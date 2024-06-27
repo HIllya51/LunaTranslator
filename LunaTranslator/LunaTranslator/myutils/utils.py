@@ -245,22 +245,25 @@ def everymethodsthread():
             print_exc()
 
 
-def gamdidchangedtask(key, idname, gameuid):
-    vid = savehook_new_data[gameuid][idname]
+def idtypecheck(key, idname, gameuid, vid):
     if vid == "":
         return
-    else:
-        try:
-            if globalconfig["metadata"][key]["idtype"] == 0:
-                try:
-                    vid = int(vid)
-                except:
-                    print(vid)
-                    return
-            savehook_new_data[gameuid][idname] = vid
-            searchvndbqueue.put((1, gameuid, (key, vid)), 1)
-        except:
-            print_exc()
+
+    try:
+        if globalconfig["metadata"][key]["idtype"] == 0:
+            try:
+                vid = int(vid)
+            except:
+                print(vid)
+                return
+        savehook_new_data[gameuid][idname] = vid
+    except:
+        print_exc()
+
+
+def gamdidchangedtask(key, idname, gameuid):
+    vid = savehook_new_data[gameuid][idname]
+    searchvndbqueue.put((1, gameuid, (key, vid)), 1)
 
 
 def titlechangedtask(gameuid, title):
@@ -269,13 +272,17 @@ def titlechangedtask(gameuid, title):
     searchvndbqueue.put((0, gameuid, [title]), 1)
 
 
+def initanewitem(gamepath, title):
+    uid = f"{time.time()}_{uuid.uuid4()}"
+    gamepath2uid[gamepath] = uid
+    savehook_new_data[uid] = getdefaultsavehook(gamepath, title)
+    uid2gamepath[uid] = gamepath
+    return uid
+
+
 def checkifnewgame(targetlist, gamepath, title=None):
     if gamepath not in gamepath2uid:
-        uid = f"{time.time()}_{uuid.uuid4()}"
-        gamepath2uid[gamepath] = uid
-        savehook_new_data[uid] = getdefaultsavehook(gamepath, title)
-
-        uid2gamepath[uid] = gamepath
+        uid = initanewitem(gamepath, title)
         searchvndbqueue.put((0, uid, [title] + guessmaybetitle(gamepath, title)))
     else:
         uid = gamepath2uid[gamepath]

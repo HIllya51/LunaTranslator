@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools
 from myutils.utils import checkencoding
 from myutils.config import globalconfig, _TR, _TRL
-from myutils.wrapper import Singleton
+from myutils.wrapper import Singleton_close
 from gui.usefulwidget import getspinbox, threebuttons, getlineedit, FocusCombo
 
 nowsuppertcodes = _TRL(
@@ -18,7 +18,7 @@ nowsuppertcodes = _TRL(
 nowsuppertcodespy = ["SHIFT-JIS", "GBK", "BIG5", "EUC-KR", "ASCII"]
 
 
-@Singleton
+@Singleton_close
 class codeacceptdialog(QDialog):
     def _setcode_i(self, combox: QComboBox, itemsaver_, code="", idx=0):
         itemsaver_.saveidx = idx
@@ -76,7 +76,7 @@ class codeacceptdialog(QDialog):
             )
 
             row += 1
-        button = threebuttons()
+        button = threebuttons(texts=["添加行", "删除行", "立即应用"])
         button.btn1clicked.connect(self.clicked1)
         button.btn2clicked.connect(self.clicked2)
         button.btn3clicked.connect(self.apply)
@@ -122,8 +122,15 @@ class codeacceptdialog(QDialog):
         self.table.setIndexWidget(index, codecombox)
 
     def clicked2(self):
+        skip = []
+        for index in self.table.selectedIndexes():
+            if index.row() in skip:
+                continue
+            skip.append(index.row())
+        skip = reversed(sorted(skip))
 
-        self.model.removeRow(self.table.currentIndex().row())
+        for row in skip:
+            self.model.removeRow(row)
 
     def apply(self):
 

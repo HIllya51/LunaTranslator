@@ -4,8 +4,10 @@ from collections import OrderedDict
 from urllib.parse import urlencode, urlsplit
 from functools import partial
 
+
 class NetWorkException(Exception):
     pass
+
 
 class Timeout(NetWorkException):
     pass
@@ -352,6 +354,12 @@ class Sessionbase:
     def options(self, url, **kwargs):
         return self.request("OPTIONS", url, **kwargs)
 
+    def patch(self, url, **kwargs):
+        return self.request("PATCH", url, **kwargs)
+
+    def delete(self, url, **kwargs):
+        return self.request("DELETE", url, **kwargs)
+
 
 Sessionimpl = [Sessionbase]
 
@@ -369,3 +377,5 @@ def session():
 get = partial(request, "GET")
 post = partial(request, "POST")
 options = partial(request, "OPTIONS")
+patch = partial(request, "PATCH")
+delete = partial(request, "DELETE")

@@ -1,117 +1,140 @@
-import requests, re, os
-from myutils.config import tryreadconfig, safesave
-import gzip, json
-import shutil, gobject
-
+import requests, re
+from myutils.config import (
+    tryreadconfig,
+    safesave,
+    savegametaged,
+    _TR,
+    savehook_new_data,
+)
+from myutils.utils import initanewitem, gamdidchangedtask
+import gzip, json, functools
+import shutil, gobject, time
+from qtsymbols import *
+from gui.inputdialog import autoinitdialog
 from metadata.abstract import common
+from gui.usefulwidget import getlineedit
+from gui.dialog_savedgame import getreflist, getalistname
+from myutils.wrapper import Singleton_close
 
 
-def safegetvndbjson(proxy, url, json, getter):
+def saferequestvndb(proxy, method, url, json=None, headers=None):
+    print(method, url, json)
     try:
-        print(url, json)
-        _ = requests.post(
-            url,
+        resp = requests.request(
+            method,
+            "https://api.vndb.org/kana/" + url,
+            headers=headers,
             json=json,
             proxies=proxy,
         )
-        print(_.text)
-        try:
-            return getter(_.json())
-        except:
-            # print_exc()
-            return None
     except:
-        return None
+        time.sleep(3)
+        print("retry network error")
+        return saferequestvndb(proxy, method, url, json, headers)
+    if resp.status_code == 429:
+        time.sleep(3)
+        print("retry 429")
+        return saferequestvndb(proxy, method, url, json, headers)
+    elif resp.status_code == 400:
+        print(resp.text)
+        # 400 搜索失败
+    else:
+        if method.upper() in ["GET", "POST"]:
+            try:
+                return resp.json()
+            except:
+                print(resp.status_code)
+                print(resp.text)
+                return None
+
+
+def safegetvndbjson(proxy, url, json):
+    return saferequestvndb(proxy, "POST", url, json)
+
+
+def gettitlefromjs(js):
+    try:
+
+        for _ in js["titles"]:
+            main = _["main"]
+            title = _["title"]
+            if main:
+                return title
+
+        raise Exception()
+    except:
+        return js["title"]
 
 
 def gettitlebyid(proxy, vid):
-    def _getter(js):
-
-        try:
-
-            for _ in js["results"][0]["titles"]:
-                main = _["main"]
-                title = _["title"]
-                if main:
-                    return title
-
-            raise Exception()
-        except:
-            return js["results"][0]["title"]
-
-    return safegetvndbjson(
+    js = safegetvndbjson(
         proxy,
-        "https://api.vndb.org/kana/vn",
+        "vn",
         {"filters": ["id", "=", vid], "fields": "title,titles.title,titles.main"},
-        _getter,
     )
+    if js:
+        return gettitlefromjs(js["results"][0])
 
 
 def getscreenshotsbyid(proxy, vid):
-    def _getter(js):
 
+    js = safegetvndbjson(
+        proxy, "vn", {"filters": ["id", "=", vid], "fields": "screenshots.url"}
+    )
+    if js:
         ___ = []
         for _ in js["results"][0]["screenshots"]:
             url = _["url"]
             ___.append(url)
         return ___
 
-    return safegetvndbjson(
-        proxy,
-        "https://api.vndb.org/kana/vn",
-        {"filters": ["id", "=", vid], "fields": "screenshots.url"},
-        _getter,
-    )
-
 
 def getimgbyid(proxy, vid):
-    return safegetvndbjson(
-        proxy,
-        "https://api.vndb.org/kana/vn",
-        {"filters": ["id", "=", vid], "fields": "image.url"},
-        lambda js: js["results"][0]["image"]["url"],
+    js = safegetvndbjson(
+        proxy, "vn", {"filters": ["id", "=", vid], "fields": "image.url"}
     )
+    if js:
+        return js["results"][0]["image"]["url"]
 
 
 def getvidbytitle_vn(proxy, title):
-    return safegetvndbjson(
+    js = safegetvndbjson(
         proxy,
-        "https://api.vndb.org/kana/vn",
+        "vn",
         {"filters": ["search", "=", title], "fields": "id", "sort": "searchrank"},
-        lambda js: js["results"][0]["id"],
     )
+    if js:
+        return js["results"][0]["id"]
 
 
 def getvidbytitle_release(proxy, title):
-    return safegetvndbjson(
+    js = safegetvndbjson(
         proxy,
-        "https://api.vndb.org/kana/release",
+        "release",
         {
             "filters": ["search", "=", title],
             "fields": "id,vns.id",
             "sort": "searchrank",
         },
-        lambda js: js["results"][0]["vns"][0]["id"],
     )
+    if js:
+        return js["results"][0]["vns"][0]["id"]
 
 
 def getdevelopersbyid(proxy, vid):
 
-    def _js(js):
+    js = safegetvndbjson(
+        proxy,
+        "vn",
+        {"filters": ["id", "=", vid], "fields": "developers.name,developers.original"},
+    )
+    if js:
         _ = []
         for item in js["results"][0]["developers"]:
             if item["original"]:
                 _.append(item["original"])
             _.append(item["name"])
         return _
-
-    name = safegetvndbjson(
-        proxy,
-        "https://api.vndb.org/kana/vn",
-        {"filters": ["id", "=", vid], "fields": "developers.name,developers.original"},
-        _js,
-    )
-    return name
 
 
 def getidbytitle_(proxy, title):
@@ -122,9 +145,9 @@ def getidbytitle_(proxy, title):
 
 
 def getcharnamemapbyid(proxy, vid):
-    res = safegetvndbjson(
+    js = safegetvndbjson(
         proxy,
-        "https://api.vndb.org/kana/character",
+        "character",
         {
             "filters": [
                 "vn",
@@ -133,8 +156,11 @@ def getcharnamemapbyid(proxy, vid):
             ],
             "fields": "name,original",
         },
-        lambda js: js["results"],
     )
+    if js:
+        res = js["results"]
+    else:
+        return {}
     namemap = {}
     try:
         for r in res:
@@ -178,8 +204,8 @@ def safedownload(proxy):
 
 def getvntagsbyid(proxy, vid):
 
-    res = safegetvndbjson(
-        "https://api.vndb.org/kana/vn",
+    js = safegetvndbjson(
+        "vn",
         {
             "filters": [
                 "id",
@@ -188,8 +214,10 @@ def getvntagsbyid(proxy, vid):
             ],
             "fields": "tags.rating",
         },
-        lambda js: js["results"][0]["tags"],
     )
+    if not js:
+        return
+    res = js["results"][0]["tags"]
     if not res:
         return
     tags = []
@@ -213,7 +241,170 @@ def getvntagsbyid(proxy, vid):
     return tags
 
 
+@Singleton_close
+class vndbsettings(QDialog):
+
+    def getalistname(self, after):
+        __d = {"k": 0}
+
+        __vis = []
+        __uid = []
+        for _ in savegametaged:
+            if _ is None:
+                __vis.append("GLOBAL")
+                __uid.append(None)
+            else:
+                __vis.append(_["title"])
+                __uid.append(_["uid"])
+        autoinitdialog(
+            self,
+            _TR("目标"),
+            600,
+            [
+                {
+                    "type": "combo",
+                    "name": _TR("目标"),
+                    "d": __d,
+                    "k": "k",
+                    "list": __vis,
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(after, __d, __uid),
+                },
+            ],
+        )
+
+    @property
+    def headers(self):
+        return {
+            "Authorization": f"Token {self._ref.config['Token']}",
+        }
+
+    @property
+    def userid(self):
+        return saferequestvndb(
+            self._ref.proxy, "GET", "authinfo", headers=self.headers
+        )["id"]
+
+    def querylist(self, needtitle):
+
+        userid = self.userid
+        pagei = 1
+        collectresults = []
+        while True:
+            json_data = {
+                "user": userid,
+                "fields": (
+                    "id, vn.title,vn.titles.title,vn.titles.main" if needtitle else "id"
+                ),
+                "sort": "vote",
+                "results": 100,
+                "page": pagei,
+            }
+            pagei += 1
+            response = saferequestvndb(
+                self._ref.proxy, "POST", "ulist", json=json_data, headers=self.headers
+            )
+            collectresults += response["results"]
+            if not response["more"]:
+                break
+        return collectresults
+
+    def getalistname_download(self, uid):
+        reflist = getreflist(uid)
+        collectresults = self.querylist()
+        thislistvids = [
+            savehook_new_data[gameuid][self._ref.idname] for gameuid in reflist
+        ]
+        collect = {}
+        for gameuid in savehook_new_data:
+            vid = savehook_new_data[gameuid][self._ref.idname]
+            collect[vid] = gameuid
+
+        for item in collectresults:
+            title = item["name"]
+            vid = int(item["id"][1:])
+            if vid in thislistvids:
+                continue
+
+            if vid in collect:
+                gameuid = collect[vid]
+            else:
+                gameuid = initanewitem(f"bgm_{vid}_{time.time()}", title)
+                savehook_new_data[gameuid][self._ref.idname] = vid
+                gamdidchangedtask(self._ref.typename, self._ref.idname, gameuid)
+            reflist.insert(0, gameuid)
+
+    def getalistname_upload(self, uid):
+        reflist = getreflist(uid)
+        vids = [int(item["id"][1:]) for item in self.querylist(False)]
+
+        for gameuid in reflist:
+            vid = savehook_new_data[gameuid][self._ref.idname]
+            if vid == 0:
+                continue
+            if vid in vids:
+                continue
+            saferequestvndb(
+                self._ref.proxy,
+                "PATCH",
+                f"ulist/v{vid}",
+                json={
+                    "labels_set": [1],
+                },
+                headers=self.headers,
+            )
+
+    def singleupload_existsoverride(self, gameuid):
+        vid = savehook_new_data[gameuid][self._ref.idname]
+        if not vid:
+            return
+
+        saferequestvndb(
+            self._ref.proxy,
+            "PATCH",
+            f"ulist/v{vid}",
+            json={
+                "labels_set": [1],
+                # "labels_unset": [1],
+                # "vote" :100
+            },
+            headers=self.headers,
+        )
+
+    def __getalistname(self, callback, _):
+        getalistname(self, callback)
+
+    def __init__(self, parent, _ref: common, gameuid: str) -> None:
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self._ref = _ref
+        self.resize(QSize(800, 10))
+        self.setWindowTitle("vndb")
+        fl = QFormLayout(self)
+        fl.addRow("Token", getlineedit(_ref.config, "Token"))
+        btn = QPushButton(_TR("上传游戏"))
+        btn.clicked.connect(
+            functools.partial(self.singleupload_existsoverride, gameuid)
+        )
+        fl.addRow(btn)
+        btn = QPushButton(_TR("上传游戏列表"))
+        btn.clicked.connect(
+            functools.partial(self.__getalistname, self.getalistname_upload)
+        )
+        fl.addRow(btn)
+        btn = QPushButton(_TR("获取游戏列表"))
+        btn.clicked.connect(
+            functools.partial(self.__getalistname, self.getalistname_download)
+        )
+        fl.addRow(btn)
+        self.show()
+
+
 class searcher(common):
+
+    def querysettingwindow(self, parent, gameuid):
+        vndbsettings(parent, self, gameuid)
 
     def refmainpage(self, _id):
         return f"https://vndb.org/v{_id}"

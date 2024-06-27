@@ -16,12 +16,19 @@ from myutils.config import (
     static_data,
 )
 from myutils.hwnd import getExeIcon
-from myutils.wrapper import Singleton_close, Singleton, threader, tryprint
+from myutils.wrapper import (
+    Singleton_close,
+    Singleton,
+    threader,
+    tryprint,
+    Singleton_close,
+)
 from myutils.utils import (
     checkifnewgame,
     str2rgba,
     gamdidchangedtask,
     titlechangedtask,
+    idtypecheck,
     selectdebugfile,
     targetmod,
 )
@@ -707,8 +714,9 @@ class dialog_setting_game_internal(QWidget):
             if globalconfig["metadata"][key]["idtype"] == 0:
                 vndbid.setValidator(QIntValidator())
             vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+
             vndbid.textEdited.connect(
-                functools.partial(savehook_new_data[gameuid].__setitem__, idname)
+                functools.partial(idtypecheck, key, idname, gameuid)
             )
             vndbid.returnPressed.connect(
                 functools.partial(gamdidchangedtask, key, idname, gameuid)
@@ -729,7 +737,9 @@ class dialog_setting_game_internal(QWidget):
                 __settting = targetmod[key].querysettingwindow
                 _vbox_internal.insert(
                     1,
-                    getIconButton(functools.partial(__settting, self), icon="fa.gear"),
+                    getIconButton(
+                        functools.partial(__settting, self, gameuid), icon="fa.gear"
+                    ),
                 )
             except:
                 pass
@@ -1149,9 +1159,16 @@ class dialog_setting_game_internal(QWidget):
         ):  # 2
             self.__checkaddnewmethod(row, k)
         vbox.addWidget(table)
-        buttons = threebuttons(btns=2, texts=_TRL(["添加行", "删除行"]))
+        buttons = threebuttons(texts=["添加行", "删除行", "上移", "下移"])
         buttons.btn1clicked.connect(self.__privatetextproc_btn1)
-        buttons.btn2clicked.connect(self.__privatetextproc_btn2)
+        buttons.btn2clicked.connect(self.removerows)
+        buttons.btn3clicked.connect(
+            functools.partial(self.__privatetextproc_moverank, -1)
+        )
+        buttons.btn4clicked.connect(
+            functools.partial(self.__privatetextproc_moverank, 1)
+        )
+        vbox.addWidget(buttons)
         vbox.addWidget(buttons)
         return _w
 
@@ -1217,6 +1234,25 @@ class dialog_setting_game_internal(QWidget):
                 self.__textprocinternalmodel.index(row, 2),
                 btn,
             )
+
+    def removerows(self):
+
+        skip = []
+        for index in self.__textprocinternaltable.selectedIndexes():
+            if index.row() in skip:
+                continue
+            skip.append(index.row())
+        skip = reversed(sorted(skip))
+
+        for row in skip:
+            self.__textprocinternalmodel.removeRow(row)
+            _dict = savehook_new_data[self.__privatetextproc_gameuid][
+                "save_text_process_info"
+            ]
+            post = _dict["rank"][row]
+            _dict["rank"].pop(row)
+            if post in _dict["postprocessconfig"]:
+                _dict["postprocessconfig"].pop(post)
 
     def __privatetextproc_btn2(self):
         row = self.__textprocinternaltable.currentIndex().row()
@@ -1475,7 +1511,7 @@ class dialog_setting_game(QDialog):
             pass
 
 
-@Singleton
+@Singleton_close
 class dialog_syssetting(QDialog):
 
     def __init__(self, parent, type_=1) -> None:
@@ -2491,6 +2527,50 @@ class pixwrapper(QWidget):
         self.pixview.setPixmap(pix)
 
 
+def getalistname(parent, callback, skipid=False, skipidid=None):
+    __d = {"k": 0}
+
+    __vis = []
+    __uid = []
+    for _ in savegametaged:
+        if _ is None:
+            __vis.append("GLOBAL")
+            __uid.append(None)
+        else:
+            __vis.append(_["title"])
+            __uid.append(_["uid"])
+        if skipid:
+            if skipidid == __uid[-1]:
+                __uid.pop(-1)
+                __vis.pop(-1)
+
+    def __wrap(callback, __d, __uid):
+        if len(__uid) == 0:
+            return
+
+        uid = __uid[__d["k"]]
+        callback(uid)
+
+    autoinitdialog(
+        parent,
+        _TR("目标"),
+        600,
+        [
+            {
+                "type": "combo",
+                "name": _TR("目标"),
+                "d": __d,
+                "k": "k",
+                "list": __vis,
+            },
+            {
+                "type": "okcancel",
+                "callback": functools.partial(__wrap, callback, __d, __uid),
+            },
+        ],
+    )
+
+
 class dialog_savedgame_v3(QWidget):
     def viewitem(self, k):
         try:
@@ -2597,12 +2677,8 @@ class dialog_savedgame_v3(QWidget):
             if curr and os.path.exists(curr):
                 savehook_new_data[self.currentfocusuid]["currentmainimage"] = curr
 
-    def addtolistcallback(self, __d, __uid, gameuid):
+    def addtolistcallback(self, uid, gameuid):
 
-        if len(__uid) == 0:
-            return
-
-        uid = __uid[__d["k"]]
         __save = self.reftagid
         self.reftagid = uid
 
@@ -2616,39 +2692,11 @@ class dialog_savedgame_v3(QWidget):
         self.reftagid = __save
 
     def addtolist(self):
-        __d = {"k": 0}
-
-        __vis = []
-        __uid = []
-        for _ in savegametaged:
-            if _ is None:
-                __vis.append("GLOBAL")
-                __uid.append(None)
-            else:
-                __vis.append(_["title"])
-                __uid.append(_["uid"])
-            if self.reftagid == __uid[-1]:
-                __uid.pop(-1)
-                __vis.pop(-1)
-        autoinitdialog(
+        getalistname(
             self,
-            _TR("目标"),
-            600,
-            [
-                {
-                    "type": "combo",
-                    "name": _TR("目标"),
-                    "d": __d,
-                    "k": "k",
-                    "list": __vis,
-                },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(
-                        self.addtolistcallback, __d, __uid, self.currentfocusuid
-                    ),
-                },
-            ],
+            lambda x: self.addtolistcallback(x, self.currentfocusuid),
+            True,
+            self.reftagid,
         )
 
     def directshow(self):

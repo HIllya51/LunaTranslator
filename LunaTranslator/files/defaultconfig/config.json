@@ -235,7 +235,10 @@
             "downloadtasks": [],
             "useproxy": false,
             "target": "vid",
-            "idtype": 0
+            "idtype": 0,
+            "args": {
+                "Token": ""
+            }
         },
         "dlsite": {
             "name": "dlsite",

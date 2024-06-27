@@ -812,5 +812,9 @@
     "论坛": "forum",
     "请选择": "Lütfen seçin",
     "安装成功": "Yükleme başarılı",
-    "添加成功": "Başarılı eklendi"
+    "添加成功": "Başarılı eklendi",
+    "获取游戏列表": "Oyun listesini alın",
+    "上传游戏列表": "Oyun listesini yükle",
+    "上传游戏": "Oyunu yükle",
+    "以当前md5复制选中行": "Seçili satırı mevcut MD5 ile kopyalayın"
 }

@@ -812,5 +812,9 @@
     "论坛": "Diễn đàn",
     "请选择": "Vui lòng chọn",
     "安装成功": "Cài đặt thành công",
-    "添加成功": "Thêm thành công"
+    "添加成功": "Thêm thành công",
+    "获取游戏列表": "Nhận danh sách trò chơi",
+    "上传游戏列表": "Tải lên danh sách trò chơi",
+    "上传游戏": "Tải lên trò chơi",
+    "以当前md5复制选中行": "Dòng đã chọn sao chép md5 hiện tại"
 }

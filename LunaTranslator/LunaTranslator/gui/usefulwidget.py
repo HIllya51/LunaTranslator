@@ -8,8 +8,8 @@ from webviewpy import (
     declare_library_path,
 )
 from winsharedutils import HTMLBrowser
-from myutils.config import _TR, globalconfig
-from myutils.wrapper import Singleton, Singleton_close, tryprint
+from myutils.config import _TR, globalconfig, _TRL
+from myutils.wrapper import Singleton_close, tryprint
 from myutils.utils import nowisdark, checkportavailable
 
 
@@ -59,7 +59,7 @@ class FocusDoubleSpin(QDoubleSpinBox):
             return super().wheelEvent(e)
 
 
-@Singleton
+@Singleton_close
 class dialog_showinfo(QDialog):
 
     def __init__(self, parent, title, info) -> None:
@@ -1277,34 +1277,41 @@ class threebuttons(QWidget):
     btn1clicked = pyqtSignal()
     btn2clicked = pyqtSignal()
     btn3clicked = pyqtSignal()
+    btn4clicked = pyqtSignal()
+    btn5clicked = pyqtSignal()
 
-    def __init__(self, btns=3, texts=None):
+    def __init__(self, texts=None):
         super().__init__()
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
-        button = QPushButton(self)
-        if texts:
+        texts = _TRL(texts)
+        if len(texts) >= 1:
+            button = QPushButton(self)
             button.setText(texts[0])
-        else:
-            button.setText(_TR("添加行"))
-        button.clicked.connect(self.btn1clicked)
-        button2 = QPushButton(self)
-        if texts:
+            button.clicked.connect(self.btn1clicked)
+            layout.addWidget(button)
+        if len(texts) >= 2:
+            button2 = QPushButton(self)
             button2.setText(texts[1])
-        else:
-            button2.setText(_TR("删除行"))
-        button2.clicked.connect(self.btn2clicked)
-        layout.addWidget(button)
-        layout.addWidget(button2)
-        if btns == 3:
+            button2.clicked.connect(self.btn2clicked)
+
+            layout.addWidget(button2)
+        if len(texts) >= 3:
             button3 = QPushButton(self)
-            if texts:
-                button3.setText(texts[2])
-            else:
-                button3.setText(_TR("立即应用"))
+            button3.setText(texts[2])
             button3.clicked.connect(self.btn3clicked)
             layout.addWidget(button3)
+        if len(texts) >= 4:
+            button4 = QPushButton(self)
+            button4.setText(texts[3])
+            button4.clicked.connect(self.btn4clicked)
+            layout.addWidget(button4)
+        if len(texts) >= 5:
+            button5 = QPushButton(self)
+            button5.setText(texts[4])
+            button5.clicked.connect(self.btn5clicked)
+            layout.addWidget(button5)
 
 
 def tabadd_lazy(tab, title, getrealwidgetfunction):
@@ -1534,7 +1541,8 @@ def makesubtab_lazy(
 @Singleton_close
 class listediter(QDialog):
     def showmenu(self, p: QPoint):
-        r = self.hctable.currentIndex().row()
+        curr = self.hctable.currentIndex()
+        r = curr.row()
         if r < 0:
             return
         menu = QMenu(self.hctable)
@@ -1549,15 +1557,10 @@ class listediter(QDialog):
         action = menu.exec(self.hctable.cursor().pos())
 
         if action == remove:
-            self.hcmodel.removeRow(self.hctable.currentIndex().row())
+            self.hcmodel.removeRow(curr.row())
 
         elif action == copy:
-            winsharedutils.clipboard_set(
-                self.hcmodel.item(
-                    self.hctable.currentIndex().row(),
-                    self.hctable.currentIndex().column(),
-                ).text()
-            )
+            winsharedutils.clipboard_set(self.hcmodel.itemFromIndex(curr).text())
 
         elif action == up:
 
@@ -1567,12 +1570,12 @@ class listediter(QDialog):
             self.moverank(1)
 
     def moverank(self, dy):
-        target = (self.hctable.currentIndex().row() + dy) % self.hcmodel.rowCount()
-        text = self.hcmodel.item(
-            self.hctable.currentIndex().row(), self.hctable.currentIndex().column()
-        ).text()
-        self.hcmodel.removeRow(self.hctable.currentIndex().row())
+        curr = self.hctable.currentIndex()
+        target = (curr.row() + dy) % self.hcmodel.rowCount()
+        text = self.hcmodel.itemFromIndex(curr).text()
+        self.hcmodel.removeRow(curr.row())
         self.hcmodel.insertRow(target, [QStandardItem(text)])
+        self.hctable.setCurrentIndex(self.hcmodel.index(target, 0))
 
     def __init__(
         self, p, title, header, lst, closecallback=None, ispathsedit=None
@@ -1607,9 +1610,11 @@ class listediter(QDialog):
                 self.hcmodel.insertRow(row, [QStandardItem(k)])
             formLayout = QVBoxLayout()
             formLayout.addWidget(self.hctable)
-            self.buttons = threebuttons(btns=2)
+            self.buttons = threebuttons(texts=["添加行", "删除行", "上移", "下移"])
             self.buttons.btn1clicked.connect(self.click1)
             self.buttons.btn2clicked.connect(self.clicked2)
+            self.buttons.btn3clicked.connect(functools.partial(self.moverank, -1))
+            self.buttons.btn4clicked.connect(functools.partial(self.moverank, 1))
 
             formLayout.addWidget(self.buttons)
             self.setLayout(formLayout)
@@ -1619,7 +1624,15 @@ class listediter(QDialog):
             print_exc()
 
     def clicked2(self):
-        self.hcmodel.removeRow(self.hctable.currentIndex().row())
+        skip = []
+        for index in self.hctable.selectedIndexes():
+            if index.row() in skip:
+                continue
+            skip.append(index.row())
+        skip = reversed(sorted(skip))
+
+        for row in skip:
+            self.hcmodel.removeRow(row)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.buttons.setFocus()

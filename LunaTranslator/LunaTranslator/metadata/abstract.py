@@ -29,8 +29,8 @@ class common:
             return {}
 
     @property
-    def name(self):
-        return self.config_all.get("name", self.typename)
+    def idname(self):
+        return self.config_all['target']
 
     @property
     def proxy(self):

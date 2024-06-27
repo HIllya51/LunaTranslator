@@ -812,5 +812,9 @@
     "论坛": "Foro",
     "请选择": "Por favor, elija",
     "安装成功": "Instalación exitosa",
-    "添加成功": "Se agregó con éxito"
+    "添加成功": "Se agregó con éxito",
+    "获取游戏列表": "Obtener la lista de juegos",
+    "上传游戏列表": "Subir la lista de juegos",
+    "上传游戏": "Sube el juego",
+    "以当前md5复制选中行": "Copiar la línea seleccionada con el MD5 actual"
 }

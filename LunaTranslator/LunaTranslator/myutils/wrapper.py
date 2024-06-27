@@ -19,13 +19,24 @@ def Singleton_impl(cls, behavior="activate"):
     def _singleton(*args, **kwagrs):
         if _lock.locked():
             if cls not in _instance:  # __init__很慢，来不及放入_instance
-                pass
+                return
             elif behavior == "activate":
-                _instance[cls].activateWindow()
-                _instance[cls].show()
+                try:
+                    _instance[cls].activateWindow()
+                    _instance[cls].show()
+                    return
+                except:
+                    # 父类被销毁
+                    _lock.release()
+                    pass
             elif behavior == "close":
-                _instance[cls].close()
-            return
+                try:
+                    _instance[cls].close()
+                    return
+                except:
+                    _lock.release()
+                    pass
+
         _lock.acquire()
 
         class __(cls):
@@ -43,6 +54,7 @@ def Singleton_impl(cls, behavior="activate"):
                     self.deleteLater()
                     _instance.pop(cls)
                 _lock.release()
+
         try:
             _inst = __(*args, **kwagrs)
         except:

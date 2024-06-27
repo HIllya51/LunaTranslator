@@ -4,7 +4,7 @@ from traceback import print_exc
 import qtawesome
 from myutils.config import globalconfig, _TR, _TRL
 from myutils.utils import makehtml
-from myutils.wrapper import Singleton
+from myutils.wrapper import Singleton_close
 from gui.usefulwidget import (
     MySwitch,
     selectcolor,
@@ -18,7 +18,7 @@ from gui.usefulwidget import (
 )
 
 
-@Singleton
+@Singleton_close
 class noundictconfigdialog1(QDialog):
     def newline(self, row, item):
         self.model.insertRow(
@@ -27,6 +27,41 @@ class noundictconfigdialog1(QDialog):
         )
         self.table.setIndexWidget(
             self.model.index(row, 0), getsimpleswitch(item, "regex")
+        )
+
+    def showmenu(self, table: QTableView, _):
+        r = table.currentIndex().row()
+        if r < 0:
+            return
+        menu = QMenu(table)
+        up = QAction(_TR("上移"))
+        down = QAction(_TR("下移"))
+        menu.addAction(up)
+        menu.addAction(down)
+        action = menu.exec(table.cursor().pos())
+
+        if action == up:
+
+            self.moverank(table, -1)
+
+        elif action == down:
+            self.moverank(table, 1)
+
+    def moverank(self, table: QTableView, dy):
+        curr = table.currentIndex()
+        model = table.model()
+        target = (curr.row() + dy) % model.rowCount()
+        texts = [model.item(curr.row(), i).text() for i in range(model.columnCount())]
+
+        item = self.reflist.pop(curr.row())
+        self.reflist.insert(
+            target, {"key": texts[1], "value": [2], "regex": item["regex"]}
+        )
+        model.removeRow(curr.row())
+        model.insertRow(target, [QStandardItem(text) for text in texts])
+        table.setCurrentIndex(model.index(target, curr.column()))
+        table.setIndexWidget(
+            model.index(target, 0), getsimpleswitch(self.reflist[target], "regex")
         )
 
     def __init__(self, parent, reflist, title, label) -> None:
@@ -46,6 +81,10 @@ class noundictconfigdialog1(QDialog):
         table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        table.customContextMenuRequested.connect(
+            functools.partial(self.showmenu, table)
         )
 
         self.table = table
@@ -74,7 +113,7 @@ class noundictconfigdialog1(QDialog):
         button4.clicked.connect(clicked4)
         search.addWidget(button4)
 
-        button = threebuttons()
+        button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
 
         def clicked1():
             self.reflist.insert(0, {"key": "", "value": "", "regex": False})
@@ -83,15 +122,26 @@ class noundictconfigdialog1(QDialog):
         button.btn1clicked.connect(clicked1)
 
         def clicked2():
-            self.model.removeRow(table.currentIndex().row())
-            self.reflist.pop(table.currentIndex().row())
+            skip = []
+            for index in self.table.selectedIndexes():
+                if index.row() in skip:
+                    continue
+                skip.append(index.row())
+            skip = reversed(sorted(skip))
+
+            for row in skip:
+                self.model.removeRow(row)
+                self.reflist.pop(row)
 
         button.btn2clicked.connect(clicked2)
-        button.btn3clicked.connect(self.apply)
+        button.btn5clicked.connect(self.apply)
+        button.btn3clicked.connect(functools.partial(self.moverank, table, -1))
+        button.btn4clicked.connect(functools.partial(self.moverank, table, 1))
         self.button = button
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addWidget(button)
+
         self.resize(QSize(600, 400))
         self.show()
 
@@ -115,7 +165,7 @@ class noundictconfigdialog1(QDialog):
         self.apply()
 
 
-@Singleton
+@Singleton_close
 class regexedit(QDialog):
     def __init__(self, parent, regexlist) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -135,7 +185,7 @@ class regexedit(QDialog):
         for row, regex in enumerate(regexlist):
             self.model.insertRow(row, [QStandardItem(regex)])
 
-        button = threebuttons()
+        button = threebuttons(texts=["添加行", "删除行", "立即应用"])
 
         def clicked1():
             regexlist.insert(0, "")
@@ -144,9 +194,16 @@ class regexedit(QDialog):
         button.btn1clicked.connect(clicked1)
 
         def clicked2():
-            self.model.removeRow(table.currentIndex().row())
-            regexlist.pop(table.currentIndex().row())
+            skip = []
+            for index in self.table.selectedIndexes():
+                if index.row() in skip:
+                    continue
+                skip.append(index.row())
+            skip = reversed(sorted(skip))
 
+            for row in skip:
+                self.model.removeRow(row)
+                regexlist.pop(row)
         button.btn2clicked.connect(clicked2)
         button.btn3clicked.connect(self.apply)
         self.button = button
@@ -157,16 +214,20 @@ class regexedit(QDialog):
 
     def apply(self):
         rows = self.model.rowCount()
-        rowoffset = 0
         dedump = set()
+        needremoves = []
         for row in range(rows):
             regex = self.model.item(row, 0).text()
             if regex == "" or regex in dedump:
-                self.regexlist.pop(row - rowoffset)
-                rowoffset += 1
+                needremoves.append(row)
                 continue
-            self.regexlist[row - rowoffset] = regex
+
+            self.regexlist[row] = regex
             dedump.add(regex)
+
+        for row in reversed(needremoves):
+            self.model.removeRow(row)
+            self.regexlist.pop(row)
 
     def closeEvent(self, _) -> None:
         self.button.setFocus()
@@ -185,7 +246,7 @@ def autoinitdialog_items(dic):
     return items
 
 
-@Singleton
+@Singleton_close
 class autoinitdialog(QDialog):
     def __init__(self, parent, title, width, lines, _=None) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -329,7 +390,7 @@ def getsomepath1(
     )
 
 
-@Singleton
+@Singleton_close
 class multicolorset(QDialog):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -382,7 +443,7 @@ class multicolorset(QDialog):
         self.show()
 
 
-@Singleton
+@Singleton_close
 class postconfigdialog_(QDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
         if self.closeevent:
@@ -426,7 +487,7 @@ class postconfigdialog_(QDialog):
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         # table.clicked.connect(self.show_info)
-        button = threebuttons()
+        button = threebuttons(texts=["添加行", "删除行", "立即应用"])
 
         def clicked1():
             model.insertRow(0, [QStandardItem(), QStandardItem()])
@@ -434,8 +495,15 @@ class postconfigdialog_(QDialog):
         button.btn1clicked.connect(clicked1)
 
         def clicked2():
+            skip = []
+            for index in table.selectedIndexes():
+                if index.row() in skip:
+                    continue
+                skip.append(index.row())
+            skip = reversed(sorted(skip))
 
-            model.removeRow(table.currentIndex().row())
+            for row in skip:
+                model.removeRow(row)
 
         button.btn2clicked.connect(clicked2)
         button.btn3clicked.connect(self.apply)

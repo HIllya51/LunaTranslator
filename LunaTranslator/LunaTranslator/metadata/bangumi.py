@@ -1,11 +1,156 @@
+import requests
+from myutils.config import (
+    _TR,
+    savehook_new_data,
+)
+from myutils.utils import initanewitem, gamdidchangedtask
+import functools
+import time
+from qtsymbols import *
 from metadata.abstract import common
-from gui.inputdialog import autoinitdialog, autoinitdialog_items
+from gui.usefulwidget import getlineedit
+from gui.dialog_savedgame import getreflist, getalistname
+from myutils.wrapper import Singleton_close
+
+
+@Singleton_close
+class bgmsettings(QDialog):
+
+    @property
+    def headers(self):
+        return {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Authorization": "Bearer " + self._ref.config["access-token"].strip(),
+        }
+
+    @property
+    def username(self):
+        response = requests.get(
+            "https://api.bgm.tv/v0/me", headers=self.headers, proxies=self._ref.proxy
+        )
+        return response.json()["username"]
+
+    def querylist(self):
+
+        params = {
+            "subject_type": "4",
+            "limit": "30",
+            "offset": "0",
+        }
+        collectresults = []
+        response = requests.get(
+            f"https://api.bgm.tv/v0/users/{self.username}/collections",
+            params=params,
+            headers=self.headers,
+            proxies=self._ref.proxy,
+        )
+        for item in response.json()["data"]:
+            collectresults.append(
+                {"id": item["subject_id"], "name": item["subject"]["name"]}
+            )
+        return collectresults
+
+    def getalistname_download(self, uid):
+
+        reflist = getreflist(uid)
+        collectresults = self.querylist()
+        thislistvids = [
+            savehook_new_data[gameuid][self._ref.idname] for gameuid in reflist
+        ]
+        collect = {}
+        for gameuid in savehook_new_data:
+            vid = savehook_new_data[gameuid][self._ref.idname]
+            collect[vid] = gameuid
+
+        for item in collectresults:
+            title = item["name"]
+            vid = item["id"]
+            if vid in thislistvids:
+                continue
+
+            if vid in collect:
+                gameuid = collect[vid]
+            else:
+                gameuid = initanewitem(f"bgm_{vid}_{time.time()}", title)
+                savehook_new_data[gameuid][self._ref.idname] = vid
+                gamdidchangedtask(self._ref.typename, self._ref.idname, gameuid)
+            reflist.insert(0, gameuid)
+
+    def getalistname_upload(self, uid):
+        reflist = getreflist(uid)
+        vids = [item["id"] for item in self.querylist()]
+
+        for gameuid in reflist:
+            vid = savehook_new_data[gameuid][self._ref.idname]
+            if vid == 0:
+                continue
+            if vid in vids:
+                continue
+
+            requests.post(
+                f"https://api.bgm.tv/v0/users/-/collections/{vid}",
+                headers=self.headers,
+                json={
+                    "type": 4,
+                    # "rate": 10,
+                    "comment": "string",
+                    "private": True,
+                    "tags": ["string"],
+                },
+                proxies=self._ref.proxy,
+            )
+
+    def singleupload_existsoverride(self, gameuid):
+        vid = savehook_new_data[gameuid][self._ref.idname]
+        if not vid:
+            return
+        try:
+            requests.post(
+                f"https://api.bgm.tv/v0/users/-/collections/{vid}",
+                headers=self.headers,
+                json={
+                    "type": 4,
+                    # "rate": 10,
+                    "comment": "string",
+                    "private": True,
+                    "tags": ["string"],
+                },
+                proxies=self._ref.proxy,
+            )
+        except:
+            pass
+
+    def __getalistname(self, callback, _):
+        getalistname(self, callback)
+
+    def __init__(self, parent, _ref: common, gameuid: str) -> None:
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self._ref = _ref
+        self.resize(QSize(800, 10))
+        self.setWindowTitle("vndb")
+        fl = QFormLayout(self)
+        fl.addRow("access-token", getlineedit(_ref.config, "access-token"))
+        btn = QPushButton(_TR("上传游戏"))
+        btn.clicked.connect(
+            functools.partial(self.singleupload_existsoverride, gameuid)
+        )
+        fl.addRow(btn)
+        btn = QPushButton(_TR("上传游戏列表"))
+        btn.clicked.connect(
+            functools.partial(self.__getalistname, self.getalistname_upload)
+        )
+        fl.addRow(btn)
+        btn = QPushButton(_TR("获取游戏列表"))
+        btn.clicked.connect(
+            functools.partial(self.__getalistname, self.getalistname_download)
+        )
+        fl.addRow(btn)
+        self.show()
 
 
 class searcher(common):
-    def querysettingwindow(self, parent):
-        items = autoinitdialog_items(self.config_all)
-        autoinitdialog(parent, self.name, 800, items)
+    def querysettingwindow(self, parent, gameuid):
+        bgmsettings(parent, self, gameuid)
 
     def getidbytitle(self, title):
 
