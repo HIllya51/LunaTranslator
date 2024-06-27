@@ -315,6 +315,7 @@ class lazyscrollflow(ScrollArea):
 
     def __init__(self):
         super().__init__()
+        self.setStyleSheet("background: transparent;")
         self.widgets = []
         self.fakegeos = []
         self._spacing = 6
@@ -634,9 +635,10 @@ class stackedlist(ScrollArea):
 
     def __init__(self):
         super().__init__()
-        self.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
+        self.setStyleSheet("""QWidget#shit{background-color:transparent;}QScrollArea{background-color:transparent;border:0px}""")
         self.setWidgetResizable(True)
         internal = QWidget()
+        internal.setObjectName('shit')
         self.setWidget(internal)
         self.lay = QVBoxLayout()
         self.lay.setAlignment(Qt.AlignmentFlag.AlignTop)
