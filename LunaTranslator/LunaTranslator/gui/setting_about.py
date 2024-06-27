@@ -124,7 +124,7 @@ def updatemethod(_version, self):
 
 def uncompress(self, savep):
     self.progresssignal.emit("正在解压……", 10000)
-    shutil.rmtree(gobject.getcachedir("update/LunaTranslator"))
+    shutil.rmtree(gobject.getcachedir("update/LunaTranslator/"))
     with zipfile.ZipFile(savep) as zipf:
         zipf.extractall(gobject.getcachedir("update"))
 
