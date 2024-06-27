@@ -66,37 +66,6 @@ def gettitlefromjs(js):
         return js["title"]
 
 
-def gettitlebyid(proxy, vid):
-    js = safegetvndbjson(
-        proxy,
-        "vn",
-        {"filters": ["id", "=", vid], "fields": "title,titles.title,titles.main"},
-    )
-    if js:
-        return gettitlefromjs(js["results"][0])
-
-
-def getscreenshotsbyid(proxy, vid):
-
-    js = safegetvndbjson(
-        proxy, "vn", {"filters": ["id", "=", vid], "fields": "screenshots.url"}
-    )
-    if js:
-        ___ = []
-        for _ in js["results"][0]["screenshots"]:
-            url = _["url"]
-            ___.append(url)
-        return ___
-
-
-def getimgbyid(proxy, vid):
-    js = safegetvndbjson(
-        proxy, "vn", {"filters": ["id", "=", vid], "fields": "image.url"}
-    )
-    if js:
-        return js["results"][0]["image"]["url"]
-
-
 def getvidbytitle_vn(proxy, title):
     js = safegetvndbjson(
         proxy,
@@ -121,27 +90,41 @@ def getvidbytitle_release(proxy, title):
         return js["results"][0]["vns"][0]["id"]
 
 
-def getdevelopersbyid(proxy, vid):
-
-    js = safegetvndbjson(
-        proxy,
-        "vn",
-        {"filters": ["id", "=", vid], "fields": "developers.name,developers.original"},
-    )
-    if js:
-        _ = []
-        for item in js["results"][0]["developers"]:
-            if item["original"]:
-                _.append(item["original"])
-            _.append(item["name"])
-        return _
-
-
 def getidbytitle_(proxy, title):
     vid = getvidbytitle_vn(proxy, title)
     if vid:
         return vid
     return getvidbytitle_release(proxy, title)
+
+
+def getinfosbyvid(proxy, vid):
+    js = safegetvndbjson(
+        proxy,
+        "vn",
+        {
+            "filters": ["id", "=", vid],
+            "fields": "title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original",
+        },
+    )
+    if js:
+
+        imgs = []
+        try:
+            for _ in js["results"][0]["screenshots"]:
+                url = _["url"]
+                imgs.append(url)
+        except:
+            pass
+        dev = []
+        for item in js["results"][0]["developers"]:
+            if item["original"]:
+                dev.append(item["original"])
+            dev.append(item["name"])
+        return dict(
+            title=gettitlefromjs(js["results"][0]),
+            imgs=[js["results"][0]["image"]["url"]] + imgs,
+            dev=dev,
+        )
 
 
 def getcharnamemapbyid(proxy, vid):
@@ -437,30 +420,22 @@ class searcher(common):
 
     def searchfordata(self, _vid):
         vid = "v{}".format(_vid)
-        img = getimgbyid(self.proxy, vid)
-        title = gettitlebyid(self.proxy, vid)
+        infos = getinfosbyvid(self.proxy, vid)
+
+        title = infos["title"]
         namemap = getcharnamemapbyid(self.proxy, vid)
         vndbtags = []  # getvntagsbyid(self.proxy, vid) #这个东西谜之慢
         if len(vndbtags) == 0:
             # 没代理时下不动那个tag的json
             vndbtags = self.gettagfromhtml(_vid)
-        developers = getdevelopersbyid(self.proxy, vid)
-        try:
-            imagepath_much2 = [
-                self.dispatchdownloadtask(_)
-                for _ in getscreenshotsbyid(self.proxy, vid)
-            ]
-        except:
-            imagepath_much2 = []
-        _image = self.dispatchdownloadtask(img)
-        __ = []
-        if _image:
-            __.append(_image)
-        __ += imagepath_much2
+        developers = infos["dev"]
+
+        img = [self.dispatchdownloadtask(_) for _ in infos["imgs"]]
+
         return {
             "namemap": namemap,
             "title": title,
-            "imagepath_all": __,
+            "imagepath_all": img,
             "webtags": vndbtags,
             "developers": developers,
         }
