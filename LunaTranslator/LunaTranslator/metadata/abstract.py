@@ -52,9 +52,17 @@ class common:
 
     def __safe_remove_task(self, name, pair):
         try:
-            globalconfig["metadata"][self.typename][name].remove(list(pair))
+            for i in range(len(globalconfig["metadata"][self.typename][name])):
+                if all(
+                    [
+                        pair[j] == globalconfig["metadata"][self.typename][name][i][j]
+                        for j in range(len(pair))
+                    ]
+                ):
+                    globalconfig["metadata"][self.typename][name].pop(i)
+                    break
         except:
-            pass
+            print_exc()
 
     def __tasks_searchfordata_thread(self):
 
@@ -88,7 +96,7 @@ class common:
                 self.__do_download_img(url, save)
             except NetWorkException:
                 remove = False
-            else:
+            except:
                 print_exc()
             if remove:
                 self.__safe_remove_task("downloadtasks", pair)
