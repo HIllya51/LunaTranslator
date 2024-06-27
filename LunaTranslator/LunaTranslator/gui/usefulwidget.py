@@ -334,10 +334,15 @@ class MySwitch(commonsolveevent):
     def mouseReleaseEvent(self, event) -> None:
         if not self.enable:
             return
-        if event.button() == Qt.MouseButton.LeftButton:
+        if event.button() != Qt.MouseButton.LeftButton:
+            return
+        try:
             self.checked = not self.checked
             self.clicked.emit(self.checked)
             self.runanimeorshowicon()
+            # 父窗口deletelater
+        except:
+            pass
 
     def onAnimationFinished(self):
         pass

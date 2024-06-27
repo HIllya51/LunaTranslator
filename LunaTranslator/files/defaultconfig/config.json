@@ -233,6 +233,7 @@
         "vndb": {
             "name": "vndb",
             "downloadtasks": [],
+            "searchfordatatasks": [],
             "useproxy": false,
             "target": "vid",
             "idtype": 0,
@@ -243,6 +244,7 @@
         "dlsite": {
             "name": "dlsite",
             "downloadtasks": [],
+            "searchfordatatasks": [],
             "useproxy": true,
             "target": "dlsiteid",
             "idtype": 1
@@ -250,6 +252,7 @@
         "bangumi": {
             "name": "bangumi",
             "downloadtasks": [],
+            "searchfordatatasks": [],
             "useproxy": true,
             "target": "bgmsid",
             "idtype": 0,
@@ -260,6 +263,7 @@
         "fanza": {
             "name": "FanzaGames",
             "downloadtasks": [],
+            "searchfordatatasks": [],
             "useproxy": true,
             "target": "fanzaid",
             "idtype": 1

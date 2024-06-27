@@ -1,6 +1,5 @@
 import windows
 import os, time
-from traceback import print_exc
 import codecs, hashlib
 import os, time
 import socket, gobject, uuid
@@ -182,42 +181,6 @@ def trysearchforid(gameuid, searchargs: list):
         return infoid
 
 
-def trysearchfordata(gameuid, key, vid):
-    try:
-        data = targetmod[key].searchfordata(vid)
-    except:
-        print_exc()
-        return False
-    title = data.get("title", None)
-    namemap = data.get("namemap", None)
-    developers = data.get("developers", [])
-    webtags = data.get("webtags", [])
-    imagepath_all = data.get("imagepath_all", [])
-
-    for _ in imagepath_all:
-        if _ is None:
-            continue
-        if _ not in savehook_new_data[gameuid]["imagepath_all"]:
-            savehook_new_data[gameuid]["imagepath_all"].append(_)
-    if title:
-        if not savehook_new_data[gameuid]["istitlesetted"]:
-            savehook_new_data[gameuid]["title"] = title
-        _vis = globalconfig["metadata"][key]["name"]
-        _url = targetmod[key].refmainpage(vid)
-        _urls = [_[1] for _ in savehook_new_data[gameuid]["relationlinks"]]
-        if _url not in _urls:
-            savehook_new_data[gameuid]["relationlinks"].append(
-                (_vis, targetmod[key].refmainpage(vid))
-            )
-    if namemap:
-        savehook_new_data[gameuid]["namemap"] = namemap
-    if len(webtags):
-        savehook_new_data[gameuid]["webtags"] = webtags
-    if len(developers):
-        savehook_new_data[gameuid]["developers"] = developers
-    return True
-
-
 def everymethodsthread():
     while True:
         _ = searchvndbqueue.get()
@@ -232,14 +195,7 @@ def everymethodsthread():
 
             elif _type == 1:
                 key, vid = arg
-                if trysearchfordata(gameuid, key, vid):
-                    gobject.baseobject.translation_ui.displayglobaltooltip.emit(
-                        f"{key}: {vid} data loaded"
-                    )
-                else:
-                    gobject.baseobject.translation_ui.displayglobaltooltip.emit(
-                        f"{key}: {vid} load failed"
-                    )
+                targetmod[key].dispatchsearchfordata(gameuid, vid)
 
         except:
             print_exc()
