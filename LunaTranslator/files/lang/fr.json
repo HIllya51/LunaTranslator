@@ -812,5 +812,6 @@
     "上传游戏列表": "Télécharger une liste de jeux",
     "上传游戏": "Télécharger un jeu",
     "以当前md5复制选中行": "Copier la ligne sélectionnée avec le MD5 actuel",
-    "修改列表名称": "Modifier le nom de la Liste"
+    "修改列表名称": "Modifier le nom de la Liste",
+    "滚动到最后": "Rouler jusqu'à la fin"
 }

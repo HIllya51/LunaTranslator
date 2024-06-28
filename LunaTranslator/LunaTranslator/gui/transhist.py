@@ -47,10 +47,12 @@ class transhist(closeashidewindow):
         hideshowraw = QAction(_TR("显示原文" if self.hiderawflag else "不显示原文"))
         hideshowapi = QAction(_TR("显示api" if self.hideapiflag else "不显示api"))
         hidetime = QAction(_TR("显示时间" if self.hidetime else "不显示时间"))
+        scrolltoend = QAction(_TR("滚动到最后"))
         menu.addAction(qingkong)
         menu.addAction(baocun)
         if len(self.textOutput.textCursor().selectedText()):
             menu.addAction(copy)
+        menu.addAction(scrolltoend)
         menu.addSeparator()
         menu.addAction(hideshowraw)
         menu.addAction(hideshowapi)
@@ -76,6 +78,9 @@ class transhist(closeashidewindow):
         elif action == hideshowapi:
 
             self.hideapiflag = not self.hideapiflag
+        elif action == scrolltoend:
+            scrollbar = self.textOutput.verticalScrollBar()
+            scrollbar.setValue(scrollbar.maximum())
 
     def getnewsentence(self, sentence):
 

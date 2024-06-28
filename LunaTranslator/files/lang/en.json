@@ -812,5 +812,6 @@
     "上传游戏列表": "Upload game list",
     "上传游戏": "Upload game",
     "以当前md5复制选中行": "Copy the selected row with the current MD5",
-    "修改列表名称": "Modify List Name"
+    "修改列表名称": "Modify List Name",
+    "滚动到最后": "Scroll to the end"
 }
