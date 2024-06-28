@@ -125,7 +125,7 @@ class searchhookparam(QDialog):
         elif idx == 1:  # 0默认
             # usestruct.codepage=self.codepage.value()
             usestruct.codepage = static_data["codepage_real"][self.codepagesave["spcp"]]
-            usestruct.text = self.searchtext.text()
+            usestruct.text = self.searchtext.text()[:30]
             if len(usestruct.text) < 4:
                 getQMessageBox(self, "警告", "搜索文本过短！", True)
                 return
