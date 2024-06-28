@@ -2094,16 +2094,12 @@ class dialog_savedgame_new(QWidget):
         global _global_dialog_savedgame_new
         _global_dialog_savedgame_new = self
         formLayout = QVBoxLayout()
-        self.reflist = getreflist(globalconfig["currvislistuid"])
-        if self.reflist is None:
-            # 已被删除
-            globalconfig["currvislistuid"] = None
-            self.reflist = savehook_new_list
-        self.reftagid = globalconfig["currvislistuid"]
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.__layout = layout
         self.loadcombo(True)
+        self.reflist = getreflist(globalconfig["currvislistuid"])
+        self.reftagid = globalconfig["currvislistuid"]
 
         def refreshcombo():
             _ = self.tagswidget.lineEdit.currentText()
