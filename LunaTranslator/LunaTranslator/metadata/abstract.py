@@ -146,11 +146,14 @@ class common:
         developers = data.get("developers", [])
         webtags = data.get("webtags", [])
         imagepath_all = data.get("imagepath_all", [])
-
+        normaled = [
+            os.path.normpath(os.path.abspath(_))
+            for _ in savehook_new_data[gameuid]["imagepath_all"]
+        ]
         for _ in imagepath_all:
             if _ is None:
                 continue
-            if _ not in savehook_new_data[gameuid]["imagepath_all"]:
+            if os.path.normpath(os.path.abspath(_)) not in normaled:
                 savehook_new_data[gameuid]["imagepath_all"].append(_)
         if title:
             if not savehook_new_data[gameuid]["istitlesetted"]:
