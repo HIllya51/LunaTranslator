@@ -729,7 +729,10 @@ class LRUCache:
 
 
 for k in globalconfig["metadata"]:
-    targetmod[k] = importlib.import_module(f"metadata.{k}").searcher(k)
+    try:
+        targetmod[k] = importlib.import_module(f"metadata.{k}").searcher(k)
+    except:
+        print_exc()
 
 
 threading.Thread(target=everymethodsthread).start()
