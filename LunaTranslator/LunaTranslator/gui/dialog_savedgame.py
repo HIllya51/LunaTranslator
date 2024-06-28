@@ -2600,24 +2600,27 @@ def getalistname(parent, callback, skipid=False, skipidid=None):
         uid = __uid[__d["k"]]
         callback(uid)
 
-    autoinitdialog(
-        parent,
-        _TR("目标"),
-        600,
-        [
-            {
-                "type": "combo",
-                "name": _TR("目标"),
-                "d": __d,
-                "k": "k",
-                "list": __vis,
-            },
-            {
-                "type": "okcancel",
-                "callback": functools.partial(__wrap, callback, __d, __uid),
-            },
-        ],
-    )
+    if len(__uid) > 1:
+        autoinitdialog(
+            parent,
+            _TR("目标"),
+            600,
+            [
+                {
+                    "type": "combo",
+                    "name": _TR("目标"),
+                    "d": __d,
+                    "k": "k",
+                    "list": __vis,
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(__wrap, callback, __d, __uid),
+                },
+            ],
+        )
+    else:
+        callback(__uid[0])
 
 
 class dialog_savedgame_v3(QWidget):
@@ -2910,7 +2913,7 @@ class dialog_savedgame_v3(QWidget):
                             "opened": True,
                         }
                         savegametaged.insert(i, tag)
-                        group0 = self.createtaglist(title, tag["uid"], True)
+                        group0 = self.createtaglist(self.stack, title, tag["uid"], True)
                         self.stack.insertw(i, group0)
                     elif action == editname:
                         self.stack.w(i).settitle(title)
