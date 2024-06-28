@@ -716,30 +716,33 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         for key in globalconfig["metadata"]:
-            idname = globalconfig["metadata"][key]["target"]
-            vndbid = QLineEdit(str(savehook_new_data[gameuid][idname]))
-            if globalconfig["metadata"][key].get("idtype", 1) == 0:
-                vndbid.setValidator(QIntValidator())
-            vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+            try:
+                idname = globalconfig["metadata"][key]["target"]
+                vndbid = QLineEdit(str(savehook_new_data[gameuid][idname]))
+                if globalconfig["metadata"][key].get("idtype", 1) == 0:
+                    vndbid.setValidator(QIntValidator())
+                vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
-            vndbid.textEdited.connect(
-                functools.partial(idtypecheck, key, idname, gameuid)
-            )
-            vndbid.returnPressed.connect(
-                functools.partial(gamdidchangedtask, key, idname, gameuid)
-            )
-            _vbox_internal = [
-                vndbid,
-                getIconButton(
-                    functools.partial(self.openrefmainpage, key, idname, gameuid),
-                    icon="fa.chrome",
-                ),
-                getIconButton(
-                    functools.partial(gamdidchangedtask, key, idname, gameuid),
-                    icon="fa.search",
-                ),
-            ]
-
+                vndbid.textEdited.connect(
+                    functools.partial(idtypecheck, key, idname, gameuid)
+                )
+                vndbid.returnPressed.connect(
+                    functools.partial(gamdidchangedtask, key, idname, gameuid)
+                )
+                _vbox_internal = [
+                    vndbid,
+                    getIconButton(
+                        functools.partial(self.openrefmainpage, key, idname, gameuid),
+                        icon="fa.chrome",
+                    ),
+                    getIconButton(
+                        functools.partial(gamdidchangedtask, key, idname, gameuid),
+                        icon="fa.search",
+                    ),
+                ]
+            except:
+                print_exc()
+                continue
             try:
                 __settting = targetmod[key].querysettingwindow
                 _vbox_internal.insert(

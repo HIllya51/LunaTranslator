@@ -140,7 +140,7 @@ def guessmaybetitle(gamepath, title):
         os.path.basename(os.path.dirname(gamepath)),
         os.path.basename(gamepath)[:-4],
     ]:
-        if not title:
+        if not _:
             continue
         _ = _.replace("(同人ゲーム)", "").replace("(18禁ゲーム)", "")
         _ = re.sub(r"\[RJ(.*?)\]", "", _)
@@ -160,6 +160,7 @@ def guessmaybetitle(gamepath, title):
         if (len(t) < 10) and (all(ord(c) < 128 for c in t)):
             continue
         lst.append(t)
+    print(lst)
     return lst
 
 
@@ -178,7 +179,11 @@ def trysearchforid(gameuid, searchargs: list):
     for key in __:
         vid = None
         for arg in searchargs:
-            vid = targetmod[key].getidbytitle(arg)
+            try:
+                vid = targetmod[key].getidbytitle(arg)
+            except:
+                print_exc()
+                continue
             if vid:
                 break
         if not vid:
