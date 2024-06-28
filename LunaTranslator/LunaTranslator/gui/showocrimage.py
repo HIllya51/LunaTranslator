@@ -16,10 +16,8 @@ class pixlabel(QLabel):
         if self.pix:
             painter = QPainter(self)
             painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-            pix = QPixmap(self.size() * self.devicePixelRatioF())
-            pix.fill(Qt.GlobalColor.transparent)
-            paintpix = QPainter(pix)
-            paintpix.drawPixmap(
+
+            painter.drawPixmap(
                 0,
                 0,
                 self.pix.scaled(
@@ -28,8 +26,6 @@ class pixlabel(QLabel):
                     Qt.TransformationMode.SmoothTransformation,
                 ),
             )
-            paintpix.end()
-            painter.drawPixmap(0, 0, pix)
 
         return super().paintEvent(a0)
 
