@@ -722,7 +722,6 @@
     "下移": "Di chuyển xuống",
     "腾讯图片翻译": "Bản dịch hình ảnh Tencent",
     "百度图片翻译": "100 hình ảnh dịch",
-    "修改名称": "Thay đổi tên",
     "大": "Lớn",
     "权限不足，请以管理员权限运行！": "Không đủ quyền, hãy chạy với quyền quản trị viên!",
     "标点": "Chấm câu",
@@ -812,5 +811,6 @@
     "获取游戏列表": "Nhận danh sách trò chơi",
     "上传游戏列表": "Tải lên danh sách trò chơi",
     "上传游戏": "Tải lên trò chơi",
-    "以当前md5复制选中行": "Dòng đã chọn sao chép md5 hiện tại"
+    "以当前md5复制选中行": "Dòng đã chọn sao chép md5 hiện tại",
+    "修改列表名称": "Thay đổi tên danh sách"
 }

@@ -1969,9 +1969,15 @@ class dialog_savedgame_new(QWidget):
 
     def showmenu(self, p):
         menu = QMenu(self)
+
+        editname = QAction(_TR("修改列表名称"))
+        addlist = QAction(_TR("添加列表"))
+        dellist = QAction(_TR("删除列表"))
+
         startgame = QAction(_TR("开始游戏"))
         delgame = QAction(_TR("删除游戏"))
         opendir = QAction(_TR("打开目录"))
+        addtolist = QAction(_TR("添加到列表"))
         gamesetting = QAction(_TR("游戏设置"))
         addgame = QAction(_TR("添加游戏"))
         batchadd = QAction(_TR("批量添加"))
@@ -1985,15 +1991,26 @@ class dialog_savedgame_new(QWidget):
             if exists:
                 menu.addAction(opendir)
             menu.addAction(gamesetting)
+            menu.addSeparator()
+            menu.addAction(addtolist)
         else:
+            if self.reftagid:
+                menu.addAction(editname)
+            menu.addAction(addlist)
+            if self.reftagid:
+                menu.addAction(dellist)
+            menu.addSeparator()
             menu.addAction(addgame)
             menu.addAction(batchadd)
+            menu.addSeparator()
             menu.addAction(othersetting)
         action = menu.exec(self.mapToGlobal(p))
         if action == startgame:
             startgamecheck(self, self.currentfocusuid)
         elif action == gamesetting:
             self.showsettingdialog()
+        elif action == addtolist:
+            self.addtolist()
         elif action == delgame:
             self.clicked2()
         elif action == opendir:
@@ -2005,12 +2022,72 @@ class dialog_savedgame_new(QWidget):
         elif action == othersetting:
             dialog_syssetting(self)
 
+        elif action == editname or action == addlist:
+            _dia = Prompt_dialog(
+                self,
+                _TR("修改列表名称" if action == editname else "添加列表"),
+                "",
+                [
+                    [
+                        _TR("名称"),
+                        (
+                            savegametaged[calculatetagidx(self.reftagid)]["title"]
+                            if action == editname
+                            else ""
+                        ),
+                    ],
+                ],
+            )
+
+            if _dia.exec():
+
+                title = _dia.text[0].text()
+                if title != "":
+                    i = calculatetagidx(self.reftagid)
+                    if action == addlist:
+                        tag = {
+                            "title": title,
+                            "games": [],
+                            "uid": str(uuid.uuid4()),
+                            "opened": True,
+                        }
+                        savegametaged.insert(i, tag)
+                        self.loadcombo(False)
+                    elif action == editname:
+
+                        savegametaged[i]["title"] = title
+                        self.loadcombo(False)
+        elif action == dellist:
+            i = calculatetagidx(self.reftagid)
+            savegametaged.pop(i)
+            self.loadcombo(False)
+            self.resetcurrvislist(globalconfig["currvislistuid"])
+
     def directshow(self):
         self.flow.directshow()
 
     def resetcurrvislist(self, uid):
+        self.reftagid = uid
         self.reflist = getreflist(uid)
         self.tagschanged(self.currtags)
+
+    def loadcombo(self, init):
+        vis, uid = loadvisinternal()
+        if not init:
+            w = self.__layout.itemAt(0).widget()
+            self.__layout.removeWidget(w)
+            w.hide()
+            w.deleteLater()
+        self.__layout.insertWidget(
+            0,
+            getsimplecombobox(
+                vis,
+                globalconfig,
+                "currvislistuid",
+                self.resetcurrvislist,
+                internallist=uid,
+            ),
+        )
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -2022,18 +2099,11 @@ class dialog_savedgame_new(QWidget):
             # 已被删除
             globalconfig["currvislistuid"] = None
             self.reflist = savehook_new_list
+        self.reftagid = globalconfig["currvislistuid"]
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
-        vis, uid = loadvisinternal()
-        layout.addWidget(
-            getsimplecombobox(
-                vis,
-                globalconfig,
-                "currvislistuid",
-                self.resetcurrvislist,
-                internallist=uid,
-            )
-        )
+        self.__layout = layout
+        self.loadcombo(True)
 
         def refreshcombo():
             _ = self.tagswidget.lineEdit.currentText()
@@ -2091,6 +2161,7 @@ class dialog_savedgame_new(QWidget):
         self.simplebutton("删除游戏", True, self.clicked2, False)
         self.simplebutton("打开目录", True, self.clicked4, True)
 
+        self.simplebutton("添加到列表", False, self.addtolist, 1)
         if globalconfig["startgamenototop"]:
             self.simplebutton("左移", True, functools.partial(self.moverank, -1), False)
             self.simplebutton("右移", True, functools.partial(self.moverank, 1), False)
@@ -2119,6 +2190,21 @@ class dialog_savedgame_new(QWidget):
 
         self.__filter = WindowEventFilter()  # keep ref
         self.installEventFilter(self.__filter)
+
+    def addtolist(self):
+        getalistname(
+            self,
+            lambda x: self.addtolistcallback(x, self.currentfocusuid),
+            True,
+            self.reftagid,
+        )
+
+    def addtolistcallback(self, uid, gameuid):
+        if gameuid not in getreflist(uid):
+            getreflist(uid).insert(0, gameuid)
+        else:
+            idx = getreflist(uid).index(gameuid)
+            getreflist(uid).insert(0, getreflist(uid).pop(idx))
 
     def moverank(self, dx):
         game = self.currentfocusuid
@@ -2701,7 +2787,10 @@ class dialog_savedgame_v3(QWidget):
         menu.addAction(delgame)
         if exists:
             menu.addAction(opendir)
+
+        menu.addSeparator()
         menu.addAction(addtolist)
+
         if ispixmenu:
             menu.addSeparator()
             menu.addAction(setimage)
@@ -2856,7 +2945,7 @@ class dialog_savedgame_v3(QWidget):
         self.currentfocusuid = None
         self.reftagid = tagid
         menu = QMenu(self)
-        editname = QAction(_TR("修改名称"))
+        editname = QAction(_TR("修改列表名称"))
         addlist = QAction(_TR("添加列表"))
         dellist = QAction(_TR("删除列表"))
         Upaction = QAction(_TR("上移"))
@@ -2865,11 +2954,13 @@ class dialog_savedgame_v3(QWidget):
         batchadd = QAction(_TR("批量添加"))
         menu.addAction(Upaction)
         menu.addAction(Downaction)
+        menu.addSeparator()
         if tagid:
             menu.addAction(editname)
         menu.addAction(addlist)
         if tagid:
             menu.addAction(dellist)
+        menu.addSeparator()
         menu.addAction(addgame)
         menu.addAction(batchadd)
 
@@ -2885,7 +2976,7 @@ class dialog_savedgame_v3(QWidget):
         elif action == editname or action == addlist:
             _dia = Prompt_dialog(
                 self,
-                _TR("修改名称" if action == editname else "添加列表"),
+                _TR("修改列表名称" if action == editname else "添加列表"),
                 "",
                 [
                     [

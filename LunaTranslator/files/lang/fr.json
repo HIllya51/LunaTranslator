@@ -722,7 +722,6 @@
     "下移": "Descendre",
     "腾讯图片翻译": "Traduction d'images par Tencent",
     "百度图片翻译": "Baidu traduction d'images",
-    "修改名称": "Modifier le nom",
     "大": "Grand",
     "权限不足，请以管理员权限运行！": "Autorisations insuffisantes, exécutez avec des privilèges d'administrateur!",
     "标点": "Ponctuation",
@@ -812,5 +811,6 @@
     "获取游戏列表": "Obtenir une liste de jeux",
     "上传游戏列表": "Télécharger une liste de jeux",
     "上传游戏": "Télécharger un jeu",
-    "以当前md5复制选中行": "Copier la ligne sélectionnée avec le MD5 actuel"
+    "以当前md5复制选中行": "Copier la ligne sélectionnée avec le MD5 actuel",
+    "修改列表名称": "Modifier le nom de la Liste"
 }

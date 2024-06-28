@@ -722,7 +722,6 @@
     "下移": "Move Down",
     "腾讯图片翻译": "Tencent Image Translation",
     "百度图片翻译": "Baidu Image Translation",
-    "修改名称": "Change Name",
     "大": "large",
     "权限不足，请以管理员权限运行！": "Insufficient permissions, please run with administrator privileges!",
     "标点": "punctuation",
@@ -812,5 +811,6 @@
     "获取游戏列表": "Get game list",
     "上传游戏列表": "Upload game list",
     "上传游戏": "Upload game",
-    "以当前md5复制选中行": "Copy the selected row with the current MD5"
+    "以当前md5复制选中行": "Copy the selected row with the current MD5",
+    "修改列表名称": "Modify List Name"
 }

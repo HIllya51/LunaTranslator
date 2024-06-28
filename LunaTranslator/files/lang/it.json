@@ -722,7 +722,6 @@
     "下移": "Sposta giù",
     "腾讯图片翻译": "Traduzione di immagini tencenti",
     "百度图片翻译": "Traduzione immagine Baidu",
-    "修改名称": "Cambia nome",
     "大": "grande",
     "权限不足，请以管理员权限运行！": "Permessi insufficienti, si prega di eseguire con privilegi di amministratore!",
     "标点": "punteggiatura",
@@ -812,5 +811,6 @@
     "获取游戏列表": "Ottieni la lista dei giochi",
     "上传游戏列表": "Carica la lista dei giochi",
     "上传游戏": "Carica gioco",
-    "以当前md5复制选中行": "Copia la riga selezionata con l'MD5 corrente"
+    "以当前md5复制选中行": "Copia la riga selezionata con l'MD5 corrente",
+    "修改列表名称": "Modifica nome elenco"
 }
