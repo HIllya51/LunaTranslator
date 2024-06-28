@@ -1599,14 +1599,6 @@ class dialog_syssetting(QDialog):
                 QLabel(_TR("显示标题")),
                 getsimpleswitch(globalconfig, "showgametitle"),
             )
-            formLayout.addRow(
-                _TR("显示的项目"),
-                getsimplecombobox(
-                    _TRL(["GLOBAL", "首位的", "指定的"]),
-                    globalconfig,
-                    "vispolicy",
-                ),
-            )
         self.show()
 
 
@@ -1932,6 +1924,7 @@ class dialog_savedgame_new(QWidget):
         self.idxsave.clear()
         ItemWidget.clearfocus()
         self.formLayout.removeWidget(self.flow)
+        self.flow.hide()
         self.flow.deleteLater()
         self.flow = lazyscrollflow()
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
@@ -2015,25 +2008,32 @@ class dialog_savedgame_new(QWidget):
     def directshow(self):
         self.flow.directshow()
 
+    def resetcurrvislist(self, uid):
+        self.reflist = getreflist(uid)
+        self.tagschanged(self.currtags)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         global _global_dialog_savedgame_new
         _global_dialog_savedgame_new = self
         formLayout = QVBoxLayout()
-        if globalconfig["vispolicy"] == 0:
+        self.reflist = getreflist(globalconfig["currvislistuid"])
+        if self.reflist is None:
+            # 已被删除
+            globalconfig["currvislistuid"] = None
             self.reflist = savehook_new_list
-        elif globalconfig["vispolicy"] == 1:
-            if savegametaged[0] is None:
-                self.reflist = savehook_new_list
-            else:
-                self.reflist = savegametaged[0]["games"]
-        elif globalconfig["vispolicy"] == 2:
-            self.reflist = getreflist(globalconfig["currvislistuid"])
-            if self.reflist is None:
-                self.reflist = savehook_new_list
-
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
+        vis, uid = loadvisinternal()
+        layout.addWidget(
+            getsimplecombobox(
+                vis,
+                globalconfig,
+                "currvislistuid",
+                self.resetcurrvislist,
+                internallist=uid,
+            )
+        )
 
         def refreshcombo():
             _ = self.tagswidget.lineEdit.currentText()
@@ -2576,9 +2576,7 @@ class pixwrapper(QWidget):
         self.pixview.setPixmap(pix)
 
 
-def getalistname(parent, callback, skipid=False, skipidid=None):
-    __d = {"k": 0}
-
+def loadvisinternal(skipid=False, skipidid=None):
     __vis = []
     __uid = []
     for _ in savegametaged:
@@ -2592,6 +2590,12 @@ def getalistname(parent, callback, skipid=False, skipidid=None):
             if skipidid == __uid[-1]:
                 __uid.pop(-1)
                 __vis.pop(-1)
+    return __vis, __uid
+
+
+def getalistname(parent, callback, skipid=False, skipidid=None):
+    __d = {"k": 0}
+    __vis, __uid = loadvisinternal(skipid, skipidid)
 
     def __wrap(callback, __d, __uid):
         if len(__uid) == 0:
@@ -2859,7 +2863,6 @@ class dialog_savedgame_v3(QWidget):
         Downaction = QAction(_TR("下移"))
         addgame = QAction(_TR("添加游戏"))
         batchadd = QAction(_TR("批量添加"))
-        setasvis = QAction(_TR("设为显示的项目"))
         menu.addAction(Upaction)
         menu.addAction(Downaction)
         if tagid:
@@ -2869,14 +2872,10 @@ class dialog_savedgame_v3(QWidget):
             menu.addAction(dellist)
         menu.addAction(addgame)
         menu.addAction(batchadd)
-        if globalconfig["vispolicy"] == 2:
-            menu.addAction(setasvis)
 
         action = menu.exec(QCursor.pos())
         if action == addgame:
             self.clicked3()
-        elif action == setasvis:
-            globalconfig["currvislistuid"] = self.reftagid
         elif action == batchadd:
             self.clicked3_batch()
         elif action == Upaction:
