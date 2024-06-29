@@ -68,7 +68,11 @@ class common:
 
         while True:
             pair = self.__tasks_searchfordata.get()
-            gameuid, vid = pair
+            if len(pair) == 2:
+                gameuid, vid = pair
+                retrytime = 5
+            elif len(pair) == 3:
+                gameuid, vid, retrytime = pair
             remove = True
             try:
                 self.__do_searchfordata(gameuid, vid)
@@ -83,7 +87,11 @@ class common:
 
                 self.__safe_remove_task("searchfordatatasks", pair)
             else:
-                self.__tasks_searchfordata.put((gameuid, vid))
+                if retrytime:
+                    # 尝试5次仍不行则放弃
+                    self.__tasks_searchfordata.put((gameuid, vid, retrytime - 1))
+                else:
+                    self.__safe_remove_task("searchfordatatasks", pair)
             gobject.baseobject.translation_ui.displayglobaltooltip.emit(vis)
 
     def __tasks_downloadimg_thread(self):
