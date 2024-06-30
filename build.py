@@ -26,7 +26,7 @@ ocrModelUrl = "https://github.com/HIllya51/RESOURCES/releases/download/ocr_model
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 LunaHook_latest = (
-    "https://github.com/HIllya51/LunaHook/releases/download/latest/Release_English.zip"
+    "https://github.com/HIllya51/LunaHook/releases/latest/download/Release_English.zip"
 )
 
 LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
