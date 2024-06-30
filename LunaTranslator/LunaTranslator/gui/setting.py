@@ -7,7 +7,6 @@ from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting_textinput import setTabOne_lazy
 from gui.setting_translate import setTabTwo_lazy, checkconnected
 from gui.setting_display import setTabThree_lazy
-from gui.setting_display_text import maybehavefontsizespin
 from gui.setting_tts import setTab5, showvoicelist
 from gui.setting_cishu import setTabcishu
 from gui.setting_hotkey import setTab_quick, registrhotkeys
@@ -70,7 +69,6 @@ class Setting(closeashidewindow):
     mp3playsignal = pyqtSignal(bytes, int, bool)
     versiontextsignal = pyqtSignal(str)
     progresssignal = pyqtSignal(str, int)
-    fontbigsmallsignal = pyqtSignal(int)
     opensolvetextsig = pyqtSignal()
     showandsolvesig = pyqtSignal(str)
 
@@ -81,7 +79,6 @@ class Setting(closeashidewindow):
         self.mp3playsignal.connect(self.mp3player.mp3playfunction)
         self.opensolvetextsig.connect(self.opensolvetextfun)
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
-        self.fontbigsmallsignal.connect(functools.partial(maybehavefontsizespin, self))
         self.voicelistsignal.connect(functools.partial(showvoicelist, self))
         self.versiontextsignal.connect(
             functools.partial(versionlabelmaybesettext, self)

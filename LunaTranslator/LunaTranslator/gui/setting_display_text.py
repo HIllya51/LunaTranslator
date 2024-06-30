@@ -10,9 +10,7 @@ from gui.usefulwidget import (
     Singleton_close,
     saveposwindow,
     getQMessageBox,
-    getsimpleswitch,
     D_getspinbox,
-    getspinbox,
     D_getIconButton,
     D_getcolorbutton,
     getcolorbutton,
@@ -24,20 +22,6 @@ from gui.usefulwidget import (
     FocusDoubleSpin,
     FocusSpin,
 )
-
-
-def maybehavefontsizespin(self, t):
-    if "fontSize_spinBox" in dir(self):
-        self.fontSize_spinBox.setValue(self.fontSize_spinBox.value() + 0.5 * t)
-    else:
-        globalconfig["fontsize"] += 0.5 * t
-
-
-def createfontsizespin(self):
-    self.fontSize_spinBox = getspinbox(
-        1, 100, globalconfig, "fontsize", double=True, step=0.1
-    )
-    return self.fontSize_spinBox
 
 
 def __changeuibuttonstate(self, x):
@@ -497,15 +481,32 @@ def xianshigrid_style(self):
                     type="grid",
                     grid=(
                         [
-                            ("原文字体", 3),
-                            (functools.partial(createtextfontcom, "fonttype"), 6),
+                            "原文字体",
+                            (functools.partial(createtextfontcom, "fonttype"), 4),
+                            "",
+                            "字体大小",
+                            D_getspinbox(1, 100, globalconfig, "fontsizeori", double=True, step=0.1),
                         ],
                         [
-                            ("译文字体", 3),
-                            (functools.partial(createtextfontcom, "fonttype2"), 6),
+                            "译文字体",
+                            (functools.partial(createtextfontcom, "fonttype2"), 4),
+                            "",
+                            "字体大小",
+                            D_getspinbox(1, 100, globalconfig, "fontsize", double=True, step=0.1),
                         ],
                         [
-                            ("原文颜色", 3),
+                            "加粗字体",
+                            D_getsimpleswitch(globalconfig, "showbold"),
+                            "",
+                            "居中显示",
+                            D_getsimpleswitch(globalconfig, "showatcenter"),
+                            "",
+                            "额外的行间距",
+                            D_getspinbox(-100, 100, globalconfig, "extra_space"),
+                            "",
+                        ],
+                        [
+                            "原文颜色",
                             D_getcolorbutton(
                                 globalconfig,
                                 "rawtextcolor",
@@ -518,20 +519,6 @@ def xianshigrid_style(self):
                                 name="original_color_button",
                                 parent=self,
                             ),
-                        ],
-                        [
-                            ("字体大小", 3),
-                            (functools.partial(createfontsizespin, self), 3),
-                            "",
-                            ("额外的行间距", 3),
-                            (D_getspinbox(-100, 100, globalconfig, "extra_space"), 3),
-                        ],
-                        [
-                            ("居中显示", 3),
-                            D_getsimpleswitch(globalconfig, "showatcenter"),
-                            ("", 3),
-                            ("加粗字体", 3),
-                            D_getsimpleswitch(globalconfig, "showbold"),
                         ],
                     ),
                 ),

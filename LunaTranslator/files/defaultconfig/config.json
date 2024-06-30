@@ -440,6 +440,7 @@
     "transparent": 80,
     "transparent_tool": 50,
     "fontsize": 17.0,
+    "fontsizeori": 17.0,
     "localeswitchmethod": 0,
     "hide_not_exists": false,
     "startgamenototop": true,
@@ -955,16 +956,6 @@
             "_17": {
                 "use": false,
                 "name": "退出",
-                "keystring": ""
-            },
-            "_18": {
-                "use": false,
-                "name": "字体增大（可长按）",
-                "keystring": ""
-            },
-            "_19": {
-                "use": false,
-                "name": "字体缩小（可长按）",
                 "keystring": ""
             },
             "_20": {

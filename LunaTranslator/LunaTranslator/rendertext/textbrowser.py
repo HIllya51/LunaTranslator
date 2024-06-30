@@ -518,16 +518,12 @@ class TextBrowser(QWidget, dataget):
     def _getfh(self, half, origin=True, getfm=False):
 
         font = QFont()
-        font.setBold(globalconfig["showbold"])
-        if origin:
-            font.setFamily(globalconfig["fonttype"])
-        else:
-            font.setFamily(globalconfig["fonttype2"])
-
+        fm, fs, bold = self._getfontinfo(origin)
+        font.setBold(bold)
+        font.setFamily(fm)
         if half:
-            font.setPointSizeF((globalconfig["fontsize"]) * globalconfig["kanarate"])
-        else:
-            font.setPointSizeF((globalconfig["fontsize"]))
+            fs *= globalconfig["kanarate"]
+        font.setPointSizeF(fs)
         fm = QFontMetricsF(font)
         if getfm:
             return fm

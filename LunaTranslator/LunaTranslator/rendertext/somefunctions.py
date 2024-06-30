@@ -27,9 +27,11 @@ class dataget:
     def _getfontinfo(self, origin):
         if origin:
             fm = globalconfig["fonttype"]
+            fs = globalconfig["fontsizeori"]
         else:
             fm = globalconfig["fonttype2"]
-        return fm, globalconfig["fontsize"], globalconfig["showbold"]
+            fs = globalconfig["fontsize"]
+        return fm, fs, globalconfig["showbold"]
 
     def _getfontinfo_kana(self):
         fm, fs, bold = self._getfontinfo(True)

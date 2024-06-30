@@ -52,8 +52,6 @@ def registrhotkeys(self):
         "_15": gobject.baseobject.translation_ui.bindcropwindow_signal.emit,
         "_16": gobject.baseobject.translation_ui.showhideuisignal.emit,
         "_17": gobject.baseobject.translation_ui.quitf_signal.emit,
-        "_18": lambda: gobject.baseobject.settin_ui.fontbigsmallsignal.emit(1),
-        "_19": lambda: gobject.baseobject.settin_ui.fontbigsmallsignal.emit(-1),
         "_20": gobject.baseobject.translation_ui.fullsgame_signal.emit,
         "_21": grabwindow,
         "_22": gobject.baseobject.translation_ui.muteprocessignal.emit,
