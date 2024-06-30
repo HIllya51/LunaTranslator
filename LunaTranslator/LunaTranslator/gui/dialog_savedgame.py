@@ -23,7 +23,7 @@ from myutils.wrapper import (
     Singleton_close,
 )
 from myutils.utils import (
-    checkifnewgame,
+    find_or_create_uid,
     str2rgba,
     gamdidchangedtask,
     titlechangedtask,
@@ -1769,9 +1769,14 @@ def addgamesingle(callback, targetlist):
     if res == "":
         return
     res = os.path.normpath(res)
-    uid = checkifnewgame(targetlist, res)
-    if uid:
-        callback(uid)
+    uid = find_or_create_uid(targetlist, res)
+    if uid in targetlist:
+        idx = targetlist.index(uid)
+        if idx == 0:
+            return
+        targetlist.pop(idx)
+    targetlist.insert(0, uid)
+    callback(uid)
 
 
 def addgamebatch(callback, targetlist):
@@ -1785,9 +1790,11 @@ def addgamebatch(callback, targetlist):
             path = os.path.normpath(os.path.abspath(os.path.join(_dir, _f)))
             if path.lower().endswith(".exe") == False:
                 continue
-            uid = checkifnewgame(targetlist, path)
-            if uid:
-                callback(uid)
+            uid = find_or_create_uid(targetlist, path)
+            if uid in targetlist:
+                targetlist.pop(targetlist.index(uid))
+            targetlist.insert(0, uid)
+            callback(uid)
 
 
 @Singleton_close
@@ -1917,11 +1924,20 @@ class dialog_savedgame_new(QWidget):
     def clicked4(self):
         opendirforgameuid(self.currentfocusuid)
 
+    def addgame(self, uid):
+        if uid not in self.idxsave:
+            self.newline(uid, first=True)
+        else:
+            idx = self.idxsave.index(uid)
+            self.idxsave.pop(idx)
+            self.idxsave.insert(0, uid)
+            self.flow.totop1(idx)
+
     def clicked3_batch(self):
-        addgamebatch(lambda uid: self.newline(uid, True), self.reflist)
+        addgamebatch(self.addgame, self.reflist)
 
     def clicked3(self):
-        addgamesingle(lambda uid: self.newline(uid, True), self.reflist)
+        addgamesingle(self.addgame, self.reflist)
 
     def tagschanged(self, tags):
         self.currtags = tags
@@ -2318,7 +2334,7 @@ class LazyLoadTableView(QTableView):
             for i in range(len(self.widgetfunction)):
                 if self.widgetfunction[i][0] >= start:
                     self.widgetfunction[i][0] += off
-                    print(self.widgetfunction[i])
+                    # print(self.widgetfunction[i])
 
         self.loadVisibleRows()
 
@@ -2367,16 +2383,21 @@ class dialog_savedgame_lagacy(QWidget):
 
             idx = self.table.currentIndex().row()
             savehook_new_list.pop(idx)
+            self.savelist.pop(idx)
             self.model.removeRow(self.table.currentIndex().row())
         except:
             pass
 
     def clicked3(self):
         def call(uid):
+            if uid in self.savelist:
+                idx = self.savelist.index(uid)
+                self.savelist.pop(idx)
+                self.model.removeRow(idx)
             self.newline(0, uid)
             self.table.setCurrentIndex(self.model.index(0, 0))
 
-        addgamesingle(call)
+        addgamesingle(call, savehook_new_list)
 
     def clicked(self):
         startgamecheck(
@@ -2440,8 +2461,10 @@ class dialog_savedgame_lagacy(QWidget):
         table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
         table.setWordWrap(False)
         self.table = table
+        self.savelist = []
         for row, k in enumerate(savehook_new_list):  # 2
             self.newline(row, k)
+            self.savelist.append(k)
         self.table.starttraceir()
         bottom = QHBoxLayout()
 
@@ -3107,11 +3130,20 @@ class dialog_savedgame_v3(QWidget):
     def clicked4(self):
         opendirforgameuid(self.currentfocusuid)
 
+    def addgame(self, uid):
+        if uid not in self.reallist[self.reftagid]:
+            self.newline(uid)
+        else:
+            idx = self.reallist[self.reftagid].index(uid)
+            self.reallist[self.reftagid].pop(idx)
+            self.reallist[self.reftagid].insert(0, uid)
+            self.stack.w(calculatetagidx(self.reftagid)).torank1(idx)
+
     def clicked3_batch(self):
-        addgamebatch(lambda uid: self.newline(uid), getreflist(self.reftagid))
+        addgamebatch(self.addgame, getreflist(self.reftagid))
 
     def clicked3(self):
-        addgamesingle(lambda uid: self.newline(uid), getreflist(self.reftagid))
+        addgamesingle(self.addgame, getreflist(self.reftagid))
 
     def clicked(self):
         startgamecheck(self, self.currentfocusuid)

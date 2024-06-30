@@ -242,10 +242,8 @@ def initanewitem(title):
     return uid
 
 
-def checkifnewgame(targetlist, gamepath, title=None):
-    # 用于添加游戏时，全局查找是否有过历史记录
+def find_or_create_uid(targetlist, gamepath, title=None):
     uids = findgameuidofpath(gamepath, findall=True)
-    print(uids)
     if len(uids) == 0:
         uid = initanewitem(title)
         if title is None:
@@ -256,19 +254,12 @@ def checkifnewgame(targetlist, gamepath, title=None):
             )
         uid2gamepath[uid] = gamepath
         trysearchforid(uid, [title] + guessmaybetitle(gamepath, title))
-        isnew = True
-    else:
-        isnew = True
-        for uid in uids:
-            if uid in targetlist:
-                isnew = False
-                break
-
-    if isnew:
-        targetlist.insert(0, uid)
         return uid
     else:
-        return None
+        for uid in uids:
+            if uid in targetlist:
+                return uid
+        return uids[0]
 
 
 kanjichs2ja = str.maketrans(static_data["kanjichs2ja"])

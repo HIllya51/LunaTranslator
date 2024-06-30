@@ -390,6 +390,15 @@ class lazyscrollflow(ScrollArea):
             self.resizeandshow()
 
     @trypass
+    def totop1(self, idx):
+        if idx == 0:
+            return
+        with self.lock:
+            self.widgets.insert(0, self.widgets.pop(idx))
+            self.fakegeos.insert(0, self.fakegeos.pop(idx))
+        self.resizeandshow()
+
+    @trypass
     def removeidx(self, idx):
         with self.lock:
             if idx >= 0 and idx < len(self.widgets):
@@ -548,6 +557,8 @@ class delayloadvbox(QWidget):
         self._dovisinternal(False, self.nowvisregion)
 
     def torank1(self, i):
+        if i == 0:
+            return
         with self.lock:
             self.internal_widgets.insert(0, self.internal_widgets.pop(i))
             self.internal_itemH.insert(0, self.internal_itemH.pop(i))

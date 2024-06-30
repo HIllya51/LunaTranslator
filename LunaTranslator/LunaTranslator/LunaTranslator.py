@@ -18,7 +18,7 @@ from myutils.utils import (
     minmaxmoveobservefunc,
     parsemayberegexreplace,
     kanjitrans,
-    checkifnewgame,
+    find_or_create_uid,
     checkpostusing,
     stringfyerror,
 )
@@ -483,11 +483,18 @@ class MAINUI:
             return
         if not title:
             title = windows.GetWindowText(hwnd)
-        checkifnewgame(savehook_new_list, pexe, title)
-        if globalconfig["sourcestatus2"]["texthook"]["use"]:
-            gameuid = findgameuidofpath(pexe, savehook_new_list)
-            self.textsource = texthook(pids, hwnd, pexe, gameuid)
-            self.textsource.start()
+
+        if not globalconfig["sourcestatus2"]["texthook"]["use"]:
+            return
+        gameuid = find_or_create_uid(savehook_new_list, pexe, title)
+        if gameuid not in savehook_new_list:
+            savehook_new_list.insert(0, gameuid)
+        else:
+            if globalconfig["startgamenototop"] == False:
+                idx = savehook_new_list.index(gameuid)
+                savehook_new_list.insert(0, savehook_new_list.pop(idx))
+        self.textsource = texthook(pids, hwnd, pexe, gameuid)
+        self.textsource.start()
 
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
