@@ -489,6 +489,11 @@ class AnkiWindow(QWidget):
         cropbutton = QPushButton(qtawesome.icon("fa.crop"), "")
         cropbutton.clicked.connect(self.crop)
 
+        grabwindowbtn = QPushButton(qtawesome.icon("fa.camera"), "")
+        grabwindowbtn.clicked.connect(
+            lambda: grabwindow(getimageformat(), self.editpath.setText)
+        )
+
         self.audiopath = QLineEdit()
         self.audiopath.setReadOnly(True)
         self.audiopath_sentence = QLineEdit()
@@ -566,6 +571,7 @@ class AnkiWindow(QWidget):
                                     QLabel(_TR("截图")),
                                     self.editpath,
                                     cropbutton,
+                                    grabwindowbtn,
                                     getIconButton(
                                         functools.partial(
                                             self.selecfile, self.editpath

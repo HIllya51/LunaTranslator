@@ -52,11 +52,11 @@ if _savehook:
     savehook_new_list = _savehook[0]
     savehook_new_data = _savehook[1]
     savegametaged = _savehook[2]
-    gamepath2uid = _savehook[3]
+    # gamepath2uid = _savehook[3] 不再使用，允许重复的path
 else:
 
     _savehook = tryreadconfig("savehook_new_1.39.4.json", default=[[], {}])
-    
+
     # savehook_new_list: [gamepath,...]
     # savehook_new_data:{gamepath:dict,...}
     # savegametaged: 可能没有该项 [ None, {'games':[gamepath,...],'title':str,'opened':bool,'uid':str},...]
@@ -73,23 +73,23 @@ else:
         savegametaged = [None]
 
     # 将savehook_new_data转换为新的格式
-    gamepath2uid = {}
+    __gamepath2uid = {}
     __savehook_new_data = {}
     for k in savehook_new_data:
         uid = f"{time.time()}_{uuid.uuid4()}"
 
         __savehook_new_data[uid] = savehook_new_data[k]
         __savehook_new_data[uid].update(gamepath=k)
-        gamepath2uid[k] = uid
+        __gamepath2uid[k] = uid
     savehook_new_data = __savehook_new_data
 
     # 将global游戏表和自定义子列表都转换成新格式
     def parselist(ls):
         for i in range(len(ls)):
             ori = ls[i]
-            if ori not in gamepath2uid:
+            if ori not in __gamepath2uid:
                 continue
-            ls[i] = gamepath2uid[ori]
+            ls[i] = __gamepath2uid[ori]
 
     parselist(savehook_new_list)
     for sub in savegametaged:
@@ -100,9 +100,9 @@ translatorsetting = tryreadconfig("translatorsetting.json")
 ocrsetting = tryreadconfig("ocrsetting.json")
 
 
-def getdefaultsavehook(gamepath, title=None):
+def getdefaultsavehook(title=None):
     default = {
-        # "gamepath": gamepath,
+        "gamepath": "",  # 不要直接访问，要通过uid2gamepath来间接访问
         "hooksetting_follow_default": True,
         "hooksetting_private": {},  # 显示时再加载，缺省用global中的键
         "textproc_follow_default": True,
@@ -167,12 +167,6 @@ def getdefaultsavehook(gamepath, title=None):
     }
     if title and len(title):
         default["title"] = title  # metadata
-    else:
-        default["title"] = (
-            os.path.basename(os.path.dirname(gamepath))
-            + "/"
-            + os.path.basename(gamepath)
-        )
 
     return default
 
@@ -203,6 +197,34 @@ class __uid2gamepath:
 
 
 uid2gamepath = __uid2gamepath()
+
+
+def findgameuidofpath(gamepath, targetlist=None, findall=False):
+    # 一般只在save_game_list里查找，用于从getpidexe获取uid
+    # 因为有可能有过去的不再使用的uid，发生碰撞。
+    # 只在添加游戏时，全面查找。
+    if not gamepath:
+        if findall:
+            return []
+        else:
+            return None
+    # 遍历的速度非常快，1w条的速度也就0.001x秒
+    # 但1w条数据时，load/dump的速度就有点慢了，能2秒多
+
+    checkin = targetlist
+    if checkin is None:
+        checkin = savehook_new_data.keys()
+    collect = []
+    for uid in checkin:
+        if savehook_new_data[uid]["gamepath"] == gamepath:
+            if findall:
+                collect.append(uid)
+            else:
+                return uid
+    if findall:
+        return collect
+    else:
+        return None
 
 
 def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
@@ -404,11 +426,15 @@ def _TRL(kk):
     return x
 
 
-def safesave(fname, js):
+def safesave(fname, js, beatiful=True):
     # 有时保存时意外退出，会导致config文件被清空
     os.makedirs("./userconfig", exist_ok=True)
     with open(fname + ".tmp", "w", encoding="utf-8") as ff:
-        ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False, indent=4))
+        if beatiful:
+            ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False, indent=4))
+        else:
+            # savegamedata 1w条时，indent=4要2秒，不indent 0.37秒，不ensure_ascii 0.27秒，用不着数据库了
+            ff.write(json.dumps(js, sort_keys=False))
     if os.path.exists(fname):
         os.remove(fname)
     os.rename(fname + ".tmp", fname)
@@ -426,7 +452,8 @@ def saveallconfig():
     safesave("./userconfig/ocrsetting.json", ocrsetting)
     safesave(
         "./userconfig/savegamedata_5.3.1.json",
-        [savehook_new_list, savehook_new_data, savegametaged, gamepath2uid],
+        [savehook_new_list, savehook_new_data, savegametaged, None],
+        beatiful=False,
     )
     safesave(
         "./files/lang/{}.json".format(getlanguse()),

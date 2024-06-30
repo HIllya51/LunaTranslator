@@ -38,7 +38,7 @@ def initsome11(self, l, label=None):
             continue
 
         _f = "./Lunatranslator/translator/{}.py".format(fanyi)
-        if fanyi != "selfbuild" and os.path.exists(_f) == False:
+        if not os.path.exists(_f):
             continue
         i += 1
 
@@ -128,12 +128,9 @@ def checkconnected(self):
         for dev in develop:
             if not globalconfig["fanyi"][dev]["use"]:
                 continue
-            if dev == "selfbuild":
-                if not os.path.exists("./userconfig/selfbuild.py"):
-                    continue
-            else:
-                if not os.path.exists("./LunaTranslator/translator/" + dev + ".py"):
-                    continue
+
+            if not os.path.exists("./LunaTranslator/translator/" + dev + ".py"):
+                continue
             needstart = True
             break
         try:
@@ -218,7 +215,7 @@ def setTabTwo_lazy(self, basel):
                             "",
                             "模糊匹配_相似度_%",
                             D_getspinbox(0, 100, globalconfig, "premtsimi2"),
-                            ""
+                            "",
                         ],
                         [
                             (functools.partial(createbtnexport, self), 0),
@@ -229,7 +226,7 @@ def setTabTwo_lazy(self, basel):
                 "group",
             )
         ],
-        []
+        [],
     ]
     _items = [
         {

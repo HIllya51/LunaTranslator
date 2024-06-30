@@ -388,7 +388,6 @@
     "错误": "hata",
     "所选文件格式错误！": "Seçili dosya format ı yanlış!",
     "进程号": "İşlem numarası",
-    "窗口名": "Pencere İsmi",
     "无法识别的路径！": "Bilinmeyen yol!",
     "进程": "işlem",
     "到进程": "İşleme",
@@ -716,7 +715,6 @@
     "过滤历史重复": "Tarihi çizgileri sil",
     "缓存条数": "Cache girişlerinin sayısı",
     "腾讯OCR": "Tencent OCR",
-    "添加列表": "Liste Ekle",
     "删除列表": "Listeyi sil",
     "上移": "Yukarı Taşı",
     "下移": "Aşağı taşın",
@@ -813,5 +811,6 @@
     "上传游戏": "Oyunu yükle",
     "以当前md5复制选中行": "Seçili satırı mevcut MD5 ile kopyalayın",
     "修改列表名称": "Liste ismini değiştir",
-    "滚动到最后": "Sonuna doğru yürüt"
+    "滚动到最后": "Sonuna doğru yürüt",
+    "创建列表": "Liste oluştur"
 }

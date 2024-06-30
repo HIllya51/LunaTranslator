@@ -7,7 +7,7 @@ from myutils.config import (
     _TR,
     savehook_new_list,
     uid2gamepath,
-    gamepath2uid,
+    findgameuidofpath,
     savehook_new_data,
     setlanguage,
     static_data,
@@ -20,7 +20,6 @@ from myutils.utils import (
     kanjitrans,
     checkifnewgame,
     checkpostusing,
-    getpostfile,
     stringfyerror,
 )
 from myutils.wrapper import threader
@@ -43,7 +42,7 @@ from gui.attachprocessdialog import AttachProcessDialog
 import windows
 import gobject
 import winsharedutils
-from winsharedutils import pid_running
+from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark
 
@@ -105,9 +104,11 @@ class MAINUI:
         for item in static_data["transoptimi"]:
             name = item["name"]
             try:
-                mm = getpostfile(name)
-                if not mm:
+                checkpath = "./LunaTranslator/transoptimi/" + name + ".py"
+                if os.path.exists(checkpath) == False:
                     continue
+                mm = "transoptimi." + name
+
                 Process = importlib.import_module(mm).Process
 
                 def __(kls, _name):
@@ -475,12 +476,17 @@ class MAINUI:
                     use, self.settin_ui.voicelistsignal, self.settin_ui.mp3playsignal
                 )
 
-    def selectprocess(self, selectedp):
+    def selectprocess(self, selectedp, title):
         self.textsource = None
         pids, pexe, hwnd = selectedp
-        checkifnewgame(savehook_new_list, pexe, windows.GetWindowText(hwnd))
+        if len(collect_running_pids(pids)) == 0:
+            return
+        if not title:
+            title = windows.GetWindowText(hwnd)
+        checkifnewgame(savehook_new_list, pexe, title)
         if globalconfig["sourcestatus2"]["texthook"]["use"]:
-            self.textsource = texthook(pids, hwnd, pexe, gamepath2uid[pexe])
+            gameuid = findgameuidofpath(pexe, savehook_new_list)
+            self.textsource = texthook(pids, hwnd, pexe, gameuid)
             self.textsource.start()
 
     def starttextsource(self, use=None, checked=True):
@@ -563,16 +569,9 @@ class MAINUI:
 
     def fanyiinitmethod(self, classname):
         try:
-            if classname == "selfbuild":
-                if not os.path.exists("./userconfig/selfbuild.py"):
-                    return None
-                aclass = importlib.import_module("selfbuild").TS
-            else:
-                if not os.path.exists(
-                    "./LunaTranslator/translator/" + classname + ".py"
-                ):
-                    return None
-                aclass = importlib.import_module("translator." + classname).TS
+            if not os.path.exists("./LunaTranslator/translator/" + classname + ".py"):
+                return None
+            aclass = importlib.import_module("translator." + classname).TS
         except Exception as e:
             print_exc()
             self.textgetmethod(
@@ -676,109 +675,101 @@ class MAINUI:
         except:
             print_exc()
 
-    def onwindowloadautohook(self):
-        textsourceusing = globalconfig["sourcestatus2"]["texthook"]["use"]
-        if not (globalconfig["autostarthook"] and textsourceusing):
-            return
-        elif self.AttachProcessDialog and self.AttachProcessDialog.isVisible():
-            return
-        else:
-            try:
-                if self.textsource is None:
-                    hwnd = windows.GetForegroundWindow()
-                    pid = windows.GetWindowThreadProcessId(hwnd)
-                    name_ = getpidexe(pid)
-                    if (
-                        name_
-                        and name_ in gamepath2uid
-                        and gamepath2uid[name_] in savehook_new_list
-                    ):
-                        lps = ListProcess(False)
-                        for pids, _exe in lps:
-                            if _exe == name_:
-
-                                # if any(map(testprivilege,pids)):
-                                self.textsource = None
-                                if globalconfig["sourcestatus2"]["texthook"]["use"]:
-                                    if globalconfig["startgamenototop"] == False:
-                                        idx = savehook_new_list.index(
-                                            gamepath2uid[name_]
-                                        )
-                                        savehook_new_list.insert(
-                                            0, savehook_new_list.pop(idx)
-                                        )
-                                    needinserthookcode = savehook_new_data[
-                                        gamepath2uid[name_]
-                                    ]["needinserthookcode"]
-                                    self.textsource = texthook(
-                                        pids,
-                                        hwnd,
-                                        name_,
-                                        gamepath2uid[name_],
-                                        autostarthookcode=savehook_new_data[
-                                            gamepath2uid[name_]
-                                        ]["hook"],
-                                        needinserthookcode=needinserthookcode,
-                                    )
-                                    self.textsource.start()
-                else:
-                    pids = self.textsource.pids
-                    if sum([int(pid_running(pid)) for pid in pids]) == 0:
-                        self.textsource = None
-                        self.translation_ui.thistimenotsetop = False
-                        if globalconfig["keepontop"]:
-                            self.translation_ui.settop()
-
-            except:
-
-                print_exc()
-
     def autohookmonitorthread(self):
+        def onwindowloadautohook():
+            textsourceusing = globalconfig["sourcestatus2"]["texthook"]["use"]
+            if not (globalconfig["autostarthook"] and textsourceusing):
+                return
+            elif self.AttachProcessDialog and self.AttachProcessDialog.isVisible():
+                return
+            if self.textsource is None:
+                hwnd = windows.GetForegroundWindow()
+                pid = windows.GetWindowThreadProcessId(hwnd)
+                name_ = getpidexe(pid)
+                if not name_:
+                    return
+                uid = findgameuidofpath(name_, savehook_new_list)
+                if not uid:
+                    return
+                lps = ListProcess(False)
+                for pids, _exe in lps:
+                    if _exe != name_:
+                        continue
+
+                    if self.textsource is not None:
+                        return
+                    if not globalconfig["sourcestatus2"]["texthook"]["use"]:
+                        return
+                    if globalconfig["startgamenototop"] == False:
+                        idx = savehook_new_list.index(uid)
+                        savehook_new_list.insert(0, savehook_new_list.pop(idx))
+                    needinserthookcode = savehook_new_data[uid]["needinserthookcode"]
+                    self.textsource = texthook(
+                        pids,
+                        hwnd,
+                        name_,
+                        uid,
+                        autostarthookcode=savehook_new_data[uid]["hook"],
+                        needinserthookcode=needinserthookcode,
+                    )
+                    self.textsource.start()
+
+            else:
+                pids = self.textsource.pids
+                if len(collect_running_pids(pids)) != 0:
+                    return
+                self.textsource = None
+                self.translation_ui.thistimenotsetop = False
+                if globalconfig["keepontop"]:
+                    self.translation_ui.settop()
+
         while self.isrunning:
-            self.onwindowloadautohook()
-            time.sleep(
-                0.5
-            )  # 太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
+            try:
+                onwindowloadautohook()
+            except:
+                print_exc()
+            time.sleep(0.5)
+            # 太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
 
     def autocheckhwndexists(self):
-        def setandrefresh(bool):
-            if self.translation_ui.isbindedwindow != bool:
-                self.translation_ui.isbindedwindow = bool
+        def setandrefresh(b):
+            if self.translation_ui.isbindedwindow != b:
+                self.translation_ui.isbindedwindow = b
                 self.translation_ui.refreshtooliconsignal.emit()
 
-        while self.isrunning:
-            if self.textsource:
-
-                hwnd = self.textsource.hwnd
-
-                if hwnd == 0:
-                    if globalconfig["sourcestatus2"]["texthook"]["use"]:
-                        fhwnd = windows.GetForegroundWindow()
-                        pids = self.textsource.pids
-                        if (
-                            hwnd == 0
-                            and windows.GetWindowThreadProcessId(fhwnd) in pids
-                        ):
-                            if "once" not in dir(self.textsource):
-                                self.textsource.once = True
-                                self.textsource.hwnd = fhwnd
-                                setandrefresh(True)
-                    else:
-                        setandrefresh(False)
-                else:
-                    if windows.GetWindowThreadProcessId(hwnd) == 0:
-                        self.textsource.hwnd = 0
-                        setandrefresh(False)
-                    elif "once" not in dir(self.textsource):
-                        self.textsource.once = True
-                        setandrefresh(True)
-                if len(self.textsource.pids):
-                    _mute = winsharedutils.GetProcessMute(self.textsource.pids[0])
-                    if self.translation_ui.processismuteed != _mute:
-                        self.translation_ui.processismuteed = _mute
-                        self.translation_ui.refreshtooliconsignal.emit()
-            else:
+        def __do():
+            if not self.textsource:
                 setandrefresh(False)
+                return
+            hwnd = self.textsource.hwnd
+
+            if hwnd == 0:
+                if not globalconfig["sourcestatus2"]["texthook"]["use"]:
+                    setandrefresh(False)
+                else:
+                    fhwnd = windows.GetForegroundWindow()
+                    pids = self.textsource.pids
+                    notdone = "once" not in dir(self.textsource)
+                    isgoodproc = windows.GetWindowThreadProcessId(fhwnd) in pids
+                    if isgoodproc and notdone:
+                        self.textsource.once = True
+                        self.textsource.hwnd = fhwnd
+                        setandrefresh(True)
+            else:
+                if windows.GetWindowThreadProcessId(hwnd) == 0:
+                    self.textsource.hwnd = 0
+                    setandrefresh(False)
+                elif "once" not in dir(self.textsource):
+                    self.textsource.once = True
+                    setandrefresh(True)
+            if len(self.textsource.pids):
+                _mute = winsharedutils.GetProcessMute(self.textsource.pids[0])
+                if self.translation_ui.processismuteed != _mute:
+                    self.translation_ui.processismuteed = _mute
+                    self.translation_ui.refreshtooliconsignal.emit()
+
+        while self.isrunning:
+            __do()
 
             time.sleep(0.5)
 
@@ -925,29 +916,28 @@ class MAINUI:
                         True,
                     )
 
+            _hwnd = windows.GetForegroundWindow()
+            _pid = windows.GetWindowThreadProcessId(_hwnd)
             try:
-                _hwnd = windows.GetForegroundWindow()
-                _pid = windows.GetWindowThreadProcessId(_hwnd)
-
+                if len(self.textsource.pids) == 0:
+                    raise Exception()
+                if _pid in self.textsource.pids or _pid == os.getpid():
+                    isok(self.textsource.gameuid)
+                else:
+                    self.__currentexe = None
+            except:
+                name_ = getpidexe(_pid)
+                if not name_:
+                    return
+                uids = findgameuidofpath(name_, findall=True)
                 try:
-                    if len(self.textsource.pids) == 0:
-                        raise Exception()
-                    if _pid in self.textsource.pids or _pid == os.getpid():
-                        isok(self.textsource.gameuid)
+                    if len(uids):
+                        for uid in uids:
+                            isok(uid)
                     else:
                         self.__currentexe = None
                 except:
-                    name_ = getpidexe(_pid)
-                    if (
-                        name_
-                        and name_ in gamepath2uid
-                        and gamepath2uid[name_] in savehook_new_list
-                    ):
-                        isok(gamepath2uid[name_])
-                    else:
-                        self.__currentexe = None
-            except:
-                print_exc()
+                    print_exc()
 
     @threader
     def clickwordcallback(self, word, append):

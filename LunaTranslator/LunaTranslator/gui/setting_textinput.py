@@ -34,14 +34,18 @@ from gui.usefulwidget import (
 
 def __create(self):
     self.selectbutton = getIconButton(
-        gobject.baseobject.createattachprocess, icon="fa.gear"
+        gobject.baseobject.createattachprocess,
+        icon="fa.gear",
+        enable=globalconfig["sourcestatus2"]["texthook"]["use"],
     )
     return self.selectbutton
 
 
 def __create2(self):
     self.selecthookbutton = getIconButton(
-        lambda: gobject.baseobject.hookselectdialog.showsignal.emit(), icon="fa.gear"
+        lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
+        icon="fa.gear",
+        enable=globalconfig["sourcestatus2"]["texthook"]["use"],
     )
     return self.selecthookbutton
 

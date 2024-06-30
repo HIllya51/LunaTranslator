@@ -84,25 +84,33 @@ def getprocesslist():
 
 def getpidexe(pid):
     hwnd1 = windows.AutoHandle(
-        windows.OpenProcess(windows.PROCESS_ALL_ACCESS, False, (pid))
+        windows.OpenProcess(windows.PROCESS_ALL_ACCESS, False, pid)
     )
-    if hwnd1 == 0:
+    if not hwnd1:
 
         hwnd1 = windows.OpenProcess(
-            windows.PROCESS_QUERY_LIMITED_INFORMATION, False, (pid)
+            windows.PROCESS_QUERY_LIMITED_INFORMATION, False, pid
         )
-    if hwnd1 == 0:
+    if not hwnd1:
         name_ = None
     else:
         name_ = windows.GetProcessFileName(hwnd1)
     return name_
 
 
-def testprivilege(pid):
-    hwnd1 = windows.AutoHandle(
-        windows.OpenProcess(windows.PROCESS_INJECT_ACCESS, False, (pid))
+def test_injectable_1(pid):
+    return bool(
+        windows.AutoHandle(
+            windows.OpenProcess(windows.PROCESS_INJECT_ACCESS, False, pid)
+        )
     )
-    return hwnd1 != 0
+
+
+def test_injectable(pids):
+    for pid in pids:
+        if not test_injectable_1(pid):
+            return False
+    return True
 
 
 def ListProcess(filt=True):
@@ -128,18 +136,13 @@ def ListProcess(filt=True):
             pass
     kv = {}
     for pid, exe in ret:
-        if exe in kv:
-            kv[exe]["pid"].append(pid)
-        else:
-            kv[exe] = {"pid": [pid]}
-    # for exe in kv:
-    #         if len(kv[exe]['pid'])>1:
-    #                 mems=[getprocessmem(_) for _ in kv[exe]['pid']]
-    #                 _i=argsort(mems)
-    #                 kv[exe]['pid']=[kv[exe]['pid'][_i[-1]]]
+        if exe not in kv:
+            kv[exe] = []
+
+        kv[exe].append(pid)
     xxx = []
     for exe in kv:
-        xxx.append([kv[exe]["pid"], exe])
+        xxx.append([kv[exe], exe])
     return xxx
 
 
@@ -184,28 +187,26 @@ def getExeIcon(name, icon=True, cache=False):
 
 def injectdll(injectpids, injecter, dll):
     pid = " ".join([str(_) for _ in injectpids])
-    if any(map(testprivilege, injectpids)) == False:
-        windows.ShellExecute(
-            0,
-            "runas",
-            injecter,
-            'dllinject {} "{}"'.format(pid, dll),
-            None,
-            windows.SW_HIDE,
-        )
-    else:
+    for _ in (0,):
+        if not test_injectable(injectpids):
+            break
+
         ret = subprocess.run(
             '"{}" dllinject {} "{}"'.format(injecter, pid, dll)
         ).returncode
-        if ret == 0:
-            windows.ShellExecute(
-                0,
-                "runas",
-                injecter,
-                'dllinject {} "{}"'.format(pid, dll),
-                None,
-                windows.SW_HIDE,
-            )
+        if ret:
+            return
+        pids = winsharedutils.collect_running_pids(injectpids)
+        pid = " ".join([str(_) for _ in pids])
+
+    windows.ShellExecute(
+        0,
+        "runas",
+        injecter,
+        'dllinject {} "{}"'.format(pid, dll),
+        None,
+        windows.SW_HIDE,
+    )
 
 
 def mouseselectwindow(callback):

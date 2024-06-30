@@ -6,7 +6,6 @@ import windows, gobject, winsharedutils
 from myutils.config import (
     savehook_new_list,
     savehook_new_data,
-    gamepath2uid,
     savegametaged,
     uid2gamepath,
     _TR,
@@ -614,15 +613,14 @@ def maybehavebutton(self, gameuid, post):
 
 class dialog_setting_game_internal(QWidget):
     def selectexe(self):
-        f = QFileDialog.getOpenFileName(directory=uid2gamepath[self.gameuid])
+        originpath = uid2gamepath[self.gameuid]
+        f = QFileDialog.getOpenFileName(directory=originpath)
         res = f[0]
         if res == "":
             return
+        # 修改路径允许路径重复
+        # 添加路径实际上也允许重复，只不过会去重。
         res = os.path.normpath(res)
-        if res in gamepath2uid:
-            return
-        originpath = uid2gamepath[self.gameuid]
-        gamepath2uid[res] = gamepath2uid.pop(originpath)
         uid2gamepath[self.gameuid] = res
         gobject.baseobject.resetgameinternal(originpath, res)
         _icon = getExeIcon(res, cache=True)
@@ -715,13 +713,16 @@ class dialog_setting_game_internal(QWidget):
                 internallist=list(globalconfig["metadata"].keys()),
             ),
         )
+        formLayout.addRow(None, QLabel())
         for key in globalconfig["metadata"]:
             try:
                 idname = globalconfig["metadata"][key]["target"]
                 vndbid = QLineEdit(str(savehook_new_data[gameuid][idname]))
                 if globalconfig["metadata"][key].get("idtype", 1) == 0:
                     vndbid.setValidator(QIntValidator())
-                vndbid.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+                vndbid.setSizePolicy(
+                    QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
+                )
 
                 vndbid.textEdited.connect(
                     functools.partial(idtypecheck, key, idname, gameuid)
@@ -730,6 +731,7 @@ class dialog_setting_game_internal(QWidget):
                     functools.partial(gamdidchangedtask, key, idname, gameuid)
                 )
                 _vbox_internal = [
+                    getsimpleswitch(globalconfig["metadata"][key], "auto"),
                     vndbid,
                     getIconButton(
                         functools.partial(self.openrefmainpage, key, idname, gameuid),
@@ -746,7 +748,7 @@ class dialog_setting_game_internal(QWidget):
             try:
                 __settting = targetmod[key].querysettingwindow
                 _vbox_internal.insert(
-                    1,
+                    2,
                     getIconButton(
                         functools.partial(__settting, self, gameuid), icon="fa.gear"
                     ),
@@ -1974,7 +1976,7 @@ class dialog_savedgame_new(QWidget):
         menu = QMenu(self)
 
         editname = QAction(_TR("修改列表名称"))
-        addlist = QAction(_TR("添加列表"))
+        addlist = QAction(_TR("创建列表"))
         dellist = QAction(_TR("删除列表"))
 
         startgame = QAction(_TR("开始游戏"))
@@ -2028,7 +2030,7 @@ class dialog_savedgame_new(QWidget):
         elif action == editname or action == addlist:
             _dia = Prompt_dialog(
                 self,
-                _TR("修改列表名称" if action == editname else "添加列表"),
+                _TR("修改列表名称" if action == editname else "创建列表"),
                 "",
                 [
                     [
@@ -2160,7 +2162,7 @@ class dialog_savedgame_new(QWidget):
         self.simplebutton("删除游戏", True, self.clicked2, False)
         self.simplebutton("打开目录", True, self.clicked4, True)
 
-        self.simplebutton("添加到列表", False, self.addtolist, 1)
+        self.simplebutton("添加到列表", True, self.addtolist, False)
         if globalconfig["startgamenototop"]:
             self.simplebutton("左移", True, functools.partial(self.moverank, -1), False)
             self.simplebutton("右移", True, functools.partial(self.moverank, 1), False)
@@ -2770,9 +2772,9 @@ class dialog_savedgame_v3(QWidget):
         self.stack.directshow()
 
     def stack_showmenu(self, ispixmenu, p):
-        if not self.currentfocusuid:
-            return
         menu = QMenu(self)
+
+        addlist = QAction(_TR("创建列表"))
         startgame = QAction(_TR("开始游戏"))
         delgame = QAction(_TR("删除游戏"))
         opendir = QAction(_TR("打开目录"))
@@ -2780,24 +2782,57 @@ class dialog_savedgame_v3(QWidget):
         setimage = QAction(_TR("设为封面"))
         deleteimage = QAction(_TR("删除图片"))
         hualang = QAction(_TR("画廊"))
-        exists = os.path.exists(uid2gamepath[self.currentfocusuid])
-        if exists:
-            menu.addAction(startgame)
-        menu.addAction(delgame)
-        if exists:
-            menu.addAction(opendir)
+        if not self.currentfocusuid:
 
-        menu.addSeparator()
-        menu.addAction(addtolist)
+            menu.addAction(addlist)
+        else:
+            exists = os.path.exists(uid2gamepath[self.currentfocusuid])
+            if exists:
+                menu.addAction(startgame)
+            menu.addAction(delgame)
+            if exists:
+                menu.addAction(opendir)
 
-        if ispixmenu:
             menu.addSeparator()
-            menu.addAction(setimage)
-            menu.addAction(deleteimage)
-            menu.addAction(hualang)
+            menu.addAction(addtolist)
+
+            if ispixmenu:
+                menu.addSeparator()
+                menu.addAction(setimage)
+                menu.addAction(deleteimage)
+                menu.addAction(hualang)
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, self.currentfocusuid)
+        elif addlist == action:
+            _dia = Prompt_dialog(
+                self,
+                _TR("创建列表"),
+                "",
+                [
+                    [
+                        _TR("名称"),
+                        (""),
+                    ],
+                ],
+            )
+
+            if _dia.exec():
+
+                title = _dia.text[0].text()
+                if title != "":
+                    i = calculatetagidx(None)
+                    if action == addlist:
+                        tag = {
+                            "title": title,
+                            "games": [],
+                            "uid": str(uuid.uuid4()),
+                            "opened": True,
+                        }
+                        savegametaged.insert(i, tag)
+                        group0 = self.createtaglist(self.stack, title, tag["uid"], True)
+                        self.stack.insertw(i, group0)
+
         elif action == delgame:
             self.shanchuyouxi()
         elif action == hualang:
@@ -2885,7 +2920,7 @@ class dialog_savedgame_v3(QWidget):
         )
         self.simplebutton("删除游戏", True, self.shanchuyouxi, False)
         self.simplebutton("打开目录", True, self.clicked4, True)
-        self.simplebutton("添加到列表", False, self.addtolist, 1)
+        self.simplebutton("添加到列表", True, self.addtolist, False)
         if globalconfig["startgamenototop"]:
             self.simplebutton("上移", True, functools.partial(self.moverank, -1), False)
             self.simplebutton("下移", True, functools.partial(self.moverank, 1), False)
@@ -2945,7 +2980,7 @@ class dialog_savedgame_v3(QWidget):
         self.reftagid = tagid
         menu = QMenu(self)
         editname = QAction(_TR("修改列表名称"))
-        addlist = QAction(_TR("添加列表"))
+        addlist = QAction(_TR("创建列表"))
         dellist = QAction(_TR("删除列表"))
         Upaction = QAction(_TR("上移"))
         Downaction = QAction(_TR("下移"))
@@ -2975,7 +3010,7 @@ class dialog_savedgame_v3(QWidget):
         elif action == editname or action == addlist:
             _dia = Prompt_dialog(
                 self,
-                _TR("修改列表名称" if action == editname else "添加列表"),
+                _TR("修改列表名称" if action == editname else "创建列表"),
                 "",
                 [
                     [

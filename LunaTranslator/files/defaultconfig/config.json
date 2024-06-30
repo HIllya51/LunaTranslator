@@ -232,6 +232,7 @@
     },
     "metadata": {
         "vndb": {
+            "auto": true,
             "name": "vndb",
             "downloadtasks": [],
             "searchfordatatasks": [],
@@ -243,6 +244,7 @@
             }
         },
         "dlsite": {
+            "auto": false,
             "name": "dlsite",
             "downloadtasks": [],
             "searchfordatatasks": [],
@@ -250,6 +252,7 @@
             "target": "dlsiteid"
         },
         "bangumi": {
+            "auto": true,
             "name": "bangumi",
             "downloadtasks": [],
             "searchfordatatasks": [],
@@ -261,6 +264,7 @@
             }
         },
         "fanza": {
+            "auto": false,
             "name": "FanzaGames",
             "downloadtasks": [],
             "searchfordatatasks": [],
@@ -268,6 +272,7 @@
             "target": "fanzaid"
         },
         "steam": {
+            "auto": false,
             "name": "steam",
             "downloadtasks": [],
             "searchfordatatasks": [],

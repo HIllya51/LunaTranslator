@@ -388,7 +388,6 @@
     "错误": "Error",
     "所选文件格式错误！": "Invalid File Format Selected!",
     "进程号": "Process ID",
-    "窗口名": "Window name",
     "无法识别的路径！": "Unrecognizable Path!",
     "进程": "Process",
     "到进程": "Select Process",
@@ -558,7 +557,6 @@
     "点击单词复制": "Copy On Click",
     "窗口背景透明": "Window Background Transparency",
     "背景窗口透明": "Background Window Transparency",
-    "指定模式": "Specify Mode",
     "搜索范围": "Search Range",
     "搜索方式": "Search Method",
     "使用翻译缓存": "Use Translation Cache",
@@ -716,7 +714,6 @@
     "过滤历史重复": "Filter Historical Duplicates",
     "缓存条数": "Number of Cached Items",
     "腾讯OCR": "Tencent OCR",
-    "添加列表": "Add List",
     "删除列表": "Delete List",
     "上移": "Move Up",
     "下移": "Move Down",
@@ -813,5 +810,7 @@
     "上传游戏": "Upload Game",
     "以当前md5复制选中行": "Copy Selected Row with Current MD5",
     "修改列表名称": "Modify List Name",
-    "滚动到最后": "Scroll to End"
+    "滚动到最后": "Scroll to End",
+    "指定模块": "Specify modules",
+    "创建列表": "Create List"
 }

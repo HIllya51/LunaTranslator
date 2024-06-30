@@ -900,6 +900,9 @@ def ScreenToClient(hwnd, x, y):
     return (P.x, P.y)
 
 
+INVALID_HANDLE_VALUE = -1
+
+
 class AutoHandle(HANDLE):
     def __new__(cls, value) -> None:
         instance = super().__new__(cls, value)
@@ -908,6 +911,9 @@ class AutoHandle(HANDLE):
     def __del__(self):
         if self:
             CloseHandle(self)
+
+    def __bool__(self):
+        return (self.value != INVALID_HANDLE_VALUE) and (self.value != None)
 
 
 _MapVirtualKey = _user32.MapVirtualKeyW

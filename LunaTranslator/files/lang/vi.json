@@ -388,7 +388,6 @@
     "错误": "Lỗi",
     "所选文件格式错误！": "Lỗi định dạng tập tin đã chọn!",
     "进程号": "Số tiến trình",
-    "窗口名": "Tên cửa sổ",
     "无法识别的路径！": "Đường không nhận ra!",
     "进程": "Quy trình",
     "到进程": "Tiến trình",
@@ -716,7 +715,6 @@
     "过滤历史重复": "Lọc lịch sử lặp lại",
     "缓存条数": "Số thanh bộ nhớ cache",
     "腾讯OCR": "Thông tin OCR",
-    "添加列表": "Thêm danh sách",
     "删除列表": "Xoá danh sách",
     "上移": "Di chuyển lên",
     "下移": "Di chuyển xuống",
@@ -813,5 +811,6 @@
     "上传游戏": "Tải lên trò chơi",
     "以当前md5复制选中行": "Dòng đã chọn sao chép md5 hiện tại",
     "修改列表名称": "Thay đổi tên danh sách",
-    "滚动到最后": "Cuộn đến cuối"
+    "滚动到最后": "Cuộn đến cuối",
+    "创建列表": "Tạo danh sách"
 }

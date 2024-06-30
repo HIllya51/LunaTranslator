@@ -13,9 +13,9 @@ from myutils.config import (
     globalconfig,
     static_data,
     getlanguse,
-    savehook_new_data,
     uid2gamepath,
-    gamepath2uid,
+    savehook_new_data,
+    findgameuidofpath,
     getdefaultsavehook,
 )
 from ctypes import c_float, pointer, c_void_p
@@ -127,9 +127,6 @@ class PriorityQueue:
         return bool(len(self._heap) == 0)
 
 
-searchvndbqueue = PriorityQueue()
-
-
 def guessmaybetitle(gamepath, title):
 
     __t = []
@@ -167,14 +164,20 @@ def guessmaybetitle(gamepath, title):
 targetmod = {}
 
 
-def trysearchforid(gameuid, searchargs: list):
+def dispatchsearchfordata(gameuid, target, vid):
+    targetmod[target].dispatchsearchfordata(gameuid, vid)
+
+
+def trysearchforid_1(gameuid, searchargs: list):
     infoid = None
     primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
-    __ = list(targetmod.keys())
-    if primitivtemetaorigin not in __:
-        primitivtemetaorigin = __[0]
-    __.remove(primitivtemetaorigin)
-    __.insert(0, primitivtemetaorigin)
+    __ = [primitivtemetaorigin]
+    for k in targetmod:
+        if k == primitivtemetaorigin:
+            continue
+        if not globalconfig["metadata"][k]["auto"]:
+            continue
+        __.append(k)
 
     for key in __:
         vid = None
@@ -195,28 +198,15 @@ def trysearchforid(gameuid, searchargs: list):
             if key == primitivtemetaorigin:
                 break
     if infoid:
-        searchvndbqueue.put((1, gameuid, infoid))
-        return infoid
+        key, vid = infoid
+        dispatchsearchfordata(gameuid, key, vid)
+        gobject.baseobject.translation_ui.displayglobaltooltip.emit(
+            f"{key}: found {vid}"
+        )
 
 
-def everymethodsthread():
-    while True:
-        _ = searchvndbqueue.get()
-        _type, gameuid, arg = _
-        try:
-            if _type == 0:
-                infoid = trysearchforid(gameuid, arg)
-                key, vid = infoid
-                gobject.baseobject.translation_ui.displayglobaltooltip.emit(
-                    f"{key}: found {vid}"
-                )
-
-            elif _type == 1:
-                key, vid = arg
-                targetmod[key].dispatchsearchfordata(gameuid, vid)
-
-        except:
-            print_exc()
+def trysearchforid(gameuid, searchargs: list):
+    threading.Thread(target=trysearchforid_1, args=(gameuid, searchargs)).start()
 
 
 def idtypecheck(key, idname, gameuid, vid):
@@ -237,30 +227,43 @@ def idtypecheck(key, idname, gameuid, vid):
 
 def gamdidchangedtask(key, idname, gameuid):
     vid = savehook_new_data[gameuid][idname]
-    searchvndbqueue.put((1, gameuid, (key, vid)), 1)
+    dispatchsearchfordata(gameuid, key, vid)
 
 
 def titlechangedtask(gameuid, title):
     savehook_new_data[gameuid]["title"] = title
     savehook_new_data[gameuid]["istitlesetted"] = True
-    searchvndbqueue.put((0, gameuid, [title]), 1)
+    trysearchforid(gameuid, [title])
 
 
-def initanewitem(gamepath, title):
+def initanewitem(title):
     uid = f"{time.time()}_{uuid.uuid4()}"
-    gamepath2uid[gamepath] = uid
-    savehook_new_data[uid] = getdefaultsavehook(gamepath, title)
-    uid2gamepath[uid] = gamepath
+    savehook_new_data[uid] = getdefaultsavehook(title)
     return uid
 
 
 def checkifnewgame(targetlist, gamepath, title=None):
-    if gamepath not in gamepath2uid:
-        uid = initanewitem(gamepath, title)
-        searchvndbqueue.put((0, uid, [title] + guessmaybetitle(gamepath, title)))
+    # 用于添加游戏时，全局查找是否有过历史记录
+    uids = findgameuidofpath(gamepath, findall=True)
+    print(uids)
+    if len(uids) == 0:
+        uid = initanewitem(title)
+        if title is None:
+            savehook_new_data[uid]["title"] = (
+                os.path.basename(os.path.dirname(gamepath))
+                + "/"
+                + os.path.basename(gamepath)
+            )
+        uid2gamepath[uid] = gamepath
+        trysearchforid(uid, [title] + guessmaybetitle(gamepath, title))
+        isnew = True
     else:
-        uid = gamepath2uid[gamepath]
-    isnew = uid not in targetlist
+        isnew = True
+        for uid in uids:
+            if uid in targetlist:
+                isnew = False
+                break
+
     if isnew:
         targetlist.insert(0, uid)
         return uid
@@ -414,7 +417,10 @@ class Process:
         pass
 """
                 )
-    os.startfile(p)
+    # os.startfile(p)
+    threading.Thread(
+        target=os.system, args=(f'notepad "{os.path.normpath(p)}"',)
+    ).start()
     return p
 
 
@@ -619,24 +625,11 @@ def checkpostusing(name):
     return use and checkpostlangmatch(name)
 
 
-def getpostfile(name):
-    if name == "myprocess":
-        mm = "myprocess"
-        checkpath = "./userconfig/myprocess.py"
-    else:
-        mm = "transoptimi." + name
-        checkpath = "./LunaTranslator/transoptimi/" + name + ".py"
+def loadpostsettingwindowmethod(name):
+    checkpath = "./LunaTranslator/transoptimi/" + name + ".py"
     if os.path.exists(checkpath) == False:
         return None
-    return mm
-
-
-def loadpostsettingwindowmethod(name):
-    if name == "myprocess":
-        return lambda _: selectdebugfile("./userconfig/myprocess.py")
-    mm = getpostfile(name)
-    if not mm:
-        return None
+    mm = "transoptimi." + name
 
     try:
         Process = importlib.import_module(mm).Process
@@ -739,5 +732,29 @@ for k in globalconfig["metadata"]:
     except:
         print_exc()
 
+globalcachedmodule = {}
 
-threading.Thread(target=everymethodsthread).start()
+
+def checkmd5reloadmodule(filename, module):
+    if not os.path.exists(filename):
+        # reload重新加载不存在的文件时不会报错。
+        return True, None
+    key = (filename, module)
+    md5 = getfilemd5(filename)
+    cachedmd5 = globalcachedmodule.get(key, {}).get("md5", None)
+    if md5 != cachedmd5:
+        try:
+            _ = importlib.import_module(module)
+            _ = importlib.reload(_)
+        except ModuleNotFoundError:
+            return True, None
+        # 不要捕获其他错误，缺少模块时直接跳过，只报实现错误
+        # except:
+        #     print_exc()
+        #     return True, None
+        globalcachedmodule[key] = {"md5": md5, "module": _}
+
+        return True, _
+    else:
+
+        return False, globalcachedmodule.get(key, {}).get("module", None)

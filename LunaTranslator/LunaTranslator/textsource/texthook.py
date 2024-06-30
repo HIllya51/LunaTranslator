@@ -8,9 +8,10 @@ from winsharedutils import Is64bit
 from myutils.config import globalconfig, savehook_new_data, static_data
 from textsource.textsourcebase import basetext
 from myutils.utils import checkchaos
-from myutils.hwnd import injectdll
+from myutils.hwnd import injectdll, test_injectable
 from myutils.wrapper import threader
 from myutils.utils import getfilemd5
+from traceback import print_exc
 
 from ctypes import (
     CDLL,
@@ -151,6 +152,7 @@ class texthook(basetext):
             gobject.baseobject.hookselectdialog.realshowhide.emit(True)
         self.delaycollectallselectedoutput()
         self.declare()
+        self.prepares()
 
     def checkmd5prefix(self, gamepath):
         md5 = getfilemd5(gamepath)
@@ -229,7 +231,7 @@ class texthook(basetext):
         self.Luna_FreePtr(ws)
         return string
 
-    def Luna_Startup(self):
+    def prepares(self):
         procs = [
             ProcessEvent(self.onprocconnect),
             ProcessEvent(self.connectedpids.remove),
@@ -243,15 +245,14 @@ class texthook(basetext):
         self.keepref += procs
         ptrs = [cast(_, c_void_p).value for _ in procs]
         self.Luna_Start(*ptrs)
-
-    def start(self):
-
-        self.Luna_Startup()
         self.setsettings()
 
+    def start_unsafe(self):
+
+        caninject = test_injectable(self.pids)
         injectpids = []
         for pid in self.pids:
-            if self.config["use_yapi"]:
+            if caninject and self.config["use_yapi"]:
                 self.Luna_Inject(pid, os.path.abspath("./files/plugins/LunaHook"))
             else:
                 if self.Luna_CreatePipeAndCheck(pid):
@@ -264,8 +265,16 @@ class texthook(basetext):
             dll = os.path.abspath(
                 "./files/plugins/LunaHook/LunaHook{}.dll".format(arch)
             )
-            # subprocess.Popen('"{}" dllinject {} "{}"'.format(injecter,pid,dll))
             injectdll(injectpids, injecter, dll)
+
+    def start(self):
+        try:
+            self.start_unsafe()
+        except:
+            print_exc()
+            gobject.baseobject.translation_ui.displaymessagebox.emit(
+                "错误", "权限不足，请以管理员权限运行！"
+            )
 
     def onprocconnect(self, pid):
         self.connectedpids.append(pid)

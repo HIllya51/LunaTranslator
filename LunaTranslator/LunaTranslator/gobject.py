@@ -34,8 +34,13 @@ def gettranslationrecorddir(name):
     return getcachedir(name, "translation_record")
 
 
+def gettempdir_1():
+    tgt = getcachedir("temp")
+    return tgt
+
+
 def gettempdir(filename):
-    tgt = getcachedir(os.path.join(f"temp{os.getpid()}", filename))
+    tgt = getcachedir(os.path.join(f"temp/{os.getpid()}", filename))
     return tgt
 
 

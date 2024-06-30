@@ -71,7 +71,7 @@ class bgmsettings(QDialog):
             if vid in collect:
                 gameuid = collect[vid]
             else:
-                gameuid = initanewitem(f"bgm_{vid}_{time.time()}", title)
+                gameuid = initanewitem(title)
                 savehook_new_data[gameuid][self._ref.idname] = vid
                 gamdidchangedtask(self._ref.typename, self._ref.idname, gameuid)
             reflist.insert(0, gameuid)
@@ -203,9 +203,8 @@ class searcher(common):
         vndbtags = [_["name"] for _ in response["tags"]]
         developers = []
         for _ in response["infobox"]:
-            if _["key"] == "游戏开发商":
-                developers = [_["value"]]
-                break
+            if _["key"] in ["游戏开发商", "开发", "发行"]:
+                developers += [_["value"]]
         return {
             # "namemap": namemap,
             "title": response["name"],

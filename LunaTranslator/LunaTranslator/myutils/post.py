@@ -1,8 +1,8 @@
 import re, codecs, inspect
 from traceback import print_exc
 from collections import Counter
-import importlib, gobject
-from myutils.utils import getfilemd5, LRUCache, getlangsrc
+import gobject
+from myutils.utils import checkchaos, checkmd5reloadmodule, LRUCache, getlangsrc
 from myutils.config import (
     postprocessconfig,
     globalconfig,
@@ -322,9 +322,6 @@ def lines_threshold(line, args):
     return line
 
 
-from myutils.utils import checkchaos
-
-
 def _remove_chaos(line):
     newline = ""
     for c in line:
@@ -334,12 +331,16 @@ def _remove_chaos(line):
     return newline
 
 
-_selfdefpost = None
-_selfdefpostmd5 = None
+def _mypostloader(line, file, module):
+
+    isnew, _ = checkmd5reloadmodule(file, module)
+    # 这个是单独函数的模块，不需要用isnew来判断是否需要重新初始化
+    if not _:
+        return line
+    return _.POSTSOLVE(line)
 
 
 def POSTSOLVE(line):
-    global _selfdefpostmd5, _selfdefpost
     if line == "":
         return ""
     functions = {
@@ -367,6 +368,7 @@ def POSTSOLVE(line):
         "dedump": dedump,
         "length_threshold": length_threshold,
         "lines_threshold": lines_threshold,
+        "_11": _mypostloader,
     }
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig
@@ -394,22 +396,6 @@ def POSTSOLVE(line):
                     )
     except:
         print_exc()
-    try:
-        md5 = getfilemd5(usemypostpath)
-        if md5 != _selfdefpostmd5:
-            _ = importlib.import_module(usemodule)
-            _ = importlib.reload(_)
-            _selfdefpostmd5 = md5
-            _selfdefpost = _
-        else:
-            _ = _selfdefpost
-        functions.update({"_11": _.POSTSOLVE})
-    except ModuleNotFoundError:
-        pass
-    except:
-        print_exc()
-        pass
-
     for postitem in useranklist:
         if postitem not in functions:
             continue
@@ -418,20 +404,20 @@ def POSTSOLVE(line):
         if usedpostprocessconfig[postitem]["use"]:
             try:
                 _f = functions[postitem]
-
-                sig = inspect.signature(_f)
-                np = len(sig.parameters)
-                if np == 1:
-                    line = functions[postitem](line)
-                elif np == 2:
-                    line = functions[postitem](
-                        line, usedpostprocessconfig[postitem].get("args", {})
-                    )
-                else:
-                    raise Exception("unsupported parameters num")
-
-            except Exception as e:
-                print_exc()
                 if postitem == "_11":
-                    raise e
+                    line = functions[postitem](line, usemypostpath, usemodule)
+                else:
+                    sig = inspect.signature(_f)
+                    np = len(sig.parameters)
+                    if np == 1:
+                        line = functions[postitem](line)
+                    elif np == 2:
+                        line = functions[postitem](
+                            line, usedpostprocessconfig[postitem].get("args", {})
+                        )
+                    else:
+                        raise Exception("unsupported parameters num")
+
+            except:
+                print_exc()
     return line

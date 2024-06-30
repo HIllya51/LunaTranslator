@@ -339,6 +339,16 @@ pid_running = utilsdll.pid_running
 pid_running.argtypes = (DWORD,)
 pid_running.restype = c_bool
 
+
+def collect_running_pids(pids):
+    _ = []
+    for __ in pids:
+        if not pid_running(__):
+            continue
+        _.append(__)
+    return _
+
+
 getpidhwndfirst = utilsdll.getpidhwndfirst
 getpidhwndfirst.argtypes = (DWORD,)
 getpidhwndfirst.restype = HWND

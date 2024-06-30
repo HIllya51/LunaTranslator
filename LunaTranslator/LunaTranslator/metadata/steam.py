@@ -72,7 +72,7 @@ class steamsettings(QDialog):
             if vid in collect:
                 gameuid = collect[vid]
             else:
-                gameuid = initanewitem(f"steam_{vid}_{time.time()}", title)
+                gameuid = initanewitem(title)
                 savehook_new_data[gameuid][self._ref.idname] = vid
                 gamdidchangedtask(self._ref.typename, self._ref.idname, gameuid)
             reflist.insert(0, gameuid)

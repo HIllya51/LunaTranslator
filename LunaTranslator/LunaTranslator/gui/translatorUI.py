@@ -3,7 +3,14 @@ import time, functools, threading, os, sys, importlib, shutil
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, trypass
-from myutils.config import globalconfig, saveallconfig, _TR, static_data, gamepath2uid
+from myutils.config import (
+    globalconfig,
+    saveallconfig,
+    _TR,
+    static_data,
+    findgameuidofpath,
+    savehook_new_list,
+)
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import loadpostsettingwindowmethod, str2rgba
@@ -12,13 +19,14 @@ from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless, isinrect
+from gui.usefulwidget import resizableframeless, isinrect, getQMessageBox
 from gui.edittext import edittrans
 from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 
 
 class QUnFrameWindow(resizableframeless):
     displayglobaltooltip = pyqtSignal(str)
+    displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(dict)
     displaystatus = pyqtSignal(str, str, bool, bool)
@@ -522,9 +530,13 @@ class QUnFrameWindow(resizableframeless):
     def displayglobaltooltip_f(self, string):
         QToolTip.showText(QCursor.pos(), string, self)
 
+    def displaymessagebox_f(self, string1, string2):
+        getQMessageBox(self, string1, string2)
+
     def initsignals(self):
         self.hidesignal.connect(self.hide_)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
+        self.displaymessagebox.connect(self.displaymessagebox_f)
         self.ocr_once_signal.connect(self.ocr_once_function)
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
@@ -797,7 +809,7 @@ class QUnFrameWindow(resizableframeless):
         gobject.baseobject.textsource.hwnd = hwnd if pid != _pid else None
         if not globalconfig["sourcestatus2"]["texthook"]["use"]:
             gobject.baseobject.textsource.pids = [pid] if pid != _pid else None
-            gameuid = gamepath2uid.get(getpidexe(pid), None)
+            gameuid = findgameuidofpath(getpidexe(pid), savehook_new_list)
             if gameuid:
                 gobject.baseobject.textsource.gameuid = gameuid
         self.isbindedwindow = pid != _pid
@@ -1008,13 +1020,31 @@ class QUnFrameWindow(resizableframeless):
         self.buttons[name] = button
 
     def tryremoveuseless(self):
+        try:
+            allisremoved = True
+            tmpbase = gobject.gettempdir_1()
+            for f in os.listdir(tmpbase):
+                try:
+                    pid = int(f)
+                except:
+                    continue
+                if (pid != os.getpid()) and (winsharedutils.pid_running(pid)):
+                    allisremoved = False
+                    continue
 
-        try:
-            shutil.rmtree(gobject.gettempdir(''))
-        except:
-            pass
-        try:
-            os.remove("./cache/Updater.exe")
+                try:
+                    shutil.rmtree(os.path.join(tmpbase, f))
+                except:
+                    pass
+            if allisremoved:
+                try:
+                    shutil.rmtree(tmpbase)
+                except:
+                    pass
+            try:
+                os.remove("./cache/Updater.exe")
+            except:
+                pass
         except:
             pass
 

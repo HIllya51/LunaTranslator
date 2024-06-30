@@ -22,7 +22,7 @@ def getall(l, item="fanyi", name=None):
             continue
         if name:
             _f = name % fanyi
-            if fanyi != "selfbuild" and os.path.exists(_f) == False:
+            if not os.path.exists(_f):
                 continue
         i += 1
 

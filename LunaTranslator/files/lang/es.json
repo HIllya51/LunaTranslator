@@ -388,7 +388,6 @@
     "错误": "Error",
     "所选文件格式错误！": "¡¡ el archivo seleccionado tiene un formato incorrecto!",
     "进程号": "Número de proceso",
-    "窗口名": "Nombre de la ventana",
     "无法识别的路径！": "¡Caminos no reconocibles!",
     "进程": "Proceso",
     "到进程": "Al proceso",
@@ -716,7 +715,6 @@
     "过滤历史重复": "Filtrar repetición histórica",
     "缓存条数": "Número de barras de caché",
     "腾讯OCR": "Tencent OCR",
-    "添加列表": "Añadir lista",
     "删除列表": "Eliminar lista",
     "上移": "Subir",
     "下移": "Bajar",
@@ -813,5 +811,6 @@
     "上传游戏": "Sube el juego",
     "以当前md5复制选中行": "Copiar la línea seleccionada con el MD5 actual",
     "修改列表名称": "Modificar el nombre de la lista",
-    "滚动到最后": "Rodar hasta el final"
+    "滚动到最后": "Rodar hasta el final",
+    "创建列表": "Crear lista"
 }
