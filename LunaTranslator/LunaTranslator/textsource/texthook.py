@@ -209,6 +209,7 @@ class texthook(basetext):
             c_uint32,
             c_uint32,
             c_bool,
+            c_uint32,
         )
         self.Luna_checkisusingembed = LunaHost.Luna_checkisusingembed
         self.Luna_checkisusingembed.argtypes = DWORD, c_uint64, c_uint64, c_uint64
@@ -349,6 +350,11 @@ class texthook(basetext):
                 globalconfig["embedded"]["insertspace_policy"],
                 globalconfig["embedded"]["keeprawtext"],
                 True,
+                (
+                    globalconfig["embedded"]["limittextlength_length"]
+                    if globalconfig["embedded"]["limittextlength_use"]
+                    else 0
+                ),
             )
 
     def onremovehook(self, hc, hn, tp):

@@ -810,5 +810,6 @@
     "以当前md5复制选中行": "Dòng đã chọn sao chép md5 hiện tại",
     "修改列表名称": "Thay đổi tên danh sách",
     "滚动到最后": "Cuộn đến cuối",
-    "创建列表": "Tạo danh sách"
+    "创建列表": "Tạo danh sách",
+    "限制每行字数": "Giới hạn số lượng từ trên mỗi dòng"
 }

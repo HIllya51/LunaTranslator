@@ -810,5 +810,6 @@
     "以当前md5复制选中行": "Copia la riga selezionata con l'MD5 corrente",
     "修改列表名称": "Modifica nome elenco",
     "滚动到最后": "Scorri fino alla fine",
-    "创建列表": "Crea elenco"
+    "创建列表": "Crea elenco",
+    "限制每行字数": "Limitare il numero di parole per riga"
 }

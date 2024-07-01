@@ -364,6 +364,21 @@ def gethookembedgrid(self):
             ),
         ],
         [
+            "限制每行字数",
+            D_getsimpleswitch(
+                globalconfig["embedded"],
+                "limittextlength_use",
+                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
+            ),
+            D_getspinbox(
+                0,
+                1000,
+                globalconfig["embedded"],
+                "limittextlength_length",
+                callback=lambda x: gobject.baseobject.textsource.flashembedsettings(),
+            ),
+        ],
+        [
             "修改游戏字体",
             D_getsimpleswitch(
                 globalconfig["embedded"],

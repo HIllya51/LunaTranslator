@@ -810,5 +810,6 @@
     "以当前md5复制选中行": "Kopiuj zaznaczony wiersz z bieżącym MD5",
     "修改列表名称": "Zmień nazwę listy",
     "滚动到最后": "Przewiń do końca",
-    "创建列表": "Utwórz listę"
+    "创建列表": "Utwórz listę",
+    "限制每行字数": "Ograniczenie liczby słów na wiersz"
 }
