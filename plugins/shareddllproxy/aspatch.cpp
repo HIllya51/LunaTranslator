@@ -120,7 +120,7 @@ public:
         Luna_Start(
             [](DWORD pid)
             {
-                Luna_EmbedSettings(pid, 1000 * config["embedded"]["timeout_translate"], 2, false, config["embedded"]["changefont"] ? (StringToWideString(config["embedsettings"]["changefont_font"]).data()) : L"", config["embedsettings"]["insertspace_policy"], config["embedsettings"]["keeprawtext"], false, config["embedded"]["limittextlength_use"] ? config["embedded"]["limittextlength_length"] : 0);
+                Luna_EmbedSettings(pid, 1000 * config["embedsettings"]["timeout_translate"], 2, false, config["embedsettings"]["changefont"] ? (StringToWideString(config["embedsettings"]["changefont_font"]).data()) : L"", config["embedsettings"]["insertspace_policy"], config["embedsettings"]["keeprawtext"], false, config["embedsettings"]["limittextlength_use"] ? config["embedsettings"]["limittextlength_length"] : 0);
                 connectedpids.insert(pid);
             },
             [](DWORD pid)
