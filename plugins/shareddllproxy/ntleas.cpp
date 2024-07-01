@@ -554,7 +554,7 @@ int CreateProcessEndExt(NtleaProcess *process, PROCESS_INFORMATION const *proinf
 				OUTPUT_DEBUG_STRING_INFO *dbginfo = (OUTPUT_DEBUG_STRING_INFO *)&dbgevent.u.DebugString;
 				unsigned char *msg = (unsigned char *)dbgstrbuf;
 				// read debug string from debugee process :
-				ReadProcessMemory(proinfo->hProcess, dbginfo->lpDebugStringData, msg, min(1024, dbginfo->nDebugStringLength), NULL);
+				ReadProcessMemory(proinfo->hProcess, dbginfo->lpDebugStringData, msg, std::min(1024, (int)dbginfo->nDebugStringLength), NULL);
 				fprintf(stderr, dbginfo->fUnicode ? "%S\n" : "%s\n", msg);
 				ContinueDebugEvent(dbgevent.dwProcessId, dbgevent.dwThreadId, DBG_CONTINUE);
 			}

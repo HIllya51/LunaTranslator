@@ -89,10 +89,10 @@ ocrres OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, int *num)
             start = false;
             xx += word.Text();
             auto &rect = word.BoundingRect();
-            x1 = min(rect.X, x1);
-            x2 = max(x2, rect.X + rect.Width);
-            y1 = min(rect.Y, y1);
-            y2 = max(y2, rect.Y + rect.Height);
+            x1 = std::min((unsigned int)rect.X, x1);
+            x2 = std::max(x2, (unsigned int)(rect.X + rect.Width));
+            y1 = std::min((unsigned int)rect.Y, y1);
+            y2 = std::max(y2, (unsigned int)(rect.Y + rect.Height));
         }
         ys.push_back(y1);
         xs.push_back(x1);
