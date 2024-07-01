@@ -123,7 +123,6 @@ def setTab5lz(self):
             (
                 dict(
                     title="声音",
-                    type="grid",
                     grid=[
                         [
                             "选择声音",
@@ -143,7 +142,6 @@ def setTab5lz(self):
             (
                 dict(
                     title="音频播放",
-                    type="grid",
                     grid=[
                         [
                             "引擎",
