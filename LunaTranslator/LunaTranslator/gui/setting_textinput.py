@@ -208,15 +208,7 @@ def doexportchspatch(exe, gameuid):
         "startup_argument": None,
         "inject_timeout": 1000,
         "embedhook": savehook_new_data[gameuid]["embedablehook"],
-        "embedsettings": {
-            "font": (
-                globalconfig["embedded"]["changefont_font"]
-                if globalconfig["embedded"]["changefont"]
-                else ""
-            ),
-            "insertspace_policy": globalconfig["embedded"]["insertspace_policy"],
-            "keeprawtext": globalconfig["embedded"]["keeprawtext"],
-        },
+        "embedsettings": globalconfig["embedded"]
     }
     with open(
         os.path.join(os.path.dirname(exe), "LunaPatch.json"), "w", encoding="utf8"

@@ -92,7 +92,7 @@ std::map<std::string, std::string> translation;
 std::unordered_set<DWORD> connectedpids;
 void (*Luna_Start)(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent Create, ThreadEvent Destroy, OutputCallback Output, ConsoleHandler console, HookInsertHandler hookinsert, EmbedCallback embed);
 void (*Luna_Inject)(DWORD pid, LPCWSTR basepath);
-void (*Luna_EmbedSettings)(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, UINT32 spaceadjustpolicy, UINT32 keeprawtext, bool fastskipignore);
+void (*Luna_EmbedSettings)(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, UINT32 spaceadjustpolicy, UINT32 keeprawtext, bool fastskipignore, UINT32 line_text_length_limit);
 void (*Luna_useembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2, bool use);
 bool (*Luna_checkisusingembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2);
 void (*Luna_embedcallback)(DWORD pid, LPCWSTR text, LPCWSTR trans);
@@ -120,10 +120,7 @@ public:
         Luna_Start(
             [](DWORD pid)
             {
-                auto font = StringToWideString(config["embedsettings"]["font"]);
-                auto insertspace_policy = config["embedsettings"]["insertspace_policy"];
-                auto keeprawtext = config["embedsettings"]["keeprawtext"];
-                Luna_EmbedSettings(pid, 1000, 2, false, font.data(), insertspace_policy, keeprawtext, false);
+                Luna_EmbedSettings(pid, 1000 * config["embedded"]["timeout_translate"], 2, false, config["embedded"]["changefont"] ? (StringToWideString(config["embedsettings"]["changefont_font"]).data()) : L"", config["embedsettings"]["insertspace_policy"], config["embedsettings"]["keeprawtext"], false, config["embedded"]["limittextlength_use"] ? config["embedded"]["limittextlength_length"] : 0);
                 connectedpids.insert(pid);
             },
             [](DWORD pid)
