@@ -520,6 +520,7 @@ class QUnFrameWindow(resizableframeless):
         self.fullscreenmethod = None
         self._isTracking = False
         self.showhidestate = False
+        self.autohidestart = False
         self.processismuteed = False
         self.thistimenotsetop = False
         self.isbindedwindow = False
@@ -596,6 +597,7 @@ class QUnFrameWindow(resizableframeless):
 
         # 有个莫名其妙的加载时间
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
+        self.autohidedelaythread()
 
     def setselectable(self):
 
