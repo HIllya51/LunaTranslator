@@ -1755,5 +1755,13 @@
             "miaobian0",
             "miaobian1"
         ]
-    }
+    },
+    "audioengine": [
+        "mci",
+        "miniaudio"
+    ],
+    "audioengine_vis": [
+        "Windows MCI",
+        "miniaudio"
+    ]
 }

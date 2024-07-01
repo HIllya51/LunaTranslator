@@ -40,10 +40,10 @@ class TTSbase:
 
     ########################
 
-    def __init__(self, typename, showlistsignal, mp3playsignal) -> None:
+    def __init__(self, typename, showlistsignal, playaudiofunction) -> None:
         self.typename = typename
         self.showlistsignal = showlistsignal
-        self.mp3playsignal = mp3playsignal
+        self.playaudiofunction = playaudiofunction
         self.loadok = False
 
         def _():
@@ -71,7 +71,7 @@ class TTSbase:
         volume = self.publicconfig["volume"]
 
         def _(force, volume, data):
-            self.mp3playsignal.emit(data, volume, force)
+            self.playaudiofunction(data, volume, force)
 
         self.ttscallback(content, functools.partial(_, force, volume))
 

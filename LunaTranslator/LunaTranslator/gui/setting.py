@@ -2,7 +2,6 @@ from qtsymbols import *
 import functools
 import qtawesome
 from myutils.config import globalconfig, _TR, _TRL
-from myutils.utils import wavmp3player
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting_textinput import setTabOne_lazy
 from gui.setting_translate import setTabTwo_lazy, checkconnected
@@ -66,7 +65,6 @@ class TabWidget(QWidget):
 
 class Setting(closeashidewindow):
     voicelistsignal = pyqtSignal(list, int)
-    mp3playsignal = pyqtSignal(bytes, int, bool)
     versiontextsignal = pyqtSignal(str)
     progresssignal = pyqtSignal(str, int)
     opensolvetextsig = pyqtSignal()
@@ -75,8 +73,7 @@ class Setting(closeashidewindow):
     def __init__(self, parent):
         super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
         self.setWindowIcon(qtawesome.icon("fa.gear"))
-        self.mp3player = wavmp3player()
-        self.mp3playsignal.connect(self.mp3player.mp3playfunction)
+        
         self.opensolvetextsig.connect(self.opensolvetextfun)
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.voicelistsignal.connect(functools.partial(showvoicelist, self))

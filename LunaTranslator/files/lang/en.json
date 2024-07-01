@@ -17,7 +17,6 @@
     "显示原文": "Show Original Text",
     "去除重复字符(若为1则自动分析去重)": "Filter duplicate characters (Set 1 for Auto-Removal)",
     "居中显示": "Center Display",
-    "语速:(-10~10)": "TTS Speed (-10~10):",
     "百度api": "Baidu API",
     "预翻译": "Pre-translation",
     "专有名词翻译设置(游戏ID 0表示全局)": "Proper Noun Translation Settings (Game ID 0 means global)",
@@ -94,7 +93,6 @@
     "灵格斯词典": "Lingoes Dictionary",
     "游戏窗口移动时同步移动": "Mone in Sync with Game Window",
     "语音设置": "TTS Settings",
-    "音量:(0~100)": "Volume: (0~100)",
     "光标缩放系数": "Cursor Scale Factor",
     "前景窗口截屏": "Foreground Window Screenshot",
     "3D游戏模式": "3D Game Mode",
@@ -811,5 +809,8 @@
     "滚动到最后": "Scroll to End",
     "指定模块": "Specify modules",
     "创建列表": "Create List",
-    "限制每行字数": "Limit the number of words per line"
+    "限制每行字数": "Limit the number of words per line",
+    "音频播放": "Audio playback",
+    "语速": "Speech speed",
+    "音量": "volume"
 }

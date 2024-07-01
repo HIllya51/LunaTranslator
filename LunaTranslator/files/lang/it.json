@@ -101,8 +101,6 @@
     "语音设置": "Impostazioni vocali",
     "火山TTS": "Vulcano TTS",
     "选择声音": "Seleziona suono",
-    "语速:(-10~10)": "Velocità vocale: (-10-10)",
-    "音量:(0~100)": "Volume: (0-100)",
     "自动朗读": "Lettura automatica",
     "翻译优化": "Ottimizzazione della traduzione",
     "文本预处理": "Preelaborazione del testo",
@@ -811,5 +809,8 @@
     "修改列表名称": "Modifica nome elenco",
     "滚动到最后": "Scorri fino alla fine",
     "创建列表": "Crea elenco",
-    "限制每行字数": "Limitare il numero di parole per riga"
+    "限制每行字数": "Limitare il numero di parole per riga",
+    "音频播放": "Riproduzione audio",
+    "语速": "Velocità vocale",
+    "音量": "volume"
 }

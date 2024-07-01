@@ -1,12 +1,9 @@
 import windows
 import os, time
 import codecs, hashlib
-import os, time
 import socket, gobject, uuid
 import ctypes, importlib
-import time
 import ctypes.wintypes
-import time
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -18,7 +15,6 @@ from myutils.config import (
     findgameuidofpath,
     getdefaultsavehook,
 )
-from ctypes import c_float, pointer, c_void_p
 import threading
 import re, heapq, winsharedutils
 from myutils.wrapper import tryprint
@@ -301,68 +297,6 @@ def argsort(l):
     ll = list(range(len(l)))
     ll.sort(key=lambda x: l[x])
     return ll
-
-
-class wavmp3player:
-    def __init__(self):
-        self.i = 0
-        self.lastfile = None
-        self.tasks = None
-        self.lock = threading.Lock()
-        self.lock.acquire()
-        threading.Thread(target=self.dotasks).start()
-
-    def mp3playfunction(self, binary, volume, force):
-        try:
-            self.tasks = (binary, volume, force)
-            self.lock.release()
-        except:
-            pass
-
-    def dotasks(self):
-        durationms = 0
-        try:
-            while True:
-                self.lock.acquire()
-                task = self.tasks
-                self.tasks = None
-                if task is None:
-                    continue
-                binary, volume, force = task
-                durationms = self._playsoundWin(binary, volume)
-
-                if durationms and globalconfig["ttsnointerrupt"]:
-                    while durationms > 0:
-                        durationms -= 100
-                        time.sleep(0.1)
-                        if self.tasks and self.tasks[-1]:
-                            break
-        except:
-            print_exc()
-
-    def _playsoundWin(self, binary, volume):
-        try:
-            if self.lastfile:
-                winsharedutils.PlayAudioInMem_Stop(self.lastfile[0], self.lastfile[1])
-            duration = c_float()
-            device = c_void_p()
-            decoder = c_void_p()
-            succ = winsharedutils.PlayAudioInMem(
-                binary,
-                len(binary),
-                volume / 100,
-                pointer(decoder),
-                pointer(device),
-                pointer(duration),
-            )
-            if succ != 0:
-                return 0
-            self.lastfile = decoder, device
-            durationms = duration.value * 1000
-        except:
-            durationms = 0
-
-        return durationms
 
 
 def selectdebugfile(path: str, ismypost=False):

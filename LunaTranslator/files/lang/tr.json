@@ -107,8 +107,6 @@
     "语音设置": "Ses ayarları",
     "火山TTS": "Volcano TTS",
     "选择声音": "Sesi seç",
-    "语速:(-10~10)": "Konuşma hızı: (- 10~10)",
-    "音量:(0~100)": "Ses: (0~100)",
     "自动朗读": "Otomatik okuma",
     "翻译优化": "Çeviri iyileştirmesi",
     "文本预处理": "Metin ön işleme",
@@ -811,5 +809,8 @@
     "修改列表名称": "Liste ismini değiştir",
     "滚动到最后": "Sonuna doğru yürüt",
     "创建列表": "Liste oluştur",
-    "限制每行字数": "Sırada kelimelerin sayısını sınırla"
+    "限制每行字数": "Sırada kelimelerin sayısını sınırla",
+    "音频播放": "Ses çalması",
+    "语速": "Konuşma hızı",
+    "音量": "volume"
 }

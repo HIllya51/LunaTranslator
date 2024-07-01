@@ -331,6 +331,7 @@
     "buttonsize2": 18,
     "language_setted_2.4.5": false,
     "postprocess_rank": [],
+    "audioengine": "mci",
     "transoptimi": {
         "noundict": false,
         "transerrorfix": false,

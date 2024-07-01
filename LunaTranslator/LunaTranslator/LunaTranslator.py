@@ -45,6 +45,7 @@ import winsharedutils
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark
+from myutils.audioplayer import audioplayer
 
 
 class commonstylebase(QWidget):
@@ -83,6 +84,7 @@ class MAINUI:
         self.edittextui_sync = True
         self.sqlsavegameinfo = None
         self.notifyonce = set()
+        self.audioplayer = audioplayer()
 
     @property
     def textsource(self):
@@ -473,7 +475,7 @@ class MAINUI:
 
                 self.reader_usevoice = use
                 self.reader = aclass(
-                    use, self.settin_ui.voicelistsignal, self.settin_ui.mp3playsignal
+                    use, self.settin_ui.voicelistsignal, self.audioplayer.play
                 )
 
     def selectprocess(self, selectedp, title):

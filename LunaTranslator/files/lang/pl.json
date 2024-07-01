@@ -107,8 +107,6 @@
     "语音设置": "Ustawienia głosu",
     "火山TTS": "Wulkan TTS",
     "选择声音": "Wybierz dźwięk",
-    "语速:(-10~10)": "Prędkość mowy: (-10-10)",
-    "音量:(0~100)": "Objętość: (0-100)",
     "自动朗读": "Automatyczny odczyt",
     "翻译优化": "Optymalizacja tłumaczeń",
     "文本预处理": "Wstępne przetwarzanie tekstu",
@@ -811,5 +809,8 @@
     "修改列表名称": "Zmień nazwę listy",
     "滚动到最后": "Przewiń do końca",
     "创建列表": "Utwórz listę",
-    "限制每行字数": "Ograniczenie liczby słów na wiersz"
+    "限制每行字数": "Ograniczenie liczby słów na wiersz",
+    "音频播放": "Odtwarzanie dźwięku",
+    "语速": "Szybkość mowy",
+    "音量": "objętość"
 }

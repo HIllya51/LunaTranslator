@@ -107,8 +107,6 @@
     "语音设置": "Thiết lập giọng nói",
     "火山TTS": "Núi lửa TTS",
     "选择声音": "Chọn âm thanh",
-    "语速:(-10~10)": "Tốc độ nói: (-10~10)",
-    "音量:(0~100)": "Âm lượng: (0~100)",
     "自动朗读": "Tự động đọc",
     "翻译优化": "Tối ưu hóa dịch",
     "文本预处理": "Tiền xử lý văn bản",
@@ -811,5 +809,8 @@
     "修改列表名称": "Thay đổi tên danh sách",
     "滚动到最后": "Cuộn đến cuối",
     "创建列表": "Tạo danh sách",
-    "限制每行字数": "Giới hạn số lượng từ trên mỗi dòng"
+    "限制每行字数": "Giới hạn số lượng từ trên mỗi dòng",
+    "音频播放": "Phát lại âm thanh",
+    "语速": "Tốc độ nói",
+    "音量": "Âm lượng"
 }
