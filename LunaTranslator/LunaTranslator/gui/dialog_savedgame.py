@@ -2742,6 +2742,7 @@ class dialog_savedgame_v3(QWidget):
         try:
             self.pixview.setpix(k)
             self.currentfocusuid = k
+            currvis = self.righttop.currentIndex()
             if self.righttop.count() > 1:
                 self.righttop.removeTab(1)
             tabadd_lazy(
@@ -2749,7 +2750,7 @@ class dialog_savedgame_v3(QWidget):
                 savehook_new_data[k]["title"],
                 lambda v: v.addWidget(dialog_setting_game_internal(self, k)),
             )
-
+            self.righttop.setCurrentIndex(currvis)
         except:
             print_exc()
 
