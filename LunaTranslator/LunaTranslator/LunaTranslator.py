@@ -440,18 +440,16 @@ class MAINUI:
         return text
 
     def readcurrent(self, force=False):
+        if not self.reader:
+            return
+        if not (force or globalconfig["autoread"]):
+            return
+        text = self.ttsrepair(self.currentread, globalconfig["ttscommon"])
         try:
-            if force or globalconfig["autoread"]:
-                text = self.ttsrepair(self.currentread, globalconfig["ttscommon"])
-                try:
-                    text = self.ttsrepair(
-                        text, savehook_new_data[self.textsource.gameuid]
-                    )
-                except:
-                    pass
-                self.reader.read(text, force)
+            text = self.ttsrepair(text, savehook_new_data[self.textsource.gameuid])
         except:
-            print_exc()
+            pass
+        self.reader.read(text, force)
 
     @threader
     def startreader(self, use=None, checked=True):
@@ -961,7 +959,7 @@ class MAINUI:
             else:
                 winsharedutils.clipboard_set(word)
         if globalconfig["usesearchword"]:
-            self.searchwordW.getnewsentencesignal.emit(word, append)
+            self.searchwordW.search_word.emit(word, append)
 
     def setshowintab_checked(self, widget):
         try:

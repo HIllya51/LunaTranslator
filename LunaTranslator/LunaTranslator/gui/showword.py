@@ -784,19 +784,20 @@ class QLineEdit1(QLineEdit):
 
 
 class searchwordW(closeashidewindow):
-    getnewsentencesignal = pyqtSignal(str, bool)
-    showtabsignal = pyqtSignal(float, str, str)
+    search_word = pyqtSignal(str, bool)
+    show_dict_result = pyqtSignal(float, str, str)
 
     def __init__(self, parent):
         super(searchwordW, self).__init__(parent, globalconfig["sw_geo"])
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
-        self.getnewsentencesignal.connect(self.getnewsentence)
+        self.search_word.connect(self.__click_word_search_function)
+        self.show_dict_result.connect(self.__show_dict_result_function)
 
         self.setWindowTitle(_TR("查词"))
         self.ankiwindow = AnkiWindow()
         self.setupUi()
 
-    def showresfun(self, timestamp, k, res):
+    def __show_dict_result_function(self, timestamp, k, res):
         if self.current != timestamp:
             return
         if not res:
@@ -829,7 +830,6 @@ class searchwordW(closeashidewindow):
         self.setWindowIcon(qtawesome.icon("fa.search"))
         self.thisps = {}
         self.hasclicked = False
-        self.showtabsignal.connect(self.showresfun)
 
         ww = QWidget(self)
         self.setWindowIcon(qtawesome.icon("fa.gear"))
@@ -839,10 +839,25 @@ class searchwordW(closeashidewindow):
         self.vboxlayout.addLayout(self.searchlayout)
         self.searchtext = QLineEdit1()
         self.searchtext.textChanged.connect(self.ankiwindow.reset)
+
+        self.history_last_btn = QPushButton(qtawesome.icon("fa.arrow-left"), "")
+        self.history_last_btn.clicked.connect(
+            functools.partial(self.__move_history_search, -1)
+        )
+        self.history_next_btn = QPushButton(qtawesome.icon("fa.arrow-right"), "")
+        self.history_next_btn.clicked.connect(
+            functools.partial(self.__move_history_search, 1)
+        )
+
+        self.trace_history = []
+        self.trace_history_idx = -1
+        self.__set_history_btn_able()
+        self.searchlayout.addWidget(self.history_last_btn)
+        self.searchlayout.addWidget(self.history_next_btn)
         self.searchlayout.addWidget(self.searchtext)
         searchbutton = QPushButton(qtawesome.icon("fa.search"), "")  # _TR("搜索"))
 
-        searchbutton.clicked.connect(lambda: self.search((self.searchtext.text())))
+        searchbutton.clicked.connect(self.__search_by_click_search_btn)
         self.searchlayout.addWidget(searchbutton)
 
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
@@ -912,15 +927,18 @@ class searchwordW(closeashidewindow):
             res.insert(idx, {"source": k, "content": v})
         return res
 
-    def getnewsentence(self, sentence, append):
-        sentence = sentence.strip()
+    def __click_word_search_function(self, word, append):
+        word = word.strip()
         self.showNormal()
         if append:
-            sentence = self.searchtext.text() + sentence
-        self.searchtext.setText(sentence)
+            word = self.searchtext.text() + word
+        self.searchtext.setText(word)
 
-        self.search(sentence)
-
+        self.search(word)
+        if len(self.trace_history) == 0 or self.trace_history[-1] != word:
+            self.trace_history.append(word)
+        self.trace_history_idx = len(self.trace_history) - 1
+        self.__set_history_btn_able()
         self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
@@ -934,13 +952,35 @@ class searchwordW(closeashidewindow):
                 self.ankiwindow.editpath.setText,
             )
 
-    def search(self, sentence):
+    def __set_history_btn_able(self):
+        self.history_next_btn.setEnabled(
+            self.trace_history_idx < len(self.trace_history) - 1
+        )
+        self.history_last_btn.setEnabled(self.trace_history_idx > 0)
+
+    def __move_history_search(self, offset):
+        self.trace_history_idx += offset
+        word = self.trace_history[self.trace_history_idx]
+        self.__set_history_btn_able()
+        self.searchtext.setText(word)
+        self.search(word)
+
+    def __search_by_click_search_btn(self):
+        word = self.searchtext.text()
+        self.search(word)
+
+        if len(self.trace_history) == 0 or self.trace_history[-1] != word:
+            self.trace_history.append(word)
+        self.trace_history_idx = len(self.trace_history) - 1
+        self.__set_history_btn_able()
+
+    def search(self, word):
         current = time.time()
         self.current = current
-        sentence = sentence.strip()
-        if sentence == "":
+        word = word.strip()
+        if word == "":
             return
-        self.ankiwindow.reset(sentence)
+        self.ankiwindow.reset(word)
         for i in range(self.tab.count()):
             self.tab.removeTab(0)
         self.tabks.clear()
@@ -953,5 +993,5 @@ class searchwordW(closeashidewindow):
             self.thisps[k] = cishu.config["priority"]
         for k, cishu in gobject.baseobject.cishus.items():
             cishu.safesearch(
-                sentence, functools.partial(self.showtabsignal.emit, current, k)
+                word, functools.partial(self.show_dict_result.emit, current, k)
             )

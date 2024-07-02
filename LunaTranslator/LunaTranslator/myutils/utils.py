@@ -508,7 +508,7 @@ class autosql(sqlite3.Connection):
     def __del__(self):
         self.close()
 
-
+@tryprint
 def parsemayberegexreplace(dict, res):
     for item in dict:
         if item["regex"]:
