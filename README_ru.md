@@ -1,4 +1,4 @@
-# LunaTranslator 
+## LunaTranslator 
   
 <p align="left">
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
@@ -6,16 +6,16 @@
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
 </p>
 
-## [简体中文](README.md)  |  Русский язык | [English](README_en.md) | [Other Language](otherlang.md) 
+### [简体中文](README.md)  |  Русский язык | [English](README_en.md) | [Other Language](otherlang.md) 
 
 > **Переводчик текста с экрана для игр и не только!**
 
 
-## <a href="https://hillya51.github.io/LunaTranslator/#/ru/" target="_blank">Инструкция по настройке программы (Полностью на русском языке)</a> 
+### <a href="https://hillya51.github.io/LunaTranslator/#/ru/" target="_blank">Инструкция по настройке программы (Полностью на русском языке)</a> 
 
 Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://github.com/HIllya51/LunaTranslator)
 
-## Основные функции:
+### Основные функции:
 
 #### Источник текста
 
@@ -58,7 +58,7 @@ Welcome friends who find it helpful to improve the documentation together.[Docum
 
 &emsp;&emsp;**Поиск слов** Поддерживает поиск слов с использованием Xiaoxiaoguan, Lingoes Dictionary и EDICT (японо-английский словарь).
 
-## Скачать дополнительные файлы:
+### Скачать дополнительные файлы:
 
 <details>
 <summary>Нажмите на детали</summary>
@@ -85,13 +85,13 @@ Welcome friends who find it helpful to improve the documentation together.[Docum
 
 </details>
 
-##  Отдельная благодарность: 
+###  Отдельная благодарность: 
 
 
 * [@KirpichKrasniy](https://github.com/KirpichKrasniy) (Также можете зайти в русскоязычные сообщества программы: [VK](https://vk.com/lunatranslator) и [Telegram](https://t.me/LunaTranslator))
 
 
-## References
+### References
 
 <details>
 <summary>Click to view</summary>

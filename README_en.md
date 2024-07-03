@@ -1,4 +1,4 @@
-# LunaTranslator 
+## LunaTranslator 
   
 <p align="left">
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
@@ -6,15 +6,15 @@
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
 </p>
  
-## [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Language](otherlang.md) 
+### [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Language](otherlang.md) 
 
 > **A galgame translator**
 
-## <a href="https://hillya51.github.io/LunaTranslator/#/en/" target="_blank">Documentation</a> 
+### <a href="https://hillya51.github.io/LunaTranslator/#/en/" target="_blank">Documentation</a> 
 
 Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://github.com/HIllya51/LunaTranslator)
 
-## Function support
+### Function support
 
 #### Text source
 
@@ -61,7 +61,7 @@ Support almost all translation engines you can think of, including:
  
 
 
-## References
+### References
 
 <details>
 <summary>Click to view</summary>
@@ -90,6 +90,6 @@ Support almost all translation engines you can think of, including:
 
 
  
-## Support author
+### Support author
  
 If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
