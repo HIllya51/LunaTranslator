@@ -11,9 +11,9 @@
 > **Переводчик текста с экрана для игр и не только!**
 
 
-## <a href="https://hillya51.github.io/LunaTranslator_tutorial/#/ru/" target="_blank">Инструкция по настройке программы (Полностью на русском языке)</a> 
+## <a href="https://hillya51.github.io/LunaTranslator/#/ru/" target="_blank">Инструкция по настройке программы (Полностью на русском языке)</a> 
 
-Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://github.com/HIllya51/LunaTranslator_tutorial)
+Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://github.com/HIllya51/LunaTranslator)
 
 ## Основные функции:
 

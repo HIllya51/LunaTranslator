@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html  >
+<head> 
+  <meta charset="UTF-8">
+  <title>LunaTranslator 使用说明</title>
+  <meta name="description" content="Description">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/docsify/lib/themes/vue.css">
+</head>
+<body>
+  <div id="app"></div>
+</body>
+<script>
+  window.$docsify = {
+    requestHeaders: {
+      'cache-control': 'max-age=0',
+    },
+    repo: 'https://github.com/HIllya51/LunaTranslator',
+    
+    alias: {
+      '/zh/_sidebar.md': '/zh/sidebar.md',
+      '/ru/_sidebar.md': '/ru/sidebar.md',
+      '/en/_sidebar.md': '/en/sidebar.md',
+      '/_navbar.md': '/navbar.md',
+    },
+    loadNavbar:true,
+    loadSidebar: true,
+    subMaxLevel: 3,
+    
+
+    // subMaxLevel: 2
+
+    auto2top: true,
+
+    search: {
+      noData: {
+        '/': 'No results!',
+        '/zh/': '没有结果!',
+      },
+      paths: 'auto',
+      placeholder: {
+        '/': 'Search',
+        '/zh/': '搜索',
+      }
+    },
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/docsify@latest/lib/docsify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docsify@latest/lib/plugins/search.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docsify@latest/lib/plugins/zoom-image.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-markdown.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-ruby.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-yaml.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-less.min.js"></script>
+
+</html>

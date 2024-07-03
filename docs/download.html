@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Download LunaTranslator</title>
+</head>
+<body>
+  <p id="download-link">Loading...</p>
+
+  <script>
+    fetch('https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest')
+      .then(response => response.json())
+      .then(data => {
+        const asset = data.assets.find(asset => asset.name === 'LunaTranslator.zip');
+        const asset2 = data.assets.find(asset => asset.name === 'LunaTranslator_x86.zip');
+        const downloadLink = document.getElementById('download-link');
+        downloadLink.innerHTML = `<a href="${asset.browser_download_url}">LunaTranslator.zip(64bit)</a><br><a href="${asset2.browser_download_url}">LunaTranslator_x86.zip(32bit)</a>`;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        const downloadLink = document.getElementById('download-link');
+        downloadLink.innerHTML = 'Failed to load download link.';
+      });
+  </script>
+</body>
+</html>

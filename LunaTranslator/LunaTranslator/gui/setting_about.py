@@ -324,7 +324,7 @@ def setTab_update(self, basel):
         ],
         [
             "使用说明",
-            makehtml("https://hillya51.github.io/LunaTranslator_tutorial/#/zh/"),
+            makehtml("https://hillya51.github.io/LunaTranslator/#/zh/"),
         ],
     ]
     if globalconfig["languageuse"] == 0:
