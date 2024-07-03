@@ -1,4 +1,4 @@
-## 如何使用 gemini 免费 api [^1]
+## 如何使用 gemini 免费 api
 
 1. 去 https://aistudio.google.com/app/prompts/new_chat
 2. 
@@ -38,5 +38,6 @@
 
 ![img](../images/zh/gemini/344551043-a0b058b0-e7e8-49c2-a8a4-3201db78ddec.png)
 
+<hr>
 
-[^1]: [asukaminato0721](https://github.com/HIllya51/LunaTranslator/issues/863)
+Reference: [asukaminato0721](https://github.com/HIllya51/LunaTranslator/issues/863)

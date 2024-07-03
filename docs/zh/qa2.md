@@ -1,4 +1,4 @@
-## 如何自动划词进 anki [^1]
+## 如何自动划词进 anki
 
 1. 安装 anki, https://apps.ankiweb.net/ 去主页下载安装
 
@@ -28,4 +28,6 @@
 
 ![img](../images/zh/anki/336451442-7887d600-8c44-4256-9020-1d85e0f6184a.png)
 
-[^1]: [asukaminato0721](https://github.com/HIllya51/LunaTranslator/issues/796)
+<hr>
+
+Reference: [asukaminato0721](https://github.com/HIllya51/LunaTranslator/issues/796)
