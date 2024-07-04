@@ -4,7 +4,7 @@
 Access the settings window by clicking the settings button in the toolbar or the tray icon.
 
 
-## 基本设置
+## Basic Settings
 
 Choose your text output source. A pink ✓ indicates selection, while a gray × indicates inactive selection; only one can be selected at a time.
 
