@@ -1,4 +1,4 @@
-## LunaTranslator 
+# LunaTranslator 
   
 <p align="left">
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
@@ -14,7 +14,7 @@
 ### <a href="https://hillya51.github.io/LunaTranslator/#/zh/" target="_blank">使用说明</a> <a href="https://space.bilibili.com/592120404/video" target="_blank">视频教程</a> [交流群912525396](https://qm.qq.com/q/qE32v9NYBO)
 
 
-### 功能支持
+## 功能支持
 
 #### 文本源
 
@@ -62,7 +62,7 @@
 
 &emsp;&emsp;**Anki** 支持使用一键添加单词到anki中
 
-### 引用
+## 引用
 
 <details>
 <summary>点击查看</summary>
@@ -93,7 +93,7 @@
 
 
  
-### 支持作者
+## 支持作者
 
 如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~
 
