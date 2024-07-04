@@ -4,9 +4,10 @@
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
+    <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
 </p>
  
-### [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Language](otherlang.md) 
+### [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Languages](otherlang.md) 
 
 > **A galgame translator**
 
@@ -97,3 +98,5 @@ Support almost all translation engines you can think of, including:
 ## Support author
  
 If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
+
+<img src='.\\LunaTranslator\\files\\zan.jpg' style="height: 400px !important;">
