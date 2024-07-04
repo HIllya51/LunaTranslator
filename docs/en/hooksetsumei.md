@@ -1,49 +1,47 @@
  
-# HOOK说明
+# HOOK Instructions
  
+To use the HOOK feature:
 
-在基本设置界面选择Textractor，会自动弹出进程选择窗口。
+- Select Textractor in the Basic Settings. This will automatically open the process selection window.
 
-或自行点击“选择游戏”按钮，弹出进程选择窗口。
-
-或者在工具栏点击第一个框起来的按钮“选择游戏”。
+Alternatively, you can:
+- Click the "Select Game" button in the settings, or
+- Click the first highlighted button "Select Game" in the toolbar.
 
 
 ![img](../images/zh/toolbar3.jpg) 
 
 
-有三种方式选择进程：
+There are three ways to select a process:
 
-* 点击“点此按钮后点击游戏窗口”按钮后，点击游戏窗口，会自动获取游戏进程
+- Click "Click me, then click the game window" and then click on the game window. This will automatically detect the game process.
+- Choose the game from the list below.
+- Manually enter the process ID.
 
-* 在下方的列表中选择游戏
-
-* 在手动输入进程号
-
-在使用no_admin运行时，有时可能看不到进程，或者选择后也无效
+Note: When running in no_admin mode, the process may be displayed or selections may do nothing. Please switch to admin mode to fix this.
 
 ![img](../images/zh/selectprocess.jpg)
 
-选择完毕后点击OK，然后会自动弹出文本选择窗口。（或者点击“选择文本”按钮，或者点击工具栏第二个框起来的按钮）
+After selection, click OK. A text selection window will automatically appear. (You can also open this by clicking "Select Text" or the second highlighted button in the toolbar)
 
-弹出文本选择窗口后点击游戏让游戏显示下一条文本，则可以出现若干提取到的文本。
+Once the text selection window is open, click on the game to display the next line of text. This will show several extracted text strings.
 
 ![img](../images/zh/selecttext.jpg)
 
-点击列表中的任意项，下面预览窗口中就会显示这一条目捕捉到的文本。
+Click on any item in the list to preview the captured text in the window below.
 
 ![img](../images/zh/yulan.jpg)
 
-列表中有时会有很多条目，这时在下方的“搜索包含文本的条目”文本框中输入当前游戏窗口中的文字对条目进行筛选，就可以轻松找到所需的内容。
+If there are many items in the list, you can filter them by entering text from the current game window into the "Search Entries Containing Text" box at the bottom.
 
-使用游戏中出现的“約束”字进行搜索，列表中只剩下1个条目。
+For example, by searching for the Japanese word "約束" (yakusoku) that appears in the game, you'll filter the list down to just one item.
 
 ![img](../images/zh/filter.jpg) 
 
-如果有多个条目都想选择，可以按住ctrl进行多选。
+To select multiple items, hold down the Ctrl key while clicking.
 
-
-然后选择OK，游戏就会开始翻译。如果后面发现选择的条目不符合要求，还可以重新进行选择。
+After making your selection(s), click OK to start the translation. If you later find that the selected items are not suitable, you can always make a new selection.
 
 ![img](../images/zh/reshook.jpg)
  

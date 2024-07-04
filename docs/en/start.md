@@ -1,17 +1,15 @@
+# Getting Started
 
-# 开始
- 
- 
 
-## 下载
 
-从<a  target="_blank" href="https://github.com/HIllya51/LunaTranslator/releases">https://github.com/HIllya51/LunaTranslator/releases</a>的Assets获取最新下载链接
-下载LunaTranslator.zip文件
-解压到任意目录
+## How to Download
+
+1. Go to [the LunaTranslator releases page](https://github.com/HIllya51/LunaTranslator/releases)
+2. In the "Assets" section of the latest release, find and download the "LunaTranslator.zip" file
+3. Extract the contents of the ZIP file to any directory on your computer.
 ![img](../images/zh/download.jpg)
 
-## 启动
-
-**LunaTranslator.exe** 会以管理员权限启动，部分游戏需要管理员权限才能HOOK
-
-**LunaTranslator_no_Admin.exe** 会以普通模式启动 
+## How to Run
+There are two ways to launch LunaTranslator:
+1. **LunaTranslator.exe** - This will launch the application with administrator privileges. Some games require admin rights for proper hooking
+2. **LunaTranslator_no_Admin.exe** - This will launch the application in normal mode without administrator privileges

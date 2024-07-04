@@ -4,61 +4,66 @@
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
+    <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
 </p>
  
-### [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Language](otherlang.md) 
+### [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Languages](otherlang.md) 
 
 > **A galgame translator**
 
 ### <a href="https://hillya51.github.io/LunaTranslator/#/en/" target="_blank">Documentation</a> 
 
-Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://github.com/HIllya51/LunaTranslator)
+Welcome friends who want to help us improve the documentation! [Documentation Repo](https://github.com/HIllya51/LunaTranslator)
 
-## Function support
+## Features
 
-#### Text source
+#### Text sources
 
-&emsp;&emsp;**Clipboard** Support to get text from the clipboard for translation
+&emsp;&emsp;**Clipboard** Support reading text from the clipboard for translation
 
-&emsp;&emsp;**OCR** In addition to the built-in OCR engine, it also supports Windows OCR, Baidu OCR, Youdao OCR, ocrspace, docsumo, Feishu OCR, and more.
+&emsp;&emsp;**OCR** Support offline OCR (deployed), WindowsOCR, Baidu OCR, Youdao OCR, ocrspace, docsumo, and binding to game window to avoid overlap.
 
-&emsp;&emsp;**HOOK** Support the use of HOOK to obtain text, support the use of special codes, support automatic saving of games and HOOK, automatic loading of HOOK, etc. For some engines, embedded translation is also supported.
+&emsp;&emsp;**HOOK** Supports text extraction via hooking, Hook codes (H-codes), automatic game and hook saving, and auto-loading hooks. Some engines also support embedded translation
 
 #### Translators
 
 Support almost all translation engines you can think of, including:
 
-&emsp;&emsp;**Offline translation** Support offline translation using J Beijing 7, Jinshan Express and Yediantong
+&emsp;&emsp;**Offline Translation**: J-Beijing 7, Kingsoft FastAIT, YiDianTong, Sakura, TGW, Sugoi
 
-&emsp;&emsp;**Free online translation** Support the use of Baidu, Bing, Google, Alibaba, Youdao, Caiyun, Sogou, DeepL, Jinshan, iFLYTEK, Tencent, Byte, Volcano, Papago, and peekit for translation
+&emsp;&emsp;**Free Online Translation**: Baidu, Bing, Google, Ali, Youdao, Caiyun, Sogou, DeepL, Kingsoft, iFlytek, Tencent, ByteDance, Volcano, Papago, Yeekit, and more
 
-&emsp;&emsp;**Chrome debugging translation** Supports deep, Yandex, Youdao, Baidu, Tencent, Bing, Caiyun, Xiaoniu, Alibaba, Google, Poe.com, OpenAI
+&emsp;&emsp;**API Online Translation**: Baidu, Tencent, Youdao, Niutrans, Caiyun, Volcano, DeepL, Yandex, Google, IBM, Feishu, ChatGPT, Azure, Cohere, Claude, Gemini, and more (requires user registration)
 
-&emsp;&emsp;**Registed online translation** Support the use of user registered Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, Deep, Yandex, Google, Feishu, ChatGPT, Azure Translations
+&emsp;&emsp;**Chrome Debug Translation**: DeepL, Yandex, Youdao, Baidu, Tencent, Bing, Caiyun, Niutrans, Ali, Google, OpenAI
 
-&emsp;&emsp;**Pre-translation** Support reading manual translation and aggregating machine pre-translation files
+&emsp;&emsp;**Pre-translation** Support reading human translation and aggregating machine pre-translation files
 
-&emsp;&emsp;**Custom translation extension** Support the use of python language to extend other translation interfaces I don't know
+&emsp;&emsp;**Custom Translation Extension** Support the use of Python language to extend other translation interfaces I don't know
 
 
-#### Speech Synthesis 
+ 
 
-&emsp;&emsp;**Offline TTS** Supports Windows TTS, VoiceRoad2, VoiceRoad+, NeoSpeech, and VOICEVOX
 
-&emsp;&emsp;**Online TTS** Support huoshanTTS, youdaoTTS, EdgeTTS
+#### Speech Synthesis
+
+&emsp;&emsp;**Offline TTS**: Windows TTS, VoiceRoid2, VoiceRoid+, NeoSpeech, VOICEVOX, VITS, and more
+
+&emsp;&emsp;**Online TTS**: Volcano TTS, Youdao TTS, Edge TTS, Google TTS, and more
 
 #### Translation optimization
 
-&emsp;&emsp;**Text processing** Support simple processing such as text de-duplication, filtering HTML tags, filtering line breaks, filtering characters and numbers; Support custom simple text replacement and regular expression replacement
+&emsp;&emsp;**Text Processing**: Supports over a dozen common text processing methods, from simple processing such as text de-duplication and filtering line breaks, to complex regular expression replacement and even writing your own custom Python preprocessor 
 
-&emsp;&emsp;**Translation optimization** Support the use of customized proper noun translation, and support the import of VNR shared dictionaries
+&emsp;&emsp;**Translation Optimization**: Supports custom proper noun translations and importing VNR shared dictionaries
 
 #### Japanese learning
 
-&emsp;&emsp;**Japanese word segmentation and kana display** Support the use of built-in download-free word segmentation and kana display tools, and support the use of Mecab to optimize word segmentation and kana display
+&emsp;&emsp;**Japanese Word Segmentation and Furigana Display** Supports MeCab and other tokenizers for word segmentation and furigana display to help you read
 
-&emsp;&emsp;**Word search** Support the use of primary school library, Lingers dictionary and EDICT (Japanese English) dictionary for word query
- 
+&emsp;&emsp;**Dictionary Lookup**: Supports MDICT, Shogakukan, Lingoes, EDICT, Youdao, Weblio, Goo, Moji, Jisho, and other online and offline dictionaries
+
+&emsp;&emsp;**Anki Integration**: Supports one-click addition of words to Anki
 
 
 ## References
@@ -93,3 +98,5 @@ Support almost all translation engines you can think of, including:
 ## Support author
  
 If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
+
+<img src='.\\LunaTranslator\\files\\zan.jpg' style="height: 400px !important;">

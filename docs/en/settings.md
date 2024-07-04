@@ -1,173 +1,171 @@
 
-# 设置
+# Settings
 
-在工具栏中点击设置，或者在托盘图标中点击设置，可以弹出设置窗口。
+Access the settings window by clicking the settings button in the toolbar or the tray icon.
 
 
-## 基本设置
+## Basic Settings
 
-选取使用的文本输出源，粉色√表示已选取，灰色×表示未选取。只能同时有≤1个选项生效。
+Choose your text output source. A pink ✓ indicates selection, while a gray × indicates inactive selection; only one can be selected at a time.
 
-选择OCR作为文本输入时，需要在工具栏中选取OCR识别范围。
+- When selecting OCR as the text input, you need to define the OCR region in the toolbar.
 
-选择Textractor（HOOK）作为文本输入时，会弹出进程选择窗口，选择游戏后会弹出文本选择窗口。
+- Choosing Textractor (HOOK) as the text input will open a process selection window, followed by a text selection window after choosing a game.
 
-默认是使用剪切板模型，此时会自动提取剪切板文本并进行翻译。
+- The default is clipboard mode, which automatically extracts and translates text from the clipboard.
 
 ![img](../images/zh/5.jpg)
 
 
-## 翻译设置 
+## Translation Settings
 
-一些翻译器的设置。不过作者比较懒就没有把各种类型的翻译器分开放。
+Configure various translation engines. The developer (HIllya51) hasn't separated different types of translators into categories.
 
-支持几乎所有能想得到的翻译引擎，包括：
+Supported translation engines include:
 
-&emsp;&emsp;**离线翻译** 支持使用J北京7、金山快译、译典通进行离线翻译 
+&emsp;&emsp;**Offline Translation**: Supports JBeijing7, Kingsoft FastAIT, and YiDianTong for offline translation.
 
-&emsp;&emsp;**免费在线翻译** 支持使用百度、必应、谷歌、阿里、有道、彩云、搜狗、DeepL、金山、讯飞、腾讯、字节、火山、papago、yeekit进行翻译
+&emsp;&emsp;Free Online Translation: Supports Baidu, Bing, Google, Ali, Youdao, Caiyun, Sogou, DeepL, Kingsoft, iFlytek, Tencent, ByteDance, Volcano, Papago, and Yeekit.
 
-&emsp;&emsp;**注册在线翻译** 支持使用用户注册的百度、腾讯、有道、小牛、彩云、火山、deepl翻译密钥翻译
+&emsp;&emsp;**Registered Online Translation**: Supports user-registered API keys for Baidu, Tencent, Youdao, Niutrans, Caiyun, Volcano, and DeepL.
 
-&emsp;&emsp;**预翻译** 支持读取人工翻译和聚合机器预翻译文件 
+&emsp;&emsp;**Pre-translation**: Supports loading human translations and aggregated machine pre-translations.
 
-所有翻译器均可随意选择，没有数量限制。
+You can select any number of translation engines without restriction.
 
-按钮分别是：是否使用翻译器/设置翻译文本显示颜色/设置
+- The buttons represent: Enable/Disable translator / Set translation text color / Settings
 
-其中，离线翻译&注册在线翻译&预翻译需要在使用前点击设置按钮进行设置。
+- Offline translation, API online translation, and pre-translation require setup before use.
 
-对于谷歌翻译&deepl，可能需要代理才能访问，需要在输入代理后点击确定，并开启使用代理。
+- For Google Translate and DeepL, you may need to set up a proxy to access them.
 
-对于预翻译，可以采用模糊匹配（主要对于OCR模式比较有效）。
+- Pre-translation supports fuzzy matching (particularly effective in OCR mode).
 
 ![img](../images/zh/6.jpg)
 
 
 ## HOOK设置
 
-LocaleEmulator设置可以设置LocaleEmulator的路径（新版本已内置），设置路径后可以通过LE启动游戏
+LocaleEmulator settings allow you to set the LocaleEmulator path (built-in for newer versions). Once set, you can launch games through LocaleEmulator.
 
-已保存游戏里保存了之前HOOK过的游戏，并可以启动游戏（在工具栏上点击打开已保存的游戏也一样）
+- "Game Manager" stores previously hooked games for convenient launches (same as clicking "Open Game Manager" in the toolbar).
 
-录制翻译文件可以将提取到的文本保存到transkiroku文件夹中，会输出两个文件：
+- "Record Translation File" saves extracted text to the "transkiroku" folder, outputting two files:
 
-**游戏的md5_游戏的程序文件名.sqlite** 这个文件只会录制单一的翻译源输出，用于生成“人工翻译”文件。设置“优先使用的翻译源”后会优先录制这个翻译源的内容，如果翻译失败才会记录其他翻译源内容。
+  1. **game_md5_game_executable_name.sqlite**: Records a single translation source output for generating "manual translation" files. Setting a preferred translation source prioritizes that source, and falls back to others if translation fails.
 
-**游戏的md5_游戏的程序文件名.premt_synthesize.sqlite** 这个文件用于“机器预翻译”，会记录所有有效的翻译结果。
+  2. **game_md5_game_executable_name.premt_synthesize.sqlite**: Used for "machine pre-translation" to record all valid translation results.
 
-导出sqlite文件为json文件。按下这个按钮选择上述第一个第一个文件可以导出json文件，方便修改翻译结果，然后将json文件路径设置为“人工翻译”的文件路径后，则可以使用人工翻译。
+- "Export SQLite file to JSON" Exports to JSON for easy translation editing. Set the JSON file path as the "Manual Translation" file path to use manual translations.
 
-在剪贴板模式和OCR模式下也会录制文件，前缀分别是0_copy和0_ocr。
+- In clipboard and OCR modes, files are recorded with prefixes "0_copy" and "0_ocr" respectively.
 
 
-[➔ 具体用法详见HOOK说明](hooksetsumei.md)
+[➔ See HOOK instructions for detailed usage](hooksetsumei.md)
 
 ![img](../images/zh/21.jpg)
 
  
-## OCR设置
+## OCR Settings
 
-在OCR模式下，可以选择使用的OCR源
+In OCR mode, select your preferred OCR source.
 
-其中本地OCR是内置的OCR引擎，可以无脑用。
+- The local OCR is a built-in engine that's easy to use.
 
-百度OCR/ocrspace/docsumo需要设置密钥。
+- Baidu OCR, OCRSpace, and Docsumo require API keys.
 
-youdaoocr和youdao图片翻译是体验性接口，容易抽风。
+- Youdao OCR and Youdao Image Translation are experimental interfaces that may be unstable.
 
-WindowsOCR需要操作系统中安装日语相关组件。
+- Windows OCR requires Japanese language components installed on your system.
 
-设置“每隔一段时间必然进行一次OCR”后，设置OCR最长间隔时间，则每个x秒必然进行一个OCR，不管图片是否改变。
+- Setting "Perform OCR at regular intervals" and specifying a maximum interval forces OCR to occur every X seconds, regardless if the game scene has changed or not.
 
-[➔ 具体用法详见OCR说明](ocrsetsumei.md)
+[➔ See OCR instructions for detailed usage](ocrsetsumei.md)
 
 ![img](../images/zh/22.jpg)
 
 
-## 显示设置
+## Display Settings
 
-不透明度是窗口背景不透明度
+- Opacity sets the window background opacity.
 
-开启显示原文后，可以设置显示假名和显示分词结果
+- When "Show Original Text" is enabled, you can set options to display furigana and word segmentation results.
 
-字体样式支持四种字体样式（普通，空心，描边，阴影），后三种高级字体可以在“空心线宽”“描边宽度”“阴影强度”中分别进行设置。
+- Font styles include four options (Normal, Hollow, Outline, Shadow). The latter three advanced styles can be adjusted using "Hollow Line Width," "Outline Width," and "Shadow Strength" settings.
 
-原文颜色可以设置原文的颜色，背景颜色可以设置窗口背景颜色。
+- "Original Text Color" sets the color for the source text, while "Background Color" sets the window background color.
 
-填充颜色是使用高级字体样式下的填充颜色
+- "Fill Color" is used for advanced font styles.
 
-可选取模式下可以在翻译窗口中选取内容。
+- "Selectable Mode" allows content selection within the translation window.
 
 
 ![img](../images/zh/7.jpg)
 
-四种字体样式如下
+The four font styles are shown below:
 
 ![img](../images/zh/ziti1.jpg)
 ![img](../images/zh/ziti2.jpg)
 ![img](../images/zh/ziti3.jpg)
 ![img](../images/zh/ziti4.jpg)
 
-假名显示如下
+Furigana (phonetic guide) display example:
 
 ![img](../images/zh/jiaming.jpg)
 
-分词显示如下
+Tokenization (word segmentation) display example:
 
 ![img](../images/zh/fenci.jpg)
 
 
  
   
-## 语音设置
+## Voice Settings
 
-WindowsTTS需要操作系统中安装日语相关组件。
+- Windows TTS requires Japanese language components installed on your system.
 
-AzureTTS和火山TTS是在线tts，未来可能失效。
+- Azure TTS and Volcano TTS are online services that may become unavailable in the future.
 
-VoiceRoid2是离线翻译引擎。
+- VoiceRoid2 is an offline TTS engine.
 
-VOICEVOX是一个开源TTS引擎，但是生成语音速度较慢。
+- VOICEVOX is an open-source TTS engine, but it's relatively slow at Text-to-Speech.
 
 ![img](../images/zh/8.jpg)
 
 
  
 
-## 翻译优化
+## Translation Optimization
 
-对于HOOK提取到的文本，有时会有一些不好的内容，这里可以设置对文本进行一些简单的处理操作
+For text extracted via HOOK, you can set up simple processing operations to improve the content.
 
-其中包括一些常见的设置以及一些高级设置。
+This includes common settings and some advanced options.
 
-使用简单替换内容可以将提取到的文本进行替换/过滤
+- "Simple Text Replacement" allows replacing or filtering extracted text.
 
-使用正则表达式替换需要用户了解python的reg.sub的使用方法
+- "Regular Expression Replacement" requires knowledge of Python's re.sub method (Regex).
 
-使用专有名词手动翻译选项，支持使用用户配置的特殊名词词典（例如一些人名地名等）来优化翻译
+- "Manual Translation for Proper Nouns" supports user-configured dictionaries for special terms (e.g., names, places).
 
-翻译结果修正发生在翻译结束后，名词翻译对于有的翻译引擎容易失效，可以强制替换翻译结果。
+- "Translation Result Correction" occurs after translation; forced replacement of translation results can be useful when noun translations fail with certain engines.
 
-本软件部分支持使用VNR共享辞书
+- This software partially supports using VNR shared dictionaries.
 
-如果用户了解python语言，可以直接在LunaTranslator\LunaTranslator\postprocess\post.py文件中直接进行修改即可实现用户想要的任何处理过程。
+- Users familiar with Python can directly modify the LunaTranslator\LunaTranslator\postprocess\post.py file to implement custom processing.
 
 ![img](../images/zh/10.jpg)
 
- 
 
-## 辞书设置
+## Dictionary Settings
 
-如果设置了辞书，本软件可以帮助用户学习日语。
-设置使用mecab分词并在显示设置中设置显示分词结果，可以显示出分词词结果；
-设置使用mecab分词并在显示设置中设置显示假名，可以显示出汉字的假名；
+With a dictionary configured, LunaTranslaotr can help you in your Japanese learning:
 
-（若不使用mecab，则会使用系统内置的简单分词器，也可以显示假名和分词结果，但是不能区分词性）
+- MeCab setup + "Show Word Segmentation": Displays word boundaries (tokenization)
+- MeCab + "Show Furigana": Applies furigana to kanji
+- MeCab + "Show Different Colors for Parts of Speech": Highlights grammatical elements
+- "Quick Word Lookup": Enables click-to-translate in the translation window
 
-设置使用mecab分词并设置显示不同颜色词性，则可以将不同词性的单词用不同颜色标注出来。
-
-开启快捷查词后，点击翻译窗口的原文，会弹出查词窗口。
+Note: Without MeCab, a basic built-in tokenizer will be used, providing limited furigana and segmentation without part-of-speech distinction.
 
 ![img](../images/zh/cishu.jpg)
 
@@ -176,16 +174,15 @@ VOICEVOX是一个开源TTS引擎，但是生成语音速度较慢。
 ![img](../images/zh/searchword.jpg)
 ![img](../images/zh/searchword2.jpg)
 
-## 资源下载更新
- 
-自动更新以及一些常用资源的链接。
+## Resource Download and Update
 
+Automatic updates and links to commonly used resources.
 
 ![img](../images/zh/down.jpg)
  
 
-## 快捷键设置
+## Hotkey Settings
 
-开启使用快捷键后，开启指定的快捷键设置，并进行对应的设置。
+Enable the use of hotkeys, where you can activate and configure specific hotkey settings as desired.
 
 ![img](../images/zh/quick.jpg)
