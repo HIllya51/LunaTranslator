@@ -1,18 +1,23 @@
  
-# OCR说明
+# OCR Instructions
 
-首先在基本设置中选择OCR，工具栏出现三个图标
+First, select OCR in the Basic Settings. Three new icons will appear in the toolbar:
 
 ![img](../images/zh/toolbar2.jpg) 
 
-点击第一个按钮，选择截图范围，出现如图范围框。
+Click the first button to select the screenshot area. A selection region will appear as shown in the image below:
 
 ![img](../images/zh/12.jpg)
 
-范围框点击第二个按钮可以隐藏/显示。
+The second button toggles the visibility of the selection region.
 
-第三个按钮可以选择绑定的截图窗口，先按下按钮，然后点击游戏窗口，这个按钮将变成粉色。如果想要取消绑定则按下按钮后点击翻译器本身即可取消绑定。
+The third button allows you to bind the screenshot to a specific window. To do this:
+1. Click the button
+2. Click on the game window
+3. The button will turn pink, indicating a successful bind
 
-如同为绑定了截图窗口下的样子，即时窗口互相重叠也可以正常OCR
+To unbind, click the button and then click on the translator itself.
+
+Here's how it looks when bound to a screenshot window. OCR will function normally even if windows overlap:
 
 ![img](../images/zh/ocrbind.jpg)
