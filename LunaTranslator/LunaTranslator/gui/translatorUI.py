@@ -841,10 +841,9 @@ class QUnFrameWindow(resizableframeless):
             return
         if not globalconfig["adaptive_height"]:
             return
+        limit = min(size.height(), self.screen().geometry().height())
         newHeight = (
-            size.height()
-            + self.translate_text._padding
-            + int(globalconfig["buttonsize"] * 1.5)
+            limit + self.translate_text._padding + int(globalconfig["buttonsize"] * 1.5)
         )
         self.resize(self.width(), newHeight)
 

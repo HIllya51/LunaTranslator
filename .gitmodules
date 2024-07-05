@@ -10,3 +10,6 @@
 [submodule "plugins/libs/rapidfuzz-cpp"]
 	path = plugins/libs/rapidfuzz-cpp
 	url = https://github.com/rapidfuzz/rapidfuzz-cpp
+[submodule "docs/images"]
+	path = docs/images
+	url = https://github.com/HIllya51/images

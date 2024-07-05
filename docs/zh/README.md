@@ -1,5 +1,6 @@
-# LunaTranslator 
-  
+
+# LunaTranslator 使用说明
+
 <p align="left">
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
@@ -7,11 +8,7 @@
     <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
 </p>
  
-### 简体中文 | [Русский язык](README_ru.md) | [English](README_en.md) | [Other Language](otherlang.md) 
-
-> **一款galgame翻译器**
-
-### <a href="https://hillya51.github.io/LunaTranslator/#/zh/" target="_blank">使用说明</a> <a href="https://space.bilibili.com/592120404/video" target="_blank">视频教程</a> [交流群912525396](https://qm.qq.com/q/qE32v9NYBO)
+<a href="https://hillya51.github.io/LunaTranslator/#/zh/" target="_blank">使用说明</a> <a href="https://space.bilibili.com/592120404/video" target="_blank">视频教程</a>  <a href="https://qm.qq.com/q/qE32v9NYBO" target="_blank">交流群912525396</a>
 
 
 ## 功能支持
@@ -61,41 +58,3 @@
 &emsp;&emsp;**查词** 支持使用MDICT、小学馆、灵格斯、EDICT、有道、weblio、Goo、Moji、jisho等在线和离线词典进行单词查询
 
 &emsp;&emsp;**Anki** 支持使用一键添加单词到anki中
-
-## 引用
-
-<details>
-<summary>点击查看</summary>
-
-* [Artikash/Textractor](https://github.com/Artikash/Textractor)
-
-* [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
-
-* [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
-
-* [UlionTse/translators](https://github.com/UlionTse/translators)
-
-* [Blinue/Magpie](https://github.com/Blinue/Magpie)
-
-* [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
-
-* [xupefei/Locale-Emulator](https://github.com/xupefei/Locale-Emulator)
-
-* [InWILL/Locale_Remulator](https://github.com/InWILL/Locale_Remulator)
-
-* [zxyacb/ntlea](https://github.com/zxyacb/ntlea)
-
-* [Chuyu-Team/YY-Thunks](https://github.com/Chuyu-Team/YY-Thunks)
-
-* [@KirpichKrasniy](https://github.com/KirpichKrasniy)
-
-</details>
-
-
- 
-## 支持作者
-
-如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~
-
-<img src='.\\LunaTranslator\\files\\zan.jpg' style="height: 400px !important;">
-
