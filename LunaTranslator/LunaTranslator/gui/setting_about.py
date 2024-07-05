@@ -317,19 +317,15 @@ def setTab_update(self, basel):
     ]
 
     shuominggrid = [
-        ["项目网站", makehtml("https://github.com/HIllya51/LunaTranslator")],
-        [
-            "问题反馈",
-            makehtml("https://github.com/HIllya51/LunaTranslator/issues"),
-        ],
+        ["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
+        ["项目网站", makehtml("https://lunatranslator.xyz/")],
         [
             "使用说明",
-            makehtml("https://hillya51.github.io/LunaTranslator/#/zh/"),
+            makehtml("https://docs.lunatranslator.xyz/"),
         ],
     ]
     if globalconfig["languageuse"] == 0:
         shuominggrid += [
-            [],
             [
                 "交流群",
                 makehtml("https://qm.qq.com/q/qE32v9NYBO", show=912525396),
