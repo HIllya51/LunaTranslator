@@ -42,15 +42,16 @@ def getvesionmethod_github():
         print_exc()
         return None
 
+
 def getvesionmethod():
-    try: 
+    try:
         res = requests.get(
-            "https://lunatranslator.xyz/version", 
+            "https://lunatranslator.xyz/version",
             verify=False,
-            #proxies=getproxy(("github", "versioncheck")),
+            # proxies=getproxy(("github", "versioncheck")),
         )
         print(res.text)
-        res=res.json()
+        res = res.json()
         # print(res)
         _version = res["version"]
         return _version, res
@@ -189,6 +190,7 @@ def updatemethod_github(_version, self):
     if updatemethod_checkalready(size, savep):
         return savep
 
+
 def uncompress(self, savep):
     self.progresssignal.emit("正在解压……", 10000)
     shutil.rmtree(gobject.getcachedir("update/LunaTranslator/"))
@@ -211,17 +213,17 @@ def versioncheckthread(self):
         if _version is None:
             sversion = _TR("获取失败")
         else:
-            sversion,info = _version
+            sversion = _version[0]
         self.versiontextsignal.emit(sversion)
         version = winsharedutils.queryversion(sys.argv[0])
         need = (
             version
             and _version
-            and version < tuple(int(_) for _ in _version[1:].split("."))
+            and version < tuple(int(_) for _ in _version[0][1:].split("."))
         )
         if not (need and globalconfig["autoupdate"]):
             continue
-        savep = updatemethod(info, self)
+        savep = updatemethod(_version[1], self)
         if not savep:
             self.progresssignal.emit("自动更新失败，请手动更新", 0)
             continue
@@ -384,7 +386,7 @@ def setTab_update(self, basel):
     ]
 
     shuominggrid = [
-        #["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
+        # ["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
         ["项目网站", makehtml("https://lunatranslator.xyz/")],
         [
             "使用说明",
