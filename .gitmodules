@@ -3,13 +3,10 @@
 	url = https://github.com/microsoft/wil.git
 [submodule "plugins/libs/tinymp3"]
 	path = plugins/libs/tinymp3
-	url = https://github.com/HIllya51/tinymp3
+	url = https://github.com/cpuimage/tinymp3
 [submodule "plugins/libs/miniaudio"]
 	path = plugins/libs/miniaudio
-	url = https://github.com/HIllya51/miniaudio
+	url = https://github.com/mackron/miniaudio
 [submodule "plugins/libs/rapidfuzz-cpp"]
 	path = plugins/libs/rapidfuzz-cpp
 	url = https://github.com/rapidfuzz/rapidfuzz-cpp
-[submodule "docs/images"]
-	path = docs/images
-	url = https://github.com/HIllya51/images
