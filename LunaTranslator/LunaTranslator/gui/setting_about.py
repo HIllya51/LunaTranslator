@@ -19,7 +19,7 @@ from gui.usefulwidget import (
 versionchecktask = queue.Queue()
 
 
-def getvesionmethod():
+def getvesionmethod_github():
     try:
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -38,6 +38,22 @@ def getvesionmethod():
         # print(res)
         _version = res["tag_name"]
         return _version
+    except:
+        print_exc()
+        return None
+
+def getvesionmethod():
+    try: 
+        res = requests.get(
+            "https://lunatranslator.xyz/version", 
+            verify=False,
+            #proxies=getproxy(("github", "versioncheck")),
+        )
+        print(res.text)
+        res=res.json()
+        # print(res)
+        _version = res["version"]
+        return _version, res
     except:
         print_exc()
         return None
@@ -69,7 +85,59 @@ def updatemethod_checkalready(size, savep):
 
 
 @tryprint
-def updatemethod(_version, self):
+def updatemethod(info, self):
+
+    check_interrupt = lambda: not (
+        globalconfig["autoupdate"] and versionchecktask.empty()
+    )
+    if platform.architecture()[0] == "64bit":
+        bit = "64"
+    elif platform.architecture()[0] == "32bit":
+        bit = "32"
+    else:
+        raise Exception
+    url = info[bit]
+
+    savep = gobject.getcachedir("update/LunaTranslator{}.zip".format(bit))
+
+    r2 = requests.get(
+        url, stream=True, verify=False, proxies=getproxy(("github", "download"))
+    )
+    size = int(r2.headers["Content-Length"])
+    if check_interrupt():
+        return
+    if updatemethod_checkalready(size, savep):
+        return savep
+    with open(savep, "wb") as file:
+        sess = requests.session()
+        r = sess.get(
+            url, stream=True, verify=False, proxies=getproxy(("github", "download"))
+        )
+        file_size = 0
+        for i in r.iter_content(chunk_size=1024):
+            if check_interrupt():
+                return
+            if not i:
+                continue
+            file.write(i)
+            thislen = len(i)
+            file_size += thislen
+
+            prg = int(10000 * file_size / size)
+            prg100 = prg / 100
+            sz = int(1000 * (int(size / 1024) / 1024)) / 1000
+            self.progresssignal.emit(
+                "总大小{} MB 进度 {:0.2f}% ".format(sz, prg100), prg
+            )
+
+    if check_interrupt():
+        return
+    if updatemethod_checkalready(size, savep):
+        return savep
+
+
+@tryprint
+def updatemethod_github(_version, self):
 
     check_interrupt = lambda: not (
         globalconfig["autoupdate"] and versionchecktask.empty()
@@ -121,7 +189,6 @@ def updatemethod(_version, self):
     if updatemethod_checkalready(size, savep):
         return savep
 
-
 def uncompress(self, savep):
     self.progresssignal.emit("正在解压……", 10000)
     shutil.rmtree(gobject.getcachedir("update/LunaTranslator/"))
@@ -144,7 +211,7 @@ def versioncheckthread(self):
         if _version is None:
             sversion = _TR("获取失败")
         else:
-            sversion = _version
+            sversion,info = _version
         self.versiontextsignal.emit(sversion)
         version = winsharedutils.queryversion(sys.argv[0])
         need = (
@@ -154,7 +221,7 @@ def versioncheckthread(self):
         )
         if not (need and globalconfig["autoupdate"]):
             continue
-        savep = updatemethod(_version, self)
+        savep = updatemethod(info, self)
         if not savep:
             self.progresssignal.emit("自动更新失败，请手动更新", 0)
             continue
@@ -317,7 +384,7 @@ def setTab_update(self, basel):
     ]
 
     shuominggrid = [
-        ["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
+        #["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
         ["项目网站", makehtml("https://lunatranslator.xyz/")],
         [
             "使用说明",
