@@ -209,8 +209,8 @@ def on_not_find_qweb(self):
     def _okcallback():
 
         link = [
-            "https://github.com/test123456654321/LunaTranslator/releases/download/other/QWebEngine_x86.zip",
-            "https://github.com/test123456654321/LunaTranslator/releases/download/other/QWebEngine_x64.zip",
+            "https://github.com/test123456654321/RESOURCES/releases/download/other/QWebEngine_x86.zip",
+            "https://github.com/test123456654321/RESOURCES/releases/download/other/QWebEngine_x64.zip",
         ][platform.architecture()[0] == "64bit"]
         os.startfile(link)
         installqwebdialog(self, link)

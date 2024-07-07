@@ -23,7 +23,7 @@ curlFileName64 = "curl-8.7.1_7-win64-mingw.zip"
 
 
 ocrModelUrl = (
-    "https://github.com/test123456654321/LunaTranslator/releases/download/ocr_models"
+    "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models"
 )
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
@@ -113,15 +113,15 @@ def downloadcommon():
     os.chdir(rootDir + "\\temp")
     downloadlr()
     subprocess.run(
-        f"curl -LO https://github.com/test123456654321/LunaTranslator/releases/download/other/mecab.zip"
+        f"curl -LO https://github.com/test123456654321/RESOURCES/releases/download/other/mecab.zip"
     )
     subprocess.run(f"7z x mecab.zip -oALL")
     subprocess.run(
-        f"curl -LO https://github.com/test123456654321/LunaTranslator/releases/download/other/ocr.zip"
+        f"curl -LO https://github.com/test123456654321/RESOURCES/releases/download/other/ocr.zip"
     )
     subprocess.run(f"7z x ocr.zip -oALL")
     subprocess.run(
-        f"curl -LO https://github.com/test123456654321/LunaTranslator/releases/download/other/magpie.zip"
+        f"curl -LO https://github.com/test123456654321/RESOURCES/releases/download/other/magpie.zip"
     )
     subprocess.run(f"7z x magpie.zip -oALL")
 
