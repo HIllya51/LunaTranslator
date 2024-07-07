@@ -96,6 +96,6 @@ Support almost all translation engines you can think of, including:
  
 ## Support author
  
-If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/test123456654321). Thank you ~ 
+If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
 
 <img src='.\\LunaTranslator\\files\\zan.jpg' style="height: 400px !important;">
