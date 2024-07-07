@@ -5,8 +5,8 @@
   
 <p align="left">
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/test123456654321/LunaTranslator"></a>
-    <a href="https://github.com/test123456654321/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/test123456654321/LunaTranslator?color=ffa"></a>
-    <a href="https://github.com/test123456654321/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/test123456654321/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
+    <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/test123456654321/LunaTranslator?color=ffa"></a>
+    <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
  
 <a href="https://docs.lunatranslator.xyz/#/zh/" target="_blank">使用说明</a> <a href="https://space.bilibili.com/592120404/video" target="_blank">视频教程</a>  <a href="https://qm.qq.com/q/qE32v9NYBO" target="_blank">交流群912525396</a>
 

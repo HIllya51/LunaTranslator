@@ -697,27 +697,27 @@
                     "links": [
                         {
                             "name": "日语",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip"
+                            "link": "https://lunatranslator.xyz/Resource/ocr_models/ja.zip"
                         },
                         {
                             "name": "英文",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/en.zip"
+                            "link": "https://lunatranslator.xyz/Resource/ocr_models/en.zip"
                         },
                         {
                             "name": "简体中文",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/zh.zip"
+                            "link": "https://lunatranslator.xyz/Resource/ocr_models/zh.zip"
                         },
                         {
                             "name": "繁体中文",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/cht.zip"
+                            "link": "https://lunatranslator.xyz/Resource/ocr_models/cht.zip"
                         },
                         {
                             "name": "韩语",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ko.zip"
+                            "link": "https://lunatranslator.xyz/Resource/ocr_models/ko.zip"
                         },
                         {
                             "name": "俄语",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ru.zip"
+                            "link": "https://lunatranslator.xyz/Resource/ocr_models/ru.zip"
                         }
                     ]
                 },
@@ -750,7 +750,7 @@
                     "links": [
                         {
                             "name": "MeCab",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/dictionary/Mecab.zip"
+                            "link": "https://lunatranslator.xyz/Resource/dictionary/Mecab.zip"
                         },
                         {
                             "name": "Unidic",
@@ -760,19 +760,19 @@
                 },
                 {
                     "name": "小学馆",
-                    "link": "https://github.com/test123456654321/RESOURCES/releases/download/dictionary/xiaoxueguan.db"
+                    "link": "https://lunatranslator.xyz/Resource/dictionary/xiaoxueguan.db"
                 },
                 {
                     "name": "EDICT",
-                    "link": "https://github.com/test123456654321/RESOURCES/releases/download/dictionary/edict.db"
+                    "link": "https://lunatranslator.xyz/Resource/dictionary/edict.db"
                 },
                 {
                     "name": "EDICT2",
-                    "link": "https://github.com/test123456654321/RESOURCES/releases/download/dictionary/edict2"
+                    "link": "https://lunatranslator.xyz/Resource/dictionary/edict2"
                 },
                 {
                     "name": "灵格斯词典",
-                    "link": "https://github.com/test123456654321/RESOURCES/releases/download/dictionary/Lingoes.zip"
+                    "link": "https://lunatranslator.xyz/Resource/dictionary/Lingoes.zip"
                 },
                 {
                     "name": "MDict",
@@ -847,7 +847,7 @@
                         },
                         {
                             "name": "win7适配版",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/other/Release.zip"
+                            "link": "https://lunatranslator.xyz/Resource/Magpie9_Win7"
                         }
                     ]
                 },
@@ -857,11 +857,11 @@
                     "links": [
                         {
                             "name": "x86",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/other/QWebEngine_x86.zip"
+                            "link": "https://lunatranslator.xyz/Resource/QWebEngine_x86.zip"
                         },
                         {
                             "name": "x64",
-                            "link": "https://github.com/test123456654321/RESOURCES/releases/download/other/QWebEngine_x64.zip"
+                            "link": "https://lunatranslator.xyz/Resource/QWebEngine_x64.zip"
                         }
                     ]
                 }

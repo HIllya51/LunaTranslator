@@ -19,30 +19,6 @@ from gui.usefulwidget import (
 versionchecktask = queue.Queue()
 
 
-def getvesionmethod_github():
-    try:
-        headers = {
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-            "Cache-Control": "max-age=0",
-            "Proxy-Connection": "keep-alive",
-            "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
-        }
-        res = requests.get(
-            "https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest",
-            headers=headers,
-            verify=False,
-            proxies=getproxy(("github", "versioncheck")),
-        ).json()
-        # print(res)
-        _version = res["tag_name"]
-        return _version
-    except:
-        print_exc()
-        return None
-
-
 def getvesionmethod():
     try:
         res = requests.get(
@@ -98,60 +74,6 @@ def updatemethod(info, self):
     else:
         raise Exception
     url = info[bit]
-
-    savep = gobject.getcachedir("update/LunaTranslator{}.zip".format(bit))
-
-    r2 = requests.get(
-        url, stream=True, verify=False, proxies=getproxy(("github", "download"))
-    )
-    size = int(r2.headers["Content-Length"])
-    if check_interrupt():
-        return
-    if updatemethod_checkalready(size, savep):
-        return savep
-    with open(savep, "wb") as file:
-        sess = requests.session()
-        r = sess.get(
-            url, stream=True, verify=False, proxies=getproxy(("github", "download"))
-        )
-        file_size = 0
-        for i in r.iter_content(chunk_size=1024):
-            if check_interrupt():
-                return
-            if not i:
-                continue
-            file.write(i)
-            thislen = len(i)
-            file_size += thislen
-
-            prg = int(10000 * file_size / size)
-            prg100 = prg / 100
-            sz = int(1000 * (int(size / 1024) / 1024)) / 1000
-            self.progresssignal.emit(
-                "总大小{} MB 进度 {:0.2f}% ".format(sz, prg100), prg
-            )
-
-    if check_interrupt():
-        return
-    if updatemethod_checkalready(size, savep):
-        return savep
-
-
-@tryprint
-def updatemethod_github(_version, self):
-
-    check_interrupt = lambda: not (
-        globalconfig["autoupdate"] and versionchecktask.empty()
-    )
-    if platform.architecture()[0] == "64bit":
-        bit = ""
-    elif platform.architecture()[0] == "32bit":
-        bit = "_x86"
-    else:
-        raise Exception
-    url = "https://github.com/HIllya51/LunaTranslator/releases/download/{}/LunaTranslator{}.zip".format(
-        _version, bit
-    )
 
     savep = gobject.getcachedir("update/LunaTranslator{}.zip".format(bit))
 
@@ -260,10 +182,10 @@ def createdownloadprogress(self):
 
 
 def wraplink(text: str):
-    link = "https://github.com/HIllya51/LunaTranslator/releases"
+    link = "https://lunatranslator.xyz/Github/LunaTranslator/releases"
     if text.startswith("v"):
 
-        link = f"https://github.com/HIllya51/LunaTranslator/releases/tag/{text}"
+        link = f"https://lunatranslator.xyz/Github/LunaTranslator/releases/tag/{text}"
     return makehtml(
         link,
         show=text,
@@ -386,7 +308,6 @@ def setTab_update(self, basel):
     ]
 
     shuominggrid = [
-        # ["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
         ["项目网站", makehtml("https://lunatranslator.xyz/")],
         [
             "使用说明",

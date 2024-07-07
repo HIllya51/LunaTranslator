@@ -2,8 +2,8 @@
   
 <p align="left">
     <a href="./LICENSE"><img src="https://img.shields.io/github/license/test123456654321/LunaTranslator"></a>
-    <a href="https://github.com/test123456654321/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/test123456654321/LunaTranslator?color=ffa"></a>
-    <a href="https://github.com/test123456654321/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/test123456654321/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
+    <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/test123456654321/LunaTranslator?color=ffa"></a>
+    <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
 </p>
  
 ### [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Languages](otherlang.md) 
@@ -12,7 +12,7 @@
 
 ### <a href="https://docs.lunatranslator.xyz/#/en/" target="_blank">Documentation</a> 
 
-Welcome friends who want to help us improve the documentation! [Documentation Repo](https://github.com/test123456654321/LunaTranslator)
+Welcome friends who want to help us improve the documentation! [Documentation Repo](https://lunatranslator.xyz/Github/LunaTranslator)
 
 ## Features
 

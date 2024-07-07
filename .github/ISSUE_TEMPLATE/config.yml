@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Specific Game Related 特定游戏相关
-    url: https://github.com/test123456654321/LunaHook/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml
+    url: https://lunatranslator.xyz/Github/LunaHook/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml
     about: Request for an unsupported game, or hooked text is incorrect 请求支持尚未支持的游戏，或提取的文本不正确

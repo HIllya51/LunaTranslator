@@ -23,11 +23,11 @@ curlFileName64 = "curl-8.7.1_7-win64-mingw.zip"
 
 
 ocrModelUrl = (
-    "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models"
+    "https://lunatranslator.xyz/Resource/ocr_models"
 )
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
-LunaHook_latest = "https://github.com/test123456654321/LunaHook/releases/latest/download/Release_English.zip"
+LunaHook_latest = "https://lunatranslator.xyz/Github/LunaHook/releases/latest/download/Release_English.zip"
 
 LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
 
@@ -113,15 +113,15 @@ def downloadcommon():
     os.chdir(rootDir + "\\temp")
     downloadlr()
     subprocess.run(
-        f"curl -LO https://github.com/test123456654321/RESOURCES/releases/download/other/mecab.zip"
+        f"curl -LO https://lunatranslator.xyz/Resource/build_req/mecab.zip"
     )
     subprocess.run(f"7z x mecab.zip -oALL")
     subprocess.run(
-        f"curl -LO https://github.com/test123456654321/RESOURCES/releases/download/other/ocr.zip"
+        f"curl -LO https://lunatranslator.xyz/Resource/build_req/ocr.zip"
     )
     subprocess.run(f"7z x ocr.zip -oALL")
     subprocess.run(
-        f"curl -LO https://github.com/test123456654321/RESOURCES/releases/download/other/magpie.zip"
+        f"curl -LO https://lunatranslator.xyz/Resource/build_req/magpie.zip"
     )
     subprocess.run(f"7z x magpie.zip -oALL")
 
@@ -241,8 +241,11 @@ def buildPlugins():
 
 def downloadsomething():
     os.chdir(rootDir + "\\temp")
-    os.system("git clone https://github.com/test123456654321/stylesheets")
-    move_directory_contents("stylesheets", rootDir + "\\LunaTranslator\\files\\themes")
+    subprocess.run(
+        f"curl -LO https://lunatranslator.xyz/Resource/build_req/stylesheets-main.zip"
+    )
+    subprocess.run(f"7z x stylesheets-main.zip -oALL")
+    move_directory_contents("ALL/stylesheets-main", rootDir + "\\LunaTranslator\\files\\themes")
 
 
 if __name__ == "__main__":

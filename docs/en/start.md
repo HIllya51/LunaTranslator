@@ -4,7 +4,7 @@
 
 ## How to Download
 
-1. Go to [the LunaTranslator releases page](https://github.com/test123456654321/LunaTranslator/releases)
+1. Go to [the LunaTranslator releases page](https://lunatranslator.xyz/Github/LunaTranslator/releases)
 2. In the "Assets" section of the latest release, find and download the "LunaTranslator.zip" file
 3. Extract the contents of the ZIP file to any directory on your computer.
 ![img](../images/zh/download.jpg)
