@@ -1,9 +1,10 @@
 # LunaTranslator 
   
+  
 <p align="left">
-    <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
-    <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
-    <a href="https://github.com/HIllya51/LunaTranslator/stargazers"><img src="https://img.shields.io/github/stars/HIllya51/LunaTranslator?color=ccf"></a>
+    <a href="./LICENSE"><img src="https://img.shields.io/github/license/test123456654321/LunaTranslator"></a>
+    <a href="https://github.com/test123456654321/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/test123456654321/LunaTranslator?color=ffa"></a>
+    <a href="https://github.com/test123456654321/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/test123456654321/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
 </p>
 
 ### [简体中文](README.md)  |  Русский язык | [English](README_en.md) | [Other Language](otherlang.md) 
@@ -11,9 +12,9 @@
 > **Переводчик текста с экрана для игр и не только!**
 
 
-### <a href="https://hillya51.github.io/LunaTranslator/#/ru/" target="_blank">Инструкция по настройке программы (Полностью на русском языке)</a> 
+### <a href="https://docs.lunatranslator.xyz/#/ru/" target="_blank">Инструкция по настройке программы (Полностью на русском языке)</a> 
 
-Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://github.com/HIllya51/LunaTranslator)
+Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://github.com/test123456654321/LunaTranslator)
 
 ## Основные функции:
 
@@ -95,4 +96,4 @@ Welcome friends who find it helpful to improve the documentation together.[Docum
 
 ## Support author
  
-If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
+If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/test123456654321). Thank you ~ 

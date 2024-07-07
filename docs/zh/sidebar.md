@@ -25,7 +25,7 @@
   - [如何自动划词进 anki](/zh/qa2.md) 
   - [如何使用离线 chatgpt](/zh/qa3.md) 
   - [如何使用 gemini 免费 api](/zh/qa4.md) 
-  - [其他问题](https://github.com/HIllya51/LunaTranslator/issues?q=label%3AQ%26A) 
+  - [其他问题](https://github.com/test123456654321/LunaTranslator/issues?q=label%3AQ%26A) 
   
 - 支持作者
   - [支持作者](/zh/support.md) 
