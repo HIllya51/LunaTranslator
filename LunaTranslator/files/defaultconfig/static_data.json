@@ -675,8 +675,34 @@
             "name": "离线翻译",
             "sources": [
                 {
+                    "name": "J北京7",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "J北京7",
+                            "link": "https://lunatranslator.xyz/Resource/translate/JBeijing7.zip"
+                        },
+                        {
+                            "name": "用户词典",
+                            "link": "https://lunatranslator.xyz/Resource/translate/JBeijing7UserDict.zip"
+                        }
+                    ]
+                },
+                {
+                    "name": "金山快译",
+                    "link": "https://lunatranslator.xyz/Resource/translate/FastAIT09_Setup.25269.4101.zip"
+                },
+                {
+                    "name": "快译通",
+                    "link": "https://lunatranslator.xyz/Resource/translate/DR.eye.zip"
+                },
+                {
                     "name": "MT5",
                     "link": "https://github.com/chaihahaha/OrtMT5/releases/tag/v0.1.0"
+                },
+                {
+                    "name": "Sugoi",
+                    "link": "https://lunatranslator.xyz/Resource/translate/Sugoi_Translator_V8.7z"
                 },
                 {
                     "name": "Sakura大模型",
@@ -794,6 +820,20 @@
             "name": "语音合成",
             "sources": [
                 {
+                    "name": "NeoSpeech",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "Misaki",
+                            "link": "https://lunatranslator.xyz/Resource/voice/NeoSpeech.Japanese.Misaki.zip"
+                        },
+                        {
+                            "name": "Show",
+                            "link": "https://lunatranslator.xyz/Resource/voice/NeoSpeech.TTS.NeoSpeech.Japanese.Show_v3.10.0.0.zip"
+                        }
+                    ]
+                },
+                {
                     "name": "VOICEVOX",
                     "link": "https://github.com/VOICEVOX/voicevox/releases"
                 },
@@ -812,6 +852,120 @@
                         {
                             "name": "整合包_GPU",
                             "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-gpu-v0.6.9_vits-uma-genshin-honkai.7z"
+                        }
+                    ]
+                },
+                {
+                    "name": "VoiceRoid+_東北ずん子/东北俊子",
+                    "link": "https://lunatranslator.xyz/Resource/voice/VOICEROID+zunko.7z"
+                },
+                {
+                    "name": "VoiceRoid2",
+                    "type": "group",
+                    "links": [
+                        {
+                            "name": "SFE_結月ゆかり/结月缘",
+                            "link": "https://lunatranslator.xyz/Resource/voice/Yukari2.zip"
+                        },
+                        {
+                            "name": "結月ゆかり/结月缘",
+                            "link": "https://lunatranslator.xyz/Resource/voice/VOICEROID2_Yuzuki_Yukari.zip"
+                        },
+                        {
+                            "name": "紲星あかり/绁星灯",
+                            "link": "https://lunatranslator.xyz/Resource/voice/VOICEROID2_Kizuna_Akari.zip"
+                        },
+                        {
+                            "name": "琴葉 茜・葵",
+                            "link": "https://lunatranslator.xyz/Resource/voice/VOICEROID2_Kotonoha_Akane_Aoi.zip"
+                        },
+                        {
+                            "name": "伊織弓鶴",
+                            "link": "https://lunatranslator.xyz/Resource/voice/VOICEROID2_Iori_Yuzuru.zip"
+                        },
+                        {
+                            "name": "ついなちゃん",
+                            "link": "https://lunatranslator.xyz/Resource/voice/VOICEROID2_tsuina-chan_dl_e.zip"
+                        },
+                        {
+                            "name": "東北イタコ/东北伊达子",
+                            "link": "https://lunatranslator.xyz/Resource/voice/VOICEROID2_Tohoku_Itako.zip"
+                        },
+                        {
+                            "name": "附加音源_結月ゆかり",
+                            "link": "https://lunatranslator.xyz/Resource/voice/yukari_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_紲星あかり",
+                            "link": "https://lunatranslator.xyz/Resource/voice/akari_44.zip"
+                        },
+                        {
+                            "name": "附加音源_東北きりたん",
+                            "link": "https://lunatranslator.xyz/Resource/voice/kiritan_44.zip"
+                        },
+                        {
+                            "name": "附加音源_東北イタコ",
+                            "link": "https://lunatranslator.xyz/Resource/voice/itako_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_東北ずん子",
+                            "link": "https://lunatranslator.xyz/Resource/voice/zunko_44.zip"
+                        },
+                        {
+                            "name": "附加音源_伊織弓鶴",
+                            "link": "https://lunatranslator.xyz/Resource/voice/yuzuru_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_ついなちゃん",
+                            "link": "https://lunatranslator.xyz/Resource/voice/tsuina_44.zip"
+                        },
+                        {
+                            "name": "附加音源_ついなちゃん（関西弁）",
+                            "link": "https://lunatranslator.xyz/Resource/voice/tsuina_west_44.zip"
+                        },
+                        {
+                            "name": "附加音源_琴葉茜",
+                            "link": "https://lunatranslator.xyz/Resource/voice/akane_west_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_琴葉葵",
+                            "link": "https://lunatranslator.xyz/Resource/voice/aoi_emo_44.zip"
+                        },
+                        {
+                            "name": "附加音源_水奈瀬コウ",
+                            "link": "https://lunatranslator.xyz/Resource/voice/kou_44.zip"
+                        },
+                        {
+                            "name": "附加音源_桜乃そら",
+                            "link": "https://lunatranslator.xyz/Resource/voice/sora_44.zip"
+                        },
+                        {
+                            "name": "附加音源_民安ともえ",
+                            "link": "https://lunatranslator.xyz/Resource/voice/tamiyasu_44.zip"
+                        },
+                        {
+                            "name": "附加音源_月読アイ",
+                            "link": "https://lunatranslator.xyz/Resource/voice/ai_44.zip"
+                        },
+                        {
+                            "name": "附加音源_月読ショウタ",
+                            "link": "https://lunatranslator.xyz/Resource/voice/shouta_44.zip"
+                        },
+                        {
+                            "name": "附加音源_京町セイカ",
+                            "link": "https://lunatranslator.xyz/Resource/voice/seika_44.zip"
+                        },
+                        {
+                            "name": "附加音源_音街ウナ",
+                            "link": "https://lunatranslator.xyz/Resource/voice/una_44.zip"
+                        },
+                        {
+                            "name": "附加音源_鷹の爪吉田",
+                            "link": "https://lunatranslator.xyz/Resource/voice/yoshidakun_44.zip"
+                        },
+                        {
+                            "name": "附加音源_ギャラ子",
+                            "link": "https://lunatranslator.xyz/Resource/voice/galaco_44.zip"
                         }
                     ]
                 }
