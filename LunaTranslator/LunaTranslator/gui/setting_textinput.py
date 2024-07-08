@@ -56,7 +56,7 @@ def gethookgrid(self):
         [
             (
                 makehtml(
-                    "https://lunatranslator.xyz/Github/LunaHook/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml",
+                    "https://lunatranslator.xyz/Resource/game_support",
                     show=_TR("不支持的游戏？"),
                 ),
                 0,
@@ -208,7 +208,7 @@ def doexportchspatch(exe, gameuid):
         "startup_argument": None,
         "inject_timeout": 1000,
         "embedhook": savehook_new_data[gameuid]["embedablehook"],
-        "embedsettings": globalconfig["embedded"]
+        "embedsettings": globalconfig["embedded"],
     }
     with open(
         os.path.join(os.path.dirname(exe), "LunaPatch.json"), "w", encoding="utf8"
