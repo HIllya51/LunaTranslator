@@ -13,4 +13,4 @@
 
 在设置->版本更新中，可以开启自动更新。自动更新偶尔会导致错误，请手动更新以修复！
 
-![img](../images/zh/update.png) 
+![img](https://image.lunatranslator.xyz/zh/update.png) 

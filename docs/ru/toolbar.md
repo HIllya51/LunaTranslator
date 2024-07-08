@@ -5,7 +5,7 @@
 
 ## Общие кнопки (В режиме буфера обмена)
 
-![img](../images/ru/toolbar1_ru.png) 
+![img](https://image.lunatranslator.xyz/ru/toolbar1_ru.png) 
 
 
 
@@ -38,7 +38,7 @@
 
 ## Кнопки в режиме OCR
 
-![img](../images/ru/toolbar2_ru.png) 
+![img](https://image.lunatranslator.xyz/ru/toolbar2_ru.png) 
 
 > В режиме OCR будет на три кнопки больше, чем в режиме буфера обмена.
 
@@ -51,7 +51,7 @@
 
 ## HOOK模式按钮
 
-![img](../images/ru/toolbar3_ru.png) 
+![img](https://image.lunatranslator.xyz/ru/toolbar3_ru.png) 
 
 > В режиме HOOK будет на три кнопки больше, чем в режиме буфера обмена.
 

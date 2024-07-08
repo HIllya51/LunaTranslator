@@ -6,7 +6,7 @@
 
 ## Universal button/Clipboard mode
 
-![img](../images/zh/toolbar1.jpg) 
+![img](https://image.lunatranslator.xyz/zh/toolbar1.jpg) 
 
 > These are universal buttons that appear in clipboard mode. From left to right:
 
@@ -41,7 +41,7 @@
 
 ## OCR Mode Buttons
 
-![img](../images/zh/toolbar2.jpg) 
+![img](https://image.lunatranslator.xyz/zh/toolbar2.jpg) 
 
 > OCR mode includes three additional buttons:
 
@@ -54,7 +54,7 @@
 
 ## HOOK Mode Buttons
 
-![img](../images/zh/toolbar3.jpg) 
+![img](https://image.lunatranslator.xyz/zh/toolbar3.jpg) 
 
 > HOOK mode includes two additional buttons:
 

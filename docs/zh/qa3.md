@@ -12,7 +12,7 @@ https://www.ollama.com/library/llama3
 
 下载好模型，后台跑起来后，在
 
-![img](../images/zh/336483101-915f17c5-27a4-465f-9b4e-7a547ba5029f.png)
+![img](https://image.lunatranslator.xyz/zh/336483101-915f17c5-27a4-465f-9b4e-7a547ba5029f.png)
 
 改成自己在跑的模型，端口改成对应的。就行了。
 
