@@ -119,6 +119,7 @@ class ResponseBase:
 
 
 class Requester_common:
+    Accept_Encoding = "gzip, deflate, br"
 
     def request(self, *argc) -> ResponseBase: ...
 
@@ -277,7 +278,9 @@ class Session:
         verify=False,
         cert=None,
     ):
+        requester = self.loadrequester()
         _h = self.headers.copy()
+        _h.update({"Accept-Encoding": requester.Accept_Encoding})
         if headers:
             _h.update(headers)
         headers = _h
@@ -307,7 +310,7 @@ class Session:
                     timeout = None
         if cookies:
             self.cookies.update(cookies)
-        response = self.loadrequester().request(
+        response = requester.request(
             method,
             scheme,
             server,

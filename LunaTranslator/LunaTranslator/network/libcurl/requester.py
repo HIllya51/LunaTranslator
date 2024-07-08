@@ -54,6 +54,9 @@ def ExceptionFilter(func):
 
 
 class Requester(Requester_common):
+
+    Accept_Encoding = "gzip, deflate, br, zstd"
+
     def raise_for_status(self):
         if self.last_error:
             raise CURLException(self.last_error)
