@@ -313,37 +313,8 @@ class Sessionbase:
             stream,
             verify,
             timeout,
+            allow_redirects,
         )
-
-        while allow_redirects and (
-            _.status_code == 301 or _.status_code == 302 or _.status_code == 307
-        ):
-            location = _.headers["Location"]
-            if location.startswith("/"):  # vndb
-                url = url = scheme + "://" + server + location
-                param = location
-            elif location.startswith(
-                "http"
-            ):  # https://api.github.com/repos/XXX/XXX/zipball
-                scheme, server, port, param, url = self._parseurl(location, None)
-            else:
-                raise Exception("redirect {}: {}".format(_.status_code, location))
-            _ = self.request_impl(
-                method,
-                scheme,
-                server,
-                port,
-                param,
-                url,
-                headers,
-                cookies,
-                dataptr,
-                datalen,
-                proxy,
-                stream,
-                verify,
-                timeout,
-            )
 
         return _
 

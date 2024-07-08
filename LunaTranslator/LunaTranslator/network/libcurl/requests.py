@@ -86,6 +86,11 @@ class Session(Sessionbase):
         self.last_error = curl_easy_perform(curl)
         self.raise_for_status()
 
+    def _set_allow_redirects(self, curl, allow_redirects):
+
+        curl_easy_setopt(curl, CURLoption.CURLOPT_FOLLOWLOCATION, int(allow_redirects))
+        # curl_easy_setopt(curl, CURLoption.CURLOPT_MAXREDIRS, 100) #默认50够了
+
     @ExceptionFilter
     def request_impl(
         self,
@@ -103,6 +108,7 @@ class Session(Sessionbase):
         stream,
         verify,
         timeout,
+        allow_redirects,
     ):
         curl = AutoCURLHandle(curl_easy_init())
         curl_easy_setopt(curl, CURLoption.CURLOPT_COOKIEJAR, "")
@@ -146,6 +152,7 @@ class Session(Sessionbase):
 
         self._set_verify(curl, verify)
         self._set_proxy(curl, proxy)
+        self._set_allow_redirects(curl, allow_redirects)
         if datalen:
             curl_easy_setopt(curl, CURLoption.CURLOPT_POSTFIELDS, dataptr)
             curl_easy_setopt(curl, CURLoption.CURLOPT_POSTFIELDSIZE, datalen)
@@ -154,7 +161,9 @@ class Session(Sessionbase):
         resp.keeprefs.append(curl)
         if stream:
 
-            def WriteMemoryCallback(queue, contents, size, nmemb, userp):
+            def WriteMemoryCallback(headerqueue, queue, contents, size, nmemb, userp):
+                if headerqueue:
+                    headerqueue.put(0)
                 realsize = size * nmemb
                 queue.put(cast(contents, POINTER(c_char))[:realsize])
                 return realsize
@@ -162,9 +171,11 @@ class Session(Sessionbase):
             _content = []
             _headers = []
             headerqueue = queue.Queue()
-            keepref1 = WRITEFUNCTION(functools.partial(WriteMemoryCallback, resp.queue))
+            keepref1 = WRITEFUNCTION(
+                functools.partial(WriteMemoryCallback, headerqueue, resp.queue)
+            )
             keepref2 = WRITEFUNCTION(
-                functools.partial(WriteMemoryCallback, headerqueue)
+                functools.partial(WriteMemoryCallback, None, headerqueue)
             )
             curl_easy_setopt(
                 curl,
@@ -185,7 +196,7 @@ class Session(Sessionbase):
                     self._perform(curl)
                 except:
                     print_exc()
-                    headerqueue.put(None)
+                    headerqueue.put(1)
                     error = True
                 resp.queue.put(None)
                 if error:
@@ -195,27 +206,16 @@ class Session(Sessionbase):
             threading.Thread(target=___perform, daemon=True).start()
 
             headerb = ""
-            cnt = 1
             while True:
                 _headerb = headerqueue.get()
-                if _headerb is None:
+                if _headerb == 0:
+                    break
+                elif _headerb == 1:
                     self.raise_for_status()
                 _headerb = _headerb.decode("utf8")
-
-                if _headerb.endswith(
-                    "200 Connection established\r\n"
-                ):  # HTTP/1.1 200 Connection established\r\n
-                    cnt += 1
-                elif _headerb == "\r\n":
-                    cnt -= 1
-                    if cnt == 0:
-                        break
-                    else:
-                        # 有proxy时，proxy也有可能有header.
-                        headerb = ""
-                else:
-                    headerb += _headerb
-
+                if _headerb.startswith("HTTP/"):
+                    headerb = ""
+                headerb += _headerb
             resp.headers = self._update_header_cookie(headerb)
             resp.status_code = self._getStatusCode(curl)
         else:

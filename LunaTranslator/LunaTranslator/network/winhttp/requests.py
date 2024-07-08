@@ -118,12 +118,24 @@ class Session(Sessionbase):
         if proxy:
             winhttpsetproxy(hsess, proxy)
 
-    def _set_verify(self, curl, verify):
+    def _set_verify(self, hRequest, verify):
         if verify == False:
             dwFlags = DWORD(SECURITY_FLAG_IGNORE_ALL_CERT_ERRORS)
             WinHttpSetOption(
-                curl, WINHTTP_OPTION_SECURITY_FLAGS, pointer(dwFlags), sizeof(dwFlags)
+                hRequest,
+                WINHTTP_OPTION_SECURITY_FLAGS,
+                pointer(dwFlags),
+                sizeof(dwFlags),
             )
+
+    def _set_allow_redirects(self, hRequest, allow_redirects):
+        if allow_redirects:
+            dwFlags = DWORD(WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS)
+        else:
+            dwFlags = DWORD(WINHTTP_OPTION_REDIRECT_POLICY_NEVER)
+        WinHttpSetOption(
+            hRequest, WINHTTP_OPTION_REDIRECT_POLICY, pointer(dwFlags), sizeof(dwFlags)
+        )
 
     @ExceptionFilter
     def request_impl(
@@ -142,6 +154,7 @@ class Session(Sessionbase):
         stream,
         verify,
         timeout,
+        allow_redirects,
     ):
         headers = self._parseheader(headers, cookies)
         flag = WINHTTP_FLAG_SECURE if scheme == "https" else 0
@@ -168,7 +181,7 @@ class Session(Sessionbase):
             raise WinhttpException(GetLastError())
         self._set_verify(hRequest, verify)
         self._set_proxy(hRequest, proxy)
-
+        self._set_allow_redirects(hRequest, allow_redirects)
         succ = WinHttpSendRequest(
             hRequest, headers, -1, dataptr, datalen, datalen, None
         )
