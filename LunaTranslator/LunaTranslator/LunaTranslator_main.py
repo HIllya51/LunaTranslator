@@ -14,9 +14,6 @@ if __name__ == "__main__":
 
     sys.path.append("./")
     sys.path.append("./userconfig")
-    sys.path.insert(
-        0, "./LunaTranslator/network/" + ["winhttp", "libcurl"][globalconfig["network"]]
-    )
 
     import gobject
 

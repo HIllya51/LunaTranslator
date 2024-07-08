@@ -1,5 +1,5 @@
 from ctypes import c_void_p, cast, c_size_t, pointer, create_string_buffer, POINTER
-from libcurl import *
+from .libcurl import *
 from urllib.parse import urlsplit
 import time
 
@@ -26,7 +26,7 @@ class WebSocket:
             error = curl_ws_recv(
                 self.curl, buffer, (10240), pointer(rlen), pointer(meta)
             )
-            if error.value == CURLcode.CURLE_AGAIN:
+            if error.value == CURLcode.AGAIN:
                 time.sleep(0.01)
             elif error:
                 raise CURLException(error)
@@ -57,7 +57,7 @@ class WebSocket:
         if http_proxy_host is None or http_proxy_port is None:
             return
         proxy = "{}:{}".format(http_proxy_host, http_proxy_port)
-        curl_easy_setopt(curl, CURLoption.CURLOPT_PROXY, proxy.encode("utf8"))
+        curl_easy_setopt(curl, CURLoption.PROXY, proxy.encode("utf8"))
 
     def _parseurl2serverandpath(self, url):
         url = url.strip()
@@ -86,19 +86,19 @@ class WebSocket:
 
     def _set_verify(self, curl, verify):
         if verify == False:
-            curl_easy_setopt(curl, CURLoption.CURLOPT_SSL_VERIFYPEER, 0)
-            curl_easy_setopt(curl, CURLoption.CURLOPT_SSL_VERIFYHOST, 0)
+            curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, 0)
+            curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, 0)
         else:
-            curl_easy_setopt(curl, CURLoption.CURLOPT_SSL_VERIFYPEER, 1)
-            curl_easy_setopt(curl, CURLoption.CURLOPT_SSL_VERIFYHOST, 2)
+            curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, 1)
+            curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, 2)
 
     def connect(self, url, header=None, http_proxy_host=None, http_proxy_port=None):
         https, server, port, path = self._parseurl2serverandpath(url)
         self.curl = AutoCURLHandle(curl_easy_init())
-        curl_easy_setopt(self.curl, CURLoption.CURLOPT_URL, url.encode("utf8"))
+        curl_easy_setopt(self.curl, CURLoption.URL, url.encode("utf8"))
 
-        curl_easy_setopt(self.curl, CURLoption.CURLOPT_CONNECT_ONLY, 2)
-        curl_easy_setopt(self.curl, CURLoption.CURLOPT_PORT, port)
+        curl_easy_setopt(self.curl, CURLoption.CONNECT_ONLY, 2)
+        curl_easy_setopt(self.curl, CURLoption.PORT, port)
         self._setproxy(self.curl, http_proxy_host, http_proxy_port)
         self._set_verify(self.curl, False)
         lheaders = Autoslist()
@@ -107,14 +107,8 @@ class WebSocket:
                 lheaders = curl_slist_append(
                     cast(lheaders, POINTER(curl_slist)), _.encode("utf8")
                 )
-        curl_easy_setopt(self.curl, CURLoption.CURLOPT_HTTPHEADER, lheaders)
+        curl_easy_setopt(self.curl, CURLoption.HTTPHEADER, lheaders)
 
         error = curl_easy_perform(self.curl)
         if error:
             raise CURLException(error)
-
-
-def create_connection(url, **x):
-    _ = WebSocket()
-    _.connect(url)
-    return _

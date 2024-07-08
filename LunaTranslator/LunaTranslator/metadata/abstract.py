@@ -4,7 +4,7 @@ from threading import Thread
 from myutils.commonbase import proxysession
 from myutils.config import globalconfig, savehook_new_data
 from traceback import print_exc
-from network.requests_common import NetWorkException
+from requests import NetWorkException
 
 
 class common:

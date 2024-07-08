@@ -1,12 +1,14 @@
-from winhttp import *
-from network.requests_common import *
+from .winhttp import *
+from requests import ResponseBase, Timeout, Requester_common
+from traceback import print_exc
 import gzip, zlib
 from ctypes import pointer, create_string_buffer, create_unicode_buffer
 
 try:
-    from brotli_dec import decompress
+    from .brotli_dec import decompress
 except:
-    pass
+    from traceback import print_exc
+    print_exc()
 
 
 class Response(ResponseBase):
@@ -58,20 +60,7 @@ def ExceptionFilter(func):
     return _wrapper
 
 
-class Session(Sessionbase):
-    def __init__(self) -> None:
-        super().__init__()
-        self.hSession = AutoWinHttpHandle(
-            WinHttpOpen(
-                self.UA,
-                WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
-                WINHTTP_NO_PROXY_NAME,
-                WINHTTP_NO_PROXY_BYPASS,
-                0,
-            )
-        )
-        if self.hSession == 0:
-            raise WinhttpException(GetLastError())
+class Requester(Requester_common):
 
     def _getheaders(self, hreq):
         dwSize = DWORD()
@@ -138,7 +127,7 @@ class Session(Sessionbase):
         )
 
     @ExceptionFilter
-    def request_impl(
+    def request(
         self,
         method,
         scheme,
@@ -146,7 +135,7 @@ class Session(Sessionbase):
         port,
         param,
         url,
-        headers,
+        _headers,
         cookies,
         dataptr,
         datalen,
@@ -156,12 +145,22 @@ class Session(Sessionbase):
         timeout,
         allow_redirects,
     ):
-        headers = self._parseheader(headers, cookies)
+        headers = self._parseheader(_headers, cookies)
         flag = WINHTTP_FLAG_SECURE if scheme == "https" else 0
         # print(server,port,param,dataptr)
         headers = "\r\n".join(headers)
-
-        hConnect = AutoWinHttpHandle(WinHttpConnect(self.hSession, server, port, 0))
+        hSession = AutoWinHttpHandle(
+            WinHttpOpen(
+                _headers["User-Agent"],
+                WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+                WINHTTP_NO_PROXY_NAME,
+                WINHTTP_NO_PROXY_BYPASS,
+                0,
+            )
+        )
+        if hSession == 0:
+            raise WinhttpException(GetLastError())
+        hConnect = AutoWinHttpHandle(WinHttpConnect(hSession, server, port, 0))
         if hConnect == 0:
             raise WinhttpException(GetLastError())
         hRequest = AutoWinHttpHandle(
@@ -191,16 +190,14 @@ class Session(Sessionbase):
         succ = WinHttpReceiveResponse(hRequest, None)
         if succ == 0:
             raise WinhttpException(GetLastError())
-
-        headers = self._update_header_cookie(self._getheaders(hRequest))
         resp = Response()
+        resp.headers, resp.cookies = self._parseheader2dict(self._getheaders(hRequest))
+
         resp.status_code = self._getStatusCode(hRequest)
-        resp.headers = headers
-        resp.cookies = self.cookies
         if stream:
+            resp.hSession = hSession
             resp.hconn = hConnect
             resp.hreq = hRequest
-            resp.keepref = self
             return resp
         availableSize = DWORD()
         downloadedSize = DWORD()
@@ -219,7 +216,7 @@ class Session(Sessionbase):
                 raise WinhttpException(GetLastError())
             downloadeddata += buff[: downloadedSize.value]
 
-        resp.content = self.decompress(downloadeddata, headers)
+        resp.content = self.decompress(downloadeddata, resp.headers)
 
         return resp
 
@@ -237,7 +234,5 @@ class Session(Sessionbase):
                 data = decompress(data)
             return data
         except:
+            print_exc()
             raise Exception("unenable to decompress {}".format(encode))
-
-
-Sessionimpl[0] = Session

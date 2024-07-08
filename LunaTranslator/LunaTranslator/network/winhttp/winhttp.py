@@ -1,6 +1,6 @@
 from ctypes import windll, POINTER, pointer, Structure, sizeof
 from ctypes.wintypes import LPCWSTR, DWORD, LPVOID, WORD, BOOL, LPCVOID, LPWSTR, USHORT
-from network.requests_common import NetWorkException
+from requests import NetWorkException
 
 
 class WinhttpException(NetWorkException):

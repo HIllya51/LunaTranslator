@@ -8,7 +8,7 @@ from myutils.config import (
 from myutils.utils import initanewitem, gamdidchangedtask
 import functools
 import time
-from network.requests_common import NetWorkException
+from requests import NetWorkException
 from qtsymbols import *
 from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname

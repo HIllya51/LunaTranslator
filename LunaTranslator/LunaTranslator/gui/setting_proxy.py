@@ -178,12 +178,7 @@ def setTab_proxy_lazy(self, basel):
                         "网络请求",
                         (
                             D_getsimplecombobox(
-                                ["winhttp", "libcurl"],
-                                globalconfig,
-                                "network",
-                                callback=functools.partial(
-                                    gobject.baseobject.showneedrestart, "网络请求"
-                                ),
+                                ["winhttp", "libcurl"], globalconfig, "network"
                             ),
                             5,
                         ),
