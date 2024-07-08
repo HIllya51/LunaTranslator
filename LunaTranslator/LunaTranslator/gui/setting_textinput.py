@@ -56,7 +56,7 @@ def gethookgrid(self):
         [
             (
                 makehtml(
-                    "https://lunatranslator.xyz/",
+                    "https://lunatranslator.xyz/Github/LunaHook/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml",
                     show=_TR("不支持的游戏？"),
                 ),
                 0,
