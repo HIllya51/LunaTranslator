@@ -21,23 +21,16 @@ versionchecktask = queue.Queue()
 
 def getvesionmethod():
     try:
-        headers = {
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-            "Cache-Control": "max-age=0",
-            "Proxy-Connection": "keep-alive",
-            "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
-        }
         res = requests.get(
-            "https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest",
-            headers=headers,
+            "https://lunatranslator.xyz/version",
             verify=False,
-            proxies=getproxy(("github", "versioncheck")),
-        ).json()
+            # proxies=getproxy(("github", "versioncheck")),
+        )
+        print(res.text)
+        res = res.json()
         # print(res)
-        _version = res["tag_name"]
-        return _version
+        _version = res["version"]
+        return _version, res
     except:
         print_exc()
         return None
@@ -69,20 +62,18 @@ def updatemethod_checkalready(size, savep):
 
 
 @tryprint
-def updatemethod(_version, self):
+def updatemethod(info, self):
 
     check_interrupt = lambda: not (
         globalconfig["autoupdate"] and versionchecktask.empty()
     )
     if platform.architecture()[0] == "64bit":
-        bit = ""
+        bit = "64"
     elif platform.architecture()[0] == "32bit":
-        bit = "_x86"
+        bit = "32"
     else:
         raise Exception
-    url = "https://github.com/HIllya51/LunaTranslator/releases/download/{}/LunaTranslator{}.zip".format(
-        _version, bit
-    )
+    url = info[bit]
 
     savep = gobject.getcachedir("update/LunaTranslator{}.zip".format(bit))
 
@@ -144,17 +135,17 @@ def versioncheckthread(self):
         if _version is None:
             sversion = _TR("获取失败")
         else:
-            sversion = _version
+            sversion = _version[0]
         self.versiontextsignal.emit(sversion)
         version = winsharedutils.queryversion(sys.argv[0])
         need = (
             version
             and _version
-            and version < tuple(int(_) for _ in _version[1:].split("."))
+            and version < tuple(int(_) for _ in _version[0][1:].split("."))
         )
         if not (need and globalconfig["autoupdate"]):
             continue
-        savep = updatemethod(_version, self)
+        savep = updatemethod(_version[1], self)
         if not savep:
             self.progresssignal.emit("自动更新失败，请手动更新", 0)
             continue
@@ -191,10 +182,10 @@ def createdownloadprogress(self):
 
 
 def wraplink(text: str):
-    link = "https://github.com/HIllya51/LunaTranslator/releases"
+    link = "https://lunatranslator.xyz/Github/LunaTranslator/releases"
     if text.startswith("v"):
 
-        link = f"https://github.com/HIllya51/LunaTranslator/releases/tag/{text}"
+        link = f"https://lunatranslator.xyz/Github/LunaTranslator/releases/tag/{text}"
     return makehtml(
         link,
         show=text,
@@ -317,7 +308,6 @@ def setTab_update(self, basel):
     ]
 
     shuominggrid = [
-        ["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
         ["项目网站", makehtml("https://lunatranslator.xyz/")],
         [
             "使用说明",

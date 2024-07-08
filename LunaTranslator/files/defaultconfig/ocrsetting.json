@@ -246,8 +246,8 @@
     "mangaocr": {
         "args": {
             "项目仓库": "https://github.com/kha-white/manga-ocr",
-            "整合包_CPU": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/manga-ocr_cpu_v0.1.11.zip",
-            "整合包_GPU": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/manga-ocr_gpu_v0.1.11.7z",
+            "整合包_CPU": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.2/manga-ocr_cpu_v0.1.11.zip",
+            "整合包_GPU": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-gpu-v0.6.9_vits-uma-genshin-honkai.7z",
             "Port": 5665
         },
         "argstype": {

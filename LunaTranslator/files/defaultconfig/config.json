@@ -285,10 +285,7 @@
         }
     },
     "relationlinks": [
-        [
-            "LunaTranslator",
-            "https://github.com/HIllya51/LunaTranslator"
-        ],
+        
         [
             "vndb",
             "https://vndb.org/"

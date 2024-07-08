@@ -91,7 +91,6 @@
 	},
 	"sugoix": {
 		"args": {
-			"V8": "https://github.com/HIllya51/RESOURCES/releases/download/softwares/Sugoi_Translator_V8.7z",
 			"api": "http://127.0.0.1:14366/"
 		},
 		"argstype": {
