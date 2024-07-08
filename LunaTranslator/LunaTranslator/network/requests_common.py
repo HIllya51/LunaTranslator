@@ -238,6 +238,8 @@ class Sessionbase:
         cookie = {}
         for line in headerstr.split("\r\n")[1:]:
             idx = line.find(": ")
+            if idx == -1:
+                continue
             if line[:idx].lower() == "set-cookie":
                 _c = line[idx + 2 :].split("; ")[0]
                 _idx = _c.find("=")

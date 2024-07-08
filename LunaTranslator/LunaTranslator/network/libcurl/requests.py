@@ -210,15 +210,14 @@ class Session(Sessionbase):
                     cnt -= 1
                     if cnt == 0:
                         break
+                    else:
+                        # 有proxy时，proxy也有可能有header.
+                        headerb = ""
                 else:
                     headerb += _headerb
 
             resp.headers = self._update_header_cookie(headerb)
-
-            if proxy:
-                resp.status_code = int(headerb[:-2].split(" ")[1])
-            else:
-                resp.status_code = self._getStatusCode(curl)
+            resp.status_code = self._getStatusCode(curl)
         else:
 
             def WriteMemoryCallback(saver, contents, size, nmemb, userp):
