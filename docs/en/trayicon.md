@@ -2,7 +2,7 @@
 # Tray Icon
 
 
-![img](../images/zh/trayicon.jpg) 
+![img](https://image.lunatranslator.xyz/zh/trayicon.jpg) 
 
 Left-clicking the tray icon:
 - First click: Shows the program window

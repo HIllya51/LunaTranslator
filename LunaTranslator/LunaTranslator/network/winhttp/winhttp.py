@@ -1,6 +1,7 @@
 from ctypes import windll, POINTER, pointer, Structure, sizeof
 from ctypes.wintypes import LPCWSTR, DWORD, LPVOID, WORD, BOOL, LPCVOID, LPWSTR, USHORT
-from network.requests_common import NetWorkException
+from requests import NetWorkException
+
 
 class WinhttpException(NetWorkException):
     ERROR_INVALID_PARAMETER = 87
@@ -225,3 +226,8 @@ WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE = 3
 WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE = 4
 ERROR_SUCCESS = 0
 WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS = 1000
+
+
+WINHTTP_OPTION_REDIRECT_POLICY = 88
+WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS = 2
+WINHTTP_OPTION_REDIRECT_POLICY_NEVER = 0

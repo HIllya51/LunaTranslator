@@ -14,7 +14,7 @@
 
 &emsp;&emsp;При выборе источника "буфер обмена", весь копируемый Вами текст будет автоматически извлекаться из буфера обмена и переводиться.
 
-![img](../images/ru/5_ru.png)
+![img](https://image.lunatranslator.xyz/ru/5_ru.png)
 
 
 ## Настройки переводчиков
@@ -40,7 +40,7 @@
 
 Для предварительного перевода можно использовать нечеткое сопоставление (в основном эффективно для режима OCR).
 
-![img](../images/ru/6_ru.png)
+![img](https://image.lunatranslator.xyz/ru/6_ru.png)
 
 
 ## Настройки HOOK
@@ -62,7 +62,7 @@
 
 [➔ Более полное описание смотри в "Описании HOOK"](/ru/hooksetsumei.md)
 
-![img](../images/ru/21_ru.png)
+![img](https://image.lunatranslator.xyz/ru/21_ru.png)
 
  
 ## Настройки OCR
@@ -81,7 +81,7 @@
 
 [➔ Подробности смотри в "Описание OCR"](/ru/ocrsetsumei.md)
 
-![img](../images/ru/22_ru.png)
+![img](https://image.lunatranslator.xyz/ru/22_ru.png)
 
 
 ## Настройка окна перевода
@@ -99,22 +99,22 @@
 Вы можете ** выбрать контент в окне перевода** , а также настроить реакцию окна перевода на сворачивание игры в режиме HOOK.
 
 
-![img](../images/ru/7_ru.png)
+![img](https://image.lunatranslator.xyz/ru/7_ru.png)
 
 Четыре стиля шрифта следующие:
 
-![img](../images/ru/ziti1_ru.png)
-![img](../images/ru/ziti2_ru.png)
-![img](../images/ru/ziti3_ru.png)
-![img](../images/ru/ziti4_ru.png)
+![img](https://image.lunatranslator.xyz/ru/ziti1_ru.png)
+![img](https://image.lunatranslator.xyz/ru/ziti2_ru.png)
+![img](https://image.lunatranslator.xyz/ru/ziti3_ru.png)
+![img](https://image.lunatranslator.xyz/ru/ziti4_ru.png)
 
 Кана отображается следующим образом:
 
-![img](../images/ru/jiaming_ru.png)
+![img](https://image.lunatranslator.xyz/ru/jiaming_ru.png)
 
 Причастие отображается следующим образом:
 
-![img](../images/ru/fenci_ru.png)
+![img](https://image.lunatranslator.xyz/ru/fenci_ru.png)
 
 
  
@@ -129,7 +129,7 @@
 
 ** VOICEVOX**  — это механизм TTS с открытым исходным кодом, но он медленно генерирует голос.
 
-![img](../images/ru/8_ru.png)
+![img](https://image.lunatranslator.xyz/ru/8_ru.png)
 
 
  
@@ -152,7 +152,7 @@
 
 Если пользователь понимает язык python, он может напрямую изменить его в файле ** LunaTranslator\LunaTranslator\postprocess\post.py** , чтобы реализовать любой процесс обработки, который пожелает пользователь.
 
-![img](../images/ru/10_ru.png)
+![img](https://image.lunatranslator.xyz/ru/10_ru.png)
 
  
 
@@ -167,23 +167,23 @@
 
 После включения ** быстрого поиска слов**  щелкните исходный текст в окне перевода, и появится всплывающее окно поиска слов.
 
-![img](../images/ru/cishu_ru.png)
+![img](https://image.lunatranslator.xyz/ru/cishu_ru.png)
 
 
-![img](../images/ru/fenci_ru.png)
-![img](../images/ru/searchword_ru.png)
-![img](../images/ru/searchword2_ru.png)
+![img](https://image.lunatranslator.xyz/ru/fenci_ru.png)
+![img](https://image.lunatranslator.xyz/ru/searchword_ru.png)
+![img](https://image.lunatranslator.xyz/ru/searchword2_ru.png)
 
 ## Загрузка ресурсов и обновления
 
 Автоматические обновления и ссылки на некоторые популярные ресурсы.
 
 
-![img](../images/ru/down_ru.png)
+![img](https://image.lunatranslator.xyz/ru/down_ru.png)
  
 
 ## Настройка сочетания клавиш
 
 После включения ** использования сочетаний клавиш** , Вы можете настроить одну или сочетание двух клавиш на каждое действие.
 
-![img](../images/ru/quick_ru.png)
+![img](https://image.lunatranslator.xyz/ru/quick_ru.png)

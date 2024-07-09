@@ -1,4 +1,4 @@
-from winhttp import *
+from .winhttp import *
 from urllib.parse import urlsplit
 from ctypes import pointer, create_string_buffer
 
@@ -156,9 +156,3 @@ class WebSocket:
 
         if self.hWebSocketHandle == 0:
             raise WinhttpException(GetLastError())
-
-
-def create_connection(url, **x):
-    _ = WebSocket()
-    _.connect(url)
-    return _

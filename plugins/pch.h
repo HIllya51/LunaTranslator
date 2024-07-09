@@ -38,7 +38,7 @@
 #include <mshtml.h>
 #include <stdlib.h>
 #include <iostream>
-
+#include <map>
 #include <winbase.h>
 #include <wincon.h>
 

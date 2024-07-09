@@ -57,34 +57,25 @@ int wmain(int argc, wchar_t *argv[])
     if (checkisapatch())
         return 1;
     auto argv0 = std::wstring(argv[1]);
-    if (argv0 == L"dllinject")
-        return dllinjectwmain(argc - 1, argv + 1);
-    if (argv0 == L"ntleas")
-        return ntleaswmain(argc - 1, argv + 1);
-    if (argv0 == L"listpm")
-        return listprocessmodule(argc - 1, argv + 1);
-    if (argv0 == L"update")
-        return updatewmain(argc - 1, argv + 1);
+    typedef int (*wmaint)(int, wchar_t **);
+    std::map<std::wstring, wmaint> fm = {
+        {L"dllinject", dllinjectwmain},
+        {L"ntleas", ntleaswmain},
+        {L"listpm", listprocessmodule},
+        {L"update", updatewmain},
 #ifndef _WIN64
-    else if (argv0 == L"mainmp3")
-        return mainmp3(argc - 1, argv + 1);
-    else if (argv0 == L"LR")
-        return LRwmain(argc - 1, argv + 1);
-    else if (argv0 == L"le")
-        return lewmain(argc - 1, argv + 1);
-    else if (argv0 == L"jbj7")
-        return jbjwmain(argc - 1, argv + 1);
-    else if (argv0 == L"dreye")
-        return dreyewmain(argc - 1, argv + 1);
-    else if (argv0 == L"kingsoft")
-        return kingsoftwmain(argc - 1, argv + 1);
-    else if (argv0 == L"voiceroid2")
-        return voiceroid2wmain(argc - 1, argv + 1);
-    else if (argv0 == L"neospeech")
-        return neospeech(argc - 1, argv + 1);
-    else if (argv0 == L"neospeechlist")
-        return neospeechlist(argc - 1, argv + 1);
+        {L"mainmp3", mainmp3},
+        {L"LR", LRwmain},
+        {L"le", lewmain},
+        {L"jbj7", jbjwmain},
+        {L"dreye", dreyewmain},
+        {L"kingsoft", kingsoftwmain},
+        {L"voiceroid2", voiceroid2wmain},
+        {L"neospeech", neospeech},
+        {L"neospeechlist", neospeechlist},
 #else
-    
+
 #endif // !_WIN64
+    };
+    return fm[argv0](argc - 1, argv + 1);
 }

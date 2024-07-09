@@ -3,11 +3,11 @@
 
 First, select OCR in the Basic Settings. Three new icons will appear in the toolbar:
 
-![img](../images/zh/toolbar2.jpg) 
+![img](https://image.lunatranslator.xyz/zh/toolbar2.jpg) 
 
 Click the first button to select the screenshot area. A selection region will appear as shown in the image below:
 
-![img](../images/zh/12.jpg)
+![img](https://image.lunatranslator.xyz/zh/12.jpg)
 
 The second button toggles the visibility of the selection region.
 
@@ -20,4 +20,4 @@ To unbind, click the button and then click on the translator itself.
 
 Here's how it looks when bound to a screenshot window. OCR will function normally even if windows overlap:
 
-![img](../images/zh/ocrbind.jpg)
+![img](https://image.lunatranslator.xyz/zh/ocrbind.jpg)

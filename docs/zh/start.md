@@ -8,14 +8,14 @@
 
 不要下错了下成源代码了！
 
-![img](../images/zh/down.png)
+![img](https://image.lunatranslator.xyz/zh/down.png)
 
 ### 启动
 
 解压后可以看到下列文件，使用**LunaTranslator.exe**启动即可
 
 
-![img](../images/zh/startup.png)
+![img](https://image.lunatranslator.xyz/zh/startup.png)
 
 
 **LunaTranslator.exe** 会以普通模式启动 

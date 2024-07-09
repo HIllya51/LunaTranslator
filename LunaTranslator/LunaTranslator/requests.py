@@ -3,6 +3,7 @@ from collections.abc import Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode, urlsplit
 from functools import partial
+from myutils.config import globalconfig
 
 
 class NetWorkException(Exception):
@@ -59,11 +60,10 @@ class CaseInsensitiveDict(MutableMapping):
 
 
 class ResponseBase:
-    def __init__(self):
-        self.headers = CaseInsensitiveDict()
-        self.cookies = {}
-        self.status_code = 0
-        self.content = b"{}"
+    headers = CaseInsensitiveDict()
+    cookies = {}
+    status_code = 0
+    content = b""
 
     @property
     def text(self):
@@ -118,9 +118,50 @@ class ResponseBase:
             yield pending
 
 
-class Sessionbase:
+class Requester_common:
+    Accept_Encoding = "gzip, deflate, br"
+
+    def request(self, *argc) -> ResponseBase: ...
+
+    def _parseheader(self, headers, cookies):
+        _x = []
+
+        if cookies:
+            cookie = self._parsecookie(cookies)
+            headers.update({"Cookie": cookie})
+        for k in sorted(headers.keys()):
+            _x.append("{}: {}".format(k, headers[k]))
+        return _x
+
+    def _parsecookie(self, cookie):
+        _c = []
+        for k, v in cookie.items():
+            _c.append("{}={}".format(k, v))
+        return "; ".join(_c)
+
+    def _parseheader2dict(self, headerstr):
+        # print(headerstr)
+        header = CaseInsensitiveDict()
+        cookie = {}
+        for line in headerstr.split("\r\n")[1:]:
+            idx = line.find(": ")
+            if idx == -1:
+                continue
+            if line[:idx].lower() == "set-cookie":
+                _c = line[idx + 2 :].split("; ")[0]
+                _idx = _c.find("=")
+                cookie[_c[:_idx]] = _c[_idx + 1 :]
+            else:
+                header[line[:idx]] = line[idx + 2 :]
+        return CaseInsensitiveDict(header), cookie
+
+
+class Session:
     def __init__(self) -> None:
+        self.requester = None
+        self.requester_type = None
         self.UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
         self.last_error = 0
         self.cookies = {}
         self.headers = CaseInsensitiveDict(
@@ -211,43 +252,12 @@ class Sessionbase:
         url = scheme + "://" + server + path
         return scheme, server, port, path, url
 
-    def _parseheader(self, headers, cookies):
-        _x = []
-
-        if cookies:
-            cookie = self._parsecookie(cookies)
-            headers.update({"Cookie": cookie})
-        for k in sorted(headers.keys()):
-            _x.append("{}: {}".format(k, headers[k]))
-        return _x
-
-    def _parsecookie(self, cookie):
-        _c = []
-        for k, v in cookie.items():
-            _c.append("{}={}".format(k, v))
-        return "; ".join(_c)
-
-    def _update_header_cookie(self, headerstr):
-        headers, cookies = self._parseheader2dict(headerstr)
-        self.cookies.update(cookies)
-        return headers
-
-    def _parseheader2dict(self, headerstr):
-        # print(headerstr)
-        header = CaseInsensitiveDict()
-        cookie = {}
-        for line in headerstr.split("\r\n")[1:]:
-            idx = line.find(": ")
-            if line[:idx].lower() == "set-cookie":
-                _c = line[idx + 2 :].split("; ")[0]
-                _idx = _c.find("=")
-                cookie[_c[:_idx]] = _c[_idx + 1 :]
-            else:
-                header[line[:idx]] = line[idx + 2 :]
-        return CaseInsensitiveDict(header), cookie
-
-    def request_impl(self, *args):
-        pass
+    def loadrequester(self) -> Requester_common:
+        if globalconfig["network"] == 1:
+            from network.libcurl.requester import Requester
+        elif globalconfig["network"] == 0:
+            from network.winhttp.requester import Requester
+        return Requester()
 
     def request(
         self,
@@ -268,7 +278,9 @@ class Sessionbase:
         verify=False,
         cert=None,
     ):
+        requester = self.loadrequester()
         _h = self.headers.copy()
+        _h.update({"Accept-Encoding": requester.Accept_Encoding})
         if headers:
             _h.update(headers)
         headers = _h
@@ -296,7 +308,9 @@ class Sessionbase:
                 except:
                     print("Error invalid timeout", timeout)
                     timeout = None
-        _ = self.request_impl(
+        if cookies:
+            self.cookies.update(cookies)
+        response = requester.request(
             method,
             scheme,
             server,
@@ -304,46 +318,18 @@ class Sessionbase:
             param,
             url,
             headers,
-            cookies,
+            self.cookies,
             dataptr,
             datalen,
             proxy,
             stream,
             verify,
             timeout,
+            allow_redirects,
         )
-
-        if allow_redirects and (
-            _.status_code == 301 or _.status_code == 302 or _.status_code == 307
-        ):
-            location = _.headers["Location"]
-            if location.startswith("/"):  # vndb
-                url = url = scheme + "://" + server + location
-                param = location
-            elif location.startswith(
-                "http"
-            ):  # https://api.github.com/repos/XXX/XXX/zipball
-                scheme, server, port, param, url = self._parseurl(location, None)
-            else:
-                raise Exception("redirect {}: {}".format(_.status_code, location))
-            _ = self.request_impl(
-                method,
-                scheme,
-                server,
-                port,
-                param,
-                url,
-                headers,
-                cookies,
-                dataptr,
-                datalen,
-                proxy,
-                stream,
-                verify,
-                timeout,
-            )
-
-        return _
+        self.cookies.update(response.cookies)
+        response.cookies.update(self.cookies)
+        return response
 
     def get(self, url, **kwargs):
         return self.request("GET", url, **kwargs)
@@ -361,16 +347,13 @@ class Sessionbase:
         return self.request("DELETE", url, **kwargs)
 
 
-Sessionimpl = [Sessionbase]
-
-
 def request(method, url, **kwargs):
-    with Sessionimpl[0]() as session:
+    with Session() as session:
         return session.request(method=method, url=url, **kwargs)
 
 
 def session():
-    with Sessionimpl[0]() as session:
+    with Session() as session:
         return session
 
 
