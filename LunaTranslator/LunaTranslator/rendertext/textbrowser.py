@@ -128,8 +128,9 @@ class TextBrowser(QWidget, dataget):
         self.yinyinglabels_idx = 0
         for label in self.yinyinglabels:
             label.hide()
-        for labels in self.iteryinyinglabelsave.items():
-            label.hide()
+        for labels in self.iteryinyinglabelsave.values():
+            for label in labels:
+                label.hide()
         if self.currenttype == globalconfig["rendertext_using_internal"]["textbrowser"]:
 
             return
@@ -148,9 +149,9 @@ class TextBrowser(QWidget, dataget):
         for label in self.yinyinglabels:
             label.deleteLater()
         self.yinyinglabels.clear()
-        for label in self.iteryinyinglabelsave.items():
-
-            label.deleteLater()
+        for labels in self.iteryinyinglabelsave.values():
+            for label in labels:
+                label.deleteLater()
         self.iteryinyinglabelsave.clear()
 
     def setselectable(self, b):
