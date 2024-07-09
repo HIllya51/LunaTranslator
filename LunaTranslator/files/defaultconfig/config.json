@@ -1621,6 +1621,12 @@
             "color": "#1839f0",
             "name": "Jbeijing7"
         },
+        "eztrans": {
+            "type": "offline",
+            "use": false,
+            "color": "#1839f0",
+            "name": "ezTrans"
+        },
         "sugoix": {
             "type": "offline",
             "use": false,
