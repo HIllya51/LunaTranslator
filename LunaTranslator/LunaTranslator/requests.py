@@ -6,11 +6,11 @@ from functools import partial
 from myutils.config import globalconfig
 
 
-class NetWorkException(Exception):
+class RequestException(Exception):
     pass
 
 
-class Timeout(NetWorkException):
+class Timeout(RequestException):
     pass
 
 

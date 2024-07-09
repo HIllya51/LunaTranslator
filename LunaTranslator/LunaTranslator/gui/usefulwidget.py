@@ -1555,15 +1555,16 @@ class listediter(QDialog):
         copy = QAction(_TR("复制"))
         up = QAction(_TR("上移"))
         down = QAction(_TR("下移"))
-        menu.addAction(remove)
-        menu.addAction(copy)
+        if not self.isrankeditor:
+            menu.addAction(remove)
+            menu.addAction(copy)
         menu.addAction(up)
         menu.addAction(down)
         action = menu.exec(self.hctable.cursor().pos())
 
         if action == remove:
             self.hcmodel.removeRow(curr.row())
-
+            self.internalrealname.pop(curr.row())
         elif action == copy:
             winsharedutils.clipboard_set(self.hcmodel.itemFromIndex(curr).text())
 
@@ -1577,30 +1578,43 @@ class listediter(QDialog):
     def moverank(self, dy):
         curr = self.hctable.currentIndex()
         target = (curr.row() + dy) % self.hcmodel.rowCount()
-        text = self.hcmodel.itemFromIndex(curr).text()
+        text = self.internalrealname[curr.row()]
+        self.internalrealname.pop(curr.row())
         self.hcmodel.removeRow(curr.row())
+        self.internalrealname.insert(target, text)
+        if self.namemapfunction:
+            text = self.namemapfunction(text)
         self.hcmodel.insertRow(target, [QStandardItem(text)])
         self.hctable.setCurrentIndex(self.hcmodel.index(target, 0))
 
     def __init__(
-        self, p, title, header, lst, closecallback=None, ispathsedit=None
+        self,
+        parent,
+        title,
+        header,
+        lst,
+        closecallback=None,
+        ispathsedit=None,
+        isrankeditor=False,
+        namemapfunction=None,
     ) -> None:
-        super().__init__(p)
+        super().__init__(parent)
         self.lst = lst
         self.closecallback = closecallback
         self.ispathsedit = ispathsedit
+        self.isrankeditor = isrankeditor
         try:
             self.setWindowTitle(title)
             model = QStandardItemModel()
             model.setHorizontalHeaderLabels([header])
             self.hcmodel = model
-
+            self.namemapfunction = namemapfunction
             table = QTableView()
             table.horizontalHeader().setSectionResizeMode(
                 QHeaderView.ResizeMode.ResizeToContents
             )
             table.horizontalHeader().setStretchLastSection(True)
-            if not (ispathsedit is None):
+            if isrankeditor or (not (ispathsedit is None)):
                 table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
@@ -1610,16 +1624,28 @@ class listediter(QDialog):
             table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             table.customContextMenuRequested.connect(self.showmenu)
             self.hctable = table
-
+            self.internalrealname = []
             for row, k in enumerate(lst):  # 2
+                try:
+                    namemapfunction(k)
+                except:
+                    continue
+                self.internalrealname.append(k)
+                if namemapfunction:
+                    k = namemapfunction(k)
                 self.hcmodel.insertRow(row, [QStandardItem(k)])
             formLayout = QVBoxLayout()
             formLayout.addWidget(self.hctable)
-            self.buttons = threebuttons(texts=["添加行", "删除行", "上移", "下移"])
-            self.buttons.btn1clicked.connect(self.click1)
-            self.buttons.btn2clicked.connect(self.clicked2)
-            self.buttons.btn3clicked.connect(functools.partial(self.moverank, -1))
-            self.buttons.btn4clicked.connect(functools.partial(self.moverank, 1))
+            if isrankeditor:
+                self.buttons = threebuttons(texts=["上移", "下移"])
+                self.buttons.btn1clicked.connect(functools.partial(self.moverank, -1))
+                self.buttons.btn2clicked.connect(functools.partial(self.moverank, 1))
+            else:
+                self.buttons = threebuttons(texts=["添加行", "删除行", "上移", "下移"])
+                self.buttons.btn1clicked.connect(self.click1)
+                self.buttons.btn2clicked.connect(self.clicked2)
+                self.buttons.btn3clicked.connect(functools.partial(self.moverank, -1))
+                self.buttons.btn4clicked.connect(functools.partial(self.moverank, 1))
 
             formLayout.addWidget(self.buttons)
             self.setLayout(formLayout)
@@ -1638,15 +1664,20 @@ class listediter(QDialog):
 
         for row in skip:
             self.hcmodel.removeRow(row)
+            self.internalrealname.pop(row)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.buttons.setFocus()
+
         rows = self.hcmodel.rowCount()
         rowoffset = 0
         dedump = set()
         self.lst.clear()
         for row in range(rows):
-            k = self.hcmodel.item(row, 0).text()
+            if self.namemapfunction:
+                k = self.internalrealname[row]
+            else:
+                k = self.hcmodel.item(row, 0).text()
             if k == "" or k in dedump:
                 rowoffset += 1
                 continue
@@ -1657,11 +1688,13 @@ class listediter(QDialog):
 
     def __cb(self, paths):
         for path in paths:
+            self.internalrealname.insert(0, paths)
             self.hcmodel.insertRow(0, [QStandardItem(path)])
 
     def click1(self):
 
         if self.ispathsedit is None:
+            self.internalrealname.insert(0, "")
             self.hcmodel.insertRow(0, [QStandardItem("")])
         else:
             openfiledirectory(

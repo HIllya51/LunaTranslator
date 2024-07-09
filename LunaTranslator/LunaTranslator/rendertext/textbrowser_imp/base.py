@@ -1,6 +1,7 @@
 from qtsymbols import *
 from myutils.config import globalconfig
 
+
 class base(QLabel):
     def paintText(self, painter: QPainter):
         raise Exception
@@ -25,13 +26,11 @@ class base(QLabel):
     def basecolor(self):
         return self._basecolor
 
-
     def setColor(self, color: str):
         if color is None:
             self._basecolor = QColor()
         else:
             self._basecolor = QColor(color)
-
 
     def __init__(self, typename, parent):
         super().__init__(parent)
@@ -70,11 +69,16 @@ class base(QLabel):
         point.setY(int(point.y() + self.movedy))
         super().move(point)
 
+    def y(self):
+        y = super().y()
+        return y - self.movedy
+
+    def x(self):
+        x = super().x()
+        return x - self.movedx
+
     def pos(self) -> QPoint:
-        p = super().pos()
-        p.setX(int(p.x() - self.movedx))
-        p.setY(int(p.y() - self.movedy))
-        return p
+        return QPoint(self.x(), self.y())
 
     def clearShadow(self):
         self.setGraphicsEffect(None)

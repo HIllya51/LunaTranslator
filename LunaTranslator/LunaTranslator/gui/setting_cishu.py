@@ -1,12 +1,13 @@
 import functools, os
 import gobject
-from myutils.config import globalconfig, _TRL
+from myutils.config import globalconfig, _TR
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     yuitsu_switch,
     makescrollgrid,
     D_getsimpleswitch,
     getsimplecombobox,
+    listediter,
     D_getIconButton,
 )
 from gui.setting_display_text import on_not_find_qweb
@@ -95,6 +96,17 @@ def _createseletengeinecombo_1(self):
     return self.seletengeinecombo_1
 
 
+def vistranslate_rank(self):
+    listediter(
+        self,
+        _TR("显示顺序"),
+        _TR("显示顺序"),
+        globalconfig["cishuvisrank"],
+        isrankeditor=True,
+        namemapfunction=lambda k: globalconfig["cishu"][k]["name"],
+    )
+
+
 def setTabcishu_l(self):
 
     grids = [
@@ -114,10 +126,6 @@ def setTabcishu_l(self):
         if os.path.exists(_f) == False:
             continue
 
-        items = autoinitdialog_items(globalconfig["cishu"][cishu])
-        items[-1]["callback"] = functools.partial(
-            gobject.baseobject.startxiaoxueguan, cishu
-        )
         line += [
             globalconfig["cishu"][cishu]["name"],
             D_getsimpleswitch(
@@ -125,18 +133,27 @@ def setTabcishu_l(self):
                 "use",
                 callback=functools.partial(gobject.baseobject.startxiaoxueguan, cishu),
             ),
-            D_getIconButton(
-                callback=functools.partial(
-                    autoinitdialog,
-                    self,
-                    globalconfig["cishu"][cishu]["name"],
-                    800,
-                    items,
-                ),
-                icon="fa.gear",
-            ),
         ]
+        if "args" in globalconfig["cishu"][cishu]:
 
+            items = autoinitdialog_items(globalconfig["cishu"][cishu])
+            items[-1]["callback"] = functools.partial(
+                gobject.baseobject.startxiaoxueguan, cishu
+            )
+            line += [
+                D_getIconButton(
+                    callback=functools.partial(
+                        autoinitdialog,
+                        self,
+                        globalconfig["cishu"][cishu]["name"],
+                        800,
+                        items,
+                    ),
+                    icon="fa.gear",
+                ),
+            ]
+        else:
+            line += [""]
         if i % 3 == 2:
             cishugrid.append(line)
             line = []
@@ -159,9 +176,15 @@ def setTabcishu_l(self):
                     title="显示",
                     grid=[
                         [
+                            "显示顺序",
+                            D_getIconButton(
+                                functools.partial(vistranslate_rank, self), "fa.gear"
+                            ),
+                        ],
+                        [
                             "网页显示",
                             functools.partial(_createseletengeinecombo_1, self),
-                        ]
+                        ],
                     ],
                 ),
                 0,

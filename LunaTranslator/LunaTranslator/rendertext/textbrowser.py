@@ -100,6 +100,7 @@ class TextBrowser(QWidget, dataget):
         self.lastcolor = None
         self.blockcount = 0
         self.iteryinyinglabelsave = {}
+        self.iteryinyinglabel_save_h = {}
         self.saveiterclasspointer = {}
         self.resets1()
 
@@ -127,10 +128,8 @@ class TextBrowser(QWidget, dataget):
         self.yinyinglabels_idx = 0
         for label in self.yinyinglabels:
             label.hide()
-        for klass, labels in self.iteryinyinglabelsave.items():
-            for label in labels[0]:
-                label.hide()
-            labels[1] = 0
+        for labels in self.iteryinyinglabelsave.items():
+            label.hide()
         if self.currenttype == globalconfig["rendertext_using_internal"]["textbrowser"]:
 
             return
@@ -149,11 +148,9 @@ class TextBrowser(QWidget, dataget):
         for label in self.yinyinglabels:
             label.deleteLater()
         self.yinyinglabels.clear()
-        for klass, labels in self.iteryinyinglabelsave.items():
-            for label in labels[0]:
-                label.deleteLater()
-            labels[0].clear()
-            labels[1] = 0
+        for label in self.iteryinyinglabelsave.items():
+
+            label.deleteLater()
         self.iteryinyinglabelsave.clear()
 
     def setselectable(self, b):
@@ -186,7 +183,7 @@ class TextBrowser(QWidget, dataget):
         self, iter_context_class, origin, atcenter, text, color, cleared
     ):
         if iter_context_class not in self.saveiterclasspointer:
-            self._textbrowser_append(origin, atcenter, " ", [], color, cleared)
+            self._textbrowser_append(origin, atcenter, "", [], color, cleared)
             self.saveiterclasspointer[iter_context_class] = {
                 "currtext": "",
                 "curr": self._getcurrpointer(),
@@ -288,15 +285,11 @@ class TextBrowser(QWidget, dataget):
 
     def _showyinyingtext2(self, color, iter_context_class, pos, text, font):
         if iter_context_class not in self.iteryinyinglabelsave:
-            self.iteryinyinglabelsave[iter_context_class] = [[], 0]
-        maxh = 0
-        maxh2 = 9999999
-        for label in self.iteryinyinglabelsave[iter_context_class][0]:
-            maxh2 = min(label.pos().y(), maxh2)
-            if label.isVisible() == False:
-                continue
+            self.iteryinyinglabelsave[iter_context_class] = []
+
+        lasth = self.iteryinyinglabel_save_h.get(iter_context_class, 0)
+        for label in self.iteryinyinglabelsave[iter_context_class]:
             label.hide()
-            maxh = max(label.pos().y(), maxh)
 
         subtext = []
         subpos = []
@@ -312,46 +305,40 @@ class TextBrowser(QWidget, dataget):
                 subtext.append("")
             subtext[-1] += text[i]
 
-        maxnewh = 0
+        thish = 0
+        thisy = 0
+        thisy0 = 99999
         for i in range(len(subtext)):
-            if self.iteryinyinglabelsave[iter_context_class][1] >= len(
-                self.iteryinyinglabelsave[iter_context_class][0]
-            ):
-                self.iteryinyinglabelsave[iter_context_class][0].append(
+            if i >= len(self.iteryinyinglabelsave[iter_context_class]):
+                self.iteryinyinglabelsave[iter_context_class].append(
                     self.currentclass(self.toplabel2)
                 )
-            maxnewh = max(maxnewh, subpos[i].y())
-            _ = self.iteryinyinglabelsave[iter_context_class][0][
-                self.iteryinyinglabelsave[iter_context_class][1]
-            ]
+            _ = self.iteryinyinglabelsave[iter_context_class][i]
             _.setColor(color)
             _.setText(subtext[i])
             _.setFont(font)
             _.adjustSize()
             _.move(subpos[i])
             _.show()
-            self.iteryinyinglabelsave[iter_context_class][1] += 1
+            thisy0 = min(thisy0, _.y())
+            thisy = max(thisy, _.y())
+            thish = thisy - thisy0
+            self.iteryinyinglabel_save_h[iter_context_class] = thish
 
-        if maxh:
-            if maxnewh == 0:
-                maxnewh = maxh2
-            for label in self.yinyinglabels:
+        diffheight = thish - lasth
+        for label in self.yinyinglabels:
+            if label.isVisible() == False:
+                continue
+            if label.y() >= thisy0:
+                label.move(QPoint(label.x(), label.y() + diffheight))
+        for klass in self.iteryinyinglabelsave:
+            if klass == iter_context_class:
+                continue
+            for label in self.iteryinyinglabelsave[klass]:
                 if label.isVisible() == False:
                     continue
-                if label.pos().y() > maxh:
-                    label.move(
-                        QPoint(label.pos().x(), label.pos().y() + maxnewh - maxh)
-                    )
-            for klass in self.iteryinyinglabelsave:
-                if klass == iter_context_class:
-                    continue
-                for label in self.iteryinyinglabelsave[klass][0]:
-                    if label.isVisible() == False:
-                        continue
-                    if label.pos().y() > maxh:
-                        label.move(
-                            QPoint(label.pos().x(), label.pos().y() + maxnewh - maxh)
-                        )
+                if label.y() >= thisy0:
+                    label.move(QPoint(label.x(), label.y() + diffheight))
 
     def _showyinyingtext(self, b1, b2, color, font):
         linei = self.yinyingposline
@@ -669,3 +656,4 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.clear()
 
         self.saveiterclasspointer.clear()
+        self.iteryinyinglabel_save_h.clear()

@@ -185,7 +185,8 @@ class basetrans(commonbase):
         return globalconfig["fanyi"][self.typename].get("type", "free")
 
     def gettask(self, content):
-        embedcallback = content[-2]
+        callback, contentraw, contentsolved, embedcallback, is_auto_run = content
+
         if embedcallback:
             priority = 1
         else:
@@ -314,7 +315,7 @@ class basetrans(commonbase):
             _ = self.queue.get()
             if _ is None:
                 break
-            callback, contentraw, contentsolved, embedcallback, is_auto_run = _
+            (callback, contentraw, contentsolved, embedcallback, is_auto_run) = _
             if self.onlymanual and is_auto_run:
                 continue
             if self.using == False:
@@ -349,7 +350,12 @@ class basetrans(commonbase):
                         )
 
                     else:
-                        __callback(res, 0)
+                        if globalconfig["fix_translate_rank"]:
+                            # 这个性能会稍微差一点，不然其实可以全都这样的。
+                            __callback(res, 1)
+                            __callback("", 2)
+                        else:
+                            __callback(res, 0)
                     if all([_ is not None for _ in collectiterres]):
                         self.cachesetatend(contentsolved, "".join(collectiterres))
             except Exception as e:
