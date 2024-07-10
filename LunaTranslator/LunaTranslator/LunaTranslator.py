@@ -235,19 +235,17 @@ class MAINUI:
                 self.currentread = text
                 self.autoreadcheckname()
 
+        self.transhis.getnewsentencesignal.emit(text)
+        self.maybesetedittext(text)
+        _showrawfunction = functools.partial(
+            self.translation_ui.displayraw1.emit,
+            dict(text=text, color=globalconfig["rawtextcolor"], onlytrans=onlytrans),
+        )
         if globalconfig["refresh_on_get_trans"] == False:
-            self.translation_ui.displayraw1.emit(
-                dict(text=text, color=globalconfig["rawtextcolor"], onlytrans=onlytrans)
-            )
+            _showrawfunction()
             _showrawfunction = None
             _showrawfunction_sig = 0
         else:
-            _showrawfunction = functools.partial(
-                self.translation_ui.displayraw1.emit,
-                dict(
-                    text=text, color=globalconfig["rawtextcolor"], onlytrans=onlytrans
-                ),
-            )
             _showrawfunction_sig = time.time()
 
         text_solved, optimization_params = self.solvebeforetrans(text)
@@ -329,6 +327,7 @@ class MAINUI:
                 )
         if no_available_translator:
             safe_embedcallback_none()
+            _showrawfunction()
 
     def ifuse_fix_translate_rank_preprare(self, engine, onlytrans, embedcallback):
         if onlytrans:

@@ -304,7 +304,6 @@ class TextBrowser(QWidget, dataget):
                 subtext.append("")
             subtext[-1] += text[i]
 
-        thisy0 = 99999
         collects = []
         for i in range(len(subtext)):
             if i >= len(self.iteryinyinglabelsave[iter_context_class]):
@@ -318,8 +317,10 @@ class TextBrowser(QWidget, dataget):
             _.adjustSize()
             _.move(subpos[i])
             _.show()
-            thisy0 = min(thisy0, _.y())
-
+        self.textcursor.setPosition(pos)
+        self.textbrowser.setTextCursor(self.textcursor)
+        tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
+        thisy0 = tl1.y()
         for label in self.yinyinglabels:
             if label.isVisible() == False:
                 continue

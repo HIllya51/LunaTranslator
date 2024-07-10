@@ -102,7 +102,6 @@ class QUnFrameWindow(resizableframeless):
         onlytrans = kwargs.get("onlytrans")
 
         clear = True
-        gobject.baseobject.transhis.getnewsentencesignal.emit(text)
         if onlytrans:
             return
         if len(text) > globalconfig["maxoriginlength"]:
@@ -113,8 +112,6 @@ class QUnFrameWindow(resizableframeless):
             self.showline(clear=clear, text=_res, isshowrawtext=True, color=color)
         else:
             self.showline(clear=clear)
-
-        gobject.baseobject.maybesetedittext(text)
 
     def showstatus(self, res, color, clear, origin):
         self.showline(clear=clear, text=res, color=color, origin=origin)
