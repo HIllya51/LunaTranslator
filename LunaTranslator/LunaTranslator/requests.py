@@ -5,6 +5,8 @@ from urllib.parse import urlencode, urlsplit
 from functools import partial
 from myutils.config import globalconfig
 
+default_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+
 
 class RequestException(Exception):
     pass
@@ -120,6 +122,7 @@ class ResponseBase:
 
 class Requester_common:
     Accept_Encoding = "gzip, deflate, br"
+    default_UA = default_UA
 
     def request(self, *argc) -> ResponseBase: ...
 
@@ -160,18 +163,20 @@ class Session:
     def __init__(self) -> None:
         self.requester = None
         self.requester_type = None
-        self.UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        self.default_UA = default_UA
 
         self.last_error = 0
         self.cookies = {}
         self.headers = CaseInsensitiveDict(
             {
-                "User-Agent": self.UA,
-                "Accept-Encoding": "gzip, deflate, br",
+                "User-Agent": self.default_UA,
+                # "Accept-Encoding": "gzip, deflate, br",
                 "Accept": "*/*",
                 "Connection": "keep-alive",
             }
         )
+        self._requester = None
+        self._libidx = -1
 
     def __enter__(self):
         return self
@@ -253,11 +258,15 @@ class Session:
         return scheme, server, port, path, url
 
     def loadrequester(self) -> Requester_common:
+        if self._libidx == globalconfig["network"]:
+            return self._requester
         if globalconfig["network"] == 1:
             from network.libcurl.requester import Requester
         elif globalconfig["network"] == 0:
             from network.winhttp.requester import Requester
-        return Requester()
+        self._requester = Requester()
+        self._libidx = globalconfig["network"]
+        return self._requester
 
     def request(
         self,

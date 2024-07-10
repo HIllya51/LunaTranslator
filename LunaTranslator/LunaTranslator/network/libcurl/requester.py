@@ -57,6 +57,16 @@ class Requester(Requester_common):
 
     Accept_Encoding = "gzip, deflate, br, zstd"
 
+    def __init__(self) -> None:
+        self._tls = threading.local()
+        self._tls.curl = self.initcurl()
+
+    def initcurl(self):
+        curl = AutoCURLHandle(curl_easy_init())
+        curl_easy_setopt(curl, CURLoption.COOKIEJAR, "")
+        curl_easy_setopt(curl, CURLoption.USERAGENT, self.default_UA.encode("utf8"))
+        return curl
+
     def raise_for_status(self):
         if self.last_error:
             raise CURLException(self.last_error)
@@ -121,6 +131,25 @@ class Requester(Requester_common):
         elif isinstance(headerqueue, list):
             return b"".join(headerqueue).decode("utf8")
 
+    @property
+    def curl(self):
+        if not getattr(self._tls, "curl", None):
+            self._tls.curl = self.initcurl()
+        return self._tls.curl
+
+    def _setheaders(self, curl, headers, cookies):
+        lheaders = Autoslist()
+        for _ in self._parseheader(headers, None):
+            lheaders = curl_slist_append(
+                cast(lheaders, POINTER(curl_slist)), _.encode("utf8")
+            )
+        self.last_error = curl_easy_setopt(curl, CURLoption.HTTPHEADER, lheaders)
+        self.raise_for_status()
+
+        if cookies:
+            cookie = self._parsecookie(cookies)
+            curl_easy_setopt(curl, CURLoption.COOKIE, cookie.encode("utf8"))
+
     @ExceptionFilter
     def request(
         self,
@@ -140,15 +169,8 @@ class Requester(Requester_common):
         timeout,
         allow_redirects,
     ):
-        curl = AutoCURLHandle(curl_easy_init())
-        curl_easy_setopt(curl, CURLoption.COOKIEJAR, "")
-        curl_easy_setopt(
-            curl, CURLoption.USERAGENT, headers["User-Agent"].encode("utf8")
-        )
+        curl = self.curl
 
-        if cookies:
-            cookie = self._parsecookie(cookies)
-            curl_easy_setopt(curl, CURLoption.COOKIE, cookie.encode("utf8"))
         if timeout:
             curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, timeout)
             curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout)
@@ -164,13 +186,7 @@ class Requester(Requester_common):
         self.raise_for_status()
         curl_easy_setopt(curl, CURLoption.PORT, port)
 
-        lheaders = Autoslist()
-        for _ in self._parseheader(headers, None):
-            lheaders = curl_slist_append(
-                cast(lheaders, POINTER(curl_slist)), _.encode("utf8")
-            )
-        self.last_error = curl_easy_setopt(curl, CURLoption.HTTPHEADER, lheaders)
-        self.raise_for_status()
+        self._setheaders(curl, headers, cookies)
 
         self._set_verify(curl, verify)
         self._set_proxy(curl, proxy)
