@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, platform, functools, threading, time
+import os, platform, functools, threading, uuid
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import (
@@ -898,7 +898,7 @@ class abstractwebview(QWidget):
         if len(html) < self.html_limit:
             self._setHtml(html)
         else:
-            lastcachehtml = gobject.gettempdir(str(time.time()) + ".html")
+            lastcachehtml = gobject.gettempdir(str(uuid.uuid4()) + ".html")
             with open(lastcachehtml, "w", encoding="utf8") as ff:
                 ff.write(html)
             self.navigate(lastcachehtml)

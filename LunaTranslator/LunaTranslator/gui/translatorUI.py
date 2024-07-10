@@ -1,5 +1,5 @@
 from qtsymbols import *
-import time, functools, threading, os, sys, importlib, shutil
+import time, functools, threading, os, sys, importlib, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, trypass
@@ -845,7 +845,7 @@ class QUnFrameWindow(resizableframeless):
             limit + self.translate_text._padding + int(globalconfig["buttonsize"] * 1.5)
         )
         size = QSize(self.width(), newHeight)
-        self.autoresizesig = time.time()
+        self.autoresizesig = uuid.uuid4()
         if newHeight > self.height():
             self.resize(size)
         else:
@@ -914,7 +914,7 @@ class QUnFrameWindow(resizableframeless):
 
     @threader
     def dodelayhide(self, delay):
-        enter_sig = time.time()
+        enter_sig = uuid.uuid4()
         self.enter_sig = enter_sig
         while self.checkisentered():
             time.sleep(0.1)

@@ -100,9 +100,7 @@ class AttachProcessDialog(saveposwindow):
 
         self.layout1.addLayout(bottomlayout)
         w.setLayout(self.layout1)
-        # self.setLayout(self.layout1)
         self.setCentralWidget(w)
-        # print(time.time()-t1)
 
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.close)
@@ -132,9 +130,7 @@ class AttachProcessDialog(saveposwindow):
 
         ###########################
         self.model = QStandardItemModel(self.processList)
-        # print(time.time()-t1)
         self.processlist = ListProcess()
-        # print(time.time()-t1)
         self.processList.setModel(self.model)
         for pid, pexe in self.processlist:
             if pexe in self.iconcache:
@@ -150,7 +146,6 @@ class AttachProcessDialog(saveposwindow):
         if self.hookselectdialog:
             self.hookselectdialog.realshowhide.emit(False)
         self.refreshfunction()
-        # print(time.time()-t1)
 
     def safesplit(self, process):
         try:

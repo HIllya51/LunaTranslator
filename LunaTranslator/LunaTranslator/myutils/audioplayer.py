@@ -42,10 +42,10 @@ class player_mci:
         os.remove(lastfile)
 
     def play(self, binary, volume):
-        tgt = gobject.gettempdir(f"tts/{time.time()}.wav")
+        i = str(uuid.uuid4())
+        tgt = gobject.gettempdir(f"tts/{i}.wav")
         with open(tgt, "wb") as ff:
             ff.write(binary)
-        i = str(uuid.uuid4())
         context = (i, tgt)
         windows.mciSendString(
             'open "{}" type mpegvideo  alias lunatranslator_mci_{}'.format(tgt, i)

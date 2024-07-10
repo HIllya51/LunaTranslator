@@ -1,4 +1,4 @@
-import time
+import time, uuid
 import os, threading, sys
 from qtsymbols import *
 from traceback import print_exc
@@ -199,7 +199,7 @@ class MAINUI:
         if text == "" or len(text) > 100000:
             return safe_embedcallback_none()
         if onlytrans == False:
-            self.currentsignature = time.time()
+            self.currentsignature = uuid.uuid4()
         try:
             origin = text
             text = self._POSTSOLVE(text)
@@ -246,7 +246,7 @@ class MAINUI:
             _showrawfunction = None
             _showrawfunction_sig = 0
         else:
-            _showrawfunction_sig = time.time()
+            _showrawfunction_sig = uuid.uuid4()
 
         text_solved, optimization_params = self.solvebeforetrans(text)
 
@@ -327,7 +327,8 @@ class MAINUI:
                 )
         if no_available_translator:
             safe_embedcallback_none()
-            _showrawfunction()
+            if _showrawfunction:
+                _showrawfunction()
 
     def ifuse_fix_translate_rank_preprare(self, engine, onlytrans, embedcallback):
         if onlytrans:
