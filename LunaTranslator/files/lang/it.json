@@ -812,5 +812,7 @@
     "限制每行字数": "Limitare il numero di parole per riga",
     "音频播放": "Riproduzione audio",
     "语速": "Velocità vocale",
-    "音量": "volume"
+    "音量": "volume",
+    "固定翻译显示顺序": "Ordine fisso di visualizzazione della traduzione",
+    "显示顺序": "Ordine di visualizzazione"
 }

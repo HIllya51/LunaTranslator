@@ -233,9 +233,7 @@ def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
         if key not in config1:
             config1[key] = default[key]
 
-        elif key in ("name", "tip"):
-            config1[key] = default[key]
-        elif key == "argstype":
+        elif key in ("name", "tip", "argstype"):
             config1[key] = default[key]
         elif key == "args":
             _nuse = []
@@ -256,7 +254,10 @@ def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
             elif type(default[key]) == dict:
                 if skipdict == False:
                     syncconfig(config1[key], default[key], drop, deep - 1)
-
+    if isinstance(config1, dict) and isinstance(default, dict):
+        for key in ("name", "tip", "argstype", "args"):
+            if key in config1 and key not in default:
+                config1.pop(key)
     if drop and deep > 0:
         for key in list(config1.keys()):
             if key not in default:

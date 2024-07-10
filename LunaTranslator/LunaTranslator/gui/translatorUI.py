@@ -43,6 +43,7 @@ class QUnFrameWindow(resizableframeless):
     hidesignal = pyqtSignal()
     muteprocessignal = pyqtSignal()
     ocr_once_signal = pyqtSignal()
+    resizesignal = pyqtSignal(QSize)
 
     def hookfollowsignalsolve(self, code, other):
         if self._move_drag:
@@ -558,6 +559,7 @@ class QUnFrameWindow(resizableframeless):
 
         self.muteprocessignal.connect(self.muteprocessfuntion)
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
+        self.resizesignal.connect(self.resize)
 
     def __init__(self):
 
@@ -845,7 +847,20 @@ class QUnFrameWindow(resizableframeless):
         newHeight = (
             limit + self.translate_text._padding + int(globalconfig["buttonsize"] * 1.5)
         )
-        self.resize(self.width(), newHeight)
+        size = QSize(self.width(), newHeight)
+        self.autoresizesig = time.time()
+        if newHeight > self.height():
+            self.resize(size)
+        else:
+            self.delaymaybeshrink(size, self.autoresizesig)
+
+    @threader
+    def delaymaybeshrink(self, size: QSize, sig):
+
+        time.sleep(0.1)
+        if sig != self.autoresizesig:
+            return
+        self.resizesignal.emit(size)
 
     def clickRange(self, auto):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:

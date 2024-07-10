@@ -14,6 +14,7 @@ int voiceroid2wmain(int argc, wchar_t *argv[]);
 int lewmain(int argc, wchar_t *argv[]);
 int neospeech(int argc, wchar_t *argv[]);
 int neospeechlist(int argc, wchar_t *argv[]);
+int eztrans(int argc, wchar_t *argv[]);
 #else
 #endif // !_WIN64
 
@@ -73,6 +74,7 @@ int wmain(int argc, wchar_t *argv[])
         {L"voiceroid2", voiceroid2wmain},
         {L"neospeech", neospeech},
         {L"neospeechlist", neospeechlist},
+        {L"eztrans", eztrans},
 #else
 
 #endif // !_WIN64

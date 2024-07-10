@@ -49,8 +49,6 @@ class TS(basetrans):
                     name="jbj7",
                 )
             )
-            #!!!!!!!!!!!!!!stdout=subprocess.PIPE 之后，隔一段时间之后，exe侧writefile就写不进去了！！！！！不知道为什么！！！
-
             windows.WaitForSingleObject(
                 windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),
                 windows.INFINITE,

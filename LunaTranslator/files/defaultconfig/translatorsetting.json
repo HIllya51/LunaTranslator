@@ -432,6 +432,19 @@
 			}
 		}
 	},
+	"eztrans": {
+		"args": {
+			"path": ""
+		},
+		"argstype": {
+			"path": {
+				"name": "路径",
+				"type": "file",
+				"filter":"J2KEngine.dll",
+				"dir": false
+			}
+		}
+	},
 	"dreye": {
 		"args": {
 			"path": ""

@@ -1,14 +1,13 @@
 import requests, re
-from myutils.utils import simplehtmlparser, simplehtmlparser_all
-from metadata.abstract import common
-from myutils.config import (
-    _TR,
-    savehook_new_data,
+from myutils.utils import (
+    simplehtmlparser,
+    simplehtmlparser_all,
+    initanewitem,
+    gamdidchangedtask,
 )
-from myutils.utils import initanewitem, gamdidchangedtask
+from metadata.abstract import common
+from myutils.config import _TR, savehook_new_data
 import functools
-import time
-from requests import NetWorkException
 from qtsymbols import *
 from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname
@@ -87,7 +86,9 @@ class steamsettings(QDialog):
         self.setWindowTitle(self._ref.config_all["name"])
         fl = QFormLayout(self)
         fl.addRow("userid", getlineedit(_ref.config, "userid"))
-        fl.addRow("cookie:steamLoginSecure", getlineedit(_ref.config, "steamLoginSecure"))
+        fl.addRow(
+            "cookie:steamLoginSecure", getlineedit(_ref.config, "steamLoginSecure")
+        )
 
         btn = QPushButton(_TR("wishlist"))
         btn.clicked.connect(

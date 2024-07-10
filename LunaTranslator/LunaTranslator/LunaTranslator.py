@@ -264,24 +264,24 @@ class MAINUI:
         if "premt" in self.translators:
             try:
                 res = self.translators["premt"].translate(text_solved)
-                for k in res:
-                    self.premtalready.append(k)
-                    if k in globalconfig["fanyi"]:
-                        _colork = k
+                for engine in res:
+                    self.premtalready.append(engine)
+                    if engine in globalconfig["fanyi"]:
+                        _colork = engine
                     else:
                         _colork = "premt"
                     no_available_translator = False
-                    self.GetTranslationCallback(
+                    self.create_translate_task(
                         onlytrans,
                         _colork,
-                        self.currentsignature,
                         optimization_params,
                         _showrawfunction,
                         _showrawfunction_sig,
                         text,
-                        res[k],
+                        text_solved,
                         embedcallback,
-                        0,
+                        is_auto_run,
+                        res[engine],
                     )
 
             except:
@@ -297,33 +297,89 @@ class MAINUI:
             keys = list(self.translators.keys()) + list(self.translators.keys())
             keys = keys[self.lasttranslatorindex : self.lasttranslatorindex + _len]
             # print(keys,usenum,self.lasttranslatorindex)
+            collect_this_time_use_engines = []
             for engine in keys:
                 if engine not in self.premtalready:
                     no_available_translator = False
-                    self.translators[engine].gettask(
-                        (
-                            partial(
-                                self.GetTranslationCallback,
-                                onlytrans,
-                                engine,
-                                self.currentsignature,
-                                optimization_params,
-                                _showrawfunction,
-                                _showrawfunction_sig,
-                                text,
-                            ),
-                            text,
-                            text_solved,
-                            embedcallback,
-                            is_auto_run,
-                        )
-                    )
+                    collect_this_time_use_engines.append(engine)
+
                 thistimeusednum += 1
                 self.lasttranslatorindex += 1
                 if thistimeusednum >= usenum:
                     break
+            for engine in globalconfig["fix_translate_rank_rank"]:
+                if engine not in collect_this_time_use_engines:
+                    continue
+
+                if globalconfig["fix_translate_rank"]:
+                    self.ifuse_fix_translate_rank_preprare(
+                        engine, onlytrans, embedcallback
+                    )
+
+                self.create_translate_task(
+                    onlytrans,
+                    engine,
+                    optimization_params,
+                    _showrawfunction,
+                    _showrawfunction_sig,
+                    text,
+                    text_solved,
+                    embedcallback,
+                    is_auto_run,
+                )
         if no_available_translator:
             safe_embedcallback_none()
+
+    def ifuse_fix_translate_rank_preprare(self, engine, onlytrans, embedcallback):
+        if onlytrans:
+            return
+        if embedcallback:
+            return
+        displayreskwargs = dict(
+            name="",
+            color=globalconfig["fanyi"][engine]["color"],
+            res="",
+            onlytrans=onlytrans,
+        )
+        displayreskwargs.update(iter_context=(1, engine))
+        self.translation_ui.displayres.emit(displayreskwargs)
+
+    def create_translate_task(
+        self,
+        onlytrans,
+        engine,
+        optimization_params,
+        _showrawfunction,
+        _showrawfunction_sig,
+        text,
+        text_solved,
+        embedcallback,
+        is_auto_run,
+        result=None,
+    ):
+        callback = partial(
+            self.GetTranslationCallback,
+            onlytrans,
+            engine,
+            self.currentsignature,
+            optimization_params,
+            _showrawfunction,
+            _showrawfunction_sig,
+            text,
+        )
+        task = (
+            callback,
+            text,
+            text_solved,
+            embedcallback,
+            is_auto_run,
+        )
+        if result:
+            # 预翻译
+            callback(result, embedcallback, 0)
+        else:
+
+            self.translators[engine].gettask(task)
 
     def GetTranslationCallback(
         self,
@@ -610,7 +666,19 @@ class MAINUI:
                 except:
                     pass
                 dictobject.pop(_type)
-            if globalconfig[fanyiorcishu][_type]["use"] == False:
+            use = globalconfig[fanyiorcishu][_type]["use"]
+            rankkeys = {"cishu": "cishuvisrank", "fanyi": "fix_translate_rank_rank"}
+            rankkey = rankkeys.get(fanyiorcishu)
+            if use:
+                if _type not in globalconfig[rankkey]:
+                    globalconfig[rankkey].append(_type)
+            else:
+
+                if _type in globalconfig[rankkey]:
+                    globalconfig[rankkey].remove(_type)
+
+            if not use:
+
                 return
             item = initmethod(_type)
             if item:

@@ -17,6 +17,7 @@ from gui.usefulwidget import (
     MySwitch,
     D_getsimpleswitch,
     selectcolor,
+    listediter,
     FocusFontCombo,
     FocusCombo,
     FocusDoubleSpin,
@@ -307,6 +308,17 @@ def __changeselectablestate(self, x):
     gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(x)
 
 
+def vistranslate_rank(self):
+    listediter(
+        self,
+        _TR("显示顺序"),
+        _TR("显示顺序"),
+        globalconfig["fix_translate_rank_rank"],
+        isrankeditor=True,
+        namemapfunction=lambda k:globalconfig['fanyi'][k]["name"]
+    )
+
+
 def xianshigrid_text(self):
     textgrid = [
         [
@@ -356,6 +368,13 @@ def xianshigrid_text(self):
                             "显示错误信息",
                             D_getsimpleswitch(globalconfig, "showtranexception"),
                             "",
+                        ],
+                        [
+                            "固定翻译显示顺序",
+                            D_getsimpleswitch(globalconfig, "fix_translate_rank"),
+                            D_getIconButton(
+                                functools.partial(vistranslate_rank, self), "fa.gear"
+                            ),
                         ],
                     ),
                 ),
@@ -485,14 +504,23 @@ def xianshigrid_style(self):
                             (functools.partial(createtextfontcom, "fonttype"), 4),
                             "",
                             "字体大小",
-                            D_getspinbox(1, 100, globalconfig, "fontsizeori", double=True, step=0.1),
+                            D_getspinbox(
+                                1,
+                                100,
+                                globalconfig,
+                                "fontsizeori",
+                                double=True,
+                                step=0.1,
+                            ),
                         ],
                         [
                             "译文字体",
                             (functools.partial(createtextfontcom, "fonttype2"), 4),
                             "",
                             "字体大小",
-                            D_getspinbox(1, 100, globalconfig, "fontsize", double=True, step=0.1),
+                            D_getspinbox(
+                                1, 100, globalconfig, "fontsize", double=True, step=0.1
+                            ),
                         ],
                         [
                             "加粗字体",

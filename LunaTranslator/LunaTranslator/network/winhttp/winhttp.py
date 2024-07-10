@@ -1,9 +1,9 @@
 from ctypes import windll, POINTER, pointer, Structure, sizeof
 from ctypes.wintypes import LPCWSTR, DWORD, LPVOID, WORD, BOOL, LPCVOID, LPWSTR, USHORT
-from requests import NetWorkException
+from requests import RequestException
 
 
-class WinhttpException(NetWorkException):
+class WinhttpException(RequestException):
     ERROR_INVALID_PARAMETER = 87
     ERROR_INVALID_OPERATION = 4317
     WINHTTP_ERROR_BASE = 12000

@@ -8,7 +8,7 @@ from myutils.hwnd import grabwindow
 from myutils.utils import parsekeystringtomodvkcode, unsupportkey
 from myutils.config import globalconfig, _TR, static_data, savehook_new_data
 from myutils.subproc import subproc_w
-from myutils.wrapper import threader
+from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import (
@@ -654,7 +654,7 @@ class AnkiWindow(QWidget):
                 self.parent().parent().parent().close()
             else:
                 QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
-        except requests.NetWorkException:
+        except requests.RequestException:
             getQMessageBox(self, _TR("错误"), _TR("无法连接到anki"))
         except anki.AnkiException as e:
             getQMessageBox(self, _TR("错误"), str(e))
@@ -797,26 +797,35 @@ class searchwordW(closeashidewindow):
         self.ankiwindow = AnkiWindow()
         self.setupUi()
 
+    @tryprint
     def __show_dict_result_function(self, timestamp, k, res):
         if self.current != timestamp:
             return
         if not res:
+            if (
+                not self.hasclicked
+                and self.thisps[k] == max(self.thisps.values())
+                and len(self.cache_results)
+            ):
+                self.tab.setCurrentIndex(0)
+                self.tab.tabBarClicked.emit(0)
+                self.hasclicked = True
             self.thisps.pop(k)
             return
         self.cache_results[k] = res
 
-        thisp = self.thisps[k]
+        thisp = self.thisps.get(k, 0)
         idx = 0
         for kk in self.tabks:
-            if self.thisps[kk] >= thisp:
+            if self.thisps.get(kk, 0) >= thisp:
                 idx += 1
         self.tabks.insert(idx, k)
         self.tab.insertTab(idx, _TR(globalconfig["cishu"][k]["name"]))
-
         if not self.hasclicked:
-            self.tab.setCurrentIndex(0)
-            self.tab.tabBarClicked.emit(0)
-            self.hasclicked = True
+            if thisp == max(self.thisps.values()):
+                self.tab.setCurrentIndex(0)
+                self.tab.tabBarClicked.emit(0)
+                self.hasclicked = True
 
     def tabclicked(self, idx):
         self.hasclicked = True
@@ -917,7 +926,7 @@ class searchwordW(closeashidewindow):
         for k, v in self.cache_results.items():
             if len(v) == 0:
                 continue
-            thisp = globalconfig["cishu"][k]["args"]["priority"]
+            thisp = self.thisps.get(k, 0)
             idx = 0
             for i in tabks:
                 if i >= thisp:
@@ -989,8 +998,10 @@ class searchwordW(closeashidewindow):
 
         self.thisps.clear()
         self.hasclicked = False
-        for k, cishu in gobject.baseobject.cishus.items():
-            self.thisps[k] = cishu.config["priority"]
+        pxx = 999
+        for k in globalconfig["cishuvisrank"]:
+            self.thisps[k] = pxx
+            pxx -= 1
         for k, cishu in gobject.baseobject.cishus.items():
             cishu.safesearch(
                 word, functools.partial(self.show_dict_result.emit, current, k)
