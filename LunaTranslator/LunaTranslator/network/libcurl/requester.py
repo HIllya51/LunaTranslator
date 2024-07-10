@@ -176,9 +176,10 @@ class Requester(Requester_common):
             curl = self.curl
             __ = autostatus(self)
         else:
-            curl = self.initcurl()
+            curl = AutoCURLHandle(curl_easy_duphandle(self.curl))
             __ = 0
 
+        curl_easy_reset(curl)
         curl_easy_setopt(curl, CURLoption.COOKIEJAR, "")
         if timeout:
             curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, timeout)
