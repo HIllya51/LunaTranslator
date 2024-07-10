@@ -165,14 +165,17 @@ class TextBrowser(QWidget, dataget):
         font.setBold(bold)
         return font
 
-    def _setnextfont(self, font):
-        self.textbrowser.moveCursor(QTextCursor.MoveOperation.End)
-        f = QTextCharFormat()
-        f.setFont(font)
-        f.setForeground(self.tranparentcolor)
-        c = self.textbrowser.textCursor()
-        c.setCharFormat(f)
-        self.textbrowser.setTextCursor(c)
+    def _setnextfont(self, font, cleared):
+        if cleared:
+            self.textbrowser.setFont(font)
+        else:
+            self.textbrowser.moveCursor(QTextCursor.MoveOperation.End)
+            f = QTextCharFormat()
+            f.setFont(font)
+            f.setForeground(self.tranparentcolor)
+            c = self.textbrowser.textCursor()
+            c.setCharFormat(f)
+            self.textbrowser.setTextCursor(c)
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color, cleared):
         self._textbrowser_iter_append(
@@ -242,7 +245,7 @@ class TextBrowser(QWidget, dataget):
 
     def _textbrowser_append(self, origin, atcenter, text, tag, color, cleared):
         font = self._createqfont(origin)
-        self._setnextfont(font)
+        self._setnextfont(font, cleared)
         self.textbrowser.setAlignment(self._getqalignment(atcenter))
 
         if cleared:
@@ -276,6 +279,7 @@ class TextBrowser(QWidget, dataget):
     def _insertatpointer(self, pointer, text):
         self.textcursor.setPosition(pointer)
         self.textbrowser.setTextCursor(self.textcursor)
+        self.textbrowser.setTextColor(self.tranparentcolor)
         self.textbrowser.insertPlainText(text)
 
     def _deletebetween(self, p1, p2):
