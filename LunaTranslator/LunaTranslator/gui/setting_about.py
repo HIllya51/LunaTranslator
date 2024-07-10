@@ -77,9 +77,7 @@ def updatemethod(info, self):
 
     savep = gobject.getcachedir("update/LunaTranslator{}.zip".format(bit))
 
-    r2 = requests.get(
-        url, stream=True, verify=False, proxies=getproxy(("github", "download"))
-    )
+    r2 = requests.head(url, verify=False, proxies=getproxy(("github", "download")))
     size = int(r2.headers["Content-Length"])
     if check_interrupt():
         return

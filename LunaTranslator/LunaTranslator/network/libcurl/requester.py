@@ -154,7 +154,7 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.COOKIE, cookie.encode("utf8"))
 
     @ExceptionFilter
-    def request(
+    def request_impl(
         self,
         method,
         scheme,
@@ -190,8 +190,9 @@ class Requester(Requester_common):
             headers["Accept-Encoding"].encode("utf8"),
         )
 
-        curl_easy_setopt(curl, CURLoption.CUSTOMREQUEST, method.upper().encode("utf8"))
-
+        if method == "HEAD":
+            curl_easy_setopt(curl, CURLoption.NOBODY, 1)
+        curl_easy_setopt(curl, CURLoption.CUSTOMREQUEST, method.encode("utf8"))
         self.last_error = curl_easy_setopt(curl, CURLoption.URL, url.encode("utf8"))
         self.raise_for_status()
         curl_easy_setopt(curl, CURLoption.PORT, port)

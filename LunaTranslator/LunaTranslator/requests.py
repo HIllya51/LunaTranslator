@@ -124,65 +124,14 @@ class Requester_common:
     Accept_Encoding = "gzip, deflate, br"
     default_UA = default_UA
 
-    def request(self, *argc) -> ResponseBase: ...
-
-    def _parseheader(self, headers, cookies):
-        _x = []
-
-        if cookies:
-            cookie = self._parsecookie(cookies)
-            headers.update({"Cookie": cookie})
-        for k in sorted(headers.keys()):
-            _x.append("{}: {}".format(k, headers[k]))
-        return _x
-
-    def _parsecookie(self, cookie):
-        _c = []
-        for k, v in cookie.items():
-            _c.append("{}={}".format(k, v))
-        return "; ".join(_c)
-
-    def _parseheader2dict(self, headerstr):
-        # print(headerstr)
-        header = CaseInsensitiveDict()
-        cookie = {}
-        for line in headerstr.split("\r\n")[1:]:
-            idx = line.find(": ")
-            if idx == -1:
-                continue
-            if line[:idx].lower() == "set-cookie":
-                _c = line[idx + 2 :].split("; ")[0]
-                _idx = _c.find("=")
-                cookie[_c[:_idx]] = _c[_idx + 1 :]
-            else:
-                header[line[:idx]] = line[idx + 2 :]
-        return CaseInsensitiveDict(header), cookie
-
-
-class Session:
-    def __init__(self) -> None:
-        self.requester = None
-        self.requester_type = None
-        self.default_UA = default_UA
-
-        self.last_error = 0
-        self.cookies = {}
-        self.headers = CaseInsensitiveDict(
-            {
-                "User-Agent": self.default_UA,
-                # "Accept-Encoding": "gzip, deflate, br",
-                "Accept": "*/*",
-                "Connection": "keep-alive",
-            }
-        )
-        self._requester = None
-        self._libidx = -1
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args):
-        pass
+    default_headers = CaseInsensitiveDict(
+        {
+            "User-Agent": default_UA,
+            # "Accept-Encoding": "gzip, deflate, br",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+        }
+    )
 
     @staticmethod
     def _encode_params(data):
@@ -206,6 +155,31 @@ class Session:
             return urlencode(result, doseq=True)
         else:
             return data
+
+    def _parseurl(self, url: str, param):
+        url = url.strip()
+        scheme, server, path, query, _ = urlsplit(url)
+        if scheme not in ["https", "http"]:
+            raise Exception("unknown scheme " + scheme)
+        spl = server.split(":")
+        if len(spl) == 2:
+            server = spl[0]
+            port = int(spl[1])
+        elif len(spl) == 1:
+            spl[0]
+            if scheme == "https":
+                port = 443
+            else:
+                port = 80
+        else:
+            raise Exception("invalid url")
+        if param:
+            param = self._encode_params(param)
+            query += ("&" if len(query) else "") + param
+        if len(query):
+            path += "?" + query
+        url = scheme + "://" + server + path
+        return scheme, server, port, path, url
 
     def _parsedata(self, data, headers, js):
 
@@ -232,42 +206,6 @@ class Session:
         # print(headers,dataptr,datalen)
         return headers, dataptr, datalen
 
-    def _parseurl(self, url, param):
-        url = url.strip()
-        scheme, server, path, query, _ = urlsplit(url)
-        if scheme not in ["https", "http"]:
-            raise Exception("unknown scheme " + scheme)
-        spl = server.split(":")
-        if len(spl) == 2:
-            server = spl[0]
-            port = int(spl[1])
-        elif len(spl) == 1:
-            spl[0]
-            if scheme == "https":
-                port = 443
-            else:
-                port = 80
-        else:
-            raise Exception("invalid url")
-        if param:
-            param = self._encode_params(param)
-            query += ("&" if len(query) else "") + param
-        if len(query):
-            path += "?" + query
-        url = scheme + "://" + server + path
-        return scheme, server, port, path, url
-
-    def loadrequester(self) -> Requester_common:
-        if self._libidx == globalconfig["network"]:
-            return self._requester
-        if globalconfig["network"] == 1:
-            from network.libcurl.requester import Requester
-        elif globalconfig["network"] == 0:
-            from network.winhttp.requester import Requester
-        self._requester = Requester()
-        self._libidx = globalconfig["network"]
-        return self._requester
-
     def request(
         self,
         method,
@@ -286,10 +224,10 @@ class Session:
         stream=None,
         verify=False,
         cert=None,
-    ):
-        requester = self.loadrequester()
-        _h = self.headers.copy()
-        _h.update({"Accept-Encoding": requester.Accept_Encoding})
+    ) -> ResponseBase:
+
+        _h = self.default_headers.copy()
+        _h.update({"Accept-Encoding": self.Accept_Encoding})
         if headers:
             _h.update(headers)
         headers = _h
@@ -317,9 +255,7 @@ class Session:
                 except:
                     print("Error invalid timeout", timeout)
                     timeout = None
-        if cookies:
-            self.cookies.update(cookies)
-        response = requester.request(
+        return self.request_impl(
             method,
             scheme,
             server,
@@ -327,7 +263,7 @@ class Session:
             param,
             url,
             headers,
-            self.cookies,
+            cookies,
             dataptr,
             datalen,
             proxy,
@@ -335,6 +271,105 @@ class Session:
             verify,
             timeout,
             allow_redirects,
+        )
+
+    def request_impl(self, *argc) -> ResponseBase: ...
+
+    def _parseheader(self, headers: CaseInsensitiveDict, cookies: dict):
+        _x = []
+
+        if cookies:
+            cookie = self._parsecookie(cookies)
+            headers.update({"Cookie": cookie})
+        for k in sorted(headers.keys()):
+            _x.append("{}: {}".format(k, headers[k]))
+        return _x
+
+    def _parsecookie(self, cookie: dict):
+        _c = []
+        for k, v in cookie.items():
+            _c.append("{}={}".format(k, v))
+        return "; ".join(_c)
+
+    def _parseheader2dict(self, headerstr: str):
+        # print(headerstr)
+        header = CaseInsensitiveDict()
+        cookie = {}
+        for line in headerstr.split("\r\n")[1:]:
+            idx = line.find(": ")
+            if idx == -1:
+                continue
+            if line[:idx].lower() == "set-cookie":
+                _c = line[idx + 2 :].split("; ")[0]
+                _idx = _c.find("=")
+                cookie[_c[:_idx]] = _c[_idx + 1 :]
+            else:
+                header[line[:idx]] = line[idx + 2 :]
+        return CaseInsensitiveDict(header), cookie
+
+
+class Session:
+    cookies = {}
+    _requester = None
+    _libidx = -1
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        pass
+
+    @property
+    def requester(self) -> Requester_common:
+        if self._libidx == globalconfig["network"]:
+            return self._requester
+        if globalconfig["network"] == 1:
+            from network.libcurl.requester import Requester
+        elif globalconfig["network"] == 0:
+            from network.winhttp.requester import Requester
+        self._requester = Requester()
+        self._libidx = globalconfig["network"]
+        return self._requester
+
+    def request(
+        self,
+        method: str,
+        url: str,
+        params=None,
+        data=None,
+        headers=None,
+        proxies=None,
+        json=None,
+        cookies=None,
+        files=None,
+        auth=None,
+        timeout=None,
+        allow_redirects=True,
+        hooks=None,
+        stream=None,
+        verify=False,
+        cert=None,
+    ):
+
+        if cookies:
+            self.cookies.update(cookies)
+        response = self.requester.request(
+            method.upper(),
+            url,
+            params,
+            data,
+            headers,
+            proxies,
+            json,
+            self.cookies,
+            files,
+            auth,
+            timeout,
+            allow_redirects,
+            hooks,
+            stream,
+            verify,
+            cert,
         )
         self.cookies.update(response.cookies)
         response.cookies.update(self.cookies)
@@ -355,6 +390,9 @@ class Session:
     def delete(self, url, **kwargs):
         return self.request("DELETE", url, **kwargs)
 
+    def head(self, url, **kwargs):
+        return self.request("HEAD", url, **kwargs)
+
 
 def request(method, url, **kwargs):
     with Session() as session:
@@ -371,3 +409,4 @@ post = partial(request, "POST")
 options = partial(request, "OPTIONS")
 patch = partial(request, "PATCH")
 delete = partial(request, "DELETE")
+head = partial(request, "HEAD")

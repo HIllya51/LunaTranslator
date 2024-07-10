@@ -141,7 +141,7 @@ class Requester(Requester_common):
             raise WinhttpException(GetLastError())
 
     @ExceptionFilter
-    def request(
+    def request_impl(
         self,
         method,
         scheme,
