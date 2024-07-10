@@ -53,17 +53,26 @@ def ExceptionFilter(func):
     return _wrapper
 
 
+class autostatus:
+    def __init__(self, ref) -> None:
+        self.ref = ref
+        ref.occupied = True
+
+    def __del__(self):
+        self.ref.occupied = False
+
+
 class Requester(Requester_common):
 
     Accept_Encoding = "gzip, deflate, br, zstd"
 
     def __init__(self) -> None:
-        self._tls = threading.local()
-        self._tls.curl = self.initcurl()
+        # 用tls不太行，因为为了防止阻塞，每次请求都是完全重新开的线程，会100%重新initcurl
+        self.occupied = 0
+        self.curl = self.initcurl()
 
     def initcurl(self):
         curl = AutoCURLHandle(curl_easy_init())
-        curl_easy_setopt(curl, CURLoption.COOKIEJAR, "")
         curl_easy_setopt(curl, CURLoption.USERAGENT, self.default_UA.encode("utf8"))
         return curl
 
@@ -131,12 +140,6 @@ class Requester(Requester_common):
         elif isinstance(headerqueue, list):
             return b"".join(headerqueue).decode("utf8")
 
-    @property
-    def curl(self):
-        if not getattr(self._tls, "curl", None):
-            self._tls.curl = self.initcurl()
-        return self._tls.curl
-
     def _setheaders(self, curl, headers, cookies):
         lheaders = Autoslist()
         for _ in self._parseheader(headers, None):
@@ -169,8 +172,14 @@ class Requester(Requester_common):
         timeout,
         allow_redirects,
     ):
-        curl = self.curl
+        if self.occupied == False:
+            curl = self.curl
+            __ = autostatus(self)
+        else:
+            curl = self.initcurl()
+            __ = 0
 
+        curl_easy_setopt(curl, CURLoption.COOKIEJAR, "")
         if timeout:
             curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, timeout)
             curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout)
@@ -197,7 +206,7 @@ class Requester(Requester_common):
 
         resp = Response()
         resp.keeprefs.append(curl)
-
+        resp.keeprefs.append(__)
         if stream:
             headerqueue = queue.Queue()
             _notif = headerqueue
