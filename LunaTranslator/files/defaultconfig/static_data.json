@@ -757,11 +757,11 @@
                         },
                         {
                             "name": "整合包_CPU",
-                            "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.2/manga-ocr_cpu_v0.1.11.zip"
+                            "link": "https://lunatranslator.xyz/Resource/IntegrationPack/manga_ocr/cpu"
                         },
                         {
                             "name": "整合包_GPU",
-                            "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.2/manga-ocr_gpu_v0.1.11.7z"
+                            "link": "https://lunatranslator.xyz/Resource/IntegrationPack/manga_ocr/gpu"
                         }
                     ]
                 }
@@ -847,11 +847,11 @@
                         },
                         {
                             "name": "整合包_CPU",
-                            "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-cpu-v0.6.9_vits-uma-genshin-honkai.rar"
+                            "link": "https://lunatranslator.xyz/Resource/IntegrationPack/vits-simple-api/cpu"
                         },
                         {
                             "name": "整合包_GPU",
-                            "link": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-gpu-v0.6.9_vits-uma-genshin-honkai.7z"
+                            "link": "https://lunatranslator.xyz/Resource/IntegrationPack/vits-simple-api/gpu"
                         }
                     ]
                 },

@@ -1079,7 +1079,9 @@
             "type": "offline",
             "args": {
                 "Port": 23456,
-                "preset": ""
+                "preset": "",
+                "整合包_CPU": "https://lunatranslator.xyz/Resource/IntegrationPack/vits-simple-api/cpu",
+                "整合包_GPU": "https://lunatranslator.xyz/Resource/IntegrationPack/vits-simple-api/gpu"
             },
             "argstype": {
                 "Port": {
@@ -1088,6 +1090,14 @@
                     "max": 65535,
                     "step": 1,
                     "name": "端口号"
+                },
+                "整合包_CPU": {
+                    "type": "label",
+                    "islink": true
+                },
+                "整合包_GPU": {
+                    "type": "label",
+                    "islink": true
                 },
                 "preset": {
                     "name": "GPT-SOVITS preset"

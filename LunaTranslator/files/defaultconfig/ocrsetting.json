@@ -246,8 +246,8 @@
     "mangaocr": {
         "args": {
             "项目仓库": "https://github.com/kha-white/manga-ocr",
-            "整合包_CPU": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.2/manga-ocr_cpu_v0.1.11.zip",
-            "整合包_GPU": "https://github.com/raindrop213/LunaTranslator-re/releases/download/v0.0.1/vits-simple-api-windows-gpu-v0.6.9_vits-uma-genshin-honkai.7z",
+            "整合包_CPU_1": "https://lunatranslator.xyz/Resource/IntegrationPack/manga_ocr/cpu",
+            "整合包_GPU_1": "https://lunatranslator.xyz/Resource/IntegrationPack/manga_ocr/gpu",
             "Port": 5665
         },
         "argstype": {
@@ -255,13 +255,15 @@
                 "type": "label",
                 "islink": true
             },
-            "整合包_CPU": {
+            "整合包_CPU_1": {
                 "type": "label",
-                "islink": true
+                "islink": true,
+                "name": "整合包_CPU"
             },
-            "整合包_GPU": {
+            "整合包_GPU_1": {
                 "type": "label",
-                "islink": true
+                "islink": true,
+                "name": "整合包_GPU"
             },
             "Port": {
                 "type": "intspin",
