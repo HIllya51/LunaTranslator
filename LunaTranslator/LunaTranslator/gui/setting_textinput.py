@@ -56,7 +56,7 @@ def gethookgrid(self):
         [
             (
                 makehtml(
-                    "https://lunatranslator.xyz/Resource/game_support",
+                    "{main_server}/Resource/game_support",
                     show=_TR("不支持的游戏？"),
                 ),
                 0,

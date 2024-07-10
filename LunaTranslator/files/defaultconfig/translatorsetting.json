@@ -91,7 +91,8 @@
 	},
 	"sugoix": {
 		"args": {
-			"api": "http://127.0.0.1:14366/"
+			"api": "http://127.0.0.1:14366/",
+			"V8": "{main_server}/Resource/translate/Sugoi_Translator_V8.7z"
 		},
 		"argstype": {
 			"V8": {

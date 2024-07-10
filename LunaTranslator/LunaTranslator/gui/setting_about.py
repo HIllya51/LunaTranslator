@@ -3,7 +3,7 @@ import platform, functools, sys
 import winsharedutils, queue
 from myutils.config import globalconfig, _TR, static_data, _TRL
 from myutils.wrapper import threader, tryprint
-from myutils.utils import makehtml
+from myutils.utils import makehtml, dynamiclink
 import requests, time
 import shutil, gobject
 from myutils.proxy import getproxy
@@ -22,7 +22,7 @@ versionchecktask = queue.Queue()
 def getvesionmethod():
     try:
         res = requests.get(
-            "https://lunatranslator.xyz/version",
+            dynamiclink("{main_server}/version"),
             verify=False,
             # proxies=getproxy(("github", "versioncheck")),
         )
@@ -182,10 +182,10 @@ def createdownloadprogress(self):
 
 
 def wraplink(text: str):
-    link = "https://lunatranslator.xyz/Github/LunaTranslator/releases"
+    link = "{main_server}/Github/LunaTranslator/releases"
     if text.startswith("v"):
 
-        link = f"https://lunatranslator.xyz/Github/LunaTranslator/releases/tag/{text}"
+        link = "{main_server}/Github/LunaTranslator/releases/tag/" + text
     return makehtml(
         link,
         show=text,
@@ -220,7 +220,6 @@ def versionlabelmaybesettext(self, x):
 def solvelinkitems(grid, source):
     name = source["name"]
     link = source["link"]
-
     if link[-8:] == "releases":
         __ = False
     elif link[-1] == "/":
@@ -308,17 +307,17 @@ def setTab_update(self, basel):
     ]
 
     shuominggrid = [
-        ["项目网站", makehtml("https://lunatranslator.xyz/")],
+        ["项目网站", makehtml("{main_server}/")],
         [
             "使用说明",
-            makehtml("https://docs.lunatranslator.xyz/"),
+            makehtml("{docs_server}/"),
         ],
     ]
     if globalconfig["languageuse"] == 0:
         shuominggrid += [
             [
                 "交流群",
-                makehtml("https://qm.qq.com/q/qE32v9NYBO", show=912525396),
+                makehtml("{main_server}/Resource/QQGroup", show=912525396),
             ],
             [],
             ["如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~"],

@@ -246,8 +246,8 @@
     "mangaocr": {
         "args": {
             "项目仓库": "https://github.com/kha-white/manga-ocr",
-            "整合包_CPU_1": "https://lunatranslator.xyz/Resource/IntegrationPack/manga_ocr/cpu",
-            "整合包_GPU_1": "https://lunatranslator.xyz/Resource/IntegrationPack/manga_ocr/gpu",
+            "整合包_CPU_1": "{main_server}/Resource/IntegrationPack/manga_ocr/cpu",
+            "整合包_GPU_1": "{main_server}/Resource/IntegrationPack/manga_ocr/gpu",
             "Port": 5665
         },
         "argstype": {

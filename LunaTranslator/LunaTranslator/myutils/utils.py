@@ -488,7 +488,14 @@ def minmaxmoveobservefunc(self):
     _()
 
 
+def dynamiclink(text):
+    return text.format(
+        main_server=static_data["main_server"], docs_server=static_data["docs_server"]
+    )
+
+
 def makehtml(text, base=False, show=None):
+    text = dynamiclink(text)
     if base:
         show = text.split("/")[-1]
     elif show:
@@ -507,6 +514,7 @@ class autosql(sqlite3.Connection):
 
     def __del__(self):
         self.close()
+
 
 @tryprint
 def parsemayberegexreplace(dict, res):

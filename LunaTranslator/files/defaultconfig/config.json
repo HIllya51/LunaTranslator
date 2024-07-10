@@ -1080,8 +1080,8 @@
             "args": {
                 "Port": 23456,
                 "preset": "",
-                "整合包_CPU": "https://lunatranslator.xyz/Resource/IntegrationPack/vits-simple-api/cpu",
-                "整合包_GPU": "https://lunatranslator.xyz/Resource/IntegrationPack/vits-simple-api/gpu"
+                "整合包_CPU": "{main_server}/Resource/IntegrationPack/vits-simple-api/cpu",
+                "整合包_GPU": "{main_server}/Resource/IntegrationPack/vits-simple-api/gpu"
             },
             "argstype": {
                 "Port": {

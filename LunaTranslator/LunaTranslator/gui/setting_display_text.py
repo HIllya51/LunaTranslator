@@ -4,6 +4,7 @@ import gobject, os, zipfile, shutil
 from myutils.config import globalconfig, _TRL, _TR, static_data
 from gui.inputdialog import multicolorset, autoinitdialog
 from myutils.wrapper import tryprint
+from myutils.utils import dynamiclink
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
@@ -210,8 +211,8 @@ def on_not_find_qweb(self):
     def _okcallback():
 
         link = [
-            "https://lunatranslator.xyz/Resource/QWebEngine_x86.zip",
-            "https://lunatranslator.xyz/Resource/QWebEngine_x64.zip",
+            dynamiclink("{main_server}/Resource/QWebEngine_x86.zip"),
+            dynamiclink("{main_server}/Resource/QWebEngine_x64.zip"),
         ][platform.architecture()[0] == "64bit"]
         os.startfile(link)
         installqwebdialog(self, link)
@@ -315,7 +316,7 @@ def vistranslate_rank(self):
         _TR("显示顺序"),
         globalconfig["fix_translate_rank_rank"],
         isrankeditor=True,
-        namemapfunction=lambda k:globalconfig['fanyi'][k]["name"]
+        namemapfunction=lambda k: globalconfig["fanyi"][k]["name"],
     )
 
 
