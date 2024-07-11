@@ -349,7 +349,6 @@
     "maxBufferSize": 3000,
     "maxHistorySize": 1000000,
     "yuanjiao_r": 0,
-    "yuanjiao_merge": true,
     "qwebinspectgeo": [
         100,
         100,
@@ -459,6 +458,7 @@
     "backcolor_tool": "#3f3f3f",
     "isshowhira": false,
     "locktools": true,
+    "extendtools": true,
     "showfanyisource": false,
     "use_yapi": false,
     "showfanyi": true,

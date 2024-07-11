@@ -11,11 +11,30 @@ testsavejs = False
 
 class TextBrowser(QWidget, dataget):
     contentsChanged = pyqtSignal(QSize)
+    _padding = 5
+
+    def __makeborder(self, size: QSize):
+        _padding = self._padding
+        self.masklabel_top.setGeometry(0, 0, size.width(), _padding)
+
+        self.masklabel_left.setGeometry(0, 0, _padding, size.height())
+        self.masklabel_right.setGeometry(
+            self.width() - _padding, 0, _padding, size.height()
+        )
+        self.masklabel_bottom.setGeometry(
+            0, size.height() - _padding, size.width(), _padding
+        )
 
     @tryprint
     def resizeEvent(self, event: QResizeEvent):
-        self.webivewwidget.resize(event.size())
+        self.webivewwidget.setGeometry(
+            self._padding,
+            self._padding,
+            event.size().width() - 2 * self._padding,
+            event.size().height() - 2 * self._padding,
+        )
         self.masklabel.resize(event.size())
+        self.__makeborder(event.size())
 
     def setselectable(self, b):
         self.masklabel.setHidden(b)
@@ -28,6 +47,18 @@ class TextBrowser(QWidget, dataget):
         else:
             # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
             self.webivewwidget = WebivewWidget(self)
+
+        self.masklabel_left = QLabel(self)
+        self.masklabel_left.setMouseTracking(True)
+        # self.masklabel_left.setStyleSheet('background-color:red')
+        self.masklabel_right = QLabel(self)
+        # self.masklabel_right.setStyleSheet('background-color:red')
+        self.masklabel_right.setMouseTracking(True)
+        self.masklabel_bottom = QLabel(self)
+        self.masklabel_bottom.setMouseTracking(True)
+        self.masklabel_top = QLabel(self)
+        self.masklabel_top.setMouseTracking(True)
+        # self.masklabel_bottom.setStyleSheet('background-color:red')
 
         self.masklabel = QLabel(self.webivewwidget)
         self.masklabel.setMouseTracking(True)
@@ -126,7 +157,10 @@ class TextBrowser(QWidget, dataget):
 
     def calllunaheightchange(self, h):
         self.contentsChanged.emit(
-            QSize(self.width(), int(h * self.webivewwidget.get_zoom()))
+            QSize(
+                self.width(),
+                1 + self._padding * 2 + int(h * self.webivewwidget.get_zoom()),
+            )
         )
 
     def calllunaclickedword(self, wordinfo):

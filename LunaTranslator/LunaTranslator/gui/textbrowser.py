@@ -8,28 +8,11 @@ from gui.usefulwidget import getQMessageBox
 class Textbrowser(QLabel):
     contentsChanged = pyqtSignal(QSize)
 
-    _padding = 5
-
-    def __makeborder(self, size: QSize):
-        _padding = self._padding
-        self.masklabel_right.move(self.width() - _padding, 0)
-        self.masklabel_bottom.move(0, 0 + size.height() - _padding)
-        self.masklabel_left.resize(_padding, size.height())
-        self.masklabel_right.resize(_padding, size.height())
-        self.masklabel_bottom.resize(size.width(), _padding)
-
     def resizeEvent(self, event: QResizeEvent):
-        _padding = self._padding
-        self.textbrowser.setGeometry(
-            _padding,
-            0,
-            event.size().width() - 2 * _padding,
-            event.size().height() - _padding,
-        )
-        self.__makeborder(event.size())
+        self.textbrowser.resize(event.size())
 
     def _contentsChanged(self, size: QSize):
-        self.contentsChanged.emit(QSize(size.width(), size.height()))
+        self.contentsChanged.emit(size)
 
     def loadinternal(self):
         __ = globalconfig["rendertext_using"]
@@ -63,15 +46,6 @@ class Textbrowser(QLabel):
         self.setMouseTracking(True)
         self.cleared = True
         self.loadinternal()
-        self.masklabel_left = QLabel(self)
-        self.masklabel_left.setMouseTracking(True)
-        # self.masklabel_left.setStyleSheet('background-color:red')
-        self.masklabel_right = QLabel(self)
-        # self.masklabel_right.setStyleSheet('background-color:red')
-        self.masklabel_right.setMouseTracking(True)
-        self.masklabel_bottom = QLabel(self)
-        self.masklabel_bottom.setMouseTracking(True)
-        # self.masklabel_bottom.setStyleSheet('background-color:red')
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
         cleared = self.cleared

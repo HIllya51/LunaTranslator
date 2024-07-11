@@ -270,12 +270,12 @@ class QUnFrameWindow(resizableframeless):
             self.buttons[name].setIconSize(
                 QSize(globalconfig["buttonsize"], globalconfig["buttonsize"])
             )
-        self.translate_text.move(0, int(globalconfig["buttonsize"] * 1.5))
         self.setMinimumHeight(int(globalconfig["buttonsize"] * 1.5 + 10))
-        self.setMinimumWidth(globalconfig["buttonsize"] * 2)
+        self.setMinimumWidth(globalconfig["buttonsize"] * 10)
         self.set_color_transparency()
         self.seteffect()
         self.adjustbuttons()
+        self.changeextendstated()
 
     def ocr_once_function(self):
         @threader
@@ -415,6 +415,14 @@ class QUnFrameWindow(resizableframeless):
                 btn,
                 belong,
             )
+
+    def changeextendstated(self):
+
+        self.translate_text.move(0, self.dynamicextraheight())
+
+    def changeextendstated_1(self, extend):
+        self.changeextendstated()
+        self.resize(self.width(), self.height() + [-1, 1][extend])
 
     def hide_(self):
         if globalconfig["showintab"]:
@@ -581,6 +589,7 @@ class QUnFrameWindow(resizableframeless):
         self.translate_text = Textbrowser(self)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
         self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
+        self._TitleLabel.raise_()
         t = QTimer(self)
         t.setInterval(100)
         self._isentered = False
@@ -646,13 +655,11 @@ class QUnFrameWindow(resizableframeless):
         )
         topr = self.createborderradiusstring(
             rate * use_r1,
-            globalconfig["yuanjiao_merge"] and self._TitleLabel.isVisible(),
+            globalconfig["extendtools"] and self._TitleLabel.isVisible(),
             False,
         )
         bottomr3 = self.createborderradiusstring(use_r2, False)
-        bottomr = self.createborderradiusstring(
-            rate * use_r2, globalconfig["yuanjiao_merge"], True
-        )
+        bottomr = self.createborderradiusstring(rate * use_r2, True, True)
 
         self.translate_text.setStyleSheet(
             "Textbrowser{border-width: 0;%s;background-color: %s}"
@@ -834,6 +841,9 @@ class QUnFrameWindow(resizableframeless):
             globalconfig["locktools"] = not globalconfig["locktools"]
             self.refreshtoolicon()
 
+    def dynamicextraheight(self):
+        return int(globalconfig["extendtools"]) * int(globalconfig["buttonsize"] * 1.5)
+
     def textAreaChanged(self, size: QSize):
 
         if self.translate_text.cleared:
@@ -841,9 +851,7 @@ class QUnFrameWindow(resizableframeless):
         if not globalconfig["adaptive_height"]:
             return
         limit = min(size.height(), self.screen().geometry().height())
-        newHeight = (
-            limit + self.translate_text._padding + int(globalconfig["buttonsize"] * 1.5)
-        )
+        newHeight = limit + self.dynamicextraheight()
         size = QSize(self.width(), newHeight)
         self.autoresizesig = uuid.uuid4()
         if newHeight > self.height():
@@ -854,7 +862,7 @@ class QUnFrameWindow(resizableframeless):
     @threader
     def delaymaybeshrink(self, size: QSize, sig):
 
-        time.sleep(0.1)
+        time.sleep(0.2)
         if sig != self.autoresizesig:
             return
         self.resizesignal.emit(size)
@@ -884,8 +892,6 @@ class QUnFrameWindow(resizableframeless):
 
     def toolbarhidedelay(self):
 
-        for button in self.buttons.values():
-            button.hide()
         self._TitleLabel.hide()
         self.set_color_transparency()
 
@@ -929,8 +935,6 @@ class QUnFrameWindow(resizableframeless):
         self.toolbarhidedelaysignal.emit()
 
     def enterfunction(self, delay=None):
-        for button in self.showbuttons:
-            button.show()
         self._TitleLabel.show()
         self.set_color_transparency()
 
@@ -938,7 +942,7 @@ class QUnFrameWindow(resizableframeless):
 
     def resizeEvent(self, e: QResizeEvent):
         super().resizeEvent(e)
-        wh = globalconfig["buttonsize"] * 1.5
+        wh = self.dynamicextraheight()
         height = self.height() - wh
 
         self.translate_text.resize(self.width(), int(height))
@@ -999,7 +1003,7 @@ class QUnFrameWindow(resizableframeless):
 
     def takusanbuttons(self, _type, clickfunc, tips, name, belong=None):
         if clickfunc:
-            button = QPushButton(self)
+            button = QPushButton(self._TitleLabel)
             button.clicked.connect(functools.partial(self.callwrap, clickfunc))
         else:
 
@@ -1007,6 +1011,7 @@ class QUnFrameWindow(resizableframeless):
                 def __init__(self, p):
                     super().__init__(p)
                     self._lb = QLabel(p)
+                    self._lb.setStyleSheet("background-color: transparent;")
                     self._lb.raise_()
 
                 def hideEvent(self, _):
@@ -1021,7 +1026,7 @@ class QUnFrameWindow(resizableframeless):
                 def resizeEvent(self, event):
                     self._lb.resize(event.size())
 
-            button = __(self)
+            button = __(self._TitleLabel)
 
         if tips:
             button.setToolTip(_TR(tips))

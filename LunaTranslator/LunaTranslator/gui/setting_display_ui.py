@@ -363,7 +363,7 @@ def uisetting(self):
                                             ),
                                         ],
                                         [
-                                            ("锁定工具栏"),
+                                            "锁定工具栏",
                                             D_getsimpleswitch(
                                                 globalconfig,
                                                 "locktools",
@@ -383,6 +383,12 @@ def uisetting(self):
                                                 callback=lambda _: toolcolorchange(),
                                             ),
                                             "",
+                                            "延申",
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "extendtools",
+                                                callback=gobject.baseobject.translation_ui.changeextendstated_1
+                                            ),
                                         ],
                                     ),
                                 ),
