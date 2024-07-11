@@ -168,14 +168,14 @@ class TextBrowser(QWidget, dataget):
     def _setnextfont(self, font, cleared):
         if cleared:
             self.textbrowser.setFont(font)
-        else:
-            self.textbrowser.moveCursor(QTextCursor.MoveOperation.End)
-            f = QTextCharFormat()
-            f.setFont(font)
-            f.setForeground(self.tranparentcolor)
-            c = self.textbrowser.textCursor()
-            c.setCharFormat(f)
-            self.textbrowser.setTextCursor(c)
+    
+        self.textbrowser.moveCursor(QTextCursor.MoveOperation.End)
+        f = QTextCharFormat()
+        f.setFont(font)
+        f.setForeground(self.tranparentcolor)
+        c = self.textbrowser.textCursor()
+        c.setCharFormat(f)
+        self.textbrowser.setTextCursor(c)
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color, cleared):
         self._textbrowser_iter_append(
