@@ -584,6 +584,7 @@ class QUnFrameWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self._TitleLabel = QLabel(self)
+        self._TitleLabel.setObjectName('_TitleLabel')
         self._TitleLabel.setMouseTracking(True)
         self.addbuttons()
         self.translate_text = Textbrowser(self)
@@ -672,7 +673,7 @@ class QUnFrameWindow(resizableframeless):
             )
         )
         self._TitleLabel.setStyleSheet(
-            "border-width: 0;%s;background-color: %s"
+            "QLabel#_TitleLabel{border-width: 0;%s;background-color: %s}"
             % (
                 bottomr,
                 str2rgba(
