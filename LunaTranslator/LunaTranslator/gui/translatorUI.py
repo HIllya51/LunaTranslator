@@ -929,9 +929,10 @@ class QUnFrameWindow(resizableframeless):
         while self.checkisentered():
             time.sleep(0.1)
         self._isentered = False
-        if delay is None:
-            delay = globalconfig["disappear_delay_tool"]
-        time.sleep(delay)
+        if not globalconfig["toolviswhenenter"]:
+            if delay is None:
+                delay = globalconfig["disappear_delay_tool"]
+            time.sleep(delay)
         if self.enter_sig != enter_sig:
             return
         if globalconfig["locktools"]:
