@@ -287,6 +287,8 @@ def uisetting(self):
                                                 callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
                                             ),
                                             "",
+                                            "",
+                                            ""
                                         ],
                                     ),
                                 ),
