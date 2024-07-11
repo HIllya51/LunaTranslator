@@ -130,10 +130,13 @@ def getdefaultsavehook(title=None):
         "inserthooktimeout": 0,
         "needinserthookcode": [],
         # "allow_tts_auto_names": "",#->v4
-        "allow_tts_auto_names_v4": [],
+        # "allow_tts_auto_names_v4": [],
+        "tts_follow_default": True,
         "tts_repair": False,
-        "tts_repair_regex": [],
-        "hooktypeasname": {},
+        "tts_repair_regex": [{"regex": True, "key": "(.*?)「", "value": ""}],
+        "tts_skip": False,
+        "tts_skip_regex": [],
+        # "hooktypeasname": {},
         "use_saved_text_process": False,
         # "searchnoresulttime": 0,
         "gamejsonfile": [],  # 之前是"",后面改成[]
@@ -181,6 +184,15 @@ for uid in savehook_new_data:
         savehook_new_data[uid]["allow_tts_auto_names_v4"] = savehook_new_data[uid][
             "allow_tts_auto_names"
         ].split("|")
+
+    if ("allow_tts_auto_names_v4" in savehook_new_data[uid]) and (
+        "tts_skip_regex" not in savehook_new_data[uid]
+    ):
+        savehook_new_data[uid]["tts_skip_regex"] = []
+        for name in savehook_new_data[uid]["allow_tts_auto_names_v4"]:
+            savehook_new_data[uid]["tts_skip_regex"].append(
+                {"regex": False, "key": name, "condition": 0}
+            )
 
     for k in _dfsavehook:
         if k not in savehook_new_data[uid]:

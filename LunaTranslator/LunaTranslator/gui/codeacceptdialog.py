@@ -3,7 +3,7 @@ import functools
 from myutils.utils import checkencoding
 from myutils.config import globalconfig, _TR, _TRL
 from myutils.wrapper import Singleton_close
-from gui.usefulwidget import getspinbox, threebuttons, getlineedit, FocusCombo
+from gui.usefulwidget import getspinbox, threebuttons, getlineedit, FocusCombo, TableViewW
 
 nowsuppertcodes = _TRL(
     [
@@ -46,7 +46,7 @@ class codeacceptdialog(QDialog):
         self.model = QStandardItemModel(len(globalconfig["accept_encoding"]), 1, self)
 
         self.model.setHorizontalHeaderLabels(_TRL(["接受的编码"]))
-        self.table = QTableView(self)
+        self.table = TableViewW(self)
         self.table.setModel(self.model)
         self.table.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.Stretch

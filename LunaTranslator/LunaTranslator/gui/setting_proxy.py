@@ -141,7 +141,7 @@ def makeproxytab(self, basel):
                 "辞书",
                 "元数据",
                 "分词",
-                "github",
+                "自动更新",
             ]
         ),
         [
@@ -175,10 +175,19 @@ def setTab_proxy_lazy(self, basel):
                 makescrollgrid,
                 [
                     [
-                        "网络请求",
+                        "HTTP",
                         (
                             D_getsimplecombobox(
                                 ["winhttp", "libcurl"], globalconfig, "network"
+                            ),
+                            5,
+                        ),
+                    ],
+                    [
+                        "WebSocket",
+                        (
+                            D_getsimplecombobox(
+                                ["winhttp", "libcurl"], globalconfig, "network_websocket"
                             ),
                             5,
                         ),

@@ -1,5 +1,5 @@
 import time, uuid
-import os, threading, sys
+import os, threading, sys, re, codecs
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -233,7 +233,7 @@ class MAINUI:
             self.currenttranslate = ""
             if globalconfig["read_raw"]:
                 self.currentread = text
-                self.autoreadcheckname()
+                self.readcurrent()
 
         self.transhis.getnewsentencesignal.emit(text)
         self.maybesetedittext(text)
@@ -463,48 +463,76 @@ class MAINUI:
                     else res
                 )
 
-    @threader
-    def autoreadcheckname(self):
+    def __usewhich(self):
+
         try:
-            time.sleep(globalconfig["textthreaddelay"] / 1000)
-            name = self.textsource.currentname
-            names = savehook_new_data[self.textsource.gameuid][
-                "allow_tts_auto_names_v4"
-            ]
-            needpass = False
-            if name in names:
-                needpass = True
+            for _ in (0,):
 
-            # name文本是类似“美香「おはよう」”的形式
-            text = name
-            for _name in names:
-                if text.startswith(_name) or text.endswith(_name):
-                    if len(text) >= len(_name) + 3:  # 2个引号+至少1个文本内容。
-                        needpass = True
-                        break
+                if not gobject.baseobject.textsource:
+                    break
 
-            if needpass == False:  # name not in names:
-                self.readcurrent()
-            gobject.baseobject.textsource.currentname = None
+                gameuid = gobject.baseobject.textsource.gameuid
+                if not gameuid:
+                    break
+                if savehook_new_data[gameuid]["tts_follow_default"]:
+                    break
+                return savehook_new_data[gameuid]
         except:
-            # print_exc()
-            self.readcurrent()
+            pass
+        return globalconfig["ttscommon"]
 
     def ttsrepair(self, text, usedict):
         if usedict["tts_repair"]:
             text = parsemayberegexreplace(usedict["tts_repair_regex"], text)
         return text
 
+    def guessmaybeskip(self, dic: dict, res: str):
+
+        for item in dic:
+            if item["regex"]:
+                retext = codecs.escape_decode(bytes(item["key"], "utf-8"))[0].decode(
+                    "utf-8"
+                )
+                if item["condition"] == 1:
+                    if re.search(retext, res):
+                        return True
+                elif item["condition"] == 0:
+                    if re.match(retext, res) or re.search(retext + "$", res):
+                        # 用^xxx|xxx$有可能有点危险
+                        return True
+            else:
+                if item["condition"] == 1:
+                    if (
+                        res.isascii()
+                        and item["key"].isascii()
+                        and (" " not in item["key"])
+                    ):  # 目标可能有空格
+                        resx = res.split(" ")
+                        for i in range(len(resx)):
+                            if resx[i] == item["key"]:
+                                return True
+                    else:
+                        if item["key"] in res:
+                            return True
+                elif item["condition"] == 0:
+                    if res.startswith(item["key"]) or res.endswith(item["key"]):
+                        return True
+        return False
+
+    def ttsskip(self, text, usedict):
+        if usedict["tts_skip"]:
+            return self.guessmaybeskip(usedict["tts_skip_regex"], text)
+        return False
+
+    @threader
     def readcurrent(self, force=False):
         if not self.reader:
             return
         if not (force or globalconfig["autoread"]):
             return
-        text = self.ttsrepair(self.currentread, globalconfig["ttscommon"])
-        try:
-            text = self.ttsrepair(text, savehook_new_data[self.textsource.gameuid])
-        except:
-            pass
+        if (not force) and self.ttsskip(self.currentread, self.__usewhich()):
+            return
+        text = self.ttsrepair(self.currentread, self.__usewhich())
         self.reader.read(text, force)
 
     @threader
@@ -1145,9 +1173,13 @@ class MAINUI:
                 font:{globalconfig["settingfontsize"] + 4}pt  {globalconfig["settingfonttype"]};  }}
             """
         self.commonstylebase.setStyleSheet(style)
+        font = QFont()
+        font.setFamily(globalconfig["settingfonttype"])
+        font.setPointSizeF(globalconfig["settingfontsize"])
+        QApplication.instance().setFont(font)
 
     def parsedefaultfont(self):
-        for k in ["fonttype", "fonttype2"]:
+        for k in ["fonttype", "fonttype2", "settingfonttype"]:
             if globalconfig[k] == "":
                 globalconfig[k] = QFontDatabase.systemFont(
                     QFontDatabase.SystemFont.GeneralFont

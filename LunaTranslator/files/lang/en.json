@@ -352,8 +352,6 @@
     "删除": "Delete",
     "自动切换到模式": "Switch to Mode",
     "不切换": "Don't Switch",
-    "类型": "Type",
-    "人名": "Names",
     "显示": "Show",
     "用户词典选择JcUserdic文件夹": "Select JcUserdic Folder for User Dictionary",
     "当前MD5": "Current MD5",
@@ -537,7 +535,6 @@
     "原文字体": "Original Text Font",
     "译文字体": "Translation Text Font",
     "额外的行间距": "Extra Line Spacing",
-    "区分人名和文本": "Distinguish Names and Text",
     "选取OCR范围后显示范围框": "Display Selected OCR Region Border",
     "下载": "Download",
     "附加参数": "Additional Parameters",
@@ -650,7 +647,6 @@
     "添加": "Add",
     "使用原型查询": "Use Prototype Query",
     "时": "Time",
-    "禁止自动朗读的人名": "Text-to-Speech Names Blacklist",
     "启动": "Start",
     "批量添加": "Batch Add",
     "左移": "Move Left",
@@ -817,5 +813,7 @@
     "显示顺序": "Display order",
     "安装": "install",
     "延申": "Extension",
-    "进入时才显示": "Displayed only upon entry"
+    "进入时才显示": "Displayed only upon entry",
+    "语音跳过": "Voice skipping",
+    "条件": "condition"
 }

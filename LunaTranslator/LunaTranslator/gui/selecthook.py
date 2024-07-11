@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     FocusSpin,
     FocusCombo,
+    TableViewW,
 )
 
 
@@ -390,7 +391,7 @@ class hookselect(closeashidewindow):
             return
         row = self.save.index(hook)
         output = output[:200].replace("\n", " ")
-        colidx = 2 + int(self.allow_set_text_name) + int(bool(self.embedablenum))
+        colidx = 2 + int(bool(self.embedablenum))
         self.ttCombomodelmodel.item(row, colidx).setText(output)
 
     def removehook(self, key):
@@ -408,8 +409,8 @@ class hookselect(closeashidewindow):
         self.embedablenum -= 1
         if self.embedablenum > 0:
             return
-        self.currentheader.pop(1 + int(self.allow_set_text_name))
-        self.ttCombomodelmodel.removeColumn(1 + int(self.allow_set_text_name))
+        self.currentheader.pop(1)
+        self.ttCombomodelmodel.removeColumn(1)
         self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(self.currentheader))
 
     def solveifembedablenumincreaseto1(self, key, isembedable):
@@ -420,11 +421,11 @@ class hookselect(closeashidewindow):
         if self.embedablenum != 1:
             return
 
-        self.currentheader.insert(1 + int(self.allow_set_text_name), "内嵌")
-        self.ttCombomodelmodel.insertColumn(1 + int(self.allow_set_text_name), [])
+        self.currentheader.insert(1, "内嵌")
+        self.ttCombomodelmodel.insertColumn(1, [])
         self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(self.currentheader))
         self.tttable.horizontalHeader().setSectionResizeMode(
-            1 + int(self.allow_set_text_name), QHeaderView.ResizeMode.ResizeToContents
+            1, QHeaderView.ResizeMode.ResizeToContents
         )
 
     def changeprocessclear(self, config):
@@ -438,10 +439,7 @@ class hookselect(closeashidewindow):
         self.allres = OrderedDict()
         self.hidesearchhookbuttons()
         self.currentheader = ["显示", "HOOK", "文本"]
-        self.allow_set_text_name = config["allow_set_text_name"]
         self.saveifembedable = {}
-        if self.allow_set_text_name:
-            self.currentheader.insert(1, "类型")
         self.embedablenum = 0
 
     def addnewhook(self, key, select):
@@ -459,11 +457,6 @@ class hookselect(closeashidewindow):
             self.tttable.horizontalHeader().setSectionResizeMode(
                 len(self.currentheader) - 2, QHeaderView.ResizeMode.Interactive
             )
-            if self.allow_set_text_name:
-
-                self.tttable.horizontalHeader().setSectionResizeMode(
-                    1, QHeaderView.ResizeMode.ResizeToContents
-                )
         self.solveifembedablenumincreaseto1(key, isembedable)
         if isembedable:
             self.selectionbutton.insert(
@@ -487,10 +480,8 @@ class hookselect(closeashidewindow):
             QStandardItem("%s %s %x:%x" % (hn, hc, tp.ctx, tp.ctx2)),
             QStandardItem(),
         ]
-        if self.allow_set_text_name:
-            items.insert(1, QStandardItem())
         if self.embedablenum:
-            items.insert(1 + int(self.allow_set_text_name), QStandardItem())
+            items.insert(1, QStandardItem())
         self.ttCombomodelmodel.insertRow(rown, items)
 
         if select:
@@ -504,28 +495,8 @@ class hookselect(closeashidewindow):
             checkbtn.clicked.connect(functools.partial(self._embedbtnfn, key))
 
             self.tttable.setIndexWidget(
-                self.ttCombomodelmodel.index(rown, 1 + int(self.allow_set_text_name)),
-                checkbtn,
-            )
-        if self.allow_set_text_name:
-            typecombo = getsimplecombobox(
-                _TRL(["文本", "人名"]),
-                gobject.baseobject.textsource.hooktypecollecter,
-                key,
-                callback=functools.partial(
-                    savehook_new_data[gobject.baseobject.textsource.gameuid][
-                        "hooktypeasname"
-                    ].__setitem__,
-                    json.dumps(gobject.baseobject.textsource.serialkey(key)),
-                ),
-            )
-            self.typecombo.insert(rown, typecombo)
-            self.tttable.setIndexWidget(
                 self.ttCombomodelmodel.index(rown, 1),
-                typecombo,
-            )
-            self.tttable.setRowHeight(
-                rown, max(self.tttable.rowHeight(rown), typecombo.height())
+                checkbtn,
             )
 
     def _check_tp_using(self, key):
@@ -579,7 +550,7 @@ class hookselect(closeashidewindow):
         self.hboxlayout.addLayout(self.vboxlayout)
         self.ttCombomodelmodel = QStandardItemModel()
 
-        self.tttable = QTableView()
+        self.tttable = TableViewW()
         self.tttable.setModel(self.ttCombomodelmodel)
         # self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tttable.horizontalHeader().setStretchLastSection(True)

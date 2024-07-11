@@ -352,8 +352,6 @@
     "删除": "Supprimer",
     "自动切换到模式": "Basculement automatique en mode",
     "不切换": "Pas de commutation",
-    "类型": "Type",
-    "人名": "Nom de la personne",
     "显示": "Afficher",
     "用户词典选择JcUserdic文件夹": "Dictionnaire utilisateur sélectionner le dossier jcuserdic",
     "当前MD5": "Le MD5 actuel",
@@ -537,7 +535,6 @@
     "原文字体": "Police originale",
     "译文字体": "Police de traduction",
     "额外的行间距": "Espacement des lignes supplémentaire",
-    "区分人名和文本": "Différencier les noms de personnes et les textes",
     "选取OCR范围后显示范围框": "Afficher la zone de portée après avoir sélectionné la plage ocr",
     "下载": "Télécharger",
     "附加参数": "Paramètres supplémentaires",
@@ -651,7 +648,6 @@
     "添加": "Ajouter",
     "使用原型查询": "Utiliser une requête prototype",
     "时": "Lorsque",
-    "禁止自动朗读的人名": "Noms de personnes interdits de Lecture automatique",
     "启动": "Démarrage",
     "批量添加": "Ajouter par lot",
     "左移": "Déplacement à gauche",
@@ -817,5 +813,7 @@
     "显示顺序": "Ordre d'affichage",
     "安装": "Installation",
     "延申": "Yanshin",
-    "进入时才显示": "Ne s'affiche qu'à l'entrée"
+    "进入时才显示": "Ne s'affiche qu'à l'entrée",
+    "语音跳过": "Voix skip",
+    "条件": "Conditions"
 }

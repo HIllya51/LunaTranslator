@@ -118,8 +118,6 @@ class texthook(basetext):
         self.newline = Queue()
         self.newline_delaywait = Queue()
         self.hookdatacollecter = OrderedDict()
-        self.hooktypecollecter = OrderedDict()
-        self.currentname = None
         self.reverse = {}
         self.forward = []
         self.selectinghook = None
@@ -141,7 +139,6 @@ class texthook(basetext):
         self.is64bit = Is64bit(pids[0])
         self.hwnd = hwnd
         gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit(self.config)
-        self.allow_set_text_name = self.config["allow_set_text_name"]
         self.isremoveuseless = self.config["removeuseless"] and len(
             self.autostarthookcode
         )
@@ -377,14 +374,6 @@ class texthook(basetext):
         key = (hc, hn.decode("utf8"), tp)
 
         self.hookdatacollecter[key] = []
-        self.hooktypecollecter[key] = 0
-        if self.allow_set_text_name:
-            for jskey in savehook_new_data[self.gameuid]["hooktypeasname"]:
-                if savehook_new_data[self.gameuid]["hooktypeasname"][jskey] == 0:
-                    continue
-                if self.match_compatibility(self.deserial(json.loads(jskey)), key):
-                    self.hooktypecollecter[key] = 1
-                    break
         if self.isremoveuseless:
             if hc not in [_[0] for _ in self.autostarthookcode]:
                 self.Luna_RemoveHook(tp.processId, tp.addr)
@@ -509,8 +498,6 @@ class texthook(basetext):
             return False
         key = (hc, hn.decode("utf8"), tp)
 
-        if self.hooktypecollecter[key] == 1:
-            self.currentname = output
         if len(self.selectedhook) == 1:
             if key in self.selectedhook:
                 self.newline.put(output)

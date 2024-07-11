@@ -352,8 +352,6 @@
     "删除": "Eliminar",
     "自动切换到模式": "Cambiar automáticamente al modo",
     "不切换": "Sin cambiar",
-    "类型": "Tipo",
-    "人名": "Nombre",
     "显示": "Mostrar",
     "用户词典选择JcUserdic文件夹": "El diccionario del usuario selecciona la carpeta jcuuserdic",
     "当前MD5": "MD5 actual",
@@ -537,7 +535,6 @@
     "原文字体": "Fuente original",
     "译文字体": "Fuente de traducción",
     "额外的行间距": "Espaciamiento adicional de filas",
-    "区分人名和文本": "Distinguir entre nombre y texto",
     "选取OCR范围后显示范围框": "Después de seleccionar el rango ocr, se muestra el cuadro de rango.",
     "下载": "Descargar",
     "附加参数": "Parámetros adicionales",
@@ -651,7 +648,6 @@
     "添加": "Añadir",
     "使用原型查询": "Consulta con prototipo",
     "时": "Hora",
-    "禁止自动朗读的人名": "Nombres de personas cuya lectura automática está prohibida",
     "启动": "Inicio",
     "批量添加": "Añadir por lotes",
     "左移": "Desplazamiento a la izquierda",
@@ -817,5 +813,7 @@
     "显示顺序": "Orden de visualización",
     "安装": "Instalación",
     "延申": "Extensión",
-    "进入时才显示": "Se muestra al entrar"
+    "进入时才显示": "Se muestra al entrar",
+    "语音跳过": "Salto de voz",
+    "条件": "Condiciones"
 }

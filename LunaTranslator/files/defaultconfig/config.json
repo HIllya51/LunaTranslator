@@ -16,6 +16,7 @@
     "read_translator": 0,
     "disappear_delay": 5,
     "network": 1,
+    "network_websocket": 1,
     "webview_textbrowser": false,
     "imagewrapmode": 0,
     "primitivtemetaorigin": "vid",
@@ -292,7 +293,6 @@
     ],
     "hooklossless": true,
     "direct_filterrepeat": false,
-    "allow_set_text_name": false,
     "textoutputer": {
         "clipboard": {
             "use": false
@@ -499,7 +499,7 @@
         600,
         600
     ],
-    "settingfonttype": "Arial",
+    "settingfonttype": "",
     "setting_geo_2": [
         100,
         100,
@@ -1367,7 +1367,9 @@
         "rate": 1.0,
         "volume": 100.0,
         "tts_repair": false,
-        "tts_repair_regex": []
+        "tts_repair_regex": [],
+        "tts_skip": false,
+        "tts_skip_regex": []
     },
     "allowmulti": true,
     "sourcestatus2": {

@@ -34,6 +34,7 @@ from myutils.utils import (
 from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     noundictconfigdialog1,
+    noundictconfigdialog2,
     autoinitdialog,
     autoinitdialog_items,
     postconfigdialog,
@@ -48,6 +49,7 @@ from gui.specialwidget import (
 from gui.usefulwidget import (
     yuitsu_switch,
     FocusCombo,
+    TableViewW,
     saveposwindow,
     getsimplepatheditor,
     getboxlayout,
@@ -423,7 +425,8 @@ class browserdialog(saveposwindow):
         if gameuid:
             for link in savehook_new_data[self.gameuid]["relationlinks"]:
                 items.append((link[0], tagitem.TYPE_GAME_LIKE, link[1]))
-
+        if len(items) == 0:
+            items.append(("Luna", tagitem.TYPE_GLOABL_LIKE, static_data["main_server"]))
         self.tagswidget.clearTag(False)
         self.tagswidget.addTags(items)
 
@@ -982,15 +985,43 @@ class dialog_setting_game_internal(QWidget):
         formLayout = QFormLayout()
         _w.setLayout(formLayout)
 
+        __extraw = QWidget()
+
         formLayout.addRow(
-            _TR("禁止自动朗读的人名"),
-            listediterline(
-                _TR("禁止自动朗读的人名"),
-                _TR("人名"),
-                savehook_new_data[gameuid]["allow_tts_auto_names_v4"],
+            _TR("跟随默认"),
+            getsimpleswitch(
+                savehook_new_data[gameuid],
+                "tts_follow_default",
+                callback=lambda _: __extraw.setEnabled(not _),
             ),
         )
-        formLayout.addRow(
+        __extraw.setEnabled(not savehook_new_data[gameuid]["tts_follow_default"])
+        formLayout.addRow(__extraw)
+        formLayout2 = QFormLayout()
+        formLayout2.setContentsMargins(0, 0, 0, 0)
+        __extraw.setLayout(formLayout2)
+
+        formLayout2.addRow(
+            _TR("语音跳过"),
+            getboxlayout(
+                [
+                    getsimpleswitch(savehook_new_data[gameuid], "tts_skip"),
+                    getIconButton(
+                        callback=lambda: noundictconfigdialog2(
+                            self,
+                            savehook_new_data[gameuid]["tts_skip_regex"],
+                            "语音跳过",
+                            ["正则", "条件", "内容"],
+                        ),
+                        icon="fa.gear",
+                    ),
+                    QLabel(),
+                ],
+                margin0=True,
+                makewidget=True,
+            ),
+        )
+        formLayout2.addRow(
             _TR("语音修正"),
             getboxlayout(
                 [
@@ -1006,9 +1037,11 @@ class dialog_setting_game_internal(QWidget):
                     ),
                     QLabel(),
                 ],
+                margin0=True,
                 makewidget=True,
             ),
         )
+
         return _w
 
     def maketabforanki(self, gameuid):
@@ -1164,7 +1197,7 @@ class dialog_setting_game_internal(QWidget):
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(_TRL(["预处理方法", "使用", "设置"]))
 
-        table = QTableView()
+        table = TableViewW()
 
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -1416,7 +1449,6 @@ class dialog_setting_game_internal(QWidget):
             "maxBufferSize",
             "maxHistorySize",
             "filter_chaos_code",
-            "allow_set_text_name",
             "use_yapi",
         ]:
             if k not in savehook_new_data[gameuid]["hooksetting_private"]:
@@ -1484,13 +1516,6 @@ class dialog_setting_game_internal(QWidget):
             getsimpleswitch(
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "filter_chaos_code",
-            ),
-        )
-        formLayout2.addRow(
-            _TR("区分人名和文本"),
-            getsimpleswitch(
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "allow_set_text_name",
             ),
         )
         formLayout2.addRow(

@@ -1,7 +1,7 @@
 import windows
 import os, time
-import codecs, hashlib
-import socket, gobject, uuid
+import codecs, hashlib, shutil
+import socket, gobject, uuid, subprocess
 import ctypes, importlib
 import ctypes.wintypes
 from qtsymbols import *
@@ -304,47 +304,22 @@ def selectdebugfile(path: str, ismypost=False):
         path = f"./userconfig/posts/{path}.py"
     p = os.path.abspath((path))
     os.makedirs(os.path.dirname(p), exist_ok=True)
-
+    print(path)
     if os.path.exists(p) == False:
-        with open(p, "w", encoding="utf8") as ff:
-            if path == "./userconfig/selfbuild.py":
-                ff.write(
-                    """
-import requests
-from translator.basetranslator import basetrans
-class TS(basetrans): 
-    def translate(self,content):  
-        #在这里编写
-        return content
-"""
-                )
-            elif path == "./userconfig/mypost.py" or ismypost:
-                ff.write(
-                    """
-def POSTSOLVE(line): 
-    #请在这里编写自定义处理
-    return line
-"""
-                )
-            elif path == "./userconfig/myprocess.py":
-                ff.write(
-                    """
-class Process:
-    def process_before(self, text):
-        context = {}
-        return text, context
-
-    def process_after(self, res, context):
-        return res
-    
-    @staticmethod
-    def get_setting_window(parent_window):
-        pass
-"""
-                )
+        tgt = {
+            "./userconfig/selfbuild.py": "selfbuild.py",
+            "./userconfig/mypost.py": "mypost.py",
+            "./userconfig/myprocess.py": "myprocess.py",
+        }.get(path)
+        if ismypost:
+            tgt = "mypost.py"
+        shutil.copy(
+            "LunaTranslator/myutils/template/" + tgt,
+            p,
+        )
     # os.startfile(p)
     threading.Thread(
-        target=os.system, args=(f'notepad "{os.path.normpath(p)}"',)
+        target=subprocess.run, args=(f'notepad "{os.path.normpath(p)}"',)
     ).start()
     return p
 
@@ -517,8 +492,8 @@ class autosql(sqlite3.Connection):
 
 
 @tryprint
-def parsemayberegexreplace(dict, res):
-    for item in dict:
+def parsemayberegexreplace(dic: dict, res: str):
+    for item in dic:
         if item["regex"]:
             res = re.sub(
                 codecs.escape_decode(bytes(item["key"], "utf-8"))[0].decode("utf-8"),

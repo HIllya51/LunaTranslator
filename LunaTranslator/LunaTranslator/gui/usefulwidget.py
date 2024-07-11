@@ -59,6 +59,13 @@ class FocusDoubleSpin(QDoubleSpinBox):
             return super().wheelEvent(e)
 
 
+class TableViewW(QTableView):
+    def setIndexWidget(self, index: QModelIndex, w: QWidget):
+        super().setIndexWidget(index, w)
+        if self.rowHeight(index.row()) < w.height():
+            self.setRowHeight(index.row(), w.height())
+
+
 @Singleton_close
 class dialog_showinfo(QDialog):
 
@@ -1166,7 +1173,8 @@ class mshtmlWidget(abstractwebview):
     def _parsehtml(self, html):
         html = self._parsehtml_dark(html)
         html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head><body style=" font-family:'{}'">{}</body></html>""".format(
-            QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family(), html
+            QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family(),
+            html,
         )
         return html
 

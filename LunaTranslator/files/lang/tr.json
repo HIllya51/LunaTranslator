@@ -352,8 +352,6 @@
     "删除": "Sil",
     "自动切换到模式": "Otomatik moda değiştir",
     "不切换": "Değiştirme",
-    "类型": "tür",
-    "人名": "isim",
     "显示": "Ekran",
     "用户词典选择JcUserdic文件夹": "Kullanıcı sözlük seçimi JcUserdic folder",
     "当前MD5": "Ağımdaki MD5",
@@ -537,7 +535,6 @@
     "原文字体": "Orijinal yazıtipi",
     "译文字体": "Çeviri yazıtipi",
     "额外的行间距": "Ekstra çizgi boşluğu",
-    "区分人名和文本": "Kişisel isimler ve metin arasında ayrı",
     "选取OCR范围后显示范围框": "OCR menzili seçmeden sonra menzil kutusunu göster",
     "下载": "indir",
     "附加参数": "Ekstra parametre",
@@ -651,7 +648,6 @@
     "添加": "Ekle",
     "使用原型查询": "Prototip sorguları kullanılıyor",
     "时": "Zaman",
-    "禁止自动朗读的人名": "Otomatik okuma yasaklanmış isimler",
     "启动": "start-up",
     "批量添加": "Toplu Ekle",
     "左移": "Sol vardiyası",
@@ -817,5 +813,7 @@
     "显示顺序": "Gösterim düzeni",
     "安装": "Kur",
     "延申": "Uzantı",
-    "进入时才显示": "Sadece giriş üzerinde gösterilir"
+    "进入时才显示": "Sadece giriş üzerinde gösterilir",
+    "语音跳过": "Ses atlama",
+    "条件": "durum"
 }

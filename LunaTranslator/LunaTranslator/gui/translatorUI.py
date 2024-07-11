@@ -339,7 +339,7 @@ class QUnFrameWindow(resizableframeless):
                     gobject.baseobject.settin_ui
                 ),
             ),
-            ("langdu", self.langdu),
+            ("langdu", lambda: gobject.baseobject.readcurrent(force=True)),
             ("mousetransbutton", lambda: self.changemousetransparentstate(0)),
             ("backtransbutton", lambda: self.changemousetransparentstate(1)),
             ("locktoolsbutton", self.changetoolslockstate),
@@ -882,9 +882,6 @@ class QUnFrameWindow(resizableframeless):
             self.showhideocrrange()
         if globalconfig["ocrafterrangeselect"]:
             self.startTranslater()
-
-    def langdu(self):
-        gobject.baseobject.readcurrent(force=True)
 
     def startTranslater(self):
         if gobject.baseobject.textsource:

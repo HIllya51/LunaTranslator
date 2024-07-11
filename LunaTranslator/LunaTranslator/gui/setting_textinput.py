@@ -163,10 +163,6 @@ def gethookgrid(self):
                             ),
                         ],
                         [
-                            "区分人名和文本",
-                            D_getsimpleswitch(globalconfig, "allow_set_text_name"),
-                        ],
-                        [
                             "使用YAPI注入",
                             D_getsimpleswitch(globalconfig, "use_yapi"),
                         ],

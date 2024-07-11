@@ -2,7 +2,12 @@ from qtsymbols import *
 import os, functools
 import gobject
 from myutils.config import globalconfig, _TRL, static_data
-from gui.inputdialog import autoinitdialog_items, noundictconfigdialog1, autoinitdialog
+from gui.inputdialog import (
+    autoinitdialog_items,
+    noundictconfigdialog1,
+    autoinitdialog,
+    noundictconfigdialog2,
+)
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -198,6 +203,19 @@ def setTab5lz(self):
                                     "read_translator",
                                 ),
                                 4,
+                            ),
+                        ],
+                        [
+                            "语音跳过",
+                            D_getsimpleswitch(globalconfig["ttscommon"], "tts_skip"),
+                            D_getIconButton(
+                                callback=lambda: noundictconfigdialog2(
+                                    self,
+                                    globalconfig["ttscommon"]["tts_skip_regex"],
+                                    "语音跳过",
+                                    ["正则", "条件", "内容"],
+                                ),
+                                icon="fa.gear",
                             ),
                         ],
                         [
