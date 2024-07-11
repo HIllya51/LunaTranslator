@@ -591,7 +591,7 @@ class QUnFrameWindow(resizableframeless):
         self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
         self._TitleLabel.raise_()
         t = QTimer(self)
-        t.setInterval(100)
+        t.setInterval(33)
         self._isentered = False
         t.timeout.connect(self.__betterenterevent)
         t.start()
@@ -902,7 +902,11 @@ class QUnFrameWindow(resizableframeless):
         ismyprocbutnotmainuiforeground = hwndpid == os.getpid() and hwnd != int(
             self.winId()
         )
-        onlychecktitle = onlychecktitle or ismyprocbutnotmainuiforeground
+        onlychecktitle = (
+            globalconfig["toolviswhenenter"]
+            or onlychecktitle
+            or ismyprocbutnotmainuiforeground
+        )
         if onlychecktitle:
             return self._TitleLabel.geometry().contains(
                 self.mapFromGlobal(QCursor.pos())

@@ -816,5 +816,6 @@
     "固定翻译显示顺序": "Fixed translation display order",
     "显示顺序": "Display order",
     "安装": "install",
-    "延申": "Extension"
+    "延申": "Extension",
+    "进入时才显示": "Displayed only upon entry"
 }

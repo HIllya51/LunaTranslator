@@ -1409,38 +1409,42 @@ def makegroupingrid(args):
 def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
 
     maxl = 0
+    linecolss = []
     for nowr, line in enumerate(lis):
         nowc = 0
-        for i in line:
-            if type(i) == str:
+        linecolssx = []
+        for item in line:
+            if type(item) == str:
                 cols = 1
-            elif type(i) != tuple:
-                wid, cols = i, 1
-            elif len(i) == 2:
+            elif type(item) != tuple:
+                wid, cols = item, 1
+            elif len(item) == 2:
 
-                wid, cols = i
-            elif len(i) == 3:
-                wid, cols, arg = i
+                wid, cols = item
+            elif len(item) == 3:
+                wid, cols, arg = item
             nowc += cols
+            linecolssx.append(cols)
         maxl = max(maxl, nowc)
+        linecolss.append(linecolssx)
 
     for nowr, line in enumerate(lis):
         nowc = 0
         if save:
             ll = []
-        for i in line:
-            if type(i) == str:
+        for item in line:
+            if type(item) == str:
                 cols = 1
-                wid = QLabel(_TR(i))
-            elif type(i) != tuple:
-                wid, cols = i, 1
-            elif len(i) == 2:
+                wid = QLabel(_TR(item))
+            elif type(item) != tuple:
+                wid, cols = item, 1
+            elif len(item) == 2:
 
-                wid, cols = i
+                wid, cols = item
                 if type(wid) == str:
                     wid = QLabel(_TR(wid))
-            elif len(i) == 3:
-                wid, cols, arg = i
+            elif len(item) == 3:
+                wid, cols, arg = item
                 if type(wid) == str:
                     wid = QLabel((wid))
                     if arg == "link":
@@ -1448,17 +1452,17 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
                 elif arg == "group":
                     wid = makegroupingrid(wid)
             if cols > 0:
-                col = cols
+                cols = cols
             elif cols == 0:
-                col = maxl - nowc
+                cols = maxl - sum(linecolss[nowr])
             else:
-                col = -maxl // cols
+                cols = -maxl // cols
             do = None
             if callable(wid):
                 wid = wid()
                 if isinstance(wid, tuple):
                     wid, do = wid
-            grid.addWidget(wid, nowr, nowc, 1, col)
+            grid.addWidget(wid, nowr, nowc, 1, cols)
             if do:
                 do()
             if save:

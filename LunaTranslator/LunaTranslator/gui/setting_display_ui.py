@@ -256,7 +256,7 @@ def uisetting(self):
                                                 functools.partial(
                                                     createhorizontal_slider, self
                                                 ),
-                                                4,
+                                                0,
                                             ),
                                             functools.partial(
                                                 createhorizontal_slider_label, self
@@ -306,7 +306,7 @@ def uisetting(self):
                                                 functools.partial(
                                                     createhorizontal_slider_tool, self
                                                 ),
-                                                4,
+                                                0,
                                             ),
                                             functools.partial(
                                                 createhorizontal_slider_tool_label,
@@ -361,6 +361,11 @@ def uisetting(self):
                                                 ],
                                                 makewidget=True,
                                             ),
+                                            "",
+                                            "进入时才显示",
+                                            D_getsimpleswitch(
+                                                globalconfig, "toolviswhenenter"
+                                            ),
                                         ],
                                         [
                                             "锁定工具栏",
@@ -387,7 +392,7 @@ def uisetting(self):
                                             D_getsimpleswitch(
                                                 globalconfig,
                                                 "extendtools",
-                                                callback=gobject.baseobject.translation_ui.changeextendstated_1
+                                                callback=gobject.baseobject.translation_ui.changeextendstated_1,
                                             ),
                                         ],
                                     ),

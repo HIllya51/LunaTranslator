@@ -459,6 +459,7 @@
     "isshowhira": false,
     "locktools": true,
     "extendtools": true,
+    "toolviswhenenter": false,
     "showfanyisource": false,
     "use_yapi": false,
     "showfanyi": true,
