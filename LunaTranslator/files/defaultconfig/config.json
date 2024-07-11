@@ -8,7 +8,7 @@
     "only_from_exe": [],
     "showrangeafterrangeselect": true,
     "autodisappear": false,
-    "WindowBackdrop": 0,
+    "WindowBackdrop": 3,
     "WindowEffect": 0,
     "read_raw": true,
     "global_list_opened": true,
@@ -348,7 +348,7 @@
     "textthreaddelay": 500,
     "maxBufferSize": 3000,
     "maxHistorySize": 1000000,
-    "yuanjiao_r": 0,
+    "yuanjiao_r": 5,
     "qwebinspectgeo": [
         100,
         100,
@@ -438,8 +438,6 @@
     "ocr_text_diff": 3,
     "autorun": true,
     "usewebview": 1,
-    "transparent": 80,
-    "transparent_tool": 50,
     "fontsize": 17.0,
     "fontsizeori": 17.0,
     "localeswitchmethod": 0,
@@ -447,15 +445,17 @@
     "startgamenototop": true,
     "showgametitle": true,
     "extra_space": 0,
-    "fonttype": "Arial",
-    "fonttype2": "Arial",
+    "fonttype": "",
+    "fonttype2": "",
     "hira_vis_type": 0,
     "iskongxin": true,
     "isshowrawtext": true,
     "kanarate": 0.5,
     "rawtextcolor": "#000000",
-    "backcolor": "#3f3f3f",
-    "backcolor_tool": "#3f3f3f",
+    "backcolor": "#000000",
+    "transparent": 27,
+    "backcolor_tool": "#000000",
+    "transparent_tool": 27,
     "isshowhira": false,
     "locktools": true,
     "extendtools": true,
@@ -516,10 +516,10 @@
     "accept_use_unicode_start": 0,
     "accept_use_unicode_end": 65535,
     "premtsimiuse": false,
-    "buttoncolor": "#001f9f",
+    "buttoncolor": "#2e2eff",
     "buttoncolor2": "#FF69B4",
     "buttoncolor3": "#afafaf",
-    "buttoncolor_1": "#FF69B4",
+    "buttoncolor_1": "#ff03f2",
     "premtsimi2": 100,
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,
@@ -587,20 +587,20 @@
                 "use": true,
                 "tip": "手动翻译",
                 "icon": "fa.rotate-right",
-                "align": 0
+                "align": 2
             },
             "automodebutton": {
                 "use": true,
                 "tip": "自动翻译",
                 "icon": "fa.forward",
                 "icon2": "fa.play",
-                "align": 0
+                "align": 2
             },
             "setting": {
                 "use": true,
                 "tip": "打开设置",
                 "icon": "fa.gear",
-                "align": 0
+                "align": 2
             },
             "copy_once": {
                 "use": false,
@@ -624,20 +624,20 @@
                 "use": true,
                 "tip": "鼠标穿透窗口",
                 "icon": "fa.mouse-pointer",
-                "align": 0
+                "align": 2
             },
             "backtransbutton": {
                 "use": true,
                 "tip": "背景窗口透明",
                 "icon": "fa.lightbulb-o",
-                "align": 0
+                "align": 2
             },
             "locktoolsbutton": {
                 "use": true,
                 "tip": "锁定工具栏",
                 "icon": "fa.lock",
                 "icon2": "fa.unlock",
-                "align": 0
+                "align": 2
             },
             "selectgame": {
                 "use": true,
@@ -646,7 +646,7 @@
                     "texthook"
                 ],
                 "icon": "fa.link",
-                "align": 0
+                "align": 2
             },
             "selecttext": {
                 "use": true,
@@ -655,7 +655,7 @@
                     "texthook"
                 ],
                 "icon": "fa.tasks",
-                "align": 0
+                "align": 2
             },
             "selectocrrange": {
                 "use": true,
@@ -664,7 +664,7 @@
                     "ocr"
                 ],
                 "icon": "fa.crop",
-                "align": 0
+                "align": 2
             },
             "ocr_once": {
                 "use": false,
@@ -679,7 +679,7 @@
                     "ocr"
                 ],
                 "icon": "fa.square",
-                "align": 0
+                "align": 2
             },
             "fix": {
                 "use": false,
@@ -706,7 +706,7 @@
                 "align": 1
             },
             "move": {
-                "use": false,
+                "use": true,
                 "tip": "移动",
                 "icon": "fa.hand-paper-o",
                 "align": 0
@@ -716,7 +716,7 @@
                 "tip": "缩放/恢复游戏窗口",
                 "icon": "fa.compress",
                 "icon2": "fa.expand",
-                "align": 0
+                "align": 2
             },
             "grabwindow": {
                 "use": false,
@@ -736,31 +736,31 @@
                 "tip": "显示/隐藏原文",
                 "icon": "fa.eye",
                 "icon2": "fa.eye-slash",
-                "align": 0
+                "align": 2
             },
             "langdu": {
                 "use": true,
                 "tip": "朗读",
                 "icon": "fa.music",
-                "align": 0
+                "align": 2
             },
             "copy": {
                 "use": true,
                 "tip": "复制到剪贴板",
                 "icon": "fa.copy",
-                "align": 0
+                "align": 2
             },
             "history": {
                 "use": true,
                 "tip": "显示/隐藏历史翻译",
                 "icon": "fa.rotate-left",
-                "align": 0
+                "align": 2
             },
             "gamepad_new": {
                 "use": true,
                 "tip": "游戏管理",
                 "icon": "fa.gamepad",
-                "align": 0
+                "align": 2
             },
             "edit": {
                 "use": false,
@@ -796,13 +796,13 @@
                 "use": true,
                 "tip": "绑定窗口（部分软件不支持）（点击自己取消）",
                 "icon": "fa.windows",
-                "align": 0
+                "align": 2
             },
             "keepontop": {
                 "use": true,
                 "tip": "窗口置顶",
                 "icon": "fa.neuter",
-                "align": 0
+                "align": 2
             },
             "selectable": {
                 "use": false,
@@ -1359,7 +1359,7 @@
     },
     "darklight2": 0,
     "darktheme": 0,
-    "lighttheme": 0,
+    "lighttheme": 1,
     "usesearchword": false,
     "usecopyword": false,
     "usewordorigin": false,

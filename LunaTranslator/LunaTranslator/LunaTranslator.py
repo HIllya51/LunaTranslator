@@ -1146,8 +1146,16 @@ class MAINUI:
             """
         self.commonstylebase.setStyleSheet(style)
 
+    def parsedefaultfont(self):
+        for k in ["fonttype", "fonttype2"]:
+            if globalconfig[k] == "":
+                globalconfig[k] = QFontDatabase.systemFont(
+                    QFontDatabase.SystemFont.GeneralFont
+                ).family()
+
     def loadui(self):
         self.installeventfillter()
+        self.parsedefaultfont()
         self.translation_ui = QUnFrameWindow()
         self.translation_ui.show()
         self.translation_ui.aftershowdosomething()

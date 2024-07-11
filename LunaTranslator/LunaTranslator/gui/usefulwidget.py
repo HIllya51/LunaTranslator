@@ -1166,7 +1166,7 @@ class mshtmlWidget(abstractwebview):
     def _parsehtml(self, html):
         html = self._parsehtml_dark(html)
         html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head><body style=" font-family:'{}'">{}</body></html>""".format(
-            QFontDatabase.systemFont(QFontDatabase.GeneralFont).family(), html
+            QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family(), html
         )
         return html
 
