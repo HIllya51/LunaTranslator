@@ -288,7 +288,7 @@ def uisetting(self):
                                             ),
                                             "",
                                             "",
-                                            ""
+                                            "",
                                         ],
                                     ),
                                 ),
@@ -474,8 +474,9 @@ def uisetting(self):
             (
                 dict(
                     title="其他界面",
+                    type="grid",
                     grid=(
-                        ["字体", createfontcombo],
+                        ["字体", (createfontcombo, 0)],
                         [
                             "字体大小",
                             D_getspinbox(
@@ -487,37 +488,33 @@ def uisetting(self):
                                 step=0.1,
                                 callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                             ),
-                        ],
-                        [
+                            "",
                             "按钮颜色",
-                            (
-                                D_getcolorbutton(
+                            D_getcolorbutton(
+                                globalconfig,
+                                "buttoncolor2",
+                                callback=lambda: selectcolor(
+                                    self,
                                     globalconfig,
                                     "buttoncolor2",
-                                    callback=lambda: selectcolor(
-                                        self,
-                                        globalconfig,
-                                        "buttoncolor2",
-                                        self.buttoncolorbutton2,
-                                    ),
-                                    name="buttoncolorbutton2",
-                                    parent=self,
+                                    self.buttoncolorbutton2,
                                 ),
-                                D_getcolorbutton(
+                                name="buttoncolorbutton2",
+                                parent=self,
+                            ),
+                            D_getcolorbutton(
+                                globalconfig,
+                                "buttoncolor3",
+                                callback=lambda: selectcolor(
+                                    self,
                                     globalconfig,
                                     "buttoncolor3",
-                                    callback=lambda: selectcolor(
-                                        self,
-                                        globalconfig,
-                                        "buttoncolor3",
-                                        self.buttoncolorbutton3,
-                                    ),
-                                    name="buttoncolorbutton3",
-                                    parent=self,
+                                    self.buttoncolorbutton3,
                                 ),
+                                name="buttoncolorbutton3",
+                                parent=self,
                             ),
-                        ],
-                        [
+                            "",
                             "按钮大小",
                             D_getspinbox(5, 100, globalconfig, "buttonsize2"),
                         ],
