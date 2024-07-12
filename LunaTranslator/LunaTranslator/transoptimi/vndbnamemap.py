@@ -1,5 +1,5 @@
 from myutils.config import savehook_new_data, globalconfig
-import gobject
+import gobject, json, functools
 from traceback import print_exc
 from gui.inputdialog import postconfigdialog_
 from myutils.utils import checkpostusing
@@ -18,15 +18,21 @@ class Process:
             ),
         )
 
+
     @staticmethod
     def get_setting_window_gameprivate(parent_window, gameuid):
-        return (
-            postconfigdialog_(
-                parent_window,
-                savehook_new_data[gameuid]["namemap"],
-                "指定人名翻译",
-                ["人名", "翻译"],
-            ),
+            
+        def checkchange(gameuid, __):
+            __2 = json.dumps(savehook_new_data[gameuid]["namemap"])
+            if __ != __2:
+                savehook_new_data[gameuid]["vndbnamemap_modified"] = True
+        __ = json.dumps(savehook_new_data[gameuid]["namemap"])
+        postconfigdialog_(
+            parent_window,
+            savehook_new_data[gameuid]["namemap"],
+            "指定人名翻译",
+            ["人名", "翻译"],
+            closecallback=functools.partial(checkchange, gameuid, __),
         )
 
     @property

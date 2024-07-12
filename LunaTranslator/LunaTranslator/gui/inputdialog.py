@@ -614,6 +614,8 @@ class postconfigdialog_(QDialog):
         if self.closeevent:
             self.button.setFocus()
             self.apply()
+            if self.closecallback:
+                self.closecallback()
 
     def apply(self):
         rows = self.model.rowCount()
@@ -625,8 +627,9 @@ class postconfigdialog_(QDialog):
                 row, 1
             ).text()
 
-    def __init__(self, parent, configdict, title, headers) -> None:
+    def __init__(self, parent, configdict, title, headers, closecallback=None) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.closecallback = closecallback
         self.setWindowTitle(_TR(title))
         # self.setWindowModality(Qt.ApplicationModal)
         self.closeevent = False

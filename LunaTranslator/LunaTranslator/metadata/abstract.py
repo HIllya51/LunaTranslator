@@ -172,7 +172,11 @@ class common:
             if _url not in _urls:
                 savehook_new_data[gameuid]["relationlinks"].append((_vis, _url))
         if namemap:
-            savehook_new_data[gameuid]["namemap"] = namemap
+            if (len(savehook_new_data[gameuid]["namemap"]) == 0) or (
+                not savehook_new_data[gameuid]["vndbnamemap_modified"]
+            ):
+                savehook_new_data[gameuid]["namemap"] = namemap
+                savehook_new_data[gameuid]["vndbnamemap_modified"] = False
         if len(webtags):
             savehook_new_data[gameuid]["webtags"] = webtags
         if len(developers):
