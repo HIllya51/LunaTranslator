@@ -2,6 +2,7 @@ from myutils.config import savehook_new_data, globalconfig
 import gobject
 from traceback import print_exc
 from gui.inputdialog import postconfigdialog_
+from myutils.utils import checkpostusing
 
 
 class Process:
@@ -27,6 +28,22 @@ class Process:
                 ["人名", "翻译"],
             ),
         )
+
+    @property
+    def using_X(self):
+        for _ in (0,):
+            try:
+                if not gobject.baseobject.textsource:
+                    break
+                gameuid = gobject.baseobject.textsource.gameuid
+                if savehook_new_data[gameuid]["transoptimi_followdefault"]:
+                    break
+                return savehook_new_data[gameuid]["vndbnamemap_use"]
+
+            except:
+                print_exc()
+                break
+        return checkpostusing("vndbnamemap")
 
     def usewhich(self) -> dict:
         for _ in (0,):

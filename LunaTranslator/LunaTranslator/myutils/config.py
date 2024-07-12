@@ -154,6 +154,8 @@ def getdefaultsavehook(title=None):
         "currentvisimage": None,
         "currentmainimage": "",
         "noundictconfig": [],
+        "noundict_use":True,
+        "vndbnamemap_use" :True,
         # 元数据
         "namemap": {},  # 人名翻译映射，vndb独占，用于优化翻译
         #

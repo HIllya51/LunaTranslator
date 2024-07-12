@@ -5,6 +5,7 @@ from traceback import print_exc
 import gobject
 from gui.usefulwidget import getQMessageBox, threebuttons
 from myutils.wrapper import Singleton_close
+from myutils.utils import checkpostusing
 
 
 @Singleton_close
@@ -381,6 +382,22 @@ class Process:
                 "专有名词翻译设置_游戏ID 0表示全局",
             ),
         )
+
+    @property
+    def using_X(self):
+        for _ in (0,):
+            try:
+                if not gobject.baseobject.textsource:
+                    break
+                gameuid = gobject.baseobject.textsource.gameuid
+                if savehook_new_data[gameuid]["transoptimi_followdefault"]:
+                    break
+                return savehook_new_data[gameuid]["noundict_use"]
+
+            except:
+                print_exc()
+                break
+        return checkpostusing("noundict")
 
     def usewhich(self) -> dict:
         for _ in (0,):

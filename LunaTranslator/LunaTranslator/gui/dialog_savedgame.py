@@ -1217,6 +1217,7 @@ class dialog_setting_game_internal(QWidget):
                     visname,
                     getboxlayout(
                         [
+                            getsimpleswitch(savehook_new_data[gameuid], name + "_use"),
                             getIconButton(
                                 callback=functools.partial(__, setting, self, gameuid),
                                 icon="fa.gear",

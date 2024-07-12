@@ -117,6 +117,11 @@ class MAINUI:
                     class klass(kls):
                         @property
                         def using(self):
+                            if 'using_X' in dir(self):
+                                try:
+                                    return self.using_X
+                                except:
+                                    return False
                             return checkpostusing(_name)
 
                     return klass()
