@@ -13,7 +13,7 @@ from myutils.config import (
     _TRL,
 )
 from gui.codeacceptdialog import codeacceptdialog
-from gui.usefulwidget import ( 
+from gui.usefulwidget import (
     D_getIconButton,
     getIconButton,
     D_getsimpleswitch,
@@ -42,9 +42,9 @@ def getcomparelayout(self):
     layout = QHBoxLayout()
     fromtext = QPlainTextEdit()
     totext = QPlainTextEdit()
-    solvebutton = getIconButton( 
+    solvebutton = getIconButton(
         callback=lambda: totext.setPlainText(POSTSOLVE(fromtext.toPlainText())),
-        icon="fa.chevron-right", 
+        icon="fa.chevron-right",
     )
 
     layout.addWidget(fromtext)
@@ -97,16 +97,16 @@ def setTab7_lazy(self, basel):
 
     for i, post in enumerate(sortlist):
         if post == "_11":
-            config = D_getIconButton( 
+            config = D_getIconButton(
                 callback=lambda: selectdebugfile("./userconfig/mypost.py"),
-                icon="fa.gear", 
+                icon="fa.gear",
             )
         else:
             if post not in postprocessconfig:
                 continue
             if post == "_remove_chaos":
-                config = D_getIconButton( 
-                    icon="fa.gear", 
+                config = D_getIconButton(
+                    icon="fa.gear",
                     callback=lambda: codeacceptdialog(self),
                 )
             elif "args" in postprocessconfig[post]:
@@ -114,8 +114,9 @@ def setTab7_lazy(self, basel):
                     callback = functools.partial(
                         postconfigdialog,
                         self,
-                        postprocessconfig[post]["args"],
+                        postprocessconfig[post]["args"]['替换内容'],
                         postprocessconfig[post]["name"],
+                    ["原文内容", "替换为"]
                     )
                 else:
                     items = autoinitdialog_items(postprocessconfig[post])
@@ -126,20 +127,20 @@ def setTab7_lazy(self, basel):
                         600,
                         items,
                     )
-                config = D_getIconButton( 
+                config = D_getIconButton(
                     callback=callback,
-                    icon="fa.gear", 
+                    icon="fa.gear",
                 )
             else:
                 config = ""
 
-        button_up = D_getIconButton( 
+        button_up = D_getIconButton(
             callback=functools.partial(changerank, post, True),
-            icon="fa.arrow-up", 
+            icon="fa.arrow-up",
         )
-        button_down = D_getIconButton( 
+        button_down = D_getIconButton(
             callback=functools.partial(changerank, post, False),
-            icon="fa.arrow-down", 
+            icon="fa.arrow-down",
         )
 
         l = [
@@ -165,9 +166,9 @@ def setTab7_lazy(self, basel):
 
             if setting:
                 grids2[-1].append(
-                    D_getIconButton( 
+                    D_getIconButton(
                         callback=functools.partial(__, setting, self),
-                        icon="fa.gear", 
+                        icon="fa.gear",
                     )
                 )
     grids2 += [[("", 12)]]

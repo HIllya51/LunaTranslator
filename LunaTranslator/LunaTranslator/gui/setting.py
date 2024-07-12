@@ -67,14 +67,12 @@ class Setting(closeashidewindow):
     voicelistsignal = pyqtSignal(list, int)
     versiontextsignal = pyqtSignal(str)
     progresssignal = pyqtSignal(str, int)
-    opensolvetextsig = pyqtSignal()
     showandsolvesig = pyqtSignal(str)
 
     def __init__(self, parent):
         super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
         self.setWindowIcon(qtawesome.icon("fa.gear"))
-        
-        self.opensolvetextsig.connect(self.opensolvetextfun)
+
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.voicelistsignal.connect(functools.partial(showvoicelist, self))
         self.versiontextsignal.connect(
@@ -142,7 +140,3 @@ class Setting(closeashidewindow):
         self.tab_widget.splitter.setStretchFactor(0, 0)
         self.tab_widget.splitter.setStretchFactor(1, 1)
         self.tab_widget.splitter.setSizes([width, self.tab_widget.width() - width])
-
-    def opensolvetextfun(self):
-        self.show()
-        self.tab_widget.setCurrentIndex(3)

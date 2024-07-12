@@ -1706,25 +1706,24 @@
     ],
     "transoptimi": [
         {
+            "name": "vndbnamemap",
+            "visname": "指定人名翻译"
+        },
+        {
             "name": "noundict",
-            "visname": "使用专有名词翻译"
+            "visname": "专有名词翻译"
         },
         {
             "name": "transerrorfix",
-            "visname": "使用翻译结果修正"
+            "visname": "翻译结果修正"
         },
         {
             "name": "gongxiangcishu",
-            "visname": "使用VNR共享辞书"
-        },
-        {
-            "name": "vndbnamemap",
-            "visname": "使用VNDB数据替换人名",
-            "languageuse": "en"
+            "visname": "VNR共享辞书"
         },
         {
             "name": "myprocess",
-            "visname": "使用自定义优化"
+            "visname": "自定义优化"
         },
         {
             "name": "arabic_reshaper",

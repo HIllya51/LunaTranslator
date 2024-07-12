@@ -26,6 +26,8 @@ from myutils.utils import (
     find_or_create_uid,
     str2rgba,
     gamdidchangedtask,
+    checkpostlangmatch,
+    loadpostsettingwindowmethod_private,
     titlechangedtask,
     idtypecheck,
     selectdebugfile,
@@ -593,8 +595,9 @@ def maybehavebutton(self, gameuid, post):
                     self,
                     savehook_new_data[gameuid]["save_text_process_info"][
                         "postprocessconfig"
-                    ][post]["args"],
+                    ][post]["args"]["替换内容"],
                     postprocessconfig[post]["name"],
+                    ["原文内容", "替换为"],
                 )
             else:
                 items = autoinitdialog_items(
@@ -675,25 +678,76 @@ class dialog_setting_game_internal(QWidget):
                 ]
             ),
         )
+
         functs = [
-            ("启动", self.starttab),
-            ("HOOK", self.gethooktab),
-            ("语言", self.getlangtab),
-            ("文本处理", self.gettextproc),
-            ("标签", self.getlabelsetting),
-            ("元数据", self.metadataorigin),
-            ("统计", self.getstatistic),
-            ("语音", self.getttssetting),
-            ("预翻译", self.getpretranstab),
-            ("Anki", self.maketabforanki),
+            ("游戏设置", functools.partial(self.___tabf3, self.makegamesettings)),
+            ("游戏数据", functools.partial(self.___tabf3, self.makegamedata)),
         ]
         methodtab, do = makesubtab_lazy(
             _TRL([_[0] for _ in functs]),
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
         )
-        self.methodtab = methodtab
         vbox.addLayout(formLayout)
+        vbox.addWidget(methodtab)
+        do()
+
+    def ___tabf(self, function, gameuid):
+        _w = QWidget()
+        formLayout = QFormLayout()
+        _w.setLayout(formLayout)
+        function(formLayout, gameuid)
+        return _w
+
+    def ___tabf2(self, function, gameuid):
+        _w = QWidget()
+        formLayout = QVBoxLayout()
+        _w.setLayout(formLayout)
+        function(formLayout, gameuid)
+        return _w
+
+    def ___tabf3(self, function, gameuid):
+        _w = QWidget()
+        formLayout = QVBoxLayout()
+        formLayout.setContentsMargins(0, 0, 0, 0)
+        _w.setLayout(formLayout)
+        function(formLayout, gameuid)
+        return _w
+
+    def makegamedata(self, vbox: QVBoxLayout, gameuid):
+
+        functs = [
+            ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
+            ("统计", functools.partial(self.___tabf2, self.getstatistic)),
+            ("标签", functools.partial(self.___tabf2, self.getlabelsetting)),
+        ]
+        methodtab, do = makesubtab_lazy(
+            _TRL([_[0] for _ in functs]),
+            [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
+            delay=True,
+        )
+        vbox.addWidget(methodtab)
+        do()
+
+    def makegamesettings(self, vbox: QVBoxLayout, gameuid):
+
+        functs = [
+            ("启动", functools.partial(self.___tabf, self.starttab)),
+            ("HOOK", functools.partial(self.___tabf, self.gethooktab)),
+            ("语言", functools.partial(self.___tabf, self.getlangtab)),
+            ("文本处理", functools.partial(self.___tabf, self.gettextproc)),
+            ("翻译优化", functools.partial(self.___tabf, self.gettransoptimi)),
+            ("语音", functools.partial(self.___tabf, self.getttssetting)),
+            ("预翻译", functools.partial(self.___tabf, self.getpretranstab)),
+            ("Anki", functools.partial(self.___tabf, self.maketabforanki)),
+        ]
+        methodtab, do = makesubtab_lazy(
+            _TRL([_[0] for _ in functs]),
+            [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
+            delay=True,
+        )
+
+        self.methodtab = methodtab
         vbox.addWidget(methodtab)
         do()
 
@@ -703,10 +757,7 @@ class dialog_setting_game_internal(QWidget):
         except:
             print_exc()
 
-    def metadataorigin(self, gameuid):
-        formLayout = QFormLayout()
-        _w = QWidget()
-        _w.setLayout(formLayout)
+    def metadataorigin(self, formLayout: QFormLayout, gameuid):
         formLayout.addRow(
             _TR("首选的"),
             getsimplecombobox(
@@ -762,16 +813,12 @@ class dialog_setting_game_internal(QWidget):
                 key,
                 getboxlayout(_vbox_internal),
             )
-        return _w
 
     def doaddtab(self, wfunct, exe, layout):
         w = wfunct(exe)
         layout.addWidget(w)
 
-    def starttab(self, gameuid):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
+    def starttab(self, formLayout: QFormLayout, gameuid):
 
         b = windows.GetBinaryType(uid2gamepath[gameuid])
 
@@ -811,14 +858,8 @@ class dialog_setting_game_internal(QWidget):
                 "onloadautochangemode2",
             ),
         )
-        return _w
 
-    def getstatistic(self, gameuid):
-        _w = QWidget()
-        formLayout = QVBoxLayout()
-
-        _w.setLayout(formLayout)
-        formLayout.setContentsMargins(0, 0, 0, 0)
+    def getstatistic(self, formLayout: QVBoxLayout, gameuid):
         chart = chartwidget()
         chart.xtext = lambda x: (
             "0" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0]
@@ -843,7 +884,6 @@ class dialog_setting_game_internal(QWidget):
         t.timeout.connect(self.refresh)
         t.timeout.emit()
         t.start()
-        return _w
 
     def split_range_into_days(self, times):
         everyday = {}
@@ -911,11 +951,7 @@ class dialog_setting_game_internal(QWidget):
                 string = "0"
         return string
 
-    def getlabelsetting(self, gameuid):
-        _w = QWidget()
-        formLayout = QVBoxLayout()
-        _w.setLayout(formLayout)
-        formLayout.setContentsMargins(0, 0, 0, 0)
+    def getlabelsetting(self, formLayout: QVBoxLayout, gameuid):
         self.labelflow = ScrollFlow()
 
         def newitem(text, removeable, first=False, _type=tagitem.TYPE_RAND):
@@ -978,28 +1014,40 @@ class dialog_setting_game_internal(QWidget):
                 ]
             )
         )
-        return _w
 
-    def getttssetting(self, gameuid):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
+    def createfollowdefault(
+        self, dic: dict, key: str, formLayout: QFormLayout, callback=None
+    ) -> QFormLayout:
 
         __extraw = QWidget()
+
+        def __function(__extraw: QWidget, callback, _):
+            __extraw.setEnabled(not _)
+            if callback:
+                try:
+                    callback()
+                except:
+                    print_exc()
 
         formLayout.addRow(
             _TR("跟随默认"),
             getsimpleswitch(
-                savehook_new_data[gameuid],
-                "tts_follow_default",
-                callback=lambda _: __extraw.setEnabled(not _),
+                dic,
+                key,
+                callback=functools.partial(__function, __extraw, callback),
             ),
         )
-        __extraw.setEnabled(not savehook_new_data[gameuid]["tts_follow_default"])
+        __extraw.setEnabled(not dic[key])
         formLayout.addRow(__extraw)
         formLayout2 = QFormLayout()
         formLayout2.setContentsMargins(0, 0, 0, 0)
         __extraw.setLayout(formLayout2)
+        return formLayout2
+
+    def getttssetting(self, formLayout: QFormLayout, gameuid):
+        formLayout2 = self.createfollowdefault(
+            savehook_new_data[gameuid], "tts_follow_default", formLayout
+        )
 
         formLayout2.addRow(
             _TR("语音跳过"),
@@ -1042,25 +1090,8 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
 
-        return _w
+    def maketabforanki(self, formLayout: QFormLayout, gameuid):
 
-    def maketabforanki(self, gameuid):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
-        __extraw = QWidget()
-
-        formLayout.addRow(
-            _TR("跟随默认"),
-            getsimpleswitch(
-                savehook_new_data[gameuid],
-                "follow_default_ankisettings",
-                callback=lambda _: __extraw.setEnabled(not _),
-            ),
-        )
-        __extraw.setEnabled(
-            not savehook_new_data[gameuid]["follow_default_ankisettings"]
-        )
         savehook_new_data[gameuid]["anki_DeckName"] = savehook_new_data[gameuid].get(
             "anki_DeckName", globalconfig["ankiconnect"]["DeckName"]
         )
@@ -1089,10 +1120,9 @@ class dialog_setting_game_internal(QWidget):
             globalconfig["ankiconnect"]["simulate_key"]["2"]["keystring"],
         )
 
-        formLayout.addRow(__extraw)
-        formLayout2 = QFormLayout()
-        formLayout2.setContentsMargins(0, 0, 0, 0)
-        __extraw.setLayout(formLayout2)
+        formLayout2 = self.createfollowdefault(
+            savehook_new_data[gameuid], "follow_default_ankisettings", formLayout
+        )
         formLayout2.addRow(
             _TR("DeckName"),
             getlineedit(
@@ -1130,12 +1160,8 @@ class dialog_setting_game_internal(QWidget):
                 makewidget=True,
             ),
         )
-        return _w
 
-    def getpretranstab(self, gameuid):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
+    def getpretranstab(self, formLayout: QFormLayout, gameuid):
 
         def selectimg(gameuid, key, res):
             savehook_new_data[gameuid][key] = res
@@ -1169,30 +1195,44 @@ class dialog_setting_game_internal(QWidget):
                     True,
                 ),
             )
-        return _w
 
-    def gettextproc(self, gameuid):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
-        __extra = QWidget()
+    def gettransoptimi(self, formLayout: QFormLayout, gameuid):
 
-        def __function(_):
-            __extra.setEnabled(not _)
-
-        formLayout.addRow(
-            _TR("跟随默认"),
-            getsimpleswitch(
-                savehook_new_data[gameuid],
-                "textproc_follow_default",
-                callback=__function,
-            ),
+        vbox = self.createfollowdefault(
+            savehook_new_data[gameuid], "transoptimi_followdefault", formLayout
         )
-        __extra.setEnabled(not savehook_new_data[gameuid]["textproc_follow_default"])
-        vbox = QVBoxLayout()
-        vbox.setContentsMargins(0, 0, 0, 0)
-        __extra.setLayout(vbox)
-        formLayout.addRow(__extra)
+
+        for item in static_data["transoptimi"]:
+            name = item["name"]
+            visname = item["visname"]
+            if checkpostlangmatch(name):
+                setting = loadpostsettingwindowmethod_private(name)
+                if not setting:
+                    continue
+
+                def __(_f, _1, gameuid):
+                    return _f(_1, gameuid)
+
+                vbox.addRow(
+                    visname,
+                    getboxlayout(
+                        [
+                            getIconButton(
+                                callback=functools.partial(__, setting, self, gameuid),
+                                icon="fa.gear",
+                            ),
+                            QLabel(),
+                        ],
+                        makewidget=True,
+                        margin0=True,
+                    ),
+                )
+
+    def gettextproc(self, formLayout: QFormLayout, gameuid):
+
+        vbox = self.createfollowdefault(
+            savehook_new_data[gameuid], "textproc_follow_default", formLayout
+        )
 
         model = QStandardItemModel()
         model.setHorizontalHeaderLabels(_TRL(["预处理方法", "使用", "设置"]))
@@ -1227,7 +1267,6 @@ class dialog_setting_game_internal(QWidget):
         )
         vbox.addWidget(buttons)
         vbox.addWidget(buttons)
-        return _w
 
     def __privatetextproc_showmenu(self, p):
         r = self.__textprocinternaltable.currentIndex().row()
@@ -1359,21 +1398,8 @@ class dialog_setting_game_internal(QWidget):
             ],
         )
 
-    def getlangtab(self, gameuid):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
-        __extraw = QWidget()
+    def getlangtab(self, formLayout: QFormLayout, gameuid):
 
-        formLayout.addRow(
-            _TR("跟随默认"),
-            getsimpleswitch(
-                savehook_new_data[gameuid],
-                "lang_follow_default",
-                callback=lambda _: __extraw.setEnabled(not _),
-            ),
-        )
-        __extraw.setEnabled(not savehook_new_data[gameuid]["lang_follow_default"])
         savehook_new_data[gameuid]["private_tgtlang"] = savehook_new_data[gameuid].get(
             "private_tgtlang", globalconfig["tgtlang3"]
         )
@@ -1381,10 +1407,9 @@ class dialog_setting_game_internal(QWidget):
             "private_srclang", globalconfig["srclang3"]
         )
 
-        formLayout.addRow(__extraw)
-        formLayout2 = QFormLayout()
-        formLayout2.setContentsMargins(0, 0, 0, 0)
-        __extraw.setLayout(formLayout2)
+        formLayout2 = self.createfollowdefault(
+            savehook_new_data[gameuid], "lang_follow_default", formLayout
+        )
         formLayout2.addRow(
             _TR("源语言"),
             getsimplecombobox(
@@ -1401,12 +1426,9 @@ class dialog_setting_game_internal(QWidget):
                 "private_tgtlang",
             ),
         )
-        return _w
 
-    def gethooktab(self, gameuid):
-        _w = QWidget()
-        formLayout = QFormLayout()
-        _w.setLayout(formLayout)
+    def gethooktab(self, formLayout: QFormLayout, gameuid):
+
         formLayout.addRow(
             _TR("特殊码"),
             listediterline(
@@ -1419,26 +1441,6 @@ class dialog_setting_game_internal(QWidget):
         formLayout.addRow(
             _TR("插入特殊码延迟(ms)"),
             getspinbox(0, 1000000, savehook_new_data[gameuid], "inserthooktimeout"),
-        )
-        __extraw = QWidget()
-
-        def __function(_):
-            __extraw.setEnabled(not _)
-            try:
-                gobject.baseobject.textsource.setsettings()
-            except:
-                pass
-
-        formLayout.addRow(
-            _TR("跟随默认"),
-            getsimpleswitch(
-                savehook_new_data[gameuid],
-                "hooksetting_follow_default",
-                callback=__function,
-            ),
-        )
-        __extraw.setEnabled(
-            not savehook_new_data[gameuid]["hooksetting_follow_default"]
         )
 
         for k in [
@@ -1453,10 +1455,13 @@ class dialog_setting_game_internal(QWidget):
         ]:
             if k not in savehook_new_data[gameuid]["hooksetting_private"]:
                 savehook_new_data[gameuid]["hooksetting_private"][k] = globalconfig[k]
-        formLayout.addRow(__extraw)
-        formLayout2 = QFormLayout()
-        formLayout2.setContentsMargins(0, 0, 0, 0)
-        __extraw.setLayout(formLayout2)
+
+        formLayout2 = self.createfollowdefault(
+            savehook_new_data[gameuid],
+            "hooksetting_follow_default",
+            formLayout,
+            lambda: gobject.baseobject.textsource.setsettings(),
+        )
         formLayout2.addRow(
             _TR("代码页"),
             getsimplecombobox(
@@ -1526,13 +1531,11 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
 
-        return _w
-
 
 @Singleton_close
 class dialog_setting_game(QDialog):
 
-    def __init__(self, parent, gameuid, setindexhook=False) -> None:
+    def __init__(self, parent, gameuid, setindexhook=0) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         global _global_dialog_setting_game
         _global_dialog_setting_game = self
@@ -1541,8 +1544,7 @@ class dialog_setting_game(QDialog):
 
         self.setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
         _ = dialog_setting_game_internal(self, gameuid)
-        if setindexhook:
-            _.methodtab.setCurrentIndex(1)
+        _.methodtab.setCurrentIndex(setindexhook)
         _.setMinimumSize(QSize(600, 500))
         l = QHBoxLayout(self)
         self.setLayout(l)

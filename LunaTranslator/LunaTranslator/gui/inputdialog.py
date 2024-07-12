@@ -617,35 +617,33 @@ class postconfigdialog_(QDialog):
 
     def apply(self):
         rows = self.model.rowCount()
-        newdict = {}
+        self.configdict.clear()
         for row in range(rows):
             if self.model.item(row, 0).text() == "":
                 continue
-            newdict[(self.model.item(row, 0).text())] = self.model.item(row, 1).text()
-        self.configdict[self.key] = newdict
+            self.configdict[(self.model.item(row, 0).text())] = self.model.item(
+                row, 1
+            ).text()
 
-    def __init__(self, parent, configdict, title) -> None:
+    def __init__(self, parent, configdict, title, headers) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        print(title)
         self.setWindowTitle(_TR(title))
         # self.setWindowModality(Qt.ApplicationModal)
         self.closeevent = False
         formLayout = QVBoxLayout(self)  # 配置layout
 
-        key = list(configdict.keys())[0]
-
-        model = QStandardItemModel(len(configdict[key]), 1, self)
+        model = QStandardItemModel(len(configdict), 1, self)
         row = 0
 
-        for key1 in configdict[key]:  # 2
+        for key1 in configdict:  # 2
 
             item = QStandardItem(key1)
             model.setItem(row, 0, item)
 
-            item = QStandardItem(configdict[key][key1])
+            item = QStandardItem(configdict[key1])
             model.setItem(row, 1, item)
             row += 1
-        model.setHorizontalHeaderLabels(_TRL(["原文内容", "替换为"]))
+        model.setHorizontalHeaderLabels(_TRL(headers))
         table = QTableView(self)
         table.setModel(model)
         table.setWordWrap(False)
@@ -674,7 +672,6 @@ class postconfigdialog_(QDialog):
         button.btn3clicked.connect(self.apply)
         self.button = button
         self.model = model
-        self.key = key
         self.configdict = configdict
         self.closeevent = True
         search = QHBoxLayout()
@@ -706,5 +703,5 @@ class postconfigdialog_(QDialog):
         self.show()
 
 
-def postconfigdialog(parent, configdict, title):
-    postconfigdialog_(parent, configdict, title)
+def postconfigdialog(parent, configdict, title, header):
+    postconfigdialog_(parent, configdict, title, header)

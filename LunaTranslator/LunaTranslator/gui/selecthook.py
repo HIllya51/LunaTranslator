@@ -677,11 +677,14 @@ class hookselect(closeashidewindow):
             winsharedutils.clipboard_set(copyhook)
 
     def opensolvetext(self):
-        gobject.baseobject.settin_ui.opensolvetextsig.emit()
+        try:
+            dialog_setting_game(self, gobject.baseobject.textsource.gameuid, 3)
+        except:
+            print_exc()
 
     def opengamesetting(self):
         try:
-            dialog_setting_game(self, gobject.baseobject.textsource.gameuid, True)
+            dialog_setting_game(self, gobject.baseobject.textsource.gameuid, 1)
         except:
             print_exc()
 

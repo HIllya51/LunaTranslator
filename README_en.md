@@ -12,7 +12,6 @@
 
 ### <a href="https://docs.lunatranslator.xyz/#/en/" target="_blank">Documentation</a> 
 
-Welcome friends who want to help us improve the documentation! [Documentation Repo](https://lunatranslator.xyz/Github/LunaTranslator)
 
 ## Features
 

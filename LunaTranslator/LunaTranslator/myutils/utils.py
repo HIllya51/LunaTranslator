@@ -1,7 +1,7 @@
 import windows
 import os, time
 import codecs, hashlib, shutil
-import socket, gobject, uuid, subprocess
+import socket, gobject, uuid, subprocess, functools
 import ctypes, importlib
 import ctypes.wintypes
 from qtsymbols import *
@@ -533,7 +533,7 @@ def checkpostusing(name):
     return use and checkpostlangmatch(name)
 
 
-def loadpostsettingwindowmethod(name):
+def loadpostsettingwindowmethod_1(xx, name):
     checkpath = "./LunaTranslator/transoptimi/" + name + ".py"
     if os.path.exists(checkpath) == False:
         return None
@@ -541,9 +541,18 @@ def loadpostsettingwindowmethod(name):
 
     try:
         Process = importlib.import_module(mm).Process
-        return tryprint(Process.get_setting_window)
+        if xx:
+            return tryprint(Process.get_setting_window)
+        else:
+            return tryprint(Process.get_setting_window_gameprivate)
     except:
         return None
+
+
+loadpostsettingwindowmethod = functools.partial(loadpostsettingwindowmethod_1, True)
+loadpostsettingwindowmethod_private = functools.partial(
+    loadpostsettingwindowmethod_1, False
+)
 
 
 class unsupportkey(Exception):

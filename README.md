@@ -9,8 +9,7 @@
 
 > **一款galgame翻译器**
 
-### <a href="https://lunatranslator.xyz/#/zh/" target="_blank">使用说明</a> <a href="https://space.bilibili.com/592120404/video" target="_blank">视频教程</a> [交流群912525396](https://lunatranslator.xyz/Resource/QQGroup)
-
+### <a href="https://docs.lunatranslator.xyz/#/zh/" target="_blank">使用说明</a> <a href="https://space.bilibili.com/592120404/video" target="_blank">视频教程</a> [交流群912525396](https://lunatranslator.xyz/Resource/QQGroup)
 
 ## 功能支持
 

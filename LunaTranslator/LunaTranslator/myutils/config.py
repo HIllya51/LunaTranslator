@@ -135,6 +135,7 @@ def getdefaultsavehook(title=None):
         "tts_repair": False,
         "tts_repair_regex": [{"regex": True, "key": "(.*?)「", "value": ""}],
         "tts_skip": False,
+        "transoptimi_followdefault": True,
         "tts_skip_regex": [],
         # "hooktypeasname": {},
         "use_saved_text_process": False,
@@ -152,6 +153,7 @@ def getdefaultsavehook(title=None):
         "istitlesetted": False,
         "currentvisimage": None,
         "currentmainimage": "",
+        "noundictconfig": [],
         # 元数据
         "namemap": {},  # 人名翻译映射，vndb独占，用于优化翻译
         #

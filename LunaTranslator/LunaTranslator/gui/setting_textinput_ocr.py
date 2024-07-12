@@ -137,8 +137,9 @@ def getocrgrid(self):
                                 callback=functools.partial(
                                     postconfigdialog,
                                     self,
-                                    ocrerrorfix["args"],
+                                    ocrerrorfix["args"]["替换内容"],
                                     "易错内容修正",
+                                    ["原文内容", "替换为"],
                                 ),
                                 icon="fa.gear",
                             ),

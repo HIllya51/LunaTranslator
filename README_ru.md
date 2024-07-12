@@ -14,7 +14,6 @@
 
 ### <a href="https://docs.lunatranslator.xyz/#/ru/" target="_blank">Инструкция по настройке программы (Полностью на русском языке)</a> 
 
-Welcome friends who find it helpful to improve the documentation together.[Documentation Repo](https://lunatranslator.xyz/Github/LunaTranslator)
 
 ## Основные функции:
 
