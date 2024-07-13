@@ -39,7 +39,7 @@ DECLARE char *wcocr_ocr(void *pobj, const char *u8path)
         return 0;
     std::vector<std::wstring> rets;
     std::vector<int> xs, ys, xs2, ys2;
-    nlohmann::json js;
+    nlohmann::json js = std::vector<nlohmann::json>{};
     for (auto &blk : res.ocr_response)
     {
         js.push_back({blk.left, blk.top, blk.right, blk.bottom, blk.text});
