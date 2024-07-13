@@ -266,7 +266,7 @@ def kanjitrans(k):
 
 
 def stringfyerror(e):
-    return str(type(e))[8:-2] + " " + str(e).replace("\n", "").replace("\r", "")
+    return str(type(e))[8:-2] + " " + str(e).replace("\n", " ").replace("\r", "")
 
 
 def checkportavailable(port):

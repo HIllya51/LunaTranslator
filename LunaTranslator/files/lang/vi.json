@@ -627,7 +627,6 @@
     "不被打断": "Không bị gián đoạn",
     "显示/隐藏历史翻译": "Hiện/ẩn bản dịch lịch sử",
     "全屏/恢复游戏窗口": "Toàn màn hình/Khôi phục cửa sổ trò chơi",
-    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Mô hình OCR cho ngôn ngữ này chưa được tải xuống, vui lòng sử dụng sau khi [Cài đặt bổ sung] ->[Tải xuống tài nguyên] ->[Gói ngôn ngữ OCR] mô hình tải xuống đã được giải nén vào đường dẫn files/ocr",
     "文本输出": "Xuất văn bản",
     "自动输出提取的文本": "Tự động xuất văn bản đã trích xuất",
     "缩放": "Phóng to",
@@ -816,5 +815,8 @@
     "自定义优化": "Tối ưu hóa tùy chỉnh",
     "人名": "Tên người",
     "游戏ID 0表示全局": "Game ID 0 có nghĩa là toàn cầu",
-    "游戏数据": "Dữ liệu trò chơi"
+    "游戏数据": "Dữ liệu trò chơi",
+    "当前支持的语言": "Ngôn ngữ được hỗ trợ hiện tại",
+    "添加语言包": "Thêm gói ngôn ngữ",
+    "未添加": "Chưa thêm"
 }

@@ -627,7 +627,6 @@
     "不被打断": "Ne pas être interrompu",
     "显示/隐藏历史翻译": "Afficher / masquer les traductions historiques",
     "全屏/恢复游戏窗口": "Plein écran / restaurer la fenêtre de jeu",
-    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Le modèle OCR pour cette langue n'a pas été téléchargé, utilisez - le après [autres paramètres] - > [ressources télécharger] - > [OCR Language Pack] télécharger le modèle Décompresser le chemin files / ocr",
     "文本输出": "Sortie de texte",
     "自动输出提取的文本": "Sortie automatique du texte extrait",
     "缩放": "Zoom",
@@ -816,5 +815,8 @@
     "自定义优化": "Optimisation personnalisée",
     "人名": "Nom de la personne",
     "游戏ID 0表示全局": "Game ID 0 pour global",
-    "游戏数据": "Données du jeu"
+    "游戏数据": "Données du jeu",
+    "当前支持的语言": "Langues actuellement supportées",
+    "添加语言包": "Ajouter un pack de langue",
+    "未添加": "Non ajouté"
 }

@@ -154,9 +154,9 @@ def getdefaultsavehook(title=None):
         "currentvisimage": None,
         "currentmainimage": "",
         "noundictconfig": [],
-        "noundict_use":True,
-        "vndbnamemap_use" :True,
-        "vndbnamemap_modified" :False,
+        "noundict_use": False,
+        "vndbnamemap_use": True,
+        "vndbnamemap_modified": False,
         # 元数据
         "namemap": {},  # 人名翻译映射，vndb独占，用于优化翻译
         #
@@ -442,6 +442,17 @@ def _TRL(kk):
     for k in kk:
         x.append(_TR(k))
     return x
+
+
+def getlang_inner2show(langcode):
+    return _TR(
+        dict(
+            zip(
+                static_data["language_list_translator_inner"],
+                static_data["language_list_translator"],
+            )
+        ).get(langcode, "??")
+    )
 
 
 def safesave(fname, js, beatiful=True):

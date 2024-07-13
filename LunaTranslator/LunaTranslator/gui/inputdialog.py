@@ -418,8 +418,7 @@ class autoinitdialog(QDialog):
 
         self.setWindowTitle(_TR(title))
         self.resize(QSize(width, 10))
-        formLayout = QFormLayout()
-        self.setLayout(formLayout)
+        formLayout = None
         regist = []
 
         def save(callback=None):
@@ -454,6 +453,16 @@ class autoinitdialog(QDialog):
                 regist.append([dd, key, functools.partial(__getv, __list)])
                 lineW = QHBoxLayout()
                 lineW.addWidget(e)
+            elif line["type"] == "program":
+                try:
+                    func = getattr(
+                        importlib.import_module(line["route"][0]),
+                        line["route"][1],
+                    )
+                    func(self)
+                except:
+                    print_exc()
+                break
             elif line["type"] == "combo":
                 lineW = FocusCombo()
                 if "list_function" in line:
@@ -527,6 +536,9 @@ class autoinitdialog(QDialog):
                 lineW.setSingleStep(line.get("step", 1))
                 lineW.setValue(dd[key])
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
+            if formLayout is None:
+                formLayout = QFormLayout()
+                self.setLayout(formLayout)
             if "name" in line:
                 formLayout.addRow(_TR(line["name"]), lineW)
             else:

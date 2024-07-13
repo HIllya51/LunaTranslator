@@ -1,6 +1,6 @@
-import os
-from myutils.utils import getlangsrc
-from myutils.config import globalconfig, _TR
+import os, zipfile
+from myutils.utils import getlangsrc, dynamiclink
+from myutils.config import globalconfig, _TR, getlang_inner2show
 from ocrengines.baseocrclass import baseocr
 from ctypes import (
     CDLL,
@@ -14,8 +14,11 @@ from ctypes import (
     c_char_p,
 )
 import os
-import gobject
+import gobject, functools
 from traceback import print_exc
+from qtsymbols import *
+from gui.inputdialog import autoinitdialog
+from gui.usefulwidget import FocusCombo, getboxlayout
 
 
 class ocrpoints(Structure):
@@ -116,6 +119,74 @@ class ocrwrapper:
             pass
 
 
+def getallsupports():
+    langs = []
+    for f in os.listdir("./files/ocr"):
+        path = "./files/ocr/{}".format(f)
+        if not (
+            os.path.exists(path + "/det.onnx")
+            and os.path.exists(path + "/rec.onnx")
+            and os.path.exists(path + "/dict.txt")
+        ):
+            continue
+        langs.append(f)
+    return langs
+
+
+def dodownload(combo: QComboBox, allsupports: list):
+    lang = allsupports[combo.currentIndex()]
+    os.startfile(dynamiclink("{main_server}/Resource/ocr_models/" + lang + ".zip"))
+
+
+def doinstall(combo: QComboBox, allsupports: list, parent, callback):
+    lang = allsupports[combo.currentIndex()]
+    f = QFileDialog.getOpenFileName(parent, filter=lang + ".zip")
+    fn = f[0]
+    if not fn:
+        return
+    try:
+        with zipfile.ZipFile(fn) as zipf:
+            zipf.extractall("files/ocr")
+
+        gobject.baseobject.showtraymessage("", "安装成功")
+        callback()
+    except:
+        print_exc()
+
+
+def question(dialog: QDialog):
+    formLayout = QFormLayout()
+    dialog.setLayout(formLayout)
+    supportlang = QLabel()
+    formLayout.addRow(_TR("当前支持的语言"), supportlang)
+    combo = FocusCombo()
+    allsupports = []
+
+    def callback():
+        langs = getallsupports()
+        supportlang.setText(", ".join([getlang_inner2show(f) for f in langs]))
+        _allsupports = ["ja", "en", "zh", "cht", "ko", "ru"]
+        allsupports.clear()
+        for l in _allsupports:
+            if l not in langs:
+                allsupports.append(l)
+        vis = [getlang_inner2show(f) for f in allsupports]
+        combo.clear()
+        combo.addItems(vis)
+
+    callback()
+    btndownload = QPushButton(_TR("下载"))
+    btndownload.clicked.connect(functools.partial(dodownload, combo, allsupports))
+    btninstall = QPushButton(_TR("添加"))
+    btninstall.clicked.connect(
+        functools.partial(doinstall, combo, allsupports, dialog, callback)
+    )
+    formLayout.addRow(
+        _TR("添加语言包"),
+        getboxlayout([combo, btndownload, btninstall], makewidget=True),
+    )
+
+
 class OCR(baseocr):
     def end(self):
         self._ocr.trydestroy()
@@ -137,9 +208,15 @@ class OCR(baseocr):
             and os.path.exists(path + "/dict.txt")
         ):
             raise Exception(
-                _TR(
-                    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用"
-                )
+                _TR("未添加")
+                + ' "'
+                + getlang_inner2show(self.srclang)
+                + '" '
+                + _TR("的OCR模型")
+                + "\n"
+                + _TR("当前支持的语言")
+                + ": "
+                + ", ".join([getlang_inner2show(f) for f in getallsupports()])
             )
         self._ocr.init(path + "/det.onnx", path + "/rec.onnx", path + "/dict.txt")
         self._savelang = self.srclang

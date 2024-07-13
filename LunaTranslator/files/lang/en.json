@@ -626,7 +626,6 @@
     "不被打断": "Don't Interrupt",
     "显示/隐藏历史翻译": "Show/Hide Translation History",
     "全屏/恢复游戏窗口": "Full Screen/Restore Game Window",
-    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "The OCR model for this language is not installed. Go to [Other Settings] -> [Resource Download] -> [OCR Language Pack], then download and extract the model to files/ocr.",
     "文本输出": "Text Output",
     "自动输出提取的文本": "Automatically Output Extracted Text",
     "缩放": "Scale",
@@ -816,5 +815,8 @@
     "自定义优化": "Custom optimization",
     "人名": "name",
     "游戏ID 0表示全局": "Game ID 0 represents global",
-    "游戏数据": "Game data"
+    "游戏数据": "Game data",
+    "当前支持的语言": "Currently supported languages",
+    "添加语言包": "Add language pack",
+    "未添加": "Not added"
 }

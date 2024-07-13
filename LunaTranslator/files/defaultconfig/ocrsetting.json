@@ -1,4 +1,32 @@
 {
+    "local": {
+        "args": {
+            "": ""
+        },
+        "argstype": {
+            "": {
+                "type": "program",
+                "route": [
+                    "ocrengines.local",
+                    "question"
+                ]
+            }
+        }
+    },
+    "windowsocr": {
+        "args": {
+            "": ""
+        },
+        "argstype": {
+            "": {
+                "type": "program",
+                "route": [
+                    "ocrengines.windowsocr",
+                    "question"
+                ]
+            }
+        }
+    },
     "baiduocr_X": {
         "args": {
             "注册网址": "https://console.bce.baidu.com/ai/?fromai=1#/ai/ocr/app/list",

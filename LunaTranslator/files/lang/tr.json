@@ -627,7 +627,6 @@
     "不被打断": "Bırakılmadı",
     "显示/隐藏历史翻译": "Tarihi çevirimleri göster/gizle",
     "全屏/恢复游戏窗口": "Full screen/restore game window",
-    "未下载该语言的OCR模型,请在[其他设置]->[资源下载]->[OCR语言包]下载模型解压到files/ocr路径后使用": "Bu dilin OCR modeli indirilmedi. Lütfen modelini [Diğer Ayarlar] ->[Kaynak İndirme] ->[OCR Dil Paketi] içindeki dosyalara/ikiyüzlü yola bağlayın ve kullanın",
     "文本输出": "Metin çıkış",
     "自动输出提取的文本": "Automatically output extracted text",
     "缩放": "zoom",
@@ -816,5 +815,8 @@
     "自定义优化": "Özel optimizasyon",
     "人名": "isim",
     "游戏ID 0表示全局": "Oyun ID 0 küresel olarak temsil ediyor",
-    "游戏数据": "Oyun verileri"
+    "游戏数据": "Oyun verileri",
+    "当前支持的语言": "Şu anda desteklenmiş diller",
+    "添加语言包": "Dil paketi ekle",
+    "未添加": "Eklenmedi"
 }
