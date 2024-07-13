@@ -124,15 +124,6 @@ class Requester_common:
     Accept_Encoding = "gzip, deflate, br"
     default_UA = default_UA
 
-    default_headers = CaseInsensitiveDict(
-        {
-            "User-Agent": default_UA,
-            # "Accept-Encoding": "gzip, deflate, br",
-            "Accept": "*/*",
-            "Connection": "keep-alive",
-        }
-    )
-
     @staticmethod
     def _encode_params(data):
         if isinstance(data, (str, bytes)):
@@ -226,12 +217,6 @@ class Requester_common:
         cert=None,
     ) -> ResponseBase:
 
-        _h = self.default_headers.copy()
-        _h.update({"Accept-Encoding": self.Accept_Encoding})
-        if headers:
-            _h.update(headers)
-        headers = _h
-
         if auth and isinstance(auth, tuple) and len(auth) == 2:
             headers["Authorization"] = (
                 "Basic "
@@ -313,6 +298,14 @@ class Session:
     _requester = None
     _libidx = -1
 
+    headers = CaseInsensitiveDict(
+        {
+            # "Accept-Encoding": "gzip, deflate, br",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+        }
+    )
+
     def __enter__(self):
         return self
 
@@ -353,12 +346,17 @@ class Session:
 
         if cookies:
             self.cookies.update(cookies)
+        _h = self.headers.copy()
+        _h.update({"Accept-Encoding": self.requester.Accept_Encoding})
+        _h.update({"User-Agent": self.requester.default_UA})
+        if headers:
+            _h.update(headers)
         response = self.requester.request(
             method.upper(),
             url,
             params,
             data,
-            headers,
+            _h,
             proxies,
             json,
             self.cookies,
