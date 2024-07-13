@@ -322,7 +322,7 @@ class Session:
             from network.winhttp.requester import Requester
         self._requester = Requester()
         self._libidx = globalconfig["network"]
-        
+
         self.headers.update({"Accept-Encoding": self.requester.Accept_Encoding})
         self.headers.update({"User-Agent": self.requester.default_UA})
         return self._requester
@@ -346,13 +346,13 @@ class Session:
         verify=False,
         cert=None,
     ):
-
+        requester = self.requester
         if cookies:
             self.cookies.update(cookies)
         _h = self.headers.copy()
         if headers:
             _h.update(headers)
-        response = self.requester.request(
+        response = requester.request(
             method.upper(),
             url,
             params,

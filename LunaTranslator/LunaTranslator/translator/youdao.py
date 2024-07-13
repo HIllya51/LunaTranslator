@@ -4,7 +4,6 @@ from translator.basetranslator import basetrans
 import random
 
 
-
 class TS(basetrans):
     def langmap(self):
         return {"zh": "zh-CHS"}
@@ -27,7 +26,7 @@ class TS(basetrans):
         }
 
     def inittranslator(self):
-        self.headers = {
+        headers = {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
             "Cache-Control": "no-cache",
@@ -45,9 +44,7 @@ class TS(basetrans):
         }
         # proxies = { "http": None, "https": None}
 
-        self.proxysession.trust_env = False
-        self.proxysession.headers.update(self.headers)
-        self.proxysession.get("https://fanyi.youdao.com")
+        self.proxysession.get("https://fanyi.youdao.com", headers=headers)
 
     def translate(self, content):
 

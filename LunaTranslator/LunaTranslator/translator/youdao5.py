@@ -6,7 +6,7 @@ class TS(basetrans):
         return {"zh": "zh-CHS"}
 
     def inittranslator(self):
-        self.headers = {
+        headers = {
             "authority": "ai.youdao.com",
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "accept-language": "zh-CN,zh;q=0.9",
@@ -22,9 +22,9 @@ class TS(basetrans):
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
         }
 
-        self.proxysession.trust_env = False
-        self.proxysession.headers.update(self.headers)
-        self.proxysession.get("https://ai.youdao.com/product-fanyi-text.s")
+        self.proxysession.get(
+            "https://ai.youdao.com/product-fanyi-text.s", headers=headers
+        )
 
     def translate(self, content):
 
