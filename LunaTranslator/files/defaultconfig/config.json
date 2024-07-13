@@ -1434,6 +1434,10 @@
             "use": false,
             "name": "Google Cloud Vision"
         },
+        "googlelens": {
+            "use": false,
+            "name": "Google Lens"
+        },
         "xunfei": {
             "use": false,
             "name": "讯飞OCR"
