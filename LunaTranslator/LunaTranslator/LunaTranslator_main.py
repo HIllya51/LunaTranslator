@@ -40,7 +40,8 @@ if __name__ == "__main__":
     )
     font = QFont()
     font.setStyleStrategy(QFont.StyleStrategy.PreferAntialias)
-    font.setHintingPreference(QFont.HintingPreference.PreferNoHinting)
+    font.setHintingPreference(QFont.HintingPreference.PreferFullHinting)
+    # 必须PreferFullHinting，不能PreferNoHinting，否则阿拉伯语显示不出来
     QApplication.setFont(font)
 
     app = QApplication(sys.argv)
