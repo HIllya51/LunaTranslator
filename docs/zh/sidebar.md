@@ -21,6 +21,7 @@
   - [软件更新](/zh/update.md)
 
 - 常见问题
+  - [OCR 自动化执行方法的参数含义](/zh/windowsocr.md)
   - [Windows OCR 如何安装额外的语言支持](/zh/windowsocr.md)
   - [如何使用 Mecab 分词&词性颜色标注](/zh/qa1.md) 
   - [如何自动划词进 anki](/zh/qa2.md) 

@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, os
 import gobject
 from myutils.config import globalconfig, ocrsetting, _TRL, ocrerrorfix, _TR
-from myutils.utils import splitocrtypes
+from myutils.utils import splitocrtypes, dynamiclink
 from gui.inputdialog import autoinitdialog, postconfigdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -188,7 +188,13 @@ def getocrgrid(self):
                     type="grid",
                     grid=[
                         [
-                            ("自动化执行方法", 8),
+                            ("自动化执行方法", 7),
+                            D_getIconButton(
+                                callback=lambda: os.startfile(
+                                    dynamiclink("{docs_server}/#/zh/ocrparam")
+                                ),
+                                icon="fa.question",
+                            ),
                             (
                                 D_getsimplecombobox(
                                     _TRL(
