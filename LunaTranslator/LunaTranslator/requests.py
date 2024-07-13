@@ -322,6 +322,9 @@ class Session:
             from network.winhttp.requester import Requester
         self._requester = Requester()
         self._libidx = globalconfig["network"]
+        
+        self.headers.update({"Accept-Encoding": self.requester.Accept_Encoding})
+        self.headers.update({"User-Agent": self.requester.default_UA})
         return self._requester
 
     def request(
@@ -347,8 +350,6 @@ class Session:
         if cookies:
             self.cookies.update(cookies)
         _h = self.headers.copy()
-        _h.update({"Accept-Encoding": self.requester.Accept_Encoding})
-        _h.update({"User-Agent": self.requester.default_UA})
         if headers:
             _h.update(headers)
         response = self.requester.request(
