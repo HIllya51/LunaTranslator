@@ -17,7 +17,6 @@ import os
 import gobject, functools
 from traceback import print_exc
 from qtsymbols import *
-from gui.inputdialog import autoinitdialog
 from gui.usefulwidget import FocusCombo, getboxlayout
 
 

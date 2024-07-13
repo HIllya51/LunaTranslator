@@ -1,8 +1,10 @@
 import os
 import winrtutils
 from myutils.config import _TR, static_data, getlang_inner2show
+from myutils.utils import dynamiclink
 from ocrengines.baseocrclass import baseocr
 from qtsymbols import *
+from gui.usefulwidget import getboxlayout
 
 
 def initsupports():
@@ -33,7 +35,13 @@ def question(dialog: QDialog):
     _allsupport = initsupports()
     supportlang = QLabel()
     supportlang.setText(", ".join([getlang_inner2show(f) for f in _allsupport]))
-    formLayout.addRow(_TR("当前支持的语言"), supportlang)
+    btndownload = QPushButton(_TR("添加语言包"))
+    btndownload.clicked.connect(
+        lambda: os.startfile(dynamiclink("{docs_server}/#/zh/windowsocr"))
+    )
+    formLayout.addRow(
+        _TR("当前支持的语言"), getboxlayout([supportlang, btndownload], makewidget=True)
+    )
 
 
 class OCR(baseocr):
