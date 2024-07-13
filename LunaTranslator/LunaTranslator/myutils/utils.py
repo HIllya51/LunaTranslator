@@ -281,16 +281,29 @@ def checkportavailable(port):
 
 
 def splittranslatortypes():
-    pre, offline, free, dev, api = set(), set(), set(), set(), set()
+    pre, offline, free, dev, api = [], [], [], [], []
     for k in globalconfig["fanyi"]:
         try:
             {"pre": pre, "offline": offline, "free": free, "dev": dev, "api": api}[
                 globalconfig["fanyi"][k].get("type", "free")
-            ].add(k)
+            ].append(k)
         except:
             pass
 
     return offline, pre, free, dev, api
+
+
+def splitocrtypes():
+    offline, online = [], []
+    for k in globalconfig["ocr"]:
+        try:
+            {"online": online, "offline": offline}[
+                globalconfig["ocr"][k].get("type", "online")
+            ].append(k)
+        except:
+            pass
+
+    return offline, online
 
 
 def argsort(l):

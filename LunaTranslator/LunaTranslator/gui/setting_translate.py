@@ -32,10 +32,7 @@ def initsome11(self, l, label=None):
         grids.append([(label, 8)])
     i = 0
     line = []
-    for fanyi in globalconfig["fanyi"]:
-
-        if fanyi not in l:
-            continue
+    for fanyi in l:
 
         _f = "./Lunatranslator/translator/{}.py".format(fanyi)
         if not os.path.exists(_f):

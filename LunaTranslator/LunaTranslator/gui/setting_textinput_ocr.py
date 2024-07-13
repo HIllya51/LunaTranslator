@@ -2,6 +2,7 @@ from qtsymbols import *
 import functools, os
 import gobject
 from myutils.config import globalconfig, ocrsetting, _TRL, ocrerrorfix, _TR
+from myutils.utils import splitocrtypes
 from gui.inputdialog import autoinitdialog, postconfigdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -24,16 +25,11 @@ def __label2(self):
     return self.threshold2label
 
 
-def getocrgrid(self):
-
-    grids = []
-    grids_source = []
-    i = 0
-
-    self.ocrswitchs = {}
+def initgridsources(self, names):
     line = []
-    for name in globalconfig["ocr"]:
-
+    i = 0
+    grids_source = []
+    for name in names:
         _f = "./Lunatranslator/ocrengines/{}.py".format(name)
         if os.path.exists(_f) == False:
             continue
@@ -75,6 +71,15 @@ def getocrgrid(self):
         i += 1
     if len(line):
         grids_source.append(line)
+    return grids_source
+
+
+def getocrgrid(self):
+
+    grids = []
+
+    offline, online = splitocrtypes()
+    self.ocrswitchs = {}
 
     def vissolvebtn(text):
         _ = QPushButton()
@@ -85,7 +90,34 @@ def getocrgrid(self):
     grids += [
         [
             (
-                dict(title="引擎", type="grid", grid=grids_source),
+                dict(
+                    title="引擎",
+                    type="grid",
+                    grid=[
+                        [
+                            (
+                                dict(
+                                    title="离线",
+                                    type="grid",
+                                    grid=initgridsources(self, offline),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                        [
+                            (
+                                dict(
+                                    title="在线",
+                                    type="grid",
+                                    grid=initgridsources(self, online),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                    ],
+                ),
                 0,
                 "group",
             )

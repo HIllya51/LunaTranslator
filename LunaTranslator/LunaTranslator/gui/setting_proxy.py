@@ -16,10 +16,7 @@ def getall(l, item="fanyi", name=None):
     grids = []
     i = 0
     line = []
-    for fanyi in globalconfig[item]:
-
-        if fanyi not in l:
-            continue
+    for fanyi in l:
         if name:
             _f = name % fanyi
             if not os.path.exists(_f):
@@ -103,7 +100,7 @@ def makeproxytab(self, basel):
         name="./Lunatranslator/ocrengines/%s.py",
     )
     meta = getall(
-        l=list(globalconfig["metadata"].keys()),
+        l=globalconfig["metadata"],
         item="metadata",
         name="./LunaTranslator/metadata/%s.py",
     )
@@ -123,7 +120,7 @@ def makeproxytab(self, basel):
         name="./LunaTranslator/hiraparse/%s.py",
     )
     github = getall(
-        l=list(globalconfig["github"].keys()),
+        l=globalconfig["github"],
         item="github",
     )
 
