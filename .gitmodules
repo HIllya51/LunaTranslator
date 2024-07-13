@@ -10,3 +10,6 @@
 [submodule "plugins/libs/rapidfuzz-cpp"]
 	path = plugins/libs/rapidfuzz-cpp
 	url = https://github.com/rapidfuzz/rapidfuzz-cpp
+[submodule "plugins/libs/wechat-ocr"]
+	path = plugins/libs/wechat-ocr
+	url = https://github.com/swigger/wechat-ocr

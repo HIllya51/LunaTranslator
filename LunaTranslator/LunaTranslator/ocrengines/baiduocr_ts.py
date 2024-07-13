@@ -1,8 +1,4 @@
-import requests
 import random
-import json
-import os
-import sys
 from hashlib import md5
 from ocrengines.baseocrclass import baseocr
 

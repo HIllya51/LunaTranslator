@@ -106,6 +106,8 @@ class baseocr(commonbase):
             self.level2init()
         try:
             text = self.ocr(imagebinary)
+            if text is None:
+                text = ""
         except Exception as e:
             self.needinit = True
             raise e

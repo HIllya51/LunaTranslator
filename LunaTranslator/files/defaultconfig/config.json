@@ -1454,6 +1454,11 @@
             "use": false,
             "name": "manga-ocr",
             "type": "offline"
+        },
+        "weixinocr": {
+            "use": false,
+            "name": "WeChatOCR",
+            "type": "offline"
         }
     },
     "fanyi": {
