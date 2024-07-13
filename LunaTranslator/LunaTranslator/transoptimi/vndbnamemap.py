@@ -42,6 +42,8 @@ class Process:
                 if not gobject.baseobject.textsource:
                     break
                 gameuid = gobject.baseobject.textsource.gameuid
+                if not gameuid:
+                    break
                 if savehook_new_data[gameuid]["transoptimi_followdefault"]:
                     break
                 return savehook_new_data[gameuid]["vndbnamemap_use"]
@@ -57,6 +59,8 @@ class Process:
                 if not gobject.baseobject.textsource:
                     break
                 gameuid = gobject.baseobject.textsource.gameuid
+                if not gameuid:
+                    break
                 if savehook_new_data[gameuid]["transoptimi_followdefault"]:
                     break
                 return savehook_new_data[gameuid]["namemap"]

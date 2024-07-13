@@ -390,6 +390,8 @@ class Process:
                 if not gobject.baseobject.textsource:
                     break
                 gameuid = gobject.baseobject.textsource.gameuid
+                if not gameuid:
+                    break
                 if savehook_new_data[gameuid]["transoptimi_followdefault"]:
                     break
                 return savehook_new_data[gameuid]["noundict_use"]
@@ -405,6 +407,8 @@ class Process:
                 if not gobject.baseobject.textsource:
                     break
                 gameuid = gobject.baseobject.textsource.gameuid
+                if not gameuid:
+                    break
                 if savehook_new_data[gameuid]["transoptimi_followdefault"]:
                     break
                 return 0, savehook_new_data[gameuid]["noundictconfig"]
