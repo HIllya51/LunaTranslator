@@ -1027,10 +1027,14 @@ IsZoomed.restype = BOOL
 WNDPROCTYPE = WINFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
 
 GWLP_WNDPROC = -4
-SetWindowLongPtr = _user32.SetWindowLongPtrW
+if sizeof(c_void_p) == 8:
+    SetWindowLongPtr = _user32.SetWindowLongPtrW
+    GetWindowLongPtr = _user32.GetWindowLongPtrW
+else:
+    SetWindowLongPtr = _user32.SetWindowLongW
+    GetWindowLongPtr = _user32.GetWindowLongW
 SetWindowLongPtr.argtypes = HWND, INT, c_void_p
 SetWindowLongPtr.restype = c_void_p
-GetWindowLongPtr = _user32.GetWindowLongPtrW
 GetWindowLongPtr.argtypes = HWND, INT
 GetWindowLongPtr.restype = c_void_p
 WM_LBUTTONDOWN = 0x0201
