@@ -530,7 +530,6 @@
     "原文": "orijinal metin",
     "原文字体": "Orijinal yazıtipi",
     "译文字体": "Çeviri yazıtipi",
-    "额外的行间距": "Ekstra çizgi boşluğu",
     "选取OCR范围后显示范围框": "OCR menzili seçmeden sonra menzil kutusunu göster",
     "下载": "indir",
     "附加参数": "Ekstra parametre",
@@ -819,5 +818,6 @@
     "当前支持的语言": "Şu anda desteklenmiş diller",
     "添加语言包": "Dil paketi ekle",
     "未添加": "Eklenmedi",
-    "在线": "on line"
+    "在线": "on line",
+    "行间距": "Satır boşluğu"
 }

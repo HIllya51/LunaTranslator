@@ -530,7 +530,6 @@
     "原文": "Texto original",
     "原文字体": "Fuente original",
     "译文字体": "Fuente de traducción",
-    "额外的行间距": "Espaciamiento adicional de filas",
     "选取OCR范围后显示范围框": "Después de seleccionar el rango ocr, se muestra el cuadro de rango.",
     "下载": "Descargar",
     "附加参数": "Parámetros adicionales",
@@ -819,5 +818,6 @@
     "当前支持的语言": "Idiomas apoyados actualmente",
     "添加语言包": "Añadir paquetes de idiomas",
     "未添加": "Sin agregar",
-    "在线": "En línea"
+    "在线": "En línea",
+    "行间距": "Distancia entre líneas"
 }

@@ -530,7 +530,7 @@ def xianshigrid_style(self):
                             "居中显示",
                             D_getsimpleswitch(globalconfig, "showatcenter"),
                             "",
-                            "额外的行间距",
+                            "行间距",
                             D_getspinbox(-100, 100, globalconfig, "extra_space"),
                             "",
                         ],

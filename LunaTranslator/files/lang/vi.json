@@ -530,7 +530,6 @@
     "原文": "Văn bản gốc",
     "原文字体": "Phông chữ gốc",
     "译文字体": "Phông chữ dịch",
-    "额外的行间距": "Thêm khoảng cách hàng",
     "选取OCR范围后显示范围框": "Hiển thị hộp phạm vi sau khi chọn phạm vi OCR",
     "下载": "Tải về",
     "附加参数": "Tham số bổ sung",
@@ -819,5 +818,6 @@
     "当前支持的语言": "Ngôn ngữ được hỗ trợ hiện tại",
     "添加语言包": "Thêm gói ngôn ngữ",
     "未添加": "Chưa thêm",
-    "在线": "Trực tuyến"
+    "在线": "Trực tuyến",
+    "行间距": "Khoảng cách dòng"
 }

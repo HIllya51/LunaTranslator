@@ -530,7 +530,6 @@
     "原文": "Le texte original",
     "原文字体": "Police originale",
     "译文字体": "Police de traduction",
-    "额外的行间距": "Espacement des lignes supplémentaire",
     "选取OCR范围后显示范围框": "Afficher la zone de portée après avoir sélectionné la plage ocr",
     "下载": "Télécharger",
     "附加参数": "Paramètres supplémentaires",
@@ -819,5 +818,6 @@
     "当前支持的语言": "Langues actuellement supportées",
     "添加语言包": "Ajouter un pack de langue",
     "未添加": "Non ajouté",
-    "在线": "En ligne"
+    "在线": "En ligne",
+    "行间距": "Espacement des lignes"
 }
