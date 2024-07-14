@@ -165,7 +165,7 @@ int CreateProcessStartW(NtleaProcess *process, wchar_t const *applicationPath)
 
 int CreateProcessBeginW(NtleaProcess *process, wchar_t const *applicationPath)
 {
-	ParseFileMapParams(process);
+	// ParseFileMapParams(process);
 	return CreateProcessStartW(process, applicationPath);
 }
 // first see MSDN : http://msdn.microsoft.com/en-us/library/windows/desktop/ms684280(v=vs.85).aspx
@@ -593,14 +593,20 @@ int ntleaswmain(int argc, wchar_t *wargv[])
 	}
 
 	NtleaProcess ntproc = {0};
+	{
+		auto process = &ntproc;
+		process->dwCompOption = std::stoi(wargv[1]); // 0;
+		process->dwCodePage = std::stoi(wargv[2]);	 // 932;
+		process->dwLCID = std::stoi(wargv[3]);		 // 0x411;
+		process->dwTimeZone = std::stoi(wargv[4]);	 //(DWORD)-540;
+		process->dwSpApp = 100;						 // ntlea use this value /100 for font-ratio !
+		*(LPDWORD)process->FontFaceName = 0;		 // copy empty
+	}
 	LPCWSTR pApplicationName = NULL;
 	// 1. parse params and prepare helper data :
 	int dbg = 0, dir = 0, qit = 0, ret = 0;
 
-	ret = CreateProcessBeginW(&ntproc, (pApplicationName = wargv[1]));
-	ntproc.dwCompOption = 4;
-	ntproc.dwCodePage = 932;
-	ntproc.dwLCID = 1041;
+	ret = CreateProcessBeginW(&ntproc, (pApplicationName = wargv[5]));
 	lstrcpyA((LPSTR)ntproc.FontFaceName, "MS PGothic");
 
 	// 5. if failed create process, exit ...

@@ -14,6 +14,7 @@ from myutils.config import (
     globalconfig,
     static_data,
 )
+from myutils.localetools import getgamecamptoolsname, localeswitchedrun
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import (
     Singleton_close,
@@ -820,21 +821,15 @@ class dialog_setting_game_internal(QWidget):
 
     def starttab(self, formLayout: QFormLayout, gameuid):
 
-        b = windows.GetBinaryType(uid2gamepath[gameuid])
-
-        if b == 6:
-            _methods = ["", "Locale_Remulator", "Ntleas"]
-        else:
-            _methods = ["Locale-Emulator", "Locale_Remulator", "Ntleas"]
-        if b == 6 and savehook_new_data[gameuid]["localeswitcher"] == 0:
-            savehook_new_data[gameuid]["localeswitcher"] = 1
         formLayout.addRow(
             _TR("转区启动"),
             getboxlayout(
                 [
                     getsimpleswitch(savehook_new_data[gameuid], "leuse"),
                     getsimplecombobox(
-                        _TRL(_methods), savehook_new_data[gameuid], "localeswitcher"
+                        getgamecamptoolsname(uid2gamepath[gameuid]),
+                        savehook_new_data[gameuid],
+                        "localeswitcher",
                     ),
                 ]
             ),
@@ -1708,26 +1703,8 @@ def startgame(gameuid):
                     dirpath = dirp
 
             localeswitcher = savehook_new_data[gameuid]["localeswitcher"]
-            b = windows.GetBinaryType(execheck3264)
-            if b == 6 and localeswitcher == 0:
-                localeswitcher = 1
-            if localeswitcher == 2 and b == 6:
-                _shareddllproxy = "shareddllproxy64"
-            else:
-                _shareddllproxy = "shareddllproxy32"
-            shareddllproxy = os.path.abspath("./files/plugins/" + _shareddllproxy)
-            _cmd = {0: "le", 1: "LR", 2: "ntleas"}[localeswitcher]
-            windows.CreateProcess(
-                None,
-                '"{}" {} {}'.format(shareddllproxy, _cmd, usearg),
-                None,
-                None,
-                False,
-                0,
-                None,
-                dirpath,
-                windows.STARTUPINFO(),
-            )
+            localeswitchedrun(execheck3264, localeswitcher, usearg, dirpath)
+
     except:
         print_exc()
 
