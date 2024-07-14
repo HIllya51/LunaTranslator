@@ -55,19 +55,13 @@ class base(QLabel):
         )
         self.setShadow()
 
-    def move(self, point: QPoint):
+    def move(self, x: int, y: int):
         self.movedx = 0
         self.movedy = 0
-        # text = self.text()
-        # isarabic = any((ord(char) >= 0x0600 and ord(char) <= 0x06E0) for char in text)
-        # if isarabic:
-        #     self.movedx -= self.width()
-        x, y = self.moveoffset()
-        self.movedx -= x
-        self.movedy -= y
-        point.setX(int(point.x() + self.movedx))
-        point.setY(int(point.y() + self.movedy))
-        super().move(point)
+        dx, dy = self.moveoffset()
+        self.movedx -= dx
+        self.movedy -= dy
+        super().move(QPoint(int(x + self.movedx), int(y + self.movedy)))
 
     def y(self):
         y = super().y()

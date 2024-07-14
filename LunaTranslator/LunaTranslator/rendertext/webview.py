@@ -158,7 +158,7 @@ class TextBrowser(QWidget, dataget):
     def calllunaheightchange(self, h):
         self.contentsChanged.emit(
             QSize(
-                self.width(),
+                self._padding * 2 + self.width(),
                 1 + self._padding * 2 + int(h * self.webivewwidget.get_zoom()),
             )
         )

@@ -47,6 +47,21 @@ class Qlabel_c(QLabel):
 
 class TextBrowser(QWidget, dataget):
     contentsChanged = pyqtSignal(QSize)
+    _padding = 5
+
+    def __makeborder(self, size: QSize):
+        # border是用来当可选取时，用来拖动的
+        # webview2的绘制和qt的绘制不兼容，qt的半透明对他无效，必须缩放，否则遮挡，所以还是各写一份吧。
+        _padding = self._padding
+        self.masklabel_top.setGeometry(0, 0, size.width(), _padding)
+
+        self.masklabel_left.setGeometry(0, 0, _padding, size.height())
+        self.masklabel_right.setGeometry(
+            self.width() - _padding, 0, _padding, size.height()
+        )
+        self.masklabel_bottom.setGeometry(
+            0, size.height() - _padding, size.width(), _padding
+        )
 
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
@@ -55,11 +70,16 @@ class TextBrowser(QWidget, dataget):
 
     def resizeEvent(self, event: QResizeEvent):
         self.atback2.resize(event.size())
+        self.atback_color.resize(event.size())
         self.toplabel2.resize(event.size())
         self.masklabel.resize(event.size())
 
+        self.__makeborder(event.size())
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        self.atback_color = QLabel(self)
+        self.atback_color.setMouseTracking(True)
         self.atback2 = QLabel(self)
         self.atback2.setMouseTracking(True)
 
@@ -86,7 +106,17 @@ class TextBrowser(QWidget, dataget):
         )
         self.masklabel = QLabel(self.textbrowser)
         self.masklabel.setMouseTracking(True)
-
+        self.masklabel_left = QLabel(self)
+        self.masklabel_left.setMouseTracking(True)
+        # self.masklabel_left.setStyleSheet('background-color:red')
+        self.masklabel_right = QLabel(self)
+        # self.masklabel_right.setStyleSheet('background-color:red')
+        self.masklabel_right.setMouseTracking(True)
+        self.masklabel_bottom = QLabel(self)
+        self.masklabel_bottom.setMouseTracking(True)
+        self.masklabel_top = QLabel(self)
+        self.masklabel_top.setMouseTracking(True)
+        # self.masklabel_bottom.setStyleSheet('background-color:red')
         self.savetaglabels = []
         self.searchmasklabels_clicked = []
         self.searchmasklabels = []
@@ -168,7 +198,7 @@ class TextBrowser(QWidget, dataget):
     def _setnextfont(self, font, cleared):
         if cleared:
             self.textbrowser.setFont(font)
-    
+
         self.textbrowser.moveCursor(QTextCursor.MoveOperation.End)
         f = QTextCharFormat()
         f.setFont(font)
@@ -319,7 +349,9 @@ class TextBrowser(QWidget, dataget):
             _.setText(subtext[i])
             _.setFont(font)
             _.adjustSize()
-            _.move(subpos[i])
+            _.move(
+                subpos[i].x(), subpos[i].y() + self.textbrowser.y() - self.toplabel2.y()
+            )
             _.show()
         self.textcursor.setPosition(pos)
         self.textbrowser.setTextCursor(self.textcursor)
@@ -393,7 +425,7 @@ class TextBrowser(QWidget, dataget):
                 _.setText(block.text()[s : s + l])
                 _.setFont(font)
                 _.adjustSize()
-                _.move(tl1)
+                _.move(tl1.x(), tl1.y() + self.textbrowser.y() - self.toplabel2.y())
                 _.show()
                 linei += 1
         self.yinyingposline = linei
@@ -408,7 +440,7 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.setTextCursor(self.textcursor)
 
         idx = 0
-        heigth, __, _ = self._getfh(False)
+        heigth, _ = self._getfh(False)
         for word in x:
             idx += 1
             l = len(word["orig"])
@@ -425,7 +457,7 @@ class TextBrowser(QWidget, dataget):
                 color = self._randomcolor(word)
                 if len(word["orig"].strip()):
                     if labeli >= len(self.searchmasklabels) - 1:
-                        ql = QLabel(self.atback2)
+                        ql = QLabel(self.atback_color)
                         ql.setMouseTracking(True)
                         self.searchmasklabels.append(ql)
 
@@ -434,7 +466,7 @@ class TextBrowser(QWidget, dataget):
                         ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
                         self.searchmasklabels_clicked.append(ql)
 
-                        ql = QLabel(self.atback2)
+                        ql = QLabel(self.atback_color)
                         ql.setMouseTracking(True)
                         self.searchmasklabels.append(ql)
 
@@ -538,18 +570,21 @@ class TextBrowser(QWidget, dataget):
         fm = QFontMetricsF(font)
         if getfm:
             return fm
-        return fm.height(), fm.ascent(), font
+        return fm.height(), font
 
     def _addtag(self, x):
         pos = 0
 
-        fasall, _, fontorig = self._getfh(False)
-        fha, fascent, fonthira = self._getfh(True)
+        _, fontorig = self._getfh(False)
+        fha, fonthira = self._getfh(True)
+        self.textbrowser.move(0, fha)
+        self.atback_color.move(0, fha)
+        ldh = max(globalconfig["extra_space"], fha // 2)
         for i in range(0, self.textbrowser.document().blockCount()):
             b = self.textbrowser.document().findBlockByNumber(i)
 
             tf = b.blockFormat()
-            tf.setLineHeight(fasall + fha, LineHeightTypes.FixedHeight)
+            tf.setLineHeight(ldh, LineHeightTypes.LineDistanceHeight)
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
@@ -573,7 +608,7 @@ class TextBrowser(QWidget, dataget):
             if savetaglabels_idx >= len(self.savetaglabels):
                 self.savetaglabels.append(self.currentclass(self.atback2))
             self.solvejiaminglabel(
-                self.savetaglabels[savetaglabels_idx], word, fonthira, tl1, tl2, fascent
+                self.savetaglabels[savetaglabels_idx], word, fonthira, tl1, tl2, fha
             )
             savetaglabels_idx += 1
 
@@ -668,7 +703,7 @@ class TextBrowser(QWidget, dataget):
             x = tl1.x() / 2 + tl2.x() / 2 - w / 2
             y = tl2.y() - fh
 
-        _.move(QPoint(int(x), int(y)))
+        _.move(x, y + self.textbrowser.y() - self.toplabel2.y())
 
         _.show()
         return _
@@ -680,3 +715,6 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.clear()
 
         self.saveiterclasspointer.clear()
+
+        self.textbrowser.move(0, 0)
+        self.atback_color.move(0, 0)
