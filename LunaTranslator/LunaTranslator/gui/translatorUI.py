@@ -44,7 +44,7 @@ class QUnFrameWindow(resizableframeless):
     muteprocessignal = pyqtSignal()
     ocr_once_signal = pyqtSignal()
     resizesignal = pyqtSignal(QSize)
-    move_signal=pyqtSignal(QPoint)
+    move_signal = pyqtSignal(QPoint)
 
     def hookfollowsignalsolve(self, code, other):
         if self._move_drag:
@@ -586,7 +586,7 @@ class QUnFrameWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self._TitleLabel = QLabel(self)
-        self._TitleLabel.setObjectName('_TitleLabel')
+        self._TitleLabel.setObjectName("_TitleLabel")
         self._TitleLabel.setMouseTracking(True)
         self.addbuttons()
         self.translate_text = Textbrowser(self)
@@ -670,7 +670,11 @@ class QUnFrameWindow(resizableframeless):
                 topr,
                 str2rgba(
                     globalconfig["backcolor"],
-                    globalconfig["transparent"] * (not globalconfig["backtransparent"]),
+                    max(
+                        100 / 255,
+                        globalconfig["transparent"]
+                        * (not globalconfig["backtransparent"]),
+                    ),
                 ),
             )
         )
