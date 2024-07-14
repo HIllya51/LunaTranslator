@@ -14,18 +14,13 @@ from ctypes import (
     c_ushort,
     create_string_buffer,
     c_short,
-)
-from ctypes import (
     Structure,
-    c_int,
-    POINTER,
-    c_uint,
     WINFUNCTYPE,
-    c_void_p,
     sizeof,
     byref,
+    cast,
 )
-import ctypes, os
+import os
 from traceback import print_exc
 from ctypes.wintypes import (
     RECT,
@@ -34,7 +29,11 @@ from ctypes.wintypes import (
     BOOL,
     WORD,
     DWORD,
+    PHKEY,
     BYTE,
+    HKEY,
+    LPDWORD,
+    LPBYTE,
     LPCWSTR,
     HANDLE,
     UINT,
@@ -334,7 +333,7 @@ def GetProcessFileName(hHandle):
 
             # 我操了，使用管理员权限时，这个玩意会失败
             if _WNetGetUniversalNameW(chr(A) + ":", 1, buf, byref(c_uint(65535))) == 0:
-                prefixnetwork = ctypes.cast(
+                prefixnetwork = cast(
                     buf, POINTER(UNIVERSAL_NAME_INFO)
                 ).contents.lpUniversalName
                 if v.startswith(prefixnetwork):
@@ -599,26 +598,26 @@ class SECURITY_DESCRIPTORStruct(Structure):
         ("Revision", c_byte),
         ("Sbz1", c_byte),
         ("Control", WORD),
-        ("Owner", ctypes.POINTER(SIDStruct)),
-        ("Group", ctypes.POINTER(SIDStruct)),
-        ("Sacl", ctypes.POINTER(ACLStruct)),
-        ("Dacl", ctypes.POINTER(ACLStruct)),
+        ("Owner", POINTER(SIDStruct)),
+        ("Group", POINTER(SIDStruct)),
+        ("Sacl", POINTER(ACLStruct)),
+        ("Dacl", POINTER(ACLStruct)),
     ]
 
 
 class SECURITY_ATTRIBUTESStruct(Structure):
     _fields_ = [
         ("nLength", DWORD),
-        ("lpSecurityDescriptor", ctypes.POINTER(SECURITY_DESCRIPTORStruct)),
+        ("lpSecurityDescriptor", POINTER(SECURITY_DESCRIPTORStruct)),
         ("bInheritHandle", BOOL),
     ]
 
 
 _InitializeSecurityDescriptor = _Advapi32.InitializeSecurityDescriptor
-_InitializeSecurityDescriptor.argtypes = [ctypes.c_void_p, DWORD]
+_InitializeSecurityDescriptor.argtypes = [c_void_p, DWORD]
 _InitializeSecurityDescriptor.restype = BOOL
 _SetSecurityDescriptorDacl = _Advapi32.SetSecurityDescriptorDacl
-_SetSecurityDescriptorDacl.argtypes = [ctypes.c_void_p, BOOL, ctypes.c_void_p, BOOL]
+_SetSecurityDescriptorDacl.argtypes = [c_void_p, BOOL, c_void_p, BOOL]
 
 
 def get_SECURITY_ATTRIBUTES():
@@ -754,17 +753,37 @@ def mciSendString(s):
     return bf.value
 
 
-# _RegOpenKeyExW=_Advapi32.RegOpenKeyExW
-# _RegOpenKeyExW.argtypes=c_void_p,c_wchar_p,c_uint,c_uint,c_void_p
-# ERROR_SUCCESS=0
-# def RegOpenKeyEx(hKey,lpSubkey,ulOptions,samDesired):
-#     key=c_void_p()
-#     if _RegOpenKeyExW(hKey,lpSubkey,ulOptions,samDesired,pointer(key))!=ERROR_SUCCESS:
-#         raise Exception("RegOpenKeyEx failed")
-#     return key.value
+RegCloseKey = _Advapi32.RegCloseKey
+RegCloseKey.argtypes = (HKEY,)
+_RegOpenKeyExW = _Advapi32.RegOpenKeyExW
+_RegOpenKeyExW.argtypes = HKEY, LPCWSTR, DWORD, c_uint, PHKEY
+_RegQueryValueExW = _Advapi32.RegQueryValueExW
+_RegQueryValueExW.argtypes = HKEY, LPCWSTR, LPDWORD, LPDWORD, LPBYTE, LPDWORD
+ERROR_SUCCESS = 0
+HKEY_CURRENT_USER = 0x80000001
+KEY_ALL_ACCESS = 0xF003F
+KEY_QUERY_VALUE = 1
 
-# HKEY_CURRENT_USER=0x80000001
-# KEY_ALL_ACCESS=0xf003f
+
+def RegOpenKeyEx(hKey, lpSubkey, ulOptions, samDesired):
+    key = HKEY()
+    succ = _RegOpenKeyExW(hKey, lpSubkey, ulOptions, samDesired, pointer(key))
+    if succ != ERROR_SUCCESS:
+        raise Exception("RegOpenKeyEx failed")
+    return key
+
+
+def RegQueryValueEx(hKey, lpValueName):
+    data = create_unicode_buffer(65535)
+    length = DWORD(65535)
+    succ = _RegQueryValueExW(
+        hKey, lpValueName, None, None, cast(data, LPBYTE), pointer(length)
+    )
+
+    if succ != ERROR_SUCCESS:
+        raise Exception("RegQueryValueEx failed")
+    return data.value
+
 
 # _RegQueryInfoKeyW=_Advapi32.RegQueryInfoKeyW
 # _RegQueryInfoKeyW.argtypes=c_void_p,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
