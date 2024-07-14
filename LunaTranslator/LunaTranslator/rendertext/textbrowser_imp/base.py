@@ -61,14 +61,8 @@ class base(QLabel):
         dx, dy = self.moveoffset()
         text = self.text()
         isarabic = lambda char: (ord(char) >= 0x0600 and ord(char) <= 0x06E0)
-        isasciinoteng = (
-            lambda char: (ord(char) <= 0x40)
-            or ((ord(char) >= 0x5B) and (ord(char) <= 0x60))
-            or ((ord(char) >= 0x7B) and (ord(char) <= 0x7F))
-        )
-        isarabicx = any(isarabic(char) for char in text) and all(
-            (isasciinoteng(char) or isarabic(char)) for char in text
-        )
+        isfirstara = lambda text: len(text) and isarabic(text[0])
+        isarabicx = any(isarabic(char) for char in text) and isfirstara(text)
 
         if isarabicx:
             self.movedx -= self.width()
