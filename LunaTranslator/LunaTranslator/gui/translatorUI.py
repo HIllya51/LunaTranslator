@@ -44,6 +44,7 @@ class QUnFrameWindow(resizableframeless):
     muteprocessignal = pyqtSignal()
     ocr_once_signal = pyqtSignal()
     resizesignal = pyqtSignal(QSize)
+    move_signal=pyqtSignal(QPoint)
 
     def hookfollowsignalsolve(self, code, other):
         if self._move_drag:
@@ -565,6 +566,7 @@ class QUnFrameWindow(resizableframeless):
         self.muteprocessignal.connect(self.muteprocessfuntion)
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         self.resizesignal.connect(self.resize)
+        self.move_signal.connect(self.move)
 
     def __init__(self):
 

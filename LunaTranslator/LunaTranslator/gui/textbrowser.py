@@ -3,6 +3,7 @@ from myutils.config import globalconfig, _TR
 import importlib
 from webviewpy import webview_exception
 from gui.usefulwidget import getQMessageBox
+from traceback import print_exc
 
 
 class Textbrowser(QLabel):
@@ -34,6 +35,8 @@ class Textbrowser(QLabel):
                     _TR("错误"),
                     "can't find QWebEngine!",
                 )
+            else:
+                print_exc()
             globalconfig["rendertext_using"] = "textbrowser"
             tb = importlib.import_module(f"rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)

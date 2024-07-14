@@ -962,6 +962,11 @@ class WebivewWidget(abstractwebview):
             webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
         )
 
+    def get_hwnd(self):
+        return self.webview.get_native_handle(
+            webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
+        )
+
     def __init__(self, parent=None, debug=True) -> None:
         super().__init__(parent)
         declare_library_path(
@@ -1013,9 +1018,7 @@ class WebivewWidget(abstractwebview):
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         if self.webview:
-            hwnd = self.webview.get_native_handle(
-                webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
-            )
+            hwnd = self.get_hwnd()
             size = a0.size() * self.devicePixelRatioF()
             windows.MoveWindow(hwnd, 0, 0, size.width(), size.height(), True)
 

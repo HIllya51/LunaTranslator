@@ -213,9 +213,8 @@ def mouseselectwindow(callback):
 
     def _loop():
         while True:
-            keystate = windows.GetKeyState(
-                windows.VK_LBUTTON
-            )  # 必须使用GetKeyState, GetAsyncKeyState或SetWindowHookEx都无法检测到高权限应用上的点击事件。
+            keystate = windows.GetKeyState(windows.VK_LBUTTON)
+            # 必须使用GetKeyState, GetAsyncKeyState或SetWindowHookEx都无法检测到高权限应用上的点击事件。
             if keystate < 0:
                 break
             time.sleep(0.01)

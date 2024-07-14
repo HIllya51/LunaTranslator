@@ -21,7 +21,6 @@ from ctypes import (
     cast,
 )
 import os
-from traceback import print_exc
 from ctypes.wintypes import (
     RECT,
     POINT,
@@ -30,10 +29,12 @@ from ctypes.wintypes import (
     WORD,
     DWORD,
     PHKEY,
-    BYTE,
     HKEY,
     LPDWORD,
     LPBYTE,
+    WPARAM,
+    LPARAM,
+    INT,
     LPCWSTR,
     HANDLE,
     UINT,
@@ -1022,3 +1023,16 @@ def MapViewOfFile(hfmap, acc, high, low, size):
 IsZoomed = _user32.IsZoomed
 IsZoomed.argtypes = (HWND,)
 IsZoomed.restype = BOOL
+
+WNDPROCTYPE = WINFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
+
+GWLP_WNDPROC = -4
+SetWindowLongPtr = _user32.SetWindowLongPtrW
+SetWindowLongPtr.argtypes = HWND, INT, c_void_p
+SetWindowLongPtr.restype = c_void_p
+GetWindowLongPtr = _user32.GetWindowLongPtrW
+GetWindowLongPtr.argtypes = HWND, INT
+GetWindowLongPtr.restype = c_void_p
+WM_LBUTTONDOWN = 0x0201
+WM_LBUTTONUP = 0x0202
+WM_MOUSEMOVE = 0x0200
