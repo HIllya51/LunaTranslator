@@ -257,6 +257,11 @@
             "key": ""
         }
     },
+    "geminiocr": {
+        "args": {
+            "key": ""
+        }
+    },
     "xunfei": {
         "args": {
             "link": "https://www.xfyun.cn/doc/words/multi_print_recognition/API.html",

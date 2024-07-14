@@ -1463,6 +1463,10 @@
             "use": false,
             "name": "WeChatOCR",
             "type": "offline"
+        },
+        "geminiocr": {
+            "use": false,
+            "name": "GeminiOCR"
         }
     },
     "fanyi": {
