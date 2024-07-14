@@ -62,9 +62,8 @@ class base(QLabel):
         text = self.text()
         isarabic = lambda char: (ord(char) >= 0x0600 and ord(char) <= 0x06E0)
         isfirstara = lambda text: len(text) and isarabic(text[0])
-        isarabicx = any(isarabic(char) for char in text) and isfirstara(text)
 
-        if isarabicx:
+        if isfirstara(text):
             self.movedx -= self.width()
             self.movedx += dx
         else:
