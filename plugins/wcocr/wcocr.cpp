@@ -1,6 +1,5 @@
 #include <stdafx.h>
 #include <wechatocr.h>
-#include <nlohmann/json.hpp>
 #define DECLARE extern "C" __declspec(dllexport)
 
 DECLARE void *wcocr_init(const wchar_t *wexe, const wchar_t *wwcdir)
@@ -24,28 +23,19 @@ DECLARE void wcocr_destroy(void *pobj)
     auto obj = reinterpret_cast<CWeChatOCR *>(pobj);
     delete obj;
 }
-DECLARE void wcocr_free_str(char *ptr)
-{
-    delete[] ptr;
-}
-DECLARE char *wcocr_ocr(void *pobj, const char *u8path)
+DECLARE bool wcocr_ocr(void *pobj, const char *u8path, void (*cb)(int, int, int, int, LPCSTR))
 {
     if (!pobj)
-        return 0;
+        return false;
     auto obj = reinterpret_cast<CWeChatOCR *>(pobj);
     CWeChatOCR::result_t res;
-    std::string imgpath = u8path;
-    if (!obj->doOCR(imgpath, &res))
-        return 0;
+    if (!obj->doOCR(u8path, &res))
+        return false;
     std::vector<std::wstring> rets;
     std::vector<int> xs, ys, xs2, ys2;
-    nlohmann::json js = std::vector<nlohmann::json>{};
     for (auto &blk : res.ocr_response)
     {
-        js.push_back({blk.left, blk.top, blk.right, blk.bottom, blk.text});
+        cb(blk.left, blk.top, blk.right, blk.bottom, blk.text.c_str());
     }
-    std::string _s = js.dump();
-    auto s = new char[_s.size() + 1];
-    strcpy(s, _s.c_str());
-    return s;
+    return true;
 }

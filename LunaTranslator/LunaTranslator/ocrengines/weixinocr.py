@@ -1,6 +1,6 @@
-import gobject, os, uuid, json
+import gobject, os, uuid
 from ocrengines.baseocrclass import baseocr
-from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, cast
+from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, CFUNCTYPE, c_bool, c_int
 
 
 class OCR(baseocr):
@@ -41,20 +41,24 @@ class OCR(baseocr):
             ff.write(imagebinary)
         imgfile = os.path.abspath(fname)
         wcocr_ocr = self.wcocr.wcocr_ocr
-        wcocr_ocr.argtypes = c_void_p, c_char_p
-        wcocr_ocr.restype = c_void_p
-        wcocr_free_str = self.wcocr.wcocr_free_str
-        wcocr_free_str.argtypes = (c_void_p,)
-        pstring = wcocr_ocr(self.pobj, imgfile.encode("utf8"))
-        if not pstring:
-            return
-        string = cast(pstring, c_char_p).value.decode("utf8")
-        wcocr_free_str(pstring)
+        wcocr_ocr.argtypes = c_void_p, c_char_p, c_void_p
+        wcocr_ocr.restype = c_bool
+        ret = []
 
+        def cb(x1, y1, x2, y2, text: bytes):
+            ret.append((x1, y1, x2, y2, text.decode("utf8")))
+
+        succ = wcocr_ocr(
+            self.pobj,
+            imgfile.encode("utf8"),
+            CFUNCTYPE(None, c_int, c_int, c_int, c_int, c_char_p)(cb),
+        )
+        if not succ:
+            return
         os.remove(imgfile)
         boxs = []
         texts = []
-        for line in json.loads(string):
+        for line in ret:
             x1, y1, x2, y2, text = line
             boxs.append((x1, y1, x2, y2))
             texts.append(text)

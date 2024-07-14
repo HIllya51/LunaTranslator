@@ -1,16 +1,16 @@
 
-bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume, int *length, char **buffer)
+std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume)
 {
     ISpVoice *pVoice = NULL;
     if (FAILED(::CoInitialize(NULL)))
-        return false;
-    bool ret = true;
+        return {};
+    std::optional<std::vector<byte>> ret = {};
     do
     {
         HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pVoice);
         if (FAILED(hr) || (NULL == pVoice))
         {
-            ret = false;
+            ret = {};
             break;
         }
         IEnumSpObjectTokens *pSpEnumTokens = NULL;
@@ -32,7 +32,7 @@ bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, 
             hr = pVoice->GetOutputStream(&cpOldStream);
             if (FAILED(hr) || (NULL == cpOldStream))
             {
-                ret = false;
+                ret = {};
                 break;
             }
             originalFmt.AssignFormat(cpOldStream);
@@ -52,7 +52,7 @@ bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, 
                         hr = cpWavStream->SetBaseStream(pMemStream, SPDFID_WaveFormatEx, originalFmt.WaveFormatExPtr());
                         if (FAILED(hr))
                         {
-                            ret = false;
+                            ret = {};
                             break;
                         }
                     }
@@ -84,8 +84,10 @@ bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, 
             ULONG sSize = stats.cbSize.QuadPart; // size of the data to be read
             auto wavfmt = *originalFmt.WaveFormatExPtr();
 
-            ULONG bytesRead;                         //	this will tell the number of bytes that have been read
-            char *pBuffer = new char[sSize + 0x3ea]; // buffer to read the data
+            ULONG bytesRead; //	this will tell the number of bytes that have been read
+            std::vector<byte> datas;
+            datas.resize(sSize + 0x3ea);
+            auto pBuffer = datas.data(); // buffer to read the data
             // memcpy(pBuffer,&wavHeader,sizeof(WAV_HEADER));
             int fsize = sSize + 0x3ea;
             int ptr = 0;
@@ -128,8 +130,7 @@ bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, 
                     cout << pBuffer[i] << " ";
                 cout << endl;
             */
-            *buffer = pBuffer;
-            *length = fsize;
+            ret = std::move(datas);
             pIstream->Release();
         }
 

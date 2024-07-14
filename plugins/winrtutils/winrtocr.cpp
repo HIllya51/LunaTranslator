@@ -40,24 +40,18 @@ bool check_language_valid(wchar_t *language)
         return false;
     }
 }
-wchar_t **getlanguagelist(int *num)
+void getlanguagelist(void(*cb)(LPCWSTR))
 {
     OcrEngine ocrEngine = OcrEngine::TryCreateFromUserProfileLanguages();
     auto languages = ocrEngine.AvailableRecognizerLanguages();
-    auto ret = new wchar_t *[languages.Size()];
-    int i = 0;
+     
     for (auto &&language : languages)
     {
         auto lang = language.LanguageTag();
-        size_t len = lang.size() + 1;
-        ret[i] = new wchar_t[len];
-        wcscpy_s(ret[i], len, lang.c_str());
-        i += 1;
+        cb(lang.c_str());
     }
-    *num = languages.Size();
-    return ret;
 }
-ocrres OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, int *num)
+void OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, void (*cb)(int, int, int, int, LPCWSTR))
 {
     IBuffer buffer = CryptographicBuffer::CreateFromByteArray(
         winrt::array_view<uint8_t>(static_cast<uint8_t *>(ptr), size));
@@ -71,13 +65,8 @@ ocrres OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, int *num)
     OcrEngine ocrEngine = OcrEngine::TryCreateFromLanguage(language);
     OcrResult ocrResult = ocrEngine.RecognizeAsync(softwareBitmap).get();
     auto res = ocrResult.Lines();
-    std::vector<std::wstring> rets;
-    std::vector<int> xs, ys, xs2, ys2;
-    int i = 0;
-    std::wstring sspace = space;
     for (auto line : res)
     {
-
         std::wstring xx = L"";
         bool start = true;
         unsigned int x1 = -1, x2 = 0, y1 = -1, y2 = 0;
@@ -85,7 +74,7 @@ ocrres OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, int *num)
         for (auto word : line.Words())
         {
             if (!start)
-                xx += sspace;
+                xx += space;
             start = false;
             xx += word.Text();
             auto &rect = word.BoundingRect();
@@ -94,13 +83,7 @@ ocrres OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, int *num)
             y1 = std::min((unsigned int)rect.Y, y1);
             y2 = std::max(y2, (unsigned int)(rect.Y + rect.Height));
         }
-        ys.push_back(y1);
-        xs.push_back(x1);
-        xs2.push_back(x2);
-        ys2.push_back(y2);
-        rets.emplace_back(xx);
-        i += 1;
+        cb(x1,y2,x2,y2,xx.c_str());
     }
-    *num = res.Size();
-    return ocrres{vecwstr2c(rets), vecint2c(xs), vecint2c(ys), vecint2c(xs2), vecint2c(ys2)};
+     
 }

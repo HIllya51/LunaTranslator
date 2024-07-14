@@ -1,7 +1,5 @@
 
-#pragma execution_character_set("utf-8")
 #include "define.h"
-#include "cinterface.h"
 struct mecab_node_t
 {
     struct mecab_node_t *prev;
@@ -41,11 +39,8 @@ void *mecab_init(char *utf8path, wchar_t *mepath)
     auto _mecab_new = (mecab_new)GetProcAddress(mecablib, "mecab_new");
     if (_mecab_new == 0)
         return 0;
-    std::vector<std::string> vargv = {"fugashi", "-C", "-r", "nul", "-d", utf8path, "-Owakati"};
-
-    auto argv = vecstr2c(vargv);
-    auto trigger = _mecab_new(vargv.size(), argv);
-    freestringlist(argv, vargv.size());
+    char *argv[] = {"fugashi", "-C", "-r", "nul", "-d", utf8path, "-Owakati"};
+    auto trigger = _mecab_new(ARRAYSIZE(argv), argv);
     return trigger;
 }
 void mecab_end(void *trigger)
@@ -59,7 +54,8 @@ void mecab_end(void *trigger)
         return;
     mecab_destroy((mecab_t *)trigger);
 }
-bool mecab_parse(void *trigger, char *utf8string, char ***surface, char ***features, int *num)
+
+bool mecab_parse(void *trigger, char *utf8string, void (*callback)(const char *, const char *))
 {
     if (trigger == 0)
         return false;
@@ -72,8 +68,6 @@ bool mecab_parse(void *trigger, char *utf8string, char ***surface, char ***featu
     std::string cstr = utf8string;
     auto node = _mecab_sparse_tonode((mecab_t *)trigger, cstr.c_str());
 
-    std::vector<std::string> surfs;
-    std::vector<std::string> featuresv;
     while (node->next)
     {
         node = node->next;
@@ -81,13 +75,8 @@ bool mecab_parse(void *trigger, char *utf8string, char ***surface, char ***featu
         {
             break;
         }
-        std::string surf = node->surface;
-        surf = surf.substr(0, node->length);
-        surfs.emplace_back(surf);
-        featuresv.emplace_back(node->feature);
+        std::string surf = std::string(node->surface, node->length);
+        callback(surf.c_str(), node->feature);
     }
-    *surface = vecstr2c(surfs);
-    *features = vecstr2c(featuresv);
-    *num = surfs.size();
     return true;
 }

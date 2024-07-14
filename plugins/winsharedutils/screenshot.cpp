@@ -97,7 +97,7 @@ int SaveBitmapToFile(HBITMAP hBitmap, LPCWSTR lpFileName)
     return TRUE;
 }
 
-BYTE *SaveBitmapToBuffer(HBITMAP hBitmap, size_t *size)
+std::vector<byte> SaveBitmapToBuffer(HBITMAP hBitmap)
 {
     WORD wBitCount; // 位图中每个像素所占字节数
     // 定义调色板大小，位图中像素字节大小，位图文件大小，写入文件字节数
@@ -131,7 +131,9 @@ BYTE *SaveBitmapToBuffer(HBITMAP hBitmap, size_t *size)
     bmfHdr.bfReserved1 = 0;
     bmfHdr.bfReserved2 = 0;
     bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER);
-    auto buffer = new BYTE[sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmBitsSize];
+    std::vector<byte> data;
+    data.resize(sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmBitsSize);
+    auto buffer = data.data();
     // 写入位图文件头
     // WriteFile(fh, (LPSTR)&bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
     // 写入位图信息头
@@ -150,28 +152,28 @@ BYTE *SaveBitmapToBuffer(HBITMAP hBitmap, size_t *size)
     // 写位图数据
     // WriteFile(fh, lpbk, dwBmBitsSize, &dwWritten, NULL);
 
-    *size = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmBitsSize;
     // 清除
     delete[] lpmem;
 
-    return buffer;
+    return data;
 }
-DECLARE BYTE *gdi_screenshot(HWND hwnd, RECT rect, size_t *size)
+DECLARE bool gdi_screenshot(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
 {
-    *size = 0;
     if (rect.bottom == rect.top || rect.left == rect.right)
-        return nullptr;
+        return false;
     if (!hwnd)
         hwnd = GetDesktopWindow();
     auto hdc = GetDC(hwnd);
     if (!hdc)
-        return nullptr;
+        return false;
     auto bm = GetBitmap(rect, hdc);
     // SaveBitmapToFile(bm, LR"(.\2.bmp)");
-    auto bf = SaveBitmapToBuffer(bm, size);
+    size_t size;
+    auto bf = std::move(SaveBitmapToBuffer(bm));
+    cb(bf.data(), bf.size());
     DeleteObject(bm);
     ReleaseDC(hwnd, hdc);
-    return bf;
+    return true;
 }
 
 DECLARE void maximum_window(HWND hwnd)

@@ -17,11 +17,12 @@ bool tryopenclipboard(HWND hwnd = 0)
     }
     return success;
 }
-wchar_t *clipboard_get()
+
+std::optional<std::wstring> clipboard_get_internal()
 {
-    wchar_t *data = 0;
+    std::optional<std::wstring> data = {};
     if (tryopenclipboard() == false)
-        return 0;
+        return {};
     do
     {
         HANDLE hData = GetClipboardData(CF_UNICODETEXT);
@@ -31,14 +32,22 @@ wchar_t *clipboard_get()
         if (pszText == 0)
             break;
         int sz = GlobalSize(hData);
-        data = new wchar_t[sz + 1];
-        wcscpy_s(data, sz, pszText);
-        data[sz] = 0;
+        data = std::move(std::wstring(pszText, sz));
         GlobalUnlock(hData);
     } while (false);
     CloseClipboard();
     return data;
 }
+
+bool clipboard_get(void (*cb)(const wchar_t *))
+{
+    auto data = std::move(clipboard_get_internal());
+    if (!data)
+        return false;
+    cb(data.value().c_str());
+    return true;
+}
+
 bool clipboard_set(HWND hwnd, wchar_t *text)
 {
     bool success = false;
@@ -66,7 +75,7 @@ bool clipboard_set(HWND hwnd, wchar_t *text)
     return success;
 }
 
-static void clipboard_callback_1(void (*callback)(wchar_t *, bool), HANDLE hsema, HWND *hwnd)
+static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE hsema, HWND *hwnd)
 {
     const wchar_t CLASS_NAME[] = L"LunaClipboardListener";
 
@@ -75,15 +84,14 @@ static void clipboard_callback_1(void (*callback)(wchar_t *, bool), HANDLE hsema
     {
         if (WM_CLIPBOARDUPDATE == message)
         {
-            auto data = clipboard_get();
+            auto data = clipboard_get_internal();
             auto callback_ = reinterpret_cast<decltype(callback)>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
             if (data && callback_)
             {
                 auto ohwnd = GetClipboardOwner();
                 DWORD pid;
                 GetWindowThreadProcessId(ohwnd, &pid);
-                callback_(data, pid == GetCurrentProcessId());
-                delete data;
+                callback_(data.value().c_str(), pid == GetCurrentProcessId());
             }
         }
         return DefWindowProc(hWnd, message, wParam, lParam);
@@ -109,7 +117,7 @@ static void clipboard_callback_1(void (*callback)(wchar_t *, bool), HANDLE hsema
     }
 }
 
-DECLARE HWND clipboard_callback(void (*callback)(wchar_t *, bool))
+DECLARE HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
 {
     HANDLE hsema = CreateSemaphoreW(0, 0, 10, 0);
     HWND hwnd;

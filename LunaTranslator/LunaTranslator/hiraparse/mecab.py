@@ -1,5 +1,6 @@
 import winsharedutils
-import os
+import os, functools, csv, gobject
+from ctypes import CFUNCTYPE, c_char_p
 
 from hiraparse.basehira import basehira
 
@@ -23,11 +24,36 @@ from hiraparse.basehira import basehira
 #         'aModType lid lemma_id'.split(' '))
 
 
+class mecabwrap:
+    def __init__(self, mecabpath) -> None:
+        self.kks = winsharedutils.mecab_init(
+            mecabpath.encode("utf8"), gobject.GetDllpath("libmecab.dll")
+        )
+
+    def __del__(self):
+        winsharedutils.mecab_end(self.kks)
+
+    def parse(self, text: str, codec: str):
+        res = []
+
+        def cb(surface: bytes, feature: bytes):
+            fields = list(csv.reader([feature.decode(codec)]))[0]
+            res.append((surface.decode(codec), fields))
+
+        succ = winsharedutils.mecab_parse(
+            self.kks, text.encode(codec), CFUNCTYPE(None, c_char_p, c_char_p)(cb)
+        )
+        if not succ:
+            raise Exception  # failed
+
+        return res
+
+
 class mecab(basehira):
     def init(self) -> None:
         mecabpath = self.config["path"]
         if os.path.exists(mecabpath):
-            self.kks = winsharedutils.mecabwrap(
+            self.kks = mecabwrap(
                 mecabpath
             )  #  fugashi.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
 

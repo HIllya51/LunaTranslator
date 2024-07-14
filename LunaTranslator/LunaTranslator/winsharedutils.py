@@ -3,7 +3,6 @@ from ctypes import (
     c_bool,
     POINTER,
     c_char_p,
-    c_uint64,
     c_wchar_p,
     pointer,
     CDLL,
@@ -22,18 +21,12 @@ from ctypes import (
     CFUNCTYPE,
     c_long,
 )
-from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD, RECT, BYTE
+from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD, RECT
 from windows import WINDOWPLACEMENT
-import gobject, csv
+import gobject
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
 
-_freewstringlist = utilsdll.freewstringlist
-_freewstringlist.argtypes = POINTER(c_wchar_p), c_uint
-_free_all = utilsdll.free_all
-_free_all.argtypes = (c_void_p,)
-_freestringlist = utilsdll.freestringlist
-_freestringlist.argtypes = POINTER(c_char_p), c_uint
 
 _SetProcessMute = utilsdll.SetProcessMute
 _SetProcessMute.argtypes = c_uint, c_bool
@@ -42,23 +35,10 @@ _GetProcessMute = utilsdll.GetProcessMute
 _GetProcessMute.restype = c_bool
 
 _SAPI_List = utilsdll.SAPI_List
-_SAPI_List.argtypes = (
-    c_uint,
-    POINTER(c_uint64),
-)
-_SAPI_List.restype = POINTER(c_wchar_p)
-
+_SAPI_List.argtypes = (c_uint, c_void_p)
 
 _SAPI_Speak = utilsdll.SAPI_Speak
-_SAPI_Speak.argtypes = (
-    c_wchar_p,
-    c_uint,
-    c_uint,
-    c_uint,
-    c_uint,
-    POINTER(c_int),
-    POINTER(c_void_p),
-)
+_SAPI_Speak.argtypes = (c_wchar_p, c_uint, c_uint, c_uint, c_uint, c_void_p)
 _SAPI_Speak.restype = c_bool
 
 
@@ -69,27 +49,20 @@ levenshtein_ratio = utilsdll.levenshtein_ratio
 levenshtein_ratio.argtypes = c_uint, c_wchar_p, c_uint, c_wchar_p
 levenshtein_ratio.restype = c_double
 
-_mecab_init = utilsdll.mecab_init
-_mecab_init.argtypes = c_char_p, c_wchar_p
-_mecab_init.restype = c_void_p
+mecab_init = utilsdll.mecab_init
+mecab_init.argtypes = c_char_p, c_wchar_p
+mecab_init.restype = c_void_p
 
-_mecab_parse = utilsdll.mecab_parse
-_mecab_parse.argtypes = (
-    c_void_p,
-    c_char_p,
-    POINTER(POINTER(c_char_p)),
-    POINTER(POINTER(c_char_p)),
-    POINTER(c_uint),
-)
-_mecab_parse.restype = c_bool
+mecab_parse = utilsdll.mecab_parse
+mecab_parse.argtypes = (c_void_p, c_char_p, c_void_p)
+mecab_parse.restype = c_bool
 
-_mecab_end = utilsdll.mecab_end
-_mecab_end.argtypes = (c_void_p,)
+mecab_end = utilsdll.mecab_end
+mecab_end.argtypes = (c_void_p,)
 
 _clipboard_get = utilsdll.clipboard_get
-_clipboard_get.restype = (
-    c_void_p  # 实际上是c_wchar_p，但是写c_wchar_p 傻逼python自动转成str，没法拿到指针
-)
+_clipboard_get.argtypes = (c_void_p,)
+_clipboard_get.restype = c_bool
 _clipboard_set = utilsdll.clipboard_set
 _clipboard_set.argtypes = (
     c_void_p,
@@ -106,26 +79,28 @@ def GetProcessMute(pid):
 
 
 def SAPI_List(v):
-    num = c_uint64()
-    _list = _SAPI_List(v, pointer(num))
     ret = []
-    for i in range(num.value):
-        ret.append(_list[i])
-    _freewstringlist(_list, num.value)
+    _SAPI_List(v, CFUNCTYPE(None, c_wchar_p)(ret.append))
     return ret
 
 
 def SAPI_Speak(content, v, voiceid, rate, volume):
-    length = c_int()
-    buff = c_void_p()
+    ret = []
+
+    def _cb(ptr, size):
+        ret.append(cast(ptr, POINTER(c_char))[:size])
+
     succ = _SAPI_Speak(
-        content, v, voiceid, int(rate), int(volume), pointer(length), pointer(buff)
+        content,
+        v,
+        voiceid,
+        int(rate),
+        int(volume),
+        CFUNCTYPE(None, c_void_p, c_size_t)(_cb),
     )
     if not succ:
         return None
-    data = cast(buff, POINTER(c_char))[: length.value]
-    c_free(buff)
-    return data
+    return ret[0]
 
 
 def distance(
@@ -138,38 +113,6 @@ def distance_ratio(s1, s2):
     return levenshtein_ratio(len(s1), s1, len(s2), s2)
 
 
-class mecabwrap:
-    def __init__(self, mecabpath) -> None:
-        self.kks = _mecab_init(
-            mecabpath.encode("utf8"), gobject.GetDllpath("libmecab.dll")
-        )
-
-    def __del__(self):
-        _mecab_end(self.kks)
-
-    def parse(self, text, codec):
-        surface = POINTER(c_char_p)()
-        feature = POINTER(c_char_p)()
-        num = c_uint()
-        succ = _mecab_parse(
-            self.kks,
-            text.encode(codec),
-            pointer(surface),
-            pointer(feature),
-            pointer(num),
-        )
-        if not succ:
-            raise Exception  # failed
-        res = []
-        for i in range(num.value):
-            f = feature[i]
-            fields = list(csv.reader([f.decode(codec)]))[0]
-            res.append((surface[i].decode(codec), fields))
-        _freestringlist(feature, num.value)
-        _freestringlist(surface, num.value)
-        return res
-
-
 clphwnd = windll.user32.CreateWindowExW(0, "STATIC", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
 
@@ -180,13 +123,10 @@ def clipboard_set(text):
 
 
 def clipboard_get():
-    p = _clipboard_get()
-    if p:
-        v = cast(p, c_wchar_p).value
-        _free_all(p)
-        return v
-    else:
+    ret = []
+    if not _clipboard_get(CFUNCTYPE(None, c_wchar_p)(ret.append)):
         return ""
+    return ret[0]
 
 
 html_version = utilsdll.html_version
@@ -267,24 +207,20 @@ def otsu_binary(image, thresh):
 
 
 _extracticon2data = utilsdll.extracticon2data
-_extracticon2data.argtypes = c_wchar_p, POINTER(c_size_t)
-_extracticon2data.restype = c_void_p
+_extracticon2data.argtypes = c_wchar_p, c_void_p
+_extracticon2data.restype = c_bool
 
 
 def extracticon2data(fname):
-    length = c_size_t()
-    datap = _extracticon2data(fname, pointer(length))
-    if datap:
-        save = create_string_buffer(length.value)
-        memmove(save, datap, length.value)
-        _free_all(datap)
-        return save
-    else:
+    ret = []
+
+    def cb(ptr, size):
+        ret.append(cast(ptr, POINTER(c_char))[:size])
+
+    succ = _extracticon2data(fname, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    if not succ:
         return None
-
-
-c_free = utilsdll.c_free
-c_free.argtypes = (c_void_p,)
+    return ret[0]
 
 
 _queryversion = utilsdll.queryversion
@@ -380,23 +316,25 @@ PlayAudioInMem_Stop = utilsdll.PlayAudioInMem_Stop
 PlayAudioInMem_Stop.argtypes = c_void_p, c_void_p
 
 _gdi_screenshot = utilsdll.gdi_screenshot
-_gdi_screenshot.argtypes = HWND, RECT, POINTER(c_size_t)
-_gdi_screenshot.restype = POINTER(BYTE)
+_gdi_screenshot.argtypes = HWND, RECT, c_void_p
+_gdi_screenshot.restype = c_bool
 
 
 def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
-    sz = c_size_t()
     rect = RECT()
     rect.left = x1
     rect.top = y1
     rect.right = x2
     rect.bottom = y2
-    bf = _gdi_screenshot(hwnd, rect, pointer(sz))
-    if not (sz.value and bf):
+    ret = []
+
+    def cb(ptr, size):
+        ret.append(cast(ptr, POINTER(c_char))[:size])
+
+    bf = _gdi_screenshot(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    if not bf:
         return None
-    data = cast(bf, POINTER(c_char))[: sz.value]
-    c_free(bf)
-    return data
+    return ret[0]
 
 
 maximum_window = utilsdll.maximum_window

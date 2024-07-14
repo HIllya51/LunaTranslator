@@ -1,6 +1,4 @@
-import time, os
 import winsharedutils
-
 from tts.basettsclass import TTSbase
 
 
@@ -35,8 +33,6 @@ class TTS(TTSbase):
         else:
             version = 7
             voice_idx = self._7m[voice]
-        
-        data=winsharedutils.SAPI_Speak(
-            content, version, voice_idx, rate, 100 
-        )
+
+        data = winsharedutils.SAPI_Speak(content, version, voice_idx, rate, 100)
         return data

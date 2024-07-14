@@ -1,4 +1,4 @@
-﻿bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume, int *length, char **buffer);
+﻿std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume);
 
 std::vector<std::wstring> _List(const wchar_t *token);
 int neospeechlist(int argc, wchar_t *argv[])
@@ -54,11 +54,18 @@ int neospeech(int argc, wchar_t *argv[])
             break;
         std::wstring content = text;
         int fsize;
-        char *buff;
-        _Speak(content, hkey, idx, speed, 100, &fsize, &buff);
-        memcpy(mapview, buff, fsize);
-        delete buff;
-        WriteFile(hPipe, &fsize, 4, &_, NULL);
+        auto data = std::move(_Speak(content, hkey, idx, speed, 100));
+        if (data)
+        {
+            memcpy(mapview, data.value().data(), data.value().size());
+            fsize = data.value().size();
+            WriteFile(hPipe, &fsize, 4, &_, NULL);
+        }
+        else
+        {
+            fsize = 0;
+            WriteFile(hPipe, &fsize, 4, &_, NULL);
+        }
     }
     return 0;
 }

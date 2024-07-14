@@ -1,58 +1,61 @@
 ﻿
 #include "define.h"
-#include "cinterface.h"
-bool _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume, int *length, char **buffer);
+std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume);
 
 std::vector<std::wstring> _List(const wchar_t *token);
 
 namespace SAPI
 {
-    bool Speak(std::wstring &Content, int version, int voiceid, int rate, int volume, int *length, char **buffer);
-    std::vector<std::wstring> List(int version);
+
     constexpr wchar_t SPCAT_VOICES_7[] = L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices";
     constexpr wchar_t SPCAT_VOICES_10[] = L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices";
+
+    std::vector<std::wstring> List(int version)
+    {
+        if (version == 7)
+        {
+            return _List(SPCAT_VOICES_7);
+        }
+        else if (version == 10)
+        {
+            return _List(SPCAT_VOICES_10);
+        }
+        else
+        {
+            return {};
+        }
+    }
+    std::optional<std::vector<byte>> Speak(std::wstring &Content, int version, int voiceid, int rate, int volume)
+    {
+        const wchar_t *_;
+        switch (version)
+        {
+        case 7:
+            _ = SPCAT_VOICES_7;
+            break;
+        case 10:
+            _ = SPCAT_VOICES_10;
+            break;
+            return {};
+        }
+        return _Speak(Content, _, voiceid, rate, volume);
+    }
 };
 
-bool SAPI::Speak(std::wstring &Content, int version, int voiceid, int rate, int volume, int *length, char **buffer)
-{
-    if (version == 7)
-    {
-        return _Speak(Content, SPCAT_VOICES_7, voiceid, rate, volume, length, buffer);
-    }
-    else if (version == 10)
-    {
-        return _Speak(Content, SPCAT_VOICES_10, voiceid, rate, volume, length, buffer);
-    }
-    else
-    {
-        return false;
-    }
-}
-std::vector<std::wstring> SAPI::List(int version)
-{
-    if (version == 7)
-    {
-        return _List(SPCAT_VOICES_7);
-    }
-    else if (version == 10)
-    {
-        return _List(SPCAT_VOICES_10);
-    }
-    else
-    {
-        return {};
-    }
-}
-
-DECLARE bool SAPI_Speak(const wchar_t *Content, int version, int voiceid, int rate, int volume, int *length, char **buffer)
+DECLARE bool SAPI_Speak(const wchar_t *Content, int version, int voiceid, int rate, int volume, void (*cb)(byte *, size_t))
 {
     auto _c = std::wstring(Content);
-    return SAPI::Speak(_c, version, voiceid, rate, volume, length, buffer);
+    if (auto _ = std::move(SAPI::Speak(_c, version, voiceid, rate, volume)))
+    {
+        cb(_.value().data(), _.value().size());
+        return true;
+    }
+    return false;
 }
 
-wchar_t **SAPI_List(int version, size_t *num)
+void SAPI_List(int version, void (*cb)(const wchar_t *))
 {
     auto _list = SAPI::List(version);
-    *num = _list.size();
-    return vecwstr2c(_list);
+    for (auto _ : _list)
+        cb(_.c_str());
 }

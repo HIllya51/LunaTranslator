@@ -1,13 +1,13 @@
 ﻿#include "define.h"
 #include "BMP.h"
 
-void *extracticon2data(const wchar_t *name, size_t *l)
+bool extracticon2data(const wchar_t *name, void (*cb)(const char *, size_t))
 {
     HICON h1, h2;
 
     ExtractIconExW(name, 0, &h1, &h2, 1);
     if (h1 == 0)
-        return 0;
+        return false;
     HDC hdc = GetDC(NULL);
     HDC memDC = CreateCompatibleDC(hdc);
     ICONINFO iconInfo;
@@ -63,8 +63,6 @@ void *extracticon2data(const wchar_t *name, size_t *l)
     }
     std::string data;
     bmpp.write_tomem(data);
-    auto sdata = new char[data.size()];
-    memcpy(sdata, data.data(), data.size());
-    *l = data.size();
-    return sdata;
+    cb(data.c_str(),data.size());
+    return true;
 }

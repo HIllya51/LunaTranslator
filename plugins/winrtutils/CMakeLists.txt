@@ -10,7 +10,7 @@ generate_product_version(
    VERSION_PATCH ${VERSION_PATCH}
 )
 
-add_library(winrtutils MODULE winrtsnapshot.cpp cinterface.cpp dllmain.cpp winrtocr.cpp ${versioninfo})
+add_library(winrtutils MODULE winrtsnapshot.cpp dllmain.cpp winrtocr.cpp ${versioninfo})
 target_precompile_headers(winrtutils REUSE_FROM pch) 
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
