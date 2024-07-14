@@ -151,6 +151,7 @@ def versioncheckthread(self):
         uncompress(self, savep)
         gobject.baseobject.update_avalable = True
         self.progresssignal.emit("准备完毕，等待更新", 10000)
+        gobject.baseobject.showtraymessage(sversion, "准备完毕，等待更新")
 
 
 def updateprogress(self, text, val):
