@@ -43,10 +43,5 @@ class OCR(baseocr):
 
         res = ""
         text = lens_object["data"][3][4][0]
-        print(text)
-        if len(text) > 0:
-            lines = text[0]
-            for line in lines:
-                res += line + "\n"
 
-        return "\n".join(["\n".join(_) for _ in text])
+        return self.space.join([self.space.join(_) for _ in text])
