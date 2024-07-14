@@ -59,7 +59,22 @@ class base(QLabel):
         self.movedx = 0
         self.movedy = 0
         dx, dy = self.moveoffset()
-        self.movedx -= dx
+        text = self.text()
+        isarabic = lambda char: (ord(char) >= 0x0600 and ord(char) <= 0x06E0)
+        isasciinoteng = (
+            lambda char: (ord(char) <= 0x40)
+            or ((ord(char) >= 0x5B) and (ord(char) <= 0x60))
+            or ((ord(char) >= 0x7B) and (ord(char) <= 0x7F))
+        )
+        isarabicx = any(isarabic(char) for char in text) and all(
+            (isasciinoteng(char) or isarabic(char)) for char in text
+        )
+
+        if isarabicx:
+            self.movedx -= self.width()
+            self.movedx += dx
+        else:
+            self.movedx -= dx
         self.movedy -= dy
         super().move(QPoint(int(x + self.movedx), int(y + self.movedy)))
 
