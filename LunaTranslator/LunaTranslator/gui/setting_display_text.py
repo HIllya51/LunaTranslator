@@ -452,35 +452,54 @@ def xianshigrid_text(self):
                             )
                         ],
                         [
-                            ("语法加亮"),
-                            D_getsimpleswitch(globalconfig, "show_fenci"),
-                            "",
-                            ("词性颜色_需要Mecab"),
-                            D_getIconButton(
-                                callback=lambda: multicolorset(self),
-                                icon="fa.gear",
-                            ),
-                            "",
-                        ],
-                        [
-                            ("点击单词查词"),
                             (
-                                D_getsimpleswitch(globalconfig, "usesearchword"),
-                                1,
-                            ),
-                            "",
-                            ("点击单词复制"),
-                            (
-                                D_getsimpleswitch(globalconfig, "usecopyword"),
-                                1,
-                            ),
-                        ],
-                        [
-                            ("使用原型查询"),
-                            (
-                                D_getsimpleswitch(globalconfig, "usewordorigin"),
-                                1,
-                            ),
+                                dict(
+                                    type="grid",
+                                    grid=(
+                                        [
+                                            ("语法加亮"),
+                                            D_getsimpleswitch(
+                                                globalconfig, "show_fenci"
+                                            ),
+                                            "",
+                                            ("词性颜色_需要Mecab"),
+                                            D_getIconButton(
+                                                callback=lambda: multicolorset(self),
+                                                icon="fa.gear",
+                                            ),
+                                            "",
+                                        ],
+                                        [
+                                            ("点击单词查词"),
+                                            (
+                                                D_getsimpleswitch(
+                                                    globalconfig, "usesearchword"
+                                                ),
+                                                1,
+                                            ),
+                                            "",
+                                            ("点击单词复制"),
+                                            (
+                                                D_getsimpleswitch(
+                                                    globalconfig, "usecopyword"
+                                                ),
+                                                1,
+                                            ),
+                                        ],
+                                        [
+                                            ("使用原型查询"),
+                                            (
+                                                D_getsimpleswitch(
+                                                    globalconfig, "usewordorigin"
+                                                ),
+                                                1,
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                0,
+                                "group",
+                            )
                         ],
                     ),
                 ),
