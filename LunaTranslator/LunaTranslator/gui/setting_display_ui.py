@@ -12,6 +12,7 @@ from gui.usefulwidget import (
     selectcolor,
     FocusFontCombo,
     D_getsimpleswitch,
+    getsimpleswitch,
     getboxlayout,
 )
 
@@ -556,6 +557,41 @@ def uisetting(self):
     return uigrid
 
 
+def createxxx(self):
+    self.__shadowxx = QLabel("阴影")
+    self.__shadowxx.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    self.__shadowxx2 = getsimpleswitch(
+        globalconfig,
+        "WindowEffect_shadow",
+        callback=lambda _: [
+            gobject.baseobject.translation_ui.set_color_transparency(),
+            gobject.baseobject.translation_ui.seteffect(),
+        ],
+    )
+    if globalconfig["WindowEffect"] == 0:
+        self.__shadowxx.hide()
+        self.__shadowxx2.hide()
+    return getboxlayout(
+        [
+            D_getsimplecombobox(
+                ["Disable", "Acrylic", "Aero"],
+                globalconfig,
+                "WindowEffect",
+                callback=lambda _: [
+                    gobject.baseobject.translation_ui.set_color_transparency(),
+                    gobject.baseobject.translation_ui.seteffect(),
+                    self.__shadowxx.setVisible(_ != 0),
+                    self.__shadowxx2.setVisible(_ != 0),
+                ],
+            ),
+            self.__shadowxx,
+            self.__shadowxx2,
+        ],
+        makewidget=True,
+        margin0=True,
+    )
+
+
 def themesetting(self):
 
     def themelist(t):
@@ -617,15 +653,7 @@ def themesetting(self):
                     grid=(
                         [
                             "主界面",
-                            D_getsimplecombobox(
-                                ["Disable", "Acrylic", "Aero"],
-                                globalconfig,
-                                "WindowEffect",
-                                callback=lambda _: [
-                                    gobject.baseobject.translation_ui.set_color_transparency(),
-                                    gobject.baseobject.translation_ui.seteffect(),
-                                ],
-                            ),
+                            functools.partial(createxxx, self),
                         ],
                         [
                             "其他界面",

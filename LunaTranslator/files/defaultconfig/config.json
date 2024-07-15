@@ -10,6 +10,7 @@
     "autodisappear": false,
     "WindowBackdrop": 3,
     "WindowEffect": 0,
+    "WindowEffect_shadow": false,
     "read_raw": true,
     "global_list_opened": true,
     "read_trans": false,
