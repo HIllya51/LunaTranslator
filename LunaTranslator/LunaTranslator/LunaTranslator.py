@@ -12,6 +12,8 @@ from myutils.config import (
     setlanguage,
     static_data,
     tryreadconfig,
+    getlanguse,
+    setFontDefault,
 )
 import sqlite3
 from myutils.utils import (
@@ -1186,9 +1188,11 @@ class MAINUI:
     def parsedefaultfont(self):
         for k in ["fonttype", "fonttype2", "settingfonttype"]:
             if globalconfig[k] == "":
-                globalconfig[k] = QFontDatabase.systemFont(
-                    QFontDatabase.SystemFont.GeneralFont
-                ).family()
+                l = "ja" if k=="fonttype" else getlanguse()
+                setFontDefault(l, k)
+                # globalconfig[k] = QFontDatabase.systemFont(
+                #     QFontDatabase.SystemFont.GeneralFont
+                # ).family()
 
     def loadui(self):
         self.installeventfillter()

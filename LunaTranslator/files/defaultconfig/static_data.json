@@ -99,6 +99,24 @@
         "th",
         "bo"
     ],
+    "font_type_default": {
+        "default": ["Segoe UI"],
+        "zh": ["Microsoft YaHei"],
+        "ja": ["Yu Gothic"],
+        "ko": ["Malgun Gothic"],
+        "cht": ["微軟正黑體", "Microsoft JhengHei"],
+        "th": ["Leelawadee"],
+        "bo": ["Microsoft Himalaya"]
+    },
+    "setting_font_type_default": {
+        "default": ["Segoe UI"],
+        "zh": ["Microsoft YaHei UI"],
+        "ja": ["Yu Gothic UI"],
+        "ko": ["Malgun Gothic"],
+        "cht": ["Microsoft JhengHei UI"],
+        "th": ["Leelawadee UI"],
+        "bo": ["Microsoft Himalaya"]
+    },
     "codepage_display": [
         "日语(CP932,SHIFT-JIS)",
         "UTF8(CP65001)",
