@@ -185,7 +185,9 @@ class Requester_common:
                     dataptr = (dataptr).encode("utf8")
                 datalen = len(dataptr)
                 # print('dataptr',dataptr)
-                if "Content-Type" not in headers:
+                if isinstance(data, (str, bytes)):
+                    pass
+                elif "Content-Type" not in headers:
                     headers["Content-Type"] = "application/x-www-form-urlencoded"
             elif js:
                 dataptr = json.dumps(js).encode("utf8")
