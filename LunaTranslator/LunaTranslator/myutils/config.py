@@ -495,23 +495,16 @@ def is_font_installed(font: str) -> bool:
     return QFont(font).exactMatch()
 
 
-font_default_used = {}
+# font_default_used = {}
 
 
 def get_font_default(lang: str, issetting: bool) -> str:
-    global font_default_used
-    if lang in font_default_used.keys():
-        return font_default_used[lang]
+    # global font_default_used
+    # if lang in font_default_used.keys():
+    #     return font_default_used[lang]
     
-    t = ""
-    if issetting:
-        t = "setting_font_type_default"
-    else:
-        t = "font_type_default"
-
-    l = "default"
-    if lang in static_data[t].keys():
-        l = lang
+    t = "setting_font_type_default" if issetting else "font_type_default"
+    l = lang if lang in static_data[t].keys() else "default"
     
     font_default = ""
     for font in static_data[t][l]:
@@ -520,10 +513,10 @@ def get_font_default(lang: str, issetting: bool) -> str:
             break
     if font_default == "":
         font_default = QFontDatabase.systemFont(
-                      QFontDatabase.SystemFont.GeneralFont
-                      ).family()
+                       QFontDatabase.SystemFont.GeneralFont
+                       ).family()
     
-    font_default_used["lang"] = font_default
+    # font_default_used["lang"] = font_default
     return font_default
 
 
