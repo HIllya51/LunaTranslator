@@ -12,7 +12,10 @@ from gui.usefulwidget import (
     selectcolor,
     FocusFontCombo,
     D_getsimpleswitch,
+    getsimpleswitch,
     getboxlayout,
+    makesubtab_lazy,
+    makescrollgrid,
 )
 
 
@@ -235,234 +238,63 @@ def __changeuibuttonstate(self, x):
     gobject.baseobject.translation_ui.enterfunction()
 
 
-def uisetting(self):
+def uisetting(self, l):
+    tab, do = makesubtab_lazy(
+        _TRL(["主界面", "其他界面"]),
+        [
+            lambda l: makescrollgrid(mainuisetting(self), l),
+            lambda l: makescrollgrid(otheruisetting(self), l),
+        ],
+        delay=True,
+    )
+    l.addWidget(tab)
+    do()
 
-    uigrid = [
+
+def mainuisetting(self):
+
+    return (
         [
             (
                 dict(
-                    title="主界面",
+                    title="文本区",
                     type="grid",
                     grid=(
                         [
+                            "不透明度",
                             (
-                                dict(
-                                    title="文本区",
-                                    type="grid",
-                                    grid=(
-                                        [
-                                            "不透明度",
-                                            (
-                                                functools.partial(
-                                                    createhorizontal_slider, self
-                                                ),
-                                                0,
-                                            ),
-                                            functools.partial(
-                                                createhorizontal_slider_label, self
-                                            ),
-                                        ],
-                                        [
-                                            "背景颜色",
-                                            D_getcolorbutton(
-                                                globalconfig,
-                                                "backcolor",
-                                                callback=lambda: selectcolor(
-                                                    self,
-                                                    globalconfig,
-                                                    "backcolor",
-                                                    self.back_color_button,
-                                                    callback=gobject.baseobject.translation_ui.set_color_transparency,
-                                                ),
-                                                name="back_color_button",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "圆角_半径",
-                                            D_getspinbox(
-                                                0,
-                                                100,
-                                                globalconfig,
-                                                "yuanjiao_r",
-                                                callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
-                                            ),
-                                            "",
-                                            "",
-                                            "",
-                                        ],
-                                    ),
-                                ),
+                                functools.partial(createhorizontal_slider, self),
                                 0,
-                                "group",
-                            )
+                            ),
+                            functools.partial(createhorizontal_slider_label, self),
                         ],
                         [
-                            (
-                                dict(
-                                    title="工具栏",
-                                    type="grid",
-                                    grid=(
-                                        [
-                                            "不透明度",
-                                            (
-                                                functools.partial(
-                                                    createhorizontal_slider_tool, self
-                                                ),
-                                                0,
-                                            ),
-                                            functools.partial(
-                                                createhorizontal_slider_tool_label,
-                                                self,
-                                            ),
-                                        ],
-                                        [
-                                            "背景颜色",
-                                            D_getcolorbutton(
-                                                globalconfig,
-                                                "backcolor_tool",
-                                                callback=lambda: selectcolor(
-                                                    self,
-                                                    globalconfig,
-                                                    "backcolor_tool",
-                                                    self.back_color_button_tool,
-                                                    callback=toolcolorchange,
-                                                ),
-                                                name="back_color_button_tool",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "工具按钮颜色",
-                                            getboxlayout(
-                                                [
-                                                    D_getcolorbutton(
-                                                        globalconfig,
-                                                        "buttoncolor",
-                                                        callback=lambda: selectcolor(
-                                                            self,
-                                                            globalconfig,
-                                                            "buttoncolor",
-                                                            self.buttoncolorbutton,
-                                                            callback=toolcolorchange,
-                                                        ),
-                                                        name="buttoncolorbutton",
-                                                        parent=self,
-                                                    ),
-                                                    D_getcolorbutton(
-                                                        globalconfig,
-                                                        "buttoncolor_1",
-                                                        callback=lambda: selectcolor(
-                                                            self,
-                                                            globalconfig,
-                                                            "buttoncolor_1",
-                                                            self.buttoncolorbutton_1,
-                                                            callback=toolcolorchange,
-                                                        ),
-                                                        name="buttoncolorbutton_1",
-                                                        parent=self,
-                                                    ),
-                                                ],
-                                                makewidget=True,
-                                            ),
-                                            "",
-                                            "进入时才显示",
-                                            D_getsimpleswitch(
-                                                globalconfig, "toolviswhenenter"
-                                            ),
-                                        ],
-                                        [
-                                            "锁定工具栏",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "locktools",
-                                                callback=lambda x: __changeuibuttonstate(
-                                                    self, x
-                                                ),
-                                                name="locktoolsbutton",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "工具按钮大小",
-                                            D_getspinbox(
-                                                5,
-                                                100,
-                                                globalconfig,
-                                                "buttonsize",
-                                                callback=lambda _: toolcolorchange(),
-                                            ),
-                                            "",
-                                            "延申",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "extendtools",
-                                                callback=gobject.baseobject.translation_ui.changeextendstated_1,
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                        [
-                            "窗口置顶",
-                            D_getsimpleswitch(
+                            "背景颜色",
+                            D_getcolorbutton(
                                 globalconfig,
-                                "keepontop",
-                                callback=lambda x: __changeuibuttonstate3(self, x),
+                                "backcolor",
+                                callback=lambda: selectcolor(
+                                    self,
+                                    globalconfig,
+                                    "backcolor",
+                                    self.back_color_button,
+                                    callback=gobject.baseobject.translation_ui.set_color_transparency,
+                                ),
+                                name="back_color_button",
                                 parent=self,
-                                name="keepontopbutton",
                             ),
                             "",
-                            ("自动调整高度"),
-                            D_getsimpleswitch(globalconfig, "adaptive_height"),
-                        ],
-                        [
-                            ("鼠标穿透窗口"),
-                            D_getsimpleswitch(
+                            "圆角_半径",
+                            D_getspinbox(
+                                0,
+                                100,
                                 globalconfig,
-                                "mousetransparent",
-                                callback=lambda x: __changeuibuttonstate2(self, x),
-                                parent=self,
-                                name="mousetransbutton",
+                                "yuanjiao_r",
+                                callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
                             ),
                             "",
-                            "自动隐藏窗口",
-                            getboxlayout(
-                                [
-                                    D_getsimpleswitch(globalconfig, "autodisappear"),
-                                    "隐藏延迟(s)",
-                                    D_getspinbox(
-                                        1, 100, globalconfig, "disappear_delay"
-                                    ),
-                                ],
-                                makewidget=True,
-                            ),
-                        ],
-                        [
-                            (
-                                dict(
-                                    title="跟随游戏窗口",
-                                    type="grid",
-                                    grid=(
-                                        [
-                                            "游戏失去焦点时取消置顶",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "focusnotop",
-                                            ),
-                                            "",
-                                            "游戏窗口移动时同步移动",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "movefollow",
-                                            ),
-                                            "",
-                                        ],
-                                    ),
-                                ),
-                                0,
-                                "group",
-                            )
+                            "",
+                            "",
                         ],
                     ),
                 ),
@@ -473,11 +305,214 @@ def uisetting(self):
         [
             (
                 dict(
-                    title="其他界面",
+                    title="工具栏",
                     type="grid",
                     grid=(
-                        ["字体", (createfontcombo, 0)],
                         [
+                            "不透明度",
+                            (
+                                functools.partial(createhorizontal_slider_tool, self),
+                                0,
+                            ),
+                            functools.partial(
+                                createhorizontal_slider_tool_label,
+                                self,
+                            ),
+                        ],
+                        [
+                            "背景颜色",
+                            D_getcolorbutton(
+                                globalconfig,
+                                "backcolor_tool",
+                                callback=lambda: selectcolor(
+                                    self,
+                                    globalconfig,
+                                    "backcolor_tool",
+                                    self.back_color_button_tool,
+                                    callback=toolcolorchange,
+                                ),
+                                name="back_color_button_tool",
+                                parent=self,
+                            ),
+                            "",
+                            "工具按钮颜色",
+                            getboxlayout(
+                                [
+                                    D_getcolorbutton(
+                                        globalconfig,
+                                        "buttoncolor",
+                                        callback=lambda: selectcolor(
+                                            self,
+                                            globalconfig,
+                                            "buttoncolor",
+                                            self.buttoncolorbutton,
+                                            callback=toolcolorchange,
+                                        ),
+                                        name="buttoncolorbutton",
+                                        parent=self,
+                                    ),
+                                    D_getcolorbutton(
+                                        globalconfig,
+                                        "buttoncolor_1",
+                                        callback=lambda: selectcolor(
+                                            self,
+                                            globalconfig,
+                                            "buttoncolor_1",
+                                            self.buttoncolorbutton_1,
+                                            callback=toolcolorchange,
+                                        ),
+                                        name="buttoncolorbutton_1",
+                                        parent=self,
+                                    ),
+                                ],
+                                makewidget=True,
+                            ),
+                            "",
+                            "进入时才显示",
+                            D_getsimpleswitch(globalconfig, "toolviswhenenter"),
+                        ],
+                        [
+                            "锁定工具栏",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "locktools",
+                                callback=lambda x: __changeuibuttonstate(self, x),
+                                name="locktoolsbutton",
+                                parent=self,
+                            ),
+                            "",
+                            "工具按钮大小",
+                            D_getspinbox(
+                                5,
+                                100,
+                                globalconfig,
+                                "buttonsize",
+                                callback=lambda _: toolcolorchange(),
+                            ),
+                            "",
+                            "延申",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "extendtools",
+                                callback=gobject.baseobject.translation_ui.changeextendstated_1,
+                            ),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    grid=(
+                        [
+                            "窗口特效",
+                            functools.partial(createxxx, self),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    type="grid",
+                    grid=(
+                        [
+                            "窗口置顶",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "keepontop",
+                                callback=lambda x: __changeuibuttonstate3(self, x),
+                                parent=self,
+                                name="keepontopbutton",
+                            ),
+                            "",
+                            "自动调整高度",
+                            D_getsimpleswitch(globalconfig, "adaptive_height"),
+                            "",
+                            "任务栏中显示",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "showintab",
+                                callback=lambda _: gobject.baseobject.setshowintab(),
+                            ),
+                        ],
+                        [
+                            "鼠标穿透窗口",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "mousetransparent",
+                                callback=lambda x: __changeuibuttonstate2(self, x),
+                                parent=self,
+                                name="mousetransbutton",
+                            ),
+                            "",
+                            "自动隐藏窗口",
+                            D_getsimpleswitch(globalconfig, "autodisappear"),
+                            "",
+                            "隐藏延迟(s)",
+                            D_getspinbox(
+                                1,
+                                100,
+                                globalconfig,
+                                "disappear_delay",
+                            ),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    title="跟随游戏窗口",
+                    type="grid",
+                    grid=(
+                        [
+                            "游戏失去焦点时取消置顶",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "focusnotop",
+                            ),
+                            "",
+                            "游戏窗口移动时同步移动",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "movefollow",
+                            ),
+                            "",
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
+    )
+
+
+def otheruisetting(self):
+
+    def themelist(t):
+        return [_["name"] for _ in static_data["themes"][t]]
+
+    return (
+        [
+            (
+                dict(
+                    type="grid",
+                    grid=(
+                        [
+                            "字体",
+                            (createfontcombo, 0),
+                            "",
                             "字体大小",
                             D_getspinbox(
                                 1,
@@ -488,7 +523,8 @@ def uisetting(self):
                                 step=0.1,
                                 callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                             ),
-                            "",
+                        ],
+                        [
                             "按钮颜色",
                             D_getcolorbutton(
                                 globalconfig,
@@ -517,34 +553,13 @@ def uisetting(self):
                             "",
                             "按钮大小",
                             D_getspinbox(5, 100, globalconfig, "buttonsize2"),
-                        ],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="任务栏中显示",
-                    type="grid",
-                    grid=(
-                        [
-                            "主界面",
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "showintab",
-                                callback=lambda _: gobject.baseobject.setshowintab(),
-                            ),
                             "",
-                            "其他界面",
+                            "任务栏中显示",
                             D_getsimpleswitch(
                                 globalconfig,
                                 "showintab_sub",
                                 callback=lambda _: gobject.baseobject.setshowintab(),
                             ),
-                            "",
                         ],
                     ),
                 ),
@@ -552,16 +567,6 @@ def uisetting(self):
                 "group",
             )
         ],
-    ]
-    return uigrid
-
-
-def themesetting(self):
-
-    def themelist(t):
-        return [_["name"] for _ in static_data["themes"][t]]
-
-    uigrid = [
         [
             (
                 dict(
@@ -584,7 +589,9 @@ def themesetting(self):
                                     globalconfig,
                                     "lighttheme",
                                     functools.partial(
-                                        checkthemesettingvisandapply, self, False
+                                        checkthemesettingvisandapply,
+                                        self,
+                                        False,
                                     ),
                                 ),
                                 functools.partial(createbtnthemelight, self),
@@ -598,7 +605,9 @@ def themesetting(self):
                                     globalconfig,
                                     "darktheme",
                                     functools.partial(
-                                        checkthemesettingvisandapply, self, True
+                                        checkthemesettingvisandapply,
+                                        self,
+                                        True,
                                     ),
                                 ),
                                 functools.partial(createbtnthemedark, self),
@@ -613,24 +622,16 @@ def themesetting(self):
         [
             (
                 dict(
-                    title="窗口特效",
                     grid=(
                         [
-                            "主界面",
+                            "窗口特效",
                             D_getsimplecombobox(
-                                ["Disable", "Acrylic", "Aero"],
-                                globalconfig,
-                                "WindowEffect",
-                                callback=lambda _: [
-                                    gobject.baseobject.translation_ui.set_color_transparency(),
-                                    gobject.baseobject.translation_ui.seteffect(),
+                                [
+                                    "Solid",
+                                    "Acrylic",
+                                    "Mica",
+                                    "MicaAlt",
                                 ],
-                            ),
-                        ],
-                        [
-                            "其他界面",
-                            D_getsimplecombobox(
-                                ["Solid", "Acrylic", "Mica", "MicaAlt"],
                                 globalconfig,
                                 "WindowBackdrop",
                                 callback=lambda _: gobject.baseobject.setcommonstylesheet(),
@@ -642,5 +643,39 @@ def themesetting(self):
                 "group",
             )
         ],
-    ]
-    return uigrid
+    )
+
+
+def createxxx(self):
+    self.__shadowxx = QLabel("阴影")
+    self.__shadowxx.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    self.__shadowxx2 = getsimpleswitch(
+        globalconfig,
+        "WindowEffect_shadow",
+        callback=lambda _: [
+            gobject.baseobject.translation_ui.set_color_transparency(),
+            gobject.baseobject.translation_ui.seteffect(),
+        ],
+    )
+    if globalconfig["WindowEffect"] == 0:
+        self.__shadowxx.hide()
+        self.__shadowxx2.hide()
+    return getboxlayout(
+        [
+            D_getsimplecombobox(
+                ["Disable", "Acrylic", "Aero"],
+                globalconfig,
+                "WindowEffect",
+                callback=lambda _: [
+                    gobject.baseobject.translation_ui.set_color_transparency(),
+                    gobject.baseobject.translation_ui.seteffect(),
+                    self.__shadowxx.setVisible(_ != 0),
+                    self.__shadowxx2.setVisible(_ != 0),
+                ],
+            ),
+            self.__shadowxx,
+            self.__shadowxx2,
+        ],
+        makewidget=True,
+        margin0=True,
+    )

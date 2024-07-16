@@ -21,7 +21,7 @@ class baseocr(commonbase):
     def space(self):
         if globalconfig["ocrmergelines"] == False:
             space = "\n"
-        elif self.srclang in ["zh", "ja", "cht"]:
+        elif self.srclang_1 in ["zh", "ja", "cht"]:
             space = ""
         else:
             space = " "

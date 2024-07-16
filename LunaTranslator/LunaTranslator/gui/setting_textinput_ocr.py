@@ -122,9 +122,22 @@ def getocrgrid(self):
                 "group",
             )
         ],
-        [],
-        ["竖向识别", D_getsimpleswitch(globalconfig, "verticalocr"), ("", 4)],
-        [],
+        [
+            (
+                dict(
+                    type="grid",
+                    grid=[
+                        [
+                            "竖向识别",
+                            D_getsimpleswitch(globalconfig, "verticalocr"),
+                            ("", 4),
+                        ]
+                    ],
+                ),
+                0,
+                "group",
+            )
+        ],
         [
             (
                 dict(
