@@ -1083,6 +1083,7 @@
             "args": {
                 "Port": 23456,
                 "preset": "",
+                "mode": false,
                 "整合包_CPU": "{main_server}/Resource/IntegrationPack/vits-simple-api/cpu",
                 "整合包_GPU": "{main_server}/Resource/IntegrationPack/vits-simple-api/gpu"
             },
@@ -1104,6 +1105,10 @@
                 },
                 "preset": {
                     "name": "GPT-SOVITS preset"
+                },
+                "mode": {
+                    "type": "switch",
+                    "name": "语种检测"
                 }
             }
         },
