@@ -26,7 +26,7 @@ class TS(basetrans):
         }
 
     def inittranslator(self):
-        headers = {
+        self.headers = {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
             "Cache-Control": "no-cache",
@@ -44,7 +44,7 @@ class TS(basetrans):
         }
         # proxies = { "http": None, "https": None}
 
-        self.proxysession.get("https://fanyi.youdao.com", headers=headers)
+        self.proxysession.get("https://fanyi.youdao.com", headers=self.headers)
 
     def translate(self, content):
 
