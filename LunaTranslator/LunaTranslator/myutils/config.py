@@ -1,6 +1,7 @@
 import json
 import os, time, uuid
 from traceback import print_exc
+from qtsymbols import *
 
 
 def tryreadconfig(path, default=None):
@@ -488,3 +489,37 @@ def saveallconfig():
         "./files/lang/{}.json".format(getlanguse()),
         languageshow,
     )
+
+
+def is_font_installed(font: str) -> bool:
+    return QFont(font).exactMatch()
+
+
+# font_default_used = {}
+
+
+def get_font_default(lang: str, issetting: bool) -> str:
+    # global font_default_used
+    # if lang in font_default_used.keys():
+    #     return font_default_used[lang]
+    
+    t = "setting_font_type_default" if issetting else "font_type_default"
+    l = lang if lang in static_data[t].keys() else "default"
+    
+    font_default = ""
+    for font in static_data[t][l]:
+        if is_font_installed(font):
+            font_default = font
+            break
+    if font_default == "":
+        font_default = QFontDatabase.systemFont(
+                       QFontDatabase.SystemFont.GeneralFont
+                       ).family()
+    
+    # font_default_used["lang"] = font_default
+    return font_default
+
+
+def set_font_default(lang: str, fonttype: str) -> None:
+    globalconfig[fonttype] = get_font_default(lang, True if fonttype=="settingfonttype" else False)
+
