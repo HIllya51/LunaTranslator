@@ -278,6 +278,16 @@ class Requester_common:
             _c.append("{}={}".format(k, v))
         return "; ".join(_c)
 
+    def _parsecookiestring(self, cookiestr: str):
+        if not cookiestr:
+            return {}
+        cookies = cookiestr.split("; ")
+        cookie = {}
+        for _c in cookies:
+            _idx = _c.find("=")
+            cookie[_c[:_idx]] = _c[_idx + 1 :]
+        return cookie
+
     def _parseheader2dict(self, headerstr: str):
         # print(headerstr)
         header = CaseInsensitiveDict()
@@ -287,9 +297,7 @@ class Requester_common:
             if idx == -1:
                 continue
             if line[:idx].lower() == "set-cookie":
-                _c = line[idx + 2 :].split("; ")[0]
-                _idx = _c.find("=")
-                cookie[_c[:_idx]] = _c[_idx + 1 :]
+                cookie.update(self._parsecookiestring(line[idx + 2 :]))
             else:
                 header[line[:idx]] = line[idx + 2 :]
         return CaseInsensitiveDict(header), cookie
@@ -349,11 +357,13 @@ class Session:
         cert=None,
     ):
         requester = self.requester
-        if cookies:
-            self.cookies.update(cookies)
+
         _h = self.headers.copy()
         if headers:
             _h.update(headers)
+            self.cookies.update(requester._parsecookiestring(_h.get("cookie", "")))
+        if cookies:
+            self.cookies.update(cookies)
         response = requester.request(
             method.upper(),
             url,
