@@ -10,6 +10,8 @@
 
 > **A galgame translator**
 
+### [Discord](https://lunatranslator.xyz/Resource/DiscordGroup)
+
 ### <a href="https://docs.lunatranslator.xyz/#/en/" target="_blank">Documentation</a> 
 
 

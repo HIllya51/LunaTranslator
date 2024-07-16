@@ -316,7 +316,11 @@ def setTab_update(self, basel):
         shuominggrid += [
             [
                 "交流群",
-                makehtml("{main_server}/Resource/QQGroup", show=912525396),
+                makehtml("{main_server}/Resource/QQGroup", show="QQ群"),
+            ],
+            [
+                " ",
+                makehtml("{main_server}/Resource/DiscordGroup", show="Discord"),
             ],
             [],
             ["如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~"],
@@ -325,6 +329,10 @@ def setTab_update(self, basel):
         shuominggrid += [[functools.partial(createimageview, self)]]
     else:
         shuominggrid += [
+            [
+                "Contact Me",
+                makehtml("{main_server}/Resource/DiscordGroup", show="Discord"),
+            ],
             [],
             [
                 "If you feel that the software is helpful to you, ",
