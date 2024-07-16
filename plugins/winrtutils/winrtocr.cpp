@@ -83,7 +83,7 @@ void OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, void (*cb)(int, 
             y1 = std::min((unsigned int)rect.Y, y1);
             y2 = std::max(y2, (unsigned int)(rect.Y + rect.Height));
         }
-        cb(x1,y2,x2,y2,xx.c_str());
+        cb(x1,y1,x2,y2,xx.c_str());
     }
      
 }

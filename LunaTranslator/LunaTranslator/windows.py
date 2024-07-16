@@ -13,6 +13,7 @@ from ctypes import (
     c_bool,
     c_ushort,
     create_string_buffer,
+    CFUNCTYPE,
     c_short,
     Structure,
     WINFUNCTYPE,
@@ -1024,7 +1025,7 @@ IsZoomed = _user32.IsZoomed
 IsZoomed.argtypes = (HWND,)
 IsZoomed.restype = BOOL
 
-WNDPROCTYPE = WINFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
+WNDPROCTYPE = CFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
 
 GWLP_WNDPROC = -4
 if sizeof(c_void_p) == 8:

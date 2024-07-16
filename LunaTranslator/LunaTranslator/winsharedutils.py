@@ -341,9 +341,9 @@ maximum_window = utilsdll.maximum_window
 maximum_window.argtypes = (HWND,)
 
 setAeroEffect = utilsdll.setAeroEffect
-setAeroEffect.argtypes = (HWND,)
+setAeroEffect.argtypes = (HWND, c_bool)
 setAcrylicEffect = utilsdll.setAcrylicEffect
-setAcrylicEffect.argtypes = (HWND,)
+setAcrylicEffect.argtypes = (HWND, c_bool)
 clearEffect = utilsdll.clearEffect
 clearEffect.argtypes = (HWND,)
 

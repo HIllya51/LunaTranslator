@@ -41,6 +41,14 @@ class commonbase:
             return ""
 
     @property
+    def srclang_1(self):
+        try:
+            l = getlangsrc()
+            return l
+        except:
+            return ""
+
+    @property
     def tgtlang(self):
         try:
             l = getlangtgt()

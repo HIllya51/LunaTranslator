@@ -95,6 +95,9 @@ def ocr_end():
 
 
 def ocr_run(qimage: QImage):
+    image = qimage2binary(qimage, "PNG")
+    if not image:
+        return ""
     global _nowuseocr, _ocrengine
 
     use = None
@@ -116,7 +119,7 @@ def ocr_run(qimage: QImage):
             aclass = importlib.import_module("ocrengines." + use).OCR
             _ocrengine = aclass(use)
             _nowuseocr = use
-        text = _ocrengine._private_ocr(qimage2binary(qimage, "PNG"))
+        text = _ocrengine._private_ocr(image)
     except Exception as e:
         if isinstance(e, ArgsEmptyExc):
             msg = str(e)

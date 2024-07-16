@@ -515,9 +515,9 @@ class QUnFrameWindow(resizableframeless):
         if globalconfig["WindowEffect"] == 0:
             winsharedutils.clearEffect(int(self.winId()))
         elif globalconfig["WindowEffect"] == 1:
-            winsharedutils.setAcrylicEffect(int(self.winId()))
+            winsharedutils.setAcrylicEffect(int(self.winId()), globalconfig['WindowEffect_shadow'])
         elif globalconfig["WindowEffect"] == 2:
-            winsharedutils.setAeroEffect(int(self.winId()))
+            winsharedutils.setAeroEffect(int(self.winId()), globalconfig['WindowEffect_shadow'])
 
     def initvalues(self):
         self.enter_sig = 0
