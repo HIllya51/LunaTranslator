@@ -164,8 +164,7 @@ class Requester(Requester_common):
         url,
         headers,
         cookies,
-        dataptr,
-        datalen,
+        databytes,
         proxy,
         stream,
         verify,
@@ -202,9 +201,9 @@ class Requester(Requester_common):
         self._set_verify(curl, verify)
         self._set_proxy(curl, proxy)
         self._set_allow_redirects(curl, allow_redirects)
-        if datalen:
-            curl_easy_setopt(curl, CURLoption.POSTFIELDS, dataptr)
-            curl_easy_setopt(curl, CURLoption.POSTFIELDSIZE, datalen)
+        if len(databytes):
+            curl_easy_setopt(curl, CURLoption.POSTFIELDS, databytes)
+            curl_easy_setopt(curl, CURLoption.POSTFIELDSIZE, len(databytes))
 
         resp = Response()
         resp.keeprefs.append(curl)

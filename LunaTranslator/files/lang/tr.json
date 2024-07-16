@@ -768,7 +768,6 @@
     "网络设置": "Ağ Ayarları",
     "版本更新": "Sürüm güncelleştirme",
     "词性颜色": "Konuşma renginin bir parçası",
-    "需要Mecab": "Mecabi lazım.",
     "跟随游戏窗口": "Oyun penceresini takip et",
     "自动调整高度": "Otomatik yükseklik ayarlaması",
     "文本区": "Metin alanı",
@@ -778,7 +777,6 @@
     "内容": "İçeri",
     "显示内容": "İçeri göster",
     "界面设置": "Arayüz ayarları",
-    "主题效果": "Tema etkisi",
     "其他界面": "Diğer arayüzler",
     "翻译及OCR": "Çeviri ve OCR",
     "这一设置将会在下一次打开软件时生效": "Bu ayarlar bir sonraki yazılım açıldığında etkisi alacak.",
@@ -820,5 +818,7 @@
     "未添加": "Eklenmedi",
     "在线": "on line",
     "行间距": "Satır boşluğu",
-    "阴影": "gölge"
+    "阴影": "gölge",
+    "火山": "vulkan",
+    "有道词典": "Youdao Sözlük"
 }

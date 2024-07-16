@@ -577,9 +577,9 @@ class TextBrowser(QWidget, dataget):
 
         _, fontorig = self._getfh(False)
         fha, fonthira = self._getfh(True)
-        self.textbrowser.move(0, fha)
-        self.atback_color.move(0, fha)
-        ldh = max(globalconfig["extra_space"], fha // 2)
+        self.textbrowser.move(0, int(fha))
+        self.atback_color.move(0, int(fha))
+        ldh = max(globalconfig["extra_space"], int(fha / 2))
         for i in range(0, self.textbrowser.document().blockCount()):
             b = self.textbrowser.document().findBlockByNumber(i)
 

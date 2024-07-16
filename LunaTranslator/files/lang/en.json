@@ -767,7 +767,6 @@
     "网络设置": "Network Settings",
     "版本更新": "Version Update",
     "词性颜色": "Colored Parts-of-Speech",
-    "需要Mecab": " (Requires MeCab)",
     "跟随游戏窗口": "Follow Game Window",
     "自动调整高度": "Auto Adjust Height",
     "文本区": "Text Area",
@@ -777,7 +776,6 @@
     "内容": "Content",
     "显示内容": "Show Content",
     "界面设置": "Interface Settings",
-    "主题效果": "Theme Effects",
     "其他界面": "Other Interface",
     "翻译及OCR": "Translation and OCR",
     "这一设置将会在下一次打开软件时生效": "This setting will take effect the next time the software is opened",
@@ -820,5 +818,7 @@
     "未添加": "Not added",
     "在线": "on-line",
     "行间距": "Row spacing",
-    "阴影": "shadow"
+    "阴影": "shadow",
+    "火山": "volcano",
+    "有道词典": "Youdao Dictionary"
 }

@@ -12,24 +12,17 @@ class OCR(baseocr):
         timestamp = int(time.time() * 1000)
         url = f"https://lens.google.com/v3/upload?stcs={timestamp}"
         headers = {
-            "content-type": "multipart/form-data; boundary=----WebKitFormBoundaryUjYOv45hug6CFh3t",
             "User-Agent": "Mozilla/5.0 (Linux; Android 13; RMX3771) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.144 Mobile Safari/537.36",
         }
         cookies = {"SOCS": "CAESEwgDEgk0ODE3Nzk3MjQaAmVuIAEaBgiA_LyaBg"}
 
-        data = (
-            '------WebKitFormBoundaryUjYOv45hug6CFh3t\r\nContent-Disposition: form-data; name="encoded_image"; filename="screenshot.png"\r\nContent-Type: image/png\r\n\r\n'.encode(
-                "latin-1"
-            )
-            + imagebinary
-            + "\r\n------WebKitFormBoundaryUjYOv45hug6CFh3t--\r\n".encode("latin-1")
-        )
+        files = {"encoded_image": ("screenshot.png", imagebinary, "image/png")}
         res = self.proxysession.post(
-            url, data=data, headers=headers, cookies=cookies, timeout=20
+            url, files=files, headers=headers, cookies=cookies, timeout=20
         )
         match = regex.search(res.text)
         if match == None:
-            raise Exception(False, "Regex error!")
+            return
         sideChannel = "sideChannel"
         null = None
         key = "key"

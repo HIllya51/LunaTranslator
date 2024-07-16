@@ -90,14 +90,8 @@ def SAPI_Speak(content, v, voiceid, rate, volume):
     def _cb(ptr, size):
         ret.append(cast(ptr, POINTER(c_char))[:size])
 
-    succ = _SAPI_Speak(
-        content,
-        v,
-        voiceid,
-        int(rate),
-        int(volume),
-        CFUNCTYPE(None, c_void_p, c_size_t)(_cb),
-    )
+    fp = CFUNCTYPE(None, c_void_p, c_size_t)(_cb)
+    succ = _SAPI_Speak(content, v, voiceid, int(rate), int(volume), fp)
     if not succ:
         return None
     return ret[0]

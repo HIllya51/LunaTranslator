@@ -37,27 +37,18 @@ def getall(l, item="fanyi", name=None):
     return grids
 
 
-def createcheckbtn(self):
-
-    btn = QPushButton(_TR("确定"))
-
-    btn.clicked.connect(
-        lambda x: globalconfig.__setitem__("proxy", self.__proxyedit.text())
-    )
-    self.__checkproxybtn = btn
-    _ifusesysproxy(self, globalconfig["usesysproxy"])
-    return btn
-
-
 def createproxyedit(self):
     proxy = QLineEdit(globalconfig["proxy"])
     self.__proxyedit = proxy
+    proxy.textEdited.connect(
+        lambda: globalconfig.__setitem__("proxy", self.__proxyedit.text())
+    )
+    _ifusesysproxy(self, globalconfig["usesysproxy"])
     return proxy
 
 
 def _ifusesysproxy(self, x):
     self.__proxyedit.setEnabled(not x)
-    self.__checkproxybtn.setEnabled(not x)
 
 
 def getnotofflines(key):
@@ -82,11 +73,7 @@ def makeproxytab(self, basel):
                 )
             ),
         ],
-        [
-            ("手动设置代理(ip:port)", 5),
-            (functools.partial(createproxyedit, self), 5),
-            (functools.partial(createcheckbtn, self), 2),
-        ],
+        [("手动设置代理(ip:port)", 5), (functools.partial(createproxyedit, self), 5)],
         [],
         [("使用代理的项目", -1)],
     ]
@@ -184,7 +171,9 @@ def setTab_proxy_lazy(self, basel):
                         "WebSocket",
                         (
                             D_getsimplecombobox(
-                                ["winhttp", "libcurl"], globalconfig, "network_websocket"
+                                ["winhttp", "libcurl"],
+                                globalconfig,
+                                "network_websocket",
                             ),
                             5,
                         ),

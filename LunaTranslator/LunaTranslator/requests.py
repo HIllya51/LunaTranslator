@@ -1,4 +1,4 @@
-import json, base64, re
+import json, base64, re, string, random
 from collections.abc import Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode, urlsplit
@@ -172,33 +172,6 @@ class Requester_common:
         url = scheme + "://" + server + path
         return scheme, server, port, path, url
 
-    def _parsedata(self, data, headers, js):
-
-        if data is None and js is None:
-            dataptr = None
-            datalen = 0
-        else:
-            if data:
-                dataptr = self._encode_params(data)
-
-                if isinstance(dataptr, str):
-                    dataptr = (dataptr).encode("utf8")
-                datalen = len(dataptr)
-                # print('dataptr',dataptr)
-                if isinstance(data, (str, bytes)):
-                    pass
-                elif "Content-Type" not in headers:
-                    headers["Content-Type"] = "application/x-www-form-urlencoded"
-            elif js:
-                dataptr = json.dumps(js).encode("utf8")
-                datalen = len(dataptr)
-                if "Content-Type" not in headers:
-                    headers["Content-Type"] = "application/json"
-        if datalen:
-            headers["Content-Length"] = str(datalen)
-        # print(headers,dataptr,datalen)
-        return headers, dataptr, datalen
-
     def request(
         self,
         method,
@@ -230,7 +203,18 @@ class Requester_common:
             )
 
         scheme, server, port, param, url = self._parseurl(url, params)
-        headers, dataptr, datalen = self._parsedata(data, headers, json)
+        databytes = b""
+        contenttype = None
+        if files:
+            contenttype, databytes = self._parsefilesasmultipart(files, headers)
+        elif data:
+            contenttype, databytes = self._parsedata(data)
+        elif json:
+            contenttype, databytes = self._parsejson(json)
+        if len(databytes):
+            headers["Content-Length"] = str(len(databytes))
+        if contenttype and ("Content-Type" not in headers):
+            headers["Content-Type"] = contenttype
         proxy = proxies.get(scheme, None) if proxies else None
         proxy = None if proxy == "" else proxy
         if timeout:
@@ -251,8 +235,7 @@ class Requester_common:
             url,
             headers,
             cookies,
-            dataptr,
-            datalen,
+            databytes,
             proxy,
             stream,
             verify,
@@ -301,6 +284,66 @@ class Requester_common:
             else:
                 header[line[:idx]] = line[idx + 2 :]
         return CaseInsensitiveDict(header), cookie
+
+    def _parsejson(self, _json):
+        databytes = json.dumps(_json).encode("utf8")
+        contenttype = "application/json"
+        return contenttype, databytes
+
+    def _parsedata(self, data):
+        contenttype = None
+        databytes = self._encode_params(data)
+        if isinstance(databytes, str):
+            databytes = (databytes).encode("utf8")
+        if isinstance(data, (str, bytes)):
+            pass
+        else:
+            contenttype = "application/x-www-form-urlencoded"
+        return contenttype, databytes
+
+    def _parsefilesasmultipart(self, files: dict, header: dict):
+        def generate_random_string(length=16):
+            characters = string.ascii_letters + string.digits
+            return "".join(random.choices(characters, k=length))
+
+        _ct = header.get("Content-Type", None)
+        _ct_start = "multipart/form-data; boundary="
+        if _ct and _ct.lower().startswith(_ct_start):
+            boundary = _ct[len(_ct_start) :]
+        else:
+            boundary = "----WebKitFormBoundary" + generate_random_string()
+            _ct = _ct_start + boundary
+        boundary = boundary.encode()
+        items = []
+        for name, data in files.items():
+            items.append(b"--" + boundary)
+            disposition = b'Content-Disposition: form-data; name="'
+            disposition += name.encode("utf8")
+            disposition += b'"'
+            if isinstance(data, tuple) or isinstance(data, list):
+                if len(data) == 3:
+                    filename, data, type_ = data
+                elif len(data) == 2:
+                    filename, data = data
+                    type_ = None
+            else:
+                filename = None
+                type_ = None
+            if filename:
+                disposition += b'; filename="'
+                disposition += filename.encode("utf8")
+                disposition += b'"'
+            items.append(disposition)
+            if type_:
+                Type = b"Content-Type: "
+                Type += type_.encode("utf8")
+                items.append(Type)
+            items.append(b"")
+            if isinstance(data, str):
+                data = data.encode("utf8")
+            items.append(data)
+        items.append(b"--" + boundary + b"--")
+        return _ct, b"".join(_ + b"\r\n" for _ in items)
 
 
 class Session:

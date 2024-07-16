@@ -2,6 +2,7 @@ import gobject, os, uuid, windows
 from ocrengines.baseocrclass import baseocr
 from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, CFUNCTYPE, c_bool, c_int
 import winsharedutils
+from traceback import print_exc
 
 
 class OCR(baseocr):
@@ -13,42 +14,59 @@ class OCR(baseocr):
             c_wchar_p,
         )
         wcocr_init.restype = c_void_p
-        try:
-            key = windows.RegOpenKeyEx(
-                windows.HKEY_CURRENT_USER,
-                "SOFTWARE\Tencent\WeChat",
-                0,
-                windows.KEY_QUERY_VALUE,
-            )
-            base = windows.RegQueryValueEx(key, "InstallPath")
-            windows.RegCloseKey(key)
-            WeChatexe = os.path.join(base, "WeChat.exe")
-            version = winsharedutils.queryversion(WeChatexe)
-            if not version:
-                raise Exception
+        self.pobj = None
+        for function in [self.findwechat, self.findqqnt]:
+            try:
+                wechatocr_path, wechat_path = function()
+            except:
+                print_exc()
+            if any([not os.path.exists(_) for _ in (wechatocr_path, wechat_path)]):
+                continue
+            self.pobj = wcocr_init(wechatocr_path, wechat_path)
+            if self.pobj:
+                break
+        if not self.pobj:
+            raise Exception("找不到(微信和WeChatOCR)或(QQNT和TencentOCR)")
 
-        except:
-            from traceback import print_exc
+    def findqqnt(self):
+        default = r"C:\Program Files\Tencent\QQNT"
+        version = winsharedutils.queryversion(os.path.join(default, "QQ.exe"))
+        if not version:
+            raise Exception
+        mojo = os.path.join(
+            default,
+            r"resources\app\versions",
+            f"{version[0]}.{version[1]}.{version[2]}-{version[3]}",
+        )
+        ocr = os.path.join(mojo, r"QQScreenShot\Bin\TencentOCR.exe")
+        return ocr, mojo
 
-            print_exc()
-            raise Exception("未找到WeChat")
+    def findwechat(self):
+
+        key = windows.RegOpenKeyEx(
+            windows.HKEY_CURRENT_USER,
+            "SOFTWARE\Tencent\WeChat",
+            0,
+            windows.KEY_QUERY_VALUE,
+        )
+        base = windows.RegQueryValueEx(key, "InstallPath")
+        windows.RegCloseKey(key)
+        WeChatexe = os.path.join(base, "WeChat.exe")
+        version = winsharedutils.queryversion(WeChatexe)
+        if not version:
+            raise Exception
 
         versionf = ".".join((str(_) for _ in version))
         wechat_path = os.path.join(base, "[" + versionf + "]")
         wechatocr_path = (
             os.getenv("APPDATA") + r"\Tencent\WeChat\XPlugin\Plugins\WeChatOCR"
         )
-        try:
-            wechatocr_path = os.path.join(
-                wechatocr_path,
-                os.listdir(wechatocr_path)[0],
-                r"extracted\WeChatOCR.exe",
-            )
-        except:
-            raise Exception("未找到WeChatOCR")
-        self.pobj = wcocr_init(wechatocr_path, wechat_path)
-        if not self.pobj:
-            raise Exception("加载失败")
+        wechatocr_path = os.path.join(
+            wechatocr_path,
+            os.listdir(wechatocr_path)[0],
+            r"extracted\WeChatOCR.exe",
+        )
+        return wechatocr_path, wechat_path
 
     def end(self):
 
@@ -69,11 +87,8 @@ class OCR(baseocr):
         def cb(x1, y1, x2, y2, text: bytes):
             ret.append((x1, y1, x2, y2, text.decode("utf8")))
 
-        succ = wcocr_ocr(
-            self.pobj,
-            imgfile.encode("utf8"),
-            CFUNCTYPE(None, c_int, c_int, c_int, c_int, c_char_p)(cb),
-        )
+        fp = CFUNCTYPE(None, c_int, c_int, c_int, c_int, c_char_p)(cb)
+        succ = wcocr_ocr(self.pobj, imgfile.encode("utf8"), fp)
         if not succ:
             return
         os.remove(imgfile)

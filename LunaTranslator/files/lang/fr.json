@@ -768,7 +768,6 @@
     "网络设置": "Paramètres réseau",
     "版本更新": "Mise à jour de la version",
     "词性颜色": "La couleur des mots",
-    "需要Mecab": "Mecab est nécessaire",
     "跟随游戏窗口": "Suivez la fenêtre du jeu",
     "自动调整高度": "Ajustement automatique de la hauteur",
     "文本区": "Zone de texte",
@@ -778,7 +777,6 @@
     "内容": "Contenu",
     "显示内容": "Afficher le contenu",
     "界面设置": "Paramètres de l'interface",
-    "主题效果": "Effets thématiques",
     "其他界面": "Autres interfaces",
     "翻译及OCR": "Traduction et ocr",
     "这一设置将会在下一次打开软件时生效": "Ce paramètre prendra effet lors de la prochaine ouverture du logiciel.",
@@ -820,5 +818,7 @@
     "未添加": "Non ajouté",
     "在线": "En ligne",
     "行间距": "Espacement des lignes",
-    "阴影": "Ombre"
+    "阴影": "Ombre",
+    "火山": "Le volcan",
+    "有道词典": "Dictionnaire Tao"
 }

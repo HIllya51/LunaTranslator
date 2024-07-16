@@ -16,10 +16,10 @@ localeEmulatorFile = "https://github.com/xupefei/Locale-Emulator/releases/downlo
 localeEmulatorFileName = "Locale.Emulator.2.5.0.1.zip"
 ntleaFile = "https://github.com/zxyacb/ntlea/releases/download/0.46/ntleas046_x64.7z"
 ntleaFileName = "ntleas046_x64.7z"
-curlFile32 = "https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win32-mingw.zip"
-curlFileName32 = "curl-8.7.1_7-win32-mingw.zip"
-curlFile64 = "https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip"
-curlFileName64 = "curl-8.7.1_7-win64-mingw.zip"
+curlFile32 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win32-mingw.zip"
+curlFileName32 = "curl-8.8.0_3-win32-mingw.zip"
+curlFile64 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
+curlFileName64 = "curl-8.8.0_3-win64-mingw.zip"
 
 
 ocrModelUrl = (

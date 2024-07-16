@@ -53,17 +53,8 @@ class OCR(baseocr):
             "mac": mac,
         }
 
-        data = (
-            '--6d94758aed493e27c73620d74ff01fc4\r\nContent-Disposition: form-data; name="image"; filename="2024-05-29 220022.png"\r\nContent-Type: multipart/form-data\r\n\r\n'.encode(
-                "latin-1"
-            )
-            + imagebinary
-            + "\r\n--6d94758aed493e27c73620d74ff01fc4--\r\n".encode("latin-1")
-        )
-        headers = {
-            "content-type": "multipart/form-data; boundary=6d94758aed493e27c73620d74ff01fc4",
-        }
-        response = self.proxysession.post(url, params=payload, headers=headers, data=data)
+        files = {"image": ("image.png", imagebinary, "multipart/form-data")}
+        response = self.proxysession.post(url, params=payload, files=files)
 
         try:
             js = response.json()

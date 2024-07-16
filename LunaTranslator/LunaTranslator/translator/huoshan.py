@@ -37,4 +37,4 @@ class TS(basetrans):
         try:
             return response.json()["translation"]
         except:
-            raise Exception(json.dumps(response.json(), ensure_ascii=False))
+            raise Exception(response.text)

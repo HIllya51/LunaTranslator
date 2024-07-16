@@ -25,7 +25,28 @@ from hiraparse.basehira import basehira
 
 
 class mecabwrap:
+    def testcodec(self, mecabpath):
+        default = "shift-jis"
+        dirrc = os.path.join(mecabpath, "dicrc")
+        if not os.path.exists(dirrc):
+            return default
+        with open(dirrc, "rb") as ff:
+            lines = ff.read().split(b"\n")
+        for test in ["dictionary-charset", "config-charset"]:
+            for line in lines:
+                try:
+                    line = line.decode()
+                except:
+                    continue
+                if test in line.lower():
+                    return line.split("=")[1].strip()
+        return default
+
     def __init__(self, mecabpath) -> None:
+        if not os.path.exists(mecabpath):
+            mecabpath = r"C:\Program Files (x86)\MeCab\dic\ipadic"
+        self.codec = self.testcodec(mecabpath)
+        print(self.codec)
         self.kks = winsharedutils.mecab_init(
             mecabpath.encode("utf8"), gobject.GetDllpath("libmecab.dll")
         )
@@ -33,16 +54,16 @@ class mecabwrap:
     def __del__(self):
         winsharedutils.mecab_end(self.kks)
 
-    def parse(self, text: str, codec: str):
+    def parse(self, text: str):
         res = []
+        codec = self.codec
 
         def cb(surface: bytes, feature: bytes):
             fields = list(csv.reader([feature.decode(codec)]))[0]
             res.append((surface.decode(codec), fields))
 
-        succ = winsharedutils.mecab_parse(
-            self.kks, text.encode(codec), CFUNCTYPE(None, c_char_p, c_char_p)(cb)
-        )
+        fp = CFUNCTYPE(None, c_char_p, c_char_p)(cb)
+        succ = winsharedutils.mecab_parse(self.kks, text.encode(codec), fp)
         if not succ:
             raise Exception  # failed
 
@@ -60,8 +81,7 @@ class mecab(basehira):
     def parse(self, text):
         start = 0
         result = []
-        codec = ["utf8", "shiftjis"][self.config["codec"]]
-        for node, fields in self.kks.parse(text, codec):
+        for node, fields in self.kks.parse(text):
             kana = ""
             origorig = ""
             pos1 = fields[0]

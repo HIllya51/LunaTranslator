@@ -768,7 +768,6 @@
     "网络设置": "Thiết lập mạng",
     "版本更新": "Cập nhật phiên bản",
     "词性颜色": "Màu sắc của từ",
-    "需要Mecab": "Cần Mecab",
     "跟随游戏窗口": "Theo cửa sổ trò chơi",
     "自动调整高度": "Tự động điều chỉnh chiều cao",
     "文本区": "Vùng văn bản",
@@ -778,7 +777,6 @@
     "内容": "Nội dung",
     "显示内容": "Hiển thị nội dung",
     "界面设置": "Thiết lập giao diện",
-    "主题效果": "Hiệu ứng sắc thái",
     "其他界面": "Giao diện khác",
     "翻译及OCR": "Biên dịch và OCR",
     "这一设置将会在下一次打开软件时生效": "Cài đặt này sẽ có hiệu lực vào lần mở phần mềm tiếp theo.",
@@ -820,5 +818,7 @@
     "未添加": "Chưa thêm",
     "在线": "Trực tuyến",
     "行间距": "Khoảng cách dòng",
-    "阴影": "Bóng"
+    "阴影": "Bóng",
+    "火山": "Núi lửa",
+    "有道词典": "Có một từ điển."
 }

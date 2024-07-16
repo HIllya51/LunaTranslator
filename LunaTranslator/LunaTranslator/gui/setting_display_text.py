@@ -462,7 +462,7 @@ def xianshigrid_text(self):
                                                 globalconfig, "show_fenci"
                                             ),
                                             "",
-                                            ("词性颜色_需要Mecab"),
+                                            ("词性颜色"),
                                             D_getIconButton(
                                                 callback=lambda: multicolorset(self),
                                                 icon="fa.gear",

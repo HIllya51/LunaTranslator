@@ -768,7 +768,6 @@
     "网络设置": "Configuración de la red",
     "版本更新": "Actualización de la versión",
     "词性颜色": "Color del habla",
-    "需要Mecab": "Se necesita mecab",
     "跟随游戏窗口": "Sigue la ventana del juego",
     "自动调整高度": "Ajustar automáticamente la altura",
     "文本区": "Área de texto",
@@ -778,7 +777,6 @@
     "内容": "Contenido",
     "显示内容": "Mostrar contenido",
     "界面设置": "Configuración de la interfaz",
-    "主题效果": "Efectos temáticos",
     "其他界面": "Otras interfaces",
     "翻译及OCR": "Traducción y OCR",
     "这一设置将会在下一次打开软件时生效": "Esta configuración entrará en vigor la próxima vez que abra el software",
@@ -820,5 +818,7 @@
     "未添加": "Sin agregar",
     "在线": "En línea",
     "行间距": "Distancia entre líneas",
-    "阴影": "Sombra"
+    "阴影": "Sombra",
+    "火山": "Volcán",
+    "有道词典": "Diccionario youdao"
 }

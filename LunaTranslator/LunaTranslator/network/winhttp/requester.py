@@ -151,8 +151,7 @@ class Requester(Requester_common):
         url,
         _headers,
         cookies,
-        dataptr,
-        datalen,
+        databytes,
         proxy,
         stream,
         verify,
@@ -161,7 +160,7 @@ class Requester(Requester_common):
     ):
         headers = self._parseheader(_headers, cookies)
         flag = WINHTTP_FLAG_SECURE if scheme == "https" else 0
-        # print(server,port,param,dataptr)
+        # print(server,port,param,databytes)
         headers = "\r\n".join(headers)
 
         hConnect = AutoWinHttpHandle(WinHttpConnect(self.hSession, server, port, 0))
@@ -186,7 +185,7 @@ class Requester(Requester_common):
         self._set_proxy(hRequest, proxy)
         self._set_allow_redirects(hRequest, allow_redirects)
         succ = WinHttpSendRequest(
-            hRequest, headers, -1, dataptr, datalen, datalen, None
+            hRequest, headers, -1, databytes, len(databytes), len(databytes), None
         )
         if succ == 0:
             raise WinhttpException(GetLastError())

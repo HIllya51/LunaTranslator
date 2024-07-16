@@ -466,7 +466,7 @@
     "showfanyi": true,
     "autoread": false,
     "ttsnointerrupt": false,
-    "show_fenci": false,
+    "show_fenci": true,
     "jiamingcolor": "black",
     "ankiconnect": {
         "port": 8765,
@@ -507,7 +507,7 @@
         1200,
         600
     ],
-    "global_namemap":{},
+    "global_namemap": {},
     "settingfontsize": 12,
     "filter_chaos_code": false,
     "accept_encoding": [
@@ -827,7 +827,7 @@
     "showtranexception": true,
     "refresh_on_get_trans": false,
     "languageuse": 0,
-    "proxy": "",
+    "proxy": "127.0.0.1:7890",
     "showbold": false,
     "showShadow": false,
     "shadowcolor": "blue",
@@ -1123,11 +1123,11 @@
     },
     "hirasetting": {
         "mecab": {
-            "use": false,
+            "use": true,
             "name": "MeCab",
             "args": {
                 "path": "",
-                "codec": 0
+                "downloadlink": "{main_server}/Resource/dictionary/Mecab.zip"
             },
             "argstype": {
                 "path": {
@@ -1135,13 +1135,10 @@
                     "name": "路径",
                     "dir": true
                 },
-                "codec": {
-                    "type": "combo",
-                    "name": "编码",
-                    "list": [
-                        "utf8",
-                        "shiftjis"
-                    ]
+                "downloadlink": {
+                    "type": "label",
+                    "islink": true,
+                    "name": "下载"
                 }
             },
             "type": "offline"
@@ -1303,7 +1300,7 @@
         },
         "youdao": {
             "use": false,
-            "name": "有道",
+            "name": "有道词典",
             "useproxy": false
         },
         "jisho": {
@@ -1415,6 +1412,10 @@
             "use": false,
             "name": "腾讯OCR"
         },
+        "sougou": {
+            "use": false,
+            "name": "搜狗"
+        },
         "txocrtrans": {
             "use": false,
             "name": "腾讯图片翻译"
@@ -1451,6 +1452,10 @@
             "use": false,
             "name": "有道图片翻译"
         },
+        "youdaodictocr": {
+            "use": false,
+            "name": "有道词典"
+        },
         "volcengine": {
             "use": false,
             "name": "火山OCR"
@@ -1462,7 +1467,7 @@
         },
         "weixinocr": {
             "use": false,
-            "name": "WeChatOCR",
+            "name": "WeChat/QQ OCR",
             "type": "offline"
         },
         "geminiocr": {
@@ -1531,7 +1536,7 @@
         "youdaodict": {
             "use": false,
             "color": "#95a5ff",
-            "name": "YoudaoDict"
+            "name": "有道词典"
         },
         "google2": {
             "use": false,
@@ -1751,7 +1756,7 @@
         "huoshan": {
             "use": false,
             "color": "blue",
-            "name": "huoshan"
+            "name": "火山"
         },
         "caiyunapi": {
             "type": "api",
@@ -1805,11 +1810,6 @@
             "use": false,
             "color": "blue",
             "name": "有道api"
-        },
-        "yunyi2": {
-            "use": false,
-            "color": "blue",
-            "name": "云译_v2"
         },
         "chatgpt": {
             "type": "api",
