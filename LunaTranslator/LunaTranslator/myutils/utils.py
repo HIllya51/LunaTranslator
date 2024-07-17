@@ -655,13 +655,6 @@ class LRUCache:
             self.put(key)
         return _
 
-
-for k in globalconfig["metadata"]:
-    try:
-        targetmod[k] = importlib.import_module(f"metadata.{k}").searcher(k)
-    except:
-        print_exc()
-
 globalcachedmodule = {}
 
 

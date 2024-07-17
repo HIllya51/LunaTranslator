@@ -23,6 +23,7 @@ from myutils.utils import (
     find_or_create_uid,
     checkpostusing,
     stringfyerror,
+    targetmod,
 )
 from myutils.wrapper import threader
 from gui.showword import searchwordW
@@ -119,7 +120,7 @@ class MAINUI:
                     class klass(kls):
                         @property
                         def using(self):
-                            if 'using_X' in dir(self):
+                            if "using_X" in dir(self):
                                 try:
                                     return self.using_X
                                 except:
@@ -1188,7 +1189,7 @@ class MAINUI:
     def parsedefaultfont(self):
         for k in ["fonttype", "fonttype2", "settingfonttype"]:
             if globalconfig[k] == "":
-                l = "ja" if k=="fonttype" else getlanguse()
+                l = "ja" if k == "fonttype" else getlanguse()
                 set_font_default(l, k)
                 # globalconfig[k] = QFontDatabase.systemFont(
                 #     QFontDatabase.SystemFont.GeneralFont
@@ -1197,6 +1198,7 @@ class MAINUI:
     def loadui(self):
         self.installeventfillter()
         self.parsedefaultfont()
+        self.loadmetadatas()
         self.translation_ui = QUnFrameWindow()
         self.translation_ui.show()
         self.translation_ui.aftershowdosomething()
@@ -1255,6 +1257,14 @@ class MAINUI:
         self.currentisdark = None
         self.__filter = WindowEventFilter()  # keep ref
         QApplication.instance().installEventFilter(self.__filter)
+
+    def loadmetadatas(self):
+
+        for k in globalconfig["metadata"]:
+            try:
+                targetmod[k] = importlib.import_module(f"metadata.{k}").searcher(k)
+            except:
+                print_exc()
 
     def checklang(self):
         if globalconfig["language_setted_2.4.5"] == False:
