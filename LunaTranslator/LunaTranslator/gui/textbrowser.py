@@ -1,6 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig, _TR
-import importlib
+import importlib, threading
 from webviewpy import webview_exception
 from gui.usefulwidget import getQMessageBox
 from traceback import print_exc
@@ -17,6 +17,14 @@ class Textbrowser(QLabel):
 
     def loadinternal(self):
         __ = globalconfig["rendertext_using"]
+        if self.curr_eng == __:
+            return
+        self.curr_eng = __
+        size = self.size()
+        if self.textbrowser:
+            self.textbrowser.hide()
+            self.textbrowser.contentsChanged.disconnect()
+            self.textbrowser.deleteLater()
         if __ == "QWebEngine":
             __ = "webview"
         try:
@@ -43,11 +51,16 @@ class Textbrowser(QLabel):
 
         self.textbrowser.setMouseTracking(True)
         self.textbrowser.contentsChanged.connect(self._contentsChanged)
+        self.textbrowser.resize(size)
+        self.textbrowser.show()
+        self.textbrowser.setselectable(globalconfig["selectable"])
 
     def __init__(self, parent):
         super().__init__(parent)
         self.setMouseTracking(True)
+        self.textbrowser = None
         self.cleared = True
+        self.curr_eng = None
         self.loadinternal()
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
@@ -65,3 +78,4 @@ class Textbrowser(QLabel):
     def clear(self):
         self.cleared = True
         self.textbrowser.clear()
+        self.loadinternal()

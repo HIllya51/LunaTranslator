@@ -227,7 +227,7 @@ def on_not_find_qweb(self):
     )
 
 
-def resetgroudswitchcallback(self, _2, group):
+def resetgroudswitchcallback(self, group):
 
     if group == "QWebEngine" and not gobject.testuseqwebengine():
         self.seletengeinecombo.blockSignals(True)
@@ -239,8 +239,6 @@ def resetgroudswitchcallback(self, _2, group):
         self.seletengeinecombo.blockSignals(False)
         on_not_find_qweb(self)
         return
-    if _2:
-        gobject.baseobject.showneedrestart("显示引擎", 0)
     clearlayout(self.goodfontsettingsformlayout)
 
     goodfontgroupswitch = FocusCombo()
@@ -285,7 +283,7 @@ def creategoodfontwid(self):
     )
     self.goodfontsettingsformlayout = QFormLayout()
     self.goodfontsettingsWidget.setLayout(self.goodfontsettingsformlayout)
-    resetgroudswitchcallback(self, False, globalconfig["rendertext_using"])
+    resetgroudswitchcallback(self, globalconfig["rendertext_using"])
     return self.goodfontsettingsWidget
 
 
@@ -298,7 +296,7 @@ def _createseletengeinecombo(self):
         globalconfig,
         "rendertext_using",
         internallist=visengine_internal,
-        callback=functools.partial(resetgroudswitchcallback, self, True),
+        callback=functools.partial(resetgroudswitchcallback, self),
     )
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     return self.seletengeinecombo
