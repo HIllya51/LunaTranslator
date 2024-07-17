@@ -1412,10 +1412,6 @@
             "use": false,
             "name": "腾讯OCR"
         },
-        "sougou": {
-            "use": false,
-            "name": "搜狗"
-        },
         "txocrtrans": {
             "use": false,
             "name": "腾讯图片翻译"

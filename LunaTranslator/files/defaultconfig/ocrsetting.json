@@ -13,17 +13,6 @@
             }
         }
     },
-    "sougou": {
-        "args": {
-            "Translate": false
-        },
-        "argstype": {
-            "Translate": {
-                "type": "switch",
-                "name": "翻译"
-            }
-        }
-    },
     "youdaodictocr": {
         "args": {
             "Translate": false
