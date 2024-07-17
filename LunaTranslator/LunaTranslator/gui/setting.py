@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
 import qtawesome
-from myutils.config import globalconfig, _TR, _TRL
+from myutils.config import globalconfig, _TRL
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting_textinput import setTabOne_lazy
 from gui.setting_translate import setTabTwo_lazy, checkconnected
@@ -19,6 +19,7 @@ from gui.setting_about import (
     updateprogress,
     versioncheckthread,
 )
+from gui.dynalang import LListWidgetItem, LListWidget
 
 
 class TabWidget(QWidget):
@@ -35,7 +36,7 @@ class TabWidget(QWidget):
         self.setLayout(layout)
         self.splitter = QSplitter()
         layout.addWidget(self.splitter)
-        self.list_widget = QListWidget(self)
+        self.list_widget = LListWidget(self)
         self.list_widget.setStyleSheet("QListWidget:focus {outline: 0px;}")
         self.tab_widget = QTabWidget(self)
         self.tab_widget.tabBar().hide()
@@ -51,7 +52,7 @@ class TabWidget(QWidget):
     def addTab(self, widget, title):
         self.titles.append(title)
         self.tab_widget.addTab(widget, title)
-        item = QListWidgetItem(title)
+        item = LListWidgetItem(title)
         item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         item.setSizeHint(QSize(self.tab_widget.width(), 50))
         self.list_widget.addItem(item)
@@ -93,24 +94,22 @@ class Setting(closeashidewindow):
     def firstshow(self):
 
         self.setMinimumSize(100, 100)
-        self.setWindowTitle(_TR("设置"))
+        self.setWindowTitle("设置")
 
         self.tab_widget, do = makesubtab_lazy(
-            _TRL(
-                [
-                    "文本输入",
-                    "翻译设置",
-                    "显示设置",
-                    "文本处理",
-                    "辞书设置",
-                    "语音合成",
-                    "快捷按键",
-                    "语言设置",
-                    "网络设置",
-                    "版本更新",
-                    "资源下载",
-                ]
-            ),
+            [
+                "文本输入",
+                "翻译设置",
+                "显示设置",
+                "文本处理",
+                "辞书设置",
+                "语音合成",
+                "快捷按键",
+                "语言设置",
+                "网络设置",
+                "版本更新",
+                "资源下载",
+            ],
             [
                 functools.partial(setTabOne_lazy, self),
                 functools.partial(setTabTwo_lazy, self),
@@ -134,7 +133,7 @@ class Setting(closeashidewindow):
         fn.setPointSizeF(globalconfig["settingfontsize"] + 4)
         fn.setFamily(globalconfig["settingfonttype"])
         fm = QFontMetrics(fn)
-        for title in self.tab_widget.titles:
+        for title in _TRL(self.tab_widget.titles):
             width = max(fm.size(0, title).width(), width)
         width += 50
         self.tab_widget.splitter.setStretchFactor(0, 0)

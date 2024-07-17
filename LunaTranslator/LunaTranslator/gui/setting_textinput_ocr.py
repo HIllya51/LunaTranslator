@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os
 import gobject
-from myutils.config import globalconfig, ocrsetting, _TRL, ocrerrorfix, _TR
+from myutils.config import globalconfig, ocrsetting, ocrerrorfix
 from myutils.utils import splitocrtypes, dynamiclink
 from gui.inputdialog import autoinitdialog, postconfigdialog, autoinitdialog_items
 from gui.usefulwidget import (
@@ -13,6 +13,7 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     selectcolor,
 )
+from gui.dynalang import LPushButton
 
 
 def __label1(self):
@@ -81,9 +82,8 @@ def getocrgrid(self):
     offline, online = splitocrtypes()
     self.ocrswitchs = {}
 
-    def vissolvebtn(text):
-        _ = QPushButton()
-        _.setText(text)
+    def vissolvebtn():
+        _ = LPushButton("查看处理效果")
         _.clicked.connect(gobject.baseobject.createshowocrimage)
         return _
 
@@ -147,11 +147,11 @@ def getocrgrid(self):
                         [
                             "预处理方法",
                             D_getsimplecombobox(
-                                _TRL(["不处理", "灰度化", "阈值二值化", "OTSU二值化"]),
+                                ["不处理", "灰度化", "阈值二值化", "OTSU二值化"],
                                 globalconfig,
                                 "ocr_presolve_method",
                             ),
-                            functools.partial(vissolvebtn, _TR("查看处理效果")),
+                            vissolvebtn,
                         ],
                         [
                             "二值化阈值",
@@ -210,13 +210,11 @@ def getocrgrid(self):
                             ),
                             (
                                 D_getsimplecombobox(
-                                    _TRL(
-                                        [
-                                            "分析图像更新",
-                                            "周期执行",
-                                            "分析图像更新+周期执行",
-                                        ]
-                                    ),
+                                    [
+                                        "分析图像更新",
+                                        "周期执行",
+                                        "分析图像更新+周期执行",
+                                    ],
                                     globalconfig,
                                     "ocr_auto_method",
                                 ),

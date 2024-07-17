@@ -778,7 +778,6 @@
     "界面设置": "Interface Settings",
     "其他界面": "Other Interface",
     "翻译及OCR": "Translation and OCR",
-    "这一设置将会在下一次打开软件时生效": "This setting will take effect the next time the software is opened",
     "语言包": "Language Pack",
     "项目仓库": "Project Repository",
     "整合包": "Integration Pack",
@@ -820,5 +819,9 @@
     "行间距": "Row spacing",
     "阴影": "shadow",
     "火山": "volcano",
-    "有道词典": "Youdao Dictionary"
+    "有道词典": "Youdao Dictionary",
+    "无缩放": "No scaling",
+    "总是检测": "Always checking",
+    "动态检测": "Dynamic detection",
+    "从不检测": "Never detect"
 }

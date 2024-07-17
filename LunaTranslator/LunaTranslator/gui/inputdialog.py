@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, importlib
 from traceback import print_exc
 import qtawesome
-from myutils.config import globalconfig, _TR, _TRL
+from myutils.config import globalconfig, _TR
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import (
@@ -15,13 +15,22 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     FocusSpin,
     FocusDoubleSpin,
-    FocusCombo,
+    LFocusCombo,
     getsimplecombobox,
+)
+from gui.dynalang import (
+    LFormLayout,
+    LLabel,
+    LPushButton,
+    LStandardItemModel,
+    LDialog,
+    LDialog,
+    LAction,
 )
 
 
 @Singleton_close
-class noundictconfigdialog1(QDialog):
+class noundictconfigdialog1(LDialog):
     def newline(self, row, item):
         self.model.insertRow(
             row,
@@ -35,13 +44,13 @@ class noundictconfigdialog1(QDialog):
             self.model.index(row, 0), getsimpleswitch(item, "regex")
         )
 
-    def showmenu(self, table: QTableView, _):
+    def showmenu(self, table: TableViewW, _):
         r = table.currentIndex().row()
         if r < 0:
             return
         menu = QMenu(table)
-        up = QAction(_TR("上移"))
-        down = QAction(_TR("下移"))
+        up = LAction(("上移"))
+        down = LAction(("下移"))
         menu.addAction(up)
         menu.addAction(down)
         action = menu.exec(table.cursor().pos())
@@ -53,7 +62,7 @@ class noundictconfigdialog1(QDialog):
         elif action == down:
             self.moverank(table, 1)
 
-    def moverank(self, table: QTableView, dy):
+    def moverank(self, table: TableViewW, dy):
         curr = table.currentIndex()
         model = table.model()
         target = (curr.row() + dy) % model.rowCount()
@@ -73,13 +82,13 @@ class noundictconfigdialog1(QDialog):
     def __init__(self, parent, reflist, title, label) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.label = label
-        self.setWindowTitle(_TR(title))
+        self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
         self.reflist = reflist
         formLayout = QVBoxLayout(self)  # 配置layout
 
-        self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(_TRL(label))
+        self.model = LStandardItemModel()
+        self.model.setHorizontalHeaderLabels(label)
         table = TableViewW(self)
         table.setModel(self.model)
         table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
@@ -99,8 +108,7 @@ class noundictconfigdialog1(QDialog):
         search = QHBoxLayout()
         searchcontent = QLineEdit()
         search.addWidget(searchcontent)
-        button4 = QPushButton()
-        button4.setText(_TR("搜索"))
+        button4 = LPushButton("搜索")
 
         def clicked4():
             text = searchcontent.text()
@@ -173,7 +181,7 @@ class noundictconfigdialog1(QDialog):
 
 
 @Singleton_close
-class noundictconfigdialog2(QDialog):
+class noundictconfigdialog2(LDialog):
     def newline(self, row, item):
 
         self.model.insertRow(
@@ -186,13 +194,13 @@ class noundictconfigdialog2(QDialog):
         com = getsimplecombobox(["首尾", "包含"], item, "condition")
         self.table.setIndexWidget(self.model.index(row, 1), com)
 
-    def showmenu(self, table: QTableView, _):
+    def showmenu(self, table: TableViewW, _):
         r = table.currentIndex().row()
         if r < 0:
             return
         menu = QMenu(table)
-        up = QAction(_TR("上移"))
-        down = QAction(_TR("下移"))
+        up = LAction(("上移"))
+        down = LAction(("下移"))
         menu.addAction(up)
         menu.addAction(down)
         action = menu.exec(table.cursor().pos())
@@ -204,7 +212,7 @@ class noundictconfigdialog2(QDialog):
         elif action == down:
             self.moverank(table, 1)
 
-    def moverank(self, table: QTableView, dy):
+    def moverank(self, table: TableViewW, dy):
         curr = table.currentIndex()
         model = table.model()
         target = (curr.row() + dy) % model.rowCount()
@@ -228,13 +236,13 @@ class noundictconfigdialog2(QDialog):
     def __init__(self, parent, reflist, title, label) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.label = label
-        self.setWindowTitle(_TR(title))
+        self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
         self.reflist = reflist
         formLayout = QVBoxLayout(self)  # 配置layout
 
-        self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(_TRL(label))
+        self.model = LStandardItemModel()
+        self.model.setHorizontalHeaderLabels(label)
         table = TableViewW(self)
         table.setModel(self.model)
         table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
@@ -256,8 +264,7 @@ class noundictconfigdialog2(QDialog):
         search = QHBoxLayout()
         searchcontent = QLineEdit()
         search.addWidget(searchcontent)
-        button4 = QPushButton()
-        button4.setText(_TR("搜索"))
+        button4 = LPushButton("搜索")
 
         def clicked4():
             text = searchcontent.text()
@@ -330,17 +337,17 @@ class noundictconfigdialog2(QDialog):
 
 
 @Singleton_close
-class regexedit(QDialog):
+class regexedit(LDialog):
     def __init__(self, parent, regexlist) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.regexlist = regexlist
-        self.setWindowTitle(_TR("正则匹配"))
+        self.setWindowTitle("正则匹配")
 
         formLayout = QVBoxLayout(self)  # 配置layout
 
-        self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(_TRL(["正则"]))
-        table = QTableView(self)
+        self.model = LStandardItemModel()
+        self.model.setHorizontalHeaderLabels(["正则"])
+        table = TableViewW(self)
         table.setModel(self.model)
 
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
@@ -412,11 +419,11 @@ def autoinitdialog_items(dic):
 
 
 @Singleton_close
-class autoinitdialog(QDialog):
+class autoinitdialog(LDialog):
     def __init__(self, parent, title, width, lines, _=None) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
-        self.setWindowTitle(_TR(title))
+        self.setWindowTitle(title)
         self.resize(QSize(width, 10))
         formLayout = None
         regist = []
@@ -445,10 +452,10 @@ class autoinitdialog(QDialog):
                     lineW = QLabel(makehtml(dd[key]))
                     lineW.setOpenExternalLinks(True)
                 else:
-                    lineW = QLabel(_TR(dd[key]))
+                    lineW = LLabel(dd[key])
             elif line["type"] == "textlist":
                 __list = dd[key]
-                e = listediterline(_TR(line["name"]), _TR(line["header"]), __list)
+                e = listediterline(line["name"], line["header"], __list)
 
                 regist.append([dd, key, functools.partial(__getv, __list)])
                 lineW = QHBoxLayout()
@@ -464,7 +471,7 @@ class autoinitdialog(QDialog):
                     print_exc()
                 break
             elif line["type"] == "combo":
-                lineW = FocusCombo()
+                lineW = LFocusCombo()
                 if "list_function" in line:
                     try:
                         func = getattr(
@@ -476,7 +483,7 @@ class autoinitdialog(QDialog):
                         items = []
                 else:
                     items = line["list"]
-                lineW.addItems(_TRL(items))
+                lineW.addItems(items)
                 lineW.setCurrentIndex(dd.get(key, 0))
                 lineW.currentIndexChanged.connect(
                     functools.partial(dd.__setitem__, key)
@@ -537,10 +544,10 @@ class autoinitdialog(QDialog):
                 lineW.setValue(dd[key])
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
             if formLayout is None:
-                formLayout = QFormLayout()
+                formLayout = LFormLayout()
                 self.setLayout(formLayout)
             if "name" in line:
-                formLayout.addRow(_TR(line["name"]), lineW)
+                formLayout.addRow(line["name"], lineW)
             else:
                 formLayout.addRow(lineW)
         self.show()
@@ -568,14 +575,14 @@ def getsomepath1(
 
 
 @Singleton_close
-class multicolorset(QDialog):
+class multicolorset(LDialog):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle(_TR("颜色设置"))
+        self.setWindowTitle("颜色设置")
         self.resize(QSize(300, 10))
-        formLayout = QFormLayout(self)  # 配置layout
+        formLayout = LFormLayout(self)  # 配置layout
         _hori = QHBoxLayout()
-        l = QLabel(_TR("不透明度"))
+        l = LLabel("不透明度")
         _hori.addWidget(l)
         _s = FocusSpin()
         _s.setValue(globalconfig["showcixing_touming"])
@@ -587,13 +594,13 @@ class multicolorset(QDialog):
             lambda x: globalconfig.__setitem__("showcixing_touming", x)
         )
         hori = QHBoxLayout()
-        hori.addWidget(QLabel(_TR("词性")))
-        hori.addWidget(QLabel(_TR("是否显示")))
-        hori.addWidget(QLabel(_TR("颜色")))
+        hori.addWidget(LLabel("词性"))
+        hori.addWidget(LLabel("是否显示"))
+        hori.addWidget(LLabel("颜色"))
         for k in globalconfig["cixingcolor"]:
             hori = QHBoxLayout()
 
-            l = QLabel(_TR(k))
+            l = LLabel(k)
 
             hori.addWidget(l)
 
@@ -621,7 +628,7 @@ class multicolorset(QDialog):
 
 
 @Singleton_close
-class postconfigdialog_(QDialog):
+class postconfigdialog_(LDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
         if self.closeevent:
             self.button.setFocus()
@@ -642,12 +649,12 @@ class postconfigdialog_(QDialog):
     def __init__(self, parent, configdict, title, headers, closecallback=None) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.closecallback = closecallback
-        self.setWindowTitle(_TR(title))
+        self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
         self.closeevent = False
         formLayout = QVBoxLayout(self)  # 配置layout
 
-        model = QStandardItemModel(len(configdict), 1, self)
+        model = LStandardItemModel(len(configdict), 1, self)
         row = 0
 
         for key1 in configdict:  # 2
@@ -658,8 +665,8 @@ class postconfigdialog_(QDialog):
             item = QStandardItem(configdict[key1])
             model.setItem(row, 1, item)
             row += 1
-        model.setHorizontalHeaderLabels(_TRL(headers))
-        table = QTableView(self)
+        model.setHorizontalHeaderLabels(headers)
+        table = TableViewW(self)
         table.setModel(model)
         table.setWordWrap(False)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
@@ -692,8 +699,7 @@ class postconfigdialog_(QDialog):
         search = QHBoxLayout()
         searchcontent = QLineEdit()
         search.addWidget(searchcontent)
-        button4 = QPushButton()
-        button4.setText(_TR("搜索"))
+        button4 = LPushButton("搜索")
 
         def clicked4():
             text = searchcontent.text()

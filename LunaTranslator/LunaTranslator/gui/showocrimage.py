@@ -1,7 +1,7 @@
 from qtsymbols import *
 import qtawesome, gobject
 from myutils.ocrutil import imagesolve
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow
 
@@ -48,7 +48,7 @@ class showocrimage(saveposwindow):
         self.originimage = None
         super().__init__(parent, poslist=globalconfig["showocrgeo"])
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
-        self.setWindowTitle(_TR("查看处理效果"))
+        self.setWindowTitle("查看处理效果")
         self.originlabel = pixlabel()
         qw = QWidget()
         self.solvedlabel = pixlabel()

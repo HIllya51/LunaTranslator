@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, json
 import qtawesome, gobject
-from myutils.config import globalconfig, _TR, _TRL
+from myutils.config import globalconfig
 from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -10,16 +10,17 @@ from gui.usefulwidget import (
     makescrollgrid,
     D_getsimpleswitch,
 )
+from gui.dynalang import LDialog
 
 
 @Singleton
-class dialog_selecticon(QDialog):
+class dialog_selecticon(LDialog):
     def __init__(self, parent, dict, key) -> None:
 
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.dict = dict
         self.key = key
-        self.setWindowTitle(_TR("选择图标"))
+        self.setWindowTitle("选择图标")
         with open(
             "./files/fonts/fontawesome4.7-webfont-charmap.json", "r", encoding="utf8"
         ) as ff:
@@ -109,7 +110,7 @@ def createbuttonwidget(self, lay):
             button_up,
             button_down,
             D_getsimplecombobox(
-                _TRL(["居左", "居右", "居中"]),
+                ["居左", "居右", "居中"],
                 globalconfig["toolbutton"]["buttons"][k],
                 "align",
                 callback=doadjust,

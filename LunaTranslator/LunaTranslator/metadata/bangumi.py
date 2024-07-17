@@ -1,16 +1,13 @@
 import requests
-from myutils.config import (
-    _TR,
-    savehook_new_data,
-)
+from myutils.config import savehook_new_data
 from myutils.utils import initanewitem, gamdidchangedtask
 import functools
-import time
 from qtsymbols import *
 from metadata.abstract import common
 from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname
 from myutils.wrapper import Singleton_close
+from gui.dynalang import LPushButton
 
 
 @Singleton_close
@@ -130,17 +127,17 @@ class bgmsettings(QDialog):
         self.setWindowTitle(self._ref.config_all["name"])
         fl = QFormLayout(self)
         fl.addRow("access-token", getlineedit(_ref.config, "access-token"))
-        btn = QPushButton(_TR("上传游戏"))
+        btn = LPushButton("上传游戏")
         btn.clicked.connect(
             functools.partial(self.singleupload_existsoverride, gameuid)
         )
         fl.addRow(btn)
-        btn = QPushButton(_TR("上传游戏列表"))
+        btn = LPushButton("上传游戏列表")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_upload)
         )
         fl.addRow(btn)
-        btn = QPushButton(_TR("获取游戏列表"))
+        btn = LPushButton("获取游戏列表")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_download)
         )

@@ -779,7 +779,6 @@
     "界面设置": "Ustawienia interfejsu",
     "其他界面": "Inne interfejsy",
     "翻译及OCR": "Tłumaczenia i OCR",
-    "这一设置将会在下一次打开软件时生效": "To ustawienie wchodzi w życie przy następnym otwarciu oprogramowania",
     "语言包": "Pakiet językowy",
     "项目仓库": "Magazyn projektu",
     "整合包": "Pakiet integracyjny",
@@ -820,5 +819,9 @@
     "行间距": "Odstępy wierszy",
     "阴影": "cień",
     "火山": "wulkan",
-    "有道词典": "Słownik Youdao"
+    "有道词典": "Słownik Youdao",
+    "无缩放": "Brak skalowania",
+    "总是检测": "Zawsze sprawdzam",
+    "动态检测": "Wykrywanie dynamiczne",
+    "从不检测": "Nigdy nie wykrywaj"
 }

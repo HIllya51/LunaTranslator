@@ -1,6 +1,6 @@
 from qtsymbols import *
-import os, functools, gobject
-from myutils.config import _TR, _TRL, globalconfig
+import os, functools
+from myutils.config import globalconfig
 from myutils.utils import splittranslatortypes
 from gui.usefulwidget import (
     D_getsimpleswitch,
@@ -116,18 +116,16 @@ def makeproxytab(self, basel):
     gridlayoutwidget, do = makegrid(grid1, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        _TRL(
-            [
-                "在线翻译",
-                "注册在线翻译",
-                "OCR",
-                "语音合成",
-                "辞书",
-                "元数据",
-                "分词",
-                "自动更新",
-            ]
-        ),
+        [
+            "在线翻译",
+            "注册在线翻译",
+            "OCR",
+            "语音合成",
+            "辞书",
+            "元数据",
+            "分词",
+            "自动更新",
+        ],
         [
             functools.partial(makescrollgrid, mianfei),
             functools.partial(makescrollgrid, shoufei),
@@ -147,12 +145,10 @@ def makeproxytab(self, basel):
 
 def setTab_proxy_lazy(self, basel):
     tab, dotab = makesubtab_lazy(
-        _TRL(
-            [
-                "代理设置",
-                "网络请求",
-            ]
-        ),
+        [
+            "代理设置",
+            "网络请求",
+        ],
         [
             functools.partial(makeproxytab, self),
             functools.partial(
@@ -162,7 +158,10 @@ def setTab_proxy_lazy(self, basel):
                         "HTTP",
                         (
                             D_getsimplecombobox(
-                                ["winhttp", "libcurl"], globalconfig, "network"
+                                ["winhttp", "libcurl"],
+                                globalconfig,
+                                "network",
+                                static=True,
                             ),
                             5,
                         ),
@@ -174,6 +173,7 @@ def setTab_proxy_lazy(self, basel):
                                 ["winhttp", "libcurl"],
                                 globalconfig,
                                 "network_websocket",
+                                static=True,
                             ),
                             5,
                         ),

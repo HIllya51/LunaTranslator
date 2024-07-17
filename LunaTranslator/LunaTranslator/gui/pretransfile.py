@@ -3,7 +3,8 @@ import sqlite3, os, json, functools
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
 from myutils.utils import autosql
-from gui.usefulwidget import getQMessageBox, FocusCombo
+from gui.usefulwidget import getQMessageBox, LFocusCombo
+from gui.dynalang import LFormLayout, LPushButton, LDialog
 
 
 def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
@@ -40,21 +41,20 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
         if _ in globalconfig["fanyi"]:
             _collect.append(_)
     collect = _collect
-
-    dialog = QDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle(_TR("导出翻译记录为json文件"))
+    dialog = LDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
+    dialog.setWindowTitle("导出翻译记录为json文件")
     dialog.resize(QSize(800, 10))
-    formLayout = QFormLayout(dialog)  # 配置layout
+    formLayout = LFormLayout(dialog)  # 配置layout
     dialog.setLayout(formLayout)
 
-    combo = FocusCombo()
+    combo = LFocusCombo()
     combo.addItems([globalconfig["fanyi"][_]["name"] for _ in collect])
 
-    formLayout.addRow(_TR("首选翻译"), combo)
+    formLayout.addRow("首选翻译", combo)
 
     e = QLineEdit(sqlitefile[: -(len(".sqlite"))])
 
-    bu = QPushButton(_TR("选择路径"))
+    bu = LPushButton("选择路径")
 
     def __selectsavepath():
         ff = QFileDialog.getSaveFileName(
@@ -70,7 +70,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     hori.addWidget(bu)
 
     if targetjson is None:
-        formLayout.addRow(_TR("保存路径"), hori)
+        formLayout.addRow("保存路径", hori)
 
     button = QDialogButtonBox(
         QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel

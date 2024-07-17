@@ -6,7 +6,6 @@ from myutils.wrapper import threader, trypass
 from myutils.config import (
     globalconfig,
     saveallconfig,
-    _TR,
     static_data,
     findgameuidofpath,
     savehook_new_list,
@@ -22,6 +21,7 @@ from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect, getQMessageBox
 from gui.edittext import edittrans
 from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
+from gui.dynalang import LPushButton
 
 
 class QUnFrameWindow(resizableframeless):
@@ -515,9 +515,13 @@ class QUnFrameWindow(resizableframeless):
         if globalconfig["WindowEffect"] == 0:
             winsharedutils.clearEffect(int(self.winId()))
         elif globalconfig["WindowEffect"] == 1:
-            winsharedutils.setAcrylicEffect(int(self.winId()), globalconfig['WindowEffect_shadow'])
+            winsharedutils.setAcrylicEffect(
+                int(self.winId()), globalconfig["WindowEffect_shadow"]
+            )
         elif globalconfig["WindowEffect"] == 2:
-            winsharedutils.setAeroEffect(int(self.winId()), globalconfig['WindowEffect_shadow'])
+            winsharedutils.setAeroEffect(
+                int(self.winId()), globalconfig["WindowEffect_shadow"]
+            )
 
     def initvalues(self):
         self.enter_sig = 0
@@ -1012,11 +1016,11 @@ class QUnFrameWindow(resizableframeless):
 
     def takusanbuttons(self, _type, clickfunc, tips, name, belong=None):
         if clickfunc:
-            button = QPushButton(self._TitleLabel)
+            button = LPushButton(self._TitleLabel)
             button.clicked.connect(functools.partial(self.callwrap, clickfunc))
         else:
 
-            class __(QPushButton):
+            class __(LPushButton):
                 def __init__(self, p):
                     super().__init__(p)
                     self._lb = QLabel(p)
@@ -1038,7 +1042,7 @@ class QUnFrameWindow(resizableframeless):
             button = __(self._TitleLabel)
 
         if tips:
-            button.setToolTip(_TR(tips))
+            button.setToolTip(tips)
         if _type not in self.stylebuttons:
             self.stylebuttons[_type] = []
         self.stylebuttons[_type].append(button)

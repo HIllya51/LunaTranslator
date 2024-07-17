@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools
-from myutils.config import globalconfig, magpie_config, static_data, _TRL
+from myutils.config import globalconfig, magpie_config, static_data
 from gui.inputdialog import getsomepath1
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -24,6 +24,7 @@ def makescalew(self, lay):
                     static_data["scalemethods_vis"],
                     globalconfig,
                     "fullscreenmethod_4",
+                    static=True,
                 ),
                 6,
             ),
@@ -35,7 +36,7 @@ def makescalew(self, lay):
             ("Magpie_路径", 4),
             (
                 D_getIconButton(
-                    callback=lambda : getsomepath1(
+                    callback=lambda: getsomepath1(
                         self,
                         "Magpie_路径",
                         globalconfig,
@@ -66,6 +67,7 @@ def makescalew(self, lay):
                                         globalconfig["profiles_index"]
                                     ],
                                     "scalingMode",
+                                    static=True,
                                 ),
                             ],
                             [
@@ -81,6 +83,7 @@ def makescalew(self, lay):
                                         globalconfig["profiles_index"]
                                     ],
                                     "captureMethod",
+                                    static=True,
                                 ),
                             ],
                             [
@@ -353,7 +356,7 @@ def makescalew(self, lay):
     gw, gd = makegrid(commonfsgrid, delay=True)
     vl.addWidget(gw)
     tw, td = makesubtab_lazy(
-        _TRL(["Magpie", "外部缩放软件"]),
+        ["Magpie", "外部缩放软件"],
         [
             functools.partial(makescrollgrid, innermagpie),
             functools.partial(makescrollgrid, losslessgrid),

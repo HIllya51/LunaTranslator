@@ -1,9 +1,10 @@
 from qtsymbols import *
 import functools
 import qtawesome, winsharedutils
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig
 from myutils.utils import get_time_stamp
 from gui.usefulwidget import closeashidewindow
+from gui.dynalang import LAction
 
 
 class transhist(closeashidewindow):
@@ -21,7 +22,7 @@ class transhist(closeashidewindow):
         self.hideapiflag = False
         self.hidetime = True
 
-        self.setWindowTitle(_TR("历史翻译"))
+        self.setWindowTitle("历史翻译")
 
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"))
@@ -41,13 +42,13 @@ class transhist(closeashidewindow):
 
     def showmenu(self, tb, p):
         menu = QMenu(self)
-        qingkong = QAction(_TR("清空"))
-        baocun = QAction(_TR("保存"))
-        copy = QAction(_TR("复制到剪贴板"))
-        hideshowraw = QAction(_TR("显示原文" if self.hiderawflag else "不显示原文"))
-        hideshowapi = QAction(_TR("显示api" if self.hideapiflag else "不显示api"))
-        hidetime = QAction(_TR("显示时间" if self.hidetime else "不显示时间"))
-        scrolltoend = QAction(_TR("滚动到最后"))
+        qingkong = LAction("清空")
+        baocun = LAction("保存")
+        copy = LAction("复制到剪贴板")
+        hideshowraw = LAction("显示原文" if self.hiderawflag else "不显示原文")
+        hideshowapi = LAction("显示api" if self.hideapiflag else "不显示api")
+        hidetime = LAction("显示时间" if self.hidetime else "不显示时间")
+        scrolltoend = LAction("滚动到最后")
         menu.addAction(qingkong)
         menu.addAction(baocun)
         if len(self.textOutput.textCursor().selectedText()):

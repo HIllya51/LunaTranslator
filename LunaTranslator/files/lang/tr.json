@@ -779,7 +779,6 @@
     "界面设置": "Arayüz ayarları",
     "其他界面": "Diğer arayüzler",
     "翻译及OCR": "Çeviri ve OCR",
-    "这一设置将会在下一次打开软件时生效": "Bu ayarlar bir sonraki yazılım açıldığında etkisi alacak.",
     "语言包": "Dil Paketi",
     "项目仓库": "Proje deposu",
     "整合包": "Integrasyon paketi",
@@ -820,5 +819,9 @@
     "行间距": "Satır boşluğu",
     "阴影": "gölge",
     "火山": "vulkan",
-    "有道词典": "Youdao Sözlük"
+    "有道词典": "Youdao Sözlük",
+    "无缩放": "Yerleştirme yok",
+    "总是检测": "Her zaman kontrol ediyor",
+    "动态检测": "Dinamik tanıma",
+    "从不检测": "Asla tanıma"
 }

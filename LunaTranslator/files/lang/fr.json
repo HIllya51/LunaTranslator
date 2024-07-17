@@ -779,7 +779,6 @@
     "界面设置": "Paramètres de l'interface",
     "其他界面": "Autres interfaces",
     "翻译及OCR": "Traduction et ocr",
-    "这一设置将会在下一次打开软件时生效": "Ce paramètre prendra effet lors de la prochaine ouverture du logiciel.",
     "语言包": "Pack de langues",
     "项目仓库": "Entrepôt du projet",
     "整合包": "Paquet de consolidation",
@@ -820,5 +819,9 @@
     "行间距": "Espacement des lignes",
     "阴影": "Ombre",
     "火山": "Le volcan",
-    "有道词典": "Dictionnaire Tao"
+    "有道词典": "Dictionnaire Tao",
+    "无缩放": "Pas de zoom",
+    "总是检测": "Toujours détecter",
+    "动态检测": "Détection dynamique",
+    "从不检测": "Jamais détecté"
 }

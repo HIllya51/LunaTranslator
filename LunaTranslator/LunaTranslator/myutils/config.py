@@ -328,15 +328,21 @@ for group in ["webview", "textbrowser"]:
             group
         ][0]
 
+language_last = None
+
+languageshow = {}
+
 
 def getlanguse():
-    global language, languageshow
-    return static_data["language_list_translator_inner"][language]
+    return static_data["language_list_translator_inner"][globalconfig["languageuse"]]
 
 
-def setlanguage():
-    global language, languageshow
-    language = globalconfig["languageuse"]
+def loadlanguage():
+    global language_last, languageshow
+    _language = globalconfig["languageuse"]
+    if _language == language_last:
+        return
+    language_last = _language
     try:
         with open(
             "./files/lang/{}.json".format(getlanguse()),
@@ -348,17 +354,14 @@ def setlanguage():
         languageshow = {}
 
 
-setlanguage()
-
-
 def _TR(k):
-    global language, languageshow
     if k == "":
         return ""
     try:
         k.encode("ascii")
         return k
     except:
+        loadlanguage()
         if "_" in k:
             splits = k.split("_")
             return " ".join([_TR(_) for _ in splits])
@@ -446,14 +449,12 @@ def _TRL(kk):
 
 
 def getlang_inner2show(langcode):
-    return _TR(
-        dict(
-            zip(
-                static_data["language_list_translator_inner"],
-                static_data["language_list_translator"],
-            )
-        ).get(langcode, "??")
-    )
+    return dict(
+        zip(
+            static_data["language_list_translator_inner"],
+            static_data["language_list_translator"],
+        )
+    ).get(langcode, "??")
 
 
 def safesave(fname, js, beatiful=True):
@@ -502,10 +503,10 @@ def get_font_default(lang: str, issetting: bool) -> str:
     # global font_default_used
     # if lang in font_default_used.keys():
     #     return font_default_used[lang]
-    
+
     t = "setting_font_type_default" if issetting else "font_type_default"
     l = lang if lang in static_data[t].keys() else "default"
-    
+
     font_default = ""
     for font in static_data[t][l]:
         if is_font_installed(font):
@@ -513,13 +514,14 @@ def get_font_default(lang: str, issetting: bool) -> str:
             break
     if font_default == "":
         font_default = QFontDatabase.systemFont(
-                       QFontDatabase.SystemFont.GeneralFont
-                       ).family()
-    
+            QFontDatabase.SystemFont.GeneralFont
+        ).family()
+
     # font_default_used["lang"] = font_default
     return font_default
 
 
 def set_font_default(lang: str, fonttype: str) -> None:
-    globalconfig[fonttype] = get_font_default(lang, True if fonttype=="settingfonttype" else False)
-
+    globalconfig[fonttype] = get_font_default(
+        lang, True if fonttype == "settingfonttype" else False
+    )

@@ -26,6 +26,7 @@ from gui.usefulwidget import (
     getIconButton,
     tabadd_lazy,
 )
+from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LFormLayout, LLabel
 
 
 def getimageformatlist():
@@ -151,9 +152,9 @@ class AnkiWindow(QWidget):
         self.setWindowTitle("Anki Connect")
         self.currentword = ""
         self.tabs = makesubtab_lazy(callback=self.ifshowrefresh)
-        self.tabs.addTab(self.createaddtab(), _TR("添加"))
-        tabadd_lazy(self.tabs, _TR("设置"), self.creatsetdtab)
-        tabadd_lazy(self.tabs, _TR("模板"), self.creattemplatetab)
+        self.tabs.addTab(self.createaddtab(), "添加")
+        tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
+        tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
 
         l = QHBoxLayout()
         l.setContentsMargins(0, 0, 0, 0)
@@ -207,11 +208,11 @@ class AnkiWindow(QWidget):
         wid = QWidget()
         wid.setLayout(layout)
         baselay.addWidget(wid)
-        edittemptab = QTabWidget()
-        self.previewtab = QTabBar()
-        revertbtn = QPushButton(_TR("恢复"))
+        edittemptab = LTabWidget()
+        self.previewtab = LTabBar()
+        revertbtn = LPushButton("恢复")
         revertbtn.clicked.connect(self.loadedits)
-        savebtn = QPushButton(_TR("保存"))
+        savebtn = LPushButton("保存")
         savebtn.clicked.connect(self.saveedits)
         layout.addLayout(
             getboxlayout(
@@ -238,11 +239,11 @@ class AnkiWindow(QWidget):
         self.fronttext = QPlainTextEdit()
         self.backtext = QPlainTextEdit()
         self.csstext = QPlainTextEdit()
-        edittemptab.addTab(self.fronttext, _TR("正面"))
-        edittemptab.addTab(self.backtext, _TR("背面"))
-        edittemptab.addTab(self.csstext, _TR("样式"))
-        self.previewtab.addTab(_TR("正面"))
-        self.previewtab.addTab(_TR("背面"))
+        edittemptab.addTab(self.fronttext, "正面")
+        edittemptab.addTab(self.backtext, "背面")
+        edittemptab.addTab(self.csstext, "样式")
+        self.previewtab.addTab("正面")
+        self.previewtab.addTab("背面")
         self.loadedits()
         self.fronttext.textChanged.connect(lambda: self.refreshhtml.emit())
         self.backtext.textChanged.connect(lambda: self.refreshhtml.emit())
@@ -347,60 +348,60 @@ class AnkiWindow(QWidget):
             ff.write(model_css)
 
     def creatsetdtab(self, baselay):
-        layout = QFormLayout()
+        layout = LFormLayout()
         wid = QWidget()
         wid.setLayout(layout)
         baselay.addWidget(wid)
         layout.addRow(
-            _TR("端口号"), getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
+            "端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
         )
+        layout.addRow("DeckName", getlineedit(globalconfig["ankiconnect"], "DeckName"))
         layout.addRow(
-            _TR("DeckName"), getlineedit(globalconfig["ankiconnect"], "DeckName")
-        )
-        layout.addRow(
-            _TR("ModelName"), getlineedit(globalconfig["ankiconnect"], "ModelName5")
+            "ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName5")
         )
 
         layout.addRow(
-            _TR("允许重复"),
+            "允许重复",
             getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
         )
         layout.addRow(
-            _TR("添加时更新模板"),
+            "添加时更新模板",
             getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
         )
         layout.addRow(
-            _TR("截图后进行OCR"),
+            "截图后进行OCR",
             getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
         )
 
         layout.addRow(
-            _TR("自动TTS"),
+            "自动TTS",
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
         )
         layout.addRow(
-            _TR("自动TTS_例句"),
+            "自动TTS_例句",
             getsimpleswitch(globalconfig["ankiconnect"], "autoruntts2"),
         )
         layout.addRow(
-            _TR("自动截图"),
+            "自动截图",
             getsimpleswitch(globalconfig["ankiconnect"], "autocrop"),
         )
         layout.addRow(
-            _TR("截图保存格式"),
-            getsimplecombobox(getimageformatlist(), globalconfig, "imageformat"),
+            "截图保存格式",
+            getsimplecombobox(
+                getimageformatlist(), globalconfig, "imageformat", static=True
+            ),
         )
         layout.addRow(
-            _TR("例句中加粗单词"),
+            "例句中加粗单词",
             getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
         )
         layout.addRow(
-            _TR("备注中自动填入翻译"),
+            "备注中自动填入翻译",
             getsimpleswitch(globalconfig["ankiconnect"], "fillmaksastrans"),
         )
 
         layout.addRow(
-            _TR("录音时模拟按键"),
+            "录音时模拟按键",
             getboxlayout(
                 [
                     getsimpleswitch(
@@ -415,7 +416,7 @@ class AnkiWindow(QWidget):
             ),
         )
         layout.addRow(
-            _TR("录音时模拟按键_例句"),
+            "录音时模拟按键_例句",
             getboxlayout(
                 [
                     getsimpleswitch(
@@ -524,12 +525,12 @@ class AnkiWindow(QWidget):
                     getboxlayout(
                         [
                             getboxlayout(
-                                [QLabel(_TR("例句")), self.example],
+                                [LLabel("例句"), self.example],
                                 QVBoxLayout,
                                 margin0=True,
                             ),
                             getboxlayout(
-                                [QLabel(_TR("备注")), self.remarks],
+                                [LLabel("备注"), self.remarks],
                                 QVBoxLayout,
                                 margin0=True,
                             ),
@@ -540,7 +541,7 @@ class AnkiWindow(QWidget):
                         [
                             getboxlayout(
                                 [
-                                    QLabel(_TR("语音")),
+                                    LLabel("语音"),
                                     self.audiopath,
                                     recordbtn1,
                                     soundbutton,
@@ -554,7 +555,7 @@ class AnkiWindow(QWidget):
                             ),
                             getboxlayout(
                                 [
-                                    QLabel(_TR("语音_例句")),
+                                    LLabel("语音_例句"),
                                     self.audiopath_sentence,
                                     recordbtn2,
                                     soundbutton2,
@@ -568,7 +569,7 @@ class AnkiWindow(QWidget):
                             ),
                             getboxlayout(
                                 [
-                                    QLabel(_TR("截图")),
+                                    LLabel("截图"),
                                     self.editpath,
                                     cropbutton,
                                     grabwindowbtn,
@@ -591,15 +592,13 @@ class AnkiWindow(QWidget):
         layout.addLayout(
             getboxlayout(
                 [
-                    QLabel(_TR("标签")),
-                    listediterline(
-                        _TR("标签"), _TR("标签"), globalconfig["ankiconnect"]["tags"]
-                    ),
+                    LLabel("标签"),
+                    listediterline("标签", "标签", globalconfig["ankiconnect"]["tags"]),
                 ]
             )
         )
 
-        btn = QPushButton(_TR("添加"))
+        btn = LPushButton("添加")
         btn.clicked.connect(self.errorwrap)
         layout.addWidget(btn)
 
@@ -653,11 +652,11 @@ class AnkiWindow(QWidget):
             if globalconfig["ankiconnect"]["addsuccautoclose"]:
                 self.parent().parent().parent().close()
             else:
-                QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
+                QToolTip.showText(QCursor.pos(), "添加成功", self)
         except requests.RequestException:
-            getQMessageBox(self, _TR("错误"), _TR("无法连接到anki"))
+            getQMessageBox(self, "错误", "无法连接到anki")
         except anki.AnkiException as e:
-            getQMessageBox(self, _TR("错误"), str(e))
+            getQMessageBox(self, "错误", str(e))
         except:
             print_exc()
 
@@ -764,7 +763,7 @@ class AnkiWindow(QWidget):
         )
 
 
-class CustomTabBar(QTabBar):
+class CustomTabBar(LTabBar):
     def __init__(self) -> None:
         super().__init__()
         self.savesizehint = QSize()
@@ -793,7 +792,7 @@ class searchwordW(closeashidewindow):
         self.search_word.connect(self.__click_word_search_function)
         self.show_dict_result.connect(self.__show_dict_result_function)
 
-        self.setWindowTitle(_TR("查词"))
+        self.setWindowTitle("查词")
         self.ankiwindow = AnkiWindow()
         self.setupUi()
 
@@ -820,7 +819,7 @@ class searchwordW(closeashidewindow):
             if self.thisps.get(kk, 0) >= thisp:
                 idx += 1
         self.tabks.insert(idx, k)
-        self.tab.insertTab(idx, _TR(globalconfig["cishu"][k]["name"]))
+        self.tab.insertTab(idx, (globalconfig["cishu"][k]["name"]))
         if not self.hasclicked:
             if thisp == max(self.thisps.values()):
                 self.tab.setCurrentIndex(0)
@@ -864,7 +863,7 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(self.history_last_btn)
         self.searchlayout.addWidget(self.history_next_btn)
         self.searchlayout.addWidget(self.searchtext)
-        searchbutton = QPushButton(qtawesome.icon("fa.search"), "")  # _TR("搜索"))
+        searchbutton = QPushButton(qtawesome.icon("fa.search"), "")
 
         searchbutton.clicked.connect(self.__search_by_click_search_btn)
         self.searchlayout.addWidget(searchbutton)

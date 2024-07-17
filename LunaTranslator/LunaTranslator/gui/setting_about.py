@@ -1,20 +1,17 @@
 from qtsymbols import *
 import platform, functools, sys
 import winsharedutils, queue
-from myutils.config import globalconfig, _TR, static_data, _TRL
+from myutils.config import globalconfig, static_data
 from myutils.wrapper import threader, tryprint
 from myutils.utils import makehtml, dynamiclink
-import requests, time
+import requests
 import shutil, gobject
 from myutils.proxy import getproxy
 from traceback import print_exc
 import zipfile, os
 import subprocess
-from gui.usefulwidget import (
-    D_getsimpleswitch,
-    makescrollgrid,
-    makesubtab_lazy,
-)
+from gui.usefulwidget import D_getsimpleswitch, makescrollgrid, makesubtab_lazy
+from gui.dynalang import LLabel
 
 versionchecktask = queue.Queue()
 
@@ -127,11 +124,11 @@ def versioncheckthread(self):
         self.progresssignal.emit("……", 0)
         if not x:
             continue
-        self.versiontextsignal.emit(_TR("获取中"))  # ,'',url,url))
+        self.versiontextsignal.emit(("获取中"))  # ,'',url,url))
         _version = getvesionmethod()
 
         if _version is None:
-            sversion = _TR("获取失败")
+            sversion = "获取失败"
         else:
             sversion = _version[0]
         self.versiontextsignal.emit(sversion)
@@ -193,7 +190,7 @@ def wraplink(text: str):
 
 def createversionlabel(self):
 
-    self.versionlabel = QLabel()
+    self.versionlabel = LLabel()
     self.versionlabel.setOpenExternalLinks(True)
     self.versionlabel.setTextInteractionFlags(
         Qt.TextInteractionFlag.LinksAccessibleByMouse
@@ -225,7 +222,7 @@ def solvelinkitems(grid, source):
         __ = False
     else:
         __ = True
-    grid.append([(_TR(name), 1, ""), (makehtml(link, __), 2, "link")])
+    grid.append([((name), 1, ""), (makehtml(link, __), 2, "link")])
 
 
 def resourcegrid(self, l):
@@ -255,7 +252,7 @@ def resourcegrid(self, l):
                     ]
                 )
         makewidgetsfunctions.append(functools.partial(makescrollgrid, grid))
-    tab, dotab = makesubtab_lazy(_TRL(titles), makewidgetsfunctions, delay=True)
+    tab, dotab = makesubtab_lazy(titles, makewidgetsfunctions, delay=True)
     l.addWidget(tab)
     dotab()
 

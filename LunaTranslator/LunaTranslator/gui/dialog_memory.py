@@ -1,8 +1,9 @@
 from qtsymbols import *
-import os, gobject
-from myutils.config import _TR, globalconfig
+import gobject
+from myutils.config import globalconfig
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow
+from gui.dynalang import LPushButton
 
 
 @Singleton_close
@@ -26,7 +27,7 @@ class dialog_memory(saveposwindow):
             | Qt.WindowType.WindowMinMaxButtonsHint,
             poslist=globalconfig["memorydialoggeo"],
         )
-        self.setWindowTitle(_TR("备忘录"))
+        self.setWindowTitle("备忘录")
         self.gamemd5 = gamemd5
         formLayout = QVBoxLayout()  #
         self.showtext = QTextEdit()
@@ -41,9 +42,9 @@ class dialog_memory(saveposwindow):
         formLayout.addWidget(self.showtext)
 
         x = QHBoxLayout()
-        insertpicbtn = QPushButton(_TR("插入图片"))
+        insertpicbtn = LPushButton("插入图片")
         insertpicbtn.clicked.connect(self.insertpic)
-        savebtn = QPushButton(_TR("保存"))
+        savebtn = LPushButton("保存")
         savebtn.clicked.connect(self.save)
         x.addWidget(insertpicbtn)
         x.addWidget(savebtn)

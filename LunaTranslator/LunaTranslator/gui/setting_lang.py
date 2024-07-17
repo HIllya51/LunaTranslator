@@ -1,18 +1,24 @@
-import os, functools, gobject
-from myutils.config import globalconfig, _TRL, static_data, getlanguse
+import os, functools
+from myutils.config import globalconfig, static_data, getlanguse
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
     D_getIconButton,
     makescrollgrid,
 )
+from qtsymbols import *
 
 
 def createlangs(self):
     self.srclangswitcher = getsimplecombobox(
-        _TRL(static_data["language_list_translator"]), globalconfig, "srclang3"
+        static_data["language_list_translator"], globalconfig, "srclang3"
     )
     return self.srclangswitcher
+
+
+def changelang(_):
+    languageChangeEvent = QEvent(QEvent.Type.LanguageChange)
+    QApplication.sendEvent(QApplication.instance(), languageChangeEvent)
 
 
 def setTablanglz(self):
@@ -30,7 +36,7 @@ def setTablanglz(self):
                         [
                             "目标语言",
                             D_getsimplecombobox(
-                                _TRL(static_data["language_list_translator"]),
+                                static_data["language_list_translator"],
                                 globalconfig,
                                 "tgtlang3",
                             ),
@@ -53,9 +59,8 @@ def setTablanglz(self):
                                 (static_data["language_list_show"]),
                                 globalconfig,
                                 "languageuse",
-                                callback=functools.partial(
-                                    gobject.baseobject.showneedrestart, "软件显示语言"
-                                ),
+                                callback=changelang,
+                                static=True,
                             ),
                             D_getIconButton(
                                 callback=lambda: os.startfile(

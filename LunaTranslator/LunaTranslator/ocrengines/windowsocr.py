@@ -5,6 +5,7 @@ from myutils.utils import dynamiclink
 from ocrengines.baseocrclass import baseocr
 from qtsymbols import *
 from gui.usefulwidget import getboxlayout
+from gui.dynalang import LPushButton, LFormLayout, LLabel
 
 
 def initsupports():
@@ -30,17 +31,17 @@ def initsupports():
 
 
 def question(dialog: QDialog):
-    formLayout = QFormLayout()
+    formLayout = LFormLayout()
     dialog.setLayout(formLayout)
     _allsupport = initsupports()
-    supportlang = QLabel()
-    supportlang.setText(", ".join([getlang_inner2show(f) for f in _allsupport]))
-    btndownload = QPushButton(_TR("添加语言包"))
+    supportlang = LLabel()
+    supportlang.setText("_,_".join([getlang_inner2show(f) for f in _allsupport]))
+    btndownload = LPushButton("添加语言包")
     btndownload.clicked.connect(
         lambda: os.startfile(dynamiclink("{docs_server}/#/zh/windowsocr"))
     )
     formLayout.addRow(
-        _TR("当前支持的语言"), getboxlayout([supportlang, btndownload], makewidget=True)
+        "当前支持的语言", getboxlayout([supportlang, btndownload], makewidget=True)
     )
 
 
@@ -62,7 +63,7 @@ class OCR(baseocr):
                 + "\n"
                 + _TR("当前支持的语言")
                 + ": "
-                + ", ".join([getlang_inner2show(f) for f in _allsupport])
+                + ", ".join([_TR(getlang_inner2show(f)) for f in _allsupport])
             )
 
         if self.srclang in ["zh", "ja", "cht"]:

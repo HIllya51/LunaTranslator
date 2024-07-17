@@ -9,7 +9,6 @@ from myutils.config import (
     savegametaged,
     uid2gamepath,
     _TR,
-    _TRL,
     postprocessconfig,
     globalconfig,
     static_data,
@@ -75,6 +74,14 @@ from gui.usefulwidget import (
     selectcolor,
     listediter,
     listediterline,
+)
+from gui.dynalang import (
+    LFormLayout,
+    LPushButton,
+    LStandardItemModel,
+    LDialog,
+    LAction,
+    LLabel,
 )
 
 
@@ -240,20 +247,6 @@ class IMGWidget(QLabel):
         self.setimg(pixmap)
 
 
-class CustomTabBar(QTabBar):
-    lastclick = pyqtSignal()
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    def mousePressEvent(self, event):
-        index = self.tabAt(event.pos())
-        if index == self.count() - 1 and event.button() == Qt.MouseButton.LeftButton:
-            self.lastclick.emit()
-        else:
-            super().mousePressEvent(event)
-
-
 class ClickableLabel(QLabel):
     def __init__(self):
         super().__init__()
@@ -416,12 +409,12 @@ class browserdialog(saveposwindow):
             title = savehook_new_data[gameuid]["title"]
         else:
             title = "LunaTranslator"
-        self.setWindowTitle(title)
+        super(QMainWindow).setWindowTitle(title)
 
     def loadalllinks(self, gameuid):
         items = []
         if gameuid:
-            self.setWindowTitle(savehook_new_data[gameuid]["title"])
+            super(QMainWindow).setWindowTitle(savehook_new_data[gameuid]["title"])
 
         for link in globalconfig["relationlinks"]:
             items.append((link[0], tagitem.TYPE_GLOABL_LIKE, link[1]))
@@ -458,11 +451,11 @@ class browserdialog(saveposwindow):
     def likelink(self):
         _dia = Prompt_dialog(
             self,
-            _TR("收藏"),
+            "收藏",
             "",
             [
-                [_TR("名称"), ""],
-                [_TR("网址"), self.current],
+                ["名称", ""],
+                ["网址", self.current],
             ],
         )
 
@@ -546,7 +539,7 @@ class browserdialog(saveposwindow):
         if (self.hasvndb and tab_index == 0) or tab_index == self.nettab.count() - 1:
             return
         menu = QMenu(self)
-        shanchu = QAction(_TR("删除"))
+        shanchu = LAction(("删除"))
         menu.addAction(shanchu)
         action = menu.exec(self.mapToGlobal(p))
         if action == shanchu:
@@ -638,13 +631,13 @@ class dialog_setting_game_internal(QWidget):
     def __init__(self, parent, gameuid) -> None:
         super().__init__(parent)
         vbox = QVBoxLayout(self)
-        formLayout = QFormLayout()
+        formLayout = LFormLayout()
         self.setLayout(vbox)
         self.gameuid = gameuid
         self.editpath = QLineEdit(uid2gamepath[gameuid])
         self.editpath.setReadOnly(True)
         formLayout.addRow(
-            _TR("路径"),
+            "路径",
             getboxlayout(
                 [
                     self.editpath,
@@ -671,7 +664,7 @@ class dialog_setting_game_internal(QWidget):
         titleedit.returnPressed.connect(_titlechange)
 
         formLayout.addRow(
-            _TR("标题"),
+            "标题",
             getboxlayout(
                 [
                     titleedit,
@@ -685,7 +678,7 @@ class dialog_setting_game_internal(QWidget):
             ("游戏数据", functools.partial(self.___tabf3, self.makegamedata)),
         ]
         methodtab, do = makesubtab_lazy(
-            _TRL([_[0] for _ in functs]),
+            [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
         )
@@ -695,7 +688,7 @@ class dialog_setting_game_internal(QWidget):
 
     def ___tabf(self, function, gameuid):
         _w = QWidget()
-        formLayout = QFormLayout()
+        formLayout = LFormLayout()
         _w.setLayout(formLayout)
         function(formLayout, gameuid)
         return _w
@@ -723,7 +716,7 @@ class dialog_setting_game_internal(QWidget):
             ("标签", functools.partial(self.___tabf2, self.getlabelsetting)),
         ]
         methodtab, do = makesubtab_lazy(
-            _TRL([_[0] for _ in functs]),
+            [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
         )
@@ -743,7 +736,7 @@ class dialog_setting_game_internal(QWidget):
             ("Anki", functools.partial(self.___tabf, self.maketabforanki)),
         ]
         methodtab, do = makesubtab_lazy(
-            _TRL([_[0] for _ in functs]),
+            [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
         )
@@ -758,14 +751,15 @@ class dialog_setting_game_internal(QWidget):
         except:
             print_exc()
 
-    def metadataorigin(self, formLayout: QFormLayout, gameuid):
+    def metadataorigin(self, formLayout: LFormLayout, gameuid):
         formLayout.addRow(
-            _TR("首选的"),
+            "首选的",
             getsimplecombobox(
                 list(globalconfig["metadata"].keys()),
                 globalconfig,
                 "primitivtemetaorigin",
                 internallist=list(globalconfig["metadata"].keys()),
+                static=True,
             ),
         )
         formLayout.addRow(None, QLabel())
@@ -819,10 +813,10 @@ class dialog_setting_game_internal(QWidget):
         w = wfunct(exe)
         layout.addWidget(w)
 
-    def starttab(self, formLayout: QFormLayout, gameuid):
+    def starttab(self, formLayout: LFormLayout, gameuid):
 
         formLayout.addRow(
-            _TR("转区启动"),
+            "转区启动",
             getboxlayout(
                 [
                     getsimpleswitch(savehook_new_data[gameuid], "leuse"),
@@ -830,13 +824,14 @@ class dialog_setting_game_internal(QWidget):
                         getgamecamptoolsname(uid2gamepath[gameuid]),
                         savehook_new_data[gameuid],
                         "localeswitcher",
+                        static=True,
                     ),
                 ]
             ),
         )
 
         formLayout.addRow(
-            _TR("命令行启动"),
+            "命令行启动",
             getboxlayout(
                 [
                     getsimpleswitch(savehook_new_data[gameuid], "startcmduse"),
@@ -846,9 +841,9 @@ class dialog_setting_game_internal(QWidget):
         )
 
         formLayout.addRow(
-            _TR("自动切换到模式"),
+            "自动切换到模式",
             getsimplecombobox(
-                _TRL(["不切换", "HOOK", "剪贴板", "OCR"]),
+                ["不切换", "HOOK", "剪贴板", "OCR"],
                 savehook_new_data[gameuid],
                 "onloadautochangemode2",
             ),
@@ -870,8 +865,8 @@ class dialog_setting_game_internal(QWidget):
         self._timelabel.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
         )
-        formLayout.addLayout(getboxlayout([QLabel(_TR("文字计数")), self._wordlabel]))
-        formLayout.addLayout(getboxlayout([QLabel(_TR("游戏时间")), self._timelabel]))
+        formLayout.addLayout(getboxlayout([LLabel(("文字计数")), self._wordlabel]))
+        formLayout.addLayout(getboxlayout([LLabel(("游戏时间")), self._timelabel]))
 
         formLayout.addWidget(chart)
         t = QTimer(self)
@@ -984,9 +979,9 @@ class dialog_setting_game_internal(QWidget):
         _dict = {"new": 0}
 
         formLayout.addWidget(self.labelflow)
-        button = QPushButton(_TR("添加"))
+        button = LPushButton("添加")
 
-        combo = getsimplecombobox(globalconfig["labelset"], _dict, "new")
+        combo = getsimplecombobox(globalconfig["labelset"], _dict, "new", static=True)
         combo.setEditable(True)
         combo.clearEditText()
 
@@ -1011,8 +1006,8 @@ class dialog_setting_game_internal(QWidget):
         )
 
     def createfollowdefault(
-        self, dic: dict, key: str, formLayout: QFormLayout, callback=None
-    ) -> QFormLayout:
+        self, dic: dict, key: str, formLayout: LFormLayout, callback=None
+    ) -> LFormLayout:
 
         __extraw = QWidget()
 
@@ -1025,7 +1020,7 @@ class dialog_setting_game_internal(QWidget):
                     print_exc()
 
         formLayout.addRow(
-            _TR("跟随默认"),
+            "跟随默认",
             getsimpleswitch(
                 dic,
                 key,
@@ -1034,18 +1029,18 @@ class dialog_setting_game_internal(QWidget):
         )
         __extraw.setEnabled(not dic[key])
         formLayout.addRow(__extraw)
-        formLayout2 = QFormLayout()
+        formLayout2 = LFormLayout()
         formLayout2.setContentsMargins(0, 0, 0, 0)
         __extraw.setLayout(formLayout2)
         return formLayout2
 
-    def getttssetting(self, formLayout: QFormLayout, gameuid):
+    def getttssetting(self, formLayout: LFormLayout, gameuid):
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid], "tts_follow_default", formLayout
         )
 
         formLayout2.addRow(
-            _TR("语音跳过"),
+            "语音跳过",
             getboxlayout(
                 [
                     getsimpleswitch(savehook_new_data[gameuid], "tts_skip"),
@@ -1065,7 +1060,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         formLayout2.addRow(
-            _TR("语音修正"),
+            "语音修正",
             getboxlayout(
                 [
                     getsimpleswitch(savehook_new_data[gameuid], "tts_repair"),
@@ -1085,7 +1080,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
 
-    def maketabforanki(self, formLayout: QFormLayout, gameuid):
+    def maketabforanki(self, formLayout: LFormLayout, gameuid):
 
         savehook_new_data[gameuid]["anki_DeckName"] = savehook_new_data[gameuid].get(
             "anki_DeckName", globalconfig["ankiconnect"]["DeckName"]
@@ -1119,14 +1114,14 @@ class dialog_setting_game_internal(QWidget):
             savehook_new_data[gameuid], "follow_default_ankisettings", formLayout
         )
         formLayout2.addRow(
-            _TR("DeckName"),
+            "DeckName",
             getlineedit(
                 savehook_new_data[gameuid],
                 "anki_DeckName",
             ),
         )
         formLayout2.addRow(
-            _TR("录音时模拟按键"),
+            "录音时模拟按键",
             getboxlayout(
                 [
                     getsimpleswitch(
@@ -1141,7 +1136,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         formLayout2.addRow(
-            _TR("录音时模拟按键_例句"),
+            "录音时模拟按键_例句",
             getboxlayout(
                 [
                     getsimpleswitch(
@@ -1156,7 +1151,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
 
-    def getpretranstab(self, formLayout: QFormLayout, gameuid):
+    def getpretranstab(self, formLayout: LFormLayout, gameuid):
 
         def selectimg(gameuid, key, res):
             savehook_new_data[gameuid][key] = res
@@ -1167,7 +1162,7 @@ class dialog_setting_game_internal(QWidget):
             if isinstance(savehook_new_data[gameuid][key], str):
                 savehook_new_data[gameuid][key] = [savehook_new_data[gameuid][key]]
             formLayout.addRow(
-                _TR(showname),
+                (showname),
                 listediterline(
                     showname,
                     showname,
@@ -1180,7 +1175,7 @@ class dialog_setting_game_internal(QWidget):
             ("sqlite翻译记录", "gamesqlitefile", "*.sqlite"),
         ]:
             formLayout.addRow(
-                _TR(showname),
+                showname,
                 getsimplepatheditor(
                     savehook_new_data[gameuid][key],
                     False,
@@ -1191,7 +1186,7 @@ class dialog_setting_game_internal(QWidget):
                 ),
             )
 
-    def gettransoptimi(self, formLayout: QFormLayout, gameuid):
+    def gettransoptimi(self, formLayout: LFormLayout, gameuid):
 
         vbox = self.createfollowdefault(
             savehook_new_data[gameuid], "transoptimi_followdefault", formLayout
@@ -1224,14 +1219,14 @@ class dialog_setting_game_internal(QWidget):
                     ),
                 )
 
-    def gettextproc(self, formLayout: QFormLayout, gameuid):
+    def gettextproc(self, formLayout: LFormLayout, gameuid):
 
         vbox = self.createfollowdefault(
             savehook_new_data[gameuid], "textproc_follow_default", formLayout
         )
 
-        model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(_TRL(["预处理方法", "使用", "设置"]))
+        model = LStandardItemModel()
+        model.setHorizontalHeaderLabels(["预处理方法", "使用", "设置"])
 
         table = TableViewW()
 
@@ -1269,9 +1264,9 @@ class dialog_setting_game_internal(QWidget):
         if r < 0:
             return
         menu = QMenu(self.__textprocinternaltable)
-        remove = QAction(_TR("删除"))
-        up = QAction(_TR("上移"))
-        down = QAction(_TR("下移"))
+        remove = LAction(("删除"))
+        up = LAction(("上移"))
+        down = LAction(("下移"))
         menu.addAction(remove)
         menu.addAction(up)
         menu.addAction(down)
@@ -1377,12 +1372,12 @@ class dialog_setting_game_internal(QWidget):
         __d = {"k": 0}
         autoinitdialog(
             self,
-            _TR("预处理方法"),
+            ("预处理方法"),
             400,
             [
                 {
                     "type": "combo",
-                    "name": _TR("预处理方法"),
+                    "name": ("预处理方法"),
                     "d": __d,
                     "k": "k",
                     "list": __viss,
@@ -1394,7 +1389,7 @@ class dialog_setting_game_internal(QWidget):
             ],
         )
 
-    def getlangtab(self, formLayout: QFormLayout, gameuid):
+    def getlangtab(self, formLayout: LFormLayout, gameuid):
 
         savehook_new_data[gameuid]["private_tgtlang"] = savehook_new_data[gameuid].get(
             "private_tgtlang", globalconfig["tgtlang3"]
@@ -1407,35 +1402,35 @@ class dialog_setting_game_internal(QWidget):
             savehook_new_data[gameuid], "lang_follow_default", formLayout
         )
         formLayout2.addRow(
-            _TR("源语言"),
+            "源语言",
             getsimplecombobox(
-                _TRL(static_data["language_list_translator"]),
+                static_data["language_list_translator"],
                 savehook_new_data[gameuid],
                 "private_srclang",
             ),
         )
         formLayout2.addRow(
-            _TR("目标语言"),
+            "目标语言",
             getsimplecombobox(
-                _TRL(static_data["language_list_translator"]),
+                static_data["language_list_translator"],
                 savehook_new_data[gameuid],
                 "private_tgtlang",
             ),
         )
 
-    def gethooktab(self, formLayout: QFormLayout, gameuid):
+    def gethooktab(self, formLayout: LFormLayout, gameuid):
 
         formLayout.addRow(
-            _TR("特殊码"),
+            "特殊码",
             listediterline(
-                _TR("特殊码"),
-                _TR("特殊码"),
+                ("特殊码"),
+                ("特殊码"),
                 savehook_new_data[gameuid]["needinserthookcode"],
             ),
         )
 
         formLayout.addRow(
-            _TR("插入特殊码延迟(ms)"),
+            "插入特殊码延迟(ms)",
             getspinbox(0, 1000000, savehook_new_data[gameuid], "inserthooktimeout"),
         )
 
@@ -1459,16 +1454,16 @@ class dialog_setting_game_internal(QWidget):
             lambda: gobject.baseobject.textsource.setsettings(),
         )
         formLayout2.addRow(
-            _TR("代码页"),
+            "代码页",
             getsimplecombobox(
-                _TRL(static_data["codepage_display"]),
+                static_data["codepage_display"],
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "codepage_index",
                 lambda x: gobject.baseobject.textsource.setsettings(),
             ),
         )
         formLayout2.addRow(
-            _TR("过滤反复刷新的句子"),
+            "过滤反复刷新的句子",
             getsimpleswitch(
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "direct_filterrepeat",
@@ -1477,13 +1472,13 @@ class dialog_setting_game_internal(QWidget):
         )
 
         formLayout2.addRow(
-            _TR("移除非选定hook"),
+            "移除非选定hook",
             getsimpleswitch(
                 savehook_new_data[gameuid]["hooksetting_private"], "removeuseless"
             ),
         )
         formLayout2.addRow(
-            _TR("刷新延迟(ms)"),
+            "刷新延迟(ms)",
             getspinbox(
                 0,
                 10000,
@@ -1493,7 +1488,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         formLayout2.addRow(
-            _TR("最大缓冲区长度"),
+            "最大缓冲区长度",
             getspinbox(
                 0,
                 1000000,
@@ -1503,7 +1498,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         formLayout2.addRow(
-            _TR("最大缓存文本长度"),
+            "最大缓存文本长度",
             getspinbox(
                 0,
                 1000000000,
@@ -1513,14 +1508,14 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         formLayout2.addRow(
-            _TR("过滤包含乱码的文本行"),
+            "过滤包含乱码的文本行",
             getsimpleswitch(
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "filter_chaos_code",
             ),
         )
         formLayout2.addRow(
-            _TR("使用YAPI注入"),
+            "使用YAPI注入",
             getsimpleswitch(
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "use_yapi",
@@ -1559,15 +1554,15 @@ class dialog_setting_game(QDialog):
 
 
 @Singleton_close
-class dialog_syssetting(QDialog):
+class dialog_syssetting(LDialog):
 
     def __init__(self, parent, type_=1) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle(_TR("其他设置"))
-        formLayout = QFormLayout(self)
+        self.setWindowTitle("其他设置")
+        formLayout = LFormLayout(self)
 
         formLayout.addRow(
-            QLabel(_TR("隐藏不存在的游戏")),
+            "隐藏不存在的游戏",
             getsimpleswitch(globalconfig, "hide_not_exists"),
         )
         if type_ == 1:
@@ -1580,7 +1575,7 @@ class dialog_syssetting(QDialog):
                 ("textH", "文字区高度"),
             ]:
                 formLayout.addRow(
-                    (_TR(name)),
+                    name,
                     getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
                 )
         elif type_ == 2:
@@ -1589,7 +1584,7 @@ class dialog_syssetting(QDialog):
                 ("listitemwidth", "高度"),
             ]:
                 formLayout.addRow(
-                    (_TR(name)),
+                    name,
                     getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
                 )
 
@@ -1599,7 +1594,7 @@ class dialog_syssetting(QDialog):
             ("onfilenoexistscolor1", "transparentnotexits", "游戏不存在时颜色"),
         ]:
             formLayout.addRow(
-                _TR(name),
+                name,
                 getcolorbutton(
                     globalconfig["dialog_savegame_layout"],
                     key,
@@ -1617,26 +1612,26 @@ class dialog_syssetting(QDialog):
                 ),
             )
             formLayout.addRow(
-                _TR(name) + _TR("不透明度"),
+                name + "_" + "不透明度",
                 getspinbox(0, 100, globalconfig["dialog_savegame_layout"], key2),
             )
         if type_ == 1:
             formLayout.addRow(
-                _TR("缩放"),
+                "缩放",
                 getsimplecombobox(
-                    _TRL(["填充", "适应", "拉伸", "居中"]),
+                    ["填充", "适应", "拉伸", "居中"],
                     globalconfig,
                     "imagewrapmode",
                 ),
             )
         formLayout.addRow(
-            QLabel(_TR("启动游戏不修改顺序")),
+            "启动游戏不修改顺序",
             getsimpleswitch(globalconfig, "startgamenototop"),
         )
 
         if type_ == 1:
             formLayout.addRow(
-                QLabel(_TR("显示标题")),
+                "显示标题",
                 getsimpleswitch(globalconfig, "showgametitle"),
             )
         self.show()
@@ -1863,7 +1858,7 @@ class dialog_savedgame_integrated(saveposwindow):
             | Qt.WindowType.WindowCloseButtonHint,
             poslist=globalconfig["savegamedialoggeo"],
         )
-        self.setWindowTitle(_TR("游戏管理"))
+        self.setWindowTitle("游戏管理")
 
         w, self.internallayout = getboxlayout(
             [], margin0=True, makewidget=True, both=True
@@ -2008,18 +2003,18 @@ class dialog_savedgame_new(QWidget):
     def showmenu(self, p):
         menu = QMenu(self)
 
-        editname = QAction(_TR("修改列表名称"))
-        addlist = QAction(_TR("创建列表"))
-        dellist = QAction(_TR("删除列表"))
+        editname = LAction(("修改列表名称"))
+        addlist = LAction(("创建列表"))
+        dellist = LAction(("删除列表"))
 
-        startgame = QAction(_TR("开始游戏"))
-        delgame = QAction(_TR("删除游戏"))
-        opendir = QAction(_TR("打开目录"))
-        addtolist = QAction(_TR("添加到列表"))
-        gamesetting = QAction(_TR("游戏设置"))
-        addgame = QAction(_TR("添加游戏"))
-        batchadd = QAction(_TR("批量添加"))
-        othersetting = QAction(_TR("其他设置"))
+        startgame = LAction(("开始游戏"))
+        delgame = LAction(("删除游戏"))
+        opendir = LAction(("打开目录"))
+        addtolist = LAction(("添加到列表"))
+        gamesetting = LAction(("游戏设置"))
+        addgame = LAction(("添加游戏"))
+        batchadd = LAction(("批量添加"))
+        othersetting = LAction(("其他设置"))
 
         if self.currentfocusuid:
             exists = os.path.exists(uid2gamepath[self.currentfocusuid])
@@ -2063,11 +2058,11 @@ class dialog_savedgame_new(QWidget):
         elif action == editname or action == addlist:
             _dia = Prompt_dialog(
                 self,
-                _TR("修改列表名称" if action == editname else "创建列表"),
+                "修改列表名称" if action == editname else "创建列表",
                 "",
                 [
                     [
-                        _TR("名称"),
+                        "名称",
                         (
                             savegametaged[calculatetagidx(self.reftagid)]["title"]
                             if action == editname
@@ -2124,6 +2119,7 @@ class dialog_savedgame_new(QWidget):
                 "currvislistuid",
                 self.resetcurrvislist,
                 internallist=uid,
+                static=True,
             ),
         )
 
@@ -2149,8 +2145,8 @@ class dialog_savedgame_new(QWidget):
             getIconButton(
                 lambda: listediter(
                     parent,
-                    _TR("标签集"),
-                    _TR("标签"),
+                    ("标签集"),
+                    ("标签"),
                     globalconfig["labelset"],
                     closecallback=refreshcombo,
                 ),
@@ -2260,8 +2256,7 @@ class dialog_savedgame_new(QWidget):
             print_exc()
 
     def simplebutton(self, text, save, callback, exists):
-        button5 = QPushButton()
-        button5.setText(_TR(text))
+        button5 = LPushButton(text)
         if save:
             self.savebutton.append((button5, exists))
         button5.clicked.connect(callback)
@@ -2311,8 +2306,8 @@ class dialog_savedgame_new(QWidget):
             )
 
 
-class LazyLoadTableView(QTableView):
-    def __init__(self, model: QStandardItemModel) -> None:
+class LazyLoadTableView(TableViewW):
+    def __init__(self, model: LStandardItemModel) -> None:
         super().__init__()
         self.widgetfunction = []
         self.lock = threading.Lock()
@@ -2463,8 +2458,8 @@ class dialog_savedgame_lagacy(QWidget):
         super().__init__(parent)
 
         formLayout = QVBoxLayout(self)  #
-        model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(_TRL(["转区", "", "设置", "游戏"]))  # ,'HOOK'])
+        model = LStandardItemModel()
+        model.setHorizontalHeaderLabels(["转区", "", "设置", "游戏"])  # ,'HOOK'])
 
         self.model = model
 
@@ -2485,16 +2480,13 @@ class dialog_savedgame_lagacy(QWidget):
         self.table.starttraceir()
         bottom = QHBoxLayout()
 
-        button = QPushButton()
-        button.setText(_TR("开始游戏"))
+        button = LPushButton("开始游戏")
         self.button = button
         button.clicked.connect(self.clicked)
-        button3 = QPushButton()
-        button3.setText(_TR("添加游戏"))
+        button3 = LPushButton("添加游戏")
 
         button3.clicked.connect(self.clicked3)
-        button2 = QPushButton()
-        button2.setText(_TR("删除游戏"))
+        button2 = LPushButton("删除游戏")
 
         button2.clicked.connect(self.clicked2)
         bottom.addWidget(button)
@@ -2734,12 +2726,12 @@ def getalistname(parent, callback, skipid=False, skipidid=None):
     if len(__uid) > 1:
         autoinitdialog(
             parent,
-            _TR("目标"),
+            "目标",
             600,
             [
                 {
                     "type": "combo",
-                    "name": _TR("目标"),
+                    "name": "目标",
                     "d": __d,
                     "k": "k",
                     "list": __vis,
@@ -2815,14 +2807,14 @@ class dialog_savedgame_v3(QWidget):
     def stack_showmenu(self, ispixmenu, p):
         menu = QMenu(self)
 
-        addlist = QAction(_TR("创建列表"))
-        startgame = QAction(_TR("开始游戏"))
-        delgame = QAction(_TR("删除游戏"))
-        opendir = QAction(_TR("打开目录"))
-        addtolist = QAction(_TR("添加到列表"))
-        setimage = QAction(_TR("设为封面"))
-        deleteimage = QAction(_TR("删除图片"))
-        hualang = QAction(_TR("画廊"))
+        addlist = LAction(("创建列表"))
+        startgame = LAction(("开始游戏"))
+        delgame = LAction(("删除游戏"))
+        opendir = LAction(("打开目录"))
+        addtolist = LAction(("添加到列表"))
+        setimage = LAction(("设为封面"))
+        deleteimage = LAction(("删除图片"))
+        hualang = LAction(("画廊"))
         if not self.currentfocusuid:
 
             menu.addAction(addlist)
@@ -2848,13 +2840,10 @@ class dialog_savedgame_v3(QWidget):
         elif addlist == action:
             _dia = Prompt_dialog(
                 self,
-                _TR("创建列表"),
+                "创建列表",
                 "",
                 [
-                    [
-                        _TR("名称"),
-                        (""),
-                    ],
+                    ["名称", ""],
                 ],
             )
 
@@ -2879,8 +2868,8 @@ class dialog_savedgame_v3(QWidget):
         elif action == hualang:
             listediter(
                 self,
-                _TR("画廊"),
-                _TR("画廊"),
+                ("画廊"),
+                ("画廊"),
                 savehook_new_data[self.currentfocusuid]["imagepath_all"],
                 closecallback=lambda: self.pixview.setpix(self.currentfocusuid),
                 ispathsedit=dict(),
@@ -2945,7 +2934,7 @@ class dialog_savedgame_v3(QWidget):
         rightlay = QVBoxLayout()
         rightlay.setContentsMargins(0, 0, 0, 0)
         _w.setLayout(rightlay)
-        self.righttop.addTab(_w, _TR("画廊"))
+        self.righttop.addTab(_w, "画廊")
         lay.addWidget(self.righttop)
         rightlay.addWidget(self.pixview)
         self.pixview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -3020,13 +3009,13 @@ class dialog_savedgame_v3(QWidget):
         self.currentfocusuid = None
         self.reftagid = tagid
         menu = QMenu(self)
-        editname = QAction(_TR("修改列表名称"))
-        addlist = QAction(_TR("创建列表"))
-        dellist = QAction(_TR("删除列表"))
-        Upaction = QAction(_TR("上移"))
-        Downaction = QAction(_TR("下移"))
-        addgame = QAction(_TR("添加游戏"))
-        batchadd = QAction(_TR("批量添加"))
+        editname = LAction(("修改列表名称"))
+        addlist = LAction(("创建列表"))
+        dellist = LAction(("删除列表"))
+        Upaction = LAction(("上移"))
+        Downaction = LAction(("下移"))
+        addgame = LAction(("添加游戏"))
+        batchadd = LAction(("批量添加"))
         menu.addAction(Upaction)
         menu.addAction(Downaction)
         menu.addSeparator()
@@ -3051,11 +3040,11 @@ class dialog_savedgame_v3(QWidget):
         elif action == editname or action == addlist:
             _dia = Prompt_dialog(
                 self,
-                _TR("修改列表名称" if action == editname else "创建列表"),
+                "修改列表名称" if action == editname else "创建列表",
                 "",
                 [
                     [
-                        _TR("名称"),
+                        "名称",
                         (
                             savegametaged[calculatetagidx(tagid)]["title"]
                             if action == editname
@@ -3167,8 +3156,7 @@ class dialog_savedgame_v3(QWidget):
         startgamecheck(self, self.currentfocusuid)
 
     def simplebutton(self, text, save, callback, exists):
-        button5 = QPushButton()
-        button5.setText(_TR(text))
+        button5 = LPushButton(text)
         if save:
             self.savebutton.append((button5, exists))
         button5.clicked.connect(callback)

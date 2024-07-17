@@ -1,26 +1,27 @@
-from myutils.config import noundictconfig, savehook_new_data, _TR, _TRL
+from myutils.config import noundictconfig, savehook_new_data
 import gobject, re, functools
 from qtsymbols import *
 from traceback import print_exc
 import gobject
-from gui.usefulwidget import getQMessageBox, threebuttons
+from gui.usefulwidget import getQMessageBox, threebuttons, TableViewW
 from myutils.wrapper import Singleton_close
 from myutils.utils import checkpostusing
+from gui.dynalang import LDialog, LLabel, LPushButton, LStandardItemModel, LAction
 
 
 @Singleton_close
-class noundictconfigdialog(QDialog):
+class noundictconfigdialog(LDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.button.setFocus()
         self.apply()
 
-    def showmenu(self, table: QTableView, pos):
+    def showmenu(self, table: TableViewW, pos):
         r = table.currentIndex().row()
         if r < 0:
             return
         menu = QMenu(table)
-        up = QAction(_TR("上移"))
-        down = QAction(_TR("下移"))
+        up = LAction("上移")
+        down = LAction("下移")
         menu.addAction(up)
         menu.addAction(down)
         action = menu.exec(table.cursor().pos())
@@ -32,7 +33,7 @@ class noundictconfigdialog(QDialog):
         elif action == down:
             self.moverank(table, 1)
 
-    def moverank(self, table: QTableView, dy):
+    def moverank(self, table: TableViewW, dy):
         curr = table.currentIndex()
         target = (curr.row() + dy) % table.model().rowCount()
         texts = [
@@ -66,12 +67,12 @@ class noundictconfigdialog(QDialog):
     ) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
-        self.setWindowTitle(_TR(title))
+        self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
 
         formLayout = QVBoxLayout(self)  # 配置layout
 
-        model = QStandardItemModel(len(configdict), 1, self)
+        model = LStandardItemModel(len(configdict), 1, self)
         row = 0
         for key in configdict:  # 2
             if type(configdict[key]) == str:
@@ -85,8 +86,8 @@ class noundictconfigdialog(QDialog):
                 item = QStandardItem(configdict[key][1 + i * 2])
                 model.setItem(row, 2, item)
                 row += 1
-        model.setHorizontalHeaderLabels(_TRL(label))
-        table = QTableView(self)
+        model.setHorizontalHeaderLabels(label)
+        table = TableViewW(self)
         table.setModel(model)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -150,8 +151,7 @@ class noundictconfigdialog(QDialog):
         search = QHBoxLayout()
         searchcontent = QLineEdit()
         search.addWidget(searchcontent)
-        button4 = QPushButton()
-        button4.setText(_TR("搜索"))
+        button4 = LPushButton("搜索")
 
         def clicked4():
             text = searchcontent.text()
@@ -174,14 +174,13 @@ class noundictconfigdialog(QDialog):
         formLayout.addWidget(button)
         formLayout.addWidget(button2)
         setmd5layout = QHBoxLayout()
-        setmd5layout.addWidget(QLabel(_TR("当前MD5")))
+        setmd5layout.addWidget(LLabel("当前MD5"))
         md5content = QLineEdit(gobject.baseobject.currentmd5)
         setmd5layout.addWidget(md5content)
-        button5 = QPushButton()
+        button5 = LPushButton("修改")
         button5.clicked.connect(
             lambda x: gobject.baseobject.__setattr__("currentmd5", md5content.text())
         )
-        button5.setText(_TR("修改"))
         setmd5layout.addWidget(button5)
         self.button = button
         self.model = model
@@ -211,18 +210,18 @@ class noundictconfigdialog(QDialog):
 
 
 @Singleton_close
-class noundictconfigdialog_private(QDialog):
+class noundictconfigdialog_private(LDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.button.setFocus()
         self.apply()
 
-    def showmenu(self, table: QTableView, pos):
+    def showmenu(self, table: TableViewW, pos):
         r = table.currentIndex().row()
         if r < 0:
             return
         menu = QMenu(table)
-        up = QAction(_TR("上移"))
-        down = QAction(_TR("下移"))
+        up = LAction("上移")
+        down = LAction("下移")
         menu.addAction(up)
         menu.addAction(down)
         action = menu.exec(table.cursor().pos())
@@ -234,7 +233,7 @@ class noundictconfigdialog_private(QDialog):
         elif action == down:
             self.moverank(table, 1)
 
-    def moverank(self, table: QTableView, dy):
+    def moverank(self, table: TableViewW, dy):
         curr = table.currentIndex()
         target = (curr.row() + dy) % table.model().rowCount()
         texts = [
@@ -264,12 +263,12 @@ class noundictconfigdialog_private(QDialog):
     ) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
-        self.setWindowTitle(_TR(title))
+        self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
 
         formLayout = QVBoxLayout(self)  # 配置layout
 
-        model = QStandardItemModel(len(configdict), 1, self)
+        model = LStandardItemModel(len(configdict), 1, self)
         row = 0
         for key in configdict:  # 2
             item = QStandardItem(key[0])
@@ -277,8 +276,8 @@ class noundictconfigdialog_private(QDialog):
             item = QStandardItem(key[1])
             model.setItem(row, 1, item)
             row += 1
-        model.setHorizontalHeaderLabels(_TRL(label))
-        table = QTableView(self)
+        model.setHorizontalHeaderLabels(label)
+        table = TableViewW(self)
         table.setModel(model)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -315,8 +314,7 @@ class noundictconfigdialog_private(QDialog):
         search = QHBoxLayout()
         searchcontent = QLineEdit()
         search.addWidget(searchcontent)
-        button4 = QPushButton()
-        button4.setText(_TR("搜索"))
+        button4 = LPushButton("搜索")
 
         def clicked4():
             text = searchcontent.text()

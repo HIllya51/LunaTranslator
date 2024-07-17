@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools
 import gobject
-from myutils.config import globalconfig, _TRL, static_data
+from myutils.config import globalconfig, static_data
 from gui.inputdialog import (
     autoinitdialog_items,
     noundictconfigdialog1,
@@ -155,6 +155,7 @@ def setTab5lz(self):
                                 globalconfig,
                                 "audioengine",
                                 internallist=static_data["audioengine"],
+                                static=True,
                             ),
                         ],
                         [
@@ -193,12 +194,10 @@ def setTab5lz(self):
                             "朗读的翻译",
                             (
                                 D_getsimplecombobox(
-                                    _TRL(
-                                        [
-                                            globalconfig["fanyi"][x]["name"]
-                                            for x in globalconfig["fanyi"]
-                                        ]
-                                    ),
+                                    [
+                                        globalconfig["fanyi"][x]["name"]
+                                        for x in globalconfig["fanyi"]
+                                    ],
                                     globalconfig,
                                     "read_translator",
                                 ),

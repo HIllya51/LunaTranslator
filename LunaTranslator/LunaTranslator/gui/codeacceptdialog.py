@@ -1,25 +1,30 @@
 from qtsymbols import *
 import functools
 from myutils.utils import checkencoding
-from myutils.config import globalconfig, _TR, _TRL
+from myutils.config import globalconfig
 from myutils.wrapper import Singleton_close
-from gui.usefulwidget import getspinbox, threebuttons, getlineedit, FocusCombo, TableViewW
-
-nowsuppertcodes = _TRL(
-    [
-        "日语(SHIFT-JIS)",
-        "简体中文(GBK)",
-        "繁体中文(BIG5)",
-        "韩语(EUC-KR)",
-        "英语(ASCII)",
-        "其他",
-    ]
+from gui.usefulwidget import (
+    getspinbox,
+    threebuttons,
+    getlineedit,
+    TableViewW,
+    LFocusCombo,
 )
+from gui.dynalang import LStandardItemModel, LDialog, LCheckBox, LLabel
+
+nowsuppertcodes = [
+    "日语(SHIFT-JIS)",
+    "简体中文(GBK)",
+    "繁体中文(BIG5)",
+    "韩语(EUC-KR)",
+    "英语(ASCII)",
+    "其他",
+]
 nowsuppertcodespy = ["SHIFT-JIS", "GBK", "BIG5", "EUC-KR", "ASCII"]
 
 
 @Singleton_close
-class codeacceptdialog(QDialog):
+class codeacceptdialog(LDialog):
     def _setcode_i(self, combox: QComboBox, itemsaver_, code="", idx=0):
         itemsaver_.saveidx = idx
         if idx < len(nowsuppertcodespy):
@@ -38,14 +43,14 @@ class codeacceptdialog(QDialog):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         title = "接受的编码"
-        self.setWindowTitle(_TR(title))
+        self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
 
         formLayout = QVBoxLayout(self)  # 配置layout
 
-        self.model = QStandardItemModel(len(globalconfig["accept_encoding"]), 1, self)
+        self.model = LStandardItemModel(len(globalconfig["accept_encoding"]), 1, self)
 
-        self.model.setHorizontalHeaderLabels(_TRL(["接受的编码"]))
+        self.model.setHorizontalHeaderLabels(["接受的编码"])
         self.table = TableViewW(self)
         self.table.setModel(self.model)
         self.table.horizontalHeader().setSectionResizeMode(
@@ -62,7 +67,7 @@ class codeacceptdialog(QDialog):
             itemsaver = QStandardItem()
             self.model.setItem(row, 0, itemsaver)
             index = self.model.index(row, 0)
-            codecombox = FocusCombo()
+            codecombox = LFocusCombo()
             codecombox.addItems((nowsuppertcodes))
             codecombox.setCurrentIndex(idx)
             self.table.setIndexWidget(index, codecombox)
@@ -85,21 +90,21 @@ class codeacceptdialog(QDialog):
         formLayout.addWidget(button)
         formLayout.addWidget(QLabel())
 
-        _checkunicode = QCheckBox(_TR("使用Unicode范围过滤"))
+        _checkunicode = LCheckBox(("使用Unicode范围过滤"))
         _checkunicode.setChecked(globalconfig["accept_use_unicode"])
         _checkunicode.stateChanged.connect(
             lambda x: globalconfig.__setitem__("accept_use_unicode", x)
         )
         formLayout.addWidget(_checkunicode)
         _hb = QHBoxLayout()
-        _hb.addWidget(QLabel(_TR("Unicode范围")))
+        _hb.addWidget(LLabel(("Unicode范围")))
         _hb.addWidget(getspinbox(0, 65535, globalconfig, "accept_use_unicode_start"))
         _hb.addWidget(getspinbox(0, 65535, globalconfig, "accept_use_unicode_end"))
         formLayout.addLayout(_hb)
 
         formLayout.addWidget(QLabel())
         _hb = QHBoxLayout()
-        _hb.addWidget(QLabel(_TR("例外允许的字符")))
+        _hb.addWidget(LLabel(("例外允许的字符")))
         _hb.addWidget(getlineedit(globalconfig, "accept_character"))
 
         formLayout.addLayout(_hb)
@@ -109,7 +114,7 @@ class codeacceptdialog(QDialog):
     def clicked1(self):
         itemsaver = QStandardItem()
         self.model.insertRow(0, [itemsaver])
-        codecombox = FocusCombo()
+        codecombox = LFocusCombo()
         codecombox.addItems((nowsuppertcodes))
         self._setcode_i(codecombox, itemsaver)
         codecombox.currentIndexChanged.connect(

@@ -9,7 +9,7 @@ from myutils.config import (
     uid2gamepath,
     findgameuidofpath,
     savehook_new_data,
-    setlanguage,
+    loadlanguage,
     static_data,
     tryreadconfig,
     getlanguse,
@@ -49,6 +49,7 @@ from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark
 from myutils.audioplayer import audioplayer
+from gui.dynalang import LAction, LMenu
 
 
 class commonstylebase(QWidget):
@@ -1094,21 +1095,21 @@ class MAINUI:
 
     def inittray(self):
 
-        trayMenu = QMenu(self.commonstylebase)
-        showAction = QAction(
-            _TR("&显示"),
+        trayMenu = LMenu(self.commonstylebase)
+        showAction = LAction(
+            ("&显示"),
             trayMenu,
             triggered=self.translation_ui.show_,
         )
-        settingAction = QAction(
+        settingAction = LAction(
             qtawesome.icon("fa.gear"),
-            _TR("&设置"),
+            ("&设置"),
             trayMenu,
             triggered=lambda: self.settin_ui.showsignal.emit(),
         )
-        quitAction = QAction(
+        quitAction = LAction(
             qtawesome.icon("fa.times"),
-            _TR("&退出"),
+            ("&退出"),
             trayMenu,
             triggered=self.translation_ui.close,
         )
@@ -1127,12 +1128,6 @@ class MAINUI:
 
     def showtraymessage(self, title, message):
         self.tray.showMessage(_TR(title), _TR(message), QSystemTrayIcon.MessageIcon())
-
-    def showneedrestart(self, title, _):
-        if title in self.notifyonce:
-            return
-        self.notifyonce.add(title)
-        self.showtraymessage(title, "这一设置将会在下一次打开软件时生效")
 
     def destroytray(self):
         self.tray.hide()
@@ -1274,4 +1269,4 @@ class MAINUI:
             globalconfig["language_setted_2.4.5"] = True
             globalconfig["languageuse"] = x.current
             globalconfig["tgtlang3"] = x.current
-            setlanguage()
+            loadlanguage()

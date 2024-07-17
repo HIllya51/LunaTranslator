@@ -6,12 +6,7 @@ from myutils.utils import (
     checkpostlangmatch,
     loadpostsettingwindowmethod,
 )
-from myutils.config import (
-    globalconfig,
-    postprocessconfig,
-    static_data,
-    _TRL,
-)
+from myutils.config import globalconfig, postprocessconfig, static_data
 from gui.codeacceptdialog import codeacceptdialog
 from gui.usefulwidget import (
     D_getIconButton,
@@ -21,11 +16,7 @@ from gui.usefulwidget import (
     getvboxwidget,
     makesubtab_lazy,
 )
-from gui.inputdialog import (
-    postconfigdialog,
-    autoinitdialog,
-    autoinitdialog_items,
-)
+from gui.inputdialog import postconfigdialog, autoinitdialog, autoinitdialog_items
 
 
 def delaysetcomparetext(self, s):
@@ -114,9 +105,9 @@ def setTab7_lazy(self, basel):
                     callback = functools.partial(
                         postconfigdialog,
                         self,
-                        postprocessconfig[post]["args"]['替换内容'],
+                        postprocessconfig[post]["args"]["替换内容"],
                         postprocessconfig[post]["name"],
-                    ["原文内容", "替换为"]
+                        ["原文内容", "替换为"],
                     )
                 else:
                     items = autoinitdialog_items(postprocessconfig[post])
@@ -181,7 +172,7 @@ def setTab7_lazy(self, basel):
         vbox.addWidget(getcomparelayout(self))
 
     tab, dotab = makesubtab_lazy(
-        _TRL(["文本预处理", "翻译优化"]),
+        ["文本预处理", "翻译优化"],
         [___, functools.partial(makescrollgrid, grids2)],
         delay=True,
     )

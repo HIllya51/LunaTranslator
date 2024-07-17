@@ -1,6 +1,6 @@
 import functools, os
 import gobject
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     yuitsu_switch,
@@ -91,6 +91,7 @@ def _createseletengeinecombo_1(self):
         globalconfig,
         "usewebview",
         callback=functools.partial(_checkmaybefailed, self),
+        static=True,
     )
     self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
     return self.seletengeinecombo_1
@@ -99,8 +100,8 @@ def _createseletengeinecombo_1(self):
 def vistranslate_rank(self):
     listediter(
         self,
-        _TR("显示顺序"),
-        _TR("显示顺序"),
+        ("显示顺序"),
+        ("显示顺序"),
         globalconfig["cishuvisrank"],
         isrankeditor=True,
         namemapfunction=lambda k: globalconfig["cishu"][k]["name"],

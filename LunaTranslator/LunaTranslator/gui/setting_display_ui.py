@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, importlib
 from traceback import print_exc
 import gobject
-from myutils.config import globalconfig, _TRL, static_data
+from myutils.config import globalconfig, static_data
 from myutils.utils import nowisdark
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -240,7 +240,7 @@ def __changeuibuttonstate(self, x):
 
 def uisetting(self, l):
     tab, do = makesubtab_lazy(
-        _TRL(["主界面", "其他界面"]),
+        ["主界面", "其他界面"],
         [
             lambda l: makescrollgrid(mainuisetting(self), l),
             lambda l: makescrollgrid(otheruisetting(self), l),
@@ -575,7 +575,7 @@ def otheruisetting(self):
                         [
                             "明暗",
                             D_getsimplecombobox(
-                                _TRL(["跟随系统", "明亮", "黑暗"]),
+                                ["跟随系统", "明亮", "黑暗"],
                                 globalconfig,
                                 "darklight2",
                                 lambda _: gobject.baseobject.setcommonstylesheet(),
@@ -585,7 +585,7 @@ def otheruisetting(self):
                             "明亮主题",
                             (
                                 D_getsimplecombobox(
-                                    _TRL(["默认"]) + themelist("light"),
+                                    ["默认"] + themelist("light"),
                                     globalconfig,
                                     "lighttheme",
                                     functools.partial(
@@ -635,6 +635,7 @@ def otheruisetting(self):
                                 globalconfig,
                                 "WindowBackdrop",
                                 callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+                                static=True,
                             ),
                         ],
                     ),
@@ -672,6 +673,7 @@ def createxxx(self):
                     self.__shadowxx.setVisible(_ != 0),
                     self.__shadowxx2.setVisible(_ != 0),
                 ],
+                static=True,
             ),
             self.__shadowxx,
             self.__shadowxx2,

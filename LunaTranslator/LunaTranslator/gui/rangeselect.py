@@ -1,7 +1,8 @@
 from qtsymbols import *
 import windows, winsharedutils
-from myutils.config import _TR, globalconfig
+from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
+from gui.dynalang import LAction
 
 
 class rangeadjust(Mainw):
@@ -28,7 +29,7 @@ class rangeadjust(Mainw):
 
     def showmenu(self, p):
         menu = QMenu(self)
-        close = QAction(_TR("关闭"))
+        close = LAction(("关闭"))
         menu.addAction(close)
         action = menu.exec(QCursor.pos())
         if action == close:

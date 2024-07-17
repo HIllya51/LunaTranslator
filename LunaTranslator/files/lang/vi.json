@@ -779,7 +779,6 @@
     "界面设置": "Thiết lập giao diện",
     "其他界面": "Giao diện khác",
     "翻译及OCR": "Biên dịch và OCR",
-    "这一设置将会在下一次打开软件时生效": "Cài đặt này sẽ có hiệu lực vào lần mở phần mềm tiếp theo.",
     "语言包": "Gói ngôn ngữ",
     "项目仓库": "Kho dự án",
     "整合包": "Gói tích hợp",
@@ -820,5 +819,9 @@
     "行间距": "Khoảng cách dòng",
     "阴影": "Bóng",
     "火山": "Núi lửa",
-    "有道词典": "Có một từ điển."
+    "有道词典": "Có một từ điển.",
+    "无缩放": "Không phóng to",
+    "总是检测": "Luôn phát hiện",
+    "动态检测": "Phát hiện động",
+    "从不检测": "Không bao giờ phát hiện"
 }

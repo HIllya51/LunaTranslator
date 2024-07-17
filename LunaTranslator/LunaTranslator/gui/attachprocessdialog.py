@@ -2,7 +2,7 @@ from qtsymbols import *
 import os, functools
 import windows, qtawesome, gobject
 from winsharedutils import getpidhwndfirst
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig
 from myutils.wrapper import Singleton_close
 from myutils.hwnd import (
     getpidexe,
@@ -11,6 +11,7 @@ from myutils.hwnd import (
     getExeIcon,
 )
 from gui.usefulwidget import saveposwindow, getQMessageBox
+from gui.dynalang import LPushButton, LLabel
 
 
 @Singleton_close
@@ -52,21 +53,17 @@ class AttachProcessDialog(saveposwindow):
         self.hookselectdialog = hookselectdialog
         self.selectedp = None
         self.setWindowTitle(
-            _TR("选择进程")
-            + " "
-            + _TR("当前权限")
-            + " "
-            + _TR("管理员" if windows.IsUserAnAdmin() else "非管理员")
+            "选择进程_当前权限_" + ("管理员" if windows.IsUserAnAdmin() else "非管理员")
         )
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         w = QWidget()
         self.layout1 = QVBoxLayout()
-        self.label = QLabel(
-            _TR(
+        self.label = LLabel(
+            (
                 "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件"
             )
         )
-        self.button = QPushButton(_TR("点击此按钮后点击游戏窗口"))
+        self.button = LPushButton("点击此按钮后点击游戏窗口")
         self.button.clicked.connect(
             functools.partial(mouseselectwindow, self.setcurrentpidpnamesignal.emit)
         )
@@ -74,15 +71,15 @@ class AttachProcessDialog(saveposwindow):
         self.layout1.addWidget(self.button)
         self.layout2 = QHBoxLayout()
         self.processIdEdit = QLineEdit()
-        self.layout2.addWidget(QLabel(_TR("进程号")))
+        self.layout2.addWidget(LLabel(("进程号")))
         self.layout2.addWidget(self.processIdEdit)
         self.processEdit = QLineEdit()
         self.layout3 = QHBoxLayout()
-        self.layout3.addWidget(QLabel(_TR("程序名")))
+        self.layout3.addWidget(LLabel(("程序名")))
         self.layout3.addWidget(self.processEdit)
 
         self.windowtext = QLineEdit()
-        self.layout2.addWidget(QLabel(_TR("标题")))
+        self.layout2.addWidget(LLabel(("标题")))
         self.layout2.addWidget(self.windowtext)
         self.processList = QListView()
         self.buttonBox = QDialogButtonBox()
@@ -93,7 +90,7 @@ class AttachProcessDialog(saveposwindow):
         self.layout1.addLayout(self.layout3)
         self.layout1.addWidget(self.processList)
         bottomlayout = QHBoxLayout()
-        refreshbutton = QPushButton(_TR("刷新"))
+        refreshbutton = LPushButton("刷新")
         refreshbutton.clicked.connect(self.refreshfunction)
         bottomlayout.addWidget(refreshbutton)
         bottomlayout.addWidget(self.buttonBox)
@@ -160,7 +157,6 @@ class AttachProcessDialog(saveposwindow):
         self.processEdit.setText(self.selectedp[1])
         self.windowtext.setCursorPosition(0)
         self.processEdit.setCursorPosition(0)
-
 
     def selectedfunc(self, index):
         pids, pexe = self.processlist[index.row()]

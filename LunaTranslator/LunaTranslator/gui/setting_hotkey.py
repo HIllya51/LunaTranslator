@@ -1,19 +1,16 @@
 from qtsymbols import *
 import functools
 import gobject, windows, winsharedutils
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig
 from myutils.winsyshotkey import SystemHotkey, registerException
 from myutils.hwnd import grabwindow
 from myutils.utils import parsekeystringtomodvkcode, unsupportkey
-from gui.usefulwidget import (
-    D_getsimpleswitch,
-    D_getsimplekeyseq,
-    makescrollgrid,
-)
+from gui.usefulwidget import D_getsimpleswitch, D_getsimplekeyseq, makescrollgrid
+from gui.dynalang import LLabel
 
 
 def delaycreatereferlabels(self, name):
-    referlabel = QLabel()
+    referlabel = LLabel()
     self.referlabels[name] = referlabel
     try:
         referlabel.setText(self.referlabels_data[name])
@@ -142,11 +139,11 @@ def regist_or_not_key(self, name):
     try:
         mode, vkcode = parsekeystringtomodvkcode(keystring)
     except unsupportkey as e:
-        maybesetreferlabels(self, name, _TR("不支持的键位") + ",".join(e.args[0]))
+        maybesetreferlabels(self, name, ("不支持的键位_") + ",".join(e.args[0]))
         return
 
     try:
         self.hotkeymanager.register((mode, vkcode), callback=self.bindfunctions[name])
         self.registok[name] = (mode, vkcode)
     except registerException:
-        maybesetreferlabels(self, name, _TR("快捷键冲突"))
+        maybesetreferlabels(self, name, ("快捷键冲突"))

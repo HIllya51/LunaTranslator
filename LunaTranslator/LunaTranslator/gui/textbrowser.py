@@ -1,6 +1,6 @@
 from qtsymbols import *
-from myutils.config import globalconfig, _TR
-import importlib, threading
+from myutils.config import globalconfig
+import importlib
 from webviewpy import webview_exception
 from gui.usefulwidget import getQMessageBox
 from traceback import print_exc
@@ -34,13 +34,13 @@ class Textbrowser(QLabel):
             if isinstance(e, webview_exception):
                 getQMessageBox(
                     None,
-                    _TR("错误"),
+                    "错误",
                     "can't find Webview2 runtime!",
                 )
             elif isinstance(e, ImportError) or isinstance(e, ModuleNotFoundError):
                 getQMessageBox(
                     None,
-                    _TR("错误"),
+                    "错误",
                     "can't find QWebEngine!",
                 )
             else:

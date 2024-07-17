@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, platform
 import gobject, os, zipfile, shutil
-from myutils.config import globalconfig, _TRL, _TR, static_data
+from myutils.config import globalconfig, static_data
 from gui.inputdialog import multicolorset, autoinitdialog
 from myutils.wrapper import tryprint
 from myutils.utils import dynamiclink
@@ -20,10 +20,11 @@ from gui.usefulwidget import (
     selectcolor,
     listediter,
     FocusFontCombo,
-    FocusCombo,
+    LFocusCombo,
     FocusDoubleSpin,
     FocusSpin,
 )
+from gui.dynalang import LPushButton, LFormLayout
 
 
 def __changeuibuttonstate(self, x):
@@ -65,11 +66,11 @@ class extrahtml(saveposwindow):
 
     def __init__(self, parent) -> None:
         super().__init__(parent, poslist=globalconfig["geo_extrahtml"])
-        self.setWindowTitle(_TR("额外的html"))
+        self.setWindowTitle("额外的html")
 
-        self.btn_save = QPushButton(_TR("保存"))
+        self.btn_save = LPushButton("保存")
         self.btn_save.clicked.connect(self.savehtml)
-        self.btn_apply = QPushButton(_TR("测试"))
+        self.btn_apply = LPushButton("测试")
         self.btn_apply.clicked.connect(self.applyhtml)
         self.vistext = QPlainTextEdit()
         lay = QVBoxLayout()
@@ -102,7 +103,7 @@ def clearlayout(ll: QLayout):
             continue
 
 
-def createinternalfontsettings(self, forml, group, _type):
+def createinternalfontsettings(self, forml: LFormLayout, group, _type):
 
     globalconfig["rendertext_using_internal"][group] = _type
     __internal = globalconfig["rendertext"][group][_type]
@@ -148,7 +149,7 @@ def createinternalfontsettings(self, forml, group, _type):
             lineW = MySwitch(sign=dd[key])
             lineW.clicked.connect(functools.partial(dd.__setitem__, key))
         forml.addRow(
-            _TR(name),
+            name,
             lineW,
         )
 
@@ -219,7 +220,7 @@ def on_not_find_qweb(self):
 
     getQMessageBox(
         self,
-        _TR("错误"),
+        "错误",
         "未找到QWebEngine，点击确定前往下载QWebEngine",
         True,
         True,
@@ -241,27 +242,25 @@ def resetgroudswitchcallback(self, group):
         return
     clearlayout(self.goodfontsettingsformlayout)
 
-    goodfontgroupswitch = FocusCombo()
+    goodfontgroupswitch = LFocusCombo()
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     if group == "webview" or group == "QWebEngine":
-        _btn = QPushButton(_TR("额外的html"))
+        _btn = LPushButton("额外的html")
         self.goodfontsettingsformlayout.addRow(_btn)
         _btn.clicked.connect(lambda: extrahtml(self))
     if group == "QWebEngine":
         group = "webview"
-    __form = QFormLayout()
-    __form.addRow(_TR("字体样式"), goodfontgroupswitch)
+    __form = LFormLayout()
+    __form.addRow("字体样式", goodfontgroupswitch)
     self.goodfontsettingsformlayout.addRow(__form)
-    forml = QFormLayout()
+    forml = LFormLayout()
     __form.addRow(forml)
 
     goodfontgroupswitch.addItems(
-        _TRL(
-            [
-                globalconfig["rendertext"][group][x]["name"]
-                for x in static_data["textrender"][group]
-            ]
-        )
+        [
+            globalconfig["rendertext"][group][x]["name"]
+            for x in static_data["textrender"][group]
+        ]
     )
     goodfontgroupswitch.currentIndexChanged.connect(
         lambda idx: createinternalfontsettings(
@@ -281,7 +280,7 @@ def creategoodfontwid(self):
     self.goodfontsettingsWidget.setStyleSheet(
         "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
     )
-    self.goodfontsettingsformlayout = QFormLayout()
+    self.goodfontsettingsformlayout = LFormLayout()
     self.goodfontsettingsWidget.setLayout(self.goodfontsettingsformlayout)
     resetgroudswitchcallback(self, globalconfig["rendertext_using"])
     return self.goodfontsettingsWidget
@@ -297,6 +296,7 @@ def _createseletengeinecombo(self):
         "rendertext_using",
         internallist=visengine_internal,
         callback=functools.partial(resetgroudswitchcallback, self),
+        static=True,
     )
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     return self.seletengeinecombo
@@ -310,8 +310,8 @@ def __changeselectablestate(self, x):
 def vistranslate_rank(self):
     listediter(
         self,
-        _TR("显示顺序"),
-        _TR("显示顺序"),
+        ("显示顺序"),
+        ("显示顺序"),
         globalconfig["fix_translate_rank_rank"],
         isrankeditor=True,
         namemapfunction=lambda k: globalconfig["fanyi"][k]["name"],
@@ -432,13 +432,11 @@ def xianshigrid_text(self):
                                             "",
                                             "日语注音方案",
                                             D_getsimplecombobox(
-                                                _TRL(
-                                                    [
-                                                        "平假名",
-                                                        "片假名",
-                                                        "罗马音",
-                                                    ]
-                                                ),
+                                                [
+                                                    "平假名",
+                                                    "片假名",
+                                                    "罗马音",
+                                                ],
                                                 globalconfig,
                                                 "hira_vis_type",
                                             ),

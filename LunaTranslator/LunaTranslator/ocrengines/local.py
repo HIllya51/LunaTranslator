@@ -17,7 +17,8 @@ import os
 import gobject, functools
 from traceback import print_exc
 from qtsymbols import *
-from gui.usefulwidget import FocusCombo, getboxlayout
+from gui.usefulwidget import LFocusCombo, getboxlayout
+from gui.dynalang import LPushButton, LFormLayout, LLabel
 
 
 class ocrpoints(Structure):
@@ -154,16 +155,16 @@ def doinstall(combo: QComboBox, allsupports: list, parent, callback):
 
 
 def question(dialog: QDialog):
-    formLayout = QFormLayout()
+    formLayout = LFormLayout()
     dialog.setLayout(formLayout)
-    supportlang = QLabel()
-    formLayout.addRow(_TR("当前支持的语言"), supportlang)
-    combo = FocusCombo()
+    supportlang = LLabel()
+    formLayout.addRow("当前支持的语言", supportlang)
+    combo = LFocusCombo()
     allsupports = []
 
     def callback():
         langs = getallsupports()
-        supportlang.setText(", ".join([getlang_inner2show(f) for f in langs]))
+        supportlang.setText("_,_".join([getlang_inner2show(f) for f in langs]))
         _allsupports = ["ja", "en", "zh", "cht", "ko", "ru"]
         allsupports.clear()
         for l in _allsupports:
@@ -174,14 +175,14 @@ def question(dialog: QDialog):
         combo.addItems(vis)
 
     callback()
-    btndownload = QPushButton(_TR("下载"))
+    btndownload = LPushButton("下载")
     btndownload.clicked.connect(functools.partial(dodownload, combo, allsupports))
-    btninstall = QPushButton(_TR("添加"))
+    btninstall = LPushButton("添加")
     btninstall.clicked.connect(
         functools.partial(doinstall, combo, allsupports, dialog, callback)
     )
     formLayout.addRow(
-        _TR("添加语言包"),
+        "添加语言包",
         getboxlayout([combo, btndownload, btninstall], makewidget=True),
     )
 
@@ -209,13 +210,13 @@ class OCR(baseocr):
             raise Exception(
                 _TR("未添加")
                 + ' "'
-                + getlang_inner2show(self.srclang)
+                + _TR(getlang_inner2show(self.srclang))
                 + '" '
                 + _TR("的OCR模型")
                 + "\n"
                 + _TR("当前支持的语言")
                 + ": "
-                + ", ".join([getlang_inner2show(f) for f in getallsupports()])
+                + ", ".join([_TR(getlang_inner2show(f)) for f in getallsupports()])
             )
         self._ocr.init(path + "/det.onnx", path + "/rec.onnx", path + "/dict.txt")
         self._savelang = self.srclang

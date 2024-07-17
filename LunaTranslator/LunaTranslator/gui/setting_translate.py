@@ -4,7 +4,7 @@ import requests, gobject
 from myutils.wrapper import threader
 from myutils.config import globalconfig, translatorsetting
 from myutils.subproc import subproc_w
-from myutils.config import globalconfig, _TR, _TRL
+from myutils.config import globalconfig
 from myutils.utils import selectdebugfile, splittranslatortypes, checkportavailable
 from gui.pretransfile import sqlite2json
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
@@ -20,6 +20,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     getvboxwidget,
 )
+from gui.dynalang import LPushButton, LLabel
 
 
 def hashtext(a):
@@ -103,7 +104,7 @@ def statuslabelsettext(self, text):
 
 def createstatuslabel(self):
 
-    self.statuslabel = QLabel()
+    self.statuslabel = LLabel()
     return self.statuslabel
 
 
@@ -134,10 +135,10 @@ def checkconnected(self):
 
             if needstart:
                 requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
-                statuslabelsettext(self, _TR("连接成功"))
+                statuslabelsettext(self, "连接成功")
         except:
             if checkportavailable(port):
-                statuslabelsettext(self, _TR("连接失败"))
+                statuslabelsettext(self, "连接失败")
                 if needstart:
                     call = (
                         '"%s" --disable-extensions --remote-allow-origins=* --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir="%s"'
@@ -150,13 +151,13 @@ def checkconnected(self):
                     print(call)
                     self.engine = subproc_w(call)
             else:
-                statuslabelsettext(self, _TR("端口冲突"))
+                statuslabelsettext(self, "端口冲突")
         time.sleep(1)
 
 
 def createbtnexport(self):
 
-    bt = QPushButton(_TR("导出翻译记录为json文件"))
+    bt = LPushButton("导出翻译记录为json文件")
     bt.clicked.connect(lambda x: sqlite2json(self))
     return bt
 
@@ -283,7 +284,7 @@ def setTabTwo_lazy(self, basel):
     gridlayoutwidget, do = makegrid(grids, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        _TRL(["在线翻译", "注册在线翻译", "离线翻译", "调试浏览器", "预翻译"]),
+        ["在线翻译", "注册在线翻译", "离线翻译", "调试浏览器", "预翻译"],
         [
             functools.partial(makescrollgrid, onlinegrid),
             functools.partial(makescrollgrid, online_reg_grid),

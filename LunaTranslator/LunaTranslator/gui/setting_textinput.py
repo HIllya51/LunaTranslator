@@ -1,11 +1,10 @@
 from qtsymbols import *
 import functools, os, json
 import windows, gobject
-from myutils.utils import makehtml, getfilemd5
+from myutils.utils import getfilemd5, dynamiclink
 from myutils.config import (
     globalconfig,
     _TR,
-    _TRL,
     savehook_new_data,
     uid2gamepath,
     savehook_new_list,
@@ -30,6 +29,7 @@ from gui.usefulwidget import (
     FocusCombo,
     FocusFontCombo,
 )
+from gui.dynalang import LPushButton, LDialog, LFormLayout
 
 
 def __create(self):
@@ -50,36 +50,35 @@ def __create2(self):
     return self.selecthookbutton
 
 
+def gamesupport():
+    __ = LPushButton("不支持的游戏？")
+    __.clicked.connect(
+        lambda: os.startfile(dynamiclink("{main_server}/Resource/game_support"))
+    )
+    return __
+
+
 def gethookgrid(self):
 
     grids = [
-        [
-            (
-                makehtml(
-                    "{main_server}/Resource/game_support",
-                    show=_TR("不支持的游戏？"),
-                ),
-                0,
-                "link",
-            ),
-        ],
+        [(gamesupport, 0)],
         [],
         [
-            ("选择游戏", 5),
+            "选择游戏",
             functools.partial(__create, self),
             ("", 5),
         ],
         [
-            ("选择文本", 5),
+            "选择文本",
             functools.partial(__create2, self),
         ],
         [],
         [
-            ("检测到游戏时自动开始", 5),
+            "检测到游戏时自动开始",
             (D_getsimpleswitch(globalconfig, "autostarthook"), 1),
         ],
         [
-            ("已保存游戏", 5),
+            "已保存游戏",
             (
                 D_getIconButton(
                     lambda: dialog_savedgame_integrated(self),
@@ -99,7 +98,7 @@ def gethookgrid(self):
                             "代码页",
                             (
                                 D_getsimplecombobox(
-                                    _TRL(static_data["codepage_display"]),
+                                    static_data["codepage_display"],
                                     globalconfig,
                                     "codepage_index",
                                     lambda x: gobject.baseobject.textsource.setsettings(),
@@ -214,16 +213,16 @@ def doexportchspatch(exe, gameuid):
 
 def selectgameuid(self):
 
-    dialog = QDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle(_TR("选择游戏"))
+    dialog = LDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
+    dialog.setWindowTitle("选择游戏")
     dialog.resize(QSize(800, 10))
-    formLayout = QFormLayout(dialog)
+    formLayout = LFormLayout(dialog)
     dialog.setLayout(formLayout)
 
     combo = FocusCombo()
     combo.addItems([savehook_new_data[_]["title"] for _ in savehook_new_list])
 
-    formLayout.addRow(_TR("选择游戏"), combo)
+    formLayout.addRow("选择游戏", combo)
 
     button = QDialogButtonBox(
         QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
@@ -331,7 +330,7 @@ def gethookembedgrid(self):
             "内嵌的翻译器",
             "",
             D_getsimplecombobox(
-                _TRL([globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]]),
+                [globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]],
                 globalconfig["embedded"],
                 "translator_2",
                 internallist=list(globalconfig["fanyi"]),
@@ -345,7 +344,7 @@ def gethookembedgrid(self):
             "在重叠显示的字间插入空格",
             "",
             D_getsimplecombobox(
-                _TRL(["不插入空格", "每个字后插入空格", "仅在无法编码的字后插入"]),
+                ["不插入空格", "每个字后插入空格", "仅在无法编码的字后插入"],
                 globalconfig["embedded"],
                 "insertspace_policy",
                 callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
@@ -527,7 +526,7 @@ def setTabOne_lazy(self, basel):
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        _TRL(["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出"]),
+        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出"],
         [
             lambda l: makescrollgrid(gethookgrid(self), l),
             lambda l: makescrollgrid(getocrgrid(self), l),

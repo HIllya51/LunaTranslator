@@ -3,7 +3,7 @@ import functools, json, subprocess, os, time, binascii
 from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, windows, winsharedutils, gobject
-from myutils.config import savehook_new_data, static_data, globalconfig, _TR, _TRL
+from myutils.config import savehook_new_data, static_data, globalconfig, _TR
 from myutils.utils import checkchaos, get_time_stamp
 from gui.dialog_savedgame import dialog_setting_game
 from gui.usefulwidget import (
@@ -17,9 +17,20 @@ from gui.usefulwidget import (
     FocusCombo,
     TableViewW,
 )
+from gui.dynalang import (
+    LFormLayout,
+    LRadioButton,
+    LLabel,
+    LPushButton,
+    LStandardItemModel,
+    LDialog,
+    LAction,
+    LTabWidget,
+    LCheckBox,
+)
 
 
-def getformlayoutw(w=None, cls=QFormLayout, hide=False):
+def getformlayoutw(w=None, cls=LFormLayout, hide=False):
     if w is None:
         _w = QWidget()
     else:
@@ -35,14 +46,12 @@ def getformlayoutw(w=None, cls=QFormLayout, hide=False):
 class QButtonGroup_switch_widegt(QWidget):
     selectidx = pyqtSignal(int)
 
-    def __init__(self, p, text=None) -> None:
+    def __init__(self, p) -> None:
         super().__init__()
         self._parent = p
         _, self.mainlayout = getformlayoutw(self, QVBoxLayout)
         self.selectlayout = QHBoxLayout()
         self.selectlayout.setContentsMargins(0, 0, 0, 0)
-        if text is not None:
-            self.mainlayout.addWidget(QLabel(text))
         self.mainlayout.addLayout(self.selectlayout)
         self.selectGroup = QButtonGroup()
         self.wlist = []
@@ -63,7 +72,7 @@ class QButtonGroup_switch_widegt(QWidget):
 
     def addW(self, text, widget):
         self.mainlayout.addWidget(widget)
-        btn = QRadioButton(_TR(text))
+        btn = LRadioButton(text)
         self.selectGroup.addButton(btn, len(self.wlist))
         self.selectlayout.addWidget(btn)
         if len(self.wlist) == 0:
@@ -109,7 +118,7 @@ def listprocessm():
     return ret
 
 
-class searchhookparam(QDialog):
+class searchhookparam(LDialog):
     def safehex(self, string, default):
         try:
             return int(string.replace(" ", "").replace("0x", ""), 16)
@@ -201,14 +210,14 @@ class searchhookparam(QDialog):
             0,
             windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
         )
-        self.setWindowTitle(_TR("搜索设置"))
+        self.setWindowTitle("搜索设置")
         mainlayout = QVBoxLayout()
         checks = QButtonGroup_switch_widegt(self)
         self.searchmethod = checks
         self.setLayout(mainlayout)
 
         layout1 = QHBoxLayout()
-        layout1.addWidget(QLabel(_TR("代码页")))
+        layout1.addWidget(LLabel("代码页"))
         self.codepagesave = {
             "spcp": savehook_new_data[gobject.baseobject.textsource.gameuid].get(
                 "codepage_index", globalconfig["codepage_index"]
@@ -216,7 +225,7 @@ class searchhookparam(QDialog):
         }
         layout1.addWidget(
             getsimplecombobox(
-                _TRL(static_data["codepage_display"]), self.codepagesave, "spcp"
+                static_data["codepage_display"], self.codepagesave, "spcp"
             )
         )
 
@@ -229,7 +238,7 @@ class searchhookparam(QDialog):
         # self.codepage=QSpinBox()
         # self.codepage.setMaximum(100000)
         # self.codepage.setValue(usestruct.codepage)
-        self.layoutseatchtext.addRow(_TR("文本"), self.searchtext)
+        self.layoutseatchtext.addRow("文本", self.searchtext)
 
         w2, self.layoutsettings = getformlayoutw(hide=True)
         _ = QWidget()
@@ -272,11 +281,11 @@ class searchhookparam(QDialog):
 
                     addwid = combo
                     regwid = line
-            uselayout.addRow(_TR(_vis), addwid)
+            uselayout.addRow(_vis, addwid)
             self.regists[reg] = regwid
 
         self.search_addr_range = QButtonGroup_switch_widegt(self)
-        self.layoutsettings.addRow(_TR("搜索范围"), self.search_addr_range)
+        self.layoutsettings.addRow("搜索范围", self.search_addr_range)
         absaddrw, absaddrl = getformlayoutw()
         offaddrw, offaddrl = getformlayoutw()
         self.search_addr_range.addW("绝对地址", absaddrw)
@@ -320,7 +329,7 @@ class searchhookparam(QDialog):
         )
 
         self.search_method = QButtonGroup_switch_widegt(self)
-        self.layoutsettings.addRow(_TR("搜索方式"), self.search_method)
+        self.layoutsettings.addRow("搜索方式", self.search_method)
 
         patternW, patternWl = getformlayoutw()
         # presetW,presetWl=getformlayoutw()
@@ -353,11 +362,11 @@ class searchhookparam(QDialog):
         autoaddline("time", "搜索持续时间(s)", usestruct.searchTime // 1000, 1)
         autoaddline("maxrecords", "搜索结果数上限", usestruct.maxRecords, 1)
 
-        checks.addW(_TR("默认搜索"), _)
-        checks.addW(_TR("文本搜索"), w1)
-        checks.addW(_TR("自定义搜索"), w2)
+        checks.addW("默认搜索", _)
+        checks.addW("文本搜索", w1)
+        checks.addW("自定义搜索", w2)
         mainlayout.addWidget(checks)
-        btn = QPushButton(_TR("开始搜索"))
+        btn = LPushButton("开始搜索")
         btn.clicked.connect(self.searchstart)
         mainlayout.addWidget(btn)
         self.show()
@@ -384,7 +393,7 @@ class hookselect(closeashidewindow):
         self.sysmessagesignal.connect(self.sysmessage)
         self.update_item_new_line.connect(self.update_item_new_line_function)
         self.getfoundhooksignal.connect(self.getfoundhook)
-        self.setWindowTitle(_TR("选择文本"))
+        self.setWindowTitle("选择文本")
 
     def update_item_new_line_function(self, hook, output):
         if hook not in self.save:
@@ -411,7 +420,7 @@ class hookselect(closeashidewindow):
             return
         self.currentheader.pop(1)
         self.ttCombomodelmodel.removeColumn(1)
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(self.currentheader))
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
 
     def solveifembedablenumincreaseto1(self, key, isembedable):
         self.saveifembedable[key] = isembedable
@@ -423,7 +432,7 @@ class hookselect(closeashidewindow):
 
         self.currentheader.insert(1, "内嵌")
         self.ttCombomodelmodel.insertColumn(1, [])
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(self.currentheader))
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
         self.tttable.horizontalHeader().setSectionResizeMode(
             1, QHeaderView.ResizeMode.ResizeToContents
         )
@@ -447,7 +456,7 @@ class hookselect(closeashidewindow):
         isembedable = hc[0] == "E"
 
         if len(self.save) == 0:
-            self.ttCombomodelmodel.setHorizontalHeaderLabels(_TRL(self.currentheader))
+            self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
             self.tttable.horizontalHeader().setSectionResizeMode(
                 0, QHeaderView.ResizeMode.ResizeToContents
             )
@@ -548,7 +557,7 @@ class hookselect(closeashidewindow):
         self.widget.setLayout(self.hboxlayout)
         self.vboxlayout = QVBoxLayout()
         self.hboxlayout.addLayout(self.vboxlayout)
-        self.ttCombomodelmodel = QStandardItemModel()
+        self.ttCombomodelmodel = LStandardItemModel()
 
         self.tttable = TableViewW()
         self.tttable.setModel(self.ttCombomodelmodel)
@@ -576,7 +585,7 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addLayout(self.userhooklayout)
         self.userhook = QLineEdit()
         self.userhooklayout.addWidget(self.userhook)
-        self.userhookinsert = QPushButton(_TR("插入特殊码"))
+        self.userhookinsert = LPushButton("插入特殊码")
         self.userhookinsert.clicked.connect(self.inserthook)
         self.userhooklayout.addWidget(self.userhookinsert)
 
@@ -586,16 +595,16 @@ class hookselect(closeashidewindow):
         )
         self.userhooklayout.addWidget(self.userhookinsert)
 
-        self.userhookfind = QPushButton(_TR("搜索特殊码"))
+        self.userhookfind = LPushButton("搜索特殊码")
         self.userhookfind.clicked.connect(self.findhook)
         self.userhooklayout.addWidget(self.userhookfind)
 
-        self.opensolvetextb = QPushButton(_TR("文本处理"))
+        self.opensolvetextb = LPushButton("文本处理")
         self.opensolvetextb.clicked.connect(self.opensolvetext)
         self.userhooklayout.addWidget(QLabel("      "))
         self.userhooklayout.addWidget(self.opensolvetextb)
 
-        self.settingbtn = QPushButton(_TR("游戏设置"))
+        self.settingbtn = LPushButton("游戏设置")
         self.settingbtn.clicked.connect(self.opengamesetting)
         self.userhooklayout.addWidget(self.settingbtn)
 
@@ -604,13 +613,13 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addLayout(self.searchtextlayout)
         self.searchtext = QLineEdit()
         self.searchtextlayout.addWidget(self.searchtext)
-        self.searchtextbutton = QPushButton(_TR("搜索包含文本的条目"))
+        self.searchtextbutton = LPushButton("搜索包含文本的条目")
 
         self.searchtextbutton.clicked.connect(self.searchtextfunc)
         self.searchtextlayout.addWidget(self.searchtextbutton)
         ###################
-        self.ttCombomodelmodel2 = QStandardItemModel()
-        self.tttable2 = QTableView()
+        self.ttCombomodelmodel2 = LStandardItemModel()
+        self.tttable2 = TableViewW()
         self.vboxlayout.addWidget(self.tttable2)
         self.tttable2.setModel(self.ttCombomodelmodel2)
         # self.tttable2 .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
@@ -626,10 +635,10 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addLayout(self.searchtextlayout2)
         self.searchtext2 = QLineEdit()
         self.searchtextlayout2.addWidget(self.searchtext2)
-        self.searchtextbutton2 = QPushButton(_TR("搜索包含文本的条目"))
-        self.checkfilt_notcontrol = QCheckBox(_TR("过滤控制字符"))
-        self.checkfilt_notascii = QCheckBox(_TR("过滤纯英文"))
-        self.checkfilt_notshiftjis = QCheckBox(_TR("过滤乱码文本"))
+        self.searchtextbutton2 = LPushButton("搜索包含文本的条目")
+        self.checkfilt_notcontrol = LCheckBox(("过滤控制字符"))
+        self.checkfilt_notascii = LCheckBox(("过滤纯英文"))
+        self.checkfilt_notshiftjis = LCheckBox(("过滤乱码文本"))
         self.checkfilt_notcontrol.setChecked(True)
         self.checkfilt_notascii.setChecked(True)
         self.checkfilt_notshiftjis.setChecked(True)
@@ -647,19 +656,19 @@ class hookselect(closeashidewindow):
         self.sysOutput.setUndoRedoEnabled(False)
         self.sysOutput.setReadOnly(True)
 
-        self.tabwidget = QTabWidget()
+        self.tabwidget = LTabWidget()
         self.vboxlayout.addWidget(self.tabwidget)
         self.tabwidget.setTabPosition(QTabWidget.TabPosition.East)
-        self.tabwidget.addTab(self.textOutput, _TR("文本"))
-        self.tabwidget.addTab(self.sysOutput, _TR("系统"))
+        self.tabwidget.addTab(self.textOutput, ("文本"))
+        self.tabwidget.addTab(self.sysOutput, ("系统"))
 
     def showmenu(self, p: QPoint):
         r = self.tttable.currentIndex().row()
         if r < 0:
             return
         menu = QMenu(self.tttable)
-        remove = QAction(_TR("移除"))
-        copy = QAction(_TR("复制特殊码"))
+        remove = LAction(("移除"))
+        copy = LAction(("复制特殊码"))
         menu.addAction(remove)
         menu.addAction(copy)
         action = menu.exec(self.tttable.cursor().pos())
@@ -794,7 +803,7 @@ class hookselect(closeashidewindow):
         if gobject.baseobject.textsource:
             self.allres.clear()
             self.ttCombomodelmodel2.clear()
-            self.ttCombomodelmodel2.setHorizontalHeaderLabels(_TRL(["HOOK", "文本"]))
+            self.ttCombomodelmodel2.setHorizontalHeaderLabels(["HOOK", "文本"])
             self.hidesearchhookbuttons()
         else:
             self.getnewsentence(_TR("！未选定进程！"))

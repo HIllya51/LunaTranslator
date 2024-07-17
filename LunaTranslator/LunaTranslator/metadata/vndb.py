@@ -1,5 +1,5 @@
 import requests, re
-from myutils.config import savegametaged, _TR, savehook_new_data
+from myutils.config import savegametaged, savehook_new_data
 from myutils.utils import initanewitem, gamdidchangedtask
 import functools
 import time
@@ -9,6 +9,7 @@ from metadata.abstract import common
 from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname
 from myutils.wrapper import Singleton_close
+from gui.dynalang import LPushButton
 
 
 def saferequestvndb(proxy, method, url, json=None, headers=None):
@@ -159,12 +160,12 @@ class vndbsettings(QDialog):
                 __uid.append(_["uid"])
         autoinitdialog(
             self,
-            _TR("目标"),
+            "目标",
             600,
             [
                 {
                     "type": "combo",
-                    "name": _TR("目标"),
+                    "name": "目标",
                     "d": __d,
                     "k": "k",
                     "list": __vis,
@@ -284,17 +285,17 @@ class vndbsettings(QDialog):
         self.setWindowTitle(self._ref.config_all["name"])
         fl = QFormLayout(self)
         fl.addRow("Token", getlineedit(_ref.config, "Token"))
-        btn = QPushButton(_TR("上传游戏"))
+        btn = LPushButton("上传游戏")
         btn.clicked.connect(
             functools.partial(self.singleupload_existsoverride, gameuid)
         )
         fl.addRow(btn)
-        btn = QPushButton(_TR("上传游戏列表"))
+        btn = LPushButton("上传游戏列表")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_upload)
         )
         fl.addRow(btn)
-        btn = QPushButton(_TR("获取游戏列表"))
+        btn = LPushButton("获取游戏列表")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_download)
         )

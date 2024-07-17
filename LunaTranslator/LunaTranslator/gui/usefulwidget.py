@@ -11,6 +11,19 @@ from winsharedutils import HTMLBrowser
 from myutils.config import _TR, globalconfig, _TRL
 from myutils.wrapper import Singleton_close, tryprint
 from myutils.utils import nowisdark, checkportavailable
+from gui.dynalang import (
+    LLabel,
+    LMessageBox,
+    LPushButton,
+    LAction,
+    LGroupBox,
+    LBase,
+    LFormLayout,
+    LTabWidget,
+    LStandardItemModel,
+    LDialog,
+    LMainWindow,
+)
 
 
 class FocusCombo(QComboBox):
@@ -25,6 +38,25 @@ class FocusCombo(QComboBox):
             return
         else:
             return super().wheelEvent(e)
+
+
+class LFocusCombo(FocusCombo, LBase):
+    def __init__(self, parent: QWidget = None) -> None:
+        super().__init__(parent)
+        self.__items = None
+
+    def addItems(self, items):
+        self.__items = items
+        super().addItems(_TRL(items))
+
+    def clear(self):
+        self.__items = []
+        super().clear()
+
+    def updatelangtext(self):
+        if self.__items:
+            for i in range(self.count()):
+                self.setItemText(i, _TR(self.__items[i]))
 
 
 class FocusFontCombo(QFontComboBox, FocusCombo):
@@ -59,11 +91,16 @@ class FocusDoubleSpin(QDoubleSpinBox):
             return super().wheelEvent(e)
 
 
-class TableViewW(QTableView):
+class TableViewW(QTableView, LBase):
     def setIndexWidget(self, index: QModelIndex, w: QWidget):
         super().setIndexWidget(index, w)
         if self.rowHeight(index.row()) < w.height():
             self.setRowHeight(index.row(), w.height())
+
+    def updatelangtext(self):
+        m = self.model()
+        if isinstance(m, LStandardItemModel):
+            m.updatelangtext()
 
 
 @Singleton_close
@@ -89,9 +126,10 @@ def getQMessageBox(
     cancelcallback=None,
     tr=True,
 ):
-    msgBox = QMessageBox(parent)
     if tr:
-        title, text = _TR(title), _TR(text)
+        msgBox = LMessageBox(parent)
+    else:
+        msgBox = QMessageBox(parent)
     msgBox.setWindowTitle((title))
     msgBox.setText((text))
     btn = 0
@@ -121,7 +159,7 @@ def makerect(_):
     return [x, x + w, y, y + h]
 
 
-class saveposwindow(QMainWindow):
+class saveposwindow(LMainWindow):
     def __init__(self, parent, poslist=None, flags=None) -> None:
         if flags:
             super().__init__(parent, flags=flags)
@@ -583,7 +621,7 @@ class resizableframeless(saveposwindow):
         self.resetflags()
 
 
-class Prompt_dialog(QDialog):
+class Prompt_dialog(LDialog):
     def __init__(self, parent, title, info, items) -> None:
         super().__init__(parent)
         self.setWindowFlags(
@@ -597,7 +635,7 @@ class Prompt_dialog(QDialog):
 
         _layout = QVBoxLayout()
 
-        _layout.addWidget(QLabel(info))
+        _layout.addWidget(LLabel(info))
 
         self.text = []
         for _ in items:
@@ -606,7 +644,7 @@ class Prompt_dialog(QDialog):
             le.setText(_[1])
             self.text.append((le))
             hl = QHBoxLayout()
-            hl.addWidget(QLabel(_[0]))
+            hl.addWidget(LLabel(_[0]))
             hl.addWidget(le)
             _layout.addLayout(hl)
         button = QDialogButtonBox(
@@ -640,8 +678,14 @@ def comboboxcallbackwrap(internallist, d, k, call, _):
             print_exc()
 
 
-def getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=None):
-    s = FocusCombo()
+def getsimplecombobox(
+    lst, d, k, callback=None, fixedsize=False, internallist=None, static=False
+):
+    if static:
+        s = FocusCombo()
+    else:
+
+        s = LFocusCombo()
     s.addItems(lst)
 
     if internallist:
@@ -662,8 +706,12 @@ def getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=No
     return s
 
 
-def D_getsimplecombobox(lst, d, k, callback=None, fixedsize=False, internallist=None):
-    return lambda: getsimplecombobox(lst, d, k, callback, fixedsize, internallist)
+def D_getsimplecombobox(
+    lst, d, k, callback=None, fixedsize=False, internallist=None, static=False
+):
+    return lambda: getsimplecombobox(
+        lst, d, k, callback, fixedsize, internallist, static
+    )
 
 
 def getlineedit(d, key, callback=None, readonly=False):
@@ -839,7 +887,7 @@ def getboxlayout(
             if callable(w):
                 w = w()
             elif isinstance(w, str):
-                w = QLabel(_TR(w))
+                w = LLabel(w)
             if isinstance(w, QWidget):
                 cp_layout.addWidget(w)
             elif isinstance(w, QLayout):
@@ -1301,30 +1349,29 @@ class threebuttons(QWidget):
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
-        texts = _TRL(texts)
         if len(texts) >= 1:
-            button = QPushButton(self)
+            button = LPushButton(self)
             button.setText(texts[0])
             button.clicked.connect(self.btn1clicked)
             layout.addWidget(button)
         if len(texts) >= 2:
-            button2 = QPushButton(self)
+            button2 = LPushButton(self)
             button2.setText(texts[1])
             button2.clicked.connect(self.btn2clicked)
 
             layout.addWidget(button2)
         if len(texts) >= 3:
-            button3 = QPushButton(self)
+            button3 = LPushButton(self)
             button3.setText(texts[2])
             button3.clicked.connect(self.btn3clicked)
             layout.addWidget(button3)
         if len(texts) >= 4:
-            button4 = QPushButton(self)
+            button4 = LPushButton(self)
             button4.setText(texts[3])
             button4.clicked.connect(self.btn4clicked)
             layout.addWidget(button4)
         if len(texts) >= 5:
-            button5 = QPushButton(self)
+            button5 = LPushButton(self)
             button5.setText(texts[4])
             button5.clicked.connect(self.btn5clicked)
             layout.addWidget(button5)
@@ -1339,7 +1386,7 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
     tab.addTab(q, title)
 
 
-def makeforms(lay: QFormLayout, lis, args):
+def makeforms(lay: LFormLayout, lis, args):
     Stretch = args.get("Stretch", True)
     for line in lis:
         if len(line) == 0:
@@ -1381,7 +1428,8 @@ def makeforms(lay: QFormLayout, lis, args):
                 hb.addStretch()
                 wid = hb
         if name:
-            lay.addRow(_TR(name), wid)
+            lay.addRow(name, wid)
+
         else:
             lay.addRow(wid)
 
@@ -1393,14 +1441,14 @@ def makegroupingrid(args):
     parent = args.get("parent", None)
     groupname = args.get("name", None)
     enable = args.get("enable", True)
-    group = QGroupBox()
+    group = LGroupBox()
 
     if not enable:
         group.setEnabled(False)
     if groupname and parent:
         setattr(parent, groupname, group)
     if title:
-        group.setTitle(_TR(title))
+        group.setTitle(title)
     else:
         group.setStyleSheet(
             "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
@@ -1411,7 +1459,7 @@ def makegroupingrid(args):
         group.setLayout(grid)
         automakegrid(grid, lis)
     elif _type == "form":
-        lay = QFormLayout()
+        lay = LFormLayout()
         group.setLayout(lay)
         makeforms(lay, lis, args)
     return group
@@ -1446,18 +1494,18 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
         for item in line:
             if type(item) == str:
                 cols = 1
-                wid = QLabel(_TR(item))
+                wid = LLabel(item)
             elif type(item) != tuple:
                 wid, cols = item, 1
             elif len(item) == 2:
 
                 wid, cols = item
                 if type(wid) == str:
-                    wid = QLabel(_TR(wid))
+                    wid = LLabel(wid)
             elif len(item) == 3:
                 wid, cols, arg = item
                 if type(wid) == str:
-                    wid = QLabel((wid))
+                    wid = LLabel(wid)
                     if arg == "link":
                         wid.setOpenExternalLinks(True)
                 elif arg == "group":
@@ -1530,7 +1578,7 @@ def makesubtab_lazy(
     if klass:
         tab = klass()
     else:
-        tab = QTabWidget()
+        tab = LTabWidget()
 
     def __(t, i):
         try:
@@ -1559,17 +1607,17 @@ def makesubtab_lazy(
 
 
 @Singleton_close
-class listediter(QDialog):
+class listediter(LDialog):
     def showmenu(self, p: QPoint):
         curr = self.hctable.currentIndex()
         r = curr.row()
         if r < 0:
             return
         menu = QMenu(self.hctable)
-        remove = QAction(_TR("删除"))
-        copy = QAction(_TR("复制"))
-        up = QAction(_TR("上移"))
-        down = QAction(_TR("下移"))
+        remove = LAction("删除")
+        copy = LAction("复制")
+        up = LAction("上移")
+        down = LAction("下移")
         if not self.isrankeditor:
             menu.addAction(remove)
             menu.addAction(copy)
@@ -1620,11 +1668,11 @@ class listediter(QDialog):
         self.isrankeditor = isrankeditor
         try:
             self.setWindowTitle(title)
-            model = QStandardItemModel()
+            model = LStandardItemModel()
             model.setHorizontalHeaderLabels([header])
             self.hcmodel = model
             self.namemapfunction = namemapfunction
-            table = QTableView()
+            table = TableViewW()
             table.horizontalHeader().setSectionResizeMode(
                 QHeaderView.ResizeMode.ResizeToContents
             )
@@ -1795,7 +1843,7 @@ def getsimplepatheditor(
         if useiconbutton:
             bu = getIconButton(icon="fa.gear")
         else:
-            bu = QPushButton(_TR("选择" + ("文件夹" if isdir else "文件")))
+            bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
         bu.clicked.connect(
             functools.partial(
                 openfiledirectory,

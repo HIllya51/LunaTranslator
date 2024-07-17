@@ -6,7 +6,7 @@ from myutils.utils import (
     gamdidchangedtask,
 )
 from metadata.abstract import common
-from myutils.config import _TR, savehook_new_data
+from myutils.config import savehook_new_data
 import functools
 from qtsymbols import *
 from gui.usefulwidget import getlineedit
@@ -90,7 +90,7 @@ class steamsettings(QDialog):
             "cookie:steamLoginSecure", getlineedit(_ref.config, "steamLoginSecure")
         )
 
-        btn = QPushButton(_TR("wishlist"))
+        btn = QPushButton("wishlist")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_download)
         )

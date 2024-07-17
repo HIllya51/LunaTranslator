@@ -1,10 +1,10 @@
 from qtsymbols import *
-import threading, windows, time
+import threading, windows
 import gobject, qtawesome
-from myutils.config import globalconfig, _TR, _TRL
-from myutils.utils import str2rgba
-from myutils.wrapper import Singleton_close, threader
+from myutils.config import globalconfig
+from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow, getsimplecombobox
+from gui.dynalang import LPushButton, LMainWindow, LAction
 
 
 @Singleton_close
@@ -21,7 +21,7 @@ class edittext(saveposwindow):
 
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
-        self.setWindowTitle(_TR("编辑"))
+        self.setWindowTitle("编辑")
         if cached:
             self.getnewsentence(cached)
 
@@ -89,7 +89,7 @@ class edittext(saveposwindow):
 
     def showmenu(self, point: QPoint):
         menu = QMenu(self.textOutput)
-        qingkong = QAction(_TR("清空"))
+        qingkong = LAction(("清空"))
         menu.addAction(qingkong)
         action = menu.exec(QCursor.pos())
         if action == qingkong:
@@ -101,7 +101,7 @@ class edittext(saveposwindow):
 
 
 @Singleton_close
-class edittrans(QMainWindow):
+class edittrans(LMainWindow):
 
     def __init__(self, parent):
         super().__init__(parent, Qt.WindowType.FramelessWindowHint)
@@ -139,11 +139,11 @@ class edittrans(QMainWindow):
         self.setCentralWidget(w)
         w.setLayout(qv)
 
-        submit = QPushButton(_TR("确定"))
+        submit = LPushButton("确定")
         qv.addWidget(self.textOutput)
         qv.addWidget(
             getsimplecombobox(
-                _TRL([globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]]),
+                [globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]],
                 globalconfig,
                 "realtime_edit_target",
                 internallist=list(globalconfig["fanyi"]),
