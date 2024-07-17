@@ -27,8 +27,10 @@ class LLabel(QLabel, LBase):
 
 
 class LMessageBox(QMessageBox, LBase):
-    _title = None
-    _text = None
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self._title = None
+        self._text = None
 
     def setText(self, t):
         self._text = t
@@ -106,7 +108,10 @@ class LCheckBox(QCheckBox, LBase):
 
 
 class LGroupBox(QGroupBox, LBase):
-    _text = None
+
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self._text = None
 
     def setTitle(self, t):
         self._text = t
@@ -145,7 +150,10 @@ class LFormLayout(QFormLayout):
 
 
 class LDialog(QDialog, LBase):
-    _title = None
+
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self._title = None
 
     def setWindowTitle(self, t):
         self._title = t
@@ -157,7 +165,10 @@ class LDialog(QDialog, LBase):
 
 
 class LMainWindow(QMainWindow, LBase):
-    _title = None
+
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self._title = None
 
     def setWindowTitle(self, t):
         self._title = t
@@ -178,7 +189,9 @@ class LRadioButton(QRadioButton, LBase):
 
 
 class LTabBar(QTabBar, LBase):
-    __titles = []
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self.__titles = []
 
     def insertTab(self, idx, t):
         self.__titles.insert(idx, t)
@@ -198,7 +211,9 @@ class LTabBar(QTabBar, LBase):
 
 
 class LTabWidget(QTabWidget, LBase):
-    __titles = []
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self.__titles = []
 
     def addTab(self, w, t):
         self.__titles.append(t)
@@ -210,7 +225,9 @@ class LTabWidget(QTabWidget, LBase):
 
 
 class LStandardItemModel(QStandardItemModel, LBase):
-    __ls = []
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self.__ls = []
 
     def setHorizontalHeaderLabels(self, ls: list):
         self.__ls = ls.copy()

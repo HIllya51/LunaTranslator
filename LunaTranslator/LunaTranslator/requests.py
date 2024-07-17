@@ -62,10 +62,11 @@ class CaseInsensitiveDict(MutableMapping):
 
 
 class ResponseBase:
-    headers = CaseInsensitiveDict()
-    cookies = {}
-    status_code = 0
-    content = b""
+    def __init__(self):
+        self.headers = CaseInsensitiveDict()
+        self.cookies = {}
+        self.status_code = 0
+        self.content = b""
 
     @property
     def text(self):
@@ -347,17 +348,19 @@ class Requester_common:
 
 
 class Session:
-    cookies = {}
-    _requester = None
-    _libidx = -1
+    def __init__(self):
 
-    headers = CaseInsensitiveDict(
-        {
-            # "Accept-Encoding": "gzip, deflate, br",
-            "Accept": "*/*",
-            "Connection": "keep-alive",
-        }
-    )
+        self.cookies = {}
+        self._requester = None
+        self._libidx = -1
+
+        self.headers = CaseInsensitiveDict(
+            {
+                # "Accept-Encoding": "gzip, deflate, br",
+                "Accept": "*/*",
+                "Connection": "keep-alive",
+            }
+        )
 
     def __enter__(self):
         return self
