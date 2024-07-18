@@ -33,10 +33,8 @@ from textsource.texthook import texthook
 from textsource.ocrtext import ocrtext
 from gui.selecthook import hookselect
 from gui.translatorUI import QUnFrameWindow
-from gui.languageset import languageset
 import zhconv, functools
 from gui.transhist import transhist
-from gui.usefulwidget import getQMessageBox
 from gui.edittext import edittext
 import importlib, qtawesome
 from functools import partial
@@ -1191,31 +1189,6 @@ class MAINUI:
                 #     QFontDatabase.SystemFont.GeneralFont
                 # ).family()
 
-    def checkintegrity(self):
-
-        js = static_data["checkintegrity"]
-        flist = js["shared"]
-        if platform.architecture()[0] == "64bit":
-            flist += js["64"]
-        else:
-            flist += js["32"]
-        collect = []
-        for f in flist:
-            if os.path.exists(f) == False:
-                collect.append(f)
-        if len(collect):
-
-            getQMessageBox(
-                None,
-                "错误",
-                _TR("找不到重要组件：")
-                + "\n"
-                + "\n".join(collect)
-                + "\n"
-                + _TR("请重新下载并关闭杀毒软件后重试"),
-            )
-            os._exit(0)
-
     def loadui(self):
         self.installeventfillter()
         self.parsedefaultfont()
@@ -1286,13 +1259,3 @@ class MAINUI:
                 targetmod[k] = importlib.import_module(f"metadata.{k}").searcher(k)
             except:
                 print_exc()
-
-    def checklang(self):
-        if globalconfig["language_setted_2.4.5"] == False:
-
-            x = languageset(static_data["language_list_show"])
-            x.exec()
-            globalconfig["language_setted_2.4.5"] = True
-            globalconfig["languageuse"] = x.current
-            globalconfig["tgtlang3"] = x.current
-            loadlanguage()

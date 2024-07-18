@@ -1,7 +1,6 @@
 
 #include "PyStand.h"
 
-
 //---------------------------------------------------------------------
 // dtor
 //---------------------------------------------------------------------
@@ -239,11 +238,11 @@ int PyStand::DetectScript()
 		return -1;
 	}
 	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
-	
+
 	std::vector<wchar_t> buffer(MAX_PATH);
 	GetModuleFileNameW(GetModuleHandle(0), buffer.data(), MAX_PATH);
 	SetEnvironmentVariableW(L"LUNA_EXE_NAME", buffer.data());
-	
+
 	return 0;
 }
 
@@ -318,6 +317,7 @@ int WINAPI
 WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
 #endif
 {
+	auto __handle = AutoHandle(CreateMutexA(&allAccess, FALSE, "LUNA_UPDATER_BLOCK"));
 	PyStand ps(L"LunaTranslator\\runtime");
 	if (ps.DetectScript() != 0)
 	{
