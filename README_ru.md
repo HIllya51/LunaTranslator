@@ -11,7 +11,7 @@
 
 > **Переводчик текста с экрана для игр и не только!**
 
-### [Discord](https://lunatranslator.xyz/Resource/DiscordGroup)
+### [Discord](https://discord.gg/f8NSvaDU)
 
 ### <a href="https://docs.lunatranslator.xyz/#/ru/" target="_blank">Инструкция по настройке программы (Полностью на русском языке)</a> 
 

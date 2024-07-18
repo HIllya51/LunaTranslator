@@ -7,7 +7,7 @@
     <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a></p>
 
 
-<a href="https://docs.lunatranslator.xyz/#/zh/" target="_blank">Tutorial</a> <a href="https://space.bilibili.com/592120404/video" target="_blank">Vedio</a>  <a href="https://lunatranslator.xyz/Resource/DiscordGroup" target="_blank">Discord</a> 
+<a href="https://docs.lunatranslator.xyz/#/zh/" target="_blank">Tutorial</a> <a href="https://space.bilibili.com/592120404/video" target="_blank">Vedio</a>  <a href="https://discord.gg/f8NSvaDU" target="_blank">Discord</a> 
 
 
 ## Основные функции:
