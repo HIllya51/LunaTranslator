@@ -10,9 +10,8 @@
 
 > **A galgame translator**
 
-### [Discord](https://discord.gg/f8NSvaDU)
 
-### <a href="https://docs.lunatranslator.xyz/#/en/" target="_blank">Documentation</a> 
+### [Tutorial](https://docs.lunatranslator.xyz/#/en/) [Vedio](https://space.bilibili.com/592120404/video) [Discord](https://discord.gg/f8NSvaDU)
 
 
 ## Features
