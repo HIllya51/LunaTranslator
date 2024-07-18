@@ -5,7 +5,7 @@
     /* Change navbar's style*/
     --sidebar-nav-pagelink-background-image: none;
     --sidebar-nav-link-before-content-l3: none;
-
+    --content-max-width: calc(max(60%, 1000px));
 }
 
 /* Fix sidebar fold arrow */
@@ -122,10 +122,10 @@
 
 }
 
-main{ 
-    min-height: 0vh; 
+main {
+    min-height: 0vh;
 }
 
-main .markdown-section{
+main .markdown-section {
     display: none;
 }
