@@ -1,6 +1,6 @@
 
 window.$docsify = {
-    homepage: '/redirect.html',
+    // homepage: '/redirect.html',
     requestHeaders: {
         'cache-control': 'max-age=0',
     },
@@ -79,18 +79,28 @@ const navitexts = {
         contactme: 'Chat Groups'
     }
 }
+function getcurrlang(url) {
+    for (let key in navitexts) {
+        if (url.includes(`/${key}/`)) {
+            return key
+        }
+    }
+    return ''
+}
 window.onpopstate = function (event) {
     let url = window.location.href;
-    let thislang = currentlang
-    if (url.includes('/zh/')) {
-        thislang = 'zh'
+    console.log(url)
+    if (url.endsWith('/#/')) {
+        window.location.href += 'zh/'
+        return
     }
-    else if (url.includes('/en/')) {
-        thislang = 'en'
+    for (let key in navitexts) {
+        if (url.endsWith(`/${key}/`)) {
+            window.location.href += 'README'
+            return
+        }
     }
-    else if (url.includes('/ru/')) {
-        thislang = 'ru'
-    }
+    let thislang = getcurrlang(url)
     if (thislang != currentlang) {
         currentlang = thislang
         console.log(navitexts[currentlang])
