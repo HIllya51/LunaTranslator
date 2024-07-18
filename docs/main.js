@@ -20,7 +20,7 @@ window.$docsify = {
         '/_navbar.md': '/navbar.md',
         '/_coverpage.md': '/coverpage.md',
     },
-    loadNavbar: true,
+    // loadNavbar: true,
     loadSidebar: true,
 
     auto2top: true,
