@@ -2,6 +2,7 @@ import gobject, os, uuid, windows
 from ocrengines.baseocrclass import baseocr
 from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, CFUNCTYPE, c_bool, c_int
 import winsharedutils
+import winreg
 from traceback import print_exc
 
 
@@ -42,15 +43,14 @@ class OCR(baseocr):
         return ocr, mojo
 
     def findwechat(self):
-
-        key = windows.RegOpenKeyEx(
-            windows.HKEY_CURRENT_USER,
-            "SOFTWARE\Tencent\WeChat",
+        k = winreg.OpenKeyEx(
+            winreg.HKEY_CURRENT_USER,
+            r"SOFTWARE\Tencent\WeChat",
             0,
-            windows.KEY_QUERY_VALUE,
+            winreg.KEY_QUERY_VALUE,
         )
-        base = windows.RegQueryValueEx(key, "InstallPath")
-        windows.RegCloseKey(key)
+        base = winreg.QueryValueEx(k, "InstallPath")[0]
+        winreg.CloseKey(k)
         WeChatexe = os.path.join(base, "WeChat.exe")
         version = winsharedutils.queryversion(WeChatexe)
         if not version:

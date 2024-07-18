@@ -755,58 +755,6 @@ def mciSendString(s):
     return bf.value
 
 
-RegCloseKey = _Advapi32.RegCloseKey
-RegCloseKey.argtypes = (HKEY,)
-_RegOpenKeyExW = _Advapi32.RegOpenKeyExW
-_RegOpenKeyExW.argtypes = HKEY, LPCWSTR, DWORD, c_uint, PHKEY
-_RegQueryValueExW = _Advapi32.RegQueryValueExW
-_RegQueryValueExW.argtypes = HKEY, LPCWSTR, LPDWORD, LPDWORD, LPBYTE, LPDWORD
-ERROR_SUCCESS = 0
-HKEY_CURRENT_USER = 0x80000001
-KEY_ALL_ACCESS = 0xF003F
-KEY_QUERY_VALUE = 1
-
-
-def RegOpenKeyEx(hKey, lpSubkey, ulOptions, samDesired):
-    key = HKEY()
-    succ = _RegOpenKeyExW(hKey, lpSubkey, ulOptions, samDesired, pointer(key))
-    if succ != ERROR_SUCCESS:
-        raise Exception("RegOpenKeyEx failed")
-    return key
-
-
-def RegQueryValueEx(hKey, lpValueName):
-    data = create_unicode_buffer(65535)
-    length = DWORD(65535)
-    succ = _RegQueryValueExW(
-        hKey, lpValueName, None, None, cast(data, LPBYTE), pointer(length)
-    )
-
-    if succ != ERROR_SUCCESS:
-        raise Exception("RegQueryValueEx failed")
-    return data.value
-
-
-# _RegQueryInfoKeyW=_Advapi32.RegQueryInfoKeyW
-# _RegQueryInfoKeyW.argtypes=c_void_p,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
-# def RegQueryInfoKey(hkey):
-#     ValueCount=c_uint()
-#     MaxValueNameLen=c_uint()
-#     MaxValueLen=c_uint()
-#     if _RegQueryInfoKeyW(hkey,None,None,None,None,None,None,pointer(ValueCount),pointer(MaxValueNameLen),pointer(MaxValueLen),None,None)!=ERROR_SUCCESS:
-#         raise Exception("RegQueryInfoKey failed")
-#     return ValueCount.value,MaxValueNameLen.value,MaxValueLen.value
-
-# _RegEnumValueW=_Advapi32.RegEnumValueW
-# _RegEnumValueW.argtypes=c_void_p,c_uint,c_wchar_p,c_void_p,c_void_p,c_void_p,c_void_p,c_void_p
-
-# def RegEnumValue(hkey,dwIndex,MaxValueNameLen,MaxValueLen):
-#     key=create_unicode_buffer(MaxValueNameLen+1)
-#     value=create_unicode_buffer(MaxValueLen+1)
-#     vType=c_uint()
-#     _RegEnumValueW(hkey,dwIndex,key,pointer(c_uint(MaxValueNameLen)),None,pointer(vType),value,pointer(c_uint(MaxValueLen)))
-#     return key.value,value.value
-
 _IsUserAnAdmin = _shell32.IsUserAnAdmin
 
 
