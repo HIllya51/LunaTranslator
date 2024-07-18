@@ -6,7 +6,14 @@
 	},
 	"DeepLX": {
 		"args": {
-			"api": ""
+			"github": "https://github.com/OwO-Network/DeepLX",
+			"api": "http://127.0.0.1:1188/translate"
+		},
+		"argstype": {
+			"github": {
+				"type": "label",
+				"islink": true
+			}
 		}
 	},
 	"baiduapi": {
@@ -441,7 +448,7 @@
 			"path": {
 				"name": "路径",
 				"type": "file",
-				"filter":"J2KEngine.dll",
+				"filter": "J2KEngine.dll",
 				"dir": false
 			}
 		}
