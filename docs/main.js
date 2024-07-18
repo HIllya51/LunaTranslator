@@ -56,14 +56,6 @@ for (let i = 0; i < dropdowns.length; i++) {
     });
 }
 
-
-function randombg() {
-    let list = ['luna2.jpg']// ['luna.jpg', 'luna2.jpg', 'luna3.jpg', 'luna4.jpg'];
-    let randomIndex = Math.floor(Math.random() * list.length);
-    let selectedItem = list[randomIndex];
-    document.querySelector("body > div.backgroud").style.backgroundImage = `url("https://image.lunatranslator.xyz/${selectedItem}")`
-}
-randombg()
 var currentlang = "";
 const navitexts = {
     zh: {

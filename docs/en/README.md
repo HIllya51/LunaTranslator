@@ -1,12 +1,4 @@
-# LunaTranslator 
-  
-  
-<p align="left">
-    <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
-    <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
-    <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a></p>
-
-### [Tutorial](https://docs.lunatranslator.xyz/#/en/) [Vedio](https://space.bilibili.com/592120404/video) [Discord](https://discord.gg/f8NSvaDU)
+> **A galgame translator**
 
 ## Features
 
