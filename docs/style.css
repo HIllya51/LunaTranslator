@@ -121,3 +121,11 @@
     white-space: nowrap;
 
 }
+
+main{ 
+    min-height: 0vh; 
+}
+
+main .markdown-section{
+    display: none;
+}
