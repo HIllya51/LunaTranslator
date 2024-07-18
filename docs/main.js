@@ -47,10 +47,12 @@ for (let i = 0; i < dropdowns.length; i++) {
 
     let dropdown = dropdowns[i]
     dropdown.addEventListener('mouseover', function () {
+        this.getElementsByClassName('goodlinknormal')[0].classList.add('goodlinkhover')
         let dropdownContent = this.querySelector('.dropdown-content');
         dropdownContent.style.display = 'block';
     });
     dropdown.addEventListener('mouseout', function () {
+        this.getElementsByClassName('goodlinknormal')[0].classList.remove('goodlinkhover')
         let dropdownContent = this.querySelector('.dropdown-content');
         dropdownContent.style.display = 'none';
     });

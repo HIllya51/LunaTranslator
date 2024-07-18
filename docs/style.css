@@ -47,10 +47,10 @@
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: white;
 }
 
-.goodlink {
+.goodlink , .goodlinknormal {
     text-decoration: none;
     color: black;
     line-height: 50px;
@@ -58,9 +58,9 @@
 
 }
 
-.goodlink:hover {
+.goodlink:hover , .goodlinkhover{
     color: deepskyblue;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 192, 203, 0.3);
 }
 
 
