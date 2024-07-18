@@ -754,7 +754,6 @@
     "按钮颜色": "Colore pulsante",
     "按钮大小": "Dimensione pulsante",
     "软件显示语言": "Linguaggio di visualizzazione del software",
-    "不支持的游戏？": "Giochi non supportati?",
     "填充颜色": "colore di riempimento",
     "阴影强度": "Intensità ombra",
     "阴影半径": "Raggio ombra",
@@ -823,5 +822,6 @@
     "无缩放": "Nessuna scala",
     "总是检测": "Controllo sempre",
     "动态检测": "Rilevamento dinamico",
-    "从不检测": "Non rilevare mai"
+    "从不检测": "Non rilevare mai",
+    "找不到文本？": "Non trovi il messaggio?"
 }

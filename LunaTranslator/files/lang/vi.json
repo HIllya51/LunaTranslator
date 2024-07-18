@@ -754,7 +754,6 @@
     "按钮颜色": "Màu nút",
     "按钮大小": "Kích thước nút",
     "软件显示语言": "Ngôn ngữ hiển thị phần mềm",
-    "不支持的游戏？": "Trò chơi không được hỗ trợ?",
     "填充颜色": "Màu tô",
     "阴影强度": "Cường độ bóng",
     "阴影半径": "Bán kính bóng",
@@ -823,5 +822,6 @@
     "无缩放": "Không phóng to",
     "总是检测": "Luôn phát hiện",
     "动态检测": "Phát hiện động",
-    "从不检测": "Không bao giờ phát hiện"
+    "从不检测": "Không bao giờ phát hiện",
+    "找不到文本？": "Không tìm thấy văn bản?"
 }

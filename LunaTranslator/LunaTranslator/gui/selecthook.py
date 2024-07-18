@@ -4,7 +4,7 @@ from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, windows, winsharedutils, gobject
 from myutils.config import savehook_new_data, static_data, globalconfig, _TR
-from myutils.utils import checkchaos, get_time_stamp
+from myutils.utils import checkchaos, get_time_stamp, dynamiclink
 from gui.dialog_savedgame import dialog_setting_game
 from gui.usefulwidget import (
     closeashidewindow,
@@ -614,9 +614,13 @@ class hookselect(closeashidewindow):
         self.searchtext = QLineEdit()
         self.searchtextlayout.addWidget(self.searchtext)
         self.searchtextbutton = LPushButton("搜索包含文本的条目")
-
+        __ = LPushButton("找不到文本？")
+        __.clicked.connect(
+            lambda: os.startfile(dynamiclink("{main_server}/Resource/game_support"))
+        )
         self.searchtextbutton.clicked.connect(self.searchtextfunc)
         self.searchtextlayout.addWidget(self.searchtextbutton)
+        self.searchtextlayout.addWidget(__)
         ###################
         self.ttCombomodelmodel2 = LStandardItemModel()
         self.tttable2 = TableViewW()

@@ -754,7 +754,6 @@
     "按钮颜色": "Düğme rengi",
     "按钮大小": "Düğme ölçüsi",
     "软件显示语言": "Yazılım Gösterim Dili",
-    "不支持的游戏？": "Desteklenmeyen oyunlar mı?",
     "填充颜色": "doldurum rengi",
     "阴影强度": "Gölge şiddeti",
     "阴影半径": "Gölge Yardımcısı",
@@ -823,5 +822,6 @@
     "无缩放": "Yerleştirme yok",
     "总是检测": "Her zaman kontrol ediyor",
     "动态检测": "Dinamik tanıma",
-    "从不检测": "Asla tanıma"
+    "从不检测": "Asla tanıma",
+    "找不到文本？": "Mesaj bulamıyor musun?"
 }

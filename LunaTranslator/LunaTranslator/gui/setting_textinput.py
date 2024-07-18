@@ -50,19 +50,9 @@ def __create2(self):
     return self.selecthookbutton
 
 
-def gamesupport():
-    __ = LPushButton("不支持的游戏？")
-    __.clicked.connect(
-        lambda: os.startfile(dynamiclink("{main_server}/Resource/game_support"))
-    )
-    return __
-
-
 def gethookgrid(self):
 
     grids = [
-        [(gamesupport, 0)],
-        [],
         [
             "选择游戏",
             functools.partial(__create, self),

@@ -753,7 +753,6 @@
     "按钮颜色": "Button Color",
     "按钮大小": "Button Size",
     "软件显示语言": "Software Display Language",
-    "不支持的游戏？": "Unsupported Games?",
     "填充颜色": "Fill Color",
     "阴影强度": "Shadow Intensity",
     "阴影半径": "Shadow Radius",
@@ -823,5 +822,6 @@
     "无缩放": "No scaling",
     "总是检测": "Always checking",
     "动态检测": "Dynamic detection",
-    "从不检测": "Never detect"
+    "从不检测": "Never detect",
+    "找不到文本？": "Can't find text?"
 }

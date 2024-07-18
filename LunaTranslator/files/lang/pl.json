@@ -754,7 +754,6 @@
     "按钮颜色": "Kolor przycisku",
     "按钮大小": "Rozmiar przycisku",
     "软件显示语言": "Język wyświetlania oprogramowania",
-    "不支持的游戏？": "Niewspierane gry?",
     "填充颜色": "kolor wypełnienia",
     "阴影强度": "Intensywność cienia",
     "阴影半径": "Promień cienia",
@@ -823,5 +822,6 @@
     "无缩放": "Brak skalowania",
     "总是检测": "Zawsze sprawdzam",
     "动态检测": "Wykrywanie dynamiczne",
-    "从不检测": "Nigdy nie wykrywaj"
+    "从不检测": "Nigdy nie wykrywaj",
+    "找不到文本？": "Nie możesz znaleźć smsa?"
 }

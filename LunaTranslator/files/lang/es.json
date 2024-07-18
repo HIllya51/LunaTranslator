@@ -754,7 +754,6 @@
     "按钮颜色": "Color del botón",
     "按钮大小": "Tamaño del botón",
     "软件显示语言": "Lenguaje de visualización de software",
-    "不支持的游戏？": "¿Juegos no soportados?",
     "填充颜色": "Color de relleno",
     "阴影强度": "Intensidad de la sombra",
     "阴影半径": "Radio de sombra",
@@ -823,5 +822,6 @@
     "无缩放": "Sin zoom",
     "总是检测": "Siempre detectado",
     "动态检测": "Detección dinámica",
-    "从不检测": "Nunca detectar"
+    "从不检测": "Nunca detectar",
+    "找不到文本？": "¿No se puede encontrar el texto?"
 }
