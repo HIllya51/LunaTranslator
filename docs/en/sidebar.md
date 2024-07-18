@@ -1,6 +1,4 @@
-﻿- Start
-
-  - [Introduction](/en/README.md)
+﻿- [Introduction](/en/README.md)
 
 - Usage
   - [Start](/en/start.md)
@@ -8,11 +6,8 @@
   - [Settings](/en/settings.md)
   - [Tray icon](/en/trayicon.md)
 
-- OCR instructions
-  - [OCR instructions](/en/ocrsetsumei.md)
+- [OCR instructions](/en/ocrsetsumei.md)
 
-- HOOK instructions
-  - [HOOK instructions](/en/hooksetsumei.md)
+- [HOOK instructions](/en/hooksetsumei.md)
   
-- Support author
-  - [Support author](/en/support.md) 
+- [Support author](/en/support.md) 

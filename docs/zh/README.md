@@ -1,15 +1,5 @@
 
-# LunaTranslator 使用说明
-
-  
-  
-<p align="left">
-    <a href="./LICENSE"><img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"></a>
-    <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
-    <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://lunatranslator.xyz/Github/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a></p>
-
-### [使用说明](https://docs.lunatranslator.xyz/#/zh/) [视频教程](https://space.bilibili.com/592120404/video) [QQ群](https://lunatranslator.xyz/Resource/QQGroup) [Discord](https://discord.gg/f8NSvaDU)
-
+> **一款galgame翻译器**
 
 ## 功能支持
 

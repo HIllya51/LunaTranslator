@@ -25,4 +25,4 @@
 ![img](https://image.lunatranslator.xyz/zh/mangaocr/succ.png)
 
 
-等待一会儿首次运行的下载模型和每次运行都需要的加载模型。显示“* Running on http://127.0.0.1:5665”表示服务已正常启动。
+等待一会儿首次运行的下载模型和每次运行都需要的加载模型。显示“`* Running on http://127.0.0.1:5665`”表示服务已正常启动。

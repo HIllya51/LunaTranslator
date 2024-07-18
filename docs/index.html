@@ -1,62 +1,99 @@
 <!DOCTYPE html>
-<html  >
-<head> 
-  <meta charset="UTF-8">
+<html>
+
+<head>
   <title>LunaTranslator 使用说明</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
   <link rel="icon" href="https://image.lunatranslator.xyz/luna.ico" type="image/x-icon">
-  <meta name="description" content="Description">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/docsify/lib/themes/vue.css">
+  <link rel="stylesheet" href="https://unpkg.com/docsify-themeable/dist/css/theme-simple.css" />
+  <link href="//unpkg.com/prismjs/plugins/line-numbers/prism-line-numbers.css" rel="stylesheet" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/docsify-themeable/dist/css/theme-simple.css"
+    />
+    <link
+      href="//unpkg.com/prismjs/plugins/line-numbers/prism-line-numbers.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <!-- Fontawesome -->
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.14.0/js/all.min.js"></script>
 </head>
+
 <body>
+<div class="headercenter">
+<div class="header">
+    <div class="buttons">
+        <div class="buttonitem buttonsize"><a class="goodlink buttonsize" target="_blank"  href="https://lunatranslator.xyz/" id="homepage"
+            >官方网站</a></div>
+        <div class="buttonitem buttonsize">
+            <div class="dropdown buttonsize">
+                <span class="goodlink"  id="downloadlink">
+                    软件下载
+                </span>
+                <div class="dropdown-content ">
+                    <a class="goodlink buttonsize"
+                    target="_blank"  href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip">64位<br></a>
+                    <a class="goodlink buttonsize"
+                    target="_blank"  href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip">32位<br></a>
+                </div>
+            </div>
+        </div>
+        <div class="buttonitem buttonsize"><a class="goodlink buttonsize" href="https://space.bilibili.com/592120404/video"
+                target="_blank"  id="vediotutorial">视频教学</a>
+        </div>
+        <div class="buttonitem buttonsize">
+            <div class="dropdown buttonsize">
+                <span class="goodlink" id="contactme">
+                    交流群
+                </span>
+                <div class="dropdown-content ">
+                    <a class="goodlink buttonsize"
+                    target="_blank"  href="https://lunatranslator.xyz/Resource/QQGroup">QQ群<br></a>
+                    <a class="goodlink buttonsize"
+                    target="_blank"   href="https://lunatranslator.xyz/Resource/DiscordGroup">Discord<br></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div></div>
+<div class="backgroud">
+</div>
+
   <div id="app"></div>
+  <script src="/main.js"></script>
+  <script src="https://unpkg.com/docsify@4/lib/docsify.min.js"></script>
+  <script src="https://unpkg.com/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://unpkg.com/docsify@4/lib/plugins/external-script.min.js"></script>
+  <!-- Prism -->
+  <script src="https://unpkg.com/prismjs@1/prism.js"></script>
+  <script src="https://unpkg.com/prismjs@1/components/prism-c.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1/components/prism-cpp.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1/components/prism-cmake.min.js"></script>
+  <script src="https://unpkg.com/prismjs@1/components/prism-pascal.min.js"></script>
+  <!-- Prism plugin: Line numbers -->
+  <script src="https://unpkg.com/prismjs@1/plugins/line-numbers/prism-line-numbers.js"></script>
+  <!-- docsify-katex -->
+  <script src="https://unpkg.com/docsify-katex@1.4.3/dist/docsify-katex.js"></script>
+  <link rel="stylesheet" href="//unpkg.com/katex@0.10.2/dist/katex.min.css" />
+  <!-- docsify-themeable -->
+  <script src="https://unpkg.com/docsify-themeable@0"></script>
+  <!-- docsify-sidebar-collapse -->
+  <script src="https://unpkg.com/docsify-sidebar-collapse@1.3.2/dist/docsify-sidebar-collapse.min.js"></script>
+  <!-- docsify-pagination --->
+  <script src="https://unpkg.com/docsify-pagination@2.6.0/dist/docsify-pagination.min.js"></script>
+  <!-- docsify-copy-code -->
+  <script src="https://unpkg.com/docsify-copy-code@2.1.0/dist/docsify-copy-code.min.js"></script>
+  <!-- Raphael and flowchart.js -->
+  <script src="https://unpkg.com/raphael@2.3.0/raphael.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/adrai/flowchart.js@1.15.0/release/flowchart.min.js"></script>
 </body>
-<script>
-  window.$docsify = {
-    homepage : '/redirect.html',
-    requestHeaders: {
-      'cache-control': 'max-age=0',
-    },
-    repo: 'https://lunatranslator.xyz/Github/LunaTranslator',
-    
-    alias: {
-      '/zh/_sidebar.md': '/zh/sidebar.md',
-      '/ru/_sidebar.md': '/ru/sidebar.md',
-      '/en/_sidebar.md': '/en/sidebar.md',
-      '/_navbar.md': '/navbar.md',
-    },
-    loadNavbar:true,
-    loadSidebar: true,
-    subMaxLevel: 1,
-    
-
-    // subMaxLevel: 2
-
-    auto2top: true,
-
-    search: {
-      noData: {
-        '/zh/': '没有结果!',
-        '/': 'No results!',
-      },
-      paths: 'auto',
-      placeholder: {
-        '/zh/': '搜索',
-        '/': 'Search',
-      }
-    },
-  }
-</script>
-<script src="https://unpkg.com/docsify@latest/lib/docsify.min.js"></script>
-<script src="https://unpkg.com/docsify@latest/lib/plugins/search.min.js"></script>
-<script src="https://unpkg.com/docsify@latest/lib/plugins/zoom-image.min.js"></script>
-<script src="https://unpkg.com/prismjs/components/prism-markdown.min.js"></script>
-<script src="https://unpkg.com/prismjs/components/prism-bash.min.js"></script>
-<script src="https://unpkg.com/prismjs/components/prism-ruby.min.js"></script>
-<script src="https://unpkg.com/prismjs/components/prism-yaml.min.js"></script>
-<script src="https://unpkg.com/prismjs/components/prism-less.min.js"></script>
 
 </html>

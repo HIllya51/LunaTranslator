@@ -1,0 +1,123 @@
+:root {
+    /* Change link's style */
+    --link-color: var(--theme-color);
+    --link-text-decoration: none;
+    /* Change navbar's style*/
+    --sidebar-nav-pagelink-background-image: none;
+    --sidebar-nav-link-before-content-l3: none;
+
+}
+
+/* Fix sidebar fold arrow */
+.sidebar-nav li>a[href^='#/']:not([href*='?id=']):not(:only-child) {
+    background-image: var(--sidebar-nav-pagelink-background-image--collapse,
+            var(--sidebar-nav-pagelink-background-image--loaded,
+                var(--sidebar-nav-pagelink-background-image)));
+    background-position: var(--sidebar-nav-pagelink-background-position--collapse,
+            var(--sidebar-nav-pagelink-background-position--loaded,
+                var(--sidebar-nav-pagelink-background-image)));
+}
+
+.sidebar-nav li.open>a[href^='#/']:not([href*='?id=']):not(:only-child) {
+    background-image: var(--sidebar-nav-pagelink-background-image--active,
+            var(--sidebar-nav-pagelink-background-image--loaded,
+                var(--sidebar-nav-pagelink-background-image)));
+    background-position: var(--sidebar-nav-pagelink-background-position--active,
+            var(--sidebar-nav-pagelink-background-position--loaded,
+                var(--sidebar-nav-pagelink-background-image)));
+}
+
+.markdown-section {
+    border: 1px solid deepskyblue;
+    margin-top: 60px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.app-nav {
+    font-size: 21px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.goodlink {
+    text-decoration: none;
+    color: black;
+    line-height: 50px;
+    display: block;
+
+}
+
+.goodlink:hover {
+    color: deepskyblue;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+
+.buttonsize {
+    width: 180px;
+    line-height: 50px;
+}
+
+.buttonitem {
+    display: inline-block;
+    text-align: center;
+}
+
+.headercenter {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.header {
+    font-size: 21px;
+    position: fixed;
+    height: 50px;
+    box-shadow: 0 0 4px 1px gray;
+    z-index: 100;
+    background-color: #ffffff80;
+    backdrop-filter: blur(4px);
+}
+
+.backgroud {
+    /* background-image: url("./luna.jpg"); */
+    background-size: 100% auto;
+    content: '';
+    opacity: 0.33;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+}
+
+.xiamian {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 60px;
+    bottom: 0;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.buttons {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    white-space: nowrap;
+
+}
