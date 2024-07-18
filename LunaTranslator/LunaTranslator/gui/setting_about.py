@@ -303,6 +303,7 @@ def setTab_update(self, basel):
     ]
 
     shuominggrid = [
+        ["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
         ["项目网站", makehtml("{main_server}/")],
         [
             "使用说明",

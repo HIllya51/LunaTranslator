@@ -121,6 +121,8 @@ class LGroupBox(QGroupBox, LBase):
         if self._text:
             super().setTitle(_TR(self._text))
 
+    def changeEvent(self, e: QEvent):
+        super(LGroupBox, self).changeEvent(e)
 
 class LListWidgetItem(QListWidgetItem):
     def __init__(self, text):
