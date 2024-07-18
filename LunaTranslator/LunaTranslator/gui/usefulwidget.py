@@ -123,13 +123,9 @@ def getQMessageBox(
     useok=True,
     usecancel=False,
     okcallback=None,
-    cancelcallback=None,
-    tr=True,
+    cancelcallback=None
 ):
-    if tr:
-        msgBox = LMessageBox(parent)
-    else:
-        msgBox = QMessageBox(parent)
+    msgBox = LMessageBox(parent)
     msgBox.setWindowTitle((title))
     msgBox.setText((text))
     btn = 0
