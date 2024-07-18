@@ -50,7 +50,8 @@
     background-color: white;
 }
 
-.goodlink , .goodlinknormal {
+.goodlink,
+.goodlinknormal {
     text-decoration: none;
     color: black;
     line-height: 50px;
@@ -58,7 +59,8 @@
 
 }
 
-.goodlink:hover , .goodlinkhover{
+.goodlink:hover,
+.goodlinkhover {
     color: deepskyblue;
     background-color: rgba(255, 192, 203, 0.3);
 }
@@ -74,15 +76,12 @@
     text-align: center;
 }
 
-.headercenter {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
 
 .header {
+    width: 100%;
     font-size: 21px;
     position: fixed;
+    top: 0px;
     height: 50px;
     box-shadow: 0 0 4px 1px gray;
     z-index: 100;
@@ -103,14 +102,15 @@
     z-index: -2;
 }
 
-.xiamian {
+.sidebar,
+.sidebar-toggle {
     position: fixed;
-    left: 0;
-    right: 0;
-    top: 60px;
-    bottom: 0;
-    overflow-x: auto;
-    overflow-y: auto;
+    top: 50px;
+}
+
+.github-corner {
+    position: fixed;
+    top: 50px;
 }
 
 .buttons {
