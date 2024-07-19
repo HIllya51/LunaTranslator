@@ -4,7 +4,7 @@ window.$docsify = {
     requestHeaders: {
         'cache-control': 'max-age=0',
     },
-
+    notFoundPage: 'redirect.html',
     pagination: {
         previousText: '上一节',
         nextText: '下一节',
@@ -37,10 +37,9 @@ window.$docsify = {
         }
     },
 
-    executeScript: true
+    executeScript: true,
+    
 }
-
-
 
 let dropdowns = document.getElementsByClassName('dropdown')
 for (let i = 0; i < dropdowns.length; i++) {
@@ -87,11 +86,14 @@ function getcurrlang(url) {
     }
     return ''
 }
+function switchlang(lang) {
+    window.location.href = window.location.href.replace('/' + currentlang + '/', '/' + lang + '/')
+}
 window.onpopstate = function (event) {
     let url = window.location.href;
-    console.log(url)
     if (url.endsWith('/#/')) {
-        window.location.href += 'zh/'
+        let lang = window.localStorage.currentlang ? window.localStorage.currentlang : 'zh'
+        window.location.href += lang + '/'
         return
     }
     for (let key in navitexts) {
@@ -101,9 +103,9 @@ window.onpopstate = function (event) {
         }
     }
     let thislang = getcurrlang(url)
+    window.localStorage.currentlang = thislang
     if (thislang != currentlang) {
         currentlang = thislang
-        console.log(navitexts[currentlang])
 
         for (let key in navitexts[currentlang]) {
             document.getElementById(key).innerText = navitexts[currentlang][key]
