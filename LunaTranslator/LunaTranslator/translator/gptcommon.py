@@ -128,16 +128,19 @@ class gptcommon(basetrans):
         message.append({"role": "user", "content": query})
 
         usingstream = self.config["流式输出"]
-        url = self.config["API接口地址"]
-        if url.endswith("/chat/completions"):
-            pass
-        else:
-            url = self.checkv1(url) + "/chat/completions"
         response = self.proxysession.post(
-            url,
+            self.createurl(),
             headers=self.createheaders(),
             params=self.createparam(),
             json=self.createdata(message),
             stream=usingstream,
         )
         return self.commonparseresponse(query, response, usingstream)
+
+    def createurl(self):
+        url = self.config["API接口地址"]
+        if url.endswith("/chat/completions"):
+            pass
+        else:
+            url = self.checkv1(url) + "/chat/completions"
+        return url
