@@ -162,8 +162,8 @@ def selectllmcallback(self, countnum, btn, fanyi, name):
     )
 
     if len(countnum) % 3 == 0:
-        layout.addWidget(btn, layout.rowCount(), 0, 1, 1)
-        layout.addWidget(self.btnquestion, layout.rowCount() - 1, 1, 1, 1)
+        layout.addWidget(btn, layout.rowCount(), 5 * 2, 1, 2)
+        layout.addWidget(self.btnquestion, layout.rowCount() - 1, 5 * 2 + 2, 1, 2)
     offset = 5 * (len(countnum) % 3)
     layout.addWidget(name, layout.rowCount() - 2, offset + 0)
     layout.addWidget(swc, layout.rowCount() - 2, offset + 1)
@@ -265,8 +265,9 @@ def initsome11(self, l, label=None, btnplus=False):
     if btnplus:
         grids.append(
             [
-                (functools.partial(createbtn, self, countnum), 1),
-                (functools.partial(createbtnquest, self), 1),
+                ("", 10),
+                (functools.partial(createbtn, self, countnum), 2),
+                (functools.partial(createbtnquest, self), 2),
             ]
         )
 
