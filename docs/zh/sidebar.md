@@ -3,6 +3,7 @@
     - [获取软件和启动](/zh/start.md)
 - [软件更新](/zh/update.md)
 - [常见问题](/zh/qas.md)
+    - [国产大模型API接口地址](/zh/guochandamoxing.md)
     - [mangaocr 整合包无法启动怎么办](/zh/mangaocr.md)
     - [OCR 自动化执行方法的参数含义](/zh/ocrparam.md)
     - [Windows OCR 如何安装额外的语言支持](/zh/windowsocr.md)
