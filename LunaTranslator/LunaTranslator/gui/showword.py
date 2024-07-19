@@ -9,7 +9,7 @@ from myutils.utils import parsekeystringtomodvkcode, unsupportkey
 from myutils.config import globalconfig, _TR, static_data, savehook_new_data
 from myutils.subproc import subproc_w
 from myutils.wrapper import threader, tryprint
-from myutils.ocrutil import imageCut, ocr_run
+from myutils.ocrutil import imageCut, ocr_run_2
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import (
     closeashidewindow,
@@ -131,7 +131,7 @@ class AnkiWindow(QWidget):
 
     @threader
     def asyncocr(self, img):
-        self.__ocrsettext.emit(ocr_run(img))
+        self.__ocrsettext.emit(ocr_run_2(img))
 
     def crop(self):
         def ocroncefunction(rect):
