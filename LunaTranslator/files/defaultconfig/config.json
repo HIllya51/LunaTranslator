@@ -1732,6 +1732,20 @@
             "color": "blue",
             "name": "腾讯api"
         },
+        "txhunyuan": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "腾讯混元大模型",
+            "is_gpt_like":true
+        },
+        "baiduqianfan": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "百度千帆大模型",
+            "is_gpt_like":true
+        },
         "yandexapi": {
             "type": "api",
             "use": false,

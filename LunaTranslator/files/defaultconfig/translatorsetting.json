@@ -263,6 +263,51 @@
 			}
 		}
 	},
+	"txhunyuan": {
+		"args": {
+			"secret_id": "",
+			"secret_key": "",
+			"Temperature": 0.3,
+			"top_p": 0.3,
+			"model": "hunyuan-lite",
+			"context_num": 0,
+			"use_user_prompt": false,
+			"user_prompt": "",
+			"usingstream": false
+		},
+		"argstype": {
+			"top_p": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.01
+			},
+			"usingstream": {
+				"name": "流式输出",
+				"type": "switch"
+			},
+			"user_prompt": {
+				"name": "自定义promt"
+			},
+			"use_user_prompt": {
+				"name": "使用自定义promt",
+				"type": "switch"
+			},
+			"context_num": {
+				"name": "附带上下文个数",
+				"type": "intspin",
+				"min": 0,
+				"max": 10,
+				"step": 1
+			},
+			"Temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.1
+			}
+		}
+	},
 	"claude": {
 		"args": {
 			"BASE_URL": "https://api.anthropic.com",
@@ -347,9 +392,64 @@
 				"max": 10,
 				"step": 1
 			},
-			"使用说明": {
-				"type": "label",
-				"islink": false
+			"Temperature": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.1
+			}
+		}
+	},
+	"baiduqianfan": {
+		"args": {
+			"model": "ernie-3.5-8k-0329",
+			"context_num": 0,
+			"API_KEY": "",
+			"SECRET_KEY": "",
+			"use_user_prompt": false,
+			"user_prompt": "",
+			"usingstream": false,
+			"Temperature": 0.3,
+			"top_p": 0.3,
+			"max_tokens": 128,
+			"frequency_penalty": 0
+		},
+		"argstype": {
+			"top_p": {
+				"type": "spin",
+				"min": 0,
+				"max": 1,
+				"step": 0.01
+			},
+			"frequency_penalty": {
+				"type": "spin",
+				"min": 0,
+				"max": 2,
+				"step": 0.05
+			},
+			"max_tokens": {
+				"type": "intspin",
+				"min": 1,
+				"max": 4096,
+				"step": 1
+			},
+			"user_prompt": {
+				"name": "自定义promt"
+			},
+			"usingstream": {
+				"name": "流式输出",
+				"type": "switch"
+			},
+			"use_user_prompt": {
+				"name": "使用自定义promt",
+				"type": "switch"
+			},
+			"context_num": {
+				"name": "附带上下文个数",
+				"type": "intspin",
+				"min": 0,
+				"max": 10,
+				"step": 1
 			},
 			"Temperature": {
 				"type": "spin",
@@ -381,10 +481,6 @@
 				"min": 0,
 				"max": 10,
 				"step": 1
-			},
-			"使用说明": {
-				"type": "label",
-				"islink": false
 			},
 			"Temperature": {
 				"type": "spin",
@@ -660,10 +756,6 @@
 			"Github仓库": {
 				"type": "label",
 				"islink": true
-			},
-			"使用说明": {
-				"type": "label",
-				"islink": false
 			},
 			"API超时(秒)": {
 				"type": "intspin",

@@ -3,7 +3,7 @@ import json, requests
 from traceback import print_exc
 
 
-class gptcommon(basetrans):
+class TS(basetrans):
 
     def langmap(self):
         return {
@@ -26,6 +26,7 @@ class gptcommon(basetrans):
 
     def __init__(self, typename):
         self.context = []
+        self.access = {}
         super().__init__(typename)
 
     def createdata(self, message):
@@ -34,7 +35,14 @@ class gptcommon(basetrans):
         except:
             temperature = 0.3
 
+        if self.config["use_user_prompt"]:
+            system = self.config["user_prompt"]
+        else:
+            system = "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
+                self.srclang, self.tgtlang
+            )
         data = dict(
+            system=system,
             model=self.config["model"],
             messages=message,
             # optional
@@ -44,30 +52,9 @@ class gptcommon(basetrans):
             top_p=self.config["top_p"],
             temperature=temperature,
             frequency_penalty=self.config["frequency_penalty"],
-            stream=self.config["流式输出"],
+            stream=self.config["usingstream"],
         )
         return data
-
-    def createparam(self):
-        return None
-
-    def createheaders(self):
-        return {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
-
-    def checkv1(self, api_url: str):
-        # 傻逼豆包大模型是非要v3，不是v1
-        if api_url.endswith("/v3"):
-            return api_url
-
-        if api_url.endswith("/v1/"):
-            api_url = api_url[:-1]
-        elif api_url.endswith("/v1"):
-            pass
-        elif api_url.endswith("/"):
-            api_url += "v1"
-        else:
-            api_url += "/v1"
-        return api_url
 
     def commonparseresponse(self, query, response: requests.ResponseBase, usingstream):
         if usingstream:
@@ -78,10 +65,7 @@ class gptcommon(basetrans):
                     continue
                 try:
                     json_data = json.loads(response_data[6:])
-                    rs = json_data["choices"][0].get("finish_reason")
-                    if rs and rs != "null":
-                        break
-                    msg = json_data["choices"][0]["delta"]["content"]
+                    msg = json_data["result"].replace("\n\n", "\n").strip()
                     yield msg
                     message += msg
 
@@ -90,33 +74,43 @@ class gptcommon(basetrans):
                     raise Exception(response_data)
         else:
             try:
-
-                message = (
-                    response.json()["choices"][0]["message"]["content"]
-                    .replace("\n\n", "\n")
-                    .strip()
-                )
+                message = response.json()["result"].replace("\n\n", "\n").strip()
                 yield message
             except:
                 raise Exception(response.text)
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": message})
 
+    def get_access_token(self, API_KEY, SECRET_KEY):
+        url = "https://aip.baidubce.com/oauth/2.0/token"
+        params = {
+            "grant_type": "client_credentials",
+            "client_id": API_KEY,
+            "client_secret": SECRET_KEY,
+        }
+        js = self.proxysession.post(url, params=params).json()
+
+        try:
+            return js["access_token"]
+        except:
+            raise Exception(js)
+
+    def checkchange(self):
+        self.checkempty(["model", "SECRET_KEY", "API_KEY"])
+        SECRET_KEY, API_KEY = (
+            self.multiapikeycurrent["SECRET_KEY"],
+            self.multiapikeycurrent["API_KEY"],
+        )
+        if not self.access.get((API_KEY, SECRET_KEY)):
+            acss = self.get_access_token(API_KEY, SECRET_KEY)
+            self.access[(API_KEY, SECRET_KEY)] = acss
+        return self.access[(API_KEY, SECRET_KEY)]
+
     def translate(self, query):
-        self.contextnum = int(self.config["附带上下文个数"])
+        acss = self.checkchange()
+        self.contextnum = int(self.config["context_num"])
 
-        if self.config["使用自定义promt"]:
-            message = [{"role": "user", "content": self.config["自定义promt"]}]
-        else:
-            message = [
-                {
-                    "role": "system",
-                    "content": "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
-                        self.srclang, self.tgtlang
-                    ),
-                },
-            ]
-
+        message = []
         for _i in range(min(len(self.context) // 2, self.contextnum)):
             i = (
                 len(self.context) // 2
@@ -127,16 +121,11 @@ class gptcommon(basetrans):
             message.append(self.context[i * 2 + 1])
         message.append({"role": "user", "content": query})
 
-        usingstream = self.config["流式输出"]
-        url = self.config["API接口地址"]
-        if url.endswith("/chat/completions"):
-            pass
-        else:
-            url = self.checkv1(url) + "/chat/completions"
+        usingstream = self.config["usingstream"]
+        url = f"https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/{self.config['model']}?access_token={acss}"
+
         response = self.proxysession.post(
             url,
-            headers=self.createheaders(),
-            params=self.createparam(),
             json=self.createdata(message),
             stream=usingstream,
         )

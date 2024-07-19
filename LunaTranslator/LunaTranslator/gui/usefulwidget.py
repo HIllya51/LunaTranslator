@@ -1440,6 +1440,7 @@ def makegroupingrid(args):
     parent = args.get("parent", None)
     groupname = args.get("name", None)
     enable = args.get("enable", True)
+    internallayoutname = args.get("internallayoutname", None)
     group = LGroupBox()
 
     if not enable:
@@ -1457,10 +1458,14 @@ def makegroupingrid(args):
         grid = QGridLayout()
         group.setLayout(grid)
         automakegrid(grid, lis)
+        if internallayoutname:
+            setattr(parent, internallayoutname, grid)
     elif _type == "form":
         lay = LFormLayout()
         group.setLayout(lay)
         makeforms(lay, lis, args)
+        if internallayoutname:
+            setattr(parent, internallayoutname, lay)
     return group
 
 

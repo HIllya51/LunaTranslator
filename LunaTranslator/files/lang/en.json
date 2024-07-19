@@ -823,5 +823,9 @@
     "总是检测": "Always checking",
     "动态检测": "Dynamic detection",
     "从不检测": "Never detect",
-    "找不到文本？": "Can't find text?"
+    "找不到文本？": "Can't find text?",
+    "腾讯混元大模型": "Tencent's hybrid big model",
+    "传统": "tradition",
+    "大模型": "Large model",
+    "百度千帆大模型": "Baidu Qianfan Large Model"
 }

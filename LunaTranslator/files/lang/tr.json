@@ -823,5 +823,9 @@
     "总是检测": "Her zaman kontrol ediyor",
     "动态检测": "Dinamik tanıma",
     "从不检测": "Asla tanıma",
-    "找不到文本？": "Mesaj bulamıyor musun?"
+    "找不到文本？": "Mesaj bulamıyor musun?",
+    "腾讯混元大模型": "Tencent'in hibrid büyük modeli",
+    "传统": "gelenek",
+    "大模型": "Büyük model",
+    "百度千帆大模型": "Baidu Qianfan Büyük Modeli"
 }

@@ -140,3 +140,16 @@ main .markdown-section {
     display: none;
 } 
 */
+
+.alert {
+    padding: 10px;
+    background-color: #ff9;
+    border-left: 6px solid #ff0;
+    margin-bottom: 10px;
+    color: black;
+}
+
+.alert-warning {
+    background-color: #f0ad4e;
+    border-color: #ec971f;
+}

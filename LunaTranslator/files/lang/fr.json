@@ -823,5 +823,9 @@
     "总是检测": "Toujours détecter",
     "动态检测": "Détection dynamique",
     "从不检测": "Jamais détecté",
-    "找不到文本？": "Vous ne trouvez pas le texte?"
+    "找不到文本？": "Vous ne trouvez pas le texte?",
+    "腾讯混元大模型": "Tencent hybride grand modèle",
+    "传统": "La tradition",
+    "大模型": "Le grand modèle",
+    "百度千帆大模型": "Baidu mille voiles modèle"
 }
