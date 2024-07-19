@@ -38,7 +38,35 @@ window.$docsify = {
     },
 
     executeScript: true,
-    
+    plugins: [
+        function (hook, vm) {
+            hook.doneEach(() => {
+                var sidebar = document.getElementsByClassName("sidebar")[0];
+                var resizeBar = document.createElement('div');
+                resizeBar.classList.add('sidebarresizer')
+                sidebar.appendChild(resizeBar);
+
+                var startX, startWidth;
+                resizeBar.addEventListener('mousedown', function (e) {
+                    startX = e.clientX;
+                    startWidth = sidebar.offsetWidth;
+                    e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', function (e) {
+                    if (startX) {
+                        var newWidth = startWidth + (e.clientX - startX);
+                        document.documentElement.style.setProperty('--sidebar-width', sidebar.style.width);
+                        sidebar.style.width = Math.max(200, newWidth) + 'px';
+                    }
+                });
+
+                document.addEventListener('mouseup', function () {
+                    startX = null;
+                });
+            })
+        },
+    ]
 }
 
 let dropdowns = document.getElementsByClassName('dropdown')

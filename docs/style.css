@@ -108,6 +108,15 @@
     top: 50px;
 }
 
+.sidebarresizer {
+    width: 5px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: ew-resize;
+}
+
 .github-corner {
     position: fixed;
     top: 50px;
