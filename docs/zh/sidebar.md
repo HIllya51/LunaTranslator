@@ -3,6 +3,7 @@
     - [获取软件和启动](/zh/start.md)
 - [软件更新](/zh/update.md)
 - [常见问题](/zh/qas.md)
+    - [如何改善OCR模式体验](/zh/gooduseocr.md)
     - [如何使用国产大模型API接口](/zh/guochandamoxing.md)
     - [mangaocr 整合包无法启动怎么办](/zh/mangaocr.md)
     - [OCR 自动化执行方法的参数含义](/zh/ocrparam.md)
