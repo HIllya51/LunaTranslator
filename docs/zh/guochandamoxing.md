@@ -32,9 +32,7 @@
 
 ### 百度千帆大模型
 
-<div class="alert alert-warning" role="alert">
-  <strong>警告：</strong> 这个模型好像只支持中英翻译，不支持日文
-</div> 
+!> 这个模型好像只支持中英翻译，不支持日文 
 
 **model** 应填写百度接口文档中的**请求地址**的尾部，例如：
 
