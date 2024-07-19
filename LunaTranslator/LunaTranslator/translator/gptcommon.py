@@ -29,6 +29,8 @@ class gptcommon(basetrans):
         super().__init__(typename)
 
     def createurl(self):
+        if self.config["API接口地址"].endswith("/chat/completions"):
+            return self.config["API接口地址"]
         return self.checkv1(self.config["API接口地址"]) + "/chat/completions"
 
     def createparam(self):
@@ -37,12 +39,16 @@ class gptcommon(basetrans):
     def createheaders(self):
         return {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
 
-    def checkv1(self, api_url):
-        if api_url[-4:] == "/v1/":
+    def checkv1(self, api_url: str):
+        # 傻逼豆包大模型是非要v3，不是v1
+        if api_url.endswith("/v3"):
+            return api_url
+
+        if api_url.endswith("/v1/"):
             api_url = api_url[:-1]
-        elif api_url[-3:] == "/v1":
+        elif api_url.endswith("/v1"):
             pass
-        elif api_url[-1] == "/":
+        elif api_url.endswith("/"):
             api_url += "v1"
         else:
             api_url += "/v1"
