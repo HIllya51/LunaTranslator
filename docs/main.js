@@ -56,8 +56,7 @@ window.$docsify = {
                 document.addEventListener('mousemove', function (e) {
                     if (startX) {
                         var newWidth = startWidth + (e.clientX - startX);
-                        document.documentElement.style.setProperty('--sidebar-width', sidebar.style.width);
-                        sidebar.style.width = Math.max(200, newWidth) + 'px';
+                        document.documentElement.style.setProperty('--sidebar-width', Math.min(1000, Math.max(100, newWidth)) + 'px');
                     }
                 });
 
