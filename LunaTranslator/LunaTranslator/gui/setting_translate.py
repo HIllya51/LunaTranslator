@@ -162,16 +162,10 @@ def createbtnexport(self):
     return bt
 
 
-def createfuzspin(self):
-
-    _fuzainum = getspinbox(1, 99999, globalconfig, "loadbalance_oncenum", step=1)
-    _fuzainum.setEnabled(globalconfig["loadbalance"])
-    self._fuzainum = _fuzainum
-    return _fuzainum
-
-
 def setTabTwo_lazy(self, basel):
-
+    # 均衡负载  loadbalance
+    # 单次负载个数 loadbalance_oncenum
+    # 过时的，不再在ui中展示
     grids = [
         [
             "最短翻译字数",
@@ -180,24 +174,18 @@ def setTabTwo_lazy(self, basel):
             "最长翻译字数",
             D_getspinbox(0, 9999, globalconfig, "maxlength"),
             "",
-            "翻译请求间隔(s)",
-            D_getspinbox(
-                0, 9999, globalconfig, "requestinterval", step=0.1, double=True
-            ),
+            "",
+            "",
+            "",
         ],
         [
             "使用翻译缓存",
             D_getsimpleswitch(globalconfig, "uselongtermcache"),
             "",
-            "均衡负载",
-            D_getsimpleswitch(
-                globalconfig,
-                "loadbalance",
-                callback=lambda x: self._fuzainum.setEnabled(x),
+            "翻译请求间隔(s)",
+            D_getspinbox(
+                0, 9999, globalconfig, "requestinterval", step=0.1, double=True
             ),
-            "",
-            "单次负载个数",
-            functools.partial(createfuzspin, self),
         ],
     ]
     online_reg_grid = [[("若有多个api key，用|将每个key连接后填入，即可轮流使用", -1)]]
