@@ -2,16 +2,19 @@
 
 ## ChatGPT兼容接口
 
-### DeepSeek
+
+<!-- tabs:start -->
+
+### **DeepSeek**
 
 **API接口地址** `https://api.deepseek.com`
 
-### 阿里云百炼大模型
+### **阿里云百炼大模型**
 
 
 **API接口地址** `https://dashscope.aliyuncs.com/compatible-mode/v1`
 
-### 字节跳动豆包大模型等
+### **字节跳动豆包大模型**
 
 
 
@@ -23,14 +26,17 @@
 
 ![img](https://image.lunatranslator.xyz/zh/damoxing/doubao.png)
 
+<!-- tabs:end -->
+
 ## 不兼容的专用接口
 
-### 腾讯混元大模型
+<!-- tabs:start -->
+
+### **腾讯混元大模型**
 
 略
 
-
-### 百度千帆大模型
+### **百度千帆大模型**
 
 !> 这个模型好像只支持中英翻译，不支持日文 
 
@@ -39,3 +45,5 @@
 ![img](https://image.lunatranslator.xyz/zh/damoxing/qianfan1.png)
 
 ![img](https://image.lunatranslator.xyz/zh/damoxing/qianfan2.png)
+
+<!-- tabs:end -->
