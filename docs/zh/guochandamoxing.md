@@ -28,6 +28,19 @@
 
 <!-- tabs:end -->
 
+<details>
+  <summary>需要同时使用多个ChatGPT兼容接口？</summary>
+  如果只是有多个不同的密钥想要轮询，只需用|分割就可以了。<br>
+  但有时想要使用多个不同的api接口地址和不同的prompt。方法是：<br>
+  点击右下方的“+”按钮
+  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi1.png">
+  弹出一个窗口，选择ChatGPT兼容接口，并为之取个名字。这样会复制一份当前ChatGPT兼容接口的设置和api。
+  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi2.png">
+  激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
+  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi3.png">
+</details>
+
+
 ## 不兼容的专用接口
 
 <!-- tabs:start -->
