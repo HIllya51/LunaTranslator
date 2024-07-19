@@ -58,6 +58,9 @@ class LFocusCombo(FocusCombo, LBase):
             for i in range(self.count()):
                 self.setItemText(i, _TR(self.__items[i]))
 
+    def changeEvent(self, e: QEvent):
+        super(LFocusCombo, self).changeEvent(e)
+
 
 class FocusFontCombo(QFontComboBox, FocusCombo):
     pass
@@ -123,7 +126,7 @@ def getQMessageBox(
     useok=True,
     usecancel=False,
     okcallback=None,
-    cancelcallback=None
+    cancelcallback=None,
 ):
     msgBox = LMessageBox(parent)
     msgBox.setWindowTitle((title))
