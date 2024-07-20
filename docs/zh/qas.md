@@ -1,4 +1,6 @@
 
+[如何使用大模型离线翻译](/zh/offlinellm.md) 
+
 [如何使用内嵌翻译](/zh/embedtranslate.md)
 
 [如何改善OCR模式体验](/zh/gooduseocr.md)

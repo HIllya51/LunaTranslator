@@ -10,7 +10,7 @@
 
 可参考 [text-generation-webui](https://github.com/oobabooga/text-generation-webui)进行部署，或使用[懒人包](https://pan.baidu.com/s/1fe7iiHIAtoXW80Twsrv8Nw?pwd=pato)+[非官方教程](https://www.bilibili.com/video/BV1Te411U7me)
 
-!> 看B站UP的主的视频弄出了问题别来找我，找UP主去。
+!> 看非官方教程弄出了问题别来问我，找发视频的人去。
 
 ### ChatGPT兼容接口
 
