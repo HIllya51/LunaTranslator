@@ -8,7 +8,6 @@ class TS(basetrans):
         return {"zh": "zh-CN"}
 
     def __init__(self, typename):
-        self.timeout = 30
         self.api_url = ""
         self.history = {"ja": [], "zh": []}
         super().__init__(typename)
@@ -18,10 +17,7 @@ class TS(basetrans):
             return
         self.history["ja"].append(text_ja)
         self.history["zh"].append(text_zh)
-        if (
-                len(self.history["ja"])
-                > int(self.config["附带上下文个数(必须打开利用上文翻译)"]) + 1
-        ):
+        if len(self.history["ja"]) > int(self.config["use_context_num"]) + 1:
             del self.history["ja"][0]
             del self.history["zh"][0]
 
@@ -97,7 +93,7 @@ class TS(basetrans):
                 "do_sample": self.config["do_sample"],
                 "frequency_penalty": self.config["frequency_penalty"],
             }
-            response = requests.post(url, timeout=self.timeout, json=payload)
+            response = requests.post(url, json=payload)
             if response.status_code == 200:
                 if not response:
                     raise ValueError(f"TGW出现错误或模型输出内容为空！")
@@ -106,9 +102,7 @@ class TS(basetrans):
             else:
                 raise ValueError(f"API地址正确但无法获得回复")
         except requests.Timeout as e:
-            raise ValueError(
-                f"连接到TGW超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。"
-            )
+            raise ValueError(f"连接到TGW超时：{self.api_url}，请尝试修改参数。")
 
         except Exception as e:
             print(e)
@@ -147,13 +141,12 @@ class TS(basetrans):
     def translate(self, context):
         self.checkempty(["API接口地址(默认为http://127.0.0.1:5000/)"])
         self.checkempty(["instruction_template(需要按照模型模板选择)"])
-        self.timeout = self.config["API超时(秒)"]
 
         if self.api_url == "":
             self.get_client(self.config["API接口地址(默认为http://127.0.0.1:5000/)"])
 
         if self.config["流式输出"] == False:
-            if not bool(self.config["利用上文信息翻译"]):
+            if not bool(self.config["use_context"]):
                 output = self.send_request(context)
             else:
                 history_prompt = self.get_history("zh")
@@ -162,31 +155,28 @@ class TS(basetrans):
             yield output
         else:
             url = self.api_url + "/chat/completions"
-            if not bool(self.config["利用上文信息翻译"]):
+            if not bool(self.config["use_context"]):
                 payload = self.make_request_stream(context)
             else:
                 history_prompt = self.get_history("zh")
                 payload = self.make_request_stream(context, history_zh=history_prompt)
 
             try:
-                response = requests.post(url, timeout=self.timeout, json=payload, stream=True)
+                response = requests.post(url, json=payload, stream=True)
                 if response.status_code == 200:
                     for line in response.iter_lines():
                         if line:
                             if line.startswith(b"data: "):
-                                line = line[len(b"data: "):]
+                                line = line[len(b"data: ") :]
                             payload = json.loads(line)
-                            chunk = payload['choices'][0]['delta']['content']
+                            chunk = payload["choices"][0]["delta"]["content"]
                             yield chunk
 
                 else:
                     raise ValueError(f"API无响应")
             except requests.Timeout as e:
-                raise ValueError(
-                    f"连接到TGW超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。"
-                )
+                raise ValueError(f"连接到TGW超时：{self.api_url}，请尝试修改参数。")
 
             except Exception as e:
                 print(e)
                 raise ValueError(f"无法连接到TGW:{e}")
-

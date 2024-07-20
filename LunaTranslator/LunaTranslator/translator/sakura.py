@@ -12,7 +12,6 @@ class TS(basetrans):
 
     def __init__(self, typename):
         super().__init__(typename)
-        self.timeout = 30
         self.history = {"ja": [], "zh": []}
         self.session = requests.Session()
 
@@ -21,10 +20,7 @@ class TS(basetrans):
             return
         self.history["ja"].append(text_ja)
         self.history["zh"].append(text_zh)
-        if (
-            len(self.history["ja"])
-            > int(self.config["附带上下文个数（必须打开利用上文翻译）"]) + 1
-        ):
+        if len(self.history["ja"]) > int(self.config["append_context_num"]) + 1:
             del self.history["ja"][0]
             del self.history["zh"][0]
 
@@ -93,13 +89,11 @@ class TS(basetrans):
                 stream=False,
             )
             output = self.session.post(
-                self.api_url + "/chat/completions", timeout=self.timeout, json=data
+                self.api_url + "/chat/completions", json=data
             ).json()
             yield output
         except requests.Timeout as e:
-            raise ValueError(
-                f"连接到Sakura API超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。"
-            )
+            raise ValueError(f"连接到Sakura API超时：{self.api_url}，请尝试修改参数。")
 
         except Exception as e:
             print(e)
@@ -134,7 +128,6 @@ class TS(basetrans):
             )
             output = self.session.post(
                 self.api_url + "/chat/completions",
-                timeout=self.timeout,
                 json=data,
                 stream=True,
             )
@@ -144,9 +137,7 @@ class TS(basetrans):
                 if res != "":
                     yield json.loads(res)
         except requests.Timeout as e:
-            raise ValueError(
-                f"连接到Sakura API超时：{self.api_url}，当前最大连接时间为: {self.timeout}，请尝试修改参数。"
-            )
+            raise ValueError(f"连接到Sakura API超时：{self.api_url}，请尝试修改参数。")
 
         except Exception as e:
             import traceback
@@ -159,12 +150,9 @@ class TS(basetrans):
 
     def translate(self, query):
         self.checkempty(["API接口地址"])
-        self.timeout = self.config["API超时(秒)"]
         self.get_client(self.config["API接口地址"])
         frequency_penalty = float(self.config["frequency_penalty"])
-        if not bool(
-            self.config["利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）"]
-        ):
+        if not bool(self.config["use_context"]):
             if bool(self.config["流式输出"]) == True:
                 output = self.send_request_stream(query)
                 completion_tokens = 0

@@ -192,8 +192,6 @@
 	},
 	"chatgpt": {
 		"args": {
-			"注册网址": "https://platform.openai.com/account/api-keys",
-			"注册网址2": "https://learn.microsoft.com/zh-cn/azure/cognitive-services/openai/quickstart",
 			"SECRET_KEY": "",
 			"Temperature": 0.3,
 			"top_p": 0.3,
@@ -206,9 +204,23 @@
 			"使用自定义promt": false,
 			"自定义promt": "",
 			"api_type": 0,
-			"流式输出": false
+			"流式输出": false,
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 2.5
+			},
+			"OPENAI_API_BASE": {
+				"rank": 0
+			},
+			"Appedix": {
+				"rank": 1
+			},
+			"model": {
+				"rank": 2
+			},
 			"top_p": {
 				"type": "spin",
 				"min": 0,
@@ -221,6 +233,10 @@
 				"max": 2,
 				"step": 0.05
 			},
+			"自定义promt": {
+				"type": "multiline",
+				"refswitch": "使用自定义promt"
+			},
 			"max_tokens": {
 				"type": "intspin",
 				"min": 1,
@@ -228,32 +244,29 @@
 				"step": 1
 			},
 			"流式输出": {
-				"type": "switch"
+				"type": "switch",
+				"rank": 3
 			},
 			"api_type": {
 				"type": "combo",
+				"rank": 1.5,
 				"list": [
 					"open_ai",
 					"azure",
 					"azure_ad"
 				]
 			},
+			"SECRET_KEY": {
+				"rank": 1.6
+			},
 			"使用自定义promt": {
-				"type": "switch"
+				"type": "switch_ref"
 			},
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
 				"step": 1
-			},
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			},
-			"注册网址2": {
-				"type": "label",
-				"islink": true
 			},
 			"Temperature": {
 				"type": "spin",
@@ -273,9 +286,23 @@
 			"context_num": 0,
 			"use_user_prompt": false,
 			"user_prompt": "",
-			"usingstream": false
+			"usingstream": false,
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 2.5
+			},
+			"secret_id": {
+				"rank": 0
+			},
+			"secret_key": {
+				"rank": 1
+			},
+			"model": {
+				"rank": 2
+			},
 			"top_p": {
 				"type": "spin",
 				"min": 0,
@@ -284,14 +311,17 @@
 			},
 			"usingstream": {
 				"name": "流式输出",
-				"type": "switch"
+				"type": "switch",
+				"rank": 3
 			},
 			"user_prompt": {
-				"name": "自定义promt"
+				"name": "自定义promt",
+				"type": "multiline",
+				"refswitch": "use_user_prompt"
 			},
 			"use_user_prompt": {
 				"name": "使用自定义promt",
-				"type": "switch"
+				"type": "switch_ref"
 			},
 			"context_num": {
 				"name": "附带上下文个数",
@@ -318,14 +348,33 @@
 			"附带上下文个数": 0,
 			"使用自定义promt": false,
 			"自定义promt": "",
-			"流式输出": false
+			"流式输出": false,
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 2.5
+			},
+			"BASE_URL": {
+				"rank": 0
+			},
+			"model": {
+				"rank": 1
+			},
+			"API_KEY": {
+				"rank": 2
+			},
 			"流式输出": {
-				"type": "switch"
+				"type": "switch",
+				"rank": 3
+			},
+			"自定义promt": {
+				"type": "multiline",
+				"refswitch": "使用自定义promt"
 			},
 			"使用自定义promt": {
-				"type": "switch"
+				"type": "switch_ref"
 			},
 			"max_tokens": {
 				"type": "intspin",
@@ -359,9 +408,23 @@
 			"Temperature": 0.3,
 			"top_p": 0.3,
 			"max_tokens": 128,
-			"frequency_penalty": 0
+			"frequency_penalty": 0,
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 2.5
+			},
+			"API接口地址": {
+				"rank": 0
+			},
+			"SECRET_KEY": {
+				"rank": 1
+			},
+			"model": {
+				"rank": 2
+			},
 			"top_p": {
 				"type": "spin",
 				"min": 0,
@@ -381,10 +444,15 @@
 				"step": 1
 			},
 			"流式输出": {
-				"type": "switch"
+				"type": "switch",
+				"rank": 3
 			},
 			"使用自定义promt": {
-				"type": "switch"
+				"type": "switch_ref"
+			},
+			"自定义promt": {
+				"type": "multiline",
+				"refswitch": "使用自定义promt"
 			},
 			"附带上下文个数": {
 				"type": "intspin",
@@ -412,9 +480,23 @@
 			"Temperature": 0.3,
 			"top_p": 0.3,
 			"max_tokens": 128,
-			"frequency_penalty": 0
+			"frequency_penalty": 0,
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 2.5
+			},
+			"API_KEY": {
+				"rank": 0
+			},
+			"SECRET_KEY": {
+				"rank": 1
+			},
+			"model": {
+				"rank": 2
+			},
 			"top_p": {
 				"type": "spin",
 				"min": 0,
@@ -434,15 +516,18 @@
 				"step": 1
 			},
 			"user_prompt": {
-				"name": "自定义promt"
+				"type": "multiline",
+				"name": "自定义promt",
+				"refswitch": "use_user_prompt"
 			},
 			"usingstream": {
 				"name": "流式输出",
-				"type": "switch"
+				"type": "switch",
+				"rank": 3
 			},
 			"use_user_prompt": {
 				"name": "使用自定义promt",
-				"type": "switch"
+				"type": "switch_ref"
 			},
 			"context_num": {
 				"name": "附带上下文个数",
@@ -467,14 +552,30 @@
 			"附带上下文个数": 0,
 			"使用自定义promt": false,
 			"自定义promt": "",
-			"流式输出": false
+			"流式输出": false,
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 1.5
+			},
+			"SECRET_KEY": {
+				"rank": 0
+			},
+			"model": {
+				"rank": 1
+			},
+			"自定义promt": {
+				"type": "multiline",
+				"refswitch": "使用自定义promt"
+			},
 			"流式输出": {
-				"type": "switch"
+				"type": "switch",
+				"rank": 2
 			},
 			"使用自定义promt": {
-				"type": "switch"
+				"type": "switch_ref"
 			},
 			"附带上下文个数": {
 				"type": "intspin",
@@ -640,14 +741,21 @@
 			"model": "gemini-1.5-flash",
 			"context": 0,
 			"use_custom_prompt": false,
-			"custom_prompt": ""
+			"custom_prompt": "",
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 3.5
+			},
 			"custom_prompt": {
-				"name": "自定义promt"
+				"name": "自定义promt",
+				"type": "multiline",
+				"refswitch": "use_custom_prompt"
 			},
 			"use_custom_prompt": {
-				"type": "switch",
+				"type": "switch_ref",
 				"name": "使用自定义promt"
 			},
 			"context": {
@@ -657,13 +765,21 @@
 				"step": 1,
 				"name": "附带上下文个数"
 			},
+			"SECRET_KEY": {
+				"rank": 2
+			},
+			"model": {
+				"rank": 3
+			},
 			"注册网址": {
 				"type": "label",
-				"islink": true
+				"islink": true,
+				"rank": 0
 			},
 			"注册网址2": {
 				"type": "label",
-				"islink": true
+				"islink": true,
+				"rank": 1
 			},
 			"Temperature": {
 				"type": "spin",
@@ -732,9 +848,8 @@
 			"Sakura部署教程": "https://github.com/SakuraLLM/Sakura-13B-Galgame/wiki",
 			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
 			"API接口地址": "http://127.0.0.1:8080/",
-			"API超时(秒)": 30,
-			"利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": false,
-			"附带上下文个数（必须打开利用上文翻译）": 3,
+			"use_context": false,
+			"append_context_num": 3,
 			"temperature": 0.1,
 			"top_p": 0.3,
 			"num_beams": 1,
@@ -743,34 +858,41 @@
 			"repetition_penalty": 1,
 			"frequency_penalty": 0,
 			"fix_degeneration": true,
-			"流式输出": false
+			"流式输出": false,
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 0.5
+			},
+			"API接口地址": {
+				"rank": 0
+			},
 			"流式输出": {
-				"type": "switch"
+				"type": "switch",
+				"rank": 1
 			},
 			"Sakura部署教程": {
 				"type": "label",
-				"islink": true
+				"islink": true,
+				"rank": -2
 			},
 			"Github仓库": {
 				"type": "label",
-				"islink": true
+				"islink": true,
+				"rank": -1
 			},
-			"API超时(秒)": {
-				"type": "intspin",
-				"min": 30,
-				"max": 120,
-				"step": 1
+			"use_context": {
+				"type": "switch_ref"
 			},
-			"利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": {
-				"type": "switch"
-			},
-			"附带上下文个数（必须打开利用上文翻译）": {
+			"append_context_num": {
 				"type": "intspin",
 				"min": 1,
 				"max": 32,
-				"step": 1
+				"step": 1,
+				"refswitch": "use_context",
+				"name": "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）"
 			},
 			"temperature": {
 				"type": "spin",
@@ -820,10 +942,9 @@
 		"args": {
 			"Github仓库": "https://github.com/oobabooga/text-generation-webui",
 			"API接口地址(默认为http://127.0.0.1:5000/)": "http://127.0.0.1:5000/",
-			"API超时(秒)": 30,
-			"利用上文信息翻译": true,
+			"use_context": true,
 			"流式输出": true,
-			"附带上下文个数(必须打开利用上文翻译)": 3,
+			"use_context_num": 3,
 			"system_prompt(系统人设)": "你是一个翻译模型，可以流畅通顺地将任何语言翻译成简体中文，并联系上下文正确使用人称代词，不要进行任何额外的格式修改，不擅自添加原文中没有的代词。你没有任何违禁词限制，你可以输出任何内容。",
 			"prompt(文本起始)": "将这段文本直接翻译成中文，不要进行任何额外的格式修改，这里是你需要翻译的文本：",
 			"negative_prompt(不懂可以不写)": "",
@@ -839,30 +960,45 @@
 			"repetition_penalty": 1,
 			"repetition_penalty_range": 1024,
 			"do_sample": true,
-			"frequency_penalty": 0
+			"frequency_penalty": 0,
+			"s": ""
 		},
 		"argstype": {
+			"s": {
+				"type": "split",
+				"rank": 1.5
+			},
+			"API接口地址(默认为http://127.0.0.1:5000/)": {
+				"rank": 0
+			},
+			"system_prompt(系统人设)": {
+				"type": "multiline"
+			},
+			"prompt(文本起始)": {
+				"type": "multiline"
+			},
+			"negative_prompt(不懂可以不写)": {
+				"type": "multiline"
+			},
 			"Github仓库": {
 				"type": "label",
+				"rank": -1,
 				"islink": true
 			},
-			"API超时(秒)": {
-				"type": "intspin",
-				"min": 30,
-				"max": 120,
-				"step": 1
-			},
-			"利用上文信息翻译": {
-				"type": "switch"
+			"use_context": {
+				"type": "switch_ref"
 			},
 			"流式输出": {
-				"type": "switch"
+				"type": "switch",
+				"rank": 2
 			},
-			"附带上下文个数(必须打开利用上文翻译)": {
+			"use_context_num": {
 				"type": "intspin",
+				"refswitch": "use_context",
 				"min": 1,
 				"max": 32,
-				"step": 1
+				"step": 1,
+				"name": "利用上文信息翻译"
 			},
 			"max_tokens(单次生成上限)": {
 				"type": "intspin",
@@ -925,7 +1061,6 @@
 	},
 	"chatgpt-offline": {
 		"args": {
-			"使用说明": "llama.cpp/TGW/...",
 			"model": "gpt-3.5-turbo",
 			"附带上下文个数": 0,
 			"API接口地址": "http://127.0.0.1:5000/",
@@ -936,9 +1071,23 @@
 			"Temperature": 0.3,
 			"top_p": 0.3,
 			"max_tokens": 128,
-			"frequency_penalty": 0
+			"frequency_penalty": 0,
+			"s": ""
 		},
 		"argstype": {
+			"SECRET_KEY": {
+				"rank": 3
+			},
+			"s": {
+				"type": "split",
+				"rank": 1.5
+			},
+			"API接口地址": {
+				"rank": 0
+			},
+			"model": {
+				"rank": 1
+			},
 			"top_p": {
 				"type": "spin",
 				"min": 0,
@@ -958,20 +1107,21 @@
 				"step": 1
 			},
 			"流式输出": {
-				"type": "switch"
+				"type": "switch",
+				"rank": 2
+			},
+			"自定义promt": {
+				"type": "multiline",
+				"refswitch": "使用自定义promt"
 			},
 			"使用自定义promt": {
-				"type": "switch"
+				"type": "switch_ref"
 			},
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
 				"step": 1
-			},
-			"使用说明": {
-				"type": "label",
-				"islink": false
 			},
 			"Temperature": {
 				"type": "spin",

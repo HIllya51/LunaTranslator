@@ -441,11 +441,23 @@ class autoinitdialog(LDialog):
         def __getv(l):
             return l
 
+        hasrank = []
+        hasnorank = []
+        for line in lines:
+            rank = line.get("rank", None)
+            if rank is None:
+                hasnorank.append(line)
+                continue
+            hasrank.append(line)
+        hasrank.sort(key=lambda line: line.get("rank", None))
+        lines = hasrank + hasnorank
         for line in lines:
             if "d" in line:
                 dd = line["d"]
             if "k" in line:
                 key = line["k"]
+            if line["type"] == "switch_ref":
+                continue
             if line["type"] == "label":
 
                 if "islink" in line and line["islink"]:
@@ -505,6 +517,9 @@ class autoinitdialog(LDialog):
             elif line["type"] == "lineedit":
                 lineW = QLineEdit(dd[key])
                 regist.append([dd, key, lineW.text])
+            elif line["type"] == "multiline":
+                lineW = QPlainTextEdit(dd[key])
+                regist.append([dd, key, lineW.toPlainText])
             elif line["type"] == "file":
                 __temp = {"k": dd[key]}
                 lineW = getsimplepatheditor(
@@ -543,9 +558,35 @@ class autoinitdialog(LDialog):
                 lineW.setSingleStep(line.get("step", 1))
                 lineW.setValue(dd[key])
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
+            elif line["type"] == "split":
+                lineW = QLabel()
+                lineW.setStyleSheet("background-color: gray;")
+                lineW.setFixedHeight(2)
+                formLayout.addRow(lineW)
+                continue
             if formLayout is None:
                 formLayout = LFormLayout()
                 self.setLayout(formLayout)
+            refswitch = line.get("refswitch", None)
+            if refswitch:
+                hbox = QHBoxLayout()
+                line_ref = None
+                for __ in lines:
+                    if __.get("k", None) == refswitch:
+                        line_ref = __
+                        break
+                if line_ref:
+                    if "d" in line_ref:
+                        dd = line_ref["d"]
+                    if "k" in line_ref:
+                        key = line_ref["k"]
+                    switch = MySwitch(sign=dd[key])
+                    regist.append([dd, key, switch.isChecked])
+                    switch.clicked.connect(lineW.setEnabled)
+                    lineW.setEnabled(dd[key])
+                    hbox.addWidget(switch)
+                    hbox.addWidget(lineW)
+                    lineW = hbox
             if "name" in line:
                 formLayout.addRow(line["name"], lineW)
             else:
