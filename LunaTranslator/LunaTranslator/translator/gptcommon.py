@@ -58,16 +58,22 @@ class gptcommon(basetrans):
         # 傻逼豆包大模型是非要v3，不是v1
         if api_url.endswith("/v3"):
             return api_url
-
-        if api_url.endswith("/v1/"):
-            api_url = api_url[:-1]
+        elif api_url.endswith("/v3/"):
+            return api_url[:-1]
+        # 智谱AI
+        elif api_url.endswith("/v4"):
+            return api_url
+        elif api_url.endswith("/v4/"):
+            return api_url[:-1]
+        # 正常的
         elif api_url.endswith("/v1"):
-            pass
+            return api_url
+        elif api_url.endswith("/v1/"):
+            return api_url[:-1]
         elif api_url.endswith("/"):
-            api_url += "v1"
+            return api_url + "v1"
         else:
-            api_url += "/v1"
-        return api_url
+            return api_url + "/v1"
 
     def commonparseresponse(self, query, response: requests.ResponseBase, usingstream):
         if usingstream:

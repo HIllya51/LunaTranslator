@@ -26,6 +26,19 @@
 
 ![img](https://image.lunatranslator.xyz/zh/damoxing/doubao.png)
 
+
+### **月之暗面**
+
+**API接口地址** `https://api.moonshot.cn`
+
+### **智谱AI**
+
+**API接口地址** `https://open.bigmodel.cn/api/paas/v4/chat/completions`
+
+### **零一万物**
+
+**API接口地址** `https://api.lingyiwanwu.com`
+
 <!-- tabs:end -->
 
 <details>
