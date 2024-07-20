@@ -1,3 +1,10 @@
+
+[如何使用内嵌翻译](/zh/embedtranslate.md)
+
+[如何改善OCR模式体验](/zh/gooduseocr.md)
+
+[如何使用国产大模型API接口](/zh/guochandamoxing.md)
+
 [mangaocr 整合包无法启动怎么办](/zh/mangaocr.md)
 
 [OCR 自动化执行方法的参数含义](/zh/ocrparam.md)
@@ -11,3 +18,4 @@
 [如何使用离线 chatgpt](/zh/qa3.md) 
 
 [如何使用 gemini 免费 api](/zh/qa4.md) 
+
