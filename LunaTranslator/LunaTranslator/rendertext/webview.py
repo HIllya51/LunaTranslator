@@ -46,7 +46,7 @@ class TextBrowser(QWidget, dataget):
             self.webivewwidget.on_load.connect(self.__loadextra)
         else:
             # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
-            self.webivewwidget = WebivewWidget(self)
+            self.webivewwidget = WebivewWidget(self, usedarklight=False)
 
             # webview2无法接收qt事件。
             webviewhwnd = self.webivewwidget.get_hwnd()

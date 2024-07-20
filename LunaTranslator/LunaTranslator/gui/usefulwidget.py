@@ -1014,7 +1014,7 @@ class WebivewWidget(abstractwebview):
             webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
         )
 
-    def __init__(self, parent=None, debug=True) -> None:
+    def __init__(self, parent=None, debug=True, usedarklight=True) -> None:
         super().__init__(parent)
         declare_library_path(
             os.path.abspath(
@@ -1036,13 +1036,13 @@ class WebivewWidget(abstractwebview):
         self.keepref = [zoomfunc]
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
-
-        self.__darkstate = None
-        t = QTimer(self)
-        t.setInterval(100)
-        t.timeout.connect(self.__darkstatechecker)
-        t.timeout.emit()
-        t.start()
+        if usedarklight:
+            self.__darkstate = None
+            t = QTimer(self)
+            t.setInterval(100)
+            t.timeout.connect(self.__darkstatechecker)
+            t.timeout.emit()
+            t.start()
 
     def __darkstatechecker(self):
         dl = globalconfig["darklight2"]
