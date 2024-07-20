@@ -3,7 +3,7 @@
     - [获取软件和启动](/zh/start.md)
 - [软件更新](/zh/update.md)
 - [常见问题](/zh/qas.md)
-    - [如何使用大模型离线翻译](/zh/qa3.md) 
+    - [如何使用大模型离线翻译](/zh/offlinellm.md) 
     - [如何使用内嵌翻译](/zh/embedtranslate.md)
     - [如何改善OCR模式体验](/zh/gooduseocr.md)
     - [如何使用国产大模型API接口](/zh/guochandamoxing.md)
