@@ -425,7 +425,21 @@ class autoinitdialog(LDialog):
 
         self.setWindowTitle(title)
         self.resize(QSize(width, 10))
-        formLayout = None
+        for line in lines:
+            if line["type"] != "program":
+                continue
+            try:
+                func = getattr(
+                    importlib.import_module(line["route"][0]),
+                    line["route"][1],
+                )
+                func(self)
+            except:
+                print_exc()
+            self.show()
+            return
+        formLayout = LFormLayout()
+        self.setLayout(formLayout)
         regist = []
 
         def save(callback=None):
@@ -472,16 +486,6 @@ class autoinitdialog(LDialog):
                 regist.append([dd, key, functools.partial(__getv, __list)])
                 lineW = QHBoxLayout()
                 lineW.addWidget(e)
-            elif line["type"] == "program":
-                try:
-                    func = getattr(
-                        importlib.import_module(line["route"][0]),
-                        line["route"][1],
-                    )
-                    func(self)
-                except:
-                    print_exc()
-                break
             elif line["type"] == "combo":
                 lineW = LFocusCombo()
                 if "list_function" in line:
@@ -564,9 +568,6 @@ class autoinitdialog(LDialog):
                 lineW.setFixedHeight(2)
                 formLayout.addRow(lineW)
                 continue
-            if formLayout is None:
-                formLayout = LFormLayout()
-                self.setLayout(formLayout)
             refswitch = line.get("refswitch", None)
             if refswitch:
                 hbox = QHBoxLayout()
