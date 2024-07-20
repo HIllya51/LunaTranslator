@@ -60,11 +60,15 @@ def splitapillm(l):
     return is_gpt_likes, not_is_gpt_like
 
 
-def loadvisinternal(skipid=False, skipidid=None):
+def loadvisinternal(btnplus):
     __vis = []
     __uid = []
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
-    is_gpt_likes, not_is_gpt_like = splitapillm(shoufei)
+    if btnplus == "api":
+        is_gpt_likes, not_is_gpt_like = splitapillm(shoufei)
+    elif btnplus == "offline":
+        is_gpt_likes, not_is_gpt_like = splitapillm(lixians)
+
     for _ in is_gpt_likes:
         _f = "./Lunatranslator/translator/{}.py".format(_)
         if not os.path.exists(_f):
@@ -74,9 +78,9 @@ def loadvisinternal(skipid=False, skipidid=None):
     return __vis, __uid
 
 
-def getalistname(parent, callback, skipid=False, skipidid=None):
+def getalistname(parent, btnplus, callback):
     __d = {"k": 0, "n": ""}
-    __vis, __uid = loadvisinternal(skipid, skipidid)
+    __vis, __uid = loadvisinternal(btnplus)
 
     def __wrap(callback, __d, __uid):
         if len(__uid) == 0:
@@ -111,7 +115,7 @@ def getalistname(parent, callback, skipid=False, skipidid=None):
     )
 
 
-def selectllmcallback(self, countnum, btn, fanyi, name):
+def selectllmcallback(self, countnum, btn, btnplus, fanyi, name):
     uid = str(uuid.uuid4())
     _f1 = "./Lunatranslator/translator/{}.py".format(fanyi)
     _f2 = "./Lunatranslator/translator/{}.py".format(uid)
@@ -122,10 +126,11 @@ def selectllmcallback(self, countnum, btn, fanyi, name):
     if not name:
         name = globalconfig["fanyi"][fanyi]["name"] + "_copy"
     globalconfig["fanyi"][uid]["name"] = name
+    globalconfig["fanyi"][uid]["type"] = btnplus
     if fanyi in translatorsetting:
         translatorsetting[uid] = deepcopydict(translatorsetting[fanyi])
 
-    layout: QGridLayout = self.damoxinggridinternal
+    layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
 
     items = autoinitdialog_items(translatorsetting[uid])
     last = getIconButton(
@@ -175,23 +180,32 @@ def selectllmcallback(self, countnum, btn, fanyi, name):
     countnum.append(0)
 
 
-def btnpluscallback(self, countnum, btn):
-    getalistname(self, functools.partial(selectllmcallback, self, countnum, btn))
+def btnpluscallback(self, countnum, btn, btnplus):
+    getalistname(
+        self,
+        btnplus,
+        functools.partial(selectllmcallback, self, countnum, btn, btnplus),
+    )
 
 
-def createbtn(self, countnum):
+def createbtn(self, countnum, btnplus):
     btn = QPushButton(self)
     btn.setIcon(qtawesome.icon("fa.plus"))
-    btn.clicked.connect(functools.partial(btnpluscallback, self, countnum, btn))
+    btn.clicked.connect(
+        functools.partial(btnpluscallback, self, countnum, btn, btnplus)
+    )
     return btn
 
 
-def createbtnquest(self):
+def createbtnquest(self, btnplus):
     btn = QPushButton(self)
     btn.setIcon(qtawesome.icon("fa.question"))
-    btn.clicked.connect(
-        lambda: os.startfile(dynamiclink("{docs_server}/#/zh/guochandamoxing"))
-    )
+    if btnplus == "offline":
+        btn.clicked.connect(lambda: os.startfile(dynamiclink("{docs_server}/#/zh/offlinellm")))
+    elif btnplus == "api":
+        btn.clicked.connect(
+            lambda: os.startfile(dynamiclink("{docs_server}/#/zh/guochandamoxing"))
+        )
     self.btnquestion = btn
     return btn
 
@@ -266,18 +280,18 @@ def initsome11(self, l, label=None, btnplus=False):
         grids.append(
             [
                 ("", 10),
-                (functools.partial(createbtn, self, countnum), 2),
-                (functools.partial(createbtnquest, self), 2),
+                (functools.partial(createbtn, self, countnum, btnplus), 2),
+                (functools.partial(createbtnquest, self, btnplus), 2),
             ]
         )
 
     return grids
 
 
-def initsome2(self, l, label=None):
+def initsome2(self, l, label=None, btnplus=None):
     is_gpt_likes, not_is_gpt_like = splitapillm(l)
     not_is_gpt_like = initsome11(self, not_is_gpt_like, label)
-    is_gpt_likes = initsome11(self, is_gpt_likes, label, btnplus=True)
+    is_gpt_likes = initsome11(self, is_gpt_likes, label, btnplus=btnplus)
     grids = [
         [
             (
@@ -292,7 +306,7 @@ def initsome2(self, l, label=None):
                     type="grid",
                     title="大模型",
                     grid=is_gpt_likes,
-                    internallayoutname="damoxinggridinternal",
+                    internallayoutname="damoxinggridinternal" + btnplus,
                     parent=self,
                 ),
                 0,
@@ -469,10 +483,10 @@ def setTabTwo_lazy(self, basel):
     ]
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
 
-    offlinegrid = initsome11(self, lixians)
+    offlinegrid = initsome2(self, lixians, btnplus="offline")
     onlinegrid = initsome11(self, mianfei)
     developgrid += initsome11(self, develop)
-    online_reg_grid += initsome2(self, shoufei)
+    online_reg_grid += initsome2(self, shoufei, btnplus="api")
     pretransgrid += initsome11(self, pre)
     vw, vl = getvboxwidget()
     basel.addWidget(vw)

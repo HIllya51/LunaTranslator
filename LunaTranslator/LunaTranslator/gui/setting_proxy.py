@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, functools
+import os, functools, re
 from myutils.config import globalconfig
 from myutils.utils import splittranslatortypes
 from gui.usefulwidget import (
@@ -37,14 +37,35 @@ def getall(l, item="fanyi", name=None):
     return grids
 
 
+def validator(self, text):
+    regExp = re.compile(r"^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3}):(\d{1,5})$")
+    mch = regExp.match(text)
+    for _ in (1,):
+
+        if not mch:
+            break
+        _1, _2, _3, _4, _p = [int(_) for _ in mch.groups()]
+        if _p > 65535:
+            break
+        if any([_ > 255 for _ in [_1, _2, _3, _4]]):
+            break
+        globalconfig["proxy"] = text
+        self.createproxyedit_check.setText("")
+        return
+    self.createproxyedit_check.setText("Invalid")
+
+
 def createproxyedit(self):
     proxy = QLineEdit(globalconfig["proxy"])
     self.__proxyedit = proxy
-    proxy.textEdited.connect(
-        lambda: globalconfig.__setitem__("proxy", self.__proxyedit.text())
-    )
+    proxy.textChanged.connect(functools.partial(validator, self))
     _ifusesysproxy(self, globalconfig["usesysproxy"])
     return proxy
+
+
+def createproxyedit_check(self):
+    self.createproxyedit_check = QLabel()
+    return self.createproxyedit_check
 
 
 def _ifusesysproxy(self, x):
@@ -73,7 +94,11 @@ def makeproxytab(self, basel):
                 )
             ),
         ],
-        [("手动设置代理(ip:port)", 5), (functools.partial(createproxyedit, self), 5)],
+        [
+            ("手动设置代理(ip:port)", 5),
+            (functools.partial(createproxyedit, self), 5),
+            (functools.partial(createproxyedit_check, self), 5),
+        ],
         [],
         [("使用代理的项目", -1)],
     ]

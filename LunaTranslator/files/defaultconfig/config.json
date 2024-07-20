@@ -1563,6 +1563,7 @@
             "use": false,
             "color": "blue",
             "name": "DeepLX",
+            "type": "offline",
             "useproxy": false
         },
         "dev_chatgpt": {
@@ -1737,14 +1738,14 @@
             "use": false,
             "color": "blue",
             "name": "腾讯混元大模型",
-            "is_gpt_like":true
+            "is_gpt_like": true
         },
         "baiduqianfan": {
             "type": "api",
             "use": false,
             "color": "blue",
             "name": "百度千帆大模型",
-            "is_gpt_like":true
+            "is_gpt_like": true
         },
         "yandexapi": {
             "type": "api",

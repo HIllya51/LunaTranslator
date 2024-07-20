@@ -818,8 +818,6 @@
 	},
 	"TGW": {
 		"args": {
-			"TGW懒人包": "https://www.bilibili.com/video/BV1Te411U7me",
-			"TGW懒人包1": "https://pan.baidu.com/s/1fe7iiHIAtoXW80Twsrv8Nw?pwd=pato",
 			"Github仓库": "https://github.com/oobabooga/text-generation-webui",
 			"API接口地址(默认为http://127.0.0.1:5000/)": "http://127.0.0.1:5000/",
 			"API超时(秒)": 30,
@@ -844,14 +842,6 @@
 			"frequency_penalty": 0
 		},
 		"argstype": {
-			"TGW懒人包": {
-				"type": "label",
-				"islink": true
-			},
-			"TGW懒人包1": {
-				"type": "label",
-				"islink": true
-			},
 			"Github仓库": {
 				"type": "label",
 				"islink": true
