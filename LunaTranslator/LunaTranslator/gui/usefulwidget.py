@@ -17,7 +17,6 @@ from gui.dynalang import (
     LPushButton,
     LAction,
     LGroupBox,
-    LBase,
     LFormLayout,
     LTabWidget,
     LStandardItemModel,
@@ -40,7 +39,7 @@ class FocusCombo(QComboBox):
             return super().wheelEvent(e)
 
 
-class LFocusCombo(FocusCombo, LBase):
+class LFocusCombo(FocusCombo):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.__items = None
@@ -91,7 +90,7 @@ class FocusDoubleSpin(QDoubleSpinBox):
             return super().wheelEvent(e)
 
 
-class TableViewW(QTableView, LBase):
+class TableViewW(QTableView):
     def setIndexWidget(self, index: QModelIndex, w: QWidget):
         super().setIndexWidget(index, w)
         if self.rowHeight(index.row()) < w.height():

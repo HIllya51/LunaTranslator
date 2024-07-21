@@ -2,17 +2,7 @@ from myutils.config import _TR, _TRL
 from qtsymbols import *
 
 
-class LBase(QWidget):
-
-    def changeEvent(self, e: QEvent):
-        if e.type() == QEvent.Type.LanguageChange:
-            self.updatelangtext()
-        super().changeEvent(e)
-
-    def updatelangtext(self): ...
-
-
-class LLabel(QLabel, LBase):
+class LLabel(QLabel):
     def __init__(self, s=None):
         super().__init__(_TR(s) if s else None)
         self.__s = s
@@ -26,7 +16,7 @@ class LLabel(QLabel, LBase):
             super().setText(_TR(self.__s))
 
 
-class LMessageBox(QMessageBox, LBase):
+class LMessageBox(QMessageBox):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
         self._title = None
@@ -47,7 +37,7 @@ class LMessageBox(QMessageBox, LBase):
             super().setText(_TR(self._text))
 
 
-class LPushButton(QPushButton, LBase):
+class LPushButton(QPushButton):
     def __init__(self, *argc):
         self._text = None
         self._ToolTip = None
@@ -90,14 +80,14 @@ class LAction(QAction):
         super().__init__(*newarg, **kwargv)
 
 
-class LMenu(QMenu, LBase):
+class LMenu(QMenu):
     def updatelangtext(self):
         for action in self.actions():
             if isinstance(action, LAction):
                 action.updatelangtext()
 
 
-class LCheckBox(QCheckBox, LBase):
+class LCheckBox(QCheckBox):
     def __init__(self, text):
         super().__init__(_TR(text))
         self._text = text
@@ -121,11 +111,6 @@ class LGroupBox(QGroupBox):
         if self._text:
             super().setTitle(_TR(self._text))
 
-    def changeEvent(self, e: QEvent):
-        if e.type() == QEvent.Type.LanguageChange:
-            self.updatelangtext()
-        super().changeEvent(e)
-
 
 class LListWidgetItem(QListWidgetItem):
     def __init__(self, text):
@@ -136,7 +121,7 @@ class LListWidgetItem(QListWidgetItem):
         self.setText(_TR(self.__text))
 
 
-class LListWidget(QListWidget, LBase):
+class LListWidget(QListWidget):
     def updatelangtext(self):
         for i in range(self.count()):
             item = self.item(i)
@@ -154,7 +139,7 @@ class LFormLayout(QFormLayout):
         super().addRow(*argc)
 
 
-class LDialog(QDialog, LBase):
+class LDialog(QDialog):
 
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
@@ -169,7 +154,7 @@ class LDialog(QDialog, LBase):
             super().setWindowTitle(_TR(self._title))
 
 
-class LMainWindow(QMainWindow, LBase):
+class LMainWindow(QMainWindow):
 
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
@@ -184,7 +169,7 @@ class LMainWindow(QMainWindow, LBase):
             super().setWindowTitle(_TR(self._title))
 
 
-class LRadioButton(QRadioButton, LBase):
+class LRadioButton(QRadioButton):
     def __init__(self, t):
         self.__t = t
         super().__init__(_TR(t))
@@ -193,7 +178,7 @@ class LRadioButton(QRadioButton, LBase):
         self.setText(_TR(self.__t))
 
 
-class LTabBar(QTabBar, LBase):
+class LTabBar(QTabBar):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
         self.__titles = []
@@ -215,7 +200,7 @@ class LTabBar(QTabBar, LBase):
             self.setTabText(i, _TR(self.__titles[i]))
 
 
-class LTabWidget(QTabWidget, LBase):
+class LTabWidget(QTabWidget):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
         self.__titles = []
@@ -229,7 +214,7 @@ class LTabWidget(QTabWidget, LBase):
             self.setTabText(i, _TR(self.__titles[i]))
 
 
-class LStandardItemModel(QStandardItemModel, LBase):
+class LStandardItemModel(QStandardItemModel):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
         self.__ls = []

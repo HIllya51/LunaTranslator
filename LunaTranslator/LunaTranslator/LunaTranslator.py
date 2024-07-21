@@ -1194,7 +1194,9 @@ class MAINUI:
         self.parsedefaultfont()
         self.loadmetadatas()
         self.translation_ui = QUnFrameWindow()
-        winsharedutils.showintab(int(self.translation_ui.winId()), globalconfig["showintab"])
+        winsharedutils.showintab(
+            int(self.translation_ui.winId()), globalconfig["showintab"]
+        )
         self.translation_ui.show()
         self.translation_ui.aftershowdosomething()
         self.mainuiloadafter()
@@ -1234,8 +1236,11 @@ class MAINUI:
 
     def installeventfillter(self):
         class WindowEventFilter(QObject):
-            def eventFilter(_, obj, event):
-                if event.type() == QEvent.Type.WinIdChange:
+            def eventFilter(_, obj: QObject, event: QEvent):
+                if event.type() == QEvent.Type.LanguageChange:
+                    if "updatelangtext" in dir(obj):
+                        obj.updatelangtext()
+                elif event.type() == QEvent.Type.WinIdChange:
 
                     hwnd = obj.winId()
                     if hwnd:  # window create/destroy,when destroy winId is None
