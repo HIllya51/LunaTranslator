@@ -107,7 +107,7 @@ class LCheckBox(QCheckBox, LBase):
             super().setText(_TR(self._text))
 
 
-class LGroupBox(QGroupBox, LBase):
+class LGroupBox(QGroupBox):
 
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
@@ -122,7 +122,10 @@ class LGroupBox(QGroupBox, LBase):
             super().setTitle(_TR(self._text))
 
     def changeEvent(self, e: QEvent):
-        super(LGroupBox, self).changeEvent(e)
+        if e.type() == QEvent.Type.LanguageChange:
+            self.updatelangtext()
+        super().changeEvent(e)
+
 
 class LListWidgetItem(QListWidgetItem):
     def __init__(self, text):
