@@ -357,8 +357,6 @@
     "翻译结果替换设置": "Configuración de sustitución de resultados de traducción",
     "过滤包含乱码的文本行": "Filtrar líneas de texto que contienen códigos desordenados",
     "过滤文本中的非日语字符集字符": "Filtrar los caracteres del conjunto de caracteres no japoneses en el texto",
-    "过滤ASCII字符集": "Filtrar el conjunto de caracteres ASCII",
-    "过滤latin-1字符集": "Filtrar el juego de caracteres Latin - 1",
     "过滤其他乱码": "Filtrar otros códigos desordenados",
     "过滤乱码文本": "Filtrar texto desordenado",
     "选择": "Selección",
@@ -827,5 +825,6 @@
     "腾讯混元大模型": "El gran modelo híbrido de Tencent",
     "传统": "Tradición",
     "大模型": "Gran modelo",
-    "百度千帆大模型": "Modelo Baidu qianfan"
+    "百度千帆大模型": "Modelo Baidu qianfan",
+    "过滤英文标点": "Filtrar puntuación en inglés"
 }

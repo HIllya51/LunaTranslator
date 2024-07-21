@@ -266,23 +266,19 @@ def _remove_non_shiftjis_char(line):
     return newline
 
 
-def _remove_latin(line):
-    newline = ""
-    for char in line:
-        try:
-            char.encode("latin-1")
-        except:
-            newline += char
-    return newline
+def _remove_symbo(line):
 
-
-def _remove_ascii(line):
     newline = ""
-    for char in line:
-        try:
-            char.encode("ascii")
-        except:
-            newline += char
+    for r in line:
+        _ord = ord(r)
+        if (
+            (_ord >= 0x21 and _ord <= 0x2F)
+            or (_ord >= 0x3A and _ord <= 0x40)
+            or (_ord >= 0x5B and _ord <= 0x60)
+            or (_ord >= 0x7B and _ord <= 0x80)
+        ):
+            continue
+        newline += r
     return newline
 
 
@@ -344,6 +340,7 @@ def POSTSOLVE(line):
     if line == "":
         return ""
     functions = {
+        "_remove_symbo": _remove_symbo,
         "_2": _2_f,
         "_3": _3_f,
         "_3_2": _3_2,
@@ -360,8 +357,6 @@ def POSTSOLVE(line):
         "_13EX": _13_fEX,
         "_7_zhuanyi": _7_zhuanyi_f,
         "_remove_non_shiftjis_char": _remove_non_shiftjis_char,
-        "_remove_latin": _remove_latin,
-        "_remove_ascii": _remove_ascii,
         "_remove_control": _remove_control,
         "_remove_chaos": _remove_chaos,
         "_remove_not_in_ja_bracket": _remove_not_in_ja_bracket,

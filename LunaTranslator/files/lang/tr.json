@@ -357,8 +357,6 @@
     "翻译结果替换设置": "Çeviri Sonuçları Değiştirme Ayarları",
     "过滤包含乱码的文本行": "Çöplü kodu içeren metin hatlarını sil",
     "过滤文本中的非日语字符集字符": "Japon olmayan karakter seti karakterleri metinde sil",
-    "过滤ASCII字符集": "ASCII karakter seti sil",
-    "过滤latin-1字符集": "Latin- 1 karakter setini sil",
     "过滤其他乱码": "Diğer çöplü kodları sil",
     "过滤乱码文本": "Süzgülenmiş metin",
     "选择": "seçim",
@@ -827,5 +825,6 @@
     "腾讯混元大模型": "Tencent'in hibrid büyük modeli",
     "传统": "gelenek",
     "大模型": "Büyük model",
-    "百度千帆大模型": "Baidu Qianfan Büyük Modeli"
+    "百度千帆大模型": "Baidu Qianfan Büyük Modeli",
+    "过滤英文标点": "İngilizce noktasını sil"
 }

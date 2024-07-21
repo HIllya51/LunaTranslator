@@ -356,8 +356,6 @@
     "翻译结果替换设置": "Ustawienia wymiany wyników tłumaczenia",
     "过滤包含乱码的文本行": "Filtruj wiersze tekstowe zawierające zniekształcony kod",
     "过滤文本中的非日语字符集字符": "Filtruj znaki niejapońskiego zestawu znaków w tekście",
-    "过滤ASCII字符集": "Filtruj zestaw znaków ASCII",
-    "过滤latin-1字符集": "Filtruj zestaw znaków latin-1",
     "过滤其他乱码": "Filtruj inne zniekształcone kody",
     "过滤乱码文本": "Filtruj zniekształcony tekst",
     "选择": "wybór",
@@ -827,5 +825,6 @@
     "腾讯混元大模型": "Hybrydowy duży model Tencent",
     "传统": "tradycja",
     "大模型": "Duży model",
-    "百度千帆大模型": "Duży model Baidu Qianfan"
+    "百度千帆大模型": "Duży model Baidu Qianfan",
+    "过滤英文标点": "Filtruj interpunkcję angielską"
 }

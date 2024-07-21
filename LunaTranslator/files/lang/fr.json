@@ -357,8 +357,6 @@
     "翻译结果替换设置": "Paramètres de remplacement des résultats de traduction",
     "过滤包含乱码的文本行": "Filtrer les lignes de texte contenant du Code brouillé",
     "过滤文本中的非日语字符集字符": "Filtrer les caractères du jeu de caractères non japonais dans le texte",
-    "过滤ASCII字符集": "Filtrer le jeu de caractères ASCII",
-    "过滤latin-1字符集": "Filtrer le jeu de caractères Latin - 1",
     "过滤其他乱码": "Filtrer les autres codes brouillés",
     "过滤乱码文本": "Filtrer le texte brouillé",
     "选择": "Sélection",
@@ -827,5 +825,6 @@
     "腾讯混元大模型": "Tencent hybride grand modèle",
     "传统": "La tradition",
     "大模型": "Le grand modèle",
-    "百度千帆大模型": "Baidu mille voiles modèle"
+    "百度千帆大模型": "Baidu mille voiles modèle",
+    "过滤英文标点": "Filtrer ponctuation anglaise"
 }

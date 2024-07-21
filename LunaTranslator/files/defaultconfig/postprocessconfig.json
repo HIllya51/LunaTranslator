@@ -3,17 +3,13 @@
         "use": false,
         "name": "过滤文本中的非日语字符集字符"
     },
-    "_remove_latin": {
-        "use": false,
-        "name": "过滤latin-1字符集"
-    },
-    "_remove_ascii": {
-        "use": false,
-        "name": "过滤ASCII字符集"
-    },
     "_remove_control": {
         "use": false,
         "name": "过滤控制字符"
+    },
+    "_remove_symbo": {
+        "use": false,
+        "name": "过滤英文标点"
     },
     "_remove_chaos": {
         "use": false,

@@ -357,8 +357,6 @@
     "翻译结果替换设置": "Thiết lập thay thế kết quả dịch",
     "过滤包含乱码的文本行": "Lọc các dòng văn bản có chứa mã lộn xộn",
     "过滤文本中的非日语字符集字符": "Bộ lọc ký tự bộ ký tự không phải tiếng Nhật trong văn bản",
-    "过滤ASCII字符集": "Lọc bộ ký tự ASCII",
-    "过滤latin-1字符集": "Lọc bộ ký tự latin-1",
     "过滤其他乱码": "Lọc mã lộn xộn khác",
     "过滤乱码文本": "Lọc văn bản lộn xộn",
     "选择": "Chọn",
@@ -827,5 +825,6 @@
     "腾讯混元大模型": "Mô hình hỗn hợp lớn",
     "传统": "Truyền thống",
     "大模型": "Mô hình lớn",
-    "百度千帆大模型": "Mô hình 100.000 cánh buồm"
+    "百度千帆大模型": "Mô hình 100.000 cánh buồm",
+    "过滤英文标点": "Lọc chấm câu tiếng Anh"
 }

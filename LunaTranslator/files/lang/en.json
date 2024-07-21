@@ -357,8 +357,6 @@
     "翻译结果替换设置": "Translation Result Replacement Settings",
     "过滤包含乱码的文本行": "Filter Text Lines Containing Garbled Characters",
     "过滤文本中的非日语字符集字符": "Filter Non-Japanese Character Characters in Text",
-    "过滤ASCII字符集": "Filter ASCII Character Set",
-    "过滤latin-1字符集": "Filter Latin-1 Character Set",
     "过滤其他乱码": "Filter Other Garbled Characters",
     "过滤乱码文本": "Filter Garbled Text",
     "选择": "Select",
@@ -827,5 +825,6 @@
     "腾讯混元大模型": "Tencent's hybrid big model",
     "传统": "tradition",
     "大模型": "Large model",
-    "百度千帆大模型": "Baidu Qianfan Large Model"
+    "百度千帆大模型": "Baidu Qianfan Large Model",
+    "过滤英文标点": "Filter English punctuation"
 }
