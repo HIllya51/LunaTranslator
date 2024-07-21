@@ -1585,12 +1585,6 @@
             "type": "dev",
             "name": "必应"
         },
-        "tx_dev": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "tx"
-        },
         "baidu_dev": {
             "use": false,
             "color": "blue",
