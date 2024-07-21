@@ -308,6 +308,13 @@ def __changeselectablestate(self, x):
 
 
 def vistranslate_rank(self):
+    _not = []
+    for i, k in enumerate(globalconfig["fix_translate_rank_rank"]):
+        _f = "./Lunatranslator/translator/{}.py".format(k)
+        if not os.path.exists(_f):
+            _not.append(i)
+    for _ in reversed(_not):
+        globalconfig["fix_translate_rank_rank"].pop(_)
     listediter(
         self,
         ("显示顺序"),
