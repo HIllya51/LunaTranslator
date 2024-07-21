@@ -436,7 +436,6 @@ class QUnFrameWindow(resizableframeless):
             windows.ShowWindow(int(self.winId()), windows.SW_SHOWNOACTIVATE)
         else:
             self.show()
-        windows.SetForegroundWindow(int(self.winId()))
 
     def aftershowdosomething(self):
 

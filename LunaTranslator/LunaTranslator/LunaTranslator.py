@@ -1194,6 +1194,7 @@ class MAINUI:
         self.parsedefaultfont()
         self.loadmetadatas()
         self.translation_ui = QUnFrameWindow()
+        winsharedutils.showintab(int(self.translation_ui.winId()), globalconfig["showintab"])
         self.translation_ui.show()
         self.translation_ui.aftershowdosomething()
         self.mainuiloadafter()
