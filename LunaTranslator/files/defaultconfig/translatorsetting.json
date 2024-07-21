@@ -732,6 +732,17 @@
 			}
 		}
 	},
+	"dev_chatgpt": {
+		"args": {
+			"usingstream": true
+		},
+		"argstype": {
+			"usingstream": {
+				"name": "流式输出",
+				"type": "switch"
+			}
+		}
+	},
 	"gemini": {
 		"args": {
 			"注册网址": "https://ai.google.dev/tutorials/python_quickstart",
