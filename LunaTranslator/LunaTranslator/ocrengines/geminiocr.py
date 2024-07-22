@@ -7,8 +7,10 @@ class OCR(baseocr):
     def ocr(self, imagebinary):
         self.checkempty(["key"])
         self.checkempty(["url"])
+        self.checkempty(["model"])
         api_key = self.config["key"]
         url = self.config["url"]
+        model = self.config["model"]
         image_data = base64.b64encode(imagebinary).decode("utf-8")
 
         # Prepare the request payload
@@ -26,7 +28,7 @@ class OCR(baseocr):
         # Set up the request headers and URL
         headers = {"Content-Type": "application/json"}
         # by default https://generativelanguage.googleapis.com/v1
-        url = f"{url}/models/gemini-1.5-flash:generateContent?key={api_key}"
+        url = f"{url}/models/{model}:generateContent?key={api_key}"
 
         # Send the request
         response = requests.post(url, headers=headers, json=payload, proxies=self.proxy)
