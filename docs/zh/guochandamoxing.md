@@ -83,3 +83,10 @@
 ![img](https://image.lunatranslator.xyz/zh/damoxing/qianfan2.png)
 
 <!-- tabs:end -->
+
+
+<details>
+  <summary>翻译效果</summary>
+  <table id="toupiao">
+  </table> 
+</details>
