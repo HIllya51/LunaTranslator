@@ -24,6 +24,7 @@ from myutils.utils import (
     checkpostusing,
     stringfyerror,
     targetmod,
+    translate_exits,
 )
 from myutils.wrapper import threader
 from gui.showword import searchwordW
@@ -668,9 +669,13 @@ class MAINUI:
 
     def fanyiinitmethod(self, classname):
         try:
-            if not os.path.exists("./LunaTranslator/translator/" + classname + ".py"):
+            which = translate_exits(classname, which=True)
+            if which is None:
                 return None
-            aclass = importlib.import_module("translator." + classname).TS
+            if which == 0:
+                aclass = importlib.import_module("translator." + classname).TS
+            elif which == 1:
+                aclass = importlib.import_module("userconfig.copyed." + classname).TS
         except Exception as e:
             print_exc()
             self.textgetmethod(

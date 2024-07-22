@@ -41,6 +41,22 @@ def __internal__getlang(k1, k2):
     return static_data["language_list_translator_inner"][globalconfig[k2]]
 
 
+def translate_exits(fanyi, which=False):
+    _fs = [
+        "./Lunatranslator/translator/{}.py".format(fanyi),
+        "./userconfig/copyed/{}.py".format(fanyi),
+    ]
+    if not which:
+        if all([not os.path.exists(_) for _ in _fs]):
+            return False
+        return True
+    else:
+        for i, _ in enumerate(_fs):
+            if os.path.exists(_):
+                return i
+        return None
+
+
 def getlangsrc():
     return __internal__getlang("private_srclang", "srclang3")
 
@@ -654,6 +670,7 @@ class LRUCache:
         if not _:
             self.put(key)
         return _
+
 
 globalcachedmodule = {}
 

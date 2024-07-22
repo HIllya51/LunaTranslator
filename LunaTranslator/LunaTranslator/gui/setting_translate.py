@@ -9,6 +9,7 @@ from myutils.utils import (
     splittranslatortypes,
     checkportavailable,
     dynamiclink,
+    translate_exits,
 )
 from gui.pretransfile import sqlite2json
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
@@ -60,7 +61,7 @@ def splitapillm(l):
     return is_gpt_likes, not_is_gpt_like
 
 
-def loadvisinternal(btnplus):
+def loadvisinternal(btnplus, copy):
     __vis = []
     __uid = []
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
@@ -70,17 +71,21 @@ def loadvisinternal(btnplus):
         is_gpt_likes, not_is_gpt_like = splitapillm(lixians)
 
     for _ in is_gpt_likes:
-        _f = "./Lunatranslator/translator/{}.py".format(_)
-        if not os.path.exists(_f):
-            continue
+        if copy:
+            which = translate_exits(_, which=True)
+            if which != 1:
+                continue
+        else:
+            if not translate_exits(_):
+                continue
         __vis.append(globalconfig["fanyi"][_]["name"])
         __uid.append(_)
     return __vis, __uid
 
 
-def getalistname(parent, btnplus, callback):
+def getalistname(parent, copy, btnplus, callback):
     __d = {"k": 0, "n": ""}
-    __vis, __uid = loadvisinternal(btnplus)
+    __vis, __uid = loadvisinternal(btnplus, copy)
 
     def __wrap(callback, __d, __uid):
         if len(__uid) == 0:
@@ -89,36 +94,45 @@ def getalistname(parent, btnplus, callback):
         uid = __uid[__d["k"]]
         callback(uid, __d["n"])
 
-    autoinitdialog(
-        parent,
-        "复制",
-        600,
-        [
-            {
-                "type": "combo",
-                "name": "目标",
-                "d": __d,
-                "k": "k",
-                "list": __vis,
-            },
+    __ = []
+    __.append(
+        {
+            "type": "combo",
+            "name": "目标",
+            "d": __d,
+            "k": "k",
+            "list": __vis,
+        }
+    )
+    if not copy:
+        __.append(
             {
                 "name": "名称",
                 "type": "lineedit",
                 "d": __d,
                 "k": "n",
-            },
-            {
-                "type": "okcancel",
-                "callback": functools.partial(__wrap, callback, __d, __uid),
-            },
-        ],
+            }
+        )
+
+    __.append(
+        {
+            "type": "okcancel",
+            "callback": functools.partial(__wrap, callback, __d, __uid),
+        }
+    )
+    autoinitdialog(
+        parent,
+        "删除" if copy else "复制",
+        600,
+        __,
     )
 
 
-def selectllmcallback(self, countnum, btn, btnplus, fanyi, name):
+def selectllmcallback(self, countnum, btnplus, fanyi, name):
     uid = str(uuid.uuid4())
     _f1 = "./Lunatranslator/translator/{}.py".format(fanyi)
-    _f2 = "./Lunatranslator/translator/{}.py".format(uid)
+    _f2 = "./userconfig/copyed/{}.py".format(uid)
+    os.makedirs("./userconfig/copyed", exist_ok=True)
     shutil.copy(_f1, _f2)
     globalconfig["fanyi"][uid] = deepcopydict(globalconfig["fanyi"][fanyi])
     globalconfig["fanyi"][uid]["use"] = False
@@ -167,8 +181,9 @@ def selectllmcallback(self, countnum, btn, btnplus, fanyi, name):
     )
 
     if len(countnum) % 3 == 0:
-        layout.addWidget(btn, layout.rowCount(), 5 * 2, 1, 2)
-        layout.addWidget(self.btnquestion, layout.rowCount() - 1, 5 * 2 + 2, 1, 2)
+        layout.addWidget(
+            getattr(self, "btnmany" + btnplus), layout.rowCount(), 5 * 2, 1, 4
+        )
     offset = 5 * (len(countnum) % 3)
     layout.addWidget(name, layout.rowCount() - 2, offset + 0)
     layout.addWidget(swc, layout.rowCount() - 2, offset + 1)
@@ -177,37 +192,98 @@ def selectllmcallback(self, countnum, btn, btnplus, fanyi, name):
     if len(countnum) % 3 != 2:
         layout.addWidget(QLabel(), layout.rowCount() - 2, offset + 4)
 
-    countnum.append(0)
+    countnum.append(uid)
 
 
-def btnpluscallback(self, countnum, btn, btnplus):
+def btnpluscallback(self, countnum, btnplus):
     getalistname(
         self,
+        False,
         btnplus,
-        functools.partial(selectllmcallback, self, countnum, btn, btnplus),
+        functools.partial(selectllmcallback, self, countnum, btnplus),
     )
 
 
 def createbtn(self, countnum, btnplus):
     btn = QPushButton(self)
     btn.setIcon(qtawesome.icon("fa.plus"))
-    btn.clicked.connect(
-        functools.partial(btnpluscallback, self, countnum, btn, btnplus)
-    )
+    btn.clicked.connect(functools.partial(btnpluscallback, self, countnum, btnplus))
+    setattr(self, "btnadd" + btnplus, btn)
     return btn
 
 
-def createbtnquest(self, btnplus):
+class Shit(QWidget):
+    pass
+
+
+def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
+    _f2 = "./userconfig/copyed/{}.py".format(fanyi)
+    try:
+        os.remove(_f2)
+    except:
+        pass
+    globalconfig["fanyi"][fanyi]["use"] = False
+
+    layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
+    idx = countnum.index(fanyi)
+    line = idx // 3
+    off = line * 14 + (idx % 3) * 5
+    do = 0
+    i = 0
+    while do < 4:
+
+        w = layout.itemAt(off + i).widget()
+        i += 1
+        if isinstance(w, Shit):
+            continue
+        elif isinstance(w, QLabel) and w.text() == "":
+            continue
+        elif not w.isEnabled():
+            continue
+        w.setEnabled(False)
+        do += 1
+
+
+def btndeccallback(self, countnum, btnplus):
+    getalistname(
+        self,
+        True,
+        btnplus,
+        functools.partial(selectllmcallback_2, self, countnum, btnplus),
+    )
+
+
+def createmanybtn(self, countnum, btnplus):
+    hbox = QHBoxLayout()
+    hbox.setContentsMargins(0, 0, 0, 0)
+    w = Shit()
+    w.setLayout(hbox)
+
+    btn = QPushButton(self)
+    btn.setIcon(qtawesome.icon("fa.plus"))
+    btn.clicked.connect(functools.partial(btnpluscallback, self, countnum, btnplus))
+
+    hbox.addWidget(btn)
+
+    btn = QPushButton(self)
+    btn.setIcon(qtawesome.icon("fa.minus"))
+    btn.clicked.connect(functools.partial(btndeccallback, self, countnum, btnplus))
+
+    hbox.addWidget(btn)
+
     btn = QPushButton(self)
     btn.setIcon(qtawesome.icon("fa.question"))
     if btnplus == "offline":
-        btn.clicked.connect(lambda: os.startfile(dynamiclink("{docs_server}/#/zh/offlinellm")))
+        btn.clicked.connect(
+            lambda: os.startfile(dynamiclink("{docs_server}/#/zh/offlinellm"))
+        )
     elif btnplus == "api":
         btn.clicked.connect(
             lambda: os.startfile(dynamiclink("{docs_server}/#/zh/guochandamoxing"))
         )
-    self.btnquestion = btn
-    return btn
+    hbox.addWidget(btn)
+    setattr(self, "btnmany" + btnplus, w)
+    return w
 
 
 def initsome11(self, l, label=None, btnplus=False):
@@ -219,11 +295,10 @@ def initsome11(self, l, label=None, btnplus=False):
     countnum = []
     for fanyi in l:
 
-        _f = "./Lunatranslator/translator/{}.py".format(fanyi)
-        if not os.path.exists(_f):
+        if not translate_exits(fanyi):
             continue
         i += 1
-        countnum.append(0)
+        countnum.append(fanyi)
         if fanyi in translatorsetting:
 
             items = autoinitdialog_items(translatorsetting[fanyi])
@@ -280,8 +355,7 @@ def initsome11(self, l, label=None, btnplus=False):
         grids.append(
             [
                 ("", 10),
-                (functools.partial(createbtn, self, countnum, btnplus), 2),
-                (functools.partial(createbtnquest, self, btnplus), 2),
+                (functools.partial(createmanybtn, self, countnum, btnplus), 4),
             ]
         )
 
@@ -349,7 +423,7 @@ def checkconnected(self):
             if not globalconfig["fanyi"][dev]["use"]:
                 continue
 
-            if not os.path.exists("./LunaTranslator/translator/" + dev + ".py"):
+            if not translate_exits(dev):
                 continue
             needstart = True
             break

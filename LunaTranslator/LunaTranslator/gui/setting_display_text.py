@@ -4,7 +4,7 @@ import gobject, os, zipfile, shutil
 from myutils.config import globalconfig, static_data
 from gui.inputdialog import multicolorset, autoinitdialog
 from myutils.wrapper import tryprint
-from myutils.utils import dynamiclink
+from myutils.utils import dynamiclink, translate_exits
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
@@ -310,8 +310,7 @@ def __changeselectablestate(self, x):
 def vistranslate_rank(self):
     _not = []
     for i, k in enumerate(globalconfig["fix_translate_rank_rank"]):
-        _f = "./Lunatranslator/translator/{}.py".format(k)
-        if not os.path.exists(_f):
+        if not translate_exits(k):
             _not.append(i)
     for _ in reversed(_not):
         globalconfig["fix_translate_rank_rank"].pop(_)

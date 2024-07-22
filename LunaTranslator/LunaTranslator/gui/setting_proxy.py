@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools, re
 from myutils.config import globalconfig
-from myutils.utils import splittranslatortypes
+from myutils.utils import splittranslatortypes, translate_exits
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makegrid,
@@ -18,9 +18,13 @@ def getall(l, item="fanyi", name=None):
     line = []
     for fanyi in l:
         if name:
-            _f = name % fanyi
-            if not os.path.exists(_f):
-                continue
+            if isinstance(name, str):
+                _f = name % fanyi
+                if not os.path.exists(_f):
+                    continue
+            elif callable(name):
+                if not name(fanyi):
+                    continue
         i += 1
 
         line += [
@@ -105,7 +109,7 @@ def makeproxytab(self, basel):
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
 
     mianfei = getall(l=mianfei, item="fanyi", name="./Lunatranslator/translator/%s.py")
-    shoufei = getall(l=shoufei, item="fanyi", name="./Lunatranslator/translator/%s.py")
+    shoufei = getall(l=shoufei, item="fanyi", name=translate_exits)
     ocrs = getall(
         l=getnotofflines("ocr"),
         item="ocr",
