@@ -270,7 +270,9 @@
     },
     "geminiocr": {
         "args": {
-            "key": ""
+            "key": "",
+            "url": "https://generativelanguage.googleapis.com/v1",
+            "model": "gemini-1.5-flash"
         }
     },
     "xunfei": {
