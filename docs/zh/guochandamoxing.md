@@ -86,7 +86,7 @@
 
 
 <details>
-  <summary>翻译效果</summary>
+  <summary>推荐指数</summary>
   <table id="toupiao">
   </table> 
 </details>
