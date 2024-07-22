@@ -87,7 +87,9 @@ class gptcommon(basetrans):
                     rs = json_data["choices"][0].get("finish_reason")
                     if rs and rs != "null":
                         break
-                    msg = json_data["choices"][0]["delta"]["content"]
+                    msg = json_data["choices"][0]["delta"].get("content", None)
+                    if not msg:
+                        continue
                     yield msg
                     message += msg
 

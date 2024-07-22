@@ -39,6 +39,10 @@
 
 **API接口地址** `https://api.lingyiwanwu.com`
 
+### **硅基流动**
+
+**API接口地址** `https://api.siliconflow.cn`
+
 ### **讯飞星火大模型**
 
 **API接口地址** `https://spark-api-open.xf-yun.com/v1`
