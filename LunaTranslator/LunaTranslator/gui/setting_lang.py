@@ -54,7 +54,11 @@ def setTablanglz(self):
                                 callback=functools.partial(changelang, self, "fonttype"),
                             ),
                             "",
-                            D_getsimpleswitch(globalconfig, "fonttypeauto"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "fonttypeauto",
+                                callback=functools.partial(changelang, self, "fonttype")
+                            ),
                             "根据所选语言自动更改对应字体",
                             "",
                         ],
@@ -67,7 +71,11 @@ def setTablanglz(self):
                                 callback=functools.partial(changelang, self, "fonttype2"),
                             ),
                             "",
-                            D_getsimpleswitch(globalconfig, "fonttype2auto"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "fonttype2auto",
+                                callback=functools.partial(changelang, self, "fonttype2")
+                            ),
                             "根据所选语言自动更改对应字体",
                             "",
                         ],
@@ -101,7 +109,11 @@ def setTablanglz(self):
                                 icon="fa.gear",
                             ),
                             "",
-                            D_getsimpleswitch(globalconfig, "settingfonttypeauto"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "settingfonttypeauto",
+                                callback=functools.partial(changesettinglang, self)
+                            ),
                             "根据所选语言自动更改对应字体",
                             "",
                         ],
