@@ -2669,7 +2669,6 @@ class previewimages(QWidget):
     showpixmap = pyqtSignal(QPixmap)
     changepixmappath = pyqtSignal(str)
     removepath = pyqtSignal(str)
-    switchpos = pyqtSignal(int)
 
     def sethor(self, hor):
         self.hor = hor
@@ -2691,22 +2690,6 @@ class previewimages(QWidget):
         self.list.currentRowChanged.connect(self._visidx)
         self.lay.addWidget(self.list)
         self.setLayout(self.lay)
-        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.menu)
-
-    def menu(self, _):
-        menu = QMenu(self)
-
-        deleteimage = LAction(("删除图片"))
-        pos = LAction(("位置"))
-
-        menu.addAction(deleteimage)
-        menu.addAction(pos)
-        action = menu.exec(QCursor.pos())
-        if action == deleteimage:
-            self.removecurrent()
-        elif action == pos:
-            getselectpos(self, self.switchpos.emit)
 
     def tolastnext(self, dx):
         if self.list.count() == 0:
@@ -2794,9 +2777,50 @@ class pixwrapper(QWidget):
         self.previewimages.showpixmap.connect(self.pixview.showpixmap)
         self.previewimages.changepixmappath.connect(self.changepixmappath)
         self.previewimages.removepath.connect(self.removepath)
-        self.previewimages.switchpos.connect(self.switchpos)
         self.k = None
         self.removecurrent = self.previewimages.removecurrent
+
+        self.previewimages.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.previewimages.customContextMenuRequested.connect(
+            functools.partial(self.menu, True)
+        )
+        self.pixview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.pixview.customContextMenuRequested.connect(
+            functools.partial(self.menu, False)
+        )
+
+    def menu(self, _1, _):
+        menu = QMenu(self)
+
+        setimage = LAction(("设为封面"))
+        deleteimage = LAction(("删除图片"))
+        hualang = LAction(("画廊"))
+        pos = LAction(("位置"))
+
+        menu.addAction(setimage)
+        menu.addAction(deleteimage)
+        menu.addAction(hualang)
+        if _1:
+            menu.addSeparator()
+            menu.addAction(pos)
+        action = menu.exec(QCursor.pos())
+        if action == deleteimage:
+            self.removecurrent()
+        elif action == pos:
+            getselectpos(self, self.switchpos)
+
+        elif action == hualang:
+            listediter(
+                self,
+                ("画廊"),
+                ("画廊"),
+                savehook_new_data[self.k]["imagepath_all"],
+                closecallback=lambda: self.setpix(self.k),
+                ispathsedit=dict(),
+            )
+        elif action == setimage:
+            curr = savehook_new_data[self.k]["currentvisimage"]
+            savehook_new_data[self.k]["currentmainimage"] = curr
 
     def switchpos(self, pos):
         globalconfig["viewlistpos"] = pos
@@ -2812,10 +2836,6 @@ class pixwrapper(QWidget):
     def changepixmappath(self, path):
         savehook_new_data[self.k]["currentvisimage"] = path
         self.pathview.setText(path)
-
-    def setpixmenu(self, function):
-        self.pixview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.pixview.customContextMenuRequested.connect(function)
 
     def resizeEvent(self, e: QResizeEvent):
         self.pathview.resize(e.size().width(), self.pathview.height())
@@ -2936,7 +2956,7 @@ class dialog_savedgame_v3(QWidget):
         )
         self.stack.directshow()
 
-    def stack_showmenu(self, ispixmenu, p):
+    def stack_showmenu(self, p):
         menu = QMenu(self)
 
         addlist = LAction(("创建列表"))
@@ -2944,9 +2964,6 @@ class dialog_savedgame_v3(QWidget):
         delgame = LAction(("删除游戏"))
         opendir = LAction(("打开目录"))
         addtolist = LAction(("添加到列表"))
-        setimage = LAction(("设为封面"))
-        deleteimage = LAction(("删除图片"))
-        hualang = LAction(("画廊"))
         if not self.currentfocusuid:
 
             menu.addAction(addlist)
@@ -2961,11 +2978,6 @@ class dialog_savedgame_v3(QWidget):
             menu.addSeparator()
             menu.addAction(addtolist)
 
-            if ispixmenu:
-                menu.addSeparator()
-                menu.addAction(setimage)
-                menu.addAction(deleteimage)
-                menu.addAction(hualang)
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, self.currentfocusuid)
@@ -2997,25 +3009,10 @@ class dialog_savedgame_v3(QWidget):
 
         elif action == delgame:
             self.shanchuyouxi()
-        elif action == hualang:
-            listediter(
-                self,
-                ("画廊"),
-                ("画廊"),
-                savehook_new_data[self.currentfocusuid]["imagepath_all"],
-                closecallback=lambda: self.pixview.setpix(self.currentfocusuid),
-                ispathsedit=dict(),
-            )
-
-        elif action == deleteimage:
-            self.pixview.removecurrent()
         elif action == opendir:
             self.clicked4()
         elif action == addtolist:
             self.addtolist()
-        elif action == setimage:
-            curr = savehook_new_data[self.currentfocusuid]["currentvisimage"]
-            savehook_new_data[self.currentfocusuid]["currentmainimage"] = curr
 
     def addtolistcallback(self, uid, gameuid):
 
@@ -3049,9 +3046,7 @@ class dialog_savedgame_v3(QWidget):
         self.reallist = {}
         self.stack = stackedlist()
         self.stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.stack.customContextMenuRequested.connect(
-            functools.partial(self.stack_showmenu, False)
-        )
+        self.stack.customContextMenuRequested.connect(self.stack_showmenu)
         self.stack.setFixedWidth(
             globalconfig["dialog_savegame_layout"]["listitemwidth"]
         )
@@ -3069,7 +3064,6 @@ class dialog_savedgame_v3(QWidget):
         self.righttop.addTab(_w, "画廊")
         lay.addWidget(self.righttop)
         rightlay.addWidget(self.pixview)
-        self.pixview.setpixmenu(functools.partial(self.stack_showmenu, True))
         self.buttonlayout = QHBoxLayout()
         self.savebutton = []
         rightlay.addLayout(self.buttonlayout)
