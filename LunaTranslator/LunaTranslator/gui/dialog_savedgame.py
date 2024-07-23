@@ -2263,6 +2263,7 @@ class dialog_savedgame_new(QWidget):
 
     def simplebutton(self, text, save, callback, exists):
         button5 = LPushButton(text)
+        button5.setMinimumWidth(10)
         if save:
             self.savebutton.append((button5, exists))
         button5.clicked.connect(callback)
@@ -3280,6 +3281,7 @@ class dialog_savedgame_v3(QWidget):
 
     def simplebutton(self, text, save, callback, exists):
         button5 = LPushButton(text)
+        button5.setMinimumWidth(10)
         if save:
             self.savebutton.append((button5, exists))
         button5.clicked.connect(callback)
