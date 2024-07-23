@@ -826,5 +826,6 @@
     "传统": "gelenek",
     "大模型": "Büyük model",
     "百度千帆大模型": "Baidu Qianfan Büyük Modeli",
-    "过滤英文标点": "İngilizce noktasını sil"
+    "过滤英文标点": "İngilizce noktasını sil",
+    "根据所选语言自动更改对应字体": "İlgili yazı tipini seçilen dile göre otomatik olarak değiştir"
 }

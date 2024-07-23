@@ -826,5 +826,6 @@
     "传统": "tradizione",
     "大模型": "Modello grande",
     "百度千帆大模型": "Baidu Qianfan Modello grande",
-    "过滤英文标点": "Filtra punteggiatura inglese"
+    "过滤英文标点": "Filtra punteggiatura inglese",
+    "根据所选语言自动更改对应字体": "Cambia automaticamente il carattere corrispondente in base alla lingua selezionata"
 }

@@ -826,5 +826,6 @@
     "传统": "tradycja",
     "大模型": "Duży model",
     "百度千帆大模型": "Duży model Baidu Qianfan",
-    "过滤英文标点": "Filtruj interpunkcję angielską"
+    "过滤英文标点": "Filtruj interpunkcję angielską",
+    "根据所选语言自动更改对应字体": "Automatycznie zmień odpowiednią czcionkę zgodnie z wybranym językiem"
 }

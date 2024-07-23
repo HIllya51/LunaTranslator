@@ -826,5 +826,6 @@
     "传统": "Truyền thống",
     "大模型": "Mô hình lớn",
     "百度千帆大模型": "Mô hình 100.000 cánh buồm",
-    "过滤英文标点": "Lọc chấm câu tiếng Anh"
+    "过滤英文标点": "Lọc chấm câu tiếng Anh",
+    "根据所选语言自动更改对应字体": "Tự động thay đổi phông chữ tương ứng theo ngôn ngữ đã chọn"
 }

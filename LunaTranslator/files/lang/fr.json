@@ -826,5 +826,6 @@
     "传统": "La tradition",
     "大模型": "Le grand modèle",
     "百度千帆大模型": "Baidu mille voiles modèle",
-    "过滤英文标点": "Filtrer ponctuation anglaise"
+    "过滤英文标点": "Filtrer ponctuation anglaise",
+    "根据所选语言自动更改对应字体": "Changez automatiquement la police correspondante en fonction de la langue sélectionnée"
 }
