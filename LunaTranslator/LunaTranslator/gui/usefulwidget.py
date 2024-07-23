@@ -1690,7 +1690,8 @@ class listediter(LDialog):
             self.internalrealname = []
             for row, k in enumerate(lst):  # 2
                 try:
-                    namemapfunction(k)
+                    if namemapfunction:
+                        namemapfunction(k)
                 except:
                     continue
                 self.internalrealname.append(k)
