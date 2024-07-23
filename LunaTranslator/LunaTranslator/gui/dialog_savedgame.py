@@ -1742,7 +1742,8 @@ def _getcachedimage(src, small):
         if _pix.isNull():
             return None
         return _pix
-
+    if not os.path.exists(src):
+        return None
     src2 = gobject.getcachedir(f"icon2/{__b64string(src)}.jpg")
     _pix = QPixmap(src2)
     if not _pix.isNull():
@@ -2702,18 +2703,23 @@ class previewimages(QWidget):
 
     def setpixmaps(self, paths, currentpath):
         self.list.setCurrentRow(-1)
-        pixmapi = 0
-        if currentpath in paths:
-            pixmapi = paths.index(currentpath)
         self.list.blockSignals(True)
         self.list.clear()
+        pathx = []
         for path in paths:
+            image = _getcachedimage(path, True)
+            if image is None:
+                continue
             item = QListWidgetItem()
             item.imagepath = path
-            item.setIcon(QIcon(_getcachedimage(path, True)))
+            pathx.append(path)
+            item.setIcon(QIcon(image))
 
             self.list.addItem(item)
         self.list.blockSignals(False)
+        pixmapi = 0
+        if currentpath in pathx:
+            pixmapi = pathx.index(currentpath)
         self.list.setCurrentRow(pixmapi)
 
     def _visidx(self, _):
