@@ -381,6 +381,10 @@ def xianshigrid_text(self):
                                 functools.partial(vistranslate_rank, self), "fa.gear"
                             ),
                         ],
+                        [
+                            "居中显示",
+                            D_getsimpleswitch(globalconfig, "showatcenter"),
+                        ],
                     ),
                 ),
                 0,
@@ -522,53 +526,104 @@ def xianshigrid_style(self):
                     type="grid",
                     grid=(
                         [
-                            "原文字体",
-                            (functools.partial(createtextfontcom, "fonttype"), 4),
-                            "",
-                            "字体大小",
-                            D_getspinbox(
-                                1,
-                                100,
-                                globalconfig,
-                                "fontsizeori",
-                                double=True,
-                                step=0.1,
-                            ),
-                        ],
-                        [
-                            "译文字体",
-                            (functools.partial(createtextfontcom, "fonttype2"), 4),
-                            "",
-                            "字体大小",
-                            D_getspinbox(
-                                1, 100, globalconfig, "fontsize", double=True, step=0.1
-                            ),
-                        ],
-                        [
-                            "加粗字体",
-                            D_getsimpleswitch(globalconfig, "showbold"),
-                            "",
-                            "居中显示",
-                            D_getsimpleswitch(globalconfig, "showatcenter"),
-                            "",
-                            "行间距",
-                            D_getspinbox(-100, 100, globalconfig, "extra_space"),
-                            "",
-                        ],
-                        [
-                            "原文颜色",
-                            D_getcolorbutton(
-                                globalconfig,
-                                "rawtextcolor",
-                                callback=lambda: selectcolor(
-                                    self,
-                                    globalconfig,
-                                    "rawtextcolor",
-                                    self.original_color_button,
+                            (
+                                dict(
+                                    title="原文",
+                                    type="grid",
+                                    grid=(
+                                        [
+                                            "字体",
+                                            (
+                                                functools.partial(
+                                                    createtextfontcom, "fonttype"
+                                                ),
+                                                0,
+                                            ),
+                                        ],
+                                        [
+                                            "字体大小",
+                                            D_getspinbox(
+                                                1,
+                                                100,
+                                                globalconfig,
+                                                "fontsizeori",
+                                                double=True,
+                                                step=0.1,
+                                            ),
+                                            "",
+                                            "行间距",
+                                            D_getspinbox(
+                                                -100, 100, globalconfig, "extra_space"
+                                            ),
+                                            "",
+                                            "加粗",
+                                            D_getsimpleswitch(globalconfig, "showbold"),
+                                        ],
+                                        [
+                                            "颜色",
+                                            D_getcolorbutton(
+                                                globalconfig,
+                                                "rawtextcolor",
+                                                callback=lambda: selectcolor(
+                                                    self,
+                                                    globalconfig,
+                                                    "rawtextcolor",
+                                                    self.original_color_button,
+                                                ),
+                                                name="original_color_button",
+                                                parent=self,
+                                            ),
+                                        ],
+                                    ),
                                 ),
-                                name="original_color_button",
-                                parent=self,
-                            ),
+                                0,
+                                "group",
+                            )
+                        ],
+                        [
+                            (
+                                dict(
+                                    title="译文",
+                                    type="grid",
+                                    grid=(
+                                        [
+                                            "字体",
+                                            (
+                                                functools.partial(
+                                                    createtextfontcom, "fonttype2"
+                                                ),
+                                                0,
+                                            ),
+                                        ],
+                                        [
+                                            "字体大小",
+                                            D_getspinbox(
+                                                1,
+                                                100,
+                                                globalconfig,
+                                                "fontsize",
+                                                double=True,
+                                                step=0.1,
+                                            ),
+                                            "",
+                                            "行间距",
+                                            D_getspinbox(
+                                                -100,
+                                                100,
+                                                globalconfig,
+                                                "extra_space_trans",
+                                            ),
+                                            "",
+                                            "加粗",
+                                            D_getsimpleswitch(
+                                                globalconfig, "showbold_trans"
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                0,
+                                "group",
+                            )
                         ],
                     ),
                 ),

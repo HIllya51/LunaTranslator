@@ -86,14 +86,12 @@
     "描边字体": "Carattere tratto",
     "显示设置": "Impostazioni di visualizzazione",
     "不透明度": "Opacità",
-    "原文颜色": "Colore originale",
     "工具按钮颜色": "Colore pulsante strumento",
     "显示原文": "Mostra testo originale",
     "显示分词结果": "Mostra i risultati della segmentazione",
     "翻译器字体类型": "Tipo di carattere del traduttore",
     "字体大小": "dimensione del carattere",
     "字体样式": "Stile carattere",
-    "加粗字体": "Carattere grassetto",
     "居中显示": "Centra la visualizzazione",
     "描边宽度": "Larghezza tratto",
     "游戏窗口移动时同步移动": "Sincronizza il movimento quando la finestra di gioco si muove",
@@ -526,8 +524,6 @@
     "选中时颜色": "Colore quando selezionato",
     "游戏不存在时颜色": "Colore quando il gioco non esiste",
     "原文": "testo originale",
-    "原文字体": "Carattere originale",
-    "译文字体": "Carattere di traduzione",
     "选取OCR范围后显示范围框": "Mostra la casella di intervallo dopo aver selezionato l'intervallo OCR",
     "下载": "download",
     "附加参数": "Parametri aggiuntivi",
@@ -826,5 +822,7 @@
     "传统": "tradizione",
     "大模型": "Modello grande",
     "百度千帆大模型": "Baidu Qianfan Modello grande",
-    "过滤英文标点": "Filtra punteggiatura inglese"
+    "过滤英文标点": "Filtra punteggiatura inglese",
+    "译文": "traduzione",
+    "加粗": "Bold"
 }

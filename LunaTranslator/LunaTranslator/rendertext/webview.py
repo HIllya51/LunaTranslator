@@ -240,7 +240,9 @@ class TextBrowser(QWidget, dataget):
         fmori, fsori, boldori = self._getfontinfo(origin)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
         kanacolor = self._getkanacolor()
-        line_height = self.measureH(fmori, fsori) + globalconfig["extra_space"]
+        line_height = self.measureH(fmori, fsori) + (
+            globalconfig["extra_space"] if origin else globalconfig["extra_space_trans"]
+        )
         style = self._getstylevalid()
 
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})

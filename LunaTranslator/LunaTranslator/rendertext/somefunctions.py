@@ -28,10 +28,12 @@ class dataget:
         if origin:
             fm = globalconfig["fonttype"]
             fs = globalconfig["fontsizeori"]
+            bold = globalconfig["showbold"]
         else:
             fm = globalconfig["fonttype2"]
             fs = globalconfig["fontsize"]
-        return fm, fs, globalconfig["showbold"]
+            bold = globalconfig["showbold_trans"]
+        return fm, fs, bold
 
     def _getfontinfo_kana(self):
         fm, fs, bold = self._getfontinfo(True)

@@ -288,8 +288,10 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.insertPlainText(_space + text)
 
         b2 = self.textbrowser.document().blockCount()
-
-        fh = globalconfig["extra_space"]
+        if origin:
+            fh = globalconfig["extra_space"]
+        else:
+            fh = globalconfig["extra_space_trans"]
         for i in range(self.blockcount, self.textbrowser.document().blockCount()):
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()

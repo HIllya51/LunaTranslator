@@ -86,14 +86,12 @@
     "描边字体": "Police de bord",
     "显示设置": "Paramètres d 'affichage",
     "不透明度": "Opacité",
-    "原文颜色": "Couleur originale",
     "工具按钮颜色": "Couleurs des boutons d'outils",
     "显示原文": "Afficher le texte original",
     "显示分词结果": "Afficher les résultats du participant",
     "翻译器字体类型": "Type de police du traducteur",
     "字体大小": "Taille de la police",
     "字体样式": "Style de police",
-    "加粗字体": "Police en gras",
     "居中显示": "Affichage Central",
     "描边宽度": "Largeur de la bordure",
     "显示显示原文按钮": "Afficher le bouton afficher le texte original",
@@ -526,8 +524,6 @@
     "选中时颜色": "Couleur quand sélectionnée",
     "游戏不存在时颜色": "Couleur quand le jeu n'existe pas",
     "原文": "Le texte original",
-    "原文字体": "Police originale",
-    "译文字体": "Police de traduction",
     "选取OCR范围后显示范围框": "Afficher la zone de portée après avoir sélectionné la plage ocr",
     "下载": "Télécharger",
     "附加参数": "Paramètres supplémentaires",
@@ -826,5 +822,7 @@
     "传统": "La tradition",
     "大模型": "Le grand modèle",
     "百度千帆大模型": "Baidu mille voiles modèle",
-    "过滤英文标点": "Filtrer ponctuation anglaise"
+    "过滤英文标点": "Filtrer ponctuation anglaise",
+    "译文": "Traduction",
+    "加粗": "épaissir"
 }

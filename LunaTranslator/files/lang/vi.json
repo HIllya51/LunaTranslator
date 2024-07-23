@@ -86,14 +86,12 @@
     "描边字体": "Phông viền",
     "显示设置": "Thiết lập hiển thị",
     "不透明度": "Độ mờ",
-    "原文颜色": "Màu gốc",
     "工具按钮颜色": "Màu nút công cụ",
     "显示原文": "Hiển thị văn bản gốc",
     "显示分词结果": "Hiển thị kết quả phân từ",
     "翻译器字体类型": "Kiểu phông chữ Translator",
     "字体大小": "Cỡ phông chữ",
     "字体样式": "Kiểu phông chữ",
-    "加粗字体": "Phông đậm",
     "居中显示": "Hiện ở giữa",
     "描边宽度": "Chiều rộng viền",
     "显示显示原文按钮": "Hiển thị nút hiển thị gốc",
@@ -526,8 +524,6 @@
     "选中时颜色": "Màu khi chọn",
     "游戏不存在时颜色": "Màu sắc khi trò chơi không tồn tại",
     "原文": "Văn bản gốc",
-    "原文字体": "Phông chữ gốc",
-    "译文字体": "Phông chữ dịch",
     "选取OCR范围后显示范围框": "Hiển thị hộp phạm vi sau khi chọn phạm vi OCR",
     "下载": "Tải về",
     "附加参数": "Tham số bổ sung",
@@ -826,5 +822,7 @@
     "传统": "Truyền thống",
     "大模型": "Mô hình lớn",
     "百度千帆大模型": "Mô hình 100.000 cánh buồm",
-    "过滤英文标点": "Lọc chấm câu tiếng Anh"
+    "过滤英文标点": "Lọc chấm câu tiếng Anh",
+    "译文": "Dịch",
+    "加粗": "Thô"
 }

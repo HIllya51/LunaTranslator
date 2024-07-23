@@ -86,14 +86,12 @@
     "描边字体": "Czcionka kresu",
     "显示设置": "Ustawienia wyświetlania",
     "不透明度": "Nieprzezroczystość",
-    "原文颜色": "Kolor oryginalny",
     "工具按钮颜色": "Kolor przycisku narzędzia",
     "显示原文": "Pokaż oryginalny tekst",
     "显示分词结果": "Pokaż wyniki segmentacji",
     "翻译器字体类型": "Typ czcionki tłumacza",
     "字体大小": "rozmiar czcionki",
     "字体样式": "Styl czcionki",
-    "加粗字体": "Pogrubiona czcionka",
     "居中显示": "Środkowy wyświetlacz",
     "描边宽度": "Szerokość skoku",
     "显示显示原文按钮": "Pokaż przycisk Pokaż oryginalny",
@@ -526,8 +524,6 @@
     "选中时颜色": "Kolor po zaznaczeniu",
     "游戏不存在时颜色": "Kolor, gdy gra nie istnieje",
     "原文": "tekst oryginalny",
-    "原文字体": "Oryginalna czcionka",
-    "译文字体": "Czcionka tłumaczenia",
     "选取OCR范围后显示范围框": "Pokaż pole zakresu po wybraniu zakresu OCR",
     "下载": "pobierz",
     "附加参数": "Dodatkowe parametry",
@@ -826,5 +822,7 @@
     "传统": "tradycja",
     "大模型": "Duży model",
     "百度千帆大模型": "Duży model Baidu Qianfan",
-    "过滤英文标点": "Filtruj interpunkcję angielską"
+    "过滤英文标点": "Filtruj interpunkcję angielską",
+    "译文": "tłumaczenie",
+    "加粗": "Pogrubione"
 }

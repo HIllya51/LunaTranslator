@@ -97,7 +97,6 @@
     "普通字体": "Normal Font",
     "朗读": "Text-to-Speech",
     "过滤数字和英文字母": "Filter Alphanumeric Characters",
-    "原文颜色": "Original Text Color",
     "显示朗读按钮": "Show Text-to-Speech Button",
     "接続詞": "Conjunctions",
     "小学馆": "Shogakukan Dictionary",
@@ -129,7 +128,6 @@
     "英文": "English",
     "源语言": "Source Language",
     "选择游戏": "Select Game",
-    "加粗字体": "Bold Font",
     "最邻近": "Nearest Neighbor",
     "过滤换行符": "Filter Line Breaks",
     "金山快译": "Kingsoft FastAIT",
@@ -526,8 +524,6 @@
     "选中时颜色": "Active Selection Color",
     "游戏不存在时颜色": "Missing Game Color",
     "原文": "Original Text",
-    "原文字体": "Original Text Font",
-    "译文字体": "Translation Text Font",
     "选取OCR范围后显示范围框": "Display Selected OCR Region Border",
     "下载": "Download",
     "附加参数": "Additional Parameters",
@@ -826,5 +822,7 @@
     "传统": "tradition",
     "大模型": "Large model",
     "百度千帆大模型": "Baidu Qianfan Large Model",
-    "过滤英文标点": "Filter English punctuation"
+    "过滤英文标点": "Filter English punctuation",
+    "译文": "translation",
+    "加粗": "Bold"
 }

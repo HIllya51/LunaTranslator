@@ -86,14 +86,12 @@
     "描边字体": "Fuente de dibujo",
     "显示设置": "Configuración de la pantalla",
     "不透明度": "Opacidad",
-    "原文颜色": "Color del texto original",
     "工具按钮颜色": "Color del botón de la herramienta",
     "显示原文": "Muestra el texto original",
     "显示分词结果": "Mostrar los resultados de la segmentación de palabras",
     "翻译器字体类型": "Tipo de fuente del traductor",
     "字体大小": "Tamaño de la fuente",
     "字体样式": "Estilo de fuente",
-    "加粗字体": "Negrita",
     "居中显示": "Mostrar en el Centro",
     "描边宽度": "Ancho de dibujo",
     "显示显示原文按钮": "Mostrar el botón mostrar texto original",
@@ -526,8 +524,6 @@
     "选中时颜色": "Color al seleccionar",
     "游戏不存在时颜色": "Color cuando el juego no existe",
     "原文": "Texto original",
-    "原文字体": "Fuente original",
-    "译文字体": "Fuente de traducción",
     "选取OCR范围后显示范围框": "Después de seleccionar el rango ocr, se muestra el cuadro de rango.",
     "下载": "Descargar",
     "附加参数": "Parámetros adicionales",
@@ -826,5 +822,7 @@
     "传统": "Tradición",
     "大模型": "Gran modelo",
     "百度千帆大模型": "Modelo Baidu qianfan",
-    "过滤英文标点": "Filtrar puntuación en inglés"
+    "过滤英文标点": "Filtrar puntuación en inglés",
+    "译文": "Traducción",
+    "加粗": "Engrosar"
 }
