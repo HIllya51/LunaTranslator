@@ -54,6 +54,7 @@ if _savehook:
     savehook_new_data = _savehook[1]
     savegametaged = _savehook[2]
     # gamepath2uid = _savehook[3] 不再使用，允许重复的path
+
 else:
 
     _savehook = tryreadconfig("savehook_new_1.39.4.json", default=[[], {}])
@@ -72,7 +73,6 @@ else:
         savegametaged = _savehook[2]
     except:
         savegametaged = [None]
-
     # 将savehook_new_data转换为新的格式
     __gamepath2uid = {}
     __savehook_new_data = {}
@@ -97,6 +97,11 @@ else:
         if sub is None:
             continue
         parselist(sub["games"])
+
+try:
+    extradatas = _savehook[4]
+except:
+    extradatas = {}
 translatorsetting = tryreadconfig("translatorsetting.json")
 ocrsetting = tryreadconfig("ocrsetting.json")
 
@@ -483,7 +488,7 @@ def saveallconfig():
     safesave("./userconfig/ocrsetting.json", ocrsetting)
     safesave(
         "./userconfig/savegamedata_5.3.1.json",
-        [savehook_new_list, savehook_new_data, savegametaged, None],
+        [savehook_new_list, savehook_new_data, savegametaged, None, extradatas],
         beatiful=False,
     )
     safesave(

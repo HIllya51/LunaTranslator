@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 import os, functools, uuid, threading, hashlib
@@ -11,6 +12,7 @@ from myutils.config import (
     uid2gamepath,
     _TR,
     postprocessconfig,
+    extradatas,
     globalconfig,
     static_data,
 )
@@ -26,6 +28,7 @@ from myutils.wrapper import (
 from myutils.utils import (
     find_or_create_uid,
     str2rgba,
+    get_time_stamp,
     gamdidchangedtask,
     checkpostlangmatch,
     loadpostsettingwindowmethod_private,
@@ -2026,10 +2029,10 @@ class dialog_savedgame_new(QWidget):
             exists = os.path.exists(uid2gamepath[self.currentfocusuid])
             if exists:
                 menu.addAction(startgame)
-            menu.addAction(delgame)
             if exists:
                 menu.addAction(opendir)
             menu.addAction(gamesetting)
+            menu.addAction(delgame)
             menu.addSeparator()
             menu.addAction(addtolist)
         else:
@@ -2603,6 +2606,7 @@ class fadeoutlabel(QLabel):
         effect = QGraphicsOpacityEffect(self)
         self.setGraphicsEffect(effect)
 
+        self.setStyleSheet("""background-color: rgba(255,255,255, 0);""")
         self.animation = QPropertyAnimation(effect, b"opacity")
         self.animation.setDuration(4000)
         self.animation.setStartValue(1.0)
@@ -2667,7 +2671,6 @@ def getselectpos(parent, callback):
 
 
 class previewimages(QWidget):
-    showpixmap = pyqtSignal(QPixmap)
     changepixmappath = pyqtSignal(str)
     removepath = pyqtSignal(str)
 
@@ -2716,13 +2719,9 @@ class previewimages(QWidget):
     def _visidx(self, _):
         item = self.list.currentItem()
         if item is None:
-            return self.showpixmap.emit(QPixmap())
+            return self.changepixmappath.emit(None)
         pixmap_ = item.imagepath
-        pixmap = QPixmap.fromImage(QImage(pixmap_))
-        if pixmap is None or pixmap.isNull():
-            return self.showpixmap.emit(QPixmap())
         self.changepixmappath.emit(pixmap_)
-        self.showpixmap.emit(pixmap)
 
     def removecurrent(self):
         idx = self.list.currentRow()
@@ -2739,6 +2738,104 @@ class previewimages(QWidget):
         else:
             self.list.setIconSize(QSize(self.width(), self.width()))
         return super().resizeEvent(e)
+
+
+class hoverbtn(QLabel):
+    clicked = pyqtSignal()
+
+    def mousePressEvent(self, a0: QMouseEvent) -> None:
+        self.clicked.emit()
+        return super().mousePressEvent(a0)
+
+    def __init__(self, p):
+        super().__init__(p)
+        style = r"""QLabel{
+                background: transparent; 
+                border-radius:0;
+            }
+            QLabel:hover{
+                background-color: rgba(255,255,255,0.5); 
+            }"""
+        self.setStyleSheet(style)
+
+
+class viewpixmap_x(QWidget):
+    tolastnext = pyqtSignal(int)
+
+    def sizeHint(self):
+        return QSize(400, 400)
+
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self.pixmapviewer = pixmapviewer(self)
+        self.leftclick = hoverbtn(self)
+        self.rightclick = hoverbtn(self)
+        self.maybehavecomment = hoverbtn(self)
+        self.leftclick.clicked.connect(lambda: self.tolastnext.emit(-1))
+        self.rightclick.clicked.connect(lambda: self.tolastnext.emit(1))
+        self.maybehavecomment.clicked.connect(self.viscomment)
+        self.commentedit = QPlainTextEdit(self)
+        self.commentedit.textChanged.connect(self.changecommit)
+        self.pathandtime = QLabel(self)
+        self.centerwidget = QWidget(self)
+        self.centerwidgetlayout = QVBoxLayout()
+        self.centerwidget.setLayout(self.centerwidgetlayout)
+        self.centerwidgetlayout.addWidget(self.pathandtime)
+        self.centerwidgetlayout.addWidget(self.commentedit)
+        self.centerwidget.setVisible(False)
+        self.pathview = fadeoutlabel(self)
+        self.infoview = fadeoutlabel(self)
+        self.infoview.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.currentimage = None
+
+    def changecommit(self):
+        if "imagecomment" not in extradatas:
+            extradatas["imagecomment"] = {}
+        extradatas["imagecomment"][self.currentimage] = self.commentedit.toPlainText()
+
+    def viscomment(self):
+        self.centerwidget.setVisible(not self.centerwidget.isVisible())
+
+    def resizeEvent(self, e: QResizeEvent):
+        self.pixmapviewer.resize(e.size())
+        self.pathview.resize(e.size().width(), self.pathview.height())
+        self.infoview.resize(e.size().width(), self.infoview.height())
+        self.leftclick.setGeometry(
+            0, e.size().height() // 5, e.size().width() // 5, 3 * e.size().height() // 5
+        )
+        self.rightclick.setGeometry(
+            4 * e.size().width() // 5,
+            e.size().height() // 5,
+            e.size().width() // 5,
+            3 * e.size().height() // 5,
+        )
+        self.maybehavecomment.setGeometry(
+            e.size().width() // 5, 0, 3 * e.size().width() // 5, e.size().height() // 5
+        )
+        self.centerwidget.setGeometry(
+            e.size().width() // 5,
+            e.size().height() // 5,
+            3 * e.size().width() // 5,
+            3 * e.size().height() // 5,
+        )
+        super().resizeEvent(e)
+
+    def changepixmappath(self, path):
+        self.centerwidget.setVisible(False)
+        if not path:
+            return self.pixmapviewer.showpixmap(QPixmap())
+
+        pixmap = QPixmap.fromImage(QImage(path))
+        if pixmap is None or pixmap.isNull():
+            return self.pixmapviewer.showpixmap(QPixmap())
+        self.pixmapviewer.showpixmap(pixmap)
+        self.pathview.setText(path)
+        self.infoview.setText(get_time_stamp(ct=os.path.getctime(path), ms=False))
+        self.currentimage = path
+        self.commentedit.setPlainText(extradatas.get("imagecomment", {}).get(path, ""))
+        self.pathandtime.setText(
+            path + "\n" + get_time_stamp(ct=os.path.getctime(path), ms=False)
+        )
 
 
 class pixwrapper(QWidget):
@@ -2767,15 +2864,13 @@ class pixwrapper(QWidget):
         self.previewimages = previewimages(self)
         self.vlayout = QVBoxLayout(self)
         self.vlayout.setContentsMargins(0, 0, 0, 0)
-        self.pixview = pixmapviewer(self)
+        self.pixview = viewpixmap_x(self)
         self.spliter = QSplitter(self)
         self.vlayout.addWidget(self.spliter)
         self.setrank(rank)
         self.sethor(hor)
         self.pixview.tolastnext.connect(self.previewimages.tolastnext)
         self.setLayout(self.vlayout)
-        self.pathview = fadeoutlabel(self)
-        self.previewimages.showpixmap.connect(self.pixview.showpixmap)
         self.previewimages.changepixmappath.connect(self.changepixmappath)
         self.previewimages.removepath.connect(self.removepath)
         self.k = None
@@ -2835,12 +2930,9 @@ class pixwrapper(QWidget):
         lst.pop(lst.index(path))
 
     def changepixmappath(self, path):
-        savehook_new_data[self.k]["currentvisimage"] = path
-        self.pathview.setText(path)
-
-    def resizeEvent(self, e: QResizeEvent):
-        self.pathview.resize(e.size().width(), self.pathview.height())
-        super().resizeEvent(e)
+        if path:
+            savehook_new_data[self.k]["currentvisimage"] = path
+        self.pixview.changepixmappath(path)
 
     def setpix(self, k):
         self.k = k
@@ -2972,12 +3064,17 @@ class dialog_savedgame_v3(QWidget):
             exists = os.path.exists(uid2gamepath[self.currentfocusuid])
             if exists:
                 menu.addAction(startgame)
-            menu.addAction(delgame)
-            if exists:
+                menu.addAction(delgame)
+
                 menu.addAction(opendir)
 
-            menu.addSeparator()
-            menu.addAction(addtolist)
+                menu.addSeparator()
+                menu.addAction(addtolist)
+            else:
+
+                menu.addAction(addtolist)
+                menu.addSeparator()
+                menu.addAction(delgame)
 
         action = menu.exec(QCursor.pos())
         if action == startgame:

@@ -1864,18 +1864,6 @@ def getsimplepatheditor(
 class pixmapviewer(QWidget):
     tolastnext = pyqtSignal(int)
 
-    def sizeHint(self):
-        return QSize(400, 400)
-
-    def mousePressEvent(self, a0: QMouseEvent) -> None:
-        if a0.pos().x() < self.width() / 3:
-            self.tolastnext.emit(-1)
-        elif a0.pos().x() > self.width() * 2 / 3:
-            self.tolastnext.emit(1)
-        else:
-            pass
-        return super().mousePressEvent(a0)
-
     def __init__(self, p=None) -> None:
         super().__init__(p)
         self.pix = None
