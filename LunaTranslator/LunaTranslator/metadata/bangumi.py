@@ -201,7 +201,8 @@ class searcher(common):
         developers = []
         for _ in response["infobox"]:
             if _["key"] in ["游戏开发商", "开发", "发行"]:
-                developers += [_["value"]]
+                for __ in _["value"]:
+                    developers.append(__['v'])
         return {
             # "namemap": namemap,
             "title": response["name"],

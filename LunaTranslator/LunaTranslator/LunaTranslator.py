@@ -40,7 +40,7 @@ from gui.edittext import edittext
 import importlib, qtawesome
 from functools import partial
 from gui.setting import Setting
-from gui.showocrimage import showocrimage
+from gui.setting_textinput_ocr import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
 import windows
 import gobject

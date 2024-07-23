@@ -1859,3 +1859,57 @@ def getsimplepatheditor(
         lay.addWidget(e)
         lay.addWidget(bu)
     return lay
+
+
+class pixmapviewer(QWidget):
+    tolastnext = pyqtSignal(int)
+
+    def sizeHint(self):
+        return QSize(400, 400)
+
+    def mousePressEvent(self, a0: QMouseEvent) -> None:
+        if a0.pos().x() < self.width() / 3:
+            self.tolastnext.emit(-1)
+        elif a0.pos().x() > self.width() * 2 / 3:
+            self.tolastnext.emit(1)
+        else:
+            pass
+        return super().mousePressEvent(a0)
+
+    def __init__(self, p=None) -> None:
+        super().__init__(p)
+        self.pix = None
+        self._pix = None
+
+    def showpixmap(self, pix: QPixmap):
+        pix.setDevicePixelRatio(self.devicePixelRatioF())
+        self.pix = pix
+        self._pix = None
+        self.update()
+
+    def paintEvent(self, e):
+        if self.pix:
+            if self._pix:
+                if self._pix.size() != self.size() * self.devicePixelRatioF():
+                    self._pix = None
+            if not self._pix:
+                rate = self.devicePixelRatioF()
+                self._pix = QPixmap(self.size() * rate)
+                self._pix.setDevicePixelRatio(rate)
+                self._pix.fill(Qt.GlobalColor.transparent)
+
+                if not self.pix.isNull():
+                    painter = QPainter(self._pix)
+                    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+                    painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+                    pix = self.pix.scaled(
+                        self.size() * self.devicePixelRatioF(),
+                        Qt.AspectRatioMode.KeepAspectRatio,
+                        Qt.TransformationMode.SmoothTransformation,
+                    )
+                    x = self.width() / 2 - pix.width() / 2 / self.devicePixelRatioF()
+                    y = self.height() / 2 - pix.height() / 2 / self.devicePixelRatioF()
+                    painter.drawPixmap(int(x), int(y), pix)
+            painter = QPainter(self)
+            painter.drawPixmap(0, 0, self._pix)
+        return super().paintEvent(e)

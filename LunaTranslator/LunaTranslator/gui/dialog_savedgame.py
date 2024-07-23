@@ -1,3 +1,4 @@
+from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 import os, functools, uuid, threading, hashlib
 from datetime import datetime, timedelta
@@ -50,6 +51,7 @@ from gui.specialwidget import (
 )
 from gui.usefulwidget import (
     yuitsu_switch,
+    pixmapviewer,
     FocusCombo,
     TableViewW,
     saveposwindow,
@@ -1731,33 +1733,37 @@ def __scaletosize(_pix: QPixmap, tgt):
     _pix.save(tgt)
 
 
+def _getcachedimage(src, small):
+    if not small:
+        _pix = QPixmap(src)
+        if _pix.isNull():
+            return None
+        return _pix
+
+    src2 = gobject.getcachedir(f"icon2/{__b64string(src)}.jpg")
+    _pix = QPixmap(src2)
+    if not _pix.isNull():
+        return _pix
+    _pix = QPixmap(src)
+    if _pix.isNull():
+        return None
+    __scaletosize(_pix, src2)
+    return _pix
+
+
 def _getpixfunction(kk, small=False):
     if (
         savehook_new_data[kk]["currentmainimage"]
         in savehook_new_data[kk]["imagepath_all"]
     ):
         src = savehook_new_data[kk]["currentmainimage"]
-        if small:
-            src2 = gobject.getcachedir(f"icon2/{__b64string(src)}.jpg")
-            _pix = QPixmap(src2)
-            if _pix and not _pix.isNull():
-                return _pix
-        _pix = QPixmap(src)
-        if _pix and not _pix.isNull():
-            if small:
-                __scaletosize(_pix, src2)
-            return _pix
+        pix = _getcachedimage(src, small)
+        if pix:
+            return pix
     for _ in savehook_new_data[kk]["imagepath_all"]:
-        if small:
-            src2 = gobject.getcachedir(f"icon2/{__b64string(_)}.jpg")
-            _pix = QPixmap(src2)
-            if _pix and not _pix.isNull():
-                return _pix
-        _pix = QPixmap(_)
-        if _pix and not _pix.isNull():
-            if small:
-                __scaletosize(_pix, src2)
-            return _pix
+        pix = _getcachedimage(_, small)
+        if pix:
+            return pix
     _pix = getExeIcon(uid2gamepath[kk], False, cache=True)
     return _pix
 
@@ -2608,91 +2614,130 @@ class fadeoutlabel(QLabel):
         self.animation.start()
 
 
+class XQListWidget(QListWidget):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self.setFlow(QListWidget.LeftToRight)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+
+
+class previewimages(QWidget):
+    showpixmap = pyqtSignal(QPixmap)
+    changepixmappath = pyqtSignal(str)
+    removepath = pyqtSignal(str)
+
+    def sizeHint(self):
+        return QSize(100, 100)
+
+    def __init__(self, p) -> None:
+        super().__init__(p)
+        self.lay = QHBoxLayout()
+        self.lay.setContentsMargins(0, 0, 0, 0)
+        self.list = XQListWidget(self)
+        self.list.currentRowChanged.connect(self._visidx)
+        self.lay.addWidget(self.list)
+        self.setLayout(self.lay)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.menu)
+
+    def menu(self, _):
+        menu = QMenu(self)
+
+        deleteimage = LAction(("删除图片"))
+
+        menu.addAction(deleteimage)
+        action = menu.exec(QCursor.pos())
+        if action == deleteimage:
+            self.removecurrent()
+
+    def tolastnext(self, dx):
+        if self.list.count() == 0:
+            return self.list.setCurrentRow(-1)
+        self.list.setCurrentRow((self.list.currentRow() + dx) % self.list.count())
+
+    def setpixmaps(self, paths, currentpath):
+        self.list.setCurrentRow(-1)
+        pixmapi = 0
+        if currentpath in paths:
+            pixmapi = paths.index(currentpath)
+        self.list.blockSignals(True)
+        self.list.clear()
+        for path in paths:
+            item = QListWidgetItem()
+            item.imagepath = path
+            item.setIcon(QIcon(_getcachedimage(path, True)))
+
+            self.list.addItem(item)
+        self.list.blockSignals(False)
+        self.list.setCurrentRow(pixmapi)
+
+    def _visidx(self, _):
+        item = self.list.currentItem()
+        if item is None:
+            return self.showpixmap.emit(QPixmap())
+        pixmap_ = item.imagepath
+        pixmap = QPixmap.fromImage(QImage(pixmap_))
+        if pixmap is None or pixmap.isNull():
+            return self.showpixmap.emit(QPixmap())
+        self.changepixmappath.emit(pixmap_)
+        self.showpixmap.emit(pixmap)
+
+    def removecurrent(self):
+        idx = self.list.currentRow()
+        item = self.list.currentItem()
+        if item is None:
+            return
+        path = item.imagepath
+        self.removepath.emit(path)
+        self.list.takeItem(idx)
+
+    def resizeEvent(self, e: QResizeEvent):
+        self.list.setIconSize(QSize(self.height(), self.height()))
+        return super().resizeEvent(e)
+
+
 class pixwrapper(QWidget):
     def __init__(self) -> None:
         super().__init__()
-        self.pixview = QLabel(self)
+        self.previewimages = previewimages(self)
+        self.vlayout = QVBoxLayout(self)
+        self.vlayout.setContentsMargins(0, 0, 0, 0)
+        self.pixview = pixmapviewer(self)
+        self.spliter = QSplitter(self)
+        self.spliter.setOrientation(Qt.Orientation.Vertical)
+        self.vlayout.addWidget(self.spliter)
+        self.spliter.addWidget(self.pixview)
+        self.pixview.tolastnext.connect(self.previewimages.tolastnext)
+        self.spliter.addWidget(self.previewimages)
+        self.setLayout(self.vlayout)
         self.pathview = fadeoutlabel(self)
-        self.pixmaps = []
-        self.rflist = []
-        self.iternalpixmaps = []
+        self.previewimages.showpixmap.connect(self.pixview.showpixmap)
+        self.previewimages.changepixmappath.connect(self.changepixmappath)
+        self.previewimages.removepath.connect(self.removepath)
         self.k = None
-        self.pixmapi = 0
-        self.pixview.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.current = None
+        self.removecurrent = self.previewimages.removecurrent
 
-    def tolastnext(self, dx):
-        if len(self.pixmaps) == 0:
-            return
+    def removepath(self, path):
+        lst = savehook_new_data[self.k]["imagepath_all"]
+        lst.pop(lst.index(path))
 
-        self.pixmapi = (self.pixmapi + dx) % len(self.pixmaps)
-        self.visidx()
+    def changepixmappath(self, path):
+        savehook_new_data[self.k]["currentvisimage"] = path
+        self.pathview.setText(path)
 
-    def mousePressEvent(self, a0: QMouseEvent) -> None:
-        if a0.pos().x() < self.width() / 3:
-            self.tolastnext(-1)
-        elif a0.pos().x() > self.width() * 2 / 3:
-            self.tolastnext(1)
-        else:
-            pass
-        return super().mousePressEvent(a0)
+    def setpixmenu(self, function):
+        self.pixview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.pixview.customContextMenuRequested.connect(function)
 
     def resizeEvent(self, e: QResizeEvent):
-        self.pixview.resize(e.size().width(), e.size().height())
         self.pathview.resize(e.size().width(), self.pathview.height())
-        if self.current is None:
-            self.visidx()
-        else:
-            self.scalepix(self.current)
-
-    def visidx(self):
-        if len(self.pixmaps) == 0:
-            if not self.k:
-                return
-            pixmap = getExeIcon(uid2gamepath[self.k], False, cache=True)
-            pixmap_ = None
-        else:
-            self.pixmapi = min(len(self.pixmaps) - 1, self.pixmapi)
-            pixmap_ = self.pixmaps[self.pixmapi]
-            pixmap = QPixmap.fromImage(QImage(pixmap_))
-            if pixmap is None or pixmap.isNull():
-                self.pixmaps.pop(self.pixmapi)
-                return self.visidx()
-        self.pathview.setText(pixmap_)
-        savehook_new_data[self.k]["currentvisimage"] = pixmap_
-        pixmap.setDevicePixelRatio(self.devicePixelRatioF())
-        self.current = pixmap
-        self.scalepix(pixmap)
-
-    def removecurrent(self):
-        if self.pixmapi < len(self.pixmaps):
-
-            path = self.pixmaps[self.pixmapi]
-            self.rflist.pop(self.rflist.index(path))
-            self.pixmaps.pop(self.pixmapi)
-            if self.pixmapi < len(self.pixmaps):
-                pass
-            else:
-                self.pixmapi -= 1
-            self.visidx()
+        super().resizeEvent(e)
 
     def setpix(self, k):
-
         self.k = k
-        self.pixmaps = savehook_new_data[k]["imagepath_all"].copy()
-        self.rflist = savehook_new_data[k]["imagepath_all"]
-        self.pixmapi = 0
-        if savehook_new_data[k]["currentvisimage"] in self.pixmaps:
-            self.pixmapi = self.pixmaps.index(savehook_new_data[k]["currentvisimage"])
-        self.visidx()
-
-    def scalepix(self, pix: QPixmap):
-        pix = pix.scaled(
-            self.pixview.size() * self.devicePixelRatioF(),
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
-        )
-        self.pixview.setPixmap(pix)
+        pixmaps = savehook_new_data[k]["imagepath_all"].copy()
+        self.previewimages.setpixmaps(pixmaps, savehook_new_data[k]["currentvisimage"])
 
 
 def loadvisinternal(skipid=False, skipidid=None):
@@ -2937,10 +2982,7 @@ class dialog_savedgame_v3(QWidget):
         self.righttop.addTab(_w, "画廊")
         lay.addWidget(self.righttop)
         rightlay.addWidget(self.pixview)
-        self.pixview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.pixview.customContextMenuRequested.connect(
-            functools.partial(self.stack_showmenu, True)
-        )
+        self.pixview.setpixmenu(functools.partial(self.stack_showmenu, True))
         self.buttonlayout = QHBoxLayout()
         self.savebutton = []
         rightlay.addLayout(self.buttonlayout)

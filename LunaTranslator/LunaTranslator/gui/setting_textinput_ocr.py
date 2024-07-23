@@ -1,6 +1,5 @@
 from qtsymbols import *
 import functools, os
-import gobject
 from myutils.config import globalconfig, ocrsetting, ocrerrorfix
 from myutils.utils import splitocrtypes, dynamiclink
 from gui.inputdialog import autoinitdialog, postconfigdialog, autoinitdialog_items
@@ -12,8 +11,62 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     D_getsimpleswitch,
     selectcolor,
+    saveposwindow,
+    pixmapviewer,
 )
 from gui.dynalang import LPushButton
+import qtawesome, gobject
+from myutils.ocrutil import imagesolve
+from myutils.wrapper import Singleton_close
+
+
+@Singleton_close
+class showocrimage(saveposwindow):
+    setimage = pyqtSignal(list)
+
+    def closeEvent(self, e):
+        gobject.baseobject.showocrimage = None
+        super().closeEvent(e)
+
+    def __init__(self, parent, cached):
+        self.img1 = None
+        self.originimage = None
+        super().__init__(parent, poslist=globalconfig["showocrgeo"])
+        self.setWindowIcon(qtawesome.icon("fa.picture-o"))
+        self.setWindowTitle("查看处理效果")
+        self.originlabel = pixmapviewer()
+        qw = QWidget()
+        self.solvedlabel = pixmapviewer()
+        self.lay2 = QHBoxLayout()
+        button = QPushButton(
+            icon=qtawesome.icon("fa.rotate-right", color=globalconfig["buttoncolor"])
+        )
+        button.clicked.connect(self.retest)
+        self.layout1 = QVBoxLayout()
+        # self.lay2.addWidget(button)
+        self.lay2.addLayout(self.layout1)
+        self.setCentralWidget(qw)
+        qw.setLayout(self.lay2)
+        self.layout1.addWidget(self.originlabel)
+        self.layout1.addWidget(button)
+        self.layout1.addWidget(self.solvedlabel)
+        self.setimage.connect(self.setimagefunction)
+        if cached:
+            self.setimagefunction(cached)
+
+    def retest(self):
+        if self.originimage is None:
+            return
+        img = imagesolve(self.originimage)
+        self.setimagefunction([self.originimage, img])
+
+    def setimagefunction(self, image):
+        originimage, solved = image
+        self.originimage = originimage
+        self.img1 = QPixmap.fromImage(originimage)
+        self.img2 = QPixmap.fromImage(solved)
+        self.originlabel.showpixmap(self.img1)
+        self.solvedlabel.showpixmap(self.img2)
 
 
 def __label1(self):
