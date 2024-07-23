@@ -6,6 +6,7 @@ from gui.usefulwidget import (
     getsimplecombobox,
     D_getIconButton,
     makescrollgrid,
+    D_getsimpleswitch,
 )
 from qtsymbols import *
 import gobject
@@ -52,6 +53,10 @@ def setTablanglz(self):
                                 "srclang3",
                                 callback=functools.partial(changelang, self, "fonttype"),
                             ),
+                            "",
+                            D_getsimpleswitch(globalconfig, "fonttypeauto"),
+                            "根据所选语言自动更改对应字体",
+                            "",
                         ],
                         [
                             "目标语言",
@@ -61,6 +66,10 @@ def setTablanglz(self):
                                 "tgtlang3",
                                 callback=functools.partial(changelang, self, "fonttype2"),
                             ),
+                            "",
+                            D_getsimpleswitch(globalconfig, "fonttype2auto"),
+                            "根据所选语言自动更改对应字体",
+                            "",
                         ],
                     ),
                 ),
@@ -91,6 +100,10 @@ def setTablanglz(self):
                                 ),
                                 icon="fa.gear",
                             ),
+                            "",
+                            D_getsimpleswitch(globalconfig, "settingfonttypeauto"),
+                            "根据所选语言自动更改对应字体",
+                            "",
                         ],
                     ),
                 ),
