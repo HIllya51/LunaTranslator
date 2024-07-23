@@ -824,5 +824,10 @@
     "百度千帆大模型": "Baidu Qianfan Büyük Modeli",
     "过滤英文标点": "İngilizce noktasını sil",
     "译文": "translation",
-    "加粗": "Qalın@ item font"
+    "加粗": "Qalın@ item font",
+    "位置": "position",
+    "下": "aşağı",
+    "右": "sağ",
+    "上": "üst",
+    "左": "Sol"
 }

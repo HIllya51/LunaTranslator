@@ -2617,15 +2617,68 @@ class fadeoutlabel(QLabel):
 class XQListWidget(QListWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setFlow(QListWidget.LeftToRight)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+
+    def sethor(self, hor):
+        if hor:
+            self.setFlow(QListWidget.LeftToRight)
+            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        else:
+            self.setFlow(QListWidget.TopToBottom)
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+            self.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+
+
+def getselectpos(parent, callback):
+    __d = {"k": 0}
+    __vis, __uid = ["下", "右", "上", "左"], [0, 1, 2, 3]
+
+    def __wrap(callback, __d, __uid):
+        if len(__uid) == 0:
+            return
+
+        uid = __uid[__d["k"]]
+        callback(uid)
+
+    if len(__uid) > 1:
+        autoinitdialog(
+            parent,
+            "位置",
+            600,
+            [
+                {
+                    "type": "combo",
+                    "name": "位置",
+                    "d": __d,
+                    "k": "k",
+                    "list": __vis,
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(__wrap, callback, __d, __uid),
+                },
+            ],
+        )
+    else:
+        callback(__uid[0])
 
 
 class previewimages(QWidget):
     showpixmap = pyqtSignal(QPixmap)
     changepixmappath = pyqtSignal(str)
     removepath = pyqtSignal(str)
+    switchpos = pyqtSignal(int)
+
+    def sethor(self, hor):
+        self.hor = hor
+        self.list.sethor(hor)
+
+        if self.hor:
+            self.list.setIconSize(QSize(self.height(), self.height()))
+        else:
+            self.list.setIconSize(QSize(self.width(), self.width()))
 
     def sizeHint(self):
         return QSize(100, 100)
@@ -2645,11 +2698,15 @@ class previewimages(QWidget):
         menu = QMenu(self)
 
         deleteimage = LAction(("删除图片"))
+        pos = LAction(("位置"))
 
         menu.addAction(deleteimage)
+        menu.addAction(pos)
         action = menu.exec(QCursor.pos())
         if action == deleteimage:
             self.removecurrent()
+        elif action == pos:
+            getselectpos(self, self.switchpos.emit)
 
     def tolastnext(self, dx):
         if self.list.count() == 0:
@@ -2693,30 +2750,60 @@ class previewimages(QWidget):
         self.list.takeItem(idx)
 
     def resizeEvent(self, e: QResizeEvent):
-        self.list.setIconSize(QSize(self.height(), self.height()))
+        if self.hor:
+            self.list.setIconSize(QSize(self.height(), self.height()))
+        else:
+            self.list.setIconSize(QSize(self.width(), self.width()))
         return super().resizeEvent(e)
 
 
 class pixwrapper(QWidget):
+    def setrank(self, rank):
+        if rank:
+            self.spliter.addWidget(self.pixview)
+            self.spliter.addWidget(self.previewimages)
+        else:
+            self.spliter.addWidget(self.previewimages)
+            self.spliter.addWidget(self.pixview)
+
+    def sethor(self, hor):
+        if hor:
+
+            self.spliter.setOrientation(Qt.Orientation.Vertical)
+        else:
+
+            self.spliter.setOrientation(Qt.Orientation.Horizontal)
+        self.previewimages.sethor(hor)
+
     def __init__(self) -> None:
         super().__init__()
+        rank = (globalconfig["viewlistpos"] // 2) == 0
+        hor = (globalconfig["viewlistpos"] % 2) == 0
+
         self.previewimages = previewimages(self)
         self.vlayout = QVBoxLayout(self)
         self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.pixview = pixmapviewer(self)
         self.spliter = QSplitter(self)
-        self.spliter.setOrientation(Qt.Orientation.Vertical)
         self.vlayout.addWidget(self.spliter)
-        self.spliter.addWidget(self.pixview)
+        self.setrank(rank)
+        self.sethor(hor)
         self.pixview.tolastnext.connect(self.previewimages.tolastnext)
-        self.spliter.addWidget(self.previewimages)
         self.setLayout(self.vlayout)
         self.pathview = fadeoutlabel(self)
         self.previewimages.showpixmap.connect(self.pixview.showpixmap)
         self.previewimages.changepixmappath.connect(self.changepixmappath)
         self.previewimages.removepath.connect(self.removepath)
+        self.previewimages.switchpos.connect(self.switchpos)
         self.k = None
         self.removecurrent = self.previewimages.removecurrent
+
+    def switchpos(self, pos):
+        globalconfig["viewlistpos"] = pos
+        rank = (globalconfig["viewlistpos"] // 2) == 0
+        hor = (globalconfig["viewlistpos"] % 2) == 0
+        self.setrank(rank)
+        self.sethor(hor)
 
     def removepath(self, path):
         lst = savehook_new_data[self.k]["imagepath_all"]

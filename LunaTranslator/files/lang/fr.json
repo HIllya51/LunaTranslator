@@ -824,5 +824,10 @@
     "百度千帆大模型": "Baidu mille voiles modèle",
     "过滤英文标点": "Filtrer ponctuation anglaise",
     "译文": "Traduction",
-    "加粗": "épaissir"
+    "加粗": "épaissir",
+    "位置": "Localisation",
+    "下": "En bas",
+    "右": "Droite",
+    "上": "En haut",
+    "左": "Gauche"
 }

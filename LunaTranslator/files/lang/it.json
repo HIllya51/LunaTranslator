@@ -824,5 +824,10 @@
     "百度千帆大模型": "Baidu Qianfan Modello grande",
     "过滤英文标点": "Filtra punteggiatura inglese",
     "译文": "traduzione",
-    "加粗": "Bold"
+    "加粗": "Bold",
+    "位置": "posizione",
+    "下": "inferiore",
+    "右": "destra",
+    "上": "superiore",
+    "左": "Sinistra"
 }

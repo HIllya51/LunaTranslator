@@ -824,5 +824,10 @@
     "百度千帆大模型": "Baidu Qianfan Large Model",
     "过滤英文标点": "Filter English punctuation",
     "译文": "translation",
-    "加粗": "Bold"
+    "加粗": "Bold",
+    "位置": "position",
+    "下": "lower",
+    "右": "right",
+    "上": "upper",
+    "左": "Left"
 }

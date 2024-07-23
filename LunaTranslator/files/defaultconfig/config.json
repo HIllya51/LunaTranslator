@@ -1930,5 +1930,6 @@
         "path": ""
     },
     "proxies": null,
-    "labelset": []
+    "labelset": [],
+    "viewlistpos": 0
 }

@@ -824,5 +824,10 @@
     "百度千帆大模型": "Modelo Baidu qianfan",
     "过滤英文标点": "Filtrar puntuación en inglés",
     "译文": "Traducción",
-    "加粗": "Engrosar"
+    "加粗": "Engrosar",
+    "位置": "Posición",
+    "下": "Abajo",
+    "右": "Derecha",
+    "上": "Arriba",
+    "左": "Izquierda"
 }

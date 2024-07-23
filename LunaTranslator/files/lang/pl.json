@@ -824,5 +824,10 @@
     "百度千帆大模型": "Duży model Baidu Qianfan",
     "过滤英文标点": "Filtruj interpunkcję angielską",
     "译文": "tłumaczenie",
-    "加粗": "Pogrubione"
+    "加粗": "Pogrubione",
+    "位置": "pozycja",
+    "下": "niżej",
+    "右": "w prawo",
+    "上": "górna",
+    "左": "Lewa"
 }
