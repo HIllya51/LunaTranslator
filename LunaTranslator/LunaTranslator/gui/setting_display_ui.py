@@ -93,7 +93,7 @@ def createhorizontal_slider_tool_label(self):
     return self.horizontal_slider_tool_label
 
 
-def createfontcombo():
+def createfontcombo(parent, name):
 
     sfont_comboBox = FocusFontCombo()
 
@@ -103,6 +103,7 @@ def createfontcombo():
 
     sfont_comboBox.setCurrentFont(QFont(globalconfig["settingfonttype"]))
     sfont_comboBox.currentTextChanged.connect(callback)
+    setattr(parent, name, sfont_comboBox)
     return sfont_comboBox
 
 
@@ -511,7 +512,7 @@ def otheruisetting(self):
                     grid=(
                         [
                             "字体",
-                            (createfontcombo, 0),
+                            (functools.partial(createfontcombo, self, "settingfonttype"), 0),
                             "",
                             "字体大小",
                             D_getspinbox(

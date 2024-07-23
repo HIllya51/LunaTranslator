@@ -35,10 +35,11 @@ def __changeuibuttonstate(self, x):
         pass
 
 
-def createtextfontcom(key):
+def createtextfontcom(parent, name):
     font_comboBox = FocusFontCombo()
-    font_comboBox.currentTextChanged.connect(lambda x: globalconfig.__setitem__(key, x))
-    font_comboBox.setCurrentFont(QFont(globalconfig[key]))
+    font_comboBox.currentTextChanged.connect(lambda x: globalconfig.__setitem__(name, x))
+    font_comboBox.setCurrentFont(QFont(globalconfig[name]))
+    setattr(parent, name, font_comboBox)
     return font_comboBox
 
 
@@ -524,7 +525,7 @@ def xianshigrid_style(self):
                     grid=(
                         [
                             "原文字体",
-                            (functools.partial(createtextfontcom, "fonttype"), 4),
+                            (functools.partial(createtextfontcom, self, "fonttype"), 4),
                             "",
                             "字体大小",
                             D_getspinbox(
@@ -538,7 +539,7 @@ def xianshigrid_style(self):
                         ],
                         [
                             "译文字体",
-                            (functools.partial(createtextfontcom, "fonttype2"), 4),
+                            (functools.partial(createtextfontcom, self, "fonttype2"), 4),
                             "",
                             "字体大小",
                             D_getspinbox(

@@ -448,6 +448,8 @@
     "extra_space": 0,
     "fonttype": "",
     "fonttype2": "",
+    "fonttypeauto": true,
+    "fonttype2auto": true,
     "hira_vis_type": 0,
     "iskongxin": true,
     "isshowrawtext": true,
@@ -501,6 +503,7 @@
         600
     ],
     "settingfonttype": "",
+    "settingfonttypeauto": true,
     "setting_geo_2": [
         100,
         100,

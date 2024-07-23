@@ -1,5 +1,6 @@
 import os, functools
-from myutils.config import globalconfig, static_data, getlanguse
+from myutils.config import globalconfig, static_data, getlanguse, set_font_default
+from myutils.utils import getlangsrc, getlangtgt
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
@@ -7,16 +8,30 @@ from gui.usefulwidget import (
     makescrollgrid,
 )
 from qtsymbols import *
+import gobject
 
 
-def createlangs(self):
-    self.srclangswitcher = getsimplecombobox(
-        static_data["language_list_translator"], globalconfig, "srclang3"
-    )
-    return self.srclangswitcher
+def changelang(parent, fonttype, _):
+    if globalconfig[fonttype + "auto"]:
+        font = set_font_default(
+            getlangsrc() if fonttype == "fonttype" else getlangtgt(),
+            fonttype)
+        try:
+            fonttypelayout = getattr(parent, fonttype)
+            fonttypelayout.setCurrentFont(QFont(font))
+        except AttributeError:
+            pass
 
 
-def changelang(_):
+def changesettinglang(parent, _):
+    if globalconfig["settingfonttypeauto"]:
+        font = set_font_default(getlanguse(), "settingfonttype")
+        try:
+            settingfonttypelayout = getattr(parent, "settingfonttype")
+            settingfonttypelayout.setCurrentFont(QFont(font))
+        except AttributeError:
+            pass
+        gobject.baseobject.setcommonstylesheet()
     languageChangeEvent = QEvent(QEvent.Type.LanguageChange)
     QApplication.sendEvent(QApplication.instance(), languageChangeEvent)
 
@@ -31,7 +46,12 @@ def setTablanglz(self):
                     grid=(
                         [
                             "源语言",
-                            functools.partial(createlangs, self),
+                            D_getsimplecombobox(
+                                static_data["language_list_translator"],
+                                globalconfig,
+                                "srclang3",
+                                callback=functools.partial(changelang, self, "fonttype"),
+                            ),
                         ],
                         [
                             "目标语言",
@@ -39,6 +59,7 @@ def setTablanglz(self):
                                 static_data["language_list_translator"],
                                 globalconfig,
                                 "tgtlang3",
+                                callback=functools.partial(changelang, self, "fonttype2"),
                             ),
                         ],
                     ),
@@ -59,7 +80,7 @@ def setTablanglz(self):
                                 (static_data["language_list_show"]),
                                 globalconfig,
                                 "languageuse",
-                                callback=changelang,
+                                callback=functools.partial(changesettinglang, self),
                                 static=True,
                             ),
                             D_getIconButton(

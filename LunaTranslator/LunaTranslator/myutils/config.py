@@ -521,7 +521,9 @@ def get_font_default(lang: str, issetting: bool) -> str:
     return font_default
 
 
-def set_font_default(lang: str, fonttype: str) -> None:
-    globalconfig[fonttype] = get_font_default(
+def set_font_default(lang: str, fonttype: str) -> str:
+    font = get_font_default(
         lang, True if fonttype == "settingfonttype" else False
     )
+    globalconfig[fonttype] = font
+    return font
