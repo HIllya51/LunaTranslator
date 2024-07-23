@@ -2776,11 +2776,17 @@ class viewpixmap_x(QWidget):
         self.maybehavecomment.clicked.connect(self.viscomment)
         self.commentedit = QPlainTextEdit(self)
         self.commentedit.textChanged.connect(self.changecommit)
-        self.pathandtime = QLabel(self)
+        self.timenothide = QLabel(self)
+        self.timenothide.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.pathandopen = QPushButton(self)
+        self.pathandopen.clicked.connect(
+            lambda: os.startfile(os.path.abspath(self.currentimage))
+        )
         self.centerwidget = QWidget(self)
         self.centerwidgetlayout = QVBoxLayout()
         self.centerwidget.setLayout(self.centerwidgetlayout)
-        self.centerwidgetlayout.addWidget(self.pathandtime)
+        self.centerwidgetlayout.addWidget(self.timenothide)
+        self.centerwidgetlayout.addWidget(self.pathandopen)
         self.centerwidgetlayout.addWidget(self.commentedit)
         self.centerwidget.setVisible(False)
         self.pathview = fadeoutlabel(self)
@@ -2830,12 +2836,12 @@ class viewpixmap_x(QWidget):
             return self.pixmapviewer.showpixmap(QPixmap())
         self.pixmapviewer.showpixmap(pixmap)
         self.pathview.setText(path)
-        self.infoview.setText(get_time_stamp(ct=os.path.getctime(path), ms=False))
+        timestamp = get_time_stamp(ct=os.path.getctime(path), ms=False)
+        self.infoview.setText(timestamp)
         self.currentimage = path
         self.commentedit.setPlainText(extradatas.get("imagecomment", {}).get(path, ""))
-        self.pathandtime.setText(
-            path + "\n" + get_time_stamp(ct=os.path.getctime(path), ms=False)
-        )
+        self.timenothide.setText(timestamp)
+        self.pathandopen.setText(path)
 
 
 class pixwrapper(QWidget):
