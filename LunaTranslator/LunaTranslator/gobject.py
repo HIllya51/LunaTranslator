@@ -15,11 +15,14 @@ def GetDllpath(_, base=None):
         return os.path.join(base, _[isbit64])
 
 
-def getcachedir(name, basedir="cache"):
+def getcachedir(name, basedir="cache", abspath=True):
 
     fd = os.path.dirname(name)
     fn = os.path.basename(name)
-    fn1 = os.path.abspath(basedir)
+    if abspath:
+        fn1 = os.path.abspath(basedir)
+    else:
+        fn1 = basedir
     fn1 = os.path.join(fn1, fd)
     os.makedirs(fn1, exist_ok=True)
     fn1 = os.path.join(fn1, fn)

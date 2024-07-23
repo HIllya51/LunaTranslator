@@ -2,18 +2,23 @@ import windows
 import threading
 from qtsymbols import *
 import gobject
-import os, subprocess
+import os, subprocess, functools
 import time, winrtutils, winsharedutils, hashlib
+from myutils.config import savehook_new_data
 from myutils.wrapper import threader
 
 
 @threader
-def grabwindow(app="PNG", callback=None):
-    if callback:
+def grabwindow(app="PNG", callback_origin=None):
+    if callback_origin:
         fname = gobject.gettempdir(time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
+        uid = None
     else:
         dirname = "0"
-
+        try:
+            uid = gobject.baseobject.textsource.gameuid
+        except:
+            uid = None
         try:
             if gobject.baseobject.textsource.md5 != "0":
                 dirname = gobject.baseobject.textsource.basename
@@ -22,8 +27,18 @@ def grabwindow(app="PNG", callback=None):
         fname = gobject.getcachedir(
             f"screenshot/{dirname}/"
             + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()),
+            abspath=False,
         )
 
+    def callback_1(callback, uid, fn):
+        if not os.path.exists(fn):
+            return
+        if callback:
+            callback(os.path.abspath(fn))
+        if uid:
+            savehook_new_data[uid]["imagepath_all"].append(fn)
+
+    callback = functools.partial(callback_1, callback_origin, uid)
     hwnd = windows.FindWindow(
         "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
     )
@@ -32,8 +47,7 @@ def grabwindow(app="PNG", callback=None):
         @threader
         def _():
             winrtutils._winrt_capture_window(fname + "_winrt_magpie." + app, hwnd)
-            if callback and os.path.exists(fname + "_winrt_magpie." + app):
-                callback(os.path.abspath(fname + "_winrt_magpie." + app))
+            callback(fname + "_winrt_magpie." + app)
 
         _()
     hwnd = windows.FindWindow("LosslessScaling", None)
@@ -42,8 +56,7 @@ def grabwindow(app="PNG", callback=None):
         @threader
         def _():
             winrtutils._winrt_capture_window(fname + "_winrt_lossless." + app, hwnd)
-            if callback and os.path.exists(fname + "_winrt_lossless." + app):
-                callback(os.path.abspath(fname + "_winrt_lossless." + app))
+            callback(fname + "_winrt_lossless." + app)
 
         _()
     try:
@@ -57,10 +70,9 @@ def grabwindow(app="PNG", callback=None):
     p = screenshot(0, 0, _[2], _[3], hwnd).toImage()
     if not p.allGray():
         p.save(fname + "_gdi." + app)
-        if callback and os.path.exists(fname + "_gdi." + app):
-            callback(os.path.abspath(fname + "_gdi." + app))
+        callback(fname + "_gdi." + app)
 
-    if not callback:
+    if not callback_origin:
 
         gobject.baseobject.translation_ui.displaystatus.emit(
             "saved to " + fname, "red", True, True
@@ -69,10 +81,9 @@ def grabwindow(app="PNG", callback=None):
     @threader
     def _():
         winrtutils._winrt_capture_window(fname + "_winrt." + app, hwnd)
-        if callback and os.path.exists(fname + "_winrt." + app):
-            callback(os.path.abspath(fname + "_winrt." + app))
+        callback(fname + "_winrt." + app)
 
-    if p.allGray() or (not callback):
+    if p.allGray() or (not callback_origin):
         _()
 
 
