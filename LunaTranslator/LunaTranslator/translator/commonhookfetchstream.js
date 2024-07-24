@@ -4,7 +4,7 @@ var hasdone = true
 var thistext = ''
 window.fetch = function (input, init) {
     const fetchPromise = originalFetch.apply(this, arguments);
-    if (!input.includes("conversation")) return fetchPromise;
+    if (!%s) return fetchPromise;
     hasdone = false;
     thistext = ''
     fetchPromise.then(response => {
@@ -26,9 +26,7 @@ window.fetch = function (input, init) {
                     line = line.trim()
                     if (line.length == 0) continue;
                     try {
-                        const chunk = JSON.parse(line.substring(6));
-                        console.log("Chunk received:", chunk.message.content.parts[0]);
-                        thistext = chunk.message.content.parts[0]
+                        %s
                     } catch {
 
                     }

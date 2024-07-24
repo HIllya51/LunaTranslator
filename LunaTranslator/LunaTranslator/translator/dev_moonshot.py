@@ -28,11 +28,17 @@ class TS(basetransdev):
         if self.Runtime_evaluate("window.injectedjs")["result"]["type"] != "undefined":
             return
         with open(
-            os.path.join(os.path.dirname(__file__), "dev_moonshot.js"),
+            os.path.join(os.path.dirname(__file__), "commonhookfetchstream.js"),
             "r",
             encoding="utf8",
         ) as ff:
-            js = ff.read()
+            js = ff.read() % (
+                'input.endsWith("completion/stream")',
+                """const chunk = JSON.parse(line.substring(6)); 
+                        if(chunk.event!='cmpl')continue;
+                        if(chunk.text)
+                            thistext += chunk.text""",
+            )
         self.Runtime_evaluate(js)
         self.Runtime_evaluate("window.injectedjs=true")
 

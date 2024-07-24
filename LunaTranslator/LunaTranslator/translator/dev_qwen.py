@@ -3,7 +3,7 @@ import time, os
 
 
 class TS(basetransdev):
-    target_url = "https://chatgpt.com/"
+    target_url = "https://tongyi.aliyun.com/qianwen"
 
     def langmap(self):
         return {
@@ -33,9 +33,9 @@ class TS(basetransdev):
             encoding="utf8",
         ) as ff:
             js = ff.read() % (
-                'input.includes("conversation")',
+                'input.endsWith("dialog/conversation")',
                 r"""const chunk = JSON.parse(line.substring(6));
-                        thistext = chunk.message.content.parts[0]""",
+                        thistext = chunk.contents[0].content""",
             )
         self.Runtime_evaluate(js)
         self.Runtime_evaluate("window.injectedjs=true")
@@ -52,13 +52,10 @@ class TS(basetransdev):
                 self.srclang, self.tgtlang
             )
         content = prompt + content
+        self.Runtime_evaluate('document.getElementsByTagName("textarea")[0].click()')
+        self.send_keys(content)
         self.Runtime_evaluate(
-            'textarea=document.querySelector("#prompt-textarea");textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea.value=`{}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'.format(
-                content
-            )
-        )
-        self.Runtime_evaluate(
-            r"""document.querySelector("#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div > main > div.flex.h-full.flex-col.focus-visible\\:outline-0 > div.md\\:pt-0.dark\\:border-white\\/20.md\\:border-transparent.md\\:dark\\:border-transparent.w-full > div.text-base.px-3.md\\:px-4.m-auto.md\\:px-5.lg\\:px-1.xl\\:px-5 > div > form > div > div.flex.w-full.items-center > div > div > button").click()"""
+            r"""document.querySelector("#tongyiPageLayout > div.sc-fQpRED.jsoEZg > div > div.sc-hNGPaV.erDcgy.pageContentWrap--AovzQ5wq > div > div.inputField--PE5FhWzd > div > div.chatInput--eJzBH8LP > div.operateBtn--zFx6rSR0").click()"""
         )
         if self.config["usingstream"]:
             curr = ""
