@@ -7,24 +7,11 @@ window.fetch = function (input, init) {
     if (!input.includes("conversation")) return fetchPromise;
     hasdone = false;
     thistext = ''
-    // 构造一个自定义的可读流
-    //controller.close()会导致真正的fetch被终止
-    // 不太会js，只能让他假等待了，ui里面会显示在等待，但luna里面能读到，而且按钮也能正确按下
-    const customReadableStream = new ReadableStream({
-        start(controller) {
-            setTimeout(() => {
-
-                controller.close();
-            }, 99999999999);
-
-        },
-    });
     fetchPromise.then(response => {
-        const contentType = response.headers.get('content-type');
-
+        const clone = response.clone()
+        const contentType = clone.headers.get('content-type');
         if (contentType && contentType.includes('text/event-stream')) {
-            console.log(response.body)
-            const reader = response.body.getReader();
+            const reader = clone.body.getReader();
 
             reader.read().then(function processStream({ done, value }) {
 
@@ -55,13 +42,5 @@ window.fetch = function (input, init) {
         console.error('Fetch error:', error);
     });
 
-    return new Promise((resolve, reject) => {
-        resolve(new Response(customReadableStream, {
-            status: 200,
-            headers: {
-                'Content-type': 'text/event-stream'
-            }
-        }));
-
-    });
+    return fetchPromise;
 };

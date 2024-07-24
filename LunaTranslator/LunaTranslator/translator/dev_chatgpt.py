@@ -28,7 +28,7 @@ class TS(basetransdev):
         if self.Runtime_evaluate("window.injectedjs")["result"]["type"] != "undefined":
             return
         with open(
-            os.path.join(os.path.dirname(__file__), "hookchatgptfetch.js"),
+            os.path.join(os.path.dirname(__file__), "dev_chatgpt.js"),
             "r",
             encoding="utf8",
         ) as ff:
@@ -41,12 +41,13 @@ class TS(basetransdev):
 
         self.Runtime_evaluate("hasdone=false")
         self.Runtime_evaluate('thistext=""')
-        content = (
-            "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.\n".format(
+        if self.config["use_custom_prompt"]:
+            prompt = self.config["custom_prompt"]
+        else:
+            prompt = "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.\n".format(
                 self.srclang, self.tgtlang
             )
-            + content
-        )
+        content = prompt + content
         self.Runtime_evaluate(
             'textarea=document.querySelector("#prompt-textarea");textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea=document.querySelector("textarea");textarea.value=`{}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'.format(
                 content
