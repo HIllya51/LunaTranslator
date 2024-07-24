@@ -3,9 +3,16 @@ from qtsymbols import *
 
 
 class LLabel(QLabel):
-    def __init__(self, s=None):
-        super().__init__(_TR(s) if s else None)
-        self.__s = s
+    def __init__(self, *argc):
+        self.__s = None
+        if len(argc) == 1:
+            if isinstance(argc[0], str):
+                self.__s = argc[0]
+                argc = (_TR(argc[0]),)
+        elif len(argc) == 2:
+            self.__s = argc[0]
+            argc = _TR(argc[0]), argc[1]
+        super().__init__(*argc)
 
     def setText(self, s):
         self.__s = s

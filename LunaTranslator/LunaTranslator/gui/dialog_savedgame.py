@@ -2725,8 +2725,9 @@ class previewimages(QWidget):
     def _visidx(self, _):
         item = self.list.currentItem()
         if item is None:
-            return self.changepixmappath.emit(None)
-        pixmap_ = item.imagepath
+            pixmap_ = None
+        else:
+            pixmap_ = item.imagepath
         self.changepixmappath.emit(pixmap_)
 
     def removecurrent(self):
@@ -2746,27 +2747,37 @@ class previewimages(QWidget):
         return super().resizeEvent(e)
 
 
-class hoverbtn(QLabel):
+class hoverbtn(LLabel):
     clicked = pyqtSignal()
 
     def mousePressEvent(self, a0: QMouseEvent) -> None:
         self.clicked.emit()
         return super().mousePressEvent(a0)
 
-    def __init__(self, p):
-        super().__init__(p)
+    def __init__(self, *argc):
+        super().__init__(*argc)
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+    def resizeEvent(self, e):
         style = r"""QLabel{
                 background: transparent; 
                 border-radius:0;
+                font-size: %spx;
+                color:transparent; 
             }
             QLabel:hover{
                 background-color: rgba(255,255,255,0.5); 
-            }"""
+                color:black;
+            }""" % (
+            min(self.height(), self.width()) // 3
+        )
         self.setStyleSheet(style)
+        super().resizeEvent(e)
 
 
 class viewpixmap_x(QWidget):
     tolastnext = pyqtSignal(int)
+    startgame = pyqtSignal()
 
     def sizeHint(self):
         return QSize(400, 400)
@@ -2774,9 +2785,11 @@ class viewpixmap_x(QWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.pixmapviewer = pixmapviewer(self)
-        self.leftclick = hoverbtn(self)
-        self.rightclick = hoverbtn(self)
+        self.leftclick = hoverbtn("<-", self)
+        self.rightclick = hoverbtn("->", self)
         self.maybehavecomment = hoverbtn(self)
+        self.bottombtn = hoverbtn("开始游戏", self)
+        self.bottombtn.clicked.connect(self.startgame)
         self.leftclick.clicked.connect(lambda: self.tolastnext.emit(-1))
         self.rightclick.clicked.connect(lambda: self.tolastnext.emit(1))
         self.maybehavecomment.clicked.connect(self.viscomment)
@@ -2786,7 +2799,11 @@ class viewpixmap_x(QWidget):
         self.timenothide.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.pathandopen = QPushButton(self)
         self.pathandopen.clicked.connect(
-            lambda: os.startfile(os.path.abspath(self.currentimage))
+            lambda: (
+                os.startfile(os.path.abspath(self.currentimage))
+                if self.currentimage
+                else ""
+            )
         )
         self.centerwidget = QWidget(self)
         self.centerwidgetlayout = QVBoxLayout()
@@ -2815,6 +2832,12 @@ class viewpixmap_x(QWidget):
         self.leftclick.setGeometry(
             0, e.size().height() // 5, e.size().width() // 5, 3 * e.size().height() // 5
         )
+        self.bottombtn.setGeometry(
+            e.size().width() // 5,
+            4 * e.size().height() // 5,
+            3 * e.size().width() // 5,
+            e.size().height() // 5,
+        )
         self.rightclick.setGeometry(
             4 * e.size().width() // 5,
             e.size().height() // 5,
@@ -2833,24 +2856,27 @@ class viewpixmap_x(QWidget):
         super().resizeEvent(e)
 
     def changepixmappath(self, path):
+        self.currentimage = path
         self.centerwidget.setVisible(False)
-        if not path:
-            return self.pixmapviewer.showpixmap(QPixmap())
-
-        pixmap = QPixmap.fromImage(QImage(path))
-        if pixmap is None or pixmap.isNull():
-            return self.pixmapviewer.showpixmap(QPixmap())
-        self.pixmapviewer.showpixmap(pixmap)
+        self.pathandopen.setText(path)
         self.pathview.setText(path)
         timestamp = get_time_stamp(ct=os.path.getctime(path), ms=False)
         self.infoview.setText(timestamp)
-        self.currentimage = path
         self.commentedit.setPlainText(extradatas.get("imagecomment", {}).get(path, ""))
         self.timenothide.setText(timestamp)
-        self.pathandopen.setText(path)
+
+        if not path:
+            pixmap = QPixmap()
+        else:
+            pixmap = QPixmap.fromImage(QImage(path))
+            if pixmap is None or pixmap.isNull():
+                pixmap = QPixmap()
+        self.pixmapviewer.showpixmap(pixmap)
 
 
 class pixwrapper(QWidget):
+    startgame = pyqtSignal()
+
     def setrank(self, rank):
         if rank:
             self.spliter.addWidget(self.pixview)
@@ -2877,6 +2903,7 @@ class pixwrapper(QWidget):
         self.vlayout = QVBoxLayout(self)
         self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.pixview = viewpixmap_x(self)
+        self.pixview.startgame.connect(self.startgame)
         self.spliter = QSplitter(self)
         self.vlayout.addWidget(self.spliter)
         self.setrank(rank)
@@ -3167,6 +3194,9 @@ class dialog_savedgame_v3(QWidget):
         lay.setSpacing(0)
         self.righttop = makesubtab_lazy()
         self.pixview = pixwrapper()
+        self.pixview.startgame.connect(
+            lambda: startgamecheck(self, self.currentfocusuid)
+        )
         _w = QWidget()
         rightlay = QVBoxLayout()
         rightlay.setContentsMargins(0, 0, 0, 0)
