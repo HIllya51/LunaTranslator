@@ -2,6 +2,7 @@
     window.hasdone = false
     window.thistext = ''
     if (window.injectedjs) return
+    window.injectedjs = true
     const originXHR = XMLHttpRequest 
     window.XMLHttpRequest = function () {
         var newxhr = new originXHR()
