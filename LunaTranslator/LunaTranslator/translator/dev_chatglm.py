@@ -54,7 +54,7 @@ class TS(basetransdev):
             )
         content = prompt + content
         self.Runtime_evaluate(
-            'document.querySelector("#search-input-box > div.input-wrap.flex.flex-x-between.flex-y-center > div.input-box-inner > textarea").click()'
+            'document.querySelector("#search-input-box > div.input-wrap.flex.flex-x-between.flex-y-center > div.input-box-inner > textarea").focus()'
         )
         self.send_keys(content)
          
