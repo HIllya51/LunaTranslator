@@ -1,18 +1,26 @@
 const originXHR = XMLHttpRequest
-
+var hasdone = true
+var thistext = ''
 window.XMLHttpRequest = function () {
     var newxhr = new originXHR()
     newxhr.open_ori = newxhr.open
 
     newxhr.open = function () {
-        var input=arguments[1]
+        var input = arguments[1]
         if (%s) {
-
+            hasdone = false;
+            thistext = ''
             newxhr.onprogress_ori = newxhr.onprogress
-            newxhr.offset=0
+            newxhr.onload_ori = newxhr.onload_ori
+            newxhr.offset = 0
+            newxhr.onload = function () {
+                hasdone = true;
+                if (newxhr.onload_ori)
+                    return newxhr.onload_ori.apply(this, arguments);
+            };
             newxhr.onprogress = function (event) {
-                var current=newxhr.responseText
-                var lines=current.substring(newxhr.offset)
+                var current = newxhr.responseText
+                var lines = current.substring(newxhr.offset)
                 lines = lines.split('\n')
                 for (let i = 0; i < lines.length; i++) {
                     let line = lines[i]
@@ -24,8 +32,8 @@ window.XMLHttpRequest = function () {
 
                     }
                 }
-                newxhr.offset=current.length;
-                if(newxhr.onprogress_ori)
+                newxhr.offset = current.length;
+                if (newxhr.onprogress_ori)
                     return newxhr.onprogress_ori.apply(this, arguments);
             };
         }
