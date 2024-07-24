@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-import json, requests
+import json, requests, threading
 from myutils.config import globalconfig
 import websocket, time
 from traceback import print_exc
@@ -38,28 +38,27 @@ class basetransdev(basetrans):
     #########################################
     def _private_init(self):
         self._id = 1
+        self.sendrecvlock = threading.Lock()
         self._createtarget()
         super()._private_init()
 
     def _SendRequest(self, method, params, ws=None):
         if self.using == False:
             return
-        self._id += 1
+        with self.sendrecvlock:
+            self._id += 1
 
-        if ws is None:
-            ws = self.ws
-        ws.send(json.dumps({"id": self._id, "method": method, "params": params}))
-        res = ws.recv()
+            if ws is None:
+                ws = self.ws
+            ws.send(json.dumps({"id": self._id, "method": method, "params": params}))
+            res = ws.recv()
 
-        res = json.loads(res)
-        try:
-            return res["result"]
-        except:
-            if res["error"]["code"] == -32600:
-                self._id += 1
-                self._SendRequest(method, params, ws)
-            else:
-                raise
+            res = json.loads(res)
+            try:
+                return res["result"]
+            except:
+                print(res)
+                raise Exception()
 
     def _createtarget(self):
         if self.using == False:
