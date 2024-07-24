@@ -1589,6 +1589,13 @@
             "name": "qianwen",
             "is_gpt_like": true
         },
+        "dev_chatglm": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "chatglm",
+            "is_gpt_like": true
+        },
         "deepl_dev": {
             "use": false,
             "color": "blue",
