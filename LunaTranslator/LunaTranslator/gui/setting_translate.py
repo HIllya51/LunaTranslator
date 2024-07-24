@@ -380,7 +380,9 @@ def initsome2(self, l, label=None, btnplus=None):
                     type="grid",
                     title="大模型",
                     grid=is_gpt_likes,
-                    internallayoutname="damoxinggridinternal" + btnplus,
+                    internallayoutname=(
+                        ("damoxinggridinternal" + btnplus) if btnplus else None
+                    ),
                     parent=self,
                 ),
                 0,
@@ -546,20 +548,19 @@ def setTabTwo_lazy(self, basel):
                             D_getspinbox(0, 65535, globalconfig, "debugport"),
                             "",
                         ],
+                        [(functools.partial(createstatuslabel, self), 0)],
                     ),
                 ),
                 0,
                 "group",
             )
         ],
-        [(functools.partial(createstatuslabel, self), 16)],
-        [],
     ]
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
 
     offlinegrid = initsome2(self, lixians, btnplus="offline")
     onlinegrid = initsome11(self, mianfei)
-    developgrid += initsome11(self, develop)
+    developgrid += initsome2(self, develop)
     online_reg_grid += initsome2(self, shoufei, btnplus="api")
     pretransgrid += initsome11(self, pre)
     vw, vl = getvboxwidget()

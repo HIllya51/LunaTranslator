@@ -1575,6 +1575,13 @@
             "name": "chatgpt",
             "is_gpt_like": true
         },
+        "dev_moonshot": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "moonshot",
+            "is_gpt_like": true
+        },
         "deepl_dev": {
             "use": false,
             "color": "blue",

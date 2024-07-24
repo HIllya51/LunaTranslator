@@ -25,7 +25,6 @@ class basetransdev(basetrans):
             state = self.Runtime_evaluate(expression)
             try:
                 value = state["result"]["value"]
-                print(value)
                 if multi:
                     if not (value in badresult):
                         return value

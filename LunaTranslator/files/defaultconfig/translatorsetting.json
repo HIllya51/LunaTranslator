@@ -754,6 +754,28 @@
 			}
 		}
 	},
+	"dev_moonshot": {
+		"args": {
+			"usingstream": true,
+			"use_custom_prompt": false,
+			"custom_prompt": ""
+		},
+		"argstype": {
+			"usingstream": {
+				"name": "流式输出",
+				"type": "switch"
+			},
+			"custom_prompt": {
+				"name": "自定义promt",
+				"type": "multiline",
+				"refswitch": "use_custom_prompt"
+			},
+			"use_custom_prompt": {
+				"type": "switch_ref",
+				"name": "使用自定义promt"
+			}
+		}
+	},
 	"gemini": {
 		"args": {
 			"注册网址": "https://ai.google.dev/tutorials/python_quickstart",
