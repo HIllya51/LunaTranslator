@@ -117,7 +117,7 @@ class TS(basetrans):
         self.contextnum = int(self.config["context_num"])
 
         if self.config["use_user_prompt"]:
-            message = [{"Role": "user", "Content": self.config["user_prompt"]}]
+            message = [{"Role": "system", "Content": self.config["user_prompt"]}]
         else:
             message = [
                 {

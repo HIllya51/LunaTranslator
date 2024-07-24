@@ -84,7 +84,7 @@ class TS(basetrans):
             temperature = 0.3
 
         if self.config["使用自定义promt"]:
-            message = [{"role": "user", "content": self.config["自定义promt"]}]
+            message = [{"role": "system", "content": self.config["自定义promt"]}]
         else:
             message = [
                 {

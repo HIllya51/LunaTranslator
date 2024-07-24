@@ -114,7 +114,7 @@ class gptcommon(basetrans):
         self.contextnum = int(self.config["附带上下文个数"])
 
         if self.config["使用自定义promt"]:
-            message = [{"role": "user", "content": self.config["自定义promt"]}]
+            message = [{"role": "system", "content": self.config["自定义promt"]}]
         else:
             message = [
                 {
