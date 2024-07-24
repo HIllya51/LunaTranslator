@@ -52,7 +52,7 @@ class TS(basetransdev):
                 self.srclang, self.tgtlang
             )
         content = prompt + content
-        self.Runtime_evaluate('document.getElementsByTagName("textarea")[0].click()')
+        self.Runtime_evaluate('document.getElementsByTagName("textarea")[0].focus()')
         self.send_keys(content)
         self.Runtime_evaluate(
             r"""document.querySelector("#tongyiPageLayout > div.sc-fQpRED.jsoEZg > div > div.sc-hNGPaV.erDcgy.pageContentWrap--AovzQ5wq > div > div.inputField--PE5FhWzd > div > div.chatInput--eJzBH8LP > div.operateBtn--zFx6rSR0").click()"""
