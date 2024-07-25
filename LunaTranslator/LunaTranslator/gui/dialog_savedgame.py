@@ -2806,7 +2806,10 @@ class viewpixmap_x(QWidget):
         self.centerwidget.setVisible(False)
         self.pathandopen.setText(path)
         self.pathview.setText(path)
-        timestamp = get_time_stamp(ct=os.path.getctime(path), ms=False)
+        try:
+            timestamp = get_time_stamp(ct=os.path.getctime(path), ms=False)
+        except:
+            timestamp = None
         self.infoview.setText(timestamp)
         self.commentedit.setPlainText(extradatas.get("imagecomment", {}).get(path, ""))
         self.timenothide.setText(timestamp)
