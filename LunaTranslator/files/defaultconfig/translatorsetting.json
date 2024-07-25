@@ -363,7 +363,7 @@
 				"rank": 1
 			},
 			"API_KEY": {
-				"rank": 2
+				"rank": 0.5
 			},
 			"流式输出": {
 				"type": "switch",

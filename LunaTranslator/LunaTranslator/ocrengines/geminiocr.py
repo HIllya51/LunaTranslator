@@ -4,6 +4,25 @@ from ocrengines.baseocrclass import baseocr
 
 
 class OCR(baseocr):
+    def langmap(self):
+        return {
+            "zh": "Simplified Chinese",
+            "ja": "Japanese",
+            "en": "English",
+            "ru": "Russian",
+            "es": "Spanish",
+            "ko": "Korean",
+            "fr": "French",
+            "cht": "Traditional Chinese",
+            "vi": "Vietnamese",
+            "tr": "Turkish",
+            "pl": "Polish",
+            "uk": "Ukrainian",
+            "it": "Italian",
+            "ar": "Arabic",
+            "th": "Thai",
+        }
+
     def ocr(self, imagebinary):
         self.checkempty(["key"])
         self.checkempty(["url"])
@@ -13,12 +32,15 @@ class OCR(baseocr):
         model = self.config["model"]
         image_data = base64.b64encode(imagebinary).decode("utf-8")
 
-        # Prepare the request payload
+        if self.config["use_custom_prompt"]:
+            prompt = self.config["custom_prompt"]
+        else:
+            prompt = f"Recognize the {self.srclang} text in the picture."
         payload = {
             "contents": [
                 {
                     "parts": [
-                        {"text": "Ocr this picture"},
+                        {"text": prompt},
                         {"inlineData": {"mimeType": "image/png", "data": image_data}},
                     ]
                 }

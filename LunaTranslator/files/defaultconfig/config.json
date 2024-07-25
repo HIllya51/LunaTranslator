@@ -1471,6 +1471,10 @@
         "geminiocr": {
             "use": false,
             "name": "GeminiOCR"
+        },
+        "chatgptlike": {
+            "use": false,
+            "name": "ChatGPT_兼容接口_OCR"
         }
     },
     "fanyi": {

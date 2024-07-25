@@ -272,7 +272,83 @@
         "args": {
             "key": "",
             "url": "https://generativelanguage.googleapis.com/v1",
-            "model": "gemini-1.5-flash"
+            "model": "gemini-1.5-flash",
+            "use_custom_prompt": false,
+            "custom_prompt": ""
+        },
+        "argstype": {
+            "custom_prompt": {
+                "name": "自定义promt",
+                "type": "multiline",
+                "refswitch": "use_custom_prompt"
+            },
+            "use_custom_prompt": {
+                "type": "switch_ref",
+                "name": "使用自定义promt"
+            }
+        }
+    },
+    "chatgptlike": {
+        "args": {
+            "model": "gpt-4",
+            "apiurl": "https://api.openai.com/v1",
+            "SECRET_KEY": "",
+            "use_custom_prompt": false,
+            "custom_prompt": "",
+            "Temperature": 0.3,
+            "top_p": 0.3,
+            "max_tokens": 128,
+            "frequency_penalty": 0,
+            "s": ""
+        },
+        "argstype": {
+            "SECRET_KEY": {
+                "rank": 1.1
+            },
+            "s": {
+                "type": "split",
+                "rank": 1.5
+            },
+            "apiurl": {
+                "name": "API接口地址",
+                "rank": 0
+            },
+            "model": {
+                "rank": 1
+            },
+            "top_p": {
+                "type": "spin",
+                "min": 0,
+                "max": 1,
+                "step": 0.01
+            },
+            "frequency_penalty": {
+                "type": "spin",
+                "min": 0,
+                "max": 2,
+                "step": 0.05
+            },
+            "max_tokens": {
+                "type": "intspin",
+                "min": 1,
+                "max": 4096,
+                "step": 1
+            },
+            "custom_prompt": {
+                "name": "自定义promt",
+                "type": "multiline",
+                "refswitch": "use_custom_prompt"
+            },
+            "use_custom_prompt": {
+                "type": "switch_ref",
+                "name": "使用自定义promt"
+            },
+            "Temperature": {
+                "type": "spin",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            }
         }
     },
     "xunfei": {
