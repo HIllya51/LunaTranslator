@@ -66,6 +66,7 @@ window.$docsify = {
             })
         },
         function (hook, vm) {
+            return;
             hook.doneEach(() => {
                 var toupiao = document.getElementById('toupiao')
                 if (toupiao == null) return
