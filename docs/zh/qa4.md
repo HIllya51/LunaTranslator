@@ -1,4 +1,4 @@
-## 如何使用 gemini 免费 api
+## 如何使用gemini免费 api
 
 1. 去 https://aistudio.google.com/app/prompts/new_chat
 2. 

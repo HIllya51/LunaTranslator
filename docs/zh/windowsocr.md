@@ -1,6 +1,6 @@
-## Windows OCR 如何安装额外的语言支持？
+## WindowsOCR如何安装额外的语言支持？
 
-> Windows OCR 仅支持win10-win11操作系统
+> WindowsOCR仅支持win10-win11操作系统
 
 1. 打开设置
 

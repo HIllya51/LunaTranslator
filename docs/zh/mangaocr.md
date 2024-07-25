@@ -1,4 +1,4 @@
-## mangaocr 整合包无法启动怎么办？
+## mangaocr整合包无法启动怎么办？
 
 首次启动start.bat时，会尝试从huggingface上下载模型，但是国内你懂的。
 

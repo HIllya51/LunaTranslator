@@ -1,4 +1,4 @@
-## OCR 自动化执行方法的参数含义
+## OCR自动化执行方法的参数含义
 
 ![img](https://image.lunatranslator.xyz/zh/ocrauto.png)
 
