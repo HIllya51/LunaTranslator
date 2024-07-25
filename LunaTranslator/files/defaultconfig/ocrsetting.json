@@ -303,7 +303,7 @@
         },
         "argstype": {
             "SECRET_KEY": {
-                "rank": 1.1
+                "rank": 0.5
             },
             "s": {
                 "type": "split",
