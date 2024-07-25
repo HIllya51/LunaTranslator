@@ -5,7 +5,7 @@
 - [支持作者](/zh/support.md)
 
 **常见问题**
-- [HOOK设置的参数含义](/zh/hooksettings.md)
+- [详解HOOK设置](/zh/hooksettings.md)
 - [无法启动软件](/zh/cantstart.md)
 - [各种文本处理方法的作用和用法](/zh/textprocess.md)
 - [如何使用大模型离线翻译](/zh/offlinellm.md) 
