@@ -5,6 +5,7 @@
 - [支持作者](/zh/support.md)
 
 **常见问题**
+- [无法启动软件](zh/cantstart.md)
 - [各种文本处理方法的作用和用法](zh/textprocess.md)
 - [如何使用大模型离线翻译](/zh/offlinellm.md) 
 - [如何使用内嵌翻译](/zh/embedtranslate.md)
