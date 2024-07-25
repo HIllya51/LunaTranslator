@@ -129,8 +129,11 @@ def checkintegrity():
 def switchdir():
     dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(dirname)
-    sys.path.append("./")
-    sys.path.append("./userconfig")
+    sys.path.insert(1, "./")
+    sys.path.insert(1, "./userconfig")
+    # 0 是当前目录
+    # 后面的是系统库或runtime
+    # 由于自动更新不会删除，runtime下可能有历史遗留的同名文件被优先导入
 
 
 if __name__ == "__main__":

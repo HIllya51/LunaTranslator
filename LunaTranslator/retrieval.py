@@ -130,7 +130,7 @@ for dependency in all_dependencies:
 
 
 with open(os.path.join(runtime, f"python{pyversion2}._pth"), "w") as ff:
-    ff.write(".\n..")
+    ff.write("..\n.")
 
 copycheck(os.path.join(py37Path, "python3.dll"), runtime)
 copycheck(os.path.join(py37Path, f"python{pyversion2}.dll"), runtime)
