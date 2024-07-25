@@ -64,7 +64,7 @@ const manytables = [
             { type: '百度千帆大模型', isfree: false },
             { type: 'gemini', isfree: true },
             { type: 'Sakura大模型', isfree: true },
-            { type: 'ChatGPT', isfree: true },
+            { type: 'ChatGPT', isfree: false },
             { type: 'claude', isfree: false },
             { type: 'cohere', isfree: false },
         ]
