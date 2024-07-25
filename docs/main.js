@@ -66,6 +66,12 @@ window.$docsify = {
             })
         },
         function (hook, vm) {
+            hook.doneEach(() => {
+                if (document.getElementById('manytables') == null) return
+                import('/manyapis.js')
+            })
+        },
+        function (hook, vm) {
             return;
             hook.doneEach(() => {
                 var toupiao = document.getElementById('toupiao')

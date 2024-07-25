@@ -140,3 +140,31 @@ main .markdown-section {
     display: none;
 } 
 */
+
+
+.manytables {
+    /* border: 1px solid black; */
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    /*border-collapse: collapse;*/
+}
+
+.manytables2 {
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    /*margin: 10px;*/
+    /* margin-left: auto;
+    margin-right: auto; */
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.centertable{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+}
