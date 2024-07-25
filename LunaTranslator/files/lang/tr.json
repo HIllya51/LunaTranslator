@@ -667,7 +667,6 @@
     "优先级": "Prioritet",
     "编码": "coding",
     "自动TTS": "Otomatik TTS",
-    "录音时模拟按键": "Kaydedirken düğmeleri simüle edin",
     "窗口截图": "Window screenshot",
     "自动截图": "Otomatik ekran fotoğrafı",
     "模糊匹配": "Çılgın eşleşme",
@@ -829,5 +828,6 @@
     "下": "aşağı",
     "右": "sağ",
     "上": "üst",
-    "左": "Sol"
+    "左": "Sol",
+    "录音": "Ses kaydedici"
 }

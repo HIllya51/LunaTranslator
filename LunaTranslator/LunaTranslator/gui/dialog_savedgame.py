@@ -1090,30 +1090,6 @@ class dialog_setting_game_internal(QWidget):
         savehook_new_data[gameuid]["anki_DeckName"] = savehook_new_data[gameuid].get(
             "anki_DeckName", globalconfig["ankiconnect"]["DeckName"]
         )
-        savehook_new_data[gameuid]["anki_simulate_key_1_use"] = savehook_new_data[
-            gameuid
-        ].get(
-            "anki_simulate_key_1_use",
-            globalconfig["ankiconnect"]["simulate_key"]["1"]["use"],
-        )
-        savehook_new_data[gameuid]["anki_simulate_key_1_keystring"] = savehook_new_data[
-            gameuid
-        ].get(
-            "anki_simulate_key_1_keystring",
-            globalconfig["ankiconnect"]["simulate_key"]["1"]["keystring"],
-        )
-        savehook_new_data[gameuid]["anki_simulate_key_2_use"] = savehook_new_data[
-            gameuid
-        ].get(
-            "anki_simulate_key_2_use",
-            globalconfig["ankiconnect"]["simulate_key"]["2"]["use"],
-        )
-        savehook_new_data[gameuid]["anki_simulate_key_2_keystring"] = savehook_new_data[
-            gameuid
-        ].get(
-            "anki_simulate_key_2_keystring",
-            globalconfig["ankiconnect"]["simulate_key"]["2"]["keystring"],
-        )
 
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid], "follow_default_ankisettings", formLayout
@@ -1123,36 +1099,6 @@ class dialog_setting_game_internal(QWidget):
             getlineedit(
                 savehook_new_data[gameuid],
                 "anki_DeckName",
-            ),
-        )
-        formLayout2.addRow(
-            "录音时模拟按键",
-            getboxlayout(
-                [
-                    getsimpleswitch(
-                        savehook_new_data[gameuid], "anki_simulate_key_1_use"
-                    ),
-                    getsimplekeyseq(
-                        savehook_new_data[gameuid], "anki_simulate_key_1_keystring"
-                    ),
-                ],
-                margin0=True,
-                makewidget=True,
-            ),
-        )
-        formLayout2.addRow(
-            "录音时模拟按键_例句",
-            getboxlayout(
-                [
-                    getsimpleswitch(
-                        savehook_new_data[gameuid], "anki_simulate_key_2_use"
-                    ),
-                    getsimplekeyseq(
-                        savehook_new_data[gameuid], "anki_simulate_key_2_keystring"
-                    ),
-                ],
-                margin0=True,
-                makewidget=True,
             ),
         )
 

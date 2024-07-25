@@ -666,7 +666,6 @@
     "优先级": "Priority",
     "编码": "Encoding",
     "自动TTS": "Auto TTS",
-    "录音时模拟按键": "Simulate Key Press During Recording",
     "窗口截图": "Window Screenshot",
     "自动截图": "Auto Screenshot",
     "模糊匹配": "Fuzzy Matching",
@@ -829,5 +828,6 @@
     "下": "lower",
     "右": "right",
     "上": "upper",
-    "左": "Left"
+    "左": "Left",
+    "录音": "sound recording"
 }

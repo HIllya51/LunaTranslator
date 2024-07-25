@@ -667,7 +667,6 @@
     "优先级": "priorytet",
     "编码": "kodowanie",
     "自动TTS": "Automatyczny TTS",
-    "录音时模拟按键": "Symulowanie przycisków podczas nagrywania",
     "窗口截图": "Zrzut ekranu okna",
     "自动截图": "Automatyczny zrzut ekranu",
     "模糊匹配": "Dopasowanie rozmyte",
@@ -829,5 +828,6 @@
     "下": "niżej",
     "右": "w prawo",
     "上": "górna",
-    "左": "Lewa"
+    "左": "Lewa",
+    "录音": "nagrywanie dźwięku"
 }

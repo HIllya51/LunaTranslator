@@ -62,6 +62,8 @@ def registrhotkeys(self):
         "_28": lambda: winsharedutils.clipboard_set(
             gobject.baseobject.currenttranslate
         ),
+        "_29": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn1.click(),
+        "_30": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn2.click(),
     }
     for name in globalconfig["quick_setting"]["all"]:
         if name not in self.bindfunctions:

@@ -5,7 +5,6 @@ from traceback import print_exc
 import qtawesome, requests, gobject, windows
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
-from myutils.utils import parsekeystringtomodvkcode, unsupportkey
 from myutils.config import globalconfig, _TR, static_data, savehook_new_data
 from myutils.subproc import subproc_w
 from myutils.wrapper import threader, tryprint
@@ -21,7 +20,6 @@ from gui.usefulwidget import (
     getlineedit,
     listediterline,
     getsimpleswitch,
-    getsimplekeyseq,
     makesubtab_lazy,
     getIconButton,
     tabadd_lazy,
@@ -400,82 +398,9 @@ class AnkiWindow(QWidget):
             getsimpleswitch(globalconfig["ankiconnect"], "fillmaksastrans"),
         )
 
-        layout.addRow(
-            "录音时模拟按键",
-            getboxlayout(
-                [
-                    getsimpleswitch(
-                        globalconfig["ankiconnect"]["simulate_key"]["1"], "use"
-                    ),
-                    getsimplekeyseq(
-                        globalconfig["ankiconnect"]["simulate_key"]["1"], "keystring"
-                    ),
-                ],
-                margin0=True,
-                makewidget=True,
-            ),
-        )
-        layout.addRow(
-            "录音时模拟按键_例句",
-            getboxlayout(
-                [
-                    getsimpleswitch(
-                        globalconfig["ankiconnect"]["simulate_key"]["2"], "use"
-                    ),
-                    getsimplekeyseq(
-                        globalconfig["ankiconnect"]["simulate_key"]["2"], "keystring"
-                    ),
-                ],
-                margin0=True,
-                makewidget=True,
-            ),
-        )
-
-    @threader
-    def simulate_key(self, i):
-        def __internal__keystring(i):
-            try:
-                for _ in (0,):
-
-                    if not gobject.baseobject.textsource:
-                        break
-
-                    gameuid = gobject.baseobject.textsource.gameuid
-                    if not gameuid:
-                        break
-                    if savehook_new_data[gameuid]["follow_default_ankisettings"]:
-                        break
-                    if not savehook_new_data[gameuid][f"anki_simulate_key_{i}_use"]:
-                        return None
-                    return savehook_new_data[gameuid][
-                        f"anki_simulate_key_{i}_keystring"
-                    ]
-            except:
-                pass
-            return globalconfig["ankiconnect"]["simulate_key"][i]["keystring"]
-
-        keystring = __internal__keystring(i)
-        if not keystring:
-            return
-        windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
-        time.sleep(0.1)
-        try:
-            modes, vkcode = parsekeystringtomodvkcode(keystring, modes=True)
-        except unsupportkey as e:
-            print("不支持的键")
-            return
-        for mode in modes:
-            windows.keybd_event(mode, 0, 0, 0)
-        windows.keybd_event(vkcode, 0, 0, 0)
-        time.sleep(0.1)
-        windows.keybd_event(vkcode, 0, windows.KEYEVENTF_KEYUP, 0)
-        for mode in modes:
-            windows.keybd_event(mode, 0, windows.KEYEVENTF_KEYUP, 0)
-
     def startorendrecord(self, i, target: QLineEdit, idx):
         if idx == 1:
             self.recorder = loopbackrecorder()
-            self.simulate_key(i)
         else:
             self.recorder.end(callback=target.setText)
 
@@ -519,6 +444,8 @@ class AnkiWindow(QWidget):
         recordbtn2.statuschanged1.connect(
             functools.partial(self.startorendrecord, "2", self.audiopath_sentence)
         )
+        self.recordbtn1 = recordbtn1
+        self.recordbtn2 = recordbtn2
         layout.addLayout(
             getboxlayout(
                 [

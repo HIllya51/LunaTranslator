@@ -478,16 +478,6 @@
         "ocrcroped": false,
         "autoruntts": false,
         "autoruntts2": false,
-        "simulate_key": {
-            "1": {
-                "use": false,
-                "keystring": ""
-            },
-            "2": {
-                "use": false,
-                "keystring": ""
-            }
-        },
         "autocrop": false,
         "addsuccautoclose": false,
         "boldword": false,
@@ -1003,6 +993,16 @@
             "_28": {
                 "use": false,
                 "name": "复制到剪贴板_翻译",
+                "keystring": ""
+            },
+            "_29": {
+                "use": false,
+                "name": "Anki_录音",
+                "keystring": ""
+            },
+            "_30": {
+                "use": false,
+                "name": "Anki_录音_例句",
                 "keystring": ""
             }
         }
