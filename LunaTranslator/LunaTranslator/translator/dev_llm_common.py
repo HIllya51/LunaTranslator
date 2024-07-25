@@ -3,6 +3,24 @@ import time, os
 
 
 class commonllmdev(basetransdev):
+    def langmap(self):
+        return {
+            "zh": "Simplified Chinese",
+            "ja": "Japanese",
+            "en": "English",
+            "ru": "Russian",
+            "es": "Spanish",
+            "ko": "Korean",
+            "fr": "French",
+            "cht": "Traditional Chinese",
+            "vi": "Vietnamese",
+            "tr": "Turkish",
+            "pl": "Polish",
+            "uk": "Ukrainian",
+            "it": "Italian",
+            "ar": "Arabic",
+            "th": "Thai",
+        }
 
     def injectjs(self):
         with open(
