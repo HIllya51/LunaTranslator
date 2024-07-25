@@ -9,10 +9,17 @@
 
 **API接口地址** `https://api.deepseek.com`
 
+**SECRET_KEY** https://platform.deepseek.com/api_keys
+
+**model** https://platform.deepseek.com/api-docs/zh-cn/pricing
+
 ### **阿里云百炼大模型**
 
-
 **API接口地址** `https://dashscope.aliyuncs.com/compatible-mode/v1`
+
+**SECRET_KEY** https://bailian.console.aliyun.com/?apiKey=1#/api-key
+
+**model** https://help.aliyun.com/zh/model-studio/product-overview/billing-for-alibaba-cloud-model-studio/#2550bcc04d2tk
 
 ### **字节跳动豆包大模型**
 
@@ -31,23 +38,41 @@
 
 **API接口地址** `https://api.moonshot.cn`
 
+**SECRET_KEY** https://platform.moonshot.cn/console/api-keys
+
+**model** https://platform.moonshot.cn/docs/intro
+
 ### **智谱AI**
 
 **API接口地址** `https://open.bigmodel.cn/api/paas/v4/chat/completions`
+
+**SECRET_KEY** https://bigmodel.cn/usercenter/apikeys
+
+**model** https://bigmodel.cn/dev/howuse/model
 
 ### **零一万物**
 
 **API接口地址** `https://api.lingyiwanwu.com`
 
+**SECRET_KEY** https://platform.lingyiwanwu.com/apikeys
+
+**model** https://platform.lingyiwanwu.com/docs/api-reference#list-models
+ 
 ### **硅基流动**
 
 **API接口地址** `https://api.siliconflow.cn`
+
+**SECRET_KEY** https://cloud-hk.siliconflow.cn/account/ak
+
+**model** https://docs.siliconflow.cn/docs/model-names
 
 ### **讯飞星火大模型**
 
 **API接口地址** `https://spark-api-open.xf-yun.com/v1`
 
 **SECRET_KEY** 参考[官方文档](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)获取**APIKey**和**APISecret**后，按照**APIKey:APISecret**的格式填入
+
+**model** https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-2-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0
 
 <!-- tabs:end -->
 
@@ -70,7 +95,7 @@
 
 ### **腾讯混元大模型**
 
-略
+**model** https://cloud.tencent.com/document/product/1729/97731
 
 ### **百度千帆大模型**
 
