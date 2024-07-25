@@ -4,7 +4,7 @@ import qtawesome
 from myutils.config import globalconfig, _TRL
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting_textinput import setTabOne_lazy
-from gui.setting_translate import setTabTwo_lazy, checkconnected
+from gui.setting_translate import setTabTwo_lazy
 from gui.setting_display import setTabThree_lazy
 from gui.setting_tts import setTab5, showvoicelist
 from gui.setting_cishu import setTabcishu
@@ -82,7 +82,6 @@ class Setting(closeashidewindow):
         self.progresssignal.connect(functools.partial(updateprogress, self))
         self.isfirst = True
         versioncheckthread(self)
-        checkconnected(self)
         registrhotkeys(self)
 
     def showEvent(self, e: QShowEvent):

@@ -1,12 +1,71 @@
 from translator.basetranslator import basetrans
-import json, requests, threading
-from myutils.config import globalconfig
-import websocket, time
-from traceback import print_exc
+import json, requests, threading, hashlib
+from myutils.config import globalconfig, _TR
+from myutils.wrapper import threader
+from myutils.utils import checkportavailable
+from myutils.subproc import subproc_w
+import websocket, time, queue, os
+from gui.setting_translate import statuslabelsettext
+
+
+class Commonloadchromium:
+    def __init__(self) -> None:
+        self.task = queue.Queue()
+        self.waittaskthread()
+
+    def maybeload(self):
+        self.task.put(0)
+
+    @threader
+    def waittaskthread(self):
+        while True:
+            self.__waittaskthread()
+
+    def __waittaskthread(self):
+        _ = self.task.get()
+        if not self.task.empty():
+            return
+        time.sleep(0.2)
+        if not self.task.empty():
+            return
+
+        port = globalconfig["debugport"]
+        _path = self.getpath()
+        if not _path:
+            statuslabelsettext(self, "No Chromium Found")
+            return
+        try:
+            requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
+            statuslabelsettext(self, "连接成功")
+        except:
+            if checkportavailable(port):
+                statuslabelsettext(self, "连接失败")
+                call = self.gencmd(_path, port)
+                self.engine = subproc_w(call)
+            else:
+                statuslabelsettext(self, "端口冲突")
+
+    def gencmd(self, path, port):
+        hash_ = hashlib.md5(path.encode("utf8")).hexdigest()
+        cache = os.path.abspath(os.path.join("chrome_cache", hash_))
+        fmt = '"%s" --disable-extensions --remote-allow-origins=* --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir="%s"'
+        call = fmt % (path, port, cache)
+        return call
+
+    def getpath(self):
+        for syspath in [
+            globalconfig["chromepath"],
+            r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+            r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        ]:
+            if os.path.exists(syspath) and os.path.isfile(syspath):
+                return syspath
+        return None
 
 
 class basetransdev(basetrans):
     target_url = None
+    commonloadchromium = Commonloadchromium()
 
     def check_url_is_translator_url(self, url):
         return url.startswith(self.target_url)
@@ -37,6 +96,7 @@ class basetransdev(basetrans):
 
     #########################################
     def _private_init(self):
+        self.commonloadchromium.maybeload()
         self._id = 1
         self.sendrecvlock = threading.Lock()
         self._createtarget()
@@ -50,8 +110,14 @@ class basetransdev(basetrans):
 
             if ws is None:
                 ws = self.ws
-            ws.send(json.dumps({"id": self._id, "method": method, "params": params}))
-            res = ws.recv()
+            try:
+                ws.send(
+                    json.dumps({"id": self._id, "method": method, "params": params})
+                )
+                res = ws.recv()
+            except requests.RequestException:
+                self.commonloadchromium.maybeload()
+                raise Exception(_TR("连接失败"))
 
             res = json.loads(res)
             try:
@@ -68,7 +134,6 @@ class basetransdev(basetrans):
         try:
             infos = requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
         except:
-            print_exc()
             time.sleep(1)
             self._createtarget()
             return

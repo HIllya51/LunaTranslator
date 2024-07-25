@@ -1,13 +1,10 @@
 from qtsymbols import *
-import functools, os, time, hashlib
-import requests, gobject, qtawesome, uuid, shutil
-from myutils.wrapper import threader
+import functools, os
+import gobject, qtawesome, uuid, shutil
 from myutils.config import globalconfig, translatorsetting
-from myutils.subproc import subproc_w
 from myutils.utils import (
     selectdebugfile,
     splittranslatortypes,
-    checkportavailable,
     dynamiclink,
     translate_exits,
 )
@@ -28,10 +25,6 @@ from gui.usefulwidget import (
     getvboxwidget,
 )
 from gui.dynalang import LPushButton, LLabel
-
-
-def hashtext(a):
-    return hashlib.md5(a.encode("utf8")).hexdigest()
 
 
 def deepcopydict(d):
@@ -404,53 +397,6 @@ def createstatuslabel(self):
 
     self.statuslabel = LLabel()
     return self.statuslabel
-
-
-@threader
-def checkconnected(self):
-    lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
-    while True:
-        port = globalconfig["debugport"]
-        _path = None
-        for syspath in [
-            globalconfig["chromepath"],
-            r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-            r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-        ]:
-            if os.path.exists(syspath) and os.path.isfile(syspath):
-                _path = syspath
-                break
-        needstart = False
-        for dev in develop:
-            if not globalconfig["fanyi"][dev]["use"]:
-                continue
-
-            if not translate_exits(dev):
-                continue
-            needstart = True
-            break
-        try:
-
-            if needstart:
-                requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
-                statuslabelsettext(self, "连接成功")
-        except:
-            if checkportavailable(port):
-                statuslabelsettext(self, "连接失败")
-                if needstart:
-                    call = (
-                        '"%s" --disable-extensions --remote-allow-origins=* --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir="%s"'
-                        % (
-                            _path,
-                            port,
-                            os.path.abspath("./chrome_cache/" + hashtext(_path)),
-                        )
-                    )
-                    print(call)
-                    self.engine = subproc_w(call)
-            else:
-                statuslabelsettext(self, "端口冲突")
-        time.sleep(1)
 
 
 def createbtnexport(self):
