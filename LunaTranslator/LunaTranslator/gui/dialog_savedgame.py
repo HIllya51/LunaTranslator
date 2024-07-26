@@ -414,12 +414,12 @@ class browserdialog(saveposwindow):
             title = savehook_new_data[gameuid]["title"]
         else:
             title = "LunaTranslator"
-        super(QMainWindow).setWindowTitle(title)
+        self.setWindowTitle(title)
 
     def loadalllinks(self, gameuid):
         items = []
         if gameuid:
-            super(QMainWindow).setWindowTitle(savehook_new_data[gameuid]["title"])
+            self.setWindowTitle(savehook_new_data[gameuid]["title"])
 
         for link in globalconfig["relationlinks"]:
             items.append((link[0], tagitem.TYPE_GLOABL_LIKE, link[1]))
