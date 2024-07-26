@@ -5,6 +5,7 @@
 - [支持作者](/zh/support.md)
 
 **常见问题**
+- [在XP虚拟机上玩古老游戏并提取文本翻译](/zh/playonxp.md)
 - [详解HOOK设置](/zh/hooksettings.md)
 - [无法启动软件](/zh/cantstart.md)
 - [各种文本处理方法的作用和用法](/zh/textprocess.md)
