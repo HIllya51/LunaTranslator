@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os, json
 import windows, gobject
-from myutils.utils import getfilemd5, dynamiclink
+from myutils.utils import getfilemd5, translate_exits
 from myutils.config import (
     globalconfig,
     _TR,
@@ -280,6 +280,13 @@ def creategamefont_comboBox():
 
 
 def gethookembedgrid(self):
+    alltransvis = []
+    alltrans = []
+    for x in globalconfig["fanyi"]:
+        if not translate_exits(x):
+            continue
+        alltransvis.append(globalconfig["fanyi"][x]["name"])
+        alltrans.append(x)
     grids = [
         [
             "导出翻译补丁",
@@ -320,10 +327,10 @@ def gethookembedgrid(self):
             "内嵌的翻译器",
             "",
             D_getsimplecombobox(
-                [globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]],
+                alltransvis,
                 globalconfig["embedded"],
                 "translator_2",
-                internallist=list(globalconfig["fanyi"]),
+                internallist=alltrans,
             ),
         ],
         [
