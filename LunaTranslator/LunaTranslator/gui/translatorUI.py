@@ -872,7 +872,7 @@ class QUnFrameWindow(resizableframeless):
     @threader
     def delaymaybeshrink(self, size: QSize, sig):
 
-        time.sleep(0.2)
+        time.sleep(0.1)
         if sig != self.autoresizesig:
             return
         self.resizesignal.emit(size)
