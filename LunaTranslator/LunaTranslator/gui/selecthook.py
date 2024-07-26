@@ -218,11 +218,15 @@ class searchhookparam(LDialog):
 
         layout1 = QHBoxLayout()
         layout1.addWidget(LLabel("代码页"))
-        self.codepagesave = {
-            "spcp": savehook_new_data[gobject.baseobject.textsource.gameuid].get(
-                "codepage_index", globalconfig["codepage_index"]
-            )
-        }
+        if savehook_new_data[gobject.baseobject.textsource.gameuid][
+            "hooksetting_follow_default"
+        ]:
+            cp = globalconfig["codepage_index"]
+        else:
+            cp = savehook_new_data[gobject.baseobject.textsource.gameuid][
+                "hooksetting_private"
+            ].get("codepage_index", globalconfig["codepage_index"])
+        self.codepagesave = {"spcp": cp}
         layout1.addWidget(
             getsimplecombobox(
                 static_data["codepage_display"], self.codepagesave, "spcp"
