@@ -1,6 +1,6 @@
 ## 无法启动软件？
 
-**1. Error/ModuleNotFoundError**
+#### **1. Error/ModuleNotFoundError**
 
 
 <details>
@@ -9,7 +9,13 @@
   <img src="https://image.lunatranslator.xyz/zh/cantstart/1.png">
 </details>
 
-**2. 找不到重要组件**
+#### **2. Error/PermissionError**
+
+如果软件被放到`Program Files`等特殊文件夹，可能会没有读写权限。请使用管理员权限运行。
+
+<img src="https://image.lunatranslator.xyz/zh/cantstart/6.png" width=400>
+
+#### **3. 找不到重要组件**
 
 <img src="https://image.lunatranslator.xyz/zh/cantstart/2.jpg">
 
