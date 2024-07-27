@@ -832,6 +832,7 @@ class searchwordW(closeashidewindow):
         if idx == 1:
             if self.isfirstshowanki:
                 self.spliter.addWidget(self.ankiwindow)
+                self.ankiwindow.setMinimumHeight(1)
             else:
                 self.ankiwindow.show()
         else:
