@@ -1,23 +1,20 @@
 import json
-import os, time, uuid
+import os, time, uuid, shutil
 from traceback import print_exc
 from qtsymbols import *
 
 
 def tryreadconfig(path, default=None):
     path = os.path.join("userconfig", path)
-    if not os.path.exists(path):
-        path += ".tmp"
-    dfret = default if default else {}
-    if not os.path.exists(path):
-        return dfret
     try:
         with open(path, "r", encoding="utf-8") as ff:
-            x = json.load(ff)
-
-        return x
+            return json.load(ff)
     except:
-        return dfret
+        try:
+            with open(path + ".tmp", "r", encoding="utf-8") as ff:
+                return json.load(ff)
+        except:
+            return default if default else {}
 
 
 def tryreadconfig2(path):
@@ -473,7 +470,9 @@ def safesave(fname, js, beatiful=True):
             ff.write(json.dumps(js, sort_keys=False))
     if os.path.exists(fname):
         os.remove(fname)
-    os.rename(fname + ".tmp", fname)
+    shutil.copy(fname + ".tmp", fname)
+    os.remove(fname + ".tmp")
+    # wine上MoveFile会权限问题失败，不知道为什么，WinError 32
 
 
 def saveallconfig():
