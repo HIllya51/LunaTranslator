@@ -36,6 +36,7 @@ class TS(basetrans):
             "vi": "vie",
             "uk": "ukr",
             "ar": "ara",
+            "sv": "swe",
         }
 
     def translate(self, query):

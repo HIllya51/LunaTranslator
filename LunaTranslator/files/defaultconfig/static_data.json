@@ -61,7 +61,10 @@
         "Italiano",
         "اللغة العربية",
         "ภาษาไทย",
-        "བོད་སྐད།"
+        "བོད་སྐད།",
+        "Deutsch",
+        "Svenska",
+        "Nederlands"
     ],
     "language_list_translator": [
         "简体中文",
@@ -79,7 +82,10 @@
         "意大利语",
         "阿拉伯语",
         "泰语",
-        "藏语"
+        "藏语",
+        "德语",
+        "瑞典语",
+        "荷兰语"
     ],
     "language_list_translator_inner": [
         "zh",
@@ -97,25 +103,135 @@
         "it",
         "ar",
         "th",
-        "bo"
+        "bo",
+        "de",
+        "sv",
+        "nl"
     ],
     "font_type_default": {
-        "default": ["Segoe UI", "Arial", "Tahoma", "Microsoft Sans Serif"],
-        "zh": ["微软雅黑", "Microsoft YaHei", "黑体", "SimHei", "新宋体", "NSimSun", "宋体", "SimSun"],
-        "ja": ["游ゴシック", "Yu Gothic", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "MS PGothic", "ＭＳ ゴシック", "MS Gothic"],
-        "ko": ["맑은 고딕", "Malgun Gothic", "돋움체", "Dotum", "굴림체", "Gulim", "바탕체", "Batang"],
-        "cht": ["微軟正黑體", "Microsoft JhengHei", "標楷體", "DFKai-SB", "新細明體", "PMingLiU", "細明體", "MingLiU"],
-        "th": ["Leelawadee", "Tahoma", "Microsoft Sans Serif"],
-        "bo": ["Microsoft Himalaya", "Noto Serif Tibetan", "Tibetan Machine Uni"]
+        "default": [
+            "Segoe UI",
+            "Arial",
+            "Tahoma",
+            "Microsoft Sans Serif"
+        ],
+        "zh": [
+            "微软雅黑",
+            "Microsoft YaHei",
+            "黑体",
+            "SimHei",
+            "新宋体",
+            "NSimSun",
+            "宋体",
+            "SimSun"
+        ],
+        "ja": [
+            "游ゴシック",
+            "Yu Gothic",
+            "メイリオ",
+            "Meiryo",
+            "ＭＳ Ｐゴシック",
+            "MS PGothic",
+            "ＭＳ ゴシック",
+            "MS Gothic"
+        ],
+        "ko": [
+            "맑은 고딕",
+            "Malgun Gothic",
+            "돋움체",
+            "Dotum",
+            "굴림체",
+            "Gulim",
+            "바탕체",
+            "Batang"
+        ],
+        "cht": [
+            "微軟正黑體",
+            "Microsoft JhengHei",
+            "標楷體",
+            "DFKai-SB",
+            "新細明體",
+            "PMingLiU",
+            "細明體",
+            "MingLiU"
+        ],
+        "th": [
+            "Leelawadee",
+            "Tahoma",
+            "Microsoft Sans Serif"
+        ],
+        "bo": [
+            "Microsoft Himalaya",
+            "Noto Serif Tibetan",
+            "Tibetan Machine Uni"
+        ]
     },
     "setting_font_type_default": {
-        "default": ["Segoe UI", "Tahoma", "Microsoft Sans Serif", "Arial"],
-        "zh": ["Microsoft YaHei UI", "微软雅黑", "Microsoft YaHei", "黑体", "SimHei", "新宋体", "NSimSun", "宋体", "SimSun"],
-        "ja": ["Yu Gothic UI", "游ゴシック", "Yu Gothic", "Meiryo UI", "メイリオ", "Meiryo", "MS UI Gothic", "ＭＳ Ｐゴシック", "MS PGothic", "ＭＳ ゴシック", "MS Gothic"],
-        "ko": ["맑은 고딕", "Malgun Gothic", "굴림체", "Gulim", "돋움체", "Dotum", "바탕체", "Batang"],
-        "cht": ["Microsoft JhengHei UI", "微軟正黑體", "Microsoft JhengHei", "新細明體", "PMingLiU", "細明體", "MingLiU"],
-        "th": ["Leelawadee UI", "Tahoma", "Microsoft Sans Serif"],
-        "bo": ["Microsoft YaHei UI", "微软雅黑", "Microsoft YaHei", "黑体", "SimHei", "新宋体", "NSimSun", "宋体", "SimSun"]
+        "default": [
+            "Segoe UI",
+            "Tahoma",
+            "Microsoft Sans Serif",
+            "Arial"
+        ],
+        "zh": [
+            "Microsoft YaHei UI",
+            "微软雅黑",
+            "Microsoft YaHei",
+            "黑体",
+            "SimHei",
+            "新宋体",
+            "NSimSun",
+            "宋体",
+            "SimSun"
+        ],
+        "ja": [
+            "Yu Gothic UI",
+            "游ゴシック",
+            "Yu Gothic",
+            "Meiryo UI",
+            "メイリオ",
+            "Meiryo",
+            "MS UI Gothic",
+            "ＭＳ Ｐゴシック",
+            "MS PGothic",
+            "ＭＳ ゴシック",
+            "MS Gothic"
+        ],
+        "ko": [
+            "맑은 고딕",
+            "Malgun Gothic",
+            "굴림체",
+            "Gulim",
+            "돋움체",
+            "Dotum",
+            "바탕체",
+            "Batang"
+        ],
+        "cht": [
+            "Microsoft JhengHei UI",
+            "微軟正黑體",
+            "Microsoft JhengHei",
+            "新細明體",
+            "PMingLiU",
+            "細明體",
+            "MingLiU"
+        ],
+        "th": [
+            "Leelawadee UI",
+            "Tahoma",
+            "Microsoft Sans Serif"
+        ],
+        "bo": [
+            "Microsoft YaHei UI",
+            "微软雅黑",
+            "Microsoft YaHei",
+            "黑体",
+            "SimHei",
+            "新宋体",
+            "NSimSun",
+            "宋体",
+            "SimSun"
+        ]
     },
     "codepage_display": [
         "日语(CP932,SHIFT-JIS)",
