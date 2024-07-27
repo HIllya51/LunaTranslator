@@ -5,18 +5,29 @@ bool extracticon2data(const wchar_t *name, void (*cb)(const char *, size_t))
 {
     HICON h1, h2;
 
-    ExtractIconExW(name, 0, &h1, &h2, 1);
+    if (UINT_MAX == ExtractIconExW(name, 0, &h1, &h2, 1))
+        return false;
     if (h1 == 0)
         return false;
     HDC hdc = GetDC(NULL);
+    if (!hdc)
+        return false;
     HDC memDC = CreateCompatibleDC(hdc);
+    if (!memDC)
+        return false;
     ICONINFO iconInfo;
-    GetIconInfo(h1, &iconInfo);
+    if (!GetIconInfo(h1, &iconInfo))
+        return false;
     int iconWidth = iconInfo.xHotspot * 2;
     int iconHeight = iconInfo.yHotspot * 2;
     HBITMAP hBitmap = CreateCompatibleBitmap(hdc, iconWidth, iconHeight);
+    if (!hBitmap)
+        return false;
     HBITMAP hOldBitmap = (HBITMAP)SelectObject(memDC, hBitmap);
-    DrawIconEx(memDC, 0, 0, h1, iconWidth, iconHeight, 0, NULL, DI_NORMAL);
+    if (!hOldBitmap)
+        return false;
+    if (!DrawIconEx(memDC, 0, 0, h1, iconWidth, iconHeight, 0, NULL, DI_NORMAL))
+        return false;
     SelectObject(memDC, hOldBitmap);
     DeleteDC(memDC);
 
@@ -30,7 +41,8 @@ bool extracticon2data(const wchar_t *name, void (*cb)(const char *, size_t))
     auto dwSize = bmp.bmWidthBytes * bmp.bmHeight;
     bmpp.data.resize(dwSize);
     auto dataptr = bmpp.data.data();
-    GetBitmapBits(hBitmap, dwSize, dataptr);
+    if (!GetBitmapBits(hBitmap, dwSize, dataptr))
+        return false;
     DeleteObject(hBitmap);
 
     std::vector<LONG> tmp;
@@ -63,6 +75,6 @@ bool extracticon2data(const wchar_t *name, void (*cb)(const char *, size_t))
     }
     std::string data;
     bmpp.write_tomem(data);
-    cb(data.c_str(),data.size());
+    cb(data.c_str(), data.size());
     return true;
 }
