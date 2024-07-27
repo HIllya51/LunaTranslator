@@ -545,7 +545,6 @@
             "setting",
             "copy",
             "edit",
-            "edittrans",
             "showraw",
             "history",
             "noundict",
@@ -758,12 +757,6 @@
             "edit": {
                 "use": false,
                 "tip": "编辑",
-                "icon": "fa.edit",
-                "align": 0
-            },
-            "edittrans": {
-                "use": false,
-                "tip": "编辑_翻译记录",
                 "icon": "fa.edit",
                 "align": 0
             },
@@ -1925,16 +1918,9 @@
             "color": "blue",
             "name": "TGW语言模型",
             "is_gpt_like": true
-        },
-        "realtime_edit": {
-            "use": false,
-            "type": "pre",
-            "color": "blue",
-            "name": "实时编辑"
         }
     },
     "ZoomFactor": 1,
-    "realtime_edit_target": "realtime_edit",
     "magpiepath": "",
     "movefollow": false,
     "focusnotop": false,
