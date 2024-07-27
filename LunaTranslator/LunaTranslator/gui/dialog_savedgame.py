@@ -1342,11 +1342,11 @@ class dialog_setting_game_internal(QWidget):
 
     def getlangtab(self, formLayout: LFormLayout, gameuid):
 
-        savehook_new_data[gameuid]["private_tgtlang"] = savehook_new_data[gameuid].get(
-            "private_tgtlang", globalconfig["tgtlang3"]
+        savehook_new_data[gameuid]["private_tgtlang_2"] = savehook_new_data[gameuid].get(
+            "private_tgtlang_2", globalconfig["tgtlang4"]
         )
-        savehook_new_data[gameuid]["private_srclang"] = savehook_new_data[gameuid].get(
-            "private_srclang", globalconfig["srclang3"]
+        savehook_new_data[gameuid]["private_srclang_2"] = savehook_new_data[gameuid].get(
+            "private_srclang_2", globalconfig["srclang4"]
         )
 
         formLayout2 = self.createfollowdefault(
@@ -1357,7 +1357,8 @@ class dialog_setting_game_internal(QWidget):
             getsimplecombobox(
                 static_data["language_list_translator"],
                 savehook_new_data[gameuid],
-                "private_srclang",
+                "private_srclang_2",
+                internallist=static_data['language_list_translator_inner']
             ),
         )
         formLayout2.addRow(
@@ -1365,7 +1366,8 @@ class dialog_setting_game_internal(QWidget):
             getsimplecombobox(
                 static_data["language_list_translator"],
                 savehook_new_data[gameuid],
-                "private_tgtlang",
+                "private_tgtlang_2",
+                internallist=static_data['language_list_translator_inner']
             ),
         )
 

@@ -3,7 +3,7 @@ import platform, functools, sys
 import winsharedutils, queue
 from myutils.config import globalconfig, static_data
 from myutils.wrapper import threader, tryprint
-from myutils.utils import makehtml, dynamiclink
+from myutils.utils import makehtml, dynamiclink, getlanguse
 import requests
 import shutil, gobject
 from myutils.proxy import getproxy
@@ -310,7 +310,7 @@ def setTab_update(self, basel):
             makehtml("{docs_server}/"),
         ],
     ]
-    if globalconfig["languageuse"] == 0:
+    if getlanguse() == 'zh':
         shuominggrid += [
             [
                 "交流群",

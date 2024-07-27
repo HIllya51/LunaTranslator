@@ -46,8 +46,6 @@
     "有道api": "Hay una API",
     "导出sqlite文件为json文件": "Exportar el archivo qlite como archivo json",
     "中文": "Chino",
-    "日文": "Japonés",
-    "英文": "Inglés",
     "翻译设置": "Configuración de la traducción",
     "是否显示翻译器名称": "Si se muestra el nombre del traductor",
     "源语言": "Idioma de origen",
@@ -829,5 +827,7 @@
     "录音": "Grabación",
     "德语": "Alemán",
     "瑞典语": "Sueco",
-    "荷兰语": "Holandés"
+    "荷兰语": "Holandés",
+    "捷克语": "Checo",
+    "英语": "Inglés"
 }

@@ -48,12 +48,12 @@
     "language_list_show": [
         "简体中文",
         "日本語",
+        "繁體中文",
         "English",
         "Русский язык",
         "Español",
         "한국어",
         "Français",
-        "繁體中文",
         "Tiếng Việt",
         "Türkçe",
         "Polski",
@@ -64,17 +64,18 @@
         "བོད་སྐད།",
         "Deutsch",
         "Svenska",
-        "Nederlands"
+        "Nederlands",
+        "Čeština"
     ],
     "language_list_translator": [
         "简体中文",
-        "日文",
-        "英文",
+        "日语",
+        "繁体中文",
+        "英语",
         "俄语",
         "西班牙语",
         "韩语",
         "法语",
-        "繁体中文",
         "越南语",
         "土耳其语",
         "波兰语",
@@ -85,17 +86,18 @@
         "藏语",
         "德语",
         "瑞典语",
-        "荷兰语"
+        "荷兰语",
+        "捷克语"
     ],
     "language_list_translator_inner": [
         "zh",
         "ja",
+        "cht",
         "en",
         "ru",
         "es",
         "ko",
         "fr",
-        "cht",
         "vi",
         "tr",
         "pl",
@@ -106,7 +108,8 @@
         "bo",
         "de",
         "sv",
-        "nl"
+        "nl",
+        "cs"
     ],
     "font_type_default": {
         "default": [

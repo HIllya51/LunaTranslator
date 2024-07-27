@@ -115,8 +115,8 @@ def getdefaultsavehook(title=None):
             # "mypost":# 设置时再加载
         },
         "lang_follow_default": True,
-        # "private_srclang": 0,# 显示时再加载，缺省用global中的键
-        # "private_tgtlang": 0,
+        # "private_srclang_2": 0,# 显示时再加载，缺省用global中的键
+        # "private_tgtlang_2": 0,
         "follow_default_ankisettings": True,
         # "anki_DeckName":str
         "localeswitcher": 0,
@@ -182,6 +182,9 @@ def getdefaultsavehook(title=None):
     return default
 
 
+# fmt: off
+oldlanguage = ["zh","ja","en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar","th","bo","de","sv","nl"]
+# fmt: on
 _dfsavehook = getdefaultsavehook("")
 for uid in savehook_new_data:
     if (
@@ -201,7 +204,15 @@ for uid in savehook_new_data:
             savehook_new_data[uid]["tts_skip_regex"].append(
                 {"regex": False, "key": name, "condition": 0}
             )
-
+    if ("private_srclang" in savehook_new_data[uid]) and (
+        "private_srclang_2" not in savehook_new_data[uid]
+    ):
+        savehook_new_data[uid]["private_srclang_2"] = oldlanguage[
+            savehook_new_data[uid]["private_srclang"]
+        ]
+        savehook_new_data[uid]["private_tgtlang_2"] = oldlanguage[
+            savehook_new_data[uid]["private_tgtlang"]
+        ]
     for k in _dfsavehook:
         if k not in savehook_new_data[uid]:
             savehook_new_data[uid][k] = _dfsavehook[k]
@@ -336,21 +347,33 @@ languageshow = {}
 
 
 def getlanguse():
-    return static_data["language_list_translator_inner"][globalconfig["languageuse"]]
+    return globalconfig["languageuse2"]
+
+
+def langfile(lang):
+    return "./files/lang/{}.json".format(lang)
+
+
+def loadlangviss():
+    inners = []
+    vis = []
+    for i, l in enumerate(static_data["language_list_translator_inner"]):
+        if not os.path.exists(langfile(l)):
+            continue
+        inners.append(l)
+        vis.append(static_data["language_list_show"][i])
+
+    return inners, vis
 
 
 def loadlanguage():
     global language_last, languageshow
-    _language = globalconfig["languageuse"]
+    _language = getlanguse()
     if _language == language_last:
         return
     language_last = _language
     try:
-        with open(
-            "./files/lang/{}.json".format(getlanguse()),
-            "r",
-            encoding="utf8",
-        ) as ff:
+        with open(langfile(_language), "r", encoding="utf8") as ff:
             languageshow = json.load(ff)
     except:
         languageshow = {}

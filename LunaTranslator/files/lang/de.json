@@ -339,7 +339,6 @@
     "日语(SHIFT-JIS)": "Japanisch (SHIFT-JIS)",
     "刷新": "Aktualisieren",
     "紲星あかり": "あかり",
-    "英文": "englisch",
     "时间周期执行": "Ausführung des Zeitzyklus",
     "请重新下载并关闭杀毒软件后重试": "Bitte laden Sie die Antivirensoftware herunter und schließen Sie sie erneut und versuchen Sie es erneut",
     "用户词典1": "Benutzerwörterbuch 1",
@@ -462,7 +461,6 @@
     "游戏静音": "Spiel stumm schalten",
     "简单替换内容(若替换为空则直接过滤)": "Einfacher Austausch von Inhalten (wenn leer gelassen, direkt filtern)",
     "锁定工具栏": "Werkzeugleisten sperren",
-    "日文": "Japanisch",
     "选择文本，支持按住ctrl进行多项选择（一般选择一条即可）": "Text auswählen, Unterstützung bei gedrückter Strg-Taste für Mehrfachauswahl (normalerweise wählen Sie eine)",
     "通用文字识别（高精度含位置版）": "Universelle Texterkennung (hochpräzise inkl. Positionsversion)",
     "端口号": "Hafennummer",
@@ -829,5 +827,7 @@
     "录音": "Tonaufnahme",
     "德语": "Deutsch",
     "瑞典语": "Schwedische Sprache",
-    "荷兰语": "Niederländisch"
+    "荷兰语": "Niederländisch",
+    "捷克语": "Tschechisch",
+    "英语": "Englisch"
 }

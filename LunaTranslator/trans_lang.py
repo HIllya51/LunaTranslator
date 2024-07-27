@@ -46,6 +46,7 @@ if __name__ == "__main__":
         "de": "de",
         "sv": "swe",
         "nl": "nl",
+        "cs": "cs",
     }
 
     needpop = []

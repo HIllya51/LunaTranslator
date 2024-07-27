@@ -1,5 +1,5 @@
 import time, uuid
-import os, threading, sys, re, codecs, platform
+import os, threading, sys, re, codecs
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -9,7 +9,6 @@ from myutils.config import (
     uid2gamepath,
     findgameuidofpath,
     savehook_new_data,
-    loadlanguage,
     static_data,
     tryreadconfig,
     getlanguse,

@@ -46,8 +46,6 @@
     "有道api": "Có API",
     "导出sqlite文件为json文件": "Xuất file sqlite thành file json",
     "中文": "Trung Quốc",
-    "日文": "Nhật Bản",
-    "英文": "Tiếng Việt",
     "翻译设置": "Thiết lập dịch",
     "是否显示翻译器名称": "Hiện tên bộ dịch",
     "源语言": "Ngôn ngữ nguồn",
@@ -829,5 +827,7 @@
     "录音": "Ghi âm",
     "德语": "Tiếng Việt",
     "瑞典语": "Thụy Điển",
-    "荷兰语": "Hà Lan"
+    "荷兰语": "Hà Lan",
+    "捷克语": "Tiếng Séc",
+    "英语": "Tiếng Việt"
 }

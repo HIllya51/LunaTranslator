@@ -46,8 +46,6 @@
     "有道api": "Youdao api",
     "导出sqlite文件为json文件": "Sqlite dosyasını json dosyasına aktar",
     "中文": "Çince",
-    "日文": "Japonca",
-    "英文": "İngilizce",
     "翻译设置": "Çeviri ayarları",
     "是否显示翻译器名称": "Tercüme ismini göstermek mi?",
     "源语言": "kaynak dili",
@@ -829,5 +827,7 @@
     "录音": "Ses kaydedici",
     "德语": "Almanca",
     "瑞典语": "İsveç dili",
-    "荷兰语": "Dutch"
+    "荷兰语": "Dutch",
+    "捷克语": "Çehçe",
+    "英语": "İngilizce"
 }

@@ -46,8 +46,6 @@
     "有道api": "API Youdao",
     "导出sqlite文件为json文件": "Eksportuj plik sqlite jako plik JSON",
     "中文": "Chiński",
-    "日文": "Japoński",
-    "英文": "angielski",
     "翻译设置": "Ustawienia tłumaczenia",
     "是否显示翻译器名称": "Pokaż nazwę tłumacza",
     "源语言": "język źródłowy",
@@ -829,5 +827,7 @@
     "录音": "nagrywanie dźwięku",
     "德语": "Niemiecki",
     "瑞典语": "Język szwedzki",
-    "荷兰语": "Holenderski"
+    "荷兰语": "Holenderski",
+    "捷克语": "Czeski",
+    "英语": "Angielski"
 }

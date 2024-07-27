@@ -125,7 +125,6 @@
     "显示/隐藏原文": "Show/Hide Original Text",
     "小牛api": "Niutrans API",
     "HOOK设置": "HOOK Settings",
-    "英文": "English",
     "源语言": "Source Language",
     "选择游戏": "Select Game",
     "最邻近": "Nearest Neighbor",
@@ -142,7 +141,6 @@
     "助動詞": "Auxiliary Verbs",
     "过滤HTML标签": "Filter HTML Tags",
     "快译通": "Kuaiyitong Quick Dict",
-    "日文": "Japanese",
     "选择文本输入源": "Select Text Input Source",
     "选择文件夹": "Select Folder",
     "显示分词结果": "Show Word Segmentation Result",
@@ -829,5 +827,7 @@
     "录音": "sound recording",
     "德语": "German",
     "瑞典语": "Swedish language",
-    "荷兰语": "Dutch"
+    "荷兰语": "Dutch",
+    "捷克语": "Czech",
+    "英语": "English"
 }

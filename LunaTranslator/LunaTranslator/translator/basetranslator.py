@@ -320,7 +320,9 @@ class basetrans(commonbase):
                 continue
             if self.using == False:
                 break
-
+            if self.srclang_1 == self.tgtlang_1:
+                callback(contentsolved, embedcallback, False)
+                continue
             self.requestid += 1
             try:
                 checktutukufunction = (

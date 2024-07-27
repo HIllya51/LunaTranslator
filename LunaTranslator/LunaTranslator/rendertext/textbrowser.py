@@ -393,7 +393,7 @@ class TextBrowser(QWidget, dataget):
                 self.textcursor.setPosition(blockstart + s)
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-                collects[collecti].move(tl1)
+                collects[collecti].move(tl1.x(), tl1.y())
                 collecti += 1
 
     def _showyinyingtext(self, b1, b2, color, font):

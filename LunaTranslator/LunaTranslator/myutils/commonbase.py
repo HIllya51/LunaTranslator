@@ -34,27 +34,19 @@ class commonbase:
 
     @property
     def srclang(self):
-        try:
-            l = getlangsrc()
-            return self.langmap_[l]
-        except:
-            return ""
+        return self.langmap_.get(self.srclang_1, "")
 
     @property
     def srclang_1(self):
-        try:
-            l = getlangsrc()
-            return l
-        except:
-            return ""
+        return getlangsrc()
+
+    @property
+    def tgtlang_1(self):
+        return getlangtgt()
 
     @property
     def tgtlang(self):
-        try:
-            l = getlangtgt()
-            return self.langmap_[l]
-        except:
-            return ""
+        return self.langmap_.get(self.tgtlang_1, "")
 
     @property
     def config(self):

@@ -1,19 +1,11 @@
-import os, functools
-from myutils.config import globalconfig, static_data, getlanguse
+import os
+from myutils.config import globalconfig, static_data, getlanguse, loadlangviss
 from gui.usefulwidget import (
     D_getsimplecombobox,
-    getsimplecombobox,
     D_getIconButton,
     makescrollgrid,
 )
 from qtsymbols import *
-
-
-def createlangs(self):
-    self.srclangswitcher = getsimplecombobox(
-        static_data["language_list_translator"], globalconfig, "srclang3"
-    )
-    return self.srclangswitcher
 
 
 def changelang(_):
@@ -22,6 +14,7 @@ def changelang(_):
 
 
 def setTablanglz(self):
+    inner, vis = loadlangviss()
     return [
         [
             (
@@ -31,14 +24,24 @@ def setTablanglz(self):
                     grid=(
                         [
                             "源语言",
-                            functools.partial(createlangs, self),
+                            D_getsimplecombobox(
+                                static_data["language_list_translator"],
+                                globalconfig,
+                                "srclang4",
+                                internallist=static_data[
+                                    "language_list_translator_inner"
+                                ],
+                            ),
                         ],
                         [
                             "目标语言",
                             D_getsimplecombobox(
                                 static_data["language_list_translator"],
                                 globalconfig,
-                                "tgtlang3",
+                                "tgtlang4",
+                                internallist=static_data[
+                                    "language_list_translator_inner"
+                                ],
                             ),
                         ],
                     ),
@@ -56,11 +59,12 @@ def setTablanglz(self):
                         [
                             "软件显示语言",
                             D_getsimplecombobox(
-                                (static_data["language_list_show"]),
+                                vis,
                                 globalconfig,
-                                "languageuse",
+                                "languageuse2",
                                 callback=changelang,
                                 static=True,
+                                internallist=inner,
                             ),
                             D_getIconButton(
                                 callback=lambda: os.startfile(

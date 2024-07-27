@@ -46,8 +46,6 @@
     "有道api": "API Channel",
     "导出sqlite文件为json文件": "Exporter le fichier SQLite en tant que fichier json",
     "中文": "En chinois",
-    "日文": "Japonais",
-    "英文": "Anglais",
     "翻译设置": "Paramètres de traduction",
     "是否显示翻译器名称": "Afficher le nom du traducteur",
     "源语言": "Langue source",
@@ -829,5 +827,7 @@
     "录音": "Enregistrement sonore",
     "德语": "Allemand",
     "瑞典语": "Suédois",
-    "荷兰语": "Néerlandais"
+    "荷兰语": "Néerlandais",
+    "捷克语": "Tchèque",
+    "英语": "Anglais"
 }

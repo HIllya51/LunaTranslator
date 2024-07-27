@@ -33,12 +33,10 @@ def __internal__getlang(k1, k2):
             if savehook_new_data[gameuid]["lang_follow_default"]:
                 break
 
-            return static_data["language_list_translator_inner"][
-                savehook_new_data[gameuid][k1]
-            ]
+            return savehook_new_data[gameuid][k1]
     except:
         pass
-    return static_data["language_list_translator_inner"][globalconfig[k2]]
+    return globalconfig[k2]
 
 
 def translate_exits(fanyi, which=False):
@@ -58,12 +56,12 @@ def translate_exits(fanyi, which=False):
 
 
 def getlangsrc():
-    return __internal__getlang("private_srclang", "srclang3")
+    return __internal__getlang("private_srclang_2", "srclang4")
 
 
 def getlangtgt():
 
-    return __internal__getlang("private_tgtlang", "tgtlang3")
+    return __internal__getlang("private_tgtlang_2", "tgtlang4")
 
 
 def findenclose(text, tag):

@@ -339,7 +339,6 @@
     "日语(SHIFT-JIS)": "Japans (SHIFT-JIS)",
     "刷新": "Vernieuwen",
     "紲星あかり": "あかり",
-    "英文": "Engels",
     "时间周期执行": "Tijdcyclusuitvoering",
     "请重新下载并关闭杀毒软件后重试": "Download en sluit de antivirussoftware opnieuw en probeer het opnieuw",
     "用户词典1": "Gebruikerswoordenboek 1",
@@ -462,7 +461,6 @@
     "游戏静音": "Spel dempen",
     "简单替换内容(若替换为空则直接过滤)": "Eenvoudige vervanging van inhoud (indien leeg gelaten, direct filteren)",
     "锁定工具栏": "Werkbalken vergrendelen",
-    "日文": "Japans",
     "选择文本，支持按住ctrl进行多项选择（一般选择一条即可）": "Tekst selecteren, ondersteuning Ctrl ingedrukt houden voor meerdere selecties (meestal selecteer er één)",
     "通用文字识别（高精度含位置版）": "Universele tekstherkenning (hoge precisie inclusief positionele versie)",
     "端口号": "Poortnummer",
@@ -829,5 +827,7 @@
     "录音": "geluidsopname",
     "德语": "Duits",
     "瑞典语": "Zweedse taal",
-    "荷兰语": "Nederlands"
+    "荷兰语": "Nederlands",
+    "捷克语": "Tsjechisch",
+    "英语": "Engels"
 }

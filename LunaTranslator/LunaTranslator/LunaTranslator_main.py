@@ -47,7 +47,7 @@ def loadmainui():
 
 def checklang():
 
-    from myutils.config import globalconfig, loadlanguage, static_data
+    from myutils.config import globalconfig, oldlanguage, loadlangviss
     from qtsymbols import (
         QDialog,
         pyqtSignal,
@@ -64,7 +64,7 @@ def checklang():
         getnewtranssignal = pyqtSignal(str, str)
         showsignal = pyqtSignal()
 
-        def __init__(self, language_list):
+        def __init__(self):
 
             super(languageset, self).__init__(None, Qt.WindowType.WindowStaysOnTopHint)
             self.setWindowIcon(qtawesome.icon("fa.language"))
@@ -76,9 +76,10 @@ def checklang():
             self.setFont(font)
             self.current = 0
             language_listcombox = QComboBox()
-            language_listcombox.addItems(language_list)
+            _, vis = loadlangviss()
+            language_listcombox.addItems(vis)
             language_listcombox.currentIndexChanged.connect(
-                lambda x: setattr(self, "current", x)
+                lambda x: setattr(self, "current", _[x])
             )
             vb = QVBoxLayout(self)
 
@@ -87,14 +88,21 @@ def checklang():
             vb.addWidget(bt)
             bt.clicked.connect(self.accept)
 
-    if globalconfig["language_setted_2.4.5"] == False:
-
-        x = languageset(static_data["language_list_show"])
-        x.exec()
-        globalconfig["language_setted_2.4.5"] = True
-        globalconfig["languageuse"] = x.current
-        globalconfig["tgtlang3"] = x.current
-        loadlanguage()
+    if "languageuse2" in globalconfig:
+        return
+    if globalconfig["language_setted_2.4.5"]:
+        # 新版改成新的index无关的语言设置
+        globalconfig["languageuse2"] = oldlanguage[globalconfig["languageuse"]]
+        globalconfig["tgtlang4"] = oldlanguage[globalconfig["tgtlang3"]]
+        globalconfig["srclang4"] = oldlanguage[globalconfig["srclang3"]]
+        return
+    x = languageset()
+    x.exec()
+    globalconfig["language_setted_2.4.5"] = True
+    globalconfig["languageuse2"] = x.current
+    globalconfig["tgtlang4"] = x.current
+    if globalconfig["tgtlang4"] == "ja":
+        globalconfig["srclang4"] = "zh"
 
 
 def checkintegrity():
