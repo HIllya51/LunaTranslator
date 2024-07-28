@@ -217,12 +217,11 @@ for uid in savehook_new_data:
         savehook_new_data[uid]["private_tgtlang_2"] = oldlanguage[
             savehook_new_data[uid]["private_tgtlang"]
         ]
-    for k in _dfsavehook:
-        if k not in savehook_new_data[uid]:
-            __v = _dfsavehook[k]
-            if isinstance(_dfsavehook[k], (list, dict)):
+    for __k, __v in _dfsavehook.items():
+        if __k not in savehook_new_data[uid]:
+            if isinstance(__v, (list, dict)):
                 __v = __v.copy()
-            savehook_new_data[uid][k] = __v
+            savehook_new_data[uid][__k] = __v
 
 
 class __uid2gamepath:
