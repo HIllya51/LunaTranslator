@@ -1085,9 +1085,7 @@ class MAINUI:
             == Qt.WindowType.FramelessWindowHint
         ):
             return
-        if isinstance(widget, QMenu):
-            return
-        if isinstance(widget, QFrame):
+        if isinstance(widget, (QMenu, QFrame)):
             return
         if (
             isinstance(widget, QWidget)

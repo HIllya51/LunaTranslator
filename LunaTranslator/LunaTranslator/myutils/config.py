@@ -220,7 +220,7 @@ for uid in savehook_new_data:
     for k in _dfsavehook:
         if k not in savehook_new_data[uid]:
             __v = _dfsavehook[k]
-            if isinstance(_dfsavehook[k], list) or isinstance(_dfsavehook[k], dict):
+            if isinstance(_dfsavehook[k], (list, dict)):
                 __v = __v.copy()
             savehook_new_data[uid][k] = __v
 

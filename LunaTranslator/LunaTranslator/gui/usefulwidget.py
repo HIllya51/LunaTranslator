@@ -1392,7 +1392,7 @@ def makeforms(lay: LFormLayout, lis, args):
             name, wid = None, line[0]
         else:
             name, wid = line
-        if isinstance(wid, tuple) or isinstance(wid, list):
+        if isinstance(wid, (tuple, list)):
             hb = QHBoxLayout()
             hb.setContentsMargins(0, 0, 0, 0)
             if Stretch:

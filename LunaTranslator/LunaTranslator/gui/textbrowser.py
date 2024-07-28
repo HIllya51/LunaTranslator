@@ -37,7 +37,7 @@ class Textbrowser(QLabel):
                     "错误",
                     "can't find Webview2 runtime!",
                 )
-            elif isinstance(e, ImportError) or isinstance(e, ModuleNotFoundError):
+            elif isinstance(e, (ImportError, ModuleNotFoundError)):
                 getQMessageBox(
                     None,
                     "错误",

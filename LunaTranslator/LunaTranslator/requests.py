@@ -321,7 +321,7 @@ class Requester_common:
             disposition = b'Content-Disposition: form-data; name="'
             disposition += name.encode("utf8")
             disposition += b'"'
-            if isinstance(data, tuple) or isinstance(data, list):
+            if isinstance(data, (tuple, list)):
                 if len(data) == 3:
                     filename, data, type_ = data
                 elif len(data) == 2:
