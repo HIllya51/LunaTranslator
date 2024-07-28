@@ -752,7 +752,7 @@ class dialog_setting_game_internal(QWidget):
 
     def openrefmainpage(self, key, idname, gameuid):
         try:
-            os.startfile(targetmod[key].refmainpage(savehook_new_data[gameuid][idname]))
+            gobject.baseobject.openlink(targetmod[key].refmainpage(savehook_new_data[gameuid][idname]))
         except:
             print_exc()
 

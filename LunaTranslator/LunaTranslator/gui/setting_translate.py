@@ -268,11 +268,11 @@ def createmanybtn(self, countnum, btnplus):
     btn.setIcon(qtawesome.icon("fa.question"))
     if btnplus == "offline":
         btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("{docs_server}/#/zh/offlinellm"))
+            lambda: gobject.baseobject.openlink(dynamiclink("{docs_server}/#/zh/offlinellm"))
         )
     elif btnplus == "api":
         btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("{docs_server}/#/zh/guochandamoxing"))
+            lambda: gobject.baseobject.openlink(dynamiclink("{docs_server}/#/zh/guochandamoxing"))
         )
     hbox.addWidget(btn)
     setattr(self, "btnmany" + btnplus, w)

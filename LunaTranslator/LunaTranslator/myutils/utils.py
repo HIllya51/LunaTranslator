@@ -15,9 +15,23 @@ from myutils.config import (
     findgameuidofpath,
     getdefaultsavehook,
 )
-import threading
+import threading, winreg
 import re, heapq, winsharedutils
 from myutils.wrapper import tryprint
+
+
+def checkisusingwine():
+    iswine = True
+    try:
+        winreg.OpenKeyEx(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Wine",
+            0,
+            winreg.KEY_QUERY_VALUE,
+        )
+    except FileNotFoundError:
+        iswine = False
+    return iswine
 
 
 def __internal__getlang(k1, k2):
@@ -344,7 +358,6 @@ def selectdebugfile(path: str, ismypost=False):
             "LunaTranslator/myutils/template/" + tgt,
             p,
         )
-    # os.startfile(p)
     threading.Thread(
         target=subprocess.run, args=(f'notepad "{os.path.normpath(p)}"',)
     ).start()

@@ -20,6 +20,7 @@ from myutils.utils import (
     parsemayberegexreplace,
     kanjitrans,
     find_or_create_uid,
+    checkisusingwine,
     checkpostusing,
     stringfyerror,
     targetmod,
@@ -1229,6 +1230,12 @@ class MAINUI:
         threading.Thread(target=self.darklistener).start()
         self.inittray()
         self.createsavegamedb()
+
+    def openlink(self, file):
+        if file.startswith("http") and checkisusingwine():
+            self.translation_ui.displaylink.emit(file)
+            return
+        return os.startfile(file)
 
     def darklistener(self):
         sema = winsharedutils.startdarklistener()

@@ -256,7 +256,7 @@ def getocrgrid(self):
                         [
                             ("自动化执行方法", 7),
                             D_getIconButton(
-                                callback=lambda: os.startfile(
+                                callback=lambda: gobject.baseobject.openlink(
                                     dynamiclink("{docs_server}/#/zh/ocrparam")
                                 ),
                                 icon="fa.question",

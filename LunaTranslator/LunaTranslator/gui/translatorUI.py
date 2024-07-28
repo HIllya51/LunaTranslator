@@ -12,7 +12,7 @@ from myutils.config import (
 )
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
-from myutils.utils import loadpostsettingwindowmethod, str2rgba
+from myutils.utils import loadpostsettingwindowmethod, str2rgba, makehtml
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getpidexe
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
@@ -20,11 +20,12 @@ from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect, getQMessageBox
 from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
-from gui.dynalang import LPushButton
+from gui.dynalang import LPushButton, LDialog
 
 
 class QUnFrameWindow(resizableframeless):
     displayglobaltooltip = pyqtSignal(str)
+    displaylink = pyqtSignal(str)
     displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(dict)
@@ -542,8 +543,23 @@ class QUnFrameWindow(resizableframeless):
     def displaymessagebox_f(self, string1, string2):
         getQMessageBox(self, string1, string2)
 
+    def displaylink_f(self, link):
+        class linkviewer(LDialog):
+            def __init__(_self, _link) -> None:
+                super().__init__(self)
+                _self.setWindowTitle("打开链接")
+                l = QLabel(makehtml(_link, show=_link))
+                l.setOpenExternalLinks(True)
+                la = QHBoxLayout()
+                _self.setLayout(la)
+                la.addWidget(l)
+                _self.exec()
+
+        linkviewer(link)
+
     def initsignals(self):
         self.hidesignal.connect(self.hide_)
+        self.displaylink.connect(self.displaylink_f)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
         self.displaymessagebox.connect(self.displaymessagebox_f)
         self.ocr_once_signal.connect(self.ocr_once_function)

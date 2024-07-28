@@ -620,7 +620,7 @@ class hookselect(closeashidewindow):
         self.searchtextbutton = LPushButton("搜索包含文本的条目")
         __ = LPushButton("找不到文本？")
         __.clicked.connect(
-            lambda: os.startfile(dynamiclink("{main_server}/Resource/game_support"))
+            lambda: gobject.baseobject.openlink(dynamiclink("{main_server}/Resource/game_support"))
         )
         self.searchtextbutton.clicked.connect(self.searchtextfunc)
         self.searchtextlayout.addWidget(self.searchtextbutton)

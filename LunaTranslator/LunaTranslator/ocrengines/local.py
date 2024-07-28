@@ -135,7 +135,7 @@ def getallsupports():
 
 def dodownload(combo: QComboBox, allsupports: list):
     lang = allsupports[combo.currentIndex()]
-    os.startfile(dynamiclink("{main_server}/Resource/ocr_models/" + lang + ".zip"))
+    gobject.baseobject.openlink(dynamiclink("{main_server}/Resource/ocr_models/" + lang + ".zip"))
 
 
 def doinstall(combo: QComboBox, allsupports: list, parent, callback):

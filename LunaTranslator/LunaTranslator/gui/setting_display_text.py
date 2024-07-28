@@ -215,7 +215,7 @@ def on_not_find_qweb(self):
             dynamiclink("{main_server}/Resource/QWebEngine_x86.zip"),
             dynamiclink("{main_server}/Resource/QWebEngine_x64.zip"),
         ][platform.architecture()[0] == "64bit"]
-        os.startfile(link)
+        gobject.baseobject.openlink(link)
         installqwebdialog(self, link)
 
     getQMessageBox(
@@ -288,8 +288,8 @@ def creategoodfontwid(self):
 
 def _createseletengeinecombo(self):
 
-    visengine = ["Qt", "Webview2", "QWebEngine"]
-    visengine_internal = ["textbrowser", "webview", "QWebEngine"]
+    visengine = ["Qt", "Webview2"]  # , "QWebEngine"]
+    visengine_internal = ["textbrowser", "webview"]  # , "QWebEngine"]
     self.seletengeinecombo = getsimplecombobox(
         visengine,
         globalconfig,

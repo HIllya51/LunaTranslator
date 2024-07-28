@@ -1,4 +1,4 @@
-import os
+import gobject
 import winrtutils
 from myutils.config import _TR, static_data, getlang_inner2show
 from myutils.utils import dynamiclink
@@ -38,7 +38,7 @@ def question(dialog: QDialog):
     supportlang.setText("_,_".join([getlang_inner2show(f) for f in _allsupport]))
     btndownload = LPushButton("添加语言包")
     btndownload.clicked.connect(
-        lambda: os.startfile(dynamiclink("{docs_server}/#/zh/windowsocr"))
+        lambda: gobject.baseobject.openlink(dynamiclink("{docs_server}/#/zh/windowsocr"))
     )
     formLayout.addRow(
         "当前支持的语言", getboxlayout([supportlang, btndownload], makewidget=True)
