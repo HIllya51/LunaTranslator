@@ -681,32 +681,58 @@ class postconfigdialog_(LDialog):
     def apply(self):
         rows = self.model.rowCount()
         self.configdict.clear()
-        for row in range(rows):
-            if self.model.item(row, 0).text() == "":
-                continue
-            self.configdict[(self.model.item(row, 0).text())] = self.model.item(
-                row, 1
-            ).text()
 
-    def __init__(self, parent, configdict, title, headers, closecallback=None) -> None:
+        if isinstance(self.configdict, dict):
+            for row in range(rows):
+                text = self.model.item(row, 0).text()
+                if text == "":
+                    continue
+                self.configdict[text] = self.model.item(row, 1).text()
+        elif isinstance(self.configdict, list):
+            dedump = set()
+            for row in range(rows):
+                text = self.model.item(row, 0).text()
+                if text == "":
+                    continue
+                if text in dedump:
+                    continue
+                dedump.add(text)
+                item = {}
+                for _i, key in enumerate(self.dictkeys):
+                    item[key] = self.model.item(row, _i).text()
+                self.configdict.append(item)
+        else:
+            raise
+
+    def __init__(
+        self, parent, configdict, title, headers, closecallback=None, dictkeys=None
+    ) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.closecallback = closecallback
         self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
         self.closeevent = False
         formLayout = QVBoxLayout(self)  # 配置layout
-
+        self.dictkeys = dictkeys
         model = LStandardItemModel(len(configdict), 1, self)
         row = 0
+        if isinstance(configdict, dict):
+            for key1 in configdict:  # 2
 
-        for key1 in configdict:  # 2
+                item = QStandardItem(key1)
+                model.setItem(row, 0, item)
 
-            item = QStandardItem(key1)
-            model.setItem(row, 0, item)
-
-            item = QStandardItem(configdict[key1])
-            model.setItem(row, 1, item)
-            row += 1
+                item = QStandardItem(configdict[key1])
+                model.setItem(row, 1, item)
+                row += 1
+        elif isinstance(configdict, list):
+            for line in configdict:  # 2
+                for _i, k in enumerate(dictkeys):
+                    item = QStandardItem(line.get(k, ""))
+                    model.setItem(row, _i, item)
+                row += 1
+        else:
+            raise
         model.setHorizontalHeaderLabels(headers)
         table = TableViewW(self)
         table.setModel(model)
@@ -717,7 +743,12 @@ class postconfigdialog_(LDialog):
         button = threebuttons(texts=["添加行", "删除行", "立即应用"])
 
         def clicked1():
-            model.insertRow(0, [QStandardItem(), QStandardItem()])
+            if isinstance(configdict, dict):
+                model.insertRow(0, [QStandardItem(), QStandardItem()])
+            elif isinstance(configdict, list):
+                model.insertRow(0, [QStandardItem() for _ in range(len(dictkeys))])
+            else:
+                raise
 
         button.btn1clicked.connect(clicked1)
 

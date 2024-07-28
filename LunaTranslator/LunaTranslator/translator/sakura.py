@@ -7,6 +7,8 @@ import json
 
 
 class TS(basetrans):
+    using_gpt_dict = True
+
     def langmap(self):
         return {"zh": "zh-CN"}
 
@@ -44,23 +46,73 @@ class TS(basetrans):
         # OpenAI
         # self.client = OpenAI(api_key="114514", base_url=api_url)
 
-    def make_messages(self, query, history_ja=None, history_zh=None, **kwargs):
-        messages = [
-            {
-                "role": "system",
-                "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
-            }
-        ]
-        if history_ja:
-            messages.append(
-                {"role": "user", "content": f"将下面的日文文本翻译成中文：{history_ja}"}
-            )
-        if history_zh:
-            messages.append({"role": "assistant", "content": history_zh})
+    def make_gpt_dict_text(self, gpt_dict):
+        if gpt_dict is None:
+            return ""
+        gpt_dict_text_list = []
+        for gpt in gpt_dict:
+            src = gpt["src"]
+            dst = gpt["dst"]
+            info = gpt["info"] if "info" in gpt.keys() else None
+            if info:
+                single = f"{src}->{dst} #{info}"
+            else:
+                single = f"{src}->{dst}"
+            gpt_dict_text_list.append(single)
 
-        messages.append(
-            {"role": "user", "content": f"将下面的日文文本翻译成中文：{query}"}
-        )
+        gpt_dict_raw_text = "\n".join(gpt_dict_text_list)
+        return gpt_dict_raw_text
+
+    def make_messages(
+        self, query, history_ja=None, history_zh=None, gpt_dict=None, **kwargs
+    ):
+        if self.config["prompt_version"] == 0:
+            messages = [
+                {
+                    "role": "system",
+                    "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
+                }
+            ]
+            if history_ja:
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": f"将下面的日文文本翻译成中文：{history_ja}",
+                    }
+                )
+            if history_zh:
+                messages.append({"role": "assistant", "content": history_zh})
+
+            messages.append(
+                {"role": "user", "content": f"将下面的日文文本翻译成中文：{query}"}
+            )
+        elif self.config["prompt_version"] == 1:
+            messages = [
+                {
+                    "role": "system",
+                    "content": "你是一个轻小说翻译模型，可以流畅通顺地使用给定的术语表以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，注意不要混淆使役态和被动态的主语和宾语，不要擅自添加原文中没有的代词，也不要擅自增加或减少换行。",
+                }
+            ]
+            if history_ja:
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": f"将下面的日文文本翻译成中文：{history_ja}",
+                    }
+                )
+            if history_zh:
+                messages.append({"role": "assistant", "content": history_zh})
+
+            content = ""
+
+            gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
+            content += "根据以下术语表（可以为空）：\n" + gpt_dict_raw_text + "\n\n"
+
+            content += (
+                "将下面的日文文本根据上述术语表的对应关系和备注翻译成中文：" + query
+            )
+            print(content)
+            messages.append({"role": "user", "content": content})
         return messages
 
     def send_request(self, query, is_test=False, **kwargs):
@@ -149,12 +201,15 @@ class TS(basetrans):
             )
 
     def translate(self, query):
+        query = json.loads(query)
+        gpt_dict = query["gpt_dict"]
+        query = query["text"]
         self.checkempty(["API接口地址"])
         self.get_client(self.config["API接口地址"])
         frequency_penalty = float(self.config["frequency_penalty"])
         if not bool(self.config["use_context"]):
             if bool(self.config["流式输出"]) == True:
-                output = self.send_request_stream(query)
+                output = self.send_request_stream(query, gpt_dict=gpt_dict)
                 completion_tokens = 0
                 output_text = ""
                 for o in output:
@@ -166,7 +221,7 @@ class TS(basetrans):
                     else:
                         finish_reason = o["choices"][0]["finish_reason"]
             else:
-                output = self.send_request(query)
+                output = self.send_request(query, gpt_dict=gpt_dict)
                 for o in output:
                     completion_tokens = o["usage"]["completion_tokens"]
                     output_text = o["choices"][0]["message"]["content"]
@@ -183,7 +238,9 @@ class TS(basetrans):
                     print("------------------清零------------------")
                     if bool(self.config["流式输出"]) == True:
                         output = self.send_request_stream(
-                            query, frequency_penalty=frequency_penalty
+                            query,
+                            frequency_penalty=frequency_penalty,
+                            gpt_dict=gpt_dict,
                         )
                         completion_tokens = 0
                         output_text = ""
@@ -198,7 +255,9 @@ class TS(basetrans):
                                 finish_reason = o["choices"][0]["finish_reason"]
                     else:
                         output = self.send_request(
-                            query, frequency_penalty=frequency_penalty
+                            query,
+                            frequency_penalty=frequency_penalty,
+                            gpt_dict=gpt_dict,
                         )
                         yield "\0"
                         for o in output:

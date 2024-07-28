@@ -560,6 +560,30 @@ def checkpostusing(name):
     return use and checkpostlangmatch(name)
 
 
+def postusewhich(name1, name2):
+    for _ in (0,):
+        try:
+            if not gobject.baseobject.textsource:
+                break
+            gameuid = gobject.baseobject.textsource.gameuid
+            if not gameuid:
+                break
+            if savehook_new_data[gameuid]["transoptimi_followdefault"]:
+                break
+            if savehook_new_data[gameuid][name2]:
+                return 2
+            else:
+                return 0
+
+        except:
+            print_exc()
+            break
+    if checkpostusing(name1):
+        return 1
+    else:
+        return 0
+
+
 def loadpostsettingwindowmethod_1(xx, name):
     checkpath = "./LunaTranslator/transoptimi/" + name + ".py"
     if os.path.exists(checkpath) == False:

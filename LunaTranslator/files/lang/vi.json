@@ -350,7 +350,6 @@
     "修改": "Sửa đổi",
     "翻译结果修正": "Sửa kết quả dịch",
     "翻译结果修正按钮": "Kết quả dịch Nút sửa chữa",
-    "翻译结果替换设置": "Thiết lập thay thế kết quả dịch",
     "过滤包含乱码的文本行": "Lọc các dòng văn bản có chứa mã lộn xộn",
     "过滤文本中的非日语字符集字符": "Bộ lọc ký tự bộ ký tự không phải tiếng Nhật trong văn bản",
     "过滤其他乱码": "Lọc mã lộn xộn khác",
@@ -829,5 +828,9 @@
     "瑞典语": "Thụy Điển",
     "荷兰语": "Hà Lan",
     "捷克语": "Tiếng Séc",
-    "英语": "Tiếng Việt"
+    "英语": "Tiếng Việt",
+    "直接替换": "Thay thế trực tiếp",
+    "占位符": "Bộ giữ chỗ",
+    "词典": "Từ điển",
+    "注释": "Ghi chú"
 }

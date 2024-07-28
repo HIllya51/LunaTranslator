@@ -338,7 +338,6 @@
     "当前MD5": "MD5 attuale",
     "修改": "modificare",
     "翻译结果修正": "Correzione dei risultati della traduzione",
-    "翻译结果替换设置": "Impostazioni di sostituzione dei risultati della traduzione",
     "过滤包含乱码的文本行": "Filtra linee di testo contenenti codice distorto",
     "过滤文本中的非日语字符集字符": "Filtra caratteri non giapponesi nel testo",
     "过滤其他乱码": "Filtra altri codici distorti",
@@ -829,5 +828,9 @@
     "瑞典语": "Lingua svedese",
     "荷兰语": "Olandese",
     "捷克语": "Ceco",
-    "英语": "Inglese"
+    "英语": "Inglese",
+    "直接替换": "Sostituire direttamente",
+    "占位符": "segnaposto",
+    "词典": "Dizionario",
+    "注释": "note"
 }

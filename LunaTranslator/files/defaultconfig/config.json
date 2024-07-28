@@ -26,6 +26,7 @@
         "webview": "yinying",
         "textbrowser": "yinying"
     },
+    "gptpromptdict": [],
     "rendertext": {
         "webview": {
             "normal": {
@@ -334,6 +335,7 @@
     "cishuvisrank": [],
     "transoptimi": {
         "noundict": false,
+        "gptpromptdict": false,
         "transerrorfix": false,
         "gongxiangcishu": false,
         "vndbnamemap": false,

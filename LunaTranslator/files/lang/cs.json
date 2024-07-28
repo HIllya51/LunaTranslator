@@ -285,7 +285,6 @@
     "翻译": "přeložit",
     "系统": "systém",
     "密钥": "tajný klíč",
-    "翻译结果替换设置": "Nastavení nahrazení výsledků překladu",
     "中文": "Čínština",
     "原文内容": "Původní obsah",
     "用户词典3(可选)": "Uživatelský slovník 3 (volitelný)",
@@ -829,5 +828,9 @@
     "瑞典语": "Švédský jazyk",
     "荷兰语": "Nizozemština",
     "英语": "angličtina",
-    "捷克语": "Čeština"
+    "捷克语": "Čeština",
+    "直接替换": "Přímo nahradit",
+    "占位符": "zástupný symbol",
+    "词典": "Slovník",
+    "注释": "poznámky"
 }

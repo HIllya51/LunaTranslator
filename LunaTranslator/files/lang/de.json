@@ -285,7 +285,6 @@
     "翻译": "übersetzen",
     "系统": "System",
     "密钥": "geheimer Schlüssel",
-    "翻译结果替换设置": "Einstellungen zum Ersetzen von Übersetzungsergebnissen",
     "中文": "Chinesisch",
     "原文内容": "Originalinhalt",
     "用户词典3(可选)": "Benutzerwörterbuch 3 (optional)",
@@ -829,5 +828,9 @@
     "瑞典语": "Schwedische Sprache",
     "荷兰语": "Niederländisch",
     "捷克语": "Tschechisch",
-    "英语": "Englisch"
+    "英语": "Englisch",
+    "直接替换": "Direkt ersetzen",
+    "占位符": "Platzhalter",
+    "词典": "Wörterbuch",
+    "注释": "Anmerkungen"
 }

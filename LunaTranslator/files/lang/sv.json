@@ -285,7 +285,6 @@
     "翻译": "Översätt",
     "系统": "system",
     "密钥": "hemlig nyckel",
-    "翻译结果替换设置": "Inställningar för ersättning av översättningsresultat",
     "中文": "Kinesiska",
     "原文内容": "Ursprungligt innehåll",
     "用户词典3(可选)": "Användarordbok 3 (valfritt)",
@@ -829,5 +828,9 @@
     "瑞典语": "Svenska språket",
     "荷兰语": "Nederländska",
     "捷克语": "Tjeckiska",
-    "英语": "Engelska"
+    "英语": "Engelska",
+    "直接替换": "Byt direkt ut",
+    "占位符": "platshållare",
+    "词典": "Ordbok",
+    "注释": "anteckningar"
 }

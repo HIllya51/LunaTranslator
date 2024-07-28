@@ -3,7 +3,7 @@ from queue import Queue
 from threading import Thread
 import time, types
 import zhconv, gobject
-import sqlite3, os
+import sqlite3, json
 import functools
 from myutils.config import globalconfig, translatorsetting
 from myutils.utils import stringfyerror, autosql, PriorityQueue, getlangtgt
@@ -85,6 +85,7 @@ class basetrans(commonbase):
     ############################################################
     _globalconfig_key = "fanyi"
     _setting_dict = translatorsetting
+    using_gpt_dict = False
 
     def level2init(self):
         self.multiapikeycurrentidx = -1
@@ -185,8 +186,9 @@ class basetrans(commonbase):
         return globalconfig["fanyi"][self.typename].get("type", "free")
 
     def gettask(self, content):
-        callback, contentraw, contentsolved, embedcallback, is_auto_run = content
-
+        # fmt: off
+        callback, contentraw, contentsolved, embedcallback, is_auto_run, optimization_params = content
+        # fmt: on
         if embedcallback:
             priority = 1
         else:
@@ -312,10 +314,13 @@ class basetrans(commonbase):
         self.needreinit = False
         while self.using:
 
-            _ = self.queue.get()
-            if _ is None:
+            content = self.queue.get()
+            if content is None:
                 break
-            (callback, contentraw, contentsolved, embedcallback, is_auto_run) = _
+            # fmt: off
+            callback, contentraw, contentsolved, embedcallback, is_auto_run, optimization_params = content
+            # fmt: on
+
             if self.onlymanual and is_auto_run:
                 continue
             if self.using == False:
@@ -330,11 +335,24 @@ class basetrans(commonbase):
                     and self.using
                 )
                 if checktutukufunction():
+                    if self.using_gpt_dict:
+                        gpt_dict = None
+                        for _ in optimization_params:
+                            if isinstance(_, dict):
+                                _gpt_dict = _.get("gpt_dict", None)
+                                if not _gpt_dict:
+                                    continue
+                                gpt_dict = _gpt_dict
 
+                        contentsolved = json.dumps(
+                            {"text": contentsolved, "gpt_dict": gpt_dict}
+                        )
+
+                    func = functools.partial(
+                        self.reinitandtrans, contentraw, contentsolved, is_auto_run
+                    )
                     res = timeoutfunction(
-                        functools.partial(
-                            self.reinitandtrans, contentraw, contentsolved, is_auto_run
-                        ),
+                        func,
                         checktutukufunction=checktutukufunction,
                     )
                     collectiterres = []

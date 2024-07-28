@@ -350,7 +350,6 @@
     "修改": "değiştir",
     "翻译结果修正": "Tercüme sonuçlarının düzeltmesi",
     "翻译结果修正按钮": "Çeviri sonuçları düzeltme düğmesi",
-    "翻译结果替换设置": "Çeviri Sonuçları Değiştirme Ayarları",
     "过滤包含乱码的文本行": "Çöplü kodu içeren metin hatlarını sil",
     "过滤文本中的非日语字符集字符": "Japon olmayan karakter seti karakterleri metinde sil",
     "过滤其他乱码": "Diğer çöplü kodları sil",
@@ -829,5 +828,9 @@
     "瑞典语": "İsveç dili",
     "荷兰语": "Dutch",
     "捷克语": "Çehçe",
-    "英语": "İngilizce"
+    "英语": "İngilizce",
+    "直接替换": "Direkten değiştir",
+    "占位符": "yer sahibi",
+    "词典": "Sözlük",
+    "注释": "notlar"
 }

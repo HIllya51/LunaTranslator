@@ -2,7 +2,7 @@ from myutils.config import savehook_new_data, globalconfig
 import gobject, json, functools
 from traceback import print_exc
 from gui.inputdialog import postconfigdialog_
-from myutils.utils import checkpostusing
+from myutils.utils import postusewhich
 
 
 class Process:
@@ -13,62 +13,39 @@ class Process:
             postconfigdialog_(
                 parent_window,
                 globalconfig["global_namemap"],
-                "指定人名翻译",
-                ["人名", "翻译"],
+                "专有名词翻译_直接替换_设置",
+                ["原文", "翻译"],
             ),
         )
 
-
     @staticmethod
     def get_setting_window_gameprivate(parent_window, gameuid):
-            
+
         def checkchange(gameuid, __):
             __2 = json.dumps(savehook_new_data[gameuid]["namemap"])
             if __ != __2:
                 savehook_new_data[gameuid]["vndbnamemap_modified"] = True
+
         __ = json.dumps(savehook_new_data[gameuid]["namemap"])
         postconfigdialog_(
             parent_window,
             savehook_new_data[gameuid]["namemap"],
-            "指定人名翻译",
-            ["人名", "翻译"],
+            "专有名词翻译_直接替换_设置",
+            ["原文", "翻译"],
             closecallback=functools.partial(checkchange, gameuid, __),
         )
 
     @property
     def using_X(self):
-        for _ in (0,):
-            try:
-                if not gobject.baseobject.textsource:
-                    break
-                gameuid = gobject.baseobject.textsource.gameuid
-                if not gameuid:
-                    break
-                if savehook_new_data[gameuid]["transoptimi_followdefault"]:
-                    break
-                return savehook_new_data[gameuid]["vndbnamemap_use"]
-
-            except:
-                print_exc()
-                break
-        return checkpostusing("vndbnamemap")
+        return postusewhich("vndbnamemap", "vndbnamemap_use") != 0
 
     def usewhich(self) -> dict:
-        for _ in (0,):
-            try:
-                if not gobject.baseobject.textsource:
-                    break
-                gameuid = gobject.baseobject.textsource.gameuid
-                if not gameuid:
-                    break
-                if savehook_new_data[gameuid]["transoptimi_followdefault"]:
-                    break
-                return savehook_new_data[gameuid]["namemap"]
-
-            except:
-                print_exc()
-                break
-        return globalconfig["global_namemap"]
+        which = postusewhich("vndbnamemap", "vndbnamemap_use")
+        if which == 1:
+            return globalconfig["global_namemap"]
+        elif which == 2:
+            gameuid = gobject.baseobject.textsource.gameuid
+            return savehook_new_data[gameuid]["namemap"]
 
     def process_before(self, s):
 

@@ -381,6 +381,7 @@ class MAINUI:
             text_solved,
             embedcallback,
             is_auto_run,
+            optimization_params,
         )
         if result:
             # 预翻译

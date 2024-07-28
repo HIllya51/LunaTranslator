@@ -1844,11 +1844,16 @@
     "transoptimi": [
         {
             "name": "vndbnamemap",
-            "visname": "指定人名翻译"
+            "visname": "专有名词翻译_直接替换"
         },
         {
             "name": "noundict",
-            "visname": "专有名词翻译"
+            "visname": "专有名词翻译_占位符"
+        },
+        {
+            "name": "gptpromptdict",
+            "visname": "专有名词翻译_sakura_gpt_词典",
+            "languageuse": "zh"
         },
         {
             "name": "transerrorfix",

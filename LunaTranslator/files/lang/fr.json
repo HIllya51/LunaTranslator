@@ -350,7 +350,6 @@
     "修改": "Modifier",
     "翻译结果修正": "Correction des résultats de traduction",
     "翻译结果修正按钮": "Bouton de correction des résultats de traduction",
-    "翻译结果替换设置": "Paramètres de remplacement des résultats de traduction",
     "过滤包含乱码的文本行": "Filtrer les lignes de texte contenant du Code brouillé",
     "过滤文本中的非日语字符集字符": "Filtrer les caractères du jeu de caractères non japonais dans le texte",
     "过滤其他乱码": "Filtrer les autres codes brouillés",
@@ -829,5 +828,9 @@
     "瑞典语": "Suédois",
     "荷兰语": "Néerlandais",
     "捷克语": "Tchèque",
-    "英语": "Anglais"
+    "英语": "Anglais",
+    "直接替换": "Remplacement direct",
+    "占位符": "Espace réservé",
+    "词典": "Dictionnaire",
+    "注释": "Notes"
 }

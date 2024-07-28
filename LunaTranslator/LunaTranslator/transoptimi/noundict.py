@@ -5,7 +5,7 @@ from traceback import print_exc
 import gobject
 from gui.usefulwidget import getQMessageBox, threebuttons, TableViewW
 from myutils.wrapper import Singleton_close
-from myutils.utils import checkpostusing
+from myutils.utils import postusewhich
 from gui.dynalang import LDialog, LLabel, LPushButton, LStandardItemModel, LAction
 
 
@@ -367,7 +367,7 @@ class Process:
             noundictconfigdialog_private(
                 parent_window,
                 savehook_new_data[gameuid]["noundictconfig"],
-                "专有名词翻译设置",
+                "专有名词翻译_直接替换_占位符",
             ),
         )
 
@@ -377,44 +377,21 @@ class Process:
             noundictconfigdialog(
                 parent_window,
                 noundictconfig["dict"],
-                "专有名词翻译设置_游戏ID 0表示全局",
+                "专有名词翻译_游戏ID 0表示全局",
             ),
         )
 
     @property
     def using_X(self):
-        for _ in (0,):
-            try:
-                if not gobject.baseobject.textsource:
-                    break
-                gameuid = gobject.baseobject.textsource.gameuid
-                if not gameuid:
-                    break
-                if savehook_new_data[gameuid]["transoptimi_followdefault"]:
-                    break
-                return savehook_new_data[gameuid]["noundict_use"]
-
-            except:
-                print_exc()
-                break
-        return checkpostusing("noundict")
+        return postusewhich("noundict", "noundict_use") != 0
 
     def usewhich(self) -> dict:
-        for _ in (0,):
-            try:
-                if not gobject.baseobject.textsource:
-                    break
-                gameuid = gobject.baseobject.textsource.gameuid
-                if not gameuid:
-                    break
-                if savehook_new_data[gameuid]["transoptimi_followdefault"]:
-                    break
-                return 0, savehook_new_data[gameuid]["noundictconfig"]
-
-            except:
-                print_exc()
-                break
-        return 1, noundictconfig["dict"]
+        which = postusewhich("noundict", "noundict_use")
+        if which == 1:
+            return 1, noundictconfig["dict"]
+        elif which == 2:
+            gameuid = gobject.baseobject.textsource.gameuid
+            return 2, savehook_new_data[gameuid]["noundictconfig"]
 
     def process_before(self, content):
         def __createfake():
@@ -450,7 +427,7 @@ class Process:
                     content = content.replace(key, xx)
                     mp1[xx] = v
             return content, mp1
-        elif _type == 0:
+        elif _type == 2:
             for k, v in dic:
 
                 xx = __createfake()

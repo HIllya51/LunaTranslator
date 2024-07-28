@@ -969,12 +969,22 @@
 			"frequency_penalty": 0,
 			"fix_degeneration": true,
 			"流式输出": false,
+			"prompt_version": 0,
 			"s": ""
 		},
 		"argstype": {
 			"s": {
 				"type": "split",
 				"rank": 0.5
+			},
+			"prompt_version": {
+				"rank": 1.1,
+				"name": "prompt version",
+				"type": "combo",
+				"list": [
+					"v0.9",
+					"v0.10pre1"
+				]
 			},
 			"API接口地址": {
 				"rank": 0

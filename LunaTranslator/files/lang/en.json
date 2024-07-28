@@ -350,7 +350,6 @@
     "修改": "Modify",
     "翻译结果修正": "Translation Result Correction",
     "翻译结果修正按钮": "Translation Result Correction Button",
-    "翻译结果替换设置": "Translation Result Replacement Settings",
     "过滤包含乱码的文本行": "Filter Text Lines Containing Garbled Characters",
     "过滤文本中的非日语字符集字符": "Filter Non-Japanese Character Characters in Text",
     "过滤其他乱码": "Filter Other Garbled Characters",
@@ -829,5 +828,9 @@
     "瑞典语": "Swedish language",
     "荷兰语": "Dutch",
     "捷克语": "Czech",
-    "英语": "English"
+    "英语": "English",
+    "直接替换": "Directly replace",
+    "占位符": "placeholder ",
+    "词典": "Dictionary",
+    "注释": "notes"
 }

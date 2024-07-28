@@ -159,6 +159,10 @@ def getdefaultsavehook(title=None):
         "noundictconfig": [],
         "noundict_use": False,
         "vndbnamemap_use": True,
+        "transerrorfix_use": False,
+        "transerrorfix": [],
+        "gptpromptdict_use": False,
+        "gptpromptdict": [],
         "vndbnamemap_modified": False,
         # 元数据
         "namemap": {},  # 人名翻译映射，vndb独占，用于优化翻译
@@ -215,7 +219,7 @@ for uid in savehook_new_data:
         ]
     for k in _dfsavehook:
         if k not in savehook_new_data[uid]:
-            savehook_new_data[uid][k] = _dfsavehook[k]
+            savehook_new_data[uid][k] = _dfsavehook[k].copy()
 
 
 class __uid2gamepath:
