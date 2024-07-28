@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
-import os, functools, uuid, threading, hashlib
+import os, functools, uuid, threading, hashlib, shutil, time
 from datetime import datetime, timedelta
 from traceback import print_exc
 import windows, gobject, winsharedutils
@@ -36,7 +36,9 @@ from myutils.utils import (
     idtypecheck,
     selectdebugfile,
     targetmod,
+    loopbackrecorder,
 )
+from myutils.audioplayer import player_mci
 from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     noundictconfigdialog1,
@@ -61,6 +63,7 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     getboxlayout,
     getlineedit,
+    statusbutton,
     MySwitch,
     auto_select_webview,
     Prompt_dialog,
@@ -752,7 +755,9 @@ class dialog_setting_game_internal(QWidget):
 
     def openrefmainpage(self, key, idname, gameuid):
         try:
-            gobject.baseobject.openlink(targetmod[key].refmainpage(savehook_new_data[gameuid][idname]))
+            gobject.baseobject.openlink(
+                targetmod[key].refmainpage(savehook_new_data[gameuid][idname])
+            )
         except:
             print_exc()
 
@@ -1342,12 +1347,12 @@ class dialog_setting_game_internal(QWidget):
 
     def getlangtab(self, formLayout: LFormLayout, gameuid):
 
-        savehook_new_data[gameuid]["private_tgtlang_2"] = savehook_new_data[gameuid].get(
-            "private_tgtlang_2", globalconfig["tgtlang4"]
-        )
-        savehook_new_data[gameuid]["private_srclang_2"] = savehook_new_data[gameuid].get(
-            "private_srclang_2", globalconfig["srclang4"]
-        )
+        savehook_new_data[gameuid]["private_tgtlang_2"] = savehook_new_data[
+            gameuid
+        ].get("private_tgtlang_2", globalconfig["tgtlang4"])
+        savehook_new_data[gameuid]["private_srclang_2"] = savehook_new_data[
+            gameuid
+        ].get("private_srclang_2", globalconfig["srclang4"])
 
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid], "lang_follow_default", formLayout
@@ -1358,7 +1363,7 @@ class dialog_setting_game_internal(QWidget):
                 static_data["language_list_translator"],
                 savehook_new_data[gameuid],
                 "private_srclang_2",
-                internallist=static_data['language_list_translator_inner']
+                internallist=static_data["language_list_translator_inner"],
             ),
         )
         formLayout2.addRow(
@@ -1367,7 +1372,7 @@ class dialog_setting_game_internal(QWidget):
                 static_data["language_list_translator"],
                 savehook_new_data[gameuid],
                 "private_tgtlang_2",
-                internallist=static_data['language_list_translator_inner']
+                internallist=static_data["language_list_translator_inner"],
             ),
         )
 
@@ -2726,6 +2731,7 @@ class hoverbtn(LLabel):
 class viewpixmap_x(QWidget):
     tolastnext = pyqtSignal(int)
     startgame = pyqtSignal()
+    switchstop = pyqtSignal()
 
     def sizeHint(self):
         return QSize(400, 400)
@@ -2755,15 +2761,90 @@ class viewpixmap_x(QWidget):
         )
         self.centerwidget = QWidget(self)
         self.centerwidgetlayout = QVBoxLayout()
+        audio = QHBoxLayout()
+        self.recordbtn = statusbutton(
+            icons=["fa.microphone", "fa.stop"], colors=["", ""]
+        )
+        self.recordbtn.statuschanged.connect(self.startorendrecord)
         self.centerwidget.setLayout(self.centerwidgetlayout)
         self.centerwidgetlayout.addWidget(self.timenothide)
         self.centerwidgetlayout.addWidget(self.pathandopen)
         self.centerwidgetlayout.addWidget(self.commentedit)
+        self.centerwidgetlayout.addLayout(audio)
+        audio.addWidget(self.recordbtn)
+        self.btnplay = statusbutton(icons=["fa.play", "fa.stop"], colors=["", ""])
+        audio.addWidget(self.btnplay)
+        self.btnplay.statuschanged.connect(self.playorstop)
+        gobject.baseobject.hualang_recordbtn = self.recordbtn
         self.centerwidget.setVisible(False)
         self.pathview = fadeoutlabel(self)
         self.infoview = fadeoutlabel(self)
         self.infoview.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.currentimage = None
+        self.play_context = None
+        self.recorder = None
+        self.switchstop.connect(self.switchstop_f)
+
+    def switchstop_f(self):
+        if self.play_context:
+            self.btnplay.click()
+
+    def checkplayable(self):
+        if not self.currentimage:
+            return False
+        mp3 = extradatas.get("imagerefmp3", {}).get(self.currentimage, None)
+        if mp3 is None:
+            return False
+        if not os.path.exists(mp3):
+            return False
+        return True
+
+    def playorstop(self, idx):
+        if not self.checkplayable():
+            return
+        mp3 = extradatas["imagerefmp3"][self.currentimage]
+        if idx == 1:
+            duration, self.play_context = player_mci().play(
+                mp3, globalconfig["ttscommon"]["volume"]
+            )
+            self.sigtime = time.time()
+
+            def __(ms, tm):
+                time.sleep(ms / 1000)
+                if self.sigtime == tm:
+                    self.switchstop.emit()
+
+            threading.Thread(target=__, args=(duration, self.sigtime)).start()
+        else:
+            if not self.play_context:
+                return
+            player_mci().stop(self.play_context)
+            self.play_context = None
+
+    def startorendrecord(self, idx):
+        if idx == 1:
+            if self.play_context:
+                self.btnplay.click()
+            self.btnplay.setEnabled(False)
+            self.recorder = loopbackrecorder()
+        else:
+            self.btnplay.setEnabled(False)
+
+            def _cb(image, path):
+                if not image:
+                    return
+                tgt = image + os.path.splitext(path)[1]
+                shutil.copy(path, tgt)
+                if "imagerefmp3" not in extradatas:
+                    extradatas["imagerefmp3"] = {}
+                extradatas["imagerefmp3"][image] = tgt
+
+                self.btnplay.setEnabled(self.checkplayable())
+
+            if not self.recorder:
+                return
+            self.recorder.end(callback=functools.partial(_cb, self.currentimage))
+            self.recorder = None
 
     def changecommit(self):
         if "imagecomment" not in extradatas:
@@ -2804,6 +2885,11 @@ class viewpixmap_x(QWidget):
         super().resizeEvent(e)
 
     def changepixmappath(self, path):
+        if self.recorder:
+            self.recordbtn.click()
+        if self.play_context:
+            self.btnplay.click()
+
         self.currentimage = path
         self.centerwidget.setVisible(False)
         self.pathandopen.setText(path)
@@ -2815,7 +2901,6 @@ class viewpixmap_x(QWidget):
         self.infoview.setText(timestamp)
         self.commentedit.setPlainText(extradatas.get("imagecomment", {}).get(path, ""))
         self.timenothide.setText(timestamp)
-
         if not path:
             pixmap = QPixmap()
         else:
@@ -2823,6 +2908,7 @@ class viewpixmap_x(QWidget):
             if pixmap is None or pixmap.isNull():
                 pixmap = QPixmap()
         self.pixmapviewer.showpixmap(pixmap)
+        self.btnplay.setEnabled(self.checkplayable())
 
 
 class pixwrapper(QWidget):

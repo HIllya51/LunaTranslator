@@ -19,6 +19,7 @@ from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, isinrect, getQMessageBox
+from gui.edittext import edittrans
 from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 from gui.dynalang import LPushButton, LDialog
 
@@ -325,6 +326,7 @@ class QUnFrameWindow(resizableframeless):
                 lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
             ),
             ("edit", gobject.baseobject.createedittextui),
+            ("edittrans", lambda: edittrans(gobject.baseobject.commonstylebase)),
             ("showraw", self.changeshowhideraw),
             ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
             (
@@ -983,8 +985,6 @@ class QUnFrameWindow(resizableframeless):
         self.showbuttons.clear()
         __ = [left, right, center]
         for name in globalconfig["toolbutton"]["rank2"]:
-            if name not in self.buttons:
-                continue
             button = self.buttons[name]
             if button.belong:
                 hide = True

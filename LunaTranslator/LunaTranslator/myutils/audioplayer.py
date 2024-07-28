@@ -36,17 +36,23 @@ class player_miniaudio:
 
 class player_mci:
     def stop(self, context):
-        i, lastfile = context
+        i, lastfile, remove = context
         windows.mciSendString(("stop lunatranslator_mci_{}".format(i)))
         windows.mciSendString(("close lunatranslator_mci_{}".format(i)))
-        os.remove(lastfile)
+        if remove:
+            os.remove(lastfile)
 
-    def play(self, binary, volume):
+    def play(self, binaryorfile, volume):
         i = str(uuid.uuid4())
-        tgt = gobject.gettempdir(f"tts/{i}.wav")
-        with open(tgt, "wb") as ff:
-            ff.write(binary)
-        context = (i, tgt)
+        if isinstance(binaryorfile, bytes):
+            tgt = gobject.gettempdir(f"tts/{i}.wav")
+            with open(tgt, "wb") as ff:
+                ff.write(binaryorfile)
+            remove = True
+        elif isinstance(binaryorfile, str):
+            tgt = binaryorfile
+            remove = False
+        context = (i, tgt, remove)
         windows.mciSendString(
             'open "{}" type mpegvideo  alias lunatranslator_mci_{}'.format(tgt, i)
         )
@@ -60,7 +66,7 @@ class player_mci:
         return durationms, context
 
 
-class audioplayer:
+class series_audioplayer:
     def __init__(self):
         self.i = 0
         self.lastfile = None

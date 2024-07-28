@@ -1902,3 +1902,33 @@ class pixmapviewer(QWidget):
             painter = QPainter(self)
             painter.drawPixmap(0, 0, self._pix)
         return super().paintEvent(e)
+
+
+class statusbutton(QPushButton):
+    statuschanged = pyqtSignal(int)
+
+    def __init__(self, icons, colors):
+        super().__init__()
+        self.idx = 0
+        self.icons = icons
+        self.colors = colors
+        self.clicked.connect(self.setChecked)
+        self.seticon()
+
+    def seticon(self):
+        color = QColor(self.colors[self.idx])
+        if not self.isEnabled():
+            color = disablecolor(color)
+        icon = qtawesome.icon(self.icons[self.idx], color=color)
+        self.setIcon(icon)
+
+    def setChecked(self, a0):
+        super().setChecked(a0)
+        self.idx += 1
+        self.idx %= 2
+        self.statuschanged.emit(self.idx)
+        self.seticon()
+
+    def setEnabled(self, _):
+        super().setEnabled(_)
+        self.seticon()

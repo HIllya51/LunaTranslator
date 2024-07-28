@@ -6,12 +6,13 @@ import qtawesome, requests, gobject, windows
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, _TR, static_data, savehook_new_data
-from myutils.subproc import subproc_w
+from myutils.utils import loopbackrecorder
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run_2
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import (
     closeashidewindow,
+    statusbutton,
     getQMessageBox,
     auto_select_webview,
     getboxlayout,
@@ -37,71 +38,6 @@ def getimageformatlist():
 def getimageformat():
 
     return getimageformatlist()[globalconfig["imageformat"]]
-
-
-class loopbackrecorder:
-    def __init__(self):
-        self.file = gobject.gettempdir(str(time.time()) + ".wav")
-        try:
-            self.waitsignal = str(time.time())
-            self.engine = subproc_w(
-                './files/plugins/loopbackaudio.exe "{}"  "{}"'.format(
-                    self.file, self.waitsignal
-                ),
-            )
-        except:
-            print_exc()
-
-    @threader
-    def end(self, callback):
-        windows.SetEvent(
-            windows.AutoHandle(windows.CreateEvent(False, False, self.waitsignal))
-        )
-        self.engine.wait()
-        filewav = self.file
-        if os.path.exists(filewav) == False:
-            callback("")
-            return
-        filemp3 = filewav.replace(".wav", ".mp3")
-        subproc_w(
-            './files/plugins/shareddllproxy32.exe mainmp3 "{}"  "{}"'.format(
-                filewav, filemp3
-            ),
-            run=True,
-        )
-        if os.path.exists(filemp3):
-            os.remove(filewav)
-            callback(filemp3)
-        else:
-            callback(filewav)
-
-
-class statusbutton(QPushButton):
-    statuschanged1 = pyqtSignal(int)
-    statuschanged2 = pyqtSignal(int)
-
-    def __init__(self, icons, colors):
-        super().__init__()
-        self.idx = 0
-        self.icons = icons
-        self.colors = colors
-        self.clicked.connect(self.setChecked)
-        self.seticon()
-
-    def seticon(self):
-        self.setIcon(
-            qtawesome.icon(
-                self.icons[(self.idx) % len(self.icons)],
-                color=self.colors[(self.idx) % len(self.colors)],
-            )
-        )
-
-    def setChecked(self, a0):
-        super().setChecked(a0)
-        self.idx += 1
-        self.statuschanged1.emit((self.idx) % len(self.icons))
-        self.statuschanged2.emit((self.idx) % len(self.colors))
-        self.seticon()
 
 
 class AnkiWindow(QWidget):
@@ -394,7 +330,7 @@ class AnkiWindow(QWidget):
             getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
         )
 
-    def startorendrecord(self, i, target: QLineEdit, idx):
+    def startorendrecord(self, target: QLineEdit, idx):
         if idx == 1:
             self.recorder = loopbackrecorder()
         else:
@@ -432,13 +368,13 @@ class AnkiWindow(QWidget):
 
         self.example.textChanged.connect(__)
         self.remarks = QPlainTextEdit()
-        recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=[""])
-        recordbtn1.statuschanged1.connect(
-            functools.partial(self.startorendrecord, "1", self.audiopath)
+        recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=["", ""])
+        recordbtn1.statuschanged.connect(
+            functools.partial(self.startorendrecord, self.audiopath)
         )
-        recordbtn2 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=[""])
-        recordbtn2.statuschanged1.connect(
-            functools.partial(self.startorendrecord, "2", self.audiopath_sentence)
+        recordbtn2 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=["", ""])
+        recordbtn2.statuschanged.connect(
+            functools.partial(self.startorendrecord, self.audiopath_sentence)
         )
         self.recordbtn1 = recordbtn1
         self.recordbtn2 = recordbtn2
@@ -796,9 +732,9 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(soundbutton)
 
         ankiconnect = statusbutton(
-            icons=["fa.adn"], colors=["", globalconfig["buttoncolor2"]]
+            icons=["fa.adn", "fa.adn"], colors=["", globalconfig["buttoncolor2"]]
         )
-        ankiconnect.statuschanged2.connect(self.onceaddankiwindow)
+        ankiconnect.statuschanged.connect(self.onceaddankiwindow)
         self.searchlayout.addWidget(ankiconnect)
 
         self.tab = CustomTabBar()

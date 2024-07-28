@@ -48,7 +48,7 @@ import winsharedutils
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark
-from myutils.audioplayer import audioplayer
+from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
 
 
@@ -88,7 +88,7 @@ class MAINUI:
         self.edittextui_sync = True
         self.sqlsavegameinfo = None
         self.notifyonce = set()
-        self.audioplayer = audioplayer()
+        self.audioplayer = series_audioplayer()
 
     @property
     def textsource(self):

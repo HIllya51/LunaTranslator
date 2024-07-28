@@ -17,7 +17,8 @@ from myutils.config import (
 )
 import threading, winreg
 import re, heapq, winsharedutils
-from myutils.wrapper import tryprint
+from myutils.wrapper import tryprint, threader
+from myutils.subproc import subproc_w
 
 
 def checkisusingwine():
@@ -737,3 +738,37 @@ def checkmd5reloadmodule(filename, module):
     else:
 
         return False, globalcachedmodule.get(key, {}).get("module", None)
+
+
+class loopbackrecorder:
+    def __init__(self):
+        self.file = gobject.gettempdir(str(time.time()) + ".wav")
+        try:
+            self.waitsignal = str(time.time())
+            cmd = './files/plugins/loopbackaudio.exe "{}" "{}"'.format(
+                self.file, self.waitsignal
+            )
+            self.engine = subproc_w(cmd, name=str(uuid.uuid4()))
+        except:
+            print_exc()
+
+    @threader
+    def end(self, callback):
+        windows.SetEvent(
+            windows.AutoHandle(windows.CreateEvent(False, False, self.waitsignal))
+        )
+        self.engine.wait()
+        filewav = self.file
+        if os.path.exists(filewav) == False:
+            callback("")
+            return
+        filemp3 = filewav.replace(".wav", ".mp3")
+        cmd = './files/plugins/shareddllproxy32.exe mainmp3 "{}" "{}"'.format(
+            filewav, filemp3
+        )
+        subproc_w(cmd, run=True)
+        if os.path.exists(filemp3):
+            os.remove(filewav)
+            callback(filemp3)
+        else:
+            callback(filewav)
