@@ -5,6 +5,7 @@
 - [支持作者](/zh/support.md)
 
 **常见问题**
+- [各种翻译优化的作用](/zh/transoptimi.md)
 - [在XP虚拟机上玩古老游戏并提取文本翻译](/zh/playonxp.md)
 - [详解HOOK设置](/zh/hooksettings.md)
 - [无法启动软件](/zh/cantstart.md)
