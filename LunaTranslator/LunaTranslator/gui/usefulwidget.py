@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, platform, functools, threading, uuid
+import os, platform, functools, threading, uuid, winreg
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import (
@@ -1190,7 +1190,17 @@ class mshtmlWidget(abstractwebview):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        if HTMLBrowser.version() < 10001:  # ie10之前，sethtml会乱码
+        iswine = True
+        try:
+            winreg.OpenKeyEx(
+                winreg.HKEY_CURRENT_USER,
+                r"Software\Wine",
+                0,
+                winreg.KEY_QUERY_VALUE,
+            )
+        except FileNotFoundError:
+            iswine = False
+        if iswine or (HTMLBrowser.version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0
         self.browser = HTMLBrowser(int(self.winId()))
         self.curr_url = None
