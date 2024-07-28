@@ -28,7 +28,7 @@ class basehira:
 
     @property
     def proxy(self):
-        return getproxy(("cishu", self.typename))
+        return getproxy(("hirasetting", self.typename))
 
     def splitspace(self, word: str):
         start = ""
