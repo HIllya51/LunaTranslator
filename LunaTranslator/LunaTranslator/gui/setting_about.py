@@ -21,7 +21,7 @@ def getvesionmethod():
         res = requests.get(
             dynamiclink("{main_server}/version"),
             verify=False,
-            # proxies=getproxy(("github", "versioncheck")),
+            proxies=getproxy(("github", "versioncheck")),
         )
         print(res.text)
         res = res.json()
@@ -310,7 +310,7 @@ def setTab_update(self, basel):
             makehtml("{docs_server}/"),
         ],
     ]
-    if getlanguse() == 'zh':
+    if getlanguse() == "zh":
         shuominggrid += [
             [
                 "交流群",
