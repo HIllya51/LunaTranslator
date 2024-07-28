@@ -74,7 +74,7 @@ def checklang():
             font.setFamily("Arial")
             font.setPointSize(20)
             self.setFont(font)
-            self.current = 0
+            self.current = "zh"
             language_listcombox = QComboBox()
             _, vis = loadlangviss()
             language_listcombox.addItems(vis)
