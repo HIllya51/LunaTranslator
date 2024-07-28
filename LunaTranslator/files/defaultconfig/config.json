@@ -1136,14 +1136,6 @@
             },
             "type": "offline"
         },
-        "mojinlt": {
-            "use": false,
-            "name": "mojinlt",
-            "args": {
-                "Moji NLT Token": ""
-            },
-            "useproxy": false
-        },
         "latin": {
             "use": false,
             "name": "标点",

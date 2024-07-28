@@ -130,11 +130,6 @@ def makeproxytab(self, basel):
         item="cishu",
         name="./LunaTranslator/cishu/%s.py",
     )
-    hira = getall(
-        l=getnotofflines("hirasetting"),
-        item="hirasetting",
-        name="./LunaTranslator/hiraparse/%s.py",
-    )
     github = getall(
         l=globalconfig["github"],
         item="github",
@@ -152,7 +147,6 @@ def makeproxytab(self, basel):
             "语音合成",
             "辞书",
             "元数据",
-            "分词",
             "自动更新",
         ],
         [
@@ -162,7 +156,6 @@ def makeproxytab(self, basel):
             functools.partial(makescrollgrid, readers),
             functools.partial(makescrollgrid, cishus),
             functools.partial(makescrollgrid, meta),
-            functools.partial(makescrollgrid, hira),
             functools.partial(makescrollgrid, github),
         ],
         delay=True,
