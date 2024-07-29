@@ -287,12 +287,13 @@ class TextBrowser(QWidget, dataget):
                 fh = max(globalconfig["extra_space"], fha)
             else:
                 fh = fha + globalconfig["extra_space"]
-        self.textbrowser.moveCursor(QTextCursor.MoveOperation.End)
-        cursor = self.textbrowser.textCursor()
-        bf = cursor.blockFormat()
-        bf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
-        cursor.setBlockFormat(bf)
-        self.textbrowser.setTextCursor(cursor)
+        for i in range(b1, b2):
+            b = self.textbrowser.document().findBlockByNumber(i)
+            tf = b.blockFormat()
+            tf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
+            self.textcursor.setPosition(b.position())
+            self.textcursor.setBlockFormat(tf)
+            self.textbrowser.setTextCursor(self.textcursor)
 
     def _getcurrpointer(self):
         return self.textcursor.position()
