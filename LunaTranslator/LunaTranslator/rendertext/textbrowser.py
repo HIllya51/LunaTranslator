@@ -128,7 +128,6 @@ class TextBrowser(QWidget, dataget):
         self.yinyingpos = 0
         self.yinyingposline = 0
         self.lastcolor = None
-        self.blockcount = 0
         self.iteryinyinglabelsave = {}
         self.saveiterclasspointer = {}
         self.resets1()
@@ -274,36 +273,40 @@ class TextBrowser(QWidget, dataget):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
 
     def _textbrowser_append(self, origin, atcenter, text, tag, color, cleared):
+
+        self.textbrowser.document().blockSignals(True)
         font = self._createqfont(origin)
         self._setnextfont(font, cleared)
         self.textbrowser.setAlignment(self._getqalignment(atcenter))
 
-        if cleared:
-            _space = ""
-            self.blockcount = 0
-            b1 = 0
-        else:
-            _space = "\n"
-            b1 = self.textbrowser.document().blockCount()
+        _space = "" if cleared else "\n"
+        blockcount = 0 if cleared else self.textbrowser.document().blockCount()
         self.textbrowser.insertPlainText(_space + text)
+        blockcount_after = self.textbrowser.document().blockCount()
+        self._setlineheight(blockcount, blockcount_after, origin, len(tag) > 0)
+        self.textbrowser.document().blockSignals(False)
+        self.textbrowser.document().contentsChanged.emit()
+        if len(tag) > 0:
+            self._addtag(tag)
+        self._showyinyingtext(blockcount, blockcount_after, color, font)
 
-        b2 = self.textbrowser.document().blockCount()
+    def _setlineheight(self, b1, b2, origin, hastag):
         if origin:
             fh = globalconfig["extra_space"]
         else:
             fh = globalconfig["extra_space_trans"]
-        for i in range(self.blockcount, self.textbrowser.document().blockCount()):
+        if hastag:
+            fha, _ = self._getfh(True)
+            fh = max(globalconfig["extra_space"], int(fha / 2))
+
+        for i in range(b1, b2):
             b = self.textbrowser.document().findBlockByNumber(i)
+
             tf = b.blockFormat()
             tf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
-        self.blockcount = self.textbrowser.document().blockCount()
-
-        if len(tag) > 0:
-            self._addtag(tag)
-        self._showyinyingtext(b1, b2, color, font)
 
     def _getcurrpointer(self):
         return self.textcursor.position()
@@ -581,15 +584,7 @@ class TextBrowser(QWidget, dataget):
         fha, fonthira = self._getfh(True)
         self.textbrowser.move(0, int(fha))
         self.atback_color.move(0, int(fha))
-        ldh = max(globalconfig["extra_space"], int(fha / 2))
-        for i in range(0, self.textbrowser.document().blockCount()):
-            b = self.textbrowser.document().findBlockByNumber(i)
 
-            tf = b.blockFormat()
-            tf.setLineHeight(ldh, LineHeightTypes.LineDistanceHeight)
-            self.textcursor.setPosition(b.position())
-            self.textcursor.setBlockFormat(tf)
-            self.textbrowser.setTextCursor(self.textcursor)
         x = self.nearmerge(x, pos, fonthira, fontorig)
         self.settextposcursor(pos)
         savetaglabels_idx = 0
