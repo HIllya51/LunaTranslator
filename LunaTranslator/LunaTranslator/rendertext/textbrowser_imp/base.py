@@ -2,7 +2,7 @@ from qtsymbols import *
 from myutils.config import globalconfig
 
 
-class base(QLabel):
+class base(QWidget):
     def paintText(self, painter: QPainter):
         raise Exception
 
