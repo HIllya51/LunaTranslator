@@ -125,7 +125,6 @@ class TextBrowser(QWidget, dataget):
         self.yinyinglabels = []
         self.yinyinglabels_idx = 0
 
-        self.yinyingpos = 0
         self.yinyingposline = 0
         self.lastcolor = None
         self.iteryinyinglabelsave = {}
@@ -160,20 +159,11 @@ class TextBrowser(QWidget, dataget):
             for label in labels:
                 label.hide()
         if self.currenttype == globalconfig["rendertext_using_internal"]["textbrowser"]:
-
             return
         self.resets1()
-        for label in self.searchmasklabels:
-            label.deleteLater()
-        self.searchmasklabels.clear()
-        for label in self.searchmasklabels_clicked:
-            label.deleteLater()
-        self.searchmasklabels_clicked.clear()
         for label in self.savetaglabels:
             label.deleteLater()
-
         self.savetaglabels.clear()
-        self.yinyinglabels_idx = 0
         for label in self.yinyinglabels:
             label.deleteLater()
         self.yinyinglabels.clear()
@@ -273,8 +263,6 @@ class TextBrowser(QWidget, dataget):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
 
     def _textbrowser_append(self, origin, atcenter, text, tag, color, cleared):
-
-        self.textbrowser.document().blockSignals(True)
         font = self._createqfont(origin)
         self._setnextfont(font, cleared)
         self.textbrowser.setAlignment(self._getqalignment(atcenter))
@@ -284,8 +272,6 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.insertPlainText(_space + text)
         blockcount_after = self.textbrowser.document().blockCount()
         self._setlineheight(blockcount, blockcount_after, origin, len(tag) > 0)
-        self.textbrowser.document().blockSignals(False)
-        self.textbrowser.document().contentsChanged.emit()
         if len(tag) > 0:
             self._addtag(tag)
         self._showyinyingtext(blockcount, blockcount_after, color, font)
@@ -297,16 +283,16 @@ class TextBrowser(QWidget, dataget):
             fh = globalconfig["extra_space_trans"]
         if hastag:
             fha, _ = self._getfh(True)
-            fh = max(globalconfig["extra_space"], int(fha / 2))
-
-        for i in range(b1, b2):
-            b = self.textbrowser.document().findBlockByNumber(i)
-
-            tf = b.blockFormat()
-            tf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
-            self.textcursor.setPosition(b.position())
-            self.textcursor.setBlockFormat(tf)
-            self.textbrowser.setTextCursor(self.textcursor)
+            if globalconfig["extra_space"] >= 0:
+                fh = max(globalconfig["extra_space"], fha)
+            else:
+                fh = fha + globalconfig["extra_space"]
+        self.textbrowser.moveCursor(QTextCursor.MoveOperation.End)
+        cursor = self.textbrowser.textCursor()
+        bf = cursor.blockFormat()
+        bf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
+        cursor.setBlockFormat(bf)
+        self.textbrowser.setTextCursor(cursor)
 
     def _getcurrpointer(self):
         return self.textcursor.position()
@@ -435,6 +421,44 @@ class TextBrowser(QWidget, dataget):
                 linei += 1
         self.yinyingposline = linei
 
+    def _add_searchlabel(
+        self, isfenciclick, isshow_fenci, _labeli, _pos1, callback, word, color, pos2
+    ):
+        def __parseone(labeli, pos1):
+            if labeli >= len(self.searchmasklabels_clicked):
+                ql = QLabel(self.atback_color)
+                ql.setMouseTracking(True)
+                self.searchmasklabels.append(ql)
+
+                ql = Qlabel_c(self.textbrowser)
+                ql.setMouseTracking(True)
+                ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+                self.searchmasklabels_clicked.append(ql)
+            if isfenciclick:
+                self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
+                self.searchmasklabels_clicked[labeli].company = None
+                self.searchmasklabels_clicked[labeli].show()
+                if callback:
+                    self.searchmasklabels_clicked[labeli].callback = functools.partial(
+                        callback, word
+                    )
+            if isshow_fenci and color:
+                self.searchmasklabels[labeli].setGeometry(*pos1)
+                self.searchmasklabels[labeli].setStyleSheet(
+                    "background-color: {};".format(color)
+                )
+                self.searchmasklabels[labeli].show()
+
+        __parseone(_labeli, _pos1)
+        if pos2:
+            __parseone(_labeli + 1, pos2)
+            self.searchmasklabels_clicked[_labeli].company = (
+                self.searchmasklabels_clicked[_labeli + 1]
+            )
+            self.searchmasklabels_clicked[_labeli + 1].company = (
+                self.searchmasklabels_clicked[_labeli]
+            )
+
     def addsearchwordmask(self, isshow_fenci, isfenciclick, x, raw, callback=None):
         if len(x) == 0:
             return
@@ -451,117 +475,51 @@ class TextBrowser(QWidget, dataget):
             l = len(word["orig"])
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
 
-            tl4 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
+            self.textcursor.setPosition(pos + l)
+            self.textbrowser.setTextCursor(self.textcursor)
 
-            if True:
+            tl2 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
+            tl3 = self.textbrowser.cursorRect(self.textcursor).topLeft()
+            color = self._randomcolor(word)
+            if len(word["orig"].strip()) == 0:
+                pos += l
+                tl1 = tl3
+                continue
+
+            if tl1.y() != tl3.y():
                 self.textcursor.setPosition(pos + l)
                 self.textbrowser.setTextCursor(self.textcursor)
+                __fm = self._getfh(False, getfm=True)
+                w = int(__fm.size(0, word["orig"]).width())
+                pos1 = tl1.x() + 1, tl1.y(), w - 2, int(heigth)
+                pos2 = tl3.x() + 1 - w, tl3.y(), w - 2, int(heigth)
+                self._add_searchlabel(
+                    isfenciclick,
+                    isshow_fenci,
+                    labeli,
+                    pos1,
+                    callback,
+                    word,
+                    color,
+                    pos2,
+                )
+                labeli += 2
+            else:
+                pos1 = tl1.x() + 1, tl1.y(), tl2.x() - tl1.x() - 2, int(heigth)
+                self._add_searchlabel(
+                    isfenciclick,
+                    isshow_fenci,
+                    labeli,
+                    pos1,
+                    callback,
+                    word,
+                    color,
+                    None,
+                )
+                labeli += 1
 
-                tl2 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
-                tl3 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-                color = self._randomcolor(word)
-                if len(word["orig"].strip()):
-                    if labeli >= len(self.searchmasklabels) - 1:
-                        ql = QLabel(self.atback_color)
-                        ql.setMouseTracking(True)
-                        self.searchmasklabels.append(ql)
-
-                        ql = Qlabel_c(self.textbrowser)
-                        ql.setMouseTracking(True)
-                        ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
-                        self.searchmasklabels_clicked.append(ql)
-
-                        ql = QLabel(self.atback_color)
-                        ql.setMouseTracking(True)
-                        self.searchmasklabels.append(ql)
-
-                        ql = Qlabel_c(self.textbrowser)
-                        ql.setMouseTracking(True)
-                        ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
-                        self.searchmasklabels_clicked.append(ql)
-                    if tl1.y() != tl3.y():
-                        for __i in range(len(word["orig"])):
-                            self.textcursor.setPosition(pos + __i)
-                            self.textbrowser.setTextCursor(self.textcursor)
-                            _tl = self.textbrowser.cursorRect(self.textcursor).topLeft()
-                            if _tl.y() != tl1.y():
-                                break
-                        self.textcursor.setPosition(pos + l)
-                        self.textbrowser.setTextCursor(self.textcursor)
-                        __fm = self._getfh(False, getfm=True)
-                        w1 = int(__fm.size(0, word["orig"][:__i]).width())
-                        w2 = int(__fm.size(0, word["orig"][__i:]).width())
-
-                        pos1 = (
-                            tl1.x() + 1,
-                            tl1.y(),
-                            w1 - 2,
-                            int(heigth),
-                        )
-                        pos2 = tl3.x() + 1 - w2, tl3.y(), w2 - 2, int(heigth)
-
-                        if isfenciclick:
-                            self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
-                            self.searchmasklabels_clicked[labeli].show()
-                            self.searchmasklabels_clicked[labeli].company = (
-                                self.searchmasklabels_clicked[labeli + 1]
-                            )
-                            if callback:
-                                self.searchmasklabels_clicked[labeli].callback = (
-                                    functools.partial(callback, (word))
-                                )
-
-                            self.searchmasklabels_clicked[labeli + 1].setGeometry(*pos2)
-                            self.searchmasklabels_clicked[labeli + 1].show()
-                            self.searchmasklabels_clicked[labeli + 1].company = (
-                                self.searchmasklabels_clicked[labeli]
-                            )
-                            if callback:
-                                self.searchmasklabels_clicked[labeli + 1].callback = (
-                                    functools.partial(callback, (word))
-                                )
-
-                        if isshow_fenci and color:
-                            self.searchmasklabels[labeli].setGeometry(*pos1)
-                            self.searchmasklabels[labeli].setStyleSheet(
-                                "background-color: {};".format(color)
-                            )
-                            self.searchmasklabels[labeli].show()
-
-                            self.searchmasklabels[labeli + 1].setGeometry(*pos2)
-                            self.searchmasklabels[labeli + 1].setStyleSheet(
-                                "background-color: {};".format(color)
-                            )
-                            self.searchmasklabels[labeli + 1].show()
-                        labeli += 2
-                    else:
-
-                        pos1 = (
-                            tl1.x() + 1,
-                            tl1.y(),
-                            tl2.x() - tl1.x() - 2,
-                            int(heigth),
-                        )
-                        if isfenciclick:
-                            self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
-                            self.searchmasklabels_clicked[labeli].company = None
-                            self.searchmasklabels_clicked[labeli].show()
-                            if callback:
-                                self.searchmasklabels_clicked[labeli].callback = (
-                                    functools.partial(callback, word)
-                                )
-                        if isshow_fenci and color:
-                            self.searchmasklabels[labeli].setGeometry(*pos1)
-                            self.searchmasklabels[labeli].setStyleSheet(
-                                "background-color: {};".format(color)
-                            )
-                            self.searchmasklabels[labeli].show()
-                        labeli += 1
-
-                tl1 = tl3
-                tl4 = tl2
-
-                pos += l
+            tl1 = tl3
+            pos += l
 
     def _getfh(self, half, origin=True, getfm=False):
 
@@ -580,138 +538,91 @@ class TextBrowser(QWidget, dataget):
     def _addtag(self, x):
         pos = 0
 
-        _, fontorig = self._getfh(False)
         fha, fonthira = self._getfh(True)
+        fontori_m = self._getfh(False, getfm=True)
         self.textbrowser.move(0, int(fha))
         self.atback_color.move(0, int(fha))
 
-        x = self.nearmerge(x, pos, fonthira, fontorig)
         self.settextposcursor(pos)
         savetaglabels_idx = 0
+        lines = [[]]
         for word in x:
             l = len(word["orig"])
-
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-
             self.settextposcursor(pos + l)
             pos += l
 
-            tl2 = self.textbrowser.cursorRect(self.textcursor).topLeft()
             if word["hira"] == word["orig"]:
                 continue
-            # print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
             if word["orig"] == " ":
                 continue
-            if savetaglabels_idx >= len(self.savetaglabels):
-                self.savetaglabels.append(self.currentclass(self.atback2))
-            self.solvejiaminglabel(
-                self.savetaglabels[savetaglabels_idx], word, fonthira, tl1, tl2, fha
+
+            tl2 = self.textbrowser.cursorRect(self.textcursor).topLeft()
+            _ = self.solvejiaminglabel(
+                savetaglabels_idx, word, fonthira, fontori_m, tl1, fha
             )
+            lines[-1].append(_)
+            if tl1.y() != tl2.y():
+                lines.append([])
             savetaglabels_idx += 1
+        for line in lines:
+            self._dyna_merge_label(line)
+
+    def has_intersection(self, interval1, interval2):
+        start = max(interval1[0], interval2[0])
+        end = min(interval1[1], interval2[1])
+
+        if start <= end:
+            return True
+        else:
+            return None
+
+    def _dyna_merge_label(self, line):
+        if len(line) <= 1:
+            return
+        rects = [(label.x(), label.x() + label.width()) for label in line]
+
+        for i in range(len(line) - 1):
+            if not self.has_intersection(rects[i], rects[i + 1]):
+                continue
+            w1 = rects[i][1] - rects[i][0]
+            w2 = rects[i + 1][1] - rects[i + 1][0]
+            c1 = rects[i][1] + rects[i][0]
+            c2 = rects[i + 1][1] + rects[i + 1][0]
+            center = (c1 * w1 + c2 * w2) / (w1 + w2)
+            center /= 2
+            line[i].setText(line[i].text() + line[i + 1].text())
+            line[i].adjustSize()
+            line[i].move(int(center - line[i].width() / 2), line[i].y())
+            line[i + 1].hide()
+            return self._dyna_merge_label(line[: i + 1] + line[i + 2 :])
 
     def settextposcursor(self, pos):
         self.textcursor.setPosition(pos)
         self.textbrowser.setTextCursor(self.textcursor)
 
-    def nearmerge(self, x, startpos, fonthira, fontorig):
-        pos = startpos
-        linex = []
-        newline = []
-        self.settextposcursor(pos)
-        _metrichira = QFontMetricsF(fonthira)
-        _metricorig = QFontMetricsF(fontorig)
-        for i, word in enumerate(x):
-            word["orig_w"] = _metricorig.size(0, word["orig"]).width()
-            word["hira_w"] = _metrichira.size(0, word["hira"]).width()
-            # print(word['hira'],word['hira_w'])
-            newline.append(word)
-
-            l = len(word["orig"])
-            tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-            self.settextposcursor(pos + l)
-            pos += l
-
-            tl2 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-
-            # print(tl1,tl2,word['hira'],self.textbrowser.textCursor().position())
-
-            if tl1.y() != tl2.y() or i == len(x) - 1:
-                linex.append(newline)
-                newline = []
-        res = []
-        for line in linex:
-
-            while True:
-                allnotbig = True
-                newline = []
-                canmerge = False
-                for word in line:
-                    if (
-                        word["hira"] == word["orig"]
-                        or word["hira"] == ""
-                        or word["orig"] == ""
-                    ):
-                        newline.append(word.copy())
-                        canmerge = False
-                    else:
-                        if (
-                            len(newline) > 0
-                            and canmerge
-                            and (
-                                word["hira_w"] + newline[-1]["hira_w"]
-                                > word["orig_w"] + newline[-1]["orig_w"]
-                            )
-                        ):
-                            # print(word['hira'],word['hira_w'],newline[-1]['hira_w'],word['orig_w'],newline[-1]['orig_w'])
-                            newline[-1]["hira"] += word["hira"]
-                            newline[-1]["orig"] += word["orig"]
-                            newline[-1]["hira_w"] += word["hira_w"]
-                            newline[-1]["orig_w"] += word["orig_w"]
-                            allnotbig = False
-                        else:
-                            newline.append(word.copy())
-                        canmerge = True
-                line = newline
-                if allnotbig:
-                    break
-            res += newline
-            newline = []
-        self.settextposcursor(startpos)
-        return res
-
-    def solvejiaminglabel(self, _: base, word, font, tl1, tl2, fh):
+    def solvejiaminglabel(self, idx, word, font, fontori_m: QFontMetricsF, tl1, fha):
+        if idx >= len(self.savetaglabels):
+            self.savetaglabels.append(self.currentclass(self.atback2))
+        _: base = self.savetaglabels[idx]
         color = self._getkanacolor()
         _.setColor(color)
         _.setText(word["hira"])
+        origin = word["orig"]
+        w_origin = fontori_m.size(0, origin).width()
+        y = tl1.y() - fha
+        center = tl1.x() + w_origin / 2
         _.setFont(font)
         _.adjustSize()
         w = _.width()
-
-        if tl1.y() != tl2.y():
-            # print(label,word)
-            x = tl1.x()
-            if x + w / 2 < self.textbrowser.width():
-                x = tl1.x()
-                y = tl1.y() - fh
-            else:
-                x = tl2.x() - w
-                y = tl2.y() - fh
-        else:
-            x = tl1.x() / 2 + tl2.x() / 2 - w / 2
-            y = tl2.y() - fh
-
-        _.move(x, y + self.textbrowser.y() - self.toplabel2.y())
-
+        _.move(int(center - w / 2), y + self.textbrowser.y() - self.toplabel2.y())
         _.show()
         return _
 
     def clear(self):
         self.resets()
-        self.yinyingpos = 0
         self.yinyingposline = 0
         self.textbrowser.clear()
-
         self.saveiterclasspointer.clear()
-
         self.textbrowser.move(0, 0)
         self.atback_color.move(0, 0)
