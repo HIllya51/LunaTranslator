@@ -6,7 +6,7 @@ from gui.usefulwidget import getQMessageBox
 from traceback import print_exc
 
 
-class Textbrowser(QLabel):
+class Textbrowser(QFrame):
     contentsChanged = pyqtSignal(QSize)
 
     def resizeEvent(self, event: QResizeEvent):

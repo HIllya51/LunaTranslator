@@ -604,7 +604,7 @@ class QUnFrameWindow(resizableframeless):
         self.setWindowTitle("LunaTranslator")
         self.initvalues()
         self.initsignals()
-        self._TitleLabel = QLabel(self)
+        self._TitleLabel = QFrame(self)
         self._TitleLabel.setObjectName("_TitleLabel")
         self._TitleLabel.setMouseTracking(True)
         self.addbuttons()
@@ -698,7 +698,7 @@ class QUnFrameWindow(resizableframeless):
             )
         )
         self._TitleLabel.setStyleSheet(
-            "QLabel#_TitleLabel{border-width: 0;%s;background-color: %s}"
+            "#_TitleLabel{border-width: 0;%s;background-color: %s}"
             % (
                 bottomr,
                 str2rgba(
