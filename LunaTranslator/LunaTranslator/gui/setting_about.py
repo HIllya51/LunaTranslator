@@ -1,7 +1,7 @@
 from qtsymbols import *
 import platform, functools, sys
 import winsharedutils, queue
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader, tryprint
 from myutils.utils import makehtml, dynamiclink, getlanguse
 import requests
@@ -109,7 +109,7 @@ def updatemethod(info, self):
 
 
 def uncompress(self, savep):
-    self.progresssignal.emit("正在解压……", 10000)
+    self.progresssignal.emit(_TR("正在解压"), 10000)
     shutil.rmtree(gobject.getcachedir("update/LunaTranslator/"))
     with zipfile.ZipFile(savep) as zipf:
         zipf.extractall(gobject.getcachedir("update"))
@@ -131,7 +131,7 @@ def versioncheckthread(self):
             sversion = "获取失败"
         else:
             sversion = _version[0]
-        self.versiontextsignal.emit(sversion)
+        self.versiontextsignal.emit(wraplink(sversion))
         version = winsharedutils.queryversion(sys.argv[0])
         need = (
             version
@@ -142,12 +142,12 @@ def versioncheckthread(self):
             continue
         savep = updatemethod(_version[1], self)
         if not savep:
-            self.progresssignal.emit("自动更新失败，请手动更新", 0)
+            self.progresssignal.emit(_TR("自动更新失败，请手动更新"), 0)
             continue
 
         uncompress(self, savep)
         gobject.baseobject.update_avalable = True
-        self.progresssignal.emit("准备完毕，等待更新", 10000)
+        self.progresssignal.emit(_TR("准备完毕，等待更新"), 10000)
         gobject.baseobject.showtraymessage(sversion, "准备完毕，等待更新")
 
 
@@ -208,7 +208,7 @@ def createversionlabel(self):
 
 def versionlabelmaybesettext(self, x):
     try:
-        self.versionlabel.setText(wraplink(x))
+        self.versionlabel.setText((x))
     except:
         self.versionlabel_cache = x
 

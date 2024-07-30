@@ -836,5 +836,8 @@
     "打开链接": "Ouvrir le lien",
     "翻译记录": "Record de traduction",
     "实时编辑": "Edit en temps réel",
-    "葡萄牙语": "Portugais"
+    "葡萄牙语": "Portugais",
+    "正在解压": "Décompression en cours",
+    "自动更新失败，请手动更新": "La mise à jour automatique a échoué, veuillez la mettre à jour manuellement",
+    "准备完毕，等待更新": "Prêt, en attente de mise à jour"
 }

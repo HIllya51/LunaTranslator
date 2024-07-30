@@ -836,5 +836,8 @@
     "打开链接": "Open link",
     "翻译记录": "Translation Record",
     "实时编辑": "Real time editing",
-    "葡萄牙语": "Portuguese"
+    "葡萄牙语": "Portuguese",
+    "正在解压": "Decompression in progress",
+    "自动更新失败，请手动更新": "Automatic update failed, please update manually",
+    "准备完毕，等待更新": "Ready, waiting for updates"
 }

@@ -836,5 +836,8 @@
     "打开链接": "Koppeling openen",
     "翻译记录": "Vertalingsregister",
     "实时编辑": "Realtime bewerking",
-    "葡萄牙语": "Portugees"
+    "葡萄牙语": "Portugees",
+    "正在解压": "Decompressie in uitvoering",
+    "自动更新失败，请手动更新": "Automatische update mislukt, update handmatig",
+    "准备完毕，等待更新": "Klaar, wachten op updates"
 }

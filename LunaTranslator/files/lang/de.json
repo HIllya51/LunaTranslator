@@ -836,5 +836,8 @@
     "打开链接": "Link öffnen",
     "翻译记录": "Übersetzungsdatei",
     "实时编辑": "Bearbeitung in Echtzeit",
-    "葡萄牙语": "Portugiesisch"
+    "葡萄牙语": "Portugiesisch",
+    "正在解压": "Dekompression im Gange",
+    "自动更新失败，请手动更新": "Automatische Aktualisierung fehlgeschlagen, bitte manuell aktualisieren",
+    "准备完毕，等待更新": "Bereit, warten auf Updates"
 }
