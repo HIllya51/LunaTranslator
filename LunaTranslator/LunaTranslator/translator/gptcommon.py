@@ -84,6 +84,8 @@ class gptcommon(basetrans):
                 response_data = chunk.decode("utf-8").strip()
                 if not response_data:
                     continue
+                if response_data == "data: [DONE]":
+                    break
                 try:
                     json_data = json.loads(response_data[6:])
                     rs = json_data["choices"][0].get("finish_reason")
