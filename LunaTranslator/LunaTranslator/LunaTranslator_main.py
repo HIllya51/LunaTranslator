@@ -156,6 +156,13 @@ def switchdir():
     # 0 是当前目录
     # 后面的是系统库或runtime
     # 由于自动更新不会删除，runtime下可能有历史遗留的同名文件被优先导入
+    import shutil
+
+    # 远古版本的遗留文件，同名导入冲突
+    try:
+        shutil.rmtree("./LunaTranslator/requests")
+    except:
+        pass
 
 
 if __name__ == "__main__":
