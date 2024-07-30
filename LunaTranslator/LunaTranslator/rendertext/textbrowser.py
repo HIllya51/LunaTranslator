@@ -396,7 +396,7 @@ class TextBrowser(QWidget, dataget):
         fha, _ = self._getfh(True)
         self.extra_height = fha
         if fh < 0:
-            self.extra_height = max(-fh, self.extra_height)
+            self.extra_height = -fh + self.extra_height
         for i in range(b1, b2):
             _fha = 0
             for word in linetags[i - b1]:
