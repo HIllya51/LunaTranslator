@@ -33,14 +33,10 @@ class Qlabel_c(QLabel):
         return super().mouseReleaseEvent(event)
 
     def enterEvent(self, a0) -> None:
-        if self.company:
-            self.company.setStyleSheet("background-color: rgba(0,0,0,0.5);")
         self.setStyleSheet("background-color: rgba(0,0,0,0.5);")
         return super().enterEvent(a0)
 
     def leaveEvent(self, a0) -> None:
-        if self.company:
-            self.company.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         return super().leaveEvent(a0)
 
@@ -65,8 +61,10 @@ class TextBrowser(QWidget, dataget):
 
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
-        self.textbrowser.resize(self.width(), sz.height())
-        self.contentsChanged.emit(QSize(sz.width(), self.textbrowser.y() + sz.height()))
+        self.textbrowser.resize(self.width(), sz.height() + self.extra_height)
+        self.contentsChanged.emit(
+            QSize(sz.width(), self.textbrowser.y() + sz.height() + self.extra_height)
+        )
 
     def resizeEvent(self, event: QResizeEvent):
         self.atback2.resize(event.size())
@@ -129,6 +127,7 @@ class TextBrowser(QWidget, dataget):
         self.lastcolor = None
         self.iteryinyinglabelsave = {}
         self.saveiterclasspointer = {}
+        self.extra_height = 0
         self.resets1()
 
     def resets1(self):
@@ -262,7 +261,9 @@ class TextBrowser(QWidget, dataget):
     def _getqalignment(self, atcenter):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
 
-    def _textbrowser_append(self, origin, atcenter, text, tag, color, cleared):
+    def _textbrowser_append(
+        self, origin, atcenter, text: str, tag: list, color, cleared
+    ):
         self.textbrowser.document().blockSignals(True)
         font = self._createqfont(origin)
         self._setnextfont(font, cleared)
@@ -270,29 +271,151 @@ class TextBrowser(QWidget, dataget):
 
         _space = "" if cleared else "\n"
         blockcount = 0 if cleared else self.textbrowser.document().blockCount()
-        self.textbrowser.insertPlainText(_space + text)
-        blockcount_after = self.textbrowser.document().blockCount()
-        self._setlineheight(blockcount, blockcount_after, origin, len(tag) > 0)
+        hastag = len(tag) > 0
+        if hastag:
+            textlines, linetags = self._splitlinestags(font, tag, text)
+
+            self.textbrowser.insertPlainText(_space + "\n".join(textlines))
+            blockcount_after = self.textbrowser.document().blockCount()
+            self._setlineheight_x(blockcount, blockcount_after, linetags)
+        else:
+            self.textbrowser.insertPlainText(_space + text)
+            blockcount_after = self.textbrowser.document().blockCount()
+            self._setlineheight(blockcount, blockcount_after, origin)
         self.textbrowser.document().blockSignals(False)
         self.textbrowser.document().contentsChanged.emit()
-        if len(tag) > 0:
+        if hastag:
+            xtag = self._join_tags(linetags, True)
+            tag.clear()
+            tag.extend(xtag)
             self._addtag(tag)
         self._showyinyingtext(blockcount, blockcount_after, color, font)
 
-    def _setlineheight(self, b1, b2, origin, hastag):
+    def _join_tags(self, tag, space):
+        tags = []
+        for i in range(len(tag)):
+            if i != 0 and space:
+                tags.append({"orig_X": "\n", "orig": "\n", "hira": "\n"})
+            tags += tag[i]
+        return tags
+
+    def _split_tags(self, tag):
+        taglines = [[]]
+        for word in tag:
+            if word["orig"] == "\n":
+                taglines.append([])
+                continue
+            else:
+                taglines[-1].append(word)
+        return taglines
+
+    def _splitlinestags(self, font, tag, text: str):
+        lines = text.split("\n")
+        textlines = []
+        taglines = self._join_tags(self._split_tags(tag), False)
+        newtags = []
+        for linetext in lines:
+
+            layout = QTextLayout()
+            layout.setFont(font)
+            layout.setTextOption(QTextOption(Qt.AlignLeft))
+            layout.setText(linetext)
+            layout.beginLayout()
+            newtag = []
+            __ = ""
+            while True:
+                line = layout.createLine()
+                if not line.isValid():
+                    break
+                line.setLineWidth(self.width())
+                textlines.append(
+                    linetext[line.textStart() : line.textStart() + line.textLength()]
+                )
+                while len(taglines) and len(__) < len(textlines[-1]):
+                    __ += taglines[0]["orig"]
+                    taglines[0]["orig_X"] = taglines[0]["orig"]
+                    newtag.append(taglines[0])
+                    taglines = taglines[1:]
+                if len(__) != len(textlines[-1]):
+                    orig = newtag[-1]["orig"]
+                    l1 = len(orig) - (len(__) - len(textlines[-1]))
+                    sub = orig[:l1]
+                    end = orig[l1:]
+                    __ = end
+                    if newtag[-1]["orig"] == newtag[-1]["hira"]:
+                        newtag[-1].update({"orig_X": sub, "hira": sub})
+                        _tag = newtag[-1].copy()
+                        _tag.update({"orig_X": end, "hira": end})
+                        newtag.append({"orig_X": "\n", "orig": "\n", "hira": ""})
+                        newtag.append(_tag)
+                    else:
+                        newtag[-1].update({"orig_X": sub})
+                        _tag = newtag[-1].copy()
+                        _tag.update({"orig_X": end})
+                        newtag.append({"orig_X": "\n", "orig": "\n", "hira": ""})
+                        newtag.append(_tag)
+                else:
+                    __ = ""
+                newtags.append(newtag)
+                newtag = []
+            if len(newtag):
+                newtags.append(newtag)
+            layout.endLayout()
+
+        newtag = []
+        for i in range(len(newtags)):
+            if i != 0:
+                if not hasbreak:
+                    newtag.append({"orig_X": "\n", "orig": "\n", "hira": "\n"})
+            newtag += newtags[i]
+            hasbreak = False
+            for _ in newtags[i]:
+                if _["orig_X"] == "\n":
+                    hasbreak = True
+                    break
+        return textlines, self._split_tags(newtag)
+
+    def _checkwordhastag(self, word):
+        if word["hira"] == word["orig_X"]:
+            return False
+        if word["orig_X"].strip() == "":
+            return False
+        if word["hira"].strip() == "":
+            return False
+        return True
+
+    def _setlineheight_x(self, b1, b2, linetags):
+        fh = globalconfig["extra_space"]
+        fha, _ = self._getfh(True)
+        self.extra_height = fha
+        for i in range(b1, b2):
+            _fha = 0
+            for word in linetags[i - b1]:
+
+                if not self._checkwordhastag(word):
+                    continue
+                _fha = fha
+                break
+
+            b = self.textbrowser.document().findBlockByNumber(i)
+            tf = b.blockFormat()
+            tf.setTopMargin(_fha)
+            tf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
+            self.textcursor.setPosition(b.position())
+            self.textcursor.setBlockFormat(tf)
+            self.textbrowser.setTextCursor(self.textcursor)
+
+    def _setlineheight(self, b1, b2, origin):
         if origin:
             fh = globalconfig["extra_space"]
         else:
             fh = globalconfig["extra_space_trans"]
-        if hastag:
-            fha, _ = self._getfh(True)
-            if globalconfig["extra_space"] >= 0:
-                fh = max(globalconfig["extra_space"], fha)
-            else:
-                fh = fha + globalconfig["extra_space"]
+
+        self.extra_height = 0
         for i in range(b1, b2):
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()
+            tf.setTopMargin(0)
             tf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
@@ -426,104 +549,59 @@ class TextBrowser(QWidget, dataget):
         self.yinyingposline = linei
 
     def _add_searchlabel(
-        self, isfenciclick, isshow_fenci, _labeli, _pos1, callback, word, color, pos2
+        self, isfenciclick, isshow_fenci, labeli, pos1, callback, word, color
     ):
-        def __parseone(labeli, pos1):
-            if labeli >= len(self.searchmasklabels_clicked):
-                ql = QLabel(self.atback_color)
-                ql.setMouseTracking(True)
-                self.searchmasklabels.append(ql)
+        if labeli >= len(self.searchmasklabels_clicked):
+            ql = QLabel(self.atback_color)
+            ql.setMouseTracking(True)
+            self.searchmasklabels.append(ql)
 
-                ql = Qlabel_c(self.textbrowser)
-                ql.setMouseTracking(True)
-                ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
-                self.searchmasklabels_clicked.append(ql)
-            if isfenciclick:
-                self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
-                self.searchmasklabels_clicked[labeli].company = None
-                self.searchmasklabels_clicked[labeli].show()
-                if callback:
-                    self.searchmasklabels_clicked[labeli].callback = functools.partial(
-                        callback, word
-                    )
-            if isshow_fenci and color:
-                self.searchmasklabels[labeli].setGeometry(*pos1)
-                self.searchmasklabels[labeli].setStyleSheet(
-                    "background-color: {};".format(color)
+            ql = Qlabel_c(self.textbrowser)
+            ql.setMouseTracking(True)
+            ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+            self.searchmasklabels_clicked.append(ql)
+        if isfenciclick:
+            self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
+            self.searchmasklabels_clicked[labeli].show()
+            if callback:
+                self.searchmasklabels_clicked[labeli].callback = functools.partial(
+                    callback, word
                 )
-                self.searchmasklabels[labeli].show()
-
-        __parseone(_labeli, _pos1)
-        if pos2:
-            __parseone(_labeli + 1, pos2)
-            self.searchmasklabels_clicked[_labeli].company = (
-                self.searchmasklabels_clicked[_labeli + 1]
+        if isshow_fenci and color:
+            self.searchmasklabels[labeli].setGeometry(*pos1)
+            self.searchmasklabels[labeli].setStyleSheet(
+                "background-color: {};".format(color)
             )
-            self.searchmasklabels_clicked[_labeli + 1].company = (
-                self.searchmasklabels_clicked[_labeli]
-            )
+            self.searchmasklabels[labeli].show()
 
     def addsearchwordmask(self, isshow_fenci, isfenciclick, x, raw, callback=None):
         if len(x) == 0:
             return
-        # print(x)
         pos = 0
         labeli = 0
         self.textcursor.setPosition(0)
         self.textbrowser.setTextCursor(self.textcursor)
 
-        idx = 0
         heigth, _ = self._getfh(False)
         for word in x:
-            idx += 1
-            l = len(word["orig"])
+            l = len(word["orig_X"])
+
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
 
-            self.textcursor.setPosition(pos + l)
+            pos += l
+            self.textcursor.setPosition(pos)
             self.textbrowser.setTextCursor(self.textcursor)
 
             tl2 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
-            tl3 = self.textbrowser.cursorRect(self.textcursor).topLeft()
             color = self._randomcolor(word)
-            if len(word["orig"].strip()) == 0:
-                pos += l
-                tl1 = tl3
+            if len(word["orig_X"].strip()) == 0:
                 continue
-
-            if tl1.y() != tl3.y():
-                self.textcursor.setPosition(pos + l)
-                self.textbrowser.setTextCursor(self.textcursor)
-                __fm = self._getfh(False, getfm=True)
-                w = int(__fm.size(0, word["orig"]).width())
-                pos1 = tl1.x() + 1, tl1.y(), w - 2, int(heigth)
-                pos2 = tl3.x() + 1 - w, tl3.y(), w - 2, int(heigth)
-                self._add_searchlabel(
-                    isfenciclick,
-                    isshow_fenci,
-                    labeli,
-                    pos1,
-                    callback,
-                    word,
-                    color,
-                    pos2,
-                )
-                labeli += 2
-            else:
-                pos1 = tl1.x() + 1, tl1.y(), tl2.x() - tl1.x() - 2, int(heigth)
-                self._add_searchlabel(
-                    isfenciclick,
-                    isshow_fenci,
-                    labeli,
-                    pos1,
-                    callback,
-                    word,
-                    color,
-                    None,
-                )
-                labeli += 1
-
-            tl1 = tl3
-            pos += l
+            dyna_h = int((heigth + tl2.y() - tl1.y()) / 2)
+            pos1 = tl1.x() + 1, tl1.y(), tl2.x() - tl1.x() - 2, dyna_h
+            self._add_searchlabel(
+                isfenciclick, isshow_fenci, labeli, pos1, callback, word, color
+            )
+            labeli += 1
 
     def _getfh(self, half, origin=True, getfm=False):
 
@@ -551,16 +629,13 @@ class TextBrowser(QWidget, dataget):
         savetaglabels_idx = 0
         lines = [[]]
         for word in x:
-            l = len(word["orig"])
+            l = len(word["orig_X"])
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
             self.settextposcursor(pos + l)
             pos += l
 
-            if word["hira"] == word["orig"]:
+            if not self._checkwordhastag(word):
                 continue
-            if word["orig"] == " ":
-                continue
-
             tl2 = self.textbrowser.cursorRect(self.textcursor).topLeft()
             _ = self.solvejiaminglabel(
                 savetaglabels_idx, word, fonthira, fontori_m, tl1, fha
@@ -612,7 +687,7 @@ class TextBrowser(QWidget, dataget):
         color = self._getkanacolor()
         _.setColor(color)
         _.setText(word["hira"])
-        origin = word["orig"]
+        origin = word["orig_X"]
         w_origin = fontori_m.size(0, origin).width()
         y = tl1.y() - fha
         center = tl1.x() + w_origin / 2
