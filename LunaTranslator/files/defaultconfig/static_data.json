@@ -65,7 +65,8 @@
         "Deutsch",
         "Svenska",
         "Nederlands",
-        "Čeština"
+        "Čeština",
+        "Português"
     ],
     "language_list_translator": [
         "简体中文",
@@ -87,7 +88,8 @@
         "德语",
         "瑞典语",
         "荷兰语",
-        "捷克语"
+        "捷克语",
+        "葡萄牙语"
     ],
     "language_list_translator_inner": [
         "zh",
@@ -109,7 +111,8 @@
         "de",
         "sv",
         "nl",
-        "cs"
+        "cs",
+        "pt"
     ],
     "font_type_default": {
         "default": [
