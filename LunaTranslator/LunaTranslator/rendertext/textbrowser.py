@@ -263,6 +263,7 @@ class TextBrowser(QWidget, dataget):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
 
     def _textbrowser_append(self, origin, atcenter, text, tag, color, cleared):
+        self.textbrowser.document().blockSignals(True)
         font = self._createqfont(origin)
         self._setnextfont(font, cleared)
         self.textbrowser.setAlignment(self._getqalignment(atcenter))
@@ -272,6 +273,8 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.insertPlainText(_space + text)
         blockcount_after = self.textbrowser.document().blockCount()
         self._setlineheight(blockcount, blockcount_after, origin, len(tag) > 0)
+        self.textbrowser.document().blockSignals(False)
+        self.textbrowser.document().contentsChanged.emit()
         if len(tag) > 0:
             self._addtag(tag)
         self._showyinyingtext(blockcount, blockcount_after, color, font)
