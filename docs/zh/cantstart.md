@@ -2,11 +2,14 @@
 
 #### **1. Error/ModuleNotFoundError**
 
+如果你从旧版本直接覆盖更新到新版本，或者自动更新到新版本，旧的无效文件不会被删除，而且由于python的文件加载顺序，旧的文件被优先加载，导致无法加载新的文件，从而引发这个问题。
+
+解决方法是：保留userconfig文件夹，删除其他文件后，重新下载解压。
 
 <details>
-  <summary>5.15.10已经修复这个问题。</summary>
-  如果你从旧版本直接覆盖更新到新版本，或者自动更新到新版本，旧的无效文件不会被删除，而且由于python的文件加载顺序，旧的文件被优先加载，导致无法加载新的文件，从而引发这个问题。
+  <summary>部分已内置解决的情况，不再会报错</summary>
   <img src="https://image.lunatranslator.xyz/zh/cantstart/1.png">
+  <img src="https://image.lunatranslator.xyz/zh/cantstart/3.jpg">
 </details>
 
 #### **2. Error/PermissionError**
