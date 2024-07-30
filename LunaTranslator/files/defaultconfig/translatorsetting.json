@@ -205,9 +205,23 @@
 			"自定义promt": "",
 			"api_type": 0,
 			"流式输出": false,
+			"user_user_prompt": "{sentence}",
+			"use_user_user_prompt": false,
+			"other_args": "{}",
+			"use_other_args": false,
 			"s": ""
 		},
 		"argstype": {
+			"other_args": {
+				"type": "multiline",
+				"refswitch": "use_other_args",
+				"name": "其他参数"
+			},
+			"user_user_prompt": {
+				"name": "user prompt",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1
+			},
 			"s": {
 				"type": "split",
 				"rank": 2.5
@@ -234,8 +248,10 @@
 				"step": 0.05
 			},
 			"自定义promt": {
+				"name": "自定义_system promt",
 				"type": "multiline",
-				"refswitch": "使用自定义promt"
+				"refswitch": "使用自定义promt",
+				"rank": 5
 			},
 			"max_tokens": {
 				"type": "intspin",
@@ -259,14 +275,12 @@
 			"SECRET_KEY": {
 				"rank": 1.6
 			},
-			"使用自定义promt": {
-				"type": "switch_ref"
-			},
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
-				"step": 1
+				"step": 1,
+				"rank": 4.9
 			},
 			"Temperature": {
 				"type": "spin",
@@ -286,10 +300,19 @@
 			"context_num": 0,
 			"use_user_prompt": false,
 			"user_prompt": "",
+			"user_user_prompt": "{sentence}",
+			"use_user_user_prompt": false,
 			"usingstream": false,
+			"other_args": "{}",
+			"use_other_args": false,
 			"s": ""
 		},
 		"argstype": {
+			"other_args": {
+				"type": "multiline",
+				"refswitch": "use_other_args",
+				"name": "其他参数"
+			},
 			"s": {
 				"type": "split",
 				"rank": 2.5
@@ -315,20 +338,23 @@
 				"rank": 3
 			},
 			"user_prompt": {
-				"name": "自定义promt",
+				"name": "自定义_system promt",
 				"type": "multiline",
-				"refswitch": "use_user_prompt"
+				"refswitch": "use_user_prompt",
+				"rank": 5
 			},
-			"use_user_prompt": {
-				"name": "使用自定义promt",
-				"type": "switch_ref"
+			"user_user_prompt": {
+				"name": "user prompt",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1
 			},
 			"context_num": {
 				"name": "附带上下文个数",
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
-				"step": 1
+				"step": 1,
+				"rank": 4.9
 			},
 			"Temperature": {
 				"type": "spin",
@@ -349,9 +375,23 @@
 			"使用自定义promt": false,
 			"自定义promt": "",
 			"流式输出": false,
+			"user_user_prompt": "{sentence}",
+			"use_user_user_prompt": false,
+			"other_args": "{}",
+			"use_other_args": false,
 			"s": ""
 		},
 		"argstype": {
+			"other_args": {
+				"type": "multiline",
+				"refswitch": "use_other_args",
+				"name": "其他参数"
+			},
+			"user_user_prompt": {
+				"name": "user prompt",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1
+			},
 			"s": {
 				"type": "split",
 				"rank": 2.5
@@ -371,10 +411,9 @@
 			},
 			"自定义promt": {
 				"type": "multiline",
-				"refswitch": "使用自定义promt"
-			},
-			"使用自定义promt": {
-				"type": "switch_ref"
+				"refswitch": "使用自定义promt",
+				"name": "自定义_system promt",
+				"rank": 5
 			},
 			"max_tokens": {
 				"type": "intspin",
@@ -386,7 +425,8 @@
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
-				"step": 1
+				"step": 1,
+				"rank": 4.9
 			},
 			"Temperature": {
 				"type": "spin",
@@ -409,9 +449,23 @@
 			"top_p": 0.3,
 			"max_tokens": 128,
 			"frequency_penalty": 0,
+			"user_user_prompt": "{sentence}",
+			"use_user_user_prompt": false,
+			"other_args": "{}",
+			"use_other_args": false,
 			"s": ""
 		},
 		"argstype": {
+			"other_args": {
+				"type": "multiline",
+				"refswitch": "use_other_args",
+				"name": "其他参数"
+			},
+			"user_user_prompt": {
+				"name": "user prompt",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1
+			},
 			"s": {
 				"type": "split",
 				"rank": 2.5
@@ -447,18 +501,18 @@
 				"type": "switch",
 				"rank": 3
 			},
-			"使用自定义promt": {
-				"type": "switch_ref"
-			},
 			"自定义promt": {
 				"type": "multiline",
-				"refswitch": "使用自定义promt"
+				"refswitch": "使用自定义promt",
+				"name": "自定义_system promt",
+				"rank": 5
 			},
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
-				"step": 1
+				"step": 1,
+				"rank": 4.9
 			},
 			"Temperature": {
 				"type": "spin",
@@ -481,9 +535,23 @@
 			"top_p": 0.3,
 			"max_tokens": 128,
 			"frequency_penalty": 0,
+			"user_user_prompt": "{sentence}",
+			"use_user_user_prompt": false,
+			"other_args": "{}",
+			"use_other_args": false,
 			"s": ""
 		},
 		"argstype": {
+			"other_args": {
+				"type": "multiline",
+				"refswitch": "use_other_args",
+				"name": "其他参数"
+			},
+			"user_user_prompt": {
+				"name": "user prompt",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1
+			},
 			"s": {
 				"type": "split",
 				"rank": 2.5
@@ -517,24 +585,22 @@
 			},
 			"user_prompt": {
 				"type": "multiline",
-				"name": "自定义promt",
-				"refswitch": "use_user_prompt"
+				"name": "自定义_system promt",
+				"refswitch": "use_user_prompt",
+				"rank": 5
 			},
 			"usingstream": {
 				"name": "流式输出",
 				"type": "switch",
 				"rank": 3
 			},
-			"use_user_prompt": {
-				"name": "使用自定义promt",
-				"type": "switch_ref"
-			},
 			"context_num": {
 				"name": "附带上下文个数",
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
-				"step": 1
+				"step": 1,
+				"rank": 4.9
 			},
 			"Temperature": {
 				"type": "spin",
@@ -553,9 +619,23 @@
 			"使用自定义promt": false,
 			"自定义promt": "",
 			"流式输出": false,
+			"use_user_user_prompt": false,
+			"user_user_prompt": "{sentence}",
+			"other_args": "{}",
+			"use_other_args": false,
 			"s": ""
 		},
 		"argstype": {
+			"other_args": {
+				"type": "multiline",
+				"refswitch": "use_other_args",
+				"name": "其他参数"
+			},
+			"user_user_prompt": {
+				"name": "user prompt",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1
+			},
 			"s": {
 				"type": "split",
 				"rank": 1.5
@@ -568,20 +648,20 @@
 			},
 			"自定义promt": {
 				"type": "multiline",
-				"refswitch": "使用自定义promt"
+				"refswitch": "使用自定义promt",
+				"name": "自定义_system promt",
+				"rank": 5
 			},
 			"流式输出": {
 				"type": "switch",
 				"rank": 2
 			},
-			"使用自定义promt": {
-				"type": "switch_ref"
-			},
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
-				"step": 1
+				"step": 1,
+				"rank": 4.9
 			},
 			"Temperature": {
 				"type": "spin",
@@ -744,13 +824,9 @@
 				"type": "switch"
 			},
 			"custom_prompt": {
-				"name": "自定义promt",
+				"name": "自定义_system promt",
 				"type": "multiline",
 				"refswitch": "use_custom_prompt"
-			},
-			"use_custom_prompt": {
-				"type": "switch_ref",
-				"name": "使用自定义promt"
 			}
 		}
 	},
@@ -766,13 +842,9 @@
 				"type": "switch"
 			},
 			"custom_prompt": {
-				"name": "自定义promt",
+				"name": "自定义_system promt",
 				"type": "multiline",
 				"refswitch": "use_custom_prompt"
-			},
-			"use_custom_prompt": {
-				"type": "switch_ref",
-				"name": "使用自定义promt"
 			}
 		}
 	},
@@ -788,13 +860,9 @@
 				"type": "switch"
 			},
 			"custom_prompt": {
-				"name": "自定义promt",
+				"name": "自定义_system promt",
 				"type": "multiline",
 				"refswitch": "use_custom_prompt"
-			},
-			"use_custom_prompt": {
-				"type": "switch_ref",
-				"name": "使用自定义promt"
 			}
 		}
 	},
@@ -810,13 +878,9 @@
 				"type": "switch"
 			},
 			"custom_prompt": {
-				"name": "自定义promt",
+				"name": "自定义_system promt",
 				"type": "multiline",
 				"refswitch": "use_custom_prompt"
-			},
-			"use_custom_prompt": {
-				"type": "switch_ref",
-				"name": "使用自定义promt"
 			}
 		}
 	},
@@ -832,13 +896,9 @@
 				"type": "switch"
 			},
 			"custom_prompt": {
-				"name": "自定义promt",
+				"name": "自定义_system promt",
 				"type": "multiline",
 				"refswitch": "use_custom_prompt"
-			},
-			"use_custom_prompt": {
-				"type": "switch_ref",
-				"name": "使用自定义promt"
 			}
 		}
 	},
@@ -852,28 +912,40 @@
 			"context": 0,
 			"use_custom_prompt": false,
 			"custom_prompt": "",
+			"user_user_prompt": "{sentence}",
+			"use_user_user_prompt": false,
+			"other_args": "{}",
+			"use_other_args": false,
 			"s": ""
 		},
 		"argstype": {
+			"other_args": {
+				"type": "multiline",
+				"refswitch": "use_other_args",
+				"name": "其他参数"
+			},
+			"user_user_prompt": {
+				"name": "user prompt",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1
+			},
 			"s": {
 				"type": "split",
 				"rank": 3.5
 			},
 			"custom_prompt": {
-				"name": "自定义promt",
+				"name": "自定义_system promt",
 				"type": "multiline",
-				"refswitch": "use_custom_prompt"
-			},
-			"use_custom_prompt": {
-				"type": "switch_ref",
-				"name": "使用自定义promt"
+				"refswitch": "use_custom_prompt",
+				"rank": 5
 			},
 			"context": {
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
 				"step": 1,
-				"name": "附带上下文个数"
+				"name": "附带上下文个数",
+				"rank": 4.9
 			},
 			"SECRET_KEY": {
 				"rank": 2
@@ -1003,9 +1075,6 @@
 				"islink": true,
 				"rank": -1
 			},
-			"use_context": {
-				"type": "switch_ref"
-			},
 			"append_context_num": {
 				"type": "intspin",
 				"min": 1,
@@ -1071,9 +1140,23 @@
 			"top_p": 0.3,
 			"max_tokens": 128,
 			"frequency_penalty": 0,
+			"user_user_prompt": "{sentence}",
+			"use_user_user_prompt": false,
+			"other_args": "{}",
+			"use_other_args": false,
 			"s": ""
 		},
 		"argstype": {
+			"other_args": {
+				"type": "multiline",
+				"refswitch": "use_other_args",
+				"name": "其他参数"
+			},
+			"user_user_prompt": {
+				"name": "user prompt",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1
+			},
 			"SECRET_KEY": {
 				"rank": 3
 			},
@@ -1111,16 +1194,16 @@
 			},
 			"自定义promt": {
 				"type": "multiline",
-				"refswitch": "使用自定义promt"
-			},
-			"使用自定义promt": {
-				"type": "switch_ref"
+				"refswitch": "使用自定义promt",
+				"name": "自定义_system promt",
+				"rank": 5
 			},
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
 				"max": 10,
-				"step": 1
+				"step": 1,
+				"rank": 4.9
 			},
 			"Temperature": {
 				"type": "spin",

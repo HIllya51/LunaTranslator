@@ -148,7 +148,6 @@
     "高级": "senior",
     "查词": "Sök efter ord",
     "繁体中文(CP950,BIG5)": "Traditionellt kinesiskt (CP950, BIG5)",
-    "使用自定义promt": "Använda anpassade uppmaningar",
     "翻译结果修正": "Korrigering av översättningsresultat",
     "显示": "visa",
     "选择文本输入源": "Välj textinmatningskälla",
@@ -165,7 +164,6 @@
     "代名詞": "Synonym",
     "绑定截图窗口": "Bind skärmdumpfönster",
     "执行周期": "Körcykel",
-    "自定义promt": "Anpassad prompt",
     "希腊语(CP1253)": "Grekiska (CP1253)",
     "打开保存的游戏": "Öppna det sparade spelet",
     "删除特殊码": "Ta bort särskild kod",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Portugisiska",
     "正在解压": "Nedtryckning pågår",
     "自动更新失败，请手动更新": "Automatisk uppdatering misslyckades, uppdatera manuellt",
-    "准备完毕，等待更新": "Redo, väntar på uppdateringar"
+    "准备完毕，等待更新": "Redo, väntar på uppdateringar",
+    "自定义": "anpassad",
+    "其他参数": "Andra parametrar"
 }

@@ -131,10 +131,8 @@ class TS(basetrans):
                 temperature=float(self.config["temperature"]),
                 top_p=float(self.config["top_p"]),
                 max_tokens=1 if is_test else int(self.config["max_new_token"]),
-                frequency_penalty=(
-                    float(kwargs["frequency_penalty"])
-                    if "frequency_penalty" in kwargs.keys()
-                    else float(self.config["frequency_penalty"])
+                frequency_penalty=float(
+                    kwargs.get("frequency_penalty", self.config["frequency_penalty"])
                 ),
                 seed=-1,
                 extra_query=extra_query,
@@ -169,10 +167,8 @@ class TS(basetrans):
                 temperature=float(self.config["temperature"]),
                 top_p=float(self.config["top_p"]),
                 max_tokens=1 if is_test else int(self.config["max_new_token"]),
-                frequency_penalty=(
-                    float(kwargs["frequency_penalty"])
-                    if "frequency_penalty" in kwargs.keys()
-                    else float(self.config["frequency_penalty"])
+                frequency_penalty=float(
+                    kwargs.get("frequency_penalty", self.config["frequency_penalty"])
                 ),
                 seed=-1,
                 extra_query=extra_query,

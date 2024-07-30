@@ -24,10 +24,7 @@ class OCR(baseocr):
         }
 
     def createdata(self, message):
-        try:
-            temperature = float(self.config["Temperature"])
-        except:
-            temperature = 0.3
+        temperature = self.config["Temperature"]
 
         data = dict(
             model=self.config["model"],

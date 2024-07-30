@@ -490,8 +490,6 @@
     "朗读的翻译": "Tłumaczenie czytania na głos",
     "模拟按键Ctrl": "Symuluj klawisz Ctrl",
     "模拟按键Enter": "Symulować naciśnij Enter",
-    "自定义promt": "Niestandardowy promt",
-    "使用自定义promt": "Użyj niestandardowego promta",
     "项目地址": "Adres projektu",
     "使用说明": "Instrukcja użytkowania",
     "注册地址": "Adres zarejestrowany w firmie",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Portugalski",
     "正在解压": "Dekompresja w toku",
     "自动更新失败，请手动更新": "Automatyczna aktualizacja nie powiodła się, proszę aktualizować ręcznie",
-    "准备完毕，等待更新": "Gotowi, czekamy na aktualizacje."
+    "准备完毕，等待更新": "Gotowi, czekamy na aktualizacje.",
+    "自定义": "niestandardowe",
+    "其他参数": "Inne parametry"
 }

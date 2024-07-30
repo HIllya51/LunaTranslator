@@ -148,7 +148,6 @@
     "高级": "senior",
     "查词": "Hledat slova",
     "繁体中文(CP950,BIG5)": "Tradiční čínština (CP950, BIG5)",
-    "使用自定义promt": "Použití vlastních výzv",
     "翻译结果修正": "Oprava výsledků překladu",
     "显示": "displej",
     "选择文本输入源": "Vybrat vstupní zdroj textu",
@@ -165,7 +164,6 @@
     "代名詞": "Synonym",
     "绑定截图窗口": "Vázat okno snímku obrazovky",
     "执行周期": "Cyklus provádění",
-    "自定义promt": "Vlastní dotaz",
     "希腊语(CP1253)": "Řečtina (CP1253)",
     "打开保存的游戏": "Otevřít uloženou hru",
     "删除特殊码": "Smazat zvláštní kód",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Portugalština",
     "正在解压": "Probíhá dekomprese",
     "自动更新失败，请手动更新": "Automatická aktualizace selhala, aktualizace prosím ručně",
-    "准备完毕，等待更新": "Připraveni, čekáme na novinky."
+    "准备完毕，等待更新": "Připraveni, čekáme na novinky.",
+    "自定义": "vlastní",
+    "其他参数": "Další parametry"
 }

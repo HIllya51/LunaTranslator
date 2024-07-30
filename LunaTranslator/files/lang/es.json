@@ -490,8 +490,6 @@
     "朗读的翻译": "Traducción de la lectura en voz alta",
     "模拟按键Ctrl": "Tecla de simulación Ctrl",
     "模拟按键Enter": "Botón de simulación entrar",
-    "自定义promt": "Personalizado promt",
-    "使用自定义promt": "Usar promt personalizado",
     "项目地址": "Dirección del proyecto",
     "使用说明": "Instrucciones de uso",
     "注册地址": "Dirección registrada",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Portugués",
     "正在解压": "Se está descomprimiendo",
     "自动更新失败，请手动更新": "Falló la actualización automática, actualice manualmente",
-    "准备完毕，等待更新": "Listo, esperando la actualización"
+    "准备完毕，等待更新": "Listo, esperando la actualización",
+    "自定义": "Personalizado",
+    "其他参数": "Otros parámetros"
 }

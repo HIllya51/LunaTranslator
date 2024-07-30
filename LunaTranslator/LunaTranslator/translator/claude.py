@@ -42,12 +42,21 @@ class TS(basetrans):
         return api_url
 
     def translate(self, query):
+        self.checkempty(["API_KEY", "model"])
         self.contextnum = int(self.config["附带上下文个数"])
-
+        user_prompt = (
+            self.config.get("user_user_prompt", "")
+            if self.config.get("use_user_user_prompt", False)
+            else ""
+        )
         try:
-            temperature = float(self.config["Temperature"])
+            if "{sentence}" in user_prompt:
+                query = user_prompt.format(sentence=query)
+            else:
+                query = user_prompt + query
         except:
-            temperature = 0.3
+            pass
+        temperature = self.config["Temperature"]
 
         if self.config["使用自定义promt"]:
             system = self.config["自定义promt"]
@@ -71,13 +80,8 @@ class TS(basetrans):
             "accept": "application/json",
             "anthropic-version": "2023-06-01",
             "content-type": "application/json",
+            "X-Api-Key": self.multiapikeycurrent["API_KEY"],
         }
-        if len(self.multiapikeycurrent["API_KEY"]):
-            headers.update({"X-Api-Key": self.multiapikeycurrent["API_KEY"]})
-        # elif len(self.config["AUTH_TOKEN"]):
-        #    headers.update({"Authorization": f'Bearer {self.config["AUTH_TOKEN"]}'})
-        else:
-            self.checkempty(["API_KEY"])  # , "AUTH_TOKEN"])
 
         usingstream = self.config["流式输出"]
         data = dict(

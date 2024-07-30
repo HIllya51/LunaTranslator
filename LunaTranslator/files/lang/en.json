@@ -490,8 +490,6 @@
     "朗读的翻译": "Translation of TTS Text",
     "模拟按键Ctrl": "Simulate Ctrl Key",
     "模拟按键Enter": "Simulate Enter Key",
-    "自定义promt": "Custom Prompt",
-    "使用自定义promt": "Use Custom Prompt",
     "项目地址": "Project Address",
     "使用说明": "User Guide",
     "注册地址": "Registration Address",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Portuguese",
     "正在解压": "Decompression in progress",
     "自动更新失败，请手动更新": "Automatic update failed, please update manually",
-    "准备完毕，等待更新": "Ready, waiting for updates"
+    "准备完毕，等待更新": "Ready, waiting for updates",
+    "自定义": "custom",
+    "其他参数": "Other parameters"
 }

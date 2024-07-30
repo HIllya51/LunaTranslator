@@ -465,13 +465,26 @@ class autoinitdialog(LDialog):
             hasrank.append(line)
         hasrank.sort(key=lambda line: line.get("rank", None))
         lines = hasrank + hasnorank
+
+        refname2line = {}
+        for line in lines:
+            refswitch = line.get("refswitch", None)
+            if refswitch:
+                refname2line[refswitch] = None
+        oklines = []
+
+        for line in lines:
+            k = line.get("k", None)
+            if k in refname2line:
+                refname2line[k] = line
+                continue
+            oklines.append(line)
+        lines = oklines
         for line in lines:
             if "d" in line:
                 dd = line["d"]
             if "k" in line:
                 key = line["k"]
-            if line["type"] == "switch_ref":
-                continue
             if line["type"] == "label":
 
                 if "islink" in line and line["islink"]:
@@ -571,11 +584,7 @@ class autoinitdialog(LDialog):
             refswitch = line.get("refswitch", None)
             if refswitch:
                 hbox = QHBoxLayout()
-                line_ref = None
-                for __ in lines:
-                    if __.get("k", None) == refswitch:
-                        line_ref = __
-                        break
+                line_ref = refname2line.get(refswitch, None)
                 if line_ref:
                     if "d" in line_ref:
                         dd = line_ref["d"]

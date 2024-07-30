@@ -77,11 +77,19 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(["SECRET_KEY", "model"])
         self.contextnum = int(self.config["附带上下文个数"])
-
+        user_prompt = (
+            self.config.get("user_user_prompt", "")
+            if self.config.get("use_user_user_prompt", False)
+            else ""
+        )
         try:
-            temperature = float(self.config["Temperature"])
+            if "{sentence}" in user_prompt:
+                query = user_prompt.format(sentence=query)
+            else:
+                query = user_prompt + query
         except:
-            temperature = 0.3
+            pass
+        temperature = self.config["Temperature"]
 
         if self.config["使用自定义promt"]:
             message = [{"role": "system", "content": self.config["自定义promt"]}]
@@ -94,7 +102,7 @@ class TS(basetrans):
                     ),
                 },
             ]
-            
+
         message.append(
             {
                 "role": "CHATBOT",

@@ -490,8 +490,6 @@
     "朗读的翻译": "Bản dịch của read to",
     "模拟按键Ctrl": "Mô phỏng phím Ctrl",
     "模拟按键Enter": "Mô phỏng phím Enter",
-    "自定义promt": "Tùy chỉnh Promt",
-    "使用自定义promt": "Sử dụng Custom Promt",
     "项目地址": "Địa chỉ dự án",
     "使用说明": "Hướng dẫn sử dụng",
     "注册地址": "Địa chỉ đăng ký",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Bồ Đào Nha",
     "正在解压": "Đang giải nén",
     "自动更新失败，请手动更新": "Cập nhật tự động không thành công, vui lòng cập nhật thủ công",
-    "准备完毕，等待更新": "Sẵn sàng chờ update"
+    "准备完毕，等待更新": "Sẵn sàng chờ update",
+    "自定义": "Tùy chỉnh",
+    "其他参数": "Tham số khác"
 }

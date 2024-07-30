@@ -148,7 +148,6 @@
     "高级": "Senior",
     "查词": "Suche nach Wörtern",
     "繁体中文(CP950,BIG5)": "Traditionelles Chinesisch (CP950, BIG5)",
-    "使用自定义promt": "Benutzerdefinierte Eingabeaufforderungen verwenden",
     "翻译结果修正": "Korrektur des Übersetzungsergebnisses",
     "显示": "Anzeige",
     "选择文本输入源": "Textquelle auswählen",
@@ -165,7 +164,6 @@
     "代名詞": "Synonym",
     "绑定截图窗口": "Screenshot-Fenster binden",
     "执行周期": "Ausführungszyklus",
-    "自定义promt": "Benutzerdefinierte Eingabeaufforderung",
     "希腊语(CP1253)": "Griechisch (CP1253)",
     "打开保存的游戏": "Gespeichertes Spiel öffnen",
     "删除特殊码": "Sondercode löschen",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Portugiesisch",
     "正在解压": "Dekompression im Gange",
     "自动更新失败，请手动更新": "Automatische Aktualisierung fehlgeschlagen, bitte manuell aktualisieren",
-    "准备完毕，等待更新": "Bereit, warten auf Updates"
+    "准备完毕，等待更新": "Bereit, warten auf Updates",
+    "自定义": "kundenspezifisch",
+    "其他参数": "Weitere Parameter"
 }

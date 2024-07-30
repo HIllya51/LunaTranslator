@@ -490,8 +490,6 @@
     "朗读的翻译": "Okumanın çevirimi yüksek olarak",
     "模拟按键Ctrl": "Anahtarı Ctrl'u simüle edin",
     "模拟按键Enter": "Basın Enter'i Simüle Et",
-    "自定义promt": "Özel promt",
-    "使用自定义promt": "Özel promt kullan",
     "项目地址": "Proje adresi",
     "使用说明": "Kullanılacak talimatlar",
     "注册地址": "Şirket Kayıtlı Adresi",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Portekizce",
     "正在解压": "Kıpırdama ilerliyor",
     "自动更新失败，请手动更新": "Otomatik güncelleştirme başarısız oldu, lütfen kendine güncelleştir",
-    "准备完毕，等待更新": "Hazır, güncelleştirmeleri bekliyor."
+    "准备完毕，等待更新": "Hazır, güncelleştirmeleri bekliyor.",
+    "自定义": "Özel",
+    "其他参数": "Diğer parametreler"
 }

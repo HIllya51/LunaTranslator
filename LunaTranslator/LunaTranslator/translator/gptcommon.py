@@ -29,11 +29,7 @@ class gptcommon(basetrans):
         super().__init__(typename)
 
     def createdata(self, message):
-        try:
-            temperature = float(self.config["Temperature"])
-        except:
-            temperature = 0.3
-
+        temperature = self.config["Temperature"]
         data = dict(
             model=self.config["model"],
             messages=message,
@@ -46,6 +42,12 @@ class gptcommon(basetrans):
             frequency_penalty=self.config["frequency_penalty"],
             stream=self.config["流式输出"],
         )
+        try:
+            if self.config["use_other_args"]:
+                extra = json.loads(self.config["other_args"])
+                data.update(extra)
+        except:
+            pass
         return data
 
     def createparam(self):
@@ -112,7 +114,18 @@ class gptcommon(basetrans):
 
     def translate(self, query):
         self.contextnum = int(self.config["附带上下文个数"])
-
+        user_prompt = (
+            self.config.get("user_user_prompt", "")
+            if self.config.get("use_user_user_prompt", False)
+            else ""
+        )
+        try:
+            if "{sentence}" in user_prompt:
+                query = user_prompt.format(sentence=query)
+            else:
+                query = user_prompt + query
+        except:
+            pass
         if self.config["使用自定义promt"]:
             message = [{"role": "system", "content": self.config["自定义promt"]}]
         else:

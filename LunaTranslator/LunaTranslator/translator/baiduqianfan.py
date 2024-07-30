@@ -30,10 +30,7 @@ class TS(basetrans):
         super().__init__(typename)
 
     def createdata(self, message):
-        try:
-            temperature = float(self.config["Temperature"])
-        except:
-            temperature = 0.3
+        temperature = self.config["Temperature"]
 
         if self.config["use_user_prompt"]:
             system = self.config["user_prompt"]
@@ -109,7 +106,18 @@ class TS(basetrans):
     def translate(self, query):
         acss = self.checkchange()
         self.contextnum = int(self.config["context_num"])
-
+        user_prompt = (
+            self.config.get("user_user_prompt", "")
+            if self.config.get("use_user_user_prompt", False)
+            else ""
+        )
+        try:
+            if "{sentence}" in user_prompt:
+                query = user_prompt.format(sentence=query)
+            else:
+                query = user_prompt + query
+        except:
+            pass
         message = []
         for _i in range(min(len(self.context) // 2, self.contextnum)):
             i = (

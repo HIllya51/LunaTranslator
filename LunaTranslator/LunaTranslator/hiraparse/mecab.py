@@ -46,7 +46,6 @@ class mecabwrap:
         if not os.path.exists(mecabpath):
             mecabpath = r"C:\Program Files (x86)\MeCab\dic\ipadic"
         self.codec = self.testcodec(mecabpath)
-        print(self.codec)
         self.kks = winsharedutils.mecab_init(
             mecabpath.encode("utf8"), gobject.GetDllpath("libmecab.dll")
         )

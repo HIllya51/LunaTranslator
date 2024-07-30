@@ -148,7 +148,6 @@
     "高级": "sénior",
     "查词": "Procurar por palavras",
     "繁体中文(CP950,BIG5)": "Chinês tradicional (CP950, BIG5)",
-    "使用自定义promt": "Usar comandos personalizados",
     "翻译结果修正": "Correcção do resultado da tradução",
     "显示": "display",
     "选择文本输入源": "Seleccionar a fonte de entrada de texto",
@@ -165,7 +164,6 @@
     "代名詞": "Sinónimo",
     "绑定截图窗口": "Vincular a janela da captura de ecrã",
     "执行周期": "Ciclo de execução",
-    "自定义promt": "Promt Personalizada",
     "希腊语(CP1253)": "Grego (CP1253)",
     "打开保存的游戏": "Abrir o jogo gravado",
     "删除特殊码": "Apagar o código especial",
@@ -838,5 +836,7 @@
     "葡萄牙语": "Português",
     "正在解压": "Descompressão em curso",
     "自动更新失败，请手动更新": "A actualização automática falhou, actualizar manualmente",
-    "准备完毕，等待更新": "Pronto, à espera de actualizações."
+    "准备完毕，等待更新": "Pronto, à espera de actualizações.",
+    "自定义": "personalizado",
+    "其他参数": "Outros parâmetros"
 }

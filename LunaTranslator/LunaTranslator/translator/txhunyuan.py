@@ -115,7 +115,19 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(["secret_id", "secret_key"])
         self.contextnum = int(self.config["context_num"])
-
+        user_prompt = (
+            self.config.get("user_user_prompt", "")
+            if self.config.get("use_user_user_prompt", False)
+            else ""
+        )
+        try:
+            if "{sentence}" in user_prompt:
+                query = user_prompt.format(sentence=query)
+            else:
+                query = user_prompt + query
+        except:
+            pass
+        print(query)
         if self.config["use_user_prompt"]:
             message = [{"Role": "system", "Content": self.config["user_prompt"]}]
         else:
