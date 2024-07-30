@@ -8,14 +8,14 @@ DECLARE void showintab(HWND hwnd, bool show)
     if (show)
     {
         style_ex |= WS_EX_APPWINDOW;
-        if ((style & WS_OVERLAPPEDWINDOW) != WS_OVERLAPPEDWINDOW)
-            style_ex &= ~WS_EX_TOOLWINDOW;
+        // if ((style & WS_OVERLAPPEDWINDOW) != WS_OVERLAPPEDWINDOW)
+        //     style_ex &= ~WS_EX_TOOLWINDOW;
     }
     else
     {
         style_ex &= ~WS_EX_APPWINDOW;
-        if ((style & WS_OVERLAPPEDWINDOW) != WS_OVERLAPPEDWINDOW)
-            style_ex |= WS_EX_TOOLWINDOW;
+        // if ((style & WS_OVERLAPPEDWINDOW) != WS_OVERLAPPEDWINDOW)
+        //     style_ex |= WS_EX_TOOLWINDOW;
     }
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }
