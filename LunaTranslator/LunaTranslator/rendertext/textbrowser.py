@@ -395,6 +395,8 @@ class TextBrowser(QWidget, dataget):
         fh = globalconfig["extra_space"]
         fha, _ = self._getfh(True)
         self.extra_height = fha
+        if fh < 0:
+            self.extra_height = max(-fh, self.extra_height)
         for i in range(b1, b2):
             _fha = 0
             for word in linetags[i - b1]:
@@ -417,8 +419,10 @@ class TextBrowser(QWidget, dataget):
             fh = globalconfig["extra_space"]
         else:
             fh = globalconfig["extra_space_trans"]
-
-        self.extra_height = 0
+        if fh < 0:
+            self.extra_height = -fh
+        else:
+            self.extra_height = 0
         for i in range(b1, b2):
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()
