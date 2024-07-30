@@ -354,8 +354,8 @@ class TextBrowser(QWidget, dataget):
                         newtag.append(_tag)
                     else:
                         hiras = [newtag[-1]["hira"], ""]
-                        if len(sub) > len(end):
-                            hiras = reversed(hiras)
+                        if len(end) > len(sub):
+                            hiras.reverse()
                         newtag[-1].update({"orig_X": sub, "hira": hiras[0]})
                         _tag = newtag[-1].copy()
                         _tag.update({"orig_X": end, "hira": hiras[1], "ref": True})
