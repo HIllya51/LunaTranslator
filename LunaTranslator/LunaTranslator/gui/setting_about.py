@@ -272,19 +272,22 @@ def setTab_update(self, basel):
     grid2 = [
         [
             "自动更新",
-            D_getsimpleswitch(
-                globalconfig, "autoupdate", callback=versionchecktask.put
+            (
+                D_getsimpleswitch(
+                    globalconfig, "autoupdate", callback=versionchecktask.put
+                ),
+                0,
             ),
         ],
         [
             "当前版本",
             versionstring,
-        ],
-        [
+            "",
             "最新版本",
             functools.partial(createversionlabel, self),
+            "",
         ],
-        [functools.partial(createdownloadprogress, self)],
+        [(functools.partial(createdownloadprogress, self), 0)],
     ]
 
     shuominggrid = [
@@ -329,8 +332,8 @@ def setTab_update(self, basel):
             [
                 (
                     dict(
-                        Stretch=False,
                         grid=grid2,
+                        type="grid",
                     ),
                     0,
                     "group",

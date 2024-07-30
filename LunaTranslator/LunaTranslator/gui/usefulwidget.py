@@ -1382,8 +1382,7 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
     tab.addTab(q, title)
 
 
-def makeforms(lay: LFormLayout, lis, args):
-    Stretch = args.get("Stretch", True)
+def makeforms(lay: LFormLayout, lis):
     for line in lis:
         if len(line) == 0:
             lay.addRow(QLabel())
@@ -1395,17 +1394,17 @@ def makeforms(lay: LFormLayout, lis, args):
         if isinstance(wid, (tuple, list)):
             hb = QHBoxLayout()
             hb.setContentsMargins(0, 0, 0, 0)
-            if Stretch:
-                needstretch = False
-                for w in wid:
-                    if callable(w):
-                        w = w()
-                    if w.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed:
-                        needstretch = True
-                    hb.addWidget(w)
-                if needstretch:
-                    hb.insertStretch(0)
-                    hb.addStretch()
+
+            needstretch = False
+            for w in wid:
+                if callable(w):
+                    w = w()
+                if w.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed:
+                    needstretch = True
+                hb.addWidget(w)
+            if needstretch:
+                hb.insertStretch(0)
+                hb.addStretch()
             wid = hb
         else:
             if callable(wid):
@@ -1413,10 +1412,7 @@ def makeforms(lay: LFormLayout, lis, args):
             elif isinstance(wid, str):
                 wid = QLabel(wid)
                 wid.setOpenExternalLinks(True)
-            if (
-                Stretch
-                and wid.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed
-            ):
+            if wid.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed:
                 hb = QHBoxLayout()
                 hb.setContentsMargins(0, 0, 0, 0)
                 hb.addStretch()
@@ -1460,7 +1456,7 @@ def makegroupingrid(args):
     elif _type == "form":
         lay = LFormLayout()
         group.setLayout(lay)
-        makeforms(lay, lis, args)
+        makeforms(lay, lis)
         if internallayoutname:
             setattr(parent, internallayoutname, lay)
     return group
