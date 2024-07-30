@@ -1916,13 +1916,6 @@
             "name": "ChatGPT_兼容接口",
             "is_gpt_like": true
         },
-        "TGW": {
-            "use": false,
-            "type": "offline",
-            "color": "blue",
-            "name": "TGW语言模型",
-            "is_gpt_like": true
-        },
         "realtime_edit": {
             "use": false,
             "type": "pre",
