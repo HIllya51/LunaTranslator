@@ -246,6 +246,12 @@ class TextBrowser(QWidget, dataget):
 
     def append(self, origin, atcenter, text, tag, flags, color, cleared):
         isshowhira, isshow_fenci, isfenciclick = flags
+        if len(tag):
+            font = self._createqfont(origin)
+            textlines, linetags = self._splitlinestags(font, tag, text)
+            text = "\n".join(textlines)
+            tag = self._join_tags(linetags, True)
+
         self._textbrowser_append(
             origin, atcenter, text, tag if isshowhira else [], color, cleared
         )
@@ -272,22 +278,16 @@ class TextBrowser(QWidget, dataget):
         _space = "" if cleared else "\n"
         blockcount = 0 if cleared else self.textbrowser.document().blockCount()
         hastag = len(tag) > 0
-        if hastag:
-            textlines, linetags = self._splitlinestags(font, tag, text)
+        self.textbrowser.insertPlainText(_space + text)
+        blockcount_after = self.textbrowser.document().blockCount()
 
-            self.textbrowser.insertPlainText(_space + "\n".join(textlines))
-            blockcount_after = self.textbrowser.document().blockCount()
-            self._setlineheight_x(blockcount, blockcount_after, linetags)
+        if hastag:
+            self._setlineheight_x(blockcount, blockcount_after, self._split_tags(tag))
         else:
-            self.textbrowser.insertPlainText(_space + text)
-            blockcount_after = self.textbrowser.document().blockCount()
             self._setlineheight(blockcount, blockcount_after, origin)
         self.textbrowser.document().blockSignals(False)
         self.textbrowser.document().contentsChanged.emit()
         if hastag:
-            xtag = self._join_tags(linetags, True)
-            tag.clear()
-            tag.extend(xtag)
             self._addtag(tag)
         self._showyinyingtext(blockcount, blockcount_after, color, font)
 
