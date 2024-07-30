@@ -33,10 +33,14 @@ class Qlabel_c(QLabel):
         return super().mouseReleaseEvent(event)
 
     def enterEvent(self, a0) -> None:
+        if self.company:
+            self.company.setStyleSheet("background-color: rgba(0,0,0,0.5);")
         self.setStyleSheet("background-color: rgba(0,0,0,0.5);")
         return super().enterEvent(a0)
 
     def leaveEvent(self, a0) -> None:
+        if self.company:
+            self.company.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         return super().leaveEvent(a0)
 
@@ -345,13 +349,16 @@ class TextBrowser(QWidget, dataget):
                     if newtag[-1]["orig"] == newtag[-1]["hira"]:
                         newtag[-1].update({"orig_X": sub, "hira": sub})
                         _tag = newtag[-1].copy()
-                        _tag.update({"orig_X": end, "hira": end})
+                        _tag.update({"orig_X": end, "hira": end, "ref": True})
                         newtag.append({"orig_X": "\n", "orig": "\n", "hira": ""})
                         newtag.append(_tag)
                     else:
-                        newtag[-1].update({"orig_X": sub})
+                        hiras = [newtag[-1]["hira"], ""]
+                        if len(sub) > len(end):
+                            hiras = reversed(hiras)
+                        newtag[-1].update({"orig_X": sub, "hira": hiras[0]})
                         _tag = newtag[-1].copy()
-                        _tag.update({"orig_X": end})
+                        _tag.update({"orig_X": end, "hira": hiras[1], "ref": True})
                         newtag.append({"orig_X": "\n", "orig": "\n", "hira": ""})
                         newtag.append(_tag)
                 else:
@@ -601,6 +608,15 @@ class TextBrowser(QWidget, dataget):
             self._add_searchlabel(
                 isfenciclick, isshow_fenci, labeli, pos1, callback, word, color
             )
+            if word.get("ref", False):
+                self.searchmasklabels_clicked[labeli - 1].company = (
+                    self.searchmasklabels_clicked[labeli]
+                )
+                self.searchmasklabels_clicked[labeli].company = (
+                    self.searchmasklabels_clicked[labeli - 1]
+                )
+            else:
+                self.searchmasklabels_clicked[labeli].company = None
             labeli += 1
 
     def _getfh(self, half, origin=True, getfm=False):
