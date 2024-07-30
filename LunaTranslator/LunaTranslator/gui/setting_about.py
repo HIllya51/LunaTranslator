@@ -124,14 +124,14 @@ def versioncheckthread(self):
         self.progresssignal.emit("……", 0)
         if not x:
             continue
-        self.versiontextsignal.emit(("获取中"))  # ,'',url,url))
+        self.versiontextsignal.emit("...")  # ,'',url,url))
         _version = getvesionmethod()
 
         if _version is None:
             sversion = "获取失败"
         else:
             sversion = _version[0]
-        self.versiontextsignal.emit(wraplink(sversion))
+        self.versiontextsignal.emit(sversion)
         version = winsharedutils.queryversion(sys.argv[0])
         need = (
             version
@@ -190,7 +190,7 @@ def wraplink(text: str):
 
 def createversionlabel(self):
 
-    self.versionlabel = LLabel()
+    self.versionlabel = QLabel()
     self.versionlabel.setOpenExternalLinks(True)
     self.versionlabel.setTextInteractionFlags(
         Qt.TextInteractionFlag.LinksAccessibleByMouse
@@ -208,7 +208,7 @@ def createversionlabel(self):
 
 def versionlabelmaybesettext(self, x):
     try:
-        self.versionlabel.setText((x))
+        self.versionlabel.setText(wraplink(x))
     except:
         self.versionlabel_cache = x
 
