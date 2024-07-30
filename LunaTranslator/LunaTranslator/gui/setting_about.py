@@ -124,7 +124,7 @@ def versioncheckthread(self):
         self.progresssignal.emit("……", 0)
         if not x:
             continue
-        self.versiontextsignal.emit("...")  # ,'',url,url))
+        self.versiontextsignal.emit("获取中")  # ,'',url,url))
         _version = getvesionmethod()
 
         if _version is None:
@@ -177,30 +177,15 @@ def createdownloadprogress(self):
     return self.downloadprogress
 
 
-def wraplink(text: str):
-    link = "{main_server}/Github/LunaTranslator/releases"
-    if text.startswith("v"):
-
-        link = "{main_server}/Github/LunaTranslator/releases/tag/" + text
-    return makehtml(
-        link,
-        show=text,
-    )
-
-
 def createversionlabel(self):
 
-    self.versionlabel = QLabel()
+    self.versionlabel = LLabel()
     self.versionlabel.setOpenExternalLinks(True)
     self.versionlabel.setTextInteractionFlags(
         Qt.TextInteractionFlag.LinksAccessibleByMouse
     )
     try:
-        self.versionlabel.setText(
-            wraplink(
-                self.versionlabel_cache,
-            )
-        )
+        self.versionlabel.setText(self.versionlabel_cache)
     except:
         pass
     return self.versionlabel
@@ -208,7 +193,7 @@ def createversionlabel(self):
 
 def versionlabelmaybesettext(self, x):
     try:
-        self.versionlabel.setText(wraplink(x))
+        self.versionlabel.setText(x)
     except:
         self.versionlabel_cache = x
 
