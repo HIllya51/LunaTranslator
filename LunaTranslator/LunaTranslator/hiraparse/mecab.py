@@ -2,7 +2,7 @@ import winsharedutils
 import os, functools, csv, gobject
 from ctypes import CFUNCTYPE, c_char_p
 
-from hiraparse.basehira import basehira
+from hiraparse.basehira import basehira, KnownException
 
 # # 2.1.2 src schema
 # UnidicFeatures17 = namedtuple('UnidicFeatures17',
@@ -65,7 +65,7 @@ class mecabwrap:
         fp = CFUNCTYPE(None, c_char_p, c_char_p)(cb)
         succ = winsharedutils.mecab_parse(self.kks, text.encode(codec), fp)
         if not succ:
-            raise Exception  # failed
+            raise KnownException  # failed
 
         return res
 

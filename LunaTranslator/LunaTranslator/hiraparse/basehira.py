@@ -3,6 +3,10 @@ from traceback import print_exc
 from myutils.proxy import getproxy
 
 
+class KnownException(Exception):
+    pass
+
+
 class basehira:
     def init(self):
         pass
@@ -86,6 +90,8 @@ class basehira:
                             hira[_]["hira"] = hira[_]["hira"].replace(
                                 _ka[_reverse_idx], target[_reverse_idx]
                             )
+        except KnownException:
+            pass
         except:
             print_exc()
         return hira
