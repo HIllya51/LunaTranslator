@@ -22,11 +22,7 @@ def _getproxy():
 
 
 def getproxy(pair=None):
-    if (
-        pair is None
-        or ("useproxy" not in globalconfig[pair[0]][pair[1]])
-        or globalconfig[pair[0]][pair[1]]["useproxy"]
-    ):
+    if pair is None or globalconfig[pair[0]][pair[1]].get("useproxy", True):
         return _getproxy()
     else:
         return {"https": None, "http": None}

@@ -88,6 +88,8 @@ class basetrans(commonbase):
     using_gpt_dict = False
 
     def level2init(self):
+        if self.transtype == "offline":
+            globalconfig["fanyi"][self.typename]["useproxy"] = False
         self.multiapikeycurrentidx = -1
         self.queue = PriorityQueue()
         self.sqlqueue = None
