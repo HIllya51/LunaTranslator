@@ -65,10 +65,9 @@ class TextBrowser(QWidget, dataget):
 
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
-        self.textbrowser.resize(self.width(), sz.height() + self.extra_height)
-        self.contentsChanged.emit(
-            QSize(sz.width(), self.textbrowser.y() + sz.height() + self.extra_height)
-        )
+        visheight = sz.height() + self.extra_height
+        self.textbrowser.resize(self.width(), visheight)
+        self.contentsChanged.emit(QSize(sz.width(), visheight + self.labeloffset_y))
 
     def resizeEvent(self, event: QResizeEvent):
         self.atback2.resize(event.size())
@@ -478,9 +477,7 @@ class TextBrowser(QWidget, dataget):
             _.setText(subtext[i])
             _.setFont(font)
             _.adjustSize()
-            _.move(
-                subpos[i].x(), subpos[i].y() + self.textbrowser.y() - self.toplabel2.y()
-            )
+            _.move(subpos[i].x(), subpos[i].y() + self.labeloffset_y)
             _.show()
         self.textcursor.setPosition(pos)
         self.textbrowser.setTextCursor(self.textcursor)
@@ -520,7 +517,7 @@ class TextBrowser(QWidget, dataget):
                 self.textcursor.setPosition(blockstart + s)
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-                collects[collecti].move(tl1.x(), tl1.y())
+                collects[collecti].move(tl1.x(), tl1.y() + self.labeloffset_y)
                 collecti += 1
 
     def _showyinyingtext(self, b1, b2, color, font):
@@ -554,7 +551,7 @@ class TextBrowser(QWidget, dataget):
                 _.setText(block.text()[s : s + l])
                 _.setFont(font)
                 _.adjustSize()
-                _.move(tl1.x(), tl1.y() + self.textbrowser.y() - self.toplabel2.y())
+                _.move(tl1.x(), tl1.y() + self.labeloffset_y)
                 _.show()
                 linei += 1
         self.yinyingposline = linei
@@ -637,6 +634,10 @@ class TextBrowser(QWidget, dataget):
             return fm
         return fm.height(), font
 
+    @property
+    def labeloffset_y(self):
+        return self.textbrowser.y()
+
     def _addtag(self, x):
         pos = 0
 
@@ -714,7 +715,7 @@ class TextBrowser(QWidget, dataget):
         _.setFont(font)
         _.adjustSize()
         w = _.width()
-        _.move(int(center - w / 2), y + self.textbrowser.y() - self.toplabel2.y())
+        _.move(int(center - w / 2), y + self.labeloffset_y)
         _.show()
         return _
 
