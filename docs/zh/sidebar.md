@@ -1,6 +1,6 @@
 - [简介](/zh/README.md)
+- [下载和启动](/zh/start.md)
 - [基本用法](/zh/basicuse.md)
-    - [获取软件和启动](/zh/start.md)
 - [软件更新](/zh/update.md)
 - [支持作者](/zh/support.md)
 
