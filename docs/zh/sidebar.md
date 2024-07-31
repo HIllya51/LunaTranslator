@@ -13,7 +13,7 @@
 - [如何使用大模型离线翻译](/zh/offlinellm.md) 
 - [如何使用内嵌翻译](/zh/embedtranslate.md)
 - [如何改善OCR模式体验](/zh/gooduseocr.md)
-- [如何使用国产大模型API接口](/zh/guochandamoxing.md)
+- [如何使用大模型API翻译](/zh/guochandamoxing.md)
 - [mangaocr整合包无法启动怎么办](/zh/mangaocr.md)
 - [OCR自动化执行方法的参数含义](/zh/ocrparam.md)
 - [WindowsOCR如何安装额外的语言支持](/zh/windowsocr.md)

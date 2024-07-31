@@ -1,6 +1,37 @@
-## 如何使用国产大模型API接口
+## 如何使用大模型API翻译
 
-## ChatGPT兼容接口
+
+<details>
+  <summary>同时使用多个ChatGPT兼容接口（或专用接口）？</summary>
+  如果只是有多个不同的密钥想要轮询，只需用|分割就可以了。<br>
+  但有时想要同时使用多个不同的api接口地址/prompt/model/参数等来对比翻译效果。方法是：<br>
+  点击右下方的“+”按钮
+  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi1.png">
+  弹出一个窗口，选择ChatGPT兼容接口（或专用接口），并为之取个名字。这样会复制一份当前ChatGPT兼容接口（或专用接口）的设置和api。
+  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi2.png">
+  激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
+  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi3.png">
+</details>
+
+
+
+### ChatGPT兼容接口
+
+#### 外国大模型接口
+
+<!-- tabs:start -->
+
+### **groq**
+
+**API接口地址** `https://api.groq.com/openai/v1/chat/completions`
+
+**SECRET_KEY** https://console.groq.com/keys
+
+**model** https://console.groq.com/docs/models 填写`Model ID`
+
+<!-- tabs:end -->
+
+#### 国产大模型接口
 
 
 <!-- tabs:start -->
@@ -76,20 +107,37 @@
 
 <!-- tabs:end -->
 
-<details>
-  <summary>需要同时使用多个ChatGPT兼容接口？</summary>
-  如果只是有多个不同的密钥想要轮询，只需用|分割就可以了。<br>
-  但有时想要同时使用多个不同的api接口地址/prompt/model/参数等来对比翻译效果。方法是：<br>
-  点击右下方的“+”按钮
-  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi1.png">
-  弹出一个窗口，选择ChatGPT兼容接口，并为之取个名字。这样会复制一份当前ChatGPT兼容接口的设置和api。
-  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi2.png">
-  激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
-  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi3.png">
-</details>
+### 不兼容的专用接口
+
+#### 外国大模型接口
 
 
-## 不兼容的专用接口
+<!-- tabs:start -->
+
+### **gemini**
+
+**model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
+
+**SECRET_KEY** https://aistudio.google.com/app/apikey
+
+### **claude**
+
+**BASE_URL** `https://api.anthropic.com`
+
+**API_KEY** https://console.anthropic.com/
+
+**model**  https://docs.anthropic.com/en/docs/about-claude/models
+
+### **cohere**
+
+**SECRET_KEY** https://dashboard.cohere.com/api-keys
+
+**model** https://docs.cohere.com/docs/models
+
+<!-- tabs:end -->
+
+
+#### 国产大模型接口
 
 <!-- tabs:start -->
 
@@ -108,10 +156,3 @@
 ![img](https://image.lunatranslator.xyz/zh/damoxing/qianfan2.png)
 
 <!-- tabs:end -->
-
-<!-- 
-<details>
-  <summary>推荐指数</summary>
-  <table id="toupiao">
-  </table> 
-</details> -->
