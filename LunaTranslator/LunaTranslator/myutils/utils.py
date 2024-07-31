@@ -562,7 +562,10 @@ def checkpostlangmatch(name):
     for item in static_data["transoptimi"]:
         if name == item["name"]:
             try:
-                return getlanguse() == item["languageuse"]
+                if isinstance(item["languageuse"], list):
+                    return getlanguse() in item["languageuse"]
+                elif isinstance(item["languageuse"], str):
+                    return getlanguse() == item["languageuse"]
             except:
                 return True
 

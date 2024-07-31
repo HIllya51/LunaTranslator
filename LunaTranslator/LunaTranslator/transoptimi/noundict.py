@@ -367,7 +367,7 @@ class Process:
             noundictconfigdialog_private(
                 parent_window,
                 savehook_new_data[gameuid]["noundictconfig"],
-                "专有名词翻译_直接替换_占位符",
+                "专有名词翻译_占位符",
             ),
         )
 
