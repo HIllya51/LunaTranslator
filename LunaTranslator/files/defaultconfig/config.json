@@ -1909,6 +1909,13 @@
             "name": "Sakura大模型",
             "is_gpt_like": true
         },
+        "TGW": {
+            "use": false,
+            "type": "offline",
+            "color": "blue",
+            "name": "TGW语言模型",
+            "is_gpt_like": true
+        },
         "chatgpt-offline": {
             "use": false,
             "type": "offline",
