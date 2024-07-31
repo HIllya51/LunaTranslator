@@ -141,7 +141,7 @@ class TS(basetrans):
         try:
             output = self.session.post(self.api_url + "/chat/completions", json=data)
 
-        except requests.Timeout as e:
+        except requests.RequestException as e:
             raise ValueError(f"连接到Sakura API超时：{self.api_url}")
         try:
             yield output.json()
@@ -177,7 +177,7 @@ class TS(basetrans):
                 json=data,
                 stream=True,
             )
-        except requests.Timeout:
+        except requests.RequestException:
             raise ValueError(f"连接到Sakura API超时：{self.api_url}")
 
         for o in output.iter_lines():
