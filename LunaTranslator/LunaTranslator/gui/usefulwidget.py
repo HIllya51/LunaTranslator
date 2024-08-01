@@ -105,12 +105,18 @@ class TableViewW(QTableView):
         if isinstance(m, LStandardItemModel):
             m.updatelangtext()
 
-    def safetext(self, row, col):
-        _1 = self.model().item(row, col)
+    def safetext(self, row, col=None):
+        if col is None:
+            index = row
+        else:
+            index = self.model().index(row, col)
+        _1 = self.model().itemFromIndex(index)
         _1 = _1.text() if _1 else ""
         return _1
 
     def copytable(self) -> str:
+        if len(self.selectedIndexes()) <= 1:
+            return winsharedutils.clipboard_set(self.safetext(self.currentIndex()))
         _data = []
         minr = minc = 999999999
         maxr = maxc = 0
@@ -119,10 +125,9 @@ class TableViewW(QTableView):
             minc = min(minc, index.column())
             maxr = max(maxr, index.row())
             maxc = max(maxc, index.column())
-            _data.append(self.model().itemFromIndex(index).text())
+            _data.append(self.safetext(index))
         data = {
             "data": _data,
-            "isluna": True,
             "row": maxr - minr + 1,
             "col": maxc - minc + 1,
         }
@@ -132,8 +137,6 @@ class TableViewW(QTableView):
         string = winsharedutils.clipboard_get()
         try:
             js = json.loads(string)
-            if not js.get("isluna", False):
-                raise
             current = self.currentIndex()
             for _ in range(js["row"]):
                 self.model().insertRow(current.row() + 1, [])
@@ -147,7 +150,6 @@ class TableViewW(QTableView):
                 )
 
         except:
-            print_exc()
             self.model().itemFromIndex(self.currentIndex()).setText(string)
 
 
