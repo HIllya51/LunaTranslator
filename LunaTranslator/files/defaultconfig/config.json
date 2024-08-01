@@ -731,7 +731,7 @@
             },
             "fullscreen": {
                 "use": true,
-                "tip": "缩放/恢复游戏窗口",
+                "tip": "窗口缩放",
                 "icon": "fa.compress",
                 "icon2": "fa.expand",
                 "align": 2

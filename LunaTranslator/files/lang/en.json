@@ -557,7 +557,6 @@
     "使用YAPI注入": "Use YAPI Injection",
     "窗口缩放": "Window Scaling",
     "缩放方式": "Scaling Method",
-    "缩放/恢复游戏窗口": "Maximize/Restore Game Window",
     "打开关联页面": "Open Related Page",
     "附带上下文个数（必须打开利用上文翻译）": "Number of Contexts Included (Must Enable Context-Aware Translation)",
     "API超时(秒)": "API Timeout (s)",
