@@ -126,7 +126,6 @@
     "不切换": "Não mudar",
     "自动更新": "Actualização automática",
     "缩放时模拟独占全屏": "Simular tela cheia exclusiva ao ampliar e diminuir o zoom",
-    "专有名词翻译设置按钮": "Botão exclusivo de configuração da tradução de substantivos",
     "越南语": "Vietnamita",
     "代码页": "página de código",
     "点击此按钮后点击游戏窗口": "Depois de clicar neste botão, clique na janela do jogo",
@@ -826,7 +825,6 @@
     "捷克语": "Checo",
     "直接替换": "Substituir directamente",
     "占位符": "espaço reservado",
-    "专有名词翻译设置": "Configuração da tradução para termos proprietários",
     "词典": "Dicionário",
     "注释": "notas",
     "打开链接": "Abrir ligação",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Pronto, à espera de actualizações.",
     "自定义": "personalizado",
     "其他参数": "Outros parâmetros",
-    "延迟注入(ms)": "Injeção retardada (ms)"
+    "延迟注入(ms)": "Injeção retardada (ms)",
+    "继承默认": "Herdar por omissão"
 }

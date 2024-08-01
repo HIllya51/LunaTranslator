@@ -28,8 +28,12 @@ class Process:
     def process_before(self, japanese):
 
         gpt_dict = []
+        srcs = set()
         for gpt in self.usewhich():
             src = gpt["src"]
+            if src in srcs:
+                continue
+            srcs.add(src)
             if src not in japanese:
                 continue
             gpt_dict.append(gpt)
@@ -37,12 +41,18 @@ class Process:
 
     @property
     def using_X(self):
-        return postusewhich("gptpromptdict", "gptpromptdict_use") != 0
+        return postusewhich("gptpromptdict") != 0
 
     def usewhich(self) -> dict:
-        which = postusewhich("gptpromptdict", "gptpromptdict_use")
+        which = postusewhich("gptpromptdict")
         if which == 1:
             return globalconfig["gptpromptdict"]
         elif which == 2:
             gameuid = gobject.baseobject.textsource.gameuid
             return savehook_new_data[gameuid]["gptpromptdict_use"]
+        elif which == 3:
+            gameuid = gobject.baseobject.textsource.gameuid
+            return (
+                savehook_new_data[gameuid]["gptpromptdict_use"]
+                + globalconfig["gptpromptdict"]
+            )

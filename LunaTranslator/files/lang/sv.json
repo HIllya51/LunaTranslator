@@ -126,7 +126,6 @@
     "不切换": "Byt inte",
     "自动更新": "Automatisk uppdatering",
     "缩放时模拟独占全屏": "Simulera exklusiv helskärm när du zoomar in och ut",
-    "专有名词翻译设置按钮": "Inställningsknapp för exklusiv substantiv",
     "越南语": "Vietnamesiska",
     "代码页": "kodsida",
     "点击此按钮后点击游戏窗口": "När du har klickat på den här knappen klickar du på spelfönstret",
@@ -465,7 +464,6 @@
     "替换": "ersätt",
     "绘制光标": "Rita markör",
     "颜色设置": "färginställning",
-    "专有名词翻译设置": "Översättningsinställningar för egenutvecklade termer",
     "简体中文(GBK)": "Förenklad kinesiska (GBK)",
     "到进程": "Till processen",
     "调整游戏窗口按钮": "Justera spelfönsterknappen",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Redo, väntar på uppdateringar",
     "自定义": "anpassad",
     "其他参数": "Andra parametrar",
-    "延迟注入(ms)": "Fördröjd injektion (ms)"
+    "延迟注入(ms)": "Fördröjd injektion (ms)",
+    "继承默认": "Arv förval"
 }

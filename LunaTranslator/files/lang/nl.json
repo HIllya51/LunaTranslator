@@ -126,7 +126,6 @@
     "不切换": "Niet schakelen",
     "自动更新": "Automatische update",
     "缩放时模拟独占全屏": "Simuleer exclusief volledig scherm bij in- en uitzoomen",
-    "专有名词翻译设置按钮": "Uitzonderlijke vertaalknop",
     "越南语": "Vietnamees",
     "代码页": "codepagina",
     "点击此按钮后点击游戏窗口": "Nadat je op deze knop hebt geklikt, klik je op het spelvenster",
@@ -465,7 +464,6 @@
     "替换": "vervangen",
     "绘制光标": "Cursor tekenen",
     "颜色设置": "kleurinstelling",
-    "专有名词翻译设置": "Vertalingsinstellingen voor eigen termen",
     "简体中文(GBK)": "Vereenvoudigd Chinees (GBK)",
     "到进程": "Naar het proces",
     "调整游戏窗口按钮": "De knop van het spelvenster aanpassen",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Klaar, wachten op updates",
     "自定义": "op maat",
     "其他参数": "Andere parameters",
-    "延迟注入(ms)": "Vertraagde injectie (ms)"
+    "延迟注入(ms)": "Vertraagde injectie (ms)",
+    "继承默认": "Standaard overnemen"
 }

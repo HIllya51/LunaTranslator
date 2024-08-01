@@ -126,7 +126,6 @@
     "不切换": "Nicht schalten",
     "自动更新": "Automatische Aktualisierung",
     "缩放时模拟独占全屏": "Simulieren Sie exklusiven Vollbildmodus beim Ein- und Auszoomen",
-    "专有名词翻译设置按钮": "Schaltfläche zur Einstellung der exklusiven Substantivübersetzung",
     "越南语": "Vietnamesisch",
     "代码页": "Codeseite",
     "点击此按钮后点击游戏窗口": "Nach dem Klicken auf diese Schaltfläche, klicke auf das Spielfenster",
@@ -465,7 +464,6 @@
     "替换": "ersetzen",
     "绘制光标": "Cursor zeichnen",
     "颜色设置": "Farbeinstellung",
-    "专有名词翻译设置": "Übersetzungseinstellungen für proprietäre Begriffe",
     "简体中文(GBK)": "Vereinfachtes Chinesisch (GBK)",
     "到进程": "Zum Prozess",
     "调整游戏窗口按钮": "Schaltfläche Spielfenster anpassen",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Bereit, warten auf Updates",
     "自定义": "kundenspezifisch",
     "其他参数": "Weitere Parameter",
-    "延迟注入(ms)": "Verspätete Injektion (ms)"
+    "延迟注入(ms)": "Verspätete Injektion (ms)",
+    "继承默认": "Standard vererben"
 }

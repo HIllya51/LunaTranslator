@@ -30,12 +30,18 @@ class Process:
 
     @property
     def using_X(self):
-        return postusewhich("transerrorfix", "transerrorfix_use") != 0
+        return postusewhich("transerrorfix") != 0
 
     def usewhich(self) -> dict:
-        which = postusewhich("transerrorfix", "transerrorfix_use")
+        which = postusewhich("transerrorfix")
         if which == 1:
             return transerrorfixdictconfig["dict_v2"]
         elif which == 2:
             gameuid = gobject.baseobject.textsource.gameuid
             return savehook_new_data[gameuid]["transerrorfix"]
+        elif which == 3:
+            gameuid = gobject.baseobject.textsource.gameuid
+            return (
+                savehook_new_data[gameuid]["transerrorfix"]
+                + transerrorfixdictconfig["dict_v2"]
+            )

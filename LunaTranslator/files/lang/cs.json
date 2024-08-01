@@ -126,7 +126,6 @@
     "不切换": "Nepřepínejte",
     "自动更新": "Automatická aktualizace",
     "缩放时模拟独占全屏": "Simulujte exkluzivní celou obrazovku při přiblížení a odstupu",
-    "专有名词翻译设置按钮": "Tlačítko pro nastavení exkluzivního překladu podstatného jména",
     "越南语": "Vietnamština",
     "代码页": "kódová stránka",
     "点击此按钮后点击游戏窗口": "Po kliknutí na toto tlačítko klikněte na okno hry",
@@ -465,7 +464,6 @@
     "替换": "nahradit",
     "绘制光标": "Nakreslit kurzor",
     "颜色设置": "nastavení barev",
-    "专有名词翻译设置": "Nastavení překladu vlastních termínů",
     "简体中文(GBK)": "Zjednodušená čínština (GBK)",
     "到进程": "K procesu",
     "调整游戏窗口按钮": "Nastavit tlačítko herního okna",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Připraveni, čekáme na novinky.",
     "自定义": "vlastní",
     "其他参数": "Další parametry",
-    "延迟注入(ms)": "Zpožděná injekce (ms)"
+    "延迟注入(ms)": "Zpožděná injekce (ms)",
+    "继承默认": "Zdědit výchozí"
 }

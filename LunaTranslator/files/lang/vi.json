@@ -241,7 +241,6 @@
     "移动": "Di chuyển",
     "显示移动按钮": "Hiện nút di chuyển",
     "编辑专有名词": "Danh từ độc quyền biên tập",
-    "专有名词翻译设置": "Thiết lập dịch danh từ độc quyền",
     "设置Token": "Thiết lập Token",
     "内置": "Được xây dựng trong",
     "token设置": "Thiết lập Token",
@@ -284,7 +283,6 @@
     "说明": "Mô tả",
     "分析图像更新+周期执行": "Phân tích cập nhật hình ảnh+thực hiện chu kỳ",
     "翻译器字体": "Bộ dịch",
-    "专有名词翻译设置按钮": "Nút cài đặt danh từ độc quyền",
     "调整游戏窗口按钮": "Điều chỉnh nút cửa sổ trò chơi",
     "内嵌的翻译器": "Trình dịch nội tuyến",
     "使用最快翻译而非指定翻译器": "Sử dụng bản dịch nhanh nhất thay vì chỉ định",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Sẵn sàng chờ update",
     "自定义": "Tùy chỉnh",
     "其他参数": "Tham số khác",
-    "延迟注入(ms)": "Tiêm chậm (ms)"
+    "延迟注入(ms)": "Tiêm chậm (ms)",
+    "继承默认": "Thừa kế mặc định"
 }

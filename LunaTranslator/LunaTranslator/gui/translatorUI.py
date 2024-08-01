@@ -12,7 +12,12 @@ from myutils.config import (
 )
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
-from myutils.utils import loadpostsettingwindowmethod, str2rgba, makehtml
+from myutils.utils import (
+    loadpostsettingwindowmethod,
+    str2rgba,
+    makehtml,
+    loadpostsettingwindowmethod_maybe,
+)
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getpidexe
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
@@ -336,9 +341,33 @@ class QUnFrameWindow(resizableframeless):
                 ),
             ),
             (
+                "noundict_2",
+                lambda: loadpostsettingwindowmethod_maybe(
+                    "noundict", gobject.baseobject.settin_ui
+                ),
+            ),
+            (
+                "noundict_direct",
+                lambda: loadpostsettingwindowmethod_maybe(
+                    "vndbnamemap", gobject.baseobject.settin_ui
+                ),
+            ),
+            (
+                "noundict_sakura",
+                lambda: loadpostsettingwindowmethod_maybe(
+                    "gptpromptdict", gobject.baseobject.settin_ui
+                ),
+            ),
+            (
                 "fix",
                 lambda: loadpostsettingwindowmethod("transerrorfix")(
                     gobject.baseobject.settin_ui
+                ),
+            ),
+            (
+                "fix_2",
+                lambda: loadpostsettingwindowmethod_maybe(
+                    "transerrorfix", gobject.baseobject.settin_ui
                 ),
             ),
             ("langdu", lambda: gobject.baseobject.readcurrent(force=True)),
@@ -1034,7 +1063,6 @@ class QUnFrameWindow(resizableframeless):
             button = LPushButton(self._TitleLabel)
             button.clicked.connect(functools.partial(self.callwrap, clickfunc))
         else:
-
 
             button = LIconLabel(self._TitleLabel)
 

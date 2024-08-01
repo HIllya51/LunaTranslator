@@ -383,15 +383,21 @@ class Process:
 
     @property
     def using_X(self):
-        return postusewhich("noundict", "noundict_use") != 0
+        return postusewhich("noundict") != 0
 
     def usewhich(self) -> dict:
-        which = postusewhich("noundict", "noundict_use")
+        which = postusewhich("noundict")
         if which == 1:
             return 1, noundictconfig["dict"]
         elif which == 2:
             gameuid = gobject.baseobject.textsource.gameuid
             return 2, savehook_new_data[gameuid]["noundictconfig"]
+        elif which == 3:
+            gameuid = gobject.baseobject.textsource.gameuid
+            return 3, [
+                savehook_new_data[gameuid]["noundictconfig"],
+                noundictconfig["dict"],
+            ]
 
     def process_before(self, content):
         def __createfake():
@@ -433,6 +439,32 @@ class Process:
                 xx = __createfake()
                 content = content.replace(k, xx)
                 mp1[xx] = v
+            return content, mp1
+        elif _type == 3:
+            dic1, dic = dic
+            for k, v in dic1:
+
+                xx = __createfake()
+                content = content.replace(k, xx)
+                mp1[xx] = v
+
+            for key in dic:
+                v = None
+                if type(dic[key]) == str:
+                    v = dic[mp1[key]]
+                else:
+                    for i in range(len(dic[key]) // 2):
+                        if dic[key][i * 2] in [
+                            "0",
+                            gobject.baseobject.currentmd5,
+                        ]:
+                            v = dic[key][i * 2 + 1]
+                            break
+
+                if v is not None and key in content:
+                    xx = __createfake()
+                    content = content.replace(key, xx)
+                    mp1[xx] = v
             return content, mp1
 
     def process_after(self, res, mp1):

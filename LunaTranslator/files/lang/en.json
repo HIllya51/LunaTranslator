@@ -241,7 +241,6 @@
     "移动": "Move",
     "显示移动按钮": "Show Move Button",
     "编辑专有名词": "Edit Proper Nouns",
-    "专有名词翻译设置": "Proper noun translation settings",
     "设置Token": "Set Token",
     "内置": "Built-in",
     "token设置": "Token Settings",
@@ -284,7 +283,6 @@
     "说明": "Description",
     "分析图像更新+周期执行": "Analyze Image Update + Periodic Execution",
     "翻译器字体": "Translator Font",
-    "专有名词翻译设置按钮": "Proper Noun Translation Settings Button",
     "调整游戏窗口按钮": "Adjust Game Window Button",
     "内嵌的翻译器": "Embedded Translator",
     "使用最快翻译而非指定翻译器": "Use Fastest Translation Engine Available",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Ready, waiting for updates",
     "自定义": "custom",
     "其他参数": "Other parameters",
-    "延迟注入(ms)": "Delayed injection (ms)"
+    "延迟注入(ms)": "Delayed injection (ms)",
+    "继承默认": "Inherit default"
 }

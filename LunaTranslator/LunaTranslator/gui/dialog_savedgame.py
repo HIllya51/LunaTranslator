@@ -1169,6 +1169,10 @@ class dialog_setting_game_internal(QWidget):
                                 icon="fa.gear",
                             ),
                             QLabel(),
+                            getsimpleswitch(
+                                savehook_new_data[gameuid], name + "_merge"
+                            ),
+                            LLabel("继承默认"),
                         ],
                         makewidget=True,
                         margin0=True,

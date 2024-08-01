@@ -233,7 +233,6 @@
     "编辑": "modifica",
     "移动": "Sposta",
     "编辑专有名词": "Modifica nome proprio",
-    "专有名词翻译设置": "Impostazioni di traduzione del sostantivo corrette",
     "设置Token": "Imposta gettone",
     "内置": "integrato",
     "token设置": "Impostazioni token",
@@ -378,7 +377,6 @@
     "显示复制原文按钮": "Mostra pulsante Copia originale",
     "显示朗读按钮": "Mostra pulsante Parla",
     "显示移动按钮": "Mostra pulsante Sposta",
-    "专有名词翻译设置按钮": "Pulsante di impostazione della traduzione del sostantivo appropriato",
     "翻译结果修正按钮": "Pulsante di correzione dei risultati della traduzione",
     "显示翻译历史按钮": "Mostra pulsante Cronologia delle traduzioni",
     "显示编辑按钮": "Mostra pulsante Modifica",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Pronto, in attesa di aggiornamenti",
     "自定义": "personalizzato",
     "其他参数": "Altri parametri",
-    "延迟注入(ms)": "Iniezione ritardata (ms)"
+    "延迟注入(ms)": "Iniezione ritardata (ms)",
+    "继承默认": "Eredi default"
 }

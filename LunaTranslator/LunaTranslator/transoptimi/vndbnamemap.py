@@ -37,15 +37,21 @@ class Process:
 
     @property
     def using_X(self):
-        return postusewhich("vndbnamemap", "vndbnamemap_use") != 0
+        return postusewhich("vndbnamemap") != 0
 
     def usewhich(self) -> dict:
-        which = postusewhich("vndbnamemap", "vndbnamemap_use")
+        which = postusewhich("vndbnamemap")
         if which == 1:
             return globalconfig["global_namemap"]
         elif which == 2:
             gameuid = gobject.baseobject.textsource.gameuid
             return savehook_new_data[gameuid]["namemap"]
+        elif which == 3:
+            _ = {}
+            _.update(globalconfig["global_namemap"])
+            gameuid = gobject.baseobject.textsource.gameuid
+            _.update(savehook_new_data[gameuid]["namemap"])
+            return _
 
     def process_before(self, s):
 

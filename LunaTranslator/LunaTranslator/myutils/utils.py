@@ -542,19 +542,7 @@ def parsemayberegexreplace(dic: dict, res: str):
                 res,
             )
         else:
-            if (
-                res.isascii()
-                and item["key"].isascii()
-                and item["value"].isascii()
-                and (" " not in item["key"])
-            ):  # 目标可能有空格
-                resx = res.split(" ")
-                for i in range(len(resx)):
-                    if resx[i] == item["key"]:
-                        resx[i] = item["value"]
-                res = " ".join(resx)
-            else:
-                res = res.replace(item["key"], item["value"])
+            res = res.replace(item["key"], item["value"])
     return res
 
 
@@ -577,7 +565,9 @@ def checkpostusing(name):
     return use and checkpostlangmatch(name)
 
 
-def postusewhich(name1, name2):
+def postusewhich(name1):
+    name2 = name1 + "_use"
+    merge = name1 + "_merge"
     for _ in (0,):
         try:
             if not gobject.baseobject.textsource:
@@ -588,6 +578,8 @@ def postusewhich(name1, name2):
             if savehook_new_data[gameuid]["transoptimi_followdefault"]:
                 break
             if savehook_new_data[gameuid][name2]:
+                if savehook_new_data[gameuid][merge]:
+                    return 3
                 return 2
             else:
                 return 0
@@ -621,6 +613,21 @@ loadpostsettingwindowmethod = functools.partial(loadpostsettingwindowmethod_1, T
 loadpostsettingwindowmethod_private = functools.partial(
     loadpostsettingwindowmethod_1, False
 )
+
+
+def loadpostsettingwindowmethod_maybe(name, parent):
+    for _ in (0,):
+        try:
+            if not gobject.baseobject.textsource:
+                break
+            gameuid = gobject.baseobject.textsource.gameuid
+            if not gameuid:
+                break
+            return loadpostsettingwindowmethod_private(name)(parent, gameuid)
+        except:
+            print_exc()
+            break
+    loadpostsettingwindowmethod(name)(parent)
 
 
 class unsupportkey(Exception):

@@ -241,7 +241,6 @@
     "移动": "ruchy",
     "显示移动按钮": "Pokaż przycisk ruchu",
     "编辑专有名词": "Edytuj rzeczownik właściwy",
-    "专有名词翻译设置": "Ustawienia tłumaczenia właściwego rzeczownika",
     "设置Token": "Ustaw token",
     "内置": "wbudowany",
     "token设置": "Ustawienia tokenu",
@@ -284,7 +283,6 @@
     "说明": "wyjaśnij",
     "分析图像更新+周期执行": "Analiza aktualizacji obrazów+wykonanie cyklu",
     "翻译器字体": "Czcionki tłumacza",
-    "专有名词翻译设置按钮": "Przycisk ustawienia tłumaczenia właściwego rzeczownika",
     "调整游戏窗口按钮": "Dostosuj przyciski okna gry",
     "内嵌的翻译器": "Wbudowany tłumacz",
     "使用最快翻译而非指定翻译器": "Użyj najszybszego tłumaczenia zamiast określać tłumacza",
@@ -838,5 +836,6 @@
     "准备完毕，等待更新": "Gotowi, czekamy na aktualizacje.",
     "自定义": "niestandardowe",
     "其他参数": "Inne parametry",
-    "延迟注入(ms)": "Opóźnione wstrzyknięcie (ms)"
+    "延迟注入(ms)": "Opóźnione wstrzyknięcie (ms)",
+    "继承默认": "Odziedziczyć domyślne"
 }
