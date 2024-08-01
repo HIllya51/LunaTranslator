@@ -14,13 +14,13 @@ from gui.pretransfile import sqlite2json2
 from gui.codeacceptdialog import codeacceptdialog
 from gui.setting_textinput_ocr import getocrgrid
 from gui.dialog_savedgame import dialog_savedgame_integrated
-from gui.inputdialog import regexedit
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getIconButton,
     getIconButton,
     makegrid,
+    listediter,
     yuitsu_switch,
     getvboxwidget,
     D_getsimpleswitch,
@@ -376,8 +376,11 @@ def gethookembedgrid(self):
             "内嵌安全性检查",
             D_getsimpleswitch(globalconfig["embedded"], "safecheck_use"),
             D_getIconButton(
-                callback=lambda: regexedit(
-                    self, globalconfig["embedded"]["safecheckregexs"]
+                callback=lambda: listediter(
+                    self,
+                    "正则匹配",
+                    "正则",
+                    globalconfig["embedded"]["safecheckregexs"],
                 ),
                 icon="fa.gear",
             ),

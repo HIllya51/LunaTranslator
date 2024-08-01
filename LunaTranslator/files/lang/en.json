@@ -835,7 +835,8 @@
     "延迟注入(ms)": "Delayed injection (ms)",
     "继承默认": "Inherit default",
     "游戏ID": "Game ID",
-    "俺たちに翼はない ―――under the innocent sky.": "My wings are under the innocent sky",
     "当前游戏ID": "Current game ID",
-    "粘贴": "paste"
+    "粘贴": "paste",
+    "首尾": "End to end",
+    "包含": "contain"
 }
