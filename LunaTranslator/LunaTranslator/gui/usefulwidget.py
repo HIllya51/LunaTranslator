@@ -1928,3 +1928,39 @@ class statusbutton(QPushButton):
     def setEnabled(self, _):
         super().setEnabled(_)
         self.seticon()
+
+
+class LIconLabel(LLabel):
+    def __init__(self, *argc):
+        super().__init__(*argc)
+        self._icon = QIcon()
+        self._size = QSize()
+
+    def setIcon(self, icon: QIcon):
+        self._icon = icon
+        self.update()
+
+    def setIconSize(self, size: QSize):
+        self._size = size
+        self.update()
+
+    def paintEvent(self, a0: QPaintEvent) -> None:
+
+        painter = QPainter(self)
+        if self._size.isEmpty():
+            size = self.size()
+        else:
+            size = self._size
+        rect = QRect(
+            (self.width() - size.width()) // 2,
+            (self.height() - size.height()) // 2,
+            size.width(),
+            size.height(),
+        )
+        self._icon.paint(
+            painter,
+            rect,
+            Qt.AlignmentFlag.AlignCenter,
+            QIcon.Mode.Normal,
+            QIcon.State.On,
+        )

@@ -5,7 +5,7 @@ from qtsymbols import *
 
 class CharIconPainter:
 
-    def paint(self, iconic, painter, rect, char, color):
+    def paint(self, iconic, painter, rect, mode, state, char, color):
         painter.save()
         qcolor = QColor(color)
         painter.setPen(qcolor)
@@ -28,13 +28,15 @@ class CharIconEngine(QIconEngine):
         self.char = char
         self.color = color
 
-    def paint(self, painter, rect):
-        self.painter.paint(self.iconic, painter, rect, self.char, self.color)
+    def paint(self, painter, rect, mode, state):
+        self.painter.paint(
+            self.iconic, painter, rect, mode, state, self.char, self.color
+        )
 
     def pixmap(self, size, mode, state):
         pm = QPixmap(size)
         pm.fill(Qt.GlobalColor.transparent)
-        self.paint(QPainter(pm), QRect(QPoint(0, 0), size))
+        self.paint(QPainter(pm), QRect(QPoint(0, 0), size), mode, state)
         return pm
 
 

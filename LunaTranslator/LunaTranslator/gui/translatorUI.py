@@ -18,7 +18,7 @@ from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless, isinrect, getQMessageBox
+from gui.usefulwidget import resizableframeless, isinrect, getQMessageBox, LIconLabel
 from gui.edittext import edittrans
 from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 from gui.dynalang import LPushButton, LDialog
@@ -1035,26 +1035,8 @@ class QUnFrameWindow(resizableframeless):
             button.clicked.connect(functools.partial(self.callwrap, clickfunc))
         else:
 
-            class __(LPushButton):
-                def __init__(self, p):
-                    super().__init__(p)
-                    self._lb = QLabel(p)
-                    self._lb.setStyleSheet("background-color: transparent;")
-                    self._lb.raise_()
 
-                def hideEvent(self, _):
-                    self._lb.hide()
-
-                def showEvent(self, _):
-                    self._lb.show()
-
-                def moveEvent(self, event):
-                    self._lb.move(event.pos())
-
-                def resizeEvent(self, event):
-                    self._lb.resize(event.size())
-
-            button = __(self._TitleLabel)
+            button = LIconLabel(self._TitleLabel)
 
         if tips:
             button.setToolTip(tips)
