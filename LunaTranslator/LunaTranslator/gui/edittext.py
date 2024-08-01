@@ -100,6 +100,23 @@ class edittext(saveposwindow):
             self.textOutput.setPlainText(sentence)
 
 
+class ctrlenter(QPlainTextEdit):
+    enterpressed = pyqtSignal()
+
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Return or e.key() == Qt.Key_Enter:
+            if (
+                e.modifiers() == Qt.ControlModifier
+                or e.modifiers() == Qt.ShiftModifier
+                or e.modifiers() == Qt.AltModifier
+            ):
+                self.insertPlainText("\n")
+            else:
+                self.enterpressed.emit()
+        else:
+            super().keyPressEvent(e)
+
+
 @Singleton_close
 class edittrans(LMainWindow):
 
@@ -133,12 +150,12 @@ class edittrans(LMainWindow):
     def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.edit"))
 
-        self.textOutput = QPlainTextEdit(self)
+        self.textOutput = ctrlenter(self)
         qv = QHBoxLayout()
         w = QWidget()
         self.setCentralWidget(w)
         w.setLayout(qv)
-
+        self.textOutput.enterpressed.connect(self.submitfunction)
         submit = LPushButton("确定")
         qv.addWidget(self.textOutput)
         qv.addWidget(
