@@ -194,7 +194,10 @@ class TS(basetrans):
     def translate(self, query):
         query = json.loads(query)
         gpt_dict = query["gpt_dict"]
+        contentraw = query["contentraw"]
         query = query["text"]
+        if gpt_dict is not None:
+            query = contentraw
         self.checkempty(["API接口地址"])
         self.get_client(self.config["API接口地址"])
         frequency_penalty = float(self.config["frequency_penalty"])

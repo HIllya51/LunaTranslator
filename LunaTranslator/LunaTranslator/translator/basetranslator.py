@@ -342,12 +342,16 @@ class basetrans(commonbase):
                         for _ in optimization_params:
                             if isinstance(_, dict):
                                 _gpt_dict = _.get("gpt_dict", None)
-                                if not _gpt_dict:
+                                if _gpt_dict is None:
                                     continue
                                 gpt_dict = _gpt_dict
 
                         contentsolved = json.dumps(
-                            {"text": contentsolved, "gpt_dict": gpt_dict}
+                            {
+                                "text": contentsolved,
+                                "gpt_dict": gpt_dict,
+                                "contentraw": contentraw,
+                            }
                         )
 
                     func = functools.partial(
