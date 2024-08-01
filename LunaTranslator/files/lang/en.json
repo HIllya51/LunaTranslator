@@ -112,7 +112,6 @@
     "离线翻译": "Offline Translation",
     "添加行": "Add Row",
     "彩云": "Caiyun",
-    "游戏ID MD5": "Game ID MD5",
     "灵格斯": "Lingoes",
     "备注": "Note",
     "路径": "Path",
@@ -156,7 +155,6 @@
     "预翻译采用模糊匹配": "Pre-translation Uses Fuzzy Matching",
     "必应": "Bing",
     "判定詞": "Copulas",
-    "设置所有词条为全局词条": "Set All Entries as Global Entries",
     "翻译器字体类型": "Translator Font Type",
     "检测到游戏时自动开始": "Auto-Start On Game Detection",
     "去除重复行": "Filter Duplicate Lines",
@@ -769,7 +767,6 @@
     "获取游戏列表": "Get Game List",
     "上传游戏列表": "Upload Game List",
     "上传游戏": "Upload Game",
-    "以当前md5复制选中行": "Copy Selected Row with Current MD5",
     "修改列表名称": "Modify List Name",
     "滚动到最后": "Scroll to End",
     "指定模块": "Specify Modules",
@@ -790,7 +787,6 @@
     "VNR共享辞书": "VNR Shared Lexicon",
     "自定义优化": "Custom optimization",
     "人名": "name",
-    "游戏ID 0表示全局": "Game ID 0 represents global",
     "游戏数据": "Game data",
     "当前支持的语言": "Currently supported languages",
     "添加语言包": "Add language pack",
@@ -837,5 +833,9 @@
     "自定义": "custom",
     "其他参数": "Other parameters",
     "延迟注入(ms)": "Delayed injection (ms)",
-    "继承默认": "Inherit default"
+    "继承默认": "Inherit default",
+    "游戏ID": "Game ID",
+    "俺たちに翼はない ―――under the innocent sky.": "My wings are under the innocent sky",
+    "当前游戏ID": "Current game ID",
+    "粘贴": "paste"
 }

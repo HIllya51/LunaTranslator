@@ -107,7 +107,6 @@
     "token设置": "Configuração dos tokens",
     "简体中文(CP936,GBK)": "Chinês simplificado (CP936, GBK)",
     "其他": "outros",
-    "设置所有词条为全局词条": "Definir todos os itens como itens globais",
     "过滤数字和英文字母": "Filtrar números e letras inglesas",
     "Unicode范围": "Intervalo Unicode",
     "未开始": "Ainda não começou",
@@ -351,7 +350,6 @@
     "北欧": "Norte da Europa",
     "金山快译": "Tradução Rápida Jinshan",
     "音街ウナ": "Yinjie Una",
-    "游戏ID MD5": "ID do Jogo MD5",
     "判定詞": "Palavra de julgamento",
     "翻译设置": "Configuração da Tradução",
     "使用正则表达式替换": "Substituir por expressão regular",
@@ -773,7 +771,6 @@
     "获取游戏列表": "Obter a lista de jogos",
     "上传游戏列表": "Enviar a lista de jogos",
     "上传游戏": "Carregar o jogo",
-    "以当前md5复制选中行": "Copiar a linha seleccionada com o md5 actual",
     "修改列表名称": "Alterar o nome da lista",
     "滚动到最后": "Deslocar até ao fim",
     "限制每行字数": "Limitar a contagem de palavras por linha",
@@ -792,7 +789,6 @@
     "VNR共享辞书": "Léxico Partilhado do VNR",
     "自定义优化": "Otimização personalizada",
     "人名": "nome",
-    "游戏ID 0表示全局": "O ID do Jogo 0 representa global",
     "游戏数据": "Dados do jogo",
     "当前支持的语言": "Línguas actualmente suportadas",
     "添加语言包": "Adicionar pacote de idiomas",
@@ -837,5 +833,9 @@
     "自定义": "personalizado",
     "其他参数": "Outros parâmetros",
     "延迟注入(ms)": "Injeção retardada (ms)",
-    "继承默认": "Herdar por omissão"
+    "继承默认": "Herdar por omissão",
+    "游戏ID": "ID do Jogo",
+    "俺たちに翼はない ―――under the innocent sky.": "Minhas asas estão sob o céu inocente",
+    "当前游戏ID": "ID do jogo actual",
+    "粘贴": "colar"
 }

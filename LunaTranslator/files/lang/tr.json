@@ -174,7 +174,6 @@
     "取消": "iptal et",
     "副詞": "adv",
     "添加行": "rows ekle",
-    "游戏ID MD5": "Oyun ID MD5",
     "灵格斯": "Lingo",
     "备注": "remarks",
     "路径": "yol",
@@ -194,7 +193,6 @@
     "次数统计": "Zaman istatistikleri",
     "代名詞": "Pronoun",
     "判定詞": "Tanımlayıcı kelime",
-    "设置所有词条为全局词条": "Tüm girişleri küresel giriş olarak ayarlayın",
     "去除重复行": "Çiftli çizgileri sil",
     "重复次数": "Tekrarlamalar",
     "显示翻译器名称": "Tercüme ismini göster",
@@ -770,7 +768,6 @@
     "获取游戏列表": "Oyun listesini alın",
     "上传游戏列表": "Oyun listesini yükle",
     "上传游戏": "Oyunu yükle",
-    "以当前md5复制选中行": "Seçili satırı mevcut MD5 ile kopyalayın",
     "修改列表名称": "Liste ismini değiştir",
     "滚动到最后": "Sonuna doğru yürüt",
     "创建列表": "Liste oluştur",
@@ -790,7 +787,6 @@
     "VNR共享辞书": "VNR Paylaşılmış Lexicon",
     "自定义优化": "Özel optimizasyon",
     "人名": "isim",
-    "游戏ID 0表示全局": "Oyun ID 0 küresel olarak temsil ediyor",
     "游戏数据": "Oyun verileri",
     "当前支持的语言": "Şu anda desteklenmiş diller",
     "添加语言包": "Dil paketi ekle",
@@ -837,5 +833,9 @@
     "自定义": "Özel",
     "其他参数": "Diğer parametreler",
     "延迟注入(ms)": "Uzak injeksiyon (ms)",
-    "继承默认": "Ög- belgilengeni miras edin"
+    "继承默认": "Ög- belgilengeni miras edin",
+    "游戏ID": "Oyun Kimliği",
+    "俺たちに翼はない ―――under the innocent sky.": "Kanatlarım masum gökyüzünün altında.",
+    "当前游戏ID": "Şimdiki oyun kimliği",
+    "粘贴": "Yapıştır"
 }

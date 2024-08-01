@@ -174,7 +174,6 @@
     "取消": "Cancelación",
     "副詞": "Adverbio",
     "添加行": "Añadir filas",
-    "游戏ID MD5": "ID del juego MD5",
     "灵格斯": "Lingus",
     "备注": "Nota",
     "路径": "Camino",
@@ -194,7 +193,6 @@
     "次数统计": "Estadísticas del número de veces",
     "代名詞": "Sinónimo",
     "判定詞": "Palabra de juicio",
-    "设置所有词条为全局词条": "Establecer todas las entradas como entradas globales",
     "去除重复行": "Eliminar filas repetidas",
     "重复次数": "Número de repeticiones",
     "显示翻译器名称": "Muestra el nombre del traductor",
@@ -770,7 +768,6 @@
     "获取游戏列表": "Obtener la lista de juegos",
     "上传游戏列表": "Subir la lista de juegos",
     "上传游戏": "Sube el juego",
-    "以当前md5复制选中行": "Copiar la línea seleccionada con el MD5 actual",
     "修改列表名称": "Modificar el nombre de la lista",
     "滚动到最后": "Rodar hasta el final",
     "创建列表": "Crear lista",
@@ -790,7 +787,6 @@
     "VNR共享辞书": "Diccionario compartido vnr",
     "自定义优化": "Optimización personalizada",
     "人名": "Nombre",
-    "游戏ID 0表示全局": "El ID del juego 0 Indica global",
     "游戏数据": "Datos del juego",
     "当前支持的语言": "Idiomas apoyados actualmente",
     "添加语言包": "Añadir paquetes de idiomas",
@@ -837,5 +833,9 @@
     "自定义": "Personalizado",
     "其他参数": "Otros parámetros",
     "延迟注入(ms)": "Inyección de retraso (ms)",
-    "继承默认": "Heredar predeterminado"
+    "继承默认": "Heredar predeterminado",
+    "游戏ID": "ID del juego",
+    "俺たちに翼はない ―――under the innocent sky.": "ち mi ala es hermosa? Bajo el cielo innocent.",
+    "当前游戏ID": "Id actual del juego",
+    "粘贴": "Pegar"
 }

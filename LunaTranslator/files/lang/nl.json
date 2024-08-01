@@ -107,7 +107,6 @@
     "token设置": "Token-instellingen",
     "简体中文(CP936,GBK)": "Vereenvoudigd Chinees (CP936, GBK)",
     "其他": "andere",
-    "设置所有词条为全局词条": "Alle items als globale items instellen",
     "过滤数字和英文字母": "Filternummers en Engelse letters",
     "Unicode范围": "Unicode-bereik",
     "未开始": "Nog niet gestart",
@@ -351,7 +350,6 @@
     "北欧": "Noord-Europa",
     "金山快译": "Jinshan Snelle vertaling",
     "音街ウナ": "Yinjie Una",
-    "游戏ID MD5": "Game ID MD5",
     "判定詞": "Oordeel woord",
     "翻译设置": "Vertalingsinstellingen",
     "使用正则表达式替换": "Vervangen door reguliere expressie",
@@ -773,7 +771,6 @@
     "获取游戏列表": "Spellijst ophalen",
     "上传游戏列表": "Spellijst uploaden",
     "上传游戏": "Spel uploaden",
-    "以当前md5复制选中行": "De geselecteerde rij kopiëren met de huidige md5",
     "修改列表名称": "De naam van de lijst wijzigen",
     "滚动到最后": "Naar het einde scrollen",
     "限制每行字数": "Het aantal woorden per regel beperken",
@@ -792,7 +789,6 @@
     "VNR共享辞书": "VNR Shared Lexicon",
     "自定义优化": "Aangepaste optimalisatie",
     "人名": "naam",
-    "游戏ID 0表示全局": "Game ID 0 vertegenwoordigt globaal",
     "游戏数据": "Spelgegevens",
     "当前支持的语言": "Momenteel ondersteunde talen",
     "添加语言包": "Taalpakket toevoegen",
@@ -837,5 +833,9 @@
     "自定义": "op maat",
     "其他参数": "Andere parameters",
     "延迟注入(ms)": "Vertraagde injectie (ms)",
-    "继承默认": "Standaard overnemen"
+    "继承默认": "Standaard overnemen",
+    "游戏ID": "Game ID",
+    "俺たちに翼はない ―――under the innocent sky.": "Mijn vleugels zijn onder de onschuldige hemel",
+    "当前游戏ID": "Huidige game-ID",
+    "粘贴": "plakken"
 }

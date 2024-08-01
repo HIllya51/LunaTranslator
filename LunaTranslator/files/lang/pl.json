@@ -174,7 +174,6 @@
     "取消": "anuluj",
     "副詞": "adv",
     "添加行": "dodaj wiersze",
-    "游戏ID MD5": "ID gry MD5",
     "灵格斯": "Lingo",
     "备注": "uwagi",
     "路径": "trasa",
@@ -194,7 +193,6 @@
     "次数统计": "Statystyki częstotliwości",
     "代名詞": "Zaimek",
     "判定詞": "Słowo determinujące",
-    "设置所有词条为全局词条": "Ustaw wszystkie wpisy jako wpisy globalne",
     "去除重复行": "Usuń zduplikowane wiersze",
     "重复次数": "Powtarzanie",
     "显示翻译器名称": "Pokaż nazwę tłumacza",
@@ -770,7 +768,6 @@
     "获取游戏列表": "Pobierz listę gier",
     "上传游戏列表": "Wyślij listę gier",
     "上传游戏": "Przesyłaj grę",
-    "以当前md5复制选中行": "Kopiuj zaznaczony wiersz z bieżącym MD5",
     "修改列表名称": "Zmień nazwę listy",
     "滚动到最后": "Przewiń do końca",
     "创建列表": "Utwórz listę",
@@ -790,7 +787,6 @@
     "VNR共享辞书": "Wspólny leksykon VNR",
     "自定义优化": "Optymalizacja niestandardowa",
     "人名": "nazwa",
-    "游戏ID 0表示全局": "Identyfikator gry 0 reprezentuje globalny",
     "游戏数据": "Dane gry",
     "当前支持的语言": "Obecnie obsługiwane języki",
     "添加语言包": "Dodaj pakiet językowy",
@@ -837,5 +833,9 @@
     "自定义": "niestandardowe",
     "其他参数": "Inne parametry",
     "延迟注入(ms)": "Opóźnione wstrzyknięcie (ms)",
-    "继承默认": "Odziedziczyć domyślne"
+    "继承默认": "Odziedziczyć domyślne",
+    "游戏ID": "Identyfikator gry",
+    "俺たちに翼はない ―――under the innocent sky.": "Moje skrzydła są pod niewinnym niebem",
+    "当前游戏ID": "Aktualny identyfikator gry",
+    "粘贴": "pasta"
 }

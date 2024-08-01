@@ -107,7 +107,6 @@
     "token设置": "Token-Einstellungen",
     "简体中文(CP936,GBK)": "Vereinfachtes Chinesisch (CP936, GBK)",
     "其他": "andere",
-    "设置所有词条为全局词条": "Alle Einträge als globale Einträge festlegen",
     "过滤数字和英文字母": "Filternummern und englische Buchstaben",
     "Unicode范围": "Unicode-Bereich",
     "未开始": "Noch nicht gestartet",
@@ -351,7 +350,6 @@
     "北欧": "Nordeuropa",
     "金山快译": "Jinshan Schnellübersetzung",
     "音街ウナ": "Yinjie Una",
-    "游戏ID MD5": "Spiel ID MD5",
     "判定詞": "Urteil Wort",
     "翻译设置": "Übersetzungseinstellungen",
     "使用正则表达式替换": "Durch regulären Ausdruck ersetzen",
@@ -773,7 +771,6 @@
     "获取游戏列表": "Spieleliste abrufen",
     "上传游戏列表": "Spieleliste hochladen",
     "上传游戏": "Spiel hochladen",
-    "以当前md5复制选中行": "Kopieren der ausgewählten Zeile mit der aktuellen md5",
     "修改列表名称": "Ändern des Namens der Liste",
     "滚动到最后": "Zum Ende scrollen",
     "限制每行字数": "Begrenzung der Wortanzahl pro Zeile",
@@ -792,7 +789,6 @@
     "VNR共享辞书": "VNR Shared Lexicon",
     "自定义优化": "Kundenspezifische Optimierung",
     "人名": "Name",
-    "游戏ID 0表示全局": "Spiel ID 0 repräsentiert global",
     "游戏数据": "Spieldaten",
     "当前支持的语言": "Derzeit unterstützte Sprachen",
     "添加语言包": "Sprachpaket hinzufügen",
@@ -837,5 +833,9 @@
     "自定义": "kundenspezifisch",
     "其他参数": "Weitere Parameter",
     "延迟注入(ms)": "Verspätete Injektion (ms)",
-    "继承默认": "Standard vererben"
+    "继承默认": "Standard vererben",
+    "游戏ID": "Spiel-ID",
+    "俺たちに翼はない ―――under the innocent sky.": "Meine Flügel sind unter dem unschuldigen Himmel",
+    "当前游戏ID": "Aktuelle Spiel-ID",
+    "粘贴": "Paste"
 }

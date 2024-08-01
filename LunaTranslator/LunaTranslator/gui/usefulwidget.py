@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, platform, functools, threading, uuid
+import os, platform, functools, threading, uuid, json
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import (
@@ -91,6 +91,10 @@ class FocusDoubleSpin(QDoubleSpinBox):
 
 
 class TableViewW(QTableView):
+    def __init__(self, *argc) -> None:
+        super().__init__(*argc)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.ContiguousSelection)
+
     def setIndexWidget(self, index: QModelIndex, w: QWidget):
         super().setIndexWidget(index, w)
         if self.rowHeight(index.row()) < w.height():
@@ -100,6 +104,51 @@ class TableViewW(QTableView):
         m = self.model()
         if isinstance(m, LStandardItemModel):
             m.updatelangtext()
+
+    def safetext(self, row, col):
+        _1 = self.model().item(row, col)
+        _1 = _1.text() if _1 else ""
+        return _1
+
+    def copytable(self) -> str:
+        _data = []
+        minr = minc = 999999999
+        maxr = maxc = 0
+        for index in self.selectedIndexes():
+            minr = min(minr, index.row())
+            minc = min(minc, index.column())
+            maxr = max(maxr, index.row())
+            maxc = max(maxc, index.column())
+            _data.append(self.model().itemFromIndex(index).text())
+        data = {
+            "data": _data,
+            "isluna": True,
+            "row": maxr - minr + 1,
+            "col": maxc - minc + 1,
+        }
+        winsharedutils.clipboard_set(json.dumps(data))
+
+    def pastetable(self):
+        string = winsharedutils.clipboard_get()
+        try:
+            js = json.loads(string)
+            if not js.get("isluna", False):
+                raise
+            current = self.currentIndex()
+            for _ in range(js["row"]):
+                self.model().insertRow(current.row() + 1, [])
+
+            for i, data in enumerate(js.get("data", [])):
+                c = current.column() + i % js["col"]
+                if c >= self.model().columnCount():
+                    continue
+                self.model().setItem(
+                    current.row() + 1 + i // js["col"], c, QStandardItem(data)
+                )
+
+        except:
+            print_exc()
+            self.model().itemFromIndex(self.currentIndex()).setText(string)
 
 
 @Singleton_close

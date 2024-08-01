@@ -1,9 +1,9 @@
 from myutils.config import noundictconfig, savehook_new_data
-import gobject, re, functools
+import gobject, re, functools, winsharedutils, json
 from qtsymbols import *
 from traceback import print_exc
 import gobject
-from gui.usefulwidget import getQMessageBox, threebuttons, TableViewW
+from gui.usefulwidget import threebuttons, TableViewW
 from myutils.wrapper import Singleton_close
 from myutils.utils import postusewhich
 from gui.dynalang import LDialog, LLabel, LPushButton, LStandardItemModel, LAction
@@ -22,8 +22,12 @@ class noundictconfigdialog(LDialog):
         menu = QMenu(table)
         up = LAction("上移")
         down = LAction("下移")
+        copy = LAction("复制")
+        paste = LAction("粘贴")
         menu.addAction(up)
         menu.addAction(down)
+        menu.addAction(copy)
+        menu.addAction(paste)
         action = menu.exec(table.cursor().pos())
 
         if action == up:
@@ -32,6 +36,11 @@ class noundictconfigdialog(LDialog):
 
         elif action == down:
             self.moverank(table, 1)
+        elif action == copy:
+            table.copytable()
+
+        elif action == paste:
+            table.pastetable()
 
     def moverank(self, table: TableViewW, dy):
         curr = table.currentIndex()
@@ -49,21 +58,17 @@ class noundictconfigdialog(LDialog):
         rows = self.model.rowCount()
         self.configdict.clear()
         for row in range(rows):
-            if self.model.item(row, 1).text() == "":
+            _1 = self.table.safetext(row, 1)
+            _2 = self.table.safetext(row, 2)
+            _0 = self.table.safetext(row, 0)
+            if _1 == "":
                 continue
-            if self.model.item(row, 1).text() not in self.configdict:
-                self.configdict[self.model.item(row, 1).text()] = [
-                    self.model.item(row, 0).text(),
-                    self.model.item(row, 2).text(),
-                ]
-            else:
-                self.configdict[self.model.item(row, 1).text()] += [
-                    self.model.item(row, 0).text(),
-                    self.model.item(row, 2).text(),
-                ]
+            if _1 not in self.configdict:
+                self.configdict[_1] = []
+            self.configdict[_1] += [_0, _2]
 
     def __init__(
-        self, parent, configdict, title, label=["游戏ID MD5", "原文", "翻译"], _=None
+        self, parent, configdict, title, label=["游戏ID", "原文", "翻译"], _=None
     ) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
@@ -128,25 +133,6 @@ class noundictconfigdialog(LDialog):
         button.btn4clicked.connect(functools.partial(self.moverank, table, 1))
 
         button.btn5clicked.connect(self.apply)
-        button2 = threebuttons(texts=["设置所有词条为全局词条", "以当前md5复制选中行"])
-
-        def clicked5():
-            rows = model.rowCount()
-            for row in range(rows):
-                model.item(row, 0).setText("0")
-
-        button2.btn1clicked.connect(
-            lambda: getQMessageBox(
-                self,
-                "警告",
-                "!!!",
-                True,
-                True,
-                lambda: clicked5(),
-            )
-        )
-
-        button2.btn2clicked.connect(self.copysetmd5)
 
         search = QHBoxLayout()
         searchcontent = QLineEdit()
@@ -172,41 +158,18 @@ class noundictconfigdialog(LDialog):
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addWidget(button)
-        formLayout.addWidget(button2)
         setmd5layout = QHBoxLayout()
-        setmd5layout.addWidget(LLabel("当前MD5"))
+        setmd5layout.addWidget(LLabel("当前游戏ID"))
         md5content = QLineEdit(gobject.baseobject.currentmd5)
+        md5content.setReadOnly(True)
         setmd5layout.addWidget(md5content)
-        button5 = LPushButton("修改")
-        button5.clicked.connect(
-            lambda x: gobject.baseobject.__setattr__("currentmd5", md5content.text())
-        )
-        setmd5layout.addWidget(button5)
+
         self.button = button
         self.model = model
         self.configdict = configdict
         formLayout.addLayout(setmd5layout)
         self.resize(QSize(600, 400))
         self.show()
-
-    def copysetmd5(self):
-        if len(self.table.selectedIndexes()) == 0:
-            return
-        md5 = gobject.baseobject.currentmd5
-        row = self.table.selectedIndexes()[0].row()
-        skip = []
-        for index in self.table.selectedIndexes():
-            if index.row() in skip:
-                continue
-            skip.append(index.row())
-            self.model.insertRow(
-                row,
-                [
-                    QStandardItem(md5),
-                    QStandardItem(self.model.item(index.row(), 1).text()),
-                    QStandardItem(self.model.item(index.row(), 2).text()),
-                ],
-            )
 
 
 @Singleton_close
@@ -222,8 +185,12 @@ class noundictconfigdialog_private(LDialog):
         menu = QMenu(table)
         up = LAction("上移")
         down = LAction("下移")
+        copy = LAction("复制")
+        paste = LAction("粘贴")
         menu.addAction(up)
         menu.addAction(down)
+        menu.addAction(copy)
+        menu.addAction(paste)
         action = menu.exec(table.cursor().pos())
 
         if action == up:
@@ -232,6 +199,12 @@ class noundictconfigdialog_private(LDialog):
 
         elif action == down:
             self.moverank(table, 1)
+
+        elif action == copy:
+            table.copytable()
+
+        elif action == paste:
+            table.pastetable()
 
     def moverank(self, table: TableViewW, dy):
         curr = table.currentIndex()
@@ -377,7 +350,7 @@ class Process:
             noundictconfigdialog(
                 parent_window,
                 noundictconfig["dict"],
-                "专有名词翻译_游戏ID 0表示全局",
+                "专有名词翻译_占位符",
             ),
         )
 

@@ -107,7 +107,6 @@
     "token设置": "Nastavení tokenu",
     "简体中文(CP936,GBK)": "Zjednodušená čínština (CP936, GBK)",
     "其他": "ostatní",
-    "设置所有词条为全局词条": "Nastavit všechny položky jako globální položky",
     "过滤数字和英文字母": "Filtrovat čísla a anglická písmena",
     "Unicode范围": "Rozsah Unicode",
     "未开始": "Ještě nezačalo",
@@ -351,7 +350,6 @@
     "北欧": "Severní Evropa",
     "金山快译": "Jinshan Rychlý překlad",
     "音街ウナ": "Yinjie Una.",
-    "游戏ID MD5": "ID hry MD5",
     "判定詞": "Soudní slovo",
     "翻译设置": "Nastavení překladu",
     "使用正则表达式替换": "Nahradit regulárním výrazem",
@@ -773,7 +771,6 @@
     "获取游戏列表": "Získat seznam her",
     "上传游戏列表": "Nahrát seznam hry",
     "上传游戏": "Nahrát hru",
-    "以当前md5复制选中行": "Zkopírovat vybraný řádek s aktuální md5",
     "修改列表名称": "Změna názvu seznamu",
     "滚动到最后": "Přejděte na konec",
     "限制每行字数": "Omezení počtu slov na řádek",
@@ -792,7 +789,6 @@
     "VNR共享辞书": "Sdílený slovník VNR",
     "自定义优化": "Vlastní optimalizace",
     "人名": "jméno",
-    "游戏ID 0表示全局": "ID hry 0 představuje globální",
     "游戏数据": "Údaje o hře",
     "当前支持的语言": "Aktuálně podporované jazyky",
     "添加语言包": "Přidat jazykový balíček",
@@ -837,5 +833,9 @@
     "自定义": "vlastní",
     "其他参数": "Další parametry",
     "延迟注入(ms)": "Zpožděná injekce (ms)",
-    "继承默认": "Zdědit výchozí"
+    "继承默认": "Zdědit výchozí",
+    "游戏ID": "ID hry",
+    "俺たちに翼はない ―――under the innocent sky.": "Moje křídla jsou pod nevinnou oblohou",
+    "当前游戏ID": "Aktuální ID hry",
+    "粘贴": "pasta"
 }

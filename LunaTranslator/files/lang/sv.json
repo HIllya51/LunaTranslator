@@ -107,7 +107,6 @@
     "token设置": "Tokeninställningar",
     "简体中文(CP936,GBK)": "Förenklad kinesiska (CP936, GBK)",
     "其他": "Annat",
-    "设置所有词条为全局词条": "Ange alla poster som globala poster",
     "过滤数字和英文字母": "Filtrera siffror och engelska bokstäver",
     "Unicode范围": "Unicode- intervall",
     "未开始": "Inte börjat än",
@@ -351,7 +350,6 @@
     "北欧": "Nordeuropa",
     "金山快译": "Jinshan snabböversättning",
     "音街ウナ": "Yinjie Una",
-    "游戏ID MD5": "Game ID MD5",
     "判定詞": "Domord",
     "翻译设置": "Översättningsinställningar",
     "使用正则表达式替换": "Ersätt med reguljärt uttryck",
@@ -773,7 +771,6 @@
     "获取游戏列表": "Hämta spellista",
     "上传游戏列表": "Ladda upp spellista",
     "上传游戏": "Ladda upp spel",
-    "以当前md5复制选中行": "Kopiera markerad rad med nuvarande md5",
     "修改列表名称": "Ändra namnet på listan",
     "滚动到最后": "Rulla till slutet",
     "限制每行字数": "Begränsa antalet ord per rad",
@@ -792,7 +789,6 @@
     "VNR共享辞书": "Delad VNR- leksikon",
     "自定义优化": "Anpassad optimering",
     "人名": "namn",
-    "游戏ID 0表示全局": "Spelid 0 representerar globalt",
     "游戏数据": "Speldata",
     "当前支持的语言": "Språk som stöds för närvarande",
     "添加语言包": "Lägg till språkpaket",
@@ -837,5 +833,9 @@
     "自定义": "anpassad",
     "其他参数": "Andra parametrar",
     "延迟注入(ms)": "Fördröjd injektion (ms)",
-    "继承默认": "Arv förval"
+    "继承默认": "Arv förval",
+    "游戏ID": "Spelid",
+    "俺たちに翼はない ―――under the innocent sky.": "Mina vingar är under den oskyldiga himlen",
+    "当前游戏ID": "Aktuellt spelID",
+    "粘贴": "klistra"
 }

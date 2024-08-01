@@ -174,7 +174,6 @@
     "取消": "Hủy bỏ",
     "副詞": "Trạng từ",
     "添加行": "Thêm dòng",
-    "游戏ID MD5": "ID trò chơi MD5",
     "灵格斯": "Lingus",
     "备注": "Ghi chú",
     "路径": "Đường dẫn",
@@ -194,7 +193,6 @@
     "次数统计": "Thống kê số lần",
     "代名詞": "Đại danh từ",
     "判定詞": "Phán quyết",
-    "设置所有词条为全局词条": "Đặt tất cả các mục thành toàn cục",
     "去除重复行": "Loại bỏ các dòng trùng lặp",
     "重复次数": "Số lần lặp lại",
     "显示翻译器名称": "Hiện tên bộ dịch",
@@ -770,7 +768,6 @@
     "获取游戏列表": "Nhận danh sách trò chơi",
     "上传游戏列表": "Tải lên danh sách trò chơi",
     "上传游戏": "Tải lên trò chơi",
-    "以当前md5复制选中行": "Dòng đã chọn sao chép md5 hiện tại",
     "修改列表名称": "Thay đổi tên danh sách",
     "滚动到最后": "Cuộn đến cuối",
     "创建列表": "Tạo danh sách",
@@ -790,7 +787,6 @@
     "VNR共享辞书": "VNR chia sẻ thư từ",
     "自定义优化": "Tối ưu hóa tùy chỉnh",
     "人名": "Tên người",
-    "游戏ID 0表示全局": "Game ID 0 có nghĩa là toàn cầu",
     "游戏数据": "Dữ liệu trò chơi",
     "当前支持的语言": "Ngôn ngữ được hỗ trợ hiện tại",
     "添加语言包": "Thêm gói ngôn ngữ",
@@ -837,5 +833,9 @@
     "自定义": "Tùy chỉnh",
     "其他参数": "Tham số khác",
     "延迟注入(ms)": "Tiêm chậm (ms)",
-    "继承默认": "Thừa kế mặc định"
+    "继承默认": "Thừa kế mặc định",
+    "游戏ID": "ID trò chơi",
+    "俺たちに翼はない ―――under the innocent sky.": "Lời bài hát: Under The Innocent Sky",
+    "当前游戏ID": "ID game hiện tại",
+    "粘贴": "Dán"
 }

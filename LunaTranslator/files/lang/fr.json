@@ -174,7 +174,6 @@
     "取消": "Annulation",
     "副詞": "Adverbes",
     "添加行": "Ajouter une ligne",
-    "游戏ID MD5": "Gameid MD5",
     "灵格斯": "Ringgs.",
     "备注": "Remarques",
     "路径": "Le chemin",
@@ -194,7 +193,6 @@
     "次数统计": "Nombre de statistiques",
     "代名詞": "Pronom",
     "判定詞": "Mot de décision",
-    "设置所有词条为全局词条": "Définir toutes les entrées comme des entrées globales",
     "去除重复行": "Supprimer les lignes dupliquées",
     "重复次数": "Nombre de répétitions",
     "显示翻译器名称": "Afficher le nom du traducteur",
@@ -770,7 +768,6 @@
     "获取游戏列表": "Obtenir une liste de jeux",
     "上传游戏列表": "Télécharger une liste de jeux",
     "上传游戏": "Télécharger un jeu",
-    "以当前md5复制选中行": "Copier la ligne sélectionnée avec le MD5 actuel",
     "修改列表名称": "Modifier le nom de la Liste",
     "滚动到最后": "Rouler jusqu'à la fin",
     "创建列表": "Créer une liste",
@@ -790,7 +787,6 @@
     "VNR共享辞书": "VNR partager discours",
     "自定义优化": "Optimisation personnalisée",
     "人名": "Nom de la personne",
-    "游戏ID 0表示全局": "Game ID 0 pour global",
     "游戏数据": "Données du jeu",
     "当前支持的语言": "Langues actuellement supportées",
     "添加语言包": "Ajouter un pack de langue",
@@ -837,5 +833,9 @@
     "自定义": "Personnalisation",
     "其他参数": "Autres paramètres",
     "延迟注入(ms)": "Injection retardée (MS)",
-    "继承默认": "Héritage par défaut"
+    "继承默认": "Héritage par défaut",
+    "游戏ID": "ID du jeu",
+    "俺たちに翼はない ―――under the innocent sky.": "Je suis sous le ciel innocent.",
+    "当前游戏ID": "Id de jeu actuel",
+    "粘贴": "Coller"
 }

@@ -168,7 +168,6 @@
     "取消": "annulla",
     "副詞": "adv",
     "添加行": "Aggiungi righe",
-    "游戏ID MD5": "ID gioco MD5",
     "灵格斯": "Lingo",
     "备注": "Osservazioni",
     "路径": "percorso",
@@ -188,7 +187,6 @@
     "次数统计": "Statistiche di frequenza",
     "代名詞": "Pronuncio",
     "判定詞": "Parola determinante",
-    "设置所有词条为全局词条": "Imposta tutte le voci come voci globali",
     "去除重复行": "Rimuovi righe duplicate",
     "重复次数": "Ripetizioni",
     "显示翻译器名称": "Mostra il nome del traduttore",
@@ -770,7 +768,6 @@
     "获取游戏列表": "Ottieni la lista dei giochi",
     "上传游戏列表": "Carica la lista dei giochi",
     "上传游戏": "Carica gioco",
-    "以当前md5复制选中行": "Copia la riga selezionata con l'MD5 corrente",
     "修改列表名称": "Modifica nome elenco",
     "滚动到最后": "Scorri fino alla fine",
     "创建列表": "Crea elenco",
@@ -790,7 +787,6 @@
     "VNR共享辞书": "Lexicon condiviso VNR",
     "自定义优化": "Ottimizzazione personalizzata",
     "人名": "nome",
-    "游戏ID 0表示全局": "L'ID del gioco 0 rappresenta globale",
     "游戏数据": "Dati di gioco",
     "当前支持的语言": "Lingue attualmente supportate",
     "添加语言包": "Aggiungi pacchetto linguistico",
@@ -837,5 +833,9 @@
     "自定义": "personalizzato",
     "其他参数": "Altri parametri",
     "延迟注入(ms)": "Iniezione ritardata (ms)",
-    "继承默认": "Eredi default"
+    "继承默认": "Eredi default",
+    "游戏ID": "ID gioco",
+    "俺たちに翼はない ―――under the innocent sky.": "Le mie ali sono sotto il cielo innocente",
+    "当前游戏ID": "ID del gioco corrente",
+    "粘贴": "pasta"
 }

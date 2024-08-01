@@ -167,7 +167,7 @@ class LDialog(QDialog):
         if self._title:
             super().setWindowTitle(_TR(self._title))
 
-
+    
 class LMainWindow(QMainWindow):
 
     def __init__(self, *argc, **kwarg):

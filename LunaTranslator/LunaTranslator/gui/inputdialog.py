@@ -687,6 +687,45 @@ class postconfigdialog_(LDialog):
             if self.closecallback:
                 self.closecallback()
 
+    def showmenu(self, table: TableViewW, pos):
+        r = table.currentIndex().row()
+        if r < 0:
+            return
+        menu = QMenu(table)
+        up = LAction("上移")
+        down = LAction("下移")
+        copy = LAction("复制")
+        paste = LAction("粘贴")
+        menu.addAction(up)
+        menu.addAction(down)
+        menu.addAction(copy)
+        menu.addAction(paste)
+        action = menu.exec(table.cursor().pos())
+
+        if action == up:
+
+            self.moverank(table, -1)
+
+        elif action == down:
+            self.moverank(table, 1)
+        elif action == copy:
+            table.copytable()
+
+        elif action == paste:
+            table.pastetable()
+
+    def moverank(self, table: TableViewW, dy):
+        curr = table.currentIndex()
+        target = (curr.row() + dy) % table.model().rowCount()
+        texts = [
+            table.model().item(curr.row(), i).text()
+            for i in range(table.model().columnCount())
+        ]
+
+        table.model().removeRow(curr.row())
+        table.model().insertRow(target, [QStandardItem(text) for text in texts])
+        table.setCurrentIndex(table.model().index(target, curr.column()))
+
     def apply(self):
         rows = self.model.rowCount()
         self.configdict.clear()
@@ -747,9 +786,11 @@ class postconfigdialog_(LDialog):
         table.setModel(model)
         table.setWordWrap(False)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        # table.clicked.connect(self.show_info)
-        button = threebuttons(texts=["添加行", "删除行", "立即应用"])
+        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        table.customContextMenuRequested.connect(
+            functools.partial(self.showmenu, table)
+        )
+        button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
 
         def clicked1():
             if isinstance(configdict, dict):
@@ -758,8 +799,6 @@ class postconfigdialog_(LDialog):
                 model.insertRow(0, [QStandardItem() for _ in range(len(dictkeys))])
             else:
                 raise
-
-        button.btn1clicked.connect(clicked1)
 
         def clicked2():
             skip = []
@@ -772,8 +811,12 @@ class postconfigdialog_(LDialog):
             for row in skip:
                 model.removeRow(row)
 
+        button.btn1clicked.connect(clicked1)
         button.btn2clicked.connect(clicked2)
-        button.btn3clicked.connect(self.apply)
+
+        button.btn3clicked.connect(functools.partial(self.moverank, table, -1))
+        button.btn4clicked.connect(functools.partial(self.moverank, table, 1))
+        button.btn5clicked.connect(self.apply)
         self.button = button
         self.model = model
         self.configdict = configdict
