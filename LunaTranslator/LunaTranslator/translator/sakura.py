@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 import requests
-import json
+import json, zhconv
 
 # OpenAI
 # from openai import OpenAI
@@ -106,6 +106,8 @@ class TS(basetrans):
             content = ""
 
             gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
+            if self.needzhconv:
+                gpt_dict_raw_text = zhconv.convert(gpt_dict_raw_text, "zh-tw")
             content += "根据以下术语表（可以为空）：\n" + gpt_dict_raw_text + "\n\n"
 
             content += (
