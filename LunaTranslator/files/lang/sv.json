@@ -293,7 +293,6 @@
     "文本输入": "Textinmatning",
     "泰语(CP874)": "Thailändska (CP874)",
     "语音": "röst",
-    "插入特殊码延迟(ms)": "Infoga särskild kodfördröjning (ms)",
     "连接失败": "Anslutning misslyckades",
     "居中显示": "Centrera visningen",
     "翻译及OCR语言": "Översättning och OCR-språk",
@@ -838,5 +837,6 @@
     "自动更新失败，请手动更新": "Automatisk uppdatering misslyckades, uppdatera manuellt",
     "准备完毕，等待更新": "Redo, väntar på uppdateringar",
     "自定义": "anpassad",
-    "其他参数": "Andra parametrar"
+    "其他参数": "Andra parametrar",
+    "延迟注入(ms)": "Fördröjd injektion (ms)"
 }

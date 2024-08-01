@@ -293,7 +293,6 @@
     "文本输入": "Tekstinvoer",
     "泰语(CP874)": "Thais (CP874)",
     "语音": "stem",
-    "插入特殊码延迟(ms)": "Speciale code vertraging invoegen (ms)",
     "连接失败": "verbinding mislukt",
     "居中显示": "Centrale weergave",
     "翻译及OCR语言": "Vertaling en OCR taal",
@@ -838,5 +837,6 @@
     "自动更新失败，请手动更新": "Automatische update mislukt, update handmatig",
     "准备完毕，等待更新": "Klaar, wachten op updates",
     "自定义": "op maat",
-    "其他参数": "Andere parameters"
+    "其他参数": "Andere parameters",
+    "延迟注入(ms)": "Vertraagde injectie (ms)"
 }

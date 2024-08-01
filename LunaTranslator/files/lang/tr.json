@@ -484,7 +484,6 @@
     "翻译请求间隔(s)": "Çeviri İstem Aralığı",
     "若有多个api key，用|将每个key连接后填入，即可轮流使用": "Eğer çoklu API anahtarları varsa, her anahtarı bağlamak için kullanın.",
     "端口可用": "Liman mevcut",
-    "插入特殊码延迟(ms)": "Özel kod gecikmesini (ms) ekle",
     "朗读原文": "Orijinal metin yüksek sesle okuyor",
     "朗读翻译": "Okuma ve Çeviri",
     "朗读的翻译": "Okumanın çevirimi yüksek olarak",
@@ -838,5 +837,6 @@
     "自动更新失败，请手动更新": "Otomatik güncelleştirme başarısız oldu, lütfen kendine güncelleştir",
     "准备完毕，等待更新": "Hazır, güncelleştirmeleri bekliyor.",
     "自定义": "Özel",
-    "其他参数": "Diğer parametreler"
+    "其他参数": "Diğer parametreler",
+    "延迟注入(ms)": "Uzak injeksiyon (ms)"
 }

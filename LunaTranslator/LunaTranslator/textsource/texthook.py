@@ -101,19 +101,16 @@ class texthook(basetext):
 
             return __shitdict(savehook_new_data[self.gameuid]["hooksetting_private"])
 
-    def __init__(
-        self,
-        pids,
-        hwnd,
-        gamepath,
-        gameuid,
-        autostarthookcode=None,
-        needinserthookcode=None,
-    ):
-        if autostarthookcode is None:
+    def __init__(self, pids, hwnd, gamepath, gameuid, autostart=False):
+        if autostart:
+            autostarthookcode = savehook_new_data[gameuid]["hook"]
+            needinserthookcode = savehook_new_data[gameuid]["needinserthookcode"]
+            self.injecttimeout = savehook_new_data[gameuid]["inserthooktimeout"] / 1000
+        else:
+            self.injecttimeout = 0
             autostarthookcode = []
-        if needinserthookcode is None:
             needinserthookcode = []
+
         self.keepref = []
         self.newline = Queue()
         self.newline_delaywait = Queue()
@@ -265,7 +262,12 @@ class texthook(basetext):
             )
             injectdll(injectpids, injecter, dll)
 
+    @threader
     def start(self):
+
+        time.sleep(self.injecttimeout)
+        if self.ending:
+            return
         try:
             self.start_unsafe()
         except:
@@ -276,7 +278,6 @@ class texthook(basetext):
 
     def onprocconnect(self, pid):
         self.connectedpids.append(pid)
-        time.sleep(savehook_new_data[self.gameuid]["inserthooktimeout"] / 1000)
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
         self.showgamename()

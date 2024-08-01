@@ -293,7 +293,6 @@
     "文本输入": "Zadání textu",
     "泰语(CP874)": "Thai (CP874)",
     "语音": "hlas",
-    "插入特殊码延迟(ms)": "Vložit zvláštní kód zpoždění (ms)",
     "连接失败": "připojení selhalo",
     "居中显示": "Středový displej",
     "翻译及OCR语言": "Překlady a OCR jazyk",
@@ -838,5 +837,6 @@
     "自动更新失败，请手动更新": "Automatická aktualizace selhala, aktualizace prosím ručně",
     "准备完毕，等待更新": "Připraveni, čekáme na novinky.",
     "自定义": "vlastní",
-    "其他参数": "Další parametry"
+    "其他参数": "Další parametry",
+    "延迟注入(ms)": "Zpožděná injekce (ms)"
 }

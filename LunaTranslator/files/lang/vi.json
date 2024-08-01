@@ -484,7 +484,6 @@
     "翻译请求间隔(s)": "Khoảng thời gian yêu cầu dịch (s)",
     "若有多个api key，用|将每个key连接后填入，即可轮流使用": "Nếu có nhiều API key, bạn có thể sử dụng thay phiên nhau.",
     "端口可用": "Cổng có sẵn",
-    "插入特殊码延迟(ms)": "Chèn độ trễ mã đặc biệt (ms)",
     "朗读原文": "Đọc nguyên văn",
     "朗读翻译": "Đọc bản dịch",
     "朗读的翻译": "Bản dịch của read to",
@@ -838,5 +837,6 @@
     "自动更新失败，请手动更新": "Cập nhật tự động không thành công, vui lòng cập nhật thủ công",
     "准备完毕，等待更新": "Sẵn sàng chờ update",
     "自定义": "Tùy chỉnh",
-    "其他参数": "Tham số khác"
+    "其他参数": "Tham số khác",
+    "延迟注入(ms)": "Tiêm chậm (ms)"
 }

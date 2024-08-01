@@ -130,7 +130,7 @@ def getdefaultsavehook(title=None):
         "startcmd": '"{exepath}"',
         "startcmduse": False,
         "hook": [],
-        "inserthooktimeout": 0,
+        "inserthooktimeout": 1000,
         "needinserthookcode": [],
         # "allow_tts_auto_names": "",#->v4
         # "allow_tts_auto_names_v4": [],

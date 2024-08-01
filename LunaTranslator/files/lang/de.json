@@ -293,7 +293,6 @@
     "文本输入": "Texteingabe",
     "泰语(CP874)": "Thailändisch (CP874)",
     "语音": "Stimme",
-    "插入特殊码延迟(ms)": "Sondercodeverzögerung einfügen (ms)",
     "连接失败": "Verbindung fehlgeschlagen",
     "居中显示": "Zentralanzeige",
     "翻译及OCR语言": "Übersetzung und OCR Sprache",
@@ -838,5 +837,6 @@
     "自动更新失败，请手动更新": "Automatische Aktualisierung fehlgeschlagen, bitte manuell aktualisieren",
     "准备完毕，等待更新": "Bereit, warten auf Updates",
     "自定义": "kundenspezifisch",
-    "其他参数": "Weitere Parameter"
+    "其他参数": "Weitere Parameter",
+    "延迟注入(ms)": "Verspätete Injektion (ms)"
 }

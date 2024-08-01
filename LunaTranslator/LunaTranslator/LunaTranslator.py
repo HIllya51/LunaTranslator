@@ -587,7 +587,7 @@ class MAINUI:
             if globalconfig["startgamenototop"] == False:
                 idx = savehook_new_list.index(gameuid)
                 savehook_new_list.insert(0, savehook_new_list.pop(idx))
-        self.textsource = texthook(pids, hwnd, pexe, gameuid)
+        self.textsource = texthook(pids, hwnd, pexe, gameuid, autostart=False)
         self.textsource.start()
 
     def starttextsource(self, use=None, checked=True):
@@ -820,15 +820,7 @@ class MAINUI:
                     if globalconfig["startgamenototop"] == False:
                         idx = savehook_new_list.index(uid)
                         savehook_new_list.insert(0, savehook_new_list.pop(idx))
-                    needinserthookcode = savehook_new_data[uid]["needinserthookcode"]
-                    self.textsource = texthook(
-                        pids,
-                        hwnd,
-                        name_,
-                        uid,
-                        autostarthookcode=savehook_new_data[uid]["hook"],
-                        needinserthookcode=needinserthookcode,
-                    )
+                    self.textsource = texthook(pids, hwnd, name_, uid, autostart=True)
                     self.textsource.start()
 
             else:

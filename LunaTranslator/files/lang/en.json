@@ -484,7 +484,6 @@
     "翻译请求间隔(s)": "Translation Request Interval (s)",
     "若有多个api key，用|将每个key连接后填入，即可轮流使用": "If you have multiple API keys and want to use them in rotation, separate each key with | symbol",
     "端口可用": "Port Available",
-    "插入特殊码延迟(ms)": "Insert Hook Code Delay (ms)",
     "朗读原文": "Read Aloud Original Text",
     "朗读翻译": "Read Aloud Original and Translation",
     "朗读的翻译": "Translation of TTS Text",
@@ -838,5 +837,6 @@
     "自动更新失败，请手动更新": "Automatic update failed, please update manually",
     "准备完毕，等待更新": "Ready, waiting for updates",
     "自定义": "custom",
-    "其他参数": "Other parameters"
+    "其他参数": "Other parameters",
+    "延迟注入(ms)": "Delayed injection (ms)"
 }

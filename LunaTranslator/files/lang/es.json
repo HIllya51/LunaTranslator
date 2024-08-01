@@ -484,7 +484,6 @@
     "翻译请求间隔(s)": "Intervalo de solicitud de traducción (s)",
     "若有多个api key，用|将每个key连接后填入，即可轮流使用": "Si hay varias claves api, se puede usar por turnos después de conectar cada clave con | Y rellenarla.",
     "端口可用": "Puertos disponibles",
-    "插入特殊码延迟(ms)": "Retraso en la inserción de códigos especiales (ms)",
     "朗读原文": "Leer en voz alta el texto original",
     "朗读翻译": "Traducción en voz alta",
     "朗读的翻译": "Traducción de la lectura en voz alta",
@@ -838,5 +837,6 @@
     "自动更新失败，请手动更新": "Falló la actualización automática, actualice manualmente",
     "准备完毕，等待更新": "Listo, esperando la actualización",
     "自定义": "Personalizado",
-    "其他参数": "Otros parámetros"
+    "其他参数": "Otros parámetros",
+    "延迟注入(ms)": "Inyección de retraso (ms)"
 }
