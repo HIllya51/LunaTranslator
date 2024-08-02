@@ -2687,7 +2687,7 @@ class previewimages(QWidget):
             pixmap_ = item.imagepath
         self.changepixmappath.emit(pixmap_)
 
-    def removecurrent(self):
+    def removecurrent(self, delfile):
         idx = self.list.currentRow()
         item = self.list.currentItem()
         if item is None:
@@ -2695,6 +2695,11 @@ class previewimages(QWidget):
         path = item.imagepath
         self.removepath.emit(path)
         self.list.takeItem(idx)
+        if delfile:
+            try:
+                os.remove(path)
+            except:
+                pass
 
     def resizeEvent(self, e: QResizeEvent):
         if self.hor:
@@ -2970,18 +2975,22 @@ class pixwrapper(QWidget):
 
         setimage = LAction(("设为封面"))
         deleteimage = LAction(("删除图片"))
+        deleteimage_x = LAction(("删除图片文件"))
         hualang = LAction(("画廊"))
         pos = LAction(("位置"))
 
         menu.addAction(setimage)
         menu.addAction(deleteimage)
+        menu.addAction(deleteimage_x)
         menu.addAction(hualang)
         if _1:
             menu.addSeparator()
             menu.addAction(pos)
         action = menu.exec(QCursor.pos())
         if action == deleteimage:
-            self.removecurrent()
+            self.removecurrent(False)
+        elif action == deleteimage_x:
+            self.removecurrent(True)
         elif action == pos:
             getselectpos(self, self.switchpos)
 
