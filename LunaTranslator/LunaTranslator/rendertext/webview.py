@@ -121,6 +121,7 @@ class TextBrowser(QWidget, dataget):
                 continue
             with open(_, "r", encoding="utf8") as ff:
                 self.set_extra_html(ff.read())
+            break
 
     def debugeval(self, js):
         # print(js)
