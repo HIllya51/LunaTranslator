@@ -94,7 +94,7 @@ class ButtonBar(QFrame):
         self.threelayout.addStretch()
         self._right = __(self.threelayout)
         self.setLayout(self.threelayout)
-
+        self.cntbtn = 0
         self.buttons = {}
         self.stylebuttons = {}
         self.iconstate = {}
@@ -211,8 +211,13 @@ class ButtonBar(QFrame):
                 globalconfig["toolbutton"]["buttons"][name]["align"]
             ]
             button.showinlayout(layout)
-            cnt += button.width()
-        self.parent().setMinimumWidth(cnt)
+            cnt += 1
+        self.cntbtn = cnt
+        self.adjustminwidth()
+
+    def adjustminwidth(self):
+        w = self.cntbtn * self.height() * 2 / 1.5
+        self.parent().setMinimumWidth(int(w))
 
 
 class QUnFrameWindow(resizableframeless):
@@ -443,6 +448,7 @@ class QUnFrameWindow(resizableframeless):
 
     def refreshtoolicon(self):
         self.titlebar.setFixedHeight(int(globalconfig["buttonsize"] * 1.5))
+        self.titlebar.adjustminwidth()
         self.titlebar.refreshtoolicon()
         self.setMinimumHeight(self.titlebar.height() * 2)
         self.set_color_transparency()
