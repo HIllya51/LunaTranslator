@@ -2015,3 +2015,10 @@ class LIconLabel(LLabel):
             QIcon.Mode.Normal,
             QIcon.State.On,
         )
+
+
+class SplitLine(QFrame):
+    def __init__(self, *argc):
+        super().__init__(*argc)
+        self.setStyleSheet("background-color: gray;")
+        self.setFixedHeight(2)

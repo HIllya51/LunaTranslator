@@ -25,6 +25,7 @@ from gui.usefulwidget import (
     LFocusCombo,
     FocusDoubleSpin,
     FocusSpin,
+    SplitLine,
 )
 from gui.dynalang import LPushButton, LFormLayout
 
@@ -247,18 +248,24 @@ def resetgroudswitchcallback(self, group):
     goodfontgroupswitch = LFocusCombo()
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     if group == "webview" or group == "QWebEngine":
-        _btn = LPushButton("额外的html")
+        _btn = LPushButton("编辑")
         _btn.clicked.connect(lambda: extrahtml(self))
         switch = getsimpleswitch(
             globalconfig,
             "useextrahtml",
             callback=lambda x: [
-                gobject.baseobject.translation_ui.translate_text.textbrowser.loadextra(0),
+                gobject.baseobject.translation_ui.translate_text.textbrowser.loadextra(
+                    0
+                ),
                 _btn.setEnabled(x),
             ],
         )
         _btn.setEnabled(globalconfig["useextrahtml"])
-        self.goodfontsettingsformlayout.addRow(getboxlayout([_btn, switch]))
+        self.goodfontsettingsformlayout.addRow(
+            "额外的html",
+            getboxlayout([switch, _btn]),
+        )
+        self.goodfontsettingsformlayout.addRow(SplitLine())
     if group == "QWebEngine":
         group = "webview"
     __form = LFormLayout()

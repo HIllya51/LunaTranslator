@@ -17,6 +17,7 @@ from gui.usefulwidget import (
     FocusDoubleSpin,
     LFocusCombo,
     getsimplecombobox,
+    SplitLine,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -335,6 +336,7 @@ class noundictconfigdialog2(LDialog):
         self.button.setFocus()
         self.apply()
 
+
 def autoinitdialog_items(dic):
     items = []
     for arg in dic["args"]:
@@ -505,9 +507,7 @@ class autoinitdialog(LDialog):
                 lineW.setValue(dd[key])
                 lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
             elif line["type"] == "split":
-                lineW = QLabel()
-                lineW.setStyleSheet("background-color: gray;")
-                lineW.setFixedHeight(2)
+                lineW = SplitLine()
                 formLayout.addRow(lineW)
                 continue
             refswitch = line.get("refswitch", None)
