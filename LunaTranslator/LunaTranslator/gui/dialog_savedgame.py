@@ -4,7 +4,7 @@ from qtsymbols import *
 import os, functools, uuid, threading, hashlib, shutil, time
 from datetime import datetime, timedelta
 from traceback import print_exc
-import windows, gobject, winsharedutils
+import windows, gobject, winsharedutils, qtawesome
 from myutils.config import (
     savehook_new_list,
     savehook_new_data,
@@ -1826,7 +1826,7 @@ class dialog_savedgame_integrated(saveposwindow):
             poslist=globalconfig["savegamedialoggeo"],
         )
         self.setWindowTitle("游戏管理")
-
+        self.setWindowIcon(qtawesome.icon("fa.gear"))
         w, self.internallayout = getboxlayout(
             [], margin0=True, makewidget=True, both=True
         )

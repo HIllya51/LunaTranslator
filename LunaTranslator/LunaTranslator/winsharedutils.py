@@ -250,10 +250,18 @@ def SetTheme(hwnd, dark, backdrop):
     _SetTheme(hwnd, dark, backdrop)
 
 
+getprocesses = utilsdll.getprocesses
+getprocesses.argtypes = (c_void_p,)
+
+
+def Getprcesses():
+    ret = []
+    getprocesses(CFUNCTYPE(None, DWORD)(ret.append))
+    return ret
+
+
 showintab = utilsdll.showintab
-showintab.argtypes = HWND, c_bool
-showintab_ex = utilsdll.showintab_ex
-showintab_ex.argtypes = HWND, c_bool
+showintab.argtypes = HWND, c_bool, c_bool
 
 
 class windowstatus(Structure):

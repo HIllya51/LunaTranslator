@@ -1,6 +1,6 @@
 ﻿#include "define.h"
 
-DECLARE void showintab(HWND hwnd, bool show)
+DECLARE void showintab(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
     LONG style = GetWindowLong(hwnd, GWL_STYLE);
@@ -9,30 +9,15 @@ DECLARE void showintab(HWND hwnd, bool show)
     {
         style_ex |= WS_EX_APPWINDOW;
         // if ((style & WS_OVERLAPPEDWINDOW) != WS_OVERLAPPEDWINDOW)
-        //     style_ex &= ~WS_EX_TOOLWINDOW;
+        if (tool)
+            style_ex &= ~WS_EX_TOOLWINDOW;
     }
     else
     {
         style_ex &= ~WS_EX_APPWINDOW;
         // if ((style & WS_OVERLAPPEDWINDOW) != WS_OVERLAPPEDWINDOW)
-        //     style_ex |= WS_EX_TOOLWINDOW;
-    }
-    SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
-}
-
-DECLARE void showintab_ex(HWND hwnd, bool show)
-{
-    LONG style = GetWindowLong(hwnd, GWL_STYLE);
-    auto style_ex = GetWindowLong(hwnd, GWL_EXSTYLE);
-    if (show)
-    {
-        style_ex |= WS_EX_APPWINDOW;
-        style_ex &= ~WS_EX_TOOLWINDOW;
-    }
-    else
-    {
-        style_ex &= ~WS_EX_APPWINDOW;
-        style_ex |= WS_EX_TOOLWINDOW;
+        if (tool)
+            style_ex |= WS_EX_TOOLWINDOW;
     }
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }
@@ -123,4 +108,23 @@ DECLARE bool Is64bit(DWORD pid)
     }
     else
         return false;
+}
+
+DECLARE void getprocesses(void (*cb)(DWORD))
+{
+    std::unordered_map<std::wstring, std::vector<int>> exe_pid;
+    AutoHandle hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hSnapshot == INVALID_HANDLE_VALUE)
+        return;
+
+    PROCESSENTRY32 pe32;
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+    auto currpid = GetCurrentProcessId();
+    if (Process32First(hSnapshot, &pe32))
+    {
+        do
+        {
+            cb(pe32.th32ProcessID);
+        } while (Process32Next(hSnapshot, &pe32));
+    }
 }

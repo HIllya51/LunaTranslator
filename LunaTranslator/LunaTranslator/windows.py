@@ -192,10 +192,6 @@ _kernel32 = windll.Kernel32
 _psapi = windll.Psapi
 _Advapi32 = windll.Advapi32
 
-_SetWindowPlacement = _user32.SetWindowPlacement
-_SetWindowPlacement.argtypes = c_int, POINTER(WINDOWPLACEMENT)
-_GetWindowPlacement = _user32.GetWindowPlacement
-_GetWindowPlacement.argtypes = c_int, POINTER(WINDOWPLACEMENT)
 _GetWindowRect = _user32.GetWindowRect
 _GetWindowRect.argtypes = c_int, POINTER(RECT)
 _GetForegroundWindow = _user32.GetForegroundWindow
@@ -427,21 +423,6 @@ def GetClientRect(hwnd):
     return (_rect.left, _rect.top, _rect.right, _rect.bottom)
 
 
-def GetWindowPlacement(hwnd, _simple):
-    _place = WINDOWPLACEMENT()
-    _GetWindowPlacement(hwnd, pointer(_place))
-    if _simple:
-        return (
-            _place.flags,
-            _place.showCmd,
-        )  # 只用的着showCmd，所以就先这样了
-    else:
-        return _place
-
-
-def SetWindowPlacement(hwnd, _place):
-    return _SetWindowPlacement(hwnd, pointer(_place))
-
 
 def ShowWindow(hwnd, nCmdShow):
     return _ShowWindow(hwnd, nCmdShow)
@@ -540,19 +521,6 @@ def SendMessage(hwnd, message, wp=None, lp=None):
 
 def keybd_event(bVk, bScan, dwFlags, _):
     _keybd_event(bVk, bScan, dwFlags, _)
-
-
-try:
-    _EnumProcesses = _kernel32.EnumProcesses
-except:
-    _EnumProcesses = _psapi.EnumProcesses
-
-
-def EnumProcesses():
-    buf = (c_uint * 1024)()
-    dwneed = c_uint()
-    _EnumProcesses(pointer(buf), sizeof(buf), pointer(dwneed))
-    return list(buf)[: dwneed.value // sizeof(c_uint)]
 
 
 _WaitForSingleObject = _kernel32.WaitForSingleObject

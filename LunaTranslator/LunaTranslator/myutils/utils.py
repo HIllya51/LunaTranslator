@@ -458,35 +458,13 @@ def minmaxmoveobservefunc(self):
                             gobject.baseobject.translation_ui.thistimenotsetop = True
                             if gobject.baseobject.translation_ui.istopmost():
                                 gobject.baseobject.translation_ui.canceltop()
-            if _focusp != windows.GetWindowThreadProcessId(
-                gobject.baseobject.textsource.hwnd
-            ):
-                return
-
-            rect = windows.GetWindowRect(hwnd)
-            if event == windows.EVENT_SYSTEM_MOVESIZESTART:  #
-                self.lastpos = rect
-            elif event == windows.EVENT_SYSTEM_MOVESIZEEND:  #
-                if globalconfig["movefollow"]:
-                    if self.lastpos:
-                        rate = QApplication.instance().devicePixelRatio()
-                        self.hookfollowsignal.emit(
-                            5,
-                            (
-                                int((rect[0] - self.lastpos[0]) / rate),
-                                int((rect[1] - self.lastpos[1]) / rate),
-                            ),
-                        )
 
         except:
             print_exc()
 
     win_event_callback_cfunc = WinEventProcType(win_event_callback)
 
-    eventpairs = (
-        (windows.EVENT_SYSTEM_MOVESIZESTART, windows.EVENT_SYSTEM_MOVESIZEEND),
-        (windows.EVENT_SYSTEM_FOREGROUND, windows.EVENT_SYSTEM_FOREGROUND),
-    )
+    eventpairs = ((windows.EVENT_SYSTEM_FOREGROUND, windows.EVENT_SYSTEM_FOREGROUND),)
 
     def _():
         for pair in eventpairs:

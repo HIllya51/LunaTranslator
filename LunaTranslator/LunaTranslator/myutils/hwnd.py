@@ -87,25 +87,19 @@ def grabwindow(app="PNG", callback_origin=None):
         _()
 
 
-def getprocesslist():
-
-    pids = windows.EnumProcesses()
-    return pids
-
-
 def getpidexe(pid):
-    hwnd1 = windows.AutoHandle(
+    hproc = windows.AutoHandle(
         windows.OpenProcess(windows.PROCESS_ALL_ACCESS, False, pid)
     )
-    if not hwnd1:
+    if not hproc:
 
-        hwnd1 = windows.OpenProcess(
+        hproc = windows.OpenProcess(
             windows.PROCESS_QUERY_LIMITED_INFORMATION, False, pid
         )
-    if not hwnd1:
+    if not hproc:
         name_ = None
     else:
-        name_ = windows.GetProcessFileName(hwnd1)
+        name_ = windows.GetProcessFileName(hproc)
     return name_
 
 
@@ -126,8 +120,7 @@ def test_injectable(pids):
 
 def ListProcess(filt=True):
     ret = []
-    pids = getprocesslist()
-    for pid in pids:
+    for pid in winsharedutils.Getprcesses():
         if os.getpid() == pid:
             continue
         try:

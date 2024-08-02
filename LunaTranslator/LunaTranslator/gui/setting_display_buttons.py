@@ -51,8 +51,6 @@ def doadjust(_):
     gobject.baseobject.translation_ui.adjustbuttons()
     gobject.baseobject.translation_ui.enterfunction()
 
-    for button in gobject.baseobject.translation_ui.showbuttons:
-        button.show()
 
 def changerank(item, up, sortlist, savelist, savelay):
 

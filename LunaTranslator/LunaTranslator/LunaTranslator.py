@@ -594,9 +594,8 @@ class MAINUI:
         self.translation_ui.showhidestate = False
         self.translation_ui.refreshtooliconsignal.emit()
 
-        for button in self.translation_ui.showbuttons:
-            button.show()
         self.translation_ui.set_color_transparency()
+        self.translation_ui.adjustbuttons()
         try:
             self.settin_ui.selectbutton.setEnabled(
                 globalconfig["sourcestatus2"]["texthook"]["use"]
@@ -1069,7 +1068,9 @@ class MAINUI:
         except:
             return
         if widget == self.translation_ui:
-            winsharedutils.showintab_ex(int(widget.winId()), globalconfig["showintab"])
+            winsharedutils.showintab(
+                int(widget.winId()), globalconfig["showintab"], True
+            )
             return
         window_flags = widget.windowFlags()
         if (
@@ -1086,7 +1087,9 @@ class MAINUI:
         ):
             # combobox的下拉框，然后这个widget会迅速销毁，会导致任务栏闪一下。没别的办法了姑且这样过滤一下
             return
-        winsharedutils.showintab(int(widget.winId()), globalconfig["showintab_sub"])
+        winsharedutils.showintab(
+            int(widget.winId()), globalconfig["showintab_sub"], False
+        )
 
     def inittray(self):
 
@@ -1190,8 +1193,8 @@ class MAINUI:
         self.parsedefaultfont()
         self.loadmetadatas()
         self.translation_ui = QUnFrameWindow()
-        winsharedutils.showintab_ex(
-            int(self.translation_ui.winId()), globalconfig["showintab"]
+        winsharedutils.showintab(
+            int(self.translation_ui.winId()), globalconfig["showintab"], True
         )
         self.translation_ui.show()
         self.translation_ui.aftershowdosomething()
