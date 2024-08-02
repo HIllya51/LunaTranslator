@@ -292,7 +292,7 @@ class TS(basetrans):
                 output_text = ""
                 for o in output:
                     if o["choices"][0]["finish_reason"] == None:
-                        text_partial = o["choices"][0]["delta"]["content"]
+                        text_partial = o["choices"][0]["delta"].get("content", "")
                         output_text += text_partial
                         yield text_partial
                         completion_tokens += 1
