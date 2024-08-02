@@ -5,6 +5,7 @@
 - [支持作者](/zh/support.md)
 
 **常见问题**
+- [一些实用的小功能](/zh/usefulsmalltools.md)
 - [如何使用调试浏览器翻译](/zh/tiaoshiliulanqi.md)
 - [各种翻译优化的作用](/zh/transoptimi.md)
 - [在XP虚拟机上玩古老游戏并提取文本翻译](/zh/playonxp.md)
