@@ -59,18 +59,26 @@ class ButtonX(QWidget):
 
 class IconLabelX(LIconLabel, ButtonX):
     clicked = pyqtSignal()
-    startpos = QPoint()
+    movedistance = 0
+    lastpos = QPoint()
+
+    def mouseMoveEvent(self, ev: QMouseEvent) -> None:
+        cur = QCursor.pos()
+        self.movedistance += (cur - self.lastpos).manhattanLength()
+        self.lastpos = cur
+        return super().mouseMoveEvent(ev)
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
         if ev.button() == Qt.MouseButton.LeftButton:
-            self.startpos = QCursor.pos()
+            self.lastpos = QCursor.pos()
+            self.movedistance = 0
         else:
-            self.startpos = QPoint()
+            self.movedistance = 9999
         return super().mousePressEvent(ev)
 
     def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
         if ev.button() == Qt.MouseButton.LeftButton:
-            if (QCursor.pos() - self.startpos).manhattanLength() < 16:
+            if self.movedistance <= 5:
                 self.clicked.emit()
         return super().mouseReleaseEvent(ev)
 
