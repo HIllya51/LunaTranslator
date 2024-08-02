@@ -113,8 +113,13 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.on_load.connect(self.__loadextra)
 
     def __loadextra(self, _):
-        if os.path.exists("userconfig/extrahtml.html"):
-            with open("userconfig/extrahtml.html", "r", encoding="utf8") as ff:
+        for _ in [
+            "userconfig/extrahtml.html",
+            r"LunaTranslator\rendertext\exampleextrahtml.html",
+        ]:
+            if not os.path.exists(_):
+                continue
+            with open(_, "r", encoding="utf8") as ff:
                 self.set_extra_html(ff.read())
 
     def debugeval(self, js):

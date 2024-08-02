@@ -1,8 +1,14 @@
-
-<!-- <script>alert("welcome")</script> -->
+<div div="example_hello">Hello, welcome to use LunaTranslator</div>
+<script>
+    // alert("welcome")
+    clear_all = function () {
+        _clear_all()
+        document.getElementById('example_hello').innerText = ""
+    }
+</script>
 <style>
     body::before {
-        background-image: url("./luna.png");
+        background-image: url("https://image.lunatranslator.xyz/luna.jpg");
         opacity: 0.6;
         background-size: 100% auto;
         content: '';
@@ -13,15 +19,15 @@
         bottom: 0;
         z-index: -1;
     }
-    @media (prefers-color-scheme: dark) 
-    {
+
+    @media (prefers-color-scheme: dark) {
         :root {
             color-scheme: dark;
         }
-        body 
-        { 
-            background-color: rgb(44,44,44);
-            color: white; 
+
+        body {
+            background-color: rgb(44, 44, 44);
+            color: white;
         }
     }
 </style>
