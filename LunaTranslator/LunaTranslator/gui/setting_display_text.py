@@ -13,9 +13,11 @@ from gui.usefulwidget import (
     getQMessageBox,
     D_getspinbox,
     D_getIconButton,
+    getboxlayout,
     D_getcolorbutton,
     getcolorbutton,
     MySwitch,
+    getsimpleswitch,
     D_getsimpleswitch,
     selectcolor,
     listediter,
@@ -246,8 +248,17 @@ def resetgroudswitchcallback(self, group):
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     if group == "webview" or group == "QWebEngine":
         _btn = LPushButton("额外的html")
-        self.goodfontsettingsformlayout.addRow(_btn)
         _btn.clicked.connect(lambda: extrahtml(self))
+        switch = getsimpleswitch(
+            globalconfig,
+            "useextrahtml",
+            callback=lambda x: [
+                gobject.baseobject.translation_ui.translate_text.textbrowser.loadextra(0),
+                _btn.setEnabled(x),
+            ],
+        )
+        _btn.setEnabled(globalconfig["useextrahtml"])
+        self.goodfontsettingsformlayout.addRow(getboxlayout([_btn, switch]))
     if group == "QWebEngine":
         group = "webview"
     __form = LFormLayout()

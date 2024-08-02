@@ -109,10 +109,10 @@ class TextBrowser(QWidget, dataget):
         if not isinstance(self.webivewwidget, WebivewWidget):
             return
         self.isfirst = False
-        self.__loadextra(0)
-        self.webivewwidget.on_load.connect(self.__loadextra)
+        self.loadextra(0)
+        self.webivewwidget.on_load.connect(self.loadextra)
 
-    def __loadextra(self, _):
+    def loadextra(self, _):
         for _ in [
             "userconfig/extrahtml.html",
             r"LunaTranslator\rendertext\exampleextrahtml.html",
@@ -136,6 +136,9 @@ class TextBrowser(QWidget, dataget):
         self.debugeval(f"clear_all()")
 
     def set_extra_html(self, html):
+        if not globalconfig["useextrahtml"]:
+            self.debugeval(f'set_extra_html("")')
+            return
         html = quote(html)
         self.debugeval(f'set_extra_html("{html}")')
 
