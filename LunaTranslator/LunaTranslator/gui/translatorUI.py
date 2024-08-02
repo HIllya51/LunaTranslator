@@ -860,6 +860,7 @@ class QUnFrameWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self.titlebar = ButtonBar(self)
+        self.titlebar.setFixedHeight(int(globalconfig["buttonsize"] * 1.5))
         self.titlebar.setObjectName("titlebar")
         self.titlebar.setMouseTracking(True)
         self.addbuttons()
