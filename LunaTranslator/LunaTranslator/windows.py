@@ -193,7 +193,7 @@ _psapi = windll.Psapi
 _Advapi32 = windll.Advapi32
 
 _GetWindowRect = _user32.GetWindowRect
-_GetWindowRect.argtypes = c_int, POINTER(RECT)
+_GetWindowRect.argtypes = HWND, POINTER(RECT)
 _GetForegroundWindow = _user32.GetForegroundWindow
 _WindowFromPoint = _user32.WindowFromPoint
 _WindowFromPoint.argtypes = (POINT,)
