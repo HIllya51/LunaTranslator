@@ -20,6 +20,23 @@ DECLARE void showintab(HWND hwnd, bool show)
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }
 
+DECLARE void showintab_ex(HWND hwnd, bool show)
+{
+    LONG style = GetWindowLong(hwnd, GWL_STYLE);
+    auto style_ex = GetWindowLong(hwnd, GWL_EXSTYLE);
+    if (show)
+    {
+        style_ex |= WS_EX_APPWINDOW;
+        style_ex &= ~WS_EX_TOOLWINDOW;
+    }
+    else
+    {
+        style_ex &= ~WS_EX_APPWINDOW;
+        style_ex |= WS_EX_TOOLWINDOW;
+    }
+    SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
+}
+
 struct windowstatus
 {
     WINDOWPLACEMENT wpc;

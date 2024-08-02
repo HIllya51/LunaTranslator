@@ -621,8 +621,7 @@ class QUnFrameWindow(resizableframeless):
         super(QUnFrameWindow, self).__init__(
             None,
             flags=Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.WindowMinimizeButtonHint
-            | Qt.WindowType.Tool,
+            | Qt.WindowType.WindowMinimizeButtonHint,
             poslist=globalconfig["transuigeo"],
         )  # 设置为顶级窗口，无边框
         icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()

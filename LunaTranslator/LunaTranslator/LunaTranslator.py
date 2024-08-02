@@ -1069,7 +1069,7 @@ class MAINUI:
         except:
             return
         if widget == self.translation_ui:
-            winsharedutils.showintab(int(widget.winId()), globalconfig["showintab"])
+            winsharedutils.showintab_ex(int(widget.winId()), globalconfig["showintab"])
             return
         window_flags = widget.windowFlags()
         if (
@@ -1190,7 +1190,7 @@ class MAINUI:
         self.parsedefaultfont()
         self.loadmetadatas()
         self.translation_ui = QUnFrameWindow()
-        winsharedutils.showintab(
+        winsharedutils.showintab_ex(
             int(self.translation_ui.winId()), globalconfig["showintab"]
         )
         self.translation_ui.show()

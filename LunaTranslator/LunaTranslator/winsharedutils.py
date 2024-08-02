@@ -252,6 +252,8 @@ def SetTheme(hwnd, dark, backdrop):
 
 showintab = utilsdll.showintab
 showintab.argtypes = HWND, c_bool
+showintab_ex = utilsdll.showintab_ex
+showintab_ex.argtypes = HWND, c_bool
 
 
 class windowstatus(Structure):
