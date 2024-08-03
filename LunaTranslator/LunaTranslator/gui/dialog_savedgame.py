@@ -765,20 +765,24 @@ class dialog_setting_game_internal(QWidget):
         formLayout.addRow(
             "首选的",
             getsimplecombobox(
-                list(globalconfig["metadata"].keys()),
+                list(targetmod.keys()),
                 globalconfig,
                 "primitivtemetaorigin",
-                internallist=list(globalconfig["metadata"].keys()),
+                internallist=list(targetmod.keys()),
                 static=True,
             ),
         )
         formLayout.addRow(None, QLabel())
-        for key in globalconfig["metadata"]:
+        for key in targetmod:
             try:
-                idname = globalconfig["metadata"][key]["target"]
-                vndbid = QLineEdit(str(savehook_new_data[gameuid][idname]))
+                idname = targetmod[key].idname
+
+                vndbid = QLineEdit()
                 if globalconfig["metadata"][key].get("idtype", 1) == 0:
                     vndbid.setValidator(QIntValidator())
+                    vndbid.setText(str(savehook_new_data[gameuid].get(idname, "0")))
+                else:
+                    vndbid.setText(str(savehook_new_data[gameuid].get(idname, "")))
                 vndbid.setSizePolicy(
                     QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
                 )

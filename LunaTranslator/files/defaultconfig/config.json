@@ -267,14 +267,6 @@
                 "access-token": ""
             }
         },
-        "fanza": {
-            "auto": false,
-            "name": "FanzaGames",
-            "downloadtasks": [],
-            "searchfordatatasks": [],
-            "useproxy": true,
-            "target": "fanzaid"
-        },
         "steam": {
             "auto": false,
             "name": "steam",

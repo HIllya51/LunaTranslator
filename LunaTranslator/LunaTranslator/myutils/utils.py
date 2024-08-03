@@ -216,7 +216,7 @@ def trysearchforid_1(gameuid, searchargs: list):
                 break
         if not vid:
             continue
-        idname = globalconfig["metadata"][key]["target"]
+        idname = targetmod[key].idname
         savehook_new_data[gameuid][idname] = vid
         if infoid is None or key == primitivtemetaorigin:
             infoid = key, vid
