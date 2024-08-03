@@ -33,7 +33,6 @@ from myutils.utils import (
     checkpostlangmatch,
     loadpostsettingwindowmethod_private,
     titlechangedtask,
-    idtypecheck,
     selectdebugfile,
     targetmod,
     loopbackrecorder,
@@ -778,17 +777,13 @@ class dialog_setting_game_internal(QWidget):
                 idname = targetmod[key].idname
 
                 vndbid = QLineEdit()
-                if globalconfig["metadata"][key].get("idtype", 1) == 0:
-                    vndbid.setValidator(QIntValidator())
-                    vndbid.setText(str(savehook_new_data[gameuid].get(idname, "0")))
-                else:
-                    vndbid.setText(str(savehook_new_data[gameuid].get(idname, "")))
+                vndbid.setText(str(savehook_new_data[gameuid].get(idname, "")))
                 vndbid.setSizePolicy(
                     QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
                 )
 
                 vndbid.textEdited.connect(
-                    functools.partial(idtypecheck, key, idname, gameuid)
+                    functools.partial(savehook_new_data[gameuid].__setitem__, idname)
                 )
                 vndbid.returnPressed.connect(
                     functools.partial(gamdidchangedtask, key, idname, gameuid)

@@ -232,22 +232,6 @@ def trysearchforid(gameuid, searchargs: list):
     threading.Thread(target=trysearchforid_1, args=(gameuid, searchargs)).start()
 
 
-def idtypecheck(key, idname, gameuid, vid):
-    if vid == "":
-        return
-
-    try:
-        if globalconfig["metadata"][key].get("idtype", 1) == 0:
-            try:
-                vid = int(vid)
-            except:
-                print(vid)
-                return
-        savehook_new_data[gameuid][idname] = vid
-    except:
-        print_exc()
-
-
 def gamdidchangedtask(key, idname, gameuid):
     vid = savehook_new_data[gameuid][idname]
     dispatchsearchfordata(gameuid, key, vid)

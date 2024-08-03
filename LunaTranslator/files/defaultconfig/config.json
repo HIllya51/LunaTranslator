@@ -242,7 +242,6 @@
             "searchfordatatasks": [],
             "useproxy": false,
             "target": "vid",
-            "idtype": 0,
             "args": {
                 "Token": ""
             }
@@ -262,7 +261,6 @@
             "searchfordatatasks": [],
             "useproxy": true,
             "target": "bgmsid",
-            "idtype": 0,
             "args": {
                 "access-token": ""
             }
