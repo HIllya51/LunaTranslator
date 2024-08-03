@@ -33,7 +33,7 @@ def _2_f(line, args):
         dumptime = Counter()
         cntx = 1
         lastc = None
-        for c in line:
+        for c in list(line) + [0]:
             if c != lastc:
                 dumptime[cntx] += 1
                 lastc = c
