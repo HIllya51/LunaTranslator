@@ -954,18 +954,18 @@ class dialog_setting_game_internal(QWidget):
     def getlabelsetting(self, formLayout: QVBoxLayout, gameuid):
         self.labelflow = ScrollFlow()
 
-        def newitem(text, removeable, first=False, _type=tagitem.TYPE_RAND):
-            qw = tagitem(text, removeable, _type)
+        def newitem(text, refkey, first=False, _type=tagitem.TYPE_RAND):
+            qw = tagitem(text, True, _type)
 
-            def __(_qw, _):
+            def __(_qw, refkey, _):
                 t, _type, _ = _
-                _qw.remove()
-                i = savehook_new_data[gameuid]["usertags"].index(t)
-                self.labelflow.removeidx(i)
-                savehook_new_data[gameuid]["usertags"].remove(t)
+                try:
+                    _qw.remove()
+                    savehook_new_data[gameuid][refkey].remove(t)
+                except:
+                    print_exc()
 
-            if removeable:
-                qw.removesignal.connect(functools.partial(__, qw))
+            qw.removesignal.connect(functools.partial(__, qw, refkey))
 
             def safeaddtags(_):
                 try:
@@ -980,11 +980,11 @@ class dialog_setting_game_internal(QWidget):
                 self.labelflow.addwidget(qw)
 
         for tag in savehook_new_data[gameuid]["usertags"]:
-            newitem(tag, True, _type=tagitem.TYPE_USERTAG)
+            newitem(tag, "usertags", _type=tagitem.TYPE_USERTAG)
         for tag in savehook_new_data[gameuid]["developers"]:
-            newitem(tag, False, _type=tagitem.TYPE_DEVELOPER)
+            newitem(tag, "developers", _type=tagitem.TYPE_DEVELOPER)
         for tag in savehook_new_data[gameuid]["webtags"]:
-            newitem(tag, False, _type=tagitem.TYPE_TAG)
+            newitem(tag, "webtags", _type=tagitem.TYPE_TAG)
         formLayout.addWidget(self.labelflow)
         _dict = {"new": 0}
 

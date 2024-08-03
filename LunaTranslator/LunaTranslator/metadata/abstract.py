@@ -129,11 +129,13 @@ class common:
             ff.write(_content)
 
     def dispatchdownloadtask(self, url):
+        if url is None:
+            return None
         __routine = f"cache/metadata/{self.typename}"
         if self.typename == "vndb":
             __routine = "cache/vndb"
 
-        if "." in url[5:]:
+        if "." in url[-5:]:
             __ = url[url.rfind(".") :]
         else:
             __ = ".jpg"
@@ -179,10 +181,16 @@ class common:
             ):
                 savehook_new_data[gameuid]["namemap"] = namemap
                 savehook_new_data[gameuid]["vndbnamemap_modified"] = False
-        if len(webtags):
-            savehook_new_data[gameuid]["webtags"] = webtags
-        if len(developers):
-            savehook_new_data[gameuid]["developers"] = developers
+
+        for _ in webtags:
+            if _ in savehook_new_data[gameuid]["webtags"]:
+                continue
+            savehook_new_data[gameuid]["webtags"].append(_)
+
+        for _ in developers:
+            if _ in savehook_new_data[gameuid]["developers"]:
+                continue
+            savehook_new_data[gameuid]["developers"].append(_)
         return True
 
     def dispatchsearchfordata(self, gameuid, vid):

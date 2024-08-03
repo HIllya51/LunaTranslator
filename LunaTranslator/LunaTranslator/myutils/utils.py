@@ -220,8 +220,6 @@ def trysearchforid_1(gameuid, searchargs: list):
         savehook_new_data[gameuid][idname] = vid
         if infoid is None or key == primitivtemetaorigin:
             infoid = key, vid
-            if key == primitivtemetaorigin:
-                break
     if infoid:
         key, vid = infoid
         dispatchsearchfordata(gameuid, key, vid)
