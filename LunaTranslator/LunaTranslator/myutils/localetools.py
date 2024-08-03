@@ -9,8 +9,10 @@ from gui.usefulwidget import (
     LFocusCombo,
     getspinbox,
     SplitLine,
+    getsimplepatheditor,
 )
 from traceback import print_exc
+from gui.dynalang import LFormLayout
 
 
 class Launcher:
@@ -57,22 +59,21 @@ class settingxx:
         w.setCurrentIndex(idx)
         config[self.use_which] = idx
 
-    def settingxx(self, layout, config, valid, call1, call2):
+    def settingxx(self, layout, config, call1, call2):
 
         stackw = QStackedWidget()
         stackw.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
-        if valid:
-            switch = LFocusCombo()
-            switch.addItems(["内置", "系统"])
-            switch.currentIndexChanged.connect(
-                functools.partial(self.switchidx, stackw, config)
-            )
-            layout.addRow("优先使用", switch)
-            layout.addRow(SplitLine())
+        switch = LFocusCombo()
+        switch.addItems(["内置", "系统"])
+        switch.currentIndexChanged.connect(
+            functools.partial(self.switchidx, stackw, config)
+        )
+        layout.addRow("优先使用", switch)
+        layout.addRow(SplitLine())
 
         w = QWidget()
-        default = QFormLayout()
+        default = LFormLayout()
         default.setContentsMargins(0, 0, 0, 0)
         w.setLayout(default)
 
@@ -80,15 +81,14 @@ class settingxx:
 
         stackw.addWidget(w)
         layout.addRow(stackw)
-        if valid:
 
-            w = QWidget()
-            default = QFormLayout()
-            default.setContentsMargins(0, 0, 0, 0)
-            w.setLayout(default)
-            call2(default, config)
-            stackw.addWidget(w)
-            switch.setCurrentIndex(config.get(self.use_which, 0))
+        w = QWidget()
+        default = LFormLayout()
+        default.setContentsMargins(0, 0, 0, 0)
+        w.setLayout(default)
+        call2(default, config)
+        stackw.addWidget(w)
+        switch.setCurrentIndex(config.get(self.use_which, 0))
 
 
 class le_internal(LEbase, settingxx):
@@ -99,38 +99,10 @@ class le_internal(LEbase, settingxx):
         LCID=0x11, CodePage=932, RedirectRegistry=False, HookUILanguageAPI=False
     )
 
-    def fundleproc(self):
-
-        for key in [winreg.HKEY_LOCAL_MACHINE, winreg.HKEY_CURRENT_USER]:
-            try:
-                k = winreg.OpenKeyEx(
-                    key,
-                    r"Software\Classes\CLSID\{C52B9871-E5E9-41FD-B84D-C5ACADBEC7AE}\InprocServer32",
-                    0,
-                    winreg.KEY_QUERY_VALUE,
-                )
-
-                LEContextMenuHandler: str = winreg.QueryValueEx(k, "CodeBase")[0]
-                winreg.CloseKey(k)
-                if not LEContextMenuHandler.startswith("file:///"):
-                    continue
-                LEContextMenuHandler = LEContextMenuHandler[8:]
-                LEProc = os.path.join(
-                    os.path.dirname(LEContextMenuHandler), "LEProc.exe"
-                )
-                if not os.path.exists(LEProc):
-                    continue
-                return LEProc
-            except:
-                continue
-        return None
-
-    def valid(self):
-        return (self.fundleproc() is not None) and (len(self.profiles()[1]) > 0)
-
-    def profiles(self, exe=None):
+    def profiles(self, config):
         _Names = []
         _Guids = []
+        exe = config.get("gamepath", None)
 
         def parseone(xmlpath):
             Names, Guids = [], []
@@ -140,7 +112,11 @@ class le_internal(LEbase, settingxx):
                     Guids.append(Guid)
             return Names, Guids
 
-        finds = [os.path.join(os.path.dirname(self.fundleproc()), "LEConfig.xml")]
+        finds = [
+            os.path.join(
+                os.path.dirname(config.get("le_extra_path", "")), "LEConfig.xml"
+            )
+        ]
         if exe:
             finds.append(exe + ".le.config")
         for f in finds:
@@ -154,10 +130,10 @@ class le_internal(LEbase, settingxx):
         return _Names, _Guids
 
     def runXX(self, exe, usearg, dirpath, config):
-        LEProc = self.fundleproc()
+        LEProc = config.get("le_extra_path", "")
         if not LEProc:
             return
-        guids = self.profiles(config["gamepath"])[1]
+        guids = self.profiles(config)[1]
         guid = config.get("leguid", None)
         if guid not in guids:
             guids = guids[0]
@@ -174,11 +150,30 @@ class le_internal(LEbase, settingxx):
             windows.STARTUPINFO(),
         )
 
+    def reselect(self, config, Guids, path):
+        config["le_extra_path"] = path
+        Names, _Guids = self.profiles(config)
+        self.__profiles.clear()
+        self.__profiles.addItems(Names)
+        Guids.clear()
+        Guids.extend(_Guids)
+
     def settingX(self, layout, config):
-        Names, Guids = self.profiles(config["gamepath"])
+        Names, Guids = self.profiles(config)
+        self.__profiles = getsimplecombobox(Names, config, "leguid", internal=Guids)
+        layout.addRow(
+            "路径",
+            getsimplepatheditor(
+                config.get("le_extra_path", ""),
+                False,
+                False,
+                filter1="LEProc.exe",
+                callback=functools.partial(self.reselect, config, Guids),
+            ),
+        )
         layout.addRow(
             "Profile",
-            getsimplecombobox(Names, config, "leguid", internal=Guids),
+            self.__profiles,
         )
 
     def loaddf(self, config):
@@ -191,7 +186,7 @@ class le_internal(LEbase, settingxx):
     def runX(self, exe, usearg, dirpath, config):
         if config.get(self.use_which, 0) == 1:
 
-            valid = self.valid()
+            valid = os.path.exists(config.get("le_extra_path", ""))
             if valid:
                 return self.runXX(exe, usearg, dirpath, config)
         shareddllproxy = os.path.abspath("./files/plugins/shareddllproxy32")
@@ -224,8 +219,7 @@ class le_internal(LEbase, settingxx):
         config[self.use_which] = idx
 
     def setting(self, layout, config):
-        valid = self.valid()
-        self.settingxx(layout, config, valid, self.setting1, self.settingX)
+        self.settingxx(layout, config, self.setting1, self.settingX)
 
     def setting1(self, layout, config):
 
@@ -258,7 +252,7 @@ class NTLEAS64(LEbase, settingxx):
     def runX(self, exe, usearg, dirpath, config):
         if config.get(self.use_which, 0) == 1:
 
-            valid = self.valid()
+            valid = os.path.exists(self.__path(config))
             if valid:
                 return self.runXX(exe, usearg, dirpath, config)
         shareddllproxy = os.path.abspath(
@@ -296,39 +290,17 @@ class NTLEAS64(LEbase, settingxx):
         layout.addRow("TimeZone", getspinbox(0, 0xFFFFF, config, "NT_TimeZone"))
 
     def setting(self, layout, config):
-        valid = self.valid()
-        self.settingxx(layout, config, valid, self.setting1, self.settingX)
+        self.settingxx(layout, config, self.setting1, self.settingX)
 
-    def fundleproc(self):
-
-        try:
-            CLSID = "{9C31DD66-412C-4B28-BD17-1F0BEBE29E8B}"
-
-            k = winreg.OpenKeyEx(
-                winreg.HKEY_LOCAL_MACHINE,
-                rf"Software\Classes\CLSID\{CLSID}\InprocServer32",
-                0,
-                winreg.KEY_QUERY_VALUE,
-            )
-
-            LRSubMenuExtension: str = winreg.QueryValueEx(k, "")[0]
-            winreg.CloseKey(k)
-            LRProc = os.path.join(
-                os.path.dirname(LRSubMenuExtension),
-                ["x86", "x64"][self.bit64],
-                "ntleas.exe",
-            )
-            if not os.path.exists(LRProc):
-                return None
-            return LRProc
-        except:
-            return None
-
-    def valid(self):
-        return self.fundleproc() is not None
+    def __path(self, config):
+        return os.path.join(
+            os.path.dirname(config.get("ntleas_extra_path", "")),
+            ["x86", "x64"][self.bit64],
+            "ntleas.exe",
+        )
 
     def runXX(self, exe, usearg, dirpath, config):
-        LEProc = self.fundleproc()
+        LEProc = self.__path(config)
         if not LEProc:
             return
 
@@ -349,10 +321,22 @@ class NTLEAS64(LEbase, settingxx):
             windows.STARTUPINFO(),
         )
 
+    def reselect(self, config, path):
+        config["ntleas_extra_path"] = path
+
     def settingX(self, layout, config):
         if "ntleasparam" not in config:
             config["ntleasparam"] = '"C932" "L1041" "FMS PGothic" "P4"'
-
+        layout.addRow(
+            "路径",
+            getsimplepatheditor(
+                config.get("ntleas_extra_path", ""),
+                False,
+                False,
+                filter1="ntleasWin.exe",
+                callback=functools.partial(self.reselect, config),
+            ),
+        )
         layout.addRow(
             "params",
             getlineedit(config, "ntleasparam"),
@@ -380,7 +364,7 @@ class lr_internal(LEbase, settingxx):
     def runX(self, exe, usearg, dirpath, config):
         if config.get(self.use_which, 0) == 1:
 
-            valid = self.valid()
+            valid = os.path.exists(config.get("lr_extra_path", ""))
             if valid:
                 return self.runXX(exe, usearg, dirpath, config)
 
@@ -409,8 +393,7 @@ class lr_internal(LEbase, settingxx):
         )
 
     def setting(self, layout, config):
-        valid = self.valid()
-        self.settingxx(layout, config, valid, self.setting1, self.settingX)
+        self.settingxx(layout, config, self.setting1, self.settingX)
 
     def setting1(self, layout, config):
         self.loaddf(config)
@@ -421,48 +404,15 @@ class lr_internal(LEbase, settingxx):
         layout.addRow("HookIME", getsimpleswitch(config, "LR_HookIME"))
         layout.addRow("HookLCID", getsimpleswitch(config, "LR_HookLCID"))
 
-    def fundleproc(self):
-
-        try:
-            k = winreg.OpenKeyEx(
-                winreg.HKEY_LOCAL_MACHINE,
-                r"SOFTWARE\Classes\LRSubMenus.LRSubMenuExtension\CLSID",
-                0,
-                winreg.KEY_QUERY_VALUE,
-            )
-            CLSID: str = winreg.QueryValueEx(k, "")[0]
-
-            winreg.CloseKey(k)
-            k = winreg.OpenKeyEx(
-                winreg.HKEY_LOCAL_MACHINE,
-                rf"Software\Classes\CLSID\{CLSID}\InprocServer32",
-                0,
-                winreg.KEY_QUERY_VALUE,
-            )
-
-            LRSubMenuExtension: str = winreg.QueryValueEx(k, "CodeBase")[0]
-            winreg.CloseKey(k)
-            if not LRSubMenuExtension.startswith("file:///"):
-                return None
-            LRSubMenuExtension = LRSubMenuExtension[8:]
-            LRProc = os.path.join(os.path.dirname(LRSubMenuExtension), "LRProc.exe")
-            if not os.path.exists(LRProc):
-                return None
-            return LRProc
-        except:
-
-            return None
-
-    def valid(self):
-        return (self.fundleproc() is not None) and (len(self.profiles()[1]) > 0)
-
-    def profiles(self):
+    def profiles(self, config):
 
         Names, Guids = [], []
         try:
 
             with open(
-                os.path.join(os.path.dirname(self.fundleproc()), "LRConfig.xml"),
+                os.path.join(
+                    os.path.dirname(config.get("lr_extra_path", "")), "LRConfig.xml"
+                ),
                 "r",
                 encoding="utf8",
             ) as ff:
@@ -474,10 +424,10 @@ class lr_internal(LEbase, settingxx):
         return Names, Guids
 
     def runXX(self, exe, usearg, dirpath, config):
-        LEProc = self.fundleproc()
+        LEProc = config.get("lr_extra_path", "")
         if not LEProc:
             return
-        guids = self.profiles()[1]
+        guids = self.profiles(config)[1]
         guid = config.get("lrguid", None)
         if guid not in guids:
             guids = guids[0]
@@ -494,11 +444,30 @@ class lr_internal(LEbase, settingxx):
             windows.STARTUPINFO(),
         )
 
+    def reselect(self, config, Guids, path):
+        config["lr_extra_path"] = path
+        Names, _Guids = self.profiles(config)
+        self.__profiles.clear()
+        self.__profiles.addItems(Names)
+        Guids.clear()
+        Guids.extend(_Guids)
+
     def settingX(self, layout, config):
-        Names, Guids = self.profiles()
+        Names, Guids = self.profiles(config)
+        self.__profiles = getsimplecombobox(Names, config, "lrguid", internal=Guids)
+        layout.addRow(
+            "路径",
+            getsimplepatheditor(
+                config.get("lr_extra_path", ""),
+                False,
+                False,
+                filter1="LRProc.exe",
+                callback=functools.partial(self.reselect, config, Guids),
+            ),
+        )
         layout.addRow(
             "Profile",
-            getsimplecombobox(Names, config, "lrguid", internal=Guids),
+            self.__profiles,
         )
 
 
