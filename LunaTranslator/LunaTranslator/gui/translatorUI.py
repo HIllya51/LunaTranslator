@@ -53,7 +53,7 @@ class ButtonX(QWidget):
 
     def resizeEvent(self, e):
         h = int(e.size().height() / 1.5)
-        self.setFixedWidth(self.height() * 2 / 1.5)
+        self.setFixedWidth(int(self.height() * 2 / 1.5))
         self.setIconSize(QSize(h, h))
 
 
