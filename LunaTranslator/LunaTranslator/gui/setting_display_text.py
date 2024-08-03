@@ -13,6 +13,7 @@ from gui.usefulwidget import (
     getQMessageBox,
     D_getspinbox,
     D_getIconButton,
+    clearlayout,
     getboxlayout,
     D_getcolorbutton,
     getcolorbutton,
@@ -87,23 +88,6 @@ class extrahtml(saveposwindow):
         self.setCentralWidget(w)
         self.tryload()
         self.show()
-
-
-def clearlayout(ll: QLayout):
-    while ll.count():
-        item = ll.takeAt(0)
-        if not item:
-            continue
-        ll.removeItem(item)
-        w = item.widget()
-        if w:
-            w.deleteLater()
-            continue
-        l = item.layout()
-        if l:
-            clearlayout(l)
-            l.deleteLater()
-            continue
 
 
 def createinternalfontsettings(self, forml: LFormLayout, group, _type):
@@ -312,7 +296,7 @@ def _createseletengeinecombo(self):
         visengine,
         globalconfig,
         "rendertext_using",
-        internallist=visengine_internal,
+        internal=visengine_internal,
         callback=functools.partial(resetgroudswitchcallback, self),
         static=True,
     )

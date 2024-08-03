@@ -838,5 +838,7 @@
     "粘贴": "pasta",
     "首尾": "Koniec do końca",
     "包含": "zawierać",
-    "删除图片文件": "Usuń pliki obrazów"
+    "删除图片文件": "Usuń pliki obrazów",
+    "启动方式": "Metoda uruchomienia",
+    "直接启动": "Bezpośredni start"
 }

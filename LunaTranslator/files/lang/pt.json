@@ -838,5 +838,7 @@
     "粘贴": "colar",
     "首尾": "De ponta a ponta",
     "包含": "contém",
-    "删除图片文件": "Apagar os ficheiros de imagem"
+    "删除图片文件": "Apagar os ficheiros de imagem",
+    "启动方式": "Método de arranque",
+    "直接启动": "Iniciar directamente"
 }

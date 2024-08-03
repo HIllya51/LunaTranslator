@@ -119,16 +119,14 @@ def getdefaultsavehook(title=None):
         # "private_tgtlang_2": 0,
         "follow_default_ankisettings": True,
         # "anki_DeckName":str
-        "localeswitcher": 0,
+        # "localeswitcher": 0,废弃
         "onloadautochangemode2": 0,
         "needinserthookcode": [],
         "embedablehook": [],
         "statistic_playtime": 0,
         "statistic_wordcount": 0,
         "statistic_wordcount_nodump": 0,
-        "leuse": True,
-        "startcmd": '"{exepath}"',
-        "startcmduse": False,
+        # "leuse": True, 废弃
         "hook": [],
         "inserthooktimeout": 1000,
         "needinserthookcode": [],
@@ -193,38 +191,36 @@ def getdefaultsavehook(title=None):
 oldlanguage = ["zh","ja","en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar","th","bo","de","sv","nl"]
 # fmt: on
 _dfsavehook = getdefaultsavehook("")
-for uid in savehook_new_data:
+for gameconfig in savehook_new_data.values():
     if (
-        ("allow_tts_auto_names_v4" not in savehook_new_data[uid])
-        and ("allow_tts_auto_names" in savehook_new_data[uid])
-        and len(savehook_new_data[uid]["allow_tts_auto_names"])
+        ("allow_tts_auto_names_v4" not in gameconfig)
+        and ("allow_tts_auto_names" in gameconfig)
+        and len(gameconfig["allow_tts_auto_names"])
     ):
-        savehook_new_data[uid]["allow_tts_auto_names_v4"] = savehook_new_data[uid][
+        gameconfig["allow_tts_auto_names_v4"] = gameconfig[
             "allow_tts_auto_names"
         ].split("|")
 
-    if ("allow_tts_auto_names_v4" in savehook_new_data[uid]) and (
-        "tts_skip_regex" not in savehook_new_data[uid]
+    if ("allow_tts_auto_names_v4" in gameconfig) and (
+        "tts_skip_regex" not in gameconfig
     ):
-        savehook_new_data[uid]["tts_skip_regex"] = []
-        for name in savehook_new_data[uid]["allow_tts_auto_names_v4"]:
-            savehook_new_data[uid]["tts_skip_regex"].append(
+        gameconfig["tts_skip_regex"] = []
+        for name in gameconfig["allow_tts_auto_names_v4"]:
+            gameconfig["tts_skip_regex"].append(
                 {"regex": False, "key": name, "condition": 0}
             )
-    if ("private_srclang" in savehook_new_data[uid]) and (
-        "private_srclang_2" not in savehook_new_data[uid]
-    ):
-        savehook_new_data[uid]["private_srclang_2"] = oldlanguage[
-            savehook_new_data[uid]["private_srclang"]
-        ]
-        savehook_new_data[uid]["private_tgtlang_2"] = oldlanguage[
-            savehook_new_data[uid]["private_tgtlang"]
-        ]
+    if ("private_srclang" in gameconfig) and ("private_srclang_2" not in gameconfig):
+        gameconfig["private_srclang_2"] = oldlanguage[gameconfig["private_srclang"]]
+        gameconfig["private_tgtlang_2"] = oldlanguage[gameconfig["private_tgtlang"]]
     for __k, __v in _dfsavehook.items():
-        if __k not in savehook_new_data[uid]:
+        if __k not in gameconfig:
             if isinstance(__v, (list, dict)):
                 __v = __v.copy()
-            savehook_new_data[uid][__k] = __v
+            gameconfig[__k] = __v
+
+    if not gameconfig.get("leuse", True):
+        gameconfig.pop("leuse")
+        gameconfig["launch_method"] = "direct"
 
 
 class __uid2gamepath:

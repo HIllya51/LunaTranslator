@@ -713,8 +713,8 @@ def callbackwrap(d, k, call, _):
             print_exc()
 
 
-def comboboxcallbackwrap(internallist, d, k, call, _):
-    _ = internallist[_]
+def comboboxcallbackwrap(internal, d, k, call, _):
+    _ = internal[_]
     d[k] = _
 
     if call:
@@ -724,8 +724,9 @@ def comboboxcallbackwrap(internallist, d, k, call, _):
             print_exc()
 
 
+@tryprint
 def getsimplecombobox(
-    lst, d, k, callback=None, fixedsize=False, internallist=None, static=False
+    lst, d, k, callback=None, fixedsize=False, internal=None, static=False, emit=False
 ):
     if static:
         s = FocusCombo()
@@ -734,30 +735,29 @@ def getsimplecombobox(
         s = LFocusCombo()
     s.addItems(lst)
 
-    if internallist:
-        if (k not in d) or (d[k] not in internallist):
-            d[k] = internallist[0]
-        s.setCurrentIndex(internallist.index(d[k]))
+    if internal:
+        if (k not in d) or (d[k] not in internal):
+            d[k] = internal[0]
+
+        s.setCurrentIndex(internal.index(d[k]))
         s.currentIndexChanged.connect(
-            functools.partial(comboboxcallbackwrap, internallist, d, k, callback)
+            functools.partial(comboboxcallbackwrap, internal, d, k, callback)
         )
     else:
         if (k not in d) or (d[k] >= len(lst)):
             d[k] = 0
+
         s.setCurrentIndex(d[k])
         s.currentIndexChanged.connect(functools.partial(callbackwrap, d, k, callback))
-
     if fixedsize:
         s.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     return s
 
 
 def D_getsimplecombobox(
-    lst, d, k, callback=None, fixedsize=False, internallist=None, static=False
+    lst, d, k, callback=None, fixedsize=False, internal=None, static=False
 ):
-    return lambda: getsimplecombobox(
-        lst, d, k, callback, fixedsize, internallist, static
-    )
+    return lambda: getsimplecombobox(lst, d, k, callback, fixedsize, internal, static)
 
 
 def getlineedit(d, key, callback=None, readonly=False):
@@ -2022,3 +2022,20 @@ class SplitLine(QFrame):
         super().__init__(*argc)
         self.setStyleSheet("background-color: gray;")
         self.setFixedHeight(2)
+
+
+def clearlayout(ll: QLayout):
+    while ll.count():
+        item = ll.takeAt(0)
+        if not item:
+            continue
+        ll.removeItem(item)
+        w = item.widget()
+        if w:
+            w.deleteLater()
+            continue
+        l = item.layout()
+        if l:
+            clearlayout(l)
+            l.deleteLater()
+            continue

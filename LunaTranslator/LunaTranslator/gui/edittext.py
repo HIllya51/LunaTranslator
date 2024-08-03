@@ -163,7 +163,7 @@ class edittrans(LMainWindow):
                 [globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]],
                 globalconfig,
                 "realtime_edit_target",
-                internallist=list(globalconfig["fanyi"]),
+                internal=list(globalconfig["fanyi"]),
             )
         )
         qv.addWidget(submit)

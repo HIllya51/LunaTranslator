@@ -838,5 +838,7 @@
     "粘贴": "pasta",
     "首尾": "Konec k konci",
     "包含": "obsahovat",
-    "删除图片文件": "Smazat obrázkové soubory"
+    "删除图片文件": "Smazat obrázkové soubory",
+    "启动方式": "Metoda spuštění",
+    "直接启动": "Přímo spustit"
 }

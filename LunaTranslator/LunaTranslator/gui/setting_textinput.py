@@ -330,7 +330,7 @@ def gethookembedgrid(self):
                 alltransvis,
                 globalconfig["embedded"],
                 "translator_2",
-                internallist=alltrans,
+                internal=alltrans,
             ),
         ],
         [

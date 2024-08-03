@@ -838,5 +838,7 @@
     "粘贴": "plakken",
     "首尾": "End to end",
     "包含": "bevatten",
-    "删除图片文件": "Afbeeldingsbestanden verwijderen"
+    "删除图片文件": "Afbeeldingsbestanden verwijderen",
+    "启动方式": "Opstartmethode",
+    "直接启动": "Direct starten"
 }

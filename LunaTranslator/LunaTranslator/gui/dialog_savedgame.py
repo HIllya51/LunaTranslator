@@ -16,7 +16,7 @@ from myutils.config import (
     globalconfig,
     static_data,
 )
-from myutils.localetools import getgamecamptoolsname, localeswitchedrun
+from myutils.localetools import getgamecamptools, localeswitchedrun, maycreatesettings
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import (
     Singleton_close,
@@ -66,6 +66,7 @@ from gui.usefulwidget import (
     MySwitch,
     auto_select_webview,
     Prompt_dialog,
+    clearlayout,
     getsimplecombobox,
     D_getsimpleswitch,
     getspinbox,
@@ -751,6 +752,9 @@ class dialog_setting_game_internal(QWidget):
         self.methodtab = methodtab
         vbox.addWidget(methodtab)
         do()
+        self.__launch_method.currentIndexChanged.emit(
+            self.__launch_method.currentIndex()
+        )
 
     def openrefmainpage(self, key, idname, gameuid):
         try:
@@ -767,7 +771,7 @@ class dialog_setting_game_internal(QWidget):
                 list(targetmod.keys()),
                 globalconfig,
                 "primitivtemetaorigin",
-                internallist=list(targetmod.keys()),
+                internal=list(targetmod.keys()),
                 static=True,
             ),
         )
@@ -823,31 +827,29 @@ class dialog_setting_game_internal(QWidget):
         layout.addWidget(w)
 
     def starttab(self, formLayout: LFormLayout, gameuid):
+        box = QGroupBox()
+        settinglayout = LFormLayout()
+        box.setLayout(settinglayout)
 
-        formLayout.addRow(
-            "转区启动",
-            getboxlayout(
-                [
-                    getsimpleswitch(savehook_new_data[gameuid], "leuse"),
-                    getsimplecombobox(
-                        getgamecamptoolsname(uid2gamepath[gameuid]),
-                        savehook_new_data[gameuid],
-                        "localeswitcher",
-                        static=True,
-                    ),
-                ]
+        def __(box, layout, config, uid):
+            clearlayout(layout)
+            maycreatesettings(layout, config, uid)
+            if layout.count() == 0:
+                box.hide()
+            else:
+                box.show()
+
+        self.__launch_method = getsimplecombobox(
+            [_.name for _ in getgamecamptools(uid2gamepath[gameuid])],
+            savehook_new_data[gameuid],
+            "launch_method",
+            internal=[_.id for _ in getgamecamptools(uid2gamepath[gameuid])],
+            callback=functools.partial(
+                __, box, settinglayout, savehook_new_data[gameuid]
             ),
         )
-
-        formLayout.addRow(
-            "命令行启动",
-            getboxlayout(
-                [
-                    getsimpleswitch(savehook_new_data[gameuid], "startcmduse"),
-                    getlineedit(savehook_new_data[gameuid], "startcmd"),
-                ]
-            ),
-        )
+        formLayout.addRow("启动方式", self.__launch_method)
+        formLayout.addRow(box)
 
         formLayout.addRow(
             "自动切换到模式",
@@ -1367,7 +1369,7 @@ class dialog_setting_game_internal(QWidget):
                 static_data["language_list_translator"],
                 savehook_new_data[gameuid],
                 "private_srclang_2",
-                internallist=static_data["language_list_translator_inner"],
+                internal=static_data["language_list_translator_inner"],
             ),
         )
         formLayout2.addRow(
@@ -1376,7 +1378,7 @@ class dialog_setting_game_internal(QWidget):
                 static_data["language_list_translator"],
                 savehook_new_data[gameuid],
                 "private_tgtlang_2",
-                internallist=static_data["language_list_translator_inner"],
+                internal=static_data["language_list_translator_inner"],
             ),
         )
 
@@ -1620,47 +1622,7 @@ def startgame(gameuid):
                     )
                     gobject.baseobject.starttextsource(use=_[mode], checked=True)
 
-            dirpath = os.path.dirname(game)
-
-            if savehook_new_data[gameuid]["startcmduse"]:
-                usearg = savehook_new_data[gameuid]["startcmd"].format(exepath=game)
-                windows.CreateProcess(
-                    None,
-                    usearg,
-                    None,
-                    None,
-                    False,
-                    0,
-                    None,
-                    dirpath,
-                    windows.STARTUPINFO(),
-                )
-                return
-            if savehook_new_data[gameuid]["leuse"] == False or (
-                game.lower()[-4:] not in [".lnk", ".exe"]
-            ):
-                # 对于其他文件，需要AssocQueryStringW获取命令行才能正确le，太麻烦，放弃。
-                windows.ShellExecute(None, "open", game, "", dirpath, windows.SW_SHOW)
-                return
-
-            execheck3264 = game
-            usearg = '"{}"'.format(game)
-            if game.lower()[-4:] == ".lnk":
-                exepath, args, iconpath, dirp = winsharedutils.GetLnkTargetPath(game)
-
-                if args != "":
-                    usearg = '"{}" {}'.format(exepath, args)
-                elif exepath != "":
-                    usearg = '"{}"'.format(exepath)
-
-                if exepath != "":
-                    execheck3264 = exepath
-
-                if dirp != "":
-                    dirpath = dirp
-
-            localeswitcher = savehook_new_data[gameuid]["localeswitcher"]
-            localeswitchedrun(execheck3264, localeswitcher, usearg, dirpath)
+            localeswitchedrun(gameuid)
 
     except:
         print_exc()
@@ -2085,7 +2047,7 @@ class dialog_savedgame_new(QWidget):
                 globalconfig,
                 "currvislistuid",
                 self.resetcurrvislist,
-                internallist=uid,
+                internal=uid,
                 static=True,
             ),
         )
@@ -2399,21 +2361,17 @@ class dialog_savedgame_lagacy(QWidget):
             row,
             [
                 QStandardItem(),
-                QStandardItem(),
                 keyitem,
                 QStandardItem((savehook_new_data[k]["title"])),
             ],
         )
         self.table.setIndexWidget(
-            self.model.index(row, 0), D_getsimpleswitch(savehook_new_data[k], "leuse")
-        )
-        self.table.setIndexWidget(
-            self.model.index(row, 1),
+            self.model.index(row, 0),
             functools.partial(self.delayloadicon, k),
         )
 
         self.table.setIndexWidget(
-            self.model.index(row, 2),
+            self.model.index(row, 1),
             D_getIconButton(
                 functools.partial(self.showsettingdialog, k), icon="fa.gear"
             ),
@@ -2427,7 +2385,7 @@ class dialog_savedgame_lagacy(QWidget):
 
         formLayout = QVBoxLayout(self)  #
         model = LStandardItemModel()
-        model.setHorizontalHeaderLabels(["转区", "", "设置", "游戏"])  # ,'HOOK'])
+        model.setHorizontalHeaderLabels(["", "设置", "游戏"])  # ,'HOOK'])
 
         self.model = model
 

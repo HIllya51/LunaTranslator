@@ -28,7 +28,7 @@ def setTablanglz(self):
                                 static_data["language_list_translator"],
                                 globalconfig,
                                 "srclang4",
-                                internallist=static_data[
+                                internal=static_data[
                                     "language_list_translator_inner"
                                 ],
                             ),
@@ -39,7 +39,7 @@ def setTablanglz(self):
                                 static_data["language_list_translator"],
                                 globalconfig,
                                 "tgtlang4",
-                                internallist=static_data[
+                                internal=static_data[
                                     "language_list_translator_inner"
                                 ],
                             ),
@@ -64,7 +64,7 @@ def setTablanglz(self):
                                 "languageuse2",
                                 callback=changelang,
                                 static=True,
-                                internallist=inner,
+                                internal=inner,
                             ),
                             D_getIconButton(
                                 callback=lambda: os.startfile(

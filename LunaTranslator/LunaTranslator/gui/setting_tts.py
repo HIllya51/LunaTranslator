@@ -154,7 +154,7 @@ def setTab5lz(self):
                                 static_data["audioengine_vis"],
                                 globalconfig,
                                 "audioengine",
-                                internallist=static_data["audioengine"],
+                                internal=static_data["audioengine"],
                                 static=True,
                             ),
                         ],

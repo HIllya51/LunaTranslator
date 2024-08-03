@@ -838,5 +838,7 @@
     "粘贴": "Paste",
     "首尾": "Ende zu Ende",
     "包含": "enthalten",
-    "删除图片文件": "Bilddateien löschen"
+    "删除图片文件": "Bilddateien löschen",
+    "启动方式": "Startmethode",
+    "直接启动": "Direkt starten"
 }

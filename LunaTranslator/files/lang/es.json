@@ -838,5 +838,7 @@
     "粘贴": "Pegar",
     "首尾": "De principio a fin",
     "包含": "Contiene",
-    "删除图片文件": "Eliminar archivos de imagen"
+    "删除图片文件": "Eliminar archivos de imagen",
+    "启动方式": "Modo de arranque",
+    "直接启动": "Arranque directo"
 }

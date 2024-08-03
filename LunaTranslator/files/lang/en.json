@@ -838,5 +838,7 @@
     "粘贴": "paste",
     "首尾": "End to end",
     "包含": "contain",
-    "删除图片文件": "Delete image files"
+    "删除图片文件": "Delete image files",
+    "启动方式": "Startup method",
+    "直接启动": "Directly start"
 }
