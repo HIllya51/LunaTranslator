@@ -841,5 +841,6 @@
     "删除图片文件": "Delete image files",
     "启动方式": "Startup method",
     "直接启动": "Directly start",
-    "优先使用": "priority of use"
+    "优先使用": "priority of use",
+    "外部": "external"
 }

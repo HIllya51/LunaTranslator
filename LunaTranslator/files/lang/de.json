@@ -841,5 +841,6 @@
     "删除图片文件": "Bilddateien löschen",
     "启动方式": "Startmethode",
     "直接启动": "Direkt starten",
-    "优先使用": "Priorität der Verwendung"
+    "优先使用": "Priorität der Verwendung",
+    "外部": "extern"
 }
