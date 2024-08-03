@@ -218,14 +218,14 @@ def trysearchforid_1(gameuid, searchargs: list):
             continue
         idname = targetmod[key].idname
         savehook_new_data[gameuid][idname] = vid
+        gobject.baseobject.translation_ui.displayglobaltooltip.emit(
+            f"{key}: found {vid}"
+        )
         if infoid is None or key == primitivtemetaorigin:
             infoid = key, vid
     if infoid:
         key, vid = infoid
         dispatchsearchfordata(gameuid, key, vid)
-        gobject.baseobject.translation_ui.displayglobaltooltip.emit(
-            f"{key}: found {vid}"
-        )
 
 
 def trysearchforid(gameuid, searchargs: list):
