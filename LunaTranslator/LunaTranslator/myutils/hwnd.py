@@ -118,36 +118,34 @@ def test_injectable(pids):
     return True
 
 
-def ListProcess(filt=True):
-    ret = []
-    for pid in winsharedutils.Getprcesses():
+def ListProcess(exe=None):
+    ret = {}
+    for pid, exebase in winsharedutils.Getprcesses():
         if os.getpid() == pid:
             continue
         try:
+            if exe is not None:
+                if exebase.lower() != os.path.basename(exe).lower():
+                    continue
             name_ = getpidexe(pid)
             if name_ is None:
                 continue
             name = name_.lower()
-            if filt:
+            if exe is None:
                 if (
                     ":\\windows\\" in name
                     or "\\microsoft\\" in name
                     or "\\windowsapps\\" in name
                 ):
                     continue
-            ret.append([pid, name_])
+            if name_ not in ret:
+                ret[name_] = []
+            ret[name_].append(pid)
         except:
             pass
-    kv = {}
-    for pid, exe in ret:
-        if exe not in kv:
-            kv[exe] = []
-
-        kv[exe].append(pid)
-    xxx = []
-    for exe in kv:
-        xxx.append([kv[exe], exe])
-    return xxx
+    if exe is None:
+        return ret
+    return ret.get(exe, [])
 
 
 def getExeIcon(name, icon=True, cache=False):

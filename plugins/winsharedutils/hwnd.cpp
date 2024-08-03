@@ -110,7 +110,7 @@ DECLARE bool Is64bit(DWORD pid)
         return false;
 }
 
-DECLARE void getprocesses(void (*cb)(DWORD))
+DECLARE void getprocesses(void (*cb)(DWORD, const wchar_t *))
 {
     std::unordered_map<std::wstring, std::vector<int>> exe_pid;
     AutoHandle hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -124,7 +124,7 @@ DECLARE void getprocesses(void (*cb)(DWORD))
     {
         do
         {
-            cb(pe32.th32ProcessID);
+            cb(pe32.th32ProcessID, pe32.szExeFile);
         } while (Process32Next(hSnapshot, &pe32));
     }
 }

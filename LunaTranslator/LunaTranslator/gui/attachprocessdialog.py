@@ -23,14 +23,7 @@ class AttachProcessDialog(saveposwindow):
         if pid == os.getpid():
             return
         name = getpidexe(pid)
-        lps = ListProcess(False)
-        _pids = None
-        for pids, _exe in lps:
-            if _exe == name:
-                _pids = pids
-                break
-        if _pids is None:
-            _pids = [pid]
+        _pids = ListProcess(name)
         self.processEdit.setText(name)
         self.processIdEdit.setText(",".join([str(pid) for pid in _pids]))
         self.windowtext.setText(windows.GetWindowText(hwnd))
@@ -129,7 +122,7 @@ class AttachProcessDialog(saveposwindow):
         self.model = QStandardItemModel(self.processList)
         self.processlist = ListProcess()
         self.processList.setModel(self.model)
-        for pid, pexe in self.processlist:
+        for pexe in self.processlist:
             if pexe in self.iconcache:
                 icon = self.iconcache[pexe]
             else:
@@ -152,14 +145,19 @@ class AttachProcessDialog(saveposwindow):
 
     def editpid(self, process):
         pids = self.safesplit(process)
+        if len(pids) == 0:
+            self.windowtext.clear()
+            self.processEdit.clear()
+            return
         self.selectedp = (pids, getpidexe(pids[0]), self.guesshwnd(pids))
         self.windowtext.setText(windows.GetWindowText(self.selectedp[-1]))
         self.processEdit.setText(self.selectedp[1])
         self.windowtext.setCursorPosition(0)
         self.processEdit.setCursorPosition(0)
 
-    def selectedfunc(self, index):
-        pids, pexe = self.processlist[index.row()]
+    def selectedfunc(self, index: QModelIndex):
+        pexe = self.model.itemFromIndex(index).text()
+        pids = self.processlist.get(pexe, [])
         self.processEdit.setText(pexe)
         self.processIdEdit.setText(",".join([str(pid) for pid in pids]))
         self.selectedp = pids, pexe, self.guesshwnd(pids)

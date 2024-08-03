@@ -8,7 +8,7 @@ from winsharedutils import Is64bit
 from myutils.config import globalconfig, savehook_new_data, static_data
 from textsource.textsourcebase import basetext
 from myutils.utils import checkchaos
-from myutils.hwnd import injectdll, test_injectable
+from myutils.hwnd import injectdll, test_injectable, ListProcess
 from myutils.wrapper import threader
 from myutils.utils import getfilemd5
 from traceback import print_exc
@@ -264,8 +264,12 @@ class texthook(basetext):
 
     @threader
     def start(self):
+        if self.injecttimeout:
+            time.sleep(self.injecttimeout)
+            if set(self.pids) != set(ListProcess(self.gamepath)):
+                # 部分cef/v8引擎的游戏，会在一段启动时间后，启动子进程用于渲染
+                return self.start()
 
-        time.sleep(self.injecttimeout)
         if self.ending:
             return
         try:

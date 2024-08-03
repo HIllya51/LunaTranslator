@@ -256,7 +256,9 @@ getprocesses.argtypes = (c_void_p,)
 
 def Getprcesses():
     ret = []
-    getprocesses(CFUNCTYPE(None, DWORD)(ret.append))
+    getprocesses(
+        CFUNCTYPE(None, DWORD, c_wchar_p)(lambda pid, exe: ret.append((pid, exe)))
+    )
     return ret
 
 

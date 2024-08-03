@@ -807,20 +807,16 @@ class MAINUI:
                 uid = findgameuidofpath(name_, savehook_new_list)
                 if not uid:
                     return
-                lps = ListProcess(False)
-                for pids, _exe in lps:
-                    if _exe != name_:
-                        continue
-
-                    if self.textsource is not None:
-                        return
-                    if not globalconfig["sourcestatus2"]["texthook"]["use"]:
-                        return
-                    if globalconfig["startgamenototop"] == False:
-                        idx = savehook_new_list.index(uid)
-                        savehook_new_list.insert(0, savehook_new_list.pop(idx))
-                    self.textsource = texthook(pids, hwnd, name_, uid, autostart=True)
-                    self.textsource.start()
+                pids = ListProcess(name_)
+                if self.textsource is not None:
+                    return
+                if not globalconfig["sourcestatus2"]["texthook"]["use"]:
+                    return
+                if globalconfig["startgamenototop"] == False:
+                    idx = savehook_new_list.index(uid)
+                    savehook_new_list.insert(0, savehook_new_list.pop(idx))
+                self.textsource = texthook(pids, hwnd, name_, uid, autostart=True)
+                self.textsource.start()
 
             else:
                 pids = self.textsource.pids
