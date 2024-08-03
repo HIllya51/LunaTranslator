@@ -1,6 +1,6 @@
 import windows, os, winreg, winsharedutils, re, functools
 from qtsymbols import *
-from myutils.config import savehook_new_data, uid2gamepath
+from myutils.config import savehook_new_data, uid2gamepath, globalconfig
 from gui.usefulwidget import (
     getlineedit,
     getsimplecombobox,
@@ -65,7 +65,7 @@ class settingxx:
         stackw.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
 
         switch = LFocusCombo()
-        switch.addItems(["内置", "系统"])
+        switch.addItems(["内置", "外部"])
         switch.currentIndexChanged.connect(
             functools.partial(self.switchidx, stackw, config)
         )
@@ -114,7 +114,7 @@ class le_internal(LEbase, settingxx):
 
         finds = [
             os.path.join(
-                os.path.dirname(config.get("le_extra_path", "")), "LEConfig.xml"
+                os.path.dirname(globalconfig.get("le_extra_path", "")), "LEConfig.xml"
             )
         ]
         if exe:
@@ -130,7 +130,7 @@ class le_internal(LEbase, settingxx):
         return _Names, _Guids
 
     def runXX(self, exe, usearg, dirpath, config):
-        LEProc = config.get("le_extra_path", "")
+        LEProc = globalconfig.get("le_extra_path", "")
         if not LEProc:
             return
         guids = self.profiles(config)[1]
@@ -151,7 +151,7 @@ class le_internal(LEbase, settingxx):
         )
 
     def reselect(self, config, Guids, path):
-        config["le_extra_path"] = path
+        globalconfig["le_extra_path"] = path
         Names, _Guids = self.profiles(config)
         self.__profiles.clear()
         self.__profiles.addItems(Names)
@@ -164,7 +164,7 @@ class le_internal(LEbase, settingxx):
         layout.addRow(
             "路径",
             getsimplepatheditor(
-                config.get("le_extra_path", ""),
+                globalconfig.get("le_extra_path", ""),
                 False,
                 False,
                 filter1="LEProc.exe",
@@ -186,7 +186,7 @@ class le_internal(LEbase, settingxx):
     def runX(self, exe, usearg, dirpath, config):
         if config.get(self.use_which, 0) == 1:
 
-            valid = os.path.exists(config.get("le_extra_path", ""))
+            valid = os.path.exists(globalconfig.get("le_extra_path", ""))
             if valid:
                 return self.runXX(exe, usearg, dirpath, config)
         shareddllproxy = os.path.abspath("./files/plugins/shareddllproxy32")
@@ -252,7 +252,7 @@ class NTLEAS64(LEbase, settingxx):
     def runX(self, exe, usearg, dirpath, config):
         if config.get(self.use_which, 0) == 1:
 
-            valid = os.path.exists(self.__path(config))
+            valid = os.path.exists(self.__path())
             if valid:
                 return self.runXX(exe, usearg, dirpath, config)
         shareddllproxy = os.path.abspath(
@@ -292,15 +292,15 @@ class NTLEAS64(LEbase, settingxx):
     def setting(self, layout, config):
         self.settingxx(layout, config, self.setting1, self.settingX)
 
-    def __path(self, config):
+    def __path(self):
         return os.path.join(
-            os.path.dirname(config.get("ntleas_extra_path", "")),
+            os.path.dirname(globalconfig.get("ntleas_extra_path", "")),
             ["x86", "x64"][self.bit64],
             "ntleas.exe",
         )
 
     def runXX(self, exe, usearg, dirpath, config):
-        LEProc = self.__path(config)
+        LEProc = self.__path()
         if not LEProc:
             return
 
@@ -321,8 +321,8 @@ class NTLEAS64(LEbase, settingxx):
             windows.STARTUPINFO(),
         )
 
-    def reselect(self, config, path):
-        config["ntleas_extra_path"] = path
+    def reselect(self, path):
+        globalconfig["ntleas_extra_path"] = path
 
     def settingX(self, layout, config):
         if "ntleasparam" not in config:
@@ -330,11 +330,11 @@ class NTLEAS64(LEbase, settingxx):
         layout.addRow(
             "路径",
             getsimplepatheditor(
-                config.get("ntleas_extra_path", ""),
+                globalconfig.get("ntleas_extra_path", ""),
                 False,
                 False,
                 filter1="ntleasWin.exe",
-                callback=functools.partial(self.reselect, config),
+                callback=self.reselect,
             ),
         )
         layout.addRow(
@@ -364,7 +364,7 @@ class lr_internal(LEbase, settingxx):
     def runX(self, exe, usearg, dirpath, config):
         if config.get(self.use_which, 0) == 1:
 
-            valid = os.path.exists(config.get("lr_extra_path", ""))
+            valid = os.path.exists(globalconfig.get("lr_extra_path", ""))
             if valid:
                 return self.runXX(exe, usearg, dirpath, config)
 
@@ -411,7 +411,7 @@ class lr_internal(LEbase, settingxx):
 
             with open(
                 os.path.join(
-                    os.path.dirname(config.get("lr_extra_path", "")), "LRConfig.xml"
+                    os.path.dirname(globalconfig.get("lr_extra_path", "")), "LRConfig.xml"
                 ),
                 "r",
                 encoding="utf8",
@@ -424,7 +424,7 @@ class lr_internal(LEbase, settingxx):
         return Names, Guids
 
     def runXX(self, exe, usearg, dirpath, config):
-        LEProc = config.get("lr_extra_path", "")
+        LEProc = globalconfig.get("lr_extra_path", "")
         if not LEProc:
             return
         guids = self.profiles(config)[1]
@@ -445,7 +445,7 @@ class lr_internal(LEbase, settingxx):
         )
 
     def reselect(self, config, Guids, path):
-        config["lr_extra_path"] = path
+        globalconfig["lr_extra_path"] = path
         Names, _Guids = self.profiles(config)
         self.__profiles.clear()
         self.__profiles.addItems(Names)
@@ -458,7 +458,7 @@ class lr_internal(LEbase, settingxx):
         layout.addRow(
             "路径",
             getsimplepatheditor(
-                config.get("lr_extra_path", ""),
+                globalconfig.get("lr_extra_path", ""),
                 False,
                 False,
                 filter1="LRProc.exe",
