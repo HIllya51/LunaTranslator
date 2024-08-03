@@ -56,6 +56,7 @@ class AttachProcessDialog(saveposwindow):
                 "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件"
             )
         )
+        self.label.setWordWrap(True)
         self.button = LPushButton("点击此按钮后点击游戏窗口")
         self.button.clicked.connect(
             functools.partial(mouseselectwindow, self.setcurrentpidpnamesignal.emit)
