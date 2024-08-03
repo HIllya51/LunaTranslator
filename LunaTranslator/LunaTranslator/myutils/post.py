@@ -22,28 +22,26 @@ def dedump(line, args):
 
 
 def _2_f(line, args):
+    if len(line) == 0:
+        return
     keepnodump = args["保持非重复字符"]
     times = args["重复次数(若为1则自动分析去重)"]
 
     if times >= 2:
         guesstimes = times
     else:
-        guesstimes = []
-        t1 = 1
-        for i in range(1, len(line)):
-            if line[i] == line[i - 1]:
-
-                t1 += 1
+        dumptime = Counter()
+        cntx = 1
+        lastc = None
+        for c in line:
+            if c != lastc:
+                dumptime[cntx] += 1
+                lastc = c
+                cntx = 1
             else:
-
-                guesstimes.append(t1)
-                t1 = 1
-        x = Counter(guesstimes)
-
-        if len(guesstimes) != 0:
-            guesstimes = sorted(x.keys(), key=lambda x1: x[x1])[-1]
-        else:
-            guesstimes = 1
+                cntx += 1
+        _max = max(dumptime.values())
+        guesstimes = sorted(dumptime.keys(), key=lambda x: x * (dumptime[x] != _max))[0]
     if keepnodump:
         newline = ""
         i = 0
