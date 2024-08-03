@@ -188,6 +188,10 @@ function switchlang(lang) {
 }
 window.onpopstate = function (event) {
     let url = window.location.href;
+    if (url.endsWith('.redirect')) {
+        window.location.href = url.substring(0, url.length - 9);
+        return
+    }
     if (url.endsWith('/#/')) {
         let lang = window.localStorage.currentlang ? window.localStorage.currentlang : 'zh'
         window.location.href += lang + '/'
