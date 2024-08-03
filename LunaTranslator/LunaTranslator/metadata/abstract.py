@@ -161,7 +161,9 @@ class common:
         for _ in imagepath_all:
             if _ is None:
                 continue
-            if os.path.normpath(os.path.abspath(_)) not in normaled:
+            norm = os.path.normpath(os.path.abspath(_))
+            if norm not in normaled:
+                normaled.append(norm)
                 savehook_new_data[gameuid]["imagepath_all"].append(_)
         if title:
             if not savehook_new_data[gameuid]["istitlesetted"]:
