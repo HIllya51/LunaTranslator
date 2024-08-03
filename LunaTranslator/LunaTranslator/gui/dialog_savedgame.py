@@ -2354,6 +2354,12 @@ class dialog_savedgame_lagacy(QWidget):
             qicon=getExeIcon(uid2gamepath[k], cache=True),
         )
 
+    def callback_leuse(self, k, use):
+        if use:
+            savehook_new_data[k]["launch_method"] = None
+        else:
+            savehook_new_data[k]["launch_method"] = "direct"
+
     def newline(self, row, k):
         keyitem = QStandardItem()
         keyitem.savetext = k
@@ -2361,17 +2367,26 @@ class dialog_savedgame_lagacy(QWidget):
             row,
             [
                 QStandardItem(),
+                QStandardItem(),
                 keyitem,
                 QStandardItem((savehook_new_data[k]["title"])),
             ],
         )
         self.table.setIndexWidget(
             self.model.index(row, 0),
+            D_getsimpleswitch(
+                {"1": savehook_new_data[k].get("launch_method") != "direct"},
+                "1",
+                callback=functools.partial(self.callback_leuse, k),
+            ),
+        )
+        self.table.setIndexWidget(
+            self.model.index(row, 1),
             functools.partial(self.delayloadicon, k),
         )
 
         self.table.setIndexWidget(
-            self.model.index(row, 1),
+            self.model.index(row, 2),
             D_getIconButton(
                 functools.partial(self.showsettingdialog, k), icon="fa.gear"
             ),
@@ -2385,7 +2400,7 @@ class dialog_savedgame_lagacy(QWidget):
 
         formLayout = QVBoxLayout(self)  #
         model = LStandardItemModel()
-        model.setHorizontalHeaderLabels(["", "设置", "游戏"])  # ,'HOOK'])
+        model.setHorizontalHeaderLabels(["转区", "", "设置", "游戏"])  # ,'HOOK'])
 
         self.model = model
 

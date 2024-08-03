@@ -1,4 +1,4 @@
-import windows, os, winreg, winsharedutils, re
+import windows, os, winreg, winsharedutils, re, functools
 from qtsymbols import *
 from myutils.config import savehook_new_data, uid2gamepath
 from gui.usefulwidget import (
@@ -6,7 +6,9 @@ from gui.usefulwidget import (
     getsimplecombobox,
     getspinbox,
     getsimpleswitch,
+    LFocusCombo,
     getspinbox,
+    SplitLine,
 )
 from traceback import print_exc
 
@@ -14,9 +16,6 @@ from traceback import print_exc
 class Launcher:
     name = ...
     id = ...
-
-    def valid(self):
-        return True
 
     def run(self, gameexe, config): ...
 
@@ -51,165 +50,54 @@ class LEbase(Launcher):
         self.runX(execheck3264, usearg, dirpath, config)
 
 
-class le_internal(LEbase):
-    name = "内置_Locale Emulator"
-    id = "le_internal"
+class settingxx:
+    use_which = ...
 
+    def switchidx(self, w, config, idx):
+        w.setCurrentIndex(idx)
+        config[self.use_which] = idx
+
+    def settingxx(self, layout, config, valid, call1, call2):
+
+        stackw = QStackedWidget()
+        stackw.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+
+        if valid:
+            switch = LFocusCombo()
+            switch.addItems(["内置", "系统"])
+            switch.currentIndexChanged.connect(
+                functools.partial(self.switchidx, stackw, config)
+            )
+            layout.addRow("优先使用", switch)
+            layout.addRow(SplitLine())
+
+        w = QWidget()
+        default = QFormLayout()
+        default.setContentsMargins(0, 0, 0, 0)
+        w.setLayout(default)
+
+        call1(default, config)
+
+        stackw.addWidget(w)
+        layout.addRow(stackw)
+        if valid:
+
+            w = QWidget()
+            default = QFormLayout()
+            default.setContentsMargins(0, 0, 0, 0)
+            w.setLayout(default)
+            call2(default, config)
+            stackw.addWidget(w)
+            switch.setCurrentIndex(config.get(self.use_which, 0))
+
+
+class le_internal(LEbase, settingxx):
+    name = "Locale Emulator"
+    id = "le"
+    use_which = "le_use_which"
     default = dict(
         LCID=0x11, CodePage=932, RedirectRegistry=False, HookUILanguageAPI=False
     )
-
-    def loaddf(self, config):
-        for k, v in self.default.items():
-            k = "LE_" + k
-            if k in config:
-                continue
-            config[k] = v
-
-    def runX(self, exe, usearg, dirpath, config):
-        shareddllproxy = os.path.abspath("./files/plugins/shareddllproxy32")
-
-        def _get(k):
-            return config.get("LE_" + k, self.default[k])
-
-        param = '{ANSICodePage} {OEMCodePage} {LCID} "{dirname}" {RedirectRegistry} {HookUILanguageAPI}'.format(
-            LCID=_get("LCID"),
-            OEMCodePage=_get("CodePage"),
-            ANSICodePage=_get("CodePage"),
-            dirname=dirpath,
-            RedirectRegistry=int(_get("RedirectRegistry")),
-            HookUILanguageAPI=int(_get("HookUILanguageAPI")),
-        )
-        windows.CreateProcess(
-            None,
-            '"{}" {} {} {}'.format(shareddllproxy, "le", param, usearg),
-            None,
-            None,
-            False,
-            0,
-            None,
-            dirpath,
-            windows.STARTUPINFO(),
-        )
-
-    def setting(self, layout, config):
-        self.loaddf(config)
-
-        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "LE_LCID"))
-        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "LE_CodePage"))
-        layout.addRow(
-            "RedirectRegistry", getsimpleswitch(config, "LE_RedirectRegistry")
-        )
-        layout.addRow(
-            "HookUILanguageAPI", getsimpleswitch(config, "LE_HookUILanguageAPI")
-        )
-
-
-class NTLEAS64(LEbase):
-    name = "内置_Ntleas"
-    id = "ntlea_internal"
-    bit = 6
-
-    default = dict(LCID=0x411, CodePage=932, TimeZone=540)
-
-    def loaddf(self, config):
-        for k, v in self.default.items():
-            k = "NT_" + k
-            if k in config:
-                continue
-            config[k] = v
-
-    def runX(self, exe, usearg, dirpath, config):
-        shareddllproxy = os.path.abspath(
-            ("./files/plugins/shareddllproxy32", "./files/plugins/shareddllproxy64")[
-                self.bit == 6
-            ]
-        )
-
-        def _get(k):
-            return config.get("NT_" + k, self.default[k])
-
-        param = "{dwCompOption} {dwCodePage} {dwLCID} {dwTimeZone}".format(
-            dwCompOption=0,
-            dwCodePage=_get("CodePage"),
-            dwLCID=_get("LCID"),
-            dwTimeZone=-_get("TimeZone"),
-        )
-        windows.CreateProcess(
-            None,
-            '"{}" {} {} {}'.format(shareddllproxy, "ntleas", param, usearg),
-            None,
-            None,
-            False,
-            0,
-            None,
-            dirpath,
-            windows.STARTUPINFO(),
-        )
-
-    def setting(self, layout, config):
-        self.loaddf(config)
-
-        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "NT_LCID"))
-        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "NT_CodePage"))
-        layout.addRow("TimeZone", getspinbox(0, 0xFFFFF, config, "NT_TimeZone"))
-
-
-class NTLEAS32(NTLEAS64):
-    bit = 3
-
-
-class lr_internal(LEbase):
-    name = "内置_Locale Remulator"
-    id = "lr_internal"
-
-    default = dict(LCID=0x411, CodePage=932, TimeZone=540, HookIME=False, HookLCID=True)
-
-    def loaddf(self, config):
-        for k, v in self.default.items():
-            k = "LR_" + k
-            if k in config:
-                continue
-            config[k] = v
-
-    def runX(self, exe, usearg, dirpath, config):
-        shareddllproxy = os.path.abspath("./files/plugins/shareddllproxy32")
-
-        def _get(k):
-            return config.get("LR_" + k, self.default[k])
-
-        param = "{CodePage} {LCID} {Bias} {HookIME} {HookLCID}".format(
-            LCID=_get("LCID"),
-            CodePage=_get("CodePage"),
-            Bias=_get("TimeZone"),
-            HookIME=int(_get("HookIME")),
-            HookLCID=int(_get("HookLCID")),
-        )
-        windows.CreateProcess(
-            None,
-            '"{}" {} {} {}'.format(shareddllproxy, "LR", param, usearg),
-            None,
-            None,
-            False,
-            0,
-            None,
-            dirpath,
-            windows.STARTUPINFO(),
-        )
-
-    def setting(self, layout, config):
-        self.loaddf(config)
-
-        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "LR_LCID"))
-        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "LR_CodePage"))
-        layout.addRow("TimeZone", getspinbox(0, 0xFFFFF, config, "LR_TimeZone"))
-        layout.addRow("HookIME", getsimpleswitch(config, "LR_HookIME"))
-        layout.addRow("HookLCID", getsimpleswitch(config, "LR_HookLCID"))
-
-
-class le_installed(LEbase):
-    name = "Locale Emulator"
-    id = "le_installed"
 
     def fundleproc(self):
 
@@ -265,7 +153,7 @@ class le_installed(LEbase):
 
         return _Names, _Guids
 
-    def runX(self, exe, usearg, dirpath, config):
+    def runXX(self, exe, usearg, dirpath, config):
         LEProc = self.fundleproc()
         if not LEProc:
             return
@@ -286,17 +174,252 @@ class le_installed(LEbase):
             windows.STARTUPINFO(),
         )
 
-    def setting(self, layout, config):
+    def settingX(self, layout, config):
         Names, Guids = self.profiles(config["gamepath"])
         layout.addRow(
             "Profile",
             getsimplecombobox(Names, config, "leguid", internal=Guids),
         )
 
+    def loaddf(self, config):
+        for k, v in self.default.items():
+            k = "LE_" + k
+            if k in config:
+                continue
+            config[k] = v
 
-class lr_installed(LEbase):
+    def runX(self, exe, usearg, dirpath, config):
+        if config.get(self.use_which, 0) == 1:
+
+            valid = self.valid()
+            if valid:
+                return self.runXX(exe, usearg, dirpath, config)
+        shareddllproxy = os.path.abspath("./files/plugins/shareddllproxy32")
+
+        def _get(k):
+            return config.get("LE_" + k, self.default[k])
+
+        param = '{ANSICodePage} {OEMCodePage} {LCID} "{dirname}" {RedirectRegistry} {HookUILanguageAPI}'.format(
+            LCID=_get("LCID"),
+            OEMCodePage=_get("CodePage"),
+            ANSICodePage=_get("CodePage"),
+            dirname=dirpath,
+            RedirectRegistry=int(_get("RedirectRegistry")),
+            HookUILanguageAPI=int(_get("HookUILanguageAPI")),
+        )
+        windows.CreateProcess(
+            None,
+            '"{}" {} {} {}'.format(shareddllproxy, "le", param, usearg),
+            None,
+            None,
+            False,
+            0,
+            None,
+            dirpath,
+            windows.STARTUPINFO(),
+        )
+
+    def switchidx(self, w, config, idx):
+        w.setCurrentIndex(idx)
+        config[self.use_which] = idx
+
+    def setting(self, layout, config):
+        valid = self.valid()
+        self.settingxx(layout, config, valid, self.setting1, self.settingX)
+
+    def setting1(self, layout, config):
+
+        self.loaddf(config)
+        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "LE_LCID"))
+        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "LE_CodePage"))
+        layout.addRow(
+            "RedirectRegistry", getsimpleswitch(config, "LE_RedirectRegistry")
+        )
+        layout.addRow(
+            "HookUILanguageAPI", getsimpleswitch(config, "LE_HookUILanguageAPI")
+        )
+
+
+class NTLEAS64(LEbase, settingxx):
+    name = "Ntleas"
+    id = "ntleas"
+    bit = 6
+    bit64 = True
+    use_which = "ntleas_use_which"
+    default = dict(LCID=0x411, CodePage=932, TimeZone=540)
+
+    def loaddf(self, config):
+        for k, v in self.default.items():
+            k = "NT_" + k
+            if k in config:
+                continue
+            config[k] = v
+
+    def runX(self, exe, usearg, dirpath, config):
+        if config.get(self.use_which, 0) == 1:
+
+            valid = self.valid()
+            if valid:
+                return self.runXX(exe, usearg, dirpath, config)
+        shareddllproxy = os.path.abspath(
+            ("./files/plugins/shareddllproxy32", "./files/plugins/shareddllproxy64")[
+                self.bit == 6
+            ]
+        )
+
+        def _get(k):
+            return config.get("NT_" + k, self.default[k])
+
+        param = "{dwCompOption} {dwCodePage} {dwLCID} {dwTimeZone}".format(
+            dwCompOption=0,
+            dwCodePage=_get("CodePage"),
+            dwLCID=_get("LCID"),
+            dwTimeZone=-_get("TimeZone"),
+        )
+        windows.CreateProcess(
+            None,
+            '"{}" {} {} {}'.format(shareddllproxy, "ntleas", param, usearg),
+            None,
+            None,
+            False,
+            0,
+            None,
+            dirpath,
+            windows.STARTUPINFO(),
+        )
+
+    def setting1(self, layout, config):
+        self.loaddf(config)
+
+        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "NT_LCID"))
+        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "NT_CodePage"))
+        layout.addRow("TimeZone", getspinbox(0, 0xFFFFF, config, "NT_TimeZone"))
+
+    def setting(self, layout, config):
+        valid = self.valid()
+        self.settingxx(layout, config, valid, self.setting1, self.settingX)
+
+    def fundleproc(self):
+
+        try:
+            CLSID = "{9C31DD66-412C-4B28-BD17-1F0BEBE29E8B}"
+
+            k = winreg.OpenKeyEx(
+                winreg.HKEY_LOCAL_MACHINE,
+                rf"Software\Classes\CLSID\{CLSID}\InprocServer32",
+                0,
+                winreg.KEY_QUERY_VALUE,
+            )
+
+            LRSubMenuExtension: str = winreg.QueryValueEx(k, "")[0]
+            winreg.CloseKey(k)
+            LRProc = os.path.join(
+                os.path.dirname(LRSubMenuExtension),
+                ["x86", "x64"][self.bit64],
+                "ntleas.exe",
+            )
+            if not os.path.exists(LRProc):
+                return None
+            return LRProc
+        except:
+            return None
+
+    def valid(self):
+        return self.fundleproc() is not None
+
+    def runXX(self, exe, usearg, dirpath, config):
+        LEProc = self.fundleproc()
+        if not LEProc:
+            return
+
+        arg = '"{}"  {} {}'.format(
+            LEProc,
+            usearg,
+            config.get("ntleasparam", '"C932" "L1041" "FMS PGothic" "P4"'),
+        )
+        windows.CreateProcess(
+            None,
+            arg,
+            None,
+            None,
+            False,
+            0,
+            None,
+            dirpath,
+            windows.STARTUPINFO(),
+        )
+
+    def settingX(self, layout, config):
+        if "ntleasparam" not in config:
+            config["ntleasparam"] = '"C932" "L1041" "FMS PGothic" "P4"'
+
+        layout.addRow(
+            "params",
+            getlineedit(config, "ntleasparam"),
+        )
+
+
+class NTLEAS32(NTLEAS64):
+    bit = 3
+    bit64 = False
+
+
+class lr_internal(LEbase, settingxx):
     name = "Locale Remulator"
-    id = "lr_installed"
+    id = "lr"
+    use_which = "lr_use_which"
+    default = dict(LCID=0x411, CodePage=932, TimeZone=540, HookIME=False, HookLCID=True)
+
+    def loaddf(self, config):
+        for k, v in self.default.items():
+            k = "LR_" + k
+            if k in config:
+                continue
+            config[k] = v
+
+    def runX(self, exe, usearg, dirpath, config):
+        if config.get(self.use_which, 0) == 1:
+
+            valid = self.valid()
+            if valid:
+                return self.runXX(exe, usearg, dirpath, config)
+
+        shareddllproxy = os.path.abspath("./files/plugins/shareddllproxy32")
+
+        def _get(k):
+            return config.get("LR_" + k, self.default[k])
+
+        param = "{CodePage} {LCID} {Bias} {HookIME} {HookLCID}".format(
+            LCID=_get("LCID"),
+            CodePage=_get("CodePage"),
+            Bias=_get("TimeZone"),
+            HookIME=int(_get("HookIME")),
+            HookLCID=int(_get("HookLCID")),
+        )
+        windows.CreateProcess(
+            None,
+            '"{}" {} {} {}'.format(shareddllproxy, "LR", param, usearg),
+            None,
+            None,
+            False,
+            0,
+            None,
+            dirpath,
+            windows.STARTUPINFO(),
+        )
+
+    def setting(self, layout, config):
+        valid = self.valid()
+        self.settingxx(layout, config, valid, self.setting1, self.settingX)
+
+    def setting1(self, layout, config):
+        self.loaddf(config)
+
+        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "LR_LCID"))
+        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "LR_CodePage"))
+        layout.addRow("TimeZone", getspinbox(0, 0xFFFFF, config, "LR_TimeZone"))
+        layout.addRow("HookIME", getsimpleswitch(config, "LR_HookIME"))
+        layout.addRow("HookLCID", getsimpleswitch(config, "LR_HookLCID"))
 
     def fundleproc(self):
 
@@ -350,7 +473,7 @@ class lr_installed(LEbase):
             pass
         return Names, Guids
 
-    def runX(self, exe, usearg, dirpath, config):
+    def runXX(self, exe, usearg, dirpath, config):
         LEProc = self.fundleproc()
         if not LEProc:
             return
@@ -371,81 +494,12 @@ class lr_installed(LEbase):
             windows.STARTUPINFO(),
         )
 
-    def setting(self, layout, config):
+    def settingX(self, layout, config):
         Names, Guids = self.profiles()
         layout.addRow(
             "Profile",
             getsimplecombobox(Names, config, "lrguid", internal=Guids),
         )
-
-
-class ntleas_installed(LEbase):
-    name = "Ntleas"
-    id = "ntleas_installed"
-    bit64 = True
-
-    def fundleproc(self):
-
-        try:
-            CLSID = "{9C31DD66-412C-4B28-BD17-1F0BEBE29E8B}"
-
-            k = winreg.OpenKeyEx(
-                winreg.HKEY_LOCAL_MACHINE,
-                rf"Software\Classes\CLSID\{CLSID}\InprocServer32",
-                0,
-                winreg.KEY_QUERY_VALUE,
-            )
-
-            LRSubMenuExtension: str = winreg.QueryValueEx(k, "")[0]
-            winreg.CloseKey(k)
-            LRProc = os.path.join(
-                os.path.dirname(LRSubMenuExtension),
-                ["x86", "x64"][self.bit64],
-                "ntleas.exe",
-            )
-            if not os.path.exists(LRProc):
-                return None
-            return LRProc
-        except:
-            return None
-
-    def valid(self):
-        return self.fundleproc() is not None
-
-    def runX(self, exe, usearg, dirpath, config):
-        LEProc = self.fundleproc()
-        if not LEProc:
-            return
-
-        arg = '"{}"  {} {}'.format(
-            LEProc,
-            usearg,
-            config.get("ntleasparam", '"C932" "L1041" "FMS PGothic" "P4"'),
-        )
-        windows.CreateProcess(
-            None,
-            arg,
-            None,
-            None,
-            False,
-            0,
-            None,
-            dirpath,
-            windows.STARTUPINFO(),
-        )
-
-    def setting(self, layout, config):
-        if "ntleasparam" not in config:
-            config["ntleasparam"] = '"C932" "L1041" "FMS PGothic" "P4"'
-
-        layout.addRow(
-            "params",
-            getlineedit(config, "ntleasparam"),
-        )
-
-
-class ntleas_installed32(ntleas_installed):
-    bit64 = False
 
 
 class CommandLine(Launcher):
@@ -491,13 +545,10 @@ x86tools = [
     le_internal,
     lr_internal,
     NTLEAS32,
-    le_installed,
-    lr_installed,
-    ntleas_installed32,
     CommandLine,
     Direct,
 ]
-x64tools = [lr_internal, NTLEAS64, lr_installed, ntleas_installed, CommandLine, Direct]
+x64tools = [lr_internal, NTLEAS64, CommandLine, Direct]
 
 
 def getgamecamptools(gameexe):
@@ -508,8 +559,6 @@ def getgamecamptools(gameexe):
         _methods = x86tools
     ms = []
     for _ in _methods:
-        if not _().valid():
-            continue
         ms.append(_)
     return ms
 

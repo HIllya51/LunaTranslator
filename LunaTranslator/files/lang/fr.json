@@ -840,5 +840,6 @@
     "包含": "Contient",
     "删除图片文件": "Supprimer un fichier image",
     "启动方式": "Mode de démarrage",
-    "直接启动": "Démarrage direct"
+    "直接启动": "Démarrage direct",
+    "优先使用": "Utilisation prioritaire"
 }
