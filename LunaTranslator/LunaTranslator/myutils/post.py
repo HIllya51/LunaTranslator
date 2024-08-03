@@ -41,7 +41,15 @@ def _2_f(line, args):
             else:
                 cntx += 1
         _max = max(dumptime.values())
-        guesstimes = sorted(dumptime.keys(), key=lambda x: x * (dumptime[x] != _max))[0]
+        xx = []
+        for _, _2 in dumptime.items():
+            if _2 == _max:
+                xx.append(_)
+
+        guesstimes = sorted(xx)
+        if guesstimes[0] == 1 and len(guesstimes) > 1:
+            guesstimes = guesstimes[1:]
+        guesstimes = guesstimes[0]
     if keepnodump:
         newline = ""
         i = 0
