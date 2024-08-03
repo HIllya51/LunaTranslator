@@ -201,11 +201,14 @@ class searcher(common):
         developers = []
         for _ in response["infobox"]:
             if _["key"] in ["游戏开发商", "开发", "发行"]:
-                for __ in _["value"]:
-                    if isinstance(__, str):
-                        developers.append(__)
-                    elif isinstance(__, dict):
-                        developers.append(__["v"])
+                if isinstance(_["value"], str):
+                    developers.append(_["value"])
+                else:
+                    for __ in _["value"]:
+                        if isinstance(__, str):
+                            developers.append(__)
+                        elif isinstance(__, dict):
+                            developers.append(__["v"])
         return {
             # "namemap": namemap,
             "title": response["name"],

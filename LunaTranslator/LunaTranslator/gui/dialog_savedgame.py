@@ -962,6 +962,7 @@ class dialog_setting_game_internal(QWidget):
                 try:
                     _qw.remove()
                     savehook_new_data[gameuid][refkey].remove(t)
+                    self.labelflow.removewidget(_qw)
                 except:
                     print_exc()
 

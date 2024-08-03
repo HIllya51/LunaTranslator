@@ -183,6 +183,10 @@ class ScrollFlow(QWidget):
         self.l.insertWidget(idx, wid)
 
     @trypass
+    def removewidget(self, wid):
+        self.l.removeWidget(wid)
+
+    @trypass
     def removeidx(self, index):
         _ = self.l.takeAt(index)
         _.widget().hide()
