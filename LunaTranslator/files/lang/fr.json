@@ -227,7 +227,6 @@
     "辞书": "Dictionnaire",
     "分词": "Participant",
     "过滤尖括号<>": "Filtrer les crochets d'angle < >",
-    "竖向OCR识别": "Reconnaissance verticale de la Roc",
     "Moji辞书": "Moji dict",
     "清空": "Vider",
     "不显示原文": "Ne pas afficher l'original",
@@ -726,7 +725,6 @@
     "预处理": "Pré - traitement",
     "自动化执行方法": "Méthode d'exécution automatisée",
     "后处理": "Post - traitement",
-    "竖向识别": "Identification verticale",
     "易错内容修正": "Correction de contenu faillible",
     "范围框宽度": "Largeur de la boîte de gamme",
     "按钮颜色": "Couleur du bouton",
@@ -843,5 +841,9 @@
     "直接启动": "Démarrage direct",
     "优先使用": "Utilisation prioritaire",
     "外部": "Extérieur",
-    "不添加辞书": "Pas d'ajout de discours"
+    "不添加辞书": "Pas d'ajout de discours",
+    "识别方向": "Identification des directions",
+    "横向": "Latéralement",
+    "竖向": "Verticalement",
+    "自适应": "Adaptatif"
 }

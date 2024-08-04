@@ -1405,7 +1405,7 @@
             "use": true
         }
     },
-    "verticalocr": false,
+    "verticalocr": 2,
     "ocrmergelines": true,
     "ocr": {
         "local": {

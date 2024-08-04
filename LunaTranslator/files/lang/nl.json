@@ -397,7 +397,6 @@
     "紲星あかり/绁星灯": "あかり",
     "使用Unicode范围过滤": "Unicode-bereik filteren gebruiken",
     "结束地址(hex)": "Eindadres (hex)",
-    "竖向OCR识别": "Verticale OCR-herkenning",
     "正则表达式替换": "Vervanging van reguliere expressies",
     "越南语(CP1258)": "Vietnamees (CP1258)",
     "游戏设置": "Spelinstellingen",
@@ -731,7 +730,6 @@
     "预处理": "Voorverwerking",
     "自动化执行方法": "Geautomatiseerde uitvoeringsmethode",
     "后处理": "Postverwerking",
-    "竖向识别": "Verticale herkenning",
     "易错内容修正": "Correctie van gemakkelijk foutieve inhoud",
     "范围框宽度": "Breedte van het bereik",
     "按钮颜色": "Knopkleur",
@@ -843,5 +841,9 @@
     "直接启动": "Direct starten",
     "优先使用": "prioriteit van het gebruik",
     "外部": "extern",
-    "不添加辞书": "Geen woordenboek toevoegen"
+    "不添加辞书": "Geen woordenboek toevoegen",
+    "识别方向": "Identificeer richting",
+    "横向": "dwars",
+    "竖向": "verticaal",
+    "自适应": "zelfaanpassing"
 }

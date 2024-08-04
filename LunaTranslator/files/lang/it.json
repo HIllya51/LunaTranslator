@@ -221,7 +221,6 @@
     "辞书": "Dizionario",
     "分词": "participio",
     "过滤尖括号<>": "Parentes angolari del filtro<>",
-    "竖向OCR识别": "Riconoscimento OCR verticale",
     "Moji辞书": "Dizionario Moji",
     "清空": "vuoto",
     "不显示原文": "Non visualizzare il testo originale",
@@ -726,7 +725,6 @@
     "预处理": "Preelaborazione",
     "自动化执行方法": "Metodi di esecuzione automatizzati",
     "后处理": "Post-elaborazione",
-    "竖向识别": "Riconoscimento verticale",
     "易错内容修正": "Correzione del contenuto incline agli errori",
     "范围框宽度": "Larghezza casella intervallo",
     "按钮颜色": "Colore pulsante",
@@ -843,5 +841,9 @@
     "直接启动": "Avvia direttamente",
     "优先使用": "priorità d'uso",
     "外部": "esterno",
-    "不添加辞书": "Non aggiungere un dizionario"
+    "不添加辞书": "Non aggiungere un dizionario",
+    "识别方向": "Identifica la direzione",
+    "横向": "trasversale",
+    "竖向": "verticale",
+    "自适应": "auto-adattamento"
 }

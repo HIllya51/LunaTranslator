@@ -227,7 +227,6 @@
     "辞书": "Thư từ",
     "分词": "Phân từ",
     "过滤尖括号<>": "Lọc ngoặc nhọn<>",
-    "竖向OCR识别": "Nhận dạng OCR dọc",
     "Moji辞书": "Từ điển Moji",
     "清空": "Trống rỗng",
     "不显示原文": "Không hiển thị bản gốc",
@@ -726,7 +725,6 @@
     "预处理": "Tiền xử lý",
     "自动化执行方法": "Phương pháp thực hiện tự động",
     "后处理": "Hậu xử lý",
-    "竖向识别": "Nhận dạng dọc",
     "易错内容修正": "Sửa lỗi dễ dàng",
     "范围框宽度": "Chiều rộng hộp phạm vi",
     "按钮颜色": "Màu nút",
@@ -843,5 +841,9 @@
     "直接启动": "Khởi động trực tiếp",
     "优先使用": "Ưu tiên sử dụng",
     "外部": "Bên ngoài",
-    "不添加辞书": "Không thêm từ điển"
+    "不添加辞书": "Không thêm từ điển",
+    "识别方向": "Xác định hướng",
+    "横向": "Phong cảnh",
+    "竖向": "Dọc",
+    "自适应": "Thích ứng"
 }

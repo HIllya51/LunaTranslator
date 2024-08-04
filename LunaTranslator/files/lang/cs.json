@@ -397,7 +397,6 @@
     "紲星あかり/绁星灯": "あかり",
     "使用Unicode范围过滤": "Použít filtrování rozsahu Unicode",
     "结束地址(hex)": "Koncová adresa (hex)",
-    "竖向OCR识别": "Vertikální rozpoznávání OCR",
     "正则表达式替换": "Náhrada regulárního výrazu",
     "越南语(CP1258)": "Vietnamština (CP1258)",
     "游戏设置": "Nastavení hry",
@@ -731,7 +730,6 @@
     "预处理": "Předzpracování",
     "自动化执行方法": "Metoda automatizovaného provádění",
     "后处理": "Pozpracování",
-    "竖向识别": "Vertikální rozpoznávání",
     "易错内容修正": "Oprava snadno chybného obsahu",
     "范围框宽度": "Šířka rámečku rozsahu",
     "按钮颜色": "Barva tlačítka",
@@ -843,5 +841,9 @@
     "直接启动": "Přímo spustit",
     "优先使用": "priorita použití",
     "外部": "externí",
-    "不添加辞书": "Nepřidávat slovník"
+    "不添加辞书": "Nepřidávat slovník",
+    "识别方向": "Určit směr",
+    "横向": "příčná",
+    "竖向": "vertikální",
+    "自适应": "samostatná adaptace"
 }

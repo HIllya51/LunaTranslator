@@ -181,8 +181,10 @@ def getocrgrid(self):
                     type="grid",
                     grid=[
                         [
-                            "竖向识别",
-                            D_getsimpleswitch(globalconfig, "verticalocr"),
+                            "识别方向",
+                            D_getsimplecombobox(
+                                ["横向", "竖向", "自适应"], globalconfig, "verticalocr"
+                            ),
                             ("", 4),
                         ]
                     ],

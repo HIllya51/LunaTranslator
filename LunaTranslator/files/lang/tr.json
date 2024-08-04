@@ -227,7 +227,6 @@
     "辞书": "Sözlük",
     "分词": "participle",
     "过滤尖括号<>": "Süzgüç bracketleri < >",
-    "竖向OCR识别": "Dikey OCR kimliği",
     "Moji辞书": "Moji Sözlük",
     "清空": "boş",
     "不显示原文": "Önce metini gösterme",
@@ -726,7 +725,6 @@
     "预处理": "Ön işleme",
     "自动化执行方法": "Otomatik çalışma metodları",
     "后处理": "İşlemi",
-    "竖向识别": "Dikey tanıma",
     "易错内容修正": "İçindeki düzeltme sırasında hata",
     "范围框宽度": "Aralık kutusu genişliği",
     "按钮颜色": "Düğme rengi",
@@ -843,5 +841,9 @@
     "直接启动": "Direkten başla",
     "优先使用": "kullanımın önceliği",
     "外部": "dış",
-    "不添加辞书": "Sözlük eklemeyin"
+    "不添加辞书": "Sözlük eklemeyin",
+    "识别方向": "Doğru belirle",
+    "横向": "transverse",
+    "竖向": "dikey",
+    "自适应": "kendi uygulama"
 }

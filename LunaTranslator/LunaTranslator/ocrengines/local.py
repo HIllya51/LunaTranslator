@@ -135,7 +135,9 @@ def getallsupports():
 
 def dodownload(combo: QComboBox, allsupports: list):
     lang = allsupports[combo.currentIndex()]
-    gobject.baseobject.openlink(dynamiclink("{main_server}/Resource/ocr_models/" + lang + ".zip"))
+    gobject.baseobject.openlink(
+        dynamiclink("{main_server}/Resource/ocr_models/" + lang + ".zip")
+    )
 
 
 def doinstall(combo: QComboBox, allsupports: list, parent, callback):
@@ -226,7 +228,7 @@ class OCR(baseocr):
 
         pss, texts = self._ocr.ocr(
             imagebinary,
-            globalconfig["verticalocr"],
+            0,
         )
 
         return self.common_solve_text_orientation(pss, texts)

@@ -227,7 +227,6 @@
     "辞书": "Diccionario",
     "分词": "Participio",
     "过滤尖括号<>": "Soporte puntiagudo de filtro < >",
-    "竖向OCR识别": "Identificación vertical OCR",
     "Moji辞书": "Moji dict",
     "清空": "Vaciado",
     "不显示原文": "No muestra el texto original",
@@ -726,7 +725,6 @@
     "预处理": "Preprocesamiento",
     "自动化执行方法": "Método de ejecución automatizado",
     "后处理": "Reprocesamiento",
-    "竖向识别": "Identificación vertical",
     "易错内容修正": "Corrección de contenido propenso a errores",
     "范围框宽度": "Ancho del marco de alcance",
     "按钮颜色": "Color del botón",
@@ -843,5 +841,9 @@
     "直接启动": "Arranque directo",
     "优先使用": "Uso prioritario",
     "外部": "Exterior",
-    "不添加辞书": "Sin agregar diccionarios"
+    "不添加辞书": "Sin agregar diccionarios",
+    "识别方向": "Identificar la dirección",
+    "横向": "Horizontal",
+    "竖向": "Vertical",
+    "自适应": "Autoadaptación"
 }

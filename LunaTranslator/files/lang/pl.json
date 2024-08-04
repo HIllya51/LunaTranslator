@@ -227,7 +227,6 @@
     "辞书": "Słownik",
     "分词": "uczestnik",
     "过滤尖括号<>": "Nawiasy kąta filtra<>",
-    "竖向OCR识别": "Pionowe rozpoznawanie OCR",
     "Moji辞书": "Słownik Moji",
     "清空": "pusty",
     "不显示原文": "Nie wyświetlaj oryginalnego tekstu",
@@ -726,7 +725,6 @@
     "预处理": "Przetwarzanie wstępne",
     "自动化执行方法": "Automatyczne metody wykonywania",
     "后处理": "Przetwarzanie po przetwarzaniu",
-    "竖向识别": "Rozpoznawanie pionowe",
     "易错内容修正": "Korekta zawartości podatnej na błędy",
     "范围框宽度": "Szerokość pola zakresu",
     "按钮颜色": "Kolor przycisku",
@@ -843,5 +841,9 @@
     "直接启动": "Bezpośredni start",
     "优先使用": "priorytet stosowania",
     "外部": "zewnętrzne",
-    "不添加辞书": "Nie dodawaj słownika"
+    "不添加辞书": "Nie dodawaj słownika",
+    "识别方向": "Określić kierunek",
+    "横向": "poprzeczne",
+    "竖向": "pionowy",
+    "自适应": "samodzielna adaptacja"
 }

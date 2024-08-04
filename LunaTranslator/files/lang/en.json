@@ -227,7 +227,6 @@
     "辞书": "Dictionary",
     "分词": "Tokenization",
     "过滤尖括号<>": "Filter Angle Brackets <>",
-    "竖向OCR识别": "Vertical OCR Recognition",
     "Moji辞书": "Moji Dictionary",
     "清空": "Clear",
     "不显示原文": "Don't Display Original Text",
@@ -725,7 +724,6 @@
     "预处理": "Preprocessing",
     "自动化执行方法": "Automated Execution Method",
     "后处理": "Postprocessing",
-    "竖向识别": "Vertical Recognition",
     "易错内容修正": "Translation Result Correction",
     "范围框宽度": "Range Frame Width",
     "按钮颜色": "Button Color",
@@ -843,5 +841,9 @@
     "直接启动": "Directly start",
     "优先使用": "priority of use",
     "外部": "external",
-    "不添加辞书": "Do not add a dictionary"
+    "不添加辞书": "Do not add a dictionary",
+    "识别方向": "Identify direction",
+    "横向": "transverse",
+    "竖向": "vertical ",
+    "自适应": "self-adaption"
 }

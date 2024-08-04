@@ -397,7 +397,6 @@
     "紲星あかり/绁星灯": "あかり",
     "使用Unicode范围过滤": "Använd Unicode- intervallfiltrering",
     "结束地址(hex)": "Slutadress (hex)",
-    "竖向OCR识别": "Vertikal OCR-igenkänning",
     "正则表达式替换": "Ersättning av reguljära uttryck",
     "越南语(CP1258)": "Vietnamesiska (CP1258)",
     "游戏设置": "Spelinställningar",
@@ -731,7 +730,6 @@
     "预处理": "Förbehandling",
     "自动化执行方法": "Automatisk exekveringsmetod",
     "后处理": "Efterbehandling",
-    "竖向识别": "Vertikalt erkännande",
     "易错内容修正": "Rättelse av lätt felaktigt innehåll",
     "范围框宽度": "Områdesrådans bredd",
     "按钮颜色": "Knappfärg",
@@ -843,5 +841,9 @@
     "直接启动": "Starta direkt",
     "优先使用": "prioritet för användning",
     "外部": "extern",
-    "不添加辞书": "Lägg inte till en ordlista"
+    "不添加辞书": "Lägg inte till en ordlista",
+    "识别方向": "Identifiera riktning",
+    "横向": "tvärgående",
+    "竖向": "vertikal",
+    "自适应": "självanpassning"
 }

@@ -57,12 +57,12 @@ class OCR(baseocr):
         }
 
         params = {"access_token": self.accstoken}  # '',
-        
+
         b64 = base64.b64encode(imagebinary)
 
         data = {
             "image": b64,
-            "detect_direction": globalconfig["verticalocr"],
+            "detect_direction": globalconfig["verticalocr"] != 0,
             "language_type": self.srclang,
         }
         interfacetype = self.config["接口"]
@@ -73,7 +73,9 @@ class OCR(baseocr):
             "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic",
             "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate",
         ][interfacetype]
-        response = self.proxysession.post(url, params=params, headers=headers, data=data)
+        response = self.proxysession.post(
+            url, params=params, headers=headers, data=data
+        )
         try:
 
             self.countnum()
