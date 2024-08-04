@@ -8,7 +8,7 @@ def prepareqtenv():
     windows.addenvpath("./LunaTranslator/runtime/")
     windows.loadlibrary("./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
 
-    from qtsymbols import QApplication, isqt5, Qt, QFont
+    from qtsymbols import QApplication, isqt5, Qt, QFont, QLocale
 
     gobject.overridepathexists()
 
@@ -35,6 +35,8 @@ def prepareqtenv():
     font.setHintingPreference(QFont.HintingPreference.PreferFullHinting)
     # 必须PreferFullHinting，不能PreferNoHinting，否则阿拉伯语显示不出来
     QApplication.setFont(font)
+    QLocale.setDefault(QLocale(QLocale.Language.C, QLocale.Country.AnyCountry))
+    # 香港地区数字乱码
 
 
 def loadmainui():
