@@ -97,6 +97,8 @@ class TableViewW(QTableView):
 
     def setIndexWidget(self, index: QModelIndex, w: QWidget):
         super().setIndexWidget(index, w)
+        if w is None:
+            return
         if self.rowHeight(index.row()) < w.height():
             self.setRowHeight(index.row(), w.height())
 
@@ -1668,11 +1670,12 @@ class listediter(LDialog):
         copy = LAction("复制")
         up = LAction("上移")
         down = LAction("下移")
-        if not self.isrankeditor:
+        if not (self.isrankeditor):
             menu.addAction(remove)
             menu.addAction(copy)
-        menu.addAction(up)
-        menu.addAction(down)
+        if not (self.candidates):
+            menu.addAction(up)
+            menu.addAction(down)
         action = menu.exec(self.hctable.cursor().pos())
 
         if action == remove:
@@ -1710,9 +1713,11 @@ class listediter(LDialog):
         ispathsedit=None,
         isrankeditor=False,
         namemapfunction=None,
+        candidates=None,
     ) -> None:
         super().__init__(parent)
         self.lst = lst
+        self.candidates = candidates
         self.closecallback = closecallback
         self.ispathsedit = ispathsedit
         self.isrankeditor = isrankeditor
@@ -1727,7 +1732,7 @@ class listediter(LDialog):
                 QHeaderView.ResizeMode.ResizeToContents
             )
             table.horizontalHeader().setStretchLastSection(True)
-            if isrankeditor or (not (ispathsedit is None)):
+            if isrankeditor or (not (ispathsedit is None)) or self.candidates:
                 table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
             table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
@@ -1754,6 +1759,10 @@ class listediter(LDialog):
                 self.buttons = threebuttons(texts=["上移", "下移"])
                 self.buttons.btn1clicked.connect(functools.partial(self.moverank, -1))
                 self.buttons.btn2clicked.connect(functools.partial(self.moverank, 1))
+            elif self.candidates:
+                self.buttons = threebuttons(texts=["添加行", "删除行"])
+                self.buttons.btn1clicked.connect(self.click1)
+                self.buttons.btn2clicked.connect(self.clicked2)
             else:
                 self.buttons = threebuttons(texts=["添加行", "删除行", "上移", "下移"])
                 self.buttons.btn1clicked.connect(self.click1)
@@ -1805,9 +1814,27 @@ class listediter(LDialog):
             self.internalrealname.insert(0, paths)
             self.hcmodel.insertRow(0, [QStandardItem(path)])
 
-    def click1(self):
+    def __changed(self, idx):
+        self.internalrealname[self.hctable.currentIndex().row()] = self.candidates[idx]
 
-        if self.ispathsedit is None:
+    def click1(self):
+        if self.candidates:
+            if len(self.internalrealname):
+                _vis = self.internalrealname[0]
+                self.hctable.setIndexWidget(self.hcmodel.index(0, 0), None)
+                if self.namemapfunction:
+                    _vis = self.namemapfunction(_vis)
+                self.hcmodel.setItem(0, 0, QStandardItem(_vis))
+            self.internalrealname.insert(0, self.candidates[0])
+            self.hcmodel.insertRow(0, [QStandardItem("")])
+            combo = LFocusCombo()
+            _vis = self.candidates
+            if self.namemapfunction:
+                _vis = [self.namemapfunction(_) for _ in _vis]
+            combo.addItems(_vis)
+            combo.currentIndexChanged.connect(self.__changed)
+            self.hctable.setIndexWidget(self.hcmodel.index(0, 0), combo)
+        elif self.ispathsedit is None:
             self.internalrealname.insert(0, "")
             self.hcmodel.insertRow(0, [QStandardItem("")])
         else:

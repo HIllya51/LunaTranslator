@@ -19,6 +19,7 @@ from gui.usefulwidget import (
     getspinbox,
     getsimplecombobox,
     getlineedit,
+    listediter,
     listediterline,
     getsimpleswitch,
     makesubtab_lazy,
@@ -328,6 +329,20 @@ class AnkiWindow(QWidget):
         layout.addRow(
             "例句中加粗单词",
             getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
+        )
+        layout.addRow(
+            "不添加辞书",
+            getIconButton(self.vistranslate_rank, "fa.gear"),
+        )
+
+    def vistranslate_rank(self):
+        listediter(
+            self,
+            "不添加辞书",
+            "不添加辞书",
+            globalconfig["ignoredict"],
+            candidates=list(globalconfig["cishu"].keys()),
+            namemapfunction=lambda k: globalconfig["cishu"][k]["name"],
         )
 
     def startorendrecord(self, target: QLineEdit, idx):
@@ -706,11 +721,15 @@ class searchwordW(closeashidewindow):
         self.vboxlayout.addLayout(self.searchlayout)
         self.searchtext = QLineEdit1()
         self.searchtext.textChanged.connect(self.ankiwindow.reset)
-        self.history_last_btn = statusbutton(icons=["fa.arrow-left", "fa.arrow-left"], colors=["", ""])
+        self.history_last_btn = statusbutton(
+            icons=["fa.arrow-left", "fa.arrow-left"], colors=["", ""]
+        )
         self.history_last_btn.clicked.connect(
             functools.partial(self.__move_history_search, -1)
         )
-        self.history_next_btn = statusbutton(icons=["fa.arrow-right", "fa.arrow-right"], colors=["", ""])
+        self.history_next_btn = statusbutton(
+            icons=["fa.arrow-right", "fa.arrow-right"], colors=["", ""]
+        )
         self.history_next_btn.clicked.connect(
             functools.partial(self.__move_history_search, 1)
         )
@@ -783,9 +802,12 @@ class searchwordW(closeashidewindow):
         res = []
         tabks = []
         for k, v in self.cache_results.items():
+            if k in globalconfig["ignoredict"]:
+                continue
             if len(v) == 0:
                 continue
             thisp = self.thisps.get(k, 0)
+
             idx = 0
             for i in tabks:
                 if i >= thisp:

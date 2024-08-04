@@ -842,5 +842,6 @@
     "启动方式": "Modo de arranque",
     "直接启动": "Arranque directo",
     "优先使用": "Uso prioritario",
-    "外部": "Exterior"
+    "外部": "Exterior",
+    "不添加辞书": "Sin agregar diccionarios"
 }

@@ -100,8 +100,8 @@ def _createseletengeinecombo_1(self):
 def vistranslate_rank(self):
     listediter(
         self,
-        ("显示顺序"),
-        ("显示顺序"),
+        "显示顺序",
+        "显示顺序",
         globalconfig["cishuvisrank"],
         isrankeditor=True,
         namemapfunction=lambda k: globalconfig["cishu"][k]["name"],

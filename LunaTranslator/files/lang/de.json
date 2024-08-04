@@ -842,5 +842,6 @@
     "启动方式": "Startmethode",
     "直接启动": "Direkt starten",
     "优先使用": "Priorität der Verwendung",
-    "外部": "extern"
+    "外部": "extern",
+    "不添加辞书": "Kein Wörterbuch hinzufügen"
 }
