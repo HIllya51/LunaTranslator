@@ -55,7 +55,7 @@ class baseocr(commonbase):
         return whs < 1
 
     def common_solve_text_orientation(self, boxs, texts):
-        vertical = globalconfig["verticalocr"]
+        vertical = int(globalconfig["verticalocr"])
 
         def norm48(box):
             return (
