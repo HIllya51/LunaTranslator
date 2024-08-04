@@ -18,7 +18,7 @@ class Qlabel_c(QLabel):
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         try:
-            if self.geometry().contains(self.parent().mapFromGlobal(QCursor.pos())):
+            if self.rect().contains(event.pos()):
                 try:
                     if self.pr:
                         if event.button() == Qt.MouseButton.RightButton:

@@ -698,23 +698,23 @@ class dialog_setting_game_internal(QWidget):
         _w = QWidget()
         formLayout = LFormLayout()
         _w.setLayout(formLayout)
-        function(formLayout, gameuid)
-        return _w
+        do = functools.partial(function, formLayout, gameuid)
+        return _w, do
 
     def ___tabf2(self, function, gameuid):
         _w = QWidget()
         formLayout = QVBoxLayout()
         _w.setLayout(formLayout)
-        function(formLayout, gameuid)
-        return _w
+        do = functools.partial(function, formLayout, gameuid)
+        return _w, do
 
     def ___tabf3(self, function, gameuid):
         _w = QWidget()
         formLayout = QVBoxLayout()
         formLayout.setContentsMargins(0, 0, 0, 0)
         _w.setLayout(formLayout)
-        function(formLayout, gameuid)
-        return _w
+        do = functools.partial(function, formLayout, gameuid)
+        return _w, do
 
     def makegamedata(self, vbox: QVBoxLayout, gameuid):
 
@@ -752,9 +752,6 @@ class dialog_setting_game_internal(QWidget):
         self.methodtab = methodtab
         vbox.addWidget(methodtab)
         do()
-        self.__launch_method.currentIndexChanged.emit(
-            self.__launch_method.currentIndex()
-        )
 
     def openrefmainpage(self, key, idname, gameuid):
         try:
@@ -823,8 +820,9 @@ class dialog_setting_game_internal(QWidget):
             )
 
     def doaddtab(self, wfunct, exe, layout):
-        w = wfunct(exe)
+        w, do = wfunct(exe)
         layout.addWidget(w)
+        do()
 
     def starttab(self, formLayout: LFormLayout, gameuid):
         box = QGroupBox()
@@ -839,7 +837,7 @@ class dialog_setting_game_internal(QWidget):
             else:
                 box.show()
 
-        self.__launch_method = getsimplecombobox(
+        __launch_method = getsimplecombobox(
             [_.name for _ in getgamecamptools(uid2gamepath[gameuid])],
             savehook_new_data[gameuid],
             "launch_method",
@@ -848,7 +846,7 @@ class dialog_setting_game_internal(QWidget):
                 __, box, settinglayout, savehook_new_data[gameuid]
             ),
         )
-        formLayout.addRow("启动方式", self.__launch_method)
+        formLayout.addRow("启动方式", __launch_method)
         formLayout.addRow(box)
 
         formLayout.addRow(
@@ -859,6 +857,8 @@ class dialog_setting_game_internal(QWidget):
                 "onloadautochangemode2",
             ),
         )
+
+        __launch_method.currentIndexChanged.emit(__launch_method.currentIndex())
 
     def getstatistic(self, formLayout: QVBoxLayout, gameuid):
         chart = chartwidget()

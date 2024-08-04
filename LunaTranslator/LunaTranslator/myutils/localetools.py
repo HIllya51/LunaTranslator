@@ -10,6 +10,7 @@ from gui.usefulwidget import (
     getspinbox,
     SplitLine,
     getsimplepatheditor,
+    clearlayout,
 )
 from traceback import print_exc
 from gui.dynalang import LFormLayout
@@ -55,40 +56,28 @@ class LEbase(Launcher):
 class settingxx:
     use_which = ...
 
-    def switchidx(self, w, config, idx):
-        w.setCurrentIndex(idx)
+    def switchidx(self, lay1, lay2, call1, call2, config, idx):
+        clearlayout(lay1)
+        clearlayout(lay2)
         config[self.use_which] = idx
+        (call1, call2)[idx](lay1, config)
 
     def settingxx(self, layout, config, call1, call2):
 
-        stackw = QStackedWidget()
-        stackw.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-
         switch = LFocusCombo()
         switch.addItems(["内置", "外部"])
-        switch.currentIndexChanged.connect(
-            functools.partial(self.switchidx, stackw, config)
-        )
+        lay1 = LFormLayout()
+        lay2 = LFormLayout()
         layout.addRow("优先使用", switch)
         layout.addRow(SplitLine())
+        layout.addRow(lay1)
+        layout.addRow(lay2)
 
-        w = QWidget()
-        default = LFormLayout()
-        default.setContentsMargins(0, 0, 0, 0)
-        w.setLayout(default)
-
-        call1(default, config)
-
-        stackw.addWidget(w)
-        layout.addRow(stackw)
-
-        w = QWidget()
-        default = LFormLayout()
-        default.setContentsMargins(0, 0, 0, 0)
-        w.setLayout(default)
-        call2(default, config)
-        stackw.addWidget(w)
         switch.setCurrentIndex(config.get(self.use_which, 0))
+        switch.currentIndexChanged.connect(
+            functools.partial(self.switchidx, lay1, lay2, call1, call2, config)
+        )
+        switch.currentIndexChanged.emit(switch.currentIndex())
 
 
 class le_internal(LEbase, settingxx):
@@ -213,10 +202,6 @@ class le_internal(LEbase, settingxx):
             dirpath,
             windows.STARTUPINFO(),
         )
-
-    def switchidx(self, w, config, idx):
-        w.setCurrentIndex(idx)
-        config[self.use_which] = idx
 
     def setting(self, layout, config):
         self.settingxx(layout, config, self.setting1, self.settingX)
@@ -411,7 +396,8 @@ class lr_internal(LEbase, settingxx):
 
             with open(
                 os.path.join(
-                    os.path.dirname(globalconfig.get("lr_extra_path", "")), "LRConfig.xml"
+                    os.path.dirname(globalconfig.get("lr_extra_path", "")),
+                    "LRConfig.xml",
                 ),
                 "r",
                 encoding="utf8",
