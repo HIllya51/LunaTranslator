@@ -754,6 +754,10 @@ class searchwordW(closeashidewindow):
             icons=["fa.adn", "fa.adn"], colors=["", globalconfig["buttoncolor2"]]
         )
         ankiconnect.statuschanged.connect(self.onceaddankiwindow)
+        ankiconnect.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        ankiconnect.customContextMenuRequested.connect(
+            lambda _: self.ankiwindow.errorwrap()
+        )
         self.searchlayout.addWidget(ankiconnect)
 
         self.tab = CustomTabBar()
