@@ -60,12 +60,12 @@ class settingxx:
         clearlayout(lay1)
         clearlayout(lay2)
         config[self.use_which] = idx
-        (call1, call2)[idx](lay1, config)
+        (call1, call2)[1 - idx](lay1, config)
 
     def settingxx(self, layout, config, call1, call2):
 
         switch = LFocusCombo()
-        switch.addItems(["内置", "外部"])
+        switch.addItems(["外部", "内置"])
         lay1 = LFormLayout()
         lay2 = LFormLayout()
         layout.addRow("优先使用", switch)
@@ -173,7 +173,7 @@ class le_internal(LEbase, settingxx):
             config[k] = v
 
     def runX(self, exe, usearg, dirpath, config):
-        if config.get(self.use_which, 0) == 1:
+        if config.get(self.use_which, 0) == 0:
 
             valid = os.path.exists(globalconfig.get("le_extra_path", ""))
             if valid:
@@ -235,7 +235,7 @@ class NTLEAS64(LEbase, settingxx):
             config[k] = v
 
     def runX(self, exe, usearg, dirpath, config):
-        if config.get(self.use_which, 0) == 1:
+        if config.get(self.use_which, 0) == 0:
 
             valid = os.path.exists(self.__path())
             if valid:
@@ -347,7 +347,7 @@ class lr_internal(LEbase, settingxx):
             config[k] = v
 
     def runX(self, exe, usearg, dirpath, config):
-        if config.get(self.use_which, 0) == 1:
+        if config.get(self.use_which, 0) == 0:
 
             valid = os.path.exists(globalconfig.get("lr_extra_path", ""))
             if valid:
