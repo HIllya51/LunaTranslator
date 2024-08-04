@@ -293,6 +293,8 @@ class commonsolveevent(QWidget):
 
 
 def disablecolor(__: QColor):
+    if __.rgb() == 0xFF000000:
+        return Qt.GlobalColor.gray
     __ = QColor(
         max(0, (__.red() - 64)),
         max(

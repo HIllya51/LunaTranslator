@@ -706,12 +706,11 @@ class searchwordW(closeashidewindow):
         self.vboxlayout.addLayout(self.searchlayout)
         self.searchtext = QLineEdit1()
         self.searchtext.textChanged.connect(self.ankiwindow.reset)
-
-        self.history_last_btn = QPushButton(qtawesome.icon("fa.arrow-left"), "")
+        self.history_last_btn = statusbutton(icons=["fa.arrow-left", "fa.arrow-left"], colors=["", ""])
         self.history_last_btn.clicked.connect(
             functools.partial(self.__move_history_search, -1)
         )
-        self.history_next_btn = QPushButton(qtawesome.icon("fa.arrow-right"), "")
+        self.history_next_btn = statusbutton(icons=["fa.arrow-right", "fa.arrow-right"], colors=["", ""])
         self.history_next_btn.clicked.connect(
             functools.partial(self.__move_history_search, 1)
         )
@@ -723,6 +722,7 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(self.history_next_btn)
         self.searchlayout.addWidget(self.searchtext)
         searchbutton = QPushButton(qtawesome.icon("fa.search"), "")
+        self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
 
         searchbutton.clicked.connect(self.__search_by_click_search_btn)
         self.searchlayout.addWidget(searchbutton)
