@@ -25,6 +25,7 @@
 - [文本处理&翻译优化](/zh/textprocess.redirect)
     - [各种文本处理方法的作用和用法](/zh/textprocess.md)
     - [各种翻译优化的作用](/zh/transoptimi.md)
+- [语音合成](/zh/ttsofname.md)
 - [分词&辞书](/zh/qa1.redirect)
     - [如何使用Mecab分词&词性颜色标注](/zh/qa1.md) 
     - [Anki集成](/zh/qa2.md)
