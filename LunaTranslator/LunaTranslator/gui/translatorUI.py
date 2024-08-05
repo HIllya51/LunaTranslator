@@ -691,6 +691,7 @@ class QUnFrameWindow(resizableframeless):
             windows.ShowWindow(self.winid, windows.SW_SHOWNOACTIVATE)
         else:
             self.show()
+        gobject.baseobject.commonstylebase.hide()
 
     def aftershowdosomething(self):
 
