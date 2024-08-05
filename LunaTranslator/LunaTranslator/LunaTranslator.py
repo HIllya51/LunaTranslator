@@ -238,12 +238,12 @@ class MAINUI:
         except:
             pass
         if onlytrans == False:
-            self.dispatchoutputer(text)
             self.currenttext = text
             self.currenttranslate = ""
             if globalconfig["read_raw"]:
                 self.currentread = text
-                self.readcurrent()
+                text = self.readcurrent(needresult=True)
+            self.dispatchoutputer(text)
 
         self.transhis.getnewsentencesignal.emit(text)
         self.maybesetedittext(text)
@@ -536,10 +536,10 @@ class MAINUI:
         return None
 
     @threader
-    def readcurrent(self, force=False):
+    def __readcurrent(self, text1, text2, force=False):
         if (not force) and (not globalconfig["autoread"]):
             return
-        matchitme = self.ttsskip(self.currentread, self.__usewhich())
+        matchitme = self.ttsskip(text1, self.__usewhich())
         reader = None
         if matchitme is None:
             reader = self.reader
@@ -565,8 +565,17 @@ class MAINUI:
                         self.specialreaders[(engine, voice)] = -1
         if reader is None:
             return
-        text = self.ttsrepair(self.currentread, self.__usewhich())
-        reader.read(text, force)
+        if text2 is None:
+            text2 = self.ttsrepair(text1, self.__usewhich())
+        reader.read(text2, force)
+
+    def readcurrent(self, force=False, needresult=False):
+        if needresult:
+            text = self.ttsrepair(self.currentread, self.__usewhich())
+            self.__readcurrent(self.currentread, text, force)
+            return text
+        else:
+            self.__readcurrent(self.currentread, None, force)
 
     def loadreader(self, use, voicelistsignal=None, privateconfig=None, init=True):
         if voicelistsignal is None:
