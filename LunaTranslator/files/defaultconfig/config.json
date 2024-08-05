@@ -1940,6 +1940,11 @@
             "type": "pre",
             "color": "blue",
             "name": "实时编辑"
+        },
+        "chatmiko": {
+            "use": false,
+            "color": "blue",
+            "name": "chatmiko"
         }
     },
     "ZoomFactor": 1,
