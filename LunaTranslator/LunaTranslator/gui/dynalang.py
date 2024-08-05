@@ -152,6 +152,14 @@ class LFormLayout(QFormLayout):
                 argc = text, widget
         super().addRow(*argc)
 
+    def insertRow(self, row, *argc):
+        if len(argc) == 2:
+            text, widget = argc
+            if isinstance(text, str):
+                text = LLabel(text)
+                argc = text, widget
+        super().insertRow(row, *argc)
+
 
 class LDialog(QDialog):
 
@@ -167,7 +175,7 @@ class LDialog(QDialog):
         if self._title:
             super().setWindowTitle(_TR(self._title))
 
-    
+
 class LMainWindow(QMainWindow):
 
     def __init__(self, *argc, **kwarg):

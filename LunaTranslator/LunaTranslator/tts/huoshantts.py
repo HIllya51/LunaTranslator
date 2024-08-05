@@ -6,7 +6,7 @@ from tts.basettsclass import TTSbase
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        return [
+        _= [
             "jp_male_satoshi",
             "jp_female_mai",
             "zh_male_rap",
@@ -20,8 +20,9 @@ class TTS(TTSbase):
             "en_male_bob",
             "en_female_sarah",
         ]
+        return _, _
 
-    def speak(self, content, rate, voice, voiceidx):
+    def speak(self, content, rate, voice):
 
         headers = {
             "authority": "translate.volcengine.com",

@@ -1088,7 +1088,6 @@
             "name": "VOICEVOX",
             "type": "offline",
             "args": {
-                "path": "",
                 "Port": 50021
             },
             "argstype": {
@@ -1098,11 +1097,6 @@
                     "max": 65535,
                     "step": 1,
                     "name": "端口号"
-                },
-                "path": {
-                    "type": "file",
-                    "name": "路径",
-                    "dir": true
                 }
             }
         },

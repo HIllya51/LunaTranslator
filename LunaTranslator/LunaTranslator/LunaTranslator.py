@@ -68,6 +68,7 @@ class MAINUI:
         self.translators = {}
         self.cishus = {}
         self.reader = None
+        self.specialreaders = {}
         self.textsource_p = None
         self.currentmd5 = "0"
         self.currenttext = ""
@@ -496,7 +497,7 @@ class MAINUI:
             text = parsemayberegexreplace(usedict["tts_repair_regex"], text)
         return text
 
-    def guessmaybeskip(self, dic: dict, res: str):
+    def matchwhich(self, dic: dict, res: str):
 
         for item in dic:
             if item["regex"]:
@@ -505,11 +506,11 @@ class MAINUI:
                 )
                 if item["condition"] == 1:
                     if re.search(retext, res):
-                        return True
+                        return item
                 elif item["condition"] == 0:
                     if re.match(retext, res) or re.search(retext + "$", res):
                         # 用^xxx|xxx$有可能有点危险
-                        return True
+                        return item
             else:
                 if item["condition"] == 1:
                     if (
@@ -520,55 +521,78 @@ class MAINUI:
                         resx = res.split(" ")
                         for i in range(len(resx)):
                             if resx[i] == item["key"]:
-                                return True
+                                return item
                     else:
                         if item["key"] in res:
-                            return True
+                            return item
                 elif item["condition"] == 0:
                     if res.startswith(item["key"]) or res.endswith(item["key"]):
-                        return True
-        return False
+                        return item
+        return None
 
-    def ttsskip(self, text, usedict):
+    def ttsskip(self, text, usedict) -> dict:
         if usedict["tts_skip"]:
-            return self.guessmaybeskip(usedict["tts_skip_regex"], text)
-        return False
+            return self.matchwhich(usedict["tts_skip_regex"], text)
+        return None
 
     @threader
     def readcurrent(self, force=False):
-        if not self.reader:
+        if (not force) and (not globalconfig["autoread"]):
             return
-        if not (force or globalconfig["autoread"]):
-            return
-        if (not force) and self.ttsskip(self.currentread, self.__usewhich()):
+        matchitme = self.ttsskip(self.currentread, self.__usewhich())
+        reader = None
+        if matchitme is None:
+            reader = self.reader
+        else:
+            target = matchitme.get("target", "default")
+            if target == "default":
+                reader = self.reader
+            elif target == "skip":
+                if not force:
+                    return
+                reader = self.reader
+            else:
+                engine, voice, _ = target
+                reader = self.specialreaders.get((engine, voice), None)
+                if reader == -1:
+                    reader = self.reader
+                elif reader is None:
+                    try:
+                        reader = self.loadreader(engine, privateconfig={"voice": voice})
+                        self.specialreaders[(engine, voice)] = reader
+                    except:
+                        reader = self.reader
+                        self.specialreaders[(engine, voice)] = -1
+        if reader is None:
             return
         text = self.ttsrepair(self.currentread, self.__usewhich())
-        self.reader.read(text, force)
+        reader.read(text, force)
+
+    def loadreader(self, use, voicelistsignal=None, privateconfig=None, init=True):
+        if voicelistsignal is None:
+            voicelistsignal = self.settin_ui.voicelistsignal
+        aclass = importlib.import_module("tts." + use).TTS
+        obj = aclass(use, voicelistsignal, self.audioplayer.play, privateconfig, init)
+        return obj
 
     @threader
     def startreader(self, use=None, checked=True):
-        try:
-            self.reader.end()
-        except:
-            pass
+
         self.reader = None
-        self.settin_ui.voicelistsignal.emit([], -1)
-        if checked:
-            if use is None:
-
-                for key in globalconfig["reader"]:
-                    if globalconfig["reader"][key]["use"] and os.path.exists(
-                        ("./LunaTranslator/tts/" + key + ".py")
-                    ):
-                        use = key
-                        break
-            if use:
-                aclass = importlib.import_module("tts." + use).TTS
-
-                self.reader_usevoice = use
-                self.reader = aclass(
-                    use, self.settin_ui.voicelistsignal, self.audioplayer.play
-                )
+        self.settin_ui.voicelistsignal.emit(None)
+        if not checked:
+            return
+        if use is None:
+            for key in globalconfig["reader"]:
+                if globalconfig["reader"][key]["use"] and os.path.exists(
+                    ("./LunaTranslator/tts/" + key + ".py")
+                ):
+                    use = key
+                    break
+        if not use:
+            return
+        self.reader = self.loadreader(use)
+        self.reader_usevoice = use
 
     def selectprocess(self, selectedp, title):
         self.textsource = None
@@ -899,57 +923,6 @@ class MAINUI:
             )
         except:
             pass
-        self.migrate_info()
-
-    @threader
-    def migrate_info(self):
-        for k in savehook_new_data:
-            self.migrate_traceplaytime_v2(k)
-            self.migrate_vndbtags(k)
-            self.migrate_images(k)
-
-    def migrate_traceplaytime_v2(self, k):
-
-        if "traceplaytime_v2" not in savehook_new_data[k]:
-            return
-        traceplaytime_v2 = savehook_new_data[k].get("traceplaytime_v2", [])
-        for slice in traceplaytime_v2.copy():
-            self.traceplaytime(k, slice[0], slice[1], True)
-            savehook_new_data[k]["traceplaytime_v2"].pop(0)
-        savehook_new_data[k].pop("traceplaytime_v2")
-
-    def migrate_vndbtags(self, k):
-        def getvndbrealtags(vndbtags_naive):
-            vndbtagdata = tryreadconfig("vndbtagdata.json")
-            vndbtags = []
-            for tagid in vndbtags_naive:
-                if tagid in vndbtagdata:
-                    vndbtags.append(vndbtagdata[tagid])
-            return vndbtags
-
-        if "vndbtags" not in savehook_new_data[k]:
-            return
-        vndbtags = savehook_new_data[k].get("vndbtags", [])
-        vndbtags = getvndbrealtags(vndbtags)
-        savehook_new_data[k]["webtags"] = vndbtags
-        savehook_new_data[k].pop("vndbtags")
-
-    def migrate_images(self, k):
-
-        if (
-            "imagepath" not in savehook_new_data[k]
-            and "imagepath_much2" not in savehook_new_data[k]
-        ):
-            return
-        single = savehook_new_data[k].get("imagepath", None)
-        much = savehook_new_data[k].get("imagepath_much2", [])
-        __ = []
-        if single:
-            __.append(single)
-        __ += much
-        savehook_new_data[k]["imagepath_all"] = __
-        savehook_new_data[k].pop("imagepath")
-        savehook_new_data[k].pop("imagepath_much2")
 
     def querytraceplaytime_v4(self, gameuid):
         gameinternalid = self.get_gameinternalid(uid2gamepath[gameuid])

@@ -777,7 +777,6 @@
     "安装": "Installation",
     "延申": "Yanshin",
     "进入时才显示": "Ne s'affiche qu'à l'entrée",
-    "语音跳过": "Voix skip",
     "条件": "Conditions",
     "指定人名翻译": "Nom de la personne désignée traduction",
     "专有名词翻译": "Traduction de noms propres",
@@ -845,5 +844,9 @@
     "识别方向": "Identification des directions",
     "横向": "Latéralement",
     "竖向": "Verticalement",
-    "自适应": "Adaptatif"
+    "自适应": "Adaptatif",
+    "清除": "Effacer",
+    "语音指定": "Désignation vocale",
+    "指定为": "Désigné comme",
+    "跳过": "Sauter"
 }

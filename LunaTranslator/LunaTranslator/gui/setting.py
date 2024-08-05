@@ -65,7 +65,7 @@ class TabWidget(QWidget):
 
 
 class Setting(closeashidewindow):
-    voicelistsignal = pyqtSignal(list, int)
+    voicelistsignal = pyqtSignal(object)
     versiontextsignal = pyqtSignal(str)
     progresssignal = pyqtSignal(str, int)
     showandsolvesig = pyqtSignal(str)

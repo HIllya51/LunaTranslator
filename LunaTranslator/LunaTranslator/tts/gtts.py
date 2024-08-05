@@ -603,8 +603,8 @@ from myutils.utils import getlangsrc
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        return [""]
+        return [""], [""]
 
-    def speak(self, content, rate, voice, voiceidx):
+    def speak(self, content, rate, voice):
         tts = gTTS(self, content, lang=getlangsrc())
         return tts.save()

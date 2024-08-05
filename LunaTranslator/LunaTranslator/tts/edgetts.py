@@ -14,13 +14,13 @@ from tts.basettsclass import TTSbase
 class TTS(TTSbase):
 
     def getvoicelist(self):
-        self.alllist = requests.get(
+        alllist = requests.get(
             "https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4",
             proxies=self.proxy,
         ).json()
-        return [_["ShortName"] for _ in self.alllist]
+        return [_["ShortName"] for _ in alllist], [_["ShortName"] for _ in alllist]
 
-    def speak(self, content, rate, voice, voiceidx):
+    def speak(self, content, rate, voice):
         return transferMsTTSData(rate, content, voice, self.proxy)
 
 

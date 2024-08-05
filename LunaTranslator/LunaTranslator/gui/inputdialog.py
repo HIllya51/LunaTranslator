@@ -1,10 +1,11 @@
 from qtsymbols import *
 import functools, importlib
 from traceback import print_exc
-import qtawesome
+import qtawesome, os, gobject
 from myutils.config import globalconfig, _TR
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton_close
+from tts.basettsclass import getvisidx
 from gui.usefulwidget import (
     MySwitch,
     selectcolor,
@@ -82,7 +83,6 @@ class noundictconfigdialog1(LDialog):
 
     def __init__(self, parent, reflist, title, label) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.label = label
         self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
         self.reflist = reflist
@@ -181,19 +181,107 @@ class noundictconfigdialog1(LDialog):
         self.apply()
 
 
+class voiceselect(LDialog):
+    voicelistsignal = pyqtSignal(object)
+
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self.setWindowTitle("选择声音")
+        self.setWindowFlags(
+            self.windowFlags()
+            & ~Qt.WindowContextHelpButtonHint
+            & ~Qt.WindowType.WindowCloseButtonHint
+            | Qt.WindowStaysOnTopHint
+        )
+        _layout = LFormLayout(self)
+
+        button = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        button.accepted.connect(self.accept)
+        button.rejected.connect(self.reject)
+
+        self.engine_vis = []
+        self.engine_internal = []
+        for name in globalconfig["reader"]:
+
+            _f = "./LunaTranslator/tts/{}.py".format(name)
+            if os.path.exists(_f) == False:
+                continue
+            self.engine_vis.append(globalconfig["reader"][name]["name"])
+            self.engine_internal.append(name)
+        self.datas = {
+            "engine": self.engine_internal[0],
+            "voice": "",
+            "vis": "",
+            "visx": "",
+        }
+        combo = getsimplecombobox(
+            self.engine_vis,
+            self.datas,
+            "engine",
+            internal=self.engine_internal,
+            callback=self.__engine_cb,
+        )
+        _layout.addRow("引擎", combo)
+        self._layout = _layout
+        combo.currentIndexChanged.emit(combo.currentIndex())
+        _layout.addRow(button)
+        self.voicelistsignal.connect(self.loadedvoice)
+        self.object = None
+        self.lastwidget = None
+
+    def loadedvoice(self, obj):
+        vl, idx = getvisidx(obj)
+        self.datas["voice"] = obj.voice
+        if self._layout.rowCount() == 3:
+            self._layout.removeRow(1)
+        if len(vl) == 0:
+            return
+        voices = getsimplecombobox(
+            vl,
+            self.datas,
+            "voice",
+            internal=obj.voicelist,
+            callback=functools.partial(self._selectvoice, obj),
+        )
+        self._layout.insertRow(1, "语音", voices)
+        voices.currentIndexChanged.emit(voices.currentIndex())
+
+    def _selectvoice(self, obj, internal):
+        vis = obj.voiceshowlist[obj.voicelist.index(internal)]
+        self.datas["vis"] = self.datas["visx"] + " " + vis
+
+    def __engine_cb(self, internal):
+        self.datas["visx"] = self.engine_vis[self.engine_internal.index(internal)]
+        self.datas["vis"] = self.datas["visx"]
+        try:
+            self.object = gobject.baseobject.loadreader(internal, self.voicelistsignal, init=False)
+        except:
+
+            if self._layout.rowCount() == 3:
+                self._layout.removeRow(1)
+
+
 @Singleton_close
-class noundictconfigdialog2(LDialog):
+class yuyinzhidingsetting(LDialog):
     def newline(self, row, item):
 
         self.model.insertRow(
             row,
-            [QStandardItem(), QStandardItem(), QStandardItem(item["key"])],
+            [
+                QStandardItem(),
+                QStandardItem(),
+                QStandardItem(item["key"]),
+                QStandardItem(),
+            ],
         )
         self.table.setIndexWidget(
             self.model.index(row, 0), getsimpleswitch(item, "regex")
         )
         com = getsimplecombobox(["首尾", "包含"], item, "condition")
         self.table.setIndexWidget(self.model.index(row, 1), com)
+        self.table.setIndexWidget(self.model.index(row, 3), self.createacombox(item))
 
     def showmenu(self, table: TableViewW, _):
         r = table.currentIndex().row()
@@ -222,7 +310,12 @@ class noundictconfigdialog2(LDialog):
         item = self.reflist.pop(curr.row())
         self.reflist.insert(
             target,
-            {"key": texts[1], "condition": item["condition"], "regex": item["regex"]},
+            {
+                "key": texts[1],
+                "condition": item["condition"],
+                "regex": item["regex"],
+                "target": item["target"],
+            },
         )
 
         model.removeRow(curr.row())
@@ -233,20 +326,67 @@ class noundictconfigdialog2(LDialog):
         )
         com = getsimplecombobox(["首尾", "包含"], item, "condition")
         table.setIndexWidget(self.model.index(target, 1), com)
+        table.setIndexWidget(self.model.index(target, 3), self.createacombox(item))
 
-    def __init__(self, parent, reflist, title, label) -> None:
+    def createacombox(self, config):
+        com = LFocusCombo()
+        com.addItems(["跳过", "默认", "选择声音"])
+        target = config.get("target", "skip")
+        if target == "skip":
+            com.setCurrentIndex(0)
+        elif target == "default":
+            com.setCurrentIndex(1)
+        else:
+            ttsklass, ttsvoice, voicename = target
+            com.addItem(voicename)
+            com.setCurrentIndex(3)
+        com.currentIndexChanged.connect(
+            functools.partial(self.__comchange, com, config)
+        )
+        return com
+
+    def __comchange(self, com: LFocusCombo, config, idx):
+        if idx == 0:
+            config["target"] = "skip"
+            if com.count() > 3:
+                com.removeItem(com.count() - 1)
+        elif idx == 1:
+            config["target"] = "default"
+            if com.count() > 3:
+                com.removeItem(com.count() - 1)
+        elif idx == 2:
+            voice = voiceselect(self)
+            if voice.exec():
+                config["target"] = (
+                    voice.datas["engine"],
+                    voice.datas["voice"],
+                    voice.datas["vis"],
+                )
+                com.blockSignals(True)
+                com.clear()
+                com.addItems(["跳过", "默认", "选择声音", voice.datas["vis"]])
+                com.setCurrentIndex(3)
+                com.blockSignals(False)
+            else:
+                com.setCurrentIndex(1)
+
+    def __init__(self, parent, reflist) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.label = label
-        self.setWindowTitle(title)
+
+        self.setWindowTitle("语音指定")
+
         # self.setWindowModality(Qt.ApplicationModal)
         self.reflist = reflist
         formLayout = QVBoxLayout(self)  # 配置layout
 
         self.model = LStandardItemModel()
-        self.model.setHorizontalHeaderLabels(label)
+        self.model.setHorizontalHeaderLabels(["正则", "条件", "目标", "指定为"])
         table = TableViewW(self)
         table.setModel(self.model)
         table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        table.horizontalHeader().setSectionResizeMode(
+            3, QHeaderView.ResizeMode.ResizeToContents
+        )
         table.horizontalHeader().setSectionResizeMode(
             1, QHeaderView.ResizeMode.ResizeToContents
         )
@@ -286,7 +426,9 @@ class noundictconfigdialog2(LDialog):
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
 
         def clicked1():
-            self.reflist.insert(0, {"key": "", "condition": 0, "regex": False})
+            self.reflist.insert(
+                0, {"key": "", "condition": 0, "regex": False, "target": "skip"}
+            )
 
             self.newline(0, self.reflist[0])
 

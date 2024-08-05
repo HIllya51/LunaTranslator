@@ -41,7 +41,7 @@ from myutils.audioplayer import player_mci
 from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     noundictconfigdialog1,
-    noundictconfigdialog2,
+    yuyinzhidingsetting,
     autoinitdialog,
     autoinitdialog_items,
     postconfigdialog,
@@ -1052,16 +1052,13 @@ class dialog_setting_game_internal(QWidget):
         )
 
         formLayout2.addRow(
-            "语音跳过",
+            "语音指定",
             getboxlayout(
                 [
                     getsimpleswitch(savehook_new_data[gameuid], "tts_skip"),
                     getIconButton(
-                        callback=lambda: noundictconfigdialog2(
-                            self,
-                            savehook_new_data[gameuid]["tts_skip_regex"],
-                            "语音跳过",
-                            ["正则", "条件", "内容"],
+                        callback=lambda: yuyinzhidingsetting(
+                            self, savehook_new_data[gameuid]["tts_skip_regex"]
                         ),
                         icon="fa.gear",
                     ),

@@ -24,9 +24,9 @@ class TTS(TTSbase):
 
             for _ in needremove:
                 self._7.remove(_)
-        return self._7 + self._10
+        return (self._7 + self._10), (self._7 + self._10)
 
-    def speak(self, content, rate, voice, voice_idx):
+    def speak(self, content, rate, voice):
         if voice in self._10m:
             version = 10
             voice_idx = self._10m[voice]

@@ -67,19 +67,6 @@ class TS(basetrans):
             )
         return True
 
-    def packuint32(self, i):  # int -> str
-        return bytes(
-            chr((i >> 24) & 0xFF)
-            + chr((i >> 16) & 0xFF)
-            + chr((i >> 8) & 0xFF)
-            + chr(i & 0xFF),
-            encoding="latin-1",
-        )
-
-    def unpackuint32(self, s):  #
-        print(s)
-        return ((s[0]) << 24) | ((s[1]) << 16) | ((s[2]) << 8) | (s[3])
-
     def x64(self, content: str):
         if self.tgtlang not in ["936", "950"]:
             return ""
@@ -93,7 +80,8 @@ class TS(basetrans):
             if len(line) == 0:
                 continue
             code1 = line.encode("utf-16-le")
-            windows.WriteFile(self.hPipe, self.packuint32(int(self.tgtlang)) + code1)
+            windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(int(self.tgtlang))))
+            windows.WriteFile(self.hPipe, code1)
             xx = windows.ReadFile(self.hPipe, 65535)
             xx = xx.decode("utf-16-le", errors="ignore")
             ress.append(xx)

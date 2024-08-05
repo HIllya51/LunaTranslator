@@ -1,16 +1,12 @@
 import requests
-import time, os
 from tts.basettsclass import TTSbase
 
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        return ["ja", "zh", "en"]
+        return ["ja", "zh", "en"], ["Japanese","Chinese","English"]
 
-    def voiceshowmap(self, voice):
-        return {"ja": "Japanese", "zh": "Chinese", "en": "English"}[voice]
-
-    def speak(self, content, rate, voice, voiceidx):
+    def speak(self, content, rate, voice):
 
         headers = {
             "Accept": "*/*",

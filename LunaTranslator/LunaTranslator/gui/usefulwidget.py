@@ -728,7 +728,6 @@ def comboboxcallbackwrap(internal, d, k, call, _):
             print_exc()
 
 
-@tryprint
 def getsimplecombobox(
     lst, d, k, callback=None, fixedsize=False, internal=None, static=False, emit=False
 ):
@@ -740,18 +739,20 @@ def getsimplecombobox(
     s.addItems(lst)
 
     if internal:
-        if (k not in d) or (d[k] not in internal):
-            d[k] = internal[0]
+        if len(internal):
+            if (k not in d) or (d[k] not in internal):
+                d[k] = internal[0]
 
-        s.setCurrentIndex(internal.index(d[k]))
+            s.setCurrentIndex(internal.index(d[k]))
         s.currentIndexChanged.connect(
             functools.partial(comboboxcallbackwrap, internal, d, k, callback)
         )
     else:
-        if (k not in d) or (d[k] >= len(lst)):
-            d[k] = 0
+        if len(lst):
+            if (k not in d) or (d[k] >= len(lst)):
+                d[k] = 0
 
-        s.setCurrentIndex(d[k])
+            s.setCurrentIndex(d[k])
         s.currentIndexChanged.connect(functools.partial(callbackwrap, d, k, callback))
     if fixedsize:
         s.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -1743,6 +1744,9 @@ class listediter(LDialog):
             table.customContextMenuRequested.connect(self.showmenu)
             self.hctable = table
             self.internalrealname = []
+            formLayout = QVBoxLayout()
+            self.setLayout(formLayout)
+            formLayout.addWidget(self.hctable)
             for row, k in enumerate(lst):  # 2
                 try:
                     if namemapfunction:
@@ -1752,9 +1756,20 @@ class listediter(LDialog):
                 self.internalrealname.append(k)
                 if namemapfunction:
                     k = namemapfunction(k)
-                self.hcmodel.insertRow(row, [QStandardItem(k)])
-            formLayout = QVBoxLayout()
-            formLayout.addWidget(self.hctable)
+                item = QStandardItem(k)
+                self.hcmodel.insertRow(row, [item])
+
+                if candidates:
+                    combo = LFocusCombo()
+                    _vis = self.candidates
+                    if self.namemapfunction:
+                        _vis = [self.namemapfunction(_) for _ in _vis]
+                    combo.addItems(_vis)
+                    combo.setCurrentIndex(self.candidates.index(lst[row]))
+                    combo.currentIndexChanged.connect(
+                        functools.partial(self.__changed, item)
+                    )
+                    self.hctable.setIndexWidget(self.hcmodel.index(row, 0), combo)
             if isrankeditor:
                 self.buttons = threebuttons(texts=["上移", "下移"])
                 self.buttons.btn1clicked.connect(functools.partial(self.moverank, -1))
@@ -1771,7 +1786,6 @@ class listediter(LDialog):
                 self.buttons.btn4clicked.connect(functools.partial(self.moverank, 1))
 
             formLayout.addWidget(self.buttons)
-            self.setLayout(formLayout)
             self.resize(600, self.sizeHint().height())
             self.show()
         except:
@@ -1811,28 +1825,23 @@ class listediter(LDialog):
 
     def __cb(self, paths):
         for path in paths:
-            self.internalrealname.insert(0, paths)
+            self.internalrealname.insert(0, path)
             self.hcmodel.insertRow(0, [QStandardItem(path)])
 
-    def __changed(self, idx):
-        self.internalrealname[self.hctable.currentIndex().row()] = self.candidates[idx]
+    def __changed(self, item: QStandardItem, idx):
+        self.internalrealname[item.row()] = self.candidates[idx]
 
     def click1(self):
         if self.candidates:
-            if len(self.internalrealname):
-                _vis = self.internalrealname[0]
-                self.hctable.setIndexWidget(self.hcmodel.index(0, 0), None)
-                if self.namemapfunction:
-                    _vis = self.namemapfunction(_vis)
-                self.hcmodel.setItem(0, 0, QStandardItem(_vis))
             self.internalrealname.insert(0, self.candidates[0])
-            self.hcmodel.insertRow(0, [QStandardItem("")])
+            item = QStandardItem("")
+            self.hcmodel.insertRow(0, [item])
             combo = LFocusCombo()
             _vis = self.candidates
             if self.namemapfunction:
                 _vis = [self.namemapfunction(_) for _ in _vis]
             combo.addItems(_vis)
-            combo.currentIndexChanged.connect(self.__changed)
+            combo.currentIndexChanged.connect(functools.partial(self.__changed, item))
             self.hctable.setIndexWidget(self.hcmodel.index(0, 0), combo)
         elif self.ispathsedit is None:
             self.internalrealname.insert(0, "")
@@ -1920,8 +1929,10 @@ def getsimplepatheditor(
         e.setReadOnly(True)
         if useiconbutton:
             bu = getIconButton(icon="fa.gear")
+            clear = getIconButton(icon="fa.remove")
         else:
             bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
+            clear = LPushButton("清除")
         bu.clicked.connect(
             functools.partial(
                 openfiledirectory,
@@ -1933,8 +1944,15 @@ def getsimplepatheditor(
                 callback,
             )
         )
+
+        def __(_cb, _e):
+            _cb("")
+            _e.setText("")
+
+        clear.clicked.connect(functools.partial(__, callback, e))
         lay.addWidget(e)
         lay.addWidget(bu)
+        lay.addWidget(clear)
     return lay
 
 

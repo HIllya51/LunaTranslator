@@ -777,7 +777,6 @@
     "安装": "Instalación",
     "延申": "Extensión",
     "进入时才显示": "Se muestra al entrar",
-    "语音跳过": "Salto de voz",
     "条件": "Condiciones",
     "指定人名翻译": "Traducción de nombre designado",
     "专有名词翻译": "Traducción de términos propios",
@@ -845,5 +844,9 @@
     "识别方向": "Identificar la dirección",
     "横向": "Horizontal",
     "竖向": "Vertical",
-    "自适应": "Autoadaptación"
+    "自适应": "Autoadaptación",
+    "清除": "Eliminar",
+    "语音指定": "Designación de voz",
+    "指定为": "Designado como",
+    "跳过": "Saltar"
 }

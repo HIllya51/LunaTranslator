@@ -779,7 +779,6 @@
     "安装": "installeren",
     "延申": "Yanshen.",
     "进入时才显示": "Alleen weergegeven bij binnenkomst",
-    "语音跳过": "Stem overslaan",
     "条件": "conditie",
     "指定人名翻译": "Vertaling van aangewezen naam",
     "专有名词翻译": "Vertaling van eigendomstermen",
@@ -845,5 +844,9 @@
     "识别方向": "Identificeer richting",
     "横向": "dwars",
     "竖向": "verticaal",
-    "自适应": "zelfaanpassing"
+    "自适应": "zelfaanpassing",
+    "清除": "elimineren",
+    "语音指定": "Stembepaling",
+    "指定为": "Aangeduid als",
+    "跳过": "overslaan"
 }

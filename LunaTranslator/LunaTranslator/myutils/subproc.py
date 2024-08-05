@@ -5,7 +5,7 @@ allsubprocess2 = {}
 
 
 class autoproc:
-    def __init__(self, proc) -> None:
+    def __init__(self, proc: subprocess.Popen) -> None:
         self.proc = proc
 
     def __del__(self):
@@ -15,7 +15,9 @@ class autoproc:
             pass
 
 
-def subproc_w(cmd, cwd=None, needstdio=False, name=None, encoding=None, run=False):
+def subproc_w(
+    cmd, cwd=None, needstdio=False, name=None, encoding=None, run=False
+) -> subprocess.Popen:
 
     _pipe = subprocess.PIPE if needstdio else None
     startupinfo = subprocess.STARTUPINFO()

@@ -777,7 +777,6 @@
     "安装": "Kur",
     "延申": "Uzantı",
     "进入时才显示": "Sadece giriş üzerinde gösterilir",
-    "语音跳过": "Ses atlama",
     "条件": "durum",
     "指定人名翻译": "Tasarlanmış İsim Çevirmesi",
     "专有名词翻译": "Özel terimlerin çevirimi",
@@ -845,5 +844,9 @@
     "识别方向": "Doğru belirle",
     "横向": "transverse",
     "竖向": "dikey",
-    "自适应": "kendi uygulama"
+    "自适应": "kendi uygulama",
+    "清除": "sil",
+    "语音指定": "Ses tasarımı",
+    "指定为": "Şöyle tasarlanmıştır",
+    "跳过": "atla"
 }

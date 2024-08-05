@@ -779,7 +779,6 @@
     "安装": "installieren",
     "延申": "Yanshen",
     "进入时才显示": "Nur bei Eingabe angezeigt",
-    "语音跳过": "Sprachüberspringen",
     "条件": "Zustand",
     "指定人名翻译": "Übersetzung benannter Namen",
     "专有名词翻译": "Übersetzung von geschützten Begriffen",
@@ -845,5 +844,9 @@
     "识别方向": "Richtung bestimmen",
     "横向": "quer",
     "竖向": "vertikal",
-    "自适应": "Selbstanpassung"
+    "自适应": "Selbstanpassung",
+    "清除": "eliminieren",
+    "语音指定": "Sprachbezeichnung",
+    "指定为": "Bestimmt als",
+    "跳过": "überspringen"
 }

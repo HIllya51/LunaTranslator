@@ -4,23 +4,9 @@
 
 #define CODEPAGE_BIG5 950
 
-UINT unpackuint32(unsigned char *s)
-{
-    int i = 0;
-    return ((s[i]) << 24) | ((s[i + 1]) << 16) | ((s[i + 2]) << 8) | (s[i + 3]);
-}
-void packuint32(UINT i, unsigned char *b)
-{
-    b[0] = (i >> 24) & 0xff;
-    b[1] = (i >> 16) & 0xff;
-    b[2] = (i >> 8) & 0xff;
-    b[3] = (i) & 0xff;
-}
-
 int jbjwmain(int argc, wchar_t *argv[])
 {
     HANDLE hPipe = CreateNamedPipe(argv[2], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-
 
     // system("chcp 932");
     HMODULE module = LoadLibraryW(argv[1]);
@@ -50,7 +36,7 @@ int jbjwmain(int argc, wchar_t *argv[])
     wchar_t *fr = new wchar_t[3000];
     wchar_t *to = new wchar_t[3000];
     wchar_t *buf = new wchar_t[3000];
-    
+
     SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[3]));
     if (ConnectNamedPipe(hPipe, NULL) != NULL)
     {
@@ -64,13 +50,10 @@ int jbjwmain(int argc, wchar_t *argv[])
         memset(buf, 0, 3000 * sizeof(wchar_t));
         int a = 3000;
         int b = 3000;
-        char codec[4] = {0};
         UINT code;
         DWORD _;
 
-        ReadFile(hPipe, intcache, 4, &_, NULL);
-
-        code = unpackuint32(intcache);
+        ReadFile(hPipe, &code, 4, &_, NULL);
 
         if (!ReadFile(hPipe, (unsigned char *)fr, 6000, &_, NULL))
             break;

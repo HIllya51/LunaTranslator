@@ -779,7 +779,6 @@
     "安装": "installera",
     "延申": "Yanshen",
     "进入时才显示": "Visas endast vid inmatning",
-    "语音跳过": "Rösthoppande",
     "条件": "tillstånd",
     "指定人名翻译": "Översättning av betecknat namn",
     "专有名词翻译": "Översättning av egendomsbenämningar",
@@ -845,5 +844,9 @@
     "识别方向": "Identifiera riktning",
     "横向": "tvärgående",
     "竖向": "vertikal",
-    "自适应": "självanpassning"
+    "自适应": "självanpassning",
+    "清除": "eliminera",
+    "语音指定": "Röstbeteckning",
+    "指定为": "Utnämnd som",
+    "跳过": "hoppa över"
 }

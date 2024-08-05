@@ -777,7 +777,6 @@
     "安装": "Cài đặt",
     "延申": "Dương Thân",
     "进入时才显示": "Hiển thị khi vào",
-    "语音跳过": "Bỏ qua giọng nói",
     "条件": "Điều kiện",
     "指定人名翻译": "Name",
     "专有名词翻译": "Bản dịch của proprietary noun",
@@ -845,5 +844,9 @@
     "识别方向": "Xác định hướng",
     "横向": "Phong cảnh",
     "竖向": "Dọc",
-    "自适应": "Thích ứng"
+    "自适应": "Thích ứng",
+    "清除": "Xoá",
+    "语音指定": "Chỉ định giọng nói",
+    "指定为": "Xác định là",
+    "跳过": "Bỏ qua"
 }

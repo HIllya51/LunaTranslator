@@ -1,12 +1,13 @@
 from qtsymbols import *
 import os, functools
 import gobject
+from tts.basettsclass import getvisidx
 from myutils.config import globalconfig, static_data
 from gui.inputdialog import (
     autoinitdialog_items,
     noundictconfigdialog1,
     autoinitdialog,
-    noundictconfigdialog2,
+    yuyinzhidingsetting,
 )
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -19,7 +20,8 @@ from gui.usefulwidget import (
 )
 
 
-def showvoicelist(self, vl, idx):
+def showvoicelist(self, obj):
+    vl, idx = getvisidx(obj)
     try:
         self.voicecombo.blockSignals(True)
         self.voicecombo.clear()
@@ -205,14 +207,11 @@ def setTab5lz(self):
                             ),
                         ],
                         [
-                            "语音跳过",
+                            "语音指定",
                             D_getsimpleswitch(globalconfig["ttscommon"], "tts_skip"),
                             D_getIconButton(
-                                callback=lambda: noundictconfigdialog2(
-                                    self,
-                                    globalconfig["ttscommon"]["tts_skip_regex"],
-                                    "语音跳过",
-                                    ["正则", "条件", "内容"],
+                                callback=lambda: yuyinzhidingsetting(
+                                    self, globalconfig["ttscommon"]["tts_skip_regex"]
                                 ),
                                 icon="fa.gear",
                             ),

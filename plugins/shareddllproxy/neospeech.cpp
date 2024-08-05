@@ -26,8 +26,6 @@ int neospeechlist(int argc, wchar_t *argv[])
 }
 int neospeech(int argc, wchar_t *argv[])
 {
-    auto hkey = argv[4];
-    auto idx = std::stoi(argv[5]);
 
     HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
@@ -41,12 +39,11 @@ int neospeech(int argc, wchar_t *argv[])
     {
         DWORD len = 0;
     }
-    int II = 0;
+    wchar_t text[10000];
+    DWORD _;
     while (true)
     {
-        wchar_t text[10000];
-        II += 1;
-        DWORD _;
+        ZeroMemory(text, sizeof(text));
         int speed;
         if (!ReadFile(hPipe, (unsigned char *)&speed, 4, &_, NULL))
             break;
@@ -54,7 +51,15 @@ int neospeech(int argc, wchar_t *argv[])
             break;
         std::wstring content = text;
         int fsize;
-        auto data = std::move(_Speak(content, hkey, idx, speed, 100));
+        ZeroMemory(text, sizeof(text));
+        if (!ReadFile(hPipe, (unsigned char *)text, 10000 * 2, &_, NULL))
+            break;
+        std::wstring hkey = text;
+        int idx;
+        if (!ReadFile(hPipe, &idx, 4, &_, NULL))
+            break;
+        ZeroMemory(text, sizeof(text));
+        auto data = std::move(_Speak(content, hkey.c_str(), idx, speed, 100));
         if (data)
         {
             memcpy(mapview, data.value().data(), data.value().size());

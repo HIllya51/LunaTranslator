@@ -1,30 +1,10 @@
 import time
-import os
 import requests, json
 from traceback import print_exc
 from tts.basettsclass import TTSbase
 
-from myutils.subproc import subproc_w, autoproc
-
 
 class TTS(TTSbase):
-
-    def init(self):
-        for cwd in (
-            self.config["path"],
-            os.path.join(self.config["path"], "vv-engine"),
-        ):
-            run = os.path.join(cwd, "run.exe")
-            if os.path.exists(run) == False:
-                return
-            self.engine = autoproc(
-                subproc_w(
-                    run,
-                    cwd=cwd,
-                    name="voicevox",
-                )
-            )
-            break
 
     def getvoicelist(self):
         while True:
@@ -53,32 +33,27 @@ class TTS(TTSbase):
                     proxies={"http": None, "https": None},
                 ).json()
                 print(response)
-                # self.voicelist=[_['name'] for _ in response]
-                # return self.voicelist
-                voicedict = {}
+                vis=[]
+                idxs=[]
                 for speaker in response:
+                    name=speaker['name']
                     styles = speaker["styles"]
                     for style in styles:
-                        voicedict[style["id"]] = "%s(%s)" % (
-                            speaker["name"],
-                            style["name"],
-                        )
-                self.voicelist = [
-                    "%02d %s" % (i, voicedict[i]) for i in range(len(voicedict))
-                ]
-                return self.voicelist
+                        idxs.append(style['id'])
+                        vis.append(name+ ' '+ style["name"])
+                
+                return idxs, vis
             except:
                 print_exc()
                 time.sleep(1)
             break
 
-    def speak(self, content, rate, voice, voiceidx):
-
+    def speak(self, content, rate, voice):
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
-        params = {"speaker": voiceidx, "text": content}
+        params = {"speaker": voice, "text": content}
 
         response = requests.post(
             f"http://localhost:{self.config['Port']}/audio_query",
@@ -87,12 +62,11 @@ class TTS(TTSbase):
             proxies={"http": None, "https": None},
         )
         print(response.json())
-        fname = str(time.time())
         headers = {
             "Content-Type": "application/json",
         }
         params = {
-            "speaker": voiceidx,
+            "speaker": voice,
         }
         response = requests.post(
             f"http://localhost:{self.config['Port']}/synthesis",

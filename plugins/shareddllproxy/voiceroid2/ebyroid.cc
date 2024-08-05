@@ -299,9 +299,6 @@ namespace ebyroid
         param->lenRawBufBytes = kConfigRawbufSize;
 
         param->volume = volume;
-        auto f = fopen(R"(C:\Users\wcy\source\repos\ConsoleApplication1\Release\2.txt)", "wb");
-        fwrite(param, 1, param_size, f);
-        fclose(f);
         result = adapter->SetParam(param);
         printf("SetParam ok %d\n", result);
         if (result != ERR_SUCCESS)
