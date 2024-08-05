@@ -21,6 +21,13 @@
     "network_websocket": 1,
     "webview_textbrowser": false,
     "imagewrapmode": 0,
+    "global_regexrepair": [
+        {
+            "regex": true,
+            "key": "(.*?)「",
+            "value": ""
+        }
+    ],
     "primitivtemetaorigin": "vid",
     "rendertext_using": "textbrowser",
     "rendertext_using_internal": {
@@ -334,6 +341,7 @@
     "cishuvisrank": [],
     "ignoredict": [],
     "transoptimi": {
+        "regexrepair": false,
         "noundict": false,
         "gptpromptdict": false,
         "transerrorfix": false,
