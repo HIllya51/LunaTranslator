@@ -203,7 +203,7 @@ def setTab5lz(self):
                                     globalconfig,
                                     "read_translator",
                                 ),
-                                4,
+                                0,
                             ),
                         ],
                         [
@@ -229,10 +229,10 @@ def setTab5lz(self):
                                 icon="fa.gear",
                             ),
                             "",
-                            "作用于翻译",
                             D_getsimpleswitch(
                                 globalconfig["ttscommon"], "tts_repair_use_at_translate"
                             ),
+                            "作用于翻译",
                         ],
                     ],
                 ),
