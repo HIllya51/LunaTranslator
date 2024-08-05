@@ -242,7 +242,14 @@ class MAINUI:
             self.currenttranslate = ""
             if globalconfig["read_raw"]:
                 self.currentread = text
-                text = self.readcurrent(needresult=True)
+                which = self.__usewhich()
+                if which.get(
+                    "tts_repair_use_at_translate",
+                    globalconfig["ttscommon"]["tts_repair_use_at_translate"],
+                ):
+                    text = self.readcurrent(needresult=True)
+                else:
+                    self.readcurrent()
             self.dispatchoutputer(text)
 
         self.transhis.getnewsentencesignal.emit(text)

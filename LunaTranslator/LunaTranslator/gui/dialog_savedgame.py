@@ -1050,7 +1050,8 @@ class dialog_setting_game_internal(QWidget):
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid], "tts_follow_default", formLayout
         )
-
+        if 'tts_repair_use_at_translate' not in savehook_new_data[gameuid]:
+            savehook_new_data[gameuid]['tts_repair_use_at_translate']=globalconfig["ttscommon"]["tts_repair"]
         formLayout2.addRow(
             "语音指定",
             getboxlayout(
@@ -1083,6 +1084,8 @@ class dialog_setting_game_internal(QWidget):
                         icon="fa.gear",
                     ),
                     QLabel(),
+                    LLabel('作用于翻译'),
+                    getsimpleswitch(savehook_new_data[gameuid], "tts_repair_use_at_translate"),
                 ],
                 margin0=True,
                 makewidget=True,
