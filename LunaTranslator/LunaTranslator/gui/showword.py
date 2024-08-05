@@ -21,6 +21,8 @@ from gui.usefulwidget import (
     getlineedit,
     listediter,
     listediterline,
+    FQPlainTextEdit,
+    FQLineEdit,
     getsimpleswitch,
     makesubtab_lazy,
     getIconButton,
@@ -171,9 +173,9 @@ class AnkiWindow(QWidget):
                 margin0=True,
             )
         )
-        self.fronttext = QPlainTextEdit1()
-        self.backtext = QPlainTextEdit1()
-        self.csstext = QPlainTextEdit1()
+        self.fronttext = FQPlainTextEdit()
+        self.backtext = FQPlainTextEdit()
+        self.csstext = FQPlainTextEdit()
         edittemptab.addTab(self.fronttext, "正面")
         edittemptab.addTab(self.backtext, "背面")
         edittemptab.addTab(self.csstext, "样式")
@@ -375,14 +377,14 @@ class AnkiWindow(QWidget):
         self.editpath.setReadOnly(True)
         self.viewimagelabel = QLabel()
         self.editpath.textChanged.connect(self.wrappedpixmap)
-        self.example = QPlainTextEdit1()
+        self.example = FQPlainTextEdit()
         self.example.hiras = None
 
         def __():
             self.example.hiras = None
 
         self.example.textChanged.connect(__)
-        self.remarks = QPlainTextEdit1()
+        self.remarks = FQPlainTextEdit()
         recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=["", ""])
         recordbtn1.statuschanged.connect(
             functools.partial(self.startorendrecord, self.audiopath)
@@ -649,18 +651,6 @@ class CustomTabBar(LTabBar):
         return self.savesizehint
 
 
-class QLineEdit1(QLineEdit):
-    def mousePressEvent(self, a0: QMouseEvent) -> None:
-        # 点击浏览器后，无法重新获取焦点。
-        windows.SetFocus(int(self.winId()))
-        return super().mousePressEvent(a0)
-
-class QPlainTextEdit1(QPlainTextEdit):
-    def mousePressEvent(self, a0: QMouseEvent) -> None:
-        # 点击浏览器后，无法重新获取焦点。
-        windows.SetFocus(int(self.winId()))
-        return super().mousePressEvent(a0)
-
 
 class searchwordW(closeashidewindow):
     search_word = pyqtSignal(str, bool)
@@ -725,7 +715,7 @@ class searchwordW(closeashidewindow):
         ww.setLayout(self.vboxlayout)
         self.searchlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchlayout)
-        self.searchtext = QLineEdit1()
+        self.searchtext = FQLineEdit()
         self.searchtext.textChanged.connect(self.ankiwindow.reset)
         self.history_last_btn = statusbutton(
             icons=["fa.arrow-left", "fa.arrow-left"], colors=["", ""]

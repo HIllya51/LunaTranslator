@@ -77,7 +77,7 @@ from gui.usefulwidget import (
     tabadd_lazy,
     getsimpleswitch,
     threebuttons,
-    getsimplekeyseq,
+    FQLineEdit,
     getspinbox,
     selectcolor,
     listediter,
@@ -346,7 +346,7 @@ class TagWidget(QWidget):
         self.setLayout(layout)
 
         self.lineEdit = FocusCombo()
-        self.lineEdit.setLineEdit(QLineEdit())
+        self.lineEdit.setLineEdit(FQLineEdit())
 
         self.lineEdit.lineEdit().returnPressed.connect(
             lambda: self.linepressedenter.emit(self.lineEdit.currentText())

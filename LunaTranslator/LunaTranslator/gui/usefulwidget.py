@@ -2086,3 +2086,17 @@ def clearlayout(ll: QLayout):
             clearlayout(l)
             l.deleteLater()
             continue
+
+
+class FQPlainTextEdit(QPlainTextEdit):
+    def mousePressEvent(self, a0: QMouseEvent) -> None:
+        # 点击浏览器后，无法重新获取焦点。
+        windows.SetFocus(int(self.winId()))
+        return super().mousePressEvent(a0)
+
+
+class FQLineEdit(QLineEdit):
+    def mousePressEvent(self, a0: QMouseEvent) -> None:
+        # 点击浏览器后，无法重新获取焦点。
+        windows.SetFocus(int(self.winId()))
+        return super().mousePressEvent(a0)
