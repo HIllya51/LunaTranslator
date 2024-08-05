@@ -265,15 +265,6 @@
             tag.forEach(word => {
                 let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
 
-                if (word.orig.trim().length == 0) {
-                    if (isshowhira) {
-                        let rt = document.createElement('rt')
-                        rt.appendChild(eleori)
-                        eleori = rt
-                    }
-                    mayberuby.push(eleori)
-                    return
-                }
                 if (isshow_fenci || isfenciclick) {
                     let div = document.createElement('div')
                     div.style.display = 'inline-block'
