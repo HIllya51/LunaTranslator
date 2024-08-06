@@ -30,7 +30,7 @@ def showvoicelist(self, obj):
     vl = obj.voiceshowlist
     idx = obj.voicelist.index(obj.voice)
     try:
-        
+
         self.voicecombo.clear()
         self.voicecombo.addItems(vl)
         self.voicecombo.setCurrentIndex(idx)
@@ -186,7 +186,9 @@ def setTab5lz(self):
                     grid=[
                         [
                             "自动朗读",
-                            D_getsimpleswitch(globalconfig, "autoread"),
+                            D_getsimpleswitch(
+                                globalconfig, "autoread", name="autoread", parent=self
+                            ),
                         ],
                         [
                             "不被打断",

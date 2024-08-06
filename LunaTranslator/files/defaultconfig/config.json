@@ -1033,6 +1033,11 @@
                 "use": false,
                 "name": "画廊_录音",
                 "keystring": ""
+            },
+            "_32": {
+                "use": false,
+                "name": "自动朗读",
+                "keystring": ""
             }
         }
     },

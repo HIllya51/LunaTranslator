@@ -310,6 +310,7 @@ def disablecolor(__: QColor):
 
 class MySwitch(commonsolveevent):
     clicked = pyqtSignal(bool)
+    clicksignal = pyqtSignal()
 
     def click(self):
         self.setChecked(not self.checked)
@@ -325,7 +326,7 @@ class MySwitch(commonsolveevent):
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.checked = sign
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-
+        self.clicksignal.connect(self.click)
         self.__currv = 0
         if sign:
             self.__currv = 20

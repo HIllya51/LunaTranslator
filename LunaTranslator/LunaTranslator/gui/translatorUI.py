@@ -471,7 +471,7 @@ class QUnFrameWindow(resizableframeless):
     def btnsetontopfunction(self):
         try:
 
-            gobject.baseobject.settin_ui.keepontopbutton.click()
+            gobject.baseobject.settin_ui.keepontopbutton.clicksignal.emit()
         except:
             globalconfig["keepontop"] = not globalconfig["keepontop"]
 
@@ -886,7 +886,7 @@ class QUnFrameWindow(resizableframeless):
     def setselectable(self):
 
         try:
-            gobject.baseobject.settin_ui.selectable_btn.click()
+            gobject.baseobject.settin_ui.selectable_btn.clicksignal.emit()
         except:
             globalconfig["selectable"] = not globalconfig["selectable"]
             self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
@@ -1042,7 +1042,7 @@ class QUnFrameWindow(resizableframeless):
         if idx == 0:
 
             try:
-                gobject.baseobject.settin_ui.mousetransbutton.click()
+                gobject.baseobject.settin_ui.mousetransbutton.clicksignal.emit()
             except:
                 globalconfig["mousetransparent"] = not globalconfig["mousetransparent"]
                 self.mousetransparent_check()
@@ -1072,7 +1072,7 @@ class QUnFrameWindow(resizableframeless):
 
     def changeshowhideraw(self):
         try:
-            gobject.baseobject.settin_ui.show_original_switch.click()
+            gobject.baseobject.settin_ui.show_original_switch.clicksignal.emit()
         except:
             globalconfig["isshowrawtext"] = not globalconfig["isshowrawtext"]
             self.refreshtoolicon()
@@ -1083,7 +1083,7 @@ class QUnFrameWindow(resizableframeless):
 
     def changetoolslockstate(self):
         try:
-            gobject.baseobject.settin_ui.locktoolsbutton.click()
+            gobject.baseobject.settin_ui.locktoolsbutton.clicksignal.emit()
         except:
             globalconfig["locktools"] = not globalconfig["locktools"]
             self.refreshtoolicon()

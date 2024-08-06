@@ -26,6 +26,13 @@ def maybesetreferlabels(self, name, text):
         self.referlabels_data[name] = text
 
 
+def autoreadswitch(self):
+    try:
+        self.autoread.clicksignal.emit()
+    except:
+        globalconfig["autoread"] = not globalconfig["autoread"]
+
+
 def registrhotkeys(self):
     self.hotkeymanager = SystemHotkey()
     self.referlabels = {}
@@ -65,6 +72,7 @@ def registrhotkeys(self):
         "_29": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn1.click(),
         "_30": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn2.click(),
         "_31": lambda: gobject.baseobject.hualang_recordbtn.click(),
+        "_32": functools.partial(autoreadswitch, self),
     }
     for name in globalconfig["quick_setting"]["all"]:
         if name not in self.bindfunctions:
@@ -89,9 +97,7 @@ def setTab_quick_lazy(self):
             ),
         ]
     ]
-    for name in globalconfig["quick_setting"]["all"]:
-        if name not in self.bindfunctions:
-            continue
+    for name in self.bindfunctions:
 
         grids.append(
             [

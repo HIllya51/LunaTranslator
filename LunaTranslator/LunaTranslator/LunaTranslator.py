@@ -577,16 +577,17 @@ class MAINUI:
                 reader = self.reader
             else:
                 engine, voice, _ = target
-                reader = self.specialreaders.get((engine, voice), None)
+                key = str((engine, voice))  # voice可能是list，无法hash
+                reader = self.specialreaders.get(key, None)
                 if reader == -1:
                     reader = self.reader
                 elif reader is None:
                     try:
                         reader = self.loadreader(engine, privateconfig={"voice": voice})
-                        self.specialreaders[(engine, voice)] = reader
+                        self.specialreaders[key] = reader
                     except:
                         reader = self.reader
-                        self.specialreaders[(engine, voice)] = -1
+                        self.specialreaders[key] = -1
         if reader is None:
             return
         if text2 is None:
