@@ -431,7 +431,13 @@ class browserdialog(saveposwindow):
             for link in savehook_new_data[self.gameuid]["relationlinks"]:
                 items.append((link[0], tagitem.TYPE_GAME_LIKE, link[1]))
         if len(items) == 0:
-            items.append(("Luna", tagitem.TYPE_GLOABL_LIKE, static_data["main_server"]))
+            items.append(
+                (
+                    "Luna",
+                    tagitem.TYPE_GLOABL_LIKE,
+                    static_data["main_server"][gobject.serverindex],
+                )
+            )
         self.tagswidget.clearTag(False)
         self.tagswidget.addTags(items)
 

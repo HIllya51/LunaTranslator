@@ -67,3 +67,6 @@ def testuseqwebengine():
     return os.path.exists(
         "./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"
     ) or (len(sys.argv) and sys.argv[-1] == "test")
+
+
+serverindex = 0

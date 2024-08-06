@@ -3,7 +3,7 @@ import platform, functools, sys
 import winsharedutils, queue
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader, tryprint
-from myutils.utils import makehtml, dynamiclink, getlanguse
+from myutils.utils import makehtml, getlanguse, dynamiclink
 import requests
 import shutil, gobject
 from myutils.proxy import getproxy
@@ -16,21 +16,51 @@ from gui.dynalang import LLabel
 versionchecktask = queue.Queue()
 
 
-def getvesionmethod():
+def tryqueryfromhost():
+
+    for i, main_server in enumerate(static_data["main_server"]):
+        try:
+            res = requests.get(
+                "{main_server}/version".format(main_server=main_server),
+                verify=False,
+                proxies=getproxy(("github", "versioncheck")),
+            )
+            res = res.json()
+            gobject.serverindex = i
+            _version = res["version"]
+
+            return _version, res
+        except:
+            print_exc()
+
+
+def tryqueryfromgithub():
+
+    res = requests.get(
+        "https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest",
+        verify=False,
+        proxies=getproxy(("github", "versioncheck")),
+    )
+    link = {
+        "64": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip",
+        "32": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip",
+    }
+    return res.json()["tag_name"], link
+
+
+def trygetupdate():
+    if platform.architecture()[0] == "64bit":
+        bit = "64"
+    elif platform.architecture()[0] == "32bit":
+        bit = "32"
     try:
-        res = requests.get(
-            dynamiclink("{main_server}/version"),
-            verify=False,
-            proxies=getproxy(("github", "versioncheck")),
-        )
-        print(res.text)
-        res = res.json()
-        # print(res)
-        _version = res["version"]
-        return _version, res
+        version, links = tryqueryfromhost()
     except:
-        print_exc()
-        return None
+        try:
+            version, links = tryqueryfromgithub()
+        except:
+            return None
+    return version, links[bit]
 
 
 def doupdate():
@@ -46,7 +76,10 @@ def doupdate():
         rf".\files\plugins\shareddllproxy{_6432}.exe",
         gobject.getcachedir("Updater.exe"),
     )
-    subprocess.Popen(rf".\cache\Updater.exe update .\cache\update\LunaTranslator{bit}")
+    subprocess.Popen(
+        rf".\cache\Updater.exe update .\cache\update\LunaTranslator{bit} "
+        + dynamiclink("{main_server}")
+    )
 
 
 def updatemethod_checkalready(size, savep):
@@ -59,20 +92,13 @@ def updatemethod_checkalready(size, savep):
 
 
 @tryprint
-def updatemethod(info, self):
+def updatemethod(url, self):
 
     check_interrupt = lambda: not (
         globalconfig["autoupdate"] and versionchecktask.empty()
     )
-    if platform.architecture()[0] == "64bit":
-        bit = "64"
-    elif platform.architecture()[0] == "32bit":
-        bit = "32"
-    else:
-        raise Exception
-    url = info[bit]
 
-    savep = gobject.getcachedir("update/LunaTranslator{}.zip".format(bit))
+    savep = gobject.getcachedir("update/" + url.split("/")[-1])
 
     r2 = requests.head(url, verify=False, proxies=getproxy(("github", "download")))
     size = int(r2.headers["Content-Length"])
@@ -125,7 +151,7 @@ def versioncheckthread(self):
         if not x:
             continue
         self.versiontextsignal.emit("获取中")  # ,'',url,url))
-        _version = getvesionmethod()
+        _version = trygetupdate()
 
         if _version is None:
             sversion = "获取失败"
