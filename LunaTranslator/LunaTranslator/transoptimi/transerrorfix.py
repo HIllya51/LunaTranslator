@@ -2,6 +2,8 @@ from myutils.config import transerrorfixdictconfig, savehook_new_data
 from myutils.utils import parsemayberegexreplace, postusewhich
 from gui.inputdialog import noundictconfigdialog1
 import gobject
+from myutils.config import uid2gamepath
+from myutils.hwnd import getExeIcon
 
 
 class Process:
@@ -22,7 +24,7 @@ class Process:
             savehook_new_data[gameuid]["transerrorfix"],
             "翻译结果修正_设置",
             ["正则", "翻译", "替换"],
-        )
+        ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
 
     def process_after(self, res, mp1):
         res = parsemayberegexreplace(self.usewhich(), res)

@@ -1,12 +1,13 @@
 from myutils.config import noundictconfig, savehook_new_data
-import gobject, re, functools, winsharedutils, json
+import gobject, re, functools
 from qtsymbols import *
 from traceback import print_exc
-import gobject
 from gui.usefulwidget import threebuttons, TableViewW
 from myutils.wrapper import Singleton_close
 from myutils.utils import postusewhich
 from gui.dynalang import LDialog, LLabel, LPushButton, LStandardItemModel, LAction
+from myutils.config import uid2gamepath
+from myutils.hwnd import getExeIcon
 
 
 @Singleton_close
@@ -336,13 +337,11 @@ class Process:
 
     @staticmethod
     def get_setting_window_gameprivate(parent_window, gameuid):
-        return (
-            noundictconfigdialog_private(
-                parent_window,
-                savehook_new_data[gameuid]["noundictconfig"],
-                "专有名词翻译_占位符",
-            ),
-        )
+        return noundictconfigdialog_private(
+            parent_window,
+            savehook_new_data[gameuid]["noundictconfig"],
+            "专有名词翻译_占位符",
+        ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
 
     @staticmethod
     def get_setting_window(parent_window):

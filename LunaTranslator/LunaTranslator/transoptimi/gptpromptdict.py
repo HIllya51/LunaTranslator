@@ -1,7 +1,8 @@
-from myutils.config import globalconfig, savehook_new_data
+from myutils.config import globalconfig, savehook_new_data, uid2gamepath
 from myutils.utils import postusewhich
 from gui.inputdialog import postconfigdialog_
 import gobject
+from myutils.hwnd import getExeIcon
 
 
 class Process:
@@ -23,7 +24,7 @@ class Process:
             "专有名词翻译_sakura_gpt_词典",
             ["原文", "翻译", "注释"],
             dictkeys=["src", "dst", "info"],
-        )
+        ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
 
     def process_before(self, japanese):
 

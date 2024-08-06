@@ -1,8 +1,8 @@
-from myutils.config import savehook_new_data, globalconfig
-import gobject, json, functools
-from traceback import print_exc
-from gui.inputdialog import postconfigdialog_
+from myutils.config import globalconfig, savehook_new_data, uid2gamepath
 from myutils.utils import postusewhich
+from gui.inputdialog import postconfigdialog_
+import gobject, json, functools
+from myutils.hwnd import getExeIcon
 
 
 class Process:
@@ -33,7 +33,7 @@ class Process:
             "专有名词翻译_直接替换_设置",
             ["原文", "翻译"],
             closecallback=functools.partial(checkchange, gameuid, __),
-        )
+        ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
 
     @property
     def using_X(self):
