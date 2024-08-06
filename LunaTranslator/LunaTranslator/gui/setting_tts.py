@@ -1,7 +1,6 @@
 from qtsymbols import *
 import os, functools
 import gobject
-from tts.basettsclass import getvisidx
 from myutils.config import globalconfig, static_data
 from gui.inputdialog import (
     autoinitdialog_items,
@@ -21,23 +20,30 @@ from gui.usefulwidget import (
 
 
 def showvoicelist(self, obj):
-    vl, idx = getvisidx(obj)
+
+    if obj is None:
+        try:
+            self.voicecombo.clear()
+        except:
+            pass
+        return
+    vl = obj.voiceshowlist
+    idx = obj.voicelist.index(obj.voice)
     try:
-        self.voicecombo.blockSignals(True)
+        
         self.voicecombo.clear()
         self.voicecombo.addItems(vl)
-        if idx >= 0:
-            self.voicecombo.setCurrentIndex(idx)
-        self.voicecombo.blockSignals(False)
+        self.voicecombo.setCurrentIndex(idx)
     except:
         self.voicecombo_cache = vl, idx
 
 
 def changevoice(self, text):
-
-    globalconfig["reader"][gobject.baseobject.reader_usevoice]["voice"] = (
-        gobject.baseobject.reader.voicelist[self.voicecombo.currentIndex()]
-    )
+    if gobject.baseobject.reader is None:
+        return
+    gobject.baseobject.reader.voice = gobject.baseobject.reader.voicelist[
+        self.voicecombo.currentIndex()
+    ]
 
 
 def createvoicecombo(self):
@@ -71,7 +77,9 @@ def getttsgrid(self):
             continue
         if "args" in globalconfig["reader"][name]:
             items = autoinitdialog_items(globalconfig["reader"][name])
-            items[-1]["callback"] = gobject.baseobject.startreader
+            items[-1]["callback"] = functools.partial(
+                gobject.baseobject.startreader, name, True, True
+            )
             _3 = D_getIconButton(
                 callback=functools.partial(
                     autoinitdialog,

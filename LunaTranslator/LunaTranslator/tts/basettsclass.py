@@ -37,32 +37,31 @@ class TTSbase:
     @property
     def voice(self):
         _v = self.privateconfig["voice"]
-        if len(self.voicelist) == 0:
-            return None
         if _v not in self.voicelist:
             _v = self.voicelist[0]
         return _v
 
+    @voice.setter
+    def voice(self, v):
+        self.privateconfig["voice"] = v
+
     ########################
 
     def __init__(
-        self,
-        typename,
-        voicelistsignal,
-        playaudiofunction,
-        privateconfig=None,
-        init=True,
+        self, typename, playaudiofunction, privateconfig=None, init=True, uid=None
     ) -> None:
         self.typename = typename
-        self.voicelistsignal = voicelistsignal
         self.playaudiofunction = playaudiofunction
-
+        self.uid = uid
         if privateconfig is None:
             self.privateconfig = globalconfig["reader"][self.typename]
         else:
             self.privateconfig = privateconfig
         self.voicelist, self.voiceshowlist = self.getvoicelist()
-        voicelistsignal.emit(self)
+        if len(self.voicelist) != len(self.voiceshowlist):
+            raise
+        if len(self.voicelist) == 0:
+            raise
         if init:
             self.init()
 
@@ -87,16 +86,3 @@ class TTSbase:
         except:
             print_exc()
             return
-
-
-def getvisidx(obj: TTSbase):
-    if obj is None:
-        vl = []
-        idx = -1
-    else:
-        vl = obj.voiceshowlist
-        if obj.voice:
-            idx = obj.voicelist.index(obj.voice)
-        else:
-            idx = -1
-    return vl, idx

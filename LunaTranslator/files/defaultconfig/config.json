@@ -1037,6 +1037,12 @@
         }
     },
     "reader": {
+        "windowstts": {
+            "use": false,
+            "voice": "",
+            "name": "WindowsTTS",
+            "type": "offline"
+        },
         "huoshantts": {
             "use": false,
             "voice": "",
@@ -1053,12 +1059,6 @@
             "voice": "",
             "name": "有道TTS",
             "useproxy": false
-        },
-        "windowstts": {
-            "use": false,
-            "voice": "",
-            "name": "WindowsTTS",
-            "type": "offline"
         },
         "NeoSpeech": {
             "use": false,
@@ -1106,35 +1106,14 @@
             "name": "vits-simple-api",
             "type": "offline",
             "args": {
-                "Port": 23456,
-                "preset": "",
-                "整合包_CPU": "{main_server}/Resource/IntegrationPack/vits-simple-api/cpu",
-                "整合包_GPU": "{main_server}/Resource/IntegrationPack/vits-simple-api/gpu"
-            },
-            "argstype": {
-                "Port": {
-                    "type": "intspin",
-                    "min": 1,
-                    "max": 65535,
-                    "step": 1,
-                    "name": "端口号"
-                },
-                "整合包_CPU": {
-                    "type": "label",
-                    "islink": true
-                },
-                "整合包_GPU": {
-                    "type": "label",
-                    "islink": true
-                },
-                "preset": {
-                    "name": "GPT-SOVITS preset"
-                }
+                "URL": "http://127.0.0.1:23456",
+                "voices": "/voice/speakers",
+                "speak": "/voice/{model_lower}?text={text}&id={id}&lang=auto&prompt_lang=auto&format=wav&preset=default"
             }
         },
         "gtts": {
             "use": false,
-            "name": "谷歌",
+            "name": "GoogleTTS",
             "voice": ""
         }
     },

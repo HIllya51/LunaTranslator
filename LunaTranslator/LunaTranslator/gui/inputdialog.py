@@ -5,7 +5,6 @@ import qtawesome, os, gobject
 from myutils.config import globalconfig, _TR
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton_close
-from tts.basettsclass import getvisidx
 from gui.usefulwidget import (
     MySwitch,
     selectcolor,
@@ -212,7 +211,7 @@ class voiceselect(LDialog):
             self.engine_internal.append(name)
         self.datas = {
             "engine": self.engine_internal[0],
-            "voice": "",
+            "voice": None,
             "vis": "",
             "visx": "",
         }
@@ -232,12 +231,10 @@ class voiceselect(LDialog):
         self.lastwidget = None
 
     def loadedvoice(self, obj):
-        vl, idx = getvisidx(obj)
-        self.datas["voice"] = obj.voice
+        vl = obj.voiceshowlist
         if self._layout.rowCount() == 3:
             self._layout.removeRow(1)
-        if len(vl) == 0:
-            return
+        self.datas["voice"] = obj.voice
         voices = getsimplecombobox(
             vl,
             self.datas,
@@ -255,8 +252,10 @@ class voiceselect(LDialog):
     def __engine_cb(self, internal):
         self.datas["visx"] = self.engine_vis[self.engine_internal.index(internal)]
         self.datas["vis"] = self.datas["visx"]
+        self.datas["voice"] = None
         try:
-            self.object = gobject.baseobject.loadreader(internal, self.voicelistsignal, init=False)
+            self.object = gobject.baseobject.loadreader(internal, init=False)
+            self.voicelistsignal.emit(self.object)
         except:
 
             if self._layout.rowCount() == 3:
@@ -357,6 +356,9 @@ class yuyinzhidingsetting(LDialog):
         elif idx == 2:
             voice = voiceselect(self)
             if voice.exec():
+                if voice.datas["voice"] is None:
+                    com.setCurrentIndex(1)
+                    return
                 config["target"] = (
                     voice.datas["engine"],
                     voice.datas["voice"],

@@ -67,7 +67,6 @@ class MAINUI:
         self.lasttranslatorindex = 0
         self.translators = {}
         self.cishus = {}
-        self.reader = None
         self.specialreaders = {}
         self.textsource_p = None
         self.currentmd5 = "0"
@@ -90,6 +89,24 @@ class MAINUI:
         self.sqlsavegameinfo = None
         self.notifyonce = set()
         self.audioplayer = series_audioplayer()
+        self._internal_reader = None
+        self.reader_uid = None
+
+    @property
+    def reader(self):
+        return self._internal_reader
+
+    @reader.setter
+    def reader(self, _):
+        if _ is None:
+            self._internal_reader = None
+            self.reader_uid = None
+            self.settin_ui.voicelistsignal.emit(None)
+        else:
+            if self.reader_uid != _.uid:
+                return
+            self._internal_reader = _
+            self.settin_ui.voicelistsignal.emit(_)
 
     @property
     def textsource(self):
@@ -584,31 +601,42 @@ class MAINUI:
         else:
             self.__readcurrent(self.currentread, None, force)
 
-    def loadreader(self, use, voicelistsignal=None, privateconfig=None, init=True):
-        if voicelistsignal is None:
-            voicelistsignal = self.settin_ui.voicelistsignal
+    def loadreader(self, use, privateconfig=None, init=True, uid=None):
         aclass = importlib.import_module("tts." + use).TTS
-        obj = aclass(use, voicelistsignal, self.audioplayer.play, privateconfig, init)
+        if uid is None:
+            uid = uuid.uuid4()
+        obj = aclass(use, self.audioplayer.play, privateconfig, init, uid)
         return obj
 
-    @threader
-    def startreader(self, use=None, checked=True):
+    def __reader_usewhich(self):
 
-        self.reader = None
-        self.settin_ui.voicelistsignal.emit(None)
+        for key in globalconfig["reader"]:
+            if globalconfig["reader"][key]["use"] and os.path.exists(
+                ("./LunaTranslator/tts/" + key + ".py")
+            ):
+                return key
+        return None
+
+    @threader
+    def startreader(self, use=None, checked=True, setting=False):
+        if setting:
+            if use != self.__reader_usewhich():
+                return
+            self.reader = None
+            self.reader_uid = uuid.uuid4()
+            self.reader = self.loadreader(use, uid=self.reader_uid)
+            return
         if not checked:
+            self.reader = None
             return
         if use is None:
-            for key in globalconfig["reader"]:
-                if globalconfig["reader"][key]["use"] and os.path.exists(
-                    ("./LunaTranslator/tts/" + key + ".py")
-                ):
-                    use = key
-                    break
+            use = self.__reader_usewhich()
         if not use:
+            self.reader = None
             return
-        self.reader = self.loadreader(use)
-        self.reader_usevoice = use
+        self.reader = None
+        self.reader_uid = uuid.uuid4()
+        self.reader = self.loadreader(use, uid=self.reader_uid)
 
     def selectprocess(self, selectedp, title):
         self.textsource = None
