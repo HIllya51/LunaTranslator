@@ -33,27 +33,15 @@ class noundictconfigdialog(LDialog):
 
         if action == up:
 
-            self.moverank(table, -1)
+            table.moverank(-1)
 
         elif action == down:
-            self.moverank(table, 1)
+            table.moverank(1)
         elif action == copy:
             table.copytable()
 
         elif action == paste:
             table.pastetable()
-
-    def moverank(self, table: TableViewW, dy):
-        curr = table.currentIndex()
-        target = (curr.row() + dy) % table.model().rowCount()
-        texts = [
-            table.model().item(curr.row(), i).text()
-            for i in range(table.model().columnCount())
-        ]
-
-        table.model().removeRow(curr.row())
-        table.model().insertRow(target, [QStandardItem(text) for text in texts])
-        table.setCurrentIndex(table.model().index(target, curr.column()))
 
     def apply(self):
         rows = self.model.rowCount()
@@ -116,22 +104,9 @@ class noundictconfigdialog(LDialog):
                 )
 
         button.btn1clicked.connect(clicked1)
-
-        def clicked2():
-
-            skip = []
-            for index in self.table.selectedIndexes():
-                if index.row() in skip:
-                    continue
-                skip.append(index.row())
-            skip = reversed(sorted(skip))
-
-            for row in skip:
-                model.removeRow(row)
-
-        button.btn2clicked.connect(clicked2)
-        button.btn3clicked.connect(functools.partial(self.moverank, table, -1))
-        button.btn4clicked.connect(functools.partial(self.moverank, table, 1))
+        button.btn2clicked.connect(self.table.removeselectedrows)
+        button.btn3clicked.connect(functools.partial(table.moverank, -1))
+        button.btn4clicked.connect(functools.partial(table.moverank, 1))
 
         button.btn5clicked.connect(self.apply)
 
@@ -196,10 +171,10 @@ class noundictconfigdialog_private(LDialog):
 
         if action == up:
 
-            self.moverank(table, -1)
+            table.moverank(-1)
 
         elif action == down:
-            self.moverank(table, 1)
+            table.moverank(1)
 
         elif action == copy:
             table.copytable()
@@ -207,30 +182,15 @@ class noundictconfigdialog_private(LDialog):
         elif action == paste:
             table.pastetable()
 
-    def moverank(self, table: TableViewW, dy):
-        curr = table.currentIndex()
-        target = (curr.row() + dy) % table.model().rowCount()
-        texts = [
-            table.model().item(curr.row(), i).text()
-            for i in range(table.model().columnCount())
-        ]
-
-        table.model().removeRow(curr.row())
-        table.model().insertRow(target, [QStandardItem(text) for text in texts])
-        table.setCurrentIndex(table.model().index(target, curr.column()))
-
     def apply(self):
+        self.table.dedumpmodel(0)
         rows = self.model.rowCount()
         self.configdict.clear()
-        _dedump = set()
+
         for row in range(rows):
             k, v = self.model.item(row, 0).text(), self.model.item(row, 1).text()
-            if k == "":
-                continue
-            if k in _dedump:
-                continue
+
             self.configdict.append([k, v])
-            _dedump.add(k)
 
     def __init__(
         self, parent, configdict, title, label=["原文", "翻译"], _=None
@@ -260,29 +220,10 @@ class noundictconfigdialog_private(LDialog):
         )
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         self.table = table
-
-        def clicked1():
-
-            model.insertRow(0, [QStandardItem(), QStandardItem()])
-
-        button.btn1clicked.connect(clicked1)
-
-        def clicked2():
-
-            skip = []
-            for index in self.table.selectedIndexes():
-                if index.row() in skip:
-                    continue
-                skip.append(index.row())
-            skip = reversed(sorted(skip))
-
-            for row in skip:
-                model.removeRow(row)
-
-        button.btn2clicked.connect(clicked2)
-        button.btn3clicked.connect(functools.partial(self.moverank, table, -1))
-        button.btn4clicked.connect(functools.partial(self.moverank, table, 1))
-
+        button.btn1clicked.connect(table.insertplainrow)
+        button.btn2clicked.connect(table.removeselectedrows)
+        button.btn3clicked.connect(functools.partial(table.moverank, -1))
+        button.btn4clicked.connect(functools.partial(table.moverank, 1))
         button.btn5clicked.connect(self.apply)
 
         search = QHBoxLayout()

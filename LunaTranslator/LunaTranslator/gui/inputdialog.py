@@ -50,35 +50,26 @@ class noundictconfigdialog1(LDialog):
         if r < 0:
             return
         menu = QMenu(table)
-        up = LAction(("上移"))
-        down = LAction(("下移"))
+        up = LAction("上移")
+        down = LAction("下移")
+        copy = LAction("复制")
+        paste = LAction("粘贴")
         menu.addAction(up)
         menu.addAction(down)
+        menu.addAction(copy)
+        menu.addAction(paste)
         action = menu.exec(table.cursor().pos())
 
         if action == up:
-
-            self.moverank(table, -1)
+            table.moverank(-1)
 
         elif action == down:
-            self.moverank(table, 1)
+            table.moverank(1)
+        elif action == copy:
+            table.copytable()
 
-    def moverank(self, table: TableViewW, dy):
-        curr = table.currentIndex()
-        model = table.model()
-        target = (curr.row() + dy) % model.rowCount()
-        texts = [model.item(curr.row(), i).text() for i in range(model.columnCount())]
-
-        item = self.reflist.pop(curr.row())
-        self.reflist.insert(
-            target, {"key": texts[1], "value": [2], "regex": item["regex"]}
-        )
-        model.removeRow(curr.row())
-        model.insertRow(target, [QStandardItem(text) for text in texts])
-        table.setCurrentIndex(model.index(target, curr.column()))
-        table.setIndexWidget(
-            model.index(target, 0), getsimpleswitch(self.reflist[target], "regex")
-        )
+        elif action == paste:
+            table.pastetable()
 
     def __init__(self, parent, reflist, title, label) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -125,32 +116,20 @@ class noundictconfigdialog1(LDialog):
 
         button4.clicked.connect(clicked4)
         search.addWidget(button4)
-
+        table.getindexwidgetdata = self.__getindexwidgetdata
+        table.setindexwidget = self.__setindexwidget
+        self.table = table
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
+        table.insertplainrow = lambda row: self.newline(
+            row, {"key": "", "value": "", "regex": False}
+        )
 
-        def clicked1():
-            self.reflist.insert(0, {"key": "", "value": "", "regex": False})
+        button.btn1clicked.connect(functools.partial(table.insertplainrow, 0))
 
-            self.newline(0, self.reflist[0])
-
-        button.btn1clicked.connect(clicked1)
-
-        def clicked2():
-            skip = []
-            for index in self.table.selectedIndexes():
-                if index.row() in skip:
-                    continue
-                skip.append(index.row())
-            skip = reversed(sorted(skip))
-
-            for row in skip:
-                self.model.removeRow(row)
-                self.reflist.pop(row)
-
-        button.btn2clicked.connect(clicked2)
+        button.btn2clicked.connect(self.table.removeselectedrows)
         button.btn5clicked.connect(self.apply)
-        button.btn3clicked.connect(functools.partial(self.moverank, table, -1))
-        button.btn4clicked.connect(functools.partial(self.moverank, table, 1))
+        button.btn3clicked.connect(functools.partial(table.moverank, -1))
+        button.btn4clicked.connect(functools.partial(table.moverank, 1))
         self.button = button
         formLayout.addWidget(table)
         formLayout.addLayout(search)
@@ -159,21 +138,21 @@ class noundictconfigdialog1(LDialog):
         self.resize(QSize(600, 400))
         self.show()
 
+    def __setindexwidget(self, index: QModelIndex, data):
+        if index.column() == 0:
+            self.table.setIndexWidget(index, getsimpleswitch(data, "regex"))
+
+    def __getindexwidgetdata(self, index: QModelIndex):
+        return {"regex": self.table.indexWidgetX(index).isChecked()}
+
     def apply(self):
-        rows = self.model.rowCount()
-        dedump = set()
-        needremoves = []
-        for row in range(rows):
+        self.table.dedumpmodel(1)
+        self.reflist.clear()
+        for row in range(self.model.rowCount()):
             k = self.model.item(row, 1).text()
             v = self.model.item(row, 2).text()
-            if k == "" or k in dedump:
-                needremoves.append(row)
-                continue
-            self.reflist[row].update({"key": k, "value": v})
-            dedump.add(k)
-        for row in reversed(needremoves):
-            self.model.removeRow(row)
-            self.reflist.pop(row)
+            switch = self.table.indexWidgetX(row, 0)
+            self.reflist.append({"key": k, "value": v, "regex": switch.isChecked()})
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.button.setFocus()
@@ -287,50 +266,24 @@ class yuyinzhidingsetting(LDialog):
         if r < 0:
             return
         menu = QMenu(table)
-        up = LAction(("上移"))
-        down = LAction(("下移"))
+        up = LAction("上移")
+        down = LAction("下移")
         menu.addAction(up)
         menu.addAction(down)
         action = menu.exec(table.cursor().pos())
 
         if action == up:
 
-            self.moverank(table, -1)
+            table.moverank(-1)
 
         elif action == down:
-            self.moverank(table, 1)
-
-    def moverank(self, table: TableViewW, dy):
-        curr = table.currentIndex()
-        model = table.model()
-        target = (curr.row() + dy) % model.rowCount()
-        texts = [model.item(curr.row(), i).text() for i in range(model.columnCount())]
-
-        item = self.reflist.pop(curr.row())
-        self.reflist.insert(
-            target,
-            {
-                "key": texts[1],
-                "condition": item["condition"],
-                "regex": item["regex"],
-                "target": item["target"],
-            },
-        )
-
-        model.removeRow(curr.row())
-        model.insertRow(target, [QStandardItem(text) for text in texts])
-        table.setCurrentIndex(model.index(target, curr.column()))
-        table.setIndexWidget(
-            model.index(target, 0), getsimpleswitch(self.reflist[target], "regex")
-        )
-        com = getsimplecombobox(["首尾", "包含"], item, "condition")
-        table.setIndexWidget(self.model.index(target, 1), com)
-        table.setIndexWidget(self.model.index(target, 3), self.createacombox(item))
+            table.moverank(1)
 
     def createacombox(self, config):
         com = LFocusCombo()
         com.addItems(["跳过", "默认", "选择声音"])
         target = config.get("target", "skip")
+        com.target = target
         if target == "skip":
             com.setCurrentIndex(0)
         elif target == "default":
@@ -346,11 +299,11 @@ class yuyinzhidingsetting(LDialog):
 
     def __comchange(self, com: LFocusCombo, config, idx):
         if idx == 0:
-            config["target"] = "skip"
+            com.target = "skip"
             if com.count() > 3:
                 com.removeItem(com.count() - 1)
         elif idx == 1:
-            config["target"] = "default"
+            com.target = "default"
             if com.count() > 3:
                 com.removeItem(com.count() - 1)
         elif idx == 2:
@@ -359,7 +312,7 @@ class yuyinzhidingsetting(LDialog):
                 if voice.datas["voice"] is None:
                     com.setCurrentIndex(1)
                     return
-                config["target"] = (
+                com.target = (
                     voice.datas["engine"],
                     voice.datas["voice"],
                     voice.datas["vis"],
@@ -428,30 +381,16 @@ class yuyinzhidingsetting(LDialog):
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
 
         def clicked1():
-            self.reflist.insert(
+            self.newline(
                 0, {"key": "", "condition": 0, "regex": False, "target": "skip"}
             )
 
-            self.newline(0, self.reflist[0])
-
         button.btn1clicked.connect(clicked1)
 
-        def clicked2():
-            skip = []
-            for index in self.table.selectedIndexes():
-                if index.row() in skip:
-                    continue
-                skip.append(index.row())
-            skip = reversed(sorted(skip))
-
-            for row in skip:
-                self.model.removeRow(row)
-                self.reflist.pop(row)
-
-        button.btn2clicked.connect(clicked2)
+        button.btn2clicked.connect(table.removeselectedrows)
         button.btn5clicked.connect(self.apply)
-        button.btn3clicked.connect(functools.partial(self.moverank, table, -1))
-        button.btn4clicked.connect(functools.partial(self.moverank, table, 1))
+        button.btn3clicked.connect(functools.partial(table.moverank, -1))
+        button.btn4clicked.connect(functools.partial(table.moverank, 1))
         self.button = button
         formLayout.addWidget(table)
         formLayout.addLayout(search)
@@ -461,20 +400,22 @@ class yuyinzhidingsetting(LDialog):
         self.show()
 
     def apply(self):
+        self.table.dedumpmodel(2)
         rows = self.model.rowCount()
-        dedump = set()
-        needremoves = []
+        self.reflist.clear()
         for row in range(rows):
             k = self.model.item(row, 2).text()
-
-            if k == "" or k in dedump:
-                needremoves.append(row)
-                continue
-            self.reflist[row].update({"key": k})
-            dedump.add(k)
-        for row in reversed(needremoves):
-            self.model.removeRow(row)
-            self.reflist.pop(row)
+            switch = self.table.indexWidgetX(row, 0)
+            con = self.table.indexWidgetX(row, 1)
+            con2 = self.table.indexWidgetX(row, 3)
+            self.reflist.append(
+                {
+                    "key": k,
+                    "condition": con.currentIndex(),
+                    "regex": switch.isChecked(),
+                    "target": con2.target,
+                }
+            )
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.button.setFocus()
@@ -777,47 +718,28 @@ class postconfigdialog_(LDialog):
 
         if action == up:
 
-            self.moverank(table, -1)
+            table.moverank(-1)
 
         elif action == down:
-            self.moverank(table, 1)
+            table.moverank(1)
         elif action == copy:
             table.copytable()
 
         elif action == paste:
             table.pastetable()
 
-    def moverank(self, table: TableViewW, dy):
-        curr = table.currentIndex()
-        target = (curr.row() + dy) % table.model().rowCount()
-        texts = [
-            table.model().item(curr.row(), i).text()
-            for i in range(table.model().columnCount())
-        ]
-
-        table.model().removeRow(curr.row())
-        table.model().insertRow(target, [QStandardItem(text) for text in texts])
-        table.setCurrentIndex(table.model().index(target, curr.column()))
-
     def apply(self):
+        self.table.dedumpmodel(0)
         rows = self.model.rowCount()
         self.configdict.clear()
 
         if isinstance(self.configdict, dict):
             for row in range(rows):
                 text = self.model.item(row, 0).text()
-                if text == "":
-                    continue
                 self.configdict[text] = self.model.item(row, 1).text()
         elif isinstance(self.configdict, list):
-            dedump = set()
             for row in range(rows):
                 text = self.model.item(row, 0).text()
-                if text == "":
-                    continue
-                if text in dedump:
-                    continue
-                dedump.add(text)
                 item = {}
                 for _i, key in enumerate(self.dictkeys):
                     item[key] = self.model.item(row, _i).text()
@@ -864,31 +786,12 @@ class postconfigdialog_(LDialog):
             functools.partial(self.showmenu, table)
         )
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
+        self.table = table
+        button.btn1clicked.connect(table.insertplainrow)
+        button.btn2clicked.connect(table.removeselectedrows)
 
-        def clicked1():
-            if isinstance(configdict, dict):
-                model.insertRow(0, [QStandardItem(), QStandardItem()])
-            elif isinstance(configdict, list):
-                model.insertRow(0, [QStandardItem() for _ in range(len(dictkeys))])
-            else:
-                raise
-
-        def clicked2():
-            skip = []
-            for index in table.selectedIndexes():
-                if index.row() in skip:
-                    continue
-                skip.append(index.row())
-            skip = reversed(sorted(skip))
-
-            for row in skip:
-                model.removeRow(row)
-
-        button.btn1clicked.connect(clicked1)
-        button.btn2clicked.connect(clicked2)
-
-        button.btn3clicked.connect(functools.partial(self.moverank, table, -1))
-        button.btn4clicked.connect(functools.partial(self.moverank, table, 1))
+        button.btn3clicked.connect(functools.partial(table.moverank, -1))
+        button.btn4clicked.connect(functools.partial(table.moverank, 1))
         button.btn5clicked.connect(self.apply)
         self.button = button
         self.model = model

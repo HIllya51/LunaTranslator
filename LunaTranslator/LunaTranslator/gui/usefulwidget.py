@@ -95,10 +95,82 @@ class TableViewW(QTableView):
         super().__init__(*argc)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ContiguousSelection)
 
+    def insertplainrow(self, row=0):
+        self.model().insertRow(
+            row, [QStandardItem() for _ in range(self.model().columnCount())]
+        )
+
+    def dedumpmodel(self, col):
+
+        rows = self.model().rowCount()
+        dedump = set()
+        needremoves = []
+        for row in range(rows):
+            k = self.safetext(row, col)
+            if k == "" or k in dedump:
+                needremoves.append(row)
+                continue
+            dedump.add(k)
+        for row in reversed(needremoves):
+            self.model().removeRow(row)
+
+    def removeselectedrows(self):
+        row = self.currentIndex().row()
+        col = self.currentIndex().column()
+        skip = []
+        for index in self.selectedIndexes():
+            if index.row() in skip:
+                continue
+            skip.append(index.row())
+        skip = reversed(sorted(skip))
+
+        for row in skip:
+            self.model().removeRow(row)
+        row = min(row, self.model().rowCount() - 1)
+        self.setCurrentIndex(self.model().index(row, col))
+        return skip
+
+    def moverank(self, dy):
+        curr = self.currentIndex()
+        row, col = curr.row(), curr.column()
+
+        model = self.model()
+        realws = []
+        for _ in range(self.model().columnCount()):
+            w = self.indexWidget(self.model().index(row, _))
+            if w is None:
+                realws.append(None)
+                continue
+            l: QHBoxLayout = w.layout()
+            w = l.takeAt(0).widget()
+            realws.append(w)
+        target = (row + dy) % model.rowCount()
+        model.insertRow(target, model.takeRow(row))
+        self.setCurrentIndex(model.index(target, col))
+        for _ in range(self.model().columnCount()):
+            self.setIndexWidget(self.model().index(target, _), realws[_])
+        return row, target
+
+    def indexWidgetX(self, row_or_index, col=None):
+        if col is None:
+            index: QModelIndex = row_or_index
+        else:
+            index = self.model().index(row_or_index, col)
+        w = self.indexWidget(index)
+        if w is None:
+            return w
+        l: QHBoxLayout = w.layout()
+        return l.itemAt(0).widget()
+
     def setIndexWidget(self, index: QModelIndex, w: QWidget):
-        super().setIndexWidget(index, w)
         if w is None:
             return
+        __w = QWidget()
+        __l = QHBoxLayout()
+        __w.setLayout(__l)
+        __l.setContentsMargins(0, 0, 0, 0)
+        __l.addWidget(w)
+        super().setIndexWidget(index, __w)
         if self.rowHeight(index.row()) < w.height():
             self.setRowHeight(index.row(), w.height())
 
@@ -107,13 +179,23 @@ class TableViewW(QTableView):
         if isinstance(m, LStandardItemModel):
             m.updatelangtext()
 
-    def safetext(self, row, col=None):
+    def getindexwidgetdata(self, index: QModelIndex): ...
+
+    def setindexwidget(self, index, data): ...
+
+    def safetext(self, row_or_index, col=None, mybewidget=False):
         if col is None:
-            index = row
+            index: QModelIndex = row_or_index
         else:
-            index = self.model().index(row, col)
+            index = self.model().index(row_or_index, col)
+        if mybewidget:
+            w = self.indexWidget(index)
+            if w is not None:
+                return self.getindexwidgetdata(index)
+
         _1 = self.model().itemFromIndex(index)
         _1 = _1.text() if _1 else ""
+
         return _1
 
     def copytable(self) -> str:
@@ -127,7 +209,7 @@ class TableViewW(QTableView):
             minc = min(minc, index.column())
             maxr = max(maxr, index.row())
             maxc = max(maxc, index.column())
-            _data.append(self.safetext(index))
+            _data.append(self.safetext(index, mybewidget=True))
         data = {
             "data": _data,
             "row": maxr - minr + 1,
@@ -141,17 +223,25 @@ class TableViewW(QTableView):
             js = json.loads(string)
             current = self.currentIndex()
             for _ in range(js["row"]):
-                self.model().insertRow(current.row() + 1, [])
-
+                self.insertplainrow(current.row() + 1)
             for i, data in enumerate(js.get("data", [])):
                 c = current.column() + i % js["col"]
                 if c >= self.model().columnCount():
                     continue
-                self.model().setItem(
-                    current.row() + 1 + i // js["col"], c, QStandardItem(data)
-                )
+                if isinstance(data, str):
+                    self.model().setItem(
+                        current.row() + 1 + i // js["col"], c, QStandardItem(data)
+                    )
+                else:
+                    self.model().setItem(
+                        current.row() + 1 + i // js["col"], c, QStandardItem("")
+                    )
+                    self.setindexwidget(
+                        self.model().index(current.row() + 1 + i // js["col"], c), data
+                    )
 
         except:
+            print_exc()
             self.model().itemFromIndex(self.currentIndex()).setText(string)
 
 
@@ -1694,16 +1784,8 @@ class listediter(LDialog):
             self.moverank(1)
 
     def moverank(self, dy):
-        curr = self.hctable.currentIndex()
-        target = (curr.row() + dy) % self.hcmodel.rowCount()
-        text = self.internalrealname[curr.row()]
-        self.internalrealname.pop(curr.row())
-        self.hcmodel.removeRow(curr.row())
-        self.internalrealname.insert(target, text)
-        if self.namemapfunction:
-            text = self.namemapfunction(text)
-        self.hcmodel.insertRow(target, [QStandardItem(text)])
-        self.hctable.setCurrentIndex(self.hcmodel.index(target, 0))
+        src, tgt = self.hctable.moverank(dy)
+        self.internalrealname.insert(tgt, self.internalrealname.pop(src))
 
     def __init__(
         self,
@@ -1793,15 +1875,8 @@ class listediter(LDialog):
             print_exc()
 
     def clicked2(self):
-        skip = []
-        for index in self.hctable.selectedIndexes():
-            if index.row() in skip:
-                continue
-            skip.append(index.row())
-        skip = reversed(sorted(skip))
-
+        skip = self.hctable.removeselectedrows()
         for row in skip:
-            self.hcmodel.removeRow(row)
             self.internalrealname.pop(row)
 
     def closeEvent(self, a0: QCloseEvent) -> None:

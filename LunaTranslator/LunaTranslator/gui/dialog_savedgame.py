@@ -1050,8 +1050,10 @@ class dialog_setting_game_internal(QWidget):
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid], "tts_follow_default", formLayout
         )
-        if 'tts_repair_use_at_translate' not in savehook_new_data[gameuid]:
-            savehook_new_data[gameuid]['tts_repair_use_at_translate']=globalconfig["ttscommon"]["tts_repair"]
+        if "tts_repair_use_at_translate" not in savehook_new_data[gameuid]:
+            savehook_new_data[gameuid]["tts_repair_use_at_translate"] = globalconfig[
+                "ttscommon"
+            ]["tts_repair"]
         formLayout2.addRow(
             "语音指定",
             getboxlayout(
@@ -1084,8 +1086,10 @@ class dialog_setting_game_internal(QWidget):
                         icon="fa.gear",
                     ),
                     QLabel(),
-                    getsimpleswitch(savehook_new_data[gameuid], "tts_repair_use_at_translate"),
-                    LLabel('作用于翻译'),
+                    getsimpleswitch(
+                        savehook_new_data[gameuid], "tts_repair_use_at_translate"
+                    ),
+                    LLabel("作用于翻译"),
                 ],
                 margin0=True,
                 makewidget=True,
@@ -1227,8 +1231,8 @@ class dialog_setting_game_internal(QWidget):
             return
         menu = QMenu(self.__textprocinternaltable)
         remove = LAction(("删除"))
-        up = LAction(("上移"))
-        down = LAction(("下移"))
+        up = LAction("上移")
+        down = LAction("下移")
         menu.addAction(remove)
         menu.addAction(up)
         menu.addAction(down)
@@ -3298,8 +3302,8 @@ class dialog_savedgame_v3(QWidget):
         editname = LAction(("修改列表名称"))
         addlist = LAction(("创建列表"))
         dellist = LAction(("删除列表"))
-        Upaction = LAction(("上移"))
-        Downaction = LAction(("下移"))
+        Upaction = LAction("上移")
+        Downaction = LAction("下移")
         addgame = LAction(("添加游戏"))
         batchadd = LAction(("批量添加"))
         menu.addAction(Upaction)

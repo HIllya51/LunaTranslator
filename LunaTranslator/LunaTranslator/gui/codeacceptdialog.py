@@ -83,7 +83,7 @@ class codeacceptdialog(LDialog):
             row += 1
         button = threebuttons(texts=["添加行", "删除行", "立即应用"])
         button.btn1clicked.connect(self.clicked1)
-        button.btn2clicked.connect(self.clicked2)
+        button.btn2clicked.connect(self.table.removeselectedrows)
         button.btn3clicked.connect(self.apply)
         self.button = button
         formLayout.addWidget(self.table)
@@ -125,17 +125,6 @@ class codeacceptdialog(LDialog):
         )
         index = self.model.index(0, 0)
         self.table.setIndexWidget(index, codecombox)
-
-    def clicked2(self):
-        skip = []
-        for index in self.table.selectedIndexes():
-            if index.row() in skip:
-                continue
-            skip.append(index.row())
-        skip = reversed(sorted(skip))
-
-        for row in skip:
-            self.model.removeRow(row)
 
     def apply(self):
 
