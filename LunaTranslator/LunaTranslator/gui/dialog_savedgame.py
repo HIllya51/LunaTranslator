@@ -42,6 +42,7 @@ from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     noundictconfigdialog1,
     yuyinzhidingsetting,
+    postconfigdialog2x,
     autoinitdialog,
     autoinitdialog_items,
     postconfigdialog,
@@ -591,7 +592,19 @@ def maybehavebutton(self, gameuid, post):
                 icon="fa.gear", callback=lambda: codeacceptdialog(self)
             )
         elif "args" in postprocessconfig[post]:
-            if isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
+            if post == "stringreplace":
+                callback = functools.partial(
+                    postconfigdialog2x,
+                    self,
+                    savehook_new_data[gameuid]["save_text_process_info"][
+                        "postprocessconfig"
+                    ][post]["args"]["internal"],
+                    savehook_new_data[gameuid]["save_text_process_info"][
+                        "postprocessconfig"
+                    ][post]["name"],
+                    ["正则", "转义", "原文内容", "替换为"],
+                )
+            elif isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
                 callback = functools.partial(
                     postconfigdialog,
                     self,
@@ -1081,7 +1094,7 @@ class dialog_setting_game_internal(QWidget):
                             self,
                             savehook_new_data[gameuid]["tts_repair_regex"],
                             "语音修正",
-                            ["正则", "原文", "替换"],
+                            ["正则", "转义", "原文", "替换"],
                         ),
                         icon="fa.gear",
                     ),

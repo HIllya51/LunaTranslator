@@ -849,5 +849,8 @@
     "语音指定": "Sprachbezeichnung",
     "指定为": "Bestimmt als",
     "跳过": "überspringen",
-    "作用于翻译": "Auf Übersetzungen angewendet"
+    "作用于翻译": "Auf Übersetzungen angewendet",
+    "字符串替换": "Zeichenfolgenersatz",
+    "转义": "Flucht",
+    "不推荐使用": "Nicht empfohlen für die Anwendung"
 }

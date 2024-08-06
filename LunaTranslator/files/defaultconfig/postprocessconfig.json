@@ -1,4 +1,11 @@
 {
+    "stringreplace": {
+        "use": false,
+        "name": "字符串替换",
+        "args": {
+            "internal":[]
+        }
+    },
     "_remove_non_shiftjis_char": {
         "use": false,
         "name": "过滤文本中的非日语字符集字符"
@@ -157,21 +164,21 @@
     },
     "_7": {
         "use": true,
-        "name": "简单字符串替换",
+        "name": "!_不推荐使用_简单字符串替换_!",
         "args": {
             "替换内容": {}
         }
     },
     "_7_zhuanyi": {
         "use": true,
-        "name": "转义字符串替换",
+        "name": "!_不推荐使用_转义字符串替换_!",
         "args": {
             "替换内容": {}
         }
     },
     "_8": {
         "use": false,
-        "name": "正则表达式替换",
+        "name": "!_不推荐使用_正则表达式替换_!",
         "args": {
             "替换内容": {}
         }

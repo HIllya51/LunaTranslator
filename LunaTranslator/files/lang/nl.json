@@ -849,5 +849,8 @@
     "语音指定": "Stembepaling",
     "指定为": "Aangeduid als",
     "跳过": "overslaan",
-    "作用于翻译": "Toegepast op vertaling"
+    "作用于翻译": "Toegepast op vertaling",
+    "字符串替换": "Vervanging van tekenreeks",
+    "转义": "Ontsnappen",
+    "不推荐使用": "Niet aanbevolen voor gebruik"
 }

@@ -849,5 +849,8 @@
     "语音指定": "Voice designation",
     "指定为": "Designated as",
     "跳过": "skip",
-    "作用于翻译": "Applied to translation"
+    "作用于翻译": "Applied to translation",
+    "字符串替换": "String replacement",
+    "转义": "Escaping",
+    "不推荐使用": "Not recommended for use"
 }

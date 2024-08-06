@@ -849,5 +849,8 @@
     "语音指定": "Oznaczenie głosu",
     "指定为": "Wyznaczony jako",
     "跳过": "pominięcie",
-    "作用于翻译": "Zastosowanie do tłumaczenia"
+    "作用于翻译": "Zastosowanie do tłumaczenia",
+    "字符串替换": "Zastąpienie ciągu",
+    "转义": "Ucieczka",
+    "不推荐使用": "Nie zaleca się stosowania"
 }

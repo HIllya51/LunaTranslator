@@ -2,7 +2,7 @@ import re, codecs, inspect
 from traceback import print_exc
 from collections import Counter
 import gobject
-from myutils.utils import checkchaos, checkmd5reloadmodule, LRUCache, getlangsrc
+from myutils.utils import checkchaos, checkmd5reloadmodule, LRUCache, getlangsrc, parsemayberegexreplace
 from myutils.config import (
     postprocessconfig,
     globalconfig,
@@ -219,6 +219,11 @@ def _92_f(line):
     return line
 
 
+def stringreplace(line, args):
+    filters = args["internal"]
+    return parsemayberegexreplace(filters, line)
+
+
 def _7_zhuanyi_f(line, args):
     filters = args["替换内容"]
     for fil in filters:
@@ -370,6 +375,7 @@ def POSTSOLVE(line):
         "length_threshold": length_threshold,
         "lines_threshold": lines_threshold,
         "_11": _mypostloader,
+        "stringreplace": stringreplace,
     }
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig

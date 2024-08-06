@@ -234,7 +234,7 @@ def setTab5lz(self):
                                     self,
                                     globalconfig["ttscommon"]["tts_repair_regex"],
                                     "语音修正",
-                                    ["正则", "原文", "替换"],
+                                    ["正则",'转义', "原文", "替换"],
                                 ),
                                 icon="fa.gear",
                             ),

@@ -113,7 +113,6 @@ class searcher(common):
         print(imags1)
 
         return {
-            # "namemap": namemap,
             "title": title,
             "imagepath_all": [self.dispatchdownloadtask(_) for _ in imags1 + imags2],
             "webtags": tags,

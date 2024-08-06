@@ -16,33 +16,6 @@ class noundictconfigdialog(LDialog):
         self.button.setFocus()
         self.apply()
 
-    def showmenu(self, table: TableViewW, pos):
-        r = table.currentIndex().row()
-        if r < 0:
-            return
-        menu = QMenu(table)
-        up = LAction("上移")
-        down = LAction("下移")
-        copy = LAction("复制")
-        paste = LAction("粘贴")
-        menu.addAction(up)
-        menu.addAction(down)
-        menu.addAction(copy)
-        menu.addAction(paste)
-        action = menu.exec(table.cursor().pos())
-
-        if action == up:
-
-            table.moverank(-1)
-
-        elif action == down:
-            table.moverank(1)
-        elif action == copy:
-            table.copytable()
-
-        elif action == paste:
-            table.pastetable()
-
     def apply(self):
         rows = self.model.rowCount()
         self.configdict.clear()
@@ -84,10 +57,7 @@ class noundictconfigdialog(LDialog):
         table = TableViewW(self)
         table.setModel(model)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        table.customContextMenuRequested.connect(
-            functools.partial(self.showmenu, table)
-        )
+        table.setsimplemenu()
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         self.table = table
 
@@ -154,34 +124,6 @@ class noundictconfigdialog_private(LDialog):
         self.button.setFocus()
         self.apply()
 
-    def showmenu(self, table: TableViewW, pos):
-        r = table.currentIndex().row()
-        if r < 0:
-            return
-        menu = QMenu(table)
-        up = LAction("上移")
-        down = LAction("下移")
-        copy = LAction("复制")
-        paste = LAction("粘贴")
-        menu.addAction(up)
-        menu.addAction(down)
-        menu.addAction(copy)
-        menu.addAction(paste)
-        action = menu.exec(table.cursor().pos())
-
-        if action == up:
-
-            table.moverank(-1)
-
-        elif action == down:
-            table.moverank(1)
-
-        elif action == copy:
-            table.copytable()
-
-        elif action == paste:
-            table.pastetable()
-
     def apply(self):
         self.table.dedumpmodel(0)
         rows = self.model.rowCount()
@@ -214,10 +156,7 @@ class noundictconfigdialog_private(LDialog):
         table = TableViewW(self)
         table.setModel(model)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        table.customContextMenuRequested.connect(
-            functools.partial(self.showmenu, table)
-        )
+        table.setsimplemenu()
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         self.table = table
         button.btn1clicked.connect(table.insertplainrow)

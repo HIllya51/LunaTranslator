@@ -16,7 +16,12 @@ from gui.usefulwidget import (
     getvboxwidget,
     makesubtab_lazy,
 )
-from gui.inputdialog import postconfigdialog, autoinitdialog, autoinitdialog_items
+from gui.inputdialog import (
+    postconfigdialog,
+    autoinitdialog,
+    autoinitdialog_items,
+    postconfigdialog2x,
+)
 
 
 def delaysetcomparetext(self, s):
@@ -101,7 +106,16 @@ def setTab7_lazy(self, basel):
                     callback=lambda: codeacceptdialog(self),
                 )
             elif "args" in postprocessconfig[post]:
-                if isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
+                
+                if post=='stringreplace':
+                    callback = functools.partial(
+                        postconfigdialog2x,
+                        self,
+                        postprocessconfig[post]["args"]['internal'],
+                        postprocessconfig[post]["name"],
+                        ["正则", "转义", "原文内容", "替换为"],
+                    )
+                elif isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
                     callback = functools.partial(
                         postconfigdialog,
                         self,

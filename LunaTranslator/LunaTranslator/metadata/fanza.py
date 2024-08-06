@@ -171,7 +171,6 @@ class searcher(common):
         inner = simplehtmlparser(response.text, "div", '<div ref="product_slider_data"')
 
         return {
-            # "namemap": namemap,
             "title": title,
             "imagepath_all": [
                 self.dispatchdownloadtask(_.replace("js-", "jp-")) for _ in imags2

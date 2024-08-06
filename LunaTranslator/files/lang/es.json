@@ -849,5 +849,8 @@
     "语音指定": "Designación de voz",
     "指定为": "Designado como",
     "跳过": "Saltar",
-    "作用于翻译": "Actuar sobre la traducción"
+    "作用于翻译": "Actuar sobre la traducción",
+    "字符串替换": "Reemplazo de cadenas",
+    "转义": "Transliteración",
+    "不推荐使用": "No se recomienda usar"
 }

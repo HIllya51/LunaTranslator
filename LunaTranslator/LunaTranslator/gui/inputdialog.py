@@ -37,39 +37,21 @@ class noundictconfigdialog1(LDialog):
             row,
             [
                 QStandardItem(),
+                QStandardItem(),
                 QStandardItem(item["key"]),
                 QStandardItem(item["value"]),
             ],
         )
+        if "regex" not in item:
+            item["regex"] = False
+        if "escape" not in item:
+            item["escape"] = item["regex"]
         self.table.setIndexWidget(
             self.model.index(row, 0), getsimpleswitch(item, "regex")
         )
-
-    def showmenu(self, table: TableViewW, _):
-        r = table.currentIndex().row()
-        if r < 0:
-            return
-        menu = QMenu(table)
-        up = LAction("上移")
-        down = LAction("下移")
-        copy = LAction("复制")
-        paste = LAction("粘贴")
-        menu.addAction(up)
-        menu.addAction(down)
-        menu.addAction(copy)
-        menu.addAction(paste)
-        action = menu.exec(table.cursor().pos())
-
-        if action == up:
-            table.moverank(-1)
-
-        elif action == down:
-            table.moverank(1)
-        elif action == copy:
-            table.copytable()
-
-        elif action == paste:
-            table.pastetable()
+        self.table.setIndexWidget(
+            self.model.index(row, 1), getsimpleswitch(item, "escape")
+        )
 
     def __init__(self, parent, reflist, title, label) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -82,15 +64,15 @@ class noundictconfigdialog1(LDialog):
         self.model.setHorizontalHeaderLabels(label)
         table = TableViewW(self)
         table.setModel(self.model)
+        table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
         table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-        table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.ResizeToContents
+        )
         table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.ResizeToContents
         )
-        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        table.customContextMenuRequested.connect(
-            functools.partial(self.showmenu, table)
-        )
+        table.setsimplemenu()
 
         self.table = table
         for row, item in enumerate(reflist):
@@ -141,18 +123,39 @@ class noundictconfigdialog1(LDialog):
     def __setindexwidget(self, index: QModelIndex, data):
         if index.column() == 0:
             self.table.setIndexWidget(index, getsimpleswitch(data, "regex"))
+        if index.column() == 1:
+            self.table.setIndexWidget(index, getsimpleswitch(data, "escape"))
 
     def __getindexwidgetdata(self, index: QModelIndex):
-        return {"regex": self.table.indexWidgetX(index).isChecked()}
+        if index.column() == 0:
+            return {"regex": self.table.indexWidgetX(index).isChecked()}
+        if index.column() == 1:
+            return {"escape": self.table.indexWidgetX(index).isChecked()}
 
     def apply(self):
-        self.table.dedumpmodel(1)
+        def __check(row):
+            k = self.model.item(row, 2).text()
+            if k == "":
+                return ""
+            switch = self.table.indexWidgetX(row, 0).isChecked()
+            es = self.table.indexWidgetX(row, 1).isChecked()
+            return (switch, es, k)
+
+        self.table.dedumpmodel(__check)
         self.reflist.clear()
         for row in range(self.model.rowCount()):
-            k = self.model.item(row, 1).text()
-            v = self.model.item(row, 2).text()
+            k = self.model.item(row, 2).text()
+            v = self.model.item(row, 3).text()
             switch = self.table.indexWidgetX(row, 0)
-            self.reflist.append({"key": k, "value": v, "regex": switch.isChecked()})
+            es = self.table.indexWidgetX(row, 1)
+            self.reflist.append(
+                {
+                    "key": k,
+                    "value": v,
+                    "escape": es.isChecked(),
+                    "regex": switch.isChecked(),
+                }
+            )
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.button.setFocus()
@@ -261,24 +264,6 @@ class yuyinzhidingsetting(LDialog):
         self.table.setIndexWidget(self.model.index(row, 1), com)
         self.table.setIndexWidget(self.model.index(row, 3), self.createacombox(item))
 
-    def showmenu(self, table: TableViewW, _):
-        r = table.currentIndex().row()
-        if r < 0:
-            return
-        menu = QMenu(table)
-        up = LAction("上移")
-        down = LAction("下移")
-        menu.addAction(up)
-        menu.addAction(down)
-        action = menu.exec(table.cursor().pos())
-
-        if action == up:
-
-            table.moverank(-1)
-
-        elif action == down:
-            table.moverank(1)
-
     def createacombox(self, config):
         com = LFocusCombo()
         com.addItems(["跳过", "默认", "选择声音"])
@@ -348,10 +333,7 @@ class yuyinzhidingsetting(LDialog):
         table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.ResizeToContents
         )
-        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        table.customContextMenuRequested.connect(
-            functools.partial(self.showmenu, table)
-        )
+        table.setsimplemenu({"copypaste": False})
 
         self.table = table
         for row, item in enumerate(reflist):
@@ -695,38 +677,8 @@ class multicolorset(LDialog):
 @Singleton_close
 class postconfigdialog_(LDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
-        if self.closeevent:
-            self.button.setFocus()
-            self.apply()
-            if self.closecallback:
-                self.closecallback()
-
-    def showmenu(self, table: TableViewW, pos):
-        r = table.currentIndex().row()
-        if r < 0:
-            return
-        menu = QMenu(table)
-        up = LAction("上移")
-        down = LAction("下移")
-        copy = LAction("复制")
-        paste = LAction("粘贴")
-        menu.addAction(up)
-        menu.addAction(down)
-        menu.addAction(copy)
-        menu.addAction(paste)
-        action = menu.exec(table.cursor().pos())
-
-        if action == up:
-
-            table.moverank(-1)
-
-        elif action == down:
-            table.moverank(1)
-        elif action == copy:
-            table.copytable()
-
-        elif action == paste:
-            table.pastetable()
+        self.button.setFocus()
+        self.apply()
 
     def apply(self):
         self.table.dedumpmodel(0)
@@ -747,14 +699,9 @@ class postconfigdialog_(LDialog):
         else:
             raise
 
-    def __init__(
-        self, parent, configdict, title, headers, closecallback=None, dictkeys=None
-    ) -> None:
+    def __init__(self, parent, configdict, title, headers, dictkeys=None) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.closecallback = closecallback
         self.setWindowTitle(title)
-        # self.setWindowModality(Qt.ApplicationModal)
-        self.closeevent = False
         formLayout = QVBoxLayout(self)  # 配置layout
         self.dictkeys = dictkeys
         model = LStandardItemModel(len(configdict), 1, self)
@@ -781,10 +728,7 @@ class postconfigdialog_(LDialog):
         table.setModel(model)
         table.setWordWrap(False)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        table.customContextMenuRequested.connect(
-            functools.partial(self.showmenu, table)
-        )
+        table.setsimplemenu()
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         self.table = table
         button.btn1clicked.connect(table.insertplainrow)
@@ -796,7 +740,6 @@ class postconfigdialog_(LDialog):
         self.button = button
         self.model = model
         self.configdict = configdict
-        self.closeevent = True
         search = QHBoxLayout()
         searchcontent = QLineEdit()
         search.addWidget(searchcontent)
@@ -827,3 +770,7 @@ class postconfigdialog_(LDialog):
 
 def postconfigdialog(parent, configdict, title, header):
     postconfigdialog_(parent, configdict, title, header)
+
+
+def postconfigdialog2x(parent, reflist, title, header):
+    noundictconfigdialog1(parent, reflist, title, header)

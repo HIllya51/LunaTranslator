@@ -95,6 +95,36 @@ class TableViewW(QTableView):
         super().__init__(*argc)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ContiguousSelection)
 
+    def showmenu(self, info, pos):
+        r = self.currentIndex().row()
+        if r < 0:
+            return
+        menu = QMenu(self)
+        up = LAction("上移")
+        down = LAction("下移")
+        copy = LAction("复制")
+        paste = LAction("粘贴")
+        menu.addAction(up)
+        menu.addAction(down)
+        if info.get("copypaste", True):
+            menu.addAction(copy)
+            menu.addAction(paste)
+        action = menu.exec(self.cursor().pos())
+        if action == up:
+            self.moverank(-1)
+        elif action == down:
+            self.moverank(1)
+        elif action == copy:
+            self.copytable()
+        elif action == paste:
+            self.pastetable()
+
+    def setsimplemenu(self, info=None):
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        if info is None:
+            info = {}
+        self.customContextMenuRequested.connect(functools.partial(self.showmenu, info))
+
     def insertplainrow(self, row=0):
         self.model().insertRow(
             row, [QStandardItem() for _ in range(self.model().columnCount())]
@@ -106,11 +136,15 @@ class TableViewW(QTableView):
         dedump = set()
         needremoves = []
         for row in range(rows):
-            k = self.safetext(row, col)
+            if isinstance(col, int):
+                k = self.safetext(row, col)
+            elif callable(col):
+                k = col(row)
             if k == "" or k in dedump:
                 needremoves.append(row)
                 continue
             dedump.add(k)
+
         for row in reversed(needremoves):
             self.model().removeRow(row)
 

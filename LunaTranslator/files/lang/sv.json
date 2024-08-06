@@ -849,5 +849,8 @@
     "语音指定": "Röstbeteckning",
     "指定为": "Utnämnd som",
     "跳过": "hoppa över",
-    "作用于翻译": "Tillämpad på översättning"
+    "作用于翻译": "Tillämpad på översättning",
+    "字符串替换": "Strängersättning",
+    "转义": "Flykt",
+    "不推荐使用": "Rekommenderas inte för användning"
 }

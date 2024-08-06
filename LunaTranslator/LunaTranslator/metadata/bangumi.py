@@ -210,7 +210,6 @@ class searcher(common):
                         elif isinstance(__, dict):
                             developers.append(__["v"])
         return {
-            # "namemap": namemap,
             "title": response["name"],
             "imagepath_all": [imagepath],
             "webtags": vndbtags,

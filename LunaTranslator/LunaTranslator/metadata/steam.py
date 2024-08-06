@@ -185,7 +185,6 @@ class searcher(common):
             + [data.get("background_raw", None)]
         )
         return {
-            # "namemap": namemap,
             "title": data["name"],
             "imagepath_all": [
                 self.dispatchdownloadtask(re.sub("\\?t=(\\d+)", "", _)) for _ in images
