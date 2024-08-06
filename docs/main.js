@@ -11,7 +11,7 @@ window.$docsify = {
         crossChapter: true,
         crossChapterText: true,
     },
-    repo: 'https://lunatranslator.xyz/Github/LunaTranslator',
+    repo: 'https://github.com/HIllya51/LunaTranslator',
 
     alias: {
         '/zh/_sidebar.md': '/zh/sidebar.md',
@@ -69,70 +69,6 @@ window.$docsify = {
             hook.doneEach(() => {
                 if (document.getElementById('manytables') == null) return
                 import('/manyapis.js')
-            })
-        },
-        function (hook, vm) {
-            return;
-            hook.doneEach(() => {
-                var toupiao = document.getElementById('toupiao')
-                if (toupiao == null) return
-                fetch('https://lunatranslator.xyz/toupiao_query?toupiao=1&toupiao=2&toupiao=3&toupiao=4&toupiao=5&toupiao=6&toupiao=7&toupiao=8&toupiao=9&toupiao=10').then(
-                    (_) => {
-                        return _.json()
-                    }
-                )
-                    .then((res) => {
-                        var averages = []
-
-                        for (let idx = 0; idx < 10; idx++) {
-                            const values = res[idx]
-                            var average = 0;
-                            if (values.length) {
-
-                                const sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                                average = sum / values.length;
-                            }
-                            const names = ["DeepSeek", "阿里云百炼大模型", "字节跳动豆包大模型", "月之暗面", "智谱AI", "零一万物", "硅基流动", "讯飞星火大模型", "腾讯混元大模型", "百度千帆大模型"]
-
-                            averages.push({ average: average, name: names[idx], idx: idx })
-                        }
-                        averages.sort((a, b) => b.average - a.average)
-                        for (let idx = 0; idx < 10; idx++) {
-
-                            let item = averages[idx]
-                            toupiao.innerHTML += `
-    <tr><td>${item.name}</td><td>${item.average}</td>
-    <td><input type="radio" name="rate-${item.idx}" id="rate-${item.idx}-1">
-    <input type="radio" name="rate-${item.idx}" id="rate-${item.idx}-2">
-    <input type="radio" name="rate-${item.idx}" id="rate-${item.idx}-3">
-    <input type="radio" name="rate-${item.idx}" id="rate-${item.idx}-4">
-    <input type="radio" name="rate-${item.idx}" id="rate-${item.idx}-5">
-    </td></tr>
-    `
-                        }
-                        for (let i = 0; i < 10; i++) {
-                            const values = res[i]
-                            var average = 0;
-                            if (values.length) {
-                                const sum = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                                average = sum / values.length;
-                            }
-
-                            var value = Math.floor(average)
-                            if (value == 0) value = 1;
-                            document.querySelector(`#rate-${i}-${value}`).checked = true
-                            for (let ii = 0; ii < 5; ii += 1) {
-                                document.querySelector(`#rate-${i}-${ii + 1}`).addEventListener('click', function () {
-
-                                    window.open(`https://lunatranslator.xyz/toupiao_set?toupiao=${1 + Number(this.id.split('-')[1])}&value=${Number(this.id.split('-')[2])}`, '_blank');
-
-                                })
-                            }
-                        }
-
-
-                    })
-
             })
         },
     ]
