@@ -71,6 +71,18 @@ window.$docsify = {
                 import('/manyapis.js')
             })
         },
+        function (hook, vm) {
+            hook.doneEach(() => {
+                if (!window.location.hostname.startsWith('docs')) return
+                let replacetarget = window.location.protocol + '//image.' + window.location.hostname.substring(5);
+                var images = document.getElementsByTagName('img');
+
+                for (var i = 0; i < images.length; i++) {
+
+                    images[i].src = images[i].src.replace('https://image.lunatranslator.org', replacetarget)
+                }
+            })
+        },
     ]
 }
 
@@ -150,3 +162,8 @@ window.onpopstate = function (event) {
         }
     }
 };
+
+function tohomeurl() {
+    var hostname = window.location.hostname;
+    window.open(window.location.protocol + hostname.substring(5));
+}
