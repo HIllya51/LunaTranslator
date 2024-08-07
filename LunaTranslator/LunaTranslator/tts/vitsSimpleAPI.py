@@ -6,8 +6,6 @@ from urllib.parse import quote
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        if self.config["voices"] == "":
-            return [(0, 0, 0)], []
         responseVits = requests.get(
             urljoin(self.config["URL"], self.config["voices"])
         ).json()

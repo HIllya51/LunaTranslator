@@ -9,9 +9,10 @@ from myutils.subproc import subproc_w, autoproc
 class TTS(TTSbase):
     def getvoicelist(self):
         voicelist = []
-        if os.path.exists(self.config["path"]) == False:
-            return []
-        l = os.listdir(os.path.join(self.config["path"], "Voice"))
+        _p = os.path.join(self.config["path"], "Voice")
+        if os.path.exists(_p) == False:
+            raise Exception(f"not exists {_p}")
+        l = os.listdir(_p)
 
         for _ in l:
             if "_" in _:
