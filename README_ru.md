@@ -11,7 +11,7 @@
 > **Переводчик текста с экрана для игр и не только!**
 
 
-### [Tutorial](http://38.46.30.10:8000/#/ru/) [Vedio](https://space.bilibili.com/592120404/video) [Discord](https://discord.com/invite/ErtDwVeAbB)
+### [Tutorial](https://lunatranslator.org/#/ru/) [Vedio](https://space.bilibili.com/592120404/video) [Discord](https://discord.com/invite/ErtDwVeAbB)
 
 
 ## Основные функции:

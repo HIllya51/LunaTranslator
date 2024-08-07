@@ -8,19 +8,19 @@
 
 <details>
   <summary>部分已内置解决的情况，不再会报错</summary>
-  <img src="https://image.lunatranslator.xyz/zh/cantstart/1.png">
-  <img src="https://image.lunatranslator.xyz/zh/cantstart/3.jpg">
+  <img src="https://image.lunatranslator.org/zh/cantstart/1.png">
+  <img src="https://image.lunatranslator.org/zh/cantstart/3.jpg">
 </details>
 
 #### **2. Error/PermissionError**
 
 如果软件被放到`Program Files`等特殊文件夹，可能会没有读写权限。请使用管理员权限运行。
 
-<img src="https://image.lunatranslator.xyz/zh/cantstart/6.png" width=400>
+<img src="https://image.lunatranslator.org/zh/cantstart/6.png" width=400>
 
 #### **3. 找不到重要组件**
 
-<img src="https://image.lunatranslator.xyz/zh/cantstart/2.jpg">
+<img src="https://image.lunatranslator.org/zh/cantstart/2.jpg">
 
 解决方法：关闭杀毒软件，无法关闭(如windows defender)则添加信任，然后重下。
 
@@ -30,6 +30,6 @@
 
 <details>
   <summary>对于windows defender，方法为：“病毒和威胁防护”->“排除项”->“添加或删除排除项”->“添加排除项”->“文件夹”，把Luna的文件夹添加进去</summary>
-  <img src="https://image.lunatranslator.xyz/zh/cantstart/4.png">
-  <img src="https://image.lunatranslator.xyz/zh/cantstart/3.png">
+  <img src="https://image.lunatranslator.org/zh/cantstart/4.png">
+  <img src="https://image.lunatranslator.org/zh/cantstart/3.png">
 </details>

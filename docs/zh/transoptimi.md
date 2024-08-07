@@ -8,7 +8,7 @@
 
 <details>
   <summary>示例</summary>
-  <img src="https://image.lunatranslator.xyz/zh/transoptimi/1.png">
+  <img src="https://image.lunatranslator.org/zh/transoptimi/1.png">
 </details>
 
 #### **2. 专有名词翻译 占位符**
@@ -20,9 +20,9 @@
 <details>
   <summary>示例</summary>
   建议使用：
-  <img src="https://image.lunatranslator.xyz/zh/transoptimi/2.png">
+  <img src="https://image.lunatranslator.org/zh/transoptimi/2.png">
   而不是：
-  <img src="https://image.lunatranslator.xyz/zh/transoptimi/3.png">
+  <img src="https://image.lunatranslator.org/zh/transoptimi/3.png">
 </details>
 
 
@@ -34,7 +34,7 @@
 
 <details>
   <summary>示例</summary>
-  <img src="https://image.lunatranslator.xyz/zh/transoptimi/4.png">
+  <img src="https://image.lunatranslator.org/zh/transoptimi/4.png">
 </details>
 
 #### **4. 翻译结果修正**

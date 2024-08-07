@@ -2,7 +2,7 @@
 # Иконка на панели задач
 
 
-![img](https://image.lunatranslator.xyz/ru/trayicon_ru.png) 
+![img](https://image.lunatranslator.org/ru/trayicon_ru.png) 
 
 Щелкните на значок левой кнопкой мыши, чтобы **отобразить окно программы**, щелкните еще раз, чтобы **скрыть его**.
 

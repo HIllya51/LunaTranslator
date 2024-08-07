@@ -6,7 +6,7 @@
 
 ?> 这一设置当且仅当从游戏中提取的文本是**HOOK引擎内部未指定编码**的**多字节字符串**时才有意义，当HOOK引擎内部已经指定了代码页，或者文本是**宽字符字符串**或者**UTF32**字符串时，这一设置没有任何意义
 
-这一设置一般没有修改的必要，当且仅当部分古老引擎(例如Yuris)的官方中文版可能会有GBK/BIG5/UTF8。如果找不到正确的文本，直接向我发[issue](https://lunatranslator.xyz/Resource/game_support)，修改这个设置通常是徒劳的。
+这一设置一般没有修改的必要，当且仅当部分古老引擎(例如Yuris)的官方中文版可能会有GBK/BIG5/UTF8。如果找不到正确的文本，直接向我发[issue](https://lunatranslator.org/Resource/game_support)，修改这个设置通常是徒劳的。
 
 **2. 移除非选定hook**
  
@@ -93,7 +93,7 @@ YAPI中如果游戏进程和Luna进程的位数相同，则会正常注入；若
 有时，需要游戏稍微运行一小会儿后，再插入特殊码。一般情况下不需要延迟，不需要动这个数值。
 
 
-![img](https://image.lunatranslator.xyz/zh/gamesettings/1.jpg)
+![img](https://image.lunatranslator.org/zh/gamesettings/1.jpg)
 
-![img](https://image.lunatranslator.xyz/zh/gamesettings/2.jpg)
+![img](https://image.lunatranslator.org/zh/gamesettings/2.jpg)
 

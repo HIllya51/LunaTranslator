@@ -8,9 +8,9 @@
 
 点击**绑定窗口**按钮，然后点击游戏窗口，按钮变成粉色，说明成功绑定了游戏窗口
 
-![img](https://image.lunatranslator.xyz/zh/gooduseocr/bind.png)
+![img](https://image.lunatranslator.org/zh/gooduseocr/bind.png)
 
-![img](https://image.lunatranslator.xyz/zh/gooduseocr/bindok.png)
+![img](https://image.lunatranslator.org/zh/gooduseocr/bindok.png)
 
 这时会有一些重要变化：
 

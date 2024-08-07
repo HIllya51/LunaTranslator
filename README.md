@@ -10,7 +10,7 @@
 
 > **一款galgame翻译器**
 
-### [使用说明](http://38.46.30.10:8000/#/zh/) [视频教程](https://space.bilibili.com/592120404/video) [QQ群](https://qm.qq.com/q/I5rr3uEpi2) [Discord](https://discord.com/invite/ErtDwVeAbB)
+### [使用说明](https://lunatranslator.org/#/zh/) [视频教程](https://space.bilibili.com/592120404/video) [QQ群](https://qm.qq.com/q/I5rr3uEpi2) [Discord](https://discord.com/invite/ErtDwVeAbB)
 
 ## 功能支持
 

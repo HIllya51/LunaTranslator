@@ -7,7 +7,7 @@
 1. Go to [the LunaTranslator releases page](https://github.com/HIllya51/LunaTranslator/releases)
 2. In the "Assets" section of the latest release, find and download the "LunaTranslator.zip" file
 3. Extract the contents of the ZIP file to any directory on your computer.
-![img](https://image.lunatranslator.xyz/zh/download.jpg)
+![img](https://image.lunatranslator.org/zh/download.jpg)
 
 ## How to Run
 There are two ways to launch LunaTranslator:

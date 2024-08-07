@@ -14,7 +14,7 @@ Choose your text output source. A pink ✓ indicates selection, while a gray × 
 
 - The default is clipboard mode, which automatically extracts and translates text from the clipboard.
 
-![img](https://image.lunatranslator.xyz/zh/5.jpg)
+![img](https://image.lunatranslator.org/zh/5.jpg)
 
 
 ## Translation Settings
@@ -41,7 +41,7 @@ You can select any number of translation engines without restriction.
 
 - Pre-translation supports fuzzy matching (particularly effective in OCR mode).
 
-![img](https://image.lunatranslator.xyz/zh/6.jpg)
+![img](https://image.lunatranslator.org/zh/6.jpg)
 
 
 ## HOOK设置
@@ -63,7 +63,7 @@ LocaleEmulator settings allow you to set the LocaleEmulator path (built-in for n
 
 [➔ See HOOK instructions for detailed usage](hooksetsumei.md)
 
-![img](https://image.lunatranslator.xyz/zh/21.jpg)
+![img](https://image.lunatranslator.org/zh/21.jpg)
 
  
 ## OCR Settings
@@ -82,7 +82,7 @@ In OCR mode, select your preferred OCR source.
 
 [➔ See OCR instructions for detailed usage](ocrsetsumei.md)
 
-![img](https://image.lunatranslator.xyz/zh/22.jpg)
+![img](https://image.lunatranslator.org/zh/22.jpg)
 
 
 ## Display Settings
@@ -100,22 +100,22 @@ In OCR mode, select your preferred OCR source.
 - "Selectable Mode" allows content selection within the translation window.
 
 
-![img](https://image.lunatranslator.xyz/zh/7.jpg)
+![img](https://image.lunatranslator.org/zh/7.jpg)
 
 The four font styles are shown below:
 
-![img](https://image.lunatranslator.xyz/zh/ziti1.jpg)
-![img](https://image.lunatranslator.xyz/zh/ziti2.jpg)
-![img](https://image.lunatranslator.xyz/zh/ziti3.jpg)
-![img](https://image.lunatranslator.xyz/zh/ziti4.jpg)
+![img](https://image.lunatranslator.org/zh/ziti1.jpg)
+![img](https://image.lunatranslator.org/zh/ziti2.jpg)
+![img](https://image.lunatranslator.org/zh/ziti3.jpg)
+![img](https://image.lunatranslator.org/zh/ziti4.jpg)
 
 Furigana (phonetic guide) display example:
 
-![img](https://image.lunatranslator.xyz/zh/jiaming.jpg)
+![img](https://image.lunatranslator.org/zh/jiaming.jpg)
 
 Tokenization (word segmentation) display example:
 
-![img](https://image.lunatranslator.xyz/zh/fenci.jpg)
+![img](https://image.lunatranslator.org/zh/fenci.jpg)
 
 
  
@@ -130,7 +130,7 @@ Tokenization (word segmentation) display example:
 
 - VOICEVOX is an open-source TTS engine, but it's relatively slow at Text-to-Speech.
 
-![img](https://image.lunatranslator.xyz/zh/8.jpg)
+![img](https://image.lunatranslator.org/zh/8.jpg)
 
 
  
@@ -153,7 +153,7 @@ This includes common settings and some advanced options.
 
 - Users familiar with Python can directly modify the LunaTranslator\LunaTranslator\postprocess\post.py file to implement custom processing.
 
-![img](https://image.lunatranslator.xyz/zh/10.jpg)
+![img](https://image.lunatranslator.org/zh/10.jpg)
 
 
 ## Dictionary Settings
@@ -167,22 +167,22 @@ With a dictionary configured, LunaTranslaotr can help you in your Japanese learn
 
 Note: Without MeCab, a basic built-in tokenizer will be used, providing limited furigana and segmentation without part-of-speech distinction.
 
-![img](https://image.lunatranslator.xyz/zh/cishu.jpg)
+![img](https://image.lunatranslator.org/zh/cishu.jpg)
 
 
-![img](https://image.lunatranslator.xyz/zh/fenci.jpg)
-![img](https://image.lunatranslator.xyz/zh/searchword.jpg)
-![img](https://image.lunatranslator.xyz/zh/searchword2.jpg)
+![img](https://image.lunatranslator.org/zh/fenci.jpg)
+![img](https://image.lunatranslator.org/zh/searchword.jpg)
+![img](https://image.lunatranslator.org/zh/searchword2.jpg)
 
 ## Resource Download and Update
 
 Automatic updates and links to commonly used resources.
 
-![img](https://image.lunatranslator.xyz/zh/down.jpg)
+![img](https://image.lunatranslator.org/zh/down.jpg)
  
 
 ## Hotkey Settings
 
 Enable the use of hotkeys, where you can activate and configure specific hotkey settings as desired.
 
-![img](https://image.lunatranslator.xyz/zh/quick.jpg)
+![img](https://image.lunatranslator.org/zh/quick.jpg)

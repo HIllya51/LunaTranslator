@@ -6,11 +6,11 @@
   如果只是有多个不同的密钥想要轮询，只需用|分割就可以了。<br>
   但有时想要同时使用多个不同的api接口地址/prompt/model/参数等来对比翻译效果。方法是：<br>
   点击右下方的“+”按钮
-  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi1.png">
+  <img src="https://image.lunatranslator.org/zh/damoxing/extraapi1.png">
   弹出一个窗口，选择ChatGPT兼容接口（或专用接口），并为之取个名字。这样会复制一份当前ChatGPT兼容接口（或专用接口）的设置和api。
-  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi2.png">
+  <img src="https://image.lunatranslator.org/zh/damoxing/extraapi2.png">
   激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
-  <img src="https://image.lunatranslator.xyz/zh/damoxing/extraapi3.png">
+  <img src="https://image.lunatranslator.org/zh/damoxing/extraapi3.png">
 </details>
 
 
@@ -62,7 +62,7 @@
 
 **model** 创建[推理接入点](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10)后，填入**接入点**而非**模型**
 
-![img](https://image.lunatranslator.xyz/zh/damoxing/doubao.png)
+![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
 
 
 ### **月之暗面**
@@ -151,8 +151,8 @@
 
 **model** 应填写百度接口文档中的**请求地址**的尾部，例如：
 
-![img](https://image.lunatranslator.xyz/zh/damoxing/qianfan1.png)
+![img](https://image.lunatranslator.org/zh/damoxing/qianfan1.png)
 
-![img](https://image.lunatranslator.xyz/zh/damoxing/qianfan2.png)
+![img](https://image.lunatranslator.org/zh/damoxing/qianfan2.png)
 
 <!-- tabs:end -->

@@ -1,6 +1,6 @@
 ## OCR自动化执行方法的参数含义
 
-![img](https://image.lunatranslator.xyz/zh/ocrauto.png)
+![img](https://image.lunatranslator.org/zh/ocrauto.png)
 
 #### 文本相似度阈值
 

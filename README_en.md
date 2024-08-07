@@ -11,7 +11,7 @@
 > **A galgame translator**
 
 
-### [Tutorial](http://38.46.30.10:8000/#/en/) [Vedio](https://space.bilibili.com/592120404/video) [Discord](https://discord.com/invite/ErtDwVeAbB)
+### [Tutorial](https://lunatranslator.org/#/en/) [Vedio](https://space.bilibili.com/592120404/video) [Discord](https://discord.com/invite/ErtDwVeAbB)
 
 
 ## Features

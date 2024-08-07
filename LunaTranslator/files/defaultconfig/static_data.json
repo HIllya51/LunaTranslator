@@ -1912,10 +1912,12 @@
         "miniaudio"
     ],
     "main_server": [
+        "https://lunatranslator.org",
         "https://lunatranslator.xyz",
         "http://38.46.30.10:5000"
     ],
     "docs_server": [
+        "https://docs.lunatranslator.org",
         "https://docs.lunatranslator.xyz",
         "http://38.46.30.10:8000"
     ]
