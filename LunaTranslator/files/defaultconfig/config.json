@@ -17,7 +17,7 @@
     "read_translator": 0,
     "disappear_delay": 5,
     "network": 1,
-    "useextrahtml": false,
+    "useextrahtml": true,
     "network_websocket": 1,
     "webview_textbrowser": false,
     "imagewrapmode": 0,
