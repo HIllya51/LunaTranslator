@@ -94,14 +94,12 @@ class gptcommon(basetrans):
                     msg = json_data["choices"][0]["delta"].get("content", None)
                     if not msg:
                         continue
-                    yield msg
                     message += msg
-                
-                except GeneratorExit:
-                    return
+
                 except:
                     print_exc()
                     raise Exception(response_data)
+                yield msg
         else:
             try:
 
@@ -110,9 +108,9 @@ class gptcommon(basetrans):
                     .replace("\n\n", "\n")
                     .strip()
                 )
-                yield message
             except:
                 raise Exception(response.text)
+            yield message
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": message})
 

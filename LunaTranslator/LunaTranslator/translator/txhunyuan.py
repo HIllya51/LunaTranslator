@@ -189,9 +189,8 @@ class TS(basetrans):
                 message = response.json()["Response"]["Choices"][0]["Message"][
                     "Content"
                 ]
-                yield message
             except:
                 raise Exception(response.text)
-
+            yield message
         self.context.append({"Role": "user", "Content": query})
         self.context.append({"Role": "assistant", "Content": message})

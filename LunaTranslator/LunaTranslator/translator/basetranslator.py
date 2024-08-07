@@ -384,9 +384,6 @@ class basetrans(commonbase):
                             __callback(res, 0)
                     if all([_ is not None for _ in collectiterres]):
                         self.cachesetatend(contentsolved, "".join(collectiterres))
-
-            except GeneratorExit:
-                pass
             except Exception as e:
                 if self.using and globalconfig["showtranexception"]:
                     if isinstance(e, ArgsEmptyExc):

@@ -63,19 +63,18 @@ class TS(basetrans):
                 try:
                     json_data = json.loads(response_data[6:])
                     msg = json_data["result"].replace("\n\n", "\n").strip()
-                    yield msg
                     message += msg
-                except GeneratorExit:
-                    return
+
                 except:
                     print_exc()
                     raise Exception(response_data)
+                yield msg
         else:
             try:
                 message = response.json()["result"].replace("\n\n", "\n").strip()
-                yield message
             except:
                 raise Exception(response.text)
+            yield message
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": message})
 
