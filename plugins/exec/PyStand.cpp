@@ -1,4 +1,4 @@
-
+﻿
 #include "PyStand.h"
 
 //---------------------------------------------------------------------
@@ -317,6 +317,12 @@ int WINAPI
 WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
 #endif
 {
+	{
+		// 当更新进行时，禁止启动
+		AutoHandle hMutex = CreateMutex(NULL, FALSE, L"LUNA_UPDATER_SINGLE");
+		if (GetLastError() == ERROR_ALREADY_EXISTS)
+			return 0;
+	}
 	auto __handle = AutoHandle(CreateMutexA(&allAccess, FALSE, "LUNA_UPDATER_BLOCK"));
 	PyStand ps(L"LunaTranslator\\runtime");
 	if (ps.DetectScript() != 0)

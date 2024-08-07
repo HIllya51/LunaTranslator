@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, io, time
 
 
 def prepareqtenv():
@@ -142,6 +142,7 @@ def checkpermission():
 
     try:
         os.makedirs("userconfig", exist_ok=True)
+        os.makedirs("logs", exist_ok=True)
     except PermissionError:
         msg = QMessageBox()
         msg.setText(_TR("权限不足，请以管理员权限运行！"))
@@ -167,6 +168,38 @@ def switchdir():
         pass
 
 
+class debugoutput(io.IOBase):
+    file = None
+
+    def __init__(self, file=sys.stdout) -> None:
+        super().__init__()
+        self.originfile = file
+
+    def write(self, data):
+        if self.originfile:
+            self.originfile.write(data)
+        try:
+            if self.file is None:
+                self.file = open(
+                    f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
+                    "w",
+                    errors="ignore",
+                )
+            self.file.write(data)
+            self.file.flush()
+        except:
+            pass
+
+    def flush(self):
+        if self.originfile:
+            self.originfile.flush()
+
+
+def savelogs():
+    sys.stderr = debugoutput(sys.stderr)
+    sys.stdout = debugoutput(sys.stdout)
+
+
 if __name__ == "__main__":
     switchdir()
     prepareqtenv()
@@ -177,5 +210,6 @@ if __name__ == "__main__":
     checklang()
     checkintegrity()
     checkpermission()
+    savelogs()
     loadmainui()
     app.exit(app.exec())
