@@ -31,7 +31,7 @@ def tryqueryfromhost():
 
             return _version, res
         except:
-            print_exc()
+            pass
 
 
 def tryqueryfromgithub():

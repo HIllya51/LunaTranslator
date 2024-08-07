@@ -22,3 +22,13 @@ body:
       尽可能详细描述错误产生的细节。
   validations:
     required: true
+
+- type: textarea
+  attributes:
+    label: Logs 日志文件
+    description: >
+      Please provide me with the latest txt log file in the logs directory.
+      
+      将logs目录下最新的txt日志文件给我。
+  validations:
+    required: true
