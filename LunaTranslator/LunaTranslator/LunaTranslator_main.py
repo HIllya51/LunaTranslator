@@ -1,4 +1,4 @@
-import sys, os, io, time, threading
+import sys, os, io, time, threading, queue
 
 
 def prepareqtenv():
@@ -170,45 +170,39 @@ def switchdir():
 
 class Lockedfile:
     def __init__(self) -> None:
-        self.file = None
-        self.lock = threading.Lock()
+        self.collect = queue.Queue()
+        threading.Thread(target=self.__write).start()
+
+    def __write(self):
+        data = self.collect.get()
+        file = open(
+            f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
+            "w",
+            errors="ignore",
+        )
+        while True:
+            file.write(data)
+            file.flush()
+            data = self.collect.get()
 
     def write(self, data):
-        try:
-            self._write(data)
-        except:
-            pass
-
-    def _write(self, data):
-        with self.lock:
-            if self.file is None:
-                self.file = open(
-                    f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
-                    "w",
-                    errors="ignore",
-                )
-            self.file.write(data)
-            self.file.flush()
+        self.collect.put(data)
 
 
 lockedfile = Lockedfile()
 
 
 class debugoutput(io.IOBase):
-    file = None
-
-    def __init__(self, file=sys.stdout) -> None:
+    def __init__(self, file: io.TextIOBase) -> None:
         super().__init__()
         self.originfile = file
 
     def write(self, data):
-        if self.originfile:
-            self.originfile.write(data)
+        self.originfile.write(data)
         lockedfile.write(data)
 
     def flush(self):
-        if self.originfile:
-            self.originfile.flush()
+        self.originfile.flush()
 
 
 def savelogs():
