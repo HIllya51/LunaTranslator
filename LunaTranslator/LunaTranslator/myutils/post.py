@@ -2,7 +2,13 @@ import re, codecs, inspect
 from traceback import print_exc
 from collections import Counter
 import gobject
-from myutils.utils import checkchaos, checkmd5reloadmodule, LRUCache, getlangsrc, parsemayberegexreplace
+from myutils.utils import (
+    checkchaos,
+    checkmd5reloadmodule,
+    LRUCache,
+    getlangsrc,
+    parsemayberegexreplace,
+)
 from myutils.config import (
     postprocessconfig,
     globalconfig,
@@ -362,11 +368,11 @@ def POSTSOLVE(line):
         "_6EX": _6_fEX,
         "_91": _91_f,
         "_92": _92_f,
-        "_7": _7_f,
-        "_8": _8_f,
+        "_7": _7_f,  # depracated
+        "_8": _8_f,  # depracated
         "_13": _13_f,
         "_13EX": _13_fEX,
-        "_7_zhuanyi": _7_zhuanyi_f,
+        "_7_zhuanyi": _7_zhuanyi_f,  # depracated
         "_remove_non_shiftjis_char": _remove_non_shiftjis_char,
         "_remove_control": _remove_control,
         "_remove_chaos": _remove_chaos,

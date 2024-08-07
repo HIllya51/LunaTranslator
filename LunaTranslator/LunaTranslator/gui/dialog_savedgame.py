@@ -1340,17 +1340,20 @@ class dialog_setting_game_internal(QWidget):
             _dict["postprocessconfig"].pop(post)
 
     def __privatetextproc_btn1(self):
-        __viss = [
-            postprocessconfig[_internal]["name"] for _internal in postprocessconfig
-        ]
 
-        def __callback(d):
-            __ = list(postprocessconfig.keys())[d["k"]]
+        __viss = []
+        _internal = []
+        for xx in postprocessconfig:
             __list = savehook_new_data[self.__privatetextproc_gameuid][
                 "save_text_process_info"
             ]["rank"]
-            if __ in __list:
-                return
+            if xx in __list:
+                continue
+            __viss.append(postprocessconfig[xx]["name"])
+            _internal.append(xx)
+
+        def __callback(_internal, d):
+            __ = _internal[d["k"]]
             __list.insert(0, __)
             self.__checkaddnewmethod(0, __)
 
@@ -1369,7 +1372,7 @@ class dialog_setting_game_internal(QWidget):
                 },
                 {
                     "type": "okcancel",
-                    "callback": functools.partial(__callback, __d),
+                    "callback": functools.partial(__callback, _internal, __d),
                 },
             ],
         )

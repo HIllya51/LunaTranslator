@@ -427,7 +427,7 @@ if ocrerrorfix == {}:
         ocrerrorfix = postprocessconfig["_100"]
     else:
         ocrerrorfix = ocrerrorfixdefault
-syncconfig(postprocessconfig, defaultpost, True, 3)
+syncconfig(postprocessconfig, defaultpost, deep=3)
 
 
 if needcast:
