@@ -96,7 +96,9 @@ class gptcommon(basetrans):
                         continue
                     yield msg
                     message += msg
-
+                
+                except GeneratorExit:
+                    return
                 except:
                     print_exc()
                     raise Exception(response_data)

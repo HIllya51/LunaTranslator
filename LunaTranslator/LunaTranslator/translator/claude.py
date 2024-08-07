@@ -118,6 +118,8 @@ class TS(basetrans):
                             msg = json_data["content_block"]["text"]
                             yield msg
                             message += msg
+                    except GeneratorExit:
+                        return
                     except:
                         print_exc()
                         raise Exception(response_data)

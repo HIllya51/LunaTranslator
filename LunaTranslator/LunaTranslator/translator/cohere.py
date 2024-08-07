@@ -155,6 +155,8 @@ class TS(basetrans):
                     elif t == "stream-end":
                         break
 
+                except GeneratorExit:
+                    return
                 except:
                     print_exc()
                     raise Exception(response_data)
