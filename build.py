@@ -4,6 +4,16 @@ import subprocess, time
 import urllib.request
 from urllib.parse import urljoin
 
+rootDir = os.path.dirname(__file__)
+if sys.argv[1] == "loadversion":
+    os.chdir(rootDir)
+    with open("plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
+        pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
+        match = re.findall(pattern, ff.read())[0]
+        version_major, version_minor, version_patch = match
+        versionstring = f"v{version_major}.{version_minor}.{version_patch}"
+        print("version=" + versionstring)
+        exit()
 # 继github被封后，域名又被封了。真是走了狗屎运了。这个世界上到底还有什么是能信任的。
 # 暂时先这样吧。在软件内使用重定向链接，因为链接失效没办法及时更新；在github网站或文档内，用直链。
 with open(
@@ -88,11 +98,6 @@ LunaHook_latest = dynalink(
 )
 
 LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
-
-# rootDir = os.path.dirname(os.path.abspath(__file__))
-# print(__file__)
-# print(rootDir)
-rootDir = os.path.dirname(__file__)
 
 
 def createPluginDirs():
@@ -299,15 +304,6 @@ def downloadsomething():
 
 
 if __name__ == "__main__":
-    if sys.argv[1] == "loadversion":
-        os.chdir(rootDir)
-        with open("plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
-            pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
-            match = re.findall(pattern, ff.read())[0]
-            version_major, version_minor, version_patch = match
-            versionstring = f"v{version_major}.{version_minor}.{version_patch}"
-            print("version=" + versionstring)
-            exit()
     arch = sys.argv[1]
     version = sys.argv[2]
     os.chdir(rootDir)
