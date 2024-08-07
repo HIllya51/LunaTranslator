@@ -7,6 +7,13 @@ body:
     label: Version 程序版本
   validations:
     required: true
+- type: input
+  attributes:
+    label: OS version and bits 系统版本和位数
+    placeholder: >
+      e.g. windows 7 sp1 32 bits, windows 11 23H2 64 bits
+  validations:
+    required: true
 - type: textarea
   attributes:
     label: bug's screenshot 错误截图
@@ -25,10 +32,10 @@ body:
 
 - type: textarea
   attributes:
-    label: Logs 日志文件
+    label: Log files 日志文件
     description: >
-      Please provide me with the latest txt log file in the logs directory.
+      View log files in the "logs" directory. Please upload the log file as an attachment instead of copying its contents.
       
-      将logs目录下最新的txt日志文件给我。
+      在"logs"目录中获取日志文件。请将日志文件以附件的形式上传，而不是将其中的内容复制。
   validations:
     required: true
