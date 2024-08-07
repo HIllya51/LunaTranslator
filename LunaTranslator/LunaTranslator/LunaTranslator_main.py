@@ -178,6 +178,7 @@ class Lockedfile:
         file = open(
             f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
             "w",
+            encoding="utf8",
             errors="ignore",
         )
         while True:
