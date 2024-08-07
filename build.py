@@ -2,6 +2,7 @@ import os, sys, re, json
 import shutil, json
 import subprocess, time
 import urllib.request
+from urllib.parse import urljoin
 
 # 继github被封后，域名又被封了。真是走了狗屎运了。这个世界上到底还有什么是能信任的。
 # 暂时先这样吧。在软件内使用重定向链接，因为链接失效没办法及时更新；在github网站或文档内，用直链。
@@ -43,7 +44,7 @@ links302 = {
 
 def _dynalink(path: str):
     if hostserver:
-        return hostserver + path
+        return urljoin(hostserver, path)
     pathx = path.split("/")
     if pathx[0] == "Github":
         return (
