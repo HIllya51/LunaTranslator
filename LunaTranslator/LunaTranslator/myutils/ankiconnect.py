@@ -91,22 +91,14 @@ class Card:
 class Model:
     @staticmethod
     def create(modelName, inOrderFields: list, css, isCloze, cardTemplates):
-        try:
-            print(
-                invoke(
-                    "createModel",
-                    modelName=modelName,
-                    inOrderFields=inOrderFields,
-                    css=css,
-                    isCloze=isCloze,
-                    cardTemplates=cardTemplates,
-                )
-            )
-        except AnkiException as e:
-            if str(e) == "Model name already exists":
-                pass
-            else:
-                raise e
+        invoke(
+            "createModel",
+            modelName=modelName,
+            inOrderFields=inOrderFields,
+            css=css,
+            isCloze=isCloze,
+            cardTemplates=cardTemplates,
+        )
         return Model(modelName)
 
     def __init__(self, name):
