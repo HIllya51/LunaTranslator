@@ -493,7 +493,8 @@ class autosql(sqlite3.Connection):
         self.close()
 
 
-def parsemayberegexreplace_(lst: list, line: str):
+@tryprint
+def parsemayberegexreplace(lst: list, line: str):
     for fil in lst:
         regex = fil.get("regex", False)
         escape = fil.get("escape", regex)
@@ -506,28 +507,22 @@ def parsemayberegexreplace_(lst: list, line: str):
                 line = re.sub(
                     codecs.escape_decode(bytes(key, "utf-8"))[0].decode("utf-8"),
                     codecs.escape_decode(bytes(value, "utf-8"))[0].decode("utf-8"),
+                    line,
                 )
 
             else:
 
-                line = re.sub(key, value)
+                line = re.sub(key, value, line)
         else:
             if escape:
                 line = line.replace(
                     codecs.escape_decode(bytes(key, "utf-8"))[0].decode("utf-8"),
-                    codecs.escape_decode(bytes(value, "utf-8"))[0].decode("utf-8"),
+                    codecs.escape_decode(bytes(value, "utf-8"))[0].decode("utf-8")
                 )
             else:
                 line = line.replace(key, value)
 
     return line
-
-
-def parsemayberegexreplace(lst: list, line: str):
-    try:
-        return parsemayberegexreplace_(lst, line)
-    except:
-        return line
 
 
 def checkpostlangmatch(name):
