@@ -10,6 +10,7 @@ with open(
 ) as ff:
     data = json.loads(ff.read())
 hostservers = data["main_server"]
+print(hostservers)
 hostserver = None
 
 for _hostserver in hostservers:
@@ -19,6 +20,7 @@ for _hostserver in hostservers:
         break
     except:
         pass
+print(hostserver)
 links302 = {
     "Github": {
         "LunaTranslator": "HIllya51/LunaTranslator",
@@ -39,7 +41,7 @@ links302 = {
 }
 
 
-def dynalink(path: str):
+def _dynalink(path: str):
     if hostserver:
         return hostserver + path
     pathx = path.split("/")
@@ -51,6 +53,12 @@ def dynalink(path: str):
             + "/".join(pathx[2:])
         )
     return links302.get(pathx[0]).get(pathx[1]).get(pathx[2])
+
+
+def dynalink(path):
+    _ = _dynalink(path)
+    print(_)
+    return _
 
 
 pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "LunaHook", "Magpie", "NTLEAS"]
