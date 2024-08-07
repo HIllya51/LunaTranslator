@@ -1,4 +1,4 @@
-import sys, os, io, time
+import sys, os, io, time, threading
 
 
 def prepareqtenv():
@@ -168,6 +168,32 @@ def switchdir():
         pass
 
 
+class Lockedfile:
+    def __init__(self) -> None:
+        self.file = None
+        self.lock = threading.Lock()
+
+    def write(self, data):
+        try:
+            self._write(data)
+        except:
+            pass
+
+    def _write(self, data):
+        with self.lock:
+            if self.file is None:
+                self.file = open(
+                    f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
+                    "w",
+                    errors="ignore",
+                )
+            self.file.write(data)
+            self.file.flush()
+
+
+lockedfile = Lockedfile()
+
+
 class debugoutput(io.IOBase):
     file = None
 
@@ -178,17 +204,7 @@ class debugoutput(io.IOBase):
     def write(self, data):
         if self.originfile:
             self.originfile.write(data)
-        try:
-            if self.file is None:
-                self.file = open(
-                    f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
-                    "w",
-                    errors="ignore",
-                )
-            self.file.write(data)
-            self.file.flush()
-        except:
-            pass
+        lockedfile.write(data)
 
     def flush(self):
         if self.originfile:
