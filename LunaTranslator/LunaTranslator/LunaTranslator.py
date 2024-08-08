@@ -1232,6 +1232,7 @@ class MAINUI:
         winsharedutils.globalmessagelistener(self.messagecallback__)
         self.inittray()
         self.createsavegamedb()
+        self.__count = 0
 
     def openlink(self, file):
         if file.startswith("http") and checkisusingwine():
@@ -1242,7 +1243,9 @@ class MAINUI:
     def messagecallback(self, msg, param):
         if msg == 0:
             if globalconfig["darklight2"] == 0:
-                self.commonstylebase.setstylesheetsignal.emit()
+                self.__count += 1
+                if self.__count % 2:
+                    self.commonstylebase.setstylesheetsignal.emit()
         elif msg == 1:
             if bool(param):
                 windows.BringWindowToTop(int(self.translation_ui.winid))
