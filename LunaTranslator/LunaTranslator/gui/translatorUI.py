@@ -1239,16 +1239,12 @@ class QUnFrameWindow(resizableframeless):
 
                 gobject.baseobject.textsource = None
             endsubprocs()
-            try:
+            gobject.baseobject.destroytray()
+            handle = windows.CreateMutex(False, "LUNASAVECONFIGUPDATE")
+            if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
                 saveallconfig()
                 self.tryremoveuseless()
-            except:
-                print_exc()
-            gobject.baseobject.destroytray()
-            handle = windows.CreateMutex(False, "LUNASAVECONFIG")
-            if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
                 doupdate()
-            else:
                 windows.CloseHandle(handle)
             os._exit(0)
 
