@@ -18,7 +18,7 @@ from myutils.utils import (
     makehtml,
     loadpostsettingwindowmethod_maybe,
 )
-from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getpidexe
+from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getpidexe, getcurrexe
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
@@ -846,7 +846,7 @@ class QUnFrameWindow(resizableframeless):
             | Qt.WindowType.WindowMinimizeButtonHint,
             poslist=globalconfig["transuigeo"],
         )  # 设置为顶级窗口，无边框
-        icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()
+        icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
         self.firstshow = True

@@ -28,7 +28,7 @@ from myutils.utils import (
 )
 from myutils.wrapper import threader
 from gui.showword import searchwordW
-from myutils.hwnd import getpidexe, ListProcess, getExeIcon
+from myutils.hwnd import getpidexe, ListProcess, getExeIcon, getcurrexe
 from textsource.copyboard import copyboard
 from textsource.texthook import texthook
 from textsource.ocrtext import ocrtext
@@ -1131,7 +1131,7 @@ class MAINUI:
         trayMenu.addAction(quitAction)
         self.tray = QSystemTrayIcon()
 
-        icon = getExeIcon(sys.argv[0])  #'./LunaTranslator.exe')# QIcon()
+        icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
         self.tray.setIcon(icon)
 
         self.tray.activated.connect(self.translation_ui.leftclicktray)

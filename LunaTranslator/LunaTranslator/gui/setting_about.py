@@ -3,6 +3,7 @@ import platform, functools, sys
 import winsharedutils, queue
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader, tryprint
+from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
 import requests
 import shutil, gobject
@@ -158,7 +159,7 @@ def versioncheckthread(self):
         else:
             sversion = _version[0]
         self.versiontextsignal.emit(sversion)
-        version = winsharedutils.queryversion(sys.argv[0])
+        version = winsharedutils.queryversion(getcurrexe())
         need = (
             version
             and _version
@@ -288,7 +289,7 @@ def setTab_aboutlazy(self, basel):
 
 
 def setTab_update(self, basel):
-    version = winsharedutils.queryversion(sys.argv[0])
+    version = winsharedutils.queryversion(getcurrexe())
     if version is None:
         versionstring = "unknown"
     else:

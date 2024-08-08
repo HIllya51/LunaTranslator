@@ -103,6 +103,10 @@ def getpidexe(pid):
     return name_
 
 
+def getcurrexe():
+    return os.environ.get("LUNA_EXE_NAME", "")
+
+
 def test_injectable_1(pid):
     return bool(
         windows.AutoHandle(
