@@ -24,7 +24,7 @@ class Process:
         noundictconfigdialog1(
             parent_window,
             savehook_new_data[gameuid]["namemap2"],
-            "专有名词翻译_直接替换_设置",
+            "专有名词翻译_直接替换_-_" + savehook_new_data[gameuid]["title"],
             ["正则",'转义', "原文", "翻译"],
         ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
 
