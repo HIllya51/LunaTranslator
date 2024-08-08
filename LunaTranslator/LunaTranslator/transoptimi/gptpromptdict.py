@@ -11,7 +11,7 @@ class Process:
         return postconfigdialog_(
             parent_window,
             globalconfig["gptpromptdict"],
-            "专有名词翻译_sakura_gpt_词典",
+            "专有名词翻译_sakura_gpt_词典_设置",
             ["原文", "翻译", "注释"],
             dictkeys=["src", "dst", "info"],
         )
@@ -21,7 +21,7 @@ class Process:
         postconfigdialog_(
             parent_window,
             savehook_new_data[gameuid]["gptpromptdict"],
-            "专有名词翻译_sakura_gpt_词典",
+            "专有名词翻译_sakura_gpt_词典_-_" + savehook_new_data[gameuid]["title"],
             ["原文", "翻译", "注释"],
             dictkeys=["src", "dst", "info"],
         ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))

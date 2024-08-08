@@ -220,7 +220,7 @@ class Process:
         return noundictconfigdialog_private(
             parent_window,
             savehook_new_data[gameuid]["noundictconfig"],
-            "专有名词翻译_占位符",
+            "专有名词翻译_占位符_-_" + savehook_new_data[gameuid]["title"],
         ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
 
     @staticmethod
@@ -229,7 +229,7 @@ class Process:
             noundictconfigdialog(
                 parent_window,
                 noundictconfig["dict"],
-                "专有名词翻译_占位符",
+                "专有名词翻译_占位符_设置",
             ),
         )
 
