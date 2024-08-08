@@ -50,15 +50,6 @@ def grabwindow(app="PNG", callback_origin=None):
             callback(fname + "_winrt_magpie." + app)
 
         _()
-    hwnd = windows.FindWindow("LosslessScaling", None)
-    if hwnd:
-
-        @threader
-        def _():
-            winrtutils._winrt_capture_window(fname + "_winrt_lossless." + app, hwnd)
-            callback(fname + "_winrt_lossless." + app)
-
-        _()
     try:
         hwnd = gobject.baseobject.textsource.hwnd
         if not hwnd:

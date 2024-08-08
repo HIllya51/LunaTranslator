@@ -438,12 +438,10 @@ def minmaxmoveobservefunc(self):
                         hwndmagpie = windows.FindWindow(
                             "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
                         )
-                        hwndlossless = windows.FindWindow("LosslessScaling", None)
                         if (
                             len(gobject.baseobject.textsource.pids) == 0
                             or _focusp in gobject.baseobject.textsource.pids
                             or hwnd == hwndmagpie
-                            or hwnd == hwndlossless
                         ):
                             gobject.baseobject.translation_ui.thistimenotsetop = False
                             gobject.baseobject.translation_ui.settop()

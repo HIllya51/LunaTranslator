@@ -1243,9 +1243,9 @@ class MAINUI:
     def messagecallback(self, msg, param):
         if msg == 0:
             if globalconfig["darklight2"] == 0:
-                self.__count += 1
                 if self.__count % 2:
                     self.commonstylebase.setstylesheetsignal.emit()
+                self.__count += 1
         elif msg == 1:
             if bool(param):
                 windows.BringWindowToTop(int(self.translation_ui.winid))
