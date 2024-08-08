@@ -1,5 +1,5 @@
 import time, uuid
-import os, threading, sys, re, codecs
+import os, threading, re, codecs, winreg
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -10,10 +10,10 @@ from myutils.config import (
     findgameuidofpath,
     savehook_new_data,
     static_data,
-    tryreadconfig,
     getlanguse,
     set_font_default,
 )
+from ctypes import c_int, CFUNCTYPE, c_void_p
 import sqlite3
 from myutils.utils import (
     minmaxmoveobservefunc,
@@ -26,7 +26,7 @@ from myutils.utils import (
     targetmod,
     translate_exits,
 )
-from myutils.wrapper import threader
+from myutils.wrapper import threader, tryprint
 from gui.showword import searchwordW
 from myutils.hwnd import getpidexe, ListProcess, getExeIcon, getcurrexe
 from textsource.copyboard import copyboard
@@ -1106,40 +1106,34 @@ class MAINUI:
         )
 
     def inittray(self):
-
+        self.tray = QSystemTrayIcon()
+        self.tray.setIcon(getExeIcon(getcurrexe()))
         trayMenu = LMenu(self.commonstylebase)
-        showAction = LAction(
-            ("&显示"),
-            trayMenu,
-            triggered=self.translation_ui.show_,
-        )
-        settingAction = LAction(
-            qtawesome.icon("fa.gear"),
-            ("&设置"),
-            trayMenu,
-            triggered=lambda: self.settin_ui.showsignal.emit(),
-        )
-        quitAction = LAction(
-            qtawesome.icon("fa.times"),
-            ("&退出"),
-            trayMenu,
-            triggered=self.translation_ui.close,
-        )
+        showAction = LAction("&显示", trayMenu)
+        showAction.triggered.connect(self.translation_ui.show_)
+        settingAction = LAction(qtawesome.icon("fa.gear"), "&设置", trayMenu)
+        settingAction.triggered.connect(self.settin_ui.showsignal)
+        quitAction = LAction(qtawesome.icon("fa.times"), "&退出", trayMenu)
+        quitAction.triggered.connect(self.translation_ui.close)
         trayMenu.addAction(showAction)
         trayMenu.addAction(settingAction)
         trayMenu.addSeparator()
         trayMenu.addAction(quitAction)
-        self.tray = QSystemTrayIcon()
-
-        icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
-        self.tray.setIcon(icon)
-
-        self.tray.activated.connect(self.translation_ui.leftclicktray)
-        self.tray.show()
+        trayMenu.addAction(showAction)
+        trayMenu.addAction(settingAction)
+        trayMenu.addSeparator()
+        trayMenu.addAction(quitAction)
         self.tray.setContextMenu(trayMenu)
+        self.tray.activated.connect(self.leftclicktray)
+        self.tray.messageClicked.connect(winsharedutils.dispatchcloseevent)
+        self.tray.show()
+
+    def leftclicktray(self, reason):
+        if reason == QSystemTrayIcon.ActivationReason.Trigger:
+            self.translation_ui.showhideui()
 
     def showtraymessage(self, title, message):
-        self.tray.showMessage(_TR(title), _TR(message), QSystemTrayIcon.MessageIcon())
+        self.tray.showMessage(_TR(title), _TR(message), getExeIcon(getcurrexe()))
 
     def destroytray(self):
         self.tray.hide()
@@ -1234,7 +1228,8 @@ class MAINUI:
             target=minmaxmoveobservefunc, args=(self.translation_ui,)
         ).start()
         threading.Thread(target=self.checkgameplayingthread).start()
-        threading.Thread(target=self.darklistener).start()
+        self.messagecallback__ = CFUNCTYPE(None, c_int, c_void_p)(self.messagecallback)
+        winsharedutils.globalmessagelistener(self.messagecallback__)
         self.inittray()
         self.createsavegamedb()
 
@@ -1244,14 +1239,15 @@ class MAINUI:
             return
         return os.startfile(file)
 
-    def darklistener(self):
-        sema = winsharedutils.startdarklistener()
-        while True:
-            # 会触发两次
-            windows.WaitForSingleObject(sema, windows.INFINITE)
+    def messagecallback(self, msg, param):
+        if msg == 0:
             if globalconfig["darklight2"] == 0:
                 self.commonstylebase.setstylesheetsignal.emit()
-            windows.WaitForSingleObject(sema, windows.INFINITE)
+        elif msg == 1:
+            if bool(param):
+                windows.BringWindowToTop(int(self.translation_ui.winid))
+        elif msg == 2:
+            self.translation_ui.closesignal.emit()
 
     def installeventfillter(self):
         class WindowEventFilter(QObject):
@@ -1284,3 +1280,18 @@ class MAINUI:
                 targetmod[k] = importlib.import_module(f"metadata.{k}").searcher(k)
             except:
                 print_exc()
+
+    @tryprint
+    def urlprotocol(self):
+
+        key = winreg.CreateKey(
+            winreg.HKEY_CURRENT_USER, r"Software\Classes\lunatranslator"
+        )
+        winreg.SetValue(key, None, winreg.REG_SZ, "URL:lunatranslator")
+        winreg.SetValueEx(key, r"URL Protocol", 0, winreg.REG_SZ, "")
+        keysub = winreg.CreateKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Classes\lunatranslator\shell\open\command",
+        )
+        command = f'"{getcurrexe()}" --URLProtocol "%1"'
+        winreg.SetValue(keysub, r"", winreg.REG_SZ, command)

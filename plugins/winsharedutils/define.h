@@ -3,7 +3,6 @@
 extern "C"
 {
 
-    __declspec(dllexport) HANDLE startdarklistener();
     __declspec(dllexport) bool queryversion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4);
 
     __declspec(dllexport) void SAPI_List(int version, void (*cb)(const wchar_t *));

@@ -17,7 +17,7 @@ import os
 import gobject, functools
 from traceback import print_exc
 from qtsymbols import *
-from gui.usefulwidget import LFocusCombo, getboxlayout
+from gui.usefulwidget import LFocusCombo, getboxlayout, getQMessageBox
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 
 
@@ -140,7 +140,7 @@ def dodownload(combo: QComboBox, allsupports: list):
     )
 
 
-def doinstall(combo: QComboBox, allsupports: list, parent, callback):
+def doinstall(self, combo: QComboBox, allsupports: list, parent, callback):
     lang = allsupports[combo.currentIndex()]
     f = QFileDialog.getOpenFileName(parent, filter=lang + ".zip")
     fn = f[0]
@@ -149,8 +149,7 @@ def doinstall(combo: QComboBox, allsupports: list, parent, callback):
     try:
         with zipfile.ZipFile(fn) as zipf:
             zipf.extractall("files/ocr")
-
-        gobject.baseobject.showtraymessage("", "安装成功")
+        getQMessageBox(self, "成功", "安装成功")
         callback()
     except:
         print_exc()
@@ -181,7 +180,7 @@ def question(dialog: QDialog):
     btndownload.clicked.connect(functools.partial(dodownload, combo, allsupports))
     btninstall = LPushButton("添加")
     btninstall.clicked.connect(
-        functools.partial(doinstall, combo, allsupports, dialog, callback)
+        functools.partial(doinstall, dialog, combo, allsupports, dialog, callback)
     )
     formLayout.addRow(
         "添加语言包",

@@ -116,6 +116,8 @@ class TS(basetrans):
                         elif json_data["type"] == "content_block_start":
                             msg = json_data["content_block"]["text"]
                             message += msg
+                        else:
+                            continue
                     except:
                         print_exc()
                         raise Exception(response_data)

@@ -239,8 +239,10 @@ def queryversion(exe):
     return None
 
 
-startdarklistener = utilsdll.startdarklistener
-startdarklistener.restype = HANDLE
+globalmessagelistener = utilsdll.globalmessagelistener
+globalmessagelistener.argtypes = (c_void_p,)
+dispatchcloseevent = utilsdll.dispatchcloseevent
+
 
 _SetTheme = utilsdll._SetTheme
 _SetTheme.argtypes = HWND, c_bool, c_int
@@ -301,11 +303,6 @@ Is64bit.restype = c_bool
 
 isDark = utilsdll.isDark
 isDark.restype = c_bool
-
-startmaglistener = utilsdll.startmaglistener
-startmaglistener.restype = HANDLE
-endmaglistener = utilsdll.endmaglistener
-endmaglistener.argtypes = (HANDLE,)
 
 PlayAudioInMem = utilsdll.PlayAudioInMem
 PlayAudioInMem.argtypes = (

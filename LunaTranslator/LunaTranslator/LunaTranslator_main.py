@@ -45,6 +45,7 @@ def loadmainui():
 
     gobject.baseobject = MAINUI()
     gobject.baseobject.loadui()
+    # gobject.baseobject.urlprotocol()
 
 
 def checklang():
@@ -211,6 +212,27 @@ def savelogs():
     sys.stdout = debugoutput(sys.stdout)
 
 
+def urlprotocol():
+    import argparse
+    from urllib.parse import urlsplit
+    from traceback import print_exc
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--URLProtocol", required=False)
+    args = parser.parse_args()
+    URLProtocol: str = args.URLProtocol
+    try:
+        if URLProtocol:
+            print(URLProtocol)
+            result = urlsplit(URLProtocol)
+            netloc = result.netloc.lower()
+            if netloc == "oauthtoken":
+                token = result.path[1:]
+
+    except:
+        print()
+
+
 if __name__ == "__main__":
     switchdir()
     prepareqtenv()
@@ -222,5 +244,6 @@ if __name__ == "__main__":
     checkintegrity()
     checkpermission()
     savelogs()
+    # urlprotocol()
     loadmainui()
     app.exit(app.exec())

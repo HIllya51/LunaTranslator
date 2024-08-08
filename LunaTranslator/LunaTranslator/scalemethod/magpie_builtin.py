@@ -1,11 +1,10 @@
 from scalemethod.base import scalebase
-import os, json
+import json
 import windows, gobject
 from myutils.config import globalconfig, magpie_config
 from myutils.subproc import subproc_w
-from myutils.wrapper import threader
-from winsharedutils import startmaglistener, endmaglistener
-
+from ctypes import c_int, CFUNCTYPE, c_void_p
+import winsharedutils
 
 class Method(scalebase):
     def saveconfig(self):
@@ -14,17 +13,14 @@ class Method(scalebase):
                 json.dumps(magpie_config, ensure_ascii=False, sort_keys=False, indent=4)
             )
 
-    @threader
-    def statuslistener(self):
-        listener = windows.AutoHandle(startmaglistener())
-        while not self.hasend:
-            status = windows.c_int.from_buffer_copy(windows.ReadFile(listener, 4)).value
-            self.setuistatus(status)
-
-        endmaglistener(listener)
+     
+    def messagecallback(self ,msg, status):
+        if msg==1:
+            self.setuistatus(int(bool(status)))
 
     def init(self):
-        self.statuslistener()
+        self.messagecallback__ = CFUNCTYPE(None, c_int, c_void_p)(self.messagecallback)
+        winsharedutils.globalmessagelistener(self.messagecallback__)
         self.jspath = gobject.gettempdir("magpie.config.json")
         self.engine = subproc_w(
             './files/plugins/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),

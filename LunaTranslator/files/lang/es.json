@@ -853,5 +853,7 @@
     "字符串替换": "Reemplazo de cadenas",
     "转义": "Transliteración",
     "不推荐使用": "No se recomienda usar",
-    "游戏已存在，是否重复添加？": "¿El juego ya existe, ¿ se repite la adición?"
+    "游戏已存在，是否重复添加？": "¿El juego ya existe, ¿ se repite la adición?",
+    "点击消息后重新启动以生效": "Reiniciar para entrar en vigor después de hacer clic en el mensaje",
+    "点击消息后退出并开始更新": "Haga clic en el mensaje para salir y comenzar la actualización"
 }

@@ -167,8 +167,7 @@ def doinstallqweb(self, dd, base):
         zipf.extractall(target)
         bit = ["x86", "x64"][platform.architecture()[0] == "64bit"]
         copytree(f"{target}/{bit}/PyQt5", "LunaTranslator/runtime/PyQt5")
-
-    gobject.baseobject.showtraymessage("", "安装成功")
+    getQMessageBox(self, "成功", "安装成功")
 
 
 def installqwebdialog(self, link):

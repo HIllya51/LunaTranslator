@@ -1,5 +1,5 @@
 from qtsymbols import *
-import time, functools, threading, os, sys, importlib, shutil, uuid
+import time, functools, threading, os, importlib, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, trypass
@@ -18,7 +18,13 @@ from myutils.utils import (
     makehtml,
     loadpostsettingwindowmethod_maybe,
 )
-from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getpidexe, getcurrexe
+from myutils.hwnd import (
+    mouseselectwindow,
+    grabwindow,
+    getExeIcon,
+    getpidexe,
+    getcurrexe,
+)
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
@@ -236,6 +242,7 @@ class QUnFrameWindow(resizableframeless):
     ocr_once_signal = pyqtSignal()
     resizesignal = pyqtSignal(QSize)
     move_signal = pyqtSignal(QPoint)
+    closesignal = pyqtSignal()
 
     @threader
     def tracewindowposthread(self):
@@ -435,11 +442,6 @@ class QUnFrameWindow(resizableframeless):
             self.show_()
         else:
             self.hide_()
-
-    def leftclicktray(self, reason):
-        # 鼠标左键点击
-        if reason == QSystemTrayIcon.Trigger:
-            self.showhideui()
 
     def refreshtoolicon(self):
         self.titlebar.setFixedHeight(int(globalconfig["buttonsize"] * 1.5))
@@ -837,6 +839,7 @@ class QUnFrameWindow(resizableframeless):
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
         self.resizesignal.connect(self.resize)
         self.move_signal.connect(self.move)
+        self.closesignal.connect(self.close)
 
     def __init__(self):
 
@@ -1226,19 +1229,28 @@ class QUnFrameWindow(resizableframeless):
             pass
 
     def closeEvent(self, a0) -> None:
-        if self.fullscreenmanager:
-            self.fullscreenmanager.endX()
-        gobject.baseobject.isrunning = False
-        self.hide()
+        try:
+            if self.fullscreenmanager:
+                self.fullscreenmanager.endX()
+            gobject.baseobject.isrunning = False
+            self.hide()
 
-        if gobject.baseobject.textsource:
+            if gobject.baseobject.textsource:
 
-            gobject.baseobject.textsource = None
+                gobject.baseobject.textsource = None
+            endsubprocs()
+            try:
+                saveallconfig()
+                self.tryremoveuseless()
+            except:
+                print_exc()
+            gobject.baseobject.destroytray()
+            handle = windows.CreateMutex(False, "LUNASAVECONFIG")
+            if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
+                doupdate()
+            else:
+                windows.CloseHandle(handle)
+            os._exit(0)
 
-        saveallconfig()
-
-        endsubprocs()
-        self.tryremoveuseless()
-        gobject.baseobject.destroytray()
-        doupdate()
-        os._exit(0)
+        except:
+            print_exc()

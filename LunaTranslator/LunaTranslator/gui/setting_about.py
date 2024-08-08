@@ -1,5 +1,5 @@
 from qtsymbols import *
-import platform, functools, sys
+import platform, functools
 import winsharedutils, queue
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader, tryprint
@@ -8,7 +8,6 @@ from myutils.utils import makehtml, getlanguse, dynamiclink
 import requests
 import shutil, gobject
 from myutils.proxy import getproxy
-from traceback import print_exc
 import zipfile, os
 import subprocess
 from gui.usefulwidget import D_getsimpleswitch, makescrollgrid, makesubtab_lazy
@@ -148,7 +147,7 @@ def versioncheckthread(self):
     while True:
         x = versionchecktask.get()
         gobject.baseobject.update_avalable = False
-        self.progresssignal.emit("……", 0)
+        self.progresssignal.emit("", 0)
         if not x:
             continue
         self.versiontextsignal.emit("获取中")  # ,'',url,url))
@@ -167,6 +166,7 @@ def versioncheckthread(self):
         )
         if not (need and globalconfig["autoupdate"]):
             continue
+        self.progresssignal.emit("……", 0)
         savep = updatemethod(_version[1], self)
         if not savep:
             self.progresssignal.emit(_TR("自动更新失败，请手动更新"), 0)
@@ -175,7 +175,9 @@ def versioncheckthread(self):
         uncompress(self, savep)
         gobject.baseobject.update_avalable = True
         self.progresssignal.emit(_TR("准备完毕，等待更新"), 10000)
-        gobject.baseobject.showtraymessage(sversion, "准备完毕，等待更新")
+        gobject.baseobject.showtraymessage(
+            sversion, "准备完毕，等待更新_\n_点击消息后退出并开始更新"
+        )
 
 
 def updateprogress(self, text, val):

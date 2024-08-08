@@ -205,7 +205,8 @@ _GetWindowLong.argtypes = c_int, c_int
 
 _SetWindowLongW = _user32.SetWindowLongW
 _SetWindowLongW.argtypes = c_int, c_int, c_int
-
+BringWindowToTop = _user32.BringWindowToTop
+BringWindowToTop.argtypes = (HWND,)
 _GetDC = _user32.GetDC
 _GetDC.restype = c_void_p
 _ReleaseDC = _user32.ReleaseDC
@@ -421,7 +422,6 @@ def GetClientRect(hwnd):
     _rect = RECT()
     _GetClientRect(hwnd, pointer(_rect))
     return (_rect.left, _rect.top, _rect.right, _rect.bottom)
-
 
 
 def ShowWindow(hwnd, nCmdShow):
