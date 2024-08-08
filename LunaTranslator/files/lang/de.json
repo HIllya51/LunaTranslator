@@ -852,5 +852,6 @@
     "作用于翻译": "Auf Übersetzungen angewendet",
     "字符串替换": "Zeichenfolgenersatz",
     "转义": "Flucht",
-    "不推荐使用": "Nicht empfohlen für die Anwendung"
+    "不推荐使用": "Nicht empfohlen für die Anwendung",
+    "游戏已存在，是否重复添加？": "Das Spiel existiert bereits, möchtest du es noch einmal hinzufügen?"
 }

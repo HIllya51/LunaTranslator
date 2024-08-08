@@ -2,7 +2,7 @@ import windows
 import os, time
 import codecs, hashlib, shutil
 import socket, gobject, uuid, subprocess, functools
-import ctypes, importlib
+import ctypes, importlib, json
 import ctypes.wintypes
 from qtsymbols import *
 from traceback import print_exc
@@ -249,6 +249,12 @@ def initanewitem(title):
     return uid
 
 
+def duplicateconfig(uidold):
+    uid = f"{time.time()}_{uuid.uuid4()}"
+    savehook_new_data[uid] = json.loads(json.dumps(savehook_new_data[uidold]))
+    return uid
+
+
 def find_or_create_uid(targetlist, gamepath, title=None):
     uids = findgameuidofpath(gamepath, findall=True)
     if len(uids) == 0:
@@ -263,10 +269,15 @@ def find_or_create_uid(targetlist, gamepath, title=None):
         trysearchforid(uid, [title] + guessmaybetitle(gamepath, title))
         return uid
     else:
+        intarget = uids[0]
+        index = len(targetlist)
         for uid in uids:
             if uid in targetlist:
-                return uid
-        return uids[0]
+                thisindex = targetlist.index(uid)
+                if thisindex < index:
+                    index = thisindex
+                    intarget = uid
+        return intarget
 
 
 kanjichs2ja = str.maketrans(static_data["kanjichs2ja"])
@@ -517,7 +528,7 @@ def parsemayberegexreplace(lst: list, line: str):
             if escape:
                 line = line.replace(
                     codecs.escape_decode(bytes(key, "utf-8"))[0].decode("utf-8"),
-                    codecs.escape_decode(bytes(value, "utf-8"))[0].decode("utf-8")
+                    codecs.escape_decode(bytes(value, "utf-8"))[0].decode("utf-8"),
                 )
             else:
                 line = line.replace(key, value)

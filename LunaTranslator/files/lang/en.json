@@ -852,5 +852,6 @@
     "作用于翻译": "Applied to translation",
     "字符串替换": "String replacement",
     "转义": "Escaping",
-    "不推荐使用": "Not recommended for use"
+    "不推荐使用": "Not recommended for use",
+    "游戏已存在，是否重复添加？": "The game already exists, would you like to add it again?"
 }

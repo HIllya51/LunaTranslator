@@ -28,6 +28,7 @@ from myutils.wrapper import (
 from myutils.utils import (
     find_or_create_uid,
     str2rgba,
+    duplicateconfig,
     get_time_stamp,
     gamdidchangedtask,
     checkpostlangmatch,
@@ -1729,7 +1730,7 @@ def startgamecheck(self, gameuid):
     startgame(gameuid)
 
 
-def addgamesingle(callback, targetlist):
+def addgamesingle(parent, callback, targetlist):
     f = QFileDialog.getOpenFileName(options=QFileDialog.Option.DontResolveSymlinks)
 
     res = f[0]
@@ -1739,9 +1740,19 @@ def addgamesingle(callback, targetlist):
     uid = find_or_create_uid(targetlist, res)
     if uid in targetlist:
         idx = targetlist.index(uid)
-        if idx == 0:
-            return
-        targetlist.pop(idx)
+        response = QMessageBox.question(
+            parent,
+            "",
+            _TR("游戏已存在，是否重复添加？"),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if response == QMessageBox.StandardButton.No:
+            if idx == 0:
+                return
+            targetlist.pop(idx)
+        else:
+            uid = duplicateconfig(uid)
     targetlist.insert(0, uid)
     callback(uid)
 
@@ -1904,7 +1915,7 @@ class dialog_savedgame_new(QWidget):
         addgamebatch(self.addgame, self.reflist)
 
     def clicked3(self):
-        addgamesingle(self.addgame, self.reflist)
+        addgamesingle(self, self.addgame, self.reflist)
 
     def tagschanged(self, tags):
         self.currtags = tags
@@ -2365,7 +2376,7 @@ class dialog_savedgame_lagacy(QWidget):
             self.newline(0, uid)
             self.table.setCurrentIndex(self.model.index(0, 0))
 
-        addgamesingle(call, savehook_new_list)
+        addgamesingle(self, call, savehook_new_list)
 
     def clicked(self):
         startgamecheck(
@@ -3462,7 +3473,7 @@ class dialog_savedgame_v3(QWidget):
         addgamebatch(self.addgame, getreflist(self.reftagid))
 
     def clicked3(self):
-        addgamesingle(self.addgame, getreflist(self.reftagid))
+        addgamesingle(self, self.addgame, getreflist(self.reftagid))
 
     def clicked(self):
         startgamecheck(self, self.currentfocusuid)

@@ -852,5 +852,6 @@
     "作用于翻译": "Toegepast op vertaling",
     "字符串替换": "Vervanging van tekenreeks",
     "转义": "Ontsnappen",
-    "不推荐使用": "Niet aanbevolen voor gebruik"
+    "不推荐使用": "Niet aanbevolen voor gebruik",
+    "游戏已存在，是否重复添加？": "Het spel bestaat al, wil je het opnieuw toevoegen?"
 }
