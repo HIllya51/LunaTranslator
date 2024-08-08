@@ -3,13 +3,13 @@
     window.thistext = ''
     if (window.injectedjs) return
     window.injectedjs = true
-    const originXHR = XMLHttpRequest 
+    const originXHR = XMLHttpRequest
     window.XMLHttpRequest = function () {
         var newxhr = new originXHR()
         newxhr.open_ori = newxhr.open
 
         newxhr.open = function () {
-            var input = arguments[1]
+            var url = arguments[1]
             if (%s) {
                 window.hasdone = false;
                 window.thistext = ''
@@ -29,8 +29,13 @@
                         let line = lines[i]
                         line = line.trim()
                         if (line.length == 0) continue;
+                        if (line.substring(6) == '[DONE]') {
+                            hasdone = true;
+                            break;
+                        }
                         try {
-                            %s
+                            const chunk = JSON.parse(line.substring(6));
+                                %s
                         } catch {
 
                         }

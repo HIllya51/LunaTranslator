@@ -4,7 +4,7 @@
     if (window.injectedjs) return
     window.injectedjs = true
     const originalFetch = window.fetch;
-    window.fetch = function (input, init) {
+    window.fetch = function (url, init) {
         const fetchPromise = originalFetch.apply(this, arguments);
         if (!%s) return fetchPromise;
         window.hasdone = false;
@@ -27,8 +27,13 @@
                         let line = lines[i]
                         line = line.trim()
                         if (line.length == 0) continue;
+                        if (line.substring(6) == '[DONE]') {
+                            hasdone = true;
+                            break;
+                        }
                         try {
-                        %s
+                            const chunk = JSON.parse(line.substring(6));
+                                %s
                         } catch {
 
                         }

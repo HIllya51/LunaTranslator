@@ -1607,6 +1607,13 @@
             "name": "deepseek",
             "is_gpt_like": true
         },
+        "dev_chatgpt_mirror": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "chatgpt mirror",
+            "is_gpt_like": true
+        },
         "deepl_dev": {
             "use": false,
             "color": "blue",

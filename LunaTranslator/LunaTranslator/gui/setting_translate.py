@@ -24,6 +24,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     getvboxwidget,
 )
+from traceback import print_exc
 from gui.dynalang import LPushButton, LLabel
 
 
@@ -62,6 +63,8 @@ def loadvisinternal(btnplus, copy):
         is_gpt_likes, not_is_gpt_like = splitapillm(shoufei)
     elif btnplus == "offline":
         is_gpt_likes, not_is_gpt_like = splitapillm(lixians)
+    elif btnplus == "develop":
+        is_gpt_likes, not_is_gpt_like = splitapillm(develop)
 
     for _ in is_gpt_likes:
         if copy:
@@ -268,11 +271,21 @@ def createmanybtn(self, countnum, btnplus):
     btn.setIcon(qtawesome.icon("fa.question"))
     if btnplus == "offline":
         btn.clicked.connect(
-            lambda: gobject.baseobject.openlink(dynamiclink("{docs_server}/#/zh/offlinellm"))
+            lambda: gobject.baseobject.openlink(
+                dynamiclink("{docs_server}/#/zh/offlinellm")
+            )
         )
     elif btnplus == "api":
         btn.clicked.connect(
-            lambda: gobject.baseobject.openlink(dynamiclink("{docs_server}/#/zh/guochandamoxing"))
+            lambda: gobject.baseobject.openlink(
+                dynamiclink("{docs_server}/#/zh/guochandamoxing")
+            )
+        )
+    elif btnplus == "develop":
+        btn.clicked.connect(
+            lambda: gobject.baseobject.openlink(
+                dynamiclink("{docs_server}/#/zh/tiaoshiliulanqi")
+            )
         )
     hbox.addWidget(btn)
     setattr(self, "btnmany" + btnplus, w)
@@ -506,7 +519,7 @@ def setTabTwo_lazy(self, basel):
 
     offlinegrid = initsome2(self, lixians, btnplus="offline")
     onlinegrid = initsome11(self, mianfei)
-    developgrid += initsome2(self, develop)
+    developgrid += initsome2(self, develop, btnplus="develop")
     online_reg_grid += initsome2(self, shoufei, btnplus="api")
     pretransgrid += initsome11(self, pre)
     vw, vl = getvboxwidget()
