@@ -1,6 +1,148 @@
 from ctypes import windll, POINTER, pointer, Structure, sizeof
 from ctypes.wintypes import LPCWSTR, DWORD, LPVOID, WORD, BOOL, LPCVOID, LPWSTR, USHORT
-from requests import RequestException
+from requests import RequestException, Timeout
+import windows
+
+
+# typedef
+HINTERNET = LPVOID
+INTERNET_PORT = WORD
+DWORD_PTR = POINTER(DWORD)
+LPDWORD = POINTER(DWORD)
+# const
+NULL = None
+WINHTTP_ACCESS_TYPE_DEFAULT_PROXY = 0
+WINHTTP_NO_PROXY_NAME = None
+WINHTTP_NO_PROXY_BYPASS = None
+INTERNET_DEFAULT_PORT = 0
+INTERNET_DEFAULT_HTTP_PORT = 80
+INTERNET_DEFAULT_HTTPS_PORT = 443
+WINHTTP_NO_REFERER = None
+WINHTTP_DEFAULT_ACCEPT_TYPES = None
+# WINHTTP_FLAG_REFRESH
+WINHTTP_FLAG_SECURE = 0x00800000  # https
+WINHTTP_NO_ADDITIONAL_HEADERS = None
+WINHTTP_NO_REQUEST_DATA = None
+WINHTTP_QUERY_SET_COOKIE = 43
+WINHTTP_QUERY_RAW_HEADERS_CRLF = 22
+WINHTTP_HEADER_NAME_BY_INDEX = None
+WINHTTP_NO_HEADER_INDEX = None
+ERROR_INSUFFICIENT_BUFFER = 122
+WINHTTP_OPTION_PROXY = 38
+WINHTTP_ACCESS_TYPE_NAMED_PROXY = 3
+WINHTTP_QUERY_STATUS_CODE = 19
+WINHTTP_QUERY_FLAG_NUMBER = 0x20000000
+WINHTTP_OPTION_SECURITY_FLAGS = 31
+SECURITY_FLAG_IGNORE_UNKNOWN_CA = 0x00000100
+SECURITY_FLAG_IGNORE_CERT_WRONG_USAGE = 0x00000200
+SECURITY_FLAG_IGNORE_CERT_CN_INVALID = 0x00001000  # bad common name in X509 Cert.
+SECURITY_FLAG_IGNORE_CERT_DATE_INVALID = 0x00002000  # expired X509 Cert.
+SECURITY_FLAG_IGNORE_ALL_CERT_ERRORS = (
+    SECURITY_FLAG_IGNORE_UNKNOWN_CA
+    | SECURITY_FLAG_IGNORE_CERT_WRONG_USAGE
+    | SECURITY_FLAG_IGNORE_CERT_CN_INVALID
+    | SECURITY_FLAG_IGNORE_CERT_DATE_INVALID
+)
+# function
+kernel32 = windll.kernel32
+Winhttp = windll.Winhttp
+WinHttpOpen = Winhttp.WinHttpOpen
+WinHttpOpen.argtypes = LPCWSTR, DWORD, LPCWSTR, LPCWSTR, DWORD
+WinHttpOpen.restype = HINTERNET
+WinHttpCloseHandle = Winhttp.WinHttpCloseHandle
+WinHttpCloseHandle.argtypes = (HINTERNET,)
+
+WinHttpSetTimeouts = Winhttp.WinHttpSetTimeouts
+WinHttpSetTimeouts.argtypes = HINTERNET, DWORD, DWORD, DWORD, DWORD
+WinHttpSetTimeouts.restype = BOOL
+
+WinHttpConnect = Winhttp.WinHttpConnect
+WinHttpConnect.argtypes = HINTERNET, LPCWSTR, INTERNET_PORT, DWORD
+WinHttpConnect.restype = HINTERNET
+WinHttpOpenRequest = Winhttp.WinHttpOpenRequest
+WinHttpOpenRequest.argtypes = (
+    HINTERNET,
+    LPCWSTR,
+    LPCWSTR,
+    LPCWSTR,
+    LPCWSTR,
+    POINTER(LPCWSTR),
+    DWORD,
+)
+WinHttpOpenRequest.restype = HINTERNET
+WinHttpSendRequest = Winhttp.WinHttpSendRequest
+WinHttpSendRequest.argtypes = HINTERNET, LPCWSTR, DWORD, LPVOID, DWORD, DWORD, DWORD_PTR
+WinHttpSendRequest.restype = BOOL
+WinHttpReceiveResponse = Winhttp.WinHttpReceiveResponse
+WinHttpReceiveResponse.argtypes = HINTERNET, LPVOID
+WinHttpReceiveResponse.restype = BOOL
+WinHttpQueryDataAvailable = Winhttp.WinHttpQueryDataAvailable
+WinHttpQueryDataAvailable.argtypes = HINTERNET, LPDWORD
+WinHttpQueryDataAvailable.restype = BOOL
+WinHttpReadData = Winhttp.WinHttpReadData
+WinHttpReadData.argtypes = HINTERNET, LPVOID, DWORD, LPDWORD
+WinHttpReadData.restype = BOOL
+WinHttpWriteData = Winhttp.WinHttpWriteData
+WinHttpWriteData.argtypes = HINTERNET, LPCVOID, DWORD, LPDWORD
+WinHttpWriteData.restype = BOOL
+WinHttpQueryHeaders = Winhttp.WinHttpQueryHeaders
+WinHttpQueryHeaders.argtypes = HINTERNET, DWORD, LPCWSTR, LPVOID, LPDWORD, LPDWORD
+WinHttpQueryHeaders.restype = BOOL
+WinHttpSetOption = Winhttp.WinHttpSetOption
+WinHttpSetOption.argtypes = HINTERNET, DWORD, LPVOID, DWORD
+WinHttpSetOption.restype = BOOL
+
+
+class WINHTTP_PROXY_INFO(Structure):
+    _fields_ = [
+        ("dwAccessType", DWORD),
+        ("lpszProxy", LPWSTR),
+        ("lpszProxyBypass", LPWSTR),
+    ]
+
+
+class AutoWinHttpHandle(HINTERNET):
+    def __del__(self):
+        if self:
+            WinHttpCloseHandle(self)
+
+
+try:
+    WinHttpWebSocketCompleteUpgrade = Winhttp.WinHttpWebSocketCompleteUpgrade
+    WinHttpWebSocketCompleteUpgrade.argtypes = HINTERNET, DWORD_PTR
+    WinHttpWebSocketCompleteUpgrade.restype = HINTERNET
+    WinHttpWebSocketSend = Winhttp.WinHttpWebSocketSend
+    WinHttpWebSocketSend.argtypes = HINTERNET, DWORD, LPVOID, DWORD
+    WinHttpWebSocketSend.restype = DWORD
+    WinHttpWebSocketReceive = Winhttp.WinHttpWebSocketReceive
+    WinHttpWebSocketReceive.argtypes = HINTERNET, LPVOID, DWORD, DWORD_PTR, DWORD_PTR
+    WinHttpWebSocketReceive.restype = DWORD
+    WinHttpWebSocketClose = Winhttp.WinHttpWebSocketClose
+    WinHttpWebSocketClose.argtypes = HINTERNET, USHORT, LPVOID, DWORD_PTR
+    WinHttpWebSocketClose.restype = DWORD
+except:
+
+    def _undefined(*args):
+        raise Exception("undefined websocket functions for windows 7-")
+
+    WinHttpWebSocketCompleteUpgrade = WinHttpWebSocketSend = WinHttpWebSocketReceive = (
+        WinHttpWebSocketClose
+    ) = _undefined
+
+WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET = 114
+
+WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE = 0
+WINHTTP_WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE = 1
+WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE = 2
+WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE = 3
+WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE = 4
+ERROR_SUCCESS = 0
+WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS = 1000
+
+
+WINHTTP_OPTION_REDIRECT_POLICY = 88
+WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS = 2
+WINHTTP_OPTION_REDIRECT_POLICY_NEVER = 0
 
 
 class WinhttpException(RequestException):
@@ -64,116 +206,33 @@ class WinhttpException(RequestException):
     ERROR_WINHTTP_FEATURE_DISABLED = WINHTTP_ERROR_BASE + 192
 
     def __init__(self, code) -> None:
-        self.errorcode = code
-        if type(code) == int:
-            error = "UNKNOWN ERROR " + str(code)
-            for _ in dir(self):
-                if _.startswith("ERROR") and code == getattr(self, _):
-                    error = _ + " " + str(code)
-                    break
-        else:
-            error = code
+        module = None
+        if (
+            WinhttpException.WINHTTP_ERROR_BASE <= code
+            and code <= WinhttpException.ERROR_WINHTTP_FEATURE_DISABLED
+        ):
+            module = Winhttp._handle
+        message = windows.FormatMessage(code, module)
+        error = f"UNKNOWN ERROR {code}"
+        for _ in dir(self):
+            if _.startswith("ERROR") and code == getattr(self, _):
+                error = _
+                break
+        if message:
+            error += f": {message}"
+
         super().__init__(error)
 
 
-# typedef
-HINTERNET = LPVOID
-INTERNET_PORT = WORD
-DWORD_PTR = POINTER(DWORD)
-LPDWORD = POINTER(DWORD)
-# const
-NULL = None
-WINHTTP_ACCESS_TYPE_DEFAULT_PROXY = 0
-WINHTTP_NO_PROXY_NAME = None
-WINHTTP_NO_PROXY_BYPASS = None
-INTERNET_DEFAULT_PORT = 0
-INTERNET_DEFAULT_HTTP_PORT = 80
-INTERNET_DEFAULT_HTTPS_PORT = 443
-WINHTTP_NO_REFERER = None
-WINHTTP_DEFAULT_ACCEPT_TYPES = None
-# WINHTTP_FLAG_REFRESH
-WINHTTP_FLAG_SECURE = 0x00800000  # https
-WINHTTP_NO_ADDITIONAL_HEADERS = None
-WINHTTP_NO_REQUEST_DATA = None
-WINHTTP_QUERY_SET_COOKIE = 43
-WINHTTP_QUERY_RAW_HEADERS_CRLF = 22
-WINHTTP_HEADER_NAME_BY_INDEX = None
-WINHTTP_NO_HEADER_INDEX = None
-ERROR_INSUFFICIENT_BUFFER = 122
-WINHTTP_OPTION_PROXY = 38
-WINHTTP_ACCESS_TYPE_NAMED_PROXY = 3
-WINHTTP_QUERY_STATUS_CODE = 19
-WINHTTP_QUERY_FLAG_NUMBER = 0x20000000
-WINHTTP_OPTION_SECURITY_FLAGS = 31
-SECURITY_FLAG_IGNORE_UNKNOWN_CA = 0x00000100
-SECURITY_FLAG_IGNORE_CERT_WRONG_USAGE = 0x00000200
-SECURITY_FLAG_IGNORE_CERT_CN_INVALID = 0x00001000  # bad common name in X509 Cert.
-SECURITY_FLAG_IGNORE_CERT_DATE_INVALID = 0x00002000  # expired X509 Cert.
-SECURITY_FLAG_IGNORE_ALL_CERT_ERRORS = (
-    SECURITY_FLAG_IGNORE_UNKNOWN_CA
-    | SECURITY_FLAG_IGNORE_CERT_WRONG_USAGE
-    | SECURITY_FLAG_IGNORE_CERT_CN_INVALID
-    | SECURITY_FLAG_IGNORE_CERT_DATE_INVALID
-)
-# function
-kernel32 = windll.kernel32
-GetLastError = kernel32.GetLastError
-GetLastError.restype = DWORD
-
-Winhttp = windll.Winhttp
-WinHttpOpen = Winhttp.WinHttpOpen
-WinHttpOpen.argtypes = LPCWSTR, DWORD, LPCWSTR, LPCWSTR, DWORD
-WinHttpOpen.restype = HINTERNET
-WinHttpCloseHandle = Winhttp.WinHttpCloseHandle
-WinHttpCloseHandle.argtypes = (HINTERNET,)
-
-WinHttpSetTimeouts = Winhttp.WinHttpSetTimeouts
-WinHttpSetTimeouts.argtypes = HINTERNET, DWORD, DWORD, DWORD, DWORD
-WinHttpSetTimeouts.restype = BOOL
-
-WinHttpConnect = Winhttp.WinHttpConnect
-WinHttpConnect.argtypes = HINTERNET, LPCWSTR, INTERNET_PORT, DWORD
-WinHttpConnect.restype = HINTERNET
-WinHttpOpenRequest = Winhttp.WinHttpOpenRequest
-WinHttpOpenRequest.argtypes = (
-    HINTERNET,
-    LPCWSTR,
-    LPCWSTR,
-    LPCWSTR,
-    LPCWSTR,
-    POINTER(LPCWSTR),
-    DWORD,
-)
-WinHttpOpenRequest.restype = HINTERNET
-WinHttpSendRequest = Winhttp.WinHttpSendRequest
-WinHttpSendRequest.argtypes = HINTERNET, LPCWSTR, DWORD, LPVOID, DWORD, DWORD, DWORD_PTR
-WinHttpSendRequest.restype = BOOL
-WinHttpReceiveResponse = Winhttp.WinHttpReceiveResponse
-WinHttpReceiveResponse.argtypes = HINTERNET, LPVOID
-WinHttpReceiveResponse.restype = BOOL
-WinHttpQueryDataAvailable = Winhttp.WinHttpQueryDataAvailable
-WinHttpQueryDataAvailable.argtypes = HINTERNET, LPDWORD
-WinHttpQueryDataAvailable.restype = BOOL
-WinHttpReadData = Winhttp.WinHttpReadData
-WinHttpReadData.argtypes = HINTERNET, LPVOID, DWORD, LPDWORD
-WinHttpReadData.restype = BOOL
-WinHttpWriteData = Winhttp.WinHttpWriteData
-WinHttpWriteData.argtypes = HINTERNET, LPCVOID, DWORD, LPDWORD
-WinHttpWriteData.restype = BOOL
-WinHttpQueryHeaders = Winhttp.WinHttpQueryHeaders
-WinHttpQueryHeaders.argtypes = HINTERNET, DWORD, LPCWSTR, LPVOID, LPDWORD, LPDWORD
-WinHttpQueryHeaders.restype = BOOL
-WinHttpSetOption = Winhttp.WinHttpSetOption
-WinHttpSetOption.argtypes = HINTERNET, DWORD, LPVOID, DWORD
-WinHttpSetOption.restype = BOOL
-
-
-class WINHTTP_PROXY_INFO(Structure):
-    _fields_ = [
-        ("dwAccessType", DWORD),
-        ("lpszProxy", LPWSTR),
-        ("lpszProxyBypass", LPWSTR),
-    ]
+def MaybeRaiseException(error=None):
+    if error is None:
+        error = windows.GetLastError()
+    if error == ERROR_SUCCESS:
+        return
+    exception = WinhttpException(error)
+    if error == WinhttpException.ERROR_WINHTTP_TIMEOUT:
+        raise Timeout(exception)
+    raise exception
 
 
 def winhttpsetproxy(hreq, proxy):
@@ -185,49 +244,4 @@ def winhttpsetproxy(hreq, proxy):
         hreq, WINHTTP_OPTION_PROXY, pointer(proxyInfo), sizeof(proxyInfo)
     )
     if succ == 0:
-        raise WinhttpException(GetLastError())
-        # raise WinhttpException('invalid proxy: {}'.format(proxy))
-
-
-class AutoWinHttpHandle(HINTERNET):
-    def __del__(self):
-        if self:
-            WinHttpCloseHandle(self)
-
-
-try:
-    WinHttpWebSocketCompleteUpgrade = Winhttp.WinHttpWebSocketCompleteUpgrade
-    WinHttpWebSocketCompleteUpgrade.argtypes = HINTERNET, DWORD_PTR
-    WinHttpWebSocketCompleteUpgrade.restype = HINTERNET
-    WinHttpWebSocketSend = Winhttp.WinHttpWebSocketSend
-    WinHttpWebSocketSend.argtypes = HINTERNET, DWORD, LPVOID, DWORD
-    WinHttpWebSocketSend.restype = DWORD
-    WinHttpWebSocketReceive = Winhttp.WinHttpWebSocketReceive
-    WinHttpWebSocketReceive.argtypes = HINTERNET, LPVOID, DWORD, DWORD_PTR, DWORD_PTR
-    WinHttpWebSocketReceive.restype = DWORD
-    WinHttpWebSocketClose = Winhttp.WinHttpWebSocketClose
-    WinHttpWebSocketClose.argtypes = HINTERNET, USHORT, LPVOID, DWORD_PTR
-    WinHttpWebSocketClose.restype = DWORD
-except:
-
-    def _undefined(*args):
-        raise Exception("undefined websocket functions for windows 7-")
-
-    WinHttpWebSocketCompleteUpgrade = WinHttpWebSocketSend = WinHttpWebSocketReceive = (
-        WinHttpWebSocketClose
-    ) = _undefined
-
-WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET = 114
-
-WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE = 0
-WINHTTP_WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE = 1
-WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE = 2
-WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE = 3
-WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE = 4
-ERROR_SUCCESS = 0
-WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS = 1000
-
-
-WINHTTP_OPTION_REDIRECT_POLICY = 88
-WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS = 2
-WINHTTP_OPTION_REDIRECT_POLICY_NEVER = 0
+        MaybeRaiseException()

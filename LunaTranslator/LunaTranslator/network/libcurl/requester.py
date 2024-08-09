@@ -4,6 +4,8 @@ from ctypes import c_long, cast, pointer, POINTER, c_char
 from requests import ResponseBase, Timeout, Requester_common
 from traceback import print_exc
 
+ 
+
 
 class Response(ResponseBase):
     def __init__(self):
@@ -11,7 +13,7 @@ class Response(ResponseBase):
         self.last_error = 0
         self.keeprefs = []
         self.queue = queue.Queue()
-
+ 
     def iter_content_impl(self, chunk_size=1):
 
         downloadeddata = b""
@@ -35,22 +37,7 @@ class Response(ResponseBase):
             downloadeddata = downloadeddata[chunk_size:]
 
     def raise_for_status(self):
-        if self.last_error:
-            raise CURLException(self.last_error)
-
-
-def ExceptionFilter(func):
-    def _wrapper(*args, **kwargs):
-        try:
-            _ = func(*args, **kwargs)
-            return _
-        except CURLException as e:
-            if e.errorcode == CURLcode.OPERATION_TIMEDOUT:
-                raise Timeout(e)
-            else:
-                raise e
-
-    return _wrapper
+        MaybeRaiseException(self.last_error)
 
 
 class autostatus:
@@ -77,9 +64,7 @@ class Requester(Requester_common):
         return curl
 
     def raise_for_status(self):
-        if self.last_error:
-            raise CURLException(self.last_error)
-
+        MaybeRaiseException(self.last_error)
     def _getStatusCode(self, curl):
         status_code = c_long()
         self.last_error = curl_easy_getinfo(
@@ -153,7 +138,6 @@ class Requester(Requester_common):
             cookie = self._parsecookie(cookies)
             curl_easy_setopt(curl, CURLoption.COOKIE, cookie.encode("utf8"))
 
-    @ExceptionFilter
     def request_impl(
         self,
         method,

@@ -33,6 +33,8 @@ from ctypes.wintypes import (
     HKEY,
     LPDWORD,
     LPBYTE,
+    LPCVOID,
+    LPWSTR,
     WPARAM,
     LPARAM,
     INT,
@@ -619,11 +621,8 @@ def CreateMutex(bInitialOwner, lpName, secu=get_SECURITY_ATTRIBUTES()):
     return _CreateMutexW(pointer(secu), bInitialOwner, lpName)
 
 
-_GetLastError = _kernel32.GetLastError
-
-
-def GetLastError():
-    return _GetLastError()
+GetLastError = _kernel32.GetLastError
+GetLastError.restype = DWORD
 
 
 ERROR_ALREADY_EXISTS = 183
@@ -958,3 +957,34 @@ GetWindowLongPtr.restype = c_void_p
 WM_LBUTTONDOWN = 0x0201
 WM_LBUTTONUP = 0x0202
 WM_MOUSEMOVE = 0x0200
+
+FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x100
+FORMAT_MESSAGE_FROM_HMODULE = 0x800
+FORMAT_MESSAGE_FROM_SYSTEM = 0x1000
+FORMAT_MESSAGE_IGNORE_INSERTS = 0x200
+FormatMessageW = _kernel32.FormatMessageW
+FormatMessageW.argtypes = DWORD, LPCVOID, DWORD, DWORD, LPWSTR, DWORD, LPCVOID
+FormatMessageW.restype = c_size_t
+LocalFree = _kernel32.LocalFree
+LocalFree.argtypes = (c_void_p,)
+
+
+def FormatMessage(code, module=None):
+    mess = LPWSTR()
+    flag = (
+        FORMAT_MESSAGE_ALLOCATE_BUFFER
+        | FORMAT_MESSAGE_FROM_SYSTEM
+        | FORMAT_MESSAGE_IGNORE_INSERTS
+    )
+    if module:
+        flag |= FORMAT_MESSAGE_FROM_HMODULE
+
+    length = FormatMessageW(
+        flag, module, code, 0x400, cast(pointer(mess), LPWSTR), 0, None
+    )
+    if mess.value is None:
+        return ""
+    res = mess.value[:length]
+    if length:
+        LocalFree(mess)
+    return res.strip()

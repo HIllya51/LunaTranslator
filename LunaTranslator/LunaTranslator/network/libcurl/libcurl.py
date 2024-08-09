@@ -1,5 +1,5 @@
 import gobject, os
-from requests import RequestException
+from requests import RequestException, Timeout
 from ctypes import (
     CDLL,
     c_void_p,
@@ -322,13 +322,21 @@ class AutoCURLHandle(CURL):
 
 class CURLException(RequestException):
     def __init__(self, code) -> None:
-        if isinstance(code, CURLcode):
-            self.errorcode = code.value
-            error = curl_easy_strerror(code).decode("utf8")
-            for _ in dir(CURLcode):
-                if _.startswith("") and code.value == getattr(CURLcode, _):
-                    error = str(code.value) + " " + _ + " : " + error
-                    break
-        else:
+        if not isinstance(code, CURLcode):
             raise Exception("not a valid CURLException")
+        self.errorcode = code.value
+        error = curl_easy_strerror(code).decode("utf8")
+        for _ in dir(CURLcode):
+            if _.startswith("") and code.value == getattr(CURLcode, _):
+                error = f"{_}: {error}"
+                break
         super().__init__(error)
+
+
+def MaybeRaiseException(error: CURLcode):
+    if not error.value:
+        return
+    e = CURLException(error)
+    if error.value == CURLcode.OPERATION_TIMEDOUT:
+        raise Timeout(e)
+    raise e

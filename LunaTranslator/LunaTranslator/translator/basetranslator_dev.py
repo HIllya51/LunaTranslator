@@ -124,7 +124,7 @@ class basetransdev(basetrans):
                 return res["result"]
             except:
                 print(res)
-                raise Exception()
+                raise Exception(res)
 
     def _createtarget(self):
         if self.using == False:

@@ -1,6 +1,7 @@
 from .winhttp import *
 from requests import ResponseBase, Timeout, Requester_common
 from traceback import print_exc
+import windows
 import gzip, zlib
 from ctypes import pointer, create_string_buffer, create_unicode_buffer
 
@@ -12,6 +13,7 @@ except:
     print_exc()
 
 
+
 class Response(ResponseBase):
     def iter_content_impl(self, chunk_size=1):
         availableSize = DWORD()
@@ -20,7 +22,7 @@ class Response(ResponseBase):
         while True:
             succ = WinHttpQueryDataAvailable(self.hreq, pointer(availableSize))
             if succ == 0:
-                raise WinhttpException(GetLastError())
+                MaybeRaiseException()
             if availableSize.value == 0:
                 break
             buff = create_string_buffer(availableSize.value)
@@ -28,7 +30,7 @@ class Response(ResponseBase):
                 self.hreq, buff, availableSize, pointer(downloadedSize)
             )
             if succ == 0:
-                raise WinhttpException(GetLastError())
+                MaybeRaiseException()
 
             if chunk_size:
                 downloadeddata += buff[: downloadedSize.value]
@@ -42,23 +44,7 @@ class Response(ResponseBase):
             downloadeddata = downloadeddata[chunk_size:]
 
     def raise_for_status(self):
-        error = GetLastError()
-        if error:
-            raise WinhttpException(error)
-
-
-def ExceptionFilter(func):
-    def _wrapper(*args, **kwargs):
-        try:
-            _ = func(*args, **kwargs)
-            return _
-        except WinhttpException as e:
-            if e.errorcode == WinhttpException.ERROR_WINHTTP_TIMEOUT:
-                raise Timeout(e)
-            else:
-                raise e
-
-    return _wrapper
+        MaybeRaiseException()
 
 
 class Requester(Requester_common):
@@ -99,9 +85,7 @@ class Requester(Requester_common):
             None,
         )
         if bResults == 0:
-            error = GetLastError()
-            if error:
-                raise WinhttpException(error)
+            MaybeRaiseException()
         return dwStatusCode.value
 
     def _set_proxy(self, hsess, proxy):
@@ -138,9 +122,8 @@ class Requester(Requester_common):
             )
         )
         if self.hSession == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
 
-    @ExceptionFilter
     def request_impl(
         self,
         method,
@@ -160,12 +143,11 @@ class Requester(Requester_common):
     ):
         headers = self._parseheader(_headers, cookies)
         flag = WINHTTP_FLAG_SECURE if scheme == "https" else 0
-        # print(server,port,param,databytes)
         headers = "\r\n".join(headers)
 
         hConnect = AutoWinHttpHandle(WinHttpConnect(self.hSession, server, port, 0))
         if hConnect == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         hRequest = AutoWinHttpHandle(
             WinHttpOpenRequest(
                 hConnect,
@@ -180,7 +162,7 @@ class Requester(Requester_common):
         if timeout:
             WinHttpSetTimeouts(hRequest, timeout, timeout, timeout, timeout)
         if hRequest == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         self._set_verify(hRequest, verify)
         self._set_proxy(hRequest, proxy)
         self._set_allow_redirects(hRequest, allow_redirects)
@@ -188,11 +170,11 @@ class Requester(Requester_common):
             hRequest, headers, -1, databytes, len(databytes), len(databytes), None
         )
         if succ == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
 
         succ = WinHttpReceiveResponse(hRequest, None)
         if succ == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         resp = Response()
         resp.headers, resp.cookies = self._parseheader2dict(self._getheaders(hRequest))
 
@@ -208,7 +190,7 @@ class Requester(Requester_common):
         while True:
             succ = WinHttpQueryDataAvailable(hRequest, pointer(availableSize))
             if succ == 0:
-                raise WinhttpException(GetLastError())
+                MaybeRaiseException()
             if availableSize.value == 0:
                 break
             buff = create_string_buffer(availableSize.value)
@@ -216,7 +198,7 @@ class Requester(Requester_common):
                 hRequest, buff, availableSize, pointer(downloadedSize)
             )
             if succ == 0:
-                raise WinhttpException(GetLastError())
+                MaybeRaiseException()
             downloadeddata += buff[: downloadedSize.value]
 
         resp.content = self.decompress(downloadeddata, resp.headers)

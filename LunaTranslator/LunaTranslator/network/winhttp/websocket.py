@@ -12,9 +12,7 @@ class WebSocket:
             _t = WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE
         datalen = len(data)
         dwError = WinHttpWebSocketSend(self.hWebSocketHandle, _t, data, datalen)
-
-        if ERROR_SUCCESS != dwError:
-            raise WinhttpException(dwError)
+        MaybeRaiseException(dwError)
 
     def recv(self):
         eBufferType = DWORD(0)
@@ -30,19 +28,18 @@ class WebSocket:
             pointer(dwBytesTransferred),
             pointer(eBufferType),
         )
-        if dwError == ERROR_SUCCESS:
-            if eBufferType.value in [
-                WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE,
-                WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE,
-            ]:
-                return pbCurrentBufferPointer[: dwBytesTransferred.value].decode("utf8")
-            elif eBufferType.value in [
-                WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE,
-                WINHTTP_WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE,
-            ]:
-                return pbCurrentBufferPointer[: dwBytesTransferred.value]
-        else:
-            raise WinhttpException(dwError)
+        MaybeRaiseException(dwError)
+
+        if eBufferType.value in [
+            WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE,
+            WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE,
+        ]:
+            return pbCurrentBufferPointer[: dwBytesTransferred.value].decode("utf8")
+        elif eBufferType.value in [
+            WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE,
+            WINHTTP_WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE,
+        ]:
+            return pbCurrentBufferPointer[: dwBytesTransferred.value]
 
     def close(self):
         if self.hWebSocketHandle:
@@ -70,7 +67,7 @@ class WebSocket:
         elif scheme == "ws":
             ishttps = False
         else:
-            raise WinhttpException("unknown scheme " + scheme)
+            raise RequestException("unknown scheme " + scheme)
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -82,7 +79,7 @@ class WebSocket:
             else:
                 port = INTERNET_DEFAULT_HTTP_PORT
         else:
-            raise WinhttpException("invalid url")
+            raise RequestException("invalid url")
         if len(query):
             path += "?" + query
         return ishttps, server, port, path
@@ -114,13 +111,13 @@ class WebSocket:
             )
         )
         if self.hSession == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         self._setproxy(self.hSession, http_proxy_host, http_proxy_port)
         self.hConnect = AutoWinHttpHandle(
             WinHttpConnect(self.hSession, server, port, 0)
         )
         if self.hConnect == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         hRequest = AutoWinHttpHandle(
             WinHttpOpenRequest(
                 self.hConnect,
@@ -133,26 +130,26 @@ class WebSocket:
             )
         )
         if hRequest == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         fStatus = WinHttpSetOption(
             hRequest, WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET, NULL, 0
         )
 
         if fStatus == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         fStatus = WinHttpSendRequest(
             hRequest, self._parseheader(header), -1, WINHTTP_NO_REQUEST_DATA, 0, 0, None
         )
 
         if fStatus == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         fStatus = WinHttpReceiveResponse(hRequest, 0)
 
         if fStatus == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
         self.hWebSocketHandle = AutoWinHttpHandle(
             WinHttpWebSocketCompleteUpgrade(hRequest, NULL)
         )
 
         if self.hWebSocketHandle == 0:
-            raise WinhttpException(GetLastError())
+            MaybeRaiseException()
