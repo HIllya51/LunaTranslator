@@ -3,6 +3,7 @@ import functools, threading
 from myutils.wrapper import threader
 from traceback import print_exc
 from myutils.proxy import getproxy
+from myutils.utils import LRUCache
 
 
 class TTSbase:
@@ -53,6 +54,7 @@ class TTSbase:
         self.typename = typename
         self.playaudiofunction = playaudiofunction
         self.uid = uid
+        self.LRUCache = LRUCache(3)
         if privateconfig is None:
             self.privateconfig = globalconfig["reader"][self.typename]
         else:
@@ -80,9 +82,14 @@ class TTSbase:
         if len(self.voicelist) == 0:
             return
         try:
+            key = content, self.rate, self.voice
+            data = self.LRUCache.get(key)
+            if data:
+                return callback(data)
             data = self.speak(content, self.rate, self.voice)
-            if data and len(data):
+            if data:
                 callback(data)
+                self.LRUCache.put(key, data)
         except:
             print_exc()
             return

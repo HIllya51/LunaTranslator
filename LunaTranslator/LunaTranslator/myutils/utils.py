@@ -685,24 +685,30 @@ def get_time_stamp(ct=None, ms=True):
 class LRUCache:
     def __init__(self, capacity: int):
         self.cache = {}
+        self.Lock = threading.Lock()
         self.capacity = capacity
         self.order = []
 
     def setcap(self, cap):
-        if cap == -1:
-            cap = 9999999999
-        self.capacity = cap
-        while len(self.cache) > self.capacity:
-            self.cache.popitem(last=False)
+        with self.Lock:
+            if cap == -1:
+                cap = 9999999999
+            self.capacity = cap
+            while len(self.cache) > self.capacity:
+                self.cache.popitem(last=False)
 
-    def get(self, key: int) -> bool:
+    def __get(self, key):
         if key in self.cache:
             self.order.remove(key)
             self.order.append(key)
-            return True
-        return False
+            return self.cache[key]
+        return None
 
-    def put(self, key: int) -> None:
+    def get(self, key):
+        with self.Lock:
+            return self.__get(key)
+
+    def __put(self, key, value=True) -> None:
         if not self.capacity:
             return
         if key in self.cache:
@@ -710,14 +716,19 @@ class LRUCache:
         elif len(self.order) == self.capacity:
             old_key = self.order.pop(0)
             del self.cache[old_key]
-        self.cache[key] = None
+        self.cache[key] = value
         self.order.append(key)
 
+    def put(self, key, value=True) -> None:
+        with self.Lock:
+            self.__put(key, value)
+
     def test(self, key):
-        _ = self.get(key)
-        if not _:
-            self.put(key)
-        return _
+        with self.Lock:
+            _ = self.__get(key)
+            if not _:
+                self.__put(key)
+            return _
 
 
 globalcachedmodule = {}
