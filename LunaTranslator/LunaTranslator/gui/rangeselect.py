@@ -14,6 +14,7 @@ class rangeadjust(Mainw):
 
     def traceoffset(self, curr):
         if self._isTracking:
+            self.tracepos = QPoint()
             return
         _geo = self.geometry()
         if self.tracepos.isNull():
@@ -64,7 +65,6 @@ class rangeadjust(Mainw):
         )
 
     def mouseMoveEvent(self, e):
-        self.tracepos = QPoint()
         if self._isTracking:
             self._endPos = e.pos() - self._startPos
             _geo = self.geometry()

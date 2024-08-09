@@ -84,6 +84,7 @@ class TextBrowser(QWidget, dataget):
     @threader
     def trackingthread(self):
         pos = gobject.baseobject.translation_ui.pos()
+        gobject.baseobject.translation_ui._move_drag = True
         cus = QCursor.pos()
         while True:
             keystate = windows.GetKeyState(windows.VK_LBUTTON)
@@ -93,6 +94,7 @@ class TextBrowser(QWidget, dataget):
                 pos + QCursor.pos() - cus
             )
             time.sleep(0.01)
+        gobject.baseobject.translation_ui._move_drag = False
 
     def extrahandle(self, orig, hwnd, msg, wp, lp):
         if wp == windows.WM_LBUTTONDOWN:

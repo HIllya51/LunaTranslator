@@ -264,6 +264,9 @@ class QUnFrameWindow(resizableframeless):
             if not globalconfig["movefollow"]:
                 lastpos = None
                 continue
+            if self.isdoingsomething():
+                lastpos = None
+                continue
             try:
                 hwnd = gobject.baseobject.textsource.hwnd
                 if hwnd != tracehwnd:
@@ -291,7 +294,7 @@ class QUnFrameWindow(resizableframeless):
             try:
                 gobject.baseobject.textsource.traceoffset(rect)
             except:
-                print_exc()
+                pass
             self.move_signal.emit(tracepos - lastpos + rect)
 
     def showres(self, kwargs):  # name,color,res,onlytrans,iter_context):
@@ -782,7 +785,6 @@ class QUnFrameWindow(resizableframeless):
         self.isletgamefullscreened = False
         self.fullscreenmanager = None
         self.fullscreenmethod = None
-        self._isTracking = False
         self.showhidestate = False
         self.autohidestart = False
         self.processismuteed = False

@@ -626,6 +626,19 @@ class resizableframeless(saveposwindow):
         self._padding = 5
         self.resetflags()
 
+    def isdoingsomething(self):
+        return (
+            self._move_drag
+            or self._corner_drag_youxia
+            or self._bottom_drag
+            or self._top_drag
+            or self._corner_drag_zuoxia
+            or self._right_drag
+            or self._left_drag
+            or self._corner_drag_zuoshang
+            or self._corner_drag_youshang
+        )
+
     def resetflags(self):
         self._move_drag = False
         self._corner_drag_youxia = False
