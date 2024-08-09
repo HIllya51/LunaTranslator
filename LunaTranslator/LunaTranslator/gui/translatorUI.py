@@ -702,29 +702,16 @@ class QUnFrameWindow(resizableframeless):
         self.setontopthread()
 
     def canceltop(self):
-        windows.SetWindowPos(
-            self.winid,
-            windows.HWND_NOTOPMOST,
-            0,
-            0,
-            0,
-            0,
-            windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
-        )
-        HWNDStyleEx = windows.GetWindowLong(self.winid, windows.GWL_EXSTYLE)
-        windows.SetWindowLong(
-            self.winid, windows.GWL_EXSTYLE, HWNDStyleEx & ~windows.WS_EX_TOPMOST
-        )
-
-        windows.SetWindowPos(
-            self.winid,
-            windows.GetForegroundWindow(),
-            0,
-            0,
-            0,
-            0,
-            windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
-        )
+        if self.istopmost():
+            windows.SetWindowPos(
+                self.winid,
+                windows.HWND_NOTOPMOST,
+                0,
+                0,
+                0,
+                0,
+                windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
+            )
 
     def istopmost(self):
         return bool(
@@ -733,12 +720,6 @@ class QUnFrameWindow(resizableframeless):
         )
 
     def settop(self):
-        if not self.istopmost():
-            self.canceltop()
-        HWNDStyleEx = windows.GetWindowLong(self.winid, windows.GWL_EXSTYLE)
-        windows.SetWindowLong(
-            self.winid, windows.GWL_EXSTYLE, HWNDStyleEx | windows.WS_EX_TOPMOST
-        )
         windows.SetWindowPos(
             self.winid,
             windows.HWND_TOPMOST,
@@ -751,22 +732,25 @@ class QUnFrameWindow(resizableframeless):
 
     @threader
     def setontopthread(self):
-        self.settop()
-        while globalconfig["keepontop"]:
 
-            try:
-                hwnd = windows.GetForegroundWindow()
-                pid = windows.GetWindowThreadProcessId(hwnd)
-                if pid == os.getpid():
-                    pass
-                elif globalconfig["focusnotop"] and self.thistimenotsetop:
-                    pass
-                else:
-                    self.settop()
-            except:
-                print_exc()
-            time.sleep(0.5)
-        self.canceltop()
+        with self.setontopthread_lock:
+            if not globalconfig["keepontop"]:
+                return self.canceltop()
+            self.settop()
+            while globalconfig["keepontop"]:
+
+                try:
+                    hwnd = windows.GetForegroundWindow()
+                    pid = windows.GetWindowThreadProcessId(hwnd)
+                    if pid == os.getpid():
+                        pass
+                    elif globalconfig["focusnotop"] and self.thistimenotsetop:
+                        pass
+                    else:
+                        self.settop()
+                except:
+                    print_exc()
+                time.sleep(0.5)
 
     def seteffect(self):
         if globalconfig["WindowEffect"] == 0:
@@ -792,6 +776,7 @@ class QUnFrameWindow(resizableframeless):
         self.processismuteed = False
         self.thistimenotsetop = False
         self.isbindedwindow = False
+        self.setontopthread_lock = threading.Lock()
 
     def displayglobaltooltip_f(self, string):
         QToolTip.showText(QCursor.pos(), string, self)

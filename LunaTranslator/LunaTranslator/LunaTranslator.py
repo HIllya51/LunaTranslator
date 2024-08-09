@@ -1248,7 +1248,10 @@ class MAINUI:
                 self.__count += 1
         elif msg == 1:
             if bool(param):
-                windows.BringWindowToTop(int(self.translation_ui.winid))
+                self.translation_ui.settop()
+            else:
+                if not globalconfig['keepontop']:
+                    self.translation_ui.canceltop()
         elif msg == 2:
             self.translation_ui.closesignal.emit()
 
