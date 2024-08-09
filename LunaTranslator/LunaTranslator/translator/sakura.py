@@ -53,8 +53,8 @@ class TS(basetrans):
         for gpt in gpt_dict:
             src = gpt["src"]
             if self.needzhconv:
-                dst = zhconv.convert(gpt["dst"], "zh-cn")
-                info = zhconv.convert(gpt["info"], "zh-cn") if "info" in gpt.keys() else None
+                dst = zhconv.convert(gpt["dst"], "zh-hans")
+                info = zhconv.convert(gpt["info"], "zh-hans") if "info" in gpt.keys() else None
             else:
                 dst = gpt["dst"]
                 info = gpt["info"] if "info" in gpt.keys() else None
