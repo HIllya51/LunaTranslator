@@ -33,13 +33,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Run build script
+        run: |
+          python build.py ${{ matrix.architecture }} 3.7.9
       - name: Generate attestation for artifact
         uses: actions/attest-build-provenance@v1
         with:
           subject-path: build/${{ matrix.fname }}.zip
-      - name: Run build script
-        run: |
-          python build.py ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
