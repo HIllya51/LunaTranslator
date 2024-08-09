@@ -2,7 +2,7 @@ import winsharedutils
 import os, functools, csv, gobject
 from ctypes import CFUNCTYPE, c_char_p
 
-from hiraparse.basehira import basehira, KnownException
+from hiraparse.basehira import basehira
 
 # # 2.1.2 src schema
 # UnidicFeatures17 = namedtuple('UnidicFeatures17',
@@ -64,7 +64,7 @@ class mecabwrap:
         fp = CFUNCTYPE(None, c_char_p, c_char_p)(cb)
         succ = winsharedutils.mecab_parse(self.kks, text.encode(codec), fp)
         if not succ:
-            raise KnownException  # failed
+            raise Exception("mecab parse failed")
 
         return res
 
@@ -72,10 +72,9 @@ class mecabwrap:
 class mecab(basehira):
     def init(self) -> None:
         mecabpath = self.config["path"]
-        if os.path.exists(mecabpath):
-            self.kks = mecabwrap(
-                mecabpath
-            )  #  fugashi.Tagger('-r nul -d "{}" -Owakati'.format(mecabpath))
+        if not os.path.exists(mecabpath):
+            raise Exception("no exits " + mecabpath)
+        self.kks = mecabwrap(mecabpath)
 
     def parse(self, text):
         start = 0

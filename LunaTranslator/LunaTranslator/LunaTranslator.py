@@ -190,6 +190,15 @@ class MAINUI:
         with self.solvegottextlock:
             self.textgetmethod_1(text, is_auto_run, embedcallback, onlytrans)
 
+    def parsehira(self, text):
+        try:
+            if self.hira_:
+                return self.hira_.safeparse(text)
+            else:
+                return []
+        except:
+            return []
+
     def textgetmethod_1(
         self, text, is_auto_run=True, embedcallback=None, onlytrans=False
     ):
@@ -1250,7 +1259,7 @@ class MAINUI:
             if bool(param):
                 self.translation_ui.settop()
             else:
-                if not globalconfig['keepontop']:
+                if not globalconfig["keepontop"]:
                     self.translation_ui.canceltop()
         elif msg == 2:
             self.translation_ui.closesignal.emit()

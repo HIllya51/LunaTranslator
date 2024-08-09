@@ -366,21 +366,6 @@ class QUnFrameWindow(resizableframeless):
                 newlines.append(line)
         return "\n".join(newlines)
 
-    def parsehira(self, text):
-        hira = []
-
-        try:
-            if gobject.baseobject.hira_:
-                for i, _ in enumerate(text.split("\n")):
-
-                    h = gobject.baseobject.hira_.parseparse(_)
-                    if i:
-                        hira += [{"orig": "\n", "hira": "\n"}]
-                    hira += h
-        except:
-            print_exc()
-        return hira
-
     def showline(self, **kwargs):  # clear,res,color ,type_=1,origin=True):
         clear = kwargs.get("clear", True)
         origin = kwargs.get("origin", True)
@@ -413,7 +398,7 @@ class QUnFrameWindow(resizableframeless):
                 )
                 needhira = isshow_fenci or isshowhira or isfenciclick
                 if needhira:
-                    hira = self.parsehira(text)
+                    hira = gobject.baseobject.parsehira(text)
 
             self.translate_text.append(
                 origin,

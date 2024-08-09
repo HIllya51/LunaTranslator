@@ -201,9 +201,7 @@ class AnkiWindow(QWidget):
         example = self.example.toPlainText()
         if globalconfig["ankiconnect"]["boldword"]:
             if self.example.hiras is None:
-                self.example.hiras = gobject.baseobject.translation_ui.parsehira(
-                    example
-                )
+                self.example.hiras = gobject.baseobject.parsehira(example)
             collect = []
             for hira in self.example.hiras:
                 if hira["orig"] == word or hira.get("origorig", None) == word:
@@ -512,7 +510,7 @@ class AnkiWindow(QWidget):
         if text and len(text):
             self.ruby = quote(
                 json.dumps(
-                    gobject.baseobject.translation_ui.parsehira(text),
+                    gobject.baseobject.parsehira(text),
                     ensure_ascii=False,
                 )
             )
@@ -649,7 +647,6 @@ class CustomTabBar(LTabBar):
         if size_hint.height():
             self.savesizehint = size_hint
         return self.savesizehint
-
 
 
 class searchwordW(closeashidewindow):
