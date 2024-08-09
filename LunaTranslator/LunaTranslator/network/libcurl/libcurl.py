@@ -41,95 +41,7 @@ class curl_ws_frame(Structure):
     ]
 
 
-class CURLcode(c_int):
-    OK = 0
-    UNSUPPORTED_PROTOCOL = 1
-    FAILED_INIT = 2
-    URL_MALFORMAT = 3
-    COULDNT_RESOLVE_PROXY = 5
-    COULDNT_RESOLVE_HOST = 6
-    COULDNT_CONNECT = 7
-    FTP_WEIRD_SERVER_REPLY = 8
-    REMOTE_ACCESS_DENIED = 9
-    FTP_WEIRD_PASS_REPLY = 11
-    FTP_WEIRD_PASV_REPLY = 13
-    FTP_WEIRD_227_FORMAT = 14
-    FTP_CANT_GET_HOST = 15
-    FTP_COULDNT_SET_TYPE = 17
-    PARTIAL_FILE = 18
-    FTP_COULDNT_RETR_FILE = 19
-    QUOTE_ERROR = 21
-    HTTP_RETURNED_ERROR = 22
-    WRITE_ERROR = 23
-    UPLOAD_FAILED = 25
-    READ_ERROR = 26
-    OUT_OF_MEMORY = 27
-    OPERATION_TIMEDOUT = 28
-    FTP_PORT_FAILED = 30
-    FTP_COULDNT_USE_REST = 31
-    RANGE_ERROR = 33
-    HTTP_POST_ERROR = 34
-    SSL_CONNECT_ERROR = 35
-    BAD_DOWNLOAD_RESUME = 36
-    FILE_COULDNT_READ_FILE = 37
-    LDAP_CANNOT_BIND = 38
-    LDAP_SEARCH_FAILED = 39
-    FUNCTION_NOT_FOUND = 41
-    ABORTED_BY_CALLBACK = 42
-    BAD_FUNCTION_ARGUMENT = 43
-    INTERFACE_FAILED = 45
-    TOO_MANY_REDIRECTS = 47
-    UNKNOWN_TELNET_OPTION = 48
-    TELNET_OPTION_SYNTAX = 49
-    PEER_FAILED_VERIFICATION = 51
-    GOT_NOTHING = 52
-    SSL_ENGINE_NOTFOUND = 53
-    SSL_ENGINE_SETFAILED = 54
-    SEND_ERROR = 55
-    RECV_ERROR = 56
-    SSL_CERTPROBLEM = 58
-    SSL_CIPHER = 59
-    SSL_CACERT = 60
-    BAD_CONTENT_ENCODING = 61
-    LDAP_INVALID_URL = 62
-    FILESIZE_EXCEEDED = 63
-    USE_SSL_FAILED = 64
-    SEND_FAIL_REWIND = 65
-    SSL_ENGINE_INITFAILED = 66
-    LOGIN_DENIED = 67
-    TFTP_NOTFOUND = 68
-    TFTP_PERM = 69
-    REMOTE_DISK_FULL = 70
-    TFTP_ILLEGAL = 71
-    TFTP_UNKNOWNID = 72
-    REMOTE_FILE_EXISTS = 73
-    TFTP_NOSUCHUSER = 74
-    CONV_FAILED = 75
-    CONV_REQD = 76
-    SSL_CACERT_BADFILE = 77
-    REMOTE_FILE_NOT_FOUND = 78
-    SSH = 79
-    SSL_SHUTDOWN_FAILED = 80
-    AGAIN = 81
-    SSL_CRL_BADFILE = 82
-    SSL_ISSUER_ERROR = 83
-    FTP_PRET_FAILED = 84
-    RTSP_CSEQ_ERROR = 85
-    RTSP_SESSION_ERROR = 86
-    FTP_BAD_FILE_LIST = 87
-    CHUNK_FAILED = 88
-    NO_CONNECTION_AVAILABLE = 89
-    SSL_PINNEDPUBKEYNOTMATCH = 90
-    SSL_INVALIDCERTSTATUS = 91
-    HTTP2_STREAM = 92
-    RECURSIVE_API_CALL = 93
-    AUTH_ERROR = 94
-    HTTP3 = 95
-    QUIC_CONNECT_ERROR = 96
-    PROXY = 97
-    SSL_CLIENTCERT = 98
-    UNRECOVERABLE_POLL = 99
-    LAST = 100
+CURLcode = c_uint
 
 
 class CURLoption(c_int):
@@ -321,22 +233,111 @@ class AutoCURLHandle(CURL):
 
 
 class CURLException(RequestException):
+    OK = 0
+    UNSUPPORTED_PROTOCOL = 1
+    FAILED_INIT = 2
+    URL_MALFORMAT = 3
+    COULDNT_RESOLVE_PROXY = 5
+    COULDNT_RESOLVE_HOST = 6
+    COULDNT_CONNECT = 7
+    FTP_WEIRD_SERVER_REPLY = 8
+    REMOTE_ACCESS_DENIED = 9
+    FTP_WEIRD_PASS_REPLY = 11
+    FTP_WEIRD_PASV_REPLY = 13
+    FTP_WEIRD_227_FORMAT = 14
+    FTP_CANT_GET_HOST = 15
+    FTP_COULDNT_SET_TYPE = 17
+    PARTIAL_FILE = 18
+    FTP_COULDNT_RETR_FILE = 19
+    QUOTE_ERROR = 21
+    HTTP_RETURNED_ERROR = 22
+    WRITE_ERROR = 23
+    UPLOAD_FAILED = 25
+    READ_ERROR = 26
+    OUT_OF_MEMORY = 27
+    OPERATION_TIMEDOUT = 28
+    FTP_PORT_FAILED = 30
+    FTP_COULDNT_USE_REST = 31
+    RANGE_ERROR = 33
+    HTTP_POST_ERROR = 34
+    SSL_CONNECT_ERROR = 35
+    BAD_DOWNLOAD_RESUME = 36
+    FILE_COULDNT_READ_FILE = 37
+    LDAP_CANNOT_BIND = 38
+    LDAP_SEARCH_FAILED = 39
+    FUNCTION_NOT_FOUND = 41
+    ABORTED_BY_CALLBACK = 42
+    BAD_FUNCTION_ARGUMENT = 43
+    INTERFACE_FAILED = 45
+    TOO_MANY_REDIRECTS = 47
+    UNKNOWN_TELNET_OPTION = 48
+    TELNET_OPTION_SYNTAX = 49
+    PEER_FAILED_VERIFICATION = 51
+    GOT_NOTHING = 52
+    SSL_ENGINE_NOTFOUND = 53
+    SSL_ENGINE_SETFAILED = 54
+    SEND_ERROR = 55
+    RECV_ERROR = 56
+    SSL_CERTPROBLEM = 58
+    SSL_CIPHER = 59
+    SSL_CACERT = 60
+    BAD_CONTENT_ENCODING = 61
+    LDAP_INVALID_URL = 62
+    FILESIZE_EXCEEDED = 63
+    USE_SSL_FAILED = 64
+    SEND_FAIL_REWIND = 65
+    SSL_ENGINE_INITFAILED = 66
+    LOGIN_DENIED = 67
+    TFTP_NOTFOUND = 68
+    TFTP_PERM = 69
+    REMOTE_DISK_FULL = 70
+    TFTP_ILLEGAL = 71
+    TFTP_UNKNOWNID = 72
+    REMOTE_FILE_EXISTS = 73
+    TFTP_NOSUCHUSER = 74
+    CONV_FAILED = 75
+    CONV_REQD = 76
+    SSL_CACERT_BADFILE = 77
+    REMOTE_FILE_NOT_FOUND = 78
+    SSH = 79
+    SSL_SHUTDOWN_FAILED = 80
+    AGAIN = 81
+    SSL_CRL_BADFILE = 82
+    SSL_ISSUER_ERROR = 83
+    FTP_PRET_FAILED = 84
+    RTSP_CSEQ_ERROR = 85
+    RTSP_SESSION_ERROR = 86
+    FTP_BAD_FILE_LIST = 87
+    CHUNK_FAILED = 88
+    NO_CONNECTION_AVAILABLE = 89
+    SSL_PINNEDPUBKEYNOTMATCH = 90
+    SSL_INVALIDCERTSTATUS = 91
+    HTTP2_STREAM = 92
+    RECURSIVE_API_CALL = 93
+    AUTH_ERROR = 94
+    HTTP3 = 95
+    QUIC_CONNECT_ERROR = 96
+    PROXY = 97
+    SSL_CLIENTCERT = 98
+    UNRECOVERABLE_POLL = 99
+    LAST = 100
+
     def __init__(self, code) -> None:
-        if not isinstance(code, CURLcode):
-            raise Exception("not a valid CURLException")
-        self.errorcode = code.value
-        error = curl_easy_strerror(code).decode("utf8")
-        for _ in dir(CURLcode):
-            if _.startswith("") and code.value == getattr(CURLcode, _):
-                error = f"{_}: {error}"
+        error = f"UNKNOWN ERROR {code}"
+        message = curl_easy_strerror(code).decode("utf8")
+        for _ in dir(self):
+            if _.startswith("") and code == getattr(self, _):
+                error = _
                 break
+        if message:
+            error += f": {message}"
         super().__init__(error)
 
 
-def MaybeRaiseException(error: CURLcode):
-    if not error.value:
+def MaybeRaiseException(error):
+    if not error:
         return
     e = CURLException(error)
-    if error.value == CURLcode.OPERATION_TIMEDOUT:
+    if error == CURLException.OPERATION_TIMEDOUT:
         raise Timeout(e)
     raise e

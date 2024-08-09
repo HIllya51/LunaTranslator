@@ -25,7 +25,7 @@ class WebSocket:
             error = curl_ws_recv(
                 self.curl, buffer, (10240), pointer(rlen), pointer(meta)
             )
-            if error.value == CURLcode.AGAIN:
+            if error == CURLException.AGAIN:
                 time.sleep(0.01)
             elif error:
                 MaybeRaiseException(error)
