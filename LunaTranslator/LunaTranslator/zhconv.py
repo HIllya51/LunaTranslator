@@ -8,6 +8,8 @@ dict_zhcn = None
 dict_zhsg = None
 dict_zhtw = None
 dict_zhhk = None
+dict_zhhans = None
+dict_zhhant = None
 pfsdict = {}
 
 
@@ -30,7 +32,7 @@ def getdict(locale):
     Generate or get convertion dict cache for certain locale.
     Dictionaries are loaded on demand.
     """
-    global zhcdicts, dict_zhcn, dict_zhsg, dict_zhtw, dict_zhhk, pfsdict
+    global zhcdicts, dict_zhcn, dict_zhsg, dict_zhtw, dict_zhhk, dict_zhhans, dict_zhhant, pfsdict
     if zhcdicts is None:
         loaddict(DICTIONARY)
     if locale == "zh-cn":
@@ -47,6 +49,18 @@ def getdict(locale):
             dict_zhtw = zhcdicts["zh2Hant"].copy()
             dict_zhtw.update(zhcdicts["zh2TW"])
             got = dict_zhtw
+    elif locale == "zh-hans":
+        if dict_zhhans:
+            got = dict_zhhans
+        else:
+            dict_zhhans = zhcdicts["zh2Hans"].copy()
+            got = dict_zhhans
+    elif locale == "zh-hant":
+        if dict_zhhant:
+            got = dict_zhhant
+        else:
+            dict_zhtw = zhcdicts["zh2Hant"].copy()
+            got = dict_zhhant
 
     if locale not in pfsdict:
         pfsdict[locale] = getpfset(got)

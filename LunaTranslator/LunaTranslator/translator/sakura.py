@@ -52,8 +52,13 @@ class TS(basetrans):
         gpt_dict_text_list = []
         for gpt in gpt_dict:
             src = gpt["src"]
-            dst = gpt["dst"]
-            info = gpt["info"] if "info" in gpt.keys() else None
+            if self.needzhconv:
+                dst = zhconv.convert(gpt["dst"], "zh-hans")
+                info = zhconv.convert(gpt["info"], "zh-hans") if "info" in gpt.keys() else None
+            else:
+                dst = gpt["dst"]
+                info = gpt["info"] if "info" in gpt.keys() else None
+            
             if info:
                 single = f"{src}->{dst} #{info}"
             else:
@@ -106,8 +111,6 @@ class TS(basetrans):
             content = ""
 
             gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
-            if self.needzhconv:
-                gpt_dict_raw_text = zhconv.convert(gpt_dict_raw_text, "zh-cn")
             content += "根据以下术语表（可以为空）：\n" + gpt_dict_raw_text + "\n\n"
 
             content += (
