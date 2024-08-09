@@ -248,23 +248,23 @@ if os.path.exists(rf"{targetdir}\..\{target}.7z"):
 os.system(
     rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {targetdir}\..\{target}.zip {targetdir}'
 )
-os.system(
-    rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA2 -mx9 {targetdir}\..\{target}.7z {targetdir}'
-)
+if 0:
+    os.system(
+        rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA2 -mx9 {targetdir}\..\{target}.7z {targetdir}'
+    )
+    with open(r"C:\Program Files\7-Zip\7z.sfx", "rb") as ff:
+        sfx = ff.read()
 
-with open(r"C:\Program Files\7-Zip\7z.sfx", "rb") as ff:
-    sfx = ff.read()
-
-config = """
-;!@Install@!UTF-8!
+    config = """
+    ;!@Install@!UTF-8!
 
 
-;!@InstallEnd@!
-"""
-with open(rf"{targetdir}\..\{target}.7z", "rb") as ff:
-    data = ff.read()
+    ;!@InstallEnd@!
+    """
+    with open(rf"{targetdir}\..\{target}.7z", "rb") as ff:
+        data = ff.read()
 
-with open(rf"{targetdir}\..\{target}.exe", "wb") as ff:
-    ff.write(sfx)
-    ff.write(config.encode("utf8"))
-    ff.write(data)
+    with open(rf"{targetdir}\..\{target}.exe", "wb") as ff:
+        ff.write(sfx)
+        ff.write(config.encode("utf8"))
+        ff.write(data)

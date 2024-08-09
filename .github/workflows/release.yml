@@ -13,6 +13,10 @@ jobs:
             fname: LunaTranslator_x86
           - architecture: x64
             fname: LunaTranslator
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,7 +33,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+      - name: Generate attestation for artifact
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: build/${{ matrix.fname }}.zip
       - name: Run build script
         run: |
           python build.py ${{ matrix.architecture }} 3.7.9
@@ -37,11 +44,7 @@ jobs:
         with:
           name: ${{ matrix.fname }}
           path: build/${{ matrix.fname }}.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.fname }} sfx
-          path: build/${{ matrix.fname }}.exe
-
+          
       - name: loadversion
         id: loadversion
         run: python build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
