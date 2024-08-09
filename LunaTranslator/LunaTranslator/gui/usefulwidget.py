@@ -320,12 +320,6 @@ def getQMessageBox(
         cancelcallback()
 
 
-def isinrect(pos, rect):
-    x, y = pos.x(), pos.y()
-    x1, x2, y1, y2 = rect
-    return x >= x1 and x <= x2 and y <= y2 and y >= y1
-
-
 def makerect(_):
     x, y, w, h = _
     return [x, x + w, y, y + h]
@@ -651,58 +645,18 @@ class resizableframeless(saveposwindow):
         self._corner_drag_youshang = False
 
     def resizeEvent(self, e):
-
+        pad = self._padding
+        w = self.width()
+        h = self.height()
         if self._move_drag == False:
-            self._right_rect = [
-                self.width() - self._padding,
-                self.width() + self._padding,
-                self._padding,
-                self.height() - self._padding,
-            ]
-            self._left_rect = [
-                -self._padding,
-                self._padding,
-                self._padding,
-                self.height() - self._padding,
-            ]
-            self._bottom_rect = [
-                self._padding,
-                self.width() - self._padding,
-                self.height() - self._padding,
-                self.height() + self._padding,
-            ]
-            self._top_rect = [
-                self._padding,
-                self.width() - self._padding,
-                -self._padding,
-                self._padding,
-            ]
-            self._corner_youxia = [
-                self.width() - self._padding,
-                self.width() + self._padding,
-                self.height() - self._padding,
-                self.height() + self._padding,
-            ]
-            self._corner_zuoxia = [
-                -self._padding,
-                self._padding,
-                self.height() - self._padding,
-                self.height() + self._padding,
-            ]
-
-            self._corner_youshang = [
-                self.width() - self._padding,
-                self.width() + self._padding,
-                -self._padding,
-                self._padding,
-            ]
-
-            self._corner_zuoshang = [
-                -self._padding,
-                self._padding,
-                -self._padding,
-                self._padding,
-            ]
+            self._right_rect = QRect(w - pad, pad, 2 * pad, h)
+            self._left_rect = QRect(-pad, pad, 2 * pad, h)
+            self._bottom_rect = QRect(pad, h - pad, w, 2 * pad)
+            self._top_rect = QRect(pad, -pad, w, 2 * pad)
+            self._corner_youxia = QRect(w - pad, h - pad, 2 * pad, 2 * pad)
+            self._corner_zuoxia = QRect(-pad, h - pad, 2 * pad, 2 * pad)
+            self._corner_youshang = QRect(w - pad, -pad, 2 * pad, 2 * pad)
+            self._corner_zuoshang = QRect(-pad, -pad, 2 * pad, 2 * pad)
         super().resizeEvent(e)
 
     def mousePressEvent(self, event: QMouseEvent):
@@ -714,21 +668,22 @@ class resizableframeless(saveposwindow):
         self.startx = gpos.x()
         self.starth = self.height()
         self.startw = self.width()
-        if isinrect(event.pos(), self._corner_youxia):
+        pos = event.pos()
+        if self._corner_youxia.contains(pos):
             self._corner_drag_youxia = True
-        elif isinrect(event.pos(), self._right_rect):
+        elif self._right_rect.contains(pos):
             self._right_drag = True
-        elif isinrect(event.pos(), self._left_rect):
+        elif self._left_rect.contains(pos):
             self._left_drag = True
-        elif isinrect(event.pos(), self._top_rect):
+        elif self._top_rect.contains(pos):
             self._top_drag = True
-        elif isinrect(event.pos(), self._bottom_rect):
+        elif self._bottom_rect.contains(pos):
             self._bottom_drag = True
-        elif isinrect(event.pos(), self._corner_zuoxia):
+        elif self._corner_zuoxia.contains(pos):
             self._corner_drag_zuoxia = True
-        elif isinrect(event.pos(), self._corner_youshang):
+        elif self._corner_youshang.contains(pos):
             self._corner_drag_youshang = True
-        elif isinrect(event.pos(), self._corner_zuoshang):
+        elif self._corner_zuoshang.contains(pos):
             self._corner_drag_zuoshang = True
         else:
             self._move_drag = True
@@ -742,21 +697,21 @@ class resizableframeless(saveposwindow):
 
         pos = event.pos()
         gpos = QCursor.pos()
-        if isinrect(pos, self._corner_youxia):
+        if self._corner_youxia.contains(pos):
             self.setCursor(Qt.CursorShape.SizeFDiagCursor)
-        elif isinrect(pos, self._corner_zuoshang):
+        elif self._corner_zuoshang.contains(pos):
             self.setCursor(Qt.CursorShape.SizeFDiagCursor)
-        elif isinrect(pos, self._corner_zuoxia):
+        elif self._corner_zuoxia.contains(pos):
             self.setCursor(Qt.CursorShape.SizeBDiagCursor)
-        elif isinrect(pos, self._corner_youshang):
+        elif self._corner_youshang.contains(pos):
             self.setCursor(Qt.CursorShape.SizeBDiagCursor)
-        elif isinrect(pos, self._bottom_rect):
+        elif self._bottom_rect.contains(pos):
             self.setCursor(Qt.CursorShape.SizeVerCursor)
-        elif isinrect(pos, self._top_rect):
+        elif self._top_rect.contains(pos):
             self.setCursor(Qt.CursorShape.SizeVerCursor)
-        elif isinrect(pos, self._right_rect):
+        elif self._right_rect.contains(pos):
             self.setCursor(Qt.CursorShape.SizeHorCursor)
-        elif isinrect(pos, self._left_rect):
+        elif self._left_rect.contains(pos):
             self.setCursor(Qt.CursorShape.SizeHorCursor)
         else:
             self.setCursor(Qt.CursorShape.ArrowCursor)

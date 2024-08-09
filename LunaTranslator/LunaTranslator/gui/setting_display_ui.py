@@ -432,15 +432,24 @@ def mainuisetting(self):
                                 name="keepontopbutton",
                             ),
                             "",
+                            "",
+                            "",
+                            "",
+                            "",
+                        ],
+                        [
                             "自动调整高度",
                             D_getsimpleswitch(globalconfig, "adaptive_height"),
                             "",
+                        ],
+                        [
                             "任务栏中显示",
                             D_getsimpleswitch(
                                 globalconfig,
                                 "showintab",
                                 callback=lambda _: gobject.baseobject.setshowintab(),
                             ),
+                            "",
                         ],
                         [
                             "鼠标穿透窗口",
@@ -452,6 +461,10 @@ def mainuisetting(self):
                                 name="mousetransbutton",
                             ),
                             "",
+                            "增强效果",
+                            D_getsimpleswitch(globalconfig, "mousetransparent_ex"),
+                        ],
+                        [
                             "自动隐藏窗口",
                             D_getsimpleswitch(globalconfig, "autodisappear"),
                             "",

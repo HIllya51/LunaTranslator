@@ -29,7 +29,7 @@ from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless, isinrect, getQMessageBox, LIconLabel
+from gui.usefulwidget import resizableframeless, getQMessageBox, LIconLabel
 from gui.edittext import edittrans
 from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
 from gui.dynalang import LDialog
@@ -993,15 +993,15 @@ class QUnFrameWindow(resizableframeless):
         hwnd = int(self.winid)
         while globalconfig["mousetransparent"]:
             cursor_pos = self.mapFromGlobal(QCursor.pos())
-            if isinrect(
-                cursor_pos,
-                [
-                    self.titlebar.x(),
-                    self.titlebar.x() + self.titlebar.width(),
-                    self.titlebar.y(),
-                    self.titlebar.y() + self.titlebar.height(),
-                ],
+            usegeo = self.titlebar.geometry()
+            btn: QWidget = self.titlebar.buttons["mousetransbutton"]
+            if (
+                globalconfig["mousetransparent_ex"]
+                and (not btn.isVisible())
+                and (btn.reflayout is not None)
             ):
+                usegeo = btn.geometry()
+            if usegeo.contains(cursor_pos):
 
                 windows.SetWindowLong(
                     hwnd,
@@ -1127,7 +1127,6 @@ class QUnFrameWindow(resizableframeless):
         self.set_color_transparency()
 
     def checkisentered(self):
-        onlychecktitle = globalconfig["mousetransparent"]
         hwnd = windows.GetForegroundWindow()
         hwndpid = windows.GetWindowThreadProcessId(hwnd)
         ismyprocbutnotmainuiforeground = hwndpid == os.getpid() and hwnd != int(
@@ -1135,11 +1134,20 @@ class QUnFrameWindow(resizableframeless):
         )
         onlychecktitle = (
             globalconfig["toolviswhenenter"]
-            or onlychecktitle
+            or globalconfig["mousetransparent"]
             or ismyprocbutnotmainuiforeground
         )
         if onlychecktitle:
-            return self.titlebar.geometry().contains(self.mapFromGlobal(QCursor.pos()))
+            usegeo = self.titlebar.geometry()
+            btn: QWidget = self.titlebar.buttons["mousetransbutton"]
+            if (
+                globalconfig["mousetransparent"]
+                and globalconfig["mousetransparent_ex"]
+                and (not btn.isVisible())
+                and (btn.reflayout is not None)
+            ):
+                usegeo = btn.geometry()
+            return usegeo.contains(self.mapFromGlobal(QCursor.pos()))
         else:
             return self.geometry().contains(QCursor.pos())
 

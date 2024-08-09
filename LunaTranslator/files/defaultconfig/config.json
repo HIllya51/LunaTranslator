@@ -838,6 +838,7 @@
     },
     "disappear_delay_tool": 1,
     "mousetransparent": false,
+    "mousetransparent_ex": false,
     "adaptive_height": true,
     "backtransparent": false,
     "showtranexception": true,
