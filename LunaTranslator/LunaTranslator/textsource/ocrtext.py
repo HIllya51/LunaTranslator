@@ -56,9 +56,13 @@ class ocrtext(basetext):
             self.lastocrtime.append(0)
             self.savelasttext.append(None)
 
-    def moveui(self, x, y):
+    def starttrace(self, pos):
         for _r in self.range_ui:
-            _r.move(_r.pos().x() + x, _r.pos().y() + y)
+            _r.starttrace(pos)
+
+    def traceoffset(self, curr):
+        for _r in self.range_ui:
+            _r.traceoffsetsignal.emit(curr)
 
     def setrect(self, rect):
         self.range_ui[-1].setrect(rect)

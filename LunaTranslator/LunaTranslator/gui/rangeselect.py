@@ -6,12 +6,33 @@ from gui.dynalang import LAction
 
 
 class rangeadjust(Mainw):
+    traceoffsetsignal = pyqtSignal(QPoint)
+
+    def starttrace(self, pos):
+        self.tracepos = self.geometry().topLeft()
+        self.traceposstart = pos
+
+    def traceoffset(self, curr):
+        if self._isTracking:
+            return
+        _geo = self.geometry()
+        if self.tracepos.isNull():
+            self.tracepos = _geo.topLeft()
+            self.traceposstart = curr
+        target = self.tracepos + (curr - self.traceposstart) * self.devicePixelRatioF()
+        self.setGeometry(
+            target.x(),
+            target.y(),
+            _geo.width(),
+            _geo.height(),
+        )
 
     def __init__(self, parent):
-
         super(rangeadjust, self).__init__(parent)
+        self.traceoffsetsignal.connect(self.traceoffset)
         self.label = QLabel(self)
         self.setstyle()
+        self.tracepos = QPoint()
         self.drag_label = QLabel(self)
         self.drag_label.setGeometry(0, 0, 4000, 2000)
         self._isTracking = False
@@ -43,9 +64,12 @@ class rangeadjust(Mainw):
         )
 
     def mouseMoveEvent(self, e):
+        self.tracepos = QPoint()
         if self._isTracking:
             self._endPos = e.pos() - self._startPos
-            self.move(self.pos() + self._endPos)
+            _geo = self.geometry()
+            _geo.translate(self._endPos)
+            self.setGeometry(*_geo.getRect())
 
     def mousePressEvent(self, e):
         if e.button() == Qt.MouseButton.LeftButton:
@@ -100,6 +124,7 @@ class rangeadjust(Mainw):
         return self._rect
 
     def setrect(self, rect):
+        self.tracepos = QPoint()
         if rect:
             (x1, y1), (x2, y2) = rect
             self.show()

@@ -247,9 +247,17 @@ class QUnFrameWindow(resizableframeless):
     @threader
     def tracewindowposthread(self):
         lastpos = None
+        tracepos = None
+        tracehwnd = None
+
+        def _castqp(rect):
+            return QPoint(
+                int(rect[0] / self.devicePixelRatioF()),
+                int(rect[1] / self.devicePixelRatioF()),
+            )
+
         while True:
-            time.sleep(0.05)
-            # 不能太快了，不然有int取整累计误差。其实应该记录起始窗口位置，然后计算与起始的dxdy，而不是与上一次的dxdy，但这太麻烦了
+            time.sleep(0.01)
             if self._move_drag:
                 lastpos = None
                 continue
@@ -258,29 +266,33 @@ class QUnFrameWindow(resizableframeless):
                 continue
             try:
                 hwnd = gobject.baseobject.textsource.hwnd
+                if hwnd != tracehwnd:
+                    lastpos = None
             except:
                 lastpos = None
                 continue
             rect = windows.GetWindowRect(hwnd)
+            tracehwnd = hwnd
             if not rect:
                 lastpos = None
                 continue
+            rect = _castqp(rect)
             if not lastpos:
                 lastpos = rect
+                tracepos = self.pos()
+                try:
+                    gobject.baseobject.textsource.starttrace(rect)
+                except:
+                    pass
                 continue
-            rate = self.devicePixelRatioF()
 
-            dx, dy = int((rect[0] - lastpos[0]) / rate), int(
-                (rect[1] - lastpos[1]) / rate
-            )
-            if dx == 0 and dy == 0:
+            if rect == QPoint(0, 0):
                 continue
             try:
-                gobject.baseobject.textsource.moveui(dx, dy)
+                gobject.baseobject.textsource.traceoffset(rect)
             except:
-                pass
-            self.move_signal.emit(QPoint(self.x() + dx, self.y() + dy))
-            lastpos = rect
+                print_exc()
+            self.move_signal.emit(tracepos - lastpos + rect)
 
     def showres(self, kwargs):  # name,color,res,onlytrans,iter_context):
         try:

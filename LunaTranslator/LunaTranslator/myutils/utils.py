@@ -423,12 +423,15 @@ def minmaxmoveobservefunc(self):
     def win_event_callback(
         hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime
     ):
+
         try:
             if gobject.baseobject.textsource is None:
                 return
-            if gobject.baseobject.textsource.hwnd == 0:
+            if not gobject.baseobject.textsource.hwnd:
                 return
-
+            if not gobject.baseobject.textsource.pids:
+                return
+            p_pids = gobject.baseobject.textsource.pids
             _focusp = windows.GetWindowThreadProcessId(hwnd)
             if event != windows.EVENT_SYSTEM_FOREGROUND:
                 return
@@ -441,10 +444,7 @@ def minmaxmoveobservefunc(self):
                 "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
             ):
                 return
-            if (
-                len(gobject.baseobject.textsource.pids) == 0
-                or _focusp in gobject.baseobject.textsource.pids
-            ):
+            if _focusp in p_pids:
                 gobject.baseobject.translation_ui.thistimenotsetop = False
                 gobject.baseobject.translation_ui.settop()
             else:

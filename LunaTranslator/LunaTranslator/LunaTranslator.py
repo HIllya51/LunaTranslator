@@ -935,7 +935,7 @@ class MAINUI:
                 elif "once" not in dir(self.textsource):
                     self.textsource.once = True
                     setandrefresh(True)
-            if len(self.textsource.pids):
+            if self.textsource.pids:
                 _mute = winsharedutils.GetProcessMute(self.textsource.pids[0])
                 if self.translation_ui.processismuteed != _mute:
                     self.translation_ui.processismuteed = _mute
