@@ -298,6 +298,9 @@ def downloadsomething():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {dynalink('Resource/build_req/stylesheets-main.zip')}")
     subprocess.run(f"7z x stylesheets-main.zip -oALL")
+    move_directory_contents(
+        "ALL/stylesheets-main", rootDir + "\\LunaTranslator\\files\\themes"
+    )
 
 
 def downloadbass():
