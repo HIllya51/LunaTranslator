@@ -59,7 +59,7 @@ def getdict(locale):
         if dict_zhhant:
             got = dict_zhhant
         else:
-            dict_zhtw = zhcdicts["zh2Hant"].copy()
+            dict_zhhant = zhcdicts["zh2Hant"].copy()
             got = dict_zhhant
 
     if locale not in pfsdict:
