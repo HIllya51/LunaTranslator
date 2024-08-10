@@ -65,7 +65,7 @@ class TextBrowser(QWidget, dataget):
 
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
-        visheight = sz.height() + self.extra_height
+        visheight = int(sz.height() + self.extra_height)
         self.textbrowser.resize(self.width(), visheight)
         self.contentsChanged.emit(QSize(sz.width(), visheight + self.labeloffset_y))
 
