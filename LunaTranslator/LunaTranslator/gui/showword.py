@@ -6,7 +6,7 @@ import qtawesome, requests, gobject, windows
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, _TR, static_data, savehook_new_data
-from myutils.utils import loopbackrecorder
+from myutils.utils import loopbackrecorder, parsekeystringtomodvkcode
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run_2
 from gui.rangeselect import rangeselct_function
@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     statusbutton,
     getQMessageBox,
     auto_select_webview,
+    FocusCombo,
     getboxlayout,
     getspinbox,
     getsimplecombobox,
@@ -290,7 +291,36 @@ class AnkiWindow(QWidget):
         layout.addRow(
             "端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
         )
-        layout.addRow("DeckName", getlineedit(globalconfig["ankiconnect"], "DeckName"))
+        combox = getsimplecombobox(
+            globalconfig["ankiconnect"]["DeckNameS"],
+            globalconfig["ankiconnect"],
+            "DeckName_i",
+        )
+
+        def refreshcombo(combo: QComboBox):
+            combo.clear()
+            if len(globalconfig["ankiconnect"]["DeckNameS"]) == 0:
+                globalconfig["ankiconnect"]["DeckNameS"].append("lunadeck")
+            combo.addItems(globalconfig["ankiconnect"]["DeckNameS"])
+
+        layout.addRow(
+            "DeckName",
+            getboxlayout(
+                [
+                    getIconButton(
+                        lambda: listediter(
+                            self,
+                            "DeckName",
+                            "DeckName",
+                            globalconfig["ankiconnect"]["DeckNameS"],
+                            closecallback=functools.partial(refreshcombo, combox),
+                        ),
+                        icon="fa.gear",
+                    ),
+                    combox,
+                ]
+            ),
+        )
         layout.addRow(
             "ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName5")
         )
@@ -345,9 +375,50 @@ class AnkiWindow(QWidget):
             namemapfunction=lambda k: globalconfig["cishu"][k]["name"],
         )
 
+    @threader
+    def simulate_key(self, i):
+        def __internal__keystring(i):
+            try:
+                for _ in (0,):
+
+                    if not gobject.baseobject.textsource:
+                        break
+
+                    gameuid = gobject.baseobject.textsource.gameuid
+                    if not gameuid:
+                        break
+                    if savehook_new_data[gameuid]["follow_default_ankisettings"]:
+                        break
+                    if not savehook_new_data[gameuid][f"anki_simulate_key_{i}_use"]:
+                        return None
+                    return savehook_new_data[gameuid][
+                        f"anki_simulate_key_{i}_keystring"
+                    ]
+            except:
+                pass
+            return globalconfig["ankiconnect"]["simulate_key"][i]["keystring"]
+
+        keystring = __internal__keystring(i)
+        if not keystring:
+            return
+        windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+        time.sleep(0.1)
+        try:
+            modes, vkcode = parsekeystringtomodvkcode(keystring, modes=True)
+        except:
+            return
+        for mode in modes:
+            windows.keybd_event(mode, 0, 0, 0)
+        windows.keybd_event(vkcode, 0, 0, 0)
+        time.sleep(0.1)
+        windows.keybd_event(vkcode, 0, windows.KEYEVENTF_KEYUP, 0)
+        for mode in modes:
+            windows.keybd_event(mode, 0, windows.KEYEVENTF_KEYUP, 0)
+
     def startorendrecord(self, target: QLineEdit, idx):
         if idx == 1:
             self.recorder = loopbackrecorder()
+            self.simulate_key(idx)
         else:
             self.recorder.end(callback=target.setText)
 
@@ -553,29 +624,16 @@ class AnkiWindow(QWidget):
 
     def addanki(self):
 
-        def __internal__DeckName():
-            try:
-                for _ in (0,):
-
-                    if not gobject.baseobject.textsource:
-                        break
-
-                    gameuid = gobject.baseobject.textsource.gameuid
-                    if not gameuid:
-                        break
-                    if savehook_new_data[gameuid]["follow_default_ankisettings"]:
-                        break
-
-                    return savehook_new_data[gameuid]["anki_DeckName"]
-            except:
-                pass
-            return globalconfig["ankiconnect"]["DeckName"]
-
         autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
         allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
         anki.global_port = globalconfig["ankiconnect"]["port"]
         ModelName = globalconfig["ankiconnect"]["ModelName5"]
-        DeckName = __internal__DeckName()
+        try:
+            DeckName = globalconfig["ankiconnect"]["DeckNameS"][
+                globalconfig["ankiconnect"]["DeckName_i"]
+            ]
+        except:
+            DeckName = "lunadeck"
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
         tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)
