@@ -854,5 +854,7 @@
     "转义": "Escaping",
     "游戏已存在，是否重复添加？": "The game already exists, would you like to add it again?",
     "点击消息后退出并开始更新": "Click on the message to exit and start updating",
-    "增强效果": "Enhanced effect"
+    "增强效果": "Enhanced effect",
+    "显示/隐藏翻译": "Show/Hide Translation",
+    "全局": "overall situation"
 }

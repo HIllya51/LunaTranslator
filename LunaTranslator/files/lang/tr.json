@@ -854,5 +854,7 @@
     "转义": "Kaçmak",
     "游戏已存在，是否重复添加？": "Oyun zaten var, tekrar eklemek ister misiniz?",
     "点击消息后退出并开始更新": "Çıkmak ve güncellenmeye başlamak için mesajı tıklayın",
-    "增强效果": "Yükselmiş etki"
+    "增强效果": "Yükselmiş etki",
+    "显示/隐藏翻译": "Çeviri Göster/Gizle",
+    "全局": "bütün durum"
 }

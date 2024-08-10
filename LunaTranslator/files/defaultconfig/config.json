@@ -689,25 +689,25 @@
             },
             "noundict": {
                 "use": false,
-                "tip": "专有名词翻译_占位符",
+                "tip": "专有名词翻译_占位符_全局",
                 "icon": "fa.book",
                 "align": 0
             },
             "noundict_2": {
                 "use": false,
-                "tip": "专有名词翻译_占位符_2",
+                "tip": "专有名词翻译_占位符",
                 "icon": "fa.book",
                 "align": 0
             },
             "fix": {
                 "use": false,
-                "tip": "翻译结果修正",
+                "tip": "翻译结果修正_全局",
                 "icon": "fa.won",
                 "align": 0
             },
             "fix_2": {
                 "use": false,
-                "tip": "翻译结果修正_2",
+                "tip": "翻译结果修正",
                 "icon": "fa.won",
                 "align": 0
             },
