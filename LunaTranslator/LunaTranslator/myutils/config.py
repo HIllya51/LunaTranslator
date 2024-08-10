@@ -468,13 +468,12 @@ for key in ___:
     globalconfig["toolbutton"]["rank2"].remove(key)
 
 if "DeckName" in globalconfig["ankiconnect"]:
+    deckname = globalconfig["ankiconnect"].pop("DeckName")
     if (
         globalconfig["ankiconnect"]["DeckName"]
         not in globalconfig["ankiconnect"]["DeckNameS"]
     ):
-        globalconfig["ankiconnect"]["DeckNameS"].append(
-            globalconfig["ankiconnect"].pop("DeckName")
-        )
+        globalconfig["ankiconnect"]["DeckNameS"].append(deckname)
 
     for data in savehook_new_data.values():
         deck = data.get("anki_DeckName", "")
