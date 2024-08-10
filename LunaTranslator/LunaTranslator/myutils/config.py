@@ -131,6 +131,7 @@ def getdefaultsavehook(title=None):
         # "private_srclang_2": 0,# 显示时再加载，缺省用global中的键
         # "private_tgtlang_2": 0,
         "follow_default_ankisettings": True,
+        # "anki_DeckName":str
         # "localeswitcher": 0,废弃
         "onloadautochangemode2": 0,
         "needinserthookcode": [],
@@ -467,22 +468,6 @@ for key in globalconfig["toolbutton"]["rank2"]:
 for key in ___:
     globalconfig["toolbutton"]["rank2"].remove(key)
 
-if "DeckName" in globalconfig["ankiconnect"]:
-    if (
-        globalconfig["ankiconnect"]["DeckName"]
-        not in globalconfig["ankiconnect"]["DeckNameS"]
-    ):
-        globalconfig["ankiconnect"]["DeckNameS"].append(
-            globalconfig["ankiconnect"].pop("DeckName")
-        )
-
-    for data in savehook_new_data.values():
-        deck = data.get("anki_DeckName", "")
-        if not deck:
-            continue
-        if deck in globalconfig["ankiconnect"]["DeckNameS"]:
-            continue
-        globalconfig["ankiconnect"]["DeckNameS"].append(deck)
 
 for group in ["webview", "textbrowser"]:
 

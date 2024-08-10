@@ -15,7 +15,6 @@ from gui.usefulwidget import (
     statusbutton,
     getQMessageBox,
     auto_select_webview,
-    FocusCombo,
     getboxlayout,
     getspinbox,
     getsimplecombobox,
@@ -291,36 +290,7 @@ class AnkiWindow(QWidget):
         layout.addRow(
             "端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
         )
-        combox = getsimplecombobox(
-            globalconfig["ankiconnect"]["DeckNameS"],
-            globalconfig["ankiconnect"],
-            "DeckName_i",
-        )
-
-        def refreshcombo(combo: QComboBox):
-            combo.clear()
-            if len(globalconfig["ankiconnect"]["DeckNameS"]) == 0:
-                globalconfig["ankiconnect"]["DeckNameS"].append("lunadeck")
-            combo.addItems(globalconfig["ankiconnect"]["DeckNameS"])
-
-        layout.addRow(
-            "DeckName",
-            getboxlayout(
-                [
-                    getIconButton(
-                        lambda: listediter(
-                            self,
-                            "DeckName",
-                            "DeckName",
-                            globalconfig["ankiconnect"]["DeckNameS"],
-                            closecallback=functools.partial(refreshcombo, combox),
-                        ),
-                        icon="fa.gear",
-                    ),
-                    combox,
-                ]
-            ),
-        )
+        layout.addRow("DeckName", getlineedit(globalconfig["ankiconnect"], "DeckName"))
         layout.addRow(
             "ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName5")
         )
@@ -624,16 +594,29 @@ class AnkiWindow(QWidget):
 
     def addanki(self):
 
+        def __internal__DeckName():
+            try:
+                for _ in (0,):
+
+                    if not gobject.baseobject.textsource:
+                        break
+
+                    gameuid = gobject.baseobject.textsource.gameuid
+                    if not gameuid:
+                        break
+                    if savehook_new_data[gameuid]["follow_default_ankisettings"]:
+                        break
+
+                    return savehook_new_data[gameuid]["anki_DeckName"]
+            except:
+                pass
+            return globalconfig["ankiconnect"]["DeckName"]
+
         autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
         allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
         anki.global_port = globalconfig["ankiconnect"]["port"]
         ModelName = globalconfig["ankiconnect"]["ModelName5"]
-        try:
-            DeckName = globalconfig["ankiconnect"]["DeckNameS"][
-                globalconfig["ankiconnect"]["DeckName_i"]
-            ]
-        except:
-            DeckName = "lunadeck"
+        DeckName = __internal__DeckName()
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
         tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)
