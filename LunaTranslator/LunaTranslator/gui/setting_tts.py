@@ -147,27 +147,6 @@ def setTab5lz(self):
                             "语速_(-10~10)",
                             D_getspinbox(-10, 10, globalconfig["ttscommon"], "rate"),
                         ],
-                    ],
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="音频播放",
-                    grid=[
-                        [
-                            "引擎",
-                            D_getsimplecombobox(
-                                static_data["audioengine_vis"],
-                                globalconfig,
-                                "audioengine",
-                                internal=static_data["audioengine"],
-                                static=True,
-                            ),
-                        ],
                         [
                             "音量_(0~100)",
                             D_getspinbox(0, 100, globalconfig["ttscommon"], "volume"),
@@ -234,7 +213,7 @@ def setTab5lz(self):
                                     self,
                                     globalconfig["ttscommon"]["tts_repair_regex"],
                                     "语音修正",
-                                    ["正则",'转义', "原文", "替换"],
+                                    ["正则", "转义", "原文", "替换"],
                                 ),
                                 icon="fa.gear",
                             ),

@@ -1,69 +1,95 @@
-import windows
-import os, time
-import gobject, uuid
+import time
 from traceback import print_exc
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig
 import threading
-import winsharedutils
-from ctypes import c_float, pointer, c_void_p
-
-# miniaudio似乎有的时候会莫名崩溃，但我没遇到过。没办法只好恢复之前的mci了
-# 但miniaudio的好处是不需要写硬盘，可以直接在内存里播放，mci必须写到文件里才能播放
-
-
-class player_miniaudio:
-    def stop(self, context):
-        winsharedutils.PlayAudioInMem_Stop(context[0], context[1])
-
-    def play(self, binary, volume):
-        duration = c_float()
-        device = c_void_p()
-        decoder = c_void_p()
-        succ = winsharedutils.PlayAudioInMem(
-            binary,
-            len(binary),
-            volume / 100,
-            pointer(decoder),
-            pointer(device),
-            pointer(duration),
-        )
-        if succ != 0:
-            return 0
-        context = decoder, device
-        durationms = duration.value * 1000
-        return durationms, context
+import gobject
+from ctypes.wintypes import BOOL, DWORD, HWND
+from ctypes import (
+    WinDLL,
+    WINFUNCTYPE,
+    c_int,
+    c_ulong,
+    c_float,
+    c_int64,
+    c_void_p,
+    c_double,
+)
 
 
-class player_mci:
-    def stop(self, context):
-        i, lastfile, remove = context
-        windows.mciSendString(("stop lunatranslator_mci_{}".format(i)))
-        windows.mciSendString(("close lunatranslator_mci_{}".format(i)))
-        if remove:
-            os.remove(lastfile)
+HMUSIC = c_ulong  # MOD music handle
+HSAMPLE = c_ulong  # sample handle
+HPLUGIN = c_ulong  # Plugin handle
+QWORD = c_int64
+HSTREAM = c_ulong  # sample stream handle
 
-    def play(self, binaryorfile, volume):
-        i = str(uuid.uuid4())
-        if isinstance(binaryorfile, bytes):
-            tgt = gobject.gettempdir(f"tts/{i}.wav")
-            with open(tgt, "wb") as ff:
-                ff.write(binaryorfile)
-            remove = True
-        elif isinstance(binaryorfile, str):
-            tgt = binaryorfile
-            remove = False
-        context = (i, tgt, remove)
-        windows.mciSendString(
-            'open "{}" type mpegvideo  alias lunatranslator_mci_{}'.format(tgt, i)
-        )
-        durationms = int(
-            windows.mciSendString("status lunatranslator_mci_{} length".format(i))
-        )
-        windows.mciSendString(
-            "setaudio lunatranslator_mci_{} volume to {}".format(i, volume * 10)
-        )
-        windows.mciSendString(("play lunatranslator_mci_{}".format(i)))
-        return durationms, context
+BASS_UNICODE = 0x80000000  # -2147483648
+BASS_ATTRIB_VOL = 2
+BASS_POS_BYTE = 0  # byte position
+bass_module = WinDLL(gobject.GetDllpath("bass.dll"))
+
+BASS_ChannelSetAttribute = WINFUNCTYPE(BOOL, DWORD, DWORD, c_float)(
+    ("BASS_ChannelSetAttribute", bass_module)
+)
+
+BASS_ChannelGetLength = WINFUNCTYPE(QWORD, DWORD, DWORD)(
+    ("BASS_ChannelGetLength", bass_module)
+)
+BASS_ChannelGetPosition = WINFUNCTYPE(QWORD, DWORD, DWORD)(
+    ("BASS_ChannelGetPosition", bass_module)
+)
+BASS_ChannelPlay = WINFUNCTYPE(BOOL, DWORD, BOOL)(("BASS_ChannelPlay", bass_module))
+BASS_StreamFree = WINFUNCTYPE(BOOL, HSTREAM)(("BASS_StreamFree", bass_module))
+BASS_Init = WINFUNCTYPE(BOOL, c_int, DWORD, DWORD, HWND, c_void_p)(
+    ("BASS_Init", bass_module)
+)
+BASS_StreamCreateFile = WINFUNCTYPE(HSTREAM, BOOL, c_void_p, QWORD, QWORD, DWORD)(
+    ("BASS_StreamCreateFile", bass_module)
+)
+BASS_Free = WINFUNCTYPE(BOOL)(("BASS_Free", bass_module))
+
+
+class playonce:
+    def __init__(self, fileormem, volume) -> None:
+        self.handle = None
+        self.channel_length = 0
+        self.__play(fileormem, volume)
+
+    def __del__(self):
+        self.__stop()
+
+    @property
+    def isplaying(self):
+        if not self.handle:
+            return False
+        if not self.channel_length:
+            return False
+        channel_position = BASS_ChannelGetPosition(self.handle, BASS_POS_BYTE)
+        return channel_position < self.channel_length
+
+    def __play(self, fileormem, volume):
+        if isinstance(fileormem, bytes):
+            handle = BASS_StreamCreateFile(True, fileormem, 0, len(fileormem), 0)
+        else:
+            handle = BASS_StreamCreateFile(False, fileormem, 0, 0, BASS_UNICODE)
+        if not handle:
+            return
+
+        BASS_ChannelSetAttribute(handle, BASS_ATTRIB_VOL, volume / 100)
+        if not BASS_ChannelPlay(handle, False):
+            return
+        channel_length = BASS_ChannelGetLength(handle, BASS_POS_BYTE)
+        self.channel_length = channel_length
+        self.handle = handle
+
+    def __stop(self):
+        _ = self.handle
+        if not _:
+            return
+        self.handle = None
+        BASS_StreamFree(_)
+
+
+BASS_Init(-1, 44100, 0, 0, 0)
 
 
 class series_audioplayer:
@@ -73,8 +99,6 @@ class series_audioplayer:
         self.tasks = None
         self.lock = threading.Lock()
         self.lock.acquire()
-        self.lastplayer = None
-        self.lastengine = None
 
         self.lastcontext = None
         threading.Thread(target=self.__dotasks).start()
@@ -86,36 +110,7 @@ class series_audioplayer:
         except:
             pass
 
-    def __maybeinitengine(self):
-        using = globalconfig["audioengine"]
-        supports = static_data["audioengine"]
-        if using not in supports:
-            using = supports[0]
-        if using == self.lastengine:
-            return
-        self.lastplayer = {"mci": player_mci, "miniaudio": player_miniaudio}.get(
-            using
-        )()
-        self.lastengine = using
-
-    def __maybestoplast(self):
-        if self.lastplayer and self.lastcontext:
-            try:
-                self.lastplayer.stop(self.lastcontext)
-            except:
-                print_exc()
-        self.lastcontext = None
-
-    def __playthis(self, binary, volume):
-        try:
-            durationms, self.lastcontext = self.lastplayer.play(binary, volume)
-        except:
-            durationms = 0
-            self.lastcontext = None
-        return durationms
-
     def __dotasks(self):
-        durationms = 0
         try:
             while True:
                 self.lock.acquire()
@@ -124,12 +119,10 @@ class series_audioplayer:
                 if task is None:
                     continue
                 binary, volume, force = task
-                self.__maybestoplast()
-                self.__maybeinitengine()
-                durationms = self.__playthis(binary, volume)
-                if durationms and globalconfig["ttsnointerrupt"]:
-                    while durationms > 0:
-                        durationms -= 100
+                _playonce = None
+                _playonce = playonce(binary, volume)
+                if globalconfig["ttsnointerrupt"]:
+                    while _playonce.isplaying:
                         time.sleep(0.1)
                         if self.tasks and self.tasks[-1]:
                             break

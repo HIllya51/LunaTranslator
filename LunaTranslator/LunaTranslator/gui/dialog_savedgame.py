@@ -38,7 +38,7 @@ from myutils.utils import (
     targetmod,
     loopbackrecorder,
 )
-from myutils.audioplayer import player_mci
+from myutils.audioplayer import playonce
 from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     noundictconfigdialog1,
@@ -2823,21 +2823,19 @@ class viewpixmap_x(QWidget):
             return
         mp3 = extradatas["imagerefmp3"][self.currentimage]
         if idx == 1:
-            duration, self.play_context = player_mci().play(
-                mp3, globalconfig["ttscommon"]["volume"]
-            )
+            self.play_context = playonce(mp3, globalconfig["ttscommon"]["volume"])
             self.sigtime = time.time()
 
-            def __(ms, tm):
-                time.sleep(ms / 1000)
+            def __(tm):
+                while self.play_context and self.play_context.isplaying:
+                    time.sleep(1)
                 if self.sigtime == tm:
                     self.switchstop.emit()
 
-            threading.Thread(target=__, args=(duration, self.sigtime)).start()
+            threading.Thread(target=__, args=(self.sigtime,)).start()
         else:
             if not self.play_context:
                 return
-            player_mci().stop(self.play_context)
             self.play_context = None
 
     def startorendrecord(self, idx):

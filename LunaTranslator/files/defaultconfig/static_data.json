@@ -1903,14 +1903,6 @@
             "miaobian1"
         ]
     },
-    "audioengine": [
-        "mci",
-        "miniaudio"
-    ],
-    "audioengine_vis": [
-        "Windows MCI",
-        "miniaudio"
-    ],
     "main_server": [
         "https://lunatranslator.org",
         "http://lunatranslator.star.is"

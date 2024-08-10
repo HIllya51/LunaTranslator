@@ -304,19 +304,6 @@ Is64bit.restype = c_bool
 isDark = utilsdll.isDark
 isDark.restype = c_bool
 
-PlayAudioInMem = utilsdll.PlayAudioInMem
-PlayAudioInMem.argtypes = (
-    c_void_p,
-    c_size_t,
-    c_float,
-    c_void_p,
-    c_void_p,
-    POINTER(c_float),
-)
-PlayAudioInMem.restype = c_int
-
-PlayAudioInMem_Stop = utilsdll.PlayAudioInMem_Stop
-PlayAudioInMem_Stop.argtypes = c_void_p, c_void_p
 
 _gdi_screenshot = utilsdll.gdi_screenshot
 _gdi_screenshot.argtypes = HWND, RECT, c_void_p

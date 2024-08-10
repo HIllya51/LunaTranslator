@@ -114,9 +114,14 @@ class TTS(TTSbase):
             _2 = self.linear_map(rate)
         elif voice.endswith("_22"):
             _2 = 0
-        try:
-            code1 = content.encode("shift-jis")
-        except:
+        __ = []
+        for c in content:
+            try:
+                __.append(c.encode("shift-jis"))
+            except:
+                pass
+        code1 = b"".join(__)
+        if not code1:
             return
         windows.WriteFile(self.hPipe, voice.encode())
         windows.WriteFile(self.hPipe, bytes(c_float(_2)))

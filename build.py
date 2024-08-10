@@ -298,6 +298,21 @@ def downloadsomething():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {dynalink('Resource/build_req/stylesheets-main.zip')}")
     subprocess.run(f"7z x stylesheets-main.zip -oALL")
+    shutil.move(
+        "ALL/bass.dll",
+        f"{rootDir}/LunaTranslator/files/plugins/DLL32",
+    )
+    shutil.move(
+        "ALL/x64/bass.dll",
+        f"{rootDir}/LunaTranslator/files/plugins/DLL64",
+    )
+
+
+def downloadbass():
+
+    os.chdir(rootDir + "\\temp")
+    subprocess.run(f"curl -LO https://www.un4seen.com/files/bass24.zip")
+    subprocess.run(f"7z x bass24.zip -oALL")
     move_directory_contents(
         "ALL/stylesheets-main", rootDir + "\\LunaTranslator\\files\\themes"
     )
@@ -318,6 +333,7 @@ if __name__ == "__main__":
     downloadCurl()
     downloadOCRModel()
     downloadcommon()
+    downloadbass()
     buildLunaHook()
 
     installVCLTL()
