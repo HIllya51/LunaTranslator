@@ -29,4 +29,5 @@
 - [分词&辞书](/zh/qa1.redirect)
     - [如何使用Mecab分词&词性颜色标注](/zh/qa1.md) 
     - [Anki集成](/zh/qa2.md)
+- [工具按钮](/zh/alltoolbuttons.md)
 - [实用功能](/zh/usefulsmalltools.md)
