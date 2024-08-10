@@ -761,7 +761,6 @@ class dialog_setting_game_internal(QWidget):
             ("翻译优化", functools.partial(self.___tabf, self.gettransoptimi)),
             ("语音", functools.partial(self.___tabf, self.getttssetting)),
             ("预翻译", functools.partial(self.___tabf, self.getpretranstab)),
-            ("Anki", functools.partial(self.___tabf, self.maketabforanki)),
         ]
         methodtab, do = makesubtab_lazy(
             [_[0] for _ in functs],
@@ -1113,23 +1112,6 @@ class dialog_setting_game_internal(QWidget):
                 ],
                 margin0=True,
                 makewidget=True,
-            ),
-        )
-
-    def maketabforanki(self, formLayout: LFormLayout, gameuid):
-
-        savehook_new_data[gameuid]["anki_DeckName"] = savehook_new_data[gameuid].get(
-            "anki_DeckName", globalconfig["ankiconnect"]["DeckName"]
-        )
-
-        formLayout2 = self.createfollowdefault(
-            savehook_new_data[gameuid], "follow_default_ankisettings", formLayout
-        )
-        formLayout2.addRow(
-            "DeckName",
-            getlineedit(
-                savehook_new_data[gameuid],
-                "anki_DeckName",
             ),
         )
 

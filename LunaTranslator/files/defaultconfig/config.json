@@ -472,7 +472,10 @@
     "jiamingcolor": "black",
     "ankiconnect": {
         "port": 8765,
-        "DeckName": "lunadeck",
+        "DeckName_i": 0,
+        "DeckNameS": [
+            "lunadeck"
+        ],
         "ModelName5": "lunamodel5",
         "allowDuplicate": true,
         "autoUpdateModel": true,
