@@ -38,6 +38,9 @@ def __changeuibuttonstate(self, x):
     except:
         pass
 
+def __changeuibuttonstate2(self, x):
+    gobject.baseobject.translation_ui.refreshtoolicon()
+
 
 def createtextfontcom(key):
     font_comboBox = FocusFontCombo()
@@ -361,7 +364,13 @@ def xianshigrid_text(self):
                         ],
                         [
                             "显示翻译",
-                            D_getsimpleswitch(globalconfig, "showfanyi"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "showfanyi",
+                                callback=lambda x: __changeuibuttonstate2(self, x),
+                                name="show_fany_switch",
+                                parent=self,
+                            ),
                             "",
                             ("显示翻译器名称"),
                             D_getsimpleswitch(globalconfig, "showfanyisource"),

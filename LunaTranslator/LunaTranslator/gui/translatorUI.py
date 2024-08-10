@@ -511,6 +511,12 @@ class QUnFrameWindow(resizableframeless):
                 lambda: globalconfig["isshowrawtext"],
                 lambda: globalconfig["isshowrawtext"],
             ),
+            (
+                "showtrans",
+                self.changeshowhidetrans,
+                lambda: globalconfig["showfanyi"],
+                lambda: globalconfig["showfanyi"],
+            ),
             ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
             (
                 "noundict",
@@ -1062,6 +1068,13 @@ class QUnFrameWindow(resizableframeless):
             gobject.baseobject.settin_ui.show_original_switch.clicksignal.emit()
         except:
             globalconfig["isshowrawtext"] = not globalconfig["isshowrawtext"]
+            self.refreshtoolicon()
+
+    def changeshowhidetrans(self):
+        try:
+            gobject.baseobject.settin_ui.show_fany_switch.clicksignal.emit()
+        except:
+            globalconfig["showfanyi"] = not globalconfig["showfanyi"]
             self.refreshtoolicon()
 
     def changeTranslateMode(self):

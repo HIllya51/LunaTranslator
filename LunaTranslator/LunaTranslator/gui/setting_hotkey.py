@@ -44,6 +44,7 @@ def registrhotkeys(self):
         "_3": self.showsignal.emit,
         "_4": lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
         "_5": gobject.baseobject.translation_ui.changeshowhideraw,
+        "_51":gobject.baseobject.translation_ui.changeshowhidetrans,
         "_6": lambda: gobject.baseobject.transhis.showsignal.emit(),
         "_7": lambda: gobject.baseobject.readcurrent(force=True),
         "_8": lambda: gobject.baseobject.translation_ui.changemousetransparentstate(0),

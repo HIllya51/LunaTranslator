@@ -756,6 +756,13 @@
                 "icon2": "fa.eye-slash",
                 "align": 2
             },
+            "showtrans": {
+                "use": false,
+                "tip": "显示/隐藏翻译",
+                "icon": "fa.eye",
+                "icon2": "fa.eye-slash",
+                "align": 2
+            },
             "langdu": {
                 "use": true,
                 "tip": "朗读",
@@ -918,6 +925,11 @@
             "_5": {
                 "use": false,
                 "name": "显示/隐藏原文",
+                "keystring": ""
+            },
+            "_51": {
+                "use": false,
+                "name": "显示/隐藏翻译",
                 "keystring": ""
             },
             "_6": {
