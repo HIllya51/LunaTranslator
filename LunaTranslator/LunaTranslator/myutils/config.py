@@ -469,10 +469,7 @@ for key in ___:
 
 if "DeckName" in globalconfig["ankiconnect"]:
     deckname = globalconfig["ankiconnect"].pop("DeckName")
-    if (
-        globalconfig["ankiconnect"]["DeckName"]
-        not in globalconfig["ankiconnect"]["DeckNameS"]
-    ):
+    if deckname not in globalconfig["ankiconnect"]["DeckNameS"]:
         globalconfig["ankiconnect"]["DeckNameS"].append(deckname)
 
     for data in savehook_new_data.values():
