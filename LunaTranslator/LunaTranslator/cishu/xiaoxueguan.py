@@ -1,4 +1,4 @@
-import sqlite3, os
+import sqlite3, os, re
 import winsharedutils
 from myutils.utils import argsort, autosql
 
@@ -15,8 +15,12 @@ class xiaoxueguan(cishubase):
         except:
             pass
 
-    def search(self, word):
+    def search(self, word: str):
         if not self.sql:
+            return
+        if word in "【】":
+            return
+        if not word.strip():
             return
         x = self.sql.execute(
             "select word,explanation from xiaoxueguanrizhong where word like ?",
@@ -27,8 +31,17 @@ class xiaoxueguan(cishubase):
         save = []
         dis = []
         for w, xx in exp:
-
-            d = winsharedutils.distance(w, word)
+            w: str = w.strip()
+            if w.startswith("-"):
+                w = w[1:]
+            match1 = re.match("(.*?)【(.*?)】", w)
+            if match1:
+                pr, w = match1.groups()
+                d = min(
+                    winsharedutils.distance(pr, word), winsharedutils.distance(w, word)
+                )
+            else:
+                d = winsharedutils.distance(w, word)
             if d <= self.config["distance"]:
                 dis.append(d)
 
