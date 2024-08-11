@@ -733,7 +733,6 @@
     "按钮颜色": "Barva tlačítka",
     "按钮大小": "Velikost tlačítka",
     "软件显示语言": "Zobrazovací jazyk softwaru",
-    "找不到文本？": "Nemůžeš najít zprávu?",
     "填充颜色": "barva výplně",
     "阴影强度": "Intenzita stínu",
     "阴影半径": "Poloměr stínu",
@@ -854,5 +853,6 @@
     "全局": "celková situace",
     "添加文件": "Přidat soubor",
     "添加文件夹": "přidat složky",
-    "类型": "typ"
+    "类型": "typ",
+    "找不到文本": "Text nebyl nalezen"
 }

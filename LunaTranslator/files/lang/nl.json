@@ -733,7 +733,6 @@
     "按钮颜色": "Knopkleur",
     "按钮大小": "Knopgrootte",
     "软件显示语言": "Weergavetaal van software",
-    "找不到文本？": "Kan je geen sms vinden?",
     "填充颜色": "vulkleur",
     "阴影强度": "Schaduwintensiteit",
     "阴影半径": "Schaduwstraal",
@@ -854,5 +853,6 @@
     "全局": "algemene situatie",
     "添加文件": "Bestand toevoegen",
     "添加文件夹": "mappen toevoegen",
-    "类型": "type"
+    "类型": "type",
+    "找不到文本": "Tekst niet gevonden"
 }

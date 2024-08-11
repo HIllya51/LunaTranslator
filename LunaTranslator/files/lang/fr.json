@@ -791,7 +791,6 @@
     "总是检测": "Toujours détecter",
     "动态检测": "Détection dynamique",
     "从不检测": "Jamais détecté",
-    "找不到文本？": "Vous ne trouvez pas le texte?",
     "腾讯混元大模型": "Tencent hybride grand modèle",
     "传统": "La tradition",
     "大模型": "Le grand modèle",
@@ -854,5 +853,6 @@
     "全局": "Globale",
     "添加文件": "Ajouter un fichier",
     "添加文件夹": "Ajouter un dossier",
-    "类型": "Type"
+    "类型": "Type",
+    "找不到文本": "Aucun texte trouvé"
 }

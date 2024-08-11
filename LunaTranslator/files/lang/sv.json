@@ -733,7 +733,6 @@
     "按钮颜色": "Knappfärg",
     "按钮大小": "Knappstorlek",
     "软件显示语言": "Programvaruvisningsspråk",
-    "找不到文本？": "Kan du inte hitta sms?",
     "填充颜色": "fyllningsfärg",
     "阴影强度": "Skuggintensitet",
     "阴影半径": "Skuggradie",
@@ -854,5 +853,6 @@
     "全局": "övergripande situation",
     "添加文件": "Lägg till fil",
     "添加文件夹": "lägg till kataloger",
-    "类型": "typ"
+    "类型": "typ",
+    "找不到文本": "Text hittades inte"
 }

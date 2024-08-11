@@ -791,7 +791,6 @@
     "总是检测": "Luôn phát hiện",
     "动态检测": "Phát hiện động",
     "从不检测": "Không bao giờ phát hiện",
-    "找不到文本？": "Không tìm thấy văn bản?",
     "腾讯混元大模型": "Mô hình hỗn hợp lớn",
     "传统": "Truyền thống",
     "大模型": "Mô hình lớn",
@@ -854,5 +853,6 @@
     "全局": "Toàn cục",
     "添加文件": "Thêm tập tin",
     "添加文件夹": "Thêm thư mục",
-    "类型": "Loại"
+    "类型": "Loại",
+    "找不到文本": "Không tìm thấy văn bản"
 }

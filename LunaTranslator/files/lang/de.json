@@ -733,7 +733,6 @@
     "按钮颜色": "Knopffarbe",
     "按钮大小": "Schaltflächengröße",
     "软件显示语言": "Software-Anzeigesprache",
-    "找不到文本？": "Können Sie keine SMS finden?",
     "填充颜色": "Füllfarbe",
     "阴影强度": "Schattenintensität",
     "阴影半径": "Schattenradius",
@@ -854,5 +853,6 @@
     "全局": "Gesamtlage",
     "添加文件": "Datei hinzufügen",
     "添加文件夹": "Ordner hinzufügen",
-    "类型": "Typ"
+    "类型": "Typ",
+    "找不到文本": "Text nicht gefunden"
 }

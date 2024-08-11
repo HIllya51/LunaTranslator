@@ -733,7 +733,6 @@
     "按钮颜色": "Cor do botão",
     "按钮大小": "Tamanho do botão",
     "软件显示语言": "Linguagem de visualização do software",
-    "找不到文本？": "Não consegue encontrar mensagens?",
     "填充颜色": "cor do preenchimento",
     "阴影强度": "Intensidade da sombra",
     "阴影半径": "Raio da sombra",
@@ -854,5 +853,6 @@
     "全局": "situação global",
     "添加文件": "Adicionar um ficheiro",
     "添加文件夹": "adicionar pastas",
-    "类型": "tipo"
+    "类型": "tipo",
+    "找不到文本": "Texto não encontrado"
 }

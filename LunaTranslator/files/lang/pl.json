@@ -791,7 +791,6 @@
     "总是检测": "Zawsze sprawdzam",
     "动态检测": "Wykrywanie dynamiczne",
     "从不检测": "Nigdy nie wykrywaj",
-    "找不到文本？": "Nie możesz znaleźć smsa?",
     "腾讯混元大模型": "Hybrydowy duży model Tencent",
     "传统": "tradycja",
     "大模型": "Duży model",
@@ -854,5 +853,6 @@
     "全局": "ogólna sytuacja",
     "添加文件": "Dodaj plik",
     "添加文件夹": "dodaj foldery",
-    "类型": "typ"
+    "类型": "typ",
+    "找不到文本": "Tekst nie znaleziony"
 }

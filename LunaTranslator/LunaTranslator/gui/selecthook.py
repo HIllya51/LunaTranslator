@@ -619,7 +619,7 @@ class hookselect(closeashidewindow):
         self.searchtextlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchtextlayout)
         self.searchtext = QLineEdit()
-        __ = LPushButton("!?_找不到文本？_!?")
+        __ = LPushButton("!?_找不到文本_!?")
         __.clicked.connect(
             lambda: gobject.baseobject.openlink(
                 dynamiclink("{main_server}/Resource/game_support")

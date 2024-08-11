@@ -791,7 +791,6 @@
     "总是检测": "Always checking",
     "动态检测": "Dynamic detection",
     "从不检测": "Never detect",
-    "找不到文本？": "Can't find text?",
     "腾讯混元大模型": "Tencent's hybrid big model",
     "传统": "tradition",
     "大模型": "Large model",
@@ -854,5 +853,6 @@
     "全局": "overall situation",
     "添加文件": "Add file",
     "添加文件夹": "add folders",
-    "类型": "type"
+    "类型": "type",
+    "找不到文本": "Text not found"
 }

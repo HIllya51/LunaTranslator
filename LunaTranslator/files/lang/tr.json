@@ -791,7 +791,6 @@
     "总是检测": "Her zaman kontrol ediyor",
     "动态检测": "Dinamik tanıma",
     "从不检测": "Asla tanıma",
-    "找不到文本？": "Mesaj bulamıyor musun?",
     "腾讯混元大模型": "Tencent'in hibrid büyük modeli",
     "传统": "gelenek",
     "大模型": "Büyük model",
@@ -854,5 +853,6 @@
     "全局": "bütün durum",
     "添加文件": "Dosya ekle",
     "添加文件夹": "Dosyaları ekle",
-    "类型": "tür"
+    "类型": "tür",
+    "找不到文本": "Metin bulunamadı"
 }
