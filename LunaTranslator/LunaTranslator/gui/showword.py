@@ -367,8 +367,10 @@ class AnkiWindow(QWidget):
             except:
                 pass
             return globalconfig["ankiconnect"]["simulate_key"][i]["keystring"]
-
-        keystring = __internal__keystring(i)
+        try:
+            keystring = __internal__keystring(i)
+        except:
+            return
         if not keystring:
             return
         windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
