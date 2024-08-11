@@ -369,12 +369,13 @@ class AnkiWindow(QWidget):
 
     def startorendrecord(self, ii, target: QLineEdit, idx):
         if idx == 1:
-            self.recorder = loopbackrecorder()
+            self.recorders[ii] = loopbackrecorder()
             self.simulate_key(ii)
         else:
-            self.recorder.end(callback=target.setText)
+            self.recorders[ii].end(callback=target.setText)
 
     def createaddtab(self):
+        self.recorders = {}
         layout = QVBoxLayout()
         wid = QWidget()
         wid.setLayout(layout)
