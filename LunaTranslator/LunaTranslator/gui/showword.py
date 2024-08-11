@@ -353,8 +353,11 @@ class AnkiWindow(QWidget):
             return
         if not keystring:
             return
-        windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
-        time.sleep(0.1)
+        try:
+            windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+            time.sleep(0.1)
+        except:
+            pass
         try:
             modes, vkcode = parsekeystringtomodvkcode(keystring, modes=True)
         except:
