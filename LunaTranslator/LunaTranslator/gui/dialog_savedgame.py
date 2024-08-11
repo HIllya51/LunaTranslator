@@ -3066,7 +3066,8 @@ def getalistname(parent, callback, skipid=False, skipidid=None):
                 },
             ],
         )
-    else:
+    elif len(__uid):
+
         callback(__uid[0])
 
 

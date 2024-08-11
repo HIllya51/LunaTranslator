@@ -1,12 +1,20 @@
 
 #include "LoopbackCapture.h"
-int wmain(int argc, wchar_t *argv[])
+#define DECLARE extern "C" __declspec(dllexport)
+
+DECLARE void StartCaptureAsync(void (*datacb)(void *ptr, size_t size), void (*handlecb)(HANDLE))
 {
+    auto mutex = CreateSemaphoreW(NULL, 0, 1, NULL);
+    handlecb(mutex);
     CLoopbackCapture loopbackCapture;
-    loopbackCapture.StartCaptureAsync(GetCurrentProcessId(), false, argv[1]);
-    WaitForSingleObject(
-        CreateEventW(&allAccess, FALSE, FALSE, argv[2]),
-        INFINITE);
+    loopbackCapture.StartCaptureAsync(GetCurrentProcessId(), false);
+    WaitForSingleObject(mutex, INFINITE);
+    CloseHandle(mutex);
     loopbackCapture.StopCaptureAsync();
-    return 0;
+    datacb(loopbackCapture.buffer.data(), loopbackCapture.buffer.size());
+}
+
+DECLARE void StopCaptureAsync(HANDLE m)
+{
+    ReleaseSemaphore(m, 1, NULL);
 }

@@ -5,6 +5,8 @@ import socket, gobject, uuid, subprocess, functools
 import ctypes, importlib, json
 import ctypes.wintypes
 from qtsymbols import *
+from ctypes import CDLL, c_void_p, CFUNCTYPE, c_size_t, cast, c_char, POINTER
+from ctypes.wintypes import HANDLE
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
@@ -759,36 +761,65 @@ def checkmd5reloadmodule(filename, module):
         return False, globalcachedmodule.get(key, {}).get("module", None)
 
 
+class audiocapture:
+    def __datacollect(self, ptr, size):
+        self.data = cast(ptr, POINTER(c_char))[:size]
+        self.stoped.release()
+
+    def __mutexcb(self, mutex):
+        self.mutex = mutex
+
+    def stop(self):
+        _ = self.mutex
+        if _:
+            self.mutex = None
+            self.StopCaptureAsync(_)
+            self.stoped.acquire()
+        return self.data
+
+    def __del__(self):
+        self.stop()
+
+    def __init__(self) -> None:
+
+        loopbackaudio = CDLL(gobject.GetDllpath("loopbackaudio.dll"))
+        StartCaptureAsync = loopbackaudio.StartCaptureAsync
+        StartCaptureAsync.argtypes = c_void_p, c_void_p
+        StartCaptureAsync.restype = HANDLE
+        StopCaptureAsync = loopbackaudio.StopCaptureAsync
+        StopCaptureAsync.argtypes = (HANDLE,)
+        self.StopCaptureAsync = StopCaptureAsync
+        self.mutex = None
+        self.stoped = threading.Lock()
+        self.stoped.acquire()
+        self.data = None
+        self.cb1 = CFUNCTYPE(None, c_void_p, c_size_t)(self.__datacollect)
+        self.cb2 = CFUNCTYPE(None, c_void_p)(self.__mutexcb)
+        threading.Thread(target=StartCaptureAsync, args=(self.cb1, self.cb2)).start()
+
+
 class loopbackrecorder:
     def __init__(self):
-        self.file = gobject.gettempdir(str(time.time()) + ".wav")
         try:
-            self.waitsignal = str(time.time())
-            cmd = './files/plugins/loopbackaudio.exe "{}" "{}"'.format(
-                self.file, self.waitsignal
-            )
-            self.engine = subproc_w(cmd, name=str(uuid.uuid4()))
+            self.capture = audiocapture()
         except:
-            print_exc()
+            self.capture = None
 
     @threader
     def end(self, callback):
-        windows.SetEvent(
-            windows.AutoHandle(windows.CreateEvent(False, False, self.waitsignal))
-        )
-        self.engine.wait()
-        filewav = self.file
-        if os.path.exists(filewav) == False:
-            callback("")
-            return
-        with open(filewav, "rb") as ff:
-            wav = ff.read()
+        if not self.capture:
+            return callback("")
+        wav = self.capture.stop()
+        if not wav:
+            return callback("")
         mp3 = winsharedutils.encodemp3(wav)
-        if mp3:
-            filemp3 = filewav[:-3] + "mp3"
-            with open(filemp3, "wb") as ff:
-                ff.write(mp3)
-            os.remove(filewav)
-            callback(filemp3)
+        if not mp3:
+            file = gobject.gettempdir(str(time.time()) + ".wav")
+            with open(file, "wb") as ff:
+                ff.write(wav)
+            callback(file)
         else:
-            callback(filewav)
+            file = gobject.gettempdir(str(time.time()) + ".mp3")
+            with open(file, "wb") as ff:
+                ff.write(mp3)
+            callback(file)

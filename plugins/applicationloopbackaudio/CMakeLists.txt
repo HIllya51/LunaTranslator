@@ -10,13 +10,8 @@ generate_product_version(
    VERSION_MINOR ${VERSION_MINOR}
    VERSION_PATCH ${VERSION_PATCH}
 )
-
-
-if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+ 
 	
-else()
-	
-	add_executable(loopbackaudio runer.cpp  LoopbackCapture.cpp  ${versioninfo})
+	add_library(loopbackaudio MODULE runer.cpp  LoopbackCapture.cpp  ${versioninfo})
 	target_precompile_headers(loopbackaudio REUSE_FROM pch) 
-	target_link_libraries(loopbackaudio Mfplat mfuuid )
-endif()
+	target_link_libraries(loopbackaudio Mfplat mfuuid ) 

@@ -347,28 +347,8 @@ class AnkiWindow(QWidget):
 
     @threader
     def simulate_key(self, i):
-        def __internal__keystring(i):
-            try:
-                for _ in (0,):
-
-                    if not gobject.baseobject.textsource:
-                        break
-
-                    gameuid = gobject.baseobject.textsource.gameuid
-                    if not gameuid:
-                        break
-                    if savehook_new_data[gameuid]["follow_default_ankisettings"]:
-                        break
-                    if not savehook_new_data[gameuid][f"anki_simulate_key_{i}_use"]:
-                        return None
-                    return savehook_new_data[gameuid][
-                        f"anki_simulate_key_{i}_keystring"
-                    ]
-            except:
-                pass
-            return globalconfig["ankiconnect"]["simulate_key"][i]["keystring"]
         try:
-            keystring = __internal__keystring(i)
+            keystring = globalconfig["ankiconnect"]["simulate_key"][i]["keystring"]
         except:
             return
         if not keystring:
@@ -387,10 +367,10 @@ class AnkiWindow(QWidget):
         for mode in modes:
             windows.keybd_event(mode, 0, windows.KEYEVENTF_KEYUP, 0)
 
-    def startorendrecord(self, target: QLineEdit, idx):
+    def startorendrecord(self, ii, target: QLineEdit, idx):
         if idx == 1:
             self.recorder = loopbackrecorder()
-            self.simulate_key(idx)
+            self.simulate_key(ii)
         else:
             self.recorder.end(callback=target.setText)
 
@@ -428,11 +408,11 @@ class AnkiWindow(QWidget):
         self.remarks = FQPlainTextEdit()
         recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=["", ""])
         recordbtn1.statuschanged.connect(
-            functools.partial(self.startorendrecord, self.audiopath)
+            functools.partial(self.startorendrecord, 1, self.audiopath)
         )
         recordbtn2 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=["", ""])
         recordbtn2.statuschanged.connect(
-            functools.partial(self.startorendrecord, self.audiopath_sentence)
+            functools.partial(self.startorendrecord, 2, self.audiopath_sentence)
         )
         self.recordbtn1 = recordbtn1
         self.recordbtn2 = recordbtn2
