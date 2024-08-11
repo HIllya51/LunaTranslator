@@ -348,7 +348,7 @@ class AnkiWindow(QWidget):
     @threader
     def simulate_key(self, i):
         try:
-            keystring = globalconfig["ankiconnect"]["simulate_key"][i]["keystring"]
+            keystring = globalconfig["ankiconnect"]["simulate_key"][str(i)]["keystring"]
         except:
             return
         if not keystring:
