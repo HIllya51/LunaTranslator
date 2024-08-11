@@ -115,6 +115,8 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 keyx = "shadowR"
             widthline = __internal["argstype"].get(keyx, None)
             if widthline is not None:
+                __ = LLabel("x_字体大小_+")
+                __.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
                 forml.addRow(
                     name,
                     getboxlayout(
@@ -127,7 +129,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                                 True,
                                 widthline.get("step", 0.1),
                             ),
-                            LLabel("x_字体大小_+"),
+                            __,
                             getspinbox(
                                 line.get("min", 0),
                                 line.get("max", 100),
@@ -157,21 +159,15 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 name="miaobian_color_button",
                 parent=self,
             )
-        elif _type == "spin":
-            lineW = FocusDoubleSpin()
-            lineW.setMinimum(line.get("min", 0))
-            lineW.setMaximum(line.get("max", 100))
-            lineW.setSingleStep(line.get("step", 0.1))
-            lineW.setValue(dd[key])
-            lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
-
-        elif _type == "intspin":
-            lineW = FocusSpin()
-            lineW.setMinimum(line.get("min", 0))
-            lineW.setMaximum(line.get("max", 100))
-            lineW.setSingleStep(line.get("step", 1))
-            lineW.setValue(dd[key])
-            lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
+        elif _type in ["spin", "intspin"]:
+            lineW = getspinbox(
+                line.get("min", 0),
+                line.get("max", 100),
+                dd,
+                key,
+                _type == "spin",
+                line.get("step", 0.1),
+            )
         elif _type == "switch":
             lineW = MySwitch(sign=dd[key])
             lineW.clicked.connect(functools.partial(dd.__setitem__, key))

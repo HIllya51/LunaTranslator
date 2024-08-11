@@ -17,6 +17,7 @@ from gui.usefulwidget import (
     FocusDoubleSpin,
     LFocusCombo,
     getsimplecombobox,
+    getspinbox,
     SplitLine,
 )
 from gui.dynalang import (
@@ -558,21 +559,15 @@ class autoinitdialog(LDialog):
                 _.addWidget(lineW)
                 _.addStretch()
                 lineW = _
-            elif line["type"] == "spin":
-                lineW = FocusDoubleSpin()
-                lineW.setMinimum(line.get("min", 0))
-                lineW.setMaximum(line.get("max", 100))
-                lineW.setSingleStep(line.get("step", 0.1))
-                lineW.setValue(dd[key])
-                lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
-
-            elif line["type"] == "intspin":
-                lineW = FocusSpin()
-                lineW.setMinimum(line.get("min", 0))
-                lineW.setMaximum(line.get("max", 100))
-                lineW.setSingleStep(line.get("step", 1))
-                lineW.setValue(dd[key])
-                lineW.valueChanged.connect(functools.partial(dd.__setitem__, key))
+            elif line["type"] in ["spin", "intspin"]:
+                lineW = getspinbox(
+                    line.get("min", 0),
+                    line.get("max", 100),
+                    dd,
+                    key,
+                    line["type"] == "spin",
+                    line.get("step", 0.1),
+                )
             elif line["type"] == "split":
                 lineW = SplitLine()
                 formLayout.addRow(lineW)
