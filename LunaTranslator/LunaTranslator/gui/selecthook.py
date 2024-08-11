@@ -146,6 +146,8 @@ class searchhookparam(LDialog):
                     dumpvalues[k] = widget.text()
                 if type(widget) == FocusSpin:
                     dumpvalues[k] = widget.value()
+                if callable(widget):
+                    dumpvalues[k] = widget()
             pattern = dumpvalues["pattern"]
             if "." in pattern:
                 usestruct.length = 1
@@ -162,9 +164,7 @@ class searchhookparam(LDialog):
             usestruct.boundaryModule = dumpvalues["module"][:120]
             usestruct.address_method = self.search_addr_range.idx()
             usestruct.search_method = self.search_method.idx()
-            usestruct.jittype = ["PC", "YUZU", "PPSSPP", "VITA3K", "RPCS3"].index(
-                dumpvalues["jittype"]
-            )
+            usestruct.jittype = dumpvalues["jittype"]
             if self.search_addr_range.idx() == 0:
                 usestruct.minAddress = self.safehex(
                     dumpvalues["startaddr"], usestruct.minAddress
@@ -269,7 +269,6 @@ class searchhookparam(LDialog):
                 regwid = addwid = sp
             elif _type == 2:
                 line = QLineEdit(str(_val))
-                line._idx = 0
                 try:
                     _list = getlistcall()
                 except:
@@ -332,16 +331,29 @@ class searchhookparam(LDialog):
             uselayout=offaddrl,
         )
 
+        _typelayout = LFormLayout()
+
+        self.layoutsettings.addRow("搜索方式", _typelayout)
+        _jitcombo = FocusCombo()
+        _jitcombo.addItems(["PC", "YUZU", "PPSSPP", "VITA3K", "RPCS3"])
         self.search_method = QButtonGroup_switch_widegt(self)
-        self.layoutsettings.addRow("搜索方式", self.search_method)
+        _jitcombo.currentIndexChanged.connect(
+            lambda idx: [
+                self.search_method.setVisible(idx == 0),
+                self.resize(self.width(), 1),
+            ]
+        )
+        self.regists["jittype"] = lambda: _jitcombo.currentIndex()
+
+        _typelayout.addRow("类型", _jitcombo)
+
+        self.layoutsettings.addWidget(self.search_method)
 
         patternW, patternWl = getformlayoutw()
         # presetW,presetWl=getformlayoutw()
         self.search_method.addW("特征匹配", patternW)
         self.search_method.addW("函数对齐", QLabel())
         self.search_method.addW("函数调用", QLabel())
-        widjit, layoutjit = getformlayoutw()
-        self.search_method.addW("JIT", widjit)
 
         autoaddline(
             "pattern",
@@ -352,15 +364,6 @@ class searchhookparam(LDialog):
         )
         autoaddline(
             "offset", "相对特征地址的偏移", usestruct.offset, 1, uselayout=patternWl
-        )
-        autoaddline(
-            "jittype",
-            "type",
-            "PC",
-            2,
-            uselayout=layoutjit,
-            getlistcall=lambda: ["PC", "YUZU", "PPSSPP", "VITA3K", "RPCS3"],
-            listeditable=False,
         )
 
         autoaddline("time", "搜索持续时间(s)", usestruct.searchTime // 1000, 1)
@@ -616,15 +619,17 @@ class hookselect(closeashidewindow):
         self.searchtextlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchtextlayout)
         self.searchtext = QLineEdit()
-        self.searchtextlayout.addWidget(self.searchtext)
-        self.searchtextbutton = LPushButton("搜索包含文本的条目")
-        __ = LPushButton("找不到文本？")
+        __ = LPushButton("!?_找不到文本？_!?")
         __.clicked.connect(
-            lambda: gobject.baseobject.openlink(dynamiclink("{main_server}/Resource/game_support"))
+            lambda: gobject.baseobject.openlink(
+                dynamiclink("{main_server}/Resource/game_support")
+            )
         )
+        self.searchtextlayout.addWidget(__)
+        self.searchtextlayout.addWidget(self.searchtext)
+        self.searchtextbutton = LPushButton("搜索")
         self.searchtextbutton.clicked.connect(self.searchtextfunc)
         self.searchtextlayout.addWidget(self.searchtextbutton)
-        self.searchtextlayout.addWidget(__)
         ###################
         self.ttCombomodelmodel2 = LStandardItemModel()
         self.tttable2 = TableViewW()
@@ -643,7 +648,7 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addLayout(self.searchtextlayout2)
         self.searchtext2 = QLineEdit()
         self.searchtextlayout2.addWidget(self.searchtext2)
-        self.searchtextbutton2 = LPushButton("搜索包含文本的条目")
+        self.searchtextbutton2 = LPushButton("搜索")
         self.checkfilt_notcontrol = LCheckBox(("过滤控制字符"))
         self.checkfilt_notascii = LCheckBox(("过滤纯英文"))
         self.checkfilt_notshiftjis = LCheckBox(("过滤乱码文本"))

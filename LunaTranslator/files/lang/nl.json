@@ -346,7 +346,6 @@
     "通用文字识别（标准含位置版）": "Universele tekstherkenning (standaard inclusief positionele versie)",
     "琴葉茜": "Qin Yeqian.",
     "月読アイ": "Maand 読アIN",
-    "搜索包含文本的条目": "Zoeken naar items met tekst",
     "北欧": "Noord-Europa",
     "金山快译": "Jinshan Snelle vertaling",
     "音街ウナ": "Yinjie Una",
@@ -678,7 +677,6 @@
     "背景颜色": "achtergrondkleur",
     "工具按钮": "Gereedschapsknop",
     "窗口特效": "Venstereffecten",
-    "遍历目录中的全部词典文件": "Doorzoek alle woordenboekbestanden in de map",
     "网络请求": "Netwerkverzoek",
     "网页显示": "Weergave van webpagina's",
     "显示时间": "Weergavetijd",
@@ -853,5 +851,8 @@
     "点击消息后退出并开始更新": "Klik op het bericht om te sluiten en te beginnen met updaten",
     "增强效果": "Verbeterd effect",
     "显示/隐藏翻译": "Vertaling tonen/verbergen",
-    "全局": "algemene situatie"
+    "全局": "algemene situatie",
+    "添加文件": "Bestand toevoegen",
+    "添加文件夹": "mappen toevoegen",
+    "类型": "type"
 }

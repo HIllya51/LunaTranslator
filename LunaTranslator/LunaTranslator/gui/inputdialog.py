@@ -541,12 +541,13 @@ class autoinitdialog(LDialog):
                 lineW = getsimplepatheditor(
                     dd[key],
                     line.get("multi", False),
-                    line["dir"],
+                    line.get("dir", False),
                     line.get("filter", None),
                     callback=functools.partial(__temp.__setitem__, "k"),
                     reflist=__temp["k"],
                     name=line.get("name", ""),
                     header=line.get("name", ""),
+                    dirorfile=line.get("dirorfile", False),
                 )
 
                 regist.append([dd, key, functools.partial(__temp.__getitem__, "k")])

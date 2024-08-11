@@ -346,7 +346,6 @@
     "通用文字识别（标准含位置版）": "Universelle Texterkennung (Standard inkl. Positionsversion)",
     "琴葉茜": "Qin Yeqian",
     "月読アイ": "Monat",
-    "搜索包含文本的条目": "Suche nach Einträgen mit Text",
     "北欧": "Nordeuropa",
     "金山快译": "Jinshan Schnellübersetzung",
     "音街ウナ": "Yinjie Una",
@@ -678,7 +677,6 @@
     "背景颜色": "Hintergrundfarbe",
     "工具按钮": "Werkzeugtaste",
     "窗口特效": "Fenstereffekte",
-    "遍历目录中的全部词典文件": "Durchsuchen Sie alle Wörterbuchdateien im Verzeichnis",
     "网络请求": "Netzwerkanfrage",
     "网页显示": "Anzeige der Webseite",
     "显示时间": "Anzeigezeit",
@@ -853,5 +851,8 @@
     "点击消息后退出并开始更新": "Klicken Sie auf die Nachricht, um zu beenden und mit der Aktualisierung zu beginnen",
     "增强效果": "Verstärkte Wirkung",
     "显示/隐藏翻译": "Übersetzung ein-/ausblenden",
-    "全局": "Gesamtlage"
+    "全局": "Gesamtlage",
+    "添加文件": "Datei hinzufügen",
+    "添加文件夹": "Ordner hinzufügen",
+    "类型": "Typ"
 }

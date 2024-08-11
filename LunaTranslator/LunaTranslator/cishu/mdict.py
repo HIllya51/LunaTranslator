@@ -2094,14 +2094,17 @@ class mdict(cishubase):
         for f in paths:
             if f.strip() == "":
                 continue
-            self.init_once_mdx(f)
-
-        for _dir, _, _fs in os.walk(self.config["path_dir"]):
-            for f in _fs:
-                if not f.lower().endswith(".mdx"):
-                    continue
-                f = os.path.join(_dir, f)
+            if not os.path.exists(f):
+                continue
+            if os.path.isfile(f):
                 self.init_once_mdx(f)
+                continue
+            for _dir, _, _fs in os.walk(f):
+                for _f in _fs:
+                    if not _f.lower().endswith(".mdx"):
+                        continue
+                    _f = os.path.join(_dir, _f)
+                    self.init_once_mdx(_f)
 
         try:
             with open(

@@ -1337,21 +1337,15 @@
             "args": {
                 "paths": [],
                 "distance": 0,
-                "stylehv": 0,
-                "path_dir": ""
+                "stylehv": 0
             },
             "argstype": {
                 "paths": {
                     "type": "file",
                     "name": "路径",
-                    "dir": false,
+                    "dirorfile": true,
                     "multi": true,
                     "filter": "*.mdx"
-                },
-                "path_dir": {
-                    "type": "file",
-                    "name": "遍历目录中的全部词典文件",
-                    "dir": true
                 },
                 "distance": {
                     "type": "intspin",

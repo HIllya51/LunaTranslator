@@ -346,7 +346,6 @@
     "通用文字识别（标准含位置版）": "Univerzální rozpoznávání textu (standardní včetně polohové verze)",
     "琴葉茜": "Qin Yeqian",
     "月読アイ": "Měsíc",
-    "搜索包含文本的条目": "Hledat položky obsahující text",
     "北欧": "Severní Evropa",
     "金山快译": "Jinshan Rychlý překlad",
     "音街ウナ": "Yinjie Una.",
@@ -678,7 +677,6 @@
     "背景颜色": "Barva pozadí",
     "工具按钮": "Tlačítko nástroje",
     "窗口特效": "Efekty oken",
-    "遍历目录中的全部词典文件": "Procházet všechny soubory slovníku v adresáři",
     "网络请求": "Žádost o síť",
     "网页显示": "Zobrazení webové stránky",
     "显示时间": "Čas zobrazení",
@@ -853,5 +851,8 @@
     "点击消息后退出并开始更新": "Klikněte na zprávu pro ukončení a spuštění aktualizace",
     "增强效果": "Zvýšený efekt",
     "显示/隐藏翻译": "Zobrazit/skrýt překlad",
-    "全局": "celková situace"
+    "全局": "celková situace",
+    "添加文件": "Přidat soubor",
+    "添加文件夹": "přidat složky",
+    "类型": "typ"
 }

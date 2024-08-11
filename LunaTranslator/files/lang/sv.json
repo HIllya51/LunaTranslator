@@ -346,7 +346,6 @@
     "通用文字识别（标准含位置版）": "Universell textigenkänning (standard inklusive positionsversion)",
     "琴葉茜": "Qin Yeqian",
     "月読アイ": "Månad 読アアイ",
-    "搜索包含文本的条目": "Sök efter poster som innehåller text",
     "北欧": "Nordeuropa",
     "金山快译": "Jinshan snabböversättning",
     "音街ウナ": "Yinjie Una",
@@ -678,7 +677,6 @@
     "背景颜色": "bakgrundsfärg",
     "工具按钮": "Verktygsknapp",
     "窗口特效": "Fönstereffekter",
-    "遍历目录中的全部词典文件": "Bläddra igenom alla ordlista filer i katalogen",
     "网络请求": "Nätverksbegäran",
     "网页显示": "Webbsidvisning",
     "显示时间": "Visningstid",
@@ -853,5 +851,8 @@
     "点击消息后退出并开始更新": "Klicka på meddelandet för att avsluta och börja uppdatera",
     "增强效果": "Förbättrad effekt",
     "显示/隐藏翻译": "Visa/dölj översättning",
-    "全局": "övergripande situation"
+    "全局": "övergripande situation",
+    "添加文件": "Lägg till fil",
+    "添加文件夹": "lägg till kataloger",
+    "类型": "typ"
 }

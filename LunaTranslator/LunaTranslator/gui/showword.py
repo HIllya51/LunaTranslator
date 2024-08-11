@@ -381,6 +381,7 @@ class AnkiWindow(QWidget):
         wid.setLayout(layout)
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
         soundbutton.clicked.connect(self.langdu)
+
         soundbutton2 = QPushButton(qtawesome.icon("fa.music"), "")
         soundbutton2.clicked.connect(self.langdu2)
         cropbutton = QPushButton(qtawesome.icon("fa.crop"), "")
@@ -432,6 +433,14 @@ class AnkiWindow(QWidget):
 
         lb = QLabel("DeckName")
         lb.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        folder_open = QPushButton(qtawesome.icon("fa.folder-open"), "")
+        folder_open.clicked.connect(functools.partial(self.selecfile, self.audiopath))
+        folder_open2 = QPushButton(qtawesome.icon("fa.folder-open"), "")
+        folder_open2.clicked.connect(
+            functools.partial(self.selecfile, self.audiopath_sentence)
+        )
+        folder_open3 = QPushButton(qtawesome.icon("fa.folder-open"), "")
+        folder_open3.clicked.connect(functools.partial(self.selecfile, self.editpath))
         layout.addLayout(
             getboxlayout(
                 [
@@ -492,12 +501,7 @@ class AnkiWindow(QWidget):
                                     self.audiopath,
                                     recordbtn1,
                                     soundbutton,
-                                    getIconButton(
-                                        functools.partial(
-                                            self.selecfile, self.audiopath
-                                        ),
-                                        icon="fa.gear",
-                                    ),
+                                    folder_open,
                                 ]
                             ),
                             getboxlayout(
@@ -506,12 +510,7 @@ class AnkiWindow(QWidget):
                                     self.audiopath_sentence,
                                     recordbtn2,
                                     soundbutton2,
-                                    getIconButton(
-                                        functools.partial(
-                                            self.selecfile, self.audiopath_sentence
-                                        ),
-                                        icon="fa.gear",
-                                    ),
+                                    folder_open2,
                                 ]
                             ),
                             getboxlayout(
@@ -520,12 +519,7 @@ class AnkiWindow(QWidget):
                                     self.editpath,
                                     cropbutton,
                                     grabwindowbtn,
-                                    getIconButton(
-                                        functools.partial(
-                                            self.selecfile, self.editpath
-                                        ),
-                                        icon="fa.gear",
-                                    ),
+                                    folder_open3,
                                 ]
                             ),
                             self.viewimagelabel,

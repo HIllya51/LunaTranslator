@@ -124,7 +124,6 @@
     "文本": "testo",
     "插入特殊码": "Inserisci codice speciale",
     "搜索特殊码": "Cerca codici speciali",
-    "搜索包含文本的条目": "Cerca voci contenenti testo",
     "过滤控制字符": "Carattere di controllo filtro",
     "过滤路径": "Percorso filtro",
     "过滤纯英文": "Filtro inglese puro",
@@ -669,7 +668,6 @@
     "背景颜色": "colore di sfondo",
     "工具按钮": "Pulsanti strumenti",
     "窗口特效": "Effetti finestra",
-    "遍历目录中的全部词典文件": "Attraversa tutti i file del dizionario nella directory",
     "网络请求": "Richiesta di rete",
     "网页显示": "Visualizzazione pagina web",
     "显示时间": "Tempo di visualizzazione",
@@ -853,5 +851,8 @@
     "点击消息后退出并开始更新": "Clicca sul messaggio per uscire e iniziare l'aggiornamento",
     "增强效果": "Effetto potenziato",
     "显示/隐藏翻译": "Mostra/Nascondi traduzione",
-    "全局": "situazione generale"
+    "全局": "situazione generale",
+    "添加文件": "Aggiungi file",
+    "添加文件夹": "aggiungi cartelle",
+    "类型": "tipo"
 }

@@ -579,10 +579,17 @@ def parsetarget(dict_, key):
     dict_[key] = t
 
 
+mdict_path_dir = (
+    globalconfig.get("cishu", {}).get("mdict", {}).get("args", {}).get("path_dir", None)
+)
+if mdict_path_dir:
+    globalconfig["cishu"]["mdict"]["args"]["paths"].append(mdict_path_dir)
+    globalconfig["cishu"]["mdict"]["args"].pop("path_dir")
+
+
 def autoparsedynamicpath():
     for dic, routine, target in (
         (globalconfig, ("cishu", "mdict", "args"), "paths"),
-        (globalconfig, ("cishu", "mdict", "args"), "path_dir"),
         (globalconfig, ("cishu", "edict", "args"), "path"),
         (globalconfig, ("cishu", "linggesi", "args"), "path"),
         (globalconfig, ("cishu", "xiaoxueguan", "args"), "path"),

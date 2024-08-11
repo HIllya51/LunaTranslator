@@ -5,7 +5,6 @@
     "查词": "Look Up Word",
     "文本": "Text",
     "插入特殊码": "Insert Hook Code",
-    "搜索包含文本的条目": "Search Entries Containing Text",
     "选择文本，支持按住ctrl进行多项选择（一般选择一条即可）": "Select text. Press and hold CTRL to make multiple selections (generally one entry is enough)",
     "不绘制光标": "Don't Draw Cursor",
     "退出": "Exit",
@@ -668,7 +667,6 @@
     "背景颜色": "Background Color",
     "工具按钮": "Tool Button",
     "窗口特效": "Window Effect",
-    "遍历目录中的全部词典文件": "Traverse All Dictionary Files in Directory",
     "网络请求": "Network Request",
     "网页显示": "Webpage Display",
     "显示时间": "Display Time",
@@ -853,5 +851,8 @@
     "点击消息后退出并开始更新": "Click on the message to exit and start updating",
     "增强效果": "Enhanced effect",
     "显示/隐藏翻译": "Show/Hide Translation",
-    "全局": "overall situation"
+    "全局": "overall situation",
+    "添加文件": "Add file",
+    "添加文件夹": "add folders",
+    "类型": "type"
 }

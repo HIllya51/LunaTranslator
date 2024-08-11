@@ -130,7 +130,6 @@
     "文本": "Văn bản",
     "插入特殊码": "Chèn mã đặc biệt",
     "搜索特殊码": "Tìm kiếm mã đặc biệt",
-    "搜索包含文本的条目": "Tìm kiếm các mục có chứa văn bản",
     "过滤控制字符": "Bộ lọc ký tự điều khiển",
     "过滤路径": "Đường dẫn lọc",
     "过滤纯英文": "Lọc tiếng Anh thuần túy",
@@ -669,7 +668,6 @@
     "背景颜色": "Màu nền",
     "工具按钮": "Nút công cụ",
     "窗口特效": "Hiệu ứng cửa sổ",
-    "遍历目录中的全部词典文件": "Đi qua tất cả các tập tin từ điển trong thư mục",
     "网络请求": "Yêu cầu mạng",
     "网页显示": "Hiển thị trang web",
     "显示时间": "Thời gian hiển thị",
@@ -853,5 +851,8 @@
     "点击消息后退出并开始更新": "Thoát sau khi nhấp vào tin nhắn và bắt đầu cập nhật",
     "增强效果": "Hiệu ứng nâng cao",
     "显示/隐藏翻译": "Hiện/ẩn bản dịch",
-    "全局": "Toàn cục"
+    "全局": "Toàn cục",
+    "添加文件": "Thêm tập tin",
+    "添加文件夹": "Thêm thư mục",
+    "类型": "Loại"
 }

@@ -1864,11 +1864,39 @@ class listediter(LDialog):
                 self.buttons.btn1clicked.connect(self.click1)
                 self.buttons.btn2clicked.connect(self.clicked2)
             else:
-                self.buttons = threebuttons(texts=["添加行", "删除行", "上移", "下移"])
-                self.buttons.btn1clicked.connect(self.click1)
-                self.buttons.btn2clicked.connect(self.clicked2)
-                self.buttons.btn3clicked.connect(functools.partial(self.moverank, -1))
-                self.buttons.btn4clicked.connect(functools.partial(self.moverank, 1))
+                if self.ispathsedit and self.ispathsedit.get("dirorfile", False):
+                    self.buttons = threebuttons(
+                        texts=["添加文件", "添加文件夹", "删除行", "上移", "下移"]
+                    )
+                    self.buttons.btn1clicked.connect(
+                        functools.partial(self._addfile, False)
+                    )
+                    self.buttons.btn2clicked.connect(
+                        functools.partial(self._addfile, True)
+                    )
+                    self.buttons.btn3clicked.connect(self.clicked2)
+                    self.buttons.btn4clicked.connect(
+                        functools.partial(self.moverank, -1)
+                    )
+                    self.buttons.btn5clicked.connect(
+                        functools.partial(self.moverank, 1)
+                    )
+                else:
+                    xx = "添加行"
+                    if self.ispathsedit:
+                        if self.ispathsedit.get("isdir", False):
+                            xx = "添加文件夹"
+                        else:
+                            xx = "添加文件"
+                    self.buttons = threebuttons(texts=[xx, "删除行", "上移", "下移"])
+                    self.buttons.btn1clicked.connect(self.click1)
+                    self.buttons.btn2clicked.connect(self.clicked2)
+                    self.buttons.btn3clicked.connect(
+                        functools.partial(self.moverank, -1)
+                    )
+                    self.buttons.btn4clicked.connect(
+                        functools.partial(self.moverank, 1)
+                    )
 
             formLayout.addWidget(self.buttons)
             self.resize(600, self.sizeHint().height())
@@ -1908,6 +1936,16 @@ class listediter(LDialog):
 
     def __changed(self, item: QStandardItem, idx):
         self.internalrealname[item.row()] = self.candidates[idx]
+
+    def _addfile(self, isdir):
+        openfiledirectory(
+            "",
+            multi=True,
+            edit=None,
+            isdir=isdir,
+            filter1=self.ispathsedit.get("filter1", "*.*"),
+            callback=self.__cb,
+        )
 
     def click1(self):
         if self.candidates:
@@ -1993,21 +2031,25 @@ def getsimplepatheditor(
     reflist=None,
     name=None,
     header=None,
+    dirorfile=False,
 ):
     lay = QHBoxLayout()
     lay.setContentsMargins(0, 0, 0, 0)
 
     if multi:
         e = listediterline(
-            name, header, reflist, dict(isdir=isdir, multi=False, filter1=filter1)
+            name,
+            header,
+            reflist,
+            dict(isdir=isdir, multi=False, filter1=filter1, dirorfile=dirorfile),
         )
         lay.addWidget(e)
     else:
         e = QLineEdit(text)
         e.setReadOnly(True)
         if useiconbutton:
-            bu = getIconButton(icon="fa.gear")
-            clear = getIconButton(icon="fa.remove")
+            bu = getIconButton(icon="fa.folder-open")
+            clear = getIconButton(icon="fa.window-close-o")
         else:
             bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
             clear = LPushButton("清除")

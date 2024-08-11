@@ -130,7 +130,6 @@
     "文本": "metin",
     "插入特殊码": "Özel kodu ekle",
     "搜索特殊码": "Özel kodu arayın",
-    "搜索包含文本的条目": "Metin içeren giriş arayın",
     "过滤控制字符": "Süzgüç kontrol karakterleri",
     "过滤路径": "Süzgüç yolu",
     "过滤纯英文": "Tüm İngilizce'i sil",
@@ -669,7 +668,6 @@
     "背景颜色": "Arkaplan rengi",
     "工具按钮": "Araç düğmeleri",
     "窗口特效": "Pencere etkileri",
-    "遍历目录中的全部词典文件": "Dizindeki bütün sözlük dosyalarını yolla",
     "网络请求": "Network request",
     "网页显示": "Web sayfası gösterisi",
     "显示时间": "Display time",
@@ -853,5 +851,8 @@
     "点击消息后退出并开始更新": "Çıkmak ve güncellenmeye başlamak için mesajı tıklayın",
     "增强效果": "Yükselmiş etki",
     "显示/隐藏翻译": "Çeviri Göster/Gizle",
-    "全局": "bütün durum"
+    "全局": "bütün durum",
+    "添加文件": "Dosya ekle",
+    "添加文件夹": "Dosyaları ekle",
+    "类型": "tür"
 }
