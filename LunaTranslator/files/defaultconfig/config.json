@@ -54,14 +54,14 @@
                         "step": 1
                     },
                     "shadowR": {
-                        "name": "阴影半径_字体倍率",
+                        "name": "阴影半径",
                         "type": "spin",
                         "min": 0,
                         "max": 10,
                         "step": 0.01
                     },
                     "shadowR_ex": {
-                        "name": "阴影半径_固定值",
+                        "name": "阴影半径",
                         "type": "spin",
                         "min": 0,
                         "max": 100,
@@ -108,14 +108,14 @@
                         "type": "colorselect"
                     },
                     "width": {
-                        "name": "描边宽度_固定值",
+                        "name": "描边宽度",
                         "type": "spin",
                         "min": 0,
                         "max": 100,
                         "step": 0.1
                     },
                     "width_rate": {
-                        "name": "描边宽度_字体倍率",
+                        "name": "描边宽度",
                         "type": "spin",
                         "min": 0,
                         "max": 10,
@@ -174,14 +174,14 @@
                         "type": "colorselect"
                     },
                     "width": {
-                        "name": "描边宽度_固定值",
+                        "name": "描边宽度",
                         "type": "spin",
                         "min": 0,
                         "max": 100,
                         "step": 0.1
                     },
                     "width_rate": {
-                        "name": "描边宽度_字体倍率",
+                        "name": "描边宽度",
                         "type": "spin",
                         "min": 0,
                         "max": 10,
@@ -217,14 +217,14 @@
                         "step": 1
                     },
                     "shadowR": {
-                        "name": "阴影半径_字体倍率",
+                        "name": "阴影半径",
                         "type": "spin",
                         "min": 0,
                         "max": 10,
                         "step": 0.01
                     },
                     "shadowR_ex": {
-                        "name": "阴影半径_固定值",
+                        "name": "阴影半径",
                         "type": "spin",
                         "min": 0,
                         "max": 100,

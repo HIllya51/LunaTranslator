@@ -24,6 +24,8 @@ from gui.usefulwidget import (
     listediter,
     FocusFontCombo,
     LFocusCombo,
+    getspinbox,
+    LLabel,
     FocusDoubleSpin,
     FocusSpin,
     SplitLine,
@@ -37,6 +39,7 @@ def __changeuibuttonstate(self, x):
         self.fenyinsettings.setEnabled(x)
     except:
         pass
+
 
 def __changeuibuttonstate2(self, x):
     gobject.baseobject.translation_ui.refreshtoolicon()
@@ -105,6 +108,40 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
         line = __internal["argstype"][key]
         name = line["name"]
         _type = line["type"]
+        if key in ["width", "shadowR_ex"]:
+            if key == "width":
+                keyx = "width_rate"
+            elif key == "shadowR_ex":
+                keyx = "shadowR"
+            widthline = __internal["argstype"].get(keyx, None)
+            if widthline is not None:
+                forml.addRow(
+                    name,
+                    getboxlayout(
+                        [
+                            getspinbox(
+                                widthline.get("min", 0),
+                                widthline.get("max", 100),
+                                dd,
+                                keyx,
+                                True,
+                                widthline.get("step", 0.1),
+                            ),
+                            LLabel("x_字体大小_+"),
+                            getspinbox(
+                                line.get("min", 0),
+                                line.get("max", 100),
+                                dd,
+                                key,
+                                True,
+                                line.get("step", 0.1),
+                            ),
+                        ]
+                    ),
+                )
+                continue
+        elif key in ["width_rate", "shadowR"]:
+            continue
         if _type == "colorselect":
             lineW = getcolorbutton(
                 dd,
