@@ -775,7 +775,9 @@ class audiocapture:
             self.mutex = None
             self.StopCaptureAsync(_)
             self.stoped.acquire()
-        return self.data
+        _ = self.data
+        self.data = None
+        return _
 
     def __del__(self):
         self.stop()
