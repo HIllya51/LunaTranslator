@@ -361,3 +361,18 @@ clipboard_callback.restype = HWND
 clipboard_callback_stop = utilsdll.clipboard_callback_stop
 clipboard_callback_stop.argtypes = (HWND,)
 clipboard_callback_type = CFUNCTYPE(None, c_wchar_p, c_bool)
+
+_encodemp3 = utilsdll.encodemp3
+_encodemp3.argtypes = c_void_p, c_size_t, c_void_p
+
+
+def encodemp3(wav):
+    ret = []
+
+    def cb(ptr, size):
+        ret.append(cast(ptr, POINTER(c_char))[:size])
+
+    _encodemp3(wav, len(wav), CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    if len(ret):
+        return ret[0]
+    return None

@@ -781,12 +781,13 @@ class loopbackrecorder:
         if os.path.exists(filewav) == False:
             callback("")
             return
-        filemp3 = filewav.replace(".wav", ".mp3")
-        cmd = './files/plugins/shareddllproxy32.exe mainmp3 "{}" "{}"'.format(
-            filewav, filemp3
-        )
-        subproc_w(cmd, run=True)
-        if os.path.exists(filemp3):
+        with open(filewav, "rb") as ff:
+            wav = ff.read()
+        mp3 = winsharedutils.encodemp3(wav)
+        if mp3:
+            filemp3 = filewav[:-3] + "mp3"
+            with open(filemp3, "wb") as ff:
+                ff.write(mp3)
             os.remove(filewav)
             callback(filemp3)
         else:

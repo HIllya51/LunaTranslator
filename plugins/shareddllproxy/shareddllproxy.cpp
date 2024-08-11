@@ -5,7 +5,7 @@ int ntleaswmain(int argc, wchar_t *wargv[]);
 int updatewmain(int argc, wchar_t *wargv[]);
 bool checkisapatch();
 #ifndef _WIN64
-int mainmp3(int argc, wchar_t *argv[]);
+// int mainmp3(int argc, wchar_t *argv[]);
 int LRwmain(int argc, wchar_t *argv[]);
 int jbjwmain(int argc, wchar_t *argv[]);
 int dreyewmain(int argc, wchar_t *argv[]);
@@ -65,7 +65,7 @@ int wmain(int argc, wchar_t *argv[])
         {L"listpm", listprocessmodule},
         {L"update", updatewmain},
 #ifndef _WIN64
-        {L"mainmp3", mainmp3},
+        // {L"mainmp3", mainmp3},
         {L"LR", LRwmain},
         {L"le", lewmain},
         {L"jbj7", jbjwmain},
