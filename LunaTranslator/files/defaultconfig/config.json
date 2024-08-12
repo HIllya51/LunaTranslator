@@ -459,7 +459,7 @@
     "transparent": 27,
     "backcolor_tool": "#000000",
     "transparent_tool": 27,
-    "isshowhira": false,
+    "isshowhira": true,
     "locktools": true,
     "extendtools": true,
     "toolviswhenenter": false,
