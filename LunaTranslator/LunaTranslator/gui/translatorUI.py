@@ -681,12 +681,10 @@ class QUnFrameWindow(resizableframeless):
         return int(self.winId())
 
     def changeextendstated(self):
-
-        self.translate_text.move(0, self.dynamicextraheight())
-
-    def changeextendstated_1(self, extend):
-        self.changeextendstated()
-        self.resize(self.width(), self.height() + [-1, 1][extend])
+        dh = self.dynamicextraheight()
+        self.translate_text.move(0, dh)
+        height = self.height() - dh
+        self.translate_text.resize(self.width(), int(height))
 
     def hide_(self):
         if globalconfig["showintab"]:
@@ -924,7 +922,8 @@ class QUnFrameWindow(resizableframeless):
         )
         topr = self.createborderradiusstring(
             rate * use_r1,
-            globalconfig["extendtools"] and self.titlebar.isVisible(),
+            (globalconfig["WindowEffect"] == 0 or globalconfig["locktools"])
+            and self.titlebar.isVisible(),
             False,
         )
         bottomr3 = self.createborderradiusstring(use_r2, False)
@@ -994,6 +993,19 @@ class QUnFrameWindow(resizableframeless):
             print_exc()
         self.fullscreenmanager_busy = False
 
+    @property
+    def mousetranscheckrect(self):
+        btn: QWidget = self.titlebar.buttons["mousetransbutton"]
+        usegeo = btn.geometry()
+        usegeo = QRect(
+            usegeo.x() - usegeo.width(),
+            usegeo.y(),
+            usegeo.width() * 3,
+            usegeo.height(),
+        )
+        usegeo = usegeo.intersected(QRect(0, 0, self.width(), self.height()))
+        return usegeo
+
     @threader
     def mousetransparent_check(self):
         hwnd = int(self.winid)
@@ -1001,12 +1013,8 @@ class QUnFrameWindow(resizableframeless):
             cursor_pos = self.mapFromGlobal(QCursor.pos())
             usegeo = self.titlebar.geometry()
             btn: QWidget = self.titlebar.buttons["mousetransbutton"]
-            if (
-                globalconfig["mousetransparent_ex"]
-                and (not btn.isVisible())
-                and (btn.reflayout is not None)
-            ):
-                usegeo = btn.geometry()
+            if (not btn.isVisible()) and (btn.reflayout is not None):
+                usegeo = self.mousetranscheckrect
             if usegeo.contains(cursor_pos):
 
                 windows.SetWindowLong(
@@ -1089,7 +1097,13 @@ class QUnFrameWindow(resizableframeless):
             self.refreshtoolicon()
 
     def dynamicextraheight(self):
-        return int(globalconfig["extendtools"]) * self.titlebar.height()
+        if globalconfig["WindowEffect"] == 0:
+
+            return self.titlebar.height()
+        if globalconfig["locktools"]:
+            return self.titlebar.height()
+
+        return 0
 
     def textAreaChanged(self, size: QSize):
 
@@ -1142,24 +1156,19 @@ class QUnFrameWindow(resizableframeless):
     def checkisentered(self):
         hwnd = windows.GetForegroundWindow()
         hwndpid = windows.GetWindowThreadProcessId(hwnd)
-        ismyprocbutnotmainuiforeground = hwndpid == os.getpid() and hwnd != int(
-            self.winId()
-        )
+        ismyprocbutnotmainuiforeground = hwndpid == os.getpid() and hwnd != self.winid
         onlychecktitle = (
-            globalconfig["toolviswhenenter"]
-            or globalconfig["mousetransparent"]
-            or ismyprocbutnotmainuiforeground
+            globalconfig["mousetransparent"] or ismyprocbutnotmainuiforeground
         )
         if onlychecktitle:
             usegeo = self.titlebar.geometry()
             btn: QWidget = self.titlebar.buttons["mousetransbutton"]
             if (
                 globalconfig["mousetransparent"]
-                and globalconfig["mousetransparent_ex"]
                 and (not btn.isVisible())
                 and (btn.reflayout is not None)
             ):
-                usegeo = btn.geometry()
+                usegeo = self.mousetranscheckrect
             return usegeo.contains(self.mapFromGlobal(QCursor.pos()))
         else:
             return self.geometry().contains(QCursor.pos())
@@ -1179,10 +1188,10 @@ class QUnFrameWindow(resizableframeless):
         while self.checkisentered():
             time.sleep(0.1)
         self._isentered = False
-        if not globalconfig["toolviswhenenter"]:
-            if delay is None:
-                delay = globalconfig["disappear_delay_tool"]
-            time.sleep(delay)
+
+        if delay is None:
+            delay = globalconfig["disappear_delay_tool"]
+        time.sleep(delay)
         if self.enter_sig != enter_sig:
             return
         if globalconfig["locktools"]:
