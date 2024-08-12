@@ -1,4 +1,5 @@
 from translator.basetranslator import basetrans
+import json
 
 
 class TS(basetrans):
@@ -112,8 +113,7 @@ class TS(basetrans):
                 __x = __x.strip()
                 if not __x.startswith('"text":'):
                     continue
-                __x = __x[7:]
-                __x = eval(__x)
+                __x = json.loads("{" + __x + "}")["text"]
                 yield __x
                 line += __x
 
