@@ -974,13 +974,19 @@
 			"use_user_user_prompt": false,
 			"other_args": "{}",
 			"use_other_args": false,
-			"s": ""
+			"s": "",
+			"usingstream": true
 		},
 		"argstype": {
 			"other_args": {
 				"type": "multiline",
 				"refswitch": "use_other_args",
 				"name": "其他参数"
+			},
+			"usingstream": {
+				"name": "流式输出",
+				"type": "switch",
+				"rank": 4
 			},
 			"user_user_prompt": {
 				"name": "user prompt",

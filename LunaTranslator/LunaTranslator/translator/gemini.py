@@ -31,19 +31,14 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(["SECRET_KEY", "model"])
         self.contextnum = int(self.config["context"])
-        try:
-            gen_config = {
-                "generationConfig": {
-                    "stopSequences": [" \n"],
-                    "temperature": self.config["Temperature"],
-                }
+
+        gen_config = {
+            "generationConfig": {
+                "stopSequences": [" \n"],
+                "temperature": self.config["Temperature"],
             }
-        except:
-            gen_config = {"generationConfig": {"temperature": 0.3}}
-        try:
-            model = self.config["model"]
-        except:
-            model = "gemini-1.5-flash"
+        }
+        model = self.config["model"]
         user_prompt = (
             self.config.get("user_user_prompt", "")
             if self.config.get("use_user_user_prompt", False)
@@ -103,17 +98,30 @@ class TS(basetrans):
 
         message.append({"role": "user", "parts": [{"text": query}]})
         contents = dict(contents=message)
-
+        usingstream = self.config["usingstream"]
         payload = {**contents, **safety, **sys_message, **gen_config}
         res = self.proxysession.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:{['generateContent','streamGenerateContent'][usingstream]}",
             params={"key": self.multiapikeycurrent["SECRET_KEY"]},
             json=payload,
+            stream=usingstream,
         )
-        try:
-            line = res.json()["candidates"][0]["content"]["parts"][0]["text"]
-        except:
-            raise Exception(res.text)
-        yield line
+        if usingstream:
+            line = ""
+            for __x in res.iter_lines(decode_unicode=True):
+                __x = __x.strip()
+                if not __x.startswith('"text":'):
+                    continue
+                __x = __x[7:]
+                __x = eval(__x)
+                yield __x
+                line += __x
+
+        else:
+            try:
+                line = res.json()["candidates"][0]["content"]["parts"][0]["text"]
+            except:
+                raise Exception(res.text)
+            yield line
         self.context.append({"role": "user", "parts": [{"text": query}]})
         self.context.append({"role": "model", "parts": [{"text": line}]})
