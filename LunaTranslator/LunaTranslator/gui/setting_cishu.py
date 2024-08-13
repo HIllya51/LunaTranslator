@@ -1,5 +1,6 @@
 import functools, os
 import gobject
+from myutils.utils import splitocrtypes
 from myutils.config import globalconfig
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
@@ -108,21 +109,11 @@ def vistranslate_rank(self):
     )
 
 
-def setTabcishu_l(self):
-
-    grids = [
-        [
-            (
-                dict(title="分词器", type="grid", grid=gethiragrid(self)),
-                0,
-                "group",
-            )
-        ],
-    ]
+def initinternal(self, names):
     cishugrid = []
     line = []
     i = 0
-    for cishu in globalconfig["cishu"]:
+    for cishu in names:
         _f = "./LunaTranslator/cishu/{}.py".format(cishu)
         if os.path.exists(_f) == False:
             continue
@@ -163,10 +154,52 @@ def setTabcishu_l(self):
         i += 1
     if len(line):
         cishugrid.append(line)
+    return cishugrid
+
+
+def setTabcishu_l(self):
+
+    grids = [
+        [
+            (
+                dict(title="分词器", type="grid", grid=gethiragrid(self)),
+                0,
+                "group",
+            )
+        ],
+    ]
+    offline, online = splitocrtypes(globalconfig["cishu"])
     grids += [
         [
             (
-                dict(title="辞书", type="grid", grid=cishugrid),
+                dict(
+                    title="辞书",
+                    type="grid",
+                    grid=[
+                        [
+                            (
+                                dict(
+                                    title="离线",
+                                    type="grid",
+                                    grid=initinternal(self, offline),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                        [
+                            (
+                                dict(
+                                    title="在线",
+                                    type="grid",
+                                    grid=initinternal(self, online),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                    ],
+                ),
                 0,
                 "group",
             )

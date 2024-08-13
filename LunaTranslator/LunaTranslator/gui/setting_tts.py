@@ -1,6 +1,7 @@
 from qtsymbols import *
 import os, functools
 import gobject
+from myutils.utils import splitocrtypes, translate_exits
 from myutils.config import globalconfig, static_data
 from gui.inputdialog import (
     autoinitdialog_items,
@@ -64,13 +65,13 @@ def setTab5(self, l):
     makescrollgrid(setTab5lz(self), l)
 
 
-def getttsgrid(self):
+def getttsgrid(self, names):
 
     grids = []
     i = 0
     self.ttswitchs = {}
     line = []
-    for name in globalconfig["reader"]:
+    for name in names:
 
         _f = "./LunaTranslator/tts/{}.py".format(name)
         if os.path.exists(_f) == False:
@@ -126,10 +127,45 @@ def getttsgrid(self):
 
 def setTab5lz(self):
     grids = []
+    offline, online = splitocrtypes(globalconfig["reader"])
+    alltransvis = []
+    alltrans = []
+    for x in globalconfig["fanyi"]:
+        if not translate_exits(x):
+            continue
+        alltransvis.append(globalconfig["fanyi"][x]["name"])
+        alltrans.append(x)
     grids += [
         [
             (
-                dict(title="引擎", type="grid", grid=getttsgrid(self)),
+                dict(
+                    title="引擎",
+                    type="grid",
+                    grid=[
+                        [
+                            (
+                                dict(
+                                    title="离线",
+                                    type="grid",
+                                    grid=getttsgrid(self, offline),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                        [
+                            (
+                                dict(
+                                    title="在线",
+                                    type="grid",
+                                    grid=getttsgrid(self, online),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                    ],
+                ),
                 0,
                 "group",
             )
@@ -164,64 +200,96 @@ def setTab5lz(self):
                     type="grid",
                     grid=[
                         [
-                            "自动朗读",
-                            D_getsimpleswitch(
-                                globalconfig, "autoread", name="autoread", parent=self
-                            ),
-                        ],
-                        [
-                            "不被打断",
-                            D_getsimpleswitch(globalconfig, "ttsnointerrupt"),
-                        ],
-                        [
-                            "朗读原文",
-                            D_getsimpleswitch(globalconfig, "read_raw"),
-                        ],
-                        [
-                            "朗读翻译",
-                            D_getsimpleswitch(globalconfig, "read_trans"),
-                        ],
-                        [
-                            "朗读的翻译",
                             (
-                                D_getsimplecombobox(
-                                    [
-                                        globalconfig["fanyi"][x]["name"]
-                                        for x in globalconfig["fanyi"]
+                                dict(
+                                    type="grid",
+                                    grid=[
+                                        [
+                                            "自动朗读",
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "autoread",
+                                                name="autoread",
+                                                parent=self,
+                                            ),
+                                            "",
+                                            "不被打断",
+                                            D_getsimpleswitch(
+                                                globalconfig, "ttsnointerrupt"
+                                            ),
+                                        ],
+                                        [
+                                            "朗读原文",
+                                            D_getsimpleswitch(globalconfig, "read_raw"),
+                                            "",
+                                            "朗读翻译",
+                                            D_getsimpleswitch(
+                                                globalconfig, "read_trans"
+                                            ),
+                                            D_getsimplecombobox(
+                                                alltransvis,
+                                                globalconfig,
+                                                "read_translator",
+                                                internal=alltrans,
+                                            ),
+                                            "",
+                                        ],
                                     ],
-                                    globalconfig,
-                                    "read_translator",
                                 ),
                                 0,
-                            ),
+                                "group",
+                            )
                         ],
                         [
-                            "语音指定",
-                            D_getsimpleswitch(globalconfig["ttscommon"], "tts_skip"),
-                            D_getIconButton(
-                                callback=lambda: yuyinzhidingsetting(
-                                    self, globalconfig["ttscommon"]["tts_skip_regex"]
+                            (
+                                dict(
+                                    type="grid",
+                                    grid=[
+                                        [
+                                            "语音指定",
+                                            D_getsimpleswitch(
+                                                globalconfig["ttscommon"], "tts_skip"
+                                            ),
+                                            D_getIconButton(
+                                                callback=lambda: yuyinzhidingsetting(
+                                                    self,
+                                                    globalconfig["ttscommon"][
+                                                        "tts_skip_regex"
+                                                    ],
+                                                ),
+                                                icon="fa.gear",
+                                            ),
+                                        ],
+                                        [
+                                            "语音修正",
+                                            D_getsimpleswitch(
+                                                globalconfig["ttscommon"], "tts_repair"
+                                            ),
+                                            D_getIconButton(
+                                                callback=lambda: noundictconfigdialog1(
+                                                    self,
+                                                    globalconfig["ttscommon"][
+                                                        "tts_repair_regex"
+                                                    ],
+                                                    "语音修正",
+                                                    ["正则", "转义", "原文", "替换"],
+                                                ),
+                                                icon="fa.gear",
+                                            ),
+                                            "",
+                                            D_getsimpleswitch(
+                                                globalconfig["ttscommon"],
+                                                "tts_repair_use_at_translate",
+                                            ),
+                                            "作用于翻译",
+                                            "",
+                                            "",
+                                        ],
+                                    ],
                                 ),
-                                icon="fa.gear",
-                            ),
-                        ],
-                        [
-                            "语音修正",
-                            D_getsimpleswitch(globalconfig["ttscommon"], "tts_repair"),
-                            D_getIconButton(
-                                callback=lambda: noundictconfigdialog1(
-                                    self,
-                                    globalconfig["ttscommon"]["tts_repair_regex"],
-                                    "语音修正",
-                                    ["正则", "转义", "原文", "替换"],
-                                ),
-                                icon="fa.gear",
-                            ),
-                            "",
-                            D_getsimpleswitch(
-                                globalconfig["ttscommon"], "tts_repair_use_at_translate"
-                            ),
-                            "作用于翻译",
+                                0,
+                                "group",
+                            )
                         ],
                     ],
                 ),

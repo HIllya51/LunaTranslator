@@ -132,7 +132,7 @@ def getocrgrid(self):
 
     grids = []
 
-    offline, online = splitocrtypes()
+    offline, online = splitocrtypes(globalconfig["ocr"])
     self.ocrswitchs = {}
 
     def vissolvebtn():

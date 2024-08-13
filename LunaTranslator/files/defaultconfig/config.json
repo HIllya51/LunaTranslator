@@ -1055,7 +1055,7 @@
     },
     "reader": {
         "windowstts": {
-            "use": false,
+            "use": true,
             "voice": "",
             "name": "WindowsTTS",
             "type": "offline"

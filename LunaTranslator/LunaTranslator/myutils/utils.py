@@ -317,13 +317,13 @@ def splittranslatortypes():
     return offline, pre, free, dev, api
 
 
-def splitocrtypes():
+def splitocrtypes(dic):
     offline, online = [], []
-    for k in globalconfig["ocr"]:
+    for k in dic:
         try:
-            {"online": online, "offline": offline}[
-                globalconfig["ocr"][k].get("type", "online")
-            ].append(k)
+            {"online": online, "offline": offline}[dic[k].get("type", "online")].append(
+                k
+            )
         except:
             pass
 

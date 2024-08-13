@@ -339,11 +339,6 @@ def _createseletengeinecombo(self):
     return self.seletengeinecombo
 
 
-def __changeselectablestate(self, x):
-    gobject.baseobject.translation_ui.refreshtoolicon()
-    gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(x)
-
-
 def vistranslate_rank(self):
     _not = []
     for i, k in enumerate(globalconfig["fix_translate_rank_rank"]):
@@ -370,63 +365,94 @@ def xianshigrid_text(self):
                     type="grid",
                     grid=(
                         [
-                            "可选取的",
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "selectable",
-                                callback=functools.partial(
-                                    __changeselectablestate, self
+                            (
+                                dict(
+                                    title="原文",
+                                    type="grid",
+                                    grid=(
+                                        [
+                                            "显示原文",
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "isshowrawtext",
+                                                callback=lambda x: __changeuibuttonstate(
+                                                    self, x
+                                                ),
+                                                name="show_original_switch",
+                                                parent=self,
+                                            ),
+                                            "",
+                                            "居中显示",
+                                            D_getsimpleswitch(
+                                                globalconfig, "showatcenter"
+                                            ),
+                                            "",
+                                            "最长显示字数",
+                                            D_getspinbox(
+                                                0,
+                                                1000000,
+                                                globalconfig,
+                                                "maxoriginlength",
+                                            ),
+                                        ],
+                                    ),
                                 ),
-                                parent=self,
-                                name="selectable_btn",
-                            ),
+                                0,
+                                "group",
+                            )
                         ],
                         [
-                            "显示原文",
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "isshowrawtext",
-                                callback=lambda x: __changeuibuttonstate(self, x),
-                                name="show_original_switch",
-                                parent=self,
-                            ),
-                            "",
-                            "最长显示字数",
-                            D_getspinbox(0, 1000000, globalconfig, "maxoriginlength"),
-                            "",
-                        ],
-                        [
-                            "显示翻译",
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "showfanyi",
-                                callback=lambda x: __changeuibuttonstate2(self, x),
-                                name="show_fany_switch",
-                                parent=self,
-                            ),
-                            "",
-                            ("显示翻译器名称"),
-                            D_getsimpleswitch(globalconfig, "showfanyisource"),
-                            "",
-                        ],
-                        [
-                            "收到翻译时才刷新",
-                            D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
-                            "",
-                            "显示错误信息",
-                            D_getsimpleswitch(globalconfig, "showtranexception"),
-                            "",
-                        ],
-                        [
-                            "固定翻译显示顺序",
-                            D_getsimpleswitch(globalconfig, "fix_translate_rank"),
-                            D_getIconButton(
-                                functools.partial(vistranslate_rank, self), "fa.gear"
-                            ),
-                        ],
-                        [
-                            "居中显示",
-                            D_getsimpleswitch(globalconfig, "showatcenter"),
+                            (
+                                dict(
+                                    title="翻译",
+                                    type="grid",
+                                    grid=(
+                                        [
+                                            "显示翻译",
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "showfanyi",
+                                                callback=lambda x: __changeuibuttonstate2(
+                                                    self, x
+                                                ),
+                                                name="show_fany_switch",
+                                                parent=self,
+                                            ),
+                                            "",
+                                            "固定翻译显示顺序",
+                                            D_getsimpleswitch(
+                                                globalconfig, "fix_translate_rank"
+                                            ),
+                                            D_getIconButton(
+                                                functools.partial(
+                                                    vistranslate_rank, self
+                                                ),
+                                                "fa.gear",
+                                            ),
+                                        ],
+                                        [
+                                            "显示翻译器名称",
+                                            D_getsimpleswitch(
+                                                globalconfig, "showfanyisource"
+                                            ),
+                                            "",
+                                            "显示错误信息",
+                                            D_getsimpleswitch(
+                                                globalconfig, "showtranexception"
+                                            ),
+                                            "",
+                                            "",
+                                            "收到翻译时才刷新",
+                                            D_getsimpleswitch(
+                                                globalconfig, "refresh_on_get_trans"
+                                            ),
+                                            "",
+                                        ],
+                                    ),
+                                ),
+                                0,
+                                "group",
+                            )
                         ],
                     ),
                 ),

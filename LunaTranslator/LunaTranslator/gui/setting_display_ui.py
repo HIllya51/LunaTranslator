@@ -251,6 +251,11 @@ def uisetting(self, l):
     do()
 
 
+def __changeselectablestate(self, x):
+    gobject.baseobject.translation_ui.refreshtoolicon()
+    gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(x)
+
+
 def mainuisetting(self):
 
     return (
@@ -293,8 +298,16 @@ def mainuisetting(self):
                                 callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
                             ),
                             "",
-                            "",
-                            "",
+                            "可选取的",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "selectable",
+                                callback=functools.partial(
+                                    __changeselectablestate, self
+                                ),
+                                parent=self,
+                                name="selectable_btn",
+                            ),
                         ],
                     ),
                 ),
