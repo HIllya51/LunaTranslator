@@ -904,7 +904,7 @@ class TranslatorWindow(resizableframeless):
             + _TR("官方网站")
             + " "
             + _TR("使用说明")
-            + " "
+            + "\n"
         )
         __tags = [
             {
@@ -935,7 +935,7 @@ class TranslatorWindow(resizableframeless):
                     dynamiclink("{docs_server}/")
                 ),
             },
-            {"orig": " ", "hira": ""},
+            {"orig": "\n", "hira": ""},
         ]
         if getlanguse() == "zh":
             __text += "支持作者 QQ群"
