@@ -265,7 +265,7 @@
             tag.forEach(word => {
                 let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
 
-                if (isshow_fenci || isfenciclick) {
+                if ((isshow_fenci || isfenciclick)  && word.hira) {
                     let div = document.createElement('div')
                     div.style.display = 'inline-block'
                     div.id = _simpleuid()

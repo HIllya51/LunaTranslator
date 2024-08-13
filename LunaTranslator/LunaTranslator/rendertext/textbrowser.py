@@ -259,13 +259,7 @@ class TextBrowser(QWidget, dataget):
             origin, atcenter, text, tag if isshowhira else [], color, cleared
         )
         if isshow_fenci or isfenciclick:
-            self.addsearchwordmask(
-                isshow_fenci,
-                isfenciclick,
-                tag,
-                text,
-                gobject.baseobject.clickwordcallback,
-            )
+            self.addsearchwordmask(isshow_fenci, isfenciclick, tag)
 
     def _getqalignment(self, atcenter):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
@@ -559,9 +553,7 @@ class TextBrowser(QWidget, dataget):
                 linei += 1
         self.yinyingposline = linei
 
-    def _add_searchlabel(
-        self, isfenciclick, isshow_fenci, labeli, pos1, callback, word, color
-    ):
+    def _add_searchlabel(self, isfenciclick, isshow_fenci, labeli, pos1, word, color):
         if labeli >= len(self.searchmasklabels_clicked):
             ql = QLabel(self.atback_color)
             ql.setMouseTracking(True)
@@ -574,9 +566,12 @@ class TextBrowser(QWidget, dataget):
         if isfenciclick:
             self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
             self.searchmasklabels_clicked[labeli].show()
-            if callback:
+            clickfunction = word.get("clickfunction", None)
+            if clickfunction:
+                self.searchmasklabels_clicked[labeli].callback = clickfunction
+            else:
                 self.searchmasklabels_clicked[labeli].callback = functools.partial(
-                    callback, word
+                    gobject.baseobject.clickwordcallback, word
                 )
         if isshow_fenci and color:
             self.searchmasklabels[labeli].setGeometry(*pos1)
@@ -585,7 +580,7 @@ class TextBrowser(QWidget, dataget):
             )
             self.searchmasklabels[labeli].show()
 
-    def addsearchwordmask(self, isshow_fenci, isfenciclick, x, raw, callback=None):
+    def addsearchwordmask(self, isshow_fenci, isfenciclick, x):
         if len(x) == 0:
             return
         pos = 0
@@ -603,15 +598,13 @@ class TextBrowser(QWidget, dataget):
             self.textcursor.setPosition(pos)
             self.textbrowser.setTextCursor(self.textcursor)
 
+            if len(word["hira"].strip()) == 0:
+                continue
             tl2 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
             color = self._randomcolor(word)
-            if len(word["orig_X"].strip()) == 0:
-                continue
             dyna_h = int((heigth + tl2.y() - tl1.y()) / 2)
             pos1 = tl1.x() + 1, tl1.y(), tl2.x() - tl1.x() - 2, dyna_h
-            self._add_searchlabel(
-                isfenciclick, isshow_fenci, labeli, pos1, callback, word, color
-            )
+            self._add_searchlabel(isfenciclick, isshow_fenci, labeli, pos1, word, color)
             if word.get("ref", False):
                 self.searchmasklabels_clicked[labeli - 1].company = (
                     self.searchmasklabels_clicked[labeli]

@@ -68,7 +68,7 @@ class TextBrowser(QWidget, dataget):
         self.masklabel_top = QLabel(self)
         self.masklabel_top.setMouseTracking(True)
         # self.masklabel_bottom.setStyleSheet('background-color:red')
-
+        self.saveclickfunction={}
         self.masklabel = QLabel(self.webivewwidget)
         self.masklabel.setMouseTracking(True)
         self.webivewwidget.navigate(
@@ -205,7 +205,11 @@ class TextBrowser(QWidget, dataget):
         )
 
     def calllunaclickedword(self, wordinfo):
-        gobject.baseobject.clickwordcallback(wordinfo, False)
+        clickfunction= wordinfo.get('clickfunction',None)
+        if clickfunction:
+            self.saveclickfunction.get(clickfunction)(False)
+        else:
+            gobject.baseobject.clickwordcallback(wordinfo, False)
 
     # native api end
 
@@ -278,6 +282,12 @@ class TextBrowser(QWidget, dataget):
                 isfenciclick=isfenciclick,
                 line_height=line_height,
             )
+            for _tag in tag:
+                clickfunction = _tag.get("clickfunction", None)
+                if clickfunction:
+                    func = "luna" + str(uuid.uuid4()).replace("-", "_")
+                    _tag["clickfunction"] = func
+                    self.saveclickfunction[func]=clickfunction
             self.create_internal_rubytext(style, styleargs, _id, tag, args)
         else:
             args = dict(

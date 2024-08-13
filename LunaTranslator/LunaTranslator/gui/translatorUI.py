@@ -6,10 +6,12 @@ from myutils.wrapper import threader, trypass
 from myutils.config import (
     globalconfig,
     saveallconfig,
+    _TR,
     static_data,
     findgameuidofpath,
     savehook_new_list,
 )
+from myutils.utils import getlanguse, dynamiclink
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
@@ -29,11 +31,17 @@ from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless, getQMessageBox, LIconLabel
+from gui.usefulwidget import (
+    resizableframeless,
+    getQMessageBox,
+    LIconLabel,
+    pixmapviewer,
+)
 from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.dialog_savedgame_setting import browserdialog
 from gui.dynalang import LDialog
+from gui.setting_about import createimageview
 
 
 class ButtonX(QWidget):
@@ -874,6 +882,105 @@ class TranslatorWindow(resizableframeless):
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
         self.autohidedelaythread()
         self.tracewindowposthread()
+        self.__showlinks()
+
+    def __showsupport(self, _):
+        dia = QDialog(self, Qt.WindowType.WindowCloseButtonHint)
+        dia.setWindowTitle("支持作者")
+        vbox = QVBoxLayout()
+        dia.setLayout(vbox)
+        vbox.addWidget(QLabel("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~"))
+        _view = pixmapviewer(self)
+        _view.showpixmap(QPixmap.fromImage(QImage("./files/zan.jpg")))
+        _view.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        dia.resize(400, 400)
+        vbox.addWidget(_view)
+        dia.exec()
+
+    def __showlinks(self):
+        __text = (
+            _TR("欢迎使用")
+            + " LunaTranslator\nGithub "
+            + _TR("官方网站")
+            + " "
+            + _TR("使用说明")
+            + " "
+        )
+        __tags = [
+            {
+                "orig": _TR("欢迎使用") + " LunaTranslator",
+                "hira": "",
+            },
+            {"orig": "\n", "hira": "\n"},
+            {
+                "orig": "Github",
+                "hira": "1",
+                "clickfunction": lambda s: gobject.baseobject.openlink(
+                    "https://github.com/HIllya51/LunaTranslator"
+                ),
+            },
+            {"orig": " ", "hira": ""},
+            {
+                "orig": _TR("官方网站"),
+                "hira": "1",
+                "clickfunction": lambda s: gobject.baseobject.openlink(
+                    dynamiclink("{main_server}/")
+                ),
+            },
+            {"orig": " ", "hira": ""},
+            {
+                "orig": _TR("使用说明"),
+                "hira": "1",
+                "clickfunction": lambda s: gobject.baseobject.openlink(
+                    dynamiclink("{docs_server}/")
+                ),
+            },
+            {"orig": " ", "hira": ""},
+        ]
+        if getlanguse() == "zh":
+            __text += "支持作者 QQ群"
+            __tags += [
+                {
+                    "orig": "支持作者",
+                    "hira": "1",
+                    "clickfunction": self.__showsupport,
+                },
+                {"orig": " ", "hira": ""},
+                {
+                    "orig": "QQ群",
+                    "hira": "1",
+                    "clickfunction": lambda s: gobject.baseobject.openlink(
+                        dynamiclink("{main_server}/Resource/QQGroup")
+                    ),
+                },
+            ]
+        else:
+            __text += "Discord Patreon"
+            __tags += [
+                {
+                    "orig": "Discord",
+                    "hira": "1",
+                    "clickfunction": lambda s: gobject.baseobject.openlink(
+                        dynamiclink("{main_server}/Resource/DiscordGroup")
+                    ),
+                },
+                {"orig": " ", "hira": ""},
+                {
+                    "orig": "Patreon",
+                    "hira": "1",
+                    "clickfunction": lambda s: gobject.baseobject.openlink(
+                        "https://www.patreon.com/hillya51"
+                    ),
+                },
+            ]
+        self.translate_text.append(
+            True,
+            globalconfig["showatcenter"],
+            __text,
+            __tags,
+            (False, True, True),
+            "black",
+        )
 
     def setselectable(self):
 
