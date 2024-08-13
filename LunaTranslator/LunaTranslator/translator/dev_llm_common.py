@@ -80,6 +80,7 @@ class commonllmdev(basetransdev):
                 if thistext.startswith(curr):
                     yield thistext[len(curr) :]
                 else:
+                    yield '\0'
                     yield thistext
                 curr = thistext
         else:
