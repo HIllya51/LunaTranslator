@@ -14,7 +14,6 @@ from myutils.config import (
     set_font_default,
 )
 from ctypes import c_int, CFUNCTYPE, c_void_p
-import sqlite3
 from myutils.utils import (
     minmaxmoveobservefunc,
     parsemayberegexreplace,
@@ -33,7 +32,7 @@ from textsource.copyboard import copyboard
 from textsource.texthook import texthook
 from textsource.ocrtext import ocrtext
 from gui.selecthook import hookselect
-from gui.translatorUI import QUnFrameWindow
+from gui.translatorUI import TranslatorWindow
 import zhconv, functools
 from gui.transhist import transhist
 from gui.edittext import edittext
@@ -48,6 +47,7 @@ import winsharedutils
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark
+from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
 
@@ -86,7 +86,6 @@ class MAINUI:
         self.edittextui = None
         self.edittextui_cached = None
         self.edittextui_sync = True
-        self.sqlsavegameinfo = None
         self.notifyonce = set()
         self.audioplayer = series_audioplayer()
         self._internal_reader = None
@@ -463,9 +462,9 @@ class MAINUI:
         if len(res) == 0:
             return
         if onlytrans == False:
-            if globalconfig["read_trans"] and (
-                list(globalconfig["fanyi"].keys())[globalconfig["read_translator"]]
-                == classname
+            if (
+                globalconfig["read_trans"]
+                and globalconfig["read_translator2"] == classname
             ):
                 self.currentread = res
                 self.readcurrent()
@@ -955,120 +954,12 @@ class MAINUI:
 
             time.sleep(0.5)
 
-    def setdarktheme(self, widget, dark):
-        if widget.testAttribute(Qt.WidgetAttribute.WA_TranslucentBackground):
+    def setdarkandbackdrop(self, widget, dark):
+        if self.__dontshowintaborsetbackdrop(widget):
             return
         winsharedutils.SetTheme(
             int(widget.winId()), dark, globalconfig["WindowBackdrop"]
         )
-
-    def createsavegamedb(self):
-        self.sqlsavegameinfo = sqlite3.connect(
-            gobject.getuserconfigdir("savegame.db"),
-            check_same_thread=False,
-            isolation_level=None,
-        )
-        try:
-            self.sqlsavegameinfo.execute(
-                "CREATE TABLE gameinternalid(gameinternalid INTEGER PRIMARY KEY AUTOINCREMENT,gamepath TEXT);"
-            )
-            self.sqlsavegameinfo.execute(
-                "CREATE TABLE traceplaytime_v4(id INTEGER PRIMARY KEY AUTOINCREMENT,gameinternalid INT,timestart BIGINT,timestop BIGINT);"
-            )
-        except:
-            pass
-
-    def querytraceplaytime_v4(self, gameuid):
-        gameinternalid = self.get_gameinternalid(uid2gamepath[gameuid])
-        return self.sqlsavegameinfo.execute(
-            "SELECT timestart,timestop FROM traceplaytime_v4 WHERE gameinternalid = ?",
-            (gameinternalid,),
-        ).fetchall()
-
-    def get_gameinternalid(self, gamepath):
-        while True:
-            ret = self.sqlsavegameinfo.execute(
-                "SELECT gameinternalid FROM gameinternalid WHERE gamepath = ?",
-                (gamepath,),
-            ).fetchone()
-            if ret is None:
-                self.sqlsavegameinfo.execute(
-                    "INSERT INTO gameinternalid VALUES(NULL,?)", (gamepath,)
-                )
-            else:
-                return ret[0]
-
-    def resetgameinternal(self, fr, to):
-        _id = self.get_gameinternalid(fr)
-        self.sqlsavegameinfo.execute(
-            "UPDATE gameinternalid SET gamepath = ? WHERE (gameinternalid = ?)",
-            (to, _id),
-        )
-
-    def traceplaytime(self, gamepath, start, end, new):
-
-        gameinternalid = self.get_gameinternalid(gamepath)
-        if new:
-            self.sqlsavegameinfo.execute(
-                "INSERT INTO traceplaytime_v4 VALUES(NULL,?,?,?)",
-                (gameinternalid, start, end),
-            )
-        else:
-            self.sqlsavegameinfo.execute(
-                "UPDATE traceplaytime_v4 SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)",
-                (end, gameinternalid, start),
-            )
-
-    def checkgameplayingthread(self):
-        self.__currentexe = None
-        self.__statistictime = time.time()
-        while True:
-            __t = time.time()
-            time.sleep(1)
-            _t = time.time()
-
-            def isok(gameuid):
-                # 可能开着程序进行虚拟机暂停，导致一下子多了很多时间。不过测试vbox上应该没问题
-                maybevmpaused = (_t - __t) > 60
-                if not maybevmpaused:
-                    savehook_new_data[gameuid]["statistic_playtime"] += _t - __t
-                if (not maybevmpaused) and (self.__currentexe == name_):
-                    self.traceplaytime(
-                        uid2gamepath[gameuid], self.__statistictime - 1, _t, False
-                    )
-
-                else:
-                    self.__statistictime = time.time()
-                    self.__currentexe = name_
-                    self.traceplaytime(
-                        uid2gamepath[gameuid],
-                        self.__statistictime - 1,
-                        self.__statistictime,
-                        True,
-                    )
-
-            _hwnd = windows.GetForegroundWindow()
-            _pid = windows.GetWindowThreadProcessId(_hwnd)
-            try:
-                if len(self.textsource.pids) == 0:
-                    raise Exception()
-                if _pid in self.textsource.pids or _pid == os.getpid():
-                    isok(self.textsource.gameuid)
-                else:
-                    self.__currentexe = None
-            except:
-                name_ = getpidexe(_pid)
-                if not name_:
-                    return
-                uids = findgameuidofpath(name_, findall=True)
-                try:
-                    if len(uids):
-                        for uid in uids:
-                            isok(uid)
-                    else:
-                        self.__currentexe = None
-                except:
-                    print_exc()
 
     @threader
     def clickwordcallback(self, word, append):
@@ -1085,6 +976,15 @@ class MAINUI:
         if globalconfig["usesearchword"]:
             self.searchwordW.search_word.emit(word, append)
 
+    def __dontshowintaborsetbackdrop(self, widget):
+        window_flags = widget.windowFlags()
+        if (
+            Qt.WindowType.FramelessWindowHint & window_flags
+            == Qt.WindowType.FramelessWindowHint
+        ):
+            return True
+        return False
+
     def setshowintab_checked(self, widget):
         try:
             self.translation_ui
@@ -1095,11 +995,7 @@ class MAINUI:
                 int(widget.winId()), globalconfig["showintab"], True
             )
             return
-        window_flags = widget.windowFlags()
-        if (
-            Qt.WindowType.FramelessWindowHint & window_flags
-            == Qt.WindowType.FramelessWindowHint
-        ):
+        if self.__dontshowintaborsetbackdrop(widget):
             return
         if isinstance(widget, (QMenu, QFrame)):
             return
@@ -1160,7 +1056,7 @@ class MAINUI:
         self.currentisdark = dark
 
         for widget in QApplication.topLevelWidgets():
-            self.setdarktheme(widget, dark)
+            self.setdarkandbackdrop(widget, dark)
         style = ""
         for _ in (0,):
             try:
@@ -1209,7 +1105,7 @@ class MAINUI:
         self.installeventfillter()
         self.parsedefaultfont()
         self.loadmetadatas()
-        self.translation_ui = QUnFrameWindow()
+        self.translation_ui = TranslatorWindow()
         winsharedutils.showintab(
             int(self.translation_ui.winId()), globalconfig["showintab"], True
         )
@@ -1236,11 +1132,10 @@ class MAINUI:
         threading.Thread(
             target=minmaxmoveobservefunc, args=(self.translation_ui,)
         ).start()
-        threading.Thread(target=self.checkgameplayingthread).start()
         self.messagecallback__ = CFUNCTYPE(None, c_int, c_void_p)(self.messagecallback)
         winsharedutils.globalmessagelistener(self.messagecallback__)
         self.inittray()
-        self.createsavegamedb()
+        self.playtimemanager = playtimemanager()
         self.__count = 0
 
     def openlink(self, file):
@@ -1264,6 +1159,20 @@ class MAINUI:
         elif msg == 2:
             self.translation_ui.closesignal.emit()
 
+    def _dowhenwndcreate(self, obj):
+        hwnd = obj.winId()
+        if not hwnd:  # window create/destroy,when destroy winId is None
+            return
+        windows.SetProp(
+            int(obj.winId()),
+            "Magpie.ToolWindow",
+            windows.HANDLE(1),
+        )
+        winsharedutils.setdwmextendframe(int(hwnd))
+        if self.currentisdark is not None:
+            self.setdarkandbackdrop(obj, self.currentisdark)
+        self.setshowintab_checked(obj)
+
     def installeventfillter(self):
         class WindowEventFilter(QObject):
             def eventFilter(_, obj: QObject, event: QEvent):
@@ -1271,17 +1180,8 @@ class MAINUI:
                     if "updatelangtext" in dir(obj):
                         obj.updatelangtext()
                 elif event.type() == QEvent.Type.WinIdChange:
+                    self._dowhenwndcreate(obj)
 
-                    hwnd = obj.winId()
-                    if hwnd:  # window create/destroy,when destroy winId is None
-                        if self.currentisdark is not None:
-                            self.setdarktheme(obj, self.currentisdark)
-                        windows.SetProp(
-                            int(obj.winId()),
-                            "Magpie.ToolWindow",
-                            windows.HANDLE(1),
-                        )
-                        self.setshowintab_checked(obj)
                 return False
 
         self.currentisdark = None

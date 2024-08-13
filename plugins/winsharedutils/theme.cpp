@@ -150,13 +150,19 @@ static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
     RefreshImmersiveColorPolicyState();
     FlushMenuThemes();
 }
+DECLARE void setdwmextendframe(HWND hwnd)
+{
+    MARGINS mar{-1, -1, -1, -1};
+    DwmExtendFrameIntoClientArea(hwnd, &mar);
+}
+
 DECLARE void _SetTheme(
     HWND _hWnd,
     bool dark,
     int backdrop)
 {
     // printf("%d %d\n",GetOSversion(),GetOSBuild());
-    if (GetOSversion() <= 6)//win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
+    if (GetOSversion() <= 6) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
         return;
     // auto _isBackgroundSolidColor = backdrop == WindowBackdrop::SolidColor;
     // if (Win32Helper::GetOSVersion().Is22H2OrNewer() &&
@@ -175,11 +181,6 @@ DECLARE void _SetTheme(
     // {
     //     return false;
     // }
-
-    // 非常诡异，这里mar，BACKDROP_MAP，value的声明顺序会导致在win7-32位上崩溃，原因未知。
-    MARGINS mar{-1, -1, -1, -1};
-    // 这个最重要，不可以跳过，否则transaprent会黑。win7无效，仍然是黑的，所以win7不可以使用QTWIN11主题。
-    DwmExtendFrameIntoClientArea(_hWnd, &mar);
 
     // https://learn.microsoft.com/zh-cn/windows/win32/api/dwmapi/ne-dwmapi-dwm_systembackdrop_type
     // 设置背景

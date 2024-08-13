@@ -229,7 +229,7 @@ def setTab5lz(self):
                                             D_getsimplecombobox(
                                                 alltransvis,
                                                 globalconfig,
-                                                "read_translator",
+                                                "read_translator2",
                                                 internal=alltrans,
                                             ),
                                             "",

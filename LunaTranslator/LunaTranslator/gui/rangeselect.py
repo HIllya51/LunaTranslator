@@ -139,10 +139,10 @@ class rangeadjust(Mainw):
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
 
-class rangeselct(QMainWindow):
+class rangeselect(QMainWindow):
     def __init__(self, parent=None):
 
-        super(rangeselct, self).__init__(parent)
+        super(rangeselect, self).__init__(parent)
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint
             | Qt.WindowType.WindowStaysOnTopHint
@@ -254,7 +254,7 @@ screen_shot_ui = None
 def rangeselct_function(callback, clickrelease, startauto):
     global screen_shot_ui
     if screen_shot_ui is None:
-        screen_shot_ui = rangeselct()
+        screen_shot_ui = rangeselect()
         # 可能是由于使用win32移动窗口，导致父翻译show/hide影响到他
     screen_shot_ui.show()
     screen_shot_ui.reset()

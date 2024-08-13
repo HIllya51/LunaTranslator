@@ -1,4 +1,5 @@
 ﻿#include "define.h"
+#include <dwmapi.h>
 
 typedef enum _WINDOWCOMPOSITIONATTRIB
 {
@@ -85,6 +86,13 @@ typedef BOOL(WINAPI *pfnSetWindowCompositionAttribute)(HWND, WINDOWCOMPOSITIONAT
 
 DECLARE bool setAcrylicEffect(HWND hwnd, bool isEnableShadow)
 {
+	// win7全都用areo
+	DWM_BLURBEHIND bb = {0};
+	bb.dwFlags = DWM_BB_ENABLE;
+	bb.fEnable = true;
+	bb.hRgnBlur = NULL;
+	DwmEnableBlurBehindWindow(hwnd, &bb);
+
 	DWORD gradientColor = 0x00FfFfFf; // ABGR
 	common
 
@@ -94,9 +102,14 @@ DECLARE bool setAcrylicEffect(HWND hwnd, bool isEnableShadow)
 	accentPolicy.AccentFlags = accentFlags;
 	return setWindowCompositionAttribute(hwnd, &winCompAttrData);
 }
-
 DECLARE bool setAeroEffect(HWND hwnd, bool isEnableShadow)
 {
+	DWM_BLURBEHIND bb = {0};
+	bb.dwFlags = DWM_BB_ENABLE;
+	bb.fEnable = true;
+	bb.hRgnBlur = NULL;
+	DwmEnableBlurBehindWindow(hwnd, &bb);
+
 	common
 
 		accentPolicy.AccentState = ACCENT_ENABLE_BLURBEHIND;
@@ -106,6 +119,11 @@ DECLARE bool setAeroEffect(HWND hwnd, bool isEnableShadow)
 }
 DECLARE bool clearEffect(HWND hwnd)
 {
+	DWM_BLURBEHIND bb = {0};
+	bb.dwFlags = DWM_BB_ENABLE;
+	bb.fEnable = false;
+	bb.hRgnBlur = NULL;
+	DwmEnableBlurBehindWindow(hwnd, &bb);
 
 	common
 		accentPolicy.AccentState = ACCENT_DISABLED;

@@ -243,13 +243,11 @@ globalmessagelistener = utilsdll.globalmessagelistener
 globalmessagelistener.argtypes = (c_void_p,)
 dispatchcloseevent = utilsdll.dispatchcloseevent
 
+setdwmextendframe = utilsdll.setdwmextendframe
+setdwmextendframe.argtypes = (HWND,)
 
-_SetTheme = utilsdll._SetTheme
-_SetTheme.argtypes = HWND, c_bool, c_int
-
-
-def SetTheme(hwnd, dark, backdrop):
-    _SetTheme(hwnd, dark, backdrop)
+SetTheme = utilsdll._SetTheme
+SetTheme.argtypes = HWND, c_bool, c_int
 
 
 getprocesses = utilsdll.getprocesses

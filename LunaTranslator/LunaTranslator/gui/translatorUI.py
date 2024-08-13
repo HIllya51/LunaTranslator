@@ -31,7 +31,8 @@ from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, getQMessageBox, LIconLabel
 from gui.edittext import edittrans
-from gui.dialog_savedgame import browserdialog, dialog_savedgame_integrated
+from gui.dialog_savedgame import dialog_savedgame_integrated
+from gui.dialog_savedgame_setting import browserdialog
 from gui.dynalang import LDialog
 
 
@@ -221,7 +222,7 @@ class ButtonBar(QFrame):
         self.parent().setMinimumWidth(int(w))
 
 
-class QUnFrameWindow(resizableframeless):
+class TranslatorWindow(resizableframeless):
     displayglobaltooltip = pyqtSignal(str)
     displaylink = pyqtSignal(str)
     displaymessagebox = pyqtSignal(str, str)
@@ -831,7 +832,7 @@ class QUnFrameWindow(resizableframeless):
 
     def __init__(self):
 
-        super(QUnFrameWindow, self).__init__(
+        super(TranslatorWindow, self).__init__(
             None,
             flags=Qt.WindowType.FramelessWindowHint
             | Qt.WindowType.WindowMinimizeButtonHint,

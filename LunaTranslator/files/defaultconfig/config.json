@@ -14,7 +14,7 @@
     "read_raw": true,
     "global_list_opened": true,
     "read_trans": false,
-    "read_translator": 0,
+    "read_translator2": "",
     "disappear_delay": 5,
     "network": 1,
     "useextrahtml": true,

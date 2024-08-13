@@ -1,4 +1,6 @@
 baseobject = None
+global_dialog_savedgame_new = None
+global_dialog_setting_game = None
 import io, sys, platform, os
 from ctypes import windll, wintypes
 
