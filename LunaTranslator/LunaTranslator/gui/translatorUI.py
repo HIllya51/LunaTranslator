@@ -975,7 +975,7 @@ class TranslatorWindow(resizableframeless):
             ]
         self.translate_text.append(
             True,
-            globalconfig["showatcenter"],
+            False,
             __text,
             __tags,
             (False, True, True),
