@@ -938,7 +938,7 @@ class TranslatorWindow(resizableframeless):
             {"orig": "\n", "hira": ""},
         ]
         if getlanguse() == "zh":
-            __text += "支持作者 QQ群"
+            __text += "支持作者 QQ群 Bilibili"
             __tags += [
                 {
                     "orig": "支持作者",
@@ -951,6 +951,14 @@ class TranslatorWindow(resizableframeless):
                     "hira": "1",
                     "clickfunction": lambda s: gobject.baseobject.openlink(
                         dynamiclink("{main_server}/Resource/QQGroup")
+                    ),
+                },
+                {"orig": " ", "hira": ""},
+                {
+                    "orig": "Bilibili",
+                    "hira": "1",
+                    "clickfunction": lambda s: gobject.baseobject.openlink(
+                        dynamiclink("{main_server}/Resource/Bilibili")
                     ),
                 },
             ]
