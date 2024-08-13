@@ -53,24 +53,24 @@ class commonllmdev(basetransdev):
             )
         content = prompt + content
         self.Runtime_evaluate(
-            f"document.querySelector(`{self.textarea_selector}`).foucs()"
+            f"document.querySelector(`{repr(self.textarea_selector)}`).foucs()"
         )
         self.send_keys(content)
         # chatgpt网站没有焦点时，用这个也可以。
         self.Runtime_evaluate(
-            f'textarea=document.querySelector(`{self.textarea_selector}`);textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea.value=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'
+            f'textarea=document.querySelector({repr(self.textarea_selector)});textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea.value=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'
         )
 
         try:
             # 月之暗面
             while self.Runtime_evaluate(
-                f"document.querySelector(`{self.button_selector}`).disabled"
+                f"document.querySelector({repr(self.button_selector)}).disabled"
             )["result"]["value"]:
                 time.sleep(0.1)
         except:
             pass
         self.Runtime_evaluate(
-            f"document.querySelector(`{self.button_selector}`).click()"
+            f"document.querySelector({repr(self.button_selector)}).click()"
         )
         if self.config["usingstream"]:
             curr = ""

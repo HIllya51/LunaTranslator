@@ -1585,6 +1585,13 @@
             "name": "chatgpt",
             "is_gpt_like": true
         },
+        "dev_theb": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "Theb.ai",
+            "is_gpt_like": true
+        },
         "dev_moonshot": {
             "use": false,
             "color": "blue",
