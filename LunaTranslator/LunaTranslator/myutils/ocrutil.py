@@ -62,6 +62,11 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
 
                 _x1, _y1 = windows.ScreenToClient(hwnd, x1, y1)
                 _x2, _y2 = windows.ScreenToClient(hwnd, x2, y2)
+
+                if not QRect(0, 0, rect[2] - rect[0], rect[3] - rect[1]).contains(
+                    QRect(_x1, _y1, _x2 - _x1, _y2 - _y1)
+                ):
+                    continue
                 pix = screenshot(_x1, _y1, _x2, _y2, hwnd)
                 if pix.toImage().allGray():
                     continue
