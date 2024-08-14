@@ -80,6 +80,7 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
     return image2
 
 
+_nowuseocrx = None
 _nowuseocr = None
 _ocrengine = None
 _initlock = threading.Lock()
@@ -89,6 +90,7 @@ def ocr_end():
     global _ocrengine, _nowuseocr
     with _initlock:
         _nowuseocr = None
+        _nowuseocrx = None
         _ocrengine = None
 
 
@@ -98,7 +100,7 @@ def ocr_init():
 
 
 def __ocr_init():
-    global _nowuseocr, _ocrengine
+    global _nowuseocr, _ocrengine, _nowuseocrx
     use = None
     for k in globalconfig["ocr"]:
         if globalconfig["ocr"][k]["use"] == True and os.path.exists(
@@ -110,6 +112,7 @@ def __ocr_init():
         raise Exception("no engine")
     if _nowuseocr == use:
         return
+    _nowuseocrx = use
     _ocrengine = None
     _nowuseocr = None
     aclass = importlib.import_module("ocrengines." + use).OCR
@@ -121,7 +124,7 @@ def ocr_run(qimage: QImage):
     image = qimage2binary(qimage, "PNG")
     if not image:
         return ""
-    global _nowuseocr, _ocrengine
+    global _nowuseocrx, _ocrengine
     try:
         ocr_init()
         text = _ocrengine._private_ocr(image)
@@ -133,7 +136,7 @@ def ocr_run(qimage: QImage):
             msg = stringfyerror(e)
         msg = (
             "<msg_error_refresh>"
-            + _TR(globalconfig["ocr"][_nowuseocr]["name"])
+            + _TR(globalconfig["ocr"][_nowuseocrx]["name"])
             + " "
             + msg
         )
