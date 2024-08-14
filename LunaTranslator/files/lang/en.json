@@ -548,7 +548,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "Number of Contexts Included (Must Enable Context-Aware Translation)",
     "API超时(秒)": "API Timeout (s)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "API Endpoint as Follows, Change IP and Port According to Your Own Settings.",
-    "语言自适应": "Language Auto-Adaptation",
     "去除重复字符": "Remove Duplicate Characters",
     "游戏内叠加层": "In-Game Overlay Layer",
     "内联效果参数": "Inline Effect Parameters",

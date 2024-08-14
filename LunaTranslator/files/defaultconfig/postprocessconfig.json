@@ -146,13 +146,9 @@
         "use": false,
         "name": "过滤尖括号<>"
     },
-    "_6": {
-        "use": false,
-        "name": "过滤换行符"
-    },
     "_6EX": {
         "use": false,
-        "name": "过滤换行符_语言自适应"
+        "name": "过滤换行符"
     },
     "_91": {
         "use": false,

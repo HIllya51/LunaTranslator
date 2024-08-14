@@ -549,7 +549,6 @@
     "附带上下文个数（必须打开利用上文翻译）": "Numero di contesti di accompagnamento (devono essere aperti e tradotti utilizzando il testo precedente)",
     "API超时(秒)": "Timeout API (secondi)",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Il formato dell'interfaccia API è il seguente e l'IP e la porta possono essere modificati in base alle proprie impostazioni.",
-    "语言自适应": "Adattamento linguistico",
     "去除重复字符": "Rimuovi caratteri duplicati",
     "游戏内叠加层": "Livello di sovrapposizione in gioco",
     "内联效果参数": "Parametri degli effetti in linea",

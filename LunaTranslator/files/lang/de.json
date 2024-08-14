@@ -555,7 +555,6 @@
     "打开关联页面": "Die zugehörige Seite öffnen",
     "附带上下文个数（必须打开利用上文翻译）": "Anzahl der begleitenden Kontexte (muss mit der vorherigen Übersetzung geöffnet werden)",
     "API超时(秒)": "API Timeout (Sekunden)",
-    "语言自适应": "Sprachanpassung",
     "API接口格式如下，可根据自己的设置进行修改IP和端口。": "Das API-Schnittstellenformat ist wie folgt, und Sie können die IP und den Port nach Ihren eigenen Einstellungen ändern.",
     "去除重复字符": "Doppelte Zeichen entfernen",
     "游戏内叠加层": "Overlay-Ebene im Spiel",

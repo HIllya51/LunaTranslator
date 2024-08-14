@@ -202,11 +202,18 @@ def _4_f(line):
 
 def _6_fEX(line):
     srclang = getlangsrc()
-    if srclang in ["zh", "ja"]:
+    if srclang in ["zh", "ja", "cht"]:
         white = ""
     else:
         white = " "
-    line = line.replace("\r", white).replace("\n", white)
+    line = (
+        line.replace("\r ", " ")
+        .replace("\n ", " ")
+        .replace(" \n", " ")
+        .replace(" \r", " ")
+        .replace("\r", white)
+        .replace("\n", white)
+    )
     return line
 
 
@@ -364,7 +371,7 @@ def POSTSOLVE(line):
         "_10": _10_f,
         "_1": _1_f,
         "_4": _4_f,
-        "_6": _6_f,
+        "_6": _6_f,  # depracated
         "_6EX": _6_fEX,
         "_91": _91_f,
         "_92": _92_f,
