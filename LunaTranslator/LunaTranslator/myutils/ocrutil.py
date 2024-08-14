@@ -6,7 +6,7 @@ from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import screenshot
 from myutils.utils import stringfyerror
 from traceback import print_exc
-import gobject, winsharedutils
+import gobject, winsharedutils, threading
 
 
 def qimage2binary(qimage: QImage, fmt="BMP"):
@@ -82,15 +82,22 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
 
 _nowuseocr = None
 _ocrengine = None
+_initlock = threading.Lock()
 
 
 def ocr_end():
     global _ocrengine, _nowuseocr
-    _nowuseocr = None
-    _ocrengine = None
+    with _initlock:
+        _nowuseocr = None
+        _ocrengine = None
 
 
 def ocr_init():
+    with _initlock:
+        __ocr_init()
+
+
+def __ocr_init():
     global _nowuseocr, _ocrengine
     use = None
     for k in globalconfig["ocr"]:
@@ -126,7 +133,7 @@ def ocr_run(qimage: QImage):
             msg = stringfyerror(e)
         msg = (
             "<msg_error_refresh>"
-            + (_TR(globalconfig["ocr"][_nowuseocr]["name"]) if _nowuseocr else "")
+            + _TR(globalconfig["ocr"][_nowuseocr]["name"])
             + " "
             + msg
         )

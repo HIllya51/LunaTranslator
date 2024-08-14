@@ -17,7 +17,7 @@ from gui.usefulwidget import (
 from gui.dynalang import LPushButton
 import qtawesome, gobject
 from myutils.ocrutil import imagesolve, ocr_end, ocr_init
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton_close, threader
 
 
 @Singleton_close
@@ -79,6 +79,7 @@ def __label2(self):
     return self.threshold2label
 
 
+@threader
 def __directinitend(engine, _ok):
     if _ok:
         ocr_init()
