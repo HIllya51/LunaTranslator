@@ -108,11 +108,11 @@ def __ocr_init():
         ):
             use = k
             break
+    _nowuseocrx = use
     if use is None:
         raise Exception("no engine")
     if _nowuseocr == use:
         return
-    _nowuseocrx = use
     _ocrengine = None
     _nowuseocr = None
     aclass = importlib.import_module("ocrengines." + use).OCR
@@ -136,7 +136,7 @@ def ocr_run(qimage: QImage):
             msg = stringfyerror(e)
         msg = (
             "<msg_error_refresh>"
-            + _TR(globalconfig["ocr"][_nowuseocrx]["name"])
+            + (_TR(globalconfig["ocr"][_nowuseocrx]["name"]) if _nowuseocrx else "")
             + " "
             + msg
         )
