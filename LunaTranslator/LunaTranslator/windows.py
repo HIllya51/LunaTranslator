@@ -60,7 +60,7 @@ EVENT_SYSTEM_MINIMIZEEND = 23
 EVENT_SYSTEM_MOVESIZESTART = 10
 EVENT_SYSTEM_MOVESIZEEND = 11
 EVENT_SYSTEM_FOREGROUND = 3
-
+EVENT_OBJECT_DESTROY = 0x8001
 
 PIPE_ACCESS_INBOUND = 0x00000001
 PIPE_ACCESS_OUTBOUND = 0x00000002
@@ -261,6 +261,7 @@ _keybd_event.argtypes = c_byte, c_byte, c_uint, c_void_p
 _RegisterWindowMessage = _user32.RegisterWindowMessageW
 
 _GetWindowThreadProcessId = _user32.GetWindowThreadProcessId
+_GetWindowThreadProcessId.argtypes = HWND, c_void_p
 _GetClipboardOwner = _user32.GetClipboardOwner
 
 try:

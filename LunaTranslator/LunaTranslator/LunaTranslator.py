@@ -46,7 +46,7 @@ import gobject
 import winsharedutils
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
-from myutils.utils import nowisdark
+from myutils.utils import nowisdark, getfilemd5
 from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
@@ -89,6 +89,7 @@ class MAINUI:
         self.audioplayer = series_audioplayer()
         self._internal_reader = None
         self.reader_uid = None
+        self.__hwnd = None
 
     @property
     def reader(self):
@@ -110,6 +111,41 @@ class MAINUI:
     def textsource(self):
         return self.textsource_p
 
+    @property
+    def hwnd(self):
+        return self.__hwnd
+
+    @hwnd.setter
+    def hwnd(self, __hwnd):
+        self.__hwnd = __hwnd
+        if not __hwnd:
+            self.translation_ui.processismuteed = False
+            self.translation_ui.isbindedwindow = False
+            self.translation_ui.refreshtooliconsignal.emit()
+            self.translation_ui.thistimenotsetop = False
+        else:
+            _mute = winsharedutils.GetProcessMute(
+                windows.GetWindowThreadProcessId(__hwnd)
+            )
+            self.translation_ui.processismuteed = _mute
+            self.translation_ui.isbindedwindow = True
+            self.translation_ui.refreshtooliconsignal.emit()
+            try:
+                if not self.textsource:
+                    return
+                if not self.textsource.autofindpids:
+                    return
+                self.textsource.pids = [windows.GetWindowThreadProcessId(__hwnd)]
+                gameuid = findgameuidofpath(getpidexe(self.textsource.pids[0]))
+                if gameuid:
+                    self.textsource.gameuid = gameuid[0]
+                    self.textsource.md5 = getfilemd5(uid2gamepath[gameuid[0]])
+            except:
+                print_exc()
+
+        if globalconfig["keepontop"]:
+            self.translation_ui.settop()
+
     @textsource.setter
     def textsource(self, _):
         if _ is None and self.textsource_p:
@@ -117,6 +153,7 @@ class MAINUI:
                 self.textsource_p.end()
             except:
                 print_exc()
+            self.hwnd = None
         self.textsource_p = _
 
     @property
@@ -513,10 +550,10 @@ class MAINUI:
         try:
             for _ in (0,):
 
-                if not gobject.baseobject.textsource:
+                if not self.textsource:
                     break
 
-                gameuid = gobject.baseobject.textsource.gameuid
+                gameuid = self.textsource.gameuid
                 if not gameuid:
                     break
                 if savehook_new_data[gameuid]["tts_follow_default"]:
@@ -669,7 +706,8 @@ class MAINUI:
             gameuid = find_or_create_uid(savehook_new_list, pexe, title)
             savehook_new_list.insert(0, gameuid)
 
-        self.textsource = texthook(pids, hwnd, pexe, gameuid, autostart=False)
+        self.textsource = texthook(pids, pexe, gameuid, autostart=False)
+        self.hwnd = hwnd
         self.textsource.start()
 
     def starttextsource(self, use=None, checked=True):
@@ -899,7 +937,8 @@ class MAINUI:
             if globalconfig["startgamenototop"] == False:
                 idx = reflist.index(uid)
                 reflist.insert(0, reflist.pop(idx))
-            self.textsource = texthook(pids, hwnd, name_, uid, autostart=True)
+            self.textsource = texthook(pids, name_, uid, autostart=True)
+            self.hwnd = hwnd
             self.textsource.start()
 
         while self.isrunning:
@@ -1070,6 +1109,7 @@ class MAINUI:
         self.mainuiloadafter()
 
     def mainuiloadafter(self):
+        self.__checkmutethread()
         self.safeloadprocessmodels()
         self.prepare()
         self.startxiaoxueguan()
@@ -1092,6 +1132,20 @@ class MAINUI:
         self.inittray()
         self.playtimemanager = playtimemanager()
         self.__count = 0
+
+    @threader
+    def __checkmutethread(self):
+        while True:
+            time.sleep(0.5)
+            if not self.hwnd:
+                continue
+            pid = windows.GetWindowThreadProcessId(self.hwnd)
+            if not pid:
+                continue
+            _mute = winsharedutils.GetProcessMute(pid)
+            if self.translation_ui.processismuteed != _mute:
+                self.translation_ui.processismuteed = _mute
+                self.translation_ui.refreshtooliconsignal.emit()
 
     def openlink(self, file):
         if file.startswith("http") and checkisusingwine():

@@ -127,7 +127,7 @@ class edittrans(LMainWindow):
         self.trykeeppos()
 
     def trykeeppos(self):
-        self.followhwnd = gobject.baseobject.textsource.hwnd
+        self.followhwnd = gobject.baseobject.hwnd
         rect = windows.GetWindowRect(self.followhwnd)
         if rect is None:
             raise

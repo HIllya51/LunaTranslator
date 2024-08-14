@@ -1,97 +1,15 @@
 import threading, gobject, queue
-import time, sqlite3, json, os, windows, winsharedutils
+import time, sqlite3, json, os
 from traceback import print_exc
-from myutils.config import (
-    globalconfig,
-    savehook_new_data,
-    findgameuidofpath,
-    uid2gamepath,
-)
-from myutils.utils import autosql, getfilemd5
-from myutils.hwnd import getpidexe
-from myutils.wrapper import threader
-
-
-class hwndchecker:
-    def __del__(self):
-        if self.ref.hwnd:
-            return
-        gobject.baseobject.translation_ui.processismuteed = False
-        gobject.baseobject.translation_ui.isbindedwindow = False
-        gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
-        gobject.baseobject.translation_ui.thistimenotsetop = False
-        if globalconfig["keepontop"]:
-            gobject.baseobject.translation_ui.settop()
-
-    def __init__(self, hwnd, ref) -> None:
-        self.hwnd = hwnd
-        self.ref = ref
-        self.end = False
-
-        _mute = winsharedutils.GetProcessMute(
-            windows.GetWindowThreadProcessId(self.hwnd)
-        )
-
-        gobject.baseobject.translation_ui.processismuteed = _mute
-        gobject.baseobject.translation_ui.isbindedwindow = True
-        gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
-        self.__checkthread()
-
-    @threader
-    def __checkthread(self):
-        while not self.end:
-            pid = windows.GetWindowThreadProcessId(self.hwnd)
-            if not pid:
-                self.hwnd = None
-                self.__del__()
-                break
-            _mute = winsharedutils.GetProcessMute(pid)
-            if gobject.baseobject.translation_ui.processismuteed != _mute:
-                gobject.baseobject.translation_ui.processismuteed = _mute
-                gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
-            time.sleep(0.5)
+from myutils.config import globalconfig, savehook_new_data
+from myutils.utils import autosql
 
 
 class basetext:
     autofindpids = True
 
-    @property
-    def hwnd(self):
-
-        if self.__hwnd is None:
-            return None
-        return self.__hwnd.hwnd
-
-    @hwnd.setter
-    def hwnd(self, _hwnd):
-        if self.__hwnd:
-            self.__hwnd.end = True
-        self.__hwnd = None
-        if self.autofindpids:
-            self.pids = []
-            self.gameuid = None
-            self.md5 = "0"
-            self.basename = self.__basename
-        if _hwnd:
-
-            self.__hwnd = hwndchecker(_hwnd, self)
-
-            if not self.autofindpids:
-                return
-            self.pids = [windows.GetWindowThreadProcessId(_hwnd)]
-            gameuid = findgameuidofpath(getpidexe(self.pids[0]))
-            if gameuid:
-                self.gameuid = gameuid[0]
-                self.md5 = getfilemd5(uid2gamepath[gameuid[0]])
-                gamepath = uid2gamepath[self.gameuid]
-                self.basename = os.path.basename(gamepath).replace(
-                    "." + os.path.basename(gamepath).split(".")[-1], ""
-                )
-
     def __init__(self, md5, basename):
         self.md5 = md5
-        self.__basename = self.basename = basename
-        self.__hwnd = None
         self.pids = []
         self.gameuid = None
         #
@@ -137,7 +55,6 @@ class basetext:
         return None
 
     def end(self):
-        self.hwnd = None
         self.ending = True
 
     ##################

@@ -74,7 +74,7 @@ class ocrtext(basetext):
         h4 = windows.WindowFromPoint(windows.POINT(p2[0], p1[1]))
 
         self.range_ui[-1].setrect(rect)
-        if len(self.range_ui) > 1:
+        if gobject.baseobject.hwnd:
             return
         usehwnds = []
         for _ in (h1, h2, h3, h4):
@@ -86,7 +86,7 @@ class ocrtext(basetext):
             return
         hwnd, count = Counter(usehwnds).most_common()[0]
         if count == len(usehwnds):
-            self.hwnd = hwnd
+            gobject.baseobject.hwnd = hwnd
 
     def setstyle(self):
         [_.setstyle() for _ in self.range_ui]
@@ -114,7 +114,12 @@ class ocrtext(basetext):
             if rect is None:
                 continue
             imgr = imageCut(
-                self.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1], i == 0
+                gobject.baseobject.hwnd,
+                rect[0][0],
+                rect[0][1],
+                rect[1][0],
+                rect[1][1],
+                i == 0,
             )
             ok = True
 
@@ -186,7 +191,9 @@ class ocrtext(basetext):
                 continue
             if rect[0][0] > rect[1][0] or rect[0][1] > rect[1][1]:
                 return
-            img = imageCut(self.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+            img = imageCut(
+                gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
+            )
 
             text = ocr_run(img)
             imgr1 = qimge2np(img)

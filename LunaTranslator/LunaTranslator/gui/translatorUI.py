@@ -272,15 +272,15 @@ class TranslatorWindow(resizableframeless):
             if self.isdoingsomething():
                 lastpos = None
                 continue
-            try:
-                hwnd = gobject.baseobject.textsource.hwnd
-                if hwnd != tracehwnd:
-                    lastpos = None
-            except:
+
+            hwnd = gobject.baseobject.hwnd
+            if not hwnd:
+                continue
+            if hwnd != tracehwnd:
+                tracehwnd = hwnd
                 lastpos = None
                 continue
             rect = windows.GetWindowRect(hwnd)
-            tracehwnd = hwnd
             if not rect:
                 lastpos = None
                 continue
@@ -468,9 +468,9 @@ class TranslatorWindow(resizableframeless):
 
     @threader
     def simulate_key_enter(self):
-        windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+        windows.SetForegroundWindow(gobject.baseobject.hwnd)
         time.sleep(0.1)
-        while windows.GetForegroundWindow() == gobject.baseobject.textsource.hwnd:
+        while windows.GetForegroundWindow() == gobject.baseobject.hwnd:
             time.sleep(0.001)
             windows.keybd_event(13, 0, 0, 0)
         windows.keybd_event(13, 0, windows.KEYEVENTF_KEYUP, 0)
@@ -487,10 +487,10 @@ class TranslatorWindow(resizableframeless):
 
     def addbuttons(self):
         def simulate_key_ctrl():
-            windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+            windows.SetForegroundWindow(gobject.baseobject.hwnd)
             time.sleep(0.1)
             windows.keybd_event(17, 0, 0, 0)
-            while windows.GetForegroundWindow() == gobject.baseobject.textsource.hwnd:
+            while windows.GetForegroundWindow() == gobject.baseobject.hwnd:
                 time.sleep(0.001)
             windows.keybd_event(17, 0, windows.KEYEVENTF_KEYUP, 0)
 
@@ -1080,8 +1080,8 @@ class TranslatorWindow(resizableframeless):
             return
         self.fullscreenmanager_busy = True
         try:
-            if gobject.baseobject.textsource and gobject.baseobject.textsource.hwnd:
-                _hwnd = gobject.baseobject.textsource.hwnd
+            if gobject.baseobject.hwnd:
+                _hwnd = gobject.baseobject.hwnd
             else:
                 _hwnd = windows.GetForegroundWindow()
                 _pid = windows.GetWindowThreadProcessId(_hwnd)
@@ -1180,7 +1180,7 @@ class TranslatorWindow(resizableframeless):
 
     def bindcropwindowcallback(self, pid, hwnd):
         _pid = os.getpid()
-        gobject.baseobject.textsource.hwnd = hwnd if pid != _pid else None
+        gobject.baseobject.hwnd = hwnd if pid != _pid else None
 
     def changeshowhideraw(self):
         try:

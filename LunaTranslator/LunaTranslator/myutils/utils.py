@@ -427,13 +427,15 @@ def minmaxmoveobservefunc(self):
     ):
 
         try:
-            if gobject.baseobject.textsource is None:
+            if not gobject.baseobject.hwnd:
                 return
-            if not gobject.baseobject.textsource.hwnd:
-                return
-            if not gobject.baseobject.textsource.pids:
-                return
+            if event == windows.EVENT_OBJECT_DESTROY:
+                if hwnd == gobject.baseobject.hwnd:
+                    gobject.baseobject.hwnd = None
+                    return
             p_pids = gobject.baseobject.textsource.pids
+            if not p_pids:
+                return
             _focusp = windows.GetWindowThreadProcessId(hwnd)
             if event != windows.EVENT_SYSTEM_FOREGROUND:
                 return
@@ -441,7 +443,6 @@ def minmaxmoveobservefunc(self):
                 return
             if _focusp == os.getpid():
                 return
-
             if windows.FindWindow(
                 "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
             ):
@@ -467,7 +468,10 @@ def minmaxmoveobservefunc(self):
 
     win_event_callback_cfunc = WinEventProcType(win_event_callback)
 
-    eventpairs = ((windows.EVENT_SYSTEM_FOREGROUND, windows.EVENT_SYSTEM_FOREGROUND),)
+    eventpairs = (
+        (windows.EVENT_SYSTEM_FOREGROUND, windows.EVENT_SYSTEM_FOREGROUND),
+        (windows.EVENT_OBJECT_DESTROY, windows.EVENT_OBJECT_DESTROY),
+    )
 
     def _():
         for pair in eventpairs:

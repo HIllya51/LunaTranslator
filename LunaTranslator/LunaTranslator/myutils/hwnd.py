@@ -14,10 +14,14 @@ def grabwindow(app="PNG", callback_origin=None):
         fname = gobject.gettempdir(time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
         uid = None
     else:
-        try:
-            dirname = gobject.baseobject.textsource.basename
-        except:
-            dirname = "0"
+
+        hwndx = gobject.baseobject.hwnd
+        if not hwndx:
+            hwndx = windows.GetForegroundWindow()
+        gamepath = getpidexe(windows.GetWindowThreadProcessId(hwndx))
+        dirname = os.path.basename(gamepath).replace(
+            "." + os.path.basename(gamepath).split(".")[-1], ""
+        )
         try:
             uid = gobject.baseobject.textsource.gameuid
         except:
@@ -48,11 +52,9 @@ def grabwindow(app="PNG", callback_origin=None):
             callback(fname + "_winrt_magpie." + app)
 
         _()
-    try:
-        hwnd = gobject.baseobject.textsource.hwnd
-        if not hwnd:
-            raise
-    except:
+
+    hwnd = gobject.baseobject.hwnd
+    if not hwnd:
         hwnd = windows.GetForegroundWindow()
 
     _ = windows.GetClientRect(hwnd)

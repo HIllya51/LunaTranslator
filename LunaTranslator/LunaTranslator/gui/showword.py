@@ -354,7 +354,7 @@ class AnkiWindow(QWidget):
         if not keystring:
             return
         try:
-            windows.SetForegroundWindow(gobject.baseobject.textsource.hwnd)
+            windows.SetForegroundWindow(gobject.baseobject.hwnd)
             time.sleep(0.1)
         except:
             pass

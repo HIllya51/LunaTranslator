@@ -103,7 +103,7 @@ class texthook(basetext):
 
             return __shitdict(savehook_new_data[self.gameuid]["hooksetting_private"])
 
-    def __init__(self, pids, hwnd, gamepath, gameuid, autostart=False):
+    def __init__(self, pids, gamepath, gameuid, autostart=False):
         if autostart:
             autostarthookcode = savehook_new_data[gameuid]["hook"]
             needinserthookcode = savehook_new_data[gameuid]["needinserthookcode"]
@@ -136,7 +136,6 @@ class texthook(basetext):
         self.gameuid = gameuid
         self.pids = pids
         self.is64bit = Is64bit(pids[0])
-        self.hwnd = hwnd
         gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
         self.isremoveuseless = self.config["removeuseless"] and len(
             self.autostarthookcode
