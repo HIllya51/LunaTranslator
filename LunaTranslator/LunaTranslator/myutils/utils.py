@@ -429,7 +429,10 @@ def minmaxmoveobservefunc(self):
         try:
             if not gobject.baseobject.hwnd:
                 return
-            if event == windows.EVENT_OBJECT_DESTROY:
+            if (
+                event == windows.EVENT_OBJECT_DESTROY
+                and idObject == windows.OBJID_WINDOW
+            ):
                 if hwnd == gobject.baseobject.hwnd:
                     gobject.baseobject.hwnd = None
                     return
