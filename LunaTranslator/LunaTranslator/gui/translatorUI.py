@@ -1124,7 +1124,7 @@ class TranslatorWindow(resizableframeless):
             usegeo.width() * 3,
             usegeo.height(),
         )
-        usegeo = usegeo.intersected(QRect(0, 0, self.width(), self.height()))
+        usegeo = usegeo.intersected(self.rect())
         return usegeo
 
     @threader

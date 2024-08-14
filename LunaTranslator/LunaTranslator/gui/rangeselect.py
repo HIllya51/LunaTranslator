@@ -28,6 +28,15 @@ class rangeadjust(Mainw):
             _geo.height(),
         )
 
+    def rect(self):
+        geo = self.geometry()
+        return QRectF(
+            0,
+            0,
+            geo.width() / self.devicePixelRatioF(),
+            geo.height() / self.devicePixelRatioF(),
+        ).toRect()
+
     def __init__(self, parent):
         super(rangeadjust, self).__init__(parent)
         self.traceoffsetsignal.connect(self.traceoffset)
