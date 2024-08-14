@@ -884,7 +884,10 @@ class TranslatorWindow(resizableframeless):
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
         self.autohidedelaythread()
         self.tracewindowposthread()
-        self.__showlinks()
+        today = time.strftime("%Y-%m-%d", time.localtime())
+        if globalconfig.get("lastvisday", None) != today:
+            globalconfig["lastvisday"] = today
+            self.__showlinks()
 
     def __showsupport(self, _):
         dia = QDialog(self, Qt.WindowType.WindowCloseButtonHint)
