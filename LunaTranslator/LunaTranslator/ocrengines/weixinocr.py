@@ -6,8 +6,8 @@ import winreg
 from traceback import print_exc
 
 
-class OCR(baseocr):
-    def initocr(self):
+class wcocr:
+    def __init__(self):
         self.wcocr = CDLL(gobject.GetDllpath(("wcocr.dll")))
         wcocr_init = self.wcocr.wcocr_init
         wcocr_init.argtypes = (
@@ -98,4 +98,23 @@ class OCR(baseocr):
             x1, y1, x2, y2, text = line
             boxs.append((x1, y1, x2, y2))
             texts.append(text)
-        return self.common_solve_text_orientation(boxs, texts)
+        return boxs, texts
+
+
+globalonce = None
+# 这个wcocr，析构有问题。既然内存占用也不高，干脆不要释放了。
+
+
+class OCR(baseocr):
+    def initocr(self):
+        global globalonce
+        if globalonce is None:
+            globalonce = 0
+            globalonce = wcocr()
+
+    def ocr(self, imagebinary):
+        global globalonce
+        if not globalonce:
+            raise Exception
+
+        return self.common_solve_text_orientation(globalonce.ocr(imagebinary))
