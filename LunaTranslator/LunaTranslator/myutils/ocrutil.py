@@ -60,9 +60,9 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
                 if rect is None:
                     continue
 
-                x1, y1 = windows.ScreenToClient(hwnd, x1, y1)
-                x2, y2 = windows.ScreenToClient(hwnd, x2, y2)
-                pix = screenshot(x1, y1, x2, y2, hwnd)
+                _x1, _y1 = windows.ScreenToClient(hwnd, x1, y1)
+                _x2, _y2 = windows.ScreenToClient(hwnd, x2, y2)
+                pix = screenshot(_x1, _y1, _x2, _y2, hwnd)
                 if pix.toImage().allGray():
                     continue
                 break
