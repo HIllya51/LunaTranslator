@@ -171,9 +171,9 @@ class voiceselect(LDialog):
         self.setWindowTitle("选择声音")
         self.setWindowFlags(
             self.windowFlags()
-            & ~Qt.WindowContextHelpButtonHint
+            & ~Qt.WindowType.WindowContextHelpButtonHint
             & ~Qt.WindowType.WindowCloseButtonHint
-            | Qt.WindowStaysOnTopHint
+            | Qt.WindowType.WindowStaysOnTopHint
         )
         _layout = LFormLayout(self)
 

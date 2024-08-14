@@ -769,9 +769,9 @@ class Prompt_dialog(LDialog):
         super().__init__(parent)
         self.setWindowFlags(
             self.windowFlags()
-            & ~Qt.WindowContextHelpButtonHint
+            & ~Qt.WindowType.WindowContextHelpButtonHint
             & ~Qt.WindowType.WindowCloseButtonHint
-            | Qt.WindowStaysOnTopHint
+            | Qt.WindowType.WindowStaysOnTopHint
         )
         self.setWindowTitle(title)
         self.setWindowIcon(qtawesome.icon("fa-question"))
