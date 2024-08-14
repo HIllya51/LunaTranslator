@@ -67,6 +67,8 @@ class basetext:
         self.__hwnd = None
         self.pids = []
         self.gameuid = None
+        self.md5 = "0"
+        self.basename = self.__basename
         if _hwnd:
 
             self.__hwnd = hwndchecker(_hwnd, self)
@@ -83,7 +85,7 @@ class basetext:
 
     def __init__(self, md5, basename):
         self.md5 = md5
-        self.basename = basename
+        self.__basename = self.basename = basename
         self.__hwnd = None
         self.pids = []
         self.gameuid = None
