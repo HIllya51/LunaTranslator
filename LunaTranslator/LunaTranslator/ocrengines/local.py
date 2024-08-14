@@ -35,10 +35,12 @@ class ocrpoints(Structure):
 
 
 class ocrwrapper:
-    def __init__(self) -> None:
+    def __init__(self, det, rec, key) -> None:
         self.dll = CDLL(gobject.GetDllpath(("LunaOCR32.dll", "LunaOCR64.dll")))
+        self.pOcrObj = None
+        self.__OcrInit(det, rec, key)
 
-    def _OcrInit(self, szDetModel, szRecModel, szKeyPath, szClsModel="", nThreads=4):
+    def __OcrInit(self, szDetModel, szRecModel, szKeyPath, szClsModel="", nThreads=4):
 
         _OcrInit = self.dll.OcrInit
         _OcrInit.restype = c_void_p
@@ -50,7 +52,7 @@ class ocrwrapper:
             nThreads,
         )
 
-    def _OcrDetect(self, data: bytes, angle):
+    def __OcrDetect(self, data: bytes, angle):
         _OcrDetect = self.dll.OcrDetect
         _OcrDetect.argtypes = (
             c_void_p,
@@ -98,25 +100,19 @@ class ocrwrapper:
         _OcrFreeptr(num, ps, chars)
         return pss, texts
 
-    def _OcrDestroy(self):
-        _OcrDestroy = self.dll.OcrDestroy
-        _OcrDestroy(self.pOcrObj)
-
-    def init(self, det, rec, key):
-        self._OcrInit(det, rec, key)
-
     def ocr(self, data, angle=0):
         try:
-            return self._OcrDetect(data, angle)
+            return self.__OcrDetect(data, angle)
         except:
             print_exc()
             return [], []
 
-    def trydestroy(self):
-        try:
-            self._OcrDestroy()
-        except:
-            pass
+    def __del__(self):
+        if not self.pOcrObj:
+            return
+        _OcrDestroy = self.dll.OcrDestroy
+        _OcrDestroy.argtypes = (c_void_p,)
+        _OcrDestroy(self.pOcrObj)
 
 
 def getallsupports():
@@ -189,19 +185,15 @@ def question(dialog: QDialog):
 
 
 class OCR(baseocr):
-    def __del__(self):
-        self._ocr.trydestroy()
-
     def initocr(self):
-        self._ocr = ocrwrapper()
+        self._ocr = None
         self._savelang = None
         self.checkchange()
 
     def checkchange(self):
         if self._savelang == self.srclang:
             return
-        self._ocr.trydestroy()
-
+        self._ocr = None
         path = "./files/ocr/{}".format(getlangsrc())
         if not (
             os.path.exists(path + "/det.onnx")
@@ -219,7 +211,9 @@ class OCR(baseocr):
                 + ": "
                 + ", ".join([_TR(getlang_inner2show(f)) for f in getallsupports()])
             )
-        self._ocr.init(path + "/det.onnx", path + "/rec.onnx", path + "/dict.txt")
+        self._ocr = ocrwrapper(
+            path + "/det.onnx", path + "/rec.onnx", path + "/dict.txt"
+        )
         self._savelang = self.srclang
 
     def ocr(self, imagebinary):
