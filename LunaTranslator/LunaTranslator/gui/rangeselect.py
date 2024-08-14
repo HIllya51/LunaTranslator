@@ -14,6 +14,10 @@ class rangeadjust(Mainw):
         self.traceposstart = pos
 
     def traceoffset(self, curr):
+        keystate = windows.GetKeyState(windows.VK_LBUTTON)
+        if keystate < 0 and windows.GetForegroundWindow() == int(self.winId()):
+            self.tracepos = QPoint()
+            return
         if self._isTracking:
             self.tracepos = QPoint()
             return
