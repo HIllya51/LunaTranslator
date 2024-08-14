@@ -78,7 +78,7 @@ class ocrtext(basetext):
         h4 = windows.WindowFromPoint(windows.POINT(p2[0], p1[1]))
 
         self.range_ui[-1].setrect(rect)
-        if globalconfig["multiregion"]:
+        if len(self.range_ui) > 1:
             return
         usehwnds = []
         for _ in (h1, h2, h3, h4):
@@ -89,14 +89,9 @@ class ocrtext(basetext):
         if not usehwnds:
             return
         hwnd, count = Counter(usehwnds).most_common()[0]
-        if self.hwnd:
-            if count == len(usehwnds):
-                self.hwnd = hwnd
-                self.pids = [windows.GetWindowThreadProcessId(hwnd)]
-        else:
-            if count >= len(usehwnds) - 1:
-                self.hwnd = hwnd
-                self.pids = [windows.GetWindowThreadProcessId(hwnd)]
+        if count == len(usehwnds):
+            self.hwnd = hwnd
+            self.pids = [windows.GetWindowThreadProcessId(hwnd)]
 
     def setstyle(self):
         [_.setstyle() for _ in self.range_ui]
