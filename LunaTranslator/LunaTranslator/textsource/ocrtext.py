@@ -1,11 +1,12 @@
-import time
+import time, os
 from myutils.config import globalconfig
-import winsharedutils
+import winsharedutils, windows
 from gui.rangeselect import rangeadjust
 from myutils.ocrutil import imageCut, ocr_run, ocr_end, ocr_init
 import time, gobject
 from qtsymbols import *
 from traceback import print_exc
+from collections import Counter
 from textsource.textsourcebase import basetext
 
 
@@ -70,7 +71,28 @@ class ocrtext(basetext):
             _r.traceoffsetsignal.emit(curr)
 
     def setrect(self, rect):
+        p1, p2 = rect
+        h1 = windows.WindowFromPoint(windows.POINT(*p1))
+        h2 = windows.WindowFromPoint(windows.POINT(*p2))
+        h3 = windows.WindowFromPoint(windows.POINT(p1[0], p2[1]))
+        h4 = windows.WindowFromPoint(windows.POINT(p2[0], p1[1]))
+
         self.range_ui[-1].setrect(rect)
+        usehwnds = []
+        for _ in (h1, h2, h3, h4):
+            if windows.GetWindowThreadProcessId(_) == os.getpid():
+                continue
+            usehwnds.append(_)
+
+        if not usehwnds:
+            return
+        hwnd, count = Counter(usehwnds).most_common()[0]
+        if self.hwnd:
+            if count == len(usehwnds):
+                self.hwnd = hwnd
+        else:
+            if count >= len(usehwnds) - 1:
+                self.hwnd = hwnd
 
     def setstyle(self):
         [_.setstyle() for _ in self.range_ui]

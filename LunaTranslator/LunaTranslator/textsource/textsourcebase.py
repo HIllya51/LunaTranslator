@@ -1,16 +1,71 @@
 import threading, gobject, queue
-import time, sqlite3, json, os
+import time, sqlite3, json, os, windows, winsharedutils
 from traceback import print_exc
 from myutils.config import globalconfig, savehook_new_data
 from myutils.utils import autosql
+from myutils.wrapper import threader
+
+
+class hwndchecker:
+    def __del__(self):
+        if self.ref.hwnd:
+            return
+        gobject.baseobject.translation_ui.processismuteed = False
+        gobject.baseobject.translation_ui.isbindedwindow = False
+        gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
+        gobject.baseobject.translation_ui.thistimenotsetop = False
+        if globalconfig["keepontop"]:
+            gobject.baseobject.translation_ui.settop()
+
+    def __init__(self, hwnd, ref) -> None:
+        self.hwnd = hwnd
+        self.ref = ref
+        self.end = False
+
+        _mute = winsharedutils.GetProcessMute(
+            windows.GetWindowThreadProcessId(self.hwnd)
+        )
+
+        gobject.baseobject.translation_ui.processismuteed = _mute
+        gobject.baseobject.translation_ui.isbindedwindow = True
+        gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
+        self.__checkthread()
+
+    @threader
+    def __checkthread(self):
+        while not self.end:
+            pid = windows.GetWindowThreadProcessId(self.hwnd)
+            if not pid:
+                self.hwnd = None
+                self.__del__()
+                break
+            _mute = winsharedutils.GetProcessMute(pid)
+            if gobject.baseobject.translation_ui.processismuteed != _mute:
+                gobject.baseobject.translation_ui.processismuteed = _mute
+                gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
+            time.sleep(0.5)
 
 
 class basetext:
+    @property
+    def hwnd(self):
+
+        if self.__hwnd is None:
+            return None
+        return self.__hwnd.hwnd
+
+    @hwnd.setter
+    def hwnd(self, _hwnd):
+        if self.__hwnd:
+            self.__hwnd.end = True
+        self.__hwnd = None
+        if _hwnd:
+            self.__hwnd = hwndchecker(_hwnd, self)
 
     def __init__(self, md5, basename):
         self.md5 = md5
         self.basename = basename
-        self.hwnd = None
+        self.__hwnd = None
         self.pids = []
         self.gameuid = None
         #

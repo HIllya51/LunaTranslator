@@ -226,10 +226,15 @@ class texthook(basetext):
         self.Luna_FreePtr(ws)
         return string
 
+    def procdisc(self, pid):
+        self.connectedpids.remove(pid)
+        if len(self.connectedpids) == 0:
+            gobject.baseobject.textsource = None
+
     def prepares(self):
         procs = [
             ProcessEvent(self.onprocconnect),
-            ProcessEvent(self.connectedpids.remove),
+            ProcessEvent(self.procdisc),
             ThreadEvent(self.onnewhook),
             ThreadEvent(self.onremovehook),
             OutputCallback(self.handle_output),

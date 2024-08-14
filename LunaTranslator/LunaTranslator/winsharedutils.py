@@ -28,11 +28,11 @@ import gobject
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
 
 
-_SetProcessMute = utilsdll.SetProcessMute
-_SetProcessMute.argtypes = c_uint, c_bool
+SetProcessMute = utilsdll.SetProcessMute
+SetProcessMute.argtypes = c_uint, c_bool
 
-_GetProcessMute = utilsdll.GetProcessMute
-_GetProcessMute.restype = c_bool
+GetProcessMute = utilsdll.GetProcessMute
+GetProcessMute.restype = c_bool
 
 _SAPI_List = utilsdll.SAPI_List
 _SAPI_List.argtypes = (c_uint, c_void_p)
@@ -68,14 +68,6 @@ _clipboard_set.argtypes = (
     c_void_p,
     c_wchar_p,
 )
-
-
-def SetProcessMute(pid, mute):
-    _SetProcessMute(pid, mute)
-
-
-def GetProcessMute(pid):
-    return _GetProcessMute(pid)
 
 
 def SAPI_List(v):

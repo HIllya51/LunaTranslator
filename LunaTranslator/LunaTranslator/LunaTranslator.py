@@ -877,35 +877,27 @@ class MAINUI:
                 return
             elif self.AttachProcessDialog and self.AttachProcessDialog.isVisible():
                 return
-            if self.textsource is None:
-                hwnd = windows.GetForegroundWindow()
-                pid = windows.GetWindowThreadProcessId(hwnd)
-                name_ = getpidexe(pid)
-                if not name_:
-                    return
-                found = findgameuidofpath(name_)
-                if not found:
-                    return
-                uid, reflist = found
-                pids = ListProcess(name_)
-                if self.textsource is not None:
-                    return
-                if not globalconfig["sourcestatus2"]["texthook"]["use"]:
-                    return
-                if globalconfig["startgamenototop"] == False:
-                    idx = reflist.index(uid)
-                    reflist.insert(0, reflist.pop(idx))
-                self.textsource = texthook(pids, hwnd, name_, uid, autostart=True)
-                self.textsource.start()
-
-            else:
-                pids = self.textsource.pids
-                if len(collect_running_pids(pids)) != 0:
-                    return
-                self.textsource = None
-                self.translation_ui.thistimenotsetop = False
-                if globalconfig["keepontop"]:
-                    self.translation_ui.settop()
+            if self.textsource is not None:
+                return
+            hwnd = windows.GetForegroundWindow()
+            pid = windows.GetWindowThreadProcessId(hwnd)
+            name_ = getpidexe(pid)
+            if not name_:
+                return
+            found = findgameuidofpath(name_)
+            if not found:
+                return
+            uid, reflist = found
+            pids = ListProcess(name_)
+            if self.textsource is not None:
+                return
+            if not globalconfig["sourcestatus2"]["texthook"]["use"]:
+                return
+            if globalconfig["startgamenototop"] == False:
+                idx = reflist.index(uid)
+                reflist.insert(0, reflist.pop(idx))
+            self.textsource = texthook(pids, hwnd, name_, uid, autostart=True)
+            self.textsource.start()
 
         while self.isrunning:
             try:
@@ -914,49 +906,6 @@ class MAINUI:
                 print_exc()
             time.sleep(0.5)
             # 太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
-
-    def autocheckhwndexists(self):
-        def setandrefresh(b):
-            if self.translation_ui.isbindedwindow != b:
-                self.translation_ui.isbindedwindow = b
-                self.translation_ui.refreshtooliconsignal.emit()
-
-        @tryprint
-        def __do():
-            if not self.textsource:
-                setandrefresh(False)
-                return
-            hwnd = self.textsource.hwnd
-
-            if hwnd == 0:
-                if not globalconfig["sourcestatus2"]["texthook"]["use"]:
-                    setandrefresh(False)
-                else:
-                    fhwnd = windows.GetForegroundWindow()
-                    pids = self.textsource.pids
-                    notdone = "once" not in dir(self.textsource)
-                    isgoodproc = windows.GetWindowThreadProcessId(fhwnd) in pids
-                    if isgoodproc and notdone:
-                        self.textsource.once = True
-                        self.textsource.hwnd = fhwnd
-                        setandrefresh(True)
-            else:
-                if windows.GetWindowThreadProcessId(hwnd) == 0:
-                    self.textsource.hwnd = 0
-                    setandrefresh(False)
-                elif "once" not in dir(self.textsource):
-                    self.textsource.once = True
-                    setandrefresh(True)
-            if self.textsource.pids:
-                _mute = winsharedutils.GetProcessMute(self.textsource.pids[0])
-                if self.translation_ui.processismuteed != _mute:
-                    self.translation_ui.processismuteed = _mute
-                    self.translation_ui.refreshtooliconsignal.emit()
-
-        while self.isrunning:
-            __do()
-
-            time.sleep(0.5)
 
     def setdarkandbackdrop(self, widget, dark):
         if self.__dontshowintaborsetbackdrop(widget):
@@ -1131,7 +1080,6 @@ class MAINUI:
         self.searchwordW = searchwordW(self.commonstylebase)
         self.hookselectdialog = hookselect(self.commonstylebase)
         self.starttextsource()
-        threading.Thread(target=self.autocheckhwndexists).start()
         threading.Thread(target=self.autohookmonitorthread).start()
         threading.Thread(
             target=minmaxmoveobservefunc, args=(self.translation_ui,)

@@ -1189,8 +1189,6 @@ class TranslatorWindow(resizableframeless):
             gameuid = findgameuidofpath(getpidexe(pid))
             if gameuid:
                 gobject.baseobject.textsource.gameuid = gameuid[0]
-        self.isbindedwindow = pid != _pid
-        self.refreshtoolicon()
 
     def changeshowhideraw(self):
         try:

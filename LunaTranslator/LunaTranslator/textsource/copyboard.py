@@ -1,8 +1,6 @@
-import time
 from textsource.textsourcebase import basetext
 from myutils.config import globalconfig
-import winsharedutils, os, queue
-import windows
+import winsharedutils, queue
 
 
 class copyboard(basetext):

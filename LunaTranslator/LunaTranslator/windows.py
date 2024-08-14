@@ -398,6 +398,8 @@ def GetClipboardOwner():
 def GetWindowThreadProcessId(hwnd):
     pid = c_uint()
     handle = _GetWindowThreadProcessId(hwnd, pointer(pid))
+    if handle == 0:
+        return 0
     return pid.value
 
 
