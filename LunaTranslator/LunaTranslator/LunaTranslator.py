@@ -662,12 +662,13 @@ class MAINUI:
         found = findgameuidofpath(pexe)
         if found:
             gameuid, reflist = found
+            if globalconfig["startgamenototop"] == False:
+                idx = reflist.index(gameuid)
+                reflist.insert(0, reflist.pop(idx))
         else:
             gameuid = find_or_create_uid(savehook_new_list, pexe, title)
-            reflist = savehook_new_list
-        if globalconfig["startgamenototop"] == False:
-            idx = reflist.index(gameuid)
-            reflist.insert(0, reflist.pop(idx))
+            savehook_new_list.insert(0, gameuid)
+
         self.textsource = texthook(pids, hwnd, pexe, gameuid, autostart=False)
         self.textsource.start()
 

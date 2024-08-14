@@ -86,6 +86,8 @@ EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 
 
 class texthook(basetext):
+    autofindpids = False
+
     @property
     def config(self):
         if savehook_new_data[self.gameuid]["hooksetting_follow_default"]:
@@ -135,7 +137,7 @@ class texthook(basetext):
         self.pids = pids
         self.is64bit = Is64bit(pids[0])
         self.hwnd = hwnd
-        gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit(self.config)
+        gobject.baseobject.hookselectdialog.changeprocessclearsignal.emit()
         self.isremoveuseless = self.config["removeuseless"] and len(
             self.autostarthookcode
         )

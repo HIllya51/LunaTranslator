@@ -53,6 +53,8 @@ class hwndchecker:
 
 
 class basetext:
+    autofindpids = True
+
     @property
     def hwnd(self):
 
@@ -65,14 +67,17 @@ class basetext:
         if self.__hwnd:
             self.__hwnd.end = True
         self.__hwnd = None
-        self.pids = []
-        self.gameuid = None
-        self.md5 = "0"
-        self.basename = self.__basename
+        if self.autofindpids:
+            self.pids = []
+            self.gameuid = None
+            self.md5 = "0"
+            self.basename = self.__basename
         if _hwnd:
 
             self.__hwnd = hwndchecker(_hwnd, self)
 
+            if not self.autofindpids:
+                return
             self.pids = [windows.GetWindowThreadProcessId(_hwnd)]
             gameuid = findgameuidofpath(getpidexe(self.pids[0]))
             if gameuid:

@@ -383,7 +383,7 @@ class hookselect(closeashidewindow):
     addnewhooksignal = pyqtSignal(tuple, bool)
     getnewsentencesignal = pyqtSignal(str)
     sysmessagesignal = pyqtSignal(str)
-    changeprocessclearsignal = pyqtSignal(dict)
+    changeprocessclearsignal = pyqtSignal()
     removehooksignal = pyqtSignal(tuple)
     getfoundhooksignal = pyqtSignal(dict)
     update_item_new_line = pyqtSignal(tuple, str)
@@ -444,7 +444,7 @@ class hookselect(closeashidewindow):
             1, QHeaderView.ResizeMode.ResizeToContents
         )
 
-    def changeprocessclear(self, config):
+    def changeprocessclear(self):
         # self.ttCombo.clear()
         self.ttCombomodelmodel.clear()
         self.save = []
