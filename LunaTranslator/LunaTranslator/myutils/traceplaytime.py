@@ -73,7 +73,6 @@ class playtimemanager:
     def traceplaytime(self, gameuid, start, end, new):
 
         gameinternalid = self.get_gameinternalid(gameuid)
-        print(gameuid, gameinternalid)
         if new:
             self.sqlsavegameinfo.execute(
                 "INSERT INTO traceplaytime_v4 VALUES(NULL,?,?,?)",
