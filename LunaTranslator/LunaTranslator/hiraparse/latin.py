@@ -36,6 +36,6 @@ class latin(basehira):
             if c in punctuations:
                 _x.append({"orig": c, "hira": "", "isdeli": True})
             else:
-                _x.append({"orig": c, "hira": ""})
+                _x.append({"orig": c, "hira": c})
 
         return _x
