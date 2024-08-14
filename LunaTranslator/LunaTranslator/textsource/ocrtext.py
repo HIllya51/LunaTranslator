@@ -90,9 +90,11 @@ class ocrtext(basetext):
         if self.hwnd:
             if count == len(usehwnds):
                 self.hwnd = hwnd
+                self.pids = [windows.GetWindowThreadProcessId(hwnd)]
         else:
             if count >= len(usehwnds) - 1:
                 self.hwnd = hwnd
+                self.pids = [windows.GetWindowThreadProcessId(hwnd)]
 
     def setstyle(self):
         [_.setstyle() for _ in self.range_ui]
