@@ -8,7 +8,6 @@ from myutils.config import (
     saveallconfig,
     _TR,
     static_data,
-    findgameuidofpath,
 )
 from myutils.utils import getlanguse, dynamiclink
 from myutils.subproc import endsubprocs
@@ -23,7 +22,6 @@ from myutils.hwnd import (
     mouseselectwindow,
     grabwindow,
     getExeIcon,
-    getpidexe,
     getcurrexe,
 )
 from gui.setting_about import doupdate
@@ -40,7 +38,6 @@ from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.dialog_savedgame_setting import browserdialog
 from gui.dynalang import LDialog
-from gui.setting_about import createimageview
 
 
 class ButtonX(QWidget):
@@ -1184,11 +1181,6 @@ class TranslatorWindow(resizableframeless):
     def bindcropwindowcallback(self, pid, hwnd):
         _pid = os.getpid()
         gobject.baseobject.textsource.hwnd = hwnd if pid != _pid else None
-        if not globalconfig["sourcestatus2"]["texthook"]["use"]:
-            gobject.baseobject.textsource.pids = [pid] if pid != _pid else None
-            gameuid = findgameuidofpath(getpidexe(pid))
-            if gameuid:
-                gobject.baseobject.textsource.gameuid = gameuid[0]
 
     def changeshowhideraw(self):
         try:

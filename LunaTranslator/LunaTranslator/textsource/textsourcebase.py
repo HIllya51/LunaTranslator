@@ -1,8 +1,14 @@
 import threading, gobject, queue
 import time, sqlite3, json, os, windows, winsharedutils
 from traceback import print_exc
-from myutils.config import globalconfig, savehook_new_data
-from myutils.utils import autosql
+from myutils.config import (
+    globalconfig,
+    savehook_new_data,
+    findgameuidofpath,
+    uid2gamepath,
+)
+from myutils.utils import autosql, getfilemd5
+from myutils.hwnd import getpidexe
 from myutils.wrapper import threader
 
 
@@ -59,8 +65,21 @@ class basetext:
         if self.__hwnd:
             self.__hwnd.end = True
         self.__hwnd = None
+        self.pids = []
+        self.gameuid = None
         if _hwnd:
+
             self.__hwnd = hwndchecker(_hwnd, self)
+
+            self.pids = [windows.GetWindowThreadProcessId(_hwnd)]
+            gameuid = findgameuidofpath(getpidexe(self.pids[0]))
+            if gameuid:
+                self.gameuid = gameuid[0]
+                self.md5 = getfilemd5(uid2gamepath[gameuid[0]])
+                gamepath = uid2gamepath[self.gameuid]
+                self.basename = os.path.basename(gamepath).replace(
+                    "." + os.path.basename(gamepath).split(".")[-1], ""
+                )
 
     def __init__(self, md5, basename):
         self.md5 = md5

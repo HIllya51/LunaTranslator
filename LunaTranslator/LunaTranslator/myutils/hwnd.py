@@ -4,7 +4,7 @@ from qtsymbols import *
 import gobject
 import os, subprocess, functools
 import time, winrtutils, winsharedutils, hashlib
-from myutils.config import savehook_new_data
+from myutils.config import savehook_new_data, uid2gamepath
 from myutils.wrapper import threader
 
 
@@ -14,16 +14,14 @@ def grabwindow(app="PNG", callback_origin=None):
         fname = gobject.gettempdir(time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
         uid = None
     else:
-        dirname = "0"
+        try:
+            dirname = gobject.baseobject.textsource.basename
+        except:
+            dirname = "0"
         try:
             uid = gobject.baseobject.textsource.gameuid
         except:
             uid = None
-        try:
-            if gobject.baseobject.textsource.md5 != "0":
-                dirname = gobject.baseobject.textsource.basename
-        except:
-            pass
         fname = gobject.getcachedir(
             f"screenshot/{dirname}/"
             + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()),

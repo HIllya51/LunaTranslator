@@ -69,7 +69,6 @@ class MAINUI:
         self.cishus = {}
         self.specialreaders = {}
         self.textsource_p = None
-        self.currentmd5 = "0"
         self.currenttext = ""
         self.currenttranslate = ""
         self.currentread = ""
@@ -120,7 +119,10 @@ class MAINUI:
                 print_exc()
         self.textsource_p = _
 
-        self.currentmd5 = "0" if _ is None else _.md5
+    @property
+    def currentmd5(self):
+        _ = self.textsource
+        return "0" if _ is None else _.md5
 
     @threader
     def safeloadprocessmodels(self):
