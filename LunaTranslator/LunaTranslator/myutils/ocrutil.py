@@ -86,20 +86,12 @@ _ocrengine = None
 
 def ocr_end():
     global _ocrengine, _nowuseocr
-    try:
-        _ocrengine.end()
-    except:
-        pass
     _nowuseocr = None
     _ocrengine = None
 
 
-def ocr_run(qimage: QImage):
-    image = qimage2binary(qimage, "PNG")
-    if not image:
-        return ""
+def ocr_init():
     global _nowuseocr, _ocrengine
-
     use = None
     for k in globalconfig["ocr"]:
         if globalconfig["ocr"][k]["use"] == True and os.path.exists(
@@ -108,17 +100,23 @@ def ocr_run(qimage: QImage):
             use = k
             break
     if use is None:
-        return ""
+        raise Exception("no engine")
+    if _nowuseocr == use:
+        return
+    _ocrengine = None
+    _nowuseocr = None
+    aclass = importlib.import_module("ocrengines." + use).OCR
+    _ocrengine = aclass(use)
+    _nowuseocr = use
 
+
+def ocr_run(qimage: QImage):
+    image = qimage2binary(qimage, "PNG")
+    if not image:
+        return ""
+    global _nowuseocr, _ocrengine
     try:
-        if _nowuseocr != use:
-            try:
-                _ocrengine.end()
-            except:
-                pass
-            aclass = importlib.import_module("ocrengines." + use).OCR
-            _ocrengine = aclass(use)
-            _nowuseocr = use
+        ocr_init()
         text = _ocrengine._private_ocr(image)
     except Exception as e:
         if isinstance(e, ArgsEmptyExc):
@@ -126,7 +124,12 @@ def ocr_run(qimage: QImage):
         else:
             print_exc()
             msg = stringfyerror(e)
-        msg = "<msg_error_refresh>" + _TR(globalconfig["ocr"][use]["name"]) + " " + msg
+        msg = (
+            "<msg_error_refresh>"
+            + (_TR(globalconfig["ocr"][_nowuseocr]["name"]) if _nowuseocr else "")
+            + " "
+            + msg
+        )
         text = msg
     return text
 

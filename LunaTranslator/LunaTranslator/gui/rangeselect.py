@@ -6,6 +6,7 @@ from gui.dynalang import LAction
 
 
 class rangeadjust(Mainw):
+    closesignal = pyqtSignal()
     traceoffsetsignal = pyqtSignal(QPoint)
 
     def starttrace(self, pos):
@@ -42,6 +43,7 @@ class rangeadjust(Mainw):
         self.traceoffsetsignal.connect(self.traceoffset)
         self.label = QLabel(self)
         self.setstyle()
+        self.closesignal.connect(self.close)
         self.tracepos = QPoint()
         self.drag_label = QLabel(self)
         self.drag_label.setGeometry(0, 0, 4000, 2000)

@@ -68,7 +68,7 @@ class OCR(baseocr):
         )
         return wechatocr_path, wechat_path
 
-    def end(self):
+    def __del__(self):
 
         wcocr_destroy = self.wcocr.wcocr_destroy
         wcocr_destroy.argtypes = (c_void_p,)

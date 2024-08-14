@@ -970,7 +970,6 @@ def yuitsu_switch(parent, configdict, dictobjectn, key, callback, checked):
         for k in dictobject:
             configdict[k]["use"] = k == key
             dictobject[k].setChecked(k == key)
-
     if callback:
         callback(key, checked)
 

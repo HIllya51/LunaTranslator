@@ -189,7 +189,7 @@ def question(dialog: QDialog):
 
 
 class OCR(baseocr):
-    def end(self):
+    def __del__(self):
         self._ocr.trydestroy()
 
     def initocr(self):

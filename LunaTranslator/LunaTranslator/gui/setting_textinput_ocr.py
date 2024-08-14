@@ -16,7 +16,7 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LPushButton
 import qtawesome, gobject
-from myutils.ocrutil import imagesolve
+from myutils.ocrutil import imagesolve, ocr_end, ocr_init
 from myutils.wrapper import Singleton_close
 
 
@@ -79,6 +79,13 @@ def __label2(self):
     return self.threshold2label
 
 
+def __directinitend(engine, _ok):
+    if _ok:
+        ocr_init()
+    else:
+        ocr_end()
+
+
 def initgridsources(self, names):
     line = []
     i = 0
@@ -111,7 +118,7 @@ def initgridsources(self, names):
                     globalconfig["ocr"],
                     "ocrswitchs",
                     name,
-                    None,
+                    __directinitend,
                 ),
                 pair="ocrswitchs",
             ),

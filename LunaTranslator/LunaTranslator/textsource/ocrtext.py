@@ -2,9 +2,10 @@ import time
 from myutils.config import globalconfig
 import winsharedutils
 from gui.rangeselect import rangeadjust
-from myutils.ocrutil import imageCut, ocr_run, ocr_end
+from myutils.ocrutil import imageCut, ocr_run, ocr_end, ocr_init
 import time, gobject
 from qtsymbols import *
+from traceback import print_exc
 from textsource.textsourcebase import basetext
 
 
@@ -34,6 +35,10 @@ def compareImage(img1: QImage, img2):
 class ocrtext(basetext):
 
     def __init__(self):
+        try:
+            ocr_init()
+        except:
+            print_exc()
         self.screen = QApplication.primaryScreen()
         self.savelastimg = []
         self.savelastrecimg = []
@@ -178,6 +183,6 @@ class ocrtext(basetext):
 
     def end(self):
         globalconfig["ocrregions"] = [_.getrect() for _ in self.range_ui]
-        [_.close() for _ in self.range_ui]
+        [_.closesignal.emit() for _ in self.range_ui]
         super().end()
         ocr_end()
