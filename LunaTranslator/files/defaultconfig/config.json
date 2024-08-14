@@ -1963,8 +1963,6 @@
     "image_analyse": true,
     "time_period": false,
     "ocr_auto_method": 0,
-    "ocr_presolve_method": 0,
-    "binary_thresh": 128,
     "ocr_interval": 5,
     "mustocr_interval": 5,
     "ocrmininterval": 1,

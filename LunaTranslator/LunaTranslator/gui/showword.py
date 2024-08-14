@@ -73,9 +73,7 @@ class AnkiWindow(QWidget):
 
     def crop(self):
         def ocroncefunction(rect):
-            img = imageCut(
-                0, rect[0][0], rect[0][1], rect[1][0], rect[1][1], False, True
-            )
+            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
             fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
             img.save(fname)
             self.editpath.setText(os.path.abspath(fname))

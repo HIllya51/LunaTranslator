@@ -11,63 +11,10 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     D_getsimpleswitch,
     selectcolor,
-    saveposwindow,
-    pixmapviewer,
 )
-from gui.dynalang import LPushButton
-import qtawesome, gobject
-from myutils.ocrutil import imagesolve, ocr_end, ocr_init
-from myutils.wrapper import Singleton_close, threader
-
-
-@Singleton_close
-class showocrimage(saveposwindow):
-    setimage = pyqtSignal(list)
-
-    def closeEvent(self, e):
-        gobject.baseobject.showocrimage = None
-        super().closeEvent(e)
-
-    def __init__(self, parent, cached):
-        self.img1 = None
-        self.originimage = None
-        super().__init__(parent, poslist=globalconfig["showocrgeo"])
-        self.setWindowIcon(qtawesome.icon("fa.picture-o"))
-        self.setWindowTitle("查看处理效果")
-        self.originlabel = pixmapviewer()
-        qw = QWidget()
-        self.solvedlabel = pixmapviewer()
-        self.lay2 = QHBoxLayout()
-        button = QPushButton(
-            icon=qtawesome.icon("fa.rotate-right", color=globalconfig["buttoncolor"])
-        )
-        button.clicked.connect(self.retest)
-        self.layout1 = QVBoxLayout()
-        # self.lay2.addWidget(button)
-        self.lay2.addLayout(self.layout1)
-        self.setCentralWidget(qw)
-        qw.setLayout(self.lay2)
-        self.layout1.addWidget(self.originlabel)
-        self.layout1.addWidget(button)
-        self.layout1.addWidget(self.solvedlabel)
-        self.setimage.connect(self.setimagefunction)
-        if cached:
-            self.setimagefunction(cached)
-
-    def retest(self):
-        if self.originimage is None:
-            return
-        img = imagesolve(self.originimage)
-        self.setimagefunction([self.originimage, img])
-
-    def setimagefunction(self, image):
-        originimage, solved = image
-        self.originimage = originimage
-        self.img1 = QPixmap.fromImage(originimage)
-        self.img2 = QPixmap.fromImage(solved)
-        self.originlabel.showpixmap(self.img1)
-        self.solvedlabel.showpixmap(self.img2)
-
+import gobject
+from myutils.ocrutil import ocr_end, ocr_init
+from myutils.wrapper import threader
 
 def __label1(self):
     self.threshold1label = QLabel()
@@ -143,11 +90,6 @@ def getocrgrid(self):
     offline, online = splitocrtypes(globalconfig["ocr"])
     self.ocrswitchs = {}
 
-    def vissolvebtn():
-        _ = LPushButton("查看处理效果")
-        _.clicked.connect(gobject.baseobject.createshowocrimage)
-        return _
-
     grids += [
         [
             (
@@ -195,31 +137,6 @@ def getocrgrid(self):
                             ),
                             ("", 4),
                         ]
-                    ],
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="预处理",
-                    type="grid",
-                    grid=[
-                        [
-                            "预处理方法",
-                            D_getsimplecombobox(
-                                ["不处理", "灰度化", "阈值二值化", "OTSU二值化"],
-                                globalconfig,
-                                "ocr_presolve_method",
-                            ),
-                            vissolvebtn,
-                        ],
-                        [
-                            "二值化阈值",
-                            D_getspinbox(0, 255, globalconfig, "binary_thresh"),
-                        ],
                     ],
                 ),
                 0,

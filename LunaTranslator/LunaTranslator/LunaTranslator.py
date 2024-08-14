@@ -39,7 +39,6 @@ from gui.edittext import edittext
 import importlib, qtawesome
 from functools import partial
 from gui.setting import Setting
-from gui.setting_textinput_ocr import showocrimage
 from gui.attachprocessdialog import AttachProcessDialog
 import windows
 import gobject
@@ -79,8 +78,6 @@ class MAINUI:
         self.outputers = {}
         self.processmethods = []
         self.zhanweifu = 0
-        self.showocrimage = None
-        self.showocrimage_cached = None
         self.AttachProcessDialog = None
         self.edittextui = None
         self.edittextui_cached = None
@@ -860,22 +857,6 @@ class MAINUI:
             return
 
         return aclass(type_)
-
-    def maybesetimage(self, pair):
-        if self.showocrimage:
-            try:
-                self.showocrimage.setimage.emit(pair)
-            except:
-                print_exc()
-        self.showocrimage_cached = pair
-
-    def createshowocrimage(self):
-        try:
-            self.showocrimage = showocrimage(self.settin_ui, self.showocrimage_cached)
-            if self.showocrimage:
-                self.showocrimage.show()
-        except:
-            print_exc()
 
     def maybesetedittext(self, text):
         if self.edittextui:

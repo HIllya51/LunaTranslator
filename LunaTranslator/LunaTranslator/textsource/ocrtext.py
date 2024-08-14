@@ -17,19 +17,12 @@ def qimge2np(img: QImage):
     return img
 
 
-def sample_compare(img1, img2, h=24, w=128):
+def compareImage(img1, img2, h=24, w=128):
     cnt = 0
     for i in range(w):
         for j in range(h):
             cnt += img1.pixel(i, j) == img2.pixel(i, j)
     return cnt / (w * h)
-
-
-def compareImage(img1: QImage, img2):
-    if globalconfig["ocr_presolve_method"] in [2, 3]:
-        return sample_compare(img1, img2, img1.height(), img1.width())
-    else:
-        return sample_compare(img1, img2)
 
 
 class ocrtext(basetext):
@@ -114,12 +107,7 @@ class ocrtext(basetext):
             if rect is None:
                 continue
             imgr = imageCut(
-                gobject.baseobject.hwnd,
-                rect[0][0],
-                rect[0][1],
-                rect[1][0],
-                rect[1][1],
-                i == 0,
+                gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
             )
             ok = True
 

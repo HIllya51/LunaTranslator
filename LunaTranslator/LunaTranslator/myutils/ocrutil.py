@@ -6,7 +6,7 @@ from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import screenshot
 from myutils.utils import stringfyerror
 from traceback import print_exc
-import gobject, winsharedutils, threading
+import threading
 
 
 def qimage2binary(qimage: QImage, fmt="BMP"):
@@ -25,30 +25,7 @@ def binary2qimage(binary):
     return image
 
 
-def togray(image):
-    gray_image = image.convertToFormat(QImage.Format_Grayscale8)
-    return gray_image
-
-
-def otsu_threshold_fast(image: QImage, thresh):
-    image_data = qimage2binary(image)
-    solved = winsharedutils.otsu_binary(image_data, thresh)
-    return binary2qimage(solved)
-
-
-def imagesolve(image):
-    if globalconfig["ocr_presolve_method"] == 0:
-        image2 = image
-    elif globalconfig["ocr_presolve_method"] == 1:
-        image2 = togray(image)
-    elif globalconfig["ocr_presolve_method"] == 2:
-        image2 = otsu_threshold_fast(image, globalconfig["binary_thresh"])
-    elif globalconfig["ocr_presolve_method"] == 3:
-        image2 = otsu_threshold_fast(image, -1)
-    return image2
-
-
-def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
+def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
 
     for _ in range(2):
 
@@ -77,12 +54,7 @@ def imageCut(hwnd, x1, y1, x2, y2, viscompare=True, rawimage=False) -> QImage:
             pix = screenshot(x1, y1, x2, y2)
 
     image = pix.toImage()
-    if rawimage:
-        return image
-    image2 = imagesolve(image)
-    if viscompare:
-        gobject.baseobject.maybesetimage([image, image2])
-    return image2
+    return image
 
 
 _nowuseocrx = None
