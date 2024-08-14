@@ -705,6 +705,7 @@ class TranslatorWindow(resizableframeless):
             windows.ShowWindow(self.winid, windows.SW_SHOWNOACTIVATE)
         else:
             self.show()
+            windows.SetForegroundWindow(self.winid)
         gobject.baseobject.commonstylebase.hide()
 
     def aftershowdosomething(self):
@@ -849,7 +850,7 @@ class TranslatorWindow(resizableframeless):
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
         self.firstshow = True
-        if globalconfig['keepontop']:
+        if globalconfig["keepontop"]:
             self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
