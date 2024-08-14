@@ -78,6 +78,8 @@ class ocrtext(basetext):
         h4 = windows.WindowFromPoint(windows.POINT(p2[0], p1[1]))
 
         self.range_ui[-1].setrect(rect)
+        if globalconfig["multiregion"]:
+            return
         usehwnds = []
         for _ in (h1, h2, h3, h4):
             if windows.GetWindowThreadProcessId(_) == os.getpid():
