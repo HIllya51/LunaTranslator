@@ -137,6 +137,7 @@ class basetext:
         return None
 
     def end(self):
+        self.hwnd = None
         self.ending = True
 
     ##################

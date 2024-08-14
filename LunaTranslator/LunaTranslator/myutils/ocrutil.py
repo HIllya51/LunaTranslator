@@ -87,7 +87,7 @@ _initlock = threading.Lock()
 
 
 def ocr_end():
-    global _ocrengine, _nowuseocr
+    global _ocrengine, _nowuseocr, _nowuseocrx
     with _initlock:
         _nowuseocr = None
         _nowuseocrx = None
