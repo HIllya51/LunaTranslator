@@ -104,11 +104,11 @@ class ctrlenter(QPlainTextEdit):
     enterpressed = pyqtSignal()
 
     def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Return or e.key() == Qt.Key_Enter:
+        if e.key() == Qt.Key.Key_Return or e.key() == Qt.Key.Key_Enter:
             if (
-                e.modifiers() == Qt.ControlModifier
-                or e.modifiers() == Qt.ShiftModifier
-                or e.modifiers() == Qt.AltModifier
+                e.modifiers() == Qt.KeyboardModifier.ControlModifier
+                or e.modifiers() == Qt.KeyboardModifier.ShiftModifier
+                or e.modifiers() == Qt.KeyboardModifier.AltModifier
             ):
                 self.insertPlainText("\n")
             else:
