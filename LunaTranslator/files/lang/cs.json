@@ -666,7 +666,6 @@
     "工具按钮": "Tlačítko nástroje",
     "窗口特效": "Efekty oken",
     "网络请求": "Žádost o síť",
-    "网页显示": "Zobrazení webové stránky",
     "显示时间": "Čas zobrazení",
     "不显示时间": "Nezobrazovat čas",
     "过滤历史重复": "Filtrovat duplicitní historii",
@@ -841,5 +840,7 @@
     "类型": "typ",
     "找不到文本": "Text nebyl nalezen",
     "官方网站": "Oficiální internetové stránky",
-    "欢迎使用": "Vítejte v použití"
+    "欢迎使用": "Vítejte v použití",
+    "显示注音": "Zobrazit fonetickou zápis",
+    "辞书显示顺序": "Lexikografické pořadí zobrazení"
 }

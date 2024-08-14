@@ -356,236 +356,6 @@ def vistranslate_rank(self):
     )
 
 
-def xianshigrid_text(self):
-    textgrid = [
-        [
-            (
-                dict(
-                    title="文本",
-                    type="grid",
-                    grid=(
-                        [
-                            (
-                                dict(
-                                    title="原文",
-                                    type="grid",
-                                    grid=(
-                                        [
-                                            "显示原文",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "isshowrawtext",
-                                                callback=lambda x: __changeuibuttonstate(
-                                                    self, x
-                                                ),
-                                                name="show_original_switch",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "居中显示",
-                                            D_getsimpleswitch(
-                                                globalconfig, "showatcenter"
-                                            ),
-                                            "",
-                                            "最长显示字数",
-                                            D_getspinbox(
-                                                0,
-                                                1000000,
-                                                globalconfig,
-                                                "maxoriginlength",
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                        [
-                            (
-                                dict(
-                                    title="翻译",
-                                    type="grid",
-                                    grid=(
-                                        [
-                                            "显示翻译",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "showfanyi",
-                                                callback=lambda x: __changeuibuttonstate2(
-                                                    self, x
-                                                ),
-                                                name="show_fany_switch",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "固定翻译显示顺序",
-                                            D_getsimpleswitch(
-                                                globalconfig, "fix_translate_rank"
-                                            ),
-                                            D_getIconButton(
-                                                functools.partial(
-                                                    vistranslate_rank, self
-                                                ),
-                                                "fa.gear",
-                                            ),
-                                        ],
-                                        [
-                                            "显示翻译器名称",
-                                            D_getsimpleswitch(
-                                                globalconfig, "showfanyisource"
-                                            ),
-                                            "",
-                                            "显示错误信息",
-                                            D_getsimpleswitch(
-                                                globalconfig, "showtranexception"
-                                            ),
-                                            "",
-                                            "",
-                                            "收到翻译时才刷新",
-                                            D_getsimpleswitch(
-                                                globalconfig, "refresh_on_get_trans"
-                                            ),
-                                            "",
-                                        ],
-                                    ),
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="分词",
-                    type="grid",
-                    parent=self,
-                    name="fenyinsettings",
-                    enable=globalconfig["isshowrawtext"],
-                    grid=(
-                        [
-                            (
-                                dict(
-                                    title="注音",
-                                    type="grid",
-                                    grid=(
-                                        [
-                                            ("显示"),
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "isshowhira",
-                                            ),
-                                            "",
-                                            ("颜色"),
-                                            D_getcolorbutton(
-                                                globalconfig,
-                                                "jiamingcolor",
-                                                callback=lambda: selectcolor(
-                                                    self,
-                                                    globalconfig,
-                                                    "jiamingcolor",
-                                                    self.jiamingcolor_b,
-                                                ),
-                                                name="jiamingcolor_b",
-                                                parent=self,
-                                            ),
-                                            "",
-                                        ],
-                                        [
-                                            "字体缩放",
-                                            D_getspinbox(
-                                                0.05,
-                                                1,
-                                                globalconfig,
-                                                "kanarate",
-                                                double=True,
-                                                step=0.05,
-                                                dec=2,
-                                            ),
-                                            "",
-                                            "日语注音方案",
-                                            D_getsimplecombobox(
-                                                [
-                                                    "平假名",
-                                                    "片假名",
-                                                    "罗马音",
-                                                ],
-                                                globalconfig,
-                                                "hira_vis_type",
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                        [
-                            (
-                                dict(
-                                    type="grid",
-                                    grid=(
-                                        [
-                                            ("语法加亮"),
-                                            D_getsimpleswitch(
-                                                globalconfig, "show_fenci"
-                                            ),
-                                            "",
-                                            ("词性颜色"),
-                                            D_getIconButton(
-                                                callback=lambda: multicolorset(self),
-                                                icon="fa.gear",
-                                            ),
-                                            "",
-                                        ],
-                                        [
-                                            ("点击单词查词"),
-                                            (
-                                                D_getsimpleswitch(
-                                                    globalconfig, "usesearchword"
-                                                ),
-                                                1,
-                                            ),
-                                            "",
-                                            ("点击单词复制"),
-                                            (
-                                                D_getsimpleswitch(
-                                                    globalconfig, "usecopyword"
-                                                ),
-                                                1,
-                                            ),
-                                        ],
-                                        [
-                                            ("使用原型查询"),
-                                            (
-                                                D_getsimpleswitch(
-                                                    globalconfig, "usewordorigin"
-                                                ),
-                                                1,
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-    ]
-    return textgrid
-
-
 def xianshigrid_style(self):
     textgrid = [
         [
@@ -608,8 +378,7 @@ def xianshigrid_style(self):
                                                 ),
                                                 0,
                                             ),
-                                        ],
-                                        [
+                                            "",
                                             "字体大小",
                                             D_getspinbox(
                                                 1,
@@ -619,7 +388,8 @@ def xianshigrid_style(self):
                                                 double=True,
                                                 step=0.1,
                                             ),
-                                            "",
+                                        ],
+                                        [
                                             "行间距",
                                             D_getspinbox(
                                                 -100, 100, globalconfig, "extra_space"
@@ -627,8 +397,7 @@ def xianshigrid_style(self):
                                             "",
                                             "加粗",
                                             D_getsimpleswitch(globalconfig, "showbold"),
-                                        ],
-                                        [
+                                            "",
                                             "颜色",
                                             D_getcolorbutton(
                                                 globalconfig,
@@ -663,8 +432,7 @@ def xianshigrid_style(self):
                                                 ),
                                                 0,
                                             ),
-                                        ],
-                                        [
+                                            "",
                                             "字体大小",
                                             D_getspinbox(
                                                 1,
@@ -674,7 +442,8 @@ def xianshigrid_style(self):
                                                 double=True,
                                                 step=0.1,
                                             ),
-                                            "",
+                                        ],
+                                        [
                                             "行间距",
                                             D_getspinbox(
                                                 -100,
@@ -686,6 +455,156 @@ def xianshigrid_style(self):
                                             "加粗",
                                             D_getsimpleswitch(
                                                 globalconfig, "showbold_trans"
+                                            ),
+                                            "",
+                                            "",
+                                            "",
+                                        ],
+                                    ),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    title="内容",
+                    type="grid",
+                    grid=(
+                        [
+                            (
+                                dict(
+                                    title="",
+                                    type="grid",
+                                    grid=(
+                                        [
+                                            "居中显示",
+                                            D_getsimpleswitch(
+                                                globalconfig, "showatcenter"
+                                            ),
+                                            "",
+                                            "最长显示字数",
+                                            D_getspinbox(
+                                                0,
+                                                1000000,
+                                                globalconfig,
+                                                "maxoriginlength",
+                                            ),
+                                            "",
+                                            "收到翻译时才刷新",
+                                            D_getsimpleswitch(
+                                                globalconfig, "refresh_on_get_trans"
+                                            ),
+                                        ],
+                                        [
+                                            "显示原文",
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "isshowrawtext",
+                                                callback=lambda x: __changeuibuttonstate(
+                                                    self, x
+                                                ),
+                                                name="show_original_switch",
+                                                parent=self,
+                                            ),
+                                            "",
+                                            "显示翻译",
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "showfanyi",
+                                                callback=lambda x: __changeuibuttonstate2(
+                                                    self, x
+                                                ),
+                                                name="show_fany_switch",
+                                                parent=self,
+                                            ),
+                                            "",
+                                            "固定翻译显示顺序",
+                                            D_getsimpleswitch(
+                                                globalconfig, "fix_translate_rank"
+                                            ),
+                                            D_getIconButton(
+                                                functools.partial(
+                                                    vistranslate_rank, self
+                                                ),
+                                                "fa.gear",
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                        [
+                            (
+                                dict(
+                                    title="分词",
+                                    type="grid",
+                                    parent=self,
+                                    name="fenyinsettings",
+                                    enable=globalconfig["isshowrawtext"],
+                                    grid=(
+                                        [
+                                            ("显示注音"),
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "isshowhira",
+                                            ),
+                                            "",
+                                            ("颜色"),
+                                            D_getcolorbutton(
+                                                globalconfig,
+                                                "jiamingcolor",
+                                                callback=lambda: selectcolor(
+                                                    self,
+                                                    globalconfig,
+                                                    "jiamingcolor",
+                                                    self.jiamingcolor_b,
+                                                ),
+                                                name="jiamingcolor_b",
+                                                parent=self,
+                                            ),
+                                            "",
+                                            "字体缩放",
+                                            D_getspinbox(
+                                                0.05,
+                                                1,
+                                                globalconfig,
+                                                "kanarate",
+                                                double=True,
+                                                step=0.05,
+                                                dec=2,
+                                            ),
+                                        ],
+                                        [
+                                            "日语注音方案",
+                                            D_getsimplecombobox(
+                                                [
+                                                    "平假名",
+                                                    "片假名",
+                                                    "罗马音",
+                                                ],
+                                                globalconfig,
+                                                "hira_vis_type",
+                                            ),
+                                            "",
+                                            ("语法加亮"),
+                                            D_getsimpleswitch(
+                                                globalconfig, "show_fenci"
+                                            ),
+                                            "",
+                                            ("词性颜色"),
+                                            D_getIconButton(
+                                                callback=lambda: multicolorset(self),
+                                                icon="fa.gear",
                                             ),
                                         ],
                                     ),

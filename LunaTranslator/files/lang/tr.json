@@ -657,7 +657,6 @@
     "工具按钮": "Araç düğmeleri",
     "窗口特效": "Pencere etkileri",
     "网络请求": "Network request",
-    "网页显示": "Web sayfası gösterisi",
     "显示时间": "Display time",
     "不显示时间": "Zamanı gösterme",
     "过滤历史重复": "Tarihi çizgileri sil",
@@ -841,5 +840,7 @@
     "类型": "tür",
     "找不到文本": "Metin bulunamadı",
     "官方网站": "Resmi web sitesi",
-    "欢迎使用": "Kullanmaya hoş geldiniz."
+    "欢迎使用": "Kullanmaya hoş geldiniz.",
+    "显示注音": "Fonetik notasyonu göster",
+    "辞书显示顺序": "Lexicographical display order"
 }

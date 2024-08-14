@@ -207,17 +207,45 @@ def setTabcishu_l(self):
         [
             (
                 dict(
-                    title="显示",
+                    title="查词",
+                    type="grid",
                     grid=[
                         [
-                            "显示顺序",
+                            "查词",
                             D_getIconButton(
-                                functools.partial(vistranslate_rank, self), "fa.gear"
+                                lambda: gobject.baseobject.searchwordW.showsignal.emit(),
+                                "fa.search",
+                            ),
+                            "",
+                            "辞书显示顺序",
+                            D_getIconButton(
+                                functools.partial(vistranslate_rank, self),
+                                "fa.gear",
+                            ),
+                            "",
+                        ],
+                        [
+                            ("点击单词查词"),
+                            (
+                                D_getsimpleswitch(globalconfig, "usesearchword"),
+                                1,
+                            ),
+                            "",
+                            ("点击单词复制"),
+                            (
+                                D_getsimpleswitch(globalconfig, "usecopyword"),
+                                1,
+                            ),
+                            "",
+                            ("使用原型查询"),
+                            (
+                                D_getsimpleswitch(globalconfig, "usewordorigin"),
+                                1,
                             ),
                         ],
                         [
-                            "网页显示",
-                            functools.partial(_createseletengeinecombo_1, self),
+                            "显示引擎",
+                            (functools.partial(_createseletengeinecombo_1, self), 0),
                         ],
                     ],
                 ),

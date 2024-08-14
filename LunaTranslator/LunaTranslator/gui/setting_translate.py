@@ -431,9 +431,8 @@ def setTabTwo_lazy(self, basel):
             "最长翻译字数",
             D_getspinbox(0, 9999, globalconfig, "maxlength"),
             "",
-            "",
-            "",
-            "",
+            "显示翻译器名称",
+            D_getsimpleswitch(globalconfig, "showfanyisource"),
         ],
         [
             "使用翻译缓存",
@@ -443,6 +442,9 @@ def setTabTwo_lazy(self, basel):
             D_getspinbox(
                 0, 9999, globalconfig, "requestinterval", step=0.1, double=True
             ),
+            "",
+            "显示错误信息",
+            D_getsimpleswitch(globalconfig, "showtranexception"),
         ],
     ]
     online_reg_grid = [[("若有多个api key，用|将每个key连接后填入，即可轮流使用", -1)]]

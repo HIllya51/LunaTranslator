@@ -666,7 +666,6 @@
     "工具按钮": "Verktygsknapp",
     "窗口特效": "Fönstereffekter",
     "网络请求": "Nätverksbegäran",
-    "网页显示": "Webbsidvisning",
     "显示时间": "Visningstid",
     "不显示时间": "Visa inte tid",
     "过滤历史重复": "Filtrera bort dubbletthistorik",
@@ -841,5 +840,7 @@
     "类型": "typ",
     "找不到文本": "Text hittades inte",
     "官方网站": "Officiell webbplats",
-    "欢迎使用": "Välkommen att använda"
+    "欢迎使用": "Välkommen att använda",
+    "显示注音": "Visa fonetisk notation",
+    "辞书显示顺序": "Lexikografisk visningsordning"
 }

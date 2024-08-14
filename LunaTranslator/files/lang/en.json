@@ -656,7 +656,6 @@
     "工具按钮": "Tool Button",
     "窗口特效": "Window Effect",
     "网络请求": "Network Request",
-    "网页显示": "Webpage Display",
     "显示时间": "Display Time",
     "不显示时间": "Don't Display Time",
     "过滤历史重复": "Filter Historical Duplicates",
@@ -841,5 +840,7 @@
     "类型": "type",
     "找不到文本": "Text not found",
     "官方网站": "Official website",
-    "欢迎使用": "Welcome to use"
+    "欢迎使用": "Welcome to use",
+    "显示注音": "Display phonetic notation",
+    "辞书显示顺序": "Lexicographical display order"
 }

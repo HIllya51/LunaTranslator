@@ -657,7 +657,6 @@
     "工具按钮": "Nút công cụ",
     "窗口特效": "Hiệu ứng cửa sổ",
     "网络请求": "Yêu cầu mạng",
-    "网页显示": "Hiển thị trang web",
     "显示时间": "Thời gian hiển thị",
     "不显示时间": "Không hiển thị thời gian",
     "过滤历史重复": "Lọc lịch sử lặp lại",
@@ -841,5 +840,7 @@
     "类型": "Loại",
     "找不到文本": "Không tìm thấy văn bản",
     "官方网站": "Trang web chính thức",
-    "欢迎使用": "Chào mừng đến với"
+    "欢迎使用": "Chào mừng đến với",
+    "显示注音": "Hiện chú thích",
+    "辞书显示顺序": "Trình tự hiển thị từ điển"
 }

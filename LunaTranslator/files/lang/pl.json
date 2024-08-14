@@ -657,7 +657,6 @@
     "工具按钮": "Przyciski narzędziowe",
     "窗口特效": "Efekty okien",
     "网络请求": "Żądanie sieci",
-    "网页显示": "Wyświetlanie strony internetowej",
     "显示时间": "Czas wyświetlania",
     "不显示时间": "Nie wyświetlaj czasu",
     "过滤历史重复": "Filtruj duplikaty historyczne",
@@ -841,5 +840,7 @@
     "类型": "typ",
     "找不到文本": "Tekst nie znaleziony",
     "官方网站": "Oficjalna strona internetowa",
-    "欢迎使用": "Witamy w użyciu"
+    "欢迎使用": "Witamy w użyciu",
+    "显示注音": "Wyświetla notację fonetyczną",
+    "辞书显示顺序": "Kolejność wyświetlania leksygraficznego"
 }

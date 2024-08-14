@@ -666,7 +666,6 @@
     "工具按钮": "Werkzeugtaste",
     "窗口特效": "Fenstereffekte",
     "网络请求": "Netzwerkanfrage",
-    "网页显示": "Anzeige der Webseite",
     "显示时间": "Anzeigezeit",
     "不显示时间": "Zeit nicht anzeigen",
     "过滤历史重复": "Duplizierter Verlauf herausfiltern",
@@ -841,5 +840,7 @@
     "类型": "Typ",
     "找不到文本": "Text nicht gefunden",
     "官方网站": "Offizielle Website",
-    "欢迎使用": "Willkommen zur Nutzung"
+    "欢迎使用": "Willkommen zur Nutzung",
+    "显示注音": "Phonetische Notation anzeigen",
+    "辞书显示顺序": "Lexikographische Anzeigereihenfolge"
 }

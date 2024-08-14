@@ -666,7 +666,6 @@
     "工具按钮": "Botão da ferramenta",
     "窗口特效": "Efeitos de janela",
     "网络请求": "Pedido de rede",
-    "网页显示": "Apresentação da página Web",
     "显示时间": "Tempo de exibição",
     "不显示时间": "Não mostrar a hora",
     "过滤历史重复": "Filtrar o histórico duplicado",
@@ -841,5 +840,7 @@
     "类型": "tipo",
     "找不到文本": "Texto não encontrado",
     "官方网站": "Sítio Web oficial",
-    "欢迎使用": "Bem- vindo ao uso"
+    "欢迎使用": "Bem- vindo ao uso",
+    "显示注音": "Mostrar a notação fonética",
+    "辞书显示顺序": "Ordem de visualização lexicográfica"
 }

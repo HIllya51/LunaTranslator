@@ -666,7 +666,6 @@
     "工具按钮": "Gereedschapsknop",
     "窗口特效": "Venstereffecten",
     "网络请求": "Netwerkverzoek",
-    "网页显示": "Weergave van webpagina's",
     "显示时间": "Weergavetijd",
     "不显示时间": "Tijd niet weergeven",
     "过滤历史重复": "Dubbele geschiedenis filteren",
@@ -841,5 +840,7 @@
     "类型": "type",
     "找不到文本": "Tekst niet gevonden",
     "官方网站": "Officiële website",
-    "欢迎使用": "Welkom bij gebruik"
+    "欢迎使用": "Welkom bij gebruik",
+    "显示注音": "Toon fonetische notatie",
+    "辞书显示顺序": "Lexicografische weergavevolgorde"
 }
