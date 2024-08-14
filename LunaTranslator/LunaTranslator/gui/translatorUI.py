@@ -9,7 +9,6 @@ from myutils.config import (
     _TR,
     static_data,
     findgameuidofpath,
-    savehook_new_list,
 )
 from myutils.utils import getlanguse, dynamiclink
 from myutils.subproc import endsubprocs
@@ -1181,9 +1180,9 @@ class TranslatorWindow(resizableframeless):
         gobject.baseobject.textsource.hwnd = hwnd if pid != _pid else None
         if not globalconfig["sourcestatus2"]["texthook"]["use"]:
             gobject.baseobject.textsource.pids = [pid] if pid != _pid else None
-            gameuid = findgameuidofpath(getpidexe(pid), savehook_new_list)
+            gameuid = findgameuidofpath(getpidexe(pid))
             if gameuid:
-                gobject.baseobject.textsource.gameuid = gameuid
+                gobject.baseobject.textsource.gameuid = gameuid[0]
         self.isbindedwindow = pid != _pid
         self.refreshtoolicon()
 

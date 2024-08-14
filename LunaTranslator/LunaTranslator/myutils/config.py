@@ -338,32 +338,21 @@ class __uid2gamepath:
 uid2gamepath = __uid2gamepath()
 
 
-def findgameuidofpath(gamepath, targetlist=None, findall=False):
-    # 一般只在save_game_list里查找，用于从getpidexe获取uid
-    # 因为有可能有过去的不再使用的uid，发生碰撞。
-    # 只在添加游戏时，全面查找。
-    if not gamepath:
-        if findall:
-            return []
-        else:
-            return None
-    # 遍历的速度非常快，1w条的速度也就0.001x秒
-    # 但1w条数据时，load/dump的速度就有点慢了，能2秒多
-
-    checkin = targetlist
-    if checkin is None:
-        checkin = savehook_new_data.keys()
+def findgameuidofpath(gamepath, findall=False):
     collect = []
-    for uid in checkin:
-        if savehook_new_data[uid]["gamepath"] == gamepath:
-            if findall:
-                collect.append(uid)
-            else:
-                return uid
-    if findall:
-        return collect
-    else:
-        return None
+    for sub in savegametaged:
+        if sub is None:
+            use = savehook_new_list
+        else:
+            use = sub["games"]
+        for uid in use:
+            if savehook_new_data[uid]["gamepath"] == gamepath:
+                if findall:
+                    if uid not in collect:
+                        collect.append(uid)
+                else:
+                    return uid, use
+    return collect
 
 
 def syncconfig(config1, default, drop=False, deep=0, skipdict=False):

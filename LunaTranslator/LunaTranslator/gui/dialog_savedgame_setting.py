@@ -284,7 +284,6 @@ class dialog_setting_game_internal(QWidget):
         # 添加路径实际上也允许重复，只不过会去重。
         res = os.path.normpath(res)
         uid2gamepath[self.gameuid] = res
-        gobject.baseobject.playtimemanager.resetgameinternal(originpath, res)
         _icon = getExeIcon(res, cache=True)
 
         self.setWindowIcon(_icon)

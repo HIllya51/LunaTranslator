@@ -251,7 +251,7 @@ class dialog_savedgame_new(QWidget):
             menu.addAction(othersetting)
         action = menu.exec(self.mapToGlobal(p))
         if action == startgame:
-            startgamecheck(self, self.currentfocusuid)
+            startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
         elif action == gamesetting:
             self.showsettingdialog()
         elif action == addtolist:
@@ -396,16 +396,21 @@ class dialog_savedgame_new(QWidget):
         self.buttonlayout = buttonlayout
         self.savebutton = []
         self.simplebutton(
-            "开始游戏", True, lambda: startgamecheck(self, self.currentfocusuid), True
+            "开始游戏",
+            True,
+            lambda: startgamecheck(
+                self, getreflist(self.reftagid), self.currentfocusuid
+            ),
+            True,
         )
         self.simplebutton("游戏设置", True, self.showsettingdialog, False)
         self.simplebutton("删除游戏", True, self.clicked2, False)
         self.simplebutton("打开目录", True, self.clicked4, True)
 
         self.simplebutton("添加到列表", True, self.addtolist, False)
-        if globalconfig["startgamenototop"]:
-            self.simplebutton("左移", True, functools.partial(self.moverank, -1), False)
-            self.simplebutton("右移", True, functools.partial(self.moverank, 1), False)
+        # if globalconfig["startgamenototop"]:
+        self.simplebutton("左移", True, functools.partial(self.moverank, -1), False)
+        self.simplebutton("右移", True, functools.partial(self.moverank, 1), False)
         self.simplebutton("添加游戏", False, self.clicked3, 1)
         self.simplebutton("批量添加", False, self.clicked3_batch, 1)
         self.simplebutton("其他设置", False, lambda: dialog_syssetting(self), False)
@@ -494,7 +499,9 @@ class dialog_savedgame_new(QWidget):
         gameitem = ItemWidget(
             k, functools.partial(getpixfunction, k), savehook_new_data[k]["title"]
         )
-        gameitem.doubleclicked.connect(functools.partial(startgamecheck, self))
+        gameitem.doubleclicked.connect(
+            functools.partial(startgamecheck, self, getreflist(self.reftagid))
+        )
         gameitem.focuschanged.connect(self.itemfocuschanged)
         if focus:
             gameitem.click()

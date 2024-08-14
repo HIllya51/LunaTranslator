@@ -121,7 +121,9 @@ class dialog_savedgame_legacy(QWidget):
 
     def clicked(self):
         startgamecheck(
-            self, self.model.item(self.table.currentIndex().row(), 2).savetext
+            self,
+            savehook_new_list,
+            self.model.item(self.table.currentIndex().row(), 2).savetext,
         )
 
     def delayloadicon(self, k):

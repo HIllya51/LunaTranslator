@@ -6,6 +6,7 @@ from traceback import print_exc
 from myutils.config import (
     uid2gamepath,
     findgameuidofpath,
+    savehook_new_list,
     savehook_new_data,
 )
 from myutils.hwnd import getpidexe
@@ -23,46 +24,56 @@ class playtimemanager:
         )
         try:
             self.sqlsavegameinfo.execute(
-                "CREATE TABLE gameinternalid(gameinternalid INTEGER PRIMARY KEY AUTOINCREMENT,gamepath TEXT);"
-            )
-            self.sqlsavegameinfo.execute(
                 "CREATE TABLE traceplaytime_v4(id INTEGER PRIMARY KEY AUTOINCREMENT,gameinternalid INT,timestart BIGINT,timestop BIGINT);"
             )
+        except:
+            pass
+        try:
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE gameinternalid_v2(gameinternalid INTEGER PRIMARY KEY AUTOINCREMENT,gameuid TEXT);"
+            )
+            self.trycastoldversion()
         except:
             pass
 
         threading.Thread(target=self.checkgameplayingthread).start()
 
+    def trycastoldversion(self):
+        for _id, gamepath in self.sqlsavegameinfo.execute(
+            "SELECT * from gameinternalid"
+        ).fetchall():
+            gameuid = findgameuidofpath(gamepath)
+            if not gameuid:
+                continue
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO gameinternalid_v2 VALUES(?,?)", (_id, gameuid[0])
+            )
+        self.sqlsavegameinfo.commit()
+
     def querytraceplaytime_v4(self, gameuid):
-        gameinternalid = self.get_gameinternalid(uid2gamepath[gameuid])
+        gameinternalid = self.get_gameinternalid(gameuid)
         return self.sqlsavegameinfo.execute(
             "SELECT timestart,timestop FROM traceplaytime_v4 WHERE gameinternalid = ?",
             (gameinternalid,),
         ).fetchall()
 
-    def get_gameinternalid(self, gamepath):
+    def get_gameinternalid(self, gameuid):
         while True:
             ret = self.sqlsavegameinfo.execute(
-                "SELECT gameinternalid FROM gameinternalid WHERE gamepath = ?",
-                (gamepath,),
+                "SELECT * FROM gameinternalid_v2 WHERE gameuid = ?",
+                (gameuid,),
             ).fetchone()
             if ret is None:
                 self.sqlsavegameinfo.execute(
-                    "INSERT INTO gameinternalid VALUES(NULL,?)", (gamepath,)
+                    "INSERT INTO gameinternalid_v2 VALUES(NULL,?)", (gameuid,)
                 )
             else:
                 return ret[0]
 
-    def resetgameinternal(self, fr, to):
-        _id = self.get_gameinternalid(fr)
-        self.sqlsavegameinfo.execute(
-            "UPDATE gameinternalid SET gamepath = ? WHERE (gameinternalid = ?)",
-            (to, _id),
-        )
+    def traceplaytime(self, gameuid, start, end, new):
 
-    def traceplaytime(self, gamepath, start, end, new):
-
-        gameinternalid = self.get_gameinternalid(gamepath)
+        gameinternalid = self.get_gameinternalid(gameuid)
+        print(gameuid, gameinternalid)
         if new:
             self.sqlsavegameinfo.execute(
                 "INSERT INTO traceplaytime_v4 VALUES(NULL,?,?,?)",
@@ -88,15 +99,13 @@ class playtimemanager:
                 if not maybevmpaused:
                     savehook_new_data[gameuid]["statistic_playtime"] += _t - __t
                 if (not maybevmpaused) and (self.__currentexe == name_):
-                    self.traceplaytime(
-                        uid2gamepath[gameuid], self.__statistictime - 1, _t, False
-                    )
+                    self.traceplaytime(gameuid, self.__statistictime - 1, _t, False)
 
                 else:
                     self.__statistictime = time.time()
                     self.__currentexe = name_
                     self.traceplaytime(
-                        uid2gamepath[gameuid],
+                        gameuid,
                         self.__statistictime - 1,
                         self.__statistictime,
                         True,
@@ -115,11 +124,10 @@ class playtimemanager:
                 name_ = getpidexe(_pid)
                 if not name_:
                     return
-                uids = findgameuidofpath(name_, findall=True)
+                uid = findgameuidofpath(name_)
                 try:
-                    if len(uids):
-                        for uid in uids:
-                            isok(uid)
+                    if uid:
+                        isok(uid[0])
                     else:
                         self.__currentexe = None
                 except:

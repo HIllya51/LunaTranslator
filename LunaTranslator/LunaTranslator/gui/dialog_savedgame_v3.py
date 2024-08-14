@@ -733,10 +733,10 @@ class dialog_savedgame_v3(QWidget):
         if self.currentfocusuid:
             self.viewitem(k)
 
-    def delayitemcreater(self, k, select, reftagid):
+    def delayitemcreater(self, k, select, reftagid, reflist):
 
         item = clickitem(k)
-        item.doubleclicked.connect(functools.partial(startgamecheck, self))
+        item.doubleclicked.connect(functools.partial(startgamecheck, self, reflist))
         item.focuschanged.connect(functools.partial(self.itemfocuschanged, reftagid))
         if select:
             item.click()
@@ -751,6 +751,7 @@ class dialog_savedgame_v3(QWidget):
                 res,
                 True,
                 self.reftagid,
+                getreflist(self.reftagid),
             ),
             1 + globalconfig["dialog_savegame_layout"]["listitemheight"],
         )
@@ -785,7 +786,7 @@ class dialog_savedgame_v3(QWidget):
 
         action = menu.exec(QCursor.pos())
         if action == startgame:
-            startgamecheck(self, self.currentfocusuid)
+            startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
         elif addlist == action:
             _dia = Prompt_dialog(
                 self,
@@ -863,7 +864,9 @@ class dialog_savedgame_v3(QWidget):
         self.righttop = makesubtab_lazy()
         self.pixview = pixwrapper()
         self.pixview.startgame.connect(
-            lambda: startgamecheck(self, self.currentfocusuid)
+            lambda: startgamecheck(
+                self, getreflist(self.reftagid), self.currentfocusuid
+            )
         )
         _w = QWidget()
         rightlay = QVBoxLayout()
@@ -877,14 +880,19 @@ class dialog_savedgame_v3(QWidget):
         rightlay.addLayout(self.buttonlayout)
 
         self.simplebutton(
-            "开始游戏", True, lambda: startgamecheck(self, self.currentfocusuid), True
+            "开始游戏",
+            True,
+            lambda: startgamecheck(
+                self, getreflist(self.reftagid), self.currentfocusuid
+            ),
+            True,
         )
         self.simplebutton("删除游戏", True, self.shanchuyouxi, False)
         self.simplebutton("打开目录", True, self.clicked4, True)
         self.simplebutton("添加到列表", True, self.addtolist, False)
-        if globalconfig["startgamenototop"]:
-            self.simplebutton("上移", True, functools.partial(self.moverank, -1), False)
-            self.simplebutton("下移", True, functools.partial(self.moverank, 1), False)
+        # if globalconfig["startgamenototop"]:
+        self.simplebutton("上移", True, functools.partial(self.moverank, -1), False)
+        self.simplebutton("下移", True, functools.partial(self.moverank, 1), False)
         self.simplebutton("添加游戏", False, self.clicked3, 1)
         self.simplebutton("批量添加", False, self.clicked3_batch, 1)
         self.simplebutton(
@@ -923,7 +931,7 @@ class dialog_savedgame_v3(QWidget):
                     vis = False
                 group0.insertw(
                     rowreal,
-                    functools.partial(self.delayitemcreater, k, vis, tagid),
+                    functools.partial(self.delayitemcreater, k, vis, tagid, lst),
                     1 + globalconfig["dialog_savegame_layout"]["listitemheight"],
                 )
 
@@ -1084,7 +1092,7 @@ class dialog_savedgame_v3(QWidget):
         addgamesingle(self, self.addgame, getreflist(self.reftagid))
 
     def clicked(self):
-        startgamecheck(self, self.currentfocusuid)
+        startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
 
     def simplebutton(self, text, save, callback, exists):
         button5 = LPushButton(text)

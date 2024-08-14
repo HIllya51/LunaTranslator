@@ -657,13 +657,15 @@ class MAINUI:
 
         if not globalconfig["sourcestatus2"]["texthook"]["use"]:
             return
-        gameuid = find_or_create_uid(savehook_new_list, pexe, title)
-        if gameuid not in savehook_new_list:
-            savehook_new_list.insert(0, gameuid)
+        found = findgameuidofpath(pexe)
+        if found:
+            gameuid, reflist = found
         else:
-            if globalconfig["startgamenototop"] == False:
-                idx = savehook_new_list.index(gameuid)
-                savehook_new_list.insert(0, savehook_new_list.pop(idx))
+            gameuid = find_or_create_uid(savehook_new_list, pexe, title)
+            reflist = savehook_new_list
+        if globalconfig["startgamenototop"] == False:
+            idx = reflist.index(gameuid)
+            reflist.insert(0, reflist.pop(idx))
         self.textsource = texthook(pids, hwnd, pexe, gameuid, autostart=False)
         self.textsource.start()
 
@@ -881,17 +883,18 @@ class MAINUI:
                 name_ = getpidexe(pid)
                 if not name_:
                     return
-                uid = findgameuidofpath(name_, savehook_new_list)
-                if not uid:
+                found = findgameuidofpath(name_)
+                if not found:
                     return
+                uid, reflist = found
                 pids = ListProcess(name_)
                 if self.textsource is not None:
                     return
                 if not globalconfig["sourcestatus2"]["texthook"]["use"]:
                     return
                 if globalconfig["startgamenototop"] == False:
-                    idx = savehook_new_list.index(uid)
-                    savehook_new_list.insert(0, savehook_new_list.pop(idx))
+                    idx = reflist.index(uid)
+                    reflist.insert(0, reflist.pop(idx))
                 self.textsource = texthook(pids, hwnd, name_, uid, autostart=True)
                 self.textsource.start()
 

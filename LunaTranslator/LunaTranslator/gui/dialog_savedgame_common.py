@@ -434,14 +434,14 @@ def getpixfunction(kk, small=False):
     return _pix
 
 
-def startgamecheck(self, gameuid):
+def startgamecheck(self, reflist, gameuid):
     if not gameuid:
         return
     if not os.path.exists(uid2gamepath[gameuid]):
         return
     if globalconfig["startgamenototop"] == False:
-        idx = savehook_new_list.index(gameuid)
-        savehook_new_list.insert(0, savehook_new_list.pop(idx))
+        idx = reflist.index(gameuid)
+        reflist.insert(0, reflist.pop(idx))
     self.parent().parent().close()
     startgame(gameuid)
 
