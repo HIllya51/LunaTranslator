@@ -921,6 +921,7 @@ class MAINUI:
                 self.translation_ui.isbindedwindow = b
                 self.translation_ui.refreshtooliconsignal.emit()
 
+        @tryprint
         def __do():
             if not self.textsource:
                 setandrefresh(False)

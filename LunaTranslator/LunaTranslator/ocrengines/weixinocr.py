@@ -71,7 +71,7 @@ class OCR(baseocr):
     def end(self):
 
         wcocr_destroy = self.wcocr.wcocr_destroy
-        wcocr_destroy.argtypes = c_void_p
+        wcocr_destroy.argtypes = (c_void_p,)
         wcocr_destroy(self.pobj)
 
     def ocr(self, imagebinary):
