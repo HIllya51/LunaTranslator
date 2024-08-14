@@ -1929,6 +1929,8 @@ class listediter(LDialog):
             self.closecallback()
 
     def __cb(self, paths):
+        if isinstance(paths, str):
+            paths = [paths]
         for path in paths:
             self.internalrealname.insert(0, path)
             self.hcmodel.insertRow(0, [QStandardItem(path)])
