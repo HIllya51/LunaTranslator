@@ -322,7 +322,7 @@
         "limittextlength_use": false,
         "limittextlength_length": 40
     },
-    "requestinterval": 1,
+    "requestinterval": 0.5,
     "keepontop": true,
     "buttonsize": 20,
     "buttonsize2": 18,
