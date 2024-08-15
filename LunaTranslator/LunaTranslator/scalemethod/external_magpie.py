@@ -28,10 +28,7 @@ class Method(scalebase):
             if pid in self.injectedpids:
                 return
             dll = os.path.abspath("./files/plugins/hookmagpie.dll")
-            injecter = os.path.abspath(
-                "./files/plugins/shareddllproxy{}.exe".format("64")
-            )
-            injectdll([pid], injecter, dll)
+            injectdll([pid], 64, dll)
             self.injectedpids.add(pid)
 
     @threader

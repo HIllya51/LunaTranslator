@@ -152,7 +152,6 @@
     "必应": "Bing",
     "判定詞": "Copulas",
     "翻译器字体类型": "Translator Font Type",
-    "检测到游戏时自动开始": "Auto-Start On Game Detection",
     "去除重复行": "Filter Duplicate Lines",
     "字体大小": "Font Size",
     "最短翻译字数": "Minimum Translation Characters",
@@ -799,8 +798,6 @@
     "其他参数": "Other parameters",
     "延迟注入(ms)": "Delayed injection (ms)",
     "继承默认": "Inherit default",
-    "游戏ID": "Game ID",
-    "当前游戏ID": "Current game ID",
     "粘贴": "paste",
     "首尾": "End to end",
     "包含": "contain",
@@ -833,5 +830,7 @@
     "欢迎使用": "Welcome to use",
     "显示注音": "Display phonetic notation",
     "辞书显示顺序": "Lexicographical display order",
-    "背景窗口透明": "Background window transparent"
+    "背景窗口透明": "Background window transparent",
+    "文件翻译": "documentary translation",
+    "文件": "file"
 }

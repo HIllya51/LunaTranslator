@@ -70,7 +70,6 @@
     "西里尔(CP1251)": "Thiên thần (CP1251)",
     "拉丁(CP1252)": "Latina (CP1252)",
     "HOOK设置": "Thiết lập hook",
-    "检测到游戏时自动开始": "Tự động bắt đầu khi trò chơi được phát hiện",
     "已保存游戏": "Trò chơi đã lưu",
     "代码页": "Trang mã",
     "刷新延迟(ms)": "Độ trễ làm mới (ms)",
@@ -799,8 +798,6 @@
     "其他参数": "Tham số khác",
     "延迟注入(ms)": "Tiêm chậm (ms)",
     "继承默认": "Thừa kế mặc định",
-    "游戏ID": "ID trò chơi",
-    "当前游戏ID": "ID game hiện tại",
     "粘贴": "Dán",
     "首尾": "Trang chủ",
     "包含": "Bao gồm",
@@ -833,5 +830,7 @@
     "欢迎使用": "Chào mừng đến với",
     "显示注音": "Hiện chú thích",
     "辞书显示顺序": "Trình tự hiển thị từ điển",
-    "背景窗口透明": "Trong suốt cửa sổ nền"
+    "背景窗口透明": "Trong suốt cửa sổ nền",
+    "文件翻译": "Dịch tài liệu",
+    "文件": "Tài liệu"
 }

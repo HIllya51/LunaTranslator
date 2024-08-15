@@ -27,6 +27,7 @@ class baseocr(commonbase):
     ############################################################
     _globalconfig_key = "ocr"
     _setting_dict = ocrsetting
+    isocrtranslate = False
 
     def flatten4point(self, boxs):
         return [

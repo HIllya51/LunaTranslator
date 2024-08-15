@@ -14,11 +14,7 @@ from ctypes import (
     c_uint,
 )
 
-libcurl = CDLL(
-    os.path.join(
-        gobject.DLL3264path, ("./libcurl.dll", "./libcurl-x64.dll")[gobject.isbit64]
-    )
-)
+libcurl = CDLL(gobject.GetDllpath(("./libcurl.dll", "./libcurl-x64.dll")))
 
 CURL = c_void_p
 CURLSH = c_void_p

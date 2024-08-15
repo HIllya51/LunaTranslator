@@ -55,7 +55,6 @@
     "名詞": "Substantive",
     "读取剪贴板": "Zwischenablage lesen",
     "游戏": "Spiel",
-    "检测到游戏时自动开始": "Automatisch starten, wenn das Spiel erkannt wird",
     "插值算法": "Interpolationsalgorithmus",
     "显示帧率": "Framerate anzeigen",
     "最新版本": "Neueste Version",
@@ -799,8 +798,6 @@
     "其他参数": "Weitere Parameter",
     "延迟注入(ms)": "Verspätete Injektion (ms)",
     "继承默认": "Standard vererben",
-    "游戏ID": "Spiel-ID",
-    "当前游戏ID": "Aktuelle Spiel-ID",
     "粘贴": "Paste",
     "首尾": "Ende zu Ende",
     "包含": "enthalten",
@@ -833,5 +830,7 @@
     "欢迎使用": "Willkommen zur Nutzung",
     "显示注音": "Phonetische Notation anzeigen",
     "辞书显示顺序": "Lexikographische Anzeigereihenfolge",
-    "背景窗口透明": "Hintergrundfenster transparent"
+    "背景窗口透明": "Hintergrundfenster transparent",
+    "文件翻译": "Übersetzung von Dokumenten",
+    "文件": "Datei"
 }

@@ -26,8 +26,7 @@ from gui.usefulwidget import (
     LFocusCombo,
     getspinbox,
     LLabel,
-    FocusDoubleSpin,
-    FocusSpin,
+    getsmalllabel,
     SplitLine,
 )
 from gui.dynalang import LPushButton, LFormLayout
@@ -115,8 +114,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 keyx = "shadowR"
             widthline = __internal["argstype"].get(keyx, None)
             if widthline is not None:
-                __ = LLabel("x_字体大小_+")
-                __.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+                __ = getsmalllabel("x_字体大小_+")()
                 forml.addRow(
                     name,
                     getboxlayout(

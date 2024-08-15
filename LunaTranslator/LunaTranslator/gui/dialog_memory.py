@@ -1,7 +1,8 @@
 from qtsymbols import *
-import gobject
-from myutils.config import globalconfig
+import gobject, os
+from myutils.config import globalconfig, uid2gamepath
 from myutils.wrapper import Singleton_close
+from myutils.utils import getfilemd5
 from gui.usefulwidget import saveposwindow
 from gui.dynalang import LPushButton
 
@@ -19,7 +20,7 @@ class dialog_memory(saveposwindow):
         if res != "":
             self.showtext.insertHtml('<img src="{}">'.format(res))
 
-    def __init__(self, parent, gamemd5="0") -> None:
+    def __init__(self, parent) -> None:
 
         super().__init__(
             parent,
@@ -28,11 +29,19 @@ class dialog_memory(saveposwindow):
             poslist=globalconfig["memorydialoggeo"],
         )
         self.setWindowTitle("备忘录")
-        self.gamemd5 = gamemd5
         formLayout = QVBoxLayout()  #
         self.showtext = QTextEdit()
-        self.rwpath = gobject.getuserconfigdir("memory/{}.html".format(gamemd5))
+        self.rwpath = gobject.getuserconfigdir(
+            "memory/{}.html".format(gobject.baseobject.textsource.gameuid)
+        )
         try:
+            if os.path.exists(self.rwpath) == False:
+                md5 = getfilemd5(uid2gamepath[gobject.baseobject.textsource.gameuid])
+                f2 = gobject.getuserconfigdir("memory/{}.html".format(md5))
+                try:
+                    os.rename(f2, self.rwpath)
+                except:
+                    pass
             with open(self.rwpath, "r", encoding="utf8") as ff:
                 text = ff.read()
         except:

@@ -1,5 +1,5 @@
 import threading, gobject, queue
-import time, sqlite3, json, os
+import sqlite3, json
 from traceback import print_exc
 from myutils.config import globalconfig, savehook_new_data
 from myutils.utils import autosql
@@ -8,8 +8,13 @@ from myutils.utils import autosql
 class basetext:
     autofindpids = True
 
-    def __init__(self, md5, basename):
-        self.md5 = md5
+    def gettextonce(self):
+        return None
+
+    def init(self): ...
+    def end(self): ...
+
+    def __init__(self):
         self.pids = []
         self.gameuid = None
         #
@@ -17,14 +22,12 @@ class basetext:
         self.textgetmethod = gobject.baseobject.textgetmethod
 
         self.ending = False
-        self.sqlqueue = queue.Queue()
+        self.sqlqueue = None
+        self.init()
 
-        sqlfname_all_old = gobject.gettranslationrecorddir(
-            md5 + "_" + basename + ".pretrans_common.sqlite"
-        )
-        sqlfname_all = gobject.gettranslationrecorddir(basename + "_" + md5 + ".sqlite")
-        if os.path.exists(sqlfname_all_old):
-            sqlfname_all = sqlfname_all_old
+    def startsql(self, sqlfname_all):
+        self.sqlqueueput(None)
+        self.sqlqueue = queue.Queue()
         try:
 
             # self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False, isolation_level=None)
@@ -44,21 +47,34 @@ class basetext:
             except:
                 pass
         except:
-            print_exc
+            print_exc()
         threading.Thread(target=self.sqlitethread).start()
-        threading.Thread(target=self.gettextthread_).start()
 
-    def gettextthread(self):
-        return None
+    def dispatchtext(self, text):
+        if self.ending or not self.isautorunning:
+            return
+        if isinstance(text, tuple):
+            self.textgetmethod(*text)
+        else:
+            self.textgetmethod(text)
 
-    def gettextonce(self):
-        return None
+    def waitfortranslation(self, text):
+        resultwaitor = queue.Queue()
+        self.dispatchtext((text, True, resultwaitor.put, True))
+        text, info = resultwaitor.get(), 0
+        if info:
+            gobject.baseobject.displayinfomessage(text, info)
+        else:
+            return text
 
-    def end(self): ...
+    @property
+    def isautorunning(self):
+        return globalconfig["autorun"]
 
     ##################
     def endX(self):
         self.ending = True
+        self.sqlqueueput(None)
         self.end()
 
     def sqlqueueput(self, xx):
@@ -68,8 +84,10 @@ class basetext:
             pass
 
     def sqlitethread(self):
-        while True:
+        while not self.ending:
             task = self.sqlqueue.get()
+            if not task:
+                break
             try:
                 if len(task) == 2:
                     src, origin = task
@@ -104,7 +122,6 @@ class basetext:
                         "SELECT machineTrans FROM artificialtrans WHERE source = ?",
                         (src,),
                     ).fetchone()
-
                     ret = json.loads((ret[0]))
                     ret[clsname] = trans
                     ret = json.dumps(ret, ensure_ascii=False)
@@ -112,25 +129,6 @@ class basetext:
                         "UPDATE artificialtrans SET machineTrans = ? WHERE source = ?",
                         (ret, src),
                     )
-            except:
-                print_exc()
-
-    def gettextthread_(self):
-        while True:
-            if self.ending:
-                break
-            if globalconfig["autorun"] == False:
-                time.sleep(0.1)
-                continue
-
-            # print(globalconfig['autorun'])
-            try:
-                t = self.gettextthread()
-                if t and globalconfig["autorun"]:
-                    if isinstance(t, tuple):
-                        self.textgetmethod(*t)
-                    else:
-                        self.textgetmethod(t)
             except:
                 print_exc()
 

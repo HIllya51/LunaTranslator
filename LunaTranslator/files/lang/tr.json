@@ -70,7 +70,6 @@
     "西里尔(CP1251)": "Cyril (CP1251)",
     "拉丁(CP1252)": "Latin (CP1252)",
     "HOOK设置": "HOOK ayarları",
-    "检测到游戏时自动开始": "Bir oyun keşfettiğinde otomatik olarak başla",
     "已保存游戏": "Kaydedilmiş oyun",
     "代码页": "kod sayfası",
     "刷新延迟(ms)": "Yeniden geçirme (ms)",
@@ -799,8 +798,6 @@
     "其他参数": "Diğer parametreler",
     "延迟注入(ms)": "Uzak injeksiyon (ms)",
     "继承默认": "Ög- belgilengeni miras edin",
-    "游戏ID": "Oyun Kimliği",
-    "当前游戏ID": "Şimdiki oyun kimliği",
     "粘贴": "Yapıştır",
     "首尾": "Sonuna kadar",
     "包含": "içerir",
@@ -833,5 +830,7 @@
     "欢迎使用": "Kullanmaya hoş geldiniz.",
     "显示注音": "Fonetik notasyonu göster",
     "辞书显示顺序": "Lexicographical display order",
-    "背景窗口透明": "Arkaplan penceresi transparent"
+    "背景窗口透明": "Arkaplan penceresi transparent",
+    "文件翻译": "belgeler çeviri",
+    "文件": "dosya"
 }

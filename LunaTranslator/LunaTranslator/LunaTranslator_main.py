@@ -1,8 +1,25 @@
 import sys, os, io, time, threading, queue
+from ctypes import windll, wintypes
+
+
+def dopathexists(file):
+    if not file:
+        return False
+    if not file.strip():
+        return False
+    PathFileExists = windll.Shlwapi.PathFileExistsW
+    PathFileExists.argtypes = (wintypes.LPCWSTR,)
+    PathFileExists.restype = wintypes.BOOL
+    return bool(PathFileExists(os.path.abspath(file)))
+
+
+def overridepathexists():
+    # win7上，如果假如没有D盘，然后os.path.exists("D:/...")，就会弹窗说不存在D盘
+    os.path.exists = dopathexists
 
 
 def prepareqtenv():
-    import windows, gobject
+    import windows
 
     # win7 no vcredist2015
     windows.addenvpath("./LunaTranslator/runtime/")
@@ -10,14 +27,14 @@ def prepareqtenv():
 
     from qtsymbols import QApplication, isqt5, Qt, QFont, QLocale
 
-    gobject.overridepathexists()
+    overridepathexists()
 
     if isqt5:
         # 中文字符下不能自动加载
         QApplication.addLibraryPath("./LunaTranslator/runtime/PyQt5/Qt5/plugins")
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
-    if gobject.testuseqwebengine():
+    if os.path.exists("./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
         # maybe use qwebengine
 
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)

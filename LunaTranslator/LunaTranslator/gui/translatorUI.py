@@ -307,7 +307,7 @@ class TranslatorWindow(resizableframeless):
             name = kwargs.get("name", "")
             color = kwargs.get("color")
             res = kwargs.get("res")
-            onlytrans = kwargs.get("onlytrans")  # 仅翻译，不显示
+            onlytrans = kwargs.get("onlytrans", False)  # 仅翻译，不显示
             iter_context = kwargs.get("iter_context", (0, None))
             clear = kwargs.get("clear", False)
 
@@ -458,8 +458,11 @@ class TranslatorWindow(resizableframeless):
         @threader
         def ocroncefunction(rect):
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
-            text = ocr_run(img)
-            gobject.baseobject.textgetmethod(text, False)
+            text, infotype = ocr_run(img)
+            if infotype:
+                gobject.baseobject.displayinfomessage(text, infotype)
+            else:
+                gobject.baseobject.textgetmethod(text, False)
 
         rangeselct_function(ocroncefunction, False, False)
 
@@ -606,9 +609,7 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "memory",
-                lambda: dialog_memory(
-                    gobject.baseobject.commonstylebase, gobject.baseobject.currentmd5
-                ),
+                lambda: dialog_memory(gobject.baseobject.commonstylebase),
             ),
             (
                 "keepontop",

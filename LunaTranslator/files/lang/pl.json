@@ -70,7 +70,6 @@
     "西里尔(CP1251)": "Cyryl (CP1251)",
     "拉丁(CP1252)": "Łaciński (CP1252)",
     "HOOK设置": "Ustawienia HOOK",
-    "检测到游戏时自动开始": "Automatyczne uruchamianie po wykryciu gry",
     "已保存游戏": "Gra zapisana",
     "代码页": "strona kodowa",
     "刷新延迟(ms)": "Opóźnienie odświeżania (ms)",
@@ -799,8 +798,6 @@
     "其他参数": "Inne parametry",
     "延迟注入(ms)": "Opóźnione wstrzyknięcie (ms)",
     "继承默认": "Odziedziczyć domyślne",
-    "游戏ID": "Identyfikator gry",
-    "当前游戏ID": "Aktualny identyfikator gry",
     "粘贴": "pasta",
     "首尾": "Koniec do końca",
     "包含": "zawierać",
@@ -833,5 +830,7 @@
     "欢迎使用": "Witamy w użyciu",
     "显示注音": "Wyświetla notację fonetyczną",
     "辞书显示顺序": "Kolejność wyświetlania leksygraficznego",
-    "背景窗口透明": "Okno tła przejrzyste"
+    "背景窗口透明": "Okno tła przejrzyste",
+    "文件翻译": "tłumaczenie dokumentów",
+    "文件": "plik"
 }

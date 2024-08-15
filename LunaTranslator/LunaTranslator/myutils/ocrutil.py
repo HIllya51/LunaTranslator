@@ -105,33 +105,20 @@ def ocr_run(qimage: QImage):
     try:
         ocr_init()
         text = _ocrengine._private_ocr(image)
+        isocrtranslate = _ocrengine.isocrtranslate
+        if isocrtranslate:
+            return text, "<notrans>"
+        else:
+            return text, None
     except Exception as e:
         if isinstance(e, ArgsEmptyExc):
             msg = str(e)
         else:
             print_exc()
             msg = stringfyerror(e)
-        msg = (
-            "<msg_error_refresh>"
-            + (_TR(globalconfig["ocr"][_nowuseocrx]["name"]) if _nowuseocrx else "")
+        text = (
+            (_TR(globalconfig["ocr"][_nowuseocrx]["name"]) if _nowuseocrx else "")
             + " "
             + msg
         )
-        text = msg
-    return text
-
-
-def ocr_run_2(qimage: QImage):
-    text = ocr_run(qimage)
-
-    msgs = [
-        "<notrans>",
-        "<msg_info_not_refresh>",
-        "<msg_info_refresh>",
-        "<msg_error_not_refresh>",
-        "<msg_error_refresh>",
-    ]
-    for msg in msgs:
-        if text.startswith(msg):
-            return text[len(msg) :]
-    return text
+        return text, "<msg_error_refresh>"

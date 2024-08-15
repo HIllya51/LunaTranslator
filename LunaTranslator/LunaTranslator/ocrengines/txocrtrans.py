@@ -4,6 +4,8 @@ from ocrengines.baseocrclass import baseocr
 
 
 class OCR(baseocr):
+    isocrtranslate = True
+
     def langmap(self):
         # https://cloud.tencent.com/document/product/551/17232
         return {"cht": "zh-TW"}
@@ -126,6 +128,6 @@ class OCR(baseocr):
             texts = [
                 _["TargetText"] for _ in r.json()["Response"]["ImageRecord"]["Value"]
             ]
-            return "<notrans>" + self.common_solve_text_orientation(boxs, texts)
+            return self.common_solve_text_orientation(boxs, texts)
         except:
             raise Exception(r.json())

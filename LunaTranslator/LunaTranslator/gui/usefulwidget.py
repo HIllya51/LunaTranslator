@@ -649,10 +649,10 @@ class resizableframeless(saveposwindow):
         w = self.width()
         h = self.height()
         if self._move_drag == False:
-            self._right_rect = QRect(w - pad, pad, 2 * pad, h)
-            self._left_rect = QRect(-pad, pad, 2 * pad, h)
-            self._bottom_rect = QRect(pad, h - pad, w, 2 * pad)
-            self._top_rect = QRect(pad, -pad, w, 2 * pad)
+            self._right_rect = QRect(w - pad, pad, 2 * pad, h - 2 * pad)
+            self._left_rect = QRect(-pad, pad, 2 * pad, h - 2 * pad)
+            self._bottom_rect = QRect(pad, h - pad, w - 2 * pad, 2 * pad)
+            self._top_rect = QRect(pad, -pad, w - 2 * pad, 2 * pad)
             self._corner_youxia = QRect(w - pad, h - pad, 2 * pad, 2 * pad)
             self._corner_zuoxia = QRect(-pad, h - pad, 2 * pad, 2 * pad)
             self._corner_youshang = QRect(w - pad, -pad, 2 * pad, 2 * pad)
@@ -693,7 +693,7 @@ class resizableframeless(saveposwindow):
         self.setCursor(Qt.CursorShape.ArrowCursor)
         return super().leaveEvent(a0)
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event: QMouseEvent):
 
         pos = event.pos()
         gpos = QCursor.pos()
@@ -740,7 +740,7 @@ class resizableframeless(saveposwindow):
                 self.height(),
             )
         elif self._bottom_drag:
-            self.resize(self.width(), event.pos().y())
+            self.resize(self.width(), pos.y())
         elif self._top_drag:
             self.setGeometry(
                 self.x(),
@@ -753,7 +753,7 @@ class resizableframeless(saveposwindow):
                 (gpos - self.startxp).x(),
                 self.y(),
                 self.startw - (gpos.x() - self.startx),
-                event.pos().y(),
+                pos.y(),
             )
         elif self._corner_drag_youxia:
             self.resize(pos.x(), pos.y())
@@ -991,6 +991,16 @@ def getsimpleswitch(
     elif name:
         setattr(parent, name, b)
     return b
+
+
+def __getsmalllabel(text):
+    __ = LLabel(text)
+    __.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+    return __
+
+
+def getsmalllabel(text):
+    return lambda: __getsmalllabel(text)
 
 
 def D_getsimpleswitch(

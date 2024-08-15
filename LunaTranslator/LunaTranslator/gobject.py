@@ -1,16 +1,11 @@
-baseobject = None
-global_dialog_savedgame_new = None
-global_dialog_setting_game = None
-import io, sys, platform, os
-from ctypes import windll, wintypes
-
-isbit64 = platform.architecture()[0] == "64bit"
-DLL3264path = os.path.abspath("files/plugins/DLL" + ("32", "64")[isbit64])
+import platform, os
 
 
 def GetDllpath(_, base=None):
+    isbit64 = platform.architecture()[0] == "64bit"
+
     if base is None:
-        base = DLL3264path
+        base = os.path.abspath("files/plugins/DLL" + ("32", "64")[isbit64])
     if isinstance(_, str):
         return os.path.join(base, _)
     elif isinstance(_, (list, tuple)):
@@ -49,24 +44,12 @@ def gettempdir(filename):
     return tgt
 
 
-def dopathexists(file):
-    if not file:
-        return False
-    if not file.strip():
-        return False
-    PathFileExists = windll.Shlwapi.PathFileExistsW
-    PathFileExists.argtypes = (wintypes.LPCWSTR,)
-    PathFileExists.restype = wintypes.BOOL
-    return bool(PathFileExists(os.path.abspath(file)))
-
-
-def overridepathexists():
-    # win7上，如果假如没有D盘，然后os.path.exists("D:/...")，就会弹窗说不存在D盘
-    os.path.exists = dopathexists
-
-
 def testuseqwebengine():
     return os.path.exists("./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll")
 
+from LunaTranslator import MAINUI
 
+baseobject: MAINUI = None
+global_dialog_savedgame_new = None
+global_dialog_setting_game = None
 serverindex = 0

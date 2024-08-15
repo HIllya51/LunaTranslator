@@ -1,14 +1,15 @@
 from qtsymbols import *
 import os, functools
 import gobject
-from myutils.utils import splitocrtypes, translate_exits
-from myutils.config import globalconfig, static_data
+from myutils.utils import splitocrtypes
+from myutils.config import globalconfig
 from gui.inputdialog import (
     autoinitdialog_items,
     noundictconfigdialog1,
     autoinitdialog,
     yuyinzhidingsetting,
 )
+from gui.setting_textinput import loadvalidtss
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -128,13 +129,7 @@ def getttsgrid(self, names):
 def setTab5lz(self):
     grids = []
     offline, online = splitocrtypes(globalconfig["reader"])
-    alltransvis = []
-    alltrans = []
-    for x in globalconfig["fanyi"]:
-        if not translate_exits(x):
-            continue
-        alltransvis.append(globalconfig["fanyi"][x]["name"])
-        alltrans.append(x)
+    alltrans, alltransvis=loadvalidtss()
     grids += [
         [
             (

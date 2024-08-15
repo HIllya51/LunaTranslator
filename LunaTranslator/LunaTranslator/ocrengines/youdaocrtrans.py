@@ -6,6 +6,8 @@ from ocrengines.baseocrclass import baseocr
 
 
 class OCR(baseocr):
+    isocrtranslate = True
+
     def langmap(self):
         return {"zh": "zh-CHS", "cht": "zh-CHT"}
 
@@ -38,9 +40,7 @@ class OCR(baseocr):
         )
 
         try:
-            return "<notrans>" + self.space.join(
-                [l["tranContent"] for l in response.json()["lines"]]
-            )
+            return self.space.join([l["tranContent"] for l in response.json()["lines"]])
         except:
             raise Exception(response.text)
 
@@ -48,7 +48,6 @@ class OCR(baseocr):
 
         self.checkempty(["APP_KEY", "APP_SECRET"])
         APP_KEY, APP_SECRET = self.config["APP_KEY"], self.config["APP_SECRET"]
- 
 
         """
         添加鉴权相关参数 -
@@ -151,7 +150,7 @@ class OCR(baseocr):
                 [int(_) for _ in l["boundingBox"].split(",")]
                 for l in response.json()["resRegions"]
             ]
-            return "<notrans>" + self.common_solve_text_orientation(box, text)
+            return self.common_solve_text_orientation(box, text)
         except:
             raise Exception(response.text)
 

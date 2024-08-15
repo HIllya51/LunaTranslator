@@ -42,7 +42,6 @@ defaultpost = tryreadconfig2("postprocessconfig.json")
 defaultglobalconfig = tryreadconfig2("config.json")
 defaulterrorfix = tryreadconfig2("transerrorfixdictconfig.json")
 dfmagpie_config = tryreadconfig2("magpie_config.json")
-defaultnoun = tryreadconfig2("noundictconfig.json")
 translatordfsetting = tryreadconfig2("translatorsetting.json")
 ocrdfsetting = tryreadconfig2("ocrsetting.json")
 ocrerrorfixdefault = tryreadconfig2("ocrerrorfix.json")
@@ -51,7 +50,7 @@ ocrerrorfix = tryreadconfig("ocrerrorfix.json")
 globalconfig = tryreadconfig("config.json")
 magpie_config = tryreadconfig("magpie_config.json")
 postprocessconfig = tryreadconfig("postprocessconfig.json")
-noundictconfig = tryreadconfig("noundictconfig.json")
+
 transerrorfixdictconfig = tryreadconfig("transerrorfixdictconfig.json")
 _savehook = tryreadconfig("savegamedata_5.3.1.json")
 if _savehook:
@@ -404,7 +403,6 @@ if True:  # transerrorfixdictconfig cast v1 to v2:
         transerrorfixdictconfig.pop("dict")
 
 
-syncconfig(noundictconfig, defaultnoun)
 syncconfig(magpie_config, dfmagpie_config, skipdict=True)
 syncconfig(translatorsetting, translatordfsetting)
 
@@ -417,6 +415,17 @@ if ocrerrorfix == {}:
         ocrerrorfix = ocrerrorfixdefault
 syncconfig(postprocessconfig, defaultpost, deep=3)
 
+
+if "noundictconfig" not in globalconfig:
+
+    noundictconfig = tryreadconfig("noundictconfig.json", {"dict": {}})
+    globalconfig["noundictconfig"] = []
+    for k, v in noundictconfig["dict"].items():
+        if len(v) % 2 != 0:
+            continue
+        for i in range(len(v) // 2):
+            md5, ts = v[i * 2], v[i * 2 + 1]
+            globalconfig["noundictconfig"].append((k, ts))
 
 if needcast:
     ifuse = False
@@ -649,7 +658,6 @@ def saveallconfig():
     safesave("./userconfig/magpie_config.json", magpie_config)
     safesave("./userconfig/postprocessconfig.json", postprocessconfig)
     safesave("./userconfig/transerrorfixdictconfig.json", transerrorfixdictconfig)
-    safesave("./userconfig/noundictconfig.json", noundictconfig)
     safesave("./userconfig/translatorsetting.json", translatorsetting)
     safesave("./userconfig/ocrerrorfix.json", ocrerrorfix)
     safesave("./userconfig/ocrsetting.json", ocrsetting)

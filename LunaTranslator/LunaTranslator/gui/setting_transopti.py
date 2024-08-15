@@ -24,13 +24,13 @@ from gui.inputdialog import (
 )
 
 
-def delaysetcomparetext(self, s):
+def delaysetcomparetext(self, s, x):
     try:
         self.__fromtext.setPlainText(s)
-        self.__totext.setPlainText(POSTSOLVE(s))
+        self.__totext.setPlainText(x)
     except:
         self.__fromtext_cache = s
-        self.__totext_cache = POSTSOLVE(s)
+        self.__totext_cache = x
 
 
 def getcomparelayout(self):

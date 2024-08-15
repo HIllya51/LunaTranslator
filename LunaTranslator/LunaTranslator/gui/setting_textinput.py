@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os, json
 import windows, gobject
-from myutils.utils import getfilemd5, translate_exits
+from myutils.utils import translate_exits
 from myutils.config import (
     globalconfig,
     _TR,
@@ -10,6 +10,7 @@ from myutils.config import (
     savehook_new_list,
     static_data,
 )
+from traceback import print_exc
 from gui.pretransfile import sqlite2json2
 from gui.codeacceptdialog import codeacceptdialog
 from gui.setting_textinput_ocr import getocrgrid
@@ -28,8 +29,9 @@ from gui.usefulwidget import (
     makescrollgrid,
     FocusCombo,
     FocusFontCombo,
+    getsmalllabel,
 )
-from gui.dynalang import LPushButton, LDialog, LFormLayout
+from gui.dynalang import LDialog, LFormLayout
 
 
 def __create(self):
@@ -63,10 +65,6 @@ def gethookgrid(self):
             functools.partial(__create2, self),
         ],
         [],
-        [
-            "检测到游戏时自动开始",
-            (D_getsimpleswitch(globalconfig, "autostarthook"), 1),
-        ],
         [
             "已保存游戏",
             (
@@ -240,27 +238,22 @@ def exportchspatch(self):
             return
         exe = os.path.normpath(exe)
     doexportchspatch(exe, gameuid)
-    md5 = getfilemd5(exe)
-    name = os.path.basename(exe).replace("." + os.path.basename(exe).split(".")[-1], "")
-    sqlfname_all = gobject.gettranslationrecorddir(name + "_" + md5 + ".sqlite")
-    if os.path.exists(sqlfname_all) == False:
-        f = QFileDialog.getOpenFileName(
-            self,
-            caption=_TR("选择预翻译文件"),
-            directory="translation_record",
-            filter="*.sqlite",
-        )
-        sqlfname_all = f[0]
-    if os.path.exists(sqlfname_all):
-        sqlite2json2(
-            self,
-            sqlfname_all,
-            os.path.join(os.path.dirname(exe), "translation.json"),
-            existsmerge=True,
-        )
-    else:
-        with open(os.path.join(os.path.dirname(exe), "translation.json"), "w") as ff:
-            ff.write("{}")
+
+    f = QFileDialog.getOpenFileName(
+        self,
+        caption=_TR("选择预翻译文件"),
+        directory="translation_record",
+        filter="*.sqlite",
+    )
+    sqlfname_all = f[0]
+    if not sqlfname_all:
+        return
+    sqlite2json2(
+        self,
+        sqlfname_all,
+        os.path.join(os.path.dirname(exe), "translation.json"),
+        existsmerge=True,
+    )
 
 
 def creategamefont_comboBox():
@@ -279,7 +272,8 @@ def creategamefont_comboBox():
     return gamefont_comboBox
 
 
-def gethookembedgrid(self):
+def loadvalidtss():
+
     alltransvis = []
     alltrans = []
     for x in globalconfig["fanyi"]:
@@ -287,6 +281,11 @@ def gethookembedgrid(self):
             continue
         alltransvis.append(globalconfig["fanyi"][x]["name"])
         alltrans.append(x)
+    return alltrans, alltransvis
+
+
+def gethookembedgrid(self):
+    alltrans, alltransvis = loadvalidtss()
     grids = [
         [
             "导出翻译补丁",
@@ -403,6 +402,76 @@ def getTabclip(self):
     return grids
 
 
+def selectfile(self):
+    f = QFileDialog.getOpenFileName(
+        options=QFileDialog.Option.DontResolveSymlinks,
+        filter="text file (*.json *.txt)",
+    )
+
+    res = f[0]
+    if res == "":
+        return
+    callback = functools.partial(
+        yuitsu_switch,
+        self,
+        globalconfig["sourcestatus2"],
+        "sourceswitchs",
+        "filetrans",
+        gobject.baseobject.starttextsource,
+    )
+
+    try:
+        callback(True)
+        gobject.baseobject.textsource.starttranslatefile(res)
+    except:
+        print_exc()
+
+
+def createdownloadprogress(self):
+
+    downloadprogress = QProgressBar()
+
+    downloadprogress.setRange(0, 10000)
+
+    downloadprogress.setAlignment(
+        Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+    )
+
+    def __set(_d, text, i):
+        _d.setValue(i)
+        _d.setFormat(text)
+
+    self.progresssignal2.connect(functools.partial(__set, downloadprogress))
+    self.progresssignal3.connect(lambda x: downloadprogress.setRange(0, x))
+    return downloadprogress
+
+
+def filetranslate(self):
+    alltrans, alltransvis = loadvalidtss()
+    grids = [
+        [
+            "文件",
+            D_getIconButton(functools.partial(selectfile, self), icon="fa.folder-open"),
+        ],
+        [(functools.partial(createdownloadprogress, self), 0)],
+        [],
+        [
+            "使用最快翻译而非指定翻译器",
+            D_getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"),
+            (
+                D_getsimplecombobox(
+                    alltransvis,
+                    globalconfig["embedded"],
+                    "translator_2",
+                    internal=alltrans,
+                ),
+                2,
+            ),
+        ],
+    ]
+    return grids
+
+
 def outputgrid(self):
 
     grids = [
@@ -464,61 +533,35 @@ def outputgrid(self):
 
 
 def setTabOne_lazy(self, basel):
+    _rank = [
+        ("texthook", "HOOK"),
+        ("ocr", "OCR"),
+        ("copy", "剪贴板"),
+    ]
+    __ = []
+    for key, name in _rank:
+        __.append(getsmalllabel(name))
+        __.append(
+            D_getsimpleswitch(
+                globalconfig["sourcestatus2"][key],
+                "use",
+                name=key,
+                parent=self,
+                callback=functools.partial(
+                    yuitsu_switch,
+                    self,
+                    globalconfig["sourcestatus2"],
+                    "sourceswitchs",
+                    key,
+                    gobject.baseobject.starttextsource,
+                ),
+                pair="sourceswitchs",
+            )
+        )
+        __.append("")
     tab1grids = [
         [("选择文本输入源", -1)],
-        [
-            "HOOK",
-            D_getsimpleswitch(
-                globalconfig["sourcestatus2"]["texthook"],
-                "use",
-                name="texthook",
-                parent=self,
-                callback=functools.partial(
-                    yuitsu_switch,
-                    self,
-                    globalconfig["sourcestatus2"],
-                    "sourceswitchs",
-                    "texthook",
-                    gobject.baseobject.starttextsource,
-                ),
-                pair="sourceswitchs",
-            ),
-            "",
-            "OCR",
-            D_getsimpleswitch(
-                globalconfig["sourcestatus2"]["ocr"],
-                "use",
-                name="ocr",
-                parent=self,
-                callback=functools.partial(
-                    yuitsu_switch,
-                    self,
-                    globalconfig["sourcestatus2"],
-                    "sourceswitchs",
-                    "ocr",
-                    gobject.baseobject.starttextsource,
-                ),
-                pair="sourceswitchs",
-            ),
-            "",
-            "剪贴板",
-            D_getsimpleswitch(
-                globalconfig["sourcestatus2"]["copy"],
-                "use",
-                name="copy",
-                parent=self,
-                callback=functools.partial(
-                    yuitsu_switch,
-                    self,
-                    globalconfig["sourcestatus2"],
-                    "sourceswitchs",
-                    "copy",
-                    gobject.baseobject.starttextsource,
-                ),
-                pair="sourceswitchs",
-            ),
-            "",
-        ],
+        __,
     ]
 
     vw, vl = getvboxwidget()
@@ -526,13 +569,14 @@ def setTabOne_lazy(self, basel):
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出"],
+        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出", "文件翻译"],
         [
             lambda l: makescrollgrid(gethookgrid(self), l),
             lambda l: makescrollgrid(getocrgrid(self), l),
             lambda l: makescrollgrid(getTabclip(self), l),
             lambda l: makescrollgrid(gethookembedgrid(self), l),
             lambda l: makescrollgrid(outputgrid(self), l),
+            lambda l: makescrollgrid(filetranslate(self), l),
         ],
         delay=True,
     )

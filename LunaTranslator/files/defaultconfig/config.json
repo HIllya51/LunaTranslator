@@ -1,7 +1,5 @@
 {
     "lastapppath": null,
-    "loadbalance": false,
-    "loadbalance_oncenum": 1,
     "ocrafterrangeselect": true,
     "excule_from_self": true,
     "excule_from_exe": [],
@@ -1379,14 +1377,17 @@
     },
     "allowmulti": true,
     "sourcestatus2": {
-        "copy": {
-            "use": false
+        "texthook": {
+            "use": true
         },
         "ocr": {
             "use": false
         },
-        "texthook": {
-            "use": true
+        "copy": {
+            "use": false
+        },
+        "filetrans":{
+            "use": false
         }
     },
     "verticalocr": 2,
@@ -1966,7 +1967,7 @@
     "mustocr_interval": 5,
     "ocrmininterval": 1,
     "selectable": false,
-    "autoupdate": false,
+    "autoupdate": true,
     "gongxiangcishu": {
         "use": false,
         "path": ""

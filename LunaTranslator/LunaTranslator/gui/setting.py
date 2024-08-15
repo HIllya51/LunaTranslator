@@ -68,7 +68,9 @@ class Setting(closeashidewindow):
     voicelistsignal = pyqtSignal(object)
     versiontextsignal = pyqtSignal(str)
     progresssignal = pyqtSignal(str, int)
-    showandsolvesig = pyqtSignal(str)
+    progresssignal2 = pyqtSignal(str, int)
+    progresssignal3 = pyqtSignal(int)
+    showandsolvesig = pyqtSignal(str, str)
 
     def __init__(self, parent):
         super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])

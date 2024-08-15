@@ -55,7 +55,6 @@
     "名詞": "zelfstandige naamwoorden",
     "读取剪贴板": "Klembord lezen",
     "游戏": "spel",
-    "检测到游戏时自动开始": "Automatisch starten wanneer het spel wordt gedetecteerd",
     "插值算法": "Interpolatiealgoritme",
     "显示帧率": "Framesnelheid weergeven",
     "最新版本": "Laatste versie",
@@ -799,8 +798,6 @@
     "其他参数": "Andere parameters",
     "延迟注入(ms)": "Vertraagde injectie (ms)",
     "继承默认": "Standaard overnemen",
-    "游戏ID": "Game ID",
-    "当前游戏ID": "Huidige game-ID",
     "粘贴": "plakken",
     "首尾": "End to end",
     "包含": "bevatten",
@@ -833,5 +830,7 @@
     "欢迎使用": "Welkom bij gebruik",
     "显示注音": "Toon fonetische notatie",
     "辞书显示顺序": "Lexicografische weergavevolgorde",
-    "背景窗口透明": "Achtergrondvenster transparant"
+    "背景窗口透明": "Achtergrondvenster transparant",
+    "文件翻译": "documentaire vertaling",
+    "文件": "bestand"
 }

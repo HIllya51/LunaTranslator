@@ -182,7 +182,9 @@ def getExeIcon(name, icon=True, cache=False):
         return pixmap
 
 
-def injectdll(injectpids, injecter, dll):
+def injectdll(injectpids, bit, dll):
+
+    injecter = os.path.abspath(f"./files/plugins/shareddllproxy{bit}.exe")
     pid = " ".join([str(_) for _ in injectpids])
     for _ in (0,):
         if not test_injectable(injectpids):

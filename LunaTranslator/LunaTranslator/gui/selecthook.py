@@ -383,7 +383,6 @@ class hookselect(closeashidewindow):
     addnewhooksignal = pyqtSignal(tuple, bool)
     getnewsentencesignal = pyqtSignal(str)
     sysmessagesignal = pyqtSignal(str)
-    changeprocessclearsignal = pyqtSignal()
     removehooksignal = pyqtSignal(tuple)
     getfoundhooksignal = pyqtSignal(dict)
     update_item_new_line = pyqtSignal(tuple, str)
@@ -393,7 +392,6 @@ class hookselect(closeashidewindow):
         self.setupUi()
         self.save = []
         self.hidesearchhookbuttons()
-        self.changeprocessclearsignal.connect(self.changeprocessclear)
         self.removehooksignal.connect(self.removehook)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)
@@ -401,6 +399,7 @@ class hookselect(closeashidewindow):
         self.update_item_new_line.connect(self.update_item_new_line_function)
         self.getfoundhooksignal.connect(self.getfoundhook)
         self.setWindowTitle("选择文本")
+        self.changeprocessclear()
 
     def update_item_new_line_function(self, hook, output):
         if hook not in self.save:

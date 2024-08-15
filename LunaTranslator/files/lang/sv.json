@@ -55,7 +55,6 @@
     "名詞": "Substantiv",
     "读取剪贴板": "Läs urklipp",
     "游戏": "spel",
-    "检测到游戏时自动开始": "Starta automatiskt när spelet upptäcks",
     "插值算法": "Interpoleringsalgoritm",
     "显示帧率": "Visa bildhastighet",
     "最新版本": "Senaste versionen",
@@ -799,8 +798,6 @@
     "其他参数": "Andra parametrar",
     "延迟注入(ms)": "Fördröjd injektion (ms)",
     "继承默认": "Arv förval",
-    "游戏ID": "Spelid",
-    "当前游戏ID": "Aktuellt spelID",
     "粘贴": "klistra",
     "首尾": "Slut till slut",
     "包含": "innehåller",
@@ -833,5 +830,7 @@
     "欢迎使用": "Välkommen att använda",
     "显示注音": "Visa fonetisk notation",
     "辞书显示顺序": "Lexikografisk visningsordning",
-    "背景窗口透明": "Bakgrundsfönster genomskinligt"
+    "背景窗口透明": "Bakgrundsfönster genomskinligt",
+    "文件翻译": "dokumentär översättning",
+    "文件": "fil"
 }

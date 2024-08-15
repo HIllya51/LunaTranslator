@@ -55,7 +55,6 @@
     "名詞": "Podstatná jména",
     "读取剪贴板": "Číst schránku",
     "游戏": "hra",
-    "检测到游戏时自动开始": "Automaticky spustit při detekci hry",
     "插值算法": "Interpolační algoritmus",
     "显示帧率": "Zobrazit snímkovou frekvenci",
     "最新版本": "Nejnovější verze",
@@ -799,8 +798,6 @@
     "其他参数": "Další parametry",
     "延迟注入(ms)": "Zpožděná injekce (ms)",
     "继承默认": "Zdědit výchozí",
-    "游戏ID": "ID hry",
-    "当前游戏ID": "Aktuální ID hry",
     "粘贴": "pasta",
     "首尾": "Konec k konci",
     "包含": "obsahovat",
@@ -833,5 +830,7 @@
     "欢迎使用": "Vítejte v použití",
     "显示注音": "Zobrazit fonetickou zápis",
     "辞书显示顺序": "Lexikografické pořadí zobrazení",
-    "背景窗口透明": "Okno pozadí transparentní"
+    "背景窗口透明": "Okno pozadí transparentní",
+    "文件翻译": "dokumentární překlad",
+    "文件": "soubor"
 }

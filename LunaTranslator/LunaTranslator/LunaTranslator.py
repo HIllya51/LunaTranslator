@@ -27,10 +27,12 @@ from myutils.utils import (
 )
 from myutils.wrapper import threader, tryprint
 from gui.showword import searchwordW
-from myutils.hwnd import getpidexe, ListProcess, getExeIcon, getcurrexe
+from myutils.hwnd import getpidexe, getExeIcon, getcurrexe
 from textsource.copyboard import copyboard
 from textsource.texthook import texthook
 from textsource.ocrtext import ocrtext
+from textsource.textsourcebase import basetext
+from textsource.filetrans import filetrans
 from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
 import zhconv, functools
@@ -41,7 +43,6 @@ from functools import partial
 from gui.setting import Setting
 from gui.attachprocessdialog import AttachProcessDialog
 import windows
-import gobject
 import winsharedutils
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
@@ -51,19 +52,10 @@ from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
 
 
-class commonstylebase(QWidget):
-    setstylesheetsignal = pyqtSignal()
-
-    def __init__(self, parent) -> None:
-        super().__init__(parent)
-        self.setstylesheetsignal.connect(gobject.baseobject.setcommonstylesheet)
-
-
 class MAINUI:
     def __init__(self) -> None:
         super().__init__()
         self.update_avalable = False
-        self.lasttranslatorindex = 0
         self.translators = {}
         self.cishus = {}
         self.specialreaders = {}
@@ -105,7 +97,7 @@ class MAINUI:
             self.settin_ui.voicelistsignal.emit(_)
 
     @property
-    def textsource(self):
+    def textsource(self) -> basetext:
         return self.textsource_p
 
     @property
@@ -136,7 +128,6 @@ class MAINUI:
                 gameuid = findgameuidofpath(getpidexe(self.textsource.pids[0]))
                 if gameuid:
                     self.textsource.gameuid = gameuid[0]
-                    self.textsource.md5 = getfilemd5(uid2gamepath[gameuid[0]])
             except:
                 print_exc()
 
@@ -152,11 +143,6 @@ class MAINUI:
                 print_exc()
             self.hwnd = None
         self.textsource_p = _
-
-    @property
-    def currentmd5(self):
-        _ = self.textsource
-        return "0" if _ is None else _.md5
 
     @threader
     def safeloadprocessmodels(self):
@@ -214,17 +200,6 @@ class MAINUI:
                 print_exc()
         return res
 
-    def _POSTSOLVE(self, s):
-        ss = POSTSOLVE(s)
-        self.settin_ui.showandsolvesig.emit(s)
-        return ss
-
-    def textgetmethod(
-        self, text, is_auto_run=True, embedcallback=None, onlytrans=False
-    ):
-        with self.solvegottextlock:
-            self.textgetmethod_1(text, is_auto_run, embedcallback, onlytrans)
-
     def parsehira(self, text):
         try:
             if self.hira_:
@@ -234,18 +209,12 @@ class MAINUI:
         except:
             return []
 
-    def textgetmethod_1(
-        self, text, is_auto_run=True, embedcallback=None, onlytrans=False
-    ):
-
-        safe_embedcallback = embedcallback if embedcallback else lambda _: 1
-        safe_embedcallback_none = functools.partial(safe_embedcallback, "")
-        if text.startswith("<notrans>"):
+    def displayinfomessage(self, text, infotype):
+        if infotype == "<notrans>":
             self.translation_ui.displayres.emit(
                 dict(
                     color=globalconfig["rawtextcolor"],
-                    res=text[len("<notrans>") :],
-                    onlytrans=onlytrans,
+                    res=text,
                     clear=True,
                 )
             )
@@ -261,18 +230,29 @@ class MAINUI:
                 ("<msg_error_refresh>", "red", True),
             ]
             for msg, color, refresh in msgs:
-                if text.startswith(msg):
-                    self.translation_ui.displaystatus.emit(
-                        text[len(msg) :], color, refresh, False
-                    )
+                if infotype == msg:
+                    self.translation_ui.displaystatus.emit(text, color, refresh, False)
                     return
+
+    def textgetmethod(
+        self, text, is_auto_run=True, waitforresultcallback=None, onlytrans=False
+    ):
+        with self.solvegottextlock:
+            self.textgetmethod_1(text, is_auto_run, waitforresultcallback, onlytrans)
+
+    def textgetmethod_1(
+        self, text, is_auto_run=True, waitforresultcallback=None, onlytrans=False
+    ):
+        safe_callback = waitforresultcallback if waitforresultcallback else lambda _: 1
+        safe_callback_none = functools.partial(safe_callback, "")
         if text == "" or len(text) > 100000:
-            return safe_embedcallback_none()
+            return safe_callback_none()
         if onlytrans == False:
             self.currentsignature = uuid.uuid4()
         try:
             origin = text
-            text = self._POSTSOLVE(text)
+            text = POSTSOLVE(text)
+            self.settin_ui.showandsolvesig.emit(origin, text)
         except Exception as e:
             msg = str(type(e))[8:-2] + " " + str(e).replace("\n", "").replace("\r", "")
             self.translation_ui.displaystatus.emit(msg, "red", True, True)
@@ -286,7 +266,7 @@ class MAINUI:
                 > (max(globalconfig["maxoriginlength"], globalconfig["maxlength"]))
             )
         ):
-            return safe_embedcallback_none()
+            return safe_callback_none()
 
         try:
             self.textsource.sqlqueueput(
@@ -331,22 +311,23 @@ class MAINUI:
             len(text_solved) < globalconfig["minlength"]
             or len(text_solved) > globalconfig["maxlength"]
         ):
-            return safe_embedcallback_none()
+            return safe_callback_none()
 
-        self.premtalready = ["premt"]
-        self.usefultranslators = list(self.translators.keys())
+        premtalready = ["premt"]
+        usefultranslators = list(self.translators.keys())
         no_available_translator = True
         if "premt" in self.translators:
             try:
                 res = self.translators["premt"].translate(text_solved)
                 for engine in res:
-                    self.premtalready.append(engine)
+                    premtalready.append(engine)
                     if engine in globalconfig["fanyi"]:
                         _colork = engine
                     else:
                         _colork = "premt"
                     no_available_translator = False
                     self.create_translate_task(
+                        usefultranslators,
                         onlytrans,
                         _colork,
                         optimization_params,
@@ -354,44 +335,31 @@ class MAINUI:
                         _showrawfunction_sig,
                         text,
                         text_solved,
-                        embedcallback,
+                        waitforresultcallback,
                         is_auto_run,
                         res[engine],
                     )
 
             except:
                 print_exc()
-        if globalconfig["loadbalance"]:
-            usenum = min(globalconfig["loadbalance_oncenum"], len(self.translators))
-        else:
-            usenum = len(self.translators)
-        if usenum:
-            thistimeusednum = 0
-            self.lasttranslatorindex = self.lasttranslatorindex % len(self.translators)
-            _len = len(self.translators)
-            keys = list(self.translators.keys()) + list(self.translators.keys())
-            keys = keys[self.lasttranslatorindex : self.lasttranslatorindex + _len]
-            # print(keys,usenum,self.lasttranslatorindex)
+        if len(self.translators):
             collect_this_time_use_engines = []
-            for engine in keys:
-                if engine not in self.premtalready:
+            for engine in self.translators:
+                if engine not in premtalready:
                     no_available_translator = False
                     collect_this_time_use_engines.append(engine)
 
-                thistimeusednum += 1
-                self.lasttranslatorindex += 1
-                if thistimeusednum >= usenum:
-                    break
             for engine in globalconfig["fix_translate_rank_rank"]:
                 if engine not in collect_this_time_use_engines:
                     continue
 
                 if globalconfig["fix_translate_rank"]:
                     self.ifuse_fix_translate_rank_preprare(
-                        engine, onlytrans, embedcallback
+                        engine, onlytrans, waitforresultcallback
                     )
 
                 self.create_translate_task(
+                    usefultranslators,
                     onlytrans,
                     engine,
                     optimization_params,
@@ -399,18 +367,20 @@ class MAINUI:
                     _showrawfunction_sig,
                     text,
                     text_solved,
-                    embedcallback,
+                    waitforresultcallback,
                     is_auto_run,
                 )
         if no_available_translator:
-            safe_embedcallback_none()
+            safe_callback_none()
             if _showrawfunction:
                 _showrawfunction()
 
-    def ifuse_fix_translate_rank_preprare(self, engine, onlytrans, embedcallback):
+    def ifuse_fix_translate_rank_preprare(
+        self, engine, onlytrans, waitforresultcallback
+    ):
         if onlytrans:
             return
-        if embedcallback:
+        if waitforresultcallback:
             return
         displayreskwargs = dict(
             name="",
@@ -423,6 +393,7 @@ class MAINUI:
 
     def create_translate_task(
         self,
+        usefultranslators,
         onlytrans,
         engine,
         optimization_params,
@@ -430,13 +401,14 @@ class MAINUI:
         _showrawfunction_sig,
         text,
         text_solved,
-        embedcallback,
+        waitforresultcallback,
         is_auto_run,
         result=None,
     ):
         callback = partial(
             self.GetTranslationCallback,
-            embedcallback,
+            usefultranslators,
+            waitforresultcallback,
             onlytrans,
             engine,
             self.currentsignature,
@@ -449,7 +421,7 @@ class MAINUI:
             callback,
             text,
             text_solved,
-            embedcallback,
+            waitforresultcallback,
             is_auto_run,
             optimization_params,
         )
@@ -462,7 +434,8 @@ class MAINUI:
 
     def GetTranslationCallback(
         self,
-        embedcallback,
+        usefultranslators,
+        waitforresultcallback,
         onlytrans,
         classname,
         currentsignature,
@@ -472,26 +445,25 @@ class MAINUI:
         contentraw,
         res,
         iter_res_status,
+        iserror=False,
     ):
-        if classname in self.usefultranslators:
-            self.usefultranslators.remove(classname)
-        if embedcallback is None and currentsignature != self.currentsignature:
+        if classname in usefultranslators:
+            usefultranslators.remove(classname)
+        if waitforresultcallback is None and currentsignature != self.currentsignature:
             return
 
-        safe_embedcallback = embedcallback if embedcallback else lambda _: 1
-        safe_embedcallback_none = functools.partial(safe_embedcallback, "")
-        if res.startswith("<msg_translator>"):
+        safe_callback = waitforresultcallback if waitforresultcallback else lambda _: 1
+
+        if iserror:
             if currentsignature == self.currentsignature:
                 self.translation_ui.displaystatus.emit(
-                    globalconfig["fanyi"][classname]["name"]
-                    + " "
-                    + res[len("<msg_translator>") :],
+                    globalconfig["fanyi"][classname]["name"] + " " + res,
                     "red",
                     onlytrans,
                     False,
                 )
-            if len(self.usefultranslators) == 0:
-                safe_embedcallback_none()
+            if len(usefultranslators) == 0:
+                safe_callback("")
             return
 
         res = self.solveaftertrans(res, optimization_params)
@@ -522,7 +494,6 @@ class MAINUI:
                 iter_context=(iter_res_status, classname),
             )
             self.translation_ui.displayres.emit(displayreskwargs)
-
         if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
             try:
                 self.textsource.sqlqueueput((contentraw, classname, res))
@@ -531,15 +502,16 @@ class MAINUI:
             if len(self.currenttranslate):
                 self.currenttranslate += "\n"
             self.currenttranslate += res
-            if (
-                globalconfig["embedded"]["as_fast_as_posible"]
-                or classname == globalconfig["embedded"]["translator_2"]
+            if globalconfig["embedded"]["as_fast_as_posible"] or (
+                classname == globalconfig["embedded"]["translator_2"]
             ):
-                return safe_embedcallback(
+                safe_callback(
                     kanjitrans(zhconv.convert(res, "zh-tw"))
                     if globalconfig["embedded"]["trans_kanji"]
                     else res
                 )
+            elif len(usefultranslators) == 0:
+                safe_callback("")
 
     def __usewhich(self):
 
@@ -682,8 +654,8 @@ class MAINUI:
         self.reader_uid = uuid.uuid4()
         self.reader = self.loadreader(use, uid=self.reader_uid)
 
+    @tryprint
     def selectprocess(self, selectedp, title):
-        self.textsource = None
         pids, pexe, hwnd = selectedp
         if len(collect_running_pids(pids)) == 0:
             return
@@ -701,10 +673,7 @@ class MAINUI:
         else:
             gameuid = find_or_create_uid(savehook_new_list, pexe, title)
             savehook_new_list.insert(0, gameuid)
-
-        self.textsource = texthook(pids, pexe, gameuid, autostart=False)
-        self.hwnd = hwnd
-        self.textsource.start()
+        self.textsource.start(hwnd, pids, pexe, gameuid, autostart=False)
 
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
@@ -723,7 +692,12 @@ class MAINUI:
             pass
         self.textsource = None
         if checked:
-            classes = {"ocr": ocrtext, "copy": copyboard, "texthook": None}
+            classes = {
+                "ocr": ocrtext,
+                "copy": copyboard,
+                "texthook": texthook,
+                "filetrans": filetrans,
+            }
             if use is None:
                 use = list(
                     filter(
@@ -734,8 +708,6 @@ class MAINUI:
                 use = None if len(use) == 0 else use[0]
             if use is None:
                 return
-            elif classes[use] is None:
-                pass
             else:
                 self.textsource = classes[use]()
 
@@ -794,11 +766,11 @@ class MAINUI:
                 aclass = importlib.import_module("userconfig.copyed." + classname).TS
         except Exception as e:
             print_exc()
-            self.textgetmethod(
-                "<msg_error_not_refresh>"
-                + globalconfig["fanyi"][classname]["name"]
+            self.displayinfomessage(
+                globalconfig["fanyi"][classname]["name"]
                 + " import failed : "
-                + str(stringfyerror(e))
+                + str(stringfyerror(e)),
+                "<msg_error_not_refresh>",
             )
             return None
         return aclass(classname)
@@ -890,44 +862,6 @@ class MAINUI:
                 self.AttachProcessDialog.show()
         except:
             print_exc()
-
-    def autohookmonitorthread(self):
-        def onwindowloadautohook():
-            textsourceusing = globalconfig["sourcestatus2"]["texthook"]["use"]
-            if not (globalconfig["autostarthook"] and textsourceusing):
-                return
-            elif self.AttachProcessDialog and self.AttachProcessDialog.isVisible():
-                return
-            if self.textsource is not None:
-                return
-            hwnd = windows.GetForegroundWindow()
-            pid = windows.GetWindowThreadProcessId(hwnd)
-            name_ = getpidexe(pid)
-            if not name_:
-                return
-            found = findgameuidofpath(name_)
-            if not found:
-                return
-            uid, reflist = found
-            pids = ListProcess(name_)
-            if self.textsource is not None:
-                return
-            if not globalconfig["sourcestatus2"]["texthook"]["use"]:
-                return
-            if globalconfig["startgamenototop"] == False:
-                idx = reflist.index(uid)
-                reflist.insert(0, reflist.pop(idx))
-            self.textsource = texthook(pids, name_, uid, autostart=True)
-            self.hwnd = hwnd
-            self.textsource.start()
-
-        while self.isrunning:
-            try:
-                onwindowloadautohook()
-            except:
-                print_exc()
-            time.sleep(0.5)
-            # 太短了的话，中间存在一瞬间，后台进程比前台窗口内存占用要大。。。
 
     def setdarkandbackdrop(self, widget, dark):
         if self.__dontshowintaborsetbackdrop(widget):
@@ -1095,6 +1029,14 @@ class MAINUI:
         self.startxiaoxueguan()
         self.starthira()
         self.startoutputer()
+
+        class commonstylebase(QWidget):
+            setstylesheetsignal = pyqtSignal()
+
+            def __init__(__, parent) -> None:
+                super().__init__(parent)
+                __.setstylesheetsignal.connect(self.setcommonstylesheet)
+
         self.commonstylebase = commonstylebase(self.translation_ui)
         self.setcommonstylesheet()
         self.settin_ui = Setting(self.commonstylebase)
@@ -1103,7 +1045,6 @@ class MAINUI:
         self.searchwordW = searchwordW(self.commonstylebase)
         self.hookselectdialog = hookselect(self.commonstylebase)
         self.starttextsource()
-        threading.Thread(target=self.autohookmonitorthread).start()
         threading.Thread(
             target=minmaxmoveobservefunc, args=(self.translation_ui,)
         ).start()

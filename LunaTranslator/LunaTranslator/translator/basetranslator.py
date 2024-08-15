@@ -89,11 +89,11 @@ class basetrans(commonbase):
         try:
             self._private_init()
         except Exception as e:
-            gobject.baseobject.textgetmethod(
-                "<msg_error_not_refresh>"
-                + globalconfig["fanyi"][self.typename]["name"]
+            gobject.baseobject.displayinfomessage(
+                globalconfig["fanyi"][self.typename]["name"]
                 + " init translator failed : "
-                + str(stringfyerror(e))
+                + str(stringfyerror(e)),
+                "<msg_error_not_refresh>",
             )
             print_exc()
 
@@ -183,9 +183,9 @@ class basetrans(commonbase):
 
     def gettask(self, content):
         # fmt: off
-        callback, contentraw, contentsolved, embedcallback, is_auto_run, optimization_params = content
+        callback, contentraw, contentsolved, callback, is_auto_run, optimization_params = content
         # fmt: on
-        if embedcallback:
+        if callback:
             priority = 1
         else:
             priority = 0
@@ -330,7 +330,7 @@ class basetrans(commonbase):
             if content is None:
                 break
             # fmt: off
-            callback, contentraw, contentsolved, embedcallback, is_auto_run, optimization_params = content
+            callback, contentraw, contentsolved, waitforresultcallback, is_auto_run, optimization_params = content
             # fmt: on
 
             if self.onlymanual and is_auto_run:
@@ -340,7 +340,7 @@ class basetrans(commonbase):
                 continue
             try:
                 checktutukufunction = (
-                    lambda: ((embedcallback is not None) or self.queue.empty())
+                    lambda: ((waitforresultcallback is not None) or self.queue.empty())
                     and self.using
                 )
                 if not checktutukufunction():
@@ -390,5 +390,4 @@ class basetrans(commonbase):
                     print_exc()
                     msg = stringfyerror(e)
                     self.needreinit = True
-                msg = "<msg_translator>" + msg
-                callback(msg, 0)
+                callback(msg, 0, True)
