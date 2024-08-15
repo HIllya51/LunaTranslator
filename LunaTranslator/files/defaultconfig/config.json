@@ -433,7 +433,6 @@
     "removeuseless": false,
     "currvislistuid": null,
     "multiregion": false,
-    "rememberocrregions": false,
     "ocrregions": [],
     "ocr_stable_sim": 0,
     "ocr_diff_sim": 0.95,

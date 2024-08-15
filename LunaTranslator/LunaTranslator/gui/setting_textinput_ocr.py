@@ -268,10 +268,6 @@ def getocrgrid(self):
                             D_getsimpleswitch(globalconfig, "multiregion"),
                         ],
                         [
-                            "记忆选定区域",
-                            D_getsimpleswitch(globalconfig, "rememberocrregions"),
-                        ],
-                        [
                             "范围框颜色",
                             D_getcolorbutton(
                                 globalconfig,

@@ -147,7 +147,7 @@ class MAINUI:
     def textsource(self, _):
         if _ is None and self.textsource_p:
             try:
-                self.textsource_p.end()
+                self.textsource_p.endX()
             except:
                 print_exc()
             self.hwnd = None
@@ -240,7 +240,6 @@ class MAINUI:
 
         safe_embedcallback = embedcallback if embedcallback else lambda _: 1
         safe_embedcallback_none = functools.partial(safe_embedcallback, "")
-
         if text.startswith("<notrans>"):
             self.translation_ui.displayres.emit(
                 dict(
@@ -418,8 +417,8 @@ class MAINUI:
             color=globalconfig["fanyi"][engine]["color"],
             res="",
             onlytrans=onlytrans,
+            iter_context=(1, engine),
         )
-        displayreskwargs.update(iter_context=(1, engine))
         self.translation_ui.displayres.emit(displayreskwargs)
 
     def create_translate_task(
@@ -520,9 +519,8 @@ class MAINUI:
                 color=globalconfig["fanyi"][classname]["color"],
                 res=res,
                 onlytrans=onlytrans,
+                iter_context=(iter_res_status, classname),
             )
-            if iter_res_status:
-                displayreskwargs.update(iter_context=(iter_res_status, classname))
             self.translation_ui.displayres.emit(displayreskwargs)
 
         if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止

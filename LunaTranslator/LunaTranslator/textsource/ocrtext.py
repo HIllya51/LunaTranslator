@@ -37,11 +37,6 @@ class ocrtext(basetext):
         self.range_ui = []
         self.timestamp = time.time()
         super(ocrtext, self).__init__("0", "ocr")
-        if globalconfig["rememberocrregions"]:
-            for region in globalconfig["ocrregions"]:
-                if region:
-                    self.newrangeadjustor()
-                    self.setrect(region)
 
     def newrangeadjustor(self):
         if len(self.range_ui) == 0 or globalconfig["multiregion"]:
@@ -85,6 +80,12 @@ class ocrtext(basetext):
         [_.setstyle() for _ in self.range_ui]
 
     def showhiderangeui(self, b):
+        if b and len(self.range_ui) == 0:
+            for region in globalconfig["ocrregions"]:
+                if region:
+                    self.newrangeadjustor()
+                    self.setrect(region)
+            return
         for _ in self.range_ui:
             if b:
                 _r = _.getrect()
@@ -195,4 +196,3 @@ class ocrtext(basetext):
     def end(self):
         globalconfig["ocrregions"] = [_.getrect() for _ in self.range_ui]
         [_.closesignal.emit() for _ in self.range_ui]
-        super().end()

@@ -7,7 +7,6 @@ class copyboard(basetext):
 
     def end(self):
         winsharedutils.clipboard_callback_stop(self.__hwnd)
-        super().end()
 
     def __callback(self, string, ismy):
         if globalconfig["excule_from_self"] and ismy:

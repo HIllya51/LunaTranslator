@@ -229,7 +229,7 @@ class texthook(basetext):
 
     def procdisc(self, pid):
         self.connectedpids.remove(pid)
-        if len(self.connectedpids) == 0:
+        if len(self.connectedpids) == 0 and not self.ending:
             gobject.baseobject.textsource = None
 
     def prepares(self):
@@ -564,4 +564,3 @@ class texthook(basetext):
         for pid in self.connectedpids:
             self.Luna_Detach(pid)
         time.sleep(0.1)
-        super().end()

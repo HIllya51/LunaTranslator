@@ -54,10 +54,13 @@ class basetext:
     def gettextonce(self):
         return None
 
-    def end(self):
-        self.ending = True
+    def end(self): ...
 
     ##################
+    def endX(self):
+        self.ending = True
+        self.end()
+
     def sqlqueueput(self, xx):
         try:
             self.sqlqueue.put(xx)

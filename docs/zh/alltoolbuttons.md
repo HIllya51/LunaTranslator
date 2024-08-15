@@ -66,7 +66,8 @@
     该按钮每次都需要进行翻译选择，不会进行记忆。
 1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> 显示/隐藏范围框 
     **该按钮仅在OCR模式下可用**<br>
-    略
+    当未选择任何OCR范围时，使用该按钮显示OCR范围，会自动设置OCR范围为上一次选择的OCR。
+    
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_直接替换
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_sakura_gpt_词典
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_占位符_全局

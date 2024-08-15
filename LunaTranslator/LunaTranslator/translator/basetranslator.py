@@ -302,14 +302,14 @@ class basetrans(commonbase):
                 else:
                     collectiterres += _res
                 callback(collectiterres, 1)
-            callback("", 2)
+            callback(collectiterres, 2)
             res = collectiterres
 
         else:
             if globalconfig["fix_translate_rank"]:
                 # 这个性能会稍微差一点，不然其实可以全都这样的。
                 callback(res, 1)
-                callback("", 2)
+                callback(res, 2)
             else:
                 callback(res, 0)
 
@@ -391,7 +391,4 @@ class basetrans(commonbase):
                     msg = stringfyerror(e)
                     self.needreinit = True
                 msg = "<msg_translator>" + msg
-                if embedcallback:
-                    callback(contentraw, 0)
-                else:
-                    callback(msg, 0)
+                callback(msg, 0)

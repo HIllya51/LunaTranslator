@@ -2,7 +2,7 @@ from qtsymbols import *
 import time, functools, threading, os, importlib, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
-from myutils.wrapper import threader, trypass
+from myutils.wrapper import threader, trypass, tryprint
 from myutils.config import (
     globalconfig,
     saveallconfig,
@@ -308,16 +308,13 @@ class TranslatorWindow(resizableframeless):
             color = kwargs.get("color")
             res = kwargs.get("res")
             onlytrans = kwargs.get("onlytrans")  # 仅翻译，不显示
-            iter_context = kwargs.get("iter_context", None)
+            iter_context = kwargs.get("iter_context", (0, None))
             clear = kwargs.get("clear", False)
 
-            if iter_context:
-                iter_res_status, iter_context_class = iter_context
-                if iter_res_status == 2:  # iter结束
-                    gobject.baseobject.transhis.getnewtranssignal.emit(name, res)
-                    return
-            else:
+            iter_res_status, iter_context_class = iter_context
+            if iter_res_status == 2:  # iter结束
                 gobject.baseobject.transhis.getnewtranssignal.emit(name, res)
+                return
 
             if onlytrans:
                 return
@@ -1246,6 +1243,7 @@ class TranslatorWindow(resizableframeless):
 
         rangeselct_function(self.afterrange, auto, auto)
 
+    @tryprint
     def afterrange(self, rect):
         gobject.baseobject.textsource.newrangeadjustor()
         gobject.baseobject.textsource.setrect(rect)
@@ -1360,9 +1358,7 @@ class TranslatorWindow(resizableframeless):
             gobject.baseobject.isrunning = False
             self.hide()
 
-            if gobject.baseobject.textsource:
-
-                gobject.baseobject.textsource = None
+            gobject.baseobject.textsource = None
             endsubprocs()
             gobject.baseobject.destroytray()
             handle = windows.CreateMutex(False, "LUNASAVECONFIGUPDATE")
