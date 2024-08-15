@@ -62,16 +62,7 @@ class noundictconfigdialog(LDialog):
         self.table = table
 
         def clicked1():
-            try:
-                md5 = gobject.baseobject.currentmd5
-                model.insertRow(
-                    0, [QStandardItem(md5), QStandardItem(), QStandardItem()]
-                )
-            except:
-                print_exc()
-                model.insertRow(
-                    0, [QStandardItem("0"), QStandardItem(), QStandardItem()]
-                )
+            model.insertRow(0, [QStandardItem("0"), QStandardItem(), QStandardItem()])
 
         button.btn1clicked.connect(clicked1)
         button.btn2clicked.connect(self.table.removeselectedrows)
