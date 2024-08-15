@@ -235,7 +235,7 @@ def trysearchforid(gameuid, searchargs: list):
 
 
 def gamdidchangedtask(key, idname, gameuid):
-    vid = savehook_new_data[gameuid][idname]
+    vid = savehook_new_data[gameuid].get(idname, "")
     dispatchsearchfordata(gameuid, key, vid)
 
 
