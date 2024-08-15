@@ -437,6 +437,7 @@ class MAINUI:
     ):
         callback = partial(
             self.GetTranslationCallback,
+            embedcallback,
             onlytrans,
             engine,
             self.currentsignature,
@@ -455,13 +456,14 @@ class MAINUI:
         )
         if result:
             # 预翻译
-            callback(result, embedcallback, 0)
+            callback(result, 0)
         else:
 
             self.translators[engine].gettask(task)
 
     def GetTranslationCallback(
         self,
+        embedcallback,
         onlytrans,
         classname,
         currentsignature,
@@ -470,7 +472,6 @@ class MAINUI:
         _showrawfunction_sig,
         contentraw,
         res,
-        embedcallback,
         iter_res_status,
     ):
         if classname in self.usefultranslators:

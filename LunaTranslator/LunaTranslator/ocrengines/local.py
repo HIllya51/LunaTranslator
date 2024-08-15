@@ -1,6 +1,6 @@
 import os, zipfile
-from myutils.utils import getlangsrc, dynamiclink
-from myutils.config import globalconfig, _TR, getlang_inner2show
+from myutils.utils import dynamiclink
+from myutils.config import _TR, getlang_inner2show
 from ocrengines.baseocrclass import baseocr
 from ctypes import (
     CDLL,
@@ -194,7 +194,7 @@ class OCR(baseocr):
         if self._savelang == self.srclang:
             return
         self._ocr = None
-        path = "./files/ocr/{}".format(getlangsrc())
+        path = "./files/ocr/{}".format(self.srclang)
         if not (
             os.path.exists(path + "/det.onnx")
             and os.path.exists(path + "/rec.onnx")

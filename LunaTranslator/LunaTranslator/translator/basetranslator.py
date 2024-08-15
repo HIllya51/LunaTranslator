@@ -6,21 +6,19 @@ import zhconv, gobject
 import sqlite3, json
 import functools
 from myutils.config import globalconfig, translatorsetting
-from myutils.utils import stringfyerror, autosql, PriorityQueue, getlangtgt
+from myutils.utils import stringfyerror, autosql, PriorityQueue
 from myutils.commonbase import ArgsEmptyExc, commonbase
 
 
-class TimeOut(Exception):
+class Interrupted(Exception):
     pass
 
 
 class Threadwithresult(Thread):
-    def __init__(self, func, defalut, ignoreexceptions):
+    def __init__(self, func):
         super(Threadwithresult, self).__init__()
         self.func = func
-        self.result = defalut
-        self.istimeout = True
-        self.ignoreexceptions = ignoreexceptions
+        self.isInterrupted = True
         self.exception = None
 
     def run(self):
@@ -28,31 +26,26 @@ class Threadwithresult(Thread):
             self.result = self.func()
         except Exception as e:
             self.exception = e
-        self.istimeout = False
+        self.isInterrupted = False
 
-    def get_result(self, timeout=1, checktutukufunction=None):
+    def get_result(self, checktutukufunction=None):
         # Thread.join(self,timeout)
         # 不再超时等待，只检查是否是最后一个请求，若是则无限等待，否则立即放弃。
-        while checktutukufunction and checktutukufunction() and self.istimeout:
+        while checktutukufunction and checktutukufunction() and self.isInterrupted:
             Thread.join(self, 0.1)
 
-        if self.ignoreexceptions:
-            return self.result
+        if self.isInterrupted:
+            raise Interrupted()
+        elif self.exception:
+            raise self.exception
         else:
-            if self.istimeout:
-                raise TimeOut()
-            elif self.exception:
-                raise self.exception
-            else:
-                return self.result
+            return self.result
 
 
-def timeoutfunction(
-    func, timeout=100, default=None, ignoreexceptions=False, checktutukufunction=None
-):
-    t = Threadwithresult(func, default, ignoreexceptions)
+def timeoutfunction(func, checktutukufunction=None):
+    t = Threadwithresult(func)
     t.start()
-    return t.get_result(timeout, checktutukufunction)
+    return t.get_result(checktutukufunction)
 
 
 class basetrans(commonbase):
@@ -105,7 +98,6 @@ class basetrans(commonbase):
             print_exc()
 
         self.lastrequesttime = 0
-        self.requestid = 0
         self._cache = {}
 
         self.newline = None
@@ -153,11 +145,11 @@ class basetrans(commonbase):
                 src, trans = task
                 self.sqlwrite2.execute(
                     "DELETE from cache WHERE (srclang,tgtlang,source)=(?,?,?)",
-                    (self.srclang, self.tgtlang, src),
+                    (self.srclang_1, self.tgtlang_1, src),
                 )
                 self.sqlwrite2.execute(
                     "INSERT into cache VALUES(?,?,?,?)",
-                    (self.srclang, self.tgtlang, src, trans),
+                    (self.srclang_1, self.tgtlang_1, src, trans),
                 )
             except:
                 print_exc()
@@ -175,8 +167,7 @@ class basetrans(commonbase):
     @property
     def needzhconv(self):
         # The API does not support direct translation to Traditional Chinese, only Simplified Chinese can be translated first and then converted to Traditional Chinese
-        l = getlangtgt()
-        return l == "cht" and "cht" not in self.langmap()
+        return self.tgtlang_1 == "cht" and "cht" not in self.langmap()
 
     @property
     def using(self):
@@ -185,6 +176,9 @@ class basetrans(commonbase):
     @property
     def transtype(self):
         # free/dev/api/offline/pre
+        # dev/offline/pre 无视请求间隔
+        # pre不使用翻译缓存
+        # offline不被新的请求打断
         return globalconfig["fanyi"][self.typename].get("type", "free")
 
     def gettask(self, content):
@@ -200,8 +194,8 @@ class basetrans(commonbase):
     def longtermcacheget(self, src):
         try:
             ret = self.sqlwrite2.execute(
-                "SELECT trans FROM cache WHERE (srclang,tgtlang,source)=(?,?,?)",
-                (self.srclang, self.tgtlang, src),
+                "SELECT trans FROM cache WHERE (((srclang,tgtlang)=(?,?) or (srclang,tgtlang)=(?,?)) and (source= ?))",
+                (self.srclang_1, self.tgtlang_1, self.srclang, self.tgtlang, src),
             ).fetchone()
             if ret:
                 return ret[0]
@@ -213,7 +207,7 @@ class basetrans(commonbase):
         self.sqlqueue.put((src, tgt))
 
     def shorttermcacheget(self, src):
-        langkey = (self.srclang, self.tgtlang)
+        langkey = (self.srclang_1, self.tgtlang_1)
         if langkey not in self._cache:
             self._cache[langkey] = {}
         try:
@@ -222,42 +216,36 @@ class basetrans(commonbase):
             return None
 
     def shorttermcacheset(self, src, tgt):
-        langkey = (self.srclang, self.tgtlang)
+        langkey = (self.srclang_1, self.tgtlang_1)
 
         if langkey not in self._cache:
             self._cache[langkey] = {}
         self._cache[langkey][src] = tgt
 
-    def cached_translate(self, contentsolved, is_auto_run):
-        is_using_gpt_and_retrans = is_auto_run == False and self.is_gpt_like
-        if is_using_gpt_and_retrans == False:
-            res = self.shorttermcacheget(contentsolved)
-            if res:
-                return res
+    def shortorlongcacheget(self, content, is_auto_run):
+        if self.is_gpt_like and not is_auto_run:
+            return None
+        if self.transtype == "pre":
+            # 预翻译不使用翻译缓存
+            return None
+        res = self.shorttermcacheget(content)
+        if res:
+            return res
         if globalconfig["uselongtermcache"]:
-            res = self.longtermcacheget(contentsolved)
-            if res:
-                return res
+            return None
+        res = self.longtermcacheget(content)
+        if res:
+            return res
+        return None
 
-        if self.transtype == "offline" and not self.is_gpt_like:
-            # 避免离线gpt被大量翻译阻塞
+    def maybecachetranslate(self, contentraw, contentsolved, is_auto_run):
+        res = self.shortorlongcacheget(contentraw, is_auto_run)
+        if res:
+            return res
+        if self.transtype in ["offline", "pre", "dev"]:
             res = self.translate(contentsolved)
         else:
             res = self.intervaledtranslate(contentsolved)
-        return res
-
-    def cachesetatend(self, contentsolved, res):
-        if self.transtype == "pre":
-            return
-        if globalconfig["uselongtermcache"]:
-            self.longtermcacheset(contentsolved, res)
-        self.shorttermcacheset(contentsolved, res)
-
-    def maybecachetranslate(self, contentraw, contentsolved, is_auto_run):
-        if self.transtype == "pre":
-            res = self.translate(contentraw)
-        else:
-            res = self.cached_translate(contentsolved, is_auto_run)
         return res
 
     def intervaledtranslate(self, content):
@@ -278,31 +266,6 @@ class basetrans(commonbase):
 
         return res
 
-    def _iterget(self, __callback, rid, __res):
-        succ = True
-        for _res in __res:
-            if self.requestid != rid:
-                succ = False
-                break
-            __callback(_res, 1)
-        if succ:
-            __callback("", 2)
-
-    def __callback(self, collectiterres, callback, embedcallback, ares, is_iter_res):
-        if self.needzhconv:
-            ares = zhconv.convert(ares, "zh-tw")
-        if ares == "\0":  # 清除前面的输出
-            collectiterres.clear()
-            pass
-        else:
-            collectiterres.append(ares)
-        __ = ""
-        for ares in collectiterres:
-            if ares is None:
-                continue
-            __ += ares
-        callback(__, embedcallback, is_iter_res)
-
     def reinitandtrans(self, contentraw, contentsolved, is_auto_run):
         if self.needreinit or self.initok == False:
             self.needreinit = False
@@ -313,11 +276,57 @@ class basetrans(commonbase):
                 raise Exception("init translator failed : " + str(stringfyerror(e)))
         return self.maybecachetranslate(contentraw, contentsolved, is_auto_run)
 
+    def translate_and_collect(
+        self,
+        contentraw,
+        contentsolved,
+        is_auto_run,
+        callback,
+    ):
+        def __maybeshow(callback, res, is_iter_res):
+
+            if self.needzhconv:
+                res = zhconv.convert(res, "zh-tw")
+            callback(res, is_iter_res)
+
+        callback = functools.partial(__maybeshow, callback)
+
+        res = self.reinitandtrans(contentraw, contentsolved, is_auto_run)
+        # 不能因为被打断而放弃后面的操作，发出的请求不会因为不再处理而无效，所以与其浪费不如存下来
+        # gettranslationcallback里已经有了是否为当前请求的校验，这里无脑输出就行了
+        if isinstance(res, types.GeneratorType):
+            collectiterres = ""
+            for _res in res:
+                if _res == "\0":
+                    collectiterres = ""
+                else:
+                    collectiterres += _res
+                callback(collectiterres, 1)
+            callback("", 2)
+            res = collectiterres
+
+        else:
+            if globalconfig["fix_translate_rank"]:
+                # 这个性能会稍微差一点，不然其实可以全都这样的。
+                callback(res, 1)
+                callback("", 2)
+            else:
+                callback(res, 0)
+
+        # 保存缓存
+        # 不管是否使用翻译缓存，都存下来
+        if self.transtype == "pre":
+            return
+        self.shorttermcacheset(contentsolved, res)
+        self.longtermcacheset(contentsolved, res)
+
     def _fythread(self):
         self.needreinit = False
         while self.using:
 
             content = self.queue.get()
+            if not self.using:
+                break
             if content is None:
                 break
             # fmt: off
@@ -326,76 +335,63 @@ class basetrans(commonbase):
 
             if self.onlymanual and is_auto_run:
                 continue
-            if self.using == False:
-                break
             if self.srclang_1 == self.tgtlang_1:
-                callback(contentsolved, embedcallback, False)
+                callback(contentsolved, 0)
                 continue
-            self.requestid += 1
             try:
                 checktutukufunction = (
                     lambda: ((embedcallback is not None) or self.queue.empty())
                     and self.using
                 )
-                if checktutukufunction():
-                    if self.using_gpt_dict:
-                        gpt_dict = None
-                        for _ in optimization_params:
-                            if isinstance(_, dict):
-                                _gpt_dict = _.get("gpt_dict", None)
-                                if _gpt_dict is None:
-                                    continue
-                                gpt_dict = _gpt_dict
+                if not checktutukufunction():
+                    # 检查请求队列是否空，请求队列有新的请求，则放弃当前请求。但对于内嵌翻译请求，不可以放弃。
+                    continue
+                if self.using_gpt_dict:
+                    gpt_dict = None
+                    for _ in optimization_params:
+                        if isinstance(_, dict):
+                            _gpt_dict = _.get("gpt_dict", None)
+                            if _gpt_dict is None:
+                                continue
+                            gpt_dict = _gpt_dict
 
-                        contentsolved = json.dumps(
-                            {
-                                "text": contentsolved,
-                                "gpt_dict": gpt_dict,
-                                "contentraw": contentraw,
-                            }
-                        )
-
-                    func = functools.partial(
-                        self.reinitandtrans, contentraw, contentsolved, is_auto_run
+                    contentsolved = json.dumps(
+                        {
+                            "text": contentsolved,
+                            "gpt_dict": gpt_dict,
+                            "contentraw": contentraw,
+                        }
                     )
-                    res = timeoutfunction(
+
+                func = functools.partial(
+                    self.translate_and_collect,
+                    contentraw,
+                    contentsolved,
+                    is_auto_run,
+                    callback,
+                )
+                if self.transtype == "offline":
+                    # 离线翻译例如sakura不要被中断，因为即使中断了，部署的服务仍然在运行，直到请求结束
+                    func()
+                else:
+                    timeoutfunction(
                         func,
                         checktutukufunction=checktutukufunction,
                     )
-                    collectiterres = []
-
-                    __callback = functools.partial(
-                        self.__callback, collectiterres, callback, embedcallback
-                    )
-                    if isinstance(res, types.GeneratorType):
-
-                        timeoutfunction(
-                            functools.partial(
-                                self._iterget, __callback, self.requestid, res
-                            ),
-                            checktutukufunction=checktutukufunction,
-                        )
-
-                    else:
-                        if globalconfig["fix_translate_rank"]:
-                            # 这个性能会稍微差一点，不然其实可以全都这样的。
-                            __callback(res, 1)
-                            __callback("", 2)
-                        else:
-                            __callback(res, 0)
-                    if all([_ is not None for _ in collectiterres]):
-                        self.cachesetatend(contentsolved, "".join(collectiterres))
             except Exception as e:
-                if self.using and globalconfig["showtranexception"]:
-                    if isinstance(e, ArgsEmptyExc):
-                        msg = str(e)
-                    elif isinstance(e, TimeOut):
-                        # 更改了timeout机制。timeout只会发生在队列非空时，故直接放弃
-                        continue
-                    else:
-                        print_exc()
-                        msg = stringfyerror(e)
-                        self.needreinit = True
-                    msg = "<msg_translator>" + msg
-
-                    callback(msg, embedcallback, False)
+                if not (self.using and globalconfig["showtranexception"]):
+                    continue
+                if isinstance(e, ArgsEmptyExc):
+                    msg = str(e)
+                elif isinstance(e, Interrupted):
+                    # 因为有新的请求而被打断
+                    continue
+                else:
+                    print_exc()
+                    msg = stringfyerror(e)
+                    self.needreinit = True
+                msg = "<msg_translator>" + msg
+                if embedcallback:
+                    callback(contentraw, 0)
+                else:
+                    callback(msg, 0)
