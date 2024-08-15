@@ -731,7 +731,6 @@
     "语言包": "Language Pack",
     "项目仓库": "Project Repository",
     "整合包": "Integration Pack",
-    "TGW懒人包": "TGW Lazy Pack",
     "论坛": "Forum",
     "请选择": "Please Select",
     "安装成功": "Installation Successful",
@@ -834,5 +833,6 @@
     "官方网站": "Official website",
     "欢迎使用": "Welcome to use",
     "显示注音": "Display phonetic notation",
-    "辞书显示顺序": "Lexicographical display order"
+    "辞书显示顺序": "Lexicographical display order",
+    "背景窗口透明": "Background window transparent"
 }

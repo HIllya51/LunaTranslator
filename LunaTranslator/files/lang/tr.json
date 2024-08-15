@@ -732,7 +732,6 @@
     "语言包": "Dil Paketi",
     "项目仓库": "Proje deposu",
     "整合包": "Integrasyon paketi",
-    "TGW懒人包": "TGW Lazy Bag",
     "论坛": "forum",
     "请选择": "Lütfen seçin",
     "安装成功": "Yükleme başarılı",
@@ -834,5 +833,6 @@
     "官方网站": "Resmi web sitesi",
     "欢迎使用": "Kullanmaya hoş geldiniz.",
     "显示注音": "Fonetik notasyonu göster",
-    "辞书显示顺序": "Lexicographical display order"
+    "辞书显示顺序": "Lexicographical display order",
+    "背景窗口透明": "Arkaplan penceresi transparent"
 }

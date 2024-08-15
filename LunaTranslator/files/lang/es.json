@@ -732,7 +732,6 @@
     "语言包": "Paquete lingüístico",
     "项目仓库": "Almacén del proyecto",
     "整合包": "Paquete de integración",
-    "TGW懒人包": "Bolsa perezosa tgw",
     "论坛": "Foro",
     "请选择": "Por favor, elija",
     "安装成功": "Instalación exitosa",
@@ -834,5 +833,6 @@
     "官方网站": "Sitio web oficial",
     "欢迎使用": "Bienvenido a usar",
     "显示注音": "Muestra la nota de sonido",
-    "辞书显示顺序": "Orden de visualización del diccionario"
+    "辞书显示顺序": "Orden de visualización del diccionario",
+    "背景窗口透明": "La ventana de fondo es transparente"
 }

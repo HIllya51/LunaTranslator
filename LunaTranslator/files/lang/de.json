@@ -734,7 +734,6 @@
     "翻译及OCR": "Übersetzung und OCR",
     "项目仓库": "Projektlager",
     "整合包": "Integrationspaket",
-    "TGW懒人包": "TGW Lazy Bag",
     "论坛": "Forum",
     "请选择": "Bitte wählen",
     "安装成功": "Installation erfolgreich",
@@ -834,5 +833,6 @@
     "官方网站": "Offizielle Website",
     "欢迎使用": "Willkommen zur Nutzung",
     "显示注音": "Phonetische Notation anzeigen",
-    "辞书显示顺序": "Lexikographische Anzeigereihenfolge"
+    "辞书显示顺序": "Lexikographische Anzeigereihenfolge",
+    "背景窗口透明": "Hintergrundfenster transparent"
 }

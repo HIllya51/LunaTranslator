@@ -239,7 +239,8 @@ class basetrans(commonbase):
             if res:
                 return res
 
-        if self.transtype == "offline":
+        if self.transtype == "offline" and not self.is_gpt_like:
+            # 避免离线gpt被大量翻译阻塞
             res = self.translate(contentsolved)
         else:
             res = self.intervaledtranslate(contentsolved)

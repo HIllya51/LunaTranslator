@@ -230,13 +230,7 @@ def versionlabelmaybesettext(self, x):
 def solvelinkitems(grid, source):
     name = source["name"]
     link = source["link"]
-    if link[-8:] == "releases":
-        __ = False
-    elif link[-1] == "/":
-        __ = False
-    else:
-        __ = True
-    grid.append([((name), 1, ""), (makehtml(link, __), 2, "link")])
+    grid.append([((name), 1, ""), (makehtml(link), 2, "link")])
 
 
 def resourcegrid(self, l):

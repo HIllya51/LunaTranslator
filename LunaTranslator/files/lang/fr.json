@@ -732,7 +732,6 @@
     "语言包": "Pack de langues",
     "项目仓库": "Entrepôt du projet",
     "整合包": "Paquet de consolidation",
-    "TGW懒人包": "Tgw sac pour paresseux",
     "论坛": "Le Forum",
     "请选择": "Veuillez sélectionner",
     "安装成功": "Installation réussie",
@@ -834,5 +833,6 @@
     "官方网站": "Site officiel",
     "欢迎使用": "Bienvenue à utiliser",
     "显示注音": "Afficher les notes",
-    "辞书显示顺序": "Ordre d'affichage des discours"
+    "辞书显示顺序": "Ordre d'affichage des discours",
+    "背景窗口透明": "Fenêtre de fond transparente"
 }

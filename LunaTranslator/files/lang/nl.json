@@ -734,7 +734,6 @@
     "翻译及OCR": "Vertaling en OCR",
     "项目仓库": "Projectmagazijn",
     "整合包": "Integratiepakket",
-    "TGW懒人包": "TGW Lazy Bag",
     "论坛": "forum",
     "请选择": "Kies alsjeblieft",
     "安装成功": "Installatie succesvol",
@@ -834,5 +833,6 @@
     "官方网站": "Officiële website",
     "欢迎使用": "Welkom bij gebruik",
     "显示注音": "Toon fonetische notatie",
-    "辞书显示顺序": "Lexicografische weergavevolgorde"
+    "辞书显示顺序": "Lexicografische weergavevolgorde",
+    "背景窗口透明": "Achtergrondvenster transparant"
 }

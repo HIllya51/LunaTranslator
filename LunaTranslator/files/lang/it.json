@@ -732,7 +732,6 @@
     "语言包": "Pacchetto linguistico",
     "项目仓库": "Magazzino del progetto",
     "整合包": "Pacchetto di integrazione",
-    "TGW懒人包": "TGW Lazy Bag",
     "论坛": "forum",
     "请选择": "Seleziona",
     "安装成功": "Installazione riuscita",
@@ -834,5 +833,6 @@
     "官方网站": "Sito ufficiale",
     "欢迎使用": "Benvenuti all'uso",
     "显示注音": "Mostra notazione fonetica",
-    "辞书显示顺序": "Ordine di visualizzazione lessicografico"
+    "辞书显示顺序": "Ordine di visualizzazione lessicografico",
+    "背景窗口透明": "Finestra di sfondo trasparente"
 }

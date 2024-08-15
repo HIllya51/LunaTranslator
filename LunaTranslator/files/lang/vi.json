@@ -732,7 +732,6 @@
     "语言包": "Gói ngôn ngữ",
     "项目仓库": "Kho dự án",
     "整合包": "Gói tích hợp",
-    "TGW懒人包": "Túi xách lười TGW",
     "论坛": "Diễn đàn",
     "请选择": "Vui lòng chọn",
     "安装成功": "Cài đặt thành công",
@@ -834,5 +833,6 @@
     "官方网站": "Trang web chính thức",
     "欢迎使用": "Chào mừng đến với",
     "显示注音": "Hiện chú thích",
-    "辞书显示顺序": "Trình tự hiển thị từ điển"
+    "辞书显示顺序": "Trình tự hiển thị từ điển",
+    "背景窗口透明": "Trong suốt cửa sổ nền"
 }

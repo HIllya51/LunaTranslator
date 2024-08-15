@@ -499,9 +499,16 @@ def dynamiclink(text):
     )
 
 
-def makehtml(text, base=False, show=None):
+def makehtml(text, show=None):
+
+    if text[-8:] == "releases":
+        __ = False
+    elif text[-1] == "/":
+        __ = False
+    else:
+        __ = True
     text = dynamiclink(text)
-    if base:
+    if __:
         show = text.split("/")[-1]
     elif show:
         pass

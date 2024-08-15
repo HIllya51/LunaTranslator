@@ -734,7 +734,6 @@
     "翻译及OCR": "Tradução e OCR",
     "项目仓库": "Armazém do Projecto",
     "整合包": "Pacote de integração",
-    "TGW懒人包": "Saco Preguiçoso TGW",
     "论坛": "fórum",
     "请选择": "Por favor escolha",
     "安装成功": "Instalação bem sucedida",
@@ -834,5 +833,6 @@
     "官方网站": "Sítio Web oficial",
     "欢迎使用": "Bem- vindo ao uso",
     "显示注音": "Mostrar a notação fonética",
-    "辞书显示顺序": "Ordem de visualização lexicográfica"
+    "辞书显示顺序": "Ordem de visualização lexicográfica",
+    "背景窗口透明": "Janela de fundo transparente"
 }

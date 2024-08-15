@@ -1133,7 +1133,7 @@
 			},
 			"prompt_version": {
 				"rank": 1.1,
-				"name": "prompt version",
+				"name": "prompt格式（需要根据模型版本决定。使用v0.10pre1以支持gpt词典）",
 				"type": "combo",
 				"list": [
 					"v0.9",

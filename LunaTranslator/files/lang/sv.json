@@ -734,7 +734,6 @@
     "翻译及OCR": "Översättning och OCR",
     "项目仓库": "Projektlager",
     "整合包": "Integrationspaket",
-    "TGW懒人包": "TGW Lazy Bag",
     "论坛": "forum",
     "请选择": "Välj",
     "安装成功": "Installation lyckad",
@@ -834,5 +833,6 @@
     "官方网站": "Officiell webbplats",
     "欢迎使用": "Välkommen att använda",
     "显示注音": "Visa fonetisk notation",
-    "辞书显示顺序": "Lexikografisk visningsordning"
+    "辞书显示顺序": "Lexikografisk visningsordning",
+    "背景窗口透明": "Bakgrundsfönster genomskinligt"
 }
