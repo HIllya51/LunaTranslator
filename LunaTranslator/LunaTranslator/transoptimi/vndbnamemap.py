@@ -40,6 +40,7 @@ class Process:
             gameuid = gobject.baseobject.textsource.gameuid
             return savehook_new_data[gameuid]["namemap2"]
         elif which == 3:
+            gameuid = gobject.baseobject.textsource.gameuid
             return (
                 savehook_new_data[gameuid]["namemap2"] + globalconfig["global_namemap2"]
             )

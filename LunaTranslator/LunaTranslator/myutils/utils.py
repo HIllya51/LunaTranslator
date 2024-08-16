@@ -209,6 +209,8 @@ def trysearchforid_1(gameuid, searchargs: list):
     for key in __:
         vid = None
         for arg in searchargs:
+            if not arg:
+                continue
             try:
                 vid = targetmod[key].getidbytitle(arg)
             except:

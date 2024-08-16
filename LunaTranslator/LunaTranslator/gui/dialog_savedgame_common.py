@@ -362,14 +362,15 @@ def startgame(gameuid):
                 if globalconfig["sourcestatus2"][_[mode]]["use"] == False:
                     globalconfig["sourcestatus2"][_[mode]]["use"] = True
 
-                    yuitsu_switch(
-                        gobject.baseobject.settin_ui,
-                        globalconfig["sourcestatus2"],
-                        "sourceswitchs",
-                        _[mode],
-                        None,
-                        True,
-                    )
+                    for k in globalconfig["sourcestatus2"]:
+                        globalconfig["sourcestatus2"][k]["use"] = k == _[mode]
+                        try:
+                            getattr(gobject.baseobject.settin_ui, "sourceswitchs")[
+                                k
+                            ].setChecked(k == _[mode])
+                        except:
+                            pass
+
                     gobject.baseobject.starttextsource(use=_[mode], checked=True)
 
             localeswitchedrun(gameuid)
