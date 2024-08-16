@@ -12,7 +12,6 @@ from myutils.config import (
     extradatas,
     globalconfig,
 )
-from myutils.wrapper import Singleton_close
 from myutils.utils import str2rgba, get_time_stamp, loopbackrecorder
 from myutils.audioplayer import playonce
 from gui.inputdialog import autoinitdialog
@@ -21,14 +20,8 @@ from gui.usefulwidget import (
     pixmapviewer,
     statusbutton,
     Prompt_dialog,
-    getsimplecombobox,
-    getspinbox,
-    getcolorbutton,
     makesubtab_lazy,
     tabadd_lazy,
-    getsimpleswitch,
-    getspinbox,
-    selectcolor,
     listediter,
 )
 from gui.dialog_savedgame_setting import (
@@ -47,96 +40,10 @@ from gui.dialog_savedgame_common import (
     addgamebatch,
 )
 from gui.dynalang import (
-    LFormLayout,
     LPushButton,
-    LDialog,
     LAction,
     LLabel,
 )
-
-
-@Singleton_close
-class dialog_syssetting(LDialog):
-
-    def __init__(self, parent, type_=1) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("其他设置")
-        formLayout = LFormLayout(self)
-
-        formLayout.addRow(
-            "隐藏不存在的游戏",
-            getsimpleswitch(globalconfig, "hide_not_exists"),
-        )
-        if type_ == 1:
-            for key, name in [
-                ("itemw", "宽度"),
-                ("itemh", "高度"),
-                # ("imgw", "图片宽度"),
-                # ("imgh", "图片高度"),
-                ("margin", "边距"),
-                ("textH", "文字区高度"),
-            ]:
-                formLayout.addRow(
-                    name,
-                    getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
-                )
-        elif type_ == 2:
-            for key, name in [
-                ("listitemheight", "文字区高度"),
-                ("listitemwidth", "高度"),
-            ]:
-                formLayout.addRow(
-                    name,
-                    getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
-                )
-
-        for key, key2, name in [
-            ("backcolor1", "transparent", "颜色"),
-            ("onselectcolor1", "transparentselect", "选中时颜色"),
-            ("onfilenoexistscolor1", "transparentnotexits", "游戏不存在时颜色"),
-        ]:
-            formLayout.addRow(
-                name,
-                getcolorbutton(
-                    globalconfig["dialog_savegame_layout"],
-                    key,
-                    callback=functools.partial(
-                        selectcolor,
-                        self,
-                        globalconfig["dialog_savegame_layout"],
-                        key,
-                        None,
-                        self,
-                        key,
-                    ),
-                    name=key,
-                    parent=self,
-                ),
-            )
-            formLayout.addRow(
-                name + "_" + "不透明度",
-                getspinbox(0, 100, globalconfig["dialog_savegame_layout"], key2),
-            )
-        if type_ == 1:
-            formLayout.addRow(
-                "缩放",
-                getsimplecombobox(
-                    ["填充", "适应", "拉伸", "居中"],
-                    globalconfig,
-                    "imagewrapmode",
-                ),
-            )
-        formLayout.addRow(
-            "启动游戏不修改顺序",
-            getsimpleswitch(globalconfig, "startgamenototop"),
-        )
-
-        if type_ == 1:
-            formLayout.addRow(
-                "显示标题",
-                getsimpleswitch(globalconfig, "showgametitle"),
-            )
-        self.show()
 
 
 class clickitem(QWidget):
