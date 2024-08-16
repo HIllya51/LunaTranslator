@@ -385,12 +385,12 @@ def __b64string(a: str):
 
 def __scaletosize(_pix: QPixmap, tgt):
 
-    if min(_pix.width(), _pix.height()) > 400:
+    if max(_pix.width(), _pix.height()) > 400:
 
-        if _pix.height() < 400:
-            sz = QSize(_pix.width() * 400 // _pix.height(), 400)
+        if _pix.width() > _pix.height():
+            sz = QSize(400, 400 * _pix.height() // _pix.width())
         else:
-            sz = QSize(400, _pix.height() * 400 // _pix.width())
+            sz = QSize(400, _pix.width() * 400 // _pix.height())
         _pix = _pix.scaled(
             sz,
             Qt.AspectRatioMode.KeepAspectRatio,
