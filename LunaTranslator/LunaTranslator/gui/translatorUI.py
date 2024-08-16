@@ -312,9 +312,10 @@ class TranslatorWindow(resizableframeless):
             clear = kwargs.get("clear", False)
 
             iter_res_status, iter_context_class = iter_context
-            if iter_res_status == 2:  # iter结束
+            if iter_res_status in (0, 2):  # iter结束
                 gobject.baseobject.transhis.getnewtranssignal.emit(name, res)
-                return
+                if iter_res_status == 2:
+                    return
 
             if onlytrans:
                 return
