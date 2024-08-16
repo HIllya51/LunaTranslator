@@ -9,4 +9,4 @@ class TS(commonllmdev):
                         if(chunk.text)
                             thistext += chunk.text"""
     button_selector='#send-button'
-    textarea_selector='#root > div > div.mainContent___vvQdb > div.layoutContent___NvxZ_ > div.MuiBox-root.css-ar9pyi > div > div > div > div > div.chatPageLayoutRightBoxLeft___taL5l > div.content___inD6V > div > div.chatBottomContainer___MmYFg.MuiBox-root.css-0 > div > div.chatInput___bMC0h > div > div > div.editor___KShcc.editor___DSPKC > div.editorContentEditable___FZJd9'
+    textarea_selector='button[id="send-button"]'
