@@ -405,7 +405,7 @@ def getTabclip(self):
 def selectfile(self):
     f = QFileDialog.getOpenFileName(
         options=QFileDialog.Option.DontResolveSymlinks,
-        filter="text file (*.json *.txt)",
+        filter="text file (*.json *.txt *.lrc *.srt)",
     )
 
     res = f[0]

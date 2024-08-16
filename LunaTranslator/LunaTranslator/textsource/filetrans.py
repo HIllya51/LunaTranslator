@@ -1,6 +1,6 @@
 from textsource.textsourcebase import basetext
 from myutils.wrapper import threader
-import json, time, os, gobject, hashlib
+import json, time, os, gobject, re
 from myutils.config import globalconfig
 
 
@@ -62,6 +62,61 @@ class parsetxt:
             yield i, k
 
 
+class parsesrt:
+    def __del__(self):
+        with open(
+            os.path.join(
+                os.path.dirname(self.file), "luna_" + os.path.basename(self.file)
+            ),
+            "w",
+            encoding="utf8",
+        ) as ff:
+            ff.write("\n\n".join(self.blocks))
+
+    def __init__(self, file):
+        self.file = file
+        with open(file, "r", encoding="utf8") as ff:
+            self.blocks = ff.read().split("\n\n")
+
+    def __len__(self):
+        return len(self.blocks)
+
+    def save(self, index, k, ts):
+        self.blocks[index] = "\n".join(self.blocks[index].split("\n")[:2]) + "\n" + ts
+
+    def load(self):
+        for i, k in enumerate(self.blocks):
+            yield i, "\n".join(k.split("\n")[2:])
+
+
+class parselrc:
+    def __del__(self):
+
+        with open(
+            os.path.join(
+                os.path.dirname(self.file), "luna_" + os.path.basename(self.file)
+            ),
+            "w",
+            encoding="utf8",
+        ) as ff:
+            ff.write("\n".join(self.data))
+
+    def __init__(self, file):
+        self.file = file
+        with open(file, "r", encoding="utf8") as ff:
+            self.data = ff.read().split("\n")
+
+    def __len__(self):
+        return len(self.data)
+
+    def save(self, index, k, ts):
+        self.data[index] = self.data[index][: self.data[index].find("]") + 1] + ts
+
+    def load(self):
+        for i, a in enumerate(self.data):
+            yield i, a[a.find("]") + 1 :]
+
+
 class filetrans(basetext):
     autofindpids = False
 
@@ -98,6 +153,10 @@ class filetrans(basetext):
             file = parsetxt(file)
         elif file.lower().endswith(".json"):
             file = parsejson(file)
+        elif file.lower().endswith(".lrc"):
+            file = parselrc(file)
+        elif file.lower().endswith(".srt"):
+            file = parsesrt(file)
         gobject.baseobject.settin_ui.progresssignal3.emit(len(file))
         gobject.baseobject.settin_ui.progresssignal2.emit("", 0)
         for index, line in file.load():
@@ -120,4 +179,5 @@ class filetrans(basetext):
             )
             if not ts:
                 continue
-            file.save(index, line, ts)
+            if len(ts.split("\n")) == len(line.split("\n")):
+                file.save(index, line, ts)
