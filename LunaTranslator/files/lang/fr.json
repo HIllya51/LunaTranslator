@@ -830,5 +830,6 @@
     "辞书显示顺序": "Ordre d'affichage des discours",
     "背景窗口透明": "Fenêtre de fond transparente",
     "文件翻译": "Traduction de documents",
-    "文件": "Documents"
+    "文件": "Documents",
+    "最大结果条数": "Nombre maximal de barres de résultats"
 }

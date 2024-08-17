@@ -45,6 +45,6 @@ class xiaoxueguan(cishubase):
             if d <= self.config["distance"]:
                 dis.append(d)
 
-        srt = argsort(dis)[:10]
+        srt = argsort(dis)[: self.config["max_num"]]
         save = ["<span h>" + exp[i][1].replace("\\n", "") for i in srt]
         return "<hr>".join(save)

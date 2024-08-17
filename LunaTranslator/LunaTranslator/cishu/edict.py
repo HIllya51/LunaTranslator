@@ -30,11 +30,9 @@ class edict(cishubase):
                 dis.append(d)
         save = []
         srt = argsort(dis)
-        for ii in srt:
+        for ii in srt[: self.config["max_num"]]:
             if exp[ii][1] not in save:
                 save.append(exp[ii][1])
-            if len(save) >= 10:
-                break
         saveres = []
         for _id in save:
             x = self.sql.execute(

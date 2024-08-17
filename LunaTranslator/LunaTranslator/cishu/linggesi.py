@@ -45,6 +45,6 @@ class linggesi(cishubase):
                 if d <= self.config["distance"]:
                     mp[w] = [xx, d]
 
-        x = sorted(list(mp.keys()), key=lambda x: mp[x][1])[:10]
+        x = sorted(list(mp.keys()), key=lambda x: mp[x][1])[: self.config["max_num"]]
         save = [w + "<br>" + mp[w][0] for w in x]
         return "<hr>".join(save)

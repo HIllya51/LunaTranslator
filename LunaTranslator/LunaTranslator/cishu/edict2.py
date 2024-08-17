@@ -38,10 +38,8 @@ class edict2(cishubase):
                     savew.append(w)
         saveres = []
         srt = argsort(dis)
-        for ii in srt:
+        for ii in srt[: self.config["max_num"]]:
             saveres.append(
                 savew[ii] + "<br>" + re.sub("/EntL.*/", "", self.save[savew[ii]][1:])
             )
-            if len(saveres) >= 10:
-                break
         return "<hr>".join(saveres)

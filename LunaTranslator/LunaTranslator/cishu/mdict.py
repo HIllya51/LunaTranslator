@@ -2129,7 +2129,7 @@ class mdict(cishubase):
                 results.append(k)
                 diss[k] = dis
 
-        return sorted(results, key=lambda x: diss[x])
+        return sorted(results, key=lambda x: diss[x])[: self.config["max_num"]]
 
     def parse_strings(self, input_string):
         parsed_strings = []

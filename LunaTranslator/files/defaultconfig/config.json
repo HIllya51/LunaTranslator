@@ -1211,7 +1211,8 @@
         "xiaoxueguan": {
             "args": {
                 "path": "",
-                "distance": 0
+                "distance": 0,
+                "max_num": 10
             },
             "argstype": {
                 "path": {
@@ -1225,6 +1226,13 @@
                     "name": "模糊匹配_编辑距离",
                     "min": 0,
                     "max": 100,
+                    "step": 1
+                },
+                "max_num": {
+                    "type": "intspin",
+                    "name": "最大结果条数",
+                    "min": 0,
+                    "max": 9999,
                     "step": 1
                 }
             },
@@ -1237,7 +1245,8 @@
             "name": "EDICT",
             "args": {
                 "path": "",
-                "distance": 0
+                "distance": 0,
+                "max_num": 10
             },
             "argstype": {
                 "path": {
@@ -1252,6 +1261,13 @@
                     "min": 0,
                     "max": 100,
                     "step": 1
+                },
+                "max_num": {
+                    "type": "intspin",
+                    "name": "最大结果条数",
+                    "min": 0,
+                    "max": 9999,
+                    "step": 1
                 }
             },
             "type": "offline"
@@ -1261,7 +1277,8 @@
             "name": "EDICT2",
             "args": {
                 "path": "",
-                "distance": 0
+                "distance": 0,
+                "max_num": 10
             },
             "argstype": {
                 "path": {
@@ -1275,6 +1292,13 @@
                     "min": 0,
                     "max": 100,
                     "step": 1
+                },
+                "max_num": {
+                    "type": "intspin",
+                    "name": "最大结果条数",
+                    "min": 0,
+                    "max": 9999,
+                    "step": 1
                 }
             },
             "type": "offline"
@@ -1284,7 +1308,8 @@
             "name": "灵格斯词典",
             "args": {
                 "path": "",
-                "distance": 0
+                "distance": 0,
+                "max_num": 10
             },
             "argstype": {
                 "path": {
@@ -1297,6 +1322,13 @@
                     "name": "模糊匹配_编辑距离",
                     "min": 0,
                     "max": 100,
+                    "step": 1
+                },
+                "max_num": {
+                    "type": "intspin",
+                    "name": "最大结果条数",
+                    "min": 0,
+                    "max": 9999,
                     "step": 1
                 }
             },
@@ -1325,6 +1357,7 @@
             "args": {
                 "paths": [],
                 "distance": 0,
+                "max_num": 10,
                 "stylehv": 0
             },
             "argstype": {
@@ -1340,6 +1373,13 @@
                     "name": "模糊匹配_编辑距离",
                     "min": 0,
                     "max": 100,
+                    "step": 1
+                },
+                "max_num": {
+                    "type": "intspin",
+                    "name": "最大结果条数",
+                    "min": 0,
+                    "max": 9999,
                     "step": 1
                 },
                 "stylehv": {

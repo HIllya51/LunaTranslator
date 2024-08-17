@@ -830,5 +830,6 @@
     "辞书显示顺序": "Lexicographical display order",
     "背景窗口透明": "Background window transparent",
     "文件翻译": "documentary translation",
-    "文件": "file"
+    "文件": "file",
+    "最大结果条数": "Maximum number of results"
 }
