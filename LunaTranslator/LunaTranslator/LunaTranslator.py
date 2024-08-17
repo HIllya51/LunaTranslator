@@ -764,16 +764,15 @@ class MAINUI:
                 aclass = importlib.import_module("translator." + classname).TS
             elif which == 1:
                 aclass = importlib.import_module("userconfig.copyed." + classname).TS
+            return aclass(classname)
         except Exception as e:
-            print_exc()
             self.displayinfomessage(
                 globalconfig["fanyi"][classname]["name"]
                 + " import failed : "
                 + str(stringfyerror(e)),
                 "<msg_error_not_refresh>",
             )
-            return None
-        return aclass(classname)
+            raise e
 
     @threader
     def prepare(self, now=None, _=None):
@@ -802,17 +801,15 @@ class MAINUI:
                 if _type not in globalconfig[rankkey]:
                     globalconfig[rankkey].append(_type)
             else:
-
                 if _type in globalconfig[rankkey]:
                     globalconfig[rankkey].remove(_type)
-
-            if not use:
-
                 return
             item = initmethod(_type)
             if item:
                 dictobject[_type] = item
         except:
+            if _type in globalconfig[rankkey]:
+                globalconfig[rankkey].remove(_type)
             print_exc()
 
     @threader
@@ -820,13 +817,9 @@ class MAINUI:
         self.commonloader("cishu", self.cishus, self.cishuinitmethod, type_)
 
     def cishuinitmethod(self, type_):
-        try:
-            aclass = importlib.import_module("cishu." + type_)
-            aclass = getattr(aclass, type_)
-        except:
-            print_exc()
-            return
 
+        aclass = importlib.import_module("cishu." + type_)
+        aclass = getattr(aclass, type_)
         return aclass(type_)
 
     def maybesetedittext(self, text):
