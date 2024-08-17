@@ -388,7 +388,6 @@
     "起始地址(hex)": "Start Address (hex)",
     "结束地址(hex)": "End Address (hex)",
     "搜索文本过短！": "Search Text too Short!",
-    "移除非选定hook": "Remove Unused Hooks",
     "不能为空": "Cannot be empty",
     "阿里api": "Ali API",
     "找不到重要组件：": "Important Component Not Found:",

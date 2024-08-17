@@ -388,7 +388,6 @@
     "起始地址(hex)": "Địa chỉ bắt đầu (Hex)",
     "结束地址(hex)": "Địa chỉ kết thúc (Hex)",
     "搜索文本过短！": "Tìm kiếm văn bản quá ngắn!",
-    "移除非选定hook": "Xóa hook không chọn",
     "不能为空": "Không thể để trống",
     "阿里api": "bởi aliapi",
     "找不到重要组件：": "Không tìm thấy thành phần quan trọng:",

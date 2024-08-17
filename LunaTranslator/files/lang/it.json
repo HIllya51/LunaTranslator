@@ -388,7 +388,6 @@
     "起始地址(hex)": "Indirizzo iniziale (esadecimale)",
     "结束地址(hex)": "Indirizzo finale (esadecimale)",
     "搜索文本过短！": "Il testo di ricerca è troppo breve!",
-    "移除非选定hook": "Rimuovi ganci non selezionati",
     "不能为空": "Impossibile essere vuoto",
     "阿里api": "API Alibaba",
     "找不到重要组件：": "Componente importante non trovato:",

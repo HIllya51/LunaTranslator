@@ -388,7 +388,6 @@
     "起始地址(hex)": "Dirección inicial (hex)",
     "结束地址(hex)": "Dirección final (hex)",
     "搜索文本过短！": "¡El texto de búsqueda es demasiado corto!",
-    "移除非选定hook": "Eliminar gancho no seleccionado",
     "不能为空": "No puede estar vacío",
     "阿里api": "Ali API",
     "找不到重要组件：": "No se pueden encontrar componentes importantes:",

@@ -1,6 +1,6 @@
 import sys, time
 
-sys.path.append("./LunaTranslator")
+sys.path.insert(0, "./LunaTranslator")
 from translator.baidu_ai import TS
 
 

@@ -388,7 +388,6 @@
     "起始地址(hex)": "Başlangıç adresi (hex)",
     "结束地址(hex)": "Sonu Adresi (hex)",
     "搜索文本过短！": "Arama mesajı çok kısa!",
-    "移除非选定hook": "Seçilmemiş halkaları kaldır",
     "不能为空": "Boş olamaz",
     "阿里api": "Alibaba API",
     "找不到重要组件：": "Önemli komponent bulunamadı:",
