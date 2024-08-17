@@ -801,6 +801,13 @@ class searchwordW(closeashidewindow):
 
         self.tab = CustomTabBar()
         self.tab.tabBarClicked.connect(self.tabclicked)
+
+        def __(idx):
+            if not self.hasclicked:
+                return
+            self.tabclicked(idx)
+
+        self.tab.currentChanged.connect(__)
         self.tabks = []
         self.setCentralWidget(ww)
         self.textOutput = auto_select_webview(self)
