@@ -54,11 +54,15 @@ class TS(basetrans):
             src = gpt["src"]
             if self.needzhconv:
                 dst = zhconv.convert(gpt["dst"], "zh-hans")
-                info = zhconv.convert(gpt["info"], "zh-hans") if "info" in gpt.keys() else None
+                info = (
+                    zhconv.convert(gpt["info"], "zh-hans")
+                    if "info" in gpt.keys()
+                    else None
+                )
             else:
                 dst = gpt["dst"]
                 info = gpt["info"] if "info" in gpt.keys() else None
-            
+
             if info:
                 single = f"{src}->{dst} #{info}"
             else:
@@ -118,6 +122,7 @@ class TS(basetrans):
             )
             # print(content)
             messages.append({"role": "user", "content": content})
+        print(messages)
         return messages
 
     def send_request(self, query, is_test=False, **kwargs):
@@ -293,7 +298,9 @@ class TS(basetrans):
             # output_text = output["choices"][0]["message"]["content"]
 
             if bool(self.config["流式输出"]) == True:
-                output = self.send_request_stream(query, history_zh=history_prompt)
+                output = self.send_request_stream(
+                    query, history_zh=history_prompt, gpt_dict=gpt_dict
+                )
                 completion_tokens = 0
                 output_text = ""
                 for o in output:
@@ -305,7 +312,9 @@ class TS(basetrans):
                     else:
                         finish_reason = o["choices"][0]["finish_reason"]
             else:
-                output = self.send_request(query, history_zh=history_prompt)
+                output = self.send_request(
+                    query, history_zh=history_prompt, gpt_dict=gpt_dict
+                )
                 for o in output:
                     completion_tokens = o["usage"]["completion_tokens"]
                     output_text = o["choices"][0]["message"]["content"]
@@ -324,6 +333,7 @@ class TS(basetrans):
                             query,
                             history_zh=history_prompt,
                             frequency_penalty=frequency_penalty,
+                            gpt_dict=gpt_dict,
                         )
                         completion_tokens = 0
                         output_text = ""
@@ -341,6 +351,7 @@ class TS(basetrans):
                             query,
                             history_zh=history_prompt,
                             frequency_penalty=frequency_penalty,
+                            gpt_dict=gpt_dict,
                         )
                         yield "\0"
                         for o in output:
