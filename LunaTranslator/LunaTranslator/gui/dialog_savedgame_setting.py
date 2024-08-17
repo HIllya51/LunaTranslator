@@ -1042,13 +1042,11 @@ class dialog_setting_game_internal(QWidget):
 
         for k in [
             "codepage_index",
-            "removeuseless",
             "direct_filterrepeat",
             "textthreaddelay",
             "maxBufferSize",
             "maxHistorySize",
             "filter_chaos_code",
-            "use_yapi",
         ]:
             if k not in savehook_new_data[gameuid]["hooksetting_private"]:
                 savehook_new_data[gameuid]["hooksetting_private"][k] = globalconfig[k]
@@ -1068,21 +1066,7 @@ class dialog_setting_game_internal(QWidget):
                 lambda x: gobject.baseobject.textsource.setsettings(),
             ),
         )
-        formLayout2.addRow(
-            "过滤反复刷新的句子",
-            getsimpleswitch(
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "direct_filterrepeat",
-                callback=lambda x: gobject.baseobject.textsource.setsettings(),
-            ),
-        )
 
-        formLayout2.addRow(
-            "移除非选定hook",
-            getsimpleswitch(
-                savehook_new_data[gameuid]["hooksetting_private"], "removeuseless"
-            ),
-        )
         formLayout2.addRow(
             "刷新延迟(ms)",
             getspinbox(
@@ -1114,20 +1098,20 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         formLayout2.addRow(
+            "过滤反复刷新的句子",
+            getsimpleswitch(
+                savehook_new_data[gameuid]["hooksetting_private"],
+                "direct_filterrepeat",
+                callback=lambda x: gobject.baseobject.textsource.setsettings(),
+            ),
+        )
+        formLayout2.addRow(
             "过滤包含乱码的文本行",
             getsimpleswitch(
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "filter_chaos_code",
             ),
         )
-        formLayout2.addRow(
-            "使用YAPI注入",
-            getsimpleswitch(
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "use_yapi",
-            ),
-        )
-
 
 
 

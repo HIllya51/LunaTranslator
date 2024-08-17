@@ -260,9 +260,6 @@ class texthook(basetext):
         self.gamepath = gamepath
         self.gameuid = gameuid
         self.is64bit = Is64bit(pids[0])
-        self.isremoveuseless = self.config["removeuseless"] and len(
-            self.autostarthookcode
-        )
         if (
             len(autostarthookcode) == 0
             and len(savehook_new_data[self.gameuid]["embedablehook"]) == 0
@@ -301,7 +298,7 @@ class texthook(basetext):
         caninject = test_injectable(pids)
         injectpids = []
         for pid in pids:
-            if caninject and self.config["use_yapi"]:
+            if caninject and globalconfig["use_yapi"]:
                 self.Luna_Inject(pid, os.path.abspath("./files/plugins/LunaHook"))
             else:
                 if self.Luna_CreatePipeAndCheck(pid):
@@ -423,10 +420,6 @@ class texthook(basetext):
         key = (hc, hn.decode("utf8"), tp)
 
         self.hookdatacollecter[key] = []
-        if self.isremoveuseless:
-            if hc not in [_[0] for _ in self.autostarthookcode]:
-                self.Luna_RemoveHook(tp.processId, tp.addr)
-                return False
 
         select = False
         for _i, autostarthookcode in enumerate(self.autostarthookcode):

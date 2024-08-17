@@ -428,7 +428,6 @@
         500
     ],
     "codepage_index": 0,
-    "removeuseless": false,
     "currvislistuid": null,
     "multiregion": false,
     "ocrregions": [],
@@ -1386,7 +1385,7 @@
         "copy": {
             "use": false
         },
-        "filetrans":{
+        "filetrans": {
             "use": false
         }
     },

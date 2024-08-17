@@ -95,14 +95,6 @@ def gethookgrid(self):
                             ),
                         ],
                         [
-                            "移除非选定hook",
-                            D_getsimpleswitch(globalconfig, "removeuseless"),
-                        ],
-                        [
-                            "过滤反复刷新的句子",
-                            D_getsimpleswitch(globalconfig, "direct_filterrepeat"),
-                        ],
-                        [
                             "刷新延迟(ms)",
                             (
                                 D_getspinbox(
@@ -140,6 +132,10 @@ def gethookgrid(self):
                                 ),
                                 2,
                             ),
+                        ],
+                        [
+                            "过滤反复刷新的句子",
+                            D_getsimpleswitch(globalconfig, "direct_filterrepeat"),
                         ],
                         [
                             "过滤包含乱码的文本行",
