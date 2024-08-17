@@ -219,6 +219,7 @@
     "辞书": "Dictionary",
     "分词": "Tokenization",
     "过滤尖括号<>": "Filter Angle Brackets <>",
+    "Moji辞书": "Moji Dictionary",
     "清空": "Clear",
     "不显示原文": "Don't Display Original Text",
     "不显示api": "Don't Display API",

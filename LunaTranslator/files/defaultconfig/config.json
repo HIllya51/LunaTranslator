@@ -1334,6 +1334,11 @@
             },
             "type": "offline"
         },
+        "mojidict": {
+            "use": false,
+            "name": "Moji辞书",
+            "useproxy": false
+        },
         "youdao": {
             "use": false,
             "name": "有道词典",
