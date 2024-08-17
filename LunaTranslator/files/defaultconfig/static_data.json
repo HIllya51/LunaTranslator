@@ -809,7 +809,6 @@
         "北欧",
         "西里尔"
     ],
-    "hcodeintroduction": "Enter read code\nR{S|Q|V|M}[null_length<][codepage#]@addr\nOR\nEnter hook code\nH{A|B|W|H|S|Q|V|M}[F][null_length<][N][codepage#][padding+]data_offset[*deref_offset][:split_offset[*deref_offset]]@addr[:module[:func]]\nAll numbers except codepage/null_length in hexadecimal\nDefault codepage is 932 (Shift-JIS) but this can be changed in settings\nA/B: codepage char little/big endian\nW: UTF-16 char\nH: Two hex bytes\nS/Q/V/M: codepage/UTF-16/UTF-8/hex string\nF: treat strings as full lines of text\nN: don't use context\nnull_length: length of null terminator used for string\npadding: length of padding data before string (C struct { int64_t size; char string[500]; } needs padding = 8)\nNegatives for data_offset/split_offset refer to registers\n-4 for EAX, -8 for ECX, -C for EDX, -10 for EBX, -14 for ESP, -18 for EBP, -1C for ESI, -20 for EDI\n-C for RAX, -14 for RBX, -1C for RCX, -24 for RDX, and so on for RSP, RBP, RSI, RDI, R8-R15\n* means dereference pointer+deref_offset",
     "aboutsource": [
         {
             "name": "离线翻译",

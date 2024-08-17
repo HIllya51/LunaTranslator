@@ -279,19 +279,6 @@ class TableViewW(QTableView):
             self.model().itemFromIndex(self.currentIndex()).setText(string)
 
 
-@Singleton_close
-class dialog_showinfo(QDialog):
-
-    def __init__(self, parent, title, info) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle(title)
-        l = QLabel(info)
-        layout = QHBoxLayout()
-        layout.addWidget(l)
-        self.setLayout(layout)
-        self.show()
-
-
 def getQMessageBox(
     parent=None,
     title="",
@@ -306,17 +293,17 @@ def getQMessageBox(
     msgBox.setText((text))
     btn = 0
     if useok:
-        btn |= QMessageBox.Ok
+        btn |= QMessageBox.StandardButton.Ok
     if usecancel:
-        btn |= QMessageBox.Cancel
+        btn |= QMessageBox.StandardButton.Cancel
 
     msgBox.setStandardButtons(btn)
-    msgBox.setDefaultButton(QMessageBox.Ok)
+    msgBox.setDefaultButton(QMessageBox.StandardButton.Ok)
     ret = msgBox.exec()
 
-    if ret == QMessageBox.Ok and okcallback:
+    if ret == QMessageBox.StandardButton.Ok and okcallback:
         okcallback()
-    elif ret == QMessageBox.Cancel and cancelcallback:
+    elif ret == QMessageBox.StandardButton.Cancel and cancelcallback:
         cancelcallback()
 
 
