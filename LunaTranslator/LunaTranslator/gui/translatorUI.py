@@ -9,6 +9,7 @@ from myutils.config import (
     _TR,
     static_data,
 )
+from gui.dialog_savedgame import dialog_setting_game
 from myutils.utils import getlanguse, dynamiclink
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
@@ -641,7 +642,11 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "open_game_setting",
-                lambda: gobject.baseobject.hookselectdialog.opengamesetting(),
+                lambda: dialog_setting_game(
+                    gobject.baseobject.commonstylebase,
+                    gobject.baseobject.textsource.gameuid,
+                    1,
+                ),
             ),
             ("ocr_once", self.ocr_once_signal.emit),
             ("minmize", self.hide_),

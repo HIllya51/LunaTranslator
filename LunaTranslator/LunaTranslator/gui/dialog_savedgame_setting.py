@@ -51,7 +51,7 @@ from gui.usefulwidget import (
     getspinbox,
     listediterline,
 )
-from gui.dynalang import LFormLayout, LPushButton, LStandardItemModel, LAction, LLabel
+from gui.dynalang import LFormLayout, LPushButton, LStandardItemModel, LAction, LLabel, LDialog
 from gui.dialog_savedgame_common  import tagitem, TagWidget
 
 
@@ -1139,7 +1139,7 @@ def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:
     return new_rect
 
 @Singleton_close
-class dialog_setting_game(QDialog):
+class dialog_setting_game(LDialog):
 
     def __init__(self, parent, gameuid, setindexhook=0) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)

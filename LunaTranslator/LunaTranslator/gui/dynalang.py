@@ -1,3 +1,4 @@
+import gobject
 from myutils.config import _TR, _TRL
 from qtsymbols import *
 
@@ -161,10 +162,18 @@ class LFormLayout(QFormLayout):
         super().insertRow(row, *argc)
 
 
+traceonepostion = {}
+
+
 class LDialog(QDialog):
+    def moveEvent(self, e):
+        traceonepostion[self.parent()] = self.pos()
 
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
+        if self.parent() == gobject.baseobject.commonstylebase:
+            if traceonepostion.get(self.parent(), None):
+                self.move(traceonepostion.get(self.parent(), None))
         self._title = None
 
     def setWindowTitle(self, t):
