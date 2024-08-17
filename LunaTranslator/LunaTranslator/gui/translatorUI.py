@@ -527,37 +527,37 @@ class TranslatorWindow(resizableframeless):
             (
                 "noundict",
                 lambda: loadpostsettingwindowmethod("noundict")(
-                    gobject.baseobject.settin_ui
+                    gobject.baseobject.commonstylebase
                 ),
             ),
             (
                 "noundict_2",
                 lambda: loadpostsettingwindowmethod_maybe(
-                    "noundict", gobject.baseobject.settin_ui
+                    "noundict", gobject.baseobject.commonstylebase
                 ),
             ),
             (
                 "noundict_direct",
                 lambda: loadpostsettingwindowmethod_maybe(
-                    "vndbnamemap", gobject.baseobject.settin_ui
+                    "vndbnamemap", gobject.baseobject.commonstylebase
                 ),
             ),
             (
                 "noundict_sakura",
                 lambda: loadpostsettingwindowmethod_maybe(
-                    "gptpromptdict", gobject.baseobject.settin_ui
+                    "gptpromptdict", gobject.baseobject.commonstylebase
                 ),
             ),
             (
                 "fix",
                 lambda: loadpostsettingwindowmethod("transerrorfix")(
-                    gobject.baseobject.settin_ui
+                    gobject.baseobject.commonstylebase
                 ),
             ),
             (
                 "fix_2",
                 lambda: loadpostsettingwindowmethod_maybe(
-                    "transerrorfix", gobject.baseobject.settin_ui
+                    "transerrorfix", gobject.baseobject.commonstylebase
                 ),
             ),
             ("langdu", lambda: gobject.baseobject.readcurrent(force=True)),
