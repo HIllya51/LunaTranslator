@@ -568,6 +568,7 @@
             "open_relative_link",
             "open_game_setting",
             "ocr_once",
+            "ocr_once_follow",
             "selectable",
             "minmize",
             "quit"
