@@ -245,7 +245,6 @@ class TranslatorWindow(resizableframeless):
     refreshtooliconsignal = pyqtSignal()
     hidesignal = pyqtSignal()
     muteprocessignal = pyqtSignal()
-    ocr_once_signal = pyqtSignal()
     resizesignal = pyqtSignal(QSize)
     move_signal = pyqtSignal(QPoint)
     closesignal = pyqtSignal()
@@ -467,13 +466,6 @@ class TranslatorWindow(resizableframeless):
         else:
             gobject.baseobject.textgetmethod(text, False)
 
-    def ocr_once_function(self):
-        def ocroncefunction(rect):
-            self.ocr_once_follow_rect = rect
-            self.ocr_do_function(rect)
-
-        rangeselct_function(ocroncefunction, False, False)
-
     @threader
     def simulate_key_enter(self):
         windows.SetForegroundWindow(gobject.baseobject.hwnd)
@@ -654,7 +646,6 @@ class TranslatorWindow(resizableframeless):
                     1,
                 ),
             ),
-            ("ocr_once", self.ocr_once_signal.emit),
             (
                 "ocr_once_follow",
                 lambda: self.ocr_do_function(self.ocr_once_follow_rect),
@@ -827,7 +818,6 @@ class TranslatorWindow(resizableframeless):
         self.displaylink.connect(self.displaylink_f)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
         self.displaymessagebox.connect(self.displaymessagebox_f)
-        self.ocr_once_signal.connect(self.ocr_once_function)
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
         self.displayres.connect(self.showres)
@@ -1255,11 +1245,20 @@ class TranslatorWindow(resizableframeless):
         self.resizesignal.emit(size)
 
     def clickRange(self, auto):
-        if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
-            return
-        self.showhidestate = False
 
-        rangeselct_function(self.afterrange, auto, auto)
+        def ocroncefunction(rect):
+            self.ocr_once_follow_rect = rect
+            self.ocr_do_function(rect)
+
+        def inocrmode(rect):
+            self.showhidestate = False
+            self.afterrange(rect)
+
+        if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
+            f = ocroncefunction
+        else:
+            f = inocrmode
+        rangeselct_function(f, auto, auto)
 
     @tryprint
     def afterrange(self, rect):

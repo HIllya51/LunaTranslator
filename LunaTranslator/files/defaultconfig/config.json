@@ -567,8 +567,8 @@
             "copy_once",
             "open_relative_link",
             "open_game_setting",
-            "ocr_once",
             "selectable",
+            "ocr_once_follow",
             "minmize",
             "quit"
         ],
@@ -650,9 +650,6 @@
             "selectocrrange": {
                 "use": true,
                 "tip": "选取OCR范围",
-                "belong": [
-                    "ocr"
-                ],
                 "icon": "fa.crop",
                 "align": 2
             },
@@ -664,12 +661,6 @@
                 ],
                 "icon": "fa.square",
                 "align": 2
-            },
-            "ocr_once": {
-                "use": false,
-                "tip": "进行一次OCR",
-                "icon": "fa.crop",
-                "align": 0
             },
             "ocr_once_follow": {
                 "use": false,
@@ -1016,11 +1007,6 @@
             "_25": {
                 "use": false,
                 "name": "Magpie_游戏内叠加层",
-                "keystring": ""
-            },
-            "_26": {
-                "use": false,
-                "name": "进行一次OCR",
                 "keystring": ""
             },
             "_27": {
