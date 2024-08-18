@@ -13,7 +13,6 @@ except:
     print_exc()
 
 
-
 class Response(ResponseBase):
     def iter_content_impl(self, chunk_size=1):
         availableSize = DWORD()
@@ -48,6 +47,11 @@ class Response(ResponseBase):
 
 
 class Requester(Requester_common):
+    def request(self, *argc, **kwarg) -> ResponseBase:
+        if kwarg["stream"]:
+            # winhttp流式时，没办法判断解压边界
+            kwarg["headers"].pop("Accept-Encoding")
+        return super().request(*argc, **kwarg)
 
     def _getheaders(self, hreq):
         dwSize = DWORD()
