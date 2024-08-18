@@ -58,13 +58,16 @@
     点击按钮弹出选择游戏文本窗口，来选择要翻译哪条HOOK到的文本。<br>
     不过，选择文本窗口在选择进程后会自动弹出，这个按钮实际上是用来更换选择的文本，或修改一些设置用的。
 1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> 选取OCR范围
-    **OCR模式下**，选取OCR区域，或者更换OCR区域，或者当激活`OCR设置`->`其他`->`多重区域模式`时增加新的OCR区域
-    **非OCR模式下**，合并了原`进行一次OCR`按钮的功能，先进行OCR范围选择，然后进行一次OCR，然后进行翻译流程。一般用于，在HOOK模式下，遇到选择支时，临时使用一次OCR进行翻译选择支。或者在OCR模式下，临时去识别一次其他偶尔出现的新的位置。
+    **该按钮仅在OCR模式下可用**<br>
+    OCR模式下，选取OCR区域，或者更换OCR区域，或者当激活`OCR设置`->`其他`->`多重区域模式`时增加新的OCR区域
 1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> 显示/隐藏范围框 
     **该按钮仅在OCR模式下可用**<br>
     当未选择任何OCR范围时，使用该按钮显示OCR范围，会自动设置OCR范围为上一次选择的OCR。
+1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> 进行一次OCR
+    该按钮和`读取剪贴板`类似，不管当前的默认文本输入源是什么，都会先进行OCR范围选择，然后进行一次OCR，然后进行翻译流程。<br>
+    该按钮一般用于，在HOOK模式下，遇到选择支时，临时使用一次OCR进行翻译选择支。或者在OCR模式下，临时去识别一次其他偶尔出现的新的位置。<br>
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次进行OCR
-    **非OCR模式下**，当使用过一次`选取OCR范围`后，使用这个按钮，可以在原来的位置上再次进行一次OCR而无需重新选择识别区域。
+    当使用过一次`进行一次OCR`后，使用这个按钮，可以在原来的位置上再次进行一次OCR而无需重新选择识别区域。
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_直接替换
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_sakura_gpt_词典

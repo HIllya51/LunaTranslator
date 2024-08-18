@@ -65,6 +65,7 @@ def registrhotkeys(self):
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
         ),
+        "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
         "_27": gobject.baseobject.translation_ui.simulate_key_enter,
         "_28": lambda: winsharedutils.clipboard_set(
             gobject.baseobject.currenttranslate

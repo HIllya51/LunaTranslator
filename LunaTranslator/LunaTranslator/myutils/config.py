@@ -382,7 +382,7 @@ def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
                 if skipdict == False:
                     syncconfig(config1[key], default[key], drop, deep - 1)
     if isinstance(config1, dict) and isinstance(default, dict):
-        for key in ("name", "tip", "argstype", "args", "belong"):
+        for key in ("name", "tip", "argstype", "args"):
             if key in config1 and key not in default:
                 config1.pop(key)
     if drop and deep > 0:
