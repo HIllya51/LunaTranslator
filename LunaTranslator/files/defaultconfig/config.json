@@ -656,12 +656,6 @@
                 "icon": "fa.crop",
                 "align": 2
             },
-            "ocr_once": {
-                "use": false,
-                "tip": "进行一次OCR",
-                "icon": "fa.crop",
-                "align": 0
-            },
             "hideocrrange": {
                 "use": true,
                 "tip": "显示/隐藏范围框",
@@ -670,6 +664,18 @@
                 ],
                 "icon": "fa.square",
                 "align": 2
+            },
+            "ocr_once": {
+                "use": false,
+                "tip": "进行一次OCR",
+                "icon": "fa.crop",
+                "align": 0
+            },
+            "ocr_once_follow": {
+                "use": false,
+                "tip": "再次进行OCR",
+                "icon": "fa.spinner",
+                "align": 0
             },
             "noundict_direct": {
                 "use": false,

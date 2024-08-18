@@ -832,5 +832,6 @@
     "背景窗口透明": "Hintergrundfenster transparent",
     "文件翻译": "Übersetzung von Dokumenten",
     "文件": "Datei",
-    "最大结果条数": "Maximale Anzahl der Ergebnisse"
+    "最大结果条数": "Maximale Anzahl der Ergebnisse",
+    "再次进行OCR": "OCR erneut ausführen"
 }

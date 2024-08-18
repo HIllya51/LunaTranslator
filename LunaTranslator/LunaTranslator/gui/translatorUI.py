@@ -456,15 +456,21 @@ class TranslatorWindow(resizableframeless):
         self.seteffect()
         self.changeextendstated()
 
+    @threader
+    def ocr_do_function(self, rect):
+        if not rect:
+            return
+        img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        text, infotype = ocr_run(img)
+        if infotype:
+            gobject.baseobject.displayinfomessage(text, infotype)
+        else:
+            gobject.baseobject.textgetmethod(text, False)
+
     def ocr_once_function(self):
-        @threader
         def ocroncefunction(rect):
-            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
-            text, infotype = ocr_run(img)
-            if infotype:
-                gobject.baseobject.displayinfomessage(text, infotype)
-            else:
-                gobject.baseobject.textgetmethod(text, False)
+            self.ocr_once_follow_rect = rect
+            self.ocr_do_function(rect)
 
         rangeselct_function(ocroncefunction, False, False)
 
@@ -649,6 +655,10 @@ class TranslatorWindow(resizableframeless):
                 ),
             ),
             ("ocr_once", self.ocr_once_signal.emit),
+            (
+                "ocr_once_follow",
+                lambda: self.ocr_do_function(self.ocr_once_follow_rect),
+            ),
             ("minmize", self.hide_),
             ("quit", self.close),
             (
@@ -790,6 +800,7 @@ class TranslatorWindow(resizableframeless):
         self.thistimenotsetop = False
         self.isbindedwindow = False
         self.setontopthread_lock = threading.Lock()
+        self.ocr_once_follow_rect = None
 
     def displayglobaltooltip_f(self, string):
         QToolTip.showText(QCursor.pos(), string, self)
