@@ -155,23 +155,6 @@ class fadeoutlabel(QLabel):
         self.animation.start()
 
 
-class XQListWidget(QListWidget):
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
-
-    def sethor(self, hor):
-        if hor:
-            self.setFlow(QListWidget.LeftToRight)
-            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
-            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        else:
-            self.setFlow(QListWidget.TopToBottom)
-            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-            self.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
-
-
 def getselectpos(parent, callback):
     __d = {"k": 0}
     __vis, __uid = ["下", "右", "上", "左"], [0, 1, 2, 3]
@@ -206,6 +189,65 @@ def getselectpos(parent, callback):
         callback(__uid[0])
 
 
+PathRole = Qt.ItemDataRole.UserRole + 1
+ImageRequestedRole = PathRole + 1
+
+
+class ImageDelegate(QStyledItemDelegate):
+    def initStyleOption(self, opt: QStyleOptionViewItem, index: QModelIndex):
+        super().initStyleOption(opt, index)
+        if not index.data(ImageRequestedRole):
+            opt.features |= opt.ViewItemFeature.HasDecoration
+            opt.decorationSize = QSize(100, 100)
+
+
+class MyQListWidget(QListWidget):
+
+    def sethor(self, hor):
+        if hor:
+            self.setFlow(QListWidget.Flow.LeftToRight)
+            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        else:
+            self.setFlow(QListWidget.Flow.TopToBottom)
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+            self.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+
+    def __init__(self, p=None):
+        super(MyQListWidget, self).__init__(p)
+        self.imageDelegate = ImageDelegate(self)
+        self.setItemDelegate(self.imageDelegate)
+        self.lock = threading.Lock()
+        self.loadTimer = QTimer(interval=25, timeout=self.loadImage)
+        self.loadTimer.start()
+
+    def loadImage(self):
+        try:
+            start = self.indexAt(self.viewport().rect().topLeft()).row()
+            end = self.indexAt(self.viewport().rect().bottomRight()).row()
+            if start < 0:
+                return
+            if end < 0:
+                end = start
+            with self.lock:
+                model = self.model()
+                for row in range(start, end + 1):
+                    index = model.index(row, 0)
+                    if not index.data(ImageRequestedRole):
+                        self.model().setData(index, True, ImageRequestedRole)
+                        image = getcachedimage(index.data(PathRole), True)
+                        if image is None:
+                            self.blockSignals(True)
+                            self.takeItem(index.row())
+                            self.blockSignals(False)
+                        else:
+                            self.item(index.row()).setIcon(QIcon(image))
+        except:
+            print_exc()
+
+
 class previewimages(QWidget):
     changepixmappath = pyqtSignal(str)
     removepath = pyqtSignal(str)
@@ -226,7 +268,7 @@ class previewimages(QWidget):
         super().__init__(p)
         self.lay = QHBoxLayout()
         self.lay.setContentsMargins(0, 0, 0, 0)
-        self.list = XQListWidget(self)
+        self.list = MyQListWidget(self)
         self.list.currentRowChanged.connect(self._visidx)
         self.lay.addWidget(self.list)
         self.setLayout(self.lay)
@@ -240,21 +282,15 @@ class previewimages(QWidget):
         self.list.setCurrentRow(-1)
         self.list.blockSignals(True)
         self.list.clear()
-        pathx = []
         for path in paths:
-            image = getcachedimage(path, True)
-            if image is None:
-                continue
             item = QListWidgetItem()
-            item.imagepath = path
-            pathx.append(path)
-            item.setIcon(QIcon(image))
-
+            item.setData(PathRole, path)
+            item.setData(ImageRequestedRole, False)
             self.list.addItem(item)
         self.list.blockSignals(False)
         pixmapi = 0
-        if currentpath in pathx:
-            pixmapi = pathx.index(currentpath)
+        if currentpath in paths:
+            pixmapi = paths.index(currentpath)
         self.list.setCurrentRow(pixmapi)
 
     def _visidx(self, _):
@@ -262,7 +298,7 @@ class previewimages(QWidget):
         if item is None:
             pixmap_ = None
         else:
-            pixmap_ = item.imagepath
+            pixmap_ = item.data(PathRole)
         self.changepixmappath.emit(pixmap_)
 
     def removecurrent(self, delfile):
@@ -270,7 +306,7 @@ class previewimages(QWidget):
         item = self.list.currentItem()
         if item is None:
             return
-        path = item.imagepath
+        path = item.data(PathRole)
         self.removepath.emit(path)
         self.list.takeItem(idx)
         if delfile:
