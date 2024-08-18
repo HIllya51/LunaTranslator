@@ -1024,6 +1024,11 @@
                 "name": "进行一次OCR",
                 "keystring": ""
             },
+            "_26_1": {
+                "use": false,
+                "name": "再次进行OCR",
+                "keystring": ""
+            },
             "_27": {
                 "use": false,
                 "name": "模拟按键Enter",

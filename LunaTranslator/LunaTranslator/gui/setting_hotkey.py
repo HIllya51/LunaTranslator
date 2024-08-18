@@ -44,7 +44,7 @@ def registrhotkeys(self):
         "_3": self.showsignal.emit,
         "_4": lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
         "_5": gobject.baseobject.translation_ui.changeshowhideraw,
-        "_51":gobject.baseobject.translation_ui.changeshowhidetrans,
+        "_51": gobject.baseobject.translation_ui.changeshowhidetrans,
         "_6": lambda: gobject.baseobject.transhis.showsignal.emit(),
         "_7": lambda: gobject.baseobject.readcurrent(force=True),
         "_8": lambda: gobject.baseobject.translation_ui.changemousetransparentstate(0),
@@ -66,6 +66,9 @@ def registrhotkeys(self):
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
         ),
         "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
+        "_26_1": gobject.baseobject.translation_ui.ocr_do_function(
+            gobject.baseobject.translation_ui.ocr_once_follow_rect
+        ),
         "_27": gobject.baseobject.translation_ui.simulate_key_enter,
         "_28": lambda: winsharedutils.clipboard_set(
             gobject.baseobject.currenttranslate

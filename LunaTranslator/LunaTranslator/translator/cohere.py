@@ -153,7 +153,8 @@ class TS(basetrans):
                         message += msg
                     elif t == "stream-end":
                         break
-
+                    else:
+                        continue
                 except:
                     print_exc()
                     raise Exception(response_data)
