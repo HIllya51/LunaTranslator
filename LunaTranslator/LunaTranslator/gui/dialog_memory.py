@@ -32,11 +32,11 @@ class dialog_memory(saveposwindow):
         formLayout = QVBoxLayout()  #
         self.showtext = QTextEdit()
         self.rwpath = gobject.getuserconfigdir(
-            "memory/{}.html".format(gobject.baseobject.textsource.gameuid)
+            "memory/{}.html".format(gobject.baseobject.gameuid)
         )
         try:
             if os.path.exists(self.rwpath) == False:
-                md5 = getfilemd5(uid2gamepath[gobject.baseobject.textsource.gameuid])
+                md5 = getfilemd5(uid2gamepath[gobject.baseobject.gameuid])
                 f2 = gobject.getuserconfigdir("memory/{}.html".format(md5))
                 try:
                     os.rename(f2, self.rwpath)

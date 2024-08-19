@@ -118,7 +118,6 @@ class parselrc:
 
 
 class filetrans(basetext):
-    autofindpids = False
 
     def end(self):
 

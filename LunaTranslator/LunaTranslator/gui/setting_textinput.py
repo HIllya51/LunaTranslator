@@ -249,6 +249,7 @@ def exportchspatch(self):
         sqlfname_all,
         os.path.join(os.path.dirname(exe), "translation.json"),
         existsmerge=True,
+        isforembed=True,
     )
 
 

@@ -643,15 +643,13 @@ class TranslatorWindow(resizableframeless):
                 "open_relative_link",
                 lambda: browserdialog(
                     gobject.baseobject.commonstylebase,
-                    trypass(lambda: gobject.baseobject.textsource.gameuid)(),
+                    trypass(lambda: gobject.baseobject.gameuid)(),
                 ),
             ),
             (
                 "open_game_setting",
                 lambda: dialog_setting_game(
-                    gobject.baseobject.commonstylebase,
-                    gobject.baseobject.textsource.gameuid,
-                    1,
+                    gobject.baseobject.commonstylebase, gobject.baseobject.gameuid, 1
                 ),
             ),
             ("ocr_once", self.ocr_once_signal.emit),
@@ -1079,11 +1077,12 @@ class TranslatorWindow(resizableframeless):
         self.titlebar.setstyle(bottomr, bottomr3)
 
     def muteprocessfuntion(self):
-        if gobject.baseobject.textsource and gobject.baseobject.textsource.pids:
-            self.processismuteed = not self.processismuteed
-            self.refreshtoolicon()
-            for pid in gobject.baseobject.textsource.pids:
-                winsharedutils.SetProcessMute(pid, self.processismuteed)
+        pid = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
+        if not pid:
+            return
+        self.processismuteed = not self.processismuteed
+        self.refreshtoolicon()
+        winsharedutils.SetProcessMute(pid, self.processismuteed)
 
     def _externalfsend(self, current):
         self.isletgamefullscreened = current

@@ -22,10 +22,7 @@ def grabwindow(app="PNG", callback_origin=None):
         dirname = os.path.basename(gamepath).replace(
             "." + os.path.basename(gamepath).split(".")[-1], ""
         )
-        try:
-            uid = gobject.baseobject.textsource.gameuid
-        except:
-            uid = None
+        uid = gobject.baseobject.gameuid
         fname = gobject.getcachedir(
             f"screenshot/{dirname}/"
             + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()),

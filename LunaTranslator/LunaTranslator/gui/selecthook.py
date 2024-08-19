@@ -82,42 +82,6 @@ class QButtonGroup_switch_widegt(QWidget):
         self.wlist.append(widget)
 
 
-def listprocessm():
-    cachefname = gobject.gettempdir("{}.txt".format(time.time()))
-    arch = "64" if gobject.baseobject.textsource.is64bit else "32"
-    exe = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(arch))
-    pid = " ".join([str(_) for _ in gobject.baseobject.textsource.pids])
-    subprocess.run('"{}"  listpm "{}" {}'.format(exe, cachefname, pid))
-
-    with open(cachefname, "r", encoding="utf-16-le") as ff:
-        readf = ff.read()
-
-    os.remove(cachefname)
-    _list = readf.split("\n")[:-1]
-    if len(_list) == 0:
-        return []
-
-    ret = []
-    hasprogram = "c:\\program files" in _list[0].lower()
-    for name_ in _list:
-        name = name_.lower()
-        if (
-            ":\\windows\\" in name
-            or "\\microsoft\\" in name
-            or "\\windowsapps\\" in name
-        ):
-            continue
-        if hasprogram == False and "c:\\program files" in name:
-            continue
-        fn = name_.split("\\")[-1]
-        if fn in ret:
-            continue
-        if fn.lower() in ["lunahook32.dll", "lunahook64.dll"]:
-            continue
-        ret.append(fn)
-    return ret
-
-
 hookcodehelp = r"""
 1、内存读取
 R{S|Q|V|U}[codepage#]@addr
@@ -261,12 +225,10 @@ class searchhookparam(LDialog):
 
         layout1 = QHBoxLayout()
         layout1.addWidget(LLabel("代码页"))
-        if savehook_new_data[gobject.baseobject.textsource.gameuid][
-            "hooksetting_follow_default"
-        ]:
+        if savehook_new_data[gobject.baseobject.gameuid]["hooksetting_follow_default"]:
             cp = globalconfig["codepage_index"]
         else:
-            cp = savehook_new_data[gobject.baseobject.textsource.gameuid][
+            cp = savehook_new_data[gobject.baseobject.gameuid][
                 "hooksetting_private"
             ].get("codepage_index", globalconfig["codepage_index"])
         self.codepagesave = {"spcp": cp}
@@ -357,7 +319,7 @@ class searchhookparam(LDialog):
             usestruct.boundaryModule,
             2,
             uselayout=offaddrl,
-            getlistcall=listprocessm,
+            getlistcall=gobject.baseobject.textsource.listprocessm,
         )
         autoaddline(
             "offstartaddr",
@@ -565,11 +527,11 @@ class hookselect(closeashidewindow):
         if _isusing:
 
             if hn[:8] == "UserHook":
-                needinserthookcode = savehook_new_data[
-                    gobject.baseobject.textsource.gameuid
-                ]["needinserthookcode"]
+                needinserthookcode = savehook_new_data[gobject.baseobject.gameuid][
+                    "needinserthookcode"
+                ]
                 needinserthookcode = list(set(needinserthookcode + [hc]))
-                savehook_new_data[gobject.baseobject.textsource.gameuid].update(
+                savehook_new_data[gobject.baseobject.gameuid].update(
                     {"needinserthookcode": needinserthookcode}
                 )
             else:
@@ -581,21 +543,17 @@ class hookselect(closeashidewindow):
         gobject.baseobject.textsource.useembed(tp.addr, tp.ctx, tp.ctx2, _)
         _use = self._check_tp_using(key)
         if _use:
-            savehook_new_data[gobject.baseobject.textsource.gameuid][
-                "embedablehook"
-            ].append([hc, tp.addr, tp.ctx, tp.ctx2])
+            savehook_new_data[gobject.baseobject.gameuid]["embedablehook"].append(
+                [hc, tp.addr, tp.ctx, tp.ctx2]
+            )
         else:
             save = []
-            for _ in savehook_new_data[gobject.baseobject.textsource.gameuid][
-                "embedablehook"
-            ]:
+            for _ in savehook_new_data[gobject.baseobject.gameuid]["embedablehook"]:
                 hc, ad, c1, c2 = _
                 if (hc, 0, c1, c2) == (hc, 0, tp.ctx, tp.ctx2):
                     save.append(_)
             for _ in save:
-                savehook_new_data[gobject.baseobject.textsource.gameuid][
-                    "embedablehook"
-                ].remove(_)
+                savehook_new_data[gobject.baseobject.gameuid]["embedablehook"].remove(_)
 
     def setupUi(self):
         self.widget = QWidget()
@@ -740,13 +698,13 @@ class hookselect(closeashidewindow):
 
     def opensolvetext(self):
         try:
-            dialog_setting_game(self, gobject.baseobject.textsource.gameuid, 3)
+            dialog_setting_game(self, gobject.baseobject.gameuid, 3)
         except:
             print_exc()
 
     def opengamesetting(self):
         try:
-            dialog_setting_game(self, gobject.baseobject.textsource.gameuid, 1)
+            dialog_setting_game(self, gobject.baseobject.gameuid, 1)
         except:
             print_exc()
 
@@ -900,17 +858,17 @@ class hookselect(closeashidewindow):
                 gobject.baseobject.textsource.selectedhook.append(key)
 
                 if hn[:8] == "UserHook":
-                    needinserthookcode = savehook_new_data[
-                        gobject.baseobject.textsource.gameuid
-                    ]["needinserthookcode"]
+                    needinserthookcode = savehook_new_data[gobject.baseobject.gameuid][
+                        "needinserthookcode"
+                    ]
                     needinserthookcode = list(set(needinserthookcode + [hc]))
-                    savehook_new_data[gobject.baseobject.textsource.gameuid].update(
+                    savehook_new_data[gobject.baseobject.gameuid].update(
                         {"needinserthookcode": needinserthookcode}
                     )
             else:
                 pass
 
-            savehook_new_data[gobject.baseobject.textsource.gameuid].update(
+            savehook_new_data[gobject.baseobject.gameuid].update(
                 {"hook": gobject.baseobject.textsource.serialselectedhook()}
             )
         except:

@@ -79,6 +79,8 @@ class MAINUI:
         self._internal_reader = None
         self.reader_uid = None
         self.__hwnd = None
+        self.gameuid = 0
+        self.autoswitchgameuid = True
 
     @property
     def reader(self):
@@ -112,36 +114,38 @@ class MAINUI:
             self.translation_ui.isbindedwindow = False
             self.translation_ui.refreshtooliconsignal.emit()
             self.translation_ui.thistimenotsetop = False
+            if self.autoswitchgameuid:
+                self.gameuid = 0
         else:
-            _mute = winsharedutils.GetProcessMute(
-                windows.GetWindowThreadProcessId(__hwnd)
-            )
-            self.translation_ui.processismuteed = _mute
-            self.translation_ui.isbindedwindow = True
-            self.translation_ui.refreshtooliconsignal.emit()
-            try:
-                if not self.textsource:
-                    return
-                if not self.textsource.autofindpids:
-                    return
-                self.textsource.pids = [windows.GetWindowThreadProcessId(__hwnd)]
-                gameuid = findgameuidofpath(getpidexe(self.textsource.pids[0]))
-                if gameuid:
-                    self.textsource.gameuid = gameuid[0]
-            except:
-                print_exc()
-
+            _pid = windows.GetWindowThreadProcessId(__hwnd)
+            if _pid:
+                _mute = winsharedutils.GetProcessMute(_pid)
+                self.translation_ui.processismuteed = _mute
+                self.translation_ui.isbindedwindow = True
+                self.translation_ui.refreshtooliconsignal.emit()
+                try:
+                    if self.autoswitchgameuid:
+                        gameuid = findgameuidofpath(getpidexe(_pid))
+                        if gameuid:
+                            self.gameuid = gameuid[0]
+                except:
+                    print_exc()
+            else:
+                if self.autoswitchgameuid:
+                    self.gameuid = 0
         if globalconfig["keepontop"]:
             self.translation_ui.settop()
 
     @textsource.setter
     def textsource(self, _):
-        if _ is None and self.textsource_p:
-            try:
-                self.textsource_p.endX()
-            except:
-                print_exc()
+        if _ is None:
+            if self.textsource_p:
+                try:
+                    self.textsource_p.endX()
+                except:
+                    print_exc()
             self.hwnd = None
+            self.autoswitchgameuid = True
         self.textsource_p = _
 
     @threader
@@ -517,11 +521,7 @@ class MAINUI:
 
         try:
             for _ in (0,):
-
-                if not self.textsource:
-                    break
-
-                gameuid = self.textsource.gameuid
+                gameuid = self.gameuid
                 if not gameuid:
                     break
                 if savehook_new_data[gameuid]["tts_follow_default"]:

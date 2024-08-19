@@ -39,10 +39,10 @@ class Process:
         if which == 1:
             return transerrorfixdictconfig["dict_v2"]
         elif which == 2:
-            gameuid = gobject.baseobject.textsource.gameuid
+            gameuid = gobject.baseobject.gameuid
             return savehook_new_data[gameuid]["transerrorfix"]
         elif which == 3:
-            gameuid = gobject.baseobject.textsource.gameuid
+            gameuid = gobject.baseobject.gameuid
             return (
                 savehook_new_data[gameuid]["transerrorfix"]
                 + transerrorfixdictconfig["dict_v2"]

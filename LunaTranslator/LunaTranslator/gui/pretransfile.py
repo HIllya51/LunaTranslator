@@ -3,24 +3,27 @@ import sqlite3, os, json, functools
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
 from myutils.utils import autosql
-from gui.usefulwidget import getQMessageBox, LFocusCombo
+from gui.usefulwidget import getQMessageBox, LFocusCombo, getsimplepatheditor
 from gui.dynalang import LFormLayout, LPushButton, LDialog
 from textsource.texthook import splitembedlines
+from collections import Counter
+from myutils.wrapper import tryprint
 
 
-def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
+@tryprint
+def sqlite2json2(
+    self, sqlitefile, targetjson=None, existsmerge=False, isforembed=False
+):
     try:
         sql = autosql(sqlite3.connect(sqlitefile, check_same_thread=False))
         ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
         js_format2 = {}
-        collect = set()
+        collect = []
         for _aret in ret:
             if len(_aret) == 4:
-
                 _id, source, mt, source_origin = _aret
                 if targetjson:
                     source = source_origin
-
                 js_format2[source] = mt
             elif len(_aret) == 3:
                 _id, source, mt = _aret
@@ -31,14 +34,13 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
                 mtjs = mt
             js_format2[source] = mtjs
 
-            collect = collect.union(set(mtjs.keys()))
-        collect = list(collect)
+            collect.extend(list(mtjs.keys()))
     except:
         print_exc()
         getQMessageBox(self, "错误", "所选文件格式错误！")
         return
     _collect = []
-    for _ in collect:
+    for _, __ in Counter(collect).most_common():
         if _ in globalconfig["fanyi"]:
             _collect.append(_)
     collect = _collect
@@ -52,7 +54,6 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     combo.addItems([globalconfig["fanyi"][_]["name"] for _ in collect])
 
     formLayout.addRow("首选翻译", combo)
-
     e = QLineEdit(sqlitefile[: -(len(".sqlite"))])
 
     bu = LPushButton("选择路径")
@@ -79,7 +80,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     formLayout.addRow(button)
     button.rejected.connect(dialog.close)
 
-    def __savefunction(target, existsmerge):
+    def __savefunction(target, existsmerge, isforembed):
         if len(collect) > 0:
             transkirokuuse = collect[combo.currentIndex()]
             for k in js_format2:
@@ -96,8 +97,9 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
             for k in existsjs:
                 if k not in js_format2 or js_format2[k] == "":
                     js_format2[k] = existsjs[k]
-        for _ in js_format2:
-            js_format2[_] = splitembedlines(js_format2[_])
+        if isforembed:
+            for _ in js_format2:
+                js_format2[_] = splitembedlines(js_format2[_])
         os.makedirs(os.path.dirname(target), exist_ok=True)
         with open(target, "w", encoding="utf8") as ff:
             ff.write(
@@ -105,7 +107,9 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
             )
         dialog.close()
 
-    button.accepted.connect(functools.partial(__savefunction, targetjson, existsmerge))
+    button.accepted.connect(
+        functools.partial(__savefunction, targetjson, existsmerge, isforembed)
+    )
     button.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
     button.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
     dialog.show()

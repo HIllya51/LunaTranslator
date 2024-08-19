@@ -11,7 +11,7 @@ import winsharedutils
 class TS(basetrans):
     def unsafegetcurrentgameconfig(self):
         try:
-            gameuid = gobject.baseobject.textsource.gameuid
+            gameuid = gobject.baseobject.gameuid
             _path = savehook_new_data[gameuid]["gamesqlitefile"]
             return _path
         except:

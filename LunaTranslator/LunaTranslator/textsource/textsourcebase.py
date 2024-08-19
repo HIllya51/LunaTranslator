@@ -6,17 +6,13 @@ from myutils.utils import autosql
 
 
 class basetext:
-    autofindpids = True
 
     def gettextonce(self):
         return None
 
     def init(self): ...
     def end(self): ...
-
     def __init__(self):
-        self.pids = []
-        self.gameuid = None
         #
 
         self.textgetmethod = gobject.baseobject.textgetmethod
@@ -96,7 +92,7 @@ class basetext:
                         "SELECT * FROM artificialtrans WHERE source = ?", (src,)
                     ).fetchone()
                     try:
-                        savehook_new_data[self.gameuid]["statistic_wordcount"] += lensrc
+                        savehook_new_data[gobject.baseobject.gameuid]["statistic_wordcount"] += lensrc
                     except:
                         pass
                     if ret is None:
@@ -111,7 +107,7 @@ class basetext:
                                 (src, json.dumps({})),
                             )
                         try:
-                            savehook_new_data[self.gameuid][
+                            savehook_new_data[gobject.baseobject.gameuid][
                                 "statistic_wordcount_nodump"
                             ] += lensrc
                         except:

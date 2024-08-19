@@ -40,11 +40,7 @@ def checkisusingwine():
 def __internal__getlang(k1, k2):
     try:
         for _ in (0,):
-
-            if not gobject.baseobject.textsource:
-                break
-
-            gameuid = gobject.baseobject.textsource.gameuid
+            gameuid = gobject.baseobject.gameuid
             if not gameuid:
                 break
             if savehook_new_data[gameuid]["lang_follow_default"]:
@@ -442,9 +438,7 @@ def minmaxmoveobservefunc(self):
                 if hwnd == gobject.baseobject.hwnd:
                     gobject.baseobject.hwnd = None
                     return
-            p_pids = gobject.baseobject.textsource.pids
-            if not p_pids:
-                return
+            p_pids = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
             _focusp = windows.GetWindowThreadProcessId(hwnd)
             if event != windows.EVENT_SYSTEM_FOREGROUND:
                 return
@@ -456,7 +450,7 @@ def minmaxmoveobservefunc(self):
                 "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
             ):
                 return
-            if _focusp in p_pids:
+            if _focusp == p_pids:
                 gobject.baseobject.translation_ui.thistimenotsetop = False
                 gobject.baseobject.translation_ui.settop()
             else:
@@ -590,9 +584,7 @@ def postusewhich(name1):
     merge = name1 + "_merge"
     for _ in (0,):
         try:
-            if not gobject.baseobject.textsource:
-                break
-            gameuid = gobject.baseobject.textsource.gameuid
+            gameuid = gobject.baseobject.gameuid
             if not gameuid:
                 break
             if savehook_new_data[gameuid]["transoptimi_followdefault"]:
@@ -638,9 +630,7 @@ loadpostsettingwindowmethod_private = functools.partial(
 def loadpostsettingwindowmethod_maybe(name, parent):
     for _ in (0,):
         try:
-            if not gobject.baseobject.textsource:
-                break
-            gameuid = gobject.baseobject.textsource.gameuid
+            gameuid = gobject.baseobject.gameuid
             if not gameuid:
                 break
             return loadpostsettingwindowmethod_private(name)(parent, gameuid)

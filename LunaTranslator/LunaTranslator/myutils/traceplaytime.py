@@ -113,10 +113,14 @@ class playtimemanager:
             _hwnd = windows.GetForegroundWindow()
             _pid = windows.GetWindowThreadProcessId(_hwnd)
             try:
-                if len(gobject.baseobject.textsource.pids) == 0:
-                    raise Exception()
-                if _pid in gobject.baseobject.textsource.pids or _pid == os.getpid():
-                    isok(gobject.baseobject.textsource.gameuid)
+                gamehwnd = gobject.baseobject.hwnd
+                if not gamehwnd:
+                    raise
+                gamepid = windows.GetWindowThreadProcessId(gamehwnd)
+                if not gamepid:
+                    raise
+                if _pid == gamepid or _pid == os.getpid():
+                    isok(gobject.baseobject.gameuid)
                 else:
                     self.__currentexe = None
             except:

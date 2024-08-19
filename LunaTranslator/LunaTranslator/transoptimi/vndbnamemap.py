@@ -37,10 +37,10 @@ class Process:
         if which == 1:
             return globalconfig["global_namemap2"]
         elif which == 2:
-            gameuid = gobject.baseobject.textsource.gameuid
+            gameuid = gobject.baseobject.gameuid
             return savehook_new_data[gameuid]["namemap2"]
         elif which == 3:
-            gameuid = gobject.baseobject.textsource.gameuid
+            gameuid = gobject.baseobject.gameuid
             return (
                 savehook_new_data[gameuid]["namemap2"] + globalconfig["global_namemap2"]
             )

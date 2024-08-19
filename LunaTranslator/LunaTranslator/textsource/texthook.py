@@ -15,6 +15,7 @@ from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace
 from myutils.hwnd import injectdll, test_injectable, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
+import subprocess
 
 from ctypes import (
     CDLL,
@@ -88,7 +89,7 @@ HookInsertHandler = CFUNCTYPE(None, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 
 
-def splitembedlines(trans):
+def splitembedlines(trans: str):
     if len(trans) and globalconfig["embedded"]["limittextlength_use"]:
         length = globalconfig["embedded"]["limittextlength_length"]
         lines = trans.split("\n")
@@ -104,7 +105,6 @@ def splitembedlines(trans):
 
 
 class texthook(basetext):
-    autofindpids = False
 
     @property
     def config(self):
@@ -188,7 +188,7 @@ class texthook(basetext):
         self.Luna_QueryThreadHistory = LunaHost.Luna_QueryThreadHistory
         self.Luna_QueryThreadHistory.argtypes = (ThreadParam,)
         self.Luna_QueryThreadHistory.restype = c_void_p
-
+        self.pids = []
         self.keepref = []
         self.hookdatacollecter = OrderedDict()
         self.reverse = {}
@@ -201,9 +201,45 @@ class texthook(basetext):
         self.multiselectedcollectorlock = threading.Lock()
         self.lastflushtime = 0
         self.runonce_line = ""
+        gobject.baseobject.autoswitchgameuid = False
         self.delaycollectallselectedoutput()
         self.prepares()
         self.autohookmonitorthread()
+
+    def listprocessm(self):
+        cachefname = gobject.gettempdir("{}.txt".format(time.time()))
+        arch = "64" if self.is64bit else "32"
+        exe = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(arch))
+        pid = " ".join([str(_) for _ in self.pids])
+        subprocess.run('"{}"  listpm "{}" {}'.format(exe, cachefname, pid))
+
+        with open(cachefname, "r", encoding="utf-16-le") as ff:
+            readf = ff.read()
+
+        os.remove(cachefname)
+        _list = readf.split("\n")[:-1]
+        if len(_list) == 0:
+            return []
+
+        ret = []
+        hasprogram = "c:\\program files" in _list[0].lower()
+        for name_ in _list:
+            name = name_.lower()
+            if (
+                ":\\windows\\" in name
+                or "\\microsoft\\" in name
+                or "\\windowsapps\\" in name
+            ):
+                continue
+            if hasprogram == False and "c:\\program files" in name:
+                continue
+            fn = name_.split("\\")[-1]
+            if fn in ret:
+                continue
+            if fn.lower() in ["lunahook32.dll", "lunahook64.dll"]:
+                continue
+            ret.append(fn)
+        return ret
 
     def connecthwnd(self, hwnd):
         if (
@@ -245,6 +281,8 @@ class texthook(basetext):
 
     def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
         gobject.baseobject.hwnd = hwnd
+        gobject.baseobject.gameuid = gameuid
+        self.gameuid = gameuid
         self.detachall()
         _filename, _ = os.path.splitext(os.path.basename(gamepath))
         sqlitef = gobject.gettranslationrecorddir(f"{_filename}_{gameuid}.sqlite")
@@ -272,7 +310,6 @@ class texthook(basetext):
         self.removedaddress = []
 
         self.gamepath = gamepath
-        self.gameuid = gameuid
         self.is64bit = Is64bit(pids[0])
         if (
             len(autostarthookcode) == 0
