@@ -144,8 +144,9 @@ class MAINUI:
                     self.textsource_p.endX()
                 except:
                     print_exc()
-            self.hwnd = None
             self.autoswitchgameuid = True
+            self.hwnd = None
+            self.gameuid = 0
         self.textsource_p = _
 
     @threader
