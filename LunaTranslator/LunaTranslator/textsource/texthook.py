@@ -88,6 +88,21 @@ HookInsertHandler = CFUNCTYPE(None, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 
 
+def splitembedlines(trans):
+    if len(trans) and globalconfig["embedded"]["limittextlength_use"]:
+        length = globalconfig["embedded"]["limittextlength_length"]
+        lines = trans.split("\n")
+        newlines = []
+        space = getlanguagespace(getlangtgt())
+        for line in lines:
+            line = line.split(space) if space else line
+            while len(line):
+                newlines.append(space.join(line[:length]))
+                line = line[length:]
+        trans = "\n".join(newlines)
+    return trans
+
+
 class texthook(basetext):
     autofindpids = False
 
@@ -369,18 +384,7 @@ class texthook(basetext):
             self.embedcallback(text, trans)
 
     def embedcallback(self, text: str, trans: str):
-        if len(trans) and globalconfig["embedded"]["limittextlength_use"]:
-            length = globalconfig["embedded"]["limittextlength_length"]
-            lines = trans.split("\n")
-            newlines = []
-            space = getlanguagespace(getlangtgt())
-            for line in lines:
-                line = line.split(space) if space else line
-                while len(line):
-                    newlines.append(space.join(line[:length]))
-                    line = line[length:]
-            trans = "\n".join(newlines)
-        print(trans)
+        trans = splitembedlines(trans)
         for pid in self.pids.copy():
             self.Luna_embedcallback(pid, text, trans)
 

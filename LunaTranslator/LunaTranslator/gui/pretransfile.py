@@ -5,6 +5,7 @@ from myutils.config import globalconfig, _TR
 from myutils.utils import autosql
 from gui.usefulwidget import getQMessageBox, LFocusCombo
 from gui.dynalang import LFormLayout, LPushButton, LDialog
+from textsource.texthook import splitembedlines
 
 
 def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
@@ -95,6 +96,8 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
             for k in existsjs:
                 if k not in js_format2 or js_format2[k] == "":
                     js_format2[k] = existsjs[k]
+        for _ in js_format2:
+            js_format2[_] = splitembedlines(js_format2[_])
         os.makedirs(os.path.dirname(target), exist_ok=True)
         with open(target, "w", encoding="utf8") as ff:
             ff.write(
