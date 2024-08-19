@@ -1,4 +1,5 @@
 from myutils.config import globalconfig, ocrsetting, ocrerrorfix
+from myutils.utils import getlanguagespace
 from myutils.commonbase import commonbase
 
 
@@ -18,10 +19,8 @@ class baseocr(commonbase):
     def space(self):
         if globalconfig["ocrmergelines"] == False:
             space = "\n"
-        elif self.srclang_1 in ["zh", "ja", "cht"]:
-            space = ""
         else:
-            space = " "
+            space = getlanguagespace(self.srclang_1)
         return space
 
     ############################################################

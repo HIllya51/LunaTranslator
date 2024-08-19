@@ -7,6 +7,7 @@ from myutils.utils import (
     checkmd5reloadmodule,
     LRUCache,
     getlangsrc,
+    getlanguagespace,
     parsemayberegexreplace,
 )
 from myutils.config import (
@@ -202,10 +203,7 @@ def _4_f(line):
 
 def _6_fEX(line):
     srclang = getlangsrc()
-    if srclang in ["zh", "ja", "cht"]:
-        white = ""
-    else:
-        white = " "
+    white = getlanguagespace(srclang)
     line = (
         line.replace("\r ", " ")
         .replace("\n ", " ")

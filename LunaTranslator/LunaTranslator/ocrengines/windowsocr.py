@@ -66,12 +66,8 @@ class OCR(baseocr):
                 + ", ".join([_TR(getlang_inner2show(f)) for f in _allsupport])
             )
 
-        if self.srclang in ["zh", "ja", "cht"]:
-            space = ""
-        else:
-            space = " "
 
-        ret = winrtutils.OCR_f(imagebinary, self.supportmap[self.srclang], space)
+        ret = winrtutils.OCR_f(imagebinary, self.supportmap[self.srclang], self.space)
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
 

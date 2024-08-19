@@ -11,7 +11,7 @@ from myutils.config import (
     findgameuidofpath,
 )
 from textsource.textsourcebase import basetext
-from myutils.utils import checkchaos, getfilemd5
+from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace
 from myutils.hwnd import injectdll, test_injectable, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
@@ -158,7 +158,6 @@ class texthook(basetext):
             c_uint32,
             c_uint32,
             c_bool,
-            c_uint32,
         )
         self.Luna_checkisusingembed = LunaHost.Luna_checkisusingembed
         self.Luna_checkisusingembed.argtypes = DWORD, c_uint64, c_uint64, c_uint64
@@ -358,19 +357,30 @@ class texthook(basetext):
     @threader
     def getembedtext(self, text, tp):
         if self.safeembedcheck(text) == False:
-            self.embedcallback(text, text)
+            self.embedcallback(text, "")
             return
         if not self.isautorunning:
-            self.embedcallback(text, text)
+            self.embedcallback(text, "")
             return
         if self.checkisusingembed(tp.addr, tp.ctx, tp.ctx2):
             trans = self.waitfortranslation(text)
             if not trans:
-                trans = text
+                trans = ""
             self.embedcallback(text, trans)
 
-    def embedcallback(self, text, trans):
-
+    def embedcallback(self, text: str, trans: str):
+        if len(trans) and globalconfig["embedded"]["limittextlength_use"]:
+            length = globalconfig["embedded"]["limittextlength_length"]
+            lines = trans.split("\n")
+            newlines = []
+            space = getlanguagespace(getlangtgt())
+            for line in lines:
+                line = line.split(space) if space else line
+                while len(line):
+                    newlines.append(space.join(line[:length]))
+                    line = line[length:]
+            trans = "\n".join(newlines)
+        print(trans)
         for pid in self.pids.copy():
             self.Luna_embedcallback(pid, text, trans)
 
@@ -393,11 +403,6 @@ class texthook(basetext):
                 globalconfig["embedded"]["insertspace_policy"],
                 globalconfig["embedded"]["keeprawtext"],
                 True,
-                (
-                    globalconfig["embedded"]["limittextlength_length"]
-                    if globalconfig["embedded"]["limittextlength_use"]
-                    else 0
-                ),
             )
 
     def onremovehook(self, hc, hn, tp):
