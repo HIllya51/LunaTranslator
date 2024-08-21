@@ -3,18 +3,15 @@ from myutils.config import globalconfig
 import winsharedutils, windows
 from gui.rangeselect import rangeadjust
 from myutils.wrapper import threader
-from myutils.ocrutil import imageCut, ocr_run, ocr_init
+from myutils.ocrutil import imageCut, ocr_run, ocr_init, qimage2binary
 import time, gobject
 from qtsymbols import *
 from collections import Counter
 from textsource.textsourcebase import basetext
 
 
-def qimge2np(img: QImage):
-    # img=img.convertToFormat(QImage.Format_Grayscale8)
-    shape = img.height(), img.width(), 1
+def normqimage(img: QImage):
     img = img.scaled(128, 8 * 3)
-    img.shape = shape
     return img
 
 
@@ -121,21 +118,28 @@ class ocrtext(basetext):
                     # 松开
                     triggered = True
                 laststate = this
-                if triggered and gobject.baseobject.hwnd:
-                    for _ in range(2):
-                        # 切换前台窗口
-                        p1 = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
-                        p2 = windows.GetWindowThreadProcessId(
-                            windows.GetForegroundWindow()
-                        )
-                        triggered = p1 == p2
-                        if triggered:
-                            break
-                        time.sleep(0.1)
+                if triggered:
+                    if gobject.baseobject.hwnd:
+                        for _ in range(2):
+                            # 切换前台窗口
+                            p1 = windows.GetWindowThreadProcessId(
+                                gobject.baseobject.hwnd
+                            )
+                            p2 = windows.GetWindowThreadProcessId(
+                                windows.GetForegroundWindow()
+                            )
+                            triggered = p1 == p2
+                            if triggered:
+                                break
+                            time.sleep(0.1)
+
+                        for _ in range(len(self.savelastimg)):
+                            self.savelastimg[_] = None
+                    else:
+                        triggered = self.waitforstablex(strict=True)
                 if triggered:
                     time.sleep(globalconfig["ocr_trigger_delay"])
-                    for _ in range(len(self.savelastimg)):
-                        self.savelastimg[_] = None
+
                     while (not self.ending) and (globalconfig["ocr_auto_method"] == 3):
                         if self.waitforstablex():
                             break
@@ -151,24 +155,35 @@ class ocrtext(basetext):
                     self.dispatchtext(t)
                 time.sleep(0.1)
 
-    def waitforstable(self, i, imgr):
-        imgr1 = qimge2np(imgr)
-        if self.savelastimg[i] is not None and (
-            imgr1.shape == self.savelastimg[i].shape
+    def waitforstable(self, i, imgr, strict):
+        if strict:
+            imgr1 = imgr
+        else:
+            imgr1 = normqimage(imgr)
+        if (self.savelastimg[i] is not None) and (
+            imgr1.size() == self.savelastimg[i].size()
         ):
-            image_score = compareImage(imgr1, self.savelastimg[i])
+            if strict:
+                a = qimage2binary(imgr1)
+                b = qimage2binary(self.savelastimg[i])
+                image_score = a != b
+            else:
+                image_score = compareImage(imgr1, self.savelastimg[i])
         else:
             image_score = 0
+
         if i == 0:
             try:
                 gobject.baseobject.settin_ui.threshold1label.setText(str(image_score))
             except:
                 pass
         self.savelastimg[i] = imgr1
-        ok = image_score > globalconfig["ocr_stable_sim2"]
-        return ok
+        if strict:
+            return image_score != 0
+        else:
+            return image_score > globalconfig["ocr_stable_sim2"]
 
-    def waitforstablex(self):
+    def waitforstablex(self, strict=False):
         for i, range_ui in enumerate(self.range_ui):
             rect = range_ui.getrect()
             if rect is None:
@@ -176,17 +191,17 @@ class ocrtext(basetext):
             img = imageCut(
                 gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
             )
-            if not self.waitforstable(i, img):
+            if not self.waitforstable(i, img, strict):
                 return False
         return True
 
     def getresauto(self, i, imgr):
         ok = True
         if globalconfig["ocr_auto_method"] in [0, 2]:
-            imgr1 = qimge2np(imgr)
-            h, w, c = imgr1.shape
+            imgr1 = normqimage(imgr)
+
             if self.savelastimg[i] is not None and (
-                imgr1.shape == self.savelastimg[i].shape
+                imgr1.size() == self.savelastimg[i].size()
             ):
 
                 image_score = compareImage(imgr1, self.savelastimg[i])
@@ -204,7 +219,7 @@ class ocrtext(basetext):
 
             if image_score > globalconfig["ocr_stable_sim"]:
                 if self.savelastrecimg[i] is not None and (
-                    imgr1.shape == self.savelastrecimg[i].shape
+                    imgr1.size() == self.savelastrecimg[i].size()
                 ):
                     image_score2 = compareImage(imgr1, self.savelastrecimg[i])
                 else:
@@ -242,7 +257,7 @@ class ocrtext(basetext):
     def getresmanual(self, i, imgr):
 
         text, infotype = ocr_run(imgr)
-        imgr1 = qimge2np(imgr)
+        imgr1 = normqimage(imgr)
         self.savelastimg[i] = imgr1
         self.savelastrecimg[i] = imgr1
         self.lastocrtime[i] = time.time()
