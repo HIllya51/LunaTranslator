@@ -833,5 +833,8 @@
     "文件翻译": "belgeler çeviri",
     "文件": "dosya",
     "最大结果条数": "En yüksek sonuçların sayısı",
-    "再次进行OCR": "OCR tekrar yap"
+    "再次进行OCR": "OCR tekrar yap",
+    "选取OCR范围后自动绑定窗口": "OCR menzili seçmeden sonra pencereyi otomatik bağlayın",
+    "延迟(s)": "Geç",
+    "鼠标键盘触发+等待稳定": "Fare ve klavye tetikleyici+stabilizasyonu bekliyor"
 }

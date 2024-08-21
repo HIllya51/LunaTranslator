@@ -62,6 +62,8 @@ class ocrtext(basetext):
         h4 = windows.WindowFromPoint(windows.POINT(p2[0], p1[1]))
 
         self.range_ui[-1].setrect(rect)
+        if not globalconfig["ocrautobindhwnd"]:
+            return
         if gobject.baseobject.hwnd:
             return
         usehwnds = []
@@ -96,17 +98,82 @@ class ocrtext(basetext):
 
     @threader
     def gettextthread(self):
+        laststate = (0, 0, 0, 0, 0)
         while not self.ending:
-            time.sleep(0.1)
             if not self.isautorunning:
                 continue
-            t = self.getallres(True)
-            if t:
-                self.dispatchtext(t)
+
+            if globalconfig["ocr_auto_method"] == 3:
+                triggered = False
+                this = (
+                    windows.GetAsyncKeyState(windows.VK_LBUTTON),
+                    windows.GetAsyncKeyState(windows.VK_RETURN),
+                    windows.GetAsyncKeyState(windows.VK_CONTROL),
+                    windows.GetAsyncKeyState(windows.VK_SHIFT),
+                    windows.GetAsyncKeyState(windows.VK_MENU),
+                )
+
+                if any(((this[_] and (laststate[_] == 0)) for _ in (0, 1))):
+                    # 按下
+                    triggered = True
+                elif any(((this[_] == 0 and laststate[_]) for _ in (2, 3, 4))):
+                    # 松开
+                    triggered = True
+                laststate = this
+                if triggered and gobject.baseobject.hwnd:
+                    p1 = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
+                    p2 = windows.GetWindowThreadProcessId(windows.GetForegroundWindow())
+                    triggered = p1 == p2
+                if triggered:
+                    time.sleep(globalconfig["ocr_trigger_delay"])
+                    for _ in range(len(self.savelastimg)):
+                        self.savelastimg[_] = None
+                    while (not self.ending) and (globalconfig["ocr_auto_method"] == 3):
+                        if self.waitforstablex():
+                            break
+                        time.sleep(0.1)
+                    t = self.getallres(False)
+                    if t:
+                        self.dispatchtext(t)
+                time.sleep(0.01)
+            else:
+                laststate = (0, 0, 0, 0, 0)
+                t = self.getallres(True)
+                if t:
+                    self.dispatchtext(t)
+                time.sleep(0.1)
+
+    def waitforstable(self, i, imgr):
+        imgr1 = qimge2np(imgr)
+        if self.savelastimg[i] is not None and (
+            imgr1.shape == self.savelastimg[i].shape
+        ):
+            image_score = compareImage(imgr1, self.savelastimg[i])
+        else:
+            image_score = 0
+        if i == 0:
+            try:
+                gobject.baseobject.settin_ui.threshold1label.setText(str(image_score))
+            except:
+                pass
+        self.savelastimg[i] = imgr1
+        ok = image_score > globalconfig["ocr_stable_sim2"]
+        return ok
+
+    def waitforstablex(self):
+        for i, range_ui in enumerate(self.range_ui):
+            rect = range_ui.getrect()
+            if rect is None:
+                continue
+            img = imageCut(
+                gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
+            )
+            if not self.waitforstable(i, img):
+                return False
+        return True
 
     def getresauto(self, i, imgr):
         ok = True
-
         if globalconfig["ocr_auto_method"] in [0, 2]:
             imgr1 = qimge2np(imgr)
             h, w, c = imgr1.shape

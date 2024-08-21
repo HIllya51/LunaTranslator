@@ -833,5 +833,8 @@
     "文件翻译": "dokumentární překlad",
     "文件": "soubor",
     "最大结果条数": "Maximální počet výsledků",
-    "再次进行OCR": "Proveďte znovu OCR"
+    "再次进行OCR": "Proveďte znovu OCR",
+    "选取OCR范围后自动绑定窗口": "Automaticky vázat okno po výběru rozsahu OCR",
+    "延迟(s)": "Zpoždění (s)",
+    "鼠标键盘触发+等待稳定": "Spouštěč myši a klávesnice+čekání na stabilizaci"
 }

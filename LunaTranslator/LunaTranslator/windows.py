@@ -135,6 +135,10 @@ WM_HOTKEY = 786
 
 VK_LBUTTON = 1
 VK_RBUTTON = 2
+VK_RETURN = 0xD
+VK_SHIFT = 0x10
+VK_CONTROL = 0x11
+VK_MENU = 0x12
 
 
 WNDENUMPROC = WINFUNCTYPE(c_bool, c_void_p, c_void_p)
@@ -738,6 +742,8 @@ def IsUserAnAdmin():
 
 _GetKeyState = _user32.GetKeyState
 _GetKeyState.restype = c_short
+
+GetAsyncKeyState = _user32.GetAsyncKeyState
 
 
 def GetKeyState(key):

@@ -833,5 +833,8 @@
     "文件翻译": "documentary translation",
     "文件": "file",
     "最大结果条数": "Maximum number of results",
-    "再次进行OCR": "Perform OCR again"
+    "再次进行OCR": "Perform OCR again",
+    "选取OCR范围后自动绑定窗口": "Automatically bind window after selecting OCR range",
+    "延迟(s)": "Delay (s)",
+    "鼠标键盘触发+等待稳定": "Mouse and keyboard trigger+waiting for stabilization"
 }

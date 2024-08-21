@@ -10,11 +10,15 @@ from gui.usefulwidget import (
     yuitsu_switch,
     D_getcolorbutton,
     D_getsimpleswitch,
+    clearlayout,
+    getboxlayout,
     selectcolor,
 )
 import gobject
+from gui.dynalang import LFormLayout
 from myutils.ocrutil import ocr_end, ocr_init
 from myutils.wrapper import threader
+
 
 def __label1(self):
     self.threshold1label = QLabel()
@@ -81,6 +85,98 @@ def initgridsources(self, names):
     if len(line):
         grids_source.append(line)
     return grids_source
+
+
+def _ocrparam_create(self, idx):
+    clearlayout(self._ocrparaml)
+    if idx in [1, 2]:
+        self._ocrparaml.addRow(
+            "执行周期(s)",
+            getboxlayout(
+                [
+                    D_getspinbox(
+                        0.1,
+                        100,
+                        globalconfig,
+                        "ocr_interval",
+                        double=True,
+                        step=0.1,
+                    ),
+                    QLabel,
+                ]
+            ),
+        )
+    if idx in [3]:
+        self._ocrparaml.addRow(
+            "延迟(s)",
+            getboxlayout(
+                [
+                    D_getspinbox(
+                        0,
+                        100,
+                        globalconfig,
+                        "ocr_trigger_delay",
+                        double=True,
+                        step=0.1,
+                    ),
+                    QLabel,
+                ]
+            ),
+        )
+    if idx in [0, 2, 3]:
+        self._ocrparaml.addRow(
+            "图像稳定性阈值",
+            getboxlayout(
+                [
+                    D_getspinbox(
+                        0,
+                        1,
+                        globalconfig,
+                        ("ocr_stable_sim", "ocr_stable_sim2")[idx == 3],
+                        double=True,
+                        step=0.001,
+                        dec=3,
+                    ),
+                    functools.partial(__label1, self),
+                ]
+            ),
+        )
+    if idx in [0, 2]:
+        self._ocrparaml.addRow(
+            "图像一致性阈值",
+            getboxlayout(
+                [
+                    D_getspinbox(
+                        0,
+                        1,
+                        globalconfig,
+                        "ocr_diff_sim",
+                        double=True,
+                        step=0.001,
+                        dec=3,
+                    ),
+                    functools.partial(__label2, self),
+                ]
+            ),
+        )
+    if idx in [0, 1, 2]:
+        self._ocrparaml.addRow(
+            "文本相似度阈值",
+            getboxlayout(
+                [D_getspinbox(0, 100000, globalconfig, "ocr_text_diff"), QLabel]
+            ),
+        )
+
+
+def _ocrparam(self):
+    self._ocrparam = QGroupBox()
+    self._ocrparam.setStyleSheet(
+        "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
+    )
+    self._ocrparaml = LFormLayout()
+    self._ocrparam.setLayout(self._ocrparaml)
+    _ocrparam_create(self, globalconfig["ocr_auto_method"])
+    return self._ocrparam
 
 
 def getocrgrid(self):
@@ -181,7 +277,7 @@ def getocrgrid(self):
                     type="grid",
                     grid=[
                         [
-                            ("自动化执行方法", 7),
+                            "自动化执行方法",
                             D_getIconButton(
                                 callback=lambda: gobject.baseobject.openlink(
                                     dynamiclink("{docs_server}/#/zh/ocrparam")
@@ -194,63 +290,16 @@ def getocrgrid(self):
                                         "分析图像更新",
                                         "周期执行",
                                         "分析图像更新+周期执行",
+                                        "鼠标键盘触发+等待稳定",
                                     ],
                                     globalconfig,
                                     "ocr_auto_method",
+                                    callback=functools.partial(_ocrparam_create, self),
                                 ),
                                 12,
                             ),
                         ],
-                        [
-                            (("执行周期(s)"), 8),
-                            (
-                                D_getspinbox(
-                                    0.1,
-                                    100,
-                                    globalconfig,
-                                    "ocr_interval",
-                                    double=True,
-                                    step=0.1,
-                                ),
-                                4,
-                            ),
-                        ],
-                        [
-                            (("图像稳定性阈值"), 8),
-                            (
-                                D_getspinbox(
-                                    0,
-                                    1,
-                                    globalconfig,
-                                    "ocr_stable_sim",
-                                    double=True,
-                                    step=0.01,
-                                    dec=3,
-                                ),
-                                4,
-                            ),
-                            (functools.partial(__label1, self), 0),
-                        ],
-                        [
-                            (("图像一致性阈值"), 8),
-                            (
-                                D_getspinbox(
-                                    0,
-                                    1,
-                                    globalconfig,
-                                    "ocr_diff_sim",
-                                    double=True,
-                                    step=0.01,
-                                    dec=3,
-                                ),
-                                4,
-                            ),
-                            (functools.partial(__label2, self), 0),
-                        ],
-                        [
-                            (("文本相似度阈值"), 8),
-                            (D_getspinbox(0, 100000, globalconfig, "ocr_text_diff"), 4),
-                        ],
+                        [(functools.partial(_ocrparam, self), 0)],
                     ],
                 ),
                 0,
@@ -305,6 +354,10 @@ def getocrgrid(self):
                             D_getsimpleswitch(
                                 globalconfig, "showrangeafterrangeselect"
                             ),
+                        ],
+                        [
+                            "选取OCR范围后自动绑定窗口",
+                            D_getsimpleswitch(globalconfig, "ocrautobindhwnd"),
                         ],
                     ],
                 ),

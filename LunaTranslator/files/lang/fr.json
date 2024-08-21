@@ -833,5 +833,8 @@
     "文件翻译": "Traduction de documents",
     "文件": "Documents",
     "最大结果条数": "Nombre maximal de barres de résultats",
-    "再次进行OCR": "OCR à nouveau"
+    "再次进行OCR": "OCR à nouveau",
+    "选取OCR范围后自动绑定窗口": "Fenêtre de liaison automatique après sélection de la plage ocr",
+    "延迟(s)": "Retard (s)",
+    "鼠标键盘触发+等待稳定": "Déclenchement du clavier de la souris + attente de stabilisation"
 }

@@ -833,5 +833,8 @@
     "文件翻译": "Dịch tài liệu",
     "文件": "Tài liệu",
     "最大结果条数": "Số thanh kết quả tối đa",
-    "再次进行OCR": "OCR lần nữa"
+    "再次进行OCR": "OCR lần nữa",
+    "选取OCR范围后自动绑定窗口": "Tự động ràng buộc cửa sổ sau khi chọn phạm vi OCR",
+    "延迟(s)": "Độ trễ (s)",
+    "鼠标键盘触发+等待稳定": "Kích hoạt bàn phím chuột+chờ ổn định"
 }
