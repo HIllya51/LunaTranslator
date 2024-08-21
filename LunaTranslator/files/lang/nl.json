@@ -837,5 +837,10 @@
     "选取OCR范围后自动绑定窗口": "Venster automatisch binden na het selecteren van OCR-bereik",
     "延迟(s)": "Vertraging (s)",
     "鼠标键盘触发+等待稳定": "Muis en toetsenbord trigger+wachten op stabilisatie",
-    "匈牙利语": "Hongaarse taal"
+    "匈牙利语": "Hongaarse taal",
+    "触发事件": "Trigger gebeurtenis",
+    "按键": "Sleutel",
+    "事件": "gebeurtenis",
+    "按下": "Druk omlaag",
+    "松开": "release"
 }

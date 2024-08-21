@@ -837,5 +837,10 @@
     "选取OCR范围后自动绑定窗口": "Automatycznie wiąże okno po wybraniu zakresu OCR",
     "延迟(s)": "Opóźnienie (s)",
     "鼠标键盘触发+等待稳定": "Wyzwalacz myszy i klawiatury+oczekiwanie na stabilizację",
-    "匈牙利语": "Język węgierski"
+    "匈牙利语": "Język węgierski",
+    "触发事件": "Wyzwalanie zdarzenia",
+    "按键": "Klucz",
+    "事件": "zdarzenie",
+    "按下": "Naciśnij w dół",
+    "松开": "uwolnienie"
 }

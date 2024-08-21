@@ -837,5 +837,10 @@
     "选取OCR范围后自动绑定窗口": "Associa automaticamente la finestra dopo aver selezionato l'intervallo OCR",
     "延迟(s)": "Ritardo (s)",
     "鼠标键盘触发+等待稳定": "Mouse e tastiera trigger + attesa di stabilizzazione",
-    "匈牙利语": "Lingua ungherese"
+    "匈牙利语": "Lingua ungherese",
+    "触发事件": "Evento di attivazione",
+    "按键": "Chiave",
+    "事件": "evento",
+    "按下": "Premere verso il basso",
+    "松开": "rilascio"
 }

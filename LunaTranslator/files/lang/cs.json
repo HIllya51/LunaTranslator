@@ -837,5 +837,10 @@
     "选取OCR范围后自动绑定窗口": "Automaticky vázat okno po výběru rozsahu OCR",
     "延迟(s)": "Zpoždění (s)",
     "鼠标键盘触发+等待稳定": "Spouštěč myši a klávesnice+čekání na stabilizaci",
-    "匈牙利语": "Maďarština"
+    "匈牙利语": "Maďarština",
+    "触发事件": "Spouštěcí událost",
+    "按键": "Klíč",
+    "事件": "událost",
+    "按下": "Stiskněte dolů",
+    "松开": "uvolnění"
 }

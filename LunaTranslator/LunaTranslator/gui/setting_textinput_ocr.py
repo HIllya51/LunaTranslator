@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, os
-from myutils.config import globalconfig, ocrsetting, ocrerrorfix
+from myutils.config import globalconfig, ocrsetting, ocrerrorfix, static_data
 from myutils.utils import splitocrtypes, dynamiclink
 from gui.inputdialog import autoinitdialog, postconfigdialog, autoinitdialog_items
 from gui.usefulwidget import (
@@ -13,11 +13,16 @@ from gui.usefulwidget import (
     clearlayout,
     getboxlayout,
     selectcolor,
+    TableViewW,
+    listediter,
+    LStandardItemModel,
+    LFocusCombo,
+    threebuttons,
 )
 import gobject
-from gui.dynalang import LFormLayout
+from gui.dynalang import LFormLayout, LDialog, LAction
 from myutils.ocrutil import ocr_end, ocr_init
-from myutils.wrapper import threader
+from myutils.wrapper import threader, Singleton_close
 
 
 def __label1(self):
@@ -36,6 +41,88 @@ def __directinitend(engine, _ok):
         ocr_init()
     else:
         ocr_end()
+
+
+@Singleton_close
+class triggereditor(LDialog):
+    def showmenu(self, p: QPoint):
+        curr = self.hctable.currentIndex()
+        r = curr.row()
+        if r < 0:
+            return
+        menu = QMenu(self.hctable)
+        remove = LAction("删除")
+        menu.addAction(remove)
+        action = menu.exec(self.hctable.cursor().pos())
+
+        if action == remove:
+            self.hctable.removeselectedrows()
+
+    def moverank(self, dy):
+        src, tgt = self.hctable.moverank(dy)
+        self.internalrealname.insert(tgt, self.internalrealname.pop(src))
+
+    def __init__(self, parent) -> None:
+        super().__init__(parent)
+        self.list = globalconfig["ocr_trigger_events"]
+
+        self.setWindowTitle("触发事件")
+        model = LStandardItemModel()
+        model.setHorizontalHeaderLabels(["按键", "事件"])
+        self.hcmodel = model
+        table = TableViewW()
+        table.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setStretchLastSection(True)
+        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setWordWrap(False)
+        table.setModel(model)
+
+        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        table.customContextMenuRequested.connect(self.showmenu)
+        self.hctable = table
+        self.internalrealname = []
+        formLayout = QVBoxLayout()
+        self.setLayout(formLayout)
+        formLayout.addWidget(self.hctable)
+        self.vkeys = list(static_data["vkcode_map"].keys())
+        for row, k in enumerate(self.list):  # 2
+            self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem()])
+            combo = LFocusCombo()
+            combo.addItems(self.vkeys)
+            combo.setCurrentIndex(self.vkeys.index(k["vkey"]))
+            self.hctable.setIndexWidget(self.hcmodel.index(row, 0), combo)
+            combo = LFocusCombo()
+            combo.addItems(["按下", "松开"])
+            combo.setCurrentIndex(k["event"])
+            self.hctable.setIndexWidget(self.hcmodel.index(row, 1), combo)
+        self.buttons = threebuttons(texts=["添加行", "删除行"])
+        self.buttons.btn1clicked.connect(self.click1)
+        self.buttons.btn2clicked.connect(self.hctable.removeselectedrows)
+
+        formLayout.addWidget(self.buttons)
+        self.resize(600, self.sizeHint().height())
+        self.show()
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        rows = self.hcmodel.rowCount()
+        self.list.clear()
+        for row in range(rows):
+            i0 = self.hctable.indexWidgetX(row, 0).currentIndex()
+            i1 = self.hctable.indexWidgetX(row, 1).currentIndex()
+            self.list.append({"vkey": self.vkeys[i0], "event": i1})
+
+    def click1(self):
+        self.hcmodel.insertRow(0, [QStandardItem(), QStandardItem()])
+        combo = LFocusCombo()
+        combo.addItems(self.vkeys)
+        self.hctable.setIndexWidget(self.hcmodel.index(0, 0), combo)
+        combo = LFocusCombo()
+        combo.addItems(["按下", "松开"])
+        self.hctable.setIndexWidget(self.hcmodel.index(0, 1), combo)
 
 
 def initgridsources(self, names):
@@ -107,6 +194,17 @@ def _ocrparam_create(self, idx):
             ),
         )
     if idx in [3]:
+        self._ocrparaml.addRow(
+            "触发事件",
+            getboxlayout(
+                [
+                    D_getIconButton(
+                        functools.partial(triggereditor, self),
+                        "fa.gear",
+                    ),
+                ]
+            ),
+        )
         self._ocrparaml.addRow(
             "延迟(s)",
             getboxlayout(

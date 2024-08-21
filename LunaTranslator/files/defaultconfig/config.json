@@ -2018,6 +2018,28 @@
     "ocr_auto_method": 0,
     "ocr_interval": 5,
     "ocr_trigger_delay": 0,
+    "ocr_trigger_events": [
+        {
+            "vkey": "LBUTTON",
+            "event": 0
+        },
+        {
+            "vkey": "ENTER",
+            "event": 0
+        },
+        {
+            "vkey": "CTRL",
+            "event": 1
+        },
+        {
+            "vkey": "ALT",
+            "event": 1
+        },
+        {
+            "vkey": "SHIFT",
+            "event": 1
+        }
+    ],
     "mustocr_interval": 5,
     "ocrmininterval": 1,
     "selectable": false,

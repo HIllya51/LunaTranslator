@@ -837,5 +837,10 @@
     "选取OCR范围后自动绑定窗口": "Bind automatiskt fönster efter markerat OCR-område",
     "延迟(s)": "Försening (s)",
     "鼠标键盘触发+等待稳定": "Mus och tangentbord trigger + väntar på stabilisering",
-    "匈牙利语": "Ungerska språket"
+    "匈牙利语": "Ungerska språket",
+    "触发事件": "Trigger- händelse",
+    "按键": "Nyckel",
+    "事件": "händelse",
+    "按下": "Tryck ner",
+    "松开": "frigörande"
 }

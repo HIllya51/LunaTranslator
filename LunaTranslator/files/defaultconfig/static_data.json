@@ -1166,6 +1166,8 @@
         "ALT": 1
     },
     "vkcode_map": {
+        "LBUTTON": 1,
+        "RBUTTON": 2,
         "F1": 112,
         "F2": 113,
         "F3": 114,

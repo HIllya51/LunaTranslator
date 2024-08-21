@@ -837,5 +837,10 @@
     "选取OCR范围后自动绑定窗口": "OCR menzili seçmeden sonra pencereyi otomatik bağlayın",
     "延迟(s)": "Geç",
     "鼠标键盘触发+等待稳定": "Fare ve klavye tetikleyici+stabilizasyonu bekliyor",
-    "匈牙利语": "Macar dili"
+    "匈牙利语": "Macar dili",
+    "触发事件": "Dönüştürme olayını",
+    "按键": "Anahtar",
+    "事件": "Olay",
+    "按下": "Aşağı basın",
+    "松开": "serbest"
 }

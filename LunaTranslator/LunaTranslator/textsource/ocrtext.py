@@ -1,5 +1,5 @@
 import time, os, threading
-from myutils.config import globalconfig
+from myutils.config import globalconfig, static_data
 import winsharedutils, windows
 from gui.rangeselect import rangeadjust
 from myutils.wrapper import threader
@@ -95,7 +95,7 @@ class ocrtext(basetext):
 
     @threader
     def gettextthread(self):
-        laststate = (0, 0, 0, 0, 0)
+        laststate = tuple((0 for _ in range(len(globalconfig["ocr_trigger_events"]))))
         while not self.ending:
             if not self.isautorunning:
                 time.sleep(0.1)
@@ -103,20 +103,23 @@ class ocrtext(basetext):
 
             if globalconfig["ocr_auto_method"] == 3:
                 triggered = False
-                this = (
-                    windows.GetAsyncKeyState(windows.VK_LBUTTON),
-                    windows.GetAsyncKeyState(windows.VK_RETURN),
-                    windows.GetAsyncKeyState(windows.VK_CONTROL),
-                    windows.GetAsyncKeyState(windows.VK_SHIFT),
-                    windows.GetAsyncKeyState(windows.VK_MENU),
+                this = tuple(
+                    (
+                        windows.GetAsyncKeyState(
+                            static_data["vkcode_map"][line["vkey"]]
+                        )
+                        for line in globalconfig["ocr_trigger_events"]
+                    )
                 )
+                for _, line in enumerate(globalconfig["ocr_trigger_events"]):
+                    event = line["event"]
+                    press = this[_]
+                    if ((event == 0) and (laststate[_] == 0) and press) or (
+                        (event == 1) and laststate[_] and (press == 0)
+                    ):
+                        triggered = True
+                        break
 
-                if any(((this[_] and (laststate[_] == 0)) for _ in (0, 1))):
-                    # 按下
-                    triggered = True
-                elif any(((this[_] == 0 and laststate[_]) for _ in (2, 3, 4))):
-                    # 松开
-                    triggered = True
                 laststate = this
                 if triggered:
                     if gobject.baseobject.hwnd:
@@ -149,7 +152,9 @@ class ocrtext(basetext):
                         self.dispatchtext(t)
                 time.sleep(0.01)
             else:
-                laststate = (0, 0, 0, 0, 0)
+                laststate = tuple(
+                    (0 for _ in range(len(globalconfig["ocr_trigger_events"])))
+                )
                 t = self.getallres(True)
                 if t:
                     self.dispatchtext(t)
