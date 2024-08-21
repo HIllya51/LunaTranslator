@@ -89,7 +89,8 @@
         "瑞典语",
         "荷兰语",
         "捷克语",
-        "葡萄牙语"
+        "葡萄牙语",
+        "匈牙利语"
     ],
     "language_list_translator_inner": [
         "zh",
@@ -112,7 +113,8 @@
         "sv",
         "nl",
         "cs",
-        "pt"
+        "pt",
+        "hu"
     ],
     "font_type_default": {
         "default": [
