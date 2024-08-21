@@ -101,6 +101,7 @@ class ocrtext(basetext):
         laststate = (0, 0, 0, 0, 0)
         while not self.ending:
             if not self.isautorunning:
+                time.sleep(0.1)
                 continue
 
             if globalconfig["ocr_auto_method"] == 3:
