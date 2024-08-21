@@ -121,9 +121,16 @@ class ocrtext(basetext):
                     triggered = True
                 laststate = this
                 if triggered and gobject.baseobject.hwnd:
-                    p1 = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
-                    p2 = windows.GetWindowThreadProcessId(windows.GetForegroundWindow())
-                    triggered = p1 == p2
+                    for _ in range(2):
+                        # 切换前台窗口
+                        p1 = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
+                        p2 = windows.GetWindowThreadProcessId(
+                            windows.GetForegroundWindow()
+                        )
+                        triggered = p1 == p2
+                        if triggered:
+                            break
+                        time.sleep(0.1)
                 if triggered:
                     time.sleep(globalconfig["ocr_trigger_delay"])
                     for _ in range(len(self.savelastimg)):
