@@ -3,6 +3,7 @@ from myutils.proxy import getproxy
 from threading import Thread
 from myutils.commonbase import proxysession
 from myutils.config import globalconfig, savehook_new_data, namemapcast
+from myutils.utils import getlangtgt
 from traceback import print_exc
 from requests import RequestException
 
@@ -180,13 +181,14 @@ class common:
             for _ in savehook_new_data[gameuid]["namemap2"]:
                 dedump.add(_.get("key", ""))
             namemap = namemapcast(namemap)
+            usenamemap = getlangtgt() == "en"
             for name in namemap:
                 if name in dedump:
                     continue
                 savehook_new_data[gameuid]["namemap2"].append(
                     {
                         "key": name,
-                        "value": namemap[name],
+                        "value": namemap[name] if usenamemap else name,
                         "regex": False,
                         "escape": False,
                     }

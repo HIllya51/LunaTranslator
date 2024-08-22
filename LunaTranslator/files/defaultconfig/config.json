@@ -2003,7 +2003,7 @@
     "realtime_edit_target": "realtime_edit",
     "magpiepath": "",
     "movefollow": true,
-    "focusnotop": true,
+    "focusnotop": false,
     "autostarthook": true,
     "minlength": 0,
     "maxlength": 1000,
