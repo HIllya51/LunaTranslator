@@ -941,7 +941,7 @@ class MAINUI:
             self.translation_ui.showhideui()
 
     def showtraymessage(self, title, message):
-        self.tray.showMessage(_TR(title), _TR(message), getExeIcon(getcurrexe()))
+        self.tray.showMessage(title, message, getExeIcon(getcurrexe()))
 
     def destroytray(self):
         self.tray.hide()

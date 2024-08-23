@@ -1,6 +1,6 @@
 from qtsymbols import *
 import platform, functools
-import winsharedutils, queue
+import winsharedutils, queue, hashlib
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader, tryprint
 from myutils.hwnd import getcurrexe
@@ -60,7 +60,7 @@ def trygetupdate():
             version, links = tryqueryfromgithub()
         except:
             return None
-    return version, links[bit]
+    return version, links[bit], links.get("sha256", {}).get(bit, None)
 
 
 def doupdate():
@@ -82,18 +82,23 @@ def doupdate():
     )
 
 
-def updatemethod_checkalready(size, savep):
+def updatemethod_checkalready(size, savep, sha256):
     if not os.path.exists(savep):
         return False
     stats = os.stat(savep)
     if stats.st_size != size:
         return False
-    return True
+    if not sha256:
+        return True
+    with open(savep, "rb") as ff:
+        newsha256 = hashlib.sha256(ff.read()).hexdigest()
+        # print(newsha256, sha256)
+        return newsha256 == sha256
 
 
 @tryprint
-def updatemethod(url, self):
-
+def updatemethod(urls, self):
+    url, sha256 = urls
     check_interrupt = lambda: not (
         globalconfig["autoupdate"] and versionchecktask.empty()
     )
@@ -104,7 +109,7 @@ def updatemethod(url, self):
     size = int(r2.headers["Content-Length"])
     if check_interrupt():
         return
-    if updatemethod_checkalready(size, savep):
+    if updatemethod_checkalready(size, savep, sha256):
         return savep
     with open(savep, "wb") as file:
         sess = requests.session()
@@ -130,7 +135,7 @@ def updatemethod(url, self):
 
     if check_interrupt():
         return
-    if updatemethod_checkalready(size, savep):
+    if updatemethod_checkalready(size, savep, sha256):
         return savep
 
 
@@ -167,7 +172,7 @@ def versioncheckthread(self):
         if not (need and globalconfig["autoupdate"]):
             continue
         self.progresssignal.emit("……", 0)
-        savep = updatemethod(_version[1], self)
+        savep = updatemethod(_version[1:], self)
         if not savep:
             self.progresssignal.emit(_TR("自动更新失败，请手动更新"), 0)
             continue
