@@ -1316,6 +1316,8 @@ class TranslatorWindow(resizableframeless):
     def dodelayhide(self, delay):
         enter_sig = uuid.uuid4()
         self.enter_sig = enter_sig
+        if delay == -1:
+            return
         while self.checkisentered():
             time.sleep(0.1)
         self._isentered = False
@@ -1332,8 +1334,6 @@ class TranslatorWindow(resizableframeless):
     def enterfunction(self, delay=None):
         self.titlebar.show()
         self.set_color_transparency()
-        if delay == -1:
-            return
         self.dodelayhide(delay)
 
     def resizeEvent(self, e: QResizeEvent):
