@@ -1280,12 +1280,6 @@ class TranslatorWindow(resizableframeless):
         self.set_color_transparency()
 
     def checkisentered(self):
-        hwnd = windows.GetForegroundWindow()
-        hwndpid = windows.GetWindowThreadProcessId(hwnd)
-        ismyprocbutnotmainuiforeground = hwndpid == os.getpid() and hwnd != self.winid
-
-        if ismyprocbutnotmainuiforeground:
-            return False
         usegeo = self.titlebar.geometry()
         btn: QWidget = self.titlebar.buttons["mousetransbutton"]
         if (
