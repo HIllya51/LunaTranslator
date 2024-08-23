@@ -23,7 +23,7 @@ def tryqueryfromhost():
             res = requests.get(
                 "{main_server}/version".format(main_server=main_server),
                 verify=False,
-                proxies=getproxy(("github", "versioncheck")),
+                proxies=getproxy(("update", "lunatranslator")),
             )
             res = res.json()
             gobject.serverindex = i
@@ -39,7 +39,6 @@ def tryqueryfromgithub():
     res = requests.get(
         "https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest",
         verify=False,
-        proxies=getproxy(("github", "versioncheck")),
     )
     link = {
         "64": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip",
@@ -104,8 +103,11 @@ def updatemethod(urls, self):
     )
 
     savep = gobject.getcachedir("update/" + url.split("/")[-1])
-
-    r2 = requests.head(url, verify=False, proxies=getproxy(("github", "download")))
+    if url.startswith("https://github.com"):
+        __x = "github"
+    else:
+        __x = "lunatranslator"
+    r2 = requests.head(url, verify=False, proxies=getproxy(("update", __x)))
     size = int(r2.headers["Content-Length"])
     if check_interrupt():
         return
@@ -113,9 +115,7 @@ def updatemethod(urls, self):
         return savep
     with open(savep, "wb") as file:
         sess = requests.session()
-        r = sess.get(
-            url, stream=True, verify=False, proxies=getproxy(("github", "download"))
-        )
+        r = sess.get(url, stream=True, verify=False, proxies=getproxy(("update", __x)))
         file_size = 0
         for i in r.iter_content(chunk_size=1024):
             if check_interrupt():

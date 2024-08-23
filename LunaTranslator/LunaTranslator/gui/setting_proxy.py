@@ -131,8 +131,8 @@ def makeproxytab(self, basel):
         name="./LunaTranslator/cishu/%s.py",
     )
     github = getall(
-        l=globalconfig["github"],
-        item="github",
+        l=globalconfig["update"],
+        item="update",
     )
 
     vw, vl = getvboxwidget()

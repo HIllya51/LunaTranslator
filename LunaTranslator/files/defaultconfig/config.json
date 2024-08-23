@@ -1145,12 +1145,14 @@
             "voice": ""
         }
     },
-    "github": {
-        "versioncheck": {
-            "useproxy": false
+    "update": {
+        "lunatranslator": {
+            "useproxy": false,
+            "name": "lunatranslator.org"
         },
-        "download": {
-            "useproxy": true
+        "github": {
+            "useproxy": true,
+            "name": "GitHub"
         }
     },
     "hirasetting": {
