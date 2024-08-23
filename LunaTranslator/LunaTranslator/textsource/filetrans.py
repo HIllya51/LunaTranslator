@@ -30,6 +30,7 @@ class parsejson:
     def load(self):
         for i, k in enumerate(self.data):
             if self.data[k]:
+                yield i, None
                 continue
             yield i, k
 
@@ -158,6 +159,7 @@ class filetrans(basetext):
             file = parsesrt(file)
         gobject.baseobject.settin_ui.progresssignal3.emit(len(file))
         gobject.baseobject.settin_ui.progresssignal2.emit("", 0)
+
         for index, line in file.load():
             if self.ending:
                 return
@@ -165,17 +167,25 @@ class filetrans(basetext):
                 if self.ending:
                     return
                 time.sleep(0.1)
+
+            class __p:
+                def __del__(self):
+                    gobject.baseobject.settin_ui.progresssignal2.emit(
+                        "{}/{} {:0.2f}% ".format(
+                            index + 1, len(file), 100 * (index + 1) / len(file)
+                        ),
+                        (index + 1),
+                    )
+
+            _ref = __p()
+            if not line:
+                continue
             ts = self.query(line)
             if not ts:
                 ts = self.waitfortranslation(line)
             if self.ending:
                 return
-            gobject.baseobject.settin_ui.progresssignal2.emit(
-                "{}/{} {:0.2f}% ".format(
-                    index + 1, len(file), 100 * (index + 1) / len(file)
-                ),
-                (index + 1),
-            )
+
             if not ts:
                 continue
             if len(ts.split("\n")) == len(line.split("\n")):
