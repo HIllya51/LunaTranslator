@@ -1066,7 +1066,8 @@ class TranslatorWindow(resizableframeless):
                 topr,
                 str2rgba(
                     globalconfig["backcolor"],
-                    globalconfig["transparent"] * (not globalconfig["backtransparent"]),
+                    max(100 / 255, globalconfig["transparent"])
+                    * (not globalconfig["backtransparent"]),
                 ),
             )
         )

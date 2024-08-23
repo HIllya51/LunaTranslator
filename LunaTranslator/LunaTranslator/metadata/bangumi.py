@@ -209,7 +209,17 @@ class searcher(common):
                             developers.append(__)
                         elif isinstance(__, dict):
                             developers.append(__["v"])
+        namemaps = {}
+        try:
+            charas = self.proxysession.get(
+                f"https://api.bgm.tv/v0/subjects/{sid}/characters", headers=headers
+            ).json()
+            for _ in charas:
+                namemaps[_["name"]] = _["name"]
+        except:
+            pass
         return {
+            "namemap": namemaps,
             "title": response["name"],
             "imagepath_all": [imagepath],
             "webtags": vndbtags,

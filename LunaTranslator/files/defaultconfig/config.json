@@ -621,7 +621,7 @@
             },
             "backtransbutton": {
                 "use": true,
-                "tip": "背景窗口透明",
+                "tip": "背景窗口透明_EX",
                 "icon": "fa.lightbulb-o",
                 "align": 2
             },

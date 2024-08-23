@@ -9,7 +9,7 @@ def namemapcast(namemap):
     for k, v in namemap.items():
         for sp in ["・", " "]:
             spja = k.split(sp)
-            spen = v.split(" ")
+            spen = v.split(sp if k == v else " ")
             if len(spja) == len(spen) and len(spen) > 1:
                 for i in range(len(spja)):
                     if len(spja[i]) >= 2:
