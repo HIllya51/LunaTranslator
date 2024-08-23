@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     getboxlayout,
     makesubtab_lazy,
     makescrollgrid,
+    getsmalllabel,
 )
 
 
@@ -30,24 +31,41 @@ def changeHorizontal(self):
     gobject.baseobject.translation_ui.set_color_transparency()
 
 
+def __exswitch(self, ex):
+    self.horizontal_slider.setMinimum(1 - ex)
+    gobject.baseobject.translation_ui.set_color_transparency()
+
+
 def createhorizontal_slider(self):
 
     self.horizontal_slider = QSlider()
     self.horizontal_slider.setMaximum(100)
-    self.horizontal_slider.setMinimum(0)
+    self.horizontal_slider.setMinimum(1 - globalconfig["transparent_EX"])
     self.horizontal_slider.setOrientation(Qt.Orientation.Horizontal)
-    self.horizontal_slider.setValue(0)
     self.horizontal_slider.setValue(globalconfig["transparent"])
     self.horizontal_slider.valueChanged.connect(
         functools.partial(changeHorizontal, self)
     )
-    return self.horizontal_slider
+    w = QWidget()
+    hb = QHBoxLayout()
+    hb.setContentsMargins(0, 0, 0, 0)
+    w.setLayout(hb)
 
-
-def createhorizontal_slider_label(self):
     self.horizontal_slider_label = QLabel()
     self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent"]))
-    return self.horizontal_slider_label
+    hb.addWidget(self.horizontal_slider)
+    hb.addWidget(self.horizontal_slider_label)
+
+    l = getsmalllabel("  EX")()
+    hb.addWidget(l)
+    sw = getsimpleswitch(
+        globalconfig,
+        "transparent_EX",
+        callback=functools.partial(__exswitch, self),
+    )
+
+    hb.addWidget(sw)
+    return w
 
 
 def changeHorizontal_tool(self):
@@ -271,7 +289,6 @@ def mainuisetting(self):
                                 functools.partial(createhorizontal_slider, self),
                                 0,
                             ),
-                            functools.partial(createhorizontal_slider_label, self),
                         ],
                         [
                             "背景颜色",
