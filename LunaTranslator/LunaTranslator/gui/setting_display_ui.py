@@ -34,7 +34,7 @@ def createhorizontal_slider(self):
 
     self.horizontal_slider = QSlider()
     self.horizontal_slider.setMaximum(100)
-    self.horizontal_slider.setMinimum(1)
+    self.horizontal_slider.setMinimum(0)
     self.horizontal_slider.setOrientation(Qt.Orientation.Horizontal)
     self.horizontal_slider.setValue(0)
     self.horizontal_slider.setValue(globalconfig["transparent"])
