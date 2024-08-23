@@ -30,7 +30,7 @@
 
 该方法仅支持sakura大模型v0.10版本以上。
 
-使用该方法时，需要在sakura大模型的设置中，切换`prompt version`为`v0.10pre1`
+使用该方法时，需要在sakura大模型的设置中，切换`prompt格式（需要根据模型版本决定）`为`v0.10pre1（支持gpt词典）`
 
 <details>
   <summary>示例</summary>

@@ -1283,21 +1283,18 @@ class TranslatorWindow(resizableframeless):
         hwnd = windows.GetForegroundWindow()
         hwndpid = windows.GetWindowThreadProcessId(hwnd)
         ismyprocbutnotmainuiforeground = hwndpid == os.getpid() and hwnd != self.winid
-        onlychecktitle = (
-            globalconfig["mousetransparent"] or ismyprocbutnotmainuiforeground
-        )
-        if onlychecktitle:
-            usegeo = self.titlebar.geometry()
-            btn: QWidget = self.titlebar.buttons["mousetransbutton"]
-            if (
-                globalconfig["mousetransparent"]
-                and (not btn.isVisible())
-                and (btn.reflayout is not None)
-            ):
-                usegeo = self.mousetranscheckrect
-            return usegeo.contains(self.mapFromGlobal(QCursor.pos()))
-        else:
-            return self.geometry().contains(QCursor.pos())
+
+        if ismyprocbutnotmainuiforeground:
+            return False
+        usegeo = self.titlebar.geometry()
+        btn: QWidget = self.titlebar.buttons["mousetransbutton"]
+        if (
+            globalconfig["mousetransparent"]
+            and (not btn.isVisible())
+            and (btn.reflayout is not None)
+        ):
+            usegeo = self.mousetranscheckrect
+        return usegeo.contains(self.mapFromGlobal(QCursor.pos()))
 
     def __betterenterevent(self):
         if self._isentered:
@@ -1306,6 +1303,14 @@ class TranslatorWindow(resizableframeless):
             return
         self._isentered = True
         self.enterfunction()
+
+    def leaveEvent(self, e):
+        super().leaveEvent(e)
+        self.dodelayhide(None)
+
+    def enterEvent(self, e: QEvent):
+        super().enterEvent(e)
+        self.enterfunction(delay=-1)
 
     @threader
     def dodelayhide(self, delay):
@@ -1327,7 +1332,8 @@ class TranslatorWindow(resizableframeless):
     def enterfunction(self, delay=None):
         self.titlebar.show()
         self.set_color_transparency()
-
+        if delay == -1:
+            return
         self.dodelayhide(delay)
 
     def resizeEvent(self, e: QResizeEvent):

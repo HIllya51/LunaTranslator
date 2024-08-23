@@ -17,7 +17,7 @@
     - [OCR自动化执行方法的参数含义](/zh/ocrparam.md)
     - [WindowsOCR如何安装额外的语言支持](/zh/windowsocr.md)
     - [mangaocr整合包无法启动怎么办](/zh/mangaocr.md)
-    - [如何改善OCR模式体验](/zh/gooduseocr.md)
+    - [OCR模式绑定游戏窗口](/zh/gooduseocr.md)
 - [翻译源设置](/zh/guochandamoxing.redirect)
     - [如何使用大模型API翻译](/zh/guochandamoxing.md)
     - [如何使用大模型离线翻译](/zh/offlinellm.md) 
