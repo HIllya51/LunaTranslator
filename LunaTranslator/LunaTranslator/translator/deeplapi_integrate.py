@@ -10,9 +10,14 @@ class TS(basetrans):
         return x
 
     def translate(self, query):
-        self.checkempty(["DeepL-Auth-Key"])
-
-        appid = self.multiapikeycurrent["DeepL-Auth-Key"]
+        if self.config["usewhich"] == 0:
+            appid = self.multiapikeycurrent["DeepL-Auth-Key-1"]
+            endpoint = "https://api-free.deepl.com/v2/translate"
+            self.checkempty(["DeepL-Auth-Key-1"])
+        elif self.config["usewhich"] == 1:
+            appid = self.multiapikeycurrent["DeepL-Auth-Key-2"]
+            endpoint = "https://api.deepl.com/v2/translate"
+            self.checkempty(["DeepL-Auth-Key-2"])
 
         headers = {
             "Authorization": "DeepL-Auth-Key " + appid,
@@ -29,14 +34,10 @@ class TS(basetrans):
         )
 
         response = self.proxysession.post(
-            "https://api-free.deepl.com/v2/translate",
-            headers=headers,
-            verify=False,
-            data=data,
+            endpoint, headers=headers, verify=False, data=data
         )
 
         try:
-            # print(res['trans_result'][0]['dst'])
             _ = response.json()["translations"][0]["text"]
 
             self.countnum(query)

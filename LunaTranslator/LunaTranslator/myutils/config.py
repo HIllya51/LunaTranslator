@@ -360,7 +360,7 @@ def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
         if key not in config1:
             config1[key] = default[key]
 
-        elif key in ("name", "tip", "argstype"):
+        elif key in ("name", "tip", "argstype", "type"):
             config1[key] = default[key]
         elif key == "args":
             _nuse = []

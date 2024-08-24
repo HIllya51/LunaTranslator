@@ -4,15 +4,23 @@
 			"host": "translate.plausibility.cloud"
 		}
 	},
-	"DeepLX": {
+	"deepl": {
 		"args": {
-			"github": "https://github.com/OwO-Network/DeepLX",
+			"usewhich": 0,
 			"api": "http://127.0.0.1:1188/translate"
 		},
 		"argstype": {
-			"github": {
-				"type": "label",
-				"islink": true
+			"api": {
+				"name": "DeepLX api"
+			},
+			"usewhich": {
+				"rank": 0,
+				"type": "combo",
+				"name": "类型",
+				"list": [
+					"DeepL",
+					"DeepLX"
+				]
 			}
 		}
 	},
@@ -58,31 +66,32 @@
 			}
 		}
 	},
-	"deeplapi-free": {
+	"deeplapi_integrate": {
 		"args": {
 			"注册网址": "https://www.deepl.com/translator",
-			"DeepL-Auth-Key": "",
-			"字数统计": "0",
-			"次数统计": "0"
+			"usewhich": 0,
+			"DeepL-Auth-Key-1": "",
+			"DeepL-Auth-Key-2": "",
+			"字数统计": "0"
 		},
 		"argstype": {
 			"注册网址": {
 				"type": "label",
 				"islink": true
-			}
-		}
-	},
-	"deeplapi": {
-		"args": {
-			"注册网址": "https://www.deepl.com/translator",
-			"DeepL-Auth-Key": "",
-			"字数统计": "0",
-			"次数统计": "0"
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
+			},
+			"DeepL-Auth-Key-1": {
+				"name": "DeepL-Auth-Key Free"
+			},
+			"DeepL-Auth-Key-2": {
+				"name": "DeepL-Auth-Key Pro"
+			},
+			"usewhich": {
+				"type": "combo",
+				"name": "类型",
+				"list": [
+					"Free",
+					"Pro"
+				]
 			}
 		}
 	},

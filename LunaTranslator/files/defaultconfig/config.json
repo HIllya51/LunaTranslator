@@ -1607,11 +1607,6 @@
             "color": "#95a5ff",
             "name": "谷歌_v2"
         },
-        "sougou": {
-            "use": false,
-            "color": "blue",
-            "name": "搜狗"
-        },
         "caiyun": {
             "use": false,
             "color": "blue",
@@ -1620,19 +1615,9 @@
         "deepl": {
             "use": false,
             "color": "blue",
-            "name": "deepl"
-        },
-        "deepl2": {
-            "use": false,
-            "color": "blue",
-            "name": "deepl_v2"
-        },
-        "DeepLX": {
-            "use": false,
-            "color": "blue",
-            "name": "DeepLX",
-            "type": "offline",
-            "useproxy": false
+            "name": "DeepL/DeepLX",
+            "useproxy": false,
+            "type": "free"
         },
         "dev_chatgpt": {
             "use": false,
@@ -1783,7 +1768,7 @@
         "sougou2": {
             "use": false,
             "color": "blue",
-            "name": "搜狗_v2"
+            "name": "搜狗"
         },
         "youdao3": {
             "use": false,
@@ -1856,7 +1841,7 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "yandex_api"
+            "name": "yandex api"
         },
         "qqimt": {
             "use": false,
@@ -1909,17 +1894,11 @@
             "color": "blue",
             "name": "sqlite翻译记录"
         },
-        "deeplapi-free": {
+        "deeplapi_integrate": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "deeplapi-free"
-        },
-        "deeplapi": {
-            "type": "api",
-            "use": false,
-            "color": "blue",
-            "name": "deeplapi"
+            "name": "DeepL api"
         },
         "youdaoapi": {
             "type": "api",

@@ -77,7 +77,12 @@ class commonbase:
             if (self.config[item]) == "":
                 emptys.append(item)
         if len(emptys):
-            raise ArgsEmptyExc(emptys)
+            emptys_s = []
+            argstype = self._setting_dict[self.typename].get("argstype", {})
+            for e in emptys:
+                name = argstype.get(e, {}).get("name", e)
+                emptys_s.append(name)
+            raise ArgsEmptyExc(emptys_s)
 
     @property
     def langmap_(self):
