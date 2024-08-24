@@ -92,6 +92,7 @@
 				"name": "DeepL-Auth-Key Pro"
 			},
 			"usewhich": {
+				"rank": 0,
 				"type": "combo",
 				"name": "类型",
 				"list": [
