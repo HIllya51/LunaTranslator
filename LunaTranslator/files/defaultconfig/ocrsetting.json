@@ -221,16 +221,11 @@
     },
     "volcengine": {
         "args": {
-            "注册网址": "https://console.volcengine.com/ai/ability/detail/1",
             "密钥获取": "https://console.volcengine.com/iam/keymanage/",
             "Access Key ID": "",
             "Secret Access Key": ""
         },
         "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
-            },
             "密钥获取": {
                 "type": "label",
                 "islink": true

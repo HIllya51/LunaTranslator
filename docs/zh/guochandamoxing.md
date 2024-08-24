@@ -52,15 +52,13 @@
 
 **model** https://help.aliyun.com/zh/model-studio/product-overview/billing-for-alibaba-cloud-model-studio/#2550bcc04d2tk
 
-### **字节跳动豆包大模型**
-
-
+### **字节跳动豆包大模型(火山引擎)**
 
 **API接口地址** `https://ark.cn-beijing.volces.com/api/v3`
 
-**SECRET_KEY** 跟[官方文档](https://www.volcengine.com/docs/82379/1263279)获取
+**SECRET_KEY** [创建API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)获取
 
-**model** 创建[推理接入点](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10)后，填入**接入点**而非**模型**
+**model** [创建推理接入点](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10)后，填入**接入点**而非**模型**
 
 ![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
 
