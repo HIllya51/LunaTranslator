@@ -4,7 +4,7 @@ from qtsymbols import *
 import gobject
 import os, subprocess, functools
 import time, winrtutils, winsharedutils, hashlib
-from myutils.config import savehook_new_data, uid2gamepath
+from myutils.config import savehook_new_data, globalconfig
 from myutils.wrapper import threader
 
 
@@ -19,15 +19,27 @@ def grabwindow(app="PNG", callback_origin=None):
         if not hwndx:
             hwndx = windows.GetForegroundWindow()
         gamepath = getpidexe(windows.GetWindowThreadProcessId(hwndx))
-        dirname = os.path.basename(gamepath).replace(
+        exename = os.path.basename(gamepath).replace(
             "." + os.path.basename(gamepath).split(".")[-1], ""
         )
         uid = gobject.baseobject.gameuid
-        fname = gobject.getcachedir(
-            f"screenshot/{dirname}/"
+        screenshot_savepath: str = globalconfig.get("screenshot_savepath", "")
+        fnamef = lambda: gobject.getcachedir(
+            f"screenshot/{exename}/"
             + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()),
             abspath=False,
         )
+        if screenshot_savepath:
+            try:
+                dirname = screenshot_savepath.format(exename=exename)
+                os.makedirs(dirname, exist_ok=True)
+                fname = os.path.join(
+                    dirname, time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+                )
+            except:
+                fname = fnamef()
+        else:
+            fname = fnamef()
 
     def callback_1(callback, uid, fn):
         if not os.path.exists(fn):
