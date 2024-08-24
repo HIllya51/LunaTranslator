@@ -1843,6 +1843,11 @@
             "color": "blue",
             "name": "yandex api"
         },
+        "yandex": {
+            "use": false,
+            "color": "blue",
+            "name": "yandex"
+        },
         "qqimt": {
             "use": false,
             "color": "blue",
@@ -1894,7 +1899,7 @@
             "color": "blue",
             "name": "sqlite翻译记录"
         },
-        "deeplapi_integrate": {
+        "deeplapi-free": {
             "type": "api",
             "use": false,
             "color": "blue",

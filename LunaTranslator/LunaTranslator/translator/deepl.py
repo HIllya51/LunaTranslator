@@ -123,9 +123,6 @@ class TS(basetrans):
             data=postStr,
         ).json()
         try:
-            try:
-                return res["result"]["texts"][0]["alternatives"][0]["text"]
-            except:
-                return res["result"]["texts"][0]["text"]
+            return res["result"]["texts"][0]["text"]
         except:
             raise Exception(res)

@@ -7,9 +7,15 @@
 	"deepl": {
 		"args": {
 			"usewhich": 0,
+			"github": "https://github.com/OwO-Network/DeepLX",
 			"api": "http://127.0.0.1:1188/translate"
 		},
 		"argstype": {
+			"github": {
+				"name": "DeepLX Github",
+				"type": "label",
+				"islink": true
+			},
 			"api": {
 				"name": "DeepLX api"
 			},
@@ -66,11 +72,11 @@
 			}
 		}
 	},
-	"deeplapi_integrate": {
+	"deeplapi-free": {
 		"args": {
 			"注册网址": "https://www.deepl.com/translator",
 			"usewhich": 0,
-			"DeepL-Auth-Key-1": "",
+			"DeepL-Auth-Key": "",
 			"DeepL-Auth-Key-2": "",
 			"字数统计": "0"
 		},
@@ -79,7 +85,7 @@
 				"type": "label",
 				"islink": true
 			},
-			"DeepL-Auth-Key-1": {
+			"DeepL-Auth-Key": {
 				"name": "DeepL-Auth-Key Free"
 			},
 			"DeepL-Auth-Key-2": {
