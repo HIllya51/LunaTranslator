@@ -82,13 +82,16 @@
 		},
 		"argstype": {
 			"注册网址": {
+				"rank": -1,
 				"type": "label",
 				"islink": true
 			},
 			"DeepL-Auth-Key": {
+				"rank": 1,
 				"name": "DeepL-Auth-Key Free"
 			},
 			"DeepL-Auth-Key-2": {
+				"rank": 2,
 				"name": "DeepL-Auth-Key Pro"
 			},
 			"usewhich": {
