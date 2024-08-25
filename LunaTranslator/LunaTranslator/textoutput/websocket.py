@@ -49,7 +49,6 @@ class websocketserver:
         response = "HTTP/1.1 101 Switching Protocols\r\n"
         response += "Upgrade: websocket\r\n"
         response += "Connection: Upgrade\r\n"
-        response += "sec-websocket-protocol: 111\r\n"
         response += f"Sec-WebSocket-Accept: {hashed}\r\n\r\n"
 
         # 发送握手响应给客户端
