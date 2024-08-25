@@ -1904,10 +1904,10 @@
     },
     "main_server": [
         "https://lunatranslator.org",
-        "http://lunatranslator.star.is"
+        "https://lunatranslator.star.is"
     ],
     "docs_server": [
         "https://docs.lunatranslator.org",
-        "http://docs.lunatranslator.star.is"
+        "https://docs.lunatranslator.star.is"
     ]
 }
