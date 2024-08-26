@@ -531,8 +531,18 @@ class AnkiWindow(QWidget):
             )
         )
 
-        btn = LPushButton("添加")
-        btn.clicked.connect(self.errorwrap)
+        class LRButton(LPushButton):
+            rightclick = pyqtSignal()
+
+            def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
+                if self.rect().contains(ev.pos()):
+                    if ev.button() == Qt.MouseButton.RightButton:
+                        self.rightclick.emit()
+                return super().mouseReleaseEvent(ev)
+
+        btn = LRButton("添加")
+        btn.clicked.connect(functools.partial(self.errorwrap, False))
+        btn.rightclick.connect(functools.partial(self.errorwrap, True))
         layout.addWidget(btn)
 
         self.__ocrsettext.connect(self.example.appendPlainText)
@@ -579,13 +589,15 @@ class AnkiWindow(QWidget):
         self.audiopath.clear()
         self.audiopath_sentence.clear()
 
-    def errorwrap(self):
+    def errorwrap(self, close=False):
         try:
             self.addanki()
             if globalconfig["ankiconnect"]["addsuccautoclose"]:
-                self.parent().parent().parent().close()
+                gobject.baseobject.searchwordW.close()
             else:
                 QToolTip.showText(QCursor.pos(), "添加成功", self)
+            if close:
+                gobject.baseobject.searchwordW.close()
         except requests.RequestException:
             getQMessageBox(self, "错误", "无法连接到anki")
         except anki.AnkiException as e:
