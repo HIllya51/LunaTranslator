@@ -97,8 +97,7 @@
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 显示/隐藏翻译
     切换是否显示翻译的状态，当下一次读取文本时，才真正生效。
 1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> 朗读
-    对当前文本进行语音合成。<br>
-    该朗读会无视`跳过`（如果在`语音指定`中，匹配当前文本目标为`跳过`，则使用按钮进行朗读时，会无视跳过，强制进行朗读）
+    左击按钮会对当前文本进行语音合成。<br>右击该按钮会中断朗读。<br>    该朗读会无视`跳过`（如果在`语音指定`中，匹配当前文本目标为`跳过`，则使用按钮进行朗读时，会无视跳过，强制进行朗读）
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 复制到剪贴板
     复制当前提取到的文本到剪贴板一次。如果想要自动提取到剪贴板，应当激活`文本输入`->`文本输出`->`剪贴板`->`自动输出`。
 1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 显示/隐藏历史翻译

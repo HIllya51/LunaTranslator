@@ -842,5 +842,6 @@
     "按键": "Key",
     "事件": "event",
     "按下": "Press down",
-    "松开": "release"
+    "松开": "release",
+    "中断": "interrupt"
 }

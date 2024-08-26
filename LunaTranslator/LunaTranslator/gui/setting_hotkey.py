@@ -47,6 +47,7 @@ def registrhotkeys(self):
         "_51": gobject.baseobject.translation_ui.changeshowhidetrans,
         "_6": lambda: gobject.baseobject.transhis.showsignal.emit(),
         "_7": lambda: gobject.baseobject.readcurrent(force=True),
+        "_7_1": lambda: gobject.baseobject.audioplayer.stop(),
         "_8": lambda: gobject.baseobject.translation_ui.changemousetransparentstate(0),
         "_9": gobject.baseobject.translation_ui.changetoolslockstate,
         "_10": lambda: gobject.baseobject.translation_ui.showsavegame_signal.emit(),

@@ -842,5 +842,6 @@
     "按键": "Chiave",
     "事件": "evento",
     "按下": "Premere verso il basso",
-    "松开": "rilascio"
+    "松开": "rilascio",
+    "中断": "interrupt"
 }

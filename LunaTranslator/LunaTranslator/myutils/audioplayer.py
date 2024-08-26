@@ -103,6 +103,13 @@ class series_audioplayer:
         self.lastcontext = None
         threading.Thread(target=self.__dotasks).start()
 
+    def stop(self):
+        try:
+            self.tasks = (None, 0, True)
+            self.lock.release()
+        except:
+            pass
+
     def play(self, binary, volume, force):
         try:
             self.tasks = (binary, volume, force)
@@ -120,6 +127,8 @@ class series_audioplayer:
                     continue
                 binary, volume, force = task
                 _playonce = None
+                if not binary:
+                    continue
                 _playonce = playonce(binary, volume)
                 if globalconfig["ttsnointerrupt"]:
                     while _playonce.isplaying:

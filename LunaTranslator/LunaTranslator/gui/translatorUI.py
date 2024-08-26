@@ -71,6 +71,7 @@ class ButtonX(QWidget):
 
 class IconLabelX(LIconLabel, ButtonX):
     clicked = pyqtSignal()
+    rightclick = pyqtSignal()
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
         if QObject.receivers(self, self.clicked) == 0:
@@ -78,7 +79,10 @@ class IconLabelX(LIconLabel, ButtonX):
 
     def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
         if self.rect().contains(ev.pos()):
-            self.clicked.emit()
+            if ev.button() == Qt.MouseButton.RightButton:
+                self.rightclick.emit()
+            elif ev.button() == Qt.MouseButton.LeftButton:
+                self.clicked.emit()
         return super().mouseReleaseEvent(ev)
 
 
@@ -165,19 +169,28 @@ class ButtonBar(QFrame):
                 btn.setStyleSheet(style)
 
     def takusanbuttons(
-        self, _type, clickfunc, tips, name, belong=None, iconstate=None, colorstate=None
+        self,
+        _type,
+        clickfunc,
+        rightclick,
+        tips,
+        name,
+        belong=None,
+        iconstate=None,
+        colorstate=None,
     ):
         button = IconLabelX()
+
+        def callwrap(call):
+            try:
+                call()
+            except:
+                print_exc()
+
         if clickfunc:
-
-            def callwrap(call):
-                try:
-                    call()
-                except:
-                    print_exc()
-
             button.clicked.connect(functools.partial(callwrap, clickfunc))
-
+        if rightclick:
+            button.rightclick.connect(functools.partial(callwrap, rightclick))
         if tips:
             button.setToolTip(tips)
         if _type not in self.stylebuttons:
@@ -567,7 +580,13 @@ class TranslatorWindow(resizableframeless):
                     "transerrorfix", gobject.baseobject.commonstylebase
                 ),
             ),
-            ("langdu", lambda: gobject.baseobject.readcurrent(force=True)),
+            (
+                "langdu",
+                lambda: gobject.baseobject.readcurrent(force=True),
+                None,
+                None,
+                lambda: gobject.baseobject.audioplayer.stop(),
+            ),
             (
                 "mousetransbutton",
                 lambda: self.changemousetransparentstate(0),
@@ -670,13 +689,13 @@ class TranslatorWindow(resizableframeless):
         _type = {"quit": 2}
 
         for __ in functions:
+            btn = func = iconstate = colorstate = rightclick = None
             if len(__) == 2:
                 btn, func = __
-                iconstate = colorstate = None
             elif len(__) == 4:
                 btn, func, iconstate, colorstate = __
-            else:
-                raise
+            elif len(__) == 5:
+                btn, func, iconstate, colorstate, rightclick = __
             belong = (
                 globalconfig["toolbutton"]["buttons"][btn]["belong"]
                 if "belong" in globalconfig["toolbutton"]["buttons"][btn]
@@ -686,6 +705,7 @@ class TranslatorWindow(resizableframeless):
             self.titlebar.takusanbuttons(
                 tp,
                 func,
+                rightclick,
                 globalconfig["toolbutton"]["buttons"][btn]["tip"],
                 btn,
                 belong,

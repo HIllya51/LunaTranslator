@@ -947,6 +947,11 @@
                 "name": "朗读",
                 "keystring": ""
             },
+            "_7_1": {
+                "use": false,
+                "name": "朗读_中断",
+                "keystring": ""
+            },
             "_8": {
                 "use": false,
                 "name": "鼠标穿透窗口",

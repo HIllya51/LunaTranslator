@@ -842,5 +842,6 @@
     "按键": "Sleutel",
     "事件": "gebeurtenis",
     "按下": "Druk omlaag",
-    "松开": "release"
+    "松开": "release",
+    "中断": "onderbreken"
 }
