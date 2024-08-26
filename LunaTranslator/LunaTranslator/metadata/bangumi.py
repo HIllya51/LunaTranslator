@@ -1,7 +1,7 @@
-import requests
-from myutils.config import savehook_new_data
+import requests, os
+from myutils.config import savehook_new_data, static_data
 from myutils.utils import initanewitem, gamdidchangedtask
-import functools, time
+import functools, time, json, gobject
 from qtsymbols import *
 from metadata.abstract import common
 from gui.usefulwidget import getlineedit
@@ -124,23 +124,87 @@ class bgmsettings(QDialog):
 
     @threader
     def checkvalid(self, k):
+        self.lbinfo.setText("")
         t = time.time()
         self.tm = t
-        self._ref.config["access-token"] = k
+        if k != self._ref.config["access-token"]:
+            self._ref.config["access-token"] = k
+            self._ref.config["refresh_token"] = ""
         headers = {
             "accept": "application/json",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         }
-        headers["Authorization"] = "Bearer " + k
-        response = requests.get(f"https://api.bgm.tv/v0/me", headers=headers)
-        description = response.json().get("description", None)
+        response = requests.post(
+            f"https://bgm.tv/oauth/token_status",
+            params={"access_token": k},
+            headers=headers,
+            proxies=self._ref.proxy,
+        ).json()
         if t != self.tm:
             return
-        if description:
-            self.setWindowTitle(self._ref.config_all["name"] + " " + description)
+        print(response)
+        expires = response.get("expires", 0)
+        if expires:
+            info = ""
+            try:
+                create = (
+                    json.loads(response["info"])
+                    .get("created_at", "")
+                    .replace("T", " ")
+                    .split(".")[0]
+                )
+                if create:
+                    info += "创建日期： " + create + " "
+            except:
+                pass
+            info += "有效期至： " + time.strftime(
+                "%Y-%m-%d %H:%M:%S", time.localtime(expires)
+            )
         else:
+            info = " ".join(
+                (response.get("error", ""), response.get("error_description", ""))
+            )
+        self.lbinfo.setText(info)
 
-            self.setWindowTitle(self._ref.config_all["name"])
+    def __oauth(self):
+        gobject.baseobject.urlprotocol()
+        gobject.baseobject.openlink(
+            f'https://bgm.tv/oauth/authorize?client_id={static_data["bangumi_oauth"]["client_id"]}&response_type=code&redirect_uri=lunatranslator://bangumioauth'
+        )
+        self.__wait()
+
+    @threader
+    def __wait(self):
+        bangumioauth = gobject.getcachedir("bangumioauth")
+        while True:
+            time.sleep(1)
+            if not os.path.exists(bangumioauth):
+                continue
+            try:
+                with open(bangumioauth, "r", encoding="utf8") as ff:
+                    code = ff.read()
+            except:
+                continue
+            print(code)
+            os.remove(bangumioauth)
+            response = requests.post(
+                f"https://bgm.tv/oauth/access_token",
+                json={
+                    "grant_type": "authorization_code",
+                    "client_id": static_data["bangumi_oauth"]["client_id"],
+                    "client_secret": static_data["bangumi_oauth"]["client_secret"],
+                    "code": code,
+                    "redirect_uri": "lunatranslator://bangumioauth",
+                },
+                proxies=self._ref.proxy,
+            ).json()
+            print(response)
+            access_token = response["access_token"]
+            self._token.setText(access_token)
+            self._ref.config["refresh_token"] = response["refresh_token"]
+            self._ref.config["access-token"] = access_token
+            print(self._ref.config)
+            break
 
     def __init__(self, parent, _ref: common, gameuid: str) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -149,11 +213,20 @@ class bgmsettings(QDialog):
         self.resize(QSize(800, 10))
         self.setWindowTitle(self._ref.config_all["name"])
         fl = QFormLayout(self)
+        vbox = QVBoxLayout()
+        hbox = QHBoxLayout()
         s = QLineEdit()
+        self.lbinfo = QLabel()
         s.textChanged.connect(self.checkvalid)
         s.setText(_ref.config["access-token"])
-
-        fl.addRow("access-token", s)
+        self._token = s
+        vbox.addLayout(hbox)
+        hbox.addWidget(s)
+        oauth = QPushButton("OAuth")
+        hbox.addWidget(oauth)
+        oauth.clicked.connect(self.__oauth)
+        vbox.addWidget(self.lbinfo)
+        fl.addRow("access-token", vbox)
 
         btn = LPushButton("上传游戏")
         btn.clicked.connect(
@@ -174,6 +247,30 @@ class bgmsettings(QDialog):
 
 
 class searcher(common):
+    def __init__(self, typename) -> None:
+        super().__init__(typename)
+        self._refresh()
+
+    @threader
+    def _refresh(self):
+        if self.config["refresh_token"]:
+            resp = self.proxysession.post(
+                "https://bgm.tv/oauth/access_token",
+                json={
+                    "grant_type": "refresh_token",
+                    "client_id": static_data["bangumi_oauth"]["client_id"],
+                    "client_secret": static_data["bangumi_oauth"]["client_secret"],
+                    "refresh_token": self.config["refresh_token"],
+                    "redirect_uri": "lunatranslator://bangumioauth",
+                },
+            ).json()
+            try:
+                self.config["refresh_token"] = resp["refresh_token"]
+                self.config["access-token"] = resp["access_token"]
+            except:
+                print(resp)
+                self.config["refresh_token"] = ""
+
     def querysettingwindow(self, parent, gameuid):
         bgmsettings(parent, self, gameuid)
 

@@ -3,14 +3,8 @@ import time, functools, threading, os, importlib, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, trypass, tryprint
-from myutils.config import (
-    globalconfig,
-    saveallconfig,
-    _TR,
-    static_data,
-)
+from myutils.config import globalconfig, saveallconfig, static_data
 from gui.dialog_savedgame import dialog_setting_game
-from myutils.utils import getlanguse, dynamiclink
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
@@ -19,22 +13,12 @@ from myutils.utils import (
     makehtml,
     loadpostsettingwindowmethod_maybe,
 )
-from myutils.hwnd import (
-    mouseselectwindow,
-    grabwindow,
-    getExeIcon,
-    getcurrexe,
-)
+from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import (
-    resizableframeless,
-    getQMessageBox,
-    LIconLabel,
-    pixmapviewer,
-)
+from gui.usefulwidget import resizableframeless, getQMessageBox, LIconLabel
 from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.dialog_savedgame_setting import browserdialog
@@ -269,12 +253,6 @@ class TranslatorWindow(resizableframeless):
         tracepos = None
         tracehwnd = None
 
-        def _castqp(rect):
-            return QPoint(
-                int(rect[0] / self.devicePixelRatioF()),
-                int(rect[1] / self.devicePixelRatioF()),
-            )
-
         while True:
             time.sleep(0.01)
             if self._move_drag:
@@ -298,23 +276,29 @@ class TranslatorWindow(resizableframeless):
             if not rect:
                 lastpos = None
                 continue
-            rect = _castqp(rect)
+            rect = QRect(
+                int(rect[0] / self.devicePixelRatioF()),
+                int(rect[1] / self.devicePixelRatioF()),
+                int((rect[2] - rect[0]) / self.devicePixelRatioF()),
+                int((rect[3] - rect[1]) / self.devicePixelRatioF()),
+            )
             if not lastpos:
                 lastpos = rect
                 tracepos = self.pos()
                 try:
-                    gobject.baseobject.textsource.starttrace(rect)
+                    gobject.baseobject.textsource.starttrace(rect.topLeft())
                 except:
                     pass
                 continue
 
-            if rect == QPoint(0, 0):
+            if (rect.topLeft() == QPoint(0, 0)) or (rect.size() != lastpos.size()):
+                lastpos = rect
                 continue
             try:
-                gobject.baseobject.textsource.traceoffset(rect)
+                gobject.baseobject.textsource.traceoffset(rect.topLeft())
             except:
                 pass
-            self.move_signal.emit(tracepos - lastpos + rect)
+            self.move_signal.emit(tracepos - lastpos.topLeft() + rect.topLeft())
 
     def showres(self, kwargs):  # name,color,res,onlytrans,iter_context):
         try:

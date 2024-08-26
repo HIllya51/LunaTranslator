@@ -1909,5 +1909,9 @@
     "docs_server": [
         "https://docs.lunatranslator.org",
         "https://docs.lunatranslator.star.is"
-    ]
+    ],
+    "bangumi_oauth": {
+        "client_id": "bgm31536662bc84ee9a9",
+        "client_secret": "b4ca9f5dc7c3819bff163843e1b5cdb0"
+    }
 }

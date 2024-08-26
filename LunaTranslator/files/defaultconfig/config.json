@@ -261,7 +261,8 @@
             "useproxy": true,
             "target": "bgmsid",
             "args": {
-                "access-token": ""
+                "access-token": "",
+                "refresh_token": ""
             }
         },
         "fanza": {

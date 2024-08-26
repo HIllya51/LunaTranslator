@@ -230,7 +230,7 @@ def savelogs():
 
 
 def urlprotocol():
-    import argparse
+    import argparse, gobject, sys
     from urllib.parse import urlsplit
     from traceback import print_exc
 
@@ -243,11 +243,14 @@ def urlprotocol():
             print(URLProtocol)
             result = urlsplit(URLProtocol)
             netloc = result.netloc.lower()
-            if netloc == "oauthtoken":
-                token = result.path[1:]
-
-    except:
-        print()
+            if netloc == "bangumioauth":
+                # code=xxx
+                bangumioauth = gobject.getcachedir("bangumioauth")
+                with open(bangumioauth, "w", encoding="utf8") as ff:
+                    ff.write(result.query[5:])
+                os._exit(0)
+    except Exception:
+        print_exc()
 
 
 if __name__ == "__main__":
@@ -261,6 +264,6 @@ if __name__ == "__main__":
     checkintegrity()
     checkpermission()
     savelogs()
-    # urlprotocol()
+    urlprotocol()
     loadmainui()
     app.exit(app.exec())

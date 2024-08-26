@@ -5,7 +5,7 @@ from traceback import print_exc
 import qtawesome, requests, gobject, windows
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
-from myutils.config import globalconfig, _TR, static_data, savehook_new_data
+from myutils.config import globalconfig, _TR, static_data
 from myutils.utils import loopbackrecorder, parsekeystringtomodvkcode
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
@@ -15,7 +15,6 @@ from gui.usefulwidget import (
     statusbutton,
     getQMessageBox,
     auto_select_webview,
-    FocusCombo,
     getboxlayout,
     getspinbox,
     getsimplecombobox,
@@ -161,7 +160,7 @@ class AnkiWindow(QWidget):
             )
         )
 
-        self.htmlbrowser = auto_select_webview(self)
+        self.htmlbrowser = auto_select_webview(self, True)
         self.htmlbrowser.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
@@ -716,10 +715,18 @@ class searchwordW(closeashidewindow):
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.search_word.connect(self.__click_word_search_function)
         self.show_dict_result.connect(self.__show_dict_result_function)
+        self.state = 0
 
-        self.setWindowTitle("查词")
-        self.ankiwindow = AnkiWindow()
+    def __load(self):
+        if self.state != 0:
+            return
+        self.state = 1
         self.setupUi()
+        self.state = 2
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        self.__load()
 
     @tryprint
     def __show_dict_result_function(self, timestamp, k, res):
@@ -760,6 +767,8 @@ class searchwordW(closeashidewindow):
         self.textOutput.setHtml(html)
 
     def setupUi(self):
+        self.setWindowTitle("查词")
+        self.ankiwindow = AnkiWindow()
         self.setWindowIcon(qtawesome.icon("fa.search"))
         self.thisps = {}
         self.hasclicked = False
@@ -813,8 +822,14 @@ class searchwordW(closeashidewindow):
 
         self.tab = CustomTabBar()
         self.tab.tabBarClicked.connect(self.tabclicked)
+        self.tabcurrentindex = -1
 
         def __(idx):
+            if self.tabcurrentindex == idx:
+                return
+            self.tabcurrentindex = idx
+            if idx == -1:
+                return
             if not self.hasclicked:
                 return
             self.tabclicked(idx)
@@ -822,7 +837,7 @@ class searchwordW(closeashidewindow):
         self.tab.currentChanged.connect(__)
         self.tabks = []
         self.setCentralWidget(ww)
-        self.textOutput = auto_select_webview(self)
+        self.textOutput = auto_select_webview(self, True)
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
@@ -881,8 +896,10 @@ class searchwordW(closeashidewindow):
         return res
 
     def __click_word_search_function(self, word, append):
-        word = word.strip()
         self.showNormal()
+        if self.state != 2:
+            return
+        word = word.strip()
         if append:
             word = self.searchtext.text() + word
         self.searchtext.setText(word)
