@@ -46,10 +46,12 @@ import windows
 import winsharedutils
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
-from myutils.utils import nowisdark, getfilemd5
+from myutils.utils import nowisdark
 from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
+from gui.setting_textinput_ocr import showocrimage
+
 
 
 class MAINUI:
@@ -80,7 +82,25 @@ class MAINUI:
         self.reader_uid = None
         self.__hwnd = None
         self.gameuid = 0
+        self.showocrimage = None
+        self.showocrimage_cached = None
         self.autoswitchgameuid = True
+
+    def maybesetimage(self, pair):
+        if self.showocrimage:
+            try:
+                self.showocrimage.setimage.emit(pair)
+            except:
+                print_exc()
+        self.showocrimage_cached = pair
+
+    def createshowocrimage(self):
+        try:
+            self.showocrimage = showocrimage(self.settin_ui, self.showocrimage_cached)
+            if self.showocrimage:
+                self.showocrimage.show()
+        except:
+            print_exc()
 
     @property
     def reader(self):

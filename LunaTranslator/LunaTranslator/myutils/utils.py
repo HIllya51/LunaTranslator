@@ -835,3 +835,20 @@ class loopbackrecorder:
             with open(file, "wb") as ff:
                 ff.write(mp3)
             callback(file)
+
+
+def copytree(src, dst, copy_function=shutil.copy2):
+    names = os.listdir(src)
+
+    os.makedirs(dst, exist_ok=True)
+    for name in names:
+
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        try:
+            if os.path.isdir(srcname):
+                copytree(srcname, dstname, copy_function)
+            else:
+                copy_function(srcname, dstname)
+        except:
+            pass

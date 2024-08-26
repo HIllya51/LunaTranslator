@@ -1,12 +1,12 @@
 import requests
 from myutils.config import savehook_new_data
 from myutils.utils import initanewitem, gamdidchangedtask
-import functools
+import functools, time
 from qtsymbols import *
 from metadata.abstract import common
 from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton_close, threader
 from gui.dynalang import LPushButton
 
 
@@ -120,13 +120,41 @@ class bgmsettings(QDialog):
     def __getalistname(self, callback, _):
         getalistname(self, callback)
 
+    infosig = pyqtSignal(str)
+
+    @threader
+    def checkvalid(self, k):
+        t = time.time()
+        self.tm = t
+        self._ref.config["access-token"] = k
+        headers = {
+            "accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        }
+        headers["Authorization"] = "Bearer " + k
+        response = requests.get(f"https://api.bgm.tv/v0/me", headers=headers)
+        description = response.json().get("description", None)
+        if t != self.tm:
+            return
+        if description:
+            self.setWindowTitle(self._ref.config_all["name"] + " " + description)
+        else:
+
+            self.setWindowTitle(self._ref.config_all["name"])
+
     def __init__(self, parent, _ref: common, gameuid: str) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.tm = None
         self._ref = _ref
         self.resize(QSize(800, 10))
         self.setWindowTitle(self._ref.config_all["name"])
         fl = QFormLayout(self)
-        fl.addRow("access-token", getlineedit(_ref.config, "access-token"))
+        s = QLineEdit()
+        s.textChanged.connect(self.checkvalid)
+        s.setText(_ref.config["access-token"])
+
+        fl.addRow("access-token", s)
+
         btn = LPushButton("上传游戏")
         btn.clicked.connect(
             functools.partial(self.singleupload_existsoverride, gameuid)

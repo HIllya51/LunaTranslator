@@ -1,10 +1,10 @@
 from qtsymbols import *
 import functools, platform
-import gobject, os, zipfile, shutil
+import gobject, os, zipfile
 from myutils.config import globalconfig, static_data
 from gui.inputdialog import multicolorset, autoinitdialog
 from myutils.wrapper import tryprint
-from myutils.utils import dynamiclink, translate_exits
+from myutils.utils import dynamiclink, translate_exits, copytree
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
@@ -173,23 +173,6 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
             name,
             lineW,
         )
-
-
-def copytree(src, dst, copy_function=shutil.copy2):
-    names = os.listdir(src)
-
-    os.makedirs(dst, exist_ok=True)
-    for name in names:
-
-        srcname = os.path.join(src, name)
-        dstname = os.path.join(dst, name)
-        try:
-            if os.path.isdir(srcname):
-                copytree(srcname, dstname, copy_function)
-            else:
-                copy_function(srcname, dstname)
-        except:
-            pass
 
 
 def doinstallqweb(self, dd, base):

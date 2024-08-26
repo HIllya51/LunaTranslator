@@ -6,7 +6,7 @@ from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import screenshot
 from myutils.utils import stringfyerror
 from traceback import print_exc
-import threading
+import threading, gobject
 
 
 def qimage2binary(qimage: QImage, fmt="BMP"):
@@ -54,6 +54,7 @@ def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
             pix = screenshot(x1, y1, x2, y2)
 
     image = pix.toImage()
+    gobject.baseobject.maybesetimage(image)
     return image
 
 

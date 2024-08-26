@@ -11,11 +11,13 @@ from myutils.config import (
     findgameuidofpath,
 )
 from textsource.textsourcebase import basetext
-from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace
+from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace, copytree
 from myutils.hwnd import injectdll, test_injectable, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
-import subprocess
+import subprocess, hashlib, requests, zipfile, shutil
+from myutils.proxy import getproxy
+
 
 from ctypes import (
     CDLL,
@@ -40,6 +42,7 @@ from gui.usefulwidget import getQMessageBox
 MAX_MODULE_SIZE = 120
 HOOK_NAME_SIZE = 60
 HOOKCODE_LEN = 500
+oncecheckversion = True
 
 
 class ThreadParam(Structure):
@@ -125,7 +128,95 @@ class texthook(basetext):
 
             return __shitdict(savehook_new_data[self.gameuid]["hooksetting_private"])
 
+    def tryqueryfromhost(self):
+
+        for i, main_server in enumerate(static_data["main_server"]):
+            try:
+                res = requests.get(
+                    "{main_server}/version_lunahook".format(main_server=main_server),
+                    verify=False,
+                    proxies=getproxy(("update", "lunatranslator")),
+                )
+                res = res.json()
+                return res
+            except:
+                pass
+
+    @threader
+    def checkversion(self):
+        if not globalconfig["autoupdate"]:
+            return
+        dlls = ["LunaHook32.dll", "LunaHook64.dll", "LunaHost32.dll", "LunaHost64.dll"]
+        sha256 = {}
+        for dll in dlls:
+            f = os.path.join("files/plugins/LunaHook", dll)
+            with open(f, "rb") as ff:
+                bs = ff.read()
+            sha = hashlib.sha256(bs).hexdigest()
+            sha256[dll] = sha
+        res = self.tryqueryfromhost()
+        if not res:
+            return
+        isnew = True
+        for _, sha in res["sha256"].items():
+            if sha256[_] != sha:
+                isnew = False
+                break
+        if isnew:
+            return
+
+        url = res["download"]
+        savep = gobject.getcachedir("update/LunaHook.zip")
+        if url.startswith("https://github.com"):
+            __x = "github"
+        else:
+            __x = "lunatranslator"
+        data = requests.get(
+            url, verify=False, proxies=getproxy(("update", __x))
+        ).content
+        with open(savep, "wb") as ff:
+            ff.write(data)
+        tgt = gobject.getcachedir("update/LunaHook")
+        with zipfile.ZipFile(savep) as zipf:
+            zipf.extractall(tgt)
+        if os.path.exists(os.path.join(tgt, "Release_English", "LunaHook32.dll")):
+            shutil.move(os.path.join(tgt, "Release_English"), "files/plugins/LunaHook")
+        else:
+            shutil.move(tgt, "files/plugins/LunaHook")
+
     def init(self):
+        self.pids = []
+        self.keepref = []
+        self.hookdatacollecter = OrderedDict()
+        self.reverse = {}
+        self.forward = []
+        self.selectinghook = None
+        self.selectedhook = []
+        self.selectedhookidx = []
+
+        self.multiselectedcollector = []
+        self.multiselectedcollectorlock = threading.Lock()
+        self.lastflushtime = 0
+        self.runonce_line = ""
+        gobject.baseobject.autoswitchgameuid = False
+        self.delaycollectallselectedoutput()
+        self.autohookmonitorthread()
+        self.initdllonce = True
+        self.initdlllock = threading.Lock()
+
+        global oncecheckversion
+        if oncecheckversion:
+            oncecheckversion = False
+            self.checkversion()
+
+    def delayinit(self):
+        with self.initdlllock:
+            if not self.initdllonce:
+                return
+            self.initdllonce = False
+            self.__delayinit()
+
+    def __delayinit(self):
         LunaHost = CDLL(
             gobject.GetDllpath(
                 ("LunaHost32.dll", "LunaHost64.dll"),
@@ -188,23 +279,19 @@ class texthook(basetext):
         self.Luna_QueryThreadHistory = LunaHost.Luna_QueryThreadHistory
         self.Luna_QueryThreadHistory.argtypes = (ThreadParam,)
         self.Luna_QueryThreadHistory.restype = c_void_p
-        self.pids = []
-        self.keepref = []
-        self.hookdatacollecter = OrderedDict()
-        self.reverse = {}
-        self.forward = []
-        self.selectinghook = None
-        self.selectedhook = []
-        self.selectedhookidx = []
-
-        self.multiselectedcollector = []
-        self.multiselectedcollectorlock = threading.Lock()
-        self.lastflushtime = 0
-        self.runonce_line = ""
-        gobject.baseobject.autoswitchgameuid = False
-        self.delaycollectallselectedoutput()
-        self.prepares()
-        self.autohookmonitorthread()
+        procs = [
+            ProcessEvent(self.onprocconnect),
+            ProcessEvent(self.removeproc),
+            ThreadEvent(self.onnewhook),
+            ThreadEvent(self.onremovehook),
+            OutputCallback(self.handle_output),
+            ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
+            HookInsertHandler(self.newhookinsert),
+            EmbedCallback(self.getembedtext),
+        ]
+        self.keepref += procs
+        ptrs = [cast(_, c_void_p).value for _ in procs]
+        self.Luna_Start(*ptrs)
 
     def listprocessm(self):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))
@@ -280,6 +367,7 @@ class texthook(basetext):
             time.sleep(0.1)
 
     def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
+        self.delayinit()
         gobject.baseobject.hwnd = hwnd
         gobject.baseobject.gameuid = gameuid
         self.gameuid = gameuid
@@ -329,23 +417,7 @@ class texthook(basetext):
         if len(self.pids) == 0:
             self.autohookmonitorthread()
 
-    def prepares(self):
-        procs = [
-            ProcessEvent(self.onprocconnect),
-            ProcessEvent(self.removeproc),
-            ThreadEvent(self.onnewhook),
-            ThreadEvent(self.onremovehook),
-            OutputCallback(self.handle_output),
-            ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
-            HookInsertHandler(self.newhookinsert),
-            EmbedCallback(self.getembedtext),
-        ]
-        self.keepref += procs
-        ptrs = [cast(_, c_void_p).value for _ in procs]
-        self.Luna_Start(*ptrs)
-
     def start_unsafe(self, pids):
-
         caninject = test_injectable(pids)
         injectpids = []
         for pid in pids:

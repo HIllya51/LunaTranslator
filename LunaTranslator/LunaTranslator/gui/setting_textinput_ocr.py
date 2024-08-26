@@ -7,6 +7,7 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getIconButton,
+    getIconButton,
     yuitsu_switch,
     D_getcolorbutton,
     D_getsimpleswitch,
@@ -14,14 +15,15 @@ from gui.usefulwidget import (
     getboxlayout,
     selectcolor,
     TableViewW,
-    listediter,
+    saveposwindow,
+    pixmapviewer,
     LStandardItemModel,
     LFocusCombo,
     threebuttons,
 )
-import gobject
+import gobject, qtawesome
 from gui.dynalang import LFormLayout, LDialog, LAction
-from myutils.ocrutil import ocr_end, ocr_init
+from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton_close
 
 
@@ -277,6 +279,74 @@ def _ocrparam(self):
     return self._ocrparam
 
 
+@Singleton_close
+class showocrimage(saveposwindow):
+    setimage = pyqtSignal(QImage)
+
+    def closeEvent(self, e):
+        gobject.baseobject.showocrimage = None
+        super().closeEvent(e)
+
+    def openff(self):
+        f = QFileDialog.getOpenFileName(
+            filter="image ("
+            + " ".join(
+                ["*" + _.data().decode() for _ in QImageWriter.supportedImageFormats()]
+            )
+            + ")"
+        )
+        res = f[0]
+        if not res:
+            return
+        img = QImage(res)
+        if img.isNull():
+            return
+        self.originimage = img
+        self.setimagefunction(img)
+        text, infotype = ocr_run(img)
+        if infotype:
+            gobject.baseobject.displayinfomessage(text, infotype)
+        else:
+            gobject.baseobject.textgetmethod(text, False)
+
+    def __init__(self, parent, cached):
+        self.img1 = None
+        self.originimage = None
+        super().__init__(parent, poslist=globalconfig["showocrgeo"])
+        self.setWindowIcon(qtawesome.icon("fa.picture-o"))
+        self.setWindowTitle("截图")
+        self.originlabel = pixmapviewer()
+        qw = QWidget()
+        self.layout1 = QVBoxLayout()
+        self.setCentralWidget(qw)
+        qw.setLayout(self.layout1)
+        icon = getIconButton(callback=self.openff, icon="fa.folder-open")
+        button = getIconButton(callback=self.retest, icon="fa.rotate-right")
+        hb = QHBoxLayout()
+        hb.addWidget(icon)
+        hb.addWidget(button)
+        self.layout1.addLayout(hb)
+        self.layout1.addWidget(self.originlabel)
+        self.setimage.connect(self.setimagefunction)
+        if cached:
+            self.setimagefunction(cached)
+
+    def retest(self):
+        if self.originimage is None:
+            return
+
+        text, infotype = ocr_run(self.originimage)
+        if infotype:
+            gobject.baseobject.displayinfomessage(text, infotype)
+        else:
+            gobject.baseobject.textgetmethod(text, False)
+
+    def setimagefunction(self, originimage):
+        self.originimage = originimage
+        self.img1 = QPixmap.fromImage(originimage)
+        self.originlabel.showpixmap(self.img1)
+
+
 def getocrgrid(self):
 
     grids = []
@@ -329,7 +399,13 @@ def getocrgrid(self):
                             D_getsimplecombobox(
                                 ["横向", "竖向", "自适应"], globalconfig, "verticalocr"
                             ),
-                            ("", 4),
+                            "",
+                            D_getIconButton(
+                                gobject.baseobject.createshowocrimage,
+                                icon="fa.picture-o",
+                            ),
+                            "",
+                            "",
                         ]
                     ],
                 ),
