@@ -439,6 +439,10 @@ def minmaxmoveobservefunc(self):
                     gobject.baseobject.hwnd = None
                     return
             p_pids = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
+            if not p_pids:
+                # 有时候谜之没有EVENT_OBJECT_DESTROY/僵尸进程
+                gobject.baseobject.hwnd = None
+                return
             _focusp = windows.GetWindowThreadProcessId(hwnd)
             if event != windows.EVENT_SYSTEM_FOREGROUND:
                 return
