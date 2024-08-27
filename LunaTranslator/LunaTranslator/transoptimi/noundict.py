@@ -167,8 +167,7 @@ class Process:
             mp1[xx] = v
         return content, mp1
 
-    def process_after(self, res, mp1):
+    def process_after(self, res: str, mp1):
         for key in mp1:
-            reg = re.compile(re.escape(key), re.IGNORECASE)
-            res = reg.sub(mp1[key], res)
+            res = res.replace(key, mp1[key])
         return res
