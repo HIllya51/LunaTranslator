@@ -63,7 +63,11 @@ class playonce:
             return False
         if not self.channel_length:
             return False
+        if self.channel_length == -1:
+            return False
         channel_position = BASS_ChannelGetPosition(self.handle, BASS_POS_BYTE)
+        if channel_position == -1:
+            return False
         return channel_position < self.channel_length
 
     def __play(self, fileormem, volume):
