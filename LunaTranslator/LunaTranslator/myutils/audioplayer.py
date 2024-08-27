@@ -99,18 +99,21 @@ class series_audioplayer:
         self.tasks = None
         self.lock = threading.Lock()
         self.lock.acquire()
-
+        self.timestamp = None
         self.lastcontext = None
         threading.Thread(target=self.__dotasks).start()
 
     def stop(self):
+        self.timestamp = None
         try:
             self.tasks = (None, 0, True)
             self.lock.release()
         except:
             pass
 
-    def play(self, binary, volume, force):
+    def play(self, binary, volume, force, timestamp):
+        if timestamp != self.timestamp:
+            return
         try:
             self.tasks = (binary, volume, force)
             self.lock.release()

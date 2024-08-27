@@ -337,10 +337,12 @@
 				"rank": 2.5
 			},
 			"secret_id": {
-				"rank": 0
+				"rank": 0,
+				"name": "SecretId"
 			},
 			"secret_key": {
-				"rank": 1
+				"rank": 1,
+				"name": "SecretKey"
 			},
 			"model": {
 				"rank": 2

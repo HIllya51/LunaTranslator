@@ -53,7 +53,6 @@ from gui.dynalang import LAction, LMenu
 from gui.setting_textinput_ocr import showocrimage
 
 
-
 class MAINUI:
     def __init__(self) -> None:
         super().__init__()
@@ -628,7 +627,8 @@ class MAINUI:
             return
         if text2 is None:
             text2 = self.ttsrepair(text1, self.__usewhich())
-        reader.read(text2, force)
+        self.audioplayer.timestamp = uuid.uuid4()
+        reader.read(text2, force, self.audioplayer.timestamp)
 
     def readcurrent(self, force=False, needresult=False):
         if needresult:

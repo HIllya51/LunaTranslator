@@ -168,6 +168,11 @@ class bgmsettings(QDialog):
 
     def __oauth(self):
         gobject.baseobject.urlprotocol()
+        bangumioauth = gobject.getcachedir("bangumioauth")
+        try:
+            os.remove(bangumioauth)
+        except:
+            pass
         gobject.baseobject.openlink(
             f'https://bgm.tv/oauth/authorize?client_id={static_data["bangumi_oauth"]["client_id"]}&response_type=code&redirect_uri=lunatranslator://bangumioauth'
         )

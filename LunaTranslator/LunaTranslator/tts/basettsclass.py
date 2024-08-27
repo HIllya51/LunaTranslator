@@ -67,12 +67,12 @@ class TTSbase:
         if init:
             self.init()
 
-    def read(self, content, force=False):
+    def read(self, content, force=False, timestamp=None):
 
-        def _(force, volume, data):
-            self.playaudiofunction(data, volume, force)
+        def _(force, volume, timestamp, data):
+            self.playaudiofunction(data, volume, force, timestamp)
 
-        self.ttscallback(content, functools.partial(_, force, self.volume))
+        self.ttscallback(content, functools.partial(_, force, self.volume, timestamp))
 
     @threader
     def ttscallback(self, content, callback):

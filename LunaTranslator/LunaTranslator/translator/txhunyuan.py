@@ -158,8 +158,8 @@ class TS(basetrans):
             "Temperature": self.config["Temperature"],
         }
         headers = _build_req_with_tc3_signature(
-            self.multiapikeycurrent["secret_id"],
             self.multiapikeycurrent["secret_key"],
+            self.multiapikeycurrent["secret_id"],
             "ChatCompletions",
             json_data,
         )
