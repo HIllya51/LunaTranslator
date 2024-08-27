@@ -46,6 +46,10 @@ def getimageformat():
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
+    settextsignal = pyqtSignal(QObject, str)
+
+    def settextsignalf(self, obj, text):
+        obj.setText(text)
 
     def callbacktts(self, edit, sig, data):
         if sig != edit.sig:
@@ -53,7 +57,8 @@ class AnkiWindow(QWidget):
         fname = gobject.gettempdir(str(uuid.uuid4()) + ".mp3")
         with open(fname, "wb") as ff:
             ff.write(data)
-        edit.setText(os.path.abspath(fname))
+        self.settextsignal.emit(edit, os.path.abspath(fname))
+        # 这几个settext有一定概率触发谜之bug，导致直接秒闪退无log
 
     def langdu(self):
         self.audiopath.sig = uuid.uuid4()
@@ -84,7 +89,7 @@ class AnkiWindow(QWidget):
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
             fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
             img.save(fname)
-            self.editpath.setText(os.path.abspath(fname))
+            self.settextsignal.emit(self.editpath, os.path.abspath(fname))
             if globalconfig["ankiconnect"]["ocrcroped"]:
                 self.asyncocr(img)
 
@@ -92,6 +97,7 @@ class AnkiWindow(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+        self.settextsignal.connect(self.settextsignalf)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle("Anki Connect")
         self.currentword = ""
@@ -927,7 +933,9 @@ class searchwordW(closeashidewindow):
         if globalconfig["ankiconnect"]["autocrop"]:
             grabwindow(
                 getimageformat(),
-                self.ankiwindow.editpath.setText,
+                functools.partial(
+                    self.ankiwindow.settextsignal.emit, self.ankiwindow.editpath
+                ),
             )
 
     def __set_history_btn_able(self):
