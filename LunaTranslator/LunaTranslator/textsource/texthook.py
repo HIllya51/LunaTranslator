@@ -413,7 +413,11 @@ class texthook(basetext):
         return string
 
     def removeproc(self, pid):
-        self.pids.remove(pid)
+        try:
+            if pid in self.pids:
+                self.pids.remove(pid)
+        except:
+            pass
         if len(self.pids) == 0:
             self.autohookmonitorthread()
 
@@ -449,8 +453,17 @@ class texthook(basetext):
                 "错误", "权限不足，请以管理员权限运行！"
             )
 
+    @threader
+    def waitend(self, pid):
+        windows.WaitForSingleObject(
+            windows.AutoHandle(windows.OpenProcess(windows.SYNCHRONIZE, False, pid)),
+            windows.INFINITE,
+        )
+        self.removeproc(pid)
+
     def onprocconnect(self, pid):
         self.pids.append(pid)
+        self.waitend(pid)
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
         gobject.baseobject.displayinfomessage(
