@@ -112,7 +112,8 @@ def getinfosbyvid(proxy, vid):
             dev.append(item["name"])
         return dict(
             title=gettitlefromjs(js["results"][0]),
-            imgs=[js["results"][0]["image"]["url"]] + imgs,
+            img=js["results"][0]["image"]["url"],
+            sc=imgs,
             dev=dev,
         )
 
@@ -336,6 +337,24 @@ class searcher(common):
         else:
             return []
 
+    def getreleasecvfromhtml(self, _vid):
+
+        headers = {
+            "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
+            "Referer": "https://vndb.org/",
+            "sec-ch-ua-mobile": "?0",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
+            "sec-ch-ua-platform": '"Windows"',
+        }
+
+        html = self.proxysession.get(
+            self.refmainpage(_vid) + "/cv", headers=headers
+        ).text
+        return [
+            "https://t.vndb.org/cv/" + _
+            for _ in re.findall('"https://t.vndb.org/cv/(.*?)"', html)
+        ]
+
     def searchfordata(self, _vid):
         vid = "v{}".format(_vid)
         infos = getinfosbyvid(self.proxy, vid)
@@ -345,12 +364,15 @@ class searcher(common):
         vndbtags = self.gettagfromhtml(_vid)
         developers = infos["dev"]
 
-        img = [self.dispatchdownloadtask(_) for _ in infos["imgs"]]
-
+        img = [
+            self.dispatchdownloadtask(_)
+            for _ in ([infos["img"]] + self.getreleasecvfromhtml(_vid))
+        ]
+        sc = [self.dispatchdownloadtask(_) for _ in infos["sc"]]
         return {
             "namemap": namemap,
             "title": title,
-            "imagepath_all": img,
+            "imagepath_all": img + sc,
             "webtags": vndbtags,
             "developers": developers,
         }
