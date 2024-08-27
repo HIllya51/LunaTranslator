@@ -47,23 +47,32 @@ class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
 
-    def callbacktts(self, edit, data):
+    def callbacktts(self, edit, sig, data):
+        if sig != edit.sig:
+            return
         fname = gobject.gettempdir(str(uuid.uuid4()) + ".mp3")
         with open(fname, "wb") as ff:
             ff.write(data)
         edit.setText(os.path.abspath(fname))
 
     def langdu(self):
+        self.audiopath.sig = uuid.uuid4()
         if gobject.baseobject.reader:
             gobject.baseobject.reader.ttscallback(
-                self.currentword, functools.partial(self.callbacktts, self.audiopath)
+                self.currentword,
+                functools.partial(self.callbacktts, self.audiopath, self.audiopath.sig),
             )
 
     def langdu2(self):
+        self.audiopath_sentence.sig = uuid.uuid4()
         if gobject.baseobject.reader:
             gobject.baseobject.reader.ttscallback(
                 self.example.toPlainText(),
-                functools.partial(self.callbacktts, self.audiopath_sentence),
+                functools.partial(
+                    self.callbacktts,
+                    self.audiopath_sentence,
+                    self.audiopath_sentence.sig,
+                ),
             )
 
     @threader
