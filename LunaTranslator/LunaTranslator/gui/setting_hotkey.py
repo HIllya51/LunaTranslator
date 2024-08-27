@@ -1,11 +1,18 @@
 from qtsymbols import *
 import functools
 import gobject, windows, winsharedutils
-from myutils.config import globalconfig
+from myutils.config import globalconfig, static_data
 from myutils.winsyshotkey import SystemHotkey, registerException
 from myutils.hwnd import grabwindow
 from myutils.utils import parsekeystringtomodvkcode, unsupportkey
-from gui.usefulwidget import D_getsimpleswitch, D_getsimplekeyseq, makescrollgrid
+from gui.usefulwidget import (
+    D_getsimpleswitch,
+    D_getsimplekeyseq,
+    makescrollgrid,
+    getsmalllabel,
+    makesubtab_lazy,
+    getboxlayout,
+)
 from gui.dynalang import LLabel
 
 
@@ -78,31 +85,52 @@ def registrhotkeys(self):
         "_30": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn2.click(),
         "_31": lambda: gobject.baseobject.hualang_recordbtn.click(),
         "_32": functools.partial(autoreadswitch, self),
+        "_33": lambda: gobject.baseobject.searchwordW.soundbutton.click(),
+        "_34": lambda: gobject.baseobject.searchwordW.ankiconnect.click(),
+        "_35": lambda: gobject.baseobject.searchwordW.ankiconnect.customContextMenuRequested.emit(
+            QPoint()
+        ),
+        "36": lambda: gobject.baseobject.textgetmethod(
+            winsharedutils.clipboard_get(), False
+        ),
     }
-    for name in globalconfig["quick_setting"]["all"]:
-        if name not in self.bindfunctions:
-            continue
+    for name in self.bindfunctions:
         regist_or_not_key(self, name)
 
 
-def setTab_quick(self, l):
+def setTab_quick(self, l: QVBoxLayout):
 
-    makescrollgrid(setTab_quick_lazy(self), l)
+    l.addWidget(
+        getboxlayout(
+            [
+                getsmalllabel("是否使用快捷键"),
+                D_getsimpleswitch(
+                    globalconfig["quick_setting"],
+                    "use",
+                    callback=functools.partial(__enable, self),
+                ),
+            ],
+            makewidget=True,
+        )
+    )
+    __ = []
+    __vis = []
+
+    def ___x(ls, l):
+        makescrollgrid(setTab_quick_lazy(self, ls), l)
+
+    for _ in static_data["hotkeys"]:
+        __vis.append(_[0])
+        __.append(functools.partial(___x, _[1]))
+    tab, do = makesubtab_lazy(__vis, __, delay=True)
+
+    l.addWidget(tab)
+    do()
 
 
-def setTab_quick_lazy(self):
-
-    grids = [
-        [
-            "是否使用快捷键",
-            D_getsimpleswitch(
-                globalconfig["quick_setting"],
-                "use",
-                callback=functools.partial(__enable, self),
-            ),
-        ]
-    ]
-    for name in self.bindfunctions:
+def setTab_quick_lazy(self, ls):
+    grids = []
+    for name in ls:
 
         grids.append(
             [

@@ -44,7 +44,6 @@
     "自动翻译": "Auto Translate",
     "锁定工具栏": "Lock Toolbar",
     "辞书设置": "Dictionary Settings",
-    "绑定截图窗口": "Bind Screenshot Window",
     "中文": "Chinese",
     "显示/隐藏翻译窗口": "Show/Hide Translation Window",
     "游戏": "Game",
@@ -364,7 +363,6 @@
     "使用代理的项目": "Items Using Proxy",
     "相关说明": "Related Instructions",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "If you find LunaTranslator helpful, please consider scanning the WeChat QR code to make a donation, thank you~",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Bind to Window (not compatible with all apps) (click to undo)",
     "绑定窗口按钮": "Bind to Window Button",
     "处理": "Processing",
     "波兰语": "Polish",
@@ -843,5 +841,10 @@
     "事件": "event",
     "按下": "Press down",
     "松开": "release",
-    "中断": "interrupt"
+    "中断": "interrupt",
+    "打开": "open",
+    "单词": "word",
+    "成功添加后关闭窗口": "Close the window after successful addition",
+    "绑定窗口": "Bind Window",
+    "（点击自己取消）": "(Click to cancel by yourself)"
 }

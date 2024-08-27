@@ -111,7 +111,6 @@
     "小学馆辞书": "Thư từ trường tiểu học",
     "快捷键设置": "Thiết lập phím tắt",
     "是否使用快捷键": "Dùng phím tắt hay không",
-    "绑定截图窗口": "Cửa sổ ảnh chụp màn hình bị ràng buộc",
     "显示/隐藏翻译窗口": "Hiện/ẩn cửa sổ dịch",
     "前景窗口截屏": "Ảnh chụp cửa sổ Foreground",
     "游戏静音": "Im lặng trò chơi",
@@ -364,7 +363,6 @@
     "使用代理的项目": "Các dự án sử dụng proxy",
     "相关说明": "Hướng dẫn liên quan",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Nếu bạn cảm thấy phần mềm này có ích cho bạn, hoan nghênh tài trợ quét mã wechat, cảm ơn~",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Cửa sổ bị ràng buộc (một số phần mềm không hỗ trợ) (Nhấp vào tự hủy)",
     "绑定窗口按钮": "Nút cửa sổ liên kết",
     "处理": "Xử lý",
     "波兰语": "Ba Lan",
@@ -843,5 +841,10 @@
     "事件": "Sự kiện",
     "按下": "Nhấn",
     "松开": "Thả lỏng",
-    "中断": "Ngắt"
+    "中断": "Ngắt",
+    "打开": "Mở",
+    "单词": "Từ",
+    "成功添加后关闭窗口": "Đóng cửa sổ sau khi thêm thành công",
+    "绑定窗口": "Cửa sổ bị ràng buộc",
+    "（点击自己取消）": "(Click vào tự hủy)"
 }

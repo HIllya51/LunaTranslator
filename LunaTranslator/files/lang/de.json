@@ -4,7 +4,6 @@
     "sqlite翻译记录": "SQLite Translation Record",
     "显示编辑按钮": "Schaltfläche Bearbeiten anzeigen",
     "过滤换行符": "Zeilenumbrüche filtern",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Bindefenster (wird von einigen Programmen nicht unterstützt) (klicken Sie, um selbst abzubrechen)",
     "文本设置": "Texteinstellungen",
     "过滤数字": "Filternummern",
     "插入特殊码": "Sondercode einfügen",
@@ -158,7 +157,6 @@
     "灵格斯": "Lingos",
     "使用说明": "Anleitung",
     "代名詞": "Synonym",
-    "绑定截图窗口": "Screenshot-Fenster binden",
     "执行周期": "Ausführungszyklus",
     "希腊语(CP1253)": "Griechisch (CP1253)",
     "API接口地址": "API-Schnittstelle-Adresse",
@@ -843,5 +841,10 @@
     "事件": "Ereignis",
     "按下": "Drücken Sie nach unten",
     "松开": "Freigabe",
-    "中断": "Unterbrechung"
+    "中断": "Unterbrechung",
+    "打开": "offen",
+    "单词": "Wort",
+    "成功添加后关闭窗口": "Fenster nach erfolgreichem Hinzufügen schließen",
+    "绑定窗口": "Fenster binden",
+    "（点击自己取消）": "(Klicken Sie, um selbst abzubrechen)"
 }

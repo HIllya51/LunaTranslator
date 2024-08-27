@@ -107,7 +107,6 @@
     "小学馆辞书": "Dizionario della biblioteca della scuola elementare",
     "快捷键设置": "Impostazioni dei tasti di scelta rapida",
     "是否使用快捷键": "Vuoi usare i tasti di scelta rapida",
-    "绑定截图窗口": "Finestra di collegamento dello screenshot",
     "显示/隐藏翻译窗口": "Mostra/nasconde finestra di traduzione",
     "前景窗口截屏": "Schermata della finestra di primo piano",
     "游戏静音": "Muto gioco",
@@ -355,7 +354,6 @@
     "使用代理的项目": "Progetti che utilizzano proxy",
     "相关说明": "Istruzioni correlate",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Se ritieni che questo software sia utile per te, sei il benvenuto a scansionare WeChat per la sponsorizzazione.",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Finestra di associazione (non supportata da alcuni software) (clicca per annullarti)",
     "处理": "maniglia",
     "波兰语": "Polacco",
     "窗口置顶": "Finestra in alto",
@@ -843,5 +841,10 @@
     "事件": "evento",
     "按下": "Premere verso il basso",
     "松开": "rilascio",
-    "中断": "interrupt"
+    "中断": "interrupt",
+    "打开": "aperto",
+    "单词": "parola",
+    "成功添加后关闭窗口": "Chiudere la finestra dopo l'aggiunta riuscita",
+    "绑定窗口": "Associa finestra",
+    "（点击自己取消）": "(Clicca per annullare da solo)"
 }

@@ -111,7 +111,6 @@
     "小学馆辞书": "Dictionnaire de l'école primaire",
     "快捷键设置": "Paramètres des raccourcis clavier",
     "是否使用快捷键": "Utiliser ou non des raccourcis clavier",
-    "绑定截图窗口": "Lier la fenêtre de capture d'écran",
     "显示/隐藏翻译窗口": "Afficher / masquer la fenêtre de traduction",
     "前景窗口截屏": "Capture d'écran de la fenêtre de premier plan",
     "游戏静音": "Jeu muet",
@@ -364,7 +363,6 @@
     "使用代理的项目": "Projets utilisant des agents",
     "相关说明": "Instructions connexes",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Si vous sentez que le logiciel vous aide, bienvenue Wechat scan code sponsoring, merci ~",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Binding window (non pris en charge par certains logiciels) (cliquez vous - même pour annuler)",
     "绑定窗口按钮": "Bouton BIND window",
     "处理": "Traitement",
     "波兰语": "Polonais",
@@ -843,5 +841,10 @@
     "事件": "Événements",
     "按下": "Appuyez sur",
     "松开": "Desserrer",
-    "中断": "Interruption"
+    "中断": "Interruption",
+    "打开": "Ouvrir",
+    "单词": "Mots",
+    "成功添加后关闭窗口": "Fermer la fenêtre après un ajout réussi",
+    "绑定窗口": "Fenêtre de liaison",
+    "（点击自己取消）": "(cliquez vous - même pour annuler)"
 }

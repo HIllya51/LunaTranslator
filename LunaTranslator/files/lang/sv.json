@@ -4,7 +4,6 @@
     "sqlite翻译记录": "SQLite översättningspost",
     "显示编辑按钮": "Visa redigeringsknapp",
     "过滤换行符": "Filtreringsradbrytningar",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Bindningsfönster (inte stöds av någon programvara) (klicka för att avbryta själv)",
     "文本设置": "Textinställningar",
     "过滤数字": "Filtreringsnummer",
     "插入特殊码": "Infoga särskild kod",
@@ -158,7 +157,6 @@
     "灵格斯": "Lingo",
     "使用说明": "instruktioner",
     "代名詞": "Synonym",
-    "绑定截图窗口": "Bind skärmdumpfönster",
     "执行周期": "Körcykel",
     "希腊语(CP1253)": "Grekiska (CP1253)",
     "API接口地址": "API-gränssnittsadress",
@@ -843,5 +841,10 @@
     "事件": "händelse",
     "按下": "Tryck ner",
     "松开": "frigörande",
-    "中断": "avbryt"
+    "中断": "avbryt",
+    "打开": "öppna",
+    "单词": "ord",
+    "成功添加后关闭窗口": "Stäng fönstret efter lyckat tillägg",
+    "绑定窗口": "Bind fönster",
+    "（点击自己取消）": "(Klicka för att avbryta själv)"
 }

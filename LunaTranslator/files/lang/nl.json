@@ -4,7 +4,6 @@
     "sqlite翻译记录": "SQLite vertaalrecord",
     "显示编辑按钮": "Bewerken-knop weergeven",
     "过滤换行符": "Regeleinden filteren",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Binding venster (niet ondersteund door sommige software) (klik om zelf te annuleren)",
     "文本设置": "Tekstinstellingen",
     "过滤数字": "Filternummers",
     "插入特殊码": "Speciale code invoegen",
@@ -158,7 +157,6 @@
     "灵格斯": "Lingoes",
     "使用说明": "instructies",
     "代名詞": "Synoniem",
-    "绑定截图窗口": "Schermafdruk binden",
     "执行周期": "Uitvoeringscyclus",
     "希腊语(CP1253)": "Grieks (CP1253)",
     "API接口地址": "API-interfaceadres",
@@ -843,5 +841,10 @@
     "事件": "gebeurtenis",
     "按下": "Druk omlaag",
     "松开": "release",
-    "中断": "onderbreken"
+    "中断": "onderbreken",
+    "打开": "open",
+    "单词": "woord",
+    "成功添加后关闭窗口": "Sluit het venster na succesvolle toevoeging",
+    "绑定窗口": "Venster binden",
+    "（点击自己取消）": "(Klik om zelf te annuleren)"
 }

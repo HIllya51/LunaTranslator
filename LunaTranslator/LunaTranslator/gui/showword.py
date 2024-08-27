@@ -346,6 +346,10 @@ class AnkiWindow(QWidget):
             "不添加辞书",
             getIconButton(self.vistranslate_rank, "fa.gear"),
         )
+        layout.addRow(
+            "成功添加后关闭窗口",
+            getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
+        )
 
     def vistranslate_rank(self):
         listediter(
@@ -606,16 +610,14 @@ class AnkiWindow(QWidget):
     def errorwrap(self, close=False):
         try:
             self.addanki()
-            if globalconfig["ankiconnect"]["addsuccautoclose"]:
+            if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
                 gobject.baseobject.searchwordW.close()
             else:
                 QToolTip.showText(QCursor.pos(), "添加成功", self)
-            if close:
-                gobject.baseobject.searchwordW.close()
         except requests.RequestException:
-            getQMessageBox(self, "错误", "无法连接到anki")
+            getQMessageBox(gobject.baseobject.searchwordW, "错误", "无法连接到anki")
         except anki.AnkiException as e:
-            getQMessageBox(self, "错误", str(e))
+            getQMessageBox(gobject.baseobject.searchwordW, "错误", str(e))
         except:
             print_exc()
 
@@ -823,6 +825,7 @@ class searchwordW(closeashidewindow):
 
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
         soundbutton.clicked.connect(self.langdu)
+        self.soundbutton = soundbutton
         self.searchlayout.addWidget(soundbutton)
 
         ankiconnect = statusbutton(
@@ -833,6 +836,7 @@ class searchwordW(closeashidewindow):
         ankiconnect.customContextMenuRequested.connect(
             lambda _: self.ankiwindow.errorwrap()
         )
+        self.ankiconnect = ankiconnect
         self.searchlayout.addWidget(ankiconnect)
 
         self.tab = CustomTabBar()

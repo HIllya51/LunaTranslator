@@ -111,7 +111,6 @@
     "小学馆辞书": "İlkokul sözlüğü",
     "快捷键设置": "Kısayol tuş ayarları",
     "是否使用快捷键": "Kısayol tuşları kullanılması",
-    "绑定截图窗口": "Ekran görüntüsü penceresini bağla",
     "显示/隐藏翻译窗口": "Çeviri penceresini göster/gizle",
     "前景窗口截屏": "Ön plan penceresinin ekran resimi",
     "游戏静音": "Oyun Sessiz",
@@ -364,7 +363,6 @@
     "使用代理的项目": "Proksiler kullanarak projeler",
     "相关说明": "İlişkili talimatlar",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Eğer bu yazılım size yardımcı olduğunu hissediyorsanız, sponsorluk için WeChat'ı taramak için hoş geldiniz. Teşekkürler ~",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Bağlama penceresi (bazı yazılım tarafından desteklenmiyor) (kendini iptal etmek için tıklayın)",
     "绑定窗口按钮": "Bağlam Pencere Düğmesi",
     "处理": "Döndür",
     "波兰语": "Polonyca@ item Spelling dictionary",
@@ -843,5 +841,10 @@
     "事件": "Olay",
     "按下": "Aşağı basın",
     "松开": "serbest",
-    "中断": "bölme"
+    "中断": "bölme",
+    "打开": "Aç",
+    "单词": "kelime",
+    "成功添加后关闭窗口": "Başarılı eklendikten sonra pencereyi kapat",
+    "绑定窗口": "Bağlam Penceresi",
+    "（点击自己取消）": "(Kendin iptal etmek için tıklayın)"
 }

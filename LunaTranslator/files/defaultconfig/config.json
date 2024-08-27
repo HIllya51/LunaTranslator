@@ -826,7 +826,7 @@
             },
             "bindwindow": {
                 "use": true,
-                "tip": "绑定窗口（部分软件不支持）（点击自己取消）",
+                "tip": "绑定窗口_（点击自己取消）",
                 "icon": "fa.windows",
                 "align": 2
             },
@@ -908,6 +908,11 @@
     "quick_setting": {
         "use": false,
         "all": {
+            "36": {
+                "use": false,
+                "name": "读取剪贴板",
+                "keystring": ""
+            },
             "_1": {
                 "use": false,
                 "name": "手动翻译",
@@ -990,7 +995,7 @@
             },
             "_15": {
                 "use": false,
-                "name": "绑定截图窗口",
+                "name": "绑定窗口_（点击自己取消）",
                 "keystring": ""
             },
             "_16": {
@@ -1066,6 +1071,21 @@
             "_32": {
                 "use": false,
                 "name": "自动朗读",
+                "keystring": ""
+            },
+            "_33": {
+                "use": false,
+                "name": "朗读_单词",
+                "keystring": ""
+            },
+            "_34": {
+                "use": false,
+                "name": "Anki_打开",
+                "keystring": ""
+            },
+            "_35": {
+                "use": false,
+                "name": "Anki_添加",
                 "keystring": ""
             }
         }

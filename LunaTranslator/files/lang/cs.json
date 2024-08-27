@@ -4,7 +4,6 @@
     "sqlite翻译记录": "Překladový záznam SQLite",
     "显示编辑按钮": "Zobrazit tlačítko pro editaci",
     "过滤换行符": "Konce filtru",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Vázané okno (není podporováno některým softwarem) (kliknutím zrušíte sami)",
     "文本设置": "Nastavení textu",
     "过滤数字": "Čísla filtru",
     "插入特殊码": "Vložit zvláštní kód",
@@ -158,7 +157,6 @@
     "灵格斯": "Lingoes",
     "使用说明": "instrukce",
     "代名詞": "Synonym",
-    "绑定截图窗口": "Vázat okno snímku obrazovky",
     "执行周期": "Cyklus provádění",
     "希腊语(CP1253)": "Řečtina (CP1253)",
     "API接口地址": "Adresa rozhraní API",
@@ -843,5 +841,10 @@
     "事件": "událost",
     "按下": "Stiskněte dolů",
     "松开": "uvolnění",
-    "中断": "přerušit"
+    "中断": "přerušit",
+    "打开": "otevřít",
+    "单词": "slovo",
+    "成功添加后关闭窗口": "Zavřít okno po úspěšném přidání",
+    "绑定窗口": "Vázat okno",
+    "（点击自己取消）": "(Kliknutím zrušíte sami)"
 }

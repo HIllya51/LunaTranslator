@@ -4,7 +4,6 @@
     "sqlite翻译记录": "Registo de Tradução do SQLite",
     "显示编辑按钮": "Mostrar o botão de edição",
     "过滤换行符": "Quebras de linha do filtro",
-    "绑定窗口（部分软件不支持）（点击自己取消）": "Janela de ligação (não suportada por algum software) (clique para cancelar por si mesmo)",
     "文本设置": "Configuração do texto",
     "过滤数字": "Números do filtro",
     "插入特殊码": "Inserir código especial",
@@ -158,7 +157,6 @@
     "灵格斯": "Lingoes",
     "使用说明": "instruções",
     "代名詞": "Sinónimo",
-    "绑定截图窗口": "Vincular a janela da captura de ecrã",
     "执行周期": "Ciclo de execução",
     "希腊语(CP1253)": "Grego (CP1253)",
     "API接口地址": "Endereço da interface da API",
@@ -843,5 +841,10 @@
     "事件": "evento",
     "按下": "Pressione para baixo",
     "松开": "libertação",
-    "中断": "interromper"
+    "中断": "interromper",
+    "打开": "abrir",
+    "单词": "palavra",
+    "成功添加后关闭窗口": "Fechar a janela após a adição bem sucedida",
+    "绑定窗口": "Janela Vincular",
+    "（点击自己取消）": "(Clique para cancelar por si mesmo)"
 }
