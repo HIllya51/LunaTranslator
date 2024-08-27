@@ -186,6 +186,8 @@ class texthook(basetext):
 
     def init(self):
         self.pids = []
+        self.maybepids = []
+        self.maybepidslock = threading.Lock()
         self.keepref = []
         self.hookdatacollecter = OrderedDict()
         self.reverse = {}
@@ -200,8 +202,6 @@ class texthook(basetext):
         self.runonce_line = ""
         gobject.baseobject.autoswitchgameuid = False
         self.delaycollectallselectedoutput()
-        self.singlethread = True
-        self.singlethreadlock = threading.Lock()
         self.autohookmonitorthread()
         self.initdllonce = True
         self.initdlllock = threading.Lock()
@@ -359,10 +359,6 @@ class texthook(basetext):
 
     @threader
     def autohookmonitorthread(self):
-        with self.singlethreadlock:
-            if not self.singlethread:
-                return
-            self.singlethread = False
         while (not self.ending) and (len(self.pids) == 0):
             try:
                 hwnd = windows.GetForegroundWindow()
@@ -371,13 +367,10 @@ class texthook(basetext):
             except:
                 print_exc()
             time.sleep(0.1)
-        with self.singlethreadlock:
-            self.singlethread = True
 
     def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
         self.delayinit()
         for pid in pids:
-            # 如果有进程一闪而逝，没来的及注入，导致无法自动重连
             self.waitend(pid)
         gobject.baseobject.hwnd = hwnd
         gobject.baseobject.gameuid = gameuid
@@ -424,11 +417,7 @@ class texthook(basetext):
         return string
 
     def removeproc(self, pid):
-        try:
-            if pid in self.pids:
-                self.pids.remove(pid)
-        except:
-            pass
+        self.pids.remove(pid)
         if len(self.pids) == 0:
             self.autohookmonitorthread()
 
@@ -466,14 +455,25 @@ class texthook(basetext):
 
     @threader
     def waitend(self, pid):
+        # 如果有进程一闪而逝，没来的及注入，导致无法自动重连
+        self.maybepids.append(pid)
         windows.WaitForSingleObject(
             windows.AutoHandle(windows.OpenProcess(windows.SYNCHRONIZE, False, pid)),
             windows.INFINITE,
         )
-        self.removeproc(pid)
+        with self.maybepidslock:
+            if len(self.pids) == 0 and len(self.maybepids):
+                # 如果进程连接，则剔除maybepids
+                # 当进程结束，且发现是被试探过&未曾连接，则重试
+                self.maybepids.clear()
+                self.autohookmonitorthread()
 
     def onprocconnect(self, pid):
         self.pids.append(pid)
+        try:
+            self.maybepids.remove(pid)
+        except:
+            pass
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
         gobject.baseobject.displayinfomessage(
