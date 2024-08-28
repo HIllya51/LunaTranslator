@@ -362,6 +362,7 @@ class texthook(basetext):
         while (not self.ending) and (len(self.pids) == 0):
             try:
                 hwnd = windows.GetForegroundWindow()
+                hwnd = windows.GetAncestor(hwnd)
                 if self.connecthwnd(hwnd):
                     break
             except:
