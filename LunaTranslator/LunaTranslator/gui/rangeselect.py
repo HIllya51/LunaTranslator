@@ -174,6 +174,7 @@ class rangeselect(QMainWindow):
         winsharedutils.maximum_window(int(self.winId()))
         # desktop = QApplication.primaryScreen().virtualGeometry()
         # self.setGeometry(desktop)
+        self.once = True
         self.is_drawing = False
         self.start_point = QPoint()
         self.end_point = QPoint()
@@ -192,6 +193,9 @@ class rangeselect(QMainWindow):
 
             self.close()
 
+            if not self.once:
+                return
+            self.once = False
             self.callback(self.getRange())
         except:
             pass
@@ -260,6 +264,9 @@ class rangeselect(QMainWindow):
             self.__end = windows.GetCursorPos()
 
             self.close()
+            if not self.once:
+                return
+            self.once = False
             self.callback(self.getRange())
 
 
