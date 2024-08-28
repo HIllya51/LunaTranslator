@@ -872,6 +872,7 @@ class TranslatorWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self.titlebar = ButtonBar(self)
+        self.titlebar.move(0, 0)  # 多显示屏下，谜之错位
         self.titlebar.setFixedHeight(int(globalconfig["buttonsize"] * 1.5))
         self.titlebar.setObjectName("titlebar")
         self.titlebar.setMouseTracking(True)
@@ -1230,7 +1231,6 @@ class TranslatorWindow(resizableframeless):
         height = self.height() - wh
 
         self.translate_text.resize(self.width(), int(height))
-        self.titlebar.move(0, 0)  # 多显示屏下，谜之错位
         if e.oldSize().width() != e.size().width():
             self.titlebar.setFixedWidth(self.width())
 
