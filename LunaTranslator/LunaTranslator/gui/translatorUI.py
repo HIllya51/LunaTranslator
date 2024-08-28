@@ -1230,6 +1230,7 @@ class TranslatorWindow(resizableframeless):
         height = self.height() - wh
 
         self.translate_text.resize(self.width(), int(height))
+        self.titlebar.move(0, 0)  # 多显示屏下，谜之错位
         if e.oldSize().width() != e.size().width():
             self.titlebar.setFixedWidth(self.width())
 
