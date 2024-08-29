@@ -846,5 +846,6 @@
     "单词": "word",
     "成功添加后关闭窗口": "Close the window after successful addition",
     "绑定窗口": "Bind Window",
-    "（点击自己取消）": "(Click to cancel by yourself)"
+    "（点击自己取消）": "(Click to cancel by yourself)",
+    "启动程序": "Start the program"
 }

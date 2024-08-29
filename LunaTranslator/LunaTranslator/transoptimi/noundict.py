@@ -5,7 +5,7 @@ from gui.usefulwidget import threebuttons, TableViewW
 from myutils.wrapper import Singleton_close
 from myutils.utils import postusewhich
 from gui.dynalang import LDialog, LPushButton, LStandardItemModel
-from myutils.config import uid2gamepath
+from myutils.config import get_launchpath
 from myutils.hwnd import getExeIcon
 
 
@@ -114,7 +114,7 @@ class Process:
             parent_window,
             savehook_new_data[gameuid]["noundictconfig"],
             "专有名词翻译_占位符_-_" + savehook_new_data[gameuid]["title"],
-        ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
+        ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 
     @staticmethod
     def get_setting_window(parent_window):

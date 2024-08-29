@@ -20,7 +20,6 @@ from myutils.config import (
 import threading, winreg
 import re, heapq, winsharedutils
 from myutils.wrapper import tryprint, threader
-from myutils.subproc import subproc_w
 
 
 def checkisusingwine():
@@ -195,17 +194,19 @@ def dispatchsearchfordata(gameuid, target, vid):
     targetmod[target].dispatchsearchfordata(gameuid, vid)
 
 
-def trysearchforid_1(gameuid, searchargs: list):
+def trysearchforid_1(gameuid, searchargs: list, target=None):
     infoid = None
-    primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
-    __ = [primitivtemetaorigin]
-    for k in targetmod:
-        if k == primitivtemetaorigin:
-            continue
-        if not globalconfig["metadata"][k]["auto"]:
-            continue
-        __.append(k)
-
+    if target is None:
+        primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
+        __ = [primitivtemetaorigin]
+        for k in targetmod:
+            if k == primitivtemetaorigin:
+                continue
+            if not globalconfig["metadata"][k]["auto"]:
+                continue
+            __.append(k)
+    else:
+        __ = [target]
     for key in __:
         vid = None
         for arg in searchargs:
@@ -232,13 +233,16 @@ def trysearchforid_1(gameuid, searchargs: list):
         dispatchsearchfordata(gameuid, key, vid)
 
 
-def trysearchforid(gameuid, searchargs: list):
-    threading.Thread(target=trysearchforid_1, args=(gameuid, searchargs)).start()
+def trysearchforid(*argc):
+    threading.Thread(target=trysearchforid_1, args=argc).start()
 
 
 def gamdidchangedtask(key, idname, gameuid):
     vid = savehook_new_data[gameuid].get(idname, "")
-    dispatchsearchfordata(gameuid, key, vid)
+    if not vid:
+        trysearchforid(gameuid, [savehook_new_data[gameuid]["title"]], key)
+    else:
+        dispatchsearchfordata(gameuid, key, vid)
 
 
 def titlechangedtask(gameuid, title):

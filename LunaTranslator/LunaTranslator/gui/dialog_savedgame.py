@@ -13,8 +13,8 @@ from gui.specialwidget import lazyscrollflow
 from myutils.config import (
     savehook_new_data,
     savegametaged,
-    uid2gamepath,
     _TR,
+    get_launchpath,
     globalconfig,
 )
 from gui.usefulwidget import (
@@ -182,7 +182,7 @@ class dialog_savedgame_new(QWidget):
             notshow = False
             for tag, _type, _ in tags:
                 if _type == tagitem.TYPE_EXISTS:
-                    if os.path.exists(uid2gamepath[k]) == False:
+                    if os.path.exists(get_launchpath(k)) == False:
                         notshow = True
                         break
                 elif _type == tagitem.TYPE_DEVELOPER:
@@ -229,7 +229,7 @@ class dialog_savedgame_new(QWidget):
         othersetting = LAction(("其他设置"))
 
         if self.currentfocusuid:
-            exists = os.path.exists(uid2gamepath[self.currentfocusuid])
+            exists = os.path.exists(get_launchpath(self.currentfocusuid))
             if exists:
                 menu.addAction(startgame)
             if exists:
@@ -491,7 +491,7 @@ class dialog_savedgame_new(QWidget):
             _able1 = b and (
                 (not exists)
                 or (self.currentfocusuid)
-                and (os.path.exists(uid2gamepath[self.currentfocusuid]))
+                and (os.path.exists(get_launchpath(self.currentfocusuid)))
             )
             _btn.setEnabled(_able1)
 

@@ -3,7 +3,7 @@ import sqlite3, os, json, functools
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
 from myutils.utils import autosql
-from gui.usefulwidget import getQMessageBox, LFocusCombo, getsimplepatheditor
+from gui.usefulwidget import getQMessageBox, LFocusCombo
 from gui.dynalang import LFormLayout, LPushButton, LDialog
 from textsource.texthook import splitembedlines
 from collections import Counter

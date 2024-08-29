@@ -1943,7 +1943,7 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "Azure Openai",
+            "name": "Azure",
             "is_gpt_like": true
         },
         "cohere": {

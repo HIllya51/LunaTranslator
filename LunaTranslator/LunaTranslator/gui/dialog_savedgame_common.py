@@ -12,12 +12,12 @@ from myutils.config import (
     savehook_new_data,
     savegametaged,
     uid2gamepath,
+    get_launchpath,
     _TR,
     savehook_new_list,
     globalconfig,
 )
 from gui.usefulwidget import (
-    yuitsu_switch,
     getIconButton,
     FocusCombo,
     getsimplecombobox,
@@ -114,17 +114,14 @@ class ItemWidget(QWidget):
         layout.addWidget(self._lb)
         self.setLayout(layout)
         self.gameuid = gameuid
+        exists = os.path.exists(get_launchpath(gameuid))
         c = globalconfig["dialog_savegame_layout"][
-            ("onfilenoexistscolor1", "backcolor1")[
-                os.path.exists(uid2gamepath[gameuid])
-            ]
+            ("onfilenoexistscolor1", "backcolor1")[exists]
         ]
         c = str2rgba(
             c,
             globalconfig["dialog_savegame_layout"][
-                ("transparentnotexits", "transparent")[
-                    os.path.exists(uid2gamepath[gameuid])
-                ]
+                ("transparentnotexits", "transparent")[exists]
             ],
         )
         self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
@@ -345,7 +342,7 @@ class TagWidget(QWidget):
 
 
 def opendirforgameuid(gameuid):
-    f = uid2gamepath[gameuid]
+    f = get_launchpath(gameuid)
     f = os.path.dirname(f)
     if os.path.exists(f) and os.path.isdir(f):
         os.startfile(f)
@@ -354,7 +351,7 @@ def opendirforgameuid(gameuid):
 @threader
 def startgame(gameuid):
     try:
-        game = uid2gamepath[gameuid]
+        game = get_launchpath(gameuid)
         if os.path.exists(game):
             mode = savehook_new_data[gameuid]["onloadautochangemode2"]
             if mode > 0:
@@ -438,7 +435,7 @@ def getpixfunction(kk, small=False):
 def startgamecheck(self, reflist, gameuid):
     if not gameuid:
         return
-    if not os.path.exists(uid2gamepath[gameuid]):
+    if not os.path.exists(get_launchpath(gameuid)):
         return
     if globalconfig["startgamenototop"] == False:
         idx = reflist.index(gameuid)

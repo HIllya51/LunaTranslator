@@ -8,6 +8,7 @@ import gobject
 from myutils.config import (
     savehook_new_data,
     uid2gamepath,
+    get_launchpath,
     _TR,
     postprocessconfig,
     globalconfig,
@@ -51,8 +52,15 @@ from gui.usefulwidget import (
     getspinbox,
     listediterline,
 )
-from gui.dynalang import LFormLayout, LPushButton, LStandardItemModel, LAction, LLabel, LDialog
-from gui.dialog_savedgame_common  import tagitem, TagWidget
+from gui.dynalang import (
+    LFormLayout,
+    LPushButton,
+    LStandardItemModel,
+    LAction,
+    LLabel,
+    LDialog,
+)
+from gui.dialog_savedgame_common import tagitem, TagWidget
 
 
 @Singleton
@@ -155,7 +163,7 @@ class browserdialog(saveposwindow):
     def __init__(self, parent, gameuid=None) -> None:
         super().__init__(parent, poslist=globalconfig["browserwidget"])
         if gameuid:
-            self.setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
+            self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
         self.browser = auto_select_webview(self)
 
         self.tagswidget = TagWidget(self)
@@ -274,20 +282,12 @@ def maybehavebutton(self, gameuid, post):
 
 
 class dialog_setting_game_internal(QWidget):
-    def selectexe(self):
-        originpath = uid2gamepath[self.gameuid]
-        f = QFileDialog.getOpenFileName(directory=originpath)
-        res = f[0]
-        if res == "":
-            return
-        # 修改路径允许路径重复
-        # 添加路径实际上也允许重复，只不过会去重。
+    def selectexe(self, res):
         res = os.path.normpath(res)
         uid2gamepath[self.gameuid] = res
-        _icon = getExeIcon(res, cache=True)
+        _icon = getExeIcon(get_launchpath(self.gameuid), cache=True)
 
         self.setWindowIcon(_icon)
-        self.editpath.setText(res)
 
     def __init__(self, parent, gameuid) -> None:
         super().__init__(parent)
@@ -295,14 +295,16 @@ class dialog_setting_game_internal(QWidget):
         formLayout = LFormLayout()
         self.setLayout(vbox)
         self.gameuid = gameuid
-        self.editpath = QLineEdit(uid2gamepath[gameuid])
-        self.editpath.setReadOnly(True)
         formLayout.addRow(
             "路径",
             getboxlayout(
                 [
-                    self.editpath,
-                    getIconButton(functools.partial(self.selectexe), icon="fa.gear"),
+                    getsimplepatheditor(
+                        uid2gamepath[gameuid],
+                        callback=self.selectexe,
+                        clearable=False,
+                        icons=("fa.gear",),
+                    ),
                     getIconButton(
                         lambda: browserdialog(
                             gobject.baseobject.commonstylebase, gameuid
@@ -476,6 +478,15 @@ class dialog_setting_game_internal(QWidget):
         layout.addWidget(w)
         do()
 
+    def selectexe_lauch(self, p):
+        if p:
+            p = os.path.normpath(p)
+        savehook_new_data[self.gameuid]["launchpath"] = p
+
+        _icon = getExeIcon(get_launchpath(self.gameuid), cache=True)
+
+        self.setWindowIcon(_icon)
+
     def starttab(self, formLayout: LFormLayout, gameuid):
         box = QGroupBox()
         settinglayout = LFormLayout()
@@ -490,12 +501,21 @@ class dialog_setting_game_internal(QWidget):
                 box.show()
 
         __launch_method = getsimplecombobox(
-            [_.name for _ in getgamecamptools(uid2gamepath[gameuid])],
+            [_.name for _ in getgamecamptools(get_launchpath(gameuid))],
             savehook_new_data[gameuid],
             "launch_method",
-            internal=[_.id for _ in getgamecamptools(uid2gamepath[gameuid])],
+            internal=[_.id for _ in getgamecamptools(get_launchpath(gameuid))],
             callback=functools.partial(
                 __, box, settinglayout, savehook_new_data[gameuid]
+            ),
+        )
+        formLayout.addRow(
+            "启动程序",
+            getsimplepatheditor(
+                get_launchpath(gameuid),
+                callback=self.selectexe_lauch,
+                icons=("fa.gear", "fa.window-close-o"),
+                clearset=uid2gamepath[gameuid],
             ),
         )
         formLayout.addRow("启动方式", __launch_method)
@@ -779,7 +799,7 @@ class dialog_setting_game_internal(QWidget):
                     False,
                     filt,
                     functools.partial(selectimg, gameuid, key),
-                    True,
+                    icons=("fa.folder-open", "fa.window-close-o"),
                 ),
             )
 
@@ -1114,13 +1134,13 @@ class dialog_setting_game_internal(QWidget):
         )
 
 
-
 def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:
     original_center = original_rect.center()
     new_left = original_center.x() - size.width() // 2
     new_top = original_center.y() - size.height() // 2
     new_rect = QRect(new_left, new_top, size.width(), size.height())
     return new_rect
+
 
 @Singleton_close
 class dialog_setting_game(LDialog):
@@ -1131,7 +1151,7 @@ class dialog_setting_game(LDialog):
 
         self.setWindowTitle(savehook_new_data[gameuid]["title"])
 
-        self.setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
+        self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
         _ = dialog_setting_game_internal(self, gameuid)
         _.methodtab.setCurrentIndex(setindexhook)
         _.setMinimumSize(QSize(600, 500))

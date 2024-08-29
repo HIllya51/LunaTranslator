@@ -1,6 +1,6 @@
-import windows, os, winreg, winsharedutils, re, functools
+import windows, os, winsharedutils, re, functools
 from qtsymbols import *
-from myutils.config import savehook_new_data, uid2gamepath, globalconfig
+from myutils.config import savehook_new_data, get_launchpath, globalconfig
 from gui.usefulwidget import (
     getlineedit,
     getsimplecombobox,
@@ -12,7 +12,6 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     clearlayout,
 )
-from traceback import print_exc
 from gui.dynalang import LFormLayout
 
 
@@ -529,9 +528,9 @@ def fundlauncher(_id):
 def localeswitchedrun(gameuid):
     config = savehook_new_data[gameuid]
     launch_method = config.get("launch_method", None)
-    gameexe = uid2gamepath[gameuid]
+    gameexe = get_launchpath(gameuid)
     tools = getgamecamptools(gameexe)
-    ids = [_.id for _ in getgamecamptools(uid2gamepath[gameuid])]
+    ids = [_.id for _ in tools]
     if launch_method not in ids:
         index = 0
     else:

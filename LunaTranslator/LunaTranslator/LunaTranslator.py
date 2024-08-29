@@ -4,9 +4,7 @@ from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
-    _TR,
     savehook_new_list,
-    uid2gamepath,
     findgameuidofpath,
     savehook_new_data,
     static_data,

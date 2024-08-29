@@ -4,7 +4,6 @@ from myutils.utils import initanewitem, gamdidchangedtask
 import functools, time, json, gobject
 from qtsymbols import *
 from metadata.abstract import common
-from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname
 from myutils.wrapper import Singleton_close, threader
 from gui.dynalang import LPushButton
@@ -121,9 +120,11 @@ class bgmsettings(QDialog):
         getalistname(self, callback)
 
     infosig = pyqtSignal(str)
+    showhide = pyqtSignal(bool)
 
     @threader
     def checkvalid(self, k):
+        self.showhide.emit(False)
         self.lbinfo.setText("")
         t = time.time()
         self.tm = t
@@ -147,6 +148,17 @@ class bgmsettings(QDialog):
         if expires:
             info = ""
             try:
+                response1 = requests.get(
+                    f"https://api.bgm.tv/v0/me",
+                    params={"access_token": k},
+                    headers=self.headers,
+                    proxies=self._ref.proxy,
+                )
+                print(response1.json())
+                info += "用户名： " + response1.json()["nickname"] + "\n"
+            except:
+                pass
+            try:
                 create = (
                     json.loads(response["info"])
                     .get("created_at", "")
@@ -160,10 +172,12 @@ class bgmsettings(QDialog):
             info += "有效期至： " + time.strftime(
                 "%Y-%m-%d %H:%M:%S", time.localtime(expires)
             )
+            self.showhide.emit(True)
         else:
             info = " ".join(
                 (response.get("error", ""), response.get("error_description", ""))
             )
+            self.showhide.emit(False)
         self.lbinfo.setText(info)
 
     def __oauth(self):
@@ -223,7 +237,13 @@ class bgmsettings(QDialog):
         s = QLineEdit()
         self.lbinfo = QLabel()
         s.textChanged.connect(self.checkvalid)
-        s.setText(_ref.config["access-token"])
+        fl2 = QFormLayout()
+        fl2.setContentsMargins(0, 0, 0, 0)
+        ww = QWidget()
+        ww.setLayout(fl2)
+        ww.hide()
+        self.fl2 = ww
+        self.showhide.connect(self.fl2.setVisible)
         self._token = s
         vbox.addLayout(hbox)
         hbox.addWidget(s)
@@ -232,22 +252,23 @@ class bgmsettings(QDialog):
         oauth.clicked.connect(self.__oauth)
         vbox.addWidget(self.lbinfo)
         fl.addRow("access-token", vbox)
-
         btn = LPushButton("上传游戏")
         btn.clicked.connect(
             functools.partial(self.singleupload_existsoverride, gameuid)
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
         btn = LPushButton("上传游戏列表")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_upload)
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
         btn = LPushButton("获取游戏列表")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_download)
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
+        fl.addRow(ww)
+        s.setText(_ref.config["access-token"])
         self.show()
 
 

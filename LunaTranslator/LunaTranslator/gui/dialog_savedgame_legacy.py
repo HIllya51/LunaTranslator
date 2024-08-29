@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 import functools, threading
-from myutils.config import savehook_new_list, savehook_new_data, uid2gamepath
+from myutils.config import savehook_new_list, savehook_new_data, get_launchpath
 from myutils.hwnd import getExeIcon
 from gui.usefulwidget import (
     TableViewW,
@@ -131,7 +131,7 @@ class dialog_savedgame_legacy(QWidget):
             "",
             "",
             functools.partial(opendirforgameuid, k),
-            qicon=getExeIcon(uid2gamepath[k], cache=True),
+            qicon=getExeIcon(get_launchpath(k), cache=True),
         )
 
     def callback_leuse(self, k, use):

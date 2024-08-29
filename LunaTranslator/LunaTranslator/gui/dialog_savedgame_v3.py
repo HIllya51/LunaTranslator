@@ -8,7 +8,7 @@ from myutils.config import (
     savehook_new_list,
     savehook_new_data,
     savegametaged,
-    uid2gamepath,
+    get_launchpath,
     extradatas,
     globalconfig,
 )
@@ -96,16 +96,14 @@ class clickitem(QWidget):
         self.lay.setContentsMargins(0, 0, 0, 0)
 
         self.maskshowfileexists = QLabel(self)
-
+        exits = os.path.exists(get_launchpath(uid))
         c = globalconfig["dialog_savegame_layout"][
-            ("onfilenoexistscolor1", "backcolor1")[os.path.exists(uid2gamepath[uid])]
+            ("onfilenoexistscolor1", "backcolor1")[exits]
         ]
         c = str2rgba(
             c,
             globalconfig["dialog_savegame_layout"][
-                ("transparentnotexits", "transparent")[
-                    os.path.exists(uid2gamepath[uid])
-                ]
+                ("transparentnotexits", "transparent")[exits]
             ],
         )
         self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
@@ -121,9 +119,7 @@ class clickitem(QWidget):
         _.setFixedSize(QSize(size, size))
         _.setScaledContents(True)
         _.setStyleSheet("background-color: rgba(255,255,255, 0);")
-        icon = getpixfunction(
-            uid, small=True
-        )  # getExeIcon(uid2gamepath[uid], icon=False, cache=True)
+        icon = getpixfunction(uid, small=True)
         icon.setDevicePixelRatio(self.devicePixelRatioF())
         _.setPixmap(icon)
         self.lay.addWidget(_)
@@ -229,19 +225,17 @@ class MyQListWidget(QListWidget):
             end = self.indexAt(self.viewport().rect().bottomRight()).row()
             if start < 0:
                 return
-            if end < 0:
-                end = start
             with self.lock:
                 model = self.model()
+                if end < 0:
+                    end = model.rowCount()
                 for row in range(start, end + 1):
                     index = model.index(row, 0)
                     if not index.data(ImageRequestedRole):
                         self.model().setData(index, True, ImageRequestedRole)
                         image = getcachedimage(index.data(PathRole), True)
                         if image is None:
-                            self.blockSignals(True)
                             self.takeItem(index.row())
-                            self.blockSignals(False)
                         else:
                             self.item(index.row()).setIcon(QIcon(image))
         except:
@@ -670,7 +664,7 @@ class dialog_savedgame_v3(QWidget):
             _able1 = b and (
                 (not exists)
                 or (self.currentfocusuid)
-                and (os.path.exists(uid2gamepath[self.currentfocusuid]))
+                and (os.path.exists(get_launchpath(self.currentfocusuid)))
             )
             _btn.setEnabled(_able1)
         if self.currentfocusuid:
@@ -712,7 +706,7 @@ class dialog_savedgame_v3(QWidget):
 
             menu.addAction(addlist)
         else:
-            exists = os.path.exists(uid2gamepath[self.currentfocusuid])
+            exists = os.path.exists(get_launchpath(self.currentfocusuid))
             if exists:
                 menu.addAction(startgame)
                 menu.addAction(delgame)
@@ -862,10 +856,9 @@ class dialog_savedgame_v3(QWidget):
             self.stack.insertw(i, group0)
             rowreal = 0
             for row, k in enumerate(lst):
-                if globalconfig["hide_not_exists"] and not os.path.exists(
-                    uid2gamepath[k]
-                ):
-                    continue
+                if globalconfig["hide_not_exists"]:
+                    if not os.path.exists(get_launchpath(k)):
+                        continue
                 self.reallist[tagid].append(k)
                 if opened and isfirst and (rowreal == 0):
                     vis = True

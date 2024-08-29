@@ -2035,11 +2035,13 @@ def getsimplepatheditor(
     isdir=False,
     filter1="*.*",
     callback=None,
-    useiconbutton=False,
+    icons=None,
     reflist=None,
     name=None,
     header=None,
     dirorfile=False,
+    clearable=True,
+    clearset=""
 ):
     lay = QHBoxLayout()
     lay.setContentsMargins(0, 0, 0, 0)
@@ -2055,12 +2057,14 @@ def getsimplepatheditor(
     else:
         e = QLineEdit(text)
         e.setReadOnly(True)
-        if useiconbutton:
-            bu = getIconButton(icon="fa.folder-open")
-            clear = getIconButton(icon="fa.window-close-o")
+        if icons:
+            bu = getIconButton(icon=icons[0])
+            if clearable:
+                clear = getIconButton(icon=icons[1])
         else:
             bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
-            clear = LPushButton("清除")
+            if clearable:
+                clear = LPushButton("清除")
         bu.clicked.connect(
             functools.partial(
                 openfiledirectory,
@@ -2072,15 +2076,16 @@ def getsimplepatheditor(
                 callback,
             )
         )
-
-        def __(_cb, _e):
-            _cb("")
-            _e.setText("")
-
-        clear.clicked.connect(functools.partial(__, callback, e))
         lay.addWidget(e)
         lay.addWidget(bu)
-        lay.addWidget(clear)
+        if clearable:
+
+            def __(_cb, _e, t):
+                _cb("")
+                _e.setText(t)
+
+            clear.clicked.connect(functools.partial(__, callback, e, clearset))
+            lay.addWidget(clear)
     return lay
 
 

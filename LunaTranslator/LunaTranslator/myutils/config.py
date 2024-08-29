@@ -118,6 +118,7 @@ ocrsetting = tryreadconfig("ocrsetting.json")
 def getdefaultsavehook(title=None):
     default = {
         "gamepath": "",  # 不要直接访问，要通过uid2gamepath来间接访问
+        #"launchpath": "",
         "hooksetting_follow_default": True,
         "hooksetting_private": {},  # 显示时再加载，缺省用global中的键
         "textproc_follow_default": True,
@@ -336,6 +337,11 @@ class __uid2gamepath:
 
 uid2gamepath = __uid2gamepath()
 
+def get_launchpath(uid):
+    launch = savehook_new_data[uid].get("launchpath", "")
+    if not launch:
+        launch = uid2gamepath[uid]
+    return launch
 
 def findgameuidofpath(gamepath, findall=False):
     collect = []

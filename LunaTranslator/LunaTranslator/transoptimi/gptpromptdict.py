@@ -1,4 +1,4 @@
-from myutils.config import globalconfig, savehook_new_data, uid2gamepath
+from myutils.config import globalconfig, savehook_new_data, get_launchpath
 from myutils.utils import postusewhich
 from gui.inputdialog import postconfigdialog_
 import gobject
@@ -24,7 +24,7 @@ class Process:
             "专有名词翻译_sakura_gpt_词典_-_" + savehook_new_data[gameuid]["title"],
             ["原文", "翻译", "注释"],
             dictkeys=["src", "dst", "info"],
-        ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
+        ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 
     def process_before(self, japanese):
 

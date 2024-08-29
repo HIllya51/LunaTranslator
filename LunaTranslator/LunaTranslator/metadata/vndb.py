@@ -6,13 +6,12 @@ import time
 from qtsymbols import *
 from gui.inputdialog import autoinitdialog
 from metadata.abstract import common
-from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton_close, threader
 from gui.dynalang import LPushButton
 
 
-def saferequestvndb(proxy, method, url, json=None, headers=None):
+def saferequestvndb(proxy, method, url, json=None, headers=None, failnone=True):
     print(method, url, json)
     resp = requests.request(
         method,
@@ -35,11 +34,14 @@ def saferequestvndb(proxy, method, url, json=None, headers=None):
             except:
                 print(resp.status_code)
                 print(resp.text)
-                return None
+                if failnone:
+                    return None
+                else:
+                    return resp.text
 
 
-def safegetvndbjson(proxy, url, json):
-    return saferequestvndb(proxy, "POST", url, json)
+def safegetvndbjson(proxy, url, json=None, headers=None):
+    return saferequestvndb(proxy, "POST", url, json, headers)
 
 
 def gettitlefromjs(js):
@@ -279,28 +281,69 @@ class vndbsettings(QDialog):
     def __getalistname(self, callback, _):
         getalistname(self, callback)
 
+    showhide = pyqtSignal(bool)
+
+    @threader
+    def checkvalid(self, k):
+        self.showhide.emit(False)
+        self.lbinfo.setText("")
+        t = time.time()
+        self.tm = t
+        if k != self._ref.config["Token"]:
+            self._ref.config["Token"] = k
+        response = saferequestvndb(
+            self._ref.proxy, "GET", "authinfo", headers=self.headers, failnone=False
+        )
+        if t != self.tm:
+            return
+        print(response)
+        if isinstance(response, dict) and response.get("username"):
+            info = "username: " + response.get("username")
+            self.showhide.emit(True)
+        else:
+            info = response
+            self.showhide.emit(False)
+        self.lbinfo.setText(info)
+
     def __init__(self, parent, _ref: common, gameuid: str) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.tm = None
         self._ref = _ref
         self.resize(QSize(800, 10))
         self.setWindowTitle(self._ref.config_all["name"])
         fl = QFormLayout(self)
-        fl.addRow("Token", getlineedit(_ref.config, "Token"))
+        vbox = QVBoxLayout()
+        s = QLineEdit()
+        self.lbinfo = QLabel()
+        s.textChanged.connect(self.checkvalid)
+        fl2 = QFormLayout()
+        fl2.setContentsMargins(0, 0, 0, 0)
+        ww = QWidget()
+        ww.setLayout(fl2)
+        ww.hide()
+        self.fl2 = ww
+        self.showhide.connect(self.fl2.setVisible)
+        self._token = s
+        vbox.addWidget(s)
+        vbox.addWidget(self.lbinfo)
+        fl.addRow("Token", vbox)
         btn = LPushButton("上传游戏")
         btn.clicked.connect(
             functools.partial(self.singleupload_existsoverride, gameuid)
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
         btn = LPushButton("上传游戏列表")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_upload)
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
         btn = LPushButton("获取游戏列表")
         btn.clicked.connect(
             functools.partial(self.__getalistname, self.getalistname_download)
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
+        fl.addRow(ww)
+        s.setText(_ref.config["Token"])
         self.show()
 
 
