@@ -68,6 +68,7 @@ class ResponseBase:
         self.cookies = {}
         self.status_code = 0
         self.__content = b""
+        self.__content_s = []
         self.content_prepared = threading.Event()
         self.interonce = True
 
@@ -77,10 +78,15 @@ class ResponseBase:
             for _ in self.iter_content():
                 pass
         self.content_prepared.wait()
-        return self.__content
+        if self.stream:
+            return b"".join(self.__content_s)
+        else:
+            return self.__content
 
     @content.setter
     def content(self, c):
+        if self.stream:
+            raise RequestException()
         self.__content = c
         self.content_prepared.set()
 
@@ -110,7 +116,7 @@ class ResponseBase:
         self.interonce = False
 
         for chunk in self.iter_content_impl(chunk_size):
-            self.__content += chunk
+            self.__content_s.append(chunk)
             if decode_unicode:
                 yield chunk.decode("utf8")
             else:
