@@ -431,9 +431,6 @@ def minmaxmoveobservefunc(self):
             myhwnd = gobject.baseobject.hwnd
             if not myhwnd:
                 return
-            mymyhwnd = windows.GetAncestor(myhwnd)
-            if myhwnd != mymyhwnd:
-                gobject.baseobject.hwnd = myhwnd = mymyhwnd
             if (
                 event == windows.EVENT_OBJECT_DESTROY
                 and idObject == windows.OBJID_WINDOW

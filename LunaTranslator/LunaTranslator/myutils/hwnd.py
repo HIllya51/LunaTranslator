@@ -18,6 +18,8 @@ def grabwindow(app="PNG", callback_origin=None):
         hwndx = gobject.baseobject.hwnd
         if not hwndx:
             hwndx = windows.GetForegroundWindow()
+        else:
+            hwndx = windows.GetAncestor(hwndx)
         gamepath = getpidexe(windows.GetWindowThreadProcessId(hwndx))
         exename = os.path.basename(gamepath).replace(
             "." + os.path.basename(gamepath).split(".")[-1], ""
@@ -65,7 +67,8 @@ def grabwindow(app="PNG", callback_origin=None):
     hwnd = gobject.baseobject.hwnd
     if not hwnd:
         hwnd = windows.GetForegroundWindow()
-
+    else:
+        hwnd = windows.GetAncestor(hwnd)
     _ = windows.GetClientRect(hwnd)
     p = screenshot(0, 0, _[2], _[3], hwnd).toImage()
     if not p.allGray():
