@@ -132,6 +132,10 @@
 
 **model** https://docs.cohere.com/docs/models
 
+### **Azure**
+
+https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions
+
 <!-- tabs:end -->
 
 

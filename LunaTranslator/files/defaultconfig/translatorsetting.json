@@ -209,20 +209,20 @@
 			}
 		}
 	},
-	"chatgpt": {
+	"azureopenai": {
 		"args": {
-			"SECRET_KEY": "",
+			"api-key": "",
 			"Temperature": 0.3,
 			"top_p": 0.3,
 			"max_tokens": 128,
 			"frequency_penalty": 0,
 			"model": "gpt-3.5-turbo",
 			"附带上下文个数": 0,
-			"OPENAI_API_BASE": "https://api.openai.com/v1",
-			"Appedix": "/chat/completions",
+			"endpoint": "https://your-resource-name.openai.azure.com",
+			"deployment-id":"",
+			"api-version":"2024-06-01",
 			"使用自定义promt": false,
 			"自定义promt": "",
-			"api_type": 0,
 			"流式输出": true,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
@@ -245,11 +245,14 @@
 				"type": "split",
 				"rank": 2.5
 			},
-			"OPENAI_API_BASE": {
+			"endpoint": {
 				"rank": 0
 			},
-			"Appedix": {
+			"deployment-id": {
 				"rank": 1
+			},
+			"api-version": {
+				"rank": 1.5
 			},
 			"model": {
 				"rank": 2
@@ -282,16 +285,7 @@
 				"type": "switch",
 				"rank": 3
 			},
-			"api_type": {
-				"type": "combo",
-				"rank": 1.5,
-				"list": [
-					"open_ai",
-					"azure",
-					"azure_ad"
-				]
-			},
-			"SECRET_KEY": {
+			"api-key": {
 				"rank": 1.6
 			},
 			"附带上下文个数": {

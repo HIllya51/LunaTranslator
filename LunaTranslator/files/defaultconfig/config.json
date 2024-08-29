@@ -1561,6 +1561,13 @@
         }
     },
     "fanyi": {
+        "chatgpt-3rd-party": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "ChatGPT_兼容接口",
+            "is_gpt_like": true
+        },
         "microsoft": {
             "use": false,
             "color": "gray",
@@ -1932,11 +1939,11 @@
             "color": "blue",
             "name": "有道api"
         },
-        "chatgpt": {
+        "azureopenai": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "ChatGPT",
+            "name": "Azure Openai",
             "is_gpt_like": true
         },
         "cohere": {
@@ -1951,13 +1958,6 @@
             "use": false,
             "color": "blue",
             "name": "claude",
-            "is_gpt_like": true
-        },
-        "chatgpt-3rd-party": {
-            "type": "api",
-            "use": false,
-            "color": "blue",
-            "name": "ChatGPT_兼容接口",
             "is_gpt_like": true
         },
         "hanshant": {

@@ -39,9 +39,6 @@ class OCR(baseocr):
         )
         return data
 
-    def createparam(self):
-        return None
-
     def createheaders(self):
         return {"Authorization": "Bearer " + self.config["SECRET_KEY"]}
 
@@ -93,7 +90,6 @@ class OCR(baseocr):
         response = self.proxysession.post(
             self.createurl(),
             headers=self.createheaders(),
-            params=self.createparam(),
             json=self.createdata(message),
         )
         try:

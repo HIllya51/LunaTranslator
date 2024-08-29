@@ -50,9 +50,6 @@ class gptcommon(basetrans):
             pass
         return data
 
-    def createparam(self):
-        return None
-
     def createheaders(self):
         return {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
 
@@ -158,7 +155,6 @@ class gptcommon(basetrans):
         response = self.proxysession.post(
             self.createurl(),
             headers=self.createheaders(),
-            params=self.createparam(),
             json=self.createdata(message),
             stream=usingstream,
         )
