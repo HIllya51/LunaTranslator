@@ -179,7 +179,7 @@ class Requester(Requester_common):
         succ = WinHttpReceiveResponse(hRequest, None)
         if succ == 0:
             MaybeRaiseException()
-        resp = Response()
+        resp = Response(stream)
         resp.headers, resp.cookies = self._parseheader2dict(self._getheaders(hRequest))
 
         resp.status_code = self._getStatusCode(hRequest)

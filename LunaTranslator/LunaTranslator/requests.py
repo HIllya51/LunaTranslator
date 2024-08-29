@@ -1,4 +1,4 @@
-import json, base64, re, string, random
+import json, base64, re, string, random, threading
 from collections.abc import Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode, urlsplit
@@ -62,11 +62,27 @@ class CaseInsensitiveDict(MutableMapping):
 
 
 class ResponseBase:
-    def __init__(self):
+    def __init__(self, stream):
         self.headers = CaseInsensitiveDict()
+        self.stream = stream
         self.cookies = {}
         self.status_code = 0
-        self.content = b""
+        self.__content = b""
+        self.content_prepared = threading.Event()
+        self.interonce = True
+
+    @property
+    def content(self):
+        if self.stream and self.interonce:
+            for _ in self.iter_content():
+                pass
+        self.content_prepared.wait()
+        return self.__content
+
+    @content.setter
+    def content(self, c):
+        self.__content = c
+        self.content_prepared.set()
 
     @property
     def text(self):
@@ -86,11 +102,20 @@ class ResponseBase:
         return json.loads(self.text)
 
     def iter_content(self, chunk_size=1, decode_unicode=False):
+        if not self.stream:
+            raise RequestException()
+
+        if not self.interonce:
+            raise RequestException()
+        self.interonce = False
+
         for chunk in self.iter_content_impl(chunk_size):
+            self.__content += chunk
             if decode_unicode:
                 yield chunk.decode("utf8")
             else:
                 yield chunk
+        self.content_prepared.set()
 
     def iter_content_impl(self, chunk_size=1):
         pass

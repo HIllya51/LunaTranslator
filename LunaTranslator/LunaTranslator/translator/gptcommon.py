@@ -80,6 +80,9 @@ class gptcommon(basetrans):
     def commonparseresponse(self, query, response: requests.ResponseBase, usingstream):
         if usingstream:
             message = ""
+            if not response.headers["Content-Type"].startswith("text/event-stream"):
+                # application/json
+                raise Exception(response.text)
             for chunk in response.iter_lines():
                 response_data = chunk.decode("utf-8").strip()
                 if not response_data:

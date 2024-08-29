@@ -8,8 +8,8 @@ from traceback import print_exc
 
 
 class Response(ResponseBase):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, stream=False):
+        super().__init__(stream)
         self.last_error = 0
         self.keeprefs = []
         self.queue = queue.Queue()
@@ -189,7 +189,7 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.POSTFIELDS, databytes)
             curl_easy_setopt(curl, CURLoption.POSTFIELDSIZE, len(databytes))
 
-        resp = Response()
+        resp = Response(stream)
         resp.keeprefs.append(curl)
         resp.keeprefs.append(__)
         if stream:
