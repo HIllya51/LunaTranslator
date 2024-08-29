@@ -427,18 +427,21 @@ def minmaxmoveobservefunc(self):
     def win_event_callback(
         hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime
     ):
-
         try:
-            if not gobject.baseobject.hwnd:
+            myhwnd = gobject.baseobject.hwnd
+            if not myhwnd:
                 return
+            mymyhwnd = windows.GetAncestor(myhwnd)
+            if myhwnd != mymyhwnd:
+                gobject.baseobject.hwnd = myhwnd = mymyhwnd
             if (
                 event == windows.EVENT_OBJECT_DESTROY
                 and idObject == windows.OBJID_WINDOW
             ):
-                if hwnd == gobject.baseobject.hwnd:
+                if hwnd == myhwnd:
                     gobject.baseobject.hwnd = None
                     return
-            p_pids = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
+            p_pids = windows.GetWindowThreadProcessId(myhwnd)
             if not p_pids:
                 # 有时候谜之没有EVENT_OBJECT_DESTROY/僵尸进程
                 gobject.baseobject.hwnd = None
