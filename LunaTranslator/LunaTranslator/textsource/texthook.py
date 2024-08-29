@@ -179,6 +179,7 @@ class texthook(basetext):
         tgt = gobject.getcachedir("update/LunaHook")
         with zipfile.ZipFile(savep) as zipf:
             zipf.extractall(tgt)
+        shutil.rmtree("files/plugins/LunaHook")
         if os.path.exists(os.path.join(tgt, "Release_English", "LunaHook32.dll")):
             shutil.move(os.path.join(tgt, "Release_English"), "files/plugins/LunaHook")
         else:
