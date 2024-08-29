@@ -82,6 +82,7 @@ class gptcommon(basetrans):
             message = ""
             if not response.headers["Content-Type"].startswith("text/event-stream"):
                 # application/json
+                # text/html
                 raise Exception(response.text)
             for chunk in response.iter_lines():
                 response_data = chunk.decode("utf-8").strip()

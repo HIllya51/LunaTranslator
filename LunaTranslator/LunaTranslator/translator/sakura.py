@@ -189,7 +189,8 @@ class TS(basetrans):
             )
         except requests.RequestException:
             raise ValueError(f"连接到Sakura API超时：{self.api_url}")
-
+        if not output.headers["Content-Type"].startswith("text/event-stream"):
+            raise Exception(output.text)
         for o in output.iter_lines():
             try:
                 res = o.decode("utf-8").strip()[6:]  # .replace("data: ", "")
