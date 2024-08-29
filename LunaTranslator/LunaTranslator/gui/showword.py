@@ -893,7 +893,8 @@ class searchwordW(closeashidewindow):
 
     def langdu(self):
         if gobject.baseobject.reader:
-            gobject.baseobject.reader.read(self.searchtext.text(), True)
+            gobject.baseobject.audioplayer.timestamp = uuid.uuid4()
+            gobject.baseobject.reader.read(self.searchtext.text(), True, gobject.baseobject.audioplayer.timestamp)
 
     def generate_explains(self):
         res = []

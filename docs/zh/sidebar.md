@@ -30,4 +30,5 @@
     - [如何使用Mecab分词&词性颜色标注](/zh/qa1.md) 
     - [Anki集成](/zh/qa2.md)
 - [工具按钮](/zh/alltoolbuttons.md)
+- [快捷按键](/zh/fastkeys.md)
 - [实用功能](/zh/usefulsmalltools.md)

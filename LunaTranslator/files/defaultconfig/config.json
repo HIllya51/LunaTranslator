@@ -1078,11 +1078,6 @@
                 "name": "朗读_单词",
                 "keystring": ""
             },
-            "_34": {
-                "use": false,
-                "name": "Anki_打开",
-                "keystring": ""
-            },
             "_35": {
                 "use": false,
                 "name": "Anki_添加",

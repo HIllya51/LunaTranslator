@@ -86,7 +86,6 @@ def registrhotkeys(self):
         "_31": lambda: gobject.baseobject.hualang_recordbtn.click(),
         "_32": functools.partial(autoreadswitch, self),
         "_33": lambda: gobject.baseobject.searchwordW.soundbutton.click(),
-        "_34": lambda: gobject.baseobject.searchwordW.ankiconnect.click(),
         "_35": lambda: gobject.baseobject.searchwordW.ankiconnect.customContextMenuRequested.emit(
             QPoint()
         ),
