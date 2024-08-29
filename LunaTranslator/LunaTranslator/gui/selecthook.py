@@ -691,10 +691,7 @@ class hookselect(closeashidewindow):
             gobject.baseobject.textsource.removehook(pid, addr)
 
         elif action == copy:
-            copyhook = hc
-            if copyhook[0] == "E":
-                copyhook = copyhook[copyhook.find("H") :]
-            winsharedutils.clipboard_set(copyhook)
+            winsharedutils.clipboard_set(hc)
 
     def opensolvetext(self):
         try:
