@@ -70,15 +70,15 @@ class ResponseBase:
         self.__content = b""
         self.__content_s = []
         self.content_prepared = threading.Event()
-        self.interonce = True
+        self.iter_once = True
 
     @property
     def content(self):
-        if self.stream and self.interonce:
-            for _ in self.iter_content():
-                pass
-        self.content_prepared.wait()
         if self.stream:
+            if self.iter_once:
+                for _ in self.iter_content():
+                    pass
+            self.content_prepared.wait()
             return b"".join(self.__content_s)
         else:
             return self.__content
@@ -88,7 +88,6 @@ class ResponseBase:
         if self.stream:
             raise RequestException()
         self.__content = c
-        self.content_prepared.set()
 
     @property
     def text(self):
@@ -111,9 +110,9 @@ class ResponseBase:
         if not self.stream:
             raise RequestException()
 
-        if not self.interonce:
+        if not self.iter_once:
             raise RequestException()
-        self.interonce = False
+        self.iter_once = False
 
         for chunk in self.iter_content_impl(chunk_size):
             self.__content_s.append(chunk)
