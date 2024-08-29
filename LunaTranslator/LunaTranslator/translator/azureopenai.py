@@ -8,6 +8,7 @@ class TS(gptcommon):
     def createheaders(self):
         _ = super().createheaders()
         _.update({"api-key": self.multiapikeycurrent["api-key"]})
+        return _
 
     def translate(self, query):
         self.checkempty(["api-key", "api-version", "endpoint", "deployment-id"])
