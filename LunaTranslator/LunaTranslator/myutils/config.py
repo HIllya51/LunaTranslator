@@ -118,7 +118,7 @@ ocrsetting = tryreadconfig("ocrsetting.json")
 def getdefaultsavehook(title=None):
     default = {
         "gamepath": "",  # 不要直接访问，要通过uid2gamepath来间接访问
-        #"launchpath": "",
+        # "launchpath": "",
         "hooksetting_follow_default": True,
         "hooksetting_private": {},  # 显示时再加载，缺省用global中的键
         "textproc_follow_default": True,
@@ -337,11 +337,13 @@ class __uid2gamepath:
 
 uid2gamepath = __uid2gamepath()
 
+
 def get_launchpath(uid):
     launch = savehook_new_data[uid].get("launchpath", "")
     if not launch:
         launch = uid2gamepath[uid]
     return launch
+
 
 def findgameuidofpath(gamepath, findall=False):
     collect = []
@@ -658,7 +660,7 @@ def safesave(fname, js, beatiful=True):
     # wine上MoveFile会权限问题失败，不知道为什么，WinError 32
 
 
-def saveallconfig():
+def saveallconfig(test=False):
 
     safesave("./userconfig/config.json", globalconfig)
     safesave("./userconfig/magpie_config.json", magpie_config)
@@ -672,10 +674,11 @@ def saveallconfig():
         [savehook_new_list, savehook_new_data, savegametaged, None, extradatas],
         beatiful=False,
     )
-    safesave(
-        "./files/lang/{}.json".format(getlanguse()),
-        languageshow,
-    )
+    if not test:
+        safesave(
+            "./files/lang/{}.json".format(getlanguse()),
+            languageshow,
+        )
 
 
 def is_font_installed(font: str) -> bool:

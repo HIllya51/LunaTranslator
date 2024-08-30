@@ -155,12 +155,12 @@ def checkintegrity():
 
 
 def checkpermission():
-    from myutils.config import _TR
+    from myutils.config import _TR, saveallconfig
     from qtsymbols import QMessageBox
 
     try:
-        os.makedirs("userconfig", exist_ok=True)
-        os.makedirs("logs", exist_ok=True)
+        saveallconfig(test=True)
+        # 先写一遍试试，免得到最后配置半天白瞎。
     except PermissionError:
         msg = QMessageBox()
         msg.setText(_TR("权限不足，请以管理员权限运行！"))
@@ -193,6 +193,7 @@ class Lockedfile:
 
     def __write(self):
         data = self.collect.get()
+        os.makedirs("logs", exist_ok=True)
         file = open(
             f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
             "w",
