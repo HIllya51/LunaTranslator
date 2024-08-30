@@ -21,6 +21,7 @@ from gui.usefulwidget import (
     getlineedit,
     listediter,
     listediterline,
+    pixmapviewer,
     FQPlainTextEdit,
     FQLineEdit,
     getsimpleswitch,
@@ -417,7 +418,7 @@ class AnkiWindow(QWidget):
         self.audiopath_sentence.setReadOnly(True)
         self.editpath = QLineEdit()
         self.editpath.setReadOnly(True)
-        self.viewimagelabel = QLabel()
+        self.viewimagelabel = pixmapviewer()
         self.editpath.textChanged.connect(self.wrappedpixmap)
         self.example = FQPlainTextEdit()
         self.example.hiras = None
@@ -573,18 +574,7 @@ class AnkiWindow(QWidget):
             pix = QPixmap()
         else:
             pix = QPixmap.fromImage(QImage(src))
-        rate = self.devicePixelRatioF()
-        pix.setDevicePixelRatio(rate)
-        if (
-            pix.width() > self.viewimagelabel.width()
-            or pix.height() > self.viewimagelabel.height()
-        ):
-            pix = pix.scaled(
-                self.viewimagelabel.size() * rate,
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-        self.viewimagelabel.setPixmap(pix)
+        self.viewimagelabel.showpixmap(pix)
 
     def selecfile(self, item):
         f = QFileDialog.getOpenFileName()
