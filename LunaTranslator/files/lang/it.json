@@ -846,5 +846,10 @@
     "成功添加后关闭窗口": "Chiudere la finestra dopo l'aggiunta riuscita",
     "绑定窗口": "Associa finestra",
     "（点击自己取消）": "(Clicca per annullare da solo)",
-    "启动程序": "Avvia il programma"
+    "启动程序": "Avvia il programma",
+    "复制接口": "Interfaccia copia",
+    "删除接口": "Elimina interfaccia",
+    "命名为": "Denominato come",
+    "复制自": "Copia da",
+    "目标列表": "Elenco target"
 }

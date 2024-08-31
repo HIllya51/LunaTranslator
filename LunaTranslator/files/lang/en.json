@@ -846,5 +846,10 @@
     "成功添加后关闭窗口": "Close the window after successful addition",
     "绑定窗口": "Bind Window",
     "（点击自己取消）": "(Click to cancel by yourself)",
-    "启动程序": "Start the program"
+    "启动程序": "Start the program",
+    "复制接口": "Copy interface",
+    "删除接口": "Delete interface",
+    "命名为": "Named as",
+    "复制自": "Copy from",
+    "目标列表": "Target List"
 }

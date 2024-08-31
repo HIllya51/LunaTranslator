@@ -514,7 +514,7 @@ class dialog_setting_game_internal(QWidget):
             getsimplepatheditor(
                 get_launchpath(gameuid),
                 callback=self.selectexe_lauch,
-                icons=("fa.gear", "fa.window-close-o"),
+                icons=("fa.gear", "fa.refresh"),
                 clearset=uid2gamepath[gameuid],
             ),
         )
@@ -690,7 +690,12 @@ class dialog_setting_game_internal(QWidget):
         )
 
     def createfollowdefault(
-        self, dic: dict, key: str, formLayout: LFormLayout, callback=None
+        self,
+        dic: dict,
+        key: str,
+        formLayout: LFormLayout,
+        callback=None,
+        klass=LFormLayout,
     ) -> LFormLayout:
 
         __extraw = QWidget()
@@ -713,7 +718,7 @@ class dialog_setting_game_internal(QWidget):
         )
         __extraw.setEnabled(not dic[key])
         formLayout.addRow(__extraw)
-        formLayout2 = LFormLayout()
+        formLayout2 = klass()
         formLayout2.setContentsMargins(0, 0, 0, 0)
         __extraw.setLayout(formLayout2)
         return formLayout2
@@ -799,17 +804,22 @@ class dialog_setting_game_internal(QWidget):
                     False,
                     filt,
                     functools.partial(selectimg, gameuid, key),
-                    icons=("fa.folder-open", "fa.window-close-o"),
+                    icons=("fa.folder-open", "fa.refresh"),
                 ),
             )
 
     def gettransoptimi(self, formLayout: LFormLayout, gameuid):
 
-        vbox = self.createfollowdefault(
-            savehook_new_data[gameuid], "transoptimi_followdefault", formLayout
+        vbox: QGridLayout = self.createfollowdefault(
+            savehook_new_data[gameuid],
+            "transoptimi_followdefault",
+            formLayout,
+            klass=QGridLayout,
         )
+        vbox.addWidget(LLabel("继承默认"), 0, 4)
+        vbox.addWidget(QLabel(), 0, 5)
 
-        for item in static_data["transoptimi"]:
+        for i, item in enumerate(static_data["transoptimi"]):
             name = item["name"]
             visname = item["visname"]
             if checkpostlangmatch(name):
@@ -820,24 +830,23 @@ class dialog_setting_game_internal(QWidget):
                 def __(_f, _1, gameuid):
                     return _f(_1, gameuid)
 
-                vbox.addRow(
-                    visname,
-                    getboxlayout(
-                        [
-                            getsimpleswitch(savehook_new_data[gameuid], name + "_use"),
-                            getIconButton(
-                                callback=functools.partial(__, setting, self, gameuid),
-                                icon="fa.gear",
-                            ),
-                            QLabel(),
-                            getsimpleswitch(
-                                savehook_new_data[gameuid], name + "_merge"
-                            ),
-                            LLabel("继承默认"),
-                        ],
-                        makewidget=True,
-                        margin0=True,
+                vbox.addWidget(LLabel(visname), i + 1, 0)
+                vbox.addWidget(
+                    getsimpleswitch(savehook_new_data[gameuid], name + "_use"), i + 1, 1
+                )
+                vbox.addWidget(
+                    getIconButton(
+                        callback=functools.partial(__, setting, self, gameuid),
+                        icon="fa.gear",
                     ),
+                    i + 1,
+                    2,
+                )
+                vbox.addWidget(QLabel(), i + 1, 3)
+                vbox.addWidget(
+                    getsimpleswitch(savehook_new_data[gameuid], name + "_merge"),
+                    i + 1,
+                    4,
                 )
 
     def gettextproc(self, formLayout: LFormLayout, gameuid):

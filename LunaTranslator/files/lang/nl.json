@@ -846,5 +846,10 @@
     "成功添加后关闭窗口": "Sluit het venster na succesvolle toevoeging",
     "绑定窗口": "Venster binden",
     "（点击自己取消）": "(Klik om zelf te annuleren)",
-    "启动程序": "Start het programma"
+    "启动程序": "Start het programma",
+    "复制接口": "Interface kopiëren",
+    "删除接口": "Interface verwijderen",
+    "命名为": "Genoemd als",
+    "复制自": "Kopiëren van",
+    "目标列表": "Doellijst"
 }

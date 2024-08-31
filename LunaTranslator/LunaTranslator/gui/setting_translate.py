@@ -94,7 +94,7 @@ def getalistname(parent, copy, btnplus, callback):
     __.append(
         {
             "type": "combo",
-            "name": "目标",
+            "name": "复制自" if not copy else "删除",
             "d": __d,
             "k": "k",
             "list": __vis,
@@ -103,7 +103,7 @@ def getalistname(parent, copy, btnplus, callback):
     if not copy:
         __.append(
             {
-                "name": "名称",
+                "name": "命名为",
                 "type": "lineedit",
                 "d": __d,
                 "k": "n",
@@ -118,7 +118,7 @@ def getalistname(parent, copy, btnplus, callback):
     )
     autoinitdialog(
         parent,
-        "删除" if copy else "复制",
+        ("删除" if copy else "复制") + "接口",
         600,
         __,
     )

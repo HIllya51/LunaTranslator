@@ -237,7 +237,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -359,7 +359,7 @@
 				"rank": 5
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -403,7 +403,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -477,7 +477,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -563,7 +563,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -647,7 +647,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -1022,7 +1022,7 @@
 				"rank": 4
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -1250,7 +1250,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},

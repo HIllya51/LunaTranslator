@@ -846,5 +846,10 @@
     "成功添加后关闭窗口": "Đóng cửa sổ sau khi thêm thành công",
     "绑定窗口": "Cửa sổ bị ràng buộc",
     "（点击自己取消）": "(Click vào tự hủy)",
-    "启动程序": "Khởi chạy chương trình"
+    "启动程序": "Khởi chạy chương trình",
+    "复制接口": "Giao diện sao chép",
+    "删除接口": "Xoá giao diện",
+    "命名为": "Đặt tên",
+    "复制自": "Copy từ",
+    "目标列表": "Danh sách mục tiêu"
 }

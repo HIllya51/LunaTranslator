@@ -846,5 +846,10 @@
     "成功添加后关闭窗口": "Fechar a janela após a adição bem sucedida",
     "绑定窗口": "Janela Vincular",
     "（点击自己取消）": "(Clique para cancelar por si mesmo)",
-    "启动程序": "Iniciar o programa"
+    "启动程序": "Iniciar o programa",
+    "复制接口": "Copiar a interface",
+    "删除接口": "Apagar a interface",
+    "命名为": "Nomeado como",
+    "复制自": "Copiar de",
+    "目标列表": "Lista de Destinos"
 }

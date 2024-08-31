@@ -846,5 +846,10 @@
     "成功添加后关闭窗口": "Zamknij okno po pomyślnym dodaniu",
     "绑定窗口": "Wiąż okno",
     "（点击自己取消）": "(Kliknij, aby anulować samodzielnie)",
-    "启动程序": "Uruchom program"
+    "启动程序": "Uruchom program",
+    "复制接口": "Kopiuj interfejs",
+    "删除接口": "Usuń interfejs",
+    "命名为": "Nazwa:",
+    "复制自": "Kopiuj z",
+    "目标列表": "Lista docelowa"
 }

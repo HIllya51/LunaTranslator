@@ -846,5 +846,10 @@
     "成功添加后关闭窗口": "Zavřít okno po úspěšném přidání",
     "绑定窗口": "Vázat okno",
     "（点击自己取消）": "(Kliknutím zrušíte sami)",
-    "启动程序": "Spustit program"
+    "启动程序": "Spustit program",
+    "复制接口": "Kopírovat rozhraní",
+    "删除接口": "Smazat rozhraní",
+    "命名为": "Jmenuje se jako",
+    "复制自": "Kopírovat z",
+    "目标列表": "Seznam cílů"
 }

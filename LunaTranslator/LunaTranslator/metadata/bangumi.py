@@ -51,11 +51,13 @@ class bgmsettings(QDialog):
         reflist = getreflist(uid)
         collectresults = self.querylist()
         thislistvids = [
-            savehook_new_data[gameuid][self._ref.idname] for gameuid in reflist
+            savehook_new_data[gameuid].get(self._ref.idname, 0) for gameuid in reflist
         ]
         collect = {}
         for gameuid in savehook_new_data:
-            vid = savehook_new_data[gameuid][self._ref.idname]
+            vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
+            if not vid:
+                continue
             collect[vid] = gameuid
 
         for item in collectresults:
@@ -77,8 +79,8 @@ class bgmsettings(QDialog):
         vids = [item["id"] for item in self.querylist()]
 
         for gameuid in reflist:
-            vid = savehook_new_data[gameuid][self._ref.idname]
-            if vid == 0:
+            vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
+            if not vid:
                 continue
             if vid in vids:
                 continue
@@ -97,7 +99,7 @@ class bgmsettings(QDialog):
             )
 
     def singleupload_existsoverride(self, gameuid):
-        vid = savehook_new_data[gameuid][self._ref.idname]
+        vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
         if not vid:
             return
         try:
@@ -116,8 +118,8 @@ class bgmsettings(QDialog):
         except:
             pass
 
-    def __getalistname(self, callback, _):
-        getalistname(self, callback)
+    def __getalistname(self, title, callback, _):
+        getalistname(self, callback, title=title)
 
     infosig = pyqtSignal(str)
     showhide = pyqtSignal(bool)
@@ -259,12 +261,12 @@ class bgmsettings(QDialog):
         fl2.addRow(btn)
         btn = LPushButton("上传游戏列表")
         btn.clicked.connect(
-            functools.partial(self.__getalistname, self.getalistname_upload)
+            functools.partial(self.__getalistname, "上传游戏列表", self.getalistname_upload)
         )
         fl2.addRow(btn)
         btn = LPushButton("获取游戏列表")
         btn.clicked.connect(
-            functools.partial(self.__getalistname, self.getalistname_download)
+            functools.partial(self.__getalistname, "添加到列表", self.getalistname_download)
         )
         fl2.addRow(btn)
         fl.addRow(ww)

@@ -506,7 +506,7 @@ def loadvisinternal(skipid=False, skipidid=None):
     return __vis, __uid
 
 
-def getalistname(parent, callback, skipid=False, skipidid=None):
+def getalistname(parent, callback, skipid=False, skipidid=None, title="添加到列表"):
     __d = {"k": 0}
     __vis, __uid = loadvisinternal(skipid, skipidid)
 
@@ -520,12 +520,12 @@ def getalistname(parent, callback, skipid=False, skipidid=None):
     if len(__uid) > 1:
         autoinitdialog(
             parent,
-            "目标",
+            title,
             600,
             [
                 {
                     "type": "combo",
-                    "name": "目标",
+                    "name": "目标列表",
                     "d": __d,
                     "k": "k",
                     "list": __vis,

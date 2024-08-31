@@ -846,5 +846,10 @@
     "成功添加后关闭窗口": "Başarılı eklendikten sonra pencereyi kapat",
     "绑定窗口": "Bağlam Penceresi",
     "（点击自己取消）": "(Kendin iptal etmek için tıklayın)",
-    "启动程序": "Programı başlat"
+    "启动程序": "Programı başlat",
+    "复制接口": "Arayüzünü kopyala",
+    "删除接口": "Arayüzü sil",
+    "命名为": "İsimlendirilmiş",
+    "复制自": "Kopyalayın",
+    "目标列表": "Hedef Listesi"
 }

@@ -17,6 +17,8 @@
 
 ### ChatGPT兼容接口
 
+>绝大多数大模型平台都是使用ChatGPT兼容接口。<br>由于平台各种各样，不可能一一列举。对于其他没有列举出来的接口，请自行查阅其文档来填写对应参数。
+
 #### 外国大模型接口
 
 <!-- tabs:start -->
@@ -28,6 +30,14 @@
 **SECRET_KEY** https://console.groq.com/keys
 
 **model** https://console.groq.com/docs/models 填写`Model ID`
+
+### **OpenRouter**
+
+**API接口地址** `https://openrouter.ai/api/v1/chat/completions`
+
+**SECRET_KEY** https://openrouter.ai/settings/keys
+
+**model** https://openrouter.ai/docs/models
 
 <!-- tabs:end -->
 
@@ -106,6 +116,9 @@
 <!-- tabs:end -->
 
 ### 特定平台的专用接口
+
+
+>部分大模型平台不完全兼容ChatGPT接口，请在专用接口中填写参数使用。
 
 #### 外国大模型接口
 
