@@ -162,6 +162,58 @@ class basetransdev(basetrans):
                 pass
             time.sleep(0.1)
 
+    def clear_input(self):
+        self._SendRequest(
+            "Input.dispatchKeyEvent",
+            {
+                "type": "keyDown",
+                "modifiers": 2,
+                "timestamp": 0,
+                "windowsVirtualKeyCode": 65,
+                "autoRepeat": False,
+                "isKeypad": False,
+                "isSystemKey": False,
+                "location": 0,
+            },
+        )
+        self._SendRequest(
+            "Input.dispatchKeyEvent",
+            {
+                "type": "keyUp",
+                "modifiers": 2,
+                "timestamp": 0,
+                "windowsVirtualKeyCode": 65,
+                "autoRepeat": False,
+                "isKeypad": False,
+                "isSystemKey": False,
+                "location": 0,
+            },
+        )
+        self._SendRequest(
+            "Input.dispatchKeyEvent",
+            {
+                "type": "keyDown",
+                "timestamp": 0,
+                "windowsVirtualKeyCode": 8,
+                "autoRepeat": False,
+                "isKeypad": False,
+                "isSystemKey": False,
+                "location": 0,
+            },
+        )
+        self._SendRequest(
+            "Input.dispatchKeyEvent",
+            {
+                "type": "keyUp",
+                "timestamp": 0,
+                "windowsVirtualKeyCode": 8,
+                "autoRepeat": False,
+                "isKeypad": False,
+                "isSystemKey": False,
+                "location": 0,
+            },
+        )
+
     def send_keys(self, text):
         # self._SendRequest("Input.setIgnoreInputEvents", {"ignore": False})
         try:

@@ -55,6 +55,7 @@ class commonllmdev(basetransdev):
         self.Runtime_evaluate(
             f"document.querySelector(`{repr(self.textarea_selector)}`).foucs()"
         )
+        self.clear_input()
         self.send_keys(content)
         # chatgpt网站没有焦点时，用这个也可以。
         self.Runtime_evaluate(
