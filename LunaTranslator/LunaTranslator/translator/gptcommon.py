@@ -87,6 +87,8 @@ class gptcommon(basetrans):
                     continue
                 if response_data == "data: [DONE]":
                     break
+                if response_data == ": OPENROUTER PROCESSING":
+                    continue
                 try:
                     json_data = json.loads(response_data[6:])
                     rs = json_data["choices"][0].get("finish_reason")
