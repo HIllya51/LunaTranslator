@@ -42,7 +42,6 @@ from gui.usefulwidget import getQMessageBox
 MAX_MODULE_SIZE = 120
 HOOK_NAME_SIZE = 60
 HOOKCODE_LEN = 500
-oncecheckversion = True
 
 
 class ThreadParam(Structure):
@@ -142,49 +141,9 @@ class texthook(basetext):
             except:
                 pass
 
-    @threader
-    def checkversion(self):
-        if not globalconfig["autoupdate"]:
-            return
-        dlls = ["LunaHook32.dll", "LunaHook64.dll", "LunaHost32.dll", "LunaHost64.dll"]
-        sha256 = {}
-        for dll in dlls:
-            f = os.path.join("files/plugins/LunaHook", dll)
-            with open(f, "rb") as ff:
-                bs = ff.read()
-            sha = hashlib.sha256(bs).hexdigest()
-            sha256[dll] = sha
-        res = self.tryqueryfromhost()
-        if not res:
-            return
-        isnew = True
-        for _, sha in res["sha256"].items():
-            if sha256[_] != sha:
-                isnew = False
-                break
-        if isnew:
-            return
-
-        url = res["download"]
-        savep = gobject.getcachedir("update/LunaHook.zip")
-        if url.startswith("https://github.com"):
-            __x = "github"
-        else:
-            __x = "lunatranslator"
-        data = requests.get(
-            url, verify=False, proxies=getproxy(("update", __x))
-        ).content
-        with open(savep, "wb") as ff:
-            ff.write(data)
-        tgt = gobject.getcachedir("update/LunaHook")
-        with zipfile.ZipFile(savep) as zipf:
-            zipf.extractall(tgt)
-        if os.path.exists(os.path.join(tgt, "Release_English", "LunaHook32.dll")):
-            copytree(os.path.join(tgt, "Release_English"), "files/plugins/LunaHook")
-        else:
-            copytree(tgt, "files/plugins/LunaHook")
-
     def init(self):
+        self.initdll()
+
         self.pids = []
         self.maybepids = []
         self.maybepidslock = threading.Lock()
@@ -203,22 +162,8 @@ class texthook(basetext):
         gobject.baseobject.autoswitchgameuid = False
         self.delaycollectallselectedoutput()
         self.autohookmonitorthread()
-        self.initdllonce = True
-        self.initdlllock = threading.Lock()
 
-        global oncecheckversion
-        if oncecheckversion:
-            oncecheckversion = False
-            self.checkversion()
-
-    def delayinit(self):
-        with self.initdlllock:
-            if not self.initdllonce:
-                return
-            self.initdllonce = False
-            self.__delayinit()
-
-    def __delayinit(self):
+    def initdll(self):
         LunaHost = CDLL(
             gobject.GetDllpath(
                 ("LunaHost32.dll", "LunaHost64.dll"),
@@ -370,7 +315,6 @@ class texthook(basetext):
             time.sleep(0.1)
 
     def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
-        self.delayinit()
         for pid in pids:
             self.waitend(pid)
         gobject.baseobject.hwnd = hwnd
