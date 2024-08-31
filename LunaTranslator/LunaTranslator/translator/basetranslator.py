@@ -231,15 +231,15 @@ class basetrans(commonbase):
         res = self.shorttermcacheget(content)
         if res:
             return res
-        if globalconfig["uselongtermcache"]:
+        if not globalconfig["uselongtermcache"]:
             return None
         res = self.longtermcacheget(content)
         if res:
             return res
         return None
 
-    def maybecachetranslate(self, contentraw, contentsolved, is_auto_run):
-        res = self.shortorlongcacheget(contentraw, is_auto_run)
+    def maybecachetranslate(self, contentsolved, is_auto_run):
+        res = self.shortorlongcacheget(contentsolved, is_auto_run)
         if res:
             return res
         if self.transtype in ["offline", "pre", "dev"]:
@@ -266,7 +266,7 @@ class basetrans(commonbase):
 
         return res
 
-    def reinitandtrans(self, contentraw, contentsolved, is_auto_run):
+    def reinitandtrans(self, contentsolved, is_auto_run):
         if self.needreinit or self.initok == False:
             self.needreinit = False
             self.renewsesion()
@@ -274,11 +274,10 @@ class basetrans(commonbase):
                 self._private_init()
             except Exception as e:
                 raise Exception("init translator failed : " + str(stringfyerror(e)))
-        return self.maybecachetranslate(contentraw, contentsolved, is_auto_run)
+        return self.maybecachetranslate(contentsolved, is_auto_run)
 
     def translate_and_collect(
         self,
-        contentraw,
         contentsolved,
         is_auto_run,
         callback,
@@ -291,7 +290,7 @@ class basetrans(commonbase):
 
         callback = functools.partial(__maybeshow, callback)
 
-        res = self.reinitandtrans(contentraw, contentsolved, is_auto_run)
+        res = self.reinitandtrans(contentsolved, is_auto_run)
         # 不能因为被打断而放弃后面的操作，发出的请求不会因为不再处理而无效，所以与其浪费不如存下来
         # gettranslationcallback里已经有了是否为当前请求的校验，这里无脑输出就行了
         if isinstance(res, types.GeneratorType):
@@ -332,7 +331,6 @@ class basetrans(commonbase):
             # fmt: off
             callback, contentraw, contentsolved, waitforresultcallback, is_auto_run, optimization_params = content
             # fmt: on
-
             if self.onlymanual and is_auto_run:
                 continue
             if self.srclang_1 == self.tgtlang_1:
@@ -365,7 +363,6 @@ class basetrans(commonbase):
 
                 func = functools.partial(
                     self.translate_and_collect,
-                    contentraw,
                     contentsolved,
                     is_auto_run,
                     callback,
