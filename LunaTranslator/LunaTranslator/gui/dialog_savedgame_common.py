@@ -615,8 +615,8 @@ class dialog_syssetting(LDialog):
 
         elif type_ == 2:
             for key, name in [
-                ("listitemwidth", "高度"),
-                ("listitemheight", "文字区高度"),
+                ("listitemwidth", "宽度"),
+                ("listitemheight", "高度"),
             ]:
                 formLayout.addRow(
                     name,
