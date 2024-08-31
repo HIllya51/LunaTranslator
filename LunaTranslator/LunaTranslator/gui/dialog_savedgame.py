@@ -10,6 +10,7 @@ from gui.dialog_savedgame_legacy import dialog_savedgame_legacy
 from gui.dialog_savedgame_setting import dialog_setting_game
 from myutils.wrapper import Singleton_close
 from gui.specialwidget import lazyscrollflow
+from myutils.utils import str2rgba
 from myutils.config import (
     savehook_new_data,
     savegametaged,
@@ -335,8 +336,34 @@ class dialog_savedgame_new(QWidget):
             ),
         )
 
+    def setstyle(self):
+        key = "savegame_textfont1"
+        fontstring = globalconfig.get(key, "")
+        _style = """background-color: rgba(255,255,255, 0);"""
+        if fontstring:
+            _f = QFont()
+            _f.fromString(fontstring)
+            _style += f"font-size:{_f.pointSize()}pt;"
+            _style += f'font-family:"{_f.family()}";'
+        style = f"#{key}{{ {_style} }}"
+        for exits in [True, False]:
+            c = globalconfig["dialog_savegame_layout"][
+                ("onfilenoexistscolor1", "backcolor1")[exits]
+            ]
+            c = str2rgba(
+                c,
+                globalconfig["dialog_savegame_layout"][
+                    ("transparentnotexits", "transparent")[exits]
+                ],
+            )
+
+            style += f"#savegame_exists{exits}{{background-color:{c};}}"
+        style += f'#savegame_onselectcolor1{{background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};}}'
+        self.setStyleSheet(style)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        self.setstyle()
         gobject.global_dialog_savedgame_new = self
         formLayout = QVBoxLayout()
         layout = QHBoxLayout()

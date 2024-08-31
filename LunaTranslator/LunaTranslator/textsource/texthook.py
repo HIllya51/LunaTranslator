@@ -142,24 +142,20 @@ class texthook(basetext):
                 pass
 
     def init(self):
-        self.initdll()
 
         self.pids = []
         self.maybepids = []
         self.maybepidslock = threading.Lock()
         self.keepref = []
         self.hookdatacollecter = OrderedDict()
-        self.reverse = {}
-        self.forward = []
         self.selectinghook = None
         self.selectedhook = []
-        self.selectedhookidx = []
-
         self.multiselectedcollector = []
         self.multiselectedcollectorlock = threading.Lock()
         self.lastflushtime = 0
         self.runonce_line = ""
         gobject.baseobject.autoswitchgameuid = False
+        self.initdll()
         self.delaycollectallselectedoutput()
         self.autohookmonitorthread()
 

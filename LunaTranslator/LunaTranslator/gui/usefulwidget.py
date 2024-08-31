@@ -2041,11 +2041,11 @@ def getsimplepatheditor(
     header=None,
     dirorfile=False,
     clearable=True,
-    clearset=""
+    clearset="",
+    isfontselector=False,
 ):
     lay = QHBoxLayout()
     lay.setContentsMargins(0, 0, 0, 0)
-
     if multi:
         e = listediterline(
             name,
@@ -2065,8 +2065,23 @@ def getsimplepatheditor(
             bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
             if clearable:
                 clear = LPushButton("清除")
-        bu.clicked.connect(
-            functools.partial(
+
+        if isfontselector:
+
+            def __selectfont(callback, e):
+                f = QFont()
+                text = e.text()
+                if text:
+                    f.fromString(text)
+                font, ok = QFontDialog.getFont(f, e)
+                if ok:
+                    _s = font.toString()
+                    callback(_s)
+                    e.setText(_s)
+
+            _cb = functools.partial(__selectfont, callback, e)
+        else:
+            _cb = functools.partial(
                 openfiledirectory,
                 text,
                 multi,
@@ -2075,7 +2090,7 @@ def getsimplepatheditor(
                 "" if isdir else filter1,
                 callback,
             )
-        )
+        bu.clicked.connect(_cb)
         lay.addWidget(e)
         lay.addWidget(bu)
         if clearable:

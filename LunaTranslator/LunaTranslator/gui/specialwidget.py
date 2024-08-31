@@ -319,7 +319,7 @@ class lazyscrollflow(ScrollArea):
 
     def __init__(self):
         super().__init__()
-        self.setStyleSheet("background: transparent;")
+        self.setStyleSheet("lazyscrollflow{background: transparent;}")
         self.widgets = []
         self.fakegeos = []
         self._spacing = 6

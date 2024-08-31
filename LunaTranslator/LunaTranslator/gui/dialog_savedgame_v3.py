@@ -65,9 +65,7 @@ class clickitem(QWidget):
 
     def click(self):
         try:
-            self.bottommask.setStyleSheet(
-                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};'
-            )
+            self.bottommask.show()
             if self != clickitem.globallashfocus:
                 clickitem.clearfocus()
             clickitem.globallashfocus = self
@@ -79,7 +77,7 @@ class clickitem(QWidget):
         self.click()
 
     def focusOut(self):
-        self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        self.bottommask.hide()
         self.focuschanged.emit(False, self.uid)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
@@ -96,19 +94,11 @@ class clickitem(QWidget):
         self.lay.setContentsMargins(0, 0, 0, 0)
 
         self.maskshowfileexists = QLabel(self)
-        exits = os.path.exists(get_launchpath(uid))
-        c = globalconfig["dialog_savegame_layout"][
-            ("onfilenoexistscolor1", "backcolor1")[exits]
-        ]
-        c = str2rgba(
-            c,
-            globalconfig["dialog_savegame_layout"][
-                ("transparentnotexits", "transparent")[exits]
-            ],
-        )
-        self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
+        exists = os.path.exists(get_launchpath(uid))
+        self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
         self.bottommask = QLabel(self)
-        self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        self.bottommask.hide()
+        self.bottommask.setObjectName('savegame_onselectcolor1')
         _ = QLabel(self)
         _.setStyleSheet(
             """background-color: rgba(255,255,255, 0);border-bottom: 1px solid gray;"""
@@ -126,9 +116,9 @@ class clickitem(QWidget):
         _ = QLabel(savehook_new_data[uid]["title"])
         _.setWordWrap(True)
         _.setFixedHeight(size + 1)
+        _.setObjectName("savegame_textfont2")
         self.lay.addWidget(_)
         self.setLayout(self.lay)
-        _.setStyleSheet("""background-color: rgba(255,255,255, 0);""")
 
 
 class fadeoutlabel(QLabel):
@@ -782,6 +772,31 @@ class dialog_savedgame_v3(QWidget):
     def directshow(self):
         self.stack.directshow()
 
+    def setstyle(self):
+        key = "savegame_textfont2"
+        fontstring = globalconfig.get(key, "")
+        _style = """background-color: rgba(255,255,255, 0);"""
+        if fontstring:
+            _f = QFont()
+            _f.fromString(fontstring)
+            _style += f"font-size:{_f.pointSize()}pt;"
+            _style += f'font-family:"{_f.family()}";'
+        style = f"#{key}{{ {_style} }}"
+        for exits in [True, False]:
+            c = globalconfig["dialog_savegame_layout"][
+                ("onfilenoexistscolor1", "backcolor1")[exits]
+            ]
+            c = str2rgba(
+                c,
+                globalconfig["dialog_savegame_layout"][
+                    ("transparentnotexits", "transparent")[exits]
+                ],
+            )
+
+            style += f"#savegame_exists{exits}{{background-color:{c};}}"
+        style += f'#savegame_onselectcolor1{{background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};}}'
+        self.setStyleSheet(style)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.currentfocusuid = None
@@ -794,6 +809,7 @@ class dialog_savedgame_v3(QWidget):
             globalconfig["dialog_savegame_layout"]["listitemwidth"]
         )
         self.stack.bgclicked.connect(clickitem.clearfocus)
+        self.setstyle()
         lay = QHBoxLayout()
         self.setLayout(lay)
         lay.addWidget(self.stack)

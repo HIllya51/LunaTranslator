@@ -24,9 +24,11 @@ from gui.usefulwidget import (
     getspinbox,
     getcolorbutton,
     getsimpleswitch,
+    getsimplepatheditor,
     FQLineEdit,
     getspinbox,
     selectcolor,
+    SplitLine,
 )
 
 
@@ -46,10 +48,7 @@ class ItemWidget(QWidget):
 
     def click(self):
         try:
-            self.bottommask.setStyleSheet(
-                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};'
-            )
-
+            self.bottommask.show()
             if self != ItemWidget.globallashfocus:
                 ItemWidget.clearfocus()
             ItemWidget.globallashfocus = self
@@ -61,7 +60,7 @@ class ItemWidget(QWidget):
         self.click()
 
     def focusOut(self):
-        self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        self.bottommask.hide()
         self.focuschanged.emit(False, self.gameuid)
 
     def mouseDoubleClickEvent(self, e):
@@ -91,8 +90,11 @@ class ItemWidget(QWidget):
         self.setFixedSize(QSize(self.itemw, self.itemh))
         # self.setFocusPolicy(Qt.StrongFocus)
         self.maskshowfileexists = QLabel(self)
+        exists = os.path.exists(get_launchpath(gameuid))
+        self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
         self.bottommask = QLabel(self)
-        self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        self.bottommask.hide()
+        self.bottommask.setObjectName("savegame_onselectcolor1")
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self._img = IMGWidget(self.imgw, self.imgh, pixmap)
@@ -109,22 +111,11 @@ class ItemWidget(QWidget):
         if globalconfig["showgametitle"]:
             self._lb.setText(file)
         self._lb.setWordWrap(True)
-        self._lb.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        self._lb.setObjectName("savegame_textfont1")
         self._lb.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         layout.addWidget(self._lb)
         self.setLayout(layout)
         self.gameuid = gameuid
-        exists = os.path.exists(get_launchpath(gameuid))
-        c = globalconfig["dialog_savegame_layout"][
-            ("onfilenoexistscolor1", "backcolor1")[exists]
-        ]
-        c = str2rgba(
-            c,
-            globalconfig["dialog_savegame_layout"][
-                ("transparentnotexits", "transparent")[exists]
-            ],
-        )
-        self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
 
 
 class IMGWidget(QLabel):
@@ -565,6 +556,10 @@ def getreflist(reftagid):
 
 @Singleton_close
 class dialog_syssetting(LDialog):
+    def selectfont(self, key, fontstring):
+        globalconfig[key] = fontstring
+
+        self.parent().setstyle()
 
     def __init__(self, parent, type_=1) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -575,6 +570,26 @@ class dialog_syssetting(LDialog):
             "隐藏不存在的游戏",
             getsimpleswitch(globalconfig, "hide_not_exists"),
         )
+
+        formLayout.addRow(
+            "启动游戏不修改顺序",
+            getsimpleswitch(globalconfig, "startgamenototop"),
+        )
+
+        if type_ == 1:
+            formLayout.addRow(
+                "显示标题",
+                getsimpleswitch(globalconfig, "showgametitle"),
+            )
+            formLayout.addRow(
+                "缩放",
+                getsimplecombobox(
+                    ["填充", "适应", "拉伸", "居中"],
+                    globalconfig,
+                    "imagewrapmode",
+                ),
+            )
+        formLayout.addRow(SplitLine())
         if type_ == 1:
             for key, name in [
                 ("itemw", "宽度"),
@@ -588,16 +603,36 @@ class dialog_syssetting(LDialog):
                     name,
                     getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
                 )
+            formLayout.addRow(
+                "字体",
+                getsimplepatheditor(
+                    text=globalconfig.get("savegame_textfont1", ""),
+                    callback=functools.partial(self.selectfont, "savegame_textfont1"),
+                    icons=("fa.font", "fa.refresh"),
+                    isfontselector=True,
+                ),
+            )
+
         elif type_ == 2:
             for key, name in [
-                ("listitemheight", "文字区高度"),
                 ("listitemwidth", "高度"),
+                ("listitemheight", "文字区高度"),
             ]:
                 formLayout.addRow(
                     name,
                     getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
                 )
+            formLayout.addRow(
+                "字体",
+                getsimplepatheditor(
+                    text=globalconfig.get("savegame_textfont2", ""),
+                    callback=functools.partial(self.selectfont, "savegame_textfont2"),
+                    icons=("fa.font", "fa.refresh"),
+                    isfontselector=True,
+                ),
+            )
 
+        formLayout.addRow(SplitLine())
         for key, key2, name in [
             ("backcolor1", "transparent", "颜色"),
             ("onselectcolor1", "transparentselect", "选中时颜色"),
@@ -616,6 +651,7 @@ class dialog_syssetting(LDialog):
                         None,
                         self,
                         key,
+                        callback=self.parent().setstyle,
                     ),
                     name=key,
                     parent=self,
@@ -623,25 +659,12 @@ class dialog_syssetting(LDialog):
             )
             formLayout.addRow(
                 name + "_" + "不透明度",
-                getspinbox(0, 100, globalconfig["dialog_savegame_layout"], key2),
-            )
-        if type_ == 1:
-            formLayout.addRow(
-                "缩放",
-                getsimplecombobox(
-                    ["填充", "适应", "拉伸", "居中"],
-                    globalconfig,
-                    "imagewrapmode",
+                getspinbox(
+                    0,
+                    100,
+                    globalconfig["dialog_savegame_layout"],
+                    key2,
+                    callback=lambda _: self.parent().setstyle(),
                 ),
-            )
-        formLayout.addRow(
-            "启动游戏不修改顺序",
-            getsimpleswitch(globalconfig, "startgamenototop"),
-        )
-
-        if type_ == 1:
-            formLayout.addRow(
-                "显示标题",
-                getsimpleswitch(globalconfig, "showgametitle"),
             )
         self.show()
