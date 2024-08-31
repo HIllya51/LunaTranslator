@@ -179,11 +179,10 @@ class texthook(basetext):
         tgt = gobject.getcachedir("update/LunaHook")
         with zipfile.ZipFile(savep) as zipf:
             zipf.extractall(tgt)
-        shutil.rmtree("files/plugins/LunaHook")
         if os.path.exists(os.path.join(tgt, "Release_English", "LunaHook32.dll")):
-            shutil.move(os.path.join(tgt, "Release_English"), "files/plugins/LunaHook")
+            copytree(os.path.join(tgt, "Release_English"), "files/plugins/LunaHook")
         else:
-            shutil.move(tgt, "files/plugins/LunaHook")
+            copytree(tgt, "files/plugins/LunaHook")
 
     def init(self):
         self.pids = []
