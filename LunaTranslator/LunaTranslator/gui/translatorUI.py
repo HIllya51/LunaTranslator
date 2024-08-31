@@ -306,7 +306,7 @@ class TranslatorWindow(resizableframeless):
             color = kwargs.get("color")
             res = kwargs.get("res")
             onlytrans = kwargs.get("onlytrans", False)  # 仅翻译，不显示
-            iter_context = kwargs.get("iter_context", (0, None))
+            iter_context = kwargs.get("iter_context", None)
             clear = kwargs.get("clear", False)
 
             iter_res_status, iter_context_class = iter_context
@@ -384,7 +384,10 @@ class TranslatorWindow(resizableframeless):
         atcenter = globalconfig["showatcenter"]
 
         if iter_context:
-            _, iter_context_class = iter_context
+            iter_res_status, iter_context_class = iter_context
+        else:
+            iter_res_status = 0
+        if iter_res_status:
             self.translate_text.iter_append(
                 iter_context_class, origin, atcenter, text, color
             )
