@@ -550,12 +550,6 @@ class TranslatorWindow(resizableframeless):
                 ),
             ),
             (
-                "noundict_sakura",
-                lambda: loadpostsettingwindowmethod_maybe(
-                    "gptpromptdict", gobject.baseobject.commonstylebase
-                ),
-            ),
-            (
                 "fix",
                 lambda: loadpostsettingwindowmethod("transerrorfix")(
                     gobject.baseobject.commonstylebase
@@ -881,6 +875,7 @@ class TranslatorWindow(resizableframeless):
         self.titlebar.setMouseTracking(True)
         self.addbuttons()
         self.translate_text = Textbrowser(self)
+        self.translate_text.move(0, 0)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
         self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
         self.titlebar.raise_()

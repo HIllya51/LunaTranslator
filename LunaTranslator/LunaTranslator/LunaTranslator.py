@@ -441,7 +441,6 @@ class MAINUI:
         )
         task = (
             callback,
-            text,
             text_solved,
             waitforresultcallback,
             is_auto_run,

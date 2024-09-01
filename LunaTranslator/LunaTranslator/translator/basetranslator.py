@@ -183,7 +183,7 @@ class basetrans(commonbase):
 
     def gettask(self, content):
         # fmt: off
-        callback, contentraw, contentsolved, callback, is_auto_run, optimization_params = content
+        callback, contentsolved, callback, is_auto_run, optimization_params = content
         # fmt: on
         if callback:
             priority = 1
@@ -329,7 +329,7 @@ class basetrans(commonbase):
             if content is None:
                 break
             # fmt: off
-            callback, contentraw, contentsolved, waitforresultcallback, is_auto_run, optimization_params = content
+            callback, contentsolved, waitforresultcallback, is_auto_run, optimization_params = content
             # fmt: on
             if self.onlymanual and is_auto_run:
                 continue
@@ -346,12 +346,14 @@ class basetrans(commonbase):
                     continue
                 if self.using_gpt_dict:
                     gpt_dict = None
+                    contentraw = contentsolved
                     for _ in optimization_params:
                         if isinstance(_, dict):
                             _gpt_dict = _.get("gpt_dict", None)
                             if _gpt_dict is None:
                                 continue
                             gpt_dict = _gpt_dict
+                            contentraw = _.get("gpt_dict_origin")
 
                     contentsolved = json.dumps(
                         {

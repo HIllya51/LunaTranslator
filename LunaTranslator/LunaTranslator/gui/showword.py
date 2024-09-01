@@ -27,6 +27,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     makesubtab_lazy,
     getIconButton,
+    saveposwindow,
     tabadd_lazy,
 )
 from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LFormLayout, LLabel
@@ -96,8 +97,9 @@ class AnkiWindow(QWidget):
 
         rangeselct_function(ocroncefunction, False, False)
 
-    def __init__(self) -> None:
+    def __init__(self, p) -> None:
         super().__init__()
+        self.refsearchw: searchwordW = p
         self.settextsignal.connect(self.settextsignalf)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle("Anki Connect")
@@ -209,7 +211,7 @@ class AnkiWindow(QWidget):
 
     def loadfileds(self):
         word = self.currentword
-        explain = quote(json.dumps(gobject.baseobject.searchwordW.generate_explains()))
+        explain = quote(json.dumps(self.refsearchw.generate_explains()))
 
         remarks = self.remarks.toPlainText()
         example = self.example.toPlainText()
@@ -601,13 +603,13 @@ class AnkiWindow(QWidget):
         try:
             self.addanki()
             if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
-                gobject.baseobject.searchwordW.close()
+                self.refsearchw.close()
             else:
                 QToolTip.showText(QCursor.pos(), "添加成功", self)
         except requests.RequestException:
-            getQMessageBox(gobject.baseobject.searchwordW, "错误", "无法连接到anki")
+            getQMessageBox(self.refsearchw, "错误", "无法连接到anki")
         except anki.AnkiException as e:
-            getQMessageBox(gobject.baseobject.searchwordW, "错误", str(e))
+            getQMessageBox(self.refsearchw, "错误", str(e))
         except:
             print_exc()
 
@@ -773,9 +775,22 @@ class searchwordW(closeashidewindow):
             return
         self.textOutput.setHtml(html)
 
+    def _createnewwindowsearch(self, _):
+        word = self.searchtext.text()
+
+        class searchwordWx(searchwordW):
+            def closeEvent(self1, event: QCloseEvent):
+                self1.deleteLater()
+                super(saveposwindow, self1).closeEvent(event)
+
+        _ = searchwordWx(self.parent())
+        _.show()
+        _.searchtext.setText(word)
+        _.__search_by_click_search_btn()
+
     def setupUi(self):
         self.setWindowTitle("查词")
-        self.ankiwindow = AnkiWindow()
+        self.ankiwindow = AnkiWindow(self)
         self.setWindowIcon(qtawesome.icon("fa.search"))
         self.thisps = {}
         self.hasclicked = False
@@ -808,6 +823,8 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(self.history_next_btn)
         self.searchlayout.addWidget(self.searchtext)
         searchbutton = QPushButton(qtawesome.icon("fa.search"), "")
+        searchbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        searchbutton.customContextMenuRequested.connect(self._createnewwindowsearch)
         self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
 
         searchbutton.clicked.connect(self.__search_by_click_search_btn)
@@ -884,7 +901,9 @@ class searchwordW(closeashidewindow):
     def langdu(self):
         if gobject.baseobject.reader:
             gobject.baseobject.audioplayer.timestamp = uuid.uuid4()
-            gobject.baseobject.reader.read(self.searchtext.text(), True, gobject.baseobject.audioplayer.timestamp)
+            gobject.baseobject.reader.read(
+                self.searchtext.text(), True, gobject.baseobject.audioplayer.timestamp
+            )
 
     def generate_explains(self):
         res = []
