@@ -71,12 +71,11 @@
     当使用过一次`进行一次OCR`后，使用这个按钮，可以在原来的位置上再次进行一次OCR而无需重新选择识别区域。
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_直接替换
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_sakura_gpt_词典
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_占位符_全局
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_占位符
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_全局
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻译结果修正_全局
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻译结果修正
-    以上六个按钮，效果类似，是用来快捷打开翻译优化的设置窗口，增加新的指定词条的。<br>
+    以上五个按钮，效果类似，是用来快捷打开翻译优化的设置窗口，增加新的指定词条的。<br>
     对于`全局`，则一定打开全局的词典设置。对于非`全局`，则当有绑定的游戏(HOOK链接游戏/剪贴板、OCR绑定窗口)时，打开游戏的专用词典设置，否则则是打开全局的词典设置
 1. #### <i class="fa fa-minus"></i> <i class="fa fa-icon fa-rotate-right"></i> 最小化到托盘
     略
