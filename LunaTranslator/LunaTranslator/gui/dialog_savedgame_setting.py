@@ -221,14 +221,14 @@ class browserdialog(saveposwindow):
 
 
 def maybehavebutton(self, gameuid, post):
+    save_text_process_info = savehook_new_data[gameuid]["save_text_process_info"]
     if post == "_11":
-        savehook_new_data[gameuid]["save_text_process_info"]["mypost"] = str(
-            uuid.uuid4()
-        ).replace("-", "_")
+        if "mypost" not in save_text_process_info:
+            save_text_process_info["mypost"] = str(uuid.uuid4()).replace("-", "_")
         return getIconButton(
             callback=functools.partial(
                 selectdebugfile,
-                savehook_new_data[gameuid]["save_text_process_info"]["mypost"],
+                save_text_process_info["mypost"],
                 ismypost=True,
             ),
             icon="fa.gear",
@@ -245,29 +245,25 @@ def maybehavebutton(self, gameuid, post):
                 callback = functools.partial(
                     postconfigdialog2x,
                     self,
-                    savehook_new_data[gameuid]["save_text_process_info"][
-                        "postprocessconfig"
-                    ][post]["args"]["internal"],
-                    savehook_new_data[gameuid]["save_text_process_info"][
-                        "postprocessconfig"
-                    ][post]["name"],
+                    save_text_process_info["postprocessconfig"][post]["args"][
+                        "internal"
+                    ],
+                    save_text_process_info["postprocessconfig"][post]["name"],
                     ["正则", "转义", "原文内容", "替换为"],
                 )
             elif isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
                 callback = functools.partial(
                     postconfigdialog,
                     self,
-                    savehook_new_data[gameuid]["save_text_process_info"][
-                        "postprocessconfig"
-                    ][post]["args"]["替换内容"],
+                    save_text_process_info["postprocessconfig"][post]["args"][
+                        "替换内容"
+                    ],
                     postprocessconfig[post]["name"],
                     ["原文内容", "替换为"],
                 )
             else:
                 items = autoinitdialog_items(
-                    savehook_new_data[gameuid]["save_text_process_info"][
-                        "postprocessconfig"
-                    ][post]
+                    save_text_process_info["postprocessconfig"][post]
                 )
                 callback = functools.partial(
                     autoinitdialog,

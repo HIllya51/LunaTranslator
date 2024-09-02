@@ -309,6 +309,12 @@ class MAINUI:
             )
         except:
             pass
+        if (
+            (windows.GetKeyState(windows.VK_CONTROL) < 0)
+            or (windows.GetKeyState(windows.VK_SHIFT) < 0)
+            or (windows.GetKeyState(windows.VK_RETURN) < 0)
+        ):
+            return safe_callback_none()
         if onlytrans == False:
             self.currenttext = text
             self.currenttranslate = ""
