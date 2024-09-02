@@ -88,7 +88,7 @@
                 }
             },
             "miaobian1": {
-                "name": "描边字体_2",
+                "name": "描边字体",
                 "args": {
                     "fillcolor": "#eeeeee",
                     "width_rate": 0.1,
@@ -154,7 +154,7 @@
                 }
             },
             "miaobian1": {
-                "name": "描边字体_2",
+                "name": "描边字体",
                 "args": {
                     "fillcolor": "#eeeeee",
                     "width_rate": 0.1,
