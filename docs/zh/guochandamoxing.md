@@ -39,6 +39,14 @@
 
 **model** https://openrouter.ai/docs/models
 
+### **Deepbricks**
+
+**API接口地址** `https://api.deepbricks.ai/v1/chat/completions`
+
+**SECRET_KEY** https://deepbricks.ai/api-key
+
+**model** https://deepbricks.ai/pricing
+
 <!-- tabs:end -->
 
 #### 国产大模型接口
