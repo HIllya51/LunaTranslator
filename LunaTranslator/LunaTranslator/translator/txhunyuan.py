@@ -115,30 +115,11 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(["secret_id", "secret_key"])
         self.contextnum = int(self.config["context_num"])
-        user_prompt = (
-            self.config.get("user_user_prompt", "")
-            if self.config.get("use_user_user_prompt", False)
-            else ""
+        query = self._gptlike_createquery(
+            query, "use_user_user_prompt", "user_user_prompt"
         )
-        try:
-            if "{sentence}" in user_prompt:
-                query = user_prompt.format(sentence=query)
-            else:
-                query = user_prompt + query
-        except:
-            pass
-        print(query)
-        if self.config["use_user_prompt"]:
-            message = [{"Role": "system", "Content": self.config["user_prompt"]}]
-        else:
-            message = [
-                {
-                    "Role": "system",
-                    "Content": "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
-                        self.srclang, self.tgtlang
-                    ),
-                },
-            ]
+        sysprompt = self._gptlike_createsys("use_user_prompt", "user_prompt")
+        message = [{"Role": "system", "Content": sysprompt}]
 
         for _i in range(min(len(self.context) // 2, self.contextnum)):
             i = (

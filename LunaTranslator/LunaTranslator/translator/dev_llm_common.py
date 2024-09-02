@@ -44,13 +44,7 @@ class commonllmdev(basetransdev):
 
     def translate(self, content):
         self.injectjs()
-
-        if self.config["use_custom_prompt"]:
-            prompt = self.config["custom_prompt"]
-        else:
-            prompt = "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.\n".format(
-                self.srclang, self.tgtlang
-            )
+        prompt = self._gptlike_createsys("use_custom_prompt", "custom_prompt")
         content = prompt + content
         self.Runtime_evaluate(
             f"document.querySelector(`{repr(self.textarea_selector)}`).foucs()"

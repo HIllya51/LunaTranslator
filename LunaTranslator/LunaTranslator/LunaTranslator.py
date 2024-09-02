@@ -257,13 +257,25 @@ class MAINUI:
                     return
 
     def textgetmethod(
-        self, text, is_auto_run=True, waitforresultcallback=None, onlytrans=False
+        self,
+        text,
+        is_auto_run=True,
+        waitforresultcallback=None,
+        onlytrans=False,
+        donttrans=False,
     ):
         with self.solvegottextlock:
-            self.textgetmethod_1(text, is_auto_run, waitforresultcallback, onlytrans)
+            self.textgetmethod_1(
+                text, is_auto_run, waitforresultcallback, onlytrans, donttrans
+            )
 
     def textgetmethod_1(
-        self, text, is_auto_run=True, waitforresultcallback=None, onlytrans=False
+        self,
+        text,
+        is_auto_run=True,
+        waitforresultcallback=None,
+        onlytrans=False,
+        donttrans=False,
     ):
         safe_callback = waitforresultcallback if waitforresultcallback else lambda _: 1
         safe_callback_none = functools.partial(safe_callback, "")
@@ -309,11 +321,7 @@ class MAINUI:
             )
         except:
             pass
-        if (
-            (windows.GetKeyState(windows.VK_CONTROL) < 0)
-            or (windows.GetKeyState(windows.VK_SHIFT) < 0)
-            or (windows.GetKeyState(windows.VK_RETURN) < 0)
-        ):
+        if donttrans:
             return safe_callback_none()
         if onlytrans == False:
             self.currenttext = text

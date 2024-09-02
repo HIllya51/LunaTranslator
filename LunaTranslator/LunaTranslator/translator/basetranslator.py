@@ -6,7 +6,7 @@ import zhconv, gobject
 import sqlite3, json
 import functools
 from myutils.config import globalconfig, translatorsetting
-from myutils.utils import stringfyerror, autosql, PriorityQueue
+from myutils.utils import stringfyerror, autosql, PriorityQueue, SafeFormatter
 from myutils.commonbase import ArgsEmptyExc, commonbase
 
 
@@ -265,6 +265,22 @@ class basetrans(commonbase):
         res = self.translate(content)
 
         return res
+
+    def _gptlike_createquery(self, query, usekey, tempk):
+        user_prompt = (
+            self.config.get(tempk, "") if self.config.get(usekey, False) else ""
+        )
+        fmt = SafeFormatter()
+        return fmt.format(user_prompt, must_exists="sentence", sentence=query)
+
+    def _gptlike_createsys(self, usekey, tempk):
+
+        fmt = SafeFormatter()
+        if self.config[usekey]:
+            template = self.config[tempk]
+        else:
+            template = "You are a translator. Please help me translate the following {srclang} text into {tgtlang}, and you should only tell me the translation."
+        return fmt.format(template, srclang=self.srclang, tgtlang=self.tgtlang)
 
     def reinitandtrans(self, contentsolved, is_auto_run):
         if self.needreinit or self.initok == False:

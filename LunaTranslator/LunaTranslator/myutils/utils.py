@@ -5,6 +5,7 @@ import socket, gobject, uuid, subprocess, functools
 import ctypes, importlib, json
 import ctypes.wintypes
 from qtsymbols import *
+from string import Formatter
 from ctypes import CDLL, c_void_p, CFUNCTYPE, c_size_t, cast, c_char, POINTER
 from ctypes.wintypes import HANDLE
 from traceback import print_exc
@@ -860,3 +861,20 @@ def copytree(src, dst, copy_function=shutil.copy2):
                 copy_function(srcname, dstname)
         except:
             pass
+
+
+class SafeFormatter(Formatter):
+    def format(self, format_string, must_exists=None, *args, **kwargs):
+        if must_exists:
+            check = "{" + must_exists + "}"
+            if check not in format_string:
+                format_string += check
+
+        return super().format(format_string, *args, **kwargs)
+
+    def get_value(self, key, args, kwargs):
+        if key in kwargs:
+            return super().get_value(key, args, kwargs)
+        else:
+            print(f"{key} is missing")
+            return key

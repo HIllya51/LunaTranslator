@@ -1,6 +1,7 @@
 from traceback import print_exc
 import json
 from translator.basetranslator import basetrans
+from myutils.utils import SafeFormatter
 
 
 class TS(basetrans):
@@ -44,26 +45,12 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(["API_KEY", "model"])
         self.contextnum = int(self.config["附带上下文个数"])
-        user_prompt = (
-            self.config.get("user_user_prompt", "")
-            if self.config.get("use_user_user_prompt", False)
-            else ""
+        query = self._gptlike_createquery(
+            query, "use_user_user_prompt", "user_user_prompt"
         )
-        try:
-            if "{sentence}" in user_prompt:
-                query = user_prompt.format(sentence=query)
-            else:
-                query = user_prompt + query
-        except:
-            pass
+        system = self._gptlike_createsys("使用自定义promt", "自定义promt")
         temperature = self.config["Temperature"]
 
-        if self.config["使用自定义promt"]:
-            system = self.config["自定义promt"]
-        else:
-            system = "You are a translator, translate from {} to {}".format(
-                self.srclang, self.tgtlang
-            )
         message = []
         for _i in range(min(len(self.context) // 2, self.contextnum)):
             i = (

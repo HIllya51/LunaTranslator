@@ -46,13 +46,10 @@ class basetext:
             print_exc()
         threading.Thread(target=self.sqlitethread).start()
 
-    def dispatchtext(self, text):
+    def dispatchtext(self, *arg, **kwarg):
         if self.ending or not self.isautorunning:
             return
-        if isinstance(text, tuple):
-            self.textgetmethod(*text)
-        else:
-            self.textgetmethod(text)
+        self.textgetmethod(*arg, **kwarg)
 
     def waitfortranslation(self, text):
         resultwaitor = queue.Queue()

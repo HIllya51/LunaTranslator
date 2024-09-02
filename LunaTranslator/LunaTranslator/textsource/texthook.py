@@ -662,7 +662,13 @@ class texthook(basetext):
 
     def dispatchtext(self, text):
         self.runonce_line = text
-        return super().dispatchtext(text)
+
+        donttrans = (
+            (windows.GetKeyState(windows.VK_CONTROL) < 0)
+            or (windows.GetKeyState(windows.VK_SHIFT) < 0)
+            or (windows.GetKeyState(windows.VK_RETURN) < 0)
+        )
+        return super().dispatchtext(text, donttrans=donttrans)
 
     def gettextonce(self):
         return self.runonce_line
