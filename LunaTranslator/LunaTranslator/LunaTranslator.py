@@ -284,10 +284,20 @@ class MAINUI:
             is_auto_run
             and (
                 text == self.currenttext
-                or len(text)
-                > (max(globalconfig["maxoriginlength"], globalconfig["maxlength"]))
+                or (
+                    len(text) < globalconfig["minlength"]
+                    or len(text) > globalconfig["maxlength"]
+                )
             )
         ):
+            if text != "":
+                if len(text) > globalconfig["maxlength"]:
+                    text = text[: globalconfig["maxlength"]] + "……"
+                else:
+                    text = text
+                self.translation_ui.displayraw1.emit(
+                    dict(text=text, color=globalconfig["rawtextcolor"])
+                )
             return safe_callback_none()
 
         try:
@@ -328,12 +338,6 @@ class MAINUI:
             _showrawfunction_sig = uuid.uuid4()
 
         text_solved, optimization_params = self.solvebeforetrans(text)
-
-        if is_auto_run and (
-            len(text_solved) < globalconfig["minlength"]
-            or len(text_solved) > globalconfig["maxlength"]
-        ):
-            return safe_callback_none()
 
         premtalready = ["premt"]
         usefultranslators = list(self.translators.keys())

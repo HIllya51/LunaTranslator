@@ -471,14 +471,6 @@ def xianshigrid_style(self):
                                                 globalconfig, "showatcenter"
                                             ),
                                             "",
-                                            "最长显示字数",
-                                            D_getspinbox(
-                                                0,
-                                                1000000,
-                                                globalconfig,
-                                                "maxoriginlength",
-                                            ),
-                                            "",
                                             "收到翻译时才刷新",
                                             D_getsimpleswitch(
                                                 globalconfig, "refresh_on_get_trans"

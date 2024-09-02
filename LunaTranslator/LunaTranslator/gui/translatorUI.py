@@ -317,15 +317,11 @@ class TranslatorWindow(resizableframeless):
 
             if onlytrans:
                 return
-            if len(res) > globalconfig["maxoriginlength"]:
-                _res = res[: globalconfig["maxoriginlength"]] + "……"
-            else:
-                _res = res
 
             if globalconfig["showfanyisource"]:
-                _showtext = name + "  " + _res
+                _showtext = name + "  " + res
             else:
-                _showtext = _res
+                _showtext = res
             self.showline(
                 clear=clear,
                 text=_showtext,
@@ -345,12 +341,8 @@ class TranslatorWindow(resizableframeless):
         clear = True
         if onlytrans:
             return
-        if len(text) > globalconfig["maxoriginlength"]:
-            _res = text[: globalconfig["maxoriginlength"]] + "……"
-        else:
-            _res = text
         if globalconfig["isshowrawtext"]:
-            self.showline(clear=clear, text=_res, isshowrawtext=True, color=color)
+            self.showline(clear=clear, text=text, isshowrawtext=True, color=color)
         else:
             self.showline(clear=clear)
 
