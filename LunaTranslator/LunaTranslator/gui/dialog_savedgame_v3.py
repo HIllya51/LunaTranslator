@@ -38,6 +38,7 @@ from gui.dialog_savedgame_common import (
     dialog_syssetting,
     addgamesingle,
     addgamebatch,
+    addgamebatch_x,
 )
 from gui.dynalang import (
     LPushButton,
@@ -98,7 +99,7 @@ class clickitem(QWidget):
         self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
         self.bottommask = QLabel(self)
         self.bottommask.hide()
-        self.bottommask.setObjectName('savegame_onselectcolor1')
+        self.bottommask.setObjectName("savegame_onselectcolor1")
         _ = QLabel(self)
         _.setStyleSheet(
             """background-color: rgba(255,255,255, 0);border-bottom: 1px solid gray;"""
@@ -799,6 +800,7 @@ class dialog_savedgame_v3(QWidget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        self.setAcceptDrops(True)
         self.currentfocusuid = None
         self.reftagid = None
         self.reallist = {}
@@ -1055,3 +1057,13 @@ class dialog_savedgame_v3(QWidget):
         button5.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.buttonlayout.addWidget(button5)
         return button5
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        files = [u.toLocalFile() for u in event.mimeData().urls()]
+        addgamebatch_x(self.addgame, savehook_new_list, files)

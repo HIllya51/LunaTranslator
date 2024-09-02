@@ -462,22 +462,32 @@ def addgamesingle(parent, callback, targetlist):
     callback(uid)
 
 
+def addgamebatch_x(callback, targetlist, paths):
+    for path in paths:
+        if not os.path.isfile(path):
+            continue
+        path = os.path.normpath(path)
+        uid = find_or_create_uid(targetlist, path)
+        if uid in targetlist:
+            targetlist.pop(targetlist.index(uid))
+        targetlist.insert(0, uid)
+        callback(uid)
+
+
 def addgamebatch(callback, targetlist):
     res = QFileDialog.getExistingDirectory(
         options=QFileDialog.Option.DontResolveSymlinks
     )
     if res == "":
         return
+    paths = []
     for _dir, _, _fs in os.walk(res):
         for _f in _fs:
             path = os.path.normpath(os.path.abspath(os.path.join(_dir, _f)))
             if path.lower().endswith(".exe") == False:
                 continue
-            uid = find_or_create_uid(targetlist, path)
-            if uid in targetlist:
-                targetlist.pop(targetlist.index(uid))
-            targetlist.insert(0, uid)
-            callback(uid)
+            paths.append(path)
+    addgamebatch_x(callback, targetlist, paths)
 
 
 def loadvisinternal(skipid=False, skipidid=None):

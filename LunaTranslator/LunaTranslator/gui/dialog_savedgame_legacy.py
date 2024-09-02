@@ -11,7 +11,12 @@ from gui.usefulwidget import (
 )
 from gui.dialog_savedgame_setting import dialog_setting_game
 from gui.dynalang import LPushButton, LStandardItemModel
-from gui.dialog_savedgame_common import opendirforgameuid, startgamecheck, addgamesingle
+from gui.dialog_savedgame_common import (
+    opendirforgameuid,
+    startgamecheck,
+    addgamesingle,
+    addgamebatch_x,
+)
 
 
 class LazyLoadTableView(TableViewW):
@@ -92,6 +97,16 @@ class LazyLoadTableView(TableViewW):
 
 class dialog_savedgame_legacy(QWidget):
 
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        files = [u.toLocalFile() for u in event.mimeData().urls()]
+        addgamebatch_x(self.addgame, savehook_new_list, files)
+
     def directshow(self):
         pass
 
@@ -108,16 +123,16 @@ class dialog_savedgame_legacy(QWidget):
         except:
             pass
 
-    def clicked3(self):
-        def call(uid):
-            if uid in self.savelist:
-                idx = self.savelist.index(uid)
-                self.savelist.pop(idx)
-                self.model.removeRow(idx)
-            self.newline(0, uid)
-            self.table.setCurrentIndex(self.model.index(0, 0))
+    def addgame(self, uid):
+        if uid in self.savelist:
+            idx = self.savelist.index(uid)
+            self.savelist.pop(idx)
+            self.model.removeRow(idx)
+        self.newline(0, uid)
+        self.table.setCurrentIndex(self.model.index(0, 0))
 
-        addgamesingle(self, call, savehook_new_list)
+    def clicked3(self):
+        addgamesingle(self, self.addgame, savehook_new_list)
 
     def clicked(self):
         startgamecheck(
@@ -178,6 +193,7 @@ class dialog_savedgame_legacy(QWidget):
         # dialog_savedgame._sigleton=True
         super().__init__(parent)
 
+        self.setAcceptDrops(True)
         formLayout = QVBoxLayout(self)  #
         model = LStandardItemModel()
         model.setHorizontalHeaderLabels(["转区", "", "设置", "游戏"])  # ,'HOOK'])

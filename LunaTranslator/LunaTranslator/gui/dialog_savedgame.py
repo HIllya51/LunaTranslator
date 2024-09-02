@@ -41,6 +41,7 @@ from gui.dialog_savedgame_common import (
     getpixfunction,
     addgamesingle,
     addgamebatch,
+    addgamebatch_x,
 )
 
 
@@ -128,6 +129,17 @@ class dialog_savedgame_integrated(saveposwindow):
 
 
 class dialog_savedgame_new(QWidget):
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        files = [u.toLocalFile() for u in event.mimeData().urls()]
+        addgamebatch_x(self.addgame, self.reflist, files)
+
     def clicked2(self):
         try:
             game = self.currentfocusuid
@@ -367,6 +379,7 @@ class dialog_savedgame_new(QWidget):
         gobject.global_dialog_savedgame_new = self
         formLayout = QVBoxLayout()
         layout = QHBoxLayout()
+        self.setAcceptDrops(True)
         layout.setContentsMargins(0, 0, 0, 0)
         self.__layout = layout
         self.loadcombo(True)
