@@ -48,6 +48,8 @@ class baseocr(commonbase):
         for x1, y1, x2, y2 in boxs:
             w = x2 - x1
             h = y2 - y1
+            if h == 0 or w == 0:
+                continue
             whs *= w / h
         return whs < 1
 
