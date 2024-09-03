@@ -527,7 +527,6 @@
     "Sakura部署教程": "Hướng dẫn triển khai Sakura",
     "Github仓库": "Kho Github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Sử dụng thông tin trên để dịch (thường có một số hiệu ứng tăng lên, nhưng có thể dẫn đến chậm hơn)",
-    "显示翻译": "Hiện bản dịch",
     "使用YAPI注入": "Sử dụng YAPI Injection",
     "窗口缩放": "Thu phóng cửa sổ",
     "缩放方式": "Cách thu phóng",
@@ -814,7 +813,6 @@
     "转义": "Thoát",
     "游戏已存在，是否重复添加？": "Trò chơi đã tồn tại, có được thêm nhiều lần không?",
     "点击消息后退出并开始更新": "Thoát sau khi nhấp vào tin nhắn và bắt đầu cập nhật",
-    "显示/隐藏翻译": "Hiện/ẩn bản dịch",
     "全局": "Toàn cục",
     "添加文件": "Thêm tập tin",
     "添加文件夹": "Thêm thư mục",
@@ -849,5 +847,7 @@
     "删除接口": "Xoá giao diện",
     "命名为": "Đặt tên",
     "复制自": "Copy từ",
-    "目标列表": "Danh sách mục tiêu"
+    "目标列表": "Danh sách mục tiêu",
+    "使用翻译": "Sử dụng bản dịch",
+    "使用/跳过翻译": "Sử dụng/bỏ qua bản dịch"
 }

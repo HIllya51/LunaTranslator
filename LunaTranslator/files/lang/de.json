@@ -534,7 +534,6 @@
     "Github仓库": "Github-Repository",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Übersetzen Sie mit den Informationen im vorherigen Text (normalerweise mit etwas Verbesserung, kann aber zu einer langsameren Übersetzung führen)",
     "历史翻译": "Historische Übersetzung",
-    "显示翻译": "Übersetzung anzeigen",
     "使用YAPI注入": "Injizieren mit YAPI",
     "窗口缩放": "Fensterskalierung",
     "缩放方式": "Skalierungsmethode",
@@ -814,7 +813,6 @@
     "转义": "Flucht",
     "游戏已存在，是否重复添加？": "Das Spiel existiert bereits, möchtest du es noch einmal hinzufügen?",
     "点击消息后退出并开始更新": "Klicken Sie auf die Nachricht, um zu beenden und mit der Aktualisierung zu beginnen",
-    "显示/隐藏翻译": "Übersetzung ein-/ausblenden",
     "全局": "Gesamtlage",
     "添加文件": "Datei hinzufügen",
     "添加文件夹": "Ordner hinzufügen",
@@ -849,5 +847,7 @@
     "删除接口": "Schnittstelle löschen",
     "命名为": "Benannt als",
     "复制自": "Kopieren von",
-    "目标列表": "Zielliste"
+    "目标列表": "Zielliste",
+    "使用翻译": "Verwendung der Übersetzung",
+    "使用/跳过翻译": "Übersetzung verwenden/überspringen"
 }

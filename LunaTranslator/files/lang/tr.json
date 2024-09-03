@@ -527,7 +527,6 @@
     "Sakura部署教程": "Sakura Deployment Tutorial",
     "Github仓库": "Github deposu",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Önceki metinde verilen bilgileri kullanarak çevirin (genelde etkinliğinde bazı gelişmelerle, fakat daha yavaş çeviriye yol açabilir)",
-    "显示翻译": "Çeviri göster",
     "使用YAPI注入": "YAPI injeksiyonu kullanıyor",
     "窗口缩放": "Pencere Yakınlaştır",
     "缩放方式": "Yakınlaştırma yöntemi",
@@ -814,7 +813,6 @@
     "转义": "Kaçmak",
     "游戏已存在，是否重复添加？": "Oyun zaten var, tekrar eklemek ister misiniz?",
     "点击消息后退出并开始更新": "Çıkmak ve güncellenmeye başlamak için mesajı tıklayın",
-    "显示/隐藏翻译": "Çeviri Göster/Gizle",
     "全局": "bütün durum",
     "添加文件": "Dosya ekle",
     "添加文件夹": "Dosyaları ekle",
@@ -849,5 +847,7 @@
     "删除接口": "Arayüzü sil",
     "命名为": "İsimlendirilmiş",
     "复制自": "Kopyalayın",
-    "目标列表": "Hedef Listesi"
+    "目标列表": "Hedef Listesi",
+    "使用翻译": "Çeviri kullanılıyor",
+    "使用/跳过翻译": "Çeviri kullan/atla"
 }

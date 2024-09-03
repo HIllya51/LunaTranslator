@@ -534,7 +534,6 @@
     "Github仓库": "Github repository",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Vertalen met behulp van de informatie in de vorige tekst (meestal met enige verbetering, maar kan resulteren in tragere vertaling)",
     "历史翻译": "Historische vertaling",
-    "显示翻译": "Vertaling weergeven",
     "使用YAPI注入": "Injecteren met YAPI",
     "窗口缩放": "Vensterschalen",
     "缩放方式": "Schaalmethode",
@@ -814,7 +813,6 @@
     "转义": "Ontsnappen",
     "游戏已存在，是否重复添加？": "Het spel bestaat al, wil je het opnieuw toevoegen?",
     "点击消息后退出并开始更新": "Klik op het bericht om te sluiten en te beginnen met updaten",
-    "显示/隐藏翻译": "Vertaling tonen/verbergen",
     "全局": "algemene situatie",
     "添加文件": "Bestand toevoegen",
     "添加文件夹": "mappen toevoegen",
@@ -849,5 +847,7 @@
     "删除接口": "Interface verwijderen",
     "命名为": "Genoemd als",
     "复制自": "Kopiëren van",
-    "目标列表": "Doellijst"
+    "目标列表": "Doellijst",
+    "使用翻译": "Vertaling gebruiken",
+    "使用/跳过翻译": "Vertaling gebruiken/overslaan"
 }

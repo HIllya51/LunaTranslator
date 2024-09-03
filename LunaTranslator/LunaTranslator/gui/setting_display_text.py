@@ -40,10 +40,6 @@ def __changeuibuttonstate(self, x):
         pass
 
 
-def __changeuibuttonstate2(self, x):
-    gobject.baseobject.translation_ui.refreshtoolicon()
-
-
 def createtextfontcom(key):
     font_comboBox = FocusFontCombo()
     font_comboBox.currentTextChanged.connect(lambda x: globalconfig.__setitem__(key, x))
@@ -475,6 +471,17 @@ def xianshigrid_style(self):
                                             D_getsimpleswitch(
                                                 globalconfig, "refresh_on_get_trans"
                                             ),
+                                            "",
+                                            "固定翻译显示顺序",
+                                            D_getsimpleswitch(
+                                                globalconfig, "fix_translate_rank"
+                                            ),
+                                            D_getIconButton(
+                                                functools.partial(
+                                                    vistranslate_rank, self
+                                                ),
+                                                "fa.gear",
+                                            ),
                                         ],
                                         [
                                             "显示原文",
@@ -488,26 +495,9 @@ def xianshigrid_style(self):
                                                 parent=self,
                                             ),
                                             "",
-                                            "显示翻译",
+                                            "显示错误信息",
                                             D_getsimpleswitch(
-                                                globalconfig,
-                                                "showfanyi",
-                                                callback=lambda x: __changeuibuttonstate2(
-                                                    self, x
-                                                ),
-                                                name="show_fany_switch",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "固定翻译显示顺序",
-                                            D_getsimpleswitch(
-                                                globalconfig, "fix_translate_rank"
-                                            ),
-                                            D_getIconButton(
-                                                functools.partial(
-                                                    vistranslate_rank, self
-                                                ),
-                                                "fa.gear",
+                                                globalconfig, "showtranexception"
                                             ),
                                         ],
                                     ),

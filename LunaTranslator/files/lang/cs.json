@@ -534,7 +534,6 @@
     "Github仓库": "Úložiště Github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Přeložit pomocí informací uvedených v předchozím textu (obvykle s určitým zlepšením, ale může vést k pomalejšímu překladu)",
     "历史翻译": "Historický překlad",
-    "显示翻译": "Zobrazit překlad",
     "使用YAPI注入": "Injekce pomocí YAPI",
     "窗口缩放": "Měřítko okna",
     "缩放方式": "Metoda škálování",
@@ -814,7 +813,6 @@
     "转义": "Útěk",
     "游戏已存在，是否重复添加？": "Hra již existuje, chtěli byste ji znovu přidat?",
     "点击消息后退出并开始更新": "Klikněte na zprávu pro ukončení a spuštění aktualizace",
-    "显示/隐藏翻译": "Zobrazit/skrýt překlad",
     "全局": "celková situace",
     "添加文件": "Přidat soubor",
     "添加文件夹": "přidat složky",
@@ -849,5 +847,7 @@
     "删除接口": "Smazat rozhraní",
     "命名为": "Jmenuje se jako",
     "复制自": "Kopírovat z",
-    "目标列表": "Seznam cílů"
+    "目标列表": "Seznam cílů",
+    "使用翻译": "Použití překladu",
+    "使用/跳过翻译": "Použít/přeskočit překlad"
 }

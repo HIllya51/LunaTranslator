@@ -351,6 +351,12 @@ class MAINUI:
         else:
             _showrawfunction_sig = uuid.uuid4()
 
+        if not globalconfig["showfanyi"]:
+            safe_callback_none()
+            if _showrawfunction:
+                _showrawfunction()
+            return
+
         text_solved, optimization_params = self.solvebeforetrans(text)
 
         premtalready = ["premt"]
@@ -524,7 +530,7 @@ class MAINUI:
             self.refresh_on_get_trans_signature = _showrawfunction_sig
             _showrawfunction()
 
-        if currentsignature == self.currentsignature and globalconfig["showfanyi"]:
+        if currentsignature == self.currentsignature:
             displayreskwargs = dict(
                 name=globalconfig["fanyi"][classname]["name"],
                 color=globalconfig["fanyi"][classname]["color"],

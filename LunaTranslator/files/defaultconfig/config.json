@@ -757,9 +757,9 @@
             },
             "showtrans": {
                 "use": false,
-                "tip": "显示/隐藏翻译",
-                "icon": "fa.eye",
-                "icon2": "fa.eye-slash",
+                "tip": "使用/跳过翻译",
+                "icon": "fa.toggle-on",
+                "icon2": "fa.toggle-off",
                 "align": 2
             },
             "langdu": {
@@ -932,7 +932,7 @@
             },
             "_51": {
                 "use": false,
-                "name": "显示/隐藏翻译",
+                "name": "使用/跳过翻译",
                 "keystring": ""
             },
             "_6": {

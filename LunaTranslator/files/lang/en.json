@@ -526,7 +526,6 @@
     "Sakura部署教程": "Sakura Deployment Tutorial",
     "Github仓库": "Github Repository",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Enable Context-Aware Translation (Improves quality by using previous text for translation context, but may be slower)",
-    "显示翻译": "Show Translated Text",
     "使用YAPI注入": "Use YAPI Injection",
     "窗口缩放": "Window Scaling",
     "缩放方式": "Scaling Method",
@@ -814,7 +813,6 @@
     "转义": "Escaping",
     "游戏已存在，是否重复添加？": "The game already exists, would you like to add it again?",
     "点击消息后退出并开始更新": "Click on the message to exit and start updating",
-    "显示/隐藏翻译": "Show/Hide Translation",
     "全局": "overall situation",
     "添加文件": "Add file",
     "添加文件夹": "add folders",
@@ -849,5 +847,7 @@
     "删除接口": "Delete interface",
     "命名为": "Named as",
     "复制自": "Copy from",
-    "目标列表": "Target List"
+    "目标列表": "Target List",
+    "使用翻译": "Using translation",
+    "使用/跳过翻译": "Use/skip translation"
 }

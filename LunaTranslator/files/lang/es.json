@@ -527,7 +527,6 @@
     "Sakura部署教程": "Guía de despliegue Sakura",
     "Github仓库": "Almacén github",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Traducción utilizando la información anterior (generalmente tiene un cierto efecto de mejora, pero puede causar lentitud)",
-    "显示翻译": "Mostrar traducción",
     "使用YAPI注入": "Inyección con Yapi",
     "窗口缩放": "Ampliación de la ventana",
     "缩放方式": "Modo de zoom",
@@ -814,7 +813,6 @@
     "转义": "Transliteración",
     "游戏已存在，是否重复添加？": "¿El juego ya existe, ¿ se repite la adición?",
     "点击消息后退出并开始更新": "Haga clic en el mensaje para salir y comenzar la actualización",
-    "显示/隐藏翻译": "Mostrar / ocultar traducción",
     "全局": "Global",
     "添加文件": "Añadir archivo",
     "添加文件夹": "Añadir carpetas",
@@ -849,5 +847,7 @@
     "删除接口": "Eliminar interfaz",
     "命名为": "Nombrado",
     "复制自": "Copiado de",
-    "目标列表": "Lista de objetivos"
+    "目标列表": "Lista de objetivos",
+    "使用翻译": "Uso de traductores",
+    "使用/跳过翻译": "Usar / saltar la traducción"
 }

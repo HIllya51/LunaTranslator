@@ -534,7 +534,6 @@
     "Github仓库": "Github- arkiv",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Översätt med hjälp av informationen i föregående text (vanligtvis med viss förbättring, men kan resultera i långsammare översättning)",
     "历史翻译": "Historisk översättning",
-    "显示翻译": "Visa översättning",
     "使用YAPI注入": "Injicera med YAPI",
     "窗口缩放": "Fönsterskalning",
     "缩放方式": "Skalningsmetod",
@@ -814,7 +813,6 @@
     "转义": "Flykt",
     "游戏已存在，是否重复添加？": "Spelet finns redan, vill du lägga till det igen?",
     "点击消息后退出并开始更新": "Klicka på meddelandet för att avsluta och börja uppdatera",
-    "显示/隐藏翻译": "Visa/dölj översättning",
     "全局": "övergripande situation",
     "添加文件": "Lägg till fil",
     "添加文件夹": "lägg till kataloger",
@@ -849,5 +847,7 @@
     "删除接口": "Ta bort gränssnitt",
     "命名为": "Namnet som",
     "复制自": "Kopiera från",
-    "目标列表": "Mållista"
+    "目标列表": "Mållista",
+    "使用翻译": "Använda översättning",
+    "使用/跳过翻译": "Använd/hoppa över översättning"
 }

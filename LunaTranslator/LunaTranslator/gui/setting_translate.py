@@ -424,32 +424,42 @@ def createbtnexport(self):
     return bt
 
 
+def __changeuibuttonstate2(self, x):
+    gobject.baseobject.translation_ui.refreshtoolicon()
+
+
 def setTabTwo_lazy(self, basel):
     # 均衡负载  loadbalance
     # 单次负载个数 loadbalance_oncenum
     # 过时的，不再在ui中展示
     grids = [
         [
-            "最短翻译字数",
-            D_getspinbox(0, 9999, globalconfig, "minlength"),
-            "",
-            "最长翻译字数",
-            D_getspinbox(0, 9999, globalconfig, "maxlength"),
+            "使用翻译",
+            D_getsimpleswitch(
+                globalconfig,
+                "showfanyi",
+                callback=lambda x: __changeuibuttonstate2(self, x),
+                name="show_fany_switch",
+                parent=self,
+            ),
             "",
             "显示翻译器名称",
             D_getsimpleswitch(globalconfig, "showfanyisource"),
-        ],
-        [
-            "使用翻译缓存",
-            D_getsimpleswitch(globalconfig, "uselongtermcache"),
             "",
             "翻译请求间隔(s)",
             D_getspinbox(
                 0, 9999, globalconfig, "requestinterval", step=0.1, double=True
             ),
+        ],
+        [
+            "使用翻译缓存",
+            D_getsimpleswitch(globalconfig, "uselongtermcache"),
             "",
-            "显示错误信息",
-            D_getsimpleswitch(globalconfig, "showtranexception"),
+            "最短翻译字数",
+            D_getspinbox(0, 9999, globalconfig, "minlength"),
+            "",
+            "最长翻译字数",
+            D_getspinbox(0, 9999, globalconfig, "maxlength"),
         ],
     ]
     online_reg_grid = [[("若有多个api key，用|将每个key连接后填入，即可轮流使用", -1)]]
