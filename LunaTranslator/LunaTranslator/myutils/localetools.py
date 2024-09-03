@@ -529,6 +529,7 @@ def localeswitchedrun(gameuid):
     config = savehook_new_data[gameuid]
     launch_method = config.get("launch_method", None)
     gameexe = get_launchpath(gameuid)
+    gameexe = os.path.abspath(gameexe)
     tools = getgamecamptools(gameexe)
     ids = [_.id for _ in tools]
     if launch_method not in ids:

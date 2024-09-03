@@ -354,6 +354,7 @@ def get_launchpath(uid):
 
 
 def findgameuidofpath(gamepath, findall=False):
+    gamepath = os.path.normpath(gamepath)
     collect = []
     for sub in savegametaged:
         if sub is None:
@@ -361,7 +362,7 @@ def findgameuidofpath(gamepath, findall=False):
         else:
             use = sub["games"]
         for uid in use:
-            if savehook_new_data[uid]["gamepath"] == gamepath:
+            if os.path.abspath(savehook_new_data[uid]["gamepath"]) == gamepath:
                 if findall:
                     if uid not in collect:
                         collect.append(uid)
