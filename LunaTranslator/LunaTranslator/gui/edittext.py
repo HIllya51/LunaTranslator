@@ -4,7 +4,7 @@ import gobject, qtawesome
 from myutils.config import globalconfig
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow, getsimplecombobox
-from gui.dynalang import LPushButton, LMainWindow, LAction
+from gui.dynalang import LPushButton, LMainWindow
 
 
 @Singleton_close
@@ -29,11 +29,6 @@ class edittext(saveposwindow):
         self.setWindowIcon(qtawesome.icon("fa.edit"))
 
         self.textOutput = QPlainTextEdit(self)
-
-        self.textOutput.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-
-        self.textOutput.customContextMenuRequested.connect(self.showmenu)
-        # self.setCentralWidget(self.textOutput)
 
         self.textOutput.setUndoRedoEnabled(True)
         self.textOutput.setReadOnly(False)
@@ -86,14 +81,6 @@ class edittext(saveposwindow):
                 ),
             )
         )
-
-    def showmenu(self, point: QPoint):
-        menu = QMenu(self.textOutput)
-        qingkong = LAction(("清空"))
-        menu.addAction(qingkong)
-        action = menu.exec(QCursor.pos())
-        if action == qingkong:
-            self.textOutput.clear()
 
     def getnewsentence(self, sentence):
         if gobject.baseobject.edittextui_sync:
