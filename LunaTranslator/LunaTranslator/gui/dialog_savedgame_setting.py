@@ -279,15 +279,17 @@ def maybehavebutton(self, gameuid, post):
 
 class dialog_setting_game_internal(QWidget):
     def selectexe(self, res):
-        res = os.path.normpath(res)
         uid2gamepath[self.gameuid] = res
         _icon = getExeIcon(get_launchpath(self.gameuid), cache=True)
 
         self.setWindowIcon(_icon)
+        if self.lauchpath:
+            self.lauchpath.clear.clicked.emit()
 
     def __init__(self, parent, gameuid) -> None:
         super().__init__(parent)
         vbox = QVBoxLayout(self)
+        self.lauchpath = None
         formLayout = LFormLayout()
         self.setLayout(vbox)
         self.gameuid = gameuid
@@ -475,8 +477,6 @@ class dialog_setting_game_internal(QWidget):
         do()
 
     def selectexe_lauch(self, p):
-        if p:
-            p = os.path.normpath(p)
         savehook_new_data[self.gameuid]["launchpath"] = p
 
         _icon = getExeIcon(get_launchpath(self.gameuid), cache=True)
@@ -505,15 +505,13 @@ class dialog_setting_game_internal(QWidget):
                 __, box, settinglayout, savehook_new_data[gameuid]
             ),
         )
-        formLayout.addRow(
-            "启动程序",
-            getsimplepatheditor(
-                get_launchpath(gameuid),
-                callback=self.selectexe_lauch,
-                icons=("fa.gear", "fa.refresh"),
-                clearset=uid2gamepath[gameuid],
-            ),
+        self.lauchpath = getsimplepatheditor(
+            get_launchpath(gameuid),
+            callback=self.selectexe_lauch,
+            icons=("fa.gear", "fa.refresh"),
+            clearset=lambda: uid2gamepath[gameuid],
         )
+        formLayout.addRow("启动程序", self.lauchpath)
         formLayout.addRow("启动方式", __launch_method)
         formLayout.addRow(box)
 
@@ -795,7 +793,7 @@ class dialog_setting_game_internal(QWidget):
             formLayout.addRow(
                 showname,
                 getsimplepatheditor(
-                    savehook_new_data[gameuid][key],
+                    lambda: savehook_new_data[gameuid][key],
                     False,
                     False,
                     filt,

@@ -2013,13 +2013,14 @@ class listediterline(QLineEdit):
 def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):
     if isdir:
         f = QFileDialog.getExistingDirectory(directory=directory)
-        res = f
+        res = os.path.normpath(f)
     else:
         if multi:
             f = QFileDialog.getOpenFileNames(directory=directory, filter=filter1)
+            res = [os.path.normpath(_) for _ in f[0]]
         else:
             f = QFileDialog.getOpenFileName(directory=directory, filter=filter1)
-        res = f[0]
+            res = os.path.normpath(f[0])
 
     if len(res) == 0:
         return
@@ -2041,7 +2042,7 @@ def getsimplepatheditor(
     header=None,
     dirorfile=False,
     clearable=True,
-    clearset="",
+    clearset=None,
     isfontselector=False,
 ):
     lay = QHBoxLayout()
@@ -2065,6 +2066,8 @@ def getsimplepatheditor(
             bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
             if clearable:
                 clear = LPushButton("清除")
+        if clearable:
+            lay.clear = clear
 
         if isfontselector:
 
@@ -2097,7 +2100,10 @@ def getsimplepatheditor(
 
             def __(_cb, _e, t):
                 _cb("")
-                _e.setText(t)
+                if not t:
+                    _e.setText("")
+                elif callable(t):
+                    _e.setText(t())
 
             clear.clicked.connect(functools.partial(__, callback, e, clearset))
             lay.addWidget(clear)

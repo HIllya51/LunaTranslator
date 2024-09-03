@@ -2055,7 +2055,7 @@ class mdict(cishubase):
     def init_once_mdx(self, f):
         if not os.path.isfile(f):
             return
-        f = os.path.normpath(f)
+        f = os.path.abspath(f)
         if f in self.dedump:
             return
         self.dedump.add(f)
