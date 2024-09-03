@@ -46,10 +46,8 @@ class Commonloadchromium:
                 statuslabelsettext(self, "端口冲突")
 
     def gencmd(self, path, port):
-        hash_ = hashlib.md5(path.encode("utf8")).hexdigest()
-        cache = os.path.abspath(os.path.join("chrome_cache", hash_))
-        fmt = '"%s" --disable-extensions --remote-allow-origins=* --disable-gpu --no-first-run --remote-debugging-port=%d --user-data-dir="%s"'
-        call = fmt % (path, port, cache)
+        fmt = '"%s" --remote-allow-origins=* --remote-debugging-port=%d '
+        call = fmt % (path, port)
         return call
 
     def getpath(self):
