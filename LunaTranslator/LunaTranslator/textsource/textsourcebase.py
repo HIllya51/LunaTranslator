@@ -53,7 +53,12 @@ class basetext:
 
     def waitfortranslation(self, text):
         resultwaitor = queue.Queue()
-        self.dispatchtext((text, True, resultwaitor.put, True))
+        self.textgetmethod(
+            text,
+            is_auto_run=True,
+            waitforresultcallback=resultwaitor.put,
+            onlytrans=True,
+        )
         text, info = resultwaitor.get(), 0
         if info:
             gobject.baseobject.displayinfomessage(text, info)
@@ -89,7 +94,9 @@ class basetext:
                         "SELECT * FROM artificialtrans WHERE source = ?", (src,)
                     ).fetchone()
                     try:
-                        savehook_new_data[gobject.baseobject.gameuid]["statistic_wordcount"] += lensrc
+                        savehook_new_data[gobject.baseobject.gameuid][
+                            "statistic_wordcount"
+                        ] += lensrc
                     except:
                         pass
                     if ret is None:
