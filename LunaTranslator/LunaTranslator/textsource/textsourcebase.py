@@ -59,11 +59,7 @@ class basetext:
             waitforresultcallback=resultwaitor.put,
             onlytrans=True,
         )
-        text, info = resultwaitor.get(), 0
-        if info:
-            gobject.baseobject.displayinfomessage(text, info)
-        else:
-            return text
+        return resultwaitor.get()
 
     @property
     def isautorunning(self):
