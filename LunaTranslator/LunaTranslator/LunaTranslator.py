@@ -303,7 +303,7 @@ class MAINUI:
                 )
             )
         ):
-            if text != "":
+            if text not in ("", self.currenttext):
                 if len(text) > globalconfig["maxlength"]:
                     text = text[: globalconfig["maxlength"]] + "……"
                 else:
