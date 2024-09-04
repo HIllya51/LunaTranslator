@@ -189,16 +189,21 @@ class TS(basetrans):
             )
         except requests.RequestException:
             raise ValueError(f"连接到Sakura API超时：{self.api_url}")
-
-        for o in output.iter_lines():
+        if not output.headers["Content-Type"].startswith("text/event-stream"):
+            raise Exception(output.text)
+        for chunk in output.iter_lines():
+            response_data: str = chunk.decode("utf-8").strip()
+            if not response_data.startswith("data: "):
+                continue
+            response_data = response_data[6:]
+            if not response_data:
+                continue
+            if response_data == "[DONE]":
+                break
             try:
-                res = o.decode("utf-8").strip()[6:]  # .replace("data: ", "")
-                # print(res)
-                if res == "":
-                    continue
-                res = json.loads(res)
+                res = json.loads(response_data)
             except:
-                raise Exception(o)
+                raise Exception(response_data)
 
             yield res
 
@@ -207,7 +212,7 @@ class TS(basetrans):
         gpt_dict = query["gpt_dict"]
         contentraw = query["contentraw"]
         query = query["text"]
-        if gpt_dict is not None:
+        if (gpt_dict is not None) and len(gpt_dict):
             query = contentraw
         self.checkempty(["API接口地址"])
         self.get_client(self.config["API接口地址"])

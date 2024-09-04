@@ -10,11 +10,12 @@ from gui.dialog_savedgame_legacy import dialog_savedgame_legacy
 from gui.dialog_savedgame_setting import dialog_setting_game
 from myutils.wrapper import Singleton_close
 from gui.specialwidget import lazyscrollflow
+from myutils.utils import str2rgba
 from myutils.config import (
     savehook_new_data,
     savegametaged,
-    uid2gamepath,
     _TR,
+    get_launchpath,
     globalconfig,
 )
 from gui.usefulwidget import (
@@ -40,6 +41,7 @@ from gui.dialog_savedgame_common import (
     getpixfunction,
     addgamesingle,
     addgamebatch,
+    addgamebatch_x,
 )
 
 
@@ -127,6 +129,17 @@ class dialog_savedgame_integrated(saveposwindow):
 
 
 class dialog_savedgame_new(QWidget):
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        files = [u.toLocalFile() for u in event.mimeData().urls()]
+        addgamebatch_x(self.addgame, self.reflist, files)
+
     def clicked2(self):
         try:
             game = self.currentfocusuid
@@ -182,7 +195,7 @@ class dialog_savedgame_new(QWidget):
             notshow = False
             for tag, _type, _ in tags:
                 if _type == tagitem.TYPE_EXISTS:
-                    if os.path.exists(uid2gamepath[k]) == False:
+                    if os.path.exists(get_launchpath(k)) == False:
                         notshow = True
                         break
                 elif _type == tagitem.TYPE_DEVELOPER:
@@ -229,7 +242,7 @@ class dialog_savedgame_new(QWidget):
         othersetting = LAction(("其他设置"))
 
         if self.currentfocusuid:
-            exists = os.path.exists(uid2gamepath[self.currentfocusuid])
+            exists = os.path.exists(get_launchpath(self.currentfocusuid))
             if exists:
                 menu.addAction(startgame)
             if exists:
@@ -335,11 +348,38 @@ class dialog_savedgame_new(QWidget):
             ),
         )
 
+    def setstyle(self):
+        key = "savegame_textfont1"
+        fontstring = globalconfig.get(key, "")
+        _style = """background-color: rgba(255,255,255, 0);"""
+        if fontstring:
+            _f = QFont()
+            _f.fromString(fontstring)
+            _style += f"font-size:{_f.pointSize()}pt;"
+            _style += f'font-family:"{_f.family()}";'
+        style = f"#{key}{{ {_style} }}"
+        for exits in [True, False]:
+            c = globalconfig["dialog_savegame_layout"][
+                ("onfilenoexistscolor1", "backcolor1")[exits]
+            ]
+            c = str2rgba(
+                c,
+                globalconfig["dialog_savegame_layout"][
+                    ("transparentnotexits", "transparent")[exits]
+                ],
+            )
+
+            style += f"#savegame_exists{exits}{{background-color:{c};}}"
+        style += f'#savegame_onselectcolor1{{background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};}}'
+        self.setStyleSheet(style)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        self.setstyle()
         gobject.global_dialog_savedgame_new = self
         formLayout = QVBoxLayout()
         layout = QHBoxLayout()
+        self.setAcceptDrops(True)
         layout.setContentsMargins(0, 0, 0, 0)
         self.__layout = layout
         self.loadcombo(True)
@@ -491,7 +531,7 @@ class dialog_savedgame_new(QWidget):
             _able1 = b and (
                 (not exists)
                 or (self.currentfocusuid)
-                and (os.path.exists(uid2gamepath[self.currentfocusuid]))
+                and (os.path.exists(get_launchpath(self.currentfocusuid)))
             )
             _btn.setEnabled(_able1)
 

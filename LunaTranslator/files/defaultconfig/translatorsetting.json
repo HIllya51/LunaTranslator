@@ -209,20 +209,20 @@
 			}
 		}
 	},
-	"chatgpt": {
+	"azureopenai": {
 		"args": {
-			"SECRET_KEY": "",
+			"api-key": "",
 			"Temperature": 0.3,
 			"top_p": 0.3,
 			"max_tokens": 128,
 			"frequency_penalty": 0,
 			"model": "gpt-3.5-turbo",
 			"附带上下文个数": 0,
-			"OPENAI_API_BASE": "https://api.openai.com/v1",
-			"Appedix": "/chat/completions",
+			"endpoint": "https://your-resource-name.openai.azure.com",
+			"deployment-id": "",
+			"api-version": "2024-06-01",
 			"使用自定义promt": false,
 			"自定义promt": "",
-			"api_type": 0,
 			"流式输出": true,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
@@ -237,7 +237,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -245,11 +245,14 @@
 				"type": "split",
 				"rank": 2.5
 			},
-			"OPENAI_API_BASE": {
+			"endpoint": {
 				"rank": 0
 			},
-			"Appedix": {
+			"deployment-id": {
 				"rank": 1
+			},
+			"api-version": {
+				"rank": 1.5
 			},
 			"model": {
 				"rank": 2
@@ -282,16 +285,7 @@
 				"type": "switch",
 				"rank": 3
 			},
-			"api_type": {
-				"type": "combo",
-				"rank": 1.5,
-				"list": [
-					"open_ai",
-					"azure",
-					"azure_ad"
-				]
-			},
-			"SECRET_KEY": {
+			"api-key": {
 				"rank": 1.6
 			},
 			"附带上下文个数": {
@@ -337,10 +331,12 @@
 				"rank": 2.5
 			},
 			"secret_id": {
-				"rank": 0
+				"rank": 0,
+				"name": "SecretId"
 			},
 			"secret_key": {
-				"rank": 1
+				"rank": 1,
+				"name": "SecretKey"
 			},
 			"model": {
 				"rank": 2
@@ -363,7 +359,7 @@
 				"rank": 5
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -407,7 +403,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -481,7 +477,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -567,7 +563,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -651,7 +647,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -1026,7 +1022,7 @@
 				"rank": 4
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
@@ -1254,7 +1250,7 @@
 				"name": "其他参数"
 			},
 			"user_user_prompt": {
-				"name": "user prompt",
+				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},

@@ -1,9 +1,10 @@
 from qtsymbols import *
-import functools
+import functools, gobject
 from myutils.post import POSTSOLVE
 from myutils.utils import (
     selectdebugfile,
     checkpostlangmatch,
+    dynamiclink,
     loadpostsettingwindowmethod,
 )
 from myutils.config import globalconfig, postprocessconfig, static_data
@@ -59,7 +60,21 @@ def getcomparelayout(self):
 
 
 def setTab7_lazy(self, basel):
-    grids = [[("预处理方法", 6), "", "", ("调整执行顺序", 6)]]
+    grids = [
+        [
+            D_getIconButton(
+                lambda: gobject.baseobject.openlink(
+                    dynamiclink("{docs_server}/#/zh/textprocess")
+                ),
+                "fa.question",
+            ),
+            ("预处理方法", 5),
+            "",
+            "",
+            "",
+            ("调整执行顺序", 6),
+        ]
+    ]
     if set(postprocessconfig.keys()) != set(globalconfig["postprocess_rank"]):
         globalconfig["postprocess_rank"] = list(postprocessconfig.keys())
     sortlist = globalconfig["postprocess_rank"]
@@ -106,16 +121,18 @@ def setTab7_lazy(self, basel):
                     callback=lambda: codeacceptdialog(self),
                 )
             elif "args" in postprocessconfig[post]:
-                
-                if post=='stringreplace':
+
+                if post == "stringreplace":
                     callback = functools.partial(
                         postconfigdialog2x,
                         self,
-                        postprocessconfig[post]["args"]['internal'],
+                        postprocessconfig[post]["args"]["internal"],
                         postprocessconfig[post]["name"],
                         ["正则", "转义", "原文内容", "替换为"],
                     )
-                elif isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
+                elif isinstance(
+                    list(postprocessconfig[post]["args"].values())[0], dict
+                ):
                     callback = functools.partial(
                         postconfigdialog,
                         self,
@@ -152,11 +169,21 @@ def setTab7_lazy(self, basel):
             ((postprocessconfig[post]["name"]), 6),
             D_getsimpleswitch(postprocessconfig[post], "use"),
             config,
+            "",
             button_up,
             button_down,
         ]
         grids.append(l)
-    grids2 = []
+    grids2 = [
+        [
+            D_getIconButton(
+                lambda: gobject.baseobject.openlink(
+                    dynamiclink("{docs_server}/#/zh/transoptimi")
+                ),
+                "fa.question",
+            )
+        ]
+    ]
     for item in static_data["transoptimi"]:
         name = item["name"]
         visname = item["visname"]
@@ -176,7 +203,7 @@ def setTab7_lazy(self, basel):
                         icon="fa.gear",
                     )
                 )
-    grids2 += [[("", 12)]]
+    grids2 += [[("", 15)]]
 
     def ___(lay):
         vboxw, vbox = getvboxwidget()

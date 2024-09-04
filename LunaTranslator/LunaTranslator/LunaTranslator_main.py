@@ -155,12 +155,12 @@ def checkintegrity():
 
 
 def checkpermission():
-    from myutils.config import _TR
+    from myutils.config import _TR, saveallconfig
     from qtsymbols import QMessageBox
 
     try:
-        os.makedirs("userconfig", exist_ok=True)
-        os.makedirs("logs", exist_ok=True)
+        saveallconfig(test=True)
+        # 先写一遍试试，免得到最后配置半天白瞎。
     except PermissionError:
         msg = QMessageBox()
         msg.setText(_TR("权限不足，请以管理员权限运行！"))
@@ -193,6 +193,7 @@ class Lockedfile:
 
     def __write(self):
         data = self.collect.get()
+        os.makedirs("logs", exist_ok=True)
         file = open(
             f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
             "w",
@@ -230,7 +231,7 @@ def savelogs():
 
 
 def urlprotocol():
-    import argparse
+    import argparse, gobject, sys
     from urllib.parse import urlsplit
     from traceback import print_exc
 
@@ -243,11 +244,14 @@ def urlprotocol():
             print(URLProtocol)
             result = urlsplit(URLProtocol)
             netloc = result.netloc.lower()
-            if netloc == "oauthtoken":
-                token = result.path[1:]
-
-    except:
-        print()
+            if netloc == "bangumioauth":
+                # code=xxx
+                bangumioauth = gobject.getcachedir("bangumioauth")
+                with open(bangumioauth, "w", encoding="utf8") as ff:
+                    ff.write(result.query[5:])
+                os._exit(0)
+    except Exception:
+        print_exc()
 
 
 if __name__ == "__main__":
@@ -261,6 +265,6 @@ if __name__ == "__main__":
     checkintegrity()
     checkpermission()
     savelogs()
-    # urlprotocol()
+    urlprotocol()
     loadmainui()
     app.exit(app.exec())

@@ -10,6 +10,7 @@ from gui.usefulwidget import (
     getsimplecombobox,
     listediter,
     D_getIconButton,
+    auto_select_webview,
 )
 from gui.setting_display_text import on_not_find_qweb
 
@@ -82,6 +83,7 @@ def _checkmaybefailed(self, idx):
         on_not_find_qweb(self)
         return
     self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
+    auto_select_webview.switchtype()
 
 
 def _createseletengeinecombo_1(self):

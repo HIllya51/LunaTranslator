@@ -5,7 +5,7 @@ from rendertext.textbrowser_imp.base import base
 class TextLine(base):
 
     def colorpair(self):
-        return QColor(self.config["fillcolor"]), QColor(self.basecolor)
+        return QColor(self.basecolor), QColor(self.config["fillcolor"])
 
     def paintText(self, painter: QPainter):
         self.m_outLineColor, self.m_contentColor = self.colorpair()

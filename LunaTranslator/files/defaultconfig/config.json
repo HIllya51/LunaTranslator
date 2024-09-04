@@ -26,7 +26,6 @@
         "webview": "yinying",
         "textbrowser": "yinying"
     },
-    "gptpromptdict": [],
     "rendertext": {
         "webview": {
             "normal": {
@@ -89,7 +88,7 @@
                 }
             },
             "miaobian1": {
-                "name": "描边字体_2",
+                "name": "描边字体",
                 "args": {
                     "fillcolor": "#eeeeee",
                     "width_rate": 0.1,
@@ -155,7 +154,7 @@
                 }
             },
             "miaobian1": {
-                "name": "描边字体_2",
+                "name": "描边字体",
                 "args": {
                     "fillcolor": "#eeeeee",
                     "width_rate": 0.1,
@@ -261,7 +260,8 @@
             "useproxy": true,
             "target": "bgmsid",
             "args": {
-                "access-token": ""
+                "access-token": "",
+                "refresh_token": ""
             }
         },
         "fanza": {
@@ -333,7 +333,6 @@
     "ignoredict": [],
     "transoptimi": {
         "noundict": false,
-        "gptpromptdict": false,
         "transerrorfix": false,
         "gongxiangcishu": false,
         "vndbnamemap": false,
@@ -687,21 +686,15 @@
                 "icon": "fa.book",
                 "align": 0
             },
-            "noundict_sakura": {
-                "use": false,
-                "tip": "专有名词翻译_sakura_gpt_词典",
-                "icon": "fa.book",
-                "align": 0
-            },
             "noundict": {
                 "use": false,
-                "tip": "专有名词翻译_占位符_全局",
+                "tip": "专有名词翻译_全局",
                 "icon": "fa.book",
                 "align": 0
             },
             "noundict_2": {
                 "use": false,
-                "tip": "专有名词翻译_占位符",
+                "tip": "专有名词翻译",
                 "icon": "fa.book",
                 "align": 0
             },
@@ -764,9 +757,9 @@
             },
             "showtrans": {
                 "use": false,
-                "tip": "显示/隐藏翻译",
-                "icon": "fa.eye",
-                "icon2": "fa.eye-slash",
+                "tip": "使用/跳过翻译",
+                "icon": "fa.toggle-on",
+                "icon2": "fa.toggle-off",
                 "align": 2
             },
             "langdu": {
@@ -825,7 +818,7 @@
             },
             "bindwindow": {
                 "use": true,
-                "tip": "绑定窗口（部分软件不支持）（点击自己取消）",
+                "tip": "绑定窗口_（点击自己取消）",
                 "icon": "fa.windows",
                 "align": 2
             },
@@ -907,6 +900,11 @@
     "quick_setting": {
         "use": false,
         "all": {
+            "36": {
+                "use": false,
+                "name": "读取剪贴板",
+                "keystring": ""
+            },
             "_1": {
                 "use": false,
                 "name": "手动翻译",
@@ -934,7 +932,7 @@
             },
             "_51": {
                 "use": false,
-                "name": "显示/隐藏翻译",
+                "name": "使用/跳过翻译",
                 "keystring": ""
             },
             "_6": {
@@ -945,6 +943,11 @@
             "_7": {
                 "use": false,
                 "name": "朗读",
+                "keystring": ""
+            },
+            "_7_1": {
+                "use": false,
+                "name": "朗读_中断",
                 "keystring": ""
             },
             "_8": {
@@ -984,7 +987,7 @@
             },
             "_15": {
                 "use": false,
-                "name": "绑定截图窗口",
+                "name": "绑定窗口_（点击自己取消）",
                 "keystring": ""
             },
             "_16": {
@@ -1060,6 +1063,16 @@
             "_32": {
                 "use": false,
                 "name": "自动朗读",
+                "keystring": ""
+            },
+            "_33": {
+                "use": false,
+                "name": "朗读_单词",
+                "keystring": ""
+            },
+            "_35": {
+                "use": false,
+                "name": "Anki_添加",
                 "keystring": ""
             }
         }
@@ -1540,6 +1553,13 @@
         }
     },
     "fanyi": {
+        "chatgpt-3rd-party": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "ChatGPT_兼容接口",
+            "is_gpt_like": true
+        },
         "microsoft": {
             "use": false,
             "color": "gray",
@@ -1911,11 +1931,11 @@
             "color": "blue",
             "name": "有道api"
         },
-        "chatgpt": {
+        "azureopenai": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "ChatGPT",
+            "name": "Azure",
             "is_gpt_like": true
         },
         "cohere": {
@@ -1930,13 +1950,6 @@
             "use": false,
             "color": "blue",
             "name": "claude",
-            "is_gpt_like": true
-        },
-        "chatgpt-3rd-party": {
-            "type": "api",
-            "use": false,
-            "color": "blue",
-            "name": "ChatGPT_兼容接口",
             "is_gpt_like": true
         },
         "hanshant": {

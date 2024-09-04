@@ -457,11 +457,13 @@ class TextBrowser(QWidget, dataget):
             self.textcursor.setPosition(posx)
             posx += 1
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-            if lastpos is None or tl1.y() != lastpos.y() or text[i] == "\n":
+            if lastpos is None or tl1.y() != lastpos.y():
                 lastpos = tl1
                 subpos.append(lastpos)
                 subtext.append("")
-            subtext[-1] += text[i]
+
+            if text[i] != "\n":
+                subtext[-1] += text[i]
 
         collects = []
         for i in range(len(subtext)):

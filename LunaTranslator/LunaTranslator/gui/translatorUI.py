@@ -3,14 +3,8 @@ import time, functools, threading, os, importlib, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, trypass, tryprint
-from myutils.config import (
-    globalconfig,
-    saveallconfig,
-    _TR,
-    static_data,
-)
+from myutils.config import globalconfig, saveallconfig, static_data
 from gui.dialog_savedgame import dialog_setting_game
-from myutils.utils import getlanguse, dynamiclink
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
@@ -19,22 +13,12 @@ from myutils.utils import (
     makehtml,
     loadpostsettingwindowmethod_maybe,
 )
-from myutils.hwnd import (
-    mouseselectwindow,
-    grabwindow,
-    getExeIcon,
-    getcurrexe,
-)
+from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import (
-    resizableframeless,
-    getQMessageBox,
-    LIconLabel,
-    pixmapviewer,
-)
+from gui.usefulwidget import resizableframeless, getQMessageBox, LIconLabel
 from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.dialog_savedgame_setting import browserdialog
@@ -71,6 +55,7 @@ class ButtonX(QWidget):
 
 class IconLabelX(LIconLabel, ButtonX):
     clicked = pyqtSignal()
+    rightclick = pyqtSignal()
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
         if QObject.receivers(self, self.clicked) == 0:
@@ -78,7 +63,10 @@ class IconLabelX(LIconLabel, ButtonX):
 
     def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
         if self.rect().contains(ev.pos()):
-            self.clicked.emit()
+            if ev.button() == Qt.MouseButton.RightButton:
+                self.rightclick.emit()
+            elif ev.button() == Qt.MouseButton.LeftButton:
+                self.clicked.emit()
         return super().mouseReleaseEvent(ev)
 
 
@@ -165,19 +153,28 @@ class ButtonBar(QFrame):
                 btn.setStyleSheet(style)
 
     def takusanbuttons(
-        self, _type, clickfunc, tips, name, belong=None, iconstate=None, colorstate=None
+        self,
+        _type,
+        clickfunc,
+        rightclick,
+        tips,
+        name,
+        belong=None,
+        iconstate=None,
+        colorstate=None,
     ):
         button = IconLabelX()
+
+        def callwrap(call):
+            try:
+                call()
+            except:
+                print_exc()
+
         if clickfunc:
-
-            def callwrap(call):
-                try:
-                    call()
-                except:
-                    print_exc()
-
             button.clicked.connect(functools.partial(callwrap, clickfunc))
-
+        if rightclick:
+            button.rightclick.connect(functools.partial(callwrap, rightclick))
         if tips:
             button.setToolTip(tips)
         if _type not in self.stylebuttons:
@@ -256,12 +253,6 @@ class TranslatorWindow(resizableframeless):
         tracepos = None
         tracehwnd = None
 
-        def _castqp(rect):
-            return QPoint(
-                int(rect[0] / self.devicePixelRatioF()),
-                int(rect[1] / self.devicePixelRatioF()),
-            )
-
         while True:
             time.sleep(0.01)
             if self._move_drag:
@@ -285,23 +276,29 @@ class TranslatorWindow(resizableframeless):
             if not rect:
                 lastpos = None
                 continue
-            rect = _castqp(rect)
+            rect = QRect(
+                int(rect[0] / self.devicePixelRatioF()),
+                int(rect[1] / self.devicePixelRatioF()),
+                int((rect[2] - rect[0]) / self.devicePixelRatioF()),
+                int((rect[3] - rect[1]) / self.devicePixelRatioF()),
+            )
             if not lastpos:
                 lastpos = rect
                 tracepos = self.pos()
                 try:
-                    gobject.baseobject.textsource.starttrace(rect)
+                    gobject.baseobject.textsource.starttrace(rect.topLeft())
                 except:
                     pass
                 continue
 
-            if rect == QPoint(0, 0):
+            if (rect.topLeft() == QPoint(0, 0)) or (rect.size() != lastpos.size()):
+                lastpos = rect
                 continue
             try:
-                gobject.baseobject.textsource.traceoffset(rect)
+                gobject.baseobject.textsource.traceoffset(rect.topLeft())
             except:
                 pass
-            self.move_signal.emit(tracepos - lastpos + rect)
+            self.move_signal.emit(tracepos - lastpos.topLeft() + rect.topLeft())
 
     def showres(self, kwargs):  # name,color,res,onlytrans,iter_context):
         try:
@@ -309,7 +306,7 @@ class TranslatorWindow(resizableframeless):
             color = kwargs.get("color")
             res = kwargs.get("res")
             onlytrans = kwargs.get("onlytrans", False)  # 仅翻译，不显示
-            iter_context = kwargs.get("iter_context", (0, None))
+            iter_context = kwargs.get("iter_context", None)
             clear = kwargs.get("clear", False)
 
             iter_res_status, iter_context_class = iter_context
@@ -320,15 +317,11 @@ class TranslatorWindow(resizableframeless):
 
             if onlytrans:
                 return
-            if len(res) > globalconfig["maxoriginlength"]:
-                _res = res[: globalconfig["maxoriginlength"]] + "……"
-            else:
-                _res = res
 
             if globalconfig["showfanyisource"]:
-                _showtext = name + "  " + _res
+                _showtext = name + "  " + res
             else:
-                _showtext = _res
+                _showtext = res
             self.showline(
                 clear=clear,
                 text=_showtext,
@@ -348,12 +341,8 @@ class TranslatorWindow(resizableframeless):
         clear = True
         if onlytrans:
             return
-        if len(text) > globalconfig["maxoriginlength"]:
-            _res = text[: globalconfig["maxoriginlength"]] + "……"
-        else:
-            _res = text
         if globalconfig["isshowrawtext"]:
-            self.showline(clear=clear, text=_res, isshowrawtext=True, color=color)
+            self.showline(clear=clear, text=text, isshowrawtext=True, color=color)
         else:
             self.showline(clear=clear)
 
@@ -387,7 +376,10 @@ class TranslatorWindow(resizableframeless):
         atcenter = globalconfig["showatcenter"]
 
         if iter_context:
-            _, iter_context_class = iter_context
+            iter_res_status, iter_context_class = iter_context
+        else:
+            iter_res_status = 0
+        if iter_res_status:
             self.translate_text.iter_append(
                 iter_context_class, origin, atcenter, text, color
             )
@@ -550,12 +542,6 @@ class TranslatorWindow(resizableframeless):
                 ),
             ),
             (
-                "noundict_sakura",
-                lambda: loadpostsettingwindowmethod_maybe(
-                    "gptpromptdict", gobject.baseobject.commonstylebase
-                ),
-            ),
-            (
                 "fix",
                 lambda: loadpostsettingwindowmethod("transerrorfix")(
                     gobject.baseobject.commonstylebase
@@ -567,7 +553,13 @@ class TranslatorWindow(resizableframeless):
                     "transerrorfix", gobject.baseobject.commonstylebase
                 ),
             ),
-            ("langdu", lambda: gobject.baseobject.readcurrent(force=True)),
+            (
+                "langdu",
+                lambda: gobject.baseobject.readcurrent(force=True),
+                None,
+                None,
+                lambda: gobject.baseobject.audioplayer.stop(),
+            ),
             (
                 "mousetransbutton",
                 lambda: self.changemousetransparentstate(0),
@@ -670,13 +662,13 @@ class TranslatorWindow(resizableframeless):
         _type = {"quit": 2}
 
         for __ in functions:
+            btn = func = iconstate = colorstate = rightclick = None
             if len(__) == 2:
                 btn, func = __
-                iconstate = colorstate = None
             elif len(__) == 4:
                 btn, func, iconstate, colorstate = __
-            else:
-                raise
+            elif len(__) == 5:
+                btn, func, iconstate, colorstate, rightclick = __
             belong = (
                 globalconfig["toolbutton"]["buttons"][btn]["belong"]
                 if "belong" in globalconfig["toolbutton"]["buttons"][btn]
@@ -686,6 +678,7 @@ class TranslatorWindow(resizableframeless):
             self.titlebar.takusanbuttons(
                 tp,
                 func,
+                rightclick,
                 globalconfig["toolbutton"]["buttons"][btn]["tip"],
                 btn,
                 belong,
@@ -868,11 +861,13 @@ class TranslatorWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self.titlebar = ButtonBar(self)
+        self.titlebar.move(0, 0)  # 多显示屏下，谜之错位
         self.titlebar.setFixedHeight(int(globalconfig["buttonsize"] * 1.5))
         self.titlebar.setObjectName("titlebar")
         self.titlebar.setMouseTracking(True)
         self.addbuttons()
         self.translate_text = Textbrowser(self)
+        self.translate_text.move(0, 0)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
         self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
         self.titlebar.raise_()

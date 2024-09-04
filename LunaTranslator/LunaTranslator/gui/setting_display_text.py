@@ -1,10 +1,10 @@
 from qtsymbols import *
 import functools, platform
-import gobject, os, zipfile, shutil
+import gobject, os, zipfile
 from myutils.config import globalconfig, static_data
 from gui.inputdialog import multicolorset, autoinitdialog
 from myutils.wrapper import tryprint
-from myutils.utils import dynamiclink, translate_exits
+from myutils.utils import dynamiclink, translate_exits, copytree
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
@@ -38,10 +38,6 @@ def __changeuibuttonstate(self, x):
         self.fenyinsettings.setEnabled(x)
     except:
         pass
-
-
-def __changeuibuttonstate2(self, x):
-    gobject.baseobject.translation_ui.refreshtoolicon()
 
 
 def createtextfontcom(key):
@@ -173,23 +169,6 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
             name,
             lineW,
         )
-
-
-def copytree(src, dst, copy_function=shutil.copy2):
-    names = os.listdir(src)
-
-    os.makedirs(dst, exist_ok=True)
-    for name in names:
-
-        srcname = os.path.join(src, name)
-        dstname = os.path.join(dst, name)
-        try:
-            if os.path.isdir(srcname):
-                copytree(srcname, dstname, copy_function)
-            else:
-                copy_function(srcname, dstname)
-        except:
-            pass
 
 
 def doinstallqweb(self, dd, base):
@@ -488,17 +467,20 @@ def xianshigrid_style(self):
                                                 globalconfig, "showatcenter"
                                             ),
                                             "",
-                                            "最长显示字数",
-                                            D_getspinbox(
-                                                0,
-                                                1000000,
-                                                globalconfig,
-                                                "maxoriginlength",
-                                            ),
-                                            "",
                                             "收到翻译时才刷新",
                                             D_getsimpleswitch(
                                                 globalconfig, "refresh_on_get_trans"
+                                            ),
+                                            "",
+                                            "固定翻译显示顺序",
+                                            D_getsimpleswitch(
+                                                globalconfig, "fix_translate_rank"
+                                            ),
+                                            D_getIconButton(
+                                                functools.partial(
+                                                    vistranslate_rank, self
+                                                ),
+                                                "fa.gear",
                                             ),
                                         ],
                                         [
@@ -513,26 +495,9 @@ def xianshigrid_style(self):
                                                 parent=self,
                                             ),
                                             "",
-                                            "显示翻译",
+                                            "显示错误信息",
                                             D_getsimpleswitch(
-                                                globalconfig,
-                                                "showfanyi",
-                                                callback=lambda x: __changeuibuttonstate2(
-                                                    self, x
-                                                ),
-                                                name="show_fany_switch",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "固定翻译显示顺序",
-                                            D_getsimpleswitch(
-                                                globalconfig, "fix_translate_rank"
-                                            ),
-                                            D_getIconButton(
-                                                functools.partial(
-                                                    vistranslate_rank, self
-                                                ),
-                                                "fa.gear",
+                                                globalconfig, "showtranexception"
                                             ),
                                         ],
                                     ),

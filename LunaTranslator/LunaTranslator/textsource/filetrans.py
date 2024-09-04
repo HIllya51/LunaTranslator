@@ -168,11 +168,13 @@ class filetrans(basetext):
                     return
                 time.sleep(0.1)
 
+            lenfile = len(file)
+
             class __p:
                 def __del__(self):
                     gobject.baseobject.settin_ui.progresssignal2.emit(
                         "{}/{} {:0.2f}% ".format(
-                            index + 1, len(file), 100 * (index + 1) / len(file)
+                            index + 1, lenfile, 100 * (index + 1) / lenfile
                         ),
                         (index + 1),
                     )

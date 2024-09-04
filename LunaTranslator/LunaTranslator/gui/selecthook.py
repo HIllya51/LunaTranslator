@@ -691,10 +691,7 @@ class hookselect(closeashidewindow):
             gobject.baseobject.textsource.removehook(pid, addr)
 
         elif action == copy:
-            copyhook = hc
-            if copyhook[0] == "E":
-                copyhook = copyhook[copyhook.find("H") :]
-            winsharedutils.clipboard_set(copyhook)
+            winsharedutils.clipboard_set(hc)
 
     def opensolvetext(self):
         try:
@@ -781,11 +778,9 @@ class hookselect(closeashidewindow):
         if len(hookcode) == 0:
             return
 
-        if gobject.baseobject.textsource:
+        if gobject.baseobject.textsource.pids:
             gobject.baseobject.textsource.inserthook(hookcode)
             self.tabwidget.setCurrentIndex(1)
-        else:
-            self.getnewsentence(_TR("！未选定进程！"))
 
     def hidesearchhookbuttons(self, hide=True):
 
@@ -797,7 +792,7 @@ class hookselect(closeashidewindow):
         self.checkfilt_notshiftjis.setHidden(hide)
 
     def findhook(self):
-        if gobject.baseobject.textsource is None:
+        if not gobject.baseobject.textsource.pids:
             return
         if globalconfig["sourcestatus2"]["texthook"]["use"] == False:
             return
@@ -811,7 +806,7 @@ class hookselect(closeashidewindow):
         )
 
     def findhookchecked(self):
-        if gobject.baseobject.textsource:
+        if gobject.baseobject.textsource.pids:
             self.allres.clear()
             self.ttCombomodelmodel2.clear()
             self.ttCombomodelmodel2.setHorizontalHeaderLabels(["HOOK", "文本"])

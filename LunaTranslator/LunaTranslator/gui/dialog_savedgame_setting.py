@@ -8,6 +8,7 @@ import gobject
 from myutils.config import (
     savehook_new_data,
     uid2gamepath,
+    get_launchpath,
     _TR,
     postprocessconfig,
     globalconfig,
@@ -51,8 +52,15 @@ from gui.usefulwidget import (
     getspinbox,
     listediterline,
 )
-from gui.dynalang import LFormLayout, LPushButton, LStandardItemModel, LAction, LLabel, LDialog
-from gui.dialog_savedgame_common  import tagitem, TagWidget
+from gui.dynalang import (
+    LFormLayout,
+    LPushButton,
+    LStandardItemModel,
+    LAction,
+    LLabel,
+    LDialog,
+)
+from gui.dialog_savedgame_common import tagitem, TagWidget
 
 
 @Singleton
@@ -155,7 +163,7 @@ class browserdialog(saveposwindow):
     def __init__(self, parent, gameuid=None) -> None:
         super().__init__(parent, poslist=globalconfig["browserwidget"])
         if gameuid:
-            self.setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
+            self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
         self.browser = auto_select_webview(self)
 
         self.tagswidget = TagWidget(self)
@@ -213,14 +221,14 @@ class browserdialog(saveposwindow):
 
 
 def maybehavebutton(self, gameuid, post):
+    save_text_process_info = savehook_new_data[gameuid]["save_text_process_info"]
     if post == "_11":
-        savehook_new_data[gameuid]["save_text_process_info"]["mypost"] = str(
-            uuid.uuid4()
-        ).replace("-", "_")
+        if "mypost" not in save_text_process_info:
+            save_text_process_info["mypost"] = str(uuid.uuid4()).replace("-", "_")
         return getIconButton(
             callback=functools.partial(
                 selectdebugfile,
-                savehook_new_data[gameuid]["save_text_process_info"]["mypost"],
+                save_text_process_info["mypost"],
                 ismypost=True,
             ),
             icon="fa.gear",
@@ -237,29 +245,25 @@ def maybehavebutton(self, gameuid, post):
                 callback = functools.partial(
                     postconfigdialog2x,
                     self,
-                    savehook_new_data[gameuid]["save_text_process_info"][
-                        "postprocessconfig"
-                    ][post]["args"]["internal"],
-                    savehook_new_data[gameuid]["save_text_process_info"][
-                        "postprocessconfig"
-                    ][post]["name"],
+                    save_text_process_info["postprocessconfig"][post]["args"][
+                        "internal"
+                    ],
+                    save_text_process_info["postprocessconfig"][post]["name"],
                     ["正则", "转义", "原文内容", "替换为"],
                 )
             elif isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
                 callback = functools.partial(
                     postconfigdialog,
                     self,
-                    savehook_new_data[gameuid]["save_text_process_info"][
-                        "postprocessconfig"
-                    ][post]["args"]["替换内容"],
+                    save_text_process_info["postprocessconfig"][post]["args"][
+                        "替换内容"
+                    ],
                     postprocessconfig[post]["name"],
                     ["原文内容", "替换为"],
                 )
             else:
                 items = autoinitdialog_items(
-                    savehook_new_data[gameuid]["save_text_process_info"][
-                        "postprocessconfig"
-                    ][post]
+                    save_text_process_info["postprocessconfig"][post]
                 )
                 callback = functools.partial(
                     autoinitdialog,
@@ -274,35 +278,31 @@ def maybehavebutton(self, gameuid, post):
 
 
 class dialog_setting_game_internal(QWidget):
-    def selectexe(self):
-        originpath = uid2gamepath[self.gameuid]
-        f = QFileDialog.getOpenFileName(directory=originpath)
-        res = f[0]
-        if res == "":
-            return
-        # 修改路径允许路径重复
-        # 添加路径实际上也允许重复，只不过会去重。
-        res = os.path.normpath(res)
+    def selectexe(self, res):
         uid2gamepath[self.gameuid] = res
-        _icon = getExeIcon(res, cache=True)
+        _icon = getExeIcon(get_launchpath(self.gameuid), cache=True)
 
         self.setWindowIcon(_icon)
-        self.editpath.setText(res)
+        if self.lauchpath:
+            self.lauchpath.clear.clicked.emit()
 
     def __init__(self, parent, gameuid) -> None:
         super().__init__(parent)
         vbox = QVBoxLayout(self)
+        self.lauchpath = None
         formLayout = LFormLayout()
         self.setLayout(vbox)
         self.gameuid = gameuid
-        self.editpath = QLineEdit(uid2gamepath[gameuid])
-        self.editpath.setReadOnly(True)
         formLayout.addRow(
             "路径",
             getboxlayout(
                 [
-                    self.editpath,
-                    getIconButton(functools.partial(self.selectexe), icon="fa.gear"),
+                    getsimplepatheditor(
+                        uid2gamepath[gameuid],
+                        callback=self.selectexe,
+                        clearable=False,
+                        icons=("fa.gear",),
+                    ),
                     getIconButton(
                         lambda: browserdialog(
                             gobject.baseobject.commonstylebase, gameuid
@@ -476,6 +476,13 @@ class dialog_setting_game_internal(QWidget):
         layout.addWidget(w)
         do()
 
+    def selectexe_lauch(self, p):
+        savehook_new_data[self.gameuid]["launchpath"] = p
+
+        _icon = getExeIcon(get_launchpath(self.gameuid), cache=True)
+
+        self.setWindowIcon(_icon)
+
     def starttab(self, formLayout: LFormLayout, gameuid):
         box = QGroupBox()
         settinglayout = LFormLayout()
@@ -490,14 +497,21 @@ class dialog_setting_game_internal(QWidget):
                 box.show()
 
         __launch_method = getsimplecombobox(
-            [_.name for _ in getgamecamptools(uid2gamepath[gameuid])],
+            [_.name for _ in getgamecamptools(get_launchpath(gameuid))],
             savehook_new_data[gameuid],
             "launch_method",
-            internal=[_.id for _ in getgamecamptools(uid2gamepath[gameuid])],
+            internal=[_.id for _ in getgamecamptools(get_launchpath(gameuid))],
             callback=functools.partial(
                 __, box, settinglayout, savehook_new_data[gameuid]
             ),
         )
+        self.lauchpath = getsimplepatheditor(
+            get_launchpath(gameuid),
+            callback=self.selectexe_lauch,
+            icons=("fa.gear", "fa.refresh"),
+            clearset=lambda: uid2gamepath[gameuid],
+        )
+        formLayout.addRow("启动程序", self.lauchpath)
         formLayout.addRow("启动方式", __launch_method)
         formLayout.addRow(box)
 
@@ -670,7 +684,12 @@ class dialog_setting_game_internal(QWidget):
         )
 
     def createfollowdefault(
-        self, dic: dict, key: str, formLayout: LFormLayout, callback=None
+        self,
+        dic: dict,
+        key: str,
+        formLayout: LFormLayout,
+        callback=None,
+        klass=LFormLayout,
     ) -> LFormLayout:
 
         __extraw = QWidget()
@@ -693,7 +712,7 @@ class dialog_setting_game_internal(QWidget):
         )
         __extraw.setEnabled(not dic[key])
         formLayout.addRow(__extraw)
-        formLayout2 = LFormLayout()
+        formLayout2 = klass()
         formLayout2.setContentsMargins(0, 0, 0, 0)
         __extraw.setLayout(formLayout2)
         return formLayout2
@@ -774,22 +793,27 @@ class dialog_setting_game_internal(QWidget):
             formLayout.addRow(
                 showname,
                 getsimplepatheditor(
-                    savehook_new_data[gameuid][key],
+                    lambda: savehook_new_data[gameuid][key],
                     False,
                     False,
                     filt,
                     functools.partial(selectimg, gameuid, key),
-                    True,
+                    icons=("fa.folder-open", "fa.refresh"),
                 ),
             )
 
     def gettransoptimi(self, formLayout: LFormLayout, gameuid):
 
-        vbox = self.createfollowdefault(
-            savehook_new_data[gameuid], "transoptimi_followdefault", formLayout
+        vbox: QGridLayout = self.createfollowdefault(
+            savehook_new_data[gameuid],
+            "transoptimi_followdefault",
+            formLayout,
+            klass=QGridLayout,
         )
+        vbox.addWidget(LLabel("继承默认"), 0, 4)
+        vbox.addWidget(QLabel(), 0, 5)
 
-        for item in static_data["transoptimi"]:
+        for i, item in enumerate(static_data["transoptimi"]):
             name = item["name"]
             visname = item["visname"]
             if checkpostlangmatch(name):
@@ -800,24 +824,23 @@ class dialog_setting_game_internal(QWidget):
                 def __(_f, _1, gameuid):
                     return _f(_1, gameuid)
 
-                vbox.addRow(
-                    visname,
-                    getboxlayout(
-                        [
-                            getsimpleswitch(savehook_new_data[gameuid], name + "_use"),
-                            getIconButton(
-                                callback=functools.partial(__, setting, self, gameuid),
-                                icon="fa.gear",
-                            ),
-                            QLabel(),
-                            getsimpleswitch(
-                                savehook_new_data[gameuid], name + "_merge"
-                            ),
-                            LLabel("继承默认"),
-                        ],
-                        makewidget=True,
-                        margin0=True,
+                vbox.addWidget(LLabel(visname), i + 1, 0)
+                vbox.addWidget(
+                    getsimpleswitch(savehook_new_data[gameuid], name + "_use"), i + 1, 1
+                )
+                vbox.addWidget(
+                    getIconButton(
+                        callback=functools.partial(__, setting, self, gameuid),
+                        icon="fa.gear",
                     ),
+                    i + 1,
+                    2,
+                )
+                vbox.addWidget(QLabel(), i + 1, 3)
+                vbox.addWidget(
+                    getsimpleswitch(savehook_new_data[gameuid], name + "_merge"),
+                    i + 1,
+                    4,
                 )
 
     def gettextproc(self, formLayout: LFormLayout, gameuid):
@@ -1114,13 +1137,13 @@ class dialog_setting_game_internal(QWidget):
         )
 
 
-
 def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:
     original_center = original_rect.center()
     new_left = original_center.x() - size.width() // 2
     new_top = original_center.y() - size.height() // 2
     new_rect = QRect(new_left, new_top, size.width(), size.height())
     return new_rect
+
 
 @Singleton_close
 class dialog_setting_game(LDialog):
@@ -1131,7 +1154,7 @@ class dialog_setting_game(LDialog):
 
         self.setWindowTitle(savehook_new_data[gameuid]["title"])
 
-        self.setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
+        self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
         _ = dialog_setting_game_internal(self, gameuid)
         _.methodtab.setCurrentIndex(setindexhook)
         _.setMinimumSize(QSize(600, 500))

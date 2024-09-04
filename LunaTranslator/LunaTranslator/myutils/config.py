@@ -118,6 +118,7 @@ ocrsetting = tryreadconfig("ocrsetting.json")
 def getdefaultsavehook(title=None):
     default = {
         "gamepath": "",  # 不要直接访问，要通过uid2gamepath来间接访问
+        # "launchpath": "",
         "hooksetting_follow_default": True,
         "hooksetting_private": {},  # 显示时再加载，缺省用global中的键
         "textproc_follow_default": True,
@@ -165,7 +166,8 @@ def getdefaultsavehook(title=None):
         "istitlesetted": False,
         "currentvisimage": None,
         "currentmainimage": "",
-        "noundictconfig": [],
+        # "noundictconfig": [],
+        "noundictconfig_ex": [],
         "noundict_use": False,
         "noundict_merge": False,
         "vndbnamemap_use": True,
@@ -173,9 +175,6 @@ def getdefaultsavehook(title=None):
         "transerrorfix_use": False,
         "transerrorfix_merge": False,
         "transerrorfix": [],
-        "gptpromptdict_use": False,
-        "gptpromptdict_merge": False,
-        "gptpromptdict": [],
         # 元数据
         "namemap2": [],
         # "namemap": {},  # 人名翻译映射，vndb独占，用于优化翻译
@@ -208,6 +207,16 @@ oldlanguage = ["zh","ja","en","ru","es","ko","fr","cht","vi","tr","pl","uk","it"
 # fmt: on
 _dfsavehook = getdefaultsavehook("")
 for gameconfig in savehook_new_data.values():
+    if "noundictconfig_ex" not in gameconfig:
+
+        gameconfig["noundictconfig_ex"] = []
+        if "noundictconfig" in gameconfig:
+
+            for k, v in gameconfig["noundictconfig"]:
+                gameconfig["noundictconfig_ex"].append(dict(src=k, dst=v, info=""))
+        if "gptpromptdict" in gameconfig:
+
+            gameconfig["noundictconfig_ex"].extend(gameconfig["gptpromptdict"])
     if (
         ("allow_tts_auto_names_v4" not in gameconfig)
         and ("allow_tts_auto_names" in gameconfig)
@@ -337,7 +346,15 @@ class __uid2gamepath:
 uid2gamepath = __uid2gamepath()
 
 
+def get_launchpath(uid):
+    launch = savehook_new_data[uid].get("launchpath", "")
+    if not launch:
+        launch = uid2gamepath[uid]
+    return launch
+
+
 def findgameuidofpath(gamepath, findall=False):
+    gamepath = os.path.normpath(gamepath)
     collect = []
     for sub in savegametaged:
         if sub is None:
@@ -345,7 +362,7 @@ def findgameuidofpath(gamepath, findall=False):
         else:
             use = sub["games"]
         for uid in use:
-            if savehook_new_data[uid]["gamepath"] == gamepath:
+            if os.path.abspath(savehook_new_data[uid]["gamepath"]) == gamepath:
                 if findall:
                     if uid not in collect:
                         collect.append(uid)
@@ -426,6 +443,15 @@ if "noundictconfig" not in globalconfig:
         for i in range(len(v) // 2):
             md5, ts = v[i * 2], v[i * 2 + 1]
             globalconfig["noundictconfig"].append((k, ts))
+
+if "noundictconfig_ex" not in globalconfig:
+    globalconfig["noundictconfig_ex"] = []
+    for k, v in globalconfig["noundictconfig"]:
+        globalconfig["noundictconfig_ex"].append(dict(src=k, dst=v, info=""))
+    if "gptpromptdict" in globalconfig:
+
+        globalconfig["noundictconfig_ex"].extend(globalconfig["gptpromptdict"])
+
 
 if needcast:
     ifuse = False
@@ -652,7 +678,7 @@ def safesave(fname, js, beatiful=True):
     # wine上MoveFile会权限问题失败，不知道为什么，WinError 32
 
 
-def saveallconfig():
+def saveallconfig(test=False):
 
     safesave("./userconfig/config.json", globalconfig)
     safesave("./userconfig/magpie_config.json", magpie_config)
@@ -666,10 +692,11 @@ def saveallconfig():
         [savehook_new_list, savehook_new_data, savegametaged, None, extradatas],
         beatiful=False,
     )
-    safesave(
-        "./files/lang/{}.json".format(getlanguse()),
-        languageshow,
-    )
+    if not test:
+        safesave(
+            "./files/lang/{}.json".format(getlanguse()),
+            languageshow,
+        )
 
 
 def is_font_installed(font: str) -> bool:

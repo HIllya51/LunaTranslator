@@ -5,7 +5,7 @@ from traceback import print_exc
 import qtawesome, requests, gobject, windows
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
-from myutils.config import globalconfig, _TR, static_data, savehook_new_data
+from myutils.config import globalconfig, _TR, static_data
 from myutils.utils import loopbackrecorder, parsekeystringtomodvkcode
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
@@ -15,18 +15,19 @@ from gui.usefulwidget import (
     statusbutton,
     getQMessageBox,
     auto_select_webview,
-    FocusCombo,
     getboxlayout,
     getspinbox,
     getsimplecombobox,
     getlineedit,
     listediter,
     listediterline,
+    pixmapviewer,
     FQPlainTextEdit,
     FQLineEdit,
     getsimpleswitch,
     makesubtab_lazy,
     getIconButton,
+    saveposwindow,
     tabadd_lazy,
 )
 from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LFormLayout, LLabel
@@ -47,24 +48,38 @@ def getimageformat():
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
+    settextsignal = pyqtSignal(QObject, str)
 
-    def callbacktts(self, edit, data):
+    def settextsignalf(self, obj, text):
+        obj.setText(text)
+
+    def callbacktts(self, edit, sig, data):
+        if sig != edit.sig:
+            return
         fname = gobject.gettempdir(str(uuid.uuid4()) + ".mp3")
         with open(fname, "wb") as ff:
             ff.write(data)
-        edit.setText(os.path.abspath(fname))
+        self.settextsignal.emit(edit, os.path.abspath(fname))
+        # 这几个settext有一定概率触发谜之bug，导致直接秒闪退无log
 
     def langdu(self):
+        self.audiopath.sig = uuid.uuid4()
         if gobject.baseobject.reader:
             gobject.baseobject.reader.ttscallback(
-                self.currentword, functools.partial(self.callbacktts, self.audiopath)
+                self.currentword,
+                functools.partial(self.callbacktts, self.audiopath, self.audiopath.sig),
             )
 
     def langdu2(self):
+        self.audiopath_sentence.sig = uuid.uuid4()
         if gobject.baseobject.reader:
             gobject.baseobject.reader.ttscallback(
                 self.example.toPlainText(),
-                functools.partial(self.callbacktts, self.audiopath_sentence),
+                functools.partial(
+                    self.callbacktts,
+                    self.audiopath_sentence,
+                    self.audiopath_sentence.sig,
+                ),
             )
 
     @threader
@@ -76,14 +91,16 @@ class AnkiWindow(QWidget):
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
             fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
             img.save(fname)
-            self.editpath.setText(os.path.abspath(fname))
+            self.settextsignal.emit(self.editpath, os.path.abspath(fname))
             if globalconfig["ankiconnect"]["ocrcroped"]:
                 self.asyncocr(img)
 
         rangeselct_function(ocroncefunction, False, False)
 
-    def __init__(self) -> None:
+    def __init__(self, p) -> None:
         super().__init__()
+        self.refsearchw: searchwordW = p
+        self.settextsignal.connect(self.settextsignalf)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle("Anki Connect")
         self.currentword = ""
@@ -161,7 +178,7 @@ class AnkiWindow(QWidget):
             )
         )
 
-        self.htmlbrowser = auto_select_webview(self)
+        self.htmlbrowser = auto_select_webview(self, True)
         self.htmlbrowser.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
@@ -194,7 +211,7 @@ class AnkiWindow(QWidget):
 
     def loadfileds(self):
         word = self.currentword
-        explain = quote(json.dumps(gobject.baseobject.searchwordW.generate_explains()))
+        explain = quote(json.dumps(self.refsearchw.generate_explains()))
 
         remarks = self.remarks.toPlainText()
         example = self.example.toPlainText()
@@ -332,6 +349,10 @@ class AnkiWindow(QWidget):
             "不添加辞书",
             getIconButton(self.vistranslate_rank, "fa.gear"),
         )
+        layout.addRow(
+            "成功添加后关闭窗口",
+            getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
+        )
 
     def vistranslate_rank(self):
         listediter(
@@ -399,7 +420,7 @@ class AnkiWindow(QWidget):
         self.audiopath_sentence.setReadOnly(True)
         self.editpath = QLineEdit()
         self.editpath.setReadOnly(True)
-        self.viewimagelabel = QLabel()
+        self.viewimagelabel = pixmapviewer()
         self.editpath.textChanged.connect(self.wrappedpixmap)
         self.example = FQPlainTextEdit()
         self.example.hiras = None
@@ -531,8 +552,18 @@ class AnkiWindow(QWidget):
             )
         )
 
-        btn = LPushButton("添加")
-        btn.clicked.connect(self.errorwrap)
+        class LRButton(LPushButton):
+            rightclick = pyqtSignal()
+
+            def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
+                if self.rect().contains(ev.pos()):
+                    if ev.button() == Qt.MouseButton.RightButton:
+                        self.rightclick.emit()
+                return super().mouseReleaseEvent(ev)
+
+        btn = LRButton("添加")
+        btn.clicked.connect(functools.partial(self.errorwrap, False))
+        btn.rightclick.connect(functools.partial(self.errorwrap, True))
         layout.addWidget(btn)
 
         self.__ocrsettext.connect(self.example.appendPlainText)
@@ -545,18 +576,7 @@ class AnkiWindow(QWidget):
             pix = QPixmap()
         else:
             pix = QPixmap.fromImage(QImage(src))
-        rate = self.devicePixelRatioF()
-        pix.setDevicePixelRatio(rate)
-        if (
-            pix.width() > self.viewimagelabel.width()
-            or pix.height() > self.viewimagelabel.height()
-        ):
-            pix = pix.scaled(
-                self.viewimagelabel.size() * rate,
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
-            )
-        self.viewimagelabel.setPixmap(pix)
+        self.viewimagelabel.showpixmap(pix)
 
     def selecfile(self, item):
         f = QFileDialog.getOpenFileName()
@@ -579,17 +599,17 @@ class AnkiWindow(QWidget):
         self.audiopath.clear()
         self.audiopath_sentence.clear()
 
-    def errorwrap(self):
+    def errorwrap(self, close=False):
         try:
             self.addanki()
-            if globalconfig["ankiconnect"]["addsuccautoclose"]:
-                self.parent().parent().parent().close()
+            if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
+                self.refsearchw.close()
             else:
                 QToolTip.showText(QCursor.pos(), "添加成功", self)
         except requests.RequestException:
-            getQMessageBox(self, "错误", "无法连接到anki")
+            getQMessageBox(self.refsearchw, "错误", "无法连接到anki")
         except anki.AnkiException as e:
-            getQMessageBox(self, "错误", str(e))
+            getQMessageBox(self.refsearchw, "错误", str(e))
         except:
             print_exc()
 
@@ -704,10 +724,18 @@ class searchwordW(closeashidewindow):
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.search_word.connect(self.__click_word_search_function)
         self.show_dict_result.connect(self.__show_dict_result_function)
+        self.state = 0
 
-        self.setWindowTitle("查词")
-        self.ankiwindow = AnkiWindow()
+    def __load(self):
+        if self.state != 0:
+            return
+        self.state = 1
         self.setupUi()
+        self.state = 2
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        self.__load()
 
     @tryprint
     def __show_dict_result_function(self, timestamp, k, res):
@@ -747,7 +775,22 @@ class searchwordW(closeashidewindow):
             return
         self.textOutput.setHtml(html)
 
+    def _createnewwindowsearch(self, _):
+        word = self.searchtext.text()
+
+        class searchwordWx(searchwordW):
+            def closeEvent(self1, event: QCloseEvent):
+                self1.deleteLater()
+                super(saveposwindow, self1).closeEvent(event)
+
+        _ = searchwordWx(self.parent())
+        _.show()
+        _.searchtext.setText(word)
+        _.__search_by_click_search_btn()
+
     def setupUi(self):
+        self.setWindowTitle("查词")
+        self.ankiwindow = AnkiWindow(self)
         self.setWindowIcon(qtawesome.icon("fa.search"))
         self.thisps = {}
         self.hasclicked = False
@@ -780,6 +823,8 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(self.history_next_btn)
         self.searchlayout.addWidget(self.searchtext)
         searchbutton = QPushButton(qtawesome.icon("fa.search"), "")
+        searchbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        searchbutton.customContextMenuRequested.connect(self._createnewwindowsearch)
         self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
 
         searchbutton.clicked.connect(self.__search_by_click_search_btn)
@@ -787,6 +832,7 @@ class searchwordW(closeashidewindow):
 
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
         soundbutton.clicked.connect(self.langdu)
+        self.soundbutton = soundbutton
         self.searchlayout.addWidget(soundbutton)
 
         ankiconnect = statusbutton(
@@ -797,12 +843,19 @@ class searchwordW(closeashidewindow):
         ankiconnect.customContextMenuRequested.connect(
             lambda _: self.ankiwindow.errorwrap()
         )
+        self.ankiconnect = ankiconnect
         self.searchlayout.addWidget(ankiconnect)
 
         self.tab = CustomTabBar()
         self.tab.tabBarClicked.connect(self.tabclicked)
+        self.tabcurrentindex = -1
 
         def __(idx):
+            if self.tabcurrentindex == idx:
+                return
+            self.tabcurrentindex = idx
+            if idx == -1:
+                return
             if not self.hasclicked:
                 return
             self.tabclicked(idx)
@@ -810,7 +863,7 @@ class searchwordW(closeashidewindow):
         self.tab.currentChanged.connect(__)
         self.tabks = []
         self.setCentralWidget(ww)
-        self.textOutput = auto_select_webview(self)
+        self.textOutput = auto_select_webview(self, True)
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
@@ -847,7 +900,10 @@ class searchwordW(closeashidewindow):
 
     def langdu(self):
         if gobject.baseobject.reader:
-            gobject.baseobject.reader.read(self.searchtext.text(), True)
+            gobject.baseobject.audioplayer.timestamp = uuid.uuid4()
+            gobject.baseobject.reader.read(
+                self.searchtext.text(), True, gobject.baseobject.audioplayer.timestamp
+            )
 
     def generate_explains(self):
         res = []
@@ -869,8 +925,10 @@ class searchwordW(closeashidewindow):
         return res
 
     def __click_word_search_function(self, word, append):
-        word = word.strip()
         self.showNormal()
+        if self.state != 2:
+            return
+        word = word.strip()
         if append:
             word = self.searchtext.text() + word
         self.searchtext.setText(word)
@@ -889,7 +947,9 @@ class searchwordW(closeashidewindow):
         if globalconfig["ankiconnect"]["autocrop"]:
             grabwindow(
                 getimageformat(),
-                self.ankiwindow.editpath.setText,
+                functools.partial(
+                    self.ankiwindow.settextsignal.emit, self.ankiwindow.editpath
+                ),
             )
 
     def __set_history_btn_able(self):

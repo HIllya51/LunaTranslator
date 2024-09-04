@@ -1,18 +1,16 @@
 import requests, re
-from myutils.config import savegametaged, savehook_new_data
+from myutils.config import savehook_new_data
 from myutils.utils import initanewitem, gamdidchangedtask
 import functools
 import time
 from qtsymbols import *
-from gui.inputdialog import autoinitdialog
 from metadata.abstract import common
-from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton_close, threader
 from gui.dynalang import LPushButton
 
 
-def saferequestvndb(proxy, method, url, json=None, headers=None):
+def saferequestvndb(proxy, method, url, json=None, headers=None, failnone=True):
     print(method, url, json)
     resp = requests.request(
         method,
@@ -35,11 +33,14 @@ def saferequestvndb(proxy, method, url, json=None, headers=None):
             except:
                 print(resp.status_code)
                 print(resp.text)
-                return None
+                if failnone:
+                    return None
+                else:
+                    return resp.text
 
 
-def safegetvndbjson(proxy, url, json):
-    return saferequestvndb(proxy, "POST", url, json)
+def safegetvndbjson(proxy, url, json=None, headers=None):
+    return saferequestvndb(proxy, "POST", url, json, headers)
 
 
 def gettitlefromjs(js):
@@ -112,7 +113,8 @@ def getinfosbyvid(proxy, vid):
             dev.append(item["name"])
         return dict(
             title=gettitlefromjs(js["results"][0]),
-            imgs=[js["results"][0]["image"]["url"]] + imgs,
+            img=js["results"][0]["image"]["url"],
+            sc=imgs,
             dev=dev,
         )
 
@@ -145,37 +147,6 @@ def getcharnamemapbyid(proxy, vid):
 
 @Singleton_close
 class vndbsettings(QDialog):
-
-    def getalistname(self, after):
-        __d = {"k": 0}
-
-        __vis = []
-        __uid = []
-        for _ in savegametaged:
-            if _ is None:
-                __vis.append("GLOBAL")
-                __uid.append(None)
-            else:
-                __vis.append(_["title"])
-                __uid.append(_["uid"])
-        autoinitdialog(
-            self,
-            "目标",
-            600,
-            [
-                {
-                    "type": "combo",
-                    "name": "目标",
-                    "d": __d,
-                    "k": "k",
-                    "list": __vis,
-                },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(after, __d, __uid),
-                },
-            ],
-        )
 
     @property
     def headers(self):
@@ -217,11 +188,13 @@ class vndbsettings(QDialog):
         reflist = getreflist(uid)
         collectresults = self.querylist(True)
         thislistvids = [
-            savehook_new_data[gameuid][self._ref.idname] for gameuid in reflist
+            savehook_new_data[gameuid].get(self._ref.idname, 0) for gameuid in reflist
         ]
         collect = {}
         for gameuid in savehook_new_data:
-            vid = savehook_new_data[gameuid][self._ref.idname]
+            vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
+            if not vid:
+                continue
             collect[vid] = gameuid
 
         for item in collectresults:
@@ -243,8 +216,8 @@ class vndbsettings(QDialog):
         vids = [int(item["id"][1:]) for item in self.querylist(False)]
 
         for gameuid in reflist:
-            vid = savehook_new_data[gameuid][self._ref.idname]
-            if vid == 0:
+            vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
+            if not vid:
                 continue
             if vid in vids:
                 continue
@@ -259,7 +232,7 @@ class vndbsettings(QDialog):
             )
 
     def singleupload_existsoverride(self, gameuid):
-        vid = savehook_new_data[gameuid][self._ref.idname]
+        vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
         if not vid:
             return
 
@@ -275,31 +248,76 @@ class vndbsettings(QDialog):
             headers=self.headers,
         )
 
-    def __getalistname(self, callback, _):
-        getalistname(self, callback)
+    def __getalistname(self, title, callback, _):
+        getalistname(self, callback, title=title)
+
+    showhide = pyqtSignal(bool)
+
+    @threader
+    def checkvalid(self, k):
+        self.showhide.emit(False)
+        self.lbinfo.setText("")
+        t = time.time()
+        self.tm = t
+        if k != self._ref.config["Token"]:
+            self._ref.config["Token"] = k
+        response = saferequestvndb(
+            self._ref.proxy, "GET", "authinfo", headers=self.headers, failnone=False
+        )
+        if t != self.tm:
+            return
+        print(response)
+        if isinstance(response, dict) and response.get("username"):
+            info = "username: " + response.get("username")
+            self.showhide.emit(True)
+        else:
+            info = response
+            self.showhide.emit(False)
+        self.lbinfo.setText(info)
 
     def __init__(self, parent, _ref: common, gameuid: str) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.tm = None
         self._ref = _ref
         self.resize(QSize(800, 10))
         self.setWindowTitle(self._ref.config_all["name"])
         fl = QFormLayout(self)
-        fl.addRow("Token", getlineedit(_ref.config, "Token"))
+        vbox = QVBoxLayout()
+        s = QLineEdit()
+        self.lbinfo = QLabel()
+        s.textChanged.connect(self.checkvalid)
+        fl2 = QFormLayout()
+        fl2.setContentsMargins(0, 0, 0, 0)
+        ww = QWidget()
+        ww.setLayout(fl2)
+        ww.hide()
+        self.fl2 = ww
+        self.showhide.connect(self.fl2.setVisible)
+        self._token = s
+        vbox.addWidget(s)
+        vbox.addWidget(self.lbinfo)
+        fl.addRow("Token", vbox)
         btn = LPushButton("上传游戏")
         btn.clicked.connect(
             functools.partial(self.singleupload_existsoverride, gameuid)
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
         btn = LPushButton("上传游戏列表")
         btn.clicked.connect(
-            functools.partial(self.__getalistname, self.getalistname_upload)
+            functools.partial(
+                self.__getalistname, "上传游戏列表", self.getalistname_upload
+            )
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
         btn = LPushButton("获取游戏列表")
         btn.clicked.connect(
-            functools.partial(self.__getalistname, self.getalistname_download)
+            functools.partial(
+                self.__getalistname, "添加到列表", self.getalistname_download
+            )
         )
-        fl.addRow(btn)
+        fl2.addRow(btn)
+        fl.addRow(ww)
+        s.setText(_ref.config["Token"])
         self.show()
 
 
@@ -336,6 +354,24 @@ class searcher(common):
         else:
             return []
 
+    def getreleasecvfromhtml(self, _vid):
+
+        headers = {
+            "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
+            "Referer": "https://vndb.org/",
+            "sec-ch-ua-mobile": "?0",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
+            "sec-ch-ua-platform": '"Windows"',
+        }
+
+        html = self.proxysession.get(
+            self.refmainpage(_vid) + "/cv", headers=headers
+        ).text
+        return [
+            "https://t.vndb.org/cv/" + _
+            for _ in re.findall('"https://t.vndb.org/cv/(.*?)"', html)
+        ]
+
     def searchfordata(self, _vid):
         vid = "v{}".format(_vid)
         infos = getinfosbyvid(self.proxy, vid)
@@ -345,12 +381,15 @@ class searcher(common):
         vndbtags = self.gettagfromhtml(_vid)
         developers = infos["dev"]
 
-        img = [self.dispatchdownloadtask(_) for _ in infos["imgs"]]
-
+        img = [
+            self.dispatchdownloadtask(_)
+            for _ in ([infos["img"]] + self.getreleasecvfromhtml(_vid))
+        ]
+        sc = [self.dispatchdownloadtask(_) for _ in infos["sc"]]
         return {
             "namemap": namemap,
             "title": title,
-            "imagepath_all": img,
+            "imagepath_all": img + sc,
             "webtags": vndbtags,
             "developers": developers,
         }

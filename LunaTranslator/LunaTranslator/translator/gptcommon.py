@@ -1,6 +1,7 @@
 from translator.basetranslator import basetrans
 import json, requests
 from traceback import print_exc
+from myutils.utils import SafeFormatter
 
 
 class gptcommon(basetrans):
@@ -50,9 +51,6 @@ class gptcommon(basetrans):
             pass
         return data
 
-    def createparam(self):
-        return None
-
     def createheaders(self):
         return {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
 
@@ -80,14 +78,21 @@ class gptcommon(basetrans):
     def commonparseresponse(self, query, response: requests.ResponseBase, usingstream):
         if usingstream:
             message = ""
+            if not response.headers["Content-Type"].startswith("text/event-stream"):
+                # application/json
+                # text/html
+                raise Exception(response.text)
             for chunk in response.iter_lines():
-                response_data = chunk.decode("utf-8").strip()
+                response_data: str = chunk.decode("utf-8").strip()
+                if not response_data.startswith("data: "):
+                    continue
+                response_data = response_data[6:]
                 if not response_data:
                     continue
-                if response_data == "data: [DONE]":
+                if response_data == "[DONE]":
                     break
                 try:
-                    json_data = json.loads(response_data[6:])
+                    json_data = json.loads(response_data)
                     rs = json_data["choices"][0].get("finish_reason")
                     if rs and rs != "null":
                         break
@@ -116,29 +121,11 @@ class gptcommon(basetrans):
 
     def translate(self, query):
         self.contextnum = int(self.config["附带上下文个数"])
-        user_prompt = (
-            self.config.get("user_user_prompt", "")
-            if self.config.get("use_user_user_prompt", False)
-            else ""
+        query = self._gptlike_createquery(
+            query, "use_user_user_prompt", "user_user_prompt"
         )
-        try:
-            if "{sentence}" in user_prompt:
-                query = user_prompt.format(sentence=query)
-            else:
-                query = user_prompt + query
-        except:
-            pass
-        if self.config["使用自定义promt"]:
-            message = [{"role": "system", "content": self.config["自定义promt"]}]
-        else:
-            message = [
-                {
-                    "role": "system",
-                    "content": "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
-                        self.srclang, self.tgtlang
-                    ),
-                },
-            ]
+        sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
+        message = [{"role": "system", "content": sysprompt}]
 
         for _i in range(min(len(self.context) // 2, self.contextnum)):
             i = (
@@ -149,12 +136,10 @@ class gptcommon(basetrans):
             message.append(self.context[i * 2])
             message.append(self.context[i * 2 + 1])
         message.append({"role": "user", "content": query})
-
         usingstream = self.config["流式输出"]
         response = self.proxysession.post(
             self.createurl(),
             headers=self.createheaders(),
-            params=self.createparam(),
             json=self.createdata(message),
             stream=usingstream,
         )

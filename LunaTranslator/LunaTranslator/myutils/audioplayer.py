@@ -63,7 +63,11 @@ class playonce:
             return False
         if not self.channel_length:
             return False
+        if self.channel_length == -1:
+            return False
         channel_position = BASS_ChannelGetPosition(self.handle, BASS_POS_BYTE)
+        if channel_position == -1:
+            return False
         return channel_position < self.channel_length
 
     def __play(self, fileormem, volume):
@@ -99,11 +103,21 @@ class series_audioplayer:
         self.tasks = None
         self.lock = threading.Lock()
         self.lock.acquire()
-
+        self.timestamp = None
         self.lastcontext = None
         threading.Thread(target=self.__dotasks).start()
 
-    def play(self, binary, volume, force):
+    def stop(self):
+        self.timestamp = None
+        try:
+            self.tasks = (None, 0, True)
+            self.lock.release()
+        except:
+            pass
+
+    def play(self, binary, volume, force, timestamp):
+        if timestamp != self.timestamp:
+            return
         try:
             self.tasks = (binary, volume, force)
             self.lock.release()
@@ -120,6 +134,8 @@ class series_audioplayer:
                     continue
                 binary, volume, force = task
                 _playonce = None
+                if not binary:
+                    continue
                 _playonce = playonce(binary, volume)
                 if globalconfig["ttsnointerrupt"]:
                     while _playonce.isplaying:

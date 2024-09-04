@@ -8,7 +8,7 @@ from myutils.config import (
     savehook_new_list,
     savehook_new_data,
     savegametaged,
-    uid2gamepath,
+    get_launchpath,
     extradatas,
     globalconfig,
 )
@@ -38,6 +38,7 @@ from gui.dialog_savedgame_common import (
     dialog_syssetting,
     addgamesingle,
     addgamebatch,
+    addgamebatch_x,
 )
 from gui.dynalang import (
     LPushButton,
@@ -65,9 +66,7 @@ class clickitem(QWidget):
 
     def click(self):
         try:
-            self.bottommask.setStyleSheet(
-                f'background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};'
-            )
+            self.bottommask.show()
             if self != clickitem.globallashfocus:
                 clickitem.clearfocus()
             clickitem.globallashfocus = self
@@ -79,7 +78,7 @@ class clickitem(QWidget):
         self.click()
 
     def focusOut(self):
-        self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        self.bottommask.hide()
         self.focuschanged.emit(False, self.uid)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
@@ -96,21 +95,11 @@ class clickitem(QWidget):
         self.lay.setContentsMargins(0, 0, 0, 0)
 
         self.maskshowfileexists = QLabel(self)
-
-        c = globalconfig["dialog_savegame_layout"][
-            ("onfilenoexistscolor1", "backcolor1")[os.path.exists(uid2gamepath[uid])]
-        ]
-        c = str2rgba(
-            c,
-            globalconfig["dialog_savegame_layout"][
-                ("transparentnotexits", "transparent")[
-                    os.path.exists(uid2gamepath[uid])
-                ]
-            ],
-        )
-        self.maskshowfileexists.setStyleSheet(f"background-color:{c};")
+        exists = os.path.exists(get_launchpath(uid))
+        self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
         self.bottommask = QLabel(self)
-        self.bottommask.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        self.bottommask.hide()
+        self.bottommask.setObjectName("savegame_onselectcolor1")
         _ = QLabel(self)
         _.setStyleSheet(
             """background-color: rgba(255,255,255, 0);border-bottom: 1px solid gray;"""
@@ -121,18 +110,16 @@ class clickitem(QWidget):
         _.setFixedSize(QSize(size, size))
         _.setScaledContents(True)
         _.setStyleSheet("background-color: rgba(255,255,255, 0);")
-        icon = getpixfunction(
-            uid, small=True
-        )  # getExeIcon(uid2gamepath[uid], icon=False, cache=True)
+        icon = getpixfunction(uid, small=True)
         icon.setDevicePixelRatio(self.devicePixelRatioF())
         _.setPixmap(icon)
         self.lay.addWidget(_)
         _ = QLabel(savehook_new_data[uid]["title"])
         _.setWordWrap(True)
         _.setFixedHeight(size + 1)
+        _.setObjectName("savegame_textfont2")
         self.lay.addWidget(_)
         self.setLayout(self.lay)
-        _.setStyleSheet("""background-color: rgba(255,255,255, 0);""")
 
 
 class fadeoutlabel(QLabel):
@@ -229,19 +216,17 @@ class MyQListWidget(QListWidget):
             end = self.indexAt(self.viewport().rect().bottomRight()).row()
             if start < 0:
                 return
-            if end < 0:
-                end = start
             with self.lock:
                 model = self.model()
+                if end < 0:
+                    end = model.rowCount()
                 for row in range(start, end + 1):
                     index = model.index(row, 0)
                     if not index.data(ImageRequestedRole):
                         self.model().setData(index, True, ImageRequestedRole)
                         image = getcachedimage(index.data(PathRole), True)
                         if image is None:
-                            self.blockSignals(True)
                             self.takeItem(index.row())
-                            self.blockSignals(False)
                         else:
                             self.item(index.row()).setIcon(QIcon(image))
         except:
@@ -670,7 +655,7 @@ class dialog_savedgame_v3(QWidget):
             _able1 = b and (
                 (not exists)
                 or (self.currentfocusuid)
-                and (os.path.exists(uid2gamepath[self.currentfocusuid]))
+                and (os.path.exists(get_launchpath(self.currentfocusuid)))
             )
             _btn.setEnabled(_able1)
         if self.currentfocusuid:
@@ -712,7 +697,7 @@ class dialog_savedgame_v3(QWidget):
 
             menu.addAction(addlist)
         else:
-            exists = os.path.exists(uid2gamepath[self.currentfocusuid])
+            exists = os.path.exists(get_launchpath(self.currentfocusuid))
             if exists:
                 menu.addAction(startgame)
                 menu.addAction(delgame)
@@ -788,8 +773,34 @@ class dialog_savedgame_v3(QWidget):
     def directshow(self):
         self.stack.directshow()
 
+    def setstyle(self):
+        key = "savegame_textfont2"
+        fontstring = globalconfig.get(key, "")
+        _style = """background-color: rgba(255,255,255, 0);"""
+        if fontstring:
+            _f = QFont()
+            _f.fromString(fontstring)
+            _style += f"font-size:{_f.pointSize()}pt;"
+            _style += f'font-family:"{_f.family()}";'
+        style = f"#{key}{{ {_style} }}"
+        for exits in [True, False]:
+            c = globalconfig["dialog_savegame_layout"][
+                ("onfilenoexistscolor1", "backcolor1")[exits]
+            ]
+            c = str2rgba(
+                c,
+                globalconfig["dialog_savegame_layout"][
+                    ("transparentnotexits", "transparent")[exits]
+                ],
+            )
+
+            style += f"#savegame_exists{exits}{{background-color:{c};}}"
+        style += f'#savegame_onselectcolor1{{background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};}}'
+        self.setStyleSheet(style)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        self.setAcceptDrops(True)
         self.currentfocusuid = None
         self.reftagid = None
         self.reallist = {}
@@ -800,6 +811,7 @@ class dialog_savedgame_v3(QWidget):
             globalconfig["dialog_savegame_layout"]["listitemwidth"]
         )
         self.stack.bgclicked.connect(clickitem.clearfocus)
+        self.setstyle()
         lay = QHBoxLayout()
         self.setLayout(lay)
         lay.addWidget(self.stack)
@@ -862,10 +874,9 @@ class dialog_savedgame_v3(QWidget):
             self.stack.insertw(i, group0)
             rowreal = 0
             for row, k in enumerate(lst):
-                if globalconfig["hide_not_exists"] and not os.path.exists(
-                    uid2gamepath[k]
-                ):
-                    continue
+                if globalconfig["hide_not_exists"]:
+                    if not os.path.exists(get_launchpath(k)):
+                        continue
                 self.reallist[tagid].append(k)
                 if opened and isfirst and (rowreal == 0):
                     vis = True
@@ -1046,3 +1057,13 @@ class dialog_savedgame_v3(QWidget):
         button5.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.buttonlayout.addWidget(button5)
         return button5
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        files = [u.toLocalFile() for u in event.mimeData().urls()]
+        addgamebatch_x(self.addgame, savehook_new_list, files)

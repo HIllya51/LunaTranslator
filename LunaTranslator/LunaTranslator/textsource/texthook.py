@@ -11,11 +11,13 @@ from myutils.config import (
     findgameuidofpath,
 )
 from textsource.textsourcebase import basetext
-from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace
+from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace, copytree
 from myutils.hwnd import injectdll, test_injectable, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
-import subprocess
+import subprocess, hashlib, requests, zipfile, shutil
+from myutils.proxy import getproxy
+
 
 from ctypes import (
     CDLL,
@@ -125,7 +127,39 @@ class texthook(basetext):
 
             return __shitdict(savehook_new_data[self.gameuid]["hooksetting_private"])
 
+    def tryqueryfromhost(self):
+
+        for i, main_server in enumerate(static_data["main_server"]):
+            try:
+                res = requests.get(
+                    "{main_server}/version_lunahook".format(main_server=main_server),
+                    verify=False,
+                    proxies=getproxy(("update", "lunatranslator")),
+                )
+                res = res.json()
+                return res
+            except:
+                pass
+
     def init(self):
+
+        self.pids = []
+        self.maybepids = []
+        self.maybepidslock = threading.Lock()
+        self.keepref = []
+        self.hookdatacollecter = OrderedDict()
+        self.selectinghook = None
+        self.selectedhook = []
+        self.multiselectedcollector = []
+        self.multiselectedcollectorlock = threading.Lock()
+        self.lastflushtime = 0
+        self.runonce_line = ""
+        gobject.baseobject.autoswitchgameuid = False
+        self.initdll()
+        self.delaycollectallselectedoutput()
+        self.autohookmonitorthread()
+
+    def initdll(self):
         LunaHost = CDLL(
             gobject.GetDllpath(
                 ("LunaHost32.dll", "LunaHost64.dll"),
@@ -188,23 +222,19 @@ class texthook(basetext):
         self.Luna_QueryThreadHistory = LunaHost.Luna_QueryThreadHistory
         self.Luna_QueryThreadHistory.argtypes = (ThreadParam,)
         self.Luna_QueryThreadHistory.restype = c_void_p
-        self.pids = []
-        self.keepref = []
-        self.hookdatacollecter = OrderedDict()
-        self.reverse = {}
-        self.forward = []
-        self.selectinghook = None
-        self.selectedhook = []
-        self.selectedhookidx = []
-
-        self.multiselectedcollector = []
-        self.multiselectedcollectorlock = threading.Lock()
-        self.lastflushtime = 0
-        self.runonce_line = ""
-        gobject.baseobject.autoswitchgameuid = False
-        self.delaycollectallselectedoutput()
-        self.prepares()
-        self.autohookmonitorthread()
+        procs = [
+            ProcessEvent(self.onprocconnect),
+            ProcessEvent(self.removeproc),
+            ThreadEvent(self.onnewhook),
+            ThreadEvent(self.onremovehook),
+            OutputCallback(self.handle_output),
+            ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
+            HookInsertHandler(self.newhookinsert),
+            EmbedCallback(self.getembedtext),
+        ]
+        self.keepref += procs
+        ptrs = [cast(_, c_void_p).value for _ in procs]
+        self.Luna_Start(*ptrs)
 
     def listprocessm(self):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))
@@ -273,6 +303,7 @@ class texthook(basetext):
         while (not self.ending) and (len(self.pids) == 0):
             try:
                 hwnd = windows.GetForegroundWindow()
+                hwnd = windows.GetAncestor(hwnd)
                 if self.connecthwnd(hwnd):
                     break
             except:
@@ -280,6 +311,8 @@ class texthook(basetext):
             time.sleep(0.1)
 
     def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
+        for pid in pids:
+            self.waitend(pid)
         gobject.baseobject.hwnd = hwnd
         gobject.baseobject.gameuid = gameuid
         self.gameuid = gameuid
@@ -329,23 +362,7 @@ class texthook(basetext):
         if len(self.pids) == 0:
             self.autohookmonitorthread()
 
-    def prepares(self):
-        procs = [
-            ProcessEvent(self.onprocconnect),
-            ProcessEvent(self.removeproc),
-            ThreadEvent(self.onnewhook),
-            ThreadEvent(self.onremovehook),
-            OutputCallback(self.handle_output),
-            ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
-            HookInsertHandler(self.newhookinsert),
-            EmbedCallback(self.getembedtext),
-        ]
-        self.keepref += procs
-        ptrs = [cast(_, c_void_p).value for _ in procs]
-        self.Luna_Start(*ptrs)
-
     def start_unsafe(self, pids):
-
         caninject = test_injectable(pids)
         injectpids = []
         for pid in pids:
@@ -377,8 +394,27 @@ class texthook(basetext):
                 "错误", "权限不足，请以管理员权限运行！"
             )
 
+    @threader
+    def waitend(self, pid):
+        # 如果有进程一闪而逝，没来的及注入，导致无法自动重连
+        self.maybepids.append(pid)
+        windows.WaitForSingleObject(
+            windows.AutoHandle(windows.OpenProcess(windows.SYNCHRONIZE, False, pid)),
+            windows.INFINITE,
+        )
+        with self.maybepidslock:
+            if len(self.pids) == 0 and len(self.maybepids):
+                # 如果进程连接，则剔除maybepids
+                # 当进程结束，且发现是被试探过&未曾连接，则重试
+                self.maybepids.clear()
+                self.autohookmonitorthread()
+
     def onprocconnect(self, pid):
         self.pids.append(pid)
+        try:
+            self.maybepids.remove(pid)
+        except:
+            pass
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
         gobject.baseobject.displayinfomessage(
@@ -626,7 +662,11 @@ class texthook(basetext):
 
     def dispatchtext(self, text):
         self.runonce_line = text
-        return super().dispatchtext(text)
+
+        donttrans = (windows.GetKeyState(windows.VK_CONTROL) < 0) or (
+            windows.GetKeyState(windows.VK_SHIFT) < 0
+        )
+        return super().dispatchtext(text, donttrans=donttrans)
 
     def gettextonce(self):
         return self.runonce_line

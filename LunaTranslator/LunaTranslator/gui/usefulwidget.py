@@ -1,12 +1,8 @@
 from qtsymbols import *
-import os, platform, functools, threading, uuid, json
+import os, platform, functools, uuid, json
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
-from webviewpy import (
-    webview_native_handle_kind_t,
-    Webview,
-    declare_library_path,
-)
+from webviewpy import webview_native_handle_kind_t, Webview, declare_library_path
 from winsharedutils import HTMLBrowser
 from myutils.config import _TR, globalconfig, _TRL
 from myutils.wrapper import Singleton_close, tryprint
@@ -1060,15 +1056,15 @@ class abstractwebview(QWidget):
     html_limit = 2 * 1024 * 1024
 
     # 必须的接口
-    def _setHtml(self, html):
+    def setHtml(self, html):
         pass
 
     def navigate(self, url):
         pass
 
     #
-    def _parsehtml(self, html):
-        return self._parsehtml_dark_auto(html)
+    def parsehtml(self, html):
+        pass
 
     def set_zoom(self, zoom):
         pass
@@ -1088,15 +1084,18 @@ class abstractwebview(QWidget):
     def clear(self):
         self.navigate("about:blank")
 
-    def setHtml(self, html):
-        html = self._parsehtml(html)
-        if len(html) < self.html_limit:
-            self._setHtml(html)
-        else:
-            lastcachehtml = gobject.gettempdir(str(uuid.uuid4()) + ".html")
-            with open(lastcachehtml, "w", encoding="utf8") as ff:
-                ff.write(html)
-            self.navigate(lastcachehtml)
+    def _parsehtml_codec(self, html):
+
+        html = f"""<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head>{html}</html>"""
+        return html
+
+    def _parsehtml_font(self, html):
+
+        html = """<body style=" font-family:'{}'">{}</body>""".format(
+            QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family(),
+            html,
+        )
+        return html
 
     def _parsehtml_dark(self, html):
         if nowisdark():
@@ -1135,6 +1134,8 @@ class abstractwebview(QWidget):
 
 
 class WebivewWidget(abstractwebview):
+    html_limit = 1572834
+    # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
 
     def __del__(self):
         winsharedutils.remove_ZoomFactorChanged(self.get_controller(), self.__token)
@@ -1210,11 +1211,14 @@ class WebivewWidget(abstractwebview):
             size = a0.size() * self.devicePixelRatioF()
             windows.MoveWindow(hwnd, 0, 0, size.width(), size.height(), True)
 
-    def _setHtml(self, html):
+    def setHtml(self, html):
         self.webview.set_html(html)
 
     def set_transparent_background(self):
         winsharedutils.set_transparent_background(self.get_controller())
+
+    def parsehtml(self, html):
+        return self._parsehtml_codec(self._parsehtml_dark_auto(html))
 
 
 class QWebWrap(abstractwebview):
@@ -1320,15 +1324,15 @@ class QWebWrap(abstractwebview):
             url = url.replace("\\", "/")
         self.internal.load(QUrl(url))
 
-    def _setHtml(self, html):
+    def setHtml(self, html):
         self.internal.setHtml(html)
 
     @tryprint
     def resizeEvent(self, a0: QResizeEvent) -> None:
         self.internal.resize(a0.size())
 
-    def _parsehtml(self, html):
-        return self._parsehtml_dark(html)
+    def parsehtml(self, html):
+        return self._parsehtml_codec(self._parsehtml_dark(html))
 
 
 class mshtmlWidget(abstractwebview):
@@ -1359,16 +1363,11 @@ class mshtmlWidget(abstractwebview):
         size = a0.size() * self.devicePixelRatioF()
         self.browser.resize(0, 0, size.width(), size.height())
 
-    def _setHtml(self, html):
+    def setHtml(self, html):
         self.browser.set_html(html)
 
-    def _parsehtml(self, html):
-        html = self._parsehtml_dark(html)
-        html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head><body style=" font-family:'{}'">{}</body></html>""".format(
-            QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family(),
-            html,
-        )
-        return html
+    def parsehtml(self, html):
+        return self._parsehtml_codec(self._parsehtml_font(self._parsehtml_dark(html)))
 
 
 class CustomKeySequenceEdit(QKeySequenceEdit):
@@ -1402,22 +1401,33 @@ def D_getsimplekeyseq(dic, key, callback=None):
     return lambda: getsimplekeyseq(dic, key, callback)
 
 
+switchtypes = []
+
+
 class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
 
     def clear(self):
+        self.lastaction = None
         self.internal.clear()
 
     def navigate(self, url):
-        self._maybecreate()
+        self.lastaction = 0, url
         self.internal.set_zoom(self.internalsavedzoom)
         self.internal.navigate(url)
 
     def setHtml(self, html):
-        self._maybecreate()
+        self.lastaction = 1, html
         self.internal.set_zoom(self.internalsavedzoom)
-        self.internal.setHtml(html)
+        html = self.internal.parsehtml(html)
+        if len(html) < self.internal.html_limit:
+            self.internal.setHtml(html)
+        else:
+            lastcachehtml = gobject.gettempdir(str(uuid.uuid4()) + ".html")
+            with open(lastcachehtml, "w", encoding="utf8") as ff:
+                ff.write(html)
+            self.internal.navigate(lastcachehtml)
 
     def set_zoom(self, zoom):
         self.internalsavedzoom = zoom
@@ -1426,34 +1436,29 @@ class auto_select_webview(QWidget):
     def sizeHint(self):
         return QSize(256, 192)
 
-    def __init__(self, parent) -> None:
+    def __init__(self, parent, dyna=False) -> None:
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.is_fallback = -2
-        self.contex = -1
-        self.internal = (
-            abstractwebview()
-        )  # 加个占位的widget，否则等待加载的时候有一瞬间的灰色背景。
-        self.lock = threading.Lock()
+        self.internal = None
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.internal)
         self.setLayout(layout)
         self.internalsavedzoom = 1
+        self.lastaction = None
+        self._maybecreate_internal()
+        if dyna:
+            switchtypes.append(self)
+
+    @staticmethod
+    def switchtype():
+        for _ in switchtypes:
+            _._maybecreate_internal()
 
     def internalzoomchanged(self, zoom):
         self.internalsavedzoom = zoom
         self.on_ZoomFactorChanged.emit(zoom)
 
-    def _maybecreate(self):
-        with self.lock:
-            self._maybecreate_internal()
-
     def _maybecreate_internal(self):
-        if globalconfig["usewebview"] == self.contex:
-            return
-        if self.is_fallback == globalconfig["usewebview"]:
-            return
         if self.internal:
             self.layout().removeWidget(self.internal)
         self.internal = self._createwebview()
@@ -1461,19 +1466,24 @@ class auto_select_webview(QWidget):
         self.internal.on_load.connect(self.on_load)
         self.internal.on_ZoomFactorChanged.connect(self.internalzoomchanged)
         self.layout().addWidget(self.internal)
+        if self.lastaction:
+            action, arg = self.lastaction
+            if action == 0:
+                self.navigate(arg)
+            elif action == 1:
+                self.setHtml(arg)
 
     def _createwebview(self):
-        self.contex = globalconfig["usewebview"]
+        contex = globalconfig["usewebview"]
         try:
-            if self.contex == 0:
+            if contex == 0:
                 browser = mshtmlWidget()
-            elif self.contex == 1:
+            elif contex == 1:
                 browser = WebivewWidget()
-            elif self.contex == 2:
+            elif contex == 2:
                 browser = QWebWrap()
         except:
             print_exc()
-            self.is_fallback = self.contex
             browser = mshtmlWidget()
         return browser
 
@@ -2003,13 +2013,14 @@ class listediterline(QLineEdit):
 def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):
     if isdir:
         f = QFileDialog.getExistingDirectory(directory=directory)
-        res = f
+        res = os.path.normpath(f)
     else:
         if multi:
             f = QFileDialog.getOpenFileNames(directory=directory, filter=filter1)
+            res = [os.path.normpath(_) for _ in f[0]]
         else:
             f = QFileDialog.getOpenFileName(directory=directory, filter=filter1)
-        res = f[0]
+            res = os.path.normpath(f[0])
 
     if len(res) == 0:
         return
@@ -2025,15 +2036,17 @@ def getsimplepatheditor(
     isdir=False,
     filter1="*.*",
     callback=None,
-    useiconbutton=False,
+    icons=None,
     reflist=None,
     name=None,
     header=None,
     dirorfile=False,
+    clearable=True,
+    clearset=None,
+    isfontselector=False,
 ):
     lay = QHBoxLayout()
     lay.setContentsMargins(0, 0, 0, 0)
-
     if multi:
         e = listediterline(
             name,
@@ -2045,14 +2058,33 @@ def getsimplepatheditor(
     else:
         e = QLineEdit(text)
         e.setReadOnly(True)
-        if useiconbutton:
-            bu = getIconButton(icon="fa.folder-open")
-            clear = getIconButton(icon="fa.window-close-o")
+        if icons:
+            bu = getIconButton(icon=icons[0])
+            if clearable:
+                clear = getIconButton(icon=icons[1])
         else:
             bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
-            clear = LPushButton("清除")
-        bu.clicked.connect(
-            functools.partial(
+            if clearable:
+                clear = LPushButton("清除")
+        if clearable:
+            lay.clear = clear
+
+        if isfontselector:
+
+            def __selectfont(callback, e):
+                f = QFont()
+                text = e.text()
+                if text:
+                    f.fromString(text)
+                font, ok = QFontDialog.getFont(f, e)
+                if ok:
+                    _s = font.toString()
+                    callback(_s)
+                    e.setText(_s)
+
+            _cb = functools.partial(__selectfont, callback, e)
+        else:
+            _cb = functools.partial(
                 openfiledirectory,
                 text,
                 multi,
@@ -2061,16 +2093,20 @@ def getsimplepatheditor(
                 "" if isdir else filter1,
                 callback,
             )
-        )
-
-        def __(_cb, _e):
-            _cb("")
-            _e.setText("")
-
-        clear.clicked.connect(functools.partial(__, callback, e))
+        bu.clicked.connect(_cb)
         lay.addWidget(e)
         lay.addWidget(bu)
-        lay.addWidget(clear)
+        if clearable:
+
+            def __(_cb, _e, t):
+                _cb("")
+                if not t:
+                    _e.setText("")
+                elif callable(t):
+                    _e.setText(t())
+
+            clear.clicked.connect(functools.partial(__, callback, e, clearset))
+            lay.addWidget(clear)
     return lay
 
 

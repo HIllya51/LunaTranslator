@@ -40,18 +40,9 @@ class TS(basetrans):
             }
         }
         model = self.config["model"]
-        user_prompt = (
-            self.config.get("user_user_prompt", "")
-            if self.config.get("use_user_user_prompt", False)
-            else ""
+        query = self._gptlike_createquery(
+            query, "use_user_user_prompt", "user_user_prompt"
         )
-        try:
-            if "{sentence}" in user_prompt:
-                query = user_prompt.format(sentence=query)
-            else:
-                query = user_prompt + query
-        except:
-            pass
         safety = {
             "safety_settings": [
                 {
@@ -72,21 +63,8 @@ class TS(basetrans):
                 },
             ]
         }
-
-        if self.config["use_custom_prompt"]:
-            sys_message = {
-                "systemInstruction": {"parts": {"text": self.config["custom_prompt"]}}
-            }
-        else:
-            sys_message = {
-                "systemInstruction": {
-                    "parts": {
-                        "text": "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
-                            self.srclang, self.tgtlang
-                        ),
-                    },
-                },
-            }
+        sysprompt = self._gptlike_createsys("use_custom_prompt", "custom_prompt")
+        sys_message = {"systemInstruction": {"parts": {"text": sysprompt}}}
         message = []
         for _i in range(min(len(self.context) // 2, self.contextnum)):
             i = (

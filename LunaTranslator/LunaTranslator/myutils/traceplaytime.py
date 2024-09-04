@@ -3,12 +3,7 @@ import time
 import os, threading
 from qtsymbols import *
 from traceback import print_exc
-from myutils.config import (
-    uid2gamepath,
-    findgameuidofpath,
-    savehook_new_list,
-    savehook_new_data,
-)
+from myutils.config import findgameuidofpath, savehook_new_data
 from myutils.hwnd import getpidexe
 import windows
 import gobject

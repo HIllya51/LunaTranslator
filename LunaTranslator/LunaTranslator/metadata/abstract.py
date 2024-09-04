@@ -158,13 +158,12 @@ class common:
         webtags = data.get("webtags", [])
         imagepath_all = data.get("imagepath_all", [])
         normaled = [
-            os.path.normpath(os.path.abspath(_))
-            for _ in savehook_new_data[gameuid]["imagepath_all"]
+            os.path.abspath(_) for _ in savehook_new_data[gameuid]["imagepath_all"]
         ]
         for _ in imagepath_all:
             if _ is None:
                 continue
-            norm = os.path.normpath(os.path.abspath(_))
+            norm = os.path.abspath(_)
             if norm not in normaled:
                 normaled.append(norm)
                 savehook_new_data[gameuid]["imagepath_all"].append(_)

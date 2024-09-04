@@ -6,7 +6,7 @@ from myutils.config import (
     globalconfig,
     _TR,
     savehook_new_data,
-    uid2gamepath,
+    get_launchpath,
     savehook_new_list,
     static_data,
 )
@@ -224,7 +224,7 @@ def exportchspatch(self):
     gameuid = selectgameuid(self)
     if gameuid is None:
         return
-    exe = uid2gamepath[gameuid]
+    exe = get_launchpath(gameuid)
     if exe.lower().endswith(".exe") == False:
         f = QFileDialog.getOpenFileName(
             self, caption=_TR("选择EXE文件"), filter="*.exe"

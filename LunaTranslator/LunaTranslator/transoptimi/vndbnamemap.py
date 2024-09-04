@@ -1,7 +1,7 @@
-from myutils.config import globalconfig, savehook_new_data, uid2gamepath
+from myutils.config import globalconfig, savehook_new_data, get_launchpath
 from myutils.utils import postusewhich, parsemayberegexreplace
 from gui.inputdialog import noundictconfigdialog1
-import gobject, json, functools
+import gobject
 from myutils.hwnd import getExeIcon
 
 
@@ -26,7 +26,7 @@ class Process:
             savehook_new_data[gameuid]["namemap2"],
             "专有名词翻译_直接替换_-_" + savehook_new_data[gameuid]["title"],
             ["正则", "转义", "原文", "翻译"],
-        ).setWindowIcon(getExeIcon(uid2gamepath[gameuid], cache=True))
+        ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 
     @property
     def using_X(self):

@@ -1,4 +1,5 @@
 from myutils.wrapper import threader
+import windows
 
 
 class scalebase:
@@ -20,6 +21,7 @@ class scalebase:
         self.callstatuschange_(hwnd)
 
     def callstatuschange_(self, hwnd):
+        hwnd = windows.GetAncestor(hwnd)
         self.hwnd = hwnd
         if self.changestatus(hwnd, self.full):
             self.setuistatus(self.full)

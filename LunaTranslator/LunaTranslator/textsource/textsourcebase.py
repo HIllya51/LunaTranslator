@@ -46,22 +46,20 @@ class basetext:
             print_exc()
         threading.Thread(target=self.sqlitethread).start()
 
-    def dispatchtext(self, text):
+    def dispatchtext(self, *arg, **kwarg):
         if self.ending or not self.isautorunning:
             return
-        if isinstance(text, tuple):
-            self.textgetmethod(*text)
-        else:
-            self.textgetmethod(text)
+        self.textgetmethod(*arg, **kwarg)
 
     def waitfortranslation(self, text):
         resultwaitor = queue.Queue()
-        self.dispatchtext((text, True, resultwaitor.put, True))
-        text, info = resultwaitor.get(), 0
-        if info:
-            gobject.baseobject.displayinfomessage(text, info)
-        else:
-            return text
+        self.textgetmethod(
+            text,
+            is_auto_run=True,
+            waitforresultcallback=resultwaitor.put,
+            onlytrans=True,
+        )
+        return resultwaitor.get()
 
     @property
     def isautorunning(self):
@@ -92,7 +90,9 @@ class basetext:
                         "SELECT * FROM artificialtrans WHERE source = ?", (src,)
                     ).fetchone()
                     try:
-                        savehook_new_data[gobject.baseobject.gameuid]["statistic_wordcount"] += lensrc
+                        savehook_new_data[gobject.baseobject.gameuid][
+                            "statistic_wordcount"
+                        ] += lensrc
                     except:
                         pass
                     if ret is None:

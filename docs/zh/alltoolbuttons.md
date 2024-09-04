@@ -71,12 +71,11 @@
     当使用过一次`进行一次OCR`后，使用这个按钮，可以在原来的位置上再次进行一次OCR而无需重新选择识别区域。
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_直接替换
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_sakura_gpt_词典
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_占位符_全局
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_占位符
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_全局
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻译结果修正_全局
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻译结果修正
-    以上六个按钮，效果类似，是用来快捷打开翻译优化的设置窗口，增加新的指定词条的。<br>
+    以上五个按钮，效果类似，是用来快捷打开翻译优化的设置窗口，增加新的指定词条的。<br>
     对于`全局`，则一定打开全局的词典设置。对于非`全局`，则当有绑定的游戏(HOOK链接游戏/剪贴板、OCR绑定窗口)时，打开游戏的专用词典设置，否则则是打开全局的词典设置
 1. #### <i class="fa fa-minus"></i> <i class="fa fa-icon fa-rotate-right"></i> 最小化到托盘
     略
@@ -94,11 +93,10 @@
     当绑定游戏窗口后（不只是hook模式，ocr或剪贴板模式都可以，只要绑定了游戏窗口），可以一键对游戏进行静音，省去了在系统音量合成器进行游戏静音的麻烦。
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 显示/隐藏原文
     切换是否显示原文的状态，当下一次读取文本时，才真正生效。
-1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 显示/隐藏翻译
-    切换是否显示翻译的状态，当下一次读取文本时，才真正生效。
+1. #### <i class="fa fa-toggle-on"></i> <i class="btnstatus2 fa fa-toggle-off"></i> 使用/跳过翻译
+    切换是否使用翻译，系翻译的总开关，关闭后将不会进行任何翻译。
 1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> 朗读
-    对当前文本进行语音合成。<br>
-    该朗读会无视`跳过`（如果在`语音指定`中，匹配当前文本目标为`跳过`，则使用按钮进行朗读时，会无视跳过，强制进行朗读）
+    左击按钮会对当前文本进行语音合成。<br>右击该按钮会中断朗读。<br>    该朗读会无视`跳过`（如果在`语音指定`中，匹配当前文本目标为`跳过`，则使用按钮进行朗读时，会无视跳过，强制进行朗读）
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 复制到剪贴板
     复制当前提取到的文本到剪贴板一次。如果想要自动提取到剪贴板，应当激活`文本输入`->`文本输出`->`剪贴板`->`自动输出`。
 1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 显示/隐藏历史翻译
@@ -117,7 +115,7 @@
     对于当前正在玩的游戏，打开备忘录窗口。对于每个游戏都有单独的一个备忘录文件。<br>
     可以用来临时写点笔录，或者把攻略复制进来看并且随玩随删，很方便，免去打开网页/单独开一个txt文件的麻烦，非常实用。
 1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 绑定窗口（部分软件不支持）（点击自己取消）
-    **该按钮非常重要，需要功能都依赖于该按钮先进行设置后才可用**<br>
+    **该按钮非常重要，许多功能都依赖于该按钮先进行设置后才可用**<br>
     在绑定了游戏窗口后，`窗口缩放` `窗口截图` `游戏静音`，`跟随游戏窗口`->`游戏失去焦点时取消置顶`和`游戏窗口移动时同步移动`，以及记录游戏时间等，才可用。
     不论HOOK/OCR/剪贴板模式，该按钮都可用。<br>
     在HOOK模式下，会自动根据连接的游戏，自动绑定游戏窗口。但也可以在用该按钮重新选择其他窗口。<br>

@@ -77,31 +77,13 @@ class TS(basetrans):
     def translate(self, query):
         self.checkempty(["SECRET_KEY", "model"])
         self.contextnum = int(self.config["附带上下文个数"])
-        user_prompt = (
-            self.config.get("user_user_prompt", "")
-            if self.config.get("use_user_user_prompt", False)
-            else ""
-        )
-        try:
-            if "{sentence}" in user_prompt:
-                query = user_prompt.format(sentence=query)
-            else:
-                query = user_prompt + query
-        except:
-            pass
-        temperature = self.config["Temperature"]
 
-        if self.config["使用自定义promt"]:
-            message = [{"role": "system", "content": self.config["自定义promt"]}]
-        else:
-            message = [
-                {
-                    "role": "system",
-                    "message": "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
-                        self.srclang, self.tgtlang
-                    ),
-                },
-            ]
+        query = self._gptlike_createquery(
+            query, "use_user_user_prompt", "user_user_prompt"
+        )
+        sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
+        message = [{"role": "system", "message": sysprompt}]
+        temperature = self.config["Temperature"]
 
         message.append(
             {

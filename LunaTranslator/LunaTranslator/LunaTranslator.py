@@ -4,9 +4,7 @@ from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
-    _TR,
     savehook_new_list,
-    uid2gamepath,
     findgameuidofpath,
     savehook_new_data,
     static_data,
@@ -46,10 +44,11 @@ import windows
 import winsharedutils
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
-from myutils.utils import nowisdark, getfilemd5
+from myutils.utils import nowisdark
 from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
+from gui.setting_textinput_ocr import showocrimage
 
 
 class MAINUI:
@@ -80,7 +79,26 @@ class MAINUI:
         self.reader_uid = None
         self.__hwnd = None
         self.gameuid = 0
+        self.showocrimage = None
+        self.showocrimage_cached = None
         self.autoswitchgameuid = True
+        self.istriggertoupdate = False
+
+    def maybesetimage(self, pair):
+        if self.showocrimage:
+            try:
+                self.showocrimage.setimage.emit(pair)
+            except:
+                print_exc()
+        self.showocrimage_cached = pair
+
+    def createshowocrimage(self):
+        try:
+            self.showocrimage = showocrimage(self.settin_ui, self.showocrimage_cached)
+            if self.showocrimage:
+                self.showocrimage.show()
+        except:
+            print_exc()
 
     @property
     def reader(self):
@@ -240,13 +258,25 @@ class MAINUI:
                     return
 
     def textgetmethod(
-        self, text, is_auto_run=True, waitforresultcallback=None, onlytrans=False
+        self,
+        text,
+        is_auto_run=True,
+        waitforresultcallback=None,
+        onlytrans=False,
+        donttrans=False,
     ):
         with self.solvegottextlock:
-            self.textgetmethod_1(text, is_auto_run, waitforresultcallback, onlytrans)
+            self.textgetmethod_1(
+                text, is_auto_run, waitforresultcallback, onlytrans, donttrans
+            )
 
     def textgetmethod_1(
-        self, text, is_auto_run=True, waitforresultcallback=None, onlytrans=False
+        self,
+        text,
+        is_auto_run=True,
+        waitforresultcallback=None,
+        onlytrans=False,
+        donttrans=False,
     ):
         safe_callback = waitforresultcallback if waitforresultcallback else lambda _: 1
         safe_callback_none = functools.partial(safe_callback, "")
@@ -267,10 +297,20 @@ class MAINUI:
             is_auto_run
             and (
                 text == self.currenttext
-                or len(text)
-                > (max(globalconfig["maxoriginlength"], globalconfig["maxlength"]))
+                or (
+                    len(text) < globalconfig["minlength"]
+                    or len(text) > globalconfig["maxlength"]
+                )
             )
         ):
+            if text != "":
+                if len(text) > globalconfig["maxlength"]:
+                    text = text[: globalconfig["maxlength"]] + "……"
+                else:
+                    text = text
+                self.translation_ui.displayraw1.emit(
+                    dict(text=text, color=globalconfig["rawtextcolor"])
+                )
             return safe_callback_none()
 
         try:
@@ -282,6 +322,8 @@ class MAINUI:
             )
         except:
             pass
+        if donttrans:
+            return safe_callback_none()
         if onlytrans == False:
             self.currenttext = text
             self.currenttranslate = ""
@@ -310,13 +352,13 @@ class MAINUI:
         else:
             _showrawfunction_sig = uuid.uuid4()
 
-        text_solved, optimization_params = self.solvebeforetrans(text)
+        if not globalconfig["showfanyi"]:
+            safe_callback_none()
+            if _showrawfunction:
+                _showrawfunction()
+            return
 
-        if is_auto_run and (
-            len(text_solved) < globalconfig["minlength"]
-            or len(text_solved) > globalconfig["maxlength"]
-        ):
-            return safe_callback_none()
+        text_solved, optimization_params = self.solvebeforetrans(text)
 
         premtalready = ["premt"]
         usefultranslators = list(self.translators.keys())
@@ -424,7 +466,6 @@ class MAINUI:
         )
         task = (
             callback,
-            text,
             text_solved,
             waitforresultcallback,
             is_auto_run,
@@ -490,7 +531,7 @@ class MAINUI:
             self.refresh_on_get_trans_signature = _showrawfunction_sig
             _showrawfunction()
 
-        if currentsignature == self.currentsignature and globalconfig["showfanyi"]:
+        if currentsignature == self.currentsignature:
             displayreskwargs = dict(
                 name=globalconfig["fanyi"][classname]["name"],
                 color=globalconfig["fanyi"][classname]["color"],
@@ -608,7 +649,8 @@ class MAINUI:
             return
         if text2 is None:
             text2 = self.ttsrepair(text1, self.__usewhich())
-        reader.read(text2, force)
+        self.audioplayer.timestamp = uuid.uuid4()
+        reader.read(text2, force, self.audioplayer.timestamp)
 
     def readcurrent(self, force=False, needresult=False):
         if needresult:
@@ -933,8 +975,12 @@ class MAINUI:
         trayMenu.addAction(quitAction)
         self.tray.setContextMenu(trayMenu)
         self.tray.activated.connect(self.leftclicktray)
-        self.tray.messageClicked.connect(winsharedutils.dispatchcloseevent)
+        self.tray.messageClicked.connect(self.triggertoupdate)
         self.tray.show()
+
+    def triggertoupdate(self):
+        self.istriggertoupdate = True
+        winsharedutils.dispatchcloseevent()
 
     def leftclicktray(self, reason):
         if reason == QSystemTrayIcon.ActivationReason.Trigger:

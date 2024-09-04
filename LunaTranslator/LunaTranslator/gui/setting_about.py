@@ -76,7 +76,7 @@ def doupdate():
         gobject.getcachedir("Updater.exe"),
     )
     subprocess.Popen(
-        rf".\cache\Updater.exe update .\cache\update\LunaTranslator{bit} "
+        rf".\cache\Updater.exe update {int(gobject.baseobject.istriggertoupdate)} .\cache\update\LunaTranslator{bit} "
         + dynamiclink("{main_server}")
     )
 
@@ -129,8 +129,9 @@ def updatemethod(urls, self):
             prg = int(10000 * file_size / size)
             prg100 = prg / 100
             sz = int(1000 * (int(size / 1024) / 1024)) / 1000
-            self.progresssignal.emit(
-                "总大小{} MB 进度 {:0.2f}% ".format(sz, prg100), prg
+            self.downloadprogress_cache = (
+                "总大小{} MB 进度 {:0.2f}% ".format(sz, prg100),
+                prg,
             )
 
     if check_interrupt():
@@ -140,7 +141,7 @@ def updatemethod(urls, self):
 
 
 def uncompress(self, savep):
-    self.progresssignal.emit(_TR("正在解压"), 10000)
+    self.downloadprogress_cache = (_TR("正在解压"), 10000)
     shutil.rmtree(gobject.getcachedir("update/LunaTranslator/"))
     with zipfile.ZipFile(savep) as zipf:
         zipf.extractall(gobject.getcachedir("update"))
@@ -152,7 +153,7 @@ def versioncheckthread(self):
     while True:
         x = versionchecktask.get()
         gobject.baseobject.update_avalable = False
-        self.progresssignal.emit("", 0)
+        self.downloadprogress_cache = ("", 0)
         if not x:
             continue
         self.versiontextsignal.emit("获取中")  # ,'',url,url))
@@ -171,26 +172,18 @@ def versioncheckthread(self):
         )
         if not (need and globalconfig["autoupdate"]):
             continue
-        self.progresssignal.emit("……", 0)
+        self.downloadprogress_cache = ("……", 0)
         savep = updatemethod(_version[1:], self)
         if not savep:
-            self.progresssignal.emit(_TR("自动更新失败，请手动更新"), 0)
+            self.downloadprogress_cache = (_TR("自动更新失败，请手动更新"), 0)
             continue
 
         uncompress(self, savep)
         gobject.baseobject.update_avalable = True
-        self.progresssignal.emit(_TR("准备完毕，等待更新"), 10000)
+        self.downloadprogress_cache = (_TR("准备完毕，等待更新"), 10000)
         gobject.baseobject.showtraymessage(
             sversion, _TR("准备完毕，等待更新") + "\n" + _TR("点击消息后退出并开始更新")
         )
-
-
-def updateprogress(self, text, val):
-    try:
-        self.downloadprogress.setValue(val)
-        self.downloadprogress.setFormat(text)
-    except:
-        self.downloadprogress_cache = val, text
 
 
 def createdownloadprogress(self):
@@ -202,12 +195,18 @@ def createdownloadprogress(self):
     self.downloadprogress.setAlignment(
         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
     )
-    try:
-        val, text = self.downloadprogress_cache
+
+    def __cb(self):
+        try:
+            text, val = self.downloadprogress_cache
+        except:
+            return
         self.downloadprogress.setValue(val)
         self.downloadprogress.setFormat(text)
-    except:
-        pass
+
+    self.downloadprogresstimer = QTimer(self.downloadprogress)
+    self.downloadprogresstimer.timeout.connect(functools.partial(__cb, self))
+    self.downloadprogresstimer.start(100)
     return self.downloadprogress
 
 

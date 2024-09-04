@@ -3,7 +3,7 @@ import requests, re, json
 from cishu.cishubase import cishubase
 
 
-def mojiclicksearch(self,word):
+def mojiclicksearch(self, word):
 
     headers = {
         "accept": "*/*",
@@ -24,12 +24,11 @@ def mojiclicksearch(self,word):
         {
             "searchText": word,
             "langEnv": "zh-CN_ja",
-            "_SessionToken": "r:718e90d7837c22ac48f71d000d0a62f4",
             "_ClientVersion": "js3.4.1",
             "_ApplicationId": "E62VyFVLMiW7kvbtVq3p",
             "g_os": "PCWeb",
-            "g_ver": "v4.8.1.20240522",
-            "_InstallationId": "101241e8-4004-40b2-a040-f6839ed76d32",
+            "g_ver": "v4.8.8.20240829",
+            "_InstallationId": "563b6bd3-e514-46fb-8557-d6138311a06c",
         },
         ensure_ascii=False,
     ).encode()
@@ -573,7 +572,7 @@ def mojiclicksearch(self,word):
     return result
 
 
-def mojizonghe(self,word):
+def mojizonghe(self, word):
     response = requests.post(
         "https://api.mojidict.com/parse/functions/union-api",
         json={
@@ -590,11 +589,26 @@ def mojizonghe(self,word):
                     },
                 },
             ],
+            "_ClientVersion": "js3.4.1",
             "_ApplicationId": "E62VyFVLMiW7kvbtVq3p",
+            "g_os": "PCWeb",
+            "g_ver": "v4.8.8.20240829",
+            "_InstallationId": "563b6bd3-e514-46fb-8557-d6138311a06c",
         },
         headers={
+            "accept": "*/*",
+            "accept-language": "zh-CN,zh;q=0.9,ar;q=0.8,sq;q=0.7,ru;q=0.6",
             "content-type": "text/plain",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+            "origin": "https://www.mojidict.com",
+            "priority": "u=1, i",
+            "referer": "https://www.mojidict.com/",
+            "sec-ch-ua": '"Not)A;Brand";v="99", "Google Chrome";v="127", "Chromium";v="127"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-site",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
         },
         proxies=self.proxy,
     )
@@ -613,12 +627,12 @@ class mojidict(cishubase):
 
         result = ""
         try:
-            result += mojiclicksearch(self,word)
+            result += mojiclicksearch(self, word)
             result += "<br>"
         except:
             pass
         try:
-            result += mojizonghe(self,word)
+            result += mojizonghe(self, word)
         except:
             pass
         return result

@@ -31,13 +31,8 @@ class TS(basetrans):
 
     def createdata(self, message):
         temperature = self.config["Temperature"]
+        system = self._gptlike_createsys("use_user_prompt", "user_prompt")
 
-        if self.config["use_user_prompt"]:
-            system = self.config["user_prompt"]
-        else:
-            system = "You are a translator. Please help me translate the following {} text into {}, and you should only tell me the translation.".format(
-                self.srclang, self.tgtlang
-            )
         data = dict(
             system=system,
             model=self.config["model"],
@@ -106,18 +101,9 @@ class TS(basetrans):
     def translate(self, query):
         acss = self.checkchange()
         self.contextnum = int(self.config["context_num"])
-        user_prompt = (
-            self.config.get("user_user_prompt", "")
-            if self.config.get("use_user_user_prompt", False)
-            else ""
+        query = self._gptlike_createquery(
+            query, "use_user_user_prompt", "user_user_prompt"
         )
-        try:
-            if "{sentence}" in user_prompt:
-                query = user_prompt.format(sentence=query)
-            else:
-                query = user_prompt + query
-        except:
-            pass
         message = []
         for _i in range(min(len(self.context) // 2, self.contextnum)):
             i = (

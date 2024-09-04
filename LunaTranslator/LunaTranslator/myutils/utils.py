@@ -5,6 +5,7 @@ import socket, gobject, uuid, subprocess, functools
 import ctypes, importlib, json
 import ctypes.wintypes
 from qtsymbols import *
+from string import Formatter
 from ctypes import CDLL, c_void_p, CFUNCTYPE, c_size_t, cast, c_char, POINTER
 from ctypes.wintypes import HANDLE
 from traceback import print_exc
@@ -20,7 +21,6 @@ from myutils.config import (
 import threading, winreg
 import re, heapq, winsharedutils
 from myutils.wrapper import tryprint, threader
-from myutils.subproc import subproc_w
 
 
 def checkisusingwine():
@@ -195,17 +195,19 @@ def dispatchsearchfordata(gameuid, target, vid):
     targetmod[target].dispatchsearchfordata(gameuid, vid)
 
 
-def trysearchforid_1(gameuid, searchargs: list):
+def trysearchforid_1(gameuid, searchargs: list, target=None):
     infoid = None
-    primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
-    __ = [primitivtemetaorigin]
-    for k in targetmod:
-        if k == primitivtemetaorigin:
-            continue
-        if not globalconfig["metadata"][k]["auto"]:
-            continue
-        __.append(k)
-
+    if target is None:
+        primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
+        __ = [primitivtemetaorigin]
+        for k in targetmod:
+            if k == primitivtemetaorigin:
+                continue
+            if not globalconfig["metadata"][k]["auto"]:
+                continue
+            __.append(k)
+    else:
+        __ = [target]
     for key in __:
         vid = None
         for arg in searchargs:
@@ -232,13 +234,16 @@ def trysearchforid_1(gameuid, searchargs: list):
         dispatchsearchfordata(gameuid, key, vid)
 
 
-def trysearchforid(gameuid, searchargs: list):
-    threading.Thread(target=trysearchforid_1, args=(gameuid, searchargs)).start()
+def trysearchforid(*argc):
+    threading.Thread(target=trysearchforid_1, args=argc).start()
 
 
 def gamdidchangedtask(key, idname, gameuid):
     vid = savehook_new_data[gameuid].get(idname, "")
-    dispatchsearchfordata(gameuid, key, vid)
+    if not vid:
+        trysearchforid(gameuid, [savehook_new_data[gameuid]["title"]], key)
+    else:
+        dispatchsearchfordata(gameuid, key, vid)
 
 
 def titlechangedtask(gameuid, title):
@@ -427,18 +432,22 @@ def minmaxmoveobservefunc(self):
     def win_event_callback(
         hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime
     ):
-
         try:
-            if not gobject.baseobject.hwnd:
+            myhwnd = gobject.baseobject.hwnd
+            if not myhwnd:
                 return
             if (
                 event == windows.EVENT_OBJECT_DESTROY
                 and idObject == windows.OBJID_WINDOW
             ):
-                if hwnd == gobject.baseobject.hwnd:
+                if hwnd == myhwnd:
                     gobject.baseobject.hwnd = None
                     return
-            p_pids = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
+            p_pids = windows.GetWindowThreadProcessId(myhwnd)
+            if not p_pids:
+                # 有时候谜之没有EVENT_OBJECT_DESTROY/僵尸进程
+                gobject.baseobject.hwnd = None
+                return
             _focusp = windows.GetWindowThreadProcessId(hwnd)
             if event != windows.EVENT_SYSTEM_FOREGROUND:
                 return
@@ -835,3 +844,37 @@ class loopbackrecorder:
             with open(file, "wb") as ff:
                 ff.write(mp3)
             callback(file)
+
+
+def copytree(src, dst, copy_function=shutil.copy2):
+    names = os.listdir(src)
+
+    os.makedirs(dst, exist_ok=True)
+    for name in names:
+
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        try:
+            if os.path.isdir(srcname):
+                copytree(srcname, dstname, copy_function)
+            else:
+                copy_function(srcname, dstname)
+        except:
+            pass
+
+
+class SafeFormatter(Formatter):
+    def format(self, format_string, must_exists=None, *args, **kwargs):
+        if must_exists:
+            check = "{" + must_exists + "}"
+            if check not in format_string:
+                format_string += check
+
+        return super().format(format_string, *args, **kwargs)
+
+    def get_value(self, key, args, kwargs):
+        if key in kwargs:
+            return super().get_value(key, args, kwargs)
+        else:
+            print(f"{key} is missing")
+            return key
