@@ -72,6 +72,7 @@ class ResponseBase:
         self.url = ""
         self.cookies = {}
         self.status_code = 0
+        self.status_text = ""
         self.__content = b""
         self.__content_s = []
         self.content_prepared = threading.Event()
@@ -156,17 +157,12 @@ class ResponseBase:
             yield pending
 
     def raise_for_status(self):
-        reason = ""
         http_error_msg = ""
         if 400 <= self.status_code < 500:
-            http_error_msg = (
-                f"{self.status_code} Client Error: {reason} for url: {self.url}"
-            )
+            http_error_msg = f"{self.status_code} Client Error: {self.status_text} for url: {self.url}"
 
         elif 500 <= self.status_code < 600:
-            http_error_msg = (
-                f"{self.status_code} Server Error: {reason} for url: {self.url}"
-            )
+            http_error_msg = f"{self.status_code} Server Error: {self.status_text} for url: {self.url}"
 
         if http_error_msg:
             raise HTTPError(http_error_msg)
@@ -324,10 +320,11 @@ class Requester_common:
         return cookie
 
     def _parseheader2dict(self, headerstr: str):
-        # print(headerstr)
         header = CaseInsensitiveDict()
         cookie = {}
-        for line in headerstr.split("\r\n")[1:]:
+        lines = headerstr.split("\r\n")
+        status_text = " ".join(lines[0].split(" ")[2:])
+        for line in lines[1:]:
             idx = line.find(": ")
             if idx == -1:
                 continue
@@ -335,7 +332,7 @@ class Requester_common:
                 cookie.update(self._parsecookiestring(line[idx + 2 :]))
             else:
                 header[line[:idx]] = line[idx + 2 :]
-        return CaseInsensitiveDict(header), cookie
+        return CaseInsensitiveDict(header), cookie, status_text
 
     def _parsejson(self, _json):
         databytes = json.dumps(_json).encode("utf8")

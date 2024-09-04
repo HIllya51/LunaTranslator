@@ -97,22 +97,28 @@ class Requester(Requester_common):
             que.append(bs)
         return realsize
 
+    def _filter_header(self, headertext):
+        header = []
+        for line in headertext.split("\n"):
+            if line.startswith("HTTP/"):
+                header = []
+            header.append(line)
+        return "\n".join(header)
+
     def __getrealheader(self, headerqueue):
         if isinstance(headerqueue, queue.Queue):
-            header = ""
+            header = []
             while True:
                 _headerb = headerqueue.get()
                 if _headerb == 0:
                     break
-                elif _headerb == 1:
-                    raise CURLException()
-                _headerb = _headerb.decode("utf8")
-                if _headerb.startswith("HTTP/"):
-                    header = ""
-                header += _headerb
-            return header
+                elif isinstance(_headerb, Exception):
+                    raise _headerb
+                header.append(_headerb)
+
         elif isinstance(headerqueue, list):
-            return b"".join(headerqueue).decode("utf8")
+            header = headerqueue
+        return self._filter_header(b"".join(header).decode("utf8"))
 
     def _setheaders(self, curl, headers, cookies):
         lheaders = Autoslist()
@@ -208,17 +214,11 @@ class Requester(Requester_common):
         if stream:
 
             def ___perform():
-                error = False
                 try:
                     self._perform(curl)
-                except:
-                    print_exc()
-                    headerqueue.put(1)
-                    error = True
+                except Exception as e:
+                    headerqueue.put(e)
                 resp.queue.put(None)
-                if error:
-                    print(url)
-                    raise CURLException()
 
             threading.Thread(target=___perform, daemon=True).start()
 
@@ -229,7 +229,7 @@ class Requester(Requester_common):
         if not stream:
             resp.content = b"".join(resp.queue)
 
-        resp.headers, resp.cookies = self._parseheader2dict(header)
+        resp.headers, resp.cookies, resp.status_text = self._parseheader2dict(header)
         resp.status_code = self._getStatusCode(curl)
         resp.url = url
 
