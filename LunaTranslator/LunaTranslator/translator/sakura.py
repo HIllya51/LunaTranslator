@@ -192,6 +192,8 @@ class TS(basetrans):
         if not output.headers["Content-Type"].startswith("text/event-stream"):
             raise Exception(output.text)
         for o in output.iter_lines():
+            if o == b"data: [DONE]":
+                break
             try:
                 res = o.decode("utf-8").strip()[6:]  # .replace("data: ", "")
                 # print(res)
