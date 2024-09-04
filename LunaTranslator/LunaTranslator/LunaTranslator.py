@@ -284,8 +284,9 @@ class MAINUI:
             return
         if is_auto_run and text == self.currenttext:
             return
+        currentsignature = uuid.uuid4()
         if onlytrans == False:
-            self.currentsignature = currentsignature = uuid.uuid4()
+            self.currentsignature = currentsignature
         try:
             origin = text
             text = POSTSOLVE(text)
