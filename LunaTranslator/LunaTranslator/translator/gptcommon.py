@@ -83,15 +83,16 @@ class gptcommon(basetrans):
                 # text/html
                 raise Exception(response.text)
             for chunk in response.iter_lines():
-                response_data = chunk.decode("utf-8").strip()
+                response_data: str = chunk.decode("utf-8").strip()
+                if not response_data.startswith("data: "):
+                    continue
+                response_data = response_data[6:]
                 if not response_data:
                     continue
-                if response_data == "data: [DONE]":
+                if response_data == "[DONE]":
                     break
-                if response_data == ": OPENROUTER PROCESSING":
-                    continue
                 try:
-                    json_data = json.loads(response_data[6:])
+                    json_data = json.loads(response_data)
                     rs = json_data["choices"][0].get("finish_reason")
                     if rs and rs != "null":
                         break

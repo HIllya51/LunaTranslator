@@ -191,18 +191,19 @@ class TS(basetrans):
             raise ValueError(f"连接到Sakura API超时：{self.api_url}")
         if not output.headers["Content-Type"].startswith("text/event-stream"):
             raise Exception(output.text)
-        for o in output.iter_lines():
-            o = o.decode("utf-8").strip()
-            if o == "data: [DONE]":
+        for chunk in output.iter_lines():
+            response_data: str = chunk.decode("utf-8").strip()
+            if not response_data.startswith("data: "):
+                continue
+            response_data = response_data[6:]
+            if not response_data:
+                continue
+            if response_data == "[DONE]":
                 break
             try:
-                res = o[6:]
-                # print(res)
-                if res == "":
-                    continue
-                res = json.loads(res)
+                res = json.loads(response_data)
             except:
-                raise Exception(o)
+                raise Exception(response_data)
 
             yield res
 
