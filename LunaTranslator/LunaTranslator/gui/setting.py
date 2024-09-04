@@ -16,7 +16,6 @@ from gui.setting_about import (
     setTab_aboutlazy,
     setTab_update,
     versionlabelmaybesettext,
-    updateprogress,
     versioncheckthread,
 )
 from gui.dynalang import LListWidgetItem, LListWidget
@@ -67,7 +66,6 @@ class TabWidget(QWidget):
 class Setting(closeashidewindow):
     voicelistsignal = pyqtSignal(object)
     versiontextsignal = pyqtSignal(str)
-    progresssignal = pyqtSignal(str, int)
     progresssignal2 = pyqtSignal(str, int)
     progresssignal3 = pyqtSignal(int)
     showandsolvesig = pyqtSignal(str, str)
@@ -81,7 +79,6 @@ class Setting(closeashidewindow):
         self.versiontextsignal.connect(
             functools.partial(versionlabelmaybesettext, self)
         )
-        self.progresssignal.connect(functools.partial(updateprogress, self))
         self.isfirst = True
         versioncheckthread(self)
         registrhotkeys(self)

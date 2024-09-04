@@ -23,15 +23,15 @@ int updatewmain(int argc, wchar_t *argv[])
     *(wcsrchr(path, '\\')) = 0;
 
     SetCurrentDirectory(path);
+    int needreload = std::stoi(argv[1]);
     try
     {
-        std::filesystem::copy(argv[1], L".\\", std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
-        MessageBoxW(GetForegroundWindow(), L"Update success", L"Success", 0);
+        std::filesystem::copy(argv[2], L".\\", std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
     }
     catch (std::exception &e)
     {
         MessageBoxA(GetForegroundWindow(), (std::string("Update failed!\r\n") + e.what()).c_str(), "Error", 0);
-        ShellExecute(0, L"open", (std::wstring(argv[2]) + L"/Github/LunaTranslator/releases").c_str(), NULL, NULL, SW_SHOWNORMAL);
+        ShellExecute(0, L"open", (std::wstring(argv[3]) + L"/Github/LunaTranslator/releases").c_str(), NULL, NULL, SW_SHOWNORMAL);
         return 0;
     }
     try
@@ -41,6 +41,11 @@ int updatewmain(int argc, wchar_t *argv[])
     }
     catch (std::exception &e)
     {
+    }
+    MessageBoxW(GetForegroundWindow(), L"Update success", L"Success", 0);
+    if (needreload)
+    {
+        ShellExecute(0, L"open", L".\\LunaTranslator.exe", NULL, NULL, SW_SHOWNORMAL);
     }
     return 0;
 }

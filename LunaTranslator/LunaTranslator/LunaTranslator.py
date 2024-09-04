@@ -82,6 +82,7 @@ class MAINUI:
         self.showocrimage = None
         self.showocrimage_cached = None
         self.autoswitchgameuid = True
+        self.istriggertoupdate = False
 
     def maybesetimage(self, pair):
         if self.showocrimage:
@@ -974,8 +975,12 @@ class MAINUI:
         trayMenu.addAction(quitAction)
         self.tray.setContextMenu(trayMenu)
         self.tray.activated.connect(self.leftclicktray)
-        self.tray.messageClicked.connect(winsharedutils.dispatchcloseevent)
+        self.tray.messageClicked.connect(self.triggertoupdate)
         self.tray.show()
+
+    def triggertoupdate(self):
+        self.istriggertoupdate = True
+        winsharedutils.dispatchcloseevent()
 
     def leftclicktray(self, reason):
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
