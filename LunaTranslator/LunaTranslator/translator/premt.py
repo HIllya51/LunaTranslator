@@ -41,7 +41,8 @@ class TS(basetrans):
             maxsim = 0
             savet = "{}"
             ret = self.sql.execute("SELECT * FROM artificialtrans  ").fetchall()
-
+            if not ret:
+                return {}
             for line in ret:
                 text = line[1]
                 trans = line[2]
@@ -61,6 +62,8 @@ class TS(basetrans):
             ret = self.sql.execute(
                 "SELECT machineTrans FROM artificialtrans WHERE source = ?", (content,)
             ).fetchone()
+            if not ret:
+                return {}
             try:
                 ret = json.loads(ret[0])
             except:

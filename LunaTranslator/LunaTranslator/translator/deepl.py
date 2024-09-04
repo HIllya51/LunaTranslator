@@ -75,7 +75,7 @@ class TS(basetrans):
             "target_lang": self.tgtlang,
         }
 
-        response = self.proxysession.post(self.config["api"], json=payload)
+        response = self.proxysession.post(self.multiapikeycurrent["api"], json=payload)
 
         try:
             return response.json()["data"]

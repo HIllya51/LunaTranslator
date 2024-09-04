@@ -4,16 +4,13 @@ from ctypes import c_long, cast, pointer, POINTER, c_char
 from requests import ResponseBase, Timeout, Requester_common
 from traceback import print_exc
 
- 
-
 
 class Response(ResponseBase):
     def __init__(self, stream=False):
         super().__init__(stream)
-        self.last_error = 0
         self.keeprefs = []
         self.queue = queue.Queue()
- 
+
     def iter_content_impl(self, chunk_size=1):
 
         downloadeddata = b""
@@ -35,9 +32,6 @@ class Response(ResponseBase):
         while len(downloadeddata):
             yield downloadeddata[:chunk_size]
             downloadeddata = downloadeddata[chunk_size:]
-
-    def raise_for_status(self):
-        MaybeRaiseException(self.last_error)
 
 
 class autostatus:
@@ -63,22 +57,18 @@ class Requester(Requester_common):
         curl_easy_setopt(curl, CURLoption.USERAGENT, self.default_UA.encode("utf8"))
         return curl
 
-    def raise_for_status(self):
-        MaybeRaiseException(self.last_error)
     def _getStatusCode(self, curl):
         status_code = c_long()
-        self.last_error = curl_easy_getinfo(
-            curl, CURLINFO.RESPONSE_CODE, pointer(status_code)
+        MaybeRaiseException(
+            curl_easy_getinfo(curl, CURLINFO.RESPONSE_CODE, pointer(status_code))
         )
-        self.raise_for_status()
         return status_code.value
 
     def _set_proxy(self, curl, proxy):
         if proxy:
-            self.last_error = curl_easy_setopt(
-                curl, CURLoption.PROXY, proxy.encode("utf8")
+            MaybeRaiseException(
+                curl_easy_setopt(curl, CURLoption.PROXY, proxy.encode("utf8"))
             )
-            self.raise_for_status()
 
     def _set_verify(self, curl, verify):
         if verify == False:
@@ -89,8 +79,7 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, 2)
 
     def _perform(self, curl):
-        self.last_error = curl_easy_perform(curl)
-        self.raise_for_status()
+        MaybeRaiseException(curl_easy_perform(curl))
 
     def _set_allow_redirects(self, curl, allow_redirects):
 
@@ -116,7 +105,7 @@ class Requester(Requester_common):
                 if _headerb == 0:
                     break
                 elif _headerb == 1:
-                    self.raise_for_status()
+                    raise CURLException()
                 _headerb = _headerb.decode("utf8")
                 if _headerb.startswith("HTTP/"):
                     header = ""
@@ -131,8 +120,7 @@ class Requester(Requester_common):
             lheaders = curl_slist_append(
                 cast(lheaders, POINTER(curl_slist)), _.encode("utf8")
             )
-        self.last_error = curl_easy_setopt(curl, CURLoption.HTTPHEADER, lheaders)
-        self.raise_for_status()
+        MaybeRaiseException(curl_easy_setopt(curl, CURLoption.HTTPHEADER, lheaders))
 
         if cookies:
             cookie = self._parsecookie(cookies)
@@ -176,8 +164,7 @@ class Requester(Requester_common):
         if method == "HEAD":
             curl_easy_setopt(curl, CURLoption.NOBODY, 1)
         curl_easy_setopt(curl, CURLoption.CUSTOMREQUEST, method.encode("utf8"))
-        self.last_error = curl_easy_setopt(curl, CURLoption.URL, url.encode("utf8"))
-        self.raise_for_status()
+        MaybeRaiseException(curl_easy_setopt(curl, CURLoption.URL, url.encode("utf8")))
         curl_easy_setopt(curl, CURLoption.PORT, port)
 
         self._setheaders(curl, headers, cookies)
@@ -231,7 +218,7 @@ class Requester(Requester_common):
                 resp.queue.put(None)
                 if error:
                     print(url)
-                    self.raise_for_status()
+                    raise CURLException()
 
             threading.Thread(target=___perform, daemon=True).start()
 
@@ -244,6 +231,6 @@ class Requester(Requester_common):
 
         resp.headers, resp.cookies = self._parseheader2dict(header)
         resp.status_code = self._getStatusCode(curl)
+        resp.url = url
 
-        resp.last_error = self.last_error
         return resp

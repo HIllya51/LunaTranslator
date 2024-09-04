@@ -42,9 +42,6 @@ class Response(ResponseBase):
             yield downloadeddata[:chunk_size]
             downloadeddata = downloadeddata[chunk_size:]
 
-    def raise_for_status(self):
-        MaybeRaiseException()
-
 
 class Requester(Requester_common):
     def request(self, *argc, **kwarg) -> ResponseBase:
@@ -183,6 +180,7 @@ class Requester(Requester_common):
         resp.headers, resp.cookies = self._parseheader2dict(self._getheaders(hRequest))
 
         resp.status_code = self._getStatusCode(hRequest)
+        resp.url = url
         if stream:
             resp.hSession = self.hSession
             resp.hconn = hConnect
@@ -204,7 +202,6 @@ class Requester(Requester_common):
             if succ == 0:
                 MaybeRaiseException()
             downloadeddata += buff[: downloadedSize.value]
-
         resp.content = self.decompress(downloadeddata, resp.headers)
 
         return resp

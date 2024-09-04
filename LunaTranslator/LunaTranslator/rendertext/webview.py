@@ -68,7 +68,7 @@ class TextBrowser(QWidget, dataget):
         self.masklabel_top = QLabel(self)
         self.masklabel_top.setMouseTracking(True)
         # self.masklabel_bottom.setStyleSheet('background-color:red')
-        self.saveclickfunction={}
+        self.saveclickfunction = {}
         self.masklabel = QLabel(self.webivewwidget)
         self.masklabel.setMouseTracking(True)
         self.webivewwidget.navigate(
@@ -205,7 +205,7 @@ class TextBrowser(QWidget, dataget):
         )
 
     def calllunaclickedword(self, wordinfo):
-        clickfunction= wordinfo.get('clickfunction',None)
+        clickfunction = wordinfo.get("clickfunction", None)
         if clickfunction:
             self.saveclickfunction.get(clickfunction)(False)
         else:
@@ -250,7 +250,7 @@ class TextBrowser(QWidget, dataget):
             ]["webview"][0]
         return currenttype
 
-    def _webview_append(self, _id, origin, atcenter, text, tag, flags, color):
+    def _webview_append(self, _id, origin, atcenter, text: str, tag, flags, color):
 
         fmori, fsori, boldori = self._getfontinfo(origin)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
@@ -287,17 +287,28 @@ class TextBrowser(QWidget, dataget):
                 if clickfunction:
                     func = "luna" + str(uuid.uuid4()).replace("-", "_")
                     _tag["clickfunction"] = func
-                    self.saveclickfunction[func]=clickfunction
+                    self.saveclickfunction[func] = clickfunction
             self.create_internal_rubytext(style, styleargs, _id, tag, args)
         else:
+            sig = "LUNASHOWHTML"
+            userawhtml = text.startswith(sig)
+            if userawhtml:
+                text = text[len(sig) :]
+            else:
+                if sig in text:
+                    # 显示名称时。不管了，就这样吧
+                    text = text.replace(sig, "")
+                    userawhtml = True
             args = dict(
                 atcenter=atcenter,
-                fm=fmori,
-                fs=fsori,
+                fontFamily=fmori,
+                fontSize=fsori,
                 bold=boldori,
                 color=color,
-                line_height=line_height,
+                lineHeight=line_height,
+                userawhtml=userawhtml,
             )
+
             self.create_internal_text(style, styleargs, _id, text, args)
 
     def clear(self):

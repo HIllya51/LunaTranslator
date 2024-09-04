@@ -16,6 +16,10 @@ class Timeout(RequestException):
     pass
 
 
+class HTTPError(RequestException):
+    pass
+
+
 class CaseInsensitiveDict(MutableMapping):
 
     def __init__(self, data=None, **kwargs):
@@ -65,6 +69,7 @@ class ResponseBase:
     def __init__(self, stream):
         self.headers = CaseInsensitiveDict()
         self.stream = stream
+        self.url = ""
         self.cookies = {}
         self.status_code = 0
         self.__content = b""
@@ -149,6 +154,22 @@ class ResponseBase:
 
         if pending is not None:
             yield pending
+
+    def raise_for_status(self):
+        reason = ""
+        http_error_msg = ""
+        if 400 <= self.status_code < 500:
+            http_error_msg = (
+                f"{self.status_code} Client Error: {reason} for url: {self.url}"
+            )
+
+        elif 500 <= self.status_code < 600:
+            http_error_msg = (
+                f"{self.status_code} Server Error: {reason} for url: {self.url}"
+            )
+
+        if http_error_msg:
+            raise HTTPError(http_error_msg)
 
 
 class Requester_common:
