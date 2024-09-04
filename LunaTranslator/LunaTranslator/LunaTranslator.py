@@ -266,9 +266,11 @@ class MAINUI:
         donttrans=False,
     ):
         with self.solvegottextlock:
-            self.textgetmethod_1(
+            succ = self.textgetmethod_1(
                 text, is_auto_run, waitforresultcallback, onlytrans, donttrans
             )
+            if waitforresultcallback and not succ:
+                waitforresultcallback("")
 
     def textgetmethod_1(
         self,
@@ -278,12 +280,12 @@ class MAINUI:
         onlytrans=False,
         donttrans=False,
     ):
-        safe_callback = waitforresultcallback if waitforresultcallback else lambda _: 1
-        safe_callback_none = functools.partial(safe_callback, "")
-        if text == "" or len(text) > 100000:
-            return safe_callback_none()
+        if not text:
+            return
+        if is_auto_run and text == self.currenttext:
+            return
         if onlytrans == False:
-            self.currentsignature = uuid.uuid4()
+            self.currentsignature = currentsignature = uuid.uuid4()
         try:
             origin = text
             text = POSTSOLVE(text)
@@ -292,38 +294,27 @@ class MAINUI:
             msg = str(type(e))[8:-2] + " " + str(e).replace("\n", "").replace("\r", "")
             self.translation_ui.displaystatus.emit(msg, "red", True, True)
             return
-
-        if text == "" or (
-            is_auto_run
-            and (
-                text == self.currenttext
-                or (
-                    len(text) < globalconfig["minlength"]
-                    or len(text) > globalconfig["maxlength"]
-                )
-            )
+        if not text:
+            return
+        if is_auto_run and (
+            len(text) < globalconfig["minlength"]
+            or len(text) > globalconfig["maxlength"]
         ):
-            if text not in ("", self.currenttext):
-                if len(text) > globalconfig["maxlength"]:
-                    text = text[: globalconfig["maxlength"]] + "……"
-                else:
-                    text = text
-                self.translation_ui.displayraw1.emit(
-                    dict(text=text, color=globalconfig["rawtextcolor"])
-                )
-            return safe_callback_none()
+
+            if len(text) > globalconfig["maxlength"]:
+                text = text[: globalconfig["maxlength"]] + "……"
+
+            self.translation_ui.displayraw1.emit(
+                dict(text=text, color=globalconfig["rawtextcolor"])
+            )
+            return
 
         try:
-            self.textsource.sqlqueueput(
-                (
-                    text,
-                    origin,
-                )
-            )
+            self.textsource.sqlqueueput((text, origin))
         except:
             pass
         if donttrans:
-            return safe_callback_none()
+            return
         if onlytrans == False:
             self.currenttext = text
             self.currenttranslate = ""
@@ -353,7 +344,6 @@ class MAINUI:
             _showrawfunction_sig = uuid.uuid4()
 
         if not globalconfig["showfanyi"]:
-            safe_callback_none()
             if _showrawfunction:
                 _showrawfunction()
             return
@@ -374,6 +364,7 @@ class MAINUI:
                         _colork = "premt"
                     no_available_translator = False
                     self.create_translate_task(
+                        currentsignature,
                         usefultranslators,
                         onlytrans,
                         _colork,
@@ -406,6 +397,7 @@ class MAINUI:
                     )
 
                 self.create_translate_task(
+                    currentsignature,
                     usefultranslators,
                     onlytrans,
                     engine,
@@ -418,9 +410,10 @@ class MAINUI:
                     is_auto_run,
                 )
         if no_available_translator:
-            safe_callback_none()
             if _showrawfunction:
                 _showrawfunction()
+            return
+        return True
 
     def ifuse_fix_translate_rank_preprare(
         self, engine, onlytrans, waitforresultcallback
@@ -440,6 +433,7 @@ class MAINUI:
 
     def create_translate_task(
         self,
+        currentsignature,
         usefultranslators,
         onlytrans,
         engine,
@@ -458,7 +452,7 @@ class MAINUI:
             waitforresultcallback,
             onlytrans,
             engine,
-            self.currentsignature,
+            currentsignature,
             optimization_params,
             _showrawfunction,
             _showrawfunction_sig,
