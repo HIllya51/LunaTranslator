@@ -1,9 +1,10 @@
 from qtsymbols import *
-import functools
+import functools, gobject
 from myutils.post import POSTSOLVE
 from myutils.utils import (
     selectdebugfile,
     checkpostlangmatch,
+    dynamiclink,
     loadpostsettingwindowmethod,
 )
 from myutils.config import globalconfig, postprocessconfig, static_data
@@ -59,7 +60,21 @@ def getcomparelayout(self):
 
 
 def setTab7_lazy(self, basel):
-    grids = [[("预处理方法", 6), "", "", "", ("调整执行顺序", 6)]]
+    grids = [
+        [
+            D_getIconButton(
+                lambda: gobject.baseobject.openlink(
+                    dynamiclink("{docs_server}/#/zh/textprocess")
+                ),
+                "fa.question",
+            ),
+            ("预处理方法", 5),
+            "",
+            "",
+            "",
+            ("调整执行顺序", 6),
+        ]
+    ]
     if set(postprocessconfig.keys()) != set(globalconfig["postprocess_rank"]):
         globalconfig["postprocess_rank"] = list(postprocessconfig.keys())
     sortlist = globalconfig["postprocess_rank"]
@@ -159,7 +174,16 @@ def setTab7_lazy(self, basel):
             button_down,
         ]
         grids.append(l)
-    grids2 = []
+    grids2 = [
+        [
+            D_getIconButton(
+                lambda: gobject.baseobject.openlink(
+                    dynamiclink("{docs_server}/#/zh/transoptimi")
+                ),
+                "fa.question",
+            )
+        ]
+    ]
     for item in static_data["transoptimi"]:
         name = item["name"]
         visname = item["visname"]
