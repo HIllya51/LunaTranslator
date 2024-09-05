@@ -48,7 +48,7 @@ class Textbrowser(QFrame):
             globalconfig["rendertext_using"] = "textbrowser"
             tb = importlib.import_module(f"rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
-            self.textbrowser.move(0, 0)
+        self.textbrowser.move(0, 0)
         self.textbrowser.setMouseTracking(True)
         self.textbrowser.contentsChanged.connect(self._contentsChanged)
         self.textbrowser.resize(size)
