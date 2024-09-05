@@ -212,7 +212,11 @@ class TS(basetrans):
         gpt_dict = query["gpt_dict"]
         contentraw = query["contentraw"]
         query = query["text"]
-        if (gpt_dict is not None) and len(gpt_dict):
+        if (
+            (gpt_dict is not None)
+            and len(gpt_dict)
+            and self.config["prompt_version"] == 1
+        ):
             query = contentraw
         self.checkempty(["API接口地址"])
         self.get_client(self.config["API接口地址"])

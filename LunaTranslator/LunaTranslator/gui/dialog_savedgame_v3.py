@@ -156,13 +156,13 @@ def getselectpos(parent, callback):
     if len(__uid) > 1:
         autoinitdialog(
             parent,
+            __d,
             "位置",
             600,
             [
                 {
                     "type": "combo",
                     "name": "位置",
-                    "d": __d,
                     "k": "k",
                     "list": __vis,
                 },

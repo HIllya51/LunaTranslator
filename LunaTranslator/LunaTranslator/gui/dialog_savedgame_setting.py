@@ -268,6 +268,7 @@ def maybehavebutton(self, gameuid, post):
                 callback = functools.partial(
                     autoinitdialog,
                     self,
+                    save_text_process_info["postprocessconfig"][post]['args'],
                     postprocessconfig[post]["name"],
                     600,
                     items,
@@ -999,13 +1000,13 @@ class dialog_setting_game_internal(QWidget):
         __d = {"k": 0}
         autoinitdialog(
             self,
+            __d,
             ("预处理方法"),
             400,
             [
                 {
                     "type": "combo",
                     "name": ("预处理方法"),
-                    "d": __d,
                     "k": "k",
                     "list": __viss,
                 },

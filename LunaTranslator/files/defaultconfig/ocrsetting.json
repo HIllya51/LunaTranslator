@@ -269,17 +269,26 @@
             "url": "https://generativelanguage.googleapis.com/v1",
             "model": "gemini-1.5-flash",
             "use_custom_prompt": false,
+            "modellistcache": [],
             "custom_prompt": ""
         },
         "argstype": {
             "custom_prompt": {
-                "name": "自定义promt",
+                "name": "自定义_promt",
                 "type": "multiline",
                 "refswitch": "use_custom_prompt"
             },
             "use_custom_prompt": {
                 "type": "switch_ref",
                 "name": "使用自定义promt"
+            },
+            "model": {
+                "type": "lineedit_or_combo",
+                "list_function": "list_models",
+                "list_cache": "modellistcache"
+            },
+            "modellistcache": {
+                "type": "list_cache"
             }
         }
     },
@@ -294,11 +303,13 @@
             "top_p": 0.3,
             "max_tokens": 128,
             "frequency_penalty": 0,
+            "modellistcache": [],
             "s": ""
         },
         "argstype": {
             "SECRET_KEY": {
-                "rank": 0.5
+                "rank": 0.5,
+                "name": "API Key"
             },
             "s": {
                 "type": "split",
@@ -309,7 +320,13 @@
                 "rank": 0
             },
             "model": {
-                "rank": 1
+                "rank": 1,
+                "type": "lineedit_or_combo",
+                "list_function": "list_models",
+                "list_cache": "modellistcache"
+            },
+            "modellistcache": {
+                "type": "list_cache"
             },
             "top_p": {
                 "type": "spin",
@@ -330,7 +347,7 @@
                 "step": 1
             },
             "custom_prompt": {
-                "name": "自定义promt",
+                "name": "自定义_prompt",
                 "type": "multiline",
                 "refswitch": "use_custom_prompt"
             },

@@ -116,6 +116,30 @@
         "pt",
         "hu"
     ],
+    "language_list_translator_inner_english": [
+        "Simplified Chinese",
+        "Japanese",
+        "Traditional Chinese",
+        "English",
+        "Russian",
+        "Spanish",
+        "Korean",
+        "French",
+        "Vietnamese",
+        "Turkish",
+        "Polish",
+        "Ukrainian",
+        "Italian",
+        "Arabic",
+        "Thai",
+        "Tibetan",
+        "German",
+        "Swedish",
+        "Dutch",
+        "Czech",
+        "Portuguese",
+        "Hungarian"
+    ],
     "font_type_default": {
         "default": [
             "Segoe UI",

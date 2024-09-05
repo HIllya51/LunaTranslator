@@ -117,7 +117,6 @@ class OCR(baseocr):
                 "X-TC-Region": region,
             },
             data=payload,
-            timeout=10,
         )
 
         try:

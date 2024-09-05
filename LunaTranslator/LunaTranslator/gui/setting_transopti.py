@@ -145,6 +145,7 @@ def setTab7_lazy(self, basel):
                     callback = functools.partial(
                         autoinitdialog,
                         self,
+                        postprocessconfig[post]['args'],
                         postprocessconfig[post]["name"],
                         600,
                         items,

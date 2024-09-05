@@ -9,7 +9,7 @@ from myutils.utils import (
     translate_exits,
 )
 from gui.pretransfile import sqlite2json
-from gui.inputdialog import autoinitdialog, autoinitdialog_items
+from gui.inputdialog import autoinitdialog, autoinitdialog_items, autoinitdialogx
 from gui.usefulwidget import (
     D_getspinbox,
     getIconButton,
@@ -95,7 +95,6 @@ def getalistname(parent, copy, btnplus, callback):
         {
             "type": "combo",
             "name": "复制自" if not copy else "删除",
-            "d": __d,
             "k": "k",
             "list": __vis,
         }
@@ -105,7 +104,6 @@ def getalistname(parent, copy, btnplus, callback):
             {
                 "name": "命名为",
                 "type": "lineedit",
-                "d": __d,
                 "k": "n",
             }
         )
@@ -118,6 +116,7 @@ def getalistname(parent, copy, btnplus, callback):
     )
     autoinitdialog(
         parent,
+        __d,
         ("删除" if copy else "复制") + "接口",
         600,
         __,
@@ -148,13 +147,17 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
     layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
 
     items = autoinitdialog_items(translatorsetting[uid])
+
     last = getIconButton(
         callback=functools.partial(
-            autoinitdialog,
+            autoinitdialogx,
             self,
+            translatorsetting[uid]['args'],
             (globalconfig["fanyi"][uid]["name"]),
             800,
             items,
+            "userconfig.copyed."+uid,
+            uid,
         ),
         icon="fa.gear",
     )
@@ -305,21 +308,29 @@ def initsome11(self, l, label=None, btnplus=False):
     line = []
     countnum = []
     for fanyi in l:
-
-        if not translate_exits(fanyi):
+        which=translate_exits(fanyi,which=True)
+        if which is None:
             continue
         i += 1
         countnum.append(fanyi)
         if fanyi in translatorsetting:
 
             items = autoinitdialog_items(translatorsetting[fanyi])
+            
+            if which==0:
+                aclass = "translator." + fanyi
+            elif which == 1:
+                aclass = "userconfig.copyed." + fanyi
             last = D_getIconButton(
                 callback=functools.partial(
-                    autoinitdialog,
+                    autoinitdialogx,
                     self,
-                    (globalconfig["fanyi"][fanyi]["name"]),
+                    translatorsetting[fanyi]['args'],
+                    globalconfig["fanyi"][fanyi]["name"],
                     800,
                     items,
+                    aclass,
+                    fanyi,
                 ),
                 icon="fa.gear",
             )
@@ -494,7 +505,6 @@ def setTabTwo_lazy(self, basel):
             "dir": False,
             "filter": "*.exe",
             "name": "Chromium_路径",
-            "d": globalconfig,
             "k": "chromepath",
         },
         {"type": "okcancel"},
@@ -513,6 +523,7 @@ def setTabTwo_lazy(self, basel):
                                 callback=functools.partial(
                                     autoinitdialog,
                                     self,
+                                    globalconfig,
                                     "Chromium_路径",
                                     800,
                                     _items,

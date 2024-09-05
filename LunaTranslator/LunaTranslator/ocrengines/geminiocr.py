@@ -1,27 +1,35 @@
 import base64
 import requests
 from ocrengines.baseocrclass import baseocr
+from myutils.utils import createenglishlangmap
+from myutils.proxy import getproxy
+
+
+def list_models(typename, regist):
+    js = requests.get(
+        "https://generativelanguage.googleapis.com/v1beta/models",
+        params={"key": regist["key"]().split("|")[0]},
+        proxies=getproxy(("ocr", typename)),
+    ).json()
+    try:
+        models = js["models"]
+    except:
+        raise Exception(js)
+    mm = []
+    for m in models:
+        name: str = m["name"]
+        supportedGenerationMethods: list = m["supportedGenerationMethods"]
+        if "generateContent" not in supportedGenerationMethods:
+            continue
+        if name.startswith("models/"):
+            name = name[7:]
+        mm.append(name)
+    return mm
 
 
 class OCR(baseocr):
     def langmap(self):
-        return {
-            "zh": "Simplified Chinese",
-            "ja": "Japanese",
-            "en": "English",
-            "ru": "Russian",
-            "es": "Spanish",
-            "ko": "Korean",
-            "fr": "French",
-            "cht": "Traditional Chinese",
-            "vi": "Vietnamese",
-            "tr": "Turkish",
-            "pl": "Polish",
-            "uk": "Ukrainian",
-            "it": "Italian",
-            "ar": "Arabic",
-            "th": "Thai",
-        }
+        return createenglishlangmap()
 
     def ocr(self, imagebinary):
         self.checkempty(["key"])

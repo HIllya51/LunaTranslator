@@ -14,11 +14,11 @@ from gui.usefulwidget import (
     TableViewW,
     getsimplepatheditor,
     FocusSpin,
-    FocusDoubleSpin,
     LFocusCombo,
     getsimplecombobox,
     getspinbox,
     SplitLine,
+    getIconButton,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -27,7 +27,6 @@ from gui.dynalang import (
     LStandardItemModel,
     LDialog,
     LDialog,
-    LAction,
 )
 
 
@@ -408,7 +407,7 @@ class yuyinzhidingsetting(LDialog):
 def autoinitdialog_items(dic):
     items = []
     for arg in dic["args"]:
-        default = dict(name=arg, d=dic["args"], k=arg, type="lineedit")
+        default = dict(name=arg, k=arg, type="lineedit")
 
         if "argstype" in dic and arg in dic["argstype"]:
             default.update(dic["argstype"][arg])
@@ -418,10 +417,11 @@ def autoinitdialog_items(dic):
 
 
 @Singleton_close
-class autoinitdialog(LDialog):
-    def __init__(self, parent, title, width, lines, _=None) -> None:
+class autoinitdialog__(LDialog):
+    def __init__(
+        self, parent, dd, title, width, lines, modelfile=None, maybehasextrainfo=None
+    ) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-
         self.setWindowTitle(title)
         self.resize(QSize(width, 10))
         for line in lines:
@@ -439,11 +439,11 @@ class autoinitdialog(LDialog):
             return
         formLayout = LFormLayout()
         self.setLayout(formLayout)
-        regist = []
+        regist = {}
 
         def save(callback=None):
-            for l in regist:
-                l[0][l[1]] = l[2]()
+            for k in regist:
+                dd[k] = regist[k]()
             self.close()
             if callback:
                 try:
@@ -470,6 +470,10 @@ class autoinitdialog(LDialog):
             refswitch = line.get("refswitch", None)
             if refswitch:
                 refname2line[refswitch] = None
+
+            list_cache = line.get("list_cache", None)
+            if list_cache:
+                refname2line[list_cache] = None
         oklines = []
 
         for line in lines:
@@ -480,8 +484,6 @@ class autoinitdialog(LDialog):
             oklines.append(line)
         lines = oklines
         for line in lines:
-            if "d" in line:
-                dd = line["d"]
             if "k" in line:
                 key = line["k"]
             if line["type"] == "label":
@@ -492,12 +494,9 @@ class autoinitdialog(LDialog):
                 else:
                     lineW = LLabel(dd[key])
             elif line["type"] == "textlist":
-                __list = dd[key]
-                e = listediterline(line["name"], line["header"], __list)
-
-                regist.append([dd, key, functools.partial(__getv, __list)])
-                lineW = QHBoxLayout()
-                lineW.addWidget(e)
+                __list = dd[key].copy()
+                lineW = listediterline(line["name"], line["header"], __list)
+                regist[key] = functools.partial(__getv, __list)
             elif line["type"] == "combo":
                 lineW = LFocusCombo()
                 if "list_function" in line:
@@ -513,9 +512,48 @@ class autoinitdialog(LDialog):
                     items = line["list"]
                 lineW.addItems(items)
                 lineW.setCurrentIndex(dd.get(key, 0))
-                lineW.currentIndexChanged.connect(
-                    functools.partial(dd.__setitem__, key)
-                )
+                regist[key] = lineW.currentIndex
+            elif line["type"] == "lineedit_or_combo":
+                line1 = QLineEdit()
+                lineW = QHBoxLayout()
+                combo = LFocusCombo()
+                combo.setLineEdit(line1)
+
+                def __refresh(regist, line, combo: LFocusCombo):
+                    try:
+                        func = getattr(
+                            importlib.import_module(modelfile), line["list_function"]
+                        )
+                        items = func(maybehasextrainfo, regist)
+                        curr = combo.currentText()
+                        combo.clear()
+                        combo.addItems(items)
+                        if curr in items:
+                            combo.setCurrentIndex(items.index(curr))
+
+                        dd[refname2line[line["list_cache"]]["k"]] = items
+                    except Exception as e:
+                        print_exc()
+                        QMessageBox.information(self, str(type(e))[8:-2], str(e))
+
+                if "list_function" in line:
+                    items = dd[refname2line[line["list_cache"]]["k"]]
+                else:
+                    items = line["list"]
+                combo.addItems(items)
+                if dd[key] in items:
+                    combo.setCurrentIndex(items.index(dd[key]))
+                else:
+                    combo.setCurrentText(dd[key])
+                regist[key] = combo.currentText
+                if "list_function" in line:
+                    lineW.addWidget(
+                        getIconButton(
+                            callback=functools.partial(__refresh, regist, line, combo),
+                            icon="fa.refresh",
+                        )
+                    )
+                lineW.addWidget(combo)
             elif line["type"] == "okcancel":
                 lineW = QDialogButtonBox(
                     QDialogButtonBox.StandardButton.Ok
@@ -532,10 +570,10 @@ class autoinitdialog(LDialog):
                 )
             elif line["type"] == "lineedit":
                 lineW = QLineEdit(dd[key])
-                regist.append([dd, key, lineW.text])
+                regist[key] = lineW.text
             elif line["type"] == "multiline":
                 lineW = QPlainTextEdit(dd[key])
-                regist.append([dd, key, lineW.toPlainText])
+                regist[key] = lineW.toPlainText
             elif line["type"] == "file":
                 __temp = {"k": dd[key]}
                 lineW = getsimplepatheditor(
@@ -550,25 +588,28 @@ class autoinitdialog(LDialog):
                     dirorfile=line.get("dirorfile", False),
                 )
 
-                regist.append([dd, key, functools.partial(__temp.__getitem__, "k")])
+                regist[key] = functools.partial(__temp.__getitem__, "k")
 
             elif line["type"] == "switch":
                 lineW = MySwitch(sign=dd[key])
-                regist.append([dd, key, lineW.isChecked])
+                regist[key] = lineW.isChecked
                 _ = QHBoxLayout()
                 _.addStretch()
                 _.addWidget(lineW)
                 _.addStretch()
                 lineW = _
             elif line["type"] in ["spin", "intspin"]:
+
+                __temp = {"k": dd[key]}
                 lineW = getspinbox(
                     line.get("min", 0),
                     line.get("max", 100),
-                    dd,
-                    key,
+                    __temp,
+                    "k",
                     line["type"] == "spin",
                     line.get("step", 0.1),
                 )
+                regist[key] = lineW.value
             elif line["type"] == "split":
                 lineW = SplitLine()
                 formLayout.addRow(lineW)
@@ -578,12 +619,10 @@ class autoinitdialog(LDialog):
                 hbox = QHBoxLayout()
                 line_ref = refname2line.get(refswitch, None)
                 if line_ref:
-                    if "d" in line_ref:
-                        dd = line_ref["d"]
                     if "k" in line_ref:
                         key = line_ref["k"]
                     switch = MySwitch(sign=dd[key])
-                    regist.append([dd, key, switch.isChecked])
+                    regist[key] = switch.isChecked
                     switch.clicked.connect(lineW.setEnabled)
                     lineW.setEnabled(dd[key])
                     hbox.addWidget(switch)
@@ -596,18 +635,28 @@ class autoinitdialog(LDialog):
         self.show()
 
 
+def autoinitdialogx(
+    parent, dd, title, width, lines, modelfile, maybehasextrainfo, _=None
+):
+    autoinitdialog__(parent, dd, title, width, lines, modelfile, maybehasextrainfo)
+
+
+def autoinitdialog(parent, dd, title, width, lines, _=None):
+    autoinitdialog__(parent, dd, title, width, lines)
+
+
 def getsomepath1(
     parent, title, d, k, label, callback=None, isdir=False, filter1="*.db"
 ):
     autoinitdialog(
         parent,
+        d,
         title,
         800,
         [
             {
                 "type": "file",
                 "name": label,
-                "d": d,
                 "k": k,
                 "dir": isdir,
                 "filter": filter1,

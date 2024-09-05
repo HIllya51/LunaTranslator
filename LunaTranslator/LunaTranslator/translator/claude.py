@@ -1,28 +1,24 @@
 from traceback import print_exc
 import json
 from translator.basetranslator import basetrans
-from myutils.utils import SafeFormatter
+from myutils.utils import createenglishlangmap
+
+
+def checkv1(api_url):
+    if api_url[-4:] == "/v1/":
+        api_url = api_url[:-1]
+    elif api_url[-3:] == "/v1":
+        pass
+    elif api_url[-1] == "/":
+        api_url += "v1"
+    else:
+        api_url += "/v1"
+    return api_url
 
 
 class TS(basetrans):
     def langmap(self):
-        return {
-            "zh": "Simplified Chinese",
-            "ja": "Japanese",
-            "en": "English",
-            "ru": "Russian",
-            "es": "Spanish",
-            "ko": "Korean",
-            "fr": "French",
-            "cht": "Traditional Chinese",
-            "vi": "Vietnamese",
-            "tr": "Turkish",
-            "pl": "Polish",
-            "uk": "Ukrainian",
-            "it": "Italian",
-            "ar": "Arabic",
-            "th": "Thai",
-        }
+        return createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []
@@ -30,17 +26,6 @@ class TS(basetrans):
 
     def inittranslator(self):
         self.api_key = None
-
-    def checkv1(self, api_url):
-        if api_url[-4:] == "/v1/":
-            api_url = api_url[:-1]
-        elif api_url[-3:] == "/v1":
-            pass
-        elif api_url[-1] == "/":
-            api_url += "v1"
-        else:
-            api_url += "/v1"
-        return api_url
 
     def translate(self, query):
         self.checkempty(["API_KEY", "model"])
@@ -65,7 +50,6 @@ class TS(basetrans):
         headers = {
             "anthropic-version": "2023-06-01",
             "accept": "application/json",
-            "anthropic-version": "2023-06-01",
             "content-type": "application/json",
             "X-Api-Key": self.multiapikeycurrent["API_KEY"],
         }
@@ -80,7 +64,7 @@ class TS(basetrans):
             stream=usingstream,
         )
         response = self.proxysession.post(
-            self.checkv1(self.config["BASE_URL"]) + "/messages",
+            checkv1(self.config["BASE_URL"]) + "/messages",
             headers=headers,
             json=data,
             stream=usingstream,

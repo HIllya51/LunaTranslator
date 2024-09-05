@@ -1,6 +1,6 @@
 from translator.basetranslator_dev import basetransdev
 import time, os
-
+from myutils.utils import createenglishlangmap
 
 class commonllmdev(basetransdev):
     jsfile = ...
@@ -10,23 +10,7 @@ class commonllmdev(basetransdev):
     function2 = ...
 
     def langmap(self):
-        return {
-            "zh": "Simplified Chinese",
-            "ja": "Japanese",
-            "en": "English",
-            "ru": "Russian",
-            "es": "Spanish",
-            "ko": "Korean",
-            "fr": "French",
-            "cht": "Traditional Chinese",
-            "vi": "Vietnamese",
-            "tr": "Turkish",
-            "pl": "Polish",
-            "uk": "Ukrainian",
-            "it": "Italian",
-            "ar": "Arabic",
-            "th": "Thai",
-        }
+        return createenglishlangmap()
 
     def injectjs(self):
         with open(

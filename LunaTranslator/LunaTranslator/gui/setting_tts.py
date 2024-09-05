@@ -86,6 +86,7 @@ def getttsgrid(self, names):
                 callback=functools.partial(
                     autoinitdialog,
                     self,
+                    globalconfig["reader"][name]['args'],
                     globalconfig["reader"][name]["name"],
                     800,
                     items,

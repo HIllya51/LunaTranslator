@@ -878,3 +878,42 @@ class SafeFormatter(Formatter):
         else:
             print(f"{key} is missing")
             return key
+
+
+def checkv1(api_url: str):
+    # 傻逼豆包大模型是非要v3，不是v1
+    if api_url.endswith("/v3"):
+        return api_url
+    elif api_url.endswith("/v3/"):
+        return api_url[:-1]
+    # 智谱AI
+    elif api_url.endswith("/v4"):
+        return api_url
+    elif api_url.endswith("/v4/"):
+        return api_url[:-1]
+    # 正常的
+    elif api_url.endswith("/v1"):
+        return api_url
+    elif api_url.endswith("/v1/"):
+        return api_url[:-1]
+    elif api_url.endswith("/"):
+        return api_url + "v1"
+    else:
+        return api_url + "/v1"
+
+
+def createurl(url: str):
+    if url.endswith("/chat/completions"):
+        pass
+    else:
+        url = checkv1(url) + "/chat/completions"
+    return url
+
+
+def createenglishlangmap():
+    return dict(
+        zip(
+            static_data["language_list_translator_inner"],
+            static_data["language_list_translator_inner_english"],
+        )
+    )

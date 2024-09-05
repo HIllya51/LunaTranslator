@@ -37,6 +37,7 @@ def gethiragrid(self):
                 callback=functools.partial(
                     autoinitdialog,
                     self,
+                    globalconfig["hirasetting"][name]['args'],
                     globalconfig["hirasetting"][name]["name"],
                     800,
                     items,
@@ -139,6 +140,7 @@ def initinternal(self, names):
                     callback=functools.partial(
                         autoinitdialog,
                         self,
+                        globalconfig["cishu"][cishu]['args'],
                         globalconfig["cishu"][cishu]["name"],
                         800,
                         items,

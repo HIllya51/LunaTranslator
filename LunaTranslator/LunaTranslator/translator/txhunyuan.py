@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 import json
-
+from myutils.utils import createenglishlangmap
 from datetime import datetime
 import hashlib, sys, hmac, time, json
 
@@ -90,23 +90,7 @@ def _build_req_with_tc3_signature(key, _id, action, params, options=None):
 class TS(basetrans):
 
     def langmap(self):
-        return {
-            "zh": "Simplified Chinese",
-            "ja": "Japanese",
-            "en": "English",
-            "ru": "Russian",
-            "es": "Spanish",
-            "ko": "Korean",
-            "fr": "French",
-            "cht": "Traditional Chinese",
-            "vi": "Vietnamese",
-            "tr": "Turkish",
-            "pl": "Polish",
-            "uk": "Ukrainian",
-            "it": "Italian",
-            "ar": "Arabic",
-            "th": "Thai",
-        }
+        return createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []

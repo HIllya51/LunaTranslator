@@ -1931,13 +1931,6 @@
             "color": "blue",
             "name": "有道api"
         },
-        "azureopenai": {
-            "type": "api",
-            "use": false,
-            "color": "blue",
-            "name": "Azure",
-            "is_gpt_like": true
-        },
         "cohere": {
             "type": "api",
             "use": false,

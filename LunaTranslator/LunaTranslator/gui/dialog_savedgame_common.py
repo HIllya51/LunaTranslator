@@ -521,13 +521,13 @@ def getalistname(parent, callback, skipid=False, skipidid=None, title="添加到
     if len(__uid) > 1:
         autoinitdialog(
             parent,
+            __d,
             title,
             600,
             [
                 {
                     "type": "combo",
                     "name": "目标列表",
-                    "d": __d,
                     "k": "k",
                     "list": __vis,
                 },

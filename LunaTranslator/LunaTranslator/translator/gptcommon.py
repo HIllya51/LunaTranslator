@@ -1,29 +1,27 @@
 from translator.basetranslator import basetrans
 import json, requests
 from traceback import print_exc
-from myutils.utils import SafeFormatter
+from myutils.utils import createurl, createenglishlangmap
+from myutils.proxy import getproxy
+
+
+def list_models(typename, regist):
+    js = requests.get(
+        createurl(regist["API接口地址"]())[: -len("/chat/completions")] + "/models",
+        headers={"Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0]},
+        proxies=getproxy(("fanyi", typename)),
+    ).json()
+
+    try:
+        return [_["id"] for _ in js["data"]]
+    except:
+        raise Exception(js)
 
 
 class gptcommon(basetrans):
 
     def langmap(self):
-        return {
-            "zh": "Simplified Chinese",
-            "ja": "Japanese",
-            "en": "English",
-            "ru": "Russian",
-            "es": "Spanish",
-            "ko": "Korean",
-            "fr": "French",
-            "cht": "Traditional Chinese",
-            "vi": "Vietnamese",
-            "tr": "Turkish",
-            "pl": "Polish",
-            "uk": "Ukrainian",
-            "it": "Italian",
-            "ar": "Arabic",
-            "th": "Thai",
-        }
+        return createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []
@@ -52,28 +50,10 @@ class gptcommon(basetrans):
         return data
 
     def createheaders(self):
-        return {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
-
-    def checkv1(self, api_url: str):
-        # 傻逼豆包大模型是非要v3，不是v1
-        if api_url.endswith("/v3"):
-            return api_url
-        elif api_url.endswith("/v3/"):
-            return api_url[:-1]
-        # 智谱AI
-        elif api_url.endswith("/v4"):
-            return api_url
-        elif api_url.endswith("/v4/"):
-            return api_url[:-1]
-        # 正常的
-        elif api_url.endswith("/v1"):
-            return api_url
-        elif api_url.endswith("/v1/"):
-            return api_url[:-1]
-        elif api_url.endswith("/"):
-            return api_url + "v1"
-        else:
-            return api_url + "/v1"
+        _ = {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
+        if "openai.azure.com/openai/deployments/" in self.config["API接口地址"]:
+            _.update({"api-key": self.multiapikeycurrent["SECRET_KEY"]})
+        return _
 
     def commonparseresponse(self, query, response: requests.ResponseBase, usingstream):
         if usingstream:
@@ -146,9 +126,6 @@ class gptcommon(basetrans):
         return self.commonparseresponse(query, response, usingstream)
 
     def createurl(self):
-        url = self.config["API接口地址"]
-        if url.endswith("/chat/completions"):
-            pass
-        else:
-            url = self.checkv1(url) + "/chat/completions"
-        return url
+        if "openai.azure.com/openai/deployments/" in self.config["API接口地址"]:
+            return self.config["API接口地址"]
+        return createurl(self.config["API接口地址"])

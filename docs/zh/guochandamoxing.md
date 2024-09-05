@@ -13,6 +13,8 @@
   <img src="https://image.lunatranslator.org/zh/damoxing/extraapi3.png">
 </details>
 
+>**model**可以在下拉列表中选取，如果列表中没有也可以参照接口官方文档手动填写/修改。<br>
+>部分接口可以根据**API接口地址**和**API Key**动态获取模型列表，填好这两项后点击**model**旁的刷新按钮即可获取可用的模型列表。
 
 
 ### ChatGPT兼容接口
@@ -27,7 +29,7 @@
 
 **API接口地址** `https://api.groq.com/openai/v1/chat/completions`
 
-**SECRET_KEY** https://console.groq.com/keys
+**API Key** https://console.groq.com/keys
 
 **model** https://console.groq.com/docs/models 填写`Model ID`
 
@@ -35,7 +37,7 @@
 
 **API接口地址** `https://openrouter.ai/api/v1/chat/completions`
 
-**SECRET_KEY** https://openrouter.ai/settings/keys
+**API Key** https://openrouter.ai/settings/keys
 
 **model** https://openrouter.ai/docs/models
 
@@ -43,9 +45,13 @@
 
 **API接口地址** `https://api.deepbricks.ai/v1/chat/completions`
 
-**SECRET_KEY** https://deepbricks.ai/api-key
+**API Key** https://deepbricks.ai/api-key
 
 **model** https://deepbricks.ai/pricing
+
+### **Azure**
+
+https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions
 
 <!-- tabs:end -->
 
@@ -58,7 +64,7 @@
 
 **API接口地址** `https://api.deepseek.com`
 
-**SECRET_KEY** https://platform.deepseek.com/api_keys
+**API Key** https://platform.deepseek.com/api_keys
 
 **model** https://platform.deepseek.com/api-docs/zh-cn/pricing
 
@@ -66,7 +72,7 @@
 
 **API接口地址** `https://dashscope.aliyuncs.com/compatible-mode/v1`
 
-**SECRET_KEY** https://bailian.console.aliyun.com/?apiKey=1#/api-key
+**API Key** https://bailian.console.aliyun.com/?apiKey=1#/api-key
 
 **model** https://help.aliyun.com/zh/model-studio/product-overview/billing-for-alibaba-cloud-model-studio/#2550bcc04d2tk
 
@@ -74,7 +80,7 @@
 
 **API接口地址** `https://ark.cn-beijing.volces.com/api/v3`
 
-**SECRET_KEY** [创建API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)获取
+**API Key** [创建API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)获取
 
 **model** [创建推理接入点](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10)后，填入**接入点**而非**模型**
 
@@ -85,7 +91,7 @@
 
 **API接口地址** `https://api.moonshot.cn`
 
-**SECRET_KEY** https://platform.moonshot.cn/console/api-keys
+**API Key** https://platform.moonshot.cn/console/api-keys
 
 **model** https://platform.moonshot.cn/docs/intro
 
@@ -93,7 +99,7 @@
 
 **API接口地址** `https://open.bigmodel.cn/api/paas/v4/chat/completions`
 
-**SECRET_KEY** https://bigmodel.cn/usercenter/apikeys
+**API Key** https://bigmodel.cn/usercenter/apikeys
 
 **model** https://bigmodel.cn/dev/howuse/model
 
@@ -101,7 +107,7 @@
 
 **API接口地址** `https://api.lingyiwanwu.com`
 
-**SECRET_KEY** https://platform.lingyiwanwu.com/apikeys
+**API Key** https://platform.lingyiwanwu.com/apikeys
 
 **model** https://platform.lingyiwanwu.com/docs/api-reference#list-models
  
@@ -109,7 +115,7 @@
 
 **API接口地址** `https://api.siliconflow.cn`
 
-**SECRET_KEY** https://cloud-hk.siliconflow.cn/account/ak
+**API Key** https://cloud-hk.siliconflow.cn/account/ak
 
 **model** https://docs.siliconflow.cn/docs/model-names
 
@@ -117,7 +123,7 @@
 
 **API接口地址** `https://spark-api-open.xf-yun.com/v1`
 
-**SECRET_KEY** 参考[官方文档](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)获取**APIKey**和**APISecret**后，按照**APIKey:APISecret**的格式填入
+**API Key** 参考[官方文档](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)获取**APIKey**和**APISecret**后，按照**APIKey:APISecret**的格式填入
 
 **model** https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-2-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0
 
@@ -137,7 +143,7 @@
 
 **model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
 
-**SECRET_KEY** https://aistudio.google.com/app/apikey
+**API Key** https://aistudio.google.com/app/apikey
 
 ### **claude**
 
@@ -149,13 +155,10 @@
 
 ### **cohere**
 
-**SECRET_KEY** https://dashboard.cohere.com/api-keys
+**API Key** https://dashboard.cohere.com/api-keys
 
 **model** https://docs.cohere.com/docs/models
 
-### **Azure**
-
-https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions
 
 <!-- tabs:end -->
 

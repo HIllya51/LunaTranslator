@@ -1,6 +1,9 @@
 from traceback import print_exc
-import json
+import json, requests
+from myutils.utils import createenglishlangmap
 from translator.basetranslator import basetrans
+from myutils.proxy import getproxy
+
 
 """
 {'response_id': 'f6299ecb-b90a-4582-84e9-3c5c5c586919', 'text': 'In Chinese characters, "Monday" is written as: 星期一\n\nIs there anything else you would like me to translate for you?', 'generation_id': '998f2d14-1af7-4ec3-8699-b164c67a6900', 'chat_history': [{'role': 'USER', 'message': 'translate it to chinese'}, {'role': 'CHATBOT', 'message': 'ok'}, {'role': 'USER', 'message': 'today is monday'}, {'role': 'CHATBOT', 'message': 'In Chinese characters, "Monday" is written as: 星期一\n\nIs there anything else you would like me to translate for you?'}], 'finish_reason': 'COMPLETE', 'meta': {'api_version': {'version': '1'}, 'billed_units': {'input_tokens': 10, 'output_tokens': 29}, 'tokens': {'input_tokens': 82, 'output_tokens': 29}}}
@@ -38,23 +41,7 @@ from translator.basetranslator import basetrans
 
 class TS(basetrans):
     def langmap(self):
-        return {
-            "zh": "Simplified Chinese",
-            "ja": "Japanese",
-            "en": "English",
-            "ru": "Russian",
-            "es": "Spanish",
-            "ko": "Korean",
-            "fr": "French",
-            "cht": "Traditional Chinese",
-            "vi": "Vietnamese",
-            "tr": "Turkish",
-            "pl": "Polish",
-            "uk": "Ukrainian",
-            "it": "Italian",
-            "ar": "Arabic",
-            "th": "Thai",
-        }
+        return createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []
@@ -62,17 +49,6 @@ class TS(basetrans):
 
     def inittranslator(self):
         self.api_key = None
-
-    def checkv1(self, api_url):
-        if api_url[-4:] == "/v1/":
-            api_url = api_url[:-1]
-        elif api_url[-3:] == "/v1":
-            pass
-        elif api_url[-1] == "/":
-            api_url += "v1"
-        else:
-            api_url += "/v1"
-        return api_url
 
     def translate(self, query):
         self.checkempty(["SECRET_KEY", "model"])
@@ -150,3 +126,25 @@ class TS(basetrans):
             yield message
         self.context.append({"role": "USER", "message": query})
         self.context.append({"role": "CHATBOT", "message": message})
+
+
+def list_models(typename, regist):
+    js = requests.get(
+        "https://api.cohere.com/v1/models",
+        headers={
+            "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0],
+            "X-Client-Name": "my-cool-project",
+        },
+        proxies=getproxy(("fanyi", typename)),
+    ).json()
+    try:
+        models = js["models"]
+    except:
+        raise Exception(js)
+    mm = []
+    for m in models:
+        endpoints = m["endpoints"]
+        if "chat" not in endpoints:
+            continue
+        mm.append(m["name"])
+    return mm

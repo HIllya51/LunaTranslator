@@ -1,26 +1,12 @@
 from translator.basetranslator import basetrans
-import json
+from myutils.utils import createenglishlangmap
+import json, requests
+from myutils.proxy import getproxy
 
 
 class TS(basetrans):
     def langmap(self):
-        return {
-            "zh": "Simplified Chinese",
-            "ja": "Japanese",
-            "en": "English",
-            "ru": "Russian",
-            "es": "Spanish",
-            "ko": "Korean",
-            "fr": "French",
-            "cht": "Traditional Chinese",
-            "vi": "Vietnamese",
-            "tr": "Turkish",
-            "pl": "Polish",
-            "uk": "Ukrainian",
-            "it": "Italian",
-            "ar": "Arabic",
-            "th": "Thai",
-        }
+        return createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []
@@ -103,3 +89,25 @@ class TS(basetrans):
             yield line
         self.context.append({"role": "user", "parts": [{"text": query}]})
         self.context.append({"role": "model", "parts": [{"text": line}]})
+
+
+def list_models(typename, regist):
+    js = requests.get(
+        "https://generativelanguage.googleapis.com/v1beta/models",
+        params={"key": regist["SECRET_KEY"]().split("|")[0]},
+        proxies=getproxy(("fanyi", typename)),
+    ).json()
+    try:
+        models = js["models"]
+    except:
+        raise Exception(js)
+    mm = []
+    for m in models:
+        name: str = m["name"]
+        supportedGenerationMethods: list = m["supportedGenerationMethods"]
+        if "generateContent" not in supportedGenerationMethods:
+            continue
+        if name.startswith("models/"):
+            name = name[7:]
+        mm.append(name)
+    return mm

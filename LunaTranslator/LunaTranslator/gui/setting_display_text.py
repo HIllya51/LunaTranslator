@@ -188,13 +188,13 @@ def installqwebdialog(self, link):
     base = link.split("/")[-1]
     autoinitdialog(
         self,
+        dd,
         "安装_QWebEngine",
         800,
         [
             {
                 "type": "file",
                 "name": "路径",
-                "d": dd,
                 "k": "k",
                 "dir": False,
                 "filter": base,

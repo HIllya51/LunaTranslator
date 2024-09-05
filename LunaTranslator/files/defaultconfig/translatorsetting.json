@@ -209,100 +209,6 @@
 			}
 		}
 	},
-	"azureopenai": {
-		"args": {
-			"api-key": "",
-			"Temperature": 0.3,
-			"top_p": 0.3,
-			"max_tokens": 128,
-			"frequency_penalty": 0,
-			"model": "gpt-3.5-turbo",
-			"附带上下文个数": 0,
-			"endpoint": "https://your-resource-name.openai.azure.com",
-			"deployment-id": "",
-			"api-version": "2024-06-01",
-			"使用自定义promt": false,
-			"自定义promt": "",
-			"流式输出": true,
-			"user_user_prompt": "{sentence}",
-			"use_user_user_prompt": false,
-			"other_args": "{}",
-			"use_other_args": false,
-			"s": ""
-		},
-		"argstype": {
-			"other_args": {
-				"type": "multiline",
-				"refswitch": "use_other_args",
-				"name": "其他参数"
-			},
-			"user_user_prompt": {
-				"name": "自定义_user message",
-				"refswitch": "use_user_user_prompt",
-				"rank": 5.1
-			},
-			"s": {
-				"type": "split",
-				"rank": 2.5
-			},
-			"endpoint": {
-				"rank": 0
-			},
-			"deployment-id": {
-				"rank": 1
-			},
-			"api-version": {
-				"rank": 1.5
-			},
-			"model": {
-				"rank": 2
-			},
-			"top_p": {
-				"type": "spin",
-				"min": 0,
-				"max": 1,
-				"step": 0.01
-			},
-			"frequency_penalty": {
-				"type": "spin",
-				"min": 0,
-				"max": 2,
-				"step": 0.05
-			},
-			"自定义promt": {
-				"name": "自定义_system prompt",
-				"type": "multiline",
-				"refswitch": "使用自定义promt",
-				"rank": 5
-			},
-			"max_tokens": {
-				"type": "intspin",
-				"min": 1,
-				"max": 4096,
-				"step": 1
-			},
-			"流式输出": {
-				"type": "switch",
-				"rank": 3
-			},
-			"api-key": {
-				"rank": 1.6
-			},
-			"附带上下文个数": {
-				"type": "intspin",
-				"min": 0,
-				"max": 10,
-				"step": 1,
-				"rank": 4.9
-			},
-			"Temperature": {
-				"type": "spin",
-				"min": 0,
-				"max": 1,
-				"step": 0.1
-			}
-		}
-	},
 	"txhunyuan": {
 		"args": {
 			"secret_id": "",
@@ -339,7 +245,18 @@
 				"name": "SecretKey"
 			},
 			"model": {
-				"rank": 2
+				"rank": 2,
+				"type": "lineedit_or_combo",
+				"list": [
+					"hunyuan-lite",
+					"hunyuan-turbo",
+					"hunyuan-pro",
+					"hunyuan-standard",
+					"hunyuan-standard-256k",
+					"hunyuan-role",
+					"hunyuan-functioncall",
+					"hunyuan-code"
+				]
 			},
 			"top_p": {
 				"type": "spin",
@@ -382,7 +299,7 @@
 	"claude": {
 		"args": {
 			"BASE_URL": "https://api.anthropic.com",
-			"model": "claude-3-opus-20240229",
+			"model": "claude-3-5-sonnet-20240620",
 			"API_KEY": "",
 			"max_tokens": 2048,
 			"Temperature": 0.3,
@@ -415,7 +332,14 @@
 				"rank": 0
 			},
 			"model": {
-				"rank": 1
+				"rank": 1,
+				"type": "lineedit_or_combo",
+				"list": [
+					"claude-3-5-sonnet-20240620",
+					"claude-3-opus-20240229",
+					"claude-3-sonnet-20240229",
+					"claude-3-haiku-20240307"
+				]
 			},
 			"API_KEY": {
 				"rank": 0.5
@@ -454,6 +378,7 @@
 	"chatgpt-3rd-party": {
 		"args": {
 			"model": "gpt-3.5-turbo",
+			"modellistcache": [],
 			"附带上下文个数": 0,
 			"API接口地址": "https://api.openai.com",
 			"SECRET_KEY": "",
@@ -489,10 +414,17 @@
 				"rank": 0
 			},
 			"SECRET_KEY": {
-				"rank": 1
+				"rank": 1,
+				"name": "API Key"
 			},
 			"model": {
-				"rank": 2
+				"rank": 2,
+				"type": "lineedit_or_combo",
+				"list_function": "list_models",
+				"list_cache": "modellistcache"
+			},
+			"modellistcache": {
+				"type": "list_cache"
 			},
 			"top_p": {
 				"type": "spin",
@@ -539,7 +471,7 @@
 	},
 	"baiduqianfan": {
 		"args": {
-			"model": "ernie-3.5-8k-0329",
+			"model": "ernie-4.0-8k",
 			"context_num": 0,
 			"API_KEY": "",
 			"SECRET_KEY": "",
@@ -575,10 +507,23 @@
 				"rank": 0
 			},
 			"SECRET_KEY": {
-				"rank": 1
+				"rank": 1,
+				"name": "API Key"
 			},
 			"model": {
-				"rank": 2
+				"rank": 2,
+				"type": "lineedit_or_combo",
+				"list": [
+					"ernie-4.0-8k",
+					"ernie-4.0-turbo-8k",
+					"ernie-3.5-128k",
+					"ernie-3.5-8k",
+					"ernie-speed-pro-128k",
+					"ernie-speed-128k",
+					"ernie-speed-8k",
+					"ernie-lite-8k",
+					"ernie-tiny-8k"
+				]
 			},
 			"top_p": {
 				"type": "spin",
@@ -629,6 +574,7 @@
 		"args": {
 			"SECRET_KEY": "",
 			"Temperature": 0.3,
+			"modellistcache": [],
 			"model": "command-r",
 			"附带上下文个数": 0,
 			"使用自定义promt": false,
@@ -656,10 +602,17 @@
 				"rank": 1.5
 			},
 			"SECRET_KEY": {
-				"rank": 0
+				"rank": 0,
+				"name": "API Key"
 			},
 			"model": {
-				"rank": 1
+				"rank": 1,
+				"type": "lineedit_or_combo",
+				"list_function": "list_models",
+				"list_cache": "modellistcache"
+			},
+			"modellistcache": {
+				"type": "list_cache"
 			},
 			"自定义promt": {
 				"type": "multiline",
@@ -1000,6 +953,7 @@
 			"SECRET_KEY": "",
 			"Temperature": 0.3,
 			"model": "gemini-1.5-flash",
+			"modellistcache": [],
 			"context": 0,
 			"use_custom_prompt": false,
 			"custom_prompt": "",
@@ -1045,10 +999,17 @@
 				"rank": 4.9
 			},
 			"SECRET_KEY": {
-				"rank": 2
+				"rank": 2,
+				"name": "API Key"
 			},
 			"model": {
-				"rank": 3
+				"rank": 3,
+				"type": "lineedit_or_combo",
+				"list_function": "list_models",
+				"list_cache": "modellistcache"
+			},
+			"modellistcache": {
+				"type": "list_cache"
 			},
 			"注册网址": {
 				"type": "label",
@@ -1255,7 +1216,8 @@
 				"rank": 5.1
 			},
 			"SECRET_KEY": {
-				"rank": 3
+				"rank": 3,
+				"name": "API Key"
 			},
 			"s": {
 				"type": "split",
