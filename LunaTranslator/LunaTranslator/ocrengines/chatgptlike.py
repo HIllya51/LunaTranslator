@@ -9,6 +9,7 @@ def list_models(typename, regist):
         createurl(regist["apiurl"]())[: -len("/chat/completions")] + "/models",
         headers={"Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0]},
         proxies=getproxy(("ocr", typename)),
+        timeout=10,
     ).json()
 
     try:

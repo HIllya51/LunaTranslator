@@ -10,6 +10,7 @@ def list_models(typename, regist):
         createurl(regist["API接口地址"]())[: -len("/chat/completions")] + "/models",
         headers={"Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0]},
         proxies=getproxy(("fanyi", typename)),
+        timeout=10,
     ).json()
 
     try:
@@ -51,7 +52,7 @@ class gptcommon(basetrans):
 
     def createheaders(self):
         _ = {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
-        if "openai.azure.com/openai/deployments/" in self.config["API接口地址"]:
+        if "openai.azure.com/openai/deployments/" in self.config("API接口地址", ""):
             _.update({"api-key": self.multiapikeycurrent["SECRET_KEY"]})
         return _
 

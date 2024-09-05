@@ -136,6 +136,7 @@ def list_models(typename, regist):
             "X-Client-Name": "my-cool-project",
         },
         proxies=getproxy(("fanyi", typename)),
+        timeout=10,
     ).json()
     try:
         models = js["models"]

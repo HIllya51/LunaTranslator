@@ -10,6 +10,7 @@ def list_models(typename, regist):
         "https://generativelanguage.googleapis.com/v1beta/models",
         params={"key": regist["key"]().split("|")[0]},
         proxies=getproxy(("ocr", typename)),
+        timeout=10,
     ).json()
     try:
         models = js["models"]
