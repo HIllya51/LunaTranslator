@@ -587,7 +587,6 @@
     "显示/隐藏历史翻译": "Zobrazit/skrýt historické překlady",
     "全屏/恢复游戏窗口": "Celá obrazovka/obnovení herního okna",
     "文本输出": "Textový výstup",
-    "自动输出提取的文本": "Automaticky výstup extrahovaného textu",
     "缩放": "zoom",
     "填充": "vyplnit",
     "适应": "přizpůsobit",
@@ -849,5 +848,8 @@
     "复制自": "Kopírovat z",
     "目标列表": "Seznam cílů",
     "使用翻译": "Použití překladu",
-    "使用/跳过翻译": "Použít/přeskočit překlad"
+    "使用/跳过翻译": "Použít/přeskočit překlad",
+    "prompt格式（需要根据模型版本决定）": "Formát výzvy (v závislosti na verzi modelu)",
+    "v0.10pre1（支持gpt词典）": "V0.10 pre1 (podporuje GPT slovník)",
+    "输出的内容": "Výstupní obsah"
 }

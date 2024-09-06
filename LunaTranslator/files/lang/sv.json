@@ -587,7 +587,6 @@
     "显示/隐藏历史翻译": "Visa/dölj historiska översättningar",
     "全屏/恢复游戏窗口": "Helskärms-/återställningsfönster",
     "文本输出": "Textutmatning",
-    "自动输出提取的文本": "Skriv ut extraherad text automatiskt",
     "缩放": "zooma",
     "填充": "Fyll",
     "适应": "anpassa",
@@ -849,5 +848,8 @@
     "复制自": "Kopiera från",
     "目标列表": "Mållista",
     "使用翻译": "Använda översättning",
-    "使用/跳过翻译": "Använd/hoppa över översättning"
+    "使用/跳过翻译": "Använd/hoppa över översättning",
+    "prompt格式（需要根据模型版本决定）": "Frågaformat (beroende på modellversion)",
+    "v0.10pre1（支持gpt词典）": "V0. 10 pre1 (stöder GPT ordbok)",
+    "输出的内容": "Utdatainnehåll"
 }

@@ -172,7 +172,6 @@ class edittrans(LMainWindow):
                 name=globalconfig["fanyi"]["realtime_edit"]["name"],
                 color=globalconfig["fanyi"]["realtime_edit"]["color"],
                 res=text,
-                onlytrans=False,
                 iter_context=(1, "realtime_edit_directvis_fakeclass"),
             )
             gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)

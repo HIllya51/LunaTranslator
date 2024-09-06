@@ -578,7 +578,6 @@
     "显示/隐藏历史翻译": "Show/Hide Translation History",
     "全屏/恢复游戏窗口": "Full Screen/Restore Game Window",
     "文本输出": "Text Output",
-    "自动输出提取的文本": "Automatically Output Extracted Text",
     "缩放": "Scale",
     "填充": "Fill",
     "适应": "Fit",
@@ -849,5 +848,8 @@
     "复制自": "Copy from",
     "目标列表": "Target List",
     "使用翻译": "Using translation",
-    "使用/跳过翻译": "Use/skip translation"
+    "使用/跳过翻译": "Use/skip translation",
+    "prompt格式（需要根据模型版本决定）": "Prompt format (depending on the model version)",
+    "v0.10pre1（支持gpt词典）": "V0.10 pre1 (supports GPT dictionary)",
+    "输出的内容": "Output content"
 }

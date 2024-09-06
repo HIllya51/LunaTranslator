@@ -579,7 +579,6 @@
     "显示/隐藏历史翻译": "Hiện/ẩn bản dịch lịch sử",
     "全屏/恢复游戏窗口": "Toàn màn hình/Khôi phục cửa sổ trò chơi",
     "文本输出": "Xuất văn bản",
-    "自动输出提取的文本": "Tự động xuất văn bản đã trích xuất",
     "缩放": "Phóng to",
     "填充": "Điền",
     "适应": "Điều chỉnh",
@@ -849,5 +848,8 @@
     "复制自": "Copy từ",
     "目标列表": "Danh sách mục tiêu",
     "使用翻译": "Sử dụng bản dịch",
-    "使用/跳过翻译": "Sử dụng/bỏ qua bản dịch"
+    "使用/跳过翻译": "Sử dụng/bỏ qua bản dịch",
+    "prompt格式（需要根据模型版本决定）": "Định dạng prompt (cần được quyết định dựa trên phiên bản model)",
+    "v0.10pre1（支持gpt词典）": "v0.10pre1 (hỗ trợ từ điển gpt)",
+    "输出的内容": "Nội dung xuất"
 }

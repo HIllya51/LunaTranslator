@@ -587,7 +587,6 @@
     "显示/隐藏历史翻译": "Historische Übersetzungen ein-/ausblenden",
     "全屏/恢复游戏窗口": "Vollbildmodus/Spielfenster wiederherstellen",
     "文本输出": "Textausgabe",
-    "自动输出提取的文本": "Extrahierter Text automatisch ausgeben",
     "缩放": "Zoom",
     "填充": "Füllen",
     "适应": "Anpassung",
@@ -849,5 +848,8 @@
     "复制自": "Kopieren von",
     "目标列表": "Zielliste",
     "使用翻译": "Verwendung der Übersetzung",
-    "使用/跳过翻译": "Übersetzung verwenden/überspringen"
+    "使用/跳过翻译": "Übersetzung verwenden/überspringen",
+    "prompt格式（需要根据模型版本决定）": "Aufforderungsformat (abhängig von der Modellversion)",
+    "v0.10pre1（支持gpt词典）": "V0.10 pre1 (unterstützt GPT Wörterbuch)",
+    "输出的内容": "Ausgabeinhalt"
 }

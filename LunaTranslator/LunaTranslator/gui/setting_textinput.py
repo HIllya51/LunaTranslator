@@ -462,7 +462,25 @@ def filetranslate(self):
 def outputgrid(self):
 
     grids = [
-        ["自动输出提取的文本"],
+        [
+            (
+                dict(
+                    title="输出的内容",
+                    grid=(
+                        [
+                            "原文",
+                            D_getsimpleswitch(globalconfig, "textoutput_origin"),
+                        ],
+                        [
+                            "翻译",
+                            D_getsimpleswitch(globalconfig, "textoutput_trans"),
+                        ],
+                    ),
+                ),
+                0,
+                "group",
+            )
+        ],
         [],
         [
             (

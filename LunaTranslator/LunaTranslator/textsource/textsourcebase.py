@@ -57,7 +57,6 @@ class basetext:
             text,
             is_auto_run=True,
             waitforresultcallback=resultwaitor.put,
-            onlytrans=True,
         )
         return resultwaitor.get()
 

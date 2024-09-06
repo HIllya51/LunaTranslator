@@ -300,23 +300,13 @@ class TranslatorWindow(resizableframeless):
                 pass
             self.move_signal.emit(tracepos - lastpos.topLeft() + rect.topLeft())
 
-    def showres(self, kwargs):  # name,color,res,onlytrans,iter_context):
+    def showres(self, kwargs):
         try:
             name = kwargs.get("name", "")
             color = kwargs.get("color")
             res = kwargs.get("res")
-            onlytrans = kwargs.get("onlytrans", False)  # 仅翻译，不显示
             iter_context = kwargs.get("iter_context", None)
             clear = kwargs.get("clear", False)
-
-            iter_res_status, iter_context_class = iter_context
-            if iter_res_status in (0, 2):  # iter结束
-                gobject.baseobject.transhis.getnewtranssignal.emit(name, res)
-                if iter_res_status == 2:
-                    return
-
-            if onlytrans:
-                return
 
             if globalconfig["showfanyisource"]:
                 _showtext = name + "  " + res
@@ -333,14 +323,11 @@ class TranslatorWindow(resizableframeless):
         except:
             print_exc()
 
-    def showraw(self, kwargs):  # res,color,onlytrans):
+    def showraw(self, kwargs):
         text = kwargs.get("text")
         color = kwargs.get("color")
-        onlytrans = kwargs.get("onlytrans")
 
         clear = True
-        if onlytrans:
-            return
         if globalconfig["isshowrawtext"]:
             self.showline(clear=clear, text=text, isshowrawtext=True, color=color)
         else:

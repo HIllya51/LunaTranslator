@@ -262,12 +262,11 @@ class MAINUI:
         text,
         is_auto_run=True,
         waitforresultcallback=None,
-        onlytrans=False,
         donttrans=False,
     ):
         with self.solvegottextlock:
             succ = self.textgetmethod_1(
-                text, is_auto_run, waitforresultcallback, onlytrans, donttrans
+                text, is_auto_run, waitforresultcallback, donttrans
             )
             if waitforresultcallback and not succ:
                 waitforresultcallback("")
@@ -277,7 +276,6 @@ class MAINUI:
         text,
         is_auto_run=True,
         waitforresultcallback=None,
-        onlytrans=False,
         donttrans=False,
     ):
         if not text:
@@ -285,7 +283,7 @@ class MAINUI:
         if is_auto_run and text == self.currenttext:
             return
         currentsignature = uuid.uuid4()
-        if onlytrans == False:
+        if not waitforresultcallback:
             self.currentsignature = currentsignature
         try:
             origin = text
@@ -316,7 +314,8 @@ class MAINUI:
             pass
         if donttrans:
             return
-        if onlytrans == False:
+
+        if not waitforresultcallback:
             self.currenttext = text
             self.currenttranslate = ""
             if globalconfig["read_raw"]:
@@ -329,16 +328,20 @@ class MAINUI:
                     text = self.readcurrent(needresult=True)
                 else:
                     self.readcurrent()
-            self.dispatchoutputer(text)
+            if globalconfig["textoutput_origin"]:
+                self.dispatchoutputer(text)
 
+            _showrawfunction = functools.partial(
+                self.translation_ui.displayraw1.emit,
+                dict(text=text, color=globalconfig["rawtextcolor"]),
+            )
+        else:
+            _showrawfunction = None
         self.transhis.getnewsentencesignal.emit(text)
         self.maybesetedittext(text)
-        _showrawfunction = functools.partial(
-            self.translation_ui.displayraw1.emit,
-            dict(text=text, color=globalconfig["rawtextcolor"], onlytrans=onlytrans),
-        )
         if globalconfig["refresh_on_get_trans"] == False:
-            _showrawfunction()
+            if _showrawfunction:
+                _showrawfunction()
             _showrawfunction = None
             _showrawfunction_sig = 0
         else:
@@ -367,7 +370,6 @@ class MAINUI:
                     self.create_translate_task(
                         currentsignature,
                         usefultranslators,
-                        onlytrans,
                         _colork,
                         optimization_params,
                         _showrawfunction,
@@ -394,13 +396,12 @@ class MAINUI:
 
                 if globalconfig["fix_translate_rank"]:
                     self.ifuse_fix_translate_rank_preprare(
-                        engine, onlytrans, waitforresultcallback
+                        engine, waitforresultcallback
                     )
 
                 self.create_translate_task(
                     currentsignature,
                     usefultranslators,
-                    onlytrans,
                     engine,
                     optimization_params,
                     _showrawfunction,
@@ -416,18 +417,13 @@ class MAINUI:
             return
         return True
 
-    def ifuse_fix_translate_rank_preprare(
-        self, engine, onlytrans, waitforresultcallback
-    ):
-        if onlytrans:
-            return
+    def ifuse_fix_translate_rank_preprare(self, engine, waitforresultcallback):
         if waitforresultcallback:
             return
         displayreskwargs = dict(
             name="",
             color=globalconfig["fanyi"][engine]["color"],
             res="",
-            onlytrans=onlytrans,
             iter_context=(1, engine),
         )
         self.translation_ui.displayres.emit(displayreskwargs)
@@ -436,7 +432,6 @@ class MAINUI:
         self,
         currentsignature,
         usefultranslators,
-        onlytrans,
         engine,
         optimization_params,
         _showrawfunction,
@@ -451,7 +446,6 @@ class MAINUI:
             self.GetTranslationCallback,
             usefultranslators,
             waitforresultcallback,
-            onlytrans,
             engine,
             currentsignature,
             optimization_params,
@@ -477,7 +471,6 @@ class MAINUI:
         self,
         usefultranslators,
         waitforresultcallback,
-        onlytrans,
         classname,
         currentsignature,
         optimization_params,
@@ -500,7 +493,7 @@ class MAINUI:
                 self.translation_ui.displaystatus.emit(
                     globalconfig["fanyi"][classname]["name"] + " " + res,
                     "red",
-                    onlytrans,
+                    False,
                     False,
                 )
             if len(usefultranslators) == 0:
@@ -508,16 +501,10 @@ class MAINUI:
             return
 
         res = self.solveaftertrans(res, optimization_params)
-        if len(res) == 0:
+        if not res:
+            if len(usefultranslators) == 0:
+                safe_callback("")
             return
-        if onlytrans == False:
-            if (
-                globalconfig["read_trans"]
-                and globalconfig["read_translator2"] == classname
-            ):
-                self.currentread = res
-                self.readcurrent()
-
         needshowraw = (
             _showrawfunction
             and self.refresh_on_get_trans_signature != _showrawfunction_sig
@@ -526,16 +513,29 @@ class MAINUI:
             self.refresh_on_get_trans_signature = _showrawfunction_sig
             _showrawfunction()
 
-        if currentsignature == self.currentsignature:
+        if (currentsignature == self.currentsignature) and (iter_res_status in (0, 1)):
             displayreskwargs = dict(
                 name=globalconfig["fanyi"][classname]["name"],
                 color=globalconfig["fanyi"][classname]["color"],
                 res=res,
-                onlytrans=onlytrans,
                 iter_context=(iter_res_status, classname),
             )
             self.translation_ui.displayres.emit(displayreskwargs)
         if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
+
+            self.transhis.getnewtranssignal.emit(
+                globalconfig["fanyi"][classname]["name"], res
+            )
+            if not waitforresultcallback:
+                if (
+                    globalconfig["read_trans"]
+                    and globalconfig["read_translator2"] == classname
+                ):
+                    self.currentread = res
+                    self.readcurrent()
+
+                if globalconfig["textoutput_trans"]:
+                    self.dispatchoutputer(res)
             try:
                 self.textsource.sqlqueueput((contentraw, classname, res))
             except:
