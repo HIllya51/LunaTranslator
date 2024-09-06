@@ -8,7 +8,7 @@ from myutils.proxy import getproxy
 def list_models(typename, regist):
     js = requests.get(
         "https://generativelanguage.googleapis.com/v1beta/models",
-        params={"key": regist["key"]().split("|")[0]},
+        params={"key": regist["key"]().split("|")[0].strip()},
         proxies=getproxy(("ocr", typename)),
         timeout=10,
     ).json()
@@ -25,7 +25,7 @@ def list_models(typename, regist):
         if name.startswith("models/"):
             name = name[7:]
         mm.append(name)
-    return mm
+    return sorted(mm)
 
 
 class OCR(baseocr):

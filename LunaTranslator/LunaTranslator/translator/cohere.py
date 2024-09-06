@@ -132,7 +132,7 @@ def list_models(typename, regist):
     js = requests.get(
         "https://api.cohere.com/v1/models",
         headers={
-            "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0],
+            "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip(),
             "X-Client-Name": "my-cool-project",
         },
         proxies=getproxy(("fanyi", typename)),
@@ -148,4 +148,4 @@ def list_models(typename, regist):
         if "chat" not in endpoints:
             continue
         mm.append(m["name"])
-    return mm
+    return sorted(mm)

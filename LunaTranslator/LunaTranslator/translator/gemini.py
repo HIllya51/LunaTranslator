@@ -94,7 +94,7 @@ class TS(basetrans):
 def list_models(typename, regist):
     js = requests.get(
         "https://generativelanguage.googleapis.com/v1beta/models",
-        params={"key": regist["SECRET_KEY"]().split("|")[0]},
+        params={"key": regist["SECRET_KEY"]().split("|")[0].strip()},
         proxies=getproxy(("fanyi", typename)),
         timeout=10,
     ).json()
@@ -111,4 +111,4 @@ def list_models(typename, regist):
         if name.startswith("models/"):
             name = name[7:]
         mm.append(name)
-    return mm
+    return sorted(mm)

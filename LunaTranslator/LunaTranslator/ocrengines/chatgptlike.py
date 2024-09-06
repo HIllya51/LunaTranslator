@@ -6,14 +6,14 @@ from myutils.proxy import getproxy
 
 def list_models(typename, regist):
     js = requests.get(
-        createurl(regist["apiurl"]())[: -len("/chat/completions")] + "/models",
-        headers={"Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0]},
+        createurl(regist["apiurl"]().strip())[: -len("/chat/completions")] + "/models",
+        headers={"Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()},
         proxies=getproxy(("ocr", typename)),
         timeout=10,
     ).json()
 
     try:
-        return [_["id"] for _ in js["data"]]
+        return sorted([_["id"] for _ in js["data"]])
     except:
         raise Exception(js)
 
