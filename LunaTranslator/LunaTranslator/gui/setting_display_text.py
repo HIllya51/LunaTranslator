@@ -544,7 +544,6 @@ def xianshigrid_style(self):
                                                 "kanarate",
                                                 double=True,
                                                 step=0.05,
-                                                dec=2,
                                             ),
                                         ],
                                         [

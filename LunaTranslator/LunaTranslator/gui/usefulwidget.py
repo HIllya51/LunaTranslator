@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, platform, functools, uuid, json
+import os, platform, functools, uuid, json, math
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import webview_native_handle_kind_t, Webview, declare_library_path
@@ -849,10 +849,10 @@ def getlineedit(d, key, callback=None, readonly=False):
     return s
 
 
-def getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, dec=1):
+def getspinbox(mini, maxi, d, key, double=False, step=1, callback=None):
     if double:
         s = FocusDoubleSpin()
-        s.setDecimals(dec)
+        s.setDecimals(math.ceil(-math.log10(step)))
     else:
         s = FocusSpin()
         d[key] = int(d[key])
@@ -864,8 +864,8 @@ def getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, dec=1):
     return s
 
 
-def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, dec=1):
-    return lambda: getspinbox(mini, maxi, d, key, double, step, callback, dec)
+def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None):
+    return lambda: getspinbox(mini, maxi, d, key, double, step, callback)
 
 
 def getIconButton(callback=None, icon="fa.paint-brush", enable=True, qicon=None):

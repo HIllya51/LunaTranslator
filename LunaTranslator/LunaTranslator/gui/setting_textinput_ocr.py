@@ -242,7 +242,6 @@ def _ocrparam_create(self, idx):
                         ("ocr_stable_sim", "ocr_stable_sim2")[idx == 3],
                         double=True,
                         step=0.001,
-                        dec=3,
                     ),
                     functools.partial(__label1, self),
                 ]
@@ -260,7 +259,6 @@ def _ocrparam_create(self, idx):
                         "ocr_diff_sim",
                         double=True,
                         step=0.001,
-                        dec=3,
                     ),
                     functools.partial(__label2, self),
                 ]
