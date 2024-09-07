@@ -21,6 +21,7 @@
 - [翻译源设置](/zh/guochandamoxing.redirect)
     - [如何使用大模型API翻译](/zh/guochandamoxing.md)
     - [如何使用大模型离线翻译](/zh/offlinellm.md) 
+    - [如何部署SakuraLLM到Kaggle/Google Colab](/zh/sakurallmkagglecolab.md) 
     - [如何使用调试浏览器翻译](/zh/tiaoshiliulanqi.md)
 - [文本处理&翻译优化](/zh/textprocess.redirect)
     - [各种文本处理方法的作用和用法](/zh/textprocess.md)
