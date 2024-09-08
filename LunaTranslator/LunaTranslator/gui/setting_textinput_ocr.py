@@ -538,6 +538,20 @@ def getocrgrid(self):
                             "选取OCR范围后自动绑定窗口",
                             D_getsimpleswitch(globalconfig, "ocrautobindhwnd"),
                         ],
+                        [
+                            "选取OCR范围时不透明度",
+                            (
+                                D_getspinbox(
+                                    0,
+                                    1,
+                                    globalconfig,
+                                    "ocrselectalpha",
+                                    double=True,
+                                    step=0.01,
+                                ),
+                                2,
+                            ),
+                        ],
                     ],
                 ),
                 0,

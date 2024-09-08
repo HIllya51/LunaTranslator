@@ -75,8 +75,8 @@ class rangeadjust(Mainw):
 
     def setstyle(self):
         self.label.setStyleSheet(
-            " border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"
-            % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"])
+            " border:%spx solid %s; background-color: rgba(0,0,0, %s)"
+            % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"], 1 / 255)
         )
 
     def mouseMoveEvent(self, e):
@@ -165,7 +165,7 @@ class rangeselect(QMainWindow):
         )
         self.rectlabel = QLabel(self)
         # self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setWindowOpacity(0.5)
+        # self.setWindowOpacity(0.5)
         self.setMouseTracking(True)
         self.setCursor(Qt.CursorShape.CrossCursor)
         self.reset()
@@ -184,8 +184,11 @@ class rangeselect(QMainWindow):
         self.clickrelease = False
         self.rectlabel.resize(0, 0)
         self.rectlabel.setStyleSheet(
-            " border:%spx solid %s; background-color: rgba(0,0,0, 0.01)"
+            " border:%spx solid %s"
             % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"])
+        )
+        self.setStyleSheet(
+            "background-color: rgba(255,255,255, %s)" % globalconfig["ocrselectalpha"]
         )
 
     def immediateend(self):

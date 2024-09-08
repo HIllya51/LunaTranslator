@@ -17,6 +17,7 @@
     "disappear_delay": 5,
     "network": 1,
     "useextrahtml": true,
+    "ocrselectalpha": 0.3,
     "network_websocket": 1,
     "webview_textbrowser": false,
     "imagewrapmode": 0,
