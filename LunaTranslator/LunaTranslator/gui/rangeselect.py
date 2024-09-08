@@ -184,7 +184,7 @@ class rangeselect(QMainWindow):
         self.clickrelease = False
         self.rectlabel.resize(0, 0)
         self.rectlabel.setStyleSheet(
-            " border:%spx solid %s"
+            " border:%spx solid %s; background-color: rgba(0,0,0, 0)"
             % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"])
         )
         self.setStyleSheet(
