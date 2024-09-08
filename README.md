@@ -5,12 +5,13 @@
     <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
     <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a> <img src="https://img.shields.io/badge/OS-windows 7--11 / wine-FF007C"/>
 </p>
+
+### [使用说明](https://docs.lunatranslator.org/#/zh/) [视频教程](https://space.bilibili.com/592120404/video) [QQ群](https://qm.qq.com/q/I5rr3uEpi2) [Discord](https://discord.com/invite/ErtDwVeAbB)
+
  
 ### 简体中文 | [Русский язык](README_ru.md) | [English](README_en.md) | [Other Language](otherlang.md) 
 
 > **一款galgame翻译器**
-
-### [使用说明](https://docs.lunatranslator.org/#/zh/) [视频教程](https://space.bilibili.com/592120404/video) [QQ群](https://qm.qq.com/q/I5rr3uEpi2) [Discord](https://discord.com/invite/ErtDwVeAbB)
 
 ## 功能支持
 
@@ -18,7 +19,7 @@
 
 - **剪贴板** 支持从剪贴板中获取文本进行翻译
 
-- **OCR** 支持 **离线OCR** ( 内置OCR引擎外，还支持WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **在线OCR** ( 百度OCR/图片翻译、有道OCR/图片翻译、有道OCR/图片翻译、飞书OCR、讯飞OCR、Google Lens、Google Cloud Vision、docsumo、ocrspace ) 。还可以使用多模态大模型进行OCR，支持GeminiOCR、ChatGPT兼容接口
+- **OCR** 支持 **离线OCR** ( 内置OCR引擎外，还支持WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **在线OCR** ( 百度OCR/图片翻译、有道OCR/图片翻译、有道OCR/图片翻译、飞书OCR、讯飞OCR、Google Lens、Google Cloud Vision、docsumo、ocrspace ) 。还可以使用**多模态大模型**进行OCR ( 支持GeminiOCR、ChatGPT兼容接口 )
 
 - **HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。
 
