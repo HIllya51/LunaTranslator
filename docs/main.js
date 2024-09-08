@@ -165,5 +165,5 @@ window.onpopstate = function (event) {
 
 function tohomeurl() {
     var hostname = window.location.hostname;
-    window.open(window.location.protocol + '//' + hostname.substring(5));
+    window.open(window.location.protocol + '//' + hostname.substring(5), '_blank');
 }
