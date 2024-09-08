@@ -36,10 +36,10 @@ jobs:
       - name: Run build script
         run: |
           python build.py ${{ matrix.architecture }} 3.7.9
-      - name: Generate attestation for artifact
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: build/${{ matrix.fname }}.zip
+      # - name: Generate attestation for artifact
+      #   uses: actions/attest-build-provenance@v1
+      #   with:
+      #     subject-path: build/${{ matrix.fname }}.zip
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
