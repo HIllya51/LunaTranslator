@@ -4,7 +4,7 @@
 
 
 
-注册[ngrok](https://ngrok.com/)，分别获取<a href="javascript:void(0);" onclick="NGROK_TOKEN();">NGROK_TOKEN</a>和<a href="javascript:void(0);" onclick="NGROK_DOMAIN();">NGROK_DOMAIN</a>，以供后面使用。
+注册[ngrok](https://ngrok.com/)，分别获取[NGROK_TOKEN](https://dashboard.ngrok.com/get-started/your-authtoken)和[NGROK_DOMAIN](https://dashboard.ngrok.com/cloud-edge/domains)，以供后面使用。
 
 
 也可以不注册**ngrok**，将**NGROK_TOKEN**置为空，则会使用**gradio-tunneling**的随机域名进行内网穿透。

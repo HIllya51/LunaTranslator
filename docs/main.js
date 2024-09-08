@@ -167,12 +167,3 @@ function tohomeurl() {
     var hostname = window.location.hostname;
     window.open(window.location.protocol + '//' + hostname.substring(5));
 }
-
-function NGROK_TOKEN() {
-    window.open('https://dashboard.ngrok.com/get-started/your-authtoken', '_blank');
-    window.open('https://image.lunatranslator.org/zh/sakurallm/ngrok2.png', '_blank');
-}
-function NGROK_DOMAIN() {
-    window.open('https://dashboard.ngrok.com/cloud-edge/domains', '_blank');
-    window.open('https://image.lunatranslator.org/zh/sakurallm/ngrok.png', '_blank');
-} 
