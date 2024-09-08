@@ -1,20 +1,40 @@
 ## 部署SakuraLLM到Kaggle/Google Colab
 
-### 1. 注册[ngrok](https://ngrok.com/)，以将请求转发给llama.cpp服务
+### 1. 设置内网穿透，以将请求转发给llama.cpp服务
 
-注册后，分别获取[NGROK_TOKEN](https://dashboard.ngrok.com/get-started/your-authtoken)和[NGROK_DOMAIN](https://dashboard.ngrok.com/cloud-edge/domains)，以供后面使用。
+注册[ngrok](https://ngrok.com/)，分别获取[NGROK_TOKEN](https://dashboard.ngrok.com/get-started/your-authtoken)和[NGROK_DOMAIN](https://dashboard.ngrok.com/cloud-edge/domains)，以供后面使用。
+
+也可以不注册**ngrok**，将**NGROK_TOKEN**置为空，则会使用**gradio-tunneling**的随机域名进行内网穿透。
+
+若使用**ngrok**，并填写了**NGROK_DOMAIN**，则每次运行时将会使用固定的域名进行内网穿透，否则将会使用随机的域名。
+
+启动后，将会在log中看到本次运行的url接口地址，将url接口地址填写到翻译器中即可：
 
 <details>
-  <summary><strong>NGROK_TOKEN</strong></summary>
+  <summary>全空，使用gradio-tunneling，随机的域名</summary>
+  <img src="https://image.lunatranslator.org/zh/sakurallm/tunnel.png">
+</details>
+
+<details>
+  <summary>填写NGROK_TOKEN，使用ngrok，随机的域名</summary>
+  <img src="https://image.lunatranslator.org/zh/sakurallm/tunnel3.png">
+</details>
+
+<details>
+  <summary>填写NGROK_TOKEN+NGROK_DOMAIN，使用ngrok，固定的域名</summary>
+  <img src="https://image.lunatranslator.org/zh/sakurallm/tunnel2.png">
+</details>
+
+
+<details>
+  <summary>NGROK_TOKEN</summary>
   <img src="https://image.lunatranslator.org/zh/sakurallm/ngrok2.png">
 </details>
 
 <details>
-  <summary><strong>NGROK_DOMAIN</strong></summary>
+  <summary>NGROK_DOMAIN</summary>
   <img src="https://image.lunatranslator.org/zh/sakurallm/ngrok.png">
 </details>
-
->之后，在Sakura大模型的设置中，将**API接口地址**填写为`https://`加上**NGROK_DOMAIN**即可，该地址不会发生变化。
 
 
 ### 2. 部署到Kaggle/Google Colab
