@@ -75,7 +75,7 @@ class rangeadjust(Mainw):
 
     def setstyle(self):
         self.label.setStyleSheet(
-            " border:%spx solid %s; background-color: rgba(0,0,0, %s)"
+            " border:%spx solid %s; background-color: rgba(0,0,0, %s); border-radius:0;"
             % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"], 1 / 255)
         )
 
