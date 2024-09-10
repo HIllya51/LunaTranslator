@@ -15,6 +15,7 @@ from gui.dialog_savedgame_common import (
     opendirforgameuid,
     startgamecheck,
     addgamesingle,
+    showcountgame,
     addgamebatch_x,
 )
 
@@ -120,6 +121,7 @@ class dialog_savedgame_legacy(QWidget):
             savehook_new_list.pop(idx)
             self.savelist.pop(idx)
             self.model.removeRow(self.table.currentIndex().row())
+            showcountgame(self.parent_,len(self.savelist))
         except:
             pass
 
@@ -130,6 +132,7 @@ class dialog_savedgame_legacy(QWidget):
             self.model.removeRow(idx)
         self.newline(0, uid)
         self.table.setCurrentIndex(self.model.index(0, 0))
+        showcountgame(self.parent_,len(self.savelist))
 
     def clicked3(self):
         addgamesingle(self, self.addgame, savehook_new_list)
@@ -192,7 +195,7 @@ class dialog_savedgame_legacy(QWidget):
         #         return
         # dialog_savedgame._sigleton=True
         super().__init__(parent)
-
+        self.parent_ = parent
         self.setAcceptDrops(True)
         formLayout = QVBoxLayout(self)  #
         model = LStandardItemModel()
@@ -214,6 +217,9 @@ class dialog_savedgame_legacy(QWidget):
         for row, k in enumerate(savehook_new_list):  # 2
             self.newline(row, k)
             self.savelist.append(k)
+
+        
+        showcountgame(self.parent_,len(self.savelist))
         self.table.starttraceir()
         bottom = QHBoxLayout()
 

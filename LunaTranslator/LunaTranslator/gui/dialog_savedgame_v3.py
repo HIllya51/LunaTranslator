@@ -15,7 +15,7 @@ from myutils.config import (
 from myutils.utils import str2rgba, get_time_stamp, loopbackrecorder
 from myutils.audioplayer import playonce
 from gui.inputdialog import autoinitdialog
-from gui.specialwidget import stackedlist, shrinkableitem
+from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
 from gui.usefulwidget import (
     pixmapviewer,
     statusbutton,
@@ -738,7 +738,9 @@ class dialog_savedgame_v3(QWidget):
                             "opened": True,
                         }
                         savegametaged.insert(i, tag)
-                        group0 = self.createtaglist(self.stack, title, tag["uid"], True)
+                        group0, btn = self.createtaglist(
+                            self.stack, title, tag["uid"], True
+                        )
                         self.stack.insertw(i, group0)
 
         elif action == delgame:
@@ -800,6 +802,7 @@ class dialog_savedgame_v3(QWidget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        parent.setWindowTitle("游戏管理")
         self.setAcceptDrops(True)
         self.currentfocusuid = None
         self.reftagid = None
@@ -870,7 +873,7 @@ class dialog_savedgame_v3(QWidget):
                 title = tag["title"]
                 tagid = tag["uid"]
                 opened = tag.get("opened", True)
-            group0 = self.createtaglist(self.stack, title, tagid, opened)
+            group0, btn = self.createtaglist(self.stack, title, tagid, opened)
             self.stack.insertw(i, group0)
             rowreal = 0
             for row, k in enumerate(lst):
@@ -890,6 +893,7 @@ class dialog_savedgame_v3(QWidget):
                 )
 
                 rowreal += 1
+            btn.setnum(rowreal)
 
     def taglistrerank(self, tagid, dx):
         idx1 = calculatetagidx(tagid)
@@ -960,7 +964,9 @@ class dialog_savedgame_v3(QWidget):
                             "opened": True,
                         }
                         savegametaged.insert(i, tag)
-                        group0 = self.createtaglist(self.stack, title, tag["uid"], True)
+                        group0, btn = self.createtaglist(
+                            self.stack, title, tag["uid"], True
+                        )
                         self.stack.insertw(i, group0)
                     elif action == editname:
                         self.stack.w(i).settitle(title)
@@ -975,13 +981,13 @@ class dialog_savedgame_v3(QWidget):
     def createtaglist(self, p, title, tagid, opened):
 
         self.reallist[tagid] = []
-        _btn = QPushButton(title)
+        _btn = shownumQPushButton(title)
         _btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         _btn.clicked.connect(functools.partial(self._revertoepn, tagid))
         _btn.customContextMenuRequested.connect(
             functools.partial(self.tagbuttonmenu, tagid)
         )
-        return shrinkableitem(p, _btn, opened)
+        return shrinkableitem(p, _btn, opened), _btn
 
     def _revertoepn(self, tagid):
         item = savegametaged[calculatetagidx(tagid)]
@@ -1019,11 +1025,13 @@ class dialog_savedgame_v3(QWidget):
             self.reallist[self.reftagid].pop(idx2)
             clickitem.clearfocus()
             group0 = self.stack.w(calculatetagidx(self.reftagid))
+            group0.button().setnum(len(self.reallist[self.reftagid]))
             group0.popw(idx2)
             try:
                 group0.w(idx2).click()
             except:
                 group0.w(idx2 - 1).click()
+
         except:
             print_exc()
 
@@ -1038,6 +1046,9 @@ class dialog_savedgame_v3(QWidget):
             self.reallist[self.reftagid].pop(idx)
             self.reallist[self.reftagid].insert(0, uid)
             self.stack.w(calculatetagidx(self.reftagid)).torank1(idx)
+        self.stack.w(calculatetagidx(self.reftagid)).button().setnum(
+            len(self.reallist[self.reftagid])
+        )
 
     def clicked3_batch(self):
         addgamebatch(self.addgame, getreflist(self.reftagid))

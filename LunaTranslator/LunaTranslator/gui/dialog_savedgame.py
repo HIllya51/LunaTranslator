@@ -39,6 +39,7 @@ from gui.dialog_savedgame_common import (
     calculatetagidx,
     getreflist,
     getpixfunction,
+    showcountgame,
     addgamesingle,
     addgamebatch,
     addgamebatch_x,
@@ -94,7 +95,6 @@ class dialog_savedgame_integrated(saveposwindow):
             | Qt.WindowType.WindowCloseButtonHint,
             poslist=globalconfig["savegamedialoggeo"],
         )
-        self.setWindowTitle("游戏管理")
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         w, self.internallayout = getboxlayout(
             [], margin0=True, makewidget=True, both=True
@@ -155,6 +155,7 @@ class dialog_savedgame_new(QWidget):
             except:
                 self.flow.widget(idx2 - 1).click()
 
+            showcountgame(self._parent, len(self.idxsave))
         except:
             print_exc()
 
@@ -169,6 +170,7 @@ class dialog_savedgame_new(QWidget):
             self.idxsave.pop(idx)
             self.idxsave.insert(0, uid)
             self.flow.totop1(idx)
+        showcountgame(self._parent, len(self.idxsave))
 
     def clicked3_batch(self):
         addgamebatch(self.addgame, self.reflist)
@@ -188,7 +190,6 @@ class dialog_savedgame_new(QWidget):
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
         idx = 0
-
         for k in self.reflist:
             if newtags != self.currtags:
                 break
@@ -223,6 +224,8 @@ class dialog_savedgame_new(QWidget):
                 continue
             self.newline(k, idx == 0)
             idx += 1
+
+        showcountgame(self._parent, idx)
         self.flow.directshow()
 
     def showmenu(self, p):
@@ -375,6 +378,7 @@ class dialog_savedgame_new(QWidget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        self._parent = parent
         self.setstyle()
         gobject.global_dialog_savedgame_new = self
         formLayout = QVBoxLayout()

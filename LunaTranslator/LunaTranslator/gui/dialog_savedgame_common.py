@@ -32,6 +32,13 @@ from gui.usefulwidget import (
 )
 
 
+def showcountgame(window, num):
+    if num:
+        window.setWindowTitle("游戏管理____-_" + str(num))
+    else:
+        window.setWindowTitle("游戏管理")
+
+
 class ItemWidget(QWidget):
     focuschanged = pyqtSignal(bool, str)
     doubleclicked = pyqtSignal(str)

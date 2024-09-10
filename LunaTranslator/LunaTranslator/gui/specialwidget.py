@@ -590,8 +590,35 @@ class delayloadvbox(QWidget):
         return len(self.internal_widgets)
 
 
+class shownumQPushButton(QPushButton):
+    def __init__(self, *arg, **kw):
+        super().__init__(*arg, **kw)
+        self.num = 0
+
+    def setnum(self, num):
+        self.num = num
+        self.update()
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        if not self.num:
+            return
+        painter = QPainter(self)
+        painter.setPen(Qt.GlobalColor.gray)
+        rect = self.rect()
+
+        textRect = self.fontMetrics().boundingRect(self.text())
+        numberRect = rect.adjusted(textRect.width() + 10, 0, -10, 0)
+
+        painter.drawText(
+            numberRect,
+            Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+            str(self.num),
+        )
+
+
 class shrinkableitem(QWidget):
-    def __init__(self, p, shrinker: QPushButton, opened):
+    def __init__(self, p, shrinker: shownumQPushButton, opened):
         super().__init__(p)
         self.lay = QVBoxLayout()
         # self.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Fixed)
@@ -646,6 +673,9 @@ class shrinkableitem(QWidget):
 
     def len(self):
         return self.items.len()
+
+    def button(self):
+        return self.btn
 
 
 class stackedlist(ScrollArea):
