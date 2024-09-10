@@ -413,7 +413,11 @@ def getcachedimage(src, small):
     return _pix
 
 
-def getpixfunction(kk, small=False):
+def getpixfunction(kk, small=False, iconfirst=False):
+    if iconfirst:
+        _pix = getExeIcon(uid2gamepath[kk], False, cache=True)
+        if not _pix.toImage().allGray():
+            return _pix
     if (
         savehook_new_data[kk]["currentmainimage"]
         in savehook_new_data[kk]["imagepath_all"]

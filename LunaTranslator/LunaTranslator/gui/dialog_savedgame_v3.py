@@ -92,7 +92,9 @@ class clickitem(QWidget):
         self.uid = uid
         self.lay = QHBoxLayout()
         self.lay.setSpacing(0)
-        self.lay.setContentsMargins(0, 0, 0, 0)
+        size = globalconfig["dialog_savegame_layout"]["listitemheight"]
+        margin = min(3, int(size / 15))
+        self.lay.setContentsMargins(margin, margin, margin, margin)
 
         self.maskshowfileexists = QLabel(self)
         exists = os.path.exists(get_launchpath(uid))
@@ -101,22 +103,20 @@ class clickitem(QWidget):
         self.bottommask.hide()
         self.bottommask.setObjectName("savegame_onselectcolor1")
         _ = QLabel(self)
-        _.setStyleSheet(
-            """background-color: rgba(255,255,255, 0);border-bottom: 1px solid gray;"""
-        )
+        _.setStyleSheet("""background-color: rgba(255,255,255, 0);""")
         self.bottomline = _
-        size = globalconfig["dialog_savegame_layout"]["listitemheight"]
+
         _ = QLabel()
-        _.setFixedSize(QSize(size, size))
+        _.setFixedSize(QSize(size - 2 * margin, size - 2 * margin))
         _.setScaledContents(True)
         _.setStyleSheet("background-color: rgba(255,255,255, 0);")
-        icon = getpixfunction(uid, small=True)
+        icon = getpixfunction(uid, small=True, iconfirst=True)
         icon.setDevicePixelRatio(self.devicePixelRatioF())
         _.setPixmap(icon)
         self.lay.addWidget(_)
         _ = QLabel(savehook_new_data[uid]["title"])
         _.setWordWrap(True)
-        _.setFixedHeight(size + 1)
+        _.setFixedHeight(size)
         _.setObjectName("savegame_textfont2")
         self.lay.addWidget(_)
         self.setLayout(self.lay)
