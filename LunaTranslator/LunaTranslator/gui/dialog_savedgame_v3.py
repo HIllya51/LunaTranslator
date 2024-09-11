@@ -94,8 +94,9 @@ class clickitem(QWidget):
         self.lay.setSpacing(0)
         size = globalconfig["dialog_savegame_layout"]["listitemheight"]
         margin = min(3, int(size / 15))
-        self.lay.setContentsMargins(margin, margin, margin, margin)
-
+        lay1 = QHBoxLayout()
+        lay1.setContentsMargins(margin, margin, margin, margin)
+        self.lay.setContentsMargins(0, 0, 0, 0)
         self.maskshowfileexists = QLabel(self)
         exists = os.path.exists(get_launchpath(uid))
         self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
@@ -113,7 +114,8 @@ class clickitem(QWidget):
         icon = getpixfunction(uid, small=True, iconfirst=True)
         icon.setDevicePixelRatio(self.devicePixelRatioF())
         _.setPixmap(icon)
-        self.lay.addWidget(_)
+        lay1.addWidget(_)
+        self.lay.addLayout(lay1)
         _ = QLabel(savehook_new_data[uid]["title"])
         _.setWordWrap(True)
         _.setFixedHeight(size)
@@ -571,12 +573,19 @@ class pixwrapper(QWidget):
         menu = QMenu(self)
 
         setimage = LAction(("设为封面"))
+        curr = savehook_new_data[self.k]["currentvisimage"]
+        curricon = savehook_new_data[self.k].get("currenticon")
+        if curr == curricon:
+            seticon = LAction(("还原图标"))
+        else:
+            seticon = LAction(("设为图标"))
         deleteimage = LAction(("删除图片"))
         deleteimage_x = LAction(("删除图片文件"))
         hualang = LAction(("画廊"))
         pos = LAction(("位置"))
 
         menu.addAction(setimage)
+        menu.addAction(seticon)
         menu.addAction(deleteimage)
         menu.addAction(deleteimage_x)
         menu.addAction(hualang)
@@ -601,8 +610,12 @@ class pixwrapper(QWidget):
                 ispathsedit=dict(),
             )
         elif action == setimage:
-            curr = savehook_new_data[self.k]["currentvisimage"]
             savehook_new_data[self.k]["currentmainimage"] = curr
+        elif action == seticon:
+            if curr == curricon:
+                savehook_new_data[self.k].pop("currenticon")
+            else:
+                savehook_new_data[self.k]["currenticon"] = curr
 
     def switchpos(self, pos):
         globalconfig["viewlistpos"] = pos

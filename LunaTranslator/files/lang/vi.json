@@ -852,5 +852,7 @@
     "prompt格式（需要根据模型版本决定）": "Định dạng prompt (cần được quyết định dựa trên phiên bản model)",
     "v0.10pre1（支持gpt词典）": "v0.10pre1 (hỗ trợ từ điển gpt)",
     "输出的内容": "Nội dung xuất",
-    "选取OCR范围时不透明度": "Độ mờ đục khi chọn phạm vi OCR"
+    "选取OCR范围时不透明度": "Độ mờ đục khi chọn phạm vi OCR",
+    "设为图标": "Đặt làm biểu tượng",
+    "还原图标": "Khôi phục biểu tượng"
 }

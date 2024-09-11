@@ -852,5 +852,7 @@
     "prompt格式（需要根据模型版本决定）": "Format pytania (w zależności od wersji modelu)",
     "v0.10pre1（支持gpt词典）": "V0.10 pre1 (obsługuje słownik GPT)",
     "输出的内容": "Zawartość wyjściowa",
-    "选取OCR范围时不透明度": "Przezroczystość przy wyborze zakresu OCR"
+    "选取OCR范围时不透明度": "Przezroczystość przy wyborze zakresu OCR",
+    "设为图标": "Ustaw jako ikonę",
+    "还原图标": "przywróć ikony"
 }

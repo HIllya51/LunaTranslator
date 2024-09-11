@@ -594,6 +594,8 @@ class shownumQPushButton(QPushButton):
     def __init__(self, *arg, **kw):
         super().__init__(*arg, **kw)
         self.num = 0
+        self.setCheckable(True)
+        self.clicked.connect(self.setChecked)
 
     def setnum(self, num):
         self.num = num
@@ -616,6 +618,13 @@ class shownumQPushButton(QPushButton):
             str(self.num),
         )
 
+        numberRect = rect.adjusted(10, 0, textRect.width() + -10, 0)
+        painter.drawText(
+            numberRect,
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+            ("+", "-")[self.isChecked()],
+        )
+
 
 class shrinkableitem(QWidget):
     def __init__(self, p, shrinker: shownumQPushButton, opened):
@@ -631,6 +640,7 @@ class shrinkableitem(QWidget):
         self.lay.addWidget(self.btn)
         self.lay.addWidget(self.items)
         self.items.setVisible(opened)
+        shrinker.setChecked(opened)
         self._ref_p_stackedlist = p
 
     def visheight(self):

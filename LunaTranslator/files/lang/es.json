@@ -852,5 +852,7 @@
     "prompt格式（需要根据模型版本决定）": "Formato prompt (debe decidirse en función de la versión del modelo)",
     "v0.10pre1（支持gpt词典）": "V0.10pre1 (admite diccionario gpt)",
     "输出的内容": "Contenido exportado",
-    "选取OCR范围时不透明度": "Opacidad al seleccionar el rango OCR"
+    "选取OCR范围时不透明度": "Opacidad al seleccionar el rango OCR",
+    "设为图标": "Establecer como icono",
+    "还原图标": "Restaurar iconos"
 }

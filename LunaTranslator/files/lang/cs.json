@@ -852,5 +852,7 @@
     "prompt格式（需要根据模型版本决定）": "Formát výzvy (v závislosti na verzi modelu)",
     "v0.10pre1（支持gpt词典）": "V0.10 pre1 (podporuje GPT slovník)",
     "输出的内容": "Výstupní obsah",
-    "选取OCR范围时不透明度": "Krytí při výběru rozsahu OCR"
+    "选取OCR范围时不透明度": "Krytí při výběru rozsahu OCR",
+    "设为图标": "Nastavit jako ikona",
+    "还原图标": "obnovit ikony"
 }
