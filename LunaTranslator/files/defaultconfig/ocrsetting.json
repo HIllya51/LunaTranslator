@@ -301,7 +301,7 @@
             "custom_prompt": "",
             "Temperature": 0.3,
             "top_p": 0.3,
-            "max_tokens": 128,
+            "max_tokens": 1024,
             "frequency_penalty": 0,
             "modellistcache": [],
             "s": ""
@@ -343,7 +343,7 @@
             "max_tokens": {
                 "type": "intspin",
                 "min": 1,
-                "max": 4096,
+                "max": 1000000,
                 "step": 1
             },
             "custom_prompt": {

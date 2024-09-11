@@ -387,7 +387,7 @@
 			"流式输出": true,
 			"Temperature": 0.3,
 			"top_p": 0.3,
-			"max_tokens": 128,
+			"max_tokens": 1024,
 			"frequency_penalty": 0,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
@@ -441,7 +441,7 @@
 			"max_tokens": {
 				"type": "intspin",
 				"min": 1,
-				"max": 4096,
+				"max": 1000000,
 				"step": 1
 			},
 			"流式输出": {
@@ -480,7 +480,7 @@
 			"usingstream": true,
 			"Temperature": 0.3,
 			"top_p": 0.3,
-			"max_tokens": 128,
+			"max_tokens": 1024,
 			"frequency_penalty": 0,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
@@ -540,7 +540,7 @@
 			"max_tokens": {
 				"type": "intspin",
 				"min": 1,
-				"max": 4096,
+				"max": 1000000,
 				"step": 1
 			},
 			"user_prompt": {
@@ -1094,7 +1094,7 @@
 			"top_p": 0.3,
 			"num_beams": 1,
 			"do_sample": true,
-			"max_new_token": 128,
+			"max_new_token": 1024,
 			"repetition_penalty": 1,
 			"frequency_penalty": 0,
 			"fix_degeneration": true,
@@ -1168,7 +1168,7 @@
 			"max_new_token": {
 				"type": "intspin",
 				"min": 1,
-				"max": 4096,
+				"max": 1000000,
 				"step": 1
 			},
 			"repetition_penalty": {
@@ -1196,7 +1196,7 @@
 			"流式输出": true,
 			"Temperature": 0.3,
 			"top_p": 0.3,
-			"max_tokens": 128,
+			"max_tokens": 1024,
 			"frequency_penalty": 0,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
@@ -1244,7 +1244,7 @@
 			"max_tokens": {
 				"type": "intspin",
 				"min": 1,
-				"max": 4096,
+				"max": 1000000,
 				"step": 1
 			},
 			"流式输出": {
