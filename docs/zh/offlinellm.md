@@ -6,7 +6,7 @@
 
 部署方法
 
-1. [部署SakuraLLM到Kaggle/Google Colab](/zh/sakurallmkagglecolab.md)
+1. [部署SakuraLLM到Google Colab](/zh/sakurallmcolab.md)
 
 
 2. 其他部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki

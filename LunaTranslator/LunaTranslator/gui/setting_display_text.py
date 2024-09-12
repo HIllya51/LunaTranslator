@@ -34,6 +34,7 @@ from gui.dynalang import LPushButton, LFormLayout
 
 def __changeuibuttonstate(self, x):
     gobject.baseobject.translation_ui.refreshtoolicon()
+    gobject.baseobject.translation_ui.translate_text.textbrowser.showhideorigin(x)
     try:
         self.fenyinsettings.setEnabled(x)
     except:

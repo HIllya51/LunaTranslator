@@ -131,6 +131,7 @@ class TextBrowser(QWidget, dataget):
         self.iteryinyinglabelsave = {}
         self.saveiterclasspointer = {}
         self.extra_height = 0
+        self.trace = []
         self.resets1()
 
     def resets1(self):
@@ -198,16 +199,19 @@ class TextBrowser(QWidget, dataget):
         c.setCharFormat(f)
         self.textbrowser.setTextCursor(c)
 
-    def iter_append(self, iter_context_class, origin, atcenter, text, color, cleared):
-        self._textbrowser_iter_append(
-            iter_context_class, origin, atcenter, text, color, cleared
-        )
+    def showhideorigin(self, show):
+        traces = self.trace.copy()
+        self.clear()
+        for t, trace in traces:
+            if t == 0:
+                self.append(*trace)
+            elif t == 1:
+                self.iter_append(*trace)
 
-    def _textbrowser_iter_append(
-        self, iter_context_class, origin, atcenter, text, color, cleared
-    ):
+    def iter_append(self, iter_context_class, origin, atcenter, text, color):
+        self.trace.append((1, (iter_context_class, origin, atcenter, text, color)))
         if iter_context_class not in self.saveiterclasspointer:
-            self._textbrowser_append(origin, atcenter, "", [], color, cleared)
+            self._textbrowser_append(origin, atcenter, "", [], color)
             self.saveiterclasspointer[iter_context_class] = {
                 "currtext": "",
                 "curr": self._getcurrpointer(),
@@ -247,16 +251,18 @@ class TextBrowser(QWidget, dataget):
             self._createqfont(origin),
         )
 
-    def append(self, origin, atcenter, text, tag, flags, color, cleared):
+    def append(self, origin, atcenter, text, tag, flags, color):
+        self.trace.append((0, (origin, atcenter, text, tag, flags, color)))
+        if origin and not globalconfig["isshowrawtext"]:
+            return
         isshowhira, isshow_fenci, isfenciclick = flags
         if len(tag):
             font = self._createqfont(origin)
             textlines, linetags = self._splitlinestags(font, tag, text)
             text = "\n".join(textlines)
             tag = self._join_tags(linetags, True)
-
         self._textbrowser_append(
-            origin, atcenter, text, tag if isshowhira else [], color, cleared
+            origin, atcenter, text, tag if isshowhira else [], color
         )
         if isshow_fenci or isfenciclick:
             self.addsearchwordmask(isshow_fenci, isfenciclick, tag)
@@ -264,11 +270,10 @@ class TextBrowser(QWidget, dataget):
     def _getqalignment(self, atcenter):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
 
-    def _textbrowser_append(
-        self, origin, atcenter, text: str, tag: list, color, cleared
-    ):
+    def _textbrowser_append(self, origin, atcenter, text: str, tag: list, color):
         self.textbrowser.document().blockSignals(True)
         font = self._createqfont(origin)
+        cleared = len(self.textbrowser.toPlainText()) == 0
         self._setnextfont(font, cleared)
         self.textbrowser.setAlignment(self._getqalignment(atcenter))
 
@@ -722,3 +727,4 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer.clear()
         self.textbrowser.move(0, 0)
         self.atback_color.move(0, 0)
+        self.trace = []

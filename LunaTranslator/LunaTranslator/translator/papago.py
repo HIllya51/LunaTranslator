@@ -22,15 +22,18 @@ class TS(basetrans):
             "upgrade-insecure-requests": "1",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
         }
-        host_html = self.proxysession.get("https://papago.naver.com/", headers=headers).text
-        url_path = re.compile("/home.(.*?).chunk.js").search(host_html).group()
+        host_html = self.proxysession.get(
+            "https://papago.naver.com/", headers=headers
+        ).text
+        url_path = re.compile("/main.(.*?).chunk.js").search(host_html).group()
         self.language_url = "".join(["https://papago.naver.com", url_path])
         lang_html = self.proxysession.get(self.language_url, headers=headers).text
-        self.auth_key = self.get_auth_key(lang_html)
-        self.uuid = uuid.uuid4().__str__()
+        self.auth_key = re.search(r'"PPG "(.*)"(.*?)"\).toString', lang_html).groups()[
+            1
+        ]
+        # Authorization: "PPG " + t + ":" + p.a.HmacMD5(t + "\n" + e.split("?")[0] + "\n" + n, "v1.8.4_bbf86e0446").toString(p.a.enc.Base64),
 
-    def get_auth_key(self, lang_html: str) -> str:
-        return re.compile('AUTH_KEY:"(.*?)"').findall(lang_html)[0]
+        self.uuid = uuid.uuid4().__str__()
 
     def get_auth(self, url, auth_key, device_id, time_stamp):
         auth = hmac.new(
@@ -85,5 +88,7 @@ class TS(basetrans):
         )
 
         data = r.json()
-
-        return data["translatedText"]
+        try:
+            return data["translatedText"]
+        except:
+            raise Exception(data)

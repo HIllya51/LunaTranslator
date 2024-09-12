@@ -284,7 +284,7 @@
 				"name": "附带上下文个数",
 				"type": "intspin",
 				"min": 0,
-				"max": 10,
+				"max": 99999,
 				"step": 1,
 				"rank": 4.9
 			},
@@ -363,7 +363,7 @@
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
-				"max": 10,
+				"max": 99999,
 				"step": 1,
 				"rank": 4.9
 			},
@@ -457,7 +457,7 @@
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
-				"max": 10,
+				"max": 99999,
 				"step": 1,
 				"rank": 4.9
 			},
@@ -558,7 +558,7 @@
 				"name": "附带上下文个数",
 				"type": "intspin",
 				"min": 0,
-				"max": 10,
+				"max": 99999,
 				"step": 1,
 				"rank": 4.9
 			},
@@ -627,7 +627,7 @@
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
-				"max": 10,
+				"max": 99999,
 				"step": 1,
 				"rank": 4.9
 			},
@@ -993,7 +993,7 @@
 			"context": {
 				"type": "intspin",
 				"min": 0,
-				"max": 10,
+				"max": 99999,
 				"step": 1,
 				"name": "附带上下文个数",
 				"rank": 4.9
@@ -1136,7 +1136,7 @@
 			"append_context_num": {
 				"type": "intspin",
 				"min": 1,
-				"max": 32,
+				"max": 99999,
 				"step": 1,
 				"refswitch": "use_context",
 				"name": "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）"
@@ -1260,7 +1260,7 @@
 			"附带上下文个数": {
 				"type": "intspin",
 				"min": 0,
-				"max": 10,
+				"max": 99999,
 				"step": 1,
 				"rank": 4.9
 			},

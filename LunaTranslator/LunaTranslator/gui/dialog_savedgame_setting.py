@@ -268,7 +268,7 @@ def maybehavebutton(self, gameuid, post):
                 callback = functools.partial(
                     autoinitdialog,
                     self,
-                    save_text_process_info["postprocessconfig"][post]['args'],
+                    save_text_process_info["postprocessconfig"][post]["args"],
                     postprocessconfig[post]["name"],
                     600,
                     items,
@@ -1032,19 +1032,19 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.addRow(
             "源语言",
             getsimplecombobox(
-                static_data["language_list_translator"],
+                [_["zh"] for _ in static_data["lang_list_all"]],
                 savehook_new_data[gameuid],
                 "private_srclang_2",
-                internal=static_data["language_list_translator_inner"],
+                internal=[_["code"] for _ in static_data["lang_list_all"]],
             ),
         )
         formLayout2.addRow(
             "目标语言",
             getsimplecombobox(
-                static_data["language_list_translator"],
+                [_["zh"] for _ in static_data["lang_list_all"]],
                 savehook_new_data[gameuid],
                 "private_tgtlang_2",
-                internal=static_data["language_list_translator_inner"],
+                internal=[_["code"] for _ in static_data["lang_list_all"]],
             ),
         )
 

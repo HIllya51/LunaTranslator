@@ -46,99 +46,203 @@
         ]
     },
     "language_list_show": [
-        "简体中文",
-        "日本語",
-        "繁體中文",
-        "English",
-        "Русский язык",
-        "Español",
-        "한국어",
-        "Français",
-        "Tiếng Việt",
-        "Türkçe",
-        "Polski",
-        "Українська Мова",
-        "Italiano",
-        "اللغة العربية",
-        "ภาษาไทย",
-        "བོད་སྐད།",
-        "Deutsch",
-        "Svenska",
-        "Nederlands",
-        "Čeština",
-        "Português"
+        [
+            "简体中文",
+            "zh"
+        ],
+        [
+            "繁體中文",
+            "cht"
+        ],
+        [
+            "English",
+            "en"
+        ],
+        [
+            "Русский язык",
+            "ru"
+        ],
+        [
+            "日本語",
+            "ja"
+        ],
+        [
+            "Español",
+            "es"
+        ],
+        [
+            "한국어",
+            "ko"
+        ],
+        [
+            "Français",
+            "fr"
+        ],
+        [
+            "Tiếng Việt",
+            "vi"
+        ],
+        [
+            "Türkçe",
+            "tr"
+        ],
+        [
+            "Polski",
+            "pl"
+        ],
+        [
+            "Українська Мова",
+            "uk"
+        ],
+        [
+            "Italiano",
+            "it"
+        ],
+        [
+            "اللغة العربية",
+            "ar"
+        ],
+        [
+            "ภาษาไทย",
+            "th"
+        ],
+        [
+            "Deutsch",
+            "de"
+        ],
+        [
+            "Svenska",
+            "sv"
+        ],
+        [
+            "Nederlands",
+            "nl"
+        ],
+        [
+            "Čeština",
+            "cs"
+        ],
+        [
+            "Português",
+            "pt"
+        ]
     ],
-    "language_list_translator": [
-        "简体中文",
-        "日语",
-        "繁体中文",
-        "英语",
-        "俄语",
-        "西班牙语",
-        "韩语",
-        "法语",
-        "越南语",
-        "土耳其语",
-        "波兰语",
-        "乌克兰语",
-        "意大利语",
-        "阿拉伯语",
-        "泰语",
-        "藏语",
-        "德语",
-        "瑞典语",
-        "荷兰语",
-        "捷克语",
-        "葡萄牙语",
-        "匈牙利语"
-    ],
-    "language_list_translator_inner": [
-        "zh",
-        "ja",
-        "cht",
-        "en",
-        "ru",
-        "es",
-        "ko",
-        "fr",
-        "vi",
-        "tr",
-        "pl",
-        "uk",
-        "it",
-        "ar",
-        "th",
-        "bo",
-        "de",
-        "sv",
-        "nl",
-        "cs",
-        "pt",
-        "hu"
-    ],
-    "language_list_translator_inner_english": [
-        "Simplified Chinese",
-        "Japanese",
-        "Traditional Chinese",
-        "English",
-        "Russian",
-        "Spanish",
-        "Korean",
-        "French",
-        "Vietnamese",
-        "Turkish",
-        "Polish",
-        "Ukrainian",
-        "Italian",
-        "Arabic",
-        "Thai",
-        "Tibetan",
-        "German",
-        "Swedish",
-        "Dutch",
-        "Czech",
-        "Portuguese",
-        "Hungarian"
+    "lang_list_all": [
+        {
+            "code": "zh",
+            "zh": "简体中文",
+            "en": "Simplified Chinese"
+        },
+        {
+            "code": "ja",
+            "zh": "日语",
+            "en": "Japanese"
+        },
+        {
+            "code": "cht",
+            "zh": "繁体中文",
+            "en": "Traditional Chinese"
+        },
+        {
+            "code": "en",
+            "zh": "英语",
+            "en": "English"
+        },
+        {
+            "code": "ru",
+            "zh": "俄语",
+            "en": "Russian"
+        },
+        {
+            "code": "es",
+            "zh": "西班牙语",
+            "en": "Spanish"
+        },
+        {
+            "code": "ko",
+            "zh": "韩语",
+            "en": "Korean"
+        },
+        {
+            "code": "fr",
+            "zh": "法语",
+            "en": "French"
+        },
+        {
+            "code": "vi",
+            "zh": "越南语",
+            "en": "Vietnamese"
+        },
+        {
+            "code": "tr",
+            "zh": "土耳其语",
+            "en": "Turkish"
+        },
+        {
+            "code": "pl",
+            "zh": "波兰语",
+            "en": "Polish"
+        },
+        {
+            "code": "uk",
+            "zh": "乌克兰语",
+            "en": "Ukrainian"
+        },
+        {
+            "code": "it",
+            "zh": "意大利语",
+            "en": "Italian"
+        },
+        {
+            "code": "ar",
+            "zh": "阿拉伯语",
+            "en": "Arabic"
+        },
+        {
+            "code": "th",
+            "zh": "泰语",
+            "en": "Thai"
+        },
+        {
+            "code": "bo",
+            "zh": "藏语",
+            "en": "Tibetan"
+        },
+        {
+            "code": "de",
+            "zh": "德语",
+            "en": "German"
+        },
+        {
+            "code": "sv",
+            "zh": "瑞典语",
+            "en": "Swedish"
+        },
+        {
+            "code": "nl",
+            "zh": "荷兰语",
+            "en": "Dutch"
+        },
+        {
+            "code": "cs",
+            "zh": "捷克语",
+            "en": "Czech"
+        },
+        {
+            "code": "pt",
+            "zh": "葡萄牙语",
+            "en": "Portuguese"
+        },
+        {
+            "code": "hu",
+            "zh": "匈牙利语",
+            "en": "Hungarian"
+        },
+        {
+            "code": "la",
+            "zh": "拉丁语",
+            "en": "Latin language"
+        }
     ],
     "font_type_default": {
         "default": [
@@ -887,7 +991,7 @@
                             "link": "{main_server}/Resource/ocr_models/ja.zip"
                         },
                         {
-                            "name": "英文",
+                            "name": "英语",
                             "link": "{main_server}/Resource/ocr_models/en.zip"
                         },
                         {
@@ -1141,7 +1245,7 @@
                 },
                 {
                     "name": "Locale_Remulator",
-                    "link": "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
+                    "link": "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.4/Locale_Remulator.1.5.4.zip"
                 },
                 {
                     "name": "Ntleas",

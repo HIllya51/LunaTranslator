@@ -67,7 +67,7 @@ def loadmainui():
 
 def checklang():
 
-    from myutils.config import globalconfig, oldlanguage, loadlangviss
+    from myutils.config import globalconfig, oldlanguage, static_data
     from qtsymbols import (
         QDialog,
         pyqtSignal,
@@ -96,10 +96,12 @@ def checklang():
             self.setFont(font)
             self.current = "zh"
             language_listcombox = QComboBox()
-            _, vis = loadlangviss()
+            inner, vis = [_[1] for _ in static_data["language_list_show"]], [
+                _[0] for _ in static_data["language_list_show"]
+            ]
             language_listcombox.addItems(vis)
             language_listcombox.currentIndexChanged.connect(
-                lambda x: setattr(self, "current", _[x])
+                lambda x: setattr(self, "current", inner[x])
             )
             vb = QVBoxLayout(self)
 

@@ -97,7 +97,7 @@ LunaHook_latest = dynalink(
     "Github/LunaHook/releases/latest/download/Release_English.zip"
 )
 
-LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
+LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.4/Locale_Remulator.1.5.4.zip"
 
 
 def createPluginDirs():

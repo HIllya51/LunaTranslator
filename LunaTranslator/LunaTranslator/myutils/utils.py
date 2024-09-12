@@ -569,14 +569,21 @@ def parsemayberegexreplace(lst: list, line: str):
     return line
 
 
+def checklangisusing(langs):
+    if langs is None:
+        return True
+    elif isinstance(langs, list):
+        return getlanguse() in langs
+    elif isinstance(langs, str):
+        return getlanguse() == langs
+    raise Exception(langs)
+
+
 def checkpostlangmatch(name):
     for item in static_data["transoptimi"]:
         if name == item["name"]:
             try:
-                if isinstance(item["languageuse"], list):
-                    return getlanguse() in item["languageuse"]
-                elif isinstance(item["languageuse"], str):
-                    return getlanguse() == item["languageuse"]
+                return checklangisusing(item.get("languageuse", None))
             except:
                 return True
 
@@ -913,7 +920,7 @@ def createurl(url: str):
 def createenglishlangmap():
     return dict(
         zip(
-            static_data["language_list_translator_inner"],
-            static_data["language_list_translator_inner_english"],
+            [_["code"] for _ in static_data["lang_list_all"]],
+            [_["en"] for _ in static_data["lang_list_all"]],
         )
     )

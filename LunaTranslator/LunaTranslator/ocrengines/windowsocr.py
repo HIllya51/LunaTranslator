@@ -11,7 +11,7 @@ from gui.dynalang import LPushButton, LFormLayout, LLabel
 def initsupports():
     _allsupport = winrtutils.getlanguagelist()
     supportmap = {}
-    for lang in static_data["language_list_translator_inner"] + [
+    for lang in [_["code"] for _ in static_data["lang_list_all"]] + [
         "zh-Hans",
         "zh-Hant",
     ]:
@@ -38,7 +38,9 @@ def question(dialog: QDialog):
     supportlang.setText("_,_".join([getlang_inner2show(f) for f in _allsupport]))
     btndownload = LPushButton("添加语言包")
     btndownload.clicked.connect(
-        lambda: gobject.baseobject.openlink(dynamiclink("{docs_server}/#/zh/windowsocr"))
+        lambda: gobject.baseobject.openlink(
+            dynamiclink("{docs_server}/#/zh/windowsocr")
+        )
     )
     formLayout.addRow(
         "当前支持的语言", getboxlayout([supportlang, btndownload], makewidget=True)
@@ -53,11 +55,11 @@ class OCR(baseocr):
         if self.srclang not in self.supportmap:
 
             _allsupport = initsupports()
-            idx = static_data["language_list_translator_inner"].index(self.srclang)
+            idx = [_["code"] for _ in static_data["lang_list_all"]].index(self.srclang)
             raise Exception(
                 _TR("系统未安装")
                 + ' "'
-                + _TR(static_data["language_list_translator"][idx])
+                + _TR([_["zh"] for _ in static_data["lang_list_all"]][idx])
                 + '" '
                 + _TR("的OCR模型")
                 + "\n"
@@ -65,7 +67,6 @@ class OCR(baseocr):
                 + ": "
                 + ", ".join([_TR(getlang_inner2show(f)) for f in _allsupport])
             )
-
 
         ret = winrtutils.OCR_f(imagebinary, self.supportmap[self.srclang], self.space)
         boxs = [_[1:] for _ in ret]

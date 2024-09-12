@@ -13,6 +13,9 @@ class TS(basetransdev):
             "cht": "cht",
             "vi": "vie",
             "uk": "ukr",
+            "ar": "ara",
+            "sv": "swe",
+            "la": "lat",
         }
 
     def translate(self, content):

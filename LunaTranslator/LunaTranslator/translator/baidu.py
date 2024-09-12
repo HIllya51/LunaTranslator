@@ -178,6 +178,8 @@ class TS(basetrans):
             "vi": "vie",
             "uk": "ukr",
             "ar": "ara",
+            "sv": "swe",
+            "la": "lat",
         }
 
     def inittranslator(self):

@@ -152,11 +152,11 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
         callback=functools.partial(
             autoinitdialogx,
             self,
-            translatorsetting[uid]['args'],
+            translatorsetting[uid]["args"],
             (globalconfig["fanyi"][uid]["name"]),
             800,
             items,
-            "userconfig.copyed."+uid,
+            "userconfig.copyed." + uid,
             uid,
         ),
         icon="fa.gear",
@@ -308,7 +308,7 @@ def initsome11(self, l, label=None, btnplus=False):
     line = []
     countnum = []
     for fanyi in l:
-        which=translate_exits(fanyi,which=True)
+        which = translate_exits(fanyi, which=True)
         if which is None:
             continue
         i += 1
@@ -316,8 +316,8 @@ def initsome11(self, l, label=None, btnplus=False):
         if fanyi in translatorsetting:
 
             items = autoinitdialog_items(translatorsetting[fanyi])
-            
-            if which==0:
+
+            if which == 0:
                 aclass = "translator." + fanyi
             elif which == 1:
                 aclass = "userconfig.copyed." + fanyi
@@ -325,7 +325,7 @@ def initsome11(self, l, label=None, btnplus=False):
                 callback=functools.partial(
                     autoinitdialogx,
                     self,
-                    translatorsetting[fanyi]['args'],
+                    translatorsetting[fanyi]["args"],
                     globalconfig["fanyi"][fanyi]["name"],
                     800,
                     items,

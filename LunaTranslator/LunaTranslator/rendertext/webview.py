@@ -130,9 +130,11 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.eval(js)
 
     # js api
+    def showhideorigin(self, show):
+        self.debugeval(f'showhideorigin("{int(show)}")')
 
-    def create_div_line_id(self, _id):
-        self.debugeval(f'create_div_line_id("{_id}");')
+    def create_div_line_id(self, _id, origin):
+        self.debugeval(f'create_div_line_id("{_id}","{int(origin)}")')
 
     def clear_all(self):
         self.debugeval(f"clear_all()")
@@ -213,24 +215,24 @@ class TextBrowser(QWidget, dataget):
 
     # native api end
 
-    def iter_append(self, iter_context_class, origin, atcenter, text, color, cleared):
+    def iter_append(self, iter_context_class, origin, atcenter, text, color):
 
         if iter_context_class not in self.saveiterclasspointer:
-            _id = self.createtextlineid()
+            _id = self.createtextlineid(origin)
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
         self._webview_append(_id, origin, atcenter, text, [], [], color)
 
-    def createtextlineid(self):
+    def createtextlineid(self, origin):
 
         _id = f"luna_{uuid.uuid4()}"
-        self.create_div_line_id(_id)
+        self.create_div_line_id(_id, origin)
         return _id
 
-    def append(self, origin, atcenter, text, tag, flags, color, cleared):
+    def append(self, origin, atcenter, text, tag, flags, color):
 
-        _id = self.createtextlineid()
+        _id = self.createtextlineid(origin)
         self._webview_append(_id, origin, atcenter, text, tag, flags, color)
 
     def measureH(self, font_family, font_size):

@@ -88,8 +88,8 @@ class commonbase:
     def langmap_(self):
         _ = dict(
             zip(
-                static_data["language_list_translator_inner"],
-                static_data["language_list_translator_inner"],
+                [_["code"] for _ in static_data["lang_list_all"]],
+                [_["code"] for _ in static_data["lang_list_all"]],
             )
         )
         _.update({"cht": "zh"})

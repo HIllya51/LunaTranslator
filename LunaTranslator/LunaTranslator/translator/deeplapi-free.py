@@ -5,7 +5,7 @@ from translator.basetranslator import basetrans
 
 class TS(basetrans):
     def langmap(self):
-        x = {_: _.upper() for _ in static_data["language_list_translator_inner"]}
+        x = {_: _.upper() for _ in [_["code"] for _ in static_data["lang_list_all"]]}
         x.pop("cht")
         return x
 

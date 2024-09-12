@@ -1,5 +1,5 @@
 import os
-from myutils.config import globalconfig, static_data, getlanguse, loadlangviss
+from myutils.config import globalconfig, static_data, getlanguse
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getIconButton,
@@ -14,7 +14,9 @@ def changelang(_):
 
 
 def setTablanglz(self):
-    inner, vis = loadlangviss()
+    inner, vis = [_[1] for _ in static_data["language_list_show"]], [
+        _[0] for _ in static_data["language_list_show"]
+    ]
     return [
         [
             (
@@ -25,22 +27,22 @@ def setTablanglz(self):
                         [
                             "源语言",
                             D_getsimplecombobox(
-                                static_data["language_list_translator"],
+                                [_["zh"] for _ in static_data["lang_list_all"]],
                                 globalconfig,
                                 "srclang4",
-                                internal=static_data[
-                                    "language_list_translator_inner"
+                                internal=[
+                                    _["code"] for _ in static_data["lang_list_all"]
                                 ],
                             ),
                         ],
                         [
                             "目标语言",
                             D_getsimplecombobox(
-                                static_data["language_list_translator"],
+                                [_["zh"] for _ in static_data["lang_list_all"]],
                                 globalconfig,
                                 "tgtlang4",
-                                internal=static_data[
-                                    "language_list_translator_inner"
+                                internal=[
+                                    _["code"] for _ in static_data["lang_list_all"]
                                 ],
                             ),
                         ],

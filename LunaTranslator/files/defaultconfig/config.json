@@ -25,7 +25,7 @@
     "rendertext_using": "textbrowser",
     "rendertext_using_internal": {
         "webview": "yinying",
-        "textbrowser": "yinying"
+        "textbrowser": "miaobian1"
     },
     "rendertext": {
         "webview": {
@@ -36,9 +36,9 @@
                 "name": "阴影字体",
                 "args": {
                     "fillcolor": "#eeeeee",
-                    "shadowforce": 5,
-                    "shadowR": 0.1,
-                    "shadowR_ex": 3
+                    "shadowforce": 10,
+                    "shadowR": 0.25,
+                    "shadowR_ex": 0
                 },
                 "argstype": {
                     "fillcolor": {
@@ -92,8 +92,8 @@
                 "name": "描边字体",
                 "args": {
                     "fillcolor": "#eeeeee",
-                    "width_rate": 0.1,
-                    "width": 3,
+                    "width_rate": 0.3,
+                    "width": 0,
                     "trace": 0,
                     "reverse": true
                 },
@@ -158,8 +158,8 @@
                 "name": "描边字体",
                 "args": {
                     "fillcolor": "#eeeeee",
-                    "width_rate": 0.1,
-                    "width": 3,
+                    "width_rate": 0.25,
+                    "width": 0,
                     "trace": 0,
                     "reverse": true
                 },
@@ -199,9 +199,9 @@
                 "name": "阴影字体",
                 "args": {
                     "fillcolor": "#eeeeee",
-                    "shadowforce": 5,
+                    "shadowforce": 10,
                     "shadowR": 1,
-                    "shadowR_ex": 3
+                    "shadowR_ex": 0
                 },
                 "argstype": {
                     "fillcolor": {
@@ -1785,6 +1785,12 @@
             "use": false,
             "color": "#1839f0",
             "name": "快译通"
+        },
+        "atlas": {
+            "type": "offline",
+            "use": false,
+            "color": "#1839f0",
+            "name": "Atlas"
         },
         "sougou2": {
             "use": false,

@@ -1,4 +1,4 @@
-## 部署SakuraLLM到Kaggle/Google Colab
+## 部署SakuraLLM到Google Colab
 
 ### 1. 设置内网穿透，以将请求转发给llama.cpp服务
 
@@ -29,32 +29,10 @@
 
 
 
-### 2. 部署到Kaggle/Google Colab
+### 2. 部署到Google Colab
 
 <!-- tabs:start -->
 
-### **Kaggle**
-
-1. 注册<a href="https://kaggle.com/" target="_blank">Kaggle</a>，导入<a href="https://kaggle.com/kernels/welcome?src=https://lunatranslator.org/nginxfile/kaggle_sakurallm.ipynb" target="_blank">ipynb脚本</a>
-
-<details>
-  <summary>2. 选择GPU运行时，打开网络连接。首次使用需要验证手机号</summary>
-  <img src="https://image.lunatranslator.org/zh/sakurallm/kaggle.2.png">
-  <img src="https://image.lunatranslator.org/zh/sakurallm/kaggle.3.png">
-</details>
-
-<details>
-  <summary>3. 设置ngrok密钥和域名，以及使用的模型</summary>
-  将注册的ngrok的NGROK_TOKEN和NGROK_DOMAIN填入脚本中。<br>
-  REPO和MODEL是<code>https://huggingface.co/REPO</code>下的MODEL模型文件名
-  <img src="https://image.lunatranslator.org/zh/sakurallm/kaggle.png">
-</details>
-
-<details>
-  <summary>4. 运行脚本，稍微等待一分钟左右即可</summary>
-  llama.cpp是已经预先编译好的，省去了编译的时间，因此主要是下载模型需要花费一点时间。
-  <img src="https://image.lunatranslator.org/zh/sakurallm/kagglerun.png">
-</details>
 
 ### **Google Colab**
 

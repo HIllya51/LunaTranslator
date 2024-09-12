@@ -92,7 +92,8 @@
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 游戏静音
     当绑定游戏窗口后（不只是hook模式，ocr或剪贴板模式都可以，只要绑定了游戏窗口），可以一键对游戏进行静音，省去了在系统音量合成器进行游戏静音的麻烦。
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 显示/隐藏原文
-    切换是否显示原文的状态，当下一次读取文本时，才真正生效。
+    切换是否显示原文，会立即生效。
+
 1. #### <i class="fa fa-toggle-on"></i> <i class="btnstatus2 fa fa-toggle-off"></i> 使用/跳过翻译
     切换是否使用翻译，系翻译的总开关，关闭后将不会进行任何翻译。
 1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> 朗读

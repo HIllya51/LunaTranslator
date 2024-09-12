@@ -328,10 +328,7 @@ class TranslatorWindow(resizableframeless):
         color = kwargs.get("color")
 
         clear = True
-        if globalconfig["isshowrawtext"]:
-            self.showline(clear=clear, text=text, isshowrawtext=True, color=color)
-        else:
-            self.showline(clear=clear)
+        self.showline(clear=clear, text=text, color=color)
 
     def showstatus(self, res, color, clear, origin):
         self.showline(clear=clear, text=res, color=color, origin=origin)
@@ -351,7 +348,6 @@ class TranslatorWindow(resizableframeless):
         origin = kwargs.get("origin", True)
         text = kwargs.get("text", None)
         color = kwargs.get("color", "black")
-        isshowrawtext = kwargs.get("isshowrawtext", False)
         iter_context = kwargs.get("iter_context", None)
 
         if clear:
@@ -373,7 +369,7 @@ class TranslatorWindow(resizableframeless):
         else:
             hira = []
             isshowhira = isshow_fenci = isfenciclick = False
-            if isshowrawtext:
+            if origin:
                 isshowhira = globalconfig["isshowhira"]
                 isshow_fenci = globalconfig["show_fenci"]
                 isfenciclick = (
@@ -1074,6 +1070,9 @@ class TranslatorWindow(resizableframeless):
         except:
             globalconfig["isshowrawtext"] = not globalconfig["isshowrawtext"]
             self.refreshtoolicon()
+            self.translate_text.textbrowser.showhideorigin(
+                globalconfig["isshowrawtext"]
+            )
 
     def changeshowhidetrans(self):
         try:

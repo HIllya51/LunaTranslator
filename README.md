@@ -90,6 +90,8 @@
 
 * [@KirpichKrasniy](https://github.com/KirpichKrasniy)
 
+* [uyjulian/AtlasTranslate](https://github.com/uyjulian/AtlasTranslate)
+
 </details>
 
 

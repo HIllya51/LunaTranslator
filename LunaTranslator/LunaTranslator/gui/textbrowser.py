@@ -54,6 +54,7 @@ class Textbrowser(QFrame):
         self.textbrowser.resize(size)
         self.textbrowser.show()
         self.textbrowser.setselectable(globalconfig["selectable"])
+        self.textbrowser.showhideorigin(globalconfig["isshowrawtext"])
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -64,16 +65,12 @@ class Textbrowser(QFrame):
         self.loadinternal()
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
-        cleared = self.cleared
         self.cleared = False
-        self.textbrowser.iter_append(
-            iter_context_class, origin, atcenter, text, color, cleared
-        )
+        self.textbrowser.iter_append(iter_context_class, origin, atcenter, text, color)
 
     def append(self, origin, atcenter, text, tag, flags, color):
-        cleared = self.cleared
         self.cleared = False
-        self.textbrowser.append(origin, atcenter, text, tag, flags, color, cleared)
+        self.textbrowser.append(origin, atcenter, text, tag, flags, color)
 
     def clear(self):
         self.cleared = True

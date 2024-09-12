@@ -37,6 +37,7 @@ class TS(basetrans):
             "uk": "ukr",
             "ar": "ara",
             "sv": "swe",
+            "la": "lat",
         }
 
     def translate(self, query):

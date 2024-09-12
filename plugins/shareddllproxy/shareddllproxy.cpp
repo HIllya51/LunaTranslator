@@ -15,6 +15,7 @@ int lewmain(int argc, wchar_t *argv[]);
 int neospeech(int argc, wchar_t *argv[]);
 int neospeechlist(int argc, wchar_t *argv[]);
 int eztrans(int argc, wchar_t *argv[]);
+int atlaswmain(int argc, wchar_t *argv[]);
 #else
 #endif // !_WIN64
 
@@ -75,6 +76,7 @@ int wmain(int argc, wchar_t *argv[])
         {L"neospeech", neospeech},
         {L"neospeechlist", neospeechlist},
         {L"eztrans", eztrans},
+        {L"atlaswmain", atlaswmain},
 #else
 
 #endif // !_WIN64

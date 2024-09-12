@@ -528,18 +528,6 @@ def langfile(lang):
     return "./files/lang/{}.json".format(lang)
 
 
-def loadlangviss():
-    inners = []
-    vis = []
-    for i, l in enumerate(static_data["language_list_translator_inner"]):
-        if not os.path.exists(langfile(l)):
-            continue
-        inners.append(l)
-        vis.append(static_data["language_list_show"][i])
-
-    return inners, vis
-
-
 def loadlanguage():
     global language_last, languageshow
     _language = getlanguse()
@@ -657,8 +645,8 @@ def _TRL(kk):
 def getlang_inner2show(langcode):
     return dict(
         zip(
-            static_data["language_list_translator_inner"],
-            static_data["language_list_translator"],
+            [_["code"] for _ in static_data["lang_list_all"]],
+            [_["zh"] for _ in static_data["lang_list_all"]],
         )
     ).get(langcode, "??")
 
