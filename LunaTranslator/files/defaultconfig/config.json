@@ -25,7 +25,7 @@
     "rendertext_using": "textbrowser",
     "rendertext_using_internal": {
         "webview": "yinying",
-        "textbrowser": "miaobian1"
+        "textbrowser": "yinying"
     },
     "rendertext": {
         "webview": {
@@ -359,7 +359,7 @@
     "transuigeo": [
         500,
         500,
-        1200,
+        800,
         200
     ],
     "geo_extrahtml": [
