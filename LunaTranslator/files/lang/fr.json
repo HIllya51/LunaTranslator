@@ -221,7 +221,6 @@
     "Moji辞书": "Moji dict",
     "清空": "Vider",
     "不显示原文": "Ne pas afficher l'original",
-    "不显示api": "Ne pas afficher l'API",
     "字体": "Les polices",
     "飞书": "Le livre volant",
     "编辑": "Modifier",
@@ -855,5 +854,7 @@
     "设为图标": "Faire une icône",
     "还原图标": "Restaurer les icônes",
     "拉丁语": "Latin",
-    "显示/隐藏翻译": "Afficher / masquer la traduction"
+    "显示/隐藏翻译": "Afficher / masquer la traduction",
+    "不显示翻译器名称": "Ne pas afficher le nom du traducteur",
+    "华为云": "Huawei Cloud"
 }

@@ -76,7 +76,7 @@ def grabwindow(app="PNG", callback_origin=None):
     if not callback_origin:
 
         gobject.baseobject.translation_ui.displaystatus.emit(
-            "saved to " + fname, "red", True, True
+            "saved to " + fname, False, True
         )
 
     @threader

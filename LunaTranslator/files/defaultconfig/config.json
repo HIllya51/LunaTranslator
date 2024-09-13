@@ -1945,6 +1945,12 @@
             "color": "blue",
             "name": "有道api"
         },
+        "hwcloud": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "华为云"
+        },
         "cohere": {
             "type": "api",
             "use": false,

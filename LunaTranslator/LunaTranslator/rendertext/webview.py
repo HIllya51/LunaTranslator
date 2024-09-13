@@ -256,7 +256,6 @@ class TextBrowser(QWidget, dataget):
         return currenttype
 
     def _webview_append(self, _id, origin, atcenter, text: str, tag, flags, color):
-
         fmori, fsori, boldori = self._getfontinfo(origin)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
         kanacolor = self._getkanacolor()

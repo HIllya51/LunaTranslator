@@ -291,7 +291,6 @@
     "显示显示原文按钮": "Visa originaltextknapp",
     "去除花括号{}": "Ta bort lockiga hängslen",
     "保留原文": "Behåll originaltexten",
-    "不显示api": "Visa inte API",
     "朗读原文": "Läs originaltexten högt",
     "连接成功": "Anslutning lyckad",
     "修改游戏字体": "Ändra spelteckensnitt",
@@ -855,5 +854,7 @@
     "设为图标": "Ange som ikon",
     "还原图标": "återställ ikoner",
     "拉丁语": "Latinska språk",
-    "显示/隐藏翻译": "Visa/dölj översättning"
+    "显示/隐藏翻译": "Visa/dölj översättning",
+    "不显示翻译器名称": "Visa inte översättarens namn",
+    "华为云": "Hua Weiyun"
 }

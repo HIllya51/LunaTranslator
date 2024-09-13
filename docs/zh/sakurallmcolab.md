@@ -1,13 +1,11 @@
-## 部署SakuraLLM到Google Colab
+## 部署SakuraLLM到在线GPU平台
 
 ### 1. 设置内网穿透，以将请求转发给llama.cpp服务
 
 
-
 注册[ngrok](https://ngrok.com/)，分别获取[NGROK_TOKEN](https://dashboard.ngrok.com/get-started/your-authtoken)和[NGROK_DOMAIN](https://dashboard.ngrok.com/cloud-edge/domains)，以供后面使用。
 
-
-也可以不注册**ngrok**，将**NGROK_TOKEN**置为空，则会使用**gradio-tunneling**的随机域名进行内网穿透。
+对于**Google Colab**，也可以不注册**ngrok**，将**NGROK_TOKEN**置为空，则会使用**gradio-tunneling**的随机域名进行内网穿透。
 
 若使用**ngrok**，并填写了**NGROK_DOMAIN**，则每次运行时将会使用固定的域名进行内网穿透，否则将会使用随机的域名。
 
@@ -29,13 +27,58 @@
 
 
 
-### 2. 部署到Google Colab
+### 2. 部署到在线GPU平台
 
 <!-- tabs:start -->
 
 
+### **飞桨Ai Studio**
+
+* 免费额度为每日登录领取4小时，或可累加
+
+<details>
+  <summary>1. 在<a href="https://aistudio.baidu.com/my/project/private" target="_blank">飞桨Ai Studio</a>中创建项目，注意<strong>项目框架</strong>必须为<strong>PaddlePaddle 3.0.0beta1</strong></summary>
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle.png">
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle2.png">
+</details>
+
+<details>
+  <summary>2. 点击<strong>启动环境</strong>，并选择<strong>V100 16GB</strong>。启动完毕后，进入环境</summary>
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle3.png">
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle4.png">
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle5.png">
+</details>
+
+<details>
+  <summary>3. 下载<a href="https://lunatranslator.org/nginxfile/kaggle_sakurallm.ipynb" target="_blank">ipynb脚本</a>，拖拽到文件区中以上传脚本，双击打开脚本。</summary>
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle8.png">
+</details>
+
+
+<details>
+  <summary>4. 设置ngrok密钥和域名，以及使用的模型</summary>
+  将注册的ngrok的NGROK_TOKEN和NGROK_DOMAIN填入脚本中。
+  REPO和MODEL是<code>https://huggingface.co/REPO</code>下的MODEL模型文件名
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle6.png">
+</details>
+
+<details>
+  <summary>5. 运行脚本，等待模型下载，并获取内网穿透地址</summary>
+  内网穿透地址在下面的log中可以看到。飞桨下载模型速度只有20MB/s，大概需要等待5分钟。
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle7.png">
+</details>
+
+
+<details>
+  <summary>6. 运行结束后，回到项目详情中，主动停止项目，以避免消耗积分。</summary>
+  再次启动环境时会保持之前的文件，直接从<strong>5</strong>继续开始即可，并且不需要再次下载模型。<br>
+  <img src="https://image.lunatranslator.org/zh/sakurallm/paddle9.png">
+</details>
+
+
 ### **Google Colab**
 
+* 免费时长约为每天四小时，具体时长根据账号历史用量波动
 
 <details>
   <summary>1. 在Google drive中安装<strong>Colaboratory</strong>应用</summary>

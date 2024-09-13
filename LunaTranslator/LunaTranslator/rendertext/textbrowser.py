@@ -269,16 +269,15 @@ class TextBrowser(QWidget, dataget):
         )
         if self.checkskip(origin):
             return
-        isshowhira, isshow_fenci, isfenciclick = flags
         if len(tag):
+            isshowhira, isshow_fenci, isfenciclick = flags
             font = self._createqfont(origin)
             textlines, linetags = self._splitlinestags(font, tag, text)
             text = "\n".join(textlines)
             tag = self._join_tags(linetags, True)
-        self._textbrowser_append(
-            origin, atcenter, text, tag if isshowhira else [], color
-        )
-        if isshow_fenci or isfenciclick:
+            tag = tag if isshowhira else []
+        self._textbrowser_append(origin, atcenter, text, tag, color)
+        if len(tag) and (isshow_fenci or isfenciclick):
             self.addsearchwordmask(isshow_fenci, isfenciclick, tag)
 
     def _getqalignment(self, atcenter):

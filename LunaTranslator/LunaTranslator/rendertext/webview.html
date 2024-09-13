@@ -154,6 +154,10 @@
         miaobian1: miaobian12_common,
     }
     function dispatch_text_style_line(style, styleargs, text, args) {
+        if (text == '') {
+            text = '<br>'
+            args.userawhtml = true
+        }
         let ele = regist_style_imp[style](styleargs, text, args);
         if (args.userawhtml) {
             if (args.atcenter) {
@@ -221,13 +225,11 @@
 </style>
 <script>
     function _showhidetranslate(show) {
-        console.log(show)
         let css = ['.lunatranslator_translate{   display: none;    }', '.lunatranslator_translate{   display: block;    }'][show]
         document.getElementById('maybeshowtranslate').innerHTML = css;
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
     }
     function _showhideorigin(show) {
-        console.log(show)
         let css = ['.lunatranslator_origin{   display: none;    }', '.lunatranslator_origin{   display: block;    }'][show]
         document.getElementById('maybeshoworigin').innerHTML = css;
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
@@ -238,7 +240,7 @@
         if (1 == origin) {
             div.classList.add('lunatranslator_origin')
         }
-        else{
+        else {
             div.classList.add('lunatranslator_translate')
         }
         document.getElementById(rootdivid).appendChild(div);

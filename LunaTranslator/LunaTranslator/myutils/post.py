@@ -201,22 +201,18 @@ def _4_f(line):
     return line
 
 
-def _6_fEX(line):
+def _6_fEX(line: str):
     srclang = getlangsrc()
     white = getlanguagespace(srclang)
-    line = (
-        line.replace("\r ", " ")
-        .replace("\n ", " ")
-        .replace(" \n", " ")
-        .replace(" \r", " ")
-        .replace("\r", white)
-        .replace("\n", white)
-    )
-    return line
+    while True:
+        curr = line
+        for _ in "\r\n\u2928\u2029":
+            line = line.replace(_ + " ", " ").replace(" " + _, " ")
+        if line == curr:
+            break
 
+    line = re.sub(r"[\r\n\u2928\u2029]+", white, line)
 
-def _6_f(line):
-    line = line.replace("\r", "").replace("\n", "")
     return line
 
 
@@ -369,7 +365,7 @@ def POSTSOLVE(line):
         "_10": _10_f,
         "_1": _1_f,
         "_4": _4_f,
-        "_6": _6_f,  # depracated
+        "_6": _6_fEX,  # 废弃，重定向到新的实现
         "_6EX": _6_fEX,
         "_91": _91_f,
         "_92": _92_f,

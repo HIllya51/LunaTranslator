@@ -209,6 +209,28 @@
 			}
 		}
 	},
+	"hwcloud": {
+		"args": {
+			"注册网址": "https://www.huaweicloud.com/product/nlpmt.html",
+			"ak": "",
+			"sk": "",
+			"endpoint": "cn-north-4",
+			"字数统计": "0",
+			"次数统计": "0"
+		},
+		"argstype": {
+			"注册网址": {
+				"type": "label",
+				"islink": true
+			},
+			"ak": {
+				"name": "Access Key Id"
+			},
+			"sk": {
+				"name": "Secret Access Key"
+			}
+		}
+	},
 	"txhunyuan": {
 		"args": {
 			"secret_id": "",

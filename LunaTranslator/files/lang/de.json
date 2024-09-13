@@ -291,7 +291,6 @@
     "显示显示原文按钮": "Schaltfläche Originaltext anzeigen",
     "去除花括号{}": "Lockige Klammern entfernen {}",
     "保留原文": "Den Originaltext beibehalten",
-    "不显示api": "API nicht anzeigen",
     "朗读原文": "Lesen Sie den Originaltext laut vor",
     "连接成功": "Verbindung erfolgreich",
     "修改游戏字体": "Spiel-Schriftart ändern",
@@ -855,5 +854,7 @@
     "设为图标": "Als Symbol festlegen",
     "还原图标": "Symbole wiederherstellen",
     "拉丁语": "Lateinische Sprache",
-    "显示/隐藏翻译": "Übersetzung ein-/ausblenden"
+    "显示/隐藏翻译": "Übersetzung ein-/ausblenden",
+    "不显示翻译器名称": "Übersetzername nicht anzeigen",
+    "华为云": "Hua Weiyun"
 }

@@ -230,7 +230,7 @@ class TranslatorWindow(resizableframeless):
     displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(dict)
-    displaystatus = pyqtSignal(str, str, bool, bool)
+    displaystatus = pyqtSignal(str, bool, bool)
     showhideuisignal = pyqtSignal()
     toolbarhidedelaysignal = pyqtSignal()
     showsavegame_signal = pyqtSignal()
@@ -328,14 +328,38 @@ class TranslatorWindow(resizableframeless):
         color = kwargs.get("color")
 
         clear = True
-        self.showline(clear=clear, text=text, color=color)
 
-    def showstatus(self, res, color, clear, origin):
-        self.showline(clear=clear, text=res, color=color, origin=origin)
+        hira = []
+        isshowhira = isshow_fenci = isfenciclick = False
+
+        text = self.cleartext(text)
+        isshowhira = globalconfig["isshowhira"]
+        isshow_fenci = globalconfig["show_fenci"]
+        isfenciclick = globalconfig["usesearchword"] or globalconfig["usecopyword"]
+        needhira = isshow_fenci or isshowhira or isfenciclick
+        if needhira:
+            hira = gobject.baseobject.parsehira(text)
+
+        self.showline(
+            clear=clear,
+            text=text,
+            color=color,
+            hira=hira,
+            flags=(isshowhira, isshow_fenci, isfenciclick),
+        )
+
+    def showstatus(self, res, isredorrawtextcolor, clear):
+        if isredorrawtextcolor:
+            color = "red"
+        else:
+            color = globalconfig["rawtextcolor"]
+        self.showline(clear=clear, text=res, color=color, origin=False)
 
     def cleartext(self, text):
         text = text.replace("\t", " ")
         text = text.replace("\r", "\n")
+        text = text.replace("\u2028", "\n")
+        text = text.replace("\u2029", "\n")
         lines = text.split("\n")
         newlines = []
         for line in lines:
@@ -349,13 +373,14 @@ class TranslatorWindow(resizableframeless):
         text = kwargs.get("text", None)
         color = kwargs.get("color", "black")
         iter_context = kwargs.get("iter_context", None)
+        hira = kwargs.get("hira", [])
+        flags = kwargs.get("flags", None)
 
         if clear:
             self.translate_text.clear()
         if text is None:
             return
         text = self.cleartext(text)
-
         atcenter = globalconfig["showatcenter"]
 
         if iter_context:
@@ -367,24 +392,12 @@ class TranslatorWindow(resizableframeless):
                 iter_context_class, origin, atcenter, text, color
             )
         else:
-            hira = []
-            isshowhira = isshow_fenci = isfenciclick = False
-            if origin:
-                isshowhira = globalconfig["isshowhira"]
-                isshow_fenci = globalconfig["show_fenci"]
-                isfenciclick = (
-                    globalconfig["usesearchword"] or globalconfig["usecopyword"]
-                )
-                needhira = isshow_fenci or isshowhira or isfenciclick
-                if needhira:
-                    hira = gobject.baseobject.parsehira(text)
-
             self.translate_text.append(
                 origin,
                 atcenter,
                 text,
                 hira,
-                (isshowhira, isshow_fenci, isfenciclick),
+                flags,
                 color,
             )
         if globalconfig["autodisappear"]:

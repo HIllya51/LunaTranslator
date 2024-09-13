@@ -221,7 +221,6 @@
     "Moji辞书": "Từ điển Moji",
     "清空": "Trống rỗng",
     "不显示原文": "Không hiển thị bản gốc",
-    "不显示api": "Không hiển thị API",
     "字体": "Phông chữ",
     "飞书": "Sách bay",
     "编辑": "Chỉnh sửa",
@@ -855,5 +854,7 @@
     "设为图标": "Đặt làm biểu tượng",
     "还原图标": "Khôi phục biểu tượng",
     "拉丁语": "Tiếng Việt",
-    "显示/隐藏翻译": "Hiện/ẩn bản dịch"
+    "显示/隐藏翻译": "Hiện/ẩn bản dịch",
+    "不显示翻译器名称": "Name",
+    "华为云": "Hoa Vi Vân"
 }

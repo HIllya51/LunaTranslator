@@ -221,7 +221,6 @@
     "Moji辞书": "Słownik Moji",
     "清空": "pusty",
     "不显示原文": "Nie wyświetlaj oryginalnego tekstu",
-    "不显示api": "Nie wyświetlaj interfejsu API",
     "字体": "pisma",
     "飞书": "list anonimowy",
     "编辑": "edytuj",
@@ -855,5 +854,7 @@
     "设为图标": "Ustaw jako ikonę",
     "还原图标": "przywróć ikony",
     "拉丁语": "Język łaciński",
-    "显示/隐藏翻译": "Pokaż/ukryj tłumaczenie"
+    "显示/隐藏翻译": "Pokaż/ukryj tłumaczenie",
+    "不显示翻译器名称": "Nie wyświetlaj nazwy tłumacza",
+    "华为云": "Hua Weiyun."
 }

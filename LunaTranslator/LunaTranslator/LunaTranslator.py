@@ -248,14 +248,14 @@ class MAINUI:
             return
         else:
             msgs = [
-                ("<msg_info_not_refresh>", globalconfig["rawtextcolor"], False),
-                ("<msg_info_refresh>", globalconfig["rawtextcolor"], True),
-                ("<msg_error_not_refresh>", "red", False),
-                ("<msg_error_refresh>", "red", True),
+                ("<msg_info_not_refresh>", False, False),
+                ("<msg_info_refresh>", False, True),
+                ("<msg_error_not_refresh>", True, False),
+                ("<msg_error_refresh>", True, True),
             ]
             for msg, color, refresh in msgs:
                 if infotype == msg:
-                    self.translation_ui.displaystatus.emit(text, color, refresh, False)
+                    self.translation_ui.displaystatus.emit(text, color, refresh)
                     return
 
     def maybeneedtranslateshowhidetranslate(self):
@@ -300,7 +300,7 @@ class MAINUI:
             self.settin_ui.showandsolvesig.emit(origin, text)
         except Exception as e:
             msg = str(type(e))[8:-2] + " " + str(e).replace("\n", "").replace("\r", "")
-            self.translation_ui.displaystatus.emit(msg, "red", True, True)
+            self.translation_ui.displaystatus.emit(msg, True, True)
             return
         if not text:
             return
@@ -501,10 +501,7 @@ class MAINUI:
         if iserror:
             if currentsignature == self.currentsignature:
                 self.translation_ui.displaystatus.emit(
-                    globalconfig["fanyi"][classname]["name"] + " " + res,
-                    "red",
-                    False,
-                    False,
+                    globalconfig["fanyi"][classname]["name"] + " " + res, True, False
                 )
             if len(usefultranslators) == 0:
                 safe_callback("")

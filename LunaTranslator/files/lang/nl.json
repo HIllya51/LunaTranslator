@@ -291,7 +291,6 @@
     "显示显示原文按钮": "Originele tekstknop weergeven",
     "去除花括号{}": "Krullende beugels verwijderen.",
     "保留原文": "De oorspronkelijke tekst behouden",
-    "不显示api": "API niet weergeven",
     "朗读原文": "Lees de oorspronkelijke tekst hardop voor",
     "连接成功": "Verbinding succesvol",
     "修改游戏字体": "Spellettertype wijzigen",
@@ -855,5 +854,7 @@
     "设为图标": "Als pictogram instellen",
     "还原图标": "pictogrammen herstellen",
     "拉丁语": "Latijnse taal",
-    "显示/隐藏翻译": "Vertaling tonen/verbergen"
+    "显示/隐藏翻译": "Vertaling tonen/verbergen",
+    "不显示翻译器名称": "Toon de naam van de vertaler niet",
+    "华为云": "Hua Weiyun."
 }

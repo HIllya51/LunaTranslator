@@ -291,7 +291,6 @@
     "显示显示原文按钮": "Mostrar o botão do texto original",
     "去除花括号{}": "Remover as chaves encaracoladas {}",
     "保留原文": "Manter o texto original",
-    "不显示api": "Não mostrar a API",
     "朗读原文": "Leia o texto original em voz alta",
     "连接成功": "Ligação bem sucedida",
     "修改游戏字体": "Modificar o tipo de letra do jogo",
@@ -855,5 +854,7 @@
     "设为图标": "Definir como ícone",
     "还原图标": "restaurar ícones",
     "拉丁语": "Língua latina",
-    "显示/隐藏翻译": "Mostrar/ Esconder a Tradução"
+    "显示/隐藏翻译": "Mostrar/ Esconder a Tradução",
+    "不显示翻译器名称": "Não mostrar o nome do tradutor",
+    "华为云": "Hua Weiyun"
 }

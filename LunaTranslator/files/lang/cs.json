@@ -291,7 +291,6 @@
     "显示显示原文按钮": "Zobrazit tlačítko původního textu",
     "去除花括号{}": "Odstraňte kudrnaté rovnátka.",
     "保留原文": "Zachovat původní text",
-    "不显示api": "Nezobrazovat API",
     "朗读原文": "Přečtěte si původní text nahlas",
     "连接成功": "Připojení úspěšné",
     "修改游戏字体": "Upravit písmo hry",
@@ -855,5 +854,7 @@
     "设为图标": "Nastavit jako ikona",
     "还原图标": "obnovit ikony",
     "拉丁语": "Latinský jazyk",
-    "显示/隐藏翻译": "Zobrazit/skrýt překlad"
+    "显示/隐藏翻译": "Zobrazit/skrýt překlad",
+    "不显示翻译器名称": "Nezobrazovat jméno překladatele",
+    "华为云": "Hua Weiyun."
 }

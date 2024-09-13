@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools
-import qtawesome, winsharedutils
+import qtawesome, winsharedutils, threading
 from myutils.config import globalconfig
 from myutils.utils import get_time_stamp
 from gui.usefulwidget import closeashidewindow
@@ -21,7 +21,8 @@ class transhist(closeashidewindow):
         self.hiderawflag = False
         self.hideapiflag = False
         self.hidetime = True
-
+        self.trace = []
+        self.lock = threading.Lock()
         self.setWindowTitle("历史翻译")
 
     def setupUi(self):
@@ -46,7 +47,7 @@ class transhist(closeashidewindow):
         baocun = LAction("保存")
         copy = LAction("复制到剪贴板")
         hideshowraw = LAction("显示原文" if self.hiderawflag else "不显示原文")
-        hideshowapi = LAction("显示api" if self.hideapiflag else "不显示api")
+        hideshowapi = LAction("显示翻译器名称" if self.hideapiflag else "不显示翻译器名称")
         hidetime = LAction("显示时间" if self.hidetime else "不显示时间")
         scrolltoend = LAction("滚动到最后")
         menu.addAction(qingkong)
@@ -71,32 +72,51 @@ class transhist(closeashidewindow):
             with open(ff[0], "w", encoding="utf8") as ff:
                 ff.write(tb.toPlainText())
         elif action == hideshowraw:
-
             self.hiderawflag = not self.hiderawflag
+            self.refresh()
         elif action == hidetime:
-
             self.hidetime = not self.hidetime
+            self.refresh()
         elif action == hideshowapi:
-
             self.hideapiflag = not self.hideapiflag
+            self.refresh()
         elif action == scrolltoend:
             scrollbar = self.textOutput.verticalScrollBar()
             scrollbar.setValue(scrollbar.maximum())
 
-    def getnewsentence(self, sentence):
+    def refresh(self):
+        with self.lock:
+            self.textOutput.clear()
+            for line in self.trace:
+                self.textOutput.appendPlainText(self.visline(line))
 
-        if self.hiderawflag:
-            sentence = ""
-        else:
+    def visline(self, line):
+        ii, line = line
+        if ii == 0:
+            tm, sentence = line
+            if self.hiderawflag:
+                sentence = ""
+            else:
+                if not self.hidetime:
+                    sentence = tm + " " + sentence
+                sentence = "\n" + sentence
+            return sentence
+        elif ii == 1:
+            tm, api, sentence = line
+            if not self.hideapiflag:
+                sentence = api + " " + sentence
             if not self.hidetime:
-                sentence = get_time_stamp() + " " + sentence
-            sentence = "\n" + sentence
-        self.textOutput.appendPlainText(sentence)
+                sentence = tm + " " + sentence
+            return sentence
+
+    def getnewsentence(self, sentence):
+        with self.lock:
+            tm = get_time_stamp()
+            self.trace.append((0, (tm, sentence)))
+            self.textOutput.appendPlainText(self.visline(self.trace[-1]))
 
     def getnewtrans(self, api, sentence):
-        if not self.hideapiflag:
-            sentence = api + " " + sentence
-        if not self.hidetime:
-            sentence = get_time_stamp() + " " + sentence
-
-        self.textOutput.appendPlainText(sentence)
+        with self.lock:
+            tm = get_time_stamp()
+            self.trace.append((1, (tm, api, sentence)))
+            self.textOutput.appendPlainText(self.visline(self.trace[-1]))

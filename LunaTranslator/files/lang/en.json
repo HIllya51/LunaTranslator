@@ -221,7 +221,6 @@
     "Moji辞书": "Moji Dictionary",
     "清空": "Clear",
     "不显示原文": "Don't Display Original Text",
-    "不显示api": "Don't Display API",
     "字体": "Font",
     "飞书": "Feishu",
     "编辑": "Edit",
@@ -855,5 +854,7 @@
     "设为图标": "Set as icon",
     "还原图标": "restore icons",
     "拉丁语": "Latin language",
-    "显示/隐藏翻译": "Show/Hide Translation"
+    "显示/隐藏翻译": "Show/Hide Translation",
+    "不显示翻译器名称": "Do not display translator name",
+    "华为云": "Hua Weiyun"
 }
