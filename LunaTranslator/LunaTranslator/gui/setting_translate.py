@@ -63,7 +63,7 @@ def loadvisinternal(btnplus, copy):
         is_gpt_likes, not_is_gpt_like = splitapillm(shoufei)
     elif btnplus == "offline":
         is_gpt_likes, not_is_gpt_like = splitapillm(lixians)
-    elif btnplus == "develop":
+    elif btnplus == "dev":
         is_gpt_likes, not_is_gpt_like = splitapillm(develop)
 
     for _ in is_gpt_likes:
@@ -289,7 +289,7 @@ def createmanybtn(self, countnum, btnplus):
                 dynamiclink("{docs_server}/#/zh/guochandamoxing")
             )
         )
-    elif btnplus == "develop":
+    elif btnplus == "dev":
         btn.clicked.connect(
             lambda: gobject.baseobject.openlink(
                 dynamiclink("{docs_server}/#/zh/tiaoshiliulanqi")
@@ -548,7 +548,7 @@ def setTabTwo_lazy(self, basel):
 
     offlinegrid = initsome2(self, lixians, btnplus="offline")
     onlinegrid = initsome11(self, mianfei)
-    developgrid += initsome2(self, develop, btnplus="develop")
+    developgrid += initsome2(self, develop, btnplus="dev")
     online_reg_grid += initsome2(self, shoufei, btnplus="api")
     pretransgrid += initsome11(self, pre)
     vw, vl = getvboxwidget()

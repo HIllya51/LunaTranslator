@@ -36,7 +36,7 @@
 
 - **离线翻译** 支持 **传统翻译** ( J北京7、金山快译、译典通、ezTrans、Sugoi、MT5 ) 和离线部署的 **大模型翻译** ( ChatGPT兼容接口、Sakura大模型 ) 
 
-- **Chrome调试翻译** 支持 **传统翻译** ( deepl、yandex、有道、百度、腾讯、必应、彩云、小牛、阿里、谷歌 ) 和 **大模型翻译** ( chatgpt、deepseek、moonshot、qianwen、chatglm、Theb.ai ) 
+- **Chrome调试翻译** 支持 **传统翻译** ( deepl、yandex、有道、百度、腾讯、必应、彩云、小牛、阿里、谷歌 ) 和 **大模型翻译** ( chatgpt、deepseek、moonshot、qianwen、chatglm、Theb.ai、DuckDuckGo ) 
 
 - **预翻译** 支持读取预翻译文件，支持翻译缓存
 

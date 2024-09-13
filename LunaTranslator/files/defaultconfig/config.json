@@ -1647,6 +1647,13 @@
             "name": "chatgpt",
             "is_gpt_like": true
         },
+        "dev_duckduckgo": {
+            "use": false,
+            "color": "blue",
+            "type": "dev",
+            "name": "DuckDuckGo",
+            "is_gpt_like": true
+        },
         "dev_theb": {
             "use": false,
             "color": "blue",
