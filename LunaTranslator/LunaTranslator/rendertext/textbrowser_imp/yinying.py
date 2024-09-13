@@ -21,7 +21,7 @@ class CachedQGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
 
     def draw(self, painter):
         r = self.parent().devicePixelRatioF()
-        if self.shadow_pixmap.isNull() or self.savey != self.parent().y():
+        if self.shadow_pixmap.isNull():
 
             size = QSize(painter.device().width(), painter.device().height()) * r
             self.shadow_pixmap = QPixmap(size)
@@ -31,11 +31,11 @@ class CachedQGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
             shadow_painter.setRenderHint(QPainter.RenderHint.Antialiasing)
             for _ in range(self.x):
                 super().draw(shadow_painter)
-        self.savey = self.parent().y()
+            self.savey = self.parent().y()
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.drawPixmap(
             -int(self.parent().x()),
-            -int(self.parent().y()) - self.parent().parent().parent().parent().y(),
+            -self.parent().parent().parent().parent().y() - self.savey,
             self.shadow_pixmap,
         )
 
