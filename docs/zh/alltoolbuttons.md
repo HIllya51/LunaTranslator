@@ -94,8 +94,11 @@
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 显示/隐藏原文
     切换是否显示原文，会立即生效。
 
-1. #### <i class="fa fa-toggle-on"></i> <i class="btnstatus2 fa fa-toggle-off"></i> 使用/跳过翻译
+1. #### <i class="fa fa-toggle-on"></i> <i class="btnstatus2 fa fa-toggle-off"></i> 显示/隐藏翻译
     切换是否使用翻译，系翻译的总开关，关闭后将不会进行任何翻译。
+    如果已经进行过了翻译，则关闭后将会隐藏翻译结果，并再重新打开时重新显示本次的翻译结果。
+    如果未进行过翻译，并从隐藏切换到显示，则会触发对当前句子的翻译。
+
 1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> 朗读
     左击按钮会对当前文本进行语音合成。<br>右击该按钮会中断朗读。<br>    该朗读会无视`跳过`（如果在`语音指定`中，匹配当前文本目标为`跳过`，则使用按钮进行朗读时，会无视跳过，强制进行朗读）
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 复制到剪贴板

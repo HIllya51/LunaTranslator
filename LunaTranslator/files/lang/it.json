@@ -848,12 +848,12 @@
     "复制自": "Copia da",
     "目标列表": "Elenco target",
     "使用翻译": "Uso della traduzione",
-    "使用/跳过翻译": "Usa/salta traduzione",
     "prompt格式（需要根据模型版本决定）": "Formato di richiesta (a seconda della versione del modello)",
     "v0.10pre1（支持gpt词典）": "V0.10 pre1 (supporta il dizionario GPT)",
     "输出的内容": "Contenuto di output",
     "选取OCR范围时不透明度": "Opacità durante la selezione dell'intervallo OCR",
     "设为图标": "Imposta come icona",
     "还原图标": "ripristina icone",
-    "拉丁语": "Lingua latina"
+    "拉丁语": "Lingua latina",
+    "显示/隐藏翻译": "Mostra/Nascondi traduzione"
 }

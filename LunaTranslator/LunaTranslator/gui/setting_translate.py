@@ -437,6 +437,7 @@ def createbtnexport(self):
 
 def __changeuibuttonstate2(self, x):
     gobject.baseobject.translation_ui.refreshtoolicon()
+    gobject.baseobject.maybeneedtranslateshowhidetranslate()
 
 
 def setTabTwo_lazy(self, basel):

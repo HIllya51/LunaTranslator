@@ -1080,6 +1080,7 @@ class TranslatorWindow(resizableframeless):
         except:
             globalconfig["showfanyi"] = not globalconfig["showfanyi"]
             self.refreshtoolicon()
+            gobject.baseobject.maybeneedtranslateshowhidetranslate()
 
     def changeTranslateMode(self):
         globalconfig["autorun"] = not globalconfig["autorun"]

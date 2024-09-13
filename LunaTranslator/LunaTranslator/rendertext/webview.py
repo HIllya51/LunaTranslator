@@ -130,6 +130,9 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.eval(js)
 
     # js api
+    def showhidetranslate(self, show):
+        self.debugeval(f'showhidetranslate("{int(show)}")')
+
     def showhideorigin(self, show):
         self.debugeval(f'showhideorigin("{int(show)}")')
 

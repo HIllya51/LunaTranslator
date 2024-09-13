@@ -1,7 +1,7 @@
 from qtsymbols import *
 from myutils.config import globalconfig, static_data
 from rendertext.somefunctions import dataget
-import gobject, functools, importlib
+import gobject, functools, importlib, copy
 from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
 
@@ -199,6 +199,9 @@ class TextBrowser(QWidget, dataget):
         c.setCharFormat(f)
         self.textbrowser.setTextCursor(c)
 
+    def showhidetranslate(self, show):
+        self.showhideorigin(show)
+
     def showhideorigin(self, show):
         traces = self.trace.copy()
         self.clear()
@@ -208,8 +211,17 @@ class TextBrowser(QWidget, dataget):
             elif t == 1:
                 self.iter_append(*trace)
 
+    def checkskip(self, origin):
+        if origin and not globalconfig["isshowrawtext"]:
+            return True
+        if (not origin) and (not globalconfig["showfanyi"]):
+            return True
+        return False
+
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
         self.trace.append((1, (iter_context_class, origin, atcenter, text, color)))
+        if self.checkskip(origin):
+            return
         if iter_context_class not in self.saveiterclasspointer:
             self._textbrowser_append(origin, atcenter, "", [], color)
             self.saveiterclasspointer[iter_context_class] = {
@@ -252,8 +264,10 @@ class TextBrowser(QWidget, dataget):
         )
 
     def append(self, origin, atcenter, text, tag, flags, color):
-        self.trace.append((0, (origin, atcenter, text, tag, flags, color)))
-        if origin and not globalconfig["isshowrawtext"]:
+        self.trace.append(
+            (0, (origin, atcenter, text, copy.deepcopy(tag), flags, color))
+        )
+        if self.checkskip(origin):
             return
         isshowhira, isshow_fenci, isfenciclick = flags
         if len(tag):

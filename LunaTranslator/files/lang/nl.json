@@ -848,12 +848,12 @@
     "复制自": "Kopiëren van",
     "目标列表": "Doellijst",
     "使用翻译": "Vertaling gebruiken",
-    "使用/跳过翻译": "Vertaling gebruiken/overslaan",
     "prompt格式（需要根据模型版本决定）": "Prompt formaat (afhankelijk van de modelversie)",
     "v0.10pre1（支持gpt词典）": "V0.10 pre1 (ondersteunt GPT woordenboek)",
     "输出的内容": "Uitvoerinhoud",
     "选取OCR范围时不透明度": "Opaciteit bij het selecteren van OCR-bereik",
     "设为图标": "Als pictogram instellen",
     "还原图标": "pictogrammen herstellen",
-    "拉丁语": "Latijnse taal"
+    "拉丁语": "Latijnse taal",
+    "显示/隐藏翻译": "Vertaling tonen/verbergen"
 }

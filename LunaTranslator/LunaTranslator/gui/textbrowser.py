@@ -55,6 +55,7 @@ class Textbrowser(QFrame):
         self.textbrowser.show()
         self.textbrowser.setselectable(globalconfig["selectable"])
         self.textbrowser.showhideorigin(globalconfig["isshowrawtext"])
+        self.textbrowser.showhidetranslate(globalconfig["showfanyi"])
 
     def __init__(self, parent):
         super().__init__(parent)

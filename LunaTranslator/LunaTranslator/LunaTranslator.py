@@ -83,6 +83,7 @@ class MAINUI:
         self.showocrimage_cached = None
         self.autoswitchgameuid = True
         self.istriggertoupdate = False
+        self.thishastranslated = True
 
     def maybesetimage(self, pair):
         if self.showocrimage:
@@ -257,6 +258,14 @@ class MAINUI:
                     self.translation_ui.displaystatus.emit(text, color, refresh, False)
                     return
 
+    def maybeneedtranslateshowhidetranslate(self):
+        if not self.thishastranslated:
+            self.textgetmethod(self.currenttext, is_auto_run=False)
+        else:
+            self.translation_ui.translate_text.textbrowser.showhidetranslate(
+                globalconfig["showfanyi"]
+            )
+
     def textgetmethod(
         self,
         text,
@@ -335,6 +344,7 @@ class MAINUI:
                 self.translation_ui.displayraw1.emit,
                 dict(text=text, color=globalconfig["rawtextcolor"]),
             )
+            self.thishastranslated = globalconfig["showfanyi"]
         else:
             _showrawfunction = None
         self.transhis.getnewsentencesignal.emit(text)

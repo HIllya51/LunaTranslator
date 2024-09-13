@@ -216,9 +216,16 @@
     }
 </script>
 <style id="maybeshoworigin">
-
+</style>
+<style id="maybeshowtranslate">
 </style>
 <script>
+    function _showhidetranslate(show) {
+        console.log(show)
+        let css = ['.lunatranslator_translate{   display: none;    }', '.lunatranslator_translate{   display: block;    }'][show]
+        document.getElementById('maybeshowtranslate').innerHTML = css;
+        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+    }
     function _showhideorigin(show) {
         console.log(show)
         let css = ['.lunatranslator_origin{   display: none;    }', '.lunatranslator_origin{   display: block;    }'][show]
@@ -230,6 +237,9 @@
         div.id = _id;
         if (1 == origin) {
             div.classList.add('lunatranslator_origin')
+        }
+        else{
+            div.classList.add('lunatranslator_translate')
         }
         document.getElementById(rootdivid).appendChild(div);
     }
@@ -376,6 +386,7 @@
 <script>
     //api
     showhideorigin = _showhideorigin
+    showhidetranslate = _showhidetranslate
     create_div_line_id = _create_div_line_id;
     create_internal_text = _create_internal_text;
     create_internal_rubytext = _create_internal_rubytext;

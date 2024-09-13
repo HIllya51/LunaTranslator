@@ -758,7 +758,7 @@
             },
             "showtrans": {
                 "use": false,
-                "tip": "使用/跳过翻译",
+                "tip": "显示/隐藏翻译",
                 "icon": "fa.toggle-on",
                 "icon2": "fa.toggle-off",
                 "align": 2
@@ -933,7 +933,7 @@
             },
             "_51": {
                 "use": false,
-                "name": "使用/跳过翻译",
+                "name": "显示/隐藏翻译",
                 "keystring": ""
             },
             "_6": {

@@ -848,12 +848,12 @@
     "复制自": "Kopiera från",
     "目标列表": "Mållista",
     "使用翻译": "Använda översättning",
-    "使用/跳过翻译": "Använd/hoppa över översättning",
     "prompt格式（需要根据模型版本决定）": "Frågaformat (beroende på modellversion)",
     "v0.10pre1（支持gpt词典）": "V0. 10 pre1 (stöder GPT ordbok)",
     "输出的内容": "Utdatainnehåll",
     "选取OCR范围时不透明度": "Opacitet vid val av OCR-område",
     "设为图标": "Ange som ikon",
     "还原图标": "återställ ikoner",
-    "拉丁语": "Latinska språk"
+    "拉丁语": "Latinska språk",
+    "显示/隐藏翻译": "Visa/dölj översättning"
 }
