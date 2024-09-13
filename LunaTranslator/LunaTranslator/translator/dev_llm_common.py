@@ -2,6 +2,7 @@ from translator.basetranslator_dev import basetransdev
 import time, os
 from myutils.utils import createenglishlangmap
 
+
 class commonllmdev(basetransdev):
     jsfile = ...
     textarea_selector = ...
@@ -52,16 +53,22 @@ class commonllmdev(basetransdev):
             f"document.querySelector({repr(self.button_selector)}).click()"
         )
         if self.config["usingstream"]:
-            curr = ""
-            while not self.Runtime_evaluate("hasdone")["result"]["value"]:
+            __ = [""]
+
+            def ___(__):
                 time.sleep(0.1)
                 thistext = self.Runtime_evaluate("thistext")["result"]["value"]
-                if thistext.startswith(curr):
-                    yield thistext[len(curr) :]
+
+                if thistext.startswith(__[0]):
+                    yield thistext[len(__[0]) :]
                 else:
-                    yield '\0'
+                    yield "\0"
                     yield thistext
-                curr = thistext
+                __[0] = thistext
+
+            while not self.Runtime_evaluate("hasdone")["result"]["value"]:
+                yield from ___(__)
+            yield from ___(__)
         else:
             while not self.Runtime_evaluate("hasdone")["result"]["value"]:
                 time.sleep(0.1)
