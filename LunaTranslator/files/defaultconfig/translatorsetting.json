@@ -948,8 +948,7 @@
 	},
 	"gemini": {
 		"args": {
-			"注册网址": "https://ai.google.dev/tutorials/python_quickstart",
-			"注册网址2": "https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models",
+			"注册网址_x": "https://aistudio.google.com/app/apikey",
 			"SECRET_KEY": "",
 			"Temperature": 0.3,
 			"model": "gemini-1.5-flash",
@@ -1011,15 +1010,11 @@
 			"modellistcache": {
 				"type": "list_cache"
 			},
-			"注册网址": {
+			"注册网址_x": {
+				"name": "注册网址",
 				"type": "label",
 				"islink": true,
 				"rank": 0
-			},
-			"注册网址2": {
-				"type": "label",
-				"islink": true,
-				"rank": 1
 			},
 			"Temperature": {
 				"type": "spin",
