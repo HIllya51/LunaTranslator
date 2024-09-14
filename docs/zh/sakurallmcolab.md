@@ -50,7 +50,7 @@
 </details>
 
 <details>
-  <summary>3. 下载<a href="https://lunatranslator.org/nginxfile/kaggle_sakurallm.ipynb" target="_blank">ipynb脚本</a>，拖拽到文件区中以上传脚本，双击打开脚本。</summary>
+  <summary>3. 下载<a href="https://lunatranslator.org/nginxfile/aistudio.sakurallm.ipynb" target="_blank">ipynb脚本</a>，拖拽到文件区中以上传脚本，双击打开脚本。</summary>
   <img src="https://image.lunatranslator.org/zh/sakurallm/paddle8.png">
 </details>
 
