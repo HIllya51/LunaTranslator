@@ -1,4 +1,4 @@
-import json, base64, re, string, random, threading
+import json, base64, re, string, random, threading, codecs
 from collections.abc import Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode, urlsplit
@@ -112,6 +112,17 @@ class ResponseBase:
     def json(self):
         return json.loads(self.text)
 
+    def stream_decode_response_unicode(self, iterator):
+
+        decoder = codecs.getincrementaldecoder(self.charset)(errors="replace")
+        for chunk in iterator:
+            rv = decoder.decode(chunk)
+            if rv:
+                yield rv
+        rv = decoder.decode(b"", final=True)
+        if rv:
+            yield rv
+
     def iter_content(self, chunk_size=1, decode_unicode=False):
         if not self.stream:
             raise RequestException()
@@ -120,13 +131,20 @@ class ResponseBase:
             raise RequestException()
         self.iter_once = False
 
-        for chunk in self.iter_content_impl(chunk_size):
-            self.__content_s.append(chunk)
-            if decode_unicode:
-                yield chunk.decode("utf8")
-            else:
+        def __generate():
+            for chunk in self.iter_content_impl(chunk_size):
+                self.__content_s.append(chunk)
                 yield chunk
-        self.content_prepared.set()
+            self.content_prepared.set()
+
+        stream_chunks = __generate()
+
+        chunks = stream_chunks
+
+        if decode_unicode:
+            chunks = self.stream_decode_response_unicode(chunks)
+
+        return chunks
 
     def iter_content_impl(self, chunk_size=1):
         pass
