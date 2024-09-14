@@ -15,9 +15,6 @@ class base(QWidget):
     def extraWH(self):
         return 2 * self.config.get("width", 0), 2 * self.config.get("width", 0)
 
-    def init(self):
-        pass
-
     @property
     def config(self):
         return globalconfig["rendertext"]["textbrowser"][self.typename].get("args", {})
@@ -40,8 +37,6 @@ class base(QWidget):
         self.movedx = 0
         self._pix = None
         self._m_text = ""
-
-        self.init()
 
     def adjustSize(self):
         self._pix = None

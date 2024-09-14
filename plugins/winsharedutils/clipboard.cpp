@@ -31,8 +31,7 @@ std::optional<std::wstring> clipboard_get_internal()
         LPWSTR pszText = static_cast<LPWSTR>(GlobalLock(hData));
         if (pszText == 0)
             break;
-        int sz = GlobalSize(hData);
-        data = std::move(std::wstring(pszText, sz));
+        data = std::move(std::wstring(pszText));
         GlobalUnlock(hData);
     } while (false);
     CloseClipboard();

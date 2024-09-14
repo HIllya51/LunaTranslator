@@ -2009,7 +2009,7 @@
     "ZoomFactor": 1,
     "realtime_edit_target": "realtime_edit",
     "magpiepath": "",
-    "movefollow": true,
+    "movefollow": false,
     "focusnotop": false,
     "autostarthook": true,
     "minlength": 0,

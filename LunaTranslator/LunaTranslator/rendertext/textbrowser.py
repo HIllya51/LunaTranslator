@@ -275,8 +275,10 @@ class TextBrowser(QWidget, dataget):
             textlines, linetags = self._splitlinestags(font, tag, text)
             text = "\n".join(textlines)
             tag = self._join_tags(linetags, True)
-            tag = tag if isshowhira else []
-        self._textbrowser_append(origin, atcenter, text, tag, color)
+            tagshow = tag if isshowhira else []
+        else:
+            tagshow = []
+        self._textbrowser_append(origin, atcenter, text, tagshow, color)
         if len(tag) and (isshow_fenci or isfenciclick):
             self.addsearchwordmask(isshow_fenci, isfenciclick, tag)
 
@@ -466,7 +468,7 @@ class TextBrowser(QWidget, dataget):
 
         for label in self.iteryinyinglabelsave[iter_context_class]:
             label.hide()
-
+        maxh = self.maxvisheight
         subtext = []
         subpos = []
         lastpos = None
@@ -475,6 +477,8 @@ class TextBrowser(QWidget, dataget):
             self.textcursor.setPosition(posx)
             posx += 1
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
+            if tl1.y() > maxh:
+                break
             if lastpos is None or tl1.y() != lastpos.y():
                 lastpos = tl1
                 subpos.append(lastpos)
@@ -534,15 +538,21 @@ class TextBrowser(QWidget, dataget):
                 self.textcursor.setPosition(blockstart + s)
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
+                if tl1.y() > maxh:
+                    return
                 collects[collecti].move(tl1.x(), tl1.y() + self.labeloffset_y)
                 collecti += 1
+
+    @property
+    def maxvisheight(self):
+        return QApplication.primaryScreen().virtualGeometry().height() * 2
 
     def _showyinyingtext(self, b1, b2, color, font):
         linei = self.yinyingposline
 
         doc = self.textbrowser.document()
         block = doc.findBlockByNumber(0)
-
+        maxh = self.maxvisheight
         for blocki in range(b1, b2):
             block = doc.findBlockByNumber(blocki)
             layout = block.layout()
@@ -558,18 +568,20 @@ class TextBrowser(QWidget, dataget):
                 self.textcursor.setPosition(blockstart + s)
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-
+                if tl1.y() > maxh:
+                    self.yinyingposline = linei
+                    return
                 if self.yinyinglabels_idx >= len(self.yinyinglabels):
                     self.yinyinglabels.append(self.currentclass(self.toplabel2))
                 _ = self.yinyinglabels[self.yinyinglabels_idx]
                 self.yinyinglabels_idx += 1
-
                 _.setColor(color)
                 _.setText(block.text()[s : s + l])
                 _.setFont(font)
                 _.adjustSize()
                 _.move(tl1.x(), tl1.y() + self.labeloffset_y)
                 _.show()
+
                 linei += 1
         self.yinyingposline = linei
 
@@ -663,6 +675,7 @@ class TextBrowser(QWidget, dataget):
         self.settextposcursor(pos)
         savetaglabels_idx = 0
         lines = [[]]
+        maxh = self.maxvisheight
         for word in x:
             l = len(word["orig_X"])
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
@@ -672,6 +685,8 @@ class TextBrowser(QWidget, dataget):
             if not self._checkwordhastag(word):
                 continue
             tl2 = self.textbrowser.cursorRect(self.textcursor).topLeft()
+            if tl2.y() > maxh:
+                break
             _ = self.solvejiaminglabel(
                 savetaglabels_idx, word, fonthira, fontori_m, tl1, fha
             )
