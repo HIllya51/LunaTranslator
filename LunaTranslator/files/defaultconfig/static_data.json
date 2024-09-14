@@ -966,10 +966,6 @@
                     "link": "{main_server}/Resource/translate/DR.eye.zip"
                 },
                 {
-                    "name": "MT5",
-                    "link": "https://github.com/chaihahaha/OrtMT5/releases/tag/v0.1.0"
-                },
-                {
                     "name": "Sugoi",
                     "link": "{main_server}/Resource/translate/Sugoi_Translator_V8.7z"
                 },
@@ -1997,6 +1993,30 @@
             "visname": "arabic reshaper",
             "languageuse": "ar"
         }
+    ],
+    "language_list_translator_inner": [
+        "zh",
+        "ja",
+        "cht",
+        "en",
+        "ru",
+        "es",
+        "ko",
+        "fr",
+        "vi",
+        "tr",
+        "pl",
+        "uk",
+        "it",
+        "ar",
+        "th",
+        "bo",
+        "de",
+        "sv",
+        "nl",
+        "cs",
+        "pt",
+        "hu"
     ],
     "model_fileds": [
         "word",

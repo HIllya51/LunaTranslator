@@ -1985,12 +1985,6 @@
             "name": "ibm api",
             "useproxy": true
         },
-        "ort_sp": {
-            "use": false,
-            "type": "offline",
-            "color": "blue",
-            "name": "MT5"
-        },
         "sakura": {
             "use": false,
             "type": "offline",
