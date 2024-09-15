@@ -66,6 +66,7 @@ class MAINUI:
         self.currentsignature = None
         self.isrunning = True
         self.solvegottextlock = threading.Lock()
+        self.gettranslatelock = threading.Lock()
         self.outputers = {}
         self.processmethods = []
         self.zhanweifu = 0
@@ -323,7 +324,7 @@ class MAINUI:
             pass
         if donttrans:
             return
-
+        _showrawfunction_unsafe = None
         if not waitforresultcallback:
             self.currenttext = text
             self.currenttranslate = ""
@@ -340,103 +341,82 @@ class MAINUI:
             if globalconfig["textoutput_origin"]:
                 self.dispatchoutputer(text)
 
-            _showrawfunction = functools.partial(
+            _showrawfunction_unsafe = functools.partial(
                 self.translation_ui.displayraw1.emit,
                 dict(text=text, color=globalconfig["rawtextcolor"]),
             )
             self.thishastranslated = globalconfig["showfanyi"]
-        else:
-            _showrawfunction = None
+        _showrawfunction = lambda: (
+            _showrawfunction_unsafe() if _showrawfunction_unsafe else None
+        )
+
         self.transhis.getnewsentencesignal.emit(text)
         self.maybesetedittext(text)
-        if globalconfig["refresh_on_get_trans"] == False:
-            if _showrawfunction:
-                _showrawfunction()
-            _showrawfunction = None
-            _showrawfunction_sig = 0
-        else:
-            _showrawfunction_sig = uuid.uuid4()
 
         if not globalconfig["showfanyi"]:
-            if _showrawfunction:
-                _showrawfunction()
-            return
+            return _showrawfunction()
 
         text_solved, optimization_params = self.solvebeforetrans(text)
 
-        premtalready = ["premt"]
         usefultranslators = list(self.translators.keys())
-        no_available_translator = True
+        maybehaspremt = {}
+        fix_rank = globalconfig["fix_translate_rank_rank"].copy()
+
         if "premt" in self.translators:
             try:
-                res = self.translators["premt"].translate(text_solved)
-                for engine in res:
-                    premtalready.append(engine)
-                    if engine in globalconfig["fanyi"]:
-                        _colork = engine
-                    else:
-                        _colork = "premt"
-                    no_available_translator = False
-                    self.create_translate_task(
-                        currentsignature,
-                        usefultranslators,
-                        _colork,
-                        optimization_params,
-                        _showrawfunction,
-                        _showrawfunction_sig,
-                        text,
-                        text_solved,
-                        waitforresultcallback,
-                        is_auto_run,
-                        res[engine],
-                    )
-
+                maybehaspremt = self.translators["premt"].translate(text_solved)
             except:
                 print_exc()
-        if len(self.translators):
-            collect_this_time_use_engines = []
-            for engine in self.translators:
-                if engine not in premtalready:
-                    no_available_translator = False
-                    collect_this_time_use_engines.append(engine)
+            other = list(set(maybehaspremt.keys()) - set(fix_rank))
+            idx = fix_rank.index("premt")
+            fix_rank = fix_rank[:idx] + other + fix_rank[idx + 1 :]
 
-            for engine in globalconfig["fix_translate_rank_rank"]:
-                if engine not in collect_this_time_use_engines:
-                    continue
+        real_fix_rank = []
 
-                if globalconfig["fix_translate_rank"]:
-                    self.ifuse_fix_translate_rank_preprare(
-                        engine, waitforresultcallback
-                    )
+        for engine in fix_rank:
+            if (engine not in self.translators) and (engine not in maybehaspremt):
+                continue
+            real_fix_rank.append(engine)
 
-                self.create_translate_task(
-                    currentsignature,
-                    usefultranslators,
-                    engine,
-                    optimization_params,
-                    _showrawfunction,
-                    _showrawfunction_sig,
-                    text,
-                    text_solved,
-                    waitforresultcallback,
-                    is_auto_run,
-                )
-        if no_available_translator:
-            if _showrawfunction:
-                _showrawfunction()
-            return
+        if len(real_fix_rank) == 0:
+            return _showrawfunction()
+        if globalconfig["fix_translate_rank"] and (not waitforresultcallback):
+            _showrawfunction = functools.partial(
+                self._delaypreparefixrank, _showrawfunction, real_fix_rank
+            )
+        if not globalconfig["refresh_on_get_trans"]:
+            _showrawfunction()
+            _showrawfunction = None
+        for engine in real_fix_rank:
+            if engine in globalconfig["fanyi"]:
+                _colork = engine
+            else:
+                _colork = "premt"
+            self.create_translate_task(
+                currentsignature,
+                usefultranslators,
+                _colork,
+                optimization_params,
+                _showrawfunction,
+                text,
+                text_solved,
+                waitforresultcallback,
+                is_auto_run,
+                result=maybehaspremt.get(engine),
+            )
         return True
 
-    def ifuse_fix_translate_rank_preprare(self, engine, waitforresultcallback):
-        if waitforresultcallback:
-            return
-        displayreskwargs = dict(
-            name="",
-            color=globalconfig["fanyi"][engine]["color"],
-            res="",
-            iter_context=(1, engine),
-        )
-        self.translation_ui.displayres.emit(displayreskwargs)
+    def _delaypreparefixrank(self, _showrawfunction, real_fix_rank):
+        _showrawfunction()
+        for engine in real_fix_rank:
+            colorx = globalconfig["fanyi"].get(engine, globalconfig["fanyi"]["premt"])
+            displayreskwargs = dict(
+                name="",
+                color=colorx["color"],
+                res="",
+                iter_context=(1, engine),
+            )
+            self.translation_ui.displayres.emit(displayreskwargs)
 
     def create_translate_task(
         self,
@@ -445,7 +425,6 @@ class MAINUI:
         engine,
         optimization_params,
         _showrawfunction,
-        _showrawfunction_sig,
         text,
         text_solved,
         waitforresultcallback,
@@ -460,7 +439,6 @@ class MAINUI:
             currentsignature,
             optimization_params,
             _showrawfunction,
-            _showrawfunction_sig,
             text,
         )
         task = (
@@ -485,81 +463,89 @@ class MAINUI:
         currentsignature,
         optimization_params,
         _showrawfunction,
-        _showrawfunction_sig,
         contentraw,
         res,
         iter_res_status,
         iserror=False,
     ):
-        if classname in usefultranslators:
-            usefultranslators.remove(classname)
-        if waitforresultcallback is None and currentsignature != self.currentsignature:
-            return
-
-        safe_callback = waitforresultcallback if waitforresultcallback else lambda _: 1
-
-        if iserror:
-            if currentsignature == self.currentsignature:
-                self.translation_ui.displaystatus.emit(
-                    globalconfig["fanyi"][classname]["name"] + " " + res, True, False
-                )
-            if len(usefultranslators) == 0:
-                safe_callback("")
-            return
-
-        res = self.solveaftertrans(res, optimization_params)
-        if not res:
-            if len(usefultranslators) == 0:
-                safe_callback("")
-            return
-        needshowraw = (
-            _showrawfunction
-            and self.refresh_on_get_trans_signature != _showrawfunction_sig
-        )
-        if needshowraw:
-            self.refresh_on_get_trans_signature = _showrawfunction_sig
-            _showrawfunction()
-
-        if (currentsignature == self.currentsignature) and (iter_res_status in (0, 1)):
-            displayreskwargs = dict(
-                name=globalconfig["fanyi"][classname]["name"],
-                color=globalconfig["fanyi"][classname]["color"],
-                res=res,
-                iter_context=(iter_res_status, classname),
-            )
-            self.translation_ui.displayres.emit(displayreskwargs)
-        if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
-
-            self.transhis.getnewtranssignal.emit(
-                globalconfig["fanyi"][classname]["name"], res
-            )
-            if not waitforresultcallback:
-                if (
-                    globalconfig["read_trans"]
-                    and globalconfig["read_translator2"] == classname
-                ):
-                    self.currentread = res
-                    self.readcurrent()
-
-                if globalconfig["textoutput_trans"]:
-                    self.dispatchoutputer(res)
-            try:
-                self.textsource.sqlqueueput((contentraw, classname, res))
-            except:
-                pass
-            if len(self.currenttranslate):
-                self.currenttranslate += "\n"
-            self.currenttranslate += res
-            if globalconfig["embedded"]["as_fast_as_posible"] or (
-                classname == globalconfig["embedded"]["translator_2"]
+        with self.gettranslatelock:
+            if classname in usefultranslators:
+                usefultranslators.remove(classname)
+            if (
+                waitforresultcallback is None
+                and currentsignature != self.currentsignature
             ):
-                safe_callback(
-                    kanjitrans(zhconv.convert(res, "zh-tw"))
-                    if globalconfig["embedded"]["trans_kanji"]
-                    else res
+                return
+
+            safe_callback = (
+                waitforresultcallback if waitforresultcallback else lambda _: 1
+            )
+
+            if iserror:
+                if currentsignature == self.currentsignature:
+                    self.translation_ui.displaystatus.emit(
+                        globalconfig["fanyi"][classname]["name"] + " " + res,
+                        True,
+                        False,
+                    )
+                if len(usefultranslators) == 0:
+                    safe_callback("")
+                return
+
+            res = self.solveaftertrans(res, optimization_params)
+            if not res:
+                if len(usefultranslators) == 0:
+                    safe_callback("")
+                return
+            needshowraw = (
+                _showrawfunction
+                and self.refresh_on_get_trans_signature != _showrawfunction
+            )
+            if needshowraw:
+                self.refresh_on_get_trans_signature = _showrawfunction
+                _showrawfunction()
+            if (currentsignature == self.currentsignature) and (
+                iter_res_status in (0, 1)
+            ):
+                displayreskwargs = dict(
+                    name=globalconfig["fanyi"][classname]["name"],
+                    color=globalconfig["fanyi"][classname]["color"],
+                    res=res,
+                    iter_context=(iter_res_status, classname),
                 )
-            elif len(usefultranslators) == 0:
-                safe_callback("")
+                self.translation_ui.displayres.emit(displayreskwargs)
+            if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
+
+                self.transhis.getnewtranssignal.emit(
+                    globalconfig["fanyi"][classname]["name"], res
+                )
+                if not waitforresultcallback:
+                    if (
+                        globalconfig["read_trans"]
+                        and globalconfig["read_translator2"] == classname
+                    ):
+                        self.currentread = res
+                        self.readcurrent()
+
+                    if globalconfig["textoutput_trans"]:
+                        self.dispatchoutputer(res)
+                try:
+                    self.textsource.sqlqueueput((contentraw, classname, res))
+                except:
+                    pass
+                if len(self.currenttranslate):
+                    self.currenttranslate += "\n"
+                self.currenttranslate += res
+                if globalconfig["embedded"]["as_fast_as_posible"] or (
+                    classname == globalconfig["embedded"]["translator_2"]
+                ):
+                    safe_callback(
+                        kanjitrans(zhconv.convert(res, "zh-tw"))
+                        if globalconfig["embedded"]["trans_kanji"]
+                        else res
+                    )
+                elif len(usefultranslators) == 0:
+                    safe_callback("")
 
     def __usewhich(self):
 
