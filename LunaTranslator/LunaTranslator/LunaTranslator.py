@@ -450,7 +450,8 @@ class MAINUI:
         )
         if result:
             # 预翻译
-            callback(result, 0)
+            callback(result, 1)
+            callback(result, 2)
         else:
 
             self.translators[engine].gettask(task)

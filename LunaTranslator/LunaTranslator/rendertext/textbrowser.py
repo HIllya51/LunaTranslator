@@ -467,8 +467,12 @@ class TextBrowser(QWidget, dataget):
     def _showyinyingtext2(self, color, iter_context_class, pos, text, font):
         if iter_context_class not in self.iteryinyinglabelsave:
             self.iteryinyinglabelsave[iter_context_class] = []
+        count = 0
         for label in self.iteryinyinglabelsave[iter_context_class]:
-            label.hide()
+            if label.isVisible():
+                count += 1
+            else:
+                label.hide()
 
         maxh = self.maxvisheight
         subtext = []
@@ -489,6 +493,7 @@ class TextBrowser(QWidget, dataget):
             if text[i] != "\n":
                 subtext[-1] += text[i]
         collects = []
+        needmovenexts = len(subtext) != count
         for i in range(len(subtext)):
 
             if i >= len(self.iteryinyinglabelsave[iter_context_class]):
@@ -503,7 +508,8 @@ class TextBrowser(QWidget, dataget):
                 _.adjustSize()
             _.move(subpos[i].x(), subpos[i].y() + self.labeloffset_y)
             _.show()
-
+        if not needmovenexts:
+            return
         self.textcursor.setPosition(pos)
         self.textbrowser.setTextCursor(self.textcursor)
         tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
