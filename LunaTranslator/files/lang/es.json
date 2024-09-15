@@ -48,7 +48,6 @@
     "目标语言": "Idioma objetivo",
     "最短翻译字数": "Número mínimo de palabras traducidas",
     "最长翻译字数": "Número máximo de palabras traducidas",
-    "预翻译采用模糊匹配": "La traducción previa adopta una coincidencia inútil",
     "录制翻译文件": "Grabar archivos traducidos",
     "导出的第一翻译源": "La primera fuente de traducción exportada",
     "离线翻译": "Traducción fuera de línea",
@@ -815,7 +814,6 @@
     "添加文件": "Añadir archivo",
     "添加文件夹": "Añadir carpetas",
     "类型": "Tipo",
-    "找不到文本": "No se puede encontrar el texto",
     "官方网站": "Sitio web oficial",
     "欢迎使用": "Bienvenido a usar",
     "显示注音": "Muestra la nota de sonido",
@@ -856,5 +854,7 @@
     "拉丁语": "Latín",
     "显示/隐藏翻译": "Mostrar / ocultar traducción",
     "不显示翻译器名称": "No se muestra el nombre del traductor",
-    "华为云": "Hua weiyun"
+    "华为云": "Hua weiyun",
+    "逐行匹配": "Coincidencia línea a línea",
+    "游戏适配": "Adaptación del juego"
 }

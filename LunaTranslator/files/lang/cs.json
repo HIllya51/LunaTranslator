@@ -80,7 +80,6 @@
     "手动设置代理(ip:port)": "Ručně nastavit proxy (ip: port)",
     "录制翻译文件": "Záznam překladových souborů",
     "字体样式": "Styl písma",
-    "预翻译采用模糊匹配": "Předpřeklad přijímá fuzzy matching",
     "搜索文本过短！": "Vyhledávací text je příliš krátký!",
     "的OCR模型": "Model OCR",
     "备忘录按钮": "Tlačítko Memo",
@@ -815,7 +814,6 @@
     "添加文件": "Přidat soubor",
     "添加文件夹": "přidat složky",
     "类型": "typ",
-    "找不到文本": "Text nebyl nalezen",
     "官方网站": "Oficiální internetové stránky",
     "欢迎使用": "Vítejte v použití",
     "显示注音": "Zobrazit fonetickou zápis",
@@ -856,5 +854,7 @@
     "拉丁语": "Latinský jazyk",
     "显示/隐藏翻译": "Zobrazit/skrýt překlad",
     "不显示翻译器名称": "Nezobrazovat jméno překladatele",
-    "华为云": "Hua Weiyun."
+    "华为云": "Hua Weiyun.",
+    "逐行匹配": "Shoda řádku po řádku",
+    "游戏适配": "Úprava hry"
 }

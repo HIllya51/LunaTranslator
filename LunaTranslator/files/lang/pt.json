@@ -80,7 +80,6 @@
     "手动设置代理(ip:port)": "Configurar manualmente o 'proxy' (ip: port)",
     "录制翻译文件": "Gravar ficheiros de tradução",
     "字体样式": "Estilo do Tipo de Letra",
-    "预翻译采用模糊匹配": "A pré-tradução adota correspondência difusa",
     "搜索文本过短！": "O texto de pesquisa é muito curto!",
     "的OCR模型": "O modelo OCR",
     "备忘录按钮": "Botão de memória",
@@ -815,7 +814,6 @@
     "添加文件": "Adicionar um ficheiro",
     "添加文件夹": "adicionar pastas",
     "类型": "tipo",
-    "找不到文本": "Texto não encontrado",
     "官方网站": "Sítio Web oficial",
     "欢迎使用": "Bem- vindo ao uso",
     "显示注音": "Mostrar a notação fonética",
@@ -856,5 +854,7 @@
     "拉丁语": "Língua latina",
     "显示/隐藏翻译": "Mostrar/ Esconder a Tradução",
     "不显示翻译器名称": "Não mostrar o nome do tradutor",
-    "华为云": "Hua Weiyun"
+    "华为云": "Hua Weiyun",
+    "逐行匹配": "Corresponder linha por linha",
+    "游戏适配": "Adaptação do jogo"
 }

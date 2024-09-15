@@ -8,19 +8,26 @@ import gobject
 
 class TS(basetrans):
     def checkfilechanged(self, p1, p):
-        if self.paths != (p1, p):
-            self.jsons = []
-            if p:
-                for pp in p:
-                    if os.path.exists(pp):
-                        with open(pp, "r", encoding="utf8") as f:
-                            self.jsons.append(json.load(f))
-            if p1:
-                for pp in p1:
-                    if os.path.exists(pp):
-                        with open(pp, "r", encoding="utf8") as f:
-                            self.jsons.append(json.load(f))
-            self.paths = (p1, p)
+        if self.paths == (p1, p):
+            return
+        self.paths = (p1, p)
+        self.json = {}
+        self.lines = None
+        if p:
+            for pp in p:
+                self.safeload(pp)
+        if p1:
+            for pp in p1:
+                self.safeload(pp)
+
+    def safeload(self, pp):
+        if not os.path.exists(pp):
+            return
+        with open(pp, "r", encoding="utf8") as f:
+            try:
+                self.json.update(json.load(f))
+            except:
+                pass
 
     def unsafegetcurrentgameconfig(self):
         try:
@@ -38,48 +45,83 @@ class TS(basetrans):
             self.unsafegetcurrentgameconfig(), tuple(self.config["jsonfile"])
         )
 
-    def translate(self, content):
-        self.checkfilechanged(
-            self.unsafegetcurrentgameconfig(), tuple(self.config["jsonfile"])
-        )
-        collect = []
+    def analyze_result(self, obj):
+        if type(obj) == str:
+            return obj
+        if type(obj) != dict:
+            return None
+
+        savet = obj.get("userTrans")
+        if savet:
+            return savet
+
+        savet = obj.get("machineTrans")
+        if savet:
+            return savet
+
+        return None
+
+    def delayloadlines(self):
+        if self.lines is not None:
+            return
+        self.lines = {}
+        for k, v in self.json.items():
+            if "\n" not in k:
+                continue
+            v = self.analyze_result(v)
+            if not v:
+                continue
+            ks = k.split("\n")
+            vs = v.split("\n")
+            if len(ks) != len(vs):
+                continue
+            for i in range(len(ks)):
+                self.lines[ks[i]] = vs[i]
+
+    def tryfindtranslate(self, content: str, _js: dict, _js2: dict = None):
         if globalconfig["premtsimiuse"]:
-            for _js in self.jsons:
-                maxsim = 0
-                savet = None
-                for jc in _js:
+
+            maxsim = 0
+            savet = None
+            for jx in (_js, _js2):
+                if not jx:
+                    continue
+                for jc in jx:
                     dis = winsharedutils.distance_ratio(content, jc)
                     if dis > maxsim:
                         maxsim = dis
                         if maxsim * 100 >= globalconfig["premtsimi2"]:
-                            if type(_js[jc]) == str:
-                                savet = _js[jc]
-                            elif _js[jc]["userTrans"] and _js[jc]["userTrans"] != "":
-                                savet = _js[jc]["userTrans"]
-
-                            elif (
-                                _js[jc]["machineTrans"]
-                                and _js[jc]["machineTrans"] != ""
-                            ):
-                                savet = _js[jc]["machineTrans"]
-                if savet is None:
-                    continue
-                else:
-                    collect.append(savet)
+                            savet = self.analyze_result(jx[jc])
+            return savet
 
         else:
-            for _js in self.jsons:
-                if content not in _js:
-                    continue
-                if type(_js[content]) == str:
-                    collect.append(_js[content])
-                elif _js[content]["userTrans"] and _js[content]["userTrans"] != "":
-                    collect.append(_js[content]["userTrans"])
+            if content in _js:
+                return self.analyze_result(_js[content])
+            if _js2 and (content in _js2):
+                return self.analyze_result(_js2[content])
+            return None
 
-                elif (
-                    _js[content]["machineTrans"] and _js[content]["machineTrans"] != ""
-                ):
-                    collect.append(_js[content]["machineTrans"])
-        if len(collect) == 0:
-            raise Exception(f"can't find: {content}")
+    def tryfindtranslate_single(self, content: str):
+        self.delayloadlines()
+        if "\n" not in content:
+            return self.tryfindtranslate(content, self.json, self.lines)
+
+        collect = []
+        for line in content.split("\n"):
+            line = self.tryfindtranslate(line, self.json, self.lines)
+            if not line:
+                return None
+            collect.append(line)
         return "\n".join(collect)
+
+    def translate(self, content: str):
+        self.checkfilechanged(
+            self.unsafegetcurrentgameconfig(), tuple(self.config["jsonfile"])
+        )
+        if globalconfig["premtmatcheveryline"]:
+            res = self.tryfindtranslate_single(content)
+        else:
+            res = self.tryfindtranslate(content, self.json)
+        if not res:
+            raise Exception(f"can't find: {content}")
+        return res

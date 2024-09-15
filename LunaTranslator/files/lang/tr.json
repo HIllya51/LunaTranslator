@@ -48,7 +48,6 @@
     "目标语言": "hedef dili",
     "最短翻译字数": "Tercüme edilen kelimelerin en az sayısı",
     "最长翻译字数": "Tercüme edilen sözlerin en büyük sayısı",
-    "预翻译采用模糊匹配": "Önceki çeviri, çöplü eşleştirmeyi kabul ediyor",
     "录制翻译文件": "Çeviri dosyasını kaydedin",
     "导出的第一翻译源": "İlk çevirim kaynağı dışarı aktarıldı",
     "离线翻译": "Devre dışı çeviri",
@@ -815,7 +814,6 @@
     "添加文件": "Dosya ekle",
     "添加文件夹": "Dosyaları ekle",
     "类型": "tür",
-    "找不到文本": "Metin bulunamadı",
     "官方网站": "Resmi web sitesi",
     "欢迎使用": "Kullanmaya hoş geldiniz.",
     "显示注音": "Fonetik notasyonu göster",
@@ -856,5 +854,7 @@
     "拉丁语": "Latin dili",
     "显示/隐藏翻译": "Çeviri Göster/Gizle",
     "不显示翻译器名称": "Tercüme ismini gösterme",
-    "华为云": "Hua Weiyun"
+    "华为云": "Hua Weiyun",
+    "逐行匹配": "Satırla eşleştir",
+    "游戏适配": "Oyun uygulaması"
 }

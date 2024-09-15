@@ -509,6 +509,7 @@
     "accept_use_unicode_start": 0,
     "accept_use_unicode_end": 65535,
     "premtsimiuse": false,
+    "premtmatcheveryline": false,
     "buttoncolor": "#2e2eff",
     "buttoncolor2": "#FF69B4",
     "buttoncolor3": "#afafaf",

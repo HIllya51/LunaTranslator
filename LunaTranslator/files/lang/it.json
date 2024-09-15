@@ -48,7 +48,6 @@
     "目标语言": "lingua di destinazione",
     "最短翻译字数": "Numero minimo di parole tradotte",
     "最长翻译字数": "Numero massimo di parole tradotte",
-    "预翻译采用模糊匹配": "Pre-traduzione usando corrispondenza sfocata",
     "录制翻译文件": "Registrazione dei file di traduzione",
     "导出的第一翻译源": "Prima fonte di traduzione esportata",
     "离线翻译": "Traduzione offline",
@@ -815,7 +814,6 @@
     "添加文件": "Aggiungi file",
     "添加文件夹": "aggiungi cartelle",
     "类型": "tipo",
-    "找不到文本": "Testo non trovato",
     "官方网站": "Sito ufficiale",
     "欢迎使用": "Benvenuti all'uso",
     "显示注音": "Mostra notazione fonetica",
@@ -856,5 +854,7 @@
     "拉丁语": "Lingua latina",
     "显示/隐藏翻译": "Mostra/Nascondi traduzione",
     "不显示翻译器名称": "Non visualizzare il nome del traduttore",
-    "华为云": "Hua Weiyun"
+    "华为云": "Hua Weiyun",
+    "逐行匹配": "Corrisponda linea per linea",
+    "游戏适配": "Adattamento del gioco"
 }

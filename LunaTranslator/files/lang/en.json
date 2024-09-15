@@ -147,7 +147,6 @@
     "简单替换内容(若替换为空则直接过滤)": "Replace Text (Deleted if Replacement is Blank)",
     "次数统计": "Count Statistics",
     "代名詞": "Pronouns",
-    "预翻译采用模糊匹配": "Pre-translation Uses Fuzzy Matching",
     "必应": "Bing",
     "判定詞": "Copulas",
     "翻译器字体类型": "Translator Font Type",
@@ -815,7 +814,6 @@
     "添加文件": "Add file",
     "添加文件夹": "add folders",
     "类型": "type",
-    "找不到文本": "Text not found",
     "官方网站": "Official website",
     "欢迎使用": "Welcome to use",
     "显示注音": "Display phonetic notation",
@@ -856,5 +854,7 @@
     "拉丁语": "Latin language",
     "显示/隐藏翻译": "Show/Hide Translation",
     "不显示翻译器名称": "Do not display translator name",
-    "华为云": "Hua Weiyun"
+    "华为云": "Hua Weiyun",
+    "逐行匹配": "Match line by line",
+    "游戏适配": "Game adaptation"
 }

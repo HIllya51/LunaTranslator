@@ -80,7 +80,6 @@
     "手动设置代理(ip:port)": "Manuellt inställd proxy (ip: port)",
     "录制翻译文件": "Spela in översättningsfiler",
     "字体样式": "Teckensnittsstil",
-    "预翻译采用模糊匹配": "Före översättning antar suddig matchning",
     "搜索文本过短！": "Söktexten är för kort!",
     "的OCR模型": "OCR-modellen",
     "备忘录按钮": "Memoknapp",
@@ -815,7 +814,6 @@
     "添加文件": "Lägg till fil",
     "添加文件夹": "lägg till kataloger",
     "类型": "typ",
-    "找不到文本": "Text hittades inte",
     "官方网站": "Officiell webbplats",
     "欢迎使用": "Välkommen att använda",
     "显示注音": "Visa fonetisk notation",
@@ -856,5 +854,7 @@
     "拉丁语": "Latinska språk",
     "显示/隐藏翻译": "Visa/dölj översättning",
     "不显示翻译器名称": "Visa inte översättarens namn",
-    "华为云": "Hua Weiyun"
+    "华为云": "Hua Weiyun",
+    "逐行匹配": "Matcha rad för rad",
+    "游戏适配": "Spelanpassning"
 }

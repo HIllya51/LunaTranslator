@@ -48,7 +48,6 @@
     "目标语言": "Ngôn ngữ đích",
     "最短翻译字数": "Số lượng từ phiên dịch ngắn nhất",
     "最长翻译字数": "Số lượng từ phiên dịch dài nhất",
-    "预翻译采用模糊匹配": "Sử dụng Blur Match",
     "录制翻译文件": "Ghi lại tập tin dịch",
     "导出的第一翻译源": "Nguồn dịch đầu tiên xuất khẩu",
     "离线翻译": "Dịch ngoại tuyến",
@@ -815,7 +814,6 @@
     "添加文件": "Thêm tập tin",
     "添加文件夹": "Thêm thư mục",
     "类型": "Loại",
-    "找不到文本": "Không tìm thấy văn bản",
     "官方网站": "Trang web chính thức",
     "欢迎使用": "Chào mừng đến với",
     "显示注音": "Hiện chú thích",
@@ -856,5 +854,7 @@
     "拉丁语": "Tiếng Việt",
     "显示/隐藏翻译": "Hiện/ẩn bản dịch",
     "不显示翻译器名称": "Name",
-    "华为云": "Hoa Vi Vân"
+    "华为云": "Hoa Vi Vân",
+    "逐行匹配": "Khớp từng dòng",
+    "游戏适配": "Trò chơi phù hợp"
 }

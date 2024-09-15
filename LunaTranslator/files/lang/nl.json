@@ -80,7 +80,6 @@
     "手动设置代理(ip:port)": "Proxy handmatig instellen (ip: poort)",
     "录制翻译文件": "Vertalingsbestanden opnemen",
     "字体样式": "Lettertypestijl",
-    "预翻译采用模糊匹配": "Voorvertaling neemt fuzzy matching aan",
     "搜索文本过短！": "De zoektekst is te kort!",
     "的OCR模型": "Het OCR-model",
     "备忘录按钮": "Memoknop",
@@ -815,7 +814,6 @@
     "添加文件": "Bestand toevoegen",
     "添加文件夹": "mappen toevoegen",
     "类型": "type",
-    "找不到文本": "Tekst niet gevonden",
     "官方网站": "Officiële website",
     "欢迎使用": "Welkom bij gebruik",
     "显示注音": "Toon fonetische notatie",
@@ -856,5 +854,7 @@
     "拉丁语": "Latijnse taal",
     "显示/隐藏翻译": "Vertaling tonen/verbergen",
     "不显示翻译器名称": "Toon de naam van de vertaler niet",
-    "华为云": "Hua Weiyun."
+    "华为云": "Hua Weiyun.",
+    "逐行匹配": "Lijn voor regel overeenkomen",
+    "游戏适配": "Game aanpassing"
 }

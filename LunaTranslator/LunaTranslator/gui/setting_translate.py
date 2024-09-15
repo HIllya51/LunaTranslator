@@ -482,12 +482,14 @@ def setTabTwo_lazy(self, basel):
                     type="grid",
                     grid=(
                         [
-                            "预翻译采用模糊匹配",
+                            "模糊匹配",
                             D_getsimpleswitch(globalconfig, "premtsimiuse"),
                             "",
                             "模糊匹配_相似度_%",
                             D_getspinbox(0, 100, globalconfig, "premtsimi2"),
                             "",
+                            "逐行匹配",
+                            D_getsimpleswitch(globalconfig, "premtmatcheveryline"),
                         ],
                         [
                             (functools.partial(createbtnexport, self), 0),

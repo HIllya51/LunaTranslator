@@ -34,7 +34,7 @@
 
 ### **飞桨Ai Studio**
 
-* 免费额度为每日登录领取4小时，或可累加
+* 免费额度为每日登录领取4小时，并且可以通过一些积分任务获取更多时长
 
 <details>
   <summary>1. 在<a href="https://aistudio.baidu.com/my/project/private" target="_blank">飞桨Ai Studio</a>中创建项目，注意<strong>项目框架</strong>必须为<strong>PaddlePaddle 3.0.0beta1</strong></summary>

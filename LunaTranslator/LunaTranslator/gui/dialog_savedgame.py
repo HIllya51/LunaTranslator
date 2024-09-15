@@ -410,6 +410,8 @@ class dialog_savedgame_new(QWidget):
         )
 
         def callback(t):
+            if not t:
+                return
             if t in globalconfig["labelset"]:
                 tp = tagitem.TYPE_USERTAG
             else:
