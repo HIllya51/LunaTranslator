@@ -1994,30 +1994,6 @@
             "languageuse": "ar"
         }
     ],
-    "language_list_translator_inner": [
-        "zh",
-        "ja",
-        "cht",
-        "en",
-        "ru",
-        "es",
-        "ko",
-        "fr",
-        "vi",
-        "tr",
-        "pl",
-        "uk",
-        "it",
-        "ar",
-        "th",
-        "bo",
-        "de",
-        "sv",
-        "nl",
-        "cs",
-        "pt",
-        "hu"
-    ],
     "model_fileds": [
         "word",
         "remarks",

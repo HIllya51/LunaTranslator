@@ -519,6 +519,14 @@ language_last = None
 
 languageshow = {}
 
+static_data["language_list_translator_inner"] = [
+    _["code"] for _ in static_data["lang_list_all"]
+]
+
+static_data["language_list_translator_inner_english"] = [
+    _["en"] for _ in static_data["lang_list_all"]
+]
+
 
 def getlanguse():
     return globalconfig["languageuse2"]
