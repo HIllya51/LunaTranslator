@@ -132,6 +132,7 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer = {}
         self.extra_height = 0
         self.trace = []
+        self.cleared = True
         self.resets1()
 
     def resets1(self):
@@ -262,6 +263,7 @@ class TextBrowser(QWidget, dataget):
             text,
             self._createqfont(origin),
         )
+        self.cleared = False
 
     def append(self, origin, atcenter, text, tag, flags, color):
         self.trace.append(
@@ -281,6 +283,7 @@ class TextBrowser(QWidget, dataget):
         self._textbrowser_append(origin, atcenter, text, tagshow, color)
         if len(tag) and (isshow_fenci or isfenciclick):
             self.addsearchwordmask(isshow_fenci, isfenciclick, tag)
+        self.cleared = False
 
     def _getqalignment(self, atcenter):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
@@ -288,12 +291,11 @@ class TextBrowser(QWidget, dataget):
     def _textbrowser_append(self, origin, atcenter, text: str, tag: list, color):
         self.textbrowser.document().blockSignals(True)
         font = self._createqfont(origin)
-        cleared = len(self.textbrowser.toPlainText()) == 0
-        self._setnextfont(font, cleared)
+        self._setnextfont(font, self.cleared)
         self.textbrowser.setAlignment(self._getqalignment(atcenter))
 
-        _space = "" if cleared else "\n"
-        blockcount = 0 if cleared else self.textbrowser.document().blockCount()
+        _space = "" if self.cleared else "\n"
+        blockcount = 0 if self.cleared else self.textbrowser.document().blockCount()
         hastag = len(tag) > 0
         self.textbrowser.insertPlainText(_space + text)
         blockcount_after = self.textbrowser.document().blockCount()
@@ -754,6 +756,7 @@ class TextBrowser(QWidget, dataget):
         self.resets()
         self.yinyingposline = 0
         self.textbrowser.clear()
+        self.cleared = True
         self.saveiterclasspointer.clear()
         self.textbrowser.move(0, 0)
         self.atback_color.move(0, 0)
