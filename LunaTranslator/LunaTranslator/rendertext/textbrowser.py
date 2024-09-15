@@ -486,37 +486,22 @@ class TextBrowser(QWidget, dataget):
 
             if text[i] != "\n":
                 subtext[-1] += text[i]
-        used = set()
         collects = []
         for i in range(len(subtext)):
 
-            finded = -1
-            for j in range(len(self.iteryinyinglabelsave[iter_context_class])):
-                if j in used:
-                    continue
-                if (
-                    self.iteryinyinglabelsave[iter_context_class][j].text()
-                    == subtext[i]
-                ):
-                    finded = j
-                    used.add(j)
-                    break
-            if finded >= 0:
-                _ = self.iteryinyinglabelsave[iter_context_class][finded]
-                _.move(subpos[i].x(), subpos[i].y() + self.labeloffset_y)
-                _.show()
-            else:
-                if i >= len(self.iteryinyinglabelsave[iter_context_class]):
-                    self.iteryinyinglabelsave[iter_context_class].append(
-                        self.currentclass(self.toplabel2)
-                    )
-                _ = self.iteryinyinglabelsave[iter_context_class][i]
+            if i >= len(self.iteryinyinglabelsave[iter_context_class]):
+                self.iteryinyinglabelsave[iter_context_class].append(
+                    self.currentclass(self.toplabel2)
+                )
+            _ = self.iteryinyinglabelsave[iter_context_class][i]
+            if _.text() != subtext[i]:
                 _.setColor(color)
                 _.setText(subtext[i])
                 _.setFont(font)
                 _.adjustSize()
-                _.move(subpos[i].x(), subpos[i].y() + self.labeloffset_y)
-                _.show()
+            _.move(subpos[i].x(), subpos[i].y() + self.labeloffset_y)
+            _.show()
+
         self.textcursor.setPosition(pos)
         self.textbrowser.setTextCursor(self.textcursor)
         tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
