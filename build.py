@@ -14,90 +14,38 @@ if sys.argv[1] == "loadversion":
         versionstring = f"v{version_major}.{version_minor}.{version_patch}"
         print("version=" + versionstring)
         exit()
-# 继github被封后，域名又被封了。真是走了狗屎运了。这个世界上到底还有什么是能信任的。
-# 暂时先这样吧。在软件内使用重定向链接，因为链接失效没办法及时更新；在github网站或文档内，用直链。
-with open(
-    "LunaTranslator/files/defaultconfig/static_data.json", "r", encoding="utf8"
-) as ff:
-    data = json.loads(ff.read())
-hostservers = data["main_server"]
-print(hostservers)
-hostserver = None
 
-for _hostserver in hostservers:
-    try:
-        urllib.request.urlopen(_hostserver)
-        hostserver = _hostserver
-        break
-    except:
-        pass
-print(hostserver)
-links302 = {
-    "Github": {
-        "LunaTranslator": "HIllya51/LunaTranslator",
-        "LunaHook": "HIllya51/LunaHook",
-    },
-    "Resource": {
+mylinks = {
+    "LunaHook": "https://github.com/HIllya51/LunaHook/releases/latest/download/Release_English.zip",
+    "ocr_models": {
         "ocr_models": {
             "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
-        },
-        "build_req": {
-            "mecab.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip",
-            "ocr.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/ocr.zip",
-            "magpie.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip",
-            "stylesheets-main.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/stylesheets-main.zip",
-            "zstd.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/zstd.zip",
-        },
+        }
     },
+    "mecab.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip",
+    "ocr.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/ocr.zip",
+    "magpie.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip",
+    "stylesheets-main.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/stylesheets-main.zip",
 }
-
-
-def _dynalink(path: str):
-    if hostserver:
-        return urljoin(hostserver, path)
-    pathx = path.split("/")
-    if pathx[0] == "Github":
-        return (
-            "https://github.com/"
-            + links302.get(pathx[0]).get(pathx[1])
-            + "/"
-            + "/".join(pathx[2:])
-        )
-    return links302.get(pathx[0]).get(pathx[1]).get(pathx[2])
-
-
-def dynalink(path):
-    _ = _dynalink(path)
-    print(_)
-    return _
 
 
 pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "LunaHook", "Magpie", "NTLEAS"]
 
 vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
-vcltlFileName = "VC-LTL-5.0.9-Binary.7z"
+
 brotliFile32 = "https://github.com/google/brotli/releases/latest/download/brotli-x86-windows-dynamic.zip"
-brotliFileName32 = "brotli-x86-windows-dynamic.zip"
 brotliFile64 = "https://github.com/google/brotli/releases/latest/download/brotli-x64-windows-dynamic.zip"
-brotliFileName64 = "brotli-x64-windows-dynamic.zip"
+
 localeEmulatorFile = "https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip"
-localeEmulatorFileName = "Locale.Emulator.2.5.0.1.zip"
 ntleaFile = "https://github.com/zxyacb/ntlea/releases/download/0.46/ntleas046_x64.7z"
-ntleaFileName = "ntleas046_x64.7z"
+LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
+
 curlFile32 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win32-mingw.zip"
-curlFileName32 = "curl-8.8.0_3-win32-mingw.zip"
 curlFile64 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
-curlFileName64 = "curl-8.8.0_3-win64-mingw.zip"
 
-
-ocrModelUrl = dynalink("Resource/ocr_models/ja.zip")
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
-LunaHook_latest = dynalink(
-    "Github/LunaHook/releases/latest/download/Release_English.zip"
-)
 
-LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
 
 
 def createPluginDirs():
@@ -113,7 +61,7 @@ def createPluginDirs():
 def installVCLTL():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {vcltlFile}")
-    subprocess.run(f"7z x {vcltlFileName} -oVC-LTL5")
+    subprocess.run(f"7z x {vcltlFile.split('/')[-1]} -oVC-LTL5")
     os.chdir("VC-LTL5")
     subprocess.run("cmd /c Install.cmd")
 
@@ -122,8 +70,8 @@ def downloadBrotli():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {brotliFile32}")
     subprocess.run(f"curl -LO {brotliFile64}")
-    subprocess.run(f"7z x {brotliFileName32} -obrotli32")
-    subprocess.run(f"7z x {brotliFileName64} -obrotli64")
+    subprocess.run(f"7z x {brotliFile32.split('/')[-1]} -obrotli32")
+    subprocess.run(f"7z x {brotliFile64.split('/')[-1]} -obrotli64")
     shutil.move(
         "brotli32/brotlicommon.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL32"
     )
@@ -175,11 +123,11 @@ def move_directory_contents(source_dir, destination_dir):
 def downloadcommon():
     os.chdir(rootDir + "\\temp")
     downloadlr()
-    subprocess.run(f"curl -LO {dynalink('Resource/build_req/mecab.zip')}")
+    subprocess.run(f"curl -LO {mylinks['mecab.zip']}")
     subprocess.run(f"7z x mecab.zip -oALL")
-    subprocess.run(f"curl -LO {dynalink('Resource/build_req/ocr.zip')}")
+    subprocess.run(f"curl -LO {mylinks['ocr.zip']}")
     subprocess.run(f"7z x ocr.zip -oALL")
-    subprocess.run(f"curl -LO {dynalink('Resource/build_req/magpie.zip')}")
+    subprocess.run(f"curl -LO {mylinks['magpie.zip']}")
     subprocess.run(f"7z x magpie.zip -oALL")
 
     move_directory_contents("ALL/ALL", f"{rootDir}/LunaTranslator/files/plugins")
@@ -188,7 +136,7 @@ def downloadcommon():
 def downloadLocaleEmulator():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {localeEmulatorFile}")
-    subprocess.run(f"7z x {localeEmulatorFileName} -oLocaleEmulator")
+    subprocess.run(f"7z x {localeEmulatorFile.split('/')[-1]} -oLocaleEmulator")
     shutil.move(
         "LocaleEmulator/LoaderDll.dll",
         f"{rootDir}/LunaTranslator/files/plugins/LoaderDll.dll",
@@ -202,7 +150,7 @@ def downloadLocaleEmulator():
 def downloadNtlea():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {ntleaFile}")
-    subprocess.run(f"7z x {ntleaFileName} -ontlea")
+    subprocess.run(f"7z x {ntleaFile.split('/')[-1]} -ontlea")
     shutil.move(
         "ntlea/x86/ntleai.dll",
         f"{rootDir}/LunaTranslator/files/plugins/NTLEAS/ntleai.dll",
@@ -217,14 +165,14 @@ def downloadCurl():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {curlFile32}")
     subprocess.run(f"curl -LO {curlFile64}")
-    subprocess.run(f"7z x {curlFileName32}")
-    subprocess.run(f"7z x {curlFileName64}")
-    outputDirName32 = curlFileName32.replace(".zip", "")
+    subprocess.run(f"7z x {curlFile32.split('/')[-1]}")
+    subprocess.run(f"7z x {curlFile64.split('/')[-1]}")
+    outputDirName32 = curlFile32.split('/')[-1].replace(".zip", "")
     shutil.move(
         f"{outputDirName32}/bin/libcurl.dll",
         f"{rootDir}/LunaTranslator/files/plugins/DLL32",
     )
-    outputDirName64 = curlFileName64.replace(".zip", "")
+    outputDirName64 = curlFile64.split('/')[-1].replace(".zip", "")
     shutil.move(
         f"{outputDirName64}/bin/libcurl-x64.dll",
         f"{rootDir}/LunaTranslator/files/plugins/DLL64",
@@ -236,7 +184,7 @@ def downloadOCRModel():
     if not os.path.exists("ocr"):
         os.mkdir("ocr")
     os.chdir("ocr")
-    subprocess.run(f"curl -LO {ocrModelUrl}")
+    subprocess.run(f"curl -LO {mylinks['ocr_models']['ja.zip']}")
     subprocess.run(f"7z x ja.zip")
     os.remove(f"ja.zip")
 
@@ -255,6 +203,7 @@ def get_url_as_json(url):
 def buildLunaHook():
 
     os.chdir(rootDir + "\\temp")
+    LunaHook_latest = mylinks["LunaHook"]
     subprocess.run(f"curl -LO {LunaHook_latest}")
     subprocess.run(f"7z x {LunaHook_latest.split('/')[-1]}")
     shutil.move(
@@ -296,7 +245,7 @@ def buildPlugins():
 
 def downloadsomething():
     os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {dynalink('Resource/build_req/stylesheets-main.zip')}")
+    subprocess.run(f"curl -LO {mylinks['stylesheets-main.zip']}")
     subprocess.run(f"7z x stylesheets-main.zip -oALL")
     move_directory_contents(
         "ALL/stylesheets-main", rootDir + "\\LunaTranslator\\files\\themes"
