@@ -99,9 +99,4 @@ class jisho(cishubase):
         ss = re.search('href="https://assets.jisho.org/assets/application(.*)"', html)
         stl = requests.get(ss.group()[6:-1], proxies=self.proxy).text
 
-        return (
-            '<div  style="text-align: center;"><a href="{}">link</a></div><br>'.format(
-                url
-            )
-            + f"<style>{stl}</style>{res}"
-        )
+        return f"<style>{stl}</style>{res}"

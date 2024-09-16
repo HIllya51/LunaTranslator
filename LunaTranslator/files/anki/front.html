@@ -1,25 +1,14 @@
 <div class="hide-style">
-    <div id="audio">{{audio}}</div>
-    <div id="audio_sentence">{{audio_sentence}}</div>
+    <div id="audio">{{audio_for_word}}</div>
+    <div id="audio_sentence">{{audio_for_example_sentence}}</div>
 </div>
 <div class="centerdiv" onclick='playAudio("audio")'>
     <div class="ruby-div" id="word">{{ word }}</div>
-    <div id="rubyword" class="ruby-div"></div>
+    <div id="rubyword" class="ruby-div">{{ rubytextHtml }}</div>
 </div>
 
 <script>
-    var ruby = JSON.parse(decodeURIComponent("{{ rubytext }}"))
-    var html = ''
-    if (ruby.length) {
-        for (var i = 0; i < ruby.length; i++) {
-            html += ruby[i]['orig'];
-            if (ruby[i]['orig'] != ruby[i]['hira'])
-                html += '<rt>' + ruby[i]['hira'] + '</rt>';
-            else
-                html += '<rt></rt>';
-        }
-        html = '<ruby>' + html + '</ruby>'
-        document.getElementById('rubyword').innerHTML = html
+    if (document.getElementById('rubyword').innerHTML.trim().length > 0) {
         document.getElementById('word').classList.add("hide-style");
     }
     else {
@@ -32,7 +21,7 @@
     {{example_sentence}}
 </div>
 <div id="image" class="centerdiv">
-    {{image}}
+    {{screenshot}}
 </div>
 
 

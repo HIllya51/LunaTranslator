@@ -443,8 +443,7 @@ def filetranslate(self):
         [(functools.partial(createdownloadprogress, self), 0)],
         [],
         [
-            "使用最快翻译而非指定翻译器",
-            D_getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"),
+            "指定翻译器",
             (
                 D_getsimplecombobox(
                     alltransvis,
@@ -452,8 +451,12 @@ def filetranslate(self):
                     "translator_2",
                     internal=alltrans,
                 ),
-                2,
+                3,
             ),
+        ],
+        [
+            "使用最快翻译而非指定翻译器",
+            D_getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"),
         ],
     ]
     return grids

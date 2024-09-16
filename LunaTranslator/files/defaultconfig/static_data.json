@@ -1996,13 +1996,20 @@
     ],
     "model_fileds": [
         "word",
-        "remarks",
+        "rubytextHtml",
         "example_sentence",
-        "image",
-        "audio",
-        "audio_sentence",
-        "rubytext",
-        "explain"
+        "audio_for_word",
+        "audio_for_example_sentence",
+        "screenshot",
+        "remarks",
+        "dictionaryInfo",
+        "dictionaryJson",
+        "luna_reserved_1",
+        "luna_reserved_2",
+        "luna_reserved_3",
+        "user_custom_1",
+        "user_custom_2",
+        "user_custom_3"
     ],
     "textrender": {
         "textbrowser": [

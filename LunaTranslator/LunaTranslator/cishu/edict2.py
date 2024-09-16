@@ -40,6 +40,6 @@ class edict2(cishubase):
         srt = argsort(dis)
         for ii in srt[: self.config["max_num"]]:
             saveres.append(
-                savew[ii] + "<br>" + re.sub("/EntL.*/", "", self.save[savew[ii]][1:])
+                savew[ii] + "<hr>" + re.sub("/EntL.*/", "", self.save[savew[ii]][1:])
             )
         return "<hr>".join(saveres)

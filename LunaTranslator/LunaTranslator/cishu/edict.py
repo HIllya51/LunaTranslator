@@ -38,6 +38,6 @@ class edict(cishubase):
             x = self.sql.execute(
                 "select word, content from entry where  id =?", (_id,)
             ).fetchone()
-            saveres.append(x[0] + "<br>" + re.sub("/EntL.*/", "", x[1][1:]))
+            saveres.append(x[0] + "<hr>" + re.sub("/EntL.*/", "", x[1][1:]))
 
         return "<hr>".join(saveres)

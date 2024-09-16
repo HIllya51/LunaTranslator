@@ -155,19 +155,16 @@ class AnkiWindow(QWidget):
 
     def creattemplatetab(self, baselay):
 
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-        wid = QWidget()
-        wid.setLayout(layout)
-        baselay.addWidget(wid)
+        spliter = QSplitter()
+        baselay.addWidget(spliter)
         edittemptab = LTabWidget()
         self.previewtab = LTabBar()
         revertbtn = LPushButton("恢复")
         revertbtn.clicked.connect(self.loadedits)
         savebtn = LPushButton("保存")
         savebtn.clicked.connect(self.saveedits)
-        layout.addLayout(
+
+        spliter.addWidget(
             getboxlayout(
                 [
                     edittemptab,
@@ -175,6 +172,7 @@ class AnkiWindow(QWidget):
                 ],
                 lc=QVBoxLayout,
                 margin0=True,
+                makewidget=True,
             )
         )
 
@@ -182,11 +180,12 @@ class AnkiWindow(QWidget):
         self.htmlbrowser.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        layout.addLayout(
+        spliter.addWidget(
             getboxlayout(
                 [self.previewtab, self.htmlbrowser],
                 lc=QVBoxLayout,
                 margin0=True,
+                makewidget=True,
             )
         )
         self.fronttext = FQPlainTextEdit()
@@ -209,10 +208,17 @@ class AnkiWindow(QWidget):
         ):
             object.setPlainText(text)
 
+    def makedictionaryHTML(self, dictionarys):
+        if not dictionarys:
+            return ""
+        htmlcontents = ""
+        for iiii in range(len(dictionarys)):
+            htmlcontents += f'<div id="luna_dict_tab_{dictionarys[iiii]["dict"]}" class="tab-pane">{dictionarys[iiii]["content"]}</div>'
+        return htmlcontents
+
     def loadfileds(self):
         word = self.currentword
-        explain = quote(json.dumps(self.refsearchw.generate_explains()))
-
+        dictionarys = self.refsearchw.generate_dictionarys()
         remarks = self.remarks.toPlainText()
         example = self.example.toPlainText()
         if globalconfig["ankiconnect"]["boldword"]:
@@ -226,10 +232,18 @@ class AnkiWindow(QWidget):
                     collect.append(hira["orig"])
             example = "".join(collect)
         ruby = self.ruby
+        dictionaryInfo = []
+        dictionaryJson = {}
+        for _ in dictionarys:
+            dictionaryInfo.append(
+                {"dict": _["dict"], "name": globalconfig["cishu"][_["dict"]]["name"]}
+            )
+            dictionaryJson[_["dict"]] = _["content"]
         fields = {
             "word": word,
-            "rubytext": ruby,
-            "explain": explain,
+            "rubytextHtml": ruby,
+            "dictionaryJson": quote(json.dumps(dictionaryJson)),
+            "dictionaryInfo": json.dumps(dictionaryInfo, ensure_ascii=False),
             "example_sentence": example.replace("\n", "<br>"),
             "remarks": remarks.replace("\n", "<br>"),
         }
@@ -275,9 +289,9 @@ class AnkiWindow(QWidget):
         else:
             encoded_string3 = ""
         fields = {
-            "audio": encoded_string2,
-            "audio_sentence": encoded_string3,
-            "image": encoded_string,
+            "audio_for_word": encoded_string2,
+            "audio_for_example_sentence": encoded_string3,
+            "screenshot": encoded_string,
         }
         return fields
 
@@ -584,15 +598,23 @@ class AnkiWindow(QWidget):
         if res != "":
             item.setText(res)
 
+    def makerubyhtml(self, ruby):
+        if not ruby:
+            return ""
+        html = ""
+        for i in range(len(ruby)):
+            html += ruby[i]["orig"]
+            if ruby[i]["orig"] != ruby[i]["hira"]:
+                html += "<rt>" + ruby[i]["hira"] + "</rt>"
+            else:
+                html += "<rt></rt>"
+        html = "<ruby>" + html + "</ruby>"
+        return html
+
     def reset(self, text):
         self.currentword = text
         if text and len(text):
-            self.ruby = quote(
-                json.dumps(
-                    gobject.baseobject.parsehira(text),
-                    ensure_ascii=False,
-                )
-            )
+            self.ruby = self.makerubyhtml(gobject.baseobject.parsehira(text))
         else:
             self.ruby = ""
         self.editpath.clear()
@@ -905,7 +927,7 @@ class searchwordW(closeashidewindow):
                 self.searchtext.text(), True, gobject.baseobject.audioplayer.timestamp
             )
 
-    def generate_explains(self):
+    def generate_dictionarys(self):
         res = []
         tabks = []
         for k, v in self.cache_results.items():
@@ -919,9 +941,8 @@ class searchwordW(closeashidewindow):
             for i in tabks:
                 if i >= thisp:
                     idx += 1
-            k = _TR(globalconfig["cishu"][k]["name"])
             tabks.append(thisp)
-            res.insert(idx, {"source": k, "content": v})
+            res.insert(idx, {"dict": k, "content": v})
         return res
 
     def __click_word_search_function(self, word, append):

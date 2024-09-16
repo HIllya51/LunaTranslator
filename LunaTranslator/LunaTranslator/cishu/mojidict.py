@@ -628,7 +628,7 @@ class mojidict(cishubase):
         result = ""
         try:
             result += mojiclicksearch(self, word)
-            result += "<br>"
+            result += "<hr>"
         except:
             pass
         try:

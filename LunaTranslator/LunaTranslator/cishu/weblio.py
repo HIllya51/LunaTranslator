@@ -23,11 +23,5 @@ class weblio(cishubase):
             xx = re.sub('class="(.*?)"', "", xx)
             _all.append(xx)
 
-        join = "<br>".join(_all)
-        if len(join):
-            return (
-                '<div  style="text-align: center;"><a href="{}">link</a></div>'.format(
-                    url
-                )
-                + join
-            )
+        join = "<hr>".join(_all)
+        return join
