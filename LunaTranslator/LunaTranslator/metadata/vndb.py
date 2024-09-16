@@ -94,7 +94,7 @@ def getinfosbyvid(proxy, vid):
         "vn",
         {
             "filters": ["id", "=", vid],
-            "fields": "title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original",
+            "fields": "tags.rating,tags.name,title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original",
         },
     )
     if js:
@@ -111,11 +111,14 @@ def getinfosbyvid(proxy, vid):
             if item["original"]:
                 dev.append(item["original"])
             dev.append(item["name"])
+        tags = [_["name"] for _ in js["results"][0]["tags"]]
+        rates = [_["rating"] for _ in js["results"][0]["tags"]]
         return dict(
             title=gettitlefromjs(js["results"][0]),
             img=js["results"][0]["image"]["url"],
             sc=imgs,
             dev=dev,
+            tags=sorted(tags, key=lambda x: -rates[tags.index(x)]),
         )
 
 
@@ -345,25 +348,6 @@ class searcher(common):
             return int(vid[1:])
         return None
 
-    def gettagfromhtml(self, _vid):
-
-        headers = {
-            "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
-            "Referer": "https://vndb.org/",
-            "sec-ch-ua-mobile": "?0",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
-            "sec-ch-ua-platform": '"Windows"',
-        }
-
-        html = self.proxysession.get(self.refmainpage(_vid), headers=headers).text
-
-        find = re.search('<div id="vntags">([\\s\\S]*?)</div>', html)
-        if find:
-            html = find.groups()[0]
-            return [_[1] for _ in re.findall("<a(.*?)>(.*?)</a>", html)]
-        else:
-            return []
-
     def getcharsfromhtml(self, _vid):
 
         headers = {
@@ -409,12 +393,9 @@ class searcher(common):
         vid = "v{}".format(_vid)
         infos = getinfosbyvid(self.proxy, vid)
 
-        title = infos["title"]
         namemap2 = getcharnamemapbyid(self.proxy, vid)
         namemap = self.getcharsfromhtml(vid)
         namemap.update(namemap2)
-        vndbtags = self.gettagfromhtml(_vid)
-        developers = infos["dev"]
 
         img = [
             self.dispatchdownloadtask(_)
@@ -423,8 +404,8 @@ class searcher(common):
         sc = [self.dispatchdownloadtask(_) for _ in infos["sc"]]
         return {
             "namemap": namemap,
-            "title": title,
+            "title": infos["title"],
             "imagepath_all": img + sc,
-            "webtags": vndbtags,
-            "developers": developers,
+            "webtags": infos["tags"],
+            "developers": infos["dev"],
         }
