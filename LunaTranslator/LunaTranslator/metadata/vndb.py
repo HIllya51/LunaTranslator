@@ -94,7 +94,7 @@ def getinfosbyvid(proxy, vid):
         "vn",
         {
             "filters": ["id", "=", vid],
-            "fields": "tags.rating,tags.name,title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original",
+            "fields": "tags.rating,tags.name,title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original,va.character.name,va.character.original",
         },
     )
     if js:
@@ -113,49 +113,21 @@ def getinfosbyvid(proxy, vid):
             dev.append(item["name"])
         tags = [_["name"] for _ in js["results"][0]["tags"]]
         rates = [_["rating"] for _ in js["results"][0]["tags"]]
+        namemap = {}
+        try:
+            for r in js["results"][0]["va"]:
+                r = r["character"]
+                namemap[r["original"]] = r["name"]
+        except:
+            pass
         return dict(
+            namemap=namemap,
             title=gettitlefromjs(js["results"][0]),
             img=js["results"][0]["image"]["url"],
             sc=imgs,
             dev=dev,
             tags=sorted(tags, key=lambda x: -rates[tags.index(x)]),
         )
-
-
-def getcharnamemapbyid(proxy, vid):
-    js = safegetvndbjson(
-        proxy,
-        "character",
-        {
-            "filters": [
-                "vn",
-                "=",
-                ["id", "=", vid],
-            ],
-            "fields": "name,original",
-        },
-    )
-    js2 = safegetvndbjson(
-        proxy,
-        "vn",
-        {
-            "filters": ["id", "=", vid],
-            "fields": "va.character.name,va.character.original",
-        },
-    )
-    namemap = {}
-    try:
-        for r in js2["results"][0]["va"]:
-            r = r["character"]
-            namemap[r["original"]] = r["name"]
-    except:
-        pass
-    try:
-        for r in js["results"]:
-            namemap[r["original"]] = r["name"]
-    except:
-        pass
-    return namemap
 
 
 @Singleton_close
@@ -392,10 +364,8 @@ class searcher(common):
     def searchfordata(self, _vid):
         vid = "v{}".format(_vid)
         infos = getinfosbyvid(self.proxy, vid)
-
-        namemap2 = getcharnamemapbyid(self.proxy, vid)
         namemap = self.getcharsfromhtml(vid)
-        namemap.update(namemap2)
+        namemap.update(infos["namemap"])
 
         img = [
             self.dispatchdownloadtask(_)
