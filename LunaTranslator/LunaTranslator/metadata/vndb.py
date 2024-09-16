@@ -122,21 +122,33 @@ def getinfosbyvid(proxy, vid):
 def getcharnamemapbyid(proxy, vid):
     js = safegetvndbjson(
         proxy,
+        "character",
+        {
+            "filters": [
+                "vn",
+                "=",
+                ["id", "=", vid],
+            ],
+            "fields": "name,original",
+        },
+    )
+    js2 = safegetvndbjson(
+        proxy,
         "vn",
         {
             "filters": ["id", "=", vid],
             "fields": "va.character.name,va.character.original",
         },
     )
-    print(js)
-    if js:
-        res = js["results"][0]["va"]
-    else:
-        return {}
     namemap = {}
     try:
-        for r in res:
+        for r in js2["results"][0]["va"]:
             r = r["character"]
+            namemap[r["original"]] = r["name"]
+    except:
+        pass
+    try:
+        for r in js["results"]:
             namemap[r["original"]] = r["name"]
     except:
         pass
@@ -352,6 +364,29 @@ class searcher(common):
         else:
             return []
 
+    def getcharsfromhtml(self, _vid):
+
+        headers = {
+            "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
+            "Referer": "https://vndb.org/",
+            "sec-ch-ua-mobile": "?0",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
+            "sec-ch-ua-platform": '"Windows"',
+        }
+
+        html = self.proxysession.get(
+            f"https://vndb.org/{_vid}/chars", headers=headers
+        ).text
+
+        find = re.findall(
+            '<tr><td colspan="2"><a href="/c(.*?)>(.*?)</a><small(.*?)>(.*?)</small>',
+            html,
+        )
+        namemap = {}
+        for _, en, _, ja in find:
+            namemap[ja] = en
+        return namemap
+
     def getreleasecvfromhtml(self, _vid):
 
         headers = {
@@ -375,7 +410,9 @@ class searcher(common):
         infos = getinfosbyvid(self.proxy, vid)
 
         title = infos["title"]
-        namemap = getcharnamemapbyid(self.proxy, vid)
+        namemap2 = getcharnamemapbyid(self.proxy, vid)
+        namemap = self.getcharsfromhtml(vid)
+        namemap.update(namemap2)
         vndbtags = self.gettagfromhtml(_vid)
         developers = infos["dev"]
 
