@@ -696,9 +696,9 @@ class AnkiWindow(QWidget):
         media = []
         tempfiles = []
         for k, _ in [
-            ("audio", self.audiopath.text()),
-            ("audio_sentence", self.audiopath_sentence.text()),
-            ("image", self.editpath.text()),
+            ("audio_for_word", self.audiopath.text()),
+            ("audio_for_example_sentence", self.audiopath_sentence.text()),
+            ("screenshot", self.editpath.text()),
         ]:
             if len(_):
                 media.append(
