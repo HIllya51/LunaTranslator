@@ -1957,14 +1957,10 @@
     },
     "scalemethods": [
         "magpie_builtin",
-        "alt_enter",
-        "SW_SHOWMAXIMIZED",
         "external_magpie"
     ],
     "scalemethods_vis": [
         "Magpie",
-        "ALT+ENTER",
-        "SW_SHOWMAXIMIZED",
         "Magpie_External"
     ],
     "transoptimi": [

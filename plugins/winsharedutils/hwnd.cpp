@@ -22,38 +22,6 @@ DECLARE void showintab(HWND hwnd, bool show, bool tool)
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }
 
-struct windowstatus
-{
-    WINDOWPLACEMENT wpc;
-    LONG HWNDStyle, HWNDStyleEx;
-};
-
-DECLARE windowstatus letfullscreen(HWND hwnd)
-{
-    WINDOWPLACEMENT wpc;
-    GetWindowPlacement(hwnd, &wpc);
-    auto HWNDStyle = GetWindowLong(hwnd, GWL_STYLE);
-    auto HWNDStyleEx = GetWindowLong(hwnd, GWL_EXSTYLE);
-    auto NewHWNDStyle = HWNDStyle;
-    NewHWNDStyle &= ~WS_BORDER;
-    NewHWNDStyle &= ~WS_DLGFRAME;
-    NewHWNDStyle &= ~WS_THICKFRAME;
-    auto NewHWNDStyleEx = HWNDStyleEx;
-    NewHWNDStyleEx &= ~WS_EX_WINDOWEDGE;
-    SetWindowLong(hwnd, GWL_STYLE, NewHWNDStyle | WS_POPUP);
-    SetWindowLong(
-        hwnd, GWL_EXSTYLE, NewHWNDStyleEx | WS_EX_TOPMOST);
-    ShowWindow(hwnd, SW_SHOWMAXIMIZED);
-    return {wpc, HWNDStyle, HWNDStyleEx};
-}
-
-DECLARE void recoverwindow(HWND hwnd, windowstatus status)
-{
-    SetWindowLong(hwnd, GWL_STYLE, status.HWNDStyle);
-    SetWindowLong(hwnd, GWL_EXSTYLE, status.HWNDStyleEx);
-    ShowWindow(hwnd, SW_SHOWNORMAL);
-    SetWindowPlacement(hwnd, &status.wpc);
-}
 DECLARE bool pid_running(DWORD pid)
 {
     DWORD code;

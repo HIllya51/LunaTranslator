@@ -7,7 +7,6 @@ from ctypes import (
     pointer,
     CDLL,
     c_int,
-    Structure,
     c_void_p,
     cast,
     memmove,
@@ -15,14 +14,12 @@ from ctypes import (
     create_string_buffer,
     c_size_t,
     windll,
-    c_float,
     c_double,
     c_char,
     CFUNCTYPE,
     c_long,
 )
-from ctypes.wintypes import WORD, HANDLE, HWND, LONG, DWORD, RECT
-from windows import WINDOWPLACEMENT
+from ctypes.wintypes import WORD, HWND, DWORD, RECT
 import gobject
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
@@ -257,17 +254,6 @@ def Getprcesses():
 showintab = utilsdll.showintab
 showintab.argtypes = HWND, c_bool, c_bool
 
-
-class windowstatus(Structure):
-    _fields_ = [("wpc", WINDOWPLACEMENT), ("HWNDStyle", LONG), ("HWNDStyleEx", LONG)]
-
-
-letfullscreen = utilsdll.letfullscreen
-letfullscreen.argtypes = (HWND,)
-letfullscreen.restype = windowstatus
-
-recoverwindow = utilsdll.recoverwindow
-recoverwindow.argtypes = HWND, windowstatus
 
 pid_running = utilsdll.pid_running
 pid_running.argtypes = (DWORD,)
