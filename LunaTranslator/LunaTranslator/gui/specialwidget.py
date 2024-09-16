@@ -468,8 +468,7 @@ class lazyscrollflow(ScrollArea):
                 line_height = max(line_height, sz.height())
 
             new_height = y + line_height - rect.y() + self._margin
-            self.internalwid.setFixedHeight(new_height)
-            return new_height
+        self.internalwid.setFixedHeight(new_height)
 
 
 def has_intersection(interval1, interval2):
