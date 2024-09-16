@@ -122,23 +122,21 @@ def getinfosbyvid(proxy, vid):
 def getcharnamemapbyid(proxy, vid):
     js = safegetvndbjson(
         proxy,
-        "character",
+        "vn",
         {
-            "filters": [
-                "vn",
-                "=",
-                ["id", "=", vid],
-            ],
-            "fields": "name,original",
+            "filters": ["id", "=", vid],
+            "fields": "va.character.name,va.character.original",
         },
     )
+    print(js)
     if js:
-        res = js["results"]
+        res = js["results"][0]["va"]
     else:
         return {}
     namemap = {}
     try:
         for r in res:
+            r = r["character"]
             namemap[r["original"]] = r["name"]
     except:
         pass
