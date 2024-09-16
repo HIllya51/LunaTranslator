@@ -321,7 +321,7 @@ class AnkiWindow(QWidget):
             "端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
         )
         layout.addRow(
-            "ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName5")
+            "ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName6")
         )
 
         layout.addRow(
@@ -657,7 +657,7 @@ class AnkiWindow(QWidget):
         autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
         allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
         anki.global_port = globalconfig["ankiconnect"]["port"]
-        ModelName = globalconfig["ankiconnect"]["ModelName5"]
+        ModelName = globalconfig["ankiconnect"]["ModelName6"]
         try:
             DeckName = globalconfig["ankiconnect"]["DeckNameS"][
                 globalconfig["ankiconnect"]["DeckName_i"]
