@@ -233,16 +233,16 @@ class AnkiWindow(QWidget):
             example = "".join(collect)
         ruby = self.ruby
         dictionaryInfo = []
-        dictionaryJson = {}
+        dictionaryContent = {}
         for _ in dictionarys:
             dictionaryInfo.append(
                 {"dict": _["dict"], "name": globalconfig["cishu"][_["dict"]]["name"]}
             )
-            dictionaryJson[_["dict"]] = _["content"]
+            dictionaryContent[_["dict"]] = quote(_["content"])
         fields = {
             "word": word,
             "rubytextHtml": ruby,
-            "dictionaryJson": quote(json.dumps(dictionaryJson)),
+            "dictionaryContent": json.dumps(dictionaryContent),
             "dictionaryInfo": json.dumps(dictionaryInfo, ensure_ascii=False),
             "example_sentence": example.replace("\n", "<br>"),
             "remarks": remarks.replace("\n", "<br>"),

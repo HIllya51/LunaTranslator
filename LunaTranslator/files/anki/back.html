@@ -52,7 +52,7 @@
 </script>
 <script>
     var dictionaryInfo = {{ dictionaryInfo }};
-    var dictionaryJson =  JSON.parse(decodeURIComponent("{{ dictionaryJson }}"))
+    var dictionaryContent = {{ dictionaryContent }}
     var htmltabbuttons = ''
     var htmlcontents = ''
     var scriptElementss = []
@@ -60,7 +60,7 @@
         htmltabbuttons += '<button type="button" onclick="onclickbtn(\'' + dictionaryInfo[iiii]['dict'] + '\')" id="luna_dict_btn_' + dictionaryInfo[iiii]['dict'] + '" class="tab-button">' + dictionaryInfo[iiii]['name'] + '</button>'
 
         var tempParent = document.createElement('div');
-        tempParent.innerHTML = dictionaryJson[dictionaryInfo[iiii]['dict']];
+        tempParent.innerHTML = decodeURIComponent(dictionaryContent[dictionaryInfo[iiii]['dict']]);
 
         var fragment = document.createElement('div');
         while (tempParent.firstChild) {
