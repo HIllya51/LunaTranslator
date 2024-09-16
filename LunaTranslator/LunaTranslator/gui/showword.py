@@ -300,15 +300,15 @@ class AnkiWindow(QWidget):
         model_htmlback = self.backtext.toPlainText()
         model_css = self.csstext.toPlainText()
         with open(
-            gobject.getuserconfigdir("anki/back.html"), "w", encoding="utf8"
+            gobject.getuserconfigdir("anki_2/back.html"), "w", encoding="utf8"
         ) as ff:
             ff.write(model_htmlback)
         with open(
-            gobject.getuserconfigdir("anki/front.html"), "w", encoding="utf8"
+            gobject.getuserconfigdir("anki_2/front.html"), "w", encoding="utf8"
         ) as ff:
             ff.write(model_htmlfront)
         with open(
-            gobject.getuserconfigdir("anki/style.css"), "w", encoding="utf8"
+            gobject.getuserconfigdir("anki_2/style.css"), "w", encoding="utf8"
         ) as ff:
             ff.write(model_css)
 
@@ -637,11 +637,11 @@ class AnkiWindow(QWidget):
 
     def tryloadankitemplates(self):
         try:
-            with open("userconfig/anki/back.html", "r", encoding="utf8") as ff:
+            with open("userconfig/anki_2/back.html", "r", encoding="utf8") as ff:
                 model_htmlback = ff.read()
-            with open("userconfig/anki/front.html", "r", encoding="utf8") as ff:
+            with open("userconfig/anki_2/front.html", "r", encoding="utf8") as ff:
                 model_htmlfront = ff.read()
-            with open("userconfig/anki/style.css", "r", encoding="utf8") as ff:
+            with open("userconfig/anki_2/style.css", "r", encoding="utf8") as ff:
                 model_css = ff.read()
         except:
             with open("files/anki/back.html", "r", encoding="utf8") as ff:

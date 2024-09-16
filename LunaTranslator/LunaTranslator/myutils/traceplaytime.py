@@ -62,6 +62,7 @@ class playtimemanager:
                 self.sqlsavegameinfo.execute(
                     "INSERT INTO gameinternalid_v2 VALUES(NULL,?)", (gameuid,)
                 )
+                self.sqlsavegameinfo.commit()
             else:
                 return ret[0]
 
@@ -78,6 +79,7 @@ class playtimemanager:
                 "UPDATE traceplaytime_v4 SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)",
                 (end, gameinternalid, start),
             )
+        self.sqlsavegameinfo.commit()
 
     def checkgameplayingthread(self):
         self.__currentexe = None
