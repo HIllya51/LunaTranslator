@@ -18,10 +18,15 @@ from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless, getQMessageBox, LIconLabel
+from gui.usefulwidget import (
+    resizableframeless,
+    getQMessageBox,
+    LIconLabel,
+    findnearestscreen,
+)
 from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
-from gui.dialog_savedgame_setting import browserdialog
+from gui.dialog_savedgame_setting import browserdialog, calculate_centered_rect
 from gui.dynalang import LDialog
 
 
@@ -699,12 +704,19 @@ class TranslatorWindow(resizableframeless):
             self.hide()
 
     def show_(self):
+
         if globalconfig["showintab"]:
             windows.ShowWindow(self.winid, windows.SW_SHOWNOACTIVATE)
         else:
             self.show()
             windows.SetForegroundWindow(self.winid)
         gobject.baseobject.commonstylebase.hide()
+
+        # 若窗口飞了，则将窗口拉回来
+        usescreen, mindis = findnearestscreen(self.geometry())
+        if mindis < 0:
+            return
+        self.setGeometry(calculate_centered_rect(usescreen.geometry(), self.size()))
 
     def aftershowdosomething(self):
 

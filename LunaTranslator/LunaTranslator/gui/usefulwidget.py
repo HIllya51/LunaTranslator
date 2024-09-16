@@ -308,6 +308,36 @@ def makerect(_):
     return [x, x + w, y, y + h]
 
 
+def findnearestscreen(rect: QRect):
+    # QScreen ,distance
+    # -1时，是有交集
+    # -2时，是被包围
+    # >=0时，是不在任何屏幕内
+    mindis = 9999999999
+    usescreen = QApplication.primaryScreen()
+    for screen in QApplication.screens():
+        rect1, rect2 = screen.geometry(), rect
+        if rect1.contains(rect2):
+            return screen, -2
+        if rect1.intersects(rect2):
+            r = rect1.intersected(rect2)
+            area = r.width() * r.width()
+            dis = -area
+        else:
+            distances = []
+            distances.append(abs(rect1.right() - rect2.left()))
+            distances.append(abs(rect1.left() - rect2.right()))
+            distances.append(abs(rect1.bottom() - rect2.top()))
+            distances.append(abs(rect1.top() - rect2.bottom()))
+            dis = min(distances)
+        if dis < mindis:
+            mindis = dis
+            usescreen = screen
+    if mindis < 0:
+        mindis = -1
+    return usescreen, mindis
+
+
 class saveposwindow(LMainWindow):
     def __init__(self, parent, poslist=None, flags=None) -> None:
         if flags:
@@ -317,17 +347,10 @@ class saveposwindow(LMainWindow):
 
         self.poslist = poslist
         if self.poslist:
-            contains = False
-            usescreen = QApplication.primaryScreen()
-            for screen in QApplication.screens():
-                if not screen.geometry().contains(QPoint(poslist[0], poslist[1])):
-                    continue
-                contains = True
-                usescreen = screen
-                break
+            usescreen, mindis = findnearestscreen(QRect(poslist[0], poslist[1], 1, 1))
             poslist[2] = max(0, min(poslist[2], usescreen.size().width()))
             poslist[3] = max(0, min(poslist[3], usescreen.size().height()))
-            if not contains:
+            if mindis != -2:
                 poslist[0] = min(
                     max(poslist[0], 0), usescreen.size().width() - poslist[2]
                 )
