@@ -18,9 +18,7 @@ if sys.argv[1] == "loadversion":
 mylinks = {
     "LunaHook": "https://github.com/HIllya51/LunaHook/releases/latest/download/Release_English.zip",
     "ocr_models": {
-        "ocr_models": {
-            "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
-        }
+        "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
     },
     "mecab.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip",
     "ocr.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/ocr.zip",
@@ -44,8 +42,6 @@ curlFile32 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win32-mingw.zip"
 curlFile64 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
 
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
-
-
 
 
 def createPluginDirs():
@@ -167,12 +163,12 @@ def downloadCurl():
     subprocess.run(f"curl -LO {curlFile64}")
     subprocess.run(f"7z x {curlFile32.split('/')[-1]}")
     subprocess.run(f"7z x {curlFile64.split('/')[-1]}")
-    outputDirName32 = curlFile32.split('/')[-1].replace(".zip", "")
+    outputDirName32 = curlFile32.split("/")[-1].replace(".zip", "")
     shutil.move(
         f"{outputDirName32}/bin/libcurl.dll",
         f"{rootDir}/LunaTranslator/files/plugins/DLL32",
     )
-    outputDirName64 = curlFile64.split('/')[-1].replace(".zip", "")
+    outputDirName64 = curlFile64.split("/")[-1].replace(".zip", "")
     shutil.move(
         f"{outputDirName64}/bin/libcurl-x64.dll",
         f"{rootDir}/LunaTranslator/files/plugins/DLL64",
