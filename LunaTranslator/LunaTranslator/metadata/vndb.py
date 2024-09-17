@@ -88,13 +88,41 @@ def getidbytitle_(proxy, title):
     return getvidbytitle_release(proxy, title)
 
 
+def getcharnamemapbyid(proxy, vid):
+    results = 100
+    while True:
+        js = safegetvndbjson(
+            proxy,
+            "character",
+            {
+                "filters": [
+                    "vn",
+                    "=",
+                    ["id", "=", vid],
+                ],
+                "fields": "name,original",
+                "results": results,
+            },
+        )
+        if not js["more"]:
+            break
+        results += 10
+    namemap = {}
+    try:
+        for r in js["results"]:
+            namemap[r["original"]] = r["name"]
+    except:
+        pass
+    return namemap
+
+
 def getinfosbyvid(proxy, vid):
     js = safegetvndbjson(
         proxy,
         "vn",
         {
             "filters": ["id", "=", vid],
-            "fields": "tags.rating,tags.name,title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original,va.character.name,va.character.original",
+            "fields": "tags.rating,tags.name,title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original",
         },
     )
     if js:
@@ -113,15 +141,8 @@ def getinfosbyvid(proxy, vid):
             dev.append(item["name"])
         tags = [_["name"] for _ in js["results"][0]["tags"]]
         rates = [_["rating"] for _ in js["results"][0]["tags"]]
-        namemap = {}
-        try:
-            for r in js["results"][0]["va"]:
-                r = r["character"]
-                namemap[r["original"]] = r["name"]
-        except:
-            pass
+
         return dict(
-            namemap=namemap,
             title=gettitlefromjs(js["results"][0]),
             img=js["results"][0]["image"]["url"],
             sc=imgs,
@@ -320,29 +341,6 @@ class searcher(common):
             return int(vid[1:])
         return None
 
-    def getcharsfromhtml(self, _vid):
-
-        headers = {
-            "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
-            "Referer": "https://vndb.org/",
-            "sec-ch-ua-mobile": "?0",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
-            "sec-ch-ua-platform": '"Windows"',
-        }
-
-        html = self.proxysession.get(
-            f"https://vndb.org/{_vid}/chars", headers=headers
-        ).text
-
-        find = re.findall(
-            '<tr><td colspan="2"><a href="/c(.*?)>(.*?)</a><small(.*?)>(.*?)</small>',
-            html,
-        )
-        namemap = {}
-        for _, en, _, ja in find:
-            namemap[ja] = en
-        return namemap
-
     def getreleasecvfromhtml(self, _vid):
 
         headers = {
@@ -364,8 +362,7 @@ class searcher(common):
     def searchfordata(self, _vid):
         vid = "v{}".format(_vid)
         infos = getinfosbyvid(self.proxy, vid)
-        namemap = self.getcharsfromhtml(vid)
-        namemap.update(infos["namemap"])
+        namemap = getcharnamemapbyid(self.proxy, vid)
 
         img = [
             self.dispatchdownloadtask(_)
