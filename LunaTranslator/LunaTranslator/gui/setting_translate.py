@@ -227,7 +227,10 @@ def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
     except:
         pass
     globalconfig["fanyi"][fanyi]["use"] = False
-
+    try:
+        gobject.baseobject.translators.pop(fanyi)
+    except:
+        pass
     layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
     idx = countnum.index(fanyi)
     line = idx // 3
