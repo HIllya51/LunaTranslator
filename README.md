@@ -6,7 +6,7 @@
     <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a> <img src="https://img.shields.io/badge/OS-windows 7--11 / wine-FF007C"/>
 </p>
 
-### [使用说明](https://docs.lunatranslator.org/#/zh/) [视频教程](https://space.bilibili.com/592120404/video) [QQ群](https://qm.qq.com/q/I5rr3uEpi2) [Discord](https://discord.com/invite/ErtDwVeAbB)
+### [使用说明](https://docs.lunatranslator.org/#/zh/) [视频教程](https://space.bilibili.com/592120404/video) [QQ群963119821](https://qm.qq.com/q/I5rr3uEpi2) [Discord](https://discord.com/invite/ErtDwVeAbB)
 
  
 ### 简体中文 | [Русский язык](README_ru.md) | [English](README_en.md) | [Other Language](otherlang.md) 

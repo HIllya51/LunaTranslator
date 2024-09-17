@@ -346,7 +346,6 @@ def opendirforgameuid(gameuid):
         os.startfile(f)
 
 
-@threader
 def startgame(gameuid):
     try:
         game = get_launchpath(gameuid)
@@ -368,7 +367,7 @@ def startgame(gameuid):
 
                     gobject.baseobject.starttextsource(use=_[mode], checked=True)
 
-            localeswitchedrun(gameuid)
+            threader(localeswitchedrun)(gameuid)
 
     except:
         print_exc()
