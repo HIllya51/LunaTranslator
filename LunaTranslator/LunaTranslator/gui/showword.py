@@ -408,7 +408,9 @@ class AnkiWindow(QWidget):
             self.recorders[ii] = loopbackrecorder()
             self.simulate_key(ii)
         else:
-            self.recorders[ii].end(callback=target.setText)
+            self.recorders[ii].end(
+                callback=functools.partial(self.settextsignal.emit, target)
+            )
 
     def createaddtab(self):
         self.recorders = {}
@@ -425,7 +427,10 @@ class AnkiWindow(QWidget):
 
         grabwindowbtn = QPushButton(qtawesome.icon("fa.camera"), "")
         grabwindowbtn.clicked.connect(
-            lambda: grabwindow(getimageformat(), self.editpath.setText)
+            lambda: grabwindow(
+                getimageformat(),
+                functools.partial(self.settextsignal.emit, self.editpath),
+            )
         )
 
         self.audiopath = QLineEdit()
