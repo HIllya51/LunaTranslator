@@ -11,11 +11,11 @@ from myutils.config import (
     findgameuidofpath,
 )
 from textsource.textsourcebase import basetext
-from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace, copytree
+from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace
 from myutils.hwnd import injectdll, test_injectable, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
-import subprocess, hashlib, requests, zipfile, shutil
+import subprocess, requests
 from myutils.proxy import getproxy
 
 
@@ -89,6 +89,7 @@ OutputCallback = CFUNCTYPE(c_bool, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
 ConsoleHandler = CFUNCTYPE(None, c_wchar_p)
 HookInsertHandler = CFUNCTYPE(None, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
+QueryHistoryCallback = CFUNCTYPE(None, c_wchar_p)
 
 
 def splitembedlines(trans: str):
@@ -216,12 +217,8 @@ class texthook(basetext):
         self.Luna_embedcallback = LunaHost.Luna_embedcallback
         self.Luna_embedcallback.argtypes = DWORD, LPCWSTR, LPCWSTR
 
-        self.Luna_FreePtr = LunaHost.Luna_FreePtr
-        self.Luna_FreePtr.argtypes = (c_void_p,)
-
         self.Luna_QueryThreadHistory = LunaHost.Luna_QueryThreadHistory
-        self.Luna_QueryThreadHistory.argtypes = (ThreadParam,)
-        self.Luna_QueryThreadHistory.restype = c_void_p
+        self.Luna_QueryThreadHistory.argtypes = (ThreadParam, c_void_p)
         procs = [
             ProcessEvent(self.onprocconnect),
             ProcessEvent(self.removeproc),
@@ -352,10 +349,9 @@ class texthook(basetext):
         self.injectproc(injecttimeout, pids)
 
     def QueryThreadHistory(self, tp):
-        ws = self.Luna_QueryThreadHistory(tp)
-        string = cast(ws, c_wchar_p).value
-        self.Luna_FreePtr(ws)
-        return string
+        ret = []
+        self.Luna_QueryThreadHistory(tp, QueryHistoryCallback(ret.append))
+        return ret[0]
 
     def removeproc(self, pid):
         self.pids.remove(pid)
