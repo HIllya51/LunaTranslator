@@ -34,7 +34,7 @@ class CachedQGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
             self.savey = self.parent().y()
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.drawPixmap(
-            -int(self.parent().x()),
+            -int(self.parent().x()) - self.parent().movedx,  # 阿拉伯语绘制偏移
             -self.parent().parent().parent().parent().y() - self.savey,
             self.shadow_pixmap,
         )
