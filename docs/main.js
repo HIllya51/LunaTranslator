@@ -83,6 +83,17 @@ window.$docsify = {
                 }
             })
         },
+        function (hook, vm) {
+            hook.doneEach(() => {
+                var elements = document.querySelectorAll('code');
+                elements.forEach(function (element) {
+                    if (!element.innerHTML.startsWith('https://')) return
+                    element.addEventListener('click', function () {
+                        copyToClipboard(element.innerText)
+                    });
+                });
+            })
+        },
     ]
 }
 
@@ -167,3 +178,40 @@ function tohomeurl() {
     var hostname = window.location.hostname;
     window.open(window.location.protocol + '//' + hostname.substring(5), '_blank');
 }
+
+function copyToClipboard(text) {
+    let url = window.location.href;
+    let thislang = getcurrlang(url)
+    const langs = {
+        zh: {
+            ok: '已复制到剪贴板！',
+            fail: '无法复制:',
+        },
+        en: {
+            ok: 'Copy to clipboard!',
+            fail: 'Cannot copy:',
+        },
+        ru: {
+            ok: 'Копировать в буфер обмена!',
+            fail: 'Невозможно скопировать:',
+        },
+    }
+
+    navigator.clipboard.writeText(text).then(function () {
+        showToast(langs[thislang].ok);
+    }, function (err) {
+        showToast(langs[thislang].fail + err);
+    });
+}
+showtoastsig = null
+function showToast(message) {
+    var toast = document.getElementById("clickcopytoast");
+    toast.style.display = "block";
+    toast.innerHTML = message;
+    let thissig = Math.random()
+    showtoastsig = thissig
+    setTimeout(function () {
+        if (showtoastsig == thissig)
+            toast.style.display = "none";
+    }, 3000);
+} 

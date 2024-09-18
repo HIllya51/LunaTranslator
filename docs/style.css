@@ -44,6 +44,22 @@
 
 }
 
+.clickcopy {
+    display: inline-block;
+}
+
+.clickcopytoast {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 16px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -162,7 +178,7 @@ main .markdown-section {
     cursor: pointer;
 }
 
-.centertable{
+.centertable {
     align-items: center;
     display: flex;
     justify-content: center;
