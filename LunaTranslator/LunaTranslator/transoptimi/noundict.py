@@ -90,4 +90,5 @@ class Process:
         mp1 = context["zhanweifu"]
         for key in mp1:
             res = res.replace(key, mp1[key])
+            res = res.replace(key.lower(), mp1[key])
         return res
