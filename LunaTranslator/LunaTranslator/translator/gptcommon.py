@@ -79,7 +79,7 @@ class gptcommon(basetrans):
                 try:
                     json_data = json.loads(response_data)
 
-                    msg = json_data["choices"][0]["delta"].get("content", None)
+                    msg = json_data["choices"][0].get("delta", {}).get("content", None)
                     if not msg:
                         continue
                     message += msg
