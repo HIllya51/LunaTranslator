@@ -147,7 +147,7 @@ class TableViewW(QTableView):
         needremoves = []
         for row in range(rows):
             if isinstance(col, int):
-                k = self.safetext(row, col)
+                k = self.getdata(row, col)
             elif callable(col):
                 k = col(row)
             if k == "" or k in dedump:
@@ -223,25 +223,21 @@ class TableViewW(QTableView):
         if isinstance(m, LStandardItemModel):
             m.updatelangtext()
 
-    def getindexwidgetdata(self, index: QModelIndex): ...
+    def getindexdata(self, index):
+        return self.model().itemFromIndex(index).text()
 
-    def setindexwidget(self, index, data):
+    def setindexdata(self, index, data):
         self.model().setItem(index.row(), index.column(), QStandardItem(data))
 
-    def safetext(self, row_or_index, col=None, mybewidget=False):
+    def getdata(self, row_or_index, col=None):
         if col is None:
             index: QModelIndex = row_or_index
         else:
             index = self.model().index(row_or_index, col)
-        if mybewidget:
-            w = self.indexWidget(index)
-            if w is not None:
-                return self.getindexwidgetdata(index)
-
         _1 = self.model().itemFromIndex(index)
-        _1 = _1.text() if _1 else ""
-
-        return _1
+        if not _1:
+            return ""
+        return self.getindexdata(index)
 
     def copytable(self) -> str:
         _data = []
@@ -250,7 +246,10 @@ class TableViewW(QTableView):
             if index.row() != lastrow:
                 _data.append([])
                 lastrow = index.row()
-            _data[-1].append(self.safetext(index, mybewidget=True))
+            data = self.getdata(index)
+            if not isinstance(data, str):
+                data = json.dumps(data, ensure_ascii=False)
+            _data[-1].append(data)
         output = io.StringIO()
 
         csv_writer = csv.writer(output, delimiter="\t")
@@ -269,7 +268,7 @@ class TableViewW(QTableView):
             my_list = list(csv_reader)
             csv_file.close()
             if len(my_list) == 1 and len(my_list[0]) == 1:
-                self.model().itemFromIndex(current).setText(my_list[0][0])
+                self.setindexdata(current, my_list[0][0])
                 return
             for j, line in enumerate(my_list):
                 self.insertplainrow(current.row() + 1)
@@ -279,12 +278,12 @@ class TableViewW(QTableView):
                     c = current.column() + i
                     if c >= self.model().columnCount():
                         continue
-                    self.setindexwidget(
+                    self.setindexdata(
                         self.model().index(current.row() + 1 + j, c), data
                     )
         except:
             print_exc()
-            self.model().itemFromIndex(current).setText(string)
+            self.setindexdata(current, string)
 
 
 def getQMessageBox(

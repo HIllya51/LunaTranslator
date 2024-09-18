@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, importlib
 from traceback import print_exc
-import qtawesome, os, gobject
+import qtawesome, os, gobject, json
 from myutils.config import globalconfig, _TR
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton_close
@@ -97,8 +97,8 @@ class noundictconfigdialog1(LDialog):
 
         button4.clicked.connect(clicked4)
         search.addWidget(button4)
-        table.getindexwidgetdata = self.__getindexwidgetdata
-        table.setindexwidget = self.__setindexwidget
+        table.getindexdata = self.__getindexwidgetdata
+        table.setindexdata = self.__setindexwidget
         self.table = table
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         table.insertplainrow = lambda row: self.newline(
@@ -134,30 +134,30 @@ class noundictconfigdialog1(LDialog):
             return self.table.indexWidgetX(index).isChecked()
         if index.column() == 1:
             return self.table.indexWidgetX(index).isChecked()
-        return self.table.safetext(index)
+        return self.model.itemFromIndex(index).text()
 
     def apply(self):
         def __check(row):
-            k = self.table.safetext(row, 2)
+            k = self.table.getdata(row, 2)
             if k == "":
                 return ""
-            switch = self.table.indexWidgetX(row, 0).isChecked()
-            es = self.table.indexWidgetX(row, 1).isChecked()
+            switch = self.table.getdata(row, 0)
+            es = self.table.getdata(row, 1)
             return (switch, es, k)
 
         self.table.dedumpmodel(__check)
         self.reflist.clear()
         for row in range(self.model.rowCount()):
-            k = self.table.safetext(row, 2)
-            v = self.table.safetext(row, 3)
-            switch = self.table.indexWidgetX(row, 0)
-            es = self.table.indexWidgetX(row, 1)
+            k = self.table.getdata(row, 2)
+            v = self.table.getdata(row, 3)
+            switch = self.table.getdata(row, 0)
+            es = self.table.getdata(row, 1)
             self.reflist.append(
                 {
                     "key": k,
                     "value": v,
-                    "escape": es.isChecked(),
-                    "regex": switch.isChecked(),
+                    "escape": es,
+                    "regex": switch,
                 }
             )
 
@@ -325,7 +325,7 @@ class yuyinzhidingsetting(LDialog):
 
         self.model = LStandardItemModel()
         self.model.setHorizontalHeaderLabels(["正则", "条件", "目标", "指定为"])
-        table = TableViewW(self, updown=True, copypaste=False)
+        table = TableViewW(self, updown=True, copypaste=True)
         table.setModel(self.model)
         table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         table.horizontalHeader().setSectionResizeMode(
@@ -337,7 +337,11 @@ class yuyinzhidingsetting(LDialog):
         table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.ResizeToContents
         )
-
+        table.getindexdata = self.__getindexwidgetdata
+        table.setindexdata = self.__setindexwidget
+        table.insertplainrow = lambda row: self.newline(
+            row, {"key": "", "condition": 0, "regex": False, "target": "skip"}
+        )
         self.table = table
         for row, item in enumerate(reflist):
             self.newline(row, item)
@@ -365,13 +369,7 @@ class yuyinzhidingsetting(LDialog):
 
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
 
-        def clicked1():
-            self.newline(
-                0, {"key": "", "condition": 0, "regex": False, "target": "skip"}
-            )
-
-        button.btn1clicked.connect(clicked1)
-
+        button.btn1clicked.connect(functools.partial(self.table.insertplainrow, 0))
         button.btn2clicked.connect(table.removeselectedrows)
         button.btn5clicked.connect(self.apply)
         button.btn3clicked.connect(functools.partial(table.moverank, -1))
@@ -384,21 +382,55 @@ class yuyinzhidingsetting(LDialog):
         self.resize(QSize(600, 400))
         self.show()
 
+    def __setindexwidget(self, index: QModelIndex, data):
+        if index.column() == 0:
+            data = {"regex": data.lower() == "true"}
+            self.table.setIndexWidget(index, getsimpleswitch(data, "regex"))
+        elif index.column() == 1:
+            try:
+                data = int(data)
+            except:
+                data = 0
+            data = {"condition": data}
+            self.table.setIndexWidget(
+                index, getsimplecombobox(["首尾", "包含"], data, "condition")
+            )
+        elif index.column() == 3:
+            if data in ["default", "skip"]:
+                pass
+            else:
+                try:
+                    data = json.loads(data)
+                except:
+                    data = "default"
+            self.table.setIndexWidget(index, self.createacombox({"target": data}))
+        else:
+            self.table.model().setItem(index.row(), index.column(), QStandardItem(data))
+
+    def __getindexwidgetdata(self, index: QModelIndex):
+        if index.column() == 0:
+            return self.table.indexWidgetX(index).isChecked()
+        if index.column() == 1:
+            return self.table.indexWidgetX(index).currentIndex()
+        if index.column() == 3:
+            return self.table.indexWidgetX(index).target
+        return self.model.itemFromIndex(index).text()
+
     def apply(self):
         self.table.dedumpmodel(2)
         rows = self.model.rowCount()
         self.reflist.clear()
         for row in range(rows):
-            k = self.table.safetext(row, 2)
-            switch = self.table.indexWidgetX(row, 0)
-            con = self.table.indexWidgetX(row, 1)
-            con2 = self.table.indexWidgetX(row, 3)
+            k = self.table.getdata(row, 2)
+            switch = self.table.getdata(row, 0)
+            con = self.table.getdata(row, 1)
+            con2 = self.table.getdata(row, 3)
             self.reflist.append(
                 {
                     "key": k,
-                    "condition": con.currentIndex(),
-                    "regex": switch.isChecked(),
-                    "target": con2.target,
+                    "condition": con,
+                    "regex": switch,
+                    "target": con2,
                 }
             )
 
@@ -735,14 +767,14 @@ class postconfigdialog_(LDialog):
 
         if isinstance(self.configdict, dict):
             for row in range(rows):
-                text = self.table.safetext(row, 0)
-                self.configdict[text] = self.table.safetext(row, 1)
+                text = self.table.getdata(row, 0)
+                self.configdict[text] = self.table.getdata(row, 1)
         elif isinstance(self.configdict, list):
             for row in range(rows):
-                text = self.table.safetext(row, 0)
+                text = self.table.getdata(row, 0)
                 item = {}
                 for _i, key in enumerate(self.dictkeys):
-                    item[key] = self.table.safetext(row, _i)
+                    item[key] = self.table.getdata(row, _i)
                 self.configdict.append(item)
         else:
             raise

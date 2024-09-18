@@ -113,8 +113,8 @@ class triggereditor(LDialog):
         rows = self.hcmodel.rowCount()
         self.list.clear()
         for row in range(rows):
-            i0 = self.hctable.indexWidgetX(row, 0).currentIndex()
-            i1 = self.hctable.indexWidgetX(row, 1).currentIndex()
+            i0 = self.hctable.getdata(row, 0)
+            i1 = self.hctable.getdata(row, 1)
             self.list.append({"vkey": self.vkeys[i0], "event": i1})
 
     def click1(self):
