@@ -136,7 +136,7 @@ class Process:
             res = reg.sub(self.vnrshareddict[context[key]]["text"], res)
         for key, value in self.sorted_vnrshareddict_post:
             if key in res:
-                res = re.sub(key, value["text"], res, flags=re.IGNORECASE)
+                res = re.sub(key, value["text"], re.escape(res), flags=re.IGNORECASE)
         return res
 
     @staticmethod

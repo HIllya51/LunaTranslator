@@ -89,5 +89,5 @@ class Process:
     def process_after(self, res: str, context):
         mp1 = context["zhanweifu"]
         for key in mp1:
-            res = re.sub(key, mp1[key], res, flags=re.IGNORECASE)
+            res = re.sub(key, re.escape(mp1[key]), res, flags=re.IGNORECASE)
         return res
