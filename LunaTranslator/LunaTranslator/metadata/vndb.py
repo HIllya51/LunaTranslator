@@ -144,7 +144,7 @@ def getinfosbyvid(proxy, vid):
 
         return dict(
             title=gettitlefromjs(js["results"][0]),
-            img=js["results"][0]["image"]["url"],
+            img=js["results"][0]["image"]["url"] if js["results"][0]["image"] else None,
             sc=imgs,
             dev=dev,
             tags=sorted(tags, key=lambda x: -rates[tags.index(x)]),

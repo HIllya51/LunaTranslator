@@ -130,7 +130,7 @@ class common:
             ff.write(_content)
 
     def dispatchdownloadtask(self, url):
-        if url is None:
+        if not url:
             return None
         __routine = f"cache/metadata/{self.typename}"
         if self.typename == "vndb":

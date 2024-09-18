@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, platform, functools, uuid, json, math
+import os, platform, functools, uuid, json, math, csv, io
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import webview_native_handle_kind_t, Webview, declare_library_path
@@ -87,11 +87,16 @@ class FocusDoubleSpin(QDoubleSpinBox):
 
 
 class TableViewW(QTableView):
-    def __init__(self, *argc) -> None:
+    def __init__(self, *argc, updown=False, copypaste=False) -> None:
         super().__init__(*argc)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ContiguousSelection)
+        self.copypaste = copypaste
+        self.updown = updown
+        if updown or copypaste:
+            self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+            self.customContextMenuRequested.connect(self.showmenu)
 
-    def showmenu(self, info, pos):
+    def showmenu(self, pos):
         r = self.currentIndex().row()
         if r < 0:
             return
@@ -100,9 +105,10 @@ class TableViewW(QTableView):
         down = LAction("下移")
         copy = LAction("复制")
         paste = LAction("粘贴")
-        menu.addAction(up)
-        menu.addAction(down)
-        if info.get("copypaste", True):
+        if self.updown:
+            menu.addAction(up)
+            menu.addAction(down)
+        if self.copypaste:
             menu.addAction(copy)
             menu.addAction(paste)
         action = menu.exec(self.cursor().pos())
@@ -115,11 +121,19 @@ class TableViewW(QTableView):
         elif action == paste:
             self.pastetable()
 
-    def setsimplemenu(self, info=None):
-        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        if info is None:
-            info = {}
-        self.customContextMenuRequested.connect(functools.partial(self.showmenu, info))
+    def keyPressEvent(self, e):
+        if self.copypaste:
+            if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                if e.key() == Qt.Key.Key_C:
+                    self.copytable()
+                elif e.key() == Qt.Key.Key_V:
+                    self.pastetable()
+                else:
+                    super().keyPressEvent(e)
+            else:
+                super().keyPressEvent(e)
+        else:
+            super().keyPressEvent(e)
 
     def insertplainrow(self, row=0):
         self.model().insertRow(
@@ -211,7 +225,8 @@ class TableViewW(QTableView):
 
     def getindexwidgetdata(self, index: QModelIndex): ...
 
-    def setindexwidget(self, index, data): ...
+    def setindexwidget(self, index, data):
+        self.model().setItem(index.row(), index.column(), QStandardItem(data))
 
     def safetext(self, row_or_index, col=None, mybewidget=False):
         if col is None:
@@ -229,50 +244,47 @@ class TableViewW(QTableView):
         return _1
 
     def copytable(self) -> str:
-        if len(self.selectedIndexes()) <= 1:
-            return winsharedutils.clipboard_set(self.safetext(self.currentIndex()))
         _data = []
-        minr = minc = 999999999
-        maxr = maxc = 0
+        lastrow = -1
         for index in self.selectedIndexes():
-            minr = min(minr, index.row())
-            minc = min(minc, index.column())
-            maxr = max(maxr, index.row())
-            maxc = max(maxc, index.column())
-            _data.append(self.safetext(index, mybewidget=True))
-        data = {
-            "data": _data,
-            "row": maxr - minr + 1,
-            "col": maxc - minc + 1,
-        }
-        winsharedutils.clipboard_set(json.dumps(data, ensure_ascii=False))
+            if index.row() != lastrow:
+                _data.append([])
+                lastrow = index.row()
+            _data[-1].append(self.safetext(index, mybewidget=True))
+        output = io.StringIO()
+
+        csv_writer = csv.writer(output, delimiter="\t")
+        for row in _data:
+            csv_writer.writerow(row)
+        csv_str = output.getvalue()
+        output.close()
+        winsharedutils.clipboard_set(csv_str)
 
     def pastetable(self):
         string = winsharedutils.clipboard_get()
+        current = self.currentIndex()
         try:
-            js = json.loads(string)
-            current = self.currentIndex()
-            for _ in range(js["row"]):
+            csv_file = io.StringIO(string)
+            csv_reader = csv.reader(csv_file, delimiter="\t")
+            my_list = list(csv_reader)
+            csv_file.close()
+            if len(my_list) == 1 and len(my_list[0]) == 1:
+                self.model().itemFromIndex(current).setText(my_list[0][0])
+                return
+            for j, line in enumerate(my_list):
                 self.insertplainrow(current.row() + 1)
-            for i, data in enumerate(js.get("data", [])):
-                c = current.column() + i % js["col"]
-                if c >= self.model().columnCount():
-                    continue
-                if isinstance(data, str):
-                    self.model().setItem(
-                        current.row() + 1 + i // js["col"], c, QStandardItem(data)
-                    )
-                else:
-                    self.model().setItem(
-                        current.row() + 1 + i // js["col"], c, QStandardItem("")
-                    )
+            for j, line in enumerate(my_list):
+                for i in range(len(line)):
+                    data = line[i]
+                    c = current.column() + i
+                    if c >= self.model().columnCount():
+                        continue
                     self.setindexwidget(
-                        self.model().index(current.row() + 1 + i // js["col"], c), data
+                        self.model().index(current.row() + 1 + j, c), data
                     )
-
         except:
             print_exc()
-            self.model().itemFromIndex(self.currentIndex()).setText(string)
+            self.model().itemFromIndex(current).setText(string)
 
 
 def getQMessageBox(

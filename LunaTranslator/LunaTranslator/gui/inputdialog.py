@@ -62,7 +62,7 @@ class noundictconfigdialog1(LDialog):
 
         self.model = LStandardItemModel()
         self.model.setHorizontalHeaderLabels(label)
-        table = TableViewW(self)
+        table = TableViewW(self, copypaste=True, updown=True)
         table.setModel(self.model)
         table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
         table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
@@ -72,7 +72,6 @@ class noundictconfigdialog1(LDialog):
         table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.ResizeToContents
         )
-        table.setsimplemenu()
 
         self.table = table
         for row, item in enumerate(reflist):
@@ -122,19 +121,24 @@ class noundictconfigdialog1(LDialog):
 
     def __setindexwidget(self, index: QModelIndex, data):
         if index.column() == 0:
+            data = {"regex": data.lower() == "true"}
             self.table.setIndexWidget(index, getsimpleswitch(data, "regex"))
-        if index.column() == 1:
+        elif index.column() == 1:
+            data = {"escape": data.lower() == "true"}
             self.table.setIndexWidget(index, getsimpleswitch(data, "escape"))
+        else:
+            self.table.model().setItem(index.row(), index.column(), QStandardItem(data))
 
     def __getindexwidgetdata(self, index: QModelIndex):
         if index.column() == 0:
-            return {"regex": self.table.indexWidgetX(index).isChecked()}
+            return self.table.indexWidgetX(index).isChecked()
         if index.column() == 1:
-            return {"escape": self.table.indexWidgetX(index).isChecked()}
+            return self.table.indexWidgetX(index).isChecked()
+        return self.table.safetext(index)
 
     def apply(self):
         def __check(row):
-            k = self.model.item(row, 2).text()
+            k = self.table.safetext(row, 2)
             if k == "":
                 return ""
             switch = self.table.indexWidgetX(row, 0).isChecked()
@@ -144,8 +148,8 @@ class noundictconfigdialog1(LDialog):
         self.table.dedumpmodel(__check)
         self.reflist.clear()
         for row in range(self.model.rowCount()):
-            k = self.model.item(row, 2).text()
-            v = self.model.item(row, 3).text()
+            k = self.table.safetext(row, 2)
+            v = self.table.safetext(row, 3)
             switch = self.table.indexWidgetX(row, 0)
             es = self.table.indexWidgetX(row, 1)
             self.reflist.append(
@@ -321,7 +325,7 @@ class yuyinzhidingsetting(LDialog):
 
         self.model = LStandardItemModel()
         self.model.setHorizontalHeaderLabels(["正则", "条件", "目标", "指定为"])
-        table = TableViewW(self)
+        table = TableViewW(self, updown=True, copypaste=False)
         table.setModel(self.model)
         table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         table.horizontalHeader().setSectionResizeMode(
@@ -333,7 +337,6 @@ class yuyinzhidingsetting(LDialog):
         table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.ResizeToContents
         )
-        table.setsimplemenu({"copypaste": False})
 
         self.table = table
         for row, item in enumerate(reflist):
@@ -386,7 +389,7 @@ class yuyinzhidingsetting(LDialog):
         rows = self.model.rowCount()
         self.reflist.clear()
         for row in range(rows):
-            k = self.model.item(row, 2).text()
+            k = self.table.safetext(row, 2)
             switch = self.table.indexWidgetX(row, 0)
             con = self.table.indexWidgetX(row, 1)
             con2 = self.table.indexWidgetX(row, 3)
@@ -732,14 +735,14 @@ class postconfigdialog_(LDialog):
 
         if isinstance(self.configdict, dict):
             for row in range(rows):
-                text = self.model.item(row, 0).text()
-                self.configdict[text] = self.model.item(row, 1).text()
+                text = self.table.safetext(row, 0)
+                self.configdict[text] = self.table.safetext(row, 1)
         elif isinstance(self.configdict, list):
             for row in range(rows):
-                text = self.model.item(row, 0).text()
+                text = self.table.safetext(row, 0)
                 item = {}
                 for _i, key in enumerate(self.dictkeys):
-                    item[key] = self.model.item(row, _i).text()
+                    item[key] = self.table.safetext(row, _i)
                 self.configdict.append(item)
         else:
             raise
@@ -769,11 +772,10 @@ class postconfigdialog_(LDialog):
         else:
             raise
         model.setHorizontalHeaderLabels(headers)
-        table = TableViewW(self)
+        table = TableViewW(self, copypaste=True, updown=True)
         table.setModel(model)
         table.setWordWrap(False)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        table.setsimplemenu()
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         self.table = table
         button.btn1clicked.connect(table.insertplainrow)
