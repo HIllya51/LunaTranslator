@@ -245,7 +245,7 @@ class TableViewW(QTableView):
             "row": maxr - minr + 1,
             "col": maxc - minc + 1,
         }
-        winsharedutils.clipboard_set(json.dumps(data))
+        winsharedutils.clipboard_set(json.dumps(data, ensure_ascii=False))
 
     def pastetable(self):
         string = winsharedutils.clipboard_get()

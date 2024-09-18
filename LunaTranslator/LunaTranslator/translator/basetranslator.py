@@ -282,6 +282,12 @@ class basetrans(commonbase):
             template = "You are a translator. Please help me translate the following {srclang} text into {tgtlang}, and you should only tell me the translation."
         return fmt.format(template, srclang=self.srclang, tgtlang=self.tgtlang)
 
+    def _gptlike_create_prefill(self, usekey, tempk):
+        user_prompt = (
+            self.config.get(tempk, "") if self.config.get(usekey, False) else ""
+        )
+        return user_prompt
+
     def reinitandtrans(self, contentsolved, is_auto_run):
         if self.needreinit or self.initok == False:
             self.needreinit = False

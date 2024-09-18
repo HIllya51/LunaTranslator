@@ -1,15 +1,25 @@
-# Getting Started
+### Download
 
+Download 64-bit version <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> Download 32-bit version <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a> or download from <a target="_blank" href="https://github.com/HIllya51/LunaTranslator/releases" target="_blank">releases</a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank">LunaTranslator.zip</a> or <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank">LunaTranslator_x86.zip</a>, and unzip to any directory.
 
+#### Note
 
-## How to Download
+Make sure not to download the source code by mistake!
 
-1. Go to [the LunaTranslator releases page](https://github.com/HIllya51/LunaTranslator/releases)
-2. In the "Assets" section of the latest release, find and download the "LunaTranslator.zip" file
-3. Extract the contents of the ZIP file to any directory on your computer.
-![img](https://image.lunatranslator.org/zh/download.jpg)
+![img](https://image.lunatranslator.org/zh/down.png)
 
-## How to Run
-There are two ways to launch LunaTranslator:
-1. **LunaTranslator.exe** - This will launch the application with administrator privileges. Some games require admin rights for proper hooking
-2. **LunaTranslator_no_Admin.exe** - This will launch the application in normal mode without administrator privileges
+### Launch
+
+After unzipping, you can see the following files. Use **LunaTranslator.exe** to start.
+
+![img](https://image.lunatranslator.org/zh/startup.png)
+
+**LunaTranslator.exe** will start in normal mode.
+
+**LunaTranslator_admin.exe** will start with administrator privileges. Some games require administrator privileges to HOOK, so use this only when necessary; otherwise, start in normal mode.
+
+**LunaTranslator_debug.exe** will display the command line and show the log during runtime. If you encounter a bug, please run this program and attach the log.
+
+#### Note
+
+Sometimes it may be flagged by antivirus software. Please add it to the trusted list and re-download and unzip.

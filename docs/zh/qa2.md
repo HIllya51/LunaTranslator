@@ -18,16 +18,15 @@
 
 填入数字，重启 anki
 
-<hr>
+---
 
 在 luna 这边，点击查词后。
-
 
 
 ![img](https://image.lunatranslator.org/zh/anki/336451202-a2dd54c0-e4ee-4c27-9183-8b4ab05c4819.png)
 
 ![img](https://image.lunatranslator.org/zh/anki/336451442-7887d600-8c44-4256-9020-1d85e0f6184a.png)
 
-<hr>
+---
 
 Reference: [asukaminato0721](https://github.com/HIllya51/LunaTranslator/issues/796)

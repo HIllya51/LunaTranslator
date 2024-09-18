@@ -21,7 +21,7 @@
 在宿主机中运行LunaTranslator，将文本输入从`HOOK`切换到`剪贴板`
 ![img](https://image.lunatranslator.org/zh/playonxp/host.png)
 
-<hr>
+---
 
 最终效果如下：
 ![img](https://image.lunatranslator.org/zh/playonxp/effect.png)

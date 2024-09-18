@@ -46,7 +46,9 @@ class TS(basetrans):
             message.append(self.context[i * 2])
             message.append(self.context[i * 2 + 1])
         message.append({"role": "user", "content": query})
-
+        prefill = self._gptlike_create_prefill("prefill_use", "prefill")
+        if prefill:
+            message.append({"role": "assistant", "content": prefill})
         headers = {
             "anthropic-version": "2023-06-01",
             "accept": "application/json",

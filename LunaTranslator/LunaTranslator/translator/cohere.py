@@ -75,7 +75,9 @@ class TS(basetrans):
             )
             message.append(self.context[i * 2])
             message.append(self.context[i * 2 + 1])
-
+        prefill = self._gptlike_create_prefill("prefill_use", "prefill")
+        if prefill:
+            message.append({"role": "CHATBOT", "message": prefill})
         headers = {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
         usingstream = self.config["流式输出"]
         data = dict(

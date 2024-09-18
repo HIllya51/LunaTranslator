@@ -68,8 +68,6 @@
 <details>
 <summary>点击查看</summary>
 
-* [Artikash/Textractor](https://github.com/Artikash/Textractor)
-
 * [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
 
 * [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)

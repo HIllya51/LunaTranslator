@@ -1,4 +1,4 @@
-from translator.gptcommon import gptcommon
+from translator.gptcommon import gptcommon, list_models
 
 
 class TS(gptcommon):

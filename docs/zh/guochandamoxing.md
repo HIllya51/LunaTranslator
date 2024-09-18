@@ -49,6 +49,14 @@
 
 **model** https://deepbricks.ai/pricing
 
+### **Mistral AI**
+
+**API接口地址** `https://api.mistral.ai/v1/chat/completions`
+
+**API Key** https://console.mistral.ai/api-keys/
+
+**model** https://docs.mistral.ai/getting-started/models/
+
 ### **Azure**
 
 https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions
@@ -168,6 +176,8 @@ https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions
 <!-- tabs:start -->
 
 ### **腾讯混元大模型**
+
+**SecretId** & **SecretKey** https://console.cloud.tencent.com/cam/capi
 
 **model** https://cloud.tencent.com/document/product/1729/97731
 

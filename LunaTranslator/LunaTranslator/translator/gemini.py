@@ -62,6 +62,9 @@ class TS(basetrans):
             message.append(self.context[i * 2 + 1])
 
         message.append({"role": "user", "parts": [{"text": query}]})
+        prefill = self._gptlike_create_prefill("prefill_use", "prefill")
+        if prefill:
+            message.append({"role": "model", "parts": [{"text": prefill}]})
         contents = dict(contents=message)
         usingstream = self.config["usingstream"]
         payload = {**contents, **safety, **sys_message, **gen_config}

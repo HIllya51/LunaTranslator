@@ -1,101 +1,65 @@
-# LunaTranslator 
-  
+# LunaTranslator
+
 <p align="left">
-    <img src="https://img.shields.io/github/license/HIllya51/LunaTranslator">
-    <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
-    <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a> <img src="https://img.shields.io/badge/OS-windows 7--11 / wine-FF007C"/>
+    <img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"> 
+    <a href="https://github.com/HIllya51/LunaTranslator/releases"><img  src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a> 
+    <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip"  target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a>  <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip"  target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>  <img src="https://img.shields.io/badge/OS-windows  7--11 / wine-FF0000"/>
 </p>
- 
-### [简体中文](README.md) | [Русский язык](README_ru.md) |  English | [Other Languages](otherlang.md) 
 
-> **A galgame translator**
+### [User Manual](https://docs.lunatranslator.org/#/zh/)  [Video Tutorial](https://space.bilibili.com/592120404/video)  <a href="https://qm.qq.com/q/I5rr3uEpi2"><img  src="https://img.shields.io/badge/QQ Group-963119821-FF007C"></a>  <a href="https://discord.com/invite/ErtDwVeAbB"><img  src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C"></a> 
 
+### Simplified Chinese | [Russian](README_ru.md) | [English](README_en.md) | [Other Language](otherlang.md) 
 
-### [Tutorial](https://docs.lunatranslator.org/#/en/) [Vedio](https://space.bilibili.com/592120404/video) [Discord](https://discord.com/invite/ErtDwVeAbB)
+> **A galgame translation tool**
 
+## Feature Support
 
-## Features
+#### Text Input
 
-#### Text sources
+- **HOOK** Supports obtaining text using HOOK methods, supports the use of special codes, supports automatic saving of games and HOOKs, automatic loading of HOOKs, etc. For some engines, it also supports embedded translation. For games that are not supported or not well supported, please [submit feedback](https://lunatranslator.org/Resource/game_support) 
 
-&emsp;&emsp;**Clipboard** Support reading text from the clipboard for translation
+- **OCR** Supports **offline OCR** (in addition to the built-in OCR engine, it also supports WindowsOCR, Tessearact5, manga-ocr, WeChat/QQ OCR) and **online OCR** (Baidu OCR/picture translation, Youdao OCR/picture translation, Youdao OCR/picture translation, Lark OCR, iFlytek OCR, Google Lens, Google Cloud Vision, docsumo, ocrspace). It can also use **multimodal large models** for OCR (supports GeminiOCR, ChatGPT compatible interfaces)
 
-&emsp;&emsp;**OCR** Support offline OCR (deployed), WindowsOCR, Baidu OCR, Youdao OCR, ocrspace, docsumo, and binding to game window to avoid overlap.
+- **Clipboard** Supports obtaining text from the clipboard for translation
 
-&emsp;&emsp;**HOOK** Supports text extraction via hooking, Hook codes (H-codes), automatic game and hook saving, and auto-loading hooks. Some engines also support embedded translation
+- **Text Output** Extracted text can be output to the clipboard, Websocket, for use by other programs.
 
-#### Translators
+#### Translator
 
-Support almost all translation engines you can think of, including:
+Supports almost all conceivable translation engines, including:
 
-&emsp;&emsp;**Offline Translation**: J-Beijing 7, Kingsoft FastAIT, YiDianTong, Sakura, TGW, Sugoi
+- **Free Online Translation** Supports Baidu, Bing, Google, Alibaba, Youdao, Caiyun, Sogou, iFlytek, Tencent, ByteDance, Volcano, DeepL/DeepLX, papago, yandex, lingva, reverso, TranslateCom, ModernMT
 
-&emsp;&emsp;**Free Online Translation**: Baidu, Bing, Google, Ali, Youdao, Caiyun, Sogou, DeepL, Kingsoft, iFlytek, Tencent, ByteDance, Volcano, Papago, Yeekit, and more
+- **Registered Online Translation** Supports user-registered **traditional translation** (Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, DeepL, yandex, google, ibm, Azure, Lark) and **large model translation** (ChatGPT compatible interface, claude, cohere, gemini, Baidu Qianfan, Tencent Hunyuan)
 
-&emsp;&emsp;**API Online Translation**: Baidu, Tencent, Youdao, Niutrans, Caiyun, Volcano, DeepL, Yandex, Google, IBM, Feishu, ChatGPT, Azure, Cohere, Claude, Gemini, and more (requires user registration)
+- **Offline Translation** Supports **traditional translation** (J Beijing 7, Kingsoft, Yidiantong, ezTrans, Sugoi, MT5) and offline deployed **large model translation** (ChatGPT compatible interface, Sakura large model)
 
-&emsp;&emsp;**Chrome Debug Translation**: DeepL, Yandex, Youdao, Baidu, Tencent, Bing, Caiyun, Niutrans, Ali, Google, OpenAI
+- **Chrome Debug Translation** Supports **traditional translation** (deepl, yandex, youdao, baidu, tencent, bing, caiyun, xiaoniu, alibaba, google) and **large model translation** (chatgpt, deepseek, moonshot, qianwen, chatglm, Theb.ai, DuckDuckGo)
 
-&emsp;&emsp;**Pre-translation** Support reading human translation and aggregating machine pre-translation files
+- **Pre-translation** Supports reading pre-translated files, supports translation caching
 
-&emsp;&emsp;**Custom Translation Extension** Support the use of Python language to extend other translation interfaces I don't know
+- **Support for Custom Translation Extensions** Supports extending other translation interfaces using the Python language
 
+#### Text-to-Speech
 
- 
+- **Offline TTS** Supports WindowsTTS, VoiceRoid2/VoiceRoid+, NeoSpeech, VOICEVOX, VITS
 
+- **Online TTS** Supports Volcano TTS, Youdao TTS, Edge TTS, Google TTS
 
-#### Speech Synthesis
+#### Translation Optimization
 
-&emsp;&emsp;**Offline TTS**: Windows TTS, VoiceRoid2, VoiceRoid+, NeoSpeech, VOICEVOX, VITS, and more
+- **Text Processing** Supports more than ten common text processing methods, and complex text processing can be achieved through the adjustment of combinations and execution order
 
-&emsp;&emsp;**Online TTS**: Volcano TTS, Youdao TTS, Edge TTS, Google TTS, and more
+- **Translation Optimization** Supports the use of custom proper noun translation, supports the import of VNR shared dictionaries
 
-#### Translation optimization
+#### Japanese Learning
 
-&emsp;&emsp;**Text Processing**: Supports over a dozen common text processing methods, from simple processing such as text de-duplication and filtering line breaks, to complex regular expression replacement and even writing your own custom Python preprocessor 
+- **Japanese Word Segmentation and Kana Display** Supports word segmentation and kana display using Mecab, etc.
 
-&emsp;&emsp;**Translation Optimization**: Supports custom proper noun translations and importing VNR shared dictionaries
+- **Vocabulary Lookup** Supports **offline dictionaries** (MDICT, Shougakukan, Lingoes Dictionary, EDICT/EDICT2) and **online dictionaries** (Youdao, weblio, Goo, Moji, jisho) for word lookup
 
-#### Japanese learning
+- **Anki** Supports one-click addition of words to Anki
 
-&emsp;&emsp;**Japanese Word Segmentation and Furigana Display** Supports MeCab and other tokenizers for word segmentation and furigana display to help you read
-
-&emsp;&emsp;**Dictionary Lookup**: Supports MDICT, Shogakukan, Lingoes, EDICT, Youdao, Weblio, Goo, Moji, Jisho, and other online and offline dictionaries
-
-&emsp;&emsp;**Anki Integration**: Supports one-click addition of words to Anki
-
-
-## References
-
-<details>
-<summary>Click to view</summary>
-
-* [Artikash/Textractor](https://github.com/Artikash/Textractor)
-
-* [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
-
-* [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
-
-* [UlionTse/translators](https://github.com/UlionTse/translators)
-
-* [Blinue/Magpie](https://github.com/Blinue/Magpie)
-
-* [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
-
-* [xupefei/Locale-Emulator](https://github.com/xupefei/Locale-Emulator)
-
-* [InWILL/Locale_Remulator](https://github.com/InWILL/Locale_Remulator)
-
-* [zxyacb/ntlea](https://github.com/zxyacb/ntlea)
-
-* [@KirpichKrasniy](https://github.com/KirpichKrasniy)
-
-</details>
-
-
- 
 ## Support author
  
 If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
-
-<img src='.\\LunaTranslator\\files\\zan.jpg' style="height: 400px !important;">

@@ -333,9 +333,19 @@
 			"use_user_user_prompt": false,
 			"other_args": "{}",
 			"use_other_args": false,
-			"s": ""
+			"s": "",
+			"s2": "",
+			"prefill": "",
+			"prefill_use": false
 		},
 		"argstype": {
+			"prefill": {
+				"refswitch": "prefill_use",
+				"rank": 5.11
+			},
+			"prefill_use": {
+				"type": "switch"
+			},
 			"other_args": {
 				"type": "multiline",
 				"refswitch": "use_other_args",
@@ -349,6 +359,10 @@
 			"s": {
 				"type": "split",
 				"rank": 2.5
+			},
+			"s2": {
+				"type": "split",
+				"rank": 5.12
 			},
 			"BASE_URL": {
 				"rank": 0
@@ -415,9 +429,19 @@
 			"use_user_user_prompt": false,
 			"other_args": "{}",
 			"use_other_args": false,
-			"s": ""
+			"s": "",
+			"s2": "",
+			"prefill": "",
+			"prefill_use": false
 		},
 		"argstype": {
+			"prefill": {
+				"refswitch": "prefill_use",
+				"rank": 5.11
+			},
+			"prefill_use": {
+				"type": "switch"
+			},
 			"other_args": {
 				"type": "multiline",
 				"refswitch": "use_other_args",
@@ -431,6 +455,10 @@
 			"s": {
 				"type": "split",
 				"rank": 2.5
+			},
+			"s2": {
+				"type": "split",
+				"rank": 5.12
 			},
 			"API接口地址": {
 				"rank": 0
@@ -606,9 +634,23 @@
 			"user_user_prompt": "{sentence}",
 			"other_args": "{}",
 			"use_other_args": false,
-			"s": ""
+			"s": "",
+			"s2":"",
+			"prefill": "",
+			"prefill_use": false
 		},
 		"argstype": {
+			"prefill": {
+				"refswitch": "prefill_use",
+				"rank": 5.11
+			},
+			"prefill_use": {
+				"type": "switch"
+			},
+			"s2": {
+				"type": "split",
+				"rank": 5.12
+			},
 			"other_args": {
 				"type": "multiline",
 				"refswitch": "use_other_args",
@@ -1001,9 +1043,19 @@
 			"other_args": "{}",
 			"use_other_args": false,
 			"s": "",
-			"usingstream": true
+			"s2":"",
+			"usingstream": true,
+			"prefill": "",
+			"prefill_use": false
 		},
 		"argstype": {
+			"prefill": {
+				"refswitch": "prefill_use",
+				"rank": 5.11
+			},
+			"prefill_use": {
+				"type": "switch"
+			},
 			"other_args": {
 				"type": "multiline",
 				"refswitch": "use_other_args",
@@ -1022,6 +1074,10 @@
 			"s": {
 				"type": "split",
 				"rank": 3.5
+			},
+			"s2": {
+				"type": "split",
+				"rank": 5.12
 			},
 			"custom_prompt": {
 				"name": "自定义_system prompt",
@@ -1223,8 +1279,9 @@
 	"chatgpt-offline": {
 		"args": {
 			"model": "gpt-3.5-turbo",
+			"modellistcache": [],
 			"附带上下文个数": 0,
-			"API接口地址": "http://127.0.0.1:5000/",
+			"API接口地址": "https://api.openai.com",
 			"SECRET_KEY": "",
 			"使用自定义promt": false,
 			"自定义promt": "",
@@ -1237,9 +1294,19 @@
 			"use_user_user_prompt": false,
 			"other_args": "{}",
 			"use_other_args": false,
-			"s": ""
+			"s": "",
+			"s2": "",
+			"prefill": "",
+			"prefill_use": false
 		},
 		"argstype": {
+			"prefill": {
+				"refswitch": "prefill_use",
+				"rank": 5.11
+			},
+			"prefill_use": {
+				"type": "switch"
+			},
 			"other_args": {
 				"type": "multiline",
 				"refswitch": "use_other_args",
@@ -1250,19 +1317,29 @@
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1
 			},
-			"SECRET_KEY": {
-				"rank": 3,
-				"name": "API Key"
-			},
 			"s": {
 				"type": "split",
-				"rank": 1.5
+				"rank": 2.5
+			},
+			"s2": {
+				"type": "split",
+				"rank": 5.12
 			},
 			"API接口地址": {
 				"rank": 0
 			},
+			"SECRET_KEY": {
+				"rank": 6,
+				"name": "API Key"
+			},
 			"model": {
-				"rank": 1
+				"rank": 1,
+				"type": "lineedit_or_combo",
+				"list_function": "list_models",
+				"list_cache": "modellistcache"
+			},
+			"modellistcache": {
+				"type": "list_cache"
 			},
 			"top_p": {
 				"type": "spin",
@@ -1284,7 +1361,7 @@
 			},
 			"流式输出": {
 				"type": "switch",
-				"rank": 2
+				"rank": 3
 			},
 			"自定义promt": {
 				"type": "multiline",

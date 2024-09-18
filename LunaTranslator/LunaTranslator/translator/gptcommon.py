@@ -7,8 +7,11 @@ from myutils.proxy import getproxy
 
 def list_models(typename, regist):
     js = requests.get(
-        createurl(regist["API接口地址"]().strip())[: -len("/chat/completions")] + "/models",
-        headers={"Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()},
+        createurl(regist["API接口地址"]().strip())[: -len("/chat/completions")]
+        + "/models",
+        headers={
+            "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()
+        },
         proxies=getproxy(("fanyi", typename)),
         timeout=10,
     ).json()
@@ -39,9 +42,10 @@ class gptcommon(basetrans):
             # stop=None,
             top_p=self.config["top_p"],
             temperature=temperature,
-            frequency_penalty=self.config["frequency_penalty"],
             stream=self.config["流式输出"],
         )
+        if "api.mistral.ai" not in self.config["API接口地址"]:
+            data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         try:
             if self.config["use_other_args"]:
                 extra = json.loads(self.config["other_args"])
@@ -74,18 +78,17 @@ class gptcommon(basetrans):
                     break
                 try:
                     json_data = json.loads(response_data)
-                    rs = json_data["choices"][0].get("finish_reason")
-                    if rs and rs != "null":
-                        break
+
                     msg = json_data["choices"][0]["delta"].get("content", None)
                     if not msg:
                         continue
                     message += msg
-
+                    yield msg
+                    rs = json_data["choices"][0].get("finish_reason")
+                    if rs and rs != "null":
+                        break
                 except:
-                    print_exc()
                     raise Exception(response_data)
-                yield msg
         else:
             try:
 
@@ -117,6 +120,9 @@ class gptcommon(basetrans):
             message.append(self.context[i * 2])
             message.append(self.context[i * 2 + 1])
         message.append({"role": "user", "content": query})
+        prefill = self._gptlike_create_prefill("prefill_use", "prefill")
+        if prefill:
+            message.append({"role": "assistant", "content": prefill})
         usingstream = self.config["流式输出"]
         response = self.proxysession.post(
             self.createurl(),

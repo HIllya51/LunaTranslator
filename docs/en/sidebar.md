@@ -1,13 +1,33 @@
-﻿- [Introduction](/en/README.md)
+**Basic**
 
-- Usage
-  - [Start](/en/start.md)
-  - [Toolbar](/en/toolbar.md)
-  - [Settings](/en/settings.md)
-  - [Tray icon](/en/trayicon.md)
+- [Introduction](/en/README.md)
+- [Download and Launch](/en/start.md)
+    - [Cannot Start the Software](/en/cantstart.md)
+- [Basic Usage](/en/basicuse.md)
+- [Software Update](/en/update.md)
+- [Support the Author](/en/support.md)
 
-- [OCR instructions](/en/ocrsetsumei.md)
+**Detailed**
 
-- [HOOK instructions](/en/hooksetsumei.md)
-  
-- [Support author](/en/support.md) 
+- [HOOK Related Settings](/en/hooksettings.redirect)
+    - [Detailed Explanation of HOOK Settings](/en/hooksettings.md)
+    - [How to Use Embedded Translation](/en/embedtranslate.md)
+    - [Playing Old Games on XP Virtual Machine and Extracting Text for Translation](/en/playonxp.md)
+- [OCR Related Settings](/en/ocrparam.redirect)
+    - [Parameter Meanings for OCR Automated Execution Methods](/en/ocrparam.md)
+    - [How to Install Additional Language Support for WindowsOCR](/en/windowsocr.md)
+    - [OCR Mode Binding Game Window](/en/gooduseocr.md)
+- [Translation Source Settings](/en/guochandamoxing.redirect)
+    - [How to Use Large Model API for Translation](/en/guochandamoxing.md)
+    - [How to Use Large Model Offline Translation](/en/offlinellm.md)
+    - [How to Use Debug Browser for Translation](/en/tiaoshiliulanqi.md)
+- [Text Processing & Translation Optimization](/en/textprocess.redirect)
+    - [The Role and Usage of Various Text Processing Methods](/en/textprocess.md)
+    - [The Role of Various Translation Optimizations](/en/transoptimi.md)
+- [Text-to-Speech](/en/ttsofname.md)
+- [Tokenization & Dictionary](/en/qa1.redirect)
+    - [How to Use Mecab Tokenization & Part-of-Speech Color Tagging](/en/qa1.md)
+    - [Anki Integration](/en/qa2.md)
+- [Tool Buttons](/en/alltoolbuttons.md)
+- [Shortcut Keys](/en/fastkeys.md)
+- [Practical Features](/en/usefulsmalltools.md)
