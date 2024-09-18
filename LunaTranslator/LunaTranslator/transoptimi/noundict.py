@@ -1,5 +1,5 @@
 from myutils.config import savehook_new_data, globalconfig
-import gobject
+import gobject, re
 from qtsymbols import *
 from myutils.utils import postusewhich
 from myutils.config import get_launchpath
@@ -89,6 +89,5 @@ class Process:
     def process_after(self, res: str, context):
         mp1 = context["zhanweifu"]
         for key in mp1:
-            res = res.replace(key, mp1[key])
-            res = res.replace(key.lower(), mp1[key])
+            res = re.sub(key, mp1[key], res, flags=re.IGNORECASE)
         return res
