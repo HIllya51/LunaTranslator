@@ -394,6 +394,7 @@ class viewpixmap_x(QWidget):
         self.play_context = None
         self.recorder = None
         self.switchstop.connect(self.switchstop_f)
+        self.maybehavecomment.raise_()
 
     def switchstop_f(self):
         if self.play_context:
@@ -467,26 +468,26 @@ class viewpixmap_x(QWidget):
         self.pathview.resize(e.size().width(), self.pathview.height())
         self.infoview.resize(e.size().width(), self.infoview.height())
         self.leftclick.setGeometry(
-            0, e.size().height() // 5, e.size().width() // 5, 3 * e.size().height() // 5
+            0, e.size().height() // 10, e.size().width() // 5, 7 * e.size().height() // 10
         )
         self.bottombtn.setGeometry(
             e.size().width() // 5,
-            4 * e.size().height() // 5,
+            7 * e.size().height() // 10,
             3 * e.size().width() // 5,
-            e.size().height() // 5,
+            3 * e.size().height() // 10,
         )
         self.rightclick.setGeometry(
             4 * e.size().width() // 5,
-            e.size().height() // 5,
+            e.size().height() // 10,
             e.size().width() // 5,
-            3 * e.size().height() // 5,
+            7 * e.size().height() // 10,
         )
         self.maybehavecomment.setGeometry(
-            e.size().width() // 5, 0, 3 * e.size().width() // 5, e.size().height() // 5
+            e.size().width() // 5, 0, 3 * e.size().width() // 5, e.size().height() // 10
         )
         self.centerwidget.setGeometry(
             e.size().width() // 5,
-            e.size().height() // 5,
+            e.size().height() // 10,
             3 * e.size().width() // 5,
             3 * e.size().height() // 5,
         )

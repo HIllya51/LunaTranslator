@@ -166,7 +166,7 @@ class browserdialog(saveposwindow):
             self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
         self.browser = auto_select_webview(self)
 
-        self.tagswidget = TagWidget(self)
+        self.tagswidget = TagWidget(self, exfoucus=True)
         self.tagswidget.tagschanged.connect(self.tagschanged)
 
         self.tagswidget.tagclicked.connect(self.urlclicked)
@@ -276,6 +276,13 @@ def maybehavebutton(self, gameuid, post):
             return getIconButton(callback=callback, icon="fa.gear")
         else:
             return None
+
+
+def userlabelset():
+    s = set()
+    for gameuid in savehook_new_data:
+        s = s.union(savehook_new_data[gameuid]["usertags"])
+    return list(s)
 
 
 class dialog_setting_game_internal(QWidget):
@@ -625,7 +632,7 @@ class dialog_setting_game_internal(QWidget):
         def newitem(text, refkey, first=False, _type=tagitem.TYPE_RAND):
             qw = tagitem(text, True, _type)
 
-            def __(_qw, refkey, _):
+            def __(gameuid, _qw, refkey, _):
                 t, _type, _ = _
                 try:
                     _qw.remove()
@@ -634,7 +641,7 @@ class dialog_setting_game_internal(QWidget):
                 except:
                     print_exc()
 
-            qw.removesignal.connect(functools.partial(__, qw, refkey))
+            qw.removesignal.connect(functools.partial(__, gameuid, qw, refkey))
 
             def safeaddtags(_):
                 try:
@@ -660,18 +667,33 @@ class dialog_setting_game_internal(QWidget):
         formLayout.addWidget(self.labelflow)
         button = LPushButton("添加")
 
-        combo = getsimplecombobox(globalconfig["labelset"], _dict, "new", static=True)
+        combo = getsimplecombobox(userlabelset(), _dict, "new", static=True)
         combo.setEditable(True)
         combo.clearEditText()
 
         def _add(_):
-
+            labelset = userlabelset()
             tag = combo.currentText()
-            # tag = globalconfig["labelset"][_dict["new"]]
-            if tag and tag not in savehook_new_data[gameuid]["usertags"]:
-                savehook_new_data[gameuid]["usertags"].insert(0, tag)
-                newitem(tag, True, True, _type=tagitem.TYPE_USERTAG)
+            if (not tag) or (tag in savehook_new_data[gameuid]["usertags"]):
+                return
+            savehook_new_data[gameuid]["usertags"].insert(0, tag)
+            newitem(tag, "usertags", first=True, _type=tagitem.TYPE_USERTAG)
             combo.clearEditText()
+            combo.clear()
+            combo.addItems(labelset)
+            try:
+                _ = (
+                    gobject.global_dialog_savedgame_new.tagswidget.lineEdit.currentText()
+                )
+                gobject.global_dialog_savedgame_new.tagswidget.lineEdit.clear()
+                gobject.global_dialog_savedgame_new.tagswidget.lineEdit.addItems(
+                    labelset
+                )
+                gobject.global_dialog_savedgame_new.tagswidget.lineEdit.setCurrentText(
+                    _
+                )
+            except:
+                pass
 
         button.clicked.connect(_add)
 
@@ -794,7 +816,7 @@ class dialog_setting_game_internal(QWidget):
             formLayout.addRow(
                 showname,
                 getsimplepatheditor(
-                    lambda: savehook_new_data[gameuid][key],
+                    savehook_new_data[gameuid][key],
                     False,
                     False,
                     filt,

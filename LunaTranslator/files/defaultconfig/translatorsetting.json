@@ -708,13 +708,9 @@
 			"path": "",
 			"path_userdict1": "",
 			"path_userdict2": "",
-			"path_userdict3": "",
-			"备注": "用户词典选择JcUserdic文件夹"
+			"path_userdict3": ""
 		},
 		"argstype": {
-			"备注": {
-				"type": "label"
-			},
 			"path": {
 				"type": "file",
 				"dir": true,

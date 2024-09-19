@@ -7,7 +7,7 @@ import gobject, qtawesome
 from gui.dynalang import LPushButton, LAction
 from gui.dialog_savedgame_v3 import dialog_savedgame_v3
 from gui.dialog_savedgame_legacy import dialog_savedgame_legacy
-from gui.dialog_savedgame_setting import dialog_setting_game
+from gui.dialog_savedgame_setting import dialog_setting_game, userlabelset
 from myutils.wrapper import Singleton_close
 from gui.specialwidget import lazyscrollflow
 from myutils.utils import str2rgba
@@ -24,8 +24,6 @@ from gui.usefulwidget import (
     MySwitch,
     Prompt_dialog,
     getsimplecombobox,
-    getIconButton,
-    listediter,
 )
 from gui.dialog_savedgame_common import (
     ItemWidget,
@@ -390,40 +388,22 @@ class dialog_savedgame_new(QWidget):
         self.reflist = getreflist(globalconfig["currvislistuid"])
         self.reftagid = globalconfig["currvislistuid"]
 
-        def refreshcombo():
-            _ = self.tagswidget.lineEdit.currentText()
-            self.tagswidget.lineEdit.clear()
-            self.tagswidget.lineEdit.addItems(globalconfig["labelset"])
-            self.tagswidget.lineEdit.setCurrentText(_)
-
-        layout.addWidget(
-            getIconButton(
-                lambda: listediter(
-                    parent,
-                    ("标签集"),
-                    ("标签"),
-                    globalconfig["labelset"],
-                    closecallback=refreshcombo,
-                ),
-                icon="fa.gear",
-            ),
-        )
-
         def callback(t):
             if not t:
                 return
-            if t in globalconfig["labelset"]:
+            labelset = userlabelset()
+            if t in labelset:
                 tp = tagitem.TYPE_USERTAG
             else:
                 tp = tagitem.TYPE_RAND
             self.tagswidget.addTag(t, tp)
 
             self.tagswidget.lineEdit.clear()
-            self.tagswidget.lineEdit.addItems(globalconfig["labelset"])
+            self.tagswidget.lineEdit.addItems(labelset)
             self.tagswidget.lineEdit.clearEditText()
 
-        self.tagswidget = TagWidget(self)
-        self.tagswidget.lineEdit.addItems(globalconfig["labelset"])
+        self.tagswidget = TagWidget(self, exfoucus=False)
+        self.tagswidget.lineEdit.addItems(userlabelset())
         self.tagswidget.lineEdit.setCurrentText("")
         self.tagswidget.linepressedenter.connect(callback)
         self.currtags = tuple()

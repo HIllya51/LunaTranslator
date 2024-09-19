@@ -25,6 +25,14 @@
 
 <!-- tabs:start -->
 
+### **OpenAI**
+
+**API接口地址** `https://api.openai.com/v1` 
+
+**API Key** https://platform.openai.com/api-keys
+
+**model** https://platform.openai.com/docs/models
+
 ### **groq**
 
 **API接口地址** `https://api.groq.com/openai/v1/chat/completions`

@@ -269,7 +269,7 @@ class TagWidget(QWidget):
     linepressedenter = pyqtSignal(str)
     tagclicked = pyqtSignal(tuple)  # tag,type,refdata
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, exfoucus=True):
         super().__init__(parent)
 
         layout = QHBoxLayout()
@@ -278,8 +278,12 @@ class TagWidget(QWidget):
         self.setLayout(layout)
 
         self.lineEdit = FocusCombo()
-        self.lineEdit.setLineEdit(FQLineEdit())
-
+        if exfoucus:
+            self.lineEdit.setLineEdit(FQLineEdit())
+            # FQLineEdit导致游戏管理页面里，点击编辑框后，下边界消失。
+            # FQLineEdit仅用于和webview同一窗口内焦点缺失问题，所以既然用不到那就不要多此一举了
+        else:
+            self.lineEdit.setEditable(True)
         self.lineEdit.lineEdit().returnPressed.connect(
             lambda: self.linepressedenter.emit(self.lineEdit.currentText())
         )

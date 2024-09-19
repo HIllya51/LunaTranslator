@@ -23,6 +23,14 @@
 
 <!-- tabs:start -->
 
+### **OpenAI**
+
+**API Interface Address** `https://api.openai.com/v1` 
+
+**API Key** https://platform.openai.com/api-keys
+
+**model** https://platform.openai.com/docs/models
+
 ### **groq**
 
 **API Interface Address** `https://api.groq.com/openai/v1/chat/completions` 

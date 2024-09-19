@@ -1,19 +1,7 @@
 from traceback import print_exc
 import json
 from translator.basetranslator import basetrans
-from myutils.utils import createenglishlangmap
-
-
-def checkv1(api_url):
-    if api_url[-4:] == "/v1/":
-        api_url = api_url[:-1]
-    elif api_url[-3:] == "/v1":
-        pass
-    elif api_url[-1] == "/":
-        api_url += "v1"
-    else:
-        api_url += "/v1"
-    return api_url
+from myutils.utils import createenglishlangmap, checkv1
 
 
 class TS(basetrans):
