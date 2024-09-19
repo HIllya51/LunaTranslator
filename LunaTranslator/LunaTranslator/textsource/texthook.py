@@ -11,7 +11,13 @@ from myutils.config import (
     findgameuidofpath,
 )
 from textsource.textsourcebase import basetext
-from myutils.utils import checkchaos, getfilemd5, getlangtgt, getlanguagespace
+from myutils.utils import (
+    checkchaos,
+    getfilemd5,
+    getlangtgt,
+    getlanguagespace,
+    safe_escape,
+)
 from myutils.hwnd import injectdll, test_injectable, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
@@ -430,9 +436,7 @@ class texthook(basetext):
             if globalconfig["embedded"]["safecheck_use"] == False:
                 return True
             for regex in globalconfig["embedded"]["safecheckregexs"]:
-                if re.match(
-                    codecs.escape_decode(bytes(regex, "utf-8"))[0].decode("utf-8"), text
-                ):
+                if re.match(safe_escape(regex), text):
                     return False
             return True
         except:

@@ -1,4 +1,5 @@
 from myutils.config import globalconfig
+from myutils.utils import case_insensitive_replace
 import xml.etree.ElementTree as ET
 import os, gobject, re
 from gui.inputdialog import getsomepath1
@@ -129,14 +130,15 @@ class Process:
                 gobject.baseobject.zhanweifu += 1
         return content, context
 
-    def process_after(self, res, context):
+    def process_after(self, res: str, context):
 
         for key in context:
-            reg = re.compile(re.escape(key), re.IGNORECASE)
-            res = reg.sub(self.vnrshareddict[context[key]]["text"], res)
+            res = case_insensitive_replace(
+                res, key, self.vnrshareddict[context[key]]["text"]
+            )
         for key, value in self.sorted_vnrshareddict_post:
             if key in res:
-                res = re.sub(key, value["text"], re.escape(res), flags=re.IGNORECASE)
+                res = res.replace(key, value["text"])
         return res
 
     @staticmethod

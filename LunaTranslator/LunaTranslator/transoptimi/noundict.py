@@ -1,7 +1,7 @@
 from myutils.config import savehook_new_data, globalconfig
 import gobject, re
 from qtsymbols import *
-from myutils.utils import postusewhich
+from myutils.utils import postusewhich, case_insensitive_replace
 from myutils.config import get_launchpath
 from myutils.hwnd import getExeIcon
 from gui.inputdialog import postconfigdialog_
@@ -89,5 +89,5 @@ class Process:
     def process_after(self, res: str, context):
         mp1 = context["zhanweifu"]
         for key in mp1:
-            res = re.sub(key, re.escape(mp1[key]), res, flags=re.IGNORECASE)
+            res = case_insensitive_replace(res, key, mp1[key])
         return res

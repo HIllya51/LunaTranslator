@@ -22,6 +22,7 @@ from myutils.utils import (
     stringfyerror,
     targetmod,
     translate_exits,
+    safe_escape,
 )
 from myutils.wrapper import threader, tryprint
 from gui.showword import searchwordW
@@ -571,9 +572,7 @@ class MAINUI:
 
         for item in dic:
             if item["regex"]:
-                retext = codecs.escape_decode(bytes(item["key"], "utf-8"))[0].decode(
-                    "utf-8"
-                )
+                retext = safe_escape(item["key"])
                 if item["condition"] == 1:
                     if re.search(retext, res):
                         return item

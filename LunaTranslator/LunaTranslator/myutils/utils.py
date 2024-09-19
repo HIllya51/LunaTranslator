@@ -537,6 +537,21 @@ class autosql(sqlite3.Connection):
         self.close()
 
 
+def safe_escape(string: str):
+    try:
+        return codecs.escape_decode(bytes(string, "utf-8"))[0].decode("utf-8")
+    except:
+        print_exc()
+        return string
+
+
+def case_insensitive_replace(text, old, new):
+    def replace_match(_):
+        return new
+
+    return re.sub(re.escape(old), replace_match, text, flags=re.IGNORECASE)
+
+
 @tryprint
 def parsemayberegexreplace(lst: list, line: str):
     for fil in lst:
@@ -548,21 +563,12 @@ def parsemayberegexreplace(lst: list, line: str):
             continue
         if regex:
             if escape:
-                line = re.sub(
-                    codecs.escape_decode(bytes(key, "utf-8"))[0].decode("utf-8"),
-                    codecs.escape_decode(bytes(value, "utf-8"))[0].decode("utf-8"),
-                    line,
-                )
-
+                line = re.sub(safe_escape(key), safe_escape(value), line)
             else:
-
                 line = re.sub(key, value, line)
         else:
             if escape:
-                line = line.replace(
-                    codecs.escape_decode(bytes(key, "utf-8"))[0].decode("utf-8"),
-                    codecs.escape_decode(bytes(value, "utf-8"))[0].decode("utf-8"),
-                )
+                line = line.replace(safe_escape(key), safe_escape(value))
             else:
                 line = line.replace(key, value)
 

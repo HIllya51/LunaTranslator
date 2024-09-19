@@ -9,6 +9,7 @@ from myutils.utils import (
     getlangsrc,
     getlanguagespace,
     parsemayberegexreplace,
+    safe_escape,
 )
 from myutils.config import (
     postprocessconfig,
@@ -237,10 +238,7 @@ def _7_zhuanyi_f(line, args):
         if fil == "":
             continue
         else:
-            line = line.replace(
-                codecs.escape_decode(bytes(fil, "utf-8"))[0].decode("utf-8"),
-                codecs.escape_decode(bytes(filters[fil], "utf-8"))[0].decode("utf-8"),
-            )
+            line = line.replace(safe_escape(fil), safe_escape(filters[fil]))
     return line
 
 
@@ -261,13 +259,7 @@ def _8_f(line, args):
             continue
         else:
             try:
-                line = re.sub(
-                    codecs.escape_decode(bytes(fil, "utf-8"))[0].decode("utf-8"),
-                    codecs.escape_decode(bytes(filters[fil], "utf-8"))[0].decode(
-                        "utf-8"
-                    ),
-                    line,
-                )
+                line = re.sub(safe_escape(fil), safe_escape(filters[fil]), line)
             except:
                 print_exc()
     return line
