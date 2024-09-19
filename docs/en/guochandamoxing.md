@@ -87,9 +87,9 @@ https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions
 
 **API Key** https://bailian.console.aliyun.com/?apiKey=1#/api-key 
 
-**model** https://help.aliyun.com/zh/model-studio/product-overview/billing-for-alibaba-cloud-model-studio/#2550bcc04d2tk 
+**model** https://help.aliyun.com/zh/model-studio/getting-started/models
 
-### **ByteDance DouBao Large Model (Volcano Engine)**
+### **ByteDance DouBao Large Model**
 
 **API Interface Address** `https://ark.cn-beijing.volces.com/api/v3` 
 
