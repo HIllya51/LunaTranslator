@@ -517,10 +517,10 @@ def makehtml(text, show=None):
     else:
         __ = True
     text = dynamiclink(text)
-    if __:
-        show = text.split("/")[-1]
-    elif show:
+    if show:
         pass
+    elif __:
+        show = text.split("/")[-1]
     else:
         show = text
     return '<a href="{}">{}</a>'.format(text, show)

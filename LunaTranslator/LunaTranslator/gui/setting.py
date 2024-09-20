@@ -13,8 +13,7 @@ from gui.setting_lang import setTablang
 from gui.setting_proxy import setTab_proxy
 from gui.setting_transopti import setTab7_lazy, delaysetcomparetext
 from gui.setting_about import (
-    setTab_aboutlazy,
-    setTab_update,
+    setTab_about,
     versionlabelmaybesettext,
     versioncheckthread,
 )
@@ -105,8 +104,7 @@ class Setting(closeashidewindow):
                 "快捷按键",
                 "语言设置",
                 "网络设置",
-                "版本更新",
-                "资源下载",
+                "关于软件",
             ],
             [
                 functools.partial(setTabOne_lazy, self),
@@ -118,8 +116,7 @@ class Setting(closeashidewindow):
                 functools.partial(setTab_quick, self),
                 functools.partial(setTablang, self),
                 functools.partial(setTab_proxy, self),
-                functools.partial(setTab_update, self),
-                functools.partial(setTab_aboutlazy, self),
+                functools.partial(setTab_about, self),
             ],
             klass=TabWidget,
             delay=True,

@@ -288,34 +288,7 @@ def setTab_aboutlazy(self, basel):
     resourcegrid(self, basel)
 
 
-def setTab_update(self, basel):
-    version = winsharedutils.queryversion(getcurrexe())
-    if version is None:
-        versionstring = "unknown"
-    else:
-        versionstring = (
-            f"v{version[0]}.{version[1]}.{version[2]}  {platform.architecture()[0]}"
-        )
-    grid2 = [
-        [
-            "自动更新",
-            (
-                D_getsimpleswitch(
-                    globalconfig, "autoupdate", callback=versionchecktask.put
-                ),
-                0,
-            ),
-        ],
-        [
-            "当前版本",
-            versionstring,
-            "",
-            "最新版本",
-            functools.partial(createversionlabel, self),
-            "",
-        ],
-        [(functools.partial(createdownloadprogress, self), 0)],
-    ]
+def setTab_about1(self, basel):
 
     shuominggrid = [
         ["Github", makehtml("https://github.com/HIllya51/LunaTranslator")],
@@ -329,7 +302,7 @@ def setTab_update(self, basel):
         shuominggrid += [
             [
                 "交流群",
-                makehtml("{main_server}/Resource/QQGroup", show="QQ群"),
+                makehtml("{main_server}/Resource/QQGroup", show="QQ群963119821"),
             ],
             [
                 " ",
@@ -359,16 +332,6 @@ def setTab_update(self, basel):
             [
                 (
                     dict(
-                        grid=grid2,
-                        type="grid",
-                    ),
-                    0,
-                    "group",
-                )
-            ],
-            [
-                (
-                    dict(
                         grid=shuominggrid,
                     ),
                     0,
@@ -378,3 +341,53 @@ def setTab_update(self, basel):
         ],
         basel,
     )
+
+
+def setTab_about(self, basel):
+    tab_widget, do = makesubtab_lazy(
+        [
+            "关于软件",
+            "版本更新",
+            "资源下载",
+        ],
+        [
+            functools.partial(setTab_about1, self),
+            functools.partial(setTab_update, self),
+            functools.partial(setTab_aboutlazy, self),
+        ],
+        delay=True,
+    )
+    basel.addWidget(tab_widget)
+    do()
+
+
+def setTab_update(self, basel):
+    version = winsharedutils.queryversion(getcurrexe())
+    if version is None:
+        versionstring = "unknown"
+    else:
+        versionstring = (
+            f"v{version[0]}.{version[1]}.{version[2]}  {platform.architecture()[0]}"
+        )
+    grid2 = [
+        [
+            "自动更新",
+            (
+                D_getsimpleswitch(
+                    globalconfig, "autoupdate", callback=versionchecktask.put
+                ),
+                0,
+            ),
+        ],
+        [
+            "当前版本",
+            versionstring,
+            "",
+            "最新版本",
+            functools.partial(createversionlabel, self),
+            "",
+        ],
+        [(functools.partial(createdownloadprogress, self), 0)],
+    ]
+
+    makescrollgrid(grid2, basel)
