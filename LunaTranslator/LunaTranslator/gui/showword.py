@@ -231,7 +231,7 @@ class AnkiWindow(QWidget):
                 else:
                     collect.append(hira["orig"])
             example = "".join(collect)
-        ruby = self.ruby
+        ruby = self.zhuyinedit.toPlainText()
         dictionaryInfo = []
         dictionaryContent = {}
         for _ in dictionarys:
@@ -442,6 +442,7 @@ class AnkiWindow(QWidget):
         self.viewimagelabel = pixmapviewer()
         self.editpath.textChanged.connect(self.wrappedpixmap)
         self.example = FQPlainTextEdit()
+        self.zhuyinedit = FQPlainTextEdit()
         self.example.hiras = None
 
         def __():
@@ -510,6 +511,11 @@ class AnkiWindow(QWidget):
                                         ]
                                     ),
                                 ]
+                            ),
+                            getboxlayout(
+                                [LLabel("注音"), self.zhuyinedit],
+                                QVBoxLayout,
+                                margin0=True,
                             ),
                             getboxlayout(
                                 [LLabel("例句"), self.example],
@@ -619,9 +625,11 @@ class AnkiWindow(QWidget):
     def reset(self, text):
         self.currentword = text
         if text and len(text):
-            self.ruby = self.makerubyhtml(gobject.baseobject.parsehira(text))
+            self.zhuyinedit.setPlainText(
+                self.makerubyhtml(gobject.baseobject.parsehira(text))
+            )
         else:
-            self.ruby = ""
+            self.zhuyinedit.clear()
         self.editpath.clear()
         self.audiopath.clear()
         self.audiopath_sentence.clear()
