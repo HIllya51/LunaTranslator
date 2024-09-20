@@ -413,7 +413,7 @@
 	},
 	"chatgpt-3rd-party": {
 		"args": {
-			"model": "gpt-3.5-turbo",
+			"model": "gpt-4o-mini",
 			"modellistcache": [],
 			"附带上下文个数": 0,
 			"API接口地址": "https://api.openai.com",
@@ -1274,7 +1274,7 @@
 	},
 	"chatgpt-offline": {
 		"args": {
-			"model": "gpt-3.5-turbo",
+			"model": "gpt-4o-mini",
 			"modellistcache": [],
 			"附带上下文个数": 0,
 			"API接口地址": "https://api.openai.com",
