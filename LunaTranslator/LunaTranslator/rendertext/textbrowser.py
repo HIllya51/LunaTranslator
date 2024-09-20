@@ -1,7 +1,7 @@
 from qtsymbols import *
 from myutils.config import globalconfig, static_data
 from rendertext.somefunctions import dataget
-import gobject, functools, importlib, copy
+import gobject, functools, importlib
 from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
 
@@ -131,7 +131,6 @@ class TextBrowser(QWidget, dataget):
         self.iteryinyinglabelsave = {}
         self.saveiterclasspointer = {}
         self.extra_height = 0
-        self.trace = []
         self.cleared = True
         self.resets1()
 
@@ -204,13 +203,7 @@ class TextBrowser(QWidget, dataget):
         self.showhideorigin(show)
 
     def showhideorigin(self, show):
-        traces = self.trace.copy()
-        self.clear()
-        for t, trace in traces:
-            if t == 0:
-                self.append(*trace)
-            elif t == 1:
-                self.iter_append(*trace)
+        self.parent().refreshcontent()
 
     def checkskip(self, origin):
         if origin and not globalconfig["isshowrawtext"]:
@@ -220,7 +213,6 @@ class TextBrowser(QWidget, dataget):
         return False
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
-        self.trace.append((1, (iter_context_class, origin, atcenter, text, color)))
         if self.checkskip(origin):
             return
         if iter_context_class not in self.saveiterclasspointer:
@@ -266,9 +258,6 @@ class TextBrowser(QWidget, dataget):
         self.cleared = False
 
     def append(self, origin, atcenter, text, tag, flags, color):
-        self.trace.append(
-            (0, (origin, atcenter, text, copy.deepcopy(tag), flags, color))
-        )
         if self.checkskip(origin):
             return
         if len(tag):
@@ -760,4 +749,3 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer.clear()
         self.textbrowser.move(0, 0)
         self.atback_color.move(0, 0)
-        self.trace = []

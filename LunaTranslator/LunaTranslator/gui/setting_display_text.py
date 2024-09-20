@@ -93,8 +93,10 @@ class extrahtml(saveposwindow):
 
 
 def createinternalfontsettings(self, forml: LFormLayout, group, _type):
-
+    need = globalconfig["rendertext_using_internal"][group] != _type
     globalconfig["rendertext_using_internal"][group] = _type
+    if need:
+        gobject.baseobject.translation_ui.translate_text.refreshcontent()
     __internal = globalconfig["rendertext"][group][_type]
     dd = __internal.get("args", {})
 
@@ -287,6 +289,7 @@ def resetgroudswitchcallback(self, group):
             globalconfig["rendertext_using_internal"][group]
         )
     )
+    gobject.baseobject.translation_ui.translate_text.loadinternal()
 
 
 def creategoodfontwid(self):

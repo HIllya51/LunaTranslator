@@ -1,6 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
-import importlib
+import importlib, copy
 from webviewpy import webview_exception
 from gui.usefulwidget import getQMessageBox
 from traceback import print_exc
@@ -56,6 +56,16 @@ class Textbrowser(QFrame):
         self.textbrowser.setselectable(globalconfig["selectable"])
         self.textbrowser.showhideorigin(globalconfig["isshowrawtext"])
         self.textbrowser.showhidetranslate(globalconfig["showfanyi"])
+        self.refreshcontent()
+
+    def refreshcontent(self):
+        traces = self.trace.copy()
+        self.clear()
+        for t, trace in traces:
+            if t == 0:
+                self.append(*trace)
+            elif t == 1:
+                self.iter_append(*trace)
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -63,17 +73,22 @@ class Textbrowser(QFrame):
         self.textbrowser = None
         self.cleared = True
         self.curr_eng = None
+        self.trace = []
         self.loadinternal()
 
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
+        self.trace.append((1, (iter_context_class, origin, atcenter, text, color)))
         self.cleared = False
         self.textbrowser.iter_append(iter_context_class, origin, atcenter, text, color)
 
     def append(self, origin, atcenter, text, tag, flags, color):
+        self.trace.append(
+            (0, (origin, atcenter, text, copy.deepcopy(tag), flags, color))
+        )
         self.cleared = False
         self.textbrowser.append(origin, atcenter, text, tag, flags, color)
 
     def clear(self):
         self.cleared = True
+        self.trace.clear()
         self.textbrowser.clear()
-        self.loadinternal()
