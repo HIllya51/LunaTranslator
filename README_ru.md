@@ -1,14 +1,12 @@
 # LunaTranslator
 
 <p align="left">
-    <img src="https://img.shields.io/github/license/HIllya51/LunaTranslator"> 
-    <a href="https://github.com/HIllya51/LunaTranslator/releases"><img  src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a> 
-    <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip"  target="_blank"><img src="https://img.shields.io/badge/загрузить_64bit-синий"/></a>  <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip"  target="_blank"><img src="https://img.shields.io/badge/загрузить_32bit-синий"/></a>  <img src="https://img.shields.io/badge/ОС-windows  7--11 / wine-FF0000"/>
+    <img src="https://img.shields.io/github/license/HIllya51/LunaTranslator">
+    <a href="https://github.com/HIllya51/LunaTranslator/releases"><img src="https://img.shields.io/github/v/release/HIllya51/LunaTranslator?color=ffa"></a>
+    <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a> <img src="https://img.shields.io/badge/OS-windows 7--11 / wine-FF0000"/>
 </p>
 
-### [Инструкция по использованию](https://docs.lunatranslator.org/#/ru/)  [Видео-учебник](https://space.bilibili.com/592120404/video)  
-
-<a href="https://qm.qq.com/q/I5rr3uEpi2"><img  src="https://img.shields.io/badge/группа_QQ-963119821-FF007C"></a>  <a href="https://discord.com/invite/ErtDwVeAbB"><img  src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C"></a> 
+### [Инструкция по использованию](https://docs.lunatranslator.org/#/ru/)   <a href="https://discord.com/invite/ErtDwVeAbB"><img  src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C"></a> 
 
 ### Упрощенный китайский | [Русский язык](README_ru.md) | [Английский](README_en.md) | [Другие языки](otherlang.md) 
 

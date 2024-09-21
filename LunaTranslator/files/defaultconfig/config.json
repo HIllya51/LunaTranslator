@@ -466,6 +466,7 @@
     "autoread": false,
     "ttsnointerrupt": false,
     "show_fenci": true,
+    "is_tracetime_strict": true,
     "jiamingcolor": "black",
     "ankiconnect": {
         "port": 8765,

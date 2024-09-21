@@ -3,8 +3,8 @@ import time
 import os, threading
 from qtsymbols import *
 from traceback import print_exc
-from myutils.config import findgameuidofpath, savehook_new_data
-from myutils.hwnd import getpidexe
+from myutils.config import findgameuidofpath, savehook_new_data, globalconfig
+from myutils.hwnd import getpidexe, ListProcess
 import windows
 import gobject
 
@@ -30,6 +30,22 @@ class playtimemanager:
             self.trycastoldversion()
         except:
             pass
+        try:
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE trace_strict(gameinternalid INT,timestart BIGINT,timestop BIGINT);"
+            )
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO trace_strict SELECT gameinternalid,timestart,timestop FROM traceplaytime_v4"
+            )
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE trace_loose(gameinternalid INT,timestart BIGINT,timestop BIGINT);"
+            )
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO trace_loose SELECT gameinternalid,timestart,timestop FROM traceplaytime_v4"
+            )
+            self.sqlsavegameinfo.commit()
+        except:
+            pass
 
         threading.Thread(target=self.checkgameplayingthread).start()
 
@@ -45,10 +61,11 @@ class playtimemanager:
             )
         self.sqlsavegameinfo.commit()
 
-    def querytraceplaytime_v4(self, gameuid):
+    def querytraceplaytime(self, gameuid):
+        table = ["trace_loose", "trace_strict"][globalconfig["is_tracetime_strict"]]
         gameinternalid = self.get_gameinternalid(gameuid)
         return self.sqlsavegameinfo.execute(
-            "SELECT timestart,timestop FROM traceplaytime_v4 WHERE gameinternalid = ?",
+            f"SELECT timestart,timestop FROM {table} WHERE gameinternalid = ?",
             (gameinternalid,),
         ).fetchall()
 
@@ -66,69 +83,71 @@ class playtimemanager:
             else:
                 return ret[0]
 
-    def traceplaytime(self, gameuid, start, end, new):
+    def stricttraceexe(self):
+        hwnd = windows.GetForegroundWindow()
+        pid = windows.GetWindowThreadProcessId(hwnd)
+        exe = getpidexe(pid)
+        exes = set()
+        exes.add(exe)
 
-        gameinternalid = self.get_gameinternalid(gameuid)
-        if new:
-            self.sqlsavegameinfo.execute(
-                "INSERT INTO traceplaytime_v4 VALUES(NULL,?,?,?)",
-                (gameinternalid, start, end),
-            )
-        else:
-            self.sqlsavegameinfo.execute(
-                "UPDATE traceplaytime_v4 SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)",
-                (end, gameinternalid, start),
-            )
-        self.sqlsavegameinfo.commit()
+        gamehwnd = gobject.baseobject.hwnd
+        if gamehwnd:
+            gamepid = windows.GetWindowThreadProcessId(gamehwnd)
+            if gamepid:
+                if pid == gamepid or pid == os.getpid():
+                    exes.add(exe)
+        return exes
+
+    def finduids(self, exes):
+        uids = []
+        for exe in exes:
+            uid, _ = findgameuidofpath(exe)
+            if not uid:
+                continue
+            uids.append(uid)
+        return uids
+
+    def tracex(self, _t: float, uids: list, dic: dict, table: str):
+        for uid in uids:
+            gameinternalid = self.get_gameinternalid(uid)
+            if uid in dic:
+                self.sqlsavegameinfo.execute(
+                    f"UPDATE {table} SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)",
+                    (_t, gameinternalid, dic[uid]),
+                )
+
+            else:
+                dic[uid] = _t
+                self.sqlsavegameinfo.execute(
+                    f"INSERT INTO {table} VALUES(?,?,?)",
+                    (gameinternalid, _t, _t),
+                )
+        for k in list(dic.keys()):
+            if k not in uids:
+                dic.pop(k)
 
     def checkgameplayingthread(self):
-        self.__currentexe = None
-        self.__statistictime = time.time()
+        self.trace_loose = {}
+        self.trace_strict = {}
+        tlast = None
+        t = time.time()
         while True:
-            __t = time.time()
+            tlast = t
+            t = time.time()
+            if t - tlast > 10:
+                # 虚拟机暂停
+                self.trace_loose.clear()
+                self.trace_strict.clear()
+                continue
+
+            self.tracex(
+                t, self.finduids(ListProcess()), self.trace_loose, "trace_loose"
+            )
+            self.tracex(
+                t,
+                self.finduids(self.stricttraceexe()),
+                self.trace_strict,
+                "trace_strict",
+            )
+            self.sqlsavegameinfo.commit()
             time.sleep(1)
-            _t = time.time()
-
-            def isok(gameuid):
-                # 可能开着程序进行虚拟机暂停，导致一下子多了很多时间。不过测试vbox上应该没问题
-                maybevmpaused = (_t - __t) > 60
-                if not maybevmpaused:
-                    savehook_new_data[gameuid]["statistic_playtime"] += _t - __t
-                if (not maybevmpaused) and (self.__currentexe == name_):
-                    self.traceplaytime(gameuid, self.__statistictime - 1, _t, False)
-
-                else:
-                    self.__statistictime = time.time()
-                    self.__currentexe = name_
-                    self.traceplaytime(
-                        gameuid,
-                        self.__statistictime - 1,
-                        self.__statistictime,
-                        True,
-                    )
-
-            _hwnd = windows.GetForegroundWindow()
-            _pid = windows.GetWindowThreadProcessId(_hwnd)
-            try:
-                gamehwnd = gobject.baseobject.hwnd
-                if not gamehwnd:
-                    raise
-                gamepid = windows.GetWindowThreadProcessId(gamehwnd)
-                if not gamepid:
-                    raise
-                if _pid == gamepid or _pid == os.getpid():
-                    isok(gobject.baseobject.gameuid)
-                else:
-                    self.__currentexe = None
-            except:
-                name_ = getpidexe(_pid)
-                if not name_:
-                    return
-                uid = findgameuidofpath(name_)
-                try:
-                    if uid:
-                        isok(uid[0])
-                    else:
-                        self.__currentexe = None
-                except:
-                    print_exc()

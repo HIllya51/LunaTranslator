@@ -286,10 +286,9 @@ class texthook(basetext):
         name_ = getpidexe(pid)
         if not name_:
             return
-        found = findgameuidofpath(name_)
-        if not found:
+        uid, reflist = findgameuidofpath(name_)
+        if not uid:
             return
-        uid, reflist = found
         pids = ListProcess(name_)
         if self.ending:
             return

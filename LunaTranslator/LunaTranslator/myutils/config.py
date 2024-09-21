@@ -135,7 +135,6 @@ def getdefaultsavehook(title=None):
         "onloadautochangemode2": 0,
         "needinserthookcode": [],
         "embedablehook": [],
-        "statistic_playtime": 0,
         "statistic_wordcount": 0,
         "statistic_wordcount_nodump": 0,
         # "leuse": True, 废弃
@@ -369,7 +368,10 @@ def findgameuidofpath(gamepath, findall=False):
                         collect.append(uid)
                 else:
                     return uid, use
-    return collect
+    if findall:
+        return collect
+    else:
+        return None, None
 
 
 def syncconfig(config1, default, drop=False, deep=0, skipdict=False):

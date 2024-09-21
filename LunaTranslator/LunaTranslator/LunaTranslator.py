@@ -146,7 +146,7 @@ class MAINUI:
                 self.translation_ui.refreshtooliconsignal.emit()
                 try:
                     if self.autoswitchgameuid:
-                        gameuid = findgameuidofpath(getpidexe(_pid))
+                        gameuid, _ = findgameuidofpath(getpidexe(_pid))
                         if gameuid:
                             self.gameuid = gameuid[0]
                 except:
@@ -695,9 +695,8 @@ class MAINUI:
 
         if not globalconfig["sourcestatus2"]["texthook"]["use"]:
             return
-        found = findgameuidofpath(pexe)
-        if found:
-            gameuid, reflist = found
+        gameuid, reflist = findgameuidofpath(pexe)
+        if gameuid:
             if globalconfig["startgamenototop"] == False:
                 idx = reflist.index(gameuid)
                 reflist.insert(0, reflist.pop(idx))

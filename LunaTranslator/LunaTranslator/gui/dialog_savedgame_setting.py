@@ -38,6 +38,7 @@ from gui.specialwidget import ScrollFlow, chartwidget
 from gui.usefulwidget import (
     TableViewW,
     saveposwindow,
+    getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
     auto_select_webview,
@@ -50,6 +51,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     threebuttons,
     getspinbox,
+    getsmalllabel,
     listediterline,
 )
 from gui.dynalang import (
@@ -551,7 +553,22 @@ class dialog_setting_game_internal(QWidget):
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
         )
         formLayout.addLayout(getboxlayout([LLabel(("文字计数")), self._wordlabel]))
-        formLayout.addLayout(getboxlayout([LLabel(("游戏时间")), self._timelabel]))
+
+        t = QTimer(self)
+        formLayout.addLayout(
+            getboxlayout(
+                [
+                    LLabel("游戏时间"),
+                    self._timelabel,
+                    getsmalllabel("严格的"),
+                    getsimpleswitch(
+                        globalconfig,
+                        "is_tracetime_strict",
+                        callback=lambda _: t.timeout.emit(),
+                    ),
+                ]
+            )
+        )
 
         formLayout.addWidget(chart)
         t = QTimer(self)
@@ -596,9 +613,8 @@ class dialog_setting_game_internal(QWidget):
         return lists
 
     def refresh(self):
-        __ = gobject.baseobject.playtimemanager.querytraceplaytime_v4(self.gameuid)
+        __ = gobject.baseobject.playtimemanager.querytraceplaytime(self.gameuid)
         _cnt = sum([_[1] - _[0] for _ in __])
-        savehook_new_data[self.gameuid]["statistic_playtime"] = _cnt
         self._timelabel.setText(self.formattime(_cnt))
         self._wordlabel.setText(
             str(savehook_new_data[self.gameuid]["statistic_wordcount"])
