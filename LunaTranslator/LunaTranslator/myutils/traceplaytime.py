@@ -93,9 +93,8 @@ class playtimemanager:
         gamehwnd = gobject.baseobject.hwnd
         if gamehwnd:
             gamepid = windows.GetWindowThreadProcessId(gamehwnd)
-            if gamepid:
-                if pid == gamepid or pid == os.getpid():
-                    exes.add(exe)
+            if gamepid and pid == os.getpid():
+                exes.add(getpidexe(gamepid))
         return exes
 
     def finduids(self, exes):
