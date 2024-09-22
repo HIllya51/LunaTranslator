@@ -170,10 +170,10 @@ _GetLnkTargetPath.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_wchar_p
 
 def GetLnkTargetPath(lnk):
     MAX_PATH = 260
-    exe = create_unicode_buffer(MAX_PATH)
-    arg = create_unicode_buffer(MAX_PATH)
-    icon = create_unicode_buffer(MAX_PATH)
-    dirp = create_unicode_buffer(MAX_PATH)
+    exe = create_unicode_buffer(MAX_PATH + 1)
+    arg = create_unicode_buffer(MAX_PATH + 1)
+    icon = create_unicode_buffer(MAX_PATH + 1)
+    dirp = create_unicode_buffer(MAX_PATH + 1)
     _GetLnkTargetPath(lnk, exe, arg, icon, dirp)
     return exe.value, arg.value, icon.value, dirp.value
 

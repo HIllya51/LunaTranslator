@@ -320,7 +320,7 @@ def GetLongPathName(file):
     succ = _GetLongPathName(file, None, 0)
     if succ == 0:
         return file
-    buff = create_unicode_buffer(succ)
+    buff = create_unicode_buffer(succ + 1)
     succ = _GetLongPathName(file, buff, succ)
     path = buff.value
     return path
