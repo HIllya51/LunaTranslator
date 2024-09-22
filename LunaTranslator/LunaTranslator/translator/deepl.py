@@ -55,10 +55,17 @@ def initDeepLXData(sourceLang: str, targetLang: str):
 
 
 class TS(basetrans):
-    def langmap(self):
-        x = {_: _.upper() for _ in [_["code"] for _ in static_data["lang_list_all"]]}
-        x.pop("cht")
-        return x  # {"zh":"ZH","ja":"JA","en":"EN","es":"ES","fr":"FR","ru":"RU"}
+    @property
+    def srclang(self):
+        if self.srclang_1 == "cht":
+            return "ZH"
+        return self.srclang_1.upper()
+
+    @property
+    def tgtlang(self):
+        if self.tgtlang_1 == "cht":
+            return "ZH-HANT"
+        return self.tgtlang_1.upper()
 
     def translate(self, translateText):
         if self.config["usewhich"] == 0:

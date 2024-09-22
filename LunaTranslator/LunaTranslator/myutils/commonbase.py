@@ -37,11 +37,11 @@ class commonbase:
         return self.langmap_.get(self.srclang_1, "")
 
     @property
-    def srclang_1(self):
+    def srclang_1(self) -> str:
         return getlangsrc()
 
     @property
-    def tgtlang_1(self):
+    def tgtlang_1(self) -> str:
         return getlangtgt()
 
     @property
