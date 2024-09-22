@@ -310,8 +310,23 @@ try:
 except:
     _QueryFullProcessImageNameW = 0
 
+_GetLongPathName = _kernel32.GetLongPathNameW
+_GetLongPathName.argtypes = (LPCWSTR, LPWSTR, DWORD)
+_GetLongPathName.restype = DWORD
+MAX_PATH = 260
 
-def GetProcessFileName(hHandle):
+
+def GetLongPathName(file):
+    succ = _GetLongPathName(file, None, 0)
+    if succ == 0:
+        return file
+    buff = create_unicode_buffer(succ)
+    succ = _GetLongPathName(file, buff, succ)
+    path = buff.value
+    return path
+
+
+def _GetProcessFileName(hHandle):
     w = create_unicode_buffer(65535)
     # 我佛了，太混乱了，不同权限获取的东西完全不一样
     if (
@@ -349,6 +364,14 @@ def GetProcessFileName(hHandle):
         return v
     else:
         return v
+
+
+def GetProcessFileName(hHandle):
+    p = _GetProcessFileName(hHandle)
+    if p:
+        # GetModuleFileNameExW有可能莫名其妙得到短路径，导致部分路径无法匹配
+        p = GetLongPathName(p)
+    return p
 
 
 _CreateProcessW = _kernel32.CreateProcessW
