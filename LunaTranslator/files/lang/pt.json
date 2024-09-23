@@ -506,7 +506,6 @@
     "使用YAPI注入": "Injectar utilizando YAPI",
     "窗口缩放": "Escala da janela",
     "缩放方式": "Método de dimensionamento",
-    "打开关联页面": "Abrir a página associada",
     "API超时(秒)": "Tempo limite da API (segundos)",
     "去除重复字符": "Remover caracteres duplicados",
     "游戏内叠加层": "Camada de sobreposição no jogo",
@@ -825,5 +824,6 @@
     "游戏适配": "Adaptação do jogo",
     "指定翻译器": "Especificar o tradutor",
     "关于软件": "Sobre o software",
-    "严格的": "estrito"
+    "严格的": "estrito",
+    "收藏夹": "Favoritos"
 }

@@ -2046,20 +2046,20 @@ class listediterline(QLineEdit):
 
 def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):
     if isdir:
-        f = QFileDialog.getExistingDirectory(directory=directory)
-        res = os.path.normpath(f)
+        res = QFileDialog.getExistingDirectory(directory=directory)
     else:
-        if multi:
-            f = QFileDialog.getOpenFileNames(directory=directory, filter=filter1)
-            res = [os.path.normpath(_) for _ in f[0]]
-        else:
-            f = QFileDialog.getOpenFileName(directory=directory, filter=filter1)
-            res = os.path.normpath(f[0])
+        res = (QFileDialog.getOpenFileName, QFileDialog.getOpenFileNames)[multi](
+            directory=directory, filter=filter1
+        )[0]
 
-    if len(res) == 0:
+    if not res:
         return
+    if isinstance(res, list):
+        res = [os.path.normpath(_) for _ in res]
+    else:
+        res = os.path.normpath(res)
     if edit:
-        edit.setText("|".join(res) if multi else res)
+        edit.setText("|".join(res) if isinstance(res, list) else res)
     if callback:
         callback(res)
 

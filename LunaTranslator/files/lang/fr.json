@@ -498,7 +498,6 @@
     "使用YAPI注入": "Injection avec Yapi",
     "窗口缩放": "Zoom de la fenêtre",
     "缩放方式": "Mode de zoom",
-    "打开关联页面": "Ouvrir la page associée",
     "API超时(秒)": "API timeout (secondes)",
     "去除重复字符": "Supprimer les caractères dupliqués",
     "游戏内叠加层": "Couches superposées dans le jeu",
@@ -825,5 +824,6 @@
     "游戏适配": "Adaptation du jeu",
     "指定翻译器": "Spécifier le traducteur",
     "关于软件": "À propos du logiciel",
-    "严格的": "Strictement"
+    "严格的": "Strictement",
+    "收藏夹": "Favoris"
 }

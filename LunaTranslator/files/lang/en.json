@@ -497,7 +497,6 @@
     "使用YAPI注入": "Use YAPI Injection",
     "窗口缩放": "Window Scaling",
     "缩放方式": "Scaling Method",
-    "打开关联页面": "Open Related Page",
     "API超时(秒)": "API Timeout (s)",
     "去除重复字符": "Remove Duplicate Characters",
     "游戏内叠加层": "In-Game Overlay Layer",
@@ -825,5 +824,6 @@
     "游戏适配": "Game adaptation",
     "指定翻译器": "Specify translator",
     "关于软件": "About software",
-    "严格的": "strict"
+    "严格的": "strict",
+    "收藏夹": "Favorites"
 }

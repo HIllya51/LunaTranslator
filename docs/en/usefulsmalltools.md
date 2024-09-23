@@ -29,11 +29,3 @@ The gallery automatically includes images downloaded from the web based on metad
 ![img](https://image.lunatranslator.org/zh/usefulsmalltools/3.png)
 
 ![img](https://image.lunatranslator.org/zh/usefulsmalltools/8.png) 
-
-#### Associated Pages, Convenient Management of Game-related Web Pages
-
-![img](https://image.lunatranslator.org/zh/usefulsmalltools/5.png) 
-
-Equivalent to a small browser, mainly allowing you to create a small bookmark for each game. It automatically queries metadata to collect game pages from vndb/bangumi/dlsite/etc., and you can manually add some web pages related to this game (e.g., game strategy web pages, in addition to using memos, you can also use this function to collect them), making it convenient to view. It saves the trouble of creating and managing bookmarks in the browser.
-
-![img](https://image.lunatranslator.org/zh/usefulsmalltools/7.png)

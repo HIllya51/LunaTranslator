@@ -29,11 +29,3 @@
 ![img](https://image.lunatranslator.org/zh/usefulsmalltools/3.png)
 
 ![img](https://image.lunatranslator.org/zh/usefulsmalltools/8.png) 
-
-#### 关联页面，便捷管理游戏相关网页
-
-![img](https://image.lunatranslator.org/zh/usefulsmalltools/5.png) 
-
-相当于一个小浏览器，主要是可以为每个游戏，单独创建一个小的收藏夹。会自动查询元数据收藏游戏的vndb/bangumi/dlsite/等页面，也可以手动再添加一些和这个游戏关联的网页进去（例如游戏攻略的网页，除了用备忘录外，也可以用这个功能进行收藏），方便查看。免去了在浏览器里创建收藏夹进行管理的麻烦。
-
-![img](https://image.lunatranslator.org/zh/usefulsmalltools/7.png) 

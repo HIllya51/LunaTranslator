@@ -506,7 +506,6 @@
     "使用YAPI注入": "Injicera med YAPI",
     "窗口缩放": "Fönsterskalning",
     "缩放方式": "Skalningsmetod",
-    "打开关联页面": "Öppna associerad sida",
     "API超时(秒)": "Tidsfrist för API (sekunder)",
     "去除重复字符": "Ta bort dubbletter",
     "游戏内叠加层": "Överläggningslager i spelet",
@@ -825,5 +824,6 @@
     "游戏适配": "Spelanpassning",
     "指定翻译器": "Ange översättare",
     "关于软件": "Om programvara",
-    "严格的": "strikt"
+    "严格的": "strikt",
+    "收藏夹": "Favoriter"
 }

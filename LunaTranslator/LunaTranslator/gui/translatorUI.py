@@ -2,8 +2,8 @@ from qtsymbols import *
 import time, functools, threading, os, importlib, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
-from myutils.wrapper import threader, trypass, tryprint
-from myutils.config import globalconfig, saveallconfig, static_data
+from myutils.wrapper import threader, tryprint
+from myutils.config import globalconfig, saveallconfig, static_data, savehook_new_data
 from gui.dialog_savedgame import dialog_setting_game
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
@@ -26,7 +26,7 @@ from gui.usefulwidget import (
 )
 from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
-from gui.dialog_savedgame_setting import browserdialog, calculate_centered_rect
+from gui.dialog_savedgame_setting import favorites, calculate_centered_rect
 from gui.dynalang import LDialog
 
 
@@ -486,6 +486,30 @@ class TranslatorWindow(resizableframeless):
             self.refreshtoolicon()
             self.setontopthread()
 
+    def favoritesmenu(self):
+        menu = QMenu(gobject.baseobject.commonstylebase)
+        gameuid = gobject.baseobject.gameuid
+        maps = {}
+        if gameuid:
+            for name, link in savehook_new_data[gameuid]["relationlinks"]:
+                act = QAction(name)
+                maps[act] = link
+                menu.addAction(act)
+        if (
+            globalconfig["relationlinks"]
+            and gameuid
+            and savehook_new_data[gameuid]["relationlinks"]
+        ):
+            menu.addSeparator()
+        for name, link in globalconfig["relationlinks"]:
+            act = QAction(name)
+            maps[act] = link
+            menu.addAction(act)
+        action = menu.exec(QCursor.pos())
+        link = maps.get(action)
+        if link:
+            gobject.baseobject.openlink(link)
+
     def addbuttons(self):
         def simulate_key_ctrl():
             windows.SetForegroundWindow(gobject.baseobject.hwnd)
@@ -633,10 +657,13 @@ class TranslatorWindow(resizableframeless):
                 ),
             ),
             (
-                "open_relative_link",
-                lambda: browserdialog(
+                "game_ref_favorites",
+                self.favoritesmenu,
+                None,
+                None,
+                lambda: favorites(
                     gobject.baseobject.commonstylebase,
-                    trypass(lambda: gobject.baseobject.gameuid)(),
+                    gobject.baseobject.gameuid,
                 ),
             ),
             (

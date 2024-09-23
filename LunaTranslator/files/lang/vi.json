@@ -498,7 +498,6 @@
     "使用YAPI注入": "Sử dụng YAPI Injection",
     "窗口缩放": "Thu phóng cửa sổ",
     "缩放方式": "Cách thu phóng",
-    "打开关联页面": "Mở trang liên kết",
     "API超时(秒)": "Thời gian chờ API (giây)",
     "去除重复字符": "Loại bỏ các ký tự trùng lặp",
     "游戏内叠加层": "Lớp phủ trong trò chơi",
@@ -825,5 +824,6 @@
     "游戏适配": "Trò chơi phù hợp",
     "指定翻译器": "Chỉ định trình dịch",
     "关于软件": "Về phần mềm",
-    "严格的": "Nghiêm ngặt"
+    "严格的": "Nghiêm ngặt",
+    "收藏夹": "Yêu thích"
 }

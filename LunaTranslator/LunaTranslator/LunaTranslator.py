@@ -148,7 +148,7 @@ class MAINUI:
                     if self.autoswitchgameuid:
                         gameuid, _ = findgameuidofpath(getpidexe(_pid))
                         if gameuid:
-                            self.gameuid = gameuid[0]
+                            self.gameuid = gameuid
                 except:
                     print_exc()
             else:

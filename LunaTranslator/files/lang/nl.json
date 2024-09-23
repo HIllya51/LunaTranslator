@@ -506,7 +506,6 @@
     "使用YAPI注入": "Injecteren met YAPI",
     "窗口缩放": "Vensterschalen",
     "缩放方式": "Schaalmethode",
-    "打开关联页面": "De bijbehorende pagina openen",
     "API超时(秒)": "API timeout (seconden)",
     "去除重复字符": "Dubbele tekens verwijderen",
     "游戏内叠加层": "Overlaylaag in het spel",
@@ -825,5 +824,6 @@
     "游戏适配": "Game aanpassing",
     "指定翻译器": "Vertaler opgeven",
     "关于软件": "Over software",
-    "严格的": "strikt"
+    "严格的": "strikt",
+    "收藏夹": "Favorieten"
 }

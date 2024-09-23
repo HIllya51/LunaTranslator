@@ -570,7 +570,6 @@
             "simulate_key_ctrl",
             "simulate_key_enter",
             "copy_once",
-            "open_relative_link",
             "open_game_setting",
             "ocr_once",
             "ocr_once_follow",
@@ -604,10 +603,10 @@
                 "icon": "fa.file-o",
                 "align": 0
             },
-            "open_relative_link": {
+            "game_ref_favorites": {
                 "use": false,
-                "tip": "打开关联页面",
-                "icon": "fa.sitemap",
+                "tip": "收藏夹",
+                "icon": "fa.heart",
                 "align": 0
             },
             "open_game_setting": {

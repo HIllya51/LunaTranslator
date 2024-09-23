@@ -34,8 +34,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     The actual meaning is to read text once from the clipboard regardless of the current default text input source and pass it on to the subsequent translation/tts/... process
 
 1. #### <i class="fa fa-sitemap"></i> <i class="fa fa-icon fa-rotate-right"></i> Open Related Page
-    It is equivalent to a small browser, mainly for creating a small favorites folder for each game. It will automatically query metadata for game-related pages such as vndb/bangumi/dlsite/, and you can also manually add some web pages associated with the game (such as game strategy pages) for easy viewing. It saves the trouble of creating and managing bookmarks in a browser.
-    See [Useful Features](/zh/usefulsmalltools.md?id=Related Page, Convenient Management of Game-Related Web Pages)
+    Able to create a small favorites folder for each game. It includes automatically query metadata for game-related pages such as vndb/bangumi/dlsite/, and you can also manually add some web pages associated with the game (such as game strategy pages) for easy viewing. It saves the trouble of creating and managing bookmarks in a browser.
 1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> Game Settings
     When using HOOK mode to connect to a game, or using OCR mode to bind a game window, you can directly open the current game's settings window through this button
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> Mouse Through Window

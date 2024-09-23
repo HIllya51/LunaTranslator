@@ -506,7 +506,6 @@
     "使用YAPI注入": "Injekce pomocí YAPI",
     "窗口缩放": "Měřítko okna",
     "缩放方式": "Metoda škálování",
-    "打开关联页面": "Otevřít přidruženou stránku",
     "API超时(秒)": "Časový limit API (sekundy)",
     "去除重复字符": "Odstranit duplicitní znaky",
     "游戏内叠加层": "Vrstva překrytí ve hře",
@@ -825,5 +824,6 @@
     "游戏适配": "Úprava hry",
     "指定翻译器": "Upřesnit překladatele",
     "关于软件": "O softwaru",
-    "严格的": "přísná"
+    "严格的": "přísná",
+    "收藏夹": "Oblíbené"
 }

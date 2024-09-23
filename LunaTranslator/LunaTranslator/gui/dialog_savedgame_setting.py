@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
-import os, functools, uuid
+import functools, uuid
 from datetime import datetime, timedelta
 from traceback import print_exc
 import gobject
@@ -37,12 +37,9 @@ from gui.inputdialog import (
 from gui.specialwidget import ScrollFlow, chartwidget
 from gui.usefulwidget import (
     TableViewW,
-    saveposwindow,
     getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
-    auto_select_webview,
-    Prompt_dialog,
     clearlayout,
     getsimplecombobox,
     getspinbox,
@@ -62,164 +59,69 @@ from gui.dynalang import (
     LLabel,
     LDialog,
 )
-from gui.dialog_savedgame_common import tagitem, TagWidget
+from gui.dialog_savedgame_common import tagitem
 
 
 @Singleton
-class browserdialog(saveposwindow):
-    seturlsignal = pyqtSignal(str)
-
-    def startupsettitle(self, gameuid):
-
-        if gameuid:
-            title = savehook_new_data[gameuid]["title"]
-        else:
-            title = "LunaTranslator"
-        self.setWindowTitle(title)
-
-    def loadalllinks(self, gameuid):
-        items = []
-        if gameuid:
-            self.setWindowTitle(savehook_new_data[gameuid]["title"])
-
-        for link in globalconfig["relationlinks"]:
-            items.append((link[0], tagitem.TYPE_GLOABL_LIKE, link[1]))
-        if gameuid:
-            for link in savehook_new_data[self.gameuid]["relationlinks"]:
-                items.append((link[0], tagitem.TYPE_GAME_LIKE, link[1]))
-        if len(items) == 0:
-            items.append(
-                (
-                    "Luna",
-                    tagitem.TYPE_GLOABL_LIKE,
-                    static_data["main_server"][gobject.serverindex],
-                )
-            )
-        self.tagswidget.clearTag(False)
-        self.tagswidget.addTags(items)
-
-    def startupnavi(self, gameuid):
-        for idx in range(2, 100):
-            if idx == 2:
-                if gameuid:
-                    if len(savehook_new_data[gameuid]["relationlinks"]):
-                        navitarget = savehook_new_data[gameuid]["relationlinks"][-1][1]
-                        break
-            elif idx == 3:
-                if len(globalconfig["relationlinks"]):
-                    navitarget = globalconfig["relationlinks"][-1][1]
-                    break
-            else:
-                navitarget = None
-                break
-        if navitarget:
-            self.browser.navigate(navitarget)
-            self.urlchanged(navitarget)
-
-    def urlchanged(self, url):
-        self.tagswidget.lineEdit.setCurrentText(url)
-        self.current = url
-
-    def likelink(self):
-        _dia = Prompt_dialog(
-            self,
-            "收藏",
-            "",
-            [
-                ["名称", ""],
-                ["网址", self.current],
-            ],
-        )
-
-        if _dia.exec():
-
-            text = []
-            for _t in _dia.text:
-                text.append(_t.text())
-            if self.gameuid:
-                savehook_new_data[self.gameuid]["relationlinks"].append(text)
-                self.tagswidget.addTag(text[0], tagitem.TYPE_GAME_LIKE, text[1])
-            else:
-                globalconfig["relationlinks"].append(text)
-                self.tagswidget.addTag(text[0], tagitem.TYPE_GLOABL_LIKE, text[1])
-
-    def tagschanged(self, tags):
-        __ = []
-        __2 = []
-        for _name, _type, _url in tags:
-            if _type == tagitem.TYPE_GLOABL_LIKE:
-                __.append([_name, _url])
-            elif _type == tagitem.TYPE_GAME_LIKE:
-                __2.append([_name, _url])
-        globalconfig["relationlinks"] = __
-        if self.gameuid:
-            savehook_new_data[self.gameuid]["relationlinks"] = __2
-
-    def reinit(self, gameuid=None):
-
-        self.gameuid = gameuid
-        self.loadalllinks(gameuid)
-        self.startupnavi(gameuid)
-        self.startupsettitle(gameuid)
+class favorites(LDialog):
 
     def __init__(self, parent, gameuid=None) -> None:
-        super().__init__(parent, poslist=globalconfig["browserwidget"])
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         if gameuid:
             self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
-        self.browser = auto_select_webview(self)
-
-        self.tagswidget = TagWidget(self, exfoucus=True)
-        self.tagswidget.tagschanged.connect(self.tagschanged)
-
-        self.tagswidget.tagclicked.connect(self.urlclicked)
-        self.tagswidget.linepressedenter.connect(self.browser.navigate)
-        self.browser.on_load.connect(self.urlchanged)
-
-        hlay = QHBoxLayout()
-        hlay.addWidget(self.tagswidget)
-
-        hlay.addWidget(getIconButton(self.likelink, icon="fa.heart"))
-        hlay.addWidget(
-            getIconButton(
-                lambda: self.urlclicked((None, None, self.current)), icon="fa.repeat"
-            )
+        self.setWindowTitle("收藏夹")
+        self.gameuid = gameuid
+        self.reflist = (
+            savehook_new_data[self.gameuid]["relationlinks"]
+            if gameuid
+            else globalconfig["relationlinks"]
         )
-        _topw = QWidget()
-        _topw.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        _topw.setLayout(hlay)
-        layout = QVBoxLayout()
-        layout.setContentsMargins(*(0 for i in range(4)))
-        hlay.setContentsMargins(*(0 for i in range(4)))
-        layout.addWidget(_topw)
-        layout.addWidget(self.browser)
-        layout.setSpacing(0)
-        __w = QWidget()
-        __w.setLayout(layout)
-        self.setCentralWidget(__w)
+        model = LStandardItemModel()
+        model.setHorizontalHeaderLabels(["名称", "链接"])
+        formLayout = QVBoxLayout(self)
+        table = TableViewW(self, copypaste=True, updown=True)
+        table.setModel(model)
+        table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.Interactive
+        )
+        table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Interactive
+        )
+        table.horizontalHeader().setStretchLastSection(True)
+        for item in self.reflist:
+            model.appendRow([QStandardItem(item[0]), QStandardItem(item[1])])
 
-        self.reinit(gameuid)
+        table.insertplainrow = lambda row: model.insertRow(
+            row,
+            [
+                QStandardItem(),
+                QStandardItem(),
+            ],
+        )
+        formLayout.addWidget(table)
+        self.table = table
+        button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
+        button.btn1clicked.connect(functools.partial(table.insertplainrow, 0))
+        button.btn2clicked.connect(table.removeselectedrows)
+        button.btn5clicked.connect(self.apply)
+        button.btn3clicked.connect(functools.partial(table.moverank, -1))
+        button.btn4clicked.connect(functools.partial(table.moverank, 1))
+        self.button = button
+        formLayout.addWidget(button)
+        self.resize(QSize(600, 400))
         self.show()
 
-    def urlclicked(self, _):
-        tag, _, url = _
-        if url[:4].lower() != "http":
-            url = os.path.abspath(url)
-        self.browser.navigate(url)
+    def apply(self):
+        self.reflist.clear()
+        self.table.dedumpmodel(1)
+        for row in range(self.table.model().rowCount()):
+            k = self.table.getdata(row, 0)
+            v = self.table.getdata(row, 1)
+            self.reflist.append((k, v))
 
-    def showmenu(self, p):
-        tab_index = self.nettab.tabBar().tabAt(p)
-        if (self.hasvndb and tab_index == 0) or tab_index == self.nettab.count() - 1:
-            return
-        menu = QMenu(self)
-        shanchu = LAction(("删除"))
-        menu.addAction(shanchu)
-        action = menu.exec(self.mapToGlobal(p))
-        if action == shanchu:
-            self.nettab.setCurrentIndex(0)
-            self.nettab.removeTab(tab_index)
-            savehook_new_data[self.gameuid]["relationlinks"].pop(
-                tab_index - self.hasvndb
-            )
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self.button.setFocus()
+        self.apply()
 
 
 def maybehavebutton(self, gameuid, post):
@@ -314,10 +216,8 @@ class dialog_setting_game_internal(QWidget):
                         icons=("fa.gear",),
                     ),
                     getIconButton(
-                        lambda: browserdialog(
-                            gobject.baseobject.commonstylebase, gameuid
-                        ),
-                        icon="fa.book",
+                        lambda: favorites(gobject.baseobject.commonstylebase, gameuid),
+                        icon="fa.heart",
                     ),
                 ]
             ),
