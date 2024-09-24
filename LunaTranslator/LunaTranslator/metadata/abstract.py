@@ -71,7 +71,7 @@ class common:
             pair = self.__tasks_searchfordata.get()
             if len(pair) == 2:
                 gameuid, vid = pair
-                retrytime = 5
+                retrytime = 3
             elif len(pair) == 3:
                 gameuid, vid, retrytime = pair
             remove = True
@@ -86,13 +86,13 @@ class common:
                 vis = f"{self.config_all['name']}: {vid} load failed"
             if remove:
 
-                self.__safe_remove_task("searchfordatatasks", pair)
+                self.__safe_remove_task("searchfordatatasks", pair[:2])
             else:
                 if retrytime:
                     # 尝试5次仍不行则放弃
                     self.__tasks_searchfordata.put((gameuid, vid, retrytime - 1))
                 else:
-                    self.__safe_remove_task("searchfordatatasks", pair)
+                    self.__safe_remove_task("searchfordatatasks", pair[:2])
             gobject.baseobject.translation_ui.displayglobaltooltip.emit(vis)
 
     def __tasks_downloadimg_thread(self):
