@@ -89,7 +89,6 @@ class common:
                 self.__safe_remove_task("searchfordatatasks", pair[:2])
             else:
                 if retrytime:
-                    # 尝试5次仍不行则放弃
                     self.__tasks_searchfordata.put((gameuid, vid, retrytime - 1))
                 else:
                     self.__safe_remove_task("searchfordatatasks", pair[:2])
