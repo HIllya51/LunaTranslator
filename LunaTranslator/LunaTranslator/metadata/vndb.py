@@ -110,7 +110,11 @@ def getcharnamemapbyid(proxy, vid):
     namemap = {}
     try:
         for r in js["results"]:
-            namemap[r["original"]] = r["name"]
+            _o = r["original"]
+            # 英语游戏没有original
+            if not _o:
+                _o = r["name"]
+            namemap[_o] = r["name"]
     except:
         pass
     return namemap
