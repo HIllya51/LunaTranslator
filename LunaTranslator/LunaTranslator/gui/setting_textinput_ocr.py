@@ -315,7 +315,6 @@ class showocrimage(saveposwindow):
             gobject.baseobject.textgetmethod(text, False)
 
     def __init__(self, parent, cached):
-        self.img1 = None
         self.originimage = None
         super().__init__(parent, poslist=globalconfig["showocrgeo"])
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
@@ -330,17 +329,30 @@ class showocrimage(saveposwindow):
         hb = QHBoxLayout()
         hb.addWidget(icon)
         hb.addWidget(button)
+        self.dial = QSpinBox(self)
+        self.dial.setRange(0, 359)
+        self.dial.setWrapping(True)
+        self.dial.valueChanged.connect(self.onValueChanged)
+        self.dial.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        hb.addWidget(self.dial)
         self.layout1.addLayout(hb)
         self.layout1.addWidget(self.originlabel)
         self.setimage.connect(self.setimagefunction)
         if cached:
             self.setimagefunction(cached)
 
+    def onValueChanged(self, value):
+        transform = QTransform()
+        transform.rotate(value)
+        rotated_image = self.originimage.transformed(transform)
+        self.originlabel.showpixmap(QPixmap.fromImage(rotated_image))
+
     def retest(self):
         if self.originimage is None:
             return
-
-        text, infotype = ocr_run(self.originimage)
+        transform = QTransform()
+        transform.rotate(self.dial.value())
+        text, infotype = ocr_run(self.originimage.transformed(transform))
         if infotype:
             gobject.baseobject.displayinfomessage(text, infotype)
         else:
@@ -348,8 +360,7 @@ class showocrimage(saveposwindow):
 
     def setimagefunction(self, originimage):
         self.originimage = originimage
-        self.img1 = QPixmap.fromImage(originimage)
-        self.originlabel.showpixmap(self.img1)
+        self.originlabel.showpixmap(QPixmap.fromImage(originimage))
 
 
 def getocrgrid(self):
