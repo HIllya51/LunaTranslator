@@ -60,7 +60,7 @@ class gptcommon(basetrans):
     def createheaders(self):
         _ = {}
         if self.multiapikeycurrent["SECRET_KEY"]:
-            # 离线可以不填，不填时不要有
+            # 部分白嫖接口可以不填，填了反而报错
             _.update(
                 {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
             )
