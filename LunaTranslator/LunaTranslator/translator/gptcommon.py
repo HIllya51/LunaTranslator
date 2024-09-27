@@ -58,7 +58,12 @@ class gptcommon(basetrans):
         return data
 
     def createheaders(self):
-        _ = {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
+        _ = {}
+        if self.multiapikeycurrent["SECRET_KEY"]:
+            # 离线可以不填，不填时不要有
+            _.update(
+                {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
+            )
         if "openai.azure.com/openai/deployments/" in self.apiurl:
             _.update({"api-key": self.multiapikeycurrent["SECRET_KEY"]})
         return _
