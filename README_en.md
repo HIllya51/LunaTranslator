@@ -46,12 +46,6 @@ Supports almost all conceivable translation engines, including:
 
 - **Online TTS** Supports Volcano TTS, Youdao TTS, Edge TTS, Google TTS
 
-#### Translation Optimization
-
-- **Text Processing** Supports more than ten common text processing methods, and complex text processing can be achieved through the adjustment of combinations and execution order
-
-- **Translation Optimization** Supports the use of custom proper noun translation, supports the import of VNR shared dictionaries
-
 #### Japanese Learning
 
 - **Japanese Word Segmentation and Kana Display** Supports word segmentation and kana display using Mecab, etc.

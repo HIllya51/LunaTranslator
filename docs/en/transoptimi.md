@@ -36,10 +36,6 @@ The last column `Comment` is only used for the `Sakura Large Model`; other trans
 
 This method allows for certain corrections to the translation result after translation and can use the entire expression for complex corrections.
 
-#### **4. VNR Shared Dictionary**
-
-Used to support VNR's shared dictionary format; not recommended for use.
-
 ## Game-specific Translation Optimization
 
 In `Game Settings` -> `Translation Optimization`, if `Follow Default` is deactivated, game-specific translation optimization settings will be used.
