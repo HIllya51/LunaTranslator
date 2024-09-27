@@ -309,7 +309,7 @@
             "(.*?)\\{(.*?)\\}(.*?)",
             "(.*?)\\[(.*?)\\](.*?)"
         ],
-        "translator": 0,
+        "translator_2": 0,
         "as_fast_as_posible": true,
         "timeout_translate": 2,
         "trans_kanji": true,
