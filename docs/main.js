@@ -119,19 +119,34 @@ const navitexts = {
         homepage: '官方网站',
         downloadlink: '软件下载',
         vediotutorial: '视频教学',
-        contactme: '交流群'
+        contactme: 'QQ群963119821'
     },
     ru: {
         homepage: 'HomePage',
         downloadlink: 'Download',
         vediotutorial: 'Vedio Tutorial',
-        contactme: 'Chat Groups'
+        contactme: 'Discord'
     },
     en: {
         homepage: 'HomePage',
         downloadlink: 'Download',
         vediotutorial: 'Vedio Tutorial',
-        contactme: 'Chat Groups'
+        contactme: 'Discord'
+    }
+}
+const languagelinks = {
+    contactme: {
+        zh: 'https://qm.qq.com/q/I5rr3uEpi2',
+        ru: 'https://discord.com/invite/ErtDwVeAbB',
+        en: 'https://discord.com/invite/ErtDwVeAbB',
+    },
+    vediotutorial: {
+        zh: 'https://space.bilibili.com/592120404/video',
+        ru: 'https://www.youtube.com/results?search_query=LunaTranslator',
+        en: 'https://www.youtube.com/results?search_query=LunaTranslator',
+    },
+    homepage: {
+        zh: window.location.protocol + '//' + window.location.hostname.substring(5)
     }
 }
 function getcurrlang(url) {
@@ -172,12 +187,14 @@ window.onpopstate = function (event) {
 
         }
     }
-};
 
-function tohomeurl() {
-    var hostname = window.location.hostname;
-    window.open(window.location.protocol + '//' + hostname.substring(5), '_blank');
-}
+    for (let _id in languagelinks) {
+        let link = languagelinks[_id][currentlang]
+        if (link === undefined)
+            link = languagelinks[_id].zh
+        document.getElementById(_id).href = link
+    }
+};
 
 function copyToClipboard(text) {
     let url = window.location.href;
