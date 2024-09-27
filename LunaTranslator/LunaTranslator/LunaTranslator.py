@@ -70,7 +70,6 @@ class MAINUI:
         self.gettranslatelock = threading.Lock()
         self.outputers = {}
         self.processmethods = []
-        self.zhanweifu = 0
         self.AttachProcessDialog = None
         self.edittextui = None
         self.edittextui_cached = None
@@ -202,7 +201,6 @@ class MAINUI:
 
     def solvebeforetrans(self, content):
         contexts = []
-        self.zhanweifu = 0
         for method in self.processmethods:
             context = None
             try:

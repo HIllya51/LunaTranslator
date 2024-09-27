@@ -49,10 +49,10 @@ class Process:
     def __createfake(self):
         ___idx = 1
         if ___idx == 1:
-            xx = "ZX{}Z".format(chr(ord("B") + gobject.baseobject.zhanweifu))
+            xx = "ZX{}Z".format(chr(ord("B") + self.zhanweifu))
         elif ___idx == 2:
-            xx = "{{{}}}".format(gobject.baseobject.zhanweifu)
-        gobject.baseobject.zhanweifu += 1
+            xx = "{{{}}}".format(self.zhanweifu)
+        self.zhanweifu += 1
         return xx
 
     def process_before(self, japanese):
@@ -68,6 +68,8 @@ class Process:
                 continue
             gpt_dict.append(gpt)
             used.append((src, gpt["dst"]))
+        
+        self.zhanweifu = 0
         japanese1, mp1 = self.process_before1(japanese, used)
 
         return japanese1, {

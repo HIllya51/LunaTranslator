@@ -23,6 +23,9 @@ def list_models(typename, regist):
 
 
 class gptcommon(basetrans):
+    @property
+    def apiurl(self):
+        return self.config.get("API接口地址", self.config.get("OPENAI_API_BASE", ""))
 
     def langmap(self):
         return createenglishlangmap()
@@ -44,7 +47,7 @@ class gptcommon(basetrans):
             temperature=temperature,
             stream=self.config["流式输出"],
         )
-        if "api.mistral.ai" not in self.config["API接口地址"]:
+        if "api.mistral.ai" not in self.apiurl:
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         try:
             if self.config["use_other_args"]:
@@ -56,7 +59,7 @@ class gptcommon(basetrans):
 
     def createheaders(self):
         _ = {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
-        if "openai.azure.com/openai/deployments/" in self.config.get("API接口地址", ""):
+        if "openai.azure.com/openai/deployments/" in self.apiurl:
             _.update({"api-key": self.multiapikeycurrent["SECRET_KEY"]})
         return _
 
@@ -132,6 +135,6 @@ class gptcommon(basetrans):
         return self.commonparseresponse(query, response, usingstream)
 
     def createurl(self):
-        if "openai.azure.com/openai/deployments/" in self.config["API接口地址"]:
-            return self.config["API接口地址"]
-        return createurl(self.config["API接口地址"])
+        if "openai.azure.com/openai/deployments/" in self.apiurl:
+            return self.apiurl
+        return createurl(self.apiurl)
