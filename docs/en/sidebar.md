@@ -21,7 +21,6 @@
 - [Translation Source Settings](/en/guochandamoxing.redirect)
     - [Using Large Model API for Translation](/en/guochandamoxing.md)
     - [Using Large Model Offline Translation](/en/offlinellm.md) 
-    - [Deploying SakuraLLM to an Online GPU Platform](/en/sakurallmcolab.md) 
     - [Using Debug Browser for Translation](/en/tiaoshiliulanqi.md)
 - [Text Processing & Translation Optimization](/en/textprocess.redirect)
     - [Functions and Usage of Various Text Processing Methods](/en/textprocess.md)

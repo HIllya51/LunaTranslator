@@ -87,7 +87,7 @@ window.$docsify = {
             hook.doneEach(() => {
                 var elements = document.querySelectorAll('code');
                 elements.forEach(function (element) {
-                    if (!element.innerHTML.startsWith('https://')) return
+                    if (!(window.location.href.endsWith('guochandamoxing') || window.location.href.endsWith('baipiaojiekou'))) return
                     element.addEventListener('click', function () {
                         copyToClipboard(element.innerText)
                     });
@@ -201,21 +201,21 @@ function copyToClipboard(text) {
     let thislang = getcurrlang(url)
     const langs = {
         zh: {
-            ok: '已复制到剪贴板！',
+            ok: '已复制到剪贴板',
             fail: '无法复制:',
         },
         en: {
-            ok: 'Copy to clipboard!',
+            ok: 'Copy to clipboard',
             fail: 'Cannot copy:',
         },
         ru: {
-            ok: 'Копировать в буфер обмена!',
+            ok: 'Копировать в буфер обмена',
             fail: 'Невозможно скопировать:',
         },
     }
 
     navigator.clipboard.writeText(text).then(function () {
-        showToast(langs[thislang].ok);
+        showToast(langs[thislang].ok + '\n' + text);
     }, function (err) {
         showToast(langs[thislang].fail + err);
     });

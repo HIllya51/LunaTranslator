@@ -21,7 +21,6 @@
 - [Настройки источника перевода](/ru/guochandamoxing.redirect)
     - [Использование API большой модели для перевода](/ru/guochandamoxing.md)
     - [Использование офлайн-перевода большой модели](/ru/offlinellm.md) 
-    - [Развертывание SakuraLLM на онлайн-платформе GPU](/ru/sakurallmcolab.md) 
     - [Использование отладочного браузера для перевода](/ru/tiaoshiliulanqi.md)
 - [Обработка текста и оптимизация перевода](/ru/textprocess.redirect)
     - [Функции и использование различных методов обработки текста](/ru/textprocess.md)
