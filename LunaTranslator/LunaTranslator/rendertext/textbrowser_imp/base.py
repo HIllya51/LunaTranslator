@@ -1,5 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
+import unicodedata
 
 
 class base(QWidget):
@@ -55,13 +56,15 @@ class base(QWidget):
         self.movedy = 0
         dx, dy = self.moveoffset()
         text = self.text()
-        isarabic = lambda char: (ord(char) >= 0x0600 and ord(char) <= 0x06E0)
-        isfirstara = lambda text: len(text) and (
-            isarabic(text[0])
-            or (any(isarabic(_) for _ in text))
-            and (isarabic(text[0]) or (ord(text[0]) in (32, 46)))
-        )
-        if isfirstara(text):
+        al = False
+        for _ in text:
+            d = unicodedata.bidirectional(_)
+            if d == "AL" or d == "R":
+                al = True
+                break
+            if d == "L":
+                break
+        if al:
             self.movedx -= self.width()
             self.movedx += dx
         else:
