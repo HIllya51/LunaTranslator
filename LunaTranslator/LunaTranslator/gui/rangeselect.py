@@ -3,6 +3,7 @@ import windows, winsharedutils
 from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
 from gui.dynalang import LAction
+from traceback import print_exc
 
 
 class rangeadjust(Mainw):
@@ -181,7 +182,6 @@ class rangeselect(QMainWindow):
         self.__start = None
         self.__end = None
         self.startauto = False
-        self.clickrelease = False
         self.rectlabel.resize(0, 0)
         self.rectlabel.setStyleSheet(
             " border:%spx solid %s; background-color: rgba(0,0,0, 0)"
@@ -190,18 +190,6 @@ class rangeselect(QMainWindow):
         self.setStyleSheet(
             "background-color: rgba(255,255,255, %s)" % globalconfig["ocrselectalpha"]
         )
-
-    def immediateend(self):
-        try:
-
-            self.close()
-
-            if not self.once:
-                return
-            self.once = False
-            self.callback(self.getRange())
-        except:
-            pass
 
     def paintEvent(self, event):
 
@@ -227,9 +215,8 @@ class rangeselect(QMainWindow):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
-            if self.clickrelease:
-                self.clickrelease = False
-                self.mouseReleaseEvent(event)
+            if self.startauto:
+                self.callbackfunction(event)
             else:
                 self.end_point = self.start_point = event.pos()
                 self.is_drawing = True
@@ -241,14 +228,14 @@ class rangeselect(QMainWindow):
             self.is_drawing = True
             self.end_point = self.start_point = event.pos()
             self.__start = self.__end = windows.GetCursorPos()
-            self.startauto = False
         if self.is_drawing:
             self.end_point = event.pos()
             self.__end = windows.GetCursorPos()
             self.update()
 
     def getRange(self):
-
+        if self.__start is None:
+            self.__start = self.__end
         x1, y1, x2, y2 = (
             self.__start.x,
             self.__start.y,
@@ -261,22 +248,27 @@ class rangeselect(QMainWindow):
 
         return ((x1, y1), (x2, y2))
 
+    def callbackfunction(self, event):
+        if not self.once:
+            return
+        self.once = False
+        self.end_point = event.pos()
+        self.__end = windows.GetCursorPos()
+        self.close()
+        try:
+            self.callback(self.getRange())
+        except:
+            print_exc()
+
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
-            self.end_point = event.pos()
-            self.__end = windows.GetCursorPos()
-
-            self.close()
-            if not self.once:
-                return
-            self.once = False
-            self.callback(self.getRange())
+            self.callbackfunction(event)
 
 
 screen_shot_ui = None
 
 
-def rangeselct_function(callback, clickrelease, startauto):
+def rangeselct_function(callback, startauto):
     global screen_shot_ui
     if screen_shot_ui is None:
         screen_shot_ui = rangeselect()
@@ -287,4 +279,3 @@ def rangeselct_function(callback, clickrelease, startauto):
     windows.SetFocus(int(screen_shot_ui.winId()))
 
     screen_shot_ui.startauto = startauto
-    screen_shot_ui.clickrelease = clickrelease

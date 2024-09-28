@@ -269,7 +269,6 @@
     "默认设置": "configuração predefinida",
     "意大利语": "Italiano",
     "已保存游戏": "Jogo gravado",
-    "使用最快翻译而非指定翻译器": "Usar a tradução mais rápida em vez de especificar um tradutor",
     "有道api": "API Youdao",
     "显示显示原文按钮": "Mostrar o botão do texto original",
     "去除花括号{}": "Remover as chaves encaracoladas {}",
@@ -823,5 +822,6 @@
     "指定翻译器": "Especificar o tradutor",
     "关于软件": "Sobre o software",
     "严格的": "estrito",
-    "收藏夹": "Favoritos"
+    "收藏夹": "Favoritos",
+    "使用指定翻译器": "Usar o tradutor designado"
 }

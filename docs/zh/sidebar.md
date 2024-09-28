@@ -14,7 +14,7 @@
     - [内嵌翻译](/zh/embedtranslate.md)
     - [在XP虚拟机上玩古老游戏并提取文本翻译](/zh/playonxp.md)
 - [OCR相关设置](/zh/ocrparam.redirect)
-    - [OCR自动化执行方法的参数含义](/zh/ocrparam.md)
+    - [OCR自动化执行方法](/zh/ocrparam.md)
     - [WindowsOCR安装额外的语言支持](/zh/windowsocr.md)
     - [mangaocr整合包无法启动怎么办](/zh/mangaocr.md)
     - [OCR模式绑定游戏窗口](/zh/gooduseocr.md)

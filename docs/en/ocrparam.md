@@ -1,4 +1,4 @@
-## Parameter Meaning for OCR Automation Execution Methods
+## OCR Automation Execution Methods
 
 ### Analyze Image Update
 

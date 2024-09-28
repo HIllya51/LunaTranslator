@@ -202,6 +202,9 @@ class TextBrowser(QWidget, dataget):
         t.start()
 
     def calllunaheightchange(self, h):
+        extra_space = globalconfig["extra_space"]
+        extra_space_trans = globalconfig["extra_space_trans"]
+        h += -min(0, extra_space, extra_space_trans)
         self.contentsChanged.emit(
             QSize(
                 self._padding * 2 + self.width(),
@@ -303,6 +306,11 @@ class TextBrowser(QWidget, dataget):
                     # 显示名称时。不管了，就这样吧
                     text = text.replace(sig, "")
                     userawhtml = True
+
+                if len(text) == 0:
+                    userawhtml = True
+                    text = "<br>"
+
             args = dict(
                 atcenter=atcenter,
                 fontFamily=fmori,

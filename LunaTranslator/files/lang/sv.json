@@ -269,7 +269,6 @@
     "默认设置": "förvald inställning",
     "意大利语": "Italienska",
     "已保存游戏": "Sparat spel",
-    "使用最快翻译而非指定翻译器": "Använd den snabbaste översättningen istället för att ange en översättare",
     "有道api": "Youdao API",
     "显示显示原文按钮": "Visa originaltextknapp",
     "去除花括号{}": "Ta bort lockiga hängslen",
@@ -823,5 +822,6 @@
     "指定翻译器": "Ange översättare",
     "关于软件": "Om programvara",
     "严格的": "strikt",
-    "收藏夹": "Favoriter"
+    "收藏夹": "Favoriter",
+    "使用指定翻译器": "Använd utsedd översättare"
 }

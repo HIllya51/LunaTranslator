@@ -246,7 +246,6 @@
     "分析图像更新+周期执行": "Actualización de la imagen de análisis + Ejecución del ciclo",
     "调整游戏窗口按钮": "Ajustar el botón de la ventana del juego",
     "内嵌的翻译器": "Traductor incorporado",
-    "使用最快翻译而非指定翻译器": "Use la traducción más rápida en lugar del traductor especificado",
     "代理设置": "Configuración del agente",
     "自动更新": "Actualización automática",
     "排除复制自翻译器的文本": "Excluir el texto copiado del traductor",
@@ -823,5 +822,6 @@
     "指定翻译器": "Especificar traductor",
     "关于软件": "Sobre el software",
     "严格的": "Estricto",
-    "收藏夹": "Colección"
+    "收藏夹": "Colección",
+    "使用指定翻译器": "Uso del traductor especificado"
 }

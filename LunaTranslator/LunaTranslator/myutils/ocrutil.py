@@ -101,7 +101,7 @@ def __ocr_init():
 def ocr_run(qimage: QImage):
     image = qimage2binary(qimage, "PNG")
     if not image:
-        return ""
+        return "", None
     global _nowuseocrx, _ocrengine
     try:
         ocr_init()

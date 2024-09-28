@@ -354,6 +354,12 @@ def get_launchpath(uid):
 
 
 def findgameuidofpath(gamepath, findall=False):
+    if not gamepath:
+        # getpidexe在部分情况下可能为None，导致崩溃
+        if findall:
+            return []
+        else:
+            return None, None
     gamepath = os.path.normpath(gamepath)
     collect = []
     for sub in savegametaged:

@@ -240,7 +240,6 @@
     "说明": "spiegare",
     "分析图像更新+周期执行": "Analizza gli aggiornamenti delle immagini + esecuzione del ciclo",
     "内嵌的翻译器": "Traduttore incorporato",
-    "使用最快翻译而非指定翻译器": "Usa la traduzione più veloce invece di specificare un traduttore",
     "代理设置": "Impostazioni proxy",
     "自动更新": "Aggiornamento automatico",
     "排除复制自翻译器的文本": "Escludi testo copiato dal traduttore",
@@ -823,5 +822,6 @@
     "指定翻译器": "Specifica traduttore",
     "关于软件": "Informazioni sul software",
     "严格的": "severo",
-    "收藏夹": "Preferiti"
+    "收藏夹": "Preferiti",
+    "使用指定翻译器": "Usa traduttore designato"
 }

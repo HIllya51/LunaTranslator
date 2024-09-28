@@ -303,14 +303,16 @@
             "port": 2333
         }
     },
+    "translator_2": null,
+    "use_appointed_translate": false,
     "embedded": {
         "safecheck_use": true,
         "safecheckregexs": [
             "(.*?)\\{(.*?)\\}(.*?)",
             "(.*?)\\[(.*?)\\](.*?)"
         ],
-        "translator_2": 0,
-        "as_fast_as_posible": true,
+        "translator_2": null,
+        "use_appointed_translate": false,
         "timeout_translate": 2,
         "trans_kanji": true,
         "keeprawtext": false,

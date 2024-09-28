@@ -246,7 +246,6 @@
     "分析图像更新+周期执行": "Görüntü güncellemesi",
     "调整游戏窗口按钮": "Oyun pencere düğmelerini ayarla",
     "内嵌的翻译器": "İçeri yatırılmış çevirici",
-    "使用最快翻译而非指定翻译器": "Tercümanı belirlemek yerine en hızlı tercüme kullanın",
     "代理设置": "Proksi Ayarları",
     "自动更新": "Otomatik güncelleştirme",
     "排除复制自翻译器的文本": "Tercümeden kopyalanan metin dışarı çıkar",
@@ -823,5 +822,6 @@
     "指定翻译器": "Çevirmeyi belirtin",
     "关于软件": "Yazılım hakkında",
     "严格的": "strict",
-    "收藏夹": "Favoritler"
+    "收藏夹": "Favoritler",
+    "使用指定翻译器": "Belirlenmiş tercümanları kullan"
 }

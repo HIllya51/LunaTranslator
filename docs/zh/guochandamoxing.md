@@ -49,14 +49,6 @@
 
 **model** https://openrouter.ai/docs/models
 
-### **Deepbricks**
-
-**API接口地址** `https://api.deepbricks.ai/v1/chat/completions`
-
-**API Key** https://deepbricks.ai/api-key
-
-**model** https://deepbricks.ai/pricing
-
 ### **Mistral AI**
 
 **API接口地址** `https://api.mistral.ai/v1/chat/completions`

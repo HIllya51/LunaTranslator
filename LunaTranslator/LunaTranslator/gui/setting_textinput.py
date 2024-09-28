@@ -316,12 +316,8 @@ def gethookembedgrid(self):
             ),
         ],
         [
-            "使用最快翻译而非指定翻译器",
-            D_getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"),
-        ],
-        [
-            "内嵌的翻译器",
-            "",
+            "使用指定翻译器",
+            D_getsimpleswitch(globalconfig["embedded"], "use_appointed_translate"),
             D_getsimplecombobox(
                 alltransvis,
                 globalconfig["embedded"],
@@ -443,20 +439,14 @@ def filetranslate(self):
         [(functools.partial(createdownloadprogress, self), 0)],
         [],
         [
-            "指定翻译器",
-            (
-                D_getsimplecombobox(
-                    alltransvis,
-                    globalconfig["embedded"],
-                    "translator_2",
-                    internal=alltrans,
-                ),
-                3,
+            "使用指定翻译器",
+            D_getsimpleswitch(globalconfig, "use_appointed_translate"),
+            D_getsimplecombobox(
+                alltransvis,
+                globalconfig,
+                "translator_2",
+                internal=alltrans,
             ),
-        ],
-        [
-            "使用最快翻译而非指定翻译器",
-            D_getsimpleswitch(globalconfig["embedded"], "as_fast_as_posible"),
         ],
     ]
     return grids

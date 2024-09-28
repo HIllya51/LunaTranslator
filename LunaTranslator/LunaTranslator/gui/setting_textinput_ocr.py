@@ -303,6 +303,9 @@ class showocrimage(saveposwindow):
         res = f[0]
         if not res:
             return
+        self.ocrfile(res)
+
+    def ocrfile(self, res):
         img = QImage(res)
         if img.isNull():
             return
@@ -314,6 +317,17 @@ class showocrimage(saveposwindow):
         else:
             gobject.baseobject.textgetmethod(text, False)
 
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        files = [u.toLocalFile() for u in event.mimeData().urls()]
+        if len(files):
+            self.ocrfile(files[0])
+
     def __init__(self, parent, cached):
         self.originimage = None
         super().__init__(parent, poslist=globalconfig["showocrgeo"])
@@ -322,6 +336,7 @@ class showocrimage(saveposwindow):
         self.originlabel = pixmapviewer()
         qw = QWidget()
         self.layout1 = QVBoxLayout()
+        self.setAcceptDrops(True)
         self.setCentralWidget(qw)
         qw.setLayout(self.layout1)
         icon = getIconButton(callback=self.openff, icon="fa.folder-open")
@@ -342,6 +357,8 @@ class showocrimage(saveposwindow):
             self.setimagefunction(cached)
 
     def onValueChanged(self, value):
+        if not self.originimage:
+            return
         transform = QTransform()
         transform.rotate(value)
         rotated_image = self.originimage.transformed(transform)

@@ -77,7 +77,10 @@ class parsesrt:
     def __init__(self, file):
         self.file = file
         with open(file, "r", encoding="utf8") as ff:
-            self.blocks = ff.read().split("\n\n")
+            text = ff.read()
+            if text.endswith("\n"):
+                text = text[:-1]
+            self.blocks = text.split("\n\n")
 
     def __len__(self):
         return len(self.blocks)
@@ -140,11 +143,9 @@ class filetrans(basetext):
 
     def query(self, origin):
         ts = self.__query(origin)
-        t = ts.get(globalconfig["embedded"]["translator_2"], None)
-        if t:
-            return t
-        if globalconfig["embedded"]["as_fast_as_posible"]:
-            return (list(ts.values()) + [None])[0]
+        if globalconfig["use_appointed_translate"]:
+            return ts.get(globalconfig["translator_2"], None)
+        return (list(ts.values()) + [None])[0]
 
     @threader
     def starttranslatefile(self, file):
@@ -184,7 +185,12 @@ class filetrans(basetext):
                 continue
             ts = self.query(line)
             if not ts:
-                ts = self.waitfortranslation(line)
+                engine = (
+                    globalconfig["translator_2"]
+                    if globalconfig["use_appointed_translate"]
+                    else None
+                )
+                ts = self.waitfortranslation(line, engine)
             if self.ending:
                 return
 

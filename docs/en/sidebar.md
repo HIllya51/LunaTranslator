@@ -14,7 +14,7 @@
     - [Embedded Translation](/en/embedtranslate.md)
     - [Playing Old Games on XP Virtual Machine and Extracting Text for Translation](/en/playonxp.md)
 - [OCR Related Settings](/en/ocrparam.redirect)
-    - [Parameter Meanings for OCR Automation Execution Methods](/en/ocrparam.md)
+    - [OCR Automation Execution Methods](/en/ocrparam.md)
     - [Installing Additional Language Support for Windows OCR](/en/windowsocr.md)
     - [What to Do If the mangaocr Integration Package Fails to Start](/en/mangaocr.md)
     - [Binding Game Window in OCR Mode](/en/gooduseocr.md)

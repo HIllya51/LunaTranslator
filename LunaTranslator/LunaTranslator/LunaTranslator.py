@@ -1,5 +1,5 @@
 import time, uuid
-import os, threading, re, codecs, winreg
+import os, threading, re, winreg
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -15,7 +15,6 @@ from ctypes import c_int, CFUNCTYPE, c_void_p
 from myutils.utils import (
     minmaxmoveobservefunc,
     parsemayberegexreplace,
-    kanjitrans,
     find_or_create_uid,
     checkisusingwine,
     checkpostusing,
@@ -34,7 +33,7 @@ from textsource.textsourcebase import basetext
 from textsource.filetrans import filetrans
 from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
-import zhconv, functools
+import functools
 from gui.transhist import transhist
 from gui.edittext import edittext
 import importlib, qtawesome
@@ -271,11 +270,16 @@ class MAINUI:
         text,
         is_auto_run=True,
         waitforresultcallback=None,
+        waitforresultcallbackengine=None,
         donttrans=False,
     ):
         with self.solvegottextlock:
             succ = self.textgetmethod_1(
-                text, is_auto_run, waitforresultcallback, donttrans
+                text,
+                is_auto_run,
+                waitforresultcallback,
+                waitforresultcallbackengine,
+                donttrans,
             )
             if waitforresultcallback and not succ:
                 waitforresultcallback("")
@@ -285,6 +289,7 @@ class MAINUI:
         text,
         is_auto_run=True,
         waitforresultcallback=None,
+        waitforresultcallbackengine=None,
         donttrans=False,
     ):
         if not text:
@@ -357,7 +362,6 @@ class MAINUI:
 
         text_solved, optimization_params = self.solvebeforetrans(text)
 
-        usefultranslators = list(self.translators.keys())
         maybehaspremt = {}
         fix_rank = globalconfig["fix_translate_rank_rank"].copy()
 
@@ -379,6 +383,14 @@ class MAINUI:
 
         if len(real_fix_rank) == 0:
             return _showrawfunction()
+
+        if waitforresultcallbackengine:
+            if waitforresultcallbackengine in real_fix_rank:
+                real_fix_rank = [waitforresultcallbackengine]
+            else:
+                waitforresultcallbackengine = None
+
+        usefultranslators = real_fix_rank.copy()
         if globalconfig["fix_translate_rank"] and (not waitforresultcallback):
             _showrawfunction = functools.partial(
                 self._delaypreparefixrank, _showrawfunction, real_fix_rank
@@ -536,16 +548,7 @@ class MAINUI:
                 if len(self.currenttranslate):
                     self.currenttranslate += "\n"
                 self.currenttranslate += res
-                if globalconfig["embedded"]["as_fast_as_posible"] or (
-                    classname == globalconfig["embedded"]["translator_2"]
-                ):
-                    safe_callback(
-                        kanjitrans(zhconv.convert(res, "zh-tw"))
-                        if globalconfig["embedded"]["trans_kanji"]
-                        else res
-                    )
-                elif len(usefultranslators) == 0:
-                    safe_callback("")
+                safe_callback(res)
 
     def __usewhich(self):
 

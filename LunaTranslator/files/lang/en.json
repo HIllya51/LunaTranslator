@@ -246,7 +246,6 @@
     "分析图像更新+周期执行": "Analyze Image Update + Periodic Execution",
     "调整游戏窗口按钮": "Adjust Game Window Button",
     "内嵌的翻译器": "Embedded Translator",
-    "使用最快翻译而非指定翻译器": "Use Fastest Translation Engine Available",
     "代理设置": "Proxy Settings",
     "自动更新": "Auto Update",
     "排除复制自翻译器的文本": "Exclude Copied Text From Translator",
@@ -823,5 +822,6 @@
     "指定翻译器": "Specify translator",
     "关于软件": "About software",
     "严格的": "strict",
-    "收藏夹": "Favorites"
+    "收藏夹": "Favorites",
+    "使用指定翻译器": "Use designated translator"
 }

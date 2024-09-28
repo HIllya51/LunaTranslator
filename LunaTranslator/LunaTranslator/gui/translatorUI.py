@@ -465,7 +465,7 @@ class TranslatorWindow(resizableframeless):
             self.ocr_once_follow_rect = rect
             self.ocr_do_function(rect)
 
-        rangeselct_function(ocroncefunction, False, False)
+        rangeselct_function(ocroncefunction, False)
 
     @threader
     def simulate_key_enter(self):
@@ -1182,7 +1182,7 @@ class TranslatorWindow(resizableframeless):
             return
         self.showhidestate = False
 
-        rangeselct_function(self.afterrange, auto, auto)
+        rangeselct_function(self.afterrange, auto)
 
     @tryprint
     def afterrange(self, rect):

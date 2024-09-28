@@ -269,7 +269,6 @@
     "默认设置": "standaardinstelling",
     "意大利语": "Italiaans",
     "已保存游戏": "Opgeslagen spel",
-    "使用最快翻译而非指定翻译器": "Gebruik de snelste vertaling in plaats van een vertaler op te geven",
     "有道api": "Youdao API",
     "显示显示原文按钮": "Originele tekstknop weergeven",
     "去除花括号{}": "Krullende beugels verwijderen.",
@@ -823,5 +822,6 @@
     "指定翻译器": "Vertaler opgeven",
     "关于软件": "Over software",
     "严格的": "strikt",
-    "收藏夹": "Favorieten"
+    "收藏夹": "Favorieten",
+    "使用指定翻译器": "Gebruik aangewezen vertaler"
 }

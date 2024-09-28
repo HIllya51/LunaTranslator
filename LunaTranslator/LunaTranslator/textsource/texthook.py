@@ -2,7 +2,7 @@ import threading
 import re, os
 import time, gobject, windows
 from collections import OrderedDict
-import codecs, functools
+import zhconv, functools
 from winsharedutils import Is64bit
 from myutils.config import (
     globalconfig,
@@ -16,6 +16,7 @@ from myutils.utils import (
     getfilemd5,
     getlangtgt,
     getlanguagespace,
+    kanjitrans,
     safe_escape,
 )
 from myutils.hwnd import injectdll, test_injectable, ListProcess, getpidexe
@@ -450,9 +451,16 @@ class texthook(basetext):
             self.embedcallback(text, "")
             return
         if self.checkisusingembed(tp.addr, tp.ctx, tp.ctx2):
-            trans = self.waitfortranslation(text)
+            engine = (
+                globalconfig["embedded"]["translator_2"]
+                if globalconfig["embedded"]["use_appointed_translate"]
+                else None
+            )
+            trans = self.waitfortranslation(text, engine)
             if not trans:
                 trans = ""
+            if globalconfig["embedded"]["trans_kanji"]:
+                trans = kanjitrans(zhconv.convert(trans, "zh-tw"))
             self.embedcallback(text, trans)
 
     def embedcallback(self, text: str, trans: str):

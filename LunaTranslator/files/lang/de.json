@@ -269,7 +269,6 @@
     "默认设置": "Standardeinstellung",
     "意大利语": "Italienisch",
     "已保存游戏": "Gespeichertes Spiel",
-    "使用最快翻译而非指定翻译器": "Verwenden Sie die schnellste Übersetzung, anstatt einen Übersetzer anzugeben",
     "有道api": "Youdao API",
     "显示显示原文按钮": "Schaltfläche Originaltext anzeigen",
     "去除花括号{}": "Lockige Klammern entfernen {}",
@@ -823,5 +822,6 @@
     "指定翻译器": "Übersetzer angeben",
     "关于软件": "Über Software",
     "严格的": "streng",
-    "收藏夹": "Favoriten"
+    "收藏夹": "Favoriten",
+    "使用指定翻译器": "Verwende einen bestimmten Übersetzer"
 }

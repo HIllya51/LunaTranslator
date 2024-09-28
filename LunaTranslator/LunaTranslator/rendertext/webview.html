@@ -154,10 +154,6 @@
         miaobian1: miaobian12_common,
     }
     function dispatch_text_style_line(style, styleargs, text, args) {
-        if (text == '') {
-            text = '<br>'
-            args.userawhtml = true
-        }
         let ele = regist_style_imp[style](styleargs, text, args);
         if (args.userawhtml) {
             if (args.atcenter) {

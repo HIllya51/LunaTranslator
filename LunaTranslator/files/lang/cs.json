@@ -269,7 +269,6 @@
     "默认设置": "výchozí nastavení",
     "意大利语": "Italština",
     "已保存游戏": "Uložená hra",
-    "使用最快翻译而非指定翻译器": "Použijte nejrychlejší překlad místo určení překladatele",
     "有道api": "Youdao API",
     "显示显示原文按钮": "Zobrazit tlačítko původního textu",
     "去除花括号{}": "Odstraňte kudrnaté rovnátka.",
@@ -823,5 +822,6 @@
     "指定翻译器": "Upřesnit překladatele",
     "关于软件": "O softwaru",
     "严格的": "přísná",
-    "收藏夹": "Oblíbené"
+    "收藏夹": "Oblíbené",
+    "使用指定翻译器": "Použít určeného překladatele"
 }

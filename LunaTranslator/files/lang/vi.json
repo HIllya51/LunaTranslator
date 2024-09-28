@@ -246,7 +246,6 @@
     "分析图像更新+周期执行": "Phân tích cập nhật hình ảnh+thực hiện chu kỳ",
     "调整游戏窗口按钮": "Điều chỉnh nút cửa sổ trò chơi",
     "内嵌的翻译器": "Trình dịch nội tuyến",
-    "使用最快翻译而非指定翻译器": "Sử dụng bản dịch nhanh nhất thay vì chỉ định",
     "代理设置": "Thiết lập ủy nhiệm",
     "自动更新": "Cập nhật tự động",
     "排除复制自翻译器的文本": "Loại trừ văn bản sao chép tự dịch",
@@ -823,5 +822,6 @@
     "指定翻译器": "Chỉ định trình dịch",
     "关于软件": "Về phần mềm",
     "严格的": "Nghiêm ngặt",
-    "收藏夹": "Yêu thích"
+    "收藏夹": "Yêu thích",
+    "使用指定翻译器": "Dùng bộ dịch đã chỉ định"
 }

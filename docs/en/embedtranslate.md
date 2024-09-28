@@ -54,9 +54,10 @@ Due to the limitation of the number of text lines that the game can display, by 
 
 The principle of embedded translation is to pause the game in a certain function before the game displays the text, send the text to be displayed to the translator, wait for the translation, modify the text memory from the translated text, and then let the game continue to display the translation. Therefore, **when using a slower translation, it will definitely cause the game to stutter**. You can avoid long-term stuttering caused by slow translation by limiting the waiting time.
 
-**3. Use the Fastest Translation Instead of Specified Translation** and **Embedded Translator**
+**3. Use Specified Translator**
 
-When activating multiple translation sources, you can choose to embed a specified translation that works best, or use the fastest translation to reduce game stuttering.
+When multiple translation sources are activated, you can choose to embed a specified translation with the best effect. If not activated, or if the specified translator is not activated, the fastest translation will be used to reduce game lag.
+
 
 **4. Convert Characters to Traditional/Japanese**
 
