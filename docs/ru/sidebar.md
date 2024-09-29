@@ -16,7 +16,6 @@
 - [Настройки OCR](/ru/ocrparam.redirect)
     - [Автоматизированный метод выполнения OCR](/ru/ocrparam.md)
     - [Установка дополнительной языковой поддержки для Windows OCR](/ru/windowsocr.md)
-    - [Что делать, если интеграционный пакет mangaocr не запускается](/ru/mangaocr.md)
     - [Привязка окна игры в режиме OCR](/ru/gooduseocr.md)
 - [Настройки источника перевода](/ru/guochandamoxing.redirect)
     - [Использование API большой модели для перевода](/ru/guochandamoxing.md)

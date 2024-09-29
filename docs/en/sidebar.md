@@ -16,7 +16,6 @@
 - [OCR Related Settings](/en/ocrparam.redirect)
     - [OCR Automation Execution Methods](/en/ocrparam.md)
     - [Installing Additional Language Support for Windows OCR](/en/windowsocr.md)
-    - [What to Do If the mangaocr Integration Package Fails to Start](/en/mangaocr.md)
     - [Binding Game Window in OCR Mode](/en/gooduseocr.md)
 - [Translation Source Settings](/en/guochandamoxing.redirect)
     - [Using Large Model API for Translation](/en/guochandamoxing.md)
