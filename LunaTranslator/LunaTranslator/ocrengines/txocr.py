@@ -59,25 +59,22 @@ class OCR(baseocr):
             url="https://ocr.tencentcloudapi.com/", params=req_para, timeout=10
         )
         # print(r.text)
-        if r.status_code == 200:
-            try:
-                boxs = [
-                    [
-                        _["Polygon"][0]["X"],
-                        _["Polygon"][0]["Y"],
-                        _["Polygon"][1]["X"],
-                        _["Polygon"][1]["Y"],
-                        _["Polygon"][2]["X"],
-                        _["Polygon"][2]["Y"],
-                        _["Polygon"][3]["X"],
-                        _["Polygon"][3]["Y"],
-                    ]
-                    for _ in r.json()["Response"]["TextDetections"]
+
+        try:
+            boxs = [
+                [
+                    _["Polygon"][0]["X"],
+                    _["Polygon"][0]["Y"],
+                    _["Polygon"][1]["X"],
+                    _["Polygon"][1]["Y"],
+                    _["Polygon"][2]["X"],
+                    _["Polygon"][2]["Y"],
+                    _["Polygon"][3]["X"],
+                    _["Polygon"][3]["Y"],
                 ]
-                texts = [
-                    _["DetectedText"] for _ in r.json()["Response"]["TextDetections"]
-                ]
-                return self.common_solve_text_orientation(boxs, texts)
-            except:
-                raise Exception(r.json())
-        return r.text
+                for _ in r.json()["Response"]["TextDetections"]
+            ]
+            texts = [_["DetectedText"] for _ in r.json()["Response"]["TextDetections"]]
+            return {"box": boxs, "text": texts}
+        except:
+            raise Exception(r.text)

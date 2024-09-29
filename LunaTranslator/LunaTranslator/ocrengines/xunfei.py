@@ -153,6 +153,6 @@ class OCR(baseocr):
                     ]
                 )
                 texts.append(line["content"])
-            return self.common_solve_text_orientation(boxs, texts)
+            return {"box": boxs, "text": texts}
         except:
             raise Exception(finalResult)

@@ -34,8 +34,6 @@ class OCR(baseocr):
         boxs, transs, texts = doocr(imagebinary, self.srclang, self.tgtlang)
 
         if self.config["Translate"]:
-            self.isocrtranslate = True
-            return self.common_solve_text_orientation(boxs, transs)
+            return {"box": boxs, "text": transs, "isocrtranslate": True}
         else:
-            self.isocrtranslate = False
-            return self.common_solve_text_orientation(boxs, texts)
+            return {"box": boxs, "text": texts}

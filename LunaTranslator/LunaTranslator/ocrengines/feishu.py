@@ -38,6 +38,6 @@ class OCR(baseocr):
             },
         )
         try:
-            return self.space.join(res.json()["data"]["text_list"])
+            return res.json()["data"]["text_list"]
         except:
             raise Exception(res.text)

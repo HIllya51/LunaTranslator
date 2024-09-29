@@ -70,6 +70,6 @@ class OCR(baseocr):
                 for _ in response.json()["ParsedResults"][0]["TextOverlay"]["Lines"]
             ]
             self.countnum()
-            return self.common_solve_text_orientation(boxs, texts)
+            return {"box": boxs, "text": texts}
         except:
             raise Exception(response.text)

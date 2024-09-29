@@ -38,13 +38,14 @@ class OCR(baseocr):
         )
 
         try:
-            return self.common_solve_text_orientation(
-                [
+
+            return {
+                "box": [
                     [int(_) for _ in l["boundingBox"].split(",")]
                     for l in response.json()["lines"]
                 ],
-                [l["words"] for l in response.json()["lines"]],
-            )
+                "text": [l["words"] for l in response.json()["lines"]],
+            }
         except:
             raise Exception(response.text)
 
@@ -88,10 +89,10 @@ class OCR(baseocr):
             _ = []
             for l in response.json()["Result"]["regions"]:
                 _ += l["lines"]
-            return self.common_solve_text_orientation(
-                [[int(_) for _ in l["boundingBox"].split(",")] for l in _],
-                [l["text"] for l in _],
-            )
+            return {
+                "box": [[int(_) for _ in l["boundingBox"].split(",")] for l in _],
+                "text": [l["text"] for l in _],
+            }
         except:
             raise Exception(response.text)
 

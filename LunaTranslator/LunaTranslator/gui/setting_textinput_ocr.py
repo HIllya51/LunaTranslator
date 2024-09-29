@@ -287,6 +287,7 @@ def _ocrparam(self):
 @Singleton_close
 class showocrimage(saveposwindow):
     setimage = pyqtSignal(QImage)
+    setresult = pyqtSignal(dict)
 
     def closeEvent(self, e):
         gobject.baseobject.showocrimage = None
@@ -328,7 +329,7 @@ class showocrimage(saveposwindow):
         if len(files):
             self.ocrfile(files[0])
 
-    def __init__(self, parent, cached):
+    def __init__(self, parent, cached, cached2):
         self.originimage = None
         super().__init__(parent, poslist=globalconfig["showocrgeo"])
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
@@ -353,8 +354,11 @@ class showocrimage(saveposwindow):
         self.layout1.addLayout(hb)
         self.layout1.addWidget(self.originlabel)
         self.setimage.connect(self.setimagefunction)
+        self.setresult.connect(self.setocr)
         if cached:
             self.setimagefunction(cached)
+        if cached2:
+            self.setocr(cached2)
 
     def onValueChanged(self, value):
         if not self.originimage:
@@ -378,6 +382,9 @@ class showocrimage(saveposwindow):
     def setimagefunction(self, originimage):
         self.originimage = originimage
         self.originlabel.showpixmap(QPixmap.fromImage(originimage))
+
+    def setocr(self, result):
+        self.originlabel.showboxtext(result.get("box"), result.get("text"))
 
 
 def getocrgrid(self):

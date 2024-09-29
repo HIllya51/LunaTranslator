@@ -574,6 +574,6 @@ class OCR(baseocr):
             boxs = self.flatten4point(
                 [box["rect"] for box in resp["data"]["ocr_infos"]]
             )
-            return self.common_solve_text_orientation(boxs, texts)
+            return {"box": boxs, "text": texts}
         except:
             raise Exception(resp)

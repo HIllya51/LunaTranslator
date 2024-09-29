@@ -20,13 +20,16 @@ class baseocr(commonbase):
         if globalconfig["ocrmergelines"] == False:
             space = "\n"
         else:
-            space = getlanguagespace(self.srclang_1)
+            space = self.space_1
         return space
+
+    @property
+    def space_1(self):
+        return getlanguagespace(self.srclang_1)
 
     ############################################################
     _globalconfig_key = "ocr"
     _setting_dict = ocrsetting
-    isocrtranslate = False
 
     def flatten4point(self, boxs):
         return [
@@ -53,7 +56,7 @@ class baseocr(commonbase):
             whs *= w / h
         return whs < 1
 
-    def common_solve_text_orientation(self, boxs, texts):
+    def sort_text_lines(self, boxs, texts):
         vertical = int(globalconfig["verticalocr"])
 
         def norm48(box):
@@ -101,7 +104,7 @@ class baseocr(commonbase):
         lines = []
         for _j in juhe:
             lines.append(" ".join([texts[_] for _ in _j]))
-        return self.space.join(lines)
+        return lines
 
     ########################################################
     def level2init(self):
@@ -117,12 +120,39 @@ class baseocr(commonbase):
             self.level2init()
         try:
             text = self.ocr(imagebinary)
-            if text is None:
-                text = ""
         except Exception as e:
             self.needinit = True
             raise e
-        return self._100_f(text)
+
+        if isinstance(text, str):
+            text = {"text": [text]}
+        elif isinstance(text, (tuple, list)):
+            text = {"text": text}
+        elif not text:
+            text = {}
+        boxs = text.get("box")
+        texts = text.get("text")
+        if not boxs:
+            # 若无标注，则合并显示
+            boxs = [[0, 0, 0, 0, 0, 0, 0, 0]]
+            textonly = self.space.join(texts)
+            texts = [textonly]
+        else:
+            textonly = self.space.join(self.sort_text_lines(boxs, texts))
+            # 对齐box成4点格式
+            for i, box in enumerate(boxs):
+                if len(box) == 8:
+                    continue
+                x1, y1, x2, y2 = box
+                boxs[i] = (x1, y1, x2, y1, x2, y2, x1, y2)
+        textonly = self._100_f(textonly)
+        text = {
+            "box": boxs,
+            "text": texts,
+            "textonly": textonly,
+            "isocrtranslate": text.get("isocrtranslate", False),
+        }
+        return text
 
     def _100_f(self, line):
         if ocrerrorfix["use"] == False:

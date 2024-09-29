@@ -2151,11 +2151,18 @@ class pixmapviewer(QWidget):
         super().__init__(p)
         self.pix = None
         self._pix = None
+        self.boxtext = [], []
 
     def showpixmap(self, pix: QPixmap):
         pix.setDevicePixelRatio(self.devicePixelRatioF())
         self.pix = pix
         self._pix = None
+        self.boxtext = [], []
+        self.update()
+
+    def showboxtext(self, box, text):
+        self._pix = None
+        self.boxtext = box, text
         self.update()
 
     def paintEvent(self, e):
@@ -2164,6 +2171,7 @@ class pixmapviewer(QWidget):
                 if self._pix.size() != self.size() * self.devicePixelRatioF():
                     self._pix = None
             if not self._pix:
+
                 rate = self.devicePixelRatioF()
                 self._pix = QPixmap(self.size() * rate)
                 self._pix.setDevicePixelRatio(rate)
@@ -2181,6 +2189,36 @@ class pixmapviewer(QWidget):
                     x = self.width() / 2 - pix.width() / 2 / self.devicePixelRatioF()
                     y = self.height() / 2 - pix.height() / 2 / self.devicePixelRatioF()
                     painter.drawPixmap(int(x), int(y), pix)
+                    boxs, texts = self.boxtext
+                    try:
+                        scale = pix.height() / self.pix.height() / rate
+                        parsex = lambda xx: (xx) * scale + x
+                        parsey = lambda yy: (yy) * scale + y
+                        font = QFont()
+                        font.setFamily(globalconfig["fonttype"])
+                        font.setPointSizeF(globalconfig["fontsizeori"])
+                        pen = QPen()
+                        pen.setColor(QColor(globalconfig["rawtextcolor"]))
+                        painter.setFont(font)
+                        painter.setPen(pen)
+                        for i in range(len(boxs)):
+                            painter.drawText(
+                                QPointF(parsex(boxs[i][0]), parsey(boxs[i][1])),
+                                texts[i],
+                            )
+                            for j in range(len(boxs[i]) // 2):
+                                painter.drawLine(
+                                    QPointF(
+                                        parsex(boxs[i][j * 2]),
+                                        parsey(boxs[i][j * 2 + 1]),
+                                    ),
+                                    QPointF(
+                                        parsex(boxs[i][(j * 2 + 2) % len(boxs[i])]),
+                                        parsey(boxs[i][(j * 2 + 3) % len(boxs[i])]),
+                                    ),
+                                )
+                    except:
+                        print_exc()
             painter = QPainter(self)
             painter.drawPixmap(0, 0, self._pix)
         return super().paintEvent(e)

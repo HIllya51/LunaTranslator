@@ -6,8 +6,6 @@ from ocrengines.baseocrclass import baseocr
 
 
 class OCR(baseocr):
-    isocrtranslate = True
-
     def langmap(self):
         return {"zh": "zh-CHS", "cht": "zh-CHT"}
 
@@ -40,7 +38,10 @@ class OCR(baseocr):
         )
 
         try:
-            return self.space.join([l["tranContent"] for l in response.json()["lines"]])
+            return {
+                "text": [l["tranContent"] for l in response.json()["lines"]],
+                "isocrtranslate": True,
+            }
         except:
             raise Exception(response.text)
 
@@ -150,7 +151,7 @@ class OCR(baseocr):
                 [int(_) for _ in l["boundingBox"].split(",")]
                 for l in response.json()["resRegions"]
             ]
-            return self.common_solve_text_orientation(box, text)
+            return {"box": box, "text": text, "isocrtranslate": True}
         except:
             raise Exception(response.text)
 

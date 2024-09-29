@@ -68,8 +68,7 @@ class OCR(baseocr):
                 + ", ".join([_TR(getlang_inner2show(f)) for f in _allsupport])
             )
 
-        ret = winrtutils.OCR_f(imagebinary, self.supportmap[self.srclang], self.space)
+        ret = winrtutils.OCR_f(imagebinary, self.supportmap[self.srclang], self.space_1)
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
-
-        return self.common_solve_text_orientation(boxs, texts)
+        return {"box": boxs, "text": texts}

@@ -81,6 +81,7 @@ class MAINUI:
         self.gameuid = 0
         self.showocrimage = None
         self.showocrimage_cached = None
+        self.showocrimage_cached2 = None
         self.autoswitchgameuid = True
         self.istriggertoupdate = False
         self.thishastranslated = True
@@ -93,9 +94,19 @@ class MAINUI:
                 print_exc()
         self.showocrimage_cached = pair
 
+    def maybesetocrresult(self, pair):
+        if self.showocrimage:
+            try:
+                self.showocrimage.setresult.emit(pair)
+            except:
+                print_exc()
+        self.showocrimage_cached2 = pair
+
     def createshowocrimage(self):
         try:
-            self.showocrimage = showocrimage(self.settin_ui, self.showocrimage_cached)
+            self.showocrimage = showocrimage(
+                self.settin_ui, self.showocrimage_cached, self.showocrimage_cached2
+            )
             if self.showocrimage:
                 self.showocrimage.show()
         except:

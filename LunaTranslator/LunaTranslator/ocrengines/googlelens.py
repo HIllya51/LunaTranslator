@@ -36,5 +36,4 @@ class OCR(baseocr):
 
         res = ""
         text = lens_object["data"][3][4][0]
-
-        return self.space.join([self.space.join(_) for _ in text])
+        return text[0]

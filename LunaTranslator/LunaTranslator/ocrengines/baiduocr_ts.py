@@ -4,7 +4,6 @@ from ocrengines.baseocrclass import baseocr
 
 
 class OCR(baseocr):
-    isocrtranslate = True
 
     def langmap(self):
         return {
@@ -74,6 +73,6 @@ class OCR(baseocr):
                 )
                 for l in js["data"]["content"]
             ]
-            return self.common_solve_text_orientation(box, text)
+            return {"box": box, "text": text, "isocrtranslate": True}
         except:
             raise Exception(response.text)

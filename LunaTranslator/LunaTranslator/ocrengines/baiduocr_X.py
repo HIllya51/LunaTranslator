@@ -80,9 +80,7 @@ class OCR(baseocr):
 
             self.countnum()
             if interfacetype in [0, 2]:
-                return self.space.join(
-                    [x["words"] for x in response.json()["words_result"]]
-                )
+                return {"text": [x["words"] for x in response.json()["words_result"]]}
             else:
                 texts = [x["words"] for x in response.json()["words_result"]]
                 boxs = [
@@ -94,6 +92,6 @@ class OCR(baseocr):
                     )
                     for x in response.json()["words_result"]
                 ]
-                return self.common_solve_text_orientation(boxs, texts)
+                return {"box": boxs, "text": texts}
         except:
             raise Exception(response.text)

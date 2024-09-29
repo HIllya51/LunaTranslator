@@ -42,4 +42,4 @@ class OCR(baseocr):
         if len(err):
             raise Exception(err)
 
-        return self.space.join(res.split("\n"))
+        return res.split("\n")

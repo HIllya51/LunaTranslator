@@ -116,5 +116,5 @@ class OCR(baseocr):
         global globalonce
         if not globalonce:
             raise Exception
-
-        return self.common_solve_text_orientation(*globalonce.ocr(imagebinary))
+        boxs, texts = globalonce.ocr(imagebinary)
+        return {"box": boxs, "text": texts}

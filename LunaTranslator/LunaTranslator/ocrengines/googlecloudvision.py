@@ -40,6 +40,6 @@ class OCR(baseocr):
                         anno["boundingPoly"]["vertices"][3]["y"],
                     ]
                 )
-            return self.common_solve_text_orientation(boxs, texts)
+            return {"box": boxs, "text": texts}
         except:
             raise Exception(response.text)

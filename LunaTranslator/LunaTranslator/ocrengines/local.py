@@ -223,5 +223,4 @@ class OCR(baseocr):
             imagebinary,
             0,
         )
-
-        return self.common_solve_text_orientation(pss, texts)
+        return {"box": pss, "text": texts}
