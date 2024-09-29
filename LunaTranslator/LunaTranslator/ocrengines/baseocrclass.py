@@ -136,7 +136,7 @@ class baseocr(commonbase):
             # 若无标注，则合并显示
             boxs = [[0, 0, 0, 0, 0, 0, 0, 0]]
             textonly = self.space.join(texts)
-            texts = [textonly]
+            texts = ["\n".join(texts)]
         else:
             textonly = self.space.join(self.sort_text_lines(boxs, texts))
             # 对齐box成4点格式
