@@ -627,13 +627,10 @@
     "跟随默认": "Suivre par défaut",
     "删除行": "Supprimer une ligne",
     "使用": "Utilisation",
-    "过滤指定字数的文本": "Filtrer le texte pour le nombre de mots spécifié",
     "最小字数": "Nombre minimum de mots",
     "最大字数": "Nombre maximal de mots",
-    "过滤指定行数的文本": "Filtrer le texte pour le nombre de lignes spécifié",
     "最小行数": "Nombre minimum de lignes",
     "最大行数": "Nombre maximal de lignes",
-    "超过时截断而非过滤": "Troncation au - delà du temps plutôt que filtrage",
     "兼容接口": "Interface compatible",
     "调试浏览器": "Déboguer le Navigateur",
     "手动翻译": "Traduction manuelle",
@@ -823,5 +820,10 @@
     "关于软件": "À propos du logiciel",
     "严格的": "Strictement",
     "收藏夹": "Favoris",
-    "使用指定翻译器": "Utiliser le traducteur spécifié"
+    "使用指定翻译器": "Utiliser le traducteur spécifié",
+    "截断时反向截断": "Troncature inverse lors de la troncature",
+    "按字数过滤或截断": "Filtrer ou tronquer par nombre de mots",
+    "按行数过滤或截断": "Filtrer ou tronquer par nombre de lignes",
+    "超过最大字数时截断而非过滤": "Tronquer au lieu de filtrer lorsque le nombre maximal de mots est dépassé",
+    "超过最大行数时截断而非过滤": "Tronquer au lieu de filtrer lorsque le nombre maximal de lignes est dépassé"
 }

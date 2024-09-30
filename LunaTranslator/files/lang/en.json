@@ -626,13 +626,10 @@
     "跟随默认": "Follow Default",
     "删除行": "Delete Row",
     "使用": "Apply",
-    "过滤指定字数的文本": "Filter Text with Specified Number of Characters",
     "最小字数": "Minimum Number of Characters",
     "最大字数": "Maximum Number of Characters",
-    "过滤指定行数的文本": "Filter Text with Specified Number of Lines",
     "最小行数": "Minimum Number of Lines",
     "最大行数": "Maximum Number of Lines",
-    "超过时截断而非过滤": "Truncate Instead of Filter When Exceeded",
     "兼容接口": "Compatible Interface",
     "调试浏览器": "Browser Debug",
     "手动翻译": "Retranslate",
@@ -823,5 +820,10 @@
     "关于软件": "About software",
     "严格的": "strict",
     "收藏夹": "Favorites",
-    "使用指定翻译器": "Use designated translator"
+    "使用指定翻译器": "Use designated translator",
+    "截断时反向截断": "Reverse truncation during truncation",
+    "按字数过滤或截断": "Filter or truncate by word count",
+    "按行数过滤或截断": "Filter or truncate by row count",
+    "超过最大字数时截断而非过滤": "Truncate instead of filtering when exceeding the maximum word count",
+    "超过最大行数时截断而非过滤": "Truncate instead of filtering when the maximum number of rows is exceeded"
 }

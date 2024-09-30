@@ -635,13 +635,10 @@
     "删除图片": "Bild löschen",
     "跟随默认": "Standardeinstellung folgen",
     "使用": "Verwendung",
-    "过滤指定字数的文本": "Text der angegebenen Wortanzahl filtern",
     "最小字数": "Minimale Wortanzahl",
     "最大字数": "Maximale Wortanzahl",
-    "过滤指定行数的文本": "Text mit einer bestimmten Anzahl von Zeilen filtern",
     "最小行数": "Mindestanzahl Zeilen",
     "最大行数": "Maximale Anzahl von Zeilen",
-    "超过时截断而非过滤": "Abschneiden bei Überschreitung statt Filtern",
     "调试浏览器": "Debugging-Browser",
     "显示引擎": "Anzeigemotor",
     "阴影字体": "Schattenschrift",
@@ -823,5 +820,10 @@
     "关于软件": "Über Software",
     "严格的": "streng",
     "收藏夹": "Favoriten",
-    "使用指定翻译器": "Verwende einen bestimmten Übersetzer"
+    "使用指定翻译器": "Verwende einen bestimmten Übersetzer",
+    "截断时反向截断": "Umgekehrte Abschneidung während des Abschneidens",
+    "按字数过滤或截断": "Nach Wortanzahl filtern oder kürzen",
+    "按行数过滤或截断": "Nach Zeilenanzahl filtern oder kürzen",
+    "超过最大字数时截断而非过滤": "Kürzen statt Filtern, wenn die maximale Wortanzahl überschritten wird",
+    "超过最大行数时截断而非过滤": "Kürzen statt Filtern, wenn die maximale Anzahl von Zeilen überschritten wird"
 }

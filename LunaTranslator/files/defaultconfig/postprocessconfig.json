@@ -3,7 +3,7 @@
         "use": false,
         "name": "字符串替换",
         "args": {
-            "internal":[]
+            "internal": []
         }
     },
     "_remove_non_shiftjis_char": {
@@ -32,11 +32,12 @@
     },
     "length_threshold": {
         "use": false,
-        "name": "过滤指定字数的文本",
+        "name": "按字数过滤或截断",
         "args": {
             "minzishu": 1,
             "maxzishu": 99999,
-            "cut": false
+            "cut": false,
+            "cut_reverse": false
         },
         "argstype": {
             "minzishu": {
@@ -54,18 +55,23 @@
                 "step": 1
             },
             "cut": {
-                "name": "超过时截断而非过滤",
+                "name": "超过最大字数时截断而非过滤",
+                "type": "switch"
+            },
+            "cut_reverse": {
+                "name": "截断时反向截断",
                 "type": "switch"
             }
         }
     },
     "lines_threshold": {
         "use": false,
-        "name": "过滤指定行数的文本",
+        "name": "按行数过滤或截断",
         "args": {
             "minzishu": 1,
             "maxzishu": 99999,
-            "cut": false
+            "cut": false,
+            "cut_reverse": false
         },
         "argstype": {
             "minzishu": {
@@ -83,7 +89,11 @@
                 "step": 1
             },
             "cut": {
-                "name": "超过时截断而非过滤",
+                "name": "超过最大行数时截断而非过滤",
+                "type": "switch"
+            },
+            "cut_reverse": {
+                "name": "截断时反向截断",
                 "type": "switch"
             }
         }

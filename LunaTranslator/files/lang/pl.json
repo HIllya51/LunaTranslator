@@ -627,13 +627,10 @@
     "跟随默认": "Postępuj zgodnie z domyślnym",
     "删除行": "Usuń wiersze",
     "使用": "stosować",
-    "过滤指定字数的文本": "Filtruj tekst z określoną liczbą słów",
     "最小字数": "Minimalna liczba słów",
     "最大字数": "Maksymalna liczba słów",
-    "过滤指定行数的文本": "Filtruj tekst z określoną liczbą wierszy",
     "最小行数": "Minimalna liczba wierszy",
     "最大行数": "Maksymalna liczba wierszy",
-    "超过时截断而非过滤": "Przycięcie zamiast filtrowania po przekroczeniu",
     "兼容接口": "Kompatybilny interfejs",
     "调试浏览器": "Debugowanie przeglądarki",
     "手动翻译": "Tłumaczenie ręczne",
@@ -823,5 +820,10 @@
     "关于软件": "O oprogramowaniu",
     "严格的": "surowe",
     "收藏夹": "Ulubione",
-    "使用指定翻译器": "Użyj wyznaczonego tłumacza"
+    "使用指定翻译器": "Użyj wyznaczonego tłumacza",
+    "截断时反向截断": "Odwrotne cięcie podczas cięcia",
+    "按字数过滤或截断": "Filtruj lub skróć według liczby słów",
+    "按行数过滤或截断": "Filtruj lub skróć według liczby wierszy",
+    "超过最大字数时截断而非过滤": "Przycięcie zamiast filtrowania przy przekroczeniu maksymalnej liczby słów",
+    "超过最大行数时截断而非过滤": "Przycięcie zamiast filtrowania przy przekroczeniu maksymalnej liczby wierszy"
 }

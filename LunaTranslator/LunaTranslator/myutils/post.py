@@ -312,18 +312,28 @@ def _remove_not_in_ja_bracket(line):
 
 
 def length_threshold(line, args):
-    if len(line) > args["maxzishu"] or len(line) < args["minzishu"]:
+    if len(line) > args["maxzishu"]:
         if args["cut"]:
-            return line[: args["maxzishu"]]
+            if args.get("cut_reverse", False):
+                return line[: args["maxzishu"]]
+            else:
+                return line[-args["maxzishu"] :]
+        return ""
+    if len(line) < args["minzishu"]:
         return ""
     return line
 
 
 def lines_threshold(line, args):
     sps = line.split("\n")
-    if len(sps) > args["maxzishu"] or len(sps) < args["minzishu"]:
+    if len(sps) > args["maxzishu"]:
         if args["cut"]:
-            return "\n".join(sps[: args["maxzishu"]])
+            if args.get("cut_reverse", False):
+                return "\n".join(sps[: args["maxzishu"]])
+            else:
+                return "\n".join(sps[-args["maxzishu"] :])
+        return ""
+    if len(sps) < args["minzishu"]:
         return ""
     return line
 

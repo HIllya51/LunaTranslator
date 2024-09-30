@@ -627,13 +627,10 @@
     "跟随默认": "Theo mặc định",
     "删除行": "Xoá dòng",
     "使用": "Sử dụng",
-    "过滤指定字数的文本": "Lọc văn bản xác định số lượng từ",
     "最小字数": "Số từ tối thiểu",
     "最大字数": "Số từ tối đa",
-    "过滤指定行数的文本": "Lọc văn bản xác định số dòng",
     "最小行数": "Số dòng tối thiểu",
     "最大行数": "Số dòng tối đa",
-    "超过时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá",
     "兼容接口": "Giao diện tương thích",
     "调试浏览器": "Gỡ lỗi trình duyệt",
     "手动翻译": "Dịch thủ công",
@@ -823,5 +820,10 @@
     "关于软件": "Về phần mềm",
     "严格的": "Nghiêm ngặt",
     "收藏夹": "Yêu thích",
-    "使用指定翻译器": "Dùng bộ dịch đã chỉ định"
+    "使用指定翻译器": "Dùng bộ dịch đã chỉ định",
+    "截断时反向截断": "Cắt cụt ngược khi cắt cụt",
+    "按字数过滤或截断": "Lọc hoặc cắt ngắn theo số lượng từ",
+    "按行数过滤或截断": "Lọc hoặc cắt ngắn theo số dòng",
+    "超过最大字数时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá số từ tối đa",
+    "超过最大行数时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá số dòng tối đa"
 }

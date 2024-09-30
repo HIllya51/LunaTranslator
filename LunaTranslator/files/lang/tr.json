@@ -627,13 +627,10 @@
     "跟随默认": "Öntanımlı takip et",
     "删除行": "Satırları Sil",
     "使用": "uygulama",
-    "过滤指定字数的文本": "Belirtilen kelime sayısıyla metin sil",
     "最小字数": "Minimal kelime sayısı",
     "最大字数": "Maksimum kelime sayısı",
-    "过滤指定行数的文本": "Belirtilen bir sayı hatlarla metin sil",
     "最小行数": "En az satır sayısı",
     "最大行数": "Azamik satır sayısı",
-    "超过时截断而非过滤": "Üstünde filtrelemek yerine küçük",
     "兼容接口": "Kompatibil arayüz",
     "调试浏览器": "Hata ayıklama tarayıcısı",
     "手动翻译": "Elle çevirim",
@@ -823,5 +820,10 @@
     "关于软件": "Yazılım hakkında",
     "严格的": "strict",
     "收藏夹": "Favoritler",
-    "使用指定翻译器": "Belirlenmiş tercümanları kullan"
+    "使用指定翻译器": "Belirlenmiş tercümanları kullan",
+    "截断时反向截断": "Kıpırdama sırasında geri döndürün",
+    "按字数过滤或截断": "Kelime sayıyla sil ya da küçük",
+    "按行数过滤或截断": "Sırada sayıyla sil ya da küçük",
+    "超过最大字数时截断而非过滤": "Maksimum kelime sayısından fazladığında filtreleme yerine küçük",
+    "超过最大行数时截断而非过滤": "Azamik satır sayısını aştığında filtrelemek yerine küçük"
 }

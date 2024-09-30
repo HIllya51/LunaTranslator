@@ -635,13 +635,10 @@
     "删除图片": "Afbeelding verwijderen",
     "跟随默认": "Standaard volgen",
     "使用": "gebruik",
-    "过滤指定字数的文本": "Filter tekst van opgegeven woordaantal",
     "最小字数": "Minimumaantal woorden",
     "最大字数": "Maximaal aantal woorden",
-    "过滤指定行数的文本": "Tekst filteren met een opgegeven aantal regels",
     "最小行数": "Minimumaantal rijen",
     "最大行数": "Maximaal aantal rijen",
-    "超过时截断而非过滤": "Afsnijden bij overschrijding in plaats van filteren",
     "调试浏览器": "Debugging-browser",
     "显示引擎": "Weergavemotor",
     "阴影字体": "Schaduwlettertype",
@@ -823,5 +820,10 @@
     "关于软件": "Over software",
     "严格的": "strikt",
     "收藏夹": "Favorieten",
-    "使用指定翻译器": "Gebruik aangewezen vertaler"
+    "使用指定翻译器": "Gebruik aangewezen vertaler",
+    "截断时反向截断": "Omgekeerde afsnijding tijdens afsnijding",
+    "按字数过滤或截断": "Filteren of inkorten op woordaantal",
+    "按行数过滤或截断": "Filteren of inkorten op rijaantal",
+    "超过最大字数时截断而非过滤": "Afsnijden in plaats van filteren bij overschrijding van het maximale aantal woorden",
+    "超过最大行数时截断而非过滤": "Afsnijden in plaats van filteren wanneer het maximale aantal rijen wordt overschreden"
 }

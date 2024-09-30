@@ -627,13 +627,10 @@
     "跟随默认": "Segui default",
     "删除行": "Elimina righe",
     "使用": "applicare",
-    "过滤指定字数的文本": "Filtra testo con numero di parole specificato",
     "最小字数": "Numero minimo di parole",
     "最大字数": "Numero massimo di parole",
-    "过滤指定行数的文本": "Filtra testo con un numero specificato di righe",
     "最小行数": "Numero minimo di righe",
     "最大行数": "Numero massimo di righe",
-    "超过时截断而非过滤": "Truncare invece di filtrare quando superato",
     "兼容接口": "Interfaccia compatibile",
     "调试浏览器": "Browser di debug",
     "手动翻译": "Traduzione manuale",
@@ -823,5 +820,10 @@
     "关于软件": "Informazioni sul software",
     "严格的": "severo",
     "收藏夹": "Preferiti",
-    "使用指定翻译器": "Usa traduttore designato"
+    "使用指定翻译器": "Usa traduttore designato",
+    "截断时反向截断": "Ritaglio inverso durante il tronco",
+    "按字数过滤或截断": "Filtra o tronca per numero di parole",
+    "按行数过滤或截断": "Filtra o tronca per numero di righe",
+    "超过最大字数时截断而非过滤": "Truncare invece di filtrare quando si supera il numero massimo di parole",
+    "超过最大行数时截断而非过滤": "Truncare invece di filtrare quando viene superato il numero massimo di righe"
 }

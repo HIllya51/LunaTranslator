@@ -635,13 +635,10 @@
     "删除图片": "Ta bort bild",
     "跟随默认": "Följ standard",
     "使用": "användning",
-    "过滤指定字数的文本": "Filtrera text för angivet ordantal",
     "最小字数": "Minsta ordantal",
     "最大字数": "Maximalt ordantal",
-    "过滤指定行数的文本": "Filtrera text med angivet antal rader",
     "最小行数": "Minsta antal rader",
     "最大行数": "Maximalt antal rader",
-    "超过时截断而非过滤": "Skär av när överskrids istället för filtrering",
     "调试浏览器": "Felsökningsbläddrare",
     "显示引擎": "Visningsmotor",
     "阴影字体": "Skuggteckensnitt",
@@ -823,5 +820,10 @@
     "关于软件": "Om programvara",
     "严格的": "strikt",
     "收藏夹": "Favoriter",
-    "使用指定翻译器": "Använd utsedd översättare"
+    "使用指定翻译器": "Använd utsedd översättare",
+    "截断时反向截断": "Omvänd trunkering under trunkering",
+    "按字数过滤或截断": "Filtrera eller förkorta efter ordräkning",
+    "按行数过滤或截断": "Filtrera eller förkorta efter radantal",
+    "超过最大字数时截断而非过滤": "Trunkera istället för filtrering när det maximala ordantalet överskrids",
+    "超过最大行数时截断而非过滤": "Trunkera istället för filtrering när det maximala antalet rader överskrids"
 }
