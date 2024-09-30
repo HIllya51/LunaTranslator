@@ -30,4 +30,3 @@
     - [Anki Integration](/en/qa2.md)
 - [Tool Buttons](/en/alltoolbuttons.md)
 - [Shortcut Keys](/en/fastkeys.md)
-- [Useful Features](/en/usefulsmalltools.md)

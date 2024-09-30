@@ -30,4 +30,3 @@
     - [Интеграция с Anki](/ru/qa2.md)
 - [Кнопки инструментов](/ru/alltoolbuttons.md)
 - [Горячие клавиши](/ru/fastkeys.md)
-- [Полезные функции](/ru/usefulsmalltools.md)
