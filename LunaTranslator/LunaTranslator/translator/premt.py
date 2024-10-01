@@ -19,6 +19,7 @@ class TS(basetrans):
 
     def checkfilechanged(self, p1, p):
         if self.paths != (p1, p):
+            self.sql = None
             if p:
                 if os.path.exists(p):
                     self.sql = autosql(sqlite3.connect(p, check_same_thread=False))
@@ -28,6 +29,7 @@ class TS(basetrans):
             self.paths = (p1, p)
 
     def inittranslator(self):
+        self.sql = None
         self.paths = (None, None)
         self.checkfilechanged(
             self.unsafegetcurrentgameconfig(), self.config["sqlitefile"]
@@ -37,10 +39,17 @@ class TS(basetrans):
         self.checkfilechanged(
             self.unsafegetcurrentgameconfig(), self.config["sqlitefile"]
         )
+        if self.sql is None:
+            try:
+                sql = gobject.baseobject.textsource.sqlwrite2
+            except:
+                return {}
+        else:
+            sql = self.sql
         if globalconfig["premtsimiuse"]:
             maxsim = 0
             savet = "{}"
-            ret = self.sql.execute("SELECT * FROM artificialtrans  ").fetchall()
+            ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
             if not ret:
                 return {}
             for line in ret:
@@ -59,7 +68,7 @@ class TS(basetrans):
 
         else:
 
-            ret = self.sql.execute(
+            ret = sql.execute(
                 "SELECT machineTrans FROM artificialtrans WHERE source = ?", (content,)
             ).fetchone()
             if not ret:

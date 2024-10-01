@@ -33,7 +33,7 @@ from textsource.textsourcebase import basetext
 from textsource.filetrans import filetrans
 from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
-import functools
+import functools, gobject
 from gui.transhist import transhist
 from gui.edittext import edittext
 import importlib, qtawesome
@@ -554,6 +554,10 @@ class MAINUI:
                         self.dispatchoutputer(res)
                 try:
                     self.textsource.sqlqueueput((contentraw, classname, res))
+                except:
+                    pass
+                try:
+                    gobject.edittrans.dispatch.emit(classname, res)
                 except:
                     pass
                 if len(self.currenttranslate):

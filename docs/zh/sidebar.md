@@ -22,7 +22,6 @@
     - [使用大模型API翻译](/zh/guochandamoxing.md)
     - [使用大模型离线翻译](/zh/offlinellm.md) 
     - [使用调试浏览器翻译](/zh/tiaoshiliulanqi.md)
-    - [部署SakuraLLM到在线GPU平台](/zh/sakurallmcolab.md) 
     - [可白嫖的大模型API](/zh/baipiaojiekou.md) 
 - [文本处理&翻译优化](/zh/textprocess.redirect)
     - [各种文本处理方法的作用和用法](/zh/textprocess.md)

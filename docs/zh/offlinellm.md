@@ -4,12 +4,7 @@
 
 > 推荐使用，配置简单，效果好，也可以纯cpu运行轻量模型
 
-部署方法
-
-1. [部署SakuraLLM到在线GPU平台](/zh/sakurallmcolab.md)
-
-
-2. 其他部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki
+部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki
 
 ### ChatGPT兼容接口
 

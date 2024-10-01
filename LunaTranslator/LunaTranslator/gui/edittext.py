@@ -2,6 +2,7 @@ from qtsymbols import *
 import threading, windows
 import gobject, qtawesome
 from myutils.config import globalconfig
+from myutils.utils import translate_exits
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow, getsimplecombobox
 from gui.dynalang import LPushButton, LMainWindow
@@ -106,12 +107,20 @@ class ctrlenter(QPlainTextEdit):
 
 @Singleton_close
 class edittrans(LMainWindow):
+    dispatch = pyqtSignal(str, str)
 
     def __init__(self, parent):
         super().__init__(parent, Qt.WindowType.FramelessWindowHint)
         self.setupUi()
         self.idx = 0
+        self.dispatch.connect(self.dispatchF)
         self.trykeeppos()
+        gobject.edittrans = self
+
+    def dispatchF(self, klass, ts):
+        if globalconfig["realtime_edit_target"] != klass:
+            return
+        self.textOutput.setPlainText(ts)
 
     def trykeeppos(self):
         self.followhwnd = gobject.baseobject.hwnd
@@ -144,13 +153,19 @@ class edittrans(LMainWindow):
         w.setLayout(qv)
         self.textOutput.enterpressed.connect(self.submitfunction)
         submit = LPushButton("确定")
+        vis, inter = [], []
+        for fanyi in globalconfig["fanyi"]:
+            if not translate_exits(fanyi):
+                continue
+            inter.append(fanyi)
+            vis.append(globalconfig["fanyi"][fanyi]["name"])
         qv.addWidget(self.textOutput)
         qv.addWidget(
             getsimplecombobox(
-                [globalconfig["fanyi"][x]["name"] for x in globalconfig["fanyi"]],
+                vis,
                 globalconfig,
                 "realtime_edit_target",
-                internal=list(globalconfig["fanyi"]),
+                internal=inter,
             )
         )
         qv.addWidget(submit)

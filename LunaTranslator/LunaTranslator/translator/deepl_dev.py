@@ -9,7 +9,7 @@ class TS(basetransdev):
     def srclang(self):
         if self.srclang_1 == "cht":
             return "zh"
-        return self.srclang_1.upper()
+        return self.srclang_1
 
     @property
     def tgtlang(self):
