@@ -251,6 +251,7 @@ class TranslatorWindow(resizableframeless):
     resizesignal = pyqtSignal(QSize)
     move_signal = pyqtSignal(QPoint)
     closesignal = pyqtSignal()
+    hotkeyuse_selectprocsignal = pyqtSignal()
 
     @threader
     def tracewindowposthread(self):
@@ -849,6 +850,7 @@ class TranslatorWindow(resizableframeless):
         linkviewer(link)
 
     def initsignals(self):
+        self.hotkeyuse_selectprocsignal.connect(gobject.baseobject.createattachprocess)
         self.hidesignal.connect(self.hide_)
         self.displaylink.connect(self.displaylink_f)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
