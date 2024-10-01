@@ -56,6 +56,7 @@
     var htmltabbuttons = ''
     var htmlcontents = ''
     var scriptElementss = []
+    var scriptElementsssrc = []
     for (var iiii = 0; iiii < dictionaryInfo.length; iiii++) {
         htmltabbuttons += '<button type="button" onclick="onclickbtn(\'' + dictionaryInfo[iiii]['dict'] + '\')" id="luna_dict_btn_' + dictionaryInfo[iiii]['dict'] + '" class="tab-button">' + dictionaryInfo[iiii]['name'] + '</button>'
 
@@ -72,12 +73,18 @@
 
         for (var jjjj = 0; jjjj < scriptElements.length; jjjj++) {
             scriptElementss.push(scriptElements[jjjj].textContent)
+            scriptElementsssrc.push(scriptElements[jjjj].src)
         }
     }
     document.getElementById('tab_buttons').innerHTML = htmltabbuttons
     document.getElementById('tab_contents').innerHTML = htmlcontents
     for (var iiii = 0; iiii < scriptElementss.length; iiii++) {
         eval(scriptElementss[iiii])
+        let newScript = document.createElement('script')
+        if (scriptElementsssrc[iiii]) {
+            newScript.src = scriptElementsssrc[iiii];
+            document.head.appendChild(newScript);
+        }
     }
     if (dictionaryInfo.length > 0) {
         onclickbtn(dictionaryInfo[0]['dict'])

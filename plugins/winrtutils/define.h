@@ -1,7 +1,7 @@
 #pragma once
 extern "C"
 {
-    __declspec(dllexport) void winrt_capture_window(wchar_t *savepath, HWND hwnd);
+    __declspec(dllexport) void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t));
 
     __declspec(dllexport) bool check_language_valid(wchar_t *);
     __declspec(dllexport) void getlanguagelist(void (*cb)(LPCWSTR));

@@ -12,6 +12,7 @@ from myutils.config import (
     extradatas,
     globalconfig,
 )
+from myutils.hwnd import clipboard_set_image
 from myutils.utils import str2rgba, get_time_stamp, loopbackrecorder
 from myutils.audioplayer import playonce
 from gui.inputdialog import autoinitdialog
@@ -468,7 +469,10 @@ class viewpixmap_x(QWidget):
         self.pathview.resize(e.size().width(), self.pathview.height())
         self.infoview.resize(e.size().width(), self.infoview.height())
         self.leftclick.setGeometry(
-            0, e.size().height() // 10, e.size().width() // 5, 7 * e.size().height() // 10
+            0,
+            e.size().height() // 10,
+            e.size().width() // 5,
+            7 * e.size().height() // 10,
         )
         self.bottombtn.setGeometry(
             e.size().width() // 5,
@@ -581,12 +585,14 @@ class pixwrapper(QWidget):
         else:
             seticon = LAction(("设为图标"))
         deleteimage = LAction(("删除图片"))
+        copyimage = LAction(("复制图片"))
         deleteimage_x = LAction(("删除图片文件"))
         hualang = LAction(("画廊"))
         pos = LAction(("位置"))
 
         menu.addAction(setimage)
         menu.addAction(seticon)
+        menu.addAction(copyimage)
         menu.addAction(deleteimage)
         menu.addAction(deleteimage_x)
         menu.addAction(hualang)
@@ -596,6 +602,8 @@ class pixwrapper(QWidget):
         action = menu.exec(QCursor.pos())
         if action == deleteimage:
             self.removecurrent(False)
+        elif copyimage == action:
+            clipboard_set_image(curr)
         elif action == deleteimage_x:
             self.removecurrent(True)
         elif action == pos:

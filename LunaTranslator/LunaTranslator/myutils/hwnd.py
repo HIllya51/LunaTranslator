@@ -5,12 +5,25 @@ import gobject
 import os, subprocess, functools
 import time, winrtutils, winsharedutils, hashlib
 from myutils.config import savehook_new_data, globalconfig
-from myutils.wrapper import threader
+from myutils.wrapper import threader, tryprint
+from myutils.utils import qimage2binary
+
+
+def clipboard_set_image(p: QImage):
+    if isinstance(p, str):
+        qimg = QImage()
+        qimg.load(p)
+        p = qimg
+    if p.isNull():
+        return
+    winsharedutils.clipboard_set_image(qimage2binary(p))
 
 
 @threader
-def grabwindow(app="PNG", callback_origin=None):
-    if callback_origin:
+def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
+    if tocliponly:
+        pass
+    elif callback_origin or tocliponly:
         fname = gobject.gettempdir(time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
         uid = None
     else:
@@ -42,50 +55,54 @@ def grabwindow(app="PNG", callback_origin=None):
         else:
             fname = fnamef()
 
-    def callback_1(callback, uid, fn):
-        if not os.path.exists(fn):
+    def callback_1(callback_origin, uid, tocliponly, p: QPixmap, fn):
+        if p.isNull():
             return
-        if callback:
-            callback(os.path.abspath(fn))
+        if tocliponly:
+            clipboard_set_image(p)
+            return
+        p.save(fn)
+        if callback_origin:
+            callback_origin(os.path.abspath(fn))
         if uid:
             savehook_new_data[uid]["imagepath_all"].append(fn)
 
-    callback = functools.partial(callback_1, callback_origin, uid)
-    hwnd = windows.FindWindow(
-        "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
-    )
-    if hwnd:
-
-        @threader
-        def _():
-            winrtutils._winrt_capture_window(fname + "_winrt_magpie." + app, hwnd)
-            callback(fname + "_winrt_magpie." + app)
-
-        _()
+    callback = functools.partial(callback_1, callback_origin, uid, tocliponly)
 
     hwnd = gobject.baseobject.hwnd
     if not hwnd:
         hwnd = windows.GetForegroundWindow()
     hwnd = windows.GetAncestor(hwnd)
     _ = windows.GetClientRect(hwnd)
-    p = screenshot(0, 0, _[2], _[3], hwnd).toImage()
-    if not p.allGray():
-        p.save(fname + "_gdi." + app)
-        callback(fname + "_gdi." + app)
+    p = gdi_screenshot(0, 0, _[2], _[3], hwnd)
 
-    if not callback_origin:
+    callback(p, fname + "_gdi." + app)
+    isshit = (not callback_origin) and (not tocliponly)
+    if (not p.isNull()) or isshit:
 
+        @threader
+        def _():
+            p = winrt_capture_window(hwnd)
+            callback(p, fname + "_winrt." + app)
+
+        _()
+
+    if isshit:
         gobject.baseobject.translation_ui.displaystatus.emit(
             "saved to " + fname, False, True
         )
 
-    @threader
-    def _():
-        winrtutils._winrt_capture_window(fname + "_winrt." + app, hwnd)
-        callback(fname + "_winrt." + app)
+        hwnd = windows.FindWindow(
+            "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
+        )
+        if hwnd:
 
-    if p.allGray() or (not callback_origin):
-        _()
+            @threader
+            def _():
+                p = winrt_capture_window(hwnd)
+                callback(p, fname + "_winrt_magpie." + app)
+
+            _()
 
 
 def getpidexe(pid):
@@ -238,13 +255,27 @@ def mouseselectwindow(callback):
     threading.Thread(target=_loop).start()
 
 
-def screenshot(x1, y1, x2, y2, hwnd=None):
+def safepixmap(bs):
+    if not bs:
+        return QPixmap()
+    pixmap = QPixmap()
+    pixmap.loadFromData(bs)
+    if pixmap.isNull():
+        return QPixmap()
+    if pixmap.toImage().allGray():
+        return QPixmap()
+    return pixmap
+
+
+def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
     if hwnd:
         _r = QApplication.instance().devicePixelRatio()
         _dpi = windows.GetDpiForWindow(hwnd)
         x1, y1, x2, y2 = (int(_ * _dpi / 96 / _r) for _ in (x1, y1, x2, y2))
     bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2, hwnd)
-    pixmap = QPixmap()
-    if bs:
-        pixmap.loadFromData(bs)
-    return pixmap
+    return safepixmap(bs)
+
+
+def winrt_capture_window(hwnd):
+    bs = winrtutils.winrt_capture_window(hwnd)
+    return safepixmap(bs)

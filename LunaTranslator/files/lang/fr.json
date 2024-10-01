@@ -825,5 +825,6 @@
     "按字数过滤或截断": "Filtrer ou tronquer par nombre de mots",
     "按行数过滤或截断": "Filtrer ou tronquer par nombre de lignes",
     "超过最大字数时截断而非过滤": "Tronquer au lieu de filtrer lorsque le nombre maximal de mots est dépassé",
-    "超过最大行数时截断而非过滤": "Tronquer au lieu de filtrer lorsque le nombre maximal de lignes est dépassé"
+    "超过最大行数时截断而非过滤": "Tronquer au lieu de filtrer lorsque le nombre maximal de lignes est dépassé",
+    "复制图片": "Copier l'image"
 }

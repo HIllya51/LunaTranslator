@@ -825,5 +825,6 @@
     "按字数过滤或截断": "Filtrera eller förkorta efter ordräkning",
     "按行数过滤或截断": "Filtrera eller förkorta efter radantal",
     "超过最大字数时截断而非过滤": "Trunkera istället för filtrering när det maximala ordantalet överskrids",
-    "超过最大行数时截断而非过滤": "Trunkera istället för filtrering när det maximala antalet rader överskrids"
+    "超过最大行数时截断而非过滤": "Trunkera istället för filtrering när det maximala antalet rader överskrids",
+    "复制图片": "Kopiera bild"
 }

@@ -825,5 +825,6 @@
     "按字数过滤或截断": "Lọc hoặc cắt ngắn theo số lượng từ",
     "按行数过滤或截断": "Lọc hoặc cắt ngắn theo số dòng",
     "超过最大字数时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá số từ tối đa",
-    "超过最大行数时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá số dòng tối đa"
+    "超过最大行数时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá số dòng tối đa",
+    "复制图片": "Sao chép ảnh"
 }

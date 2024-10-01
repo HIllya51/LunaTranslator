@@ -88,7 +88,8 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     You can scale the game window (HOOK linked game/clipboard, OCR bound window) with one click (default uses the built-in Magpie, or you can set it to use your own downloaded Magpie, etc.).<br>
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> Window Screenshot
     You can take a screenshot of the bound window (it will take two screenshots by default, GDI and Winrt, both of which have a certain probability of failure). The best part is that if you are currently using Magpie for scaling, it will also take a screenshot of the enlarged window.<br>
-    See [Useful Features](/zh/usefulsmalltools.md?id=Window Screenshot & Gallery & Recording, Capture Every Wonderful Moment)
+    When left clicked, the screenshot will be saved to a file, and when right clicked, the screenshot will be saved to the clipboard.
+
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> Game Mute
     After binding the game window (not just in HOOK mode, OCR or clipboard mode can also, as long as the game window is bound), you can mute the game with one click, saving the trouble of muting the game in the system volume mixer.
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> Show/Hide Original Text

@@ -825,5 +825,6 @@
     "按字数过滤或截断": "Filteren of inkorten op woordaantal",
     "按行数过滤或截断": "Filteren of inkorten op rijaantal",
     "超过最大字数时截断而非过滤": "Afsnijden in plaats van filteren bij overschrijding van het maximale aantal woorden",
-    "超过最大行数时截断而非过滤": "Afsnijden in plaats van filteren wanneer het maximale aantal rijen wordt overschreden"
+    "超过最大行数时截断而非过滤": "Afsnijden in plaats van filteren wanneer het maximale aantal rijen wordt overschreden",
+    "复制图片": "Afbeelding kopiëren"
 }

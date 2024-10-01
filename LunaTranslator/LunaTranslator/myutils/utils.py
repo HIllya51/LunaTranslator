@@ -23,6 +23,16 @@ import re, heapq, winsharedutils
 from myutils.wrapper import tryprint, threader
 
 
+def qimage2binary(qimage: QImage, fmt="BMP"):
+    byte_array = QByteArray()
+    buffer = QBuffer(byte_array)
+    buffer.open(QBuffer.OpenModeFlag.WriteOnly)
+    qimage.save(buffer, fmt)
+    buffer.close()
+    image_data = byte_array.data()
+    return image_data
+
+
 def checkisusingwine():
     iswine = True
     try:

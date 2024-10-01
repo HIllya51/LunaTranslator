@@ -88,7 +88,7 @@
     可以一键对游戏窗口(HOOK链接游戏/剪贴板、OCR绑定窗口)进行缩放（默认使用内置的Magpie，也可以设置使用自己下载的Magpie等）。<br>
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 窗口截图
     可以对绑定的窗口进行截图，（默认会截两张图，GDI和Winrt，两者均有一定概率会失败）。最好的地方是，如果当前正在使用Magpie进行缩放，还会对放大的窗口进行截图。<br>
-    详见[实用功能](/zh/usefulsmalltools.md?id=窗口截图amp画廊amp录音，捕捉每个精彩瞬间)
+    左键点击时会把截图保存到文件，右键点击时截图会保存到剪贴板。
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 游戏静音
     当绑定游戏窗口后（不只是hook模式，ocr或剪贴板模式都可以，只要绑定了游戏窗口），可以一键对游戏进行静音，省去了在系统音量合成器进行游戏静音的麻烦。
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 显示/隐藏原文

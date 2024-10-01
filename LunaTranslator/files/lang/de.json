@@ -825,5 +825,6 @@
     "按字数过滤或截断": "Nach Wortanzahl filtern oder kürzen",
     "按行数过滤或截断": "Nach Zeilenanzahl filtern oder kürzen",
     "超过最大字数时截断而非过滤": "Kürzen statt Filtern, wenn die maximale Wortanzahl überschritten wird",
-    "超过最大行数时截断而非过滤": "Kürzen statt Filtern, wenn die maximale Anzahl von Zeilen überschritten wird"
+    "超过最大行数时截断而非过滤": "Kürzen statt Filtern, wenn die maximale Anzahl von Zeilen überschritten wird",
+    "复制图片": "Bild kopieren"
 }

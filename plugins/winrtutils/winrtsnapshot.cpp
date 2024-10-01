@@ -56,9 +56,11 @@ int GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
     free(pImageCodecInfo);
     return -1; // Failure
 }
-void capture_window(HWND window_handle, const std::wstring &output_file_path)
+void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
 {
-    HMODULE hModule = LoadLibrary(TEXT("d3d11.dll"));
+    HMODULE hModule = GetModuleHandle(TEXT("d3d11.dll"));
+    if (!hModule)
+        hModule = LoadLibrary(TEXT("d3d11.dll"));
     HRESULT typedef(_stdcall * CreateDirect3D11DeviceFromDXGIDevice_t)(
         _In_ IDXGIDevice * dxgiDevice,
         _COM_Outptr_ IInspectable * *graphicsDevice);
@@ -88,7 +90,7 @@ void capture_window(HWND window_handle, const std::wstring &output_file_path)
     winrt::check_hresult(idxgi_device2->GetParent(winrt::guid_of<IDXGIAdapter>(), adapter.put_void()));
     winrt::com_ptr<IDXGIFactory2> factory;
     winrt::check_hresult(adapter->GetParent(winrt::guid_of<IDXGIFactory2>(), factory.put_void()));
-        
+
     winrt::com_ptr<ID3D11DeviceContext> d3d_context;
     d3d_device->GetImmediateContext(d3d_context.put());
 
@@ -132,7 +134,6 @@ void capture_window(HWND window_handle, const std::wstring &output_file_path)
             access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), texture.put_void());
             is_frame_arrived = true;
             return; });
-
     session.StartCapture();
 
     // Message pump
@@ -146,7 +147,6 @@ void capture_window(HWND window_handle, const std::wstring &output_file_path)
     }
 
     session.Close();
-    //??
 
     D3D11_TEXTURE2D_DESC captured_texture_desc;
     texture->GetDesc(&captured_texture_desc);
@@ -160,7 +160,6 @@ void capture_window(HWND window_handle, const std::wstring &output_file_path)
     winrt::check_hresult(d3d_device->CreateTexture2D(&captured_texture_desc, nullptr, user_texture.put()));
 
     d3d_context->CopyResource(user_texture.get(), texture.get());
-
     D3D11_MAPPED_SUBRESOURCE resource;
     winrt::check_hresult(d3d_context->Map(user_texture.get(), NULL, D3D11_MAP_READ, 0, &resource));
 
@@ -189,45 +188,23 @@ void capture_window(HWND window_handle, const std::wstring &output_file_path)
         sptr += resource.RowPitch;
         dptr -= l_bmp_row_pitch;
     }
+    d3d_context->Unmap(user_texture.get(), NULL);
+    BITMAPFILEHEADER bmfh;
+    memset(&bmfh, 0, sizeof(BITMAPFILEHEADER));
+    bmfh.bfType = 0x4D42; // 'BM'
+    bmfh.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + l_bmp_info.bmiHeader.biSizeImage;
+    bmfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
 
-    // FILE* lfile = nullptr;
-
-    // if (auto lerr = _wfopen_s(&lfile, output_file_path.c_str(), L"wb"); lerr != 0)
-    //{
-    //     return;
-    // }
-
-    // if (lfile != nullptr)
-    //{
-    //     BITMAPFILEHEADER bmp_file_header;
-
-    //    bmp_file_header.bfReserved1 = 0;
-    //    bmp_file_header.bfReserved2 = 0;
-    //    bmp_file_header.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + l_bmp_info.bmiHeader.biSizeImage;
-    //    bmp_file_header.bfType = 'MB';
-    //    bmp_file_header.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-
-    //    fwrite(&bmp_file_header, sizeof(BITMAPFILEHEADER), 1, lfile);
-    //    fwrite(&l_bmp_info.bmiHeader, sizeof(BITMAPINFOHEADER), 1, lfile);
-    //    fwrite(p_buf.get(), l_bmp_info.bmiHeader.biSizeImage, 1, lfile);
-
-    //    fclose(lfile);
-
-    //    //convert_image_encoding(output_file_path, L"png");
-    //}
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    ULONG_PTR gdiplusToken;
-    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-    Gdiplus::Bitmap *image = Gdiplus::Bitmap::FromBITMAPINFO(&l_bmp_info, p_buf.get());
-
-    CLSID encoderClsid;
-    GetEncoderClsid(L"image/png", &encoderClsid);
-
-    image->Save(output_file_path.c_str(), &encoderClsid, NULL);
-    delete image;
-    Gdiplus::GdiplusShutdown(gdiplusToken);
+    auto p_buf2 = std::make_unique<BYTE[]>(bmfh.bfSize);
+    auto ptr = p_buf2.get();
+    memcpy(ptr, &bmfh, sizeof(BITMAPFILEHEADER));
+    ptr += sizeof(BITMAPFILEHEADER);
+    memcpy(ptr, (char *)&l_bmp_info.bmiHeader, sizeof(BITMAPINFOHEADER));
+    ptr += sizeof(BITMAPINFOHEADER);
+    memcpy(ptr, p_buf.get(), l_bmp_info.bmiHeader.biSizeImage);
+    cb(p_buf2.get(), bmfh.bfSize);
 }
-void winrt_capture_window(wchar_t *savepath, HWND hwnd)
+void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
 {
     // auto hwnd = GetForegroundWindow();// FindWindow(L"Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", 0);
     auto style_ex = GetWindowLong(hwnd, GWL_EXSTYLE);
@@ -241,7 +218,7 @@ void winrt_capture_window(wchar_t *savepath, HWND hwnd)
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
     }
 
-    capture_window(hwnd, savepath);
+    capture_window(hwnd, cb);
     if (needset)
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex_save);
 }

@@ -63,11 +63,18 @@ bool clipboard_set(HWND hwnd, wchar_t *text)
             break;
         auto pchData = (wchar_t *)GlobalLock(hClipboardData);
         if (pchData == 0)
+        {
+            GlobalFree(hClipboardData);
             break;
+        }
         wcscpy_s(pchData, len, text);
         GlobalUnlock(hClipboardData);
-        SetClipboardData(CF_UNICODETEXT, hClipboardData);
-        success = true;
+        if (SetClipboardData(CF_UNICODETEXT, hClipboardData))
+            success = true;
+        else
+        {
+            GlobalFree(hClipboardData);
+        }
 
     } while (false);
     CloseClipboard();
@@ -136,4 +143,30 @@ DECLARE void clipboard_callback_stop(HWND hwnd)
         return;
     RemoveClipboardFormatListener(hwnd);
     DestroyWindow(hwnd);
+}
+
+DECLARE bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
+{
+    size -= sizeof(BITMAPFILEHEADER);
+    HGLOBAL hDib = GlobalAlloc(GMEM_MOVEABLE, size);
+    if (!hDib)
+        return false;
+    void *pDib = GlobalLock(hDib);
+    if (!pDib)
+    {
+        GlobalFree(hDib);
+        return false;
+    }
+    memcpy((char *)pDib, (char *)ptr + sizeof(BITMAPFILEHEADER), size);
+    if (tryopenclipboard(hwnd) == false)
+        return false;
+    EmptyClipboard();
+    if (!SetClipboardData(CF_DIB, hDib))
+    {
+        GlobalFree(hDib);
+        CloseClipboard();
+        return false;
+    }
+    CloseClipboard();
+    return true;
 }

@@ -3,20 +3,11 @@ import os, importlib
 from myutils.config import globalconfig, _TR
 from qtsymbols import *
 from myutils.commonbase import ArgsEmptyExc
-from myutils.hwnd import screenshot
-from myutils.utils import stringfyerror
+from myutils.hwnd import gdi_screenshot
+from myutils.utils import stringfyerror, qimage2binary
 from traceback import print_exc
 import threading, gobject
 
-
-def qimage2binary(qimage: QImage, fmt="BMP"):
-    byte_array = QByteArray()
-    buffer = QBuffer(byte_array)
-    buffer.open(QBuffer.WriteOnly)
-    qimage.save(buffer, fmt)
-    buffer.close()
-    image_data = byte_array.data()
-    return image_data
 
 
 def binary2qimage(binary):
@@ -44,14 +35,14 @@ def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
                     QRect(_x1, _y1, _x2 - _x1, _y2 - _y1)
                 ):
                     continue
-                pix = screenshot(_x1, _y1, _x2, _y2, hwnd)
-                if pix.toImage().allGray():
+                pix = gdi_screenshot(_x1, _y1, _x2, _y2, hwnd)
+                if pix.isNull():
                     continue
                 break
             except:
                 print_exc()
         else:
-            pix = screenshot(x1, y1, x2, y2)
+            pix = gdi_screenshot(x1, y1, x2, y2)
 
     image = pix.toImage()
     gobject.baseobject.maybesetimage(image)

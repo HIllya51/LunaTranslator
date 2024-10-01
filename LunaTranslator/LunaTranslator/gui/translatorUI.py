@@ -626,7 +626,7 @@ class TranslatorWindow(resizableframeless):
             ),
             ("searchwordW", lambda: gobject.baseobject.searchwordW.showsignal.emit()),
             ("fullscreen", self._fullsgame, lambda: self.isletgamefullscreened, None),
-            ("grabwindow", grabwindow),
+            ("grabwindow", grabwindow, None, None, lambda: grabwindow(tocliponly=True)),
             (
                 "muteprocess",
                 self.muteprocessfuntion,

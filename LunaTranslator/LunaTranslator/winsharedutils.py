@@ -61,10 +61,10 @@ _clipboard_get = utilsdll.clipboard_get
 _clipboard_get.argtypes = (c_void_p,)
 _clipboard_get.restype = c_bool
 _clipboard_set = utilsdll.clipboard_set
-_clipboard_set.argtypes = (
-    c_void_p,
-    c_wchar_p,
-)
+_clipboard_set.argtypes = (HWND, c_wchar_p)
+_clipboard_set_image = utilsdll.clipboard_set_image
+_clipboard_set_image.argtypes = (HWND, c_void_p, c_size_t)
+_clipboard_set_image.restype = c_bool
 
 
 def SAPI_List(v):
@@ -86,9 +86,8 @@ def SAPI_Speak(content, v, voiceid, rate, volume):
     return ret[0]
 
 
-def distance(
-    s1, s2
-):  # 词典更适合用编辑距离，因为就一两个字符，相似度会很小，预翻译适合用相似度
+def distance(s1, s2):
+    # 词典更适合用编辑距离，因为就一两个字符，相似度会很小，预翻译适合用相似度
     return _levenshtein_distance(len(s1), s1, len(s2), s2)
 
 
@@ -101,8 +100,12 @@ clphwnd = windll.user32.CreateWindowExW(0, "STATIC", 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 
 def clipboard_set(text):
     global clphwnd
-    # _set_clip_board_queue.put(text)
     return _clipboard_set(clphwnd, text)
+
+
+def clipboard_set_image(bytes_):
+    global clphwnd
+    return _clipboard_set_image(clphwnd, bytes_, len(bytes_))
 
 
 def clipboard_get():

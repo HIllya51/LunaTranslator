@@ -6,6 +6,9 @@ from ctypes import (
     c_size_t,
     CFUNCTYPE,
     c_void_p,
+    cast,
+    POINTER,
+    c_char,
 )
 import platform, gobject
 
@@ -50,4 +53,15 @@ if winrtutilsdll:
         return ret
 
     _winrt_capture_window = winrtutilsdll.winrt_capture_window
-    _winrt_capture_window.argtypes = c_wchar_p, c_void_p
+    _winrt_capture_window.argtypes = c_void_p, c_void_p
+
+    def winrt_capture_window(hwnd):
+        ret = []
+
+        def cb(ptr, size):
+            ret.append(cast(ptr, POINTER(c_char))[:size])
+
+        _winrt_capture_window(hwnd, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+        if len(ret):
+            return ret[0]
+        return None
