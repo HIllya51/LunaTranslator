@@ -119,19 +119,26 @@ const navitexts = {
         homepage: '官方网站',
         downloadlink: '软件下载',
         vediotutorial: '视频教学',
-        contactme: 'QQ群963119821'
+        contactme: 'QQ群963119821',
+        bit64link: '64位',
+        bit32link: '32位'
+
     },
     ru: {
         homepage: 'HomePage',
         downloadlink: 'Download',
         vediotutorial: 'Vedio Tutorial',
-        contactme: 'Discord'
+        contactme: 'Discord',
+        bit64link: '64-bit',
+        bit32link: '32-bit'
     },
     en: {
         homepage: 'HomePage',
         downloadlink: 'Download',
         vediotutorial: 'Vedio Tutorial',
-        contactme: 'Discord'
+        contactme: 'Discord',
+        bit64link: '64-bit',
+        bit32link: '32-bit'
     }
 }
 const languagelinks = {
