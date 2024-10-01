@@ -5,11 +5,13 @@ import gobject
 import os, subprocess, functools
 import time, winrtutils, winsharedutils, hashlib
 from myutils.config import savehook_new_data, globalconfig
-from myutils.wrapper import threader, tryprint
+from myutils.wrapper import threader
 from myutils.utils import qimage2binary
 
 
 def clipboard_set_image(p: QImage):
+    if not p:
+        return
     if isinstance(p, str):
         qimg = QImage()
         qimg.load(p)

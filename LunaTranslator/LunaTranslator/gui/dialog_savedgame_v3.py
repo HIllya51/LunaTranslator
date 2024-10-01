@@ -589,12 +589,12 @@ class pixwrapper(QWidget):
         deleteimage_x = LAction(("删除图片文件"))
         hualang = LAction(("画廊"))
         pos = LAction(("位置"))
-
-        menu.addAction(setimage)
-        menu.addAction(seticon)
-        menu.addAction(copyimage)
-        menu.addAction(deleteimage)
-        menu.addAction(deleteimage_x)
+        if curr and os.path.exists(curr):
+            menu.addAction(setimage)
+            menu.addAction(seticon)
+            menu.addAction(copyimage)
+            menu.addAction(deleteimage)
+            menu.addAction(deleteimage_x)
         menu.addAction(hualang)
         if _1:
             menu.addSeparator()

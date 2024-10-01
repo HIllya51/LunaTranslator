@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, platform, functools, uuid, json, math, csv, io
+import os, platform, functools, uuid, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import webview_native_handle_kind_t, Webview, declare_library_path
@@ -1955,6 +1955,8 @@ class listediter(LDialog):
         rows = self.hcmodel.rowCount()
         rowoffset = 0
         dedump = set()
+        if self.closecallback:
+            before = pickle.dumps(self.lst)
         self.lst.clear()
         for row in range(rows):
             if self.namemapfunction:
@@ -1967,7 +1969,9 @@ class listediter(LDialog):
             self.lst.append(k)
             dedump.add(k)
         if self.closecallback:
-            self.closecallback()
+            after = pickle.dumps(self.lst)
+            if before != after:
+                self.closecallback()
 
     def __cb(self, paths):
         if isinstance(paths, str):
