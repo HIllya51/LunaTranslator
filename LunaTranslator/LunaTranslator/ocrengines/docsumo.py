@@ -32,9 +32,6 @@ class OCR(baseocr):
         )
         # print(response.json())
         try:
-
-            _ = response.json()["data"]
-            self.countnum()
-            return _
+            return response.json()["data"]
         except:
             raise Exception(response.text)

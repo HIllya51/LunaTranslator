@@ -518,6 +518,8 @@ class autoinitdialog__(LDialog):
                 continue
             oklines.append(line)
         lines = oklines
+        cachecombo = {}
+        cachehasref = {}
         for line in lines:
             if "k" in line:
                 key = line["k"]
@@ -548,6 +550,7 @@ class autoinitdialog__(LDialog):
                 lineW.addItems(items)
                 lineW.setCurrentIndex(dd.get(key, 0))
                 regist[key] = lineW.currentIndex
+                cachecombo[key] = lineW
             elif line["type"] == "lineedit_or_combo":
                 line1 = QLineEdit()
                 lineW = QHBoxLayout()
@@ -649,6 +652,12 @@ class autoinitdialog__(LDialog):
                 lineW = SplitLine()
                 formLayout.addRow(lineW)
                 continue
+            refcombo = line.get("refcombo")
+            if refcombo:
+                if refcombo not in cachehasref:
+                    cachehasref[refcombo] = []
+                cachehasref[refcombo].append((lineW, line))
+
             refswitch = line.get("refswitch", None)
             if refswitch:
                 hbox = QHBoxLayout()
@@ -667,6 +676,29 @@ class autoinitdialog__(LDialog):
                 formLayout.addRow(line["name"], lineW)
             else:
                 formLayout.addRow(lineW)
+
+        for comboname, refitems in cachehasref.items():
+
+            def refcombofunction(refitems, _i):
+                for w, linwinfo in refitems:
+                    vis = True
+                    if linwinfo.get("refcombo_i") is not None:
+                        vis = linwinfo.get("refcombo_i") == _i
+                    elif linwinfo.get("refcombo_i_r") is not None:
+                        vis = linwinfo.get("refcombo_i_r") != _i
+                    elif linwinfo.get("refcombo_l") is not None:
+                        vis = _i in linwinfo.get("refcombo_l")
+                    w.setVisible(vis)
+                    formLayout.itemAt(formLayout.indexOf(w) - 1).widget().setVisible(
+                        vis
+                    )
+
+            cachecombo[comboname].currentIndexChanged.connect(
+                functools.partial(refcombofunction, refitems)
+            )
+            cachecombo[comboname].currentIndexChanged.emit(
+                cachecombo[comboname].currentIndex()
+            )
         self.show()
 
 

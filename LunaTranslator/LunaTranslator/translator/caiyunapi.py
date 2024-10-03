@@ -26,10 +26,6 @@ class TS(basetrans):
             "POST", url, data=json.dumps(payload), headers=headers
         )
         try:
-            res = json.loads(response.text)["target"]
-
-            self.countnum(query)
-            # print(res['trans_result'][0]['dst'])
-            return res
+            return json.loads(response.text)["target"]
         except:
             raise Exception(response.text)

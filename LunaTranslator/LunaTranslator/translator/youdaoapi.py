@@ -43,9 +43,6 @@ class TS(basetrans):
         }
         r = self.proxysession.get(youdao_url, params=data)  # 获取返回的json()内容
         try:
-
-            self.countnum(content)
-
             return r.json()["translation"][0]
         except:
             raise Exception(r.text)

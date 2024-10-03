@@ -56,20 +56,8 @@ class commonbase:
             return {}
 
     def countnum(self, query=None):
-        if "次数统计" in self._setting_dict[self.typename]["args"]:
-            try:
-                self._setting_dict[self.typename]["args"]["次数统计"] = str(
-                    int(self.config["次数统计"]) + 1
-                )
-            except:
-                self._setting_dict[self.typename]["args"]["次数统计"] = "1"
-        if ("字数统计" in self._setting_dict[self.typename]["args"]) and query:
-            try:
-                self._setting_dict[self.typename]["args"]["字数统计"] = str(
-                    int(self.config["字数统计"]) + len(query)
-                )
-            except:
-                self._setting_dict[self.typename]["args"]["字数统计"] = str(len(query))
+        # 防报错兼容性留置
+        pass
 
     def checkempty(self, items):
         emptys = []

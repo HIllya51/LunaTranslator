@@ -73,7 +73,6 @@ class TS(basetrans):
 
         ret = self.trans_tencent(query, appid, secretKey, self.srclang, self.tgtlang)
         try:
-            self.countnum(query)
             return ret.json()["Response"]["TargetText"]
         except:
             raise Exception(ret.text)

@@ -14,10 +14,14 @@
 			"github": {
 				"name": "DeepLX Github",
 				"type": "label",
-				"islink": true
+				"islink": true,
+				"refcombo": "usewhich",
+				"refcombo_i": 1
 			},
 			"api": {
-				"name": "DeepLX api"
+				"name": "DeepLX api",
+				"refcombo": "usewhich",
+				"refcombo_i": 1
 			},
 			"usewhich": {
 				"rank": 0,
@@ -32,60 +36,58 @@
 	},
 	"baiduapi": {
 		"args": {
-			"注册网址": "https://fanyi-api.baidu.com/api/trans/product/desktop",
+			"API Key": "",
+			"Secret Key": "",
 			"APP ID": "",
 			"密钥": "",
-			"字数统计": "0",
-			"次数统计": "0"
+			"interface": 0
 		},
 		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
+			"密钥": {
+				"refcombo": "interface",
+				"refcombo_i": 0
+			},
+			"APP ID": {
+				"refcombo": "interface",
+				"refcombo_i": 0
+			},
+			"API Key": {
+				"refcombo": "interface",
+				"refcombo_i": 1
+			},
+			"Secret Key": {
+				"refcombo": "interface",
+				"refcombo_i": 1
+			},
+			"interface": {
+				"rank": 0,
+				"name": "接口",
+				"type": "combo",
+				"list": [
+					"百度翻译开放平台",
+					"百度智能云"
+				]
 			}
 		}
 	},
 	"feishu": {
 		"args": {
-			"注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",
 			"app_id": "",
 			"app_secret": ""
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			}
 		}
 	},
 	"caiyunapi": {
 		"args": {
-			"注册网址": "https://fanyi.caiyunapp.com/#/",
-			"Token": "",
-			"字数统计": "0",
-			"次数统计": "0"
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			}
+			"Token": ""
 		}
 	},
 	"deeplapi-free": {
 		"args": {
-			"注册网址": "https://www.deepl.com/translator",
 			"usewhich": 0,
 			"DeepL-Auth-Key": "",
-			"DeepL-Auth-Key-2": "",
-			"字数统计": "0"
+			"DeepL-Auth-Key-2": ""
 		},
 		"argstype": {
-			"注册网址": {
-				"rank": -1,
-				"type": "label",
-				"islink": true
-			},
 			"DeepL-Auth-Key": {
 				"rank": 1,
 				"name": "DeepL-Auth-Key Free"
@@ -129,33 +131,17 @@
 	},
 	"huoshanapi": {
 		"args": {
-			"注册网址": "https://www.volcengine.com/docs/4640/130872",
 			"Access Key ID": "",
-			"Secret Access Key": "",
-			"字数统计": "0",
-			"次数统计": "0"
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			}
+			"Secret Access Key": ""
 		}
 	},
 	"tencentapi": {
 		"args": {
-			"注册网址": "https://console.cloud.tencent.com/cam/capi",
 			"SecretId": "",
 			"SecretKey": "",
-			"Region": 0,
-			"字数统计": "0",
-			"次数统计": "0"
+			"Region": 0
 		},
 		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			},
 			"Region": {
 				"type": "combo",
 				"list": [
@@ -182,47 +168,22 @@
 	},
 	"xiaoniu": {
 		"args": {
-			"注册网址": "https://niutrans.com/text_trans",
-			"apikey": "",
-			"字数统计": "0",
-			"次数统计": "0"
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			}
+			"apikey": ""
 		}
 	},
 	"youdaoapi": {
 		"args": {
-			"注册网址": "https://ai.youdao.com/product-fanyi-text.s",
 			"APP_KEY": "",
-			"APP_SECRET": "",
-			"字数统计": "0",
-			"次数统计": "0"
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			}
+			"APP_SECRET": ""
 		}
 	},
 	"hwcloud": {
 		"args": {
-			"注册网址": "https://www.huaweicloud.com/product/nlpmt.html",
 			"ak": "",
 			"sk": "",
-			"endpoint": "cn-north-4",
-			"字数统计": "0",
-			"次数统计": "0"
+			"endpoint": "cn-north-4"
 		},
 		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			},
 			"ak": {
 				"name": "Access Key Id"
 			},
@@ -635,7 +596,7 @@
 			"other_args": "{}",
 			"use_other_args": false,
 			"s": "",
-			"s2":"",
+			"s2": "",
 			"prefill": "",
 			"prefill_use": false
 		},
@@ -804,40 +765,19 @@
 	"azure": {
 		"args": {
 			"key1": "",
-			"Location": "",
-			"注册网址": "https://learn.microsoft.com/zh-cn/azure/cognitive-services/Translator/quickstart-translator?tabs=python"
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			}
+			"Location": ""
 		}
 	},
 	"ibm": {
 		"args": {
 			"apiurl": "",
-			"apikey": "",
-			"注册网址": "https://cloud.ibm.com/apidocs/language-translator"
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			}
+			"apikey": ""
 		}
 	},
 	"aliyunapi": {
 		"args": {
 			"Access_Key": "",
-			"SECRET_KEY": "",
-			"注册网址": "https://cn.aliyun.com/product/ai/alimt"
-		},
-		"argstype": {
-			"注册网址": {
-				"type": "label",
-				"islink": true
-			}
+			"SECRET_KEY": ""
 		}
 	},
 	"dev_chatgpt": {
@@ -1026,7 +966,6 @@
 	},
 	"gemini": {
 		"args": {
-			"注册网址_x": "https://aistudio.google.com/app/apikey",
 			"SECRET_KEY": "",
 			"Temperature": 0.3,
 			"model": "gemini-1.5-flash",
@@ -1039,7 +978,7 @@
 			"other_args": "{}",
 			"use_other_args": false,
 			"s": "",
-			"s2":"",
+			"s2": "",
 			"usingstream": true,
 			"prefill": "",
 			"prefill_use": false
@@ -1101,12 +1040,6 @@
 			},
 			"modellistcache": {
 				"type": "list_cache"
-			},
-			"注册网址_x": {
-				"name": "注册网址",
-				"type": "label",
-				"islink": true,
-				"rank": 0
 			},
 			"Temperature": {
 				"type": "spin",
@@ -1172,8 +1105,6 @@
 	},
 	"sakura": {
 		"args": {
-			"Sakura部署教程": "https://github.com/SakuraLLM/Sakura-13B-Galgame/wiki",
-			"Github仓库": "https://github.com/SakuraLLM/Sakura-13B-Galgame",
 			"API接口地址": "http://127.0.0.1:8080/",
 			"use_context": false,
 			"append_context_num": 3,
@@ -1209,16 +1140,6 @@
 			"流式输出": {
 				"type": "switch",
 				"rank": 1
-			},
-			"Sakura部署教程": {
-				"type": "label",
-				"islink": true,
-				"rank": -2
-			},
-			"Github仓库": {
-				"type": "label",
-				"islink": true,
-				"rank": -1
 			},
 			"append_context_num": {
 				"type": "intspin",

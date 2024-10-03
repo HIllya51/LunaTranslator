@@ -69,7 +69,6 @@ class OCR(baseocr):
                 _["LineText"]
                 for _ in response.json()["ParsedResults"][0]["TextOverlay"]["Lines"]
             ]
-            self.countnum()
             return {"box": boxs, "text": texts}
         except:
             raise Exception(response.text)

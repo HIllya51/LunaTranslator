@@ -1482,23 +1482,15 @@
         },
         "baiduocr_X": {
             "use": false,
-            "name": "百度OCR"
-        },
-        "baiduocr_ts": {
-            "use": false,
-            "name": "百度图片翻译"
+            "name": "百度"
         },
         "txocr": {
             "use": false,
-            "name": "腾讯OCR"
-        },
-        "txocrtrans": {
-            "use": false,
-            "name": "腾讯图片翻译"
+            "name": "腾讯"
         },
         "feishu": {
             "use": false,
-            "name": "飞书OCR"
+            "name": "飞书"
         },
         "ocrspace": {
             "use": false,
@@ -1518,15 +1510,11 @@
         },
         "xunfei": {
             "use": false,
-            "name": "讯飞OCR"
+            "name": "讯飞"
         },
         "youdaocr": {
             "use": false,
-            "name": "有道OCR"
-        },
-        "youdaocrtrans": {
-            "use": false,
-            "name": "有道图片翻译"
+            "name": "有道"
         },
         "youdaodictocr": {
             "use": false,
@@ -1534,7 +1522,7 @@
         },
         "volcengine": {
             "use": false,
-            "name": "火山OCR"
+            "name": "火山"
         },
         "mangaocr": {
             "use": false,
@@ -1548,7 +1536,7 @@
         },
         "geminiocr": {
             "use": false,
-            "name": "GeminiOCR"
+            "name": "Gemini"
         },
         "chatgptlike": {
             "use": false,
@@ -1608,7 +1596,7 @@
             "type": "api",
             "use": false,
             "color": "#ff0000",
-            "name": "google_api"
+            "name": "谷歌"
         },
         "ali": {
             "use": false,
@@ -1762,7 +1750,7 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "gemini",
+            "name": "Gemini",
             "is_gpt_like": true
         },
         "jb7": {
@@ -1845,25 +1833,25 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "百度api"
+            "name": "百度"
         },
         "aliyunapi": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "阿里api"
+            "name": "阿里"
         },
         "tencentapi": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "腾讯api"
+            "name": "腾讯"
         },
         "yandexapi": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "yandex api"
+            "name": "yandex"
         },
         "yandex": {
             "use": false,
@@ -1879,7 +1867,7 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "小牛api"
+            "name": "小牛"
         },
         "huoshan": {
             "use": false,
@@ -1890,13 +1878,13 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "彩云api"
+            "name": "彩云"
         },
         "huoshanapi": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "火山api"
+            "name": "火山"
         },
         "feishu": {
             "type": "api",
@@ -1925,13 +1913,13 @@
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "DeepL api"
+            "name": "DeepL"
         },
         "youdaoapi": {
             "type": "api",
             "use": false,
             "color": "blue",
-            "name": "有道api"
+            "name": "有道"
         },
         "hwcloud": {
             "type": "api",
@@ -1970,7 +1958,7 @@
             "use": false,
             "type": "api",
             "color": "blue",
-            "name": "ibm api",
+            "name": "IBM",
             "useproxy": true
         },
         "sakura": {

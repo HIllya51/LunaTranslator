@@ -286,7 +286,6 @@ isDark.restype = c_bool
 
 _gdi_screenshot = utilsdll.gdi_screenshot
 _gdi_screenshot.argtypes = HWND, RECT, c_void_p
-_gdi_screenshot.restype = c_bool
 
 
 def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
@@ -300,8 +299,8 @@ def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
     def cb(ptr, size):
         ret.append(cast(ptr, POINTER(c_char))[:size])
 
-    bf = _gdi_screenshot(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
-    if not bf:
+    _gdi_screenshot(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    if len(ret) == 0:
         return None
     return ret[0]
 

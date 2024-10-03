@@ -113,7 +113,7 @@ std::vector<byte> SaveBitmapToBuffer(HBITMAP hBitmap)
     GetObject(hBitmap, sizeof(BITMAP), (LPSTR)&Bitmap);
     bi.biSize = sizeof(BITMAPINFOHEADER);
     bi.biWidth = Bitmap.bmWidth;
-    bi.biHeight = Bitmap.bmHeight; // 为负,正向的位图;为正,倒向的位图
+    bi.biHeight = -Bitmap.bmHeight; // 为负,正向的位图;为正,倒向的位图
     bi.biPlanes = 1;
     bi.biBitCount = wBitCount;
     bi.biCompression = BI_RGB;
@@ -140,40 +140,40 @@ std::vector<byte> SaveBitmapToBuffer(HBITMAP hBitmap)
     // WriteFile(fh, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
 
     memcpy(buffer, &bmfHdr, sizeof(BITMAPFILEHEADER));
-    memcpy(buffer + sizeof(BITMAPFILEHEADER), &bi, sizeof(BITMAPINFOHEADER));
+    buffer += sizeof(BITMAPFILEHEADER);
+    memcpy(buffer, &bi, sizeof(BITMAPINFOHEADER));
+    buffer += sizeof(BITMAPINFOHEADER);
     // 获取位图阵列
-    lpmem = new char[dwBmBitsSize];
-    GetBitmapBits(hBitmap, dwBmBitsSize, lpmem); // 正向的内存图象数据
-
-    for (int i = 0; i < Bitmap.bmHeight; i++)
-    {
-        memcpy(buffer + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + Bitmap.bmWidth * i * 4, lpmem + Bitmap.bmWidth * (Bitmap.bmHeight - i - 1) * 4, Bitmap.bmWidth * 4);
-    }
+    if (!GetBitmapBits(hBitmap, dwBmBitsSize, buffer))
+        return {}; // 正向的内存图象数据
+    if (std::all_of(buffer, buffer + dwBmBitsSize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0)))
+        return {};
+    // for (int i = 0; i < Bitmap.bmHeight; i++)
+    // {
+    //     memcpy(buffer + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + Bitmap.bmWidth * i * 4, lpmem + Bitmap.bmWidth * (Bitmap.bmHeight - i - 1) * 4, Bitmap.bmWidth * 4);
+    // }
     // 写位图数据
     // WriteFile(fh, lpbk, dwBmBitsSize, &dwWritten, NULL);
 
-    // 清除
-    delete[] lpmem;
-
     return data;
 }
-DECLARE bool gdi_screenshot(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
+DECLARE void gdi_screenshot(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
 {
     if (rect.bottom == rect.top || rect.left == rect.right)
-        return false;
+        return;
     if (!hwnd)
         hwnd = GetDesktopWindow();
     auto hdc = GetDC(hwnd);
     if (!hdc)
-        return false;
+        return;
     auto bm = GetBitmap(rect, hdc);
     // SaveBitmapToFile(bm, LR"(.\2.bmp)");
     size_t size;
     auto bf = std::move(SaveBitmapToBuffer(bm));
-    cb(bf.data(), bf.size());
+    if (bf.size())
+        cb(bf.data(), bf.size());
     DeleteObject(bm);
     ReleaseDC(hwnd, hdc);
-    return true;
 }
 
 DECLARE void maximum_window(HWND hwnd)

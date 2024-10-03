@@ -40,81 +40,60 @@
     },
     "baiduocr_X": {
         "args": {
-            "注册网址": "https://console.bce.baidu.com/ai/?fromai=1#/ai/ocr/app/list",
             "API Key": "",
             "Secret Key": "",
-            "接口": 0,
-            "次数统计": "0"
+            "app_id": "",
+            "app_key": "",
+            "接口": 0
         },
         "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
+            "API Key": {
+                "refcombo": "接口",
+                "refcombo_i_r": 5
+            },
+            "Secret Key": {
+                "refcombo": "接口",
+                "refcombo_i_r": 5
+            },
+            "app_key": {
+                "name": "密钥",
+                "refcombo": "接口",
+                "refcombo_i": 5
+            },
+            "app_id": {
+                "name": "APP ID",
+                "refcombo": "接口",
+                "refcombo_i": 5
             },
             "接口": {
+                "rank": 0,
                 "type": "combo",
                 "list": [
-                    "通用文字识别（标准版）",
-                    "通用文字识别（标准含位置版）",
-                    "通用文字识别（高精度版）",
-                    "通用文字识别（高精度含位置版）"
+                    "百度智能云_OCR_通用文字识别（标准版）",
+                    "百度智能云_OCR_通用文字识别（标准含位置版）",
+                    "百度智能云_OCR_通用文字识别（高精度版）",
+                    "百度智能云_OCR_通用文字识别（高精度含位置版）",
+                    "百度智能云_图片翻译",
+                    "百度翻译开放平台_图片翻译"
                 ]
-            }
-        }
-    },
-    "baiduocr_ts": {
-        "args": {
-            "注册网址": "https://fanyi-api.baidu.com/product/223",
-            "app_id": "",
-            "app_key": ""
-        },
-        "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
             }
         }
     },
     "txocr": {
         "args": {
-            "注册网址": "https://cloud.tencent.com/document/product/866/33526",
-            "SecretId": "",
-            "SecretKey": "",
-            "Region": 0
-        },
-        "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
-            },
-            "Region": {
-                "type": "combo",
-                "list": [
-                    "ap-beijing",
-                    "ap-guangzhou",
-                    "ap-hongkong",
-                    "ap-seoul",
-                    "ap-shanghai",
-                    "ap-singapore",
-                    "na-toronto"
-                ]
-            }
-        }
-    },
-    "txocrtrans": {
-        "args": {
-            "注册网址": "https://cloud.tencent.com/document/product/551/17232",
             "SecretId": "",
             "SecretKey": "",
             "ProjectId": "0",
-            "Region": 0
+            "Region": 0,
+            "interface": 0
         },
         "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
+            "ProjectId": {
+                "refcombo": "interface",
+                "refcombo_i": 1
             },
             "Region": {
+                "rank": 1,
                 "type": "combo",
                 "list": [
                     "ap-beijing",
@@ -122,95 +101,73 @@
                     "ap-hongkong",
                     "ap-seoul",
                     "ap-shanghai",
-                    "ap-singapore",
-                    "na-toronto"
+                    "ap-singapore"
+                ]
+            },
+            "interface": {
+                "rank": 0,
+                "name": "接口",
+                "type": "combo",
+                "list": [
+                    "OCR_通用印刷体识别",
+                    "图片翻译"
                 ]
             }
         }
     },
     "feishu": {
         "args": {
-            "注册网址": "https://open.feishu.cn/document/ukTMukTMukTM/ukDNz4SO0MjL5QzM/auth-v3/auth/tenant_access_token_internal",
             "app_id": "",
             "app_secret": ""
-        },
-        "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
-            }
         }
     },
     "docsumo": {
         "args": {
-            "注册网址": "https://docsumo.com/",
-            "token": "",
-            "次数统计": "0"
-        },
-        "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
-            }
+            "token": ""
         }
     },
     "youdaocr": {
         "args": {
-            "注册网址": "https://ai.youdao.com/product-ocr-print.s",
-            "接口": 0,
+            "interface": 0,
             "APP_KEY": "",
-            "APP_SECRET": "",
-            "次数统计": "0"
+            "APP_SECRET": ""
         },
         "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
-            },
-            "接口": {
-                "type": "combo",
-                "list": [
-                    "免费试用",
-                    "通用文字识别 API"
+            "APP_SECRET": {
+                "refcombo": "interface",
+                "refcombo_l": [
+                    0,
+                    2
                 ]
-            }
-        }
-    },
-    "youdaocrtrans": {
-        "args": {
-            "注册网址": "https://ai.youdao.com/product-fanyi-picture.s",
-            "接口": 0,
-            "APP_KEY": "",
-            "APP_SECRET": "",
-            "次数统计": "0"
-        },
-        "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
             },
-            "接口": {
+            "APP_KEY": {
+                "refcombo": "interface",
+                "refcombo_l": [
+                    0,
+                    2
+                ]
+            },
+            "interface": {
+                "rank": 0,
+                "name": "接口",
                 "type": "combo",
                 "list": [
-                    "免费试用",
-                    "图片翻译 API"
+                    "OCR_通用文字识别",
+                    "OCR_通用文字识别_试用",
+                    "图片翻译",
+                    "图片翻译_试用"
                 ]
             }
         }
     },
     "ocrspace": {
         "args": {
-            "注册网址": "https://ocr.space/",
             "apikey": "",
-            "次数统计": "0",
             "interface": 0
         },
         "argstype": {
-            "注册网址": {
-                "type": "label",
-                "islink": true
-            },
             "interface": {
+                "rank": 0,
                 "type": "combo",
                 "list": [
                     "pro",
@@ -221,29 +178,17 @@
     },
     "volcengine": {
         "args": {
-            "密钥获取": "https://console.volcengine.com/iam/keymanage/",
             "Access Key ID": "",
             "Secret Access Key": ""
-        },
-        "argstype": {
-            "密钥获取": {
-                "type": "label",
-                "islink": true
-            }
         }
     },
     "tesseract5": {
         "args": {
-            "下载": "https://github.com/UB-Mannheim/tesseract/wiki",
             "路径": "",
             "语言": 0,
             "附加参数": "--psm 6"
         },
         "argstype": {
-            "下载": {
-                "type": "label",
-                "islink": true
-            },
             "路径": {
                 "type": "file",
                 "dir": false,
@@ -365,40 +310,16 @@
     },
     "xunfei": {
         "args": {
-            "link": "https://www.xfyun.cn/doc/words/multi_print_recognition/API.html",
             "APPId": "",
             "APISecret": "",
             "APIKey": ""
-        },
-        "argstype": {
-            "link": {
-                "type": "label",
-                "islink": true
-            }
         }
     },
     "mangaocr": {
         "args": {
-            "项目仓库": "https://github.com/kha-white/manga-ocr",
-            "整合包_CPU_1": "{main_server}/Resource/IntegrationPack/manga_ocr/cpu",
-            "整合包_GPU_1": "{main_server}/Resource/IntegrationPack/manga_ocr/gpu",
             "Port": 5665
         },
         "argstype": {
-            "项目仓库": {
-                "type": "label",
-                "islink": true
-            },
-            "整合包_CPU_1": {
-                "type": "label",
-                "islink": true,
-                "name": "整合包_CPU"
-            },
-            "整合包_GPU_1": {
-                "type": "label",
-                "islink": true,
-                "name": "整合包_GPU"
-            },
             "Port": {
                 "type": "intspin",
                 "min": 1,

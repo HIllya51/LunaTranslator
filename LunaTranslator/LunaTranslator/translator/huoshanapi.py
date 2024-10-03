@@ -419,11 +419,8 @@ class TS(basetrans):
         res = trans(query, keyid, acckey, self.srclang, self.tgtlang, self.proxy)
         try:
 
-            res = "\n".join(
+            return "\n".join(
                 [_["Translation"] for _ in json.loads(res)["TranslationList"]]
             )
-            self.countnum(query)
-            # print(res['trans_result'][0]['dst'])
-            return res
         except:
             raise Exception(res)

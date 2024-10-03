@@ -46,9 +46,6 @@ class TS(basetrans):
         )
 
         try:
-            _ = response.json()["translations"][0]["text"]
-
-            self.countnum(query)
-            return _
+            return response.json()["translations"][0]["text"]
         except:
             raise Exception(response.text)

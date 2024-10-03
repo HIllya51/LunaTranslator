@@ -36,8 +36,6 @@ class TS(basetrans):
         )
 
         try:
-            self.countnum(query)
-            # print(res['trans_result'][0]['dst'])
             return response.json()["tgt_text"]
         except:
             raise Exception(response.text)

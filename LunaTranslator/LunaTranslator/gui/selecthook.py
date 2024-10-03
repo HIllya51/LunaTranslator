@@ -391,6 +391,7 @@ class hookselect(closeashidewindow):
     removehooksignal = pyqtSignal(tuple)
     getfoundhooksignal = pyqtSignal(dict)
     update_item_new_line = pyqtSignal(tuple, str)
+    warning = pyqtSignal(str)
 
     def __init__(self, parent):
         super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
@@ -403,8 +404,16 @@ class hookselect(closeashidewindow):
         self.sysmessagesignal.connect(self.sysmessage)
         self.update_item_new_line.connect(self.update_item_new_line_function)
         self.getfoundhooksignal.connect(self.getfoundhook)
+        self.warning.connect(self.warningf)
         self.setWindowTitle("选择文本")
         self.changeprocessclear()
+
+    def warningf(self, text):
+        getQMessageBox(
+            self,
+            "警告",
+            text,
+        )
 
     def update_item_new_line_function(self, hook, output):
         if hook not in self.save:

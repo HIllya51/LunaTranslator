@@ -9,13 +9,6 @@ from traceback import print_exc
 import threading, gobject
 
 
-
-def binary2qimage(binary):
-    image = QImage()
-    image.loadFromData(binary)
-    return image
-
-
 def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
 
     for _ in range(2):

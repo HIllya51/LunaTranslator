@@ -186,6 +186,7 @@ class texthook(basetext):
             c_void_p,
             c_void_p,
             c_void_p,
+            c_void_p,
         )
         self.Luna_Inject = LunaHost.Luna_Inject
         self.Luna_Inject.argtypes = DWORD, LPCWSTR
@@ -235,6 +236,7 @@ class texthook(basetext):
             ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
             HookInsertHandler(self.newhookinsert),
             EmbedCallback(self.getembedtext),
+            ConsoleHandler(gobject.baseobject.hookselectdialog.warning.emit),
         ]
         self.keepref += procs
         ptrs = [cast(_, c_void_p).value for _ in procs]

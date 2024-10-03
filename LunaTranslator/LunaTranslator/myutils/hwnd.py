@@ -24,7 +24,8 @@ def clipboard_set_image(p: QImage):
 @threader
 def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
     if tocliponly:
-        pass
+        fname = ""
+        uid = None
     elif callback_origin or tocliponly:
         fname = gobject.gettempdir(time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
         uid = None
@@ -80,7 +81,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
     callback(p, fname + "_gdi." + app)
     isshit = (not callback_origin) and (not tocliponly)
-    if (not p.isNull()) or isshit:
+    if p.isNull() or isshit:
 
         @threader
         def _():
@@ -194,10 +195,8 @@ def getExeIcon(name, icon=True, cache=False):
         succ = False
         if cache and os.path.exists(fn):
             try:
-                with open(fn, "rb") as ff:
-                    data = ff.read()
                 pixmap = QPixmap()
-                pixmap.loadFromData(data)
+                pixmap.load(fn)
                 succ = True
             except:
                 pass
@@ -263,8 +262,6 @@ def safepixmap(bs):
     pixmap = QPixmap()
     pixmap.loadFromData(bs)
     if pixmap.isNull():
-        return QPixmap()
-    if pixmap.toImage().allGray():
         return QPixmap()
     return pixmap
 
