@@ -2,7 +2,7 @@
 window.$docsify = {
     // homepage: '/redirect.html',
     requestHeaders: {
-        'cache-control': 'max-age=0',
+        'cache-control': 'max-age=0, no-store, no-cache, must-revalidate',
     },
     notFoundPage: 'redirect.html',
     pagination: {
