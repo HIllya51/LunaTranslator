@@ -143,22 +143,34 @@ class OCR(baseocr):
         }
 
     def initocr(self):
-        self.keys = {}
+        self.access = {}
         if self.config["接口"] != 5:
             self.getaccess()
 
+    def get_access_token(self, API_KEY, SECRET_KEY):
+        url = "https://aip.baidubce.com/oauth/2.0/token"
+        params = {
+            "grant_type": "client_credentials",
+            "client_id": API_KEY,
+            "client_secret": SECRET_KEY,
+        }
+        js = self.proxysession.post(url, params=params).json()
+
+        try:
+            return js["access_token"]
+        except:
+            raise Exception(js)
+
     def getaccess(self):
         self.checkempty(["API Key", "Secret Key"])
-        pair = (self.config["API Key"], self.config["Secret Key"])
-        if pair not in self.keys:
-            accstoken = self.proxysession.get(
-                "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id="
-                + self.appid
-                + "&client_secret="
-                + self.secretKey
-            ).json()["access_token"]
-            self.keys[pair] = accstoken
-        return self.keys[pair]
+        SECRET_KEY, API_KEY = (
+            self.config["Secret Key"],
+            self.config["API Key"],
+        )
+        if not self.access.get((API_KEY, SECRET_KEY)):
+            acss = self.get_access_token(API_KEY, SECRET_KEY)
+            self.access[(API_KEY, SECRET_KEY)] = acss
+        return self.access[(API_KEY, SECRET_KEY)]
 
     def ocr(self, imagebinary):
         if self.config["接口"] in [0, 1, 2, 3]:

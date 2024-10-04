@@ -6,7 +6,7 @@ import random
 
 class TS(basetrans):
     def inittranslator(self):
-        self.keys = {}
+        self.access = {}
         if self.config["interface"] == 1:
             self.getaccess()
 
@@ -31,21 +31,30 @@ class TS(basetrans):
             return self.translate_bce(query)
         raise Exception("unknown")
 
+    def get_access_token(self, API_KEY, SECRET_KEY):
+        url = "https://aip.baidubce.com/oauth/2.0/token"
+        params = {
+            "grant_type": "client_credentials",
+            "client_id": API_KEY,
+            "client_secret": SECRET_KEY,
+        }
+        js = self.proxysession.post(url, params=params).json()
+
+        try:
+            return js["access_token"]
+        except:
+            raise Exception(js)
+
     def getaccess(self):
         self.checkempty(["API Key", "Secret Key"])
-        pair = (
-            self.multiapikeycurrent["API Key"],
+        SECRET_KEY, API_KEY = (
             self.multiapikeycurrent["Secret Key"],
+            self.multiapikeycurrent["API Key"],
         )
-        if pair not in self.keys:
-            accstoken = self.proxysession.get(
-                "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id="
-                + self.appid
-                + "&client_secret="
-                + self.secretKey
-            ).json()["access_token"]
-            self.keys[pair] = accstoken
-        return self.keys[pair]
+        if not self.access.get((API_KEY, SECRET_KEY)):
+            acss = self.get_access_token(API_KEY, SECRET_KEY)
+            self.access[(API_KEY, SECRET_KEY)] = acss
+        return self.access[(API_KEY, SECRET_KEY)]
 
     def translate_bce(self, q):
         accstoken = self.getaccess()
