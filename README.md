@@ -17,10 +17,10 @@
 
 #### 文本输入
 
-- **HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。对于不支持或支持不好的游戏，请[提交反馈](https://lunatranslator.org/Resource/game_support)
+- **HOOK** 支持使用[HOOK](https://github.com/HIllya51/LunaHook)方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。对于不支持或支持不好的游戏，请[提交反馈](https://lunatranslator.org/Resource/game_support)
 
 
-- **OCR** 支持 **离线OCR** ( 除内置OCR引擎外，还支持WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **在线OCR** ( 百度OCR/图片翻译、有道OCR/图片翻译、有道OCR/图片翻译、飞书OCR、讯飞OCR、Google Lens、Google Cloud Vision、docsumo、ocrspace ) 。还可以使用**多模态大模型**进行OCR ( 支持GeminiOCR、ChatGPT兼容接口 )
+- **OCR** 支持 **离线OCR** ( 除[内置OCR引擎](https://github.com/HIllya51/LunaOCR)外，还支持WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **在线OCR** ( 百度、有道、飞书、讯飞、Google Lens、Google Cloud Vision、docsumo、ocrspace、Gemini、ChatGPT兼容接口 )
 
 - **剪贴板** 支持从剪贴板中获取文本进行翻译
 
