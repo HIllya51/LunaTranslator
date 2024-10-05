@@ -82,15 +82,12 @@ struct ThreadParam
     uint64_t ctx2; // The subcontext of the hook: 0 by default, generated in a method specific to the hook
 };
 typedef void (*ProcessEvent)(DWORD);
-typedef void (*ThreadEvent)(wchar_t *, char *, ThreadParam);
-typedef void (*OutputCallback)(wchar_t *, char *, ThreadParam, const wchar_t *);
-typedef void (*ConsoleHandler)(const wchar_t *);
 typedef void (*HookInsertHandler)(uint64_t, const wchar_t *);
 typedef void (*EmbedCallback)(const wchar_t *, ThreadParam);
 nlohmann::json config;
 std::map<std::string, std::string> translation;
 std::unordered_set<DWORD> connectedpids;
-void (*Luna_Start)(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent Create, ThreadEvent Destroy, OutputCallback Output, ConsoleHandler console, HookInsertHandler hookinsert, EmbedCallback embed);
+void (*Luna_Start)(ProcessEvent Connect, ProcessEvent Disconnect, void *, void *, void *, void *, HookInsertHandler hookinsert, EmbedCallback embed, void *);
 void (*Luna_Inject)(DWORD pid, LPCWSTR basepath);
 void (*Luna_EmbedSettings)(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, UINT32 spaceadjustpolicy, UINT32 keeprawtext, bool fastskipignore);
 void (*Luna_useembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2, bool use);
@@ -128,10 +125,10 @@ public:
                 connectedpids.erase(pid);
                 ReleaseSemaphore(hsema, 1, NULL);
             },
-            [](auto, auto, auto) {},
-            [](auto, auto, auto) {},
-            [](auto, auto, auto, auto) {},
-            [](auto) {},
+            0,
+            0,
+            0,
+            0,
             [](uint64_t addr, const wchar_t *output)
             {
                 std::wstring newhookcode = output;
@@ -161,7 +158,8 @@ public:
                         Luna_embedcallback(pid, output, trans.c_str());
                     }
                 }
-            });
+            },
+            0);
     }
     void run()
     {
