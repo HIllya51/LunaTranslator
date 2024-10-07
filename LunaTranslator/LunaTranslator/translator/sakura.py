@@ -104,13 +104,16 @@ class TS(basetrans):
             ]
             self._gpt_common_parse_context(messages, self.context, contextnum)
             gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
-            content = (
-                "根据以下术语表（可以为空）：\n"
-                + gpt_dict_raw_text
-                + "\n"
-                + "将下面的日文文本根据对应关系和备注翻译成中文："
-                + query
-            )
+            if gpt_dict_raw_text:
+                content = (
+                    "根据以下术语表（可以为空）：\n"
+                    + gpt_dict_raw_text
+                    + "\n"
+                    + "将下面的日文文本根据对应关系和备注翻译成中文："
+                    + query
+                )
+            else:
+                content = "将下面的日文文本翻译成中文：" + query
             messages.append({"role": "user", "content": content})
         return messages
 
