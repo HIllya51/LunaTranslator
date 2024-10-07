@@ -124,8 +124,13 @@ class le_internal(LEbase, settingxx):
         guids = self.profiles(config)[1]
         guid = config.get("leguid", None)
         if guid not in guids:
-            guids = guids[0]
-        arg = '"{}" -runas {} {}'.format(LEProc, guid, usearg)
+            guid = guids[0]
+        idx = guids.index(guid)
+        if idx <= 1:
+            arg = '"{}" -runas {} {}'.format(LEProc, guid, usearg)
+        else:
+            # 程序的配置运行
+            arg = '"{}" -run {}'.format(LEProc, usearg)
         windows.CreateProcess(
             None,
             arg,
