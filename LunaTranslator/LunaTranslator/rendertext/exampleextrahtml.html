@@ -1,0 +1,33 @@
+<div id="example_hello" style="text-align: center;">Hello, welcome to use LunaTranslator</div>
+<script>
+    // alert("welcome")
+    clear_all = function () {
+        _clear_all()
+        document.getElementById('example_hello').innerText = ""
+    }
+</script>
+<style>
+    body::before {
+        background-image: url("https://image.lunatranslator.org/luna.jpg");
+        opacity: 0.1;
+        background-size: 100% auto;
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            color-scheme: dark;
+        }
+
+        body {
+            background-color: rgb(44, 44, 44);
+            color: white;
+        }
+    }
+</style>

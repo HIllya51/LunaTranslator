@@ -1,0 +1,152 @@
+import sqlite3, gobject, threading, time, windows
+import time
+import os, threading
+from qtsymbols import *
+from traceback import print_exc
+from myutils.config import findgameuidofpath, savehook_new_data, globalconfig
+from myutils.hwnd import getpidexe, ListProcess
+import windows
+import gobject
+
+
+class playtimemanager:
+    def __init__(self):
+
+        self.sqlsavegameinfo = sqlite3.connect(
+            gobject.getuserconfigdir("savegame.db"),
+            check_same_thread=False,
+            isolation_level=None,
+        )
+        try:
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE traceplaytime_v4(id INTEGER PRIMARY KEY AUTOINCREMENT,gameinternalid INT,timestart BIGINT,timestop BIGINT);"
+            )
+        except:
+            pass
+        try:
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE gameinternalid_v2(gameinternalid INTEGER PRIMARY KEY AUTOINCREMENT,gameuid TEXT);"
+            )
+            self.trycastoldversion()
+        except:
+            pass
+        try:
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE trace_strict(gameinternalid INT,timestart BIGINT,timestop BIGINT);"
+            )
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO trace_strict SELECT gameinternalid,timestart,timestop FROM traceplaytime_v4"
+            )
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE trace_loose(gameinternalid INT,timestart BIGINT,timestop BIGINT);"
+            )
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO trace_loose SELECT gameinternalid,timestart,timestop FROM traceplaytime_v4"
+            )
+            self.sqlsavegameinfo.commit()
+        except:
+            pass
+
+        threading.Thread(target=self.checkgameplayingthread).start()
+
+    def trycastoldversion(self):
+        for _id, gamepath in self.sqlsavegameinfo.execute(
+            "SELECT * from gameinternalid"
+        ).fetchall():
+            gameuid = findgameuidofpath(gamepath)
+            if not gameuid:
+                continue
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO gameinternalid_v2 VALUES(?,?)", (_id, gameuid[0])
+            )
+        self.sqlsavegameinfo.commit()
+
+    def querytraceplaytime(self, gameuid):
+        table = ["trace_loose", "trace_strict"][globalconfig["is_tracetime_strict"]]
+        gameinternalid = self.get_gameinternalid(gameuid)
+        return self.sqlsavegameinfo.execute(
+            f"SELECT timestart,timestop FROM {table} WHERE gameinternalid = ?",
+            (gameinternalid,),
+        ).fetchall()
+
+    def get_gameinternalid(self, gameuid):
+        while True:
+            ret = self.sqlsavegameinfo.execute(
+                "SELECT * FROM gameinternalid_v2 WHERE gameuid = ?",
+                (gameuid,),
+            ).fetchone()
+            if ret is None:
+                self.sqlsavegameinfo.execute(
+                    "INSERT INTO gameinternalid_v2 VALUES(NULL,?)", (gameuid,)
+                )
+                self.sqlsavegameinfo.commit()
+            else:
+                return ret[0]
+
+    def stricttraceexe(self):
+        hwnd = windows.GetForegroundWindow()
+        pid = windows.GetWindowThreadProcessId(hwnd)
+        exe = getpidexe(pid)
+        exes = set()
+        exes.add(exe)
+
+        gamehwnd = gobject.baseobject.hwnd
+        if gamehwnd:
+            gamepid = windows.GetWindowThreadProcessId(gamehwnd)
+            if gamepid and pid == os.getpid():
+                exes.add(getpidexe(gamepid))
+        return exes
+
+    def finduids(self, exes):
+        uids = []
+        for exe in exes:
+            uid, _ = findgameuidofpath(exe)
+            if not uid:
+                continue
+            uids.append(uid)
+        return uids
+
+    def tracex(self, _t: float, uids: list, dic: dict, table: str):
+        for uid in uids:
+            gameinternalid = self.get_gameinternalid(uid)
+            if uid in dic:
+                self.sqlsavegameinfo.execute(
+                    f"UPDATE {table} SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)",
+                    (_t, gameinternalid, dic[uid]),
+                )
+
+            else:
+                dic[uid] = _t
+                self.sqlsavegameinfo.execute(
+                    f"INSERT INTO {table} VALUES(?,?,?)",
+                    (gameinternalid, _t, _t),
+                )
+        for k in list(dic.keys()):
+            if k not in uids:
+                dic.pop(k)
+
+    def checkgameplayingthread(self):
+        self.trace_loose = {}
+        self.trace_strict = {}
+        tlast = None
+        t = time.time()
+        while True:
+            tlast = t
+            t = time.time()
+            if t - tlast > 10:
+                # 虚拟机暂停
+                self.trace_loose.clear()
+                self.trace_strict.clear()
+                continue
+
+            self.tracex(
+                t, self.finduids(ListProcess()), self.trace_loose, "trace_loose"
+            )
+            self.tracex(
+                t,
+                self.finduids(self.stricttraceexe()),
+                self.trace_strict,
+                "trace_strict",
+            )
+            self.sqlsavegameinfo.commit()
+            time.sleep(1)

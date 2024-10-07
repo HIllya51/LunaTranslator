@@ -1,0 +1,51 @@
+<div class="hide-style">
+    <div id="audio">{{audio_for_word}}</div>
+    <div id="audio_sentence">{{audio_for_example_sentence}}</div>
+</div>
+<div class="centerdiv" onclick='playAudio("audio")'>
+    <div class="ruby-div" id="word">{{ word }}</div>
+    <div id="rubyword" class="ruby-div">{{ rubytextHtml }}</div>
+</div>
+
+<script>
+    if (document.getElementById('rubyword').innerHTML.trim().length > 0) {
+        document.getElementById('word').classList.add("hide-style");
+    }
+    else {
+        document.getElementById('rubyword').classList.add("hide-style");
+    }
+
+</script>
+
+<div id="example_sentence" class="example-div" onclick='playAudio("audio_sentence")'>
+    {{example_sentence}}
+</div>
+<div id="image" class="centerdiv">
+    {{screenshot}}
+</div>
+
+
+<script>
+    function playAudio(audioId) {
+        var audioDiv = document.getElementById(audioId);
+        var audio = audioDiv.getElementsByTagName('*');
+        if (audio.length > 0) {
+            audio[0].click();
+        }
+    }
+    function checkhide(eid) {
+        var emptyDiv = document.getElementById(eid);
+        if (emptyDiv && emptyDiv.innerText.trim() === "") {
+            emptyDiv.classList.add("hide-style");
+        }
+    }
+    function checkhide2(eid) {
+        var emptyDiv = document.getElementById(eid);
+        if (emptyDiv && emptyDiv.children.length == 0) {
+            emptyDiv.classList.add("hide-style");
+        }
+    }
+    checkhide("example_sentence")
+    checkhide2("image")
+    checkhide("remarks")
+</script>

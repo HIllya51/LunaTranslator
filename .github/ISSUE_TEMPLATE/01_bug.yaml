@@ -1,0 +1,41 @@
+name: Bug Report 错误报告
+description: Report bugs 报告错误
+labels: bug
+body:
+- type: input
+  attributes:
+    label: Version 程序版本
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: OS version and bits 系统版本和位数
+    placeholder: >
+      e.g. windows 7 sp1 32 bits, windows 11 23H2 64 bits
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: bug's screenshot 错误截图
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Reproduction steps 复现步骤
+    description: >
+      Describe the reproduction steps precisely if possible. 
+      
+      尽可能详细描述错误产生的细节。
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Log files 日志文件
+    description: >
+      View log files in the "logs" directory. Please upload the log file as an attachment instead of copying its contents.
+      
+      在"logs"目录中获取日志文件。请将日志文件以附件的形式上传，而不是将其中的内容复制。
+  validations:
+    required: true

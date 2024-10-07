@@ -1,0 +1,331 @@
+{
+    "local": {
+        "args": {
+            "": ""
+        },
+        "argstype": {
+            "": {
+                "type": "program",
+                "route": [
+                    "ocrengines.local",
+                    "question"
+                ]
+            }
+        }
+    },
+    "youdaodictocr": {
+        "args": {
+            "Translate": false
+        },
+        "argstype": {
+            "Translate": {
+                "type": "switch",
+                "name": "翻译"
+            }
+        }
+    },
+    "windowsocr": {
+        "args": {
+            "": ""
+        },
+        "argstype": {
+            "": {
+                "type": "program",
+                "route": [
+                    "ocrengines.windowsocr",
+                    "question"
+                ]
+            }
+        }
+    },
+    "baiduocr_X": {
+        "args": {
+            "API Key": "",
+            "Secret Key": "",
+            "app_id": "",
+            "app_key": "",
+            "接口": 0
+        },
+        "argstype": {
+            "API Key": {
+                "refcombo": "接口",
+                "refcombo_i_r": 5
+            },
+            "Secret Key": {
+                "refcombo": "接口",
+                "refcombo_i_r": 5
+            },
+            "app_key": {
+                "name": "密钥",
+                "refcombo": "接口",
+                "refcombo_i": 5
+            },
+            "app_id": {
+                "name": "APP ID",
+                "refcombo": "接口",
+                "refcombo_i": 5
+            },
+            "接口": {
+                "rank": 0,
+                "type": "combo",
+                "list": [
+                    "百度智能云_OCR_通用文字识别（标准版）",
+                    "百度智能云_OCR_通用文字识别（标准含位置版）",
+                    "百度智能云_OCR_通用文字识别（高精度版）",
+                    "百度智能云_OCR_通用文字识别（高精度含位置版）",
+                    "百度智能云_图片翻译",
+                    "百度翻译开放平台_图片翻译"
+                ]
+            }
+        }
+    },
+    "txocr": {
+        "args": {
+            "SecretId": "",
+            "SecretKey": "",
+            "ProjectId": "0",
+            "Region": 0,
+            "interface": 0
+        },
+        "argstype": {
+            "ProjectId": {
+                "refcombo": "interface",
+                "refcombo_i": 1
+            },
+            "Region": {
+                "rank": 1,
+                "type": "combo",
+                "list": [
+                    "ap-beijing",
+                    "ap-guangzhou",
+                    "ap-hongkong",
+                    "ap-seoul",
+                    "ap-shanghai",
+                    "ap-singapore"
+                ]
+            },
+            "interface": {
+                "rank": 0,
+                "name": "接口",
+                "type": "combo",
+                "list": [
+                    "OCR_通用印刷体识别",
+                    "图片翻译"
+                ]
+            }
+        }
+    },
+    "feishu": {
+        "args": {
+            "app_id": "",
+            "app_secret": ""
+        }
+    },
+    "docsumo": {
+        "args": {
+            "token": ""
+        }
+    },
+    "youdaocr": {
+        "args": {
+            "interface": 0,
+            "APP_KEY": "",
+            "APP_SECRET": ""
+        },
+        "argstype": {
+            "APP_SECRET": {
+                "refcombo": "interface",
+                "refcombo_l": [
+                    0,
+                    2
+                ]
+            },
+            "APP_KEY": {
+                "refcombo": "interface",
+                "refcombo_l": [
+                    0,
+                    2
+                ]
+            },
+            "interface": {
+                "rank": 0,
+                "name": "接口",
+                "type": "combo",
+                "list": [
+                    "OCR_通用文字识别",
+                    "OCR_通用文字识别_试用",
+                    "图片翻译",
+                    "图片翻译_试用"
+                ]
+            }
+        }
+    },
+    "ocrspace": {
+        "args": {
+            "apikey": "",
+            "interface": 0
+        },
+        "argstype": {
+            "interface": {
+                "rank": 0,
+                "type": "combo",
+                "list": [
+                    "pro",
+                    "free"
+                ]
+            }
+        }
+    },
+    "volcengine": {
+        "args": {
+            "Access Key ID": "",
+            "Secret Access Key": ""
+        }
+    },
+    "tesseract5": {
+        "args": {
+            "路径": "",
+            "语言": 0,
+            "附加参数": "--psm 6"
+        },
+        "argstype": {
+            "路径": {
+                "type": "file",
+                "dir": false,
+                "filter": "tesseract.exe"
+            },
+            "语言": {
+                "type": "combo",
+                "list_function": [
+                    "ocrengines.tesseract5",
+                    "list_langs"
+                ]
+            }
+        }
+    },
+    "googlecloudvision": {
+        "args": {
+            "key": ""
+        }
+    },
+    "geminiocr": {
+        "args": {
+            "key": "",
+            "url": "https://generativelanguage.googleapis.com/v1",
+            "model": "gemini-1.5-flash",
+            "use_custom_prompt": false,
+            "modellistcache": [],
+            "custom_prompt": ""
+        },
+        "argstype": {
+            "custom_prompt": {
+                "name": "自定义_promt",
+                "type": "multiline",
+                "refswitch": "use_custom_prompt"
+            },
+            "use_custom_prompt": {
+                "type": "switch_ref",
+                "name": "使用自定义promt"
+            },
+            "model": {
+                "type": "lineedit_or_combo",
+                "list_function": "list_models",
+                "list_cache": "modellistcache"
+            },
+            "modellistcache": {
+                "type": "list_cache"
+            }
+        }
+    },
+    "chatgptlike": {
+        "args": {
+            "model": "gpt-4",
+            "apiurl": "https://api.openai.com/v1",
+            "SECRET_KEY": "",
+            "use_custom_prompt": false,
+            "custom_prompt": "",
+            "Temperature": 0.3,
+            "top_p": 0.3,
+            "max_tokens": 1024,
+            "frequency_penalty": 0,
+            "modellistcache": [],
+            "s": ""
+        },
+        "argstype": {
+            "SECRET_KEY": {
+                "rank": 0.5,
+                "name": "API Key"
+            },
+            "s": {
+                "type": "split",
+                "rank": 1.5
+            },
+            "apiurl": {
+                "name": "API接口地址",
+                "rank": 0
+            },
+            "model": {
+                "rank": 1,
+                "type": "lineedit_or_combo",
+                "list_function": "list_models",
+                "list_cache": "modellistcache"
+            },
+            "modellistcache": {
+                "type": "list_cache"
+            },
+            "top_p": {
+                "type": "spin",
+                "min": 0,
+                "max": 1,
+                "step": 0.01
+            },
+            "frequency_penalty": {
+                "type": "spin",
+                "min": 0,
+                "max": 2,
+                "step": 0.05
+            },
+            "max_tokens": {
+                "type": "intspin",
+                "min": 1,
+                "max": 1000000,
+                "step": 1
+            },
+            "custom_prompt": {
+                "name": "自定义_prompt",
+                "type": "multiline",
+                "refswitch": "use_custom_prompt"
+            },
+            "use_custom_prompt": {
+                "type": "switch_ref",
+                "name": "使用自定义promt"
+            },
+            "Temperature": {
+                "type": "spin",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            }
+        }
+    },
+    "xunfei": {
+        "args": {
+            "APPId": "",
+            "APISecret": "",
+            "APIKey": ""
+        }
+    },
+    "mangaocr": {
+        "args": {
+            "Port": 5665
+        },
+        "argstype": {
+            "Port": {
+                "type": "intspin",
+                "min": 1,
+                "max": 65535,
+                "step": 1
+            }
+        }
+    }
+}

@@ -1,0 +1,43 @@
+name: build
+
+on:
+  push:
+    paths: [ '.github/workflows/build.yml','build.py', 'LunaTranslator/**' , 'plugins/**' ]
+  pull_request:
+    paths: [ '.github/workflows/build.yml','build.py', 'LunaTranslator/**' , 'plugins/**']
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - architecture: x86
+            fname: LunaTranslator_x86
+          - architecture: x64
+            fname: LunaTranslator
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Windows 10 SDK
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.7.9'
+          architecture: ${{ matrix.architecture }}
+      
+      - name: Install Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Run build script
+        run: |
+          python build.py ${{ matrix.architecture }} 3.7.9
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.fname }}
+          path: build/${{ matrix.fname }}.zip

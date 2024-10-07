@@ -1,0 +1,187 @@
+{
+    "stringreplace": {
+        "use": false,
+        "name": "字符串替换",
+        "args": {
+            "internal": []
+        }
+    },
+    "_remove_non_shiftjis_char": {
+        "use": false,
+        "name": "过滤文本中的非日语字符集字符"
+    },
+    "_remove_control": {
+        "use": false,
+        "name": "过滤控制字符"
+    },
+    "_remove_symbo": {
+        "use": false,
+        "name": "过滤英文标点"
+    },
+    "_remove_chaos": {
+        "use": false,
+        "name": "过滤其他乱码"
+    },
+    "_remove_not_in_ja_bracket": {
+        "use": false,
+        "name": "过滤「」以外的字符"
+    },
+    "_1": {
+        "use": false,
+        "name": "去除花括号{}"
+    },
+    "length_threshold": {
+        "use": false,
+        "name": "按字数过滤或截断",
+        "args": {
+            "minzishu": 1,
+            "maxzishu": 99999,
+            "cut": false,
+            "cut_reverse": false
+        },
+        "argstype": {
+            "minzishu": {
+                "name": "最小字数",
+                "type": "intspin",
+                "min": 0,
+                "max": 99999999,
+                "step": 1
+            },
+            "maxzishu": {
+                "name": "最大字数",
+                "type": "intspin",
+                "min": 0,
+                "max": 99999999,
+                "step": 1
+            },
+            "cut": {
+                "name": "超过最大字数时截断而非过滤",
+                "type": "switch"
+            },
+            "cut_reverse": {
+                "name": "截断时反向截断",
+                "type": "switch"
+            }
+        }
+    },
+    "lines_threshold": {
+        "use": false,
+        "name": "按行数过滤或截断",
+        "args": {
+            "minzishu": 1,
+            "maxzishu": 99999,
+            "cut": false,
+            "cut_reverse": false
+        },
+        "argstype": {
+            "minzishu": {
+                "name": "最小行数",
+                "type": "intspin",
+                "min": 0,
+                "max": 99999999,
+                "step": 1
+            },
+            "maxzishu": {
+                "name": "最大行数",
+                "type": "intspin",
+                "min": 0,
+                "max": 99999999,
+                "step": 1
+            },
+            "cut": {
+                "name": "超过最大行数时截断而非过滤",
+                "type": "switch"
+            },
+            "cut_reverse": {
+                "name": "截断时反向截断",
+                "type": "switch"
+            }
+        }
+    },
+    "_2": {
+        "use": false,
+        "name": "去除重复字符_AAAABBBBCCCC->ABC",
+        "args": {
+            "重复次数(若为1则自动分析去重)": 1,
+            "保持非重复字符": true
+        },
+        "argstype": {
+            "保持非重复字符": {
+                "type": "switch"
+            },
+            "重复次数(若为1则自动分析去重)": {
+                "type": "intspin",
+                "min": 0,
+                "max": 10000,
+                "step": 1
+            }
+        }
+    },
+    "dedump": {
+        "use": false,
+        "name": "过滤历史重复_LRU",
+        "args": {
+            "cachesize": 3
+        },
+        "argstype": {
+            "cachesize": {
+                "type": "intspin",
+                "name": "缓存条数",
+                "min": -1,
+                "max": 10000,
+                "step": 1
+            }
+        }
+    },
+    "_3": {
+        "use": false,
+        "name": "去除重复行_ABCDABCDABCD->ABCD",
+        "args": {
+            "重复次数(若为1则自动分析去重)": 1
+        },
+        "argstype": {
+            "重复次数(若为1则自动分析去重)": {
+                "type": "intspin",
+                "min": 0,
+                "max": 10000,
+                "step": 1
+            }
+        }
+    },
+    "_3_2": {
+        "use": false,
+        "name": "去除重复行_S1S1S1S2S2S2->S1S2"
+    },
+    "_4": {
+        "use": false,
+        "name": "过滤尖括号<>"
+    },
+    "_6EX": {
+        "use": false,
+        "name": "过滤换行符"
+    },
+    "_91": {
+        "use": false,
+        "name": "过滤数字"
+    },
+    "_92": {
+        "use": false,
+        "name": "过滤英文字母"
+    },
+    "_10": {
+        "use": false,
+        "name": "去除重复行_ABCDBCDCDD->ABCD"
+    },
+    "_13": {
+        "use": false,
+        "name": "去除重复行_AABABCABCD->ABCD"
+    },
+    "_13EX": {
+        "use": false,
+        "name": "去除重复行_AABABCABCDEEFEFG->ABCDEFG"
+    },
+    "_11": {
+        "use": false,
+        "name": "自定义python处理"
+    }
+}

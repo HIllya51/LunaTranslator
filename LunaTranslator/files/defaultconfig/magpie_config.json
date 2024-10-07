@@ -1,0 +1,151 @@
+{
+    "language": "",
+    "theme": 2,
+    "windowPos": {
+        "centerX": 1188.0,
+        "centerY": 902.0,
+        "width": 998.6666870117188,
+        "height": 604.0,
+        "maximized": false
+    },
+    "shortcuts": {
+        "scale": 2129,
+        "overlay": 2372
+    },
+    "autoRestore": false,
+    "countdownSeconds": 3,
+    "developerMode": false,
+    "debugMode": false,
+    "disableEffectCache": false,
+    "disableFontCache": false,
+    "saveEffectSources": false,
+    "warningsAreErrors": false,
+    "allowScalingMaximized": false,
+    "simulateExclusiveFullscreen": false,
+    "alwaysRunAsAdmin": false,
+    "showNotifyIcon": true,
+    "inlineParams": false,
+    "autoCheckForUpdates": true,
+    "checkForPreviewUpdates": false,
+    "updateCheckDate": 17121608925479923,
+    "duplicateFrameDetectionMode": 1,
+    "enableStatisticsForDynamicDetection": false,
+    "scalingModes": [
+        {
+            "name": "Lanczos",
+            "effects": [
+                {
+                    "name": "Lanczos",
+                    "scalingType": 1,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            ]
+        },
+        {
+            "name": "FSR",
+            "effects": [
+                {
+                    "name": "FSR\\FSR_EASU",
+                    "scalingType": 1,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                {
+                    "name": "FSR\\FSR_RCAS",
+                    "parameters": {
+                        "sharpness": 0.8700000047683716
+                    }
+                }
+            ]
+        },
+        {
+            "name": "FSRCNNX",
+            "effects": [
+                {
+                    "name": "FSRCNNX\\FSRCNNX"
+                }
+            ]
+        },
+        {
+            "name": "ACNet",
+            "effects": [
+                {
+                    "name": "ACNet"
+                }
+            ]
+        },
+        {
+            "name": "Anime4K",
+            "effects": [
+                {
+                    "name": "Anime4K\\Anime4K_Upscale_Denoise_L"
+                }
+            ]
+        },
+        {
+            "name": "CRT-Geom",
+            "effects": [
+                {
+                    "name": "CRT\\CRT_Geom",
+                    "scalingType": 1,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parameters": {
+                        "monitorGamma": 2.200000047683716,
+                        "cornerSize": 0.0010000000474974513,
+                        "curvature": 0.0,
+                        "interlace": 0.0,
+                        "CRTGamma": 1.5
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Integer Scale 2x",
+            "effects": [
+                {
+                    "name": "Nearest",
+                    "scalingType": 0,
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                }
+            ]
+        }
+    ],
+    "profiles": [
+        {
+            "scalingMode": 0,
+            "captureMethod": 0,
+            "multiMonitorUsage": 0,
+            "graphicsCard": -1,
+            "frameRateLimiterEnabled": false,
+            "maxFrameRate": 60.0,
+            "disableWindowResizing": false,
+            "3DGameMode": false,
+            "showFPS": false,
+            "captureTitleBar": false,
+            "adjustCursorSpeed": false,
+            "drawCursor": true,
+            "disableDirectFlip": false,
+            "cursorScaling": 2,
+            "customCursorScaling": 1.0,
+            "cursorInterpolationMode": 0,
+            "croppingEnabled": false,
+            "cropping": {
+                "left": 0.0,
+                "top": 0.0,
+                "right": 0.0,
+                "bottom": 0.0
+            }
+        }
+    ]
+}
