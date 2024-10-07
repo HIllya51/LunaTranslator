@@ -98,21 +98,12 @@ class TS(basetrans):
 
     def translate(self, query):
         self.checkempty(["secret_id", "secret_key"])
-        self.contextnum = int(self.config["context_num"])
         query = self._gptlike_createquery(
             query, "use_user_user_prompt", "user_user_prompt"
         )
         sysprompt = self._gptlike_createsys("use_user_prompt", "user_prompt")
         message = [{"Role": "system", "Content": sysprompt}]
-
-        for _i in range(min(len(self.context) // 2, self.contextnum)):
-            i = (
-                len(self.context) // 2
-                - min(len(self.context) // 2, self.contextnum)
-                + _i
-            )
-            message.append(self.context[i * 2])
-            message.append(self.context[i * 2 + 1])
+        self._gpt_common_parse_context(message, self.context, self.config["context_num"])
         message.append({"Role": "user", "Content": query})
         usingstream = self.config["usingstream"]
         json_data = {

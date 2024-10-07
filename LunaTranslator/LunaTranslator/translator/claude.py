@@ -17,7 +17,6 @@ class TS(basetrans):
 
     def translate(self, query):
         self.checkempty(["API_KEY", "model"])
-        self.contextnum = int(self.config["附带上下文个数"])
         query = self._gptlike_createquery(
             query, "use_user_user_prompt", "user_user_prompt"
         )
@@ -25,14 +24,7 @@ class TS(basetrans):
         temperature = self.config["Temperature"]
 
         message = []
-        for _i in range(min(len(self.context) // 2, self.contextnum)):
-            i = (
-                len(self.context) // 2
-                - min(len(self.context) // 2, self.contextnum)
-                + _i
-            )
-            message.append(self.context[i * 2])
-            message.append(self.context[i * 2 + 1])
+        self._gpt_common_parse_context(message, self.context, self.config["附带上下文个数"])
         message.append({"role": "user", "content": query})
         prefill = self._gptlike_create_prefill("prefill_use", "prefill")
         if prefill:

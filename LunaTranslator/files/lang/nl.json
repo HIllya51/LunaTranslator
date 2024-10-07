@@ -555,7 +555,6 @@
     "名称": "naam",
     "网址": "website",
     "可选取的": "Selecteerbare opties",
-    "百度OCR": "Baidu OCR",
     "最大缓冲区长度": "Maximale bufferlengte",
     "最大缓存文本长度": "Maximale tekstlengte in cache",
     "半径": "straal",
@@ -598,7 +597,6 @@
     "删除列表": "Lijst verwijderen",
     "上移": "Naar boven gaan",
     "下移": "Naar beneden gaan",
-    "百度图片翻译": "Vertaling van afbeeldingen in Baidu",
     "大": "groot",
     "权限不足，请以管理员权限运行！": "Onvoldoende machtigingen, gelieve te draaien met beheerdersrechten!",
     "标点": "interpunctie",
@@ -783,7 +781,6 @@
     "目标列表": "Doellijst",
     "使用翻译": "Vertaling gebruiken",
     "prompt格式（需要根据模型版本决定）": "Prompt formaat (afhankelijk van de modelversie)",
-    "v0.10pre1（支持gpt词典）": "V0.10 pre1 (ondersteunt GPT woordenboek)",
     "输出的内容": "Uitvoerinhoud",
     "选取OCR范围时不透明度": "Opaciteit bij het selecteren van OCR-bereik",
     "设为图标": "Als pictogram instellen",
@@ -813,5 +810,6 @@
     "小牛": "Kalf",
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Translation Open Platform",
-    "百度智能云": "Baidu AI Cloud"
+    "百度智能云": "Baidu AI Cloud",
+    "（支持gpt词典）": "(Ondersteunt GPT woordenboek)"
 }

@@ -288,6 +288,13 @@ class basetrans(commonbase):
         )
         return user_prompt
 
+    def _gpt_common_parse_context(self, messages: list, context: list, num: int):
+
+        for _i in range(min(len(context) // 2, num)):
+            i = len(context) // 2 - min(len(context) // 2, num) + _i
+            messages.append(context[i * 2])
+            messages.append(context[i * 2 + 1])
+
     def reinitandtrans(self, contentsolved, is_auto_run):
         if self.needreinit or self.initok == False:
             self.needreinit = False

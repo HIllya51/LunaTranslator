@@ -545,7 +545,6 @@
     "收藏": "Bộ sưu tập",
     "名称": "Tên",
     "网址": "Trang chủ",
-    "百度OCR": "Số lượng OCR",
     "最大缓冲区长度": "Chiều dài bộ đệm tối đa",
     "最大缓存文本长度": "Độ dài văn bản bộ nhớ cache tối đa",
     "半径": "Bán kính",
@@ -588,7 +587,6 @@
     "删除列表": "Xoá danh sách",
     "上移": "Di chuyển lên",
     "下移": "Di chuyển xuống",
-    "百度图片翻译": "100 hình ảnh dịch",
     "大": "Lớn",
     "权限不足，请以管理员权限运行！": "Không đủ quyền, hãy chạy với quyền quản trị viên!",
     "标点": "Chấm câu",
@@ -783,7 +781,6 @@
     "目标列表": "Danh sách mục tiêu",
     "使用翻译": "Sử dụng bản dịch",
     "prompt格式（需要根据模型版本决定）": "Định dạng prompt (cần được quyết định dựa trên phiên bản model)",
-    "v0.10pre1（支持gpt词典）": "v0.10pre1 (hỗ trợ từ điển gpt)",
     "输出的内容": "Nội dung xuất",
     "选取OCR范围时不透明度": "Độ mờ đục khi chọn phạm vi OCR",
     "设为图标": "Đặt làm biểu tượng",
@@ -813,5 +810,6 @@
     "小牛": "Tiểu Ngưu",
     "讯飞": "Tin nhắn",
     "百度翻译开放平台": "100 phiên dịch mở",
-    "百度智能云": "100 đám mây thông minh"
+    "百度智能云": "100 đám mây thông minh",
+    "（支持gpt词典）": "(Hỗ trợ GPT Dictionary)"
 }

@@ -84,19 +84,11 @@ class TS(basetrans):
 
     def translate(self, query):
         acss = self.checkchange()
-        self.contextnum = int(self.config["context_num"])
         query = self._gptlike_createquery(
             query, "use_user_user_prompt", "user_user_prompt"
         )
         message = []
-        for _i in range(min(len(self.context) // 2, self.contextnum)):
-            i = (
-                len(self.context) // 2
-                - min(len(self.context) // 2, self.contextnum)
-                + _i
-            )
-            message.append(self.context[i * 2])
-            message.append(self.context[i * 2 + 1])
+        self._gpt_common_parse_context(message, self.context, self.config["context_num"])
         message.append({"role": "user", "content": query})
 
         usingstream = self.config["usingstream"]

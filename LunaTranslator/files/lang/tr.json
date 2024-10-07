@@ -545,7 +545,6 @@
     "收藏": "koleksiyon",
     "名称": "isim",
     "网址": "Web sitesi",
-    "百度OCR": "Baidu OCR",
     "最大缓冲区长度": "Azamik buffer uzunluğu",
     "最大缓存文本长度": "Maximum cached text length",
     "半径": "radius",
@@ -588,7 +587,6 @@
     "删除列表": "Listeyi sil",
     "上移": "Yukarı Taşı",
     "下移": "Aşağı taşın",
-    "百度图片翻译": "Baidu Resim Çeviri",
     "大": "büyükdictionary variant",
     "权限不足，请以管理员权限运行！": "Insufficient permissions, please run with administrator privileges!",
     "标点": "noqtalama",
@@ -783,7 +781,6 @@
     "目标列表": "Hedef Listesi",
     "使用翻译": "Çeviri kullanılıyor",
     "prompt格式（需要根据模型版本决定）": "Soru format ı (model versiyonuna bağlı)",
-    "v0.10pre1（支持gpt词典）": "V0. 10 pre1 (GPT sözlük destekliyor)",
     "输出的内容": "Çıkış içeriği",
     "选取OCR范围时不透明度": "OCR menzilini seçerken meşgullük",
     "设为图标": "İşaretçi olarak ayarlayın",
@@ -813,5 +810,6 @@
     "小牛": "Calf",
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Çeviri Açık Platformu",
-    "百度智能云": "Baidu AI Bulud"
+    "百度智能云": "Baidu AI Bulud",
+    "（支持gpt词典）": "(GPT sözlük destekliyor)"
 }

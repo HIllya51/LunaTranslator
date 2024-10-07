@@ -555,7 +555,6 @@
     "名称": "Name",
     "网址": "Website",
     "可选取的": "Auswählbare Optionen",
-    "百度OCR": "Baidu OCR",
     "最大缓冲区长度": "Maximale Pufferlänge",
     "最大缓存文本长度": "Maximale Textlänge im Cache",
     "半径": "Radius",
@@ -598,7 +597,6 @@
     "删除列表": "Liste löschen",
     "上移": "Nach oben",
     "下移": "Nach unten bewegen",
-    "百度图片翻译": "Baidu Bildübersetzung",
     "大": "groß",
     "权限不足，请以管理员权限运行！": "Unzureichende Berechtigungen, bitte mit Administratorrechten ausführen!",
     "标点": "Zeichensetzung",
@@ -783,7 +781,6 @@
     "目标列表": "Zielliste",
     "使用翻译": "Verwendung der Übersetzung",
     "prompt格式（需要根据模型版本决定）": "Aufforderungsformat (abhängig von der Modellversion)",
-    "v0.10pre1（支持gpt词典）": "V0.10 pre1 (unterstützt GPT Wörterbuch)",
     "输出的内容": "Ausgabeinhalt",
     "选取OCR范围时不透明度": "Deckkraft bei Auswahl des OCR-Bereichs",
     "设为图标": "Als Symbol festlegen",
@@ -813,5 +810,6 @@
     "小牛": "Kalb",
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Translation Open Platform",
-    "百度智能云": "Baidu AI Cloud"
+    "百度智能云": "Baidu AI Cloud",
+    "（支持gpt词典）": "(Unterstützt GPT Wörterbuch)"
 }

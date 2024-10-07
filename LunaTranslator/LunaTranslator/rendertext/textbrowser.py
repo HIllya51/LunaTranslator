@@ -200,7 +200,7 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.setTextCursor(c)
 
     def showhidetranslate(self, show):
-        self.showhideorigin(show)
+        self.parent().refreshcontent()
 
     def showhideorigin(self, show):
         self.parent().refreshcontent()

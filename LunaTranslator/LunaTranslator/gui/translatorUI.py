@@ -252,6 +252,8 @@ class TranslatorWindow(resizableframeless):
     move_signal = pyqtSignal(QPoint)
     closesignal = pyqtSignal()
     hotkeyuse_selectprocsignal = pyqtSignal()
+    changeshowhiderawsig=pyqtSignal()
+    changeshowhidetranssig=pyqtSignal()
 
     @threader
     def tracewindowposthread(self):
@@ -877,6 +879,8 @@ class TranslatorWindow(resizableframeless):
         self.resizesignal.connect(self.resize)
         self.move_signal.connect(self.move)
         self.closesignal.connect(self.close)
+        self.changeshowhiderawsig.connect(self.changeshowhideraw)
+        self.changeshowhidetranssig.connect(self.changeshowhidetrans)
 
     def __init__(self):
 

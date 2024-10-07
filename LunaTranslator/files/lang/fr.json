@@ -545,7 +545,6 @@
     "收藏": "Collections",
     "名称": "Le nom",
     "网址": "Adresse Web",
-    "百度OCR": "Baidu ocr",
     "最大缓冲区长度": "Longueur maximale du tampon",
     "最大缓存文本长度": "Longueur maximale du texte mis en cache",
     "半径": "Rayon",
@@ -588,7 +587,6 @@
     "删除列表": "Supprimer une liste",
     "上移": "Déplacement vers le Haut",
     "下移": "Descendre",
-    "百度图片翻译": "Baidu traduction d'images",
     "大": "Grand",
     "权限不足，请以管理员权限运行！": "Autorisations insuffisantes, exécutez avec des privilèges d'administrateur!",
     "标点": "Ponctuation",
@@ -783,7 +781,6 @@
     "目标列表": "Liste des objectifs",
     "使用翻译": "Utiliser la traduction",
     "prompt格式（需要根据模型版本决定）": "Format prompt (à décider en fonction de la version du modèle)",
-    "v0.10pre1（支持gpt词典）": "V0.10pre1 (support du dictionnaire GPT)",
     "输出的内容": "Contenu de la sortie",
     "选取OCR范围时不透明度": "Opacité lorsque la plage OCR est sélectionnée",
     "设为图标": "Faire une icône",
@@ -813,5 +810,6 @@
     "小牛": "Le veau",
     "讯飞": "Signal volant",
     "百度翻译开放平台": "Baidu traduction plateforme ouverte",
-    "百度智能云": "Baidu intelligent Cloud"
+    "百度智能云": "Baidu intelligent Cloud",
+    "（支持gpt词典）": "(support du dictionnaire GPT)"
 }

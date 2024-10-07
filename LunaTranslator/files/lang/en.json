@@ -544,7 +544,6 @@
     "收藏": "Favourites",
     "名称": "Name",
     "网址": "URL",
-    "百度OCR": "Baidu OCR",
     "最大缓冲区长度": "Maximum Buffer Length",
     "最大缓存文本长度": "Maximum Cached Text Length",
     "半径": "Radius",
@@ -587,7 +586,6 @@
     "删除列表": "Delete List",
     "上移": "Move Up",
     "下移": "Move Down",
-    "百度图片翻译": "Baidu Image Translation",
     "大": "Large",
     "权限不足，请以管理员权限运行！": "Insufficient Permissions, Please Run as Administrator!",
     "标点": "Punctuation",
@@ -783,7 +781,6 @@
     "目标列表": "Target List",
     "使用翻译": "Using translation",
     "prompt格式（需要根据模型版本决定）": "Prompt format (depending on the model version)",
-    "v0.10pre1（支持gpt词典）": "V0.10 pre1 (supports GPT dictionary)",
     "输出的内容": "Output content",
     "选取OCR范围时不透明度": "Opacity when selecting OCR range",
     "设为图标": "Set as icon",
@@ -813,5 +810,6 @@
     "小牛": "Calf",
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Translation Open Platform",
-    "百度智能云": "Baidu AI Cloud"
+    "百度智能云": "Baidu AI Cloud",
+    "（支持gpt词典）": "(Supports GPT dictionary)"
 }

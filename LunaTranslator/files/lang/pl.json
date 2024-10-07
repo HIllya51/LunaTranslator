@@ -545,7 +545,6 @@
     "收藏": "kolekcja",
     "名称": "nazwa",
     "网址": "Strona internetowa",
-    "百度OCR": "OCR Baidu",
     "最大缓冲区长度": "Maksymalna długość bufora",
     "最大缓存文本长度": "Maksymalna długość buforowanego tekstu",
     "半径": "promień",
@@ -588,7 +587,6 @@
     "删除列表": "Usuń listę",
     "上移": "Przesuń się w górę",
     "下移": "Przesuń w dół",
-    "百度图片翻译": "Tłumaczenie obrazów Baidu",
     "大": "duże",
     "权限不足，请以管理员权限运行！": "Niewystarczające uprawnienia, proszę uruchomić z uprawnieniami administratora!",
     "标点": "interpunkcja",
@@ -783,7 +781,6 @@
     "目标列表": "Lista docelowa",
     "使用翻译": "Korzystanie z tłumaczenia",
     "prompt格式（需要根据模型版本决定）": "Format pytania (w zależności od wersji modelu)",
-    "v0.10pre1（支持gpt词典）": "V0.10 pre1 (obsługuje słownik GPT)",
     "输出的内容": "Zawartość wyjściowa",
     "选取OCR范围时不透明度": "Przezroczystość przy wyborze zakresu OCR",
     "设为图标": "Ustaw jako ikonę",
@@ -813,5 +810,6 @@
     "小牛": "Cielęce",
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Otwarta platforma tłumaczeń Baidu",
-    "百度智能云": "Chmura AI Baidu"
+    "百度智能云": "Chmura AI Baidu",
+    "（支持gpt词典）": "(Obsługuje słownik GPT)"
 }
