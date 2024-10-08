@@ -10,15 +10,12 @@ Make sure not to download the source code by mistake!
 
 ### Launch
 
-After unzipping, you can see the following files. Use **LunaTranslator.exe** to start.
-
-![img](https://image.lunatranslator.org/zh/startup.png)
 
 **LunaTranslator.exe** will start in normal mode.
 
 **LunaTranslator_admin.exe** will start with administrator privileges. Some games require administrator privileges to HOOK, so use this only when necessary; otherwise, start in normal mode.
 
-**LunaTranslator_debug.exe** will display the command line and show the log during runtime. If you encounter a bug, please run this program and attach the log.
+**LunaTranslator_debug.exe** will generate log file. When submitting bug feedback, please be sure to run the program and reproduce the bug, and then submit the generated log file.
 
 #### Note
 

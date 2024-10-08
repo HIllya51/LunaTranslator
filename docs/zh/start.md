@@ -10,17 +10,12 @@
 
 ### 启动
 
-解压后可以看到下列文件，使用**LunaTranslator.exe**启动即可
-
-
-![img](https://image.lunatranslator.org/zh/startup.png)
-
 
 **LunaTranslator.exe** 会以普通模式启动 
 
 **LunaTranslator_admin.exe** 会以管理员权限启动，部分游戏需要管理员权限才能HOOK，仅这时需要使用这个，其他时候普通模式启动即可。
 
-**LunaTranslator_debug.exe** 会显示命令行启动，并显示运行时的log。如果遇到有bug，请运行这个程序并附上log。
+**LunaTranslator_debug.exe** 会生成log文件。提交bug反馈时，务必请使用该程序运行并复现bug，然后提交生成的log文件。
 
 
 

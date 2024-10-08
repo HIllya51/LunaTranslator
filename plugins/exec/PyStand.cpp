@@ -1,6 +1,11 @@
 ﻿
 #include "PyStand.h"
 
+#include <iomanip>
+#include <sstream>
+#include <chrono>
+#include <ctime>
+
 //---------------------------------------------------------------------
 // dtor
 //---------------------------------------------------------------------
@@ -250,52 +255,63 @@ int PyStand::DetectScript()
 // init script
 //---------------------------------------------------------------------
 const auto init_script =
-	L"import sys\n"
-	L"import os\n"
-	L"PYSTAND = os.environ['PYSTAND']\n"
-	L"PYSTAND_HOME = os.environ['PYSTAND_HOME']\n"
-	L"PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']\n"
-	L"PYSTAND_SCRIPT = os.environ['PYSTAND_SCRIPT']\n"
-	L"sys.path_origin = [n for n in sys.path]\n"
-	L"sys.PYSTAND = PYSTAND\n"
-	L"sys.PYSTAND_HOME = PYSTAND_HOME\n"
-	L"sys.PYSTAND_SCRIPT = PYSTAND_SCRIPT\n"
-	L"def MessageBox(msg, info = 'Message'):\n"
-	L"    import ctypes\n"
-	L"    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)\n"
-	L"    return 0\n"
-	L"os.MessageBox = MessageBox\n"
+	LR"(
+import sys
+import os
+PYSTAND = os.environ['PYSTAND']
+PYSTAND_HOME = os.environ['PYSTAND_HOME']
+PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']
+PYSTAND_SCRIPT = os.environ['PYSTAND_SCRIPT']
+sys.path_origin = [n for n in sys.path]
+sys.PYSTAND = PYSTAND
+sys.PYSTAND_HOME = PYSTAND_HOME
+sys.PYSTAND_SCRIPT = PYSTAND_SCRIPT
+def MessageBox(msg, info = 'Message'):
+    import ctypes
+    ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)
+    return 0
+os.MessageBox = MessageBox
+sys.stdout=sys.stderr
+)"
 #ifndef PYSTAND_CONSOLE
-	L"try:\n"
-	L"    fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)\n"
-	L"    fp = os.fdopen(fd, 'w')\n"
-	L"    sys.stdout = fp\n"
-	L"    sys.stderr = fp\n"
-	L"    attached = True\n"
-	L"except Exception as e:\n"
-	L"    fp = open(os.devnull, 'w', errors='ignore')\n"
-	L"    sys.stdout = fp\n"
-	L"    sys.stderr = fp\n"
-	L"    attached = False\n"
+	LR"(
+try:
+	fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)
+	fp = os.fdopen(fd, 'w')
+	sys.stdout = fp
+	sys.stderr = fp
+	attached = True
+except Exception as e:
+	fp = open(os.devnull, 'w', errors='ignore')
+	sys.stdout = fp
+	sys.stderr = fp
+	attached = False
+)"
 #endif
-	L"sys.argv = [PYSTAND_SCRIPT] + sys.argv[1:]\n"
-	L"text = open(PYSTAND_SCRIPT, 'rb').read()\n"
-	L"environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}\n"
-	L"environ['__package__'] = None\n"
+	LR"(
+sys.argv = [PYSTAND_SCRIPT] + sys.argv[1:]
+text = open(PYSTAND_SCRIPT, 'rb').read()
+environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}
+environ['__package__'] = None
+)"
 #ifndef PYSTAND_CONSOLE
-	L"try:\n"
-	L"    code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
-	L"    exec(code, environ)\n"
-	L"except Exception:\n"
-	L"    if attached:\n"
-	L"        raise\n"
-	L"    import traceback, io\n"
-	L"    sio = io.StringIO()\n"
-	L"    traceback.print_exc(file = sio)\n"
-	L"    os.MessageBox(sio.getvalue(), 'Error')\n"
+	LR"(
+try:
+    code = compile(text, PYSTAND_SCRIPT, 'exec')
+    exec(code, environ)
+except Exception:
+    if attached:
+        raise
+    import traceback, io
+    sio = io.StringIO()
+    traceback.print_exc(file = sio)
+    os.MessageBox(sio.getvalue(), 'Error')
+)"
 #else
-	L"code = compile(text, PYSTAND_SCRIPT, 'exec')\n"
-	L"exec(code, environ)\n"
+	LR"(
+code = compile(text, PYSTAND_SCRIPT, 'exec')
+exec(code, environ)
+)"
 #endif
 	"";
 
@@ -310,12 +326,7 @@ const auto init_script =
 //! mode: win
 //! int: objs
 
-#ifdef PYSTAND_CONSOLE
 int main()
-#else
-int WINAPI
-WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
-#endif
 {
 	{
 		// 当更新进行时，禁止启动
@@ -330,6 +341,7 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
 		return 3;
 	}
 #ifndef PYSTAND_CONSOLE
+	// winmain下的stderr没有任何卵用，对于崩溃时的stderr根本显示不出来，所以还是用控制台来保存log吧。
 	if (AttachConsole(ATTACH_PARENT_PROCESS))
 	{
 		freopen("CONOUT$", "w", stdout);
@@ -347,8 +359,27 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
 			SetEnvironmentVariableA("PYSTAND_STDIN", fn.c_str());
 		}
 	}
+#else
+	{
+		auto getCurrentTimestamp = []
+		{
+			auto now = std::chrono::system_clock::now();
+			std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+			std::tm now_tm = *std::localtime(&now_time_t);
+			std::ostringstream oss;
+			oss << std::put_time(&now_tm, "log_%Y-%m-%d-%H-%M-%S.txt");
+			return oss.str();
+		};
+		auto curr = getCurrentTimestamp();
+		freopen(curr.c_str(), "a", stderr);
+	}
 #endif
 	int hr = ps.RunString(init_script);
-	// printf("finalize\n");
 	return hr;
+}
+
+int WINAPI
+WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int show)
+{
+	return main();
 }
