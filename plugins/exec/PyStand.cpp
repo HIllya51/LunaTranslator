@@ -360,19 +360,18 @@ int main()
 		}
 	}
 #else
+	SetConsoleOutputCP(CP_UTF8);
+	auto getCurrentTimestamp = []
 	{
-		auto getCurrentTimestamp = []
-		{
-			auto now = std::chrono::system_clock::now();
-			std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
-			std::tm now_tm = *std::localtime(&now_time_t);
-			std::ostringstream oss;
-			oss << std::put_time(&now_tm, "log_%Y-%m-%d-%H-%M-%S.txt");
-			return oss.str();
-		};
-		auto curr = getCurrentTimestamp();
-		freopen(curr.c_str(), "a", stderr);
-	}
+		auto now = std::chrono::system_clock::now();
+		std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+		std::tm now_tm = *std::localtime(&now_time_t);
+		std::ostringstream oss;
+		oss << std::put_time(&now_tm, "log_%Y-%m-%d-%H-%M-%S.txt");
+		return oss.str();
+	};
+	auto curr = getCurrentTimestamp();
+	freopen(curr.c_str(), "a", stderr);
 #endif
 	int hr = ps.RunString(init_script);
 	return hr;
