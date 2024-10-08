@@ -729,14 +729,16 @@ class hookselect(closeashidewindow):
 
         if self.checkfilt_notcontrol.isChecked():
             lres = list(res)
-
             for r in lres:
                 _ord = ord(r)
-                if _ord < 0x20 or (_ord > 0x80 and _ord < 0xA0):
-
+                if (
+                    (_ord >= 0x21 and _ord <= 0x2F)
+                    or (_ord >= 0x3A and _ord <= 0x40)
+                    or (_ord >= 0x5B and _ord <= 0x60)
+                    or (_ord >= 0x7B and _ord <= 0x7E)
+                ):
                     hide = True
                     break
-
         return hide
 
     def searchtextfunc2(self):
