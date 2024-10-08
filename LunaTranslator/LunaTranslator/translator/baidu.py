@@ -111,8 +111,6 @@ class BaiduV1(Tse):
         timeout = kwargs.get("timeout", None)
         proxies = kwargs.get("proxies", None)
         sleep_seconds = kwargs.get("sleep_seconds", 0)
-        if_print_warning = kwargs.get("if_print_warning", True)
-        is_detail_result = kwargs.get("is_detail_result", False)
         update_session_after_freq = kwargs.get(
             "update_session_after_freq", self.default_session_freq
         )
@@ -120,10 +118,6 @@ class BaiduV1(Tse):
             "update_session_after_seconds", self.default_session_seconds
         )
 
-        not_update_cond_freq = 1 if self.query_count < update_session_after_freq else 0
-        not_update_cond_time = (
-            1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        )
         if not (self.session):
             self.session = requests.Session()
             _ = self.session.get(
@@ -154,17 +148,12 @@ class BaiduV1(Tse):
             proxies=proxies,
         )
         r.raise_for_status()
-        data = r.json()
         time.sleep(sleep_seconds)
         self.query_count += 1
         try:
-            return (
-                data
-                if is_detail_result
-                else "\n".join([item["dst"] for item in data["data"]])
-            )
+            return "\n".join([item["dst"] for item in r.json()["data"]])
         except:
-            raise Exception(data)
+            raise Exception(r.maybejson)
 
 
 class TS(basetrans):

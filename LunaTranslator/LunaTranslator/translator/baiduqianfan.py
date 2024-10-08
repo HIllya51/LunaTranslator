@@ -52,7 +52,7 @@ class TS(basetrans):
             try:
                 message = response.json()["result"].replace("\n\n", "\n").strip()
             except:
-                raise Exception(response.text)
+                raise Exception(response.maybejson)
             yield message
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": message})

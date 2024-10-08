@@ -58,4 +58,4 @@ class TS(basetrans):
 
             return js
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)

@@ -1,6 +1,4 @@
-import requests, os
 from translator.basetranslator import basetrans
-from myutils.subproc import subproc_w, autoproc
 
 
 class TS(basetrans):
@@ -15,4 +13,4 @@ class TS(basetrans):
         try:
             return response.json()
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)

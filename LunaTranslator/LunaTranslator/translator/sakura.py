@@ -1,6 +1,7 @@
 from translator.basetranslator import basetrans
 import requests
 import json, zhconv
+from myutils.utils import urlpathjoin
 
 # OpenAI
 # from openai import OpenAI
@@ -140,14 +141,16 @@ class TS(basetrans):
             stream=False,
         )
         try:
-            output = self.session.post(self.api_url + "/chat/completions", json=data)
+            output = self.session.post(
+                urlpathjoin(self.api_url, "chat/completions"), json=data
+            )
 
         except requests.RequestException as e:
             raise ValueError(f"连接到Sakura API超时：{self.api_url}")
         try:
             yield output.json()
         except:
-            raise Exception(output.text)
+            raise Exception(output.maybejson)
 
     def send_request_stream(self, messages, is_test=False, **kwargs):
         extra_query = {
@@ -173,14 +176,14 @@ class TS(basetrans):
         )
         try:
             output = self.session.post(
-                self.api_url + "/chat/completions",
+                urlpathjoin(self.api_url, "chat/completions"),
                 json=data,
                 stream=True,
             )
         except requests.RequestException:
             raise ValueError(f"连接到Sakura API超时：{self.api_url}")
         if not output.headers["Content-Type"].startswith("text/event-stream"):
-            raise Exception(output.text)
+            raise Exception(output.maybejson)
         for chunk in output.iter_lines():
             response_data: str = chunk.decode("utf-8").strip()
             if not response_data.startswith("data: "):

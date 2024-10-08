@@ -1,25 +1,25 @@
 from translator.basetranslator import basetrans
 import json, requests
-from traceback import print_exc
-from myutils.utils import createurl, createenglishlangmap
+from myutils.utils import createurl, createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
 
 
 def list_models(typename, regist):
-    js = requests.get(
-        createurl(regist["API接口地址"]().strip())[: -len("/chat/completions")]
-        + "/models",
+    resp = requests.get(
+        urlpathjoin(
+            createurl(regist["API接口地址"]().strip())[: -len("chat/completions")],
+            "models",
+        ),
         headers={
             "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()
         },
         proxies=getproxy(("fanyi", typename)),
         timeout=10,
-    ).json()
-
+    )
     try:
-        return sorted([_["id"] for _ in js["data"]])
+        return sorted([_["id"] for _ in resp.json()["data"]])
     except:
-        raise Exception(js)
+        raise Exception(resp.maybejson)
 
 
 class gptcommon(basetrans):
@@ -74,7 +74,7 @@ class gptcommon(basetrans):
             if not response.headers["Content-Type"].startswith("text/event-stream"):
                 # application/json
                 # text/html
-                raise Exception(response.text)
+                raise Exception(response.maybejson)
             for chunk in response.iter_lines():
                 response_data: str = chunk.decode("utf-8").strip()
                 if not response_data.startswith("data: "):
@@ -105,7 +105,7 @@ class gptcommon(basetrans):
                     .strip()
                 )
             except:
-                raise Exception(response.text)
+                raise Exception(response.maybejson)
             yield message
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": message})
@@ -116,7 +116,9 @@ class gptcommon(basetrans):
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
         message = [{"role": "system", "content": sysprompt}]
-        self._gpt_common_parse_context(message, self.context, self.config["附带上下文个数"])
+        self._gpt_common_parse_context(
+            message, self.context, self.config["附带上下文个数"]
+        )
         message.append({"role": "user", "content": query})
         prefill = self._gptlike_create_prefill("prefill_use", "prefill")
         if prefill:

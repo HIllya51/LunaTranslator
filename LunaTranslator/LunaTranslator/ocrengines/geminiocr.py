@@ -1,21 +1,21 @@
 import base64
 import requests
 from ocrengines.baseocrclass import baseocr
-from myutils.utils import createenglishlangmap
+from myutils.utils import createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
 
 
 def list_models(typename, regist):
-    js = requests.get(
-        "https://generativelanguage.googleapis.com/v1beta/models",
+    resp = requests.get(
+        urlpathjoin(regist["BASE_URL"]().strip(), "v1beta/models"),
         params={"key": regist["key"]().split("|")[0].strip()},
         proxies=getproxy(("ocr", typename)),
         timeout=10,
-    ).json()
+    )
     try:
-        models = js["models"]
+        models = resp.json()["models"]
     except:
-        raise Exception(js)
+        raise Exception(resp.maybejson)
     mm = []
     for m in models:
         name: str = m["name"]
@@ -34,10 +34,9 @@ class OCR(baseocr):
 
     def ocr(self, imagebinary):
         self.checkempty(["key"])
-        self.checkempty(["url"])
+        self.checkempty(["BASE_URL"])
         self.checkempty(["model"])
         api_key = self.config["key"]
-        url = self.config["url"]
         model = self.config["model"]
         image_data = base64.b64encode(imagebinary).decode("utf-8")
 
@@ -59,15 +58,21 @@ class OCR(baseocr):
         # Set up the request headers and URL
         headers = {"Content-Type": "application/json"}
         # by default https://generativelanguage.googleapis.com/v1
-        url = f"{url}/models/{model}:generateContent?key={api_key}"
-
         # Send the request
-        response = requests.post(url, headers=headers, json=payload, proxies=self.proxy)
+        response = requests.post(
+            urlpathjoin(
+                self.config["BASE_URL"],
+                f"v1beta/models/{model}:generateContent?key={api_key}",
+            ),
+            headers=headers,
+            json=payload,
+            proxies=self.proxy,
+        )
         try:
             # Handle the response
             if response.status_code == 200:
                 return response.json()["candidates"][0]["content"]["parts"][0]["text"]
             else:
-                raise Exception(response.text)
+                raise Exception(response.maybejson)
         except Exception as e:
-            raise Exception(response.text) from e
+            raise Exception(response.maybejson) from e

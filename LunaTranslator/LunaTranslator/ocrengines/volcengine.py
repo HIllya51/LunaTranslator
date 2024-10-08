@@ -442,7 +442,7 @@ class Service(object):
         if resp.status_code == 200:
             return resp.text
         else:
-            raise Exception(resp.text)
+            raise Exception(resp.maybejson)
 
     def prepare_request(self, api_info, params, doseq=0):
         for key in params:

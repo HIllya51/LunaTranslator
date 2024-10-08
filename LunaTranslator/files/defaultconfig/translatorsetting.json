@@ -968,6 +968,7 @@
 		"args": {
 			"SECRET_KEY": "",
 			"Temperature": 0.3,
+			"BASE_URL": "https://generativelanguage.googleapis.com",
 			"model": "gemini-1.5-flash",
 			"modellistcache": [],
 			"context": 0,
@@ -995,6 +996,9 @@
 				"type": "multiline",
 				"refswitch": "use_other_args",
 				"name": "其他参数"
+			},
+			"BASE_URL": {
+				"rank": 0
 			},
 			"usingstream": {
 				"name": "流式输出",

@@ -79,5 +79,5 @@ class TS(basetrans):
         try:
             trans = data["data"]["translateText"]
         except:
-            raise Exception(r.text)
+            raise Exception(r.maybejson)
         return html.unescape(trans)

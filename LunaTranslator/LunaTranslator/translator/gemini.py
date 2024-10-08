@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-from myutils.utils import createenglishlangmap
+from myutils.utils import createenglishlangmap, urlpathjoin
 import json, requests
 from myutils.proxy import getproxy
 
@@ -61,7 +61,10 @@ class TS(basetrans):
         usingstream = self.config["usingstream"]
         payload = {**contents, **safety, **sys_message, **gen_config}
         res = self.proxysession.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:{['generateContent','streamGenerateContent'][usingstream]}",
+            urlpathjoin(
+                self.config["BASE_URL"],
+                f"v1beta/models/{model}:{['generateContent','streamGenerateContent'][usingstream]}",
+            ),
             params={"key": self.multiapikeycurrent["SECRET_KEY"]},
             json=payload,
             stream=usingstream,
@@ -80,7 +83,7 @@ class TS(basetrans):
             try:
                 line = res.json()["candidates"][0]["content"]["parts"][0]["text"]
             except:
-                raise Exception(res.text)
+                raise Exception(res.maybejson)
             yield line
         self.context.append({"role": "user", "parts": [{"text": query}]})
         self.context.append({"role": "model", "parts": [{"text": line}]})
@@ -88,7 +91,7 @@ class TS(basetrans):
 
 def list_models(typename, regist):
     js = requests.get(
-        "https://generativelanguage.googleapis.com/v1beta/models",
+        urlpathjoin(regist["BASE_URL"]().strip(), "v1beta/models"),
         params={"key": regist["SECRET_KEY"]().split("|")[0].strip()},
         proxies=getproxy(("fanyi", typename)),
         timeout=10,

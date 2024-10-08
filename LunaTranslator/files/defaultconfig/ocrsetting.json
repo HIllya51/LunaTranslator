@@ -211,13 +211,20 @@
     "geminiocr": {
         "args": {
             "key": "",
-            "url": "https://generativelanguage.googleapis.com/v1",
+            "BASE_URL": "https://generativelanguage.googleapis.com/",
             "model": "gemini-1.5-flash",
             "use_custom_prompt": false,
             "modellistcache": [],
             "custom_prompt": ""
         },
         "argstype": {
+            "BASE_URL": {
+                "rank": 0
+            },
+            "key": {
+                "rank": 2,
+                "name": "API Key"
+            },
             "custom_prompt": {
                 "name": "自定义_promt",
                 "type": "multiline",
@@ -228,6 +235,7 @@
                 "name": "使用自定义promt"
             },
             "model": {
+                "rank": 3,
                 "type": "lineedit_or_combo",
                 "list_function": "list_models",
                 "list_cache": "modellistcache"

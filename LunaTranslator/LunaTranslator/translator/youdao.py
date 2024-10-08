@@ -105,7 +105,4 @@ class TS(basetrans):
 
             return res
         except:
-            raise Exception(response.text)
-
-    def show(self, res):
-        print("有道", "\033[0;33;47m", res, "\033[0m", flush=True)
+            raise Exception(response.maybejson)

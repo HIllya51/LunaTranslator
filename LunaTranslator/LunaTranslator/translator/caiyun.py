@@ -121,4 +121,4 @@ class TS(basetrans):
         try:
             return decrypt(response.json()["target"])
         except:
-            raise Exception(response.json())
+            raise Exception(response.maybejson)

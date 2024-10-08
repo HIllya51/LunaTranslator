@@ -43,81 +43,34 @@ class TS(basetrans):
         }
 
         mysticTime, sign = self.signx()
-        if v == 10:
-            param = {
-                "keyfrom": "deskdict.main",
-                "client": "deskdict",
-                "from": self.srclang,
-                "to": self.tgtlang,
-                "keyid": "deskdict",
-                "mysticTime": mysticTime,
-                "pointParam": "client,product,mysticTime",  # 只要不改pointParam,client,product,mysticTime，就不需要重新签名
-                "sign": sign,
-                "domain": "0",
-                "useTerm": "false",
-                "noCheckPrivate": "false",
-                "recTerms": "[]",
-                "id": "0a464aedddbc6e4b9",  # 无所谓
-                "vendor": "fanyiweb_navigation",
-                "in": "YoudaoDict_fanyiweb_navigation",
-                "appVer": "10.1.3.0",
-                "appZengqiang": "0",
-                "abTest": "0",
-                "model": "LENOVO",
-                "screen": "1920*1080",
-                "OsVersion": "10.0.19045",
-                "network": "none",
-                "mid": "windows10.0.19045",
-                "appVersion": "10.1.3.0",
-                "product": "deskdict",
-            }
-        elif v == 9:
-            param = {
-                "keyfrom": "deskdict.main",
-                "client": "deskdict",
-                "from": self.srclang,
-                "to": self.tgtlang,
-                "keyid": "deskdict",
-                "mysticTime": mysticTime,
-                "pointParam": "client,product,mysticTime",
-                "sign": sign,
-                "domain": "0",
-                "useTerm": "false",
-                "noCheckPrivate": "false",
-                "id": "0a464aedddbc6e4b9",
-                "vendor": "unknown",
-                "in": "YoudaoDictSetup",
-                "appVer": "9.3.0.0",
-                "appZengqiang": "0",
-                "abTest": "0",
-                "model": "LENOVO",
-                "screen": "1920*1080",
-                "OsVersion": "10.0.19045",
-                "appVersion": "9.3.0.0",
-                "product": "deskdict",
-            }
-        elif v == 8:
-            param = {
-                "keyfrom": "deskdict.main",
-                "client": "deskdict",
-                "from": self.srclang,
-                "to": self.tgtlang,
-                "keyid": "deskdict",
-                "mysticTime": mysticTime,
-                "pointParam": "client,product,mysticTime",
-                "sign": sign,
-                "id": "0a464aedddbc6e4b9",
-                "vendor": "unknown",
-                "in": "YoudaoDictSetup",
-                "appVer": "8.10.8.0",
-                "appZengqiang": "0",
-                "abTest": "0",
-                "model": "LENOVO",
-                "screen": "1920*1080",
-                "OsVersion": "10.0.19045",
-                "appVersion": "8.10.8.0",
-                "product": "deskdict",
-            }
+
+        param = {
+            "keyfrom": "deskdict.main",
+            "client": "deskdict",
+            "from": self.srclang,
+            "to": self.tgtlang,
+            "keyid": "deskdict",
+            "mysticTime": mysticTime,
+            "pointParam": "client,product,mysticTime",  # 只要不改pointParam,client,product,mysticTime，就不需要重新签名
+            "sign": sign,
+            "domain": "0",
+            "useTerm": "false",
+            "noCheckPrivate": "false",
+            "recTerms": "[]",
+            "id": "0a464aedddbc6e4b9",  # 无所谓
+            "vendor": "fanyiweb_navigation",
+            "in": "YoudaoDict_fanyiweb_navigation",
+            "appVer": "10.1.3.0",
+            "appZengqiang": "0",
+            "abTest": "0",
+            "model": "LENOVO",
+            "screen": "1920*1080",
+            "OsVersion": "10.0.19045",
+            "network": "none",
+            "mid": "windows10.0.19045",
+            "appVersion": "10.1.3.0",
+            "product": "deskdict",
+        }
         response = self.proxysession.post(
             "https://dict.youdao.com/dicttranslate",
             params=param,
@@ -133,13 +86,7 @@ class TS(basetrans):
                 ]
             )
         except:
-            raise Exception(response.json())
+            raise Exception(response.maybejson)
 
     def translate(self, content):
         return self.translate10_9_8(content)
-        if self.config["Version"] == 0:  # 10
-            return self.translate10_9_8(content)
-        if self.config["Version"] == 1:  # 9
-            return self.translate10_9_8(content, 9)
-        if self.config["Version"] == 2:  # 8
-            return self.translate10_9_8(content, 8)

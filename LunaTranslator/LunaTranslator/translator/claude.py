@@ -1,7 +1,7 @@
 from traceback import print_exc
 import json
 from translator.basetranslator import basetrans
-from myutils.utils import createenglishlangmap, checkv1
+from myutils.utils import createenglishlangmap, checkv1, urlpathjoin
 
 
 class TS(basetrans):
@@ -24,7 +24,9 @@ class TS(basetrans):
         temperature = self.config["Temperature"]
 
         message = []
-        self._gpt_common_parse_context(message, self.context, self.config["附带上下文个数"])
+        self._gpt_common_parse_context(
+            message, self.context, self.config["附带上下文个数"]
+        )
         message.append({"role": "user", "content": query})
         prefill = self._gptlike_create_prefill("prefill_use", "prefill")
         if prefill:
@@ -46,7 +48,7 @@ class TS(basetrans):
             stream=usingstream,
         )
         response = self.proxysession.post(
-            checkv1(self.config["BASE_URL"]) + "/messages",
+            urlpathjoin(checkv1(self.config["BASE_URL"]) + "messages"),
             headers=headers,
             json=data,
             stream=usingstream,
@@ -83,7 +85,7 @@ class TS(basetrans):
                     response.json()["content"][0]["text"].replace("\n\n", "\n").strip()
                 )
             except:
-                raise Exception(response.text)
+                raise Exception(response.maybejson)
             yield message
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": message})
