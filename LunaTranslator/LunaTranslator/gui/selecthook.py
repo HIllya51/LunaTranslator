@@ -680,7 +680,7 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addWidget(self.tabwidget)
         self.tabwidget.setTabPosition(QTabWidget.TabPosition.East)
         self.tabwidget.addTab(self.textOutput, ("文本"))
-        self.tabwidget.addTab(self.sysOutput, ("系统"))
+        self.tabwidget.addTab(self.sysOutput, ("日志"))
 
     def showmenu(self, p: QPoint):
         r = self.tttable.currentIndex().row()

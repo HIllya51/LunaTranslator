@@ -242,7 +242,6 @@
     "西班牙语": "Espanhol",
     "常规": "rotina",
     "翻译": "traduzir",
-    "系统": "sistema",
     "密钥": "chave secreta",
     "中文": "Chinês",
     "原文内容": "Conteúdo original",
@@ -811,5 +810,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Plataforma Aberta de Tradução Baidu",
     "百度智能云": "Nuvem AI Baidu",
-    "（支持gpt词典）": "(Suporta dicionário GPT)"
+    "（支持gpt词典）": "(Suporta dicionário GPT)",
+    "日志": "diário"
 }

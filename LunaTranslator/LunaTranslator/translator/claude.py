@@ -48,7 +48,7 @@ class TS(basetrans):
             stream=usingstream,
         )
         response = self.proxysession.post(
-            urlpathjoin(checkv1(self.config["BASE_URL"]) + "messages"),
+            urlpathjoin(checkv1(self.config["BASE_URL"]), "messages"),
             headers=headers,
             json=data,
             stream=usingstream,

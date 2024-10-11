@@ -242,7 +242,6 @@
     "西班牙语": "Spanisch",
     "常规": "Routine",
     "翻译": "übersetzen",
-    "系统": "System",
     "密钥": "geheimer Schlüssel",
     "中文": "Chinesisch",
     "原文内容": "Originalinhalt",
@@ -811,5 +810,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Translation Open Platform",
     "百度智能云": "Baidu AI Cloud",
-    "（支持gpt词典）": "(Unterstützt GPT Wörterbuch)"
+    "（支持gpt词典）": "(Unterstützt GPT Wörterbuch)",
+    "日志": "Journal"
 }

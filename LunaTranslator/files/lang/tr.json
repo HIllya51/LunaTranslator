@@ -314,7 +314,6 @@
     "进程号": "İşlem numarası",
     "进程": "işlem",
     "到进程": "İşleme",
-    "系统": "sistem",
     "发现": "Bul",
     "失败": "başarısız",
     "仅使用激活的翻译": "Sadece aktif çevirimleri kullan",
@@ -811,5 +810,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Çeviri Açık Platformu",
     "百度智能云": "Baidu AI Bulud",
-    "（支持gpt词典）": "(GPT sözlük destekliyor)"
+    "（支持gpt词典）": "(GPT sözlük destekliyor)",
+    "日志": "Günlük"
 }

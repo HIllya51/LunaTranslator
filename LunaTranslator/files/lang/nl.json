@@ -242,7 +242,6 @@
     "西班牙语": "Spaans",
     "常规": "routine",
     "翻译": "vertalen",
-    "系统": "systeem",
     "密钥": "geheime sleutel",
     "中文": "Chinees",
     "原文内容": "Originele inhoud",
@@ -811,5 +810,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Translation Open Platform",
     "百度智能云": "Baidu AI Cloud",
-    "（支持gpt词典）": "(Ondersteunt GPT woordenboek)"
+    "（支持gpt词典）": "(Ondersteunt GPT woordenboek)",
+    "日志": "dagboek"
 }

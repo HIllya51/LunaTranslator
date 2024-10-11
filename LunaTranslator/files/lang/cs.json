@@ -242,7 +242,6 @@
     "西班牙语": "Španělština",
     "常规": "rutina",
     "翻译": "přeložit",
-    "系统": "systém",
     "密钥": "tajný klíč",
     "中文": "Čínština",
     "原文内容": "Původní obsah",
@@ -811,5 +810,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Translation Open Platform",
     "百度智能云": "Cloud AI Baidu",
-    "（支持gpt词典）": "(Podporuje GPT slovník)"
+    "（支持gpt词典）": "(Podporuje GPT slovník)",
+    "日志": "deník"
 }

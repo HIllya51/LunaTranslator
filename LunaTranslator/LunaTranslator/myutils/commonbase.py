@@ -1,5 +1,5 @@
 from myutils.proxy import getproxy
-from myutils.utils import getlangtgt, getlangsrc
+from myutils.utils import getlangtgt, getlangsrc, getlanguagespace
 from myutils.config import _TR, static_data
 from myutils.wrapper import stripwrapper
 import requests
@@ -7,7 +7,7 @@ import requests
 
 class ArgsEmptyExc(Exception):
     def __init__(self, valuelist) -> None:
-        super().__init__(" , ".join(valuelist) + _TR("不能为空"))
+        super().__init__(" , ".join(valuelist) + getlanguagespace() + _TR("不能为空"))
 
 
 class proxysession(requests.Session):

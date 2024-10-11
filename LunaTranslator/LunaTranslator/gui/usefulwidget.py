@@ -1016,7 +1016,7 @@ def __getsmalllabel(text):
     return __
 
 
-def getsmalllabel(text):
+def getsmalllabel(text=""):
     return lambda: __getsmalllabel(text)
 
 

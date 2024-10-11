@@ -87,7 +87,9 @@ def getlangtgt():
     return __internal__getlang("private_tgtlang_2", "tgtlang4")
 
 
-def getlanguagespace(lang):
+def getlanguagespace(lang=None):
+    if lang is None:
+        lang = getlanguse()
     return "" if (lang in ("zh", "ja", "cht")) else " "
 
 

@@ -314,7 +314,6 @@
     "进程号": "Numer procesu",
     "进程": "proces",
     "到进程": "Do przetwarzania",
-    "系统": "system",
     "发现": "znaleźć",
     "失败": "niepowodzenie",
     "仅使用激活的翻译": "Używaj tylko aktywnych tłumaczeń",
@@ -811,5 +810,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Otwarta platforma tłumaczeń Baidu",
     "百度智能云": "Chmura AI Baidu",
-    "（支持gpt词典）": "(Obsługuje słownik GPT)"
+    "（支持gpt词典）": "(Obsługuje słownik GPT)",
+    "日志": "dziennik"
 }
