@@ -208,7 +208,7 @@ class TS(basetrans):
         if (
             (gpt_dict is not None)
             and len(gpt_dict)
-            and self.config["prompt_version"] == 1
+            and self.config["prompt_version"] in [1, 2]
         ):
             query = contentraw
         self.checkempty(["API接口地址"])
