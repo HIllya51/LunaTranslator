@@ -446,30 +446,29 @@ class texthook(basetext):
 
     @threader
     def getembedtext(self, text: str, tp):
-        issafe = self.safeembedcheck(text)
-        if not self.isautorunning:
-            self.embedcallback(text, "")
-            return
-        if self.checkisusingembed(tp.addr, tp.ctx, tp.ctx2):
-            engine = (
-                globalconfig["embedded"]["translator_2"]
-                if globalconfig["embedded"]["use_appointed_translate"]
-                else None
-            )
-            if not issafe:
-                collect = []
-                for _ in text.split("\n"):
-                    if _ and self.safeembedcheck(_):
-                        _ = self.waitfortranslation(_, engine)
-                    collect.append(_)
-                trans = "\n".join(collect)
-            else:
-                trans = self.waitfortranslation(text, engine)
-            if not trans:
-                trans = ""
-            if globalconfig["embedded"]["trans_kanji"]:
-                trans = kanjitrans(zhconv.convert(trans, "zh-tw"))
-            self.embedcallback(text, trans)
+        if not (
+            self.isautorunning and self.checkisusingembed(tp.addr, tp.ctx, tp.ctx2)
+        ):
+            return self.embedcallback(text, "")
+        engine = (
+            globalconfig["embedded"]["translator_2"]
+            if globalconfig["embedded"]["use_appointed_translate"]
+            else None
+        )
+        if self.safeembedcheck(text):
+            collect = []
+            for _ in text.split("\n"):
+                if _ and self.safeembedcheck(_):
+                    _ = self.waitfortranslation(_, engine)
+                collect.append(_)
+            trans = "\n".join(collect)
+        else:
+            trans = self.waitfortranslation(text, engine)
+        if not trans:
+            trans = ""
+        if globalconfig["embedded"]["trans_kanji"]:
+            trans = kanjitrans(zhconv.convert(trans, "zh-tw"))
+        self.embedcallback(text, trans)
 
     def embedcallback(self, text: str, trans: str):
         trans = splitembedlines(trans)
