@@ -64,6 +64,14 @@ class TS(basetrans):
             message.append(self.context[i * 2])
             message.append(self.context[i * 2 + 1])
 
+    def _gpt_common_parse_context_2(self, messages, context, contextnum):
+        msgs = []
+        self._gpt_common_parse_context(msgs, context, contextnum)
+        __ja, __zh = [], []
+        for i, _ in enumerate(msgs):
+            [__ja, __zh][i % 2 == 0].append(_.strip())
+        messages.append({"role": "assistant", "content": "\n".join(__zh)})
+
     def make_messages(self, query, gpt_dict=None):
         contextnum = (
             self.config["append_context_num"] if self.config["use_context"] else 0
@@ -75,7 +83,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
                 }
             ]
-            self._gpt_common_parse_context(messages, self.context, contextnum)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum)
             messages.append(
                 {"role": "user", "content": f"将下面的日文文本翻译成中文：{query}"}
             )
@@ -86,7 +94,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地使用给定的术语表以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，注意不要混淆使役态和被动态的主语和宾语，不要擅自添加原文中没有的代词，也不要擅自增加或减少换行。",
                 }
             ]
-            self._gpt_common_parse_context(messages, self.context, contextnum)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum)
             gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
             content = (
                 "根据以下术语表（可以为空）：\n"
@@ -103,7 +111,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
                 }
             ]
-            self._gpt_common_parse_context(messages, self.context, contextnum)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum)
             gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
             if gpt_dict_raw_text:
                 content = (
@@ -215,9 +223,9 @@ class TS(basetrans):
         self.get_client(self.config["API接口地址"])
         frequency_penalty = float(self.config["frequency_penalty"])
 
-        messages = self.make_messages(query)
+        messages = self.make_messages(query, gpt_dict=gpt_dict)
         if bool(self.config["流式输出"]) == True:
-            output = self.send_request_stream(messages, gpt_dict=gpt_dict)
+            output = self.send_request_stream(messages)
             completion_tokens = 0
             output_text = ""
             for o in output:
@@ -229,7 +237,7 @@ class TS(basetrans):
                 else:
                     finish_reason = o["choices"][0]["finish_reason"]
         else:
-            output = self.send_request(messages, gpt_dict=gpt_dict)
+            output = self.send_request(messages)
             for o in output:
                 completion_tokens = o["usage"]["completion_tokens"]
                 output_text = o["choices"][0]["message"]["content"]
@@ -245,9 +253,7 @@ class TS(basetrans):
                 # print("------------------清零------------------")
                 if bool(self.config["流式输出"]) == True:
                     output = self.send_request_stream(
-                        messages,
-                        frequency_penalty=frequency_penalty,
-                        gpt_dict=gpt_dict,
+                        messages, frequency_penalty=frequency_penalty
                     )
                     completion_tokens = 0
                     output_text = ""
@@ -262,9 +268,7 @@ class TS(basetrans):
                             finish_reason = o["choices"][0]["finish_reason"]
                 else:
                     output = self.send_request(
-                        messages,
-                        frequency_penalty=frequency_penalty,
-                        gpt_dict=gpt_dict,
+                        messages, frequency_penalty=frequency_penalty
                     )
                     yield "\0"
                     for o in output:
@@ -279,6 +283,5 @@ class TS(basetrans):
                         + output_text
                     )
                     break
-
-        self.context.append(messages[-1])
-        self.context.append({"role": "assistant", "content": output_text})
+        self.context.append(query)
+        self.context.append(output_text)
