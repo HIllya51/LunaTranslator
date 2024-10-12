@@ -368,7 +368,7 @@ class MAINUI:
         self.transhis.getnewsentencesignal.emit(text)
         self.maybesetedittext(text)
 
-        if not globalconfig["showfanyi"]:
+        if not waitforresultcallback and not globalconfig["showfanyi"]:
             return _showrawfunction()
 
         text_solved, optimization_params = self.solvebeforetrans(text)

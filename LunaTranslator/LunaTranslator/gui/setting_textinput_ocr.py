@@ -82,7 +82,7 @@ class triggereditor(LDialog):
         table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
         table.setWordWrap(False)
         table.setModel(model)
-
+        table.getindexdata = self.__getindexwidgetdata
         table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         table.customContextMenuRequested.connect(self.showmenu)
         self.hctable = table
@@ -108,6 +108,9 @@ class triggereditor(LDialog):
         formLayout.addWidget(self.buttons)
         self.resize(600, self.sizeHint().height())
         self.show()
+
+    def __getindexwidgetdata(self, index: QModelIndex):
+        return self.hctable.indexWidgetX(index).currentIndex()
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         rows = self.hcmodel.rowCount()
