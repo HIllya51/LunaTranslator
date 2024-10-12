@@ -445,10 +445,8 @@ class texthook(basetext):
             return False
 
     @threader
-    def getembedtext(self, text, tp):
-        if self.safeembedcheck(text) == False:
-            self.embedcallback(text, "")
-            return
+    def getembedtext(self, text: str, tp):
+        issafe = self.safeembedcheck(text)
         if not self.isautorunning:
             self.embedcallback(text, "")
             return
@@ -458,7 +456,15 @@ class texthook(basetext):
                 if globalconfig["embedded"]["use_appointed_translate"]
                 else None
             )
-            trans = self.waitfortranslation(text, engine)
+            if not issafe:
+                collect = []
+                for _ in text.split("\n"):
+                    if _ and self.safeembedcheck(_):
+                        _ = self.waitfortranslation(_, engine)
+                    collect.append(_)
+                trans = "\n".join(collect)
+            else:
+                trans = self.waitfortranslation(text, engine)
             if not trans:
                 trans = ""
             if globalconfig["embedded"]["trans_kanji"]:
