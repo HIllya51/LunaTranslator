@@ -1121,7 +1121,7 @@
 			"frequency_penalty": 0,
 			"fix_degeneration": false,
 			"流式输出": true,
-			"prompt_version": 0,
+			"prompt_version": 2,
 			"s": ""
 		},
 		"argstype": {

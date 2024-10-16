@@ -57,20 +57,21 @@ class TS(basetrans):
         gpt_dict_raw_text = "\n".join(gpt_dict_text_list)
         return gpt_dict_raw_text
 
-    def appendcontext(self, message, contextnum):
-
-        for _i in range(min(len(self.context) // 2, contextnum)):
-            i = len(self.context) // 2 - min(len(self.context) // 2, contextnum) + _i
-            message.append(self.context[i * 2])
-            message.append(self.context[i * 2 + 1])
-
-    def _gpt_common_parse_context_2(self, messages, context, contextnum):
+    def _gpt_common_parse_context_2(self, messages, context, contextnum, ja=False):
         msgs = []
         self._gpt_common_parse_context(msgs, context, contextnum)
         __ja, __zh = [], []
         for i, _ in enumerate(msgs):
-            [__ja, __zh][i % 2 == 0].append(_.strip())
-        messages.append({"role": "assistant", "content": "\n".join(__zh)})
+            [__zh, __ja][i % 2 == 0].append(_.strip())
+        if __ja:
+            if ja:
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": "将下面的日文文本翻译成中文：" + "\n".join(__ja),
+                    }
+                )
+            messages.append({"role": "assistant", "content": "\n".join(__zh)})
 
     def make_messages(self, query, gpt_dict=None):
         contextnum = (
@@ -111,7 +112,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum, True)
             gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
             if gpt_dict_raw_text:
                 content = (

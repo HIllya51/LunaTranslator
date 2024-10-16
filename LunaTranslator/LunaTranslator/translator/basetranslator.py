@@ -369,7 +369,7 @@ class basetrans(commonbase):
                 if not checktutukufunction():
                     # 检查请求队列是否空，请求队列有新的请求，则放弃当前请求。但对于内嵌翻译请求，不可以放弃。
                     continue
-                if self.using_gpt_dict:
+                if self.transtype == "pre" or self.using_gpt_dict:
                     gpt_dict = None
                     contentraw = contentsolved
                     for _ in optimization_params:

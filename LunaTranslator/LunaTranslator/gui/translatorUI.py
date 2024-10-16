@@ -13,7 +13,13 @@ from myutils.utils import (
     makehtml,
     loadpostsettingwindowmethod_maybe,
 )
-from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
+from myutils.hwnd import (
+    mouseselectwindow,
+    grabwindow,
+    getExeIcon,
+    getcurrexe,
+    hwndratex,
+)
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser
@@ -252,8 +258,8 @@ class TranslatorWindow(resizableframeless):
     move_signal = pyqtSignal(QPoint)
     closesignal = pyqtSignal()
     hotkeyuse_selectprocsignal = pyqtSignal()
-    changeshowhiderawsig=pyqtSignal()
-    changeshowhidetranssig=pyqtSignal()
+    changeshowhiderawsig = pyqtSignal()
+    changeshowhidetranssig = pyqtSignal()
 
     @threader
     def tracewindowposthread(self):
@@ -284,11 +290,12 @@ class TranslatorWindow(resizableframeless):
             if not rect:
                 lastpos = None
                 continue
+            rate = hwndratex(hwnd)
             rect = QRect(
-                int(rect[0] / self.devicePixelRatioF()),
-                int(rect[1] / self.devicePixelRatioF()),
-                int((rect[2] - rect[0]) / self.devicePixelRatioF()),
-                int((rect[3] - rect[1]) / self.devicePixelRatioF()),
+                int(rect[0] / rate),
+                int(rect[1] / rate),
+                int((rect[2] - rect[0]) / rate),
+                int((rect[3] - rect[1]) / rate),
             )
             if not lastpos:
                 lastpos = rect
