@@ -4,7 +4,7 @@ import subprocess, time
 import urllib.request
 from urllib.parse import urljoin
 
-rootDir = os.path.dirname(__file__)
+rootDir = os.path.dirname(os.path.dirname(__file__))
 if sys.argv[1] == "loadversion":
     os.chdir(rootDir)
     with open("plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
@@ -68,18 +68,10 @@ def downloadBrotli():
     subprocess.run(f"curl -LO {brotliFile64}")
     subprocess.run(f"7z x {brotliFile32.split('/')[-1]} -obrotli32")
     subprocess.run(f"7z x {brotliFile64.split('/')[-1]} -obrotli64")
-    shutil.move(
-        "brotli32/brotlicommon.dll", f"{rootDir}/src/files/plugins/DLL32"
-    )
-    shutil.move(
-        "brotli32/brotlidec.dll", f"{rootDir}/src/files/plugins/DLL32"
-    )
-    shutil.move(
-        "brotli64/brotlicommon.dll", f"{rootDir}/src/files/plugins/DLL64"
-    )
-    shutil.move(
-        "brotli64/brotlidec.dll", f"{rootDir}/src/files/plugins/DLL64"
-    )
+    shutil.move("brotli32/brotlicommon.dll", f"{rootDir}/src/files/plugins/DLL32")
+    shutil.move("brotli32/brotlidec.dll", f"{rootDir}/src/files/plugins/DLL32")
+    shutil.move("brotli64/brotlicommon.dll", f"{rootDir}/src/files/plugins/DLL64")
+    shutil.move("brotli64/brotlidec.dll", f"{rootDir}/src/files/plugins/DLL64")
 
 
 def downloadlr():
@@ -243,9 +235,7 @@ def downloadsomething():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {mylinks['stylesheets-main.zip']}")
     subprocess.run(f"7z x stylesheets-main.zip -oALL")
-    move_directory_contents(
-        "ALL/stylesheets-main", rootDir + "\\src\\files\\themes"
-    )
+    move_directory_contents("ALL/stylesheets-main", rootDir + "\\src\\files\\themes")
 
 
 def downloadbass():
