@@ -13,7 +13,7 @@ When the game loads metadata from VNDB, it queries the game's character names as
 
 #### **2. Proper Noun Translation**
 
-If using the `Sakura Large Model` and setting the prompt format to `v0.10pre1`/`v1.0pre1`, it will be converted into gpt dictionary format. Otherwise, it will follow VNR's approach and replace the original text with a placeholder `ZX?Z` (ps: I don't know what this means). After translation, the placeholder is usually not destroyed, and then the placeholder is replaced with the translation.
+If using the `sakura large model` and setting the prompt format to support the gpt dictionary prompt, it will be converted into the gpt dictionary format. Otherwise, it will refer to the VNR approach, replacing the original text with the placeholder `ZX?Z` (ps: I don't know what this means), and after the source translation, the placeholder is generally not destroyed. Then, after the translation, the placeholder will be replaced with the translation.
 
 For game-specific entries, it is recommended not to add them in `Text Processing` -> `Translation Optimization`. In the past, the game's md5 value was used to distinguish entries for multiple games, but this implementation was not very good and has been deprecated. Now, it is recommended to add game-specific entries in the `Game Settings` -> `Translation Optimization` settings for this method.
 

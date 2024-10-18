@@ -77,8 +77,6 @@ class TS(basetrans):
             headers=headers,
             data=freq,
         )
-        # good=response.text.split('\n')[3]
-        # print(response.text)
         json_data = json.loads(response.text[6:])
         data = json.loads(json_data[0][2])
         return " ".join([x[0] for x in (data[1][0][0][5] or data[1][0])])

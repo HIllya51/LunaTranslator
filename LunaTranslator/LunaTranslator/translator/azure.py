@@ -37,4 +37,4 @@ class TS(basetrans):
         try:
             return response[0]["translations"][0]["text"]
         except:
-            raise Exception(request.text)
+            raise Exception(request.maybejson)

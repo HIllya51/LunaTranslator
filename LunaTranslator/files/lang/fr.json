@@ -314,7 +314,6 @@
     "进程号": "Numéro de processus",
     "进程": "Processus",
     "到进程": "Au processus",
-    "系统": "Système",
     "发现": "Découvrir",
     "失败": "L'échec",
     "仅使用激活的翻译": "Utiliser uniquement les traductions activées",
@@ -811,5 +810,6 @@
     "讯飞": "Signal volant",
     "百度翻译开放平台": "Baidu traduction plateforme ouverte",
     "百度智能云": "Baidu intelligent Cloud",
-    "（支持gpt词典）": "(support du dictionnaire GPT)"
+    "（支持gpt词典）": "(support du dictionnaire GPT)",
+    "日志": "Logs"
 }

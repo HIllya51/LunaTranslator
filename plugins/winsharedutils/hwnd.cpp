@@ -1,5 +1,5 @@
 ﻿#include "define.h"
-
+#include <shellscalingapi.h>
 DECLARE void showintab(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
@@ -94,5 +94,37 @@ DECLARE void getprocesses(void (*cb)(DWORD, const wchar_t *))
         {
             cb(pe32.th32ProcessID, pe32.szExeFile);
         } while (Process32Next(hSnapshot, &pe32));
+    }
+}
+DECLARE UINT GetMonitorDpiScaling(HWND hwnd)
+{
+    HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    if (!hMonitor)
+        return 96;
+    auto pGetDpiForMonitor = (HRESULT(*)(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *))GetProcAddress(GetModuleHandleA("Shcore.dll"), "GetDpiForMonitor");
+    if (pGetDpiForMonitor)
+    {
+        UINT dpiX = 0;
+        UINT dpiY = 0;
+        HRESULT hr = pGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
+        if (FAILED(hr))
+            return 96;
+        else
+            return dpiX;
+    }
+    else
+    {
+        MONITORINFOEX info;
+        info.cbSize = sizeof(MONITORINFOEX);
+        if (!GetMonitorInfo(hMonitor, &info))
+            return 96;
+        HDC hdc = GetDC(NULL);
+        HDC hdcMonitor = CreateCompatibleDC(hdc);
+        HDC hdcMonitorScreen = CreateIC(TEXT("DISPLAY"), info.szDevice, NULL, 0);
+        int dpiX = GetDeviceCaps(hdcMonitorScreen, LOGPIXELSX);
+        DeleteDC(hdcMonitor);
+        DeleteDC(hdcMonitorScreen);
+        ReleaseDC(NULL, hdc);
+        return dpiX;
     }
 }

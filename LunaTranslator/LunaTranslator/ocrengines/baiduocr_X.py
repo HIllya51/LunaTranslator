@@ -43,7 +43,7 @@ class OCR(baseocr):
             ]
             return {"box": box, "text": text, "isocrtranslate": True}
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)
 
     def ocr_ts2(self, imagebinary):
         self.checkempty(["app_id", "app_key"])
@@ -103,7 +103,7 @@ class OCR(baseocr):
             ]
             return {"box": box, "text": text, "isocrtranslate": True}
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)
 
     @property
     def srclangx(self):
@@ -154,12 +154,12 @@ class OCR(baseocr):
             "client_id": API_KEY,
             "client_secret": SECRET_KEY,
         }
-        js = self.proxysession.post(url, params=params).json()
+        resp = self.proxysession.post(url, params=params)
 
         try:
-            return js["access_token"]
+            return resp.json()["access_token"]
         except:
-            raise Exception(js)
+            raise Exception(resp.maybejson)
 
     def getaccess(self):
         self.checkempty(["API Key", "Secret Key"])
@@ -236,4 +236,4 @@ class OCR(baseocr):
                 ]
                 return {"box": boxs, "text": texts}
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)

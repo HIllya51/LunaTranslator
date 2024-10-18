@@ -539,7 +539,7 @@
     "gamemanageruseversion": 0,
     "gamemanager_integrated_internal_layout": 0,
     "profiles_index": 0,
-    "ocrautobindwindow": true,
+    "ocrautobindwindow": false,
     "toolbutton": {
         "rank2": [
             "move",

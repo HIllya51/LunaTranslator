@@ -9,6 +9,7 @@ from gui.usefulwidget import (
     getIconButton,
     makescrollgrid,
     D_getsimpleswitch,
+    getsmalllabel,
 )
 from gui.dynalang import LDialog
 
@@ -33,7 +34,7 @@ class dialog_selecticon(LDialog):
                 getIconButton(
                     functools.partial(self.selectcallback, "fa." + name),
                     qicon=qtawesome.icon(
-                        "fa." + name, color=globalconfig["buttoncolor"]
+                        "fa." + name, color=globalconfig["buttoncolor2"]
                     ),
                 ),
                 i // 30,
@@ -81,7 +82,7 @@ def changerank(item, up, sortlist, savelist, savelay):
 
 def createbuttonwidget(self, lay):
     # return table
-    grids = [["显示", "", "", "对齐", "图标", "图标2", "说明"]]
+    grids = [["显示", "", "", "对齐", "", "图标", "", "图标2", "", "说明"]]
     sortlist = globalconfig["toolbutton"]["rank2"]
     savelist = []
     savelay = []
@@ -116,6 +117,7 @@ def createbuttonwidget(self, lay):
                 callback=doadjust,
                 fixedsize=True,
             ),
+            getsmalllabel(),
             D_getIconButton(
                 functools.partial(
                     dialog_selecticon,
@@ -125,9 +127,10 @@ def createbuttonwidget(self, lay):
                 ),
                 qicon=qtawesome.icon(
                     globalconfig["toolbutton"]["buttons"][k]["icon"],
-                    color=globalconfig["buttoncolor"],
+                    color=globalconfig["buttoncolor2"],
                 ),
             ),
+            getsmalllabel(),
         ]
         if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
             l.append(
@@ -140,12 +143,13 @@ def createbuttonwidget(self, lay):
                     ),
                     qicon=qtawesome.icon(
                         globalconfig["toolbutton"]["buttons"][k]["icon2"],
-                        color=globalconfig["buttoncolor"],
+                        color=globalconfig["buttoncolor2"],
                     ),
                 ),
             )
         else:
             l.append("")
+        l.append(getsmalllabel())
         if "belong" in globalconfig["toolbutton"]["buttons"][k]:
             belong = (
                 "_"

@@ -314,7 +314,6 @@
     "进程号": "Process ID",
     "进程": "Process",
     "到进程": "Select Process",
-    "系统": "System",
     "发现": "Found",
     "失败": "Failed",
     "仅使用激活的翻译": "Only Use Active Translations",
@@ -811,5 +810,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Translation Open Platform",
     "百度智能云": "Baidu AI Cloud",
-    "（支持gpt词典）": "(Supports GPT dictionary)"
+    "（支持gpt词典）": "(Supports GPT dictionary)",
+    "日志": "journal"
 }

@@ -143,7 +143,7 @@ class Itranslate(Tse):
         try:
             return r.json()["target"]["text"]
         except:
-            raise Exception(r.text)
+            raise Exception(r.maybejson)
 
 
 from traceback import print_exc

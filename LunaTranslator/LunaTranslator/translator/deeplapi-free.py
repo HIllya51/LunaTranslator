@@ -48,4 +48,4 @@ class TS(basetrans):
         try:
             return response.json()["translations"][0]["text"]
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)

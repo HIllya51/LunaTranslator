@@ -190,7 +190,6 @@ class Bing(Tse):
         )
         r.raise_for_status()
         data = r.json()
-        print(r.text)
         time.sleep(sleep_seconds)
         self.query_count += 1
         return data[0] if is_detail_result else data[0]["translations"][0]["text"]

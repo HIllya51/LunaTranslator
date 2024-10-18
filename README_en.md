@@ -8,7 +8,9 @@
 
 ### [User Manual](https://docs.lunatranslator.org/#/zh/)  <a href="https://discord.com/invite/ErtDwVeAbB"><img  src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C"></a> 
 
-### Simplified Chinese | [Russian](README_ru.md) | [English](README_en.md) | [Other Language](otherlang.md) 
+
+### [简体中文](README.md) | English | [Русский язык](README_ru.md) | [Other Language](otherlang.md) 
+
 
 > **A galgame translation tool**
 

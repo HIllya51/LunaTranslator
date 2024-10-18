@@ -1,5 +1,5 @@
 import requests
-from urllib.parse import urljoin
+from myutils.utils import urlpathjoin
 from tts.basettsclass import TTSbase
 from urllib.parse import quote
 
@@ -7,7 +7,7 @@ from urllib.parse import quote
 class TTS(TTSbase):
     def getvoicelist(self):
         responseVits = requests.get(
-            urljoin(self.config["URL"], self.config["voices"])
+            urlpathjoin(self.config["URL"], self.config["voices"])
         ).json()
         voicelist = []
         internal = []
@@ -26,6 +26,6 @@ class TTS(TTSbase):
         speak = self.config["speak"].format(
             model_lower=model.lower(), model=model, id=idx, text=encoded_content
         )
-        response = requests.get(urljoin(self.config["URL"], speak)).content
+        response = requests.get(urlpathjoin(self.config["URL"], speak)).content
 
         return response

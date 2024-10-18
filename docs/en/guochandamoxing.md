@@ -57,7 +57,9 @@
 
 ### **Azure**
 
-https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions 
+**API Endpoint URL** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
+
+Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 <!-- tabs:end -->
 

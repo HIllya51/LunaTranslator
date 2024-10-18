@@ -1,21 +1,25 @@
 from ocrengines.baseocrclass import baseocr
 import base64, requests
-from myutils.utils import createurl, createenglishlangmap
+from myutils.utils import createurl, createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
 
 
 def list_models(typename, regist):
-    js = requests.get(
-        createurl(regist["apiurl"]().strip())[: -len("/chat/completions")] + "/models",
-        headers={"Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()},
+    resp = requests.get(
+        urlpathjoin(
+            createurl(regist["apiurl"]().strip())[: -len("chat/completions")],
+            "models",
+        ),
+        headers={
+            "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()
+        },
         proxies=getproxy(("ocr", typename)),
         timeout=10,
-    ).json()
-
+    )
     try:
-        return sorted([_["id"] for _ in js["data"]])
+        return sorted([_["id"] for _ in resp.json()["data"]])
     except:
-        raise Exception(js)
+        raise Exception(resp.maybejson)
 
 
 class OCR(baseocr):
@@ -79,7 +83,7 @@ class OCR(baseocr):
             )
             return message
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)
 
     def createurl(self):
         return createurl(self.config["apiurl"])

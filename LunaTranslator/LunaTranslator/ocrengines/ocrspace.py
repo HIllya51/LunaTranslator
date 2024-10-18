@@ -51,7 +51,6 @@ class OCR(baseocr):
         response = self.proxysession.post(
             "https://" + base + "/parse/image", headers=headers, data=data
         )
-        # print(response.text)
         try:
             _ = response.json()["ParsedResults"][0]["ParsedText"]
             boxs = []
@@ -71,4 +70,4 @@ class OCR(baseocr):
             ]
             return {"box": boxs, "text": texts}
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)

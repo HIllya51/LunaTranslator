@@ -21,4 +21,4 @@ class TS(basetrans):
         try:
             return response.json()["text"][0]
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)

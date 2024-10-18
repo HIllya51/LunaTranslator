@@ -124,14 +124,11 @@ class OCR(baseocr):
             request_url, data=json.dumps(body), headers=headers
         )
 
-        re = response.content.decode("utf8")
-        str_result = json.loads(re)
-        # print("\nresponse-content:", re)
         try:
-            renew_text = str_result["payload"]["ocr_output_text"]["text"]
+            renew_text = response.json()["payload"]["ocr_output_text"]["text"]
             finalResult = json.loads(str(base64.b64decode(renew_text), "utf-8"))
         except:
-            raise Exception(str_result)
+            raise Exception(response.maybejson)
         try:
             res = finalResult["pages"][0]
             if "lines" not in res:

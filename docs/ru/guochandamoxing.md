@@ -57,7 +57,9 @@
 
 ### **Azure**
 
-https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions
+**Адрес API интерфейса** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
+
+Замените `{endpoint}` и `{deployName}` на ваш endpoint и deployName.
 
 <!-- tabs:end -->
 

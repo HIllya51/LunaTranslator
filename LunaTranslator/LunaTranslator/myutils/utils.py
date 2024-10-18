@@ -87,7 +87,9 @@ def getlangtgt():
     return __internal__getlang("private_tgtlang_2", "tgtlang4")
 
 
-def getlanguagespace(lang):
+def getlanguagespace(lang=None):
+    if lang is None:
+        lang = getlanguse()
     return "" if (lang in ("zh", "ja", "cht")) else " "
 
 
@@ -917,11 +919,22 @@ def checkv1(api_url: str):
         return api_url + "/v1"
 
 
+def urlpathjoin(*argc):
+    urlx = []
+    for i, u in enumerate(argc):
+        if u.startswith("/") and i != 0:
+            u = u[1:]
+        if u.endswith("/") and i != len(argc) - 1:
+            u = u[:-1]
+        urlx.append(u)
+    return "/".join(urlx)
+
+
 def createurl(url: str):
     if url.endswith("/chat/completions"):
         pass
     else:
-        url = checkv1(url) + "/chat/completions"
+        url = urlpathjoin(checkv1(url), "/chat/completions")
     return url
 
 

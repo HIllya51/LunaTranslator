@@ -47,7 +47,7 @@ class OCR(baseocr):
                 "text": [l["words"] for l in response.json()["lines"]],
             }
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)
 
     def ocrapi(self, imagebinary):
         def truncate(q):
@@ -93,7 +93,7 @@ class OCR(baseocr):
                 "text": [l["text"] for l in _],
             }
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)
 
     def freetest_ts(self, imagebinary):
 
@@ -129,7 +129,7 @@ class OCR(baseocr):
                 "isocrtranslate": True,
             }
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)
 
     def ocrapi_ts(self, imagebinary):
 
@@ -237,7 +237,7 @@ class OCR(baseocr):
             ]
             return {"box": box, "text": text, "isocrtranslate": True}
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)
 
     def ocr(self, imagebinary):
         interfacetype = self.config["interface"]

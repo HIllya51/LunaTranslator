@@ -13,7 +13,7 @@ generate_product_version(
 add_library(tinymp3 ../libs/tinymp3/shine_mp3.c)
 add_library(winsharedutils MODULE mp3enc.cpp webview2_extra.cpp AreoAcrylic.cpp screenshot.cpp ../implsapi.cpp hwnd.cpp globalmessagelistener.cpp theme.cpp version.cpp otsu.cpp clipboard.cpp lnk.cpp dllmain.cpp levenshtein.cpp muteprocess.cpp sapi_dll.cpp simplemecab.cpp SimpleBrowser.cpp MWebBrowser.cpp icon.cpp ${versioninfo})
 target_precompile_headers(winsharedutils REUSE_FROM pch) 
-target_link_libraries(winsharedutils tinymp3)
+target_link_libraries(winsharedutils tinymp3 Shcore)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set_target_properties(winsharedutils PROPERTIES OUTPUT_NAME "winsharedutils64")
 else()

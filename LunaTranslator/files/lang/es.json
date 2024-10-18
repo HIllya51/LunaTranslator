@@ -314,7 +314,6 @@
     "进程号": "Número de proceso",
     "进程": "Proceso",
     "到进程": "Al proceso",
-    "系统": "Sistema",
     "发现": "Hallazgo",
     "失败": "Fracaso",
     "仅使用激活的翻译": "Solo se utilizan traducciones activadas",
@@ -811,5 +810,6 @@
     "讯飞": "Xunfei",
     "百度翻译开放平台": "Baidu Translation Open Platform",
     "百度智能云": "Baidu SMART Cloud",
-    "（支持gpt词典）": "(admite diccionarios gpt)"
+    "（支持gpt词典）": "(admite diccionarios gpt)",
+    "日志": "Diario"
 }

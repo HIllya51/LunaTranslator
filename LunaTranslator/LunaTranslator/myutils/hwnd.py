@@ -266,11 +266,16 @@ def safepixmap(bs):
     return pixmap
 
 
+def hwndratex(hwnd):
+    _dpi = windows.GetDpiForWindow(hwnd)
+    mdpi = winsharedutils.GetMonitorDpiScaling(hwnd)
+    return mdpi / _dpi
+
+
 def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
     if hwnd:
-        _r = QApplication.instance().devicePixelRatio()
-        _dpi = windows.GetDpiForWindow(hwnd)
-        x1, y1, x2, y2 = (int(_ * _dpi / 96 / _r) for _ in (x1, y1, x2, y2))
+        rate = hwndratex(hwnd)
+        x1, y1, x2, y2 = (int(_ / rate) for _ in (x1, y1, x2, y2))
     bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2, hwnd)
     return safepixmap(bs)
 

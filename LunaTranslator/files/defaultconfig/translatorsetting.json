@@ -968,6 +968,7 @@
 		"args": {
 			"SECRET_KEY": "",
 			"Temperature": 0.3,
+			"BASE_URL": "https://generativelanguage.googleapis.com",
 			"model": "gemini-1.5-flash",
 			"modellistcache": [],
 			"context": 0,
@@ -995,6 +996,9 @@
 				"type": "multiline",
 				"refswitch": "use_other_args",
 				"name": "其他参数"
+			},
+			"BASE_URL": {
+				"rank": 0
 			},
 			"usingstream": {
 				"name": "流式输出",
@@ -1117,7 +1121,7 @@
 			"frequency_penalty": 0,
 			"fix_degeneration": false,
 			"流式输出": true,
-			"prompt_version": 0,
+			"prompt_version": 2,
 			"s": ""
 		},
 		"argstype": {
@@ -1132,7 +1136,7 @@
 				"list": [
 					"v0.9",
 					"v0.10pre1_（支持gpt词典）",
-					"v1.0pre1_（支持gpt词典）"
+					"v1.0/v1.0pre1_（支持gpt词典）"
 				]
 			},
 			"API接口地址": {

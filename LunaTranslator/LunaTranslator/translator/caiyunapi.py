@@ -26,6 +26,6 @@ class TS(basetrans):
             "POST", url, data=json.dumps(payload), headers=headers
         )
         try:
-            return json.loads(response.text)["target"]
+            return response.json()["target"]
         except:
-            raise Exception(response.text)
+            raise Exception(response.maybejson)

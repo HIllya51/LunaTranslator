@@ -188,50 +188,6 @@ def switchdir():
         pass
 
 
-class Lockedfile:
-    def __init__(self) -> None:
-        self.collect = queue.Queue()
-        threading.Thread(target=self.__write).start()
-
-    def __write(self):
-        data = self.collect.get()
-        os.makedirs("logs", exist_ok=True)
-        file = open(
-            f"logs/{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())}.txt",
-            "w",
-            encoding="utf8",
-            errors="ignore",
-        )
-        while True:
-            file.write(data)
-            file.flush()
-            data = self.collect.get()
-
-    def write(self, data):
-        self.collect.put(data)
-
-
-lockedfile = Lockedfile()
-
-
-class debugoutput(io.IOBase):
-    def __init__(self, file: io.TextIOBase) -> None:
-        super().__init__()
-        self.originfile = file
-
-    def write(self, data):
-        self.originfile.write(data)
-        lockedfile.write(data)
-
-    def flush(self):
-        self.originfile.flush()
-
-
-def savelogs():
-    sys.stderr = debugoutput(sys.stderr)
-    sys.stdout = debugoutput(sys.stdout)
-
-
 def urlprotocol():
     import argparse, gobject, sys
     from urllib.parse import urlsplit
@@ -239,9 +195,9 @@ def urlprotocol():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--URLProtocol", required=False)
-    args = parser.parse_args()
-    URLProtocol: str = args.URLProtocol
     try:
+        args = parser.parse_args()
+        URLProtocol: str = args.URLProtocol
         if URLProtocol:
             print(URLProtocol)
             result = urlsplit(URLProtocol)
@@ -266,7 +222,6 @@ if __name__ == "__main__":
     checklang()
     checkintegrity()
     checkpermission()
-    savelogs()
     urlprotocol()
     loadmainui()
     app.exit(app.exec())

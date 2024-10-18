@@ -680,7 +680,7 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addWidget(self.tabwidget)
         self.tabwidget.setTabPosition(QTabWidget.TabPosition.East)
         self.tabwidget.addTab(self.textOutput, ("文本"))
-        self.tabwidget.addTab(self.sysOutput, ("系统"))
+        self.tabwidget.addTab(self.sysOutput, ("日志"))
 
     def showmenu(self, p: QPoint):
         r = self.tttable.currentIndex().row()
@@ -729,14 +729,16 @@ class hookselect(closeashidewindow):
 
         if self.checkfilt_notcontrol.isChecked():
             lres = list(res)
-
             for r in lres:
                 _ord = ord(r)
-                if _ord < 0x20 or (_ord > 0x80 and _ord < 0xA0):
-
+                if (
+                    (_ord >= 0x21 and _ord <= 0x2F)
+                    or (_ord >= 0x3A and _ord <= 0x40)
+                    or (_ord >= 0x5B and _ord <= 0x60)
+                    or (_ord >= 0x7B and _ord <= 0x7E)
+                ):
                     hide = True
                     break
-
         return hide
 
     def searchtextfunc2(self):

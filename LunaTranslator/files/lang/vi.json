@@ -314,7 +314,6 @@
     "进程号": "Số tiến trình",
     "进程": "Quy trình",
     "到进程": "Tiến trình",
-    "系统": "Hệ thống",
     "发现": "Khám phá",
     "失败": "Thất bại",
     "仅使用激活的翻译": "Chỉ sử dụng bản dịch kích hoạt",
@@ -811,5 +810,6 @@
     "讯飞": "Tin nhắn",
     "百度翻译开放平台": "100 phiên dịch mở",
     "百度智能云": "100 đám mây thông minh",
-    "（支持gpt词典）": "(Hỗ trợ GPT Dictionary)"
+    "（支持gpt词典）": "(Hỗ trợ GPT Dictionary)",
+    "日志": "Đăng nhập"
 }

@@ -223,10 +223,10 @@ class basetrans(commonbase):
         self._cache[langkey][src] = tgt
 
     def shortorlongcacheget(self, content, is_auto_run):
+        # 除了预翻译不使用翻译缓存，以及手动触发gpt翻译外，其他不管什么翻译都缓存下来。
         if self.is_gpt_like and not is_auto_run:
             return None
         if self.transtype == "pre":
-            # 预翻译不使用翻译缓存
             return None
         res = self.shorttermcacheget(content)
         if res:
@@ -242,11 +242,7 @@ class basetrans(commonbase):
         res = self.shortorlongcacheget(contentsolved, is_auto_run)
         if res:
             return res
-        if self.transtype in ["offline", "pre", "dev"]:
-            res = self.translate(contentsolved)
-        else:
-            res = self.intervaledtranslate(contentsolved)
-        return res
+        return self.intervaledtranslate(contentsolved)
 
     def intervaledtranslate(self, content):
         interval = globalconfig["requestinterval"]
@@ -373,7 +369,7 @@ class basetrans(commonbase):
                 if not checktutukufunction():
                     # 检查请求队列是否空，请求队列有新的请求，则放弃当前请求。但对于内嵌翻译请求，不可以放弃。
                     continue
-                if self.using_gpt_dict:
+                if self.transtype == "pre" or self.using_gpt_dict:
                     gpt_dict = None
                     contentraw = contentsolved
                     for _ in optimization_params:

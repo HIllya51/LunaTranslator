@@ -22,7 +22,7 @@ class TS(basetrans):
             try:
                 token = res.json()["tenant_access_token"]
             except:
-                raise Exception(res.json())
+                raise Exception(res.maybejson)
             self.tokens[(app_id, app_secret)] = token
         return self.tokens[(app_id, app_secret)]
 
@@ -45,4 +45,4 @@ class TS(basetrans):
         try:
             return res.json()["data"]["text"]
         except:
-            raise Exception(res.text)
+            raise Exception(res.maybejson)

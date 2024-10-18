@@ -20,4 +20,4 @@ class OCR(baseocr):
         try:
             return response.json()["text"]
         except Exception as e:
-            raise Exception(response.text) from e
+            raise Exception(response.maybejson) from e

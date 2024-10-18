@@ -32,10 +32,10 @@ body:
 
 - type: textarea
   attributes:
-    label: Log files 日志文件
+    label: Log file 日志文件
     description: >
-      View log files in the "logs" directory. Please upload the log file as an attachment instead of copying its contents.
+      Run LunaTranslator_debug.exe to reproduce the error, and then upload the generated log_*.txt file.
       
-      在"logs"目录中获取日志文件。请将日志文件以附件的形式上传，而不是将其中的内容复制。
+      运行LunaTranslator_debug.exe复现错误，然后上传产生的log_*.txt文件。
   validations:
     required: true

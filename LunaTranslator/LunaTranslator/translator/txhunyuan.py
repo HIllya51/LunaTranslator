@@ -146,7 +146,7 @@ class TS(basetrans):
                     "Content"
                 ]
             except:
-                raise Exception(response.text)
+                raise Exception(response.maybejson)
             yield message
         self.context.append({"Role": "user", "Content": query})
         self.context.append({"Role": "assistant", "Content": message})
