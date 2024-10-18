@@ -59,7 +59,9 @@
 
 ### **Azure**
 
-https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions
+**API接口地址** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
+
+其中，将`{endpoint}`和`{deployName}`替换成你的endpoint和deployName
 
 <!-- tabs:end -->
 

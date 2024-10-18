@@ -25,7 +25,9 @@ def list_models(typename, regist):
 class gptcommon(basetrans):
     @property
     def apiurl(self):
-        return self.config.get("API接口地址", self.config.get("OPENAI_API_BASE", ""))
+        return self.config.get(
+            "API接口地址", self.config.get("OPENAI_API_BASE", "")
+        ).strip()
 
     def langmap(self):
         return createenglishlangmap()
@@ -86,7 +88,8 @@ class gptcommon(basetrans):
                     break
                 try:
                     json_data = json.loads(response_data)
-
+                    if len(json_data["choices"]) == 0:
+                        continue
                     msg = json_data["choices"][0].get("delta", {}).get("content", None)
                     if msg:
                         message += msg
@@ -124,6 +127,7 @@ class gptcommon(basetrans):
         if prefill:
             message.append({"role": "assistant", "content": prefill})
         usingstream = self.config["流式输出"]
+        print(self.createurl())
         response = self.proxysession.post(
             self.createurl(),
             headers=self.createheaders(),
