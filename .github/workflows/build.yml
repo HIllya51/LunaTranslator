@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    paths: [ '.github/workflows/build.yml','build.py', 'LunaTranslator/**' , 'plugins/**' ]
+    paths: [ '.github/workflows/build.yml','src/**']
   pull_request:
-    paths: [ '.github/workflows/build.yml','build.py', 'LunaTranslator/**' , 'plugins/**']
+    paths: [ '.github/workflows/build.yml','src/**']
 
 jobs:
   build:
@@ -36,8 +36,8 @@ jobs:
           
       - name: Run build script
         run: |
-          python build.py ${{ matrix.architecture }} 3.7.9
+          python src/build.py ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
-          path: build/${{ matrix.fname }}.zip
+          path: src/build/${{ matrix.fname }}.zip

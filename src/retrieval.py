@@ -9,9 +9,9 @@ x86 = platform.architecture()[0] == "32bit"
 if x86:
     downlevel = r"C:\Windows\SysWOW64\downlevel"
 
-    runtime = r"..\build\LunaTranslator_x86\LunaTranslator\runtime"
-    targetdir = r"..\build\LunaTranslator_x86"
-    launch = r"..\plugins\builds\_x86"
+    runtime = r"build\LunaTranslator_x86\LunaTranslator\runtime"
+    targetdir = r"build\LunaTranslator_x86"
+    launch = r"plugins\builds\_x86"
     baddll = "DLL64"
     gooddll = "DLL32"
 
@@ -19,9 +19,9 @@ if x86:
 else:
     baddll = "DLL32"
     gooddll = "DLL64"
-    launch = r"..\plugins\builds\_x64"
-    runtime = r"..\build\LunaTranslator\LunaTranslator\runtime"
-    targetdir = r"..\build\LunaTranslator"
+    launch = r"plugins\builds\_x64"
+    runtime = r"build\LunaTranslator\LunaTranslator\runtime"
+    targetdir = r"build\LunaTranslator"
     downlevel = r"C:\Windows\system32\downlevel"
 
     webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x64\webview.dll"
