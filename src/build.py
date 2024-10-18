@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 rootDir = os.path.dirname(os.path.dirname(__file__))
 if sys.argv[1] == "loadversion":
     os.chdir(rootDir)
-    with open("plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
+    with open("src/plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
         pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
         match = re.findall(pattern, ff.read())[0]
         version_major, version_minor, version_patch = match
@@ -213,7 +213,7 @@ def buildLunaHook():
 
 
 def buildPlugins():
-    os.chdir(rootDir + "\\plugins\\scripts")
+    os.chdir(rootDir + "\\src\\plugins\\scripts")
     subprocess.run("python fetchwebview2.py")
     subprocess.run(
         f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
