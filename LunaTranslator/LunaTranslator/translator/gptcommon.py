@@ -127,7 +127,6 @@ class gptcommon(basetrans):
         if prefill:
             message.append({"role": "assistant", "content": prefill})
         usingstream = self.config["流式输出"]
-        print(self.createurl())
         response = self.proxysession.post(
             self.createurl(),
             headers=self.createheaders(),
