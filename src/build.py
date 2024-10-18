@@ -45,7 +45,7 @@ availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 
 def createPluginDirs():
-    os.chdir(rootDir + "\\LunaTranslator\\files")
+    os.chdir(rootDir + "\\src\\files")
     if not os.path.exists("plugins"):
         os.mkdir("plugins")
     os.chdir("plugins")
@@ -69,16 +69,16 @@ def downloadBrotli():
     subprocess.run(f"7z x {brotliFile32.split('/')[-1]} -obrotli32")
     subprocess.run(f"7z x {brotliFile64.split('/')[-1]} -obrotli64")
     shutil.move(
-        "brotli32/brotlicommon.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL32"
+        "brotli32/brotlicommon.dll", f"{rootDir}/src/files/plugins/DLL32"
     )
     shutil.move(
-        "brotli32/brotlidec.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL32"
+        "brotli32/brotlidec.dll", f"{rootDir}/src/files/plugins/DLL32"
     )
     shutil.move(
-        "brotli64/brotlicommon.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL64"
+        "brotli64/brotlicommon.dll", f"{rootDir}/src/files/plugins/DLL64"
     )
     shutil.move(
-        "brotli64/brotlidec.dll", f"{rootDir}/LunaTranslator/files/plugins/DLL64"
+        "brotli64/brotlidec.dll", f"{rootDir}/src/files/plugins/DLL64"
     )
 
 
@@ -88,7 +88,7 @@ def downloadlr():
     subprocess.run(f"curl -LO {LocaleRe}")
     subprocess.run(f"7z x {LocaleRe.split('/')[-1]} -oLR")
     os.makedirs(
-        f"{rootDir}/LunaTranslator/files/plugins/Locale_Remulator",
+        f"{rootDir}/src/files/plugins/Locale_Remulator",
         exist_ok=True,
     )
     for _dir, _, _fs in os.walk("LR"):
@@ -96,7 +96,7 @@ def downloadlr():
             if f in ["LRHookx64.dll", "LRHookx32.dll"]:
                 shutil.move(
                     os.path.join(_dir, f),
-                    f"{rootDir}/LunaTranslator/files/plugins/Locale_Remulator",
+                    f"{rootDir}/src/files/plugins/Locale_Remulator",
                 )
 
 
@@ -126,7 +126,7 @@ def downloadcommon():
     subprocess.run(f"curl -LO {mylinks['magpie.zip']}")
     subprocess.run(f"7z x magpie.zip -oALL")
 
-    move_directory_contents("ALL/ALL", f"{rootDir}/LunaTranslator/files/plugins")
+    move_directory_contents("ALL/ALL", f"{rootDir}/src/files/plugins")
 
 
 def downloadLocaleEmulator():
@@ -135,11 +135,11 @@ def downloadLocaleEmulator():
     subprocess.run(f"7z x {localeEmulatorFile.split('/')[-1]} -oLocaleEmulator")
     shutil.move(
         "LocaleEmulator/LoaderDll.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LoaderDll.dll",
+        f"{rootDir}/src/files/plugins/LoaderDll.dll",
     )
     shutil.move(
         "LocaleEmulator/LocaleEmulator.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LocaleEmulator.dll",
+        f"{rootDir}/src/files/plugins/LocaleEmulator.dll",
     )
 
 
@@ -149,11 +149,11 @@ def downloadNtlea():
     subprocess.run(f"7z x {ntleaFile.split('/')[-1]} -ontlea")
     shutil.move(
         "ntlea/x86/ntleai.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/NTLEAS/ntleai.dll",
+        f"{rootDir}/src/files/plugins/NTLEAS/ntleai.dll",
     )
     shutil.move(
         "ntlea/x64/ntleak.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/NTLEAS/ntleak.dll",
+        f"{rootDir}/src/files/plugins/NTLEAS/ntleak.dll",
     )
 
 
@@ -166,17 +166,17 @@ def downloadCurl():
     outputDirName32 = curlFile32.split("/")[-1].replace(".zip", "")
     shutil.move(
         f"{outputDirName32}/bin/libcurl.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/DLL32",
+        f"{rootDir}/src/files/plugins/DLL32",
     )
     outputDirName64 = curlFile64.split("/")[-1].replace(".zip", "")
     shutil.move(
         f"{outputDirName64}/bin/libcurl-x64.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/DLL64",
+        f"{rootDir}/src/files/plugins/DLL64",
     )
 
 
 def downloadOCRModel():
-    os.chdir(rootDir + "\\LunaTranslator\\files")
+    os.chdir(rootDir + "\\src\\files")
     if not os.path.exists("ocr"):
         os.mkdir("ocr")
     os.chdir("ocr")
@@ -204,19 +204,19 @@ def buildLunaHook():
     subprocess.run(f"7z x {LunaHook_latest.split('/')[-1]}")
     shutil.move(
         "Release_English/LunaHook32.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
+        f"{rootDir}/src/files/plugins/LunaHook",
     )
     shutil.move(
         "Release_English/LunaHost32.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
+        f"{rootDir}/src/files/plugins/LunaHook",
     )
     shutil.move(
         "Release_English/LunaHook64.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
+        f"{rootDir}/src/files/plugins/LunaHook",
     )
     shutil.move(
         "Release_English/LunaHost64.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/LunaHook",
+        f"{rootDir}/src/files/plugins/LunaHook",
     )
 
 
@@ -244,7 +244,7 @@ def downloadsomething():
     subprocess.run(f"curl -LO {mylinks['stylesheets-main.zip']}")
     subprocess.run(f"7z x stylesheets-main.zip -oALL")
     move_directory_contents(
-        "ALL/stylesheets-main", rootDir + "\\LunaTranslator\\files\\themes"
+        "ALL/stylesheets-main", rootDir + "\\src\\files\\themes"
     )
 
 
@@ -255,11 +255,11 @@ def downloadbass():
     subprocess.run(f"7z x bass24.zip -oALL")
     shutil.move(
         "ALL/bass.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/DLL32",
+        f"{rootDir}/src/files/plugins/DLL32",
     )
     shutil.move(
         "ALL/x64/bass.dll",
-        f"{rootDir}/LunaTranslator/files/plugins/DLL64",
+        f"{rootDir}/src/files/plugins/DLL64",
     )
 
 
@@ -291,7 +291,7 @@ if __name__ == "__main__":
     else:
         py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x64\\python.exe"
 
-    os.chdir(rootDir + "\\LunaTranslator")
+    os.chdir(rootDir + "\\src")
 
     subprocess.run(f"{py37Path} -m pip install --upgrade pip")
     subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
