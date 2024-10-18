@@ -22,3 +22,12 @@ build/
 temp/
 
 .vscode/settings.json
+
+src/userconfig
+src/cache
+src/chrome_cache
+src/files/ocr
+src/files/plugins
+src/files/themes
+src/run37.bat
+src/run3732.bat
