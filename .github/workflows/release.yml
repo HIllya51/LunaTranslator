@@ -35,7 +35,7 @@ jobs:
           python-version: '3.11'
       - name: Run build script
         run: |
-          python build.py ${{ matrix.architecture }} 3.7.9
+          python src/build.py ${{ matrix.architecture }} 3.7.9
       # - name: Generate attestation for artifact
       #   uses: actions/attest-build-provenance@v1
       #   with:
@@ -47,7 +47,7 @@ jobs:
           
       - name: loadversion
         id: loadversion
-        run: python build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+        run: python src/build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
       - name: Release LunaTranslator
         uses: softprops/action-gh-release@v2
         with:
