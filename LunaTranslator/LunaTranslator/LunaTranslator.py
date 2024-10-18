@@ -310,16 +310,17 @@ class MAINUI:
         currentsignature = uuid.uuid4()
         if not waitforresultcallback:
             self.currentsignature = currentsignature
-        try:
-            origin = text
-            text = POSTSOLVE(text)
-            self.settin_ui.showandsolvesig.emit(origin, text)
-        except Exception as e:
-            msg = str(type(e))[8:-2] + " " + str(e).replace("\n", "").replace("\r", "")
-            self.translation_ui.displaystatus.emit(msg, True, True)
-            return
-        if not text:
-            return
+            # 内嵌&文件翻译不要进行文本预处理
+            try:
+                origin = text
+                text = POSTSOLVE(text)
+                self.settin_ui.showandsolvesig.emit(origin, text)
+                if not text:
+                    return
+            except Exception as e:
+                self.translation_ui.displaystatus.emit(stringfyerror(e), True, True)
+                return
+
         if is_auto_run and (
             len(text) < globalconfig["minlength"]
             or len(text) > globalconfig["maxlength"]
