@@ -241,17 +241,14 @@ for f in collect:
             ff.write(bs)
 
 target = os.path.basename(targetdir)
-if os.path.exists(rf"build\{target}.zip"):
-    os.remove(rf"build\{target}.zip")
-if os.path.exists(rf"build\{target}.7z"):
-    os.remove(rf"build\{target}.7z")
-os.system(
-    rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 build\{target}.zip {targetdir}'
-)
+os.chdir(os.path.dirname(targetdir))
+if os.path.exists(rf"{target}.zip"):
+    os.remove(rf"{target}.zip")
+if os.path.exists(rf"{target}.7z"):
+    os.remove(rf"{target}.7z")
+os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {target}.zip {target}')
 if 0:
-    os.system(
-        rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA2 -mx9 build\{target}.7z {targetdir}'
-    )
+    os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA2 -mx9 {target}.7z {target}')
     with open(r"C:\Program Files\7-Zip\7z.sfx", "rb") as ff:
         sfx = ff.read()
 
@@ -261,10 +258,10 @@ if 0:
 
     ;!@InstallEnd@!
     """
-    with open(rf"build\{target}.7z", "rb") as ff:
+    with open(rf"{target}.7z", "rb") as ff:
         data = ff.read()
 
-    with open(rf"build\{target}.exe", "wb") as ff:
+    with open(rf"{target}.exe", "wb") as ff:
         ff.write(sfx)
         ff.write(config.encode("utf8"))
         ff.write(data)
