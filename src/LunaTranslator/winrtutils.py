@@ -10,7 +10,7 @@ from ctypes import (
     POINTER,
     c_char,
 )
-import platform, gobject
+import platform, gobject, threading
 
 try:
     if platform.system() != "Windows" or int(platform.version().split(".")[0]) < 6:
@@ -43,13 +43,19 @@ if winrtutilsdll:
         def cb(x1, y1, x2, y2, text):
             ret.append((text, x1, y1, x2, y2))
 
-        _OCR_f(
-            data,
-            len(data),
-            lang,
-            space,
-            CFUNCTYPE(None, c_uint, c_uint, c_uint, c_uint, c_wchar_p)(cb),
+        t = threading.Thread(
+            target=_OCR_f,
+            args=(
+                data,
+                len(data),
+                lang,
+                space,
+                CFUNCTYPE(None, c_uint, c_uint, c_uint, c_uint, c_wchar_p)(cb),
+            ),
         )
+        t.start()
+        t.join()
+        # 如果不这样，就会在在ui线程执行时，BitmapDecoder::CreateAsync(memoryStream).get()等Async函数会导致阻塞卡住。
         return ret
 
     _winrt_capture_window = winrtutilsdll.winrt_capture_window

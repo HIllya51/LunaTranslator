@@ -23,7 +23,7 @@ mylinks = {
     "mecab.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip",
     "ocr.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/ocr.zip",
     "magpie.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip",
-    "stylesheets-main.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/stylesheets-main.zip",
+    "themes.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/themes.zip",
 }
 
 
@@ -233,9 +233,9 @@ def buildPlugins():
 
 def downloadsomething():
     os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {mylinks['stylesheets-main.zip']}")
-    subprocess.run(f"7z x stylesheets-main.zip -oALL")
-    move_directory_contents("ALL/stylesheets-main", rootDir + "\\files\\themes")
+    subprocess.run(f"curl -LO {mylinks['themes.zip']}")
+    subprocess.run(f"7z x themes.zip -oALL")
+    move_directory_contents("ALL/themes", rootDir + "\\files\\themes")
 
 
 def downloadbass():

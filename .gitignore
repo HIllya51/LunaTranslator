@@ -31,3 +31,5 @@ src/files/plugins
 src/files/themes
 src/run37.bat
 src/run3732.bat
+src/plugins/builds
+src/plugins/libs/webview2
