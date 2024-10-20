@@ -185,6 +185,9 @@ def question(dialog: QDialog):
 
 
 class OCR(baseocr):
+    def langmap(self):
+        return {"cht": "cht"}
+
     def initocr(self):
         self._ocr = None
         self._savelang = None

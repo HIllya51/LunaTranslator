@@ -48,6 +48,9 @@ def question(dialog: QDialog):
 
 
 class OCR(baseocr):
+    def langmap(self):
+        return {"cht": "cht"}
+
     def initocr(self):
         self.supportmap = initsupports()
 
