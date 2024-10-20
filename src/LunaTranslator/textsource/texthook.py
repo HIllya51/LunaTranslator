@@ -91,7 +91,8 @@ class SearchParam(Structure):
 
 findhookcallback_t = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
 ProcessEvent = CFUNCTYPE(None, DWORD)
-ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
+ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_bool)
+ThreadEvent_2 = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
 OutputCallback = CFUNCTYPE(c_bool, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
 ConsoleHandler = CFUNCTYPE(None, c_wchar_p)
 HookInsertHandler = CFUNCTYPE(None, c_uint64, c_wchar_p)
@@ -231,7 +232,7 @@ class texthook(basetext):
             ProcessEvent(self.onprocconnect),
             ProcessEvent(self.removeproc),
             ThreadEvent(self.onnewhook),
-            ThreadEvent(self.onremovehook),
+            ThreadEvent_2(self.onremovehook),
             OutputCallback(self.handle_output),
             ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
             HookInsertHandler(self.newhookinsert),
@@ -512,7 +513,7 @@ class texthook(basetext):
         name = (hc[:8] == "UserHook" and _hc[:8] == "UserHook") or (hc == _hc)
         return base and name
 
-    def onnewhook(self, hc, hn, tp):
+    def onnewhook(self, hc, hn, tp, isembedable):
         key = (hc, hn.decode("utf8"), tp)
 
         self.hookdatacollecter[key] = []
@@ -524,7 +525,7 @@ class texthook(basetext):
                 self.selectinghook = key
                 select = True
                 break
-        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key, select)
+        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key, select, isembedable)
         return True
 
     def setsettings(self):

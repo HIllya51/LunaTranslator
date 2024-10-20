@@ -385,7 +385,7 @@ class searchhookparam(LDialog):
 
 
 class hookselect(closeashidewindow):
-    addnewhooksignal = pyqtSignal(tuple, bool)
+    addnewhooksignal = pyqtSignal(tuple, bool, bool)
     getnewsentencesignal = pyqtSignal(str)
     sysmessagesignal = pyqtSignal(str)
     removehooksignal = pyqtSignal(tuple)
@@ -471,9 +471,8 @@ class hookselect(closeashidewindow):
         self.saveifembedable = {}
         self.embedablenum = 0
 
-    def addnewhook(self, key, select):
+    def addnewhook(self, key, select, isembedable):
         hc, hn, tp = key
-        isembedable = hc[0] == "E"
 
         if len(self.save) == 0:
             self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
