@@ -118,7 +118,10 @@ class basetext:
                         "SELECT machineTrans FROM artificialtrans WHERE source = ?",
                         (src,),
                     ).fetchone()
-                    ret = json.loads((ret[0]))
+                    try:
+                        ret = json.loads((ret[0]))
+                    except:
+                        ret = {}
                     ret[clsname] = trans
                     ret = json.dumps(ret, ensure_ascii=False)
                     self.sqlwrite2.execute(

@@ -33,6 +33,7 @@ from ctypes.wintypes import (
     HKEY,
     LPDWORD,
     LPBYTE,
+    HMONITOR,
     LPCVOID,
     LPWSTR,
     WPARAM,
@@ -1020,3 +1021,13 @@ def FormatMessage(code, module=None):
     if length:
         LocalFree(mess)
     return res.strip()
+
+
+MONITOR_DEFAULTTONEAREST = 0x00000002
+_MonitorFromWindow = _user32.MonitorFromWindow
+_MonitorFromWindow.argtypes = HWND, DWORD
+_MonitorFromWindow.restype = HMONITOR
+
+
+def MonitorFromWindow(hwnd, dwFlags=MONITOR_DEFAULTTONEAREST):
+    return _MonitorFromWindow(hwnd, dwFlags)

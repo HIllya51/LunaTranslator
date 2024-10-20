@@ -1,5 +1,5 @@
 from qtsymbols import *
-import windows, winsharedutils
+import windows, winsharedutils, gobject
 from myutils.config import globalconfig
 from gui.resizeablemainwindow import Mainw
 from gui.dynalang import LAction
@@ -15,6 +15,15 @@ class rangeadjust(Mainw):
         self.traceposstart = pos
 
     def traceoffset(self, curr):
+        hwnd = gobject.baseobject.hwnd
+        if not hwnd:
+            self.tracepos = QPoint()
+            return
+        if windows.MonitorFromWindow(hwnd) != windows.MonitorFromWindow(
+            int(self.winId())
+        ):
+            self.tracepos = QPoint()
+            return
         keystate = windows.GetKeyState(windows.VK_LBUTTON)
         if keystate < 0 and windows.GetForegroundWindow() == int(self.winId()):
             self.tracepos = QPoint()

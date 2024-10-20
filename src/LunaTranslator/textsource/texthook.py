@@ -457,14 +457,14 @@ class texthook(basetext):
             else None
         )
         if self.safeembedcheck(text):
+            trans = self.waitfortranslation(text, engine)
+        else:
             collect = []
             for _ in text.split("\n"):
                 if _ and self.safeembedcheck(_):
                     _ = self.waitfortranslation(_, engine)
                 collect.append(_)
             trans = "\n".join(collect)
-        else:
-            trans = self.waitfortranslation(text, engine)
         if not trans:
             trans = ""
         if globalconfig["embedded"]["trans_kanji"]:
@@ -525,7 +525,9 @@ class texthook(basetext):
                 self.selectinghook = key
                 select = True
                 break
-        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(key, select, isembedable)
+        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(
+            key, select, isembedable
+        )
         return True
 
     def setsettings(self):

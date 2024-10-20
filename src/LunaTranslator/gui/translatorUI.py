@@ -290,7 +290,7 @@ class TranslatorWindow(resizableframeless):
             if not rect:
                 lastpos = None
                 continue
-            rate = hwndratex(hwnd)
+            rate = self.devicePixelRatioF()
             rect = QRect(
                 int(rect[0] / rate),
                 int(rect[1] / rate),
@@ -305,7 +305,6 @@ class TranslatorWindow(resizableframeless):
                 except:
                     pass
                 continue
-
             if (rect.topLeft() == QPoint(0, 0)) or (rect.size() != lastpos.size()):
                 lastpos = rect
                 continue
@@ -313,6 +312,9 @@ class TranslatorWindow(resizableframeless):
                 gobject.baseobject.textsource.traceoffset(rect.topLeft())
             except:
                 pass
+            if windows.MonitorFromWindow(hwnd) != windows.MonitorFromWindow(self.winid):
+                lastpos = None
+                return
             self.move_signal.emit(tracepos - lastpos.topLeft() + rect.topLeft())
 
     def showres(self, kwargs):
