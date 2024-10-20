@@ -307,12 +307,12 @@ class MAINUI:
             return
         if is_auto_run and text == self.currenttext:
             return
+        origin = text
         currentsignature = uuid.uuid4()
         if not waitforresultcallback:
             self.currentsignature = currentsignature
             # 内嵌&文件翻译不要进行文本预处理
             try:
-                origin = text
                 text = POSTSOLVE(text)
                 self.settin_ui.showandsolvesig.emit(origin, text)
                 if not text:
