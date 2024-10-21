@@ -1,11 +1,8 @@
-﻿if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-  set(Detours ${CMAKE_CURRENT_LIST_DIR}/Detours-4.0.1/lib.X64/detours.lib)
-else()
-  set(Detours ${CMAKE_CURRENT_LIST_DIR}/Detours-4.0.1/lib.X86/detours.lib)
-endif()
+﻿
+file(GLOB Detours "${CMAKE_CURRENT_LIST_DIR}/Detours/src/*.cpp")
 
 include_directories(${CMAKE_CURRENT_LIST_DIR})
-include_directories(${CMAKE_CURRENT_LIST_DIR}/Detours-4.0.1/include)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/Detours/src)
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/wil/include)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/miniaudio)

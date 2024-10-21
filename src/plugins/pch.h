@@ -71,7 +71,6 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 
-#include <detours.h>
 
 #pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "winmm.lib")
