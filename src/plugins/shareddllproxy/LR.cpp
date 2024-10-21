@@ -1,4 +1,6 @@
 
+#include <detours.h>
+
 struct LRProfile
 {
 	UINT CodePage;
