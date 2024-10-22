@@ -10,3 +10,6 @@
 [submodule "src/plugins/libs/tinymp3"]
 	path = src/plugins/libs/tinymp3
 	url = https://github.com/HIllya51/tinymp3
+[submodule "src/plugins/libs/Detours"]
+	path = src/plugins/libs/Detours
+	url = https://github.com/microsoft/Detours
