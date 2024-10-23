@@ -79,7 +79,7 @@ class TS(basetrans):
                 self.lines[ks[i]] = vs[i]
 
     def tryfindtranslate(self, content: str, _js: dict, _js2: dict = None):
-        if globalconfig["premtsimiuse"]:
+        if globalconfig["premtsimi2"] < 100:
 
             maxsim = 0
             savet = None
@@ -103,11 +103,8 @@ class TS(basetrans):
 
     def tryfindtranslate_single(self, content: str):
         self.delayloadlines()
-        if "\n" not in content:
-            return self.tryfindtranslate(content, self.json, self.lines)
-
         collect = []
-        for line in content.split("\n"):
+        for line in content.splitlines():
             line = self.tryfindtranslate(line, self.json, self.lines)
             if not line:
                 return None
@@ -120,10 +117,9 @@ class TS(basetrans):
         self.checkfilechanged(
             self.unsafegetcurrentgameconfig(), tuple(self.config["jsonfile"])
         )
-        if globalconfig["premtmatcheveryline"]:
+        res = self.tryfindtranslate(content, self.json)
+        if (not res) and ("\n" in content):
             res = self.tryfindtranslate_single(content)
-        else:
-            res = self.tryfindtranslate(content, self.json)
         if not res:
             raise Exception(f"can't find: {content}")
         return res

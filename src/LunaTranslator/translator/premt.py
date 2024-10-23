@@ -49,7 +49,7 @@ class TS(basetrans):
                 return {}
         else:
             sql = self.sql
-        if globalconfig["premtsimiuse"]:
+        if globalconfig["premtsimi2"] < 100:
             maxsim = 0
             savet = "{}"
             ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
