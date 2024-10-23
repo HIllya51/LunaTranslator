@@ -1,7 +1,7 @@
 from qtsymbols import *
 import threading, windows
-import gobject, qtawesome
-from myutils.config import globalconfig
+import gobject, qtawesome, os, json
+from myutils.config import globalconfig, savehook_new_data, translatorsetting
 from myutils.utils import translate_exits
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow, getsimplecombobox
@@ -155,6 +155,8 @@ class edittrans(LMainWindow):
         submit = LPushButton("确定")
         vis, inter = [], []
         for fanyi in globalconfig["fanyi"]:
+            if fanyi == "premt":
+                continue
             if not translate_exits(fanyi):
                 continue
             inter.append(fanyi)
@@ -195,5 +197,33 @@ class edittrans(LMainWindow):
             )  # 显示到历史翻译
             gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
             self.textOutput.clear()
+            if globalconfig["realtime_edit_target"] == "rengong":
+                # 当json文件唯一时，才记录，否则不管。
+                __ = None
+                for _ in (
+                    self.unsafegetcurrentgameconfig()
+                    + translatorsetting["rengong"]["args"]["jsonfile"]
+                ):
+                    if os.path.exists(_):
+                        if __:
+                            return
+                        __ = _
+                if __:
+                    with open(__, "r", encoding="utf8") as f:
+                        __j = json.load(f)
+                        __j[gobject.baseobject.currenttext] = text
+                    with open(__, "w", encoding="utf8") as f:
+                        json.dump(__j, f, ensure_ascii=False, indent=4)
+
         except:
             pass
+
+    def unsafegetcurrentgameconfig(self):
+        try:
+            gameuid = gobject.baseobject.gameuid
+            _path = savehook_new_data[gameuid]["gamejsonfile"]
+            if isinstance(_path, str):
+                _path = [_path]
+            return _path
+        except:
+            return None
