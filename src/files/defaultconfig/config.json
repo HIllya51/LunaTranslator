@@ -1560,15 +1560,15 @@
             "color": "pink",
             "name": "Azure"
         },
-        "baidu": {
+        "baidu_ai": {
             "use": false,
             "color": "#ff65db",
             "name": "百度"
         },
-        "baidu_ai": {
+        "baidu": {
             "use": false,
             "color": "#ff65db",
-            "name": "百度_ait"
+            "name": "百度_old"
         },
         "bing": {
             "use": false,
