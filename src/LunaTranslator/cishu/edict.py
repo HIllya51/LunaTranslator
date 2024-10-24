@@ -1,7 +1,7 @@
 import sqlite3, os
 import winsharedutils, re
 from myutils.utils import argsort, autosql
-from cishu.cishubase import cishubase
+from cishu.cishubase import cishubase, DictTree
 
 
 class edict(cishubase):
@@ -41,3 +41,19 @@ class edict(cishubase):
             saveres.append(x[0] + "<hr>" + re.sub("/EntL.*/", "", x[1][1:]))
 
         return "<hr>".join(saveres)
+
+    def tree(self):
+        if not self.sql:
+            return
+
+        class DictTreeRoot(DictTree):
+            def __init__(self, ref) -> None:
+                self.ref = ref
+
+            def childrens(self):
+                c = []
+                for _ in self.ref.sql.execute("select text from surface").fetchall():
+                    c.append(_[0])
+                return c
+
+        return DictTreeRoot(self)

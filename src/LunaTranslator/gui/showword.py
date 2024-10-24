@@ -30,7 +30,15 @@ from gui.usefulwidget import (
     saveposwindow,
     tabadd_lazy,
 )
-from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LFormLayout, LLabel
+from gui.dynalang import (
+    LPushButton,
+    LLabel,
+    LTabWidget,
+    LTabBar,
+    LFormLayout,
+    LLabel,
+    LMainWindow,
+)
 
 
 def getimageformatlist():
@@ -748,6 +756,92 @@ class CustomTabBar(LTabBar):
         if size_hint.height():
             self.savesizehint = size_hint
         return self.savesizehint
+
+
+from cishu.cishubase import DictTree
+
+DictNodeRole = Qt.ItemDataRole.UserRole + 1
+DeterminedhasChildren = DictNodeRole + 1
+isWordNode = DeterminedhasChildren + 1
+
+
+class DynamicTreeModel(QStandardItemModel):
+    def __init__(self):
+        super().__init__()
+
+    def hasChildren(self, index):
+        if self.data(index, isWordNode):
+            return False
+        _DeterminedhasChildren = self.data(index, DeterminedhasChildren)
+        if _DeterminedhasChildren is not None:
+            return _DeterminedhasChildren
+        return self.data(index, DictNodeRole) is not None
+
+    def loadChildren(self, index: QModelIndex):
+        if not index.isValid():
+            return
+        if self.data(index, isWordNode):
+            return
+        if self.data(index, DeterminedhasChildren) is not None:
+            return
+        node: DictTree = self.data(index, DictNodeRole)
+        if not node:
+            return
+        childs = node.childrens()
+        self.setData(index, len(childs) > 0, DeterminedhasChildren)
+        thisitem = self.itemFromIndex(index)
+        for c in childs:
+            if isinstance(c, str):
+                t = c
+                has = False
+            else:
+                t = c.text()
+                has = True
+            item = QStandardItem(t)
+            if has:
+                item.setData(c, DictNodeRole)
+            else:
+                item.setData(True, isWordNode)
+            thisitem.appendRow([item])
+
+    def onDoubleClicked(self, index: QModelIndex):
+        if not self.data(index, isWordNode):
+            return
+        gobject.baseobject.searchwordW.search_word.emit(self.itemFromIndex(index).text(), False)
+
+class showdiction(LMainWindow):
+    def __init__(self, parent):
+        super(showdiction, self).__init__(parent)
+        self.resize(400, parent.height())
+        self.setWindowTitle("查看")
+        self.tree = QTreeView(self)
+        self.tree.setHeaderHidden(True)
+        self.tree.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.setCentralWidget(self.tree)
+
+        self.model = DynamicTreeModel()
+        self.tree.setModel(self.model)
+        self.tree.expanded.connect(self.model.loadChildren)
+        root = self.model.invisibleRootItem()
+        self.tree.doubleClicked.connect(self.model.onDoubleClicked)
+        good = False
+        for k in globalconfig["cishuvisrank"]:
+            cishu = gobject.baseobject.cishus[k]
+
+            if not hasattr(cishu, "tree"):
+                continue
+            try:
+                tree = cishu.tree()
+            except:
+                continue
+            if not tree:
+                continue
+
+            item = QStandardItem(globalconfig["cishu"][k]["name"])
+            item.setData(tree, DictNodeRole)
+            root.appendRow([item])
+            good = True
+        root.setData(good, DeterminedhasChildren)
 
 
 class searchwordW(closeashidewindow):

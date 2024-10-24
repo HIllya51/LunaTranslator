@@ -2,7 +2,7 @@ from myutils.utils import autosql
 import sqlite3
 import winsharedutils
 import os
-from cishu.cishubase import cishubase
+from cishu.cishubase import cishubase, DictTree
 
 
 class linggesi(cishubase):
@@ -48,3 +48,21 @@ class linggesi(cishubase):
         x = sorted(list(mp.keys()), key=lambda x: mp[x][1])[: self.config["max_num"]]
         save = [w + "<hr>" + mp[w][0] for w in x]
         return "<hr>".join(save)
+
+    def tree(self):
+        if not self.sql:
+            return
+
+        class DictTreeRoot(DictTree):
+            def __init__(self, ref) -> None:
+                self.ref = ref
+
+            def childrens(self):
+                c = []
+                for _ in self.ref.sql.execute(
+                    "select word from entry"
+                ).fetchall():
+                    c.append(_[0])
+                return c
+
+        return DictTreeRoot(self)

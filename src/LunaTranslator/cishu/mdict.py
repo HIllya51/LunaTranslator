@@ -1,5 +1,5 @@
 import math, base64, uuid, gobject
-import threading, time
+from cishu.cishubase import DictTree
 
 
 class FlexBuffer:
@@ -2032,11 +2032,11 @@ class mdict(cishubase):
             distance = self.config["distance"]
         return distance
 
-    def gettitle(self, f, index):
+    def gettitle(self, f, index: IndexBuilder):
         _ = self.extraconf[f]
         title = _["title"]
         if title is None:
-            t = os.path.basename(f)[:-4]
+            t: str = os.path.basename(f)[:-4]
             if index._title.strip() != "":
                 t1 = index._title.strip()
                 if (t1.isascii()) and (t.isascii()):
@@ -2086,7 +2086,6 @@ class mdict(cishubase):
                 self.extraconf = json.loads(ff.read())
         except:
             self.extraconf = {}
-        self.sql = None
         paths = self.config["paths"]
 
         self.builders = []
@@ -2629,3 +2628,37 @@ if (content.style.display === 'block') {
             return self.generatehtml_tabswitch(allres)
         elif self.config["stylehv"] == 1:
             return self.generatehtml_flow(allres)
+
+    def tree(self):
+        if len(self.builders) == 0:
+            return
+
+        class everydict(DictTree):
+            def __init__(self, ref, f, index: IndexBuilder) -> None:
+                self.f = f
+                self.index = index
+                self.ref = ref
+
+            def text(self):
+                return self.ref.gettitle(self.f, self.index)
+
+            def childrens(self) -> list:
+                return self.index.get_mdx_keys("*")
+
+        class DictTreeRoot(DictTree):
+            def __init__(self, ref) -> None:
+                self.ref = ref
+
+            def childrens(self):
+                saves = []
+                for f, index in self.ref.builders:
+                    saves.append(
+                        (self.ref.getpriority(f), everydict(self.ref, f, index))
+                    )
+                saves.sort(key=lambda x: x[0])
+                i = []
+                for _, _i in saves:
+                    i.append(_i)
+                return i
+
+        return DictTreeRoot(self)

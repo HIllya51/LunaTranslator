@@ -13,6 +13,7 @@ from gui.usefulwidget import (
     auto_select_webview,
 )
 from gui.setting_display_text import on_not_find_qweb
+from gui.showword import showdiction
 
 
 def setTabcishu(self, basel):
@@ -220,6 +221,10 @@ def setTabcishu_l(self):
                                 lambda: gobject.baseobject.searchwordW.showsignal.emit(),
                                 "fa.search",
                             ),
+                            D_getIconButton(
+                                lambda: showdiction(self).show(),
+                                "fa.book",
+                            ),
                             "",
                             "辞书显示顺序",
                             D_getIconButton(
@@ -235,11 +240,13 @@ def setTabcishu_l(self):
                                 1,
                             ),
                             "",
+                            "",
                             ("点击单词复制"),
                             (
                                 D_getsimpleswitch(globalconfig, "usecopyword"),
                                 1,
                             ),
+                            "",
                             "",
                             ("使用原型查询"),
                             (

@@ -1,5 +1,3 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 import os, functools, uuid, threading, shutil, time
 from traceback import print_exc

@@ -2,7 +2,7 @@ import winsharedutils, os
 import re
 from myutils.utils import argsort
 from traceback import print_exc
-from cishu.cishubase import cishubase
+from cishu.cishubase import cishubase, DictTree
 
 
 class edict2(cishubase):
@@ -43,3 +43,16 @@ class edict2(cishubase):
                 savew[ii] + "<hr>" + re.sub("/EntL.*/", "", self.save[savew[ii]][1:])
             )
         return "<hr>".join(saveres)
+
+    def tree(self):
+        if not self.save:
+            return
+
+        class DictTreeRoot(DictTree):
+            def __init__(self, ref) -> None:
+                self.ref = ref
+
+            def childrens(self):
+                return list(self.ref.save.keys())
+
+        return DictTreeRoot(self)

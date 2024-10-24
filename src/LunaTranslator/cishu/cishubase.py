@@ -4,6 +4,11 @@ from traceback import print_exc
 from myutils.proxy import getproxy
 
 
+class DictTree:
+    def text(self) -> str: ...
+    def childrens(self) -> list: ...
+
+
 class cishubase:
     typename = None
 

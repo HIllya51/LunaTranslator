@@ -1,8 +1,7 @@
 import sqlite3, os, re
 import winsharedutils
 from myutils.utils import argsort, autosql
-
-from cishu.cishubase import cishubase
+from cishu.cishubase import cishubase, DictTree
 
 
 class xiaoxueguan(cishubase):
@@ -48,3 +47,21 @@ class xiaoxueguan(cishubase):
         srt = argsort(dis)[: self.config["max_num"]]
         save = ["<span h>" + exp[i][1].replace("\\n", "") for i in srt]
         return "<hr>".join(save)
+
+    def tree(self):
+        if not self.sql:
+            return
+
+        class DictTreeRoot(DictTree):
+            def __init__(self, ref) -> None:
+                self.ref = ref
+
+            def childrens(self):
+                c = []
+                for _ in self.ref.sql.execute(
+                    "select word from xiaoxueguanrizhong"
+                ).fetchall():
+                    c.append(_[0])
+                return c
+
+        return DictTreeRoot(self)
