@@ -96,25 +96,6 @@ class Itranslate(Tse):
         to_language: str = "en",
         **kwargs
     ):
-        """
-        https://itranslate.com/webapp
-        :param query_text: str, must.
-        :param from_language: str, default 'auto'.
-        :param to_language: str, default 'en'.
-        :param **kwargs:
-                :param timeout: float, default None.
-                :param proxies: dict, default None.
-                :param sleep_seconds: float, default `random.random()`.
-                :param is_detail_result: boolean, default False.
-                :param if_ignore_limit_of_length: boolean, default False.
-                :param limit_of_length: int, default 5000.
-                :param if_ignore_empty_query: boolean, default False.
-                :param update_session_after_seconds: float, default 1500.
-                :param if_show_time_stat: boolean, default False.
-                :param show_time_stat_precision: int, default 4.
-        :return: str or dict
-        """
-
         if not (self.session):
             self.session = requests.Session()
             mainjsurl = self.session.get(

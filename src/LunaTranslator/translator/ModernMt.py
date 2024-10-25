@@ -80,17 +80,6 @@ class ModernMt(Tse):
         self.output_zh = "zh-CN"
         self.input_limit = int(5e3)
 
-    def get_language_map(self, lang_url, ss, headers, timeout, proxies, **kwargs):
-        lang_html = ss.get(
-            lang_url, headers=headers, timeout=timeout, proxies=proxies
-        ).text
-        d_lang_map = eval(
-            eval(re.compile("""('{(.*?)}')""").search(lang_html).group())
-        )  # JSON.parse('{"sq":
-        lang_list = sorted(d_lang_map)
-
-        return {}.fromkeys(lang_list, lang_list)
-
     def modernMt_api(
         self,
         query_text: str,
@@ -98,31 +87,9 @@ class ModernMt(Tse):
         to_language: str = "en",
         **kwargs
     ):
-        """
-        https://www.modernmt.com/translate
-        :param query_text: str, must.
-        :param from_language: str, default 'auto'.
-        :param to_language: str, default 'en'.
-        :param **kwargs:
-                :param timeout: float, default None.
-                :param proxies: dict, default None.
-                :param sleep_seconds: float, default 0.
-                :param is_detail_result: boolean, default False.
-                :param if_ignore_limit_of_length: boolean, default False.
-                :param limit_of_length: int, default 5000.
-                :param if_ignore_empty_query: boolean, default False.
-                :param update_session_after_freq: int, default 1000.
-                :param update_session_after_seconds: float, default 1500.
-                :param if_show_time_stat: boolean, default False.
-                :param show_time_stat_precision: int, default 4.
-                :param if_print_warning: bool, default True.
-        :return: str or dict
-        """
 
-        timeout = kwargs.get("timeout", None)
         proxies = kwargs.get("proxies", None)
         sleep_seconds = kwargs.get("sleep_seconds", 0)
-        if_print_warning = kwargs.get("if_print_warning", True)
         is_detail_result = kwargs.get("is_detail_result", False)
         update_session_after_freq = kwargs.get(
             "update_session_after_freq", self.default_session_freq
@@ -145,7 +112,6 @@ class ModernMt(Tse):
             _ = self.session.get(
                 self.host_url,
                 headers=self.host_headers,
-                timeout=timeout,
                 proxies=proxies,
             )
 
@@ -167,7 +133,6 @@ class ModernMt(Tse):
             self.api_url,
             json=form_data,
             headers=self.api_headers,
-            timeout=timeout,
             proxies=proxies,
         )
         r.raise_for_status()

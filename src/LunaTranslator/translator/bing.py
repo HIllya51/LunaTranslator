@@ -105,28 +105,6 @@ class Bing(Tse):
         to_language: str = "en",
         **kwargs
     ):
-        """
-        https://bing.com/Translator, https://cn.bing.com/Translator.
-        :param query_text: str, must.
-        :param from_language: str, default 'auto'.
-        :param to_language: str, default 'en'.
-        :param **kwargs:
-                :param timeout: float, default None.
-                :param proxies: dict, default None.
-                :param sleep_seconds: float, default 0.
-                :param is_detail_result: boolean, default False.
-                :param if_ignore_limit_of_length: boolean, default False.
-                :param limit_of_length: int, default 5000.
-                :param if_ignore_empty_query: boolean, default False.
-                :param update_session_after_freq: int, default 1000.
-                :param update_session_after_seconds: float, default 1500.
-                :param if_show_time_stat: boolean, default False.
-                :param show_time_stat_precision: int, default 4.
-                :param if_print_warning: bool, default True.
-                :param if_use_cn_host: boolean, default None.
-        :return: str or dict
-        """
-
         use_cn_condition = (
             kwargs.get("if_use_cn_host", None) or self.server_region == "CN"
         )
@@ -135,10 +113,8 @@ class Bing(Tse):
         self.host_headers = self.get_headers(self.host_url, if_api=False)
         self.api_headers = self.get_headers(self.host_url, if_api=True)
 
-        timeout = kwargs.get("timeout", None)
         proxies = kwargs.get("proxies", None)
         sleep_seconds = kwargs.get("sleep_seconds", 0)
-        if_print_warning = kwargs.get("if_print_warning", True)
         is_detail_result = kwargs.get("is_detail_result", False)
         update_session_after_freq = kwargs.get(
             "update_session_after_freq", self.default_session_freq
@@ -163,7 +139,6 @@ class Bing(Tse):
             host_html = self.session.get(
                 self.host_url,
                 headers=self.host_headers,
-                timeout=timeout,
                 proxies=proxies,
             ).text
             self.tk = self.get_tk(host_html)
@@ -185,7 +160,6 @@ class Bing(Tse):
             api_url,
             headers=self.host_headers,
             data=form_data,
-            timeout=timeout,
             proxies=proxies,
         )
         r.raise_for_status()

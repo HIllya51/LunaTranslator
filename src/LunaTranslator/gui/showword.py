@@ -2,7 +2,7 @@ from qtsymbols import *
 import json, time, functools, os, base64, uuid
 from urllib.parse import quote
 from traceback import print_exc
-import qtawesome, requests, gobject, windows
+import qtawesome, requests, gobject, windows, winsharedutils
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, _TR, static_data
@@ -38,6 +38,7 @@ from gui.dynalang import (
     LFormLayout,
     LLabel,
     LMainWindow,
+    LAction,
 )
 
 
@@ -763,11 +764,13 @@ from cishu.cishubase import DictTree
 DictNodeRole = Qt.ItemDataRole.UserRole + 1
 DeterminedhasChildren = DictNodeRole + 1
 isWordNode = DeterminedhasChildren + 1
+isLabeleddWord = isWordNode + 1
 
 
 class DynamicTreeModel(QStandardItemModel):
-    def __init__(self):
+    def __init__(self, ref):
         super().__init__()
+        self.ref = ref
 
     def hasChildren(self, index):
         if self.data(index, isWordNode):
@@ -790,6 +793,7 @@ class DynamicTreeModel(QStandardItemModel):
         childs = node.childrens()
         self.setData(index, len(childs) > 0, DeterminedhasChildren)
         thisitem = self.itemFromIndex(index)
+        maketuples = tuple((tuple(_) for _ in globalconfig["wordlabel"]))
         for c in childs:
             if isinstance(c, str):
                 t = c
@@ -802,28 +806,123 @@ class DynamicTreeModel(QStandardItemModel):
                 item.setData(c, DictNodeRole)
             else:
                 item.setData(True, isWordNode)
+            if (thisitem.text(), t) in maketuples:
+                item.setData(True, isLabeleddWord)
+                item.setData(
+                    QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole
+                )
             thisitem.appendRow([item])
+        self.ref(index)
 
     def onDoubleClicked(self, index: QModelIndex):
         if not self.data(index, isWordNode):
             return
-        gobject.baseobject.searchwordW.search_word.emit(self.itemFromIndex(index).text(), False)
+        gobject.baseobject.searchwordW.search_word.emit(
+            self.itemFromIndex(index).text(), False
+        )
+
+
+class kpQTreeView(QTreeView):
+    enterpressed = pyqtSignal(QModelIndex)
+
+    def keyPressEvent(self, e: QKeyEvent):
+        if e.key() == Qt.Key.Key_Return or e.key() == Qt.Key.Key_Enter:
+            self.enterpressed.emit(self.currentIndex())
+        else:
+            super().keyPressEvent(e)
+
 
 class showdiction(LMainWindow):
-    def __init__(self, parent):
+    def setwordfilter(self, index=None):
+        w = self.word.text()
+        if index is None:
+            item = self.model.invisibleRootItem()
+            index = self.model.indexFromItem(self.model.invisibleRootItem())
+        else:
+            item = self.model.itemFromIndex(index)
+        for i in range(item.rowCount()):
+            _item = item.child(i)
+            isw = _item.data(isWordNode)
+            if isw is None:
+                isw = False
+            self.tree.setRowHidden(i, index, isw and (w not in _item.text()))
+            self.setwordfilter(self.model.indexFromItem(_item))
+
+    def showmenu(self, _):
+        idx = self.tree.currentIndex()
+        if not idx.isValid():
+            return
+        isw = idx.data(isWordNode)
+        item = self.model.itemFromIndex(idx)
+        menu = QMenu(self)
+        copy = LAction("复制")
+        search = LAction("查词")
+        label = LAction("标记")
+        delabel = LAction("去除标记")
+        menu.addAction(copy)
+        if isw:
+            menu.addAction(search)
+            if idx.data(isLabeleddWord):
+                menu.addAction(delabel)
+            else:
+                menu.addAction(label)
+        action = menu.exec(QCursor.pos())
+        if action == search:
+            self.model.onDoubleClicked(idx)
+        elif copy == action:
+            winsharedutils.clipboard_set(item.text())
+        elif action == label:
+            item.setData(True, isLabeleddWord)
+            item.setData(QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole)
+            globalconfig["wordlabel"].append(
+                (self.model.itemFromIndex(self.model.parent(idx)).text(), item.text())
+            )
+
+        elif action == delabel:
+            item.setData(False, isLabeleddWord)
+            item.setData(None, Qt.ItemDataRole.BackgroundRole)
+            try:
+                globalconfig["wordlabel"].remove(
+                    (
+                        self.model.itemFromIndex(self.model.parent(idx)).text(),
+                        item.text(),
+                    )
+                )
+            except:
+                pass
+
+    def __init__(self, parent: QWidget):
         super(showdiction, self).__init__(parent)
+        wordfilter = QHBoxLayout()
+        word = QLineEdit()
+        self.word = word
+        word.returnPressed.connect(self.setwordfilter)
+        wordfilter.addWidget(word)
+        butn = getIconButton(self.setwordfilter, "fa.filter")
+        wordfilter.addWidget(butn)
+
         self.resize(400, parent.height())
         self.setWindowTitle("查看")
-        self.tree = QTreeView(self)
+        self.tree = kpQTreeView(self)
         self.tree.setHeaderHidden(True)
         self.tree.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.setCentralWidget(self.tree)
+        __c = QWidget()
+        __lay = QVBoxLayout()
+        __c.setLayout(__lay)
+        __lay.setSpacing(0)
+        __lay.setContentsMargins(0, 0, 0, 0)
+        __lay.addLayout(wordfilter)
+        __lay.addWidget(self.tree)
+        self.setCentralWidget(__c)
 
-        self.model = DynamicTreeModel()
+        self.model = DynamicTreeModel(self.setwordfilter)
         self.tree.setModel(self.model)
         self.tree.expanded.connect(self.model.loadChildren)
         root = self.model.invisibleRootItem()
         self.tree.doubleClicked.connect(self.model.onDoubleClicked)
+        self.tree.enterpressed.connect(self.model.onDoubleClicked)
+        self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tree.customContextMenuRequested.connect(self.showmenu)
         good = False
         for k in globalconfig["cishuvisrank"]:
             cishu = gobject.baseobject.cishus[k]

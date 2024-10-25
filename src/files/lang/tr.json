@@ -264,10 +264,6 @@
     "资源下载": "Kaynak indirmesi",
     "工具按钮大小": "Araç düğmesi ölçüsi",
     "保留原文": "Orijinal tut",
-    "不插入空格": "Boşlukları girme",
-    "每个字后插入空格": "Her kelimeden sonra uzay ekle",
-    "仅在无法编码的字后插入": "Sadece kodlamaz kelimelerden sonra ekle",
-    "在重叠显示的字间插入空格": "Kıpırdaman kelimeler arasındaki yer ekle",
     "修改游戏字体": "Oyun yazıtipini değiştir",
     "修改字体字符集": "Yazıtipi karakter setini değiştir",
     "自动": "otomatik",
@@ -811,5 +807,7 @@
     "百度智能云": "Baidu AI Bulud",
     "（支持gpt词典）": "(GPT sözlük destekliyor)",
     "日志": "Günlük",
-    "查看": "Gördün mü?"
+    "查看": "Gördün mü?",
+    "标记": "imza",
+    "去除标记": "İşaret Çıkar"
 }

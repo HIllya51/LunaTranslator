@@ -183,7 +183,6 @@
     "文本处理": "processamento de texto",
     "工具按钮大小": "Tamanho do botão da ferramenta",
     "添加编码": "Adicionar código",
-    "仅在无法编码的字后插入": "Inserir somente após palavras que não podem ser codificadas",
     "刷新延迟(ms)": "Atraso da actualização (ms)",
     "彩云": "nuvem iridescente",
     "允许缩放最大化或全屏的窗口": "Permitir o zoom máximo ou janelas de ecrã inteiro",
@@ -192,7 +191,6 @@
     "捕获模式": "Modo de captura",
     "程序名": "Nome do Programa",
     "任务栏中显示": "Mostrar na barra de tarefas",
-    "不插入空格": "Não inserir espaços",
     "通用文字识别（标准版）": "Reconhecimento Universal de Texto (Edição Normal)",
     "过滤「」以外的字符": "Filtrar caracteres diferentes de ''",
     "过滤非shiftjis": "Filtrar não shiftjis",
@@ -212,7 +210,6 @@
     "文本预处理": "Pré-processamento de texto",
     "调整执行顺序": "Ajustar a ordem de execução",
     "资源下载": "Transferência do Recurso",
-    "每个字后插入空格": "Inserir um espaço após cada palavra",
     "結月ゆかり/结月缘": "Jieyue Yuri/Jieyue Destino",
     "窗口置顶": "Parte superior da janela",
     "颜色": "cor",
@@ -272,7 +269,6 @@
     "json文件": "Ficheiro JSON",
     "剪贴板": "área de transferência",
     "系统未安装": "Sistema não instalado",
-    "在重叠显示的字间插入空格": "Inserir espaços entre as palavras exibidas sobrepostas",
     "显示/隐藏翻译窗口": "Mostrar/ Esconder a Janela de Tradução",
     "感動詞": "Palavras comoventes",
     "西里尔": "Cyril",
@@ -811,5 +807,7 @@
     "百度智能云": "Nuvem AI Baidu",
     "（支持gpt词典）": "(Suporta dicionário GPT)",
     "日志": "diário",
-    "查看": "ver"
+    "查看": "ver",
+    "标记": "signo",
+    "去除标记": "Remover a marcação"
 }

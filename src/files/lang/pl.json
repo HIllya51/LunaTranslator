@@ -264,10 +264,6 @@
     "资源下载": "Pobieranie zasobów",
     "工具按钮大小": "Rozmiar przycisku narzędzia",
     "保留原文": "Zachowaj oryginalny tekst",
-    "不插入空格": "Nie wstawiaj spacji",
-    "每个字后插入空格": "Wstaw spację po każdym słowie",
-    "仅在无法编码的字后插入": "Wstaw tylko po słowach, których nie można zakodować",
-    "在重叠显示的字间插入空格": "Wstawianie spacji między nakładającymi się słowami",
     "修改游戏字体": "Zmień czcionkę gry",
     "修改字体字符集": "Zmień zestaw znaków czcionki",
     "自动": "automatyczny",
@@ -811,5 +807,7 @@
     "百度智能云": "Chmura AI Baidu",
     "（支持gpt词典）": "(Obsługuje słownik GPT)",
     "日志": "dziennik",
-    "查看": "zobacz"
+    "查看": "zobacz",
+    "标记": "znak",
+    "去除标记": "Usuń oznaczenie"
 }

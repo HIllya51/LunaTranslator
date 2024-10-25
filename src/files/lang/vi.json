@@ -264,10 +264,6 @@
     "资源下载": "Tải xuống tài nguyên",
     "工具按钮大小": "Kích thước nút công cụ",
     "保留原文": "Giữ nguyên bản gốc",
-    "不插入空格": "Không chèn khoảng trắng",
-    "每个字后插入空格": "Chèn khoảng trắng sau mỗi từ",
-    "仅在无法编码的字后插入": "Chèn chỉ sau những từ không thể mã hóa",
-    "在重叠显示的字间插入空格": "Chèn khoảng trắng giữa các từ được hiển thị chồng chéo",
     "修改游戏字体": "Thay đổi phông chữ trò chơi",
     "修改字体字符集": "Sửa đổi bộ ký tự phông chữ",
     "自动": "Tự động",
@@ -811,5 +807,7 @@
     "百度智能云": "100 đám mây thông minh",
     "（支持gpt词典）": "(Hỗ trợ GPT Dictionary)",
     "日志": "Đăng nhập",
-    "查看": "Xem thêm"
+    "查看": "Xem thêm",
+    "标记": "Đánh dấu",
+    "去除标记": "Xóa đánh dấu"
 }

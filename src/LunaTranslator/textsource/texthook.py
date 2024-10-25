@@ -215,7 +215,6 @@ class texthook(basetext):
             c_bool,
             c_wchar_p,
             c_uint32,
-            c_uint32,
             c_bool,
         )
         self.Luna_checkisusingembed = LunaHost.Luna_checkisusingembed
@@ -492,7 +491,6 @@ class texthook(basetext):
                     if globalconfig["embedded"]["changefont"]
                     else ""
                 ),
-                globalconfig["embedded"]["insertspace_policy"],
                 globalconfig["embedded"]["keeprawtext"],
                 True,
             )

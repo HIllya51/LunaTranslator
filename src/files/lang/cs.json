@@ -183,7 +183,6 @@
     "文本处理": "zpracování textu",
     "工具按钮大小": "Velikost tlačítka nástroje",
     "添加编码": "Přidat kód",
-    "仅在无法编码的字后插入": "Vložit pouze za slova, která nelze kódovat",
     "刷新延迟(ms)": "Zpoždění obnovy (ms)",
     "彩云": "irizující mrak",
     "允许缩放最大化或全屏的窗口": "Povolit maximální přiblížení nebo okna na celé obrazovce",
@@ -192,7 +191,6 @@
     "捕获模式": "Režim zachycení",
     "程序名": "Název programu",
     "任务栏中显示": "Zobrazit na hlavním panelu",
-    "不插入空格": "Nevkládat mezery",
     "通用文字识别（标准版）": "Univerzální rozpoznávání textu (Standard Edition)",
     "过滤「」以外的字符": "Filtrovat jiné znaky než ''",
     "过滤非shiftjis": "Filtrovat non shiftjis",
@@ -212,7 +210,6 @@
     "文本预处理": "Předzpracování textu",
     "调整执行顺序": "Upravit pořadí provedení",
     "资源下载": "Stahování zdrojů",
-    "每个字后插入空格": "Vložit mezeru za každé slovo",
     "結月ゆかり/结月缘": "Jieyue Yuri/Jieyue Osud",
     "窗口置顶": "Horní okno",
     "颜色": "barva",
@@ -272,7 +269,6 @@
     "json文件": "Soubor JSON",
     "剪贴板": "schránka",
     "系统未安装": "Systém není nainstalován",
-    "在重叠显示的字间插入空格": "Vložit mezery mezi překrývajícími se zobrazenými slovy",
     "显示/隐藏翻译窗口": "Zobrazit/skrýt okno překladu",
     "感動詞": "Dojemná slova",
     "西里尔": "Cyrile",
@@ -811,5 +807,7 @@
     "百度智能云": "Cloud AI Baidu",
     "（支持gpt词典）": "(Podporuje GPT slovník)",
     "日志": "deník",
-    "查看": "viz"
+    "查看": "viz",
+    "标记": "značka",
+    "去除标记": "Odstranit značení"
 }

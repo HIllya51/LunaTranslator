@@ -14,7 +14,6 @@ def list_models(typename, regist):
             "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()
         },
         proxies=getproxy(("ocr", typename)),
-        timeout=10,
     )
     try:
         return sorted([_["id"] for _ in resp.json()["data"]])

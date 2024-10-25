@@ -330,16 +330,6 @@ def gethookembedgrid(self):
             D_getsimpleswitch(globalconfig["embedded"], "trans_kanji"),
         ],
         [
-            "在重叠显示的字间插入空格",
-            "",
-            D_getsimplecombobox(
-                ["不插入空格", "每个字后插入空格", "仅在无法编码的字后插入"],
-                globalconfig["embedded"],
-                "insertspace_policy",
-                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
-            ),
-        ],
-        [
             "限制每行字数",
             D_getsimpleswitch(globalconfig["embedded"], "limittextlength_use"),
             D_getspinbox(0, 1000, globalconfig["embedded"], "limittextlength_length"),

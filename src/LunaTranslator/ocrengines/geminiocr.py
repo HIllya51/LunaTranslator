@@ -10,7 +10,6 @@ def list_models(typename, regist):
         urlpathjoin(regist["BASE_URL"]().strip(), "v1beta/models"),
         params={"key": regist["key"]().split("|")[0].strip()},
         proxies=getproxy(("ocr", typename)),
-        timeout=10,
     )
     try:
         models = resp.json()["models"]

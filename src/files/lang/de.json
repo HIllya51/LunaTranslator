@@ -183,7 +183,6 @@
     "文本处理": "Textverarbeitung",
     "工具按钮大小": "Größe der Werkzeugtaste",
     "添加编码": "Code hinzufügen",
-    "仅在无法编码的字后插入": "Nur nach Wörtern einfügen, die nicht kodiert werden können",
     "刷新延迟(ms)": "Aktualisierungsverzögerung (ms)",
     "彩云": "irisierende Wolke",
     "允许缩放最大化或全屏的窗口": "Maximaler Zoom oder Vollbildfenster zulassen",
@@ -192,7 +191,6 @@
     "捕获模式": "Aufnahmemodus",
     "程序名": "Programmname",
     "任务栏中显示": "Anzeige in Taskleiste",
-    "不插入空格": "Keine Leerzeichen einfügen",
     "通用文字识别（标准版）": "Universal Text Recognition (Standard Edition)",
     "过滤「」以外的字符": "Andere Zeichen als ''filtern",
     "过滤非shiftjis": "Nicht shiftjis filtern",
@@ -212,7 +210,6 @@
     "文本预处理": "Textvorverarbeitung",
     "调整执行顺序": "Passen Sie die Ausführungsreihenfolge an",
     "资源下载": "Ressourcen herunterladen",
-    "每个字后插入空格": "Leerzeichen nach jedem Wort einfügen",
     "結月ゆかり/结月缘": "Jieyue Yuri/Jieyue Schicksal",
     "窗口置顶": "Fenster oben",
     "颜色": "Farbe",
@@ -272,7 +269,6 @@
     "json文件": "JSON-Datei",
     "剪贴板": "Zwischenablage",
     "系统未安装": "System nicht installiert",
-    "在重叠显示的字间插入空格": "Leerzeichen zwischen überlappenden angezeigten Wörtern einfügen",
     "显示/隐藏翻译窗口": "Übersetzungsfenster ein-/ausblenden",
     "感動詞": "Berührende Worte",
     "西里尔": "Cyril",
@@ -811,5 +807,7 @@
     "百度智能云": "Baidu AI Cloud",
     "（支持gpt词典）": "(Unterstützt GPT Wörterbuch)",
     "日志": "Journal",
-    "查看": "siehe"
+    "查看": "siehe",
+    "标记": "Zeichen",
+    "去除标记": "Markierung entfernen"
 }

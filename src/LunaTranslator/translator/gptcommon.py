@@ -14,7 +14,6 @@ def list_models(typename, regist):
             "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()
         },
         proxies=getproxy(("fanyi", typename)),
-        timeout=10,
     )
     try:
         return sorted([_["id"] for _ in resp.json()["data"]])
@@ -73,7 +72,9 @@ class gptcommon(basetrans):
     def commonparseresponse(self, query, response: requests.ResponseBase, usingstream):
         if usingstream:
             message = ""
-            if not response.headers["Content-Type"].startswith("text/event-stream"):
+            if (
+                not response.headers["Content-Type"].startswith("text/event-stream")
+            ) and (response.status_code != 200):
                 # application/json
                 # text/html
                 raise Exception(response.maybejson)

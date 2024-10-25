@@ -87,26 +87,7 @@ class TranslateCom(Tse):
         to_language: str = "en",
         **kwargs
     ):
-        """
-        https://www.translate.com/machine-translation
-        :param query_text: str, must.
-        :param from_language: str, default 'auto'.
-        :param to_language: str, default 'en'.
-        :param **kwargs:
-                :param timeout: float, default None.
-                :param proxies: dict, default None.
-                :param sleep_seconds: float, default `random.random()`.
-                :param is_detail_result: boolean, default False.
-                :param if_ignore_limit_of_length: boolean, default False.
-                :param limit_of_length: int, default 5000.
-                :param if_ignore_empty_query: boolean, default False.
-                :param update_session_after_seconds: float, default 1500.
-                :param if_show_time_stat: boolean, default False.
-                :param show_time_stat_precision: int, default 4.
-        :return: str or dict
-        """
 
-        timeout = kwargs.get("timeout", None)
         proxies = kwargs.get("proxies", None)
         is_detail_result = kwargs.get("is_detail_result", False)
         sleep_seconds = kwargs.get("sleep_seconds", random.random())
@@ -127,13 +108,11 @@ class TranslateCom(Tse):
             _ = self.session.get(
                 self.host_url,
                 headers=self.host_headers,
-                timeout=timeout,
                 proxies=proxies,
             )
             lang_r = self.session.get(
                 self.language_url,
                 headers=self.host_headers,
-                timeout=timeout,
                 proxies=proxies,
             )
             self.language_description = lang_r.json()
@@ -144,7 +123,6 @@ class TranslateCom(Tse):
                 self.lang_detect_url,
                 data=detect_form,
                 headers=self.api_headers,
-                timeout=timeout,
                 proxies=proxies,
             )
             from_language = r_detect.json()["language"]
@@ -159,7 +137,6 @@ class TranslateCom(Tse):
             self.api_url,
             data=form_data,
             headers=self.api_headers,
-            timeout=timeout,
             proxies=proxies,
         )
         r.raise_for_status()

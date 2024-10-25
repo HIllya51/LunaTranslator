@@ -84,6 +84,12 @@ def getnotofflines(key):
     return __
 
 
+def checkxx(key):
+    if not translate_exits(key):
+        return False
+    return globalconfig["fanyi"][key].get("is_gpt_like", False)
+
+
 def makeproxytab(self, basel):
 
     grid1 = [
@@ -110,6 +116,7 @@ def makeproxytab(self, basel):
 
     mianfei = getall(l=mianfei, item="fanyi", name="./Lunatranslator/translator/%s.py")
     shoufei = getall(l=shoufei, item="fanyi", name=translate_exits)
+    lixians = getall(l=lixians, item="fanyi", name=checkxx)
     ocrs = getall(
         l=getnotofflines("ocr"),
         item="ocr",
@@ -147,6 +154,7 @@ def makeproxytab(self, basel):
             "语音合成",
             "辞书",
             "元数据",
+            "离线翻译",
             "自动更新",
         ],
         [
@@ -156,6 +164,7 @@ def makeproxytab(self, basel):
             functools.partial(makescrollgrid, readers),
             functools.partial(makescrollgrid, cishus),
             functools.partial(makescrollgrid, meta),
+            functools.partial(makescrollgrid, lixians),
             functools.partial(makescrollgrid, github),
         ],
         delay=True,

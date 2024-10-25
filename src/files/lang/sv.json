@@ -183,7 +183,6 @@
     "文本处理": "Textbehandling",
     "工具按钮大小": "Verktygsknappstorlek",
     "添加编码": "Lägg till kod",
-    "仅在无法编码的字后插入": "Infoga endast efter ord som inte kan kodas",
     "刷新延迟(ms)": "Uppdateringsfördröjning (ms)",
     "彩云": "bländande moln",
     "允许缩放最大化或全屏的窗口": "Tillåt maximal zoom eller helskärmsfönster",
@@ -192,7 +191,6 @@
     "捕获模式": "Inspelningsläge",
     "程序名": "Programnamn",
     "任务栏中显示": "Visa i aktivitetsfältet",
-    "不插入空格": "Infoga inte mellanslag",
     "通用文字识别（标准版）": "Universell textigenkänning (standardutgåva)",
     "过滤「」以外的字符": "Filtrera andra tecken än ''",
     "过滤非shiftjis": "Filtrera ej skiftjis",
@@ -212,7 +210,6 @@
     "文本预处理": "Förbehandling av text",
     "调整执行顺序": "Justera exekutionsordern",
     "资源下载": "Resursnedladdning",
-    "每个字后插入空格": "Infoga ett mellanslag efter varje ord",
     "結月ゆかり/结月缘": "Jieyue Yuri/Jieyue Fate",
     "窗口置顶": "Fönstertopp",
     "颜色": "färg",
@@ -272,7 +269,6 @@
     "json文件": "JSON- fil",
     "剪贴板": "Urklipp",
     "系统未安装": "System ej installerat",
-    "在重叠显示的字间插入空格": "Infoga blanksteg mellan överlappande visade ord",
     "显示/隐藏翻译窗口": "Visa/dölj översättningsfönster",
     "感動詞": "Rörande ord",
     "西里尔": "Cyril",
@@ -811,5 +807,7 @@
     "百度智能云": "Baidu AI- molnName",
     "（支持gpt词典）": "(Stöder GPT-ordlista)",
     "日志": "journal",
-    "查看": "se"
+    "查看": "se",
+    "标记": "tecken",
+    "去除标记": "Ta bort märkning"
 }

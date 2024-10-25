@@ -183,7 +183,6 @@
     "文本处理": "tekstverwerking",
     "工具按钮大小": "Gereedschapsknopgrootte",
     "添加编码": "Code toevoegen",
-    "仅在无法编码的字后插入": "Alleen invoegen na woorden die niet kunnen worden gecodeerd",
     "刷新延迟(ms)": "Verslag vernieuwen (ms)",
     "彩云": "iriserende wolk",
     "允许缩放最大化或全屏的窗口": "Maximaal zoomen of volledig scherm vensters toestaan",
@@ -192,7 +191,6 @@
     "捕获模式": "Opnamemodus",
     "程序名": "Programmanaam",
     "任务栏中显示": "Weergeven in taakbalk",
-    "不插入空格": "Geen spaties invoegen",
     "通用文字识别（标准版）": "Universele tekstherkenning (Standard Edition)",
     "过滤「」以外的字符": "Andere tekens dan ''filteren",
     "过滤非shiftjis": "Niet shiftjis filteren",
@@ -212,7 +210,6 @@
     "文本预处理": "Tekstvoorbewerking",
     "调整执行顺序": "Pas de uitvoeringsvolgorde aan",
     "资源下载": "Bron downloaden",
-    "每个字后插入空格": "Een spatie invoegen na elk woord",
     "結月ゆかり/结月缘": "Jieyue Yuri/Jieyue Fate",
     "窗口置顶": "Vensterbovenkant",
     "颜色": "kleur",
@@ -272,7 +269,6 @@
     "json文件": "JSON-bestand",
     "剪贴板": "klembord",
     "系统未安装": "Systeem niet geïnstalleerd",
-    "在重叠显示的字间插入空格": "Spaties invoegen tussen overlappende weergegeven woorden",
     "显示/隐藏翻译窗口": "Vertalingsvenster tonen/verbergen",
     "感動詞": "Aantrekkelijke woorden",
     "西里尔": "Cyril",
@@ -811,5 +807,7 @@
     "百度智能云": "Baidu AI Cloud",
     "（支持gpt词典）": "(Ondersteunt GPT woordenboek)",
     "日志": "dagboek",
-    "查看": "zie"
+    "查看": "zie",
+    "标记": "teken",
+    "去除标记": "Markering verwijderen"
 }

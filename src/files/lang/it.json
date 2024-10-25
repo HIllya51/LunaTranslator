@@ -258,10 +258,6 @@
     "资源下载": "Scarica risorse",
     "工具按钮大小": "Dimensione pulsante strumento",
     "保留原文": "Mantieni il testo originale",
-    "不插入空格": "Non inserire spazi",
-    "每个字后插入空格": "Inserire uno spazio dopo ogni parola",
-    "仅在无法编码的字后插入": "Inserisci solo dopo parole che non possono essere codificate",
-    "在重叠显示的字间插入空格": "Inserisci spazi tra parole sovrapposte",
     "修改游戏字体": "Modifica carattere del gioco",
     "修改字体字符集": "Modifica set di caratteri caratteri",
     "自动": "automatico",
@@ -811,5 +807,7 @@
     "百度智能云": "Baidu AI Cloud",
     "（支持gpt词典）": "(Supporta il dizionario GPT)",
     "日志": "diario",
-    "查看": "vedi"
+    "查看": "vedi",
+    "标记": "segno",
+    "去除标记": "Rimuovi la marcatura"
 }

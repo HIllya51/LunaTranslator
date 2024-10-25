@@ -1161,7 +1161,7 @@
     },
     "update": {
         "lunatranslator": {
-            "useproxy": false,
+            "useproxy": true,
             "name": "lunatranslator.org"
         },
         "github": {
@@ -1964,14 +1964,16 @@
             "type": "offline",
             "color": "blue",
             "name": "Sakura大模型",
-            "is_gpt_like": true
+            "is_gpt_like": true,
+            "useproxy": false
         },
         "chatgpt-offline": {
             "use": false,
             "type": "offline",
             "color": "blue",
             "name": "ChatGPT_兼容接口",
-            "is_gpt_like": true
+            "is_gpt_like": true,
+            "useproxy": false
         },
         "realtime_edit": {
             "use": false,
@@ -2042,5 +2044,6 @@
     "proxies": null,
     "viewlistpos": 0,
     "textoutput_origin": true,
-    "textoutput_trans": false
+    "textoutput_trans": false,
+    "wordlabel": []
 }

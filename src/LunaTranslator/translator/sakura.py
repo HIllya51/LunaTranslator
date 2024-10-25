@@ -16,7 +16,6 @@ class TS(basetrans):
     def __init__(self, typename):
         super().__init__(typename)
         self.context = []
-        self.session = requests.Session()
 
     def get_client(self, api_url):
         if api_url[-4:] == "/v1/":
@@ -150,7 +149,7 @@ class TS(basetrans):
             stream=False,
         )
         try:
-            output = self.session.post(
+            output = self.proxysession.post(
                 urlpathjoin(self.api_url, "chat/completions"), json=data
             )
 
@@ -184,14 +183,17 @@ class TS(basetrans):
             stream=True,
         )
         try:
-            output = self.session.post(
+            output = self.proxysession.post(
                 urlpathjoin(self.api_url, "chat/completions"),
                 json=data,
                 stream=True,
             )
         except requests.RequestException:
             raise ValueError(f"连接到Sakura API超时：{self.api_url}")
-        if not output.headers["Content-Type"].startswith("text/event-stream"):
+
+        if (not output.headers["Content-Type"].startswith("text/event-stream")) and (
+            output.status_code != 200
+        ):
             raise Exception(output.maybejson)
         for chunk in output.iter_lines():
             response_data: str = chunk.decode("utf-8").strip()

@@ -81,7 +81,7 @@ class basetrans(commonbase):
     using_gpt_dict = False
 
     def level2init(self):
-        if self.transtype == "offline":
+        if (self.transtype == "offline") and (not self.is_gpt_like):
             globalconfig["fanyi"][self.typename]["useproxy"] = False
         self.multiapikeycurrentidx = -1
         self.queue = PriorityQueue()

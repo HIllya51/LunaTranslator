@@ -264,10 +264,6 @@
     "资源下载": "Resource Download",
     "工具按钮大小": "Tool Button Size",
     "保留原文": "Keep Original Text",
-    "不插入空格": "Don't Insert Spaces",
-    "每个字后插入空格": "Insert Space After Each Character",
-    "仅在无法编码的字后插入": "Insert Only After Unencodable Characters",
-    "在重叠显示的字间插入空格": "Insert Spaces Between Overlapping Characters",
     "修改游戏字体": "Modify Game Font",
     "修改字体字符集": "Modify Font Character Set",
     "自动": "Automatic",
@@ -811,5 +807,7 @@
     "百度智能云": "Baidu AI Cloud",
     "（支持gpt词典）": "(Supports GPT dictionary)",
     "日志": "journal",
-    "查看": "see"
+    "查看": "see",
+    "标记": "sign",
+    "去除标记": "Remove marking"
 }

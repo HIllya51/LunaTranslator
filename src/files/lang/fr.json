@@ -264,10 +264,6 @@
     "资源下载": "Ressources télécharger",
     "工具按钮大小": "Outils taille du bouton",
     "保留原文": "Conserver le texte original",
-    "不插入空格": "Pas d'espace inséré",
-    "每个字后插入空格": "Insérer un espace après chaque mot",
-    "仅在无法编码的字后插入": "Insérer seulement après un mot qui ne peut pas être codé",
-    "在重叠显示的字间插入空格": "Insérer un espace entre les mots qui se chevauchent affichage",
     "修改游戏字体": "Modifier la police du jeu",
     "修改字体字符集": "Modifier le jeu de caractères de police",
     "自动": "Automatique",
@@ -811,5 +807,7 @@
     "百度智能云": "Baidu intelligent Cloud",
     "（支持gpt词典）": "(support du dictionnaire GPT)",
     "日志": "Logs",
-    "查看": "Voir"
+    "查看": "Voir",
+    "标记": "Marquage",
+    "去除标记": "Enlever les marques"
 }

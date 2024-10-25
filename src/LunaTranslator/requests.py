@@ -108,7 +108,7 @@ class ResponseBase:
         m = re.search(r"charset=([\w-]+)", content_type)
         charset = m.group(1) if m else "utf-8"
         return charset
-    
+
     @property
     def maybejson(self):
         try:
@@ -290,6 +290,8 @@ class Requester_common:
             headers["Content-Type"] = contenttype
         proxy = proxies.get(scheme, None) if proxies else None
         proxy = None if proxy == "" else proxy
+        if timeout is None:
+            timeout = 10
         if timeout:
             if isinstance(timeout, (float, int)):
                 timeout = int(timeout * 1000)  # convert to milliseconds

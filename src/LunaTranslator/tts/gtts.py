@@ -398,7 +398,6 @@ class gTTS:
                 tokenizer_cases.other_punctuation,
             ]
         ).run,
-        timeout=None,
     ):
         self.ref = ref
         # Debug
@@ -440,7 +439,6 @@ class gTTS:
         self.pre_processor_funcs = pre_processor_funcs
         self.tokenizer_func = tokenizer_func
 
-        self.timeout = timeout
 
     def _tokenize(self, text):
         # Pre-clean

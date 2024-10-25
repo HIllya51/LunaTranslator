@@ -85,26 +85,6 @@ class Reverso(Tse):
         to_language: str = "en",
         **kwargs
     ):
-        """
-        https://www.reverso.net/text-translation
-        :param query_text: str, must.
-        :param from_language: str, default 'zh', unsupported 'auto'.
-        :param to_language: str, default 'en'.
-        :param **kwargs:
-                :param timeout: float, default None.
-                :param proxies: dict, default None.
-                :param sleep_seconds: float, default `random.random()`.
-                :param is_detail_result: boolean, default False.
-                :param if_ignore_limit_of_length: boolean, default False.
-                :param limit_of_length: int, default 5000.
-                :param if_ignore_empty_query: boolean, default False.
-                :param update_session_after_seconds: float, default 1500.
-                :param if_show_time_stat: boolean, default False.
-                :param show_time_stat_precision: int, default 4.
-        :return: str or dict
-        """
-
-        timeout = kwargs.get("timeout", None)
         proxies = kwargs.get("proxies", None)
         is_detail_result = kwargs.get("is_detail_result", False)
         sleep_seconds = kwargs.get("sleep_seconds", random.random())
@@ -125,7 +105,6 @@ class Reverso(Tse):
             host_html = self.session.get(
                 self.host_url,
                 headers=self.host_headers,
-                timeout=timeout,
                 proxies=proxies,
             ).text
 
@@ -145,7 +124,6 @@ class Reverso(Tse):
             self.api_url,
             json=form_data,
             headers=self.api_headers,
-            timeout=timeout,
             proxies=proxies,
         )
         r.raise_for_status()
@@ -154,8 +132,6 @@ class Reverso(Tse):
         self.query_count += 1
         return data if is_detail_result else "".join(data["translation"])
 
-
-from traceback import print_exc
 
 from translator.basetranslator import basetrans
 
