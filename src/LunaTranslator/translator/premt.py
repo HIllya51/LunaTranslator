@@ -36,9 +36,6 @@ class TS(basetrans):
         )
 
     def translate(self, content):
-        query = json.loads(content)
-        content = query["contentraw"]
-
         self.checkfilechanged(
             self.unsafegetcurrentgameconfig(), self.config["sqlitefile"]
         )

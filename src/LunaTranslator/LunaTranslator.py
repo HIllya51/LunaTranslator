@@ -379,7 +379,15 @@ class MAINUI:
 
         if "premt" in self.translators:
             try:
-                maybehaspremt = self.translators["premt"].translate(text_solved)
+                contentraw = text_solved
+                for _ in optimization_params:
+                    if isinstance(_, dict):
+                        _gpt_dict = _.get("gpt_dict", None)
+                        if _gpt_dict is None:
+                            continue
+                        contentraw = _.get("gpt_dict_origin")
+
+                maybehaspremt = self.translators["premt"].translate(contentraw)
             except:
                 print_exc()
             other = list(set(maybehaspremt.keys()) - set(fix_rank))
