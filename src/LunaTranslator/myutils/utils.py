@@ -939,9 +939,11 @@ def createurl(url: str):
 
 
 def createenglishlangmap():
-    return dict(
+    mp = dict(
         zip(
             [_["code"] for _ in static_data["lang_list_all"]],
             [_["en"] for _ in static_data["lang_list_all"]],
         )
     )
+    mp.update({"auto": ""})
+    return mp

@@ -137,6 +137,7 @@ from translator.basetranslator import basetrans
 
 
 class TS(basetrans):
+
     def langmap(self):
         return {
             "zh": "chi",
@@ -153,6 +154,10 @@ class TS(basetrans):
         self.engine._ = None
 
     def translate(self, content):
+
         return self.engine.reverso_api(
-            content, self.srclang, self.tgtlang, proxies=self.proxy
+            content,
+            self.parse_maybe_autolang(content),
+            self.tgtlang,
+            proxies=self.proxy,
         )

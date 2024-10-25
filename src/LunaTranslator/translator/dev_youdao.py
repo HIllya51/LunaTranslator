@@ -2,7 +2,7 @@ from translator.basetranslator_dev import basetransdev
 
 
 class TS(basetransdev):
-    target_url = "https://fanyi.youdao.com/"
+    target_url = "https://fanyi.youdao.com/#/TextTranslate"
 
     def translate(self, content):
         self.Runtime_evaluate(

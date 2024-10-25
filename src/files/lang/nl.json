@@ -808,5 +808,6 @@
     "日志": "dagboek",
     "查看": "zie",
     "标记": "teken",
-    "去除标记": "Markering verwijderen"
+    "去除标记": "Markering verwijderen",
+    "当前OCR引擎不支持设置语言为自动": "De huidige OCR-engine ondersteunt niet het instellen van de taal op automatisch"
 }

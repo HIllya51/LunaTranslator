@@ -123,8 +123,6 @@ def checklang():
     globalconfig["language_setted_2.4.5"] = True
     globalconfig["languageuse2"] = x.current
     globalconfig["tgtlang4"] = x.current
-    if globalconfig["tgtlang4"] == "ja":
-        globalconfig["srclang4"] = "zh"
 
 
 def checkintegrity():

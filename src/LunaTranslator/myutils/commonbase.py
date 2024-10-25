@@ -25,6 +25,8 @@ class commonbase:
     _setting_dict = None
     typename = None
 
+    ocr_cant_auto = False
+
     def langmap(self):
         return {}
 
@@ -34,7 +36,10 @@ class commonbase:
 
     @property
     def srclang(self):
-        return self.langmap_.get(self.srclang_1, "")
+        l = self.srclang_1
+        if self.ocr_cant_auto and (l == "auto"):
+            raise Exception(_TR("当前OCR引擎不支持设置语言为自动"))
+        return self.langmap_.get(l, l)
 
     @property
     def srclang_1(self) -> str:
@@ -46,7 +51,8 @@ class commonbase:
 
     @property
     def tgtlang(self):
-        return self.langmap_.get(self.tgtlang_1, "")
+        l = self.tgtlang_1
+        return self.langmap_.get(l, l)
 
     @property
     def config(self):
@@ -80,7 +86,7 @@ class commonbase:
                 [_["code"] for _ in static_data["lang_list_all"]],
             )
         )
-        _.update({"cht": "zh"})
+        _.update({"cht": "zh", "auto": "auto"})
         _.update(self.langmap())
         return _
 

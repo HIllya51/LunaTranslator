@@ -2004,7 +2004,7 @@
     "minlength": 0,
     "maxlength": 1000,
     "maxoriginlength": 1000,
-    "srclang4": "ja",
+    "srclang4": "auto",
     "tgtlang4": "zh",
     "transkiroku": false,
     "transkirokuuse": "baidu",

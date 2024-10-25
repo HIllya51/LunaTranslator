@@ -3,6 +3,8 @@ from ocrengines.baseocrclass import baseocr
 
 
 class OCR(baseocr):
+    ocr_cant_auto = True
+
     def langmap(self):
         return {
             "ja": "jpn",

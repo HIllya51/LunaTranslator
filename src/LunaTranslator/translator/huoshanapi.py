@@ -400,9 +400,10 @@ def trans(TextList, k_access_key, k_secret_key, src, tgt, proxy):
     service = Service(k_service_info, k_api_info)
     body = {
         "TargetLanguage": tgt,
-        "SourceLanguage": src,
         "TextList": [TextList],
     }
+    if src != "auto":
+        body.update({"SourceLanguage": src})
     res = service.json("translate", {}, json.dumps(body), proxy)
     return res
 

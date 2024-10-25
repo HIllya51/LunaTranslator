@@ -808,5 +808,6 @@
     "日志": "deník",
     "查看": "viz",
     "标记": "značka",
-    "去除标记": "Odstranit značení"
+    "去除标记": "Odstranit značení",
+    "当前OCR引擎不支持设置语言为自动": "Aktuální OCR engine nepodporuje nastavení jazyka na automatické"
 }

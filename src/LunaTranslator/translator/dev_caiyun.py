@@ -2,7 +2,7 @@ from translator.basetranslator_dev import basetransdev
 import time
 
 class TS(basetransdev):
-    target_url = "https://fanyi.caiyunapp.com/#/"
+    target_url = "https://fanyi.caiyunapp.com"
 
     def translate(self, content):
         self.Runtime_evaluate(

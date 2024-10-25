@@ -808,5 +808,6 @@
     "日志": "journal",
     "查看": "se",
     "标记": "tecken",
-    "去除标记": "Ta bort märkning"
+    "去除标记": "Ta bort märkning",
+    "当前OCR引擎不支持设置语言为自动": "Den aktuella OCR-motorn stöder inte inställning av språket till automatiskt"
 }

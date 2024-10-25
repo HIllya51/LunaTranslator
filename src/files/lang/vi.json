@@ -808,5 +808,6 @@
     "日志": "Đăng nhập",
     "查看": "Xem thêm",
     "标记": "Đánh dấu",
-    "去除标记": "Xóa đánh dấu"
+    "去除标记": "Xóa đánh dấu",
+    "当前OCR引擎不支持设置语言为自动": "Công cụ OCR hiện tại không hỗ trợ thiết lập ngôn ngữ tự động"
 }

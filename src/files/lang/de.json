@@ -808,5 +808,6 @@
     "日志": "Journal",
     "查看": "siehe",
     "标记": "Zeichen",
-    "去除标记": "Markierung entfernen"
+    "去除标记": "Markierung entfernen",
+    "当前OCR引擎不支持设置语言为自动": "Die aktuelle OCR-Engine unterstützt die Einstellung der Sprache auf automatisch nicht"
 }

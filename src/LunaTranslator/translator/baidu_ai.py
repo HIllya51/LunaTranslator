@@ -55,7 +55,7 @@ class TS(basetrans):
 
         json_data = {
             "query": query,
-            "from": self.srclang,
+            "from": self.parse_maybe_autolang(query),
             "to": self.tgtlang,
             "reference": "",
             "corpusIds": [],

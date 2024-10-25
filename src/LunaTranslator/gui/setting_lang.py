@@ -27,12 +27,12 @@ def setTablanglz(self):
                         [
                             "源语言",
                             D_getsimplecombobox(
-                                [_["zh"] for _ in static_data["lang_list_all"]],
+                                ["自动"]
+                                + [_["zh"] for _ in static_data["lang_list_all"]],
                                 globalconfig,
                                 "srclang4",
-                                internal=[
-                                    _["code"] for _ in static_data["lang_list_all"]
-                                ],
+                                internal=["auto"]
+                                + [_["code"] for _ in static_data["lang_list_all"]],
                             ),
                         ],
                         [

@@ -970,10 +970,10 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.addRow(
             "源语言",
             getsimplecombobox(
-                [_["zh"] for _ in static_data["lang_list_all"]],
+                ["自动"] + [_["zh"] for _ in static_data["lang_list_all"]],
                 savehook_new_data[gameuid],
                 "private_srclang_2",
-                internal=[_["code"] for _ in static_data["lang_list_all"]],
+                internal=["auto"] + [_["code"] for _ in static_data["lang_list_all"]],
             ),
         )
         formLayout2.addRow(

@@ -154,5 +154,8 @@ class TS(basetrans):
 
     def translate(self, content):
         return self.engine.reverso_api(
-            content, self.srclang, self.tgtlang, proxies=self.proxy
+            content,
+            self.parse_maybe_autolang(content),
+            self.tgtlang,
+            proxies=self.proxy,
         )

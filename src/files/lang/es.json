@@ -808,5 +808,6 @@
     "日志": "Diario",
     "查看": "Ver",
     "标记": "Marcado",
-    "去除标记": "Eliminar la marca"
+    "去除标记": "Eliminar la marca",
+    "当前OCR引擎不支持设置语言为自动": "El motor OCR actual no admite configurar el lenguaje a automático"
 }

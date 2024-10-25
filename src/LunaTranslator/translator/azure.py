@@ -16,8 +16,9 @@ class TS(basetrans):
 
         path = "/translate"
         constructed_url = endpoint + path
-
-        params = {"api-version": "3.0", "from": self.srclang, "to": self.tgtlang}
+        params = {"api-version": "3.0", "to": self.tgtlang}
+        if self.srclang != "auto":
+            params.update({"from": self.srclang})
 
         headers = {
             "Ocp-Apim-Subscription-Key": key,

@@ -8,6 +8,7 @@ import functools
 from myutils.config import globalconfig, translatorsetting
 from myutils.utils import stringfyerror, autosql, PriorityQueue, SafeFormatter
 from myutils.commonbase import ArgsEmptyExc, commonbase
+from myutils.languageguesser import guess
 
 
 class Interrupted(Exception):
@@ -74,6 +75,12 @@ class basetrans(commonbase):
                 return t.strip()
 
         return alternatedict(translatorsetting[self.typename]["args"])
+
+    def parse_maybe_autolang(self, content):
+        if self.srclang != "auto":
+            return self.srclang
+        gs = guess(content)
+        return self.langmap_.get(gs, gs)
 
     ############################################################
     _globalconfig_key = "fanyi"

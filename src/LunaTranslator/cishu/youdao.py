@@ -7,19 +7,10 @@ from myutils.utils import simplehtmlparser
 
 
 class youdao(cishubase):
-    @property
-    def srclang(self):
-
-        try:
-            l = getlangsrc()
-            return l
-
-        except:
-            return ""
 
     def search(self, word):
         url = "https://dict.youdao.com/result?word={}&lang={}".format(
-            quote(word), self.srclang
+            quote(word), getlangsrc()
         )
         text = requests.get(url, proxies=self.proxy).text
 

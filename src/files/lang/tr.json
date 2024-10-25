@@ -808,5 +808,6 @@
     "日志": "Günlük",
     "查看": "Gördün mü?",
     "标记": "imza",
-    "去除标记": "İşaret Çıkar"
+    "去除标记": "İşaret Çıkar",
+    "当前OCR引擎不支持设置语言为自动": "Ağımdaki OCR motoru dili otomatik olarak ayarlamasını desteklemez"
 }

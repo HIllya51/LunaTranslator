@@ -20,7 +20,7 @@ class TS(basetransdev):
     def translate(self, content):
         self.Page_navigate(
             "https://www.deepl.com/en/translator#{}/{}/{}".format(
-                self.srclang, self.tgtlang, quote(content)
+                self.parse_maybe_autolang(content), self.tgtlang, quote(content)
             )
         )
         return self.wait_for_result(
