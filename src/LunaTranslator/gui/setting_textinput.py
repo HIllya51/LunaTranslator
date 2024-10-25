@@ -134,10 +134,6 @@ def gethookgrid(self):
                             ),
                         ],
                         [
-                            "过滤反复刷新的句子",
-                            D_getsimpleswitch(globalconfig, "direct_filterrepeat"),
-                        ],
-                        [
                             "过滤包含乱码的文本行",
                             D_getsimpleswitch(globalconfig, "filter_chaos_code"),
                             D_getIconButton(

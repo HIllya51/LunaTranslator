@@ -293,7 +293,6 @@
         ]
     ],
     "hooklossless": true,
-    "direct_filterrepeat": false,
     "textoutputer": {
         "clipboard": {
             "use": false

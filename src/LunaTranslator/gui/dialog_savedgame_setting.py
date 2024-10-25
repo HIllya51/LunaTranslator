@@ -1004,7 +1004,6 @@ class dialog_setting_game_internal(QWidget):
 
         for k in [
             "codepage_index",
-            "direct_filterrepeat",
             "textthreaddelay",
             "maxBufferSize",
             "maxHistorySize",
@@ -1056,14 +1055,6 @@ class dialog_setting_game_internal(QWidget):
                 1000000000,
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "maxHistorySize",
-                callback=lambda x: gobject.baseobject.textsource.setsettings(),
-            ),
-        )
-        formLayout2.addRow(
-            "过滤反复刷新的句子",
-            getsimpleswitch(
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "direct_filterrepeat",
                 callback=lambda x: gobject.baseobject.textsource.setsettings(),
             ),
         )

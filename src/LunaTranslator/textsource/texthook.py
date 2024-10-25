@@ -531,7 +531,7 @@ class texthook(basetext):
     def setsettings(self):
         self.Luna_Settings(
             self.config["textthreaddelay"],
-            self.config["direct_filterrepeat"],
+            False,  # 不使用内置去重
             self.codepage(),
             self.config["maxBufferSize"],
             self.config["maxHistorySize"],

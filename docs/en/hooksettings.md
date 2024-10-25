@@ -8,11 +8,7 @@
 
 This setting generally does not need to be modified. It is only necessary when some old engines (e.g., Yuris) may have GBK/BIG5/UTF8 in their official Chinese versions. If you cannot find the correct text, please send an [issue](https://lunatranslator.org/Resource/game_support) directly to me; modifying this setting is usually futile.
 
-**3. Filter Repeatedly Refreshing Sentences**
-
-A simple text filter implemented internally by the HOOK engine. This filter can slightly improve performance in cases of crazy repeated text refreshing, but it is generally not recommended because the rules are too simplistic and may sometimes disrupt genuine repetition patterns.
-
-**4. Refresh Delay**
+**2. Refresh Delay**
 
 ?> Relatively speaking, this is the most practical option.
 
@@ -28,21 +24,21 @@ For **1 and 2**, because the game text is displayed too slowly, and the refresh 
 
 For **3**, you can **appropriately reduce the refresh delay** while paying attention not to cause situations **1 and 2**.
 
-**5. Maximum Buffer Length**
+**3. Maximum Buffer Length**
 
 Sometimes, text will refresh repeatedly without stopping. If the refresh delay is high and cannot be reduced, it will continue to receive text until the buffer is filled or the text stops refreshing to meet the refresh delay (usually when the game loses focus, so it generally waits until the buffer is filled).
 
 To solve this problem, you can appropriately reduce the buffer length, but be careful not to make the buffer length too short to be less than the actual text length.
 
-**6. Maximum Cached Text Length**
+**4. Maximum Cached Text Length**
 
 Received historical text is cached. When viewing the content of a text item in the text selection window, the historical cached text is queried. If there are too many text items or the text refreshes repeatedly, it will cause too much cached text, making it more sluggish to view text (sometimes even when not viewing). In fact, most of the cached text here is useless; useful historical text can be viewed in historical translations. You can arbitrarily lower this value (default is 1000000, but it can be lowered to 1000).
 
-**7. Filter Lines Containing Garbled Text**
+**5. Filter Lines Containing Garbled Text**
 
 The garbled text filtering in text processing only filters out garbled characters, while this filter, upon receiving text, will discard the entire line of text if any garbled characters are detected. When the game refreshes a large number of sentences containing garbled text, you can appropriately use this option to filter out invalid sentences and improve performance.
 
-**8. Use YAPI Injection**
+**6. Use YAPI Injection**
 
 This option can sometimes slightly improve comfort, but it may have compatibility issues, so it is not recommended.
 
