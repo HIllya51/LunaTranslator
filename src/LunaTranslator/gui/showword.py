@@ -923,7 +923,7 @@ class showdiction(LMainWindow):
         self.tree.enterpressed.connect(self.model.onDoubleClicked)
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self.showmenu)
-        good = False
+        rows = []
         for k in globalconfig["cishuvisrank"]:
             cishu = gobject.baseobject.cishus[k]
 
@@ -938,9 +938,9 @@ class showdiction(LMainWindow):
 
             item = QStandardItem(globalconfig["cishu"][k]["name"])
             item.setData(tree, DictNodeRole)
-            root.appendRow([item])
-            good = True
-        root.setData(good, DeterminedhasChildren)
+            rows.append(item)
+        root.appendRows(rows)
+        root.setData(len(rows) > 0, DeterminedhasChildren)
 
 
 class searchwordW(closeashidewindow):
