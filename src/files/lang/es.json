@@ -195,7 +195,6 @@
     "过滤尖括号<>": "Soporte puntiagudo de filtro < >",
     "Moji辞书": "Moji dict",
     "清空": "Vaciado",
-    "不显示原文": "No muestra el texto original",
     "字体": "Fuente",
     "飞书": "Libro volador",
     "编辑": "Edición",
@@ -575,7 +574,6 @@
     "窗口特效": "Efectos especiales de la ventana",
     "网络请求": "Solicitud de red",
     "显示时间": "Tiempo de visualización",
-    "不显示时间": "No muestra el tiempo",
     "过滤历史重复": "Filtrar repetición histórica",
     "缓存条数": "Número de barras de caché",
     "删除列表": "Eliminar lista",
@@ -778,10 +776,8 @@
     "输出的内容": "Contenido exportado",
     "选取OCR范围时不透明度": "Opacidad al seleccionar el rango OCR",
     "设为图标": "Establecer como icono",
-    "还原图标": "Restaurar iconos",
     "拉丁语": "Latín",
     "显示/隐藏翻译": "Mostrar / ocultar traducción",
-    "不显示翻译器名称": "No se muestra el nombre del traductor",
     "华为云": "Hua weiyun",
     "游戏适配": "Adaptación del juego",
     "指定翻译器": "Especificar traductor",
@@ -808,6 +804,5 @@
     "日志": "Diario",
     "查看": "Ver",
     "标记": "Marcado",
-    "去除标记": "Eliminar la marca",
     "当前OCR引擎不支持设置语言为自动": "El motor OCR actual no admite configurar el lenguaje a automático"
 }

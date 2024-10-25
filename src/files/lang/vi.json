@@ -195,7 +195,6 @@
     "过滤尖括号<>": "Lọc ngoặc nhọn<>",
     "Moji辞书": "Từ điển Moji",
     "清空": "Trống rỗng",
-    "不显示原文": "Không hiển thị bản gốc",
     "字体": "Phông chữ",
     "飞书": "Sách bay",
     "编辑": "Chỉnh sửa",
@@ -575,7 +574,6 @@
     "窗口特效": "Hiệu ứng cửa sổ",
     "网络请求": "Yêu cầu mạng",
     "显示时间": "Thời gian hiển thị",
-    "不显示时间": "Không hiển thị thời gian",
     "过滤历史重复": "Lọc lịch sử lặp lại",
     "缓存条数": "Số thanh bộ nhớ cache",
     "删除列表": "Xoá danh sách",
@@ -778,10 +776,8 @@
     "输出的内容": "Nội dung xuất",
     "选取OCR范围时不透明度": "Độ mờ đục khi chọn phạm vi OCR",
     "设为图标": "Đặt làm biểu tượng",
-    "还原图标": "Khôi phục biểu tượng",
     "拉丁语": "Tiếng Việt",
     "显示/隐藏翻译": "Hiện/ẩn bản dịch",
-    "不显示翻译器名称": "Name",
     "华为云": "Hoa Vi Vân",
     "游戏适配": "Trò chơi phù hợp",
     "指定翻译器": "Chỉ định trình dịch",
@@ -808,6 +804,5 @@
     "日志": "Đăng nhập",
     "查看": "Xem thêm",
     "标记": "Đánh dấu",
-    "去除标记": "Xóa đánh dấu",
     "当前OCR引擎不支持设置语言为自动": "Công cụ OCR hiện tại không hỗ trợ thiết lập ngôn ngữ tự động"
 }

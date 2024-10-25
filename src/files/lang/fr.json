@@ -195,7 +195,6 @@
     "过滤尖括号<>": "Filtrer les crochets d'angle < >",
     "Moji辞书": "Moji dict",
     "清空": "Vider",
-    "不显示原文": "Ne pas afficher l'original",
     "字体": "Les polices",
     "飞书": "Le livre volant",
     "编辑": "Modifier",
@@ -575,7 +574,6 @@
     "窗口特效": "Effets spéciaux de fenêtre",
     "网络请求": "Demande de réseau",
     "显示时间": "Afficher l'heure",
-    "不显示时间": "Ne pas afficher l'heure",
     "过滤历史重复": "Filtrer historique répétition",
     "缓存条数": "Nombre de barres de cache",
     "删除列表": "Supprimer une liste",
@@ -778,10 +776,8 @@
     "输出的内容": "Contenu de la sortie",
     "选取OCR范围时不透明度": "Opacité lorsque la plage OCR est sélectionnée",
     "设为图标": "Faire une icône",
-    "还原图标": "Restaurer les icônes",
     "拉丁语": "Latin",
     "显示/隐藏翻译": "Afficher / masquer la traduction",
-    "不显示翻译器名称": "Ne pas afficher le nom du traducteur",
     "华为云": "Huawei Cloud",
     "游戏适配": "Adaptation du jeu",
     "指定翻译器": "Spécifier le traducteur",
@@ -808,6 +804,5 @@
     "日志": "Logs",
     "查看": "Voir",
     "标记": "Marquage",
-    "去除标记": "Enlever les marques",
     "当前OCR引擎不支持设置语言为自动": "Le moteur OCR actuel ne prend pas en charge le réglage de la langue sur auto"
 }

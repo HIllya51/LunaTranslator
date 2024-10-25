@@ -858,38 +858,42 @@ class showdiction(LMainWindow):
         copy = LAction("复制")
         search = LAction("查词")
         label = LAction("标记")
-        delabel = LAction("去除标记")
+        label.setCheckable(True)
         menu.addAction(copy)
         if isw:
             menu.addAction(search)
-            if idx.data(isLabeleddWord):
-                menu.addAction(delabel)
-            else:
-                menu.addAction(label)
+            menu.addAction(label)
+            label.setChecked(bool(idx.data(isLabeleddWord)))
         action = menu.exec(QCursor.pos())
         if action == search:
             self.model.onDoubleClicked(idx)
         elif copy == action:
             winsharedutils.clipboard_set(item.text())
         elif action == label:
-            item.setData(True, isLabeleddWord)
-            item.setData(QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole)
-            globalconfig["wordlabel"].append(
-                (self.model.itemFromIndex(self.model.parent(idx)).text(), item.text())
-            )
-
-        elif action == delabel:
-            item.setData(False, isLabeleddWord)
-            item.setData(None, Qt.ItemDataRole.BackgroundRole)
-            try:
-                globalconfig["wordlabel"].remove(
+            if not idx.data(isLabeleddWord):
+                item.setData(True, isLabeleddWord)
+                item.setData(
+                    QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole
+                )
+                globalconfig["wordlabel"].append(
                     (
                         self.model.itemFromIndex(self.model.parent(idx)).text(),
                         item.text(),
                     )
                 )
-            except:
-                pass
+
+            else:
+                item.setData(False, isLabeleddWord)
+                item.setData(None, Qt.ItemDataRole.BackgroundRole)
+                try:
+                    globalconfig["wordlabel"].remove(
+                        (
+                            self.model.itemFromIndex(self.model.parent(idx)).text(),
+                            item.text(),
+                        )
+                    )
+                except:
+                    pass
 
     def __init__(self, parent: QWidget):
         super(showdiction, self).__init__(parent)

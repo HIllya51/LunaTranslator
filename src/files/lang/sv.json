@@ -313,7 +313,6 @@
     "选择文件夹": "Välj katalog",
     "最短翻译字数": "Minsta antal översättningsord",
     "问题反馈": "Problemåterkoppling",
-    "不显示原文": "Visa inte originaltexten",
     "缩放时调整光标速度": "Justera markörens hastighet vid zoomning",
     "当前MD5": "Nuvarande MD5",
     "有道5": "Youdao 5",
@@ -584,7 +583,6 @@
     "窗口特效": "Fönstereffekter",
     "网络请求": "Nätverksbegäran",
     "显示时间": "Visningstid",
-    "不显示时间": "Visa inte tid",
     "过滤历史重复": "Filtrera bort dubbletthistorik",
     "缓存条数": "Antal cache-poster",
     "创建列表": "Skapa lista",
@@ -778,10 +776,8 @@
     "输出的内容": "Utdatainnehåll",
     "选取OCR范围时不透明度": "Opacitet vid val av OCR-område",
     "设为图标": "Ange som ikon",
-    "还原图标": "återställ ikoner",
     "拉丁语": "Latinska språk",
     "显示/隐藏翻译": "Visa/dölj översättning",
-    "不显示翻译器名称": "Visa inte översättarens namn",
     "华为云": "Hua Weiyun",
     "游戏适配": "Spelanpassning",
     "指定翻译器": "Ange översättare",
@@ -808,6 +804,5 @@
     "日志": "journal",
     "查看": "se",
     "标记": "tecken",
-    "去除标记": "Ta bort märkning",
     "当前OCR引擎不支持设置语言为自动": "Den aktuella OCR-motorn stöder inte inställning av språket till automatiskt"
 }

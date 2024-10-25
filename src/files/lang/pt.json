@@ -313,7 +313,6 @@
     "选择文件夹": "Seleccionar a pasta",
     "最短翻译字数": "Número mínimo de palavras de tradução",
     "问题反馈": "Feedback sobre problemas",
-    "不显示原文": "Não mostrar o texto original",
     "缩放时调整光标速度": "Ajustar a velocidade do cursor ao ampliar",
     "当前MD5": "MD5 actual",
     "有道5": "Youdao 5",
@@ -584,7 +583,6 @@
     "窗口特效": "Efeitos de janela",
     "网络请求": "Pedido de rede",
     "显示时间": "Tempo de exibição",
-    "不显示时间": "Não mostrar a hora",
     "过滤历史重复": "Filtrar o histórico duplicado",
     "缓存条数": "Número de entradas na 'cache'",
     "创建列表": "Criar uma Lista",
@@ -778,10 +776,8 @@
     "输出的内容": "Conteúdo de saída",
     "选取OCR范围时不透明度": "Opacidade ao seleccionar o intervalo OCR",
     "设为图标": "Definir como ícone",
-    "还原图标": "restaurar ícones",
     "拉丁语": "Língua latina",
     "显示/隐藏翻译": "Mostrar/ Esconder a Tradução",
-    "不显示翻译器名称": "Não mostrar o nome do tradutor",
     "华为云": "Hua Weiyun",
     "游戏适配": "Adaptação do jogo",
     "指定翻译器": "Especificar o tradutor",
@@ -808,6 +804,5 @@
     "日志": "diário",
     "查看": "ver",
     "标记": "signo",
-    "去除标记": "Remover a marcação",
     "当前OCR引擎不支持设置语言为自动": "O mecanismo OCR atual não suporta configurar o idioma para automático"
 }

@@ -313,7 +313,6 @@
     "选择文件夹": "Vybrat složku",
     "最短翻译字数": "Minimální počet slov překladu",
     "问题反馈": "Zpětná vazba problémů",
-    "不显示原文": "Nezobrazovat původní text",
     "缩放时调整光标速度": "Nastavit rychlost kurzoru při zoomování",
     "当前MD5": "Aktuální MD5",
     "有道5": "Youdao 5.",
@@ -584,7 +583,6 @@
     "窗口特效": "Efekty oken",
     "网络请求": "Žádost o síť",
     "显示时间": "Čas zobrazení",
-    "不显示时间": "Nezobrazovat čas",
     "过滤历史重复": "Filtrovat duplicitní historii",
     "缓存条数": "Počet položek mezipaměti",
     "创建列表": "Vytvořit seznam",
@@ -778,10 +776,8 @@
     "输出的内容": "Výstupní obsah",
     "选取OCR范围时不透明度": "Krytí při výběru rozsahu OCR",
     "设为图标": "Nastavit jako ikona",
-    "还原图标": "obnovit ikony",
     "拉丁语": "Latinský jazyk",
     "显示/隐藏翻译": "Zobrazit/skrýt překlad",
-    "不显示翻译器名称": "Nezobrazovat jméno překladatele",
     "华为云": "Hua Weiyun.",
     "游戏适配": "Úprava hry",
     "指定翻译器": "Upřesnit překladatele",
@@ -808,6 +804,5 @@
     "日志": "deník",
     "查看": "viz",
     "标记": "značka",
-    "去除标记": "Odstranit značení",
     "当前OCR引擎不支持设置语言为自动": "Aktuální OCR engine nepodporuje nastavení jazyka na automatické"
 }
