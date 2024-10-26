@@ -127,7 +127,7 @@ document.querySelectorAll('.tab-widget_xxxxxx_internal .tab-button_xxxx_internal
             )
             stl = requests.get(ss.group()[6:-1], proxies=self.proxy).text
             saver["style"] = stl
-            saver["primary"] = get_element_by("id", "main_results", res) + res.replace(
+            saver["primary"] = get_element_by("id", "result_area", res) + res.replace(
                 get_element_by("id", "main_results", res),
                 get_element_by("id", "primary", res),
             )
@@ -154,6 +154,8 @@ document.querySelectorAll('.tab-widget_xxxxxx_internal .tab-button_xxxx_internal
             res.append(("Words", saver["primary"]))
         if saver.get("secondary"):
             res.append(("Others", saver["secondary"]))
+        if not res:
+            return
         return "<style>{}</style>".format(
             saver.get("style", "")
         ) + self.generatehtml_tabswitch(res)
