@@ -393,10 +393,11 @@ class hookselect(closeashidewindow):
     update_item_new_line = pyqtSignal(tuple, str)
     warning = pyqtSignal(str)
 
+    SaveTextThreadRole = Qt.ItemDataRole.UserRole + 1
+
     def __init__(self, parent):
         super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
         self.setupUi()
-        self.save = []
         self.hidesearchhookbuttons()
         self.removehooksignal.connect(self.removehook)
         self.addnewhooksignal.connect(self.addnewhook)
@@ -415,20 +416,32 @@ class hookselect(closeashidewindow):
             text,
         )
 
-    def update_item_new_line_function(self, hook, output):
-        if hook not in self.save:
+    def querykeyofrow(self, row):
+        if isinstance(row, QModelIndex):
+            row = row.row()
+        return self.ttCombomodelmodel.data(
+            self.ttCombomodelmodel.index(row, 0), self.SaveTextThreadRole
+        )
+
+    def querykeyindex(self, k):
+        for row in range(self.ttCombomodelmodel.rowCount()):
+            if self.querykeyofrow(row) == k:
+                return row
+        return -1
+
+    def update_item_new_line_function(self, key, output):
+        row = self.querykeyindex(key)
+        if row == -1:
             return
-        row = self.save.index(hook)
         output = output[:200].replace("\n", " ")
         colidx = 2 + int(bool(self.embedablenum))
         self.ttCombomodelmodel.item(row, colidx).setText(output)
 
     def removehook(self, key):
-        if key not in self.save:
+        row = self.querykeyindex(key)
+        if row == -1:
             return
-        self.ttCombomodelmodel.removeRow(self.save.index(key))
-        self.selectionbutton.pop(self.save.index(key))
-        self.save.remove(key)
+        self.ttCombomodelmodel.removeRow(row)
         self.solveifembedablenumdecreaseto0(key)
 
     def solveifembedablenumdecreaseto0(self, key):
@@ -460,11 +473,8 @@ class hookselect(closeashidewindow):
     def changeprocessclear(self):
         # self.ttCombo.clear()
         self.ttCombomodelmodel.clear()
-        self.save = []
         self.at1 = 1
         self.textOutput.clear()
-        self.selectionbutton = []
-        self.typecombo = []
         self.allres = OrderedDict()
         self.hidesearchhookbuttons()
         self.currentheader = ["显示", "HOOK", "文本"]
@@ -474,7 +484,7 @@ class hookselect(closeashidewindow):
     def addnewhook(self, key, select, isembedable):
         hc, hn, tp = key
 
-        if len(self.save) == 0:
+        if self.ttCombomodelmodel.rowCount() == 0:
             self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
             self.tttable.horizontalHeader().setSectionResizeMode(
                 0, QHeaderView.ResizeMode.ResizeToContents
@@ -486,23 +496,11 @@ class hookselect(closeashidewindow):
                 len(self.currentheader) - 2, QHeaderView.ResizeMode.Interactive
             )
         self.solveifembedablenumincreaseto1(key, isembedable)
-        if isembedable:
-            self.selectionbutton.insert(
-                0,
-                getsimpleswitch(
-                    {1: False}, 1, callback=functools.partial(self.accept, key)
-                ),
-            )
-            self.save.insert(0, key)
-            rown = 0
-        else:
-            self.save.append(key)
-            rown = self.ttCombomodelmodel.rowCount()
-            self.selectionbutton.append(
-                getsimpleswitch(
-                    {1: False}, 1, callback=functools.partial(self.accept, key)
-                )
-            )
+        selectbutton = getsimpleswitch(
+            {1: False}, 1, callback=functools.partial(self.accept, key)
+        )
+        rown = 0 if isembedable else self.ttCombomodelmodel.rowCount()
+
         items = [
             QStandardItem(),
             QStandardItem("%s %s %x:%x" % (hn, hc, tp.ctx, tp.ctx2)),
@@ -511,12 +509,11 @@ class hookselect(closeashidewindow):
         if self.embedablenum:
             items.insert(1, QStandardItem())
         self.ttCombomodelmodel.insertRow(rown, items)
+        items[0].setData(key, self.SaveTextThreadRole)
 
         if select:
-            self.selectionbutton[rown].click()
-        self.tttable.setIndexWidget(
-            self.ttCombomodelmodel.index(rown, 0), self.selectionbutton[rown]
-        )
+            selectbutton.click()
+        self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown, 0), selectbutton)
         if isembedable:
             checkbtn = MySwitch(sign=self._check_tp_using(key))
 
@@ -682,8 +679,8 @@ class hookselect(closeashidewindow):
         self.tabwidget.addTab(self.sysOutput, ("日志"))
 
     def showmenu(self, p: QPoint):
-        r = self.tttable.currentIndex().row()
-        if r < 0:
+        index = self.tttable.currentIndex()
+        if not index.isValid():
             return
         menu = QMenu(self.tttable)
         remove = LAction(("移除"))
@@ -691,8 +688,7 @@ class hookselect(closeashidewindow):
         menu.addAction(remove)
         menu.addAction(copy)
         action = menu.exec(self.tttable.cursor().pos())
-
-        hc, hn, tp = self.save[r]
+        hc, _, tp = self.querykeyofrow(index)
         if action == remove:
             pid = tp.processId
             addr = tp.addr
@@ -758,25 +754,11 @@ class hookselect(closeashidewindow):
 
         # self.ttCombomodelmodel.blockSignals(True)
         try:
-            for index, key in enumerate(
-                gobject.baseobject.textsource.hookdatacollecter
-            ):
-                ishide = True
-                for i in range(
-                    len(gobject.baseobject.textsource.hookdatacollecter[key])
-                ):
-
-                    if any(
-                        [
-                            searchtext in _.replace("\n", "")
-                            for _ in gobject.baseobject.textsource.hookdatacollecter[
-                                key
-                            ][-i:]
-                        ]
-                    ):
-                        ishide = False
-                        break
-                self.tttable.setRowHidden(index, ishide)
+            for row in range(self.ttCombomodelmodel.rowCount()):
+                key = self.querykeyofrow(row)
+                _, _, tp = key
+                hist = gobject.baseobject.textsource.QueryThreadHistory(tp)
+                self.tttable.setRowHidden(row, searchtext not in hist)
         except:
             pass
         # self.ttCombomodelmodel.blockSignals(False)
@@ -881,13 +863,12 @@ class hookselect(closeashidewindow):
 
     def showEvent(self, e):
         gobject.baseobject.safecloseattachprocess()
-        try:
-            for i in range(len(self.save)):
-                if self.save[i] in gobject.baseobject.textsource.selectedhook:
-                    self.tttable.setCurrentIndex(self.ttCombomodelmodel.index(i, 0))
-                    break
-        except:
-            print_exc()
+        if len(gobject.baseobject.textsource.selectedhook) == 0:
+            return
+        row = self.querykeyindex(gobject.baseobject.textsource.selectedhook[0])
+        if row == -1:
+            return
+        self.tttable.setCurrentIndex(self.ttCombomodelmodel.index(row, 0))
 
     def textbrowappendandmovetoend(self, textOutput, sentence, addspace=True):
         scrollbar = textOutput.verticalScrollBar()
@@ -927,10 +908,9 @@ class hookselect(closeashidewindow):
         self.tabwidget.setCurrentIndex(0)
         self.at1 = 1
         try:
-            # print(gobject.baseobject.textsource)
-            gobject.baseobject.textsource.selectinghook = self.save[index.row()]
-            hc, hn, tp = self.save[index.row()]
-
+            gobject.baseobject.textsource.selectinghook = _, _, tp = self.querykeyofrow(
+                index
+            )
             self.textOutput.setPlainText(
                 gobject.baseobject.textsource.QueryThreadHistory(tp)
             )
@@ -940,4 +920,4 @@ class hookselect(closeashidewindow):
             print_exc()
 
     def table1doubleclicked(self, index: QModelIndex):
-        self.selectionbutton[index.row()].click()
+        self.tttable.indexWidgetX(index.row(), 0).click()

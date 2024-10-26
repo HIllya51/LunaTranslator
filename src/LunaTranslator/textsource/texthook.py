@@ -91,8 +91,8 @@ class SearchParam(Structure):
 
 findhookcallback_t = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
 ProcessEvent = CFUNCTYPE(None, DWORD)
-ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_bool)
-ThreadEvent_2 = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
+ThreadEvent_maybe_embed = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_bool)
+ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
 OutputCallback = CFUNCTYPE(c_bool, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
 ConsoleHandler = CFUNCTYPE(None, c_wchar_p)
 HookInsertHandler = CFUNCTYPE(None, c_uint64, c_wchar_p)
@@ -156,7 +156,6 @@ class texthook(basetext):
         self.maybepids = []
         self.maybepidslock = threading.Lock()
         self.keepref = []
-        self.hookdatacollecter = OrderedDict()
         self.selectinghook = None
         self.selectedhook = []
         self.multiselectedcollector = []
@@ -230,8 +229,8 @@ class texthook(basetext):
         procs = [
             ProcessEvent(self.onprocconnect),
             ProcessEvent(self.removeproc),
-            ThreadEvent(self.onnewhook),
-            ThreadEvent_2(self.onremovehook),
+            ThreadEvent_maybe_embed(self.onnewhook),
+            ThreadEvent(self.onremovehook),
             OutputCallback(self.handle_output),
             ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
             HookInsertHandler(self.newhookinsert),
@@ -497,7 +496,6 @@ class texthook(basetext):
 
     def onremovehook(self, hc, hn, tp):
         key = (hc, hn.decode("utf8"), tp)
-        self.hookdatacollecter.pop(key)
         gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
 
     def match_compatibility(self, key, key2):
@@ -513,8 +511,6 @@ class texthook(basetext):
 
     def onnewhook(self, hc, hn, tp, isembedable):
         key = (hc, hn.decode("utf8"), tp)
-
-        self.hookdatacollecter[key] = []
 
         select = False
         for _i, autostarthookcode in enumerate(self.autostarthookcode):
@@ -644,8 +640,6 @@ class texthook(basetext):
         if key == self.selectinghook:
             gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(output)
 
-        self.hookdatacollecter[key].append(output)
-        self.hookdatacollecter[key] = self.hookdatacollecter[key][-100:]
         gobject.baseobject.hookselectdialog.update_item_new_line.emit(key, output)
 
         return True
