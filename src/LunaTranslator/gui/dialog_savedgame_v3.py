@@ -580,7 +580,7 @@ class pixwrapper(QWidget):
         curricon = savehook_new_data[self.k].get("currenticon")
         seticon = LAction("设为图标")
         seticon.setCheckable(True)
-        seticon.setChecked(curr != curricon)
+        seticon.setChecked(curr == curricon)
         deleteimage = LAction("删除图片")
         copyimage = LAction("复制图片")
         deleteimage_x = LAction("删除图片文件")
