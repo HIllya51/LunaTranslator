@@ -7,6 +7,8 @@ from myutils.config import globalconfig
 
 default_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 
+default_timeout = 10
+
 
 class RequestException(Exception):
     pass
@@ -257,7 +259,7 @@ class Requester_common:
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=default_timeout,
         allow_redirects=True,
         hooks=None,
         stream=None,
@@ -290,8 +292,6 @@ class Requester_common:
             headers["Content-Type"] = contenttype
         proxy = proxies.get(scheme, None) if proxies else None
         proxy = None if proxy == "" else proxy
-        if timeout is None:
-            timeout = 10
         if timeout:
             if isinstance(timeout, (float, int)):
                 timeout = int(timeout * 1000)  # convert to milliseconds
@@ -470,7 +470,7 @@ class Session:
         cookies=None,
         files=None,
         auth=None,
-        timeout=None,
+        timeout=default_timeout,
         allow_redirects=True,
         hooks=None,
         stream=None,

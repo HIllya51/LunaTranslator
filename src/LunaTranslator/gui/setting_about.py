@@ -115,7 +115,13 @@ def updatemethod(urls, self):
         return savep
     with open(savep, "wb") as file:
         sess = requests.session()
-        r = sess.get(url, stream=True, verify=False, proxies=getproxy(("update", __x)))
+        r = sess.get(
+            url,
+            stream=True,
+            verify=False,
+            proxies=getproxy(("update", __x)),
+            timeout=None,
+        )
         file_size = 0
         for i in r.iter_content(chunk_size=1024):
             if check_interrupt():
