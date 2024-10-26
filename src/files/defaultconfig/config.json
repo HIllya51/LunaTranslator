@@ -1378,6 +1378,10 @@
             "use": false,
             "name": "jisho"
         },
+        "japandict": {
+            "use": false,
+            "name": "JapanDict"
+        },
         "weblio": {
             "use": false,
             "name": "weblio"

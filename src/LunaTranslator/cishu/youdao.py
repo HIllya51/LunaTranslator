@@ -4,16 +4,22 @@ from urllib.parse import quote
 import re, os
 from cishu.cishubase import cishubase
 from myutils.utils import simplehtmlparser
+from myutils.utils import get_element_by
 
 
 class youdao(cishubase):
 
-    def search(self, word):
-        url = "https://dict.youdao.com/result?word={}&lang={}".format(
-            quote(word), getlangsrc()
-        )
+    def search(self, word: str):
+        lang = getlangsrc()
+        if lang == "auto":
+            if word.isascii():
+                lang = "en"
+            else:
+                lang = "ja"
+        url = "https://dict.youdao.com/result?word={}&lang={}".format(quote(word), lang)
         text = requests.get(url, proxies=self.proxy).text
-
+        if not get_element_by("class", "word-head", text):
+            return
         text = re.sub("<header([\\s\\S]*?)></header>", "", text)
         text = re.sub("<aside([\\s\\S]*?)></aside>", "", text)
 
