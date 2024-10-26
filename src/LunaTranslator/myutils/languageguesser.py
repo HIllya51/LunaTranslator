@@ -48,11 +48,11 @@ def guess(string: str):
                 (0x3100, 0x312F),
                 (0x31A0, 0x31BF),
                 (0x3000, 0x303F),
-            ): 10,
+            ): 20,
             lambda c: inranges(
                 ord(c),
                 (0x4E00, 0x9FA5),
-            ): 3,
+            ): 4,
         },
         "zh": {
             lambda c: inranges(
@@ -85,7 +85,6 @@ def guess(string: str):
         for lang, ck in checkers.items():
             if isinstance(ck, dict):
                 for f, w in ck.items():
-                    print(lang, f, c, f(c))
                     if f(c):
                         cnt[lang] += w
             else:
