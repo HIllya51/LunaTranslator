@@ -1,6 +1,4 @@
 
-## [大模型翻译](/zh/guochandamoxing.md)
-
 ## 注册在线翻译
 
 
@@ -182,17 +180,3 @@ https://cloud.ibm.com/apidocs/language-translator
 默认host为`translate.plausibility.cloud`，也可以在[lingva-translate](https://github.com/thedaviddelta/lingva-translate)自行部署后填入自己的域名。
 
 <!-- tabs:end -->
-
-
-## 调试浏览器翻译
-
-!> 需要电脑安装Chrome/Edge，或绿色版
-
-如果Chrome/Edge被安装到默认路径，则不需要手动设置路径，否则需要指定安装/绿色版路径
-
-!> 打开接口后，会弹出一个浏览器窗口，不要关闭这个窗口。
-
-翻译时会自动将文本填到浏览器页面的输入框中，然后读取到翻译结果传回LunaTranslator。
-
-
-?> 首次使用部分接口时，可能需要进行登录。第二次使用时就不需要再次登录了。
