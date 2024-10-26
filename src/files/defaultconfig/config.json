@@ -1562,12 +1562,12 @@
         "baidu_ai": {
             "use": false,
             "color": "#ff65db",
-            "name": "百度"
+            "name": "百度_v2"
         },
         "baidu": {
             "use": false,
             "color": "#ff65db",
-            "name": "百度_old"
+            "name": "百度_v1"
         },
         "bing": {
             "use": false,
@@ -1577,7 +1577,7 @@
         "google": {
             "use": false,
             "color": "#ff0000",
-            "name": "谷歌"
+            "name": "谷歌_v1"
         },
         "ModernMt": {
             "use": false,
