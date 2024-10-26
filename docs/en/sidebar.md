@@ -23,7 +23,6 @@
 - [Large Model Translation](/en/guochandamoxing.redirect)
     - [Using Large Model API for Translation](/en/guochandamoxing.md)
     - [Using Large Model Offline Translation](/en/offlinellm.md) 
-    - [Using Debug Browser for Translation](/en/tiaoshiliulanqi.md)
     - [Other Large Model APIs](/en/baipiaojiekou.md)
 - [Text Processing & Translation Optimization](/en/textprocess.redirect)
     - [Functions and Usage of Various Text Processing Methods](/en/textprocess.md)

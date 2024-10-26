@@ -151,6 +151,8 @@
 
 ### **gemini**
 
+<a id="gemini"></a>
+
 **model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
 
 **API Key** https://aistudio.google.com/app/apikey
