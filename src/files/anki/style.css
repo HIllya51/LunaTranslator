@@ -9,6 +9,10 @@
     justify-content: center;
 }
 
+.centertext {
+    text-align: center;
+}
+
 
 .centerdiv img {
     max-width: 100%;

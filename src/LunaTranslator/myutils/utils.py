@@ -1021,4 +1021,7 @@ def get_element_by(attr, attrv, html):
     """Return the content of the tag with the specified id in the passed HTML document"""
     parser = IDParser(attr, attrv)
     parser.loads(html)
-    return parser.get_result()
+    res = parser.get_result()
+    if res is None:
+        return ""
+    return res
