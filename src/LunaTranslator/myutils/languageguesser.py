@@ -1,4 +1,5 @@
-from collections import Counter
+from collections import defaultdict
+import re
 
 
 def inrange(n, s, e):
@@ -37,20 +38,28 @@ def guess(string: str):
             (0xA960, 0xA97F),
             (0xD7B0, 0xD7FF),
         ),
-        "ja": lambda c: inranges(
-            ord(c),
-            (0x3040, 0x309F),
-            (0x30A0, 0x30FF),
-            (0xFF65, 0xFF9F),
-            (0x31F0, 0x31FF),
-            (0x3100, 0x312F),
-            (0x31A0, 0x31BF),
-            (0x3000, 0x303F),
-        ),
-        "zh": lambda c: inranges(
-            ord(c),
-            (0x4E00, 0x9FA5),
-        ),
+        "ja": {
+            lambda c: inranges(
+                ord(c),
+                (0x3040, 0x309F),
+                (0x30A0, 0x30FF),
+                (0xFF65, 0xFF9F),
+                (0x31F0, 0x31FF),
+                (0x3100, 0x312F),
+                (0x31A0, 0x31BF),
+                (0x3000, 0x303F),
+            ): 10,
+            lambda c: inranges(
+                ord(c),
+                (0x4E00, 0x9FA5),
+            ): 3,
+        },
+        "zh": {
+            lambda c: inranges(
+                ord(c),
+                (0x4E00, 0x9FA5),
+            ): 5
+        },
         "ar": lambda c: inranges(
             ord(c),
             (0x0600, 0x06FF),
@@ -63,17 +72,27 @@ def guess(string: str):
             (0x0660, 0x0669),
             (0x06F0, 0x06F9),
         ),
-        "en": lambda c: inranges(
-            ord(c),
-            (0x0000, 0x00FF),
-        ),
+        "en": {
+            lambda c: inranges(
+                ord(c),
+                (0x0000, 0x00FF),
+            ): 0.2
+        },
     }
-    cnt = []
+    string = re.sub(r"ZX\wZ", "", string)
+    cnt = defaultdict(int)
     for c in string.strip():
-        for lang in checkers:
-            if checkers[lang](c):
-                cnt.append(lang)
+        for lang, ck in checkers.items():
+            if isinstance(ck, dict):
+                for f, w in ck.items():
+                    print(lang, f, c, f(c))
+                    if f(c):
+                        cnt[lang] += w
+            else:
+                if ck(c):
+                    cnt[lang] += 1
     if not cnt:
         return "en"
-    common = Counter(cnt).most_common()
-    return common[0][0]
+
+    max_key = max(cnt, key=cnt.get)
+    return max_key
