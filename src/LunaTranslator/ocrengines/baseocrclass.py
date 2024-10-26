@@ -129,7 +129,7 @@ class baseocr(commonbase):
         elif isinstance(text, (tuple, list)):
             text = {"text": text}
         elif not text:
-            text = {}
+            return
         boxs = text.get("box")
         texts = text.get("text")
         if not boxs:

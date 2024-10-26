@@ -90,6 +90,8 @@ def ocr_run(qimage: QImage):
     try:
         ocr_init()
         res = _ocrengine._private_ocr(image)
+        if not res:
+            return "", None
         gobject.baseobject.maybesetocrresult(res)
         text = res["textonly"]
         if res["isocrtranslate"]:

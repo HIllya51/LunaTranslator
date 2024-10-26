@@ -36,4 +36,6 @@ class OCR(baseocr):
 
         res = ""
         text = lens_object["data"][3][4][0]
+        if len(text) == 0:
+            return
         return text[0]
