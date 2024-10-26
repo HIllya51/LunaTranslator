@@ -794,8 +794,12 @@ class DynamicTreeModel(QStandardItemModel):
         self.setData(index, len(childs) > 0, DeterminedhasChildren)
         thisitem = self.itemFromIndex(index)
         maketuples = tuple((tuple(_) for _ in globalconfig["wordlabel"]))
+        dump = set()
         for c in childs:
             if isinstance(c, str):
+                if c in dump:
+                    continue
+                dump.add(c)
                 t = c
                 has = False
             else:
