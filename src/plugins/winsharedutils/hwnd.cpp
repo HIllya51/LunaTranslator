@@ -101,7 +101,7 @@ DECLARE UINT GetMonitorDpiScaling(HWND hwnd)
     HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
     if (!hMonitor)
         return 96;
-    auto pGetDpiForMonitor = (HRESULT(*)(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *))GetProcAddress(GetModuleHandleA("Shcore.dll"), "GetDpiForMonitor");
+    auto pGetDpiForMonitor = (HRESULT(STDAPICALLTYPE *)(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *))GetProcAddress(GetModuleHandleA("Shcore.dll"), "GetDpiForMonitor");
     if (pGetDpiForMonitor)
     {
         UINT dpiX = 0;
