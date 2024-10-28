@@ -442,6 +442,11 @@ class AnkiWindow(QWidget):
             )
         )
 
+        def createtbn(target: QLineEdit):
+            clearbtn = QPushButton(qtawesome.icon("fa.times"), "")
+            clearbtn.clicked.connect(lambda: target.clear())
+            return clearbtn
+
         self.audiopath = QLineEdit()
         self.audiopath.setReadOnly(True)
         self.audiopath_sentence = QLineEdit()
@@ -558,6 +563,7 @@ class AnkiWindow(QWidget):
                                     recordbtn1,
                                     soundbutton,
                                     folder_open,
+                                    functools.partial(createtbn, self.audiopath),
                                 ]
                             ),
                             getboxlayout(
@@ -567,6 +573,9 @@ class AnkiWindow(QWidget):
                                     recordbtn2,
                                     soundbutton2,
                                     folder_open2,
+                                    functools.partial(
+                                        createtbn, self.audiopath_sentence
+                                    ),
                                 ]
                             ),
                             getboxlayout(
@@ -576,6 +585,7 @@ class AnkiWindow(QWidget):
                                     cropbutton,
                                     grabwindowbtn,
                                     folder_open3,
+                                    functools.partial(createtbn, self.editpath),
                                 ]
                             ),
                             self.viewimagelabel,

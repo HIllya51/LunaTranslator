@@ -74,7 +74,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
     hwnd = gobject.baseobject.hwnd
     if not hwnd:
-        hwnd = windows.GetForegroundWindow()
+        return
     hwnd = windows.GetAncestor(hwnd)
     _ = windows.GetClientRect(hwnd)
     p = gdi_screenshot(0, 0, _[2], _[3], hwnd)
