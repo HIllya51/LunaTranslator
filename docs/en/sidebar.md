@@ -22,7 +22,6 @@
     - [Debugging browser translation](/en/tiaoshiliulanqi.md)
     - [Using Large Model API for Translation](/en/guochandamoxing.md)
     - [Using Large Model Offline Translation](/en/offlinellm.md) 
-    - [Other Large Model APIs](/en/baipiaojiekou.md)
 - [Text Processing & Translation Optimization](/en/textprocess.redirect)
     - [Functions and Usage of Various Text Processing Methods](/en/textprocess.md)
     - [Functions of Various Translation Optimizations](/en/transoptimi.md)
