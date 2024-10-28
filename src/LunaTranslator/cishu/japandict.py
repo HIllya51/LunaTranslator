@@ -10,7 +10,7 @@ class japandict(cishubase):
         html = requests.get(
             link,
             proxies=self.proxy,
-        ).content
+        ).content.replace(b"padding-top:60px !important", b"")
         base64_content = base64.b64encode(html).decode("utf-8")
         saver[link] = f"data:application/octet-stream;base64,{base64_content}"
 
@@ -21,8 +21,11 @@ class japandict(cishubase):
             proxies=self.proxy,
         ).text
 
+        check = get_element_by("class", "alert-heading", html)
+        if check:
+            return
         res = get_element_by("class", "list-group list-group-flush", html)
-        if res is None:
+        if not res:
             return
         ts = []
         saver = {}

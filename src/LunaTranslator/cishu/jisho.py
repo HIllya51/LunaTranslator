@@ -100,7 +100,7 @@ document.querySelectorAll('.tab-widget_xxxxxx_internal .tab-button_xxxx_internal
         if get_element_by("id", "no-matches", html):
             return
         res = get_element_by("id", "page_container", html)
-        if res is None:
+        if not res:
             return
         res = (
             res.replace('href="//', 'href="https://')
