@@ -120,7 +120,6 @@ def updatemethod(urls, self):
             stream=True,
             verify=False,
             proxies=getproxy(("update", __x)),
-            timeout=None,
         )
         file_size = 0
         for i in r.iter_content(chunk_size=1024):

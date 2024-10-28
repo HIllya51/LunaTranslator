@@ -97,8 +97,7 @@ class TableViewW(QTableView):
             self.customContextMenuRequested.connect(self.showmenu)
 
     def showmenu(self, pos):
-        r = self.currentIndex().row()
-        if r < 0:
+        if not self.currentIndex().isValid():
             return
         menu = QMenu(self)
         up = LAction("上移")
@@ -159,8 +158,11 @@ class TableViewW(QTableView):
             self.model().removeRow(row)
 
     def removeselectedrows(self):
-        row = self.currentIndex().row()
-        col = self.currentIndex().column()
+        curr = self.currentIndex()
+        if not curr.isValid():
+            return
+        row = curr.row()
+        col = curr.column()
         skip = []
         for index in self.selectedIndexes():
             if index.row() in skip:
@@ -176,6 +178,8 @@ class TableViewW(QTableView):
 
     def moverank(self, dy):
         curr = self.currentIndex()
+        if not curr.isValid():
+            return
         row, col = curr.row(), curr.column()
 
         model = self.model()
@@ -206,6 +210,15 @@ class TableViewW(QTableView):
         l: QHBoxLayout = w.layout()
         return l.itemAt(0).widget()
 
+    def inputMethodEvent(self, event: QInputMethodEvent):
+        # setindexwidget之后，会导致谜之循环触发，异常；
+        # 没有setindexwidget的，会跳转到第一个输入的字母的行，正常，但我不想要。
+        pres = event.commitString()
+        if not pres:
+            super().inputMethodEvent(event)
+        else:
+            event.accept()
+
     def setIndexWidget(self, index: QModelIndex, w: QWidget):
         if w is None:
             return
@@ -228,6 +241,24 @@ class TableViewW(QTableView):
 
     def setindexdata(self, index, data):
         self.model().setItem(index.row(), index.column(), QStandardItem(data))
+
+    def compatiblebool(self, data):
+        if isinstance(data, str):
+            data = data.lower() == "true"
+        elif isinstance(data, bool):
+            data = data
+        else:
+            raise Exception
+        return data
+
+    def compatiblejson(self, data):
+        if isinstance(data, str):
+            data = json.loads(data)
+        elif isinstance(data, (list, dict, tuple)):
+            data = data
+        else:
+            raise Exception
+        return data
 
     def getdata(self, row_or_index, col=None):
         if col is None:
@@ -260,8 +291,10 @@ class TableViewW(QTableView):
         winsharedutils.clipboard_set(csv_str)
 
     def pastetable(self):
-        string = winsharedutils.clipboard_get()
         current = self.currentIndex()
+        if not current.isValid():
+            return
+        string = winsharedutils.clipboard_get()
         try:
             csv_file = io.StringIO(string)
             csv_reader = csv.reader(csv_file, delimiter="\t")
@@ -1796,8 +1829,7 @@ def makesubtab_lazy(
 class listediter(LDialog):
     def showmenu(self, p: QPoint):
         curr = self.hctable.currentIndex()
-        r = curr.row()
-        if r < 0:
+        if not curr.isValid():
             return
         menu = QMenu(self.hctable)
         remove = LAction("删除")

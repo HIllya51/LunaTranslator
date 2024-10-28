@@ -294,13 +294,17 @@ class Requester_common:
         proxy = None if proxy == "" else proxy
         if timeout:
             if isinstance(timeout, (float, int)):
-                timeout = int(timeout * 1000)  # convert to milliseconds
+                timeout = (int(timeout * 1000), 0)  # convert to milliseconds
             else:
                 try:
-                    timeout = max(int(_ * 1000) for _ in timeout)
+                    timeout = [int(_ * 1000) for _ in timeout[:2]]
                 except:
                     print("Error invalid timeout", timeout)
-                    timeout = None
+                    timeout = [0, 0]
+                timeout.append(0)
+                timeout = timeout[:2]
+        else:
+            timeout = (0, 0)
         return self.request_impl(
             method,
             scheme,

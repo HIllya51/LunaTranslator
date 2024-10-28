@@ -17,13 +17,12 @@ class CachedQGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
         super().__init__(parent)
         self.shadow_pixmap = QPixmap()
         self.x = x
-        self.savey = None
+        self.savey = None  # iterappend中被移动而不需重绘
 
     def draw(self, painter):
-        r = self.parent().devicePixelRatioF()
         if self.shadow_pixmap.isNull():
-
-            size = QSize(painter.device().width(), painter.device().height()) * r
+            r = self.parent().devicePixelRatioF()
+            size = self.boundingRect().toRect().united(painter.viewport()).size() * r
             self.shadow_pixmap = QPixmap(size)
             self.shadow_pixmap.setDevicePixelRatio(r)
             self.shadow_pixmap.fill(Qt.GlobalColor.transparent)

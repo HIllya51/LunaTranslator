@@ -18,7 +18,7 @@ def translate_async(text, to_language, from_language=None, self=None):
     url = "{}/translate?api-version={}&to={}".format(
         _apiEndpoint, _apiVersion, to_language
     )
-    if from_language is not None:
+    if from_language != "auto":
         url += "&from={}".format(from_language)
     _privateKey = [
         0xA2,

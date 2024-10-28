@@ -433,10 +433,6 @@ class Service(object):
             url,
             headers=r.headers,
             data=r.form,
-            timeout=(
-                self.service_info.connection_timeout,
-                self.service_info.socket_timeout,
-            ),
             proxies=proxy,
         )
         if resp.status_code == 200:

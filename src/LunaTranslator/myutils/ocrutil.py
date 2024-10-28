@@ -87,8 +87,10 @@ def ocr_run(qimage: QImage):
     if not image:
         return "", None
     global _nowuseocrx, _ocrengine
+    thisocrtype = _nowuseocrx
     try:
         ocr_init()
+        thisocrtype = _ocrengine.typename
         res = _ocrengine._private_ocr(image)
         if not res:
             return "", None
@@ -105,7 +107,7 @@ def ocr_run(qimage: QImage):
             print_exc()
             msg = stringfyerror(e)
         text = (
-            (_TR(globalconfig["ocr"][_nowuseocrx]["name"]) if _nowuseocrx else "")
+            (_TR(globalconfig["ocr"][thisocrtype]["name"]) if thisocrtype else "")
             + " "
             + msg
         )

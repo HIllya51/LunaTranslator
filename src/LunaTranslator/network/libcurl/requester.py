@@ -158,9 +158,10 @@ class Requester(Requester_common):
 
         curl_easy_reset(curl)
         curl_easy_setopt(curl, CURLoption.COOKIEJAR, "")
-        if timeout:
-            curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, timeout)
-            curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout)
+        if timeout[0]:
+            curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout[0])
+        if timeout[1]:
+            curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, sum(timeout))
         curl_easy_setopt(
             curl,
             CURLoption.ACCEPT_ENCODING,

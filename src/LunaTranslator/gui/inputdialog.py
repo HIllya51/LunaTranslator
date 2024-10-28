@@ -32,7 +32,7 @@ from gui.dynalang import (
 
 @Singleton_close
 class noundictconfigdialog1(LDialog):
-    def newline(self, row, item):
+    def newline(self, row, item: dict):
         self.model.insertRow(
             row,
             [
@@ -42,15 +42,9 @@ class noundictconfigdialog1(LDialog):
                 QStandardItem(item["value"]),
             ],
         )
-        if "regex" not in item:
-            item["regex"] = False
-        if "escape" not in item:
-            item["escape"] = item["regex"]
-        self.table.setIndexWidget(
-            self.model.index(row, 0), getsimpleswitch(item, "regex")
-        )
-        self.table.setIndexWidget(
-            self.model.index(row, 1), getsimpleswitch(item, "escape")
+        self.table.setindexdata(self.model.index(row, 0), item.get("regex", False))
+        self.table.setindexdata(
+            self.model.index(row, 1), item.get("escape", item.get("regex", False))
         )
 
     def __init__(self, parent, reflist, title, label) -> None:
@@ -74,8 +68,6 @@ class noundictconfigdialog1(LDialog):
         )
 
         self.table = table
-        for row, item in enumerate(reflist):
-            self.newline(row, item)
 
         search = QHBoxLayout()
         searchcontent = QLineEdit()
@@ -100,6 +92,8 @@ class noundictconfigdialog1(LDialog):
         table.getindexdata = self.__getindexwidgetdata
         table.setindexdata = self.__setindexwidget
         self.table = table
+        for row, item in enumerate(reflist):
+            self.newline(row, item)
         button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         table.insertplainrow = lambda row: self.newline(
             row, {"key": "", "value": "", "regex": False}
@@ -121,10 +115,10 @@ class noundictconfigdialog1(LDialog):
 
     def __setindexwidget(self, index: QModelIndex, data):
         if index.column() == 0:
-            data = {"regex": data.lower() == "true"}
+            data = {"regex": self.table.compatiblebool(data)}
             self.table.setIndexWidget(index, getsimpleswitch(data, "regex"))
         elif index.column() == 1:
-            data = {"escape": data.lower() == "true"}
+            data = {"escape": self.table.compatiblebool(data)}
             self.table.setIndexWidget(index, getsimpleswitch(data, "escape"))
         else:
             self.table.model().setItem(index.row(), index.column(), QStandardItem(data))
@@ -261,12 +255,10 @@ class yuyinzhidingsetting(LDialog):
                 QStandardItem(),
             ],
         )
-        self.table.setIndexWidget(
-            self.model.index(row, 0), getsimpleswitch(item, "regex")
-        )
-        com = getsimplecombobox(["首尾", "包含"], item, "condition")
-        self.table.setIndexWidget(self.model.index(row, 1), com)
-        self.table.setIndexWidget(self.model.index(row, 3), self.createacombox(item))
+        self.table.setindexdata(self.model.index(row, 0), item['regex'])
+         
+        self.table.setindexdata(self.model.index(row, 1), item['condition'])
+        self.table.setindexdata(self.model.index(row, 3), item['target'])
 
     def createacombox(self, config):
         com = LFocusCombo()
@@ -384,7 +376,7 @@ class yuyinzhidingsetting(LDialog):
 
     def __setindexwidget(self, index: QModelIndex, data):
         if index.column() == 0:
-            data = {"regex": data.lower() == "true"}
+            data = {"regex": self.table.compatiblebool(data)}
             self.table.setIndexWidget(index, getsimpleswitch(data, "regex"))
         elif index.column() == 1:
             try:
@@ -400,7 +392,7 @@ class yuyinzhidingsetting(LDialog):
                 pass
             else:
                 try:
-                    data = json.loads(data)
+                    data = self.table.compatiblejson(data)
                 except:
                     data = "default"
             self.table.setIndexWidget(index, self.createacombox({"target": data}))

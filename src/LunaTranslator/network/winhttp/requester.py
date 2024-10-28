@@ -160,8 +160,9 @@ class Requester(Requester_common):
                 flag,
             )
         )
-        if timeout:
-            WinHttpSetTimeouts(hRequest, timeout, timeout, timeout, timeout)
+        tconnect = timeout[0]
+        tsendrecv = timeout[1]
+        WinHttpSetTimeouts(hRequest, tconnect, tconnect, tsendrecv, tsendrecv)
         if hRequest == 0:
             MaybeRaiseException()
         self._set_verify(hRequest, verify)
