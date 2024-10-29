@@ -212,6 +212,14 @@ class TextBrowser(QWidget, dataget):
             return True
         return False
 
+    def __findsame(self, s1, s2):
+        i = 0
+        while i < len(s1) and i < len(s2):
+            if s1[i] != s2[i]:
+                break
+            i += 1
+        return i
+
     def iter_append(self, iter_context_class, origin, atcenter, text, color):
         if self.checkskip(origin):
             return
@@ -224,18 +232,19 @@ class TextBrowser(QWidget, dataget):
             }
 
         currbefore = self.saveiterclasspointer[iter_context_class]["curr"]
-        currlen = len(self.saveiterclasspointer[iter_context_class]["currtext"])
-        if len(text) < currlen:
+        currtext = self.saveiterclasspointer[iter_context_class]["currtext"]
+        currlen = len(currtext)
+        _samenum = self.__findsame(text, currtext)
+        if _samenum < currlen:
             self._deletebetween(
-                self.saveiterclasspointer[iter_context_class]["start"] + len(text),
+                self.saveiterclasspointer[iter_context_class]["start"] + _samenum,
                 self.saveiterclasspointer[iter_context_class]["curr"],
             )
-        else:
-            newtext = text[currlen:]
-            self._insertatpointer(
-                self.saveiterclasspointer[iter_context_class]["start"] + currlen,
-                newtext,
-            )
+        newtext = text[_samenum:]
+        self._insertatpointer(
+            self.saveiterclasspointer[iter_context_class]["start"] + _samenum,
+            newtext,
+        )
 
         self.saveiterclasspointer[iter_context_class]["currtext"] = text
         currcurrent = self._getcurrpointer()
