@@ -282,10 +282,13 @@ try:
 	sys.stderr = fp
 	attached = True
 except Exception as e:
-	fp = open(os.devnull, 'w', errors='ignore')
-	sys.stdout = fp
-	sys.stderr = fp
-	attached = False
+    try:
+        fp = open(os.devnull, 'w', errors='ignore') # sometimes FileNotFound Error: [Errno 2]No such file or directory: 'nul'
+        sys.stdout = fp
+        sys.stderr = fp
+        attached = False
+    except:
+        pass
 )"
 #endif
 	LR"(
