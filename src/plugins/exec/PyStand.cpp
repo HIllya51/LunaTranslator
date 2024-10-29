@@ -272,6 +272,7 @@ def MessageBox(msg, info = 'Message'):
     return 0
 os.MessageBox = MessageBox
 sys.stdout=sys.stderr
+sys.path.insert(0, './LunaTranslator')
 )"
 #ifndef PYSTAND_CONSOLE
 	LR"(
