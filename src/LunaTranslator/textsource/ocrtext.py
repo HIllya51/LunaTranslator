@@ -35,6 +35,24 @@ class ocrtext(basetext):
         self.range_ui = []
         self.gettextthread()
 
+    def clearrange(self):
+        for _ in self.range_ui:
+            _.close()
+        self.range_ui.clear()
+        self.savelastimg.clear()
+        self.savelastrecimg.clear()
+        self.lastocrtime.clear()
+        self.savelasttext.clear()
+
+    def leaveone(self):
+        for _ in self.range_ui[:-1]:
+            _.close()
+        self.range_ui = self.range_ui[-1:]
+        self.savelastimg = self.savelastimg[-1:]
+        self.savelastrecimg = self.savelastrecimg[-1:]
+        self.lastocrtime = self.lastocrtime[-1:]
+        self.savelasttext = self.savelasttext[-1:]
+
     def newrangeadjustor(self):
         if len(self.range_ui) == 0 or globalconfig["multiregion"]:
             self.range_ui.append(rangeadjust(gobject.baseobject.settin_ui))

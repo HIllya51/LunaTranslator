@@ -5,8 +5,13 @@ from traceback import print_exc
 import qtawesome, requests, gobject, windows, winsharedutils
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
-from myutils.config import globalconfig, _TR, static_data
-from myutils.utils import loopbackrecorder, parsekeystringtomodvkcode
+from myutils.config import globalconfig, static_data
+from myutils.utils import (
+    loopbackrecorder,
+    parsekeystringtomodvkcode,
+    getimageformatlist,
+    getimagefilefilter,
+)
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
@@ -42,15 +47,7 @@ from gui.dynalang import (
 )
 
 
-def getimageformatlist():
-    _ = [_.data().decode() for _ in QImageWriter.supportedImageFormats()]
-    if globalconfig["imageformat"] == -1 or globalconfig["imageformat"] >= len(_):
-        globalconfig["imageformat"] = _.index("png")
-    return _
-
-
 def getimageformat():
-
     return getimageformatlist()[globalconfig["imageformat"]]
 
 
@@ -496,7 +493,7 @@ class AnkiWindow(QWidget):
             functools.partial(self.selecfile, self.audiopath_sentence)
         )
         folder_open3 = QPushButton(qtawesome.icon("fa.folder-open"), "")
-        folder_open3.clicked.connect(functools.partial(self.selecfile, self.editpath))
+        folder_open3.clicked.connect(functools.partial(self.selecfile2, self.editpath))
         layout.addLayout(
             getboxlayout(
                 [
@@ -621,6 +618,12 @@ class AnkiWindow(QWidget):
         else:
             pix = QPixmap.fromImage(QImage(src))
         self.viewimagelabel.showpixmap(pix)
+
+    def selecfile2(self, item):
+        f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
+        res = f[0]
+        if res != "":
+            item.setText(res)
 
     def selecfile(self, item):
         f = QFileDialog.getOpenFileName()

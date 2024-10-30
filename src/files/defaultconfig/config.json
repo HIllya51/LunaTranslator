@@ -985,6 +985,11 @@
                 "name": "显示/隐藏范围框",
                 "keystring": ""
             },
+            "_14_1": {
+                "use": false,
+                "name": "清除OCR范围",
+                "keystring": ""
+            },
             "_15": {
                 "use": false,
                 "name": "绑定窗口_（点击自己取消）",

@@ -7,6 +7,7 @@ from myutils.utils import (
     splittranslatortypes,
     dynamiclink,
     translate_exits,
+    dynamicapiname,
 )
 from gui.pretransfile import sqlite2json
 from gui.inputdialog import autoinitdialog, autoinitdialog_items, autoinitdialogx
@@ -14,6 +15,7 @@ from gui.usefulwidget import (
     D_getspinbox,
     getIconButton,
     D_getcolorbutton,
+    Prompt_dialog,
     getcolorbutton,
     getsimpleswitch,
     D_getIconButton,
@@ -25,7 +27,7 @@ from gui.usefulwidget import (
     getvboxwidget,
 )
 from traceback import print_exc
-from gui.dynalang import LPushButton, LLabel
+from gui.dynalang import LPushButton, LLabel, LAction, LMenu
 
 
 def deepcopydict(d):
@@ -74,7 +76,7 @@ def loadvisinternal(btnplus, copy):
         else:
             if not translate_exits(_):
                 continue
-        __vis.append(globalconfig["fanyi"][_]["name"])
+        __vis.append(dynamicapiname(_))
         __uid.append(_)
     return __vis, __uid
 
@@ -123,6 +125,39 @@ def getalistname(parent, copy, btnplus, callback):
     )
 
 
+def renameapi(qlabel: QLabel, apiuid, _):
+    menu = QMenu(qlabel)
+    editname = LAction("重命名")
+    menu.addAction(editname)
+    action = menu.exec(qlabel.mapToGlobal(_))
+    if action == editname:
+        before = dynamicapiname(apiuid)
+        _dia = Prompt_dialog(
+            qlabel,
+            "重命名",
+            "",
+            [
+                [
+                    "名称",
+                    before,
+                ],
+            ],
+        )
+
+        if _dia.exec():
+            title = _dia.text[0].text()
+            if title not in ("", before):
+                globalconfig["fanyi"][apiuid]["name_self_set"] = title
+                qlabel.setText(title)
+
+
+def getrenameablellabel(uid):
+    name = LLabel(dynamicapiname(uid))
+    name.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+    name.customContextMenuRequested.connect(functools.partial(renameapi, name, uid))
+    return name
+
+
 def selectllmcallback(self, countnum, btnplus, fanyi, name):
     uid = str(uuid.uuid4())
     _f11 = "./Lunatranslator/translator/{}.py".format(fanyi)
@@ -153,7 +188,7 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
             autoinitdialogx,
             self,
             translatorsetting[uid]["args"],
-            (globalconfig["fanyi"][uid]["name"]),
+            dynamicapiname(uid),
             800,
             items,
             "userconfig.copyed." + uid,
@@ -162,7 +197,7 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
         icon="fa.gear",
     )
 
-    name = LLabel(globalconfig["fanyi"][uid]["name"])
+    name = getrenameablellabel(uid)
     swc = getsimpleswitch(
         globalconfig["fanyi"][uid],
         "use",
@@ -329,7 +364,7 @@ def initsome11(self, l, label=None, btnplus=False):
                     autoinitdialogx,
                     self,
                     translatorsetting[fanyi]["args"],
-                    globalconfig["fanyi"][fanyi]["name"],
+                    dynamicapiname(fanyi),
                     800,
                     items,
                     aclass,
@@ -345,7 +380,7 @@ def initsome11(self, l, label=None, btnplus=False):
         else:
             last = ""
         line += [
-            globalconfig["fanyi"][fanyi]["name"],
+            functools.partial(getrenameablellabel, fanyi),
             D_getsimpleswitch(
                 globalconfig["fanyi"][fanyi],
                 "use",

@@ -44,7 +44,7 @@ import windows
 import winsharedutils
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
-from myutils.utils import nowisdark
+from myutils.utils import nowisdark, dynamicapiname
 from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
@@ -516,7 +516,7 @@ class MAINUI:
             if iserror:
                 if currentsignature == self.currentsignature:
                     self.translation_ui.displaystatus.emit(
-                        globalconfig["fanyi"][classname]["name"] + " " + res,
+                        dynamicapiname(classname) + " " + res,
                         True,
                         False,
                     )
@@ -540,7 +540,7 @@ class MAINUI:
                 iter_res_status in (0, 1)
             ):
                 displayreskwargs = dict(
-                    name=globalconfig["fanyi"][classname]["name"],
+                    name=dynamicapiname(classname),
                     color=globalconfig["fanyi"][classname]["color"],
                     res=res,
                     iter_context=(iter_res_status, classname),
@@ -548,9 +548,7 @@ class MAINUI:
                 self.translation_ui.displayres.emit(displayreskwargs)
             if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
 
-                self.transhis.getnewtranssignal.emit(
-                    globalconfig["fanyi"][classname]["name"], res
-                )
+                self.transhis.getnewtranssignal.emit(dynamicapiname(classname), res)
                 if not waitforresultcallback:
                     if (
                         globalconfig["read_trans"]
@@ -822,7 +820,7 @@ class MAINUI:
             return aclass(classname)
         except Exception as e:
             self.displayinfomessage(
-                globalconfig["fanyi"][classname]["name"]
+                dynamicapiname(classname)
                 + " import failed : "
                 + str(stringfyerror(e)),
                 "<msg_error_not_refresh>",

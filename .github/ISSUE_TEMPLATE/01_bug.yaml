@@ -29,13 +29,3 @@ body:
       尽可能详细描述错误产生的细节。
   validations:
     required: true
-
-- type: textarea
-  attributes:
-    label: Log file 日志文件
-    description: >
-      Run LunaTranslator_debug.exe to reproduce the error, and then upload the generated log_*.txt file.
-      
-      运行LunaTranslator_debug.exe复现错误，然后上传产生的log_*.txt文件。
-  validations:
-    required: true

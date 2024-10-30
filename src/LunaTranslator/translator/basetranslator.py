@@ -6,7 +6,13 @@ import zhconv, gobject
 import sqlite3, json
 import functools
 from myutils.config import globalconfig, translatorsetting
-from myutils.utils import stringfyerror, autosql, PriorityQueue, SafeFormatter
+from myutils.utils import (
+    stringfyerror,
+    autosql,
+    PriorityQueue,
+    SafeFormatter,
+    dynamicapiname,
+)
 from myutils.commonbase import ArgsEmptyExc, commonbase
 from myutils.languageguesser import guess
 
@@ -86,6 +92,7 @@ class basetrans(commonbase):
     _globalconfig_key = "fanyi"
     _setting_dict = translatorsetting
     using_gpt_dict = False
+    _compatible_flag_is_sakura_less_than_5_52_3 = True
 
     def level2init(self):
         if (self.transtype == "offline") and (not self.is_gpt_like):
@@ -97,7 +104,7 @@ class basetrans(commonbase):
             self._private_init()
         except Exception as e:
             gobject.baseobject.displayinfomessage(
-                globalconfig["fanyi"][self.typename]["name"]
+                dynamicapiname(self.typename)
                 + " init translator failed : "
                 + str(stringfyerror(e)),
                 "<msg_error_not_refresh>",
@@ -245,12 +252,6 @@ class basetrans(commonbase):
             return res
         return None
 
-    def maybecachetranslate(self, contentsolved, is_auto_run):
-        res = self.shortorlongcacheget(contentsolved, is_auto_run)
-        if res:
-            return res
-        return self.intervaledtranslate(contentsolved)
-
     def intervaledtranslate(self, content):
         interval = globalconfig["requestinterval"]
         current = time.time()
@@ -298,33 +299,48 @@ class basetrans(commonbase):
             messages.append(context[i * 2])
             messages.append(context[i * 2 + 1])
 
-    def reinitandtrans(self, contentsolved, is_auto_run):
-        if self.needreinit or self.initok == False:
-            self.needreinit = False
-            self.renewsesion()
-            try:
-                self._private_init()
-            except Exception as e:
-                raise Exception("init translator failed : " + str(stringfyerror(e)))
-        return self.maybecachetranslate(contentsolved, is_auto_run)
+    def maybeneedreinit(self):
+        if not (self.needreinit or not self.initok):
+            return
+        self.needreinit = False
+        self.renewsesion()
+        try:
+            self._private_init()
+        except Exception as e:
+            raise Exception("init translator failed : " + str(stringfyerror(e)))
 
-    def translate_and_collect(
-        self,
-        contentsolved,
-        is_auto_run,
-        callback,
-    ):
+    def maybezhconvwrapper(self, callback):
         def __maybeshow(callback, res, is_iter_res):
 
             if self.needzhconv:
                 res = zhconv.convert(res, "zh-tw")
             callback(res, is_iter_res)
 
-        callback = functools.partial(__maybeshow, callback)
+        return functools.partial(__maybeshow, callback)
 
-        res = self.reinitandtrans(contentsolved, is_auto_run)
+    def translate_and_collect(
+        self,
+        contentsolved: str | dict,
+        is_auto_run,
+        callback,
+    ):
+        if isinstance(contentsolved, dict):
+            if self._compatible_flag_is_sakura_less_than_5_52_3:
+                query_use = json.dumps(contentsolved)
+                cache_use = contentsolved["text"]
+            else:
+                query_use = contentsolved
+                cache_use = contentsolved["contentraw"]
+        else:
+            cache_use = query_use = contentsolved
+
+        res = self.shortorlongcacheget(cache_use, is_auto_run)
+        if not res:
+            res = self.intervaledtranslate(query_use)
         # 不能因为被打断而放弃后面的操作，发出的请求不会因为不再处理而无效，所以与其浪费不如存下来
         # gettranslationcallback里已经有了是否为当前请求的校验，这里无脑输出就行了
+
+        callback = self.maybezhconvwrapper(callback)
         if isinstance(res, types.GeneratorType):
             collectiterres = ""
             for _res in res:
@@ -348,8 +364,25 @@ class basetrans(commonbase):
         # 不管是否使用翻译缓存，都存下来
         if self.transtype == "pre":
             return
-        self.shorttermcacheset(contentsolved, res)
-        self.longtermcacheset(contentsolved, res)
+        self.shorttermcacheset(cache_use, res)
+        self.longtermcacheset(cache_use, res)
+
+    def __parse_gpt_dict(self, contentsolved, optimization_params):
+        gpt_dict = None
+        contentraw = contentsolved
+        for _ in optimization_params:
+            if isinstance(_, dict):
+                _gpt_dict = _.get("gpt_dict", None)
+                if _gpt_dict is None:
+                    continue
+                gpt_dict = _gpt_dict
+                contentraw = _.get("gpt_dict_origin")
+
+        return {
+            "text": contentsolved,
+            "gpt_dict": gpt_dict,
+            "contentraw": contentraw,
+        }
 
     def _fythread(self):
         self.needreinit = False
@@ -376,23 +409,12 @@ class basetrans(commonbase):
                 if not checktutukufunction():
                     # 检查请求队列是否空，请求队列有新的请求，则放弃当前请求。但对于内嵌翻译请求，不可以放弃。
                     continue
-                if self.transtype == "pre" or self.using_gpt_dict:
-                    gpt_dict = None
-                    contentraw = contentsolved
-                    for _ in optimization_params:
-                        if isinstance(_, dict):
-                            _gpt_dict = _.get("gpt_dict", None)
-                            if _gpt_dict is None:
-                                continue
-                            gpt_dict = _gpt_dict
-                            contentraw = _.get("gpt_dict_origin")
 
-                    contentsolved = json.dumps(
-                        {
-                            "text": contentsolved,
-                            "gpt_dict": gpt_dict,
-                            "contentraw": contentraw,
-                        }
+                self.maybeneedreinit()
+
+                if self.using_gpt_dict:
+                    contentsolved = self.__parse_gpt_dict(
+                        contentsolved, optimization_params
                     )
 
                 func = functools.partial(

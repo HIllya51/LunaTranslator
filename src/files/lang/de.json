@@ -804,5 +804,9 @@
     "日志": "Journal",
     "查看": "siehe",
     "标记": "Zeichen",
-    "当前OCR引擎不支持设置语言为自动": "Die aktuelle OCR-Engine unterstützt die Einstellung der Sprache auf automatisch nicht"
+    "当前OCR引擎不支持设置语言为自动": "Die aktuelle OCR-Engine unterstützt die Einstellung der Sprache auf automatisch nicht",
+    "字符串地址偏移": "String Adresse Offset",
+    "无效": "ungültig",
+    "清除OCR范围": "OCR-Bereich löschen",
+    "重命名": "umbenennen"
 }

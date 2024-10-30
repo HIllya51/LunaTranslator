@@ -271,7 +271,7 @@ def MessageBox(msg, info = 'Message'):
     ctypes.windll.user32.MessageBoxW(None, str(msg), str(info), 0)
     return 0
 os.MessageBox = MessageBox
-sys.stdout=sys.stderr
+#sys.stdout=sys.stderr
 sys.path.insert(0, './LunaTranslator')
 )"
 #ifndef PYSTAND_CONSOLE
@@ -365,6 +365,7 @@ int main()
 	}
 #else
 	SetConsoleOutputCP(CP_UTF8);
+	/*
 	auto getCurrentTimestamp = []
 	{
 		auto now = std::chrono::system_clock::now();
@@ -376,6 +377,7 @@ int main()
 	};
 	auto curr = getCurrentTimestamp();
 	freopen(curr.c_str(), "a", stderr);
+	*/
 #endif
 	int hr = ps.RunString(init_script);
 	return hr;

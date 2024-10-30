@@ -60,10 +60,12 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     However, the select text window will automatically pop up after selecting the process, and this button is actually used to replace the selected text or modify some settings.
 1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Select OCR Range
     **This button is only available in OCR mode**<br>
-    In OCR mode, select the OCR area, or change the OCR area, or when activating `OCR Settings` -> `Other` -> `Multiple Area Mode`, add a new OCR area
+    In OCR mode, select the OCR area, or change the OCR area, or when activating `OCR Settings` -> `Other` -> `Multiple Area Mode`, add a new OCR area<br>
+    When the right button is pressed, all selected ranges will be cleared before adding new areas.
 1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> Show/Hide Range Box 
     **This button is only available in OCR mode**<br>
-    When no OCR range is selected, use this button to display the OCR range, which will automatically set the OCR range to the last selected OCR.
+    When no OCR range is selected, use this button to display the OCR range, which will automatically set the OCR range to the last selected OCR.<br>
+    When the right button is pressed, all selected ranges will be cleared
 1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR Once
     This button is similar to `Read Clipboard`, regardless of the current default text input source, it will first select the OCR range, then perform OCR once, and then proceed with the translation process.<br>
     This button is generally used in HOOK mode, when encountering choices, to temporarily use OCR for translation of choices. Or in OCR mode, to temporarily recognize a new position that occasionally appears.<br>

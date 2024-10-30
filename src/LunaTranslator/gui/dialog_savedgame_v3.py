@@ -11,7 +11,7 @@ from myutils.config import (
     globalconfig,
 )
 from myutils.hwnd import clipboard_set_image
-from myutils.utils import str2rgba, get_time_stamp, loopbackrecorder
+from myutils.utils import str2rgba, get_time_stamp, loopbackrecorder, getimagefilefilter
 from myutils.audioplayer import playonce
 from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
@@ -613,7 +613,7 @@ class pixwrapper(QWidget):
                 ("画廊"),
                 savehook_new_data[self.k]["imagepath_all"],
                 closecallback=lambda: self.setpix(self.k),
-                ispathsedit=dict(),
+                ispathsedit=dict(filter1=getimagefilefilter()),
             )
         elif action == setimage:
             savehook_new_data[self.k]["currentmainimage"] = curr

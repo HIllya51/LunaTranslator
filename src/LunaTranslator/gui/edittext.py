@@ -2,7 +2,7 @@ from qtsymbols import *
 import threading, windows
 import gobject, qtawesome, os, json
 from myutils.config import globalconfig, savehook_new_data, translatorsetting
-from myutils.utils import translate_exits
+from myutils.utils import translate_exits, dynamicapiname
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow, getsimplecombobox
 from gui.dynalang import LPushButton, LMainWindow
@@ -160,7 +160,7 @@ class edittrans(LMainWindow):
             if not translate_exits(fanyi):
                 continue
             inter.append(fanyi)
-            vis.append(globalconfig["fanyi"][fanyi]["name"])
+            vis.append(dynamicapiname(fanyi))
         qv.addWidget(self.textOutput)
         qv.addWidget(
             getsimplecombobox(

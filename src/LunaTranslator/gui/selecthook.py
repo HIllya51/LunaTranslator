@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, json, subprocess, os, time, binascii
+import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, windows, winsharedutils, gobject
@@ -125,6 +125,33 @@ class dialog_showinfo(QDialog):
         self.show()
 
 
+class HexValidator(QValidator):
+    def validate(self, input_str, pos):
+        # 检查输入是否是有效的16进制数
+        if all(c in "0123456789abcdefABCDEF" for c in input_str):
+            return QValidator.State.Acceptable, input_str, pos
+        elif input_str == "" or (
+            len(input_str) == 1 and input_str in "0123456789abcdefABCDEF"
+        ):
+            return QValidator.State.Intermediate, input_str, pos
+        else:
+            return QValidator.State.Invalid, input_str, pos
+
+
+class PatternValidator(QValidator):
+    def validate(self, input_str, pos):
+        # 检查输入是否是有效的16进制数
+        if all(c in "0123456789abcdefABCDEF ?" for c in input_str):
+            return QValidator.State.Acceptable, input_str, pos
+        elif input_str == "" or (
+            len(input_str) == 1 and input_str in "0123456789abcdefABCDEF ?"
+        ):
+            return QValidator.State.Intermediate, input_str, pos
+        else:
+            return QValidator.State.Invalid, input_str, pos
+
+
+
 class searchhookparam(LDialog):
     def safehex(self, string, default):
         try:
@@ -149,11 +176,11 @@ class searchhookparam(LDialog):
         elif idx == 2:
             dumpvalues = {}
             for k, widget in self.regists.items():
-                if type(widget) == QLineEdit:
+                if isinstance(widget, QLineEdit):
                     dumpvalues[k] = widget.text()
-                if type(widget) == FocusSpin:
+                elif isinstance(widget, QSpinBox):
                     dumpvalues[k] = widget.value()
-                if callable(widget):
+                elif callable(widget):
                     dumpvalues[k] = widget()
             pattern = dumpvalues["pattern"]
             if "." in pattern:
@@ -161,9 +188,11 @@ class searchhookparam(LDialog):
                 usestruct.exportModule = pattern[:120]
             else:
                 try:
-                    bs = bytes.fromhex(
-                        pattern.replace(" ", "").replace("0x", "").replace("??", "11")
-                    )
+                    p = pattern.replace(" ", "").replace("??", "11")
+                    if ("?" in p) or (len(p) % 2 != 0):
+                        getQMessageBox(self, "警告", "无效", True)
+                        raise
+                    bs = bytes.fromhex(p)
                     usestruct.pattern = bs[:30]
                     usestruct.length = len(bs)
                 except:
@@ -186,7 +215,7 @@ class searchhookparam(LDialog):
                 usestruct.maxAddress = self.safehex(
                     dumpvalues["offstopaddr"], usestruct.maxAddress
                 )
-            usestruct.padding = 0  # self.safehex(dumpvalues[4], usestruct.padding)
+            usestruct.padding = dumpvalues["stroffset"]
             usestruct.offset = dumpvalues["offset"]
             usestruct.codepage = static_data["codepage_real"][
                 self.codepagesave["spcp"]
@@ -266,7 +295,19 @@ class searchhookparam(LDialog):
         ):
             if _type == 0:
                 line = QLineEdit(_val)
+                line.setValidator(HexValidator())
                 regwid = addwid = line
+            elif _type == -2:
+                line = QLineEdit(_val)
+                line.setValidator(PatternValidator())
+                regwid = addwid = line
+            elif _type == -1:
+                sp = FocusSpin()
+                sp.setDisplayIntegerBase(16)
+                sp.setMaximum(0x7FFFFFFF)
+                sp.setMinimum(-0x7FFFFFFF)
+                sp.setValue(_val)
+                regwid = addwid = sp
             elif _type == 1:
                 sp = FocusSpin()
                 sp.setMaximum(10000000)
@@ -364,13 +405,14 @@ class searchhookparam(LDialog):
             "pattern",
             "搜索匹配的特征(hex)",
             self.hex2str(usestruct.pattern),
-            0,
+            -2,
             uselayout=patternWl,
         )
         autoaddline(
             "offset", "相对特征地址的偏移", usestruct.offset, 1, uselayout=patternWl
         )
 
+        autoaddline("stroffset", "字符串地址偏移", usestruct.padding, -1)
         autoaddline("time", "搜索持续时间(s)", usestruct.searchTime // 1000, 1)
         autoaddline("maxrecords", "搜索结果数上限", usestruct.maxRecords, 1)
 

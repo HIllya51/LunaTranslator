@@ -162,14 +162,13 @@
 
 >部分大模型平台不完全兼容ChatGPT接口，请在专用接口中填写参数使用。
 
-#### 外国大模型接口
-
-
 <!-- tabs:start -->
 
 ### **gemini**
 
 <a id="gemini"></a>
+
+**BASE_URL** `https://generativelanguage.googleapis.com`
 
 **model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
 
@@ -188,14 +187,6 @@
 **API Key** https://dashboard.cohere.com/api-keys
 
 **model** https://docs.cohere.com/docs/models
-
-
-<!-- tabs:end -->
-
-
-#### 国产大模型接口
-
-<!-- tabs:start -->
 
 ### **腾讯混元大模型**
 

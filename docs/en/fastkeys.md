@@ -57,15 +57,19 @@
 ### **OCR**
 
 1. #### Select OCR Range
-    **Available only in OCR mode**
+    **Available only in OCR mode**<br>
     In OCR mode, selects the OCR area, or changes the OCR area, or when `OCR Settings` -> `Other` -> `Multi-region Mode` is activated, adds a new OCR area.
 
 1. #### Show/Hide Range Box
-    **Available only in OCR mode**
+    **Available only in OCR mode**<br>
     When no OCR range is selected, using this shortcut key will display the OCR range and automatically set the OCR range to the last selected OCR.
 
+1. ###### Clear OCR range
+    **Only available in OCR mode**<br>
+    Clear all selected ranges
+
 1. #### Select OCR Range - Immediate
-    **Available only in OCR mode**
+    **Available only in OCR mode**<br>
     The difference from `Select OCR Range` is that it requires one less mouse click.
 
 1. #### Perform OCR Once

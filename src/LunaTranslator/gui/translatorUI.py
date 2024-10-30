@@ -247,6 +247,7 @@ class TranslatorWindow(resizableframeless):
     showsavegame_signal = pyqtSignal()
     clickRange_signal = pyqtSignal(bool)
     showhide_signal = pyqtSignal()
+    clear_signal_1 = pyqtSignal()
     bindcropwindow_signal = pyqtSignal()
     fullsgame_signal = pyqtSignal()
     quitf_signal = pyqtSignal()
@@ -627,8 +628,20 @@ class TranslatorWindow(resizableframeless):
                 "selecttext",
                 lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
             ),
-            ("selectocrrange", lambda: self.clickRange(False)),
-            ("hideocrrange", self.showhideocrrange, None, lambda: self.showhidestate),
+            (
+                "selectocrrange",
+                lambda: self.clickRange(False),
+                None,
+                None,
+                lambda: self.clickRangeclear(False),
+            ),
+            (
+                "hideocrrange",
+                self.showhideocrrange,
+                None,
+                lambda: self.showhidestate,
+                self.clear_signal_1.emit,
+            ),
             (
                 "bindwindow",
                 self.bindcropwindow_signal.emit,
@@ -877,6 +890,9 @@ class TranslatorWindow(resizableframeless):
         )
         self.clickRange_signal.connect(self.clickRange)
         self.showhide_signal.connect(self.showhideocrrange)
+        self.clear_signal_1.connect(
+            lambda: self.clearstate() or gobject.baseobject.textsource.clearrange()
+        )
         self.bindcropwindow_signal.connect(
             functools.partial(mouseselectwindow, self.bindcropwindowcallback)
         )
@@ -1127,6 +1143,13 @@ class TranslatorWindow(resizableframeless):
         except:
             pass
 
+    def clearstate(self):
+        try:
+            self.showhidestate = False
+            self.refreshtoolicon()
+        except:
+            pass
+
     def bindcropwindowcallback(self, pid, hwnd):
         _pid = os.getpid()
         gobject.baseobject.hwnd = hwnd if pid != _pid else None
@@ -1197,10 +1220,18 @@ class TranslatorWindow(resizableframeless):
             return
         self.showhidestate = False
 
-        rangeselct_function(self.afterrange, auto)
+        rangeselct_function(functools.partial(self.afterrange, False), auto)
+
+    def clickRangeclear(self, auto):
+        if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
+            return
+        self.showhidestate = False
+        rangeselct_function(functools.partial(self.afterrange, True), auto)
 
     @tryprint
-    def afterrange(self, rect):
+    def afterrange(self, clear, rect):
+        if clear or not globalconfig["multiregion"]:
+            gobject.baseobject.textsource.clearrange()
         gobject.baseobject.textsource.newrangeadjustor()
         gobject.baseobject.textsource.setrect(rect)
         self.showhideocrrange()

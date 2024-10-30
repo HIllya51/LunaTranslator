@@ -157,13 +157,13 @@
 
 >Некоторые платформы больших моделей не полностью совместимы с интерфейсом ChatGPT, пожалуйста, заполните параметры в специальном интерфейсе для использования.
 
-#### Зарубежные интерфейсы больших моделей
-
 <!-- tabs:start -->
 
 ### **gemini**
 
 <a id="gemini"></a>
+
+**BASE_URL** `https://generativelanguage.googleapis.com`
 
 **model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
 
@@ -182,12 +182,6 @@
 **API Key** https://dashboard.cohere.com/api-keys
 
 **model** https://docs.cohere.com/docs/models
-
-<!-- tabs:end -->
-
-#### Китайские интерфейсы больших моделей
-
-<!-- tabs:start -->
 
 ### **Tencent Hunyuan Large Model**
 

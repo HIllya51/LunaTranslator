@@ -2,7 +2,7 @@ from qtsymbols import *
 import sqlite3, os, json, functools
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
-from myutils.utils import autosql
+from myutils.utils import autosql, dynamicapiname
 from gui.usefulwidget import getQMessageBox, LFocusCombo
 from gui.dynalang import LFormLayout, LPushButton, LDialog
 from textsource.texthook import splitembedlines
@@ -51,7 +51,7 @@ def sqlite2json2(
     dialog.setLayout(formLayout)
 
     combo = LFocusCombo()
-    combo.addItems([globalconfig["fanyi"][_]["name"] for _ in collect])
+    combo.addItems([dynamicapiname(_) for _ in collect])
 
     formLayout.addRow("首选翻译", combo)
     e = QLineEdit(sqlitefile[: -(len(".sqlite"))])

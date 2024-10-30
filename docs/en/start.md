@@ -15,7 +15,7 @@ Make sure not to download the source code by mistake!
 
 **LunaTranslator_admin.exe** will start with administrator privileges. Some games require administrator privileges to HOOK, so use this only when necessary; otherwise, start in normal mode.
 
-**LunaTranslator_debug.exe** will generate log file. When submitting bug feedback, please be sure to run the program and reproduce the bug, and then submit the generated log file.
+**LunaTranslator_debug.exe** will display a command line window
 
 #### Note
 

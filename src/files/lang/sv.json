@@ -804,5 +804,9 @@
     "日志": "journal",
     "查看": "se",
     "标记": "tecken",
-    "当前OCR引擎不支持设置语言为自动": "Den aktuella OCR-motorn stöder inte inställning av språket till automatiskt"
+    "当前OCR引擎不支持设置语言为自动": "Den aktuella OCR-motorn stöder inte inställning av språket till automatiskt",
+    "字符串地址偏移": "Strängadressförskjutning",
+    "无效": "ogiltig",
+    "清除OCR范围": "Rensa OCR-område",
+    "重命名": "Byt namn"
 }

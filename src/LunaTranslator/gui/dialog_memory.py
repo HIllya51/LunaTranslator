@@ -2,7 +2,7 @@ from qtsymbols import *
 import gobject, os
 from myutils.config import globalconfig, uid2gamepath
 from myutils.wrapper import Singleton_close
-from myutils.utils import getfilemd5
+from myutils.utils import getfilemd5, getimagefilefilter
 from gui.usefulwidget import saveposwindow
 from gui.dynalang import LPushButton
 
@@ -15,7 +15,7 @@ class dialog_memory(saveposwindow):
             ff.write(self.showtext.toHtml())
 
     def insertpic(self):
-        f = QFileDialog.getOpenFileName()
+        f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
         res = f[0]
         if res != "":
             self.showtext.insertHtml('<img src="{}">'.format(res))

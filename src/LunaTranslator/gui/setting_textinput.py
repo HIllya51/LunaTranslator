@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os, json
 import windows, gobject
-from myutils.utils import translate_exits
+from myutils.utils import translate_exits, dynamicapiname
 from myutils.config import (
     globalconfig,
     _TR,
@@ -272,7 +272,7 @@ def loadvalidtss():
     for x in globalconfig["fanyi"]:
         if not translate_exits(x):
             continue
-        alltransvis.append(globalconfig["fanyi"][x]["name"])
+        alltransvis.append(dynamicapiname(x))
         alltrans.append(x)
     return alltrans, alltransvis
 

@@ -1025,3 +1025,20 @@ def get_element_by(attr, attrv, html):
     if res is None:
         return ""
     return res
+
+
+def getimageformatlist():
+    _ = [_.data().decode() for _ in QImageWriter.supportedImageFormats()]
+    if globalconfig["imageformat"] == -1 or globalconfig["imageformat"] >= len(_):
+        globalconfig["imageformat"] = _.index("png")
+    return _
+
+
+def getimagefilefilter():
+    return " ".join(("*." + _ for _ in getimageformatlist()))
+
+
+def dynamicapiname(apiuid):
+    return globalconfig["fanyi"][apiuid].get(
+        "name_self_set", globalconfig["fanyi"][apiuid]["name"]
+    )

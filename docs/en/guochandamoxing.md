@@ -157,13 +157,13 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 >Some large model platforms are not fully compatible with the ChatGPT interface, please fill in the parameters to use in the dedicated interface.
 
-#### Foreign Large Model Interfaces
-
 <!-- tabs:start -->
 
 ### **gemini**
 
 <a id="gemini"></a>
+
+**BASE_URL** `https://generativelanguage.googleapis.com`
 
 **model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models 
 
@@ -182,12 +182,6 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 **API Key** https://dashboard.cohere.com/api-keys 
 
 **model** https://docs.cohere.com/docs/models 
-
-<!-- tabs:end -->
-
-#### Domestic Large Model Interfaces
-
-<!-- tabs:start -->
 
 ### **Tencent Hunyuan Large Model**
 

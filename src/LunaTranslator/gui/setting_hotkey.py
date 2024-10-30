@@ -62,6 +62,7 @@ def registrhotkeys(self):
         "_12": lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
         "_13": lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(False),
         "_14": gobject.baseobject.translation_ui.showhide_signal.emit,
+        "_14_1": gobject.baseobject.translation_ui.clear_signal_1.emit,
         "_15": gobject.baseobject.translation_ui.bindcropwindow_signal.emit,
         "_16": gobject.baseobject.translation_ui.showhideuisignal.emit,
         "_17": gobject.baseobject.translation_ui.quitf_signal.emit,

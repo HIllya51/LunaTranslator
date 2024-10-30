@@ -4,7 +4,7 @@ import gobject, os, zipfile
 from myutils.config import globalconfig, static_data
 from gui.inputdialog import multicolorset, autoinitdialog
 from myutils.wrapper import tryprint
-from myutils.utils import dynamiclink, translate_exits, copytree
+from myutils.utils import dynamiclink, translate_exits, copytree, dynamicapiname
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
@@ -333,7 +333,7 @@ def vistranslate_rank(self):
         ("显示顺序"),
         globalconfig["fix_translate_rank_rank"],
         isrankeditor=True,
-        namemapfunction=lambda k: globalconfig["fanyi"][k]["name"],
+        namemapfunction=lambda k: dynamicapiname(k),
     )
 
 

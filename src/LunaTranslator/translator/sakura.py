@@ -8,7 +8,11 @@ from myutils.utils import urlpathjoin
 
 
 class TS(basetrans):
-    using_gpt_dict = True
+    _compatible_flag_is_sakura_less_than_5_52_3 = False
+
+    @property
+    def using_gpt_dict(self):
+        return self.config["prompt_version"] in [1, 2]
 
     def langmap(self):
         return {"zh": "zh-CN"}
@@ -31,8 +35,6 @@ class TS(basetrans):
         # self.client = OpenAI(api_key="114514", base_url=api_url)
 
     def make_gpt_dict_text(self, gpt_dict):
-        if gpt_dict is None:
-            return ""
         gpt_dict_text_list = []
         for gpt in gpt_dict:
             src = gpt["src"]
@@ -112,11 +114,10 @@ class TS(basetrans):
                 }
             ]
             self._gpt_common_parse_context_2(messages, self.context, contextnum, True)
-            gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
-            if gpt_dict_raw_text:
+            if gpt_dict:
                 content = (
                     "根据以下术语表（可以为空）：\n"
-                    + gpt_dict_raw_text
+                    + self.make_gpt_dict_text(gpt_dict)
                     + "\n"
                     + "将下面的日文文本根据对应关系和备注翻译成中文："
                     + query
@@ -211,17 +212,16 @@ class TS(basetrans):
 
             yield res
 
-    def translate(self, query):
-        query = json.loads(query)
-        gpt_dict = query["gpt_dict"]
-        contentraw = query["contentraw"]
-        query = query["text"]
-        if (
-            (gpt_dict is not None)
-            and len(gpt_dict)
-            and self.config["prompt_version"] in [1, 2]
-        ):
-            query = contentraw
+    def translate(self, query: str | dict):
+        if isinstance(query, dict):
+            gpt_dict = query["gpt_dict"]
+            contentraw = query["contentraw"]
+            query = query["text"]
+            if gpt_dict and self.using_gpt_dict:
+                query = contentraw
+        else:
+            gpt_dict = None
+            contentraw = query
         self.checkempty(["API接口地址"])
         self.get_client(self.config["API接口地址"])
         frequency_penalty = float(self.config["frequency_penalty"])

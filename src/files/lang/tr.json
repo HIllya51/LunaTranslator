@@ -804,5 +804,9 @@
     "日志": "Günlük",
     "查看": "Gördün mü?",
     "标记": "imza",
-    "当前OCR引擎不支持设置语言为自动": "Ağımdaki OCR motoru dili otomatik olarak ayarlamasını desteklemez"
+    "当前OCR引擎不支持设置语言为自动": "Ağımdaki OCR motoru dili otomatik olarak ayarlamasını desteklemez",
+    "字符串地址偏移": "Kelime adresi",
+    "无效": "Keçersiz",
+    "清除OCR范围": "OCR aralığını temizle",
+    "重命名": "Yeniden Adlandır"
 }

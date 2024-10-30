@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os
 from myutils.config import globalconfig, ocrsetting, ocrerrorfix, static_data
-from myutils.utils import splitocrtypes, dynamiclink
+from myutils.utils import splitocrtypes, dynamiclink, getimagefilefilter
 from gui.inputdialog import autoinitdialogx, postconfigdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -297,13 +297,7 @@ class showocrimage(saveposwindow):
         super().closeEvent(e)
 
     def openff(self):
-        f = QFileDialog.getOpenFileName(
-            filter="image ("
-            + " ".join(
-                ["*" + _.data().decode() for _ in QImageWriter.supportedImageFormats()]
-            )
-            + ")"
-        )
+        f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
         res = f[0]
         if not res:
             return
@@ -531,7 +525,11 @@ def getocrgrid(self):
                     grid=[
                         [
                             "多重区域模式",
-                            D_getsimpleswitch(globalconfig, "multiregion"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "multiregion",
+                                callback=lambda _: gobject.baseobject.textsource.leaveone(),
+                            ),
                         ],
                         [
                             "范围框颜色",

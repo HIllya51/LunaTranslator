@@ -804,5 +804,9 @@
     "日志": "diario",
     "查看": "vedi",
     "标记": "segno",
-    "当前OCR引擎不支持设置语言为自动": "Il motore OCR corrente non supporta l'impostazione automatica della lingua"
+    "当前OCR引擎不支持设置语言为自动": "Il motore OCR corrente non supporta l'impostazione automatica della lingua",
+    "字符串地址偏移": "Spostamento indirizzo stringa",
+    "无效": "non valido",
+    "清除OCR范围": "Cancella intervallo OCR",
+    "重命名": "rinomina"
 }

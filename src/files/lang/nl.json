@@ -804,5 +804,9 @@
     "日志": "dagboek",
     "查看": "zie",
     "标记": "teken",
-    "当前OCR引擎不支持设置语言为自动": "De huidige OCR-engine ondersteunt niet het instellen van de taal op automatisch"
+    "当前OCR引擎不支持设置语言为自动": "De huidige OCR-engine ondersteunt niet het instellen van de taal op automatisch",
+    "字符串地址偏移": "Tekenadres offset",
+    "无效": "ongeldig",
+    "清除OCR范围": "OCR-bereik wissen",
+    "重命名": "hernoemen"
 }
