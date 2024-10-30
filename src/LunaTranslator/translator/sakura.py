@@ -215,13 +215,12 @@ class TS(basetrans):
     def translate(self, query):
         if isinstance(query, dict):
             gpt_dict = query["gpt_dict"]
-            contentraw = query["contentraw"]
-            query = query["text"]
             if gpt_dict and self.using_gpt_dict:
-                query = contentraw
+                query = query["contentraw"]
+            else:
+                query = query["text"]
         else:
             gpt_dict = None
-            contentraw = query
         self.checkempty(["API接口地址"])
         self.get_client(self.config["API接口地址"])
         frequency_penalty = float(self.config["frequency_penalty"])
