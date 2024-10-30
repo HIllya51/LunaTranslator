@@ -212,7 +212,7 @@ class TS(basetrans):
 
             yield res
 
-    def translate(self, query: str | dict):
+    def translate(self, query):
         if isinstance(query, dict):
             gpt_dict = query["gpt_dict"]
             contentraw = query["contentraw"]

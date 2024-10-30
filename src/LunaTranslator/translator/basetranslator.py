@@ -318,12 +318,7 @@ class basetrans(commonbase):
 
         return functools.partial(__maybeshow, callback)
 
-    def translate_and_collect(
-        self,
-        contentsolved: str | dict,
-        is_auto_run,
-        callback,
-    ):
+    def translate_and_collect(self, contentsolved, is_auto_run, callback):
         if isinstance(contentsolved, dict):
             if self._compatible_flag_is_sakura_less_than_5_52_3:
                 query_use = json.dumps(contentsolved)
