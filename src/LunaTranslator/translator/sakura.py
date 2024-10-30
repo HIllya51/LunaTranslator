@@ -215,10 +215,7 @@ class TS(basetrans):
     def translate(self, query):
         if isinstance(query, dict):
             gpt_dict = query["gpt_dict"]
-            if gpt_dict and self.using_gpt_dict:
-                query = query["contentraw"]
-            else:
-                query = query["text"]
+            query = query["contentraw"]
         else:
             gpt_dict = None
         self.checkempty(["API接口地址"])
