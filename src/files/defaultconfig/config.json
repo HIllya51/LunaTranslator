@@ -5,7 +5,7 @@
     "excule_from_exe": [],
     "only_from_exe": [],
     "showrangeafterrangeselect": true,
-    "ocrautobindhwnd": true,
+    "ocrautobindhwnd": false,
     "autodisappear": false,
     "WindowBackdrop": 3,
     "WindowEffect": 0,

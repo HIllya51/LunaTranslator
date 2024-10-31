@@ -620,7 +620,7 @@ class AnkiWindow(QWidget):
         self.viewimagelabel.showpixmap(pix)
 
     def selecfile2(self, item):
-        f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
+        f = QFileDialog.getOpenFileName(filter=getimagefilefilter() + ";;*")
         res = f[0]
         if res != "":
             item.setText(res)
