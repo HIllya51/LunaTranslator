@@ -73,7 +73,9 @@ https://ai.youdao.com/doc.s#guide
 
 #### **Ali**
 
-https://www.aliyun.com/product/ai/alimt
+**Открытие обслуживания** https://www.aliyun.com/product/ai/alimt
+
+**Создать ключ** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
 
 #### **Caiyun**
 

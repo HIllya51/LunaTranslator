@@ -808,5 +808,7 @@
     "字符串地址偏移": "Décalage d'adresse de chaîne",
     "无效": "Invalide",
     "清除OCR范围": "Effacer la plage ocr",
-    "重命名": "Renommer"
+    "重命名": "Renommer",
+    "应用ID": "Id de l'application",
+    "应用密钥": "Appliquer la clé"
 }

@@ -73,7 +73,9 @@ https://ai.youdao.com/doc.s#guide
 
 #### **Alibaba**
 
-https://www.aliyun.com/product/ai/alimt
+**Activate service** https://www.aliyun.com/product/ai/alimt
+
+**Create Key** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
 
 #### **Caiyun**
 

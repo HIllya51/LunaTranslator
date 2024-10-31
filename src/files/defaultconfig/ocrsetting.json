@@ -134,6 +134,7 @@
         },
         "argstype": {
             "APP_SECRET": {
+                "name": "应用密钥",
                 "refcombo": "interface",
                 "refcombo_l": [
                     0,
@@ -141,6 +142,7 @@
                 ]
             },
             "APP_KEY": {
+                "name": "应用ID",
                 "refcombo": "interface",
                 "refcombo_l": [
                     0,
@@ -218,9 +220,10 @@
             "custom_prompt": ""
         },
         "argstype": {
-            "BASE_URL": {
-                "rank": 0
-            },
+			"BASE_URL": {
+				"name": "API接口地址",
+				"rank": 0
+			},
             "key": {
                 "rank": 2,
                 "name": "API Key"

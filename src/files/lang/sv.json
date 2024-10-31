@@ -808,5 +808,7 @@
     "字符串地址偏移": "Strängadressförskjutning",
     "无效": "ogiltig",
     "清除OCR范围": "Rensa OCR-område",
-    "重命名": "Byt namn"
+    "重命名": "Byt namn",
+    "应用ID": "Program- ID",
+    "应用密钥": "Programnyckel"
 }

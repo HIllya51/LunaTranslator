@@ -171,17 +171,17 @@
 
 <a id="gemini"></a>
 
-**BASE_URL** `https://generativelanguage.googleapis.com`
-
-**model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
+**Адрес API** `https://generativelanguage.googleapis.com`
 
 **API Key** https://aistudio.google.com/app/apikey
 
+**model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
+
 ### **claude**
 
-**BASE_URL** `https://api.anthropic.com`
+**Адрес API** `https://api.anthropic.com`
 
-**API_KEY** https://console.anthropic.com/
+**API Key** https://console.anthropic.com/
 
 **model**  https://docs.anthropic.com/en/docs/about-claude/models
 

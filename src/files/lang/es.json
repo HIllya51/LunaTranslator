@@ -808,5 +808,7 @@
     "字符串地址偏移": "Desplazamiento de la dirección de la cadena",
     "无效": "Inválido",
     "清除OCR范围": "Eliminar el rango OCR",
-    "重命名": "Cambiar el nombre"
+    "重命名": "Cambiar el nombre",
+    "应用ID": "ID de la aplicación",
+    "应用密钥": "Clave de aplicación"
 }

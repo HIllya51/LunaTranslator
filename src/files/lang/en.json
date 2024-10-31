@@ -808,5 +808,7 @@
     "字符串地址偏移": "String address offset",
     "无效": "invalid",
     "清除OCR范围": "Clear OCR range",
-    "重命名": "rename"
+    "重命名": "rename",
+    "应用ID": "Application ID",
+    "应用密钥": "Application key"
 }

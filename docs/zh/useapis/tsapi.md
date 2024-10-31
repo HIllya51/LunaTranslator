@@ -73,7 +73,9 @@ https://ai.youdao.com/doc.s#guide
 
 #### **阿里**
 
-https://www.aliyun.com/product/ai/alimt
+**开通服务** https://www.aliyun.com/product/ai/alimt
+
+**创建密钥** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
 
 #### **彩云**
 

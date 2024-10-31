@@ -808,5 +808,7 @@
     "字符串地址偏移": "Kelime adresi",
     "无效": "Keçersiz",
     "清除OCR范围": "OCR aralığını temizle",
-    "重命名": "Yeniden Adlandır"
+    "重命名": "Yeniden Adlandır",
+    "应用ID": "Uygulama Kimliği",
+    "应用密钥": "Uygulama anahtarı"
 }

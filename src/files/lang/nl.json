@@ -808,5 +808,7 @@
     "字符串地址偏移": "Tekenadres offset",
     "无效": "ongeldig",
     "清除OCR范围": "OCR-bereik wissen",
-    "重命名": "hernoemen"
+    "重命名": "hernoemen",
+    "应用ID": "Applicatie-ID",
+    "应用密钥": "Toepassingssleutel"
 }

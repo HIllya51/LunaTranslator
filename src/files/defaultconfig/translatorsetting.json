@@ -90,11 +90,15 @@
 		"argstype": {
 			"DeepL-Auth-Key": {
 				"rank": 1,
-				"name": "DeepL-Auth-Key Free"
+				"name": "Auth Key",
+				"refcombo": "usewhich",
+				"refcombo_i": 0
 			},
 			"DeepL-Auth-Key-2": {
 				"rank": 2,
-				"name": "DeepL-Auth-Key Pro"
+				"name": "Auth Key",
+				"refcombo": "usewhich",
+				"refcombo_i": 1
 			},
 			"usewhich": {
 				"rank": 0,
@@ -175,6 +179,14 @@
 		"args": {
 			"APP_KEY": "",
 			"APP_SECRET": ""
+		},
+		"argstype": {
+			"APP_KEY": {
+				"name": "应用ID"
+			},
+			"APP_SECRET": {
+				"name": "应用密钥"
+			}
 		}
 	},
 	"hwcloud": {
@@ -326,6 +338,7 @@
 				"rank": 5.12
 			},
 			"BASE_URL": {
+				"name": "API接口地址",
 				"rank": 0
 			},
 			"model": {
@@ -345,6 +358,7 @@
 				]
 			},
 			"API_KEY": {
+				"name": "API Key",
 				"rank": 0.5
 			},
 			"流式输出": {
@@ -524,8 +538,7 @@
 				"rank": 0
 			},
 			"SECRET_KEY": {
-				"rank": 1,
-				"name": "API Key"
+				"rank": 1
 			},
 			"model": {
 				"rank": 2,
@@ -784,6 +797,14 @@
 		"args": {
 			"Access_Key": "",
 			"SECRET_KEY": ""
+		},
+		"argstype": {
+			"Access_Key": {
+				"name": "AccessKey ID"
+			},
+			"SECRET_KEY": {
+				"name": "AccessKey Secret"
+			}
 		}
 	},
 	"dev_chatgpt": {
@@ -1004,6 +1025,7 @@
 				"name": "其他参数"
 			},
 			"BASE_URL": {
+				"name": "API接口地址",
 				"rank": 0
 			},
 			"usingstream": {
