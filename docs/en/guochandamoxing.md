@@ -151,6 +151,14 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **model** https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-2-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0 
 
+### **Tencent Hunyuan Large Model**
+
+**API Interface Address** `https://api.hunyuan.cloud.tencent.com/v1`
+
+**API Key** Refer to the [official documentation](https://cloud.tencent.com/document/product/1729/111008)
+
+**model** https://cloud.tencent.com/document/product/1729/97731
+
 <!-- tabs:end -->
 
 ### Dedicated Interfaces for Specific Platforms
@@ -182,12 +190,6 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 **API Key** https://dashboard.cohere.com/api-keys 
 
 **model** https://docs.cohere.com/docs/models 
-
-### **Tencent Hunyuan Large Model**
-
-**SecretId** & **SecretKey** https://console.cloud.tencent.com/cam/capi 
-
-**model** https://cloud.tencent.com/document/product/1729/97731 
 
 ### **Baidu Qianfan Large Model**
 

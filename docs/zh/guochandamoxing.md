@@ -155,6 +155,15 @@
 
 **model** https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-2-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0
 
+### **腾讯混元大模型**
+
+**API接口地址** `https://api.hunyuan.cloud.tencent.com/v1`
+<!-- 
+**SecretId** & **SecretKey** https://console.cloud.tencent.com/cam/capi -->
+**API Key** 参考[官方文档](https://cloud.tencent.com/document/product/1729/111008)
+
+**model** https://cloud.tencent.com/document/product/1729/97731
+
 <!-- tabs:end -->
 
 ### 特定平台的专用接口
@@ -187,12 +196,6 @@
 **API Key** https://dashboard.cohere.com/api-keys
 
 **model** https://docs.cohere.com/docs/models
-
-### **腾讯混元大模型**
-
-**SecretId** & **SecretKey** https://console.cloud.tencent.com/cam/capi
-
-**model** https://cloud.tencent.com/document/product/1729/97731
 
 ### **百度千帆大模型**
 
