@@ -646,6 +646,7 @@ class AnkiWindow(QWidget):
         return html
 
     def wordedit_t(self, text):
+        self.currentword = text
         if text and len(text):
             self.zhuyinedit.setPlainText(
                 self.makerubyhtml(gobject.baseobject.parsehira(text))
@@ -654,7 +655,6 @@ class AnkiWindow(QWidget):
             self.zhuyinedit.clear()
 
     def reset(self, text):
-        self.currentword = text
         self.wordedit.setText(text)
         self.editpath.clear()
         self.audiopath.clear()
