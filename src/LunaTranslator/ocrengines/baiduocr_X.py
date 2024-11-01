@@ -133,6 +133,7 @@ class OCR(baseocr):
 
     def langmap(self):
         return {
+            "auto": "auto_detect",
             "zh": "CHN_ENG",
             "en": "ENG",
             "ja": "JAP",
