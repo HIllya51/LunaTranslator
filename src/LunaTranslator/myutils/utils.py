@@ -384,33 +384,6 @@ def selectdebugfile(path: str, ismypost=False):
     return p
 
 
-def checkchaos(text):
-    code = globalconfig["accept_encoding"]
-
-    text = filter(lambda x: x not in globalconfig["accept_character"], text)
-
-    if globalconfig["accept_use_unicode"]:
-        _start = globalconfig["accept_use_unicode_start"]
-        _end = globalconfig["accept_use_unicode_end"]
-        chaos = False
-        for ucode in map(lambda x: ord(x), text):
-            print(ucode, _start, _end)
-            if ucode < _start or ucode > _end:
-                chaos = True
-                break
-    else:
-        chaos = True
-        text = "".join(text)
-        for c in code:
-            try:
-                text.encode(c)
-                chaos = False
-                break
-            except:
-                pass
-        return chaos
-
-
 def checkencoding(code):
 
     try:
@@ -1065,3 +1038,23 @@ def is_ascii_symbo(c: str):
 
 def is_ascii_control(c: str):
     return cinranges(c, (0, 0x1F), (0x7F, 0xA0))
+
+
+
+def checkchaos(text):
+    code = globalconfig["accept_encoding"]
+    text = filter(lambda x: x not in globalconfig["accept_character"], text)
+
+    if globalconfig["accept_use_unicode"]:
+        _start = globalconfig["accept_use_unicode_start"]
+        _end = globalconfig["accept_use_unicode_end"]
+        return not all(cinranges(c,(_start, _end)) for c in text)
+    else:
+        text = "".join(text)
+        for c in code:
+            try:
+                text.encode(c)
+                return False
+            except:
+                pass
+        return True
