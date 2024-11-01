@@ -2362,3 +2362,12 @@ class FQLineEdit(QLineEdit):
         # 点击浏览器后，无法重新获取焦点。
         windows.SetFocus(int(self.winId()))
         return super().mousePressEvent(a0)
+
+
+class LRButton(LPushButton):
+    rightclick = pyqtSignal()
+    def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
+        if self.rect().contains(ev.pos()):
+            if ev.button() == Qt.MouseButton.RightButton:
+                self.rightclick.emit()
+        return super().mouseReleaseEvent(ev)

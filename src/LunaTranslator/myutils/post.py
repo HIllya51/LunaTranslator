@@ -10,6 +10,8 @@ from myutils.utils import (
     getlanguagespace,
     parsemayberegexreplace,
     safe_escape,
+    is_ascii_symbo,
+    is_ascii_control
 )
 from myutils.config import (
     postprocessconfig,
@@ -280,13 +282,7 @@ def _remove_symbo(line):
 
     newline = ""
     for r in line:
-        _ord = ord(r)
-        if (
-            (_ord >= 0x21 and _ord <= 0x2F)
-            or (_ord >= 0x3A and _ord <= 0x40)
-            or (_ord >= 0x5B and _ord <= 0x60)
-            or (_ord >= 0x7B and _ord <= 0x7E)
-        ):
+        if is_ascii_symbo(r):
             continue
         newline += r
     return newline
@@ -295,8 +291,7 @@ def _remove_symbo(line):
 def _remove_control(line):
     newline = ""
     for r in line:
-        _ord = ord(r)
-        if _ord <= 0x1F or (_ord >= 0x7F and _ord < 0xA0):
+        if is_ascii_control(r):
             continue
         newline += r
     return newline

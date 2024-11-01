@@ -1042,3 +1042,26 @@ def dynamicapiname(apiuid):
     return globalconfig["fanyi"][apiuid].get(
         "name_self_set", globalconfig["fanyi"][apiuid]["name"]
     )
+
+
+def inrange(n, s, e):
+    return n >= s and n <= e
+
+
+def inranges(n, *argc):
+    for s, e in argc:
+        if inrange(n, s, e):
+            return True
+    return False
+
+
+def cinranges(n, *argc):
+    return inranges(ord(n), *argc)
+
+
+def is_ascii_symbo(c: str):
+    return cinranges(c, (0x21, 0x2F), (0x3A, 0x40), (0x5B, 0x60), (0x7B, 0x7E))
+
+
+def is_ascii_control(c: str):
+    return cinranges(c, (0, 0x1F), (0x7F, 0xA0))

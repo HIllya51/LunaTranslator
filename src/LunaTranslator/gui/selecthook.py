@@ -4,7 +4,7 @@ from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, windows, winsharedutils, gobject
 from myutils.config import savehook_new_data, static_data, globalconfig, _TR
-from myutils.utils import checkchaos, get_time_stamp, dynamiclink
+from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
 from myutils.wrapper import Singleton_close
 from gui.dialog_savedgame import dialog_setting_game
 from gui.usefulwidget import (
@@ -149,7 +149,6 @@ class PatternValidator(QValidator):
             return QValidator.State.Intermediate, input_str, pos
         else:
             return QValidator.State.Invalid, input_str, pos
-
 
 
 class searchhookparam(LDialog):
@@ -751,32 +750,18 @@ class hookselect(closeashidewindow):
         except:
             print_exc()
 
-    def gethide(self, res):
-        hide = False
-
+    def gethide(self, res: str):
         if self.checkfilt_notascii.isChecked():
-            try:
-                res.encode("ascii")
-                hide = True
-            except:
-                pass
+            if res.isascii():
+                return True
         if self.checkfilt_notshiftjis.isChecked():
             if checkchaos(res):
-                hide = True
-
+                return True
         if self.checkfilt_notcontrol.isChecked():
-            lres = list(res)
-            for r in lres:
-                _ord = ord(r)
-                if (
-                    (_ord >= 0x21 and _ord <= 0x2F)
-                    or (_ord >= 0x3A and _ord <= 0x40)
-                    or (_ord >= 0x5B and _ord <= 0x60)
-                    or (_ord >= 0x7B and _ord <= 0x7E)
-                ):
-                    hide = True
-                    break
-        return hide
+            for r in res:
+                if is_ascii_control(r):
+                    return True
+        return False
 
     def searchtextfunc2(self):
         searchtext = self.searchtext2.text()
@@ -784,11 +769,9 @@ class hookselect(closeashidewindow):
         for index in range(len(self.allres)):
             _index = len(self.allres) - 1 - index
 
-            resbatch = self.allres[list(self.allres.keys())[_index]]
+            res = "\n".join(self.allres[list(self.allres.keys())[_index]])
 
-            hide = all(
-                [(searchtext not in res) or self.gethide(res) for res in resbatch]
-            )
+            hide = (searchtext not in res) or self.gethide(res)
             self.tttable2.setRowHidden(_index, hide)
 
     def searchtextfunc(self):

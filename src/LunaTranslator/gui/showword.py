@@ -34,6 +34,7 @@ from gui.usefulwidget import (
     getIconButton,
     saveposwindow,
     tabadd_lazy,
+    LRButton,
 )
 from gui.dynalang import (
     LPushButton,
@@ -454,6 +455,8 @@ class AnkiWindow(QWidget):
         self.editpath.textChanged.connect(self.wrappedpixmap)
         self.example = FQPlainTextEdit()
         self.zhuyinedit = FQPlainTextEdit()
+        self.wordedit = FQLineEdit()
+        self.wordedit.textChanged.connect(self.wordedit_t)
         self.example.hiras = None
 
         def __():
@@ -494,6 +497,12 @@ class AnkiWindow(QWidget):
         )
         folder_open3 = QPushButton(qtawesome.icon("fa.folder-open"), "")
         folder_open3.clicked.connect(functools.partial(self.selecfile2, self.editpath))
+        def createadd():
+            btn = LRButton("添加")
+            btn.clicked.connect(functools.partial(self.errorwrap, False))
+            btn.rightclick.connect(functools.partial(self.errorwrap, True))
+            return btn
+
         layout.addLayout(
             getboxlayout(
                 [
@@ -522,6 +531,11 @@ class AnkiWindow(QWidget):
                                         ]
                                     ),
                                 ]
+                            ),
+                            getboxlayout(
+                                [LLabel("单词"), self.wordedit],
+                                QHBoxLayout,
+                                margin0=True,
                             ),
                             getboxlayout(
                                 [LLabel("注音"), self.zhuyinedit],
@@ -586,26 +600,13 @@ class AnkiWindow(QWidget):
                                 ]
                             ),
                             self.viewimagelabel,
+                            createadd
                         ],
                         QVBoxLayout,
                     ),
                 ]
             )
         )
-
-        class LRButton(LPushButton):
-            rightclick = pyqtSignal()
-
-            def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
-                if self.rect().contains(ev.pos()):
-                    if ev.button() == Qt.MouseButton.RightButton:
-                        self.rightclick.emit()
-                return super().mouseReleaseEvent(ev)
-
-        btn = LRButton("添加")
-        btn.clicked.connect(functools.partial(self.errorwrap, False))
-        btn.rightclick.connect(functools.partial(self.errorwrap, True))
-        layout.addWidget(btn)
 
         self.__ocrsettext.connect(self.example.appendPlainText)
 
@@ -644,14 +645,17 @@ class AnkiWindow(QWidget):
         html = "<ruby>" + html + "</ruby>"
         return html
 
-    def reset(self, text):
-        self.currentword = text
+    def wordedit_t(self, text):
         if text and len(text):
             self.zhuyinedit.setPlainText(
                 self.makerubyhtml(gobject.baseobject.parsehira(text))
             )
         else:
             self.zhuyinedit.clear()
+
+    def reset(self, text):
+        self.currentword = text
+        self.wordedit.setText(text)
         self.editpath.clear()
         self.audiopath.clear()
         self.audiopath_sentence.clear()
@@ -915,10 +919,9 @@ class showdiction(LMainWindow):
     def __init__(self, parent: QWidget):
         super(showdiction, self).__init__(parent)
         wordfilter = QHBoxLayout()
-        word = QLineEdit()
-        self.word = word
-        word.returnPressed.connect(self.setwordfilter)
-        wordfilter.addWidget(word)
+        self.word = FQLineEdit()
+        self.word.returnPressed.connect(self.setwordfilter)
+        wordfilter.addWidget(self.word)
         butn = getIconButton(self.setwordfilter, "fa.filter")
         wordfilter.addWidget(butn)
 
