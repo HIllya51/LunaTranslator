@@ -407,7 +407,7 @@ class basetrans(commonbase):
 
                 self.maybeneedreinit()
 
-                if self.using_gpt_dict:
+                if self.using_gpt_dict or self.transtype == "pre":
                     contentsolved = self.__parse_gpt_dict(
                         contentsolved, optimization_params
                     )
