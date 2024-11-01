@@ -636,23 +636,12 @@ class hookselect(closeashidewindow):
 
         self.userhooklayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.userhooklayout)
-        self.userhook = QLineEdit()
-        self.userhooklayout.addWidget(self.userhook)
-        self.userhookinsert = LPushButton("插入特殊码")
-        self.userhookinsert.clicked.connect(self.inserthook)
-        self.userhooklayout.addWidget(self.userhookinsert)
 
-        self.userhookinsert = QPushButton(icon=qtawesome.icon("fa.question"))
-        self.userhookinsert.clicked.connect(lambda: dialog_showinfo(self))
-        self.userhooklayout.addWidget(self.userhookinsert)
-
-        self.userhookfind = LPushButton("搜索特殊码")
-        self.userhookfind.clicked.connect(self.findhook)
-        self.userhooklayout.addWidget(self.userhookfind)
-
+        self.searchtext = QLineEdit()
+        self.searchtext.textChanged.connect(self.searchtextfunc)
+        self.userhooklayout.addWidget(self.searchtext)
         self.opensolvetextb = LPushButton("文本处理")
         self.opensolvetextb.clicked.connect(self.opensolvetext)
-        self.userhooklayout.addWidget(QLabel("      "))
         self.userhooklayout.addWidget(self.opensolvetextb)
 
         self.settingbtn = LPushButton("游戏设置")
@@ -662,7 +651,6 @@ class hookselect(closeashidewindow):
         #################
         self.searchtextlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchtextlayout)
-        self.searchtext = QLineEdit()
         __ = LPushButton("游戏适配")
         __.clicked.connect(
             lambda: gobject.baseobject.openlink(
@@ -670,10 +658,21 @@ class hookselect(closeashidewindow):
             )
         )
         self.searchtextlayout.addWidget(__)
-        self.searchtextlayout.addWidget(self.searchtext)
-        self.searchtextbutton = LPushButton("搜索")
-        self.searchtextbutton.clicked.connect(self.searchtextfunc)
-        self.searchtextlayout.addWidget(self.searchtextbutton)
+        
+        self.userhook = QLineEdit()
+        self.searchtextlayout.addWidget(self.userhook)
+        self.userhookinsert = LPushButton("插入特殊码")
+        self.userhookinsert.clicked.connect(self.inserthook)
+        self.searchtextlayout.addWidget(self.userhookinsert)
+
+        self.userhookinsert = QPushButton(icon=qtawesome.icon("fa.question"))
+        self.userhookinsert.clicked.connect(lambda: dialog_showinfo(self))
+        self.searchtextlayout.addWidget(self.userhookinsert)
+
+        self.userhookfind = LPushButton("搜索特殊码")
+        self.userhookfind.clicked.connect(self.findhook)
+        self.searchtextlayout.addWidget(self.userhookfind)
+
         ###################
         self.ttCombomodelmodel2 = LStandardItemModel()
         self.tttable2 = TableViewW()
@@ -774,9 +773,7 @@ class hookselect(closeashidewindow):
             hide = (searchtext not in res) or self.gethide(res)
             self.tttable2.setRowHidden(_index, hide)
 
-    def searchtextfunc(self):
-        searchtext = self.searchtext.text()
-
+    def searchtextfunc(self, searchtext):
         # self.ttCombomodelmodel.blockSignals(True)
         try:
             for row in range(self.ttCombomodelmodel.rowCount()):
