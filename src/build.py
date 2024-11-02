@@ -301,11 +301,19 @@ if __name__ == "__main__":
         downloadbass()
         downLunaHook()
         os.chdir(rootDir)
+                
+        def listdir(d):
+            for f in os.walk(d):
+                _dir, _, _fs = f
+                for _f in _fs:
+                    print(os.path.abspath(os.path.join(_dir, _f)))
+
         shutil.copytree(
             f"{rootDir}/../build/LunaTranslator",
             f"{rootDir}/build/LunaTranslator",
             dirs_exist_ok=True,
         )
+        listdir(f"{rootDir}/build/LunaTranslator")
         shutil.copytree(
             f"{rootDir}/../build/LunaTranslator_x86",
             f"{rootDir}/build/LunaTranslator_x86",
@@ -324,6 +332,10 @@ if __name__ == "__main__":
         os.chdir(rootDir + "\\plugins\\scripts")
         subprocess.run(f"python copytarget.py 1")
         subprocess.run(f"python copytarget.py 0")
+        
+        listdir(f"{rootDir}/build/LunaTranslator")
         os.chdir(rootDir)
         os.system("python collectall.py 32")
         os.system("python collectall.py 64")
+        
+        listdir(f"{rootDir}/build/LunaTranslator")
