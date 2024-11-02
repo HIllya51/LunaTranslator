@@ -322,15 +322,23 @@ if __name__ == "__main__":
             os.system("python collectall.py 64")
         os.chdir(rootDir)
 
+        def listdir(d):
+            for f in os.walk(d):
+                _dir, _, _fs = f
+                for _f in _fs:
+                    print(os.path.abspath(os.path.join(_dir, _f)))
+
         if arch == "x86":
             shutil.copytree(
                 f"{rootDir}/../build/LunaTranslator_x86",
                 f"{rootDir}/build/LunaTranslator_x86",
                 dirs_exist_ok=True,
             )
+            listdir(f"{rootDir}/build/LunaTranslator_x86")
         else:
             shutil.copytree(
                 f"{rootDir}/../build/LunaTranslator",
                 f"{rootDir}/build/LunaTranslator",
                 dirs_exist_ok=True,
             )
+            listdir(f"{rootDir}/build/LunaTranslator")
