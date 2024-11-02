@@ -267,20 +267,9 @@ if __name__ == "__main__":
     if sys.argv[1] == "cpp":
         installVCLTL()
         buildPlugins()
-    elif sys.argv[1] == "py":
+    elif sys.argv[1] == "pyrt":
         arch = sys.argv[2]
         version = sys.argv[3]
-        createPluginDirs()
-        downloadsomething()
-        downloadBrotli()
-        downloadLocaleEmulator()
-        downloadNtlea()
-        downloadCurl()
-        downloadOCRModel()
-        downloadcommon()
-        downloadbass()
-        downLunaHook()
-        os.chdir(rootDir)
         if arch == "x86":
             py37Path = (
                 f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x86\\python.exe"
@@ -298,12 +287,26 @@ if __name__ == "__main__":
         # 放弃，3.8需要安装KB2533623才能运行，3.7用不着。
         subprocess.run(f"{py37Path} collectpyruntime.py")
     elif sys.argv[1] == "merge":
-        1
-
-    def listdir():
+        createPluginDirs()
+        downloadsomething()
+        downloadBrotli()
+        downloadLocaleEmulator()
+        downloadNtlea()
+        downloadCurl()
+        downloadOCRModel()
+        downloadcommon()
+        downloadbass()
+        downLunaHook()
+        os.chdir(rootDir)
+        shutil.copytree(f'{rootDir}/../build/cpp', f'{rootDir}/plugins/builds',dirs_exist_ok=True)
+        os.chdir(rootDir + "\\plugins\\scripts")
+        subprocess.run(f"python copytarget.py 1")
+        subprocess.run(f"python copytarget.py 0")
+        shutil.copytree(f'{rootDir}/../build/LunaTranslator', f'{rootDir}/plugins/builds',dirs_exist_ok=True)
+        shutil.copytree(f'{rootDir}/../build/LunaTranslator_x86', f'{rootDir}/plugins/builds',dirs_exist_ok=True)
         for f in os.walk("."):
             _dir, _, _fs = f
             for _f in _fs:
                 print(os.path.abspath(os.path.join(_dir, _f)))
-
-    listdir()
+        os.system('python collectall.py 32')
+        os.system('python collectall.py 64')

@@ -13,7 +13,7 @@ jobs:
       - id: loadversion
         run: python src/build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
     
-  build_py:
+  pyrt:
     runs-on: windows-latest
     strategy:
       matrix:
@@ -29,7 +29,7 @@ jobs:
           python-version: '3.7.9'
           architecture: ${{ matrix.architecture }}
       
-      - run:  python src/build.py py ${{ matrix.architecture }} 3.7.9
+      - run:  python src/build.py pyrt ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
@@ -53,7 +53,7 @@ jobs:
   
   release:
     runs-on: windows-latest
-    needs: [build_py,build_cpp,loadversion]
+    needs: [pyrt,build_cpp,loadversion]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -64,11 +64,11 @@ jobs:
         with:
           name: cpp
           path: src/plugins/builds
-      # - name: Release LunaTranslator
-      #   uses: softprops/action-gh-release@v2
-      #   with:
-      #     tag_name: ${{ needs.loadversion.outputs.version }}
-      #     files: |
-      #       src/build/${{ matrix.fname }}.zip
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.loadversion.outputs.version }}
+          files: |
+            src/build/LunaTranslator_x86.zip
+            src/build/LunaTranslator.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
