@@ -17,6 +17,10 @@ if sys.argv[1] == "loadversion":
         print("version=" + versionstring)
         exit()
 
+print(sys.version)
+print(__file__)
+print(rootDir)
+
 mylinks = {
     "LunaHook": "https://github.com/HIllya51/LunaHook/releases/latest/download/Release_English.zip",
     "ocr_models": {
