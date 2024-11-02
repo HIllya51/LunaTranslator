@@ -37,8 +37,8 @@ copycheck(os.path.join(launch, "LunaTranslator.exe"), targetdir)
 copycheck(os.path.join(launch, "LunaTranslator_admin.exe"), targetdir)
 copycheck(os.path.join(launch, "LunaTranslator_debug.exe"), targetdir)
 copycheck("./LunaTranslator", targetdir)
-copycheck(pyrt, targetdir + "/files")
 copycheck(r".\files", targetdir)
+copycheck(pyrt, targetdir + "/files")
 try:
     shutil.rmtree(rf"{targetdir}\files\plugins\{baddll}")
 except:
