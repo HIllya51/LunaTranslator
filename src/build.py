@@ -302,6 +302,16 @@ if __name__ == "__main__":
         downLunaHook()
         os.chdir(rootDir)
         shutil.copytree(
+            f"{rootDir}/../build/LunaTranslator",
+            f"{rootDir}/build/LunaTranslator",
+            dirs_exist_ok=True,
+        )
+        shutil.copytree(
+            f"{rootDir}/../build/LunaTranslator_x86",
+            f"{rootDir}/build/LunaTranslator_x86",
+            dirs_exist_ok=True,
+        )
+        shutil.copytree(
             f"{rootDir}/../build/cpp_32",
             f"{rootDir}/plugins/builds",
             dirs_exist_ok=True,
@@ -314,16 +324,6 @@ if __name__ == "__main__":
         os.chdir(rootDir + "\\plugins\\scripts")
         subprocess.run(f"python copytarget.py 1")
         subprocess.run(f"python copytarget.py 0")
-        shutil.copytree(
-            f"{rootDir}/../build/LunaTranslator",
-            f"{rootDir}/build/LunaTranslator",
-            dirs_exist_ok=True,
-        )
-        shutil.copytree(
-            f"{rootDir}/../build/LunaTranslator_x86",
-            f"{rootDir}/build/LunaTranslator",
-            dirs_exist_ok=True,
-        )
         os.chdir(rootDir)
         os.system("python collectall.py 32")
         os.system("python collectall.py 64")

@@ -63,10 +63,6 @@ jobs:
         with:
             path: build
       - run:  python src/build.py merge
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cpp
-          path: src/plugins/builds
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
