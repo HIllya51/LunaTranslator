@@ -220,23 +220,25 @@ def downLunaHook():
     )
 
 
-def buildPlugins():
+def buildPlugins(arch):
     os.chdir(rootDir + "\\plugins\\scripts")
     subprocess.run("python fetchwebview2.py")
-    subprocess.run(
-        f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
-    )
-    subprocess.run(
-        f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
-    )
+    if arch == "32":
+        subprocess.run(
+            f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
+        )
+        subprocess.run(
+            f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
+        )
     # subprocess.run(f"python copytarget.py 1")
-    subprocess.run(
-        f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
-    )
-    subprocess.run(
-        f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
-    )
-    # subprocess.run(f"python copytarget.py 0")
+    else:
+        subprocess.run(
+            f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
+        )
+        subprocess.run(
+            f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
+        )
+        # subprocess.run(f"python copytarget.py 0")
 
 
 def downloadsomething():
@@ -263,12 +265,12 @@ def downloadbass():
 
 if __name__ == "__main__":
     os.chdir(rootDir)
+    arch = sys.argv[2]
     os.makedirs("temp", exist_ok=True)
     if sys.argv[1] == "cpp":
         installVCLTL()
-        buildPlugins()
+        buildPlugins(arch)
     elif sys.argv[1] == "pyrt":
-        arch = sys.argv[2]
         version = sys.argv[3]
         if arch == "x86":
             py37Path = (
@@ -298,15 +300,33 @@ if __name__ == "__main__":
         downloadbass()
         downLunaHook()
         os.chdir(rootDir)
-        shutil.copytree(f'{rootDir}/../build/cpp', f'{rootDir}/plugins/builds',dirs_exist_ok=True)
+        shutil.copytree(
+            f"{rootDir}/../build/cpp_32",
+            f"{rootDir}/plugins/builds",
+            dirs_exist_ok=True,
+        )
+        shutil.copytree(
+            f"{rootDir}/../build/cpp_64",
+            f"{rootDir}/plugins/builds",
+            dirs_exist_ok=True,
+        )
         os.chdir(rootDir + "\\plugins\\scripts")
         subprocess.run(f"python copytarget.py 1")
         subprocess.run(f"python copytarget.py 0")
-        shutil.copytree(f'{rootDir}/../build/LunaTranslator', f'{rootDir}/plugins/builds',dirs_exist_ok=True)
-        shutil.copytree(f'{rootDir}/../build/LunaTranslator_x86', f'{rootDir}/plugins/builds',dirs_exist_ok=True)
+        shutil.copytree(
+            f"{rootDir}/../build/LunaTranslator",
+            f"{rootDir}/plugins/builds",
+            dirs_exist_ok=True,
+        )
+        shutil.copytree(
+            f"{rootDir}/../build/LunaTranslator_x86",
+            f"{rootDir}/plugins/builds",
+            dirs_exist_ok=True,
+        )
+        os.chdir(rootDir)
         for f in os.walk("."):
             _dir, _, _fs = f
             for _f in _fs:
                 print(os.path.abspath(os.path.join(_dir, _f)))
-        os.system('python collectall.py 32')
-        os.system('python collectall.py 64')
+        os.system("python collectall.py 32")
+        os.system("python collectall.py 64")

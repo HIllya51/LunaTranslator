@@ -36,6 +36,9 @@ jobs:
           path: src/build/${{ matrix.fname }}
   build_cpp:
     runs-on: windows-latest
+    strategy:
+      matrix: 
+        arch: [32,64]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,10 +47,10 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python src/build.py cpp
+      - run:  python src/build.py cpp ${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
-          name: cpp
+          name: cpp_${{ matrix.arch }}
           path: src/plugins/builds
           
   
