@@ -29,7 +29,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: pyrt_${{ matrix.architecture }}
-          path: src/build/runtime
+          path: src/pyrt
   build_cpp:
     runs-on: windows-latest
     strategy:

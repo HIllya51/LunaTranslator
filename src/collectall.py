@@ -8,12 +8,12 @@ if sys.argv[1] == "32":
     targetdir = r"build\LunaTranslator_x86"
     launch = r"plugins\builds\_x86"
     baddll = "DLL64"
-    pyrt = "../build/pyrt_x86"
+    pyrt = "../build/runtime"
 else:
     baddll = "DLL32"
     launch = r"plugins\builds\_x64"
     targetdir = r"build\LunaTranslator"
-    pyrt = "../build/pyrt_x64"
+    pyrt = "../build/runtime"
 
 
 def copycheck(src, tgt):
@@ -37,7 +37,7 @@ copycheck(os.path.join(launch, "LunaTranslator.exe"), targetdir)
 copycheck(os.path.join(launch, "LunaTranslator_admin.exe"), targetdir)
 copycheck(os.path.join(launch, "LunaTranslator_debug.exe"), targetdir)
 copycheck("./LunaTranslator", targetdir)
-copycheck(pyrt, targetdir + "/LunaTranslator")
+copycheck(pyrt, targetdir + "/files")
 copycheck(r".\files", targetdir)
 try:
     shutil.rmtree(rf"{targetdir}\files\plugins\{baddll}")

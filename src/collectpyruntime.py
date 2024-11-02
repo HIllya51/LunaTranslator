@@ -6,7 +6,7 @@ import sys
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = platform.architecture()[0] == "32bit"
-runtime = r"build\runtime"
+runtime = r"pyrt\runtime"
 if x86:
     webviewpath = r"webviewpy\platform\win32\x86"
     downlevel = r"C:\Windows\SysWOW64\downlevel"
