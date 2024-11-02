@@ -7,6 +7,8 @@ from urllib.parse import urljoin
 rootDir = os.path.dirname(__file__)
 if not rootDir:
     rootDir = os.path.abspath(".")
+else:
+    rootDir = os.path.abspath(rootDir)
 if sys.argv[1] == "loadversion":
     os.chdir(rootDir)
     with open("plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
@@ -227,14 +229,14 @@ def buildPlugins():
     subprocess.run(
         f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
     )
-    #subprocess.run(f"python copytarget.py 1")
+    # subprocess.run(f"python copytarget.py 1")
     subprocess.run(
         f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
     )
     subprocess.run(
         f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
     )
-    #subprocess.run(f"python copytarget.py 0")
+    # subprocess.run(f"python copytarget.py 0")
 
 
 def downloadsomething():
@@ -262,7 +264,7 @@ def downloadbass():
 if __name__ == "__main__":
     os.chdir(rootDir)
     if sys.argv[1] == "cpp":
-        #installVCLTL()
+        # installVCLTL()
         os.system("git submodule update --init --recursive")
         buildPlugins()
     elif sys.argv[1] == "py":
@@ -296,13 +298,13 @@ if __name__ == "__main__":
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\unittest"))
         # 放弃，3.8需要安装KB2533623才能运行，3.7用不着。
         subprocess.run(f"{py37Path} collectpyruntime.py")
-    elif sys.argv[1]=='merge':
+    elif sys.argv[1] == "merge":
         1
 
-        
     def listdir():
         for f in os.walk("."):
             _dir, _, _fs = f
             for _f in _fs:
                 print(os.path.abspath(os.path.join(_dir, _f)))
+
     listdir()
