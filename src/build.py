@@ -264,8 +264,7 @@ def downloadbass():
 if __name__ == "__main__":
     os.chdir(rootDir)
     if sys.argv[1] == "cpp":
-        # installVCLTL()
-        os.system("git submodule update --init --recursive")
+        installVCLTL()
         buildPlugins()
     elif sys.argv[1] == "py":
         arch = sys.argv[2]
