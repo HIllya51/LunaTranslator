@@ -22,8 +22,8 @@ def prepareqtenv():
     import windows
 
     # win7 no vcredist2015
-    windows.addenvpath("./LunaTranslator/runtime/")
-    windows.loadlibrary("./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
+    windows.addenvpath("./files/runtime/")
+    windows.loadlibrary("./files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
 
     from qtsymbols import QApplication, isqt5, Qt, QFont, QLocale
 
@@ -31,10 +31,10 @@ def prepareqtenv():
 
     if isqt5:
         # 中文字符下不能自动加载
-        QApplication.addLibraryPath("./LunaTranslator/runtime/PyQt5/Qt5/plugins")
+        QApplication.addLibraryPath("./files/runtime/PyQt5/Qt5/plugins")
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
-    if os.path.exists("./LunaTranslator/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
+    if os.path.exists("./files/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
         # maybe use qwebengine
 
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
