@@ -316,18 +316,14 @@ if __name__ == "__main__":
         subprocess.run(f"python copytarget.py 0")
         shutil.copytree(
             f"{rootDir}/../build/LunaTranslator",
-            f"{rootDir}/plugins/builds",
+            f"{rootDir}/build/LunaTranslator",
             dirs_exist_ok=True,
         )
         shutil.copytree(
             f"{rootDir}/../build/LunaTranslator_x86",
-            f"{rootDir}/plugins/builds",
+            f"{rootDir}/build/LunaTranslator",
             dirs_exist_ok=True,
         )
         os.chdir(rootDir)
-        for f in os.walk("."):
-            _dir, _, _fs = f
-            for _f in _fs:
-                print(os.path.abspath(os.path.join(_dir, _f)))
         os.system("python collectall.py 32")
         os.system("python collectall.py 64")
