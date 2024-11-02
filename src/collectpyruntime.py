@@ -8,14 +8,13 @@ pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = platform.architecture()[0] == "32bit"
 runtime = r"build\runtime"
 if x86:
-    webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x86\webview.dll"
+    webviewpath = r"webviewpy\platform\win32\x86"
     downlevel = r"C:\Windows\SysWOW64\downlevel"
 else:
-    webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x64\webview.dll"
+    webviewpath = r"webviewpy\platform\win32\x64"
     downlevel = r"C:\Windows\system32\downlevel"
 py37Path = os.path.dirname(sys.executable)
 print(py37Path)
-py37Pathwebview = os.path.join(py37Path, webviewappendix)
 
 
 def get_dependencies(filename):
@@ -113,6 +112,12 @@ copycheck(os.path.join(py37Path, "DLLs/libffi-7.dll"), runtime)
 
 
 copycheck(rf"{downlevel}\ucrtbase.dll", runtime)
+
+copycheck(
+    os.path.join(py37Path, "Lib/site-packages", webviewpath, "webview.dll"),
+    os.path.join(runtime, webviewpath),
+)
+
 copycheck(
     os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/vcruntime140.dll"),
     os.path.join(runtime),

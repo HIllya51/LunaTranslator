@@ -2,7 +2,7 @@ from qtsymbols import *
 import os, platform, functools, uuid, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
-from webviewpy import webview_native_handle_kind_t, Webview, declare_library_path
+from webviewpy import webview_native_handle_kind_t, Webview
 from winsharedutils import HTMLBrowser
 from myutils.config import _TR, globalconfig, _TRL
 from myutils.wrapper import Singleton_close, tryprint
@@ -1225,15 +1225,6 @@ class WebivewWidget(abstractwebview):
 
     def __init__(self, parent=None, debug=True, usedarklight=True) -> None:
         super().__init__(parent)
-        declare_library_path(
-            os.path.abspath(
-                os.path.join(
-                    "files/plugins/",
-                    ("DLL32", "DLL64")[platform.architecture()[0] == "64bit"],
-                    "webview",
-                )
-            )
-        )
         self.webview = None
         self.webview = Webview(debug=debug, window=int(self.winId()))
         zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(
