@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: loadversion
-        run: python build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+        run: python src/build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
     
   build_py:
     runs-on: windows-latest
@@ -23,6 +23,7 @@ jobs:
           - architecture: x64
             fname: LunaTranslator
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.7.9'
