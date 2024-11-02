@@ -293,3 +293,11 @@ if __name__ == "__main__":
         subprocess.run(f"{py37Path} collectpyruntime.py")
     elif sys.argv[1]=='merge':
         1
+
+        
+    def listdir():
+        for f in os.walk("."):
+            _dir, _, _fs = f
+            for _f in _fs:
+                print(os.path.abspath(os.path.join(_dir, _f)))
+    listdir()
