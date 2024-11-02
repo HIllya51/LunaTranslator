@@ -8,12 +8,12 @@ if sys.argv[1] == "32":
     targetdir = r"build\LunaTranslator_x86"
     launch = r"plugins\builds\_x86"
     baddll = "DLL64"
-    pyrt = "../build/runtime"
+    pyrt = "../build/pyrt_x86/runtime"
 else:
     baddll = "DLL32"
     launch = r"plugins\builds\_x64"
     targetdir = r"build\LunaTranslator"
-    pyrt = "../build/runtime"
+    pyrt = "../build/pyrt_x64/runtime"
 
 
 def copycheck(src, tgt):
