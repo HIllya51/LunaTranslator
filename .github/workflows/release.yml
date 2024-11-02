@@ -57,17 +57,23 @@ jobs:
   release:
     runs-on: windows-latest
     needs: [pyrt,build_cpp,loadversion]
+    strategy:
+      matrix:
+        include:
+          - architecture: x86
+            fname: LunaTranslator_x86
+          - architecture: x64
+            fname: LunaTranslator
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - run:  python src/build.py merge
+      - run:  python src/build.py merge ${{ matrix.architecture }}
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
-            src/build/LunaTranslator_x86.zip
-            src/build/LunaTranslator.zip
+            src/build/${{matrix.fname}}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
