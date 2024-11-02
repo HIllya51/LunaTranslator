@@ -265,12 +265,13 @@ def downloadbass():
 
 if __name__ == "__main__":
     os.chdir(rootDir)
-    arch = sys.argv[2]
     os.makedirs("temp", exist_ok=True)
     if sys.argv[1] == "cpp":
         installVCLTL()
+        arch = sys.argv[2]
         buildPlugins(arch)
     elif sys.argv[1] == "pyrt":
+        arch = sys.argv[2]
         version = sys.argv[3]
         if arch == "x86":
             py37Path = (
