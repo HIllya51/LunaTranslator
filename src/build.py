@@ -263,13 +263,13 @@ def downloadbass():
 
 if __name__ == "__main__":
     os.chdir(rootDir)
+    os.makedirs("temp", exist_ok=True)
     if sys.argv[1] == "cpp":
         installVCLTL()
         buildPlugins()
     elif sys.argv[1] == "py":
         arch = sys.argv[2]
         version = sys.argv[3]
-        os.makedirs("temp", exist_ok=True)
         createPluginDirs()
         downloadsomething()
         downloadBrotli()
