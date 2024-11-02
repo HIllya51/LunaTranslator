@@ -315,30 +315,24 @@ if __name__ == "__main__":
         os.chdir(rootDir + "\\plugins\\scripts")
         subprocess.run(f"python copytarget.py 1")
         subprocess.run(f"python copytarget.py 0")
-        os.chdir(rootDir)
+
         if arch == "x86":
+            os.chdir(rootDir)
             os.system("python collectall.py 32")
-        else:
-            os.system("python collectall.py 64")
-        os.chdir(rootDir)
-
-        def listdir(d):
-            for f in os.walk(d):
-                _dir, _, _fs = f
-                for _f in _fs:
-                    print(os.path.abspath(os.path.join(_dir, _f)))
-
-        if arch == "x86":
+            os.chdir(rootDir)
             shutil.copytree(
                 f"{rootDir}/../build/LunaTranslator_x86",
                 f"{rootDir}/build/LunaTranslator_x86",
                 dirs_exist_ok=True,
             )
-            listdir(f"{rootDir}/build/LunaTranslator_x86")
+            os.system("python collectall.py 32 zip")
         else:
+            os.chdir(rootDir)
+            os.system("python collectall.py 64")
+            os.chdir(rootDir)
             shutil.copytree(
                 f"{rootDir}/../build/LunaTranslator",
                 f"{rootDir}/build/LunaTranslator",
                 dirs_exist_ok=True,
             )
-            listdir(f"{rootDir}/build/LunaTranslator")
+            os.system("python collectall.py 64 zip")
