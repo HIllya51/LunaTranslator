@@ -4,7 +4,16 @@ on:
   workflow_dispatch:
   
 jobs:
-  build:
+  loadversion:
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.loadversion.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: loadversion
+        run: python build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+    
+  build_py:
     runs-on: windows-latest
     strategy:
       matrix:
@@ -13,47 +22,52 @@ jobs:
             fname: LunaTranslator_x86
           - architecture: x64
             fname: LunaTranslator
-    permissions:
-      id-token: write
-      attestations: write
-      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup Windows 10 SDK
-        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
-        with:
-          sdk-version: 22621
-      - name: Install Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.7.9'
           architecture: ${{ matrix.architecture }}
-      - name: Install Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Run build script
-        run: |
-          python src/build.py ${{ matrix.architecture }} 3.7.9
-      # - name: Generate attestation for artifact
-      #   uses: actions/attest-build-provenance@v1
-      #   with:
-      #     subject-path: build/${{ matrix.fname }}.zip
+      
+      - run:  python src/build.py py ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
-          path: src/build/${{ matrix.fname }}.zip
-          
-      - name: loadversion
-        id: loadversion
-        run: python src/build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
-      - name: Release LunaTranslator
-        uses: softprops/action-gh-release@v2
+          path: src/build/${{ matrix.fname }}
+  build_cpp:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
         with:
-          tag_name: ${{ steps.loadversion.outputs.version }}
-          files: |
-            src/build/${{ matrix.fname }}.zip
-            src/build/${{ matrix.fname }}.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          submodules: recursive
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      
+      - run:  python src/build.py cpp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cpp
+          path: src/plugins/builds
+          
+  
+  release:
+    runs-on: windows-latest
+    needs: [build_py,build_cpp,loadversion]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+            path: build
+      - run:  python src/build.py merge
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cpp
+          path: src/plugins/builds
+      # - name: Release LunaTranslator
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     tag_name: ${{ needs.loadversion.outputs.version }}
+      #     files: |
+      #       src/build/${{ matrix.fname }}.zip
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

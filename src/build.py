@@ -5,6 +5,8 @@ import urllib.request
 from urllib.parse import urljoin
 
 rootDir = os.path.dirname(__file__)
+if not rootDir:
+    rootDir = os.path.abspath(".")
 if sys.argv[1] == "loadversion":
     os.chdir(rootDir)
     with open("plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
@@ -188,7 +190,7 @@ def get_url_as_json(url):
             time.sleep(3)
 
 
-def buildLunaHook():
+def downLunaHook():
 
     os.chdir(rootDir + "\\temp")
     LunaHook_latest = mylinks["LunaHook"]
@@ -221,14 +223,14 @@ def buildPlugins():
     subprocess.run(
         f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
     )
-    subprocess.run(f"python copytarget.py 1")
+    #subprocess.run(f"python copytarget.py 1")
     subprocess.run(
         f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
     )
     subprocess.run(
         f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
     )
-    subprocess.run(f"python copytarget.py 0")
+    #subprocess.run(f"python copytarget.py 0")
 
 
 def downloadsomething():
@@ -254,39 +256,40 @@ def downloadbass():
 
 
 if __name__ == "__main__":
-    arch = sys.argv[1]
-    version = sys.argv[2]
     os.chdir(rootDir)
-    os.system("git submodule update --init --recursive")
-    os.makedirs("temp", exist_ok=True)
-
-    createPluginDirs()
-    downloadsomething()
-    downloadBrotli()
-    downloadLocaleEmulator()
-    downloadNtlea()
-    downloadCurl()
-    downloadOCRModel()
-    downloadcommon()
-    downloadbass()
-    buildLunaHook()
-
-    installVCLTL()
-    buildPlugins()
-
-    os.chdir(rootDir)
-
-    if arch == "x86":
-        py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x86\\python.exe"
-    else:
-        py37Path = f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x64\\python.exe"
-
-    os.chdir(rootDir)
-
-    subprocess.run(f"{py37Path} -m pip install --upgrade pip")
-    subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
-    # 3.8之后会莫名其妙引用这个b东西，然后这个b东西会把一堆没用的东西导入进来
-    shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\test"))
-    shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\unittest"))
-    # 放弃，3.8需要安装KB2533623才能运行，3.7用不着。
-    subprocess.run(f"{py37Path} retrieval.py")
+    if sys.argv[1] == "cpp":
+        #installVCLTL()
+        buildPlugins()
+    elif sys.argv[1] == "py":
+        arch = sys.argv[2]
+        version = sys.argv[3]
+        os.makedirs("temp", exist_ok=True)
+        createPluginDirs()
+        downloadsomething()
+        downloadBrotli()
+        downloadLocaleEmulator()
+        downloadNtlea()
+        downloadCurl()
+        downloadOCRModel()
+        downloadcommon()
+        downloadbass()
+        downLunaHook()
+        os.chdir(rootDir)
+        if arch == "x86":
+            py37Path = (
+                f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x86\\python.exe"
+            )
+        else:
+            py37Path = (
+                f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x64\\python.exe"
+            )
+        os.chdir(rootDir)
+        subprocess.run(f"{py37Path} -m pip install --upgrade pip")
+        subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
+        # 3.8之后会莫名其妙引用这个b东西，然后这个b东西会把一堆没用的东西导入进来
+        shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\test"))
+        shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\unittest"))
+        # 放弃，3.8需要安装KB2533623才能运行，3.7用不着。
+        subprocess.run(f"{py37Path} collectpyruntime.py")
+    elif sys.argv[1]=='merge':
+        1
