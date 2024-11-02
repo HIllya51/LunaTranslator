@@ -1265,20 +1265,6 @@
                             "link": "{main_server}/Resource/Magpie9_Win7"
                         }
                     ]
-                },
-                {
-                    "name": "QWebEngine",
-                    "type": "group",
-                    "links": [
-                        {
-                            "name": "x86",
-                            "link": "{main_server}/Resource/QWebEngine_x86.zip"
-                        },
-                        {
-                            "name": "x64",
-                            "link": "{main_server}/Resource/QWebEngine_x64.zip"
-                        }
-                    ]
                 }
             ]
         }
