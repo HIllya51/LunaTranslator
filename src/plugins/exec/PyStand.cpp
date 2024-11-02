@@ -339,7 +339,7 @@ int main()
 			return 0;
 	}
 	auto __handle = AutoHandle(CreateMutexA(&allAccess, FALSE, "LUNA_UPDATER_BLOCK"));
-	PyStand ps(L"LunaTranslator\\runtime");
+	PyStand ps(L"files\\runtime");
 	if (ps.DetectScript() != 0)
 	{
 		return 3;

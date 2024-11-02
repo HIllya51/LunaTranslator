@@ -7,8 +7,46 @@ on:
     paths: [ '.github/workflows/build.yml','src/**']
 
 jobs:
-  build:
+  pyrt:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        architecture: [x86, x64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.7.9'
+          architecture: ${{ matrix.architecture }}
+      
+      - run:  python src/build.py pyrt ${{ matrix.architecture }} 3.7.9
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pyrt_${{ matrix.architecture }}
+          path: src/pyrt
+  build_cpp:
+    runs-on: windows-latest
+    strategy:
+      matrix: 
+        architecture: [x86, x64]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      
+      - run:  python src/build.py cpp ${{ matrix.architecture }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cpp_${{ matrix.architecture }}
+          path: src/plugins/builds
+          
+  
+  release:
+    runs-on: windows-latest
+    needs: [pyrt,build_cpp]
     strategy:
       matrix:
         include:
@@ -17,27 +55,12 @@ jobs:
           - architecture: x64
             fname: LunaTranslator
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup Windows 10 SDK
-        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          sdk-version: 22621
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.7.9'
-          architecture: ${{ matrix.architecture }}
-      
-      - name: Install Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          
-      - name: Run build script
-        run: |
-          python src/build.py ${{ matrix.architecture }} 3.7.9
+            path: build
+      - run:  python src/build.py merge ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
-          path: src/build/${{ matrix.fname }}.zip
+          path: src/build/${{matrix.fname}}.zip

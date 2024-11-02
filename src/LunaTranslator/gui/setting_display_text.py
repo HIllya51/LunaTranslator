@@ -182,7 +182,7 @@ def doinstallqweb(self, dd, base):
         target = gobject.gettempdir("QWebEngine/")
         zipf.extractall(target)
         bit = ["x86", "x64"][platform.architecture()[0] == "64bit"]
-        copytree(f"{target}/{bit}/PyQt5", "LunaTranslator/runtime/PyQt5")
+        copytree(f"{target}/{bit}/PyQt5", "files/runtime/PyQt5")
     getQMessageBox(self, "成功", "安装成功")
 
 
