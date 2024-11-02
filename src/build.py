@@ -223,7 +223,7 @@ def downLunaHook():
 def buildPlugins(arch):
     os.chdir(rootDir + "\\plugins\\scripts")
     subprocess.run("python fetchwebview2.py")
-    if arch == "32":
+    if arch == "x86":
         subprocess.run(
             f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
         )
@@ -266,12 +266,11 @@ def downloadbass():
 if __name__ == "__main__":
     os.chdir(rootDir)
     os.makedirs("temp", exist_ok=True)
+    arch = sys.argv[2]
     if sys.argv[1] == "cpp":
         installVCLTL()
-        arch = sys.argv[2]
         buildPlugins(arch)
     elif sys.argv[1] == "pyrt":
-        arch = sys.argv[2]
         version = sys.argv[3]
         if arch == "x86":
             py37Path = (
@@ -301,14 +300,13 @@ if __name__ == "__main__":
         downloadbass()
         downLunaHook()
         os.chdir(rootDir)
-        arch = sys.argv[2]
         shutil.copytree(
-            f"{rootDir}/../build/cpp_32",
+            f"{rootDir}/../build/cpp_x86",
             f"{rootDir}/plugins/builds",
             dirs_exist_ok=True,
         )
         shutil.copytree(
-            f"{rootDir}/../build/cpp_64",
+            f"{rootDir}/../build/cpp_x64",
             f"{rootDir}/plugins/builds",
             dirs_exist_ok=True,
         )
@@ -319,20 +317,6 @@ if __name__ == "__main__":
         if arch == "x86":
             os.chdir(rootDir)
             os.system("python collectall.py 32")
-            os.chdir(rootDir)
-            shutil.copytree(
-                f"{rootDir}/../build/LunaTranslator_x86",
-                f"{rootDir}/build/LunaTranslator_x86",
-                dirs_exist_ok=True,
-            )
-            os.system("python collectall.py 32 zip")
         else:
             os.chdir(rootDir)
             os.system("python collectall.py 64")
-            os.chdir(rootDir)
-            shutil.copytree(
-                f"{rootDir}/../build/LunaTranslator",
-                f"{rootDir}/build/LunaTranslator",
-                dirs_exist_ok=True,
-            )
-            os.system("python collectall.py 64 zip")

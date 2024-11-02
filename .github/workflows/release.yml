@@ -17,11 +17,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        include:
-          - architecture: x86
-            fname: LunaTranslator_x86
-          - architecture: x64
-            fname: LunaTranslator
+        architecture: [x86, x64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -32,13 +28,13 @@ jobs:
       - run:  python src/build.py pyrt ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.fname }}
-          path: src/build/${{ matrix.fname }}
+          name: pyrt_${{ matrix.architecture }}
+          path: src/build/runtime
   build_cpp:
     runs-on: windows-latest
     strategy:
       matrix: 
-        arch: [32,64]
+        architecture: [x86, x64]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,10 +43,10 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python src/build.py cpp ${{ matrix.arch }}
+      - run:  python src/build.py cpp ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
-          name: cpp_${{ matrix.arch }}
+          name: cpp_${{ matrix.architecture }}
           path: src/plugins/builds
           
   

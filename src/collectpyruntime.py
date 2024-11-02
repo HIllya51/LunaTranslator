@@ -6,12 +6,11 @@ import sys
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = platform.architecture()[0] == "32bit"
+runtime = r"build\runtime"
 if x86:
-    runtime = r"build\LunaTranslator_x86\LunaTranslator\runtime"
     webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x86\webview.dll"
     downlevel = r"C:\Windows\SysWOW64\downlevel"
 else:
-    runtime = r"build\LunaTranslator\LunaTranslator\runtime"
     webviewappendix = r"Lib\site-packages\webviewpy\platform\win32\x64\webview.dll"
     downlevel = r"C:\Windows\system32\downlevel"
 py37Path = os.path.dirname(sys.executable)
