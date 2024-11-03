@@ -337,11 +337,11 @@ class dialog_setting_game_internal(QWidget):
             if x:
                 if combo.currentIndex() == 0:
                     combo.setCurrentIndex(idx + 1)
-                    combo.setRowVisible(idx + 1, True)
+                combo.setRowVisible(idx + 1, True)
             else:
                 if combo.currentIndex() == idx + 1:
                     combo.setCurrentIndex(0)
-                    combo.setRowVisible(idx + 1, False)
+                combo.setRowVisible(idx + 1, False)
 
         for i, key in enumerate(targetmod):
             try:
