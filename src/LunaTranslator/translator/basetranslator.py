@@ -363,12 +363,12 @@ class basetrans(commonbase):
         self.longtermcacheset(cache_use, res)
 
     def __parse_gpt_dict(self, contentsolved, optimization_params):
-        gpt_dict = None
+        gpt_dict = []
         contentraw = contentsolved
         for _ in optimization_params:
             if isinstance(_, dict):
                 _gpt_dict = _.get("gpt_dict", None)
-                if _gpt_dict is None:
+                if not _gpt_dict:
                     continue
                 gpt_dict = _gpt_dict
                 contentraw = _.get("gpt_dict_origin")

@@ -10,6 +10,7 @@ from myutils.config import (
     static_data,
     getlanguse,
     set_font_default,
+    _TR,
 )
 from ctypes import c_int, CFUNCTYPE, c_void_p
 from myutils.utils import (
@@ -512,11 +513,11 @@ class MAINUI:
             safe_callback = (
                 waitforresultcallback if waitforresultcallback else lambda _: 1
             )
-
+            apiname = _TR(dynamicapiname(classname))
             if iserror:
                 if currentsignature == self.currentsignature:
                     self.translation_ui.displaystatus.emit(
-                        dynamicapiname(classname) + " " + res,
+                        apiname + " " + res,
                         True,
                         False,
                     )
@@ -540,7 +541,7 @@ class MAINUI:
                 iter_res_status in (0, 1)
             ):
                 displayreskwargs = dict(
-                    name=dynamicapiname(classname),
+                    name=apiname,
                     color=globalconfig["fanyi"][classname]["color"],
                     res=res,
                     iter_context=(iter_res_status, classname),
@@ -548,7 +549,7 @@ class MAINUI:
                 self.translation_ui.displayres.emit(displayreskwargs)
             if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
 
-                self.transhis.getnewtranssignal.emit(dynamicapiname(classname), res)
+                self.transhis.getnewtranssignal.emit(apiname, res)
                 if not waitforresultcallback:
                     if (
                         globalconfig["read_trans"]
@@ -820,9 +821,7 @@ class MAINUI:
             return aclass(classname)
         except Exception as e:
             self.displayinfomessage(
-                dynamicapiname(classname)
-                + " import failed : "
-                + str(stringfyerror(e)),
+                dynamicapiname(classname) + " import failed : " + str(stringfyerror(e)),
                 "<msg_error_not_refresh>",
             )
             raise e
