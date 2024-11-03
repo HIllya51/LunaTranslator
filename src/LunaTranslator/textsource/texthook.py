@@ -168,6 +168,21 @@ class texthook(basetext):
         self.delaycollectallselectedoutput()
         self.autohookmonitorthread()
 
+    def edit_selectedhook_remove(self, key):
+        try:
+            self.selectedhook.remove(key)
+        except:
+            pass
+        _, _, tp = key
+        self.Luna_SyncThread(tp, False)
+
+    def edit_selectedhook_insert(self, key, idx=-1):
+        if idx == -1:
+            idx = len(self.selectedhook)
+        self.selectedhook.insert(idx, key)
+        _, _, tp = key
+        self.Luna_SyncThread(tp, True)
+
     def initdll(self):
         LunaHost = CDLL(
             gobject.GetDllpath(
@@ -538,7 +553,7 @@ class texthook(basetext):
                     insertindex = j
                 else:
                     insertindex = j + 1
-            self.selectedhook.insert(insertindex, key)
+            self.edit_selectedhook_insert(key, insertindex)
         gobject.baseobject.hookselectdialog.addnewhooksignal.emit(
             key, select, isembedable
         )
@@ -627,7 +642,9 @@ class texthook(basetext):
     def delaycollectallselectedoutput(self):
         while not self.ending:
             time.sleep(0.01)
-            if time.time() < self.lastflushtime + self.config["textthreaddelay"] / 1000:
+            if time.time() < self.lastflushtime + min(
+                0.1, self.config["textthreaddelay"] / 1000
+            ):
                 continue
             if len(self.multiselectedcollector) == 0:
                 continue

@@ -857,11 +857,10 @@ class hookselect(closeashidewindow):
         try:
             hc, hn, tp = key
             gobject.baseobject.textsource.usermanualaccepthooks.append(key)
-            if key in gobject.baseobject.textsource.selectedhook:
-                gobject.baseobject.textsource.selectedhook.remove(key)
+            gobject.baseobject.textsource.edit_selectedhook_remove(key)
 
             if select:
-                gobject.baseobject.textsource.selectedhook.append(key)
+                gobject.baseobject.textsource.edit_selectedhook_insert(key)
 
                 if hn[:8] == "UserHook":
                     needinserthookcode = savehook_new_data[gobject.baseobject.gameuid][
