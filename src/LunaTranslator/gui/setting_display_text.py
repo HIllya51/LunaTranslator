@@ -23,9 +23,8 @@ from gui.usefulwidget import (
     selectcolor,
     listediter,
     FocusFontCombo,
-    LFocusCombo,
+    SuperCombo,
     getspinbox,
-    LLabel,
     getsmalllabel,
     SplitLine,
 )
@@ -244,7 +243,7 @@ def resetgroudswitchcallback(self, group):
         return
     clearlayout(self.goodfontsettingsformlayout)
 
-    goodfontgroupswitch = LFocusCombo()
+    goodfontgroupswitch = SuperCombo()
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     if group == "webview" or group == "QWebEngine":
         _btn = LPushButton("编辑")

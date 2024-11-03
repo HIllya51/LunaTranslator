@@ -6,7 +6,7 @@ from gui.usefulwidget import (
     getsimplecombobox,
     getspinbox,
     getsimpleswitch,
-    LFocusCombo,
+    SuperCombo,
     getspinbox,
     SplitLine,
     getsimplepatheditor,
@@ -63,7 +63,7 @@ class settingxx:
 
     def settingxx(self, layout, config, call1, call2):
 
-        switch = LFocusCombo()
+        switch = SuperCombo()
         switch.addItems(["外部", "内置"])
         lay1 = LFormLayout()
         lay2 = LFormLayout()

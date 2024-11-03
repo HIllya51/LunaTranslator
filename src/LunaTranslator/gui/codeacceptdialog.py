@@ -8,7 +8,7 @@ from gui.usefulwidget import (
     threebuttons,
     getlineedit,
     TableViewW,
-    LFocusCombo,
+    SuperCombo,
 )
 from gui.dynalang import LStandardItemModel, LDialog, LCheckBox, LLabel
 
@@ -67,7 +67,7 @@ class codeacceptdialog(LDialog):
             itemsaver = QStandardItem()
             self.model.setItem(row, 0, itemsaver)
             index = self.model.index(row, 0)
-            codecombox = LFocusCombo()
+            codecombox = SuperCombo()
             codecombox.addItems((nowsuppertcodes))
             codecombox.setCurrentIndex(idx)
             self.table.setIndexWidget(index, codecombox)
@@ -114,7 +114,7 @@ class codeacceptdialog(LDialog):
     def clicked1(self):
         itemsaver = QStandardItem()
         self.model.insertRow(0, [itemsaver])
-        codecombox = LFocusCombo()
+        codecombox = SuperCombo()
         codecombox.addItems((nowsuppertcodes))
         self._setcode_i(codecombox, itemsaver)
         codecombox.currentIndexChanged.connect(

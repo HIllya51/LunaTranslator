@@ -17,7 +17,7 @@ import os
 import gobject, functools
 from traceback import print_exc
 from qtsymbols import *
-from gui.usefulwidget import LFocusCombo, getboxlayout, getQMessageBox
+from gui.usefulwidget import SuperCombo, getboxlayout, getQMessageBox
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 
 
@@ -156,7 +156,7 @@ def question(dialog: QDialog):
     dialog.setLayout(formLayout)
     supportlang = LLabel()
     formLayout.addRow("当前支持的语言", supportlang)
-    combo = LFocusCombo()
+    combo = SuperCombo()
     allsupports = []
 
     def callback():

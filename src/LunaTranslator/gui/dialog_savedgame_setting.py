@@ -324,18 +324,26 @@ class dialog_setting_game_internal(QWidget):
             print_exc()
 
     def metadataorigin(self, formLayout: LFormLayout, gameuid):
-        formLayout.addRow(
-            "首选的",
-            getsimplecombobox(
-                list(targetmod.keys()),
-                globalconfig,
-                "primitivtemetaorigin",
-                internal=list(targetmod.keys()),
-                static=True,
-            ),
+        combo = getsimplecombobox(
+            ["无"] + list(targetmod.keys()),
+            globalconfig,
+            "primitivtemetaorigin",
+            internal=[None] + list(targetmod.keys()),
         )
+        formLayout.addRow("首选的", combo)
         formLayout.addRow(None, QLabel())
-        for key in targetmod:
+
+        def valid(idx, x):
+            if x:
+                if combo.currentIndex() == 0:
+                    combo.setCurrentIndex(idx + 1)
+                    combo.setRowVisible(idx + 1, True)
+            else:
+                if combo.currentIndex() == idx + 1:
+                    combo.setCurrentIndex(0)
+                    combo.setRowVisible(idx + 1, False)
+
+        for i, key in enumerate(targetmod):
             try:
                 idname = targetmod[key].idname
 
@@ -351,8 +359,14 @@ class dialog_setting_game_internal(QWidget):
                 vndbid.returnPressed.connect(
                     functools.partial(gamdidchangedtask, key, idname, gameuid)
                 )
+                if not globalconfig["metadata"][key]["auto"]:
+                    combo.setRowVisible(i + 1, False)
                 _vbox_internal = [
-                    getsimpleswitch(globalconfig["metadata"][key], "auto"),
+                    getsimpleswitch(
+                        globalconfig["metadata"][key],
+                        "auto",
+                        callback=functools.partial(valid, i),
+                    ),
                     vndbid,
                     getIconButton(
                         functools.partial(self.openrefmainpage, key, idname, gameuid),

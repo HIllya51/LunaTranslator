@@ -3,7 +3,7 @@ import sqlite3, os, json, functools
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
 from myutils.utils import autosql, dynamicapiname
-from gui.usefulwidget import getQMessageBox, LFocusCombo
+from gui.usefulwidget import getQMessageBox, SuperCombo
 from gui.dynalang import LFormLayout, LPushButton, LDialog
 from textsource.texthook import splitembedlines
 from collections import Counter
@@ -43,15 +43,14 @@ def sqlite2json2(
     for _, __ in Counter(collect).most_common():
         if _ in globalconfig["fanyi"]:
             _collect.append(_)
-    collect = _collect
     dialog = LDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
     dialog.setWindowTitle("导出翻译记录为json文件")
     dialog.resize(QSize(800, 10))
     formLayout = LFormLayout(dialog)  # 配置layout
     dialog.setLayout(formLayout)
 
-    combo = LFocusCombo()
-    combo.addItems([dynamicapiname(_) for _ in collect])
+    combo = SuperCombo()
+    combo.addItems([dynamicapiname(_) for _ in _collect], _collect)
 
     formLayout.addRow("首选翻译", combo)
     e = QLineEdit(sqlitefile[: -(len(".sqlite"))])
@@ -81,8 +80,8 @@ def sqlite2json2(
     button.rejected.connect(dialog.close)
 
     def __savefunction(target, existsmerge, isforembed):
-        if len(collect) > 0:
-            transkirokuuse = collect[combo.currentIndex()]
+        if len(_collect) > 0:
+            transkirokuuse = combo.getIndexData(combo.currentIndex())
             for k in js_format2:
                 js_format2[k] = js_format2[k].get(transkirokuuse, "")
 

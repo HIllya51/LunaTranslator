@@ -18,7 +18,7 @@ from gui.usefulwidget import (
     saveposwindow,
     pixmapviewer,
     LStandardItemModel,
-    LFocusCombo,
+    SuperCombo,
     threebuttons,
 )
 import gobject, qtawesome
@@ -93,11 +93,11 @@ class triggereditor(LDialog):
         self.vkeys = list(static_data["vkcode_map"].keys())
         for row, k in enumerate(self.list):  # 2
             self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem()])
-            combo = LFocusCombo()
+            combo = SuperCombo()
             combo.addItems(self.vkeys)
             combo.setCurrentIndex(self.vkeys.index(k["vkey"]))
             self.hctable.setIndexWidget(self.hcmodel.index(row, 0), combo)
-            combo = LFocusCombo()
+            combo = SuperCombo()
             combo.addItems(["按下", "松开"])
             combo.setCurrentIndex(k["event"])
             self.hctable.setIndexWidget(self.hcmodel.index(row, 1), combo)
@@ -122,10 +122,10 @@ class triggereditor(LDialog):
 
     def click1(self):
         self.hcmodel.insertRow(0, [QStandardItem(), QStandardItem()])
-        combo = LFocusCombo()
+        combo = SuperCombo()
         combo.addItems(self.vkeys)
         self.hctable.setIndexWidget(self.hcmodel.index(0, 0), combo)
-        combo = LFocusCombo()
+        combo = SuperCombo()
         combo.addItems(["按下", "松开"])
         self.hctable.setIndexWidget(self.hcmodel.index(0, 1), combo)
 

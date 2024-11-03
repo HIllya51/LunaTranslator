@@ -216,7 +216,9 @@ def trysearchforid_1(gameuid, searchargs: list, target=None):
     infoid = None
     if target is None:
         primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
-        __ = [primitivtemetaorigin]
+        __ = []
+        if primitivtemetaorigin:
+            __.append(primitivtemetaorigin)
         for k in targetmod:
             if k == primitivtemetaorigin:
                 continue
@@ -1040,7 +1042,6 @@ def is_ascii_control(c: str):
     return cinranges(c, (0, 0x1F), (0x7F, 0xA0))
 
 
-
 def checkchaos(text):
     code = globalconfig["accept_encoding"]
     text = filter(lambda x: x not in globalconfig["accept_character"], text)
@@ -1048,7 +1049,7 @@ def checkchaos(text):
     if globalconfig["accept_use_unicode"]:
         _start = globalconfig["accept_use_unicode_start"]
         _end = globalconfig["accept_use_unicode_end"]
-        return not all(cinranges(c,(_start, _end)) for c in text)
+        return not all(cinranges(c, (_start, _end)) for c in text)
     else:
         text = "".join(text)
         for c in code:

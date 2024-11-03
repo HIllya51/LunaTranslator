@@ -14,7 +14,7 @@ from gui.usefulwidget import (
     TableViewW,
     getsimplepatheditor,
     FocusSpin,
-    LFocusCombo,
+    SuperCombo,
     getsimplecombobox,
     getspinbox,
     SplitLine,
@@ -261,7 +261,7 @@ class yuyinzhidingsetting(LDialog):
         self.table.setindexdata(self.model.index(row, 3), item['target'])
 
     def createacombox(self, config):
-        com = LFocusCombo()
+        com = SuperCombo()
         com.addItems(["跳过", "默认", "选择声音"])
         target = config.get("target", "skip")
         com.target = target
@@ -278,7 +278,7 @@ class yuyinzhidingsetting(LDialog):
         )
         return com
 
-    def __comchange(self, com: LFocusCombo, config, idx):
+    def __comchange(self, com: SuperCombo, config, idx):
         if idx == 0:
             com.target = "skip"
             if com.count() > 3:
@@ -527,7 +527,7 @@ class autoinitdialog__(LDialog):
                 lineW = listediterline(line["name"], line["header"], __list)
                 regist[key] = functools.partial(__getv, __list)
             elif line["type"] == "combo":
-                lineW = LFocusCombo()
+                lineW = SuperCombo()
                 if "list_function" in line:
                     try:
                         func = getattr(
@@ -546,10 +546,10 @@ class autoinitdialog__(LDialog):
             elif line["type"] == "lineedit_or_combo":
                 line1 = QLineEdit()
                 lineW = QHBoxLayout()
-                combo = LFocusCombo()
+                combo = SuperCombo()
                 combo.setLineEdit(line1)
 
-                def __refresh(regist, line, combo: LFocusCombo):
+                def __refresh(regist, line, combo: SuperCombo):
                     try:
                         func = getattr(
                             importlib.import_module(modelfile), line["list_function"]

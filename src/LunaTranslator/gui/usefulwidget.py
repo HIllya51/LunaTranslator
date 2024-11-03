@@ -34,24 +34,54 @@ class FocusCombo(QComboBox):
         else:
             return super().wheelEvent(e)
 
+class SuperCombo(FocusCombo):
+    Visoriginrole = Qt.ItemDataRole.UserRole + 1
+    Internalrole = Visoriginrole + 1
 
-class LFocusCombo(FocusCombo):
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent=None, static=False) -> None:
         super().__init__(parent)
-        self.__items = None
+        self.mo = QStandardItemModel()
+        self.static = static
+        self.setModel(self.mo)
+        self.vu = QListView()
+        self.setView(self.vu)
 
-    def addItems(self, items):
-        self.__items = items
-        super().addItems(_TRL(items))
+    def addItem(self, item, internal=None):
+        item1 = QStandardItem(_TR(item) if not self.static else item)
+        item1.setData(item, self.Visoriginrole)
+        item1.setData(internal, self.Internalrole)
+        self.mo.appendRow(item1)
 
     def clear(self):
-        self.__items = []
-        super().clear()
+        self.mo.clear()
+
+    def addItems(self, items, internals=None):
+        for i, item in enumerate(items):
+            iternal = None
+            if internals and i < len(internals):
+                iternal = internals[i]
+            self.addItem(item, iternal)
 
     def updatelangtext(self):
-        if self.__items:
-            for i in range(self.count()):
-                self.setItemText(i, _TR(self.__items[i]))
+        if self.static:
+            return
+        for _ in range(self.mo.rowCount()):
+            item = self.mo.item(_, 0)
+            item.setData(
+                _TR(item.data(self.Visoriginrole)), Qt.ItemDataRole.DisplayRole
+            )
+
+    def getIndexData(self, index):
+        item = self.mo.item(index, 0)
+        return item.data(self.Internalrole)
+
+    def setRowVisible(self, row, vis):
+        self.vu.setRowHidden(row, not vis)
+        item = self.mo.item(row, 0)
+        if vis:
+            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEnabled)
+        else:
+            item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
 
 
 class FocusFontCombo(QFontComboBox, FocusCombo):
@@ -860,8 +890,8 @@ def callbackwrap(d, k, call, _):
             print_exc()
 
 
-def comboboxcallbackwrap(internal, d, k, call, _):
-    _ = internal[_]
+def comboboxcallbackwrap(s: SuperCombo, d, k, call, _):
+    _ = s.getIndexData(_)
     d[k] = _
 
     if call:
@@ -874,12 +904,8 @@ def comboboxcallbackwrap(internal, d, k, call, _):
 def getsimplecombobox(
     lst, d, k, callback=None, fixedsize=False, internal=None, static=False, emit=False
 ):
-    if static:
-        s = FocusCombo()
-    else:
-
-        s = LFocusCombo()
-    s.addItems(lst)
+    s = SuperCombo(static=static)
+    s.addItems(lst, internal)
 
     if internal:
         if len(internal):
@@ -888,7 +914,7 @@ def getsimplecombobox(
 
             s.setCurrentIndex(internal.index(d[k]))
         s.currentIndexChanged.connect(
-            functools.partial(comboboxcallbackwrap, internal, d, k, callback)
+            functools.partial(comboboxcallbackwrap, s, d, k, callback)
         )
     else:
         if len(lst):
@@ -1908,7 +1934,7 @@ class listediter(LDialog):
                 self.hcmodel.insertRow(row, [item])
 
                 if candidates:
-                    combo = LFocusCombo()
+                    combo = SuperCombo()
                     _vis = self.candidates
                     if self.namemapfunction:
                         _vis = [self.namemapfunction(_) for _ in _vis]
@@ -2021,7 +2047,7 @@ class listediter(LDialog):
             self.internalrealname.insert(0, self.candidates[0])
             item = QStandardItem("")
             self.hcmodel.insertRow(0, [item])
-            combo = LFocusCombo()
+            combo = SuperCombo()
             _vis = self.candidates
             if self.namemapfunction:
                 _vis = [self.namemapfunction(_) for _ in _vis]
@@ -2357,6 +2383,7 @@ class FQLineEdit(QLineEdit):
 
 class LRButton(LPushButton):
     rightclick = pyqtSignal()
+
     def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
         if self.rect().contains(ev.pos()):
             if ev.button() == Qt.MouseButton.RightButton:
