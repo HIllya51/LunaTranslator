@@ -135,6 +135,9 @@ class TextBrowser(QWidget, dataget):
 
     def showhideorigin(self, show):
         self.debugeval(f'showhideorigin("{int(show)}")')
+    
+    def showhidetranslatorname(self, show):
+        self.debugeval(f'showhidetranslatorname("{int(show)}")')
 
     def create_div_line_id(self, _id, origin):
         self.debugeval(f'create_div_line_id("{_id}","{int(origin)}")')
@@ -149,12 +152,13 @@ class TextBrowser(QWidget, dataget):
         html = quote(html)
         self.debugeval(f'set_extra_html("{html}")')
 
-    def create_internal_text(self, style, styleargs, _id, text, args):
+    def create_internal_text(self, style, styleargs, _id, name, text, args):
+        name = quote(name)
         text = quote(text)
         args = quote(json.dumps(args))
         styleargs = quote(json.dumps(styleargs))
         self.debugeval(
-            f'create_internal_text("{style}","{styleargs}","{_id}","{text}","{args}");'
+            f'create_internal_text("{style}","{styleargs}","{_id}","{name}","{text}","{args}");'
         )
         self._qweb_query_h()
 
@@ -221,14 +225,14 @@ class TextBrowser(QWidget, dataget):
 
     # native api end
 
-    def iter_append(self, iter_context_class, origin, atcenter, text, color):
+    def iter_append(self, iter_context_class, origin, atcenter, name, text, color):
 
         if iter_context_class not in self.saveiterclasspointer:
             _id = self.createtextlineid(origin)
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
-        self._webview_append(_id, origin, atcenter, text, [], [], color)
+        self._webview_append(_id, origin, atcenter, name, text, [], [], color)
 
     def createtextlineid(self, origin):
 
@@ -236,10 +240,10 @@ class TextBrowser(QWidget, dataget):
         self.create_div_line_id(_id, origin)
         return _id
 
-    def append(self, origin, atcenter, text, tag, flags, color):
+    def append(self, origin, atcenter, name, text, tag, flags, color):
 
         _id = self.createtextlineid(origin)
-        self._webview_append(_id, origin, atcenter, text, tag, flags, color)
+        self._webview_append(_id, origin, atcenter, name, text, tag, flags, color)
 
     def measureH(self, font_family, font_size):
         font = QFont()
@@ -258,7 +262,9 @@ class TextBrowser(QWidget, dataget):
             ]["webview"][0]
         return currenttype
 
-    def _webview_append(self, _id, origin, atcenter, text: str, tag, flags, color):
+    def _webview_append(
+        self, _id, origin, atcenter, name: str, text: str, tag, flags, color
+    ):
         fmori, fsori, boldori = self._getfontinfo(origin)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
         kanacolor = self._getkanacolor()
@@ -301,15 +307,6 @@ class TextBrowser(QWidget, dataget):
             userawhtml = text.startswith(sig)
             if userawhtml:
                 text = text[len(sig) :]
-            else:
-                if sig in text:
-                    # 显示名称时。不管了，就这样吧
-                    text = text.replace(sig, "")
-                    userawhtml = True
-
-                if len(text) == 0:
-                    userawhtml = True
-                    text = "<br>"
 
             args = dict(
                 atcenter=atcenter,
@@ -321,7 +318,7 @@ class TextBrowser(QWidget, dataget):
                 userawhtml=userawhtml,
             )
 
-            self.create_internal_text(style, styleargs, _id, text, args)
+            self.create_internal_text(style, styleargs, _id, name, text, args)
 
     def clear(self):
 

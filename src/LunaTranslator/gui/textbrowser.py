@@ -55,6 +55,7 @@ class Textbrowser(QFrame):
         self.textbrowser.show()
         self.textbrowser.setselectable(globalconfig["selectable"])
         self.textbrowser.showhideorigin(globalconfig["isshowrawtext"])
+        self.textbrowser.showhidetranslatorname(globalconfig["showfanyisource"])
         self.textbrowser.showhidetranslate(globalconfig["showfanyi"])
         self.refreshcontent()
 
@@ -76,17 +77,21 @@ class Textbrowser(QFrame):
         self.trace = []
         self.loadinternal()
 
-    def iter_append(self, iter_context_class, origin, atcenter, text, color):
-        self.trace.append((1, (iter_context_class, origin, atcenter, text, color)))
-        self.cleared = False
-        self.textbrowser.iter_append(iter_context_class, origin, atcenter, text, color)
-
-    def append(self, origin, atcenter, text, tag, flags, color):
+    def iter_append(self, iter_context_class, origin, atcenter, name, text, color):
         self.trace.append(
-            (0, (origin, atcenter, text, copy.deepcopy(tag), flags, color))
+            (1, (iter_context_class, origin, atcenter, name, text, color))
         )
         self.cleared = False
-        self.textbrowser.append(origin, atcenter, text, tag, flags, color)
+        self.textbrowser.iter_append(
+            iter_context_class, origin, atcenter, name, text, color
+        )
+
+    def append(self, origin, atcenter, name, text, tag, flags, color):
+        self.trace.append(
+            (0, (origin, atcenter, name, text, copy.deepcopy(tag), flags, color))
+        )
+        self.cleared = False
+        self.textbrowser.append(origin, atcenter, name, text, tag, flags, color)
 
     def clear(self):
         self.cleared = True

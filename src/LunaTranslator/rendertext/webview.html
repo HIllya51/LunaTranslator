@@ -164,37 +164,12 @@
             }
             return ele
         }
-        let begin = 0; let begin1 = "";
-        let end = text.length - 1; let end1 = "";
-        for (; (begin < text.length) && (text[begin] == ' '); begin++) { begin1 += "&nbsp;" }
-        for (; (end >= 0) && (text[end] == ' '); end--) { end1 += "&nbsp;"; }
-        if ((end == (text.length - 1)) && (begin == 0))
-            return ele
         let wrap = document.createElement('div')
+        wrap.style.whiteSpace = 'pre-wrap'
+        wrap.appendChild(ele)
         if (args.atcenter) {
             wrap.style.textAlign = "center"
         }
-        if (begin != 0) {
-            let __1 = document.createElement('div')
-            __1.innerHTML = begin1
-            __1.style.display = 'inline-block'
-
-            commoninit_font_align_height(__1, args)
-            wrap.appendChild(__1)
-        }
-        let _ww = document.createElement('div')
-        _ww.appendChild(ele)
-        _ww.style.display = 'inline-block'
-        wrap.appendChild(_ww)
-        if ((end != -1) && (end != (text.length - 1))) {
-            //全是空格
-            let __1 = document.createElement('div')
-            __1.innerHTML = end1
-            __1.style.display = 'inline-block'
-            commoninit_font_align_height(__1, args)
-            wrap.appendChild(__1)
-        }
-
         return wrap
     }
     function dispatch_text_style_inlineblock(style, styleargs, text, args) {
@@ -204,13 +179,33 @@
         div.appendChild(l)
         return div
     }
-    function dispatch_text_style(style, styleargs, text, args) {
+    function addnameblock(style, styleargs, index, name, text, args) {
+        if (index == 0 && name.length) {
+            let userawhtml = args.userawhtml
+            args.userawhtml = false
+            let div = dispatch_text_style_line(style, styleargs, name + " ", args)
+            let divx = document.createElement('div')
+            divx.classList.add('lunatranslator_translator_name')
+            divx.appendChild(div)
+            args.userawhtml = userawhtml
+            let div2 = document.createElement('div')
+            div2.appendChild(divx)
+            let textdiv = dispatch_text_style_inlineblock(style, styleargs, text, args)
+            div2.appendChild(textdiv)
+            if (args.atcenter) {
+                div2.style.textAlign = "center"
+            }
+            return div2
+        }
+        return dispatch_text_style_line(style, styleargs, text, args)
+    }
+    function dispatch_text_style(style, styleargs, name, text, args) {
         if (!text.includes('\n'))
-            return dispatch_text_style_line(style, styleargs, text, args)
+            return addnameblock(style, styleargs, 0, name, text, args)
         let lines = text.split('\n')
         let wrap = document.createElement('div')
-        lines.forEach(line => {
-            wrap.appendChild(dispatch_text_style_line(style, styleargs, line, args))
+        lines.forEach((line, index) => {
+            wrap.appendChild(addnameblock(style, styleargs, index, name, line, args))
         })
         return wrap
     }
@@ -219,7 +214,14 @@
 </style>
 <style id="maybeshowtranslate">
 </style>
+<style id="maybeshowtranslatorname">
+</style>
 <script>
+    function _showhidetranslatorname(show) {
+        let css = ['.lunatranslator_translator_name{   display: none;    }', '.lunatranslator_translator_name{   display: inline-block;    }'][show]
+        document.getElementById('maybeshowtranslatorname').innerHTML = css;
+        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+    }
     function _showhidetranslate(show) {
         let css = ['.lunatranslator_translate{   display: none;    }', '.lunatranslator_translate{   display: block;    }'][show]
         document.getElementById('maybeshowtranslate').innerHTML = css;
@@ -241,13 +243,14 @@
         }
         document.getElementById(rootdivid).appendChild(div);
     }
-    function _create_internal_text(style, styleargsjson, _id, textu, argsjson) {
-        let args = JSON.parse(decodeURIComponent(argsjson))
-        let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
-        let text = decodeURIComponent(textu)
-        let innerele = dispatch_text_style(style, styleargs, text, args)
+    function _create_internal_text(style, styleargsjson, _id, nameu, textu, argsjson) {
         let ele = document.getElementById(_id)
         ele.innerHTML = ''
+        let args = JSON.parse(decodeURIComponent(argsjson))
+        let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
+        let name = decodeURIComponent(nameu)
+        let text = decodeURIComponent(textu)
+        let innerele = dispatch_text_style(style, styleargs, name, text, args)
         ele.appendChild(innerele)
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
     }
@@ -385,6 +388,7 @@
     //api
     showhideorigin = _showhideorigin
     showhidetranslate = _showhidetranslate
+    showhidetranslatorname = _showhidetranslatorname
     create_div_line_id = _create_div_line_id;
     create_internal_text = _create_internal_text;
     create_internal_rubytext = _create_internal_rubytext;

@@ -326,13 +326,10 @@ class TranslatorWindow(resizableframeless):
             iter_context = kwargs.get("iter_context", None)
             clear = kwargs.get("clear", False)
 
-            if globalconfig["showfanyisource"]:
-                _showtext = name + "  " + res
-            else:
-                _showtext = res
             self.showline(
+                name=name,
                 clear=clear,
-                text=_showtext,
+                text=res,
                 color=color,
                 origin=False,
                 iter_context=iter_context,
@@ -386,6 +383,7 @@ class TranslatorWindow(resizableframeless):
         return "\n".join(newlines)
 
     def showline(self, **kwargs):  # clear,res,color ,type_=1,origin=True):
+        name = kwargs.get("name", "")
         clear = kwargs.get("clear", True)
         origin = kwargs.get("origin", True)
         text = kwargs.get("text", None)
@@ -407,12 +405,13 @@ class TranslatorWindow(resizableframeless):
             iter_res_status = 0
         if iter_res_status:
             self.translate_text.iter_append(
-                iter_context_class, origin, atcenter, text, color
+                iter_context_class, origin, atcenter,name, text, color
             )
         else:
             self.translate_text.append(
                 origin,
                 atcenter,
+                name,
                 text,
                 hira,
                 flags,
