@@ -405,7 +405,7 @@ class TranslatorWindow(resizableframeless):
             iter_res_status = 0
         if iter_res_status:
             self.translate_text.iter_append(
-                iter_context_class, origin, atcenter,name, text, color
+                iter_context_class, origin, atcenter, name, text, color
             )
         else:
             self.translate_text.append(
@@ -430,12 +430,21 @@ class TranslatorWindow(resizableframeless):
     @threader
     def autohidedelaythread(self):
         while True:
+            # 当鼠标悬停，或前景窗口为当前进程的其他窗口时，禁止自动隐藏
+            if self.geometry().contains(QCursor.pos()) or (
+                windows.GetForegroundWindow() != self.winid
+                and windows.GetWindowThreadProcessId(windows.GetForegroundWindow())
+                == os.getpid()
+            ):
+                self.lastrefreshtime = time.time()
+                continue
             if globalconfig["autodisappear"] and self.autohidestart:
-                tnow = time.time()
-                if tnow - self.lastrefreshtime >= globalconfig["disappear_delay"]:
+                if (
+                    time.time() - self.lastrefreshtime
+                    >= globalconfig["disappear_delay"]
+                ):
                     self.hidesignal.emit()
                     self.autohidestart = False
-                    self.lastrefreshtime = tnow
 
             time.sleep(0.5)
 
