@@ -430,6 +430,7 @@ class TranslatorWindow(resizableframeless):
     @threader
     def autohidedelaythread(self):
         while True:
+            time.sleep(0.5)
             # 当鼠标悬停，或前景窗口为当前进程的其他窗口时，禁止自动隐藏
             if self.geometry().contains(QCursor.pos()) or (
                 windows.GetForegroundWindow() != self.winid
@@ -446,7 +447,6 @@ class TranslatorWindow(resizableframeless):
                     self.hidesignal.emit()
                     self.autohidestart = False
 
-            time.sleep(0.5)
 
     def showhideui(self):
         if self._move_drag:

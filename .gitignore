@@ -33,3 +33,4 @@ src/run37.bat
 src/run3732.bat
 src/plugins/builds
 src/plugins/libs/webview2
+src/plugins/.vscode/settings.json

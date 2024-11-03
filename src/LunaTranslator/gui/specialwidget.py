@@ -363,7 +363,6 @@ class lazyscrollflow(ScrollArea):
                     QApplication.processEvents()  # 会在最大化时死锁
 
             except:
-                print_exc()
                 break
 
     @trypass
@@ -534,7 +533,6 @@ class delayloadvbox(QWidget):
                 if procevent:
                     QApplication.processEvents()
             except:
-                print_exc()
                 break
 
         self.nowvisregion = region
@@ -729,6 +727,7 @@ class stackedlist(ScrollArea):
         self.scrolled.connect(lambda _: self.doshowlazywidget(True, _))
         self.saveregion = QRect()
 
+    @trypass
     def doshowlazywidget(self, procevent, region: QRect = None):
         if region:
             self.saveregion = QRect(region)

@@ -17,6 +17,7 @@ from myutils.config import (
     savehook_new_data,
     findgameuidofpath,
     getdefaultsavehook,
+    gamepath2uid_index,
 )
 import threading, winreg
 import re, heapq, winsharedutils
@@ -271,9 +272,30 @@ def titlechangedtask(gameuid, title):
     trysearchforid(gameuid, [title])
 
 
+class gamepath2uid_index_helper(dict):
+    def __init__(self, d, uid):
+        super.__init__(d)
+        self.uid = uid
+
+    def __setitem__(self, key, value):
+
+        if key == "gamepath":
+            origin = os.path.abspath(self.get(key))
+            if origin in gamepath2uid_index and self.uid in gamepath2uid_index[origin]:
+                try:
+                    gamepath2uid_index[origin].remove(self.uid)
+                except:
+                    pass
+            absv = os.path.abspath(value)
+            if absv not in gamepath2uid_index:
+                gamepath2uid_index[absv] = []
+            gamepath2uid_index[absv].append(self.uid)
+        super.__setitem__(key, value)
+
+
 def initanewitem(title):
     uid = f"{time.time()}_{uuid.uuid4()}"
-    savehook_new_data[uid] = getdefaultsavehook(title)
+    savehook_new_data[uid] = gamepath2uid_index_helper(getdefaultsavehook(title), uid)
     return uid
 
 

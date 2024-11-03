@@ -53,10 +53,7 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	}
 	LocalFree(argvw);
 
-	// init: _cwd (current working directory)
 	wchar_t path[MAX_PATH + 10];
-	GetCurrentDirectoryW(MAX_PATH + 1, path);
-	_cwd = path;
 
 	// init: _pystand (full path of PyStand.exe)
 	GetModuleFileNameW(NULL, path, MAX_PATH + 1);
@@ -64,57 +61,24 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	wsprintf(path, L"e:\\github\\tools\\pystand\\pystand.exe");
 #endif
 	_pystand = path;
+	_home = std::filesystem::path(path).parent_path().wstring();
 
-	// init: _home
-	int size = (int)wcslen(path);
-	for (; size > 0; size--)
-	{
-		if (path[size - 1] == L'/')
-			break;
-		if (path[size - 1] == L'\\')
-			break;
-	}
-	path[size] = 0;
-	SetCurrentDirectoryW(path);
-	GetCurrentDirectoryW(MAX_PATH + 1, path);
-	_home = path;
-	SetCurrentDirectoryW(_cwd.c_str());
+	SetCurrentDirectoryW(_home.c_str());
 
-	// init: _runtime (embedded python directory)
-	bool abspath = false;
-	if (wcslen(rtp) >= 3)
-	{
-		if (rtp[1] == L':')
-		{
-			if (rtp[2] == L'/' || rtp[2] == L'\\')
-				abspath = true;
-		}
-	}
-	if (abspath == false)
-	{
-		_runtime = _home + L"\\" + rtp;
-	}
-	else
-	{
-		_runtime = rtp;
-	}
-	GetFullPathNameW(_runtime.c_str(), MAX_PATH + 1, path, NULL);
-	_runtime = path;
+	_runtime = (std::filesystem::path(_home) / rtp).wstring();
 
 	// check home
-	std::wstring check = _runtime;
-	if (!PathFileExistsW(check.c_str()))
+	if (!PathFileExistsW(_runtime.c_str()))
 	{
-		std::wstring msg = L"Missing embedded Python3 in:\n" + check;
+		std::wstring msg = L"Missing embedded Python3 in:\n" + _runtime;
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}
 
 	// check python3.dll
-	std::wstring check2 = _runtime + L"\\python3.dll";
-	if (!PathFileExistsW(check2.c_str()))
+	if (!PathFileExistsW((_runtime + L"\\python3.dll").c_str()))
 	{
-		std::wstring msg = L"Missing python3.dll in:\r\n" + check;
+		std::wstring msg = L"Missing python3.dll in:\r\n" + _runtime;
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}

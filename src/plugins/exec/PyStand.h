@@ -33,7 +33,6 @@ protected:
 
 protected:
 	HINSTANCE _hDLL;
-	std::wstring _cwd;		// current working directory
 	std::wstring _args;		// arguments
 	std::wstring _pystand;	// absolute path of pystand
 	std::wstring _runtime;	// absolute path of embedded python runtime
