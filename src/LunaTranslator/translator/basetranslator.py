@@ -77,7 +77,9 @@ class basetrans(commonbase):
                     raise Exception("Incorrect use of multiapikeycurrent")
                 if "|" in t:
                     ts = t.split("|")
-                    t = ts[self.multiapikeycurrentidx % len(ts)]
+                    self.multiapikeycurrentidx = self.multiapikeycurrentidx % len(ts)
+                    self.delay_known_apikeys_num = len(ts)
+                    t = ts[int(self.multiapikeycurrentidx)]
                 return t.strip()
 
         return alternatedict(translatorsetting[self.typename]["args"])
@@ -98,6 +100,9 @@ class basetrans(commonbase):
         if (self.transtype == "offline") and (not self.is_gpt_like):
             globalconfig["fanyi"][self.typename]["useproxy"] = False
         self.multiapikeycurrentidx = -1
+        self.delay_known_apikeys_num = 1
+        self.apikey_skip_round = {}
+        self.apikey_error_cnt = {}
         self.queue = PriorityQueue()
         self.sqlqueue = None
         try:
@@ -263,12 +268,16 @@ class basetrans(commonbase):
         self.lastrequesttime = time.time()
         if (current != self.current) or (self.using == False):
             raise Exception
-
-        self.multiapikeycurrentidx += 1
-
-        res = self.translate(content)
-
-        return res
+        while True:
+            self.multiapikeycurrentidx += 1
+            self.multiapikeycurrentidx = (
+                self.multiapikeycurrentidx % self.delay_known_apikeys_num
+            )
+            if self.apikey_skip_round.get(self.multiapikeycurrentidx, 0):
+                self.apikey_skip_round[self.multiapikeycurrentidx] -= 1
+            else:
+                break
+        return self.translate(content)
 
     def _gptlike_createquery(self, query, usekey, tempk):
         user_prompt = (
@@ -438,4 +447,11 @@ class basetrans(commonbase):
                     print_exc()
                     msg = stringfyerror(e)
                     self.needreinit = True
+                    if self.multiapikeycurrentidx not in self.apikey_error_cnt:
+                        self.apikey_error_cnt[self.multiapikeycurrentidx] = 0
+                        self.apikey_skip_round[self.multiapikeycurrentidx] = 0
+                    self.apikey_error_cnt[self.multiapikeycurrentidx] += 1
+                    self.apikey_skip_round[
+                        self.multiapikeycurrentidx
+                    ] += self.apikey_error_cnt[self.multiapikeycurrentidx]
                 callback(msg, 0, True)
