@@ -565,9 +565,7 @@ class hookselect(closeashidewindow):
 
     def _check_tp_using(self, key):
         hc, hn, tp = key
-        _isusing = gobject.baseobject.textsource.checkisusingembed(
-            tp.addr, tp.ctx, tp.ctx2
-        )
+        _isusing = gobject.baseobject.textsource.Luna_checkisusingembed(tp)
         if _isusing:
 
             if hn[:8] == "UserHook":
@@ -582,9 +580,9 @@ class hookselect(closeashidewindow):
                 pass
         return _isusing
 
-    def _embedbtnfn(self, key, _):
+    def _embedbtnfn(self, key, use):
         hc, hn, tp = key
-        gobject.baseobject.textsource.useembed(tp.addr, tp.ctx, tp.ctx2, _)
+        gobject.baseobject.textsource.Luna_useembed(tp, use)
         _use = self._check_tp_using(key)
         if _use:
             savehook_new_data[gobject.baseobject.gameuid]["embedablehook"].append(
@@ -656,7 +654,7 @@ class hookselect(closeashidewindow):
             )
         )
         self.searchtextlayout.addWidget(__)
-        
+
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
         self.userhookinsert = LPushButton("插入特殊码")

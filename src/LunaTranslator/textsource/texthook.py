@@ -95,7 +95,7 @@ ThreadEvent_maybe_embed = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_bo
 ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
 OutputCallback = CFUNCTYPE(c_bool, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
 ConsoleHandler = CFUNCTYPE(None, c_wchar_p)
-HookInsertHandler = CFUNCTYPE(None, c_uint64, c_wchar_p)
+HookInsertHandler = CFUNCTYPE(None, DWORD, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 QueryHistoryCallback = CFUNCTYPE(None, c_wchar_p)
 
@@ -175,6 +175,8 @@ class texthook(basetext):
                 os.path.abspath("files/plugins/LunaHook"),
             )
         )
+        self.Luna_SyncThread = LunaHost.Luna_SyncThread
+        self.Luna_SyncThread.argtypes = ThreadParam, c_bool
         self.Luna_Settings = LunaHost.Luna_Settings
         self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int, c_int
         self.Luna_Start = LunaHost.Luna_Start
@@ -218,10 +220,10 @@ class texthook(basetext):
             c_bool,
         )
         self.Luna_checkisusingembed = LunaHost.Luna_checkisusingembed
-        self.Luna_checkisusingembed.argtypes = DWORD, c_uint64, c_uint64, c_uint64
+        self.Luna_checkisusingembed.argtypes = (ThreadParam,)
         self.Luna_checkisusingembed.restype = c_bool
         self.Luna_useembed = LunaHost.Luna_useembed
-        self.Luna_useembed.argtypes = DWORD, c_uint64, c_uint64, c_uint64, c_bool
+        self.Luna_useembed.argtypes = ThreadParam, c_bool
         self.Luna_embedcallback = LunaHost.Luna_embedcallback
         self.Luna_embedcallback.argtypes = DWORD, LPCWSTR, LPCWSTR
 
@@ -426,12 +428,17 @@ class texthook(basetext):
         )
         self.flashembedsettings(pid)
 
-    def newhookinsert(self, addr, hcode):
+    def newhookinsert(self, pid, addr, hcode):
         for _hc, _addr, _ctx1, _ctx2 in savehook_new_data[self.gameuid][
             "embedablehook"
         ]:
             if hcode == _hc:
-                self.useembed(addr, _ctx1, _ctx2, True)
+                tp = ThreadParam()
+                tp.processId = pid
+                tp.addr = addr
+                tp.ctx = _ctx1
+                tp.ctx2 = _ctx2
+                self.useembed(tp, True)
 
     def safeembedcheck(self, text):
         try:
@@ -446,9 +453,7 @@ class texthook(basetext):
 
     @threader
     def getembedtext(self, text: str, tp):
-        if not (
-            self.isautorunning and self.checkisusingembed(tp.addr, tp.ctx, tp.ctx2)
-        ):
+        if not (self.isautorunning and self.Luna_checkisusingembed(tp)):
             return self.embedcallback(text, "")
         engine = (
             globalconfig["embedded"]["translator_2"]
@@ -530,7 +535,7 @@ class texthook(basetext):
                 if idx == -1:
                     continue
                 if autoindex < idx:
-                    insertindex = j 
+                    insertindex = j
                 else:
                     insertindex = j + 1
             self.selectedhook.insert(insertindex, key)
@@ -673,12 +678,6 @@ class texthook(basetext):
         for key in self.selectedhook:
             xx.append(self.serialkey(key))
         return xx
-
-    def checkisusingembed(self, address, ctx1, ctx2):
-        for pid in self.pids.copy():
-            if self.Luna_checkisusingembed(pid, address, ctx1, ctx2):
-                return True
-        return False
 
     def useembed(self, address, ctx1, ctx2, use):
         for pid in self.pids.copy():

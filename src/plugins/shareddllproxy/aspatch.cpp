@@ -82,7 +82,7 @@ struct ThreadParam
     uint64_t ctx2; // The subcontext of the hook: 0 by default, generated in a method specific to the hook
 };
 typedef void (*ProcessEvent)(DWORD);
-typedef void (*HookInsertHandler)(uint64_t, const wchar_t *);
+typedef void (*HookInsertHandler)(DWORD, uint64_t, const wchar_t *);
 typedef void (*EmbedCallback)(const wchar_t *, ThreadParam);
 nlohmann::json config;
 std::map<std::string, std::string> translation;
@@ -90,8 +90,8 @@ std::unordered_set<DWORD> connectedpids;
 void (*Luna_Start)(ProcessEvent Connect, ProcessEvent Disconnect, void *, void *, void *, void *, HookInsertHandler hookinsert, EmbedCallback embed, void *);
 void (*Luna_Inject)(DWORD pid, LPCWSTR basepath);
 void (*Luna_EmbedSettings)(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, UINT32 keeprawtext, bool fastskipignore);
-void (*Luna_useembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2, bool use);
-bool (*Luna_checkisusingembed)(DWORD pid, uint64_t address, uint64_t ctx1, uint64_t ctx2);
+void (*Luna_useembed)(ThreadParam, bool use);
+bool (*Luna_checkisusingembed)(ThreadParam);
 void (*Luna_embedcallback)(DWORD pid, LPCWSTR text, LPCWSTR trans);
 std::set<std::string> notranslation;
 HANDLE hsema;
@@ -129,7 +129,7 @@ public:
             0,
             0,
             0,
-            [](uint64_t addr, const wchar_t *output)
+            [](DWORD pid, uint64_t addr, const wchar_t *output)
             {
                 std::wstring newhookcode = output;
                 for (auto hook : config["embedhook"])
@@ -140,10 +140,8 @@ public:
                     uint64_t _ctx2 = hook[3];
                     if (hookcode == newhookcode)
                     {
-                        for (auto pid : connectedpids)
-                        {
-                            Luna_useembed(pid, addr, _ctx1, _ctx2, true);
-                        }
+                        ThreadParam tp{pid, addr, _ctx1, _ctx2};
+                        Luna_useembed(tp, true);
                     }
                 }
             },
@@ -152,7 +150,7 @@ public:
                 std::wstring text = output;
                 for (auto pid : connectedpids)
                 {
-                    if ((Luna_checkisusingembed(pid, tp.addr, tp.ctx, tp.ctx2)))
+                    if ((Luna_checkisusingembed(tp)))
                     {
                         auto trans = findtranslation(text);
                         Luna_embedcallback(pid, output, trans.c_str());
