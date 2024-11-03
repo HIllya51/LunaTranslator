@@ -28,8 +28,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/version)
 include(generate_product_version)
 
 set(VERSION_MAJOR 5)
-set(VERSION_MINOR 53)
-set(VERSION_PATCH 13)
+set(VERSION_MINOR 55)
+set(VERSION_PATCH 0)
 
 add_library(pch pch.cpp)
 target_precompile_headers(pch PUBLIC pch.h)

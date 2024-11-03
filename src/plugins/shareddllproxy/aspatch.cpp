@@ -91,8 +91,7 @@ void (*Luna_Start)(ProcessEvent Connect, ProcessEvent Disconnect, void *, void *
 void (*Luna_Inject)(DWORD pid, LPCWSTR basepath);
 void (*Luna_EmbedSettings)(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, UINT32 keeprawtext, bool fastskipignore);
 void (*Luna_useembed)(ThreadParam, bool use);
-bool (*Luna_checkisusingembed)(ThreadParam);
-void (*Luna_embedcallback)(DWORD pid, LPCWSTR text, LPCWSTR trans);
+void (*Luna_embedcallback)(ThreadParam, LPCWSTR text, LPCWSTR trans);
 std::set<std::string> notranslation;
 HANDLE hsema;
 class lunapatch
@@ -111,7 +110,6 @@ public:
         Luna_EmbedSettings = (decltype(Luna_EmbedSettings))GetProcAddress(LunaHost, "Luna_EmbedSettings");
         Luna_Inject = (decltype(Luna_Inject))GetProcAddress(LunaHost, "Luna_Inject");
         Luna_useembed = (decltype(Luna_useembed))GetProcAddress(LunaHost, "Luna_useembed");
-        Luna_checkisusingembed = (decltype(Luna_checkisusingembed))GetProcAddress(LunaHost, "Luna_checkisusingembed");
         Luna_embedcallback = (decltype(Luna_embedcallback))GetProcAddress(LunaHost, "Luna_embedcallback");
         hsema = CreateSemaphore(NULL, 0, 100, NULL);
         Luna_Start(
@@ -148,14 +146,8 @@ public:
             [](const wchar_t *output, ThreadParam tp)
             {
                 std::wstring text = output;
-                for (auto pid : connectedpids)
-                {
-                    if ((Luna_checkisusingembed(tp)))
-                    {
-                        auto trans = findtranslation(text);
-                        Luna_embedcallback(pid, output, trans.c_str());
-                    }
-                }
+                auto trans = findtranslation(text);
+                Luna_embedcallback(tp, output, trans.c_str());
             },
             0);
     }

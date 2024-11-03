@@ -726,9 +726,7 @@ class hookselect(closeashidewindow):
         action = menu.exec(self.tttable.cursor().pos())
         hc, _, tp = self.querykeyofrow(index)
         if action == remove:
-            pid = tp.processId
-            addr = tp.addr
-            gobject.baseobject.textsource.removehook(pid, addr)
+            gobject.baseobject.textsource.Luna_RemoveHook(tp.processId, tp.addr)
 
         elif action == copy:
             winsharedutils.clipboard_set(hc)

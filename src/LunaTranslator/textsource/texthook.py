@@ -240,7 +240,7 @@ class texthook(basetext):
         self.Luna_useembed = LunaHost.Luna_useembed
         self.Luna_useembed.argtypes = ThreadParam, c_bool
         self.Luna_embedcallback = LunaHost.Luna_embedcallback
-        self.Luna_embedcallback.argtypes = DWORD, LPCWSTR, LPCWSTR
+        self.Luna_embedcallback.argtypes = ThreadParam, LPCWSTR, LPCWSTR
 
         self.Luna_QueryThreadHistory = LunaHost.Luna_QueryThreadHistory
         self.Luna_QueryThreadHistory.argtypes = (ThreadParam, c_void_p)
@@ -453,7 +453,7 @@ class texthook(basetext):
                 tp.addr = addr
                 tp.ctx = _ctx1
                 tp.ctx2 = _ctx2
-                self.useembed(tp, True)
+                self.Luna_useembed(tp, True)
 
     def safeembedcheck(self, text):
         try:
@@ -468,8 +468,8 @@ class texthook(basetext):
 
     @threader
     def getembedtext(self, text: str, tp):
-        if not (self.isautorunning and self.Luna_checkisusingembed(tp)):
-            return self.embedcallback(text, "")
+        if not self.isautorunning:
+            return self.embedcallback(text, "", tp)
         engine = (
             globalconfig["embedded"]["translator_2"]
             if globalconfig["embedded"]["use_appointed_translate"]
@@ -488,12 +488,11 @@ class texthook(basetext):
             trans = ""
         if globalconfig["embedded"]["trans_kanji"]:
             trans = kanjitrans(zhconv.convert(trans, "zh-tw"))
-        self.embedcallback(text, trans)
+        self.embedcallback(text, trans, tp)
 
-    def embedcallback(self, text: str, trans: str):
+    def embedcallback(self, text: str, trans: str, tp:ThreadParam):
         trans = splitembedlines(trans)
-        for pid in self.pids.copy():
-            self.Luna_embedcallback(pid, text, trans)
+        self.Luna_embedcallback(tp, text, trans)
 
     def flashembedsettings(self, pid=None):
         if pid:
@@ -634,10 +633,6 @@ class texthook(basetext):
                 "Invalie Hook Code Format!",
             )
 
-    def removehook(self, pid, address):
-        for pid in self.pids.copy():
-            self.Luna_RemoveHook(pid, address)
-
     @threader
     def delaycollectallselectedoutput(self):
         while not self.ending:
@@ -695,10 +690,6 @@ class texthook(basetext):
         for key in self.selectedhook:
             xx.append(self.serialkey(key))
         return xx
-
-    def useembed(self, address, ctx1, ctx2, use):
-        for pid in self.pids.copy():
-            self.Luna_useembed(pid, address, ctx1, ctx2, use)
 
     def dispatchtext(self, text):
         self.runonce_line = text
