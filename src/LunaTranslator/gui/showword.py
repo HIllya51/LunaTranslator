@@ -497,6 +497,7 @@ class AnkiWindow(QWidget):
         )
         folder_open3 = QPushButton(qtawesome.icon("fa.folder-open"), "")
         folder_open3.clicked.connect(functools.partial(self.selecfile2, self.editpath))
+
         def createadd():
             btn = LRButton("添加")
             btn.clicked.connect(functools.partial(self.errorwrap, False))
@@ -600,7 +601,7 @@ class AnkiWindow(QWidget):
                                 ]
                             ),
                             self.viewimagelabel,
-                            createadd
+                            createadd,
                         ],
                         QVBoxLayout,
                     ),
@@ -1040,6 +1041,17 @@ class searchwordW(closeashidewindow):
         _.searchtext.setText(word)
         _.__search_by_click_search_btn()
 
+    def showmenu_auto_sound(self, _):
+
+        menu = QMenu(self)
+        auto = LAction("自动")
+        auto.setCheckable(True)
+        auto.setChecked(globalconfig["is_search_word_auto_tts"])
+        menu.addAction(auto)
+        action = menu.exec(QCursor.pos())
+        if action == auto:
+            globalconfig["is_search_word_auto_tts"] = auto.isChecked()
+
     def setupUi(self):
         self.setWindowTitle("查词")
         self.ankiwindow = AnkiWindow(self)
@@ -1083,7 +1095,9 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(searchbutton)
 
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
-        soundbutton.clicked.connect(self.langdu)
+        soundbutton.clicked.connect(self.tts_for_searched_word)
+        soundbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        soundbutton.customContextMenuRequested.connect(self.showmenu_auto_sound)
         self.soundbutton = soundbutton
         self.searchlayout.addWidget(soundbutton)
 
@@ -1150,7 +1164,7 @@ class searchwordW(closeashidewindow):
             self.ankiwindow.hide()
         self.isfirstshowanki = False
 
-    def langdu(self):
+    def tts_for_searched_word(self):
         if gobject.baseobject.reader:
             gobject.baseobject.audioplayer.timestamp = uuid.uuid4()
             gobject.baseobject.reader.read(
@@ -1231,6 +1245,8 @@ class searchwordW(closeashidewindow):
         word = word.strip()
         if word == "":
             return
+        if globalconfig["is_search_word_auto_tts"]:
+            self.tts_for_searched_word()
         self.ankiwindow.reset(word)
         for i in range(self.tab.count()):
             self.tab.removeTab(0)

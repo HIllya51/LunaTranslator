@@ -18,6 +18,7 @@
     "network": 1,
     "useextrahtml": true,
     "ocrselectalpha": 0.3,
+    "is_search_word_auto_tts": false,
     "network_websocket": 1,
     "webview_textbrowser": false,
     "imagewrapmode": 0,
