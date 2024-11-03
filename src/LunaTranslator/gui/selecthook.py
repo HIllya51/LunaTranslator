@@ -538,7 +538,7 @@ class hookselect(closeashidewindow):
             )
         self.solveifembedablenumincreaseto1(key, isembedable)
         selectbutton = getsimpleswitch(
-            {1: False}, 1, callback=functools.partial(self.accept, key)
+            {1: select}, 1, callback=functools.partial(self.accept, key)
         )
         rown = 0 if isembedable else self.ttCombomodelmodel.rowCount()
 
@@ -552,8 +552,6 @@ class hookselect(closeashidewindow):
         self.ttCombomodelmodel.insertRow(rown, items)
         items[0].setData(key, self.SaveTextThreadRole)
 
-        if select:
-            selectbutton.click()
         self.tttable.setIndexWidget(self.ttCombomodelmodel.index(rown, 0), selectbutton)
         if isembedable:
             checkbtn = MySwitch(sign=self._check_tp_using(key))
@@ -860,6 +858,7 @@ class hookselect(closeashidewindow):
     def accept(self, key, select):
         try:
             hc, hn, tp = key
+            gobject.baseobject.textsource.usermanualaccepthooks.append(key)
             if key in gobject.baseobject.textsource.selectedhook:
                 gobject.baseobject.textsource.selectedhook.remove(key)
 

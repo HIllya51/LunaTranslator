@@ -1,7 +1,6 @@
 import threading
 import re, os
 import time, gobject, windows
-from collections import OrderedDict
 import zhconv, functools
 from winsharedutils import Is64bit
 from myutils.config import (
@@ -67,7 +66,7 @@ class ThreadParam(Structure):
         return self.__hash__() == __value.__hash__()
 
     def __repr__(self):
-        return "(%s,%s,%s,%s)" % (self.processId, self.addr, self.ctx, self.ctx2)
+        return "(%s,%x,%x,%x)" % (self.processId, self.addr, self.ctx, self.ctx2)
 
 
 class SearchParam(Structure):
@@ -159,6 +158,7 @@ class texthook(basetext):
         self.keepref = []
         self.selectinghook = None
         self.selectedhook = []
+        self.usermanualaccepthooks = []
         self.multiselectedcollector = []
         self.multiselectedcollectorlock = threading.Lock()
         self.lastflushtime = 0
@@ -510,16 +510,30 @@ class texthook(basetext):
         name = (hc[:8] == "UserHook" and _hc[:8] == "UserHook") or (hc == _hc)
         return base and name
 
-    def onnewhook(self, hc, hn, tp, isembedable):
-        key = (hc, hn.decode("utf8"), tp)
-
-        select = False
+    def matchkeyindex(self, key):
         for _i, autostarthookcode in enumerate(self.autostarthookcode):
             if self.match_compatibility(key, autostarthookcode):
-                self.selectedhook += [key]
-                self.selectinghook = key
-                select = True
-                break
+                return _i
+        return -1
+
+    def onnewhook(self, hc, hn, tp, isembedable):
+        key = (hc, hn.decode("utf8"), tp)
+        autoindex = self.matchkeyindex(key)
+        select = autoindex != -1
+        if select:
+            self.selectinghook = key
+            insertindex = len(self.selectedhook) - 1
+            for j in range(len(self.selectedhook)):
+                if self.selectedhook[j] in self.usermanualaccepthooks:
+                    continue
+                idx = self.matchkeyindex(self.selectedhook[j])
+                if idx == -1:
+                    continue
+                if autoindex < idx:
+                    insertindex = j 
+                else:
+                    insertindex = j + 1
+            self.selectedhook.insert(insertindex, key)
         gobject.baseobject.hookselectdialog.addnewhooksignal.emit(
             key, select, isembedable
         )
