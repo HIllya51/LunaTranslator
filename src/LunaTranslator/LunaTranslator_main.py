@@ -1,11 +1,15 @@
-import sys, os, io, time, threading, queue
+import sys, os
 from ctypes import windll, wintypes
 
 
-def dopathexists(file):
+def dopathexists(file: str):
+    import windows
+
     if not file:
         return False
     if not file.strip():
+        return False
+    if windows.check_unc_not_exists(file):
         return False
     PathFileExists = windll.Shlwapi.PathFileExistsW
     PathFileExists.argtypes = (wintypes.LPCWSTR,)

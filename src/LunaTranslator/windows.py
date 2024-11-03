@@ -327,6 +327,35 @@ def GetLongPathName(file):
     return path
 
 
+def check_unc_file(v: str):
+    buf = create_unicode_buffer(65535)
+    for i in range(26):
+        A = chr(ord("A") + i) + ":"
+        if _QueryDosDeviceW(A, buf, 65535) != 0:
+            prefixdos = buf.value
+            if v.startswith(prefixdos):
+                return A + v[len(prefixdos) :]
+        # Get network drive
+
+        # 我操了，使用管理员权限时，这个玩意会失败
+        if _WNetGetUniversalNameW(A, 1, buf, byref(c_uint(65535))) == 0:
+            prefixnetwork = cast(
+                buf, POINTER(UNIVERSAL_NAME_INFO)
+            ).contents.lpUniversalName
+            if v.startswith(prefixnetwork):
+                return A + v[len(prefixnetwork) :]
+    return None
+
+
+def check_unc_not_exists(v: str):
+    # 当路径可能为unc路径，且不存在时，返回True
+    # 避免访问不存在unc路径时过长等待导致卡死
+    # （可能误伤）
+    if v.startswith("\\"):
+        return check_unc_file(v) is None
+    return False
+
+
 def _GetProcessFileName(hHandle):
     w = create_unicode_buffer(65535)
     # 我佛了，太混乱了，不同权限获取的东西完全不一样
@@ -340,28 +369,12 @@ def _GetProcessFileName(hHandle):
     ):
         return
 
-    v = w.value
-    if v[0] == "\\":
-
-        buf = create_unicode_buffer(65535)
-        for i in range(26):
-            A = ord("A") + i
-            if _QueryDosDeviceW(chr(A) + ":", buf, 65535) != 0:
-                prefixdos = buf.value
-                if v.startswith(prefixdos):
-                    v = chr(A) + ":" + v[len(prefixdos) :]
-                    break
-
-            # Get network drive
-
-            # 我操了，使用管理员权限时，这个玩意会失败
-            if _WNetGetUniversalNameW(chr(A) + ":", 1, buf, byref(c_uint(65535))) == 0:
-                prefixnetwork = cast(
-                    buf, POINTER(UNIVERSAL_NAME_INFO)
-                ).contents.lpUniversalName
-                if v.startswith(prefixnetwork):
-                    v = chr(A) + ":" + v[len(prefixnetwork) :]
-                    break
+    v: str = w.value
+    
+    if v.startswith("\\"):
+        _f = check_unc_file(v)
+        if _f:
+            return _f
         return v
     else:
         return v

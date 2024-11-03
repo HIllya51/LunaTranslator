@@ -20,7 +20,7 @@ from ctypes import (
     c_long,
 )
 from ctypes.wintypes import WORD, HWND, DWORD, RECT, UINT
-import gobject
+import gobject, windows
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
 
@@ -198,6 +198,8 @@ _extracticon2data.restype = c_bool
 
 
 def extracticon2data(fname):
+    if windows.check_unc_not_exists(fname):
+        return None
     ret = []
 
     def cb(ptr, size):
