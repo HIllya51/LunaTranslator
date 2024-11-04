@@ -1,5 +1,5 @@
 #pragma once
-#define DECLARE extern "C" __declspec(dllexport)
+#define DECLARE_API extern "C" __declspec(dllexport)
 extern "C"
 {
 

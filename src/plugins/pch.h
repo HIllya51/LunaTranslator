@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <functional>
 #include <fstream>
+#include <numeric>
 #include <filesystem>
 #include <stdexcept>
 #include <cstdint>
@@ -69,7 +70,6 @@
 #include <crtdefs.h>
 
 #include <memory>
-#include <nlohmann/json.hpp>
 
 
 #pragma comment(lib, "shlwapi.lib")

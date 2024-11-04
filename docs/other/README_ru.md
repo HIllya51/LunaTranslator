@@ -21,7 +21,7 @@
 - **HOOK** Поддерживает получение текста с использованием метода [HOOK](https://github.com/HIllya51/LunaHook), поддерживает использование специальных кодов, поддерживает автоматическое сохранение игр и HOOK, автоматическое загрузка HOOK и т.д. Для некоторых движков также поддерживается встроенная трансляция. Для игр, которые не поддерживаются или плохо поддерживаются, пожалуйста, [отправьте обратную связь](https://lunatranslator.org/Resource/game_support) 
 
 
-- **OCR** поддерживает **офлайн OCR** (помимо [встроенного OCR-движка](https://github.com/HIllya51/LunaOCR), также поддерживает WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) и **онлайн OCR** (Baidu, Youdao, Feishu, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, совместимые интерфейсы ChatGPT).
+- **OCR** поддерживает **офлайн OCR** (помимо встроенного OCR-движка, также поддерживает WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) и **онлайн OCR** (Baidu, Youdao, Feishu, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, совместимые интерфейсы ChatGPT).
 
 - **Буфер обмена** Поддерживает получение текста из буфера обмена для перевода
 

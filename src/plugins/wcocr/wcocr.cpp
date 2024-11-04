@@ -1,8 +1,8 @@
 #include <stdafx.h>
 #include <wechatocr.h>
-#define DECLARE extern "C" __declspec(dllexport)
+#define DECLARE_API extern "C" __declspec(dllexport)
 
-DECLARE void *wcocr_init(const wchar_t *wexe, const wchar_t *wwcdir)
+DECLARE_API void *wcocr_init(const wchar_t *wexe, const wchar_t *wwcdir)
 {
     auto obj = new CWeChatOCR(wexe, wwcdir);
     if (obj->wait_connection(5000))
@@ -16,14 +16,14 @@ DECLARE void *wcocr_init(const wchar_t *wexe, const wchar_t *wwcdir)
     }
 }
 
-DECLARE void wcocr_destroy(void *pobj)
+DECLARE_API void wcocr_destroy(void *pobj)
 {
     if (!pobj)
         return;
     auto obj = reinterpret_cast<CWeChatOCR *>(pobj);
     delete obj;
 }
-DECLARE bool wcocr_ocr(void *pobj, const char *u8path, void (*cb)(int, int, int, int, LPCSTR))
+DECLARE_API bool wcocr_ocr(void *pobj, const char *u8path, void (*cb)(int, int, int, int, LPCSTR))
 {
     if (!pobj)
         return false;

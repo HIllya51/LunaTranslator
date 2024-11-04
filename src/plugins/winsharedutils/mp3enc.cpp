@@ -12,7 +12,7 @@
 
 int stereo = STEREO;
 
-DECLARE void encodemp3(void *ptr, size_t size, void (*cb)(void *ptr, size_t size))
+DECLARE_API void encodemp3(void *ptr, size_t size, void (*cb)(void *ptr, size_t size))
 {
     shine_config_t config;
     shine_t s;

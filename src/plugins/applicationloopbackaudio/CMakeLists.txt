@@ -14,4 +14,4 @@ generate_product_version(
 	
 	add_library(loopbackaudio MODULE runer.cpp  LoopbackCapture.cpp  ${versioninfo})
 	target_precompile_headers(loopbackaudio REUSE_FROM pch) 
-	target_link_libraries(loopbackaudio Mfplat mfuuid ) 
+	target_link_libraries(loopbackaudio Mfplat mfuuid wil) 

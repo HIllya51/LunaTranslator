@@ -157,7 +157,7 @@ std::vector<byte> SaveBitmapToBuffer(HBITMAP hBitmap)
 
     return data;
 }
-DECLARE void gdi_screenshot(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
+DECLARE_API void gdi_screenshot(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
 {
     if (rect.bottom == rect.top || rect.left == rect.right)
         return;
@@ -176,7 +176,7 @@ DECLARE void gdi_screenshot(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
     ReleaseDC(hwnd, hdc);
 }
 
-DECLARE void maximum_window(HWND hwnd)
+DECLARE_API void maximum_window(HWND hwnd)
 {
     RECT rect;
     GetVirtualDesktopRect(rect);

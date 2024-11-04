@@ -20,7 +20,7 @@
 
 - **HOOK** Supports obtaining text using [HOOK](https://github.com/HIllya51/LunaHook) methods, supports the use of special codes, supports automatic saving of games and HOOKs, automatic loading of HOOKs, etc. For some engines, it also supports embedded translation. For games that are not supported or not well supported, please [submit feedback](https://lunatranslator.org/Resource/game_support) 
 
-- **OCR** supports **offline OCR** (in addition to the [built-in OCR engine](https://github.com/HIllya51/LunaOCR), it also supports WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **online OCR** (Baidu, Youdao, Feishu, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, ChatGPT-compatible interfaces).
+- **OCR** supports **offline OCR** (in addition to the built-in OCR engine, it also supports WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **online OCR** (Baidu, Youdao, Feishu, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, ChatGPT-compatible interfaces).
 
 - **Clipboard** Supports obtaining text from the clipboard for translation
 

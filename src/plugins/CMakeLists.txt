@@ -29,7 +29,7 @@ include(generate_product_version)
 
 set(VERSION_MAJOR 5)
 set(VERSION_MINOR 55)
-set(VERSION_PATCH 2)
+set(VERSION_PATCH 3)
 
 add_library(pch pch.cpp)
 target_precompile_headers(pch PUBLIC pch.h)
@@ -42,3 +42,4 @@ add_subdirectory(hookmagpie)
 add_subdirectory(shareddllproxy)
 add_subdirectory(applicationloopbackaudio)
 add_subdirectory(wcocr)
+add_subdirectory(LunaOCR)

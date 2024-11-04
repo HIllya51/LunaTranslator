@@ -150,13 +150,13 @@ static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
     RefreshImmersiveColorPolicyState();
     FlushMenuThemes();
 }
-DECLARE void setdwmextendframe(HWND hwnd)
+DECLARE_API void setdwmextendframe(HWND hwnd)
 {
     MARGINS mar{-1, -1, -1, -1};
     DwmExtendFrameIntoClientArea(hwnd, &mar);
 }
 
-DECLARE void _SetTheme(
+DECLARE_API void _SetTheme(
     HWND _hWnd,
     bool dark,
     int backdrop)
@@ -191,7 +191,7 @@ DECLARE void _SetTheme(
     DwmSetWindowAttribute(_hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &value, sizeof(value));
 }
 
-DECLARE bool isDark()
+DECLARE_API bool isDark()
 {
     HKEY hKey;
     const char *subKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";

@@ -1,8 +1,8 @@
 
 #include "LoopbackCapture.h"
-#define DECLARE extern "C" __declspec(dllexport)
+#define DECLARE_API extern "C" __declspec(dllexport)
 
-DECLARE void StartCaptureAsync(void (*datacb)(void *ptr, size_t size), void (*handlecb)(HANDLE))
+DECLARE_API void StartCaptureAsync(void (*datacb)(void *ptr, size_t size), void (*handlecb)(HANDLE))
 {
     auto mutex = CreateSemaphoreW(NULL, 0, 1, NULL);
     handlecb(mutex);
@@ -14,7 +14,7 @@ DECLARE void StartCaptureAsync(void (*datacb)(void *ptr, size_t size), void (*ha
     datacb(loopbackCapture.buffer.data(), loopbackCapture.buffer.size());
 }
 
-DECLARE void StopCaptureAsync(HANDLE m)
+DECLARE_API void StopCaptureAsync(HANDLE m)
 {
     ReleaseSemaphore(m, 1, NULL);
 }
