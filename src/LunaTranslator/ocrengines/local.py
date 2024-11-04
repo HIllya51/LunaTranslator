@@ -8,12 +8,9 @@ from ctypes import (
     c_size_t,
     c_void_p,
     c_int32,
-    POINTER,
     Structure,
-    pointer,
     c_char_p,
     c_wchar_p,
-    c_bool,
     CFUNCTYPE,
 )
 import os
@@ -50,7 +47,7 @@ class ocrwrapper:
         _OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32
         self.pOcrObj = _OcrInit(szDetModel, szRecModel, szKeyPath, nThreads)
 
-    def __OcrDetect(self, data: bytes, rotate: bool):
+    def __OcrDetect(self, data: bytes, mode: int):
 
         texts = []
         pss = []
@@ -64,21 +61,21 @@ class ocrwrapper:
             c_void_p,
             c_void_p,
             c_size_t,
-            c_bool,
+            c_int32,
             c_void_p,
         )
         _OcrDetect(
             self.pOcrObj,
             data,
             len(data),
-            rotate,
+            mode,
             CFUNCTYPE(None, ocrpoints, c_char_p)(cb),
         )
         return pss, texts
 
-    def ocr(self, data, rotate=False):
+    def ocr(self, data, mode):
         try:
-            return self.__OcrDetect(data, rotate)
+            return self.__OcrDetect(data, mode)
         except:
             print_exc()
             return [], []
@@ -202,6 +199,6 @@ class OCR(baseocr):
 
         pss, texts = self._ocr.ocr(
             imagebinary,
-            globalconfig["verticalocr"] == 1,
+            globalconfig["verticalocr"],
         )
         return {"box": pss, "text": texts}

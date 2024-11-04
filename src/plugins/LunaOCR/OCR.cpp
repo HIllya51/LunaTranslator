@@ -6,6 +6,12 @@
 typedef std::vector<cv::Point> TextBox;
 typedef std::string TextLine;
 typedef std::pair<TextBox, TextLine> TextBlock;
+enum class Directional
+{
+    H,
+    V,
+    Auto
+};
 
 struct ScaleParam
 {
@@ -115,12 +121,11 @@ private:
 class DbNet : public CommonOnnxModel
 {
 public:
-    DbNet(const std::wstring &pathStr, int numOfThread): CommonOnnxModel(pathStr, {0.485 * 255, 0.456 * 255, 0.406 * 255}, {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0}, numOfThread)
-{
-}
+    DbNet(const std::wstring &pathStr, int numOfThread) : CommonOnnxModel(pathStr, {0.485 * 255, 0.456 * 255, 0.406 * 255}, {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0}, numOfThread)
+    {
+    }
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh,
                                       float boxThresh, float unClipRatio);
-
 };
 
 // onnxruntime init windows
@@ -568,7 +573,7 @@ public:
 
     std::vector<TextBlock> detect(const void *binptr, size_t size,
                                   int padding, int maxSideLen,
-                                  float boxScoreThresh, float boxThresh, float unClipRatio, bool rotate);
+                                  float boxScoreThresh, float boxThresh, float unClipRatio, Directional);
 
 private:
     DbNet dbNet;
@@ -578,7 +583,8 @@ private:
 
     std::vector<TextBlock> detect_internal(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                                            float boxScoreThresh = 0.6f, float boxThresh = 0.3f,
-                                           float unClipRatio = 2.0f, bool rotate = true);
+                                           float unClipRatio = 2.0f, Directional mode = Directional::H);
+    bool guess_V(const std::vector<TextBox> &);
 };
 
 cv::Mat makePadding(cv::Mat &src, const int padding)
@@ -593,7 +599,7 @@ cv::Mat makePadding(cv::Mat &src, const int padding)
 
 std::vector<TextBlock> OcrLite::detect(const void *binptr, size_t size,
                                        const int padding, const int maxSideLen,
-                                       float boxScoreThresh, float boxThresh, float unClipRatio, bool rotate)
+                                       float boxScoreThresh, float boxThresh, float unClipRatio, Directional mode)
 {
     std::vector<uchar> bytes{(uchar *)binptr, (uchar *)binptr + size};
     cv::Mat originSrc = imdecode(bytes, cv::IMREAD_COLOR); // default : BGR
@@ -612,7 +618,7 @@ std::vector<TextBlock> OcrLite::detect(const void *binptr, size_t size,
     cv::Mat paddingSrc = makePadding(originSrc, padding);
     ScaleParam scale = getScaleParam(paddingSrc, resize);
     return detect_internal(paddingSrc, paddingRect, scale,
-                           boxScoreThresh, boxThresh, unClipRatio, rotate);
+                           boxScoreThresh, boxThresh, unClipRatio, mode);
 }
 
 std::vector<cv::Mat> OcrLite::getPartImages(cv::Mat &src, std::vector<TextBox> &textBoxes)
@@ -626,32 +632,57 @@ std::vector<cv::Mat> OcrLite::getPartImages(cv::Mat &src, std::vector<TextBox> &
     return partImages;
 }
 
-cv::Mat matRotateClockWise180(cv::Mat src)
+void matRotateClockWise180(cv::Mat& src)
 {
     flip(src, src, 0);
     flip(src, src, 1);
-    return src;
 }
 
-cv::Mat matRotateClockWise90(cv::Mat src)
+void matRotateClockWise90(cv::Mat& src)
 {
     transpose(src, src);
     flip(src, src, 1);
-    return src;
 }
-
+bool OcrLite::guess_V(const std::vector<TextBox> &textBoxes)
+{
+    auto whs = 1.0f;
+    for (auto &box : textBoxes)
+    {
+        int minX = std::numeric_limits<int>::max();
+        int minY = std::numeric_limits<int>::max();
+        int maxX = std::numeric_limits<int>::min();
+        int maxY = std::numeric_limits<int>::min();
+        for (auto &point : box)
+        {
+            if (point.x < minX)
+                minX = point.x;
+            if (point.y < minY)
+                minY = point.y;
+            if (point.x > maxX)
+                maxX = point.x;
+            if (point.y > maxY)
+                maxY = point.y;
+        }
+        auto w = maxX - minX;
+        auto h = maxY - minY;
+        if (h == 0 || w == 0)
+            continue;
+        whs *= w / h;
+    }
+    return whs < 1;
+}
 std::vector<TextBlock> OcrLite::detect_internal(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
-                                                float boxScoreThresh, float boxThresh, float unClipRatio, bool rotate)
+                                                float boxScoreThresh, float boxThresh, float unClipRatio, Directional mode)
 {
 
     std::vector<TextBox> textBoxes = dbNet.getTextBoxes(src, scale, boxScoreThresh, boxThresh, unClipRatio);
     std::vector<cv::Mat> partImages = getPartImages(src, textBoxes);
     for (size_t i = 0; i < partImages.size(); ++i)
     {
-        if (rotate)
+        if (mode == Directional::V || (mode == Directional::Auto && guess_V(textBoxes)))
         {
-            partImages.at(i) = matRotateClockWise180(partImages[i]);
-            partImages.at(i) = matRotateClockWise90(partImages[i]);
+            matRotateClockWise180(partImages[i]);
+            matRotateClockWise90(partImages[i]);
         }
     }
 
@@ -699,14 +730,14 @@ DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecMode
     }
 }
 
-DECLARE_API void OcrDetect(OcrLite *pOcrObj, const void *binptr, size_t size, bool rotate, void (*cb)(ocrpoints, const char *))
+DECLARE_API void OcrDetect(OcrLite *pOcrObj, const void *binptr, size_t size, Directional mode, void (*cb)(ocrpoints, const char *))
 {
     if (!pOcrObj)
         return;
 
     try
     {
-        auto result = pOcrObj->detect(binptr, size, 50, 1024, 0.1, 0.1, 2.0, rotate);
+        auto result = pOcrObj->detect(binptr, size, 50, 1024, 0.1, 0.1, 2.0, mode);
 
         for (auto item : result)
         {
