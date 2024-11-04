@@ -1,4 +1,6 @@
 
+#include <nlohmann/json.hpp>
+
 HANDLE runexe(const std::wstring &exe, const std::optional<std::wstring> &startup_argument)
 {
     STARTUPINFOW si;

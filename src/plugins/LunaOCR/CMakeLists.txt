@@ -35,12 +35,11 @@ else ()
     include(${OpenCV_DIR}/x86/vc16/staticlib/OpenCVConfig.cmake)
 endif ()
 
-include_directories(${OpenCV_DIR}/include)
 set(OpenCV_LIBS opencv_core;opencv_features2d;opencv_flann;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_photo;opencv_video)
-
 
 add_library(LunaOCR SHARED OCR.cpp ${versioninfo})
 target_link_libraries(LunaOCR ${OnnxRuntime_LIBS} ${OpenCV_LIBS} Clipper2Lib) 
+target_include_directories(LunaOCR PRIVATE ${OpenCV_DIR}/include)
 target_precompile_headers(LunaOCR REUSE_FROM pch) 
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)

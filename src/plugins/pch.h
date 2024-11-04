@@ -70,7 +70,6 @@
 #include <crtdefs.h>
 
 #include <memory>
-#include <nlohmann/json.hpp>
 
 
 #pragma comment(lib, "shlwapi.lib")
