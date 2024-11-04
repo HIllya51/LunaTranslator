@@ -123,7 +123,7 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
     }
 }
 
-DECLARE HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
+DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
 {
     HANDLE hsema = CreateSemaphoreW(0, 0, 10, 0);
     HWND hwnd;
@@ -137,7 +137,7 @@ DECLARE HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
     else
         return NULL;
 }
-DECLARE void clipboard_callback_stop(HWND hwnd)
+DECLARE_API void clipboard_callback_stop(HWND hwnd)
 {
     if (!hwnd)
         return;
@@ -145,7 +145,7 @@ DECLARE void clipboard_callback_stop(HWND hwnd)
     DestroyWindow(hwnd);
 }
 
-DECLARE bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
+DECLARE_API bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
 {
     size -= sizeof(BITMAPFILEHEADER);
     HGLOBAL hDib = GlobalAlloc(GMEM_MOVEABLE, size);

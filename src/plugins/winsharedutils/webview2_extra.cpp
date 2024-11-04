@@ -11,7 +11,7 @@ using namespace Microsoft::WRL;
     if (FAILED((x)))     \
         return x;
 
-DECLARE void set_transparent_background(void* m_host){
+DECLARE_API void set_transparent_background(void* m_host){
     COREWEBVIEW2_COLOR color;
     ZeroMemory(&color,sizeof(color));
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
@@ -22,7 +22,7 @@ DECLARE void set_transparent_background(void* m_host){
     }
 }
 
-DECLARE HRESULT put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
+DECLARE_API HRESULT put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {
 
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
@@ -37,7 +37,7 @@ DECLARE HRESULT put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_CO
     }
     return S_FALSE;
 }
-DECLARE void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
+DECLARE_API void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
 {
     EventRegistrationToken *m_zoomFactorChangedToken = new EventRegistrationToken;
     // Register a handler for the ZoomFactorChanged event.
@@ -58,19 +58,19 @@ DECLARE void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
         m_zoomFactorChangedToken);
     return m_zoomFactorChangedToken;
 }
-DECLARE void remove_ZoomFactorChanged(void *m_host, void *m_zoomFactorChangedToken)
+DECLARE_API void remove_ZoomFactorChanged(void *m_host, void *m_zoomFactorChangedToken)
 {
 
     reinterpret_cast<ICoreWebView2Controller *>(m_host)->remove_ZoomFactorChanged(*reinterpret_cast<EventRegistrationToken *>(m_zoomFactorChangedToken));
     delete m_zoomFactorChangedToken;
 }
-DECLARE double get_ZoomFactor(void *m_host)
+DECLARE_API double get_ZoomFactor(void *m_host)
 {
     double zoomFactor;
     reinterpret_cast<ICoreWebView2Controller *>(m_host)->get_ZoomFactor(&zoomFactor);
     return zoomFactor;
 }
-DECLARE void put_ZoomFactor(void *m_host, double zoomFactor)
+DECLARE_API void put_ZoomFactor(void *m_host, double zoomFactor)
 {
     reinterpret_cast<ICoreWebView2Controller *>(m_host)->put_ZoomFactor(zoomFactor);
 }

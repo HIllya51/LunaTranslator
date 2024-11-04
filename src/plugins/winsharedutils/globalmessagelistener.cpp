@@ -52,12 +52,12 @@ void globalmessagelistener_1(void *callback)
         DispatchMessage(&msg);
     }
 }
-DECLARE void globalmessagelistener(void *callback)
+DECLARE_API void globalmessagelistener(void *callback)
 {
     std::thread(std::bind(globalmessagelistener_1, callback)).detach();
 }
 
-DECLARE void dispatchcloseevent()
+DECLARE_API void dispatchcloseevent()
 {
     PostMessage(HWND_BROADCAST, LUNA_UPDATE_PREPARED_OK, 0, 0);
 }

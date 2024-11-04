@@ -42,7 +42,7 @@ namespace SAPI
     }
 };
 
-DECLARE bool SAPI_Speak(const wchar_t *Content, int version, int voiceid, int rate, int volume, void (*cb)(byte *, size_t))
+DECLARE_API bool SAPI_Speak(const wchar_t *Content, int version, int voiceid, int rate, int volume, void (*cb)(byte *, size_t))
 {
     auto _c = std::wstring(Content);
     if (auto _ = std::move(SAPI::Speak(_c, version, voiceid, rate, volume)))

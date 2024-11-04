@@ -34,3 +34,9 @@ src/run3732.bat
 src/plugins/builds
 src/plugins/libs/webview2
 src/plugins/.vscode/settings.json
+src/plugins/libs/opencv-static/windows-x86
+src/plugins/libs/opencv-static/windows-x64
+src/plugins/libs/onnxruntime-static/windows-x86
+src/plugins/libs/onnxruntime-static/windows-x64
+src/plugins/libs/opencv-static.zip
+src/plugins/libs/onnxruntime-static.zip

@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <functional>
 #include <fstream>
+#include <numeric>
 #include <filesystem>
 #include <stdexcept>
 #include <cstdint>

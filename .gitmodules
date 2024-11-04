@@ -13,3 +13,6 @@
 [submodule "src/plugins/libs/Detours"]
 	path = src/plugins/libs/Detours
 	url = https://github.com/microsoft/Detours
+[submodule "src/plugins/libs/Clipper2"]
+	path = src/plugins/libs/Clipper2
+	url = https://github.com/AngusJohnson/Clipper2

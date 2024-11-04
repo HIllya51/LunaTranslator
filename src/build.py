@@ -29,7 +29,6 @@ mylinks = {
         "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
     },
     "mecab.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip",
-    "ocr.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/ocr.zip",
     "magpie.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip",
     "themes.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/themes.zip",
 }
@@ -121,8 +120,6 @@ def downloadcommon():
     downloadlr()
     subprocess.run(f"curl -LO {mylinks['mecab.zip']}")
     subprocess.run(f"7z x mecab.zip -oALL")
-    subprocess.run(f"curl -LO {mylinks['ocr.zip']}")
-    subprocess.run(f"7z x ocr.zip -oALL")
     subprocess.run(f"curl -LO {mylinks['magpie.zip']}")
     subprocess.run(f"7z x magpie.zip -oALL")
 

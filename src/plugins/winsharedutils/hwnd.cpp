@@ -1,6 +1,6 @@
 ﻿#include "define.h"
 #include <shellscalingapi.h>
-DECLARE void showintab(HWND hwnd, bool show, bool tool)
+DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
     LONG style = GetWindowLong(hwnd, GWL_STYLE);
@@ -22,7 +22,7 @@ DECLARE void showintab(HWND hwnd, bool show, bool tool)
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }
 
-DECLARE bool pid_running(DWORD pid)
+DECLARE_API bool pid_running(DWORD pid)
 {
     DWORD code;
     GetExitCodeProcess(AutoHandle(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)), &code);
@@ -54,14 +54,14 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
     }
     return TRUE;
 }
-DECLARE HWND getpidhwndfirst(DWORD pid)
+DECLARE_API HWND getpidhwndfirst(DWORD pid)
 {
     __EnumWindowsProc info = {pid, 0};
     EnumWindows(EnumWindowsProc, (LPARAM)&info);
     return info.hwnd;
 }
 
-DECLARE bool Is64bit(DWORD pid)
+DECLARE_API bool Is64bit(DWORD pid)
 {
     SYSTEM_INFO sysinfo;
     GetNativeSystemInfo(&sysinfo);
@@ -78,7 +78,7 @@ DECLARE bool Is64bit(DWORD pid)
         return false;
 }
 
-DECLARE void getprocesses(void (*cb)(DWORD, const wchar_t *))
+DECLARE_API void getprocesses(void (*cb)(DWORD, const wchar_t *))
 {
     std::unordered_map<std::wstring, std::vector<int>> exe_pid;
     AutoHandle hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -96,7 +96,7 @@ DECLARE void getprocesses(void (*cb)(DWORD, const wchar_t *))
         } while (Process32Next(hSnapshot, &pe32));
     }
 }
-DECLARE UINT GetMonitorDpiScaling(HWND hwnd)
+DECLARE_API UINT GetMonitorDpiScaling(HWND hwnd)
 {
     HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
     if (!hMonitor)
