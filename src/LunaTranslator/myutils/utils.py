@@ -274,7 +274,7 @@ def titlechangedtask(gameuid, title):
 
 class gamepath2uid_index_helper(dict):
     def __init__(self, d, uid):
-        super.__init__(d)
+        super().__init__(d)
         self.uid = uid
 
     def __setitem__(self, key, value):
@@ -290,7 +290,7 @@ class gamepath2uid_index_helper(dict):
             if absv not in gamepath2uid_index:
                 gamepath2uid_index[absv] = []
             gamepath2uid_index[absv].append(self.uid)
-        super.__setitem__(key, value)
+        super().__setitem__(key, value)
 
 
 def initanewitem(title):

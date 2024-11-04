@@ -82,49 +82,6 @@ class QButtonGroup_switch_widegt(QWidget):
         self.wlist.append(widget)
 
 
-hookcodehelp = r"""
-1、内存读取
-R{S|Q|V|U}[codepage#]@addr
-R是内存读取码标志
-S是默认ascii字符串，Q是UTF16，U是UTF32，V是UTF8
-2、HOOK
-{H|B}{A|B|W|I|S|Q|U|V}[F][N][codepage#][padding+]data_offset[*deref_offset][:split_offset[*deref_offset]]@addr[:module[:func]]
-H是inlineHook，B是vehhook
-单字符：A/B是小端/大端的mbcs，W是UTF16，I是UTF32
-字符串：S是默认ascii字符串，Q是UTF16，U是UTF32，V是UTF8。
-F：每次读取字符串后添加换行符
-N：无视上下文
--4 for EAX, -8 for ECX, -C for EDX, -10 for EBX, -14 for ESP, -18 for EBP, -1C for ESI, -20 for EDI
--C for RAX, -14 for RBX, -1C for RCX, -24 for RDX, and so on for RSP, RBP, RSI, RDI, R8-R15
-3、JIT
-{H|B}{A|B|W|I|S|Q|M|U|V}[F][N][codepage#][padding+]arg_index[*deref_offset][:split_offset[*deref_offset]]@{info}:JIT:{UNITY|YUZU|PPSSPP|VITA3K|RPCS3}
-arg_index是JIT函数的参数index。M为C#字符串，仅UNITY可用。
-UNITY的info为：[程序集]:[命名空间]:类名:函数名:参数量
-YUZU/PPSSPP/VITA3K/RPCS3的info为模拟地址
-4、内嵌
-E[D][S][N|O]HOOKCODE
-E是使用内嵌的标注，HOOKCODE是JIT特殊码或HOOK特殊码。
-D：写入时转换中文字符为日语字符集
-S：提取时使用HOOKCODE指定的文本提取方式
-N：写入时创建新的字符串并交换字符串指针
-O：写入时在原字符串上覆写
-"""
-
-
-@Singleton_close
-class dialog_showinfo(QDialog):
-
-    def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("HOOKCODE")
-        l = QLabel(hookcodehelp)
-        l.setWordWrap(True)
-        layout = QHBoxLayout()
-        layout.addWidget(l)
-        self.setLayout(layout)
-        self.show()
-
-
 class HexValidator(QValidator):
     def validate(self, input_str, pos):
         # 检查输入是否是有效的16进制数
@@ -662,7 +619,11 @@ class hookselect(closeashidewindow):
         self.searchtextlayout.addWidget(self.userhookinsert)
 
         self.userhookinsert = QPushButton(icon=qtawesome.icon("fa.question"))
-        self.userhookinsert.clicked.connect(lambda: dialog_showinfo(self))
+        self.userhookinsert.clicked.connect(
+            lambda: gobject.baseobject.openlink(
+                dynamiclink("{docs_server}/#/zh/hooksettings?id=hookcode")
+            )
+        )
         self.searchtextlayout.addWidget(self.userhookinsert)
 
         self.userhookfind = LPushButton("搜索特殊码")
