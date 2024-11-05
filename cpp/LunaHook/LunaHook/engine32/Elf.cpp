@@ -496,7 +496,11 @@ bool Elf::attach_function()
 
 bool isshiftjisX(WORD w)
 {
-  return (((BYTE)(w)) <= 0xfc) && (((BYTE)(w)) >= 0x80);
+  auto l = w & 0xff;
+  auto h = (w >> 8) & 0xff;
+  if (!(((l <= 0x9f) && (l >= 0x81)) || ((l <= 0xEF) && (l >= 0xE0))))
+    return false;
+  return ((h >= 0x40) && (h <= 0x7e)) || ((h >= 0x80) && (h <= 0xFC));
 }
 void SpecialHookElf2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
@@ -532,7 +536,6 @@ bool Elf2attach_function()
 }
 bool elf2()
 {
-  //[エルフ]あしたの雪之丞 DVD Special Edition
   // 勝　あしたの雪之丞２
   const uint8_t bytes[] = {
       0x66, 0x8b, 0x8e, XX4,
@@ -548,10 +551,31 @@ bool elf2()
   if (!addr)
     return false;
   HookParam hp;
-  hp.address = addr + sizeof(bytes);
-  hp.type = NO_CONTEXT | USING_STRING;
-  hp.offset = get_reg(regs::ebx);
 
+  hp.type = NO_CONTEXT | USING_CHAR;
+  hp.offset = get_reg(regs::ebx);
+  //[エルフ]あしたの雪之丞 DVD Special Edition
+
+  const uint8_t bytes2[] = {
+      0x66, 0x33, 0xdb,
+      0x6a, 0x01,
+      0x8a, 0xd8,
+      0x8b, 0x06,
+      0x8b, 0xce,
+      0xff, 0x50, 0x08,
+      0x33, 0xc9,
+      0x33, 0xd2,
+      0x8a, 0xe8,
+      0x0b, 0xd9};
+  auto addr2 = reverseFindBytes(bytes2, sizeof(bytes2), addr - 0x100, addr);
+  if (addr2)
+  {
+    hp.address = addr2 + sizeof(bytes2);
+  }
+  else
+  {
+    hp.address = addr + sizeof(bytes);
+  }
   return NewHook(hp, "Elf");
 }
 namespace
