@@ -11,7 +11,7 @@ else:
     rootDir = os.path.abspath(rootDir)
 if sys.argv[1] == "loadversion":
     os.chdir(rootDir)
-    with open("plugins/version/version.cmake", "r", encoding="utf8") as ff:
+    with open("../cpp/version/version.cmake", "r", encoding="utf8") as ff:
         pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
         match = re.findall(pattern, ff.read())[0]
         version_major, version_minor, version_patch = match
@@ -192,7 +192,7 @@ def get_url_as_json(url):
             time.sleep(3)
 
 def buildPlugins(arch):
-    os.chdir(rootDir + "\\plugins\\scripts")
+    os.chdir(rootDir + "\\..\\cpp\\scripts")
     subprocess.run("python fetchwebview2.py")
     if arch == "x86":
         subprocess.run(
@@ -282,15 +282,15 @@ if __name__ == "__main__":
         )
         shutil.copytree(
             f"{rootDir}/../build/cpp_x64",
-            f"{rootDir}/plugins/builds",
+            f"{rootDir}/../cpp/builds",
             dirs_exist_ok=True,
         )
         shutil.copytree(
             f"{rootDir}/../build/cpp_x64",
-            f"{rootDir}/plugins/builds",
+            f"{rootDir}/../cpp/builds",
             dirs_exist_ok=True,
         )
-        os.chdir(rootDir + "\\plugins\\scripts")
+        os.chdir(rootDir + "/../cpp/scripts")
         subprocess.run(f"python copytarget.py 1")
         subprocess.run(f"python copytarget.py 0")
 
