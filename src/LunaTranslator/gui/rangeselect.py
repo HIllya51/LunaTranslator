@@ -223,7 +223,10 @@ class rangeselect(QMainWindow):
             self.rectlabel.setGeometry(QRect(_sp, _ep))
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
+        if event.button() == Qt.MouseButton.RightButton:
+            self.once = False 
+            self.close()
+        elif event.button() == Qt.MouseButton.LeftButton:
             if self.startauto:
                 self.callbackfunction(event)
             else:
