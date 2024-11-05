@@ -1,5 +1,5 @@
 ﻿
-#include "define.h"
+
 std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume);
 
 std::vector<std::wstring> _List(const wchar_t *token);
@@ -53,7 +53,7 @@ DECLARE_API bool SAPI_Speak(const wchar_t *Content, int version, int voiceid, in
     return false;
 }
 
-void SAPI_List(int version, void (*cb)(const wchar_t *))
+DECLARE_API void SAPI_List(int version, void (*cb)(const wchar_t *))
 {
     auto _list = SAPI::List(version);
     for (auto _ : _list)

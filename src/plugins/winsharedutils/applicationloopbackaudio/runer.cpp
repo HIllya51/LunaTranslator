@@ -1,6 +1,5 @@
 
 #include "LoopbackCapture.h"
-#define DECLARE_API extern "C" __declspec(dllexport)
 
 DECLARE_API void StartCaptureAsync(void (*datacb)(void *ptr, size_t size), void (*handlecb)(HANDLE))
 {

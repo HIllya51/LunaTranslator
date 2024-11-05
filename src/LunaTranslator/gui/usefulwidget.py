@@ -1231,6 +1231,8 @@ class WebivewWidget(abstractwebview):
     # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
 
     def __del__(self):
+        if not self.webview:
+            return
         winsharedutils.remove_ZoomFactorChanged(self.get_controller(), self.__token)
 
     def bind(self, fname, func):

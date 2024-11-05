@@ -1,5 +1,4 @@
-﻿#include "define.h"
-#include <dxgi.h>
+﻿#include <dxgi.h>
 #include <inspectable.h>
 #include <dxgi1_2.h>
 #include <d3d11.h>
@@ -204,7 +203,7 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
     memcpy(ptr, p_buf.get(), l_bmp_info.bmiHeader.biSizeImage);
     cb(p_buf2.get(), bmfh.bfSize);
 }
-void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
+DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
 {
     // auto hwnd = GetForegroundWindow();// FindWindow(L"Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", 0);
     auto style_ex = GetWindowLong(hwnd, GWL_EXSTYLE);

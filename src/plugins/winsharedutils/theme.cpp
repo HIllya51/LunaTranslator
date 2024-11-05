@@ -1,4 +1,4 @@
-﻿#include "define.h"
+﻿
 // https://github.com/Blinue/Xaml-Islands-Cpp/blob/main/src/XamlIslandsCpp/XamlWindow.h
 
 static uint32_t GetOSversion() noexcept

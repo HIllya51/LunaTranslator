@@ -40,3 +40,5 @@ src/plugins/libs/onnxruntime-static/windows-x86
 src/plugins/libs/onnxruntime-static/windows-x64
 src/plugins/libs/opencv-static.zip
 src/plugins/libs/onnxruntime-static.zip
+src/plugins/libs/onnxruntime-static/onnxruntime-static.7z
+src/plugins/libs/opencv-static/opencv-static.7z

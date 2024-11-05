@@ -1,4 +1,4 @@
-#include "define.h"
+
 
 #include <wrl.h>
 #include <wil/com.h>

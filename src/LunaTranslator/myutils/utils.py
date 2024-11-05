@@ -819,7 +819,7 @@ class audiocapture:
         _ = self.mutex
         if _:
             self.mutex = None
-            self.StopCaptureAsync(_)
+            winsharedutils.StopCaptureAsync(_)
             self.stoped.acquire()
         _ = self.data
         self.data = None
@@ -830,20 +830,13 @@ class audiocapture:
 
     def __init__(self) -> None:
 
-        loopbackaudio = CDLL(gobject.GetDllpath("loopbackaudio.dll"))
-        StartCaptureAsync = loopbackaudio.StartCaptureAsync
-        StartCaptureAsync.argtypes = c_void_p, c_void_p
-        StartCaptureAsync.restype = HANDLE
-        StopCaptureAsync = loopbackaudio.StopCaptureAsync
-        StopCaptureAsync.argtypes = (HANDLE,)
-        self.StopCaptureAsync = StopCaptureAsync
         self.mutex = None
         self.stoped = threading.Lock()
         self.stoped.acquire()
         self.data = None
         self.cb1 = CFUNCTYPE(None, c_void_p, c_size_t)(self.__datacollect)
         self.cb2 = CFUNCTYPE(None, c_void_p)(self.__mutexcb)
-        threading.Thread(target=StartCaptureAsync, args=(self.cb1, self.cb2)).start()
+        threading.Thread(target=winsharedutils.StartCaptureAsync, args=(self.cb1, self.cb2)).start()
 
 
 class loopbackrecorder:

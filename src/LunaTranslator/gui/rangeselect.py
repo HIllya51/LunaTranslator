@@ -173,8 +173,9 @@ class rangeselect(QMainWindow):
             | Qt.WindowType.WindowStaysOnTopHint
             | Qt.WindowType.Tool
         )
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.backlabel = QLabel(self)
         self.rectlabel = QLabel(self)
-        # self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         # self.setWindowOpacity(0.5)
         self.setMouseTracking(True)
         self.setCursor(Qt.CursorShape.CrossCursor)
@@ -182,8 +183,7 @@ class rangeselect(QMainWindow):
 
     def reset(self):
         winsharedutils.maximum_window(int(self.winId()))
-        # desktop = QApplication.primaryScreen().virtualGeometry()
-        # self.setGeometry(desktop)
+        winsharedutils.maximum_window(int(self.backlabel.winId()))
         self.once = True
         self.is_drawing = False
         self.start_point = QPoint()
@@ -196,7 +196,7 @@ class rangeselect(QMainWindow):
             " border:%spx solid %s; background-color: rgba(0,0,0, 0)"
             % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"])
         )
-        self.setStyleSheet(
+        self.backlabel.setStyleSheet(
             "background-color: rgba(255,255,255, %s)" % globalconfig["ocrselectalpha"]
         )
 

@@ -47,12 +47,7 @@ CLoopbackCapture::~CLoopbackCapture()
         MFUnlockWorkQueue(m_dwQueueID);
     }
 }
-typedef HRESULT(STDAPICALLTYPE *ActivateAudioInterfaceAsync_t)(
-    _In_ LPCWSTR deviceInterfacePath,
-    _In_ REFIID riid,
-    _In_opt_ PROPVARIANT *activationParams,
-    _In_ IActivateAudioInterfaceCompletionHandler *completionHandler,
-    _COM_Outptr_ IActivateAudioInterfaceAsyncOperation **activationOperation);
+
 HRESULT CLoopbackCapture::ActivateAudioInterface(DWORD processId, bool includeProcessTree)
 {
     return SetDeviceStateErrorIfFailed([&]() -> HRESULT
@@ -69,9 +64,7 @@ HRESULT CLoopbackCapture::ActivateAudioInterface(DWORD processId, bool includePr
             activateParams.blob.pBlobData = (BYTE*)&audioclientActivationParams;
 
             wil::com_ptr_nothrow<IActivateAudioInterfaceAsyncOperation> asyncOp;
-            auto pActivateAudioInterfaceAsync=(ActivateAudioInterfaceAsync_t)GetProcAddress(LoadLibrary(L"Mmdevapi.dll"),"ActivateAudioInterfaceAsync");
-            if(pActivateAudioInterfaceAsync==0)return S_FALSE;
-            RETURN_IF_FAILED(pActivateAudioInterfaceAsync(VIRTUAL_AUDIO_DEVICE_PROCESS_LOOPBACK, __uuidof(IAudioClient), &activateParams, this, &asyncOp));
+            RETURN_IF_FAILED(ActivateAudioInterfaceAsync(VIRTUAL_AUDIO_DEVICE_PROCESS_LOOPBACK, __uuidof(IAudioClient), &activateParams, this, &asyncOp));
 
             // Wait for activation completion
             m_hActivateCompleted.wait();

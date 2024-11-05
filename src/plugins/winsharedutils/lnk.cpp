@@ -1,5 +1,5 @@
-#include "define.h"
-void GetLnkTargetPath(wchar_t *lnkFilePath, wchar_t *path, wchar_t *tgtpath, wchar_t *iconpath, wchar_t *dirpath)
+
+DECLARE_API void GetLnkTargetPath(wchar_t *lnkFilePath, wchar_t *path, wchar_t *tgtpath, wchar_t *iconpath, wchar_t *dirpath)
 {
     wcscpy(path, L"");
     wcscpy(tgtpath, L"");

@@ -1,4 +1,4 @@
-#include "define.h"
+
 typedef struct
 {
     BYTE b;
@@ -53,7 +53,7 @@ int calculateOtsuThreshold(const std::vector<uint8_t> &grayscaleImage)
 
     return threshold;
 }
-bool otsu_binary(const void *image, int thresh)
+DECLARE_API bool otsu_binary(const void *image, int thresh)
 {
     auto imageptr = (uintptr_t)image;
     BITMAPFILEHEADER *fileHeader = (BITMAPFILEHEADER *)imageptr;

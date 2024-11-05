@@ -1,5 +1,5 @@
 
-#include "define.h"
+
 struct mecab_node_t
 {
     struct mecab_node_t *prev;
@@ -27,11 +27,11 @@ struct mecab_node_t
 };
 
 typedef struct mecab_t mecab_t;
-typedef mecab_t *(*mecab_new)(int argc, char **argv);
+typedef mecab_t *(*mecab_new)(int argc, const char **argv);
 typedef mecab_node_t *(*mecab_sparse_tonode)(mecab_t *mecab, const char *);
 typedef void (*mecab_destroy)(mecab_t *mecab);
 HMODULE mecablib;
-void *mecab_init(char *utf8path, wchar_t *mepath)
+DECLARE_API void *mecab_init(char *utf8path, wchar_t *mepath)
 {
     mecablib = LoadLibraryW(mepath);
     if (mecablib == 0)
@@ -39,11 +39,11 @@ void *mecab_init(char *utf8path, wchar_t *mepath)
     auto _mecab_new = (mecab_new)GetProcAddress(mecablib, "mecab_new");
     if (_mecab_new == 0)
         return 0;
-    char *argv[] = {"fugashi", "-C", "-r", "nul", "-d", utf8path, "-Owakati"};
+    const char *argv[] = {"fugashi", "-C", "-r", "nul", "-d", utf8path, "-Owakati"};
     auto trigger = _mecab_new(ARRAYSIZE(argv), argv);
     return trigger;
 }
-void mecab_end(void *trigger)
+DECLARE_API void mecab_end(void *trigger)
 {
     if (trigger == 0)
         return;
@@ -55,7 +55,7 @@ void mecab_end(void *trigger)
     mecab_destroy((mecab_t *)trigger);
 }
 
-bool mecab_parse(void *trigger, char *utf8string, void (*callback)(const char *, const char *))
+DECLARE_API bool mecab_parse(void *trigger, char *utf8string, void (*callback)(const char *, const char *))
 {
     if (trigger == 0)
         return false;

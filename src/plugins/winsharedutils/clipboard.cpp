@@ -1,5 +1,5 @@
 
-#include "define.h"
+
 bool tryopenclipboard(HWND hwnd = 0)
 {
     bool success = false;
@@ -38,7 +38,7 @@ std::optional<std::wstring> clipboard_get_internal()
     return data;
 }
 
-bool clipboard_get(void (*cb)(const wchar_t *))
+DECLARE_API bool clipboard_get(void (*cb)(const wchar_t *))
 {
     auto data = std::move(clipboard_get_internal());
     if (!data)
@@ -47,7 +47,7 @@ bool clipboard_get(void (*cb)(const wchar_t *))
     return true;
 }
 
-bool clipboard_set(HWND hwnd, wchar_t *text)
+DECLARE_API bool clipboard_set(HWND hwnd, wchar_t *text)
 {
     bool success = false;
     // static HWND hwnd=CreateWindowExA(0,"STATIC",0,0,0,0,0,0,0,0,0,0);

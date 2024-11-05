@@ -1,4 +1,4 @@
-﻿#include "define.h"
+﻿
 #include <shellscalingapi.h>
 DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 {

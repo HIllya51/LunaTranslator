@@ -79,3 +79,5 @@
 #pragma comment(lib, "Version.lib")
 
 #include"common.hpp"
+
+#define DECLARE_API extern "C" __declspec(dllexport)

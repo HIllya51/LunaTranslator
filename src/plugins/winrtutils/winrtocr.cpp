@@ -1,4 +1,3 @@
-#include "define.h"
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Storage.Pickers.h>
 #include <winrt/Windows.Storage.Streams.h>
@@ -26,7 +25,7 @@ using namespace Windows::Media::Devices;
 using namespace Windows::Security::Cryptography;
 using namespace Windows::Globalization;
 using namespace Windows::Foundation::Collections;
-bool check_language_valid(wchar_t *language)
+DECLARE_API bool check_language_valid(wchar_t *language)
 {
     OcrEngine ocrEngine = OcrEngine::TryCreateFromUserProfileLanguages();
     std::wstring l = language;
@@ -40,7 +39,7 @@ bool check_language_valid(wchar_t *language)
         return false;
     }
 }
-void getlanguagelist(void(*cb)(LPCWSTR))
+DECLARE_API void getlanguagelist(void(*cb)(LPCWSTR))
 {
     OcrEngine ocrEngine = OcrEngine::TryCreateFromUserProfileLanguages();
     auto languages = ocrEngine.AvailableRecognizerLanguages();
@@ -51,7 +50,7 @@ void getlanguagelist(void(*cb)(LPCWSTR))
         cb(lang.c_str());
     }
 }
-void OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, void (*cb)(int, int, int, int, LPCWSTR))
+DECLARE_API void OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, void (*cb)(int, int, int, int, LPCWSTR))
 {
     IBuffer buffer = CryptographicBuffer::CreateFromByteArray(
         winrt::array_view<uint8_t>(static_cast<uint8_t *>(ptr), size));
@@ -77,7 +76,7 @@ void OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, void (*cb)(int, 
                 xx += space;
             start = false;
             xx += word.Text();
-            auto &rect = word.BoundingRect();
+            auto &&rect = word.BoundingRect();
             x1 = std::min((unsigned int)rect.X, x1);
             x2 = std::max(x2, (unsigned int)(rect.X + rect.Width));
             y1 = std::min((unsigned int)rect.Y, y1);

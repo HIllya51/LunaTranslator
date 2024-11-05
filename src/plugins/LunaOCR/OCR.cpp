@@ -704,7 +704,6 @@ std::vector<TextBlock> OcrLite::detect_internal(cv::Mat &src, cv::Rect &originRe
     return textBlocks;
 }
 
-#define DECLARE_API extern "C" __declspec(dllexport)
 
 struct ocrpoints
 {

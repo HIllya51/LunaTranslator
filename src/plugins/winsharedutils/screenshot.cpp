@@ -1,5 +1,5 @@
 ﻿
-#include "define.h"
+
 
 void GetVirtualDesktopRect(RECT &rect)
 {

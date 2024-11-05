@@ -1,4 +1,4 @@
-﻿#include "define.h"
+﻿
 #include <dwmapi.h>
 
 typedef enum _WINDOWCOMPOSITIONATTRIB

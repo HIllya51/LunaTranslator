@@ -19,7 +19,7 @@ from ctypes import (
     CFUNCTYPE,
     c_long,
 )
-from ctypes.wintypes import WORD, HWND, DWORD, RECT, UINT
+from ctypes.wintypes import WORD, HWND, DWORD, RECT, UINT, HANDLE
 import gobject, windows
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
@@ -361,3 +361,10 @@ def encodemp3(wav):
 GetMonitorDpiScaling = utilsdll.GetMonitorDpiScaling
 GetMonitorDpiScaling.argtypes = (HWND,)
 GetMonitorDpiScaling.restype = UINT
+
+
+StartCaptureAsync = utilsdll.StartCaptureAsync
+StartCaptureAsync.argtypes = c_void_p, c_void_p
+StartCaptureAsync.restype = HANDLE
+StopCaptureAsync = utilsdll.StopCaptureAsync
+StopCaptureAsync.argtypes = (HANDLE,)

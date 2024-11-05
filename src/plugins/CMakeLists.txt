@@ -5,12 +5,10 @@ project(LunaPlugins)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+set(CMAKE_CXX_STANDARD 17)
+add_definitions(-DUNICODE -D_UNICODE)
 add_compile_options(
-  /std:c++17
-  /MP
   /wd4018 
-  /DUNICODE 
-  /D_UNICODE
 )
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
@@ -40,6 +38,5 @@ add_subdirectory(winrtutils)
 add_subdirectory(winsharedutils)
 add_subdirectory(hookmagpie)
 add_subdirectory(shareddllproxy)
-add_subdirectory(applicationloopbackaudio)
 add_subdirectory(wcocr)
 add_subdirectory(LunaOCR)

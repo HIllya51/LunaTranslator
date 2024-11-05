@@ -1,5 +1,5 @@
 
-#include "define.h"
+
 class CAudioMgr
 {
 public:
@@ -165,13 +165,13 @@ BOOL CAudioMgr::__GetAudioSessionMgr2()
     return TRUE;
 }
 
-BOOL SetProcessMute(DWORD Pid, bool mute)
+DECLARE_API BOOL SetProcessMute(DWORD Pid, bool mute)
 {
     CAudioMgr AudioMgr;
     return AudioMgr.SetProcessMute(Pid, mute);
 }
 
-bool GetProcessMute(DWORD Pid)
+DECLARE_API bool GetProcessMute(DWORD Pid)
 {
     CAudioMgr AudioMgr;
     return AudioMgr.GetProcessMute(Pid);

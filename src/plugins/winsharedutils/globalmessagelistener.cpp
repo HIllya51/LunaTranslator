@@ -1,5 +1,5 @@
 
-#include "define.h"
+
 static auto LUNA_UPDATE_PREPARED_OK = RegisterWindowMessage(L"LUNA_UPDATE_PREPARED_OK");
 static auto WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");
 bool IsColorSchemeChangeMessage(LPARAM lParam)

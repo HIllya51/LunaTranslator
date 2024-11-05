@@ -1,0 +1,28 @@
+name: Game Compatibility 游戏适配
+description: >
+  Request for an unsupported game, or hooked text is incorrect 
+  
+  请求支持尚未支持的游戏，或提取的文本不正确
+labels: enhancement
+body:
+- type: input
+  attributes:
+    label: vndb link/id
+- type: textarea
+  attributes:
+    label: Game resource 游戏资源
+    description: >
+      Give me the game resource via onedrive or googledrive or other unlimited speed network disk. Not accept any network disk that requires installing clients or logging in to download, such as Baidu, Pikpak, etc.
+
+      使用onedrive或googledrive或其他不限速网盘给我游戏资源。不接受任何需要安装客户端、需要登录下载的网盘，例如百度、pikpak等。
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: screenshot 截图
+    description: >
+      screenshot of game and screenshot of extracted text
+
+      游戏截图和提取的文本截图
+  validations:
+    required: true

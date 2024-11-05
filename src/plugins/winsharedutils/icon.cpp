@@ -1,7 +1,7 @@
-﻿#include "define.h"
+﻿
 #include "BMP.h"
 
-bool extracticon2data(const wchar_t *name, void (*cb)(const char *, size_t))
+DECLARE_API bool extracticon2data(const wchar_t *name, void (*cb)(const char *, size_t))
 {
     HICON h1, h2;
 
