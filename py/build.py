@@ -286,7 +286,7 @@ if __name__ == "__main__":
             dirs_exist_ok=True,
         )
         shutil.copytree(
-            f"{rootDir}/../build/cpp_x64",
+            f"{rootDir}/../build/cpp_x86",
             f"{rootDir}/../cpp/builds",
             dirs_exist_ok=True,
         )
