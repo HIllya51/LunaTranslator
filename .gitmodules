@@ -1,18 +1,21 @@
 [submodule "src/plugins/libs/wil"]
-	path = src/plugins/libs/wil
+	path = cpp/libs/wil
 	url = https://github.com/microsoft/wil.git
 [submodule "src/plugins/libs/rapidfuzz-cpp"]
-	path = src/plugins/libs/rapidfuzz-cpp
+	path = cpp/libs/rapidfuzz-cpp
 	url = https://github.com/rapidfuzz/rapidfuzz-cpp
 [submodule "src/plugins/libs/wechat-ocr"]
-	path = src/plugins/libs/wechat-ocr
+	path = cpp/libs/wechat-ocr
 	url = https://github.com/swigger/wechat-ocr
 [submodule "src/plugins/libs/tinymp3"]
-	path = src/plugins/libs/tinymp3
+	path = cpp/libs/tinymp3
 	url = https://github.com/HIllya51/tinymp3
 [submodule "src/plugins/libs/Detours"]
-	path = src/plugins/libs/Detours
+	path = cpp/libs/Detours
 	url = https://github.com/microsoft/Detours
 [submodule "src/plugins/libs/Clipper2"]
-	path = src/plugins/libs/Clipper2
+	path = cpp/libs/Clipper2
 	url = https://github.com/AngusJohnson/Clipper2
+[submodule "src/plugins/libs/minhook"]
+	path = cpp/libs/minhook
+	url = https://github.com/TsudaKageyu/minhook
