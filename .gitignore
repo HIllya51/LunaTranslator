@@ -42,3 +42,4 @@ src/plugins/libs/opencv-static.zip
 src/plugins/libs/onnxruntime-static.zip
 src/plugins/libs/onnxruntime-static/onnxruntime-static.7z
 src/plugins/libs/opencv-static/opencv-static.7z
+src/plugins/libs/opencv-static/opencv-4.8.1-windows-vs2022-mt.7z
