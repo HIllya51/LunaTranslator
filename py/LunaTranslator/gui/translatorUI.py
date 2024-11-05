@@ -255,7 +255,6 @@ class TranslatorWindow(resizableframeless):
     hidesignal = pyqtSignal()
     muteprocessignal = pyqtSignal()
     ocr_once_signal = pyqtSignal()
-    resizesignal = pyqtSignal(QSize)
     move_signal = pyqtSignal(QPoint)
     closesignal = pyqtSignal()
     hotkeyuse_selectprocsignal = pyqtSignal()
@@ -446,7 +445,6 @@ class TranslatorWindow(resizableframeless):
                 ):
                     self.hidesignal.emit()
                     self.autohidestart = False
-
 
     def showhideui(self):
         if self._move_drag:
@@ -909,7 +907,6 @@ class TranslatorWindow(resizableframeless):
 
         self.muteprocessignal.connect(self.muteprocessfuntion)
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
-        self.resizesignal.connect(self.resize)
         self.move_signal.connect(self.move)
         self.closesignal.connect(self.close)
         self.changeshowhiderawsig.connect(self.changeshowhideraw)
@@ -940,6 +937,9 @@ class TranslatorWindow(resizableframeless):
         self.titlebar.setObjectName("titlebar")
         self.titlebar.setMouseTracking(True)
         self.addbuttons()
+        self.smooth_resizer = QVariantAnimation(self)
+        self.smooth_resizer.setDuration(500)
+        self.smooth_resizer.valueChanged.connect(self.smooth_resizing)
         self.translate_text = Textbrowser(self)
         self.translate_text.move(0, 0)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
@@ -1200,6 +1200,9 @@ class TranslatorWindow(resizableframeless):
 
         return 0
 
+    def smooth_resizing(self, value):
+        self.resize(QSize(self.width(), value))
+
     def textAreaChanged(self, size: QSize):
 
         if self.translate_text.cleared:
@@ -1209,19 +1212,13 @@ class TranslatorWindow(resizableframeless):
         limit = min(size.height(), self.screen().geometry().height())
         newHeight = limit + self.dynamicextraheight()
         size = QSize(self.width(), newHeight)
-        self.autoresizesig = uuid.uuid4()
+        self.smooth_resizer.stop()
         if newHeight > self.height():
             self.resize(size)
         else:
-            self.delaymaybeshrink(size, self.autoresizesig)
-
-    @threader
-    def delaymaybeshrink(self, size: QSize, sig):
-
-        time.sleep(0.1)
-        if sig != self.autoresizesig:
-            return
-        self.resizesignal.emit(size)
+            self.smooth_resizer.setStartValue(self.height())
+            self.smooth_resizer.setEndValue(newHeight)
+            self.smooth_resizer.start()
 
     def clickRange(self, auto):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
