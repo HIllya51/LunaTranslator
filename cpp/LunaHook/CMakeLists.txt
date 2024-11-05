@@ -58,7 +58,7 @@ include(${CMAKE_SOURCE_DIR}/../libs/libs.cmake)
 
 include_directories(include)
 
-include(${CMAKE_SOURCE_DIR}/../version/version.cmake)
+include(${CMAKE_SOURCE_DIR}/../version.cmake)
 
 add_subdirectory(include)
 add_subdirectory(LunaHook)

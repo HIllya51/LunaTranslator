@@ -22,7 +22,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 
 include(libs/libs.cmake)
 
-include(${CMAKE_SOURCE_DIR}/version/version.cmake)
+include(${CMAKE_SOURCE_DIR}/version.cmake)
 
 add_library(pch pch.cpp)
 target_precompile_headers(pch PUBLIC pch.h)
