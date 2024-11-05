@@ -23,14 +23,14 @@ temp/
 
 .vscode/settings.json
 
-src/userconfig
-src/cache
-src/chrome_cache
-src/files/ocr
-src/files/plugins
-src/files/themes
-src/run37.bat
-src/run3732.bat
+py/userconfig
+py/cache
+py/chrome_cache
+py/files/ocr
+py/files/plugins
+py/files/themes
+py/run37.bat
+py/run3732.bat
 cpp/LunaHook/build
 cpp/LunaHook/builds
 cpp/builds
