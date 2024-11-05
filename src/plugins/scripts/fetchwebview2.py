@@ -30,7 +30,7 @@ onnx = os.path.normpath(
 opencv = os.path.normpath(
     os.path.join(
         os.path.dirname(__file__),
-        r"..\libs\opencv-static\windows-x64\x64\vc17\staticlib\opencv_core481.lib",
+        r"..\libs\opencv-static\windows-x64\x64\vc16\staticlib\opencv_core470.lib",
     )
 )
 onnx_1 = os.path.normpath(
@@ -50,6 +50,6 @@ if os.path.exists(onnx) == False:
 if os.path.exists(opencv) == False:
     os.makedirs(os.path.dirname(opencv_1), exist_ok=True)
     os.system(
-        rf'curl -SLo "{opencv_1}" https://github.com/RapidAI/OpenCVBuilder/releases/download/4.8.1/opencv-4.8.1-windows-vs2022-mt.7z'
+        rf'curl -SLo "{opencv_1}" https://github.com/RapidAI/OpenCVBuilder/releases/download/4.7.0/opencv-4.7.0-windows-vs2019-mt.7z'
     )
     os.system(rf'7z x -y "{opencv_1}" -o{os.path.dirname(opencv_1)}')
