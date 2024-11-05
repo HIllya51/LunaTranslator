@@ -53,8 +53,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${binary_out_putpath}>)
 
 include_directories(.)
 option(USE_VCLTL "USE_VCLTL" OFF)
+option(IS_LUNAHOOK "IS_LUNAHOOK" ON)
 include(${CMAKE_SOURCE_DIR}/../libs/libs.cmake)
-add_subdirectory(${minhook_dir})
 
 include_directories(include)
 

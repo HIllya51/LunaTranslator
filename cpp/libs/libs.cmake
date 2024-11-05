@@ -1,9 +1,13 @@
 ﻿
-add_library(Detours ${CMAKE_CURRENT_LIST_DIR}/Detours/src/creatwth.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/detours.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/modules.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/disasm.cpp)
-target_include_directories(Detours PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Detours/src)
-
 add_library(nlohmann INTERFACE)
 target_include_directories(nlohmann INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+
+option(IS_LUNAHOOK "IS_LUNAHOOK" OFF)
+if(IS_LUNAHOOK)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/minhook ${CMAKE_BINARY_DIR}/minhook)
+else()
+add_library(Detours ${CMAKE_CURRENT_LIST_DIR}/Detours/src/creatwth.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/detours.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/modules.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/disasm.cpp)
+target_include_directories(Detours PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Detours/src)
 
 add_library(wil INTERFACE)
 target_include_directories(wil INTERFACE ${CMAKE_CURRENT_LIST_DIR}/wil/include)
@@ -40,6 +44,4 @@ set(OpenCV_DIR ${CMAKE_CURRENT_LIST_DIR}/opencv-static/windows-x86)
 set(OpenCV_ARCH x86)
 endif()
 set(OpenCV_RUNTIME vc16)
-
-
-set(minhook_dir ${CMAKE_CURRENT_LIST_DIR}/minhook)
+endif()
