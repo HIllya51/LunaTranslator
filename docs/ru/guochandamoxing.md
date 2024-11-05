@@ -31,6 +31,12 @@
 
 **model** https://platform.openai.com/docs/models
 
+### **x.ai**
+
+**Адрес API** `https://api.x.ai/`
+
+**API Key** https://console.x.ai/
+
 ### **groq**
 
 **Адрес API** `https://api.groq.com/openai/v1/chat/completions`
