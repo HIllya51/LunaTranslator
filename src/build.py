@@ -11,7 +11,7 @@ else:
     rootDir = os.path.abspath(rootDir)
 if sys.argv[1] == "loadversion":
     os.chdir(rootDir)
-    with open("plugins/CMakeLists.txt", "r", encoding="utf8") as ff:
+    with open("plugins/version/version.cmake", "r", encoding="utf8") as ff:
         pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
         match = re.findall(pattern, ff.read())[0]
         version_major, version_minor, version_patch = match
@@ -24,7 +24,6 @@ print(__file__)
 print(rootDir)
 
 mylinks = {
-    "LunaHook": "https://github.com/HIllya51/LunaHook/releases/latest/download/Release_English.zip",
     "ocr_models": {
         "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
     },
@@ -34,7 +33,7 @@ mylinks = {
 }
 
 
-pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "LunaHook", "Magpie", "NTLEAS"]
+pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "Magpie", "NTLEAS"]
 
 vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
 
@@ -192,31 +191,6 @@ def get_url_as_json(url):
         except:
             time.sleep(3)
 
-
-def downLunaHook():
-
-    os.chdir(rootDir + "\\temp")
-    LunaHook_latest = mylinks["LunaHook"]
-    subprocess.run(f"curl -LO {LunaHook_latest}")
-    subprocess.run(f"7z x {LunaHook_latest.split('/')[-1]}")
-    shutil.move(
-        "Release_English/LunaHook32.dll",
-        f"{rootDir}/files/plugins/LunaHook",
-    )
-    shutil.move(
-        "Release_English/LunaHost32.dll",
-        f"{rootDir}/files/plugins/LunaHook",
-    )
-    shutil.move(
-        "Release_English/LunaHook64.dll",
-        f"{rootDir}/files/plugins/LunaHook",
-    )
-    shutil.move(
-        "Release_English/LunaHost64.dll",
-        f"{rootDir}/files/plugins/LunaHook",
-    )
-
-
 def buildPlugins(arch):
     os.chdir(rootDir + "\\plugins\\scripts")
     subprocess.run("python fetchwebview2.py")
@@ -295,10 +269,19 @@ if __name__ == "__main__":
         downloadOCRModel()
         downloadcommon()
         downloadbass()
-        downLunaHook()
         os.chdir(rootDir)
         shutil.copytree(
-            f"{rootDir}/../build/cpp_x86",
+            f"{rootDir}/../build/hook_64",
+            f"{rootDir}/files/plugins/LunaHook",
+            dirs_exist_ok=True,
+        )
+        shutil.copytree(
+            f"{rootDir}/../build/hook_32",
+            f"{rootDir}/files/plugins/LunaHook",
+            dirs_exist_ok=True,
+        )
+        shutil.copytree(
+            f"{rootDir}/../build/cpp_x64",
             f"{rootDir}/plugins/builds",
             dirs_exist_ok=True,
         )

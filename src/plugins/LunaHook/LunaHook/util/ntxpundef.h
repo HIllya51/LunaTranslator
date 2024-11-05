@@ -1,0 +1,19 @@
+#if (_WIN32_WINNT <= _WIN32_WINNT_WIN7)
+typedef
+__drv_sameIRQL
+__drv_functionClass(EXCEPTION_ROUTINE)
+EXCEPTION_DISPOSITION
+NTAPI
+EXCEPTION_ROUTINE(
+    __inout struct _EXCEPTION_RECORD* ExceptionRecord,
+    __in PVOID EstablisherFrame,
+    __inout struct _CONTEXT* ContextRecord,
+    __in PVOID DispatcherContext
+);
+typedef EXCEPTION_ROUTINE* PEXCEPTION_ROUTINE;
+typedef struct _EXCEPTION_REGISTRATION_RECORD {
+    struct _EXCEPTION_REGISTRATION_RECORD* Next;
+    PEXCEPTION_ROUTINE Handler;
+} EXCEPTION_REGISTRATION_RECORD;
+
+#endif // !EXCEPTION_REGISTRATION_RECORD

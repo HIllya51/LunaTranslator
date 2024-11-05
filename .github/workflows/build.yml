@@ -7,6 +7,26 @@ on:
     paths: [ '.github/workflows/build.yml','src/**']
 
 jobs:
+  hook:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        bits: [32, 64]
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      - run: python src/plugins/LunaHook/build.py build English ${{matrix.bits}}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hook_${{matrix.bits}}
+          path: src/plugins/LunaHook/builds/Release_English
   pyrt:
     runs-on: windows-latest
     strategy:
@@ -46,7 +66,7 @@ jobs:
   
   release:
     runs-on: windows-latest
-    needs: [pyrt,build_cpp]
+    needs: [pyrt,build_cpp,hook]
     strategy:
       matrix:
         include:

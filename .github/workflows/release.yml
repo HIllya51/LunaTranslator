@@ -12,7 +12,26 @@ jobs:
       - uses: actions/checkout@v4
       - id: loadversion
         run: python src/build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
-    
+  hook:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        bits: [32, 64]
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      - run: python src/plugins/LunaHook/build.py build English ${{matrix.bits}}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hook_${{matrix.bits}}
+          path: src/plugins/LunaHook/builds/Release_English
   pyrt:
     runs-on: windows-latest
     strategy:
@@ -52,7 +71,7 @@ jobs:
   
   release:
     runs-on: windows-latest
-    needs: [pyrt,build_cpp,loadversion]
+    needs: [pyrt,build_cpp,loadversion,hook]
     strategy:
       matrix:
         include:

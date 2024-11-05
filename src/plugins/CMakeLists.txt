@@ -22,12 +22,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 
 include(libs/libs.cmake)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/version)
-include(generate_product_version)
-
-set(VERSION_MAJOR 5)
-set(VERSION_MINOR 55)
-set(VERSION_PATCH 5)
+include(${CMAKE_SOURCE_DIR}/version/version.cmake)
 
 add_library(pch pch.cpp)
 target_precompile_headers(pch PUBLIC pch.h)

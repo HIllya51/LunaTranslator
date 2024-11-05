@@ -1,0 +1,2 @@
+
+bool tryhookv8();

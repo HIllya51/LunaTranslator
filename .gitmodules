@@ -16,3 +16,6 @@
 [submodule "src/plugins/libs/Clipper2"]
 	path = src/plugins/libs/Clipper2
 	url = https://github.com/AngusJohnson/Clipper2
+[submodule "src/plugins/libs/minhook"]
+	path = src/plugins/libs/minhook
+	url = https://github.com/TsudaKageyu/minhook

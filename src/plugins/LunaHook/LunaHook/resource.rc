@@ -1,0 +1,17 @@
+charset_default CHARSET "resource/charset_default.txt"
+charset_Robotics_Notes_Dash CHARSET "resource/charset_Robotics_Notes_Dash.txt"
+charset_Robotics_Notes_Elite CHARSET "resource/charset_Robotics_Notes_Elite.txt"
+charset_Famicom_Tantei_Club CHARSET "resource/charset_Famicom_Tantei_Club.txt"
+charset_SINce_Memories CHARSET "resource/charset_SINce_Memories.txt"
+charset_SG_My_Darlings_Embrace CHARSET "resource/charset_SG_My_Darlings_Embrace.txt"
+charset_SG_Linear_Bounded_Phenogram CHARSET "resource/charset_SG_Linear_Bounded_Phenogram.txt"
+charset_SGHD CHARSET "resource/charset_SGHD.txt"
+compound_chars_SGHD COMPOUND_CHARS "resource/compound_chars_SGHD.txt"
+compound_chars_default COMPOUND_CHARS "resource/compound_chars_default.txt"
+compound_chars_Robotics_Notes_Elite COMPOUND_CHARS "resource/compound_chars_Robotics_Notes_Elite.txt"
+compound_chars_Robotics_Notes_Dash COMPOUND_CHARS "resource/compound_chars_Robotics_Notes_Dash.txt"
+
+renpy_hook_font PYSOURCE "resource/renpy_hook_font.py"
+renpy_hook_text PYSOURCE "resource/renpy_hook_text.py"
+
+lunajspatch JSSOURCE "resource/lunajspatch.js"
