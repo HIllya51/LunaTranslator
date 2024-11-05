@@ -42,4 +42,4 @@ endif()
 set(OpenCV_RUNTIME vc16)
 
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/minhook ${CMAKE_BINARY_DIR}/minhook)
+set(minhook_dir ${CMAKE_CURRENT_LIST_DIR}/minhook)
