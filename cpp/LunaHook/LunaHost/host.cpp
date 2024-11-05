@@ -176,7 +176,7 @@ namespace
 
 					if(embedcallback){
 						auto & hp=thread->second.hp;
-						if(hp.type&EMBED_ABLE){
+						if(hp.type&EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)){
 							if (auto t=commonparsestring(data->data,length,&hp,Host::defaultCodepage)){
 								auto text=t.value();
 								if(text.size()){
@@ -321,6 +321,7 @@ namespace Host
 		CreatePipe(processId);
 		return CheckProcess(processId);
 	}
+
 	void InjectProcess(DWORD processId, const std::wstring locationX)
 	{
 
@@ -400,5 +401,17 @@ namespace Host
 		if (OnWarning)
 			OnWarning(text);
 		AddConsoleOutput(L"[Warning] " + text);
+	}
+	bool CheckIsUsingEmbed(ThreadParam tp)
+	{
+		auto sm = Host::GetCommonSharedMem(tp.processId);
+		if (!sm)
+			return false;
+		for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+		{
+			if (sm->embedtps[i].use && (sm->embedtps[i].tp == tp))
+				return true;
+		}
+		return false;
 	}
 }

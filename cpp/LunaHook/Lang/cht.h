@@ -92,7 +92,7 @@
 #define HS_SEARCH_FOR_TEXT L"搜尋指定文字"
 #define VersionLatest L"最新版本"
 #define VersionCurrent L"目前版本"
-#define ProjectHomePage L"GitHub：https://github.com/HIllya51/LunaHook\n專案首頁：https://lunatranslator.org\nPatreon：https://patreon.com/HIllya51\nDiscord：https://discord.com/invite/ErtDwVeAbB\n\n本程式是 LunaTranslator 的核心子模組，並完全整合在 LunaTranslator 中。本程式僅包含一些簡單功能，如果您需要更多功能，請使用 LunaTranslator。\n如果你發現有不支援的遊戲，請提交 Issue"
+#define ProjectHomePage L"GitHub：https://github.com/HIllya51/LunaTranslator\n專案首頁：https://lunatranslator.org\nPatreon：https://patreon.com/HIllya51\nDiscord：https://discord.com/invite/ErtDwVeAbB"
 #define LIST_HOOK L"Hook"
 #define LIST_TEXT L"文字"
 #define PROC_CONN L"處理程序已連接 %d"

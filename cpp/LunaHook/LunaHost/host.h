@@ -29,4 +29,6 @@ namespace Host
 	inline int defaultCodepage = SHIFT_JIS;
 
 	constexpr ThreadParam console{0, 0, 0, 0};
+	bool CheckIsUsingEmbed(ThreadParam tp);
+
 }

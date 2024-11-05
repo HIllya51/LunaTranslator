@@ -20,7 +20,7 @@ typedef void (*ThreadEvent_maybe_embed)(const wchar_t *hookcode, const char *hoo
 typedef void (*ThreadEvent)(const wchar_t *hookcode, const char *hookname, ThreadParam);
 typedef bool (*OutputCallback)(const wchar_t *hookcode, const char *hookname, ThreadParam, const wchar_t *text);
 typedef void (*ConsoleHandler)(const wchar_t *log);
-typedef void (*HookInsertHandler)(DWORD pid, uint64_t address, const wchar_t * hookcode);
+typedef void (*HookInsertHandler)(DWORD pid, uint64_t address, const wchar_t *hookcode);
 typedef void (*EmbedCallback)(const wchar_t *text, ThreadParam);
 typedef void (*findhookcallback_t)(wchar_t *hookcode, const wchar_t *text);
 template <typename T>
@@ -110,15 +110,7 @@ C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet
 }
 C_LUNA_API bool Luna_checkisusingembed(ThreadParam tp)
 {
-    auto sm = Host::GetCommonSharedMem(tp.processId);
-    if (!sm)
-        return false;
-    for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
-    {
-        if (sm->embedtps[i].use && (sm->embedtps[i].tp == tp))
-            return true;
-    }
-    return false;
+    return Host::CheckIsUsingEmbed(tp);
 }
 C_LUNA_API void Luna_useembed(ThreadParam tp, bool use)
 {
