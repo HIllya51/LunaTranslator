@@ -56,7 +56,7 @@ def build_langx(lang, bit):
         if bit == "32":
             ff.write(
                 rf"""
-cmake -DLANGUAGE={lang} ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86_{lang}
+cmake -DBUILD_PLUGIN=OFF -DWINXP=OFF -DLANGUAGE={lang} -DBUILD_GUI=ON -DBUILD_CLI=ON ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86_{lang}
 cmake --build ../build/x86_{lang} --config Release --target ALL_BUILD -j 14
 """
             )
