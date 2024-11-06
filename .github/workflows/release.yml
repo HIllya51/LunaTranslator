@@ -28,7 +28,7 @@ jobs:
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
-            py/build/LunaTranslator_x86.zip
-            py/build/LunaTranslator.zip
+            build/LunaTranslator_x86/LunaTranslator_x86.zip
+            build/LunaTranslator/LunaTranslator.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
