@@ -162,23 +162,22 @@ namespace
       {
         auto text = (LPCSTR)s->stack[1]; // arg1
         if (!text || !*text)             // || Util::allAscii(text))
-          return  ;
+          return;
         std::string oldData = text;
         if (cache_.exists(oldData))
-          return  ;
+          return;
         // 0042F6DC   8B45 10          MOV EAX,DWORD PTR SS:[EBP+0x10]   ; jichi: retaddr
         // 0042F6DF   50               PUSH EAX
         ULONG retaddr = s->stack[0];
         *role = Engine::OtherRole;
         if (*(DWORD *)retaddr == 0x5010458b)
           *role = Engine::ScenarioRole;
-        buffer->from(oldData); 
-         
+        buffer->from(oldData);
       }
-      void hookafter1(hook_stack *s, void *data1, size_t len)
+      void hookafter1(hook_stack *s, TextBuffer buffer)
       {
         static std::string newData;
-        newData = std::string((char *)data1, len);
+        newData = buffer.strA();
         newData = cache_.put(newData).first;
         s->stack[1] = (ULONG)newData.c_str(); // arg1
       }
@@ -508,7 +507,7 @@ namespace
       hp.address = addr1;
       hp.text_fun = Private::hookBefore;
       hp.hook_after = Private::hookafter1;
-      hp.type = EMBED_ABLE | EMBED_DYNA_SJIS|NO_CONTEXT;
+      hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       auto succ = NewHook(hp, "EMBEDLUNA");
       hp.address = addr2;
       succ |= NewHook(hp, "EMBEDLUNA");

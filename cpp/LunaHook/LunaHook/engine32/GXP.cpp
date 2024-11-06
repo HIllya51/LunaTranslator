@@ -1,4 +1,4 @@
-#include"GXP.h"
+#include "GXP.h"
 /**
  *  jichi 5/11/2014: Hook to the beginning of a function
  *
@@ -211,16 +211,18 @@
  */
 static bool InsertGXP1Hook()
 {
-  union {
+  union
+  {
     DWORD i;
     DWORD *id;
     BYTE *ib;
   };
-  for (i = processStartAddress + 0x1000; i < processStopAddress - 4; i++) {
+  for (i = processStartAddress + 0x1000; i < processStopAddress - 4; i++)
+  {
     // jichi example:
     // 00A78144   66:833C70 00     CMP WORD PTR DS:[EAX+ESI*2],0x0
 
-    //find cmp word ptr [esi*2+eax],0
+    // find cmp word ptr [esi*2+eax],0
     if (*id != 0x703c8366)
       continue;
     i += 4;
@@ -231,49 +233,53 @@ static bool InsertGXP1Hook()
     j = j < (processStopAddress - 8) ? j : (processStopAddress - 8);
 
     DWORD flag = false;
-    while (i < j) {
+    while (i < j)
+    {
       DWORD k = disasm(ib);
       if (k == 0)
         break;
-      if (k == 1 && (*ib & 0xf8) == 0x50) { // push reg
+      if (k == 1 && (*ib & 0xf8) == 0x50)
+      { // push reg
         flag = true;
         break;
       }
       i += k;
     }
     if (flag)
-      while (i < j) {
-        if (*ib == 0xe8) { // jichi: find first long call after the push operation
+      while (i < j)
+      {
+        if (*ib == 0xe8)
+        { // jichi: find first long call after the push operation
           i++;
           DWORD addr = *id + i + 4;
-          if (addr > processStartAddress && addr < processStopAddress) {
+          if (addr > processStartAddress && addr < processStopAddress)
+          {
             HookParam hp;
             hp.address = addr;
-            //hp.type = CODEC_UTF16|DATA_INDIRECT;
-            hp.type = USING_STRING|CODEC_UTF16|DATA_INDIRECT|NO_CONTEXT|FIXING_SPLIT; // jichi 4/25/2015: Fixing split
-            hp.offset=get_stack(1);
+            // hp.type = CODEC_UTF16|DATA_INDIRECT;
+            hp.type = USING_STRING | CODEC_UTF16 | DATA_INDIRECT | NO_CONTEXT | FIXING_SPLIT; // jichi 4/25/2015: Fixing split
+            hp.offset = get_stack(1);
 
-            //GROWL_DWORD3(hp.address, processStartAddress, hp.address - processStartAddress);
+            // GROWL_DWORD3(hp.address, processStartAddress, hp.address - processStartAddress);
 
-            //DWORD call = Util::FindCallAndEntryAbs(hp.address, processStopAddress - processStartAddress, processStartAddress, 0xec81); // zero
-            //DWORD call = Util::FindCallAndEntryAbs(hp.address, processStopAddress - processStartAddress, processStartAddress, 0xec83); // zero
-            //DWORD call = Util::FindCallAndEntryAbs(hp.address, processStopAddress - processStartAddress, processStartAddress, 0xec8b55); // zero
-            //GROWL_DWORD3(call, processStartAddress, call - processStartAddress);
+            // DWORD call = Util::FindCallAndEntryAbs(hp.address, processStopAddress - processStartAddress, processStartAddress, 0xec81); // zero
+            // DWORD call = Util::FindCallAndEntryAbs(hp.address, processStopAddress - processStartAddress, processStartAddress, 0xec83); // zero
+            // DWORD call = Util::FindCallAndEntryAbs(hp.address, processStopAddress - processStartAddress, processStartAddress, 0xec8b55); // zero
+            // GROWL_DWORD3(call, processStartAddress, call - processStartAddress);
 
             ConsoleOutput("INSERT GXP");
-            
 
             // jichi 5/13/2015: Disable hooking to GetGlyphOutlineW
             // FIXME: GetGlyphOutlineW can extract name, but GXP cannot
             ConsoleOutput("GXP: disable GDI hooks");
-            
+
             return NewHook(hp, "GXP");
           }
         }
         i++;
       }
   }
-  //ConsoleOutput("Unknown GXP engine.");
+  // ConsoleOutput("Unknown GXP engine.");
   ConsoleOutput("GXP: failed");
   return false;
 }
@@ -282,26 +288,30 @@ static bool InsertGXP2Hook()
 {
   // pattern = 0x0f5bc9f30f11442444f30f114c2448e8
   const BYTE bytes[] = {
-     0x0f,0x5b,                      // 00A78845   0F5B             ???                                      ; Unknown command
-     0xc9,                           // 00A78847   C9               LEAVE
-     0xf3,0x0f,0x11,0x44,0x24, 0x44, // 00A78848   F3:0F114424 44   MOVSS DWORD PTR SS:[ESP+0x44],XMM0
-     0xf3,0x0f,0x11,0x4c,0x24, 0x48, // 00A7884E   F3:0F114C24 48   MOVSS DWORD PTR SS:[ESP+0x48],XMM1
-     0xe8 //37040000                 // 00A78854   E8 37040000      CALL .00A78C90  ; jichi: here's the target function to hook to, text char on the stack[0]
+      0x0f, 0x5b,                         // 00A78845   0F5B             ???                                      ; Unknown command
+      0xc9,                               // 00A78847   C9               LEAVE
+      0xf3, 0x0f, 0x11, 0x44, 0x24, 0x44, // 00A78848   F3:0F114424 44   MOVSS DWORD PTR SS:[ESP+0x44],XMM0
+      0xf3, 0x0f, 0x11, 0x4c, 0x24, 0x48, // 00A7884E   F3:0F114C24 48   MOVSS DWORD PTR SS:[ESP+0x48],XMM1
+      0xe8                                // 37040000                 // 00A78854   E8 37040000      CALL .00A78C90  ; jichi: here's the target function to hook to, text char on the stack[0]
   };
-  enum { addr_offset = sizeof(bytes) - 1 }; // 0x00a78854 - 0x00a78845
+  enum
+  {
+    addr_offset = sizeof(bytes) - 1
+  }; // 0x00a78854 - 0x00a78845
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("GXP2: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.type = CODEC_UTF16|NO_CONTEXT|DATA_INDIRECT|FIXING_SPLIT|USING_STRING;
+  hp.type = CODEC_UTF16 | NO_CONTEXT | DATA_INDIRECT | FIXING_SPLIT | USING_STRING;
   ConsoleOutput("INSERT GXP2");
-  
+
   ConsoleOutput("GXP: disable GDI hooks");
-  
+
   return NewHook(hp, "GXP2");
 }
 
@@ -312,307 +322,312 @@ bool InsertGXPHook()
   ok = InsertGXP2Hook() || ok;
   return ok;
 }
-namespace { // unnamed
+namespace
+{ // unnamed
 
-ULONG moduleBaseAddress_; // saved only for debugging purposes
+  ULONG moduleBaseAddress_; // saved only for debugging purposes
 
-bool isBadText(LPCWSTR text)
-{
-  return text[0] <= 127 || text[::wcslen(text) - 1] <= 127 // skip ascii text
-      || ::wcschr(text, 0xff3f); // Skip system text containing: ＿
-}
-
-namespace ScenarioHook1 { // for old GXP1
-namespace Private {
-  TextUnionW *arg_,
-             argValue_;
-  void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-  { 
-    
-    static std::wstring text_; // persistent storage, which makes this function not thread-safe
-      
-    auto arg = (TextUnionW *)(s->stack[0] + 4); // arg1 + 0x4
-    if (!arg->isValid())
-      return  ;
-
-    auto text = arg->getText();
-    if (isBadText(text))
-      return ;
-    buffer->from_cs(text);
-  }
-  void hook2a(hook_stack*s,void* data1, size_t len)
-  { 
-     auto text_=new wchar_t[len/2+1];
-     auto n=std::wstring((LPWSTR)data1,len/2);
-     wcscpy(text_,n.c_str());
-    auto arg = (TextUnionW *)(s->stack[0] + 4); // arg1 + 0x4
-    arg_ = arg;
-    argValue_ = *arg;
-
-    arg->setText(text_); 
-    //if (arg->size)
-    //  hashes_.insert(Engine::hashWCharArray(arg->text, arg->size));
-    // return true;
-  }
-  void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  bool isBadText(LPCWSTR text)
   {
-    if (arg_) {
-      *arg_ = argValue_;
-      arg_ = nullptr;
-    } 
+    return text[0] <= 127 || text[::wcslen(text) - 1] <= 127 // skip ascii text
+           || ::wcschr(text, 0xff3f);                        // Skip system text containing: ＿
   }
-} // namespace Private
 
-/**
- *  Sample game: 塔の下のエクセルキトゥス体験版
- *  Executable description shows "AVGEngineV2"
- *
- *  Debugging method: Find the fixed text address, and check when it is being modified
- *
- *  Scenario caller, text in the struct of arg1 + 0x4.
- */
-bool attach(ULONG startAddress, ULONG stopAddress)
-{
-  const uint8_t bytes[] = {
-    0xeb, 0x02,           // 01313bb6   eb 02            jmp short trial.01313bba
-    0x8b,0xc5,            // 01313bb8   8bc5             mov eax,ebp
-    0x8b,0x54,0x24, 0x18, // 01313bba   8b5424 18        mov edx,dword ptr ss:[esp+0x18]
-    0x8d,0x0c,0x51,       // 01313bbe   8d0c51           lea ecx,dword ptr ds:[ecx+edx*2]
-    0x8d,0x1c,0x3f        // 01313bc1   8d1c3f           lea ebx,dword ptr ds:[edi+edi]
-  };
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-  if (!addr)
-    return addr;
-  addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (!addr)
-    return addr;
-  //return winhook::hook_before(addr, Private::hookBefore);
+  namespace ScenarioHook1
+  { // for old GXP1
+    namespace Private
+    {
+      TextUnionW *arg_,
+          argValue_;
+      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      {
 
-  int count = 0;
-  auto fun = [&count](ULONG addr) -> bool {
-     auto retaddr=addr+5;
-      
-     if (*(DWORD *)retaddr!= 0x0c244c8a)
+        static std::wstring text_; // persistent storage, which makes this function not thread-safe
+
+        auto arg = (TextUnionW *)(s->stack[0] + 4); // arg1 + 0x4
+        if (!arg->isValid())
+          return;
+
+        auto text = arg->getText();
+        if (isBadText(text))
+          return;
+        buffer->from_cs(text);
+      }
+      void hook2a(hook_stack *s, TextBuffer buffer)
+      {
+        auto arg = (TextUnionW *)(s->stack[0] + 4); // arg1 + 0x4
+        arg_ = arg;
+        argValue_ = *arg;
+
+        arg->setText(allocateString(buffer.viewW()));
+        // if (arg->size)
+        //   hashes_.insert(Engine::hashWCharArray(arg->text, arg->size));
+        //  return true;
+      }
+      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      {
+        if (arg_)
+        {
+          *arg_ = argValue_;
+          arg_ = nullptr;
+        }
+      }
+    } // namespace Private
+
+    /**
+     *  Sample game: 塔の下のエクセルキトゥス体験版
+     *  Executable description shows "AVGEngineV2"
+     *
+     *  Debugging method: Find the fixed text address, and check when it is being modified
+     *
+     *  Scenario caller, text in the struct of arg1 + 0x4.
+     */
+    bool attach(ULONG startAddress, ULONG stopAddress)
+    {
+      const uint8_t bytes[] = {
+          0xeb, 0x02,             // 01313bb6   eb 02            jmp short trial.01313bba
+          0x8b, 0xc5,             // 01313bb8   8bc5             mov eax,ebp
+          0x8b, 0x54, 0x24, 0x18, // 01313bba   8b5424 18        mov edx,dword ptr ss:[esp+0x18]
+          0x8d, 0x0c, 0x51,       // 01313bbe   8d0c51           lea ecx,dword ptr ds:[ecx+edx*2]
+          0x8d, 0x1c, 0x3f        // 01313bc1   8d1c3f           lea ebx,dword ptr ds:[edi+edi]
+      };
+      ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
+      if (!addr)
+        return addr;
+      addr = MemDbg::findEnclosingAlignedFunction(addr);
+      if (!addr)
+        return addr;
+      // return winhook::hook_before(addr, Private::hookBefore);
+
+      int count = 0;
+      auto fun = [&count](ULONG addr) -> bool
+      {
+        auto retaddr = addr + 5;
+
+        if (*(DWORD *)retaddr != 0x0c244c8a)
+          return true;
+        if (*(BYTE *)retaddr == 0x4f ||
+            (*(DWORD *)retaddr & 0x00ff00ff) == 0x0024008b) // skip truncated texts
+          return true;
+        HookParam hp;
+        hp.address = addr;
+        hp.text_fun = Private::hookBefore;
+        hp.hook_after = Private::hook2a;
+        hp.type = EMBED_ABLE | CODEC_UTF16 | USING_STRING | NO_CONTEXT;
+        hp.newlineseperator = L"%r";
+        hp.hook_font = F_GetGlyphOutlineW;
+        bool succ = NewHook(hp, "EmbedGXP");
+        hp.address = addr + 5;
+        hp.text_fun = Private::hookAfter;
+        succ |= NewHook(hp, "EmbedGXP");
+        count += 1;
+        return succ; // replace all functions
+      };
+      MemDbg::iterNearCallAddress(fun, addr, startAddress, stopAddress);
+      return count;
+    }
+  } // namespace ScenarioHook1
+
+  namespace ScenarioHook2
+  { // for new GXP2
+    namespace Private
+    {
+      TextUnionW *arg_,
+          argValue_;
+      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      {
+        static std::wstring text_;            // persistent storage, which makes this function not thread-safe
+        auto arg = (TextUnionW *)s->stack[0]; // arg1
+        if (!arg->isValid())
+          return;
+
+        auto text = arg->getText();
+        if (isBadText(text))
+          return;
+        buffer->from_cs(text);
+      }
+      void hook2a(hook_stack *s, TextBuffer buffer)
+      {
+        auto arg = (TextUnionW *)s->stack[0]; // arg1 + 0x4
+        arg_ = arg;
+        argValue_ = *arg;
+
+        arg->setText(allocateString(buffer.viewW()));
+      }
+
+      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      {
+        if (arg_)
+        {
+          *arg_ = argValue_;
+          arg_ = nullptr;
+        }
+      }
+    } // namespace Private
+
+    bool attach(ULONG startAddress, ULONG stopAddress)
+    {
+      const uint8_t bytes[] = {
+          0x8d, 0x04, 0x3f, // 08159fd  |. 8d043f         lea eax,dword ptr ds:[edi+edi]	; jichi: edi *= 2 for wchar_t
+          0x50,             // 0815a00  |. 50             push eax	; jichi: size
+          0x8d, 0x04, 0x4b, // 0815a01  |. 8d044b         lea eax,dword ptr ds:[ebx+ecx*2]
+          0x50,             // 0815a04  |. 50             push eax	; jichi: source text
+          0x52              // 0815a05  |. 52             push edx	; jichi: target text
+      };
+      ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
+      if (!addr)
+        return addr;
+      addr = MemDbg::findEnclosingAlignedFunction(addr);
+      if (!addr)
+        return addr;
+      // return winhook::hook_before(addr, Private::hookBefore);
+
+      int count = 0;
+      auto fun = [&count](ULONG addr) -> bool
+      {
+        auto retaddr = addr + 5;
+        if (*(WORD *)retaddr != 0x458a)
+          return true;
+        if (*(BYTE *)retaddr == 0xa1)
+          return true;
+        HookParam hp;
+        hp.address = addr;
+        hp.text_fun = Private::hookBefore;
+        hp.hook_after = Private::hook2a;
+        hp.type = EMBED_ABLE | CODEC_UTF16 | USING_STRING | NO_CONTEXT;
+        hp.newlineseperator = L"%r";
+        hp.hook_font = F_GetGlyphOutlineW;
+        bool succ = NewHook(hp, "EmbedGXP2");
+        hp.address = addr + 5;
+        hp.text_fun = Private::hookAfter;
+        succ |= NewHook(hp, "EmbedGXP2");
+        count += 1;
+        return succ; // replace all functions
+      };
+      MemDbg::iterNearCallAddress(fun, addr, startAddress, stopAddress);
+      return count;
+    }
+  } // namespace ScenarioHook2
+  /*
+  namespace PopupHook1 { // only for old GXP1 engine
+  namespace Private {
+    bool hookBefore(winhook::hook_stack *s)
+    {
+      static std::wstring text_; // persistent storage, which makes this function not thread-safe
+      auto arg = (TextUnionW *)(s->ecx + 0x1ec); // [ecx + 0x1ec]
+      if (!arg->isValid())
+        return true;
+      auto text = arg->getText();
+      if (isBadText(text))
+        return true;
+      auto retaddr = s->stack[0];
+      auto reladdr = retaddr - moduleBaseAddress_;
+      enum { role = Engine::OtherRole };
+      std::wstring oldText = std::wstring(text),
+              newText = EngineController::instance()->dispatchTextWSTD(oldText, role, reladdr);
+      if (newText == oldText)
+        return true;
+      text_ = newText;
+      arg->setText(text_);
       return true;
-    if (*(BYTE *)retaddr == 0x4f ||
-        (*(DWORD *)retaddr & 0x00ff00ff) == 0x0024008b) // skip truncated texts
-      return true;
-    HookParam hp;
-    hp.address=addr;
-    hp.text_fun=Private::hookBefore;
-    hp.hook_after=Private::hook2a;
-    hp.type=EMBED_ABLE|CODEC_UTF16|USING_STRING|NO_CONTEXT;
-    hp.newlineseperator=L"%r";
-    hp.hook_font=F_GetGlyphOutlineW;
-    bool succ=NewHook(hp,"EmbedGXP");
-    hp.address=addr+5;
-    hp.text_fun=Private::hookAfter;
-    succ|=NewHook(hp,"EmbedGXP");
-    count+=1;
-    return succ; // replace all functions
-  };
-  MemDbg::iterNearCallAddress(fun, addr, startAddress, stopAddress); 
-  return count;
-}
-} // namespace ScenarioHook1
-
-namespace ScenarioHook2 { // for new GXP2
-namespace Private {
-   TextUnionW *arg_,
-             argValue_;
-  void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    }
+  } // Private
+   bool attach(ULONG startAddress, ULONG stopAddress)
   {
-    static std::wstring text_; // persistent storage, which makes this function not thread-safe
-    auto arg = (TextUnionW *)s->stack[0]; // arg1
-    if (!arg->isValid())
-      return ;
- 
-    auto text = arg->getText();
-    if (isBadText(text))
-      return  ; 
-    buffer->from_cs(text);
-    
+    const uint8_t bytes[] = {
+      0x8b,0x86, 0xec,0x01,0x00,0x00, // 001092a9   8b86 ec010000    mov eax,dword ptr ds:[esi+0x1ec] ; jichi: text in eax
+      0xeb, 0x06,                     // 001092af   eb 06            jmp short trial.001092b7
+      0x8d,0x86, 0xec,0x01,0x00,0x00, // 001092b1   8d86 ec010000    lea eax,dword ptr ds:[esi+0x1ec]
+      0x0f,0xb7,0x14,0x78,            // 001092b7   0fb71478         movzx edx,word ptr ds:[eax+edi*2]
+      0x52                            // 001092bb   52               push edx
+    };
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    return winhook::hook_before(addr, Private::hookBefore);
+    // Function called at runtime
+    //int count = 0;
+    //auto fun = [&count](ULONG addr) -> bool {
+    //  auto before = std::bind(Private::hookBefore, addr + 5, std::placeholders::_1);
+    //  count += winhook::hook_both(addr, before, Private::hookAfter);
+    //  return true; // replace all functions
+    //};
+    //MemDbg::iterNearCallAddress(fun, addr, startAddress, stopAddress);
+    //DOUT("call number =" << count);
+    //return count;
   }
-    void hook2a(hook_stack*s,void* data1, size_t len)
-  { 
-    auto text_=new wchar_t[len/2+1];
-     auto n=std::wstring((LPWSTR)data1,len/2);
-     wcscpy(text_,n.c_str());
-auto arg = (TextUnionW *)s->stack[0]; // arg1 + 0x4
-    arg_ = arg;
-    argValue_ = *arg;
- 
-    arg->setText(text_); 
-  }
-         
-  void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-  {
-    if (arg_) {
-      *arg_ = argValue_;
-      arg_ = nullptr;
-    } 
-  }
-} // namespace Private
- 
-bool attach(ULONG startAddress, ULONG stopAddress)
-{
-  const uint8_t bytes[] = {
-    0x8d,0x04,0x3f, // 08159fd  |. 8d043f         lea eax,dword ptr ds:[edi+edi]	; jichi: edi *= 2 for wchar_t
-    0x50,           // 0815a00  |. 50             push eax	; jichi: size
-    0x8d,0x04,0x4b, // 0815a01  |. 8d044b         lea eax,dword ptr ds:[ebx+ecx*2]
-    0x50,           // 0815a04  |. 50             push eax	; jichi: source text
-    0x52            // 0815a05  |. 52             push edx	; jichi: target text
-  };
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-  if (!addr)
-    return addr;
-  addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (!addr)
-    return addr;
-  //return winhook::hook_before(addr, Private::hookBefore);
+  } // namespace PopupHook1
 
-  int count = 0;
-  auto fun = [&count](ULONG addr) -> bool {
-     auto retaddr=addr+5;
-     if (*(WORD *)retaddr != 0x458a)
+  namespace OtherHook { // for all GXP engines
+  namespace Private {
+    bool hookBefore(winhook::hook_stack *s)
+    {
+      static std::wstring text_;
+      auto text = (LPCWSTR)s->stack[3]; // arg3
+      if (!text || !*text)
+        return true;
+      auto retaddr = s->stack[0];
+      auto reladdr = retaddr - moduleBaseAddress_;
+      enum { role = Engine::OtherRole };
+      std::wstring oldText = std::wstring(text),
+              newText = EngineController::instance()->dispatchTextWSTD(oldText, role, reladdr);
+      if (newText.empty() || oldText == newText)
+        return true;
+      strReplace(newText, L"%r", L"\n");
+      //newText.replace("%r", "\n");
+      text_ = newText;
+      s->stack[3] = (ULONG)text_.c_str();
       return true;
-    if (*(BYTE *)retaddr == 0xa1)
-      return true;
-    HookParam hp;
-    hp.address=addr;
-    hp.text_fun=Private::hookBefore;
-    hp.hook_after=Private::hook2a;
-    hp.type=EMBED_ABLE|CODEC_UTF16|USING_STRING|NO_CONTEXT;
-    hp.newlineseperator=L"%r";
-    hp.hook_font=F_GetGlyphOutlineW;
-    bool succ=NewHook(hp,"EmbedGXP2");
-    hp.address=addr+5;
-    hp.text_fun=Private::hookAfter;
-    succ|=NewHook(hp,"EmbedGXP2");
-    count+=1;
-    return succ; // replace all functions
-  };
-  MemDbg::iterNearCallAddress(fun, addr, startAddress, stopAddress); 
-  return count;
-}
-} // namespace ScenarioHook2
-/*
-namespace PopupHook1 { // only for old GXP1 engine
-namespace Private {
-  bool hookBefore(winhook::hook_stack *s)
+    }
+  } // Private
+   bool attach(ULONG startAddress, ULONG stopAddress)
   {
-    static std::wstring text_; // persistent storage, which makes this function not thread-safe
-    auto arg = (TextUnionW *)(s->ecx + 0x1ec); // [ecx + 0x1ec]
-    if (!arg->isValid())
+    const uint8_t bytes[] = {
+      0x99,           // 014d45ae   99               cdq
+      0x2b,0xc2,      // 014d45af   2bc2             sub eax,edx
+      0xd1,0xf8,      // 014d45b1   d1f8             sar eax,1
+      0x03 //,0xf0,   // 014d45b3   03f0             add esi,eax
+    };
+    int count = 0;
+    auto fun = [&count](ULONG addr) -> bool {
+      count +=
+          (addr = MemDbg::findEnclosingAlignedFunction(addr))
+          && winhook::hook_before(addr, Private::hookBefore);
       return true;
-    auto text = arg->getText();
-    if (isBadText(text))
-      return true;
-    auto retaddr = s->stack[0];
-    auto reladdr = retaddr - moduleBaseAddress_;
-    enum { role = Engine::OtherRole };
-    std::wstring oldText = std::wstring(text),
-            newText = EngineController::instance()->dispatchTextWSTD(oldText, role, reladdr);
-    if (newText == oldText)
-      return true;
-    text_ = newText;
-    arg->setText(text_);
+    };
+    MemDbg::iterFindBytes(fun, bytes, sizeof(bytes), startAddress, stopAddress);
+    DOUT("call number =" << count);
+    return count;
+  }
+  } // namespace OtherHook
+  */
+
+  bool attach()
+  {
+    ULONG startAddress = processStartAddress, stopAddress = processStopAddress;
+
+    moduleBaseAddress_ = startAddress; // used to calculate reladdr for debug purposes
+    if (ScenarioHook2::attach(startAddress, stopAddress))
+    {
+    }
+    else if (ScenarioHook1::attach(startAddress, stopAddress))
+    {
+
+      //  (PopupHook1::attach(startAddress, stopAddress));
+    }
+    else
+      return false;
+    // (OtherHook::attach(startAddress, stopAddress))
+
     return true;
   }
-} // Private
- bool attach(ULONG startAddress, ULONG stopAddress)
-{
-  const uint8_t bytes[] = {
-    0x8b,0x86, 0xec,0x01,0x00,0x00, // 001092a9   8b86 ec010000    mov eax,dword ptr ds:[esi+0x1ec] ; jichi: text in eax
-    0xeb, 0x06,                     // 001092af   eb 06            jmp short trial.001092b7
-    0x8d,0x86, 0xec,0x01,0x00,0x00, // 001092b1   8d86 ec010000    lea eax,dword ptr ds:[esi+0x1ec]
-    0x0f,0xb7,0x14,0x78,            // 001092b7   0fb71478         movzx edx,word ptr ds:[eax+edi*2]
-    0x52                            // 001092bb   52               push edx
-  };
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-  if (!addr)
-    return false;
-  addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (!addr)
-    return false;
-  return winhook::hook_before(addr, Private::hookBefore);
-  // Function called at runtime
-  //int count = 0;
-  //auto fun = [&count](ULONG addr) -> bool {
-  //  auto before = std::bind(Private::hookBefore, addr + 5, std::placeholders::_1);
-  //  count += winhook::hook_both(addr, before, Private::hookAfter);
-  //  return true; // replace all functions
-  //};
-  //MemDbg::iterNearCallAddress(fun, addr, startAddress, stopAddress);
-  //DOUT("call number =" << count);
-  //return count;
-}
-} // namespace PopupHook1
-
-namespace OtherHook { // for all GXP engines
-namespace Private {
-  bool hookBefore(winhook::hook_stack *s)
-  {
-    static std::wstring text_;
-    auto text = (LPCWSTR)s->stack[3]; // arg3
-    if (!text || !*text)
-      return true;
-    auto retaddr = s->stack[0];
-    auto reladdr = retaddr - moduleBaseAddress_;
-    enum { role = Engine::OtherRole };
-    std::wstring oldText = std::wstring(text),
-            newText = EngineController::instance()->dispatchTextWSTD(oldText, role, reladdr);
-    if (newText.empty() || oldText == newText)
-      return true;
-    strReplace(newText, L"%r", L"\n");
-    //newText.replace("%r", "\n");
-    text_ = newText;
-    s->stack[3] = (ULONG)text_.c_str();
-    return true;
-  }
-} // Private
- bool attach(ULONG startAddress, ULONG stopAddress)
-{
-  const uint8_t bytes[] = {
-    0x99,           // 014d45ae   99               cdq
-    0x2b,0xc2,      // 014d45af   2bc2             sub eax,edx
-    0xd1,0xf8,      // 014d45b1   d1f8             sar eax,1
-    0x03 //,0xf0,   // 014d45b3   03f0             add esi,eax
-  };
-  int count = 0;
-  auto fun = [&count](ULONG addr) -> bool {
-    count +=
-        (addr = MemDbg::findEnclosingAlignedFunction(addr))
-        && winhook::hook_before(addr, Private::hookBefore);
-    return true;
-  };
-  MemDbg::iterFindBytes(fun, bytes, sizeof(bytes), startAddress, stopAddress);
-  DOUT("call number =" << count);
-  return count;
-}
-} // namespace OtherHook
-*/
-
-bool  attach()
-{
-  ULONG startAddress=processStartAddress, stopAddress=processStopAddress;
-   
-  moduleBaseAddress_ = startAddress; // used to calculate reladdr for debug purposes
-  if (ScenarioHook2::attach(startAddress, stopAddress)) {
-    
-  } else if (ScenarioHook1::attach(startAddress, stopAddress)) {
-     
-    //  (PopupHook1::attach(startAddress, stopAddress));
-      
-  } else
-    return false;
-   // (OtherHook::attach(startAddress, stopAddress))
-    
-  return true;
-}
 
 } // unnamed namespace
-bool GXP::attach_function() {  
-    auto _=InsertGXPHook();
-    return attach()||_;
-} 
+bool GXP::attach_function()
+{
+  auto _ = InsertGXPHook();
+  return attach() || _;
+}

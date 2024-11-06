@@ -20,19 +20,19 @@ namespace
     hp.address = addr;
     hp.offset = get_reg(regs::eax);
     hp.type = USING_STRING | CODEC_UTF8;
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      auto xx = std::string((char *)data, *size);
+      auto xx = buffer->strA();
       static std::string last;
       if (xx == last)
-        return false;
+        return buffer->clear();
       last = xx;
       strReplace(xx, "@", "");
       strReplace(xx, "\\", "");
       strReplace(xx, "_", "\n");
       strReplace(xx, "/", "");
       // # ( ) < 代码里，但C了一会儿没遇到，不管了先
-      return write_string_overwrite(data, size, xx);
+      buffer->from(xx);
     };
     return NewHook(hp, "onscripter");
   }

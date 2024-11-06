@@ -112,8 +112,8 @@ struct HookParam
 	ALIGNPTR(uint64_t __1, uintptr_t padding); // padding before string
 	ALIGNPTR(uint64_t __12, uintptr_t user_value);
 	ALIGNPTR(uint64_t __2, void (*text_fun)(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split))
-	ALIGNPTR(uint64_t __3, bool (*filter_fun)(void *data, size_t *len, HookParam *hp)); // jichi 10/24/2014: Add filter function. Return false to skip the text
-	ALIGNPTR(uint64_t __7, void (*hook_after)(hook_stack *stack, void *data, size_t len));
+	ALIGNPTR(uint64_t __3, void (*filter_fun)(TextBuffer *buffer, HookParam *hp)); // jichi 10/24/2014: Add filter function. Return false to skip the text
+	ALIGNPTR(uint64_t __7, void (*hook_after)(hook_stack *stack, TextBuffer buffer));
 	uint64_t hook_font;
 	ALIGNPTR(uint64_t __9, const wchar_t *newlineseperator);
 	char name[HOOK_NAME_SIZE];
@@ -229,34 +229,58 @@ enum
 
 struct TextBuffer
 {
-	BYTE *buff;
-	size_t *lpsize;
+	BYTE *const buff;
+	size_t size;
 	template <typename CharT>
 	void from_cs(const CharT *c)
 	{
 		if (!c)
 			return;
-		*lpsize = strlenEx(c) * sizeof(CharT);
+		size = strlenEx(c) * sizeof(CharT);
 		strncpyEx((CharT *)buff, c, TEXT_BUFFER_SIZE);
 	}
 	template <typename StringT, typename = std::enable_if_t<!std::is_pointer_v<StringT>>>
 	void from(const StringT &c)
 	{
-		*lpsize = min(TEXT_BUFFER_SIZE, strSize(c));
-		memcpy(buff, c.data(), *lpsize);
+		size = min(TEXT_BUFFER_SIZE, strSize(c));
+		memcpy(buff, c.data(), size);
 	}
 	template <typename CharT>
 	void from(const CharT ptr, size_t t)
 	{
 		if (!ptr || !t)
 			return;
-		*lpsize = min(TEXT_BUFFER_SIZE, t);
-		memcpy(buff, (void *)ptr, *lpsize);
+		size = min(TEXT_BUFFER_SIZE, t);
+		memcpy(buff, (void *)ptr, size);
 	}
 	template <typename T>
 	void from_t(const T tm)
 	{
-		*lpsize = sizeof(T);
+		size = sizeof(T);
 		*(T *)buff = tm;
+	}
+	std::string_view viewA()
+	{
+		return std::string_view((char *)buff, size);
+	}
+	std::wstring_view viewW()
+	{
+		return std::wstring_view((wchar_t *)buff, size / 2);
+	}
+	std::basic_string_view<uint32_t> viewU()
+	{
+		return std::basic_string_view<uint32_t>((uint32_t *)buff, size / 4);
+	}
+	std::string strA()
+	{
+		return std::string((char *)buff, size);
+	}
+	std::wstring strW()
+	{
+		return std::wstring((wchar_t *)buff, size / 2);
+	}
+	void clear()
+	{
+		size = 0;
 	}
 };

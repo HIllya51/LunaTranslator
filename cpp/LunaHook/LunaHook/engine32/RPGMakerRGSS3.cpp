@@ -603,7 +603,7 @@ namespace
         LPCSTR oldText_;
         size_t oldSize_;
         std::unordered_set<std::wstring> texts_;
-        void hookafter2(hook_stack *s, void *data1, size_t len)
+        void hookafter2(hook_stack *s, TextBuffer buffer)
         {
 
           enum
@@ -625,7 +625,7 @@ namespace
 
               // ULONG split = arg->unknown2[0]; // always 2
               // ULONG split = s->stack[0]; // return address
-              std::wstring newText = std::wstring((wchar_t *)data1, len / 2);
+              std::wstring newText = buffer.strW();
 
               if (newText != trimmedText)
               {
@@ -774,7 +774,7 @@ namespace
             //   }
           }
         }
-        void hookafter2(hook_stack *s, void *data1, size_t len)
+        void hookafter2(hook_stack *s,TextBuffer buffer)
         {
           {
             auto arg = (HookArgument *)s->stack[2]; // arg2
@@ -784,7 +784,7 @@ namespace
               auto split = s->stack[0]; // return address
               std::wstring old = oldText;
 
-              std::wstring newText = std::wstring((wchar_t *)data1, len / 2);
+              std::wstring newText = buffer.strW();
               if (newText != oldText)
               {
                 if (newText.size() < oldText.size())
@@ -929,7 +929,7 @@ namespace
             }
           }
         }
-        void hookafter2(hook_stack *s, void *data1, size_t len)
+        void hookafter2(hook_stack *s, TextBuffer buffer)
         {
           {
             auto retaddr = s->stack[0];
@@ -943,8 +943,7 @@ namespace
               if (oldText.size() > 1)
               {
 
-                std::wstring newText = std::wstring((wchar_t *)data1, len / 2);
-                ;
+                std::wstring newText = buffer.strW();
                 if (newText != oldText)
                   ::wcscpy(text, (LPCWSTR)newText.c_str());
               }

@@ -417,22 +417,19 @@ bool InsertStuffScriptHook()
   return NewHook(hp, "StuffScriptEngine");
   // RegisterEngine(ENGINE_STUFFSCRIPT);
 }
-bool StuffScript2Filter(LPVOID data, size_t *size, HookParam *)
+void StuffScript2Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
   if (text[0] == '-')
   {
-    StringFilter(text, len, "-/-", 3);
-    StringFilterBetween(text, len, "-", 1, "-", 1);
+    StringFilter(buffer, "-/-", 3);
+    StringFilterBetween(buffer, "-", 1, "-", 1);
   }
-  StringCharReplacer(text, len, "_n_r", 4, '\n');
-  StringCharReplacer(text, len, "_r", 2, ' ');
-  StringFilter(text, len, "\\n", 2);
-  StringFilter(text, len, "_n", 2);
-
-  return true;
+  StringCharReplacer(buffer, "_n_r", 4, '\n');
+  StringCharReplacer(buffer, "_r", 2, ' ');
+  StringFilter(buffer, "\\n", 2);
+  StringFilter(buffer, "_n", 2);
 }
 bool InsertStuffScript2Hook()
 {
@@ -479,28 +476,25 @@ bool InsertStuffScript2Hook()
   ConsoleOutput("INSERT StuffScript2");
   return NewHook(hp, "StuffScript2");
 }
-bool StuffScript3Filter(LPVOID data, size_t *size, HookParam *)
+void StuffScript3Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
   if (text[0] == '\x81' && text[1] == '\x40')
   { // removes space at the beginning of the sentence
-    *len -= 2;
-    ::memmove(text, text + 2, *len);
+    buffer->size -= 2;
+    ::memmove(text, text + 2, buffer->size);
   }
 
-  StringFilterBetween(text, len, "/\x81\x79", 3, "\x81\x7A", 2); // remove hidden name
-  StringFilterBetween(text, len, "[", 1, "]", 1);                // garbage
+  StringFilterBetween(buffer, "/\x81\x79", 3, "\x81\x7A", 2); // remove hidden name
+  StringFilterBetween(buffer, "[", 1, "]", 1);                // garbage
 
   // ruby
-  CharFilter(text, len, '<');
-  StringFilterBetween(text, len, ",", 1, ">", 1);
+  CharFilter(buffer, '<');
+  StringFilterBetween(buffer, ",", 1, ">", 1);
 
-  StringCharReplacer(text, len, "_r\x81\x40", 4, ' ');
-  StringCharReplacer(text, len, "_r", 2, ' ');
-
-  return true;
+  StringCharReplacer(buffer, "_r\x81\x40", 4, ' ');
+  StringCharReplacer(buffer, "_r", 2, ' ');
 }
 bool InsertStuffScript3Hook()
 {
@@ -548,18 +542,13 @@ bool _5pb::attach_function()
   return b1 || b2 || b3 || sf;
 }
 
-bool KaleidoFilter(LPVOID data, size_t *size, HookParam *)
+void KaleidoFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
-
   // Unofficial eng TL with garbage newline spaces
-  StringCharReplacer(text, len, " \\n ", 4, ' ');
-  StringCharReplacer(text, len, " \\n", 3, ' ');
-  StringCharReplacer(text, len, "\\n", 2, ' ');
-  StringCharReplacer(text, len, "\xEF\xBC\x9F", 3, '?');
-
-  return true;
+  StringCharReplacer(buffer, " \\n ", 4, ' ');
+  StringCharReplacer(buffer, " \\n", 3, ' ');
+  StringCharReplacer(buffer, "\\n", 2, ' ');
+  StringCharReplacer(buffer, "\xEF\xBC\x9F", 3, '?');
 }
 
 bool InsertKaleidoHook()
@@ -615,7 +604,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.offset = get_stack(1);
-    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE  | EMBED_AFTER_NEW;
+    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_NEW;
     hp.newlineseperator = L"\\n";
     return NewHook(hp, "5bp");
   }
@@ -666,12 +655,9 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(1);
     hp.type = USING_STRING | CODEC_UTF8;
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      auto text = reinterpret_cast<LPSTR>(data);
-      auto len = reinterpret_cast<size_t *>(size);
-      StringCharReplacer(text, len, "\\n", 2, '\n');
-      return true;
+      StringCharReplacer(buffer, "\\n", 2, '\n');
     };
     return NewHook(hp, "5bp");
   }
@@ -702,18 +688,16 @@ namespace
     hp.offset = get_stack(1);
     hp.split = get_stack(2);
     hp.type = USING_SPLIT | USING_STRING | FULL_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW; // 中文显示不出来
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       // そうして、[おひとよ,2]御一夜――\n眼下に広がるこの町も、僕を間違いなく救ってくれた。
       // 「行政に関しての最大の変化は、市長です。\n現在の市長には[ひない,1]雛衣・ポーレットが就任しています」
       // 「なるほど。それゆえ、御一夜は衰退し、\n\x%lエアクラ;#00ffc040;エアクラ%l;#;工場の誘致話が持ち上がったわけか？」
       // 「ナビ。お前も\x%lエアクラ;#00ffc040;エアクラ%l;#;の仲間だったな。\n気を悪くしたか？」
-      auto text = reinterpret_cast<LPWSTR>(data);
-      auto len = reinterpret_cast<size_t *>(size);
-      auto xx = std::wstring(text, *len / 2);
+      auto xx = buffer->strW();
       xx = std::regex_replace(xx, std::wregex(L"\\[(.*?),\\d\\]"), L"$1");
       xx = std::regex_replace(xx, std::wregex(L"\\\\x%l(.*?);(.*?);(.*?);#;"), L"$1");
-      return write_string_overwrite(data, size, xx);
+      buffer->from(xx);
     };
     hp.newlineseperator = L"\\n";
     return NewHook(hp, "5bp");

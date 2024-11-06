@@ -2,7 +2,7 @@
 
 DynamicShiftJISCodec *dynamiccodec = new DynamicShiftJISCodec(932);
 
-void cast_back(const HookParam &hp, TextBuffer*buff, const std::wstring &trans, bool normal)
+void cast_back(const HookParam &hp, TextBuffer *buff, const std::wstring &trans, bool normal)
 {
 
   if ((hp.type & EMBED_CODEC_UTF16) || (hp.type & CODEC_UTF16))
@@ -206,14 +206,14 @@ bool waitforevent(UINT32 timems, const ThreadParam &tp, const std::wstring &orig
   return false;
 }
 
-void TextHook::parsenewlineseperator(TextBuffer*buff)
+void TextHook::parsenewlineseperator(TextBuffer *buff)
 {
   if (!(hp.newlineseperator))
     return;
 
   if (hp.type & CODEC_UTF16)
   {
-    StringCharReplacer((wchar_t *)buff->buff, buff->lpsize, hp.newlineseperator, wcslen(hp.newlineseperator), L'\n');
+    StringCharReplacer(buff, hp.newlineseperator, wcslen(hp.newlineseperator), L'\n');
   }
   else if (hp.type & CODEC_UTF32)
     return;
@@ -223,7 +223,7 @@ void TextHook::parsenewlineseperator(TextBuffer*buff)
     std::string newlineseperatorA;
     for (int i = 0; i < wcslen(hp.newlineseperator); i++)
       newlineseperatorA += (char)hp.newlineseperator[i];
-    StringCharReplacer((char *)buff->buff, buff->lpsize, newlineseperatorA.c_str(), newlineseperatorA.size(), '\n');
+    StringCharReplacer(buff, newlineseperatorA.c_str(), newlineseperatorA.size(), '\n');
   }
 }
 UINT64 texthash(void *data, size_t len)
@@ -237,23 +237,23 @@ UINT64 texthash(void *data, size_t len)
   }
   return sum;
 }
-bool checktranslatedok(void *data, size_t len)
+bool checktranslatedok(TextBuffer buff)
 {
   ZeroMemory(commonsharedmem->text, sizeof(commonsharedmem->text)); // clear trans before call
-  if (len > 1000)
+  if (buff.size > 1000)
     return true;
-  return (translatecache.find(texthash(data, len)) != translatecache.end());
+  return (translatecache.find(texthash(buff.buff, buff.size)) != translatecache.end());
 }
-bool TextHook::waitfornotify(TextBuffer*buff, ThreadParam tp)
+bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
   std::wstring origin;
-  if (auto t = commonparsestring(buff->buff, *buff->lpsize, &hp, commonsharedmem->codepage))
+  if (auto t = commonparsestring(buff->buff, buff->size, &hp, commonsharedmem->codepage))
     origin = t.value();
   else
     return false;
 
   std::wstring translate;
-  auto hash = texthash(buff->buff, *buff->lpsize);
+  auto hash = texthash(buff->buff, buff->size);
   if (translatecache.find(hash) != translatecache.end())
   {
     translate = translatecache.at(hash);

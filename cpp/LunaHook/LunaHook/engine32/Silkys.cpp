@@ -240,14 +240,14 @@ static void SpecialHookSilkys(hook_stack *stack, HookParam *hp, TextBuffer *buff
     text = arg1 + 4;
     size = min(size, ShortTextCapacity);
   }
-  buffer->from(text,size);
+  buffer->from(text, size);
   *split = arg2 == 0 ? 1 : 2; // arg2 == 0 ? scenario : name
 }
 void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
 {
   auto arg = (TextUnionA *)(s->stack[0] + sizeof(DWORD)); // arg1
   if (!arg || !arg->isValid())
-    return  ;
+    return;
 
   // FIXME: I am not able to distinguish choice out
   *role =
@@ -259,9 +259,9 @@ void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *rol
 }
 TextUnionA *arg_,
     argValue_;
-void hookafter1(hook_stack *s, void *data1, size_t len)
+void hookafter1(hook_stack *s, TextBuffer buffer)
 {
-  auto newData = std::string((char *)data1, len);
+  auto newData = buffer.strA();
   auto arg = (TextUnionA *)(s->stack[0] + sizeof(DWORD)); // arg1
   arg_ = arg;
   argValue_ = *arg;
@@ -276,7 +276,7 @@ void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *
   {
     *arg_ = argValue_;
     arg_ = nullptr;
-  } 
+  }
 }
 bool InsertSilkysHook()
 {
@@ -311,7 +311,7 @@ bool InsertSilkysHook()
     {
       HookParam hp;
       hp.address = addr;
-      hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS|NO_CONTEXT;
+      hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       hp.text_fun = hookBefore;
       hp.hook_after = hookafter1;
       hp.hook_font = F_GetGlyphOutlineA;
@@ -345,11 +345,12 @@ bool InsertSilkysHook2()
   hp.address = addr + 8;
   hp.type = CODEC_UTF16 | USING_STRING;
   hp.offset = get_reg(regs::eax);
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     static int idx = 0;
+    if (idx % 2)
+      buffer->clear();
     idx += 1;
-    return (bool)(idx % 2);
   };
   return NewHook(hp, "SilkysPlus2");
 }
@@ -373,21 +374,12 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(1);
     hp.newlineseperator = L"\\n";
-    hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE |  EMBED_AFTER_NEW;
+    hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW;
     return NewHook(hp, "EmbedSilkysX");
   }
 }
 namespace
 {
-  bool Silkys2Filter(LPVOID data, size_t *size, HookParam *)
-  {
-    auto text = reinterpret_cast<LPWSTR>(data);
-    auto len = reinterpret_cast<size_t *>(size);
-
-    StringCharReplacer(text, len, L"\\i", 2, L'\'');
-
-    return true;
-  }
 
   bool InsertSilkys2Hook()
   {
@@ -412,7 +404,10 @@ namespace
     HookParam hp;
     hp.address = addr + sizeof(bytes2);
     hp.offset = get_reg(regs::edi);
-    hp.filter_fun = Silkys2Filter;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      StringCharReplacer(buffer, L"\\i", 2, L'\'');
+    };
     hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
     return NewHook(hp, "Silkys2");
   }
@@ -471,10 +466,11 @@ namespace
     hp.type = USING_CHAR | DATA_INDIRECT | USING_SPLIT;
     hp.split = get_stack(1);
     hp.offset = get_stack(1); // thiscall arg1
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       static int idx = 0;
-      return (bool)((idx++) % 2);
+      if ((idx++) % 2)
+        buffer->clear();
     };
     return NewHook(hp, "Silkys4");
   }
@@ -501,10 +497,11 @@ namespace
     hp.address = addr + 2;
     hp.type = USING_CHAR | DATA_INDIRECT | CODEC_UTF16;
     hp.offset = get_reg(regs::eax);
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       static int idx = 0;
-      return (bool)((idx++) % 2);
+      if ((idx++) % 2)
+        buffer->clear();
     };
     return NewHook(hp, "silkys5");
   }
@@ -590,6 +587,7 @@ bool Siglusold::attach_function()
       continue;
     HookParam hpref;
     hpref.address = addr;
+    hpref.codepage = 932;
     hpref.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       auto a2 = (DWORD *)stack->stack[2];
@@ -602,17 +600,22 @@ bool Siglusold::attach_function()
       if (len1 == 1)
       { // 慢速
         hp->type = USING_CHAR;
-         data = a2[5] + a2[6];
-         data = *(WORD *) data;
-        auto check = (BYTE) data; // 换行符
-         len = 1 + IsDBCSLeadByteEx(932, check);
+        data = a2[5] + a2[6];
+        data = *(WORD *)data;
+        auto check = (BYTE)data; // 换行符
+        if (IsShiftjisLeadByte(check))
+        {
+          buffer->from_t<WORD>(data);
+        }
+        else
+          buffer->from_t<BYTE>(data);
       }
       else
       { // 快速&&慢速下立即显示
-         data = a2[5];
-         len = len1;
+        data = a2[5];
+        len = len1;
+        buffer->from(data, len);
       }
-      buffer->from(data,len);
     };
     hpref.type = USING_STRING;
     succ |= NewHook(hpref, "Siglusold_fast");
@@ -646,7 +649,7 @@ bool Silkyssakura::attach_function()
           HookParam hp_embed;
           hp_embed.address = addr;
           hp_embed.offset = get_stack(2);
-          hp_embed.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW |  CODEC_UTF16;
+          hp_embed.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | CODEC_UTF16;
           hp_embed.hook_font = F_GetGlyphOutlineW;
           return NewHook(hp_embed, "embedSilkyssakura"); // 这个是分两层分别绘制文字和阴影，需要两个都内嵌。
         }
@@ -686,7 +689,7 @@ namespace
     hp.address = addr;
     hp.offset = get_reg(regs::ecx);
     hp.newlineseperator = L"\\n";
-    hp.type = USING_STRING | EMBED_ABLE |  EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     return NewHook(hp, "SilkysX");
   }
 }
@@ -755,10 +758,9 @@ bool Aisystem6::attach_function()
   hp.address = addr;
   hp.offset = get_stack(1);
   hp.type = USING_STRING | NO_CONTEXT; // 男主自定义人名会被分开
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    StringCharReplacer((char *)data, len, "\x81\x93", 2, '\n');
-    return true;
+    StringCharReplacer(buffer, "\x81\x93", 2, '\n');
   };
   return NewHook(hp, "Aisystem6");
 }

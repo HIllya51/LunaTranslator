@@ -119,23 +119,21 @@ bool InsertYukaSystem2Hook()
   hp.offset = get_stack(1);
   hp.split = get_stack(2);
   hp.type = USING_SPLIT | USING_STRING | CODEC_UTF8; // UTF-8, though
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     // セミラミスの天秤
     // セミラミスの天秤 Fated Dolls
-    if (data == 0)
-      return false;
 
-    if (all_ascii(reinterpret_cast<char *>(data), *len))
-      return false;
-    auto str = std::string(reinterpret_cast<char *>(data), *len);
+    if (all_ascii(reinterpret_cast<char *>(buffer->buff), buffer->size))
+      return buffer->clear();
+    auto str = buffer->strA();
 
     str = std::regex_replace(str, std::regex(R"(@r\((.*?),(.*?)\))"), "$1");
 
     auto wstr = StringToWideString(str);
 
     if (wstr.size() == 1)
-      return false;
+      return buffer->clear();
 
     for (auto wc : wstr)
     {
@@ -143,10 +141,9 @@ bool InsertYukaSystem2Hook()
           (wc >= '0' && wc <= '9') ||
           (wc == '"') || (wc == '.') || (wc == '-') || (wc == '#') ||
           (wc == 65533) || (wc == 2))
-        return false;
+        return buffer->clear();
     }
-
-    return write_string_overwrite(data, len, str);
+    buffer->from(str);
   };
   // hp.text_fun = SpecialHookYukaSystem2;
   ConsoleOutput("INSERT YukaSystem2");
@@ -190,24 +187,18 @@ namespace
 }
 namespace __
 {
-  bool YukaSystem1Filter(LPVOID data, size_t *size, HookParam *)
+  void YukaSystem1Filter(TextBuffer *buffer, HookParam *)
   {
-    auto text = reinterpret_cast<LPSTR>(data);
-    auto len = reinterpret_cast<size_t *>(size);
-
-    if (*len == 0)
-      return false;
+    auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
     // if acii add a space at the end of the sentence overwriting null terminator
-    if (*len >= 2 && text[*len - 2] > 0)
-      text[(*len)++] = ' ';
+    if (buffer->size >= 2 && text[buffer->size - 2] > 0)
+      text[buffer->size++] = ' ';
 
-    if (cpp_strnstr(text, "@r(", *len))
+    if (cpp_strnstr(text, "@r(", buffer->size))
     {
-      StringFilterBetween(text, len, "@r(", 3, ")", 1); // @r(2,はと)
+      StringFilterBetween(buffer, "@r(", 3, ")", 1); // @r(2,はと)
     }
-
-    return true;
   }
 
   bool InsertYukaSystem1Hook()
@@ -282,13 +273,9 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(2);
     hp.type = USING_CHAR | DATA_INDIRECT;
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      auto text = reinterpret_cast<LPSTR>(data);
-      auto len = reinterpret_cast<size_t *>(size);
-      CharFilter(text, len, '@');
-
-      return true;
+      CharFilter(buffer, '@');
     };
     return NewHook(hp, "caramelbox");
   }

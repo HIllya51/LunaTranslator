@@ -221,7 +221,7 @@ bool checklengthembedable(const HookParam &hp, size_t size)
 	}
 	return size > len;
 }
-bool commonfilter(void *data, size_t *len, HookParam *hp)
+void commonfilter(TextBuffer *buffer, HookParam *hp)
 {
 
 	if (hp->type & CODEC_UTF16)
@@ -232,18 +232,17 @@ bool commonfilter(void *data, size_t *len, HookParam *hp)
 		;
 	else
 	{
-		if (*len == 2)
+		if (buffer->size == 2)
 		{
-			StringFilter((char *)data, len, "\x81\xa4", 2);
-			StringFilter((char *)data, len, "\x81\xa5", 2);
+			StringFilter(buffer, "\x81\xa4", 2);
+			StringFilter(buffer, "\x81\xa5", 2);
 		}
 	}
-	return true;
 }
 void TextHook::Send(uintptr_t lpDataBase)
 {
 	auto buffer = (TextOutput_T *)local_buffer;
-	auto pbData = buffer->data;
+	TextBuffer buff{buffer->data, 0};
 	_InterlockedIncrement((long *)&useCount);
 	__try
 	{
@@ -274,13 +273,11 @@ void TextHook::Send(uintptr_t lpDataBase)
 		if (hp.type & HOOK_EMPTY)
 			__leave; // jichi 10/24/2014: dummy hook only for dynamic hook
 
-		size_t lpCount = 0;
 		uintptr_t lpSplit = 0,
 				  lpRetn = stack->retaddr,
 				  plpdatain = (lpDataBase + hp.offset),
 				  lpDataIn = *(uintptr_t *)plpdatain;
 
-		TextBuffer buff{pbData, &lpCount};
 		if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
 		{
 			lpDataIn = jitgetaddr(stack, &hp);
@@ -299,7 +296,7 @@ void TextHook::Send(uintptr_t lpDataBase)
 		else if (hp.type & SPECIAL_JIT_STRING)
 		{
 			if (hp.jittype == JITTYPE::UNITY)
-				commonsolvemonostring(lpDataIn, &lpDataIn, &lpCount);
+				commonsolvemonostring(lpDataIn, &buff);
 		}
 		else
 		{
@@ -317,45 +314,49 @@ void TextHook::Send(uintptr_t lpDataBase)
 				lpDataIn = *(uintptr_t *)plpdatain;
 			}
 			lpDataIn += hp.padding;
-			lpCount = GetLength(stack, lpDataIn);
+			buff.size = GetLength(stack, lpDataIn);
 		}
 
-		if (lpCount <= 0)
+		if (buff.size <= 0)
 			__leave;
-		if (lpCount > TEXT_BUFFER_SIZE)
+		if (buff.size > TEXT_BUFFER_SIZE)
 		{
-			ConsoleOutput(InvalidLength, lpCount, hp.name);
-			lpCount = TEXT_BUFFER_SIZE;
+			ConsoleOutput(InvalidLength, buff.size, hp.name);
+			buff.size = TEXT_BUFFER_SIZE;
 		}
 		if (hp.type & USING_CHAR || (!hp.text_fun && !(hp.type & USING_STRING)))
 		{
 			if (hp.text_fun)
-				lpDataIn = *(uint32_t *)pbData;
+				lpDataIn = *(uint32_t *)buff.buff;
 			if (hp.type & CODEC_UTF32 || hp.type & CODEC_UTF8)
 			{
-				*(uint32_t *)pbData = lpDataIn & 0xffffffff;
+				*(uint32_t *)buff.buff = lpDataIn & 0xffffffff;
 			}
 			else
 			{ // CHAR_LITTEL_ENDIAN,CODEC_ANSI_BE,CODEC_UTF16
 				lpDataIn &= 0xffff;
 				if ((hp.type & CODEC_ANSI_BE) && (lpDataIn >> 8))
 					lpDataIn = _byteswap_ushort(lpDataIn & 0xffff);
-				if (lpCount == 1)
+				if (buff.size == 1)
 					lpDataIn &= 0xff;
-				*(WORD *)pbData = lpDataIn & 0xffff;
+				*(WORD *)buff.buff = lpDataIn & 0xffff;
 			}
 		}
-		else if (!hp.text_fun)
+		else if ((!hp.text_fun) && (!(hp.type & SPECIAL_JIT_STRING)))
 		{
 			if (lpDataIn == 0)
 				__leave;
-			::memcpy(pbData, (void *)lpDataIn, lpCount);
+			::memcpy(buff.buff, (void *)lpDataIn, buff.size);
 		}
-
-		if (!commonfilter(pbData, &lpCount, &hp) || lpCount <= 0)
+		commonfilter(&buff, &hp);
+		if (buff.size <= 0)
 			__leave;
-		if (hp.filter_fun && !hp.filter_fun(pbData, &lpCount, &hp) || lpCount <= 0)
-			__leave;
+		if (hp.filter_fun)
+		{
+			hp.filter_fun(&buff, &hp);
+			if (buff.size <= 0)
+				__leave;
+		}
 
 		if (hp.type & (NO_CONTEXT | FIXING_SPLIT))
 			lpRetn = 0;
@@ -370,12 +371,12 @@ void TextHook::Send(uintptr_t lpDataBase)
 		bool canembed;
 		if (hp.type & EMBED_ABLE)
 		{
-			if (!checklengthembedable(hp, lpCount))
+			if (!checklengthembedable(hp, buff.size))
 			{
 				buffer->type &= (~EMBED_ABLE);
 				canembed = false;
 			}
-			else if (checktranslatedok(pbData, lpCount))
+			else if (checktranslatedok(buff))
 			{
 				buffer->type &= (~EMBED_ABLE);
 				canembed = true;
@@ -386,33 +387,33 @@ void TextHook::Send(uintptr_t lpDataBase)
 			}
 		}
 
-		TextOutput(tp, hp, buffer, lpCount);
+		TextOutput(tp, hp, buffer, buff.size);
 
 		if (canembed && (check_embed_able(tp)))
 		{
-			auto lpCountsave = lpCount;
+			auto lpCountsave = buff.size;
 			if (waitfornotify(&buff, tp))
 			{
 				if (hp.type & EMBED_AFTER_NEW)
 				{
-					auto _ = new char[max(lpCountsave, lpCount) + 10];
-					memcpy(_, pbData, lpCount);
-					for (int i = lpCount; i < max(lpCountsave, lpCount) + 10; i++)
+					auto _ = new char[max(lpCountsave, buff.size) + 10];
+					memcpy(_, buff.buff, buff.size);
+					for (int i = buff.size; i < max(lpCountsave, buff.size) + 10; i++)
 						_[i] = 0;
 					*(uintptr_t *)plpdatain = (uintptr_t)_;
 				}
 				else if (hp.type & EMBED_AFTER_OVERWRITE)
 				{
-					memcpy((void *)lpDataIn, pbData, lpCount);
-					for (int i = lpCount; i < lpCountsave; i++)
+					memcpy((void *)lpDataIn, buff.buff, buff.size);
+					for (int i = buff.size; i < lpCountsave; i++)
 						((BYTE *)(lpDataIn))[i] = 0;
 				}
 				else if (hp.hook_after)
-					hp.hook_after(stack, pbData, lpCount);
+					hp.hook_after(stack, buff);
 				else if (hp.type & SPECIAL_JIT_STRING)
 				{
 					if (hp.jittype == JITTYPE::UNITY)
-						unity_ui_string_hook_after(argidx(stack, hp.argidx), pbData, lpCount);
+						unity_ui_string_hook_after(argidx(stack, hp.argidx), buff);
 				}
 			}
 		}
@@ -467,12 +468,11 @@ bool TextHook::InsertHookCode()
 
 void TextHook::Read()
 {
-	size_t dataLen = 1;
 	// BYTE(*buffer)[PIPE_BUFFER_SIZE] = &::buffer, *pbData = *buffer + sizeof(ThreadParam);
-
 	auto buffer = (TextOutput_T *)local_buffer;
 	auto pbData = buffer->data;
 	buffer->type = hp.type;
+	TextBuffer buff{pbData, 1};
 	__try
 	{
 		if (hp.text_fun)
@@ -482,21 +482,26 @@ void TextHook::Read()
 		}
 		else
 		{
+
 			while (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT)
 			{
 				if (!location)
 					continue;
 				int currentLen = HookStrlen((BYTE *)location);
-				bool changed = memcmp(pbData, location, dataLen) != 0;
-				if (changed || (currentLen != dataLen))
+				bool changed = memcmp(pbData, location, buff.size) != 0;
+				if (changed || (currentLen != buff.size))
 				{
-					dataLen = min(currentLen, TEXT_BUFFER_SIZE);
-					memcpy(pbData, location, dataLen);
-					if (hp.filter_fun && !hp.filter_fun(pbData, &dataLen, &hp) || dataLen <= 0)
-						continue;
-					TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, dataLen);
-					dataLen = min(currentLen, TEXT_BUFFER_SIZE);
-					memcpy(pbData, location, dataLen);
+					buff.size = min(currentLen, TEXT_BUFFER_SIZE);
+					memcpy(pbData, location, buff.size);
+					if (hp.filter_fun)
+					{
+						hp.filter_fun(&buff, &hp);
+						if (buff.size <= 0)
+							continue;
+					}
+					TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
+					buff.size = min(currentLen, TEXT_BUFFER_SIZE);
+					memcpy(pbData, location, buff.size);
 				}
 			}
 		}

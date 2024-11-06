@@ -56,11 +56,12 @@ namespace
 
       hp.type = USING_STRING;
       hp.offset = get_stack(4);
-      hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *)
       {
-        auto xx = std::string((char *)data, *size);
+        auto xx = buffer->strA();
         static lru_cache<std::string> last(10);
-        return !last.touch(xx);
+        if (last.touch(xx))
+          buffer->clear();
       };
       return NewHook(hp, "takeout");
     };

@@ -4,7 +4,7 @@
 namespace
 {
 
-    void mscorlib_system_string_InternalSubString_hook_fun(hook_stack *stack, HookParam *hp, uintptr_t *data, uintptr_t *split, size_t *len)
+    void mscorlib_system_string_InternalSubString_hook_fun(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         uintptr_t offset = stack->ARG1;
         uintptr_t startIndex = stack->ARG2;
@@ -13,18 +13,18 @@ namespace
         MonoString *string = (MonoString *)offset;
         if (string == 0)
             return;
-        *data = (uintptr_t)(startIndex + string->chars);
-        if (wcslen((wchar_t *)*data) < length)
+        auto data = (uintptr_t)(startIndex + string->chars);
+        if (wcslen((wchar_t *)data) < length)
             return;
-        *len = length * 2;
+        buffer->from(data, length * 2);
     }
 
     /** jichi 12/26/2014 Mono
      *  Sample game: [141226] ハ�レ�めいと
      */
-    void SpecialHookMonoString(hook_stack *stack, HookParam *hp, uintptr_t *data, uintptr_t *split, size_t *len)
+    void SpecialHookMonoString(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        commonsolvemonostring(stack->ARG1, data, len);
+        commonsolvemonostring(stack->ARG1, buffer);
 
 #ifndef _WIN64
         auto s = stack->ecx;
@@ -72,7 +72,7 @@ namespace monocommon
         const char *name;
         int argsCount;
         int argidx;
-        void *text_fun = nullptr;
+        decltype(HookParam::text_fun) text_fun = nullptr;
         bool Embed = false;
         bool isstring = true;
         std::string hookname()

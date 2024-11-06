@@ -215,15 +215,14 @@
  *  EIP 01612940 Ron2.01612940
  */
 // Skip ASCII garbage such as: Dat/Chr/HAL_061.swf
-static bool AdobeFlashFilter(LPVOID data, size_t *size, HookParam *)
+static void AdobeFlashFilter(TextBuffer *buffer, HookParam *)
 {
   // TODO: Remove [0-9a-zA-Z./]{4,} as garbage
-  LPCWSTR p = reinterpret_cast<LPCWSTR>(data);
-  size_t len = *size / 2;
-  for (size_t i = 0; i < len; i++)
+  LPCWSTR p = reinterpret_cast<LPCWSTR>(buffer->buff);
+  for (size_t i = 0; i < buffer->size / 2; i++)
     if (p[i] & 0xff00)
-      return true;
-  return false;
+      return;
+  buffer->clear();
 }
 bool InsertAdobeFlash10Hook()
 {

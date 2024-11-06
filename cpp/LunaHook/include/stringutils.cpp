@@ -193,13 +193,13 @@ std::basic_string<uint32_t> utf16_to_utf32(const wchar_t *u16str, size_t size)
   return utf32String;
 }
 
-std::wstring utf32_to_utf16(uint32_t *u32str, size_t size)
+std::wstring utf32_to_utf16(std::basic_string_view<uint32_t> sv)
 {
   std::wstring u16str;
-  for (auto i = 0; i < size; i++)
+  for (auto i = 0; i < sv.size(); i++)
   {
     unsigned h, l;
-    convertUTF32ToUTF16(u32str[i], h, l);
+    convertUTF32ToUTF16(sv[i], h, l);
     if (h)
       u16str.push_back((wchar_t)h);
     u16str.push_back((wchar_t)l);
@@ -284,7 +284,7 @@ std::optional<std::wstring> commonparsestring(void *data, size_t length, void *p
   if (hp->type & CODEC_UTF16)
     return std::wstring((wchar_t *)data, length / sizeof(wchar_t));
   else if (hp->type & CODEC_UTF32)
-    return (std::move(utf32_to_utf16((uint32_t *)data, length / sizeof(uint32_t))));
+    return (std::move(utf32_to_utf16(std::basic_string_view<uint32_t>((uint32_t *)data, length / sizeof(uint32_t)))));
   else if (auto converted = StringToWideString(std::string((char *)data, length), (hp->type & CODEC_UTF8) ? CP_UTF8 : (hp->codepage ? hp->codepage : df)))
     return (converted.value());
   else

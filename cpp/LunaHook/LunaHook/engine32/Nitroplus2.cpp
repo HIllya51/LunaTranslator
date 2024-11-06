@@ -466,7 +466,7 @@ namespace
       HookParam hp;
       hp.address = addr;
       hp.offset = get_stack(1);
-      hp.type = USING_STRING | EMBED_ABLE |  EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+      hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
       hp.filter_fun = all_ascii_Filter;
       return NewHook(hp, "EmbedNitroplus");
     }
@@ -509,20 +509,20 @@ namespace
       hp.address = addr;
       hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
       hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-      { 
+      {
         auto refaddr = stack->retaddr - (DWORD)GetModuleHandle(0);
         if (refaddr < 0xb0000 || refaddr > 0xb1000)
           return;
-          buffer->from(stack->stack[1], stack->stack[2]);
+        buffer->from(stack->stack[1], stack->stack[2]);
       };
-      hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         static const std::regex rx("#\\{(.*?)\\}(.*?)#", std::regex_constants::icase);
-        std::string result = std::string((char *)data, *len);
+        std::string result = buffer->strA();
         result = std::regex_replace(result, rx, "$2");
         strReplace(result, u8"　\n", "");
         strReplace(result, u8"\n", "");
-        return write_string_overwrite(data, len, result);
+        buffer->from(result);
       };
       succ |= NewHook(hp, "sayanouta");
     }

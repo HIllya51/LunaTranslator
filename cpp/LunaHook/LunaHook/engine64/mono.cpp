@@ -60,9 +60,9 @@ namespace
         *split = str.find(L"OnShowComplete") != str.npos;
         buffer->from(str);
       };
-      hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        std::wstring str = std::wstring((LPWSTR)data, *len / 2);
+        std::wstring str = buffer->strW();
         if (str.find(L"OnShowComplete") != str.npos)
         {
           str = std::regex_replace(str, std::wregex(L"\n"), L"");
@@ -73,9 +73,8 @@ namespace
 
           std::regex_search(str, match, std::wregex(L" Text:(.*?)Next:(.*?)"));
           result1 = match[1].str();
-          write_string_overwrite(data, len, result1);
+          buffer->from(result1);
         }
-        return true;
       };
       suc |= NewHook(hp, "monobdwgcdll");
     }

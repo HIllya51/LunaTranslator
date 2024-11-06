@@ -1,5 +1,4 @@
-#include"Leaf.h"
-
+#include "Leaf.h"
 
 /** jichi 12/25/2014: Leaf/AQUAPLUS
  *  Sample game: [141224] [AQUAPLUS] WHITE ALBUM2 ミニアフタースト�リー
@@ -367,228 +366,232 @@
  *  EDI 079047E0
  *  EIP 00451671 .00451671
  */
-namespace{
+namespace
+{
   std::string save;
   int role;
 }
 static void SpecialHookLeaf(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   DWORD text = stack->ebx - 1; // = ebx -1
-  save=std::string((LPSTR)text,::strlen((LPCSTR)text)); 
+  save = std::string((LPSTR)text, ::strlen((LPCSTR)text));
   *split = FIXED_SPLIT_VALUE; // only caller's address use as split
   buffer->from(save);
 }
 // Remove both \n and \k
-static bool LeafFilter(LPVOID data, size_t *size, HookParam *)
+static void LeafFilter(TextBuffer *buffer, HookParam *)
 {
-  LPSTR text = (LPSTR)data;
-  if (::memchr(text, '\\', *size)) {
-    StringFilter(text, reinterpret_cast<size_t *>(size), "\\n", 2);
-    StringFilter(text, reinterpret_cast<size_t *>(size), "\\k", 2);
+  LPSTR text = (LPSTR)buffer->buff;
+  if (::memchr(text, '\\', buffer->size))
+  {
+    StringFilter(buffer, "\\n", 2);
+    StringFilter(buffer, "\\k", 2);
   }
-  return true;
 }
-namespace{
-void hook2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-  {   
-    strReplace(save,"\\k","");
+namespace
+{
+  void hook2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    strReplace(save, "\\k", "");
     static std::regex rx("<R(.+?)\\|.+>");
-    save= std::regex_replace(save, rx, "$1");
+    save = std::regex_replace(save, rx, "$1");
     buffer->from(save);
   }
-  void hook2a(hook_stack*s,void* data1, size_t len)
-  { 
-    s->ecx=(DWORD)allocateString(std::string_view((char*)data1,len));
+  void hook2a(hook_stack *s, TextBuffer buffer)
+  {
+    s->ecx = (DWORD)allocateString(buffer.viewA());
   }
 }
 bool InsertLeafHook()
 {
   const BYTE bytes[] = {
-    0x8b,0x90, XX4,      // 00451658   8b90 c08c0000    mov edx,dword ptr ds:[eax+0x8cc0]
-    0x8b,0x84,0x97, XX4, // 0045165e   8b8497 14080000  mov eax,dword ptr ds:[edi+edx*4+0x814]
-    // The above is needed as there are other matches
-    0x8d,0x58, 0x01,     // 00451665   8d58 01          lea ebx,dword ptr ds:[eax+0x1] ; jichi: hook here would crash because of jump
-    0x8a,0x10,           // 00451668   8a10             mov dl,byte ptr ds:[eax]    ; jichi: text accessed here in eax
-    0x40,                // 0045166a   40               inc eax
-    0x84,0xd2,           // 0045166b   84d2             test dl,dl
-    0x75, 0xf9,          // 0045166d  ^75 f9            jnz short .00451668
-    0x2b,0xc3,           // 0045166f   2bc3             sub eax,ebx     ; jichi: hook here, text in ebx-1
-    0x8d,0x58, 0x01      // 00451671   8d58 01           lea ebx,dword ptr ds:[eax+0x1]
-    //0x53,               // 00451674   53               push ebx
-    //0x6a, 0x00,         // 00451675   6a 00            push 0x0
-    //0x53,               // 00451677   53               push ebx
-    //0x6a, 0x00,         // 00451678   6a 00            push 0x0
-    //0xff,0x15           // 0045167a   ff15 74104a00    call dword ptr ds:[0x4a1074]             ; kernel32.getprocessheap
+      0x8b, 0x90, XX4,       // 00451658   8b90 c08c0000    mov edx,dword ptr ds:[eax+0x8cc0]
+      0x8b, 0x84, 0x97, XX4, // 0045165e   8b8497 14080000  mov eax,dword ptr ds:[edi+edx*4+0x814]
+      // The above is needed as there are other matches
+      0x8d, 0x58, 0x01, // 00451665   8d58 01          lea ebx,dword ptr ds:[eax+0x1] ; jichi: hook here would crash because of jump
+      0x8a, 0x10,       // 00451668   8a10             mov dl,byte ptr ds:[eax]    ; jichi: text accessed here in eax
+      0x40,             // 0045166a   40               inc eax
+      0x84, 0xd2,       // 0045166b   84d2             test dl,dl
+      0x75, 0xf9,       // 0045166d  ^75 f9            jnz short .00451668
+      0x2b, 0xc3,       // 0045166f   2bc3             sub eax,ebx     ; jichi: hook here, text in ebx-1
+      0x8d, 0x58, 0x01  // 00451671   8d58 01           lea ebx,dword ptr ds:[eax+0x1]
+                        // 0x53,               // 00451674   53               push ebx
+                        // 0x6a, 0x00,         // 00451675   6a 00            push 0x0
+                        // 0x53,               // 00451677   53               push ebx
+                        // 0x6a, 0x00,         // 00451678   6a 00            push 0x0
+                        // 0xff,0x15           // 0045167a   ff15 74104a00    call dword ptr ds:[0x4a1074]             ; kernel32.getprocessheap
   };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  enum { addr_offset = 0x0045166f - 0x00451658 };
-  //GROWL_DWORD(addr);
-  if (!addr) {
+  enum
+  {
+    addr_offset = 0x0045166f - 0x00451658
+  };
+  // GROWL_DWORD(addr);
+  if (!addr)
+  {
     ConsoleOutput("Leaf: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  //hp.offset=get_reg(regs::eax);
-  hp.type = USING_STRING|USING_SPLIT; // use top of the stack as split
+  // hp.offset=get_reg(regs::eax);
+  hp.type = USING_STRING | USING_SPLIT; // use top of the stack as split
   hp.text_fun = SpecialHookLeaf;
-  //hp.filter_fun = NewLineStringFilterA; // remove two characters of "\\n"
   hp.filter_fun = LeafFilter; // remove two characters
   ConsoleOutput("INSERT Leaf");
-  auto succ=NewHook(hp, "Leaf");
+  auto succ = NewHook(hp, "Leaf");
 
-  //ConsoleOutput("Leaf: disable GDI hooks");
-  // 0045165E   8B8497 14080000  MOV EAX,DWORD PTR DS:[EDI+EDX*4+0x814]  ; jichi: text in eax, hook1 hook after here to replace eax
-  // 0045169D   8B8C97 14080000  MOV ECX,DWORD PTR DS:[EDI+EDX*4+0x814]  ; jichi: text in ecx, hook2 hook after here to replace ecx
-  const uint8_t bytes1[] = { 0x8b,0x84,0x97, 0x14,0x08,0x00,0x00 },
-                bytes2[] = { 0x8b,0x8c,0x97, 0x14,0x08,0x00,0x00 };
- 
+  // ConsoleOutput("Leaf: disable GDI hooks");
+  //  0045165E   8B8497 14080000  MOV EAX,DWORD PTR DS:[EDI+EDX*4+0x814]  ; jichi: text in eax, hook1 hook after here to replace eax
+  //  0045169D   8B8C97 14080000  MOV ECX,DWORD PTR DS:[EDI+EDX*4+0x814]  ; jichi: text in ecx, hook2 hook after here to replace ecx
+  const uint8_t bytes1[] = {0x8b, 0x84, 0x97, 0x14, 0x08, 0x00, 0x00},
+                bytes2[] = {0x8b, 0x8c, 0x97, 0x14, 0x08, 0x00, 0x00};
 
   ULONG addr1 = MemDbg::findBytes(bytes1, sizeof(bytes1), processStartAddress, processStopAddress),
         addr2 = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
   if (!addr1 || !addr2)
     return true;
   HookParam hp1;
-  //这个会卡死，无解
-  // hp.address=addr1+7;
-  // hp.hook_before=Private::hook1;
-  // hp.hook_after=Private::hookafterbf;
-  // hp.type=EMBED_ABLE;
-  //NewHook(hp,"EmbedLeaf");
-  hp1.address=addr2+7;
-  hp1.text_fun=hook2;
-  hp1.hook_after=hook2a;
-  hp1.type=EMBED_ABLE|EMBED_DYNA_SJIS|NO_CONTEXT;
-  hp1.newlineseperator=L"\\n";
-  succ|=NewHook(hp1,"EmbedLeaf");
-  return succ; 
+  // 这个会卡死，无解
+  //  hp.address=addr1+7;
+  //  hp.hook_before=Private::hook1;
+  //  hp.hook_after=Private::hookafterbf;
+  //  hp.type=EMBED_ABLE;
+  // NewHook(hp,"EmbedLeaf");
+  hp1.address = addr2 + 7;
+  hp1.text_fun = hook2;
+  hp1.hook_after = hook2a;
+  hp1.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
+  hp1.newlineseperator = L"\\n";
+  succ |= NewHook(hp1, "EmbedLeaf");
+  return succ;
 }
-bool activehook() 
+bool activehook()
 {
-  
-    /*
-    * Sample games:
-    * https://vndb.org/v2477
-    */
+
+  /*
+   * Sample games:
+   * https://vndb.org/v2477
+   */
   const BYTE bytes[] = {
-    0x56,                    // push esi                   << hook here
-    0xE8, XX4,               // call HEARTWORK.EXE+134F0
-    0x83, 0xC4, 0x38,        // add esp,38
-    0x5F,                    // pop edi
-    0x5D,                    // pop ebp
-    0x5B,                    // pop ebx
-    0xE8, XX4                // call HEARTWORK.EXE+1AF80
+      0x56,             // push esi                   << hook here
+      0xE8, XX4,        // call HEARTWORK.EXE+134F0
+      0x83, 0xC4, 0x38, // add esp,38
+      0x5F,             // pop edi
+      0x5D,             // pop ebp
+      0x5B,             // pop ebx
+      0xE8, XX4         // call HEARTWORK.EXE+1AF80
   };
 
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)   return false; 
+  if (!addr)
+    return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_reg(regs::ecx);
+  hp.offset = get_reg(regs::ecx);
   hp.type = USING_STRING;
   return NewHook(hp, "active");
 }
-bool AquaplusFilter(LPVOID data, size_t *size, HookParam *)
+void AquaplusFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
-  CharReplacer(text, len, '^', '\"');
-  StringCharReplacer(text, len, "\\n", 2, ' ');
-  StringFilter(text, len, "\\k", 2);
-  StringFilter(text, len, "\\p", 2);
-  if (cpp_strnstr(text, "<R", *len)) {  // ex. <R華奢|きゃしゃ>
-    StringFilter(text, len, "<R", 2);
-    StringFilterBetween(text, len, "|", 1, ">", 1);
+  CharReplacer(buffer, '^', '\"');
+  StringCharReplacer(buffer, "\\n", 2, ' ');
+  StringFilter(buffer, "\\k", 2);
+  StringFilter(buffer, "\\p", 2);
+  if (cpp_strnstr(text, "<R", buffer->size))
+  { // ex. <R華奢|きゃしゃ>
+    StringFilter(buffer, "<R", 2);
+    StringFilterBetween(buffer, "|", 1, ">", 1);
   }
-  StringFilter(text, len, "<c", 3); // remove "<c" followed by 1 char
-  CharFilter(text, len, '>');
-
-  if (*len == 0) return false;
-
-  return true;
+  StringFilter(buffer, "<c", 3); // remove "<c" followed by 1 char
+  CharFilter(buffer, '>');
 }
 
-bool InsertAquaplus1Hook() 
+bool InsertAquaplus1Hook()
 {
-  
-    /*
-    * Sample games:
-    * https://vndb.org/r20439
-    */
+
+  /*
+   * Sample games:
+   * https://vndb.org/r20439
+   */
   const BYTE bytes[] = {
-    0xCC,                         // int 3 
-    0x53,                         // push ebx             << hook here
-    0x8B, 0x5C, 0x24, 0x0C,       // mov ebx,[esp+0C]
-    0x55,                         // push ebp
-    0x8B, 0x6C, 0x24, 0x0C,       // mov ebp,[esp+0C]
-    0x56,                         // push esi
-    0x57,                         // push edi
-    0x8B, 0x7D, 0x24,             // mov edi,[ebp+24]
-    0x85, 0xFF                    // test edi,edi
+      0xCC,                   // int 3
+      0x53,                   // push ebx             << hook here
+      0x8B, 0x5C, 0x24, 0x0C, // mov ebx,[esp+0C]
+      0x55,                   // push ebp
+      0x8B, 0x6C, 0x24, 0x0C, // mov ebp,[esp+0C]
+      0x56,                   // push esi
+      0x57,                   // push edi
+      0x8B, 0x7D, 0x24,       // mov edi,[ebp+24]
+      0x85, 0xFF              // test edi,edi
   };
 
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)  return false; 
+  if (!addr)
+    return false;
 
   HookParam hp;
   hp.address = addr + 1;
-  hp.offset=get_stack(2);
+  hp.offset = get_stack(2);
   hp.type = USING_STRING;
-  hp.filter_fun = AquaplusFilter; 
+  hp.filter_fun = AquaplusFilter;
   return NewHook(hp, "Aquaplus1");
 }
 
-bool InsertAquaplus2Hook() 
+bool InsertAquaplus2Hook()
 {
-  
-    /*
-    * Sample games:
-    * https://vndb.org/r108249
-    */
+
+  /*
+   * Sample games:
+   * https://vndb.org/r108249
+   */
   const BYTE bytes[] = {
-    0xC6, 0x04, 0x30 , 0x00,      // mov byte ptr [eax+esi],00           << hook here
-    0x8B, 0xF2,                   // mov esi,edx
-    0x8A, 0x02,                   // mov al,[edx]
-    0x42,                         // inc edx
-    0x84, 0xC0,                   // test al,al
-    0x75, 0xF9                    // jne "WHITE ALBUM Memories like Falling Snow.exe"+85253
+      0xC6, 0x04, 0x30, 0x00, // mov byte ptr [eax+esi],00           << hook here
+      0x8B, 0xF2,             // mov esi,edx
+      0x8A, 0x02,             // mov al,[edx]
+      0x42,                   // inc edx
+      0x84, 0xC0,             // test al,al
+      0x75, 0xF9              // jne "WHITE ALBUM Memories like Falling Snow.exe"+85253
   };
 
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)   return false; 
+  if (!addr)
+    return false;
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_reg(regs::ebx);
+  hp.offset = get_reg(regs::ebx);
   hp.index = 0;
   hp.split = get_reg(regs::esp);
   hp.split_index = 0;
-  hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT |CODEC_UTF8;
-  hp.filter_fun = AquaplusFilter; 
+  hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | CODEC_UTF8;
+  hp.filter_fun = AquaplusFilter;
   return NewHook(hp, "Aquaplus2");
 }
-bool InsertAquaplus3Hook() 
+bool InsertAquaplus3Hook()
 {
-    /*
-    * Sample games:
-    * Dungeon Travelers 2: The Royal Library & the Monster Seal
-    */
+  /*
+   * Sample games:
+   * Dungeon Travelers 2: The Royal Library & the Monster Seal
+   */
   const BYTE bytes[] = {
-    0xCC,                       // int 3 
-    0x80, 0x3D, XX4, 0x00,      // cmp byte ptr [DT2_en.exe+3052EC],00    << hook here
-    0x75, 0x67,                 // jne DT2_en.exe+89DC0
-    0x56,                       // push esi
-    0xBA, XX4                   // mov edx,DT2_en.exe+3051E0
+      0xCC,                  // int 3
+      0x80, 0x3D, XX4, 0x00, // cmp byte ptr [DT2_en.exe+3052EC],00    << hook here
+      0x75, 0x67,            // jne DT2_en.exe+89DC0
+      0x56,                  // push esi
+      0xBA, XX4              // mov edx,DT2_en.exe+3051E0
   };
 
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)return false;
+  if (!addr)
+    return false;
   HookParam hp;
   hp.address = addr + 1;
   hp.offset = get_reg(regs::eax);
@@ -597,60 +600,69 @@ bool InsertAquaplus3Hook()
   return NewHook(hp, "Aquaplus3");
 }
 bool InsertAquaplusHooks()
-{ return InsertAquaplus1Hook() || InsertAquaplus2Hook()||InsertAquaplus3Hook();}
+{
+  return InsertAquaplus1Hook() || InsertAquaplus2Hook() || InsertAquaplus3Hook();
+}
 
-namespace{
-  bool kizuato(){
+namespace
+{
+  bool kizuato()
+  {
     const BYTE bytes[] = {
-      //痕　～きずあと～　
-      0x3c,0xa0,
-      0x0f,0x82,XX4,
-      0x3c,0xe0,
-      0x0f,0x83    
-    };
+        // 痕　～きずあと～　
+        0x3c, 0xa0,
+        0x0f, 0x82, XX4,
+        0x3c, 0xe0,
+        0x0f, 0x83};
     const BYTE bytes2[] = {
-      //雫　～しずく～　
-      0x80,0xf9,0xa0,
-      0x0f,0x82,XX4,
-      0x80,0xf9,0xe0,
-      0x0f,0x83    
-    };
+        // 雫　～しずく～　
+        0x80, 0xf9, 0xa0,
+        0x0f, 0x82, XX4,
+        0x80, 0xf9, 0xe0,
+        0x0f, 0x83};
     ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-    if (!addr)  addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStartAddress + range);\
-    if (!addr)   return false; 
-    ConsoleOutput("%x",addr);
-    BYTE subespbegin[]={0x81,0xEC,XX,0x01,0x00,0x00};
-    addr=reverseFindBytes(subespbegin,sizeof(subespbegin),addr-0x500,addr);
-    ConsoleOutput("%x",addr);
-    if (!addr)   return false; 
+    if (!addr)
+      addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStartAddress + range);
+    if (!addr)
+      return false;
+    ConsoleOutput("%x", addr);
+    BYTE subespbegin[] = {0x81, 0xEC, XX, 0x01, 0x00, 0x00};
+    addr = reverseFindBytes(subespbegin, sizeof(subespbegin), addr - 0x500, addr);
+    ConsoleOutput("%x", addr);
+    if (!addr)
+      return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset =0x34; 
-    hp.type = USING_STRING  ;
-     
-    hp.text_fun =[](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
+    hp.offset = 0x34;
+    hp.type = USING_STRING;
+
+    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
       static std::unordered_map<uintptr_t, std::string> last;
-      auto ret=stack->stack[0];
-      if(last.find(ret)==last.end())last[ret]="";
-      auto current=std::string((char*)stack->stack[13]);
-      if(last[ret]==current)return ;
-      last[ret]=current;
-      strReplace(current, "\\k\\n","\n"); 
-      strReplace(current,"\\n" ,"" );
-      strReplace(current,"\\k" ,"" );
-      strReplace(current,"\\s" ,"" );
-      current=std::regex_replace(current, std::regex(R"(\|(.*?)>)"),"$1");
-      strReplace(current,"<F60" ,"" ); 
-      strReplace(current,"<R", "" ); 
-      strReplace(current,">", "" );  
-       buffer->from(current);
+      auto ret = stack->stack[0];
+      if (last.find(ret) == last.end())
+        last[ret] = "";
+      auto current = std::string((char *)stack->stack[13]);
+      if (last[ret] == current)
+        return;
+      last[ret] = current;
+      strReplace(current, "\\k\\n", "\n");
+      strReplace(current, "\\n", "");
+      strReplace(current, "\\k", "");
+      strReplace(current, "\\s", "");
+      current = std::regex_replace(current, std::regex(R"(\|(.*?)>)"), "$1");
+      strReplace(current, "<F60", "");
+      strReplace(current, "<R", "");
+      strReplace(current, ">", "");
+      buffer->from(current);
     };
     return NewHook(hp, "kizuato");
   }
 }
-namespace{
-  //WHITE ALBUM2 Special Contents
+namespace
+{
+  // WHITE ALBUM2 Special Contents
   /*
   int __cdecl sub_40DE00(char *Source, int a2)
   {
@@ -736,31 +748,35 @@ namespace{
     return sub_44B4F0(1091, dword_4CFC7C);
   }
   */
-  bool wa2special(){
-    BYTE sig[]={
-      0x6A,0x01,0x6A,0x28,0x6A,0x20,0x6A,0x0E,0x6A,0x00,0x6A,0x0F,0x6A,0x28,0x6A,0x1C,
-      // .text:0040DE70                 push    1
-      // .text:0040DE72                 push    28h ; '('
-      // .text:0040DE74                 push    20h ; ' '
-      // .text:0040DE76                 push    0Eh
-      // .text:0040DE78                 push    0
-      // .text:0040DE7A                 push    0Fh
-      // .text:0040DE7C                 push    28h ; '('
-      // .text:0040DE7E                 push    1Ch
+  bool wa2special()
+  {
+    BYTE sig[] = {
+        0x6A, 0x01, 0x6A, 0x28, 0x6A, 0x20, 0x6A, 0x0E, 0x6A, 0x00, 0x6A, 0x0F, 0x6A, 0x28, 0x6A, 0x1C,
+        // .text:0040DE70                 push    1
+        // .text:0040DE72                 push    28h ; '('
+        // .text:0040DE74                 push    20h ; ' '
+        // .text:0040DE76                 push    0Eh
+        // .text:0040DE78                 push    0
+        // .text:0040DE7A                 push    0Fh
+        // .text:0040DE7C                 push    28h ; '('
+        // .text:0040DE7E                 push    1Ch
     };
-    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress );
-    if (!addr)return false; 
-    addr=MemDbg::findEnclosingAlignedFunction_strict(addr);
-    if (!addr)return false; 
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction_strict(addr);
+    if (!addr)
+      return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(1);
-    hp.type = USING_STRING | NO_CONTEXT|EMBED_ABLE|EMBED_DYNA_SJIS|EMBED_AFTER_NEW;
-    hp.newlineseperator=L"\\n";
-    hp.filter_fun = AquaplusFilter; 
+    hp.offset = get_stack(1);
+    hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_NEW;
+    hp.newlineseperator = L"\\n";
+    hp.filter_fun = AquaplusFilter;
     return NewHook(hp, "wa2special");
   }
 }
-bool Leaf::attach_function() {
-    return InsertLeafHook()||activehook()||InsertAquaplusHooks()||kizuato()||wa2special();
-} 
+bool Leaf::attach_function()
+{
+  return InsertLeafHook() || activehook() || InsertAquaplusHooks() || kizuato() || wa2special();
+}

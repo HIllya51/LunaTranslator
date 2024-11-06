@@ -1053,7 +1053,6 @@ namespace
     hp.split = hp.offset; // the same logic but diff value as KiriKiri1, use [ecx] as split
     hp.index = 0x14;      // the same as KiriKiri1
     hp.type = CODEC_UTF16 | DATA_INDIRECT | USING_SPLIT | SPLIT_INDIRECT;
-    // hp.filter_fun = NewLineCharFilterW;
     ConsoleOutput("INSERT KiriKiriZ");
     ConsoleOutput("KiriKiriZ: disable GDI hooks");
     return NewHook(hp, "KiriKiriZ");
@@ -1135,26 +1134,22 @@ namespace
 
 // jichi 1/30/2015: Do KiriKiriZ2 first, which might insert to the same location as KiriKiri1.
 
-bool KiriKiriZ_msvcFilter(LPVOID data, size_t *size, HookParam *)
+void KiriKiriZ_msvcFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
   static std::wstring prevText;
 
-  if (!*len)
-    return false;
-  text[*len / sizeof(wchar_t)] = L'\0'; // clean text
+  text[buffer->size / sizeof(wchar_t)] = L'\0'; // clean text
 
   if (!prevText.compare(text))
-    return false;
+    return buffer->clear();
   prevText = text;
 
-  StringCharReplacer(text, len, L"\\n", 2, L' ');
-  if (cpp_wcsnstr(text, L"%", *len / sizeof(wchar_t)))
+  StringCharReplacer(buffer, L"\\n", 2, L' ');
+  if (cpp_wcsnstr(text, L"%", buffer->size / sizeof(wchar_t)))
   {
-    StringFilterBetween(text, len, L"%", 1, L";", 1);
+    StringFilterBetween(buffer, L"%", 1, L";", 1);
   }
-  return true;
 }
 bool Krkrtextrenderdll()
 {
@@ -1211,18 +1206,15 @@ bool Krkrtextrenderdll()
   }();
   return b1 || b2;
 }
-bool KiriKiriZ3Filter(LPVOID data, size_t *size, HookParam *)
+void KiriKiriZ3Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
 
-  CharFilter(text, len, L'\x000A');
-  if (cpp_wcsnstr(text, L"%", *len / sizeof(wchar_t)))
+  CharFilter(buffer, L'\x000A');
+  if (cpp_wcsnstr(text, L"%", buffer->size / sizeof(wchar_t)))
   {
-    StringFilterBetween(text, len, L"%", 1, L"%", 1);
+    StringFilterBetween(buffer, L"%", 1, L"%", 1);
   }
-
-  return true;
 }
 
 bool InsertKiriKiriZHook3()
@@ -1258,21 +1250,18 @@ bool InsertKiriKiriZHook3()
   return NewHook(hp, "KiriKiriZ3");
 }
 
-bool KiriKiriZ4Filter(LPVOID data, size_t *size, HookParam *)
+void KiriKiriZ4Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
 
   if (text[0] == L' ' || text[0] == L':' || text[0] == L'@' || text[0] == L'[' || text[0] == L']')
-    return false;
+    return buffer->clear();
 
-  if (cpp_wcsnstr(text, L"[", *len / sizeof(wchar_t)))
+  if (cpp_wcsnstr(text, L"[", buffer->size / sizeof(wchar_t)))
   {
-    StringCharReplacer(text, len, L"[r]", 3, L' ');
-    StringFilterBetween(text, len, L"[", 1, L"]", 1);
+    StringCharReplacer(buffer, L"[r]", 3, L' ');
+    StringFilterBetween(buffer, L"[", 1, L"]", 1);
   }
-
-  return true;
 }
 
 bool InsertKiriKiriZHook4()
@@ -1317,10 +1306,10 @@ namespace
 {
   int type = 0;
   std::wstring saveend = L"";
-  void hookafter(hook_stack *s, void *data, size_t len)
+  void hookafter(hook_stack *s, TextBuffer buffer)
   {
 
-    auto newText = std::wstring((wchar_t *)data, len / 2); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
+    auto newText = buffer.strW(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
     newText = newText + L"[plc]";
     if (type == 2)
     {
@@ -1493,10 +1482,10 @@ namespace Private
 
     buffer->from(utf8save);
   }
-  void after(hook_stack *s, void *data, size_t len)
+  void after(hook_stack *s, TextBuffer buffer)
   {
 
-    std::string res = std::string((char *)data, len); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
+    std::string res = buffer.strA(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
     strReplace(res, "\\-", "%51;");
     strReplace(res, "\\+\\+", "%164;");
     strReplace(res, "\\+", "%123;");
@@ -1667,20 +1656,20 @@ namespace
     HookParam hp;
     hp.address = addr;
     if (off == 8)
-      hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE ;
+      hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE;
     else
       hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE;
     hp.offset = off;
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      auto t = std::wstring((wchar_t *)data, *size / 2);
+      auto t = buffer->strW();
       if (all_ascii(t.c_str(), t.size()))
-        return false;
+        return buffer->clear();
       if (t.find(L".ks") != t.npos || t.find(L".tjs") != t.npos || t.find(L".xp3") != t.npos || t.find(L"/") != t.npos || t.find(L"\\") != t.npos || t[0] == L'@')
-        return false; // 脚本路径或文件路径
+        return buffer->clear(); // 脚本路径或文件路径
       // if(t.find(L"[\u540d\u524d]")!=t.npos)return false; //[名前]，翻译后破坏结构
       if (t.find(L"\u8aad\u307f\u8fbc\u307f") != t.npos)
-        return false; // 読み込み
+        return buffer->clear(); // 読み込み
       if (t.size() > 4 && t.substr(t.size() - 4) == L"[np]")
         t = t.substr(0, t.size() - 4);
       if (t.size() > 4 && t.substr(t.size() - 3) == L"[r]")
@@ -1690,13 +1679,13 @@ namespace
       t = std::regex_replace(t, std::wregex(L"\\[ch text=\"(.*?)\"\\]"), L"$1");
       if (std::any_of(t.begin(), t.end(), [](wchar_t c)
                       { return (c <= 127) && ((c != L'[') || c != L']'); }))
-        return false;
-      return write_string_overwrite(data, size, t);
+        return buffer->clear();
+      buffer->from(t);
     };
-    hp.hook_after = [](hook_stack *s, void *data, size_t len)
+    hp.hook_after = [](hook_stack *s, TextBuffer buffer)
     {
       auto t = std::wstring((wchar_t *)s->stack[off / 4]);
-      auto newText = std::wstring((wchar_t *)data, len / 2);
+      auto newText = buffer.strW();
       if (t.size() > 4 && t.substr(t.size() - 4) == L"[np]")
         newText = newText + L"[np]";
       if (t.size() > 3 && t.substr(t.size() - 3) == L"[r]")
@@ -1707,39 +1696,34 @@ namespace
     return NewHook(hp, "Krkr2wcs");
   }
 }
-bool KiriKiri3Filter(LPVOID data, size_t *size, HookParam *)
+void KiriKiri3Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
   static std::wstring prevText;
 
-  if (!*len)
-    return false;
-  text[*len / sizeof(wchar_t)] = L'\0'; // clean text
+  text[buffer->size / sizeof(wchar_t)] = L'\0'; // clean text
   if (!prevText.compare(text))
-    return false;
+    return buffer->clear();
   prevText = text;
 
-  if (cpp_wcsnstr(text, L"[", *len / sizeof(wchar_t)))
+  if (cpp_wcsnstr(text, L"[", buffer->size / sizeof(wchar_t)))
   {
-    StringCharReplacer(text, len, L"[r]", 3, L' ');
-    StringFilterBetween(text, len, L"[", 1, L"]\\", 2);
+    StringCharReplacer(buffer, L"[r]", 3, L' ');
+    StringFilterBetween(buffer, L"[", 1, L"]\\", 2);
     // ruby type 1
-    StringFilterBetween(text, len, L"[mruby r=", 9, L"\" text=\"", 8); // [mruby r="ゆきみ" text="由紀美"]
+    StringFilterBetween(buffer, L"[mruby r=", 9, L"\" text=\"", 8); // [mruby r="ゆきみ" text="由紀美"]
     // ruby type 2
-    StringFilterBetween(text, len, L"[ruby text=", 11, L"]", 1); // [ruby text="せんがわ" align="e"][ch text="仙川"]
-    StringFilter(text, len, L"[ch text=\"", 10);                 // [ruby text="せんがわ" align="e"][ch text="仙川"]
+    StringFilterBetween(buffer, L"[ruby text=", 11, L"]", 1); // [ruby text="せんがわ" align="e"][ch text="仙川"]
+    StringFilter(buffer, L"[ch text=\"", 10);                 // [ruby text="せんがわ" align="e"][ch text="仙川"]
     // ruby type 1-2
-    StringFilter(text, len, L"\"]", 2);
+    StringFilter(buffer, L"\"]", 2);
     // end ruby
-    StringFilter(text, len, L"[heart]", 7);
+    StringFilter(buffer, L"[heart]", 7);
   }
 
-  StringCharReplacer(text, len, L"\uff0f", 1, L'\n');
-  if (cpp_wcsnstr(text, L"[", *len / sizeof(wchar_t))) // detect garbage sentence. [ruby text=%r][ch text=%text][macropop]
-    return false;
-
-  return true;
+  StringCharReplacer(buffer, L"\uff0f", 1, L'\n');
+  if (cpp_wcsnstr(text, L"[", buffer->size / sizeof(wchar_t))) // detect garbage sentence. [ruby text=%r][ch text=%text][macropop]
+    return buffer->clear();
 }
 bool InsertKiriKiri3Hook()
 {
@@ -1781,31 +1765,28 @@ bool InsertKiriKiri3Hook()
   return NewHook(hp, "KiriKiri3");
 }
 
-bool KiriKiri4Filter(LPVOID data, size_t *size, HookParam *)
+void KiriKiri4Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
 
-  if (text[0] == L'[' || text[0] == L'@' || (*len <= 2 && text[0] == L' '))
-    return false;
+  if (text[0] == L'[' || text[0] == L'@' || (buffer->size <= 2 && text[0] == L' '))
+    return buffer->clear();
 
-  if (cpp_wcsnstr(text, L"[", *len / sizeof(wchar_t)))
+  if (cpp_wcsnstr(text, L"[", buffer->size / sizeof(wchar_t)))
   {
-    StringCharReplacer(text, len, L"[r]", 3, L' ');
-    StringFilterBetween(text, len, L"[", 1, L"]\\", 2);
+    StringCharReplacer(buffer, L"[r]", 3, L' ');
+    StringFilterBetween(buffer, L"[", 1, L"]\\", 2);
     // ruby type 1
-    StringFilterBetween(text, len, L"[mruby r=", 9, L"\" text=\"", 8); // [mruby r="ゆきみ" text="由紀美"]
+    StringFilterBetween(buffer, L"[mruby r=", 9, L"\" text=\"", 8); // [mruby r="ゆきみ" text="由紀美"]
     // ruby type 2
-    StringFilterBetween(text, len, L"[ruby text=", 11, L"]", 1); // [ruby text="せんがわ" align="e"][ch text="仙川"]
-    StringFilterBetween(text, len, L"[Ruby text", 10, L"]", 1);  // [Ruby text = "Sawano"][ch text="沢野"]
-    StringFilter(text, len, L"[ch text=\"", 10);                 // [ruby text="せんがわ" align="e"][ch text="仙川"]
+    StringFilterBetween(buffer, L"[ruby text=", 11, L"]", 1); // [ruby text="せんがわ" align="e"][ch text="仙川"]
+    StringFilterBetween(buffer, L"[Ruby text", 10, L"]", 1);  // [Ruby text = "Sawano"][ch text="沢野"]
+    StringFilter(buffer, L"[ch text=\"", 10);                 // [ruby text="せんがわ" align="e"][ch text="仙川"]
     // ruby type 1-2
-    StringFilter(text, len, L"\"]", 2);
+    StringFilter(buffer, L"\"]", 2);
     // end ruby
-    StringFilterBetween(text, len, L"[", 1, L"]", 1);
+    StringFilterBetween(buffer, L"[", 1, L"]", 1);
   }
-
-  return true;
 }
 
 bool InsertKiriKiri4Hook()

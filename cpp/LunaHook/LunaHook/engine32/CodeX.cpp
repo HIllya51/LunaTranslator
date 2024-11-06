@@ -1,16 +1,15 @@
 #include "CodeX.h"
 
-bool CodeXFilter(LPVOID data, size_t *size, HookParam *)
+void CodeXFilter(TextBuffer *buffer, HookParam *)
 {
-  std::string result = std::string((char *)data, *size);
+  std::string result = buffer->strA();
   strReplace(result, "^n", "\n");
   if (startWith(result, "\n"))
     result = result.substr(1);
 
   //|晒[さら]
   result = std::regex_replace(result, std::regex("\\|(.+?)\\[(.+?)\\]"), "$1");
-
-  return write_string_overwrite(data, size, result);
+  buffer->from(result);
 }
 
 bool InsertCodeXHook()
@@ -44,7 +43,7 @@ bool InsertCodeXHook()
   hp.address = addr;
   hp.offset = get_reg(regs::eax);
   hp.index = 0;
-  hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_OVERWRITE  | NO_CONTEXT; // 无法解决中文乱码
+  hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_OVERWRITE | NO_CONTEXT; // 无法解决中文乱码
   hp.hook_font = F_GetGlyphOutlineA;
   hp.filter_fun = CodeXFilter;
   ConsoleOutput("INSERT CodeX");

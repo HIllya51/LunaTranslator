@@ -37,12 +37,12 @@ bool InsertAnim2Hook()
     myhp.hook_font = F_GetGlyphOutlineA;
     // メスつまみ３
     // そんな俺に声をかけてきたのは、近所のスーパーで働いている主婦の、@n『@[赤羽:あかばね]@[千晶:ちあき]』さんだ。
-    myhp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+    myhp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
         static const std::regex rx("@\\[(.*?):(.*?)\\]", std::regex_constants::icase);
-        std::string result = std::string((char *)data, *len);
+        std::string result = buffer->strA();
         result = std::regex_replace(result, rx, "$1");
-        return write_string_overwrite(data, len, result);
+        buffer->from(result);
     };
     myhp.newlineseperator = L"@n";
     myhp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE  | EMBED_DYNA_SJIS;
@@ -55,19 +55,14 @@ bool InsertAnim2Hook()
 }
 namespace
 {
-    bool Anim3Filter(LPVOID data, size_t *size, HookParam *)
+    void Anim3Filter(TextBuffer *buffer, HookParam *)
     {
-        auto text = reinterpret_cast<LPSTR>(data);
-        auto len = reinterpret_cast<size_t *>(size);
-
-        StringFilterBetween(text, len, "\x81\x40", 2, "@m", 2); // @r(2,はと)
-        StringFilterBetween(text, len, "\x81\x40", 2, "@n", 2); // @r(2,はと)
-        StringCharReplacer(text, len, "@b", 2, ' ');
-        StringCharReplacer(text, len, "\x81\x42", 2, '.');
-        StringCharReplacer(text, len, "\x81\x48", 2, '?');
-        StringCharReplacer(text, len, "\x81\x49", 2, '!');
-
-        return true;
+        StringFilterBetween(buffer, "\x81\x40", 2, "@m", 2); // @r(2,はと)
+        StringFilterBetween(buffer, "\x81\x40", 2, "@n", 2); // @r(2,はと)
+        StringCharReplacer(buffer, "@b", 2, ' ');
+        StringCharReplacer(buffer, "\x81\x42", 2, '.');
+        StringCharReplacer(buffer, "\x81\x48", 2, '?');
+        StringCharReplacer(buffer, "\x81\x49", 2, '!');
     }
 
     bool InsertAnim3Hook()

@@ -148,11 +148,11 @@ namespace
           textStorage_.clear();
         }
         if (!*role)
-          return  ;
+          return;
 
         auto text = (LPSTR) * (DWORD *)(s->ecx + textOffset_); // [ecx+0x114]
         if (!*text || all_ascii(text))                         // allspaces is only needed when textstorage is enabled though
-          return  ;
+          return;
 
         if (!textStorage_.isEmpty())
         {
@@ -172,10 +172,10 @@ namespace
         // oldData.replace("\x81\x40", ""); // remove spaces in the middle of names
         buffer->from(oldData);
       }
-      void hookafter2(hook_stack *s, void *data, size_t len)
+      void hookafter2(hook_stack *s, TextBuffer buffer)
       {
 
-        auto newData = std::string((char *)data, len);
+        auto newData = buffer.strA();
         auto retaddr = s->stack[0];
         int role = 0;
         // if (retaddr == 0x4b7728)
@@ -548,7 +548,7 @@ namespace
         case 0x08eb: // 004135BA   EB 08            JMP SHORT .004135C4
           break;
         default:
-          return  ;
+          return;
         }
         auto text = (LPCSTR)s->stack[1]; // arg1
         int size = s->stack[2];          // arg2
@@ -557,12 +557,12 @@ namespace
           //|| !q->isTextDecodable(text)) // avoid re-translation
           //|| isascii(text[::strlen(text) - 2])
           //|| isSkippedText(text))
-          return  ;
+          return;
         enum
         {
           role = Engine::OtherRole
         };
-          buffer->from(text, size);
+        buffer->from(text, size);
         /*    //oldData.replace("\\n", "\n"); // Remove new line. FIXME: automatically adjust line width
             std::string newData = EngineController::instance()->dispatchTextASTD(oldData, role, retaddr);
             if (newData == oldData)
@@ -573,12 +573,10 @@ namespace
             return true;*/
       }
 
-      void hookafter(hook_stack *s, void *data, size_t len)
+      void hookafter(hook_stack *s, TextBuffer buffer)
       {
-
-        auto newData = std::string((char *)data, len);
         static std::string data_;
-        data_ = newData;
+        data_ = buffer.strA();
         s->stack[1] = (ULONG)data_.c_str();
         s->stack[2] = data_.size();
       }
@@ -787,7 +785,7 @@ namespace
       hp.address = addr;
       hp.text_fun = Private::hookBefore;
       hp.hook_after = Private::hookafter;
-      hp.type = EMBED_ABLE | EMBED_DYNA_SJIS|NO_CONTEXT;
+      hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       hp.newlineseperator = L"\\n";
       hp.hook_font = F_GetGlyphOutlineA;
       return NewHook(hp, "EMbedUnicornOther");

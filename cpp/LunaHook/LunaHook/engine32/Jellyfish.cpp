@@ -27,14 +27,14 @@ bool Jellyfish::Jellyfish_attach_function()
   hp.address = addr;
   hp.offset = get_stack(1);
   hp.type = USING_STRING;
-  hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
-    if (*size == 2)
-      return false;
-    StringCharReplacer(reinterpret_cast<char *>(data), size, "\\n", 2, '\n');
-    StringCharReplacer(reinterpret_cast<char *>(data), size, "\\N", 2, '\n');
+    if (buffer->size == 2)
+      return buffer->clear();
+    StringCharReplacer(buffer, "\\n", 2, '\n');
+    StringCharReplacer(buffer, "\\N", 2, '\n');
 
-    return write_string_overwrite(data, size, std::regex_replace(std::string(reinterpret_cast<char *>(data), *size), std::regex("\\\\[0-7a-zA-Z]"), ""));
+    buffer->from(std::regex_replace(buffer->strA(), std::regex("\\\\[0-7a-zA-Z]"), ""));
   };
 
   return NewHook(hp, "Jellyfish");

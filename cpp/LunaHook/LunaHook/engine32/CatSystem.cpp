@@ -236,11 +236,11 @@ bool InsertCatSystem2Hook()
   hp.address = addr;
   hp.offset = get_reg(regs::eax);
   hp.type = USING_STRING | CODEC_UTF8;
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     static std::regex rx(R"(\[(.+?)/.+\])");
-    auto _ = std::regex_replace(std::string((char *)data, *len), rx, "$1");
-    return write_string_overwrite(data, len, _);
+    auto _ = std::regex_replace(buffer->strA(), rx, "$1");
+    buffer->from(_);
   };
   return NewHook(hp, "CatSystem2new");
 }
@@ -584,13 +584,13 @@ namespace
         // static std::unordered_set<uint64_t> hashes_;
         auto text = (LPSTR)s->eax; // arg1
         if (!text || !*text || all_ascii(text))
-          return  ;
+          return;
         // Alternatively, if do not skip ascii chars, edx is always 0x4ef74 for Japanese texts
         // if (s->edx != 0x4ef74)
         //  return true;
         trimmedText = ltrim(text);
         if (!trimmedText || !*trimmedText)
-          return  ;
+          return;
         trimmedSize = rtrim(trimmedText);
         *role = Engine::OtherRole;
         // DOUT(QString::fromLocal8Bit((LPCSTR)s->esi));
@@ -636,9 +636,9 @@ namespace
         strReplace(oldData, "\\n", "\n");
         buffer->from(oldData);
       }
-      void hookafter(hook_stack *s, void *data, size_t len)
+      void hookafter(hook_stack *s, TextBuffer buffer)
       {
-        auto newData = std::string((char *)data, len);
+        auto newData = buffer.strA();
         strReplace(newData, "\n", "\\n");
         if (trimmedText[trimmedSize])
           newData.append(trimmedText + trimmedSize);
@@ -825,7 +825,7 @@ namespace
         return false;
       HookParam hp;
       hp.address = addr + 5;
-      hp.type = USING_STRING | EMBED_ABLE|NO_CONTEXT;
+      hp.type = USING_STRING | EMBED_ABLE | NO_CONTEXT;
       if (code)
         hp.type |= code;
       else
@@ -833,11 +833,10 @@ namespace
       hp.text_fun = Private::hookBefore;
       hp.hook_after = Private::hookafter;
       hp.hook_font = F_GetGlyphOutlineA;
-      hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         static std::regex rx(R"(\[(.+?)/.+\])");
-        auto _ = std::regex_replace(std::string((char *)data, *len), rx, "$1");
-        return write_string_overwrite(data, len, _);
+        buffer->from(std::regex_replace(buffer->strA(), rx, "$1"));
       };
 
       static ULONG p;

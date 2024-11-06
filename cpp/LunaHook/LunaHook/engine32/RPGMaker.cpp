@@ -26,15 +26,14 @@ bool RPGMaker::attach_function()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_STRING | CODEC_UTF8;
-  hp.offset=get_stack(1);
-  hp.length_offset=2;
-  hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+  hp.offset = get_stack(1);
+  hp.length_offset = 2;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
-    if (all_ascii((char *)data, *size))
-      return false;
-    std::string result = std::string((char *)data, *size);
-    result = std::regex_replace(result, std::regex(R"(@c\[\](.*?)@c\[\])"), "$1");
-    return write_string_overwrite(data, size, result);
+    std::string result = buffer->strA();
+    if (all_ascii(result.c_str(), result.size()))
+      return buffer->clear();
+    buffer->from(std::regex_replace(result, std::regex(R"(@c\[\](.*?)@c\[\])"), "$1"));
   };
 
   return NewHook(hp, "RPGMaker");

@@ -1,76 +1,79 @@
-#include"ONScripterru.h"
-void ONScripterruCommonFilter(char *text, size_t *len)
+#include "ONScripterru.h"
+void ONScripterruCommonFilter(TextBuffer *buffer)
 {
-  StringCharReplacer(text, len, "{n}", 3, ' ');
 
-  if (cpp_strnstr(text, "{c:", *len)) {
-    StringFilterBetween(text, len, "{c:", 3, ":", 1);
+  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  StringCharReplacer(buffer, "{n}", 3, ' ');
+  if (cpp_strnstr(text, "{c:", buffer->size))
+  {
+    StringFilterBetween(buffer, "{c:", 3, ":", 1);
   }
-  if (cpp_strnstr(text, "{e:", *len)) {
-    StringFilterBetween(text, len, "{e:", 3, ":", 1);
+  if (cpp_strnstr(text, "{e:", buffer->size))
+  {
+    StringFilterBetween(buffer, "{e:", 3, ":", 1);
   }
-  if (cpp_strnstr(text, "{f:", *len)) {
-    StringFilterBetween(text, len, "{f:", 3, ":", 1);
+  if (cpp_strnstr(text, "{f:", buffer->size))
+  {
+    StringFilterBetween(buffer, "{f:", 3, ":", 1);
   }
-  if (cpp_strnstr(text, "{i:", *len)) {
-    StringFilter(text, len, "{i:", 3);
+  if (cpp_strnstr(text, "{i:", buffer->size))
+  {
+    StringFilter(buffer, "{i:", 3);
   }
-  if (cpp_strnstr(text, "{p:", *len)) {
-    StringFilterBetween(text, len, "{p:", 3, "}", 1);
+  if (cpp_strnstr(text, "{p:", buffer->size))
+  {
+    StringFilterBetween(buffer, "{p:", 3, "}", 1);
   }
-  CharFilter(text, len, '}');
+  CharFilter(buffer, '}');
 
-  if (cpp_strnstr(text, "[", *len)) {
-    StringFilterBetween(text, len, "[", 1, "]", 1);
+  if (cpp_strnstr(text, "[", buffer->size))
+  {
+    StringFilterBetween(buffer, "[", 1, "]", 1);
   }
-
 }
 
-bool ONScripterru1Filter(LPVOID data, size_t *size, HookParam *)
+void ONScripterru1Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
-  if ( *len == 0 || text[0] == ':' || text[1] == '{')
-	return false;
+  if (text[0] == ':' || text[1] == '{')
+    return buffer->clear();
 
-  ONScripterruCommonFilter(text, len);
-  CharFilter(text, len, '`');
-
-  return true;
+  ONScripterruCommonFilter(buffer);
+  CharFilter(buffer, '`');
 }
 
-bool InsertONScripterruHook1() 
+bool InsertONScripterruHook1()
 {
-  
-    /*
-    * Sample games:
-    * Umineko Project (all text displayed)
-    */
+
+  /*
+   * Sample games:
+   * Umineko Project (all text displayed)
+   */
   const BYTE bytes[] = {
-    0x90,                      // nop 
-    0x55,                      // push ebp   << hook here
-    0x57,                      // push edi
-    0x31, 0xED,                // xor ebp,ebp
-    0x56,                      // push esi
-    0x53,                      // push ebx
-    0x83, 0xEC, 0x3C           // sub esp,3C
+      0x90,            // nop
+      0x55,            // push ebp   << hook here
+      0x57,            // push edi
+      0x31, 0xED,      // xor ebp,ebp
+      0x56,            // push esi
+      0x53,            // push ebx
+      0x83, 0xEC, 0x3C // sub esp,3C
   };
 
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("ONScripter-RU 1: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr + 1;
-  hp.offset=get_reg(regs::eax);
-  hp.type =  USING_STRING | CODEC_UTF8;
+  hp.offset = get_reg(regs::eax);
+  hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = ONScripterru1Filter;
   ConsoleOutput("INSERT ONScripter-RU 1");
   return NewHook(hp, "ONScripter-RU1");
-
 }
 
 void StringBetween(char *str, size_t *size, const char *fr, size_t frlen, const char *to, size_t tolen)
@@ -80,63 +83,60 @@ void StringBetween(char *str, size_t *size, const char *fr, size_t frlen, const 
 
   char *start = cpp_strnstr(str, fr, len);
   if (!*start)
-	  return;
-  //start += frlen;
+    return;
+  // start += frlen;
   char *end = cpp_strnstr((start += frlen), to, len - (start - str));
   if (!*end)
-	  return;
+    return;
   ::memmove(str, start, end - start);
 
   *size = end - start;
-  //str[*size] = '\0';
+  // str[*size] = '\0';
 }
 
-bool ONScripterru2Filter(LPVOID data, size_t *size, HookParam *)
+void ONScripterru2Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  StringBetween((char *)buffer->buff, &buffer->size, "`", 1, "`", 1);
 
-  StringBetween(text, len, "`", 1, "`", 1);
-
-  ONScripterruCommonFilter(text, len);
-
-  return true;
+  ONScripterruCommonFilter(buffer);
 }
 
-bool InsertONScripterruHook2() 
+bool InsertONScripterruHook2()
 {
-  
-    /*
-    * Sample games:
-    * Umineko Project (partial text displayed)
-    */
+
+  /*
+   * Sample games:
+   * Umineko Project (partial text displayed)
+   */
   const BYTE bytes[] = {
-    0x0F, 0xB6, 0x04, 0x18,    // movzx eax,byte ptr [eax+ebx]   << hook here
-    0x89, 0x74, 0x24, 0x04,    // mov [esp+04],esi
-    0x43,                      // inc ebx
-    0x89, 0x44, 0x24, 0x08     // mov [esp+08],eax
+      0x0F, 0xB6, 0x04, 0x18, // movzx eax,byte ptr [eax+ebx]   << hook here
+      0x89, 0x74, 0x24, 0x04, // mov [esp+04],esi
+      0x43,                   // inc ebx
+      0x89, 0x44, 0x24, 0x08  // mov [esp+08],eax
   };
 
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("ONScripter-RU 2: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_reg(regs::eax);
-  hp.split  =get_reg(regs::esi);
-  hp.type =  USING_STRING | CODEC_UTF8 | USING_SPLIT | KNOWN_UNSTABLE;
-  //hp.type =  USING_STRING | CODEC_UTF8 | USING_SPLIT;
+  hp.offset = get_reg(regs::eax);
+  hp.split = get_reg(regs::esi);
+  hp.type = USING_STRING | CODEC_UTF8 | USING_SPLIT | KNOWN_UNSTABLE;
+  // hp.type =  USING_STRING | CODEC_UTF8 | USING_SPLIT;
   hp.filter_fun = ONScripterru2Filter;
   ConsoleOutput("INSERT ONScripter-RU 2");
   return NewHook(hp, "ONScripter-RU2");
 }
 
-bool ONScripterru::attach_function() {
-    
-   bool ok = InsertONScripterruHook1();
-  return  InsertONScripterruHook2() || ok;
-} 
+bool ONScripterru::attach_function()
+{
+
+  bool ok = InsertONScripterruHook1();
+  return InsertONScripterruHook2() || ok;
+}

@@ -3,14 +3,14 @@
 
 namespace ppsspp
 {
-	bool ULJS00403_filter(void *data, size_t *len, HookParam *hp)
+	void ULJS00403_filter(TextBuffer *buffer, HookParam *hp)
 	{
-		std::string result = std::string((char *)data, *len);
+		std::string result = buffer->strA();
 		std::regex newlinePattern(R"((\\n)+)");
 		result = std::regex_replace(result, newlinePattern, " ");
 		std::regex pattern(R"((\\d$|^\@[a-z]+|#.*?#|\$))");
 		result = std::regex_replace(result, pattern, "");
-		return write_string_overwrite(data, len, result);
+		buffer->from(result);
 	}
 
 	void ULJS00339(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -86,9 +86,9 @@ namespace ppsspp
 		buffer->from(s);
 	}
 
-	bool NPJH50909_filter(void *data, size_t *len, HookParam *hp)
+	void NPJH50909_filter(TextBuffer *buffer, HookParam *hp)
 	{
-		std::string result = std::string((char *)data, *len);
+		std::string result = buffer->strA();
 		auto ws = StringToWideString(result, 932).value();
 		// Remove single line markers
 		ws = std::regex_replace(ws, std::wregex(L"(\\%N)+"), L" ");
@@ -104,12 +104,12 @@ namespace ppsspp
 			ws = std::regex_replace(ws, std::wregex(L"^[^「]+"), L"");
 			ws = name + L"\n" + ws;
 		}
-		return write_string_overwrite(data, len, WideStringToString(ws, 932));
+		buffer->from(WideStringToString(ws, 932));
 	}
 
-	bool ULJM06119_filter(void *data, size_t *len, HookParam *hp)
+	void ULJM06119_filter(TextBuffer *buffer, HookParam *hp)
 	{
-		std::string s = std::string((char *)data, *len);
+		std::string s = buffer->strA();
 
 		std::regex pattern(R"(/\[[^\]]+./g)");
 		s = std::regex_replace(s, pattern, "");
@@ -122,17 +122,17 @@ namespace ppsspp
 
 		std::regex newlinePattern(R"(/\n+)");
 		s = std::regex_replace(s, newlinePattern, " ");
-		return write_string_overwrite(data, len, s);
+		buffer->from(s);
 	}
 
-	bool ULJM06036_filter(void *data, size_t *len, HookParam *hp)
+	void ULJM06036_filter(TextBuffer *buffer, HookParam *hp)
 	{
-		std::wstring result = std::wstring((wchar_t *)data, *len / 2);
+		std::wstring result = buffer->strW();
 		std::wregex pattern(LR"(<R([^\/]+).([^>]+).>)");
 		result = std::regex_replace(result, pattern, L"$2");
 		std::wregex tagPattern(LR"(<[A-Z]+>)");
 		result = std::regex_replace(result, tagPattern, L"");
-		return write_string_overwrite(data, len, result);
+		buffer->from(result);
 	}
 
 	namespace Corda
@@ -173,7 +173,7 @@ namespace ppsspp
 				}
 				else
 				{
-					auto len = 1 + (IsDBCSLeadByteEx(932, *(BYTE *)(address + i)));
+					auto len = 1 + (IsShiftjisLeadByte(*(BYTE *)(address + i)));
 					s += std::string((char *)(address + i), len);
 					i += len; // encoder.encode(c).byteLength;
 				}
@@ -199,29 +199,24 @@ namespace ppsspp
 		buffer->from(s);
 	}
 
-	bool ULJM05943F(void *data, size_t *len, HookParam *hp)
+	void ULJM05943F(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = std::string((char *)data, *len);
+		auto s = buffer->strA();
 		strReplace(s, "#n", "");
 		s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*\\.)?\\d+\\]+"), "");
-		return write_string_overwrite(data, len, s);
+		buffer->from(s);
 	}
 
-	bool FULJM05603(LPVOID data, size_t *size, HookParam *)
+	void FULJM05603(TextBuffer *buffer, HookParam *)
 	{
-		auto text = reinterpret_cast<LPSTR>(data);
-		auto len = reinterpret_cast<size_t *>(size);
-
-		StringCharReplacer(text, len, "%N", 2, ' ');
-		StringFilter(text, len, "%K", 2);
-		StringFilter(text, len, "%P", 2);
-
-		return true;
+		StringCharReplacer(buffer, "%N", 2, ' ');
+		StringFilter(buffer, "%K", 2);
+		StringFilter(buffer, "%P", 2);
 	}
 
 	void ULJM05810(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto data=PPSSPP::emu_arg(stack)[0]+0x0f;
+		auto data = PPSSPP::emu_arg(stack)[0] + 0x0f;
 		data = data + 400;
 		std::string s;
 		while (true)
@@ -238,58 +233,56 @@ namespace ppsspp
 	namespace NPJH50530
 	{
 		std::string current;
-		bool T(LPVOID data, size_t *size, HookParam *)
+		void T(TextBuffer *buffer, HookParam *)
 		{
-			current = std::string((char *)data, *size);
-			return true;
+			current = buffer->strA();
 		}
-		bool N(LPVOID data, size_t *size, HookParam *)
+		void N(TextBuffer *buffer, HookParam *)
 		{
-			auto current1 = std::string((char *)data, *size);
-			return current != current1;
+			auto current1 = buffer->strA();
+			if(current == current1)
+				buffer->clear();
 		}
 	}
-	bool FNPJH50243(LPVOID data, size_t *size, HookParam *)
+	void FNPJH50243(TextBuffer *buffer, HookParam *)
 	{
-		auto s = std::wstring((wchar_t *)data, *size / 2);
+		auto s = buffer->strW();
 		s = std::regex_replace(s, std::wregex(LR"(<(.*?)\|(.*?)>)"), L"$1");
-		return write_string_overwrite(data, size, s);
+		buffer->from(s);
 	}
-	bool FNPJH50459(void *data, size_t *len, HookParam *hp)
+	void FNPJH50459(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = std::string((char *)data, *len);
+		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(#SCL\((.*?)\)(.*?)#ECL)"), "$2");
 		strReplace(s, "\n\r\n", "\n");
-		return write_string_overwrite(data, len, s);
+		buffer->from(s);
 	}
-	bool FNPJH50127(void *data, size_t *len, HookParam *hp)
+	void FNPJH50127(TextBuffer *buffer, HookParam *hp)
 	{
-		StringCharReplacer((char *)data, len, "\\n", 2, '\n');
-		return true;
+		StringCharReplacer(buffer, "\\n", 2, '\n');
 	}
-	bool ULJM06145(void *data, size_t *len, HookParam *hp)
+	void ULJM06145(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = std::string((char *)data, *len);
+		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(#Ruby\[(.*?),(.*?)\])"), "$1");
 		s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*\\.)?\\d+\\]+"), "");
 		strReplace(s, "#n", "");
 		strReplace(s, "\x84\xbd", "!?");
-		return write_string_overwrite(data, len, s);
+		buffer->from(s);
 	}
-	bool FULJM05690(void *data, size_t *len, HookParam *hp)
+	void FULJM05690(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = std::string((char *)data, *len);
+		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(#Kana\[(.*?),(.*?)\])"), "$1");
 		strReplace(s, "#n", "");
-		return write_string_overwrite(data, len, s);
+		buffer->from(s);
 	}
-	bool FULJM05889(LPVOID data, size_t *size, HookParam *)
+	void FULJM05889(TextBuffer *buffer, HookParam *)
 	{
-		auto text = reinterpret_cast<LPSTR>(data);
-		auto len = reinterpret_cast<size_t *>(size);
-		for (size_t i = 0; i < *len;)
+		auto text = reinterpret_cast<LPSTR>(buffer->buff);
+		for (size_t i = 0; i < buffer->size;)
 		{
-			if (IsDBCSLeadByteEx(932, (text[i])))
+			if (IsShiftjisLeadByte(text[i]))
 			{
 				i += 2;
 				continue;
@@ -299,12 +292,11 @@ namespace ppsspp
 
 			i += 1;
 		}
-		return true;
 	}
 
-	bool NPJH50619F(void *data, size_t *len, HookParam *hp)
+	void NPJH50619F(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = std::string((char *)data, *len);
+		auto s = buffer->strA();
 		std::regex pattern1("[\\r\\n]+");
 		std::string replacement1 = "";
 		std::string result1 = std::regex_replace(s, pattern1, replacement1);
@@ -317,12 +309,12 @@ namespace ppsspp
 		std::regex pattern4("(#.+?\\))+");
 		std::string replacement4 = "";
 		std::string result4 = std::regex_replace(result3, pattern4, replacement4);
-		return write_string_overwrite(data, len, result4);
+		buffer->from(result4);
 	}
 
-	bool NPJH50505F(void *data, size_t *len, HookParam *hp)
+	void NPJH50505F(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = std::string((char *)data, *len);
+		auto s = buffer->strA();
 
 		std::regex pattern2("#RUBS(#[A-Z0-9]+)*[^#]+");
 		std::string replacement2 = "";
@@ -343,19 +335,18 @@ namespace ppsspp
 		std::regex pattern6("\\n+");
 		std::string replacement6 = " ";
 		std::string result6 = std::regex_replace(result5, pattern6, replacement6);
-
-		return write_string_overwrite(data, len, result6);
+		buffer->from(result6);
 	}
 
 	void QNPJH50909(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto data=PPSSPP::emu_arg(stack)[0];
+		auto data = PPSSPP::emu_arg(stack)[0];
 		uintptr_t addr = PPSSPP::emu_addr(stack, 0x08975110);
 		if (0x6e87 == *(WORD *)data)
 			return;
 		if (0x000a == *(WORD *)data)
 			return;
-		buffer->from(addr + 0x20,*(DWORD *)(addr + 0x14) * 2 );
+		buffer->from(addr + 0x20, *(DWORD *)(addr + 0x14) * 2);
 	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
 		// Shinigami to Shoujo
@@ -373,7 +364,7 @@ namespace ppsspp
 		{0x89b59dc, {0, 0, 0, ULJM05428, 0, "ULJM05428"}},
 		// Kin'iro no Corda
 		{0x886162c, {0, 0, 0, ULJM05054, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
-		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},		   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
+		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},	   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
 		// Sol Trigger
 		{0x8952cfc, {CODEC_UTF8, 0, 0, 0, NPJH50619F, "NPJH50619"}}, // dialog
 		{0x884aad4, {CODEC_UTF8, 0, 0, 0, NPJH50619F, "NPJH50619"}}, // description

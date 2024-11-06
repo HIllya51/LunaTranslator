@@ -1,174 +1,189 @@
-#include"CMVS.h"
-namespace { // unnamed
-/********************************************************************************************
-CMVS hook:
-  Process name is cmvs.exe or cnvs.exe or cmvs*.exe. Used by PurpleSoftware games.
+#include "CMVS.h"
+namespace
+{ // unnamed
+  /********************************************************************************************
+  CMVS hook:
+    Process name is cmvs.exe or cnvs.exe or cmvs*.exe. Used by PurpleSoftware games.
 
-  Font caching issue. Find call to GetGlyphOutlineA and the function entry.
-********************************************************************************************/
+    Font caching issue. Find call to GetGlyphOutlineA and the function entry.
+  ********************************************************************************************/
 
-// jichi 3/6/2014: This is the original CMVS hook in ITH
-// It does not work for パ�プルソフトウェア games after しあわせ家族部 (2012)
-bool InsertCMVS1Hook()
-{ 
-  const DWORD funcs[] = {  
-    0xec83, // caller pattern: sub esp = 0x83,0xec
-    0xec8b55, 
-  };
-  enum { FunctionCount = sizeof(funcs) / sizeof(*funcs) };
-  ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetGlyphOutlineA, funcs, FunctionCount, processStartAddress, processStopAddress);
-  //初恋サクラメント
-  //夏に奏でる僕らの詩 
-  if (!addr) {
+  // jichi 3/6/2014: This is the original CMVS hook in ITH
+  // It does not work for パ�プルソフトウェア games after しあわせ家族部 (2012)
+  bool InsertCMVS1Hook()
+  {
+    const DWORD funcs[] = {
+        0xec83, // caller pattern: sub esp = 0x83,0xec
+        0xec8b55,
+    };
+    enum
+    {
+      FunctionCount = sizeof(funcs) / sizeof(*funcs)
+    };
+    ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetGlyphOutlineA, funcs, FunctionCount, processStartAddress, processStopAddress);
+    // 初恋サクラメント
+    // 夏に奏でる僕らの詩
+    if (!addr)
+    {
 
-    //例外：
-    //みはる -あるとアナザーストーリー-
-    addr = findiatcallormov((DWORD)GetGlyphOutlineA,processStartAddress,processStartAddress,processStopAddress,false,XX);
-    if (addr == 0)return false;
-    addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)return false;
+      // 例外：
+      // みはる -あるとアナザーストーリー-
+      addr = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress, false, XX);
+      if (addr == 0)
+        return false;
+      addr = MemDbg::findEnclosingAlignedFunction(addr);
+      if (addr == 0)
+        return false;
+    }
+
+    // クロノクロック
+    // 会提前停止
+    if (((*(DWORD *)(addr - 3)) & 0xffffff) == 0xec8b55)
+      addr -= 3;
+    HookParam hp;
+    hp.address = addr;
+    if (*(BYTE *)addr == 0x8b)
+    {
+      // みはる -あるとアナザーストーリー-
+      // stdcall , mov     edx, [esp+arg_0]
+      hp.offset = get_stack(3);
+    }
+    else
+      hp.offset = get_stack(2);
+    hp.split = get_reg(regs::esp);
+    hp.type = CODEC_ANSI_BE | USING_SPLIT;
+
+    ConsoleOutput("INSERT CMVS1");
+
+    // RegisterEngineType(ENGINE_CMVS);
+    return NewHook(hp, "CMVS");
   }
 
-  //クロノクロック
-  //会提前停止
-  if(((*(DWORD*)(addr-3))&0xffffff)==0xec8b55 )addr-=3;
-  HookParam hp;
-  hp.address = addr;
-  if(*(BYTE*)addr==0x8b){
-     //みはる -あるとアナザーストーリー-
-     //stdcall , mov     edx, [esp+arg_0]
-     hp.offset=get_stack(3);
-  }  
-  else
-    hp.offset=get_stack(2);
-  hp.split =get_reg(regs::esp);
-  hp.type = CODEC_ANSI_BE|USING_SPLIT;
+  /**
+   *  CMSV
+   *  Sample games:
+   *  ハピメア: /HAC@48FF3:cmvs32.exe
+   *  ハピメアFD: /HB-1C*0@44EE95
+   *
+   *  Optional: ハピメアFD: /HB-1C*0@44EE95
+   *  This hook has issue that the text will be split to a large amount of threads
+   *  - length_offset: 1
+   *  - off: 4294967264 = 0xffffffe0 = -0x20
+   *  - type: 8
+   *
+   *  ハピメア: /HAC@48FF3:cmvs32.exe
+   *  base: 0x400000
+   *  - length_offset: 1
+   *  - off: 12 = 0xc
+   *  - type: 68 = 0x44
+   *
+   *  00448fee     cc             int3
+   *  00448fef     cc             int3
+   *  00448ff0  /$ 55             push ebp
+   *  00448ff1  |. 8bec           mov ebp,esp
+   *  00448ff3  |. 83ec 68        sub esp,0x68 ; jichi: hook here, it is actually  tagTEXTMETRICA
+   *  00448ff6  |. 8b01           mov eax,dword ptr ds:[ecx]
+   *  00448ff8  |. 56             push esi
+   *  00448ff9  |. 33f6           xor esi,esi
+   *  00448ffb  |. 33d2           xor edx,edx
+   *  00448ffd  |. 57             push edi
+   *  00448ffe  |. 894d fc        mov dword ptr ss:[ebp-0x4],ecx
+   *  00449001  |. 3bc6           cmp eax,esi
+   *  00449003  |. 74 37          je short cmvs32.0044903c
+   *  00449005  |> 66:8b78 08     /mov di,word ptr ds:[eax+0x8]
+   *  00449009  |. 66:3b7d 0c     |cmp di,word ptr ss:[ebp+0xc]
+   *  0044900d  |. 75 0a          |jnz short cmvs32.00449019
+   *  0044900f  |. 66:8b7d 10     |mov di,word ptr ss:[ebp+0x10]
+   *  00449013  |. 66:3978 0a     |cmp word ptr ds:[eax+0xa],di
+   *  00449017  |. 74 0a          |je short cmvs32.00449023
+   *  00449019  |> 8bd0           |mov edx,eax
+   *  0044901b  |. 8b00           |mov eax,dword ptr ds:[eax]
+   *  0044901d  |. 3bc6           |cmp eax,esi
+   *  0044901f  |.^75 e4          \jnz short cmvs32.00449005
+   *  00449021  |. eb 19          jmp short cmvs32.0044903c
+   *  00449023  |> 3bd6           cmp edx,esi
+   *  00449025  |. 74 0a          je short cmvs32.00449031
+   *  00449027  |. 8b38           mov edi,dword ptr ds:[eax]
+   *  00449029  |. 893a           mov dword ptr ds:[edx],edi
+   *  0044902b  |. 8b11           mov edx,dword ptr ds:[ecx]
+   *  0044902d  |. 8910           mov dword ptr ds:[eax],edx
+   *  0044902f  |. 8901           mov dword ptr ds:[ecx],eax
+   *  00449031  |> 8b40 04        mov eax,dword ptr ds:[eax+0x4]
+   *  00449034  |. 3bc6           cmp eax,esi
+   *  00449036  |. 0f85 64010000  jnz cmvs32.004491a0
+   *  0044903c  |> 8b55 08        mov edx,dword ptr ss:[ebp+0x8]
+   *  0044903f  |. 53             push ebx
+   *  00449040  |. 0fb75d 0c      movzx ebx,word ptr ss:[ebp+0xc]
+   *  00449044  |. b8 00000100    mov eax,0x10000
+   *  00449049  |. 8945 e4        mov dword ptr ss:[ebp-0x1c],eax
+   *  0044904c  |. 8945 f0        mov dword ptr ss:[ebp-0x10],eax
+   *  0044904f  |. 8d45 e4        lea eax,dword ptr ss:[ebp-0x1c]
+   *  00449052  |. 50             push eax                                 ; /pMat2
+   *  00449053  |. 56             push esi                                 ; |Buffer
+   *  00449054  |. 56             push esi                                 ; |BufSize
+   *  00449055  |. 8d4d d0        lea ecx,dword ptr ss:[ebp-0x30]          ; |
+   *  00449058  |. 51             push ecx                                 ; |pMetrics
+   *  00449059  |. 6a 05          push 0x5                                 ; |Format = GGO_GRAY4_BITMAP
+   *  0044905b  |. 53             push ebx                                 ; |Char
+   *  0044905c  |. 52             push edx                                 ; |hDC
+   *  0044905d  |. 8975 e8        mov dword ptr ss:[ebp-0x18],esi          ; |
+   *  00449060  |. 8975 ec        mov dword ptr ss:[ebp-0x14],esi          ; |
+   *  00449063  |. ff15 5cf05300  call dword ptr ds:[<&gdi32.getglyphoutli>; \GetGlyphOutlineA
+   *  00449069  |. 8b75 10        mov esi,dword ptr ss:[ebp+0x10]
+   *  0044906c  |. 0faff6         imul esi,esi
+   *  0044906f  |. 8bf8           mov edi,eax
+   *  00449071  |. 8d04bd 0000000>lea eax,dword ptr ds:[edi*4]
+   *  00449078  |. 3bc6           cmp eax,esi
+   *  0044907a  |. 76 02          jbe short cmvs32.0044907e
+   *  0044907c  |. 8bf0           mov esi,eax
+   *  0044907e  |> 56             push esi                                 ; /Size
+   *  0044907f  |. 6a 00          push 0x0                                 ; |Flags = LMEM_FIXED
+   *  00449081  |. ff15 34f25300  call dword ptr ds:[<&kernel32.localalloc>; \LocalAlloc
+   */
+  bool InsertCMVS2Hook()
+  {
+    // There are multiple functions satisfy the pattern below.
+    // Hook to any one of them is OK.
+    const BYTE bytes[] = {
+        // function begin
+        0x55,             // 00448ff0  /$ 55             push ebp
+        0x8b, 0xec,       // 00448ff1  |. 8bec           mov ebp,esp
+        0x83, 0xec, 0x68, // 00448ff3  |. 83ec 68        sub esp,0x68 ; jichi: hook here
+        0x8b, 0x01,       // 00448ff6  |. 8b01           mov eax,dword ptr ds:[ecx]
+        0x56,             // 00448ff8  |. 56             push esi
+        0x33, 0xf6,       // 00448ff9  |. 33f6           xor esi,esi
+        0x33, 0xd2,       // 00448ffb  |. 33d2           xor edx,edx
+        0x57,             // 00448ffd  |. 57             push edi
+        0x89, 0x4d, 0xfc, // 00448ffe  |. 894d fc        mov dword ptr ss:[ebp-0x4],ecx
+        0x3b, 0xc6,       // 00449001  |. 3bc6           cmp eax,esi
+        0x74, 0x37        // 00449003  |. 74 37          je short cmvs32.0044903c
+    };
+    enum
+    {
+      addr_offset = 3
+    }; // offset from the beginning of the function
+    ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+    // Artikash 11/9/2018: Not sure, but isn't findCallerAddress a better way to do this?
+    if (!addr)
+      addr = MemDbg::findCallerAddressAfterInt3((DWORD)GetGlyphOutlineA, processStartAddress, processStopAddress);
+    if (!addr)
+    {
+      ConsoleOutput("CMVS2: pattern not found");
+      return false;
+    }
 
-  ConsoleOutput("INSERT CMVS1");
-  
-  //RegisterEngineType(ENGINE_CMVS);
-  return NewHook(hp, "CMVS");
-}
+    // reladdr = 0x48ff0;
+    // reladdr = 0x48ff3;
+    HookParam hp;
+    hp.address = addr + addr_offset;
+    hp.offset = get_stack(3);
+    hp.type = CODEC_ANSI_BE;
 
-/**
- *  CMSV
- *  Sample games:
- *  ハピメア: /HAC@48FF3:cmvs32.exe
- *  ハピメアFD: /HB-1C*0@44EE95
- *
- *  Optional: ハピメアFD: /HB-1C*0@44EE95
- *  This hook has issue that the text will be split to a large amount of threads
- *  - length_offset: 1
- *  - off: 4294967264 = 0xffffffe0 = -0x20
- *  - type: 8
- *
- *  ハピメア: /HAC@48FF3:cmvs32.exe
- *  base: 0x400000
- *  - length_offset: 1
- *  - off: 12 = 0xc
- *  - type: 68 = 0x44
- *
- *  00448fee     cc             int3
- *  00448fef     cc             int3
- *  00448ff0  /$ 55             push ebp
- *  00448ff1  |. 8bec           mov ebp,esp
- *  00448ff3  |. 83ec 68        sub esp,0x68 ; jichi: hook here, it is actually  tagTEXTMETRICA
- *  00448ff6  |. 8b01           mov eax,dword ptr ds:[ecx]
- *  00448ff8  |. 56             push esi
- *  00448ff9  |. 33f6           xor esi,esi
- *  00448ffb  |. 33d2           xor edx,edx
- *  00448ffd  |. 57             push edi
- *  00448ffe  |. 894d fc        mov dword ptr ss:[ebp-0x4],ecx
- *  00449001  |. 3bc6           cmp eax,esi
- *  00449003  |. 74 37          je short cmvs32.0044903c
- *  00449005  |> 66:8b78 08     /mov di,word ptr ds:[eax+0x8]
- *  00449009  |. 66:3b7d 0c     |cmp di,word ptr ss:[ebp+0xc]
- *  0044900d  |. 75 0a          |jnz short cmvs32.00449019
- *  0044900f  |. 66:8b7d 10     |mov di,word ptr ss:[ebp+0x10]
- *  00449013  |. 66:3978 0a     |cmp word ptr ds:[eax+0xa],di
- *  00449017  |. 74 0a          |je short cmvs32.00449023
- *  00449019  |> 8bd0           |mov edx,eax
- *  0044901b  |. 8b00           |mov eax,dword ptr ds:[eax]
- *  0044901d  |. 3bc6           |cmp eax,esi
- *  0044901f  |.^75 e4          \jnz short cmvs32.00449005
- *  00449021  |. eb 19          jmp short cmvs32.0044903c
- *  00449023  |> 3bd6           cmp edx,esi
- *  00449025  |. 74 0a          je short cmvs32.00449031
- *  00449027  |. 8b38           mov edi,dword ptr ds:[eax]
- *  00449029  |. 893a           mov dword ptr ds:[edx],edi
- *  0044902b  |. 8b11           mov edx,dword ptr ds:[ecx]
- *  0044902d  |. 8910           mov dword ptr ds:[eax],edx
- *  0044902f  |. 8901           mov dword ptr ds:[ecx],eax
- *  00449031  |> 8b40 04        mov eax,dword ptr ds:[eax+0x4]
- *  00449034  |. 3bc6           cmp eax,esi
- *  00449036  |. 0f85 64010000  jnz cmvs32.004491a0
- *  0044903c  |> 8b55 08        mov edx,dword ptr ss:[ebp+0x8]
- *  0044903f  |. 53             push ebx
- *  00449040  |. 0fb75d 0c      movzx ebx,word ptr ss:[ebp+0xc]
- *  00449044  |. b8 00000100    mov eax,0x10000
- *  00449049  |. 8945 e4        mov dword ptr ss:[ebp-0x1c],eax
- *  0044904c  |. 8945 f0        mov dword ptr ss:[ebp-0x10],eax
- *  0044904f  |. 8d45 e4        lea eax,dword ptr ss:[ebp-0x1c]
- *  00449052  |. 50             push eax                                 ; /pMat2
- *  00449053  |. 56             push esi                                 ; |Buffer
- *  00449054  |. 56             push esi                                 ; |BufSize
- *  00449055  |. 8d4d d0        lea ecx,dword ptr ss:[ebp-0x30]          ; |
- *  00449058  |. 51             push ecx                                 ; |pMetrics
- *  00449059  |. 6a 05          push 0x5                                 ; |Format = GGO_GRAY4_BITMAP
- *  0044905b  |. 53             push ebx                                 ; |Char
- *  0044905c  |. 52             push edx                                 ; |hDC
- *  0044905d  |. 8975 e8        mov dword ptr ss:[ebp-0x18],esi          ; |
- *  00449060  |. 8975 ec        mov dword ptr ss:[ebp-0x14],esi          ; |
- *  00449063  |. ff15 5cf05300  call dword ptr ds:[<&gdi32.getglyphoutli>; \GetGlyphOutlineA
- *  00449069  |. 8b75 10        mov esi,dword ptr ss:[ebp+0x10]
- *  0044906c  |. 0faff6         imul esi,esi
- *  0044906f  |. 8bf8           mov edi,eax
- *  00449071  |. 8d04bd 0000000>lea eax,dword ptr ds:[edi*4]
- *  00449078  |. 3bc6           cmp eax,esi
- *  0044907a  |. 76 02          jbe short cmvs32.0044907e
- *  0044907c  |. 8bf0           mov esi,eax
- *  0044907e  |> 56             push esi                                 ; /Size
- *  0044907f  |. 6a 00          push 0x0                                 ; |Flags = LMEM_FIXED
- *  00449081  |. ff15 34f25300  call dword ptr ds:[<&kernel32.localalloc>; \LocalAlloc
- */
-bool InsertCMVS2Hook()
-{
-  // There are multiple functions satisfy the pattern below.
-  // Hook to any one of them is OK.
-  const BYTE bytes[] = {  // function begin
-    0x55,               // 00448ff0  /$ 55             push ebp
-    0x8b,0xec,          // 00448ff1  |. 8bec           mov ebp,esp
-    0x83,0xec, 0x68,    // 00448ff3  |. 83ec 68        sub esp,0x68 ; jichi: hook here
-    0x8b,0x01,          // 00448ff6  |. 8b01           mov eax,dword ptr ds:[ecx]
-    0x56,               // 00448ff8  |. 56             push esi
-    0x33,0xf6,          // 00448ff9  |. 33f6           xor esi,esi
-    0x33,0xd2,          // 00448ffb  |. 33d2           xor edx,edx
-    0x57,               // 00448ffd  |. 57             push edi
-    0x89,0x4d, 0xfc,    // 00448ffe  |. 894d fc        mov dword ptr ss:[ebp-0x4],ecx
-    0x3b,0xc6,          // 00449001  |. 3bc6           cmp eax,esi
-    0x74, 0x37          // 00449003  |. 74 37          je short cmvs32.0044903c
-  };
-  enum { addr_offset = 3 }; // offset from the beginning of the function
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  // Artikash 11/9/2018: Not sure, but isn't findCallerAddress a better way to do this?
-  if (!addr) addr = MemDbg::findCallerAddressAfterInt3((DWORD)GetGlyphOutlineA, processStartAddress, processStopAddress);
-  if (!addr) {
-    ConsoleOutput("CMVS2: pattern not found");
-    return false;
+    ConsoleOutput("INSERT CMVS2");
+
+    return NewHook(hp, "CMVS2");
   }
-
-  //reladdr = 0x48ff0;
-  //reladdr = 0x48ff3;
-  HookParam hp;
-  hp.address = addr + addr_offset;
-  hp.offset=get_stack(3);
-  hp.type = CODEC_ANSI_BE;
-
-  ConsoleOutput("INSERT CMVS2");
-  
-  return NewHook(hp, "CMVS2");
-}
 
 } // unnamed namespace
 
@@ -178,19 +193,19 @@ bool InsertCMVSHook()
   // Both CMVS1 and CMVS2 exists in new games.
   // Insert the CMVS2 first. Since CMVS1 could break CMVS2
   // And the CMVS1 games do not have CMVS2 patterns.
-  //return InsertCMVS2Hook() || InsertCMVS1Hook();
+  // return InsertCMVS2Hook() || InsertCMVS1Hook();
 
-  //初恋サクラメント
-  //夏に奏でる僕らの詩
-  //まじぷり＼Wonder Cradle
-  //等等一堆游戏，都能搜索到2，但没文字。
-  // bool b2=InsertCMVS2Hook();
-  // //先插入1会崩溃。
-  // bool b1=InsertCMVS1Hook();
-  //return b1||b2;
+  // 初恋サクラメント
+  // 夏に奏でる僕らの詩
+  // まじぷり＼Wonder Cradle
+  // 等等一堆游戏，都能搜索到2，但没文字。
+  //  bool b2=InsertCMVS2Hook();
+  //  //先插入1会崩溃。
+  //  bool b1=InsertCMVS1Hook();
+  // return b1||b2;
   return InsertCMVS1Hook();
 }
- /**
+/**
  *  Sample game: クロノクロック (CMVS2)
  *
  *  This function is found by back-tracking GetGlyphOutlineA
@@ -1165,57 +1180,60 @@ bool InsertCMVSHook()
  *  00442BC9   CC               INT3
  *  00442BCA   CC               INT3
  */
-namespace{
-bool attach(const uint8_t pattern[],int patternSize,DWORD startAddress,DWORD stopAddress){
+namespace
+{
+  bool attach(const uint8_t pattern[], int patternSize, DWORD startAddress, DWORD stopAddress)
+  {
     ULONG addr = MemDbg::findBytes(pattern, patternSize, startAddress, stopAddress);
-    if(addr==0)return false;
+    if (addr == 0)
+      return false;
     addr = MemDbg::findEnclosingAlignedFunction_strict(addr);
-    if(addr==0)return false;
+    if (addr == 0)
+      return false;
     HookParam hp;
-    hp.address = addr  ;
-    hp.offset=get_stack(1);
-    hp.type=EMBED_ABLE|USING_STRING|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
-    hp.hook_font=F_GetGlyphOutlineA;
-    hp.filter_fun=[](void* data, size_t* len, HookParam* hp){
-              auto text = reinterpret_cast<LPSTR>(data);
-              std::string str = std::string(text, *len);
-              std::regex reg1("\\{(.*?)/(.*?)\\}");
-              std::string result1 = std::regex_replace(str, reg1, "$1");
-              
-              return write_string_overwrite(text,len,result1);
-            };
-    
+    hp.address = addr;
+    hp.offset = get_stack(1);
+    hp.type = EMBED_ABLE | USING_STRING | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+    hp.hook_font = F_GetGlyphOutlineA;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      std::string str = buffer->strA();
+      std::regex reg1("\\{(.*?)/(.*?)\\}");
+      std::string result1 = std::regex_replace(str, reg1, "$1");
+      buffer->from(result1);
+    };
+
     return NewHook(hp, "EmbedCMVS");
-};}
+  };
+}
 bool attachScenarioHook(ULONG startAddress, ULONG stopAddress)
 {
 
   // This pattern is selected by comparing two CMVS games
   const uint8_t bytes[] = {
-    0xb8, 0xcd,0xcc,0xcc,0xcc,  // 004512de   b8 cdcccccc      mov eax,0xcccccccd
-    0xf7,0xe1,                  // 004512e3   f7e1             mul ecx
-    0xc1,0xea, 0x02,            // 004512e5   c1ea 02          shr edx,0x2
-    0xd1,0xe9,                  // 004512e8   d1e9             shr ecx,1
-    0x2b,0xca                   // 004512ea   2bca             sub ecx,edx
+      0xb8, 0xcd, 0xcc, 0xcc, 0xcc, // 004512de   b8 cdcccccc      mov eax,0xcccccccd
+      0xf7, 0xe1,                   // 004512e3   f7e1             mul ecx
+      0xc1, 0xea, 0x02,             // 004512e5   c1ea 02          shr edx,0x2
+      0xd1, 0xe9,                   // 004512e8   d1e9             shr ecx,1
+      0x2b, 0xca                    // 004512ea   2bca             sub ecx,edx
   };
-  //const uint8_t bytes[] = {  //青春&国记的人名&选择支
-  //  0xb8, 0xcd,0xcc,0xcc,0xcc,  // 004512de   b8 cdcccccc      mov eax,0xcccccccd
-  //  0xf7,0xe1,                  // 004512e3   f7e1             mul ecx 
-  //  0xd1,0xe9,                  // 004512e8   d1e9             shr ecx,1
+  // const uint8_t bytes[] = {  //青春&国记的人名&选择支
+  //   0xb8, 0xcd,0xcc,0xcc,0xcc,  // 004512de   b8 cdcccccc      mov eax,0xcccccccd
+  //   0xf7,0xe1,                  // 004512e3   f7e1             mul ecx
+  //   0xd1,0xe9,                  // 004512e8   d1e9             shr ecx,1
 
   //  0xc1,0xea, 0x02,            // 004512e5   c1ea 02          shr edx,0x2
   //  0x2b,0xca                   // 004512ea   2bca             sub ecx,edx
   //};
-  const uint8_t bytes_kunado_kukoki[] = {  
+  const uint8_t bytes_kunado_kukoki[] = {
 
-   0xf7,0xe1,              
-   0x8b,0x85,0xd8,0xfd,0xff,0xff,  
-   0xd1,0xe9,              
-   0xc1,0xea, 0x02,        
-   0x2b,0xca          
-  };
-  
-  return attach(bytes, sizeof(bytes), startAddress, stopAddress)||attach(bytes_kunado_kukoki, sizeof(bytes_kunado_kukoki), startAddress, stopAddress);
+      0xf7, 0xe1,
+      0x8b, 0x85, 0xd8, 0xfd, 0xff, 0xff,
+      0xd1, 0xe9,
+      0xc1, 0xea, 0x02,
+      0x2b, 0xca};
+
+  return attach(bytes, sizeof(bytes), startAddress, stopAddress) || attach(bytes_kunado_kukoki, sizeof(bytes_kunado_kukoki), startAddress, stopAddress);
 }
 /**
  *  FIXME: This function exists but is not called for クロノクロック when painting backlog.
@@ -1503,17 +1521,19 @@ bool attachScenarioHook(ULONG startAddress, ULONG stopAddress)
 bool attachHistoryHook(ULONG startAddress, ULONG stopAddress)
 {
   const uint8_t bytes[] = {
-    0xb8, 0xcd,0xcc,0xcc,0xcc,  // 0044ae11   b8 cdcccccc      mov eax,0xcccccccd
-    0xf7,0xe1,                  // 0044ae16   f7e1             mul ecx
-    0xd1,0xe9,                  // 0044ae18   d1e9             shr ecx,1
-    0xc1,0xea, 0x02,            // 0044ae1a   c1ea 02          shr edx,0x2
-    0x2b,0xca                   // 0044ae1d   2bca             sub ecx,edx
+      0xb8, 0xcd, 0xcc, 0xcc, 0xcc, // 0044ae11   b8 cdcccccc      mov eax,0xcccccccd
+      0xf7, 0xe1,                   // 0044ae16   f7e1             mul ecx
+      0xd1, 0xe9,                   // 0044ae18   d1e9             shr ecx,1
+      0xc1, 0xea, 0x02,             // 0044ae1a   c1ea 02          shr edx,0x2
+      0x2b, 0xca                    // 0044ae1d   2bca             sub ecx,edx
   };
- 
+
   return attach(bytes, sizeof(bytes), startAddress, stopAddress);
 }
-bool CMVS::attach_function() {
-    bool embed=attachScenarioHook(processStartAddress,processStopAddress);
-    if(embed)attachHistoryHook(processStartAddress,processStopAddress);
-    return InsertCMVSHook()||embed;
-} 
+bool CMVS::attach_function()
+{
+  bool embed = attachScenarioHook(processStartAddress, processStopAddress);
+  if (embed)
+    attachHistoryHook(processStartAddress, processStopAddress);
+  return InsertCMVSHook() || embed;
+}

@@ -21,10 +21,10 @@ namespace
     *split = FIXED_SPLIT_VALUE;
     buffer->from_cs((char *)*(DWORD *)(stack->base + hp->offset));
   }
-  void hook_after(hook_stack *s, void *data, size_t len)
+  void hook_after(hook_stack *s, TextBuffer buffer)
   {
     static std::string ts;
-    ts = std::string((LPSTR)data, len);
+    ts = buffer.viewA();
 
     if (_type == 1)
     {
@@ -62,10 +62,10 @@ namespace
               // hp.type = USING_STRING;
               hp.hook_after = hook_after;
               hp.hook_font = F_MultiByteToWideChar | F_GetTextExtentPoint32A;
-              hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | FIXING_SPLIT | EMBED_ABLE |  EMBED_DYNA_SJIS; // there is only one thread
-              hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+              hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | FIXING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS; // there is only one thread
+              hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
               {
-                return write_string_overwrite(data, len, std::regex_replace(std::string((char *)data, *len), std::regex("\\{(.*?)/(.*?)\\}"), "$1"));
+                buffer->from(std::regex_replace(buffer->strA(), std::regex("\\{(.*?)/(.*?)\\}"), "$1"));
               };
               ConsoleOutput("INSERT Debonosu");
 
@@ -117,7 +117,7 @@ namespace
     // hp.text_fun = SpecialHookDebonosuName;
     hp.offset = get_reg(regs::ecx);
     // hp.type = USING_STRING;
-    hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | EMBED_ABLE |  EMBED_AFTER_NEW; //|FIXING_SPLIT; // there is only one thread
+    hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | EMBED_ABLE | EMBED_AFTER_NEW; //|FIXING_SPLIT; // there is only one thread
     ConsoleOutput("INSERT DebonosuName");
 
     return NewHook(hp, "DebonosuName");
@@ -182,19 +182,16 @@ namespace
       hp.address = addr + 6;
       hp.type = USING_STRING | NO_CONTEXT;
       hp.offset = get_reg(regs::eax);
-      hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *)
       {
-        auto text = reinterpret_cast<LPSTR>(data);
-        auto len = reinterpret_cast<size_t *>(size);
-        if (all_ascii(text, *len))
-          return false;
+        auto text = reinterpret_cast<LPSTR>(buffer->buff);
+        if (all_ascii(text, buffer->size))
+          return buffer->clear();
 
-        std::string str = std::string(text, *len);
+        std::string str = buffer->strA();
         std::regex reg1("\\{(.*?)/(.*?)\\}");
         std::string result1 = std::regex_replace(str, reg1, "$1");
-
-        return write_string_overwrite(text, len, result1);
-        return true;
+        buffer->from(result1);
       };
       succ |= NewHook(hp, "debonosu");
     }

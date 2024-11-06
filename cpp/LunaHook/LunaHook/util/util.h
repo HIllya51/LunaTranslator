@@ -94,15 +94,6 @@ struct WindowInfo
 };
 std::vector<WindowInfo> get_proc_windows();
 
-template <class CharT>
-bool write_string_overwrite(void *data, size_t *len, const std::basic_string<CharT> &s)
-{
-  size_t t = s.size();
-  strcpyEx((CharT *)data, s.data());
-  *len = t * sizeof(CharT);
-  return t;
-}
-
 template <typename StringT>
 auto allocateString(const StringT &s) -> typename StringT::value_type *
 {
@@ -117,3 +108,6 @@ size_t strSize(const StringT &s)
 {
   return s.size() * sizeof(StringT::value_type);
 }
+
+bool IsShiftjisWord(WORD w);
+bool IsShiftjisLeadByte(BYTE b);

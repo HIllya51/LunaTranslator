@@ -21,12 +21,11 @@ typedef struct _cef_string_utf16_t
 	size_t length;
 	void (*dtor)(char16 *str);
 } cef_string_utf16_t;
-static void hook_cef_string_utf16_t(hook_stack *stack, HookParam *hp, uintptr_t *data, uintptr_t *split, size_t *len)
+static void hook_cef_string_utf16_t(hook_stack *stack, HookParam *hp, TextBuffer *buff, uintptr_t *split)
 {
 	if (auto p = (_cef_string_utf16_t *)stack->stack[1])
 	{
-		*data = (DWORD)p->str;
-		*len = p->length; // for widechar
+		buff->from(p->str, p->length);
 
 		auto s = stack->ecx;
 		for (int i = 0; i < 0x10; i++) // traverse pointers until a non-readable address is met
@@ -40,12 +39,11 @@ static void hook_cef_string_utf16_t(hook_stack *stack, HookParam *hp, uintptr_t 
 			*split = s;
 	}
 }
-static void hook_cef_string_wide_t(hook_stack *stack, HookParam *hp, uintptr_t *data, uintptr_t *split, size_t *len)
+static void hook_cef_string_wide_t(hook_stack *stack, HookParam *hp, TextBuffer *buff, uintptr_t *split)
 {
 	if (auto p = (_cef_string_wide_t *)stack->stack[1])
 	{
-		*data = (DWORD)p->str;
-		*len = p->length; // for widechar
+		buff->from(p->str, p->length);
 
 		auto s = stack->ecx;
 		for (int i = 0; i < 0x10; i++) // traverse pointers until a non-readable address is met
@@ -59,13 +57,11 @@ static void hook_cef_string_wide_t(hook_stack *stack, HookParam *hp, uintptr_t *
 			*split = s;
 	}
 }
-static void hook_cef_string_utf8_t(hook_stack *stack, HookParam *hp, uintptr_t *data, uintptr_t *split, size_t *len)
+static void hook_cef_string_utf8_t(hook_stack *stack, HookParam *hp, TextBuffer *buff, uintptr_t *split)
 {
 	if (auto p = (_cef_string_utf8_t *)stack->stack[1])
 	{
-		*data = (DWORD)p->str;
-		*len = p->length; // for widechar
-
+		buff->from(p->str, p->length);
 		auto s = stack->ecx;
 		for (int i = 0; i < 0x10; i++) // traverse pointers until a non-readable address is met
 			if (s && !::IsBadReadPtr((LPCVOID)s, sizeof(DWORD)))
@@ -87,10 +83,10 @@ bool InsertlibcefHook(HMODULE module)
 	struct libcefFunction
 	{ // argument indices start from 0 for SpecialHookMonoString, otherwise 1
 		const char *functionName;
-		size_t textIndex;		// argument index
-		short lengthIndex;		// argument index
-		unsigned long hookType; // HookParam type
-		void *text_fun;			// HookParam::text_fun_t
+		size_t textIndex;						// argument index
+		short lengthIndex;						// argument index
+		unsigned long hookType;					// HookParam type
+		decltype(HookParam::text_fun) text_fun; // HookParam::text_fun_t
 	};
 
 	HookParam hp;
@@ -134,13 +130,12 @@ bool InsertlibcefHook(HMODULE module)
 }
 namespace
 {
-	bool ceffileter(void *data, uintptr_t *size, HookParam *hp)
+	void ceffileter(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = std::wstring((wchar_t *)data, *size / 2);
+		auto s = buffer->strW();
 		if (s == *(std::wstring *)(hp->user_value))
-			return false;
+			return buffer->clear();
 		*(std::wstring *)(hp->user_value) = s;
-		return true;
 	};
 }
 bool libcefhook(HMODULE module)

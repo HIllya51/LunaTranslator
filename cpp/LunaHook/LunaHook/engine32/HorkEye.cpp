@@ -1,7 +1,5 @@
-#include"HorkEye.h"
+#include "HorkEye.h"
 
-
-  
 /** 10/20/2014 jichi: HorkEye, http://horkeye.com
  *  Sample game: [150226] 結城友奈�勀��ある 体験版
  *
@@ -156,42 +154,44 @@
 */
 // Skip text between "," and "�, and remove [n]
 // ex:【夏偾,S005_B_0002】「バーッ�ク
-static bool HorkEyeFilter(LPVOID data, size_t *size, HookParam *)
+static void HorkEyeFilter(TextBuffer *buffer, HookParam *)
 {
-  size_t len = *size;
-  char *str = reinterpret_cast<char *>(data),
+  char *str = reinterpret_cast<char *>(buffer->buff),
        *start,
        *stop;
 
   // Remove text between , and ]
   // FIXME: This does not work well because of the ascii encoding
-  if ((start = (char *)::memchr(str, ',', len)) &&
-      (stop = cpp_strnstr(start, "\x81\x7a", len - (start - str))) &&
-      (len -= stop - start)) // = u'�.encode('sjis')
-    ::memmove(start, stop, len - (start - str));
+  if ((start = (char *)::memchr(str, ',', buffer->size)) &&
+      (stop = cpp_strnstr(start, "\x81\x7a", buffer->size - (start - str))) &&
+      (buffer->size -= stop - start)) // = u'�.encode('sjis')
+    ::memmove(start, stop, buffer->size - (start - str));
 
   // Remove [n]
-  enum { skip_len = 3 }; // = length of "[n]"
-  while (len >= skip_len &&
-         (start = cpp_strnstr(str, "[n]", len)) &&
-         (len -= skip_len))
-    ::memmove(start, start + skip_len, len - (start - str));
-
-  *size = len;
-  return true;
+  enum
+  {
+    skip_len = 3
+  }; // = length of "[n]"
+  while (buffer->size >= skip_len &&
+         (start = cpp_strnstr(str, "[n]", buffer->size)) &&
+         (buffer->size -= skip_len))
+    ::memmove(start, start + skip_len, buffer->size - (start - str));
 }
-namespace{
+namespace
+{
   template <typename strT>
   strT ltrim(strT text)
   {
     strT lastText = nullptr;
-    while (*text && text != lastText) {
+    while (*text && text != lastText)
+    {
       lastText = text;
       if (text[0] == 0x20)
         text++;
       if ((UINT8)text[0] == 0x81 && (UINT8)text[1] == 0x40) // skip space \u3000 (0x8140 in sjis)
         text += 2;
-      if (text[0] == '\\') {
+      if (text[0] == '\\')
+      {
         text++;
         while (::islower(text[0]) || text[0] == '@')
           text++;
@@ -201,193 +201,201 @@ namespace{
       text++;
     return text;
   }
-  template<int offset=1>
-  void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
-    auto str=(LPSTR)(s->stack[offset]);//stack-2:eax
-    int len=strlen(str);//s->ecx; 
+  template <int offset = 1>
+  void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    auto str = (LPSTR)(s->stack[offset]); // stack-2:eax
+    int len = strlen(str);                // s->ecx;
     char *stop;
-  if ((stop = cpp_strnstr(str, "\x81\x7a", len )) &&
-        (len -= (stop - str+2))){
-          str=stop+2;
+    if ((stop = cpp_strnstr(str, "\x81\x7a", len)) &&
+        (len -= (stop - str + 2)))
+    {
+      str = stop + 2;
     } // = u'�.encode('sjis')
-      auto old=std::string(str,len);
-      buffer->from(old); 
+    auto old = std::string(str, len);
+    buffer->from(old);
   }
-  template<int offset=1>
-  void hookafter(hook_stack*s,void* data, size_t len1){
-      
-      auto newData =std::string((char*)data,len1);
-       auto str=(LPSTR)(s->stack[offset]);//stack-2:eax
-    int len=strlen(str);//s->ecx; 
-    int lensave=len;
-       char *stop;
-      if ( (stop = cpp_strnstr(str, "\x81\x7a", len )) &&
-        (len -= (stop - str+2))){
-         auto old=std::string(str,stop+2-str);
-         newData=old+newData;
+  template <int offset = 1>
+  void hookafter(hook_stack *s, TextBuffer buffer)
+  {
+
+    auto newData = buffer.strA();
+    auto str = (LPSTR)(s->stack[offset]); // stack-2:eax
+    int len = strlen(str);                // s->ecx;
+    int lensave = len;
+    char *stop;
+    if ((stop = cpp_strnstr(str, "\x81\x7a", len)) &&
+        (len -= (stop - str + 2)))
+    {
+      auto old = std::string(str, stop + 2 - str);
+      newData = old + newData;
     }
-    for(int i=0;i<lensave-newData.size();i++)newData.push_back(' ');
-    memcpy((void*)str,newData.c_str(),lensave);
-  //   s->ecx=newData.size(); 修改ecx没用
+    for (int i = 0; i < lensave - newData.size(); i++)
+      newData.push_back(' ');
+    memcpy((void *)str, newData.c_str(), lensave);
+    //   s->ecx=newData.size(); 修改ecx没用
   }
 }
 bool InsertHorkEyeHook()
 {
   const BYTE bytes[] = {
-    0x89,0x6c,0x24, 0x24,   // 013cdb01   896c24 24        mov dword ptr ss:[esp+0x24],ebp
-    0x89,0x74,0x24, 0x0c,   // 013cdb05   897424 0c        mov dword ptr ss:[esp+0xc],esi
-    0x89,0x4c,0x24, 0x18,   // 013cdb09   894c24 18        mov dword ptr ss:[esp+0x18],ecx
-    0x8a,0x0c,0x1a          // 013cdb0d   8a0c1a           mov cl,byte ptr ds:[edx+ebx]        jichi: here
+      0x89, 0x6c, 0x24, 0x24, // 013cdb01   896c24 24        mov dword ptr ss:[esp+0x24],ebp
+      0x89, 0x74, 0x24, 0x0c, // 013cdb05   897424 0c        mov dword ptr ss:[esp+0xc],esi
+      0x89, 0x4c, 0x24, 0x18, // 013cdb09   894c24 18        mov dword ptr ss:[esp+0x18],ecx
+      0x8a, 0x0c, 0x1a        // 013cdb0d   8a0c1a           mov cl,byte ptr ds:[edx+ebx]        jichi: here
   };
-  enum { addr_offset = sizeof(bytes) - 3 }; // 8a0c1a
+  enum
+  {
+    addr_offset = sizeof(bytes) - 3
+  }; // 8a0c1a
   ;
-  if (ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress)) {
-	  HookParam hp;
-	  hp.address = addr + addr_offset;
-	  hp.offset=get_reg(regs::ebx);
-	  hp.type = USING_STRING| NO_CONTEXT|FIXING_SPLIT|EMBED_ABLE|EMBED_DYNA_SJIS;
-    hp.text_fun=hookBefore<-4-1>;
-    hp.hook_after=hookafter<-4-1>;
-	  hp.filter_fun = HorkEyeFilter;
-    hp.newlineseperator=L"[n]";
-	  ConsoleOutput("INSERT HorkEye");
-	  
-	  return NewHook(hp, "HorkEye");
+  if (ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress))
+  {
+    HookParam hp;
+    hp.address = addr + addr_offset;
+    hp.offset = get_reg(regs::ebx);
+    hp.type = USING_STRING | NO_CONTEXT | FIXING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS;
+    hp.text_fun = hookBefore<-4 - 1>;
+    hp.hook_after = hookafter<-4 - 1>;
+    hp.filter_fun = HorkEyeFilter;
+    hp.newlineseperator = L"[n]";
+    ConsoleOutput("INSERT HorkEye");
+
+    return NewHook(hp, "HorkEye");
   }
 
-  memcpy(spDefault.pattern, Array<BYTE>{ 0xcc, 0xcc, 0xcc, XX, 0xec }, spDefault.length = 5);
+  memcpy(spDefault.pattern, Array<BYTE>{0xcc, 0xcc, 0xcc, XX, 0xec}, spDefault.length = 5);
   spDefault.offset = 3;
 
   const BYTE bytes2[] =
-  {
-	  0x83, 0xec, XX, // sub esp,??
-	  0xa1, XX4, // mov eax,??
-	  0x8b, 0x0d, XX4, // mov ecx,??
-	  0x03, 0xc0 // add eax,eax
-  };
+      {
+          0x83, 0xec, XX,  // sub esp,??
+          0xa1, XX4,       // mov eax,??
+          0x8b, 0x0d, XX4, // mov ecx,??
+          0x03, 0xc0       // add eax,eax
+      };
 
-  for (auto addr : Util::SearchMemory(bytes2, sizeof(bytes2),PAGE_EXECUTE_READWRITE,processStartAddress, processStopAddress))
+  for (auto addr : Util::SearchMemory(bytes2, sizeof(bytes2), PAGE_EXECUTE_READWRITE, processStartAddress, processStopAddress))
   {
-	  HookParam hp;
-	  hp.address = addr;
-	  hp.offset=get_stack(1);
-    hp.type = USING_STRING| EMBED_ABLE|EMBED_DYNA_SJIS|NO_CONTEXT;
-    hp.text_fun=hookBefore<1>;
-    hp.hook_after=hookafter<1>;
-	  
-	  return NewHook(hp, "HorkEye2");
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = get_stack(1);
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
+    hp.text_fun = hookBefore<1>;
+    hp.hook_after = hookafter<1>;
+
+    return NewHook(hp, "HorkEye2");
   }
 
   ConsoleOutput("HorkEye: pattern not found");
   return false;
-  
 }
 
 bool InsertHorkEye3Hook()
-{ 
+{
   const BYTE bytes2[] =
-  { 
-    0x55,
-    0x8d,0xac,0x24,XX4, 
-    0x81,0xec,XX4,
-    0x6a,0xff,
-    0x68,XX4,
-    0x64,0xa1,0x00,0x00,0x00,0x00,
-    0x50,
-    0x83,0xec,0x38,   //必须是0x38，不能是XX，否则有重的。
+      {
+          0x55,
+          0x8d, 0xac, 0x24, XX4,
+          0x81, 0xec, XX4,
+          0x6a, 0xff,
+          0x68, XX4,
+          0x64, 0xa1, 0x00, 0x00, 0x00, 0x00,
+          0x50,
+          0x83, 0xec, 0x38, // 必须是0x38，不能是XX，否则有重的。
 
-//.text:0042E7F0 55                            push    ebp
-//.text : 0042E7F1 8D AC 24 24 FF FF FF          lea     ebp,[esp - 0DCh]
-//.text : 0042E7F8 81 EC DC 00 00 00             sub     esp, 0DCh
-//.text : 0042E7FE 6A FF                         push    0FFFFFFFFh
-//.text : 0042E800 68 51 1E 5C 00                push    offset SEH_42E7F0
-//.text : 0042E805 64 A1 00 00 00 00             mov     eax, large fs : 0
-//.text : 0042E80B 50                            push    eax
-//.text : 0042E80C 83 EC 38                      sub     esp, 38h
-//.text : 0042E80F A1 24 D0 64 00                mov     eax, ___security_cookie
-//.text : 0042E814 33 C5 xor eax, ebp
-//.text : 0042E816 89 85 D8 00 00 00             mov[ebp + 0DCh + var_4], eax
-  };
+          //.text:0042E7F0 55                            push    ebp
+          //.text : 0042E7F1 8D AC 24 24 FF FF FF          lea     ebp,[esp - 0DCh]
+          //.text : 0042E7F8 81 EC DC 00 00 00             sub     esp, 0DCh
+          //.text : 0042E7FE 6A FF                         push    0FFFFFFFFh
+          //.text : 0042E800 68 51 1E 5C 00                push    offset SEH_42E7F0
+          //.text : 0042E805 64 A1 00 00 00 00             mov     eax, large fs : 0
+          //.text : 0042E80B 50                            push    eax
+          //.text : 0042E80C 83 EC 38                      sub     esp, 38h
+          //.text : 0042E80F A1 24 D0 64 00                mov     eax, ___security_cookie
+          //.text : 0042E814 33 C5 xor eax, ebp
+          //.text : 0042E816 89 85 D8 00 00 00             mov[ebp + 0DCh + var_4], eax
+      };
 
-  auto addr=MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-  if (addr == 0)return false;
+  auto addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
+  if (addr == 0)
+    return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1);
-  hp.type = USING_STRING| EMBED_ABLE|EMBED_DYNA_SJIS|NO_CONTEXT;
-  hp.text_fun=hookBefore<1>;
-  hp.hook_after=hookafter<1>;  
-  
-  return NewHook(hp, "HorkEye3");
+  hp.offset = get_stack(1);
+  hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
+  hp.text_fun = hookBefore<1>;
+  hp.hook_after = hookafter<1>;
 
+  return NewHook(hp, "HorkEye3");
 }
 
 bool InsertHorkEye4Hook()
 {
-  //辻堂さんのバージンロード
-  //辻堂さんの純愛ロード
+  // 辻堂さんのバージンロード
+  // 辻堂さんの純愛ロード
   const BYTE bytes2[] =
-  {
-    0xf7,0xd8,
-    0x1b,0xc0,
-    0x83,0xc0,0x02
-  };
+      {
+          0xf7, 0xd8,
+          0x1b, 0xc0,
+          0x83, 0xc0, 0x02};
   auto addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-  if (addr == 0)return false;
+  if (addr == 0)
+    return false;
   const BYTE bytebetter[] = {
-    0x8b,XX,XX,XX,
-    0xa1,XX4,
-    0x83,0xc4,XX,
-    0x8b,XX
-  };
+      0x8b, XX, XX, XX,
+      0xa1, XX4,
+      0x83, 0xc4, XX,
+      0x8b, XX};
   auto addr1 = MemDbg::findBytes(bytebetter, sizeof(bytebetter), addr - 0x100, addr);
   if (addr1)
     addr = addr1;
   else
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)return false;
+  if (addr == 0)
+    return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_reg(regs::eax);
-  hp.type = USING_STRING| NO_CONTEXT|EMBED_ABLE|EMBED_DYNA_SJIS;
-  hp.text_fun=hookBefore<-1-1>;
-  hp.hook_after=hookafter<-1-1>;
-  
-  return NewHook(hp, "HorkEye4");
+  hp.offset = get_reg(regs::eax);
+  hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS;
+  hp.text_fun = hookBefore<-1 - 1>;
+  hp.hook_after = hookafter<-1 - 1>;
 
+  return NewHook(hp, "HorkEye4");
 }
-  
+
 bool InsertHorkEye6Hook()
 {
-  //みなとカーニバルFD
+  // みなとカーニバルFD
 
   const BYTE bytes2[] =
-  {
-    0x83,0xc2,0x6c,
-    0x52,
-    0xe8
-  };
+      {
+          0x83, 0xc2, 0x6c,
+          0x52,
+          0xe8};
   auto addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-  if (addr == 0)return false;
+  if (addr == 0)
+    return false;
   ConsoleOutput("hk6 %p", addr);
-  const BYTE start[] = { 0x6A ,0xFF };
+  const BYTE start[] = {0x6A, 0xFF};
   addr = reverseFindBytes(start, sizeof(start), addr - 0x1000, addr);
-  if (addr == 0)return false;
+  if (addr == 0)
+    return false;
   ConsoleOutput("hk6 %p", addr);
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(3);
-  hp.type = CODEC_ANSI_BE ;
+  hp.offset = get_stack(3);
+  hp.type = CODEC_ANSI_BE;
   ConsoleOutput("INSERT HorkEye6 %p", addr);
-  
-  return NewHook(hp, "HorkEye6");
 
+  return NewHook(hp, "HorkEye6");
 }
 
-bool HorkEye::attach_function() {  
-    bool b1=InsertHorkEyeHook();
-    bool b2=InsertHorkEye3Hook();
-    bool b3=InsertHorkEye4Hook();
-    bool b4=InsertHorkEye6Hook();
-    return b1||b2||b3||b4;
-} 
+bool HorkEye::attach_function()
+{
+  bool b1 = InsertHorkEyeHook();
+  bool b2 = InsertHorkEye3Hook();
+  bool b3 = InsertHorkEye4Hook();
+  bool b4 = InsertHorkEye6Hook();
+  return b1 || b2 || b3 || b4;
+}

@@ -96,24 +96,19 @@ void InsertRealliveHook()
   trigger_fun = InsertRealliveDynamicHook;
 }
 
-bool RlBabelFilter(LPVOID data, size_t *size, HookParam *)
+void RlBabelFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
-
-  if (text[0] == '\x01')
+  if (((char *)buffer->buff)[0] == '\x01')
   {
-    StringFilterBetween(text, len, "\x01", 1, "\x02", 1); // remove names
+    StringFilterBetween(buffer, "\x01", 1, "\x02", 1); // remove names
   }
 
-  CharReplacer(text, len, '\x08', '"');
-  CharReplacer(text, len, '\x09', '\'');
-  CharReplacer(text, len, '\x0A', '\'');
-  CharFilter(text, len, '\x1F');                           // remove color
-  StringReplacer(text, len, "\x89\x85", 2, "\x81\x63", 2); // "\x89\x85"-> shift-JIS"…"
-  StringReplacer(text, len, "\x89\x97", 2, "--", 2);
-
-  return true;
+  CharReplacer(buffer, '\x08', '"');
+  CharReplacer(buffer, '\x09', '\'');
+  CharReplacer(buffer, '\x0A', '\'');
+  CharFilter(buffer, '\x1F');                           // remove color
+  StringReplacer(buffer, "\x89\x85", 2, "\x81\x63", 2); // "\x89\x85"-> shift-JIS"…"
+  StringReplacer(buffer, "\x89\x97", 2, "--", 2);
 }
 
 bool InsertRlBabelHook()
