@@ -1,6 +1,10 @@
 name: buildlunahook
 on:
-  workflow_call:
+  push:
+    paths: [ '.github/workflows/buildlunahook.yml','cpp/LunaHook/**']
+  pull_request:
+    paths: [ '.github/workflows/buildlunahook.yml','cpp/LunaHook/**']
+
 jobs:
   build_xp:
     runs-on: windows-2019
@@ -16,14 +20,9 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: cd cpp/LunaHook
-      - run: python build.py build ${{ matrix.language }} winxp
-      - run: python scripts/pack.py
+      - run: python cpp/LunaHook/build.py build ${{ matrix.language }} winxp
+      - run: python cpp/LunaHook/scripts/pack.py
 
-      # - name: Generate attestation for artifact
-      #   uses: actions/attest-build-provenance@v1
-      #   with:
-      #     subject-path: builds/${{ matrix.target }}.zip
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.language }}_winxp
@@ -31,7 +30,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: LunaHook
-          files: builds/Release_${{ matrix.language }}_winxp.zip
+          files: cpp/LunaHook/builds/Release_${{ matrix.language }}_winxp.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
@@ -64,9 +63,8 @@ jobs:
           arch:         ${{ matrix.qtarch }}
           dir:          ${{ runner.temp }}
           setup-python: true
-      - run: cd cpp/LunaHook
-      - run: python build.py ${{ matrix.cmd }}
-      - run: python scripts/pack.py
+      - run: python cpp/LunaHook/build.py ${{ matrix.cmd }}
+      - run: python cpp/LunaHook/scripts/pack.py
 
       # - name: Generate attestation for artifact
       #   uses: actions/attest-build-provenance@v1
@@ -75,14 +73,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
-          path: builds/${{ matrix.target }}.zip
+          path: cpp/LunaHook/builds/${{ matrix.target }}.zip
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: LunaHook
-          files: builds/${{ matrix.target }}.zip
+          files: cpp/LunaHook/builds/${{ matrix.target }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build:
+  build_x:
     runs-on: windows-latest
     strategy:
       matrix:
@@ -97,27 +95,25 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: cd cpp/LunaHook
-      - run: python build.py build ${{ matrix.language }} ${{matrix.bits}}
+      - run: python cpp/LunaHook/build.py build ${{ matrix.language }} ${{matrix.bits}}
 
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.language }}_${{matrix.bits}}
-          path: builds
+          path: cpp/LunaHook/builds
   
-  release:
+  build:
     runs-on: windows-latest
-    needs: [build]
+    needs: [build_x]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - run: cd cpp/LunaHook
-      - run: python build.py merge
+      - run: python cpp/LunaHook/build.py merge
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: LunaHook
-          files: builds/*
+          files: cpp/LunaHook/builds/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

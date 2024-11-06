@@ -63,7 +63,7 @@ cmake --build ../build/x86_{lang} --config Release --target ALL_BUILD -j 14
         elif bit == "64":
             ff.write(
                 rf"""
-cmake -DLANGUAGE={lang} ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64_{lang}
+cmake -DBUILD_PLUGIN=OFF -DWINXP=OFF -DLANGUAGE={lang} -DBUILD_GUI=ON -DBUILD_CLI=ON ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64_{lang}
 cmake --build ../build/x64_{lang} --config Release --target ALL_BUILD -j 14
 """
             )
@@ -71,11 +71,16 @@ cmake --build ../build/x64_{lang} --config Release --target ALL_BUILD -j 14
 
 
 def build_langx_xp(lang):
+    url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.0.7/YY-Thunks-1.0.7-Binary.zip"
+    target = "YY-Thunks/objs/X86/YY_Thunks_for_WinXP.obj"
+    if os.path.exists(target) == False:
+        os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
+        os.system(rf'7z x -y YY-Thunks-1.0.7-Binary.zip -oYY-Thunks')
     with open("do.bat", "w") as ff:
         ff.write(
             rf"""
 
-cmake -DBUILD_PLUGIN=OFF -DWINXP=1 -DLANGUAGE={lang} ../CMakeLists.txt -G "Visual Studio 16 2019" -A win32 -T v141_xp -B ../build/x86_{lang}_xp
+cmake -DBUILD_PLUGIN=OFF -DWINXP=ON -DLANGUAGE={lang} -DBUILD_GUI=ON -DBUILD_CLI=ON ../CMakeLists.txt -G "Visual Studio 16 2019" -A win32 -T v141_xp -B ../build/x86_{lang}_xp
 cmake --build ../build/x86_{lang}_xp --config Release --target ALL_BUILD -j 14
 call dobuildxp.bat
 """

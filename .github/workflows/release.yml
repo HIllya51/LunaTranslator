@@ -6,8 +6,6 @@ on:
 jobs:
   buildluna:
     uses: ./.github/workflows/buildluna.yml
-  buildlunahook:
-    uses: ./.github/workflows/buildlunahook.yml
   loadversion:
     runs-on: windows-latest
     outputs:
