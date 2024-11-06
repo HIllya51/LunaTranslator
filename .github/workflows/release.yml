@@ -14,7 +14,7 @@ jobs:
         run: python py/build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
 
   buildluna:
-    uses: ./.github/workflows/buildluna.yaml
+    uses: ./.github/workflows/buildluna.yml
   
   release:
     runs-on: windows-latest
