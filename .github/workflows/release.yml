@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   
 jobs:
+  buildluna:
+    uses: ./.github/workflows/buildluna.yml
   loadversion:
     runs-on: windows-latest
     outputs:
@@ -12,89 +14,19 @@ jobs:
       - uses: actions/checkout@v4
       - id: loadversion
         run: python py/build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
-  hook:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        bits: [32, 64]
-    permissions:
-      id-token: write
-      attestations: write
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
-        with:
-          sdk-version: 22621
-      - run: python cpp/LunaHook/build.py build English ${{matrix.bits}}
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: hook_${{matrix.bits}}
-          path: cpp/LunaHook/builds/Release_English
-  pyrt:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        architecture: [x86, x64]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.7.9'
-          architecture: ${{ matrix.architecture }}
-      
-      - run:  python py/build.py pyrt ${{ matrix.architecture }} 3.7.9
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pyrt_${{ matrix.architecture }}
-          path: py/pyrt
-  build_cpp:
-    runs-on: windows-latest
-    strategy:
-      matrix: 
-        architecture: [x86, x64]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
-        with:
-          sdk-version: 22621
-      
-      - run:  python py/build.py cpp ${{ matrix.architecture }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cpp_${{ matrix.architecture }}
-          path: cpp/builds
-          
-  
   release:
     runs-on: windows-latest
-    needs: [pyrt,build_cpp,loadversion,hook]
-    strategy:
-      matrix:
-        include:
-          - architecture: x86
-            fname: LunaTranslator_x86
-          - architecture: x64
-            fname: LunaTranslator
+    needs: [buildluna,loadversion]
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - run:  python py/build.py merge ${{ matrix.architecture }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.fname }}
-          path: py/build/${{matrix.fname}}.zip
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
-            py/build/${{matrix.fname}}.zip
+            build/LunaTranslator_x86/LunaTranslator_x86.zip
+            build/LunaTranslator/LunaTranslator.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

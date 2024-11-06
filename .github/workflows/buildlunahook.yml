@@ -1,0 +1,123 @@
+name: buildlunahook
+on:
+  push:
+    paths: [ '.github/workflows/buildlunahook.yml','cpp/LunaHook/**']
+  pull_request:
+    paths: [ '.github/workflows/buildlunahook.yml','cpp/LunaHook/**']
+
+jobs:
+  build_xp:
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        language: [Chinese,English,Russian,TradChinese]
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      - run: python cpp/LunaHook/build.py build ${{ matrix.language }} winxp
+      - run: python cpp/LunaHook/scripts/pack.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.language }}_winxp
+          path: cpp/LunaHook/builds/Release_${{ matrix.language }}_winxp.zip
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: LunaHook
+          files: cpp/LunaHook/builds/Release_${{ matrix.language }}_winxp.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  build_plugin:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - cmd: plg32
+            qtarch: win32_msvc2019
+            target: plugin32
+          - cmd: plg64
+            qtarch: win64_msvc2019_64
+            target: plugin64
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      
+      - uses: jurplel/install-qt-action@v3.3.0
+        with:
+          version:      5.15.2
+          host:         windows
+          target:       desktop
+          arch:         ${{ matrix.qtarch }}
+          dir:          ${{ runner.temp }}
+          setup-python: true
+      - run: python cpp/LunaHook/build.py ${{ matrix.cmd }}
+      - run: python cpp/LunaHook/scripts/pack.py
+
+      # - name: Generate attestation for artifact
+      #   uses: actions/attest-build-provenance@v1
+      #   with:
+      #     subject-path: builds/${{ matrix.target }}.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: cpp/LunaHook/builds/${{ matrix.target }}.zip
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: LunaHook
+          files: cpp/LunaHook/builds/${{ matrix.target }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build_x:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        language: [Chinese,English,Russian,TradChinese]
+        bits: [32, 64]
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      - run: python cpp/LunaHook/build.py build ${{ matrix.language }} ${{matrix.bits}}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.language }}_${{matrix.bits}}
+          path: cpp/LunaHook/builds
+  
+  build:
+    runs-on: windows-latest
+    needs: [build_x]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+            path: cpp/LunaHook/build
+      - run: python cpp/LunaHook/build.py merge
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: LunaHook
+          files: cpp/LunaHook/builds/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

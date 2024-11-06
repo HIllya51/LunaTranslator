@@ -30,6 +30,4 @@ set_target_properties(LunaHostCLI PROPERTIES OUTPUT_NAME "LunaHostCLI${bitappend
 target_link_libraries(LunaHostCLI pch host ${YY_Thunks_for_WinXP})
 endif()
 
-if(BUILD_GUI)
 add_subdirectory(GUI)
-endif()
