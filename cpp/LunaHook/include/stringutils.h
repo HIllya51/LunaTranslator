@@ -1,6 +1,8 @@
 #ifndef __LUNA_STRINGUILTS_H
 #define __LUNA_STRINGUILTS_H
 
+using u32string = std::basic_string<uint32_t>;
+using u32string_view = std::basic_string_view<uint32_t>;
 enum
 {
   VNR_TEXT_CAPACITY = 1500
@@ -26,12 +28,19 @@ bool startWith(const std::wstring_view &s, const std::wstring_view &s2);
 
 bool endWith(const std::string_view &s, const std::string_view &s2);
 bool endWith(const std::wstring_view &s, const std::wstring_view &s2);
-std::wstring utf32_to_utf16(std::basic_string_view<uint32_t> sv);
-std::basic_string<uint32_t> utf16_to_utf32(const wchar_t *u16str, size_t size);
+std::wstring utf32_to_utf16(u32string_view sv);
+u32string utf16_to_utf32(std::wstring_view);
 
 std::string WideStringToString(const std::wstring &text, UINT cp = CP_UTF8);
+std::string WideStringToString(std::wstring_view text, UINT cp = CP_UTF8);
+std::string WideStringToString(const wchar_t *, UINT cp = CP_UTF8);
+
 std::wstring StringToWideString(const std::string &text);
+std::wstring StringToWideString(std::string_view);
+std::wstring StringToWideString(const char *);
 std::optional<std::wstring> StringToWideString(const std::string &text, UINT encoding);
+std::optional<std::wstring> StringToWideString(std::string_view text, UINT encoding);
+std::optional<std::wstring> StringToWideString(const char *, UINT encoding);
 
 std::string wcasta(const std::wstring &x);
 std::wstring acastw(const std::string &x);

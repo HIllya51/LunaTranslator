@@ -615,7 +615,7 @@ namespace
           auto arg = (HookArgument *)s->stack[0]; // arg1
           if (arg && arg->isValid())
           {                                                                                                // && (quint8)arg->text[0] > 127) { // skip translate text beginning with ascii character
-            std::wstring oldText = StringToWideString(std::string(arg->text, arg->size), CP_UTF8).value(), // QString::fromUtf8(arg->text, arg->size),
+            std::wstring oldText = StringToWideString(std::string_view(arg->text, arg->size), CP_UTF8).value(), // QString::fromUtf8(arg->text, arg->size),
                 prefix,
                          suffix,
                          trimmedText = trim(oldText, &prefix, &suffix);
@@ -664,7 +664,7 @@ namespace
           auto arg = (HookArgument *)s->stack[0]; // arg1
           if (arg && arg->isValid())
           {                                                                                                // && (quint8)arg->text[0] > 127) { // skip translate text beginning with ascii character
-            std::wstring oldText = StringToWideString(std::string(arg->text, arg->size), CP_UTF8).value(), // QString::fromUtf8(arg->text, arg->size),
+            std::wstring oldText = StringToWideString(std::string_view(arg->text, arg->size), CP_UTF8).value(), // QString::fromUtf8(arg->text, arg->size),
                 prefix,
                          suffix,
                          trimmedText = trim(oldText, &prefix, &suffix);
@@ -763,7 +763,7 @@ namespace
           auto arg = (HookArgument *)s->stack[2]; // arg2
           if (arg->isValid())
           {
-            auto oldText = StringToWideString(std::string(arg->text), CP_UTF8).value();
+            auto oldText = StringToWideString(std::string_view(arg->text), CP_UTF8).value();
             auto split = s->stack[0]; // return address
             buffer->from(oldText);
             //   std::wstring newText = EngineController::instance()->dispatchTextWSTD(oldText, role, sig);
@@ -780,7 +780,7 @@ namespace
             auto arg = (HookArgument *)s->stack[2]; // arg2
             if (arg->isValid())
             {
-              auto oldText = StringToWideString(std::string(arg->text), CP_UTF8).value();
+              auto oldText = StringToWideString(std::string_view(arg->text), CP_UTF8).value();
               auto split = s->stack[0]; // return address
               std::wstring old = oldText;
 

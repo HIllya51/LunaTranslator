@@ -132,7 +132,7 @@ void LunaHost::on_proc_connect(DWORD pid)
             std::string name = safequeryjson(savedhookcontext[u8procname], "name", std::string());
             if (startWith(name, "UserHook"))
             {
-                if (auto hp = HookCode::Parse(StringToWideString(savedhookcontext[u8procname]["hookcode"])))
+                if (auto hp = HookCode::Parse(StringToWideString(std::string_view(savedhookcontext[u8procname]["hookcode"]))))
                     Host::InsertHook(pid, hp.value());
             }
         }

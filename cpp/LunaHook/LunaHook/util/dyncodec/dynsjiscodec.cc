@@ -165,14 +165,14 @@ std::wstring DynamicShiftJISCodecPrivate::decode(const char* data, size_t length
         if (ch <= 127)
             ret.push_back(ch);
         else if (ch >= 0xa1 && ch <= 0xdf) // size == 1
-            ret.append(StringToWideString(std::string(data + 1, 1), codepage).value());
+            ret.append(StringToWideString(std::string_view(data + 1, 1), codepage).value());
         else {
             if (i + 1 == length) // no enough character
                 return ret;
             UINT8 ch2 = (UINT8)data[++i];
             if ((ch >= 0x81 && ch <= 0x9f || ch >= 0xe0 && ch <= 0xef)
                 && (ch2 != 0x7f && ch2 >= 0x40 && ch2 <= 0xfc))
-                ret.append(StringToWideString(std::string(data + i - 1, 2), codepage).value());
+                ret.append(StringToWideString(std::string_view(data + i - 1, 2), codepage).value());
             else if (wchar_t c = decodeChar(ch, ch2)) {
                 ret.push_back(c);
                 if (dynamic)

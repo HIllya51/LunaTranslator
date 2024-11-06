@@ -638,8 +638,7 @@ namespace
             s = std::regex_replace(s, std::wregex(L"#T2[^#]+"), L"");
             s = std::regex_replace(s, std::wregex(L"#T\\d"), L"");
         }
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     void F010093800DB1C000(TextBuffer *buffer, HookParam *hp)
     {
@@ -651,8 +650,7 @@ namespace
             s = std::regex_replace(s, std::wregex(L"\\#T2[^#]+"), L"");
             s = std::regex_replace(s, std::wregex(L"\\#T\\d"), L"");
         }
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     void F0100F7E00DFC8000(TextBuffer *buffer, HookParam *hp)
     {
@@ -661,8 +659,7 @@ namespace
         s = std::regex_replace(s, std::wregex(L"#KW"), L"");
         s = std::regex_replace(s, std::wregex(L"#C\\(TR,0xff0000ff\\)"), L"");
         s = std::regex_replace(s, std::wregex(L"#P\\(.*\\)"), L"");
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
 
     void F0100982015606000(TextBuffer *buffer, HookParam *hp)
@@ -732,8 +729,7 @@ namespace
         auto s = utf32_to_utf16(buffer->viewU());
         s = std::regex_replace(s, std::wregex(L"<[^>]+>"), L"");
         s = std::regex_replace(s, std::wregex(L"\n+"), L" ");
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     template <int index>
     void T01000BB01CB8A000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -1121,11 +1117,9 @@ namespace
     }
     void F0100E4000F616000(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        auto ws = StringToWideString(s, 932).value();
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
         ws = std::regex_replace(ws, std::wregex(LR"(\\\w)"), L"");
-        s = WideStringToString(ws, 932);
-        buffer->from(s);
+        buffer->from(WideStringToString(ws, 932));
     }
     void F01005A401D766000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1225,8 +1219,7 @@ namespace
         s = std::regex_replace(s, std::wregex(LR"(\#T\d)"), L"");
         if (s == L"　　")
             return buffer->clear();
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     void F010021D01474E000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1238,8 +1231,7 @@ namespace
         if (last == s)
             return buffer->clear();
         last = s;
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     void F010021D01474E000_2(TextBuffer *buffer, HookParam *hp)
     {
@@ -1250,8 +1242,7 @@ namespace
         if (last == s)
             return buffer->clear();
         last = s;
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     void F01002C00177AE000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1262,8 +1253,7 @@ namespace
         if (last == s)
             return buffer->clear();
         last = s;
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     void F0100EA100DF92000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1582,8 +1572,7 @@ namespace
         auto s = utf32_to_utf16(buffer->viewU());
         s = std::regex_replace(s, std::wregex(L"<rb>(.+?)</rb><rt>.+?</rt>"), L"$1");
         s = std::regex_replace(s, std::wregex(L"\n+"), L" ");
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     void F0100771013FA8000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1768,8 +1757,7 @@ namespace
         s = std::regex_replace(s, std::wregex(L"【SW】"), L"");
         s = std::regex_replace(s, std::wregex(L"【SP】"), L"");
         s = std::regex_replace(s, std::wregex(L"#P\\(.*\\)"), L"");
-        auto u32 = utf16_to_utf32(s.c_str(), s.size());
-        buffer->from(u32);
+        buffer->from(utf16_to_utf32(s));
     }
     void F010061A01C1CE000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1854,15 +1842,13 @@ namespace
     template <bool choice>
     void F0100E5200D1A2000(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        auto ws = StringToWideString(s, 932).value();
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
         ws = std::regex_replace(ws, std::wregex(LR"((\\n)+)"), L" ");
         ws = std::regex_replace(ws, std::wregex(LR"(\\d$|^\@[a-z]+|#.*?#|\$)"), L"");
         ws = std::regex_replace(ws, std::wregex(LR"(\u3000+)"), L"");
         if (choice)
             ws = std::regex_replace(ws, std::wregex(LR"(, ?\w+)"), L"");
-        s = WideStringToString(ws, 932);
-        buffer->from(s);
+        buffer->from(WideStringToString(ws, 932));
     }
     void F010028D0148E6000_2(TextBuffer *buffer, HookParam *hp)
     {
@@ -1900,16 +1886,14 @@ namespace
     template <bool choice>
     void F0100EFE0159C6000(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        auto ws = StringToWideString(s, 932).value();
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
         ws = std::regex_replace(ws, std::wregex(LR"((\\n)+)"), L" ");
         ws = std::regex_replace(ws, std::wregex(LR"(\\d$|^\@[a-z]+|#.*?#|\$)"), L"");
         ws = std::regex_replace(ws, std::wregex(LR"(\u3000+)"), L"");
         ws = std::regex_replace(ws, std::wregex(LR"(@w|\\c)"), L"");
         if (choice)
             ws = std::regex_replace(ws, std::wregex(LR"(, ?\w+)"), L"");
-        s = WideStringToString(ws, 932);
-        buffer->from(s);
+        buffer->from(WideStringToString(ws, 932));
     }
 
     void F0100FDB00AA80000(TextBuffer *buffer, HookParam *hp)

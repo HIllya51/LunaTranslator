@@ -88,8 +88,7 @@ namespace ppsspp
 
 	void NPJH50909_filter(TextBuffer *buffer, HookParam *hp)
 	{
-		std::string result = buffer->strA();
-		auto ws = StringToWideString(result, 932).value();
+		auto ws = StringToWideString(buffer->viewA(), 932).value();
 		// Remove single line markers
 		ws = std::regex_replace(ws, std::wregex(L"(\\%N)+"), L" ");
 
@@ -240,7 +239,7 @@ namespace ppsspp
 		void N(TextBuffer *buffer, HookParam *)
 		{
 			auto current1 = buffer->strA();
-			if(current == current1)
+			if (current == current1)
 				buffer->clear();
 		}
 	}

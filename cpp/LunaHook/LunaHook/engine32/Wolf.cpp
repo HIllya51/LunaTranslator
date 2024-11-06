@@ -145,12 +145,12 @@ namespace
 
   void commonfilter(TextBuffer *buffer, HookParam *hp)
   {
-    auto str = buffer->strA();
+    auto str = buffer->viewA();
     bool checkchaos = WideStringToString(StringToWideString(str)) != str;
     if (checkchaos)
       return buffer->clear();
     bool check1 = str.find("/") != str.npos || str.find("\\") != str.npos;
-    auto hashsuffix = [str]()
+    auto hashsuffix = [&]()
     {
       auto filterpath = {
           ".png", ".jpg", ".bmp",
@@ -163,7 +163,7 @@ namespace
       return false;
     };
     bool check2 = hashsuffix();
-    bool check3 = all_ascii(str.c_str(), str.size());
+    bool check3 = all_ascii(str.data(), str.size());
     if (check1 && (check2 || check3))
       return buffer->clear();
   }

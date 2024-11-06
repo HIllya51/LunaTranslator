@@ -262,8 +262,7 @@ namespace
     }
     void PCSG00776(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        auto ws = StringToWideString(s, 932).value();
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
         strReplace(ws, L"\x02", L"");
         Trim(ws);
         buffer->from(WideStringToString(ws));
@@ -436,20 +435,16 @@ namespace
     }
     void FPCSG00477(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        auto ws = StringToWideString(s, 932).value();
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
         ws = std::regex_replace(ws, std::wregex(LR"(#n\u3000*)"), L"");
         ws = std::regex_replace(ws, std::wregex(LR"(#\w.+?])"), L"");
-        s = WideStringToString(ws, 932);
-        buffer->from(s);
+        buffer->from(WideStringToString(ws, 932));
     }
     void FPCSG00852(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        auto ws = StringToWideString(s, 932).value();
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
         ws = std::regex_replace(ws, std::wregex(LR"(\^)"), L"");
-        s = WideStringToString(ws, 932);
-        buffer->from(s);
+        buffer->from(WideStringToString(ws, 932));
     }
     void FPCSG01066(TextBuffer *buffer, HookParam *hp)
     {

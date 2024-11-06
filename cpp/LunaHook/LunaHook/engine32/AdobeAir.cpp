@@ -221,7 +221,7 @@ bool adobelair3()
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     // 若当前还有5个字符，则这个句子会显示5次，然后substr(1,len-1)，直到结束，总共显示5+4+3+2+1次
-    auto ws = StringToWideString(buffer->strA());
+    auto ws = StringToWideString(buffer->viewA());
     static int leng = 0;
     if (ws.length() <= leng)
     {

@@ -94,8 +94,12 @@ typedef HRESULT(WINAPI *CONVERTINETUNICODETOMULTIBYTE)(
     LPINT lpnWideCharCount,
     LPSTR lpDstStr,
     LPINT lpnMultiCharCount);
-
 std::optional<std::wstring> StringToWideString(const std::string &text, UINT encoding)
+{
+  return StringToWideString(std::string_view(text), encoding);
+}
+
+std::optional<std::wstring> StringToWideString(std::string_view text, UINT encoding)
 {
   std::vector<wchar_t> buffer(text.size() + 1);
   if (disable_mbwc)
@@ -108,7 +112,7 @@ std::optional<std::wstring> StringToWideString(const std::string &text, UINT enc
     auto ConvertINetMultiByteToUnicode = (CONVERTINETMULTIBYTETOUNICODE)GetProcAddress(h, "ConvertINetMultiByteToUnicode");
     if (ConvertINetMultiByteToUnicode == 0)
       return {};
-    auto hr = ConvertINetMultiByteToUnicode(0, encoding, text.c_str(), &_s, buffer.data(), &_s2);
+    auto hr = ConvertINetMultiByteToUnicode(0, encoding, text.data(), &_s, buffer.data(), &_s2);
     if (SUCCEEDED(hr))
     {
       return std::wstring(buffer.data(), _s2);
@@ -118,7 +122,7 @@ std::optional<std::wstring> StringToWideString(const std::string &text, UINT enc
   }
   else
   {
-    if (int length = MultiByteToWideChar(encoding, 0, text.c_str(), text.size() + 1, buffer.data(), buffer.size()))
+    if (int length = MultiByteToWideChar(encoding, 0, text.data(), text.size() + 1, buffer.data(), buffer.size()))
       return std::wstring(buffer.data(), length - 1);
     return {};
   }
@@ -128,8 +132,30 @@ std::wstring StringToWideString(const std::string &text)
 {
   return StringToWideString(text, CP_UTF8).value();
 }
+std::wstring StringToWideString(std::string_view text)
+{
+  return StringToWideString(text, CP_UTF8).value();
+}
 
+std::optional<std::wstring> StringToWideString(const char *text, UINT encoding)
+{
+  return StringToWideString(std::string_view(text), encoding);
+}
+
+std::wstring StringToWideString(const char *text)
+{
+  return StringToWideString(std::string_view(text));
+}
 std::string WideStringToString(const std::wstring &text, UINT cp)
+{
+  return WideStringToString(std::wstring_view(text), cp);
+}
+
+std::string WideStringToString(const wchar_t *text, UINT cp)
+{
+  return WideStringToString(std::wstring_view(text), cp);
+}
+std::string WideStringToString(std::wstring_view text, UINT cp)
 {
   std::vector<char> buffer((text.size() + 1) * 4);
   if (disable_wcmb)
@@ -142,7 +168,7 @@ std::string WideStringToString(const std::wstring &text, UINT cp)
     auto ConvertINetUnicodeToMultiByte = (CONVERTINETUNICODETOMULTIBYTE)GetProcAddress(h, "ConvertINetUnicodeToMultiByte");
     if (ConvertINetUnicodeToMultiByte == 0)
       return {};
-    auto hr = ConvertINetUnicodeToMultiByte(0, cp, text.c_str(), &_s, buffer.data(), &_s2);
+    auto hr = ConvertINetUnicodeToMultiByte(0, cp, text.data(), &_s, buffer.data(), &_s2);
     if (SUCCEEDED(hr))
     {
       return std::string(buffer.data(), _s2);
@@ -152,7 +178,7 @@ std::string WideStringToString(const std::wstring &text, UINT cp)
   }
   else
   {
-    WideCharToMultiByte(cp, 0, text.c_str(), -1, buffer.data(), buffer.size(), nullptr, nullptr);
+    WideCharToMultiByte(cp, 0, text.data(), -1, buffer.data(), buffer.size(), nullptr, nullptr);
     return buffer.data();
   }
 }
@@ -171,16 +197,16 @@ inline unsigned int convertUTF32ToUTF16(unsigned int cUTF32, unsigned int &h, un
   return ret;
 }
 
-std::basic_string<uint32_t> utf16_to_utf32(const wchar_t *u16str, size_t size)
+u32string utf16_to_utf32(std::wstring_view wsv)
 {
-  std::basic_string<uint32_t> utf32String;
-  for (size_t i = 0; i < size; i++)
+  u32string utf32String;
+  for (size_t i = 0; i < wsv.size(); i++)
   {
-    auto u16c = u16str[i];
+    auto u16c = wsv[i];
     if (u16c - 0xd800u < 2048u)
-      if ((u16c & 0xfffffc00 == 0xd800) && (i < size - 1) && (u16str[i + 1] & 0xfffffc00 == 0xdc00))
+      if ((u16c & 0xfffffc00 == 0xd800) && (i < wsv.size() - 1) && (wsv[i + 1] & 0xfffffc00 == 0xdc00))
       {
-        utf32String += (u16c << 10) + u16str[i + 1] - 0x35fdc00;
+        utf32String += (u16c << 10) + wsv[i + 1] - 0x35fdc00;
         i += 1;
       }
       else
@@ -188,12 +214,12 @@ std::basic_string<uint32_t> utf16_to_utf32(const wchar_t *u16str, size_t size)
         // error invalid u16 char
       }
     else
-      utf32String += u16str[i];
+      utf32String += wsv[i];
   }
   return utf32String;
 }
 
-std::wstring utf32_to_utf16(std::basic_string_view<uint32_t> sv)
+std::wstring utf32_to_utf16(u32string_view sv)
 {
   std::wstring u16str;
   for (auto i = 0; i < sv.size(); i++)
@@ -284,9 +310,9 @@ std::optional<std::wstring> commonparsestring(void *data, size_t length, void *p
   if (hp->type & CODEC_UTF16)
     return std::wstring((wchar_t *)data, length / sizeof(wchar_t));
   else if (hp->type & CODEC_UTF32)
-    return (std::move(utf32_to_utf16(std::basic_string_view<uint32_t>((uint32_t *)data, length / sizeof(uint32_t)))));
+    return utf32_to_utf16(u32string_view((uint32_t *)data, length / sizeof(uint32_t)));
   else if (auto converted = StringToWideString(std::string((char *)data, length), (hp->type & CODEC_UTF8) ? CP_UTF8 : (hp->codepage ? hp->codepage : df)))
-    return (converted.value());
+    return converted.value();
   else
     return {};
 }

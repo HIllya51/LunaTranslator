@@ -55,7 +55,7 @@ namespace
     {
       StringFilter(buffer, "@1r", 3);
       StringFilter(buffer, "@-1r", 4);
-      if (!StringToWideString(buffer->strA(), 932).has_value())
+      if (!StringToWideString(buffer->viewA(), 932).has_value())
         buffer->clear();
     };
     return NewHook(hp, "Aksys");
