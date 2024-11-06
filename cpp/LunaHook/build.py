@@ -14,6 +14,7 @@ if len(sys.argv) and sys.argv[1] == "loadversion":
         print("version=" + versionstring)
         exit()
 if len(sys.argv) and sys.argv[1] == "merge":
+    os.chdir(rootDir)
     os.mkdir("../build")
     os.mkdir("builds")
     language = ["Chinese", "English", "Russian", "TradChinese"]
