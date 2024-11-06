@@ -143,12 +143,12 @@ bool InsertWolfHook()
 namespace
 {
 
-  bool commonfilter(void *data, size_t *len, HookParam *hp)
+  void commonfilter(TextBuffer *buffer, HookParam *hp)
   {
-    auto str = std::string(reinterpret_cast<LPSTR>(data), *len);
+    auto str = buffer->strA();
     bool checkchaos = WideStringToString(StringToWideString(str)) != str;
     if (checkchaos)
-      return false;
+      return buffer->clear();
     bool check1 = str.find("/") != str.npos || str.find("\\") != str.npos;
     auto hashsuffix = [str]()
     {
@@ -163,10 +163,9 @@ namespace
       return false;
     };
     bool check2 = hashsuffix();
-    bool check3 = all_ascii((const char *)data, *len);
+    bool check3 = all_ascii(str.c_str(), str.size());
     if (check1 && (check2 || check3))
-      return false;
-    return true;
+      return buffer->clear();
   }
   bool hook5_1(DWORD addr_1)
   {
@@ -192,7 +191,7 @@ namespace
     HookParam hp;
     hp.address = addr + sizeof(bytes) - 1;
     hp.offset = get_stack(7);
-    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_OVERWRITE ;
+    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
     hp.filter_fun = commonfilter;
     return NewHook(hp, "Wolf5_1");
   }
@@ -218,7 +217,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.offset = get_stack(8);
-    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_OVERWRITE ;
+    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
     hp.filter_fun = commonfilter;
     return NewHook(hp, "Wolf5");
   }
@@ -317,7 +316,7 @@ namespace
               int prefixSize = text - self->text,
                   capacity = self->capacity - prefixSize;
               buffer->from(data);
-              return ;
+              return;
 
               // data = EngineController::instance()->dispatchTextASTD(data, role, sig, capacity, SendAllowed, &timeout);
               // if (timeout)
@@ -329,12 +328,12 @@ namespace
               // self->size = data.size() + prefixSize;
             }
           }
-        } 
+        }
       }
-      void hookafter2(hook_stack *s, void *data1, size_t len)
+      void hookafter2(hook_stack *s, TextBuffer buffer)
       {
 
-        auto newData = std::string((char *)data1, len);
+        auto newData = buffer.strA();
 
         auto self = (TextListElement *)s->ecx; // ecx is actually a list of element
         if (self->isValid())
@@ -873,7 +872,7 @@ namespace
       hp.index = 4;
       hp.text_fun = Private::hookBefore;
       hp.hook_after = Private::hookafter2;
-      hp.type = USING_STRING | DATA_INDIRECT | EMBED_ABLE | EMBED_DYNA_SJIS|NO_CONTEXT;
+      hp.type = USING_STRING | DATA_INDIRECT | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       hp.hook_font = F_GetGlyphOutlineA;
       return NewHook(hp, "EmbedWolf");
     }

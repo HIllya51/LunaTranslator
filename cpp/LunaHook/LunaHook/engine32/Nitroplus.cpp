@@ -100,7 +100,7 @@ namespace
 				if (hp->user_value > l)
 					hp->user_value = 0;
 				data += hp->user_value;
-				auto len  = l - hp->user_value;
+				auto len = l - hp->user_value;
 				hp->user_value = l;
 				buffer->from(data, len);
 			};
@@ -115,26 +115,23 @@ bool Nitroplus::attach_function()
 	return InsertNitroplusHook() || InsertNitroplus2Hook() || dmmdrc();
 }
 
-bool NitroplusSysFilter(LPVOID data, size_t *size, HookParam *)
+void NitroplusSysFilter(TextBuffer *buffer, HookParam *)
 {
-	auto text = reinterpret_cast<LPSTR>(data);
-	auto len = reinterpret_cast<size_t *>(size);
+	auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
-	if (*len <= 2)
-		return false;
+	if (buffer->size <= 2)
+		return buffer->clear();
 
-	StringFilter(text, len, "\x81@", 2);
-	CharReplacer(text, len, '\r', ' ');
-	if (cpp_strnstr(text, "<", *len))
+	StringFilter(buffer, "\x81@", 2);
+	CharReplacer(buffer, '\r', ' ');
+	if (cpp_strnstr(text, "<", buffer->size))
 	{
-		StringFilterBetween(text, len, "<", 1, ">", 1);
+		StringFilterBetween(buffer, "<", 1, ">", 1);
 	}
-	while (*len > 1 && ::isspace(*text))
+	while (buffer->size > 1 && ::isspace(*text))
 	{
-		::memmove(text, text + 1, --(*len));
+		::memmove(text, text + 1, --buffer->size);
 	}
-
-	return true;
 }
 
 bool InsertNitroplusSysHook()

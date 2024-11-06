@@ -218,18 +218,17 @@ bool adobelair3()
   hp.address = addr;
   hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
   hp.offset = get_stack(1);
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     // 若当前还有5个字符，则这个句子会显示5次，然后substr(1,len-1)，直到结束，总共显示5+4+3+2+1次
-    auto ws = StringToWideString(std::string((char *)data, *len));
+    auto ws = StringToWideString(buffer->strA());
     static int leng = 0;
     if (ws.length() <= leng)
     {
       leng = ws.length();
-      return false;
+      return buffer->clear();
     }
     leng = ws.length();
-    return true;
   };
   return NewHook(hp, "AIRNovel");
 }

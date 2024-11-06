@@ -1,5 +1,4 @@
-#include"Tamamo.h"
-
+#include "Tamamo.h"
 
 /** jichi 8/23/2015 Tamamo
  *  Sample game: 閃光の騎士 ～カリスティアナイト～ Ver1.03
@@ -220,71 +219,82 @@
  * 072618A0  98 DD 95 48 00 40 00 88 83 4A 83 43 81 75 81 63  俤菱.@.・Jイ「…
  * 072618B0  81 63 82 A4 82 F1 81 41 82 BB 82 A4 82 B5 82 E6  …うん、そうしよ
  */
-namespace { // unnamed
-bool TamamoFilter(LPVOID data, size_t *size, HookParam *)
-{
-  LPSTR text = (LPSTR)data;
-  if (::memchr(text, '<', *size))
-    StringFilter(text, reinterpret_cast<size_t *>(size), "<e>", 3);
-  StringFilter(text, reinterpret_cast<size_t *>(size), "\x0d\x0a\x81\x40", 4); // remove \n before space
-  StringFilterBetween(text,size,"<",1,">",1);
-  StringFilterBetween(text,size,"{",1,"}",1);
-  return true;
-}
-void SpecialHookTamamo(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-{
-  auto text = (LPCSTR)stack->stack[1]; // arg2
-  auto size = stack->stack[2]; // arg3 
-  if (0 < size && size < VNR_TEXT_CAPACITY && size == ::strlen(text) && !all_ascii(text)) {
-    
-    //*len = argof(esp_base, 3 - 1);
-     
-    //*split = argof(8 - 1, esp_base); // use parent return address as split
-    //*split = argof(7 - 1, esp_base); // use the address just before parent retaddr
-    *split = stack->stack[5];
-    //if (hp.split)
-    //  *split = *(DWORD *)(esp_base + hp.split);
-    buffer->from(text, size);
+namespace
+{ // unnamed
+  void TamamoFilter(TextBuffer *buffer, HookParam *)
+  {
+    LPSTR text = (LPSTR)buffer->buff;
+    if (::memchr(text, '<', buffer->size))
+      StringFilter(buffer, "<e>", 3);
+    StringFilter(buffer, "\x0d\x0a\x81\x40", 4); // remove \n before space
+    StringFilterBetween(buffer, "<", 1, ">", 1);
+    StringFilterBetween(buffer, "{", 1, "}", 1);
   }
-}
+  void SpecialHookTamamo(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    auto text = (LPCSTR)stack->stack[1]; // arg2
+    auto size = stack->stack[2];         // arg3
+    if (0 < size && size < VNR_TEXT_CAPACITY && size == ::strlen(text) && !all_ascii(text))
+    {
+
+      //*len = argof(esp_base, 3 - 1);
+
+      //*split = argof(8 - 1, esp_base); // use parent return address as split
+      //*split = argof(7 - 1, esp_base); // use the address just before parent retaddr
+      *split = stack->stack[5];
+      // if (hp.split)
+      //   *split = *(DWORD *)(esp_base + hp.split);
+      buffer->from(text, size);
+    }
+  }
 } // unnamed namespace
 bool InsertTamamoHook()
 {
   ULONG addr = 0;
   { // for new games
     const BYTE bytes[] = {
-      0x8b,0xd6,      // 0051c287   8bd6             mov edx,esi
-      0x85,0xff,      // 0051c289   85ff             test edi,edi
-      0x74, 0x0e,     // 0051c28b   74 0e            je short .0051c29b
-      0x57,           // 0051c28d   57               push edi
-      0x8d,0x04,0x0b, // 0051c28e   8d040b           lea eax,dword ptr ds:[ebx+ecx]
-      0x50,           // 0051c291   50               push eax
-      0x52,           // 0051c292   52               push edx
-      0xe8 //f8440f00 // 0051c293   e8 f8440f00      call .00610790    ; jichi: copy invoked here
+        0x8b, 0xd6,       // 0051c287   8bd6             mov edx,esi
+        0x85, 0xff,       // 0051c289   85ff             test edi,edi
+        0x74, 0x0e,       // 0051c28b   74 0e            je short .0051c29b
+        0x57,             // 0051c28d   57               push edi
+        0x8d, 0x04, 0x0b, // 0051c28e   8d040b           lea eax,dword ptr ds:[ebx+ecx]
+        0x50,             // 0051c291   50               push eax
+        0x52,             // 0051c292   52               push edx
+        0xe8              // f8440f00 // 0051c293   e8 f8440f00      call .00610790    ; jichi: copy invoked here
     };
-    enum { addr_offset = sizeof(bytes) - 1 };
+    enum
+    {
+      addr_offset = sizeof(bytes) - 1
+    };
     addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr) {
+    if (addr)
+    {
       addr += addr_offset;
       ConsoleOutput("Tamamo: pattern for new version found");
     }
   }
-  if (!addr) { // for old games
+  if (!addr)
+  { // for old games
     const BYTE bytes[] = {
-      0x72, 0x11,       // 0067fa5b   72 11            jb short .0067fa6e
-      0x56,             // 0067fa5d   56               push esi
-      0xff,0x75, 0x10,  // 0067fa5e   ff75 10          push dword ptr ss:[ebp+0x10]
-      0xff,0x75, 0x08,  // 0067fa61   ff75 08          push dword ptr ss:[ebp+0x8]
-      0xe8 // 27080000  // 0067fa64   e8 27080000      call .00680290  ; jichi: copy invoked here
+        0x72, 0x11,       // 0067fa5b   72 11            jb short .0067fa6e
+        0x56,             // 0067fa5d   56               push esi
+        0xff, 0x75, 0x10, // 0067fa5e   ff75 10          push dword ptr ss:[ebp+0x10]
+        0xff, 0x75, 0x08, // 0067fa61   ff75 08          push dword ptr ss:[ebp+0x8]
+        0xe8              // 27080000  // 0067fa64   e8 27080000      call .00680290  ; jichi: copy invoked here
     };
-    enum { addr_offset = sizeof(bytes) - 1 };
+    enum
+    {
+      addr_offset = sizeof(bytes) - 1
+    };
     addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr) {
+    if (addr)
+    {
       addr += addr_offset;
       ConsoleOutput("Tamamo: pattern for old version found");
     }
   }
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("Tamamo: pattern not found");
     return false;
   }
@@ -292,63 +302,69 @@ bool InsertTamamoHook()
   hp.address = addr;
   hp.text_fun = SpecialHookTamamo;
   hp.filter_fun = TamamoFilter;
-  hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT;
+  hp.type = USING_STRING | USING_SPLIT | NO_CONTEXT;
   ConsoleOutput("INSERT Tamamo");
   return NewHook(hp, "Tamamo");
 }
-namespace{
-  bool Tamamogettext(LPVOID data, size_t *size, HookParam *)
+namespace
+{
+  void Tamamogettext(TextBuffer *buffer, HookParam *)
   {
-    auto s=std::string((char*)data,*size);
-     
-    s=std::regex_replace(s, std::regex("\\{#(.*?)\\}"), ""); 
-    s = std::regex_replace(s, std::regex("<(.*?)>"), ""); 
-    
-    s = std::regex_replace(s, std::regex("(.*)\x81u([\\s\\S]*?)\x81v(.*)"), "\x81u$2\x81v"); //「  」
-    s = std::regex_replace(s, std::regex("(.*)\x81i([\\s\\S]*?)\x81j(.*)"), "\x81i$2\x81j"); //（  ）
-    
-    return write_string_overwrite(data,size,s);
+    auto s = buffer->strA();
+
+    s = std::regex_replace(s, std::regex("\\{#(.*?)\\}"), "");
+    s = std::regex_replace(s, std::regex("<(.*?)>"), "");
+
+    s = std::regex_replace(s, std::regex("(.*)\x81u([\\s\\S]*?)\x81v(.*)"), "\x81u$2\x81v"); // 「  」
+    s = std::regex_replace(s, std::regex("(.*)\x81i([\\s\\S]*?)\x81j(.*)"), "\x81i$2\x81j"); // （  ）
+    buffer->from(s);
   }
-  bool Tamamogetname(LPVOID data, size_t *size, HookParam *)
+  void Tamamogetname(TextBuffer *buffer, HookParam *)
   {
-    auto s=std::string((char*)data,*size);
-     
-    s=std::regex_replace(s, std::regex("\\{#(.*?)\\}"), ""); 
-    s = std::regex_replace(s, std::regex("<(.*?)>"), ""); 
-    if(s.find("\x81u")!=s.npos && s.find("\x81v")!=s.npos)
-    s = std::regex_replace(s, std::regex("(.*)\x81u([\\s\\S]*?)\x81v(.*)"), "$1"); //「  」
-    else if (s.find("\x81i")!=s.npos && s.find("\x81j")!=s.npos)
-    s = std::regex_replace(s, std::regex("(.*)\x81i([\\s\\S]*?)\x81j(.*)"), "$1"); //（  ）
-    else return false;
-    return write_string_overwrite(data,size,s);
+    auto s = buffer->strA();
+
+    s = std::regex_replace(s, std::regex("\\{#(.*?)\\}"), "");
+    s = std::regex_replace(s, std::regex("<(.*?)>"), "");
+    if (s.find("\x81u") != s.npos && s.find("\x81v") != s.npos)
+      s = std::regex_replace(s, std::regex("(.*)\x81u([\\s\\S]*?)\x81v(.*)"), "$1"); // 「  」
+    else if (s.find("\x81i") != s.npos && s.find("\x81j") != s.npos)
+      s = std::regex_replace(s, std::regex("(.*)\x81i([\\s\\S]*?)\x81j(.*)"), "$1"); // （  ）
+    else
+      return buffer->clear();
+    buffer->from(s);
   }
-   bool tamamo3(){
-    //閃光の騎士 ～カリスティアナイト～
-    char face[]="face_%s_%s.png";
+  bool tamamo3()
+  {
+    // 閃光の騎士 ～カリスティアナイト～
+    char face[] = "face_%s_%s.png";
     auto addr = MemDbg::findBytes(face, sizeof(face), processStartAddress, processStopAddress);
-    if(addr==0)return false;
-    bool ok=false;
-     
-    BYTE bytes[]={0x68,XX4};
-    memcpy(bytes+1,&addr,4); 
-    for(auto addr:Util::SearchMemory(bytes, sizeof(bytes), PAGE_EXECUTE, processStartAddress, processStopAddress)){ 
+    if (addr == 0)
+      return false;
+    bool ok = false;
+
+    BYTE bytes[] = {0x68, XX4};
+    memcpy(bytes + 1, &addr, 4);
+    for (auto addr : Util::SearchMemory(bytes, sizeof(bytes), PAGE_EXECUTE, processStartAddress, processStopAddress))
+    {
       addr = MemDbg::findEnclosingAlignedFunction(addr);
-      if (!addr) continue; 
+      if (!addr)
+        continue;
       HookParam hp;
-      hp.address = addr  ;
-      hp.offset=get_stack(1);
-      hp.type = USING_STRING;  
-      hp.filter_fun=Tamamogettext;
-      ok|=NewHook(hp, "tamamo_text"); 
-      hp.address = addr+5  ; 
-      hp.offset=get_stack(3);
-      hp.filter_fun=Tamamogetname;
-      ok|=NewHook(hp, "tamamo_name");
+      hp.address = addr;
+      hp.offset = get_stack(1);
+      hp.type = USING_STRING;
+      hp.filter_fun = Tamamogettext;
+      ok |= NewHook(hp, "tamamo_text");
+      hp.address = addr + 5;
+      hp.offset = get_stack(3);
+      hp.filter_fun = Tamamogetname;
+      ok |= NewHook(hp, "tamamo_name");
     }
     return ok;
   }
 }
-bool Tamamo::attach_function() {  
-     bool aa=tamamo3();
-    return InsertTamamoHook()||aa;
-} 
+bool Tamamo::attach_function()
+{
+  bool aa = tamamo3();
+  return InsertTamamoHook() || aa;
+}

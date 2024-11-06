@@ -164,20 +164,17 @@ namespace
    *  0042CF76   CC               INT3
    *  0042CF77   CC               INT3
    */
-  bool Siglus4Filter(LPVOID data, size_t *size, HookParam *)
+  void Siglus4Filter(TextBuffer *buffer, HookParam *)
   {
-    auto text = reinterpret_cast<LPWSTR>(data);
-    auto len = reinterpret_cast<size_t *>(size);
     // Remove "NNLI"
     // if (*len > 2 && ::all_ascii(text))
     //  return false;
     // if (*len == 2 && *text == L'N')
     //  return false;
-    StringFilter(text, len, L"NLI", 3);
+    StringFilter(buffer, L"NLI", 3);
     // Replace 『�(300e, 300f) with 「�(300c,300d)
     // CharReplacer(text, len, 0x300e, 0x300c);
     // CharReplacer(text, len, 0x300f, 0x300d);
-    return true;
   }
   void SpecialHookSiglus4(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
@@ -190,12 +187,12 @@ namespace
       return;
     DWORD data;
     if (size < 8)
-       data = eax;
+      data = eax;
     else
-       data = *(DWORD *)eax;
+      data = *(DWORD *)eax;
 
     // Skip all ascii characters
-    if (all_ascii((LPCWSTR) data))
+    if (all_ascii((LPCWSTR)data))
       return;
 
     // Avoid duplication
@@ -205,9 +202,9 @@ namespace
     //  return;
     // lastTextHash_ = hash;
 
-    buffer->from(data, size * 2);// UTF-16
-    DWORD s0 = stack->retaddr; // use stack[0] as split
-    if (s0 <= 0xff)            // scenario text
+    buffer->from(data, size * 2); // UTF-16
+    DWORD s0 = stack->retaddr;    // use stack[0] as split
+    if (s0 <= 0xff)               // scenario text
       *split = FIXED_SPLIT_VALUE;
     else if (::IsBadReadPtr((LPCVOID)s0, 4))
       *split = s0;
@@ -1570,7 +1567,7 @@ bool InsertSiglus4Hook()
   {
     // 写回有乱码
     auto textu = (TextUnionW *)(stack->ecx + 4);
-    buffer->from(textu->getText(),textu->size * 2);
+    buffer->from(textu->getText(), textu->size * 2);
   }
 
   // jichi: 8/17/2013: Change return type to bool
@@ -1761,14 +1758,14 @@ namespace
 
         auto arg = (TextUnionW *)(type_ == Type1 ? s->ecx : s->stack[1]);
         if (!arg || !arg->isValid())
-          return  ;
-        buffer->from(arg->getText(), arg->size*2);
+          return;
+        buffer->from(arg->getText(), arg->size * 2);
       }
-      void hookafter(hook_stack *s, void *data, size_t len)
+      void hookafter(hook_stack *s, TextBuffer buffer)
       {
         auto arg = (TextUnionW *)(type_ == Type1 ? s->ecx : s->stack[1]);
         auto argValue = *arg;
-        auto newText = new std::wstring((wchar_t *)data, len / 2);
+        auto newText = new std::wstring(buffer.viewW());
         arg->setLongText(*newText);
 
         // Restoring is indispensible, and as a result, the default hook does not work
@@ -1784,7 +1781,7 @@ namespace
       // return Private::oldHookFun = (Private::hook_fun_t)winhook::replace_fun(addr, (ULONG)Private::newHookFun);
       HookParam hp;
       hp.address = addr;
-      hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE|NO_CONTEXT; // 0x41
+      hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE | NO_CONTEXT; // 0x41
       hp.text_fun = Private::text_fun;
       hp.hook_after = Private::hookafter;
       hp.hook_font = F_GetGlyphOutlineW;
@@ -1805,19 +1802,19 @@ namespace OtherHook
       static std::wstring text_;
       auto arg = (TextUnionW *)s->stack[0];
       if (!arg || !arg->isValid())
-        return  ;
+        return;
 
       LPCWSTR text = arg->getText();
       // Skip all ascii
       if (!text || !*text || *text <= 127 || arg->size > 1500) // there could be garbage
-        return  ;
+        return;
 
       *role = Engine::OtherRole;
       ULONG split = s->stack[3];
       if (split <= 0xffff || !Engine::isAddressReadable(split))
       { // skip modifying scenario thread
         // role = Engine::ScenarioRole;
-        return  ;
+        return;
       }
       else
       {
@@ -1831,17 +1828,16 @@ namespace OtherHook
       }
       // auto sig = Engine::hashThreadSignature(role, split);
 
-       buffer->from(text, arg->size*2);
+      buffer->from(text, arg->size * 2);
       //           newText = EngineController::instance()->dispatchTextWSTD(oldText, role, sig);
     }
-    void hookafter2(hook_stack *s, void *data, size_t len)
+    void hookafter2(hook_stack *s, TextBuffer buffer)
     {
       auto arg = (TextUnionW *)s->stack[0];
       arg_ = arg;
       argValue_ = *arg;
       static std::wstring text_;
-      auto newText = std::wstring((LPWSTR)data, len / 2);
-      text_ = newText;
+      text_ = buffer.viewW();
       arg->setLongText(text_);
     }
 
@@ -1874,7 +1870,7 @@ namespace OtherHook
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE|NO_CONTEXT; // 0x41
+    hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE | NO_CONTEXT; // 0x41
     hp.text_fun = Private::hookBefore;
     hp.hook_after = Private::hookafter2;
     hp.hook_font = F_GetGlyphOutlineW;

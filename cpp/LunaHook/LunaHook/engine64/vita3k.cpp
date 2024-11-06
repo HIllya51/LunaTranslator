@@ -102,28 +102,28 @@ bool vita3k::attach_function()
 
 namespace
 {
-    bool FPCSG01023(void *data, size_t *len, HookParam *hp)
+    void FPCSG01023(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("<br>"), "");
         s = std::regex_replace(s, std::regex("%CF11F"), "");
         s = std::regex_replace(s, std::regex("%CFFFF"), "");
         s = std::regex_replace(s, std::regex("%K%P"), "");
         s = std::regex_replace(s, std::regex("%K%N"), "");
         s = std::regex_replace(s, std::regex("\n"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
     template <int idx>
-    bool FPCSG01282(void *data, size_t *len, HookParam *hp)
+    void FPCSG01282(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("(\\n)+"), " ");
         s = std::regex_replace(s, std::regex("\\d$|^@[a-z]+|#.*?#|\\$"), "");
         static std::string last;
         if (last == s)
-            return false;
+            return buffer->clear();
         last = s;
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
 
     template <int index>
@@ -133,9 +133,9 @@ namespace
         buffer->from(address + 0xC, (*(DWORD *)(address + 0x8)) * 2);
     }
 
-    bool FPCSG00410(void *data, size_t *len, HookParam *hp)
+    void FPCSG00410(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
         s = std::regex_replace(s, std::regex("#Pos\\[[\\s\\S]*?\\]"), "");
         s = std::regex_replace(s, std::regex("#n"), " ");
@@ -148,125 +148,125 @@ namespace
         strReplace(s, "\x87\x4b", "\x81\x7a");
         strReplace(s, "\x87\x44", "\x81\x41");
         strReplace(s, "\x87\x40", "\x81\x45\x81\x45\x81\x45");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00448(void *data, size_t *len, HookParam *hp)
+    void FPCSG00448(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("[\\s]"), "");
         s = std::regex_replace(s, std::regex("(#n)+"), "");
         s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
         s = std::regex_replace(s, std::regex("#Pos[\\s\\S]*?\\]"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG01008(void *data, size_t *len, HookParam *hp)
+    void FPCSG01008(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("#Ruby\\[([^,]+)\\.([^\\]]+)\\]."), "$1");
         s = std::regex_replace(s, std::regex("(#n)+"), " ");
         s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
     void TPCSG00903(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = VITA3K::emu_arg(stack)[0];
         buffer->from(address + 0x1C, (*(DWORD *)(address + 0x14)));
     }
-    bool FPCSG00903(void *data, size_t *len, HookParam *hp)
+    void FPCSG00903(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("\\\\n"), " ");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG01180(void *data, size_t *len, HookParam *hp)
+    void FPCSG01180(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"(\\n)"), " ");
         s = std::regex_replace(s, std::regex(R"(,.*$)"), " ");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00839(void *data, size_t *len, HookParam *hp)
+    void FPCSG00839(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::wstring((wchar_t *)data, *len / 2);
+        auto s = buffer->strW();
         s = std::regex_replace(s, std::wregex(L"\\[[^\\]]+."), L"");
         s = std::regex_replace(s, std::wregex(L"\\\\k|\\\\x|%C|%B|%p-1;"), L"");
         s = std::regex_replace(s, std::wregex(L"#[0-9a-fA-F]+;([^%#]+)(%r)?"), L"$1");
         s = std::regex_replace(s, std::wregex(L"\\\\n"), L"");
         static std::wstring last;
         if (last.find(s) != last.npos)
-            return false;
+            return buffer->clear();
         last = s;
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00751(void *data, size_t *len, HookParam *hp)
+    void FPCSG00751(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("[\\s]"), "");
         s = std::regex_replace(s, std::regex("@[a-z]"), "");
         // s = std::regex_replace(s, std::regex("＄"), "");
         strReplace(s, "\x81\x90", "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00401(void *data, size_t *len, HookParam *hp)
+    void FPCSG00401(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"([\s])"), "");
         s = std::regex_replace(s, std::regex(R"(\c)"), "");
         s = std::regex_replace(s, std::regex(R"(\\n)"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00912(void *data, size_t *len, HookParam *hp)
+    void FPCSG00912(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("%N"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00706(void *data, size_t *len, HookParam *hp)
+    void FPCSG00706(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::wstring((wchar_t *)data, *len / 2);
+        auto s = buffer->strW();
         s = std::regex_replace(s, std::wregex(L"<br>"), L"");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00696(void *data, size_t *len, HookParam *hp)
+    void FPCSG00696(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         //.replace(/㌔/g, '⁉')
         //.replace(/㍉/g, '!!')
         strReplace(s, "\x87\x60", "");
         strReplace(s, "\x87\x5f", "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00389(void *data, size_t *len, HookParam *hp)
+    void FPCSG00389(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("[\\s]"), "");
         s = std::regex_replace(s, std::regex("(#n)+"), "");
         s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
         s = std::regex_replace(s, std::regex("#Pos\\[[\\s\\S]*?\\]"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00216(void *data, size_t *len, HookParam *hp)
+    void FPCSG00216(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("[\\s]"), "");
         s = std::regex_replace(s, std::regex("(#n)+"), "");
         s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
         s = std::regex_replace(s, std::regex("#Pos\\[[\\s\\S]*?\\]"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00405(void *data, size_t *len, HookParam *hp)
+    void FPCSG00405(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("[\\s]"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool PCSG00776(void *data, size_t *len, HookParam *hp)
+    void PCSG00776(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         auto ws = StringToWideString(s, 932).value();
         strReplace(ws, L"\x02", L"");
         Trim(ws);
-        return write_string_overwrite(data, len, WideStringToString(ws));
+        buffer->from(WideStringToString(ws));
     }
     void PCSG00912(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -371,54 +371,54 @@ namespace
         buffer->from(pre);
     }
 
-    bool FPCSG00468(void *data, size_t *len, HookParam *hp)
+    void FPCSG00468(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(u8R"(\\n(　)*|\\k)"), "");
         s = std::regex_replace(s, std::regex(R"(\[|\*[^\]]+])"), "");
         s = std::regex_replace(s, std::regex(u8"×"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00808(void *data, size_t *len, HookParam *hp)
+    void FPCSG00808(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"(^\s+|\s+$)"), "");
         s = std::regex_replace(s, std::regex(R"(\s*(#n)*\s*)"), "");
         s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool F010088B01A8FC000(void *data, size_t *len, HookParam *hp)
+    void F010088B01A8FC000(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         static std::string last;
         s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
         s = std::regex_replace(s, std::regex(u8"　"), "");
         if (last == s)
-            return false;
+            return buffer->clear();
         last = s;
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00815(void *data, size_t *len, HookParam *hp)
+    void FPCSG00815(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"(\s*(#n)*\s*)"), "");
         s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00855(void *data, size_t *len, HookParam *hp)
+    void FPCSG00855(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(u8R"(#n(　)*)"), "");
         s = std::regex_replace(s, std::regex(R"(#\w.+?])"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
     template <int idx>
-    bool FPCSG00855_2(void *data, size_t *len, HookParam *hp)
+    void FPCSG00855_2(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         static std::string last;
         if (last == s)
-            return false;
+            return buffer->clear();
         last = s;
         strReplace(s, u8"Χ", u8"、");
         strReplace(s, u8"Δ", u8"。");
@@ -431,44 +431,40 @@ namespace
         strReplace(s, u8"∵", u8"』");
         strReplace(s, u8"П", u8"【");
         strReplace(s, u8"Ц", u8"】");
-        if (write_string_overwrite(data, len, s))
-            return FPCSG00855(data, len, hp);
-        else
-            return false;
+        buffer->from(s);
+        FPCSG00855(buffer, hp);
     }
-    bool FPCSG00477(void *data, size_t *len, HookParam *hp)
+    void FPCSG00477(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         auto ws = StringToWideString(s, 932).value();
         ws = std::regex_replace(ws, std::wregex(LR"(#n\u3000*)"), L"");
         ws = std::regex_replace(ws, std::wregex(LR"(#\w.+?])"), L"");
         s = WideStringToString(ws, 932);
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG00852(void *data, size_t *len, HookParam *hp)
+    void FPCSG00852(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         auto ws = StringToWideString(s, 932).value();
         ws = std::regex_replace(ws, std::wregex(LR"(\^)"), L"");
         s = WideStringToString(ws, 932);
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG01066(void *data, size_t *len, HookParam *hp)
+    void FPCSG01066(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(u8R"(\n(　)*)"), "");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
-    bool FPCSG01075(void *data, size_t *len, HookParam *hp)
+    void FPCSG01075(TextBuffer *buffer, HookParam *hp)
     {
-        if (!FPCSG00808(data, len, hp))
-            return false;
-        auto s = std::string((char *)data, *len);
+        FPCSG00808(buffer, hp);
+        auto s = buffer->strA();
         static std::string last;
         if (last == s)
-            return false;
+            return buffer->clear();
         last = s;
-        return true;
     }
     auto _ = []()
     {

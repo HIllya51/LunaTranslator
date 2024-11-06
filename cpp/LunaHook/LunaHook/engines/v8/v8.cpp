@@ -37,12 +37,12 @@ namespace
 			buffer->from_cs(text);
 		}
 	}
-	std::wstring parseafter(void *data, size_t len)
+	std::wstring parseafter(std::wstring_view view)
 	{
 		std::wstring transwithfont = magicrecv;
 		transwithfont += commonsharedmem->fontFamily;
 		transwithfont += L'\x02';
-		transwithfont += std::wstring((wchar_t *)data, len / 2);
+		transwithfont += view;
 		return transwithfont;
 	}
 }
@@ -52,16 +52,16 @@ namespace
 	{
 		HookParam hp;
 		hp.address = (uintptr_t)SetClipboardData;
-		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE ;
+		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE;
 		hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buffer, uintptr_t *split)
 		{
 			HGLOBAL hClipboardData = (HGLOBAL)stack->ARG2;
 			parsebefore((wchar_t *)GlobalLock(hClipboardData), hp, split, buffer);
 			GlobalUnlock(hClipboardData);
 		};
-		hp.hook_after = [](hook_stack *s, void *data, size_t len)
+		hp.hook_after = [](hook_stack *s, TextBuffer buffer)
 		{
-			std::wstring transwithfont = parseafter(data, len);
+			std::wstring transwithfont = parseafter(buffer.viewW());
 			HGLOBAL hClipboardData = GlobalAlloc(GMEM_MOVEABLE, transwithfont.size() * 2 + 2);
 			auto pchData = (wchar_t *)GlobalLock(hClipboardData);
 			wcscpy(pchData, (wchar_t *)transwithfont.c_str());
@@ -77,17 +77,15 @@ namespace
 	{
 		HookParam hp;
 		hp.address = (uintptr_t)LUNA_CONTENTBYPASS;
-		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE ;
+		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE;
 		hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buffer, uintptr_t *split)
 		{
 			parsebefore((wchar_t *)stack->ARG1, hp, split, buffer);
 		};
-		hp.hook_after = [](hook_stack *s, void *data, size_t len)
+		hp.hook_after = [](hook_stack *s, TextBuffer buffer)
 		{
-			std::wstring transwithfont = parseafter(data, len);
-			auto news = new wchar_t[transwithfont.size() + 1];
-			wcscpy(news, transwithfont.c_str());
-			s->ARG1 = (uintptr_t)news;
+			std::wstring transwithfont = parseafter(buffer.viewW());
+			s->ARG1 = (uintptr_t)allocateString(transwithfont);
 		};
 		return NewHook(hp, "nwjs/electron rpgmakermv/tyranoscript");
 	}
@@ -321,15 +319,14 @@ namespace
 			((size_t(THISCALL *)(void *, char *, int, int *, int))WriteUtf8)((void *)stack->THISCALLTHIS, u8str, length, &writen, 0);
 			buffer->from(u8str, length);
 		};
-		hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+		hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
 		{
-			if (strstr((char *)data, R"(http://)") != 0)
-				return false;
-			if (strstr((char *)data, R"(https://)") != 0)
-				return false;
-			if (strstr((char *)data, R"(\\?\)") != 0)
-				return false; // 过滤路径
-			return true;
+			if (strstr((char *)buffer->buff, R"(http://)") != 0)
+				return buffer->clear();
+			if (strstr((char *)buffer->buff, R"(https://)") != 0)
+				return buffer->clear();
+			if (strstr((char *)buffer->buff, R"(\\?\)") != 0)
+				return buffer->clear(); // 过滤路径
 		};
 		bool succ = false;
 

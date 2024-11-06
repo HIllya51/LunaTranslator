@@ -45,12 +45,11 @@ namespace
       hp.type = CODEC_UTF16 | USING_STRING | DATA_INDIRECT;
       hp.index = 0;
       hp.offset = get_reg(regs::rcx);
-      hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        std::wstring s((wchar_t *)data, *len / 2);
+        auto s = buffer->viewW();
         if (s.substr(s.size() - 2, 2) == L"\\w")
-          *len -= 4;
-        return true;
+          buffer->size -= 4;
       };
       suc |= NewHook(hp, "LightVN");
     }
@@ -75,12 +74,12 @@ namespace
     hp.address = addr;
     hp.type = CODEC_UTF16 | USING_STRING;
     hp.offset = get_stack(6);
-    hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
-      if (all_ascii((wchar_t *)data, *len))
-        return false;
+      if (all_ascii((wchar_t *)buffer->buff, buffer->size / 2))
+        return buffer->clear();
       // 高架下に広がる[瀟洒]<しょうしゃ>な店内には、あたしたちのような学生の他に、
-      auto str = std::wstring(reinterpret_cast<LPWSTR>(data), *len / 2);
+      auto str = buffer->strW();
       auto filterpath = {
           L".rpy", L".rpa", L".py", L".pyc", L".txt",
           L".png", L".jpg", L".bmp",
@@ -89,22 +88,22 @@ namespace
           L".otf", L".ttf", L"Data/"};
       for (auto _ : filterpath)
         if (str.find(_) != str.npos)
-          return false;
+          return buffer->clear();
       str = std::regex_replace(str, std::wregex(L"\\[(.*?)\\]<(.*?)>"), L"$1");
-      return write_string_overwrite(data, len, str);
+      buffer->from(str);
     };
     return NewHook(hp, "LightVN2");
   }
 }
 namespace
 {
-  bool commonfilter(LPVOID data, size_t *size, HookParam *)
+  void commonfilter(TextBuffer *buffer, HookParam *)
   {
-    auto str = std::wstring((wchar_t *)data, *size / 2);
+    auto str = buffer->strW();
     std::wregex pattern(L"-{2,}");
     str = std::regex_replace(str, pattern, L"");
     str = std::regex_replace(str, std::wregex(L"\\[(.*?)\\]<(.*?)>"), L"$1");
-    return write_string_overwrite(data, size, str);
+    buffer->from(str);
   }
   bool lightvnparsestring()
   {
@@ -172,7 +171,7 @@ namespace
         hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
           // wstring=TextUnionW for msvc c++17
-          auto tu=(TextUnionW *)stack->rdx;
+          auto tu = (TextUnionW *)stack->rdx;
           buffer->from(std::wstring_view(tu->getText(), tu->size));
         };
         hp.filter_fun = commonfilter;

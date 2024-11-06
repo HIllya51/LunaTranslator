@@ -203,7 +203,7 @@ namespace
 
         int size = s->eax - 1;
         if (size <= 0)
-          return  ;
+          return;
 
         // 0042FC03   8B15 E8234A00    MOV EDX,DWORD PTR DS:[0x4A23E8]	; jichi: text here
         // 0042FC09   8B4C24 10        MOV ECX,DWORD PTR SS:[ESP+0x10]	; jichi: count is here
@@ -230,12 +230,12 @@ namespace
             || text[size]                               // text length not verified since there could be trailing zeros
             || ::isalpha(text[0]) && ::isalpha(text[1]) // Sample system text in 恋姫無双: bcg_剣道場a
             || all_ascii(text))
-          return  ;
+          return;
 
         auto trimmedSize = size;
         auto trimmedText = trim(text, &trimmedSize);
         if (trimmedSize <= 0)
-          return  ;
+          return;
 
         // auto size = s->ecx * 4;
         // auto dst = (LPSTR)s->edi;
@@ -268,7 +268,7 @@ namespace
         }
         buffer->from(oldData);
       }
-      void hookafter(hook_stack *s, void *data, size_t len1)
+      void hookafter(hook_stack *s, TextBuffer buffer)
       {
 
         int size = s->eax - 1;
@@ -317,7 +317,7 @@ namespace
           // They should be escaped here.
           // Escaping not implemented since I am lazy.
         }
-        std::string newData = std::string((char *)data, len1);
+        std::string newData = buffer.strA();
         if (newData.empty() || newData == oldData)
           return;
 
@@ -339,7 +339,7 @@ namespace
       void hook2(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (!data_.empty())
-          s->esi = (ULONG)data_.c_str(); 
+          s->esi = (ULONG)data_.c_str();
       }
     } // namespace Private
 
@@ -677,7 +677,7 @@ namespace
       hp.address = addr1;
       hp.text_fun = Private::hook1;
       hp.hook_after = Private::hookafter;
-      hp.type = EMBED_ABLE|NO_CONTEXT;
+      hp.type = EMBED_ABLE | NO_CONTEXT;
       hp.newlineseperator = L"\x01";
       hp.hook_font = F_GetGlyphOutlineA;
       if (dyna)

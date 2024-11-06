@@ -188,12 +188,10 @@ bool InsertShinaHook(int ver)
             hp.type = DIRECT_READ;
             hp.address = addr;
             hp.codepage = 932;
-            hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+            hp.filter_fun = [](TextBuffer *buffer, HookParam *)
             {
-              StringFilter(reinterpret_cast<LPSTR>(data), reinterpret_cast<size_t *>(size), "_r", 2);
-
-              write_string_overwrite(data, size, std::regex_replace(std::string((char *)data, *size), std::regex("_t!.*?[/>]"), ""));
-              return true;
+              StringFilter(buffer, "_r", 2);
+              buffer->from(std::regex_replace(buffer->strA(), std::regex("_t!.*?[/>]"), ""));
             };
             ConsoleOutput("triggered: adding dynamic reader");
             ret |= NewHook(hp, "ShinaRio READ");
@@ -633,10 +631,10 @@ namespace
       int hookStackIndex_; // hook argument index on the stack
       int textOffset_;     // distance of the text from the hook argument
       bool backtrackText_; // whether backtrack to find text address
-      void hookafter(hook_stack *s, void *data1, size_t len)
+      void hookafter(hook_stack *s, TextBuffer buffer)
       {
 
-        std::string newData = std::string((char *)data1, len);
+        std::string newData = buffer.strA();
 
         DWORD argaddr;
         if (hookStackIndex_ == 1)
@@ -979,10 +977,9 @@ namespace
       hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       hp.newlineseperator = L"_r";
       hp.hook_font = F_GetGlyphOutlineA;
-      hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        write_string_overwrite(data, len, std::regex_replace(std::string((char *)data, *len), std::regex("_t!.*?[/>]"), ""));
-        return true;
+        buffer->from(std::regex_replace(buffer->strA(), std::regex("_t!.*?[/>]"), ""));
       };
       return NewHook(hp, "EmbedShario");
     }

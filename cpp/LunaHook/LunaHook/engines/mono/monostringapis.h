@@ -37,7 +37,7 @@ struct MonoFunction { // argument indices start from 0 for SpecialHookMonoString
   const char *functionName; 
   size_t textIndex; // argument index
   unsigned long hookType; // HookParam type
-  void *text_fun;// HookParam::text_fun_t
+  decltype(HookParam::text_fun) text_fun;// HookParam::text_fun_t
 };
 
 #ifndef _WIN64

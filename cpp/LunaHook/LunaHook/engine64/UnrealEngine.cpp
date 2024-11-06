@@ -1,16 +1,13 @@
 #include "UnrealEngine.h"
 
-bool ENTERGRAMfilter(void *data, size_t *size, HookParam *hp)
+void ENTERGRAMfilter(TextBuffer *buffer, HookParam *hp)
 {
-
-  auto text = reinterpret_cast<LPWSTR>(data);
-  std::wstring str = std::wstring(text, *size / 2);
-  std::wregex reg1(L"\\|(.*?)\x300a(.*?)\x300b");
+  std::wstring str = buffer->strW();
+  std::wregex reg1(L"\\|(.*?)\u300a(.*?)\u300b");
   std::wstring result1 = std::regex_replace(str, reg1, L"$1");
-  std::wregex reg2(L"\x3000|\n");
+  std::wregex reg2(L"\u3000|\n");
   std::wstring result2 = std::regex_replace(result1, reg2, L"");
-  write_string_overwrite(text, size, result2);
-  return true;
+  buffer->from(result2);
 };
 bool InsertENTERGRAM()
 {

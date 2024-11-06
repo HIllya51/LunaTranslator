@@ -125,15 +125,14 @@ bool TACTICSattach_function1()
   HookParam hp;
   hp.address = *(DWORD *)addr;
   hp.type = USING_STRING | DIRECT_READ;
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    CharFilter((char *)data, len, 1);
-    CharFilter((char *)data, len, 2);
-    CharFilter((char *)data, len, 3);
-    CharFilter((char *)data, len, 4);
-    CharFilter((char *)data, len, 5);
-    CharFilter((char *)data, len, 0x11);
-    return true;
+    CharFilter(buffer, '\x01');
+    CharFilter(buffer, '\x02');
+    CharFilter(buffer, '\x03');
+    CharFilter(buffer, '\x04');
+    CharFilter(buffer, '\x05');
+    CharFilter(buffer, '\x11');
   };
   return NewHook(hp, "TACTICS_R");
 }
@@ -153,10 +152,11 @@ bool TACTICSattach_function2()
   hp.address = addr;
   hp.type = USING_CHAR | CODEC_ANSI_BE;
   hp.offset = get_reg(regs::eax);
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     static int idx = 0;
-    return 0 == ((idx++) % 2);
+    if ((idx++) % 2)
+      buffer->clear();
   };
   return NewHook(hp, "TACTICS_H");
 }
@@ -197,10 +197,11 @@ namespace
     hp.address = addr;
     hp.type = USING_CHAR | CODEC_ANSI_BE | NO_CONTEXT;
     hp.offset = get_stack(5);
-    hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       static int idx = 0;
-      return 0 == ((idx++) % 2);
+      if ((idx++) % 2)
+        buffer->clear();
     };
     return NewHook(hp, "TACTICS_2");
   }

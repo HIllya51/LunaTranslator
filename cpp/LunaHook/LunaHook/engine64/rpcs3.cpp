@@ -262,15 +262,15 @@ bool rpcs3::attach_function()
 namespace
 {
 
-    bool FBLJM61131(void *data, size_t *len, HookParam *hp)
+    void FBLJM61131(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = std::string((char *)data, *len);
+        auto s = buffer->strA();
         std::regex pattern("\\[[^\\]]+.");
         s = std::regex_replace(s, pattern, "");
         s = std::regex_replace(s, std::regex("\\\\k|\\\\x|%C|%B"), "");
         s = std::regex_replace(s, std::regex("\\%\\d+\\#[0-9a-fA-F]*\\;"), "");
         s = std::regex_replace(s, std::regex("\\n+"), " ");
-        return write_string_overwrite(data, len, s);
+        buffer->from(s);
     }
     auto _ = []()
     {

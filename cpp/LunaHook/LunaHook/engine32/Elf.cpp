@@ -253,9 +253,9 @@ namespace
           //  ::memset(text + oldData.size() - left, 0, left);
         }
       }
-      void hookafter1(hook_stack *s, void *data1, size_t len)
+      void hookafter1(hook_stack *s, TextBuffer buffer)
       {
-        auto newData = std::string((char *)data1, len);
+        auto newData = buffer.strA();
         auto arg = (TextArgument *)s->stack[0]; // arg1 on the top of the stack
 
         // Scenario

@@ -503,10 +503,10 @@ namespace
         textSize_ = 0;
         auto text = (LPCWSTR)s->stack[1]; // arg1
         if (!text || !*text)
-          return  ;
+          return;
 
         if (::wcscmp(text, L"----/--/-- --:--") == 0)
-          return  ;
+          return;
 
         textSize_ = ::wcslen(text);
         if (s->stack[1] == s->stack[13]) // for new games
@@ -576,13 +576,13 @@ namespace
           // 004B521B   33ED             XOR EBP,EBP
           *role = s->stack[5] == 0 ? Engine::NameRole : Engine::ScenarioRole;
         }
-        buffer->from_cs(text); 
+        buffer->from_cs(text);
       }
 
       void hookAfterCaller(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (textSize_)
-          s->eax = textSize_; 
+          s->eax = textSize_;
       }
       bool attachCaller(ULONG addr)
       {
@@ -591,9 +591,9 @@ namespace
           return false;
         addresses_.insert(addr);
         HookParam hp;
-        hp.address=addr;
+        hp.address = addr;
         hp.text_fun = hookAfterCaller;
-        return NewHook(hp,"attachCaller");
+        return NewHook(hp, "attachCaller");
       }
 
     } // namespace Private
@@ -601,16 +601,15 @@ namespace
   } // namespace ScenarioHook
 
 } // unnamed namespace
-bool CotophaFilter(LPVOID data, size_t *size, HookParam *)
+void CotophaFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
 
-  if (*len <= 2 || text[0] != L'\\')
-    return false;
+  if (buffer->size <= 2 || text[0] != L'\\')
+    return buffer->clear();
 
   size_t lenPurged = 0;
-  for (size_t i = 0; i < *len / 2; i++)
+  for (size_t i = 0; i < buffer->size / 2; i++)
   {
     if (text[i] != L'\\')
     {
@@ -638,8 +637,7 @@ bool CotophaFilter(LPVOID data, size_t *size, HookParam *)
   }
   if (lenPurged)
     text[lenPurged++] = L' '; // for Western language compatibility
-  *len = lenPurged * 2;
-  return true;
+  buffer->size = lenPurged * 2;
 }
 bool InsertCotophaHook1()
 {
@@ -654,7 +652,7 @@ bool InsertCotophaHook1()
   hp.address = addr;
   hp.offset = get_stack(1);
   hp.split = get_reg(regs::ebp);
-  hp.type = CODEC_UTF16 | USING_SPLIT | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW|NO_CONTEXT;
+  hp.type = CODEC_UTF16 | USING_SPLIT | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | NO_CONTEXT;
   hp.text_fun = ScenarioHook::Private::hookBefore;
   ConsoleOutput("INSERT Cotopha");
 
@@ -685,7 +683,7 @@ bool InsertCotophaHook3()
 
   HookParam myhp;
   myhp.address = addr;
-  myhp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE |  EMBED_AFTER_NEW;
+  myhp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
   myhp.offset = get_reg(regs::eax);
 
   return NewHook(myhp, "Cotopha3_EWideString");
@@ -778,7 +776,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.offset = get_stack(3);
-    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW ;
+    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
     hp.hook_font = F_GetGlyphOutlineW;
     return NewHook(hp, "Cotopha5");
   }

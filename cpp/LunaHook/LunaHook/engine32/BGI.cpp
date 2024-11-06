@@ -1255,14 +1255,13 @@ bool InsertBGIDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
     hp.type = USING_STRING | USING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_NEW | NO_CONTEXT;
 
     hp.text_fun = Private::hookBefore;
-    hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       // It could be either <R..> or <r..>
       static const std::regex rx("<r.+?>(.+?)</r>", std::regex_constants::icase);
-      std::string result = std::string((char *)data, *len);
+      std::string result = buffer->strA();
       result = std::regex_replace(result, rx, "$1");
-
-      return write_string_overwrite(data, len, result);
+      buffer->from(result);
     };
 
     hp.split = get_stack(8); // pseudo arg8
@@ -1397,30 +1396,26 @@ bool InsertBGI3Hook()
 // Insert BGI2 first.
 // Artikash 6/12/2019: In newer games neither exists, but WideCharToMultiByte works, so insert that if BGI2 fails.
 
-bool BGI7Filter(LPVOID data, size_t *size, HookParam *)
+void BGI7Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
-
-  CharFilter(text, len, L'\x0001');
-  CharFilter(text, len, L'\x0002');
-  CharFilter(text, len, L'\x0003');
-  CharFilter(text, len, L'\x0004');
-  CharFilter(text, len, L'\x0005');
-  CharFilter(text, len, L'\x000A');
-  if (text[0] == L'\x3000')
+  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
+  CharFilter(buffer, L'\x0001');
+  CharFilter(buffer, L'\x0002');
+  CharFilter(buffer, L'\x0003');
+  CharFilter(buffer, L'\x0004');
+  CharFilter(buffer, L'\x0005');
+  CharFilter(buffer, L'\x000A');
+  if (text[0] == L'\u3000')
   {
-    *len -= 2;
-    ::memmove(text, text + 1, *len);
+    buffer->size -= 2;
+    ::memmove(text, text + 1, buffer->size);
   }
-  CharReplacer(text, len, L'\x3000', L' '); // IDSP
+  CharReplacer(buffer, L'\u3000', L' '); // IDSP
 
-  if (cpp_wcsnstr(text, L"<", *len / sizeof(wchar_t)))
+  if (cpp_wcsnstr(text, L"<", buffer->size / sizeof(wchar_t)))
   {
-    StringFilterBetween(text, len, L"<", 1, L">", 1);
+    StringFilterBetween(buffer, L"<", 1, L">", 1);
   }
-
-  return true;
 }
 
 bool InsertBGI7Hook()
@@ -1459,18 +1454,15 @@ bool InsertBGI7Hook()
   return found;
 }
 
-bool BGI56Filter(LPVOID data, size_t *size, HookParam *)
+void BGI56Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
   if (text[0] == '@')
   {
-    *len -= 1;
-    ::memmove(text, text + 1, *len);
+    buffer->size -= 1;
+    ::memmove(text, text + 1, buffer->size);
   }
-
-  return true;
 }
 
 bool InsertBGI5Hook()
@@ -1602,10 +1594,10 @@ bool InsertBGI4Hook()
       buffer->from_cs((wchar_t *)stack->stack[2]);
     }
   };
-  hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE  | EMBED_AFTER_OVERWRITE;
+  hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
   hp.hook_font = F_TextOutW | F_GetTextExtentPoint32W;
   hp.filter_fun = BGI7Filter;
-  hp.offset=get_stack(2);
+  hp.offset = get_stack(2);
   ConsoleOutput("BGI4");
 
   return NewHook(hp, "BGI4");

@@ -12,13 +12,13 @@ namespace
         hp.offset = get_stack(2);
         hp.split = get_stack(1);
         hp.length_offset = 3;
-        hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+        hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
         {
-            auto s = std::string((char *)data, *len);
+            auto s = buffer->strA();
             strReplace(s, "%N", "\n");
             // sub_140096E80
             //%I %B %C %R( %Z %%
-            return write_string_overwrite(data, len, s);
+            buffer->from(s);
         };
         return NewHook(hp, "strncat");
     }

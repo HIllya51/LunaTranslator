@@ -1,4 +1,4 @@
-#include"Yuris.h"
+#include "Yuris.h"
 /********************************************************************************************
 YU-RIS hook:
   Becomes common recently. I first encounter this game in Whirlpool games.
@@ -9,58 +9,69 @@ YU-RIS hook:
   For a usual name this value is greater than 2.
 ********************************************************************************************/
 
-//bool InsertWhirlpoolHook() // jichi: 12/27/2014: Renamed to YU-RIS
+// bool InsertWhirlpoolHook() // jichi: 12/27/2014: Renamed to YU-RIS
 static bool InsertYuris1Hook()
 {
-  //IthBreak();
+  // IthBreak();
   DWORD entry = Util::FindCallAndEntryBoth((DWORD)TextOutA, processStopAddress - processStartAddress, processStartAddress, 0xec83);
-  //GROWL_DWORD(entry);
-  if (!entry) {
+  // GROWL_DWORD(entry);
+  if (!entry)
+  {
     ConsoleOutput("YU-RIS: function entry does not exist");
     return false;
   }
   entry = Util::FindCallAndEntryRel(entry - 4, processStopAddress - processStartAddress, processStartAddress, 0xec83);
-  //GROWL_DWORD(entry);
-  if (!entry) {
+  // GROWL_DWORD(entry);
+  if (!entry)
+  {
     ConsoleOutput("YU-RIS: function entry does not exist");
     return false;
   }
-  entry = Util::FindCallOrJmpRel(entry - 4,processStopAddress - processStartAddress - 0x10000, processStartAddress + 0x10000, false);
+  entry = Util::FindCallOrJmpRel(entry - 4, processStopAddress - processStartAddress - 0x10000, processStartAddress + 0x10000, false);
   DWORD i,
-        t = 0;
-  //GROWL_DWORD(entry);
-  __try { // jichi 12/27/2014
+      t = 0;
+  // GROWL_DWORD(entry);
+  __try
+  { // jichi 12/27/2014
     for (i = entry - 4; i > entry - 0x100; i--)
-      if (::IsBadReadPtr((LPCVOID)i, 4)) { // jichi 12/27/2014: might raise in new YU-RIS, 4 = sizeof(DWORD)
+      if (::IsBadReadPtr((LPCVOID)i, 4))
+      { // jichi 12/27/2014: might raise in new YU-RIS, 4 = sizeof(DWORD)
         ConsoleOutput("YU-RIS: do not have read permission");
         return false;
-      } else if (*(WORD *)i == 0xc085) {
+      }
+      else if (*(WORD *)i == 0xc085)
+      {
         t = *(WORD *)(i + 2);
-        if ((t & 0xff) == 0x76) {
+        if ((t & 0xff) == 0x76)
+        {
           t = 4;
           break;
-        } else if ((t & 0xffff) == 0x860f) {
+        }
+        else if ((t & 0xffff) == 0x860f)
+        {
           t = 8;
           break;
         }
       }
-
-  } __except(EXCEPTION_EXECUTE_HANDLER) {
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
     ConsoleOutput("YU-RIS: illegal access exception");
     return false;
   }
-  if (i == entry - 0x100) {
+  if (i == entry - 0x100)
+  {
     ConsoleOutput("YU-RIS: pattern not exist");
     return false;
   }
-  //GROWL_DWORD2(i,t);
+  // GROWL_DWORD2(i,t);
   HookParam hp;
   hp.address = i + t;
-  hp.offset=get_reg(regs::edi);
+  hp.offset = get_reg(regs::edi);
   hp.split = get_reg(regs::eax);
-  hp.type = USING_STRING|USING_SPLIT;
+  hp.type = USING_STRING | USING_SPLIT;
   ConsoleOutput("INSERT YU-RIS");
-  //GROWL_DWORD(hp.address);
+  // GROWL_DWORD(hp.address);
   return NewHook(hp, "YU-RIS");
 }
 
@@ -151,7 +162,8 @@ static bool InsertYuris1Hook()
 static bool InsertYuris2Hook()
 {
   ULONG addr = MemDbg::findCallAddress((ULONG)::TextOutA, processStartAddress, processStopAddress);
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("YU-RIS2: failed");
     return false;
   }
@@ -162,66 +174,73 @@ static bool InsertYuris2Hook()
   //   _In_  int nYStart,
   //   _In_  LPCTSTR lpString,
   //   _In_  int cchString
-  // ); 
+  // );
   HookParam hp;
   hp.address = addr;
-  hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT; // disable context that will cause thread split
+  hp.type = USING_STRING | USING_SPLIT | NO_CONTEXT; // disable context that will cause thread split
   hp.offset = get_stack(3);
   hp.split = get_stack(5);
 
   ConsoleOutput("INSERT YU-RIS 2");
   return NewHook(hp, "YU-RIS2");
 }
- 
+
 bool InsertYuris4Hook()
 {
-  
+
   /*
-  * Sample games:
-  * https://vndb.org/v6540
-  */
+   * Sample games:
+   * https://vndb.org/v6540
+   */
   bool found = false;
   const BYTE pattern[] = {
-        0x52,                               // 52               push edx
-        0x68, 0x00, 0x42, 0x5C, 0x00,       // 68 00425C00      push euphoria.exe+1C4200
-        0xFF, 0x15, 0x90, 0x44, 0x7E, 0x00, // FF 15 90447E00   call dword ptr [euphoria.exe+3E4490]
-        0x83, 0xC4, 0x0C,                   // 83 C4 0C         add esp,0C
-        0xEB, 0x5F,                         // EB 5F            jmp euphoria.exe+4F4C5
-        0xFF, 0x35, 0xA4, 0x19, 0x66, 0x00, // FF 35 A4196600   push [euphoria.exe+2619A4]
-        0x52                                // 52               push edx
+      0x52,                               // 52               push edx
+      0x68, 0x00, 0x42, 0x5C, 0x00,       // 68 00425C00      push euphoria.exe+1C4200
+      0xFF, 0x15, 0x90, 0x44, 0x7E, 0x00, // FF 15 90447E00   call dword ptr [euphoria.exe+3E4490]
+      0x83, 0xC4, 0x0C,                   // 83 C4 0C         add esp,0C
+      0xEB, 0x5F,                         // EB 5F            jmp euphoria.exe+4F4C5
+      0xFF, 0x35, 0xA4, 0x19, 0x66, 0x00, // FF 35 A4196600   push [euphoria.exe+2619A4]
+      0x52                                // 52               push edx
   };
-  enum { addr_offset = 12 }; // distance to the beginning of the function, which is 0x83, 0xC4, 0x0C (add esp,0C)
+  enum
+  {
+    addr_offset = 12
+  }; // distance to the beginning of the function, which is 0x83, 0xC4, 0x0C (add esp,0C)
 
   for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
   {
     HookParam hp;
-    hp.address = addr+addr_offset;
-    hp.offset=get_reg(regs::edx);
-    hp.type = USING_STRING ;
+    hp.address = addr + addr_offset;
+    hp.offset = get_reg(regs::edx);
+    hp.type = USING_STRING;
     ConsoleOutput("INSERT YU-RIS 4");
-    found|=NewHook(hp, "YU-RIS4");
+    found |= NewHook(hp, "YU-RIS4");
   }
-  if (!found) ConsoleOutput("YU-RIS 4: pattern not found");
+  if (!found)
+    ConsoleOutput("YU-RIS 4: pattern not found");
   return found;
 }
 
 bool InsertYuris5Hook()
 {
-  
+
   /*
-  * Sample games:
-  * https://vndb.org/v4037
-  */
+   * Sample games:
+   * https://vndb.org/v4037
+   */
   const BYTE bytes[] = {
-    0x33, 0xD2,          // xor edx,edx
-    0x88, 0x14, 0x0F,    // mov [edi+ecx],dl
-    0xA1, XX4,           // mov eax,[exe+2DE630]
-    0x8B, 0x78, 0x3C,    // mov edi,[eax+3C]
-    0x8B, 0x58, 0x5C,    // mov ebx,[eax+5C]
-    0x88, 0x14, 0x3B     // mov [ebx+edi],dl
+      0x33, 0xD2,       // xor edx,edx
+      0x88, 0x14, 0x0F, // mov [edi+ecx],dl
+      0xA1, XX4,        // mov eax,[exe+2DE630]
+      0x8B, 0x78, 0x3C, // mov edi,[eax+3C]
+      0x8B, 0x58, 0x5C, // mov ebx,[eax+5C]
+      0x88, 0x14, 0x3B  // mov [ebx+edi],dl
   };
 
-  enum { addr_offset = 0 }; // distance to the beginning of the function, which is 0x55 (push ebp)
+  enum
+  {
+    addr_offset = 0
+  }; // distance to the beginning of the function, which is 0x55 (push ebp)
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
@@ -229,65 +248,68 @@ bool InsertYuris5Hook()
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset=get_reg(regs::ecx);
+  hp.offset = get_reg(regs::ecx);
   hp.type = USING_STRING | NO_CONTEXT;
 
   ConsoleOutput("INSERT YU-RIS 5");
   return NewHook(hp, "YU-RIS5");
 }
 
-static bool Yuris6Filter(LPVOID data, size_t *size, HookParam *)
+static void Yuris6Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
+  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+
   static std::string prevText;
 
-  if (prevText.length()==*len && prevText.find(text, 0, *len) != std::string::npos) // Check if the string is present in the previous one
-    return false;
-  prevText.assign(text, *len);
+  if (prevText.length() == buffer->size && prevText.find(text, 0, buffer->size) != std::string::npos) // Check if the string is present in the previous one
+    return buffer->clear();
+  prevText.assign(text, buffer->size);
 
   // ruby ＜手水舎／ちょうずや＞
-  if (cpp_strnstr(text, "\x81\x83", *len)) {		// \x81\x83 -> '＜'
-    StringFilterBetween(text, len, "\x81\x5E", 2, "\x81\x84", 2); // \x81\x5E -> '／' , \x81\x84 -> '＞'
-    StringFilter(text, len, "\x81\x83", 2);			// \x81\x83 -> '＜'
+  if (cpp_strnstr(text, "\x81\x83", buffer->size))
+  {                                                            // \x81\x83 -> '＜'
+    StringFilterBetween(buffer, "\x81\x5E", 2, "\x81\x84", 2); // \x81\x5E -> '／' , \x81\x84 -> '＞'
+    StringFilter(buffer, "\x81\x83", 2);                       // \x81\x83 -> '＜'
   }
   // ruby ≪美桜／姉さん≫
-  else if (cpp_strnstr(text, "\x81\xE1", *len)) {	// \x81\xE1 -> '≪'
-    StringFilterBetween(text, len, "\x81\x5E", 2, "\x81\xE2", 2); // \x81\x5E -> '／' , \x81\xE2 -> '≫'
-    StringFilter(text, len, "\x81\xE1", 2);			// \x81\xE1 -> '≪'
+  else if (cpp_strnstr(text, "\x81\xE1", buffer->size))
+  {                                                            // \x81\xE1 -> '≪'
+    StringFilterBetween(buffer, "\x81\x5E", 2, "\x81\xE2", 2); // \x81\x5E -> '／' , \x81\xE2 -> '≫'
+    StringFilter(buffer, "\x81\xE1", 2);                       // \x81\xE1 -> '≪'
   }
 
-  CharReplacer(text, len, '=', '-');
-  StringCharReplacer(text, len, "\xEF\xF0", 2, ' ');
-  StringFilter(text, len, "\xEF\xF2", 2);
-  StringFilter(text, len, "\xEF\xF5", 2);
-  StringFilter(text, len, "\x81\x98", 2);
-
-  return true;
+  CharReplacer(buffer, '=', '-');
+  StringCharReplacer(buffer, "\xEF\xF0", 2, ' ');
+  StringFilter(buffer, "\xEF\xF2", 2);
+  StringFilter(buffer, "\xEF\xF5", 2);
+  StringFilter(buffer, "\x81\x98", 2);
 }
 bool InsertYuris6Hook()
 {
-  
+
   /*
-  * work with Windows 11
-  * Sample games:
-  * https://vndb.org/v40058
-  * https://vndb.org/v42883
-  * https://vndb.org/v44092
-  * https://vndb.org/v21171
-  * https://vndb.org/r46910
-  */
+   * work with Windows 11
+   * Sample games:
+   * https://vndb.org/v40058
+   * https://vndb.org/v42883
+   * https://vndb.org/v44092
+   * https://vndb.org/v21171
+   * https://vndb.org/r46910
+   */
   const BYTE bytes[] = {
-    0xE9, XX4,           // jmp oshitona01.exe+1B629     << hook here
-    0xBF, XX4,           // mov edi,oshitona01.exe+24EEA0
-    0x8A, 0x17,          // mov dl,[edi]
-    0x47,                // inc edi
-    0x88, 0x16,          // mov [esi],dl
-    0x46,                // inc esi
-    0x84, 0xD2           // test dl,dl
+      0xE9, XX4,  // jmp oshitona01.exe+1B629     << hook here
+      0xBF, XX4,  // mov edi,oshitona01.exe+24EEA0
+      0x8A, 0x17, // mov dl,[edi]
+      0x47,       // inc edi
+      0x88, 0x16, // mov [esi],dl
+      0x46,       // inc esi
+      0x84, 0xD2  // test dl,dl
   };
 
-  enum { addr_offset = 0 };
+  enum
+  {
+    addr_offset = 0
+  };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
@@ -295,93 +317,100 @@ bool InsertYuris6Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_reg(regs::eax);
+  hp.offset = get_reg(regs::eax);
   hp.index = 0x38;
   hp.filter_fun = Yuris6Filter;
   hp.type = USING_STRING | NO_CONTEXT | DATA_INDIRECT;
 
-  ConsoleOutput("INSERT YU-RIS 6"); 
+  ConsoleOutput("INSERT YU-RIS 6");
   return NewHook(hp, "YU-RIS6");
 }
-bool yuris7(){
-  //猫忍えくすはーとSPIN!
-  //夏空あすてりずむ
-  
-  //https://vndb.org/r111807
+bool yuris7()
+{
+  // 猫忍えくすはーとSPIN!
+  // 夏空あすてりずむ
+
+  // https://vndb.org/r111807
   //[210924][1139364][Liquid] 黒獣2改 ～淫欲に染まる背徳の都、再び～ 多国語版 Chinese-English DL版 (files)
   const BYTE bytes[] = {
-    0x57,0x56,0x55,0x53,0x83,0xec,0x10,
-    0x8b,0x5c,0x24,0x24,
-    0x8b,0x15,XX4,
-    0x8b,0x0c,0x9a,
-    0xc6,0x41,0x01,0x03,
-    0x8b,0xc3,
-    0xe8
-  };
+      0x57, 0x56, 0x55, 0x53, 0x83, 0xec, 0x10,
+      0x8b, 0x5c, 0x24, 0x24,
+      0x8b, 0x15, XX4,
+      0x8b, 0x0c, 0x9a,
+      0xc6, 0x41, 0x01, 0x03,
+      0x8b, 0xc3,
+      0xe8};
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (!addr) return false;
-   
-    HookParam hp;
-    hp.address = addr; 
-    hp.offset=get_reg(regs::edx);
-    hp.type = USING_STRING; 
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-    {
-      if(stack->edi>0x100)return;
-      //if(stack->eax==1)return;
-      if(stack->edi<0x60||stack->edi>0x80)return;
-      if(strlen((char*)stack->edx)>2)return;
-      if(strcmp((char*)stack->edx,"BG")==0||strcmp((char*)stack->edx,"VO")==0)return;
+  if (!addr)
+    return false;
 
-      *split=stack->edi;//|(stack->eax*0x100);//会把人名的引号分开
-      buffer->from(stack->edx, min(2,strlen((char*)stack->edx)));
-    };
-    return NewHook(hp,"yuris8");
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = get_reg(regs::edx);
+  hp.type = USING_STRING;
+  hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    if (stack->edi > 0x100)
+      return;
+    // if(stack->eax==1)return;
+    if (stack->edi < 0x60 || stack->edi > 0x80)
+      return;
+    if (strlen((char *)stack->edx) > 2)
+      return;
+    if (strcmp((char *)stack->edx, "BG") == 0 || strcmp((char *)stack->edx, "VO") == 0)
+      return;
+
+    *split = stack->edi; //|(stack->eax*0x100);//会把人名的引号分开
+    buffer->from(stack->edx, min(2, strlen((char *)stack->edx)));
+  };
+  return NewHook(hp, "yuris8");
 }
-bool yuris8(){
-  //けもの道☆ガーリッシュスクエア LOVE+PLUS
-  //https://vndb.org/v36773
-  //codepage 950
-    const BYTE bytes[] = {
-      0x8b,XX,
-      0x8b,0x94,0x24,XX,0,0,0,
-      0x8b,0x8c,0x24,XX,0,0,0,
-      0xe8,XX4,
-      0xeb,XX,
-      0x8b,XX,
-      0x8b,0x94,0x24,XX,0,0,0,
-      0x8b,0x8c,0x24,XX,0,0,0,
-      0xe8,XX4, 
-    };
-    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (!addr) return false;
-    
-    HookParam hp;
-    hp.address = addr+sizeof(bytes)-5;  
-    hp.type = USING_STRING; 
-    hp.offset=get_reg(regs::ecx);
-    hp.filter_fun=[](void* data, size_t* len, HookParam* hp){
-       
-        auto text=std::string((char*)data,*len); 
-        if(std::all_of(text.begin(),text.end(),[](char c){return c=='1'||c=='2'||c=='E';}))return false;
-        return true;
-    };
-    return NewHook(hp,"yuris8");
+bool yuris8()
+{
+  // けもの道☆ガーリッシュスクエア LOVE+PLUS
+  // https://vndb.org/v36773
+  // codepage 950
+  const BYTE bytes[] = {
+      0x8b, XX,
+      0x8b, 0x94, 0x24, XX, 0, 0, 0,
+      0x8b, 0x8c, 0x24, XX, 0, 0, 0,
+      0xe8, XX4,
+      0xeb, XX,
+      0x8b, XX,
+      0x8b, 0x94, 0x24, XX, 0, 0, 0,
+      0x8b, 0x8c, 0x24, XX, 0, 0, 0,
+      0xe8, XX4};
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+
+  HookParam hp;
+  hp.address = addr + sizeof(bytes) - 5;
+  hp.type = USING_STRING;
+  hp.offset = get_reg(regs::ecx);
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    auto text = buffer->viewA();
+    if (std::all_of(text.begin(), text.end(), [](char c)
+                    { return c == '1' || c == '2' || c == 'E'; }))
+      return buffer->clear();
+  };
+  return NewHook(hp, "yuris8");
 }
 bool InsertYurisHook()
-{ 
+{
   bool ok = InsertYuris1Hook();
   ok = InsertYuris2Hook() || ok;
   ok = InsertYuris4Hook() || ok;
   ok = InsertYuris5Hook() || ok;
   ok = InsertYuris6Hook() || ok;
-  ok=yuris7()||ok;
-  ok=yuris8()||ok;
+  ok = yuris7() || ok;
+  ok = yuris8() || ok;
   return ok;
 }
 
+bool Yuris::attach_function()
+{
 
-bool Yuris::attach_function() {
-    
-    return InsertYurisHook();
-} 
+  return InsertYurisHook();
+}

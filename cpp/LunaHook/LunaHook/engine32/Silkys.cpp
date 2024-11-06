@@ -259,9 +259,9 @@ void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *rol
 }
 TextUnionA *arg_,
     argValue_;
-void hookafter1(hook_stack *s, void *data1, size_t len)
+void hookafter1(hook_stack *s, TextBuffer buffer)
 {
-  auto newData = std::string((char *)data1, len);
+  auto newData = buffer.strA();
   auto arg = (TextUnionA *)(s->stack[0] + sizeof(DWORD)); // arg1
   arg_ = arg;
   argValue_ = *arg;
@@ -345,11 +345,12 @@ bool InsertSilkysHook2()
   hp.address = addr + 8;
   hp.type = CODEC_UTF16 | USING_STRING;
   hp.offset = get_reg(regs::eax);
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     static int idx = 0;
+    if (idx % 2)
+      buffer->clear();
     idx += 1;
-    return (bool)(idx % 2);
   };
   return NewHook(hp, "SilkysPlus2");
 }
@@ -379,15 +380,6 @@ namespace
 }
 namespace
 {
-  bool Silkys2Filter(LPVOID data, size_t *size, HookParam *)
-  {
-    auto text = reinterpret_cast<LPWSTR>(data);
-    auto len = reinterpret_cast<size_t *>(size);
-
-    StringCharReplacer(text, len, L"\\i", 2, L'\'');
-
-    return true;
-  }
 
   bool InsertSilkys2Hook()
   {
@@ -412,7 +404,10 @@ namespace
     HookParam hp;
     hp.address = addr + sizeof(bytes2);
     hp.offset = get_reg(regs::edi);
-    hp.filter_fun = Silkys2Filter;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      StringCharReplacer(buffer, L"\\i", 2, L'\'');
+    };
     hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
     return NewHook(hp, "Silkys2");
   }
@@ -471,10 +466,11 @@ namespace
     hp.type = USING_CHAR | DATA_INDIRECT | USING_SPLIT;
     hp.split = get_stack(1);
     hp.offset = get_stack(1); // thiscall arg1
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       static int idx = 0;
-      return (bool)((idx++) % 2);
+      if ((idx++) % 2)
+        buffer->clear();
     };
     return NewHook(hp, "Silkys4");
   }
@@ -501,10 +497,11 @@ namespace
     hp.address = addr + 2;
     hp.type = USING_CHAR | DATA_INDIRECT | CODEC_UTF16;
     hp.offset = get_reg(regs::eax);
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       static int idx = 0;
-      return (bool)((idx++) % 2);
+      if ((idx++) % 2)
+        buffer->clear();
     };
     return NewHook(hp, "silkys5");
   }
@@ -761,10 +758,9 @@ bool Aisystem6::attach_function()
   hp.address = addr;
   hp.offset = get_stack(1);
   hp.type = USING_STRING | NO_CONTEXT; // 男主自定义人名会被分开
-  hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    StringCharReplacer((char *)data, len, "\x81\x93", 2, '\n');
-    return true;
+    StringCharReplacer(buffer, "\x81\x93", 2, '\n');
   };
   return NewHook(hp, "Aisystem6");
 }

@@ -286,8 +286,8 @@ bool InsertNeXASHookA()
           v9 = (const unsigned __int8 *)(v1 + 268);
         else
           v9 = *(const unsigned __int8 **)(v1 + 268);
-          
-        buffer->from_cs((char*)v9);
+
+        buffer->from_cs((char *)v9);
       };
       if (NewHook(hp, "NeXAS_1"))
         return true;
@@ -311,15 +311,15 @@ bool InsertNeXASHookA()
     hp.offset = get_reg(regs::eax);
     hp.type = USING_STRING;
     hp.newlineseperator = L"@n";
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      auto s = std::string((char *)data, *size);
+      auto s = buffer->strA();
       s = std::regex_replace(s, std::regex("@r(.*?)@(.*?)@"), "$1");
       s = std::regex_replace(s, std::regex("@v\\d{8}"), "");
       s = std::regex_replace(s, std::regex("@k"), "");
       s = std::regex_replace(s, std::regex("@g"), "");
       s = std::regex_replace(s, std::regex("@d"), "");
-      return write_string_overwrite(data, size, s);
+      buffer->from(s);
     };
     if (NewHook(hp, "NeXAS3"))
       return true;
@@ -397,8 +397,8 @@ bool InsertNeXASHookW()
         v9 = (const unsigned __int8 *)(v1 + off2);
       else
         v9 = *(const unsigned __int8 **)(v1 + off2);
-        
-      buffer->from_cs((char*)v9);
+
+      buffer->from_cs((char *)v9);
       if (((nexassomeinfo *)hp->user_value)->split == 0)
         ((nexassomeinfo *)hp->user_value)->split = stack->stack[1];
       *split = std::abs((long long)((nexassomeinfo *)hp->user_value)->split - (long long)stack->stack[1]) < 0x10;
@@ -428,14 +428,13 @@ namespace
     hp.type = DATA_INDIRECT;
     hp.index = 0;
     hp.offset = get_reg(regs::ecx);
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      auto text = reinterpret_cast<LPSTR>(data);
+      auto text = reinterpret_cast<LPSTR>(buffer->buff);
       if (text[0] == '@')
       {
-        return false;
+        return buffer->clear();
       }
-      return true;
     };
 
     return NewHook(hp, "NeXAS2");
@@ -467,24 +466,22 @@ namespace
       auto a2 = (TextUnionA *)stack->stack[1]; // std::string*
       buffer->from_cs(a2->getText());
     };
-    hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
-      auto s = std::string((char *)data, *len);
+      auto s = buffer->strA();
       if (startWith(s, "@"))
       {
         if (startWith(s, "@v"))
         {
           // S001_L1_0001
           s = std::regex_replace(s, std::regex("@v[a-zA-Z0-9]{4}_[a-zA-Z0-9]{2}_[a-zA-Z0-9]{4}"), "");
-          return write_string_overwrite(data, len, s);
+          buffer->from(s);
         }
         else
         {
-          return false;
+          buffer->clear();
         }
       }
-
-      return true;
     };
     hp.newlineseperator = L"@n";
     return NewHook(hp, "NeXAS3");

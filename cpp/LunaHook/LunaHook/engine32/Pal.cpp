@@ -1,4 +1,4 @@
-#include"Pal.h"
+#include "Pal.h"
 /** jichi 6/1/2014 AMUSE CRAFT
  *  Related brands: http://erogetrailers.com/brand/2047
  *  Sample game: 魔女こいにっ� *  See:  http://sakuradite.com/topic/223
@@ -60,39 +60,45 @@
 static bool InsertOldPalHook() // this is used in case the new pattern does not work
 {
   const BYTE bytes[] = {
-    0x55,                 // 013c6150  /$ 55             push ebp ; jichi: function starts
-    0x8b,0xec,            // 013c6151  |. 8bec           mov ebp,esp
-    0x8b,0x45, 0x08,      // 013c6153  |. 8b45 08        mov eax,dword ptr ss:[ebp+0x8]
-    0x0f,0xb6,0x08,       // 013c6156  |. 0fb608         movzx ecx,byte ptr ds:[eax]
-    0x81,0xf9 //81000000  // 013c6159  |. 81f9 81000000  cmp ecx,0x81 ; jichi: hook here
+      0x55,             // 013c6150  /$ 55             push ebp ; jichi: function starts
+      0x8b, 0xec,       // 013c6151  |. 8bec           mov ebp,esp
+      0x8b, 0x45, 0x08, // 013c6153  |. 8b45 08        mov eax,dword ptr ss:[ebp+0x8]
+      0x0f, 0xb6, 0x08, // 013c6156  |. 0fb608         movzx ecx,byte ptr ds:[eax]
+      0x81, 0xf9        // 81000000  // 013c6159  |. 81f9 81000000  cmp ecx,0x81 ; jichi: hook here
   };
-  enum { addr_offset = sizeof(bytes) - 2 };
+  enum
+  {
+    addr_offset = sizeof(bytes) - 2
+  };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  //GROWL_DWORD(reladdr); // supposed to be 0x21650
-  //GROWL_DWORD(reladdr  + addr_offset);
-  //reladdr = 0x26159; // 魔女こいにっ�trial
-  if (!addr) {
+  // GROWL_DWORD(reladdr); // supposed to be 0x21650
+  // GROWL_DWORD(reladdr  + addr_offset);
+  // reladdr = 0x26159; // 魔女こいにっ�trial
+  if (!addr)
+  {
     ConsoleOutput("AMUSE CRAFT: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  //hp.type = NO_CONTEXT|USING_SPLIT|DATA_INDIRECT; // 0x418
-  //hp.type = NO_CONTEXT|USING_SPLIT|DATA_INDIRECT|RELATIVE_SPLIT;  // Use relative address to prevent floating issue
-  hp.type = NO_CONTEXT|USING_SPLIT|DATA_INDIRECT;
-  hp.offset=get_reg(regs::eax); // eax
+  // hp.type = NO_CONTEXT|USING_SPLIT|DATA_INDIRECT; // 0x418
+  // hp.type = NO_CONTEXT|USING_SPLIT|DATA_INDIRECT|RELATIVE_SPLIT;  // Use relative address to prevent floating issue
+  hp.type = NO_CONTEXT | USING_SPLIT | DATA_INDIRECT;
+  hp.offset = get_reg(regs::eax); // eax
   ConsoleOutput("INSERT AMUSE CRAFT");
   return NewHook(hp, "Pal");
 }
-namespace{
+namespace
+{
   template <typename strT>
   strT trim(strT text, int *size)
   {
-    //int length = ::strlen(text);
+    // int length = ::strlen(text);
     auto length = *size;
-    if (text[0] == '<' && text[1] == 'c') {
+    if (text[0] == '<' && text[1] == 'c')
+    {
       auto p = ::strchr(text + 2, '>');
       if (!p)
         return text;
@@ -107,76 +113,79 @@ namespace{
     *size = length;
     return text;
   }
-  LPSTR trimmedText;int trimmedSize;
-void before(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role){
-  auto text = (LPSTR)s->stack[2]; // text in arg2
+  LPSTR trimmedText;
+  int trimmedSize;
+  void before(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+  {
+    auto text = (LPSTR)s->stack[2]; // text in arg2
     if (!text || !*text)
-      return  ;
+      return;
 
     int size = ::strlen(text);
-        trimmedSize = size;
+    trimmedSize = size;
     trimmedText = trim(text, &trimmedSize);
     if (trimmedSize <= 0 || !trimmedText || !*trimmedText)
-      return  ;
-    auto retaddr = s->stack[0]; 
+      return;
+    auto retaddr = s->stack[0];
     if (*(WORD *)(retaddr - 8) == 0x088b) // 8b08  mov ecx,dword ptr ds:[eax]
-      *role = s->stack[3] ? Engine::ScenarioRole : Engine::NameRole; 
-     buffer->from(trimmedText, trimmedSize);
-}  
-void after(hook_stack*s,void* data, size_t len){
-  std::string newData((char*)data, len);
-   auto text = (LPSTR)s->stack[2]; // text in arg2
-  int prefixSize = trimmedText - text;
-  int size = ::strlen(text);
-     int    suffixSize = size - prefixSize - trimmedSize;
-    //if (prefixSize)
-    //  newData.prepend(text, prefixSize);
+      *role = s->stack[3] ? Engine::ScenarioRole : Engine::NameRole;
+    buffer->from(trimmedText, trimmedSize);
+  }
+  void after(hook_stack *s, TextBuffer buffer)
+  {
+    std::string newData = buffer.strA();
+    auto text = (LPSTR)s->stack[2]; // text in arg2
+    int prefixSize = trimmedText - text;
+    int size = ::strlen(text);
+    int suffixSize = size - prefixSize - trimmedSize;
+    // if (prefixSize)
+    //   newData.prepend(text, prefixSize);
     if (suffixSize)
       newData.append(trimmedText + trimmedSize, suffixSize);
     ::strcpy(trimmedText, newData.c_str());
-}
- 
-std::string  rubyRemove( std::string text) {
+  }
+
+  std::string rubyRemove(std::string text)
+  {
     std::regex rx("<r(.*?)>(.*?)</r>");
-    text= std::regex_replace(text, rx, "$2");
+    text = std::regex_replace(text, rx, "$2");
     std::regex rx2("<c(.*?)>(.*?)</c>");
-    text= std::regex_replace(text, rx2, "$2");
+    text = std::regex_replace(text, rx2, "$2");
     std::regex rx3("<s(.*?)>(.*?)</s>");
-    text= std::regex_replace(text, rx3, "$2");
+    text = std::regex_replace(text, rx3, "$2");
     return text;
-}
+  }
 }
 static bool InsertNewPal1Hook()
 {
-  //有乱码，无法处理。并且遇到某些中文字符会闪退
+  // 有乱码，无法处理。并且遇到某些中文字符会闪退
   const BYTE bytes[] = {
-    0x55,               // 002c6ab0   55               push ebp
-    0x8b,0xec,          // 002c6ab1   8bec             mov ebp,esp
-    0x83,0xec, 0x78,    // 002c6ab3   83ec 78          sub esp,0x78
-    0xa1, XX4,          // 002c6ab6   a1 8c002f00      mov eax,dword ptr ds:[0x2f008c]
-    0x33,0xc5,          // 002c6abb   33c5             xor eax,ebp
-    0x89,0x45, 0xf8     // 002c6abd   8945 f8          mov dword ptr ss:[ebp-0x8],eax ; mireado : small update
+      0x55,             // 002c6ab0   55               push ebp
+      0x8b, 0xec,       // 002c6ab1   8bec             mov ebp,esp
+      0x83, 0xec, 0x78, // 002c6ab3   83ec 78          sub esp,0x78
+      0xa1, XX4,        // 002c6ab6   a1 8c002f00      mov eax,dword ptr ds:[0x2f008c]
+      0x33, 0xc5,       // 002c6abb   33c5             xor eax,ebp
+      0x89, 0x45, 0xf8  // 002c6abd   8945 f8          mov dword ptr ss:[ebp-0x8],eax ; mireado : small update
   };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("Pal1: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(2); // arg2
-  hp.type = USING_STRING|EMBED_ABLE|NO_CONTEXT;
-  hp.text_fun=before;
-  hp.hook_after=after;
-  hp.filter_fun=[](void* data, size_t* len, HookParam* hp){
-      auto s=std::string((char*)data,*len);
-      s=rubyRemove(s);
-      write_string_overwrite(data,len,s);
-      return true;
+  hp.offset = get_stack(2); // arg2
+  hp.type = USING_STRING | EMBED_ABLE | NO_CONTEXT;
+  hp.text_fun = before;
+  hp.hook_after = after;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    buffer->from(rubyRemove(buffer->strA()));
   };
-  hp.hook_font=F_CreateFontIndirectA|F_CreateFontA;
+  hp.hook_font = F_CreateFontIndirectA | F_CreateFontA;
   ConsoleOutput("INSERT Pal1");
   return NewHook(hp, "Pal");
 }
@@ -185,83 +194,85 @@ static bool InsertNewPal1Hook()
 static bool InsertNewPal2Hook()
 {
   const BYTE bytes[] = {
-    0x55,               // 0124E220   55               push ebp; doesn't works... why?
-    0x8b,0xec,          // 0124E221   8bec             mov ebp,esp
-    0x83,0xec, 0x7c,    // 0124E223   83ec 7c          sub esp,0x7C
-    0xa1, XX4,          // 0124E226   a1 788D2901      mov eax,dword ptr ds:[0x2f008c]
-    0x33,0xc5,          // 0124E22B   33c5             xor eax,ebp
-    0x89,0x45, 0xfc,    // 0124E22D   8945 FC          mov dword ptr ss:[ebp-0x8],eax ; mireado : small update
-	0xe8                // 0136e230   e8			   call 01377800
+      0x55,             // 0124E220   55               push ebp; doesn't works... why?
+      0x8b, 0xec,       // 0124E221   8bec             mov ebp,esp
+      0x83, 0xec, 0x7c, // 0124E223   83ec 7c          sub esp,0x7C
+      0xa1, XX4,        // 0124E226   a1 788D2901      mov eax,dword ptr ds:[0x2f008c]
+      0x33, 0xc5,       // 0124E22B   33c5             xor eax,ebp
+      0x89, 0x45, 0xfc, // 0124E22D   8945 FC          mov dword ptr ss:[ebp-0x8],eax ; mireado : small update
+      0xe8              // 0136e230   e8			   call 01377800
   };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("Pal2: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(2); // arg2
+  hp.offset = get_stack(2); // arg2
   hp.type = USING_STRING;
   ConsoleOutput("INSERT Pal2");
   return NewHook(hp, "Pal");
 }
-namespace{
-bool redcheris(){
-const BYTE bytes[] = {
-  //int __usercall sub_44E1E0@<eax>(
-  //        char *a1@<edx>,
+namespace
+{
+  bool redcheris()
+  {
+    const BYTE bytes[] = {
+        // int __usercall sub_44E1E0@<eax>(
+        //        char *a1@<edx>,
 
-  //if ( *(_DWORD *)a1 == 1047683644 )
-    0x8B,0x06,
-    0x3D,0x3C,0x62,0x72,0x3E ,
-    0x75,0x10
-  };
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)    return false; 
-  addr=MemDbg::findEnclosingAlignedFunction(addr);
-  if (!addr)    return false; 
-  HookParam hp;
-  hp.address = addr;
-  hp.offset=get_reg(regs::edx); 
-  hp.type = USING_STRING|EMBED_ABLE|EMBED_AFTER_NEW;
-  //无法编码的字符无法显示，若开启dyna则会直接略过这个字，还不如不开。
-  //[230929] [ユニゾンシフト] 恋とHしかしていない！
-  hp.newlineseperator=L"<br>";  
-  hp.filter_fun=[](void* data, size_t* len, HookParam* hp){
-    auto s=std::string((char*)data,*len);
-    s=rubyRemove(s);
-    write_string_overwrite(data,len,s);
-    return true;
-  };
-  return NewHook(hp, "Pal");
-}
+        // if ( *(_DWORD *)a1 == 1047683644 )
+        0x8B, 0x06,
+        0x3D, 0x3C, 0x62, 0x72, 0x3E,
+        0x75, 0x10};
+    ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = get_reg(regs::edx);
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
+    // 无法编码的字符无法显示，若开启dyna则会直接略过这个字，还不如不开。
+    //[230929] [ユニゾンシフト] 恋とHしかしていない！
+    hp.newlineseperator = L"<br>";
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      buffer->from(rubyRemove(buffer->strA()));
+    };
+    return NewHook(hp, "Pal");
+  }
 }
 
 bool InsertPalHook() // use Old Pal first, which does not have ruby
-{ 
-	PcHooks::hookOtherPcFunctions(); 
-  auto succ=false;
-  for (auto func : { "PalSpriteCreateTextEx","PalSpriteCreateText","PalFontDrawText" }) {
-      HookParam hp;
-      hp.type = USING_STRING | MODULE_OFFSET | FUNCTION_OFFSET;
-      wcscpy_s(hp.module, L"Pal.dll");
-      strcpy_s(hp.function, func);
-      hp.offset=get_stack(2);
-      succ|=NewHook(hp, func);
-  } 
-  bool embed= InsertNewPal1Hook() ;
-	bool b1= InsertOldPalHook() || InsertNewPal2Hook(); 
-  
-  bool b2=redcheris();
-  return b1||b2||embed||succ;
+{
+  PcHooks::hookOtherPcFunctions();
+  auto succ = false;
+  for (auto func : {"PalSpriteCreateTextEx", "PalSpriteCreateText", "PalFontDrawText"})
+  {
+    HookParam hp;
+    hp.type = USING_STRING | MODULE_OFFSET | FUNCTION_OFFSET;
+    wcscpy_s(hp.module, L"Pal.dll");
+    strcpy_s(hp.function, func);
+    hp.offset = get_stack(2);
+    succ |= NewHook(hp, func);
+  }
+  bool embed = InsertNewPal1Hook();
+  bool b1 = InsertOldPalHook() || InsertNewPal2Hook();
+
+  bool b2 = redcheris();
+  return b1 || b2 || embed || succ;
 }
 
-bool Pal::attach_function() {
-    
-    return InsertPalHook();
-} 
+bool Pal::attach_function()
+{
 
- 
+  return InsertPalHook();
+}

@@ -517,8 +517,8 @@ bool InsertEushullyHook()
   }
   HookParam hp;
   hp.address = lastCaller;
-  hp.type = USING_STRING | FIXING_SPLIT | EMBED_ABLE |  EMBED_AFTER_NEW | EMBED_DYNA_SJIS; // merging all threads
-  hp.offset = arg2_lpString;                                                                                    // arg2 = 0x4 * 2
+  hp.type = USING_STRING | FIXING_SPLIT | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS; // merging all threads
+  hp.offset = arg2_lpString;                                                              // arg2 = 0x4 * 2
   hp.hook_font = F_MultiByteToWideChar | F_GetTextExtentPoint32A | F_GetGlyphOutlineA | F_CreateFontA;
   ConsoleOutput("INSERT Eushully");
   bool succ = NewHook(hp, "ARCGameEngine");
@@ -560,11 +560,10 @@ namespace
     hp.type = USING_STRING | USING_SPLIT | NO_CONTEXT; // 必须NO_CONTEXT否则被注音的字会被分开
     hp.offset = get_stack(5);
     hp.split = get_stack(1); // name 80000000 各种所有text 0
-    hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
-      StringFilter((char *)data, len, "\xf0\x40", 2);
-      NewLineCharFilterA((char *)data, len, hp);
-      return true;
+      StringFilter(buffer, "\xf0\x40", 2);
+      CharFilter(buffer, '\n');
     };
     return NewHook(hp, "TENMEI");
   }
@@ -577,12 +576,12 @@ namespace
     hp.address = (DWORD)GetStringTypeExW;
     hp.offset = get_stack(3);
     hp.type = USING_STRING | CODEC_UTF16;
-    hp.filter_fun = [](void *data, size_t *len, HookParam *hp)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       // 破折号和省略号会变成乱码
-      for (auto i = 0; i < *len / 2; i++)
+      for (auto i = 0; i < buffer->size / 2; i++)
       {
-        auto wc = (wchar_t *)data;
+        auto wc = (wchar_t *)buffer->buff;
         if (wc[i] == 0xe001)
           wc[i] = 0x2014;
         else if (wc[i] == 0xe003)
@@ -590,7 +589,6 @@ namespace
         else if (wc[i] == 0xe000)
           wc[i] = 0x2026;
       }
-      return true;
     };
     auto succ = NewHook(hp, "eushully");
     hp.address = (DWORD)GetTextExtentPoint32W;

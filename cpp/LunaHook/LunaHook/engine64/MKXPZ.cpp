@@ -12,20 +12,20 @@ bool MKXPZ::attach_function()
   HookParam hp;
   hp.type = CODEC_UTF8 | USING_STRING | FULL_STRING;
   hp.offset = get_reg(regs::rdx);
-  hp.filter_fun = [](void *data, size_t *size, HookParam *)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
-    auto s = std::string((char *)data, *size);
+    auto s = buffer->strA();
     if (startWith(s, "Characters/"))
-      return false;
+      return buffer->clear();
     if (startWith(s, "Pictures/"))
-      return false;
+      return buffer->clear();
     if (startWith(s, "Graphics/"))
-      return false;
+      return buffer->clear();
     s = std::regex_replace(s, std::regex("<.*?>"), "");
     s = std::regex_replace(s, std::regex(R"(\\tg\[(.*?)\])"), "$1\n"); // 人名
     s = std::regex_replace(s, std::regex(R"(\\\w+\[\d+\])"), "");
     strReplace(s, "\\|", "");
-    return write_string_overwrite((char *)data, size, s);
+    buffer->from(s);
   };
   hp.address = (uintptr_t)onigenc_get_right_adjust_char_head_with_prev; // 这个比较纯粹，但有时候会缺
   succ |= NewHook(hp, "MKXPZ");

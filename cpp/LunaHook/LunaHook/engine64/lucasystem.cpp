@@ -1,17 +1,14 @@
 #include "lucasystem.h"
 
-bool IG64filter(void *data, size_t *size, HookParam *)
+void IG64filter(TextBuffer *buffer, HookParam *)
 {
 
-  auto text = reinterpret_cast<LPWSTR>(data);
-  std::wstring str = std::wstring(text, *size / 2);
+  std::wstring str = buffer->strW();
   std::wregex reg1(L"\\$\\[(.*?)\\$/(.*?)\\$\\]");
   std::wstring result1 = std::regex_replace(str, reg1, L"$1");
 
   std::wregex reg2(L"@[^@]*@");
-  std::wstring result2 = std::regex_replace(result1, reg2, L"");
-  write_string_overwrite(text, size, result2);
-  return true;
+  buffer->from(std::regex_replace(result1, reg2, L""));
 };
 bool InsertIG64Hook2()
 {
@@ -42,7 +39,7 @@ bool InsertIG64Hook2()
   {
     HookParam hp;
     hp.address = addr;
-    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE |  EMBED_AFTER_NEW; // 可以内嵌英文
+    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW; // 可以内嵌英文
     hp.filter_fun = IG64filter;
     hp.offset = get_reg(regs::rdx); // rdx
     ok |= NewHook(hp, "IG642");

@@ -25,14 +25,13 @@ namespace
   //[240222][1261652][DESSERT Soft] 二股野郎とパパ活姉妹 パッケージ版 (mdf+mds)
   // https://vndb.org/v20368
   //[170224] [Sweet HEART] アイドル★クリニック 恋の薬でHな処方 (iso+mds+rr3)
-  bool filter(LPVOID data, size_t *size, HookParam *)
+  void filter(TextBuffer *buffer, HookParam *)
   {
-    StringFilter((char *)data, size, "$L", 2);
-    StringFilter((char *)data, size, "$M", 2);
-    StringFilter((char *)data, size, "$S", 2);
-    StringFilterBetween((char *)data, size, "[", 1, "]", 1);
-    StringFilterBetween((char *)data, size, "&", 1, ";", 1);
-    return true;
+    StringFilter(buffer, "$L", 2);
+    StringFilter(buffer, "$M", 2);
+    StringFilter(buffer, "$S", 2);
+    StringFilterBetween(buffer, "[", 1, "]", 1);
+    StringFilterBetween(buffer, "&", 1, ";", 1);
     // else
     // {
     //   v18 = *v16++;

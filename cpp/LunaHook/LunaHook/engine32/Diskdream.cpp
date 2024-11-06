@@ -19,11 +19,10 @@ bool Diskdream::attach_function()
   hp.offset = get_reg(regs::edx);
   hp.type = USING_STRING;
   hp.codepage = 932;
-  hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
-    if (*size == 0)
-      return false;
-    return (bool)IsShiftjisLeadByte(*(BYTE *)data);
+    if (!(bool)IsShiftjisLeadByte(*(BYTE *)buffer->buff))
+      buffer->clear();
   };
   return NewHook(hp, "Diskdream");
 }

@@ -58,10 +58,11 @@ namespace
     hp.address = addr + sizeof(bytes); // 不知道从哪jump到call MultiByteToWideChar的
     hp.offset = get_stack(5);
     hp.type = USING_STRING;
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *) -> bool
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       static int idx = 0;
-      return (idx++) % 2;
+      if ((idx++) % 2)
+        buffer->clear();
     };
     return NewHook(hp, "Flash Asset");
   }
@@ -90,7 +91,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.offset = get_stack(2);
-    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_NEW ;
+    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_NEW;
     return NewHook(hp, "TextXtra");
   }
 }

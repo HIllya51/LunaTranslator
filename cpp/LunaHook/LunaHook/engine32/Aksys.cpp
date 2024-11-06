@@ -51,11 +51,12 @@ namespace
     hp.offset = get_reg(regs::edx);
     hp.split = get_reg(regs::edx);
     hp.type = USING_STRING | USING_SPLIT;
-    hp.filter_fun = [](LPVOID data, size_t *size, HookParam *)
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      StringFilter((char *)data, size, "@1r", 3);
-      StringFilter((char *)data, size, "@-1r", 4);
-      return (StringToWideString(std::string((char *)data, *size), 932).has_value());
+      StringFilter(buffer, "@1r", 3);
+      StringFilter(buffer, "@-1r", 4);
+      if (!StringToWideString(buffer->strA(), 932).has_value())
+        buffer->clear();
     };
     return NewHook(hp, "Aksys");
   }

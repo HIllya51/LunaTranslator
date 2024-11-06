@@ -30,5 +30,5 @@ namespace Engine
 inline std::atomic<void (*)()> patch_fun = nullptr;
 bool ReplaceFunction(PVOID oldf, PVOID newf, PVOID *pOrigin = nullptr);
 bool check_embed_able(const ThreadParam &tp);
-bool checktranslatedok(void *data, size_t len);
+bool checktranslatedok(TextBuffer buff);
 #endif

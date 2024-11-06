@@ -1,47 +1,51 @@
-#include"Ryokucha.h"
+#include "Ryokucha.h"
 static void SpecialHookRyokucha(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  for (DWORD i = 1; i < 5; i++) {
+  for (DWORD i = 1; i < 5; i++)
+  {
     DWORD j = stack->stack[i];
-    if ((j >> 16) == 0 && (j >> 8)) {
+    if ((j >> 16) == 0 && (j >> 8))
+    {
       hp->offset = i << 2;
       buffer->from_t<WORD>(j);
-      //hp->type &= ~EXTERN_HOOK;
+      // hp->type &= ~EXTERN_HOOK;
       hp->text_fun = nullptr;
       return;
     }
-  } 
+  }
 }
-bool InsertRyokuchaDynamicHook(LPVOID addr, hook_stack*)
+bool InsertRyokuchaDynamicHook(LPVOID addr, hook_stack *)
 {
   if (addr != ::GetGlyphOutlineA)
     return false;
- 
-  auto tib = (NT_TIB*)__readfsdword(0);
-  auto exception = tib->ExceptionList;
-  for (int i = 0; i < 1; i++) { 
-      exception = exception->Next;
-  }
-  auto handler=(DWORD)exception->Handler;
-  auto ptr=*(DWORD*)((DWORD)exception+0xC);
-  auto insert_addr=ptr+*(DWORD*)(ptr-4);
-  auto flag=(*(DWORD*)(insert_addr+3)==handler);
 
-  if (flag) {
+  auto tib = (NT_TIB *)__readfsdword(0);
+  auto exception = tib->ExceptionList;
+  for (int i = 0; i < 1; i++)
+  {
+    exception = exception->Next;
+  }
+  auto handler = (DWORD)exception->Handler;
+  auto ptr = *(DWORD *)((DWORD)exception + 0xC);
+  auto insert_addr = ptr + *(DWORD *)(ptr - 4);
+  auto flag = (*(DWORD *)(insert_addr + 3) == handler);
+
+  if (flag)
+  {
     HookParam hp;
     hp.address = insert_addr;
     hp.text_fun = SpecialHookRyokucha;
-    hp.type = CODEC_ANSI_BE|USING_CHAR;
+    hp.type = CODEC_ANSI_BE | USING_CHAR;
     ConsoleOutput("INSERT StudioRyokucha");
     return NewHook(hp, "StudioRyokucha");
   }
-  //else ConsoleOutput("Unknown Ryokucha engine.");
+  // else ConsoleOutput("Unknown Ryokucha engine.");
   ConsoleOutput("StudioRyokucha: failed");
   return true;
 }
 void InsertRyokuchaHook()
 {
-  //ConsoleOutput("Probably Ryokucha. Wait for text.");
+  // ConsoleOutput("Probably Ryokucha. Wait for text.");
   trigger_fun = InsertRyokuchaDynamicHook;
   ConsoleOutput("TRIGGER Ryokucha");
 }
@@ -54,9 +58,9 @@ void InsertRyokuchaHook()
  *  Version: R7P3-13v2(131220).rar, pass: sstm http://pan.baidu.com/share/home?uk=3727185265#category/type=0
  *  /HS0@409524
  */
-//bool InsertRai7Hook()
+// bool InsertRai7Hook()
 //{
-//}
+// }
 
 /**
  *  jichi 10/1/2013: sol-fa-soft
@@ -199,169 +203,189 @@ void InsertRyokuchaHook()
  */
 bool InsertScenarioPlayerHook()
 {
-	PcHooks::hookOtherPcFunctions();
-  //const BYTE bytes[] = {
-  //  0x53,                    // 00609c0e  |. 53             push ebx
-  //  0x8b,0x5d,0x08,          // 00609c0f  |. 8b5d 08        mov ebx,dword ptr ss:[ebp+0x8]
-  //  0x57,                    // 00609c12  |. 57             push edi
-  //  0x8b,0xf9,               // 00609c13  |. 8bf9           mov edi,ecx
-  //  0x8b,0x07,               // 00609c15  |. 8b07           mov eax,dword ptr ds:[edi]
-  //  0x83,0xf8, 0x02,         // 00609c17  |. 83f8 02        cmp eax,0x2
-  //  0x75, 0x1f,              // 00609c1a  |. 75 1f          jnz short あや�00609c3b
-  //  0x3b,0x5f, 0x40,         // 00609c1c  |. 3b5f 40        cmp ebx,dword ptr ds:[edi+0x40]
-  //  0x75, 0x1a,              // 00609c1f  |. 75 1a          jnz short あや�00609c3b
-  //  0x83,0x7f, 0x44, 0x00,   // 00609c21  |. 837f 44 00     cmp dword ptr ds:[edi+0x44],0x0
-  //  0x74, 0x14,              // 00609c25  |. 74 14          je short あや�00609c3b
-  //};
-  //enum { addr_offset = 0x00609bf0 - 0x00609c0e }; // distance to the beginning of the function
+  PcHooks::hookOtherPcFunctions();
+  // const BYTE bytes[] = {
+  //   0x53,                    // 00609c0e  |. 53             push ebx
+  //   0x8b,0x5d,0x08,          // 00609c0f  |. 8b5d 08        mov ebx,dword ptr ss:[ebp+0x8]
+  //   0x57,                    // 00609c12  |. 57             push edi
+  //   0x8b,0xf9,               // 00609c13  |. 8bf9           mov edi,ecx
+  //   0x8b,0x07,               // 00609c15  |. 8b07           mov eax,dword ptr ds:[edi]
+  //   0x83,0xf8, 0x02,         // 00609c17  |. 83f8 02        cmp eax,0x2
+  //   0x75, 0x1f,              // 00609c1a  |. 75 1f          jnz short あや�00609c3b
+  //   0x3b,0x5f, 0x40,         // 00609c1c  |. 3b5f 40        cmp ebx,dword ptr ds:[edi+0x40]
+  //   0x75, 0x1a,              // 00609c1f  |. 75 1a          jnz short あや�00609c3b
+  //   0x83,0x7f, 0x44, 0x00,   // 00609c21  |. 837f 44 00     cmp dword ptr ds:[edi+0x44],0x0
+  //   0x74, 0x14,              // 00609c25  |. 74 14          je short あや�00609c3b
+  // };
+  // enum { addr_offset = 0x00609bf0 - 0x00609c0e }; // distance to the beginning of the function
 
   const BYTE bytes[] = {
-    0x74, 0x14,     // 00609c25  |. 74 14          je short あや�00609c3b
-    0x5f,           // 00609c27  |. 5f             pop edi
-    0xb0, 0x01,     // 00609c28  |. b0 01          mov al,0x1
-    0x5b,           // 00609c2a  |. 5b             pop ebx
-    0x8b,0x4d, 0xf4 // 00609c2b  |. 8b4d f4        mov ecx,dword ptr ss:[ebp-0xc]
+      0x74, 0x14,      // 00609c25  |. 74 14          je short あや�00609c3b
+      0x5f,            // 00609c27  |. 5f             pop edi
+      0xb0, 0x01,      // 00609c28  |. b0 01          mov al,0x1
+      0x5b,            // 00609c2a  |. 5b             pop ebx
+      0x8b, 0x4d, 0xf4 // 00609c2b  |. 8b4d f4        mov ecx,dword ptr ss:[ebp-0xc]
   };
-  enum { // distance to the beginning of the function
-    addr_offset_A = 0x00609bf0 - 0x00609c25   // -53
-    , addr_offset_W = 0x00406540 - 0x00406572 // -50
+  enum
+  {                                         // distance to the beginning of the function
+    addr_offset_A = 0x00609bf0 - 0x00609c25 // -53
+    ,
+    addr_offset_W = 0x00406540 - 0x00406572 // -50
   };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG start = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!start) {
+  if (!start)
+  {
     ConsoleOutput("ScenarioPlayer: pattern not found");
     return false;
   }
 
   DWORD addr = MemDbg::findEnclosingAlignedFunction(start, 80); // range is around 50, use 80
 
-  enum : BYTE { push_ebp = 0x55 };  // 011d4c80  /$ 55             push ebp
-  if (!addr || *(BYTE *)addr != push_ebp) {
+  enum : BYTE
+  {
+    push_ebp = 0x55
+  }; // 011d4c80  /$ 55             push ebp
+  if (!addr || *(BYTE *)addr != push_ebp)
+  {
     ConsoleOutput("ScenarioPlayer: pattern found but the function offset is invalid");
     return false;
   }
-  auto succ=false;
+  auto succ = false;
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1);
+  hp.offset = get_stack(1);
   if (
-      (addr - start == addr_offset_W)||
-      (
-        (Util::FindImportEntry(processStartAddress,(DWORD)GetGlyphOutlineA)==0)&&
-        (Util::FindImportEntry(processStartAddress,(DWORD)TextOutA)==0)&&
-        (Util::FindImportEntry(processStartAddress,(DWORD)ExtTextOutA)==0)&&
-        (Util::FindImportEntry(processStartAddress,(DWORD)GetTextExtentPoint32A)==0)
-        //祝福の鐘の音は、桜色の風と共に
-      )
-    ) {
-  // Artikash 8/18/2018: can't figure out how to tell apart which hook is needed, so alert user
-  // (The method used to tell the hooks apart previously fails on https://vndb.org/v19713)
+      (addr - start == addr_offset_W) ||
+      ((Util::FindImportEntry(processStartAddress, (DWORD)GetGlyphOutlineA) == 0) &&
+       (Util::FindImportEntry(processStartAddress, (DWORD)TextOutA) == 0) &&
+       (Util::FindImportEntry(processStartAddress, (DWORD)ExtTextOutA) == 0) &&
+       (Util::FindImportEntry(processStartAddress, (DWORD)GetTextExtentPoint32A) == 0)
+       // 祝福の鐘の音は、桜色の風と共に
+       ))
+  {
+    // Artikash 8/18/2018: can't figure out how to tell apart which hook is needed, so alert user
+    // (The method used to tell the hooks apart previously fails on https://vndb.org/v19713)
 
-  hp.type = CODEC_UTF16;
-  ConsoleOutput("INSERT ScenarioPlayerW");
-  succ=NewHook(hp, "ScenarioPlayerW");
-  } else {
-  hp.type = CODEC_ANSI_BE; // 4
-  ConsoleOutput("INSERT ScenarioPlayerA");
-  succ=NewHook(hp, "ScenarioPlayerA");
+    hp.type = CODEC_UTF16;
+    ConsoleOutput("INSERT ScenarioPlayerW");
+    succ = NewHook(hp, "ScenarioPlayerW");
+  }
+  else
+  {
+    hp.type = CODEC_ANSI_BE; // 4
+    ConsoleOutput("INSERT ScenarioPlayerA");
+    succ = NewHook(hp, "ScenarioPlayerA");
   }
   ConsoleOutput("Text encoding might be wrong: try changing it if this hook finds garbage!");
   return succ;
 }
 
-bool InsertScenarioPlayerHookx() {
-  //夏彩恋呗
-  //为避免和engine中的冲突，进行一次xref
+bool InsertScenarioPlayerHookx()
+{
+  // 夏彩恋呗
+  // 为避免和engine中的冲突，进行一次xref
   const BYTE bytes[] = {
-    0xC1,0xE8,0x02,0x25,0x01,0xFF,0xFF,0xFF,0x89,0x45,XX
-  };
+      0xC1, 0xE8, 0x02, 0x25, 0x01, 0xFF, 0xFF, 0xFF, 0x89, 0x45, XX};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   ConsoleOutput("%p", addr);
-  if (addr == 0)return false;
+  if (addr == 0)
+    return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
   ConsoleOutput("%p", addr);
-  if (addr == 0)return false;
+  if (addr == 0)
+    return false;
   auto addrs = findxref_reverse_checkcallop(addr, addr - 0x1000, addr, 0xe9);
-  if (addrs.size() != 1)return false;
+  if (addrs.size() != 1)
+    return false;
   addr = addrs[0];
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)return false;
+  if (addr == 0)
+    return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1);
+  hp.offset = get_stack(1);
   hp.type = CODEC_UTF16;
   return NewHook(hp, "sutajioryokutyaW");
 }
-namespace{
-  bool Iyashikei(){
-    //癒し系ソープ嬢ヒロさん
+namespace
+{
+  bool Iyashikei()
+  {
+    // 癒し系ソープ嬢ヒロさん
     const BYTE bytes[] = {
-      0x6A,0xFF,
-      0x68,XX4,
-      0x64,0xA1,0x00,0x00,0x00,0x00, 
-      0x50,
-      0x83,0xEC,0x08,
-      0x56,
-      0xA1,0x08,0x6E,0x6B,0x00,
-      0x33,0xC4,
-      0x50,
-      0x8D,0x44,0x24,XX,
-      0x64,0xA3,0x00,0x00,0x00,0x00,
-      0x8B,0xF1,
-      0x8B,0x44,0x24,XX,
-      0x50,
-      0x8D,0x4C,0x24,XX,
-      0x51,
-      0x8B,0xCE,
-      0xE8,XX4
-    };
+        0x6A, 0xFF,
+        0x68, XX4,
+        0x64, 0xA1, 0x00, 0x00, 0x00, 0x00,
+        0x50,
+        0x83, 0xEC, 0x08,
+        0x56,
+        0xA1, 0x08, 0x6E, 0x6B, 0x00,
+        0x33, 0xC4,
+        0x50,
+        0x8D, 0x44, 0x24, XX,
+        0x64, 0xA3, 0x00, 0x00, 0x00, 0x00,
+        0x8B, 0xF1,
+        0x8B, 0x44, 0x24, XX,
+        0x50,
+        0x8D, 0x4C, 0x24, XX,
+        0x51,
+        0x8B, 0xCE,
+        0xE8, XX4};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if(addr==0)return false;
+    if (addr == 0)
+      return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(1);
+    hp.offset = get_stack(1);
     hp.type = CODEC_ANSI_BE;
     return NewHook(hp, "Iyashikei");
   }
 }
-bool InsertScenarioPlayerHook_all(){
-  bool b1= InsertScenarioPlayerHook();
-  bool b2=InsertScenarioPlayerHookx();
-  return b1||b2||Iyashikei();
+bool InsertScenarioPlayerHook_all()
+{
+  bool b1 = InsertScenarioPlayerHook();
+  bool b2 = InsertScenarioPlayerHookx();
+  return b1 || b2 || Iyashikei();
 }
-bool Ryokucha::attach_function() {  
-    InsertRyokuchaHook();
+bool Ryokucha::attach_function()
+{
+  InsertRyokuchaHook();
 
-    if (Util::CheckFile(L"*.iar") && Util::CheckFile(L"*.sec5")) // jichi 9/27/2014: For new Ryokucha games
-        InsertScenarioPlayerHook_all();
-    
-    return true;
-}  
+  if (Util::CheckFile(L"*.iar") && Util::CheckFile(L"*.sec5")) // jichi 9/27/2014: For new Ryokucha games
+    InsertScenarioPlayerHook_all();
 
-bool ScenarioPlayer_last::attach_function() {  
-      
-    return InsertScenarioPlayerHook_all();
-} 
-bool Ryokucha2::attach_function() {  
-    //夏日
-			const BYTE bytes[] = {
-				0x8b,XX2,0x2b,0xd1,0xc1,0xfa,0x02,0x3b,0xd0,0x76
-			};
-			auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-			ConsoleOutput("%p", addr);
-			if (addr == 0)return false;
-			addr = MemDbg::findEnclosingAlignedFunction(addr);
-			ConsoleOutput("%p", addr);
-			if (addr == 0)return false;
-			 
-			HookParam hp;
-			hp.address = addr;
-			hp.offset =get_stack(6);
-			hp.type = USING_STRING; 
-			hp.filter_fun = [](void* data, size_t* len, HookParam* hp) {
-				std::string s = std::string(reinterpret_cast<char*>(data), *len);
-				if (s[0] == '#')return false;
-				return true;
-			};
-			return NewHook(hp, "sutajioryokutya");
-} 
+  return true;
+}
+
+bool ScenarioPlayer_last::attach_function()
+{
+
+  return InsertScenarioPlayerHook_all();
+}
+bool Ryokucha2::attach_function()
+{
+  // 夏日
+  const BYTE bytes[] = {
+      0x8b, XX2, 0x2b, 0xd1, 0xc1, 0xfa, 0x02, 0x3b, 0xd0, 0x76};
+  auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  ConsoleOutput("%p", addr);
+  if (addr == 0)
+    return false;
+  addr = MemDbg::findEnclosingAlignedFunction(addr);
+  ConsoleOutput("%p", addr);
+  if (addr == 0)
+    return false;
+
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = get_stack(6);
+  hp.type = USING_STRING;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    auto s = buffer->viewA();
+    if (s[0] == '#')
+      buffer->clear();
+  };
+  return NewHook(hp, "sutajioryokutya");
+}

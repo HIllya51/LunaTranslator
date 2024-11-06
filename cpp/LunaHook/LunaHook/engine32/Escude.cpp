@@ -1,4 +1,4 @@
-#include"Escude.h"
+#include "Escude.h"
 /** jichi 7/23/2015 Escude
  *  Sample game: Re;Lord ��ルフォルト�魔女とぬぁ�るみ *  See: http://capita.tistory.com/m/post/210
  *
@@ -140,122 +140,127 @@
  *  0042CC68   CC               INT3
  *  0042CC69   CC               INT3 *
  */
-namespace { // unnamed
-/**
- *  Handle new lines and ruby.
- *
- *  そ�日、彼の言葉に耳を傾ける�ぁ�かった� *  ザールラント歴丹�〹�　二ノ月二十日<r>グローセン州　ヘルフォルト区郊� *
- *  僁�な霋�の後�r><ruby text='まぶ�>瞼</ruby>の裏を焼く陽光に気付いた� *
- *  気�く重�ruby text='まぶ�>瞼</ruby>を開け��r>見覚えのある輪郭が瞳に�り込む� *
- *  そ�日、彼の言葉に耳を傾ける�ぁ�かった。――尊厳を捨てて媚�る。それが生きることか？――��ぁ�敗北したのた誰しも少年の声を聞かず、蔑み、そして冷笑してぁ�。安寧の世がぁ�までも続くと信じてぁ�から。それでも、私�――。ザールラント歴丹�〹�　二ノ月二十日<r>グローセン州　ヘルフォルト区郊外僅かな霋�の後�r><ruby text='まぶ�>瞼</ruby>の裏を焼く陽光に気付いた。気�く重�ruby text='まぶ�>瞼</ruby>を開け��r>見覚えのある輪郭が瞳に�り込む
- */
-bool EscudeFilter(LPVOID data, size_t *size, HookParam *)
-{
-  auto text = reinterpret_cast<LPSTR>(data);
-  auto len = reinterpret_cast<size_t *>(size);
-  StringCharReplacer(text, len, "<r>", 3, '\n');
-
-  if (cpp_strnstr(text, "<ruby", *len)) {
-    StringFilter(text, len, "</ruby>", 7);
-    StringFilterBetween(text, len, "<ruby", 5, "'>", 2);
-  }
-  return true;
-}
-LPCSTR _escudeltrim(LPCSTR text)
-{
-  if (text && *text == '<')
-    for (auto p = text; (signed char)*p > 0; p++)
-      if (*p == '>')
-        return p + 1;
-  return text;
-}
-void SpecialHookEscude(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-{
-  DWORD arg1 = stack->stack[1];
-  if (!arg1 || (LONG)arg1 == -1 || ::IsBadWritePtr((LPVOID)arg1, 4)) // this is indispensable
-    return;
-  LPCSTR text = (LPCSTR)*(DWORD *)(arg1 + 0x20);
-  if (!text || ::IsBadWritePtr((LPVOID)text, 1) || !*text) // this is indispensable
-    return;
-  text = _escudeltrim(text);
-  if (!text)
-    return;
-  *split = *(DWORD *)arg1;
-  buffer->from_cs(text);
-}
-struct HookArgument
-{
-  ULONG split;
-  //ULONG unknown1[3];
-  //LPCSTR text1; // 0x10 only for old games
-  ULONG unknown[7];
-  LPCSTR text; // 0x20
-
-  bool isValid() const { return Engine::isAddressWritable(text) && *text; }
-
-  Engine::TextRole role() const
+namespace
+{ // unnamed
+  /**
+   *  Handle new lines and ruby.
+   *
+   *  そ�日、彼の言葉に耳を傾ける�ぁ�かった� *  ザールラント歴丹�〹�　二ノ月二十日<r>グローセン州　ヘルフォルト区郊� *
+   *  僁�な霋�の後�r><ruby text='まぶ�>瞼</ruby>の裏を焼く陽光に気付いた� *
+   *  気�く重�ruby text='まぶ�>瞼</ruby>を開け��r>見覚えのある輪郭が瞳に�り込む� *
+   *  そ�日、彼の言葉に耳を傾ける�ぁ�かった。――尊厳を捨てて媚�る。それが生きることか？――��ぁ�敗北したのた誰しも少年の声を聞かず、蔑み、そして冷笑してぁ�。安寧の世がぁ�までも続くと信じてぁ�から。それでも、私�――。ザールラント歴丹�〹�　二ノ月二十日<r>グローセン州　ヘルフォルト区郊外僅かな霋�の後�r><ruby text='まぶ�>瞼</ruby>の裏を焼く陽光に気付いた。気�く重�ruby text='まぶ�>瞼</ruby>を開け��r>見覚えのある輪郭が瞳に�り込む
+   */
+  void EscudeFilter(TextBuffer *buffer, HookParam *)
   {
-    if (split >= 0xff)
-      return Engine::OtherRole;
-    static ULONG maxSplit_ = 0;
-    if (split > maxSplit_)
-      maxSplit_ = split;
-    if (split == maxSplit_)
-      return Engine::ScenarioRole;
-    return Engine::NameRole; // scenario role is larger than name role
+    auto text = reinterpret_cast<LPSTR>(buffer->buff);
+
+    StringCharReplacer(buffer, "<r>", 3, '\n');
+    if (cpp_strnstr(text, "<ruby", buffer->size))
+    {
+      StringFilter(buffer, "</ruby>", 7);
+      StringFilterBetween(buffer, "<ruby", 5, "'>", 2);
+    }
   }
-};
-LPCSTR trimmedText;
-void hook_before(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role){
-  
+  LPCSTR _escudeltrim(LPCSTR text)
+  {
+    if (text && *text == '<')
+      for (auto p = text; (signed char)*p > 0; p++)
+        if (*p == '>')
+          return p + 1;
+    return text;
+  }
+  void SpecialHookEscude(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    DWORD arg1 = stack->stack[1];
+    if (!arg1 || (LONG)arg1 == -1 || ::IsBadWritePtr((LPVOID)arg1, 4)) // this is indispensable
+      return;
+    LPCSTR text = (LPCSTR) * (DWORD *)(arg1 + 0x20);
+    if (!text || ::IsBadWritePtr((LPVOID)text, 1) || !*text) // this is indispensable
+      return;
+    text = _escudeltrim(text);
+    if (!text)
+      return;
+    *split = *(DWORD *)arg1;
+    buffer->from_cs(text);
+  }
+  struct HookArgument
+  {
+    ULONG split;
+    // ULONG unknown1[3];
+    // LPCSTR text1; // 0x10 only for old games
+    ULONG unknown[7];
+    LPCSTR text; // 0x20
+
+    bool isValid() const { return Engine::isAddressWritable(text) && *text; }
+
+    Engine::TextRole role() const
+    {
+      if (split >= 0xff)
+        return Engine::OtherRole;
+      static ULONG maxSplit_ = 0;
+      if (split > maxSplit_)
+        maxSplit_ = split;
+      if (split == maxSplit_)
+        return Engine::ScenarioRole;
+      return Engine::NameRole; // scenario role is larger than name role
+    }
+  };
+  LPCSTR trimmedText;
+  void hook_before(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+  {
+
     auto arg = (HookArgument *)s->stack[1];
     if ((long)arg == -1 || !Engine::isAddressWritable(arg) || !arg->isValid())
-      return  ;
+      return;
     trimmedText = _escudeltrim(arg->text);
-    * role = arg->role();
+    *role = arg->role();
     buffer->from_cs(trimmedText);
-}
-void hook_after(hook_stack*s,void* data, size_t len){
-  static std::string data_;
-  data_=std::string((char*)data,len);
-  auto arg = (HookArgument *)s->stack[1];
-  if(trimmedText!=arg->text)
-    data_.insert(0,std::string(arg->text, trimmedText - arg->text));
-  arg->text=data_.c_str();
-}
+  }
+  void hook_after(hook_stack *s, TextBuffer buffer)
+  {
+    static std::string data_;
+    data_ = buffer.strA();
+    auto arg = (HookArgument *)s->stack[1];
+    if (trimmedText != arg->text)
+      data_.insert(0, std::string(arg->text, trimmedText - arg->text));
+    arg->text = data_.c_str();
+  }
 } // unnamed namespace
 bool InsertEscudeHook()
 {
   const BYTE bytes[] = {
-    0x76, 0x0a,             // 0042cb9c   76 0a            jbe short .0042cba8
-    0x49,                   // 0042cb9e   49               dec ecx
-    0x0f,0xaf,0x48, 0x0c    // 0042cb9f   0faf48 0c        imul ecx,dword ptr ds:[eax+0xc]
+      0x76, 0x0a,            // 0042cb9c   76 0a            jbe short .0042cba8
+      0x49,                  // 0042cb9e   49               dec ecx
+      0x0f, 0xaf, 0x48, 0x0c // 0042cb9f   0faf48 0c        imul ecx,dword ptr ds:[eax+0xc]
   };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  //GROWL(addr);
-  if (!addr) {
+  // GROWL(addr);
+  if (!addr)
+  {
     ConsoleOutput("Escude: pattern not found");
     return false;
   }
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("Escude: enclosing function not found");
     return false;
   }
   HookParam hp;
   hp.address = addr;
-  hp.text_fun=hook_before;
-  hp.hook_after=hook_after;
-  hp.hook_font=F_TextOutA|F_GetTextExtentPoint32A;
+  hp.text_fun = hook_before;
+  hp.hook_after = hook_after;
+  hp.hook_font = F_TextOutA | F_GetTextExtentPoint32A;
   hp.text_fun = SpecialHookEscude;
   hp.filter_fun = EscudeFilter;
-  hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT|EMBED_ABLE|EMBED_DYNA_SJIS; // NO_CONTEXT as this function is only called by one caller anyway
-  hp.newlineseperator=L"<r>";
+  hp.type = USING_STRING | USING_SPLIT | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS; // NO_CONTEXT as this function is only called by one caller anyway
+  hp.newlineseperator = L"<r>";
   ConsoleOutput("INSERT Escude");
-  
+
   return NewHook(hp, "Escude");
 }
 
-bool Escude::attach_function() {   
-    return InsertEscudeHook();
-} 
+bool Escude::attach_function()
+{
+  return InsertEscudeHook();
+}

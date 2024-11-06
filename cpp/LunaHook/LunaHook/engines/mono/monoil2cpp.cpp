@@ -24,7 +24,7 @@ namespace
         return newstring;
     }
 }
-void commonsolvemonostring(uintptr_t offset, uintptr_t *data, size_t *len)
+void commonsolvemonostring(uintptr_t offset, TextBuffer *buffer)
 {
     auto sw = il2cppfunctions::get_string((void *)offset);
     if (!sw)
@@ -33,19 +33,14 @@ void commonsolvemonostring(uintptr_t offset, uintptr_t *data, size_t *len)
         sw = readmonostring((void *)offset);
     if (!sw)
         return;
-    auto sw_v = sw.value();
-    *data = (uintptr_t)sw_v.data();
-    *len = sw_v.length() * sizeof(wchar_t);
-    if (*len > TEXT_BUFFER_SIZE)
-    {
-        *len = 0;
+    if (sw.value().size() > TEXT_BUFFER_SIZE)
         return;
-    }
+    buffer->from(sw.value());
 }
 
-void unity_ui_string_hook_after(uintptr_t *offset, void *data, size_t len)
+void unity_ui_string_hook_after(uintptr_t *offset, TextBuffer buff)
 {
-    auto view = std::wstring_view((wchar_t *)data, len / 2);
+    auto view = buff.viewW();
     auto newstring = il2cppfunctions::create_string(view);
     if (!newstring)
         newstring = monofunctions::create_string(view);

@@ -267,13 +267,11 @@ namespace
     buffer->from(text, len);
     *split = FIXED_SPLIT_VALUE << index;
   }
-  bool WillPlus_extra_filter(void *data, size_t *size, HookParam *)
+  void WillPlus_extra_filter(TextBuffer *buffer, HookParam *)
   {
 
-    auto text = reinterpret_cast<LPWSTR>(data);
-    StringFilter(text, size, L"%XS", 5); // remove %XS followed by 2 chars
-    std::wstring str = text;
-    str = str.substr(0, *size / 2);
+    StringFilter(buffer, L"%XS", 5); // remove %XS followed by 2 chars
+    std::wstring str = buffer->strW();
     strReplace(str, L"\\n", L"\n");
     std::wregex reg1(L"\\{(.*?):(.*?)\\}");
     std::wstring result1 = std::regex_replace(str, reg1, L"$1");
@@ -283,9 +281,7 @@ namespace
 
     std::wregex reg2(L"%[A-Z]+");
     result1 = std::regex_replace(result1, reg2, L"");
-
-    write_string_overwrite(data, size, result1);
-    return true;
+    buffer->from(result1);
   };
   bool InsertWillPlusAHook()
   {
@@ -321,7 +317,10 @@ namespace
     hp.address = addr;
     hp.text_fun = SpecialHookWillPlusA;
     hp.type = NO_CONTEXT;
-    hp.filter_fun = NewLineStringFilterA; // remove two characters of "\\n"
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      StringFilter(buffer, "\\n", 2);
+    }; // remove two characters of "\\n"
     ConsoleOutput("INSERT WillPlusA");
     return NewHook(hp, "WillPlusA");
   }
@@ -331,10 +330,10 @@ namespace
     auto text = (LPCWSTR)stack->ecx;
     if (!text || !*text)
       return;
-      size_t len;
+    size_t len;
     text = _willplus_trim_w(text, &len);
     *split = FIXED_SPLIT_VALUE << hp->user_value;
-    buffer->from(text, len*2);
+    buffer->from(text, len * 2);
   }
 
   bool InsertWillPlusWHook()
@@ -371,7 +370,10 @@ namespace
       hp.text_fun = SpecialHookWillPlusW;
       hp.type = NO_CONTEXT | CODEC_UTF16;
       hp.user_value = i;
-      hp.filter_fun = NewLineStringFilterW; // remove two characters of "\\n"
+      hp.filter_fun = [](TextBuffer *buffer, auto *)
+      {
+        StringFilter(buffer, L"\\n", 2);
+      }; // remove two characters of "\\n"
       ConsoleOutput("INSERT WillPlusW");
       succ |= NewHook(hp, "WillPlusW");
     }
@@ -530,7 +532,7 @@ namespace will3
     auto text = (LPWSTR)s->stack[7]; // text in arg1
 
     if (!text || !*text)
-      return  ;
+      return;
 
     std::wstring str = ((LPWSTR)s->stack[7]);
     kp = 0;
@@ -559,9 +561,9 @@ namespace will3
 
     buffer->from(str);
   }
-  void hookafter(hook_stack *s, void *data, size_t len)
+  void hookafter(hook_stack *s, TextBuffer buffer)
   {
-    auto data_ = std::wstring((wchar_t *)data, len / 2); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
+    auto data_ = buffer.strW(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
     if (kp)
     {
       data_.append(L"%K%P");
@@ -574,7 +576,7 @@ namespace will3
     {
       data_ = L"%LC" + data_;
     }
-    s->stack[7] = (ULONG)(data_.c_str());
+    s->stack[7] = (DWORD)allocateString(data_);
   }
 }
 bool InsertWillPlus4Hook()
@@ -806,18 +808,18 @@ namespace
       };
       auto text = (LPCWSTR)s->stack[info->stackIndex_];
       if (!text || !*text)
-        return  ;
+        return;
       int size = ::wcslen(text),
           trimmedSize = size;
       auto trimmedText = trim(text, &trimmedSize);
       if (!trimmedSize || !*trimmedText)
-        return  ;
-      buffer->from(trimmedText, trimmedSize*2);
+        return;
+      buffer->from(trimmedText, trimmedSize * 2);
     }
     template <int idx>
-    void hookafter(hook_stack *s, void *data, size_t len)
+    void hookafter(hook_stack *s, TextBuffer buffer)
     {
-      auto newText = std::wstring((LPWSTR)data, len / 2);
+      auto newText = buffer.strW();
       auto info = savetyperef.at(idx);
       enum
       {
@@ -857,7 +859,7 @@ namespace
       _tinfo->stackIndex_ = hookStackIndex;
       savetyperef[_type] = _tinfo;
       hp.text_fun = hookBefore<_type>;
-      hp.type = EMBED_ABLE | CODEC_UTF16|NO_CONTEXT;
+      hp.type = EMBED_ABLE | CODEC_UTF16 | NO_CONTEXT;
       hp.newlineseperator = L"\\n";
       hp.hook_after = hookafter<_type>;
       hp.hook_font = F_MultiByteToWideChar | F_GetGlyphOutlineW;
@@ -1290,7 +1292,7 @@ namespace
       {
         auto text = (LPSTR)s->eax;
         if (!text)
-          return  ;
+          return;
         // dispatch(text - 1024, Engine::NameRole);
         // dispatch(text, Engine::ScenarioRole);
 
@@ -1299,12 +1301,12 @@ namespace
           sig = 0
         };
         if (!Engine::isAddressWritable(text) || !*text) // isAddressWritable is not needed for correct games
-          return  ;
+          return;
         int size = ::strlen(text),
             trimmedSize = size;
         auto trimmedText = trim(text, &trimmedSize);
         if (!trimmedSize || !*trimmedText)
-          return  ;
+          return;
         buffer->from(trimmedText, trimmedSize);
         /*newData = EngineController::instance()->dispatchTextASTD(oldData, role, sig);
         if (newData == oldData)
@@ -1314,10 +1316,10 @@ namespace
         ::strcpy(text, newData.c_str());
         return true;*/
       }
-      void hookafter(hook_stack *s, void *data, size_t len)
+      void hookafter(hook_stack *s, TextBuffer buffer)
       {
 
-        auto newData = std::string((char *)data, len);
+        auto newData = buffer.strA();
         auto text = (LPSTR)s->eax;
         int size = ::strlen(text),
             trimmedSize = size;
@@ -1568,7 +1570,7 @@ namespace
       hp.address = addr;
 
       hp.text_fun = Private::hookBefore;
-      hp.type = EMBED_ABLE|NO_CONTEXT;
+      hp.type = EMBED_ABLE | NO_CONTEXT;
       hp.newlineseperator = L"\\n";
       hp.hook_after = Private::hookafter;
       hp.hook_font = F_GetGlyphOutlineA | F_TextOutA;
@@ -1598,10 +1600,10 @@ namespace
       {
         static std::string data_;
         if (s->stack[1] == 3) // skip scenario hook where arg1 is 3
-          return  ;
+          return;
         auto text = (LPCSTR)s->stack[8];                                       // text in arg8
         if (!Engine::isAddressReadable(text) || !*text || ::strlen(text) <= 2) // do not translate single character
-          return  ;
+          return;
         *role = Engine::OtherRole;
         buffer->from_cs(text);
       }
@@ -1623,7 +1625,7 @@ namespace
       HookParam hp;
       hp.address = addr;
       hp.text_fun = Private::hookBefore;
-      hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_OVERWRITE|NO_CONTEXT;
+      hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_OVERWRITE | NO_CONTEXT;
       hp.offset = get_stack(8);
       return NewHook(hp, "EmbedWillplus_other");
     }
