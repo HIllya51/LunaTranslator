@@ -117,3 +117,6 @@ size_t strSize(const StringT &s)
 {
   return s.size() * sizeof(StringT::value_type);
 }
+
+bool IsShiftjisWord(WORD w);
+bool IsShiftjisLeadByte(BYTE b);

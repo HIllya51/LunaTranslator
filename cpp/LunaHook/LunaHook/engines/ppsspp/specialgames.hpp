@@ -173,7 +173,7 @@ namespace ppsspp
 				}
 				else
 				{
-					auto len = 1 + (IsDBCSLeadByteEx(932, *(BYTE *)(address + i)));
+					auto len = 1 + (IsShiftjisLeadByte(*(BYTE *)(address + i)));
 					s += std::string((char *)(address + i), len);
 					i += len; // encoder.encode(c).byteLength;
 				}
@@ -221,7 +221,7 @@ namespace ppsspp
 
 	void ULJM05810(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto data=PPSSPP::emu_arg(stack)[0]+0x0f;
+		auto data = PPSSPP::emu_arg(stack)[0] + 0x0f;
 		data = data + 400;
 		std::string s;
 		while (true)
@@ -289,7 +289,7 @@ namespace ppsspp
 		auto len = reinterpret_cast<size_t *>(size);
 		for (size_t i = 0; i < *len;)
 		{
-			if (IsDBCSLeadByteEx(932, (text[i])))
+			if (IsShiftjisLeadByte(text[i]))
 			{
 				i += 2;
 				continue;
@@ -349,13 +349,13 @@ namespace ppsspp
 
 	void QNPJH50909(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto data=PPSSPP::emu_arg(stack)[0];
+		auto data = PPSSPP::emu_arg(stack)[0];
 		uintptr_t addr = PPSSPP::emu_addr(stack, 0x08975110);
 		if (0x6e87 == *(WORD *)data)
 			return;
 		if (0x000a == *(WORD *)data)
 			return;
-		buffer->from(addr + 0x20,*(DWORD *)(addr + 0x14) * 2 );
+		buffer->from(addr + 0x20, *(DWORD *)(addr + 0x14) * 2);
 	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
 		// Shinigami to Shoujo
@@ -373,7 +373,7 @@ namespace ppsspp
 		{0x89b59dc, {0, 0, 0, ULJM05428, 0, "ULJM05428"}},
 		// Kin'iro no Corda
 		{0x886162c, {0, 0, 0, ULJM05054, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
-		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},		   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
+		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},	   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
 		// Sol Trigger
 		{0x8952cfc, {CODEC_UTF8, 0, 0, 0, NPJH50619F, "NPJH50619"}}, // dialog
 		{0x884aad4, {CODEC_UTF8, 0, 0, 0, NPJH50619F, "NPJH50619"}}, // description

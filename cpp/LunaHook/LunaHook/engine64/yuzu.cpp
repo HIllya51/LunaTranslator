@@ -1470,7 +1470,7 @@ namespace
             }
             else
             {
-                auto l = 1 + IsDBCSLeadByteEx(932, c);
+                auto l = 1 + IsShiftjisLeadByte(c);
                 s += std::string((char *)(address + i), l);
                 i += l;
             }
@@ -1494,7 +1494,7 @@ namespace
             }
             else
             {
-                auto l = 1 + IsDBCSLeadByteEx(932, c);
+                auto l = 1 + IsShiftjisLeadByte(c);
                 s += std::string((char *)(address + i), l);
                 i += l;
             }

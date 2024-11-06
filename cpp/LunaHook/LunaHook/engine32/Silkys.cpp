@@ -240,14 +240,14 @@ static void SpecialHookSilkys(hook_stack *stack, HookParam *hp, TextBuffer *buff
     text = arg1 + 4;
     size = min(size, ShortTextCapacity);
   }
-  buffer->from(text,size);
+  buffer->from(text, size);
   *split = arg2 == 0 ? 1 : 2; // arg2 == 0 ? scenario : name
 }
 void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
 {
   auto arg = (TextUnionA *)(s->stack[0] + sizeof(DWORD)); // arg1
   if (!arg || !arg->isValid())
-    return  ;
+    return;
 
   // FIXME: I am not able to distinguish choice out
   *role =
@@ -276,7 +276,7 @@ void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *
   {
     *arg_ = argValue_;
     arg_ = nullptr;
-  } 
+  }
 }
 bool InsertSilkysHook()
 {
@@ -311,7 +311,7 @@ bool InsertSilkysHook()
     {
       HookParam hp;
       hp.address = addr;
-      hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS|NO_CONTEXT;
+      hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       hp.text_fun = hookBefore;
       hp.hook_after = hookafter1;
       hp.hook_font = F_GetGlyphOutlineA;
@@ -373,7 +373,7 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(1);
     hp.newlineseperator = L"\\n";
-    hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE |  EMBED_AFTER_NEW;
+    hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW;
     return NewHook(hp, "EmbedSilkysX");
   }
 }
@@ -590,6 +590,7 @@ bool Siglusold::attach_function()
       continue;
     HookParam hpref;
     hpref.address = addr;
+    hpref.codepage = 932;
     hpref.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       auto a2 = (DWORD *)stack->stack[2];
@@ -602,17 +603,22 @@ bool Siglusold::attach_function()
       if (len1 == 1)
       { // 慢速
         hp->type = USING_CHAR;
-         data = a2[5] + a2[6];
-         data = *(WORD *) data;
-        auto check = (BYTE) data; // 换行符
-         len = 1 + IsDBCSLeadByteEx(932, check);
+        data = a2[5] + a2[6];
+        data = *(WORD *)data;
+        auto check = (BYTE)data; // 换行符
+        if (IsShiftjisLeadByte(check))
+        {
+          buffer->from_t<WORD>(data);
+        }
+        else
+          buffer->from_t<BYTE>(data);
       }
       else
       { // 快速&&慢速下立即显示
-         data = a2[5];
-         len = len1;
+        data = a2[5];
+        len = len1;
+        buffer->from(data, len);
       }
-      buffer->from(data,len);
     };
     hpref.type = USING_STRING;
     succ |= NewHook(hpref, "Siglusold_fast");
@@ -646,7 +652,7 @@ bool Silkyssakura::attach_function()
           HookParam hp_embed;
           hp_embed.address = addr;
           hp_embed.offset = get_stack(2);
-          hp_embed.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW |  CODEC_UTF16;
+          hp_embed.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | CODEC_UTF16;
           hp_embed.hook_font = F_GetGlyphOutlineW;
           return NewHook(hp_embed, "embedSilkyssakura"); // 这个是分两层分别绘制文字和阴影，需要两个都内嵌。
         }
@@ -686,7 +692,7 @@ namespace
     hp.address = addr;
     hp.offset = get_reg(regs::ecx);
     hp.newlineseperator = L"\\n";
-    hp.type = USING_STRING | EMBED_ABLE |  EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     return NewHook(hp, "SilkysX");
   }
 }

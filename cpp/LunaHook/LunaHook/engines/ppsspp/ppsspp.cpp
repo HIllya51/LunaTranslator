@@ -335,8 +335,8 @@ namespace ppsspp
         hpinternal.address = ret;
         hpinternal.emu_addr = em_address; // 用于生成hcode
         hpinternal.type = USING_STRING | NO_CONTEXT | BREAK_POINT | op.type;
-        hpinternal.text_fun =  op.hookfunc;
-        hpinternal.filter_fun =  op.filterfun;
+        hpinternal.text_fun = op.hookfunc;
+        hpinternal.filter_fun = op.filterfun;
         hpinternal.argidx = op.argidx;
         hpinternal.padding = op.padding;
         hpinternal.jittype = JITTYPE::PPSSPP;
@@ -488,7 +488,7 @@ namespace ppsspp
         hp.address = DoJitPtr; // Jit::DoJit
         ConsoleOutput("DoJitPtr %p", DoJitPtr);
         hp.user_value = (uintptr_t) new uintptr_t;
-        hp.text_fun = [](hook_stack *stack, HookParam *hp, auto*, auto *)
+        hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *, auto *)
         {
             static auto once1 = oncegetJitBlockCache(stack);
             auto em_address = stack->THISCALLARG1;
@@ -498,7 +498,7 @@ namespace ppsspp
             HookParam hpinternal;
             hpinternal.user_value = hp->user_value;
             hpinternal.address = stack->retaddr;
-            hpinternal.text_fun = [](hook_stack *stack, HookParam *hp, auto*, auto *)
+            hpinternal.text_fun = [](hook_stack *stack, HookParam *hp, auto *, auto *)
             {
                 auto em_address = *(uintptr_t *)(hp->user_value);
                 if (!IsValidAddress(em_address))
@@ -538,7 +538,7 @@ namespace
         // 	u32 destPtr = PARAM(0);
         // 	u32 srcPtr = PARAM(1);
         // 	u32 bytes = PARAM(2);
-        static auto GetPointer = (void*(*)(uintptr_t))findGetPointer();
+        static auto GetPointer = (void *(*)(uintptr_t))findGetPointer();
         if (!GetPointer)
             return false;
         ConsoleOutput("GetPointer %p", GetPointer);
@@ -581,12 +581,12 @@ namespace
             hp.user_value = *(uintptr_t *)(off_140F4C810 + addr + sizeof(sig1));
 #endif
             hp.address = addr;
-            hp.text_fun = [](hook_stack *stack, HookParam *hp, auto* buff, auto *split)
+            hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buff, auto *split)
             {
                 auto bytes = *((DWORD *)hp->user_value + 6);
                 auto srcPtr = GetPointer(*((DWORD *)hp->user_value + 5));
 
-                if (!IsDBCSLeadByteEx(932, *(BYTE *)srcPtr))
+                if (!IsShiftjisLeadByte(*(BYTE *)srcPtr))
                     return;
                 if (bytes != 2)
                     return;

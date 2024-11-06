@@ -494,21 +494,13 @@ bool Elf::attach_function()
   return ScenarioHook::attach(processStartAddress, processStopAddress) || _1;
 }
 
-bool isshiftjisX(WORD w)
-{
-  auto l = w & 0xff;
-  auto h = (w >> 8) & 0xff;
-  if (!(((l <= 0x9f) && (l >= 0x81)) || ((l <= 0xEF) && (l >= 0xE0))))
-    return false;
-  return ((h >= 0x40) && (h <= 0x7e)) || ((h >= 0x80) && (h <= 0xFC));
-}
 void SpecialHookElf2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   static DWORD lasttext;
   DWORD eax = stack->eax;
   DWORD edx = stack->edx;
   auto c = *(WORD *)(eax + edx);
-  if (isshiftjisX(c) == false)
+  if (IsShiftjisWord(c) == false)
   {
     return;
   }
