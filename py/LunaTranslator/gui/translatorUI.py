@@ -315,7 +315,8 @@ class TranslatorWindow(resizableframeless):
             if windows.MonitorFromWindow(hwnd) != windows.MonitorFromWindow(self.winid):
                 lastpos = None
                 return
-            self.move_signal.emit(tracepos - lastpos.topLeft() + rect.topLeft())
+            if globalconfig["top_align"] == 0:
+                self.move_signal.emit(tracepos - lastpos.topLeft() + rect.topLeft())
 
     def showres(self, kwargs):
         try:
@@ -940,6 +941,10 @@ class TranslatorWindow(resizableframeless):
         self.smooth_resizer = QVariantAnimation(self)
         self.smooth_resizer.setDuration(500)
         self.smooth_resizer.valueChanged.connect(self.smooth_resizing)
+        self.smooth_resizer2 = QVariantAnimation(self)
+        self.smooth_resizer2.setDuration(500)
+        self.smooth_resizer2.valueChanged.connect(self.smooth_resizing2)
+        self.left_bottom_corner = self.geometry().bottomLeft()
         self.translate_text = Textbrowser(self)
         self.translate_text.move(0, 0)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
@@ -1200,8 +1205,22 @@ class TranslatorWindow(resizableframeless):
 
         return 0
 
+    def mouseReleaseEvent(self, e: QMouseEvent):
+        super().mouseReleaseEvent(e)
+        self.left_bottom_corner = self.geometry().bottomLeft()
+
+    def mousePressEvent(self, e: QMouseEvent):
+        super().mousePressEvent(e)
+        self.smooth_resizer.stop()
+        self.smooth_resizer2.stop()
+        self.left_bottom_corner = self.geometry().bottomLeft()
+
     def smooth_resizing(self, value):
         self.resize(QSize(self.width(), value))
+
+    def smooth_resizing2(self, new_size: QSize):
+        new_pos = self.left_bottom_corner - QPoint(0, new_size.height())
+        self.setGeometry(new_pos.x(), new_pos.y(), new_size.width(), new_size.height())
 
     def textAreaChanged(self, size: QSize):
 
@@ -1213,12 +1232,24 @@ class TranslatorWindow(resizableframeless):
         newHeight = limit + self.dynamicextraheight()
         size = QSize(self.width(), newHeight)
         self.smooth_resizer.stop()
-        if newHeight > self.height():
+        self.smooth_resizer2.stop()
+        if self.isdoingsomething():
             self.resize(size)
+            return
+        if globalconfig["top_align"] == 0:
+            if newHeight > self.height():
+                self.resize(size)
+            else:
+                self.smooth_resizer.setStartValue(self.height())
+                self.smooth_resizer.setEndValue(newHeight)
+                self.smooth_resizer.start()
         else:
-            self.smooth_resizer.setStartValue(self.height())
-            self.smooth_resizer.setEndValue(newHeight)
-            self.smooth_resizer.start()
+            if newHeight > self.height():
+                self.smooth_resizing2(size)
+            else:
+                self.smooth_resizer2.setStartValue(self.size())
+                self.smooth_resizer2.setEndValue(size)
+                self.smooth_resizer2.start()
 
     def clickRange(self, auto):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:

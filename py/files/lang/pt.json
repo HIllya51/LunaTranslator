@@ -642,7 +642,6 @@
     "自动调整高度": "Ajustar automaticamente a altura",
     "文本区": "Área de texto",
     "自动隐藏窗口": "Esconder automaticamente as janelas",
-    "隐藏延迟(s)": "Latência oculta (s)",
     "内容": "conteúdo",
     "显示内容": "mostrar o conteúdo",
     "界面设置": "Configuração da interface",
@@ -811,5 +810,7 @@
     "重命名": "renomear",
     "应用ID": "ID da Aplicação",
     "应用密钥": "Chave da aplicação",
-    "无": "nada"
+    "无": "nada",
+    "向上": "Subir",
+    "向下": "para baixo"
 }

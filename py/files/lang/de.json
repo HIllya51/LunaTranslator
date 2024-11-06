@@ -642,7 +642,6 @@
     "自动调整高度": "Höhe automatisch anpassen",
     "文本区": "Textbereich",
     "自动隐藏窗口": "Fenster automatisch ausblenden",
-    "隐藏延迟(s)": "Versteckte Latenz (s)",
     "内容": "Inhalt",
     "显示内容": "Inhalt anzeigen",
     "界面设置": "Schnittstelleneinstellungen",
@@ -811,5 +810,7 @@
     "重命名": "umbenennen",
     "应用ID": "Anwendungs-ID",
     "应用密钥": "Anwendungsschlüssel",
-    "无": "nichts"
+    "无": "nichts",
+    "向上": "Nach oben",
+    "向下": "nach unten"
 }

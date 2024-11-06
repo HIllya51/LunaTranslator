@@ -846,6 +846,7 @@
     "disappear_delay_tool": 1,
     "mousetransparent": false,
     "adaptive_height": true,
+    "bottom_align": false,
     "backtransparent": false,
     "showtranexception": true,
     "refresh_on_get_trans": false,

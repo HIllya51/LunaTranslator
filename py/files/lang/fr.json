@@ -640,7 +640,6 @@
     "文本区": "Zone de texte",
     "收到翻译时才刷新": "Rafraîchissez seulement lorsque vous recevez la traduction",
     "自动隐藏窗口": "Masquer la fenêtre automatiquement",
-    "隐藏延迟(s)": "Délai caché (s)",
     "内容": "Contenu",
     "显示内容": "Afficher le contenu",
     "界面设置": "Paramètres de l'interface",
@@ -811,5 +810,7 @@
     "重命名": "Renommer",
     "应用ID": "Id de l'application",
     "应用密钥": "Appliquer la clé",
-    "无": "Aucun"
+    "无": "Aucun",
+    "向上": "Vers le Haut",
+    "向下": "Vers le bas"
 }

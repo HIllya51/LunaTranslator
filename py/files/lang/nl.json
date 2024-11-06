@@ -642,7 +642,6 @@
     "自动调整高度": "Hoogte automatisch aanpassen",
     "文本区": "Tekstgebied",
     "自动隐藏窗口": "Vensters automatisch verbergen",
-    "隐藏延迟(s)": "Verborgen latentie (s)",
     "内容": "inhoud",
     "显示内容": "inhoud tonen",
     "界面设置": "Interfaceinstellingen",
@@ -811,5 +810,7 @@
     "重命名": "hernoemen",
     "应用ID": "Applicatie-ID",
     "应用密钥": "Toepassingssleutel",
-    "无": "niets"
+    "无": "niets",
+    "向上": "Naar boven",
+    "向下": "omlaag"
 }

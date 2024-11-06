@@ -640,7 +640,6 @@
     "文本区": "Obszar tekstowy",
     "收到翻译时才刷新": "Odśwież tylko po otrzymaniu tłumaczenia",
     "自动隐藏窗口": "Automatyczne ukrywanie okna",
-    "隐藏延迟(s)": "Ukryte opóźnienie (s)",
     "内容": "treść",
     "显示内容": "pokaż zawartość",
     "界面设置": "Ustawienia interfejsu",
@@ -811,5 +810,7 @@
     "重命名": "zmień nazwę",
     "应用ID": "Identyfikator aplikacji",
     "应用密钥": "Klucz aplikacji",
-    "无": "nic"
+    "无": "nic",
+    "向上": "W górę",
+    "向下": "w dół"
 }

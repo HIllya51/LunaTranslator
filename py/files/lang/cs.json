@@ -642,7 +642,6 @@
     "自动调整高度": "Automaticky nastavit výšku",
     "文本区": "Textová oblast",
     "自动隐藏窗口": "Automaticky skrýt okna",
-    "隐藏延迟(s)": "Skrytá latence (s)",
     "内容": "obsah",
     "显示内容": "zobrazit obsah",
     "界面设置": "Nastavení rozhraní",
@@ -811,5 +810,7 @@
     "重命名": "přejmenovat",
     "应用ID": "ID aplikace",
     "应用密钥": "Klíč aplikace",
-    "无": "nic"
+    "无": "nic",
+    "向上": "Nahoru",
+    "向下": "dolů"
 }

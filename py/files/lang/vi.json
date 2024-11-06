@@ -640,7 +640,6 @@
     "文本区": "Vùng văn bản",
     "收到翻译时才刷新": "Làm mới khi nhận được bản dịch",
     "自动隐藏窗口": "Tự động ẩn cửa sổ",
-    "隐藏延迟(s)": "Độ trễ ẩn (s)",
     "内容": "Nội dung",
     "显示内容": "Hiển thị nội dung",
     "界面设置": "Thiết lập giao diện",
@@ -811,5 +810,7 @@
     "重命名": "Thay tên",
     "应用ID": "Ứng dụng ID",
     "应用密钥": "Khóa ứng dụng",
-    "无": "Không"
+    "无": "Không",
+    "向上": "Lên trên",
+    "向下": "Xuống"
 }

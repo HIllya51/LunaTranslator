@@ -640,7 +640,6 @@
     "文本区": "Metin alanı",
     "收到翻译时才刷新": "Sadece çeviri alırken yenilene",
     "自动隐藏窗口": "Pencereyi otomatik sakla",
-    "隐藏延迟(s)": "Gizli gecikme (s)",
     "内容": "İçeri",
     "显示内容": "İçeri göster",
     "界面设置": "Arayüz ayarları",
@@ -811,5 +810,7 @@
     "重命名": "Yeniden Adlandır",
     "应用ID": "Uygulama Kimliği",
     "应用密钥": "Uygulama anahtarı",
-    "无": "Hiçbir şey yok."
+    "无": "Hiçbir şey yok.",
+    "向上": "Yukarı",
+    "向下": "Aşağı"
 }

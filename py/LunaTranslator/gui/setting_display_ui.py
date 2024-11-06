@@ -457,6 +457,9 @@ def mainuisetting(self):
                             "",
                             "自动调整高度",
                             D_getsimpleswitch(globalconfig, "adaptive_height"),
+                            D_getsimplecombobox(
+                                ["向上", "向下"], globalconfig, "top_align"
+                            ),
                             "",
                             "任务栏中显示",
                             D_getsimpleswitch(
@@ -477,8 +480,6 @@ def mainuisetting(self):
                             "",
                             "自动隐藏窗口",
                             D_getsimpleswitch(globalconfig, "autodisappear"),
-                            "",
-                            "隐藏延迟(s)",
                             D_getspinbox(
                                 1,
                                 100,

@@ -639,7 +639,6 @@
     "文本区": "Text Area",
     "收到翻译时才刷新": "Only Refresh Display on New Translation",
     "自动隐藏窗口": "Auto Hide Window",
-    "隐藏延迟(s)": "Hide Delay (s)",
     "内容": "Content",
     "显示内容": "Show Content",
     "界面设置": "Interface Settings",
@@ -811,5 +810,7 @@
     "重命名": "rename",
     "应用ID": "Application ID",
     "应用密钥": "Application key",
-    "无": "nothing"
+    "无": "nothing",
+    "向上": "Up",
+    "向下": "down"
 }

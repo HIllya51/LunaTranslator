@@ -840,7 +840,7 @@ class resizableframeless(saveposwindow):
         elif self._move_drag:
             self.move(gpos - self.move_DragPosition)
 
-    def mouseReleaseEvent(self, QMouseEvent):
+    def mouseReleaseEvent(self, e: QMouseEvent):
         self.resetflags()
 
 

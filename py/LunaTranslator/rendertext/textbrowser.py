@@ -33,14 +33,20 @@ class Qlabel_c(QLabel):
         return super().mouseReleaseEvent(event)
 
     def enterEvent(self, a0) -> None:
-        if self.company:
-            self.company.setStyleSheet("background-color: rgba(0,0,0,0.5);")
+        try:
+            if self.company:
+                self.company.setStyleSheet("background-color: rgba(0,0,0,0.5);")
+        except:
+            pass
         self.setStyleSheet("background-color: rgba(0,0,0,0.5);")
         return super().enterEvent(a0)
 
     def leaveEvent(self, a0) -> None:
-        if self.company:
-            self.company.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+        try:
+            if self.company:
+                self.company.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+        except:
+            pass
         self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         return super().leaveEvent(a0)
 

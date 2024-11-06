@@ -642,7 +642,6 @@
     "自动调整高度": "Justera höjd automatiskt",
     "文本区": "Textområde",
     "自动隐藏窗口": "Dölj fönster automatiskt",
-    "隐藏延迟(s)": "Dold latens (s)",
     "内容": "innehåll",
     "显示内容": "visa innehåll",
     "界面设置": "Gränssnittsinställningar",
@@ -811,5 +810,7 @@
     "重命名": "Byt namn",
     "应用ID": "Program- ID",
     "应用密钥": "Programnyckel",
-    "无": "ingenting"
+    "无": "ingenting",
+    "向上": "Upp",
+    "向下": "ner"
 }
