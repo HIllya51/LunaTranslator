@@ -76,7 +76,7 @@ def build_langx_xp(lang):
     target = "YY-Thunks/objs/X86/YY_Thunks_for_WinXP.obj"
     if os.path.exists(target) == False:
         os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
-        os.system(rf'7z x -y YY-Thunks-1.0.7-Binary.zip -oYY-Thunks')
+        os.system(rf'7z x -y YY-Thunks-1.0.7-Binary.zip -o../YY-Thunks')
     os.system('dir')
     with open("do.bat", "w") as ff:
         ff.write(

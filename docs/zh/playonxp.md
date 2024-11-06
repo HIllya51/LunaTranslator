@@ -2,7 +2,7 @@
 
 **1、在虚拟机中使用LunaHook windows xp专用版提取文本**
 
-下载[LunaHook](https://github.com/HIllya51/LunaHook/releases)中的`Release_Chinese_winxp.zip`，复制到虚拟机中运行。选择游戏的进程，选择游戏文本。然后，在设置中，激活`复制到剪贴板`。
+下载[LunaHook](https://github.com/HIllya51/LunaTranslator/releases/tag/LunaHook)中的`Release_Chinese_winxp.zip`，复制到虚拟机中运行。选择游戏的进程，选择游戏文本。然后，在设置中，激活`复制到剪贴板`。
 
 ![img](https://image.lunatranslator.org/zh/playonxp/image.png)
 

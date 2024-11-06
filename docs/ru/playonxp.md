@@ -2,7 +2,7 @@
 
 **1. Использование LunaHook специальной версии для Windows XP в виртуальной машине для извлечения текста**
 
-Скачайте `Release_Chinese_winxp.zip` из [LunaHook](https://github.com/HIllya51/LunaHook/releases), скопируйте его в виртуальную машину и запустите. Выберите процесс игры, выберите текст игры. Затем, в настройках, активируйте опцию `Копировать в буфер обмена`.
+Скачайте `Release_Russian_winxp.zip` из [LunaHook](https://github.com/HIllya51/LunaTranslator/releases/tag/LunaHook), скопируйте его в виртуальную машину и запустите. Выберите процесс игры, выберите текст игры. Затем, в настройках, активируйте опцию `Копировать в буфер обмена`.
 
 ![img](https://image.lunatranslator.org/zh/playonxp/image.png) 
 
