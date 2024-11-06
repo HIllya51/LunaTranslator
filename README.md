@@ -17,7 +17,7 @@
 
 #### 文本输入
 
-- **HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。对于不支持或支持不好的游戏，请[提交反馈](https://lunatranslator.org/Resource/game_support)
+- **HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
 
 
 - **OCR** 支持 **离线OCR** ( 除内置OCR引擎外，还支持WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **在线OCR** ( 百度、有道、飞书、讯飞、Google Lens、Google Cloud Vision、docsumo、ocrspace、Gemini、ChatGPT兼容接口 )
@@ -93,5 +93,5 @@
 
 如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~
 
-<img src='.\\src\\files\\zan.jpg' style="height: 400px !important;">
+<img src='.\\py\\files\\zan.jpg' style="height: 400px !important;">
 
