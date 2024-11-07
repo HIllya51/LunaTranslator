@@ -174,8 +174,6 @@
 
 !> Для **API Key** используйте Access Key и Secret Key из Baidu AI Cloud IAM для генерации Bearer токена, который затем следует ввести как **API Key**, или напрямую введите оба в формате `{Access Key}:{Secret Key}` в поле **API Key**. Обратите внимание, что это отличается от API ключа и Secret Key старой версии v1 Qianfan ModelBuilder; они не взаимозаменяемы.
 
-!> Обратите внимание, не вводите API ключ и Secret Key старой версии v1 Qianfan ModelBuilder. Интерфейс версии v1 требует использования старого интерфейса **Baidu Qianfan Large Model**, который по умолчанию скрыт. Чтобы использовать его, переименуйте файл _baiduqianfan.py в baiduqianfan.py в папке LunaTranslator/translator.
-
 <!-- tabs:end -->
 
 ### Специальные интерфейсы для определенных платформ

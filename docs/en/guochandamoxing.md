@@ -174,8 +174,6 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 !> For the **API Key**, please use the Access Key and Secret Key from Baidu AI Cloud IAM to generate a Bearer Token, which should then be entered as the **API Key**, or directly enter both in the format `{Access Key}:{Secret Key}` in the **API Key** field. Note that this is different from the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder; they are not interchangeable.
 
-!> Please note, do not enter the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder. The v1 version interface requires using the old **Baidu Qianfan Large Model** dedicated interface, which is hidden by default. To use it, rename _baiduqianfan.py to baiduqianfan.py under LunaTranslator/translator.
-
 <!-- tabs:end -->
 
 ### Dedicated Interfaces for Specific Platforms

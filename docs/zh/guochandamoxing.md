@@ -178,8 +178,6 @@
 
 !> **API Key**请使用百度智能云IAM的Access Key、Secret Key来生成接口的BearerToken后作为**API Key**填入，或者按照`{Access Key}:{Secret Key}`的格式直接将两者一起填入**API Key**中。注意，而非千帆ModelBuilder的旧版v1版本接口的API Key、Secret Key，两者不能通用。
 
-!> 注意，请不要填入千帆ModelBuilder的旧版v1版本接口的API Key、Secret Key，v1版本接口需要使用旧版的**百度千帆大模型**专用接口，该接口已默认隐藏，将LunaTranslator/translator下的_baiduqianfan.py改名为baiduqianfan.py即可使用。
-
 <!-- tabs:end -->
 
 ### 特定平台的专用接口
