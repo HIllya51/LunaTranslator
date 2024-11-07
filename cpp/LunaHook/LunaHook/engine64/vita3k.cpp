@@ -22,8 +22,10 @@ namespace
             return symbols[0];
         }
         */
-        auto PatchBlockSig1 = "4C 8B DC 49 89 5B 10 49 89 6B 18 56 57 41 54 41 56 41 57"; // "4C 8B DC 49 89 5B ?? 49 89 6B ?? 56 57 41 54 41 56 41 57";
+        auto PatchBlockSig1 = "4C 8B DC 49 89 5B 10 49 89 6B 18 56 57 41 54 41 56 41 57";
         first = find_pattern(PatchBlockSig1, processStartAddress, processStopAddress);
+        if (!first)
+            first = find_pattern("4C 8B DC 49 89 5B ?? 49 89 6B ?? 56 57 41 54 41 56 41 57", processStartAddress, processStopAddress); // 0.1.9 3339
         if (first)
         {
             idxDescriptor = 1;
@@ -57,7 +59,7 @@ namespace
 
 bool vita3k::attach_function()
 {
-    ConsoleOutput("[Compatibility] Vita3k 0.1.9 3520+");
+    ConsoleOutput("[Compatibility] Vita3k 0.1.9 3339+");
     auto DoJitPtr = getDoJitAddress();
     if (DoJitPtr == 0)
         return false;
@@ -72,6 +74,8 @@ bool vita3k::attach_function()
         auto descriptor = *argidx(stack, idxDescriptor + 1); // r8
         auto entrypoint = *argidx(stack, idxEntrypoint + 1); // r9
         auto em_address = *(uint32_t *)descriptor;
+        if (em_address < 0x80000000)
+            em_address += 0x80000000; // 0.1.9 3339
         if (!entrypoint)
             return;
         // ConsoleOutput("%p",em_address);
@@ -572,6 +576,8 @@ namespace
             // Code: Realize ~Shirogane no Kiseki~ (Code:Realize ～白銀の奇跡～)
             {0x80015bcc, {CODEC_UTF8, 0, 0x1c, 0, F010088B01A8FC000, "PCSG01110"}},
             {0x80038e76, {CODEC_UTF8, 8, 0, 0, F010088B01A8FC000, "PCSG01110"}},
+            // オメルタ CODE:TYCOON 戒
+            {0x800BC462, {0, 3, 0, 0, F010088B01A8FC000, "PCSG00789"}},
         };
         return 1;
     }();
