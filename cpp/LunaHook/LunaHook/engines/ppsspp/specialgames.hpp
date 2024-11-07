@@ -215,7 +215,7 @@ namespace ppsspp
 
 	void ULJM05810(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto data = PPSSPP::emu_arg(stack)[0] + 0x0f;
+		auto data = PPSSPP::emu_arg(stack)[0x0f];
 		data = data + 400;
 		std::string s;
 		while (true)
