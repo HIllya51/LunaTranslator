@@ -13,9 +13,7 @@
   <img src="https://image.lunatranslator.org/zh/damoxing/extraapi3.png">
 </details>
 
->**model**可以在下拉列表中选取，如果列表中没有也可以参照接口官方文档手动填写/修改。<br>
->部分接口可以根据**API接口地址**和**API Key**动态获取模型列表，填好这两项后点击**model**旁的刷新按钮即可获取可用的模型列表。
-
+>**model**可以在下拉列表中选取，且部分接口可以根据**API接口地址**和**API Key**动态获取模型列表，填好这两项后点击**model**旁的刷新按钮即可获取可用的模型列表。如果平台不支持拉取模型的接口，且默认列表中没有要用的模型，那么请参照接口官方文档手动填写模型。
 
 ### ChatGPT兼容接口
 
@@ -170,6 +168,18 @@
 
 **model** https://cloud.tencent.com/document/product/1729/97731
 
+### **百度千帆大模型**
+
+**API接口地址** `https://qianfan.baidubce.com/v2`
+
+**API Key** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps
+
+**model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
+
+!> **API Key**请使用百度智能云IAM的Access Key、Secret Key来生成接口的BearerToken后作为**API Key**填入，或者按照`{Access Key}:{Secret Key}`的格式直接将两者一起填入**API Key**中。注意，而非千帆ModelBuilder的旧版v1版本接口的API Key、Secret Key，两者不能通用。
+
+!> 注意，请不要填入千帆ModelBuilder的旧版v1版本接口的API Key、Secret Key，v1版本接口需要使用旧版的**百度千帆大模型**专用接口，该接口已默认隐藏，将LunaTranslator/translator下的_baiduqianfan.py改名为baiduqianfan.py即可使用。
+
 <!-- tabs:end -->
 
 ### 特定平台的专用接口
@@ -203,15 +213,5 @@
 **API Key** https://dashboard.cohere.com/api-keys
 
 **model** https://docs.cohere.com/docs/models
-
-### **百度千帆大模型**
-
-!> 这个模型好像只支持中英翻译，不支持日文 
-
-**model** 应填写百度接口文档中的**请求地址**的尾部，例如：
-
-![img](https://image.lunatranslator.org/zh/damoxing/qianfan1.png)
-
-![img](https://image.lunatranslator.org/zh/damoxing/qianfan2.png)
 
 <!-- tabs:end -->

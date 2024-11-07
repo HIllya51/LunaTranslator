@@ -12,8 +12,7 @@
   <img src="https://image.lunatranslator.org/zh/damoxing/extraapi3.png">
 </details>
 
->**model** можно выбрать из выпадающего списка, если его нет в списке, можно ввести/изменить вручную, следуя официальной документации интерфейса.<br>
->Некоторые интерфейсы могут динамически получать список моделей на основе **адреса API** и **API Key**. После заполнения этих двух пунктов нажмите кнопку обновления рядом с **model**, чтобы получить список доступных моделей.
+>**model** можно выбрать из выпадающего списка, и некоторые интерфейсы могут динамически получать список моделей на основе **Адрес API** и **API Key**. После заполнения этих двух полей нажмите кнопку обновления рядом с **model**, чтобы получить доступный список моделей. Если платформа не поддерживает интерфейс для получения модели, а стандартный список не включает нужную модель, пожалуйста, ознакомьтесь с официальной документацией API, чтобы вручную ввести модель.
 
 ### Совместимый с ChatGPT интерфейс
 
@@ -165,6 +164,18 @@
 
 **model** https://cloud.tencent.com/document/product/1729/97731
 
+### **Baidu Qianfan Large Model**
+
+**Адрес API** `https://qianfan.baidubce.com/v2`
+
+**API Key** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps
+
+**model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
+
+!> Для **API Key** используйте Access Key и Secret Key из Baidu AI Cloud IAM для генерации Bearer токена, который затем следует ввести как **API Key**, или напрямую введите оба в формате `{Access Key}:{Secret Key}` в поле **API Key**. Обратите внимание, что это отличается от API ключа и Secret Key старой версии v1 Qianfan ModelBuilder; они не взаимозаменяемы.
+
+!> Обратите внимание, не вводите API ключ и Secret Key старой версии v1 Qianfan ModelBuilder. Интерфейс версии v1 требует использования старого интерфейса **Baidu Qianfan Large Model**, который по умолчанию скрыт. Чтобы использовать его, переименуйте файл _baiduqianfan.py в baiduqianfan.py в папке LunaTranslator/translator.
+
 <!-- tabs:end -->
 
 ### Специальные интерфейсы для определенных платформ
@@ -196,15 +207,5 @@
 **API Key** https://dashboard.cohere.com/api-keys
 
 **model** https://docs.cohere.com/docs/models
-
-### **Baidu Qianfan Large Model**
-
-!> Похоже, эта модель поддерживает только перевод с китайского на английский, не поддерживает японский 
-
-**model** следует заполнить хвостовой частью **адреса запроса** в документации Baidu, например:
-
-![img](https://image.lunatranslator.org/zh/damoxing/qianfan1.png)
-
-![img](https://image.lunatranslator.org/zh/damoxing/qianfan2.png)
 
 <!-- tabs:end -->

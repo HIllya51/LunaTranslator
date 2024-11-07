@@ -1,5 +1,6 @@
 from translator.basetranslator import basetrans
-import json, requests
+import json, requests, time, hmac, hashlib
+from datetime import datetime, timezone
 from myutils.utils import createurl, createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
 
@@ -21,6 +22,36 @@ def list_models(typename, regist):
         raise Exception(resp.maybejson)
 
 
+class qianfanIAM:
+
+    @staticmethod
+    def sign(access_key_id, secret_access_key):
+        now = datetime.now(timezone.utc)
+        canonical_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+        sign_key_info = f"bce-auth-v1/{access_key_id}/{canonical_time}/8640000"
+        sign_key = hmac.new(
+            secret_access_key.encode(), sign_key_info.encode(), hashlib.sha256
+        ).hexdigest()
+        string_to_sign = "GET\n/v1/BCE-BEARER/token\nexpireInSeconds=8640000\nhost:iam.bj.baidubce.com"
+        sign_result = hmac.new(
+            sign_key.encode(), string_to_sign.encode(), hashlib.sha256
+        ).hexdigest()
+        return f"{sign_key_info}/host/{sign_result}"
+
+    @staticmethod
+    def getkey(ak, sk, proxy):
+        headers = {
+            "Host": "iam.bj.baidubce.com",
+            "Authorization": qianfanIAM.sign(ak, sk),
+        }
+        return requests.get(
+            "https://iam.bj.baidubce.com/v1/BCE-BEARER/token",
+            params={"expireInSeconds": 8640000},
+            headers=headers,
+            proxies=proxy,
+        ).json()["token"]
+
+
 class gptcommon(basetrans):
     @property
     def apiurl(self):
@@ -33,6 +64,7 @@ class gptcommon(basetrans):
 
     def __init__(self, typename):
         self.context = []
+        self.maybeuse = {}
         super().__init__(typename)
 
     def createdata(self, message):
@@ -60,13 +92,18 @@ class gptcommon(basetrans):
 
     def createheaders(self):
         _ = {}
-        if self.multiapikeycurrent["SECRET_KEY"]:
+        curkey = self.multiapikeycurrent["SECRET_KEY"]
+        if curkey:
             # 部分白嫖接口可以不填，填了反而报错
-            _.update(
-                {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
-            )
+            _.update({"Authorization": "Bearer " + curkey})
         if "openai.azure.com/openai/deployments/" in self.apiurl:
-            _.update({"api-key": self.multiapikeycurrent["SECRET_KEY"]})
+            _.update({"api-key": curkey})
+        elif ("qianfan.baidubce.com/v2" in self.apiurl) and (":" in curkey):
+            if not self.maybeuse.get(curkey):
+                Access_Key, Secret_Key = curkey.split(":")
+                key = qianfanIAM.getkey(Access_Key, Secret_Key, self.proxy)
+                self.maybeuse[curkey] = key
+            _.update({"Authorization": "Bearer " + self.maybeuse[curkey]})
         return _
 
     def commonparseresponse(self, query, response: requests.ResponseBase, usingstream):

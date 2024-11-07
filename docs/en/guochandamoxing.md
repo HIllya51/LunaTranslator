@@ -12,8 +12,7 @@
   <img src="https://image.lunatranslator.org/zh/damoxing/extraapi3.png"> 
 </details>
 
->**model** can be selected from the drop-down list, and if it's not in the list, you can manually enter/modify it according to the official documentation of the interface.<br>
->Some interfaces can dynamically obtain the model list based on **API Interface Address** and **API Key**. After filling in these two items, click the refresh button next to **model** to get the list of available models.
+>**model** can be selected from a dropdown list, and some interfaces can dynamically fetch the model list based on the **API Interface Address** and **API Key**. After filling in these two fields, click the refresh button next to **model** to obtain the available model list. If the platform does not support the model retrieval interface and the default list does not include the required model, please refer to the official API documentation to manually enter the model.
 
 ### ChatGPT-Compatible Interfaces
 
@@ -165,6 +164,18 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **model** https://cloud.tencent.com/document/product/1729/97731
 
+### **Baidu Qianfan Large Model**
+
+**API Interface Address** `https://qianfan.baidubce.com/v2`
+
+**API Key** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps
+
+**model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
+
+!> For the **API Key**, please use the Access Key and Secret Key from Baidu AI Cloud IAM to generate a Bearer Token, which should then be entered as the **API Key**, or directly enter both in the format `{Access Key}:{Secret Key}` in the **API Key** field. Note that this is different from the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder; they are not interchangeable.
+
+!> Please note, do not enter the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder. The v1 version interface requires using the old **Baidu Qianfan Large Model** dedicated interface, which is hidden by default. To use it, rename _baiduqianfan.py to baiduqianfan.py under LunaTranslator/translator.
+
 <!-- tabs:end -->
 
 ### Dedicated Interfaces for Specific Platforms
@@ -196,15 +207,5 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 **API Key** https://dashboard.cohere.com/api-keys 
 
 **model** https://docs.cohere.com/docs/models 
-
-### **Baidu Qianfan Large Model**
-
-!> This model seems to only support Chinese-English translation and does not support Japanese.
-
-**model** Should fill in the tail of the **Request Address** in the Baidu interface documentation, for example:
-
-![img](https://image.lunatranslator.org/zh/damoxing/qianfan1.png) 
-
-![img](https://image.lunatranslator.org/zh/damoxing/qianfan2.png) 
 
 <!-- tabs:end -->
