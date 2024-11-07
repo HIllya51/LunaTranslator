@@ -18,7 +18,7 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python cpp/LunaHook/build.py build English ${{matrix.bits}}
+      - run: python cpp/LunaHook/build.py build English ${{matrix.bits}} 1
 
       - uses: actions/upload-artifact@v4
         with:

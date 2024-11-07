@@ -52,19 +52,24 @@ def installVCLTL():
     subprocess.run("cmd /c temp\\VC-LTL5\\Install.cmd")
 
 
-def build_langx(lang, bit):
+def build_langx(lang, bit, onlycore):
+    config = (
+        f"-DBUILD_PLUGIN=OFF -DWINXP=OFF -DLANGUAGE={lang} -DBUILD_GUI=ON -DBUILD_CLI=ON"
+        if not onlycore
+        else ""
+    )
     with open("do.bat", "w") as ff:
         if bit == "32":
             ff.write(
                 rf"""
-cmake -DBUILD_PLUGIN=OFF -DWINXP=OFF -DLANGUAGE={lang} -DBUILD_GUI=ON -DBUILD_CLI=ON ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86_{lang}
+cmake {config} ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86_{lang}
 cmake --build ../build/x86_{lang} --config Release --target ALL_BUILD -j 14
 """
             )
         elif bit == "64":
             ff.write(
                 rf"""
-cmake -DBUILD_PLUGIN=OFF -DWINXP=OFF -DLANGUAGE={lang} -DBUILD_GUI=ON -DBUILD_CLI=ON ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64_{lang}
+cmake {config} ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64_{lang}
 cmake --build ../build/x64_{lang} --config Release --target ALL_BUILD -j 14
 """
             )
@@ -76,8 +81,8 @@ def build_langx_xp(lang):
     target = "YY-Thunks/objs/X86/YY_Thunks_for_WinXP.obj"
     if os.path.exists(target) == False:
         os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
-        os.system(rf'7z x -y YY-Thunks-1.0.7-Binary.zip -o../YY-Thunks')
-    os.system('dir')
+        os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../YY-Thunks")
+    os.system("dir")
     with open("do.bat", "w") as ff:
         ff.write(
             rf"""
@@ -102,4 +107,5 @@ elif sys.argv[1] == "build":
     if bit == "winxp":
         build_langx_xp(lang)
     else:
-        build_langx(lang, bit)
+        onlycore = int(sys.argv[4]) if len(sys.argv) >= 5 else False
+        build_langx(lang, bit, onlycore)
