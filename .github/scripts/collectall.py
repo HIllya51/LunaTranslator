@@ -3,6 +3,13 @@ import platform
 import sys
 from importanalysis import importanalysis
 
+rootDir = os.path.dirname(__file__)
+if not rootDir:
+    rootDir = os.path.abspath(".")
+else:
+    rootDir = os.path.abspath(rootDir)
+rootthisfiledir=rootDir
+rootDir=os.path.abspath(os.path.join(rootDir,'../../py'))
 x86 = platform.architecture()[0] == "32bit"
 if sys.argv[1] == "32":
     targetdir = r"build\LunaTranslator_x86"

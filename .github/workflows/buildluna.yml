@@ -36,7 +36,7 @@ jobs:
           python-version: '3.7.9'
           architecture: ${{ matrix.architecture }}
       
-      - run:  python py/build.py pyrt ${{ matrix.architecture }} 3.7.9
+      - run:  python .github/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
           name: pyrt_${{ matrix.architecture }}
@@ -54,7 +54,7 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python py/build.py cpp ${{ matrix.architecture }}
+      - run:  python .github/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_${{ matrix.architecture }}
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - run:  python py/build.py merge ${{ matrix.architecture }}
+      - run:  python .github/scripts/build_lunatranslator.py merge ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}

@@ -9,6 +9,8 @@ if not rootDir:
     rootDir = os.path.abspath(".")
 else:
     rootDir = os.path.abspath(rootDir)
+rootthisfiledir=rootDir
+rootDir=os.path.abspath(os.path.join(rootDir,'../../py'))
 if sys.argv[1] == "loadversion":
     os.chdir(rootDir)
     with open("../cpp/version.cmake", "r", encoding="utf8") as ff:
@@ -258,7 +260,7 @@ if __name__ == "__main__":
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\test"))
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\unittest"))
         # 放弃，3.8需要安装KB2533623才能运行，3.7用不着。
-        subprocess.run(f"{py37Path} collectpyruntime.py")
+        subprocess.run(f"{py37Path} {os.path.join(rootthisfiledir,'collectpyruntime.py')}")
     elif sys.argv[1] == "merge":
         createPluginDirs()
         downloadsomething()
@@ -291,12 +293,24 @@ if __name__ == "__main__":
             dirs_exist_ok=True,
         )
         os.chdir(rootDir + "/../cpp/scripts")
-        subprocess.run(f"python copytarget.py 1")
-        subprocess.run(f"python copytarget.py 0")
 
+        os.makedirs('../../py/files/plugins/DLL32',exist_ok=True)
+        shutil.copy('../builds/_x86/shareddllproxy32.exe','../../py/files/plugins')
+        shutil.copy('../builds/_x86/winrtutils32.dll','../../py/files/plugins/DLL32')
+        shutil.copy('../builds/_x86/winsharedutils32.dll','../../py/files/plugins/DLL32')
+        shutil.copy('../builds/_x86/wcocr.dll','../../py/files/plugins/DLL32')
+        shutil.copy('../builds/_x86/LunaOCR32.dll','../../py/files/plugins/DLL32')
+        os.makedirs('../../py/files/plugins/DLL64',exist_ok=True)
+        shutil.copy('../builds/_x64/shareddllproxy64.exe','../../py/files/plugins')
+        shutil.copy('../builds/_x64/hookmagpie.dll','../../py/files/plugins')
+        shutil.copy('../builds/_x64/winrtutils64.dll','../../py/files/plugins/DLL64')
+        shutil.copy('../builds/_x64/winsharedutils64.dll','../../py/files/plugins/DLL64')
+        shutil.copy('../builds/_x64/wcocr.dll','../../py/files/plugins/DLL64')
+        shutil.copy('../builds/_x64/LunaOCR64.dll','../../py/files/plugins/DLL64')
+        
         if arch == "x86":
             os.chdir(rootDir)
-            os.system("python collectall.py 32")
+            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 32")
         else:
             os.chdir(rootDir)
-            os.system("python collectall.py 64")
+            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 64")

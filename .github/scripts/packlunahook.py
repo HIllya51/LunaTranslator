@@ -1,8 +1,12 @@
 import os, shutil, sys
 
-os.chdir(os.path.dirname(__file__))
 
+rootDir = os.path.dirname(__file__)
+if not rootDir:
+    rootDir = os.path.abspath(".")
+rootDir=os.path.abspath(os.path.join(rootDir,'../../cpp/LunaHook'))
 
+os.chdir(rootDir)
 for f in os.listdir("../builds"):
     if os.path.isdir("../builds/" + f) == False:
         continue

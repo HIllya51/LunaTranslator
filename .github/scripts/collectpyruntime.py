@@ -3,6 +3,13 @@ import modulefinder, shutil, os, sys
 import builtins, platform
 import sys
 
+rootDir = os.path.dirname(__file__)
+if not rootDir:
+    rootDir = os.path.abspath(".")
+else:
+    rootDir = os.path.abspath(rootDir)
+rootthisfiledir=rootDir
+rootDir=os.path.abspath(os.path.join(rootDir,'../../py'))
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = platform.architecture()[0] == "32bit"

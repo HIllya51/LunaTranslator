@@ -22,8 +22,8 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python cpp/LunaHook/build.py build ${{ matrix.language }} winxp
-      - run: python cpp/LunaHook/scripts/pack.py
+      - run: python .github/scripts/build_lunahook.py build ${{ matrix.language }} winxp
+      - run: python .github/scripts/packlunahook.py
 
       - uses: actions/upload-artifact@v4
         with:
@@ -65,8 +65,8 @@ jobs:
           arch:         ${{ matrix.qtarch }}
           dir:          ${{ runner.temp }}
           setup-python: true
-      - run: python cpp/LunaHook/build.py ${{ matrix.cmd }}
-      - run: python cpp/LunaHook/scripts/pack.py
+      - run: python .github/scripts/build_lunahook.py ${{ matrix.cmd }}
+      - run: python .github/scripts/packlunahook.py
 
       # - name: Generate attestation for artifact
       #   uses: actions/attest-build-provenance@v1
@@ -99,7 +99,7 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python cpp/LunaHook/build.py build ${{ matrix.language }} ${{matrix.bits}}
+      - run: python .github/scripts/build_lunahook.py build ${{ matrix.language }} ${{matrix.bits}}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -114,7 +114,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
             path: cpp/LunaHook/build
-      - run: python cpp/LunaHook/build.py merge
+      - run: python .github/scripts/build_lunahook.py merge
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: LunaHook
