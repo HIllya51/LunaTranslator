@@ -158,7 +158,6 @@ def question(dialog: QDialog):
 
 
 class OCR(baseocr):
-    ocr_cant_auto = True
 
     def langmap(self):
         return {"cht": "cht"}
@@ -168,31 +167,50 @@ class OCR(baseocr):
         self._savelang = None
         self.checkchange()
 
-    def checkchange(self):
-        if self._savelang == self.srclang:
-            return
-        self._ocr = None
-        path = "./files/ocr/{}".format(self.srclang)
-        if not (
+    def checklangvalid(self, langcode):
+        path = "./files/ocr/{}".format(langcode)
+        return (
             os.path.exists(path + "/det.onnx")
             and os.path.exists(path + "/rec.onnx")
             and os.path.exists(path + "/dict.txt")
-        ):
-            raise Exception(
-                _TR("未添加")
-                + ' "'
-                + _TR(getlang_inner2show(self.srclang))
-                + '" '
-                + _TR("的OCR模型")
-                + "\n"
-                + _TR("当前支持的语言")
-                + ": "
-                + ", ".join([_TR(getlang_inner2show(f)) for f in getallsupports()])
-            )
+        )
+
+    def checkchange(self):
+        if self._savelang == self.srclang:
+            return
+        if self.srclang == "auto":
+            validlangs = []
+            for lang in os.listdir("./files/ocr"):
+                if self.checklangvalid(lang):
+                    validlangs.append(lang)
+            if len(validlangs) == 1:
+                uselang = validlangs[0]
+            elif len(validlangs) == 0:
+                raise Exception(_TR("无可用模型"))
+            else:
+                self.raise_cant_be_auto_lang()
+        else:
+            if self.checklangvalid(self.srclang):
+                uselang = self.srclang
+            else:
+                raise Exception(
+                    _TR("未添加")
+                    + ' "'
+                    + _TR(getlang_inner2show(self.srclang))
+                    + '" '
+                    + _TR("的OCR模型")
+                    + "\n"
+                    + _TR("当前支持的语言")
+                    + ": "
+                    + ", ".join([_TR(getlang_inner2show(f)) for f in getallsupports()])
+                )
+
+        self._ocr = None
+        path = "./files/ocr/{}".format(uselang)
         self._ocr = ocrwrapper(
             path + "/det.onnx", path + "/rec.onnx", path + "/dict.txt"
         )
-        self._savelang = self.srclang
+        self._savelang = uselang
 
     def ocr(self, imagebinary):
         self.checkchange()

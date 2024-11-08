@@ -812,5 +812,7 @@
     "应用密钥": "Toepassingssleutel",
     "无": "niets",
     "向上": "Naar boven",
-    "向下": "omlaag"
+    "向下": "omlaag",
+    "无可用模型": "Geen beschikbare modellen",
+    "无可用语言": "Geen beschikbare talen"
 }

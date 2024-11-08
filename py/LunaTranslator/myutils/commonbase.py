@@ -25,8 +25,6 @@ class commonbase:
     _setting_dict = None
     typename = None
 
-    ocr_cant_auto = False
-
     def langmap(self):
         return {}
 
@@ -37,8 +35,6 @@ class commonbase:
     @property
     def srclang(self):
         l = self.srclang_1
-        if self.ocr_cant_auto and (l == "auto"):
-            raise Exception(_TR("当前OCR引擎不支持设置语言为自动"))
         return self.langmap_.get(l, l)
 
     @property

@@ -1,4 +1,4 @@
-from myutils.config import globalconfig, ocrsetting, ocrerrorfix
+from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR
 from myutils.utils import getlanguagespace
 from myutils.commonbase import commonbase
 
@@ -107,6 +107,11 @@ class baseocr(commonbase):
         return lines
 
     ########################################################
+    def raise_cant_be_auto_lang(self):
+        l = self.srclang_1
+        if l == "auto":
+            raise Exception(_TR("当前OCR引擎不支持设置语言为自动"))
+
     def level2init(self):
         self.needinit = True
         try:

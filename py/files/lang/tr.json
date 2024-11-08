@@ -812,5 +812,7 @@
     "应用密钥": "Uygulama anahtarı",
     "无": "Hiçbir şey yok.",
     "向上": "Yukarı",
-    "向下": "Aşağı"
+    "向下": "Aşağı",
+    "无可用模型": "Mevcut modeller yok",
+    "无可用语言": "Mevcut diller yok"
 }

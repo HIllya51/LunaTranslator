@@ -812,5 +812,7 @@
     "应用密钥": "Appliquer la clé",
     "无": "Aucun",
     "向上": "Vers le Haut",
-    "向下": "Vers le bas"
+    "向下": "Vers le bas",
+    "无可用模型": "Aucun modèle disponible",
+    "无可用语言": "Aucune langue disponible"
 }

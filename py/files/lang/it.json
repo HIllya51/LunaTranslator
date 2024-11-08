@@ -812,5 +812,7 @@
     "应用密钥": "Chiave dell'applicazione",
     "无": "niente",
     "向上": "Su",
-    "向下": "giù"
+    "向下": "giù",
+    "无可用模型": "Nessun modello disponibile",
+    "无可用语言": "Nessuna lingua disponibile"
 }

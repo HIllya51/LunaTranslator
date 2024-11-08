@@ -11,11 +11,9 @@ import json
 
 
 class OCR(baseocr):
-    ocr_cant_auto = True
-
     def ocr(self, imagebinary):
         self.checkempty(["APPId", "APISecret", "APIKey"])
-
+        self.raise_cant_be_auto_lang()
         APPId = self.config["APPId"]
         APISecret = self.config["APISecret"]
         APIKey = self.config["APIKey"]

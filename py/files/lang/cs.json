@@ -812,5 +812,7 @@
     "应用密钥": "Klíč aplikace",
     "无": "nic",
     "向上": "Nahoru",
-    "向下": "dolů"
+    "向下": "dolů",
+    "无可用模型": "Žádné dostupné modely",
+    "无可用语言": "Žádné dostupné jazyky"
 }

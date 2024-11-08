@@ -3,7 +3,6 @@ from ocrengines.baseocrclass import baseocr
 
 
 class OCR(baseocr):
-    ocr_cant_auto = True
 
     def langmap(self):
         return {
@@ -19,6 +18,7 @@ class OCR(baseocr):
 
     def ocr(self, imagebinary):
         self.checkempty(["apikey"])
+        self.raise_cant_be_auto_lang()
         apikey = self.config["apikey"]
         if self.config["interface"] == 1:
             base = "api.ocr.space"

@@ -812,5 +812,7 @@
     "应用密钥": "Programnyckel",
     "无": "ingenting",
     "向上": "Upp",
-    "向下": "ner"
+    "向下": "ner",
+    "无可用模型": "Inga tillgängliga modeller",
+    "无可用语言": "Inga tillgängliga språk"
 }
