@@ -6,6 +6,7 @@ from ocrengines.baseocrclass import baseocr
 from qtsymbols import *
 from gui.usefulwidget import getboxlayout
 from gui.dynalang import LPushButton, LFormLayout, LLabel
+from myutils.utils import getlanguagespace
 
 
 def initsupports():
@@ -84,7 +85,7 @@ class OCR(baseocr):
                 )
             else:
                 uselang = self.srclang
-        ret = winrtutils.OCR_f(imagebinary, self.supportmap[uselang], self.space_1)
+        ret = winrtutils.OCR_f(imagebinary, self.supportmap[uselang], getlanguagespace(uselang))
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
         return {"box": boxs, "text": texts}
