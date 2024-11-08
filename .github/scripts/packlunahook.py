@@ -7,11 +7,11 @@ if not rootDir:
 rootDir=os.path.abspath(os.path.join(rootDir,'../../cpp/LunaHook'))
 
 os.chdir(rootDir)
-for f in os.listdir("../builds"):
-    if os.path.isdir("../builds/" + f) == False:
+for f in os.listdir("builds"):
+    if os.path.isdir("builds/" + f) == False:
         continue
 
-    for dirname, _, fs in os.walk("../builds/" + f):
+    for dirname, _, fs in os.walk("builds/" + f):
         if (
             dirname.endswith("translations")
             or dirname.endswith("translations")
@@ -31,8 +31,8 @@ for f in os.listdir("../builds"):
                 "D3Dcompiler_47.dll",
             ]:
                 os.remove(path)
-    targetdir = "../builds/" + f
-    target = "../builds/" + f + ".zip"
+    targetdir = "builds/" + f
+    target = "builds/" + f + ".zip"
     os.system(
         rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {target} {targetdir}'
     )
