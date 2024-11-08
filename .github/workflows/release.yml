@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: loadversion
-        run: python py/build.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+        run: python .github/scripts/build_lunatranslator.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
 
   release:
     runs-on: windows-latest
