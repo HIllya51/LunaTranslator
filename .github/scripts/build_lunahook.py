@@ -34,23 +34,10 @@ if len(sys.argv) and sys.argv[1] == "merge":
             rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {target} {targetdir}'
         )
     exit()
-vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
-vcltlFileName = "VC-LTL-5.0.9-Binary.7z"
-
 
 print(sys.version)
 print(__file__)
 print(rootDir)
-
-
-def installVCLTL():
-    os.chdir(rootDir)
-    if os.path.exists("temp"):
-        return  # already installed
-    os.makedirs(rootDir + "\\temp", exist_ok=True)
-    subprocess.run(f"curl -Lo temp\\{vcltlFileName} {vcltlFile}")
-    subprocess.run(f"7z x temp\\{vcltlFileName} -otemp\\VC-LTL5")
-    subprocess.run("cmd /c temp\\VC-LTL5\\Install.cmd")
 
 
 def build_langx(lang, bit, onlycore):
@@ -95,8 +82,6 @@ call dobuildxp.bat
         )
     os.system(f"cmd /c do.bat")
 
-
-# installVCLTL()
 os.chdir(os.path.join(rootDir, "scripts"))
 if sys.argv[1] == "plg32":
     os.system(f"cmd /c buildplugin32.bat")
