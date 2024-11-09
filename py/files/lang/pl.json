@@ -19,7 +19,6 @@
     "退出": "wyloguj się",
     "设置": "ustawić",
     "基本设置": "Ustawienia podstawowe",
-    "选择文本输入源": "Wybierz źródło wejścia tekstu",
     "剪贴板": "schowek",
     "确定": "określić",
     "百度": "Baidu",
@@ -61,7 +60,6 @@
     "西里尔(CP1251)": "Cyryl (CP1251)",
     "拉丁(CP1252)": "Łaciński (CP1252)",
     "HOOK设置": "Ustawienia HOOK",
-    "已保存游戏": "Gra zapisana",
     "代码页": "strona kodowa",
     "刷新延迟(ms)": "Opóźnienie odświeżania (ms)",
     "OCR设置": "Ustawienia OCR",
@@ -811,5 +809,6 @@
     "过时的词典": "Przestarzały słownik",
     "其他工具": "Inne narzędzia",
     "过时的翻译器": "Przestarzały tłumacz",
-    "翻译器加载失败": "Wczytanie tłumacza nie powiodło się"
+    "翻译器加载失败": "Wczytanie tłumacza nie powiodło się",
+    "核心设置": "Ustawienia główne"
 }

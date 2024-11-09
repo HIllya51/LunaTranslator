@@ -580,16 +580,13 @@ def _TR(k: str):
     if "_" in k:
         splits = k.split("_")
         return " ".join([_TR(_) for _ in splits])
+    if k.startswith("(") and k.endswith(")"):
+        return "(" + _TR(k[1:-1]) + ")"
     __ = languageshow.get(k)
-    if not __:
-        if k.startswith("(") and k.endswith(")"):
-            __ = languageshow.get(k[1:-1])
-            if __:
-                __ = "(" + __ + ")"
-    if not __:
-        __ = k
-        languageshow[k] = ""
-    return __
+    if __:
+        return __
+    languageshow[k] = ""
+    return k
 
 
 lastapppath = globalconfig["lastapppath"]

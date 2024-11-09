@@ -130,7 +130,6 @@
     "繁体中文(CP950,BIG5)": "Traditionellt kinesiskt (CP950, BIG5)",
     "翻译结果修正": "Korrigering av översättningsresultat",
     "显示": "visa",
-    "选择文本输入源": "Välj textinmatningskälla",
     "获取中": "Att komma in",
     "接頭辞": "Gemensamma ord",
     "注册在线翻译": "Registrera dig för översättning online",
@@ -254,7 +253,6 @@
     "描边字体": "Teckensnitt för streck",
     "默认设置": "förvald inställning",
     "意大利语": "Italienska",
-    "已保存游戏": "Sparat spel",
     "显示显示原文按钮": "Visa originaltextknapp",
     "去除花括号{}": "Ta bort lockiga hängslen",
     "保留原文": "Behåll originaltexten",
@@ -811,5 +809,6 @@
     "过时的词典": "Föråldrad ordlista",
     "其他工具": "Andra verktyg",
     "过时的翻译器": "Föråldrad översättare",
-    "翻译器加载失败": "Laddning av översättare misslyckades"
+    "翻译器加载失败": "Laddning av översättare misslyckades",
+    "核心设置": "Kärninställningar"
 }

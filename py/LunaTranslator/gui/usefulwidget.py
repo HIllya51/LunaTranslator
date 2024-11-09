@@ -1677,7 +1677,6 @@ def makegroupingrid(args):
     enable = args.get("enable", True)
     internallayoutname = args.get("internallayoutname", None)
     group = LGroupBox()
-
     if not enable:
         group.setEnabled(False)
     if groupname and parent:

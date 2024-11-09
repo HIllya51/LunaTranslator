@@ -130,7 +130,6 @@
     "繁体中文(CP950,BIG5)": "Tradiční čínština (CP950, BIG5)",
     "翻译结果修正": "Oprava výsledků překladu",
     "显示": "displej",
-    "选择文本输入源": "Vybrat vstupní zdroj textu",
     "获取中": "Dostat se dovnitř",
     "接頭辞": "Společná slova",
     "注册在线翻译": "Zaregistrujte se k online překladu",
@@ -254,7 +253,6 @@
     "描边字体": "Písmo tahu",
     "默认设置": "výchozí nastavení",
     "意大利语": "Italština",
-    "已保存游戏": "Uložená hra",
     "显示显示原文按钮": "Zobrazit tlačítko původního textu",
     "去除花括号{}": "Odstraňte kudrnaté rovnátka.",
     "保留原文": "Zachovat původní text",
@@ -811,5 +809,6 @@
     "过时的词典": "Zastaralý slovník",
     "其他工具": "Ostatní nástroje",
     "过时的翻译器": "Zastaralý překladatel",
-    "翻译器加载失败": "Načítání překladatele selhalo"
+    "翻译器加载失败": "Načítání překladatele selhalo",
+    "核心设置": "Základní nastavení"
 }

@@ -19,7 +19,6 @@
     "退出": "Thoát",
     "设置": "Thiết lập",
     "基本设置": "Cài đặt cơ bản",
-    "选择文本输入源": "Chọn nguồn nhập văn bản",
     "剪贴板": "Bảng nháp",
     "确定": "Xác định",
     "百度": "100 triệu",
@@ -61,7 +60,6 @@
     "西里尔(CP1251)": "Thiên thần (CP1251)",
     "拉丁(CP1252)": "Latina (CP1252)",
     "HOOK设置": "Thiết lập hook",
-    "已保存游戏": "Trò chơi đã lưu",
     "代码页": "Trang mã",
     "刷新延迟(ms)": "Độ trễ làm mới (ms)",
     "OCR设置": "Thiết lập OCR",
@@ -811,5 +809,6 @@
     "过时的词典": "Từ điển lỗi thời",
     "其他工具": "Công cụ khác",
     "过时的翻译器": "Trình dịch lỗi thời",
-    "翻译器加载失败": "Trình dịch không tải được"
+    "翻译器加载失败": "Trình dịch không tải được",
+    "核心设置": "Thiết lập lõi"
 }

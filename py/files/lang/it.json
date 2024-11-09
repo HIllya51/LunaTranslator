@@ -19,7 +19,6 @@
     "退出": "quit",
     "设置": "istituito",
     "基本设置": "Impostazioni di base",
-    "选择文本输入源": "Seleziona sorgente di input testo",
     "剪贴板": "appunti",
     "确定": "conferma",
     "百度": "Baiduworld. kgm",
@@ -61,7 +60,6 @@
     "西里尔(CP1251)": "Cyril (CP1251)",
     "拉丁(CP1252)": "Latino (CP1252)",
     "HOOK设置": "Impostazioni HOOK",
-    "已保存游戏": "Partita salvata",
     "代码页": "pagina di codice",
     "刷新延迟(ms)": "Ritardo di aggiornamento (ms)",
     "OCR设置": "Impostazioni OCR",
@@ -811,5 +809,6 @@
     "过时的词典": "Dizionario obsoleto",
     "其他工具": "Altri strumenti",
     "过时的翻译器": "Traduttore obsoleto",
-    "翻译器加载失败": "Caricamento del traduttore non riuscito"
+    "翻译器加载失败": "Caricamento del traduttore non riuscito",
+    "核心设置": "Impostazioni centrali"
 }

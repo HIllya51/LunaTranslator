@@ -130,7 +130,6 @@
     "繁体中文(CP950,BIG5)": "Chinês tradicional (CP950, BIG5)",
     "翻译结果修正": "Correcção do resultado da tradução",
     "显示": "display",
-    "选择文本输入源": "Seleccionar a fonte de entrada de texto",
     "获取中": "Entrar",
     "接頭辞": "Palavras Conjuntas",
     "注册在线翻译": "Registar-se para tradução online",
@@ -254,7 +253,6 @@
     "描边字体": "Tipo de letra do traçado",
     "默认设置": "configuração predefinida",
     "意大利语": "Italiano",
-    "已保存游戏": "Jogo gravado",
     "显示显示原文按钮": "Mostrar o botão do texto original",
     "去除花括号{}": "Remover as chaves encaracoladas {}",
     "保留原文": "Manter o texto original",
@@ -811,5 +809,6 @@
     "过时的词典": "Dicionário desatualizado",
     "其他工具": "Outras ferramentas",
     "过时的翻译器": "Tradutor desatualizado",
-    "翻译器加载失败": "O carregamento do tradutor falhou"
+    "翻译器加载失败": "O carregamento do tradutor falhou",
+    "核心设置": "Configuração do Núcleo"
 }

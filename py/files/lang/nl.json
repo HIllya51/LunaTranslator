@@ -130,7 +130,6 @@
     "繁体中文(CP950,BIG5)": "Traditioneel Chinees (CP950, BIG5)",
     "翻译结果修正": "Correctie van vertaalresultaten",
     "显示": "display",
-    "选择文本输入源": "Tekst-invoerbron selecteren",
     "获取中": "Instappen",
     "接頭辞": "Gezamenlijke woorden",
     "注册在线翻译": "Registreer voor online vertaling",
@@ -254,7 +253,6 @@
     "描边字体": "Strijklettertype",
     "默认设置": "standaardinstelling",
     "意大利语": "Italiaans",
-    "已保存游戏": "Opgeslagen spel",
     "显示显示原文按钮": "Originele tekstknop weergeven",
     "去除花括号{}": "Krullende beugels verwijderen.",
     "保留原文": "De oorspronkelijke tekst behouden",
@@ -811,5 +809,6 @@
     "过时的词典": "Verouderd woordenboek",
     "其他工具": "Andere hulpmiddelen",
     "过时的翻译器": "Verouderde vertaler",
-    "翻译器加载失败": "Laden van vertaler mislukt"
+    "翻译器加载失败": "Laden van vertaler mislukt",
+    "核心设置": "Kerninstellingen"
 }

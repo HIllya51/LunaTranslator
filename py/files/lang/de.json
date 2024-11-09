@@ -130,7 +130,6 @@
     "繁体中文(CP950,BIG5)": "Traditionelles Chinesisch (CP950, BIG5)",
     "翻译结果修正": "Korrektur des Übersetzungsergebnisses",
     "显示": "Anzeige",
-    "选择文本输入源": "Textquelle auswählen",
     "获取中": "Einsteigen",
     "接頭辞": "Gemeinsame Worte",
     "注册在线翻译": "Registrieren Sie sich für Online-Übersetzung",
@@ -254,7 +253,6 @@
     "描边字体": "Strichschrift",
     "默认设置": "Standardeinstellung",
     "意大利语": "Italienisch",
-    "已保存游戏": "Gespeichertes Spiel",
     "显示显示原文按钮": "Schaltfläche Originaltext anzeigen",
     "去除花括号{}": "Lockige Klammern entfernen {}",
     "保留原文": "Den Originaltext beibehalten",
@@ -811,5 +809,6 @@
     "过时的词典": "Veraltetes Wörterbuch",
     "其他工具": "Andere Werkzeuge",
     "过时的翻译器": "Veralteter Übersetzer",
-    "翻译器加载失败": "Laden des Übersetzers fehlgeschlagen"
+    "翻译器加载失败": "Laden des Übersetzers fehlgeschlagen",
+    "核心设置": "Kerneinstellungen"
 }

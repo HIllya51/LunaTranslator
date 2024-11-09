@@ -10,7 +10,13 @@ import shutil, gobject
 from myutils.proxy import getproxy
 import zipfile, os
 import subprocess
-from gui.usefulwidget import D_getsimpleswitch, makescrollgrid, makesubtab_lazy
+from gui.usefulwidget import (
+    D_getsimpleswitch,
+    makescrollgrid,
+    makesubtab_lazy,
+    D_getsimplecombobox,
+    D_getIconButton,
+)
 from gui.dynalang import LLabel
 
 versionchecktask = queue.Queue()
@@ -347,7 +353,7 @@ def setTab_about(self, basel):
     tab_widget, do = makesubtab_lazy(
         [
             "关于软件",
-            "版本更新",
+            "其他设置",
             "资源下载",
         ],
         [
@@ -361,6 +367,11 @@ def setTab_about(self, basel):
     do()
 
 
+def changeUIlanguage(_):
+    languageChangeEvent = QEvent(QEvent.Type.LanguageChange)
+    QApplication.sendEvent(QApplication.instance(), languageChangeEvent)
+
+
 def setTab_update(self, basel):
     version = winsharedutils.queryversion(getcurrexe())
     if version is None:
@@ -369,25 +380,73 @@ def setTab_update(self, basel):
         versionstring = (
             f"v{version[0]}.{version[1]}.{version[2]}  {platform.architecture()[0]}"
         )
+    inner, vis = [_[1] for _ in static_data["language_list_show"]], [
+        _[0] for _ in static_data["language_list_show"]
+    ]
     grid2 = [
         [
-            "自动更新",
             (
-                D_getsimpleswitch(
-                    globalconfig, "autoupdate", callback=versionchecktask.put
+                dict(
+                    title="版本更新",
+                    type="grid",
+                    grid=[
+                        [
+                            "自动更新",
+                            (
+                                D_getsimpleswitch(
+                                    globalconfig,
+                                    "autoupdate",
+                                    callback=versionchecktask.put,
+                                ),
+                                0,
+                            ),
+                        ],
+                        [
+                            "当前版本",
+                            versionstring,
+                            "",
+                            "最新版本",
+                            functools.partial(createversionlabel, self),
+                            "",
+                        ],
+                        [(functools.partial(createdownloadprogress, self), 0)],
+                    ],
                 ),
                 0,
+                "group",
             ),
         ],
         [
-            "当前版本",
-            versionstring,
-            "",
-            "最新版本",
-            functools.partial(createversionlabel, self),
-            "",
+            (
+                dict(
+                    title="软件显示语言",
+                    type="grid",
+                    grid=[
+                        [
+                            "软件显示语言",
+                            D_getsimplecombobox(
+                                vis,
+                                globalconfig,
+                                "languageuse2",
+                                callback=changeUIlanguage,
+                                static=True,
+                                internal=inner,
+                            ),
+                            D_getIconButton(
+                                callback=lambda: os.startfile(
+                                    os.path.abspath(
+                                        "./files/lang/{}.json".format(getlanguse())
+                                    )
+                                ),
+                                icon="fa.gear",
+                            ),
+                        ],
+                    ],
+                ),
+                0,
+                "group",
+            ),
         ],
-        [(functools.partial(createdownloadprogress, self), 0)],
     ]
 
     makescrollgrid(grid2, basel)

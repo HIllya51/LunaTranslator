@@ -9,7 +9,6 @@ from gui.setting_display import setTabThree_lazy
 from gui.setting_tts import setTab5, showvoicelist
 from gui.setting_cishu import setTabcishu
 from gui.setting_hotkey import setTab_quick, registrhotkeys
-from gui.setting_lang import setTablang
 from gui.setting_proxy import setTab_proxy
 from gui.setting_transopti import setTab7_lazy, delaysetcomparetext
 from gui.setting_about import (
@@ -95,14 +94,13 @@ class Setting(closeashidewindow):
 
         self.tab_widget, do = makesubtab_lazy(
             [
-                "文本输入",
+                "核心设置",
                 "翻译设置",
                 "显示设置",
                 "文本处理",
                 "辞书设置",
                 "语音合成",
                 "快捷按键",
-                "语言设置",
                 "网络设置",
                 "关于软件",
             ],
@@ -114,7 +112,6 @@ class Setting(closeashidewindow):
                 functools.partial(setTabcishu, self),
                 functools.partial(setTab5, self),
                 functools.partial(setTab_quick, self),
-                functools.partial(setTablang, self),
                 functools.partial(setTab_proxy, self),
                 functools.partial(setTab_about, self),
             ],

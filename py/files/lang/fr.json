@@ -19,7 +19,6 @@
     "退出": "Sortie",
     "设置": "Paramètres",
     "基本设置": "Paramètres de base",
-    "选择文本输入源": "Sélectionner la source d'entrée de texte",
     "剪贴板": "Presse - papiers",
     "确定": "C'est sûr.",
     "百度": "Baidu",
@@ -61,7 +60,6 @@
     "西里尔(CP1251)": "Cyril (cp1251)",
     "拉丁(CP1252)": "Latin (cp1252)",
     "HOOK设置": "Paramètres Hook",
-    "已保存游戏": "Jeux enregistrés",
     "代码页": "Page de code",
     "刷新延迟(ms)": "Délai de rafraîchissement (MS)",
     "OCR设置": "Paramètres ocr",
@@ -811,5 +809,6 @@
     "过时的词典": "Dictionnaire obsolète",
     "其他工具": "Autres outils",
     "过时的翻译器": "Traducteur obsolète",
-    "翻译器加载失败": "Le chargement du traducteur a échoué"
+    "翻译器加载失败": "Le chargement du traducteur a échoué",
+    "核心设置": "Paramètres de base"
 }

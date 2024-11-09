@@ -6,7 +6,7 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     makegrid,
     makesubtab_lazy,
-    getvboxwidget,
+    LGroupBox,
     makescrollgrid,
     D_getsimplecombobox,
 )
@@ -90,28 +90,15 @@ def checkxx(key):
     return globalconfig["fanyi"][key].get("is_gpt_like", False)
 
 
-def makeproxytab(self, basel):
+def makegridW(grid, lay, save=False, savelist=None, savelay=None):
+    wid, do = makegrid(grid, save, savelist, savelay, delay=True)
+    lay.addWidget(wid)
+    do()
+    return wid
 
-    grid1 = [
-        [("使用代理", 5), (D_getsimpleswitch(globalconfig, "useproxy"), 1), ("", 10)],
-        [
-            ("自动获取系统代理", 5),
-            (
-                D_getsimpleswitch(
-                    globalconfig,
-                    "usesysproxy",
-                    callback=lambda x: _ifusesysproxy(self, x),
-                )
-            ),
-        ],
-        [
-            ("手动设置代理(ip:port)", 5),
-            (functools.partial(createproxyedit, self), 5),
-            (functools.partial(createproxyedit_check, self), 5),
-        ],
-        [],
-        [("使用代理的项目", -1)],
-    ]
+
+def makeproxytab():
+
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
 
     mianfei = getall(l=mianfei, item="fanyi", name="./Lunatranslator/translator/%s.py")
@@ -142,10 +129,6 @@ def makeproxytab(self, basel):
         item="update",
     )
 
-    vw, vl = getvboxwidget()
-    basel.addWidget(vw)
-    gridlayoutwidget, do = makegrid(grid1, delay=True)
-    vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
         [
             "在线翻译",
@@ -158,65 +141,95 @@ def makeproxytab(self, basel):
             "自动更新",
         ],
         [
-            functools.partial(makescrollgrid, mianfei),
-            functools.partial(makescrollgrid, shoufei),
-            functools.partial(makescrollgrid, ocrs),
-            functools.partial(makescrollgrid, readers),
-            functools.partial(makescrollgrid, cishus),
-            functools.partial(makescrollgrid, meta),
-            functools.partial(makescrollgrid, lixians),
-            functools.partial(makescrollgrid, github),
+            functools.partial(makegridW, mianfei),
+            functools.partial(makegridW, shoufei),
+            functools.partial(makegridW, ocrs),
+            functools.partial(makegridW, readers),
+            functools.partial(makegridW, cishus),
+            functools.partial(makegridW, meta),
+            functools.partial(makegridW, lixians),
+            functools.partial(makegridW, github),
         ],
         delay=True,
     )
-    vl.addWidget(tab)
-    do()
+    group = LGroupBox()
+    group.setTitle("使用代理的项目")
+    l = QVBoxLayout()
+    group.setLayout(l)
+    l.addWidget(tab)
     dotab()
-
-
-def setTab_proxy_lazy(self, basel):
-    tab, dotab = makesubtab_lazy(
-        [
-            "代理设置",
-            "网络请求",
-        ],
-        [
-            functools.partial(makeproxytab, self),
-            functools.partial(
-                makescrollgrid,
-                [
-                    [
-                        "HTTP",
-                        (
-                            D_getsimplecombobox(
-                                ["winhttp", "libcurl"],
-                                globalconfig,
-                                "network",
-                                static=True,
-                            ),
-                            5,
-                        ),
-                    ],
-                    [
-                        "WebSocket",
-                        (
-                            D_getsimplecombobox(
-                                ["winhttp", "libcurl"],
-                                globalconfig,
-                                "network_websocket",
-                                static=True,
-                            ),
-                            5,
-                        ),
-                    ],
-                ],
-            ),
-        ],
-        delay=True,
-    )
-    basel.addWidget(tab)
-    dotab()
+    return group
 
 
 def setTab_proxy(self, l):
-    setTab_proxy_lazy(self, l)
+    grids = [
+        [
+            (
+                dict(
+                    title="网络请求",
+                    type="grid",
+                    grid=[
+                        [
+                            "HTTP",
+                            (
+                                D_getsimplecombobox(
+                                    ["winhttp", "libcurl"],
+                                    globalconfig,
+                                    "network",
+                                    static=True,
+                                ),
+                                5,
+                            ),
+                            "",
+                            "WebSocket",
+                            (
+                                D_getsimplecombobox(
+                                    ["winhttp", "libcurl"],
+                                    globalconfig,
+                                    "network_websocket",
+                                    static=True,
+                                ),
+                                5,
+                            ),
+                        ],
+                    ],
+                ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    title="代理设置",
+                    type="grid",
+                    grid=[
+                        [
+                            ("使用代理", 5),
+                            (D_getsimpleswitch(globalconfig, "useproxy"), 1),
+                            ("", 10),
+                        ],
+                        [
+                            ("自动获取系统代理", 5),
+                            (
+                                D_getsimpleswitch(
+                                    globalconfig,
+                                    "usesysproxy",
+                                    callback=lambda x: _ifusesysproxy(self, x),
+                                )
+                            ),
+                        ],
+                        [
+                            ("手动设置代理(ip:port)", 5),
+                            (functools.partial(createproxyedit, self), 5),
+                            (functools.partial(createproxyedit_check, self), 5),
+                        ],
+                        [(makeproxytab, -1)],
+                    ],
+                ),
+                0,
+                "group",
+            )
+        ],
+    ]
+    makescrollgrid(grids, l)

@@ -9,7 +9,9 @@ from myutils.config import (
     get_launchpath,
     savehook_new_list,
     static_data,
+    getlanguse,
 )
+
 from traceback import print_exc
 from gui.pretransfile import sqlite2json2
 from gui.codeacceptdialog import codeacceptdialog
@@ -58,21 +60,14 @@ def gethookgrid(self):
         [
             "选择游戏",
             functools.partial(__create, self),
-            ("", 5),
-        ],
-        [
+            "",
             "选择文本",
             functools.partial(__create2, self),
-        ],
-        [],
-        [
-            "已保存游戏",
-            (
-                D_getIconButton(
-                    lambda: dialog_savedgame_integrated(self),
-                    icon="fa.gamepad",
-                ),
-                1,
+            "",
+            "游戏管理",
+            D_getIconButton(
+                lambda: dialog_savedgame_integrated(self),
+                icon="fa.gamepad",
             ),
         ],
         [],
@@ -519,6 +514,35 @@ def outputgrid(self):
     return grids
 
 
+def setTablanglz():
+    return [
+        [
+            "源语言",
+            (
+                D_getsimplecombobox(
+                    ["自动"] + [_["zh"] for _ in static_data["lang_list_all"]],
+                    globalconfig,
+                    "srclang4",
+                    internal=["auto"]
+                    + [_["code"] for _ in static_data["lang_list_all"]],
+                ),
+                5,
+            ),
+            "",
+            "目标语言",
+            (
+                D_getsimplecombobox(
+                    [_["zh"] for _ in static_data["lang_list_all"]],
+                    globalconfig,
+                    "tgtlang4",
+                    internal=[_["code"] for _ in static_data["lang_list_all"]],
+                ),
+                5,
+            ),
+        ]
+    ]
+
+
 def setTabOne_lazy(self, basel):
     _rank = [
         ("texthook", "HOOK"),
@@ -547,10 +571,21 @@ def setTabOne_lazy(self, basel):
         )
         __.append("")
     tab1grids = [
-        [("选择文本输入源", -1)],
-        __,
+        [
+            (
+                dict(title="语言设置", type="grid", grid=setTablanglz()),
+                0,
+                "group",
+            ),
+        ],
+        [
+            (
+                dict(title="文本输入", type="grid", grid=[__]),
+                0,
+                "group",
+            ),
+        ],
     ]
-
     vw, vl = getvboxwidget()
     basel.addWidget(vw)
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)

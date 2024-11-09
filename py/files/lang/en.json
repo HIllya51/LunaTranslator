@@ -52,7 +52,6 @@
     "描边宽度": "Stroke Width",
     "插值算法": "Interpolation Algorithm",
     "显示/隐藏范围框": "Show/Hide Scope Box",
-    "已保存游戏": "Saved Games",
     "火山TTS": "Volcano TTS",
     "翻译设置": "Translation Settings",
     "百度": "Baidu",
@@ -119,7 +118,6 @@
     "助動詞": "Auxiliary Verbs",
     "过滤HTML标签": "Filter HTML Tags",
     "快译通": "Kuaiyitong Quick Dict",
-    "选择文本输入源": "Select Text Input Source",
     "选择文件夹": "Select Folder",
     "显示分词结果": "Show Word Segmentation Result",
     "复制到剪贴板": "Copy to Clipboard",
@@ -811,5 +809,6 @@
     "过时的词典": "Outdated dictionary",
     "其他工具": "Other tools",
     "过时的翻译器": "Outdated translator",
-    "翻译器加载失败": "Translator loading failed"
+    "翻译器加载失败": "Translator loading failed",
+    "核心设置": "Core Settings"
 }
