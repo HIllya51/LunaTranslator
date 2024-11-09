@@ -60,13 +60,6 @@ class triggereditor(LDialog):
         if action == remove:
             self.hctable.removeselectedrows()
 
-    def moverank(self, dy):
-        _pair = self.hctable.moverank(dy)
-        if not _pair:
-            return
-        src, tgt = _pair
-        self.internalrealname.insert(tgt, self.internalrealname.pop(src))
-
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.list = globalconfig["ocr_trigger_events"]
