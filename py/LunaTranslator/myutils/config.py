@@ -378,9 +378,16 @@ def findgameuidofpath(gamepath, findall=False):
             use = savehook_new_list
         else:
             use = sub["games"]
+        minidx = len(use)
+        minuid = None
         for uid in uids:
             if uid in use:
-                return uid, use
+                idx = use.index(uid)
+                if minidx > idx:
+                    minidx = idx
+                    minuid = uid
+        if minuid:
+            return minuid, use
     if findall:
         return collect
     else:

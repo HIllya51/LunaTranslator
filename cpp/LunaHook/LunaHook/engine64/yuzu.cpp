@@ -912,7 +912,7 @@ namespace
     }
     void F0100B0601852A000(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strW();
+        auto s = buffer->viewW();
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -920,7 +920,7 @@ namespace
     }
     void F010027100C79A000(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
+        auto s = buffer->viewA();
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -1775,6 +1775,18 @@ namespace
         s = std::regex_replace(s, std::regex("@[0-9]"), "");
         buffer->from(s);
     }
+    void F01000EA00B23C000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = std::regex_replace(s, std::wregex(L"[`@](.*?)@"), L"$1");
+        s = std::regex_replace(s, std::wregex(L"\\$\\[(.*?)\\$/(.*?)\\$\\]"), L"$1");
+        s = std::regex_replace(s, std::wregex(L"\\$K\\d+(.*?)\\$K\\d+"), L"$1");
+        s = std::regex_replace(s, std::wregex(L"\\$A\\d+"), L"");
+        strReplace(s, L"$2", L"花");
+        strReplace(s, L"$1", L"山田");
+        strReplace(s, L"$(3)", L"花");
+        buffer->from(s);
+    }
     void F010060301588A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2059,7 +2071,24 @@ namespace
     namespace
     {
 #pragma optimize("", off)
-        // 必须禁止优化这个函数，或者引用一下参数，否则参数被优化没了。
+        void TT0100A4700BC98000(const char *_) {}
+#pragma optimize("", on)
+
+        void T0100A4700BC98000(TextBuffer *buffer, HookParam *)
+        {
+            auto s = buffer->strA();
+            HookParam hp;
+            hp.address = (uintptr_t)TT0100A4700BC98000;
+            hp.offset = GETARG1;
+            hp.type = CODEC_UTF8 | USING_STRING;
+            static auto _ = NewHook(hp, "0100A4700BC98000");
+            TT0100A4700BC98000(s.c_str());
+            // buffer->clear();
+        }
+    }
+    namespace
+    {
+#pragma optimize("", off)
         void F01006530151F0000_collect(const wchar_t *_) {}
 #pragma optimize("", on)
         void F01006530151F0000(TextBuffer *buffer, HookParam *)
@@ -3284,6 +3313,15 @@ namespace
             // Money Parasite ~Usotsuki na Onna~
             {0x2169ac, {0, 0, 0, 0, F0100A250191E8000<false>, "0100A250191E8000", "1.0.0"}},
             {0x217030, {0, 0, 0, 0, F0100A250191E8000<true>, "0100A250191E8000", "1.0.0"}},
+            // 三国恋戦記～オトメの兵法！～
+            {0x800644A0, {CODEC_UTF16, 1, 0, 0, F01000EA00B23C000, "01000EA00B23C000", "1.0.0"}},
+            // 三国恋戦記～思いでがえし～＋学園恋戦記
+            {0x80153B20, {CODEC_UTF16, 8, 0, 0, F01000EA00B23C000, "01003B6014B38000", "1.0.0"}},
+            // 殺人探偵ジャック・ザ・リッパー
+            {0x8000ED30, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, "0100A4700BC98000", "1.0.0"}}, // 1.0.0有漏的
+            {0x8000ED1C, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, "0100A4700BC98000", "1.0.0"}},
+            {0x8000ED3C, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, "0100A4700BC98000", "1.0.0"}},
+            {0x8003734C, {CODEC_UTF8, 2, 0, 0, F010027100C79A000, "0100A4700BC98000", "1.0.2"}}, // 完整
         };
         return 1;
     }();

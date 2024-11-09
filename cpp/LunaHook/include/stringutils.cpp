@@ -101,7 +101,7 @@ std::optional<std::wstring> StringToWideString(const std::string &text, UINT enc
 
 std::optional<std::wstring> StringToWideString(std::string_view text, UINT encoding)
 {
-  std::vector<wchar_t> buffer(text.size() + 1);
+  std::vector<wchar_t> buffer(text.size());
   if (disable_mbwc)
   {
     int _s = text.size();
@@ -122,8 +122,8 @@ std::optional<std::wstring> StringToWideString(std::string_view text, UINT encod
   }
   else
   {
-    if (int length = MultiByteToWideChar(encoding, 0, text.data(), text.size() + 1, buffer.data(), buffer.size()))
-      return std::wstring(buffer.data(), length - 1);
+    if (int length = MultiByteToWideChar(encoding, 0, text.data(), text.size(), buffer.data(), buffer.size()))
+      return std::wstring(buffer.data(), length);
     return {};
   }
 }
@@ -157,7 +157,7 @@ std::string WideStringToString(const wchar_t *text, UINT cp)
 }
 std::string WideStringToString(std::wstring_view text, UINT cp)
 {
-  std::vector<char> buffer((text.size() + 1) * 4);
+  std::vector<char> buffer((text.size()) * 4);
   if (disable_wcmb)
   {
     int _s = text.size();
@@ -178,7 +178,7 @@ std::string WideStringToString(std::wstring_view text, UINT cp)
   }
   else
   {
-    WideCharToMultiByte(cp, 0, text.data(), -1, buffer.data(), buffer.size(), nullptr, nullptr);
+    WideCharToMultiByte(cp, 0, text.data(), text.size(), buffer.data(), buffer.size(), nullptr, nullptr);
     return buffer.data();
   }
 }
