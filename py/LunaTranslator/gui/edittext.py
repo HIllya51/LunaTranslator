@@ -2,10 +2,10 @@ from qtsymbols import *
 import threading, windows
 import gobject, qtawesome, os, json
 from myutils.config import globalconfig, savehook_new_data, translatorsetting
-from myutils.utils import translate_exits, dynamicapiname
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import saveposwindow, getsimplecombobox
 from gui.dynalang import LPushButton, LMainWindow
+from gui.setting_textinput import loadvalidtss
 
 
 @Singleton_close
@@ -153,14 +153,7 @@ class edittrans(LMainWindow):
         w.setLayout(qv)
         self.textOutput.enterpressed.connect(self.submitfunction)
         submit = LPushButton("确定")
-        vis, inter = [], []
-        for fanyi in globalconfig["fanyi"]:
-            if fanyi == "premt":
-                continue
-            if not translate_exits(fanyi):
-                continue
-            inter.append(fanyi)
-            vis.append(dynamicapiname(fanyi))
+        inter, vis = loadvalidtss()
         qv.addWidget(self.textOutput)
         qv.addWidget(
             getsimplecombobox(

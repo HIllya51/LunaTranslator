@@ -270,11 +270,26 @@ def loadvalidtss():
     alltransvis = []
     alltrans = []
     for x in globalconfig["fanyi"]:
+        if x == "premt":
+            continue
         if not translate_exits(x):
             continue
-        alltransvis.append(dynamicapiname(x))
+        tp = globalconfig["fanyi"][x].get("type", "free")
+        alltransvis.append(
+            dynamicapiname(x)
+            + "_("
+            + {
+                "free": "在线翻译",
+                "api": "注册在线翻译",
+                "dev": "调试浏览器",
+                "pre": "预翻译",
+                "offline": "离线翻译",
+            }.get(tp, "unknown type")
+            + ")"
+        )
         alltrans.append(x)
-    return alltrans, alltransvis
+    sorted_pairs = sorted(zip(alltransvis, alltrans))
+    return [x[1] for x in sorted_pairs], [x[0] for x in sorted_pairs]
 
 
 def gethookembedgrid(self):

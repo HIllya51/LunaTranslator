@@ -571,23 +571,24 @@ def loadlanguage():
         languageshow = {}
 
 
-def _TR(k):
-    if k == "":
+def _TR(k: str):
+    if not k:
         return ""
-    try:
-        k.encode("ascii")
+    if k.isascii():
         return k
-    except:
-        loadlanguage()
-        if "_" in k:
-            splits = k.split("_")
-            return " ".join([_TR(_) for _ in splits])
-
-        if k not in languageshow or languageshow[k] == "":
-            languageshow[k] = ""
-            return k
-        else:
-            return languageshow[k]
+    loadlanguage()
+    if "_" in k:
+        splits = k.split("_")
+        return " ".join([_TR(_) for _ in splits])
+    __ = languageshow.get(k)
+    if not __:
+        if k.startswith("(") and k.endswith(")"):
+            __ = languageshow.get(k[1:-1])
+            if __:
+                __ = "(" + __ + ")"
+    if not __:
+        __ = k
+    return __
 
 
 lastapppath = globalconfig["lastapppath"]
