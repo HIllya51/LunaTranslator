@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os, json
 import windows, gobject
-from myutils.utils import translate_exits, dynamicapiname
+from myutils.utils import translate_exits, getannotatedapiname, sortAwithB
 from myutils.config import (
     globalconfig,
     _TR,
@@ -274,22 +274,10 @@ def loadvalidtss():
             continue
         if not translate_exits(x):
             continue
-        tp = globalconfig["fanyi"][x].get("type", "free")
-        alltransvis.append(
-            dynamicapiname(x)
-            + "_("
-            + {
-                "free": "在线翻译",
-                "api": "注册在线翻译",
-                "dev": "调试浏览器",
-                "pre": "预翻译",
-                "offline": "离线翻译",
-            }.get(tp, "unknown type")
-            + ")"
-        )
+        alltransvis.append(getannotatedapiname(x))
         alltrans.append(x)
-    sorted_pairs = sorted(zip(alltransvis, alltrans))
-    return [x[1] for x in sorted_pairs], [x[0] for x in sorted_pairs]
+    sortAwithB(alltransvis, alltrans)
+    return alltrans, alltransvis
 
 
 def gethookembedgrid(self):

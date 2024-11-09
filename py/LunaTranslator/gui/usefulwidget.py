@@ -34,6 +34,7 @@ class FocusCombo(QComboBox):
         else:
             return super().wheelEvent(e)
 
+
 class SuperCombo(FocusCombo):
     Visoriginrole = Qt.ItemDataRole.UserRole + 1
     Internalrole = Visoriginrole + 1
@@ -1877,7 +1878,10 @@ class listediter(LDialog):
             self.moverank(1)
 
     def moverank(self, dy):
-        src, tgt = self.hctable.moverank(dy)
+        _pair = self.hctable.moverank(dy)
+        if not _pair:
+            return
+        src, tgt = _pair
         self.internalrealname.insert(tgt, self.internalrealname.pop(src))
 
     def __init__(

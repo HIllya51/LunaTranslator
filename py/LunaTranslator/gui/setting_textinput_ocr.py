@@ -61,7 +61,10 @@ class triggereditor(LDialog):
             self.hctable.removeselectedrows()
 
     def moverank(self, dy):
-        src, tgt = self.hctable.moverank(dy)
+        _pair = self.hctable.moverank(dy)
+        if not _pair:
+            return
+        src, tgt = _pair
         self.internalrealname.insert(tgt, self.internalrealname.pop(src))
 
     def __init__(self, parent) -> None:

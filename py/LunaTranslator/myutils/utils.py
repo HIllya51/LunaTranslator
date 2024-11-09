@@ -836,7 +836,9 @@ class audiocapture:
         self.data = None
         self.cb1 = CFUNCTYPE(None, c_void_p, c_size_t)(self.__datacollect)
         self.cb2 = CFUNCTYPE(None, c_void_p)(self.__mutexcb)
-        threading.Thread(target=winsharedutils.StartCaptureAsync, args=(self.cb1, self.cb2)).start()
+        threading.Thread(
+            target=winsharedutils.StartCaptureAsync, args=(self.cb1, self.cb2)
+        ).start()
 
 
 class loopbackrecorder:
@@ -1032,6 +1034,27 @@ def dynamicapiname(apiuid):
     return globalconfig["fanyi"][apiuid].get(
         "name_self_set", globalconfig["fanyi"][apiuid]["name"]
     )
+
+
+def getannotatedapiname(x):
+    tp = globalconfig["fanyi"][x].get("type", "free")
+    return (
+        dynamicapiname(x)
+        + "_("
+        + {
+            "free": "在线翻译",
+            "api": "注册在线翻译",
+            "dev": "调试浏览器",
+            "pre": "预翻译",
+            "offline": "离线翻译",
+        }.get(tp, "unknown type")
+        + ")"
+    )
+
+
+def sortAwithB(l1, l2):
+    sorted_pairs = sorted(zip(l1, l2))
+    return [x[0] for x in sorted_pairs], [x[1] for x in sorted_pairs]
 
 
 def inrange(n, s, e):

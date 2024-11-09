@@ -1,10 +1,10 @@
 from qtsymbols import *
 import functools, platform
 import gobject, os, zipfile
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig, static_data, _TR
 from gui.inputdialog import multicolorset, autoinitdialog
 from myutils.wrapper import tryprint
-from myutils.utils import dynamiclink, translate_exits, copytree, dynamicapiname
+from myutils.utils import dynamiclink, translate_exits, copytree, getannotatedapiname
 from gui.usefulwidget import (
     D_getsimplecombobox,
     getsimplecombobox,
@@ -332,7 +332,7 @@ def vistranslate_rank(self):
         ("显示顺序"),
         globalconfig["fix_translate_rank_rank"],
         isrankeditor=True,
-        namemapfunction=lambda k: dynamicapiname(k),
+        namemapfunction=lambda k: _TR(getannotatedapiname(k))
     )
 
 

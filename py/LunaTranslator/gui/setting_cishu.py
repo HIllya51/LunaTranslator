@@ -1,7 +1,7 @@
 import functools, os
 import gobject
 from myutils.utils import splitocrtypes
-from myutils.config import globalconfig
+from myutils.config import globalconfig, _TR
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     yuitsu_switch,
@@ -109,7 +109,7 @@ def vistranslate_rank(self):
         "显示顺序",
         globalconfig["cishuvisrank"],
         isrankeditor=True,
-        namemapfunction=lambda k: globalconfig["cishu"][k]["name"],
+        namemapfunction=lambda k: _TR(globalconfig["cishu"][k]["name"]),
     )
 
 
