@@ -99,3 +99,4 @@
 #define PROC_DISCONN L"Процесс отключен %d"
 #define COPYSELECTION L"Автоматически копировать выделенный текст в буфер обмена"
 #define FONTSELECT L"Выбрать шрифт"
+#define UNMATCHABLEVERSION L"Версии LunaHook и LunaHost не совпадают и могут не работать должным образом!"

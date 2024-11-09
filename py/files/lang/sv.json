@@ -810,5 +810,6 @@
     "无可用语言": "Inga tillgängliga språk",
     "过时的词典": "Föråldrad ordlista",
     "其他工具": "Andra verktyg",
-    "过时的翻译器": "Föråldrad översättare"
+    "过时的翻译器": "Föråldrad översättare",
+    "翻译器加载失败": "Laddning av översättare misslyckades"
 }

@@ -139,44 +139,6 @@ void LunaHost::on_proc_connect(DWORD pid)
     }
 }
 
-bool queryversion(WORD *_1, WORD *_2, WORD *_3, WORD *_4)
-{
-    wchar_t fileName[MAX_PATH];
-    GetModuleFileNameW(NULL, fileName, MAX_PATH);
-    DWORD dwHandle;
-    DWORD dwSize = GetFileVersionInfoSizeW(fileName, &dwHandle);
-    if (dwSize == 0)
-    {
-        return false;
-    }
-
-    std::vector<char> versionInfoBuffer(dwSize);
-    if (!GetFileVersionInfoW(fileName, dwHandle, dwSize, versionInfoBuffer.data()))
-    {
-        return false;
-    }
-
-    VS_FIXEDFILEINFO *pFileInfo;
-    UINT fileInfoSize;
-    if (!VerQueryValueW(versionInfoBuffer.data(), L"\\", reinterpret_cast<LPVOID *>(&pFileInfo), &fileInfoSize))
-    {
-        return false;
-    }
-
-    DWORD ms = pFileInfo->dwFileVersionMS;
-    DWORD ls = pFileInfo->dwFileVersionLS;
-
-    WORD majorVersion = HIWORD(ms);
-    WORD minorVersion = LOWORD(ms);
-    WORD buildNumber = HIWORD(ls);
-    WORD revisionNumber = LOWORD(ls);
-    *_1 = majorVersion;
-    *_2 = minorVersion;
-    *_3 = buildNumber;
-    *_4 = revisionNumber;
-    return true;
-}
-
 LunaHost::LunaHost()
 {
 
@@ -348,11 +310,11 @@ LunaHost::LunaHost()
         } })
         .detach();
 
-    WORD _1, _2, _3, _4;
+    WORD version[4] = LUNA_VERSION;
     WCHAR vs[32];
     if (queryversion(&_1, &_2, &_3, &_4))
     {
-        wsprintf(vs, L" | %s v%d.%d.%d", VersionCurrent, _1, _2, _3);
+        wsprintf(vs, L" | %s v%d.%d.%d", VersionCurrent, version[0], version[1], version[2]);
         title += vs;
         settext(title);
         std::thread([&]()

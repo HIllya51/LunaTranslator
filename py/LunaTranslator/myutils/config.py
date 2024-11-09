@@ -588,6 +588,7 @@ def _TR(k: str):
                 __ = "(" + __ + ")"
     if not __:
         __ = k
+        languageshow[k] = ""
     return __
 
 

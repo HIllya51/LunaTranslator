@@ -810,5 +810,6 @@
     "无可用语言": "Không có ngôn ngữ",
     "过时的词典": "Từ điển lỗi thời",
     "其他工具": "Công cụ khác",
-    "过时的翻译器": "Trình dịch lỗi thời"
+    "过时的翻译器": "Trình dịch lỗi thời",
+    "翻译器加载失败": "Trình dịch không tải được"
 }

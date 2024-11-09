@@ -810,5 +810,6 @@
     "无可用语言": "No available languages",
     "过时的词典": "Outdated dictionary",
     "其他工具": "Other tools",
-    "过时的翻译器": "Outdated translator"
+    "过时的翻译器": "Outdated translator",
+    "翻译器加载失败": "Translator loading failed"
 }

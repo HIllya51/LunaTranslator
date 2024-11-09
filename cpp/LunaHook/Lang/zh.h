@@ -99,3 +99,4 @@
 #define PROC_DISCONN L"进程已断开连接 %d"
 #define COPYSELECTION L"自动将文本框中选取的文本复制到剪贴板"
 #define FONTSELECT L"选择字体"
+#define UNMATCHABLEVERSION L"LunaHook和LunaHost版本无法匹配，可能无法正常工作！"

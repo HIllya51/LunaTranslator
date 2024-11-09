@@ -1,8 +1,6 @@
 #pragma once
 
-// texthook/const.h
-// 8/23/2013 jichi
-// Branch: ITH/common.h, rev 128
+#define LUNA_VERSION {VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,VERSION_REVISION}
 
 enum
 {

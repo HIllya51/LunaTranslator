@@ -810,5 +810,6 @@
     "无可用语言": "Nessuna lingua disponibile",
     "过时的词典": "Dizionario obsoleto",
     "其他工具": "Altri strumenti",
-    "过时的翻译器": "Traduttore obsoleto"
+    "过时的翻译器": "Traduttore obsoleto",
+    "翻译器加载失败": "Caricamento del traduttore non riuscito"
 }

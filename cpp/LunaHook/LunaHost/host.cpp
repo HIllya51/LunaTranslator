@@ -101,7 +101,13 @@ namespace
 			OnConnect(processId);
 			Host::AddConsoleOutput(FormatString(PROC_CONN,processId));
 			//CreatePipe();
-
+			WORD hookversion[4];
+			WORD hostversion[4]=LUNA_VERSION; 
+			if( ReadFile(hookPipe, hookversion, sizeof(hookversion), &bytesRead, nullptr)){ 
+					if(memcmp(hostversion,hookversion,sizeof(hookversion))!=0)
+						Host::Warning(UNMATCHABLEVERSION);
+			} 
+			 
 			while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
 				switch (*(HostNotificationType*)buffer)
 				{

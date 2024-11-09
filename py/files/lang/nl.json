@@ -810,5 +810,6 @@
     "无可用语言": "Geen beschikbare talen",
     "过时的词典": "Verouderd woordenboek",
     "其他工具": "Andere hulpmiddelen",
-    "过时的翻译器": "Verouderde vertaler"
+    "过时的翻译器": "Verouderde vertaler",
+    "翻译器加载失败": "Laden van vertaler mislukt"
 }

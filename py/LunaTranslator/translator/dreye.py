@@ -1,5 +1,6 @@
 from myutils.subproc import subproc_w, autoproc
 from translator.basetranslator import basetrans
+from myutils.config import _TR
 import os, time
 import windows
 
@@ -61,7 +62,7 @@ class TS(basetrans):
     def x64(self, content):
 
         if self.checkpath() == False:
-            return "error"
+            raise Exception(_TR("翻译器加载失败"))
         codes = {"zh": "gbk", "ja": "shift-jis", "en": "utf8"}
         ress = []
         for line in content.split("\n"):

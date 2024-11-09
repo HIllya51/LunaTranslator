@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-import ctypes
+from myutils.config import _TR
 import os, time
 import windows
 from myutils.subproc import subproc_w, autoproc
@@ -57,7 +57,7 @@ class TS(basetrans):
     def x64(self, content: str):
 
         if self.checkpath() == False:
-            return "error"
+            raise Exception(_TR("翻译器加载失败"))
         content = content.replace("\r", "\n")
 
         code1 = content.encode("utf-16-le")
