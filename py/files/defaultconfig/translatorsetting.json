@@ -687,31 +687,13 @@
 	},
 	"jb7": {
 		"args": {
-			"path": "",
-			"path_userdict1": "",
-			"path_userdict2": "",
-			"path_userdict3": ""
+			"path": ""
 		},
 		"argstype": {
 			"path": {
 				"type": "file",
 				"dir": true,
 				"name": "路径"
-			},
-			"path_userdict1": {
-				"type": "file",
-				"dir": true,
-				"name": "用户词典1(可选)"
-			},
-			"path_userdict2": {
-				"type": "file",
-				"dir": true,
-				"name": "用户词典2(可选)"
-			},
-			"path_userdict3": {
-				"type": "file",
-				"dir": true,
-				"name": "用户词典3(可选)"
 			}
 		}
 	},

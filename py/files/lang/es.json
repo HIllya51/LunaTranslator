@@ -254,12 +254,6 @@
     "快捷键": "Teclas de acceso rápido",
     "文本输入": "Entrada de texto",
     "快捷按键": "Teclas de acceso rápido",
-    "用户词典1": "Diccionario de usuarios 1",
-    "用户词典2": "Diccionario de usuarios 2",
-    "用户词典3": "Diccionario de usuarios 3",
-    "用户词典1(可选)": "Diccionario de usuarios 1 (opcional)",
-    "用户词典2(可选)": "Diccionario de usuarios 2 (opcional)",
-    "用户词典3(可选)": "Diccionario de usuarios 3 (opcional)",
     "资源下载": "Descarga de recursos",
     "工具按钮大小": "Tamaño del botón de la herramienta",
     "保留原文": "Conservar el texto original",
@@ -386,7 +380,6 @@
     "音街ウナ": "Calle Yin",
     "鷹の爪吉田": "Yoshida, garra del águila",
     "ギャラ子": "Hijo",
-    "用户词典": "Diccionario de usuarios",
     "英语(CP437)": "Inglés (cp437)",
     "游戏信息": "Información del juego",
     "意大利语": "Italiano",
@@ -814,5 +807,8 @@
     "向上": "Arriba",
     "向下": "Abajo",
     "无可用模型": "No hay modelos disponibles",
-    "无可用语言": "No hay idiomas disponibles"
+    "无可用语言": "No hay idiomas disponibles",
+    "过时的词典": "Diccionarios obsoletos",
+    "其他工具": "Otras herramientas",
+    "过时的翻译器": "Traductores obsoletos"
 }

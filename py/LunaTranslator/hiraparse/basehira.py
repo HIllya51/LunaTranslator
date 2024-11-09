@@ -2,6 +2,14 @@ from myutils.config import globalconfig, static_data
 from traceback import print_exc
 from myutils.proxy import getproxy
 
+# fmt: off
+allkata="ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ",
+allhira="ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖゝゞ"    
+hira_s=["あ","い","う","え","お","か","き","く","け","こ","さ","し","す","せ","そ","た","ち","つ","て","と","な","に","ぬ","ね","の","は","ひ","ふ","へ","ほ","ま","み","む","め","も","や","ゆ","よ","ら","り","る","れ","ろ","わ","を","ん","が","ぎ","ぐ","げ","ご","ざ","じ","ず","ぜ","ぞ","だ","ぢ","づ","で","ど","ば","び","ぶ","べ","ぼ","ぱ","ぴ","ぷ","ぺ","ぽ","きゃ","きぃ","きゅ","きぇ","きょ","しゃ","しぃ","しゅ","しぇ","しょ","ちゃ","ちぃ","ちゅ","ちぇ","ちょ","にゃ","にぃ","にゅ","にぇ","にょ","ひゃ","ひぃ","ひゅ","ひぇ","ひょ","みゃ","みぃ","みゅ","みぇ","みょ","りゃ","りぃ","りゅ","りぇ","りょ","ぎゃ","ぎぃ","ぎゅ","ぎぇ","ぎょ","じゃ","じぃ","じゅ","じぇ","じょ","ぢゃ","ぢぃ","ぢゅ","ぢぇ","ぢょ","びゃ","びぃ","びゅ","びぇ","びょ","ぴゃ","ぴぃ","ぴゅ","ぴぇ","ぴょ","ぐぁ","ぐぃ","ぐぅ","ぐぇ","ぐぉ","つぁ","つぃ","つぇ","つぉ","ふぁ","ふぃ","ふぇ","ふぉ","うぁ","うぃ","うぅ","うぇ","うぉ","ヴぁ","ヴぃ","ヴ","ヴぇ","ヴぉ","でゃ","でぃ","でゅ","でぇ","でょ","てゃ","てぃ","てゅ","てぇ","てょ","っ"]
+kata_s=["ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ","サ","シ","ス","セ","ソ","タ","チ","ツ","テ","ト","ナ","ニ","ヌ","ネ","ノ","ハ","ヒ","フ","ヘ","ホ","マ","ミ","ム","メ","モ","ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ","ヲ","ン","ガ","ギ","グ","ゲ","ゴ","ザ","ジ","ズ","ゼ","ゾ","ダ","ヂ","ヅ","デ","ド","バ","ビ","ブ","ベ","ボ","パ","ピ","プ","ペ","ポ","キャ","キィ","キュ","キェ","キョ","シャ","シィ","シュ","シェ","ショ","チャ","チィ","チュ","チェ","チョ","ニャ","ニィ","ニュ","ニェ","ニョ","ヒャ","ヒィ","ヒュ","ヒェ","ヒョ","ミャ","ミィ","ミュ","ミェ","ミョ","リャ","リィ","リュ","リェ","リョ","ギャ","ギィ","ギュ","ギェ","ギョ","ジャ","ジィ","ジュ","ジェ","ジョ","ヂャ","ヂィ","ヂュ","ヂェ","ヂョ","ビャ","ビィ","ビュ","ビェ","ビョ","ピャ","ピィ","ピュ","ピェ","ピョ","グァ","グィ","グゥ","グェ","グォ","ツァ","ツィ","ツェ","ツォ","ファ","フィ","フェ","フォ","ウァ","ウィ","ウゥ","ウェ","ウォ","ヴァ","ヴィ","ヴ","ヴェ","ヴォ","デャ","ディ","デュ","デェ","デョ","テャ","ティ","テュ","テェ","テョ","ッ"]
+roma_s=["a","i","u","e","o","ka","ki","ku","ke","ko","sa","shi","su","se","so","ta","chi","tsu","te","to","na","ni","nu","ne","no","ha","hi","hu","he","ho","ma","mi","mu","me","mo","ya","yu","yo","ra","ri","ru","re","ro","wa","wo","n","ga","gi","gu","ge","go","za","ji","zu","ze","zo","da","ji","du","de","do","ba","bi","bu","be","bo","pa","pi","pu","pe","po","kya","kyi","kyu","kye","kyo","sha","syi","shu","she","sho","cha","cyi","chu","che","cho","nya","nyi","nyu","nye","nyo","hya","hyi","hyu","hye","hyo","mya","myi","myu","mye","myo","rya","ryi","ryu","rye","ryo","gya","gyi","gyu","gye","gyo","ja","ji","ju","je","jo","dya","dyi","dyu","dye","dyo","bya","byi","byu","bye","byo","pya","pyi","pyu","pye","pyo","gwa","gwi","gwu","gwe","gwo","tsa","tsi","tse","tso","fa","fi","fe","fo","wha","whi","whu","whe","who","va","vi","vu","ve","vo","dha","dhi","dhu","dhe","dho","tha","thi","thu","the","tho","-"]
+# fmt: on
+
 
 class basehira:
     def init(self):
@@ -12,12 +20,8 @@ class basehira:
 
     def __init__(self, typename) -> None:
         self.typename = typename
-        self.castkata2hira = str.maketrans(
-            static_data["allkata"], static_data["allhira"]
-        )
-        self.casthira2kata = str.maketrans(
-            static_data["allhira"], static_data["allkata"]
-        )
+        self.castkata2hira = str.maketrans(allkata, allhira)
+        self.casthira2kata = str.maketrans(allhira, allkata)
         self.needinit = True
         self.init()
         self.needinit = False
@@ -91,11 +95,8 @@ class basehira:
             elif globalconfig["hira_vis_type"] == 1:
                 hira[_]["hira"] = hira[_]["hira"].translate(self.casthira2kata)
             elif globalconfig["hira_vis_type"] == 2:
-                __kanas = [
-                    static_data["hira"] + ["っ"],
-                    static_data["kata"] + ["ッ"],
-                ]
-                target = static_data["roma"] + ["-"]
+                __kanas = [hira_s, kata_s]
+                target = roma_s
                 for _ka in __kanas:
                     for __idx in range(len(_ka)):
                         _reverse_idx = len(_ka) - 1 - __idx

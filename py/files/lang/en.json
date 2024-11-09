@@ -254,12 +254,6 @@
     "快捷键": "Hotkey",
     "文本输入": "Text Input",
     "快捷按键": "Shortcut Keys",
-    "用户词典1": "User Dictionary 1",
-    "用户词典2": "User Dictionary 2",
-    "用户词典3": "User Dictionary 3",
-    "用户词典1(可选)": "User Dictionary 1 (Optional)",
-    "用户词典2(可选)": "User Dictionary 2 (Optional)",
-    "用户词典3(可选)": "User Dictionary 3 (Optional)",
     "资源下载": "Resource Download",
     "工具按钮大小": "Tool Button Size",
     "保留原文": "Keep Original Text",
@@ -386,7 +380,6 @@
     "音街ウナ": "Otomachi Una",
     "鷹の爪吉田": "Takanotsume Yoshida",
     "ギャラ子": "Galaco",
-    "用户词典": "User Dictionary",
     "英语(CP437)": "English (CP437)",
     "游戏信息": "Game Information",
     "意大利语": "Italian",
@@ -814,5 +807,8 @@
     "向上": "Up",
     "向下": "down",
     "无可用模型": "No available models",
-    "无可用语言": "No available languages"
+    "无可用语言": "No available languages",
+    "过时的词典": "Outdated dictionary",
+    "其他工具": "Other tools",
+    "过时的翻译器": "Outdated translator"
 }

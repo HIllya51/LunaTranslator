@@ -17,23 +17,22 @@ class TS(basetrans):
             return False
         if os.path.exists(self.config["path"]) == False:
             return False
-        if self.config["path"] != self.path or self.userdict != (
-            self.config["path_userdict1"],
-            self.config["path_userdict2"],
-            self.config["path_userdict3"],
-        ):
+        if self.config["path"] != self.path:
+
             self.path = self.config["path"]
-            self.userdict = (
-                self.config["path_userdict1"],
-                self.config["path_userdict2"],
-                self.config["path_userdict3"],
-            )
+            paths = set()
+            for _dir, _, _fs in os.walk(self.path):
+                for _f in _fs:
+                    path = os.path.normpath(os.path.abspath(os.path.join(_dir, _f)))
+                    base, _ = os.path.splitext(os.path.basename(_f))
+                    if base == "Jcuser":
+                        paths.add(os.path.dirname(path))
+
             self.dllpath = os.path.join(self.path, "JBJCT.dll")
             dictpath = ""
-            for d in self.userdict:
-                if os.path.exists(d):
-                    d = os.path.join(d, "Jcuser")
-                    dictpath += ' "{}" '.format(d)
+            for d in sorted(list(paths), key=lambda x: -len(x))[:3]:
+                d = os.path.join(d, "Jcuser")
+                dictpath += ' "{}" '.format(d)
 
             t = time.time()
             t = str(t)

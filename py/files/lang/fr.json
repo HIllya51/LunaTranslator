@@ -254,12 +254,6 @@
     "快捷键": "Touches de raccourci",
     "文本输入": "Entrée de texte",
     "快捷按键": "Touches rapides",
-    "用户词典1": "Dictionnaire utilisateur 1",
-    "用户词典2": "Dictionnaire utilisateur 2",
-    "用户词典3": "Dictionnaire utilisateur 3",
-    "用户词典1(可选)": "Dictionnaire utilisateur 1 (facultatif)",
-    "用户词典2(可选)": "Dictionnaire utilisateur 2 (facultatif)",
-    "用户词典3(可选)": "Dictionnaire utilisateur 3 (facultatif)",
     "资源下载": "Ressources télécharger",
     "工具按钮大小": "Outils taille du bouton",
     "保留原文": "Conserver le texte original",
@@ -386,7 +380,6 @@
     "音街ウナ": "Rue du son 54 | 90 |",
     "鷹の爪吉田": "Aigle のjita",
     "ギャラ子": "ギャラ",
-    "用户词典": "Dictionnaire des utilisateurs",
     "英语(CP437)": "Anglais (cp437)",
     "游戏信息": "Informations sur le jeu",
     "意大利语": "Italien",
@@ -814,5 +807,8 @@
     "向上": "Vers le Haut",
     "向下": "Vers le bas",
     "无可用模型": "Aucun modèle disponible",
-    "无可用语言": "Aucune langue disponible"
+    "无可用语言": "Aucune langue disponible",
+    "过时的词典": "Dictionnaire obsolète",
+    "其他工具": "Autres outils",
+    "过时的翻译器": "Traducteur obsolète"
 }

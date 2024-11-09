@@ -254,12 +254,6 @@
     "快捷键": "Phím tắt",
     "文本输入": "Nhập văn bản",
     "快捷按键": "Phím tắt",
-    "用户词典1": "Từ điển người dùng 1",
-    "用户词典2": "Từ điển người dùng 2",
-    "用户词典3": "Từ điển người dùng 3",
-    "用户词典1(可选)": "Từ điển người dùng 1 (tùy chọn)",
-    "用户词典2(可选)": "Từ điển người dùng 2 (tùy chọn)",
-    "用户词典3(可选)": "Từ điển người dùng 3 (tùy chọn)",
     "资源下载": "Tải xuống tài nguyên",
     "工具按钮大小": "Kích thước nút công cụ",
     "保留原文": "Giữ nguyên bản gốc",
@@ -386,7 +380,6 @@
     "音街ウナ": "Phố âm thanh ウナ",
     "鷹の爪吉田": "Đại bàng~Claw Yoshida",
     "ギャラ子": "👉👉👉👉👉👉👉👉👉👉👉👉👉👉👉",
-    "用户词典": "Từ điển người dùng",
     "英语(CP437)": "Tiếng Anh (CP437)",
     "游戏信息": "Thông tin trò chơi",
     "意大利语": "Tiếng Ý",
@@ -814,5 +807,8 @@
     "向上": "Lên trên",
     "向下": "Xuống",
     "无可用模型": "Không có mẫu",
-    "无可用语言": "Không có ngôn ngữ"
+    "无可用语言": "Không có ngôn ngữ",
+    "过时的词典": "Từ điển lỗi thời",
+    "其他工具": "Công cụ khác",
+    "过时的翻译器": "Trình dịch lỗi thời"
 }

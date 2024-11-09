@@ -254,12 +254,6 @@
     "快捷键": "Kısayol tuşları",
     "文本输入": "Metin girdi",
     "快捷按键": "Kısayol tuşları",
-    "用户词典1": "Kullanıcı sözlük 1",
-    "用户词典2": "Kullanıcı sözlük 2",
-    "用户词典3": "Kullanıcı sözlük 3",
-    "用户词典1(可选)": "Kullanıcı sözlük 1 (seçeneksel)",
-    "用户词典2(可选)": "Kullanıcı sözlük 2 (seçeneksel)",
-    "用户词典3(可选)": "Kullanıcı sözlük 3 (seçeneksel)",
     "资源下载": "Kaynak indirmesi",
     "工具按钮大小": "Araç düğmesi ölçüsi",
     "保留原文": "Orijinal tut",
@@ -386,7 +380,6 @@
     "音街ウナ": "Yin Caddesi Roast",
     "鷹の爪吉田": "Kartal Yushida",
     "ギャラ子": "Gâララギャラ",
-    "用户词典": "Kullanıcı Sözlük",
     "英语(CP437)": "İngilizce (CP437)",
     "游戏信息": "Oyun Bilgisi",
     "意大利语": "İtalyanca",
@@ -814,5 +807,8 @@
     "向上": "Yukarı",
     "向下": "Aşağı",
     "无可用模型": "Mevcut modeller yok",
-    "无可用语言": "Mevcut diller yok"
+    "无可用语言": "Mevcut diller yok",
+    "过时的词典": "Eski sözlük",
+    "其他工具": "Diğer araçlar",
+    "过时的翻译器": "Eski çeviriciler"
 }

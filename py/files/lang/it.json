@@ -248,12 +248,6 @@
     "快捷键": "Tasti scorciatoie",
     "文本输入": "Inserimento testo",
     "快捷按键": "Tasti scorciatoie",
-    "用户词典1": "Dizionario utente 1",
-    "用户词典2": "Dizionario utente 2",
-    "用户词典3": "Dizionario utente 3",
-    "用户词典1(可选)": "Dizionario utente 1 (facoltativo)",
-    "用户词典2(可选)": "Dizionario utente 2 (facoltativo)",
-    "用户词典3(可选)": "Dizionario utente 3 (facoltativo)",
     "资源下载": "Scarica risorse",
     "工具按钮大小": "Dimensione pulsante strumento",
     "保留原文": "Mantieni il testo originale",
@@ -386,7 +380,6 @@
     "音街ウナ": "Roast Yin Street",
     "鷹の爪吉田": "Artiglio d'aquila Yoshida",
     "ギャラ子": "ギャララギャララ",
-    "用户词典": "Dizionario utente",
     "英语(CP437)": "Inglese (CP437)",
     "游戏信息": "Informazioni sul gioco",
     "意大利语": "Italiano",
@@ -814,5 +807,8 @@
     "向上": "Su",
     "向下": "giù",
     "无可用模型": "Nessun modello disponibile",
-    "无可用语言": "Nessuna lingua disponibile"
+    "无可用语言": "Nessuna lingua disponibile",
+    "过时的词典": "Dizionario obsoleto",
+    "其他工具": "Altri strumenti",
+    "过时的翻译器": "Traduttore obsoleto"
 }

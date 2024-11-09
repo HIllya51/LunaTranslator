@@ -250,24 +250,19 @@ def resourcegrid(self, l):
         sources = sourcetype["sources"]
         grid = []
         for source in sources:
-            _type = source.get("type", "link")
-            if _type == "link":
-                solvelinkitems(grid, source)
-            elif _type == "group":
-                __grid = []
-                for link in source["links"]:
-                    solvelinkitems(__grid, link)
-                grid.append(
-                    [
-                        (
-                            dict(
-                                title=source.get("name", None), type="grid", grid=__grid
-                            ),
-                            0,
-                            "group",
-                        )
-                    ]
-                )
+
+            __grid = []
+            for link in source["links"]:
+                solvelinkitems(__grid, link)
+            grid.append(
+                [
+                    (
+                        dict(title=source.get("name", None), type="grid", grid=__grid),
+                        0,
+                        "group",
+                    )
+                ]
+            )
         makewidgetsfunctions.append(functools.partial(makescrollgrid, grid))
     tab, dotab = makesubtab_lazy(titles, makewidgetsfunctions, delay=True)
     l.addWidget(tab)
