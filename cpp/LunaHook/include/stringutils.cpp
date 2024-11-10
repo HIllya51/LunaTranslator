@@ -130,11 +130,15 @@ std::optional<std::wstring> StringToWideString(std::string_view text, UINT encod
 
 std::wstring StringToWideString(const std::string &text)
 {
-  return StringToWideString(text, CP_UTF8).value();
+  if (!text.size())
+    return L"";
+  return StringToWideString(text, CP_UTF8).value_or(L"");
 }
 std::wstring StringToWideString(std::string_view text)
 {
-  return StringToWideString(text, CP_UTF8).value();
+  if (!text.size())
+    return L"";
+  return StringToWideString(text, CP_UTF8).value_or(L"");
 }
 
 std::optional<std::wstring> StringToWideString(const char *text, UINT encoding)
