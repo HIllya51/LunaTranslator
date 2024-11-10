@@ -9,7 +9,8 @@ def dopathexists(file: str):
         return False
     if not file.strip():
         return False
-    if windows.check_unc_not_exists(file):
+    file = windows.check_maybe_unc_file(file)
+    if not file:
         return False
     PathFileExists = windll.Shlwapi.PathFileExistsW
     PathFileExists.argtypes = (wintypes.LPCWSTR,)

@@ -327,15 +327,33 @@ def GetLongPathName(file):
     return path
 
 
+def get_logical_drivers():
+    buffsize = 300
+    buffer = create_unicode_buffer(buffsize)
+
+    result = _GetLogicalDriveStringsW(buffsize, buffer)
+
+    if not result:
+        return []
+
+    if buffsize < result:
+        buffer = create_unicode_buffer(result)
+        result = _GetLogicalDriveStringsW(result, buffer)
+
+    drivers = buffer[:result].split("\0")
+    if drivers and not drivers[-1]:
+        drivers.pop()
+    return drivers
+
+
 def check_unc_file(v: str):
     buf = create_unicode_buffer(65535)
-    for i in range(26):
-        A = chr(ord("A") + i) + ":"
+    for A in get_logical_drivers():
+        A = A[:-1]
         if _QueryDosDeviceW(A, buf, 65535) != 0:
             prefixdos = buf.value
             if v.startswith(prefixdos):
                 return A + v[len(prefixdos) :]
-        # Get network drive
 
         # 我操了，使用管理员权限时，这个玩意会失败
         if _WNetGetUniversalNameW(A, 1, buf, byref(c_uint(65535))) == 0:
@@ -344,40 +362,34 @@ def check_unc_file(v: str):
             ).contents.lpUniversalName
             if v.startswith(prefixnetwork):
                 return A + v[len(prefixnetwork) :]
-    return None
+    return v
 
 
-def check_unc_not_exists(v: str):
-    # 当路径可能为unc路径，且不存在时，返回True
-    # 避免访问不存在unc路径时过长等待导致卡死
-    # （可能误伤）
+def check_maybe_unc_file(v: str):
     if v.startswith("\\"):
-        return check_unc_file(v) is None
-    return False
+        v = check_unc_file(v)
+        if v.startswith("\\"):
+            return None
+    return v
 
 
 def _GetProcessFileName(hHandle):
     w = create_unicode_buffer(65535)
     # 我佛了，太混乱了，不同权限获取的东西完全不一样
+    size = DWORD(65535)
     if (
         _GetModuleFileNameExW(hHandle, None, w, 65535) == 0
         and (
             _QueryFullProcessImageNameW != 0
-            and _QueryFullProcessImageNameW(hHandle, 0, w, pointer(c_uint())) == 0
+            and _QueryFullProcessImageNameW(hHandle, 0, w, pointer(size)) == 0
         )
         and _GetProcessImageFileNameW(hHandle, w, 65535) == 0
     ):
         return
 
     v: str = w.value
-    
-    if v.startswith("\\"):
-        _f = check_unc_file(v)
-        if _f:
-            return _f
-        return v
-    else:
-        return v
+
+    return check_maybe_unc_file(v)
 
 
 def GetProcessFileName(hHandle):

@@ -197,15 +197,17 @@ _extracticon2data.argtypes = c_wchar_p, c_void_p
 _extracticon2data.restype = c_bool
 
 
-def extracticon2data(fname):
-    if windows.check_unc_not_exists(fname):
-        return None
+def extracticon2data(file):
+    
+    file = windows.check_maybe_unc_file(file)
+    if not file:
+        return False
     ret = []
 
     def cb(ptr, size):
         ret.append(cast(ptr, POINTER(c_char))[:size])
 
-    succ = _extracticon2data(fname, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    succ = _extracticon2data(file, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
     if not succ:
         return None
     return ret[0]
