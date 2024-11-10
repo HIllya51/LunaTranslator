@@ -198,7 +198,7 @@ _extracticon2data.restype = c_bool
 
 
 def extracticon2data(file):
-    
+
     file = windows.check_maybe_unc_file(file)
     if not file:
         return False
@@ -366,7 +366,7 @@ GetMonitorDpiScaling.restype = UINT
 
 
 StartCaptureAsync = utilsdll.StartCaptureAsync
-StartCaptureAsync.argtypes = c_void_p, c_void_p
+StartCaptureAsync.argtypes = (c_void_p,)
 StartCaptureAsync.restype = HANDLE
 StopCaptureAsync = utilsdll.StopCaptureAsync
 StopCaptureAsync.argtypes = (HANDLE,)

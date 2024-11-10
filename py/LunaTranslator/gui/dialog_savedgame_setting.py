@@ -1002,7 +1002,7 @@ class dialog_setting_game_internal(QWidget):
     def gethooktab(self, formLayout: LFormLayout, gameuid):
 
         formLayout.addRow(
-            "延迟注入(ms)",
+            "延迟注入_(ms)",
             getspinbox(0, 1000000, savehook_new_data[gameuid], "inserthooktimeout"),
         )
 
@@ -1042,7 +1042,7 @@ class dialog_setting_game_internal(QWidget):
         )
 
         formLayout2.addRow(
-            "刷新延迟(ms)",
+            "刷新延迟_(ms)",
             getspinbox(
                 0,
                 10000,

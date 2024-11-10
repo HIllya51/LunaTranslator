@@ -32,6 +32,7 @@ from textsource.texthook import texthook
 from textsource.ocrtext import ocrtext
 from textsource.textsourcebase import basetext
 from textsource.filetrans import filetrans
+from textsource.livecaptions import livecaptions
 from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
 import functools, gobject
@@ -751,6 +752,7 @@ class MAINUI:
                 "copy": copyboard,
                 "texthook": texthook,
                 "filetrans": filetrans,
+                "livecaptions": livecaptions,
             }
             if use is None:
                 use = list(

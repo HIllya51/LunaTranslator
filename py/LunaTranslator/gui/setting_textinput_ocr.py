@@ -186,7 +186,7 @@ def _ocrparam_create(self, idx):
     clearlayout(self._ocrparaml)
     if idx in [1, 2]:
         self._ocrparaml.addRow(
-            "执行周期(s)",
+            "执行周期_(s)",
             getboxlayout(
                 [
                     D_getspinbox(
@@ -214,7 +214,7 @@ def _ocrparam_create(self, idx):
             ),
         )
         self._ocrparaml.addRow(
-            "延迟(s)",
+            "延迟_(s)",
             getboxlayout(
                 [
                     D_getspinbox(

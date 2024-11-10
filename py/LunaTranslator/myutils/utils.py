@@ -812,9 +812,6 @@ class audiocapture:
         self.data = cast(ptr, POINTER(c_char))[:size]
         self.stoped.release()
 
-    def __mutexcb(self, mutex):
-        self.mutex = mutex
-
     def stop(self):
         _ = self.mutex
         if _:
@@ -835,10 +832,7 @@ class audiocapture:
         self.stoped.acquire()
         self.data = None
         self.cb1 = CFUNCTYPE(None, c_void_p, c_size_t)(self.__datacollect)
-        self.cb2 = CFUNCTYPE(None, c_void_p)(self.__mutexcb)
-        threading.Thread(
-            target=winsharedutils.StartCaptureAsync, args=(self.cb1, self.cb2)
-        ).start()
+        self.mutex = winsharedutils.StartCaptureAsync(self.cb1)
 
 
 class loopbackrecorder:

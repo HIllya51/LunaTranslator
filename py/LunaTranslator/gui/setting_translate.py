@@ -496,7 +496,7 @@ def setTabTwo_lazy(self, basel):
             "显示翻译器名称",
             D_getsimpleswitch(globalconfig, "showfanyisource", callback=lambda x:gobject.baseobject.translation_ui.translate_text.textbrowser.showhidetranslatorname(x)),
             "",
-            "翻译请求间隔(s)",
+            "翻译请求间隔_(s)",
             D_getspinbox(
                 0, 9999, globalconfig, "requestinterval", step=0.1, double=True
             ),

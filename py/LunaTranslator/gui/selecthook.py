@@ -297,14 +297,14 @@ class searchhookparam(LDialog):
         self.search_addr_range.addW("相对地址", offaddrw)
         autoaddline(
             "startaddr",
-            "起始地址(hex)",
+            "起始地址_(hex)",
             hex(usestruct.minAddress)[2:],
             0,
             uselayout=absaddrl,
         )
         autoaddline(
             "stopaddr",
-            "结束地址(hex)",
+            "结束地址_(hex)",
             hex(usestruct.maxAddress)[2:],
             0,
             uselayout=absaddrl,
@@ -320,14 +320,14 @@ class searchhookparam(LDialog):
         )
         autoaddline(
             "offstartaddr",
-            "起始地址(hex)",
+            "起始地址_(hex)",
             hex(usestruct.minAddress)[2:],
             0,
             uselayout=offaddrl,
         )
         autoaddline(
             "offstopaddr",
-            "结束地址(hex)",
+            "结束地址_(hex)",
             hex(usestruct.maxAddress)[2:],
             0,
             uselayout=offaddrl,
@@ -359,7 +359,7 @@ class searchhookparam(LDialog):
 
         autoaddline(
             "pattern",
-            "搜索匹配的特征(hex)",
+            "搜索匹配的特征_(hex)",
             self.hex2str(usestruct.pattern),
             -2,
             uselayout=patternWl,
@@ -369,7 +369,7 @@ class searchhookparam(LDialog):
         )
 
         autoaddline("stroffset", "字符串地址偏移", usestruct.padding, -1)
-        autoaddline("time", "搜索持续时间(s)", usestruct.searchTime // 1000, 1)
+        autoaddline("time", "搜索持续时间_(s)", usestruct.searchTime // 1000, 1)
         autoaddline("maxrecords", "搜索结果数上限", usestruct.maxRecords, 1)
 
         checks.addW("默认搜索", _)

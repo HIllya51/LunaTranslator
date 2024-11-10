@@ -220,7 +220,7 @@ def setTab_proxy(self, l):
                             ),
                         ],
                         [
-                            ("手动设置代理(ip:port)", 5),
+                            ("手动设置代理_(ip:port)", 5),
                             (functools.partial(createproxyedit, self), 5),
                             (functools.partial(createproxyedit_check, self), 5),
                         ],

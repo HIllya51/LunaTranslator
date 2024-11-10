@@ -10,9 +10,9 @@ generate_product_version(
    VERSION_PATCH ${VERSION_PATCH}
 )
 
-add_library(winrtutils MODULE winrtsnapshot.cpp winrtocr.cpp ${versioninfo})
+add_library(winrtutils MODULE winrtsnapshot.cpp winrtocr.cpp livecaptions.cpp ${versioninfo})
 target_precompile_headers(winrtutils REUSE_FROM pch) 
-
+target_link_libraries(winrtutils wil)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set_target_properties(winrtutils PROPERTIES OUTPUT_NAME "winrtutils64")
 else()

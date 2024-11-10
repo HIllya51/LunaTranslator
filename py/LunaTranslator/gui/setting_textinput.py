@@ -21,6 +21,7 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getIconButton,
+    listediterline,
     getIconButton,
     makegrid,
     listediter,
@@ -90,7 +91,7 @@ def gethookgrid(self):
                             ),
                         ],
                         [
-                            "刷新延迟(ms)",
+                            "刷新延迟_(ms)",
                             (
                                 D_getspinbox(
                                     0,
@@ -297,7 +298,7 @@ def gethookembedgrid(self):
             ),
         ],
         [
-            "翻译等待时间(s)",
+            "翻译等待时间_(s)",
             "",
             D_getspinbox(
                 0,
@@ -417,19 +418,91 @@ def filetranslate(self):
     alltrans, alltransvis = loadvalidtss()
     grids = [
         [
-            "文件",
-            D_getIconButton(functools.partial(selectfile, self), icon="fa.folder-open"),
+            (
+                dict(
+                    title="文件翻译",
+                    type="grid",
+                    grid=[
+                        [
+                            "文件",
+                            D_getIconButton(
+                                functools.partial(selectfile, self),
+                                icon="fa.folder-open",
+                            ),
+                        ],
+                        [(functools.partial(createdownloadprogress, self), 0)],
+                        [],
+                        [
+                            "使用指定翻译器",
+                            D_getsimpleswitch(globalconfig, "use_appointed_translate"),
+                            D_getsimplecombobox(
+                                alltransvis,
+                                globalconfig,
+                                "translator_2",
+                                internal=alltrans,
+                            ),
+                        ],
+                    ],
+                ),
+                0,
+                "group",
+            ),
         ],
-        [(functools.partial(createdownloadprogress, self), 0)],
-        [],
         [
-            "使用指定翻译器",
-            D_getsimpleswitch(globalconfig, "use_appointed_translate"),
-            D_getsimplecombobox(
-                alltransvis,
-                globalconfig,
-                "translator_2",
-                internal=alltrans,
+            (
+                dict(
+                    title="LiveCaptions",
+                    type="grid",
+                    grid=[
+                        [
+                            "开始",
+                            D_getsimpleswitch(
+                                globalconfig["sourcestatus2"]["livecaptions"],
+                                "use",
+                                name="livecaptions",
+                                parent=self,
+                                callback=functools.partial(
+                                    yuitsu_switch,
+                                    self,
+                                    globalconfig["sourcestatus2"],
+                                    "sourceswitchs",
+                                    "livecaptions",
+                                    gobject.baseobject.starttextsource,
+                                ),
+                                pair="sourceswitchs",
+                            ),
+                        ],
+                        [
+                            "截取行数",
+                            D_getspinbox(
+                                1,
+                                10,
+                                globalconfig,
+                                "livecaptions_cachesentence",
+                            ),
+                        ],
+                        [
+                            "刷新延迟_(ms)",
+                            D_getspinbox(
+                                10,
+                                100000,
+                                globalconfig,
+                                "livecaptions_delay",
+                            ), 
+                        ],
+                        [
+                            "最长等待时间_(ms)",
+                            D_getspinbox(
+                                10,
+                                100000,
+                                globalconfig,
+                                "livecaptions_maxwait",
+                            ), 
+                        ],
+                    ],
+                ),
+                0,
+                "group",
             ),
         ],
     ]
@@ -591,7 +664,7 @@ def setTabOne_lazy(self, basel):
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     vl.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出", "文件翻译"],
+        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出", "其他"],
         [
             lambda l: makescrollgrid(gethookgrid(self), l),
             lambda l: makescrollgrid(getocrgrid(self), l),

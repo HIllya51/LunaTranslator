@@ -10,6 +10,7 @@ from ctypes import (
     POINTER,
     c_char,
 )
+from ctypes.wintypes import HANDLE
 import platform, gobject, threading
 
 try:
@@ -71,3 +72,11 @@ if winrtutilsdll:
         if len(ret):
             return ret[0]
         return None
+
+    livecaption_start = winrtutilsdll.livecaption_start
+    livecaption_start.argtypes = (c_void_p,)
+    livecaption_start.restype = HANDLE
+    livecaption_stop = winrtutilsdll.livecaption_stop
+    livecaption_stop.argtypes = (HANDLE,)
+    livecaption_isrunning = winrtutilsdll.livecaption_isrunning
+    livecaption_isrunning.restype = c_bool

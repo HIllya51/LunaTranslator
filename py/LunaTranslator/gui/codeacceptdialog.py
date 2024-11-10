@@ -13,11 +13,11 @@ from gui.usefulwidget import (
 from gui.dynalang import LStandardItemModel, LDialog, LCheckBox, LLabel
 
 nowsuppertcodes = [
-    "日语(SHIFT-JIS)",
-    "简体中文(GBK)",
-    "繁体中文(BIG5)",
-    "韩语(EUC-KR)",
-    "英语(ASCII)",
+    "日语_(SHIFT-JIS)",
+    "简体中文_(GBK)",
+    "繁体中文_(BIG5)",
+    "韩语_(EUC-KR)",
+    "英语_(ASCII)",
     "其他",
 ]
 nowsuppertcodespy = ["SHIFT-JIS", "GBK", "BIG5", "EUC-KR", "ASCII"]
