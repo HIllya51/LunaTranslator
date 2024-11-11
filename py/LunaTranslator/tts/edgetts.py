@@ -1,21 +1,109 @@
 import requests
-
+import pytz
 import websocket
 from datetime import datetime
 import time
 import re
-import uuid, os
+import uuid, hashlib
 import time
 import requests
 import time
 from tts.basettsclass import TTSbase
+
+# https://github.com/rany2/edge-tts
+
+BASE_URL = "speech.platform.bing.com/consumer/speech/synthesize/readaloud"
+TRUSTED_CLIENT_TOKEN = "6A5AA1D4EAFF4E9FB37E23D68491D6F4"
+
+WSS_URL = f"wss://{BASE_URL}/edge/v1?TrustedClientToken={TRUSTED_CLIENT_TOKEN}"
+VOICE_LIST = f"https://{BASE_URL}/voices/list?trustedclienttoken={TRUSTED_CLIENT_TOKEN}"
+
+CHROMIUM_FULL_VERSION = "130.0.2849.68"
+CHROMIUM_MAJOR_VERSION = CHROMIUM_FULL_VERSION.split(".", maxsplit=1)[0]
+SEC_MS_GEC_VERSION = f"1-{CHROMIUM_FULL_VERSION}"
+BASE_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    f" (KHTML, like Gecko) Chrome/{CHROMIUM_MAJOR_VERSION}.0.0.0 Safari/537.36"
+    f" Edg/{CHROMIUM_MAJOR_VERSION}.0.0.0",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+WSS_HEADERS = {
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache",
+    "Origin": "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold",
+}
+WSS_HEADERS.update(BASE_HEADERS)
+VOICE_HEADERS = {
+    "Authority": "speech.platform.bing.com",
+    "Sec-CH-UA": f'" Not;A Brand";v="99", "Microsoft Edge";v="{CHROMIUM_MAJOR_VERSION}",'
+    f' "Chromium";v="{CHROMIUM_MAJOR_VERSION}"',
+    "Sec-CH-UA-Mobile": "?0",
+    "Accept": "*/*",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Dest": "empty",
+}
+VOICE_HEADERS.update(BASE_HEADERS)
+
+WIN_EPOCH = 11644473600
+S_TO_NS = 1e9
+
+
+class DRM:
+    """
+    Class to handle DRM operations with clock skew correction.
+    """
+
+    clock_skew_seconds: float = 0.0
+
+    @staticmethod
+    def adj_clock_skew_seconds(skew_seconds: float) -> None:
+        DRM.clock_skew_seconds += skew_seconds
+
+    @staticmethod
+    def get_unix_timestamp() -> float:
+        return datetime.now(pytz.utc).timestamp() + DRM.clock_skew_seconds
+
+    @staticmethod
+    def parse_rfc2616_date(date: str):
+        try:
+            return (
+                datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %Z")
+                .replace(tzinfo=pytz.utc)
+                .timestamp()
+            )
+        except ValueError:
+            return None
+
+    @staticmethod
+    def generate_sec_ms_gec() -> str:
+        # Get the current timestamp in Windows file time format with clock skew correction
+        ticks = DRM.get_unix_timestamp()
+
+        # Switch to Windows file time epoch (1601-01-01 00:00:00 UTC)
+        ticks += WIN_EPOCH
+
+        # Round down to the nearest 5 minutes (300 seconds)
+        ticks -= ticks % 300
+
+        # Convert the ticks to 100-nanosecond intervals (Windows file time format)
+        ticks *= S_TO_NS / 100
+
+        # Create the string to hash by concatenating the ticks and the trusted client token
+        str_to_hash = f"{ticks:.0f}{TRUSTED_CLIENT_TOKEN}"
+
+        # Compute the SHA256 hash and return the uppercased hex digest
+        return hashlib.sha256(str_to_hash.encode("ascii")).hexdigest().upper()
 
 
 class TTS(TTSbase):
 
     def getvoicelist(self):
         alllist = requests.get(
-            "https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4",
+            f"{VOICE_LIST}&Sec-MS-GEC={DRM.generate_sec_ms_gec()}"
+            f"&Sec-MS-GEC-Version={SEC_MS_GEC_VERSION}",
+            headers=VOICE_HEADERS,
             proxies=self.proxy,
         ).json()
         return [_["ShortName"] for _ in alllist], [_["ShortName"] for _ in alllist]
@@ -124,34 +212,19 @@ def connect_id() -> str:
 
 def transferMsTTSData(rate, content, voice, proxy):
 
-    endpoint2 = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4"
-    headers = {
-        "Pragma": "no-cache",
-        "Cache-Control": "no-cache",
-        "Origin": "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "en-US,en;q=0.9",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-        " (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36 Edg/91.0.864.41",
-    }
-    headers2 = [
-        "Pragma: no-cache",
-        "Cache-Control: no-cache",
-        "Origin: chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold",
-        "Accept-Encoding: gzip, deflate, br",
-        "Accept-Language: en-US,en;q=0.9",
-        "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-        " (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36 Edg/91.0.864.41",
-    ]
     proxy = proxy["https"]
-
     if proxy:
         ip, port = proxy.split(":")
-        ws = websocket.create_connection(
-            endpoint2, header=headers2, http_proxy_host=ip, http_proxy_port=port
-        )
     else:
-        ws = websocket.create_connection(endpoint2, header=headers2)
+        ip = port = None
+    ws = websocket.create_connection(
+        f"{WSS_URL}&Sec-MS-GEC={DRM.generate_sec_ms_gec()}"
+        f"&Sec-MS-GEC-Version={SEC_MS_GEC_VERSION}"
+        f"&ConnectionId={connect_id()}",
+        header=WSS_HEADERS,
+        http_proxy_host=ip,
+        http_proxy_port=port,
+    )
 
     date = date_to_string()
 
