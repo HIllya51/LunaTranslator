@@ -447,7 +447,7 @@ namespace
     void FPCSG00852(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
-        ws = std::regex_replace(ws, std::wregex(LR"(\^)"), L"");
+        strReplace(ws, L"^", L"");
         buffer->from(WideStringToString(ws, 932));
     }
     void FPCSG01066(TextBuffer *buffer, HookParam *hp)
@@ -578,6 +578,8 @@ namespace
             {0x80038e76, {CODEC_UTF8, 8, 0, 0, F010088B01A8FC000, "PCSG01110"}},
             // オメルタ CODE:TYCOON 戒
             {0x800BC462, {0, 3, 0, 0, F010088B01A8FC000, "PCSG00789"}},
+            // 紅色天井艶妖綺譚 二藍
+            {0x8003F554, {0, 4, 0, 0, FPCSG00852, "PCSG01221"}},
         };
         return 1;
     }();

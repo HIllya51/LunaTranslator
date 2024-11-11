@@ -255,10 +255,10 @@ class yuyinzhidingsetting(LDialog):
                 QStandardItem(),
             ],
         )
-        self.table.setindexdata(self.model.index(row, 0), item['regex'])
-         
-        self.table.setindexdata(self.model.index(row, 1), item['condition'])
-        self.table.setindexdata(self.model.index(row, 3), item['target'])
+        self.table.setindexdata(self.model.index(row, 0), item["regex"])
+
+        self.table.setindexdata(self.model.index(row, 1), item["condition"])
+        self.table.setindexdata(self.model.index(row, 3), item["target"])
 
     def createacombox(self, config):
         com = SuperCombo()
@@ -478,9 +478,6 @@ class autoinitdialog__(LDialog):
                 except:
                     print_exc()
 
-        def __getv(l):
-            return l
-
         hasrank = []
         hasnorank = []
         for line in lines:
@@ -523,9 +520,24 @@ class autoinitdialog__(LDialog):
                 else:
                     lineW = LLabel(dd[key])
             elif line["type"] == "textlist":
-                __list = dd[key].copy()
-                lineW = listediterline(line["name"], line["header"], __list)
-                regist[key] = functools.partial(__getv, __list)
+                directedit = isinstance(dd[key], str)
+                if directedit:
+                    __list = dd[key].split("|")
+                else:
+                    __list = dd[key].copy()
+                lineW = listediterline(
+                    line["name"],
+                    line.get("header", line["name"]),
+                    __list,
+                    directedit=directedit,
+                )
+
+                def __getv(l, directedit):
+                    if directedit:
+                        return "|".join(l)
+                    return l
+
+                regist[key] = functools.partial(__getv, __list, directedit)
             elif line["type"] == "combo":
                 lineW = SuperCombo()
                 if "list_function" in line:

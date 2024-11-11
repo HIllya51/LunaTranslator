@@ -9,7 +9,6 @@ from myutils.config import (
     get_launchpath,
     savehook_new_list,
     static_data,
-    getlanguse,
 )
 
 from traceback import print_exc
@@ -21,7 +20,6 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getIconButton,
-    listediterline,
     getIconButton,
     makegrid,
     listediter,

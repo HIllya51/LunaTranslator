@@ -1238,8 +1238,7 @@
             "argstype": {
                 "punctuations": {
                     "type": "textlist",
-                    "name": "标点",
-                    "header": "标点"
+                    "name": "标点"
                 }
             }
         }

@@ -312,18 +312,17 @@ LunaHost::LunaHost()
 
     WORD version[4] = LUNA_VERSION;
     WCHAR vs[32];
-    if (queryversion(&_1, &_2, &_3, &_4))
-    {
-        wsprintf(vs, L" | %s v%d.%d.%d", VersionCurrent, version[0], version[1], version[2]);
-        title += vs;
-        settext(title);
-        std::thread([&]()
-                    {
+
+    wsprintf(vs, L" | %s v%d.%d.%d", VersionCurrent, version[0], version[1], version[2]);
+    title += vs;
+    settext(title);
+    std::thread([&]()
+                {
             if (HttpRequest httpRequest{
                 L"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
                 L"lunatranslator.org",
                 L"GET",
-                L"/version_lunahook"
+                L"/version"
             }){
                 
                 try{
@@ -333,8 +332,7 @@ LunaHost::LunaHost()
                 }
                 catch(std::exception&e){}
             } })
-            .detach();
-    }
+        .detach();
 }
 void LunaHost::on_text_recv_checkissaved(TextThread &thread)
 {

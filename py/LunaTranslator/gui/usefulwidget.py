@@ -1896,6 +1896,9 @@ class listediter(LDialog):
         candidates=None,
     ) -> None:
         super().__init__(parent)
+        self.setWindowFlags(
+            self.windowFlags() & ~Qt.WindowType.WindowContextHelpButtonHint
+        )
         self.lst = lst
         self.candidates = candidates
         self.closecallback = closecallback
@@ -2073,33 +2076,62 @@ class listediter(LDialog):
             )
 
 
-class listediterline(QLineEdit):
+class ClickableLine(QLineEdit):
     clicked = pyqtSignal()
-
-    def __init__(self, name, header, reflist, ispathsedit=None):
-        super().__init__()
-        self.setReadOnly(True)
-        self.reflist = reflist
-        self.setText("|".join(reflist))
-
-        self.clicked.connect(
-            functools.partial(
-                listediter,
-                self,
-                name,
-                header,
-                reflist,
-                closecallback=self.callback,
-                ispathsedit=ispathsedit,
-            )
-        )
-
-    def callback(self):
-        self.setText("|".join(self.reflist))
 
     def mousePressEvent(self, e):
         self.clicked.emit()
         super().mousePressEvent(e)
+
+
+class listediterline(QWidget):
+
+    def text(self):
+        return self.edit.text()
+
+    def setText(self, t):
+        return self.edit.setText(t)
+
+    def __init__(self, name, header, reflist, ispathsedit=None, directedit=False):
+        super().__init__()
+        self.edit = ClickableLine()
+        self.reflist = reflist
+        self.setText("|".join(reflist))
+        hbox = QHBoxLayout()
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.addWidget(self.edit)
+        self.setLayout(hbox)
+        callback = functools.partial(
+            listediter,
+            self,
+            name,
+            header,
+            reflist,
+            closecallback=self.callback,
+            ispathsedit=ispathsedit,
+        )
+        self.directedit = directedit
+        if directedit:
+
+            def __(t):
+                self.reflist.clear()
+                self.reflist.extend(t.split("|"))
+
+            self.edit.textChanged.connect(__)
+
+            def __2():
+                self.edit.setReadOnly(True)
+                callback()
+
+            hbox.addWidget(getIconButton(icon="fa.gear", callback=__2))
+        else:
+            self.edit.setReadOnly(True)
+            self.edit.clicked.connect(callback)
+
+    def callback(self):
+        self.setText("|".join(self.reflist))
+        if self.directedit:
+            self.edit.setReadOnly(False)
 
 
 def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):

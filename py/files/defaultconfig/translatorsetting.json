@@ -21,7 +21,8 @@
 			"api": {
 				"name": "DeepLX api",
 				"refcombo": "usewhich",
-				"refcombo_i": 1
+				"refcombo_i": 1,
+				"type": "textlist"
 			},
 			"usewhich": {
 				"rank": 0,
@@ -45,19 +46,23 @@
 		"argstype": {
 			"密钥": {
 				"refcombo": "interface",
-				"refcombo_i": 0
+				"refcombo_i": 0,
+				"type": "textlist"
 			},
 			"APP ID": {
 				"refcombo": "interface",
-				"refcombo_i": 0
+				"refcombo_i": 0,
+				"type": "textlist"
 			},
 			"API Key": {
 				"refcombo": "interface",
-				"refcombo_i": 1
+				"refcombo_i": 1,
+				"type": "textlist"
 			},
 			"Secret Key": {
 				"refcombo": "interface",
-				"refcombo_i": 1
+				"refcombo_i": 1,
+				"type": "textlist"
 			},
 			"interface": {
 				"rank": 0,
@@ -74,11 +79,24 @@
 		"args": {
 			"app_id": "",
 			"app_secret": ""
+		},
+		"argstype": {
+			"app_id": {
+				"type": "textlist"
+			},
+			"app_secret": {
+				"type": "textlist"
+			}
 		}
 	},
 	"caiyunapi": {
 		"args": {
 			"Token": ""
+		},
+		"argstype": {
+			"Token": {
+				"type": "textlist"
+			}
 		}
 	},
 	"deeplapi-free": {
@@ -92,13 +110,15 @@
 				"rank": 1,
 				"name": "Auth Key",
 				"refcombo": "usewhich",
-				"refcombo_i": 0
+				"refcombo_i": 0,
+				"type": "textlist"
 			},
 			"DeepL-Auth-Key-2": {
 				"rank": 2,
 				"name": "Auth Key",
 				"refcombo": "usewhich",
-				"refcombo_i": 1
+				"refcombo_i": 1,
+				"type": "textlist"
 			},
 			"usewhich": {
 				"rank": 0,
@@ -114,11 +134,21 @@
 	"yandexapi": {
 		"args": {
 			"key": ""
+		},
+		"argstype": {
+			"key": {
+				"type": "textlist"
+			}
 		}
 	},
 	"googleapi": {
 		"args": {
 			"key": ""
+		},
+		"argstype": {
+			"key": {
+				"type": "textlist"
+			}
 		}
 	},
 	"sugoix": {
@@ -137,6 +167,14 @@
 		"args": {
 			"Access Key ID": "",
 			"Secret Access Key": ""
+		},
+		"argstype": {
+			"Access Key ID": {
+				"type": "textlist"
+			},
+			"Secret Access Key": {
+				"type": "textlist"
+			}
 		}
 	},
 	"tencentapi": {
@@ -146,6 +184,12 @@
 			"Region": 0
 		},
 		"argstype": {
+			"SecretId": {
+				"type": "textlist"
+			},
+			"SecretKey": {
+				"type": "textlist"
+			},
 			"Region": {
 				"type": "combo",
 				"list": [
@@ -173,6 +217,11 @@
 	"xiaoniu": {
 		"args": {
 			"apikey": ""
+		},
+		"argstype": {
+			"apikey": {
+				"type": "textlist"
+			}
 		}
 	},
 	"youdaoapi": {
@@ -182,10 +231,12 @@
 		},
 		"argstype": {
 			"APP_KEY": {
-				"name": "应用ID"
+				"name": "应用ID",
+				"type": "textlist"
 			},
 			"APP_SECRET": {
-				"name": "应用密钥"
+				"name": "应用密钥",
+				"type": "textlist"
 			}
 		}
 	},
@@ -197,10 +248,12 @@
 		},
 		"argstype": {
 			"ak": {
-				"name": "Access Key Id"
+				"name": "Access Key Id",
+				"type": "textlist"
 			},
 			"sk": {
-				"name": "Secret Access Key"
+				"name": "Secret Access Key",
+				"type": "textlist"
 			}
 		}
 	},
@@ -233,11 +286,13 @@
 			},
 			"secret_id": {
 				"rank": 0,
-				"name": "SecretId"
+				"name": "SecretId",
+				"type": "textlist"
 			},
 			"secret_key": {
 				"rank": 1,
-				"name": "SecretKey"
+				"name": "SecretKey",
+				"type": "textlist"
 			},
 			"model": {
 				"rank": 2,
@@ -359,7 +414,8 @@
 			},
 			"API_KEY": {
 				"name": "API Key",
-				"rank": 0.5
+				"rank": 0.5,
+				"type": "textlist"
 			},
 			"流式输出": {
 				"type": "switch",
@@ -446,7 +502,8 @@
 			},
 			"SECRET_KEY": {
 				"rank": 1,
-				"name": "API Key"
+				"name": "API Key",
+				"type": "textlist"
 			},
 			"model": {
 				"rank": 2,
@@ -536,11 +593,13 @@
 			},
 			"API_KEY": {
 				"rank": 0,
-				"name": "API Key"
+				"name": "API Key",
+				"type": "textlist"
 			},
 			"SECRET_KEY": {
 				"rank": 1,
-				"name": "Secret Key"
+				"name": "Secret Key",
+				"type": "textlist"
 			},
 			"model": {
 				"rank": 2,
@@ -649,7 +708,8 @@
 			},
 			"SECRET_KEY": {
 				"rank": 0,
-				"name": "API Key"
+				"name": "API Key",
+				"type": "textlist"
 			},
 			"model": {
 				"rank": 1,
@@ -769,12 +829,25 @@
 		"args": {
 			"key1": "",
 			"Location": ""
+		},
+		"argstype": {
+			"key1": {
+				"type": "textlist"
+			}
 		}
 	},
 	"ibm": {
 		"args": {
 			"apiurl": "",
 			"apikey": ""
+		},
+		"argstype": {
+			"apiurl": {
+				"type": "textlist"
+			},
+			"apikey": {
+				"type": "textlist"
+			}
 		}
 	},
 	"aliyunapi": {
@@ -784,10 +857,12 @@
 		},
 		"argstype": {
 			"Access_Key": {
-				"name": "AccessKey ID"
+				"name": "AccessKey ID",
+				"type": "textlist"
 			},
 			"SECRET_KEY": {
-				"name": "AccessKey Secret"
+				"name": "AccessKey Secret",
+				"type": "textlist"
 			}
 		}
 	},
@@ -1046,7 +1121,8 @@
 			},
 			"SECRET_KEY": {
 				"rank": 2,
-				"name": "API Key"
+				"name": "API Key",
+				"type": "textlist"
 			},
 			"model": {
 				"rank": 3,
@@ -1264,7 +1340,8 @@
 			},
 			"SECRET_KEY": {
 				"rank": 6,
-				"name": "API Key"
+				"name": "API Key",
+				"type": "textlist"
 			},
 			"model": {
 				"rank": 1,
