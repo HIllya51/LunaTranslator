@@ -2,12 +2,10 @@ import windows
 import os, time
 import codecs, hashlib, shutil
 import socket, gobject, uuid, subprocess, functools
-import ctypes, importlib, json
-import ctypes.wintypes
+import importlib, json
 from qtsymbols import *
 from string import Formatter
-from ctypes import CDLL, c_void_p, CFUNCTYPE, c_size_t, cast, c_char, POINTER
-from ctypes.wintypes import HANDLE
+from ctypes import cast, c_char, POINTER
 from traceback import print_exc
 from myutils.config import (
     globalconfig,
@@ -305,7 +303,7 @@ def duplicateconfig(uidold):
     return uid
 
 
-def find_or_create_uid(targetlist, gamepath, title=None):
+def find_or_create_uid(targetlist, gamepath: str, title=None):
     uids = findgameuidofpath(gamepath, findall=True)
     if len(uids) == 0:
         uid = initanewitem(title)
@@ -315,7 +313,12 @@ def find_or_create_uid(targetlist, gamepath, title=None):
                 + "/"
                 + os.path.basename(gamepath)
             )
-        uid2gamepath[uid] = gamepath
+        if gamepath.lower().endswith(".lnk"):
+            exepath, _, _, _ = winsharedutils.GetLnkTargetPath(gamepath)
+            uid2gamepath[uid] = exepath
+            savehook_new_data[uid]["launchpath"] = gamepath
+        else:
+            uid2gamepath[uid] = gamepath
         trysearchforid(uid, [title] + guessmaybetitle(gamepath, title))
         return uid
     else:
@@ -429,18 +432,6 @@ def getfilemd5(file, default="0"):
 
 def minmaxmoveobservefunc(self):
 
-    user32 = ctypes.windll.user32
-
-    WinEventProcType = ctypes.CFUNCTYPE(
-        None,
-        ctypes.wintypes.HANDLE,
-        ctypes.wintypes.DWORD,
-        ctypes.wintypes.HWND,
-        ctypes.wintypes.LONG,
-        ctypes.wintypes.LONG,
-        ctypes.wintypes.DWORD,
-        ctypes.wintypes.DWORD,
-    )
     self.lastpos = None
 
     def win_event_callback(
@@ -492,7 +483,7 @@ def minmaxmoveobservefunc(self):
         except:
             print_exc()
 
-    win_event_callback_cfunc = WinEventProcType(win_event_callback)
+    win_event_callback_cfunc = windows.WINEVENTPROC(win_event_callback)
 
     eventpairs = (
         (windows.EVENT_SYSTEM_FOREGROUND, windows.EVENT_SYSTEM_FOREGROUND),
@@ -501,16 +492,16 @@ def minmaxmoveobservefunc(self):
 
     def _():
         for pair in eventpairs:
-            hook_id = user32.SetWinEventHook(
+            hook_id = windows.SetWinEventHook(
                 pair[0], pair[1], 0, win_event_callback_cfunc, 0, 0, 0
             )
 
-        msg = ctypes.wintypes.MSG()
-        while ctypes.windll.user32.GetMessageW(ctypes.byref(msg), None, 0, 0) != 0:
-            ctypes.windll.user32.TranslateMessage(ctypes.byref(msg))
-            ctypes.windll.user32.DispatchMessageW(ctypes.byref(msg))
+        msg = windows.MSG()
+        while windows.GetMessageW(windows.byref(msg), None, 0, 0) != 0:
+            windows.TranslateMessage(windows.byref(msg))
+            windows.DispatchMessageW(windows.byref(msg))
 
-        ctypes.windll.user32.UnhookWindowsHookEx(hook_id)
+        windows.UnhookWindowsHookEx(hook_id)
 
     _()
 
@@ -831,7 +822,7 @@ class audiocapture:
         self.stoped = threading.Lock()
         self.stoped.acquire()
         self.data = None
-        self.cb1 = CFUNCTYPE(None, c_void_p, c_size_t)(self.__datacollect)
+        self.cb1 = winsharedutils.StartCaptureAsync_cb(self.__datacollect)
         self.mutex = winsharedutils.StartCaptureAsync(self.cb1)
 
 

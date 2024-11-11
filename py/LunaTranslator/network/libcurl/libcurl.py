@@ -1,4 +1,4 @@
-import gobject, os
+import gobject
 from requests import RequestException, Timeout
 from ctypes import (
     CDLL,

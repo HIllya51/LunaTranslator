@@ -10,6 +10,7 @@ testsavejs = False
 
 
 class TextBrowser(QWidget, dataget):
+    dropfilecallback = pyqtSignal(str)
     contentsChanged = pyqtSignal(QSize)
     _padding = 5
 
@@ -75,6 +76,7 @@ class TextBrowser(QWidget, dataget):
             os.path.abspath(r"LunaTranslator\rendertext\webview.html")
         )
         self.webivewwidget.set_transparent_background()
+        self.webivewwidget.dropfilecallback.connect(self.dropfilecallback)
         self.webivewwidget.bind("calllunaclickedword", self.calllunaclickedword)
         self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
         self.saveiterclasspointer = {}
@@ -135,7 +137,7 @@ class TextBrowser(QWidget, dataget):
 
     def showhideorigin(self, show):
         self.debugeval(f'showhideorigin("{int(show)}")')
-    
+
     def showhidetranslatorname(self, show):
         self.debugeval(f'showhidetranslatorname("{int(show)}")')
 

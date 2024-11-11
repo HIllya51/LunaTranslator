@@ -12,7 +12,6 @@ from myutils.config import (
     set_font_default,
     _TR,
 )
-from ctypes import c_int, CFUNCTYPE, c_void_p
 from myutils.utils import (
     minmaxmoveobservefunc,
     parsemayberegexreplace,
@@ -260,7 +259,6 @@ class MAINUI:
             return
         else:
             msgs = [
-                ("<msg_info_not_refresh>", False, False),
                 ("<msg_info_refresh>", False, True),
                 ("<msg_error_not_refresh>", True, False),
                 ("<msg_error_refresh>", True, True),
@@ -1099,7 +1097,9 @@ class MAINUI:
         threading.Thread(
             target=minmaxmoveobservefunc, args=(self.translation_ui,)
         ).start()
-        self.messagecallback__ = CFUNCTYPE(None, c_int, c_void_p)(self.messagecallback)
+        self.messagecallback__ = winsharedutils.globalmessagelistener_cb(
+            self.messagecallback
+        )
         winsharedutils.globalmessagelistener(self.messagecallback__)
         self.inittray()
         self.playtimemanager = playtimemanager()

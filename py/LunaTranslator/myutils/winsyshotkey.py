@@ -3,12 +3,7 @@ import time
 
 import _thread as thread
 import windows
-import ctypes
-from ctypes import wintypes
 
-byref = ctypes.byref
-user32 = ctypes.windll.user32
-PM_REMOVE = 0x0001
 
 unique_int = 0
 
@@ -37,7 +32,7 @@ class SystemHotkey:
             self.changedlock.acquire()
             self.hk_ref[unique_int] = hotkey
             self.changedlock.release()
-            if not user32.RegisterHotKey(None, unique_int, masks, keycode):
+            if not windows.RegisterHotKey(None, unique_int, masks, keycode):
                 self._error = True
             self.waitforregist.release()
 
@@ -58,7 +53,7 @@ class SystemHotkey:
                     break
             if _use:
                 del self.hk_ref[_use]
-                user32.UnregisterHotKey(None, _use)
+                windows.UnregisterHotKey(None, _use)
             self.changedlock.release()
 
         self.hk_action_queue.put(lambda: nt_unregister(hotkey))
@@ -78,7 +73,7 @@ class SystemHotkey:
         )
 
     def _nt_wait(self):
-        msg = wintypes.MSG()
+        msg = windows.MSG()
         while 1:
             try:
                 remove_or_add = self.hk_action_queue.get(block=False)
@@ -87,7 +82,7 @@ class SystemHotkey:
                 pass
             else:
                 remove_or_add()
-            if user32.PeekMessageA(byref(msg), 0, 0, 0, PM_REMOVE):
+            if windows.PeekMessageA(windows.pointer(msg), 0, 0, 0, windows.PM_REMOVE):
                 if msg.message == windows.WM_HOTKEY:
                     self.changedlock.acquire()
                     hotkey = self.hk_ref[msg.wParam][0], self.hk_ref[msg.wParam][1]

@@ -176,6 +176,7 @@ class rangeselect(QMainWindow):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.backlabel = QLabel(self)
         self.rectlabel = QLabel(self)
+        self.backlabel.move(0, 0)
         # self.setWindowOpacity(0.5)
         self.setMouseTracking(True)
         self.setCursor(Qt.CursorShape.CrossCursor)
@@ -183,7 +184,6 @@ class rangeselect(QMainWindow):
 
     def reset(self):
         winsharedutils.maximum_window(int(self.winId()))
-        winsharedutils.maximum_window(int(self.backlabel.winId()))
         self.once = True
         self.is_drawing = False
         self.start_point = QPoint()
@@ -199,6 +199,9 @@ class rangeselect(QMainWindow):
         self.backlabel.setStyleSheet(
             "background-color: rgba(255,255,255, %s)" % globalconfig["ocrselectalpha"]
         )
+
+    def resizeEvent(self, e: QResizeEvent):
+        self.backlabel.resize(e.size())
 
     def paintEvent(self, event):
 
@@ -224,7 +227,7 @@ class rangeselect(QMainWindow):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.RightButton:
-            self.once = False 
+            self.once = False
             self.close()
         elif event.button() == Qt.MouseButton.LeftButton:
             if self.startauto:

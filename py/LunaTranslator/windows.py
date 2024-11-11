@@ -29,12 +29,15 @@ from ctypes.wintypes import (
     BOOL,
     WORD,
     DWORD,
+    LONG,
+    MSG,
     PHKEY,
     HKEY,
     LPDWORD,
     LPBYTE,
     HMONITOR,
     LPCVOID,
+    LPMSG,
     LPWSTR,
     WPARAM,
     LPARAM,
@@ -42,8 +45,16 @@ from ctypes.wintypes import (
     LPCWSTR,
     HANDLE,
     UINT,
+    HHOOK,
+    HMODULE,
+    LPLONG,
+    HDC,
+    SHORT,
+    USHORT,
 )
 
+HWINEVENTHOOK = HANDLE
+LRESULT = LPLONG
 WAIT_TIMEOUT = 258
 SW_HIDE = 0
 SW_SHOWNORMAL = 1
@@ -202,35 +213,37 @@ _Advapi32 = windll.Advapi32
 
 _GetWindowRect = _user32.GetWindowRect
 _GetWindowRect.argtypes = HWND, POINTER(RECT)
-_GetForegroundWindow = _user32.GetForegroundWindow
-_WindowFromPoint = _user32.WindowFromPoint
-_WindowFromPoint.argtypes = (POINT,)
-_ShowWindow = _user32.ShowWindow
-_ShowWindow.argtypes = c_int, c_int
+GetForegroundWindow = _user32.GetForegroundWindow
+GetForegroundWindow.restype = HWND
+WindowFromPoint = _user32.WindowFromPoint
+WindowFromPoint.argtypes = (POINT,)
+WindowFromPoint.restype = HWND
+ShowWindow = _user32.ShowWindow
+ShowWindow.argtypes = HWND, c_int
+ShowWindow.restype = BOOL
+GetWindowLong = _user32.GetWindowLongW
+GetWindowLong.argtypes = HWND, c_int
+GetWindowLong.restype = LONG
 
-_GetWindowLong = _user32.GetWindowLongW
-_GetWindowLong.argtypes = c_int, c_int
-
-_SetWindowLongW = _user32.SetWindowLongW
-_SetWindowLongW.argtypes = c_int, c_int, c_int
+SetWindowLong = _user32.SetWindowLongW
+SetWindowLong.argtypes = HWND, c_int, LONG
+SetWindowLong.restype = LONG
 BringWindowToTop = _user32.BringWindowToTop
 BringWindowToTop.argtypes = (HWND,)
-_GetDC = _user32.GetDC
-_GetDC.restype = c_void_p
-_ReleaseDC = _user32.ReleaseDC
-_ReleaseDC.argtypes = c_void_p, c_void_p
-
-
-def ReleaseDC(_, hdc):
-    return _ReleaseDC(_, hdc)
+GetDC = _user32.GetDC
+GetDC.restype = HDC
+ReleaseDC = _user32.ReleaseDC
+ReleaseDC.argtypes = HWND, HDC
+ReleaseDC.restype = c_int
 
 
 _GetCursorPos = _user32.GetCursorPos
 _GetCursorPos.argtypes = (POINTER(POINT),)
 
 
-_GetDeviceCaps = _gdi32.GetDeviceCaps
-_GetDeviceCaps.argtypes = c_int, c_int
+GetDeviceCaps = _gdi32.GetDeviceCaps
+GetDeviceCaps.argtypes = HDC, c_int
+GetDeviceCaps.restype = c_int
 _SetWindowPos = _user32.SetWindowPos
 _SetWindowPos.argtypes = c_int, c_void_p, c_int, c_int, c_int, c_int, c_uint
 _GetWindowText = _user32.GetWindowTextW
@@ -239,50 +252,44 @@ _GetWindowTextLength = _user32.GetWindowTextLengthW
 _MoveWindow = _user32.MoveWindow
 _MoveWindow.argtypes = c_int, c_int, c_int, c_int, c_int, c_bool
 
-_IsWindow = _user32.IsWindow
-_IsWindowEnabled = _user32.IsWindowEnabled
-_IsWindowVisible = _user32.IsWindowVisible
-
-_SetForegroundWindow = _user32.SetForegroundWindow
-_SetForegroundWindow.argtypes = (c_int,)
+SetForegroundWindow = _user32.SetForegroundWindow
+SetForegroundWindow.argtypes = (HWND,)
 _GetClientRect = _user32.GetClientRect
 _GetClientRect.argtypes = c_int, POINTER(RECT)
 
-_FindWindow = _user32.FindWindowW
-_FindWindow.argtypes = c_wchar_p, c_wchar_p
-_SetFocus = _user32.SetFocus
-_SetFocus.argtypes = (c_int,)
+FindWindow = _user32.FindWindowW
+FindWindow.argtypes = LPCWSTR, LPCWSTR
+FindWindow.restype = HWND
+SetFocus = _user32.SetFocus
+SetFocus.argtypes = (HWND,)
 _EnumWindows = _user32.EnumWindows
 _EnumWindows.argtypes = WNDENUMPROC, c_void_p
 _ShellExecuteW = _shell32.ShellExecuteW
 _ShellExecuteW.argtypes = c_void_p, c_wchar_p, c_wchar_p, c_wchar_p, c_wchar_p, c_int
 _OpenProcess = _kernel32.OpenProcess
 _OpenProcess.argtypes = c_uint, c_bool, c_uint
-_CloseHandle = _kernel32.CloseHandle
+CloseHandle = _kernel32.CloseHandle
+CloseHandle.argtypes = (HANDLE,)
+CloseHandle.restype = BOOL
 _SendMessage = _user32.SendMessageW
 _SendMessage.argtypes = c_int, c_uint, c_void_p, c_void_p
 _keybd_event = _user32.keybd_event
 _keybd_event.argtypes = c_byte, c_byte, c_uint, c_void_p
-_RegisterWindowMessage = _user32.RegisterWindowMessageW
-
+RegisterWindowMessageW = _user32.RegisterWindowMessageW
+RegisterWindowMessageW.argtypes = (LPCWSTR,)
+RegisterWindowMessageW.restype = UINT
 _GetWindowThreadProcessId = _user32.GetWindowThreadProcessId
 _GetWindowThreadProcessId.argtypes = HWND, c_void_p
-_GetClipboardOwner = _user32.GetClipboardOwner
-
+GetClipboardOwner = _user32.GetClipboardOwner
+GetClipboardOwner.restype = HWND
 try:
     _GetModuleFileNameExW = _psapi.GetModuleFileNameExW
 except:
     _GetModuleFileNameExW = _kernel32.GetModuleFileNameExW
-_GetModuleFileNameExW.argtypes = c_void_p, c_void_p, c_wchar_p, c_uint
+_GetModuleFileNameExW.argtypes = HANDLE, HMODULE, LPWSTR, DWORD
+_GetModuleFileNameExW.restype = DWORD
 
 
-def GetModuleFileNameEx(handle, module=None):
-    buff = create_unicode_buffer(260)
-    _GetModuleFileNameExW(handle, module, buff, 260)
-    return buff.value
-
-
-_GetLogicalDrives = _kernel32.GetLogicalDrives
 _QueryDosDeviceW = _kernel32.QueryDosDeviceW
 _QueryDosDeviceW.argtypes = c_wchar_p, c_wchar_p, c_uint
 
@@ -300,7 +307,8 @@ _WNetGetUniversalNameW = _Mpr.WNetGetUniversalNameW
 _WNetGetUniversalNameW.argtypes = c_wchar_p, c_uint, c_wchar_p, POINTER(c_uint)
 
 _GetLogicalDriveStringsW = _kernel32.GetLogicalDriveStringsW
-_GetLogicalDriveStringsW.argtypes = c_uint, c_wchar_p
+_GetLogicalDriveStringsW.argtypes = DWORD, LPWSTR
+_GetLogicalDriveStringsW.restype = DWORD
 
 _GetCurrentDirectoryW = _kernel32.GetCurrentDirectoryW
 _GetCurrentDirectoryW.argtypes = c_uint, c_wchar_p
@@ -445,28 +453,12 @@ def CreateProcess(
     return _pinfo
 
 
-def GetClipboardOwner():
-    return _GetClipboardOwner()
-
-
 def GetWindowThreadProcessId(hwnd):
     pid = c_uint()
     handle = _GetWindowThreadProcessId(hwnd, pointer(pid))
     if handle == 0:
         return 0
     return pid.value
-
-
-def RegisterWindowMessage(lpString):
-    return _RegisterWindowMessage(c_wchar_p(lpString))
-
-
-def SetFocus(hwnd):
-    return _SetFocus(hwnd)
-
-
-def GetForegroundWindow():
-    return _GetForegroundWindow()
 
 
 def GetWindowRect(hwnd):
@@ -481,22 +473,6 @@ def GetClientRect(hwnd):
     _rect = RECT()
     _GetClientRect(hwnd, pointer(_rect))
     return (_rect.left, _rect.top, _rect.right, _rect.bottom)
-
-
-def ShowWindow(hwnd, nCmdShow):
-    return _ShowWindow(hwnd, nCmdShow)
-
-
-def GetWindowLong(hwnd, nIndex):
-    return _GetWindowLong(hwnd, nIndex)
-
-
-def SetWindowLong(hwnd, nIndex, value):
-    return _SetWindowLongW(hwnd, nIndex, value)
-
-
-def GetDC(hwnd):
-    return _GetDC(hwnd)
 
 
 def GetDpiForWindow(hwnd):
@@ -515,14 +491,6 @@ def GetCursorPos():
     return _p
 
 
-def GetDeviceCaps(hdc, index):
-    return _GetDeviceCaps(hdc, index)
-
-
-def WindowFromPoint(point):
-    return _WindowFromPoint(point)
-
-
 def SetWindowPos(hwnd, InsertAfter, X, Y, cx, cy, uFlags):
     return _SetWindowPos(hwnd, InsertAfter, X, Y, cx, cy, uFlags)
 
@@ -538,26 +506,6 @@ def MoveWindow(hwnd, X, Y, w, h, bRepaint):
     return _MoveWindow(hwnd, X, Y, w, h, bRepaint)
 
 
-def IsWindow(hwnd):
-    return _IsWindow(hwnd)
-
-
-def IsWindowEnabled(hwnd):
-    return _IsWindowEnabled(hwnd)
-
-
-def IsWindowVisible(hwnd):
-    return _IsWindowVisible(hwnd)
-
-
-def SetForegroundWindow(hwnd):
-    return _SetForegroundWindow(hwnd)
-
-
-def FindWindow(classname, windowname):
-    return _FindWindow(c_wchar_p(classname), c_wchar_p(windowname))
-
-
 def EnumWindows(lpEnumFunc, lParam):
     return _EnumWindows(WNDENUMPROC(lpEnumFunc), 0)
 
@@ -570,10 +518,6 @@ def OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId):
     return _OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId)
 
 
-def CloseHandle(handle):
-    return _CloseHandle(handle)
-
-
 def SendMessage(hwnd, message, wp=None, lp=None):
     return _SendMessage(hwnd, message, wp, lp)
 
@@ -582,21 +526,16 @@ def keybd_event(bVk, bScan, dwFlags, _):
     _keybd_event(bVk, bScan, dwFlags, _)
 
 
-_WaitForSingleObject = _kernel32.WaitForSingleObject
-_WaitForSingleObject.argtypes = c_void_p, c_uint
-
-
-def WaitForSingleObject(handle, dwms):
-    return _WaitForSingleObject(handle, dwms)
+WaitForSingleObject = _kernel32.WaitForSingleObject
+WaitForSingleObject.argtypes = HANDLE, DWORD
+WaitForSingleObject.restype = DWORD
 
 
 INFINITE = -1
 
-_SetEvent = _kernel32.SetEvent
-
-
-def SetEvent(hevent):
-    return _SetEvent(hevent)
+SetEvent = _kernel32.SetEvent
+SetEvent.argtypes = (HANDLE,)
+SetEvent.restype = BOOL
 
 
 class ACLStruct(Structure):
@@ -745,12 +684,9 @@ def CreateFile(
     )
 
 
-_WaitNamedPipeW = _kernel32.WaitNamedPipeW
-_WaitNamedPipeW.argtypes = c_wchar_p, c_uint
-
-
-def WaitNamedPipe(pipename, timeout):
-    return _WaitNamedPipeW(pipename, timeout)
+WaitNamedPipe = _kernel32.WaitNamedPipeW
+WaitNamedPipe.argtypes = LPCWSTR, DWORD
+WaitNamedPipe.restype = BOOL
 
 
 # _TerminateProcess=_kernel32.TerminateProcess
@@ -789,89 +725,23 @@ def IsUserAnAdmin():
         return False
 
 
-_GetKeyState = _user32.GetKeyState
-_GetKeyState.restype = c_short
+GetKeyState = _user32.GetKeyState
+GetKeyState.argtypes = (c_int,)
+GetKeyState.restype = SHORT
 
 GetAsyncKeyState = _user32.GetAsyncKeyState
-
-
-def GetKeyState(key):
-    return _GetKeyState(key)
+GetAsyncKeyState.argtypes = (c_int,)
+GetAsyncKeyState.restype = SHORT
 
 
 GA_ROOT = 2
 _GetAncestor = _user32.GetAncestor
+_GetAncestor.argtypes = HWND, UINT
+_GetAncestor.restype = HWND
 
 
 def GetAncestor(hwnd):
     return _GetAncestor(hwnd, GA_ROOT)
-
-
-_CreateNamedPipe = _kernel32.CreateNamedPipeW
-_CreateNamedPipe.argtypes = (
-    c_wchar_p,
-    c_uint,
-    c_uint,
-    c_uint,
-    c_uint,
-    c_uint,
-    c_uint,
-    c_void_p,
-)
-
-
-def CreateNamedPipe(
-    pipeName,
-    openMode,
-    pipeMode,
-    nMaxInstances,
-    nOutBufferSize,
-    nInBufferSize,
-    nDefaultTimeOut,
-    sa=pointer(get_SECURITY_ATTRIBUTES()),
-):
-    return _CreateNamedPipe(
-        pipeName,
-        openMode,
-        pipeMode,
-        nMaxInstances,
-        nOutBufferSize,
-        nInBufferSize,
-        nDefaultTimeOut,
-        sa,
-    )
-
-
-PIPE_TYPE_BYTE = 0
-PIPE_READMODE_BYTE = 0
-_DisconnectNamedPipe = _kernel32.DisconnectNamedPipe
-
-
-def DisconnectNamedPipe(pipe):
-    return _DisconnectNamedPipe(pipe)
-
-
-_ConnectNamedPipe = _kernel32.ConnectNamedPipe
-
-
-def ConnectNamedPipe(pipe, lpoverlap):
-    return _ConnectNamedPipe(pipe, lpoverlap)
-
-
-_MessageBoxW = _user32.MessageBoxW
-_MessageBoxW.argtypes = c_void_p, c_wchar_p, c_wchar_p, c_uint
-
-
-def MessageBox(hwnd, text, title, _type):
-    return _MessageBoxW(hwnd, text, title, _type)
-
-
-_CancelIo = _kernel32.CancelIo
-_CancelIo.argtypes = (c_void_p,)
-
-
-def CancelIo(hfile):
-    return _CancelIo(hfile)
 
 
 def GetDpiForWindow(hwnd):
@@ -934,22 +804,14 @@ def CreatePipe(lpsecu=None, sz=0):
     return AutoHandle(hread.value), AutoHandle(hwrite.value)
 
 
-_CopyFile = _kernel32.CopyFileW
-_CopyFile.argtypes = LPCWSTR, LPCWSTR, BOOL
-_CopyFile.restype = BOOL
+CopyFile = _kernel32.CopyFileW
+CopyFile.argtypes = LPCWSTR, LPCWSTR, BOOL
+CopyFile.restype = BOOL
 
 
-def CopyFile(src, dst, bFailIfExists):
-    return _CopyFile(src, dst, bFailIfExists)
-
-
-_SetPropW = _user32.SetPropW
-_SetPropW.argtypes = HWND, LPCWSTR, HANDLE
-_SetPropW.restype = BOOL
-
-
-def SetProp(hwnd, string, hdata):
-    return _SetPropW(hwnd, string, hdata)
+SetProp = _user32.SetPropW
+SetProp.argtypes = HWND, LPCWSTR, HANDLE
+SetProp.restype = BOOL
 
 
 _GetEnvironmentVariableW = _kernel32.GetEnvironmentVariableW
@@ -965,12 +827,8 @@ def addenvpath(path):
     _SetEnvironmentVariableW("PATH", env.value + ";" + path)
 
 
-_LoadLibraryW = _kernel32.LoadLibraryW
-_LoadLibraryW.argtypes = (LPCWSTR,)
-
-
-def loadlibrary(path):
-    _LoadLibraryW(path)
+LoadLibraryW = _kernel32.LoadLibraryW
+LoadLibraryW.argtypes = (LPCWSTR,)
 
 
 SECTION_MAP_WRITE = 0x0002
@@ -1056,3 +914,48 @@ _MonitorFromWindow.restype = HMONITOR
 
 def MonitorFromWindow(hwnd, dwFlags=MONITOR_DEFAULTTONEAREST):
     return _MonitorFromWindow(hwnd, dwFlags)
+
+
+WINEVENTPROC = CFUNCTYPE(
+    None,
+    HANDLE,
+    DWORD,
+    HWND,
+    LONG,
+    LONG,
+    DWORD,
+    DWORD,
+)
+
+
+PM_REMOVE = 0x0001
+
+PeekMessageA = _user32.PeekMessageA
+PeekMessageA.argtypes = LPMSG, HWND, UINT, UINT, UINT
+PeekMessageA.restype = BOOL
+RegisterHotKey = _user32.RegisterHotKey
+RegisterHotKey.argtypes = HWND, c_int, UINT, UINT
+RegisterHotKey.restype = BOOL
+UnregisterHotKey = _user32.UnregisterHotKey
+UnregisterHotKey.restype = BOOL
+UnregisterHotKey.argtypes = HWND, c_int
+
+UnhookWindowsHookEx = _user32.UnhookWindowsHookEx
+UnhookWindowsHookEx.argtypes = (HHOOK,)
+UnhookWindowsHookEx.restype = BOOL
+TranslateMessage = _user32.TranslateMessage
+TranslateMessage.argtypes = (LPMSG,)
+TranslateMessage.restype = BOOL
+DispatchMessageW = _user32.DispatchMessageW
+DispatchMessageW.argtypes = (LPMSG,)
+DispatchMessageW.restype = LRESULT
+GetMessageW = _user32.GetMessageW
+GetMessageW.argtypes = LPMSG, HWND, UINT, UINT
+GetMessageW.restype = BOOL
+SetWinEventHook = _user32.SetWinEventHook
+SetWinEventHook.restype = HWINEVENTHOOK
+SetWinEventHook.argtypes = DWORD, DWORD, HMODULE, WINEVENTPROC, DWORD, DWORD, DWORD
+
+PathFileExists = windll.Shlwapi.PathFileExistsW
+PathFileExists.argtypes = (LPCWSTR,)
+PathFileExists.restype = BOOL

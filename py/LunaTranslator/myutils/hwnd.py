@@ -173,8 +173,8 @@ def ListProcess(exe=None):
     return ret.get(exe, [])
 
 
-def getExeIcon(name, icon=True, cache=False):
-    if name.lower()[-4:] == ".lnk":
+def getExeIcon(name: str, icon=True, cache=False):
+    if name.lower().endswith(".lnk"):
         exepath, args, iconpath, dirp = winsharedutils.GetLnkTargetPath(name)
         if os.path.exists(iconpath):
             name = iconpath

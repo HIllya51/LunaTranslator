@@ -1,6 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
-import importlib, copy
+import importlib, copy, os
 from webviewpy import webview_exception
 from gui.usefulwidget import getQMessageBox
 from traceback import print_exc
@@ -8,6 +8,7 @@ from traceback import print_exc
 
 class Textbrowser(QFrame):
     contentsChanged = pyqtSignal(QSize)
+    dropfilecallback = pyqtSignal(str)
 
     def resizeEvent(self, event: QResizeEvent):
         self.textbrowser.resize(event.size())
@@ -24,6 +25,7 @@ class Textbrowser(QFrame):
         if self.textbrowser:
             self.textbrowser.hide()
             self.textbrowser.contentsChanged.disconnect()
+            self.textbrowser.dropfilecallback.disconnect()
             self.textbrowser.deleteLater()
         if __ == "QWebEngine":
             __ = "webview"
@@ -51,6 +53,7 @@ class Textbrowser(QFrame):
         self.textbrowser.move(0, 0)
         self.textbrowser.setMouseTracking(True)
         self.textbrowser.contentsChanged.connect(self._contentsChanged)
+        self.textbrowser.dropfilecallback.connect(self.normdropfilepath)
         self.textbrowser.resize(size)
         self.textbrowser.show()
         self.textbrowser.setselectable(globalconfig["selectable"])
@@ -58,6 +61,9 @@ class Textbrowser(QFrame):
         self.textbrowser.showhidetranslatorname(globalconfig["showfanyisource"])
         self.textbrowser.showhidetranslate(globalconfig["showfanyi"])
         self.refreshcontent()
+
+    def normdropfilepath(self, file):
+        self.dropfilecallback.emit(os.path.normpath(file))
 
     def refreshcontent(self):
         traces = self.trace.copy()

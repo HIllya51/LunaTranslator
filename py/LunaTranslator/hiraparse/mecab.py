@@ -1,7 +1,5 @@
 import winsharedutils
-import os, functools, csv, gobject
-from ctypes import CFUNCTYPE, c_char_p
-
+import os, csv, gobject
 from hiraparse.basehira import basehira
 
 # # 2.1.2 src schema
@@ -61,7 +59,7 @@ class mecabwrap:
             fields = list(csv.reader([feature.decode(codec)]))[0]
             res.append((surface.decode(codec), fields))
 
-        fp = CFUNCTYPE(None, c_char_p, c_char_p)(cb)
+        fp = winsharedutils.mecab_parse_cb(cb)
         succ = winsharedutils.mecab_parse(self.kks, text.encode(codec), fp)
         if not succ:
             raise Exception("mecab parse failed")

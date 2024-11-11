@@ -27,16 +27,16 @@ class Launcher:
 class LEbase(Launcher):
 
     def runX(self, exe, usearg, dirpath, config): ...
-    def run(self, game, config):
+    def run(self, game: str, config):
         dirpath = os.path.dirname(game)
-        if game.lower()[-4:] not in [".lnk", ".exe"]:
+        if not (game.lower().endswith(".exe") or game.lower().endswith(".lnk")):
             # 对于其他文件，需要AssocQueryStringW获取命令行才能正确le，太麻烦，放弃。
             windows.ShellExecute(None, "open", game, "", dirpath, windows.SW_SHOW)
             return
 
         execheck3264 = game
         usearg = '"{}"'.format(game)
-        if game.lower()[-4:] == ".lnk":
+        if game.lower().endswith(".lnk"):
             exepath, args, iconpath, dirp = winsharedutils.GetLnkTargetPath(game)
 
             if args != "":

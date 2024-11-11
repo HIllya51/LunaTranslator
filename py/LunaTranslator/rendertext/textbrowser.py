@@ -53,7 +53,21 @@ class Qlabel_c(QLabel):
 
 class TextBrowser(QWidget, dataget):
     contentsChanged = pyqtSignal(QSize)
+    dropfilecallback = pyqtSignal(str)
     _padding = 5
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        files = [u.toLocalFile() for u in event.mimeData().urls()]
+        if not files:
+            return
+        file = files[0]
+        self.dropfilecallback.emit(file)
 
     def __makeborder(self, size: QSize):
         # border是用来当可选取时，用来拖动的
@@ -85,6 +99,7 @@ class TextBrowser(QWidget, dataget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        self.setAcceptDrops(True)
         self.atback_color = QLabel(self)
         self.atback_color.setMouseTracking(True)
         self.atback2 = QLabel(self)

@@ -3,7 +3,13 @@ import time, functools, threading, os, importlib, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, tryprint
-from myutils.config import globalconfig, saveallconfig, static_data, savehook_new_data
+from myutils.config import (
+    globalconfig,
+    saveallconfig,
+    static_data,
+    savehook_new_data,
+    savehook_new_list,
+)
 from gui.dialog_savedgame import dialog_setting_game
 from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
@@ -12,13 +18,13 @@ from myutils.utils import (
     str2rgba,
     makehtml,
     loadpostsettingwindowmethod_maybe,
+    find_or_create_uid,
 )
 from myutils.hwnd import (
     mouseselectwindow,
     grabwindow,
     getExeIcon,
     getcurrexe,
-    hwndratex,
 )
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
@@ -33,6 +39,7 @@ from gui.usefulwidget import (
 from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.dialog_savedgame_setting import favorites, calculate_centered_rect
+from gui.dialog_savedgame_common import startgame
 from gui.dynalang import LDialog
 
 
@@ -947,6 +954,7 @@ class TranslatorWindow(resizableframeless):
         self.left_bottom_corner = self.geometry().bottomLeft()
         self.translate_text = Textbrowser(self)
         self.translate_text.move(0, 0)
+        self.translate_text.dropfilecallback.connect(self.dropfilecallback)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
         self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
         self.titlebar.raise_()
@@ -956,6 +964,14 @@ class TranslatorWindow(resizableframeless):
         t.timeout.connect(self.__betterenterevent)
         t.start()
         self.adjustbuttons = self.titlebar.adjustbuttons
+
+    def dropfilecallback(self, file: str):
+        if not (file.lower().endswith(".exe") or file.lower().endswith(".lnk")):
+            return
+        uid = find_or_create_uid(savehook_new_list, file)
+        if uid not in savehook_new_list:
+            savehook_new_list.insert(0, uid)
+        startgame(uid)
 
     def showEvent(self, e):
         if not self.firstshow:

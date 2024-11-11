@@ -49,9 +49,9 @@ levenshtein_ratio.restype = c_double
 mecab_init = utilsdll.mecab_init
 mecab_init.argtypes = c_char_p, c_wchar_p
 mecab_init.restype = c_void_p
-
+mecab_parse_cb = CFUNCTYPE(None, c_char_p, c_char_p)
 mecab_parse = utilsdll.mecab_parse
-mecab_parse.argtypes = (c_void_p, c_char_p, c_void_p)
+mecab_parse.argtypes = (c_void_p, c_char_p, mecab_parse_cb)
 mecab_parse.restype = c_bool
 
 mecab_end = utilsdll.mecab_end
@@ -235,8 +235,9 @@ def queryversion(exe):
     return None
 
 
+globalmessagelistener_cb = CFUNCTYPE(None, c_int, c_void_p)
 globalmessagelistener = utilsdll.globalmessagelistener
-globalmessagelistener.argtypes = (c_void_p,)
+globalmessagelistener.argtypes = (globalmessagelistener_cb,)
 dispatchcloseevent = utilsdll.dispatchcloseevent
 
 setdwmextendframe = utilsdll.setdwmextendframe
@@ -332,11 +333,14 @@ put_ZoomFactor = utilsdll.put_ZoomFactor
 put_ZoomFactor.argtypes = c_void_p, c_double
 put_PreferredColorScheme = utilsdll.put_PreferredColorScheme
 put_PreferredColorScheme.argtypes = c_void_p, c_int
-put_PreferredColorScheme.restype = c_long
 set_transparent_background = utilsdll.set_transparent_background
 set_transparent_background.argtypes = (c_void_p,)
-
-
+add_WebMessageReceived = utilsdll.add_WebMessageReceived
+add_WebMessageReceived_cb = CFUNCTYPE(c_void_p, c_wchar_p)
+add_WebMessageReceived.argtypes = (c_void_p, add_WebMessageReceived_cb)
+add_WebMessageReceived.restype = c_void_p
+remove_WebMessageReceived = utilsdll.remove_WebMessageReceived
+remove_WebMessageReceived.argtypes = c_void_p, c_void_p
 clipboard_callback = utilsdll.clipboard_callback
 clipboard_callback.argtypes = (c_void_p,)
 clipboard_callback.restype = HWND
@@ -364,9 +368,9 @@ GetMonitorDpiScaling = utilsdll.GetMonitorDpiScaling
 GetMonitorDpiScaling.argtypes = (HWND,)
 GetMonitorDpiScaling.restype = UINT
 
-
+StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
-StartCaptureAsync.argtypes = (c_void_p,)
+StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)
 StartCaptureAsync.restype = HANDLE
 StopCaptureAsync = utilsdll.StopCaptureAsync
 StopCaptureAsync.argtypes = (HANDLE,)

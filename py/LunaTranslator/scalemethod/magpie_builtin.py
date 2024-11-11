@@ -3,7 +3,6 @@ import json
 import windows, gobject
 from myutils.config import globalconfig, magpie_config
 from myutils.subproc import subproc_w
-from ctypes import c_int, CFUNCTYPE, c_void_p
 import winsharedutils
 
 class Method(scalebase):
@@ -19,7 +18,7 @@ class Method(scalebase):
             self.setuistatus(int(bool(status)))
 
     def init(self):
-        self.messagecallback__ = CFUNCTYPE(None, c_int, c_void_p)(self.messagecallback)
+        self.messagecallback__ = winsharedutils.globalmessagelistener_cb(self.messagecallback)
         winsharedutils.globalmessagelistener(self.messagecallback__)
         self.jspath = gobject.gettempdir("magpie.config.json")
         self.engine = subproc_w(

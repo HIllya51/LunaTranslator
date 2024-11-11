@@ -1230,11 +1230,15 @@ class abstractwebview(QWidget):
 class WebivewWidget(abstractwebview):
     html_limit = 1572834
     # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
+    dropfilecallback = pyqtSignal(str)
 
     def __del__(self):
         if not self.webview:
             return
         winsharedutils.remove_ZoomFactorChanged(self.get_controller(), self.__token)
+        winsharedutils.remove_WebMessageReceived(
+            self.get_controller(), self.m_webMessageReceivedToken
+        )
 
     def bind(self, fname, func):
         self.webview.bind(fname, func)
@@ -1256,13 +1260,19 @@ class WebivewWidget(abstractwebview):
         super().__init__(parent)
         self.webview = None
         self.webview = Webview(debug=debug, window=int(self.winId()))
-        zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(
+        self.m_webMessageReceivedToken = None
+        self.zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(
             self.on_ZoomFactorChanged.emit
         )
         self.__token = winsharedutils.add_ZoomFactorChanged(
-            self.get_controller(), zoomfunc
+            self.get_controller(), self.zoomfunc
         )
-        self.keepref = [zoomfunc]
+        self.dropfilecallback__ref = winsharedutils.add_WebMessageReceived_cb(
+            self.dropfilecallback.emit
+        )
+        self.m_webMessageReceivedToken = winsharedutils.add_WebMessageReceived(
+            self.get_controller(), self.dropfilecallback__ref
+        )
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
         if usedarklight:

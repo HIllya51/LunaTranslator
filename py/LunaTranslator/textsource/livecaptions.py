@@ -13,9 +13,7 @@ class livecaptions(basetext):
             threading.Thread(target=os.system, args=("livecaptions.exe",)).start()
         self.curr = ""
         self.lastshow = ""
-        self._kep = winrtutils.CFUNCTYPE(winrtutils.c_void_p, winrtutils.c_wchar_p)(
-            self.callback
-        )
+        self._kep = winrtutils.livecaption_start_callback(self.callback)
         self.sem = winrtutils.livecaption_start(self._kep)
         self.lasttime = time.time()
         self.flashtime = time.time()

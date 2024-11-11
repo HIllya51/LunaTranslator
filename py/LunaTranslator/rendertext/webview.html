@@ -19,6 +19,21 @@
         display: none;
     }
 </style>
+
+<script>document.addEventListener('DOMContentLoaded', () => {
+        //https://github.com/MicrosoftEdge/WebView2Feedback/blob/main/specs/WebMessageObjects.md
+
+        // 阻止浏览器默认行为
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            document.body.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+        document.body.addEventListener('drop', (e) => { chrome.webview.postMessageWithAdditionalObjects("FilesDropped", e.dataTransfer.files); }, false);
+
+    });
+</script>
 <script>
     //nativte api
     function safe_calllunaheightchange(h) {

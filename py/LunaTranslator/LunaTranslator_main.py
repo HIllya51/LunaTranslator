@@ -1,5 +1,4 @@
 import sys, os
-from ctypes import windll, wintypes
 
 
 def dopathexists(file: str):
@@ -12,10 +11,7 @@ def dopathexists(file: str):
     file = windows.check_maybe_unc_file(file)
     if not file:
         return False
-    PathFileExists = windll.Shlwapi.PathFileExistsW
-    PathFileExists.argtypes = (wintypes.LPCWSTR,)
-    PathFileExists.restype = wintypes.BOOL
-    return bool(PathFileExists(os.path.abspath(file)))
+    return bool(windows.PathFileExists(os.path.abspath(file)))
 
 
 def overridepathexists():
@@ -28,7 +24,7 @@ def prepareqtenv():
 
     # win7 no vcredist2015
     windows.addenvpath("./files/runtime/")
-    windows.loadlibrary("./files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
+    windows.LoadLibraryW("./files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
 
     from qtsymbols import QApplication, isqt5, Qt, QFont, QLocale
 

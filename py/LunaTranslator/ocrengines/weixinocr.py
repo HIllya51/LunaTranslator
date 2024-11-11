@@ -1,4 +1,4 @@
-import gobject, os, uuid, windows
+import gobject, os, uuid
 from ocrengines.baseocrclass import baseocr
 from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, CFUNCTYPE, c_bool, c_int
 import winsharedutils

@@ -1590,7 +1590,7 @@
             "name": "百度_v2"
         },
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度_v1"
         },
