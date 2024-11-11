@@ -11,6 +11,7 @@
 #include "engine32/LCScript.h"
 #include "engine32/Cage.h"
 #include "engine32/ONScripterru.h"
+#include "engine32/Winters.h"
 #include "engine32/CoffeeMaker.h"
 #include "engine32/TACTICS.h"
 #include "engine32/splushwave.h"
@@ -412,5 +413,6 @@ std::vector<ENGINE *> check_engines()
         new AksysGames,
         new AGE_System,
         new Cage,
+        new Winters
     };
 }
