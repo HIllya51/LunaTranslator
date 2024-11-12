@@ -1,7 +1,5 @@
 ### 下载
 
-下载后解压到任意目录
-
 #### 国内免魔法上网下载链接（若连不上github可以用该链接下载）
 
 下载64位版 <a href="https://lunatranslator.org/Resource/DownloadLuna/64" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 下载32位版 <a href="https://lunatranslator.org/Resource/DownloadLuna/32" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
@@ -15,10 +13,9 @@
 
 不要下错了下成源代码了！
 
-![img](https://image.lunatranslator.org/zh/down.png)
-
 ### 启动
 
+下载后解压到任意目录
 
 **LunaTranslator.exe** 会以普通模式启动 
 

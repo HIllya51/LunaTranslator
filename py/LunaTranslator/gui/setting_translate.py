@@ -158,6 +158,24 @@ def getrenameablellabel(uid):
     return name
 
 
+def loadbutton(self, fanyi):
+    which = translate_exits(fanyi, which=True)
+    items = autoinitdialog_items(translatorsetting[fanyi])
+    if which == 0:
+        aclass = "translator." + fanyi
+    elif which == 1:
+        aclass = "userconfig.copyed." + fanyi
+    return autoinitdialogx(
+        self,
+        translatorsetting[fanyi]["args"],
+        dynamicapiname(fanyi),
+        800,
+        items,
+        aclass,
+        fanyi,
+    )
+
+
 def selectllmcallback(self, countnum, btnplus, fanyi, name):
     uid = str(uuid.uuid4())
     _f11 = "./Lunatranslator/translator/{}.py".format(fanyi)
@@ -181,19 +199,8 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
 
     layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
 
-    items = autoinitdialog_items(translatorsetting[uid])
-
     last = getIconButton(
-        callback=functools.partial(
-            autoinitdialogx,
-            self,
-            translatorsetting[uid]["args"],
-            dynamicapiname(uid),
-            800,
-            items,
-            "userconfig.copyed." + uid,
-            uid,
-        ),
+        callback=functools.partial(loadbutton, self, uid),
         icon="fa.gear",
     )
 
@@ -352,24 +359,8 @@ def initsome11(self, l, label=None, btnplus=False):
         i += 1
         countnum.append(fanyi)
         if fanyi in translatorsetting:
-
-            items = autoinitdialog_items(translatorsetting[fanyi])
-
-            if which == 0:
-                aclass = "translator." + fanyi
-            elif which == 1:
-                aclass = "userconfig.copyed." + fanyi
             last = D_getIconButton(
-                callback=functools.partial(
-                    autoinitdialogx,
-                    self,
-                    translatorsetting[fanyi]["args"],
-                    dynamicapiname(fanyi),
-                    800,
-                    items,
-                    aclass,
-                    fanyi,
-                ),
+                callback=functools.partial(loadbutton, self, fanyi),
                 icon="fa.gear",
             )
         elif fanyi == "selfbuild":
@@ -494,7 +485,13 @@ def setTabTwo_lazy(self, basel):
             ),
             "",
             "显示翻译器名称",
-            D_getsimpleswitch(globalconfig, "showfanyisource", callback=lambda x:gobject.baseobject.translation_ui.translate_text.textbrowser.showhidetranslatorname(x)),
+            D_getsimpleswitch(
+                globalconfig,
+                "showfanyisource",
+                callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.showhidetranslatorname(
+                    x
+                ),
+            ),
             "",
             "翻译请求间隔_(s)",
             D_getspinbox(

@@ -1,28 +1,17 @@
 ## Basic Usage
 
-The interface after startup is as follows.
+The interface after launching is as follows.
 
-![img](https://image.lunatranslator.org/zh/opensetting.png)  
+![Startup Interface](https://image.lunatranslator.org/zh/basicuse/startup2.png)
 
-First, you need to activate several translation sources. Click the "Open Settings" button to open the settings interface, and then click on "Translation Settings" on the left side.
+Drag the game executable file into the software window using your mouse.
 
-In the online translation section on the right below, choose any translation sources and activate them.
+![Drag Game to Software](https://image.lunatranslator.org/zh/basicuse/load.png)
 
-![img](https://image.lunatranslator.org/zh/transsetting.png) 
+After releasing the mouse, the game will be automatically added to the software, which will then inject itself into the game, and a text selection window will pop up.
 
+![Game Loaded](https://image.lunatranslator.org/zh/basicuse/loaded.png)
 
-Close the settings interface, click the "Select Game" button to open the game selection interface, select the game and then OK.
+Run the game for a moment to display some text. At this point, several candidate text lines will appear in the text selection interface. Select the text lines that match the game's text to start the translation process.
 
-![img](https://image.lunatranslator.org/zh/attach.png)  
-
-![img](https://image.lunatranslator.org/zh/selectgame.png)  
-
-Then, a text selection interface will pop up. Let the game run for a while to display some text. At this point, several text lines will appear in the text selection interface.
-
-Click the button under the first column selection, or double-click the text line to select that line of text for translation. (If the game supports embedded translation, a second column "Embedded" will also appear)
-
-![img](https://image.lunatranslator.org/zh/selecttext.png)  
-
-After the selection is complete, close the text selection interface. At this point, you can see the translation of the game.
-
-![img](https://image.lunatranslator.org/zh/showtrans.png)
+![Translation Process](https://image.lunatranslator.org/zh/basicuse/trans.png)

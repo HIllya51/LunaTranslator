@@ -3,28 +3,16 @@
  
 启动后的界面如下。
 
-![img](https://image.lunatranslator.org/zh/opensetting.png) 
+![img](https://image.lunatranslator.org/zh/basicuse/startup2.png) 
 
-首先需要激活若干个翻译源，点击“打开设置”按钮，打开设置界面，然后在左侧点击“翻译设置”。
+将游戏程序用鼠标拖拽到软件的窗口中。
 
+![img](https://image.lunatranslator.org/zh/basicuse/load.png) 
 
-在右侧下面的在线翻译中，任意选择一些翻译源，进行激活。
+然后松开鼠标后，游戏将会被自动添加到软件中自动注入到游戏，然后会弹出选择文本窗口。
 
-![img](https://image.lunatranslator.org/zh/transsetting.png)
+![img](https://image.lunatranslator.org/zh/basicuse/loaded.png) 
 
+让游戏运行一下，以显示一些文本，这时选择文本界面中将会出现若干候选文本行。选择其中符合游戏文本的文本行，即可开始翻译。
 
-关闭设置界面，点击“选择游戏”按钮，打开游戏选择界面，选择游戏后OK
-
-![img](https://image.lunatranslator.org/zh/attach.png) 
-
-![img](https://image.lunatranslator.org/zh/selectgame.png) 
-
-然后会弹出选择文本界面，让游戏运行一下，以显示一些文本，这时选择文本界面中将会出现若干文本行。
-
-点击第一列的选择下面的按钮，或者双击文本行，以选择该行文本进行翻译。（如果该游戏支持内嵌翻译，还会额外出现第二列“内嵌”）
-
-![img](https://image.lunatranslator.org/zh/selecttext.png) 
-
-选择完毕后关闭选择文本界面即可。这时可以看到游戏的翻译。
-
-![img](https://image.lunatranslator.org/zh/showtrans.png)
+![img](https://image.lunatranslator.org/zh/basicuse/trans.png) 

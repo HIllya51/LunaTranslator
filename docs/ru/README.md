@@ -1,22 +1,21 @@
 ### Скачать
 
-Скачать 64-битную версию <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip"  target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a>  Скачать 32-битную версию <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip"  target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>  или из <a  target="_blank" href="https://github.com/HIllya51/LunaTranslator/releases"  target="_blank"> выпусков</a> скачать <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip"  target="_blank">LunaTranslator.zip</a> или <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip"  target="_blank">LunaTranslator_x86.zip</a>, распаковать в любую директорию.
+#### Скачать с Github Release
 
-#### Внимание
+Скачать версию для 64-битных систем <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/скачать_64бит-blue"/></a> Скачать версию для 32-битных систем <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/скачать_32бит-blue"/></a>
 
-Не скачивайте вместо исполняемого файла исходный код!
+#### Примечание
 
-![img](https://image.lunatranslator.org/zh/down.png) 
+Не скачивайте исходный код по ошибке!
 
 ### Запуск
 
+После скачивания распакуйте файлы в любую папку.
 
-**LunaTranslator.exe** запускается в обычном режиме
+- **LunaTranslator.exe** запустит программу в обычном режиме.
+- **LunaTranslator_admin.exe** запустит программу с правами администратора, что необходимо для некоторых игр, чтобы они могли быть захукированы; используйте этот файл только тогда, когда это необходимо, в остальных случаях запускайте программу в обычном режиме.
+- **LunaTranslator_debug.exe** откроет командное окно.
 
-**LunaTranslator_admin.exe** запускается с правами администратора, некоторые игры требуют прав администратора для HOOK, используйте его только в этом случае, в остальных случаях запускайте в обычном режиме.
+#### Примечание
 
-**LunaTranslator_debug.exe** Показать окно командной строки
-
-#### Внимание
-
-Иногда антивирусное программное обеспечение блокирует его, пожалуйста, добавьте доверие и заново скачайте и распакуйте.
+Иногда программа может быть заблокирована антивирусом. Пожалуйста, добавьте её в список доверенных и повторно скачайте и распакуйте.
