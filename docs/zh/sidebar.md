@@ -1,7 +1,6 @@
 **基本的**
 
-- [简介](/zh/README.md)
-- [下载和启动](/zh/start.md)
+- [下载和启动](/zh/README.md)
     - [无法启动软件](/zh/cantstart.md)
 - [基本用法](/zh/basicuse.md)
 - [软件更新](/zh/update.md)

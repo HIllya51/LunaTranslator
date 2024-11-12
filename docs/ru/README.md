@@ -1,47 +1,22 @@
+### Скачать
 
-> **Транслятор для galgame**
+Скачать 64-битную версию <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip"  target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a>  Скачать 32-битную версию <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip"  target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>  или из <a  target="_blank" href="https://github.com/HIllya51/LunaTranslator/releases"  target="_blank"> выпусков</a> скачать <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip"  target="_blank">LunaTranslator.zip</a> или <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip"  target="_blank">LunaTranslator_x86.zip</a>, распаковать в любую директорию.
 
-## Поддержка функций
+#### Внимание
 
-#### Ввод текста
+Не скачивайте вместо исполняемого файла исходный код!
 
-- **HOOK** Поддерживает получение текста с использованием метода [HOOK](https://github.com/HIllya51/LunaHook), поддерживает использование специальных кодов, поддерживает автоматическое сохранение игр и HOOK, автоматическое загрузка HOOK и т.д. Для некоторых движков также поддерживается встроенная трансляция. Для игр, которые не поддерживаются или плохо поддерживаются, пожалуйста, [отправьте обратную связь](https://lunatranslator.org/Resource/game_support) 
+![img](https://image.lunatranslator.org/zh/down.png) 
+
+### Запуск
 
 
-- **OCR** поддерживает **офлайн OCR** (помимо [встроенного OCR-движка](https://github.com/HIllya51/LunaOCR), также поддерживает WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) и **онлайн OCR** (Baidu, Youdao, Feishu, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, совместимые интерфейсы ChatGPT).
+**LunaTranslator.exe** запускается в обычном режиме
 
-- **Буфер обмена** Поддерживает получение текста из буфера обмена для перевода
+**LunaTranslator_admin.exe** запускается с правами администратора, некоторые игры требуют прав администратора для HOOK, используйте его только в этом случае, в остальных случаях запускайте в обычном режиме.
 
-- **Вывод текста** Извлеченный текст может быть выведен в буфер обмена, Websocket для использования другими программами.
+**LunaTranslator_debug.exe** Показать окно командной строки
 
-#### Транслятор
+#### Внимание
 
-Поддерживает почти все представимые системы перевода, включая: 
-
-- **Бесплатные онлайн переводы** Поддерживает использование Baidu, Bing, Google, Alibaba, Youdao, Caiyun, Sogou, iFlytek, Tencent, ByteDance, Volcano, DeepL/DeepLX, papago, yandex, lingva, reverso, TranslateCom, ModernMT
-
-- **Зарегистрированные онлайн переводы** Поддерживает использование зарегистрированных пользователем **традиционных переводов** ( Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, DeepL, yandex, google, ibm, Azure, Lark ) и **больших моделей перевода** ( интерфейс совместимый с ChatGPT, claude, cohere, gemini, Baidu Qianfan, Tencent Hunyuan )
-
-- **Оффлайн перевод** Поддерживает **традиционный перевод** ( J Beijing 7, Kingsoft, Yidiantong, ezTrans, Sugoi, MT5 ) и оффлайн развернутый **большой модельный перевод** ( интерфейс совместимый с ChatGPT, Sakura большой модель )
-
-- **Chrome отладочный перевод** Поддерживает **традиционный перевод** ( deepl, yandex, youdao, baidu, tencent, bing, caiyun, xiaoniu, alibaba, google ) и **большой модельный перевод** ( chatgpt, deepseek, moonshot, qianwen, chatglm, Theb.ai, DuckDuckGo )
-
-- **Предварительный перевод** Поддерживает чтение предварительно переведенных файлов, поддерживает кэширование переводов
-
-- **Поддержка пользовательских расширений перевода** Поддерживает расширение других интерфейсов перевода с использованием языка Python
- 
- 
-#### Синтез речи
-
-- **Оффлайн TTS** Поддерживает WindowsTTS, VoiceRoid2/VoiceRoid+, NeoSpeech, VOICEVOX, VITS
-
-- **Онлайн TTS** Поддерживает Volcano TTS, Youdao TTS, Edge TTS, Google TTS
-
-#### Изучение японского языка
-
-- **Сегментация японских слов и отображение глифов** Поддерживает использование Mecab и других для сегментации и отображения глифов
-
-- **Поиск слов** Поддерживает использование **оффлайн словарей** ( MDICT, Shougakukan, Lingoes Dictionary, EDICT/EDICT2 ) и **онлайн словарей** ( Youdao, weblio, Goo, Moji, jisho ) для поиска слов
-
-- **Anki** Поддерживает добавление слов в Anki одним нажатием кнопки
-
+Иногда антивирусное программное обеспечение блокирует его, пожалуйста, добавьте доверие и заново скачайте и распакуйте.
