@@ -1,4 +1,5 @@
 from urllib.parse import quote
+import time
 from translator.basetranslator_dev import basetransdev
 
 
@@ -31,8 +32,13 @@ class TS(basetransdev):
                 ("complete", ""),
                 multi=True,
             )
-            href: str = self.wait_for_result("window.location.href")
-            src, tgt = href.split("#")[1].split("/")[:2]
+            while True:
+                href: str = self.wait_for_result("window.location.href")
+                try:
+                    src, tgt = href.split("#")[1].split("/")[:2]
+                    break
+                except:
+                    time.sleep(0.1)
             if tgt != self.tgtlang:
                 self.Page_navigate(
                     "https://www.deepl.com/en/translator#{}/{}/{}".format(
