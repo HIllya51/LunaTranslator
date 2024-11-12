@@ -31,8 +31,6 @@ DECLARE_API bool wcocr_ocr(void *pobj, const char *u8path, void (*cb)(int, int, 
     CWeChatOCR::result_t res;
     if (!obj->doOCR(u8path, &res))
         return false;
-    std::vector<std::wstring> rets;
-    std::vector<int> xs, ys, xs2, ys2;
     for (auto &blk : res.ocr_response)
     {
         cb(blk.left, blk.top, blk.right, blk.bottom, blk.text.c_str());
