@@ -1821,11 +1821,6 @@
             "color": "blue",
             "name": "有道_v3"
         },
-        "youdao5": {
-            "use": false,
-            "color": "blue",
-            "name": "有道_v5"
-        },
         "itrans": {
             "use": false,
             "color": "blue",
