@@ -66,7 +66,7 @@ class Reverso(Tse):
         self.host_url = "https://www.reverso.net/text-translation"
         self.api_url = "https://api.reverso.net/translate/v1/translation"
         self.language_url = None
-        self.language_pattern = "https://cdn.reverso.net/trans/v(\d).(\d).(\d)/main.js"
+        self.language_pattern = r"https://cdn.reverso.net/trans/v(\d).(\d).(\d)/main.js"
         self.host_headers = self.get_headers(self.host_url, if_api=False)
         self.api_headers = self.get_headers(
             self.host_url, if_api=True, if_json_for_api=True
@@ -133,6 +133,7 @@ class Reverso(Tse):
         return data if is_detail_result else "".join(data["translation"])
 
 
+from myutils.languageguesser import guess
 from translator.basetranslator import basetrans
 
 
@@ -154,10 +155,14 @@ class TS(basetrans):
         self.engine._ = None
 
     def translate(self, content):
-
+        if self.srclang != "auto":
+            src = self.srclang
+        else:
+            gs = guess(content)
+            src = self.langmap_.get(gs, gs)
         return self.engine.reverso_api(
             content,
-            self.parse_maybe_autolang(content),
+            src,
             self.tgtlang,
             proxies=self.proxy,
         )

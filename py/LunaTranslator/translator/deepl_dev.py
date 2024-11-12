@@ -18,13 +18,43 @@ class TS(basetransdev):
         return self.tgtlang_1
 
     def translate(self, content):
-        self.Page_navigate(
-            "https://www.deepl.com/en/translator#{}/{}/{}".format(
-                self.parse_maybe_autolang(content), self.tgtlang, quote(content)
+        if self.srclang == "auto":
+            self.Runtime_evaluate(
+                'document.querySelector("#translator-source-clear-button").click()'
             )
-        )
-        return self.wait_for_result(
-            'document.getElementsByTagName("d-textarea")[1].textContent',
-            ("complete", ""),
-            multi=True,
-        )
+            self.Runtime_evaluate(
+                "document.getElementsByTagName('d-textarea')[0].focus()"
+            )
+            self.send_keys(content)
+            result = self.wait_for_result(
+                'document.getElementsByTagName("d-textarea")[1].textContent',
+                ("complete", ""),
+                multi=True,
+            )
+            href: str = self.wait_for_result("window.location.href")
+            src, tgt = href.split("#")[1].split("/")[:2]
+            if tgt != self.tgtlang:
+                self.Page_navigate(
+                    "https://www.deepl.com/en/translator#{}/{}/{}".format(
+                        src, self.tgtlang, quote(content)
+                    )
+                )
+                return self.wait_for_result(
+                    'document.getElementsByTagName("d-textarea")[1].textContent',
+                    ("complete", ""),
+                    multi=True,
+                )
+            else:
+                return result
+
+        else:
+            self.Page_navigate(
+                "https://www.deepl.com/en/translator#{}/{}/{}".format(
+                    self.srclang, self.tgtlang, quote(content)
+                )
+            )
+            return self.wait_for_result(
+                'document.getElementsByTagName("d-textarea")[1].textContent',
+                ("complete", ""),
+                multi=True,
+            )

@@ -40,6 +40,29 @@ class TS(basetrans):
             "la": "lat",
         }
 
+    def detectlang(self, query):
+
+        headers = {
+            "sec-ch-ua-platform": '"Windows"',
+            "Referer": "https://fanyi.baidu.com/mtpe-individual/multimodal",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+            "sec-ch-ua": '"Google Chrome";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
+            "Content-Type": "application/x-www-form-urlencoded",
+            "sec-ch-ua-mobile": "?0",
+        }
+
+        data = {
+            "query": query,
+        }
+
+        response = self.proxysession.post(
+            "https://fanyi.baidu.com/langdetect", headers=headers, data=data
+        )
+        try:
+            return response.json()["lan"]
+        except:
+            raise Exception(response.maybejson)
+
     def translate(self, query):
 
         headers = {
@@ -55,7 +78,7 @@ class TS(basetrans):
 
         json_data = {
             "query": query,
-            "from": self.parse_maybe_autolang(query),
+            "from": self.detectlang(query) if self.srclang == "auto" else self.srclang,
             "to": self.tgtlang,
             "reference": "",
             "corpusIds": [],

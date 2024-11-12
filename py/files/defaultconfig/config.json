@@ -1585,12 +1585,12 @@
             "name": "Azure"
         },
         "baidu_ai": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "name": "百度_v2"
         },
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "name": "百度_v1"
         },
@@ -1840,11 +1840,6 @@
             "use": false,
             "color": "blue",
             "name": "reverso"
-        },
-        "reverso_context": {
-            "use": false,
-            "color": "blue",
-            "name": "reverso_context"
         },
         "TranslateCom": {
             "use": false,

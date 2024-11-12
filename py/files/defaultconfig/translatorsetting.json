@@ -4,6 +4,21 @@
 			"host": "translate.plausibility.cloud"
 		}
 	},
+	"reverso": {
+		"args": {
+			"origin": 0
+		},
+		"argstype": {
+			"origin": {
+				"rank": 0,
+				"type": "combo",
+				"list": [
+					"translation.web",
+					"contextweb"
+				]
+			}
+		}
+	},
 	"deepl": {
 		"args": {
 			"usewhich": 0,

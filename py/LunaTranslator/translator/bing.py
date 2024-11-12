@@ -174,20 +174,21 @@ class Bing(Tse):
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-Hans", "cht": "zh-Hant"}
+        return {"zh": "zh-Hans", "cht": "zh-Hant", "auto": "auto-detect"}
 
     def inittranslator(self):
         self.engine = Bing()
 
     def translate(self, content):
-        src = self.parse_maybe_autolang(content)
         try:
             return self.engine.bing_api(
                 content,
-                src,
+                self.srclang,
                 self.tgtlang,
                 proxies=self.proxy,
                 if_use_cn_host=True,
             )
         except:
-            return self.engine.bing_api(content, src, self.tgtlang, proxies=self.proxy)
+            return self.engine.bing_api(
+                content, self.srclang, self.tgtlang, proxies=self.proxy
+            )
