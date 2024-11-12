@@ -201,6 +201,7 @@ class rangeselect(QMainWindow):
         )
 
     def resizeEvent(self, e: QResizeEvent):
+        winsharedutils.maximum_window(int(self.backlabel.winId()))
         self.backlabel.resize(e.size())
 
     def paintEvent(self, event):
