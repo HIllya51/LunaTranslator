@@ -191,7 +191,7 @@ class TableViewW(QTableView):
     def removeselectedrows(self):
         curr = self.currentIndex()
         if not curr.isValid():
-            return
+            return []
         row = curr.row()
         col = curr.column()
         skip = []

@@ -101,7 +101,7 @@ bool InsertAliceHook()
   return ok;
 }
 
-bool Alice::attach_function()
+bool Alice::attach_function_()
 {
 
   return InsertAliceHook();

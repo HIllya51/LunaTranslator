@@ -21,7 +21,7 @@
 - **HOOK** Поддерживает получение текста с использованием метода HOOK, поддерживает использование специальных кодов, поддерживает автоматическое сохранение игр и HOOK, автоматическое загрузка HOOK и т.д. Для некоторых движков также поддерживается встроенная трансляция. Для игр, которые не поддерживаются или плохо поддерживаются, пожалуйста, [отправьте обратную связь](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 
 
 
-- **OCR** поддерживает **офлайн OCR** (помимо встроенного OCR-движка, также поддерживает WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) и **онлайн OCR** (Baidu, Youdao, Feishu, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, совместимые интерфейсы ChatGPT).
+- **OCR** поддерживает **офлайн OCR** (помимо встроенного OCR-движка, также поддерживает WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) и **онлайн OCR** (Baidu, Youdao, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, совместимые интерфейсы ChatGPT).
 
 - **Буфер обмена** Поддерживает получение текста из буфера обмена для перевода
 
@@ -33,7 +33,7 @@
 
 - **Бесплатные онлайн переводы** Поддерживает использование Baidu, Bing, Google, Alibaba, Youdao, Caiyun, Sogou, iFlytek, Tencent, ByteDance, Volcano, DeepL/DeepLX, papago, yandex, lingva, reverso, TranslateCom, ModernMT
 
-- **Зарегистрированные онлайн переводы** Поддерживает использование зарегистрированных пользователем **традиционных переводов** ( Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, DeepL, yandex, google, ibm, Azure, Lark ) и **больших моделей перевода** ( интерфейс совместимый с ChatGPT, claude, cohere, gemini, Baidu Qianfan, Tencent Hunyuan )
+- **Зарегистрированные онлайн переводы** Поддерживает использование зарегистрированных пользователем **традиционных переводов** ( Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, DeepL, yandex, google, ibm, Azure ) и **больших моделей перевода** ( интерфейс совместимый с ChatGPT, claude, cohere, gemini, Baidu Qianfan, Tencent Hunyuan )
 
 - **Оффлайн перевод** Поддерживает **традиционный перевод** ( J Beijing 7, Kingsoft, Yidiantong, ezTrans, Sugoi, MT5 ) и оффлайн развернутый **большой модельный перевод** ( интерфейс совместимый с ChatGPT, Sakura большой модель )
 

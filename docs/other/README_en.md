@@ -20,7 +20,7 @@
 
 - **HOOK** Supports obtaining text using HOOK methods, supports the use of special codes, supports automatic saving of games and HOOKs, automatic loading of HOOKs, etc. For some engines, it also supports embedded translation. For games that are not supported or not well supported, please [submit feedback](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 
 
-- **OCR** supports **offline OCR** (in addition to the built-in OCR engine, it also supports WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **online OCR** (Baidu, Youdao, Feishu, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, ChatGPT-compatible interfaces).
+- **OCR** supports **offline OCR** (in addition to the built-in OCR engine, it also supports WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **online OCR** (Baidu, Youdao, iFlytek, Google Lens, Google Cloud Vision, docsumo, ocrspace, Gemini, ChatGPT-compatible interfaces).
 
 - **Clipboard** Supports obtaining text from the clipboard for translation
 
@@ -32,7 +32,7 @@ Supports almost all conceivable translation engines, including:
 
 - **Free Online Translation** Supports Baidu, Bing, Google, Alibaba, Youdao, Caiyun, Sogou, iFlytek, Tencent, ByteDance, Volcano, DeepL/DeepLX, papago, yandex, lingva, reverso, TranslateCom, ModernMT
 
-- **Registered Online Translation** Supports user-registered **traditional translation** (Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, DeepL, yandex, google, ibm, Azure, Lark) and **large model translation** (ChatGPT compatible interface, claude, cohere, gemini, Baidu Qianfan, Tencent Hunyuan)
+- **Registered Online Translation** Supports user-registered **traditional translation** (Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, DeepL, yandex, google, ibm, Azure) and **large model translation** (ChatGPT compatible interface, claude, cohere, gemini, Baidu Qianfan, Tencent Hunyuan)
 
 - **Offline Translation** Supports **traditional translation** (J Beijing 7, Kingsoft, Yidiantong, ezTrans, Sugoi, MT5) and offline deployed **large model translation** (ChatGPT compatible interface, Sakura large model)
 

@@ -161,10 +161,6 @@ https://www.volcengine.com/docs/6790/116978
 
 https://www.xfyun.cn/doc/platform/quickguide.html
 
-#### **Feishu**
-
-https://open.feishu.cn/document/server-docs/ai/optical_char_recognition-v1/basic_recognize
-
 #### **Google Cloud Vision**
 
 https://cloud.google.com/vision/docs

@@ -111,6 +111,5 @@ bool InsertRenpyHook()
             }
         }
     }
-    ConsoleOutput("Ren'py failed: failed to find python2X.dll");
     return false;
 }

@@ -154,9 +154,9 @@ https://yandex.cloud/en/services/translate
 
 https://www.huaweicloud.com/product/nlpmt.html
 
-#### **飞书**
+<!-- #### **飞书**
 
-https://open.feishu.cn/document/server-docs/ai/translation-v1/translate
+https://open.feishu.cn/document/server-docs/ai/translation-v1/translate -->
 
 #### **IBM**
 

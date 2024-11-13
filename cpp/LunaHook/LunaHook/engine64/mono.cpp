@@ -81,7 +81,7 @@ namespace
     return suc;
   }
 }
-bool mono::attach_function()
+bool mono::attach_function_()
 {
   bool common = monocommon::hook_mono_il2cpp();
   return common;

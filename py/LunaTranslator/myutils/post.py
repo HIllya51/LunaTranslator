@@ -11,7 +11,7 @@ from myutils.utils import (
     parsemayberegexreplace,
     safe_escape,
     is_ascii_symbo,
-    is_ascii_control
+    is_ascii_control,
 )
 from myutils.config import (
     postprocessconfig,
@@ -191,10 +191,8 @@ def _13_fEX(line: str):
 
 
 def _1_f(line):
-    r = re.compile(r"\{(.*?)/.*?\}")
-    line = r.sub(lambda x: x.groups()[0], line)
-    r = re.compile(r"\{(.*?):.*?\}")
-    line = r.sub(lambda x: x.groups()[0], line)
+    line = re.sub(r"\{(\w+)\}(.*?)\{\/\1\}", r"\2", line)
+    line = re.sub(r"\{(.*?)[:/](.*?)\}", r"\1", line)
     return line
 
 

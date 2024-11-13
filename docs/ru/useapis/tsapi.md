@@ -154,10 +154,6 @@ https://yandex.cloud/en/services/translate
 
 https://www.huaweicloud.com/product/nlpmt.html
 
-#### **Feishu**
-
-https://open.feishu.cn/document/server-docs/ai/translation-v1/translate
-
 #### **IBM**
 
 https://cloud.ibm.com/apidocs/language-translator
