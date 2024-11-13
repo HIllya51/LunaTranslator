@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os, json
 import windows, gobject
-from myutils.utils import translate_exits, getannotatedapiname, sortAwithB
+from myutils.utils import translate_exits, getannotatedapiname
 from myutils.config import (
     globalconfig,
     _TR,
@@ -14,7 +14,7 @@ from myutils.config import (
 from traceback import print_exc
 from gui.pretransfile import sqlite2json2
 from gui.codeacceptdialog import codeacceptdialog
-from gui.setting_textinput_ocr import getocrgrid
+from gui.setting_textinput_ocr import getocrgrid_table
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -24,7 +24,6 @@ from gui.usefulwidget import (
     makegrid,
     listediter,
     yuitsu_switch,
-    getvboxwidget,
     D_getsimpleswitch,
     makesubtab_lazy,
     makescrollgrid,
@@ -53,228 +52,7 @@ def __create2(self):
     return self.selecthookbutton
 
 
-def gethookgrid(self):
-
-    grids = [
-        [
-            "选择游戏",
-            functools.partial(__create, self),
-            "",
-            "选择文本",
-            functools.partial(__create2, self),
-            "",
-            "游戏管理",
-            D_getIconButton(
-                lambda: dialog_savedgame_integrated(self),
-                icon="fa.gamepad",
-            ),
-        ],
-        [],
-        [
-            (
-                dict(
-                    title="默认设置",
-                    type="grid",
-                    grid=(
-                        [
-                            "代码页",
-                            (
-                                D_getsimplecombobox(
-                                    static_data["codepage_display"],
-                                    globalconfig,
-                                    "codepage_index",
-                                    lambda x: gobject.baseobject.textsource.setsettings(),
-                                ),
-                                4,
-                            ),
-                        ],
-                        [
-                            "刷新延迟_(ms)",
-                            (
-                                D_getspinbox(
-                                    0,
-                                    10000,
-                                    globalconfig,
-                                    "textthreaddelay",
-                                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
-                                ),
-                                2,
-                            ),
-                        ],
-                        [
-                            "最大缓冲区长度",
-                            (
-                                D_getspinbox(
-                                    0,
-                                    1000000,
-                                    globalconfig,
-                                    "maxBufferSize",
-                                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
-                                ),
-                                2,
-                            ),
-                        ],
-                        [
-                            "最大缓存文本长度",
-                            (
-                                D_getspinbox(
-                                    0,
-                                    1000000000,
-                                    globalconfig,
-                                    "maxHistorySize",
-                                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
-                                ),
-                                2,
-                            ),
-                        ],
-                        [
-                            "过滤包含乱码的文本行",
-                            D_getsimpleswitch(globalconfig, "filter_chaos_code"),
-                            D_getIconButton(
-                                icon="fa.gear",
-                                callback=lambda: codeacceptdialog(self),
-                            ),
-                        ],
-                        [
-                            "使用YAPI注入",
-                            D_getsimpleswitch(globalconfig, "use_yapi"),
-                        ],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-    ]
-
-    return grids
-
-
-def doexportchspatch(exe, gameuid):
-
-    b = windows.GetBinaryType(exe)
-    is64 = b == 6
-    arch = ["32", "64"][is64]
-
-    dllhook = os.path.abspath("./files/plugins/LunaHook/LunaHook{}.dll".format(arch))
-    dllhost = os.path.abspath(
-        "./files/plugins/LunaHook/LunaHost{}.dll".format(arch, arch)
-    )
-    runner = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(arch))
-
-    windows.CopyFile(
-        dllhook, os.path.join(os.path.dirname(exe), os.path.basename(dllhook)), False
-    )
-    windows.CopyFile(
-        dllhost, os.path.join(os.path.dirname(exe), os.path.basename(dllhost)), False
-    )
-    windows.CopyFile(runner, os.path.join(os.path.dirname(exe), "LunaPatch.exe"), False)
-
-    embedconfig = {
-        "translation_file": "translation.json",
-        "target_exe": os.path.basename(exe),
-        "target_exe2": os.path.basename(exe),
-        "startup_argument": None,
-        "inject_timeout": 1000,
-        "embedhook": savehook_new_data[gameuid]["embedablehook"],
-        "embedsettings": globalconfig["embedded"],
-    }
-    with open(
-        os.path.join(os.path.dirname(exe), "LunaPatch.json"), "w", encoding="utf8"
-    ) as ff:
-        ff.write(json.dumps(embedconfig, ensure_ascii=False, indent=4))
-
-
-def selectgameuid(self):
-
-    dialog = LDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle("选择游戏")
-    dialog.resize(QSize(800, 10))
-    formLayout = LFormLayout(dialog)
-    dialog.setLayout(formLayout)
-
-    combo = FocusCombo()
-    combo.addItems([savehook_new_data[_]["title"] for _ in savehook_new_list])
-
-    formLayout.addRow("选择游戏", combo)
-
-    button = QDialogButtonBox(
-        QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-    )
-    formLayout.addRow(button)
-    button.rejected.connect(dialog.close)
-    button.accepted.connect(dialog.accept)
-    button.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
-    button.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
-    if dialog.exec():
-        return savehook_new_list[combo.currentIndex()]
-
-
-def exportchspatch(self):
-    gameuid = selectgameuid(self)
-    if gameuid is None:
-        return
-    exe = get_launchpath(gameuid)
-    if exe.lower().endswith(".exe") == False:
-        f = QFileDialog.getOpenFileName(
-            self, caption=_TR("选择EXE文件"), filter="*.exe"
-        )
-        exe = f[0]
-        if exe == "":
-            return
-        exe = os.path.normpath(exe)
-    doexportchspatch(exe, gameuid)
-
-    f = QFileDialog.getOpenFileName(
-        self,
-        caption=_TR("选择预翻译文件"),
-        directory="translation_record",
-        filter="*.sqlite",
-    )
-    sqlfname_all = f[0]
-    if not sqlfname_all:
-        return
-    sqlite2json2(
-        self,
-        sqlfname_all,
-        os.path.join(os.path.dirname(exe), "translation.json"),
-        existsmerge=True,
-        isforembed=True,
-    )
-
-
-def creategamefont_comboBox():
-
-    gamefont_comboBox = FocusFontCombo()
-
-    def callback(x):
-        globalconfig["embedded"].__setitem__("changefont_font", x)
-        try:
-            gobject.baseobject.textsource.flashembedsettings()
-        except:
-            pass
-
-    gamefont_comboBox.currentTextChanged.connect(callback)
-    gamefont_comboBox.setCurrentFont(QFont(globalconfig["embedded"]["changefont_font"]))
-    return gamefont_comboBox
-
-
-def loadvalidtss():
-
-    alltransvis = []
-    alltrans = []
-    for x in globalconfig["fanyi"]:
-        if x == "premt":
-            continue
-        if not translate_exits(x):
-            continue
-        alltransvis.append(getannotatedapiname(x))
-        alltrans.append(x)
-    sortAwithB(alltransvis, alltrans)
-    return alltrans, alltransvis
-
-
-def gethookembedgrid(self):
+def gethookgrid_em(self):
     alltrans, alltransvis = loadvalidtss()
     grids = [
         [
@@ -286,7 +64,6 @@ def gethookembedgrid(self):
             "",
             "",
         ],
-        [],
         [
             "保留原文",
             D_getsimpleswitch(
@@ -325,7 +102,12 @@ def gethookembedgrid(self):
         [
             "限制每行字数",
             D_getsimpleswitch(globalconfig["embedded"], "limittextlength_use"),
-            D_getspinbox(0, 1000, globalconfig["embedded"], "limittextlength_length"),
+            D_getspinbox(
+                0,
+                1000,
+                globalconfig["embedded"],
+                "limittextlength_length",
+            ),
         ],
         [
             "修改游戏字体",
@@ -336,7 +118,6 @@ def gethookembedgrid(self):
             ),
             creategamefont_comboBox,
         ],
-        [],
         [
             "内嵌安全性检查",
             D_getsimpleswitch(globalconfig["embedded"], "safecheck_use"),
@@ -353,6 +134,213 @@ def gethookembedgrid(self):
     ]
 
     return grids
+
+
+def gethookgrid(self):
+    grids = [
+        [
+            "代码页",
+            (
+                D_getsimplecombobox(
+                    static_data["codepage_display"],
+                    globalconfig,
+                    "codepage_index",
+                    lambda x: gobject.baseobject.textsource.setsettings(),
+                ),
+                2,
+            ),
+            "",
+            "",
+        ],
+        [
+            "刷新延迟_(ms)",
+            (
+                D_getspinbox(
+                    0,
+                    10000,
+                    globalconfig,
+                    "textthreaddelay",
+                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                ),
+                2,
+            ),
+        ],
+        [
+            "最大缓冲区长度",
+            (
+                D_getspinbox(
+                    0,
+                    1000000,
+                    globalconfig,
+                    "maxBufferSize",
+                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                ),
+                2,
+            ),
+        ],
+        [
+            "最大缓存文本长度",
+            (
+                D_getspinbox(
+                    0,
+                    1000000000,
+                    globalconfig,
+                    "maxHistorySize",
+                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                ),
+                2,
+            ),
+        ],
+        [
+            "过滤包含乱码的文本行",
+            D_getsimpleswitch(globalconfig, "filter_chaos_code"),
+            D_getIconButton(
+                icon="fa.gear",
+                callback=lambda: codeacceptdialog(self),
+            ),
+        ],
+        [
+            "使用YAPI注入",
+            D_getsimpleswitch(globalconfig, "use_yapi"),
+        ],
+    ]
+
+    return grids
+
+
+def doexportchspatch(exe, gameuid):
+
+    b = windows.GetBinaryType(exe)
+    is64 = b == 6
+    arch = ["32", "64"][is64]
+
+    dllhook = os.path.abspath("./files/plugins/LunaHook/LunaHook{}.dll".format(arch))
+    dllhost = os.path.abspath(
+        "./files/plugins/LunaHook/LunaHost{}.dll".format(arch, arch)
+    )
+    runner = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(arch))
+
+    windows.CopyFile(
+        dllhook, os.path.join(os.path.dirname(exe), os.path.basename(dllhook)), False
+    )
+    windows.CopyFile(
+        dllhost, os.path.join(os.path.dirname(exe), os.path.basename(dllhost)), False
+    )
+    windows.CopyFile(runner, os.path.join(os.path.dirname(exe), "LunaPatch.exe"), False)
+
+    embedconfig = {
+        "translation_file": "translation.json",
+        "target_exe": os.path.basename(exe),
+        "target_exe2": os.path.basename(exe),
+        "startup_argument": None,
+        "inject_timeout": 1000,
+        "embedhook": savehook_new_data[gameuid]["embedablehook"],
+        "embedsettings": globalconfig["embedded"],
+    }
+    try:
+        with open(
+            os.path.join(os.path.dirname(exe), "LunaPatch.json"), "w", encoding="utf8"
+        ) as ff:
+            ff.write(json.dumps(embedconfig, ensure_ascii=False, indent=4))
+    except:
+        pass
+
+
+def selectgameuid(self):
+
+    dialog = LDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
+    dialog.setWindowTitle("选择游戏")
+    dialog.resize(QSize(800, 10))
+    formLayout = LFormLayout(dialog)
+    dialog.setLayout(formLayout)
+    _internal = []
+    _vis = []
+    for gameuid in savehook_new_list:
+        if not savehook_new_data[gameuid]["embedablehook"]:
+            continue
+        exe = get_launchpath(gameuid)
+        if not exe.lower().endswith(".exe"):
+            continue
+        if not os.path.exists(exe):
+            continue
+        _vis.append(savehook_new_data[gameuid]["title"])
+        _internal.append(gameuid)
+
+    combo = FocusCombo()
+    combo.addItems(_vis)
+
+    formLayout.addRow("选择游戏", combo)
+
+    button = QDialogButtonBox(
+        QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+    )
+    formLayout.addRow(button)
+    button.rejected.connect(dialog.close)
+    button.accepted.connect(dialog.accept)
+    button.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
+    button.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
+    if dialog.exec():
+        return _internal[combo.currentIndex()]
+
+
+def exportchspatch(self):
+    gameuid = selectgameuid(self)
+    if gameuid is None:
+        return
+    exe = get_launchpath(gameuid)
+    doexportchspatch(exe, gameuid)
+
+    f = QFileDialog.getOpenFileName(
+        self,
+        caption=_TR("选择预翻译文件"),
+        directory="translation_record",
+        filter="*.sqlite",
+    )
+    sqlfname_all = f[0]
+    if not sqlfname_all:
+        return
+    sqlite2json2(
+        self,
+        sqlfname_all,
+        os.path.join(os.path.dirname(exe), "translation.json"),
+        existsmerge=True,
+        isforembed=True,
+    )
+
+
+def creategamefont_comboBox():
+
+    gamefont_comboBox = FocusFontCombo()
+
+    def callback(x):
+        globalconfig["embedded"].__setitem__("changefont_font", x)
+        try:
+            gobject.baseobject.textsource.flashembedsettings()
+        except:
+            pass
+
+    gamefont_comboBox.currentTextChanged.connect(callback)
+    gamefont_comboBox.setCurrentFont(QFont(globalconfig["embedded"]["changefont_font"]))
+    return gamefont_comboBox
+
+
+def sortAwithB(l1, l2):
+    sorted_pairs = sorted(zip(l1, l2))
+    return [x[1] for x in sorted_pairs], [x[0] for x in sorted_pairs]
+
+
+def loadvalidtss():
+
+    alltransvis = []
+    alltrans = []
+    for x in globalconfig["fanyi"]:
+        if x == "premt":
+            continue
+        if not translate_exits(x):
+            continue
+        alltransvis.append(getannotatedapiname(x))
+        alltrans.append(x)
+    return sortAwithB(alltransvis, alltrans)
 
 
 def getTabclip(self):
@@ -486,7 +474,7 @@ def filetranslate(self):
                                 100000,
                                 globalconfig,
                                 "livecaptions_delay",
-                            ), 
+                            ),
                         ],
                         [
                             "最长等待时间_(ms)",
@@ -495,7 +483,7 @@ def filetranslate(self):
                                 100000,
                                 globalconfig,
                                 "livecaptions_maxwait",
-                            ), 
+                            ),
                         ],
                     ],
                 ),
@@ -547,7 +535,6 @@ def outputgrid(self):
                 "group",
             )
         ],
-        [],
         [
             (
                 dict(
@@ -614,7 +601,42 @@ def setTablanglz():
     ]
 
 
-def setTabOne_lazy(self, basel):
+def setTabOne_lazy_h(self, basel: QVBoxLayout):
+    grids = [
+        [
+            "选择游戏",
+            functools.partial(__create, self),
+            "",
+            "选择文本",
+            functools.partial(__create2, self),
+            "",
+            "游戏管理",
+            D_getIconButton(
+                lambda: dialog_savedgame_integrated(self),
+                icon="fa.gamepad",
+            ),
+            "",
+        ],
+        [
+            (
+                lambda: makesubtab_lazy(
+                    ["默认设置", "内嵌翻译"],
+                    [
+                        lambda l: makescrollgrid(gethookgrid(self), l),
+                        lambda l: makescrollgrid(gethookgrid_em(self), l),
+                    ],
+                    delay=True,
+                ),
+                0,
+            )
+        ],
+    ]
+    gridlayoutwidget, do = makegrid(grids, delay=True)
+    basel.addWidget(gridlayoutwidget)
+    do()
+
+
+def setTabOne_lazy(self, basel: QVBoxLayout):
     _rank = [
         ("texthook", "HOOK"),
         ("ocr", "OCR"),
@@ -657,22 +679,19 @@ def setTabOne_lazy(self, basel):
             ),
         ],
     ]
-    vw, vl = getvboxwidget()
-    basel.addWidget(vw)
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
-    vl.addWidget(gridlayoutwidget)
+    basel.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        ["HOOK设置", "OCR设置", "剪贴板", "内嵌翻译", "文本输出", "其他"],
+        ["HOOK设置", "OCR设置", "剪贴板", "文本输出", "其他"],
         [
-            lambda l: makescrollgrid(gethookgrid(self), l),
-            lambda l: makescrollgrid(getocrgrid(self), l),
+            lambda l: setTabOne_lazy_h(self, l),
+            lambda l: getocrgrid_table(self, l),
             lambda l: makescrollgrid(getTabclip(self), l),
-            lambda l: makescrollgrid(gethookembedgrid(self), l),
             lambda l: makescrollgrid(outputgrid(self), l),
             lambda l: makescrollgrid(filetranslate(self), l),
         ],
         delay=True,
     )
-    vl.addWidget(tab)
+    basel.addWidget(tab)
     do()
     dotab()

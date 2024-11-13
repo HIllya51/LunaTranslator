@@ -14,7 +14,7 @@ from gui.usefulwidget import (
     getIconButton,
     D_getsimpleswitch,
     makescrollgrid,
-    getvboxwidget,
+    getboxlayout,
     makesubtab_lazy,
 )
 from gui.inputdialog import (
@@ -145,7 +145,7 @@ def setTab7_lazy(self, basel):
                     callback = functools.partial(
                         autoinitdialog,
                         self,
-                        postprocessconfig[post]['args'],
+                        postprocessconfig[post]["args"],
                         postprocessconfig[post]["name"],
                         600,
                         items,
@@ -206,12 +206,14 @@ def setTab7_lazy(self, basel):
                 )
     grids2 += [[("", 15)]]
 
-    def ___(lay):
-        vboxw, vbox = getvboxwidget()
+    def ___(lay: QVBoxLayout):
+        vboxw, vbox = getboxlayout(
+            [], lc=QVBoxLayout, margin0=True, makewidget=True, both=True
+        )
         lay.addWidget(vboxw)
         makescrollgrid(grids, vbox, True, savelist, savelay)
 
-        vbox.addWidget(getcomparelayout(self))
+        lay.addWidget(getcomparelayout(self))
 
     tab, dotab = makesubtab_lazy(
         ["文本预处理", "翻译优化"],

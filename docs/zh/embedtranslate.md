@@ -19,7 +19,7 @@
 
 ![img](https://image.lunatranslator.org/zh/embed/luanma.png)
 
-这时，你需要在**内嵌设置**中，激活**修改游戏字体**，并选择一个适当的字体，以显示中文字符
+这时，你需要激活**修改游戏字体**，并选择一个适当的字体，以显示中文字符
 
 ![img](https://image.lunatranslator.org/zh/embed/ziti.png)
 
@@ -27,9 +27,8 @@
 
 ![img](https://image.lunatranslator.org/zh/embed/okembed.png)
 
-但会发现内嵌的文字是繁体中文，可以在**内嵌设置**中取消**将汉字转换成繁体/日式汉字**。
+对于许多古早日本galgame，他们使用自己内置的shift-jis字符集处理，无法正确处理中文字符，可以尝试**将汉字转换成繁体/日式汉字**，减少乱码的出现。
 
->这是因为**对于许多古早日本galgame，他们使用自己内置的shift-jis字符集处理，无法正确处理中文字符，通过将汉字翻译转换成型近的繁体/日式汉字，可以减少乱码的出现，因此默认是会自动将简体中文转换成繁体中文的**。如果取消这一设置后乱码，请恢复这一设置。
 对于一些较新的游戏引擎和大部分英文游戏，一般使用utf-8或utf-16等Unicode字符集（如**KiriKiri**，**Renpy**，**TyranoScript**，**RPGMakerMV**等），即使出现乱码一般也是字体的问题，而不是字符集的问题。
 
 ![img](https://image.lunatranslator.org/zh/embed/fanti.png)
@@ -37,8 +36,6 @@
 取消这一设置后，可以正常显示简体中文了。但对于一些无法正常显示简体中文的游戏，可以尝试激活这一选择来看看能不能正常显示。
 
 ![img](https://image.lunatranslator.org/zh/embed/good.png)
-
-** **
 
 ## 一些其他设置
 

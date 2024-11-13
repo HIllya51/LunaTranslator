@@ -2,11 +2,10 @@ from qtsymbols import *
 import functools, platform
 import gobject, os, zipfile
 from myutils.config import globalconfig, static_data, _TR
-from gui.inputdialog import multicolorset, autoinitdialog
+from gui.inputdialog import autoinitdialog
 from myutils.wrapper import tryprint
 from myutils.utils import dynamiclink, translate_exits, copytree, getannotatedapiname
 from gui.usefulwidget import (
-    D_getsimplecombobox,
     getsimplecombobox,
     Singleton_close,
     saveposwindow,
@@ -332,7 +331,7 @@ def vistranslate_rank(self):
         ("显示顺序"),
         globalconfig["fix_translate_rank_rank"],
         isrankeditor=True,
-        namemapfunction=lambda k: _TR(getannotatedapiname(k))
+        namemapfunction=lambda k: _TR(getannotatedapiname(k)),
     )
 
 
@@ -459,124 +458,31 @@ def xianshigrid_style(self):
                     type="grid",
                     grid=(
                         [
-                            (
-                                dict(
-                                    title="",
-                                    type="grid",
-                                    grid=(
-                                        [
-                                            "居中显示",
-                                            D_getsimpleswitch(
-                                                globalconfig, "showatcenter"
-                                            ),
-                                            "",
-                                            "收到翻译时才刷新",
-                                            D_getsimpleswitch(
-                                                globalconfig, "refresh_on_get_trans"
-                                            ),
-                                            "",
-                                            "固定翻译显示顺序",
-                                            D_getsimpleswitch(
-                                                globalconfig, "fix_translate_rank"
-                                            ),
-                                            D_getIconButton(
-                                                functools.partial(
-                                                    vistranslate_rank, self
-                                                ),
-                                                "fa.gear",
-                                            ),
-                                        ],
-                                        [
-                                            "显示原文",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "isshowrawtext",
-                                                callback=lambda x: __changeuibuttonstate(
-                                                    self, x
-                                                ),
-                                                name="show_original_switch",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "显示错误信息",
-                                            D_getsimpleswitch(
-                                                globalconfig, "showtranexception"
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                                0,
-                                "group",
-                            )
+                            "居中显示",
+                            D_getsimpleswitch(globalconfig, "showatcenter"),
+                            "",
+                            "收到翻译时才刷新",
+                            D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
+                            "",
+                            "固定翻译显示顺序",
+                            D_getsimpleswitch(globalconfig, "fix_translate_rank"),
+                            D_getIconButton(
+                                functools.partial(vistranslate_rank, self),
+                                "fa.gear",
+                            ),
                         ],
                         [
-                            (
-                                dict(
-                                    title="分词",
-                                    type="grid",
-                                    parent=self,
-                                    name="fenyinsettings",
-                                    enable=globalconfig["isshowrawtext"],
-                                    grid=(
-                                        [
-                                            ("显示注音"),
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "isshowhira",
-                                            ),
-                                            "",
-                                            ("颜色"),
-                                            D_getcolorbutton(
-                                                globalconfig,
-                                                "jiamingcolor",
-                                                callback=lambda: selectcolor(
-                                                    self,
-                                                    globalconfig,
-                                                    "jiamingcolor",
-                                                    self.jiamingcolor_b,
-                                                ),
-                                                name="jiamingcolor_b",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "字体缩放",
-                                            D_getspinbox(
-                                                0.05,
-                                                1,
-                                                globalconfig,
-                                                "kanarate",
-                                                double=True,
-                                                step=0.05,
-                                            ),
-                                        ],
-                                        [
-                                            "日语注音方案",
-                                            D_getsimplecombobox(
-                                                [
-                                                    "平假名",
-                                                    "片假名",
-                                                    "罗马音",
-                                                ],
-                                                globalconfig,
-                                                "hira_vis_type",
-                                            ),
-                                            "",
-                                            ("语法加亮"),
-                                            D_getsimpleswitch(
-                                                globalconfig, "show_fenci"
-                                            ),
-                                            "",
-                                            ("词性颜色"),
-                                            D_getIconButton(
-                                                callback=lambda: multicolorset(self),
-                                                icon="fa.gear",
-                                            ),
-                                        ],
-                                    ),
-                                ),
-                                0,
-                                "group",
-                            )
+                            "显示原文",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "isshowrawtext",
+                                callback=lambda x: __changeuibuttonstate(self, x),
+                                name="show_original_switch",
+                                parent=self,
+                            ),
+                            "",
+                            "显示错误信息",
+                            D_getsimpleswitch(globalconfig, "showtranexception"),
                         ],
                     ),
                 ),

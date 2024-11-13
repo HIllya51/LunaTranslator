@@ -1192,6 +1192,10 @@ class TranslatorWindow(resizableframeless):
             self.translate_text.textbrowser.showhideorigin(
                 globalconfig["isshowrawtext"]
             )
+            try:
+                gobject.baseobject.settin_ui.fenyinsettings.setEnabled(globalconfig["isshowrawtext"])
+            except:
+                pass
 
     def changeshowhidetrans(self):
         try:

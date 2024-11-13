@@ -24,10 +24,8 @@ from gui.usefulwidget import (
     makegrid,
     makesubtab_lazy,
     makescrollgrid,
-    getvboxwidget,
 )
-from traceback import print_exc
-from gui.dynalang import LPushButton, LLabel, LAction, LMenu
+from gui.dynalang import LPushButton, LLabel, LAction
 
 
 def deepcopydict(d):
@@ -469,7 +467,7 @@ def __changeuibuttonstate2(self, x):
     gobject.baseobject.maybeneedtranslateshowhidetranslate()
 
 
-def setTabTwo_lazy(self, basel):
+def setTabTwo_lazy(self, basel: QVBoxLayout):
     # 均衡负载  loadbalance
     # 单次负载个数 loadbalance_oncenum
     # 过时的，不再在ui中展示
@@ -493,20 +491,20 @@ def setTabTwo_lazy(self, basel):
                 ),
             ),
             "",
-            "翻译请求间隔_(s)",
-            D_getspinbox(
-                0, 9999, globalconfig, "requestinterval", step=0.1, double=True
-            ),
-        ],
-        [
             "使用翻译缓存",
             D_getsimpleswitch(globalconfig, "uselongtermcache"),
-            "",
+        ],
+        [
             "最短翻译字数",
             D_getspinbox(0, 9999, globalconfig, "minlength"),
             "",
             "最长翻译字数",
             D_getspinbox(0, 9999, globalconfig, "maxlength"),
+            "",
+            "翻译请求间隔_(s)",
+            D_getspinbox(
+                0, 9999, globalconfig, "requestinterval", step=0.1, double=True
+            ),
         ],
     ]
     online_reg_grid = [[("若有多个api key，用|将每个key连接后填入，即可轮流使用", -1)]]
@@ -585,11 +583,9 @@ def setTabTwo_lazy(self, basel):
     developgrid += initsome2(self, develop, btnplus="dev")
     online_reg_grid += initsome2(self, shoufei, btnplus="api")
     pretransgrid += initsome11(self, pre)
-    vw, vl = getvboxwidget()
-    basel.addWidget(vw)
 
     gridlayoutwidget, do = makegrid(grids, delay=True)
-    vl.addWidget(gridlayoutwidget)
+    basel.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
         ["在线翻译", "注册在线翻译", "离线翻译", "调试浏览器", "预翻译"],
         [
@@ -601,7 +597,7 @@ def setTabTwo_lazy(self, basel):
         ],
         delay=True,
     )
-    vl.addWidget(tab)
+    basel.addWidget(tab)
 
     do()
     dotab()

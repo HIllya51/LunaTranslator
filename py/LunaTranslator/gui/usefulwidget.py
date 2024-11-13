@@ -1108,7 +1108,7 @@ def selectcolor(
 
 
 def getboxlayout(
-    widgets, lc=QHBoxLayout, margin0=False, makewidget=False, delay=False, both=False
+    widgets, lc=QHBoxLayout, margin0=False, makewidget=False, delay=False, both=False, space0=False
 ):
     cp_layout = lc()
 
@@ -1126,6 +1126,8 @@ def getboxlayout(
     _do = functools.partial(__do, cp_layout, widgets)
     if margin0:
         cp_layout.setContentsMargins(0, 0, 0, 0)
+    if space0:
+        cp_layout.setSpacing(0)
     if not delay:
         _do()
     if makewidget:
@@ -1138,10 +1140,6 @@ def getboxlayout(
     if makewidget:
         return w
     return cp_layout
-
-
-def getvboxwidget():
-    return getboxlayout([], lc=QVBoxLayout, margin0=True, makewidget=True, both=True)
 
 
 class abstractwebview(QWidget):

@@ -2,6 +2,7 @@ import functools, os
 import gobject
 from myutils.utils import splitocrtypes
 from myutils.config import globalconfig, _TR
+from gui.inputdialog import multicolorset, autoinitdialog
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     yuitsu_switch,
@@ -11,6 +12,10 @@ from gui.usefulwidget import (
     listediter,
     D_getIconButton,
     auto_select_webview,
+    selectcolor,
+    D_getspinbox,
+    D_getcolorbutton,
+    D_getsimplecombobox,
 )
 from gui.setting_display_text import on_not_find_qweb
 from gui.showword import showdiction
@@ -38,7 +43,7 @@ def gethiragrid(self):
                 callback=functools.partial(
                     autoinitdialog,
                     self,
-                    globalconfig["hirasetting"][name]['args'],
+                    globalconfig["hirasetting"][name]["args"],
                     globalconfig["hirasetting"][name]["name"],
                     800,
                     items,
@@ -141,7 +146,7 @@ def initinternal(self, names):
                     callback=functools.partial(
                         autoinitdialog,
                         self,
-                        globalconfig["cishu"][cishu]['args'],
+                        globalconfig["cishu"][cishu]["args"],
                         globalconfig["cishu"][cishu]["name"],
                         800,
                         items,
@@ -164,46 +169,114 @@ def initinternal(self, names):
 
 def setTabcishu_l(self):
 
-    grids = [
-        [
-            (
-                dict(title="分词器", type="grid", grid=gethiragrid(self)),
-                0,
-                "group",
-            )
-        ],
+    grids_1 = [
+        (
+            dict(title="分词器", type="grid", grid=gethiragrid(self)),
+            0,
+            "group",
+        )
     ]
     offline, online = splitocrtypes(globalconfig["cishu"])
-    grids += [
+    grids2 = [
+        (
+            dict(
+                title="辞书",
+                type="grid",
+                grid=[
+                    [
+                        (
+                            dict(
+                                title="离线",
+                                type="grid",
+                                grid=initinternal(self, offline),
+                            ),
+                            0,
+                            "group",
+                        )
+                    ],
+                    [
+                        (
+                            dict(
+                                title="在线",
+                                type="grid",
+                                grid=initinternal(self, online),
+                            ),
+                            0,
+                            "group",
+                        )
+                    ],
+                ],
+            ),
+            0,
+            "group",
+        )
+    ]
+    grids = [
+        grids_1,
+        grids2,
+        [],
         [
             (
                 dict(
-                    title="辞书",
+                    title="分词_&&_注音",
                     type="grid",
-                    grid=[
+                    parent=self,
+                    name="fenyinsettings",
+                    enable=globalconfig["isshowrawtext"],
+                    grid=(
                         [
-                            (
-                                dict(
-                                    title="离线",
-                                    type="grid",
-                                    grid=initinternal(self, offline),
+                            ("显示注音"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "isshowhira",
+                            ),
+                            "",
+                            ("颜色"),
+                            D_getcolorbutton(
+                                globalconfig,
+                                "jiamingcolor",
+                                callback=lambda: selectcolor(
+                                    self,
+                                    globalconfig,
+                                    "jiamingcolor",
+                                    self.jiamingcolor_b,
                                 ),
-                                0,
-                                "group",
-                            )
+                                name="jiamingcolor_b",
+                                parent=self,
+                            ),
+                            "",
+                            "字体缩放",
+                            D_getspinbox(
+                                0.05,
+                                1,
+                                globalconfig,
+                                "kanarate",
+                                double=True,
+                                step=0.05,
+                            ),
                         ],
                         [
-                            (
-                                dict(
-                                    title="在线",
-                                    type="grid",
-                                    grid=initinternal(self, online),
-                                ),
-                                0,
-                                "group",
-                            )
+                            "日语注音方案",
+                            D_getsimplecombobox(
+                                [
+                                    "平假名",
+                                    "片假名",
+                                    "罗马音",
+                                ],
+                                globalconfig,
+                                "hira_vis_type",
+                            ),
+                            "",
+                            ("语法加亮"),
+                            D_getsimpleswitch(globalconfig, "show_fenci"),
+                            "",
+                            ("词性颜色"),
+                            D_getIconButton(
+                                callback=lambda: multicolorset(self),
+                                icon="fa.gear",
+                            ),
                         ],
-                    ],
+                    ),
                 ),
                 0,
                 "group",
@@ -256,7 +329,10 @@ def setTabcishu_l(self):
                         ],
                         [
                             "显示引擎",
-                            (functools.partial(_createseletengeinecombo_1, self), 0),
+                            (
+                                functools.partial(_createseletengeinecombo_1, self),
+                                0,
+                            ),
                         ],
                     ],
                 ),

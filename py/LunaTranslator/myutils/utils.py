@@ -1037,11 +1037,6 @@ def getannotatedapiname(x):
     )
 
 
-def sortAwithB(l1, l2):
-    sorted_pairs = sorted(zip(l1, l2))
-    return [x[0] for x in sorted_pairs], [x[1] for x in sorted_pairs]
-
-
 def inrange(n, s, e):
     return n >= s and n <= e
 

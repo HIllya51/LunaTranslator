@@ -18,7 +18,7 @@ When starting embedded translation, garbled text often occurs. Game garbling is 
 
 ![img](https://image.lunatranslator.org/zh/embed/luanma.png) 
 
-At this time, you need to activate **Modify Game Font** in the **Embed Settings** and select an appropriate font to display Chinese characters.
+At this time, you need to activate **Modify Game Font** and select an appropriate font to display Chinese characters.
 
 ![img](https://image.lunatranslator.org/zh/embed/ziti.png) 
 
@@ -26,9 +26,7 @@ After modifying the font, Chinese characters can be displayed correctly:
 
 ![img](https://image.lunatranslator.org/zh/embed/okembed.png) 
 
-However, you may find that the embedded text is in Traditional Chinese, you can uncheck **Convert characters to Traditional/Japanese** in the **Embed Settings**.
-
-> This is because **for many old Japanese galgames, they use their own built-in shift-jis character set processing and cannot correctly handle Chinese characters. By converting Chinese characters to similar Traditional/Japanese characters, the occurrence of garbled text can be reduced, so it is set to automatically convert Simplified Chinese to Traditional Chinese by default**. If garbled text appears after unchecking this setting, please restore it.
+For many ancient Japanese galgames, they used their built-in shift ji character set to process Chinese characters correctly. You can try **converting Chinese characters to traditional/Japanese characters** to reduce the occurrence of garbled characters.
 
 For newer game engines and most English games, Unicode character sets such as utf-8 or utf-16 are generally used (such as **KiriKiri**, **Renpy**, **TyranoScript**, **RPGMakerMV**, etc.), and even if garbled text appears, it is usually a font issue, not a character set issue.
 
@@ -37,8 +35,6 @@ For newer game engines and most English games, Unicode character sets such as ut
 After unchecking this setting, Simplified Chinese can be displayed correctly. However, for some games that cannot display Simplified Chinese correctly, you can try activating this option to see if it can be displayed normally.
 
 ![img](https://image.lunatranslator.org/zh/embed/good.png) 
-
-** **
 
 ## Some Other Settings
 

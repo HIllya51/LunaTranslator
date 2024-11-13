@@ -86,7 +86,7 @@ def getttsgrid(self, names):
                 callback=functools.partial(
                     autoinitdialog,
                     self,
-                    globalconfig["reader"][name]['args'],
+                    globalconfig["reader"][name]["args"],
                     globalconfig["reader"][name]["name"],
                     800,
                     items,
@@ -130,7 +130,7 @@ def getttsgrid(self, names):
 def setTab5lz(self):
     grids = []
     offline, online = splitocrtypes(globalconfig["reader"])
-    alltrans, alltransvis=loadvalidtss()
+    alltrans, alltransvis = loadvalidtss()
     grids += [
         [
             (
@@ -170,16 +170,16 @@ def setTab5lz(self):
             (
                 dict(
                     title="声音",
+                    type="grid",
                     grid=[
                         [
                             "选择声音",
-                            functools.partial(createvoicecombo, self),
+                            (functools.partial(createvoicecombo, self), 0),
                         ],
                         [
                             "语速_(-10~10)",
                             D_getspinbox(-10, 10, globalconfig["ttscommon"], "rate"),
-                        ],
-                        [
+                            "",
                             "音量_(0~100)",
                             D_getspinbox(0, 100, globalconfig["ttscommon"], "volume"),
                         ],

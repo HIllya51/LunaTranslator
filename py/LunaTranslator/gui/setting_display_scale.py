@@ -6,7 +6,6 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     makegrid,
     D_getspinbox,
-    getvboxwidget,
     D_getIconButton,
     makesubtab_lazy,
     makescrollgrid,
@@ -14,43 +13,7 @@ from gui.usefulwidget import (
 )
 
 
-def makescalew(self, lay):
-
-    commonfsgrid = [
-        [
-            ("缩放方式", 4),
-            (
-                D_getsimplecombobox(
-                    static_data["scalemethods_vis"],
-                    globalconfig,
-                    "fullscreenmethod_4",
-                    static=True,
-                ),
-                6,
-            ),
-        ]
-    ]
-
-    losslessgrid = [
-        [
-            ("Magpie_路径", 4),
-            (
-                D_getIconButton(
-                    callback=lambda: getsomepath1(
-                        self,
-                        "Magpie_路径",
-                        globalconfig,
-                        "magpiepath",
-                        "Magpie_路径",
-                        isdir=True,
-                    ),
-                    icon="fa.gear",
-                ),
-                1,
-            ),
-            ("", 10),
-        ]
-    ]
+def makescalew(self, lay: QVBoxLayout):
 
     innermagpie = [
         [
@@ -351,18 +314,54 @@ def makescalew(self, lay):
         ],
     ]
 
-    vw, vl = getvboxwidget()
-    lay.addWidget(vw)
-    gw, gd = makegrid(commonfsgrid, delay=True)
-    vl.addWidget(gw)
-    tw, td = makesubtab_lazy(
-        ["Magpie", "外部缩放软件"],
+    losslessgrid = [
         [
-            functools.partial(makescrollgrid, innermagpie),
-            functools.partial(makescrollgrid, losslessgrid),
+            ("Magpie_路径", 4),
+            (
+                D_getIconButton(
+                    callback=lambda: getsomepath1(
+                        self,
+                        "Magpie_路径",
+                        globalconfig,
+                        "magpiepath",
+                        "Magpie_路径",
+                        isdir=True,
+                    ),
+                    icon="fa.gear",
+                ),
+                1,
+            ),
+            ("", 10),
         ],
-        delay=True,
-    )
-    vl.addWidget(tw)
+    ]
+
+    commonfsgrid = [
+        [
+            ("缩放方式", 4),
+            (
+                D_getsimplecombobox(
+                    static_data["scalemethods_vis"],
+                    globalconfig,
+                    "fullscreenmethod_4",
+                    static=True,
+                ),
+                6,
+            ),
+        ],
+        [
+            (
+                lambda: makesubtab_lazy(
+                    ["Magpie", "外部缩放软件"],
+                    [
+                        functools.partial(makescrollgrid, innermagpie),
+                        functools.partial(makescrollgrid, losslessgrid),
+                    ],
+                    delay=True,
+                ),
+                0,
+            )
+        ],
+    ]
+    gw, gd = makegrid(commonfsgrid, delay=True)
+    lay.addWidget(gw)
     gd()
-    td()

@@ -152,13 +152,8 @@ def makeproxytab():
         ],
         delay=True,
     )
-    group = LGroupBox()
-    group.setTitle("使用代理的项目")
-    l = QVBoxLayout()
-    group.setLayout(l)
-    l.addWidget(tab)
     dotab()
-    return group
+    return tab
 
 
 def setTab_proxy(self, l):
@@ -224,6 +219,18 @@ def setTab_proxy(self, l):
                             (functools.partial(createproxyedit, self), 5),
                             (functools.partial(createproxyedit_check, self), 5),
                         ],
+                    ],
+                ),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
+                dict(
+                    title="使用代理的项目",
+                    type="grid",
+                    grid=[
                         [(makeproxytab, -1)],
                     ],
                 ),

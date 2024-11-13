@@ -314,7 +314,7 @@
         "translator_2": null,
         "use_appointed_translate": false,
         "timeout_translate": 2,
-        "trans_kanji": true,
+        "trans_kanji": false,
         "keeprawtext": false,
         "insertspace_policy": 0,
         "changefont": false,
@@ -341,7 +341,7 @@
         "myprocess": false,
         "arabic_reshaper": false
     },
-    "uselongtermcache": false,
+    "uselongtermcache": true,
     "showintab": true,
     "showintab_sub": true,
     "remove_useless_hook": false,

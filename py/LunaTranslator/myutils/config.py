@@ -354,7 +354,7 @@ for uid in savehook_new_data:
     gamepath2uid_index[_p].append(uid)
 
 
-def get_launchpath(uid):
+def get_launchpath(uid) -> str:
     launch = savehook_new_data[uid].get("launchpath", "")
     if not launch:
         launch = uid2gamepath[uid]
