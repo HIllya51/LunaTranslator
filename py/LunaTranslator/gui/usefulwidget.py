@@ -806,7 +806,7 @@ class resizableframeless(saveposwindow):
                 self.starth - (gpos.y() - self.starty),
             )
         elif self._corner_drag_zuoshang:
-            self.setGeometry(
+            self.setgeokeepminsize(
                 (gpos - self.startxp).x(),
                 (gpos - self.startxp).y(),
                 self.startw - (gpos.x() - self.startx),
@@ -814,7 +814,7 @@ class resizableframeless(saveposwindow):
             )
 
         elif self._left_drag:
-            self.setGeometry(
+            self.setgeokeepminsize(
                 (gpos - self.startxp).x(),
                 self.y(),
                 self.startw - (gpos.x() - self.startx),
@@ -823,14 +823,14 @@ class resizableframeless(saveposwindow):
         elif self._bottom_drag:
             self.resize(self.width(), pos.y())
         elif self._top_drag:
-            self.setGeometry(
+            self.setgeokeepminsize(
                 self.x(),
                 (gpos - self.startxp).y(),
                 self.width(),
                 self.starth - (gpos.y() - self.starty),
             )
         elif self._corner_drag_zuoxia:
-            self.setGeometry(
+            self.setgeokeepminsize(
                 (gpos - self.startxp).x(),
                 self.y(),
                 self.startw - (gpos.x() - self.startx),
@@ -843,6 +843,13 @@ class resizableframeless(saveposwindow):
 
     def mouseReleaseEvent(self, e: QMouseEvent):
         self.resetflags()
+
+    def setgeokeepminsize(self, x, y, w, h):
+        width = max(w, self.minimumWidth())
+        height = max(h, self.minimumHeight())
+        x -= width - w
+        y -= height - h
+        self.setGeometry(x, y, width, height)
 
 
 class Prompt_dialog(LDialog):
@@ -1108,7 +1115,7 @@ def selectcolor(
 
 
 def getboxlayout(
-    widgets, lc=QHBoxLayout, margin0=False, makewidget=False, delay=False, both=False, space0=False
+    widgets, lc=QHBoxLayout, margin0=False, makewidget=False, delay=False, both=False
 ):
     cp_layout = lc()
 
@@ -1126,8 +1133,6 @@ def getboxlayout(
     _do = functools.partial(__do, cp_layout, widgets)
     if margin0:
         cp_layout.setContentsMargins(0, 0, 0, 0)
-    if space0:
-        cp_layout.setSpacing(0)
     if not delay:
         _do()
     if makewidget:
