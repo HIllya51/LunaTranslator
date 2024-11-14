@@ -1,10 +1,9 @@
-from myutils.utils import getlangsrc
 import requests
 from urllib.parse import quote
 import re, os
 from cishu.cishubase import cishubase
-from myutils.utils import simplehtmlparser
-from myutils.utils import get_element_by
+from myutils.utils import get_element_by, simplehtmlparser, getlangsrc
+from myutils.config import isascii
 
 
 class youdao(cishubase):
@@ -12,7 +11,7 @@ class youdao(cishubase):
     def search(self, word: str):
         lang = getlangsrc()
         if lang == "auto":
-            if word.isascii():
+            if isascii(word):
                 lang = "en"
             else:
                 lang = "ja"

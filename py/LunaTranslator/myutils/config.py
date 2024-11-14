@@ -4,6 +4,17 @@ from traceback import print_exc
 from qtsymbols import *
 
 
+def isascii(s: str):
+    try:
+        return s.isascii()
+    except:
+        try:
+            s.encode("ascii")
+            return True
+        except:
+            return False
+
+
 def namemapcast(namemap):
     bettermap = namemap.copy()
     for k, v in namemap.items():
@@ -576,7 +587,7 @@ def loadlanguage():
 def _TR(k: str):
     if not k:
         return ""
-    if k.isascii():
+    if isascii(k):
         return k
     loadlanguage()
     if "_" in k:

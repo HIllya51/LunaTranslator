@@ -1,6 +1,6 @@
 import math, base64, uuid, gobject
 from cishu.cishubase import DictTree
-
+from myutils.config import isascii
 
 class FlexBuffer:
 
@@ -2039,9 +2039,9 @@ class mdict(cishubase):
             t: str = os.path.basename(f)[:-4]
             if index._title.strip() != "":
                 t1 = index._title.strip()
-                if (t1.isascii()) and (t.isascii()):
+                if (isascii(t1)) and (isascii(t)):
                     t = t1
-                elif not t1.isascii():
+                elif not isascii(t1):
                     t = t1
             title = t
         return title

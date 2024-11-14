@@ -1,6 +1,7 @@
 import winsharedutils
 import os, csv, gobject
 from hiraparse.basehira import basehira
+from myutils.config import isascii
 
 # # 2.1.2 src schema
 # UnidicFeatures17 = namedtuple('UnidicFeatures17',
@@ -109,7 +110,7 @@ class mecab(basehira):
             if "-" in origorig:
                 try:
                     hira_ = origorig.split("-")[1]
-                    if hira_.isascii():  # 腰を引いて-->引く-他動詞
+                    if isascii(hira):  # 腰を引いて-->引く-他動詞
                         hira = hira_
                     origorig = origorig.split("-")[0]
                 except:

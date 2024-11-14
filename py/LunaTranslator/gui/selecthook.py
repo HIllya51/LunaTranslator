@@ -3,7 +3,7 @@ import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, windows, winsharedutils, gobject
-from myutils.config import savehook_new_data, static_data, globalconfig, _TR
+from myutils.config import savehook_new_data, static_data, globalconfig, _TR, isascii
 from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
 from myutils.wrapper import Singleton_close
 from gui.dialog_savedgame import dialog_setting_game
@@ -706,7 +706,7 @@ class hookselect(closeashidewindow):
 
     def gethide(self, res: str):
         if self.checkfilt_notascii.isChecked():
-            if res.isascii():
+            if isascii(res):
                 return True
         if self.checkfilt_notshiftjis.isChecked():
             if checkchaos(res):

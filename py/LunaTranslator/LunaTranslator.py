@@ -11,6 +11,7 @@ from myutils.config import (
     getlanguse,
     set_font_default,
     _TR,
+    isascii,
 )
 from myutils.utils import (
     minmaxmoveobservefunc,
@@ -606,8 +607,8 @@ class MAINUI:
             else:
                 if item["condition"] == 1:
                     if (
-                        res.isascii()
-                        and item["key"].isascii()
+                        isascii(res)
+                        and isascii(item["key"])
                         and (" " not in item["key"])
                     ):  # 目标可能有空格
                         resx = res.split(" ")

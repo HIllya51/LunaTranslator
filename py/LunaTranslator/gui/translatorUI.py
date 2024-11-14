@@ -921,19 +921,20 @@ class TranslatorWindow(resizableframeless):
         self.changeshowhidetranssig.connect(self.changeshowhidetrans)
 
     def __init__(self):
-
+        flags = (
+            Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowMinimizeButtonHint
+        )
+        if globalconfig["keepontop"]:
+            flags |= Qt.WindowType.WindowStaysOnTopHint
         super(TranslatorWindow, self).__init__(
             None,
-            flags=Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.WindowMinimizeButtonHint,
+            flags=flags,
             poslist=globalconfig["transuigeo"],
         )  # 设置为顶级窗口，无边框
         icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
         self.firstshow = True
-        if globalconfig["keepontop"]:
-            self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
         self.setWindowTitle("LunaTranslator")
@@ -1193,7 +1194,9 @@ class TranslatorWindow(resizableframeless):
                 globalconfig["isshowrawtext"]
             )
             try:
-                gobject.baseobject.settin_ui.fenyinsettings.setEnabled(globalconfig["isshowrawtext"])
+                gobject.baseobject.settin_ui.fenyinsettings.setEnabled(
+                    globalconfig["isshowrawtext"]
+                )
             except:
                 pass
 

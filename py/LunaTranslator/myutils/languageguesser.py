@@ -1,12 +1,12 @@
 from collections import defaultdict
 import re
 from myutils.utils import cinranges
-
+from myutils.config import isascii
 
 def guess(string: str):
     if not string:
         return "en"
-    if string.isascii():
+    if isascii(string):
         return "en"
     checkers = {
         "ru": lambda c: cinranges(

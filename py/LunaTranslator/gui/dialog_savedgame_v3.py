@@ -185,7 +185,7 @@ class ImageDelegate(QStyledItemDelegate):
     def initStyleOption(self, opt: QStyleOptionViewItem, index: QModelIndex):
         super().initStyleOption(opt, index)
         if not index.data(ImageRequestedRole):
-            opt.features |= opt.ViewItemFeature.HasDecoration
+            opt.features |= QStyleOptionViewItem.ViewItemFeature.HasDecoration
             opt.decorationSize = QSize(100, 100)
 
 
