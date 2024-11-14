@@ -151,7 +151,7 @@ def checkthemeissetable(self, dark: bool):
                     dark,
                     self,
                     importlib.import_module(
-                        "files.themes." + _fn[:-3].replace("/", ".")
+                        "files.LunaTranslator_qss." + _fn[:-3].replace("/", ".")
                     ).get_setting_window,
                 )
             except:

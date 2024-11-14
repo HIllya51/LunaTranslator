@@ -22,7 +22,8 @@ build/
 temp/
 
 .vscode/settings.json
-
+py/.cache
+py/.q_vscode_style
 py/userconfig
 py/cache
 py/chrome_cache
