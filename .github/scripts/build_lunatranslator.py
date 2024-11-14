@@ -214,9 +214,9 @@ def buildPlugins(arch):
         )
         # subprocess.run(f"python copytarget.py 0")
     elif arch == "xp":
-        url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.0.7/YY-Thunks-1.0.7-Binary.zip"
-        os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
-        os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../libs/YY-Thunks")
+        #url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.0.7/YY-Thunks-1.0.7-Binary.zip"
+        #os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
+        #os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../libs/YY-Thunks")
         with open("do.bat", "w") as ff:
             ff.write(
                 rf"""

@@ -14,7 +14,7 @@ set(OpenCV_STATIC ON)
 find_package(OpenCV REQUIRED)
 
 add_library(LunaOCR SHARED OCR.cpp ${versioninfo})
-target_link_libraries(LunaOCR ${OnnxRuntime_LIBS} ${OpenCV_LIBS} Clipper2Lib ${YY_Thunks_for_WinXP}) 
+target_link_libraries(LunaOCR ${OnnxRuntime_LIBS} ${OpenCV_LIBS} Clipper2Lib) 
 target_precompile_headers(LunaOCR REUSE_FROM pch) 
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)

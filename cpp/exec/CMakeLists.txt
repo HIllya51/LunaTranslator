@@ -25,8 +25,3 @@ target_precompile_headers(LunaTranslator_admin REUSE_FROM pch)
 endif()
 target_precompile_headers(LunaTranslator REUSE_FROM pch)
 target_precompile_headers(LunaTranslator_debug REUSE_FROM pch) 
-
-if(WINXP)
-target_link_libraries(LunaTranslator ${YY_Thunks_for_WinXP})
-target_link_libraries(LunaTranslator_debug ${YY_Thunks_for_WinXP})
-endif()
