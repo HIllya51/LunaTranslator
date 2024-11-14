@@ -2,6 +2,26 @@ name: buildluna
 on:
   workflow_call:
 jobs:
+  build_xp:
+    runs-on: windows-2019
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      - run: python .github/scripts/build_lunahook.py build English winxp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hook_winxp
+          path: cpp/LunaHook/builds/Release_English_winxp
+
   hook:
     runs-on: windows-latest
     strategy:

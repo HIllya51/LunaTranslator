@@ -1,6 +1,6 @@
 name: buildlunahook
 on:
-  workflow_call:
+  workflow_dispatch:
 
 jobs:
   build_xp:
