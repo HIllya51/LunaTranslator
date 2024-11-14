@@ -1422,30 +1422,58 @@
         "诸": "諸"
     },
     "checkintegrity": {
+        "xp": [
+            "./files/plugins/shareddllproxy32.exe",
+            "./files/plugins/LoaderDll.dll",
+            "./files/plugins/LocaleEmulator.dll",
+            "./files/plugins/Locale_Remulator/LRHookx32.dll",
+            "./files/plugins/Locale_Remulator/LRHookx64.dll",
+            "./files/plugins/NTLEAS/ntleak.dll",
+            "./files/plugins/NTLEAS/ntleai.dll",
+            "./files/plugins/LunaHook/LunaHook32.dll",
+            "./files/plugins/LunaHook/LunaHost32.dll",
+            "./files/plugins/DLL32/winsharedutils32.dll",
+            "./files/plugins/DLL32/libmecab.dll",
+            "./files/plugins/DLL32/libcurl.dll",
+            "./files/plugins/DLL32/bass.dll",
+            "./files/plugins/DLL32/brotlicommon.dll",
+            "./files/plugins/DLL32/brotlidec.dll"
+        ],
         "shared": [
             "./files/plugins/shareddllproxy32.exe",
             "./files/plugins/shareddllproxy64.exe",
-            "./files/plugins/LunaHook/LunaHook32.dll",
-            "./files/plugins/LunaHook/LunaHook64.dll",
-            "./files/plugins/LunaHook/LunaHost64.dll",
-            "./files/plugins/LunaHook/LunaHost32.dll",
             "./files/plugins/LoaderDll.dll",
             "./files/plugins/LocaleEmulator.dll",
-            "./files/plugins/hookmagpie.dll"
+            "./files/plugins/hookmagpie.dll",
+            "./files/plugins/Magpie/Magpie.Core.exe",
+            "./files/plugins/Locale_Remulator/LRHookx32.dll",
+            "./files/plugins/Locale_Remulator/LRHookx64.dll",
+            "./files/plugins/NTLEAS/ntleak.dll",
+            "./files/plugins/NTLEAS/ntleai.dll",
+            "./files/plugins/LunaHook/LunaHook32.dll",
+            "./files/plugins/LunaHook/LunaHost32.dll",
+            "./files/plugins/LunaHook/LunaHook64.dll",
+            "./files/plugins/LunaHook/LunaHost64.dll"
         ],
         "64": [
             "./files/plugins/DLL64/winsharedutils64.dll",
             "./files/plugins/DLL64/winrtutils64.dll",
             "./files/plugins/DLL64/LunaOCR64.dll",
             "./files/plugins/DLL64/libmecab.dll",
-            "./files/plugins/DLL64/libcurl-x64.dll"
+            "./files/plugins/DLL64/libcurl-x64.dll",
+            "./files/plugins/DLL64/bass.dll",
+            "./files/plugins/DLL64/brotlicommon.dll",
+            "./files/plugins/DLL64/brotlidec.dll"
         ],
         "32": [
             "./files/plugins/DLL32/winsharedutils32.dll",
             "./files/plugins/DLL32/winrtutils32.dll",
             "./files/plugins/DLL32/LunaOCR32.dll",
             "./files/plugins/DLL32/libmecab.dll",
-            "./files/plugins/DLL32/libcurl.dll"
+            "./files/plugins/DLL32/libcurl.dll",
+            "./files/plugins/DLL32/bass.dll",
+            "./files/plugins/DLL32/brotlicommon.dll",
+            "./files/plugins/DLL32/brotlidec.dll"
         ]
     },
     "scalemethods": [

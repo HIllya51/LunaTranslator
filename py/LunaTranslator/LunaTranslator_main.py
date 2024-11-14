@@ -135,9 +135,12 @@ def checkintegrity():
 
     js = static_data["checkintegrity"]
     flist = js["shared"]
-    if platform.architecture()[0] == "64bit":
+
+    if tuple(sys.version_info)[:2] == (3, 4):
+        flist = js["xp"]
+    elif platform.architecture()[0] == "64bit":
         flist += js["64"]
-    else:
+    elif platform.architecture()[0] == "32bit":
         flist += js["32"]
     collect = []
     for f in flist:
