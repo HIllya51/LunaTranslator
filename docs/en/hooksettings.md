@@ -56,19 +56,24 @@
   </details>
 
 ## Default Settings and Game-specific Settings
+## Dedicated Game Settings
 
-The settings made in the settings interface -> HOOK settings are default settings. When no specific HOOK settings are specified for a game, the default settings are used.
+1. #### Additional Hooks
+    1. #### Win32 Text Drawing Function Hook & Win32 String Function Hook
+        When activated, it will manually allow the injection of common function hooks for Win32 into the game.
+        Injecting too many hooks can slow down the game, so these hooks are not injected by default.
+        When the correct text cannot be extracted, you can try enabling these two options.
+    1. #### Special Codes
+        This special code will only be recorded when **a special code is inserted** and **the text of the special code is selected**. The next time the game starts, this special code will be automatically inserted. This setting records all previously recorded special codes, from which you can add or delete special codes.
 
-To set specific HOOK settings for a game, you need to open the **Game Management** interface, open the **Game Settings** interface, switch to the HOOK sub-tab in the game settings tab, and uncheck **Follow Default** to set specific HOOK settings for the game.
+1. #### Delayed Injection
+    Sometimes, the position in the game that needs to be hooked is on a dll, which will only load after the game has run for a short while. We also need to wait until the dll loads before we can proceed with the injection.
 
-1. ####  Special Code
-
-  When **Insert Special Code** and **Select Special Code Text**, this special code will be recorded, and it will be automatically inserted the next time it starts. This setting records all previously recorded special codes and allows adding or deleting special codes.
-
-1. ####  Delayed Injection
-
-  Sometimes, the position in the game that needs to be hooked, on the DLL, requires the game to run for a short while before the DLL is loaded. We also need to wait for the DLL to load before injecting.
+1. #### Dedicated HOOK Settings
+    The settings made in the settings interface -> HOOK settings are default settings. When no dedicated HOOK settings have been specified for the game, the default settings will be used.
+    
+    To set up dedicated HOOK settings for a game, you need to go to the **Game Management**, open the **Game Settings** interface, and switch to the HOOK sub-tab in the game settings selection card. After unchecking **Follow Default**, you can then set up dedicated HOOK settings for the game.
 
 ![img](https://image.lunatranslator.org/zh/gamesettings/1.jpg)
 
-![img](https://image.lunatranslator.org/zh/gamesettings/2.jpg)
+![img](https://image.lunatranslator.org/zh/gamesettings/2.png)

@@ -1006,6 +1006,7 @@ class dialog_setting_game_internal(QWidget):
             "延迟注入_(ms)",
             getspinbox(0, 1000000, savehook_new_data[gameuid], "inserthooktimeout"),
         )
+        formLayout.setSpacing(0)
         box = LGroupBox()
         box.setTitle("额外的钩子")
         settinglayout = LFormLayout()
@@ -1129,7 +1130,7 @@ class dialog_setting_game(LDialog):
         self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
         _ = dialog_setting_game_internal(self, gameuid)
         _.methodtab.setCurrentIndex(setindexhook)
-        _.setMinimumSize(QSize(600, 500))
+        _.setMinimumWidth(600)
         l = QHBoxLayout(self)
         self.setLayout(l)
         l.addWidget(_)
