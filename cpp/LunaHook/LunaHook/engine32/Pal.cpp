@@ -253,7 +253,6 @@ namespace
 
 bool InsertPalHook() // use Old Pal first, which does not have ruby
 {
-  PcHooks::hookOtherPcFunctions();
   auto succ = false;
   for (auto func : {"PalSpriteCreateTextEx", "PalSpriteCreateText", "PalFontDrawText"})
   {
