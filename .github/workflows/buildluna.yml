@@ -25,8 +25,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init src/plugins/libs/minhook
-      - run: git submodule update src/plugins/libs/minhook
+      - run: git submodule init cpp/libs/minhook
+      - run: git submodule update cpp/libs/minhook
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
@@ -48,8 +48,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init src/plugins/libs/minhook
-      - run: git submodule update src/plugins/libs/minhook
+      - run: git submodule init cpp/libs/minhook
+      - run: git submodule update cpp/libs/minhook
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621

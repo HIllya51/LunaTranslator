@@ -1,10 +1,10 @@
-
+#ifndef WINXP
 
 static auto LUNA_UPDATE_PREPARED_OK = RegisterWindowMessage(L"LUNA_UPDATE_PREPARED_OK");
 static auto WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");
 bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
-    return lParam && wcscmp(reinterpret_cast<LPCWCH>(lParam), L"ImmersiveColorSet") == 0;
+    return lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL;
 }
 void globalmessagelistener_1(void *callback)
 {
@@ -52,12 +52,17 @@ void globalmessagelistener_1(void *callback)
         DispatchMessage(&msg);
     }
 }
+#endif
 DECLARE_API void globalmessagelistener(void *callback)
 {
+#ifndef WINXP
     std::thread(std::bind(globalmessagelistener_1, callback)).detach();
+#endif
 }
 
 DECLARE_API void dispatchcloseevent()
 {
+#ifndef WINXP
     PostMessage(HWND_BROADCAST, LUNA_UPDATE_PREPARED_OK, 0, 0);
+#endif
 }
