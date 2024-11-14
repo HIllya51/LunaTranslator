@@ -2,7 +2,7 @@ name: buildluna
 on:
   workflow_call:
 jobs:
-  build_xp:
+  hook_xp:
     runs-on: windows-2019
     permissions:
       id-token: write
@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: hook_winxp
+          name: hook_xp
           path: cpp/LunaHook/builds/Release_English_winxp
 
   hook:
