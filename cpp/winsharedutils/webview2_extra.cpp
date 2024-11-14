@@ -11,8 +11,10 @@ using namespace Microsoft::WRL;
     if (FAILED((x)))     \
         return x;
 
+#endif
 DECLARE_API void set_transparent_background(void *m_host)
 {
+#ifndef WINXP
     COREWEBVIEW2_COLOR color;
     ZeroMemory(&color, sizeof(color));
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
@@ -22,10 +24,12 @@ DECLARE_API void set_transparent_background(void *m_host)
     {
         coreWebView2->put_DefaultBackgroundColor(color);
     }
+#endif
 }
 
 DECLARE_API void put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {
+#ifndef WINXP
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
     wil::com_ptr<ICoreWebView2> coreWebView2;
     [&]()
@@ -40,9 +44,11 @@ DECLARE_API void put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_C
         }
         return S_OK;
     }();
+#endif
 }
 DECLARE_API void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
 {
+#ifndef WINXP
     EventRegistrationToken *m_zoomFactorChangedToken = new EventRegistrationToken;
     // Register a handler for the ZoomFactorChanged event.
     // This handler just announces the new level of zoom on the window's title bar.
@@ -61,26 +67,38 @@ DECLARE_API void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
             .Get(),
         m_zoomFactorChangedToken);
     return m_zoomFactorChangedToken;
+#else
+    return NULL;
+#endif
 }
 DECLARE_API void remove_ZoomFactorChanged(void *m_host, void *m_zoomFactorChangedToken)
 {
+#ifndef WINXP
     auto token = reinterpret_cast<EventRegistrationToken *>(m_zoomFactorChangedToken);
     reinterpret_cast<ICoreWebView2Controller *>(m_host)->remove_ZoomFactorChanged(*token);
     delete token;
+#endif
 }
 DECLARE_API double get_ZoomFactor(void *m_host)
 {
+#ifndef WINXP
     double zoomFactor;
     reinterpret_cast<ICoreWebView2Controller *>(m_host)->get_ZoomFactor(&zoomFactor);
     return zoomFactor;
+#else
+    return 1;
+#endif
 }
 DECLARE_API void put_ZoomFactor(void *m_host, double zoomFactor)
 {
+#ifndef WINXP
     reinterpret_cast<ICoreWebView2Controller *>(m_host)->put_ZoomFactor(zoomFactor);
+#endif
 }
 // https://github.com/MicrosoftEdge/WebView2Feedback/blob/main/specs/WebMessageObjects.md
 DECLARE_API void remove_WebMessageReceived(void *m_host, void *m_webMessageReceivedToken)
 {
+#ifndef WINXP
     auto token = reinterpret_cast<EventRegistrationToken *>(m_webMessageReceivedToken);
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
     wil::com_ptr<ICoreWebView2> m_webView;
@@ -91,10 +109,12 @@ DECLARE_API void remove_WebMessageReceived(void *m_host, void *m_webMessageRecei
         return S_OK;
     }();
     delete token;
+#endif
 }
 
 DECLARE_API void *add_WebMessageReceived(void *m_host, void (*callback)(const wchar_t *))
 {
+#ifndef WINXP
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
     wil::com_ptr<ICoreWebView2Controller4> coreWebView4 =
         m_controller.try_query<ICoreWebView2Controller4>();
@@ -159,6 +179,7 @@ DECLARE_API void *add_WebMessageReceived(void *m_host, void (*callback)(const wc
         return S_OK;
     }();
     return m_webMessageReceivedToken;
-}
-
+#else
+    return NULL;
 #endif
+}
