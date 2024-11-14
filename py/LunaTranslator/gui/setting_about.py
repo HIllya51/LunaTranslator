@@ -5,7 +5,7 @@ from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader, tryprint
 from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
-import requests
+import requests, sys
 import shutil, gobject
 from myutils.proxy import getproxy
 import zipfile, os
@@ -54,6 +54,9 @@ def tryqueryfromgithub():
 
 
 def trygetupdate():
+
+    if tuple(sys.version_info)[:2] == (3, 4):
+        bit = "xp"
     if platform.architecture()[0] == "64bit":
         bit = "64"
     elif platform.architecture()[0] == "32bit":
