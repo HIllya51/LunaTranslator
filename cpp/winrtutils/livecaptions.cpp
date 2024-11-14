@@ -1,4 +1,3 @@
-#ifndef WINXP
 // https://github.com/corbamico/get-livecaptions-cpp/
 #include <sdkddkver.h>
 #include <windows.h>
@@ -61,10 +60,8 @@ public:
         return FindWindowW(L"LiveCaptionsDesktopWindow", nullptr) != NULL;
     }
 };
-#endif
 DECLARE_API HANDLE livecaption_start(void (*cb)(const wchar_t *))
 {
-#ifndef WINXP
     auto mutex = CreateSemaphoreW(NULL, 0, 1, NULL);
     auto flag = new int{1};
     std::thread([=]()
@@ -93,21 +90,13 @@ DECLARE_API HANDLE livecaption_start(void (*cb)(const wchar_t *))
                     delete flag; })
         .detach();
     return mutex;
-#else
-    return NULL;
-#endif
 }
+
 DECLARE_API void livecaption_stop(HANDLE m)
 {
-#ifndef WINXP
     ReleaseSemaphore(m, 1, NULL);
-#endif
 }
 DECLARE_API bool livecaption_isrunning()
 {
-#ifndef WINXP
     return Engine::is_livecaption_running();
-#else
-    return false;
-#endif
 }

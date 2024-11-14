@@ -74,7 +74,7 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}
-
+#ifndef WINXP
 	// check python3.dll
 	if (!PathFileExistsW((_runtime + L"\\python3.dll").c_str()))
 	{
@@ -82,7 +82,14 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}
-
+#else
+	if (!PathFileExistsW((_runtime + L"\\python34.dll").c_str()))
+	{
+		std::wstring msg = L"Missing python34.dll in:\r\n" + _runtime;
+		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
+		return false;
+	}
+#endif
 	// setup environment
 	SetEnvironmentVariableW(L"PYSTAND", _pystand.c_str());
 	SetEnvironmentVariableW(L"PYSTAND_HOME", _home.c_str());
@@ -117,7 +124,11 @@ bool PyStand::LoadPython()
 	// python dll must be load under "runtime"
 	SetCurrentDirectoryW(runtime.c_str());
 	// LoadLibrary
+#ifndef WINXP
 	_hDLL = (HINSTANCE)LoadLibraryA("python3.dll");
+#else
+	_hDLL = (HINSTANCE)LoadLibraryA("python34.dll");
+#endif
 	if (_hDLL)
 	{
 		_Py_Main = (t_Py_Main)GetProcAddress(_hDLL, "Py_Main");

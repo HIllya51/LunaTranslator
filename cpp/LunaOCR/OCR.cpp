@@ -1,12 +1,3 @@
-
-enum class Directional
-{
-    H,
-    V,
-    Auto
-};
-
-#ifndef WINXP
 #include <onnxruntime/core/session/onnxruntime_cxx_api.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
@@ -15,6 +6,13 @@ enum class Directional
 typedef std::vector<cv::Point> TextBox;
 typedef std::string TextLine;
 typedef std::pair<TextBox, TextLine> TextBlock;
+enum class Directional
+{
+    H,
+    V,
+    Auto
+};
+
 struct ScaleParam
 {
     int srcWidth;
@@ -705,16 +703,13 @@ std::vector<TextBlock> OcrLite::detect_internal(cv::Mat &src, cv::Rect &originRe
 
     return textBlocks;
 }
-#else
-struct OcrLite;
-#endif
+
 struct ocrpoints
 {
     int x1, y1, x2, y2, x3, y3, x4, y4;
 };
 DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads)
 {
-#ifndef WINXP
     OcrLite *pOcrObj = nullptr;
     try
     {
@@ -731,14 +726,10 @@ DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecMode
     {
         return nullptr;
     }
-#else
-    return nullptr;
-#endif
 }
 
 DECLARE_API void OcrDetect(OcrLite *pOcrObj, const void *binptr, size_t size, Directional mode, void (*cb)(ocrpoints, const char *))
 {
-#ifndef WINXP
     if (!pOcrObj)
         return;
 
@@ -758,13 +749,10 @@ DECLARE_API void OcrDetect(OcrLite *pOcrObj, const void *binptr, size_t size, Di
     catch (...)
     {
     }
-#endif
 }
 
 DECLARE_API void OcrDestroy(OcrLite *pOcrObj)
 {
-#ifndef WINXP
     if (pOcrObj)
         delete pOcrObj;
-#endif
 }

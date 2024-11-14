@@ -118,3 +118,18 @@ jobs:
         with:
           name: ${{ matrix.fname }}
           path: py/build/${{matrix.fname}}.zip
+  merge_xp:
+    runs-on: windows-latest
+    needs: [build_cpp_xp,hook_xp]
+    steps:
+      - uses: actions/checkout@v4
+      - run: git submodule init py/files/LunaTranslator_qss
+      - run: git submodule update py/files/LunaTranslator_qss
+      - uses: actions/download-artifact@v4
+        with:
+            path: build
+      - run:  python .github/scripts/build_lunatranslator.py merge xp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LunaTranslator_x86_winxp
+          path: py/build/LunaTranslator_x86_winxp.zip
