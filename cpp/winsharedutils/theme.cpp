@@ -130,6 +130,7 @@ static bool InitApis() noexcept
 
 static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
 {
+#ifndef WINXP
     if (!InitApis())
         return;
 
@@ -149,11 +150,14 @@ static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
 
     RefreshImmersiveColorPolicyState();
     FlushMenuThemes();
+#endif
 }
 DECLARE_API void setdwmextendframe(HWND hwnd)
 {
+#ifndef WINXP
     MARGINS mar{-1, -1, -1, -1};
     DwmExtendFrameIntoClientArea(hwnd, &mar);
+#endif
 }
 
 DECLARE_API void _SetTheme(
@@ -161,6 +165,7 @@ DECLARE_API void _SetTheme(
     bool dark,
     int backdrop)
 {
+#ifndef WINXP
     // printf("%d %d\n",GetOSversion(),GetOSBuild());
     if (GetOSversion() <= 6) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
         return;
@@ -189,10 +194,12 @@ DECLARE_API void _SetTheme(
     DWM_SYSTEMBACKDROP_TYPE value = BACKDROP_MAP[backdrop];
     // 不管操作系统版本了，硬设置就行，测试不会崩溃，让系统自己处理。
     DwmSetWindowAttribute(_hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &value, sizeof(value));
+#endif
 }
 
 DECLARE_API bool isDark()
 {
+#ifndef WINXP
     HKEY hKey;
     const char *subKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
     if (RegOpenKeyExA(HKEY_CURRENT_USER, subKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
@@ -206,5 +213,6 @@ DECLARE_API bool isDark()
         }
         RegCloseKey(hKey);
     }
+#endif
     return false;
 }

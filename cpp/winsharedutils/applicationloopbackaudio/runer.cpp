@@ -1,6 +1,7 @@
 
+#ifndef WINXP
 #include "LoopbackCapture.h"
-
+#endif
 DECLARE_API HANDLE StartCaptureAsync(void (*datacb)(void *ptr, size_t size))
 {
 #ifndef WINXP
