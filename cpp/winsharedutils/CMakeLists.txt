@@ -14,7 +14,7 @@ add_library(winsharedutils MODULE mp3enc.cpp webview2_extra.cpp AreoAcrylic.cpp 
 applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp
 SimpleBrowser.cpp MWebBrowser.cpp icon.cpp ${versioninfo})
 target_precompile_headers(winsharedutils REUSE_FROM pch) 
-target_link_libraries(winsharedutils tinymp3 Shcore rapidfuzz wil webview2 Mfplat mfuuid Mmdevapi)
+target_link_libraries(winsharedutils tinymp3 Shcore rapidfuzz wil webview2 Mfplat mfuuid Mmdevapi ${YY_Thunks_for_WinXP})
 target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Mmdevapi.dll")
 target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Mfplat.dll")
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)

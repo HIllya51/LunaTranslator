@@ -46,5 +46,5 @@ cpp/libs/onnxruntime-static.zip
 cpp/libs/onnxruntime-static/onnxruntime-static.7z
 cpp/libs/opencv-static/opencv-static.7z
 cpp/LunaHook/.vscode/settings.json
-cpp/LunaHook/YY-Thunks
 cpp/LunaHook/scripts/YY-Thunks-1.0.7-Binary.zip
+cpp/libs/YY-Thunks

@@ -205,7 +205,7 @@ def buildPlugins(arch):
             f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
         )
     # subprocess.run(f"python copytarget.py 1")
-    else:
+    elif arch=='x64':
         subprocess.run(
             f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
         )
@@ -213,8 +213,20 @@ def buildPlugins(arch):
             f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
         )
         # subprocess.run(f"python copytarget.py 0")
+    elif arch=='xp':
+        url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.0.7/YY-Thunks-1.0.7-Binary.zip"
+        os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
+        os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../libs/YY-Thunks")
+        with open("do.bat", "w") as ff:
+            ff.write(
+            rf"""
 
-
+cmake -DWINXP=ON ../CMakeLists.txt -G "Visual Studio 16 2019" -A win32 -T v141_xp -B ../build/x86_xp
+cmake --build ../build/x86_xp --config Release --target ALL_BUILD -j 14
+call dobuildxp.bat
+"""
+        )
+        os.system(f"cmd /c do.bat")
 def downloadsomething():
     pass
     # shutil.rmtree(rootDir + "\\files\\LunaTranslator_qss\\.git")

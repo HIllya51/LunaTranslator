@@ -40,10 +40,8 @@ option(WINXP "WINXP" OFF)
 
 if(WINXP)
 set(WINXPAPP "_winxp")
-set(YY_Thunks_for_WinXP ${CMAKE_CURRENT_LIST_DIR}/YY-Thunks/objs/X86/YY_Thunks_for_WinXP.obj)
 else()
 set(WINXPAPP "")
-set(YY_Thunks_for_WinXP)
 endif()
 
 add_definitions(-DLANGUAGE=${LANGUAGE})
