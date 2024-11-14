@@ -19,3 +19,6 @@
 [submodule "src/plugins/libs/minhook"]
 	path = cpp/libs/minhook
 	url = https://github.com/TsudaKageyu/minhook
+[submodule "py/files/LunaTranslator_qss"]
+	path = py/files/LunaTranslator_qss
+	url = https://github.com/HIllya51/LunaTranslator_qss.git
