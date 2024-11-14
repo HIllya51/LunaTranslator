@@ -64,16 +64,17 @@ cmake --build ../build/x64_{lang} --config Release --target ALL_BUILD -j 14
     os.system(f"cmd /c do.bat")
 
 
-def build_langx_xp(lang):
+def build_langx_xp(lang, core):
     url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.0.7/YY-Thunks-1.0.7-Binary.zip"
     os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
     os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../../libs/YY-Thunks")
     os.system("dir")
+    flags='' if core else ' -DBUILD_GUI=ON -DBUILD_CLI=ON '
     with open("do.bat", "w") as ff:
         ff.write(
             rf"""
 
-cmake -DBUILD_PLUGIN=OFF -DWINXP=ON -DLANGUAGE={lang} -DBUILD_GUI=ON -DBUILD_CLI=ON ../CMakeLists.txt -G "Visual Studio 16 2019" -A win32 -T v141_xp -B ../build/x86_{lang}_xp
+cmake -DBUILD_PLUGIN=OFF -DWINXP=ON -DLANGUAGE={lang} {flags} ../CMakeLists.txt -G "Visual Studio 16 2019" -A win32 -T v141_xp -B ../build/x86_{lang}_xp
 cmake --build ../build/x86_{lang}_xp --config Release --target ALL_BUILD -j 14
 call dobuildxp.bat
 """
@@ -89,7 +90,9 @@ elif sys.argv[1] == "build":
     lang = sys.argv[2]
     bit = sys.argv[3]
     if bit == "winxp":
-        build_langx_xp(lang)
+        build_langx_xp(lang, False)
+    elif bit == "winxp_core":
+        build_langx_xp(lang, True)
     else:
         onlycore = int(sys.argv[4]) if len(sys.argv) >= 5 else False
         build_langx(lang, bit, onlycore)
