@@ -7,7 +7,6 @@
 
 namespace PcHooks
 {
-    void hook_GetTextExtentPoint32A();
     void hookGDIFunctions();
     void hookGDIPlusFunctions();
     bool hookD3DXFunctions(HMODULE d3dxModule);
