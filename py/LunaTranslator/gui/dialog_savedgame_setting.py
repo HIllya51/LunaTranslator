@@ -1006,7 +1006,6 @@ class dialog_setting_game_internal(QWidget):
             "延迟注入_(ms)",
             getspinbox(0, 1000000, savehook_new_data[gameuid], "inserthooktimeout"),
         )
-        formLayout.setSpacing(0)
         box = LGroupBox()
         box.setTitle("额外的钩子")
         settinglayout = LFormLayout()
