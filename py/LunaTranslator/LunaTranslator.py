@@ -1026,11 +1026,11 @@ class MAINUI:
 
                 if _fn.endswith(".py"):
                     style = importlib.import_module(
-                        "files.themes." + _fn[:-3].replace("/", ".")
+                        "files.LunaTranslator_qss." + _fn[:-3].replace("/", ".")
                     ).stylesheet()
                 elif _fn.endswith(".qss"):
                     with open(
-                        "./files/themes/{}".format(_fn),
+                        "./files/LunaTranslator_qss/{}".format(_fn),
                         "r",
                     ) as ff:
                         style = ff.read()

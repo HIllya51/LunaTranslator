@@ -73,6 +73,8 @@ jobs:
             fname: LunaTranslator
     steps:
       - uses: actions/checkout@v4
+      - run: git submodule init py/files/LunaTranslator_qss
+      - run: git submodule update py/files/LunaTranslator_qss
       - uses: actions/download-artifact@v4
         with:
             path: build
