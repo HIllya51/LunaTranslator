@@ -32,7 +32,9 @@ def prepareqtenv():
 
     if isqt5:
         # 中文字符下不能自动加载
-        QApplication.addLibraryPath("./files/runtime/PyQt5/Qt5/plugins")
+        plgs = "./files/runtime/PyQt5/Qt5/plugins"
+        if os.path.exists(plgs):
+            QApplication.addLibraryPath(plgs)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
     if os.path.exists("./files/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
