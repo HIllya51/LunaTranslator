@@ -158,16 +158,22 @@ size_t lev_u_edit_distance(size_t len1, const wchar_t *string1,
     return i;
 }
 DECLARE_API size_t levenshtein_distance(size_t len1, const wchar_t *string1,
-                            size_t len2, const wchar_t *string2)
+                                        size_t len2, const wchar_t *string2)
 {
+#ifndef WINXP
     return rapidfuzz::levenshtein_distance(std::wstring_view(string1, len1), std::wstring_view(string2, len2));
-    // return lev_u_edit_distance(len1, string1, len2, string2, 0);
+#else
+    return lev_u_edit_distance(len1, string1, len2, string2, 0);
+#endif
 }
 DECLARE_API double levenshtein_ratio(size_t len1, const wchar_t *string1,
-                         size_t len2, const wchar_t *string2)
+                                     size_t len2, const wchar_t *string2)
 {
-    // auto ldist = lev_u_edit_distance(len1, string1, len2, string2, 1);
+#ifndef WINXP
     auto ldist = levenshtein_distance(len1, string1, len2, string2);
+#else
+    auto ldist = lev_u_edit_distance(len1, string1, len2, string2, 1);
+#endif
     auto lensum = len1 + len2;
     if (lensum == 0)
         return 0;

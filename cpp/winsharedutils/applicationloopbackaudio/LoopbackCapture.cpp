@@ -1,3 +1,4 @@
+#ifndef WINXP
 #include <shlobj.h>
 #include <wchar.h>
 #include <iostream>
@@ -396,3 +397,4 @@ HRESULT CLoopbackCapture::OnAudioSampleRequested()
 
     return S_OK;
 }
+#endif

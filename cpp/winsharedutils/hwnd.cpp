@@ -1,5 +1,4 @@
 ﻿
-#include <shellscalingapi.h>
 DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
@@ -96,6 +95,14 @@ DECLARE_API void getprocesses(void (*cb)(DWORD, const wchar_t *))
         } while (Process32Next(hSnapshot, &pe32));
     }
 }
+
+typedef enum MONITOR_DPI_TYPE
+{
+    MDT_EFFECTIVE_DPI = 0,
+    MDT_ANGULAR_DPI = 1,
+    MDT_RAW_DPI = 2,
+    MDT_DEFAULT = MDT_EFFECTIVE_DPI
+} MONITOR_DPI_TYPE;
 DECLARE_API UINT GetMonitorDpiScaling(HWND hwnd)
 {
     HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);

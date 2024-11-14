@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.16)
 
 project(LunaPlugins)
 
+option(WINXP "WINXP" OFF)
+if(WINXP)
+add_definitions(-DWINXP=${WINXP})
+endif()
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -29,9 +33,11 @@ target_precompile_headers(pch PUBLIC pch.h)
 
 
 add_subdirectory(exec)
-add_subdirectory(winrtutils)
 add_subdirectory(winsharedutils)
 add_subdirectory(hookmagpie)
 add_subdirectory(shareddllproxy)
-add_subdirectory(wcocr)
 add_subdirectory(LunaOCR)
+if(NOT WINXP)
+add_subdirectory(winrtutils)
+add_subdirectory(wcocr)
+endif()

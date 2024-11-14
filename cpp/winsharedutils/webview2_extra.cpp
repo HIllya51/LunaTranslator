@@ -1,4 +1,4 @@
-
+#ifndef WINXP
 
 #include <wrl.h>
 #include <wil/com.h>
@@ -160,3 +160,5 @@ DECLARE_API void *add_WebMessageReceived(void *m_host, void (*callback)(const wc
     }();
     return m_webMessageReceivedToken;
 }
+
+#endif
