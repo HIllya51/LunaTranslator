@@ -13,7 +13,7 @@ bool InsertAnimHook()
     HookParam myhp;
     myhp.address = addr + 10;
 
-    myhp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE  | EMBED_DYNA_SJIS; // /HQ 不使用上下文区分 把所有线程的文本都提取
+    myhp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE | EMBED_DYNA_SJIS; // /HQ 不使用上下文区分 把所有线程的文本都提取
     myhp.hook_font = F_GetGlyphOutlineA;
     // data_offset
     myhp.offset = get_reg(regs::ecx);
@@ -45,7 +45,7 @@ bool InsertAnim2Hook()
         buffer->from(result);
     };
     myhp.newlineseperator = L"@n";
-    myhp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE  | EMBED_DYNA_SJIS;
+    myhp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE | EMBED_DYNA_SJIS;
     // 僕がいない間に変貌えられた妻の秘肉 ～ラブラブ新婚妻は他の男に抱かれ淫らに喘ぐ夢を見るか～ 体験版
 
     // data_offset
@@ -99,10 +99,21 @@ namespace
         return NewHook(hp, "Anim3");
     }
 }
+namespace
+{
+    bool gdi()
+    {
+        HookParam hp;
+        hp.address = (DWORD)::GetGlyphOutlineA;
+        hp.offset = get_stack(2);
+        hp.type = CODEC_ANSI_BE;
+        return NewHook(hp, "Anim");
+    }
+}
 bool Anim::attach_function()
 {
 
     auto b1 = InsertAnimHook() || InsertAnim2Hook();
     b1 = InsertAnim3Hook() || b1;
-    return b1;
+    return gdi() || b1;
 }
