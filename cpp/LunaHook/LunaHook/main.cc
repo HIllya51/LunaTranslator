@@ -34,7 +34,7 @@ DWORD WINAPI Pipe(LPVOID)
 
 		*(DWORD *)buffer = GetCurrentProcessId();
 		WriteFile(hookPipe, buffer, sizeof(DWORD), &count, nullptr);
-		WORD hookversion[4]=LUNA_VERSION;
+		WORD hookversion[4] = LUNA_VERSION;
 		WriteFile(hookPipe, hookversion, sizeof(hookversion), &count, nullptr);
 
 		ConsoleOutput(PIPE_CONNECTED);
@@ -48,6 +48,15 @@ DWORD WINAPI Pipe(LPVOID)
 				auto info = *(InsertHookCmd *)buffer;
 				static int userHooks = 0;
 				NewHook(info.hp, ("UserHook" + std::to_string(userHooks += 1)).c_str());
+			}
+			break;
+			case HOST_COMMAND_INSERT_PC_HOOKS:
+			{
+				auto info = *(InsertPCHooksCmd *)buffer;
+				if (info.which == 0)
+					PcHooks::hookGdiGdiplusD3dxFunctions();
+				else if (info.which == 1)
+					PcHooks::hookOtherPcFunctions();
 			}
 			break;
 			case HOST_COMMAND_REMOVE_HOOK:

@@ -789,5 +789,8 @@
     "延迟": "atraso",
     "开始": "iniciar",
     "最长等待时间": "Tempo máximo de espera",
-    "截取行数": "Cortar o número de linhas"
+    "截取行数": "Cortar o número de linhas",
+    "Win32文字绘制函数钩子": "Gancho de função de desenho de texto Win32",
+    "Win32字符串函数钩子": "Gancho de função de cadeia Win32",
+    "额外的钩子": "Ganchos extra"
 }

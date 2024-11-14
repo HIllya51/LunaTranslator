@@ -789,5 +789,8 @@
     "延迟": "vertraging",
     "开始": "start",
     "最长等待时间": "Maximale wachttijd",
-    "截取行数": "Aantal regels snijden"
+    "截取行数": "Aantal regels snijden",
+    "Win32文字绘制函数钩子": "Win32 teksttekenfunctiehook",
+    "Win32字符串函数钩子": "Win32 tekenfunctiehook",
+    "额外的钩子": "Extra haken"
 }

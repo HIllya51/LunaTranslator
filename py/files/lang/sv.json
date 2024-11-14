@@ -789,5 +789,8 @@
     "延迟": "fördröjning",
     "开始": "start",
     "最长等待时间": "Maximal väntetid",
-    "截取行数": "Klipp av antalet rader"
+    "截取行数": "Klipp av antalet rader",
+    "Win32文字绘制函数钩子": "Win32 textritfunktionskrok",
+    "Win32字符串函数钩子": "Win32 strängfunktionskrok",
+    "额外的钩子": "Extra krokar"
 }

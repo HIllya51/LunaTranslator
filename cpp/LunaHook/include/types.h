@@ -157,7 +157,12 @@ struct SearchParam
 	wchar_t text[PATTERN_SIZE] = {};			  // text to search for
 	JITTYPE jittype;
 };
-
+struct InsertPCHooksCmd
+{
+	InsertPCHooksCmd(int _which) : which(_which) {}
+	HostCommandType command = HOST_COMMAND_INSERT_PC_HOOKS;
+	int which;
+};
 struct InsertHookCmd // From host
 {
 	InsertHookCmd(HookParam hp) : hp(hp) {}

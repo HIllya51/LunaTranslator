@@ -143,5 +143,6 @@ namespace
 }
 bool CodeX::attach_function()
 {
+  PcHooks::hookGDIFunctions(GetGlyphOutlineA); // 对于部分游戏，文本分两段显示，会吞掉后半段。故此用这个兜底
   return (hook3() | InsertCodeXHook()) || hook() || hook2();
 }

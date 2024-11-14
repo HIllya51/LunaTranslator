@@ -72,6 +72,10 @@ C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int default
     TextThread::maxHistorySize = maxHistorySize;
 }
 
+C_LUNA_API void Luna_InsertPCHooks(DWORD pid, int which)
+{
+    Host::InsertPCHooks(pid, which);
+}
 C_LUNA_API bool Luna_InsertHookCode(DWORD pid, LPCWSTR hookcode)
 {
     auto hp = HookCode::Parse(hookcode);

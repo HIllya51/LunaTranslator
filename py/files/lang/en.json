@@ -789,5 +789,8 @@
     "延迟": "delay",
     "开始": "start",
     "最长等待时间": "Maximum waiting time",
-    "截取行数": "Cut the number of lines"
+    "截取行数": "Cut the number of lines",
+    "Win32文字绘制函数钩子": "Win32 text drawing function hook",
+    "Win32字符串函数钩子": "Win32 string function hook",
+    "额外的钩子": "Extra hooks"
 }

@@ -99,21 +99,10 @@ namespace
         return NewHook(hp, "Anim3");
     }
 }
-namespace
-{
-    bool gdi()
-    {
-        HookParam hp;
-        hp.address = (DWORD)::GetGlyphOutlineA;
-        hp.offset = get_stack(2);
-        hp.type = CODEC_ANSI_BE;
-        return NewHook(hp, "Anim");
-    }
-}
 bool Anim::attach_function()
 {
-
+    PcHooks::hookGDIFunctions(GetGlyphOutlineA);
     auto b1 = InsertAnimHook() || InsertAnim2Hook();
     b1 = InsertAnim3Hook() || b1;
-    return gdi() || b1;
+    return b1;
 }

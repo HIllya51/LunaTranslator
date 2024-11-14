@@ -350,6 +350,13 @@ namespace Host
 		prs.at(processId).Send(HOST_COMMAND_DETACH);
 	}
 
+	void InsertPCHooks(DWORD processId, int which)
+	{
+		auto &prs = processRecordsByIds.Acquire().contents;
+		if (prs.find(processId) == prs.end())
+			return;
+		prs.at(processId).Send(InsertPCHooksCmd(which));
+	}
 	void InsertHook(DWORD processId, HookParam hp)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;

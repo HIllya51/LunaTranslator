@@ -192,6 +192,8 @@ class texthook(basetext):
         )
         self.Luna_SyncThread = LunaHost.Luna_SyncThread
         self.Luna_SyncThread.argtypes = ThreadParam, c_bool
+        self.Luna_InsertPCHooks = LunaHost.Luna_InsertPCHooks
+        self.Luna_InsertPCHooks.argtypes = (DWORD, c_int)
         self.Luna_Settings = LunaHost.Luna_Settings
         self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int, c_int
         self.Luna_Start = LunaHost.Luna_Start
@@ -438,10 +440,18 @@ class texthook(basetext):
             pass
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
+        if savehook_new_data[self.gameuid]["insertpchooks_GdiGdiplusD3dx"]:
+            self.Luna_InsertPCHooks(pid, 0)
+        if savehook_new_data[self.gameuid]["insertpchooks_string"]:
+            self.Luna_InsertPCHooks(pid, 1)
         gobject.baseobject.displayinfomessage(
             savehook_new_data[self.gameuid]["title"], "<msg_info_refresh>"
         )
         self.flashembedsettings(pid)
+
+    def InsertPCHooks(self, which):
+        for pid in self.pids:
+            self.Luna_InsertPCHooks(pid, which)
 
     def newhookinsert(self, pid, addr, hcode):
         for _hc, _addr, _ctx1, _ctx2 in savehook_new_data[self.gameuid][
@@ -490,7 +500,7 @@ class texthook(basetext):
             trans = kanjitrans(zhconv.convert(trans, "zh-tw"))
         self.embedcallback(text, trans, tp)
 
-    def embedcallback(self, text: str, trans: str, tp:ThreadParam):
+    def embedcallback(self, text: str, trans: str, tp: ThreadParam):
         trans = splitembedlines(trans)
         self.Luna_embedcallback(tp, text, trans)
 

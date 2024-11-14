@@ -139,7 +139,9 @@ def getdefaultsavehook(title=None):
         "statistic_wordcount_nodump": 0,
         # "leuse": True, 废弃
         "hook": [],
-        "inserthooktimeout": 1000,
+        "inserthooktimeout": 500,
+        "insertpchooks_GdiGdiplusD3dx": False,
+        "insertpchooks_string": False,
         "needinserthookcode": [],
         # "allow_tts_auto_names": "",#->v4
         # "allow_tts_auto_names_v4": [],

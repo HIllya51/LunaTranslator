@@ -789,5 +789,8 @@
     "延迟": "gecikme",
     "开始": "başlat",
     "最长等待时间": "Maksimum bekleme zamanı",
-    "截取行数": "Çizgi sayısını kesin"
+    "截取行数": "Çizgi sayısını kesin",
+    "Win32文字绘制函数钩子": "Win32 metin çizim fonksiyonu çubuğu",
+    "Win32字符串函数钩子": "Win32 string fonksiyonu",
+    "额外的钩子": "Ekstra hücreler"
 }

@@ -789,5 +789,8 @@
     "延迟": "Trì hoãn",
     "开始": "Bắt đầu",
     "最长等待时间": "Thời gian chờ tối đa",
-    "截取行数": "Số dòng bị chặn"
+    "截取行数": "Số dòng bị chặn",
+    "Win32文字绘制函数钩子": "Win32 Chức năng vẽ văn bản Hook",
+    "Win32字符串函数钩子": "Win32 Chuỗi chức năng Hook",
+    "额外的钩子": "Thêm móc"
 }

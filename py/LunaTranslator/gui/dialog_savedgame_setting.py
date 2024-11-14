@@ -16,7 +16,7 @@ from myutils.config import (
 )
 from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
-from myutils.wrapper import Singleton, Singleton_close
+from myutils.wrapper import Singleton, Singleton_close, trypass
 from myutils.utils import (
     gamdidchangedtask,
     checkpostlangmatch,
@@ -58,6 +58,7 @@ from gui.dynalang import (
     LAction,
     LLabel,
     LDialog,
+    LGroupBox,
 )
 from gui.dialog_savedgame_common import tagitem
 
@@ -1005,8 +1006,33 @@ class dialog_setting_game_internal(QWidget):
             "延迟注入_(ms)",
             getspinbox(0, 1000000, savehook_new_data[gameuid], "inserthooktimeout"),
         )
+        box = LGroupBox()
+        box.setTitle("额外的钩子")
+        settinglayout = LFormLayout()
+        box.setLayout(settinglayout)
+        formLayout.addRow(box)
+        settinglayout.addRow(
+            "Win32文字绘制函数钩子",
+            getsimpleswitch(
+                savehook_new_data[gameuid],
+                "insertpchooks_GdiGdiplusD3dx",
+                callback=lambda _: (
+                    gobject.baseobject.textsource.InsertPCHooks(0) if _ else None
+                ),
+            ),
+        )
+        settinglayout.addRow(
+            "Win32字符串函数钩子",
+            getsimpleswitch(
+                savehook_new_data[gameuid],
+                "insertpchooks_string",
+                callback=lambda _: (
+                    gobject.baseobject.textsource.InsertPCHooks(1) if _ else None
+                ),
+            ),
+        )
 
-        formLayout.addRow(
+        settinglayout.addRow(
             "特殊码",
             listediterline(
                 ("特殊码"),
@@ -1014,7 +1040,10 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["needinserthookcode"],
             ),
         )
-
+        box = QGroupBox()
+        settinglayout = LFormLayout()
+        box.setLayout(settinglayout)
+        formLayout.addRow(box)
         for k in [
             "codepage_index",
             "textthreaddelay",
@@ -1028,7 +1057,7 @@ class dialog_setting_game_internal(QWidget):
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid],
             "hooksetting_follow_default",
-            formLayout,
+            settinglayout,
             lambda: gobject.baseobject.textsource.setsettings(),
         )
         formLayout2.addRow(

@@ -4,9 +4,7 @@ public:
     bool attach_function()
     {
         ConsoleOutput("IGNORE %s", getenginename());
-        // ConsoleOutput("IGNORE engine");
-        PcHooks::hooknormalfunctions();
-        return true;
+        return false;
     }
 };
 class oldSystem40ini : public NoEngine

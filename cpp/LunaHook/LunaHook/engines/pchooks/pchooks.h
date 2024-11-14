@@ -7,11 +7,11 @@
 
 namespace PcHooks
 {
-    void hookGDIFunctions();
+    void hookGDIFunctions(void *ptr = 0);
     void hookGDIPlusFunctions();
-    bool hookD3DXFunctions(HMODULE d3dxModule);
-    void hookOtherPcFunctions();
-    void hooknormalfunctions();
+    void hookD3DXFunctions(HMODULE d3dxModule);
+    void hookOtherPcFunctions(void *ptr = 0);
+    void hookGdiGdiplusD3dxFunctions();
 } // namespace PcHooks
 
 // EOF

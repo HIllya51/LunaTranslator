@@ -138,7 +138,7 @@ void HIJACK()
 
     if (!result)
     {
-        PcHooks::hooknormalfunctions();
+        PcHooks::hookGdiGdiplusD3dxFunctions();
         PcHooks::hookOtherPcFunctions();
     }
 }
