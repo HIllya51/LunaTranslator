@@ -242,6 +242,7 @@ bool InsertCatSystem2Hook()
     auto _ = std::regex_replace(buffer->strA(), rx, "$1");
     buffer->from(_);
   };
+  hp.newlineseperator = L"\\n";
   return NewHook(hp, "CatSystem2new");
 }
 namespace
