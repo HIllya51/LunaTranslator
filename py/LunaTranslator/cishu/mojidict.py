@@ -57,7 +57,7 @@ def mojiclicksearch(self, word):
                 if subdetail["lang"] == "zh-CN":
                     collect[i] = title + collect[i]
                 elif subdetail["lang"] == "ja":
-                    title = f"({title})"
+                    title = "(" + title + ")"
                     collect[i] = collect[i] + title
                 good = True
         if not good:
@@ -559,15 +559,15 @@ def mojiclicksearch(self, word):
     
     </style>
     """
-    spell = f"<span>{spell}｜{pron}{accent}</span>"
-    spell = f'<div class="spell" style="font-size: 18px;">{spell}</div>'
+    spell = "<span>{}｜{}{}</span>".format(spell, pron, accent)
+    spell = '<div class="spell" style="font-size: 18px;">{}</div>'.format(spell)
     _type = re.match("\\[(.*?)\\]", excerpt).groups()[0]
-    _type = f'<p class="type">{_type}</p>'
+    _type = '<p class="type">{}</p>'.format(_type)
 
     for i in range(len(collect)):
-        collect[i] = f"<p>{i+1}. {collect[i]}</p>"
-    detail = f"""<div class="detail">{_type}{''.join(collect)}</div>"""
-    result = f'<div class="cloud-result">{spell}{detail}</div>'
+        collect[i] = "<p>{}. {}</p>".format(i + 1, collect[i])
+    detail = """<div class="detail">{}{}</div>""".format(_type, "".join(collect))
+    result = '<div class="cloud-result">{}{}</div>'.format(spell, detail)
     result += style
     return result
 

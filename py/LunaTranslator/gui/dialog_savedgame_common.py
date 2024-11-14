@@ -405,7 +405,7 @@ def getcachedimage(src, small):
         return _pix
     if not os.path.exists(src):
         return None
-    src2 = gobject.getcachedir(f"icon2/{__b64string(src)}.jpg")
+    src2 = gobject.getcachedir("icon2/{}.jpg".format(__b64string(src)))
     _pix = QPixmap(src2)
     if not _pix.isNull():
         return _pix

@@ -15,7 +15,7 @@ class OCR(baseocr):
         absolute_img_path = os.path.abspath(fname)
         params = {"image_path": absolute_img_path}
 
-        response = requests.get(f"http://127.0.0.1:{self.port}/image", params=params)
+        response = requests.get("http://127.0.0.1:{}/image".format(self.port), params=params)
         os.remove(absolute_img_path)
         try:
             return response.json()["text"]

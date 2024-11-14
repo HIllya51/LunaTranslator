@@ -122,5 +122,5 @@ class TS(basetrans):
         if (not res) and ("\n" in content):
             res = self.tryfindtranslate_single(content)
         if not res:
-            raise Exception(f"can't find: {content}")
+            raise Exception("can't find: " + content)
         return res

@@ -10,7 +10,7 @@ class OCR(baseocr):
         regex = re.compile(r">AF_initDataCallback\(({key: 'ds:1'.*?)\);</script>")
 
         timestamp = int(time.time() * 1000)
-        url = f"https://lens.google.com/v3/upload?stcs={timestamp}"
+        url = "https://lens.google.com/v3/upload?stcs={}".format(timestamp)
         headers = {
             "User-Agent": "Mozilla/5.0 (Linux; Android 13; RMX3771) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.144 Mobile Safari/537.36",
         }

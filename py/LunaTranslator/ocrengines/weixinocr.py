@@ -37,7 +37,7 @@ class wcocr:
         mojo = os.path.join(
             default,
             r"resources\app\versions",
-            f"{version[0]}.{version[1]}.{version[2]}-{version[3]}",
+            "{}.{}.{}-{}".format(version[0], version[1], version[2], version[3]),
         )
         ocr = os.path.join(mojo, r"QQScreenShot\Bin\TencentOCR.exe")
         return ocr, mojo

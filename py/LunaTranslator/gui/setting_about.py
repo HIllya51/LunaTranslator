@@ -377,8 +377,8 @@ def setTab_update(self, basel):
     if version is None:
         versionstring = "unknown"
     else:
-        versionstring = (
-            f"v{version[0]}.{version[1]}.{version[2]}  {platform.architecture()[0]}"
+        versionstring = ("v{}.{}.{}  {}").format(
+            version[0], version[1], version[2], platform.architecture()[0]
         )
     inner, vis = [_[1] for _ in static_data["language_list_show"]], [
         _[0] for _ in static_data["language_list_show"]

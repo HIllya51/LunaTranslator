@@ -65,7 +65,7 @@ class playtimemanager:
         table = ["trace_loose", "trace_strict"][globalconfig["is_tracetime_strict"]]
         gameinternalid = self.get_gameinternalid(gameuid)
         return self.sqlsavegameinfo.execute(
-            f"SELECT timestart,timestop FROM {table} WHERE gameinternalid = ?",
+            "SELECT timestart,timestop FROM {} WHERE gameinternalid = ?".format(table),
             (gameinternalid,),
         ).fetchall()
 
@@ -111,14 +111,14 @@ class playtimemanager:
             gameinternalid = self.get_gameinternalid(uid)
             if uid in dic:
                 self.sqlsavegameinfo.execute(
-                    f"UPDATE {table} SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)",
+                    "UPDATE {} SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)".format(table),
                     (_t, gameinternalid, dic[uid]),
                 )
 
             else:
                 dic[uid] = _t
                 self.sqlsavegameinfo.execute(
-                    f"INSERT INTO {table} VALUES(?,?,?)",
+                    "INSERT INTO {} VALUES(?,?,?)".format(table),
                     (gameinternalid, _t, _t),
                 )
         for k in list(dic.keys()):

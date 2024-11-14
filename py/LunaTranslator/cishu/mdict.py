@@ -2167,30 +2167,32 @@ class mdict(cishubase):
         for type_, string in items:
             ishtml = False
             if type_ == 1:
-                htmlitem = f'<font color="#FF0000" size=5>{string}</font>'
+                htmlitem = '<font color="#FF0000" size=5>{}</font>'.format(string)
             elif type_ == 3:
                 htmlitem = (
-                    f'<font color="#FB8C42" face="Droid Sans Fallback">{string}</font>'
+                    '<font color="#FB8C42" face="Droid Sans Fallback">{}</font>'.format(
+                        string
+                    )
                 )
             elif type_ == 4:
-                htmlitem = f"<font color=black>{string}</font>"
+                htmlitem = "<font color=black>{}</font>".format(string)
             elif type_ == 5:
-                htmlitem = f'<font color="#04A6B5">{string}</font>'
+                htmlitem = '<font color="#04A6B5">{}</font>'.format(string)
             elif type_ == 6:
-                htmlitem = f'<font color="#9900CC">{string}</font>'
+                htmlitem = '<font color="#9900CC">{}</font>'.format(string)
             elif type_ == 7:
-                htmlitem = f'<font color="#F27A04">{string}</font>'
+                htmlitem = '<font color="#F27A04">{}</font>'.format(string)
             else:
                 if str(type_).startswith("2"):
                     num = str(type_)[1:]
                     if len(num):
                         num += " "
-                    htmlitem = f'<font color="#0000FF">{num}{string}</font>'
+                    htmlitem = '<font color="#0000FF">{}{}</font>'.format(num, string)
                 elif str(type_).startswith("8"):
                     num = str(type_)[1:]
                     if len(num):
                         num += " "
-                    htmlitem = f'<font color="#330099">{num}{string}</font>'
+                    htmlitem = '<font color="#330099">{}{}</font>'.format(num, string)
                 elif (
                     str(type_).startswith("11")
                     or str(type_).startswith("9")
@@ -2218,7 +2220,9 @@ class mdict(cishubase):
                                 break
                         if idx != -1:
                             string = string[:idx] + num + string[idx:]
-                    htmlitem = f'<font color="#{color}">{num}{string}</font>'
+                    htmlitem = '<font color="#{}">{}{}</font>'.format(
+                        color, num, string
+                    )
                 else:
                     ishtml = True
                     htmlitem = string
@@ -2266,10 +2270,12 @@ class mdict(cishubase):
         uid = str(uuid.uuid4())
         # with open(uid+'.mp3','wb') as ff:
         #     ff.write(file_content)
-        audio = f'<audio controls id="{uid}" style="display: none"><source src="data:{self.get_mime_type_from_magic(file_content)};base64,{base64_content}"></audio>'
+        audio = '<audio controls id="{}" style="display: none"><source src="data:{};base64,{}"></audio>'.format(
+            uid, self.get_mime_type_from_magic(file_content), base64_content
+        )
         html_content = audio + html_content.replace(
             url,
-            f"javascript:document.getElementById('{uid}').play()",
+            "javascript:document.getElementById('{}').play()".format(uid),
         )
         return html_content
 
@@ -2402,7 +2408,7 @@ class mdict(cishubase):
             print_exc()
         base64_content = base64.b64encode(file_content.encode("utf8")).decode("utf-8")
         html_content = html_content.replace(
-            url, f"data:text/css;base64,{base64_content}"
+            url, "data:text/css;base64," + base64_content
         )
         return html_content
 
@@ -2433,9 +2439,9 @@ class mdict(cishubase):
             elif _type == 0:
                 base64_content = base64.b64encode(file_content).decode("utf-8")
                 html_content = html_content.replace(
-                    url, f"data:application/octet-stream;base64,{base64_content}"
+                    url, "data:application/octet-stream;base64," + base64_content
                 )
-        return f'<div id="{divid}">{html_content}</div>'
+        return '<div id="{}">{}</div>'.format(divid, html_content)
 
     def searchthread_internal(self, index, k, __safe):
         allres = []
@@ -2484,10 +2490,14 @@ class mdict(cishubase):
         for _, foldflow, title, res in allres:
             idx += 1
             btns.append(
-                f"""<button type="button" onclick="onclickbtn_mdict_internal('buttonid_mdict_internal{idx}')" id="buttonid_mdict_internal{idx}" class="tab-button_mdict_internal" data-tab="tab_mdict_internal{idx}">{title}</button>"""
+                """<button type="button" onclick="onclickbtn_mdict_internal('buttonid_mdict_internal{idx}')" id="buttonid_mdict_internal{idx}" class="tab-button_mdict_internal" data-tab="tab_mdict_internal{idx}">{title}</button>""".format(
+                    idx=idx, title=title
+                )
             )
             contents.append(
-                f"""<div id="tab_mdict_internal{idx}" class="tab-pane_mdict_internal">{res}</div>"""
+                """<div id="tab_mdict_internal{idx}" class="tab-pane_mdict_internal">{res}</div>""".format(
+                    idx=idx, res=res
+                )
             )
         commonstyle = """
 <script>
@@ -2537,17 +2547,17 @@ function onclickbtn_mdict_internal(_id) {
 </style>
 """
 
-        res = f"""
+        res = """
     {commonstyle}
 <div class="tab-widget_mdict_internal">
 
     <div class="centerdiv_mdict_internal"><div>
-        {''.join(btns)}
+        {btns}
     </div>
     </div>
     <div>
         <div class="tab-content_mdict_internal">
-            {''.join(contents)}
+            {contents}
         </div>
     </div>
 </div>
@@ -2555,7 +2565,9 @@ function onclickbtn_mdict_internal(_id) {
 if(document.querySelectorAll('.tab-widget_mdict_internal .tab-button_mdict_internal').length)
 document.querySelectorAll('.tab-widget_mdict_internal .tab-button_mdict_internal')[0].click()
 </script>
-"""
+""".format(
+            commonstyle=commonstyle, btns="".join(btns), contents="".join(contents)
+        )
         return res
 
     def generatehtml_flow(self, allres):

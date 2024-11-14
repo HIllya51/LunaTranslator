@@ -42,7 +42,9 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
         uid = gobject.baseobject.gameuid
         screenshot_savepath: str = globalconfig.get("screenshot_savepath", "")
         fnamef = lambda: gobject.getcachedir(
-            f"screenshot/{exename}/"
+            "screenshot/"
+            + exename
+            + "/"
             + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()),
             abspath=False,
         )
@@ -212,7 +214,7 @@ def getExeIcon(name: str, icon=True, cache=False):
 
 def injectdll(injectpids, bit, dll):
 
-    injecter = os.path.abspath(f"./files/plugins/shareddllproxy{bit}.exe")
+    injecter = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(bit))
     pid = " ".join([str(_) for _ in injectpids])
     for _ in (0,):
         if not test_injectable(injectpids):

@@ -38,7 +38,7 @@ class steamsettings(QDialog):
             pagei += 1
 
             response = requests.get(
-                f'https://store.steampowered.com/wishlist/profiles/{self._ref.config["userid"] }/wishlistdata/',
+                'https://store.steampowered.com/wishlist/profiles/{}/wishlistdata/'.format(self._ref.config["userid"]),
                 cookies=cookies,
                 params=params,
                 headers=headers,
@@ -111,7 +111,7 @@ class searcher(common):
         return response.json()[0]["appid"]
 
     def refmainpage(self, _id):
-        return f"https://store.steampowered.com/app/{_id}/_/"
+        return "https://store.steampowered.com/app/{}/_/".format(_id)
 
     def gettagfromhtml(self, _id):
 
@@ -169,7 +169,7 @@ class searcher(common):
 
     def searchfordata(self, _id):
         data = requests.get(
-            f"https://store.steampowered.com/api/appdetails?appids={_id}",
+            "https://store.steampowered.com/api/appdetails?appids={}".format(_id),
             proxies=self.proxy,
         ).json()[str(_id)]["data"]
 

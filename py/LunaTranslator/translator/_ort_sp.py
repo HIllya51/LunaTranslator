@@ -179,7 +179,7 @@ class TS(basetrans):
 
     def encode_as_ids(self, content):
         input_str = ctypes.c_char_p(
-            bytes(f"<-{self.srclang}2{self.tgtlang}-> " + content, "utf8")
+            "<-{}2{}-> {}".format(self.srclang, self.tgtlang, content).encode("utf8")
         )
         token_ids = ctypes.POINTER(ctypes.c_int32)()
         n_tokens = ctypes.c_size_t()
@@ -256,15 +256,30 @@ class TS(basetrans):
         return output_ids_py
 
     def translate(self, content):
-        delimiters = ['.','。','\n',':','：','?','？','!','！','…','「','」',]
-        raw_split = [i.strip() for i in re.split('(['+''.join(delimiters)+'])', content)]
+        delimiters = [
+            ".",
+            "。",
+            "\n",
+            ":",
+            "：",
+            "?",
+            "？",
+            "!",
+            "！",
+            "…",
+            "「",
+            "」",
+        ]
+        raw_split = [
+            i.strip() for i in re.split("([" + "".join(delimiters) + "])", content)
+        ]
         content_split = [i for i in raw_split if i]
         translated_list = []
         i = 0
         while i < len(content_split):
             sentence = content_split[i]
             while i + 1 < len(content_split):
-                if content_split[i+1] not in delimiters:
+                if content_split[i + 1] not in delimiters:
                     break
                 i += 1
                 sentence += content_split[i]
@@ -273,7 +288,7 @@ class TS(basetrans):
             translated_sentence = self.decode_from_ids(output_ids_py)
             translated_list.append(translated_sentence)
             i += 1
-        translated = ''.join(translated_list)
+        translated = "".join(translated_list)
         return translated
 
     def __del__(self):

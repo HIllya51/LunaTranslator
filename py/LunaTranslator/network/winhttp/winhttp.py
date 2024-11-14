@@ -213,13 +213,13 @@ class WinhttpException(RequestException):
         ):
             module = Winhttp._handle
         message = windows.FormatMessage(code, module)
-        error = f"UNKNOWN ERROR {code}"
+        error = "UNKNOWN ERROR {}".format(code)
         for _ in dir(self):
             if _.startswith("ERROR") and code == getattr(self, _):
                 error = _
                 break
         if message:
-            error += f": {message}"
+            error += ": {}".format(message)
 
         super().__init__(error)
 

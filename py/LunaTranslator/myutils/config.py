@@ -86,7 +86,7 @@ else:
     __gamepath2uid = {}
     __savehook_new_data = {}
     for k in savehook_new_data:
-        uid = f"{time.time()}_{uuid.uuid4()}"
+        uid = "{}_{}".format(time.time(), uuid.uuid4())
 
         __savehook_new_data[uid] = savehook_new_data[k]
         __savehook_new_data[uid].update(gamepath=k)

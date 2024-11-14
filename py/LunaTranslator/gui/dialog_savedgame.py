@@ -93,7 +93,9 @@ class dialog_savedgame_integrated(saveposwindow):
             | Qt.WindowType.WindowCloseButtonHint,
             poslist=globalconfig["savegamedialoggeo"],
         )
-        self.setWindowIcon(qtawesome.icon(globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"]))
+        self.setWindowIcon(
+            qtawesome.icon(globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"])
+        )
         w, self.internallayout = getboxlayout(
             [], margin0=True, makewidget=True, both=True
         )
@@ -356,9 +358,9 @@ class dialog_savedgame_new(QWidget):
         if fontstring:
             _f = QFont()
             _f.fromString(fontstring)
-            _style += f"font-size:{_f.pointSize()}pt;"
-            _style += f'font-family:"{_f.family()}";'
-        style = f"#{key}{{ {_style} }}"
+            _style += "font-size:{}pt;".format(_f.pointSize())
+            _style += 'font-family:"{}";'.format(_f.family())
+        style = "#{}{{ {} }}".format(key, _style)
         for exits in [True, False]:
             c = globalconfig["dialog_savegame_layout"][
                 ("onfilenoexistscolor1", "backcolor1")[exits]
@@ -370,8 +372,13 @@ class dialog_savedgame_new(QWidget):
                 ],
             )
 
-            style += f"#savegame_exists{exits}{{background-color:{c};}}"
-        style += f'#savegame_onselectcolor1{{background-color: {str2rgba(globalconfig["dialog_savegame_layout"]["onselectcolor1"],globalconfig["dialog_savegame_layout"]["transparentselect"])};}}'
+            style += "#savegame_exists{}{{background-color:{};}}".format(exits, c)
+        style += "#savegame_onselectcolor1{{background-color: {};}}".format(
+            str2rgba(
+                globalconfig["dialog_savegame_layout"]["onselectcolor1"],
+                globalconfig["dialog_savegame_layout"]["transparentselect"],
+            )
+        )
         self.setStyleSheet(style)
 
     def __init__(self, parent) -> None:

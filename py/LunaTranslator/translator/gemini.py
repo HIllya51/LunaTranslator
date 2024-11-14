@@ -63,7 +63,9 @@ class TS(basetrans):
         res = self.proxysession.post(
             urlpathjoin(
                 self.config["BASE_URL"].strip(),
-                f"v1beta/models/{model}:{['generateContent','streamGenerateContent'][usingstream]}",
+                "v1beta/models/{}:{}".format(
+                    model, ["generateContent", "streamGenerateContent"][usingstream]
+                ),
             ),
             params={"key": self.multiapikeycurrent["SECRET_KEY"]},
             json=payload,

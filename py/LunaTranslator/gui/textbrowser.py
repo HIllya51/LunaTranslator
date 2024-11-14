@@ -30,7 +30,7 @@ class Textbrowser(QFrame):
         if __ == "QWebEngine":
             __ = "webview"
         try:
-            tb = importlib.import_module(f"rendertext.{__}").TextBrowser
+            tb = importlib.import_module("rendertext." + __).TextBrowser
             self.textbrowser = tb(self)
         except Exception as e:
             if isinstance(e, webview_exception):
@@ -48,7 +48,7 @@ class Textbrowser(QFrame):
             else:
                 print_exc()
             globalconfig["rendertext_using"] = "textbrowser"
-            tb = importlib.import_module(f"rendertext.textbrowser").TextBrowser
+            tb = importlib.import_module("rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
         self.textbrowser.move(0, 0)
         self.textbrowser.setMouseTracking(True)

@@ -13,7 +13,7 @@ class AnkiModelExists(AnkiException):
 
 def invoke(action, **params):
     response = requests.get(
-        f"http://127.0.0.1:{global_port}",
+        "http://127.0.0.1:{}".format(global_port),
         json={"action": action, "params": params, "version": 6},
     ).json()
     if len(response) != 2:
@@ -45,7 +45,7 @@ class Deck:
         self.did = did
 
     def __repr__(self):
-        return f"(Deck {self.name},{self.did})"
+        return "(Deck {},{})".format(self.name, self.did)
 
     def delete(self):
         return invoke("deleteDecks", decks=[self.name], cardsToo=True)
@@ -61,7 +61,7 @@ class Deck:
 
 class Card:
     def __repr__(self):
-        return f"(Card {self.cardId})"
+        return "(Card {})".format(self.cardId)
 
     def __init__(self, cardId):
         self.cardId = cardId

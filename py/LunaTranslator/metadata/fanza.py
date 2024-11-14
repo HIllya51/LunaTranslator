@@ -57,7 +57,7 @@ class searcher(common):
         }
 
         response = self.proxysession.get(
-            f"https://dlsoft.dmm.co.jp/search/?floor=digital_pcgame&searchstr={title}&service=pcgame",
+            "https://dlsoft.dmm.co.jp/search/?floor=digital_pcgame&searchstr={}&service=pcgame".format(title),
             headers=headers,
             cookies=cookies,
         )
@@ -67,7 +67,7 @@ class searcher(common):
         return _id
 
     def refmainpage(self, _id):
-        return f"https://dlsoft.dmm.co.jp/detail/{_id}/"
+        return "https://dlsoft.dmm.co.jp/detail/{}/".format(_id)
 
     def searchfordata(self, RJ):
         cookies = {

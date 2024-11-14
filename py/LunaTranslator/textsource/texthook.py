@@ -342,10 +342,10 @@ class texthook(basetext):
         self.gameuid = gameuid
         self.detachall()
         _filename, _ = os.path.splitext(os.path.basename(gamepath))
-        sqlitef = gobject.gettranslationrecorddir(f"{_filename}_{gameuid}.sqlite")
+        sqlitef = gobject.gettranslationrecorddir("{}_{}.sqlite".format(_filename, gameuid))
         if os.path.exists(sqlitef) == False:
             md5 = getfilemd5(gamepath)
-            f2 = gobject.gettranslationrecorddir(f"{_filename}_{md5}.sqlite")
+            f2 = gobject.gettranslationrecorddir("{}_{}.sqlite".format(_filename, md5))
             try:
                 os.rename(f2, sqlitef)
             except:
@@ -396,7 +396,7 @@ class texthook(basetext):
                     injectpids.append(pid)
         if len(injectpids):
             arch = ["32", "64"][self.is64bit]
-            dll = os.path.abspath(f"./files/plugins/LunaHook/LunaHook{arch}.dll")
+            dll = os.path.abspath("./files/plugins/LunaHook/LunaHook{}.dll".format(arch))
             injectdll(injectpids, arch, dll)
 
     @threader

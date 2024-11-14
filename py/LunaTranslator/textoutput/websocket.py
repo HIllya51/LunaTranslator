@@ -28,7 +28,7 @@ class websocketserver:
         self.server_socket.listen(1)
         while True:
             client_socket, address = self.server_socket.accept()
-            print(f"Client connected: {address}")
+            print("Client connected: {}".format(address))
 
             self.handle_client(client_socket)
 
@@ -43,13 +43,13 @@ class websocketserver:
             if "Sec-WebSocket-Key:" in line:
                 key = line.split(":")[1].strip()
                 break
-        value = f"{key}258EAFA5-E914-47DA-95CA-C5AB0DC85B11".encode("utf-8")
+        value = "{}258EAFA5-E914-47DA-95CA-C5AB0DC85B11".format(key).encode("utf-8")
         hashed = base64encode(hashlib.sha1(value).digest()).strip().decode()
         # 构造握手响应
         response = "HTTP/1.1 101 Switching Protocols\r\n"
         response += "Upgrade: websocket\r\n"
         response += "Connection: Upgrade\r\n"
-        response += f"Sec-WebSocket-Accept: {hashed}\r\n\r\n"
+        response += "Sec-WebSocket-Accept: {}\r\n\r\n".format(hashed)
 
         # 发送握手响应给客户端
         client_socket.send(response.encode())

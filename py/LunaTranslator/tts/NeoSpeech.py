@@ -51,7 +51,7 @@ class TTS(TTSbase):
         )
 
     def getvoicelist(self):
-        cachefname = gobject.gettempdir(f"{time.time()}.txt")
+        cachefname = gobject.gettempdir("{}.txt".format(time.time()))
         exe = os.path.abspath("./files/plugins/shareddllproxy32.exe")
         subprocess.run('"{}"  neospeechlist "{}"'.format(exe, cachefname))
 

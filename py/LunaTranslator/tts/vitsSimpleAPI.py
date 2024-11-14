@@ -15,7 +15,7 @@ class TTS(TTSbase):
         for modelType in modelTypes:
             vits_data = responseVits[modelType]
             for item in vits_data:
-                model_info = f'{modelType}_{item["id"]}_{item["name"]}'
+                model_info = "{}_{}_{}".format(modelType, item["id"], item["name"])
                 voicelist.append(model_info)
                 internal.append((modelType, item["id"], item["name"]))
         return internal, voicelist

@@ -1187,15 +1187,14 @@ class abstractwebview(QWidget):
 
     def _parsehtml_codec(self, html):
 
-        html = f"""<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head>{html}</html>"""
+        html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head>{}</html>""".format(
+            html
+        )
         return html
 
     def _parsehtml_font(self, html):
-
-        html = """<body style=" font-family:'{}'">{}</body>""".format(
-            QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family(),
-            html,
-        )
+        font = QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family()
+        html = """<body style=" font-family:'{}'">{}</body>""".format(font, html)
         return html
 
     def _parsehtml_dark(self, html):

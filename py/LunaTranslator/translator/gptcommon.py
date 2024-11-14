@@ -28,7 +28,9 @@ class qianfanIAM:
     def sign(access_key_id, secret_access_key):
         now = datetime.now(timezone.utc)
         canonical_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-        sign_key_info = f"bce-auth-v1/{access_key_id}/{canonical_time}/8640000"
+        sign_key_info = "bce-auth-v1/{}/{}/8640000".format(
+            access_key_id, canonical_time
+        )
         sign_key = hmac.new(
             secret_access_key.encode(), sign_key_info.encode(), hashlib.sha256
         ).hexdigest()
@@ -36,7 +38,7 @@ class qianfanIAM:
         sign_result = hmac.new(
             sign_key.encode(), string_to_sign.encode(), hashlib.sha256
         ).hexdigest()
-        return f"{sign_key_info}/host/{sign_result}"
+        return "{}/host/{}".format(sign_key_info, sign_result)
 
     @staticmethod
     def getkey(ak, sk, proxy):

@@ -99,8 +99,8 @@ def findenclose(text, tag):
         tags = "<link"
         tage = ">"
     else:
-        tags = f"<{tag}"
-        tage = f"</{tag}>"
+        tags = "<{}".format(tag)
+        tage = "</{}>".format(tag)
     collect = ""
     __ = 0
     while True:
@@ -243,7 +243,7 @@ def trysearchforid_1(gameuid, searchargs: list, target=None):
         idname = targetmod[key].idname
         savehook_new_data[gameuid][idname] = vid
         gobject.baseobject.translation_ui.displayglobaltooltip.emit(
-            f"{key}: found {vid}"
+            "{}: found {}".format(key, vid)
         )
         if infoid is None or key == primitivtemetaorigin:
             infoid = key, vid
@@ -292,13 +292,13 @@ class gamepath2uid_index_helper(dict):
 
 
 def initanewitem(title):
-    uid = f"{time.time()}_{uuid.uuid4()}"
+    uid = "{}_{}".format(time.time(), uuid.uuid4())
     savehook_new_data[uid] = gamepath2uid_index_helper(getdefaultsavehook(title), uid)
     return uid
 
 
 def duplicateconfig(uidold):
-    uid = f"{time.time()}_{uuid.uuid4()}"
+    uid = "{}_{}".format(time.time(), uuid.uuid4())
     savehook_new_data[uid] = json.loads(json.dumps(savehook_new_data[uidold]))
     return uid
 
@@ -389,7 +389,7 @@ def argsort(l):
 
 def selectdebugfile(path: str, ismypost=False):
     if ismypost:
-        path = f"./userconfig/posts/{path}.py"
+        path = "./userconfig/posts/{}.py".format(path)
     p = os.path.abspath((path))
     os.makedirs(os.path.dirname(p), exist_ok=True)
     print(path)
@@ -406,7 +406,7 @@ def selectdebugfile(path: str, ismypost=False):
             p,
         )
     threading.Thread(
-        target=subprocess.run, args=(f'notepad "{os.path.normpath(p)}"',)
+        target=subprocess.run, args=("notepad " + os.path.normpath(p),)
     ).start()
     return p
 
@@ -883,7 +883,7 @@ class SafeFormatter(Formatter):
         if key in kwargs:
             return super().get_value(key, args, kwargs)
         else:
-            print(f"{key} is missing")
+            print("{} is missing".format(key))
             return key
 
 
@@ -891,9 +891,9 @@ def checkv1(api_url: str):
     # 傻逼豆包大模型是非要v3，不是v1
     # 智谱AI v4
     for i in range(1, 10):
-        if api_url.endswith(f"/v{i}"):
+        if api_url.endswith("/v{}".format(i)):
             return api_url
-        elif api_url.endswith(f"/v{i}/"):
+        elif api_url.endswith("/v{}/".format(i)):
             return api_url[:-1]
     if api_url.endswith("/"):
         return api_url + "v1"

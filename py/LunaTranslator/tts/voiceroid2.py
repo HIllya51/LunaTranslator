@@ -11,7 +11,7 @@ class TTS(TTSbase):
         voicelist = []
         _p = os.path.join(self.config["path"], "Voice")
         if os.path.exists(_p) == False:
-            raise Exception(f"not exists {_p}")
+            raise Exception("not exists " + _p)
         l = os.listdir(_p)
 
         for _ in l:

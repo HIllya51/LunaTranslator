@@ -50,9 +50,9 @@ class TS(basetrans):
                 info = gpt["info"] if "info" in gpt.keys() else None
 
             if info:
-                single = f"{src}->{dst} #{info}"
+                single = "{}->{} #{}".format(src, dst, info)
             else:
-                single = f"{src}->{dst}"
+                single = "{}->{}".format(src, dst)
             gpt_dict_text_list.append(single)
 
         gpt_dict_raw_text = "\n".join(gpt_dict_text_list)
@@ -87,7 +87,7 @@ class TS(basetrans):
             ]
             self._gpt_common_parse_context_2(messages, self.context, contextnum)
             messages.append(
-                {"role": "user", "content": f"将下面的日文文本翻译成中文：{query}"}
+                {"role": "user", "content": "将下面的日文文本翻译成中文：" + query}
             )
         elif self.config["prompt_version"] == 1:
             messages = [
@@ -155,7 +155,7 @@ class TS(basetrans):
             )
 
         except requests.RequestException as e:
-            raise ValueError(f"连接到Sakura API超时：{self.api_url}")
+            raise ValueError("连接到Sakura API超时：" + self.api_url)
         try:
             yield output.json()
         except:
@@ -190,7 +190,7 @@ class TS(basetrans):
                 stream=True,
             )
         except requests.RequestException:
-            raise ValueError(f"连接到Sakura API超时：{self.api_url}")
+            raise ValueError("连接到Sakura API超时：" + self.api_url)
 
         if (not output.headers["Content-Type"].startswith("text/event-stream")) and (
             output.status_code != 200

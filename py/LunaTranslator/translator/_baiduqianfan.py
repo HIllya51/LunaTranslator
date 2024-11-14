@@ -3,6 +3,7 @@ import json, requests
 from traceback import print_exc
 from myutils.utils import createenglishlangmap
 
+
 class TS(basetrans):
 
     def langmap(self):
@@ -88,11 +89,15 @@ class TS(basetrans):
             query, "use_user_user_prompt", "user_user_prompt"
         )
         message = []
-        self._gpt_common_parse_context(message, self.context, self.config["context_num"])
+        self._gpt_common_parse_context(
+            message, self.context, self.config["context_num"]
+        )
         message.append({"role": "user", "content": query})
 
         usingstream = self.config["usingstream"]
-        url = f"https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/{self.config['model']}?access_token={acss}"
+        url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/{}?access_token={}".format(
+            self.config["model"], acss
+        )
 
         response = self.proxysession.post(
             url,

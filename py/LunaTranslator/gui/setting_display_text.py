@@ -174,13 +174,13 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
 
 def doinstallqweb(self, dd, base):
     if not dd["k"].endswith(base):
-        getQMessageBox(self, "错误", f"请选择_{base}")
+        getQMessageBox(self, "错误", "请选择_" + base)
         return
     with zipfile.ZipFile(dd["k"]) as zipf:
         target = gobject.gettempdir("QWebEngine/")
         zipf.extractall(target)
         bit = ["x86", "x64"][platform.architecture()[0] == "64bit"]
-        copytree(f"{target}/{bit}/PyQt5", "files/runtime/PyQt5")
+        copytree("{}/{}/PyQt5".format(target, bit), "files/runtime/PyQt5")
     getQMessageBox(self, "成功", "安装成功")
 
 

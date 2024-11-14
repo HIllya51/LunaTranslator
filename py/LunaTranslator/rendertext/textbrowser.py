@@ -163,7 +163,7 @@ class TextBrowser(QWidget, dataget):
                 "textrender"
             ]["textbrowser"][0]
 
-        __ = importlib.import_module(f"rendertext.textbrowser_imp.{self.currenttype}")
+        __ = importlib.import_module("rendertext.textbrowser_imp." + self.currenttype)
 
         self.currentclass = functools.partial(__.TextLine, self.currenttype)
 

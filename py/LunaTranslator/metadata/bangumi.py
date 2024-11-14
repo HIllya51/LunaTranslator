@@ -35,7 +35,7 @@ class bgmsettings(QDialog):
         }
         collectresults = []
         response = requests.get(
-            f"https://api.bgm.tv/v0/users/{self.username}/collections",
+            "https://api.bgm.tv/v0/users/{}/collections".format(self.username),
             params=params,
             headers=self.headers,
             proxies=self._ref.proxy,
@@ -86,7 +86,7 @@ class bgmsettings(QDialog):
                 continue
 
             requests.post(
-                f"https://api.bgm.tv/v0/users/-/collections/{vid}",
+                "https://api.bgm.tv/v0/users/-/collections/{}".format(vid),
                 headers=self.headers,
                 json={
                     "type": 4,
@@ -104,7 +104,7 @@ class bgmsettings(QDialog):
             return
         try:
             requests.post(
-                f"https://api.bgm.tv/v0/users/-/collections/{vid}",
+                "https://api.bgm.tv/v0/users/-/collections/{}".format(vid),
                 headers=self.headers,
                 json={
                     "type": 4,
@@ -138,7 +138,7 @@ class bgmsettings(QDialog):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         }
         response = requests.post(
-            f"https://bgm.tv/oauth/token_status",
+            "https://bgm.tv/oauth/token_status",
             params={"access_token": k},
             headers=headers,
             proxies=self._ref.proxy,
@@ -151,7 +151,7 @@ class bgmsettings(QDialog):
             info = ""
             try:
                 response1 = requests.get(
-                    f"https://api.bgm.tv/v0/me",
+                    "https://api.bgm.tv/v0/me",
                     params={"access_token": k},
                     headers=self.headers,
                     proxies=self._ref.proxy,
@@ -190,7 +190,9 @@ class bgmsettings(QDialog):
         except:
             pass
         gobject.baseobject.openlink(
-            f'https://bgm.tv/oauth/authorize?client_id={static_data["bangumi_oauth"]["client_id"]}&response_type=code&redirect_uri=lunatranslator://bangumioauth'
+            "https://bgm.tv/oauth/authorize?client_id={}&response_type=code&redirect_uri=lunatranslator://bangumioauth".format(
+                static_data["bangumi_oauth"]["client_id"]
+            )
         )
         self.__wait()
 
@@ -209,7 +211,7 @@ class bgmsettings(QDialog):
             print(code)
             os.remove(bangumioauth)
             response = requests.post(
-                f"https://bgm.tv/oauth/access_token",
+                "https://bgm.tv/oauth/access_token",
                 json={
                     "grant_type": "authorization_code",
                     "client_id": static_data["bangumi_oauth"]["client_id"],
@@ -261,12 +263,16 @@ class bgmsettings(QDialog):
         fl2.addRow(btn)
         btn = LPushButton("上传游戏列表")
         btn.clicked.connect(
-            functools.partial(self.__getalistname, "上传游戏列表", self.getalistname_upload)
+            functools.partial(
+                self.__getalistname, "上传游戏列表", self.getalistname_upload
+            )
         )
         fl2.addRow(btn)
         btn = LPushButton("获取游戏列表")
         btn.clicked.connect(
-            functools.partial(self.__getalistname, "添加到列表", self.getalistname_download)
+            functools.partial(
+                self.__getalistname, "添加到列表", self.getalistname_download
+            )
         )
         fl2.addRow(btn)
         fl.addRow(ww)
@@ -327,7 +333,7 @@ class searcher(common):
         return response["list"][0]["id"]
 
     def refmainpage(self, _id):
-        return f"https://bangumi.tv/subject/{_id}"
+        return "https://bangumi.tv/subject/{}".format(_id)
 
     def searchfordata(self, sid):
 
@@ -338,7 +344,7 @@ class searcher(common):
         if self.config["access-token"].strip() != "":
             headers["Authorization"] = "Bearer " + self.config["access-token"]
         response = self.proxysession.get(
-            f"https://api.bgm.tv/v0/subjects/{sid}", headers=headers
+            "https://api.bgm.tv/v0/subjects/{}".format(sid), headers=headers
         )
         print(response.text)
         try:
@@ -365,7 +371,8 @@ class searcher(common):
         namemaps = {}
         try:
             charas = self.proxysession.get(
-                f"https://api.bgm.tv/v0/subjects/{sid}/characters", headers=headers
+                "https://api.bgm.tv/v0/subjects/{}/characters".format(sid),
+                headers=headers,
             ).json()
             for _ in charas:
                 namemaps[_["name"]] = _["name"]

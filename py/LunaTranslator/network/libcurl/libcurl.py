@@ -319,14 +319,14 @@ class CURLException(RequestException):
     LAST = 100
 
     def __init__(self, code) -> None:
-        error = f"UNKNOWN ERROR {code}"
+        error = "UNKNOWN ERROR {}".format(code)
         message = curl_easy_strerror(code).decode("utf8")
         for _ in dir(self):
             if _.startswith("") and code == getattr(self, _):
                 error = _
                 break
         if message:
-            error += f": {message}"
+            error += ": {}".format(message)
         super().__init__(error)
 
 

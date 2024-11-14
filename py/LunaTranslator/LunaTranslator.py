@@ -1040,10 +1040,13 @@ class MAINUI:
             + (globalconfig["settingfonttype"])
             + "' ;  }"
         )
-        style += f"""
+        style += """
         QListWidget {{
-                font:{globalconfig["settingfontsize"] + 4}pt  {globalconfig["settingfonttype"]};  }}
-            """
+                font:{fontsize}pt  {fonttype};  }}
+            """.format(
+            fontsize=globalconfig["settingfontsize"] + 4,
+            fonttype=globalconfig["settingfonttype"],
+        )
         self.commonstylebase.setStyleSheet(style)
         font = QFont()
         font.setFamily(globalconfig["settingfonttype"])
@@ -1173,7 +1176,7 @@ class MAINUI:
 
         for k in globalconfig["metadata"]:
             try:
-                targetmod[k] = importlib.import_module(f"metadata.{k}").searcher(k)
+                targetmod[k] = importlib.import_module("metadata." + k).searcher(k)
             except:
                 print_exc()
 
@@ -1189,5 +1192,5 @@ class MAINUI:
             winreg.HKEY_CURRENT_USER,
             r"Software\Classes\lunatranslator\shell\open\command",
         )
-        command = f'"{getcurrexe()}" --URLProtocol "%1"'
+        command = '"{}" --URLProtocol "%1"'.format(getcurrexe())
         winreg.SetValue(keysub, r"", winreg.REG_SZ, command)

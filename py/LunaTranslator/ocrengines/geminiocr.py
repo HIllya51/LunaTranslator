@@ -42,7 +42,7 @@ class OCR(baseocr):
         if self.config["use_custom_prompt"]:
             prompt = self.config["custom_prompt"]
         else:
-            prompt = f"Recognize the {self.srclang} text in the picture."
+            prompt = "Recognize the {} text in the picture.".format(self.srclang)
         payload = {
             "contents": [
                 {
@@ -61,7 +61,7 @@ class OCR(baseocr):
         response = requests.post(
             urlpathjoin(
                 self.config["BASE_URL"],
-                f"v1beta/models/{model}:generateContent?key={api_key}",
+                "v1beta/models/{}:generateContent?key={}".format(model, api_key),
             ),
             headers=headers,
             json=payload,

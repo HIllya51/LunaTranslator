@@ -50,7 +50,7 @@ class OCR(baseocr):
         if self.config["use_custom_prompt"]:
             prompt = self.config["custom_prompt"]
         else:
-            prompt = f"Recognize the {self.srclang} text in the picture."
+            prompt = "Recognize the {} text in the picture.".format(self.srclang)
 
         base64_image = base64.b64encode(imagebinary).decode("utf-8")
         message = [
@@ -61,7 +61,7 @@ class OCR(baseocr):
                     {
                         "type": "image_url",
                         "image_url": {
-                            "url": f"data:image/jpeg;base64,{base64_image}",
+                            "url": "data:image/jpeg;base64," + base64_image,
                             "detail": "low",
                         },
                     },

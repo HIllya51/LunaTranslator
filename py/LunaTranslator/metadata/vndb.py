@@ -161,7 +161,7 @@ class vndbsettings(QDialog):
     @property
     def headers(self):
         return {
-            "Authorization": f"Token {self._ref.config['Token']}",
+            "Authorization": "Token " + self._ref.config["Token"],
         }
 
     @property
@@ -234,7 +234,7 @@ class vndbsettings(QDialog):
             saferequestvndb(
                 self._ref.proxy,
                 "PATCH",
-                f"ulist/v{vid}",
+                "ulist/v{}".format(vid),
                 json={
                     "labels_set": [1],
                 },
@@ -249,7 +249,7 @@ class vndbsettings(QDialog):
         saferequestvndb(
             self._ref.proxy,
             "PATCH",
-            f"ulist/v{vid}",
+            "ulist/v{}".format(vid),
             json={
                 "labels_set": [1],
                 # "labels_unset": [1],
@@ -337,7 +337,7 @@ class searcher(common):
         vndbsettings(parent, self, gameuid)
 
     def refmainpage(self, _id):
-        return f"https://vndb.org/v{_id}"
+        return "https://vndb.org/v{}".format(_id)
 
     def getidbytitle(self, title):
         vid = getidbytitle_(self.proxy, title)

@@ -317,7 +317,9 @@ class TS(basetrans):
                 raise Exception(response.maybejson)
             self.cacheproject[(end, ak, sk)] = project_id
         project_id = self.cacheproject.get((end, ak, sk))
-        url = f"https://{end}/v1/{project_id}/machine-translation/text-translation"
+        url = "https://{}/v1/{}/machine-translation/text-translation".format(
+            end, project_id
+        )
         body = {
             "text": query,
             "from": self.srclang,
@@ -332,7 +334,7 @@ class TS(basetrans):
             "User-Agent": "huaweicloud-usdk-python/3.0",
         }
         r.host = end
-        r.resource_path = f"/v1/{project_id}/machine-translation/text-translation"
+        r.resource_path = "/v1/{}/machine-translation/text-translation".format(project_id)
         r.method = "POST"
         r.body = body
         r = Signer((ak, sk)).sign(r)

@@ -12,7 +12,7 @@ class japandict(cishubase):
             proxies=self.proxy,
         ).content.replace(b"padding-top:60px !important", b"")
         base64_content = base64.b64encode(html).decode("utf-8")
-        saver[link] = f"data:application/octet-stream;base64,{base64_content}"
+        saver[link] = "data:application/octet-stream;base64," + base64_content
 
     def search(self, word):
         url = "https://www.japandict.com/?s={}&lang=eng&list=1".format(quote(word))

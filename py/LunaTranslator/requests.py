@@ -184,14 +184,15 @@ class ResponseBase:
             yield pending
 
     def raise_for_status(self):
-        http_error_msg = ""
+        which = None
         if 400 <= self.status_code < 500:
-            http_error_msg = f"{self.status_code} Client Error: {self.status_text} for url: {self.url}"
-
+            which = "Client"
         elif 500 <= self.status_code < 600:
-            http_error_msg = f"{self.status_code} Server Error: {self.status_text} for url: {self.url}"
-
-        if http_error_msg:
+            which = "Server"
+        if which:
+            http_error_msg = "{code} {which} Error: {text} for url: {url}".format(
+                code=self.status_code, which=which, text=self.status_text, url=self.url
+            )
             raise HTTPError(http_error_msg)
 
 

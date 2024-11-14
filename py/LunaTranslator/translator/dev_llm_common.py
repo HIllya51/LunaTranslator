@@ -32,25 +32,27 @@ class commonllmdev(basetransdev):
         prompt = self._gptlike_createsys("use_custom_prompt", "custom_prompt")
         content = prompt + content
         self.Runtime_evaluate(
-            f"document.querySelector(`{repr(self.textarea_selector)}`).foucs()"
+            "document.querySelector(`{}`).foucs()".format(repr(self.textarea_selector))
         )
         self.clear_input()
         self.send_keys(content)
         # chatgpt网站没有焦点时，用这个也可以。
         self.Runtime_evaluate(
-            f'textarea=document.querySelector({repr(self.textarea_selector)});textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea.value=`{content}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'
+            'textarea=document.querySelector({});textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea.value=`{}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'.format(
+                repr(self.textarea_selector), content
+            )
         )
 
         try:
             # 月之暗面
             while self.Runtime_evaluate(
-                f"document.querySelector({repr(self.button_selector)}).disabled"
+                "document.querySelector({}).disabled".format(repr(self.button_selector))
             )["result"]["value"]:
                 time.sleep(0.1)
         except:
             pass
         self.Runtime_evaluate(
-            f"document.querySelector({repr(self.button_selector)}).click()"
+            "document.querySelector({}).click()".format(repr(self.button_selector))
         )
         if self.config["usingstream"]:
             __ = [""]

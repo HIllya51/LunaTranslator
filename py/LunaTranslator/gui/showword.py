@@ -157,7 +157,7 @@ class AnkiWindow(QWidget):
         fields = self.loadfileds()
         fields.update(self.loadfakefields())
         html = self.parse_template(html, fields)
-        html = f'<style>{model_css}</style><div class="card">{html}</div>'
+        html = '<style>{}</style><div class="card">{}</div>'.format(model_css, html)
         self.htmlbrowser.setHtml(html)
 
     def creattemplatetab(self, baselay):
@@ -220,7 +220,11 @@ class AnkiWindow(QWidget):
             return ""
         htmlcontents = ""
         for iiii in range(len(dictionarys)):
-            htmlcontents += f'<div id="luna_dict_tab_{dictionarys[iiii]["dict"]}" class="tab-pane">{dictionarys[iiii]["content"]}</div>'
+            htmlcontents += (
+                '<div id="luna_dict_tab_{}" class="tab-pane">{}</div>'.format(
+                    dictionarys[iiii]["dict"], dictionarys[iiii]["content"]
+                )
+            )
         return htmlcontents
 
     def loadfileds(self):
@@ -234,7 +238,7 @@ class AnkiWindow(QWidget):
             collect = []
             for hira in self.example.hiras:
                 if hira["orig"] == word or hira.get("origorig", None) == word:
-                    collect.append(f'<b>{hira["orig"]}</b>')
+                    collect.append('<b>{}</b>'.format(hira["orig"]))
                 else:
                     collect.append(hira["orig"])
             example = "".join(collect)

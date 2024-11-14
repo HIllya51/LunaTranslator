@@ -127,26 +127,26 @@ class TextBrowser(QWidget, dataget):
 
     # js api
     def showhidetranslate(self, show):
-        self.debugeval(f'showhidetranslate("{int(show)}")')
+        self.debugeval('showhidetranslate("{}")'.format(int(show)))
 
     def showhideorigin(self, show):
-        self.debugeval(f'showhideorigin("{int(show)}")')
+        self.debugeval('showhideorigin("{}")'.format(int(show)))
 
     def showhidetranslatorname(self, show):
-        self.debugeval(f'showhidetranslatorname("{int(show)}")')
+        self.debugeval('showhidetranslatorname("{}")'.format(int(show)))
 
     def create_div_line_id(self, _id, origin):
-        self.debugeval(f'create_div_line_id("{_id}","{int(origin)}")')
+        self.debugeval('create_div_line_id("{}","{}")'.format(_id, int(origin)))
 
     def clear_all(self):
-        self.debugeval(f"clear_all()")
+        self.debugeval("clear_all()")
 
     def set_extra_html(self, html):
         if not globalconfig["useextrahtml"]:
-            self.debugeval(f'set_extra_html("")')
+            self.debugeval('set_extra_html("")')
             return
         html = quote(html)
-        self.debugeval(f'set_extra_html("{html}")')
+        self.debugeval('set_extra_html("{}")'.format(html))
 
     def create_internal_text(self, style, styleargs, _id, name, text, args):
         name = quote(name)
@@ -154,7 +154,9 @@ class TextBrowser(QWidget, dataget):
         args = quote(json.dumps(args))
         styleargs = quote(json.dumps(styleargs))
         self.debugeval(
-            f'create_internal_text("{style}","{styleargs}","{_id}","{name}","{text}","{args}");'
+            'create_internal_text("{}","{}","{}","{}","{}","{}");'.format(
+                style, styleargs, _id, name, text, args
+            )
         )
 
     def create_internal_rubytext(self, style, styleargs, _id, tag, args):
@@ -162,7 +164,9 @@ class TextBrowser(QWidget, dataget):
         args = quote(json.dumps(args))
         styleargs = quote(json.dumps(styleargs))
         self.debugeval(
-            f'create_internal_rubytext("{style}","{styleargs}","{_id}","{tag}","{args}");'
+            'create_internal_rubytext("{}","{}","{}","{}","{}");'.format(
+                style, styleargs, _id, tag, args
+            )
         )
 
     def calllunaheightchange(self, h):
@@ -196,7 +200,7 @@ class TextBrowser(QWidget, dataget):
 
     def createtextlineid(self, origin):
 
-        _id = f"luna_{uuid.uuid4()}"
+        _id = "luna_{}".format(uuid.uuid4())
         self.create_div_line_id(_id, origin)
         return _id
 

@@ -18,7 +18,8 @@ class searcher(common):
         }
         try:
             response = requests.get(
-                f"https://www.dlsite.com/pro/fsr/=/language/jp/sex_category[0]/male/keyword/{title}",
+                "https://www.dlsite.com/pro/fsr/=/language/jp/sex_category[0]/male/keyword/"
+                + title,
                 headers=headers,
                 proxies=self.proxy,
             )
@@ -35,7 +36,8 @@ class searcher(common):
 
         except:
             response = requests.get(
-                f"https://www.dlsite.com/maniax/fsr/=/language/jp/sex_category[0]/male/keyword/{title}",
+                "https://www.dlsite.com/maniax/fsr/=/language/jp/sex_category[0]/male/keyword/"
+                + title,
                 headers=headers,
                 proxies=self.proxy,
             )
@@ -52,9 +54,9 @@ class searcher(common):
 
     def refmainpage(self, RJ: str):
         if RJ.startswith("RJ"):
-            return f"https://www.dlsite.com/maniax/work/=/product_id/{RJ}.html"
+            return "https://www.dlsite.com/maniax/work/=/product_id/{}.html".format(RJ)
         elif RJ.startswith("VJ"):
-            return f"https://www.dlsite.com/pro/work/=/product_id/{RJ}.html"
+            return "https://www.dlsite.com/pro/work/=/product_id/{}.html".format(RJ)
 
     def searchfordata(self, RJ):
 

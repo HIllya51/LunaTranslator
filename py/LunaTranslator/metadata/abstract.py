@@ -75,15 +75,16 @@ class common:
             elif len(pair) == 3:
                 gameuid, vid, retrytime = pair
             remove = True
+            info = "{}: {} ".format(self.config_all["name"], vid)
             try:
                 self.__do_searchfordata(gameuid, vid)
-                vis = f"{self.config_all['name']}: {vid} data loaded success"
+                vis = info + "data loaded success"
             except RequestException:
                 remove = False
-                vis = f"{self.config_all['name']}: {vid} network error, retry later"
+                vis = info + "network error, retry later"
             except:
                 print_exc()
-                vis = f"{self.config_all['name']}: {vid} load failed"
+                vis = info + " load failed"
             if remove:
 
                 self.__safe_remove_task("searchfordatatasks", pair[:2])
@@ -131,7 +132,7 @@ class common:
     def dispatchdownloadtask(self, url):
         if not url:
             return None
-        __routine = f"cache/metadata/{self.typename}"
+        __routine = "cache/metadata/" + self.typename
         if self.typename == "vndb":
             __routine = "cache/vndb"
 
@@ -139,7 +140,7 @@ class common:
             __ = url[url.rfind(".") :]
         else:
             __ = ".jpg"
-        savepath = f"{__routine}/{self.__b64string(url)}{__}"
+        savepath = __routine + "/" + self.__b64string(url) + __
 
         globalconfig["metadata"][self.typename]["downloadtasks"].append((url, savepath))
         self.__tasks_downloadimg.put((url, savepath))

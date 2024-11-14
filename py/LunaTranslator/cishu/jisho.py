@@ -14,10 +14,14 @@ class jisho(cishubase):
         for title, res in allres:
             idx += 1
             btns.append(
-                f"""<button type="button" onclick="onclickbtn_xxxxxx_internal('buttonid_xxxxx_internal{idx}')" id="buttonid_xxxxx_internal{idx}" class="tab-button_xxxx_internal" data-tab="tab_xxxxx_internal{idx}">{title}</button>"""
+                """<button type="button" onclick="onclickbtn_xxxxxx_internal('buttonid_xxxxx_internal{idx}')" id="buttonid_xxxxx_internal{idx}" class="tab-button_xxxx_internal" data-tab="tab_xxxxx_internal{idx}">{title}</button>""".format(
+                    idx=idx, title=title
+                )
             )
             contents.append(
-                f"""<div id="tab_xxxxx_internal{idx}" class="tab-pane_xxxxx_internal">{res}</div>"""
+                """<div id="tab_xxxxx_internal{idx}" class="tab-pane_xxxxx_internal">{res}</div>""".format(
+                    idx=idx, res=res
+                )
             )
         commonstyle = """
 <script>
@@ -67,17 +71,17 @@ function onclickbtn_xxxxxx_internal(_id) {
 </style>
 """
 
-        res = f"""
+        res = """
     {commonstyle}
 <div class="tab-widget_xxxxxx_internal">
 
     <div class="centerdiv_xxxxxx_internal"><div>
-        {''.join(btns)}
+        {btns}
     </div>
     </div>
     <div>
         <div class="tab-content_xxxxxx_internal">
-            {''.join(contents)}
+            {contents}
         </div>
     </div>
 </div>
@@ -85,7 +89,9 @@ function onclickbtn_xxxxxx_internal(_id) {
 if(document.querySelectorAll('.tab-widget_xxxxxx_internal .tab-button_xxxx_internal').length)
 document.querySelectorAll('.tab-widget_xxxxxx_internal .tab-button_xxxx_internal')[0].click()
 </script>
-"""
+""".format(
+            commonstyle=commonstyle, btns="".join(btns), contents="".join(contents)
+        )
         return res
 
     def paradown(self, word, key, saver):

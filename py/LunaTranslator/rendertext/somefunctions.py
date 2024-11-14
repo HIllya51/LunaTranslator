@@ -22,7 +22,7 @@ class dataget:
         if not color:
             return None
         r, g, b, a = color
-        return f"rgba({r}, {g}, {b}, {a})"
+        return "rgba({}, {}, {}, {})".format(r, g, b, a)
 
     def _getfontinfo(self, origin):
         if origin:
