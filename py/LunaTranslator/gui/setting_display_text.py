@@ -229,22 +229,13 @@ def on_not_find_qweb(self):
 
 
 def resetgroudswitchcallback(self, group):
-
-    if group == "QWebEngine" and not gobject.testuseqwebengine():
-        self.seletengeinecombo.blockSignals(True)
-        visengine_internal = ["textbrowser", "webview", "QWebEngine"]
-        globalconfig["rendertext_using"] = visengine_internal[
-            self.seletengeinecombo.lastindex
-        ]
-        self.seletengeinecombo.setCurrentIndex(self.seletengeinecombo.lastindex)
-        self.seletengeinecombo.blockSignals(False)
-        on_not_find_qweb(self)
-        return
+    if group == "QWebEngine":
+        group = "webview"
     clearlayout(self.goodfontsettingsformlayout)
 
     goodfontgroupswitch = SuperCombo()
     self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
-    if group == "webview" or group == "QWebEngine":
+    if group == "webview":
         _btn = LPushButton("编辑")
         _btn.clicked.connect(lambda: extrahtml(self))
         switch = getsimpleswitch(
@@ -263,8 +254,7 @@ def resetgroudswitchcallback(self, group):
             getboxlayout([switch, _btn]),
         )
         self.goodfontsettingsformlayout.addRow(SplitLine())
-    if group == "QWebEngine":
-        group = "webview"
+
     __form = LFormLayout()
     __form.addRow("字体样式", goodfontgroupswitch)
     self.goodfontsettingsformlayout.addRow(__form)
@@ -304,8 +294,8 @@ def creategoodfontwid(self):
 
 def _createseletengeinecombo(self):
 
-    visengine = ["Qt", "Webview2"]  # , "QWebEngine"]
-    visengine_internal = ["textbrowser", "webview"]  # , "QWebEngine"]
+    visengine = ["Qt", "Webview2"]
+    visengine_internal = ["textbrowser", "webview"]
     self.seletengeinecombo = getsimplecombobox(
         visengine,
         globalconfig,

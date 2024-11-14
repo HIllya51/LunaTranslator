@@ -4,6 +4,7 @@
 
 bool Sceplay::attach_function()
 {
+  PcHooks::hookGDIFunctions();
   trigger_fun = [](LPVOID addr1, hook_stack *stack)
   {
     if (addr1 != GetGlyphOutlineA)

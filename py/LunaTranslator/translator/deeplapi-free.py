@@ -1,5 +1,4 @@
 from urllib import parse
-from myutils.config import static_data
 from translator.basetranslator import basetrans
 
 
@@ -32,15 +31,9 @@ class TS(basetrans):
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
-        data = (
-            "text="
-            + parse.quote(query)
-            + "&target_lang="
-            + self.tgtlang
-            + "&source_lang="
-            + self.srclang
-        )
-
+        data = "text=" + parse.quote(query) + "&target_lang=" + self.tgtlang
+        if self.srclang != "auto":
+            data += "&source_lang=" + self.srclang
         response = self.proxysession.post(
             endpoint, headers=headers, verify=False, data=data
         )

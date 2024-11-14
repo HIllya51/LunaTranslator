@@ -329,7 +329,7 @@ class showocrimage(saveposwindow):
         self.originimage = None
         super().__init__(parent, poslist=globalconfig["showocrgeo"])
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
-        self.setWindowTitle("截图")
+        self.setWindowTitle("查看")
         self.originlabel = pixmapviewer()
         qw = QWidget()
         self.layout1 = QVBoxLayout()

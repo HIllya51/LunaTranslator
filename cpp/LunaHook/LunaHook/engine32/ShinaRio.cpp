@@ -169,6 +169,7 @@ bool InsertShinaHook(int ver)
 
   if (ver >= 50)
   {
+    PcHooks::hookGDIFunctions();
     // trigger_fun = StackSearchingTrigger<GetGlyphOutlineA, NULL>;
     trigger_fun = [](LPVOID funcAddr, hook_stack *stack)
     {

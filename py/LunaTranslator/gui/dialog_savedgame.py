@@ -93,7 +93,7 @@ class dialog_savedgame_integrated(saveposwindow):
             | Qt.WindowType.WindowCloseButtonHint,
             poslist=globalconfig["savegamedialoggeo"],
         )
-        self.setWindowIcon(qtawesome.icon("fa.gear"))
+        self.setWindowIcon(qtawesome.icon(globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"]))
         w, self.internallayout = getboxlayout(
             [], margin0=True, makewidget=True, both=True
         )

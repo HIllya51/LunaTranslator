@@ -3,7 +3,6 @@
 #include "engine64/V8.h"
 #include "engine64/mono.h"
 #include "engine64/AGES7.h"
-#include "engine64/pchooks.h"
 #include "engine64/Artemis.h"
 #include "engine64/KiriKiri.h"
 #include "engine64/YOX.h"
@@ -40,7 +39,6 @@ std::vector<ENGINE *> check_engines()
         new lucasystem,
         new LightVN,
         new Artemis,
-        new pchooks,
         new KiriKiri,
         new YOX,
         new CMVS,
@@ -50,5 +48,6 @@ std::vector<ENGINE *> check_engines()
         new UnrealEngine,
         new Kincaid,
         new lua51,
-        new MKXPZ};
+        new MKXPZ,
+    };
 }

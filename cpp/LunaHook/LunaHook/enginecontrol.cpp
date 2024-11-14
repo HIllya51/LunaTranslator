@@ -91,11 +91,6 @@ bool checkengine()
         if (matched == false)
             continue;
         ConsoleOutput(MatchedEngine, m->getenginename());
-        if (m->dontstop)
-        {
-            continue;
-        }
-
         if (m->is_engine_certain)
         {
             ConsoleOutput(ConfirmStop, m->getenginename());
@@ -141,8 +136,9 @@ void HIJACK()
         ConsoleOutput(HIJACK_ERROR);
     }
 
-    if (result == false)
+    if (!result)
     {
+        PcHooks::hooknormalfunctions();
         PcHooks::hookOtherPcFunctions();
     }
 }

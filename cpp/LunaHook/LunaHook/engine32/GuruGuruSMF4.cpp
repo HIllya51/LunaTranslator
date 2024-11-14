@@ -2,6 +2,8 @@
 
 bool GuruGuruSMF4::attach_function()
 {
+
+  PcHooks::hookGDIFunctions();
   // 奈落の森の花
   trigger_fun = [](LPVOID addr1, hook_stack *stack)
   {

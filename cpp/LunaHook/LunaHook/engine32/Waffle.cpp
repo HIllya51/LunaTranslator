@@ -1,5 +1,5 @@
 #include "Waffle.h"
-
+#include "pchhook.h"
 bool InsertWaffleDynamicHook(LPVOID addr, hook_stack *stack)
 {
   ConsoleOutput("WaffleDynamic:triggered");
@@ -42,8 +42,9 @@ bool InsertWaffleDynamicHook(LPVOID addr, hook_stack *stack)
  *  Sample game: 完全時間停止 体験版
  *  GDI text: TextOutA and GetTextExtentPoint32A
  */
-bool InsertWaffleHook()
+bool waffleoldhook()
 {
+  // waffle经常会加密，这个遍历会导致很慢。
   bool found = false;
   for (DWORD i = processStartAddress + 0x1000; i < processStopAddress - 4; i++)
     if (*(DWORD *)i == 0xac68 && *(BYTE *)(i + 4) == 0)
@@ -57,7 +58,10 @@ bool InsertWaffleHook()
       ConsoleOutput("INSERT WAFFLE");
       found |= NewHook(hp, "WAFFLE");
     }
-
+  return found;
+}
+bool InsertWaffleHook()
+{
   /** new waffle?
    *   test on 母三人とアナあそび https://vndb.org/v24214
    *   and 変態エルフ姉妹と真面目オーク https://vndb.org/v24215
@@ -79,12 +83,9 @@ bool InsertWaffleHook()
     hp.offset = get_reg(regs::eax);
     hp.type = DATA_INDIRECT;
     ConsoleOutput("INSERT WAFFLE2");
-    found |= NewHook(hp, "WAFFLE2");
+    return NewHook(hp, "WAFFLE2");
   }
-  // ConsoleOutput("Probably Waffle. Wait for text.");
-  if (!found)
-    trigger_fun = InsertWaffleDynamicHook;
-  return found;
+  return false;
   // ConsoleOutput("WAFFLE: failed");
 }
 bool InsertWaffleHookx()
@@ -610,5 +611,13 @@ bool Waffle::attach_function()
   bool b2 = InsertWaffleHookx();
   bool b3 = hh();
   b3 |= waffle3();
-  return b1 || b2 || embed || b3;
+  auto succ = b1 || b2 || embed || b3;
+  // ConsoleOutput("Probably Waffle. Wait for text.");
+  if (!succ)
+  {
+    succ = waffleoldhook();
+    PcHooks::hookGDIFunctions();
+    trigger_fun = InsertWaffleDynamicHook;
+  }
+  return succ;
 }

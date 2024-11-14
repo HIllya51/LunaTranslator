@@ -4,7 +4,7 @@ import gobject, uuid, json, os, functools, windows, time
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data
 from myutils.wrapper import tryprint, threader
-from gui.usefulwidget import WebivewWidget, QWebWrap
+from gui.usefulwidget import WebivewWidget
 
 testsavejs = False
 
@@ -34,30 +34,27 @@ class TextBrowser(QWidget, dataget):
             event.size().width() - 2 * self._padding,
             event.size().height() - 2 * self._padding,
         )
-        self.masklabel.resize(event.size())
         self.__makeborder(event.size())
 
     def setselectable(self, b):
-        self.masklabel.setHidden(b)
+        self.selectable = b
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        if globalconfig["rendertext_using"] == "QWebEngine":
-            self.webivewwidget = QWebWrap(self)
-            self.webivewwidget.on_load.connect(self.__loadextra)
-        else:
-            # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
-            self.webivewwidget = WebivewWidget(self, usedarklight=False)
+        self.selectable = False
+        # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
+        self.webivewwidget = WebivewWidget(self, usedarklight=False)
 
-            # webview2无法接收qt事件。
-            webviewhwnd = self.webivewwidget.get_hwnd()
-            self.wndproc = windows.WNDPROCTYPE(
-                functools.partial(
-                    self.extrahandle,
-                    windows.GetWindowLongPtr(webviewhwnd, windows.GWLP_WNDPROC),
-                )
+        # webview2无法接收qt事件。
+        webviewhwnd = self.webivewwidget.get_hwnd()
+        self.wndproc = windows.WNDPROCTYPE(
+            functools.partial(
+                self.extrahandle,
+                windows.GetWindowLongPtr(webviewhwnd, windows.GWLP_WNDPROC),
             )
-            windows.SetWindowLongPtr(webviewhwnd, windows.GWLP_WNDPROC, self.wndproc)
+        )
+        windows.SetWindowLongPtr(webviewhwnd, windows.GWLP_WNDPROC, self.wndproc)
+
         self.masklabel_left = QLabel(self)
         self.masklabel_left.setMouseTracking(True)
         # self.masklabel_left.setStyleSheet('background-color:red')
@@ -70,8 +67,6 @@ class TextBrowser(QWidget, dataget):
         self.masklabel_top.setMouseTracking(True)
         # self.masklabel_bottom.setStyleSheet('background-color:red')
         self.saveclickfunction = {}
-        self.masklabel = QLabel(self.webivewwidget)
-        self.masklabel.setMouseTracking(True)
         self.webivewwidget.navigate(
             os.path.abspath(r"LunaTranslator\rendertext\webview.html")
         )
@@ -81,7 +76,6 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
         self.saveiterclasspointer = {}
         self.isfirst = True
-        self._qweb_query_word()
 
     @threader
     def trackingthread(self):
@@ -102,7 +96,7 @@ class TextBrowser(QWidget, dataget):
         if wp == windows.WM_LBUTTONDOWN:
             # 因为有父窗口，所以msg是WM_PARENTNOTIFY，wp才是WM_LBUTTONDOWN
             # 而且SetCapture后会立即被父窗口把capture夺走，无法后面的释放&移动，所以只能开个线程来弄
-            if self.masklabel.isVisible():
+            if not self.selectable:
                 self.trackingthread()
         return windows.WNDPROCTYPE(orig)(hwnd, msg, wp, lp)
 
@@ -162,7 +156,6 @@ class TextBrowser(QWidget, dataget):
         self.debugeval(
             f'create_internal_text("{style}","{styleargs}","{_id}","{name}","{text}","{args}");'
         )
-        self._qweb_query_h()
 
     def create_internal_rubytext(self, style, styleargs, _id, tag, args):
         tag = quote(json.dumps(tag))
@@ -171,41 +164,6 @@ class TextBrowser(QWidget, dataget):
         self.debugeval(
             f'create_internal_rubytext("{style}","{styleargs}","{_id}","{tag}","{args}");'
         )
-
-        self._qweb_query_h()
-
-    # js api end
-    # native api
-    def _qweb_query_value_callback(self, name, callback):
-
-        def __receiver(callback, value):
-            if not value:
-                return
-            self.webivewwidget.eval(f"{name}=null")
-            callback(value)
-
-        self.webivewwidget.eval(name, functools.partial(__receiver, callback))
-
-    def _qweb_query_h(self):
-        if not isinstance(self.webivewwidget, QWebWrap):
-            return
-        self._qweb_query_value_callback("window.__resolve_h", self.calllunaheightchange)
-
-    def _qweb_query_word(self):
-        if not isinstance(self.webivewwidget, QWebWrap):
-            return
-        t = QTimer(self)
-        t.setInterval(100)
-
-        def __intervaledqueryword():
-
-            self._qweb_query_value_callback(
-                "window.__resolve_word", self.calllunaclickedword
-            )
-
-        t.timeout.connect(__intervaledqueryword)
-        t.timeout.emit()
-        t.start()
 
     def calllunaheightchange(self, h):
         extra_space = globalconfig["extra_space"]

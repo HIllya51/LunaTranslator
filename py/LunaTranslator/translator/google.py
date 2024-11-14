@@ -38,36 +38,17 @@ class TS(basetrans):
             },
             verify=False,
         ).text
-        # print(html)
-        # self.bl=re.search('"cfb2h":"(.*?)"',html).groups()[0]
-        # self.fsid=re.search('"FdrFJe":"(.*?)"',html).groups()[0]
 
     def realfy1(self, content):
-        t1 = time.time()
         param = json.dumps([[content, self.srclang, self.tgtlang, True], [1]])
         # print([content, 'ja', 'zh-CN', True])
         freq = json.dumps([[["MkEWBc", param, None, "generic"]]])
         freq = {"f.req": freq}
-        freq = urlencode(freq)
-        # print(freq)
-        # params = {
-        #     'rpcids': 'MkEWBc',
-        #     'source-path': '/',
-        #     'f.sid': self.fsid,
-        #     'bl': self.bl,
-        #     'hl': 'zh-CN',
-        #     'soc-app': '1',
-        #     'soc-platform': '1',
-        #     'soc-device': '1',
-        #     '_reqid': '86225',
-        #     'rt': 'c',
-        # }
 
         headers = {
             "Origin": "https://translate.google.com",
             "Referer": "https://translate.google.com",
             "X-Requested-With": "XMLHttpRequest",
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
         }
 

@@ -928,6 +928,7 @@ class showdiction(LMainWindow):
 
         self.resize(400, parent.height())
         self.setWindowTitle("查看")
+        self.setWindowIcon(qtawesome.icon("fa.book"))
         self.tree = kpQTreeView(self)
         self.tree.setHeaderHidden(True)
         self.tree.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -1058,9 +1059,7 @@ class searchwordW(closeashidewindow):
         self.setWindowIcon(qtawesome.icon("fa.search"))
         self.thisps = {}
         self.hasclicked = False
-
         ww = QWidget(self)
-        self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.vboxlayout = QVBoxLayout()
         ww.setLayout(self.vboxlayout)
         self.searchlayout = QHBoxLayout()

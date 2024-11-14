@@ -43,6 +43,7 @@ namespace
     // https://vndb.org/v6187
     // みちくさ～Loitering on the way～
 
+    PcHooks::hookGDIFunctions();
     trigger_fun = [](LPVOID addr, hook_stack *stack)
     {
       if (addr != (LPVOID)GetGlyphOutlineA)

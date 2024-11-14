@@ -1,5 +1,5 @@
 from qtsymbols import *
-import gobject, os
+import gobject, os, qtawesome
 from myutils.config import globalconfig, uid2gamepath
 from myutils.wrapper import Singleton_close
 from myutils.utils import getfilemd5, getimagefilefilter
@@ -29,6 +29,7 @@ class dialog_memory(saveposwindow):
             poslist=globalconfig["memorydialoggeo"],
         )
         self.setWindowTitle("备忘录")
+        self.setWindowIcon(qtawesome.icon(globalconfig["toolbutton"]["buttons"]["memory"]["icon"]))
         formLayout = QVBoxLayout()  #
         self.showtext = QTextEdit()
         self.rwpath = gobject.getuserconfigdir(

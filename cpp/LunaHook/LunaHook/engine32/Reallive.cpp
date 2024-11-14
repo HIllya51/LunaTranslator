@@ -91,6 +91,7 @@ static bool InsertRealliveDynamicHook(LPVOID addr, hook_stack *stack)
 }
 void InsertRealliveHook()
 {
+  PcHooks::hookGDIFunctions();
   // ConsoleOutput("Probably Reallive. Wait for text.");
   ConsoleOutput("TRIGGER Reallive");
   trigger_fun = InsertRealliveDynamicHook;

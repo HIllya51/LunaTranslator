@@ -5,13 +5,14 @@
 
 #include <Windows.h>
 
-namespace PcHooks {
-
-void hookGDIFunctions();
-void hookGDIPlusFunctions();
-bool hookD3DXFunctions(HMODULE d3dxModule);
-void hookOtherPcFunctions();
-
+namespace PcHooks
+{
+    void hook_GetTextExtentPoint32A();
+    void hookGDIFunctions();
+    void hookGDIPlusFunctions();
+    bool hookD3DXFunctions(HMODULE d3dxModule);
+    void hookOtherPcFunctions();
+    void hooknormalfunctions();
 } // namespace PcHooks
 
 // EOF

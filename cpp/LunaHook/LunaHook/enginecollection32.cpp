@@ -17,7 +17,6 @@
 #include "engine32/splushwave.h"
 #include "engine32/FrontWing.h"
 #include "engine32/GSX.h"
-#include "engine32/pchooks.h"
 #include "engine32/VALKYRIA.h"
 #include "engine32/mirage.h"
 #include "engine32/Sprite.h"
@@ -194,7 +193,6 @@ std::vector<ENGINE *> check_engines()
         new cef,
         new mono,
         new sakanagl,
-        new pchooks,
         new PONScripter,
         new Renpy,
         new Lightvn,
@@ -413,6 +411,6 @@ std::vector<ENGINE *> check_engines()
         new AksysGames,
         new AGE_System,
         new Cage,
-        new Winters
+        new Winters,
     };
 }

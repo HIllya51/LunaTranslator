@@ -558,7 +558,7 @@ class hookselect(closeashidewindow):
         self.widget = QWidget()
 
         self.setCentralWidget(self.widget)
-        self.setWindowIcon(qtawesome.icon("fa.gear"))
+        self.setWindowIcon(qtawesome.icon(globalconfig["toolbutton"]["buttons"]["selecttext"]["icon"]))
         self.hboxlayout = QHBoxLayout()
         self.widget.setLayout(self.hboxlayout)
         self.vboxlayout = QVBoxLayout()

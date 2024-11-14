@@ -614,7 +614,7 @@ namespace
 
           auto arg = (HookArgument *)s->stack[0]; // arg1
           if (arg && arg->isValid())
-          {                                                                                                // && (quint8)arg->text[0] > 127) { // skip translate text beginning with ascii character
+          {                                                                                                     // && (quint8)arg->text[0] > 127) { // skip translate text beginning with ascii character
             std::wstring oldText = StringToWideString(std::string_view(arg->text, arg->size), CP_UTF8).value(), // QString::fromUtf8(arg->text, arg->size),
                 prefix,
                          suffix,
@@ -663,7 +663,7 @@ namespace
 
           auto arg = (HookArgument *)s->stack[0]; // arg1
           if (arg && arg->isValid())
-          {                                                                                                // && (quint8)arg->text[0] > 127) { // skip translate text beginning with ascii character
+          {                                                                                                     // && (quint8)arg->text[0] > 127) { // skip translate text beginning with ascii character
             std::wstring oldText = StringToWideString(std::string_view(arg->text, arg->size), CP_UTF8).value(), // QString::fromUtf8(arg->text, arg->size),
                 prefix,
                          suffix,
@@ -774,7 +774,7 @@ namespace
             //   }
           }
         }
-        void hookafter2(hook_stack *s,TextBuffer buffer)
+        void hookafter2(hook_stack *s, TextBuffer buffer)
         {
           {
             auto arg = (HookArgument *)s->stack[2]; // arg2
@@ -1420,6 +1420,7 @@ bool RPGMakerRGSS3::attach_function()
 }
 bool RPGMakerRGSS300::attach_function()
 {
+  PcHooks::hookGDIFunctions();
   trigger_fun = [](LPVOID addr1, hook_stack *stack)
   {
     if (addr1 != GetGlyphOutlineW)

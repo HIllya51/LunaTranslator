@@ -97,7 +97,7 @@ uintptr_t getasbaddr(const HookParam &hp)
 			try
 			{
 				auto ordinal = std::stoi(hp.function);
-				function = GetProcAddress(GetModuleHandleW(hp.module), (LPCSTR)ordinal);
+				function = GetProcAddress(GetModuleHandleW(hp.module), (LPCSTR)(uintptr_t)ordinal);
 			}
 			catch (...)
 			{

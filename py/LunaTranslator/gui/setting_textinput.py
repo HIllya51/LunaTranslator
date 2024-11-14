@@ -37,7 +37,7 @@ from gui.dynalang import LDialog, LFormLayout
 def __create(self):
     self.selectbutton = getIconButton(
         gobject.baseobject.createattachprocess,
-        icon="fa.gear",
+        icon=globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"],
         enable=globalconfig["sourcestatus2"]["texthook"]["use"],
     )
     return self.selectbutton
@@ -46,7 +46,7 @@ def __create(self):
 def __create2(self):
     self.selecthookbutton = getIconButton(
         lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
-        icon="fa.gear",
+        icon=globalconfig["toolbutton"]["buttons"]["selecttext"]["icon"],
         enable=globalconfig["sourcestatus2"]["texthook"]["use"],
     )
     return self.selecthookbutton
@@ -613,7 +613,7 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
             "游戏管理",
             D_getIconButton(
                 lambda: dialog_savedgame_integrated(self),
-                icon="fa.gamepad",
+                icon=globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"],
             ),
             "",
         ],

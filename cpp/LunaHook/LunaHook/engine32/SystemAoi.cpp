@@ -192,6 +192,7 @@ namespace
 
   bool InsertSystemAoiDynamic()
   {
+    PcHooks::hookGDIFunctions();
     ConsoleOutput("DYNAMIC SystemAoi");
     // ConsoleOutput("Probably SoftHouseChara. Wait for text.");
     trigger_fun = InsertSystemAoiDynamicHook;

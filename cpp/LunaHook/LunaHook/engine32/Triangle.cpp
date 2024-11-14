@@ -39,6 +39,7 @@ bool InsertTriangleHook()
 
 bool Triangle::attach_function()
 {
+  PcHooks::hookGDIFunctions();
   trigger_fun = [](LPVOID addr, hook_stack *stack)
   {
     // Triangle  やっぱり妹がすきっ！

@@ -289,7 +289,7 @@ namespace ppsspp
         }
         else if ((address & 0x3F800000) == 0x04000000)
         {
-            return true;
+            return address < 0x80000000; // Let's disallow kernel-flagged VRAM. We don't have it mapped and I am not sure if it's accessible.
         }
         else if ((address & 0xBFFFC000) == 0x00010000)
         {

@@ -1,7 +1,8 @@
-#include"LovaGame.h"
- 
-    bool LovaGame::attach_function(){
-        return false;
+#include "LovaGame.h"
+
+bool LovaGame::attach_function()
+{
+  return false;
 #if 0 
         /** 7/19/2015: Game engine specific for http://lova.jp
  *
@@ -67,4 +68,4 @@
   ConsoleOutput("INSERT LOVA");
   return NewHook(hp, "LOVA");
 #endif
-    } 
+}

@@ -45,6 +45,7 @@ bool InsertRyokuchaDynamicHook(LPVOID addr, hook_stack *)
 }
 void InsertRyokuchaHook()
 {
+  PcHooks::hookGDIFunctions();
   // ConsoleOutput("Probably Ryokucha. Wait for text.");
   trigger_fun = InsertRyokuchaDynamicHook;
   ConsoleOutput("TRIGGER Ryokucha");

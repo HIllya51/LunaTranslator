@@ -830,12 +830,13 @@ class resizableframeless(saveposwindow):
                 self.starth - (gpos.y() - self.starty),
             )
         elif self._corner_drag_zuoxia:
-            self.setgeokeepminsize(
+            x, y, w, h = self.calculatexywh(
                 (gpos - self.startxp).x(),
                 self.y(),
                 self.startw - (gpos.x() - self.startx),
                 pos.y(),
             )
+            self.setGeometry(x, self.y(), w, h)
         elif self._corner_drag_youxia:
             self.resize(pos.x(), pos.y())
         elif self._move_drag:
@@ -844,12 +845,15 @@ class resizableframeless(saveposwindow):
     def mouseReleaseEvent(self, e: QMouseEvent):
         self.resetflags()
 
-    def setgeokeepminsize(self, x, y, w, h):
+    def setgeokeepminsize(self, *argc):
+        self.setGeometry(*self.calculatexywh(*argc))
+
+    def calculatexywh(self, x, y, w, h):
         width = max(w, self.minimumWidth())
         height = max(h, self.minimumHeight())
         x -= width - w
         y -= height - h
-        self.setGeometry(x, y, width, height)
+        return x, y, width, height
 
 
 class Prompt_dialog(LDialog):

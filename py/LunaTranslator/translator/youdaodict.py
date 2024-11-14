@@ -33,7 +33,6 @@ class TS(basetrans):
             }
         headers = {
             "Connection": "Keep-Alive",
-            "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "*/*",
             "User-Agent": "Youdao Desktop Dict (Windows NT 10.0)",
         }

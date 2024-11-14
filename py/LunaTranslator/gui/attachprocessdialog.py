@@ -48,7 +48,7 @@ class AttachProcessDialog(saveposwindow):
         self.setWindowTitle(
             "选择进程_当前权限_" + ("管理员" if windows.IsUserAnAdmin() else "非管理员")
         )
-        self.setWindowIcon(qtawesome.icon("fa.gear"))
+        self.setWindowIcon(qtawesome.icon(globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"]))
         w = QWidget()
         self.layout1 = QVBoxLayout()
         self.label = LLabel(
