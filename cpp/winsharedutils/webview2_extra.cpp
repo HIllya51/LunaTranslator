@@ -27,9 +27,9 @@ DECLARE_API void set_transparent_background(void *m_host)
 #endif
 }
 
+#ifndef WINXP
 DECLARE_API void put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {
-#ifndef WINXP
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
     wil::com_ptr<ICoreWebView2> coreWebView2;
     [&]()
@@ -44,8 +44,12 @@ DECLARE_API void put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_C
         }
         return S_OK;
     }();
-#endif
 }
+#else
+DECLARE_API void put_PreferredColorScheme(void *m_host, int scheme)
+{
+}
+#endif
 DECLARE_API void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
 {
 #ifndef WINXP

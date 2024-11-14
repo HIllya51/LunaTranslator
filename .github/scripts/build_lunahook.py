@@ -76,7 +76,6 @@ def build_langx_xp(lang, core):
 
 cmake -DBUILD_PLUGIN=OFF -DWINXP=ON -DLANGUAGE={lang} {flags} ../CMakeLists.txt -G "Visual Studio 16 2019" -A win32 -T v141_xp -B ../build/x86_{lang}_xp
 cmake --build ../build/x86_{lang}_xp --config Release --target ALL_BUILD -j 14
-call dobuildxp.bat
 """
         )
     os.system(f"cmd /c do.bat")
