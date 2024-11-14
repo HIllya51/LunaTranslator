@@ -88,8 +88,7 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
     WNDCLASS wc = {};
     wc.lpfnWndProc = [](HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
-#ifndef WINXP
-        if (WM_CLIPBOARDUPDATE == message)
+        static auto callbackx = [](HWND hWnd)
         {
             auto data = clipboard_get_internal();
             auto callback_ = reinterpret_cast<decltype(callback)>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
@@ -100,6 +99,11 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
                 GetWindowThreadProcessId(ohwnd, &pid);
                 callback_(data.value().c_str(), pid == GetCurrentProcessId());
             }
+        };
+#ifndef WINXP
+        if (WM_CLIPBOARDUPDATE == message)
+        {
+            callbackx(hWnd);
         }
 #else
         static HWND nextviewer;
@@ -125,15 +129,7 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
         break;
         case WM_DRAWCLIPBOARD:
         {
-            auto data = clipboard_get_internal();
-            auto callback_ = reinterpret_cast<decltype(callback)>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
-            if (data && callback_)
-            {
-                auto ohwnd = GetClipboardOwner();
-                DWORD pid;
-                GetWindowThreadProcessId(ohwnd, &pid);
-                callback_(data.value().c_str(), pid == GetCurrentProcessId());
-            }
+            callbackx(hWnd);
             if (nextviewer)
                 SendMessage(nextviewer, message, wParam, lParam);
         }
