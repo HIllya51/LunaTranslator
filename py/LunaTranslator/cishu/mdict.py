@@ -2608,14 +2608,14 @@ if (content.style.display === 'block') {
                 extra = "display: none;"
             uid = str(uuid.uuid4())
             lis.append(
-                rf"""<li><div class="collapsible-header" id="{uid}" onclick="mdict_flowstyle_clickcallback('{uid}')">{title}</div><div class="collapsible-content" style="{extra}">
-               {res}
-            </div></li>"""
+                r"""<li><div class="collapsible-header" id="{}" onclick="mdict_flowstyle_clickcallback('{}')">{}</div><div class="collapsible-content" style="{}">
+               {}
+            </div></li>""".format(uid,uid,title,extra,res)
             )
-        content += rf"""
+        content += r"""
 <ul class="collapsible-list">
-         {''.join(lis)}
-    </ul>"""
+         {}
+    </ul>""".format(''.join(lis))
 
         return content
 

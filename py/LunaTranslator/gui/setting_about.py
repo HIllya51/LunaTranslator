@@ -78,12 +78,13 @@ def doupdate():
         bit = "_x86"
         _6432 = "32"
     shutil.copy(
-        rf".\files\plugins\shareddllproxy{_6432}.exe",
+        r".\files\plugins\shareddllproxy{}.exe".format(_6432),
         gobject.getcachedir("Updater.exe"),
     )
     subprocess.Popen(
-        rf".\cache\Updater.exe update {int(gobject.baseobject.istriggertoupdate)} .\cache\update\LunaTranslator{bit} "
-        + dynamiclink("{main_server}")
+        r".\cache\Updater.exe update {} .\cache\update\LunaTranslator{} {}".format(
+            int(gobject.baseobject.istriggertoupdate), bit, dynamiclink("{main_server}")
+        )
     )
 
 
