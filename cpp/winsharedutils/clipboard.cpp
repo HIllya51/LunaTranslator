@@ -167,10 +167,14 @@ DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
 
     WaitForSingleObject(hsema, INFINITE);
     CloseHandle(hsema);
+#ifndef WINXP
     if (AddClipboardFormatListener(hwnd))
         return hwnd;
     else
         return NULL;
+#else
+    return hwnd;
+#endif
 }
 DECLARE_API void clipboard_callback_stop(HWND hwnd)
 {
