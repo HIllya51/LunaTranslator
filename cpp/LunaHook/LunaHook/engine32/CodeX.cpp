@@ -134,8 +134,9 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.offset = get_stack(1);
-    hp.type = USING_STRING | FULL_STRING | NO_CONTEXT;
-    // 这个可以提取到人名，但是会把一堆字体名给hook进去，所以不要内嵌
+    hp.split = get_stack(2);
+    hp.type = USING_STRING | FULL_STRING | NO_CONTEXT | USING_SPLIT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
+    hp.hook_font = F_GetGlyphOutlineA;
     hp.filter_fun = CodeXFilter;
     return NewHook(hp, "CodeX2");
   }
