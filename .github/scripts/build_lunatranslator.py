@@ -216,7 +216,8 @@ def buildPlugins(arch):
 
 
 def downloadsomething():
-    shutil.rmtree(rootDir + "\\files\\LunaTranslator_qss\\.git")
+    pass
+    # shutil.rmtree(rootDir + "\\files\\LunaTranslator_qss\\.git")
 
 
 def downloadbass():
