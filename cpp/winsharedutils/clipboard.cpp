@@ -88,6 +88,7 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
     WNDCLASS wc = {};
     wc.lpfnWndProc = [](HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
+#ifndef WINXP
         if (WM_CLIPBOARDUPDATE == message)
         {
             auto data = clipboard_get_internal();
@@ -100,6 +101,44 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
                 callback_(data.value().c_str(), pid == GetCurrentProcessId());
             }
         }
+#else
+        static HWND nextviewer;
+        switch (message)
+        {
+        case WM_CREATE:
+        {
+            nextviewer = SetClipboardViewer(hWnd);
+        }
+        break;
+        case WM_CHANGECBCHAIN:
+        {
+            if ((HWND)wParam == nextviewer)
+                nextviewer = (HWND)lParam;
+            if (nextviewer)
+                SendMessage(nextviewer, message, wParam, lParam);
+        }
+        break;
+        case WM_DESTROY:
+        {
+            ChangeClipboardChain(hWnd, nextviewer);
+        }
+        break;
+        case WM_DRAWCLIPBOARD:
+        {
+            auto data = clipboard_get_internal();
+            auto callback_ = reinterpret_cast<decltype(callback)>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
+            if (data && callback_)
+            {
+                auto ohwnd = GetClipboardOwner();
+                DWORD pid;
+                GetWindowThreadProcessId(ohwnd, &pid);
+                callback_(data.value().c_str(), pid == GetCurrentProcessId());
+            }
+            if (nextviewer)
+                SendMessage(nextviewer, message, wParam, lParam);
+        }
+        }
+#endif
         return DefWindowProc(hWnd, message, wParam, lParam);
     };
     wc.hInstance = GetModuleHandle(0);
@@ -141,7 +180,9 @@ DECLARE_API void clipboard_callback_stop(HWND hwnd)
 {
     if (!hwnd)
         return;
+#ifndef WINXP
     RemoveClipboardFormatListener(hwnd);
+#endif
     DestroyWindow(hwnd);
 }
 
