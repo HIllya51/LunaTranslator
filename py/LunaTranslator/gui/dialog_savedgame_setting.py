@@ -217,7 +217,7 @@ class dialog_setting_game_internal(QWidget):
                         icons=("fa.gear",),
                     ),
                     getIconButton(
-                        lambda: favorites(gobject.baseobject.commonstylebase, gameuid),
+                        lambda: favorites(self, gameuid),
                         icon="fa.heart",
                     ),
                 ]
