@@ -182,6 +182,11 @@ int PyStand::RunString(const wchar_t *script)
 	{
 		_py_args.push_back((wchar_t *)_py_argv[i].c_str());
 	}
+
+#ifdef WINXP
+	auto Py_SetPath = (void (*)(const wchar_t *))GetProcAddress(_hDLL, "Py_SetPath");
+	Py_SetPath(L"./files/runtime/Lib;./files/runtime/DLLs;./files/runtime/Lib/site-packages");
+#endif
 	hr = _Py_Main((int)_py_args.size(), &_py_args[0]);
 	return hr;
 }

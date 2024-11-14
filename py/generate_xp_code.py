@@ -11,7 +11,7 @@ def parsecode(code: str):
     code = code.replace("self.screen().geometry().height()", "99999")
     code = code.replace(
         '"./files/runtime/PyQt5/Qt5/plugins"',
-        r'"C:\Python34\Lib\site-packages\PyQt5\plugins"',
+        '"./files/runtime/Lib/site-packages/PyQt5/plugins"',
     )
     code = code.replace("self.parent().devicePixelRatioF()", "1")
     code = code.replace("self.devicePixelRatioF()", "1")

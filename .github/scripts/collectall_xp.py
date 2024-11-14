@@ -1,9 +1,10 @@
 import shutil, os
 import platform
 import sys
-
+os.system('python generate_xp_code.py')
 os.system("git clone https://github.com/HIllya51/py3.4_pyqt5.5.1")
-os.rename("py3.4_pyqt5.5.1", "runtime")
+os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
+
 targetdir = r"build\LunaTranslator_x86_winxp"
 launch = r"..\cpp\builds\_x86"
 baddll = "DLL64"
