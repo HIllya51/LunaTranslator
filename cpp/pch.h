@@ -74,7 +74,6 @@
 
 #pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "dwmapi.lib")
 #pragma comment(lib, "Psapi.lib")
 #pragma comment(lib, "Version.lib")
 

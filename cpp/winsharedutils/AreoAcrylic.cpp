@@ -86,6 +86,7 @@ typedef BOOL(WINAPI *pfnSetWindowCompositionAttribute)(HWND, WINDOWCOMPOSITIONAT
 
 DECLARE_API bool setAcrylicEffect(HWND hwnd, bool isEnableShadow)
 {
+#ifndef WINXP
 	// win7全都用areo
 	DWM_BLURBEHIND bb = {0};
 	bb.dwFlags = DWM_BB_ENABLE;
@@ -101,9 +102,13 @@ DECLARE_API bool setAcrylicEffect(HWND hwnd, bool isEnableShadow)
 	auto accentFlags = isEnableShadow ? (DWORD(0x20 | 0x40 | 0x80 | 0x100)) : 0;
 	accentPolicy.AccentFlags = accentFlags;
 	return setWindowCompositionAttribute(hwnd, &winCompAttrData);
+#else
+	return false;
+#endif
 }
 DECLARE_API bool setAeroEffect(HWND hwnd, bool isEnableShadow)
 {
+#ifndef WINXP
 	DWM_BLURBEHIND bb = {0};
 	bb.dwFlags = DWM_BB_ENABLE;
 	bb.fEnable = true;
@@ -116,9 +121,13 @@ DECLARE_API bool setAeroEffect(HWND hwnd, bool isEnableShadow)
 	auto accentFlags = isEnableShadow ? (DWORD(0x20 | 0x40 | 0x80 | 0x100)) : 0;
 	accentPolicy.AccentFlags = accentFlags;
 	return setWindowCompositionAttribute(hwnd, &winCompAttrData);
+#else
+	return false;
+#endif
 }
 DECLARE_API bool clearEffect(HWND hwnd)
 {
+#ifndef WINXP
 	DWM_BLURBEHIND bb = {0};
 	bb.dwFlags = DWM_BB_ENABLE;
 	bb.fEnable = false;
@@ -128,4 +137,7 @@ DECLARE_API bool clearEffect(HWND hwnd)
 	common
 		accentPolicy.AccentState = ACCENT_DISABLED;
 	return setWindowCompositionAttribute(hwnd, &winCompAttrData);
+#else
+	return false;
+#endif
 }
