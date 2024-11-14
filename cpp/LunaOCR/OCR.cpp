@@ -1,3 +1,11 @@
+
+enum class Directional
+{
+    H,
+    V,
+    Auto
+};
+
 #ifndef WINXP
 #include <onnxruntime/core/session/onnxruntime_cxx_api.h>
 #include <opencv2/opencv.hpp>
@@ -7,13 +15,6 @@
 typedef std::vector<cv::Point> TextBox;
 typedef std::string TextLine;
 typedef std::pair<TextBox, TextLine> TextBlock;
-enum class Directional
-{
-    H,
-    V,
-    Auto
-};
-
 struct ScaleParam
 {
     int srcWidth;
@@ -704,7 +705,8 @@ std::vector<TextBlock> OcrLite::detect_internal(cv::Mat &src, cv::Rect &originRe
 
     return textBlocks;
 }
-
+#else
+struct OcrLite;
 #endif
 struct ocrpoints
 {

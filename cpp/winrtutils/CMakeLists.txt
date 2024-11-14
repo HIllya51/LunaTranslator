@@ -12,7 +12,9 @@ generate_product_version(
 
 add_library(winrtutils MODULE winrtsnapshot.cpp winrtocr.cpp livecaptions.cpp ${versioninfo})
 target_precompile_headers(winrtutils REUSE_FROM pch) 
+if(NOT WINXP)
 target_link_libraries(winrtutils wil)
+endif()
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set_target_properties(winrtutils PROPERTIES OUTPUT_NAME "winrtutils64")
 else()
