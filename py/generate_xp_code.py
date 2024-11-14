@@ -13,6 +13,14 @@ def parsecode(code: str):
         '"./files/runtime/PyQt5/Qt5/plugins"',
         '"./files/runtime/Lib/site-packages/PyQt5/plugins"',
     )
+    code = code.replace(
+        "./files/runtime/PyQt5/Qt5/bin/Qt5Core.dll",
+        "./files/runtime/Lib/site-packages/PyQt5/Qt5Core.dll",
+    )
+    code = code.replace(
+        '    windows.addenvpath("./files/runtime/")',
+        '    windows.addenvpath("./files/runtime/")\n    windows.addenvpath("./files/runtime/Lib/site-packages/PyQt5")',
+    )
     code = code.replace("self.parent().devicePixelRatioF()", "1")
     code = code.replace("self.devicePixelRatioF()", "1")
     code = re.sub(

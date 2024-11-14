@@ -4,7 +4,7 @@ static auto LUNA_UPDATE_PREPARED_OK = RegisterWindowMessage(L"LUNA_UPDATE_PREPAR
 static auto WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");
 bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
-    return lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL;
+    return lParam && wcscmp(reinterpret_cast<LPCWCH>(lParam), L"ImmersiveColorSet") == 0;
 }
 void globalmessagelistener_1(void *callback)
 {
