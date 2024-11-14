@@ -1,3 +1,5 @@
+
+#ifndef WINXP
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Storage.Pickers.h>
 #include <winrt/Windows.Storage.Streams.h>
@@ -25,8 +27,10 @@ using namespace Windows::Media::Devices;
 using namespace Windows::Security::Cryptography;
 using namespace Windows::Globalization;
 using namespace Windows::Foundation::Collections;
+#endif
 DECLARE_API bool check_language_valid(wchar_t *language)
 {
+#ifndef WINXP
     OcrEngine ocrEngine = OcrEngine::TryCreateFromUserProfileLanguages();
     std::wstring l = language;
     try
@@ -38,20 +42,26 @@ DECLARE_API bool check_language_valid(wchar_t *language)
     {
         return false;
     }
+#else
+    return false;
+#endif
 }
-DECLARE_API void getlanguagelist(void(*cb)(LPCWSTR))
+DECLARE_API void getlanguagelist(void (*cb)(LPCWSTR))
 {
+#ifndef WINXP
     OcrEngine ocrEngine = OcrEngine::TryCreateFromUserProfileLanguages();
     auto languages = ocrEngine.AvailableRecognizerLanguages();
-     
+
     for (auto &&language : languages)
     {
         auto lang = language.LanguageTag();
         cb(lang.c_str());
     }
+#endif
 }
 DECLARE_API void OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, void (*cb)(int, int, int, int, LPCWSTR))
 {
+#ifndef WINXP
     IBuffer buffer = CryptographicBuffer::CreateFromByteArray(
         winrt::array_view<uint8_t>(static_cast<uint8_t *>(ptr), size));
     InMemoryRandomAccessStream memoryStream;
@@ -82,7 +92,7 @@ DECLARE_API void OCR(void *ptr, size_t size, wchar_t *lang, wchar_t *space, void
             y1 = std::min((unsigned int)rect.Y, y1);
             y2 = std::max(y2, (unsigned int)(rect.Y + rect.Height));
         }
-        cb(x1,y1,x2,y2,xx.c_str());
+        cb(x1, y1, x2, y2, xx.c_str());
     }
-     
+#endif
 }
