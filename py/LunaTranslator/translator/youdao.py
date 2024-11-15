@@ -105,4 +105,4 @@ class TS(basetrans):
 
             return res
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)

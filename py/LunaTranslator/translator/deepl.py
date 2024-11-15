@@ -87,7 +87,7 @@ class TS(basetrans):
         try:
             return response.json()["data"]
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)
 
     def translate_deeplx_internal(self, translateText):
         # Preparing the request data for the DeepL API

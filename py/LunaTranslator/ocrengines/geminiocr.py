@@ -3,6 +3,7 @@ import requests
 from ocrengines.baseocrclass import baseocr
 from myutils.utils import createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
+from myutils.commonbase import maybejson
 
 
 def list_models(typename, regist):
@@ -14,7 +15,7 @@ def list_models(typename, regist):
     try:
         models = resp.json()["models"]
     except:
-        raise Exception(resp.maybejson)
+        raise Exception(maybejson(resp))
     mm = []
     for m in models:
         name: str = m["name"]
@@ -72,6 +73,6 @@ class OCR(baseocr):
             if response.status_code == 200:
                 return response.json()["candidates"][0]["content"]["parts"][0]["text"]
             else:
-                raise Exception(response.maybejson)
+                raise Exception(response)
         except Exception as e:
-            raise Exception(response.maybejson) from e
+            raise Exception(response) from e

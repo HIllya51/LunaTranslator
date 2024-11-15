@@ -144,7 +144,7 @@ class OCR(baseocr):
             ]
             return {"box": boxs, "text": texts, "isocrtranslate": True}
         except:
-            raise Exception(r.maybejson)
+            raise Exception(r)
 
     def langmap(self):
         # https://cloud.tencent.com/document/product/866/33526
@@ -206,7 +206,7 @@ class OCR(baseocr):
             texts = [_["DetectedText"] for _ in r.json()["Response"]["TextDetections"]]
             return {"box": boxs, "text": texts}
         except:
-            raise Exception(r.maybejson)
+            raise Exception(r)
 
     def ocr(self, imagebinary):
         interfacetype = self.config["interface"]

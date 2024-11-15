@@ -75,4 +75,4 @@ class TS(basetrans):
         try:
             return ret.json()["Response"]["TargetText"]
         except:
-            raise Exception(ret.maybejson)
+            raise Exception(ret)

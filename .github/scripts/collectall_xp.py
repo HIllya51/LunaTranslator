@@ -14,8 +14,6 @@ def copycheck(src, tgt):
     print(src, tgt, os.path.exists(src))
     if not os.path.exists(src):
         return
-    if src.lower().endswith("_ssl.pyd"):
-        return
     if not os.path.exists(tgt):
         os.makedirs(tgt, exist_ok=True)
     if os.path.isdir(src):

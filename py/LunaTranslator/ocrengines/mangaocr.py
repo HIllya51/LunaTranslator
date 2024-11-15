@@ -15,9 +15,9 @@ class OCR(baseocr):
         absolute_img_path = os.path.abspath(fname)
         params = {"image_path": absolute_img_path}
 
-        response = requests.get("http://127.0.0.1:{}/image".format(self.port), params=params)
+        response = self.proxysession.get("http://127.0.0.1:{}/image".format(self.port), params=params)
         os.remove(absolute_img_path)
         try:
             return response.json()["text"]
         except Exception as e:
-            raise Exception(response.maybejson) from e
+            raise Exception(response) from e

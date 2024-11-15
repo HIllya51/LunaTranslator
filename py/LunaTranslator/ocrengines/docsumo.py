@@ -34,4 +34,4 @@ class OCR(baseocr):
         try:
             return response.json()["data"]
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)

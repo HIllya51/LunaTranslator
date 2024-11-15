@@ -116,7 +116,7 @@ class TS(basetrans):
             try:
                 message = response.json()["text"]
             except:
-                raise Exception(response.maybejson)
+                raise Exception(response)
             yield message
         self.context.append({"role": "USER", "message": query})
         self.context.append({"role": "CHATBOT", "message": message})

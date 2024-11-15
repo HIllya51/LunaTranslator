@@ -38,4 +38,4 @@ class TS(basetrans):
         try:
             return response.json()["tgt_text"]
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)

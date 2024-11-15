@@ -159,7 +159,7 @@ class TS(basetrans):
         try:
             yield output.json()
         except:
-            raise Exception(output.maybejson)
+            raise Exception(output)
 
     def send_request_stream(self, messages, is_test=False, **kwargs):
         extra_query = {
@@ -195,7 +195,7 @@ class TS(basetrans):
         if (not output.headers["Content-Type"].startswith("text/event-stream")) and (
             output.status_code != 200
         ):
-            raise Exception(output.maybejson)
+            raise Exception(output)
         for chunk in output.iter_lines():
             response_data: str = chunk.decode("utf-8").strip()
             if not response_data.startswith("data: "):

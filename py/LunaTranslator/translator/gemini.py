@@ -59,7 +59,11 @@ class TS(basetrans):
             message.append({"role": "model", "parts": [{"text": prefill}]})
         contents = dict(contents=message)
         usingstream = self.config["usingstream"]
-        payload = {**contents, **safety, **sys_message, **gen_config}
+        payload = {}
+        payload.update(contents)
+        payload.update(safety)
+        payload.update(sys_message)
+        payload.update(gen_config)
         res = self.proxysession.post(
             urlpathjoin(
                 self.config["BASE_URL"].strip(),
@@ -85,7 +89,7 @@ class TS(basetrans):
             try:
                 line = res.json()["candidates"][0]["content"]["parts"][0]["text"]
             except:
-                raise Exception(res.maybejson)
+                raise Exception(res)
             yield line
         self.context.append({"role": "user", "parts": [{"text": query}]})
         self.context.append({"role": "model", "parts": [{"text": line}]})

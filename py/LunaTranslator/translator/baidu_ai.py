@@ -60,7 +60,7 @@ class TS(basetrans):
         try:
             return response.json()["lan"]
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)
 
     def translate(self, query):
 

@@ -1,6 +1,7 @@
 import re
 import requests, time, urllib
 from translator.basetranslator import basetrans
+from myutils.commonbase import maybejson
 
 
 class Tse:
@@ -150,7 +151,7 @@ class Bing(Tse):
             "to": to_language,
             "tryFetchingGenderDebiasedTranslations": "true",
         }
-        form_data = {**form_data, **self.tk}
+        form_data.update(self.tk)
         api_url_param = "?isVertical=1&&IG={}&IID={}".format(
             self.ig_iid["ig"], self.ig_iid["iid"]
         )
@@ -169,7 +170,7 @@ class Bing(Tse):
         try:
             return data[0] if is_detail_result else data[0]["translations"][0]["text"]
         except:
-            raise Exception(r.maybejson)
+            raise Exception(maybejson(r))
 
 
 class TS(basetrans):

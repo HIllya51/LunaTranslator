@@ -10,14 +10,29 @@ class ArgsEmptyExc(Exception):
         super().__init__(" , ".join(valuelist) + getlanguagespace() + _TR("不能为空"))
 
 
+class maybejson:
+    def __init__(self, _) -> None:
+        self._ = _
+
+    def __str__(self):
+        try:
+            return str(self._.json())
+        except:
+            return self._.text
+
+    def __getattr__(self, t):
+        return getattr(self._, t)
+
+
 class proxysession(requests.Session):
     def __init__(self, _key1, _key2):
         super().__init__()
         self.proxyconf = _key1, _key2
 
-    def request(self, *args, **kwargs):
+    def request(self, *args, **kwargs) -> maybejson:
         kwargs["proxies"] = getproxy(self.proxyconf)
-        return super().request(*args, **kwargs)
+
+        return maybejson(super().request(*args, **kwargs))
 
 
 class commonbase:

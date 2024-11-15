@@ -314,7 +314,7 @@ class TS(basetrans):
             try:
                 project_id = response.json()["projects"][0]["id"]
             except:
-                raise Exception(response.maybejson)
+                raise Exception(response)
             self.cacheproject[(end, ak, sk)] = project_id
         project_id = self.cacheproject.get((end, ak, sk))
         url = "https://{}/v1/{}/machine-translation/text-translation".format(

@@ -2,6 +2,7 @@ import requests
 import re
 import urllib
 import time
+from myutils.commonbase import maybejson
 
 
 class Tse:
@@ -124,7 +125,7 @@ class Itranslate(Tse):
         try:
             return r.json()["target"]["text"]
         except:
-            raise Exception(r.maybejson)
+            raise Exception(maybejson(r))
 
 
 from traceback import print_exc

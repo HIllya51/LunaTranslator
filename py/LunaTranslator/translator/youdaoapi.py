@@ -45,4 +45,4 @@ class TS(basetrans):
         try:
             return r.json()["translation"][0]
         except:
-            raise Exception(r.maybejson)
+            raise Exception(r)

@@ -128,7 +128,7 @@ class OCR(baseocr):
             renew_text = response.json()["payload"]["ocr_output_text"]["text"]
             finalResult = json.loads(str(base64.b64decode(renew_text), "utf-8"))
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)
         try:
             res = finalResult["pages"][0]
             if "lines" not in res:

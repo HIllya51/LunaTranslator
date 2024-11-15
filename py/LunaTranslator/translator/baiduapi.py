@@ -69,7 +69,7 @@ class TS(basetrans):
         try:
             return "\n".join([_["dst"] for _ in r.json()["result"]["trans_result"]])
         except:
-            raise Exception(r.maybejson)
+            raise Exception(r)
 
     def translate_fy(self, q):
         self.checkempty(["APP ID", "密钥"])
@@ -94,4 +94,4 @@ class TS(basetrans):
             return "\n".join([_["dst"] for _ in res.json()["trans_result"]])
 
         except:
-            raise Exception(res.maybejson)
+            raise Exception(res)

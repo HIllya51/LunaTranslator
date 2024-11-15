@@ -28,4 +28,4 @@ class TS(basetrans):
         try:
             return response.json()["target"]
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)

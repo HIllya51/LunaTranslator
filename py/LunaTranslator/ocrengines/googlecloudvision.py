@@ -42,4 +42,4 @@ class OCR(baseocr):
                 )
             return {"box": boxs, "text": texts}
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)

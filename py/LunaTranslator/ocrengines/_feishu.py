@@ -20,7 +20,7 @@ class OCR(baseocr):
             try:
                 token = res.json()["tenant_access_token"]
             except:
-                raise Exception(res.maybejson)
+                raise Exception(res)
             self.tokens[(app_id, app_secret)] = token
         return self.tokens[(app_id, app_secret)]
 
@@ -40,4 +40,4 @@ class OCR(baseocr):
         try:
             return res.json()["data"]["text_list"]
         except:
-            raise Exception(res.maybejson)
+            raise Exception(res)

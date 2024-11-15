@@ -3,6 +3,7 @@ import json, requests, time, hmac, hashlib
 from datetime import datetime, timezone
 from myutils.utils import createurl, createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
+from myutils.commonbase import maybejson
 
 
 def list_models(typename, regist):
@@ -19,7 +20,7 @@ def list_models(typename, regist):
     try:
         return sorted([_["id"] for _ in resp.json()["data"]])
     except:
-        raise Exception(resp.maybejson)
+        raise Exception(maybejson(resp))
 
 
 class qianfanIAM:
@@ -116,7 +117,7 @@ class gptcommon(basetrans):
             ) and (response.status_code != 200):
                 # application/json
                 # text/html
-                raise Exception(response.maybejson)
+                raise Exception(response)
             for chunk in response.iter_lines():
                 response_data: str = chunk.decode("utf-8").strip()
                 if not response_data.startswith("data: "):
@@ -148,7 +149,7 @@ class gptcommon(basetrans):
                     .strip()
                 )
             except:
-                raise Exception(response.maybejson)
+                raise Exception(response)
             yield message
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": message})

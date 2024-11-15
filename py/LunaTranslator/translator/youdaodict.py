@@ -85,7 +85,7 @@ class TS(basetrans):
                 ]
             )
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)
 
     def translate(self, content):
         return self.translate10_9_8(content)

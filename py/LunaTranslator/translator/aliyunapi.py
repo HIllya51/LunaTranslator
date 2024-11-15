@@ -58,4 +58,4 @@ class TS(basetrans):
             response = request.json()
             return response["Data"]["Translated"]
         except:
-            raise Exception(request.maybejson)
+            raise Exception(request)

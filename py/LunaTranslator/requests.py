@@ -111,13 +111,6 @@ class ResponseBase:
         charset = m.group(1) if m else "utf-8"
         return charset
 
-    @property
-    def maybejson(self):
-        try:
-            return self.json()
-        except:
-            return self.text
-
     def json(self):
         return json.loads(self.text)
 

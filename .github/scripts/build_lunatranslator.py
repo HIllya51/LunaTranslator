@@ -281,8 +281,8 @@ if __name__ == "__main__":
         downloadBrotli()
         downloadLocaleEmulator()
         downloadNtlea()
-        downloadCurl()
         if arch != "xp":
+            downloadCurl()
             downloadOCRModel()
         downloadcommon()
         downloadbass()

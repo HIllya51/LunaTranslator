@@ -43,7 +43,7 @@ class OCR(baseocr):
             ]
             return {"box": box, "text": text, "isocrtranslate": True}
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)
 
     def ocr_ts2(self, imagebinary):
         self.checkempty(["app_id", "app_key"])
@@ -103,7 +103,7 @@ class OCR(baseocr):
             ]
             return {"box": box, "text": text, "isocrtranslate": True}
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)
 
     @property
     def srclangx(self):
@@ -160,7 +160,7 @@ class OCR(baseocr):
         try:
             return resp.json()["access_token"]
         except:
-            raise Exception(resp.maybejson)
+            raise Exception(resp)
 
     def getaccess(self):
         self.checkempty(["API Key", "Secret Key"])
@@ -237,4 +237,4 @@ class OCR(baseocr):
                 ]
                 return {"box": boxs, "text": texts}
         except:
-            raise Exception(response.maybejson)
+            raise Exception(response)

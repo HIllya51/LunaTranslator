@@ -2,6 +2,7 @@ import requests
 import re
 from translator.basetranslator import basetrans
 import time, urllib
+from myutils.commonbase import maybejson
 
 
 class Tse:
@@ -122,7 +123,7 @@ class BaiduV1(Tse):
         try:
             return "\n".join([item["dst"] for item in r.json()["data"]])
         except:
-            raise Exception(r.maybejson)
+            raise Exception(maybejson(r))
 
 
 class TS(basetrans):
