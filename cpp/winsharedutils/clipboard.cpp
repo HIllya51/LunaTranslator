@@ -106,6 +106,7 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
             callbackx(hWnd);
         }
 #else
+        // 根据文档，这样做是正确的，且在win11下管用。但到xp上就读不到了。。
         static HWND nextviewer;
         switch (message)
         {
@@ -157,7 +158,7 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
         DispatchMessage(&msg);
     }
 }
-
+#ifndef WINXP
 DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
 {
     HANDLE hsema = CreateSemaphoreW(0, 0, 10, 0);
@@ -167,23 +168,45 @@ DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
 
     WaitForSingleObject(hsema, INFINITE);
     CloseHandle(hsema);
-#ifndef WINXP
     if (AddClipboardFormatListener(hwnd))
         return hwnd;
     else
         return NULL;
-#else
-    return hwnd;
-#endif
 }
+#else
+static int running = false;
+DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
+{
+    running = true;
+    std::thread([=]()
+                {
+        std::wstring last;
+        while(running){
+            Sleep(100);
+            auto data = clipboard_get_internal();
+            if(data){
+                if(last==data.value())continue;
+                last=data.value();
+                auto ohwnd = GetClipboardOwner();
+                DWORD pid;
+                GetWindowThreadProcessId(ohwnd, &pid);
+                callback(data.value().c_str(), pid == GetCurrentProcessId());
+            }
+        } })
+        .detach();
+    return NULL;
+}
+#endif
 DECLARE_API void clipboard_callback_stop(HWND hwnd)
 {
+#ifndef WINXP
     if (!hwnd)
         return;
-#ifndef WINXP
     RemoveClipboardFormatListener(hwnd);
-#endif
     DestroyWindow(hwnd);
+#else
+    running = false;
+#endif
 }
 
 DECLARE_API bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
