@@ -278,7 +278,6 @@ if __name__ == "__main__":
         downloadNtlea()
         downloadmecab()
         downloadbass()
-        if arch != "xp":
         os.chdir(rootDir)
         if arch == "xp":
             shutil.copytree(
@@ -306,6 +305,8 @@ if __name__ == "__main__":
         downloadOCRModel()
         downloadmapie()
         downloadlr()
+        
+        os.chdir(rootDir)
         shutil.copytree(
             f"{rootDir}/../build/hook_64",
             f"{rootDir}/files/plugins/LunaHook",
