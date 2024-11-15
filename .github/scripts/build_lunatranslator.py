@@ -36,7 +36,7 @@ mylinks = {
 
 
 pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "Magpie", "NTLEAS"]
-pluginDirs_1 = ["DLL32", "NTLEAS"]
+pluginDirs_1 = ["DLL32", "DLL64", "NTLEAS"]
 
 vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
 
