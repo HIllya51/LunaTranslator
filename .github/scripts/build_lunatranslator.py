@@ -276,15 +276,9 @@ if __name__ == "__main__":
     elif sys.argv[1] == "merge":
         createPluginDirs()
         downloadNtlea()
-        if arch != "xp":
-            downloadLocaleEmulator()
-            downloadBrotli()
-            downloadCurl()
-            downloadOCRModel()
-            downloadmapie()
-            downloadlr()
         downloadmecab()
         downloadbass()
+        if arch != "xp":
         os.chdir(rootDir)
         if arch == "xp":
             shutil.copytree(
@@ -306,6 +300,12 @@ if __name__ == "__main__":
             os.chdir(rootDir)
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
             exit()
+        downloadLocaleEmulator()
+        downloadBrotli()
+        downloadCurl()
+        downloadOCRModel()
+        downloadmapie()
+        downloadlr()
         shutil.copytree(
             f"{rootDir}/../build/hook_64",
             f"{rootDir}/files/plugins/LunaHook",
