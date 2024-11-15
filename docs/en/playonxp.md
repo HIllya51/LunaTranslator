@@ -1,20 +1,16 @@
-## Playing Ancient Games on an XP Virtual Machine and Extracting Text for Translation
+## Playing Old Games on an XP Virtual Machine and Extracting Text for Translation
 
-**1. Extracting Text Using LunaHook Windows XP Special Edition in the VM**
+**1. Extracting and Translating Text Using Windows XP Adaptation in a Virtual Machine**
 
-Download `[LunaHook](https://github.com/HIllya51/LunaTranslator/releases/tag/LunaHook)`'s `Release_English_winxp.zip`, copy it into the VM, and run it. Select the game's process, choose the game text, and then in the settings, activate `Copy to Clipboard`.
+Download the [Windows XP Adaptation version](https://lunatranslator.org/Resource/DownloadLuna/xp), copy it to the virtual machine, and run it. Select the game process, choose the game text, and you can start translating.
 
-![img](https://image.lunatranslator.org/zh/playonxp/image.png)
 
-**2. Translating on the Host Machine**
+**2. Performing Translation on the Host Machine**
 
-Set up shared clipboard functionality for the VM to transmit clipboard content from the VM to the host machine.
-![img](https://image.lunatranslator.org/zh/playonxp/copy.png)
+Viewing translations through the virtual machine might be inconvenient. Disable translation within the virtual machine, and enable **Output to Clipboard** in the **Text Output** inside the virtual machine. Then, transfer the clipboard content from the virtual machine to the host machine.
 
-Run LunaTranslator on the host machine and switch the text input source from `HOOK` to `Clipboard`.
-![img](https://image.lunatranslator.org/zh/playonxp/host.png)
+![Copy to Clipboard](https://image.lunatranslator.org/zh/playonxp/copy.png)
 
----
+Run LunaTranslator on the host machine, switch the text input method from **HOOK** to **Clipboard**.
 
-The final effect is as follows:
-![img](https://image.lunatranslator.org/zh/playonxp/effect.png)
+![Switch to Clipboard Input](https://image.lunatranslator.org/zh/playonxp/host.png)
