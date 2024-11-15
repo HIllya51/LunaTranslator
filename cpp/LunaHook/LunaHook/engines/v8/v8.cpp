@@ -366,6 +366,7 @@ bool tryhookv8()
 		if (funcsucc)
 		{
 			useclipboard = !std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.clipboard"));
+#ifndef WINXP
 			usehttp = !std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.http"));
 			if (usehttp)
 			{
@@ -374,6 +375,9 @@ bool tryhookv8()
 				hook_LUNA_CONTENTBYPASS();
 				dont_detach = true;
 			}
+#else
+			usehttp = false;
+#endif
 			if (useclipboard)
 			{
 				hookClipboard();

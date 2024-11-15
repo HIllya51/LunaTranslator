@@ -51,6 +51,7 @@ endif()
 
 option(WINXP "WINXP" OFF)
 if(WINXP)
+    add_definitions(-DWINXP=${WINXP})
     set(YY_Thunks_for_WinXP ${CMAKE_CURRENT_LIST_DIR}/YY-Thunks/objs/X86/YY_Thunks_for_WinXP.obj)
 else()
     set(YY_Thunks_for_WinXP)
