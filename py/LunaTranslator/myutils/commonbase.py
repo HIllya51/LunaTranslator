@@ -23,6 +23,10 @@ class maybejson:
     def __getattr__(self, t):
         return getattr(self._, t)
 
+    @property
+    def maybejson(self):
+        return str(self)
+
 
 class proxysession(requests.Session):
     def __init__(self, _key1, _key2):
