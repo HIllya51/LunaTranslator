@@ -9,8 +9,7 @@ Download the [Windows XP Adaptation version](https://lunatranslator.org/Resource
 
 Viewing translations through the virtual machine might be inconvenient. Disable translation within the virtual machine, and enable **Output to Clipboard** in the **Text Output** inside the virtual machine. Then, transfer the clipboard content from the virtual machine to the host machine.
 
-![Copy to Clipboard](https://image.lunatranslator.org/zh/playonxp/copy.png)
 
 Run LunaTranslator on the host machine, switch the text input method from **HOOK** to **Clipboard**.
 
-![Switch to Clipboard Input](https://image.lunatranslator.org/zh/playonxp/host.png)
+![Copy to Clipboard](https://image.lunatranslator.org/zh/playonxp/copy.png)

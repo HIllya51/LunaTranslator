@@ -9,8 +9,8 @@
 
 隔着虚拟机看翻译会不太舒服。关闭虚拟机内的翻译，并在虚拟机内的**文本输出**中开启**输出到剪贴板**，并将虚拟机内的剪贴板内容传到宿主机内。
 
-![img](https://image.lunatranslator.org/zh/playonxp/copy.png)
 
 在宿主机中运行LunaTranslator，将文本输入从**HOOK**切换到**剪贴板**
 
-![img](https://image.lunatranslator.org/zh/playonxp/host.png)
+
+![img](https://image.lunatranslator.org/zh/playonxp/copy.png)
