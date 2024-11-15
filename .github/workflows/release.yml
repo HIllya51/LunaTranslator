@@ -26,6 +26,7 @@ jobs:
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
+            build/LunaTranslator_x86_winxp/LunaTranslator_x86_winxp.zip
             build/LunaTranslator_x86/LunaTranslator_x86.zip
             build/LunaTranslator/LunaTranslator.zip
         env:
