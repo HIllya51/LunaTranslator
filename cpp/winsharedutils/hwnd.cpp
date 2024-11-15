@@ -24,7 +24,11 @@ DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 DECLARE_API bool pid_running(DWORD pid)
 {
     DWORD code;
+#ifndef WINXP
     GetExitCodeProcess(AutoHandle(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)), &code);
+#else
+    GetExitCodeProcess(AutoHandle(OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid)), &code);
+#endif
     // 句柄必須具有 PROCESS_QUERY_INFORMATION 或 PROCESS_QUERY_LIMITED_INFORMATION 訪問許可權。 如需詳細資訊，請參閱 處理安全性和訪問許可權。
     // Windows Server 2003 和 Windows XP： 句柄必須具有 PROCESS_QUERY_INFORMATION 訪問許可權。
     return code == STILL_ACTIVE;
