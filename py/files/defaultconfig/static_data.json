@@ -309,17 +309,30 @@
             "Microsoft Sans Serif",
             "Arial"
         ],
-        "zh": [
-            "Microsoft YaHei UI",
-            "微软雅黑",
-            "Microsoft YaHei",
-            "黑体",
-            "SimHei",
-            "新宋体",
-            "NSimSun",
-            "宋体",
-            "SimSun"
-        ],
+        "zh": {
+            "xp": [
+                "Microsoft YaHei UI",
+                "微软雅黑",
+                "Microsoft YaHei",
+                "新宋体",
+                "NSimSun",
+                "宋体",
+                "SimSun",
+                "黑体",
+                "SimHei"
+            ],
+            "normal": [
+                "Microsoft YaHei UI",
+                "微软雅黑",
+                "Microsoft YaHei",
+                "黑体",
+                "SimHei",
+                "新宋体",
+                "NSimSun",
+                "宋体",
+                "SimSun"
+            ]
+        },
         "ja": [
             "Yu Gothic UI",
             "游ゴシック",

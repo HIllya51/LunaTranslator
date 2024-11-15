@@ -1,5 +1,5 @@
 import json
-import os, time, uuid, shutil
+import os, time, uuid, shutil, sys
 from traceback import print_exc
 from qtsymbols import *
 
@@ -743,7 +743,18 @@ def get_font_default(lang: str, issetting: bool) -> str:
     l = lang if lang in static_data[t].keys() else "default"
 
     font_default = ""
-    for font in static_data[t][l]:
+
+    if isinstance(static_data[t][l], list):
+        fontlist = static_data[t][l]
+    elif isinstance(static_data[t][l], dict):
+        if tuple(sys.version_info)[:2] == (3, 4):
+            target = "xp"
+        else:
+            target = "normal"
+        fontlist = static_data[t][l].get(target, [])
+    else:
+        fontlist = []
+    for font in fontlist:
         if is_font_installed(font):
             font_default = font
             break
