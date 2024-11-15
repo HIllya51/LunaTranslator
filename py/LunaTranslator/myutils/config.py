@@ -1,5 +1,5 @@
 import json
-import os, time, uuid, shutil, sys
+import os, time, uuid, shutil, sys, platform
 from traceback import print_exc
 from qtsymbols import *
 
@@ -732,6 +732,14 @@ def is_font_installed(font: str) -> bool:
 
 
 # font_default_used = {}
+def get_platform():
+    if tuple(sys.version_info)[:2] == (3, 4):
+        bit = "xp"
+    elif platform.architecture()[0] == "64bit":
+        bit = "64"
+    elif platform.architecture()[0] == "32bit":
+        bit = "32"
+    return bit
 
 
 def get_font_default(lang: str, issetting: bool) -> str:
@@ -747,7 +755,7 @@ def get_font_default(lang: str, issetting: bool) -> str:
     if isinstance(static_data[t][l], list):
         fontlist = static_data[t][l]
     elif isinstance(static_data[t][l], dict):
-        if tuple(sys.version_info)[:2] == (3, 4):
+        if get_platform() == "xp":
             target = "xp"
         else:
             target = "normal"

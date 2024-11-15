@@ -1,6 +1,6 @@
 import windows, os, winsharedutils, re, functools
 from qtsymbols import *
-from myutils.config import savehook_new_data, get_launchpath, globalconfig
+from myutils.config import savehook_new_data, get_launchpath, globalconfig, get_platform
 from gui.usefulwidget import (
     getlineedit,
     getsimplecombobox,
@@ -500,14 +500,22 @@ class Direct(Launcher):
         windows.ShellExecute(None, "open", gameexe, "", dirpath, windows.SW_SHOW)
 
 
-x86tools = [
-    le_internal,
-    lr_internal,
-    NTLEAS32,
-    CommandLine,
-    Direct,
-]
-x64tools = [lr_internal, NTLEAS64, CommandLine, Direct]
+if get_platform() == "xp":
+    x86tools = [
+        NTLEAS32,
+        CommandLine,
+        Direct,
+    ]
+    x64tools = [NTLEAS64, CommandLine, Direct]
+else:
+    x86tools = [
+        le_internal,
+        lr_internal,
+        NTLEAS32,
+        CommandLine,
+        Direct,
+    ]
+    x64tools = [lr_internal, NTLEAS64, CommandLine, Direct]
 
 
 def getgamecamptools(gameexe):

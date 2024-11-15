@@ -116,11 +116,14 @@ def move_directory_contents(source_dir, destination_dir):
                 )
 
 
-def downloadcommon():
+def downloadmecab():
     os.chdir(rootDir + "\\temp")
-    downloadlr()
     subprocess.run(f"curl -LO {mylinks['mecab.zip']}")
     subprocess.run(f"7z x mecab.zip -oALL")
+
+
+def downloadmapie():
+    os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {mylinks['magpie.zip']}")
     subprocess.run(f"7z x magpie.zip -oALL")
 
@@ -214,9 +217,9 @@ def buildPlugins(arch):
         )
         # subprocess.run(f"python copytarget.py 0")
     elif arch == "xp":
-        #url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.0.7/YY-Thunks-1.0.7-Binary.zip"
-        #os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
-        #os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../libs/YY-Thunks")
+        # url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.0.7/YY-Thunks-1.0.7-Binary.zip"
+        # os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
+        # os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../libs/YY-Thunks")
         with open("do.bat", "w") as ff:
             ff.write(
                 rf"""
@@ -226,11 +229,6 @@ cmake --build ../build/x86_xp --config Release --target ALL_BUILD -j 14
 """
             )
         os.system(f"cmd /c do.bat")
-
-
-def downloadsomething():
-    pass
-    # shutil.rmtree(rootDir + "\\files\\LunaTranslator_qss\\.git")
 
 
 def downloadbass():
@@ -277,14 +275,15 @@ if __name__ == "__main__":
         )
     elif sys.argv[1] == "merge":
         createPluginDirs()
-        downloadsomething()
-        downloadBrotli()
-        downloadLocaleEmulator()
         downloadNtlea()
         if arch != "xp":
+            downloadLocaleEmulator()
+            downloadBrotli()
             downloadCurl()
             downloadOCRModel()
-        downloadcommon()
+            downloadmapie()
+            downloadlr()
+        downloadmecab()
         downloadbass()
         os.chdir(rootDir)
         if arch == "xp":

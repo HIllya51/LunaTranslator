@@ -1,7 +1,7 @@
 from qtsymbols import *
 import platform, functools
 import winsharedutils, queue, hashlib
-from myutils.config import globalconfig, static_data, _TR
+from myutils.config import globalconfig, static_data, _TR, get_platform
 from myutils.wrapper import threader, tryprint
 from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
@@ -55,12 +55,7 @@ def tryqueryfromgithub():
 
 def trygetupdate():
 
-    if tuple(sys.version_info)[:2] == (3, 4):
-        bit = "xp"
-    elif platform.architecture()[0] == "64bit":
-        bit = "64"
-    elif platform.architecture()[0] == "32bit":
-        bit = "32"
+    bit = get_platform()
     try:
         version, links = tryqueryfromhost()
     except:

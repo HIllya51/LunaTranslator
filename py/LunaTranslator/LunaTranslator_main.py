@@ -129,19 +129,16 @@ def checklang():
 
 
 def checkintegrity():
-    import platform
-    from myutils.config import _TR, static_data
+    from myutils.config import _TR, static_data, get_platform
     from qtsymbols import QMessageBox
 
     js = static_data["checkintegrity"]
     flist = js["shared"]
-
-    if tuple(sys.version_info)[:2] == (3, 4):
+    plat = get_platform()
+    if plat == "xp":
         flist = js["xp"]
-    elif platform.architecture()[0] == "64bit":
-        flist += js["64"]
-    elif platform.architecture()[0] == "32bit":
-        flist += js["32"]
+    else:
+        flist += js[plat]
     collect = []
     for f in flist:
         if os.path.exists(f) == False:
