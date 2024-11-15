@@ -36,6 +36,7 @@ mylinks = {
 
 
 pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "Magpie", "NTLEAS"]
+pluginDirs_1 = ["DLL32", "NTLEAS"]
 
 vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
 
@@ -52,12 +53,12 @@ curlFile64 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 
-def createPluginDirs():
+def createPluginDirs(which):
     os.chdir(rootDir + "\\files")
     if not os.path.exists("plugins"):
         os.mkdir("plugins")
     os.chdir("plugins")
-    for pluginDir in pluginDirs:
+    for pluginDir in [pluginDirs_1, pluginDirs][which]:
         if not os.path.exists(pluginDir):
             os.mkdir(pluginDir)
 
@@ -126,8 +127,6 @@ def downloadmapie():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {mylinks['magpie.zip']}")
     subprocess.run(f"7z x magpie.zip -oALL")
-
-    move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
 
 
 def downloadLocaleEmulator():
@@ -274,7 +273,7 @@ if __name__ == "__main__":
             f"{py37Path} {os.path.join(rootthisfiledir,'collectpyruntime.py')}"
         )
     elif sys.argv[1] == "merge":
-        createPluginDirs()
+        createPluginDirs(0 if arch == "xp" else 1)
         downloadNtlea()
         downloadmecab()
         downloadbass()
@@ -305,7 +304,8 @@ if __name__ == "__main__":
         downloadOCRModel()
         downloadmapie()
         downloadlr()
-        
+        move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
+
         os.chdir(rootDir)
         shutil.copytree(
             f"{rootDir}/../build/hook_64",
