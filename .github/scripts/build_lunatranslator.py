@@ -121,12 +121,13 @@ def downloadmecab():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {mylinks['mecab.zip']}")
     subprocess.run(f"7z x mecab.zip -oALL")
-
+    move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
 
 def downloadmapie():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {mylinks['magpie.zip']}")
     subprocess.run(f"7z x magpie.zip -oALL")
+    move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
 
 
 def downloadLocaleEmulator():
@@ -279,7 +280,6 @@ if __name__ == "__main__":
         downloadbass()
         os.chdir(rootDir)
         if arch == "xp":
-            move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
             shutil.copytree(
                 f"{rootDir}/../build/cpp_xp",
                 f"{rootDir}/../cpp/builds",
@@ -305,7 +305,6 @@ if __name__ == "__main__":
         downloadOCRModel()
         downloadmapie()
         downloadlr()
-        move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
 
         os.chdir(rootDir)
         shutil.copytree(
