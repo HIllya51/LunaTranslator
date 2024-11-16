@@ -86,8 +86,8 @@ bool checkengine()
         bool matched = safematch(m);
         bool attached = matched && safeattach(m);
 
-        // ConsoleOutput("Progress %d/%d, checked engine %s, %s",current,total,m->getenginename(),infomations[matched+attached]);
-        // ConsoleOutput("Progress %d/%d, %s",current,total,infomations[matched+attached]);
+        //ConsoleOutput("Progress %d/%d, checked engine %s, %s",current,engines.size(),m->getenginename(),infomations[matched+attached]);
+        //ConsoleOutput("Progress %d/%d, %s",current,engines.size(),infomations[matched+attached]);
         if (matched == false)
             continue;
         ConsoleOutput(MatchedEngine, m->getenginename());

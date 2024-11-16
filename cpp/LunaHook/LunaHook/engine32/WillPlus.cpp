@@ -1666,40 +1666,8 @@ namespace WillPlusEngine
 namespace
 {
 
-  static bool InsertWillPlus4()
+  bool InsertWillPlus5()
   {
-    // by Blu3train
-    /*
-     * Sample games:
-     * https://vndb.org/r71235
-     */
-    const BYTE bytes[] = {
-        0x33, 0xC9,                 // xor ecx,ecx  <-- hook
-        0x8B, 0xC7,                 // mov eax,edi
-        0xC7, 0x84, 0x24, XX4, XX4, // mov [esp+000001E0],00000007
-        0x89, 0x9C, 0x24, XX4       // mov [esp+000001DC],ebx
-    };
-    ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-    if (!addr)
-    {
-      ConsoleOutput("WillPlus4: pattern not found");
-      return false;
-    }
-
-    HookParam hp = {};
-    hp.address = addr;
-    hp.offset = get_reg(regs::edi);
-    hp.type = CODEC_UTF16 | USING_STRING;
-    hp.filter_fun = WillPlus_extra_filter;
-    ConsoleOutput("INSERT WillPlus4");
-    NewHook(hp, "WillPlus4");
-    return true;
-  }
-
-  static bool InsertWillPlus5()
-  {
-    // by Blu3train
     /*
      * Sample games:
      * https://vndb.org/v29881
@@ -1728,19 +1696,78 @@ namespace
     hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | USING_SPLIT;
     hp.filter_fun = WillPlus_extra_filter;
     ConsoleOutput("INSERT WillPlus5");
-    NewHook(hp, "WillPlus5");
-    return true;
+    return NewHook(hp, "WillPlus5");
   }
 
-  bool _xxx()
+}
+namespace
+{
+  bool h7()
   {
-    bool ok = false;
-    ok = InsertWillPlus4() || ok;
-    ok = InsertWillPlus5() || ok;
-    return ok;
+    /*
+    v20 = *(unsigned __int16 *)v19;
+    sub_43B730((int)v37, a4, v20, &v33);
+    if ( v20 - 58942 > 0x119 )
+    {
+      if ( v33.gmCellIncX )
+      {
+        v24 = v39;
+        *a8 = v33.gmCellIncX;
+        a8[1] = v24;
+        goto LABEL_25;
+      }
+      gmCellIncX = v39;
+      gmCellIncY = v33.gmCellIncY;
+    }
+    else
+    {
+      sub_43B730((int)v37, a4, 0x8AADu, &v33);
+      */
+    const BYTE bytes[] = {
+        0x8d, XX, 0xc2, 0x19, 0xff, 0xff, // lea ecx, [edi-0xe63e]
+        0x81, XX, 0x19, 0x01, 0x00, 0x00, // cmp ecx,0x119
+        0x77, XX,                         // ja xx
+        XX4,                              // lea edx,[esp+34]
+        XX,                               // push edx
+        XX, 0xad, 0x8a, 0x00, 0x00        // mov edi,0x8aad
+    };
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    int offset = 0;
+    switch ((*(BYTE *)(addr + 1)) & 0x7)
+    {
+    case 0x7:
+      offset = get_reg(regs::edi);
+      break;
+    case 0x6:
+      offset = get_reg(regs::esi);
+      break;
+    case 0x5:
+      offset = get_reg(regs::ebp);
+      break;
+    case 0x3:
+      offset = get_reg(regs::ebx);
+      break;
+    case 0x2:
+      offset = get_reg(regs::edx);
+      break;
+    case 0x1:
+      offset = get_reg(regs::ecx);
+      break;
+    case 0x0:
+      offset = get_reg(regs::eax);
+      break;
+    default:
+      return false;
+    }
+    HookParam hp = {};
+    hp.address = addr;
+    hp.offset = offset;
+    hp.type = CODEC_UTF16 | USING_CHAR;
+    return NewHook(hp, "WillPlus7");
   }
 }
-
 bool WillPlus::attach_function()
 {
   bool succ = WillPlusEngine::attach();
@@ -1749,10 +1776,8 @@ bool WillPlus::attach_function()
   succ |= InsertWillPlus5Hook();
   succ |= insertwillplus6();
   succ |= willX();
-  succ |= _xxx();
-  PcHooks::hookGDIFunctions(GetGlyphOutlineA);
-  PcHooks::hookGDIFunctions(GetGlyphOutlineW);
-  return succ;
+  succ |= InsertWillPlus5();
+  return succ || h7();
 }
 
 bool Willold::attach_function()

@@ -12,7 +12,8 @@
 // #define LPASTE(s) L##s
 // #define L(s) LPASTE(s)
 
-Synchronized<std::set<void *>> hookonce;
+std::set<void *> hookonce;
+std::mutex hookoncelock;
 #define NEW_HOOK(ptr, _dll, _fun, _data, _data_ind, _split_off, _split_ind, _type, _len_off)                       \
   {                                                                                                                \
     HookParam hp;                                                                                                  \
@@ -25,15 +26,19 @@ Synchronized<std::set<void *>> hookonce;
     hp.type = _type | MODULE_OFFSET | FUNCTION_OFFSET;                                                             \
     hp.length_offset = _len_off;                                                                                   \
     auto currptr = GetModuleHandle(hp.module) ? GetProcAddress(GetModuleHandle(hp.module), hp.function) : nullptr; \
-    bool dohook = false;                                                                                           \
-    if (ptr)                                                                                                       \
-      dohook = currptr == ptr;                                                                                     \
-    else if (currptr)                                                                                              \
-      dohook = hookonce->find(currptr) == hookonce->end();                                                         \
-    if (dohook)                                                                                                    \
+    if (currptr)                                                                                                   \
     {                                                                                                              \
-      NewHook(hp, #_fun);                                                                                          \
-      hookonce->insert(currptr);                                                                                   \
+      bool dohook = false;                                                                                         \
+      std::lock_guard _(hookoncelock);                                                                             \
+      if (ptr)                                                                                                     \
+        dohook = currptr == ptr;                                                                                   \
+      else                                                                                                         \
+        dohook = hookonce.find(currptr) == hookonce.end();                                                         \
+      if (dohook)                                                                                                  \
+      {                                                                                                            \
+        NewHook(hp, #_fun);                                                                                        \
+        hookonce.insert(currptr);                                                                                  \
+      }                                                                                                            \
     }                                                                                                              \
   }
 
@@ -51,11 +56,15 @@ Synchronized<std::set<void *>> hookonce;
     hp.type = _type | MODULE_OFFSET | FUNCTION_OFFSET;                                            \
     hp.length_offset = _len_off;                                                                  \
     auto currptr = GetProcAddress(_module, hp.function);                                          \
-    auto dohook = currptr ? hookonce->find(currptr) == hookonce->end() : false;                   \
-    if (dohook)                                                                                   \
+    if (currptr)                                                                                  \
     {                                                                                             \
-      NewHook(hp, #_fun);                                                                         \
-      hookonce->insert(currptr);                                                                  \
+      std::lock_guard _(hookoncelock);                                                            \
+      auto dohook = currptr ? hookonce.find(currptr) == hookonce.end() : false;                   \
+      if (dohook)                                                                                 \
+      {                                                                                           \
+        NewHook(hp, #_fun);                                                                       \
+        hookonce.insert(currptr);                                                                 \
+      }                                                                                           \
     }                                                                                             \
   }
 
