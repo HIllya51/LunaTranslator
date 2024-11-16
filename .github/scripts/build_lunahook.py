@@ -4,7 +4,7 @@ import subprocess
 rootDir = os.path.dirname(__file__)
 if not rootDir:
     rootDir = os.path.abspath(".")
-rootDir=os.path.abspath(os.path.join(rootDir,'../../cpp/LunaHook'))
+rootDir = os.path.abspath(os.path.join(rootDir, "../../cpp/LunaHook"))
 if len(sys.argv) and sys.argv[1] == "loadversion":
     os.chdir(rootDir)
     with open("CMakeLists.txt", "r", encoding="utf8") as ff:
@@ -21,15 +21,15 @@ if len(sys.argv) and sys.argv[1] == "merge":
     language = ["Chinese", "English", "Russian", "TradChinese"]
     for lang in language:
         shutil.copytree(
-                f"build/{lang}_64/Release_{lang}",
-                f"../build/Release_{lang}",
-                dirs_exist_ok=True,
-            )
+            f"build/{lang}_64/Release_{lang}",
+            f"../build/Release_{lang}",
+            dirs_exist_ok=True,
+        )
         shutil.copytree(
-                f"build/{lang}_winxp/Release_{lang}_winxp",
-                f"../build/Release_{lang}",
-                dirs_exist_ok=True,
-            )
+            f"build/{lang}_winxp/Release_{lang}_winxp",
+            f"../build/Release_{lang}",
+            dirs_exist_ok=True,
+        )
 
         targetdir = f"../build/Release_{lang}"
         target = f"builds/Release_{lang}.zip"
@@ -72,7 +72,7 @@ def build_langx_xp(lang, core):
     os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
     os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../../libs/YY-Thunks")
     os.system("dir")
-    flags='' if core else ' -DBUILD_GUI=ON -DBUILD_CLI=ON '
+    flags = "" if core else " -DBUILD_GUI=ON -DBUILD_CLI=ON "
     with open("do.bat", "w") as ff:
         ff.write(
             rf"""
@@ -83,11 +83,26 @@ cmake --build ../build/x86_{lang}_xp --config Release --target ALL_BUILD -j 14
         )
     os.system(f"cmd /c do.bat")
 
+
 os.chdir(os.path.join(rootDir, "scripts"))
-if sys.argv[1] == "plg32":
-    os.system(f"cmd /c buildplugin32.bat")
-elif sys.argv[1] == "plg64":
-    os.system(f"cmd /c buildplugin64.bat")
+if sys.argv[1] == "plugin":
+    bits = sys.argv[2]
+    with open("buildplugin.bat", "w") as ff:
+        if bits == "32":
+            ff.write(
+                rf"""
+cmake -DBUILD_CORE=OFF -DUSESYSQTPATH=1 -DBUILD_PLUGIN=ON ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/plugin32
+cmake --build ../build/plugin32 --config Release --target ALL_BUILD -j 14
+"""
+            )
+        else:
+            ff.write(
+                rf"""
+cmake -DBUILD_CORE=OFF -DUSESYSQTPATH=1 -DBUILD_PLUGIN=ON ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/plugin64
+cmake --build ../build/plugin64 --config Release --target ALL_BUILD -j 14
+"""
+            )
+    os.system(f"cmd /c buildplugin.bat")
 elif sys.argv[1] == "build":
     lang = sys.argv[2]
     bit = sys.argv[3]

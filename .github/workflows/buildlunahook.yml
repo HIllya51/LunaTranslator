@@ -35,12 +35,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - cmd: plg32
+          - bits: 32
             qtarch: win32_msvc2019
-            target: plugin32
-          - cmd: plg64
+          - bits: 64
             qtarch: win64_msvc2019_64
-            target: plugin64
     permissions:
       id-token: write
       attestations: write
@@ -59,21 +57,17 @@ jobs:
           arch:         ${{ matrix.qtarch }}
           dir:          ${{ runner.temp }}
           setup-python: true
-      - run: python .github/scripts/build_lunahook.py ${{ matrix.cmd }}
+      - run: python .github/scripts/build_lunahook.py plugin ${{ matrix.bits }}
       - run: python .github/scripts/packlunahook.py
 
-      # - name: Generate attestation for artifact
-      #   uses: actions/attest-build-provenance@v1
-      #   with:
-      #     subject-path: builds/${{ matrix.target }}.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.target }}
-          path: cpp/LunaHook/builds/${{ matrix.target }}.zip
+          name: plugin${{ matrix.bits }}
+          path: cpp/LunaHook/builds/plugin${{ matrix.bits }}.zip
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: LunaHook
-          files: cpp/LunaHook/builds/${{ matrix.target }}.zip
+          files: cpp/LunaHook/builds/plugin${{ matrix.bits }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build_x:

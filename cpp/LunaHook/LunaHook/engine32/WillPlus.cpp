@@ -1750,7 +1750,8 @@ bool WillPlus::attach_function()
   succ |= insertwillplus6();
   succ |= willX();
   succ |= _xxx();
-
+  PcHooks::hookGDIFunctions(GetGlyphOutlineA);
+  PcHooks::hookGDIFunctions(GetGlyphOutlineW);
   return succ;
 }
 

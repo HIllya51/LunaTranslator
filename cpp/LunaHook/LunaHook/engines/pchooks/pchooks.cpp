@@ -11,22 +11,30 @@
 // http://bytes.com/topic/c/answers/135834-defining-wide-character-strings-macros
 // #define LPASTE(s) L##s
 // #define L(s) LPASTE(s)
-#define NEW_HOOK(ptr, _dll, _fun, _data, _data_ind, _split_off, _split_ind, _type, _len_off) \
-  {                                                                                          \
-    HookParam hp;                                                                            \
-    wcsncpy_s(hp.module, _dll, MAX_MODULE_SIZE - 1);                                         \
-    strncpy_s(hp.function, #_fun, MAX_MODULE_SIZE - 1);                                      \
-    hp.offset = _data;                                                                       \
-    hp.index = _data_ind;                                                                    \
-    hp.split = _split_off;                                                                   \
-    hp.split_index = _split_ind;                                                             \
-    hp.type = _type | MODULE_OFFSET | FUNCTION_OFFSET;                                       \
-    hp.length_offset = _len_off;                                                             \
-    if ((!ptr) ||                                                                            \
-        (GetModuleHandle(hp.module) &&                                                       \
-         GetProcAddress(GetModuleHandle(hp.module), hp.function) &&                          \
-         GetProcAddress(GetModuleHandle(hp.module), hp.function) == ptr))                    \
-      NewHook(hp, #_fun);                                                                    \
+
+Synchronized<std::set<void *>> hookonce;
+#define NEW_HOOK(ptr, _dll, _fun, _data, _data_ind, _split_off, _split_ind, _type, _len_off)                       \
+  {                                                                                                                \
+    HookParam hp;                                                                                                  \
+    wcsncpy_s(hp.module, _dll, MAX_MODULE_SIZE - 1);                                                               \
+    strncpy_s(hp.function, #_fun, MAX_MODULE_SIZE - 1);                                                            \
+    hp.offset = _data;                                                                                             \
+    hp.index = _data_ind;                                                                                          \
+    hp.split = _split_off;                                                                                         \
+    hp.split_index = _split_ind;                                                                                   \
+    hp.type = _type | MODULE_OFFSET | FUNCTION_OFFSET;                                                             \
+    hp.length_offset = _len_off;                                                                                   \
+    auto currptr = GetModuleHandle(hp.module) ? GetProcAddress(GetModuleHandle(hp.module), hp.function) : nullptr; \
+    bool dohook = false;                                                                                           \
+    if (ptr)                                                                                                       \
+      dohook = currptr == ptr;                                                                                     \
+    else if (currptr)                                                                                              \
+      dohook = hookonce->find(currptr) == hookonce->end();                                                         \
+    if (dohook)                                                                                                    \
+    {                                                                                                              \
+      NewHook(hp, #_fun);                                                                                          \
+      hookonce->insert(currptr);                                                                                   \
+    }                                                                                                              \
   }
 
 #define NEW_MODULE_HOOK(_module, _fun, _data, _data_ind, _split_off, _split_ind, _type, _len_off) \
@@ -42,7 +50,13 @@
     hp.split_index = _split_ind;                                                                  \
     hp.type = _type | MODULE_OFFSET | FUNCTION_OFFSET;                                            \
     hp.length_offset = _len_off;                                                                  \
-    NewHook(hp, #_fun);                                                                           \
+    auto currptr = GetProcAddress(_module, hp.function);                                          \
+    auto dohook = currptr ? hookonce->find(currptr) == hookonce->end() : false;                   \
+    if (dohook)                                                                                   \
+    {                                                                                             \
+      NewHook(hp, #_fun);                                                                         \
+      hookonce->insert(currptr);                                                                  \
+    }                                                                                             \
   }
 
 #ifndef _WIN64
@@ -71,16 +85,6 @@ enum args
 };
 #endif // _WIN64
 
-bool once_hookGDIFunctions = false;
-bool once_hookGDIPlusFunctions = false;
-bool once_hookD3DXFunctions = false;
-bool once_hookOtherPcFunctions = false;
-#define once_run_pchooks(x) \
-  {                         \
-    if (once_##x)           \
-      return;               \
-    once_##x = true;        \
-  }
 constexpr short arg_sz = (short)sizeof(void *);
 void PcHooks::hookGdiGdiplusD3dxFunctions()
 {
@@ -98,7 +102,6 @@ void PcHooks::hookGdiGdiplusD3dxFunctions()
 // jichi 7/17/2014: Renamed from InitDefaultHook
 void PcHooks::hookGDIFunctions(void *ptr)
 {
-  once_run_pchooks(hookGDIFunctions);
   // gdi32.dll
   NEW_HOOK(ptr, L"gdi32.dll", GetTextExtentPoint32A, s_arg2, 0, s_arg1, 0, USING_STRING, s_arg3 / arg_sz)
   NEW_HOOK(ptr, L"gdi32.dll", GetTextExtentExPointA, s_arg2, 0, s_arg1, 0, USING_STRING, s_arg3 / arg_sz)
@@ -139,7 +142,6 @@ void PcHooks::hookGDIFunctions(void *ptr)
 // jichi 6/18/2015: GDI+ functions
 void PcHooks::hookGDIPlusFunctions()
 {
-  once_run_pchooks(hookGDIPlusFunctions);
   HMODULE hModule = ::GetModuleHandleA("gdiplus.dll");
   if (!hModule)
     return;
@@ -162,7 +164,6 @@ void PcHooks::hookGDIPlusFunctions()
 
 void PcHooks::hookD3DXFunctions(HMODULE d3dxModule)
 {
-  once_run_pchooks(hookD3DXFunctions);
   if (GetProcAddress(d3dxModule, "D3DXCreateTextA"))
   {
     NEW_MODULE_HOOK(d3dxModule, D3DXCreateTextA, s_arg3, 0, 0, 0, USING_STRING, 0)
@@ -219,7 +220,6 @@ void PcHooks::hookD3DXFunctions(HMODULE d3dxModule)
 // Note: All functions does not have NO_CONTEXT attribute and will be filtered.
 void PcHooks::hookOtherPcFunctions(void *ptr)
 {
-  once_run_pchooks(hookOtherPcFunctions);
   // int TextHook::InitHook(LPVOID addr, DWORD data, DWORD data_ind, DWORD split_off, DWORD split_ind, WORD type, DWORD len_off)
 
   // http://msdn.microsoft.com/en-us/library/78zh94ax.aspx
