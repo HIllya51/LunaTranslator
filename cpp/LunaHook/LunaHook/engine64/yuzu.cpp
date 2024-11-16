@@ -1782,6 +1782,13 @@ namespace
         strReplace(s, "#", "");
         buffer->from(s);
     }
+    void F01003E601E324000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = std::regex_replace(s, std::wregex(LR"(<[^>]*>)"), L"");
+        s = std::regex_replace(s, std::wregex(LR"(\[[^\]]*\])"), L"");
+        buffer->from(s);
+    }
     void F01000EA00B23C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -3331,6 +3338,8 @@ namespace
             {0x8003734C, {CODEC_UTF8, 2, 0, 0, F010027100C79A000, "0100A4700BC98000", "1.0.2"}}, // 完整
             // サスペクツルーム -警視庁門前署取調班-
             {0x81397F6C, {CODEC_UTF8, 1, 0, 0, F010069E01A7CE000, "010069E01A7CE000", "1.0.0"}},
+            // Dragon Quest III Hd-2D Remake
+            {0x80c4b094, {CODEC_UTF16, 0, 0, 0, F01003E601E324000, "01003E601E324000", "1.0.1"}},
         };
         return 1;
     }();
