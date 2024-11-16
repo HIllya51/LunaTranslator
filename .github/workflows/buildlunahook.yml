@@ -1,6 +1,7 @@
 name: buildlunahook
 on:
-  workflow_dispatch:
+  push:
+    paths: [ 'cpp/LunaHook/**']
 
 jobs:
   build_xp:
