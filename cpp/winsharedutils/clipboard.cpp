@@ -1,4 +1,4 @@
-
+﻿
 
 bool tryopenclipboard(HWND hwnd = 0)
 {
