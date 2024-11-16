@@ -19,11 +19,14 @@ if len(sys.argv) and sys.argv[1] == "merge":
     os.mkdir("../build")
     os.mkdir("builds")
     language = ["Chinese", "English", "Russian", "TradChinese"]
-    bits = [32, 64]
     for lang in language:
-        for bit in bits:
-            shutil.copytree(
-                f"build/{lang}_{bit}/Release_{lang}",
+        shutil.copytree(
+                f"build/{lang}_64/Release_{lang}",
+                f"../build/Release_{lang}",
+                dirs_exist_ok=True,
+            )
+        shutil.copytree(
+                f"build/{lang}_winxp/Release_{lang}_winxp",
                 f"../build/Release_{lang}",
                 dirs_exist_ok=True,
             )

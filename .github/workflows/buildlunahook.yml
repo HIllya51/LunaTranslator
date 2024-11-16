@@ -25,13 +25,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.language }}_winxp
-          path: cpp/LunaHook/builds/Release_${{ matrix.language }}_winxp.zip
-      - uses: softprops/action-gh-release@v2
-        with:
-          tag_name: LunaHook
-          files: cpp/LunaHook/builds/Release_${{ matrix.language }}_winxp.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: cpp/LunaHook/builds
   
   build_plugin:
     runs-on: windows-latest
@@ -84,7 +78,7 @@ jobs:
     strategy:
       matrix:
         language: [Chinese,English,Russian,TradChinese]
-        bits: [32, 64]
+        bits: [64]
     permissions:
       id-token: write
       attestations: write
@@ -105,7 +99,7 @@ jobs:
   
   build:
     runs-on: windows-latest
-    needs: [build_x]
+    needs: [build_x,build_xp]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
