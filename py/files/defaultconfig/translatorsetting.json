@@ -169,10 +169,15 @@
 	"sugoix": {
 		"args": {
 			"api": "http://127.0.0.1:14366/",
-			"V8": "{main_server}/Resource/translate/Sugoi_Translator_V8.7z"
+			"V8": "{main_server}/Resource/translate/Sugoi_Translator_V8.7z",
+			"V10.1": "{main_server}/Resource/translate/Sugoi_Translator_V10.1.7z"
 		},
 		"argstype": {
 			"V8": {
+				"type": "label",
+				"islink": true
+			},
+			"V10.1": {
 				"type": "label",
 				"islink": true
 			}
