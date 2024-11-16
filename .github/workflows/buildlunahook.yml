@@ -1,9 +1,6 @@
 name: buildlunahook
 on:
-  push:
-    paths: [ '.github/scripts/**','.github/workflows/**','cpp/LunaHook/**']
-  pull_request:
-    paths: [ '.github/scripts/**','.github/workflows/**','cpp/LunaHook/**']
+  workflow_dispatch:
 
 jobs:
   build_xp:
