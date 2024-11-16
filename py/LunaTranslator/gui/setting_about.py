@@ -69,12 +69,16 @@ def trygetupdate():
 def doupdate():
     if not gobject.baseobject.update_avalable:
         return
-    if platform.architecture()[0] == "64bit":
-        bit = ""
-        _6432 = "64"
-    elif platform.architecture()[0] == "32bit":
-        bit = "_x86"
+    plat = get_platform()
+    if plat == "xp":
         _6432 = "32"
+        bit = "_x86_winxp"
+    elif plat == "32":
+        bit = "_x86"
+        _6432 = plat
+    elif plat == "64":
+        bit = ""
+        _6432 = plat
     shutil.copy(
         r".\files\plugins\shareddllproxy{}.exe".format(_6432),
         gobject.getcachedir("Updater.exe"),
@@ -89,9 +93,11 @@ def doupdate():
 def updatemethod_checkalready(size, savep, sha256):
     if not os.path.exists(savep):
         return False
-    stats = os.stat(savep)
-    if stats.st_size != size:
-        return False
+    if get_platform() != "xp":
+        # requests旧版本重定向的resp.headers不正确
+        stats = os.stat(savep)
+        if stats.st_size != size:
+            return False
     if not sha256:
         return True
     with open(savep, "rb") as ff:
