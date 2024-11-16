@@ -25,7 +25,6 @@ void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE);
 void context_get(hook_stack *, PCONTEXT);
 void context_set(hook_stack *, PCONTEXT);
 
-inline std::map<uint64_t, std::pair<std::string, HookParam>> delayinserthook;
 void delayinsertadd(HookParam, std::string);
 void delayinsertNewHook(uint64_t);
 inline bool safeautoleaveveh = false;

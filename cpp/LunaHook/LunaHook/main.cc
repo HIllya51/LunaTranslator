@@ -5,6 +5,7 @@ void detachall();
 HMODULE hLUNAHOOKDLL;
 WinMutex viewMutex;
 CommonSharedMem *commonsharedmem;
+Synchronized<std::map<uint64_t, std::pair<std::string, HookParam>>> delayinserthook; // 谜之这个必须在这里定义（可以extern+cpp里定义，或者只在这里写），不能在main.h里inline定义，否则会在v141_xp上编译后会崩。
 namespace
 {
 	AutoHandle<> hookPipe = INVALID_HANDLE_VALUE,
@@ -252,20 +253,17 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname)
 		return true;
 	}
 }
-static std::mutex delayinsertlock;
 void delayinsertadd(HookParam hp, std::string name)
 {
-	std::lock_guard _(maplock);
-	delayinserthook[hp.emu_addr] = {name, hp};
+	delayinserthook->insert(std::make_pair(hp.emu_addr, std::make_pair(name, hp)));
 	ConsoleOutput(INSERTING_HOOK, name.c_str(), hp.emu_addr);
 }
 void delayinsertNewHook(uint64_t em_address)
 {
-	if (delayinserthook.find(em_address) == delayinserthook.end())
+	if (delayinserthook->find(em_address) == delayinserthook->end())
 		return;
-	std::lock_guard _(maplock);
-	auto h = delayinserthook[em_address];
-	delayinserthook.erase(em_address);
+	auto h = delayinserthook->at(em_address);
+	delayinserthook->erase(em_address);
 	NewHook(h.second, h.first.c_str());
 }
 bool NewHook(HookParam hp, LPCSTR name)
