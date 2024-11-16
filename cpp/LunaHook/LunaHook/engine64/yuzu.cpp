@@ -1786,6 +1786,7 @@ namespace
     {
         auto s = buffer->strA();
         strReplace(s, "[n]", "\n");
+        strReplace(s, "[#]", ""); // 分两段显示
         buffer->from(s);
     }
     void F01003E601E324000(TextBuffer *buffer, HookParam *hp)
@@ -3349,6 +3350,9 @@ namespace
             // EVE rebirth terror
             {0x8002CC40, {0, 1, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.0"}},
             {0x80045918, {0, 0, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.2"}},
+            // EVE ghost enemies
+            {0x80053900, {0, 1, 0, 0, F01008BA00F172000, "01007BE0160D6000", "1.0.0"}},
+            {0x80052440, {0, 1, 0, 0, F01008BA00F172000, "01007BE0160D6000", "1.0.1"}},
         };
         return 1;
     }();
