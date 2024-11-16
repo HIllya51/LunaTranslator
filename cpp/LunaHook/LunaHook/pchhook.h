@@ -3,6 +3,7 @@
 // #define wcslen(XX) wcsnlen((XX), TEXT_BUFFER_SIZE*2)
 // #define strlen(XX) strnlen((XX), TEXT_BUFFER_SIZE*2)
 
+#include "texthook.h"
 #include "main.h"
 #include "stackoffset.hpp"
 #include "util/stringfilters.h"

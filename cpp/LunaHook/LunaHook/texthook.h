@@ -1,34 +1,7 @@
 #pragma once
 
-// texthook.h
-// 8/24/2013 jichi
-// Branch: IHF_DLL/IHF_CLIENT.h, rev 133
-//
-// 8/24/2013 TODO:
-// - Clean up this file
-// - Reduce global variables. Use namespaces or singleton classes instead.
-
 inline std::atomic<bool (*)(LPVOID addr, hook_stack *stack)> trigger_fun = nullptr;
 
-// jichi 9/25/2013: This class will be used by NtMapViewOfSectionfor
-// interprocedure communication, where constructor/destructor will NOT work.
-struct CommonSharedMem
-{
-	UINT32 waittime;
-	UINT32 keeprawtext;
-	uint64_t hash;
-	wchar_t text[1000];
-	bool fontCharSetEnabled;
-	UINT8 fontCharSet;
-	wchar_t fontFamily[100];
-	UINT codepage;
-	bool fastskipignore;
-	struct
-	{
-		bool use;
-		ThreadParam tp;
-	} embedtps[32];
-};
 class TextHook
 {
 public:

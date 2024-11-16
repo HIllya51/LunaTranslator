@@ -289,3 +289,21 @@ struct TextBuffer
 		size = 0;
 	}
 };
+
+struct CommonSharedMem
+{
+	UINT32 waittime;
+	UINT32 keeprawtext;
+	uint64_t hash;
+	wchar_t text[1000];
+	bool fontCharSetEnabled;
+	UINT8 fontCharSet;
+	wchar_t fontFamily[100];
+	UINT codepage;
+	bool fastskipignore;
+	struct
+	{
+		bool use;
+		ThreadParam tp;
+	} embedtps[32];
+};

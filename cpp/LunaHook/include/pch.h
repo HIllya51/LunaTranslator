@@ -41,6 +41,5 @@
 #include "const.h"
 #include "types.h"
 #include "hookcode.h"
-#include "texthook.h"
 #include "winevent.hpp"
 #include "lrucache.hpp"
