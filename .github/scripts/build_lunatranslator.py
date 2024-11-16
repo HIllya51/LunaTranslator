@@ -285,6 +285,7 @@ if __name__ == "__main__":
         downloadbass()
         os.chdir(rootDir)
         if arch == "xp":
+            downloadmecabxp()
             shutil.copytree(
                 f"{rootDir}/../build/cpp_xp",
                 f"{rootDir}/../cpp/builds",
