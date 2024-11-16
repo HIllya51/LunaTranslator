@@ -29,6 +29,7 @@ mylinks = {
     "ocr_models": {
         "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
     },
+    "mecab_xp.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab_xp.zip",
     "mecab.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip",
     "magpie.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip",
     "themes.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/themes.zip",
@@ -121,6 +122,11 @@ def downloadmecab():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {mylinks['mecab.zip']}")
     subprocess.run(f"7z x mecab.zip -oALL")
+    move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
+def downloadmecabxp():
+    os.chdir(rootDir + "\\temp")
+    subprocess.run(f"curl -LO {mylinks['mecab_xp.zip']}")
+    subprocess.run(f"7z x mecab_xp.zip -oALL")
     move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
 
 def downloadmapie():
@@ -276,7 +282,6 @@ if __name__ == "__main__":
     elif sys.argv[1] == "merge":
         createPluginDirs(0 if arch == "xp" else 1)
         downloadNtlea()
-        downloadmecab()
         downloadbass()
         os.chdir(rootDir)
         if arch == "xp":
@@ -299,6 +304,7 @@ if __name__ == "__main__":
             os.chdir(rootDir)
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
             exit()
+        downloadmecab()
         downloadLocaleEmulator()
         downloadBrotli()
         downloadCurl()

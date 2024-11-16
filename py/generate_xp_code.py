@@ -28,7 +28,7 @@ def parsecode(code: str):
     )
     # 移除类型注解
     code = re.sub(r": [a-zA-Z0-9_]+\)", ")", code)
-    code = re.sub(r": [a-zA-Z0-9_]+,", ",", code)
+    code = re.sub(r"([a-zA-Z0-9_]): [a-zA-Z0-9_]+,", r"\1,", code)
     code = re.sub(r": [a-zA-Z0-9_]+ =", " =", code)
     return code
 
