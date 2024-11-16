@@ -18,8 +18,10 @@ inline SearchParam spDefault;
 
 // EOF
 int HookStrLen(HookParam *, BYTE *data);
-inline std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
-inline std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
+
+// v141_xp上，定义inline std::map会直接导致dll detach后发生崩溃。
+extern std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
+extern std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
 void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE);
 
 void context_get(hook_stack *, PCONTEXT);

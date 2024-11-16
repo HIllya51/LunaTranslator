@@ -2,10 +2,12 @@
 #include "MinHook.h"
 void HIJACK();
 void detachall();
+std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
+std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
 HMODULE hLUNAHOOKDLL;
 WinMutex viewMutex;
 CommonSharedMem *commonsharedmem;
-Synchronized<std::map<uint64_t, std::pair<std::string, HookParam>>> delayinserthook; // 谜之这个必须在这里定义（可以extern+cpp里定义，或者只在这里写），不能在main.h里inline定义，否则会在v141_xp上编译后会崩。
+Synchronized<std::map<uint64_t, std::pair<std::string, HookParam>>> delayinserthook;
 namespace
 {
 	AutoHandle<> hookPipe = INVALID_HANDLE_VALUE,
