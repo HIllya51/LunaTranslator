@@ -1782,6 +1782,12 @@ namespace
         strReplace(s, "#", "");
         buffer->from(s);
     }
+    void F01008BA00F172000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        strReplace(s, "[n]", "\n");
+        buffer->from(s);
+    }
     void F01003E601E324000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -3340,6 +3346,8 @@ namespace
             {0x81397F6C, {CODEC_UTF8, 1, 0, 0, F010069E01A7CE000, "010069E01A7CE000", "1.0.0"}},
             // Dragon Quest III Hd-2D Remake
             {0x80c4b094, {CODEC_UTF16, 0, 0, 0, F01003E601E324000, "01003E601E324000", "1.0.1"}},
+            // EVE rebirth terror
+            {0x8002CC40, {0, 1, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.0"}},
         };
         return 1;
     }();
