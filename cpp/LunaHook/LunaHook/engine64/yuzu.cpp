@@ -363,7 +363,8 @@ namespace
     void F0100F6A00A684000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::sregex_token_iterator it(s.begin(), s.end(), std::regex("(?=@.)"), -1);
+        auto r = std::regex("(?=@.)");
+        std::sregex_token_iterator it(s.begin(), s.end(), r, -1);
         std::sregex_token_iterator end;
         std::vector<std::string> parts(it, end);
         s = "";
@@ -423,7 +424,8 @@ namespace
     void F01006590155AC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::sregex_token_iterator it(s.begin(), s.end(), std::regex("(?=@.)"), -1);
+        auto r = std::regex("(?=@.)");
+        std::sregex_token_iterator it(s.begin(), s.end(), r, -1);
         std::sregex_token_iterator end;
 
         std::vector<std::string> parts(it, end);
@@ -502,8 +504,8 @@ namespace
         static std::string readString_savedSentence = "";
         static bool readString_playerNameFlag = false;
         static std::string readString_playerName = u8"ラピス";
-
-        std::sregex_token_iterator it(s.begin(), s.end(), std::regex("(?=@.)"), -1);
+        auto r = std::regex("(?=@.)");
+        std::sregex_token_iterator it(s.begin(), s.end(), r, -1);
         std::sregex_token_iterator end;
 
         std::vector<std::string> parts(it, end);
