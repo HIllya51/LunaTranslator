@@ -248,6 +248,13 @@ namespace ppsspp
 	{
 		StringCharReplacer(buffer, "\\n", 2, '\n');
 	}
+	void ULJM06129(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(#\w+?\[\d\])"), "");
+		strReplace(s, "#n", "");
+		buffer->from(s);
+	}
 	void FNPJH50247(TextBuffer *buffer, HookParam *hp)
 	{
 		static lru_cache<std::string> cache(3);
@@ -402,6 +409,9 @@ namespace ppsspp
 		{0x8955CE0, {0, 0, 0, ULJM05810, 0, "ULJM05810"}},
 		// Fate/EXTRA
 		{0x88B87F0, {0, 6, 0, 0, FNPJH50247, "NPJH50247"}},
+		// 十鬼の絆
+		{0x891AAAC, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // text
+		{0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text
 	};
 
 }

@@ -28,11 +28,13 @@ bool InsertEMEHook()
   HookParam hp;
   hp.address = addr;
   hp.offset = get_reg(regs::eax);
-  hp.type = NO_CONTEXT | DATA_INDIRECT | USING_STRING;
-  ConsoleOutput("INSERT EmonEngine");
-
-  // ConsoleOutput("EmonEngine, hook will only work with text speed set to slow or normal!");
-  // else ConsoleOutput("Unknown EmonEngine engine");
+  hp.type = NO_CONTEXT | DATA_INDIRECT | USING_CHAR;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+  {
+    auto xx = buffer->strA();
+    strReplace(xx, "	", "");
+    buffer->from(xx);
+  };
   return NewHook(hp, "EmonEngine");
 }
 namespace
@@ -60,17 +62,81 @@ namespace
       hp.filter_fun = [](TextBuffer *buffer, HookParam *)
       {
         auto xx = buffer->strA();
+        strReplace(xx, "	", "");
         static lru_cache<std::string> last(10);
         if (last.touch(xx))
           buffer->clear();
+        else
+          buffer->from(xx);
       };
       return NewHook(hp, "takeout");
     };
     return false;
   }
 }
+namespace
+{
+  /*
+  v8 = (BYTE *)(*(_DWORD *)(this + 64) + v7);
+  if ( *v8 == 9 )
+  {
+    *v8 = 0;
+    v9 = *(_DWORD *)(this + 68);
+    ++*(_WORD *)(this + 74);
+    *(_WORD *)(this + 72) = 0;
+    *(_DWORD *)(this + 68) = v9 + 1;
+    sub_413920(String1, 1);
+    return 1;
+  }
+  else
+  {
+    if ( IsDBCSLeadByte(*v8) )
+  */
+  bool emeengine()
+  {
+    BYTE sig[] = {
+        /*
+        .text:0042D05C                 mov     cl, [eax]
+  .text:0042D05E                 cmp     cl, 9
+  .text:0042D061                 jnz     short loc_42D08E
+        */
+        0x8A, 0x08,
+        0x80, 0xF9, 0x09,
+        0x75, XX};
+    BYTE tgt[] = {
+        /*
+        .text:0042D08E                 push    ecx             ; TestChar
+  .text:0042D08F                 call    ds:IsDBCSLeadByte
+        */
+        0x51,
+        0xFF, 0x15, XX4};
+    auto __IsDBCSLeadByte = Util::FindImportEntry(processStartAddress, (DWORD)IsDBCSLeadByte);
+    if (!__IsDBCSLeadByte)
+      return false;
+    *(DWORD *)(tgt + 3) = __IsDBCSLeadByte;
+    for (auto addr : Util::SearchMemory(sig, sizeof(sig), PAGE_EXECUTE_READWRITE, processStartAddress, processStopAddress))
+    {
+      auto off = *(BYTE *)(addr + sizeof(sig) - 1);
+      auto target = addr + sizeof(sig) + off;
+      if (memcmp((void *)target, tgt, sizeof(tgt)) != 0)
+        continue;
+      HookParam hp;
+      hp.address = addr;
+      hp.offset = get_reg(regs::eax);
+      hp.type = NO_CONTEXT | DATA_INDIRECT | USING_CHAR;
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+      {
+        auto xx = buffer->strA();
+        strReplace(xx, "	", "");
+        buffer->from(xx);
+      };
+      return NewHook(hp, "EmonEngine2");
+    }
+    return InsertEMEHook();
+  }
+}
 bool EME::attach_function()
 {
 
-  return InsertEMEHook() | takeout();
+  return emeengine() | takeout();
 }
