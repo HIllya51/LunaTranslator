@@ -393,8 +393,7 @@ namespace
   void hook2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     strReplace(save, "\\k", "");
-    static std::regex rx("<R(.+?)\\|.+>");
-    save = std::regex_replace(save, rx, "$1");
+    save = std::regex_replace(save, std::regex("<R(.+?)\\|.+>"), "$1");
     buffer->from(save);
   }
   void hook2a(hook_stack *s, TextBuffer buffer)

@@ -6,10 +6,8 @@ namespace ppsspp
 	void ULJS00403_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string result = buffer->strA();
-		std::regex newlinePattern(R"((\\n)+)");
-		result = std::regex_replace(result, newlinePattern, " ");
-		std::regex pattern(R"((\\d$|^\@[a-z]+|#.*?#|\$))");
-		result = std::regex_replace(result, pattern, "");
+		result = std::regex_replace(result, std::regex(R"((\\n)+)"), " ");
+		result = std::regex_replace(result, std::regex(R"((\\d$|^\@[a-z]+|#.*?#|\$))"), "");
 		buffer->from(result);
 	}
 
@@ -109,28 +107,18 @@ namespace ppsspp
 	void ULJM06119_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string s = buffer->strA();
-
-		std::regex pattern(R"(/\[[^\]]+./g)");
-		s = std::regex_replace(s, pattern, "");
-
-		std::regex tagPattern(R"(/\\k|\\x|%C|%B)");
-		s = std::regex_replace(s, tagPattern, "");
-
-		std::regex colorPattern(R"(/\%\d+\#[0-9a-fA-F]*\;)");
-		s = std::regex_replace(s, colorPattern, "");
-
-		std::regex newlinePattern(R"(/\n+)");
-		s = std::regex_replace(s, newlinePattern, " ");
+		s = std::regex_replace(s, std::regex(R"(/\[[^\]]+./g)"), "");
+		s = std::regex_replace(s, std::regex(R"(/\\k|\\x|%C|%B)"), "");
+		s = std::regex_replace(s, std::regex(R"(/\%\d+\#[0-9a-fA-F]*\;)"), "");
+		s = std::regex_replace(s, std::regex(R"(/\n+)"), " ");
 		buffer->from(s);
 	}
 
 	void ULJM06036_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::wstring result = buffer->strW();
-		std::wregex pattern(LR"(<R([^\/]+).([^>]+).>)");
-		result = std::regex_replace(result, pattern, L"$2");
-		std::wregex tagPattern(LR"(<[A-Z]+>)");
-		result = std::regex_replace(result, tagPattern, L"");
+		result = std::regex_replace(result, std::wregex(LR"(<R([^\/]+).([^>]+).>)"), L"$2");
+		result = std::regex_replace(result, std::wregex(LR"(<[A-Z]+>)"), L"");
 		buffer->from(result);
 	}
 
@@ -260,6 +248,20 @@ namespace ppsspp
 	{
 		StringCharReplacer(buffer, "\\n", 2, '\n');
 	}
+	void FNPJH50247(TextBuffer *buffer, HookParam *hp)
+	{
+		static lru_cache<std::string> cache(3);
+		auto s = buffer->strA();
+		if (cache.touch(s))
+			buffer->clear();
+		else
+		{
+			s = std::regex_replace(s, std::regex("#C[0-9]{9}"), "");
+			s = std::regex_replace(s, std::regex("#RUBS(.*?)#RUBE(.*?)#REND"), "$2");
+			s = std::regex_replace(s, std::regex("#CDEF"), "");
+			buffer->from(s);
+		}
+	}
 	void ULJM06145(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -296,45 +298,22 @@ namespace ppsspp
 	void NPJH50619F(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		std::regex pattern1("[\\r\\n]+");
-		std::string replacement1 = "";
-		std::string result1 = std::regex_replace(s, pattern1, replacement1);
-		std::regex pattern2("^(.*?)\\)+");
-		std::string replacement2 = "";
-		std::string result2 = std::regex_replace(result1, pattern2, replacement2);
-		std::regex pattern3("#ECL+");
-		std::string replacement3 = "";
-		std::string result3 = std::regex_replace(result2, pattern3, replacement3);
-		std::regex pattern4("(#.+?\\))+");
-		std::string replacement4 = "";
-		std::string result4 = std::regex_replace(result3, pattern4, replacement4);
-		buffer->from(result4);
+		s = std::regex_replace(s, std::regex("[\\r\\n]+"), "");
+		s = std::regex_replace(s, std::regex("^(.*?)\\)+"), "");
+		s = std::regex_replace(s, std::regex("#ECL+"), "");
+		s = std::regex_replace(s, std::regex("(#.+?\\))+"), "");
+		buffer->from(s);
 	}
 
 	void NPJH50505F(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-
-		std::regex pattern2("#RUBS(#[A-Z0-9]+)*[^#]+");
-		std::string replacement2 = "";
-		std::string result2 = std::regex_replace(s, pattern2, replacement2);
-
-		std::regex pattern3("#FAMILY");
-		std::string replacement3 = "$FAMILY";
-		std::string result3 = std::regex_replace(result2, pattern3, replacement3);
-
-		std::regex pattern4("#GIVE");
-		std::string replacement4 = "$GIVE";
-		std::string result4 = std::regex_replace(result3, pattern4, replacement4);
-
-		std::regex pattern5("(#[A-Z0-9\\-]+)+");
-		std::string replacement5 = "";
-		std::string result5 = std::regex_replace(result4, pattern5, replacement5);
-
-		std::regex pattern6("\\n+");
-		std::string replacement6 = " ";
-		std::string result6 = std::regex_replace(result5, pattern6, replacement6);
-		buffer->from(result6);
+		s = std::regex_replace(s, std::regex("#RUBS(#[A-Z0-9]+)*[^#]+"), "");
+		s = std::regex_replace(s, std::regex("#FAMILY"), "$FAMILY");
+		s = std::regex_replace(s, std::regex("#GIVE"), "$GIVE");
+		s = std::regex_replace(s, std::regex("(#[A-Z0-9\\-]+)+"), "");
+		s = std::regex_replace(s, std::regex("\\n+"), "");
+		buffer->from(s);
 	}
 
 	void QNPJH50909(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -420,7 +399,9 @@ namespace ppsspp
 		// 源狼 GENROH
 		{0x8940DA8, {0, 1, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
 		// 遙かなる時空の中で４ 愛蔵版
-		{0x8955CE0, {0, 0, 0, ULJM05810, 0, " ULJM05810"}},
+		{0x8955CE0, {0, 0, 0, ULJM05810, 0, "ULJM05810"}},
+		// Fate/EXTRA
+		{0x88B87F0, {0, 6, 0, 0, FNPJH50247, "NPJH50247"}},
 	};
 
 }

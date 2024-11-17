@@ -363,8 +363,7 @@ namespace
     void F0100F6A00A684000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex regex("(?=@.)");
-        std::sregex_token_iterator it(s.begin(), s.end(), regex, -1);
+        std::sregex_token_iterator it(s.begin(), s.end(), std::regex("(?=@.)"), -1);
         std::sregex_token_iterator end;
         std::vector<std::string> parts(it, end);
         s = "";
@@ -424,8 +423,7 @@ namespace
     void F01006590155AC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex regex("(?=@.)");
-        std::sregex_token_iterator it(s.begin(), s.end(), regex, -1);
+        std::sregex_token_iterator it(s.begin(), s.end(), std::regex("(?=@.)"), -1);
         std::sregex_token_iterator end;
 
         std::vector<std::string> parts(it, end);
@@ -468,8 +466,7 @@ namespace
             }
             else if (tag == "@v" || tag == "@h")
             {
-                std::regex regex("[\\w_-]+");
-                s += std::regex_replace(content, regex, "");
+                s += std::regex_replace(content, std::regex("[\\w_-]+"), "");
                 counter++;
                 continue;
             }
@@ -486,8 +483,7 @@ namespace
                     counter++;
                     continue;
                 }
-                std::regex regex(u8"[\\d+─]");
-                s += std::regex_replace(content, regex, "");
+                s += std::regex_replace(content, std::regex(u8"[\\d+─]"), "");
                 counter += 3;
                 continue;
             }
@@ -507,8 +503,7 @@ namespace
         static bool readString_playerNameFlag = false;
         static std::string readString_playerName = u8"ラピス";
 
-        std::regex regex("(?=@.)");
-        std::sregex_token_iterator it(s.begin(), s.end(), regex, -1);
+        std::sregex_token_iterator it(s.begin(), s.end(), std::regex("(?=@.)"), -1);
         std::sregex_token_iterator end;
 
         std::vector<std::string> parts(it, end);
@@ -572,8 +567,7 @@ namespace
             }
             else if (tag == "@v" || tag == "@h")
             {
-                std::regex regex("[\\w_-]+");
-                s += std::regex_replace(content, regex, "");
+                s += std::regex_replace(content, std::regex("[\\w_-]+"), "");
                 counter++;
                 continue;
             }
@@ -590,8 +584,7 @@ namespace
                     counter++;
                     continue;
                 }
-                std::regex regex(u8"[\\d+─]");
-                s += std::regex_replace(content, regex, "");
+                s += std::regex_replace(content, std::regex(u8"[\\d+─]"), "");
                 counter += 3;
                 continue;
             }
@@ -789,8 +782,7 @@ namespace
     void F010045C014650000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex pattern("(@(\\/)?[a-zA-Z#](\\(\\d+\\))?|)[*<>]+");
-        s = std::regex_replace(s, pattern, "");
+        s = std::regex_replace(s, std::regex(R"((@(\/)?[a-zA-Z#](\(\d+\))?|)+|[\*<>]+)"), "");
         buffer->from(s);
     }
 
@@ -846,18 +838,15 @@ namespace
     void F0100AFA01750C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex newlineRegex("(\\\\n)+");
-        std::regex specialCharsRegex("\\\\d$|^\\@[a-z]+|#.*?#|\\$");
-        s = std::regex_replace(s, newlineRegex, " ");
-        s = std::regex_replace(s, specialCharsRegex, "");
+        s = std::regex_replace(s, std::regex(R"((\\n)+)"), " ");
+        s = std::regex_replace(s, std::regex(R"(\\d$|^\@[a-z]+|#.*?#|\$)"), "");
         buffer->from(s);
     }
     void F0100C1E0102B8000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("#N"), "\n");
-        std::regex colorRegex("#Color\\[[\\d]+\\]");
-        s = std::regex_replace(s, colorRegex, "");
+        s = std::regex_replace(s, std::regex("#Color\\[[\\d]+\\]"), "");
         buffer->from(s);
     }
     void F0100BD700E648000(TextBuffer *buffer, HookParam *hp)
@@ -956,8 +945,7 @@ namespace
     void F010055D009F78000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex pattern3("\\d+");
-        s = std::regex_replace(s, pattern3, "");
+        s = std::regex_replace(s, std::regex("\\d+"), "");
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -968,21 +956,16 @@ namespace
     void F010080C01AA22000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex furiganaRegex("#\\d+R.*?#");
-        s = std::regex_replace(s, furiganaRegex, "");
-        std::regex lettersNumbersRegex("[A-Za-z0-9]");
-        s = std::regex_replace(s, lettersNumbersRegex, "");
-        std::regex symbolsRegex(u8"[().%,_!#©&:?/]");
-        s = std::regex_replace(s, symbolsRegex, "");
+        s = std::regex_replace(s, std::regex("#\\d+R.*?#"), "");
+        s = std::regex_replace(s, std::regex("[A-Za-z0-9]"), "");
+        s = std::regex_replace(s, std::regex(u8"[().%,_!#©&:?/]"), "");
         buffer->from(s);
     }
     void F0100CB700D438000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex furiganaRegex("<RUBY><RB>(.*?)<\\/RB><RT>(.*?)<\\/RT><\\/RUBY>");
-        s = std::regex_replace(s, furiganaRegex, "$1");
-        std::regex htmlTagRegex("<[^>]*>");
-        s = std::regex_replace(s, htmlTagRegex, "");
+        s = std::regex_replace(s, std::regex(R"(<RUBY><RB>(.*?)<\/RB><RT>(.*?)<\/RT><\/RUBY>)"), "$1");
+        s = std::regex_replace(s, std::regex("<[^>]*>"), "");
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -1018,14 +1001,10 @@ namespace
     void F010072000BD32000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex lineBreakRegex("\\[~\\]");
-        s = std::regex_replace(s, lineBreakRegex, "\n");
-        std::regex romRegex("rom:[\\s\\S]*$");
-        s = std::regex_replace(s, romRegex, "");
-        std::regex furiganaRegex("\\[[\\w\\d]*\\[[\\w\\d]*\\].*?\\[\\/\\[\\w\\d]*\\]\\]");
-        s = std::regex_replace(s, furiganaRegex, "");
-        std::regex bracketsRegex("\\[.*?\\]");
-        s = std::regex_replace(s, bracketsRegex, "");
+        s = std::regex_replace(s, std::regex(R"(\[~\])"), "\n");
+        s = std::regex_replace(s, std::regex(R"(\rom:[\s\S]*$)"), "");
+        s = std::regex_replace(s, std::regex(R"(\[[\w\d]*\[[\w\d]*\].*?\[\/[\w\d]*\]\])"), "");
+        s = std::regex_replace(s, std::regex(R"(\[.*?\])"), "");
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -1334,12 +1313,8 @@ namespace
     void F0100B5500CA0C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        // std::regex pattern1("\\\\u0000+$");
-        std::regex pattern2("\\\\");
-        std::regex pattern3("\\$");
-        // s = std::regex_replace(s, pattern1, "");
-        s = std::regex_replace(s, pattern2, "");
-        s = std::regex_replace(s, pattern3, "");
+        s = std::regex_replace(s, std::regex("\\\\"), "");
+        s = std::regex_replace(s, std::regex("\\$"), "");
         buffer->from(s);
     }
     void T0100B5500CA0C000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -1585,11 +1560,9 @@ namespace
     void F0100556015CCC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex rubiRegex("\\[[^\\]]+.");
-        s = std::regex_replace(s, rubiRegex, "");
+        s = std::regex_replace(s, std::regex("\\[[^\\]]+."), "");
         s = std::regex_replace(s, std::regex("\\\\k|\\\\x|%C|%B|%p-1;"), "");
-        std::regex colorRegex("#[0-9a-fA-F]+;([^%#]+)(%r)?");
-        s = std::regex_replace(s, colorRegex, "$1");
+        s = std::regex_replace(s, std::regex("#[0-9a-fA-F]+;([^%#]+)(%r)?"), "$1");
         static std::set<std::string> dump;
         if (dump.find(s) != dump.end())
             return buffer->clear();
@@ -1668,14 +1641,10 @@ namespace
     void F01001B900C0E2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex whitespaceRegex("\\s");
-        s = std::regex_replace(s, whitespaceRegex, "");
-        std::regex hashRegex("#[A-Za-z]+(\\[(\\d*\\.)?\\d+\\])+");
-        s = std::regex_replace(s, hashRegex, "");
-        std::regex hashLetterRegex("#[a-z]");
-        s = std::regex_replace(s, hashLetterRegex, "");
-        std::regex lowercaseRegex("[a-z]");
-        s = std::regex_replace(s, lowercaseRegex, "");
+        s = std::regex_replace(s, std::regex("\\s"), "");
+        s = std::regex_replace(s, std::regex("#[A-Za-z]+(\\[(\\d*\\.)?\\d+\\])+"), "");
+        s = std::regex_replace(s, std::regex("#[a-z]"), "");
+        s = std::regex_replace(s, std::regex("[a-z]"), "");
         buffer->from(s);
     }
 
@@ -1950,8 +1919,7 @@ namespace
     void F01005E9016BDE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex patt("/\\/\\/ remove rubi\\n\\ss = s.replace\\(patt, ''\\);/");
-        s = std::regex_replace(s, patt, "");
+        s = std::regex_replace(s, std::regex(R"(\[[^\]]+.)"), "");
         s = std::regex_replace(s, std::regex("\\\\k|\\\\x|%C|%B|%p-1;"), "");
         s = std::regex_replace(s, std::regex("#[0-9a-fA-F]+;([^%#]+)(%r)?"), "$1");
         s = std::regex_replace(s, std::regex("\\\\n"), " ");
@@ -1970,12 +1938,9 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex pattern1(L"\\[([^\\]\\/]+)\\/[^\\]]+\\]");
-        s = std::regex_replace(s, pattern1, L"$1");
-        std::wregex pattern2(L"(\\S*)@");
-        s = std::regex_replace(s, pattern2, L"$1");
-        std::wregex pattern3(L"\\$");
-        s = std::regex_replace(s, pattern3, L"");
+        s = std::regex_replace(s, std::wregex(LR"(\[([^\]\/]+)\/[^\]]+\])"), L"$1");
+        s = std::regex_replace(s, std::wregex(L"(\\S*)@"), L"$1");
+        s = std::regex_replace(s, std::wregex(L"\\$"), L"");
         buffer->from(s);
     }
     void F01000A400AF2A000(TextBuffer *buffer, HookParam *hp)

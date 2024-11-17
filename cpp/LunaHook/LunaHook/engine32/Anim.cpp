@@ -39,9 +39,8 @@ bool InsertAnim2Hook()
     // そんな俺に声をかけてきたのは、近所のスーパーで働いている主婦の、@n『@[赤羽:あかばね]@[千晶:ちあき]』さんだ。
     myhp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
-        static const std::regex rx("@\\[(.*?):(.*?)\\]", std::regex_constants::icase);
         std::string result = buffer->strA();
-        result = std::regex_replace(result, rx, "$1");
+        result = std::regex_replace(result, std::regex("@\\[(.*?):(.*?)\\]", std::regex_constants::icase), "$1");
         buffer->from(result);
     };
     myhp.newlineseperator = L"@n";

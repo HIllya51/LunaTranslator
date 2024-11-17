@@ -238,8 +238,7 @@ bool InsertCatSystem2Hook()
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    static std::regex rx(R"(\[(.+?)/.+\])");
-    auto _ = std::regex_replace(buffer->strA(), rx, "$1");
+    auto _ = std::regex_replace(buffer->strA(), std::regex(R"(\[(.+?)/.+\])"), "$1");
     buffer->from(_);
   };
   hp.newlineseperator = L"\\n";
@@ -836,8 +835,7 @@ namespace
       hp.hook_font = F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        static std::regex rx(R"(\[(.+?)/.+\])");
-        buffer->from(std::regex_replace(buffer->strA(), rx, "$1"));
+        buffer->from(std::regex_replace(buffer->strA(), std::regex(R"(\[(.+?)/.+\])"), "$1"));
       };
 
       static ULONG p;

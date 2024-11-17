@@ -1258,9 +1258,8 @@ bool InsertBGIDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       // It could be either <R..> or <r..>
-      static const std::regex rx("<r.+?>(.+?)</r>", std::regex_constants::icase);
       std::string result = buffer->strA();
-      result = std::regex_replace(result, rx, "$1");
+      result = std::regex_replace(result, std::regex("<r.+?>(.+?)</r>", std::regex_constants::icase), "$1");
       buffer->from(result);
     };
 

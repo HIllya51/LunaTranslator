@@ -517,9 +517,8 @@ namespace
       };
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        static const std::regex rx("#\\{(.*?)\\}(.*?)#", std::regex_constants::icase);
         std::string result = buffer->strA();
-        result = std::regex_replace(result, rx, "$2");
+        result = std::regex_replace(result, std::regex("#\\{(.*?)\\}(.*?)#", std::regex_constants::icase), "$2");
         strReplace(result, u8"　\n", "");
         strReplace(result, u8"\n", "");
         buffer->from(result);

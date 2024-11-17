@@ -265,8 +265,7 @@ namespace
     void FBLJM61131(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        std::regex pattern("\\[[^\\]]+.");
-        s = std::regex_replace(s, pattern, "");
+        s = std::regex_replace(s, std::regex("\\[[^\\]]+."), "");
         s = std::regex_replace(s, std::regex("\\\\k|\\\\x|%C|%B"), "");
         s = std::regex_replace(s, std::regex("\\%\\d+\\#[0-9a-fA-F]*\\;"), "");
         s = std::regex_replace(s, std::regex("\\n+"), " ");
