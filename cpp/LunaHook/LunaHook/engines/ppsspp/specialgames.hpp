@@ -412,6 +412,10 @@ namespace ppsspp
 		// 十鬼の絆
 		{0x891AAAC, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // text
 		{0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text
+		// ティンクル☆くるせいだーす STARLIT BRAVE!!
+		{0x88A94BC, {0, 4, 0, 0, 0, "ULJS00315"}}, // text
+		// ティンクル☆くるせいだーす GoGo!
+		{0x8822F24, {0, 0xe, 0, 0, 0, "ULJS00316"}}, // text
 	};
 
 }
