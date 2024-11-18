@@ -1230,7 +1230,7 @@ namespace
 
         std::string data;
         bool update = false;
-
+        std::wstring collect;
         for (size_t size; *text; text += size)
         {
           if (text[0] == 0x7 && text[1] == 0x8)
@@ -1253,10 +1253,11 @@ namespace
             data.append(oldData);
           else
           {
-            buffer->from(std::wstring_view(oldTextAddress, trimmedSize));
-            return;
+            collect += std::wstring_view(oldTextAddress, trimmedSize);
+            // 在屏上输出一大段文字的时候，这个只是其中一小段
           }
         }
+        buffer->from(collect);
       }
     } // namespace Private
 
