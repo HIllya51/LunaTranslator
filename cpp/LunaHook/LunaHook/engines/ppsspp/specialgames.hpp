@@ -248,6 +248,10 @@ namespace ppsspp
 	{
 		StringCharReplacer(buffer, "\\n", 2, '\n');
 	}
+	void NPJH50900(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '^');
+	}
 	void ULJM06129(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -416,6 +420,8 @@ namespace ppsspp
 		{0x88A94BC, {0, 4, 0, 0, 0, "ULJS00315"}}, // text
 		// ティンクル☆くるせいだーす GoGo!
 		{0x8822F24, {0, 0xe, 0, 0, 0, "ULJS00316"}}, // text
+		// 明治東亰恋伽 トワヰライト・キス
+		{0x8857910, {0, 0xe, 0, 0, NPJH50900, "NPJH50900"}}, // text
 	};
 
 }
