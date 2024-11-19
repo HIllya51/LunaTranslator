@@ -14,7 +14,7 @@ bool InsertAnimHook()
     myhp.address = addr + 10;
 
     myhp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE | EMBED_DYNA_SJIS; // /HQ 不使用上下文区分 把所有线程的文本都提取
-    myhp.hook_font = F_GetGlyphOutlineA;
+    myhp.embed_hook_font = F_GetGlyphOutlineA;
     // data_offset
     myhp.offset = get_reg(regs::ecx);
     char nameForUser[HOOK_NAME_SIZE] = "Anim";
@@ -34,7 +34,7 @@ bool InsertAnim2Hook()
     }
     HookParam myhp;
     myhp.address = addr + 10;
-    myhp.hook_font = F_GetGlyphOutlineA;
+    myhp.embed_hook_font = F_GetGlyphOutlineA;
     // メスつまみ３
     // そんな俺に声をかけてきたのは、近所のスーパーで働いている主婦の、@n『@[赤羽:あかばね]@[千晶:ちあき]』さんだ。
     myhp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
@@ -43,7 +43,7 @@ bool InsertAnim2Hook()
         result = std::regex_replace(result, std::regex("@\\[(.*?):(.*?)\\]", std::regex_constants::icase), "$1");
         buffer->from(result);
     };
-    myhp.newlineseperator = L"@n";
+    myhp.lineSeparator = L"@n";
     myhp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE | EMBED_DYNA_SJIS;
     // 僕がいない間に変貌えられた妻の秘肉 ～ラブラブ新婚妻は他の男に抱かれ淫らに喘ぐ夢を見るか～ 体験版
 

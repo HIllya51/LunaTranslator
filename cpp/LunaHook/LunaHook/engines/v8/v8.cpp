@@ -59,7 +59,7 @@ namespace
 			parsebefore((wchar_t *)GlobalLock(hClipboardData), hp, split, buffer);
 			GlobalUnlock(hClipboardData);
 		};
-		hp.hook_after = [](hook_stack *s, TextBuffer buffer)
+		hp.embed_fun = [](hook_stack *s, TextBuffer buffer)
 		{
 			std::wstring transwithfont = parseafter(buffer.viewW());
 			HGLOBAL hClipboardData = GlobalAlloc(GMEM_MOVEABLE, transwithfont.size() * 2 + 2);
@@ -82,7 +82,7 @@ namespace
 		{
 			parsebefore((wchar_t *)stack->ARG1, hp, split, buffer);
 		};
-		hp.hook_after = [](hook_stack *s, TextBuffer buffer)
+		hp.embed_fun = [](hook_stack *s, TextBuffer buffer)
 		{
 			std::wstring transwithfont = parseafter(buffer.viewW());
 			s->ARG1 = (uintptr_t)allocateString(transwithfont);

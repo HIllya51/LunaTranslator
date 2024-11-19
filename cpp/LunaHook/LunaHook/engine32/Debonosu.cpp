@@ -21,7 +21,7 @@ namespace
     *split = FIXED_SPLIT_VALUE;
     buffer->from_cs((char *)*(DWORD *)(stack->base + hp->offset));
   }
-  void hook_after(hook_stack *s, TextBuffer buffer)
+  void embed_fun(hook_stack *s, TextBuffer buffer)
   {
     static std::string ts;
     ts = buffer.viewA();
@@ -60,8 +60,8 @@ namespace
               hp.address = hook_addr;
               hp.text_fun = SpecialHookDebonosuScenario;
               // hp.type = USING_STRING;
-              hp.hook_after = hook_after;
-              hp.hook_font = F_MultiByteToWideChar | F_GetTextExtentPoint32A;
+              hp.embed_fun = embed_fun;
+              hp.embed_hook_font = F_MultiByteToWideChar | F_GetTextExtentPoint32A;
               hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | FIXING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS; // there is only one thread
               hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
               {

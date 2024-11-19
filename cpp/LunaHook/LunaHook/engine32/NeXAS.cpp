@@ -310,7 +310,7 @@ bool InsertNeXASHookA()
     hp.address = addrx + sizeof(sig2) - 5;
     hp.offset = get_reg(regs::eax);
     hp.type = USING_STRING;
-    hp.newlineseperator = L"@n";
+    hp.lineSeparator = L"@n";
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       auto s = buffer->strA();
@@ -483,7 +483,7 @@ namespace
         }
       }
     };
-    hp.newlineseperator = L"@n";
+    hp.lineSeparator = L"@n";
     return NewHook(hp, "NeXAS3");
   }
 }

@@ -757,7 +757,7 @@ bool attach(ULONG startAddress, ULONG stopAddress) // attach scenario
     hp.type=USING_STRING|EMBED_ABLE|EMBED_AFTER_NEW| EMBED_DYNA_SJIS|NO_CONTEXT;
     hp.offset=get_stack(1);
     hp.text_fun=Private::hookBefore;
-    hp.hook_font=F_GetGlyphOutlineA;
+    hp.embed_hook_font=F_GetGlyphOutlineA;
     return NewHook(hp,"EmbedNexton");
 }
 

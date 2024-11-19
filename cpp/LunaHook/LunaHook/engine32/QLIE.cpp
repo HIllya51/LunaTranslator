@@ -1014,10 +1014,10 @@ namespace
       HookParam hp;
       hp.address = addr;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter;
-      hp.newlineseperator = L"[n]";
+      hp.embed_fun = Private::hookafter;
+      hp.lineSeparator = L"[n]";
       hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | USING_STRING | NO_CONTEXT;
-      hp.hook_font = F_ExtTextOutA | F_GetTextExtentPoint32A;
+      hp.embed_hook_font = F_ExtTextOutA | F_GetTextExtentPoint32A;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         buffer->from(std::regex_replace(buffer->strA(), std::regex("\\[rb,(.*?),.+\\]"), "$1"));

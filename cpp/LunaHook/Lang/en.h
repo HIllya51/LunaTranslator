@@ -99,4 +99,4 @@
 #define PROC_DISCONN L"process disconnected %d"
 #define COPYSELECTION L"auto send selected text in textbox to clipboard"
 #define FONTSELECT L"Select Font"
-#define UNMATCHABLEVERSION L"LunaHook and LunaHost versions do not match, may not work properly!"
+#define UNMATCHABLEVERSION L"The file version cannot be matched, may not work properly, please re-download again!"

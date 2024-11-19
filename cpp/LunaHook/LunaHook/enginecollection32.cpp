@@ -23,6 +23,7 @@
 #include "engine32/PONScripter.h"
 #include "engine32/Stronger.h"
 #include "engine32/Fizz.h"
+#include "engine32/Aromarie.h"
 #include "engine32/Ruf.h"
 #include "engine32/SYSD.h"
 #include "engine32/Diskdream.h"
@@ -412,5 +413,6 @@ std::vector<ENGINE *> check_engines()
         new AGE_System,
         new Cage,
         new Winters,
+        new Aromarie,
     };
 }

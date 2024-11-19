@@ -29,7 +29,7 @@ bool InsertTanukiHook()
         hp.address = j;
         hp.offset=get_stack(1);
         hp.type = USING_STRING | NO_CONTEXT|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
-        hp.hook_font=F_GetGlyphOutlineA;
+        hp.embed_hook_font=F_GetGlyphOutlineA;
         ConsoleOutput("INSERT TanukiSoft");
         return NewHook(hp, "TanukiSoft");
       }

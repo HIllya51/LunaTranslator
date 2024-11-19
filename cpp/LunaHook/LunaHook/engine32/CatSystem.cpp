@@ -241,7 +241,7 @@ bool InsertCatSystem2Hook()
     auto _ = std::regex_replace(buffer->strA(), std::regex(R"(\[(.+?)/.+\])"), "$1");
     buffer->from(_);
   };
-  hp.newlineseperator = L"\\n";
+  hp.lineSeparator = L"\\n";
   return NewHook(hp, "CatSystem2new");
 }
 namespace
@@ -831,8 +831,8 @@ namespace
       else
         hp.type |= EMBED_DYNA_SJIS;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter;
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.embed_fun = Private::hookafter;
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         buffer->from(std::regex_replace(buffer->strA(), std::regex(R"(\[(.+?)/.+\])"), "$1"));
@@ -843,7 +843,7 @@ namespace
       if (p)
       {
         hp.type |= EMBED_DYNA_SJIS;
-        hp.hook_font = F_GetGlyphOutlineA;
+        hp.embed_hook_font = F_GetGlyphOutlineA;
         patch_fun = []()
         {
           if (*(WORD *)p == 0xc985)

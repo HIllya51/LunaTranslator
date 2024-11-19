@@ -56,7 +56,7 @@ bool Triangle::attach_function()
       hp.offset = get_stack(4);
       hp.split = get_stack(1);
       hp.type = USING_STRING | USING_SPLIT;
-      hp.hook_font = F_TextOutA;
+      hp.embed_hook_font = F_TextOutA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         // ▼

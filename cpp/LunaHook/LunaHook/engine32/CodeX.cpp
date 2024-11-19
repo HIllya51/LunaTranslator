@@ -44,7 +44,7 @@ bool InsertCodeXHook()
   hp.offset = get_reg(regs::eax);
   hp.index = 0;
   hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_OVERWRITE | NO_CONTEXT; // 无法解决中文乱码
-  hp.hook_font = F_GetGlyphOutlineA;
+  hp.embed_hook_font = F_GetGlyphOutlineA;
   hp.filter_fun = CodeXFilter;
   ConsoleOutput("INSERT CodeX");
 
@@ -136,7 +136,7 @@ namespace
     hp.offset = get_stack(1);
     hp.split = get_stack(2);
     hp.type = USING_STRING | FULL_STRING | NO_CONTEXT | USING_SPLIT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
-    hp.hook_font = F_GetGlyphOutlineA;
+    hp.embed_hook_font = F_GetGlyphOutlineA;
     hp.filter_fun = CodeXFilter;
     return NewHook(hp, "CodeX2");
   }

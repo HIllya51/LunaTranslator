@@ -128,7 +128,7 @@ auto makeserveronce(int port)
     HTTP_BINDING_INFO BindingProperty;
     HTTP_TIMEOUT_LIMIT_INFO CGTimeout;
 
-    auto url = std::wstring(L"http://127.0.0.1:") + std::to_wstring(port) + L"/fuck";
+    auto url = std::wstring(L"http://127.0.0.1:") + std::to_wstring(port) + L"/sakurakouji";
     //
     // Initialize HTTP APIs.
     //

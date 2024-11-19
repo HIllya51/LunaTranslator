@@ -1190,14 +1190,14 @@ bool InsertBGIDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
     */
     ULONG addr, funaddr;
     HookParam hp;
-    hp.hook_font = F_TextOutA | F_TextOutW;
+    hp.embed_hook_font = F_TextOutA | F_TextOutW;
     if (addr = search_bgi3(processStartAddress, processStopAddress))
     {
       // 有乱码，无法处理。
       Private::textIndex_ = 3;
       hp.offset = get_stack(Private::textIndex_);
       Private::type_ = Private::Type_BGI3;
-      hp.hook_font |= F_GetTextExtentPoint32W;
+      hp.embed_hook_font |= F_GetTextExtentPoint32W;
       if (addr - processStartAddress == 0x3B860) //[220729][1171051][きゃべつそふと] ジュエリー・ハーツ・アカデミア -We will wing wonder world-，无法处理的乱码，不知道怎么回事。
         addr = 0;
     }
@@ -1594,7 +1594,7 @@ bool InsertBGI4Hook()
     }
   };
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
-  hp.hook_font = F_TextOutW | F_GetTextExtentPoint32W;
+  hp.embed_hook_font = F_TextOutW | F_GetTextExtentPoint32W;
   hp.filter_fun = BGI7Filter;
   hp.offset = get_stack(2);
   ConsoleOutput("BGI4");

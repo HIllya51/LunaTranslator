@@ -21,10 +21,15 @@ def overridepathexists():
 
 def prepareqtenv():
     import windows
+    from myutils.config import get_platform
 
     # win7 no vcredist2015
     windows.addenvpath("./files/runtime/")
-    windows.LoadLibraryW("./files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
+    if get_platform() != "xp":
+        windows.LoadLibraryW("./files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
+    else:
+        windows.addenvpath("./files/runtime/Lib/site-packages/PyQt5")
+        windows.LoadLibraryW("./files/runtime/Lib/site-packages/PyQt5/Qt5Core.dll")
 
     from qtsymbols import QApplication, isqt5, Qt, QFont, QLocale
 
@@ -32,10 +37,15 @@ def prepareqtenv():
 
     if isqt5:
         # 中文字符下不能自动加载
-        plgs = "./files/runtime/PyQt5/Qt5/plugins"
+        if get_platform() != "xp":
+            plgs = "./files/runtime/PyQt5/Qt5/plugins"
+        else:
+            plgs = "./files/runtime/Lib/site-packages/PyQt5/plugins"
+
         if os.path.exists(plgs):
             QApplication.addLibraryPath(plgs)
-        QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
+        if get_platform() != "xp":
+            QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
     if os.path.exists("./files/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
         # maybe use qwebengine
@@ -46,10 +56,10 @@ def prepareqtenv():
             QApplication.setAttribute(
                 Qt.ApplicationAttribute.AA_DontCreateNativeWidgetSiblings
             )
-
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
-    )
+    if get_platform() != "xp":
+        QApplication.setHighDpiScaleFactorRoundingPolicy(
+            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
+        )
     font = QFont()
     font.setStyleStrategy(QFont.StyleStrategy.PreferAntialias)
     font.setHintingPreference(QFont.HintingPreference.PreferFullHinting)

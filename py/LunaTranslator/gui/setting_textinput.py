@@ -9,6 +9,7 @@ from myutils.config import (
     get_launchpath,
     savehook_new_list,
     static_data,
+    get_platform,
 )
 
 from traceback import print_exc
@@ -280,6 +281,8 @@ def selectgameuid(self):
     button.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
     button.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
     if dialog.exec():
+        if not _internal:
+            return None
         return _internal[combo.currentIndex()]
 
 
@@ -642,6 +645,8 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         ("ocr", "OCR"),
         ("copy", "剪贴板"),
     ]
+    if get_platform() == "xp":
+        _rank.pop(1)
     __ = []
     for key, name in _rank:
         __.append(getsmalllabel(name))
@@ -681,15 +686,21 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     ]
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     basel.addWidget(gridlayoutwidget)
+    titles = ["HOOK设置", "OCR设置", "剪贴板", "文本输出", "其他"]
+    funcs = [
+        lambda l: setTabOne_lazy_h(self, l),
+        lambda l: getocrgrid_table(self, l),
+        lambda l: makescrollgrid(getTabclip(self), l),
+        lambda l: makescrollgrid(outputgrid(self), l),
+        lambda l: makescrollgrid(filetranslate(self), l),
+    ]
+
+    if get_platform() == "xp":
+        titles.pop(1)
+        funcs.pop(1)
     tab, dotab = makesubtab_lazy(
-        ["HOOK设置", "OCR设置", "剪贴板", "文本输出", "其他"],
-        [
-            lambda l: setTabOne_lazy_h(self, l),
-            lambda l: getocrgrid_table(self, l),
-            lambda l: makescrollgrid(getTabclip(self), l),
-            lambda l: makescrollgrid(outputgrid(self), l),
-            lambda l: makescrollgrid(filetranslate(self), l),
-        ],
+        titles,
+        funcs,
         delay=True,
     )
     basel.addWidget(tab)

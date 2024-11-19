@@ -484,9 +484,9 @@ namespace
           HookParam hp;
           hp.address = addr;
           hp.text_fun = Private::hookBefore;
-          hp.hook_after = Private::hookafter;
+          hp.embed_fun = Private::hookafter;
           hp.index = 4;
-          hp.hook_font = F_TextOutA | F_GetTextExtentPoint32A;
+          hp.embed_hook_font = F_TextOutA | F_GetTextExtentPoint32A;
           hp.type = DATA_INDIRECT | USING_STRING | EMBED_ABLE | NO_CONTEXT | EMBED_DYNA_SJIS;
           if (role == Engine::NameRole)
             count += NewHook(hp, "EmbedWaffle_name");

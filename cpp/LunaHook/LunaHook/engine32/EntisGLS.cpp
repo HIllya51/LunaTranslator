@@ -24,7 +24,7 @@ bool EntisGLS::attach_function() {
     HookParam hp;
     hp.address = addr ;
     hp.offset=get_stack(1);
-    hp.hook_font=F_GetGlyphOutlineW;
+    hp.embed_hook_font=F_GetGlyphOutlineW;
     hp.type = USING_STRING|CODEC_UTF16|EMBED_ABLE|EMBED_AFTER_NEW; 
     
     return NewHook(hp, "EntisGLS");

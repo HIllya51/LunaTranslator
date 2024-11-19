@@ -871,9 +871,9 @@ namespace
       hp.offset = get_reg(regs::ecx);
       hp.index = 4;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter2;
+      hp.embed_fun = Private::hookafter2;
       hp.type = USING_STRING | DATA_INDIRECT | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       return NewHook(hp, "EmbedWolf");
     }
 

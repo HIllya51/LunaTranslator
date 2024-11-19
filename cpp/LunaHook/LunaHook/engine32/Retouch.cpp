@@ -31,7 +31,7 @@ bool InsertRetouch1Hook()
   hp.address = addr;
   hp.offset=get_stack(1);
   hp.type = USING_STRING|NO_CONTEXT|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
-  hp.hook_font=F_GetGlyphOutlineA;
+  hp.embed_hook_font=F_GetGlyphOutlineA;
   hp.text_fun = SpecialHookRetouch1;
   ConsoleOutput("INSERT Retouch");
   return NewHook(hp, "Retouch");
@@ -56,7 +56,7 @@ bool InsertRetouch2Hook()
   hp.address = addr;
   hp.offset=get_stack(1);
   hp.type = USING_STRING|NO_CONTEXT|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
-  hp.hook_font=F_GetGlyphOutlineA;
+  hp.embed_hook_font=F_GetGlyphOutlineA;
   ConsoleOutput("INSERT Retouch");
   return NewHook(hp, "Retouch");
 }
@@ -87,7 +87,7 @@ bool attach() // attach scenario
   hp.address = addr;
   hp.offset=get_stack(1); 
   hp.type = USING_STRING|NO_CONTEXT|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
-  hp.hook_font=F_GetGlyphOutlineA;
+  hp.embed_hook_font=F_GetGlyphOutlineA;
   return NewHook(hp, "RetouchHistory");
 }
 

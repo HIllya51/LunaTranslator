@@ -396,24 +396,28 @@ void TextHook::Send(uintptr_t lpDataBase)
 			{
 				if (hp.type & EMBED_AFTER_NEW)
 				{
-					auto _ = new char[max(lpCountsave, buff.size) + 10];
+					auto size = max(lpCountsave, buff.size + 1);
+					auto _ = new char[size];
 					memcpy(_, buff.buff, buff.size);
-					for (int i = buff.size; i < max(lpCountsave, buff.size) + 10; i++)
-						_[i] = 0;
+					memset(_ + buff.size, 0, size - buff.size);
 					*(uintptr_t *)plpdatain = (uintptr_t)_;
 				}
 				else if (hp.type & EMBED_AFTER_OVERWRITE)
 				{
 					memcpy((void *)lpDataIn, buff.buff, buff.size);
-					for (int i = buff.size; i < lpCountsave; i++)
-						((BYTE *)(lpDataIn))[i] = 0;
+					auto zeros = 1;
+					if (hp.type & CODEC_UTF16)
+						zeros = 2;
+					else if (hp.type & CODEC_UTF32)
+						zeros = 4;
+					memset((char *)lpDataIn + buff.size, 0, max(lpCountsave, zeros));
 				}
-				else if (hp.hook_after)
-					hp.hook_after(stack, buff);
+				else if (hp.embed_fun)
+					hp.embed_fun(stack, buff);
 				else if (hp.type & SPECIAL_JIT_STRING)
 				{
 					if (hp.jittype == JITTYPE::UNITY)
-						unity_ui_string_hook_after(argidx(stack, hp.argidx), buff);
+						unity_ui_string_embed_fun(argidx(stack, hp.argidx), buff);
 				}
 			}
 		}

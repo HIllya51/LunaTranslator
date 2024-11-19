@@ -30,7 +30,7 @@ bool InsertENTERGRAM()
   hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
   hp.filter_fun = ENTERGRAMfilter;
   hp.offset = get_reg(regs::rsi);
-  hp.newlineseperator = L"\\n";
+  hp.lineSeparator = L"\\n";
   return NewHook(hp, "UnrealEngine");
 }
 bool UnrealEngine::attach_function()

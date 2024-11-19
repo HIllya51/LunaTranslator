@@ -665,7 +665,7 @@ namespace
         hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
         hp.offset = get_stack(2);
         hp.filter_fun = pensilfilter;
-        hp.hook_font = F_GetGlyphOutlineA;
+        hp.embed_hook_font = F_GetGlyphOutlineA;
         return NewHook(hp, "EmbedPensil");
       };
       if (addr && _do(addr))
@@ -702,7 +702,7 @@ namespace
       hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
       hp.offset = get_stack(1);
       hp.filter_fun = pensilfilter;
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       return NewHook(hp, "EmbedPensilChoice");
     }
 

@@ -455,14 +455,14 @@ bool InsertLeafHook()
   // 这个会卡死，无解
   //  hp.address=addr1+7;
   //  hp.hook_before=Private::hook1;
-  //  hp.hook_after=Private::hookafterbf;
+  //  hp.embed_fun=Private::hookafterbf;
   //  hp.type=EMBED_ABLE;
   // NewHook(hp,"EmbedLeaf");
   hp1.address = addr2 + 7;
   hp1.text_fun = hook2;
-  hp1.hook_after = hook2a;
+  hp1.embed_fun = hook2a;
   hp1.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
-  hp1.newlineseperator = L"\\n";
+  hp1.lineSeparator = L"\\n";
   succ |= NewHook(hp1, "EmbedLeaf");
   return succ;
 }
@@ -770,7 +770,7 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(1);
     hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_NEW;
-    hp.newlineseperator = L"\\n";
+    hp.lineSeparator = L"\\n";
     hp.filter_fun = AquaplusFilter;
     return NewHook(hp, "wa2special");
   }

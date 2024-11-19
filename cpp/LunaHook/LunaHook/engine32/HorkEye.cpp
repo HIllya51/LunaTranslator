@@ -256,9 +256,9 @@ bool InsertHorkEyeHook()
     hp.offset = get_reg(regs::ebx);
     hp.type = USING_STRING | NO_CONTEXT | FIXING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS;
     hp.text_fun = hookBefore<-4 - 1>;
-    hp.hook_after = hookafter<-4 - 1>;
+    hp.embed_fun = hookafter<-4 - 1>;
     hp.filter_fun = HorkEyeFilter;
-    hp.newlineseperator = L"[n]";
+    hp.lineSeparator = L"[n]";
     ConsoleOutput("INSERT HorkEye");
 
     return NewHook(hp, "HorkEye");
@@ -282,7 +282,7 @@ bool InsertHorkEyeHook()
     hp.offset = get_stack(1);
     hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
     hp.text_fun = hookBefore<1>;
-    hp.hook_after = hookafter<1>;
+    hp.embed_fun = hookafter<1>;
 
     return NewHook(hp, "HorkEye2");
   }
@@ -325,7 +325,7 @@ bool InsertHorkEye3Hook()
   hp.offset = get_stack(1);
   hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
   hp.text_fun = hookBefore<1>;
-  hp.hook_after = hookafter<1>;
+  hp.embed_fun = hookafter<1>;
 
   return NewHook(hp, "HorkEye3");
 }
@@ -359,7 +359,7 @@ bool InsertHorkEye4Hook()
   hp.offset = get_reg(regs::eax);
   hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS;
   hp.text_fun = hookBefore<-1 - 1>;
-  hp.hook_after = hookafter<-1 - 1>;
+  hp.embed_fun = hookafter<-1 - 1>;
 
   return NewHook(hp, "HorkEye4");
 }

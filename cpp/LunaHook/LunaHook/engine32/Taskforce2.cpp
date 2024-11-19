@@ -392,8 +392,8 @@ namespace
       HookParam hp;
       hp.address = addr + addr_offset;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter;
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.embed_fun = Private::hookafter;
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       return NewHook(hp, "EmbedTaskforce");
     }

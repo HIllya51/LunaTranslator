@@ -1423,7 +1423,7 @@ namespace
         hp.address = addr;
         hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
         hp.text_fun = Private::hookBefore;
-        hp.hook_after = Private::hookafter2;
+        hp.embed_fun = Private::hookafter2;
         auto succ = NewHook(hp, "EmbedSysmtem44");
         hp.address = addr + 5;
         hp.text_fun = Private::hookAfter;

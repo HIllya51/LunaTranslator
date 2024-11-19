@@ -412,10 +412,10 @@ namespace
         HookParam hp;
         hp.address = addr;
         hp.text_fun = Private::hookBefore;
-        hp.hook_after = Private::hook2a;
+        hp.embed_fun = Private::hook2a;
         hp.type = EMBED_ABLE | CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-        hp.newlineseperator = L"%r";
-        hp.hook_font = F_GetGlyphOutlineW;
+        hp.lineSeparator = L"%r";
+        hp.embed_hook_font = F_GetGlyphOutlineW;
         bool succ = NewHook(hp, "EmbedGXP");
         hp.address = addr + 5;
         hp.text_fun = Private::hookAfter;
@@ -493,10 +493,10 @@ namespace
         HookParam hp;
         hp.address = addr;
         hp.text_fun = Private::hookBefore;
-        hp.hook_after = Private::hook2a;
+        hp.embed_fun = Private::hook2a;
         hp.type = EMBED_ABLE | CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-        hp.newlineseperator = L"%r";
-        hp.hook_font = F_GetGlyphOutlineW;
+        hp.lineSeparator = L"%r";
+        hp.embed_hook_font = F_GetGlyphOutlineW;
         bool succ = NewHook(hp, "EmbedGXP2");
         hp.address = addr + 5;
         hp.text_fun = Private::hookAfter;

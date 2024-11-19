@@ -16,7 +16,7 @@ add_library(host
 )
 target_precompile_headers(host REUSE_FROM pch)
 target_include_directories(host PUBLIC .)
-
+target_link_libraries(host VERSION_DEF)
 
 add_library(LunaHostDll MODULE LunaHostDll.cpp  ${versioninfohost})
 target_precompile_headers(LunaHostDll REUSE_FROM pch)

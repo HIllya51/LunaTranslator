@@ -1473,7 +1473,7 @@ namespace
       HookParam hp;
       hp.address = addr;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter;
+      hp.embed_fun = Private::hookafter;
       hp.type = CODEC_UTF16 | EMBED_ABLE | NO_CONTEXT;
       return NewHook(hp, "EmbedMalie");
     }

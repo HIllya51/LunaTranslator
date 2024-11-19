@@ -476,7 +476,7 @@ namespace
       hp.address = addr;
       hp.offset = get_stack(1);
       hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
-      hp.hook_font = F_DrawTextA | F_GetGlyphOutlineA;
+      hp.embed_hook_font = F_DrawTextA | F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         buffer->from(std::regex_replace(buffer->strA(), std::regex("\\[.+\\|(.+?)\\]"), "$1"));

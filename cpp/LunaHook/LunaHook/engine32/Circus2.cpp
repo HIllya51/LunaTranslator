@@ -85,7 +85,7 @@ namespace
     hp.address = funcaddr;
     hp.offset = get_stack(2);
     hp.type = USING_STRING; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
-    // hp.hook_font=F_GetGlyphOutlineA;
+    // hp.embed_hook_font=F_GetGlyphOutlineA;
     // it will split a long to many lines
     hp.filter_fun = filter;
 
@@ -321,8 +321,8 @@ namespace
       hp.address = addr;
       hp.filter_fun = filter;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter;
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.embed_fun = Private::hookafter;
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       hp.type = USING_STRING | EMBED_ABLE | NO_CONTEXT | EMBED_DYNA_SJIS;
 
       return NewHook(hp, "EmbedCircus");

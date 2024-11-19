@@ -113,9 +113,9 @@ struct HookParam
 	ALIGNPTR(uint64_t __12, uintptr_t user_value);
 	ALIGNPTR(uint64_t __2, void (*text_fun)(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split))
 	ALIGNPTR(uint64_t __3, void (*filter_fun)(TextBuffer *buffer, HookParam *hp)); // jichi 10/24/2014: Add filter function. Return false to skip the text
-	ALIGNPTR(uint64_t __7, void (*hook_after)(hook_stack *stack, TextBuffer buffer));
-	uint64_t hook_font;
-	ALIGNPTR(uint64_t __9, const wchar_t *newlineseperator);
+	ALIGNPTR(uint64_t __7, void (*embed_fun)(hook_stack *stack, TextBuffer buffer));
+	uint64_t embed_hook_font;
+	ALIGNPTR(uint64_t __9, const wchar_t *lineSeparator);
 	char name[HOOK_NAME_SIZE];
 	wchar_t hookcode[HOOKCODE_LEN];
 	HookParam()

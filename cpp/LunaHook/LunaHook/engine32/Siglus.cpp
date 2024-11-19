@@ -1783,8 +1783,8 @@ namespace
       hp.address = addr;
       hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE | NO_CONTEXT; // 0x41
       hp.text_fun = Private::text_fun;
-      hp.hook_after = Private::hookafter;
-      hp.hook_font = F_GetGlyphOutlineW;
+      hp.embed_fun = Private::hookafter;
+      hp.embed_hook_font = F_GetGlyphOutlineW;
       return NewHook(hp, "EmbedSiglus");
     }
   }
@@ -1872,8 +1872,8 @@ namespace OtherHook
     hp.address = addr;
     hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE | NO_CONTEXT; // 0x41
     hp.text_fun = Private::hookBefore;
-    hp.hook_after = Private::hookafter2;
-    hp.hook_font = F_GetGlyphOutlineW;
+    hp.embed_fun = Private::hookafter2;
+    hp.embed_hook_font = F_GetGlyphOutlineW;
     return NewHook(hp, "EmbedSiglus");
   }
 

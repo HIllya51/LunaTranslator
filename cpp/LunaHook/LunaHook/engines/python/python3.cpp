@@ -179,7 +179,7 @@ bool InsertRenpy3Hook()
                     if (PyUnicode_FromKindAndData)
                     {
                         hp.type |= EMBED_ABLE | EMBED_CODEC_UTF16;
-                        hp.hook_after = [](hook_stack *stack, TextBuffer buffer)
+                        hp.embed_fun = [](hook_stack *stack, TextBuffer buffer)
                         {
                             auto format = (PyObject *)stack->rcx;
                             if (!format)

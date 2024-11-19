@@ -147,8 +147,8 @@ bool attach_navel(ULONG startAddress, ULONG stopAddress) // attach scenario
   hp.address = addr;
   hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
   hp.text_fun = hookBefore_navel;
-  hp.hook_after = hookafter_navel;
-  hp.hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
+  hp.embed_fun = hookafter_navel;
+  hp.embed_hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
   return NewHook(hp, "LucifenEmbed");
 }
 namespace
@@ -751,8 +751,8 @@ namespace
       hp.address = addr;
       hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter;
-      hp.hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
+      hp.embed_fun = Private::hookafter;
+      hp.embed_hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
       return NewHook(hp, "EmbedLucifen");
     }
   } // namespace ScenarioHook
@@ -950,8 +950,8 @@ namespace
       hp.address = addr;
       hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter;
-      hp.hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
+      hp.embed_fun = Private::hookafter;
+      hp.embed_hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
       return NewHook(hp, "lucifen_choice");
     }
   } // namespace ChoiceHook
@@ -1016,9 +1016,9 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(1);
     hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
-    hp.hook_after = hookafter;
+    hp.embed_fun = hookafter;
     hp.text_fun = hookBefore;
-    hp.hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
+    hp.embed_hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
     return NewHook(hp, "Embedlucifen2");
   }
 }

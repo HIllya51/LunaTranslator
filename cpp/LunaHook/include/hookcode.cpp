@@ -299,7 +299,7 @@ namespace
 		{
 			HCode += L"E";
 
-			if (hp.hook_after)
+			if (hp.embed_fun)
 				HCode += L'X';
 			else
 			{

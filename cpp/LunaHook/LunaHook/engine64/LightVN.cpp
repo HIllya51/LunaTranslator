@@ -136,7 +136,7 @@ namespace
       buffer->from(str);
     };
     hp.filter_fun = commonfilter;
-    hp.newlineseperator = L"\\n";
+    hp.lineSeparator = L"\\n";
     return NewHook(hp, "Light.VN.16");
   }
 

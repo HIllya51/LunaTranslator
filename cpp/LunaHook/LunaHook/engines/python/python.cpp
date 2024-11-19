@@ -1,6 +1,6 @@
 #include "python.h"
 #include <dwrite.h>
-extern "C" __declspec(dllexport) const wchar_t *internal_renpy_call_host(const wchar_t *text, int split)
+extern "C" __declspec(dllexport) const wchar_t *luna_internal_renpy_call_host(const wchar_t *text, int split)
 {
     return text;
 }
@@ -21,9 +21,9 @@ bool Luna_checkisusingembed(uint64_t address, uint64_t ctx2, bool usingsplit)
     }
     return false;
 }
-extern "C" __declspec(dllexport) bool internal_renpy_call_is_embed_using(int split, bool usingsplit)
+extern "C" __declspec(dllexport) bool luna_internal_renpy_call_is_embed_using(int split, bool usingsplit)
 {
-    return Luna_checkisusingembed((uint64_t)internal_renpy_call_host, split, usingsplit);
+    return Luna_checkisusingembed((uint64_t)luna_internal_renpy_call_host, split, usingsplit);
 }
 namespace
 {
@@ -62,11 +62,11 @@ namespace
     void hook_internal_renpy_call_host()
     {
         HookParam hp_internal;
-        hp_internal.address = (uintptr_t)internal_renpy_call_host;
+        hp_internal.address = (uintptr_t)luna_internal_renpy_call_host;
         hp_internal.offset = GETARG1;
         hp_internal.split = GETARG2;
-        hp_internal.type = USING_SPLIT | USING_STRING | CODEC_UTF16 | EMBED_ABLE |  EMBED_AFTER_NEW | NO_CONTEXT;
-        NewHook(hp_internal, "internal_renpy_call_host");
+        hp_internal.type = USING_SPLIT | USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW | NO_CONTEXT;
+        NewHook(hp_internal, "luna_internal_renpy_call_host");
         PyRunScript(LoadResData(L"renpy_hook_text", L"PYSOURCE").c_str());
     }
 
@@ -268,7 +268,7 @@ namespace
     }
 
 }
-extern "C" __declspec(dllexport) const wchar_t *internal_renpy_get_font()
+extern "C" __declspec(dllexport) const wchar_t *luna_internal_renpy_get_font()
 {
     if (wcslen(commonsharedmem->fontFamily) == 0)
         return NULL;

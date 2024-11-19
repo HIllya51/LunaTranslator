@@ -1,12 +1,11 @@
 from qtsymbols import *
 import os, functools, re
-from myutils.config import globalconfig
+from myutils.config import globalconfig, get_platform
 from myutils.utils import splittranslatortypes, translate_exits
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makegrid,
     makesubtab_lazy,
-    LGroupBox,
     makescrollgrid,
     D_getsimplecombobox,
 )
@@ -128,28 +127,32 @@ def makeproxytab():
         l=globalconfig["update"],
         item="update",
     )
-
+    titles = [
+        "在线翻译",
+        "注册在线翻译",
+        "OCR",
+        "语音合成",
+        "辞书",
+        "元数据",
+        "离线翻译",
+        "自动更新",
+    ]
+    funcs = [
+        functools.partial(makegridW, mianfei),
+        functools.partial(makegridW, shoufei),
+        functools.partial(makegridW, ocrs),
+        functools.partial(makegridW, readers),
+        functools.partial(makegridW, cishus),
+        functools.partial(makegridW, meta),
+        functools.partial(makegridW, lixians),
+        functools.partial(makegridW, github),
+    ]
+    if get_platform() == "xp":
+        titles.pop(2)
+        funcs.pop(2)
     tab, dotab = makesubtab_lazy(
-        [
-            "在线翻译",
-            "注册在线翻译",
-            "OCR",
-            "语音合成",
-            "辞书",
-            "元数据",
-            "离线翻译",
-            "自动更新",
-        ],
-        [
-            functools.partial(makegridW, mianfei),
-            functools.partial(makegridW, shoufei),
-            functools.partial(makegridW, ocrs),
-            functools.partial(makegridW, readers),
-            functools.partial(makegridW, cishus),
-            functools.partial(makegridW, meta),
-            functools.partial(makegridW, lixians),
-            functools.partial(makegridW, github),
-        ],
+        titles,
+        funcs,
         delay=True,
     )
     dotab()
@@ -157,42 +160,42 @@ def makeproxytab():
 
 
 def setTab_proxy(self, l):
-    grids = [
-        [
-            (
-                dict(
-                    title="网络请求",
-                    type="grid",
-                    grid=[
-                        [
-                            "HTTP",
-                            (
-                                D_getsimplecombobox(
-                                    ["winhttp", "libcurl"],
-                                    globalconfig,
-                                    "network",
-                                    static=True,
-                                ),
-                                5,
+    grids1 = [
+        (
+            dict(
+                title="网络请求",
+                type="grid",
+                grid=[
+                    [
+                        "HTTP",
+                        (
+                            D_getsimplecombobox(
+                                ["winhttp", "libcurl"],
+                                globalconfig,
+                                "network",
+                                static=True,
                             ),
-                            "",
-                            "WebSocket",
-                            (
-                                D_getsimplecombobox(
-                                    ["winhttp", "libcurl"],
-                                    globalconfig,
-                                    "network_websocket",
-                                    static=True,
-                                ),
-                                5,
+                            5,
+                        ),
+                        "",
+                        "WebSocket",
+                        (
+                            D_getsimplecombobox(
+                                ["winhttp", "libcurl"],
+                                globalconfig,
+                                "network_websocket",
+                                static=True,
                             ),
-                        ],
+                            5,
+                        ),
                     ],
-                ),
-                0,
-                "group",
-            )
-        ],
+                ],
+            ),
+            0,
+            "group",
+        )
+    ]
+    grids = [
         [
             (
                 dict(
@@ -239,4 +242,6 @@ def setTab_proxy(self, l):
             )
         ],
     ]
+    if get_platform() != "xp":
+        grids.insert(0, grids1)
     makescrollgrid(grids, l)

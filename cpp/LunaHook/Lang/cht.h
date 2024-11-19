@@ -99,4 +99,4 @@
 #define PROC_DISCONN L"處理程序已中斷連接 %d"
 #define COPYSELECTION L"自動將文字框中選取的文字複製到剪貼簿"
 #define FONTSELECT L"選擇字體"
-#define UNMATCHABLEVERSION L"LunaHook 和 LunaHost 版本不匹配，可能無法正常運作！"
+#define UNMATCHABLEVERSION L"文件版本不匹配，可能無法正常運作，請重新下載！"

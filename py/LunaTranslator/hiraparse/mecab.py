@@ -109,10 +109,13 @@ class mecab(basehira):
             # print(node.feature)
             if "-" in origorig:
                 try:
-                    hira_ = origorig.split("-")[1]
-                    if isascii(hira):  # 腰を引いて-->引く-他動詞
-                        hira = hira_
-                    origorig = origorig.split("-")[0]
+                    maybe_english = origorig.split("-")[1]
+                    if isascii(maybe_english):
+                        # コンビニを --> コンビニ-convenience
+                        hira = origorig = maybe_english
+                    else:
+                        # 腰を引いて --> 引く-他動詞
+                        origorig = origorig.split("-")[0]
                 except:
                     pass
 

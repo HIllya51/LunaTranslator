@@ -506,7 +506,7 @@ namespace
       HookParam hp;
       hp.address = addr1;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter1;
+      hp.embed_fun = Private::hookafter1;
       hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       auto succ = NewHook(hp, "EMBEDLUNA");
       hp.address = addr2;

@@ -194,7 +194,7 @@ bool libcefhook(HMODULE module)
 			hp.address = addr + 4;
 			hp.offset = get_stack(1);
 			hp.filter_fun = ceffileter;
-			hp.newlineseperator = L"<br>";
+			hp.lineSeparator = L"<br>";
 			hp.length_offset = 2;
 			hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
 			hp.user_value = (DWORD) new std::wstring;

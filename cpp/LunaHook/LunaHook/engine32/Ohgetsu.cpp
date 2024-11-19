@@ -133,7 +133,7 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(2);
     hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
-    hp.hook_font = F_GetGlyphOutlineA;
+    hp.embed_hook_font = F_GetGlyphOutlineA;
     return NewHook(hp, "Basil2");
   }
 }

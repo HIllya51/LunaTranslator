@@ -481,11 +481,11 @@ namespace
       HookParam hp;
       hp.address = beforeAddress;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter2;
+      hp.embed_fun = Private::hookafter2;
       hp.offset = get_stack(1);
-      hp.newlineseperator = L"\\n";
+      hp.lineSeparator = L"\\n";
       hp.type = EMBED_ABLE | EMBED_DYNA_SJIS;
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       auto suc = NewHook(hp, "EMbedUnicorn");
       hp.address = afterAddress;
       hp.text_fun = Private::hookAfter;
@@ -784,10 +784,10 @@ namespace
       HookParam hp;
       hp.address = addr;
       hp.text_fun = Private::hookBefore;
-      hp.hook_after = Private::hookafter;
+      hp.embed_fun = Private::hookafter;
       hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
-      hp.newlineseperator = L"\\n";
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.lineSeparator = L"\\n";
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       return NewHook(hp, "EMbedUnicornOther");
     }
 

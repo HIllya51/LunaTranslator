@@ -38,7 +38,7 @@ void commonsolvemonostring(uintptr_t offset, TextBuffer *buffer)
     buffer->from(sw.value());
 }
 
-void unity_ui_string_hook_after(uintptr_t *offset, TextBuffer buff)
+void unity_ui_string_embed_fun(uintptr_t *offset, TextBuffer buff)
 {
     auto view = buff.viewW();
     auto newstring = il2cppfunctions::create_string(view);

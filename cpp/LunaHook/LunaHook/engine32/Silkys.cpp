@@ -313,8 +313,8 @@ bool InsertSilkysHook()
       hp.address = addr;
       hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
       hp.text_fun = hookBefore;
-      hp.hook_after = hookafter1;
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.embed_fun = hookafter1;
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       succ_ |= NewHook(hp, "EmbedSilkys");
     }
     {
@@ -373,7 +373,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.offset = get_stack(1);
-    hp.newlineseperator = L"\\n";
+    hp.lineSeparator = L"\\n";
     hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW;
     return NewHook(hp, "EmbedSilkysX");
   }
@@ -650,7 +650,7 @@ bool Silkyssakura::attach_function()
           hp_embed.address = addr;
           hp_embed.offset = get_stack(2);
           hp_embed.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | CODEC_UTF16;
-          hp_embed.hook_font = F_GetGlyphOutlineW;
+          hp_embed.embed_hook_font = F_GetGlyphOutlineW;
           return NewHook(hp_embed, "embedSilkyssakura"); // 这个是分两层分别绘制文字和阴影，需要两个都内嵌。
         }
       }
@@ -688,7 +688,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.offset = get_reg(regs::ecx);
-    hp.newlineseperator = L"\\n";
+    hp.lineSeparator = L"\\n";
     hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     return NewHook(hp, "SilkysX");
   }
@@ -719,7 +719,7 @@ bool Silkysveryveryold_attach_function()
   HookParam hp;
   hp.address = addr;
   hp.offset = get_stack(1);
-  hp.newlineseperator = L"\\n";
+  hp.lineSeparator = L"\\n";
   hp.type = USING_STRING;
   return NewHook(hp, "SilkysX");
 }

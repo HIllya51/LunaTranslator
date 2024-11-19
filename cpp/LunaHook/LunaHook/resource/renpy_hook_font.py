@@ -3,11 +3,15 @@ def callLunaHostFont():
         import ctypes
 
         try:
-            internal_renpy_get_font = ctypes.CDLL("LunaHook64").internal_renpy_get_font
+            luna_internal_renpy_get_font = ctypes.CDLL(
+                "LunaHook64"
+            ).luna_internal_renpy_get_font
         except:
-            internal_renpy_get_font = ctypes.CDLL("LunaHook32").internal_renpy_get_font
-        internal_renpy_get_font.restype = ctypes.c_wchar_p
-        return internal_renpy_get_font()
+            luna_internal_renpy_get_font = ctypes.CDLL(
+                "LunaHook32"
+            ).luna_internal_renpy_get_font
+        luna_internal_renpy_get_font.restype = ctypes.c_wchar_p
+        return luna_internal_renpy_get_font()
     except:
         return None
 
@@ -17,17 +21,17 @@ def callLunaIsUsingEmbed_nosplit():
         import ctypes
 
         try:
-            internal_renpy_call_is_embed_using = ctypes.CDLL(
+            luna_internal_renpy_call_is_embed_using = ctypes.CDLL(
                 "LunaHook64"
-            ).internal_renpy_call_is_embed_using
+            ).luna_internal_renpy_call_is_embed_using
         except:
-            internal_renpy_call_is_embed_using = ctypes.CDLL(
+            luna_internal_renpy_call_is_embed_using = ctypes.CDLL(
                 "LunaHook32"
-            ).internal_renpy_call_is_embed_using
-        internal_renpy_call_is_embed_using.argstype = ctypes.c_int, ctypes.c_bool
-        internal_renpy_call_is_embed_using.restype = ctypes.c_bool
+            ).luna_internal_renpy_call_is_embed_using
+        luna_internal_renpy_call_is_embed_using.argstype = ctypes.c_int, ctypes.c_bool
+        luna_internal_renpy_call_is_embed_using.restype = ctypes.c_bool
 
-        return internal_renpy_call_is_embed_using(0, False)
+        return luna_internal_renpy_call_is_embed_using(0, False)
     except:
         return False
 

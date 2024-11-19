@@ -777,7 +777,7 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(3);
     hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
-    hp.hook_font = F_GetGlyphOutlineW;
+    hp.embed_hook_font = F_GetGlyphOutlineW;
     return NewHook(hp, "Cotopha5");
   }
 }

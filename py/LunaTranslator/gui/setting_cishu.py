@@ -1,7 +1,7 @@
 import functools, os
 import gobject
 from myutils.utils import splitocrtypes
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig, _TR, get_platform
 from gui.inputdialog import multicolorset, autoinitdialog
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
@@ -96,6 +96,9 @@ def _checkmaybefailed(self, idx):
 def _createseletengeinecombo_1(self):
 
     webviews = ["MSHTML", "WebView2", "QWebEngine"]
+
+    if get_platform() == "xp":
+        webviews = ["MSHTML"]
     self.seletengeinecombo_1 = getsimplecombobox(
         webviews,
         globalconfig,

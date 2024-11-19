@@ -605,7 +605,7 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(1);
     hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_NEW;
-    hp.newlineseperator = L"\\n";
+    hp.lineSeparator = L"\\n";
     return NewHook(hp, "5bp");
   }
   bool __()
@@ -699,7 +699,7 @@ namespace
       xx = std::regex_replace(xx, std::wregex(L"\\\\x%l(.*?);(.*?);(.*?);#;"), L"$1");
       buffer->from(xx);
     };
-    hp.newlineseperator = L"\\n";
+    hp.lineSeparator = L"\\n";
     return NewHook(hp, "5bp");
   }
 

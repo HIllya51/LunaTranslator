@@ -676,16 +676,16 @@ namespace
       HookParam hp;
       hp.address = addr1;
       hp.text_fun = Private::hook1;
-      hp.hook_after = Private::hookafter;
+      hp.embed_fun = Private::hookafter;
       hp.type = EMBED_ABLE | NO_CONTEXT;
-      hp.newlineseperator = L"\x01";
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.lineSeparator = L"\x01";
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       if (dyna)
       {
         static ULONG dynas;
         dynas = dyna;
         hp.type |= EMBED_DYNA_SJIS;
-        hp.hook_font = F_GetGlyphOutlineA;
+        hp.embed_hook_font = F_GetGlyphOutlineA;
         patch_fun = []()
         {
           ReplaceFunction((PVOID)dynas, (PVOID)(ULONG)isLeadByteChar);

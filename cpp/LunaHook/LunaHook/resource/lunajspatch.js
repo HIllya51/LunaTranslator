@@ -28,7 +28,7 @@ function cppjsio(name, s_raw, lpsplit, embedable) {
     s = magicsend + name + '\x03' + lpsplit.toString() + '\x04' + (embedable ? '1' : '0') + '\x02' + s_raw;
     if (internal_http_port) {
         var xhr = new XMLHttpRequest();
-        var url = 'http://127.0.0.1:' + internal_http_port + '/fuck'
+        var url = 'http://127.0.0.1:' + internal_http_port + '/sakurakouji'
         xhr.open('POST', url, false);
         xhr.send(s);
         if (xhr.status === 200) {

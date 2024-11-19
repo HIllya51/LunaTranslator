@@ -3,21 +3,21 @@ def callLunaHost(text, split):
         import ctypes
 
         try:
-            internal_renpy_call_host = ctypes.CDLL(
+            luna_internal_renpy_call_host = ctypes.CDLL(
                 "LunaHook64"
-            ).internal_renpy_call_host
+            ).luna_internal_renpy_call_host
         except:
-            internal_renpy_call_host = ctypes.CDLL(
+            luna_internal_renpy_call_host = ctypes.CDLL(
                 "LunaHook32"
-            ).internal_renpy_call_host
-        internal_renpy_call_host.argstype = ctypes.c_wchar_p, ctypes.c_int
-        internal_renpy_call_host.restype = ctypes.c_wchar_p
+            ).luna_internal_renpy_call_host
+        luna_internal_renpy_call_host.argstype = ctypes.c_wchar_p, ctypes.c_int
+        luna_internal_renpy_call_host.restype = ctypes.c_wchar_p
 
         try:
             _text = text.decode("utf8")
         except:
             _text = text
-        text = internal_renpy_call_host(_text, split)
+        text = luna_internal_renpy_call_host(_text, split)
     except:
         pass
     return text
@@ -28,17 +28,17 @@ def callLunaIsUsingEmbed(split):
         import ctypes
 
         try:
-            internal_renpy_call_is_embed_using = ctypes.CDLL(
+            luna_internal_renpy_call_is_embed_using = ctypes.CDLL(
                 "LunaHook64"
-            ).internal_renpy_call_is_embed_using
+            ).luna_internal_renpy_call_is_embed_using
         except:
-            internal_renpy_call_is_embed_using = ctypes.CDLL(
+            luna_internal_renpy_call_is_embed_using = ctypes.CDLL(
                 "LunaHook32"
-            ).internal_renpy_call_is_embed_using
-        internal_renpy_call_is_embed_using.argstype = ctypes.c_int, ctypes.c_bool
-        internal_renpy_call_is_embed_using.restype = ctypes.c_bool
+            ).luna_internal_renpy_call_is_embed_using
+        luna_internal_renpy_call_is_embed_using.argstype = ctypes.c_int, ctypes.c_bool
+        luna_internal_renpy_call_is_embed_using.restype = ctypes.c_bool
 
-        return internal_renpy_call_is_embed_using(split, True)
+        return luna_internal_renpy_call_is_embed_using(split, True)
     except:
         return False
 

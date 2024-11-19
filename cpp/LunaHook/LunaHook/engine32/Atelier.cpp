@@ -75,7 +75,7 @@ bool InsertAtelierKaguya2Hook()
   hp.address = addr;
   hp.offset = get_reg(regs::eax);
   hp.type = USING_STRING | EMBED_AFTER_OVERWRITE  | EMBED_ABLE | EMBED_DYNA_SJIS;
-  hp.hook_font = F_TextOutA;
+  hp.embed_hook_font = F_TextOutA;
   hp.filter_fun = NewLineCharToSpaceFilterA;
   ConsoleOutput("INSERT Atelier KAGUYA2");
 

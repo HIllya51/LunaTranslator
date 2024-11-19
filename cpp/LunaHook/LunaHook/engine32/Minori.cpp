@@ -665,9 +665,9 @@ namespace
           HookParam hp;
           hp.address = addr;
           hp.text_fun = Private::hookBeforehookBefore;
-          hp.hook_after = Private::hookafter;
+          hp.embed_fun = Private::hookafter;
           hp.type = EMBED_ABLE | USING_STRING | EMBED_DYNA_SJIS | NO_CONTEXT;
-          hp.hook_font = F_GetGlyphOutlineA;
+          hp.embed_hook_font = F_GetGlyphOutlineA;
           hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
           {
             buffer->from(std::regex_replace(buffer->strA(), std::regex("\\{.*?\\}"), ""));
@@ -678,7 +678,7 @@ namespace
           HookParam hp;
           hp.address = addr + 5;
           hp.text_fun = Private::hookAfter;
-          hp.hook_after = Private::hookafter;
+          hp.embed_fun = Private::hookafter;
           count |= NewHook(hp, "EmbedMinori");
         }
         return true; // replace all functions

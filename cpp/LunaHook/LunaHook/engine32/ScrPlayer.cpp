@@ -24,7 +24,7 @@ bool ScrPlayer_attach_function1()
   hp.offset = get_stack(5);
   // 会把多行分开导致翻译不对。
   hp.type = USING_STRING; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
-  // hp.hook_font=F_GetGlyphOutlineA;
+  // hp.embed_hook_font=F_GetGlyphOutlineA;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
     static int idx = 0;

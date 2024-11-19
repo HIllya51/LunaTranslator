@@ -177,12 +177,12 @@ static bool InsertNewPal1Hook()
   hp.offset = get_stack(2); // arg2
   hp.type = USING_STRING | EMBED_ABLE | NO_CONTEXT;
   hp.text_fun = before;
-  hp.hook_after = after;
+  hp.embed_fun = after;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     buffer->from(rubyRemove(buffer->strA()));
   };
-  hp.hook_font = F_CreateFontIndirectA | F_CreateFontA;
+  hp.embed_hook_font = F_CreateFontIndirectA | F_CreateFontA;
   ConsoleOutput("INSERT Pal1");
   return NewHook(hp, "Pal");
 }
@@ -239,7 +239,7 @@ namespace
     hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
     // 无法编码的字符无法显示，若开启dyna则会直接略过这个字，还不如不开。
     //[230929] [ユニゾンシフト] 恋とHしかしていない！
-    hp.newlineseperator = L"<br>";
+    hp.lineSeparator = L"<br>";
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       buffer->from(rubyRemove(buffer->strA()));

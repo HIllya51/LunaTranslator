@@ -1417,7 +1417,7 @@ namespace
     hp.address = addr;
     hp.type = EMBED_ABLE | CODEC_UTF16 | NO_CONTEXT;
     hp.text_fun = hookBefore;
-    hp.hook_after = hookafter;
+    hp.embed_fun = hookafter;
     return NewHook(hp, "EmbedKrkr2");
   }
 
@@ -1609,9 +1609,9 @@ dl 16
         hp.address = addr;
         hp.type = EMBED_ABLE | CODEC_UTF8 | NO_CONTEXT | USING_STRING;
         hp.text_fun = hookBeforez;
-        hp.hook_after = after;
-        hp.newlineseperator = L"\\n";
-        hp.hook_font = F_GetTextExtentPoint32W | F_GetGlyphOutlineW;
+        hp.embed_fun = after;
+        hp.lineSeparator = L"\\n";
+        hp.embed_hook_font = F_GetTextExtentPoint32W | F_GetGlyphOutlineW;
         succ |= NewHook(hp, "EmbedKrkrZ");
         // return true;
       }
@@ -1682,7 +1682,7 @@ namespace
         return buffer->clear();
       buffer->from(t);
     };
-    hp.hook_after = [](hook_stack *s, TextBuffer buffer)
+    hp.embed_fun = [](hook_stack *s, TextBuffer buffer)
     {
       auto t = std::wstring((wchar_t *)s->stack[off / 4]);
       auto newText = buffer.strW();
@@ -1692,7 +1692,7 @@ namespace
         newText = newText + L"[r]"; // 揺り籠より天使まで
       wcscpy((wchar_t *)s->stack[off / 4], newText.c_str());
     };
-    hp.hook_font = F_GetTextExtentPoint32W | F_GetGlyphOutlineW;
+    hp.embed_hook_font = F_GetTextExtentPoint32W | F_GetGlyphOutlineW;
     return NewHook(hp, "Krkr2wcs");
   }
 }

@@ -725,9 +725,9 @@ namespace
         HookParam hp;
         hp.address = addr;
         hp.text_fun = Private::hookBefore;
-        hp.hook_after = Private::hookafter2;
+        hp.embed_fun = Private::hookafter2;
         hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE | NO_CONTEXT;
-        hp.hook_font = F_GetGlyphOutlineW;
+        hp.embed_hook_font = F_GetGlyphOutlineW;
         auto succ = NewHook(hp, "EmbedRGSS3");
         hp.address = addr + 5;
         hp.text_fun = Private::hookAfter;
@@ -890,9 +890,9 @@ namespace
               HookParam hp;
               hp.address = addr;
               hp.text_fun = Private::hookBefore;
-              hp.hook_after = Private::hookafter2;
+              hp.embed_fun = Private::hookafter2;
               hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE | NO_CONTEXT;
-              hp.hook_font = F_GetGlyphOutlineW;
+              hp.embed_hook_font = F_GetGlyphOutlineW;
 
               functionAddress = addr;
               return NewHook(hp, "EmbedRGSS3Choice");
@@ -1348,9 +1348,9 @@ namespace
           HookParam hp;
           hp.address = addr;
           hp.text_fun = Private::hookBefore;
-          hp.hook_after = Private::hookafter2;
+          hp.embed_fun = Private::hookafter2;
           hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE | NO_CONTEXT;
-          hp.hook_font = F_GetGlyphOutlineW;
+          hp.embed_hook_font = F_GetGlyphOutlineW;
 
           return NewHook(hp, "EmbedRGSS3Other");
         }

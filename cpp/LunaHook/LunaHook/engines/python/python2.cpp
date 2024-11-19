@@ -95,7 +95,7 @@ bool InsertRenpyHook()
                     if (PyUnicode_FromUnicode)
                     {
                         hp.type |= EMBED_ABLE;
-                        hp.hook_after = [](hook_stack *stack, TextBuffer buffer)
+                        hp.embed_fun = [](hook_stack *stack, TextBuffer buffer)
                         {
                             auto format = (PyObject *)stack->ARG1;
                             if (!format)

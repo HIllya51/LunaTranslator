@@ -35,7 +35,7 @@ namespace
       hp.offset = get_reg(regs::rdx);
 
       hp.type = EMBED_ABLE | USING_STRING |  EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
-      hp.hook_font = F_GetGlyphOutlineA;
+      hp.embed_hook_font = F_GetGlyphOutlineA;
       res |= NewHook(hp, "EmbedCMVS");
     }
     return res;

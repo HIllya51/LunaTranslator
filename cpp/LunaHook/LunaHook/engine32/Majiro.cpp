@@ -233,7 +233,7 @@ bool InsertMajiroHook3x() {
   hp.offset=get_reg(regs::ecx);
   hp.type = USING_STRING | NO_CONTEXT;//|EMBED_ABLE|EMBED_AFTER_OVERWRITE|EMBED_DYNA_SJIS;
   //可以内嵌，但是必须保持「」，且DynamicEncoding编码的文字会被自动替换成引擎内的某的字符，导致可读性低。
-  //hp.hook_font=F_TextOutA|F_GetTextExtentPoint32A;
+  //hp.embed_hook_font=F_TextOutA|F_GetTextExtentPoint32A;
   //https://vndb.org/v17376
   //私が好きなら「好き」って言って！
   hp.text_fun= [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
