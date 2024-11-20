@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
 import gobject, windows, winsharedutils
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig, get_platform
 from myutils.winsyshotkey import SystemHotkey, registerException
 from myutils.hwnd import grabwindow
 from myutils.utils import parsekeystringtomodvkcode, unsupportkey
@@ -98,8 +98,20 @@ def registrhotkeys(self):
         regist_or_not_key(self, name)
 
 
-def setTab_quick(self, l: QVBoxLayout):
+hotkeys = [
+    ["通用", ["_1", "_2", "_3", "_5", "_51", "_6", "_8", "_9", "_10", "_16", "_17"]],
+    ["HOOK", ["_11", "_12"]],
+    ["OCR", ["_13", "_14", "_14_1", "_23", "_26", "_26_1"]],
+    ["剪贴板", ["36", "_4", "_28"]],
+    ["TTS", ["_32", "_7", "_7_1"]],
+    ["游戏", ["_15", "_20", "_21", "_22", "_25", "_27", "_31"]],
+    ["查词", ["_29", "_30", "_35", "_33"]],
+]
 
+
+def setTab_quick(self, l: QVBoxLayout):
+    if get_platform() == "xp":
+        hotkeys.pop(2)
     l.addWidget(
         getboxlayout(
             [
@@ -119,7 +131,7 @@ def setTab_quick(self, l: QVBoxLayout):
     def ___x(ls, l):
         makescrollgrid(setTab_quick_lazy(self, ls), l)
 
-    for _ in static_data["hotkeys"]:
+    for _ in hotkeys:
         __vis.append(_[0])
         __.append(functools.partial(___x, _[1]))
     tab, do = makesubtab_lazy(__vis, __, delay=True)
