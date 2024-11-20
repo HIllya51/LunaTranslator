@@ -793,5 +793,6 @@
     "Win32文字绘制函数钩子": "Gancho de función de dibujo de texto Win32",
     "Win32字符串函数钩子": "Gancho de función de cadena Win32",
     "额外的钩子": "Ganchos adicionales",
-    "自动前进": "Avance automático"
+    "自动前进": "Avance automático",
+    "在新窗口中查词": "Buscar palabras en una nueva ventana"
 }

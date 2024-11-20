@@ -793,5 +793,6 @@
     "Win32文字绘制函数钩子": "Win32 Text Zeichenfunktion Hook",
     "Win32字符串函数钩子": "Win32 String Function Hook",
     "额外的钩子": "Zusätzliche Haken",
-    "自动前进": "Automatisch vorwärts"
+    "自动前进": "Automatisch vorwärts",
+    "在新窗口中查词": "Suche nach Wörtern in einem neuen Fenster"
 }

@@ -1163,6 +1163,9 @@ class abstractwebview(QWidget):
     def navigate(self, url):
         pass
 
+    def add_menu(self, index, label, callback):
+        pass
+
     #
     def parsehtml(self, html):
         pass
@@ -1245,6 +1248,8 @@ class WebivewWidget(abstractwebview):
         winsharedutils.remove_WebMessageReceived(
             self.get_controller(), self.m_webMessageReceivedToken
         )
+        for m in self.addmenu_infos:
+            winsharedutils.remove_ContextMenuRequested(self.get_controller(), m)
 
     def bind(self, fname, func):
         self.webview.bind(fname, func)
@@ -1262,9 +1267,20 @@ class WebivewWidget(abstractwebview):
             webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
         )
 
+    def add_menu(self, index, label, callback):
+        __ = winsharedutils.add_ContextMenuRequested_cb(callback)
+        self.callbacks.append(__)
+        self.addmenu_infos.append(
+            winsharedutils.add_ContextMenuRequested(
+                self.get_controller(), index, label, __
+            )
+        )
+
     def __init__(self, parent=None, debug=True, usedarklight=True) -> None:
         super().__init__(parent)
         self.webview = None
+        self.callbacks = []
+        self.addmenu_infos = []
         self.webview = Webview(debug=debug, window=int(self.winId()))
         self.m_webMessageReceivedToken = None
         self.zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(
@@ -1511,6 +1527,10 @@ class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
 
+    def add_menu(self, index, label, callback):
+        self.addmenuinfo.append((index, label, callback))
+        self.internal.add_menu(index, label, callback)
+
     def clear(self):
         self.lastaction = None
         self.internal.clear()
@@ -1541,6 +1561,7 @@ class auto_select_webview(QWidget):
 
     def __init__(self, parent, dyna=False) -> None:
         super().__init__(parent)
+        self.addmenuinfo = []
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.internal = None
         layout = QHBoxLayout()
@@ -1575,6 +1596,8 @@ class auto_select_webview(QWidget):
                 self.navigate(arg)
             elif action == 1:
                 self.setHtml(arg)
+        for _ in self.addmenuinfo:
+            self.internal.add_menu(*_)
 
     def _createwebview(self):
         contex = globalconfig["usewebview"]

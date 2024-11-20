@@ -187,3 +187,105 @@ DECLARE_API void *add_WebMessageReceived(void *m_host, void (*callback)(const wc
     return NULL;
 #endif
 }
+struct contextcallbackdatas
+{
+    EventRegistrationToken contextMenuRequestedToken;
+    std::wstring label;
+};
+// https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/how-to/context-menus?tabs=cpp
+// https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2_11?view=webview2-1.0.2849.39
+DECLARE_API void *add_ContextMenuRequested(void *m_host, int index, const wchar_t *label, void (*callback)(const wchar_t *))
+{
+#ifndef WINXP
+    contextcallbackdatas *data = new contextcallbackdatas;
+    data->label = label; // 持久化
+    [=]()
+    {
+        wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+        wil::com_ptr<ICoreWebView2> m_webView;
+        CHECK_FAILURE(m_controller->get_CoreWebView2(&m_webView));
+        auto m_webView2_11 = m_webView.try_query<ICoreWebView2_11>();
+        if (!m_webView2_11)
+            return S_OK;
+        m_webView2_11->add_ContextMenuRequested(
+            Callback<ICoreWebView2ContextMenuRequestedEventHandler>(
+                [=](
+                    ICoreWebView2 *sender,
+                    ICoreWebView2ContextMenuRequestedEventArgs *args)
+                {
+                    wil::com_ptr<ICoreWebView2ContextMenuTarget> target;
+                    CHECK_FAILURE(args->get_ContextMenuTarget(&target));
+                    COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND targetKind;
+                    BOOL hasselection;
+                    CHECK_FAILURE(target->get_Kind(&targetKind));
+                    CHECK_FAILURE(target->get_HasSelection(&hasselection));
+                    if (!(hasselection && (targetKind ==
+                                           COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT)))
+                        return S_OK;
+                    wil::com_ptr<ICoreWebView2_11> m_webView2_11;
+                    CHECK_FAILURE(sender->QueryInterface(IID_PPV_ARGS(&m_webView2_11)));
+
+                    wil::com_ptr<ICoreWebView2Environment> webviewEnvironment;
+                    CHECK_FAILURE(m_webView2_11->get_Environment(&webviewEnvironment));
+                    auto webviewEnvironment_5 = webviewEnvironment.try_query<ICoreWebView2Environment9>();
+                    if (!webviewEnvironment_5)
+                        return S_OK;
+                    wil::com_ptr<ICoreWebView2ContextMenuItemCollection> items;
+                    CHECK_FAILURE(args->get_MenuItems(&items));
+                    UINT32 itemsCount;
+                    CHECK_FAILURE(items->get_Count(&itemsCount));
+                    // Adding a custom context menu item for the page that will display the page's URI.
+                    wil::com_ptr<ICoreWebView2ContextMenuItem> newMenuItem;
+                    CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(
+                        data->label.c_str(),
+                        nullptr,
+                        COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+                    newMenuItem->add_CustomItemSelected(
+                        Callback<ICoreWebView2CustomItemSelectedEventHandler>(
+                            [=](
+                                ICoreWebView2ContextMenuItem *sender,
+                                IUnknown *args)
+                            {
+                                LPWSTR selecttext;
+                                CHECK_FAILURE(target->get_SelectionText(&selecttext));
+                                callback(selecttext);
+                                // 不需要free，free反而会崩溃
+                                return S_OK;
+                            })
+                            .Get(),
+                        nullptr);
+                    UINT idx;
+                    if (index == -1)
+                        idx = itemsCount;
+                    else
+                        idx = index;
+                    CHECK_FAILURE(items->InsertValueAtIndex(idx, newMenuItem.get()));
+                    return S_OK;
+                })
+                .Get(),
+            &data->contextMenuRequestedToken);
+        return S_OK;
+    }();
+    return data;
+#else
+    return NULL;
+#endif
+}
+DECLARE_API void remove_ContextMenuRequested(void *m_host, void *data)
+{
+#ifndef WINXP
+    auto token = reinterpret_cast<contextcallbackdatas *>(data);
+    wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+    wil::com_ptr<ICoreWebView2> m_webView;
+    [&]()
+    {
+        CHECK_FAILURE(m_controller->get_CoreWebView2(&m_webView));
+        auto m_webView2_11 = m_webView.try_query<ICoreWebView2_11>();
+        if (!m_webView2_11)
+            return S_OK;
+        CHECK_FAILURE(m_webView2_11->remove_ContextMenuRequested(token->contextMenuRequestedToken));
+        return S_OK;
+    }();
+    delete token;
+#endif
+}

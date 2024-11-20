@@ -5,7 +5,7 @@ from traceback import print_exc
 import qtawesome, requests, gobject, windows, winsharedutils
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig, static_data, _TR
 from myutils.utils import (
     loopbackrecorder,
     parsekeystringtomodvkcode,
@@ -238,7 +238,7 @@ class AnkiWindow(QWidget):
             collect = []
             for hira in self.example.hiras:
                 if hira["orig"] == word or hira.get("origorig", None) == word:
-                    collect.append('<b>{}</b>'.format(hira["orig"]))
+                    collect.append("<b>{}</b>".format(hira["orig"]))
                 else:
                     collect.append(hira["orig"])
             example = "".join(collect)
@@ -976,11 +976,13 @@ class showdiction(LMainWindow):
 class searchwordW(closeashidewindow):
     search_word = pyqtSignal(str, bool)
     show_dict_result = pyqtSignal(float, str, str)
+    search_word_in_new_window = pyqtSignal(str)
 
     def __init__(self, parent):
         super(searchwordW, self).__init__(parent, globalconfig["sw_geo"])
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.search_word.connect(self.__click_word_search_function)
+        self.search_word_in_new_window.connect(self.searchwinnewwindow)
         self.show_dict_result.connect(self.__show_dict_result_function)
         self.state = 0
 
@@ -1033,8 +1035,7 @@ class searchwordW(closeashidewindow):
             return
         self.textOutput.setHtml(html)
 
-    def _createnewwindowsearch(self, _):
-        word = self.searchtext.text()
+    def searchwinnewwindow(self, word):
 
         class searchwordWx(searchwordW):
             def closeEvent(self1, event: QCloseEvent):
@@ -1042,9 +1043,14 @@ class searchwordW(closeashidewindow):
                 super(saveposwindow, self1).closeEvent(event)
 
         _ = searchwordWx(self.parent())
+        _.move(_.pos() + QPoint(20, 20))
         _.show()
         _.searchtext.setText(word)
         _.__search_by_click_search_btn()
+
+    def _createnewwindowsearch(self, _):
+        word = self.searchtext.text()
+        self.searchwinnewwindow(word)
 
     def showmenu_auto_sound(self, _):
 
@@ -1133,6 +1139,12 @@ class searchwordW(closeashidewindow):
         self.tabks = []
         self.setCentralWidget(ww)
         self.textOutput = auto_select_webview(self, True)
+        self.textOutput.add_menu(
+            0, _TR("查词"), lambda w: self.search_word.emit(w, False)
+        )
+        self.textOutput.add_menu(
+            1, _TR("在新窗口中查词"), threader(self.search_word_in_new_window.emit)
+        )
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
