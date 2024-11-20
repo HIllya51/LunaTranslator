@@ -187,11 +187,14 @@ DECLARE_API void *add_WebMessageReceived(void *m_host, void (*callback)(const wc
     return NULL;
 #endif
 }
+
+#ifndef WINXP
 struct contextcallbackdatas
 {
     EventRegistrationToken contextMenuRequestedToken;
     std::wstring label;
 };
+#endif
 // https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/how-to/context-menus?tabs=cpp
 // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2_11?view=webview2-1.0.2849.39
 DECLARE_API void *add_ContextMenuRequested(void *m_host, int index, const wchar_t *label, void (*callback)(const wchar_t *))
