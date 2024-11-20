@@ -500,8 +500,8 @@ class TranslatorWindow(resizableframeless):
         time.sleep(0.1)
         while windows.GetForegroundWindow() == gobject.baseobject.hwnd:
             time.sleep(0.001)
-            windows.keybd_event(13, 0, 0, 0)
-        windows.keybd_event(13, 0, windows.KEYEVENTF_KEYUP, 0)
+            windows.keybd_event(windows.VK_RETURN, 0, 0, 0)
+        windows.keybd_event(windows.VK_RETURN, 0, windows.KEYEVENTF_KEYUP, 0)
 
     def btnsetontopfunction(self):
         try:
@@ -541,10 +541,10 @@ class TranslatorWindow(resizableframeless):
         def simulate_key_ctrl():
             windows.SetForegroundWindow(gobject.baseobject.hwnd)
             time.sleep(0.1)
-            windows.keybd_event(17, 0, 0, 0)
+            windows.keybd_event(windows.VK_CONTROL, 0, 0, 0)
             while windows.GetForegroundWindow() == gobject.baseobject.hwnd:
                 time.sleep(0.001)
-            windows.keybd_event(17, 0, windows.KEYEVENTF_KEYUP, 0)
+            windows.keybd_event(windows.VK_CONTROL, 0, windows.KEYEVENTF_KEYUP, 0)
 
         functions = (
             ("move", None),

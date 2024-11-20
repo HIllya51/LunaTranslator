@@ -466,6 +466,7 @@
     "showfanyi": true,
     "autoread": false,
     "ttsnointerrupt": false,
+    "ttsautoforward": false,
     "show_fenci": true,
     "is_tracetime_strict": true,
     "jiamingcolor": "black",

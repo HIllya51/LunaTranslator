@@ -213,7 +213,23 @@ def setTab5lz(self):
                                             D_getsimpleswitch(
                                                 globalconfig, "ttsnointerrupt"
                                             ),
+                                            "",
+                                            "自动前进",
+                                            D_getsimpleswitch(
+                                                globalconfig, "ttsautoforward"
+                                            ),
                                         ],
+                                    ],
+                                ),
+                                0,
+                                "group",
+                            )
+                        ],
+                        [
+                            (
+                                dict(
+                                    type="grid",
+                                    grid=[
                                         [
                                             "朗读原文",
                                             D_getsimpleswitch(globalconfig, "read_raw"),

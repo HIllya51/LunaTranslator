@@ -792,5 +792,6 @@
     "截取行数": "Cut the number of lines",
     "Win32文字绘制函数钩子": "Win32 text drawing function hook",
     "Win32字符串函数钩子": "Win32 string function hook",
-    "额外的钩子": "Extra hooks"
+    "额外的钩子": "Extra hooks",
+    "自动前进": "Automatic Forward"
 }

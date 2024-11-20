@@ -76,7 +76,7 @@ class MAINUI:
         self.edittextui_cached = None
         self.edittextui_sync = True
         self.notifyonce = set()
-        self.audioplayer = series_audioplayer()
+        self.audioplayer = series_audioplayer(playovercallback=self.ttsautoforward)
         self._internal_reader = None
         self.reader_uid = None
         self.__hwnd = None
@@ -87,6 +87,16 @@ class MAINUI:
         self.autoswitchgameuid = True
         self.istriggertoupdate = False
         self.thishastranslated = True
+
+    @threader
+    def ttsautoforward(self):
+        if not globalconfig["ttsautoforward"]:
+            return
+        windows.SetForegroundWindow(self.hwnd)
+        time.sleep(0.001)
+        windows.keybd_event(windows.VK_RETURN, 0, 0, 0)
+        time.sleep(0.001)
+        windows.keybd_event(windows.VK_RETURN, 0, windows.KEYEVENTF_KEYUP, 0)
 
     def maybesetimage(self, pair):
         if self.showocrimage:

@@ -792,5 +792,6 @@
     "截取行数": "Snížit počet řádků",
     "Win32文字绘制函数钩子": "Win32 funkce kreslení textu",
     "Win32字符串函数钩子": "Win32 řetězcový funkční hák",
-    "额外的钩子": "Extra háčky"
+    "额外的钩子": "Extra háčky",
+    "自动前进": "Automaticky dopředu"
 }

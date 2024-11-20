@@ -792,5 +792,6 @@
     "截取行数": "Nombre de lignes interceptées",
     "Win32文字绘制函数钩子": "Win32 crochet de fonction de dessin de texte",
     "Win32字符串函数钩子": "Crochet de fonction de chaîne Win32",
-    "额外的钩子": "Crochets supplémentaires"
+    "额外的钩子": "Crochets supplémentaires",
+    "自动前进": "Avance automatique"
 }

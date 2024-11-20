@@ -97,8 +97,9 @@ BASS_Init(-1, 44100, 0, 0, 0)
 
 
 class series_audioplayer:
-    def __init__(self):
+    def __init__(self, playovercallback=None):
         self.i = 0
+        self.playovercallback = playovercallback
         self.lastfile = None
         self.tasks = None
         self.lock = threading.Lock()
@@ -137,10 +138,16 @@ class series_audioplayer:
                 if not binary:
                     continue
                 _playonce = playonce(binary, volume)
-                if globalconfig["ttsnointerrupt"]:
-                    while _playonce.isplaying:
-                        time.sleep(0.1)
-                        if self.tasks and self.tasks[-1]:
+                while _playonce.isplaying:
+                    time.sleep(0.1)
+                    if self.tasks:
+                        if globalconfig["ttsnointerrupt"]:
+                            if self.tasks[-1]:
+                                break
+                        else:
                             break
+                else:
+                    if self.playovercallback:
+                        self.playovercallback()
         except:
             print_exc()

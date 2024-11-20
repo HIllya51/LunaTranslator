@@ -792,5 +792,6 @@
     "截取行数": "Taglia il numero di righe",
     "Win32文字绘制函数钩子": "Gancio della funzione di disegno del testo Win32",
     "Win32字符串函数钩子": "Aggancio della funzione stringa Win32",
-    "额外的钩子": "Ganci supplementari"
+    "额外的钩子": "Ganci supplementari",
+    "自动前进": "Avanti automatico"
 }

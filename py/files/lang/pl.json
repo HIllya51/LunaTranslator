@@ -792,5 +792,6 @@
     "截取行数": "Wyciąć liczbę linii",
     "Win32文字绘制函数钩子": "Hook funkcji rysowania tekstu Win32",
     "Win32字符串函数钩子": "Hook funkcji ciągów Win32",
-    "额外的钩子": "Dodatkowe haki"
+    "额外的钩子": "Dodatkowe haki",
+    "自动前进": "Automatyczne naprzód"
 }
