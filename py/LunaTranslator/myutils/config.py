@@ -1,7 +1,6 @@
 import json
 import os, time, uuid, shutil, sys, platform
 from traceback import print_exc
-from qtsymbols import *
 
 
 def isascii(s: str):
@@ -727,10 +726,6 @@ def saveallconfig(test=False):
         )
 
 
-def is_font_installed(font: str) -> bool:
-    return QFont(font).exactMatch()
-
-
 # font_default_used = {}
 def get_platform():
     if tuple(sys.version_info)[:2] == (3, 4):
@@ -740,42 +735,3 @@ def get_platform():
     elif platform.architecture()[0] == "32bit":
         bit = "32"
     return bit
-
-
-def get_font_default(lang: str, issetting: bool) -> str:
-    # global font_default_used
-    # if lang in font_default_used.keys():
-    #     return font_default_used[lang]
-
-    t = "setting_font_type_default" if issetting else "font_type_default"
-    l = lang if lang in static_data[t].keys() else "default"
-
-    font_default = ""
-
-    if isinstance(static_data[t][l], list):
-        fontlist = static_data[t][l]
-    elif isinstance(static_data[t][l], dict):
-        if get_platform() == "xp":
-            target = "xp"
-        else:
-            target = "normal"
-        fontlist = static_data[t][l].get(target, [])
-    else:
-        fontlist = []
-    for font in fontlist:
-        if is_font_installed(font):
-            font_default = font
-            break
-    if font_default == "":
-        font_default = QFontDatabase.systemFont(
-            QFontDatabase.SystemFont.GeneralFont
-        ).family()
-
-    # font_default_used["lang"] = font_default
-    return font_default
-
-
-def set_font_default(lang: str, fonttype: str) -> None:
-    globalconfig[fonttype] = get_font_default(
-        lang, True if fonttype == "settingfonttype" else False
-    )

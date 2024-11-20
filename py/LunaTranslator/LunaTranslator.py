@@ -9,8 +9,8 @@ from myutils.config import (
     savehook_new_data,
     static_data,
     getlanguse,
-    set_font_default,
     _TR,
+    get_platform,
     isascii,
 )
 from myutils.utils import (
@@ -1054,11 +1054,49 @@ class MAINUI:
         font.setPointSizeF(globalconfig["settingfontsize"])
         QApplication.instance().setFont(font)
 
+    def get_font_default(self, lang: str, issetting: bool) -> str:
+        # global font_default_used
+        # if lang in font_default_used.keys():
+        #     return font_default_used[lang]
+
+        t = "setting_font_type_default" if issetting else "font_type_default"
+        l = lang if lang in static_data[t].keys() else "default"
+
+        font_default = ""
+
+        if isinstance(static_data[t][l], list):
+            fontlist = static_data[t][l]
+        elif isinstance(static_data[t][l], dict):
+            if get_platform() == "xp":
+                target = "xp"
+            else:
+                target = "normal"
+            fontlist = static_data[t][l].get(target, [])
+        else:
+            fontlist = []
+        is_font_installed = lambda font: QFont(font).exactMatch()
+        for font in fontlist:
+            if is_font_installed(font):
+                font_default = font
+                break
+        if font_default == "":
+            font_default = QFontDatabase.systemFont(
+                QFontDatabase.SystemFont.GeneralFont
+            ).family()
+
+        # font_default_used["lang"] = font_default
+        return font_default
+
+    def set_font_default(self, lang: str, fonttype: str) -> None:
+        globalconfig[fonttype] = self.get_font_default(
+            lang, True if fonttype == "settingfonttype" else False
+        )
+
     def parsedefaultfont(self):
         for k in ["fonttype", "fonttype2", "settingfonttype"]:
             if globalconfig[k] == "":
                 l = "ja" if k == "fonttype" else getlanguse()
-                set_font_default(l, k)
+                self.set_font_default(l, k)
                 # globalconfig[k] = QFontDatabase.systemFont(
                 #     QFontDatabase.SystemFont.GeneralFont
                 # ).family()

@@ -1753,6 +1753,21 @@ namespace
         strReplace(s, "#", "");
         buffer->from(s);
     }
+    void F01002BB00A662000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        strReplace(s, "#n", "");
+        strReplace(s, "\x81\x40", "");
+        s = std::regex_replace(s, std::regex(R"(#Ruby\[(.*?),(.*?)\])"), "$1");
+        buffer->from(s);
+    }
+    void F01002BB00A662000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        F01002BB00A662000(buffer, hp);
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(#(\w+?)\[[\d,]+?\])"), ""); // #Pos[0,42]#Speed[5]#Effect[0]#Scale[1]
+        buffer->from(s);
+    }
     void F01008BA00F172000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -3320,6 +3335,10 @@ namespace
             // EVE ghost enemies
             {0x80053900, {0, 1, 0, 0, F01008BA00F172000, "01007BE0160D6000", "1.0.0"}},
             {0x80052440, {0, 1, 0, 0, F01008BA00F172000, "01007BE0160D6000", "1.0.1"}},
+            // ニル・アドミラリの天秤 色ドリ撫子
+            {0x8000BDD0, {0, 8, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}},   // text
+            {0x80019260, {0, 0, 0, 0, F01002BB00A662000_1, "01002BB00A662000", "1.0.0"}}, // name+text
+
         };
         return 1;
     }();
