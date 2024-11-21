@@ -250,7 +250,18 @@ namespace ppsspp
 	}
 	void NPJH50900(TextBuffer *buffer, HookParam *hp)
 	{
-		CharFilter(buffer, '^');
+		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		strReplace(ws, L"^", L"");
+		static std::wstring last;
+		if (startWith(ws, last))
+		{
+			auto _ = ws.substr(last.size(), ws.size() - last.size());
+			last = ws;
+			ws = _;
+		}
+		else
+			last = ws;
+		buffer->from(WideStringToString(ws, 932));
 	}
 	void ULJM06129(TextBuffer *buffer, HookParam *hp)
 	{
@@ -421,7 +432,7 @@ namespace ppsspp
 		// ティンクル☆くるせいだーす GoGo!
 		{0x8822F24, {0, 0xe, 0, 0, 0, "ULJS00316"}}, // text
 		// 明治東亰恋伽 トワヰライト・キス
-		{0x8857910, {0, 0xe, 0, 0, NPJH50900, "NPJH50900"}}, // text
+		{0x884DE44, {0, 0, 0, 0, NPJH50900, "NPJH50900"}}, // text
 	};
 
 }
