@@ -8,6 +8,8 @@ body:
 - type: input
   attributes:
     label: vndb link/id
+  validations:
+    required: true
 - type: textarea
   attributes:
     label: Game resource 游戏资源
