@@ -1,4 +1,4 @@
-#ifndef WINXP
+﻿#ifndef WINXP
 
 #include <wrl.h>
 #include <wil/com.h>

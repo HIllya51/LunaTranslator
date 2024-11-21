@@ -26,18 +26,33 @@ int updatewmain(int argc, wchar_t *argv[])
     int needreload = std::stoi(argv[1]);
     try
     {
+        std::filesystem::remove_all(L".\\files_old");
+        std::filesystem::rename(L".\\files", L".\\files_old");
         std::filesystem::copy(argv[2], L".\\", std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+        try
+        {
+            std::filesystem::remove_all(L".\\files_old");
+        }
+        catch (...)
+        {
+        }
     }
     catch (std::exception &e)
     {
+        try
+        {
+            std::filesystem::rename(L".\\files_old", L".\\files");
+        }
+        catch (...)
+        {
+        }
         MessageBoxA(GetForegroundWindow(), (std::string("Update failed!\r\n") + e.what()).c_str(), "Error", 0);
         ShellExecute(0, L"open", (std::wstring(argv[3]) + L"/Github/LunaTranslator/releases").c_str(), NULL, NULL, SW_SHOWNORMAL);
         return 0;
     }
     try
     {
-        wcscat(path, L"\\cache\\update");
-        std::filesystem::remove_all(path);
+        std::filesystem::remove_all(argv[2]);
     }
     catch (std::exception &e)
     {
