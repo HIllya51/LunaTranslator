@@ -3,7 +3,6 @@ import os, platform, functools, uuid, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import webview_native_handle_kind_t, Webview
-from winsharedutils import HTMLBrowser
 from myutils.config import _TR, globalconfig, _TRL
 from myutils.wrapper import Singleton_close, tryprint
 from myutils.utils import nowisdark, checkportavailable, checkisusingwine
@@ -1455,38 +1454,66 @@ class QWebWrap(abstractwebview):
 
 
 class mshtmlWidget(abstractwebview):
+    CommandBase = 10086
+    def __del__(self):
+        if not self.browser:
+            return
+        winsharedutils.html_release(self.browser)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
+        self.callbacks = {}
         iswine = checkisusingwine()
-        if iswine or (HTMLBrowser.version() < 10001):  # ie10之前，sethtml会乱码
+        if iswine or (winsharedutils.html_version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0
-        self.browser = HTMLBrowser(int(self.winId()))
+        self.browser = winsharedutils.html_new(int(self.winId()))
         self.curr_url = None
         t = QTimer(self)
         t.setInterval(100)
         t.timeout.connect(self.__getcurrenturl)
         t.timeout.emit()
         t.start()
+        self.add_menu(0, _TR("复制"), winsharedutils.clipboard_set)
+        self.add_menu(0, None, lambda: 1)
+
+        self.wndproc = windows.WNDPROCTYPE(
+            functools.partial(
+                self.extrahandle,
+                windows.GetWindowLongPtr(int(self.winId()), windows.GWLP_WNDPROC),
+            )
+        )
+        windows.SetWindowLongPtr(int(self.winId()), windows.GWLP_WNDPROC, self.wndproc)
+
+    def extrahandle(self, orig, hwnd, msg, wp, lp):
+        if msg == windows.WM_COMMAND:
+            func = self.callbacks.get(wp)
+            if func:
+                func(winsharedutils.html_get_select_text(self.browser))
+        return windows.WNDPROCTYPE(orig)(hwnd, msg, wp, lp)
 
     def __getcurrenturl(self):
-        _u = self.browser.get_current_url()
+        _u = winsharedutils.html_get_current_url(self.browser)
         if self.curr_url != _u:
             self.curr_url = _u
             self.on_load.emit(_u)
 
     def navigate(self, url):
-        self.browser.navigate(url)
+        winsharedutils.html_navigate(self.browser, url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         size = a0.size() * self.devicePixelRatioF()
-        self.browser.resize(0, 0, size.width(), size.height())
+        winsharedutils.html_resize(self.browser, 0, 0, size.width(), size.height())
 
     def setHtml(self, html):
-        self.browser.set_html(html)
+        winsharedutils.html_set_html(self.browser, html)
 
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_font(self._parsehtml_dark(html)))
+
+    def add_menu(self, index, label, callback):
+        command = mshtmlWidget.CommandBase + len(self.callbacks)
+        self.callbacks[command] = callback
+        winsharedutils.html_add_menu(self.browser, index, command, label)
 
 
 class CustomKeySequenceEdit(QKeySequenceEdit):
@@ -1604,10 +1631,8 @@ class auto_select_webview(QWidget):
         try:
             if contex == 0:
                 browser = mshtmlWidget()
-            elif contex == 1:
+            else:
                 browser = WebivewWidget()
-            elif contex == 2:
-                browser = QWebWrap()
         except:
             print_exc()
             browser = mshtmlWidget()

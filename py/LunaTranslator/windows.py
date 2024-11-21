@@ -873,6 +873,7 @@ SetWindowLongPtr.restype = c_void_p
 GetWindowLongPtr.argtypes = HWND, INT
 GetWindowLongPtr.restype = c_void_p
 WM_LBUTTONDOWN = 0x0201
+WM_COMMAND = 0x0111
 WM_LBUTTONUP = 0x0202
 WM_MOUSEMOVE = 0x0200
 

@@ -208,26 +208,6 @@ def installqwebdialog(self, link):
     )
 
 
-def on_not_find_qweb(self):
-    def _okcallback():
-
-        link = [
-            dynamiclink("{main_server}/Resource/QWebEngine_x86.zip"),
-            dynamiclink("{main_server}/Resource/QWebEngine_x64.zip"),
-        ][platform.architecture()[0] == "64bit"]
-        gobject.baseobject.openlink(link)
-        installqwebdialog(self, link)
-
-    getQMessageBox(
-        self,
-        "错误",
-        "未找到QWebEngine，点击确定前往下载QWebEngine",
-        True,
-        True,
-        okcallback=_okcallback,
-    )
-
-
 def resetgroudswitchcallback(self, group):
     if group == "QWebEngine":
         group = "webview"

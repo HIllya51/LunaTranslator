@@ -17,7 +17,6 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     D_getsimplecombobox,
 )
-from gui.setting_display_text import on_not_find_qweb
 from gui.showword import showdiction
 
 
@@ -85,17 +84,13 @@ def gethiragrid(self):
 
 
 def _checkmaybefailed(self, idx):
-    if idx == 2 and not gobject.testuseqwebengine():
-        self.seletengeinecombo_1.setCurrentIndex(self.seletengeinecombo_1.lastindex)
-        on_not_find_qweb(self)
-        return
     self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
     auto_select_webview.switchtype()
 
 
 def _createseletengeinecombo_1(self):
 
-    webviews = ["MSHTML", "WebView2", "QWebEngine"]
+    webviews = ["MSHTML", "WebView2"]
 
     if get_platform() == "xp":
         webviews = ["MSHTML"]

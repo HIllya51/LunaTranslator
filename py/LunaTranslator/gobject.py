@@ -44,10 +44,6 @@ def gettempdir(filename):
     return tgt
 
 
-def testuseqwebengine():
-    return os.path.exists("./files/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll")
-
-
 from LunaTranslator import MAINUI
 
 baseobject: MAINUI = None

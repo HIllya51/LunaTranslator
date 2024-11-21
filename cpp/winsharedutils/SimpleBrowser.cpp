@@ -1,4 +1,4 @@
-// SimpleBrowser.cpp --- simple Win32 browser
+﻿// SimpleBrowser.cpp --- simple Win32 browser
 // Copyright (C) 2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
 
@@ -106,14 +106,77 @@ BOOL DoSetBrowserEmulation(DWORD dwValue)
 
     return bOK;
 }
-extern "C" __declspec(dllexport) DWORD html_version()
+class MWebBrowserEx : public MWebBrowser
+{
+    HWND hwndParent;
+
+public:
+    std::vector<std::tuple<std::optional<std::wstring>, int>> menuitems;
+    static MWebBrowserEx *Create(HWND _hwndParent);
+    // IDocHostUIHandler interface
+    STDMETHODIMP ShowContextMenu(
+        DWORD dwID,
+        POINT *ppt,
+        IUnknown *pcmdtReserved,
+        IDispatch *pdispReserved);
+
+protected:
+    MWebBrowserEx(HWND _hwndParent);
+};
+MWebBrowserEx::MWebBrowserEx(HWND _hwndParent) : MWebBrowser(_hwndParent), hwndParent(_hwndParent)
+{
+}
+MWebBrowserEx *MWebBrowserEx::Create(HWND _hwndParent)
+{
+    MWebBrowserEx *pBrowser = new MWebBrowserEx(_hwndParent);
+    if (!pBrowser->IsCreated())
+    {
+        pBrowser->Release();
+        pBrowser = NULL;
+    }
+    return pBrowser;
+}
+STDMETHODIMP MWebBrowserEx::ShowContextMenu(
+    DWORD dwID,
+    POINT *ppt,
+    IUnknown *pcmdtReserved,
+    IDispatch *pdispReserved)
+{
+    HMENU hMenu = NULL;
+    switch (dwID)
+    {
+    case CONTEXT_MENU_TEXTSELECT:
+    {
+        if (!menuitems.size())
+            return S_FALSE;
+        HMENU hMenu = CreatePopupMenu();
+        int idx = 0;
+        for (auto &item : menuitems)
+        {
+            if (std::get<0>(item))
+            {
+                AppendMenu(hMenu, MF_STRING, std::get<1>(item), std::get<0>(item).value().c_str());
+            }
+            else
+                AppendMenu(hMenu, MF_SEPARATOR, 0, nullptr);
+            idx += 1;
+        }
+        TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON, ppt->x, ppt->y, 0, hwndParent, nullptr);
+        DestroyMenu(hMenu);
+        return S_OK;
+    }
+    default:
+        return S_FALSE;
+    }
+}
+DECLARE_API DWORD html_version()
 {
     return getemulation();
 }
-extern "C" __declspec(dllexport) void *html_new(HWND parent)
+DECLARE_API void *html_new(HWND parent)
 {
     DoSetBrowserEmulation(getemulation());
-    auto s_pWebBrowser = MWebBrowser::Create(parent);
+    auto s_pWebBrowser = MWebBrowserEx::Create(parent);
     if (!s_pWebBrowser)
         return NULL;
 
@@ -124,18 +187,18 @@ extern "C" __declspec(dllexport) void *html_new(HWND parent)
     return s_pWebBrowser;
 }
 
-extern "C" __declspec(dllexport) void html_navigate(void *web, wchar_t *path)
+DECLARE_API void html_navigate(void *web, wchar_t *path)
 {
     if (!web)
         return;
-    auto ww = static_cast<MWebBrowser *>(web);
+    auto ww = static_cast<MWebBrowserEx *>(web);
     ww->Navigate2(path);
 }
-extern "C" __declspec(dllexport) void html_resize(void *web, int x, int y, int w, int h)
+DECLARE_API void html_resize(void *web, int x, int y, int w, int h)
 {
     if (!web)
         return;
-    auto ww = static_cast<MWebBrowser *>(web);
+    auto ww = static_cast<MWebBrowserEx *>(web);
     RECT r;
     r.left = x;
     r.top = y;
@@ -143,29 +206,78 @@ extern "C" __declspec(dllexport) void html_resize(void *web, int x, int y, int w
     r.bottom = y + h;
     ww->MoveWindow(r);
 }
-extern "C" __declspec(dllexport) void html_release(void *web)
+DECLARE_API void html_release(void *web)
 {
     if (!web)
         return;
-    auto ww = static_cast<MWebBrowser *>(web);
+    auto ww = static_cast<MWebBrowserEx *>(web);
     ww->Destroy();
     // ww->Release(); Destroy减少引用计数，自动del
 }
 
-extern "C" __declspec(dllexport) void html_get_current_url(void *web, wchar_t *url)
+DECLARE_API const wchar_t *html_get_current_url(void *web)
 {
     if (!web)
-        return;
-    auto ww = static_cast<MWebBrowser *>(web);
+        return L"";
+    auto ww = static_cast<MWebBrowserEx *>(web);
     wchar_t *_u;
     ww->get_LocationURL(&_u);
-    wcscpy(url, _u);
+    return _u;
 }
 
-extern "C" __declspec(dllexport) void html_set_html(void *web, wchar_t *html)
+DECLARE_API void html_set_html(void *web, wchar_t *html)
 {
     if (!web)
         return;
-    auto ww = static_cast<MWebBrowser *>(web);
+    auto ww = static_cast<MWebBrowserEx *>(web);
     ww->SetHtml(html);
+}
+DECLARE_API void html_add_menu(void *web, int index, int command, const wchar_t *label)
+{
+    if (!web)
+        return;
+    auto ww = static_cast<MWebBrowserEx *>(web);
+    std::optional<std::wstring> _label;
+    if (label)
+        _label = label;
+    auto ptr = ww->menuitems.begin() + index;
+    ww->menuitems.insert(ptr, {_label, command});
+}
+BSTR GetSelectedText(IHTMLDocument2 *pHTMLDoc2)
+{
+    IHTMLSelectionObject *pSelectionObj = nullptr;
+    HRESULT hr = pHTMLDoc2->get_selection(&pSelectionObj);
+    if (FAILED(hr) || pSelectionObj == nullptr)
+    {
+        return nullptr;
+    }
+
+    IHTMLTxtRange *pTxtRange = nullptr;
+    hr = pSelectionObj->createRange((IDispatch **)&pTxtRange);
+    pSelectionObj->Release();
+    if (FAILED(hr) || pTxtRange == nullptr)
+    {
+        return nullptr;
+    }
+
+    BSTR selectedText = nullptr;
+    hr = pTxtRange->get_text(&selectedText);
+    pTxtRange->Release();
+
+    return selectedText;
+}
+DECLARE_API const wchar_t *html_get_select_text(void *web)
+{
+    if (!web)
+        return L"";
+    auto ww = static_cast<MWebBrowserEx *>(web);
+
+    if (IHTMLDocument2 *pDocument = ww->GetIHTMLDocument2())
+    {
+        auto text = GetSelectedText(pDocument);
+        pDocument->Release();
+        // 不需要free，free会崩溃
+        return text;
+    }
+    return L"";
 }
