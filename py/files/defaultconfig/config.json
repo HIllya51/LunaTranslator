@@ -598,10 +598,10 @@
                 "align": 2
             },
             "copy_once": {
-                "use": false,
+                "use": true,
                 "tip": "读取剪贴板",
                 "icon": "fa.file-o",
-                "align": 0
+                "align": 2
             },
             "game_ref_favorites": {
                 "use": false,
@@ -671,16 +671,16 @@
                 "align": 2
             },
             "ocr_once": {
-                "use": false,
+                "use": true,
                 "tip": "进行一次OCR",
                 "icon": "fa.crop",
-                "align": 0
+                "align": 2
             },
             "ocr_once_follow": {
                 "use": false,
                 "tip": "再次进行OCR",
                 "icon": "fa.spinner",
-                "align": 0
+                "align": 2
             },
             "noundict_direct": {
                 "use": false,
@@ -825,7 +825,7 @@
                 "align": 2
             },
             "keepontop": {
-                "use": true,
+                "use": false,
                 "tip": "窗口置顶",
                 "icon": "fa.neuter",
                 "align": 2
