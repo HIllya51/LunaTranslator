@@ -19,12 +19,8 @@ add_library(pchhook pchhook.cpp)
 target_precompile_headers(pchhook PUBLIC pchhook.h)
 
 
-add_library(hostmain main.cc)
-target_link_libraries(hostmain VERSION_DEF minhook)
-target_precompile_headers(hostmain REUSE_FROM pchhook) 
-
-
 set(texthook_src
+		main.cc
 		texthook.cc
 		hookfinder.cc
 		${enginessrc}
@@ -55,4 +51,4 @@ target_precompile_headers(LunaHook REUSE_FROM pchhook)
 
 set_target_properties(LunaHook PROPERTIES OUTPUT_NAME "LunaHook${bitappendix}")
 
-target_link_libraries(LunaHook hostmain Version httpapi ws2_32 Shlwapi pch minhook commonengine utils ${YY_Thunks_for_WinXP})
+target_link_libraries(LunaHook VERSION_DEF Version httpapi ws2_32 Shlwapi pch minhook commonengine utils ${YY_Thunks_for_WinXP})

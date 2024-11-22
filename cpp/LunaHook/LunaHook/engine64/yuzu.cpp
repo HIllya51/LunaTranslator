@@ -1753,6 +1753,12 @@ namespace
         strReplace(s, "#", "");
         buffer->from(s);
     }
+    void F0100509013040000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        strReplace(ws, L"^", L"");
+        buffer->from(WideStringToString(ws, 932));
+    }
     void F01002BB00A662000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -3346,7 +3352,9 @@ namespace
             {0x8007C1D4, {0, 0, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // name+text 这个两作都能提到。实际上只留这一个也行，但它显示完才有，速度慢。
             // Hakkenden
             {0x819ade74, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01007A901E728000, "01007A901E728000", "1.0.1"}},
-
+            // 大正メビウスライン大全 三合一
+            {0x800C43D4, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.0"}}, // text
+            {0x800C4468, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.1"}}, // text
         };
         return 1;
     }();

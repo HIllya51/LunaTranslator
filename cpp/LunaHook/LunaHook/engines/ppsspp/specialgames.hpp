@@ -199,6 +199,7 @@ namespace ppsspp
 		StringCharReplacer(buffer, "%N", 2, ' ');
 		StringFilter(buffer, "%K", 2);
 		StringFilter(buffer, "%P", 2);
+		StringFilter(buffer, "%O030", 5);
 	}
 
 	void ULJM05810(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -223,12 +224,17 @@ namespace ppsspp
 		void T(TextBuffer *buffer, HookParam *)
 		{
 			current = buffer->strA();
+			StringCharReplacer(buffer, "\\n", 2, '\n');
 		}
 		void N(TextBuffer *buffer, HookParam *)
 		{
 			auto current1 = buffer->strA();
 			if (current == current1)
 				buffer->clear();
+			else
+			{
+				StringCharReplacer(buffer, "\\n", 2, '\n');
+			}
 		}
 	}
 	void FNPJH50243(TextBuffer *buffer, HookParam *)
@@ -348,6 +354,20 @@ namespace ppsspp
 			return;
 		buffer->from(addr + 0x20, *(DWORD *)(addr + 0x14) * 2);
 	}
+	void ULJM05433(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		static std::string last;
+		if (startWith(s, last))
+		{
+			auto _ = s.substr(last.size(), s.size() - last.size());
+			last = s;
+			s = _;
+		}
+		else
+			last = s;
+		buffer->from(s);
+	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
 		// Shinigami to Shoujo
 		{0x883bf34, {0, 1, 0, 0, ULJS00403_filter, "ULJS00403"}},
@@ -433,6 +453,8 @@ namespace ppsspp
 		{0x8822F24, {0, 0xe, 0, 0, 0, "ULJS00316"}}, // text
 		// 明治東亰恋伽 トワヰライト・キス
 		{0x884DE44, {0, 0, 0, 0, NPJH50900, "NPJH50900"}}, // text
+		// Never7 -the end of infinity-
+		{0x88196F0, {0, 0xe, 0, 0, ULJM05433, "ULJM05433"}},
 	};
 
 }
