@@ -671,8 +671,6 @@ class texthook(basetext):
 
     def handle_output(self, hc, hn, tp, output):
 
-        if self.config["filter_chaos_code"] and checkchaos(output):
-            return False
         key = (hc, hn.decode("utf8"), tp)
         if key in self.selectedhook:
             if len(self.selectedhook) == 1:

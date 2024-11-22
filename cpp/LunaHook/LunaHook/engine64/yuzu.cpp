@@ -329,7 +329,7 @@ namespace
         s = std::regex_replace(s, std::regex("#[^\\]]*\\]"), "");
         s = std::regex_replace(s, std::regex("#[^\\n]*\\n"), "");
         s = std::regex_replace(s, std::regex(u8"　"), "");
-        s = std::regex_replace(s, std::regex(u8"Save[\\s\\S]*データ"), "");
+        s = std::regex_replace(s, std::regex(u8R"(Save(.|\s)*データ)"), "");
         buffer->from(s);
     }
 
@@ -1004,7 +1004,7 @@ namespace
     {
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"(\[~\])"), "\n");
-        s = std::regex_replace(s, std::regex(R"(\rom:[\s\S]*$)"), "");
+        s = std::regex_replace(s, std::regex(R"(rom:(.|\s)*$)"), "");
         s = std::regex_replace(s, std::regex(R"(\[[\w\d]*\[[\w\d]*\].*?\[\/[\w\d]*\]\])"), "");
         s = std::regex_replace(s, std::regex(R"(\[.*?\])"), "");
         static std::string last;
@@ -1158,7 +1158,7 @@ namespace
         s = std::regex_replace(s, closingBraceRegex, L"");
         if (choice)
         {
-            std::wregex whitespaceRegex(LR"([^\S\n]|　)");
+            std::wregex whitespaceRegex(LR"([ \t\r\f\v]|　)");
             s = std::regex_replace(s, whitespaceRegex, L"");
         }
         else
@@ -1513,7 +1513,7 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\\s\\S]*$"), L"");
+        s = std::regex_replace(s, std::wregex(LR"((.|\s)*$)"), L"");
         s = std::regex_replace(s, std::wregex(L"\n+"), L" ");
         s = std::regex_replace(s, std::wregex(L"\\s"), L"");
         s = std::regex_replace(s, std::wregex(L"[＀븅]"), L"");
@@ -1769,6 +1769,15 @@ namespace
         strReplace(s, "[#]", ""); // 分两段显示
         buffer->from(s);
     }
+    void F01007A901E728000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = std::regex_replace(s, std::wregex(LR"((\\n)+)"), L"");
+        s = std::regex_replace(s, std::wregex(LR"([^ \t\r\n\f\v]+＠)"), L""); // c++ regex\S对中文字符支持有问题
+        s = std::regex_replace(s, std::wregex(LR"(\\)"), L"");
+        s = std::regex_replace(s, std::wregex(LR"((\@)+)"), L"");
+        buffer->from(s);
+    }
     void F01003E601E324000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -1950,8 +1959,8 @@ namespace
 
         auto s = buffer->strW();
         s = std::regex_replace(s, std::wregex(LR"(\[([^\]\/]+)\/[^\]]+\])"), L"$1");
-        s = std::regex_replace(s, std::wregex(L"(\\S*)@"), L"$1");
-        s = std::regex_replace(s, std::wregex(L"\\$"), L"");
+        s = std::regex_replace(s, std::wregex(LR"(([^ \t\r\n\f\v]*)@)"), L"$1");
+        s = std::regex_replace(s, std::wregex(LR"(\$)"), L"");
         buffer->from(s);
     }
     void F01000A400AF2A000(TextBuffer *buffer, HookParam *hp)
@@ -3335,6 +3344,8 @@ namespace
             // 其二
             {0x8006BCC0, {0, 8, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // text
             {0x8007C1D4, {0, 0, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // name+text 这个两作都能提到。实际上只留这一个也行，但它显示完才有，速度慢。
+            // Hakkenden
+            {0x819ade74, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01007A901E728000, "01007A901E728000", "1.0.1"}},
 
         };
         return 1;

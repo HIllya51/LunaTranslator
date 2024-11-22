@@ -193,14 +193,6 @@ def gethookgrid(self):
             ),
         ],
         [
-            "过滤包含乱码的文本行",
-            D_getsimpleswitch(globalconfig, "filter_chaos_code"),
-            D_getIconButton(
-                icon="fa.gear",
-                callback=lambda: codeacceptdialog(self),
-            ),
-        ],
-        [
             "使用YAPI注入",
             D_getsimpleswitch(globalconfig, "use_yapi"),
         ],

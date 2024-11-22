@@ -32,10 +32,6 @@
 
   Received historical text is cached. When viewing the content of a text item in the text selection window, the historical cached text is queried. If there are too many text items or the text refreshes repeatedly, it will cause too much cached text, making it more sluggish to view text (sometimes even when not viewing). In fact, most of the cached text here is useless; useful historical text can be viewed in historical translations. You can arbitrarily lower this value (default is 1000000, but it can be lowered to 1000).
 
-1. ####  Filter Lines Containing Garbled Text
-
-  The garbled text filtering in text processing only filters out garbled characters, while this filter, upon receiving text, will discard the entire line of text if any garbled characters are detected. When the game refreshes a large number of sentences containing garbled text, you can appropriately use this option to filter out invalid sentences and improve performance.
-
 1. ####  Use YAPI Injection
 
   This option can sometimes slightly improve comfort, but it may have compatibility issues, so it is not recommended.

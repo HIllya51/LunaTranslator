@@ -1049,7 +1049,6 @@ class dialog_setting_game_internal(QWidget):
             "textthreaddelay",
             "maxBufferSize",
             "maxHistorySize",
-            "filter_chaos_code",
         ]:
             if k not in savehook_new_data[gameuid]["hooksetting_private"]:
                 savehook_new_data[gameuid]["hooksetting_private"][k] = globalconfig[k]
@@ -1098,13 +1097,6 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "maxHistorySize",
                 callback=lambda x: gobject.baseobject.textsource.setsettings(),
-            ),
-        )
-        formLayout2.addRow(
-            "过滤包含乱码的文本行",
-            getsimpleswitch(
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "filter_chaos_code",
             ),
         )
 
