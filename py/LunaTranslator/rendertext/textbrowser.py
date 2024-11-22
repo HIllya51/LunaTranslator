@@ -723,9 +723,9 @@ class TextBrowser(QWidget, dataget):
             _ = self.solvejiaminglabel(
                 savetaglabels_idx, word, fonthira, fontori_m, tl1, fha
             )
-            lines[-1].append(_)
-            if tl1.y() != tl2.y():
+            if len(lines[-1]) and (_.y() != lines[-1][-1].y()):
                 lines.append([])
+            lines[-1].append(_)
             savetaglabels_idx += 1
         for line in lines:
             self._dyna_merge_label(line)
