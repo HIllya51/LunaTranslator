@@ -792,5 +792,6 @@
     "Win32字符串函数钩子": "Win32 řetězcový funkční hák",
     "额外的钩子": "Extra háčky",
     "自动前进": "Automaticky dopředu",
-    "在新窗口中查词": "Vyhledávání slov v novém okně"
+    "在新窗口中查词": "Vyhledávání slov v novém okně",
+    "成功时跳过其他翻译": "Přeskočit další překlady po úspěchu"
 }

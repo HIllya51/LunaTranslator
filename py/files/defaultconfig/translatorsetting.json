@@ -816,7 +816,8 @@
 	},
 	"rengong": {
 		"args": {
-			"jsonfile": []
+			"jsonfile": [],
+			"skip_other_on_success": false
 		},
 		"argstype": {
 			"jsonfile": {
@@ -825,6 +826,10 @@
 				"dir": false,
 				"filter": "*.json",
 				"multi": true
+			},
+			"skip_other_on_success": {
+				"type": "switch",
+				"name": "成功时跳过其他翻译"
 			}
 		}
 	},

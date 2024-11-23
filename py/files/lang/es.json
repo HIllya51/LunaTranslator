@@ -792,5 +792,6 @@
     "Win32字符串函数钩子": "Gancho de función de cadena Win32",
     "额外的钩子": "Ganchos adicionales",
     "自动前进": "Avance automático",
-    "在新窗口中查词": "Buscar palabras en una nueva ventana"
+    "在新窗口中查词": "Buscar palabras en una nueva ventana",
+    "成功时跳过其他翻译": "Saltar otras traducciones cuando tenga éxito"
 }

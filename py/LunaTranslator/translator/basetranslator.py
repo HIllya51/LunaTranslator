@@ -188,8 +188,8 @@ class basetrans(commonbase):
     @property
     def transtype(self):
         # free/dev/api/offline/pre
-        # dev/offline/pre 无视请求间隔
-        # pre不使用翻译缓存
+        # dev/offline 无视请求间隔
+        # pre全都有额外的处理，不走该pipeline，不使用翻译缓存
         # offline不被新的请求打断
         return globalconfig["fanyi"][self.typename].get("type", "free")
 
@@ -237,8 +237,6 @@ class basetrans(commonbase):
     def shortorlongcacheget(self, content, is_auto_run):
         # 除了预翻译不使用翻译缓存，以及手动触发gpt翻译外，其他不管什么翻译都缓存下来。
         if self.is_gpt_like and not is_auto_run:
-            return None
-        if self.transtype == "pre":
             return None
         res = self.shorttermcacheget(content)
         if res:
@@ -359,8 +357,6 @@ class basetrans(commonbase):
 
         # 保存缓存
         # 不管是否使用翻译缓存，都存下来
-        if self.transtype == "pre":
-            return
         self.shorttermcacheset(cache_use, res)
         self.longtermcacheset(cache_use, res)
 
@@ -374,6 +370,7 @@ class basetrans(commonbase):
                     continue
                 gpt_dict = _gpt_dict
                 contentraw = _.get("gpt_dict_origin")
+                break
 
         return {
             "text": contentsolved,
@@ -409,7 +406,7 @@ class basetrans(commonbase):
 
                 self.maybeneedreinit()
 
-                if self.using_gpt_dict or self.transtype == "pre":
+                if self.using_gpt_dict:
                     contentsolved = self.__parse_gpt_dict(
                         contentsolved, optimization_params
                     )

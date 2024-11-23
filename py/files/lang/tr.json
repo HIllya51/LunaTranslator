@@ -792,5 +792,6 @@
     "Win32字符串函数钩子": "Win32 string fonksiyonu",
     "额外的钩子": "Ekstra hücreler",
     "自动前进": "Otomatik İleri",
-    "在新窗口中查词": "Yeni pencerede kelimeler arayın"
+    "在新窗口中查词": "Yeni pencerede kelimeler arayın",
+    "成功时跳过其他翻译": "Başarılı olduğunda diğer çevirileri atla"
 }

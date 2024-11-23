@@ -792,5 +792,6 @@
     "Win32字符串函数钩子": "Hook funkcji ciągów Win32",
     "额外的钩子": "Dodatkowe haki",
     "自动前进": "Automatyczne naprzód",
-    "在新窗口中查词": "Wyszukiwanie słów w nowym oknie"
+    "在新窗口中查词": "Wyszukiwanie słów w nowym oknie",
+    "成功时跳过其他翻译": "Pomiń inne tłumaczenia po powodzeniu"
 }

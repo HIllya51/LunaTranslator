@@ -386,18 +386,23 @@ class MAINUI:
         text_solved, optimization_params = self.solvebeforetrans(text)
 
         maybehaspremt = {}
+        skip_other_on_success = False
         fix_rank = globalconfig["fix_translate_rank_rank"].copy()
-
-        if "premt" in self.translators:
+        if "rengong" in self.translators:
+            contentraw = self.analyzecontent(text_solved, optimization_params)
             try:
-                contentraw = text_solved
-                for _ in optimization_params:
-                    if isinstance(_, dict):
-                        _gpt_dict = _.get("gpt_dict", None)
-                        if _gpt_dict is None:
-                            continue
-                        contentraw = _.get("gpt_dict_origin")
+                res = self.translators["rengong"].translate(contentraw)
+            except:
+                print_exc()
+                res = None
+            maybehaspremt["rengong"] = res
+            skip_other_on_success = (
+                res and self.translators["rengong"].config["skip_other_on_success"]
+            )
 
+        if (not skip_other_on_success) and ("premt" in self.translators):
+            contentraw = self.analyzecontent(text_solved, optimization_params)
+            try:
                 maybehaspremt = self.translators["premt"].translate(contentraw)
             except:
                 print_exc()
@@ -406,11 +411,13 @@ class MAINUI:
             fix_rank = fix_rank[:idx] + other + fix_rank[idx + 1 :]
 
         real_fix_rank = []
-
-        for engine in fix_rank:
-            if (engine not in self.translators) and (engine not in maybehaspremt):
-                continue
-            real_fix_rank.append(engine)
+        if skip_other_on_success:
+            real_fix_rank.append("rengong")
+        else:
+            for engine in fix_rank:
+                if (engine not in self.translators) and (engine not in maybehaspremt):
+                    continue
+                real_fix_rank.append(engine)
 
         if len(real_fix_rank) == 0:
             return _showrawfunction()
@@ -447,6 +454,15 @@ class MAINUI:
                 result=maybehaspremt.get(engine),
             )
         return True
+
+    def analyzecontent(self, text_solved, optimization_params):
+        for _ in optimization_params:
+            if isinstance(_, dict):
+                _gpt_dict = _.get("gpt_dict", None)
+                if _gpt_dict is None:
+                    continue
+                return _.get("gpt_dict_origin")
+        return text_solved
 
     def _delaypreparefixrank(self, _showrawfunction, real_fix_rank):
         _showrawfunction()

@@ -113,8 +113,7 @@ class TS(basetrans):
             collect.append(line)
         return "\n".join(collect)
 
-    def translate(self, content: dict):
-        content = content["contentraw"]
+    def translate(self, content):
         self.checkfilechanged(
             self.unsafegetcurrentgameconfig(), tuple(self.config["jsonfile"])
         )

@@ -792,5 +792,6 @@
     "Win32字符串函数钩子": "Aggancio della funzione stringa Win32",
     "额外的钩子": "Ganci supplementari",
     "自动前进": "Avanti automatico",
-    "在新窗口中查词": "Cerca parole in una nuova finestra"
+    "在新窗口中查词": "Cerca parole in una nuova finestra",
+    "成功时跳过其他翻译": "Salta altre traduzioni quando hai successo"
 }

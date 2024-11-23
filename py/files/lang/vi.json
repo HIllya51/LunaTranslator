@@ -792,5 +792,6 @@
     "Win32字符串函数钩子": "Win32 Chuỗi chức năng Hook",
     "额外的钩子": "Thêm móc",
     "自动前进": "Tự động chuyển tiếp",
-    "在新窗口中查词": "Tra từ trong cửa sổ mới"
+    "在新窗口中查词": "Tra từ trong cửa sổ mới",
+    "成功时跳过其他翻译": "Bỏ qua các bản dịch khác khi thành công"
 }
