@@ -183,13 +183,14 @@ class rangeselect(QMainWindow):
         self.reset()
 
     def reset(self):
-        winsharedutils.maximum_window(int(self.winId()))
-        self.once = True
         self.is_drawing = False
-        self.start_point = QPoint()
-        self.end_point = QPoint()
         self.__start = None
         self.__end = None
+        self.start_point = None
+        self.end_point = None
+        self._cached_dpi = None
+        winsharedutils.maximum_window(int(self.winId()))
+        self.once = True
         self.startauto = False
         self.rectlabel.resize(0, 0)
         self.rectlabel.setStyleSheet(
@@ -286,12 +287,14 @@ screen_shot_ui = None
 
 def rangeselct_function(callback, startauto):
     global screen_shot_ui
-    if screen_shot_ui is None:
-        screen_shot_ui = rangeselect()
-        # 可能是由于使用win32移动窗口，导致父翻译show/hide影响到他
+    if screen_shot_ui is not None:
+        # 完全销毁旧的实例
+        screen_shot_ui.deleteLater()
+        screen_shot_ui = None
+    
+    screen_shot_ui = rangeselect()
     screen_shot_ui.show()
     screen_shot_ui.reset()
     screen_shot_ui.callback = callback
     windows.SetFocus(int(screen_shot_ui.winId()))
-
     screen_shot_ui.startauto = startauto
