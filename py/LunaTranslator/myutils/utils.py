@@ -1057,7 +1057,8 @@ def is_ascii_symbo(c: str):
 
 
 def is_ascii_control(c: str):
-    return cinranges(c, (0, 0x1F), (0x7F, 0xA0))
+    # 不要管\r\n
+    return cinranges(c, (0, 0x9), (0xB, 0xC), (0xE, 0x1F), (0x7F, 0xA0))
 
 
 def checkchaos(text):

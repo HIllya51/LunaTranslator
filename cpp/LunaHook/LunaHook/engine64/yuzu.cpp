@@ -678,6 +678,10 @@ namespace
         strReplace(s, "#n", "\n");
         buffer->from(s);
     }
+    void F010035001D1B2000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, "#n", 2);
+    }
     void F0100E1E00E2AE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -3355,6 +3359,9 @@ namespace
             // 大正メビウスライン大全 三合一
             {0x800C43D4, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.0"}}, // text
             {0x800C4468, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.1"}}, // text
+            // 猛獣たちとお姫様 for Nintendo Switch  二合一
+            {0x80115C70, {CODEC_UTF8, 0, 0, 0, F010035001D1B2000, "010035001D1B2000", "1.0.0"}}, // text
+            {0x80115F20, {CODEC_UTF8, 0, 0, 0, F010035001D1B2000, "010035001D1B2000", "1.0.1"}}, // text
         };
         return 1;
     }();

@@ -5,7 +5,6 @@ from traceback import print_exc
 import qtawesome, windows, winsharedutils, gobject
 from myutils.config import savehook_new_data, static_data, globalconfig, _TR, isascii
 from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
-from myutils.wrapper import Singleton_close
 from gui.dialog_savedgame import dialog_setting_game
 from gui.usefulwidget import (
     closeashidewindow,

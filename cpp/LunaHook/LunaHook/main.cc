@@ -262,10 +262,11 @@ void delayinsertadd(HookParam hp, std::string name)
 }
 void delayinsertNewHook(uint64_t em_address)
 {
-	if (delayinserthook->find(em_address) == delayinserthook->end())
+	auto &&_delayinserthook = delayinserthook.Acquire();
+	if (_delayinserthook->find(em_address) == _delayinserthook->end())
 		return;
-	auto h = delayinserthook->at(em_address);
-	delayinserthook->erase(em_address);
+	auto h = _delayinserthook->at(em_address);
+	_delayinserthook->erase(em_address);
 	NewHook(h.second, h.first.c_str());
 }
 bool NewHook(HookParam hp, LPCSTR name)
