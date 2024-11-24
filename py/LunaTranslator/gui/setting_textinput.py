@@ -429,63 +429,6 @@ def filetranslate(self):
                 "group",
             ),
         ],
-        [
-            (
-                dict(
-                    title="LiveCaptions",
-                    type="grid",
-                    grid=[
-                        [
-                            "开始",
-                            D_getsimpleswitch(
-                                globalconfig["sourcestatus2"]["livecaptions"],
-                                "use",
-                                name="livecaptions",
-                                parent=self,
-                                callback=functools.partial(
-                                    yuitsu_switch,
-                                    self,
-                                    globalconfig["sourcestatus2"],
-                                    "sourceswitchs",
-                                    "livecaptions",
-                                    gobject.baseobject.starttextsource,
-                                ),
-                                pair="sourceswitchs",
-                            ),
-                        ],
-                        [
-                            "截取行数",
-                            D_getspinbox(
-                                1,
-                                10,
-                                globalconfig,
-                                "livecaptions_cachesentence",
-                            ),
-                        ],
-                        [
-                            "刷新延迟_(ms)",
-                            D_getspinbox(
-                                10,
-                                100000,
-                                globalconfig,
-                                "livecaptions_delay",
-                            ),
-                        ],
-                        [
-                            "最长等待时间_(ms)",
-                            D_getspinbox(
-                                10,
-                                100000,
-                                globalconfig,
-                                "livecaptions_maxwait",
-                            ),
-                        ],
-                    ],
-                ),
-                0,
-                "group",
-            ),
-        ],
     ]
     return grids
 

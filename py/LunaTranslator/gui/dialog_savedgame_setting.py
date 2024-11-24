@@ -807,12 +807,20 @@ class dialog_setting_game_internal(QWidget):
 
         table = TableViewW()
 
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        table.setModel(model)
+        table.horizontalHeader().setSectionResizeMode(
+            2, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
+        )
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
         table.setWordWrap(False)
-        table.setModel(model)
 
         table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         table.customContextMenuRequested.connect(self.__privatetextproc_showmenu)
@@ -876,7 +884,7 @@ class dialog_setting_game_internal(QWidget):
         self.__textprocinternalmodel.insertRow(
             row,
             [
-                QStandardItem(postprocessconfig[_internal]["name"]),
+                QStandardItem(_TR(postprocessconfig[_internal]["name"])),
                 QStandardItem(),
                 QStandardItem(),
             ],
