@@ -183,14 +183,13 @@ class rangeselect(QMainWindow):
         self.reset()
 
     def reset(self):
-        self.is_drawing = False
-        self.__start = None
-        self.__end = None
-        self.start_point = None
-        self.end_point = None
-        self._cached_dpi = None
         winsharedutils.maximum_window(int(self.winId()))
         self.once = True
+        self.is_drawing = False
+        self.start_point = QPoint()
+        self.end_point = QPoint()
+        self.__start = None
+        self.__end = None
         self.startauto = False
         self.rectlabel.resize(0, 0)
         self.rectlabel.setStyleSheet(
