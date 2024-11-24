@@ -1,9 +1,10 @@
 from qtsymbols import *
 from myutils.config import globalconfig, static_data
 from rendertext.somefunctions import dataget
-import gobject, functools, importlib
+import gobject, functools, importlib, winsharedutils
 from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
+from gui.dynalang import LAction
 
 
 class Qlabel_c(QLabel):
@@ -97,6 +98,23 @@ class TextBrowser(QWidget, dataget):
 
         self.__makeborder(event.size())
 
+    def showmenu(self, p):
+        curr = self.textbrowser.textCursor().selectedText()
+        if not curr:
+            return
+        menu = QMenu(self)
+
+        search = LAction(("查词"))
+        copy = LAction(("复制"))
+
+        menu.addAction(search)
+        menu.addAction(copy)
+        action = menu.exec(self.mapToGlobal(p))
+        if action == search:
+            gobject.baseobject.searchwordW.search_word.emit(curr, False)
+        elif action == copy:
+            winsharedutils.clipboard_set(curr)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.setAcceptDrops(True)
@@ -108,6 +126,9 @@ class TextBrowser(QWidget, dataget):
         self.toplabel2 = QLabel(self)
         self.toplabel2.setMouseTracking(True)
         self.textbrowser = QTextBrowser(self)
+        self.textbrowser.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.textbrowser.customContextMenuRequested.connect(self.showmenu)
+
         self.textbrowser.document().contentsChanged.connect(self.contentchangedfunction)
         self.tranparentcolor = QColor()
         self.tranparentcolor.setAlpha(0)

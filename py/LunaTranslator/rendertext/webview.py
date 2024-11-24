@@ -2,7 +2,8 @@ from qtsymbols import *
 from rendertext.somefunctions import dataget
 import gobject, uuid, json, os, functools, windows, time
 from urllib.parse import quote
-from myutils.config import globalconfig, static_data
+from myutils.utils import threader
+from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import tryprint, threader
 from gui.usefulwidget import WebivewWidget
 
@@ -45,7 +46,6 @@ class TextBrowser(QWidget, dataget):
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
         self.webivewwidget = WebivewWidget(self, usedarklight=False)
 
-        # webview2无法接收qt事件。
         webviewhwnd = self.webivewwidget.get_hwnd()
         self.wndproc = windows.WNDPROCTYPE(
             functools.partial(
@@ -54,7 +54,15 @@ class TextBrowser(QWidget, dataget):
             )
         )
         windows.SetWindowLongPtr(webviewhwnd, windows.GWLP_WNDPROC, self.wndproc)
-
+        self.webivewwidget.add_menu(
+            0,
+            _TR("查词"),
+            threader(
+                lambda w: gobject.baseobject.searchwordW.search_word.emit(
+                    w.replace("\n", "").strip(), False
+                )
+            ),
+        )
         self.masklabel_left = QLabel(self)
         self.masklabel_left.setMouseTracking(True)
         # self.masklabel_left.setStyleSheet('background-color:red')
