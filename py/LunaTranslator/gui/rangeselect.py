@@ -286,12 +286,14 @@ screen_shot_ui = None
 
 def rangeselct_function(callback, startauto):
     global screen_shot_ui
-    if screen_shot_ui is None:
-        screen_shot_ui = rangeselect()
-        # 可能是由于使用win32移动窗口，导致父翻译show/hide影响到他
+    if screen_shot_ui is not None:
+        # 完全销毁旧的实例
+        screen_shot_ui.deleteLater()
+        screen_shot_ui = None
+    
+    screen_shot_ui = rangeselect()
     screen_shot_ui.show()
     screen_shot_ui.reset()
     screen_shot_ui.callback = callback
     windows.SetFocus(int(screen_shot_ui.winId()))
-
     screen_shot_ui.startauto = startauto
