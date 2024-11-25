@@ -10,6 +10,7 @@ namespace
 
     uintptr_t getDoJitAddress()
     {
+        // Dynarmic::Backend::X64::EmitX64::RegisterBlock
         auto RegisterBlockSig1 = "E8 ?? ?? ?? ?? 4? 8B ?? 4? 8B ?? 4? 8B ?? E8 ?? ?? ?? ?? 4? 89?? 4? 8B???? ???????? 4? 89?? ?? 4? 8B?? 4? 89";
         auto RegisterBlock = find_pattern(RegisterBlockSig1, processStartAddress, processStopAddress);
         if (RegisterBlock)
@@ -40,25 +41,6 @@ namespace
             }
         }
         return 0;
-        /*
-        这块不知道怎么实现。
-        // DebugSymbol: RegisterBlock
-        // ?RegisterBlock@EmitX64@X64@Backend@Dynarmic@@IEAA?AUBlockDescriptor@1234@AEBVLocationDescriptor@IR@4@PEBX_K@Z <- new
-        // ?RegisterBlock@EmitX64@X64@Backend@Dynarmic@@IEAA?AUBlockDescriptor@1234@AEBVLocationDescriptor@IR@4@PEBX1_K@Z
-        const symbols = DebugSymbol.findFunctionsMatching('Dynarmic::Backend::X64::EmitX64::RegisterBlock');
-        if (symbols.length !== 0) {
-            return symbols[0];
-        }
-
-        // DebugSymbol: Patch
-        // ?Patch@EmitX64@X64@Backend@Dynarmic@@IEAAXAEBVLocationDescriptor@IR@4@PEBX@Z
-        const patchs = DebugSymbol.findFunctionsMatching('Dynarmic::Backend::X64::EmitX64::Patch');
-        if (patchs.length !== 0) {
-            idxDescriptor = 1;
-            idxEntrypoint = 2;
-            return patchs[0];
-        }
-        */
     }
 
     struct emfuncinfo
@@ -672,11 +654,10 @@ namespace
 
     void F010001D015260000(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
+        auto s = buffer->viewA();
         if (startWith(s, "#Key"))
             return buffer->clear();
-        strReplace(s, "#n", "\n");
-        buffer->from(s);
+        StringFilter(buffer, "#n", 2);
     }
     void F010035001D1B2000(TextBuffer *buffer, HookParam *hp)
     {
@@ -2433,7 +2414,9 @@ namespace
             {0x8003E874, {CODEC_UTF8, 0, 0, 0, F0100068019996000, "0100068019996000", "1.0.0"}}, // English
             // 薄桜鬼 真改 万葉ノ抄
             {0x8004E8F0, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100EA601A0A0000", "1.0.0"}},
-            // Hakuouki Shinkai: Tsukikage no Shou / 薄桜鬼 真改 月影ノ抄
+            // 薄桜鬼 真改 銀星ノ抄
+            {0x80047F00, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100C49010598000", "1.0.0"}},
+            // 薄桜鬼 真改 月影ノ抄
             {0x8019ecd0, {CODEC_UTF8, 1, 0, 0, F0100E1E00E2AE000, "0100E1E00E2AE000", "1.0.0"}}, // Text
             // Chrono Cross: The Radical Dreamers Edition
             {0x802b1254, {CODEC_UTF32, 1, 0, 0, 0, "0100AC20128AC000", "1.0.2"}}, // Text
