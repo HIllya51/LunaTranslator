@@ -738,11 +738,6 @@
     "严格的": "estrito",
     "收藏夹": "Favoritos",
     "使用指定翻译器": "Usar o tradutor designado",
-    "截断时反向截断": "Truncamento reverso durante o truncamento",
-    "按字数过滤或截断": "Filtrar ou truncar por contagem de palavras",
-    "按行数过滤或截断": "Filtrar ou truncar por contagem de linhas",
-    "超过最大字数时截断而非过滤": "Truncar em vez de filtrar quando exceder a contagem máxima de palavras",
-    "超过最大行数时截断而非过滤": "Truncar em vez de filtrar quando o número máximo de linhas for excedido",
     "复制图片": "Copiar a imagem",
     "试用": "em julgamento",
     "图片翻译": "Tradução da imagem",
@@ -793,5 +788,7 @@
     "额外的钩子": "Ganchos extra",
     "自动前进": "Avançar Automático",
     "在新窗口中查词": "Procurar palavras numa nova janela",
-    "成功时跳过其他翻译": "Ignorar outras traduções quando bem sucedidas"
+    "成功时跳过其他翻译": "Ignorar outras traduções quando bem sucedidas",
+    "截取指定行数": "Extrair o número especificado de linhas",
+    "截取末尾": "Cortar até ao fim"
 }

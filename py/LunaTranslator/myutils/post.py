@@ -304,30 +304,13 @@ def _remove_not_in_ja_bracket(line):
     return line
 
 
-def length_threshold(line, args):
-    if len(line) > args["maxzishu"]:
-        if args["cut"]:
-            if args.get("cut_reverse", False):
-                return line[: args["maxzishu"]]
-            else:
-                return line[-args["maxzishu"] :]
-        return ""
-    if len(line) < args["minzishu"]:
-        return ""
-    return line
-
-
 def lines_threshold(line, args):
     sps = line.split("\n")
     if len(sps) > args["maxzishu"]:
-        if args["cut"]:
-            if args.get("cut_reverse", False):
-                return "\n".join(sps[: args["maxzishu"]])
-            else:
-                return "\n".join(sps[-args["maxzishu"] :])
-        return ""
-    if len(sps) < args["minzishu"]:
-        return ""
+        if args.get("cut_reverse", True):
+            return "\n".join(sps[-args["maxzishu"] :])
+        else:
+            return "\n".join(sps[: args["maxzishu"]])
     return line
 
 
@@ -374,8 +357,7 @@ def POSTSOLVE(line):
         "_remove_chaos": _remove_chaos,
         "_remove_not_in_ja_bracket": _remove_not_in_ja_bracket,
         "dedump": dedump,
-        "length_threshold": length_threshold,
-        "lines_threshold": lines_threshold,
+        "lines_threshold_1": lines_threshold,
         "_11": _mypostloader,
         "stringreplace": stringreplace,
     }

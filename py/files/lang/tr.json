@@ -738,11 +738,6 @@
     "严格的": "strict",
     "收藏夹": "Favoritler",
     "使用指定翻译器": "Belirlenmiş tercümanları kullan",
-    "截断时反向截断": "Kıpırdama sırasında geri döndürün",
-    "按字数过滤或截断": "Kelime sayıyla sil ya da küçük",
-    "按行数过滤或截断": "Sırada sayıyla sil ya da küçük",
-    "超过最大字数时截断而非过滤": "Maksimum kelime sayısından fazladığında filtreleme yerine küçük",
-    "超过最大行数时截断而非过滤": "Azamik satır sayısını aştığında filtrelemek yerine küçük",
     "复制图片": "Görüntü kopyala",
     "试用": "mahkemede",
     "图片翻译": "Resim çevirimi",
@@ -793,5 +788,7 @@
     "额外的钩子": "Ekstra hücreler",
     "自动前进": "Otomatik İleri",
     "在新窗口中查词": "Yeni pencerede kelimeler arayın",
-    "成功时跳过其他翻译": "Başarılı olduğunda diğer çevirileri atla"
+    "成功时跳过其他翻译": "Başarılı olduğunda diğer çevirileri atla",
+    "截取指定行数": "Belirtilen satır sayısını çıkart",
+    "截取末尾": "Sonuna kesin."
 }

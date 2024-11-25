@@ -738,11 +738,6 @@
     "严格的": "strict",
     "收藏夹": "Favorites",
     "使用指定翻译器": "Use designated translator",
-    "截断时反向截断": "Reverse truncation during truncation",
-    "按字数过滤或截断": "Filter or truncate by word count",
-    "按行数过滤或截断": "Filter or truncate by row count",
-    "超过最大字数时截断而非过滤": "Truncate instead of filtering when exceeding the maximum word count",
-    "超过最大行数时截断而非过滤": "Truncate instead of filtering when the maximum number of rows is exceeded",
     "复制图片": "Copy image",
     "试用": "on trial",
     "图片翻译": "Image translation",
@@ -793,5 +788,7 @@
     "额外的钩子": "Extra hooks",
     "自动前进": "Automatic Forward",
     "在新窗口中查词": "Search for words in a new window",
-    "成功时跳过其他翻译": "Skip other translations when successful"
+    "成功时跳过其他翻译": "Skip other translations when successful",
+    "截取指定行数": "Extract the specified number of rows",
+    "截取末尾": "Cut to the end"
 }

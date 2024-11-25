@@ -32,25 +32,11 @@
 
     `「{恵麻/えま}さん、まだ{起き/おき}てる？」` or `「{恵麻:えま}さん、まだ{起き:おき}てる？」` will be processed into `「恵麻さん、まだ起きてる？」`
 
-1. #### Filter or Truncate by Word Count
+1. #### Extract Specified Number of Lines
 
-    This method determines how to handle the text based on its word count.
+    This method will extract the number of lines specified by **Number of Lines to Extract**.
 
-    If the text length is less than the minimum word count, the text will be filtered out. For example, some games continuously refresh a single inverted triangle character in a static state, which can be filtered using this method.
-
-    If the text length exceeds the maximum word count, if **Truncate instead of Filter when exceeding maximum word count** is activated, it will truncate the text to the specified word count; otherwise, the text will be completely filtered out.
-
-    If **Reverse Truncation when Truncating** is activated, when truncating, it will keep the last `maximum word count` words; otherwise, it will keep the first `maximum word count` words.
-
-1. #### Filter or Truncate by Line Count
-
-    This is similar to the above, but it determines based on the number of lines in the text. It can be mainly used to truncate the first three lines of the text, or the last line of the text, or to filter out lines that are too many or too few.
-
-    If the number of lines in the text is less than the minimum line count, the text will be filtered out.
-
-    If the number of lines in the text exceeds the maximum line count, if **Truncate instead of Filter when exceeding maximum line count** is activated, it will truncate the text to the specified number of lines; otherwise, the text will be completely filtered out.
-
-    If **Reverse Truncation when Truncating** is activated, when truncating, it will keep the last `maximum line count` lines; otherwise, it will keep the first `maximum line count` lines.
+    If **Extract from End** is activated, it will extract the specified number of lines from the end of the text.
 
 1. #### Remove Duplicate Characters _AAAABBBBCCCC->ABC
 

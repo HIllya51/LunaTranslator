@@ -30,70 +30,23 @@
         "use": false,
         "name": "去除花括号{}"
     },
-    "length_threshold": {
+    "lines_threshold_1": {
         "use": false,
-        "name": "按字数过滤或截断",
+        "name": "截取指定行数",
         "args": {
-            "minzishu": 1,
-            "maxzishu": 99999,
-            "cut": false,
-            "cut_reverse": false
+            "maxzishu": 1,
+            "cut_reverse": true
         },
         "argstype": {
-            "minzishu": {
-                "name": "最小字数",
-                "type": "intspin",
-                "min": 0,
-                "max": 99999999,
-                "step": 1
-            },
             "maxzishu": {
-                "name": "最大字数",
+                "name": "截取行数",
                 "type": "intspin",
                 "min": 0,
                 "max": 99999999,
                 "step": 1
-            },
-            "cut": {
-                "name": "超过最大字数时截断而非过滤",
-                "type": "switch"
             },
             "cut_reverse": {
-                "name": "截断时反向截断",
-                "type": "switch"
-            }
-        }
-    },
-    "lines_threshold": {
-        "use": false,
-        "name": "按行数过滤或截断",
-        "args": {
-            "minzishu": 1,
-            "maxzishu": 99999,
-            "cut": false,
-            "cut_reverse": false
-        },
-        "argstype": {
-            "minzishu": {
-                "name": "最小行数",
-                "type": "intspin",
-                "min": 0,
-                "max": 99999999,
-                "step": 1
-            },
-            "maxzishu": {
-                "name": "最大行数",
-                "type": "intspin",
-                "min": 0,
-                "max": 99999999,
-                "step": 1
-            },
-            "cut": {
-                "name": "超过最大行数时截断而非过滤",
-                "type": "switch"
-            },
-            "cut_reverse": {
-                "name": "截断时反向截断",
+                "name": "截取末尾",
                 "type": "switch"
             }
         }

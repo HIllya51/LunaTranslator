@@ -738,11 +738,6 @@
     "严格的": "přísná",
     "收藏夹": "Oblíbené",
     "使用指定翻译器": "Použít určeného překladatele",
-    "截断时反向截断": "Reverzní zkrácení během zkrácení",
-    "按字数过滤或截断": "Filtrovat nebo zkrátit podle počtu slov",
-    "按行数过滤或截断": "Filtrovat nebo zkrátit podle počtu řádků",
-    "超过最大字数时截断而非过滤": "Při překročení maximálního počtu slov zkrátit místo filtrování",
-    "超过最大行数时截断而非过滤": "Při překročení maximálního počtu řádků zkrátit namísto filtrování",
     "复制图片": "Kopírovat obrázek",
     "试用": "před soudem",
     "图片翻译": "Překlad obrázků",
@@ -793,5 +788,7 @@
     "额外的钩子": "Extra háčky",
     "自动前进": "Automaticky dopředu",
     "在新窗口中查词": "Vyhledávání slov v novém okně",
-    "成功时跳过其他翻译": "Přeskočit další překlady po úspěchu"
+    "成功时跳过其他翻译": "Přeskočit další překlady po úspěchu",
+    "截取指定行数": "Extrahovat zadaný počet řádků",
+    "截取末尾": "Střih do konce"
 }

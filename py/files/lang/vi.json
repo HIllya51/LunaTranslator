@@ -738,11 +738,6 @@
     "严格的": "Nghiêm ngặt",
     "收藏夹": "Yêu thích",
     "使用指定翻译器": "Dùng bộ dịch đã chỉ định",
-    "截断时反向截断": "Cắt cụt ngược khi cắt cụt",
-    "按字数过滤或截断": "Lọc hoặc cắt ngắn theo số lượng từ",
-    "按行数过滤或截断": "Lọc hoặc cắt ngắn theo số dòng",
-    "超过最大字数时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá số từ tối đa",
-    "超过最大行数时截断而非过滤": "Cắt ngắn thay vì lọc khi vượt quá số dòng tối đa",
     "复制图片": "Sao chép ảnh",
     "试用": "Thử nghiệm",
     "图片翻译": "Dịch ảnh",
@@ -793,5 +788,7 @@
     "额外的钩子": "Thêm móc",
     "自动前进": "Tự động chuyển tiếp",
     "在新窗口中查词": "Tra từ trong cửa sổ mới",
-    "成功时跳过其他翻译": "Bỏ qua các bản dịch khác khi thành công"
+    "成功时跳过其他翻译": "Bỏ qua các bản dịch khác khi thành công",
+    "截取指定行数": "Chặn số dòng đã xác định",
+    "截取末尾": "Kết thúc cắt"
 }
