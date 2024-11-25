@@ -21,25 +21,6 @@ Version: 24-March-2008
 // typedef void (*newFuncType)(PCONTEXT);
 using newFuncType = std::function<bool(PCONTEXT)>;
 
-typedef struct veh_node
-{
-	struct veh_node *last;
-	struct veh_node *next;
-	void *origFunc;
-	newFuncType newFunc;
-	void *handle;
-	DWORD hooktype;
-	void *baseAddr; // Address of the page in which origFunc resides.
-	BYTE origBaseByte;
-	DWORD OldProtect;
-} veh_node_t;
-
-typedef struct
-{
-	veh_node_t *head;
-	veh_node_t *tail;
-} veh_list_t;
-
 // VEH hook interface functions for creating and removing hooks.
 bool add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type = VEH_HK_INT3);
 bool remove_veh_hook(void *origFunc);
@@ -49,10 +30,5 @@ bool remove_veh_hook(void *origFunc);
 LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo);
 
 // Functions used internally by the library.
-veh_list_t *new_veh_list();
-veh_node_t *create_veh_node(void *origFunc, newFuncType newFunc, void *handle, DWORD hook_type);
-void insert_veh_node(veh_list_t *list, veh_node_t *);
-void remove_veh_node(veh_list_t *list, void *origFunc);
-veh_node_t *get_veh_node(veh_list_t *list, void *origFunc, int range = 0);
 
 #endif // LIST_T_H_INCLUDED

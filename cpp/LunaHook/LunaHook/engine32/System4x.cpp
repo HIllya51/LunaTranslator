@@ -855,35 +855,19 @@ static bool InsertSystem43NewHook(ULONG startAddress, ULONG stopAddress, LPCSTR 
       0x51,                   // 004eeb43   51               push ecx
       0xe8                    //, XX4,           // 004eeb44   e8 42dc1900      call .0068c78b
   };
-  enum
-  {
-    addr_offset = 0
-  };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   // GROWL_DWORD(addr);
   if (!addr)
-  {
-    ConsoleOutput("System43+: pattern not found");
     return false;
-  }
-
-  // addr = *(DWORD *)(addr+1) + addr + 5; // change to hook to the actual address of function being called
-
   HookParam hp;
   hp.address = addr;
   hp.type = NO_CONTEXT | USING_STRING | USING_SPLIT | SPLIT_INDIRECT;
   // hp.type = NO_CONTEXT|USING_STRING|FIXING_SPLIT;
   hp.split_index = 0x10; // use [[esp]+0x10] to differentiate name and thread
 
-  // Only name can be modified here, where the value of split is 0x6, and text in 0x2
-
-  ConsoleOutput("INSERT System43+");
-
-  ConsoleOutput("System43+: disable GDI hooks"); // disable hooking to TextOutA, which is cached
-
   return NewHook(hp, hookName);
 }
-void System43New2Filter(TextBuffer *buffer, HookParam *)
+void System43aFilter(TextBuffer *buffer, HookParam *)
 {
   auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
@@ -895,7 +879,7 @@ void System43New2Filter(TextBuffer *buffer, HookParam *)
   }
 }
 
-bool InsertSystem43New2Hook()
+bool InsertSystem43aHook()
 {
 
   /*
@@ -910,30 +894,47 @@ bool InsertSystem43New2Hook()
       0x57,                   // push edi
       0xC6, 0x06, 0x00        // mov byte ptr [esi],00   << hook here
   };
-  enum
-  {
-    addr_offset = sizeof(bytes) - 3
-  };
-
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
-  {
-    ConsoleOutput("System43new: pattern not found");
     return false;
-  }
   HookParam hp;
-  hp.address = addr + addr_offset;
+  hp.address = addr + sizeof(bytes) - 3;
   hp.offset = get_reg(regs::edx);
   hp.split = get_reg(regs::esp);
   hp.type = NO_CONTEXT | USING_STRING | USING_SPLIT;
-  hp.filter_fun = System43New2Filter;
-  ConsoleOutput("INSERT System43new");
+  hp.filter_fun = System43aFilter;
   return NewHook(hp, "System43new");
+}
+
+bool InsertSystem43bHook()
+{
+  /*
+   * Sample games:
+   * https://vndb.org/v10732
+   */
+  const BYTE bytes[] = {
+      0x8B, 0xCE,             // mov ecx,esi            << hook here
+      0xE8, XX4,              // call Oyakorankan.exe+13D890
+      0x8B, 0x43, 0x04,       // mov eax,[ebx+04]
+      0x8D, 0x4C, 0x24, 0x10, // lea ecx,[esp+10]
+      0x3B, 0xC8,             // cmp ecx,eax
+      0x73, 0x64              // jae Oyakorankan.exe+1403B2
+  };
+
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp = {};
+  hp.address = addr;
+  hp.offset = get_reg(regs::edx);
+  hp.split = get_stack(12);
+  hp.type = USING_STRING | USING_SPLIT;
+  NewHook(hp, "System43b");
+  return true;
 }
 bool InsertSystem43Hook()
 {
-  if (InsertSystem43New2Hook())
+  if (InsertSystem43aHook() || InsertSystem43bHook())
     return true;
   // bool patched = Util::CheckFile(L"AliceRunPatch.dll");
   bool patched = ::GetModuleHandleA("AliceRunPatch.dll");

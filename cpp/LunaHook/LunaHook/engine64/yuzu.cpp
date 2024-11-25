@@ -662,6 +662,22 @@ namespace
         s = std::regex_replace(s, std::regex(R"(#Color\[\d+?\])"), "");
         buffer->from(s);
     }
+    void F0100CF90151E0000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        strReplace(ws, L"^", L"");
+        ws = std::regex_replace(ws, std::wregex(LR"(@c\d)"), L"");
+        ws = std::regex_replace(ws, std::wregex(LR"(@v\(\d+\))"), L"");
+        buffer->from(WideStringToString(ws, 932));
+    }
+    void F010052300F612000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(#r(.*?)\|(.*?)#)"), "$1");
+        strReplace(s, R"(\c)", "");
+        strReplace(s, R"(\n)", "");
+        buffer->from(s);
+    }
     void F010001D015260000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->viewA();
@@ -891,6 +907,15 @@ namespace
         std::wregex colorRegex(L"<color=.*?>(.*?)<\\/color>");
         s = std::regex_replace(s, colorRegex, L"$1");
         buffer->from(s);
+    }
+    void F010015600D814000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, L"\\n", 2);
+        auto s = buffer->viewW();
+        static std::wstring last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
     }
     void F0100B0601852A000(TextBuffer *buffer, HookParam *hp)
     {
@@ -3363,6 +3388,16 @@ namespace
             // 猛獣たちとお姫様 for Nintendo Switch  二合一
             {0x80115C70, {CODEC_UTF8, 0, 0, 0, F010001D015260000, "010035001D1B2000", "1.0.0"}}, // text
             {0x80115F20, {CODEC_UTF8, 0, 0, 0, F010001D015260000, "010035001D1B2000", "1.0.1"}}, // text
+            // BEAST Darling!-けもみみ男子と秘密の寮-
+            {0x80424D50, {CODEC_UTF16, 8, 0, 0, F0100B0601852A000, "010045F00BF64000", "1.0.0"}}, // text
+            // 恋の花咲く百花園
+            {0x211464, {0, 0, 0, 0, F010052300F612000, "010052300F612000", "1.0.0"}}, // text
+            // 東京24区 -祈-
+            {0x8006F100, {0, 0, 0, 0, F0100CF90151E0000, "0100CF90151E0000", "1.0.0"}}, // text
+            // ディアマジ -魔法少年学科-
+            {0x802B1270, {CODEC_UTF16, 8, 0, 0, F010015600D814000, "010015600D814000", "1.0.0"}}, // text
+            {0x802B19E0, {CODEC_UTF16, 8, 0, 0, F010015600D814000, "010015600D814000", "1.0.1"}}, // text
+
         };
         return 1;
     }();
