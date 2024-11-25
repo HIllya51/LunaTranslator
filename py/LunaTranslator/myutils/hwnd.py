@@ -116,8 +116,8 @@ def getpidexe(pid):
     )
     if not hproc:
 
-        hproc = windows.OpenProcess(
-            windows.PROCESS_QUERY_LIMITED_INFORMATION, False, pid
+        hproc = windows.AutoHandle(
+            windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
         )
     if not hproc:
         name_ = None
