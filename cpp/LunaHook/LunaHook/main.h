@@ -23,6 +23,7 @@ int HookStrLen(HookParam *, BYTE *data);
 extern std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
 extern std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
 void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE);
+void jitaddrclear();
 
 void context_get(hook_stack *, PCONTEXT);
 void context_set(hook_stack *, PCONTEXT);

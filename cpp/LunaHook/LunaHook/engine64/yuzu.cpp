@@ -129,6 +129,7 @@ bool Hook_Network_RoomMember_SendGameInfo()
                 << std::setfill('0')
                 << game_info.id;
             ConsoleOutput("%s %s %s", game_info.name.c_str(), num.str().c_str(), game_info.version.c_str());
+            jitaddrclear();
         };
         return NewHook(hp, "yuzuGameInfo");
     }
@@ -652,15 +653,20 @@ namespace
         buffer->from(s);
     }
 
+    void F01004EB01A328000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, "#n", 2);
+        char name[] = u8"雪村";
+        StringReplacer(buffer, "#Name[1]", 8, name, strlen(name));
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(#Color\[\d+?\])"), "");
+        buffer->from(s);
+    }
     void F010001D015260000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->viewA();
         if (startWith(s, "#Key"))
             return buffer->clear();
-        StringFilter(buffer, "#n", 2);
-    }
-    void F010035001D1B2000(TextBuffer *buffer, HookParam *hp)
-    {
         StringFilter(buffer, "#n", 2);
     }
     void F0100E1E00E2AE000(TextBuffer *buffer, HookParam *hp)
@@ -1750,7 +1756,7 @@ namespace
         strReplace(s, "#n", "");
         strReplace(s, "\x81\x40", "");
         s = std::regex_replace(s, std::regex(R"(#Ruby\[(.*?),(.*?)\])"), "$1");
-        s = std::regex_replace(s, std::regex(R"(#(\w+?)\[[\d,]+?\])"), ""); // #Pos[0,42]#Speed[5]#Effect[0]#Scale[1]
+        s = std::regex_replace(s, std::regex(R"(#(\w+?)\[[\d,\.]+?\])"), ""); // #Pos[0,42]#Speed[5]#Effect[0]#Scale[1] #Scale[0.9]
         buffer->from(s);
     }
     void F01008BA00F172000(TextBuffer *buffer, HookParam *hp)
@@ -2412,8 +2418,20 @@ namespace
             {0x80008d88, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Location
             // Norn9 Var Commons
             {0x8003E874, {CODEC_UTF8, 0, 0, 0, F0100068019996000, "0100068019996000", "1.0.0"}}, // English
+            // 薄桜鬼 真改 遊戯録　隊士達の大宴会 for Nintendo Switch   三合一
+            {0x80016730, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其一
+            {0x8013AAA0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其二
+            {0x8009C8A0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其三
+            {0x800167B0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其一
+            {0x8013AFA0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其二
+            {0x8009CCE0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其三
+            // 薄桜鬼SSL ～sweet school life～ for Nintendo Switch
+            {0x8004E71C, {CODEC_UTF8, 1, 0, 0, F01004EB01A328000, "01004EB01A328000", "1.0.0"}},
+            {0x8004EAEC, {CODEC_UTF8, 1, 0, 0, F01004EB01A328000, "01004EB01A328000", "1.0.1"}},
             // 薄桜鬼 真改 万葉ノ抄
             {0x8004E8F0, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100EA601A0A0000", "1.0.0"}},
+            // 薄桜鬼 真改 天雲ノ抄
+            {0x8004CACC, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100997017690000", "1.0.0"}},
             // 薄桜鬼 真改 銀星ノ抄
             {0x80047F00, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100C49010598000", "1.0.0"}},
             // 薄桜鬼 真改 月影ノ抄
@@ -3343,8 +3361,8 @@ namespace
             {0x800C43D4, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.0"}}, // text
             {0x800C4468, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.1"}}, // text
             // 猛獣たちとお姫様 for Nintendo Switch  二合一
-            {0x80115C70, {CODEC_UTF8, 0, 0, 0, F010035001D1B2000, "010035001D1B2000", "1.0.0"}}, // text
-            {0x80115F20, {CODEC_UTF8, 0, 0, 0, F010035001D1B2000, "010035001D1B2000", "1.0.1"}}, // text
+            {0x80115C70, {CODEC_UTF8, 0, 0, 0, F010001D015260000, "010035001D1B2000", "1.0.0"}}, // text
+            {0x80115F20, {CODEC_UTF8, 0, 0, 0, F010001D015260000, "010035001D1B2000", "1.0.1"}}, // text
         };
         return 1;
     }();

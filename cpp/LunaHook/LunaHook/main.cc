@@ -223,6 +223,12 @@ int HookStrLen(HookParam *hp, BYTE *data)
 		return strnlen((char *)data, TEXT_BUFFER_SIZE);
 }
 static std::mutex maplock;
+void jitaddrclear()
+{
+	std::lock_guard _(maplock);
+	emuaddr2jitaddr.clear();
+	jitaddr2emuaddr.clear();
+}
 void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE jittype)
 {
 	std::lock_guard _(maplock);
