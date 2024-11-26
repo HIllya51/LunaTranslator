@@ -1467,23 +1467,8 @@
         },
         "filetrans": {
             "use": false
-        },
-        "livecaptions": {
-            "use": false
         }
     },
-    "livecaptions_cachesentence": 1,
-    "livecaptions_delay": 300,
-    "livecaptions_maxwait": 3000,
-    "livecaptions_checkers": [
-        ",",
-        "，",
-        "。",
-        "！",
-        "？",
-        "!",
-        "?"
-    ],
     "verticalocr": 2,
     "ocrmergelines": true,
     "ocr": {
@@ -1664,41 +1649,6 @@
             "color": "blue",
             "type": "dev",
             "name": "DuckDuckGo",
-            "is_gpt_like": true
-        },
-        "dev_theb": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "Theb.ai",
-            "is_gpt_like": true
-        },
-        "dev_moonshot": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "moonshot",
-            "is_gpt_like": true
-        },
-        "dev_qwen": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "qianwen",
-            "is_gpt_like": true
-        },
-        "dev_chatglm": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "chatglm",
-            "is_gpt_like": true
-        },
-        "dev_deepseek": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "deepseek",
             "is_gpt_like": true
         },
         "dev_chatgpt_mirror": {

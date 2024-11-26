@@ -621,13 +621,13 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     ]
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     basel.addWidget(gridlayoutwidget)
-    titles = ["HOOK设置", "OCR设置", "剪贴板", "文本输出", "其他"]
+    titles = ["HOOK设置", "OCR设置", "剪贴板", "其他", "文本输出"]
     funcs = [
         lambda l: setTabOne_lazy_h(self, l),
         lambda l: getocrgrid_table(self, l),
         lambda l: makescrollgrid(getTabclip(self), l),
-        lambda l: makescrollgrid(outputgrid(self), l),
         lambda l: makescrollgrid(filetranslate(self), l),
+        lambda l: makescrollgrid(outputgrid(self), l),
     ]
 
     if get_platform() == "xp":

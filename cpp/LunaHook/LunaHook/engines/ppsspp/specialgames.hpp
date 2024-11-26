@@ -190,7 +190,7 @@ namespace ppsspp
 	{
 		auto s = buffer->strA();
 		strReplace(s, "#n", "");
-		s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*\\.)?\\d+\\]+"), "");
+		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"), "");
 		buffer->from(s);
 	}
 
@@ -455,6 +455,10 @@ namespace ppsspp
 		{0x884DE44, {0, 0, 0, 0, NPJH50900, "NPJH50900"}}, // text
 		// Never7 -the end of infinity-
 		{0x88196F0, {0, 0xe, 0, 0, ULJM05433, "ULJM05433"}},
+		// 青春はじめました！
+		{0x880a744, {0, 0, 0, 0, ULJM05943F, "ULJM0630[23]"}}, // ULJM06302 & ULJM06303
+		// アーメン・ノワール ポータブル
+		{0x883b6a8, {0, 0, 0, 0, ULJM05943F, "ULJM06064"}},
 	};
 
 }

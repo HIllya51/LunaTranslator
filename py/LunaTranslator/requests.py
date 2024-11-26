@@ -74,7 +74,7 @@ class ResponseBase:
         self.url = ""
         self.cookies = {}
         self.status_code = 0
-        self.status_text = ""
+        self.reason = ""
         self.__content = b""
         self.__content_s = []
         self.content_prepared = threading.Event()
@@ -184,7 +184,7 @@ class ResponseBase:
             which = "Server"
         if which:
             http_error_msg = "{code} {which} Error: {text} for url: {url}".format(
-                code=self.status_code, which=which, text=self.status_text, url=self.url
+                code=self.status_code, which=which, text=self.reason, url=self.url
             )
             raise HTTPError(http_error_msg)
 
@@ -348,7 +348,7 @@ class Requester_common:
         header = CaseInsensitiveDict()
         cookie = {}
         lines = headerstr.split("\r\n")
-        status_text = " ".join(lines[0].split(" ")[2:])
+        reason = " ".join(lines[0].split(" ")[2:])
         for line in lines[1:]:
             idx = line.find(": ")
             if idx == -1:
@@ -357,7 +357,7 @@ class Requester_common:
                 cookie.update(self._parsecookiestring(line[idx + 2 :]))
             else:
                 header[line[:idx]] = line[idx + 2 :]
-        return CaseInsensitiveDict(header), cookie, status_text
+        return CaseInsensitiveDict(header), cookie, reason
 
     def _parsejson(self, _json):
         databytes = json.dumps(_json).encode("utf8")

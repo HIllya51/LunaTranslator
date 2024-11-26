@@ -20,7 +20,6 @@
     - [传统在线翻译接口](/zh/useapis/tsapi.md)
     - [大模型API翻译](/zh/guochandamoxing.md)
     - [大模型离线翻译](/zh/offlinellm.md) 
-    - [调试浏览器](/zh/tiaoshiliulanqi.md)
 - [文本处理&翻译优化](/zh/textprocess.redirect)
     - [各种文本处理方法的作用和用法](/zh/textprocess.md)
     - [各种翻译优化的作用](/zh/transoptimi.md)

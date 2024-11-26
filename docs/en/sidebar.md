@@ -20,7 +20,6 @@
   - [Traditional online translation interface](/en/useapis/tsapi.md)
   - [Large Model API for Translation](/en/guochandamoxing.md)
   - [Large Model Offline Translation](/en/offlinellm.md)
-  - [Debugging browser translation](/en/tiaoshiliulanqi.md)
 - [Text Processing &amp; Translation Optimization](/en/textprocess.redirect)
   - [Functions and Usage of Various Text Processing Methods](/en/textprocess.md)
   - [Functions of Various Translation Optimizations](/en/transoptimi.md)

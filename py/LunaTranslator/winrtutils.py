@@ -72,12 +72,3 @@ if winrtutilsdll:
         if len(ret):
             return ret[0]
         return None
-
-    livecaption_start_callback = CFUNCTYPE(c_void_p, c_wchar_p)
-    livecaption_start = winrtutilsdll.livecaption_start
-    livecaption_start.argtypes = (livecaption_start_callback,)
-    livecaption_start.restype = HANDLE
-    livecaption_stop = winrtutilsdll.livecaption_stop
-    livecaption_stop.argtypes = (HANDLE,)
-    livecaption_isrunning = winrtutilsdll.livecaption_isrunning
-    livecaption_isrunning.restype = c_bool

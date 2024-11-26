@@ -274,7 +274,7 @@ namespace ppsspp
         auto wininfos = get_proc_windows();
         for (auto &&info : wininfos)
         {
-            if (info.title.find(acastw(em._id)) != info.title.npos)
+            if (std::regex_search(info.title, std::wregex(acastw(em._id))))
                 return true;
         }
         return false;

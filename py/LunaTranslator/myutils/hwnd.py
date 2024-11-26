@@ -108,6 +108,10 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
                 callback(p, fname + "_winrt_magpie." + app)
 
             _()
+    elif tocliponly:
+        gobject.baseobject.translation_ui.displaystatus.emit(
+            "saved to clipboard", False, True
+        )
 
 
 def getpidexe(pid):

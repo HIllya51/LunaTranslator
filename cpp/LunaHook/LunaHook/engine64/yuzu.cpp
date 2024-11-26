@@ -298,19 +298,17 @@ namespace
     void F0100A3A00CC7E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        std::wregex pattern1(L"^`([^@]+).");
-        s = std::regex_replace(s, pattern1, L"$1: ");
-        s = std::regex_replace(s, std::wregex(L"\\$[A-Z]\\d*(,\\d*)*"), L"");
-        std::wregex pattern2(L"\\$\\[([^$]+)..([^$]+)..");
-        s = std::regex_replace(s, pattern2, L"$1");
+        s = std::regex_replace(s, std::wregex(LR"(^\`([^\@]+).)"), L"$1: ");
+        s = std::regex_replace(s, std::wregex(LR"(\$[A-Z]\d*(,\d*)*)"), L"");
+        s = std::regex_replace(s, std::wregex(LR"(\$\[([^$]+)..([^$]+)..)"), L"$1");
         buffer->from(s);
     }
 
     void F010045C0109F2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("#[^\\]]*\\]"), "");
-        s = std::regex_replace(s, std::regex("#[^\\n]*\\n"), "");
+        s = std::regex_replace(s, std::regex(R"(#[^\]]*\])"), "");
+        s = std::regex_replace(s, std::regex(R"(#[^n]*n)"), "");
         s = std::regex_replace(s, std::regex(u8"　"), "");
         s = std::regex_replace(s, std::regex(u8R"(Save(.|\s)*データ)"), "");
         buffer->from(s);
@@ -678,6 +676,25 @@ namespace
         strReplace(s, R"(\n)", "");
         buffer->from(s);
     }
+    namespace
+    {
+        static std::string F0100FB50156E6000;
+        void F0100FB50156E6000_1(TextBuffer *buffer, HookParam *hp)
+        {
+            auto s = buffer->strA();
+            s = std::regex_replace(s, std::regex(R"(@v\(\d+\))"), "");
+            F0100FB50156E6000 = s;
+            s = std::regex_replace(s, std::regex("@r(.*?)@(.*?)@"), "$1");
+            s = std::regex_replace(s, std::regex("@n"), "");
+            buffer->from(s);
+        }
+        void F0100FB50156E6000_2(TextBuffer *buffer, HookParam *hp)
+        {
+            auto s = buffer->viewA();
+            if (s == F0100FB50156E6000)
+                return buffer->clear();
+        }
+    }
     void F010001D015260000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->viewA();
@@ -824,6 +841,26 @@ namespace
         s = std::regex_replace(s, std::wregex(L"\\[.*?\\]"), L" ");
         buffer->from(s);
     }
+    void F010019C0155D8000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->viewW();
+        if (ws.find(L"@n") != ws.npos)
+            buffer->clear();
+    }
+    void F010019C0155D8000_2(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->strW();
+        if (ws.find(L"@n") == ws.npos)
+            buffer->clear();
+        else
+        {
+            strReplace(ws, L"@n", L"");
+            strReplace(ws, L"%dts", L"");
+            strReplace(ws, L"%dte", L"");
+            ws = std::regex_replace(ws, std::wregex(LR"(%rbs(.*?)\{(.*?)\}%rbe)"), L"$1");
+            buffer->from(ws);
+        }
+    }
     void F0100068019996000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -834,14 +871,10 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex symbolRegex(L"[~^$(,)]");
-        std::wregex alphanumericRegex(L"[A-Za-z0-9]");
-        std::wregex atRegex(L"@");
-        std::wregex leadingSpaceRegex(L"^\\s+");
-        s = std::regex_replace(s, symbolRegex, L"");
-        s = std::regex_replace(s, alphanumericRegex, L"");
-        s = std::regex_replace(s, atRegex, L" ");
-        s = std::regex_replace(s, leadingSpaceRegex, L"");
+        s = std::regex_replace(s, std::wregex(L"[~^$(,)]"), L"");
+        s = std::regex_replace(s, std::wregex(L"[A-Za-z0-9]"), L"");
+        s = std::regex_replace(s, std::wregex(L"@"), L" ");
+        s = std::regex_replace(s, std::wregex(L"^\\s+"), L"");
         buffer->from(s);
     }
     void F0100AFA01750C000(TextBuffer *buffer, HookParam *hp)
@@ -902,10 +935,18 @@ namespace
     void F01005940182EC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        std::wregex whitespaceRegex(L"\\s");
-        s = std::regex_replace(s, whitespaceRegex, L"");
-        std::wregex colorRegex(L"<color=.*?>(.*?)<\\/color>");
-        s = std::regex_replace(s, colorRegex, L"$1");
+        s = std::regex_replace(s, std::wregex(L"\\s"), L"");
+        s = std::regex_replace(s, std::wregex(L"<color=.*?>(.*?)<\\/color>"), L"$1");
+        buffer->from(s);
+    }
+    void F0100AE90109A2000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        static std::wstring last;
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        s = std::regex_replace(s, std::wregex(LR"(%co[\de])"), L"");
         buffer->from(s);
     }
     void F010015600D814000(TextBuffer *buffer, HookParam *hp)
@@ -937,10 +978,8 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex htmlTagsPattern(L"<[^>]*>");
-        std::wregex lettersAndNumbersPattern(L"[A-Za-z0-9]");
-        s = std::regex_replace(s, htmlTagsPattern, L"");
-        s = std::regex_replace(s, lettersAndNumbersPattern, L"");
+        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
+        s = std::regex_replace(s, std::wregex(L"[A-Za-z0-9]"), L"");
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -952,8 +991,7 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex htmlTagsPattern(L"<[^>]*>");
-        s = std::regex_replace(s, htmlTagsPattern, L"");
+        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1033,10 +1071,8 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex htmlTagRegex(L"<[^>]*>");
-        s = std::regex_replace(s, htmlTagRegex, L"");
-        std::wregex hoursRegex(L"\\b\\d{2}:\\d{2}\\b");
-        s = std::regex_replace(s, hoursRegex, L"");
+        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
+        s = std::regex_replace(s, std::wregex(L"\\b\\d{2}:\\d{2}\\b"), L"");
 
         auto _ = L"^(?:スキップ|むしる|取り出す|話す|選ぶ|ならびかえ|閉じる|やめる|undefined|決定|ボロのクワ|拾う)$(\\r?\\n|\\r)?";
         while (std::regex_search(s, std::wregex(_)))
@@ -1166,21 +1202,16 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex dicRegex(L"\\[dic.*?text=");
-        s = std::regex_replace(s, dicRegex, L"");
-        std::wregex rubyRegex(L"\\[|'.*?\\]");
-        s = std::regex_replace(s, rubyRegex, L"");
-        std::wregex closingBraceRegex(L"\\]");
-        s = std::regex_replace(s, closingBraceRegex, L"");
+        s = std::regex_replace(s, std::wregex(L"\\[dic.*?text="), L"");
+        s = std::regex_replace(s, std::wregex(L"\\[|'.*?\\]"), L"");
+        s = std::regex_replace(s, std::wregex(L"\\]"), L"");
         if (choice)
         {
-            std::wregex whitespaceRegex(LR"([ \t\r\f\v]|　)");
-            s = std::regex_replace(s, whitespaceRegex, L"");
+            s = std::regex_replace(s, std::wregex(LR"([ \t\r\f\v]|　)"), L"");
         }
         else
         {
-            std::wregex whitespaceRegex(L"\\s|　");
-            s = std::regex_replace(s, whitespaceRegex, L"");
+            s = std::regex_replace(s, std::wregex(L"\\s|　"), L"");
         }
         buffer->from(s);
     }
@@ -1344,10 +1375,8 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex samePageNewLineRegex(L"[\r\n]+");
-        s = std::regex_replace(s, samePageNewLineRegex, L"");
-        std::wregex newPageTextRegex(L"(<.+?>)+");
-        s = std::regex_replace(s, newPageTextRegex, L"\r\n");
+        s = std::regex_replace(s, std::wregex(L"[\r\n]+"), L"");
+        s = std::regex_replace(s, std::wregex(L"(<.+?>)+"), L"\r\n");
         strReplace(s, L"", L"(L)");
         strReplace(s, L"", L"(ZL)");
         strReplace(s, L"", L"(Y)");
@@ -1366,8 +1395,7 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex tagContentRegex(L"<[^>]*>([^<]*)<\\/[^>]*>");
-        s = std::regex_replace(s, tagContentRegex, L"");
+        s = std::regex_replace(s, std::wregex(L"<[^>]*>([^<]*)<\\/[^>]*>"), L"");
         s = std::regex_replace(s, std::wregex(L"<sprite name=L>"), L"L");
         s = std::regex_replace(s, std::wregex(L"<sprite name=R>"), L"R");
         s = std::regex_replace(s, std::wregex(L"<sprite name=A>"), L"A");
@@ -1548,10 +1576,8 @@ namespace
         {
             if (result.empty() == false)
                 result += L"\n";
-            std::wregex commandRegex(L"^(?:メニュー|システム|Ver\\.)$(\\r?\\n|\\r)?");
-            s = std::regex_replace(s, commandRegex, L"");
-            std::wregex emptyLineRegex(L"^\\s*$");
-            s = std::regex_replace(s, emptyLineRegex, L"");
+            s = std::regex_replace(s, std::wregex(L"^(?:メニュー|システム|Ver\\.)$(\\r?\\n|\\r)?"), L"");
+            s = std::regex_replace(s, std::wregex(L"^\\s*$"), L"");
         }
         static std::wstring last;
         if (last == s)
@@ -1670,10 +1696,8 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex htmlTagRegex(L"<[^>]*>");
-        s = std::regex_replace(s, htmlTagRegex, L"");
-        std::wregex furiganaRegex(L"｛([^｛｝]+)：[^｛｝]+｝");
-        s = std::regex_replace(s, furiganaRegex, L"$1");
+        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
+        s = std::regex_replace(s, std::wregex(L"｛([^｛｝]+)：[^｛｝]+｝"), L"$1");
         while (std::regex_search(s, std::wregex(L"^\\s+")))
         {
             s = std::regex_replace(s, std::wregex(L"^\\s+"), L"");
@@ -1684,8 +1708,7 @@ namespace
     {
 
         auto s = buffer->strW();
-        std::wregex htmlTagRegex(L"<[^>]*>");
-        s = std::regex_replace(s, htmlTagRegex, L"");
+        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
         auto _ = L"^(?:決定|進む|ページ移動|ノート全体図|閉じる|もどる|セーブ中)$(\\r?\\n|\\r)?";
         while (std::regex_search(s, std::wregex(_)))
         {
@@ -3371,6 +3394,7 @@ namespace
             // EVE rebirth terror
             {0x8002CC40, {0, 1, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.0"}},
             {0x80045918, {0, 0, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.2"}},
+            {0x80045798, {0, 0, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.3"}},
             // EVE ghost enemies
             {0x80053900, {0, 1, 0, 0, F01008BA00F172000, "01007BE0160D6000", "1.0.0"}},
             {0x80052440, {0, 1, 0, 0, F01008BA00F172000, "01007BE0160D6000", "1.0.1"}},
@@ -3397,7 +3421,21 @@ namespace
             // ディアマジ -魔法少年学科-
             {0x802B1270, {CODEC_UTF16, 8, 0, 0, F010015600D814000, "010015600D814000", "1.0.0"}}, // text
             {0x802B19E0, {CODEC_UTF16, 8, 0, 0, F010015600D814000, "010015600D814000", "1.0.1"}}, // text
-
+            // デスマッチラブコメ！
+            {0x800FB41C, {CODEC_UTF16, 1, -2, 0, F0100AE90109A2000, "0100AE90109A2000", "1.0.0"}},
+            // CROSS†CHANNEL ～For all people～
+            {0x80033250, {0, 0, 0, 0, F0100068019996000, "0100735012AAE000", "1.0.0"}}, // text
+            // フルキス
+            {0x804988A0, {CODEC_UTF8, 0, 0, 0, F0100FB50156E6000_1, "0100FB50156E6000", "1.0.0"}}, // text
+            {0x804FECD4, {CODEC_UTF8, 1, 0, 0, F0100FB50156E6000_2, "0100FB50156E6000", "1.0.0"}}, // text+name->name
+            // フルキスS  1.0.0 & 1.0.1
+            {0x804E7AF0, {CODEC_UTF8, 0, 0, 0, F0100FB50156E6000_1, "0100BEE0156D8000", nullptr}}, // text
+            {0x804FF454, {CODEC_UTF8, 1, 0, 0, F0100FB50156E6000_2, "0100BEE0156D8000", nullptr}}, // text+name->name
+            // アーキタイプ・アーカディア
+            {0x817FAC88, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_1, "010019C0155D8000", "1.0.0"}}, // text+name,->name
+            {0x817FAC90, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_2, "010019C0155D8000", "1.0.0"}}, // text+name,->text
+            {0x817E5818, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_1, "010019C0155D8000", "1.0.2"}}, // text+name,->name
+            {0x817E5820, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_2, "010019C0155D8000", "1.0.2"}}, // text+name,->text
         };
         return 1;
     }();

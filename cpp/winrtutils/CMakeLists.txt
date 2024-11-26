@@ -10,7 +10,7 @@ generate_product_version(
    VERSION_PATCH ${VERSION_PATCH}
 )
 
-add_library(winrtutils MODULE winrtsnapshot.cpp winrtocr.cpp livecaptions.cpp ${versioninfo})
+add_library(winrtutils MODULE winrtsnapshot.cpp winrtocr.cpp ${versioninfo})
 target_precompile_headers(winrtutils REUSE_FROM pch) 
 target_link_libraries(winrtutils wil dwmapi)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)

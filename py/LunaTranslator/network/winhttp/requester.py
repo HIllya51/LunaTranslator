@@ -178,7 +178,7 @@ class Requester(Requester_common):
         if succ == 0:
             MaybeRaiseException()
         resp = Response(stream)
-        resp.headers, resp.cookies, resp.status_text = self._parseheader2dict(
+        resp.headers, resp.cookies, resp.reason = self._parseheader2dict(
             self._getheaders(hRequest)
         )
 

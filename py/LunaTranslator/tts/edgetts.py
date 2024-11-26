@@ -114,7 +114,7 @@ class TTS(TTSbase):
             headers=VOICE_HEADERS,
             proxies=self.proxy,
         ).json()
-        return [_["ShortName"] for _ in alllist], [_["ShortName"] for _ in alllist]
+        return [_["ShortName"] for _ in alllist], [_["FriendlyName"] for _ in alllist]
 
     def speak(self, content, rate, voice):
         return transferMsTTSData(rate, content, voice, self.proxy)
