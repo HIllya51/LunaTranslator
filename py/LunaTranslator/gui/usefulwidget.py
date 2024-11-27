@@ -2091,8 +2091,7 @@ class listediter(LDialog):
             dedump.add(k)
         if self.closecallback:
             after = pickle.dumps(self.lst)
-            if before != after:
-                self.closecallback()
+            self.closecallback(before != after)
 
     def __cb(self, paths):
         if isinstance(paths, str):
@@ -2192,8 +2191,9 @@ class listediterline(QWidget):
             self.edit.setReadOnly(True)
             self.edit.clicked.connect(callback)
 
-    def callback(self):
-        self.setText("|".join(self.reflist))
+    def callback(self, changed):
+        if changed:
+            self.setText("|".join(self.reflist))
         if self.directedit:
             self.edit.setReadOnly(False)
 

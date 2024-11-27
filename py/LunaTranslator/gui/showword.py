@@ -485,7 +485,9 @@ class AnkiWindow(QWidget):
             "DeckName_i",
         )
 
-        def refreshcombo(combo: QComboBox):
+        def refreshcombo(combo: QComboBox, changed):
+            if not changed:
+                return
             combo.clear()
             if len(globalconfig["ankiconnect"]["DeckNameS"]) == 0:
                 globalconfig["ankiconnect"]["DeckNameS"].append("lunadeck")

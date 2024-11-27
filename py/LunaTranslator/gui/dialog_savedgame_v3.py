@@ -612,7 +612,7 @@ class pixwrapper(QWidget):
                 ("画廊"),
                 ("画廊"),
                 savehook_new_data[self.k]["imagepath_all"],
-                closecallback=lambda: self.setpix(self.k),
+                closecallback=lambda changed: self.setpix(self.k) if changed else None,
                 ispathsedit=dict(filter1=getimagefilefilter()),
             )
         elif action == setimage:
