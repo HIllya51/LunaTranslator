@@ -821,6 +821,10 @@ namespace
         s = std::regex_replace(s, std::wregex(LR"(<[^>]*>)"), L"");
         buffer->from(s);
     }
+    void F0100B5801D7CE000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, LR"(\n)", 2);
+    }
     void F01008C0016544000(TextBuffer *buffer, HookParam *hp)
     {
 
@@ -2310,34 +2314,33 @@ namespace
             // Memories Off
             {0x8003eeac, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100978013276000", "1.0.0"}},
             {0x8003eebc, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100978013276000", "1.0.1"}},
-            // Memories Off ~Sorekara~
+            // Memories Off ～それから～
             {0x8003fb7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100B4A01326E000", "1.0.0"}},
             {0x8003fb8c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100B4A01326E000", "1.0.1"}},
-            // Famicom Tantei Club: Kieta Koukeisha
+            // ファミコン探偵倶楽部 消えた後継者
             {0x80052a10, {CODEC_UTF16, 0, 0, mages_readstring<3>, 0, "0100B4500F7AE000", "1.0.0"}},
-            // Famicom Tantei Club Part: Ushiro ni Tatsu Shoujo
+            // ファミコン探偵倶楽部PartII うしろに立つ少女
             {0x8004cb30, {CODEC_UTF16, 0, 0, mages_readstring<3>, 0, "010078400F7B0000", "1.0.0"}},
             // Memories Off 2nd
             {0x8003ee0c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100D31013274000", "1.0.0"}},
             {0x8003ee1c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100D31013274000", "1.0.1"}},
-            // Omoide ni Kawaru Kimi ~Memories Off~
+            // 想い出にかわる君 ～メモリーズオフ～
             {0x8003ef6c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100FFA013272000", "1.0.0"}},
             {0x8003ef7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100FFA013272000", "1.0.1"}},
-            // Memories Off 6 ~T-Wave~
+            // メモリーズオフ6 ～T-wave～
             {0x80043d7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010047A013268000", "1.0.0"}},
             {0x80043d5c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010047A013268000", "1.0.1"}},
-            // Memories Off: Yubikiri no Kioku
+            // メモリーズオフ ゆびきりの記憶
             {0x800440ec, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010079C012896000", "1.0.0"}},
-            // Memories Off #5 Togireta Film
+            // Memories Off #5 とぎれたフィルム
             {0x8003f6ac, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010073901326C000", "1.0.0"}},
             {0x8003f5fc, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010073901326C000", "1.0.1"}},
-            // SINce Memories: Hoshi no Sora no Shita de
+            // シンスメモリーズ 星天の下で
             {0x80048cc8, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, "0100E94014792000", 0}}, // line + name => join
             {0x8004f44c, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, "0100E94014792000", 0}}, // fast trophy
             {0x8004f474, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, "0100E94014792000", 0}}, // prompt
             {0x80039dc0, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, "0100E94014792000", 0}}, // choice
-
-            // Yahari Game demo Ore no Seishun Love Come wa Machigatteiru.
+            // やはりゲームでも俺の青春ラブコメはまちがっている。
             {0x8005DFB8, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100E0D0154BC000", "1.0.0"}},
             // CHAOS;HEAD NOAH
             {0x80046700, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}},
@@ -2345,11 +2348,11 @@ namespace
             {0x8003EAB0, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}}, // TIPS list (menu)
             {0x8004C648, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}}, // system message
             {0x80050374, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}}, // TIPS (red)
-            // Shiro to Kuro no Alice
+            // 白と黒のアリス
             {0x80013f20, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
             {0x80013f94, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
             {0x8001419c, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
-            // Shiro to Kuro no Alice -Twilight line-
+            // 白と黒のアリス -Twilight line-
             {0x80014260, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
             {0x800142d4, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
             {0x800144dc, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
@@ -2363,26 +2366,24 @@ namespace
             {0x805bba5c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100A1E00BFEA000, "0100A1E00BFEA000", "1.0.1"}}, // dialogue
             {0x805e9930, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100A1E00BFEA000, "0100A1E00BFEA000", "1.0.1"}}, // choice
             {0x805e7fd8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100A1E00BFEA000, "0100A1E00BFEA000", "1.0.1"}}, // name
-
-            // Chou no Doku Hana no Kusari Taishou Tsuya Koi Ibun
+            // 蝶の毒 華の鎖
             {0x80095010, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, "0100A1200CA3C000", "2.0.1"}}, // Main Text + Names
             // Live a Live
             {0x80a05170, {CODEC_UTF16, 0, 0, 0, F0100982015606000, "0100C29017106000", "1.0.0"}},
-            // Sakura no Kumo * Scarlet no Koi
+            // さくらの雲＊スカアレットの恋
             {0x804e4858, {CODEC_UTF8, 3, 1, 0, F01006590155AC000, "01006590155AC000", "1.0.0"}}, // name
             {0x804e4870, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01006590155AC000", "1.0.0"}}, // dialogue
-            // Majestic Majolical
+            // マジェスティック☆マジョリカル
             {0x80557408, {CODEC_UTF8, 0, 0, 0, F01000200194AE000, "01000200194AE000", "1.0.0"}}, // name
             {0x8059ee94, {CODEC_UTF8, 3, 0, 0, F01000200194AE000, "01000200194AE000", "1.0.0"}}, // player name
             {0x80557420, {CODEC_UTF8, 0, 0, 0, F01000200194AE000, "01000200194AE000", "1.0.0"}}, // dialogue
-
-            // Matsurika no Kei
+            // マツリカの炯-kEi- 天命胤異伝
             {0x8017ad54, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, "0100EA001A626000", "1.0.0"}}, // text
             {0x80174d4c, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, "0100EA001A626000", "1.0.0"}}, // name
-            // Cupid Parasite
+            // キューピット・パラサイト
             {0x80057910, {CODEC_UTF32, 2, 0, 0, F0100F7E00DFC8000, "0100F7E00DFC8000", "1.0.1"}}, // name + text
             {0x80169df0, {CODEC_UTF32, 0, 0, 0, F0100F7E00DFC8000, "0100F7E00DFC8000", "1.0.1"}}, // choice
-            // Radiant Tale
+            // ラディアンテイル
             {0x80075190, {CODEC_UTF8, 1, 0, 0, F0100925014864000, "0100925014864000", "1.0.0"}}, // prompt
             {0x8002fb18, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100925014864000", "1.0.0"}}, // name
             {0x8002fd7c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100925014864000", "1.0.0"}}, // text
@@ -2396,7 +2397,7 @@ namespace
             {0x80ac4d88, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, "0100936018EB4000", "1.0.3"}}, // Main text
             {0x808f7e84, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, "0100936018EB4000", "1.0.3"}}, // Item name
             {0x80bdf804, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, "0100936018EB4000", "1.0.3"}}, // Item description
-            // Hamefura Pirates 乙女ゲームの破滅フラグしかない悪役令嬢に転生してしまった… 〜波乱を呼ぶ海賊〜
+            // 乙女ゲームの破滅フラグしかない悪役令嬢に転生してしまった… 〜波乱を呼ぶ海賊〜
             {0x81e75940, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100982015606000", "1.0.0"}}, // Hamekai.TalkPresenter$$AddMessageBacklog
             {0x81c9ae60, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100982015606000", "1.0.0"}}, // Hamekai.ChoicesText$$SetText
             {0x81eb7dc0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100982015606000", "1.0.0"}}, // Hamekai.ShortStoryTextView$$AddText
@@ -2407,11 +2408,11 @@ namespace
             // Death end re;Quest Code Z
             {0x82349188, {CODEC_UTF16, 1, 0, 0, 0, "010054B01BE90000", "1.0.0"}},
             {0x823DC128, {CODEC_UTF16, 1, 0, 0, 0, "010054B01BE90000", "1.0.2"}},
-            // Meta Meet Cute!!!+
+            // ――ッ違う!!!
             {0x81DD6010, {CODEC_UTF16, 1, -32, 0, 0, "01009A401C1B0000", "1.02"}}, // english ver, only long string, short string can't find.
-            // Of the Red, the Light, and the Ayakashi Tsuzuri
+            // あかやあかしやあやかしの 綴
             {0x8176D78C, {CODEC_UTF16, 3, 0, 0, 0, "0100F7801B5DC000", "1.0.0"}},
-            // Tokimeki Memorial Girl's Side: 4th Heart
+            // ときめきメモリアル Girl's Side 4th Heart
             {0x817e7da8, {CODEC_UTF16, 0, 0, T0100B0100E26C000<2, 0>, 0, "0100B0100E26C000", "1.0.0"}}, // name (x1) + dialogue (x2)
             {0x81429f54, {CODEC_UTF16, 0, 0, T0100B0100E26C000<0, 1>, 0, "0100B0100E26C000", "1.0.0"}}, // choice (x0)
             {0x8180633c, {CODEC_UTF16, 0, 0, T0100B0100E26C000<1, 2>, 0, "0100B0100E26C000", "1.0.0"}}, // help (x1)
@@ -2484,19 +2485,24 @@ namespace
             {0x80047F00, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100C49010598000", "1.0.0"}},
             // 薄桜鬼 真改 月影ノ抄
             {0x8019ecd0, {CODEC_UTF8, 1, 0, 0, F0100E1E00E2AE000, "0100E1E00E2AE000", "1.0.0"}}, // Text
+            // 薄桜鬼　黎明録
+            {0x8002e94c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100D57014692000", "1.0.0"}}, // Text
+            {0x8004c3f4, {CODEC_UTF8, 1, 0, 0, F0100925014864000, "0100D57014692000", "1.0.0"}},
+            {0x8005389c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100D57014692000", "1.0.0"}},
+            {0x80059b68, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100D57014692000", "1.0.0"}},
             // Chrono Cross: The Radical Dreamers Edition
             {0x802b1254, {CODEC_UTF32, 1, 0, 0, 0, "0100AC20128AC000", "1.0.2"}}, // Text
             // AIR
             {0x800a6b10, {CODEC_UTF16, 1, 0, 0, F0100ADC014DA0000, "0100ADC014DA0000", "1.0.1"}}, // Text + Name
-            // Shinigami to Shoujo
+            // 死神と少女
             {0x21cb08, {0, 1, 0, 0, F0100AFA01750C000, "0100AFA01750C000", "1.0.2"}}, // Text,sjis
             // Octopath Traveler II
             {0x8088a4d4, {CODEC_UTF16, 0, 0, 0, 0, "0100A3501946E000", "1.0.0"}}, // main text
             // NieR:Automata The End of YoRHa Edition
             {0x808e7068, {CODEC_UTF16, 3, 0, 0, 0, "0100B8E016F76000", "1.0.2"}}, // Text
-            // Reine des Fleurs
+            // レンドフルール
             {0x80026434, {CODEC_UTF8, 0, 0, 0, 0, "0100B5800C0E4000", "1.0.0"}}, // Dialogue text
-            // Code: Realize ~Saikou no Hanataba~ (Code：Realize ～彩虹の花束～)
+            // Code：Realize ～彩虹の花束～
             {0x80019c14, {CODEC_UTF8, 0, 0x1c, 0, F010088B01A8FC000, "0100B6900A668000", "1.0.0"}},
             {0x80041560, {CODEC_UTF8, 1, 0, 0, F010088B01A8FC000, "0100B6900A668000", "1.0.0"}},
             {0x800458c8, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, "0100B6900A668000", "1.0.0"}},
@@ -2504,23 +2510,23 @@ namespace
             {0x80041080, {CODEC_UTF8, 1, 0, 0, F0100BD700E648000, "0100BD700E648000", "1.0.0"}}, // name
             {0x80041080, {CODEC_UTF8, 0, 0, 0, F0100BD700E648000, "0100BD700E648000", "1.0.0"}}, // dialogue
             {0x80041080, {CODEC_UTF8, 2, 0, 0, F0100BD700E648000, "0100BD700E648000", "1.0.0"}}, // choice1
-            // Shinobi, Koi Utsutsu
+            // 忍び、恋うつつ
             {0x8002aca0, {CODEC_UTF8, 0, 0, 0, F0100C1E0102B8000, "0100C1E0102B8000", "1.0.0"}}, // name
             {0x8002aea4, {CODEC_UTF8, 0, 0, 0, F0100C1E0102B8000, "0100C1E0102B8000", "1.0.0"}}, // dialogue1
             {0x8001ca90, {CODEC_UTF8, 2, 0, 0, F0100C1E0102B8000, "0100C1E0102B8000", "1.0.0"}}, // dialogue2
             {0x80049dbc, {CODEC_UTF8, 1, 0, 0, F0100C1E0102B8000, "0100C1E0102B8000", "1.0.0"}}, // choice
-            // Yoru, Tomosu
+            // 夜、灯す
             {0xe2748eb0, {CODEC_UTF32, 1, 0, 0, 0, "0100C2901153C000", "1.0.0"}}, // text1
             // Closed Nightmare
             {0x800c0918, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, "0100D9500A0F6000", "1.0.0"}}, // line + name
             {0x80070b98, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, "0100D9500A0F6000", "1.0.0"}}, // fast trophy
             {0x800878fc, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, "0100D9500A0F6000", "1.0.0"}}, // prompt
             {0x80087aa0, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, "0100D9500A0F6000", "1.0.0"}}, // choice
-            // Yuru Camp△ - Have a Nice Day!
+            // ゆるキャン△ Have a nice day!
             {0x816d03f8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100982015606000, "0100D12014FC2000", "1.0.0"}}, // dialog / backlog
-            // Akuyaku Reijou wa Ringoku no Outaishi ni Dekiai Sareru
+            // 悪役令嬢は隣国の王太子に溺愛される
             {0x817b35c4, {CODEC_UTF8, 1, 0, 0, F0100DA201E0DA000, "0100DA201E0DA000", "1.0.0"}}, // Dialogue
-            // Yunohana Spring! ~Mellow Times~
+            // ゆのはなSpRING！～Mellow Times～
             {0x80028178, {CODEC_UTF8, 0, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // name
             {0x8001b9d8, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // dialogue1
             {0x8001b9b0, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // dialogue2
@@ -2528,7 +2534,7 @@ namespace
             {0x8004a8d0, {CODEC_UTF8, 1, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // choice
             // サマータイムレンダ Another Horizon
             {0x818ebaf0, {CODEC_UTF16, 0, 0x14, 0, F01005940182EC000, "01005940182EC000", "1.0.0"}}, // dialogue
-            // Aquarium
+            // あくありうむ。
             {0x8051a990, {CODEC_UTF8, 0, 1, 0, F01006590155AC000, "0100D11018A7E000", "1.0.0"}}, // name
             {0x8051a9a8, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "0100D11018A7E000", "1.0.0"}}, // dialogue
             {0x80500178, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "0100D11018A7E000", "1.0.0"}}, // choice
@@ -2594,18 +2600,18 @@ namespace
             {0x81cf41b4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Enemy Special Attacks
             // Trials of Mana
             {0x800e8abc, {CODEC_UTF16, 1, 0, 0, F0100D7800E9E0000, "0100D7800E9E0000", "1.1.1"}}, // Text
-            // Utsusemi no Meguri
+            // 空蝉の廻
             {0x821b452c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100DA101D9AA000", "1.0.0"}}, // text1
             {0x821b456c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100DA101D9AA000", "1.0.0"}}, // text2
             {0x821b45ac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100DA101D9AA000", "1.0.0"}}, // text3
-            // Buddy Mission BOND
+            // バディミッション BOND
             {0x80046dd0, {0, 0, 0, T0100DB300B996000, 0, "0100DB300B996000", 0}}, // 1.0.0, 1.0.1,sjis
             {0x80046de0, {0, 0, 0, T0100DB300B996000, 0, "0100DB300B996000", 0}},
             // Bravely Default II
             {0x80b97700, {CODEC_UTF16, 0, 0, 0, 0, "010056F00C7B4000", "1.0.0"}}, // Main Text
             {0x80bb8d3c, {CODEC_UTF16, 0, 0, 0, 0, "010056F00C7B4000", "1.0.0"}}, // Main Ptc Text
             {0x810add68, {CODEC_UTF16, 0, 0, 0, 0, "010056F00C7B4000", "1.0.0"}}, // Secondary Text
-            // Tantei Bokumetsu / 探偵撲滅
+            // 探偵撲滅
             {0x8011c340, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, "0100CBA014014000", "1.0.0"}}, // Text
             {0x80064f20, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, "0100CBA014014000", "1.0.0"}}, // Choices
             // Ys X: Nordics
@@ -2617,21 +2623,21 @@ namespace
             {0x8005388c, {CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, "0100BDD01AAE4000", "1.0.0"}}, // choice
             {0x80065010, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, "0100BDD01AAE4000", "1.0.0"}}, // character description
             {0x8009c780, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, "0100BDD01AAE4000", "1.0.0"}}, // prompt
-            // Kiss Bell - Let's sound the kissing-bell of the promise / キスベル
+            // キスベル
             {0x8049d958, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, "0100BD7015E6C000", "1.0.0"}}, // text
-            // Piofiore no Banshou -Ricordo-  CN
+            // ピオフィオーレの晩鐘 -Ricordo-  CN
             {0x80015fa0, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerMsg
             {0x80050d50, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerName
             {0x8002F430, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerPrompt
             {0x8002F4F0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerPrompt
             {0x8002F540, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerPrompt
-            // Piofiore no Banshou -Ricordo-
+            // ピオフィオーレの晩鐘 -Ricordo-
             {0x800141d0, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerMsg
             {0x8004ce20, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerName
             {0x8002be90, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerPrompt
             {0x8002bf50, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerPrompt
             {0x8002bfa0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerPrompt
-            // Piofiore no Banshou -Episodio1926-
+            // ピオフィオーレの晩鐘 -Episodio1926-
             {0x80019630, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerMsg
             {0x8005B7B0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerName
             {0x80039230, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerPrompt
@@ -2639,7 +2645,7 @@ namespace
             {0x80039340, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerPrompt
             // Pokémon Let’s Go, Pikachu!
             {0x8067d9fc, {CODEC_UTF16, 0, 0, 0, F010003F003A34000, "010003F003A34000", "1.0.2"}}, // Text
-            // Ikemen Sengoku Toki o Kakeru Koi / イケメン戦国◆時をかける恋　新たなる出逢い
+            // イケメン戦国◆時をかける恋 新たなる出逢い
             {0x813e4fb4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01008BE016CE2000", "1.0.0"}}, // Main Text
             {0x813e4c60, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01008BE016CE2000", "1.0.0"}}, // Name
             {0x813b5360, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01008BE016CE2000", "1.0.0"}}, // Choices
@@ -2653,32 +2659,32 @@ namespace
             {0x80027b30, {CODEC_UTF8, 0, 0, 0, F0100DE200C0DA000, "01006B000A666000", "1.0.0"}}, // dialogue
             // Crayon Shin-chan Shiro of Coal Town
             {0x83fab4bc, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F01007B601C608000, "01007B601C608000", "1.0.1"}},
-            // Fuuraiki 4
+            // 風雨来記4
             {0x80008c80, {CODEC_UTF32, 1, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Main
             {0x80012b1c, {CODEC_UTF32, 1, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Wordpad
             {0x80012ccc, {CODEC_UTF32, 1, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Comments
             {0x80009f74, {CODEC_UTF32, 1, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Choices
             {0x80023d64, {CODEC_UTF32, 0, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Location
-            // Ken ga Kimi for S / 剣が君 for S
+            // 剣が君 for S
             {0x81477128, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100771013FA8000, "0100771013FA8000", "1.1"}}, // Main Text
             {0x81470e38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100771013FA8000, "0100771013FA8000", "1.1"}}, // Secondary Text
             // ANONYMOUS;CODE
             {0x80011608, {CODEC_UTF8, 1, 0, 0, F0100556015CCC000, "0100556015CCC000", "1.0.0"}}, // dialouge, menu
-            // Sugar * Style (シュガー＊スタイル)
+            // Sugar * Style
             {0x800ccbc8, {0, 0, 0, 0, 0, "0100325012B70000", "1.0.0"}}, // ret x0 name + text (readShiftJisString), filter is to complex, quit.
             // Nightshade／百花百狼
             {0x802999c8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, "010042300C4F6000", "1.0.1"}}, // dialogue
             {0x8015b544, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010042300C4F6000, "010042300C4F6000", "1.0.1"}}, // name
             {0x802a2fd4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, "010042300C4F6000", "1.0.1"}}, // choice1
             {0x802b7900, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, "010042300C4F6000", "1.0.1"}}, // choice2
-            // Toraware no Paruma
+            // 囚われのパルマ
             {0x8015b7a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010044800D2EC000, "010044800D2EC000", "1.0.0"}}, // text x0
             {0x8015b46c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010044800D2EC000, "010044800D2EC000", "1.0.0"}}, // name x1
             // Brothers Conflict: Precious Baby
             {0x8016aecc, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100982015606000, "010037400DAAE000", "1.0.0"}}, // name
             {0x80126b9c, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100982015606000, "010037400DAAE000", "1.0.0"}}, // dialogue
             {0x80129160, {CODEC_UTF16, 0, 0, ReadTextAndLenW<2>, F0100982015606000, "010037400DAAE000", "1.0.0"}}, // choice
-            // Zettai Kaikyu Gakuen
+            // 絶対階級学園 ~Eden with roses and phantasm~
             {0x80067b5c, {CODEC_UTF16, 1, 0, 0, F010021300F69E000<0>, "010021300F69E000", "1.0.0"}}, // name+ dialogue main(ADV)+choices
             {0x80067cd4, {CODEC_UTF16, 1, 0, 0, F010021300F69E000<1>, "010021300F69E000", "1.0.0"}}, // dialogueNVL
             // Dragon Quest Builders 2
@@ -2695,7 +2701,7 @@ namespace
             {0x80713be0, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Mission3
             {0x8076ab04, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Tutorial header
             {0x8076ab2c, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Tutorial explanation
-            // BUSTAFELLOWS season2
+            // BUSTAFELLOWS シーズン2
             {0x819ed3e4, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010037400DAAE000", "1.0.0"}}, // dialogue
             {0x82159cd0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<1>, F0100874017BE2000, "010037400DAAE000", "1.0.0"}}, // textmessage
             {0x81e17530, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010037400DAAE000", "1.0.0"}}, // option
@@ -2707,7 +2713,7 @@ namespace
             {0x81b1c68c, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, "010094601D910000", "1.0.1"}}, // choice1
             {0x81b1c664, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, "010094601D910000", "1.0.1"}}, // choice2
             {0x81b1e5b0, {CODEC_UTF16, 3, 0X14, 0, F010094601D910000, "010094601D910000", "1.0.1"}}, // dialogue
-            // Tokimeki Memorial Girl’s Side 2nd Season for Nintendo Switch
+            // ときめきメモリアル Girl’s Side 2nd Kiss
             {0x82058848, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // dialogue1
             {0x82058aa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // dialogue2
             {0x8205a244, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // dialogue3
@@ -2719,7 +2725,7 @@ namespace
             {0x82269138, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // profile2
             {0x822691ec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // profile3
             {0x82269198, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // profile4
-            // Uta no☆Prince-sama♪ Repeat Love / うたの☆プリンスさまっ♪Repeat LOVE
+            // うたの☆プリンスさまっ♪ Repeat LOVE
             {0x800374a0, {0, 0, 0, 0, F0100068019996000, "010024200E00A000", "1.0.0"}}, // Main Text + Name,sjis
             {0x8002ea08, {0, 0, 0, 0, F0100068019996000, "010024200E00A000", "1.0.0"}}, // Choices,sjis
             // ワンド オブ フォーチュン Ｒ～ for Nintendo Switch
@@ -2732,7 +2738,7 @@ namespace
             {0x835015e8, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100DA201E0DA000, "010088A01A774000", "1.0.0"}}, // name
             // Yo-kai Watch 4++
             {0x80a88080, {CODEC_UTF8, 1, 0, 0, F010086C00AF7C000, "010086C00AF7C000", "2.2.0"}}, // All Text
-            // Cupid Parasite -Sweet & Spicy Darling-
+            // キューピット・パラサイト -Sweet & Spicy Darling.-
             {0x80138150, {CODEC_UTF32, 2, 0, 0, F010079C017B98000, "010079C017B98000", "1.0.0"}}, // name + text
             {0x801a1bf0, {CODEC_UTF32, 0, 0, 0, F010079C017B98000, "010079C017B98000", "1.0.0"}}, // choice
             // DesperaDrops
@@ -2766,13 +2772,13 @@ namespace
             {0x80e39130, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Item Name
             {0x80e38f80, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Item Description Part1
             {0x80e38ea8, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Item Description Part2
-            // Sen no Hatou, Tsukisome no Kouki
+            // 千の刃濤、桃花染の皇姫
             {0x8003fc90, {CODEC_UTF8, 1, 0, 0, 0, "0100F8A017BAA000", "1.0.0"}}, // text1
             {0x8017a740, {CODEC_UTF8, 0, 0, 0, 0, "0100F8A017BAA000", "1.0.0"}}, // text2
-            // Olympia Soiree
+            // オランピアソワレ
             {0x8002ad60, {CODEC_UTF8, 31, 0, 0, F0100C310110B4000, "0100F9D00C186000", "1.0.0"}},
             {0x8004b9e0, {CODEC_UTF8, 1, 0, 0, F0100C310110B4000, "0100F9D00C186000", "1.0.0"}},
-            // Getsuei no Kusari -Sakuran Paranoia-
+            // 月影の鎖 -錯乱パラノイア-
             {0x21801c, {0, 2, 0, 0, F0100F7401AA74000, "0100F7401AA74000", "1.0.0"}}, // text,sjis
             {0x228fac, {0, 1, 0, 0, F0100F7401AA74000, "0100F7401AA74000", "1.0.0"}}, // choices
             {0x267f24, {0, 1, 0, 0, F0100F7401AA74000, "0100F7401AA74000", "1.0.0"}}, // dictionary
@@ -2793,7 +2799,7 @@ namespace
             {0x8026a454, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Acquired Item Name
             {0x803c725c, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Acquired Item Notification
             {0x802794cc, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Location Discovered
-            // Unicorn Overlord
+            // Unicorn Overlord -国王的假日-
             {0x805ae1f8, {CODEC_UTF8, 1, 0, 0, F01000AE01954A000, "01000AE01954A000", "1.00"}}, // Text
             // Octopath Traveler
             {0x8005ef78, {CODEC_UTF32, 0, 0, 0, 0, "01000E200DC58000", "1.0.0"}}, // Text
@@ -2804,7 +2810,7 @@ namespace
             {0x821db028, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100982015606000, "01001DD010A2E800", "1.0.5"}}, // choice
             // Collar x Malice
             {0x800444c4, {CODEC_UTF8, 0, 0, 0, 0, "01002B400E9DA000", "1.0.0"}}, // Text
-            // Kanda Alice mo Suiri Suru.
+            // 神田アリスも推理スル。
             {0x80041db0, {0, 0, 0, 0, F01003BD013E30000, "01003BD013E30000", "1.0.0"}}, // sjis
             // Rune Factory 3 Special
             {0x81fb3364, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Main Text
@@ -2814,24 +2820,24 @@ namespace
             {0x826ba1a0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Info
             {0x823f6200, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // More Info
             {0x826c381c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Item Select Name
-            // Toraware no Paruma -Refrain-
+            // 囚われのパルマ Refrain
             {0x80697300, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // text x1
             {0x806f43c0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // name x0
             {0x80d2aca4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // choice x0
             {0x804b04c8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // alert x0
             {0x804b725c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // prompt x0
-            // Aiyoku no Eustia
+            // 穢翼のユースティア
             {0x804BEFD0, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01001CC017BB2000", "1.0.0"}}, // x0 - name
             {0x804BEFE8, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01001CC017BB2000", "1.0.0"}}, // x0 - dialogue
             {0x804d043c, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01001CC017BB2000", "1.0.0"}}, // x0 - choice
-            // Jakou no Lyla ~Trap of MUSK~
+            // 蛇香のライラ ～Allure of MUSK～
             {0x80167100, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  1. European night
             {0x801589a0, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
             {0x801b4300, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  2. Asian night
             {0x802a9170, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
             {0x80301e80, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  3. Arabic night
             {0x803f7a90, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
-            // Galleria no Chika Meikyuu to Majo no Ryodan ガレリアの地下迷宮と魔女ノ旅団
+            // ガレリアの地下迷宮と魔女ノ旅団
             {0x8002f64c, {CODEC_UTF8, 0, 0, 0, 0, "01007010157B4000", "1.0.1"}}, // Main Text
             // Dragon's Dogma: Dark Arisen
             {0x81023a80, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Main Text
@@ -2882,20 +2888,19 @@ namespace
             {0x80e50dd4, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, "010029B018432000", "1.0.0"}}, // Object Name
             {0x80f91c08, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, "010029B018432000", "1.0.0"}}, // Language Selection
             {0x805c9014, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, "010029B018432000", "1.0.0"}}, // Story/Character Info
-            // Higurashi no Naku Koro ni Hou
+            // ひぐらしのなく頃に奉
             {0x800bd6c8, {0, 0, 0, 0, F0100F6A00A684000, "0100F6A00A684000", "1.0.0"}}, // sjis
             {0x800c2d20, {0, 0, 0, 0, F0100F6A00A684000, "0100F6A00A684000", "1.2.0"}}, // sjis
-            // Umineko no Naku Koro ni Saku ~Nekobako to Musou no Koukyoukyoku~
+            // うみねこのなく頃に咲 ～猫箱と夢想の交響曲～
             {0x800b4560, {CODEC_UTF8, 0, 0, 0, 0, "01006A300BA2C000", "1.0.0"}}, // x0 name + text (bottom, center) - whole line. filter is to complex, quit.
             {0x801049c0, {CODEC_UTF8, 0, 0, 0, 0, "01006A300BA2C000", "1.0.0"}}, // x0 prompt, bottomLeft
             {0x80026378, {CODEC_UTF8, 0, 0, 0, 0, "01006A300BA2C000", "1.0.0"}}, // x0 Yes|No
             {0x801049a8, {CODEC_UTF8, 0, 0, 0, 0, "01006A300BA2C000", "1.0.0"}}, // x0 topLeft (double: ♪ + text)
-
-            // Koroshiya to Strawberry- Plus
+            // 殺し屋とストロベリー
             {0x81322cec, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010042300C4F6000, "0100E390145C8000", "1.0.0"}}, // dialogue
             {0x819b1a78, {CODEC_UTF16, 0, 0, ReadTextAndLenW<2>, F010042300C4F6000, "0100E390145C8000", "1.0.0"}}, // dialogue
             {0x81314e8c, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010042300C4F6000, "0100E390145C8000", "1.0.0"}}, // dialogue
-            // Tokimeki Memorial Girl's Side 1st Love for Nintendo Switch
+            // ときめきメモリアル Girl's Side
             {0x822454a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // dialogue1
             {0x82247138, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // dialogue2
             {0x822472e0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // dialogue3
@@ -2924,20 +2929,20 @@ namespace
             {0x80e76150, {CODEC_UTF8, 0, 0, 0, F010074F013262000, "010074F013262000", "2.2.0"}}, // Secondary Text
             {0x807b4ee4, {CODEC_UTF8, 1, 0, 0, F010074F013262000, "010074F013262000", "2.2.0"}}, // Tutorial Description
             {0x80850218, {CODEC_UTF8, 0, 0, 0, F010074F013262000, "010074F013262000", "2.2.0"}}, // Objective
-            // CLOCK ZERO ~Shuuen no Ichibyou~ Devote
+            // CLOCK ZERO 〜終焉の一秒〜
             {0x8003c290, {0, 0, 0, 0, F0100BDD01AAE4000, "01008C100C572000", "1.0.0"}}, // name,sjis
             {0x8003c184, {0, 0, 0, 0, F0100BDD01AAE4000, "01008C100C572000", "1.0.0"}}, // dialogue
             {0x8001f6d0, {0, 0, 0, 0, F0100BDD01AAE4000, "01008C100C572000", "1.0.0"}}, // prompt
-            // Shuuen no Virche -ErroR:salvation
+            // 終遠のヴィルシュ -ErroR:salvation-
             {0x8001f594, {CODEC_UTF8, 0, 0x1C, 0, F0100C310110B4000, "01005B9014BE0000", "1.0.0"}}, // dialog
             {0x8001f668, {CODEC_UTF8, 0, 0x1C, 0, F0100C310110B4000, "01005B9014BE0000", "1.0.0"}}, // center
             {0x8003d540, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005B9014BE0000", "1.0.0"}},    // choice
-            // Shuuen no Virche -EpiC:lycoris-
+            // 終遠のヴィルシュ -EpiC:lycoris-
             {0x8002bf6c, {CODEC_UTF8, 0, 0x1c, 0, FF010061300DF48000_2, "01004D601B0AA000", "1.0.1"}},
             {0x8004e720, {CODEC_UTF8, 1, 0, 0, FF010061300DF48000_2, "01004D601B0AA000", "1.0.1"}},
-            // Spade no Kuni no Alice ~Wonderful White World~ / スペードの国のアリス ～Wonderful White World～
+            // スペードの国のアリス ～Wonderful White World～
             {0x8135d018, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01008C0016544000, "01003FE00E2F8000", "1.0.0"}}, // Text + Name
-            // Spade no Kuni no Alice ~Wonderful Black World~ (スペードの国のアリス ～Wonderful Black World～)
+            // スペードの国のアリス ～Wonderful Black World～
             {0x819dbdc8, {CODEC_UTF16, 0, 0x14, 0, F0100AB100E2FA000, "0100AB100E2FA000", "1.0.0"}},
             {0x81f8e564, {CODEC_UTF16, 1, 0x14, 0, F0100AB100E2FA000, "0100AB100E2FA000", "1.0.0"}},
             // 十三支演義 偃月三国伝1・2 for Nintendo Switch (Juuzaengi ~Engetsu Sangokuden~)
@@ -2953,11 +2958,11 @@ namespace
             // Nil Adminari no Tenbin Irodori Nadeshiko
             {0x8005fd5c, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, "01002BB00A662000", "1.0.0"}},  // name
             {0x800db0d8, {CODEC_UTF8, 0, 20, 0, F0100BDD01AAE4000, "01002BB00A662000", "1.0.0"}}, // name
-            // Hanayaka Nari, Waga Ichizoku Modern Nostalgie
+            // 華ヤカ哉、我ガ一族 モダンノスタルジィ
             {0x2509ac, {CODEC_UTF8, 0, 0, T0100B5500CA0C000, F0100B5500CA0C000, "01008DE00C022000", "1.0.0"}},
-            // Hanayaka Nari, Waga Ichizoku Gentou Nostalgie
+            // 華ヤカ哉、我ガ一族 幻燈ノスタルジィ
             {0x27ca10, {CODEC_UTF8, 0, 0, T0100B5500CA0C000, F0100B5500CA0C000, "0100B5500CA0C000", "1.0.0"}}, // x3 (double trigged), name+text, onscreen
-            // Master Detective Archives: Rain Code
+            // 超探偵事件簿 レインコード
             {0x80bf2034, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Dialogue text
             {0x80c099d4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Cutscene text
             {0x80cbf1f4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Menu
@@ -2983,13 +2988,12 @@ namespace
             {0x804022f8, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Request
             {0x802f7df4, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Quest Description
             {0x8031af0c, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Aproach Text
-            // Sweet Clown ~Gozen San-ji no Okashi na Doukeshi~
-            {0x20dbfc, {0, 0, 0x28, 0, F010028D0148E6000, "010028D0148E6000", "1.2.0"}}, // dialog, sjis
-            {0x214978, {0, 2, 0xC, 0, F010028D0148E6000, "010028D0148E6000", "1.2.0"}},  // choices
-            // SWEET CLOWN ～午前三時のオカシな道化師～
+            // SWEET CLOWN ~午前三時のオカシな道化師~
+            {0x20dbfc, {0, 0, 0x28, 0, F010028D0148E6000, "010028D0148E6000", "1.2.0"}},          // dialog, sjis
+            {0x214978, {0, 2, 0xC, 0, F010028D0148E6000, "010028D0148E6000", "1.2.0"}},           // choices
             {0x218B40, {FULL_STRING, 1, 0, 0, F010028D0148E6000_2, "010028D0148E6000", "1.0.1"}}, // TEXT
             {0x20D420, {0, 0, 0, 0, 0, "010028D0148E6000", "1.0.1"}},                             // NAME+TEXT
-            // Another Code: Recollection
+            // アナザーコード リコレクション：２つの記憶 / 記憶の扉
             {0x82dcad30, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Main Text
             {0x82f2cfb0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Item Description
             {0x82dcc5fc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Tutorial PopUp Header
@@ -3011,11 +3015,11 @@ namespace
             {0x82c1ccf0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Decision Header
             {0x82c1d218, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Decision1
             {0x82c1e43c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Decision2
-            // AI: The Somnium Files
+            // AI：ソムニウム ファイル
             {0x8165a9a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100C7400CFB4000, "0100C7400CFB4000", "1.0.2"}}, // Main Text + Tutorial
             {0x80320dd4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100C7400CFB4000, "0100C7400CFB4000", "1.0.2"}}, // Menu Interface Text1
             {0x80320e20, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100C7400CFB4000, "0100C7400CFB4000", "1.0.2"}}, // Menu Interface Text2
-            // AI: The Somnium Files - nirvanA Initiative
+            // AI: ソムニウムファイル ニルヴァーナイニシアチブ
             {0x8189ae64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Main Text + Tutorial
             {0x81813428, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Hover Investigation Text
             {0x82e122b8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Info
@@ -3023,18 +3027,18 @@ namespace
             {0x818c3cd8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // File: Names
             {0x82ea1a38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // File: Contents
             {0x82cbb1fc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Investigation Choices
-            // Fata morgana no Yakata ~Dreams of the Revenants Edition~ / ファタモ
+            // ファタモルガーナの館 -DREAMS OF THE REVENANTS EDITION-
             {0x8025a998, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, "0100BE40138B8000", "1.0.1"}}, // Main Text
             {0x801d6050, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, "0100BE40138B8000", "1.0.1"}}, // Choices
             // Ni no Kuni II: Revenant Kingdom
             {0x80ac651c, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, "0100C4E013E5E000", "1.0.0"}}, // Main Text
             {0x80335ea0, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, "0100C4E013E5E000", "1.0.0"}}, // Name
-            // Harukanaru Toki no Naka de 7
+            // 遙かなる時空の中で7
             {0x800102bc, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100CF400F7CE000", "1.0.0"}}, // name, sjis
             {0x80051f90, {0, 0, 0, T0100CF400F7CE000<1>, F0100CF400F7CE000, "0100CF400F7CE000", "1.0.0"}}, // text
             {0x80010b48, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100CF400F7CE000", "1.0.0"}}, // prompt
             {0x80010c80, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100CF400F7CE000", "1.0.0"}}, // choice
-            // Angelique Luminarise
+            // アンジェリーク ルミナライズ
             {0x80046c04, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100D11018A7E000", "1.0.0"}}, // ingameDialogue, sjis
             {0x80011284, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100D11018A7E000", "1.0.0"}}, // choice
             {0x80011140, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100D11018A7E000", "1.0.0"}}, // prompt first
@@ -3096,11 +3100,11 @@ namespace
             {0x80086e70, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, "010012A017F18000", "1.0.2"}},
             // 月姫 -A piece of blue glass moon-
             {0x800ac290, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, "01001DC01486A000", 0}}, // 1.0.1,1.0.2
-            // The Quintessential Quintuplets the Movie: Five Memories of My Time with You (JP)
+            // 映画 五等分の花嫁　～君と過ごした五つの思い出～ (JP)
             {0x80011688, {CODEC_UTF8, 1, 0, 0, F01005E9016BDE000, "01005E9016BDE000", "1.0.0"}}, // dialogue, menu, choice, name
-            // Flowers: Les Quatre Saisons
+            // FLOWERS 四季
             {0x8006f940, {CODEC_UTF16, 1, 0, 0, F01002AE00F442000, "01002AE00F442000", "1.0.1"}},
-            // 最悪なる災厄人間に捧ぐ eSHOP [01000A400AF2A000][v0]
+            // 最悪なる災厄人間に捧ぐ
             {0x8034EB44, {CODEC_UTF16, 8, 0, 0, F01000A400AF2A000, "01000A400AF2A000", "1.0.0"}}, // text
             // 神様のような君へ
             {0x80487CD0, {CODEC_UTF8, 0, 0, 0, F01006B5014E2E000, "01006B5014E2E000", "1.0.0"}}, // text
@@ -3109,7 +3113,7 @@ namespace
             {0x80191f88, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010060800B7A8000", "1.1.3"}}, // Choice
             {0x801921a4, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010060800B7A8000", "1.1.3"}}, // Choice 2
             {0x801935f0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010060800B7A8000", "1.1.3"}}, // option
-            // Moujuutsukai to Ouji-sama ~Flower ＆ Snow~
+            // 猛獣使いと王子様 ～Flower ＆ Snow～ for Nintendo Switch
             {0x800a1a10, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, "01001B900C0E2000", "1.0.0"}}, // Dialogue 1
             {0x80058f80, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, "01001B900C0E2000", "1.0.0"}}, // Dialogue 2
             // Detective Pikachu Returns
@@ -3162,83 +3166,83 @@ namespace
             // ヤマノススメ Next Summit ～あの山に、もう一度～
             {0x806E1444, {CODEC_UTF8, 0, 0, 0, F0100815019488000_text, "0100815019488000", "1.0.0"}},
             {0x80659EE0, {CODEC_UTF8, 1, 0, 0, F0100815019488000_name, "0100815019488000", "1.0.0"}},
-            // Prison Princess
+            // プリズンプリンセス
             {0x800eba00, {CODEC_UTF16, 2, 0x14, 0, 0, "0100F4800F872000", "1.0.0"}},
-            // 泡沫のユークロニア Utakata no Uchronia
+            // 泡沫のユークロニア
             {0x8180de40, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<false>, "010027401A2A2000", "1.0.0"}}, // text box
             {0x816b61c0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<false>, "010027401A2A2000", "1.0.0"}}, // dictionary
             {0x815fe594, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<true>, "010027401A2A2000", "1.0.0"}},  // choices
             {0x81836E0C, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, "010027401A2A2000", "1.0.1"}},
-            // Little Busters! Converted Edition
+            // リトルバスターズ！Converted Edition
             {0x800A97C8, {CODEC_UTF8, 9, 0, 0, F0100943010310000, "0100943010310000", "1.0.0"}},
             // GrimGrimoire OnceMore
             {0x80020bd4, {CODEC_UTF8, 0, 0, 0, 0, "01003F5017760000", "1.0.0"}},
             {0x800375a0, {CODEC_UTF8, 2, 0, 0, 0, "01003F5017760000", "1.0.0"}}, // tutorial
             {0x800781dc, {CODEC_UTF8, 0, 0, 0, 0, "01003F5017760000", "1.0.0"}}, // Chapter
-            // Temirana Koku no Tsuiteru Hime to Tsuitenai Kishidan
+            // テミラーナ国の強運姫と悲運騎士団
             {0x82457970, {CODEC_UTF16, 0, 0x14, 0, F0100A62019078000, "0100A62019078000", "1.0.1"}},
-            // Doukoku Soshite
+            // 慟哭 そして…
             {0x8008171c, {0, 0, 0, 0, 0, "01007F000EB36000", "1.0.0"}},
-            // Mistonia no Kibou - The Lost Delight
+            // ミストニアの翅望 -The Lost Delight-
             {0x8246c4ac, {CODEC_UTF16, 0, 0, 0, 0, "01007AD01CB42000", "1.0.0"}},
-            // even if TEMPEST: Tsuranaru Toki no Akatsuki
+            // even if TEMPEST 連なるときの暁
             {0x80031008, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "0100DEF01D0C2000", "1.0.2"}},
             {0x8002e2cc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "0100DEF01D0C2000", "1.0.2"}},
             {0x8002e2cc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "0100DEF01D0C2000", "1.0.2"}},
-            // even if TEMPEST: Yoiyami ni Kaku Katariki Majo
+            // even if TEMPEST 宵闇にかく語りき魔女
             {0x8001cf80, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "010095E01581C000", "1.0.8"}},
             {0x800297d0, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "010095E01581C000", "1.0.8"}},
             {0x8000edcc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "010095E01581C000", "1.0.8"}},
-            // Taishou x Alice all in one
+            // 大正×対称アリス all in one
             {0x80064ab8, {CODEC_UTF16, 1, 0, 0, F010096000CA38000, "010096000CA38000", "1.0.2"}},
             {0x80064bd4, {CODEC_UTF16, 1, 0, 0, F010096000CA38000, "010096000CA38000", "1.0.2"}},
             {0x8015f968, {CODEC_UTF16, 0, 0, 0, F010096000CA38000, "010096000CA38000", "1.0.2"}},
-            // Taishou x Alice: HEADS & TAILS
+            // 大正×対称アリス HEADS&TAILS
             {0x8009bb3c, {CODEC_UTF16, 1, 0, 0, F0100B1F0123B6000, "0100B1F0123B6000", "2.0.0"}},
             {0x8009bc58, {CODEC_UTF16, 1, 0, 0, F0100B1F0123B6000, "0100B1F0123B6000", "2.0.0"}},
-            // Hiiro_no_Kakera_Tamayorihime_Kitan_Omoiiro_no_Kioku
+            // 緋色の欠片 玉依姫奇譚 ～おもいいろの記憶～
             {0x81922ce8, {CODEC_UTF16, 0, 0x14, 0, F0100EC001DE7E000, "0100EC001DE7E000", "1.0.0"}},
-            // Gensou Manège
+            // 幻想マネージュ
             {0x8124f690, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, "010037500DF38000", "1.0.4"}},
             {0x811f63f0, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, "010037500DF38000", "1.0.4"}},
             {0x811917f4, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, "010037500DF38000", "1.0.4"}},
             {0x81595f90, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, "010037500DF38000", "1.0.4"}},
-            // Gensou Kissa Enchanté
+            // 幻奏喫茶アンシャンテ
             {0x8002863c, {CODEC_UTF8, 0, 0, 0, 0, "010079200C26E000", "1.0.0"}},
             {0x80044360, {CODEC_UTF8, 1, 0, 0, 0, "010079200C26E000", "1.0.0"}},
             {0x8004a1a4, {CODEC_UTF8, 0, 0, 0, F010079200C26E000<0>, "010079200C26E000", "1.0.0"}},
             {0x8004a394, {CODEC_UTF8, 0, 0, 0, F010079200C26E000<1>, "010079200C26E000", "1.0.0"}},
-            // Tengoku Struggle -strayside-
+            // 天獄ストラグル -strayside-
             {0x801bc678, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, "01002C00177AE000", "1.0.0"}},
             {0x8016a05c, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, "01002C00177AE000", "1.0.0"}},
             {0x80140cac, {CODEC_UTF32, 1, 0, 0, F01002C00177AE000, "01002C00177AE000", "1.0.0"}},
             {0x800e08dc, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, "01002C00177AE000", "1.0.0"}},
-            // Meiji Katsugeki Haikara Ryuuseigumi -Seibai Shimaseu, Yonaoshi Kagyou-
+            // 明治活劇 ハイカラ流星組 －成敗しませう、世直し稼業－
             {0x802ab2fc, {CODEC_UTF8, 6, 0, 0, F0100EA100DF92000, "0100EA100DF92000", "1.0.0"}},
             // 7'scarlet
             {0x8177ec00, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, "0100FA001E160000", "1.0.0"}},
             {0x817754ac, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, "0100FA001E160000", "1.0.0"}},
-            // SympathyKiss / Sympathy Kiss (JP)
+            // SympathyKiss (JP)
             {0x80037d90, {CODEC_UTF8, 0, 0, 0, F0100FA10185B0000, "0100FA10185B0000", "1.0.0"}},
             {0x80030f24, {CODEC_UTF8, 0, 0, 0, F0100FA10185B0000, "0100FA10185B0000", "1.0.0"}},
             {0x80054804, {CODEC_UTF8, 1, 0, 0, F0100FA10185B0000, "0100FA10185B0000", "1.0.0"}},
             {0x80054290, {CODEC_UTF8, 1, 0, 0, F0100FA10185B0000, "0100FA10185B0000", "1.0.0"}},
-            // Kimi wa Yukima ni Koinegau (君は雪間に希う)
+            // 君は雪間に希う
             {0x8013a0f0, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, "010021D01474E000", "1.0.0"}},
             {0x800319f8, {CODEC_UTF32, 0, 0, 0, F010021D01474E000_2, "010021D01474E000", "1.0.0"}},
             {0x800488e4, {CODEC_UTF32, 1, 0, 0, F010021D01474E000, "010021D01474E000", "1.0.0"}},
             {0x800bdb84, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, "010021D01474E000", "1.0.0"}},
             {0x800e4540, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, "010021D01474E000", "1.0.0"}},
-            // Dairoku: Ayakashimori (DAIROKU：AYAKASHIMORI)
+            // DAIROKU：AYAKASHIMORI
             {0x800e35ec, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, "010061300DF48000", "1.0.1"}},
             {0x800d103c, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, "010061300DF48000", "1.0.1"}},
             {0x800f1320, {CODEC_UTF8, 0, 0, T010061300DF48000, FF010061300DF48000_2, "010061300DF48000", "1.0.1"}},
-            // Charade Maniacs / CharadeManiacs
+            // Charade Maniacs
             {0x8001c460, {CODEC_UTF8, 0, 0x5c, 0, F0100CEF0152DE000, "0100CEF0152DE000", "1.0.0"}},
             {0x8004c390, {CODEC_UTF8, 1, 0, 0, F0100CEF0152DE000, "0100CEF0152DE000", "1.0.0"}},
             {0x80050d60, {CODEC_UTF8, 0, 0, 0, F0100CEF0152DE000, "0100CEF0152DE000", "1.0.0"}},
             {0x8007ee20, {CODEC_UTF8, 0, 0, 0, F0100CEF0152DE000, "0100CEF0152DE000", "1.0.0"}},
-            // Hanaemu Kare to & bloom (花笑む彼と & bloom)
+            // 花笑む彼と & bloom
             {0x833e4d84, {CODEC_UTF16, 0, 0x14, 0, F0100DEF01D0C6000, "0100DEF01D0C6000", "1.0.0"}},
             {0x8335f650, {CODEC_UTF16, 0, 0x14, 0, F0100DEF01D0C6000, "0100DEF01D0C6000", "1.0.0"}},
             {0x81729520, {CODEC_UTF16, 1, 0x14, 0, F0100DEF01D0C6000_2, "0100DEF01D0C6000", "1.0.0"}},
@@ -3251,32 +3255,32 @@ namespace
             {0x817b76d4, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, "01003BB01DF54000", "1.0.0"}},
             {0x8187882c, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, "01003BB01DF54000", "1.0.1"}},
             {0x817b8f64, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, "01003BB01DF54000", "1.0.1"}},
-            // Tokeijikake no Apocalypse (時計仕掛けのアポカリプス)
+            // 時計仕掛けのアポカリプス
             {0x8001d9c4, {CODEC_UTF8, 0, 0x1c, 0, F01005AF00E9DC000, "01005AF00E9DC000", "1.0.0"}},
             {0x8004ca84, {CODEC_UTF8, 1, 0, 0, F01005AF00E9DC000, "01005AF00E9DC000", "1.0.0"}},
             {0x8005b304, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, "01005AF00E9DC000", "1.0.0"}},
             {0x8005b310, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, "01005AF00E9DC000", "1.0.0"}},
-            // Radiant Tale ~Fanfare!~ (ラディアンテイル ～ファンファーレ！～)
+            // ラディアンテイル ～ファンファーレ！～
             {0x8003a880, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, "010088B01A8FC000", "1.0.1"}},
             {0x8004eb08, {CODEC_UTF8, 1, 0, 0, F010088B01A8FC000, "010088B01A8FC000", "1.0.1"}},
             {0x8005bff4, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, "010088B01A8FC000", "1.0.1"}},
             {0x8005f0d4, {CODEC_UTF8, 3, 0, 0, F010088B01A8FC000, "010088B01A8FC000", "1.0.1"}},
-            // LoverPretend / Lover Pretend
+            // Lover Pretend
             {0x80034ad0, {CODEC_UTF8, 0, 0, 0, F010032300C562000, "010032300C562000", "1.0.0"}},
             {0x8004e950, {CODEC_UTF8, 1, 0, 0, F010032300C562000, "010032300C562000", "1.0.0"}},
             {0x8002e6c4, {CODEC_UTF8, 0, 0, 0, F010032300C562000, "010032300C562000", "1.0.0"}},
             {0x8005f6ec, {CODEC_UTF8, 0, 0, 0, F010032300C562000, "010032300C562000", "1.0.0"}},
-            // Norn9 ~Norn + Nonette~ LOFN (NORN9 ~ノルン+ノネット~ LOFN)
+            // NORN9 ~ノルン+ノネット~ LOFN for Nintendo Switch
             {0x8002b200, {CODEC_UTF8, 1, 0x18, 0, F010061300DF48000, "01001A500AD6A000", "1.0.0"}},
             {0x8003d83c, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, "01001A500AD6A000", "1.0.0"}},
             {0x80047850, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, "01001A500AD6A000", "1.0.0"}},
-            // Shiritsu Berubara Gakuen ~Versailles no Bara Re*imagination~ (私立ベルばら学園 ～ベルサイユのばらRe*imagination～)
+            // 私立ベルばら学園 ～ベルサイユのばらRe*imagination～
             {0x8001b68c, {CODEC_UTF8, 0, 0x1c, 0, F010027300A660000, "010027300A660000", "1.0.0"}},
             {0x800460f0, {CODEC_UTF8, 1, 0, 0, F010027300A660000, "010027300A660000", "1.0.0"}},
-            // Himehibi Another Princess Days -White or Black- (ひめひび Another Princess Days – White or Black –)
+            // ひめひび Another Princess Days – White or Black –
             {0x219ed0, {0, 0, 0, 0, F0100E4000F616000, "0100E4000F616000", "1.0.0"}},
             {0x21a3e0, {0, 0, 0, 0, F0100E4000F616000, "0100E4000F616000", "1.0.0"}},
-            // Himehibi -Princess Days- (ひめひび -Princess Days-)
+            // ひめひび -Princess Days-
             {0x20d7b8, {0, 0, 0, 0, F0100E4000F616000, "0100F8D0129F4000", "1.0.0"}},
             {0x20da9c, {0, 0, 0, 0, F0100E4000F616000, "0100E4000F616000", "1.0.0"}},
             {0x20d834, {0, 0, 0, 0, F0100E4000F616000, "0100F8D0129F4000", "1.0.1"}},
@@ -3287,30 +3291,30 @@ namespace
             {0x83d22530, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, "010044701E9BC000", "1.2.0"}},
             {0x83d225c0, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, "010044701E9BC000", "1.2.0"}},
             {0x83d26fd8, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, "010044701E9BC000", "1.2.0"}},
-            // Trouble Magia ~Wakeari Shoujo wa Mirai o Kachitoru Tame ni Ikoku no Mahou Gakkou e Ryuugaku Shimasu~ (トラブル・マギア ～訳アリ少女は未来を勝ち取るために異国の魔法学校へ留学します～)
+            // トラブル・マギア ～訳アリ少女は未来を勝ち取るために異国の魔法学校へ留学します～
             {0x8017e6b0, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<1>, F01000BB01CB8A000, "01000BB01CB8A000", "1.0.0"}},
             {0x80177ae0, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, "01000BB01CB8A000", "1.0.0"}},
             {0x80122a4c, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, "01000BB01CB8A000", "1.0.0"}},
             {0x800ba088, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, "01000BB01CB8A000", "1.0.0"}},
-            // Moeyo! Otome Doushi ~Kayuu Koigatari~ (燃えよ！ 乙女道士 ～華遊恋語～)
+            // 燃えよ！ 乙女道士 ～華遊恋語～
             {0x8005c698, {CODEC_UTF16, 1, 0x20, 0, F01001BA01EBFC000, "01001BA01EBFC000", "1.0.0"}},
             {0x80051cd0, {CODEC_UTF16, 1, 0, 0, F01001BA01EBFC000, "01001BA01EBFC000", "1.0.0"}},
-            // planetarian: Snow Globe
+            // planetarian～雪圏球～
             {0x800F32A0, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, 0, "010031C01F410000", "1.0.0"}}, // 各种语言一起都提取出来了
-            // planetarian: The Reverie of a Little Planet & Snow Globe 英文版
+            // planetarian～ちいさなほしのゆめ＆雪圏球～ パッケージ版 英文版
             {0x801253EC, {CODEC_UTF16, 0xA, 0, 0, 0, "0100F0A01F112000", nullptr}},               // 1.0.0 && 1.0.1 // 中文
             {0x8012441C, {CODEC_UTF16, 8, 0, 0, F0100F0A01F112000, "0100F0A01F112000", nullptr}}, // 1.0.0 && 1.0.1 // 日文
-            // The Town of Nie
+            // 贄の町
             {0x818B6078, {CODEC_UTF16, 1, 0, 0, F0100C9001E10C000, "0100C9001E10C000", "1.0.0"}},
             // Honey Vibes
             {0x81845F80, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100FB301E70A000, "0100FB301E70A000", "1.0.0"}},
-            // WORLDEND SYNDROME
+            // ワールドエンド・シンドローム
             {0x805F5F04, {CODEC_UTF16, 2, 0, 0, 0, "01008A30083E2000", "1.0.0"}},
             {0x800FBA84, {CODEC_UTF16, 2, 0, 0, 0, "01008A30083E2000", "1.0.1"}},
-            // Hatsumira -From the Future Undying-
+            // 果つることなき未来ヨリ
             {0x8017BE0C, {CODEC_UTF8, 8, 0, 0, aF0100A9B01D4AE000, "0100A9B01D4AE000", "1.0.0"}},  // 英文
             {0x8017C0B4, {CODEC_UTF16, 8, 0, 0, wF0100A9B01D4AE000, "0100A9B01D4AE000", "1.0.0"}}, // 日文
-            // Meiji Tokyo Renka  Full Moon
+            // 明治東亰恋伽
             {0x81898840, {CODEC_UTF16, 3, 0, 0, F010043901E972000, "010043901E972000", "1.0.0"}}, // 日文
             // 月影の鎖～狂爛モラトリアム～
             {0x2170B4, {0, 1, 0, 0, F010076501DAEA000, "010076501DAEA000", "1.0.0"}}, // text
@@ -3342,27 +3346,27 @@ namespace
             {0x8004970c, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, "0100E8E016D82000", "1.0.0"}},
             {0x800da5e0, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, "0100E8E016D82000", "1.0.0"}},
             {0x8003dfac, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, "0100E8E016D82000", "1.0.0"}},
-            // PSYCHIC ECLIPSE -reload-
+            // PSYCHIC ECLIPSE-サイキックイクリプス- reload
             {0x8091B41C, {CODEC_UTF8, 8, 0, 0, 0, "0100A0001B9F0000", "1.0.0"}},               // 提取不到短字符串
             {0x804FAF5C, {CODEC_UTF8 | FULL_STRING, 1, 0, 0, 0, "0100A0001B9F0000", "1.1.0"}}, // 提取不到短字符串 text+name
             {0x80887ABC, {CODEC_UTF8, 8, 0, 0, 0, "0100A0001B9F0000", "1.1.0"}},               // 提取不到短字符串
             // アイ★チュウ
             {0x824865C4, {CODEC_UTF16, 3, 0, 0, F01006CC015ECA000, "01006CC015ECA000", "1.14"}},
-            // Kaeru Batake DE Tsukamaete☆ (カエル畑DEつかまえて☆彡)
+            // カエル畑DEつかまえて☆彡
             {0x2206bc, {0, 0, 0, 0, F0100E5200D1A2000<false>, "0100E5200D1A2000", "1.0.0"}},
             {0x220cfc, {0, 0, 0, 0, F0100E5200D1A2000<true>, "0100E5200D1A2000", "1.0.0"}},
             {0x2372b0, {0, 1, 0, 0, F0100E5200D1A2000<false>, "0100E5200D1A2000", "1.0.0"}},
-            // Kaeru Batake DE Tsukamaete: Natsu Chigira Sansen! (カエル畑DEつかまえて・夏 千木良参戦!)
+            // カエル畑DEつかまえて・夏 千木良参戦!
             {0x2210d0, {0, 0, 0, 0, F0100EFE0159C6000<false>, "0100EFE0159C6000", "1.0.0"}},
             {0x221768, {0, 0, 0, 0, F0100EFE0159C6000<false>, "0100EFE0159C6000", "1.0.0"}},
-            // Katakoi Contrast -collection of branch- (片恋いコントラスト ―collection of branch―)
+            // 片恋いコントラスト ―collection of branch―
             {0x8004ba20, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
             {0x800c6eb0, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
             {0x8017e560, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
             {0x801f67c0, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
             {0x802a76c0, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
             {0x8031fc80, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
-            // Jewelry Hearts Academia -We will wing wonder world-
+            // ジュエリー・ハーツ・アカデミア -We will wing wonder world-
             {0x805b0714, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, "010064701F37A000", "1.0.0"}},
             {0x805b0704, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "010064701F37A000", "1.0.0"}},
             // 真 流行り神１・２パック
@@ -3375,7 +3379,7 @@ namespace
             // アサツグトリ
             {0x8012C824, {CODEC_UTF8, 1, 0, 0, F010060301588A000, "010060301588A000", "1.0.0"}},
             {0x80095370, {CODEC_UTF8, 4, 0, 0, F010060301588A000, "010060301588A000", "1.0.2"}}, // text only
-            // Money Parasite ~Usotsuki na Onna~
+            // Money Parasite〜嘘つきな女〜
             {0x2169ac, {0, 0, 0, 0, F0100A250191E8000<false>, "0100A250191E8000", "1.0.0"}},
             {0x217030, {0, 0, 0, 0, F0100A250191E8000<true>, "0100A250191E8000", "1.0.0"}},
             // 三国恋戦記～オトメの兵法！～
@@ -3404,7 +3408,7 @@ namespace
             // 其二
             {0x8006BCC0, {0, 8, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // text
             {0x8007C1D4, {0, 0, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // name+text 这个两作都能提到。实际上只留这一个也行，但它显示完才有，速度慢。
-            // Hakkenden
+            // 八剱伝
             {0x819ade74, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01007A901E728000, "01007A901E728000", "1.0.1"}},
             // 大正メビウスライン大全 三合一
             {0x800C43D4, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.0"}}, // text
@@ -3412,7 +3416,7 @@ namespace
             // 猛獣たちとお姫様 for Nintendo Switch  二合一
             {0x80115C70, {CODEC_UTF8, 0, 0, 0, F010001D015260000, "010035001D1B2000", "1.0.0"}}, // text
             {0x80115F20, {CODEC_UTF8, 0, 0, 0, F010001D015260000, "010035001D1B2000", "1.0.1"}}, // text
-            // BEAST Darling!-けもみみ男子と秘密の寮-
+            // BEAST Darling! ～けもみみ男子と秘密の寮～
             {0x80424D50, {CODEC_UTF16, 8, 0, 0, F0100B0601852A000, "010045F00BF64000", "1.0.0"}}, // text
             // 恋の花咲く百花園
             {0x211464, {0, 0, 0, 0, F010052300F612000, "010052300F612000", "1.0.0"}}, // text
@@ -3436,6 +3440,10 @@ namespace
             {0x817FAC90, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_2, "010019C0155D8000", "1.0.0"}}, // text+name,->text
             {0x817E5818, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_1, "010019C0155D8000", "1.0.2"}}, // text+name,->name
             {0x817E5820, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_2, "010019C0155D8000", "1.0.2"}}, // text+name,->text
+            // 神凪ノ杜
+            {0x8205e150, {CODEC_UTF16, 0, 0x14, 0, F0100B5801D7CE000, "0100B5801D7CE000", "1.0.0"}},
+            {0x820e2e6c, {CODEC_UTF16, 0, 0x14, 0, 0, "0100B5801D7CE000", "1.0.0"}},
+
         };
         return 1;
     }();

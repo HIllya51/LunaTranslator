@@ -393,20 +393,20 @@ namespace ppsspp
 		}
 	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
-		// Shinigami to Shoujo
+		// 死神と少女
 		{0x883bf34, {0, 1, 0, 0, ULJS00403_filter, "ULJS00403"}},
-		// Amagami
+		// アマガミ
 		{0x0886775c, {0, 0, 0, ULJS00339, 0, "ULJS00339"}}, // String.length()
-		// Sekai de Ichiban Dame na Koi
+		// 世界でいちばんNG（だめ）な恋
 		{0x8814adc, {0, 0, 0, 0, NPJH50909_filter, "ULJM05878"}}, // name + dialouge
 		{0x8850b2c, {0, 0, 0, 0, NPJH50909_filter, "ULJM05878"}}, // onscreen toast
 		// Dunamis15
 		{0x0891D72C, {CODEC_UTF8, 0, 0, 0, ULJM06119_filter, "ULJM06119"}},
-		// Princess Evangile Portable
+		// Princess Evangile
 		{0x88506d0, {CODEC_UTF16, 2, 0, 0, ULJM06036_filter, "ULJM06036"}}, // [0x88506d0(2)...0x088507C0(?)] // name text text (line doubled)
-		// Kin'iro no Corda 2f
+		// 金色のコルダ2 f
 		{0x89b59dc, {0, 0, 0, ULJM05428, 0, "ULJM05428"}},
-		// Kin'iro no Corda
+		// 金色のコルダ
 		{0x886162c, {0, 0, 0, ULJM05054, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
 		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},	   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
 		// Sol Trigger
@@ -418,17 +418,19 @@ namespace ppsspp
 		{0x88bcef8, {CODEC_UTF8, 1, 0, 0, NPJH50619F, "NPJH50619"}}, // battle talk
 		// Fate/EXTRA CCC
 		{0x8958490, {0, 0, 0, 0, NPJH50505F, "NPJH50505"}},
-		// Kamigami no Asobi InFinite
+		// Fate/EXTRA
+		{0x88B87F0, {0, 6, 0, 0, FNPJH50247, "NPJH50247"}},
+		// 神々の悪戯 InFinite
 		{0x088630f8, {0, 0, 0, QNPJH50909, 0, "NPJH50909"}}, // text, choice (debounce trailing 400ms), TODO: better hook
 		{0x0887813c, {0, 3, 4, 0, 0, "NPJH50909"}},			 // Question YN
-		// Gekka Ryouran Romance
+		// 月華繚乱ROMANCE
 		{0x88eeba4, {0, 0, 0, 0, ULJM05943F, "ULJM05943"}}, // a0 - monologue text
 		{0x8875e0c, {0, 1, 6, 0, ULJM05943F, "ULJM05943"}}, // a1 - dialogue text
 		// My Merry May with be
 		{0x886F014, {0, 3, 0, 0, FULJM05603, "ULJM05603"}},
-		// Corpse Party -The Anthology- Sachiko no Ren'ai Yuugi ♥ Hysteric Birthday 2U - Regular Edition
+		// コープスパーティー -THE ANTHOLOGY- サチコの恋愛遊戯♥Hysteric Birthday 2U
 		{0x88517C8, {0, 1, 0, 0, FULJM05603, "ULJM06114"}},
-		// Himawari_no_Kyoukai_to_Nagai_Natsuyasumi_Extra_Vacation_JPN_PSP-MOEMOE
+		// 向日葵の教会と長い夏休み
 		{0x881c444, {FULL_STRING, 0, 0, 0, 0, "ULJM06321"}}, // name+text,sjit,FULL_STRING to split name and text
 		// ましろ色シンフォニー *mutsu-no-hana
 		{0x8868AB8, {0, 0, 0, 0, FULJM05889, "ULJM05889"}},
@@ -453,7 +455,7 @@ namespace ppsspp
 		{0x8889CCC, {CODEC_UTF8, 1, 0, 0, FNPJH50459, "NPJH50716"}}, // 会有两三条后续文本都被一次性提取到。
 		// マイナスエイト
 		{0x88DC218, {0, 0, 0, 0, FULJM05690, "ULJM06341"}},
-		// Tokimeki Memorial 4
+		//ときめきメモリアル4
 		{0x899a510, {0, 2, 0, 0, FNPJH50127, "NPJH50127"}},
 		{0x88719dc, {0, 1, 0, 0, FNPJH50127, "NPJH50127"}},
 		// オメルタ～沈黙の掟～ THE LEGACY
@@ -466,8 +468,6 @@ namespace ppsspp
 		{0x8940DA8, {0, 1, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
 		// 遙かなる時空の中で４ 愛蔵版
 		{0x8955CE0, {0, 0, 0, ULJM05810, 0, "ULJM05810"}},
-		// Fate/EXTRA
-		{0x88B87F0, {0, 6, 0, 0, FNPJH50247, "NPJH50247"}},
 		// 十鬼の絆
 		{0x891AAAC, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // text
 		{0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text

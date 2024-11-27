@@ -274,7 +274,7 @@ namespace
     auto _ = []()
     {
         emfunctionhooks = {
-            //'&' -Sora no Mukou de Sakimasu you ni-
+            // ‘＆’ - 空の向こうで咲きますように -
             {0x46328, {CODEC_UTF8, 1, 0, 0, FBLJM61131, "BLJM61131"}},
             // Dunamis15
             {0x42c90, {CODEC_UTF8, 1, 0, 0, FBLJM61131, "BLJM60347"}},
