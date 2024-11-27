@@ -37,8 +37,7 @@ DWORD WINAPI Pipe(LPVOID)
 
 		*(DWORD *)buffer = GetCurrentProcessId();
 		WriteFile(hookPipe, buffer, sizeof(DWORD), &count, nullptr);
-		WORD hookversion[4] = LUNA_VERSION;
-		WriteFile(hookPipe, hookversion, sizeof(hookversion), &count, nullptr);
+		WriteFile(hookPipe, LUNA_VERSION, sizeof(LUNA_VERSION), &count, nullptr);
 
 		ConsoleOutput(PIPE_CONNECTED);
 		HIJACK();

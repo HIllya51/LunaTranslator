@@ -368,6 +368,30 @@ namespace ppsspp
 			last = s;
 		buffer->from(s);
 	}
+	void ULJM06289(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "#n", 2);
+		StringFilter(buffer, "\x81\x40", 2);
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex("(#[A-Za-z]+\\[(\\d*[.])?\\d+\\])+"), "");
+		buffer->from(s);
+	}
+	namespace
+	{
+		void ULJM05823_1(TextBuffer *buffer, HookParam *hp)
+		{
+			StringFilter(buffer, "#n", 2);
+			auto s = buffer->strA();
+			s = std::regex_replace(s, std::regex("(#[A-Za-z]+\\[(\\d*[.])?\\d+\\])+"), "");
+			buffer->from(s);
+		}
+		void ULJM05823_2(TextBuffer *buffer, HookParam *hp)
+		{
+			auto s = buffer->viewA();
+			if (s.find("#n") != s.npos)
+				return buffer->clear();
+		}
+	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
 		// Shinigami to Shoujo
 		{0x883bf34, {0, 1, 0, 0, ULJS00403_filter, "ULJS00403"}},
@@ -459,6 +483,36 @@ namespace ppsspp
 		{0x880a744, {0, 0, 0, 0, ULJM05943F, "ULJM0630[23]"}}, // ULJM06302 & ULJM06303
 		// アーメン・ノワール ポータブル
 		{0x883b6a8, {0, 0, 0, 0, ULJM05943F, "ULJM06064"}},
+		// デス・コネクション　ポータブル
+		{0x882AEF4, {0, 0, 0, 0, ULJM05823_1, "ULJM05823"}},
+		{0x88B2464, {0, 0, 0, 0, ULJM05823_2, "ULJM05823"}}, // text+name->name
+		// しらつゆの怪
+		{0x888A26C, {0, 0, 0, 0, ULJM06289, "ULJM06289"}},
+		// 新装版クローバーの国のアリス～Wonderful Wonder World～
+		{0x8875E50, {0, 1, 0, 0, 0, "NPJH50894"}},
+		// ダイヤの国のアリス～Wonderful Wonder World～
+		{0x8857E3C, {0, 0, 0, 0, 0, "ULJM06216"}},
+		// ダイヤの国のアリス～ Wonderful Mirror World ～
+		{0x8855AE4, {0, 1, 0, 0, 0, "ULJM06295"}},
+		// ハートの国のアリス～Wonderful Twin World～
+		{0x8881CAC, {0, 1, 0, 0, 0, "NPJH50872"}},
+		// 新装版 ハートの国のアリス～Wonderful Wonder World～
+		{0x886B610, {0, 1, 0, 0, 0, "ULJM06332"}},
+		// S・Y・K ～新説西遊記～ ポータブル
+		{0x88DD918, {0, 0, 0, 0, ULJM05823_2, "ULJM05697"}}, // text+name->name
+		{0x88DA420, {0, 4, 0, 0, ULJM05823_1, "ULJM05697"}},
+		// Glass Heart Princess
+		{0x885FA30, {0, 0, 0, 0, ULJM05823_1, "ULJM06196"}},
+		// Glass Heart Princess:PLATINUM
+		{0x885D4F0, {0, 0, 0, 0, ULJM05823_1, "ULJM06309"}},
+		// ウィル・オ・ウィスプ ポータブル
+		{0x885DD04, {0, 0, 0, 0, ULJM05823_1, "ULJM05447"}},
+		// 華鬼 ～恋い初める刻 永久の印～
+		{0x8829F14, {0, 4, 0, 0, ULJM05823_1, "ULJM05847"}},
+		{0x886D270, {0, 0, 0, 0, ULJM05823_2, "ULJM05847"}},
+		// 華鬼 ～夢のつづき～
+		{0x88406CC, {0, 0, 0, 0, ULJM05823_1, "ULJM06048"}}, // text
+		{0x885B7BC, {0, 0, 0, 0, ULJM05823_1, "ULJM06048"}}, // name+text
 	};
 
 }

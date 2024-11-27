@@ -310,10 +310,9 @@ LunaHost::LunaHost()
         } })
         .detach();
 
-    WORD version[4] = LUNA_VERSION;
     WCHAR vs[32];
 
-    wsprintf(vs, L" | %s v%d.%d.%d", VersionCurrent, version[0], version[1], version[2]);
+    wsprintf(vs, L" | %s v%d.%d.%d", VersionCurrent, LUNA_VERSION[0], LUNA_VERSION[1], LUNA_VERSION[2]);
     title += vs;
     settext(title);
     std::thread([&]()

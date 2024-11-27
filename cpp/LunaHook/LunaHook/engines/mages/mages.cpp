@@ -129,7 +129,7 @@ namespace mages
                 }
                 else if (c == 2)
                 { // line
-                    // do nothing -> back to readChar
+                  // do nothing -> back to readChar
                 }
                 else if (c == 4 || c == 0x15)
                 { // SetColor, EvaluateExpression => SKIP
@@ -273,7 +273,7 @@ namespace hookmages
         buffer->from(s);
     }
 
-    bool MAGES()
+    bool MAGES_text()
     {
 #ifndef _WIN64
         auto dialogSigOffset = 2;
@@ -371,10 +371,10 @@ namespace hookmages
         // hookaddr上是没有重复的，pos上是都能读到但有重复。
         hp.text_fun = SpecialHookMAGES<0>;
         hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-        auto _ = NewHook(hp, "5pb_MAGES");
+        auto _ = NewHook(hp, "MAGES_text");
         hp.address = pos;
         hp.text_fun = SpecialHookMAGES<1>;
-        _ |= NewHook(hp, "5pb_MAGES");
+        _ |= NewHook(hp, "MAGES_text");
         ConsoleOutput("%p %p", hookaddr, pos);
         return _;
 
@@ -417,9 +417,41 @@ namespace hookmages
         hp.address = hookaddr;
         hp.text_fun = SpecialHookMAGES<0>;
         hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-        return NewHook(hp, "5pb_MAGES");
+        return NewHook(hp, "MAGES");
 
 #endif
     }
 
+    void MAGES_mail()
+    {
+#ifndef _WIN64
+        BYTE sig1[] = {
+            0xe8, XX, XX, XX, 0x00, 0x6a, 0x18, 0x50, 0x68, XX, 0x01, 0x00, 0x00, 0xe8, XX4, 0x8b};
+        auto sigsize = sizeof(sig1);
+        auto addr = MemDbg::findBytes(sig1, sizeof(sig1), processStartAddress, processStopAddress);
+        if (!addr)
+        {
+            BYTE sig2[] = {
+                0xe8, XX, XX, XX, 0x00, 0x6a, 0x18, XX, XX, 0xb9, XX, 0x01, 0x00, 0x00, 0xe8, XX4, 0x8b};
+            sigsize = sizeof(sig2);
+            addr = MemDbg::findBytes(sig2, sizeof(sig2), processStartAddress, processStopAddress);
+        }
+        if (!addr)
+            return;
+        addr += sigsize - 6;
+        addr += *(int *)(addr + 1) + 5;
+        HookParam hp;
+        hp.address = addr;
+        hp.text_fun = SpecialHookMAGES<0>;
+        hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
+        NewHook(hp, "MAGES_mail");
+#endif
+    }
+    bool MAGES()
+    {
+        auto succ = MAGES_text();
+        if (succ)
+            MAGES_mail();
+        return succ;
+    }
 }

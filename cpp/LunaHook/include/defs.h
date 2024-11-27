@@ -32,4 +32,5 @@ constexpr auto LUNA_HOOK_DLL = LUNA_HOOK_DLL_64; // .dll but LoadLibrary automat
 constexpr auto LUNA_HOOK_DLL = LUNA_HOOK_DLL_32; // .dll but LoadLibrary automatically adds that
 #endif
 
+extern WORD LUNA_VERSION[4];
 // EOF
