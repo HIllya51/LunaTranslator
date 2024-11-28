@@ -376,6 +376,28 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex("(#[A-Za-z]+\\[(\\d*[.])?\\d+\\])+"), "");
 		buffer->from(s);
 	}
+	void NPJH50380(TextBuffer *buffer, HookParam *hp)
+	{
+		static std::wstring last;
+		static int lastj = 0;
+		auto s = buffer->strW();
+		if (!last.size())
+		{
+			buffer->clear();
+		}
+		else
+		{
+			if (s[0] != last[0])
+				lastj = 0;
+			int j = s.size() - 1;
+			for (; (j >= 0) && (last[j] == s[j]); j--)
+				;
+			j += 1;
+			buffer->from(s.substr(lastj, j - lastj));
+			lastj = j;
+		}
+		last = s;
+	}
 	namespace
 	{
 		void ULJM05823_1(TextBuffer *buffer, HookParam *hp)
@@ -455,7 +477,7 @@ namespace ppsspp
 		{0x8889CCC, {CODEC_UTF8, 1, 0, 0, FNPJH50459, "NPJH50716"}}, // 会有两三条后续文本都被一次性提取到。
 		// マイナスエイト
 		{0x88DC218, {0, 0, 0, 0, FULJM05690, "ULJM06341"}},
-		//ときめきメモリアル4
+		// ときめきメモリアル4
 		{0x899a510, {0, 2, 0, 0, FNPJH50127, "NPJH50127"}},
 		{0x88719dc, {0, 1, 0, 0, FNPJH50127, "NPJH50127"}},
 		// オメルタ～沈黙の掟～ THE LEGACY
@@ -513,6 +535,8 @@ namespace ppsspp
 		// 華鬼 ～夢のつづき～
 		{0x88406CC, {0, 0, 0, 0, ULJM05823_1, "ULJM06048"}}, // text
 		{0x885B7BC, {0, 0, 0, 0, ULJM05823_1, "ULJM06048"}}, // name+text
+		// サモンナイト３
+		{0x89DCF90, {0, 6, 0, 0, NPJH50380, "NPJH50380"}},
 	};
 
 }
