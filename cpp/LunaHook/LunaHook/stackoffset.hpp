@@ -113,6 +113,7 @@ inline uintptr_t regof(regs reg, hook_stack *stack)
 #define ARG1 stack[1]
 #define ARG2 stack[2]
 #define ARG3 stack[3]
+#define ARG4 stack[4]
 #define LASTRETVAL eax
 #define THISCALL __thiscall
 #define THISCALLTHIS ecx
@@ -125,6 +126,7 @@ inline uintptr_t regof(regs reg, hook_stack *stack)
 #define ARG1 rcx
 #define ARG2 rdx
 #define ARG3 r8
+#define ARG4 r9
 #define LASTRETVAL rax
 #define THISCALLTHIS rcx
 #define THISCALLARG1 rdx

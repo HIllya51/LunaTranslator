@@ -335,7 +335,7 @@ void SearchForHooks(SearchParam spUser)
 		initrecords();
 
 		std::vector<uintptr_t> addresses;
-		if( sp.jittype==JITTYPE::PC)
+		if( !sp.isjithook)
 		{
 			if (*sp.boundaryModule) {
 				auto [minaddr,maxaddr]=Util::QueryModuleLimits(GetModuleHandleW(sp.boundaryModule));

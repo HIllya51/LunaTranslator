@@ -16,8 +16,6 @@ namespace
     }
     uintptr_t getDoJitAddress() {
         auto DoJitPtr=getDoJitAddress_();
-        
-        ConsoleOutput("DoJitPtr %p",DoJitPtr);
         if(!DoJitPtr)return 0;
         //<--DoJitPtr
         //0f85 1b050000 // jbe 0x00 ; long jump
@@ -242,7 +240,7 @@ bool rpcs3::attach_function()
     if (DoJitPtr == 0)
         return false;
     unsafeinithooks();
-    spDefault.jittype = JITTYPE::RPCS3;
+    spDefault.isjithook = true;
     spDefault.minAddress = 0;
     spDefault.maxAddress = -1;
     HookParam hp;

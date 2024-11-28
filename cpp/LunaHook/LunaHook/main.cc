@@ -105,21 +105,12 @@ void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T *buffer
 	memcpy(&buffer->hp, &hp, sizeof(hp));
 	WriteFile(hookPipe, buffer, sizeof(TextOutput_T) + len, DUMMY, nullptr);
 }
-
-void ConsoleOutput(LPCSTR text, ...)
+void HostInfo(HOSTINFO type, LPCSTR text, ...)
 {
-	ConsoleOutputNotif buffer;
+	HostInfoNotif buffer;
 	va_list args;
 	va_start(args, text);
-	vsnprintf(buffer.message, MESSAGE_SIZE, text, args);
-	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
-}
-
-void WarningOutput(LPCSTR text, ...)
-{
-	WarningNotif buffer;
-	va_list args;
-	va_start(args, text);
+	buffer.type = type;
 	vsnprintf(buffer.message, MESSAGE_SIZE, text, args);
 	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
 }

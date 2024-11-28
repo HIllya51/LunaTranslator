@@ -83,13 +83,14 @@ struct ThreadParam
     uint64_t ctx;  // The context of the hook: by default the first value on stack, usually the return address
     uint64_t ctx2; // The subcontext of the hook: 0 by default, generated in a method specific to the hook
 };
-typedef void (*ProcessEvent)(DWORD);
-typedef void (*HookInsertHandler)(DWORD, uint64_t, const wchar_t *);
-typedef void (*EmbedCallback)(const wchar_t *, ThreadParam);
+
+typedef void (*ProcessEvent)(DWORD pid);
+typedef void (*HookInsertHandler)(DWORD pid, uint64_t address, const wchar_t *hookcode);
+typedef void (*EmbedCallback)(const wchar_t *text, ThreadParam);
 nlohmann::json config;
 std::map<std::string, std::string> translation;
 std::unordered_set<DWORD> connectedpids;
-void (*Luna_Start)(ProcessEvent Connect, ProcessEvent Disconnect, void *, void *, void *, void *, HookInsertHandler hookinsert, EmbedCallback embed, void *);
+void (*Luna_Start)(ProcessEvent Connect, ProcessEvent Disconnect, void *, void *, void *, void *, HookInsertHandler hookinsert, EmbedCallback embed);
 void (*Luna_Inject)(DWORD pid, LPCWSTR basepath);
 void (*Luna_EmbedSettings)(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, UINT32 keeprawtext, bool fastskipignore);
 void (*Luna_useembed)(ThreadParam, bool use);
@@ -150,8 +151,7 @@ public:
                 std::wstring text = output;
                 auto trans = findtranslation(text);
                 Luna_embedcallback(tp, output, trans.c_str());
-            },
-            0);
+            });
     }
     void run()
     {

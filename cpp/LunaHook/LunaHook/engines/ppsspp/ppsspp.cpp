@@ -65,7 +65,7 @@ struct PPSSPPFunction
 
 namespace
 {
-    uintptr_t findleapushaddr(uintptr_t addr)
+    uintptr_t findleapushalignfuncaddr(uintptr_t addr)
     {
 #ifndef _WIN64
         addr = MemDbg::findPushAddress(addr, processStartAddress, processStopAddress);
@@ -148,7 +148,7 @@ bool InsertPPSSPPHLEHooks()
         auto addr = MemDbg::findBytes(function.pattern, ::strlen(function.pattern), processStartAddress, processStopAddress);
         if (!addr)
             continue;
-        addr = findleapushaddr(addr);
+        addr = findleapushalignfuncaddr(addr);
 
         if (!addr)
             continue;
@@ -268,13 +268,23 @@ uintptr_t getDoJitAddress()
 
 namespace ppsspp
 {
-
+    struct GameInfo
+    {
+        std::string DISC_ID{""};
+        std::string TITLE{""};
+    } game_info;
     bool checkiscurrentgame(const emfuncinfo &em)
     {
         auto wininfos = get_proc_windows();
         for (auto &&info : wininfos)
         {
-            if (std::regex_search(info.title, std::wregex(acastw(em._id))))
+            if (game_info.DISC_ID.size())
+            {
+                std::smatch match;
+                if (std::regex_match(game_info.DISC_ID, match, std::regex(em._id)))
+                    return true;
+            }
+            else if (std::regex_search(info.title, std::wregex(acastw(em._id))))
                 return true;
         }
         return false;
@@ -476,17 +486,61 @@ namespace ppsspp
         }
         return true;
     }
+
+    void Load_PSP_ISO_StringFromFormat()
+    {
+        /*
+        bool Load_PSP_ISO(FileLoader *fileLoader, std::string *error_string) {
+    // Mounting stuff relocated to InitMemoryForGameISO due to HD Remaster restructuring of code.
+
+    std::string sfoPath("disc0:/PSP_GAME/PARAM.SFO");
+    PSPFileInfo fileInfo = pspFileSystem.GetFileInfo(sfoPath.c_str());
+    if (fileInfo.exists) {
+        std::vector<u8> paramsfo;
+        pspFileSystem.ReadEntireFile(sfoPath, paramsfo);
+        if (g_paramSFO.ReadSFO(paramsfo)) {
+            std::string title = StringFromFormat("%s : %s", g_paramSFO.GetValueString("DISC_ID").c_str(), g_paramSFO.GetValueString("TITLE").c_str());
+            INFO_LOG(Log::Loader, "%s", title.c_str());
+            System_SetWindowTitle(title);
+        }
+    }
+
+    ------>StringFromFormat
+        */
+        BYTE sig[] = {
+#ifndef _WIN64
+            0x55, 0x8B, 0xEC, 0x6A, 0xFF, 0x68, XX4, 0x64, 0xA1, 0x00, 0x00, 0x00, 0x00, 0x50, 0x64, 0x89, 0x25, 0x00, 0x00, 0x00, 0x00, 0x83, 0xEC, 0x14, 0x56, 0x8B, 0x75, 0x08, 0x0F, 0x57, 0xC0, 0xC7, 0x45, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x8D, 0x46, 0x10, 0x57, 0x89, 0x45, 0xF0, 0x0F, 0x11, 0x06, 0xC7, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC7, 0x46, 0x14, 0x00, 0x00, 0x00, 0x00, 0xC7, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC7, 0x46, 0x14, 0x0F, 0x00, 0x00, 0x00, 0xC6, 0x06, 0x00, 0xC7, 0x45, 0xFC, 0x00, 0x00, 0x00, 0x00, 0xC7, 0x45, 0xE8, 0x01, 0x00, 0x00, 0x00, 0xE8, XX4, 0x8B, 0xC8, 0x8D, 0x45, 0x10, 0x50, 0x6A, 0x00, 0xFF, 0x75, 0x0C, 0x8B, 0x01, 0x6A, 0x00, 0x6A, 0x00, 0xFF, 0x71, 0x04, 0x83, 0xC8, 0x02, 0x89, 0x4D, 0xE0, 0x50, 0xE8, XX4
+#else
+            0x48, 0x8B, 0xC4, 0x48, 0x89, 0x50, 0x10, 0x48, 0x89, 0x48, 0x08, 0x4C, 0x89, 0x40, 0x18, 0x4C, 0x89, 0x48, 0x20, 0x53, 0x55, 0x56, 0x57, 0x41, 0x56, 0x41, 0x57, 0x48, 0x83, 0xEC, 0x48, 0x48, 0x8B, 0xDA, 0x48, 0x8B, 0xF9, 0x33, 0xED, 0x89, 0x68, 0xB8, 0x0F, 0x57, 0xC0, 0x0F, 0x11, 0x01, 0x48, 0x89, 0x69, 0x10, 0x48, 0xC7, 0x41, 0x18, 0x0F, 0x00, 0x00, 0x00, 0x40, 0x88, 0x29, 0xC7, 0x40, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x4C, 0x8D, 0x70, 0x18, 0xE8, XX4, 0x48, 0x8B, 0xF0, 0x48, 0x8B, 0x08, 0x48, 0x83, 0xC9, 0x02, 0x4C, 0x89, 0x74, 0x24, 0x28, 0x48, 0x89, 0x6C, 0x24, 0x20, 0x4C, 0x8B, 0xCB, 0x45, 0x33, 0xC0, 0x33, 0xD2, 0xE8, XX4
+#endif
+        };
+        auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+        if (!addr)
+            return;
+        HookParam hp;
+        hp.address = addr;
+        hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buff, auto *split)
+        {
+            if (strcmp((char *)stack->ARG2, "%s : %s") != 0)
+                return;
+            game_info.DISC_ID = (char *)stack->ARG3;
+            game_info.TITLE = (char *)stack->ARG4;
+            HostInfo(HOSTINFO::EmuGameName, "%s %s", stack->ARG3, stack->ARG4);
+            jitaddrclear();
+        };
+        NewHook(hp, "PPSSPPGameInfo");
+    }
     bool hookPPSSPPDoJit()
     {
         auto DoJitPtr = getDoJitAddress();
-        if (DoJitPtr == 0)
+        if (!DoJitPtr)
             return false;
-        spDefault.jittype = JITTYPE::PPSSPP;
+        Load_PSP_ISO_StringFromFormat();
+        spDefault.isjithook = true;
         spDefault.minAddress = 0;
         spDefault.maxAddress = -1;
         HookParam hp;
         hp.address = DoJitPtr; // Jit::DoJit
-        ConsoleOutput("DoJitPtr %p", DoJitPtr);
         hp.user_value = (uintptr_t) new uintptr_t;
         hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *, auto *)
         {
@@ -529,7 +583,7 @@ namespace
         auto addr = MemDbg::findBytes(GetPointer, sizeof(GetPointer), processStartAddress, processStopAddress);
         if (!addr)
             return nullptr;
-        addr = findleapushaddr(addr);
+        addr = findleapushalignfuncaddr(addr);
         return (void *)addr;
     }
     bool Replace_memcpy()

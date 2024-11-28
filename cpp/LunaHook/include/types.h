@@ -155,7 +155,7 @@ struct SearchParam
 	wchar_t boundaryModule[MAX_MODULE_SIZE] = {}; // hook all functions within this module (middle priority)
 	wchar_t exportModule[MAX_MODULE_SIZE] = {};	  // hook the exports of this module (highest priority)
 	wchar_t text[PATTERN_SIZE] = {};			  // text to search for
-	JITTYPE jittype;
+	bool isjithook;
 };
 struct InsertPCHooksCmd
 {
@@ -183,16 +183,11 @@ struct FindHookCmd // From host
 	SearchParam sp;
 };
 
-struct ConsoleOutputNotif // From dll
+struct HostInfoNotif // From dll
 {
-	ConsoleOutputNotif(std::string message = "") { strncpy_s(this->message, message.c_str(), MESSAGE_SIZE - 1); }
+	HostInfoNotif(std::string message = "") { strncpy_s(this->message, message.c_str(), MESSAGE_SIZE - 1); }
 	HostNotificationType command = HOST_NOTIFICATION_TEXT;
-	char message[MESSAGE_SIZE] = {};
-};
-struct WarningNotif // From dll
-{
-	WarningNotif(std::string message = "") { strncpy_s(this->message, message.c_str(), MESSAGE_SIZE - 1); }
-	HostNotificationType command = HOST_NOTIFICATION_WARNING;
+	HOSTINFO type;
 	char message[MESSAGE_SIZE] = {};
 };
 

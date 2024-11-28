@@ -36,7 +36,12 @@ enum HostNotificationType
   HOST_NOTIFICATION_RMVHOOK,
   HOST_NOTIFICATION_INSERTING_HOOK,
   HOST_SETTEXTTHREADTYPE,
-  HOST_NOTIFICATION_WARNING
+};
+enum class HOSTINFO
+{
+  Console,
+  Warning,
+  EmuGameName
 };
 #define NEXT_MASK(x)            \
   DUMMY1_##x,                   \

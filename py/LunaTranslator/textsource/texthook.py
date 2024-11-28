@@ -85,7 +85,7 @@ class SearchParam(Structure):
         ("boundaryModule", c_wchar * 120),
         ("exportModule", c_wchar * 120),
         ("text", c_wchar * 30),
-        ("jittype", c_int),
+        ("isjithook", c_bool),
     ]
 
 
@@ -94,7 +94,7 @@ ProcessEvent = CFUNCTYPE(None, DWORD)
 ThreadEvent_maybe_embed = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_bool)
 ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
 OutputCallback = CFUNCTYPE(c_bool, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
-ConsoleHandler = CFUNCTYPE(None, c_wchar_p)
+HostInfoHandler = CFUNCTYPE(None, c_int, c_wchar_p)
 HookInsertHandler = CFUNCTYPE(None, DWORD, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 QueryHistoryCallback = CFUNCTYPE(None, c_wchar_p)
@@ -206,7 +206,6 @@ class texthook(basetext):
             c_void_p,
             c_void_p,
             c_void_p,
-            c_void_p,
         )
         self.Luna_Inject = LunaHost.Luna_Inject
         self.Luna_Inject.argtypes = DWORD, LPCWSTR
@@ -252,10 +251,9 @@ class texthook(basetext):
             ThreadEvent_maybe_embed(self.onnewhook),
             ThreadEvent(self.onremovehook),
             OutputCallback(self.handle_output),
-            ConsoleHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
+            HostInfoHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
             HookInsertHandler(self.newhookinsert),
             EmbedCallback(self.getembedtext),
-            ConsoleHandler(gobject.baseobject.hookselectdialog.warning.emit),
         ]
         self.keepref += procs
         ptrs = [cast(_, c_void_p).value for _ in procs]
@@ -342,7 +340,9 @@ class texthook(basetext):
         self.gameuid = gameuid
         self.detachall()
         _filename, _ = os.path.splitext(os.path.basename(gamepath))
-        sqlitef = gobject.gettranslationrecorddir("{}_{}.sqlite".format(_filename, gameuid))
+        sqlitef = gobject.gettranslationrecorddir(
+            "{}_{}.sqlite".format(_filename, gameuid)
+        )
         if os.path.exists(sqlitef) == False:
             md5 = getfilemd5(gamepath)
             f2 = gobject.gettranslationrecorddir("{}_{}.sqlite".format(_filename, md5))
@@ -396,7 +396,9 @@ class texthook(basetext):
                     injectpids.append(pid)
         if len(injectpids):
             arch = ["32", "64"][self.is64bit]
-            dll = os.path.abspath("./files/plugins/LunaHook/LunaHook{}.dll".format(arch))
+            dll = os.path.abspath(
+                "./files/plugins/LunaHook/LunaHook{}.dll".format(arch)
+            )
             injectdll(injectpids, arch, dll)
 
     @threader
@@ -605,7 +607,7 @@ class texthook(basetext):
         usestruct.maxRecords = 100000
         usestruct.codepage = self.codepage()
         usestruct.boundaryModule = os.path.basename(self.gamepath)
-        usestruct.jittype = 0
+        usestruct.isjithook = False
         return usestruct
 
     @threader

@@ -122,13 +122,16 @@ bool Hook_Network_RoomMember_SendGameInfo()
             //     Network::RoomMember *this,
             //     const AnnounceMultiplayerRoom::GameInfo *game_info)
             game_info = *(GameInfo *)stack->rdx;
-            std::stringstream num;
-            num << std::uppercase
-                << std::hex
-                << std::setw(16)
-                << std::setfill('0')
-                << game_info.id;
-            ConsoleOutput("%s %s %s", game_info.name.c_str(), num.str().c_str(), game_info.version.c_str());
+            if (game_info.id)
+            {
+                std::stringstream num;
+                num << std::uppercase
+                    << std::hex
+                    << std::setw(16)
+                    << std::setfill('0')
+                    << game_info.id;
+                HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), num.str().c_str(), game_info.version.c_str());
+            }
             jitaddrclear();
         };
         return NewHook(hp, "yuzuGameInfo");
@@ -137,15 +140,14 @@ bool Hook_Network_RoomMember_SendGameInfo()
 }
 bool yuzu::attach_function()
 {
-    Hook_Network_RoomMember_SendGameInfo();
     ConsoleOutput("[Compatibility] Yuzu 1616+");
     auto DoJitPtr = getDoJitAddress();
-    if (DoJitPtr == 0)
+    if (!DoJitPtr)
         return false;
-    spDefault.jittype = JITTYPE::YUZU;
+    Hook_Network_RoomMember_SendGameInfo();
+    spDefault.isjithook = true;
     spDefault.minAddress = 0;
     spDefault.maxAddress = -1;
-    ConsoleOutput("DoJitPtr %p", DoJitPtr);
     HookParam hp;
     hp.address = DoJitPtr;
     hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -310,7 +312,7 @@ namespace
         s = std::regex_replace(s, std::regex(R"(#[^\]]*\])"), "");
         s = std::regex_replace(s, std::regex(R"(#[^n]*n)"), "");
         s = std::regex_replace(s, std::regex(u8"　"), "");
-        s = std::regex_replace(s, std::regex(u8R"(Save(.|\s)*データ)"), "");
+        s = std::regex_replace(s, std::regex(u8R"(Save[\s\S]*データ)"), "");
         buffer->from(s);
     }
 
@@ -674,6 +676,16 @@ namespace
         s = std::regex_replace(s, std::regex(R"(#r(.*?)\|(.*?)#)"), "$1");
         strReplace(s, R"(\c)", "");
         strReplace(s, R"(\n)", "");
+        buffer->from(s);
+    }
+    template <int _1>
+    void F010053F0128DC000(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+        auto s = buffer->strA();
+        char __[] = "$1";
+        __[1] += _1 - 1;
+        s = std::regex_replace(s, std::regex(R"(<CLY2>(.*?)<CLNA>([\s\S]*))"), __);
         buffer->from(s);
     }
     namespace
@@ -1062,7 +1074,7 @@ namespace
     {
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"(\[~\])"), "\n");
-        s = std::regex_replace(s, std::regex(R"(rom:(.|\s)*$)"), "");
+        s = std::regex_replace(s, std::regex(R"(rom:[\s\S]*$)"), "");
         s = std::regex_replace(s, std::regex(R"(\[[\w\d]*\[[\w\d]*\].*?\[\/[\w\d]*\]\])"), "");
         s = std::regex_replace(s, std::regex(R"(\[.*?\])"), "");
         static std::string last;
@@ -1204,7 +1216,6 @@ namespace
     template <bool choice>
     void F010027401A2A2000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = std::regex_replace(s, std::wregex(L"\\[dic.*?text="), L"");
         s = std::regex_replace(s, std::wregex(L"\\[|'.*?\\]"), L"");
@@ -1561,7 +1572,7 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"((.|\s)*$)"), L"");
+        s = std::regex_replace(s, std::wregex(LR"([\s\S]*$)"), L"");
         s = std::regex_replace(s, std::wregex(L"\n+"), L" ");
         s = std::regex_replace(s, std::wregex(L"\\s"), L"");
         s = std::regex_replace(s, std::wregex(L"[＀븅]"), L"");
@@ -3443,6 +3454,11 @@ namespace
             // 神凪ノ杜
             {0x8205e150, {CODEC_UTF16, 0, 0x14, 0, F0100B5801D7CE000, "0100B5801D7CE000", "1.0.0"}},
             {0x820e2e6c, {CODEC_UTF16, 0, 0x14, 0, 0, "0100B5801D7CE000", "1.0.0"}},
+            // シェルノサージュ ～失われた星へ捧ぐ詩～ DX
+            {0x801A1140, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, "010053F0128DC000", "1.0.0"}},
+            {0x801A10A4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, "010053F0128DC000", "1.0.0"}},
+            {0x801A04F4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, "010053F0128DC000", "1.0.1"}},
+            {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, "010053F0128DC000", "1.0.1"}},
 
         };
         return 1;

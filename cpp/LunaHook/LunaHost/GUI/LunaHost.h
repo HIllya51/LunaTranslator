@@ -116,7 +116,7 @@ class LunaHost : public mainwindow
     void on_thread_delete(TextThread &thread);
     void on_proc_connect(DWORD pid);
     void on_proc_disconnect(DWORD pid);
-    void on_warning(const std::wstring &);
+    void on_info(HOSTINFO type, const std::wstring &);
 
     void showtext(const std::wstring &text, bool clear);
     void updatelisttext(const std::wstring &text, LONG_PTR data);

@@ -63,8 +63,7 @@ bool vita3k::attach_function()
     auto DoJitPtr = getDoJitAddress();
     if (DoJitPtr == 0)
         return false;
-    ConsoleOutput("DoJitPtr %p", DoJitPtr);
-    spDefault.jittype = JITTYPE::VITA3K;
+    spDefault.isjithook = true;
     spDefault.minAddress = 0;
     spDefault.maxAddress = -1;
     HookParam hp;

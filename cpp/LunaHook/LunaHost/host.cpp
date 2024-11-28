@@ -49,8 +49,8 @@ namespace
 
 	Host::ProcessEventHandler OnConnect, OnDisconnect;
 	Host::ThreadEventHandler OnCreate, OnDestroy;
-	Host::ConsoleHandler OnConsole = 0;
-	Host::ConsoleHandler OnWarning = 0;
+	Host::HostInfoHandler OnHostInfo = 0;
+	bool has_consolethread = false;
 	Host::HookInsertHandler HookInsert = 0;
 	Host::EmbedCallback embedcallback = 0;
 	void RemoveThreads(std::function<bool(ThreadParam)> removeIf)
@@ -104,7 +104,7 @@ namespace
 			WORD hookversion[4];
 			if( ReadFile(hookPipe, hookversion, sizeof(hookversion), &bytesRead, nullptr)){ 
 					if(memcmp(hookversion,LUNA_VERSION,sizeof(hookversion))!=0)
-						Host::Warning(UNMATCHABLEVERSION);
+						Host::InfoOutput(HOSTINFO::Warning, UNMATCHABLEVERSION);
 			} 
 			 
 			while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
@@ -150,14 +150,8 @@ namespace
 				break;
 				case HOST_NOTIFICATION_TEXT:
 				{
-					auto info = *(ConsoleOutputNotif*)buffer;
-					Host::AddConsoleOutput(StringToWideString(info.message));
-				}
-				break;
-				case HOST_NOTIFICATION_WARNING:
-				{
-					auto info = *(WarningNotif*)buffer;
-					Host::Warning(StringToWideString(info.message));
+					auto info = *(HostInfoNotif*)buffer;
+					Host::InfoOutput(info.type, StringToWideString(info.message)); 
 				}
 				break;
 				default:
@@ -225,20 +219,27 @@ namespace Host
 		{
 			OnCreate(textThreadsByParams->try_emplace(console, console, HookParam{}, CONSOLE).first->second);
 			Host::AddConsoleOutput(ProjectHomePage);
+			has_consolethread = true;
 		}
 
 		// CreatePipe();
 	}
-	void StartEx(std::optional<ProcessEventHandler> Connect, std::optional<ProcessEventHandler> Disconnect, std::optional<ThreadEventHandler> Create, std::optional<ThreadEventHandler> Destroy, std::optional<TextThread::OutputCallback> Output, std::optional<ConsoleHandler> console, std::optional<HookInsertHandler> hookinsert, std::optional<EmbedCallback> embed, std::optional<ConsoleHandler> warning)
+	void StartEx(std::optional<ProcessEventHandler> Connect,
+				 std::optional<ProcessEventHandler> Disconnect,
+				 std::optional<ThreadEventHandler> Create,
+				 std::optional<ThreadEventHandler> Destroy,
+				 std::optional<TextThread::OutputCallback> Output,
+				 bool consolethread,
+				 std::optional<HostInfoHandler> hostinfo,
+				 std::optional<HookInsertHandler> hookinsert,
+				 std::optional<EmbedCallback> embed)
 	{
 		Start(Connect.value_or([](auto) {}), Disconnect.value_or([](auto) {}), Create.value_or([](auto &) {}), Destroy.value_or([](auto &) {}), Output.value_or([](auto &, auto &)
 																																								{ return false; }),
-			  !console);
-		if (warning)
-			OnWarning = warning.value();
-		if (console)
-			OnConsole = [=](auto &&...args)
-			{std::lock_guard _(outputmutex);console.value()(std::forward<decltype(args)>(args)...); };
+			  consolethread);
+		if (hostinfo)
+			OnHostInfo = [=](auto &&...args)
+			{std::lock_guard _(outputmutex);hostinfo.value()(std::forward<decltype(args)>(args)...); };
 		if (hookinsert)
 			HookInsert = [=](auto &&...args)
 			{std::lock_guard _(threadmutex);hookinsert.value()(std::forward<decltype(args)>(args)...); };
@@ -403,16 +404,29 @@ namespace Host
 	}
 	void AddConsoleOutput(std::wstring text)
 	{
-		if (OnConsole)
-			OnConsole(std::move(text));
-		else
-			GetThread(console).AddSentence(std::move(text));
+		InfoOutput(HOSTINFO::Console, text);
 	}
-	void Warning(std::wstring text)
+	void InfoOutput(HOSTINFO type, std::wstring text)
 	{
-		if (OnWarning)
-			OnWarning(text);
-		AddConsoleOutput(L"[Warning] " + text);
+		if (OnHostInfo)
+			OnHostInfo(type, std::move(text));
+
+		if (has_consolethread || (type != HOSTINFO::Console))
+		{
+			switch (type)
+			{
+			case HOSTINFO::Warning:
+				text = L"[Warning] " + text;
+				break;
+			case HOSTINFO::EmuGameName:
+				text = L"[Game] " + text;
+				break;
+			}
+			if (has_consolethread)
+				GetThread(console).AddSentence(std::move(text));
+			else if (type != HOSTINFO::Console)
+				OnHostInfo(HOSTINFO::Console, std::move(text));
+		}
 	}
 	bool CheckIsUsingEmbed(ThreadParam tp)
 	{

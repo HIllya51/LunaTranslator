@@ -168,16 +168,8 @@ namespace ppsspp
 			return s;
 		}
 	}
-
+	
 	void ULJM05428(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-	{
-		auto address = PPSSPP::emu_arg(stack)[1];
-		bool haveNamve;
-		auto s = Corda::readBinaryString(address, &haveNamve);
-		*split = haveNamve;
-		buffer->from(s);
-	}
-	void ULJM05054(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		auto address = PPSSPP::emu_arg(stack)[1];
 		bool haveNamve;
@@ -426,10 +418,12 @@ namespace ppsspp
 		{0x0891D72C, {CODEC_UTF8, 0, 0, 0, ULJM06119_filter, "ULJM06119"}},
 		// Princess Evangile
 		{0x88506d0, {CODEC_UTF16, 2, 0, 0, ULJM06036_filter, "ULJM06036"}}, // [0x88506d0(2)...0x088507C0(?)] // name text text (line doubled)
+		// 金色のコルダ３
+		{0x896C3B8, {0, 0, 0, ULJM05428, 0, "ULJM05624"}},
 		// 金色のコルダ2 f
 		{0x89b59dc, {0, 0, 0, ULJM05428, 0, "ULJM05428"}},
 		// 金色のコルダ
-		{0x886162c, {0, 0, 0, ULJM05054, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
+		{0x886162c, {0, 0, 0, ULJM05428, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
 		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},	   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
 		// Sol Trigger
 		{0x8952cfc, {CODEC_UTF8, 0, 0, 0, NPJH50619F, "NPJH50619"}}, // dialog
