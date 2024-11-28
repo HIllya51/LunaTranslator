@@ -909,24 +909,6 @@
 			}
 		}
 	},
-	"dev_duckduckgo": {
-		"args": {
-			"usingstream": true,
-			"use_custom_prompt": false,
-			"custom_prompt": ""
-		},
-		"argstype": {
-			"usingstream": {
-				"name": "流式输出",
-				"type": "switch"
-			},
-			"custom_prompt": {
-				"name": "自定义_promt",
-				"type": "multiline",
-				"refswitch": "use_custom_prompt"
-			}
-		}
-	},
 	"dev_chatgpt_mirror": {
 		"args": {
 			"target_url": "https://chatgpt.com/",
