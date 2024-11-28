@@ -167,6 +167,12 @@ function getcurrlang(url) {
 function switchlang(lang) {
     window.location.href = window.location.href.replace('/' + currentlang + '/', '/' + lang + '/')
 }
+function browserlang() {
+    let l = navigator.language
+    if (l.includes('-')) l = l.split('-')[0]
+    if (navitexts[l]) return l
+    return 'en'
+}
 window.onpopstate = function (event) {
     let url = window.location.href;
     if (url.endsWith('.redirect')) {
@@ -174,7 +180,7 @@ window.onpopstate = function (event) {
         return
     }
     if (url.endsWith('/#/')) {
-        let lang = window.localStorage.currentlang ? window.localStorage.currentlang : 'zh'
+        let lang = window.localStorage.currentlang ? window.localStorage.currentlang : browserlang()
         window.location.href += lang + '/'
         return
     }
