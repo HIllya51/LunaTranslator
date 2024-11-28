@@ -26,7 +26,7 @@ bool VALKYRIA::attach_function()
     auto str = buffer->strA();
     if (str == "\\r" || str == "\\R")
     {
-      buffer->from_cs("\n");
+      buffer->from("\n");
     }
     //   switch ( v12 )
     // {

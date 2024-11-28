@@ -26,7 +26,7 @@ namespace
       return;
     if (strlen((char *)Src) < Size - 4)
       return;
-    buffer->from_cs((char *)Src);
+    buffer->from((char *)Src);
     // ConsoleOutput(WideStringToString(StringToWideString((char*)Src,936).value()).c_str());
     // std::string xx;
     // for(int i=0;i<*len;i++){

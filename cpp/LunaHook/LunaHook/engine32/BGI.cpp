@@ -553,7 +553,7 @@ bool InsertBGIDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
 
         DWORD retaddr = s->stack[0]; // retaddr
         *role = Engine::ScenarioRole;
-        buffer->from_cs((LPCSTR)s->stack[textIndex_]);
+        buffer->from((LPCSTR)s->stack[textIndex_]);
         return;
       }
 
@@ -619,7 +619,7 @@ bool InsertBGIDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
         break;
       }
 
-      buffer->from_cs((LPCSTR)s->stack[textIndex_]);
+      buffer->from((LPCSTR)s->stack[textIndex_]);
     }
 
   }
@@ -1590,7 +1590,7 @@ bool InsertBGI4Hook()
     {
       // [240726][1282405][HOOKSOFT] シークレットラブ（仮）
       // 这作case 1仅当快进时才有文本,其他的在XXXXX790上
-      buffer->from_cs((wchar_t *)stack->stack[2]);
+      buffer->from((wchar_t *)stack->stack[2]);
     }
   };
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;

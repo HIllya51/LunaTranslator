@@ -336,7 +336,7 @@ namespace
           //  if (::strlen(text) < NameCapacity
           //      && text[NameCapacity - 1] == 0 && text[NameCapacity])
           //    *role = Engine::NameRole;
-          b->from_cs(text);
+          b->from(text);
         }
         void dispatchText2(LPSTR text, bool paddingSpace, std::string newData)
         {
@@ -710,7 +710,7 @@ namespace
         auto arg = (HookArgument *)argaddr;
         if (Engine::isAddressReadable((argaddr + textOffset_)) == false)
         {
-          buffer->from_cs((LPSTR)s->stack[2]);
+          buffer->from((LPSTR)s->stack[2]);
           return;
         }
         LPSTR textAddress = (LPSTR) * (DWORD *)(argaddr + textOffset_),

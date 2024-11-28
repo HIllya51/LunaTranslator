@@ -166,7 +166,7 @@ inline DWORD MajiroNewFontSplit(const DWORD *arg) // arg is supposed to be a str
 void SpecialHookMajiro(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   DWORD arg3 = stack->stack[3]; // text
-  buffer->from_cs((LPCSTR)arg3);
+  buffer->from((LPCSTR)arg3);
   // IsBadReadPtr is not needed for old Majiro game.
   // I am not sure if it is needed by new Majiro game.
   if (hp->user_value) { // new majiro
@@ -238,7 +238,7 @@ bool InsertMajiroHook3x() {
   //私が好きなら「好き」って言って！
   hp.text_fun= [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
     auto str=(char*)stack->ecx;
-    buffer->from_cs(str);
+    buffer->from(str);
     if((str[0]==0x81)&&(str[1]==0x79))*split=0;
     else *split=1;
      

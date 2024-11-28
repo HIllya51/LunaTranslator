@@ -175,7 +175,7 @@ static void SpecialHookExp(hook_stack *stack, HookParam *hp, TextBuffer *buffer,
        lasttext = text; // mov edx,dword ptr ds:[eax]
         //*len = arg3 - 1; // the last char is the '\0', so -1, but this value is not reliable
         
-        buffer->from_cs((char*)text);
+        buffer->from((char*)text);
         // Registers are not used as split as all of them are floating at runtime
         //*split = argof(4, esp_base); // arg4, always -8, this will merge all threads and result in repetition
         *split = stack->stack[7]; // reduce repetition, but still have sub-text repeat

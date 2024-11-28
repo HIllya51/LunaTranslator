@@ -1080,7 +1080,7 @@ namespace
           else if (split >= 2 && split <= 0x14 && split != 3 && split != 0xb || split == 0x22)
             *role = Engine::ScenarioRole;
         }
-        buffer->from_cs(arg->text);
+        buffer->from(arg->text);
       }
       void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {

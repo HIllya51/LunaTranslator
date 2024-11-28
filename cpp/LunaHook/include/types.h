@@ -237,7 +237,7 @@ struct TextBuffer
 	BYTE *const buff;
 	size_t size;
 	template <typename CharT>
-	void from_cs(const CharT *c)
+	void from(const CharT *c)
 	{
 		if (!c)
 			return;
@@ -250,8 +250,8 @@ struct TextBuffer
 		size = min(TEXT_BUFFER_SIZE, strSize(c));
 		memcpy(buff, c.data(), size);
 	}
-	template <typename CharT>
-	void from(const CharT ptr, size_t t)
+	template <typename AddrT>
+	void from(const AddrT ptr, size_t t)
 	{
 		if (!ptr || !t)
 			return;

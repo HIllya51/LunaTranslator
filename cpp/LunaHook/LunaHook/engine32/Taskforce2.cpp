@@ -207,7 +207,7 @@ namespace
         {
           sig = 0
         }; // split not used
-        buffer->from_cs(text);
+        buffer->from(text);
       }
       void hookafter(hook_stack *s, TextBuffer buffer)
       {

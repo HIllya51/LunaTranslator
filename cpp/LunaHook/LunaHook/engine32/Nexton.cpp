@@ -189,7 +189,7 @@ namespace Private {
     else if (ins == 0x5f) // 0047D5A4   5F               POP EDI
       *role = Engine::NameRole;
        
-     buffer->from_cs(text);
+     buffer->from(text);
   }
 } // namespace Private
 

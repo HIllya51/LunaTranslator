@@ -30,7 +30,7 @@ namespace
     hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       if (stack->retaddr == (DWORD)-1){
-        buffer->from_cs((char *)stack->rax);
+        buffer->from((char *)stack->rax);
       }
     };
     return NewHook(hp, "Kincaid");

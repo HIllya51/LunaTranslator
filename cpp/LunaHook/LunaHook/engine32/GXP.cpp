@@ -351,7 +351,7 @@ namespace
         auto text = arg->getText();
         if (isBadText(text))
           return;
-        buffer->from_cs(text);
+        buffer->from(text);
       }
       void hook2a(hook_stack *s, TextBuffer buffer)
       {
@@ -444,7 +444,7 @@ namespace
         auto text = arg->getText();
         if (isBadText(text))
           return;
-        buffer->from_cs(text);
+        buffer->from(text);
       }
       void hook2a(hook_stack *s, TextBuffer buffer)
       {

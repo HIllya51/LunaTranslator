@@ -262,7 +262,7 @@ namespace
         return;
 
       *role = Engine::OtherRole;
-      buffer->from_cs(text);
+      buffer->from(text);
     }
     void afterAgsSpriteCreateTextExW(hook_stack *s, TextBuffer buffer)
     {
@@ -298,7 +298,7 @@ namespace
           *role = Engine::ScenarioRole;
           break;
         }
-      buffer->from_cs(text);
+      buffer->from(text);
     }
     void afterAgsSpriteCreateTextW(hook_stack *s, TextBuffer buffer)
     {
@@ -341,7 +341,7 @@ namespace
           *role = Engine::ScenarioRole;
           break;
         }
-      buffer->from_cs(text);
+      buffer->from(text);
     }
   }
   // jichi 7/26/2015: Backport logic in vnragent to vnrhook

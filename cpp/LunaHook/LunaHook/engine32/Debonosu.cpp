@@ -19,7 +19,7 @@ namespace
     // hp->type ^= EXTERN_HOOK;
     hp->text_fun = nullptr;
     *split = FIXED_SPLIT_VALUE;
-    buffer->from_cs((char *)*(DWORD *)(stack->base + hp->offset));
+    buffer->from((char *)*(DWORD *)(stack->base + hp->offset));
   }
   void embed_fun(hook_stack *s, TextBuffer buffer)
   {

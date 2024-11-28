@@ -34,7 +34,7 @@ namespace
 			else
 				hp->type &= ~EMBED_ABLE;
 			text = embedable + 1;
-			buffer->from_cs(text);
+			buffer->from(text);
 		}
 	}
 	std::wstring parseafter(std::wstring_view view)

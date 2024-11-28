@@ -139,7 +139,7 @@ namespace
     {
       auto str = (wchar_t *)stack->ebx;
       *split = (wcschr(str, 0x3010) != nullptr) && (wcschr(str, 0x3011) != nullptr);
-      buffer->from_cs(str);
+      buffer->from(str);
     };
     hp.offset = get_reg(regs::ebx);
     return NewHook(hp, "tkbl");

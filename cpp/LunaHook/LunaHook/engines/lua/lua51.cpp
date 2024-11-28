@@ -14,7 +14,7 @@ bool lua51::attach_function() {
     hp.text_fun=[](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
       auto text=(char*)stack->ARG2;
       *split=all_ascii(text);
-      buffer->from_cs(text);
+      buffer->from(text);
     };
     return NewHook(hp,"lua51");
 } 

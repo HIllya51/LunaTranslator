@@ -576,7 +576,7 @@ namespace
           // 004B521B   33ED             XOR EBP,EBP
           *role = s->stack[5] == 0 ? Engine::NameRole : Engine::ScenarioRole;
         }
-        buffer->from_cs(text);
+        buffer->from(text);
       }
 
       void hookAfterCaller(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)

@@ -287,7 +287,7 @@ bool InsertNeXASHookA()
         else
           v9 = *(const unsigned __int8 **)(v1 + 268);
 
-        buffer->from_cs((char *)v9);
+        buffer->from((char *)v9);
       };
       if (NewHook(hp, "NeXAS_1"))
         return true;
@@ -398,7 +398,7 @@ bool InsertNeXASHookW()
       else
         v9 = *(const unsigned __int8 **)(v1 + off2);
 
-      buffer->from_cs((char *)v9);
+      buffer->from((char *)v9);
       if (((nexassomeinfo *)hp->user_value)->split == 0)
         ((nexassomeinfo *)hp->user_value)->split = stack->stack[1];
       *split = std::abs((long long)((nexassomeinfo *)hp->user_value)->split - (long long)stack->stack[1]) < 0x10;
@@ -464,7 +464,7 @@ namespace
     hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       auto a2 = (TextUnionA *)stack->stack[1]; // std::string*
-      buffer->from_cs(a2->getText());
+      buffer->from(a2->getText());
     };
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {

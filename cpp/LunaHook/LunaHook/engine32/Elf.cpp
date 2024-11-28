@@ -234,7 +234,7 @@ namespace
           auto text = arg->scenarioText;
           if (!Engine::isAddressReadable(text))
             return;
-          buffer->from_cs(text);
+          buffer->from(text);
           return;
           // data_ = q->dispatchTextASTD(text, role, sig);
           // scenarioArg_ = arg;
@@ -245,7 +245,7 @@ namespace
         {
           *role = Engine::NameRole;
           auto text = arg->nameText;
-          buffer->from_cs(text);
+          buffer->from(text);
           return;
           //  ::memcpy(text, newData.constData(), qMin(oldData.size(), newData.size()));
           // int left = oldData.size() - newData.size();

@@ -147,7 +147,7 @@ namespace
       // Still extract the first text
       // hp->type ^= EXTERN_HOOK;
       char *str = *(char **)(stack->base + hp->offset);
-      buffer->from_cs(str);
+      buffer->from(str);
       *split = 0; // 8/3/2014 jichi: use return address as split
     }
     else
@@ -1605,7 +1605,7 @@ namespace
         if (!Engine::isAddressReadable(text) || !*text || ::strlen(text) <= 2) // do not translate single character
           return;
         *role = Engine::OtherRole;
-        buffer->from_cs(text);
+        buffer->from(text);
       }
 
     } // namespace Private

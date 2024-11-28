@@ -75,7 +75,7 @@ bool Moonstone::attach_function()
   {
     if (stack->edi != 0)
       return;
-    buffer->from_cs((char *)stack->edx);
+    buffer->from((char *)stack->edx);
   };
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {

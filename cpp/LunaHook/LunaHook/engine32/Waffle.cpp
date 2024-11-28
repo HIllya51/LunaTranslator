@@ -187,7 +187,7 @@ namespace
         // DOUT(retaddr);
 
         // auto sig = Engine::hashThreadSignature(role, reladdr);
-        buffer->from_cs(arg->getText());
+        buffer->from(arg->getText());
       }
       void hookafter(hook_stack *s, TextBuffer buffer)
       {

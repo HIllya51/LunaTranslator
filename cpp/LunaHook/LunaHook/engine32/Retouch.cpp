@@ -5,7 +5,7 @@ namespace { // unnamed
 
 void SpecialHookRetouch1(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 { 
-  buffer->from_cs((char*)stack->stack[1]);
+  buffer->from((char*)stack->stack[1]);
   *split =
     stack->eax == 0 ? FIXED_SPLIT_VALUE * 2 : // name
     stack->ebx == 0 ? FIXED_SPLIT_VALUE * 1 : // scenario

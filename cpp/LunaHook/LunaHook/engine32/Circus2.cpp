@@ -158,7 +158,7 @@ namespace
         //*(BYTE *)(retaddr + 3) == 0xe9 // old name
         //? Engine::NameRole : // retaddr+3 is jmp
         // Engine::ScenarioRole;
-        buffer->from_cs(trimmedText);
+        buffer->from(trimmedText);
       }
 
       // Alternatively, using the following pattern bytes also works:

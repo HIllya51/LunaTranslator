@@ -131,7 +131,7 @@ static void SpecialGCHookVanillaware(hook_stack *stack, HookParam *hp, TextBuffe
   if (lasttext != text && *text && !_vanillawaregarbage(text)) {
     lasttext = text;
     *split = stack->ecx;
-    buffer->from_cs(text);
+    buffer->from(text);
     //*split = FIXED_SPLIT_VALUE;
   }
 }

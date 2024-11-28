@@ -181,7 +181,7 @@ namespace
     if (!text)
       return;
     *split = *(DWORD *)arg1;
-    buffer->from_cs(text);
+    buffer->from(text);
   }
   struct HookArgument
   {
@@ -214,7 +214,7 @@ namespace
       return;
     trimmedText = _escudeltrim(arg->text);
     *role = arg->role();
-    buffer->from_cs(trimmedText);
+    buffer->from(trimmedText);
   }
   void embed_fun(hook_stack *s, TextBuffer buffer)
   {

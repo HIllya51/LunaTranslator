@@ -769,7 +769,7 @@ namespace
         if (!text || !*text)
           return;
         *split = Engine::ChoiceRole;
-        buffer->from_cs(text);
+        buffer->from(text);
       }
       void hookafter(hook_stack *s, TextBuffer buffer)
       {
@@ -969,7 +969,7 @@ namespace
     if (!text || ::strlen(text) <= 2)
       return;
     *split = Engine::OtherRole;
-    buffer->from_cs(text);
+    buffer->from(text);
   }
   void hookafter(hook_stack *s, TextBuffer buffer)
   {

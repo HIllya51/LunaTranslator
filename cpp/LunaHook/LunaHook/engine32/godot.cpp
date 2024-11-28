@@ -186,7 +186,7 @@ struct ItemText : public Item {
       auto v471= (DWORD*)stack->eax;
       auto v481 = *v471;
       auto ptr=*(WCHAR**)(v481 + 28);
-      buffer->from_cs(ptr);
+      buffer->from(ptr);
   };
   
     return NewHook(hp, "godot35");

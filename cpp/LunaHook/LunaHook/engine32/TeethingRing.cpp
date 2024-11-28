@@ -40,7 +40,7 @@ bool TeethingRing_attach_function()
 
         case 16:
           auto v4 = (char *)(*(int(__thiscall **)(void *, DWORD))(*(DWORD *)_this + 60))(_this, a2[1]);
-          buffer->from_cs(v4);
+          buffer->from(v4);
         }
       }
     }
@@ -96,7 +96,7 @@ bool TeethingRing_attach_function2()
       v16 = (DWORD *)*v14;
     auto a2 = stack->ARG1;
     *split = (DWORD)_this;
-    buffer->from_cs((char *)((DWORD)v16 + a2));
+    buffer->from((char *)((DWORD)v16 + a2));
   };
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
