@@ -392,11 +392,16 @@ void TextHook::Send(uintptr_t lpDataBase)
 		if (canembed && (check_embed_able(tp)))
 		{
 			auto lpCountsave = buff.size;
+			auto zeros = 1;
+			if (hp.type & CODEC_UTF16)
+				zeros = 2;
+			else if (hp.type & CODEC_UTF32)
+				zeros = 4;
 			if (waitfornotify(&buff, tp))
 			{
 				if (hp.type & EMBED_AFTER_NEW)
 				{
-					auto size = max(lpCountsave, buff.size + 1);
+					auto size = max(lpCountsave, buff.size + zeros);
 					auto _ = new char[size];
 					memcpy(_, buff.buff, buff.size);
 					memset(_ + buff.size, 0, size - buff.size);
@@ -405,11 +410,7 @@ void TextHook::Send(uintptr_t lpDataBase)
 				else if (hp.type & EMBED_AFTER_OVERWRITE)
 				{
 					memcpy((void *)lpDataIn, buff.buff, buff.size);
-					auto zeros = 1;
-					if (hp.type & CODEC_UTF16)
-						zeros = 2;
-					else if (hp.type & CODEC_UTF32)
-						zeros = 4;
+
 					memset((char *)lpDataIn + buff.size, 0, max(lpCountsave, zeros));
 				}
 				else if (hp.embed_fun)

@@ -1593,8 +1593,7 @@ bool InsertBGI4Hook()
       buffer->from((wchar_t *)stack->stack[2]);
     }
   };
-  hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
-  hp.embed_hook_font = F_TextOutW | F_GetTextExtentPoint32W;
+  hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
   hp.filter_fun = BGI7Filter;
   hp.offset = get_stack(2);
   ConsoleOutput("BGI4");

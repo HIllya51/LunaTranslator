@@ -14,6 +14,7 @@
 #include "engine64/UnrealEngine.h"
 #include "engine64/TYPEMOON.h"
 #include "engine64/Kincaid.h"
+#include "engine64/BGI.h"
 #include "engine64/LightVN.h"
 #include "engine64/yuzu.h"
 #include "engine64/Ryujinx.h"
@@ -49,5 +50,6 @@ std::vector<ENGINE *> check_engines()
         new Kincaid,
         new lua51,
         new MKXPZ,
+        new BGI,
     };
 }
