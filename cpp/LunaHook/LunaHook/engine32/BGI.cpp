@@ -1397,24 +1397,14 @@ bool InsertBGI3Hook()
 
 void BGI7Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
   CharFilter(buffer, L'\x0001');
   CharFilter(buffer, L'\x0002');
   CharFilter(buffer, L'\x0003');
   CharFilter(buffer, L'\x0004');
   CharFilter(buffer, L'\x0005');
   CharFilter(buffer, L'\x000A');
-  if (text[0] == L'\u3000')
-  {
-    buffer->size -= 2;
-    ::memmove(text, text + 1, buffer->size);
-  }
-  CharReplacer(buffer, L'\u3000', L' '); // IDSP
-
-  if (cpp_wcsnstr(text, L"<", buffer->size / sizeof(wchar_t)))
-  {
-    StringFilterBetween(buffer, L"<", 1, L">", 1);
-  }
+  CharFilter(buffer, L'▼');
+  StringFilterBetween(buffer, L"<", 1, L">", 1);
 }
 
 bool InsertBGI7Hook()
