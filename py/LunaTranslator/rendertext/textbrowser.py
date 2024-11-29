@@ -1,7 +1,7 @@
 from qtsymbols import *
 from myutils.config import globalconfig, static_data
 from rendertext.somefunctions import dataget
-import gobject, functools, importlib, winsharedutils
+import gobject, functools, importlib, winsharedutils, uuid
 from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
@@ -22,10 +22,8 @@ class Qlabel_c(QLabel):
             if self.rect().contains(event.pos()):
                 try:
                     if self.pr:
-                        if event.button() == Qt.MouseButton.RightButton:
-                            self.callback(True)
-                        else:
-                            self.callback(False)
+                        if event.button() == Qt.MouseButton.LeftButton:
+                            self.callback()
                 except:
                     print_exc()
             self.pr = False
@@ -102,18 +100,26 @@ class TextBrowser(QWidget, dataget):
         curr = self.textbrowser.textCursor().selectedText()
         if not curr:
             return
-        menu = QMenu(self)
+        menu = QMenu(gobject.baseobject.commonstylebase)
 
         search = LAction(("查词"))
+        translate = LAction(("翻译"))
+        tts = LAction(("朗读"))
         copy = LAction(("复制"))
-
         menu.addAction(search)
+        menu.addAction(translate)
+        menu.addAction(tts)
+        menu.addSeparator()
         menu.addAction(copy)
         action = menu.exec(self.mapToGlobal(p))
         if action == search:
-            gobject.baseobject.searchwordW.search_word.emit(curr, False)
+            gobject.baseobject.searchwordW.search_word.emit(curr)
         elif action == copy:
             winsharedutils.clipboard_set(curr)
+        elif action == tts:
+            gobject.baseobject.read_text(curr)
+        elif action == translate:
+            gobject.baseobject.textgetmethod(curr, False)
 
     def __init__(self, parent) -> None:
         super().__init__(parent)

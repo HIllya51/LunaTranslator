@@ -689,6 +689,13 @@ class MAINUI:
         self.audioplayer.timestamp = uuid.uuid4()
         reader.read(text2, force, self.audioplayer.timestamp)
 
+    @tryprint
+    def read_text(self, text):
+        if not self.reader:
+            return
+        self.audioplayer.timestamp = uuid.uuid4()
+        self.reader.read(text, True, self.audioplayer.timestamp)
+
     def readcurrent(self, force=False, needresult=False):
         if needresult:
             text = self.ttsrepair(self.currentread, self.__usewhich())
@@ -941,19 +948,16 @@ class MAINUI:
         )
 
     @threader
-    def clickwordcallback(self, word, append):
+    def clickwordcallback(self, word):
         if globalconfig["usewordorigin"] == False:
             word = word["orig"]
         else:
             word = word.get("origorig", word["orig"])
 
         if globalconfig["usecopyword"]:
-            if append:
-                winsharedutils.clipboard_set(winsharedutils.clipboard_get() + word)
-            else:
-                winsharedutils.clipboard_set(word)
+            winsharedutils.clipboard_set(word)
         if globalconfig["usesearchword"]:
-            self.searchwordW.search_word.emit(word, append)
+            self.searchwordW.search_word.emit(word)
 
     def __dontshowintaborsetbackdrop(self, widget):
         window_flags = widget.windowFlags()

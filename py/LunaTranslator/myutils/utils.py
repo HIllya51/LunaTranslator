@@ -920,6 +920,18 @@ def createurl(url: str):
     return url
 
 
+def create_langmap(langmap):
+    _ = dict(
+        zip(
+            [_["code"] for _ in static_data["lang_list_all"]],
+            [_["code"] for _ in static_data["lang_list_all"]],
+        )
+    )
+    _.update({"cht": "zh", "auto": "auto"})
+    _.update(langmap)
+    return _
+
+
 def createenglishlangmap():
     mp = dict(
         zip(

@@ -846,7 +846,7 @@ class DynamicTreeModel(QStandardItemModel):
         if not self.data(index, isWordNode):
             return
         gobject.baseobject.searchwordW.search_word.emit(
-            self.itemFromIndex(index).text(), False
+            self.itemFromIndex(index).text()
         )
 
 
@@ -976,7 +976,7 @@ class showdiction(LMainWindow):
 
 
 class searchwordW(closeashidewindow):
-    search_word = pyqtSignal(str, bool)
+    search_word = pyqtSignal(str)
     show_dict_result = pyqtSignal(float, str, str)
     search_word_in_new_window = pyqtSignal(str)
 
@@ -1106,7 +1106,9 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(searchbutton)
 
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
-        soundbutton.clicked.connect(self.tts_for_searched_word)
+        soundbutton.clicked.connect(
+            lambda: gobject.baseobject.read_text(self.searchtext.text())
+        )
         soundbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         soundbutton.customContextMenuRequested.connect(self.showmenu_auto_sound)
         self.soundbutton = soundbutton
@@ -1141,12 +1143,12 @@ class searchwordW(closeashidewindow):
         self.tabks = []
         self.setCentralWidget(ww)
         self.textOutput = auto_select_webview(self, True)
-        self.textOutput.add_menu(
-            0, _TR("查词"), lambda w: self.search_word.emit(w, False)
-        )
+        self.textOutput.add_menu(0, _TR("查词"), self.search_word.emit)
         self.textOutput.add_menu(
             1, _TR("在新窗口中查词"), threader(self.search_word_in_new_window.emit)
         )
+        self.textOutput.add_menu(2, _TR("翻译"), gobject.baseobject.textgetmethod)
+        self.textOutput.add_menu(3, _TR("朗读"), gobject.baseobject.read_text)
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
@@ -1181,13 +1183,6 @@ class searchwordW(closeashidewindow):
             self.ankiwindow.hide()
         self.isfirstshowanki = False
 
-    def tts_for_searched_word(self):
-        if gobject.baseobject.reader:
-            gobject.baseobject.audioplayer.timestamp = uuid.uuid4()
-            gobject.baseobject.reader.read(
-                self.searchtext.text(), True, gobject.baseobject.audioplayer.timestamp
-            )
-
     def generate_dictionarys(self):
         res = []
         tabks = []
@@ -1206,13 +1201,11 @@ class searchwordW(closeashidewindow):
             res.insert(idx, {"dict": k, "content": v})
         return res
 
-    def __click_word_search_function(self, word, append):
+    def __click_word_search_function(self, word):
         self.showNormal()
         if self.state != 2:
             return
         word = word.strip()
-        if append:
-            word = self.searchtext.text() + word
         self.searchtext.setText(word)
 
         self.search(word)
@@ -1263,7 +1256,7 @@ class searchwordW(closeashidewindow):
         if word == "":
             return
         if globalconfig["is_search_word_auto_tts"]:
-            self.tts_for_searched_word()
+            gobject.baseobject.read_text(self.searchtext.text())
         self.ankiwindow.reset(word)
         for i in range(self.tab.count()):
             self.tab.removeTab(0)

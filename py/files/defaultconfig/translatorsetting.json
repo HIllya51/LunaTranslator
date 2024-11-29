@@ -90,20 +90,6 @@
 			}
 		}
 	},
-	"feishu": {
-		"args": {
-			"app_id": "",
-			"app_secret": ""
-		},
-		"argstype": {
-			"app_id": {
-				"type": "textlist"
-			},
-			"app_secret": {
-				"type": "textlist"
-			}
-		}
-	},
 	"caiyunapi": {
 		"args": {
 			"Token": ""
@@ -277,95 +263,6 @@
 			}
 		}
 	},
-	"txhunyuan": {
-		"args": {
-			"secret_id": "",
-			"secret_key": "",
-			"Temperature": 0.3,
-			"top_p": 0.3,
-			"model": "hunyuan-lite",
-			"context_num": 0,
-			"use_user_prompt": false,
-			"user_prompt": "",
-			"user_user_prompt": "{sentence}",
-			"use_user_user_prompt": false,
-			"usingstream": true,
-			"other_args": "{}",
-			"use_other_args": false,
-			"s": ""
-		},
-		"argstype": {
-			"other_args": {
-				"type": "multiline",
-				"refswitch": "use_other_args",
-				"name": "其他参数"
-			},
-			"s": {
-				"type": "split",
-				"rank": 2.5
-			},
-			"secret_id": {
-				"rank": 0,
-				"name": "SecretId",
-				"type": "textlist"
-			},
-			"secret_key": {
-				"rank": 1,
-				"name": "SecretKey",
-				"type": "textlist"
-			},
-			"model": {
-				"rank": 2,
-				"type": "lineedit_or_combo",
-				"list": [
-					"hunyuan-lite",
-					"hunyuan-turbo",
-					"hunyuan-pro",
-					"hunyuan-standard",
-					"hunyuan-standard-256k",
-					"hunyuan-role",
-					"hunyuan-functioncall",
-					"hunyuan-code"
-				]
-			},
-			"top_p": {
-				"type": "spin",
-				"min": 0,
-				"max": 1,
-				"step": 0.01
-			},
-			"usingstream": {
-				"name": "流式输出",
-				"type": "switch",
-				"rank": 3
-			},
-			"user_prompt": {
-				"name": "自定义_system prompt",
-				"type": "multiline",
-				"refswitch": "use_user_prompt",
-				"rank": 5
-			},
-			"user_user_prompt": {
-				"name": "自定义_user message",
-				"refswitch": "use_user_user_prompt",
-				"rank": 5.1
-			},
-			"context_num": {
-				"name": "附带上下文个数",
-				"type": "intspin",
-				"min": 0,
-				"max": 99999,
-				"step": 1,
-				"rank": 4.9
-			},
-			"Temperature": {
-				"type": "spin",
-				"min": 0,
-				"max": 1,
-				"step": 0.1
-			}
-		}
-	},
 	"claude": {
 		"args": {
 			"BASE_URL": "https://api.anthropic.com",
@@ -379,8 +276,6 @@
 			"流式输出": true,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
-			"other_args": "{}",
-			"use_other_args": false,
 			"s": "",
 			"s2": "",
 			"prefill": "",
@@ -393,11 +288,6 @@
 			},
 			"prefill_use": {
 				"type": "switch"
-			},
-			"other_args": {
-				"type": "multiline",
-				"refswitch": "use_other_args",
-				"name": "其他参数"
 			},
 			"user_user_prompt": {
 				"name": "自定义_user message",
@@ -577,110 +467,6 @@
 			}
 		}
 	},
-	"baiduqianfan": {
-		"args": {
-			"model": "ernie-4.0-8k",
-			"context_num": 0,
-			"API_KEY": "",
-			"SECRET_KEY": "",
-			"use_user_prompt": false,
-			"user_prompt": "",
-			"usingstream": true,
-			"Temperature": 0.3,
-			"top_p": 0.3,
-			"max_tokens": 1024,
-			"frequency_penalty": 0,
-			"user_user_prompt": "{sentence}",
-			"use_user_user_prompt": false,
-			"other_args": "{}",
-			"use_other_args": false,
-			"s": ""
-		},
-		"argstype": {
-			"other_args": {
-				"type": "multiline",
-				"refswitch": "use_other_args",
-				"name": "其他参数"
-			},
-			"user_user_prompt": {
-				"name": "自定义_user message",
-				"refswitch": "use_user_user_prompt",
-				"rank": 5.1
-			},
-			"s": {
-				"type": "split",
-				"rank": 2.5
-			},
-			"API_KEY": {
-				"rank": 0,
-				"name": "API Key",
-				"type": "textlist"
-			},
-			"SECRET_KEY": {
-				"rank": 1,
-				"name": "Secret Key",
-				"type": "textlist"
-			},
-			"model": {
-				"rank": 2,
-				"type": "lineedit_or_combo",
-				"list": [
-					"ernie-4.0-8k",
-					"ernie-4.0-turbo-8k",
-					"ernie-3.5-128k",
-					"ernie-3.5-8k",
-					"ernie-speed-pro-128k",
-					"ernie-speed-128k",
-					"ernie-speed-8k",
-					"ernie-lite-8k",
-					"ernie-tiny-8k"
-				]
-			},
-			"top_p": {
-				"type": "spin",
-				"min": 0,
-				"max": 1,
-				"step": 0.01
-			},
-			"frequency_penalty": {
-				"type": "spin",
-				"min": 0,
-				"max": 2,
-				"step": 0.05
-			},
-			"max_tokens": {
-				"type": "intspin",
-				"min": 1,
-				"max": 1000000,
-				"step": 1
-			},
-			"user_prompt": {
-				"type": "multiline",
-				"name": "自定义_system prompt",
-				"refswitch": "use_user_prompt",
-				"rank": 5
-			},
-			"usingstream": {
-				"name": "流式输出",
-				"type": "switch",
-				"rank": 3
-			},
-			"context_num": {
-				"name": "附带上下文个数",
-				"type": "intspin",
-				"min": 0,
-				"max": 99999,
-				"step": 1,
-				"rank": 4.9
-			},
-			"Temperature": {
-				"type": "spin",
-				"min": 0,
-				"max": 1,
-				"step": 0.1
-			}
-		}
-	},
 	"cohere": {
 		"args": {
 			"SECRET_KEY": "",
@@ -693,8 +479,6 @@
 			"流式输出": true,
 			"use_user_user_prompt": false,
 			"user_user_prompt": "{sentence}",
-			"other_args": "{}",
-			"use_other_args": false,
 			"s": "",
 			"s2": "",
 			"prefill": "",
@@ -711,11 +495,6 @@
 			"s2": {
 				"type": "split",
 				"rank": 5.12
-			},
-			"other_args": {
-				"type": "multiline",
-				"refswitch": "use_other_args",
-				"name": "其他参数"
 			},
 			"user_user_prompt": {
 				"name": "自定义_user message",
@@ -979,8 +758,6 @@
 			"custom_prompt": "",
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
-			"other_args": "{}",
-			"use_other_args": false,
 			"s": "",
 			"s2": "",
 			"usingstream": true,
@@ -994,11 +771,6 @@
 			},
 			"prefill_use": {
 				"type": "switch"
-			},
-			"other_args": {
-				"type": "multiline",
-				"refswitch": "use_other_args",
-				"name": "其他参数"
 			},
 			"BASE_URL": {
 				"name": "API接口地址",
@@ -1054,60 +826,6 @@
 				"type": "spin",
 				"min": 0,
 				"max": 1,
-				"step": 0.1
-			}
-		}
-	},
-	"ort_sp": {
-		"args": {
-			"path": "",
-			"最大生成长度": 128,
-			"最小生成长度": 1,
-			"柱搜索数": 8,
-			"序列数": 1,
-			"过长惩罚": 1.4,
-			"重复惩罚": 1.7
-		},
-		"argstype": {
-			"path": {
-				"name": "路径",
-				"type": "file",
-				"dir": true
-			},
-			"序列数": {
-				"type": "intspin",
-				"min": 0,
-				"max": 10000,
-				"step": 1
-			},
-			"最大生成长度": {
-				"type": "intspin",
-				"min": 0,
-				"max": 10000,
-				"step": 1
-			},
-			"最小生成长度": {
-				"type": "intspin",
-				"min": 0,
-				"max": 10000,
-				"step": 1
-			},
-			"柱搜索数": {
-				"type": "intspin",
-				"min": 0,
-				"max": 10000,
-				"step": 1
-			},
-			"过长惩罚": {
-				"type": "spin",
-				"min": 0,
-				"max": 10000,
-				"step": 0.1
-			},
-			"重复惩罚": {
-				"type": "spin",
-				"min": 0,
-				"max": 10000,
 				"step": 0.1
 			}
 		}

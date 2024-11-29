@@ -1304,6 +1304,8 @@ class WebivewWidget(abstractwebview):
             t.timeout.emit()
             t.start()
 
+        self.add_menu(0, "", lambda _: None)
+
     def __darkstatechecker(self):
         dl = globalconfig["darklight2"]
         if dl == self.__darkstate:
@@ -1455,6 +1457,7 @@ class QWebWrap(abstractwebview):
 
 class mshtmlWidget(abstractwebview):
     CommandBase = 10086
+
     def __del__(self):
         if not self.browser:
             return

@@ -69,10 +69,6 @@ class OCR(baseocr):
             proxies=self.proxy,
         )
         try:
-            # Handle the response
-            if response.status_code == 200:
-                return response.json()["candidates"][0]["content"]["parts"][0]["text"]
-            else:
-                raise Exception(response)
+            return response.json()["candidates"][0]["content"]["parts"][0]["text"]
         except Exception as e:
             raise Exception(response) from e

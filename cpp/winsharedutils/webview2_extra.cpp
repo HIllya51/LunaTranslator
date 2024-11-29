@@ -239,24 +239,34 @@ DECLARE_API void *add_ContextMenuRequested(void *m_host, int index, const wchar_
                     CHECK_FAILURE(items->get_Count(&itemsCount));
                     // Adding a custom context menu item for the page that will display the page's URI.
                     wil::com_ptr<ICoreWebView2ContextMenuItem> newMenuItem;
-                    CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(
-                        data->label.c_str(),
-                        nullptr,
-                        COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
-                    newMenuItem->add_CustomItemSelected(
-                        Callback<ICoreWebView2CustomItemSelectedEventHandler>(
-                            [=](
-                                ICoreWebView2ContextMenuItem *sender,
-                                IUnknown *args)
-                            {
-                                LPWSTR selecttext;
-                                CHECK_FAILURE(target->get_SelectionText(&selecttext));
-                                callback(selecttext);
-                                // 不需要free，free反而会崩溃
-                                return S_OK;
-                            })
-                            .Get(),
-                        nullptr);
+                    if (data->label.size())
+                    {
+                        CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(
+                            data->label.c_str(),
+                            nullptr,
+                            COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+                        newMenuItem->add_CustomItemSelected(
+                            Callback<ICoreWebView2CustomItemSelectedEventHandler>(
+                                [=](
+                                    ICoreWebView2ContextMenuItem *sender,
+                                    IUnknown *args)
+                                {
+                                    LPWSTR selecttext;
+                                    CHECK_FAILURE(target->get_SelectionText(&selecttext));
+                                    callback(selecttext);
+                                    // 不需要free，free反而会崩溃
+                                    return S_OK;
+                                })
+                                .Get(),
+                            nullptr);
+                    }
+                    else
+                    {
+                        CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(
+                            L"",
+                            nullptr,
+                            COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
+                    }
                     UINT idx;
                     if (index == -1)
                         idx = itemsCount;

@@ -2,8 +2,12 @@ import functools, os
 import gobject
 from myutils.utils import splitocrtypes
 from myutils.config import globalconfig, _TR, get_platform
-from gui.inputdialog import multicolorset, autoinitdialog
-from gui.inputdialog import autoinitdialog, autoinitdialog_items
+from gui.inputdialog import (
+    multicolorset,
+    autoinitdialogx,
+    autoinitdialog_items,
+    autoinitdialog,
+)
 from gui.usefulwidget import (
     yuitsu_switch,
     makescrollgrid,
@@ -40,7 +44,7 @@ def gethiragrid(self):
             items[-1]["callback"] = gobject.baseobject.starthira
             _3 = D_getIconButton(
                 callback=functools.partial(
-                    autoinitdialog,
+                    autoinitdialogx,
                     self,
                     globalconfig["hirasetting"][name]["args"],
                     globalconfig["hirasetting"][name]["name"],
@@ -142,12 +146,14 @@ def initinternal(self, names):
             line += [
                 D_getIconButton(
                     callback=functools.partial(
-                        autoinitdialog,
+                        autoinitdialogx,
                         self,
                         globalconfig["cishu"][cishu]["args"],
                         globalconfig["cishu"][cishu]["name"],
                         800,
                         items,
+                        "cishu." + cishu,
+                        cishu,
                     ),
                     icon="fa.gear",
                 ),

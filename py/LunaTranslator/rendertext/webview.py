@@ -54,12 +54,14 @@ class TextBrowser(QWidget, dataget):
             )
         )
         windows.SetWindowLongPtr(webviewhwnd, windows.GWLP_WNDPROC, self.wndproc)
+        self.webivewwidget.add_menu(0, _TR("朗读"), gobject.baseobject.read_text)
+        self.webivewwidget.add_menu(0, _TR("翻译"), gobject.baseobject.textgetmethod)
         self.webivewwidget.add_menu(
             0,
             _TR("查词"),
             threader(
                 lambda w: gobject.baseobject.searchwordW.search_word.emit(
-                    w.replace("\n", "").strip(), False
+                    w.replace("\n", "").strip()
                 )
             ),
         )
@@ -191,9 +193,9 @@ class TextBrowser(QWidget, dataget):
     def calllunaclickedword(self, wordinfo):
         clickfunction = wordinfo.get("clickfunction", None)
         if clickfunction:
-            self.saveclickfunction.get(clickfunction)(False)
+            self.saveclickfunction.get(clickfunction)()
         else:
-            gobject.baseobject.clickwordcallback(wordinfo, False)
+            gobject.baseobject.clickwordcallback(wordinfo)
 
     # native api end
 

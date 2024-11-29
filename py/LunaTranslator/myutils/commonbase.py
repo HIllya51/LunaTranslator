@@ -1,6 +1,6 @@
 from myutils.proxy import getproxy
-from myutils.utils import getlangtgt, getlangsrc, getlanguagespace
-from myutils.config import _TR, static_data
+from myutils.utils import getlangtgt, getlangsrc, getlanguagespace, create_langmap
+from myutils.config import _TR
 from myutils.wrapper import stripwrapper
 import requests
 
@@ -95,15 +95,7 @@ class commonbase:
 
     @property
     def langmap_(self):
-        _ = dict(
-            zip(
-                [_["code"] for _ in static_data["lang_list_all"]],
-                [_["code"] for _ in static_data["lang_list_all"]],
-            )
-        )
-        _.update({"cht": "zh", "auto": "auto"})
-        _.update(self.langmap())
-        return _
+        return create_langmap(self.langmap())
 
     def __init__(self, typename) -> None:
         self.typename = typename

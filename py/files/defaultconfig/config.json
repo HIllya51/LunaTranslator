@@ -1396,6 +1396,150 @@
             "use": false,
             "name": "goo"
         },
+        "gemini": {
+            "use": false,
+            "name": "Gemini",
+            "args": {
+                "SECRET_KEY": "",
+                "Temperature": 0.3,
+                "BASE_URL": "https://generativelanguage.googleapis.com",
+                "model": "gemini-1.5-flash",
+                "modellistcache": [],
+                "use_custom_prompt": false,
+                "custom_prompt": "",
+                "user_user_prompt": "{sentence}",
+                "use_user_user_prompt": false,
+                "s": "",
+                "s2": ""
+            },
+            "argstype": {
+                "BASE_URL": {
+                    "name": "API接口地址",
+                    "rank": 0
+                },
+                "user_user_prompt": {
+                    "name": "自定义_user message",
+                    "refswitch": "use_user_user_prompt",
+                    "rank": 5.1
+                },
+                "s": {
+                    "type": "split",
+                    "rank": 3.5
+                },
+                "s2": {
+                    "type": "split",
+                    "rank": 5.12
+                },
+                "custom_prompt": {
+                    "name": "自定义_system prompt",
+                    "type": "multiline",
+                    "refswitch": "use_custom_prompt",
+                    "rank": 5
+                },
+                "SECRET_KEY": {
+                    "rank": 2,
+                    "name": "API Key",
+                    "type": "textlist"
+                },
+                "model": {
+                    "rank": 3,
+                    "type": "lineedit_or_combo",
+                    "list_function": "list_models",
+                    "list_cache": "modellistcache"
+                },
+                "modellistcache": {
+                    "type": "list_cache"
+                },
+                "Temperature": {
+                    "type": "spin",
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.1
+                }
+            }
+        },
+        "chatgptlike": {
+            "use": false,
+            "name": "ChatGPT_兼容接口",
+            "args": {
+                "model": "gpt-4o-mini",
+                "modellistcache": [],
+                "API接口地址": "https://api.openai.com",
+                "SECRET_KEY": "",
+                "使用自定义promt": false,
+                "自定义promt": "",
+                "Temperature": 0.3,
+                "top_p": 0.3,
+                "max_tokens": 1024,
+                "frequency_penalty": 0,
+                "user_user_prompt": "{sentence}",
+                "use_user_user_prompt": false,
+                "s": "",
+                "s2": ""
+            },
+            "argstype": {
+                "user_user_prompt": {
+                    "name": "自定义_user message",
+                    "refswitch": "use_user_user_prompt",
+                    "rank": 5.1
+                },
+                "s": {
+                    "type": "split",
+                    "rank": 2.5
+                },
+                "s2": {
+                    "type": "split",
+                    "rank": 5.12
+                },
+                "API接口地址": {
+                    "rank": 0
+                },
+                "SECRET_KEY": {
+                    "rank": 1,
+                    "name": "API Key",
+                    "type": "textlist"
+                },
+                "model": {
+                    "rank": 2,
+                    "type": "lineedit_or_combo",
+                    "list_function": "list_models",
+                    "list_cache": "modellistcache"
+                },
+                "modellistcache": {
+                    "type": "list_cache"
+                },
+                "top_p": {
+                    "type": "spin",
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.01
+                },
+                "frequency_penalty": {
+                    "type": "spin",
+                    "min": 0,
+                    "max": 2,
+                    "step": 0.05
+                },
+                "max_tokens": {
+                    "type": "intspin",
+                    "min": 1,
+                    "max": 1000000,
+                    "step": 1
+                },
+                "自定义promt": {
+                    "type": "multiline",
+                    "refswitch": "使用自定义promt",
+                    "name": "自定义_system prompt",
+                    "rank": 5
+                },
+                "Temperature": {
+                    "type": "spin",
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.1
+                }
+            }
+        },
         "mdict": {
             "use": false,
             "name": "MDict",
@@ -1494,10 +1638,6 @@
         "txocr": {
             "use": false,
             "name": "腾讯"
-        },
-        "feishu": {
-            "use": false,
-            "name": "飞书"
         },
         "ocrspace": {
             "use": false,
@@ -1841,12 +1981,6 @@
             "color": "blue",
             "name": "火山"
         },
-        "feishu": {
-            "type": "api",
-            "use": false,
-            "color": "blue",
-            "name": "飞书"
-        },
         "papago": {
             "use": false,
             "color": "blue",
@@ -1937,20 +2071,6 @@
             "type": "pre",
             "color": "blue",
             "name": "实时编辑"
-        },
-        "baiduqianfan": {
-            "type": "api",
-            "use": false,
-            "color": "blue",
-            "name": "百度千帆大模型",
-            "is_gpt_like": true
-        },
-        "txhunyuan": {
-            "type": "api",
-            "use": false,
-            "color": "blue",
-            "name": "腾讯混元大模型",
-            "is_gpt_like": true
         }
     },
     "ZoomFactor": 1,
