@@ -107,7 +107,7 @@ class cishubase:
         lideep = 0
 
         def switchli():
-            nonlocal lideep
+            nonlocal lideep, lastli
             while lideep:
                 html_lines.append("</ul>")
                 lideep -= 1
