@@ -139,3 +139,19 @@ DECLARE_API UINT GetMonitorDpiScaling(HWND hwnd)
         return dpiX;
     }
 }
+
+DECLARE_API bool check_window_viewable(HWND hwnd)
+{
+    RECT windowRect;
+    if (!GetWindowRect(hwnd, &windowRect))
+        return false;
+    HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    if (!hMonitor)
+        return false;
+    MONITORINFO monitorInfo;
+    monitorInfo.cbSize = sizeof(MONITORINFO);
+    if (!GetMonitorInfo(hMonitor, &monitorInfo))
+        return false;
+    RECT _;
+    return IntersectRect(&_, &windowRect, &monitorInfo.rcWork);
+}

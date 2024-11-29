@@ -356,3 +356,7 @@ StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)
 StartCaptureAsync.restype = HANDLE
 StopCaptureAsync = utilsdll.StopCaptureAsync
 StopCaptureAsync.argtypes = (HANDLE,)
+
+check_window_viewable = utilsdll.check_window_viewable
+check_window_viewable.argtypes = (HWND,)
+check_window_viewable.restype = c_bool

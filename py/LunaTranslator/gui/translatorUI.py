@@ -297,6 +297,9 @@ class TranslatorWindow(resizableframeless):
             if not rect:
                 lastpos = None
                 continue
+            if not winsharedutils.check_window_viewable(hwnd):
+                lastpos = None
+                continue
             rate = self.devicePixelRatioF()
             rect = QRect(
                 int(rect[0] / rate),
