@@ -1095,55 +1095,6 @@ bool InsertBGIDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
     }
     return 0; // failed
   }
-  ULONG search_bgi3(ULONG startAddress, ULONG stopAddress)
-  {
-    // 黄昏のフォルクローレ
-    /* .text:00C3A700 push    ebp
-     .text : 00C3A701 mov     ebp, esp
-     .text : 00C3A703 push[ebp + arg_30]
-     .text : 00C3A706 mov     edx, [ebp + arg_4]
-     .text : 00C3A709 push[ebp + arg_2C]
-     .text : 00C3A70C mov     ecx, [ebp + arg_0]
-     .text : 00C3A70F push[ebp + arg_28]
-     .text : 00C3A712 push[ebp + arg_24]
-     .text : 00C3A715 push[ebp + arg_20]
-     .text : 00C3A718 push[ebp + arg_1C]
-     .text : 00C3A71B push[ebp + arg_18]
-     .text : 00C3A71E push[ebp + arg_14]
-     .text : 00C3A721 push[ebp + arg_10]
-     .text : 00C3A724 push[ebp + arg_C]
-     .text : 00C3A727 push[ebp + arg_8]
-     .text : 00C3A72A call    loc_C3A740
-     int __stdcall sub_C3A700(
-   int a1,
-   int a2,
-   int a3,
-   int a4,
-   int a5,
-   int a6,
-   int a7,
-   int a8,
-   int a9,
-   int a10,
-   int a11,
-   int a12,
-   int a13)
-
-     */
-    const uint8_t bytes[] = {
-        0x55,
-        0x8b, 0xec,
-        0xff, 0x75, 0x38,
-        0x8b, 0x55, 0x0c,
-        0xff, 0x75, 0x34,
-        0x8b, 0x4d, 0x08,
-        0xff, 0x75, 0x30};
-    ULONG range = min(ULONG(stopAddress - startAddress), ULONG(0x00300000));
-    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, startAddress + range);
-    if (addr == 0)
-      return 0;
-    return addr;
-  }
   bool search_tayutama(DWORD *funaddr, DWORD *addr)
   {
     const BYTE bytes[] = {
@@ -1191,17 +1142,7 @@ bool InsertBGIDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
     ULONG addr, funaddr;
     HookParam hp;
     hp.embed_hook_font = F_TextOutA | F_TextOutW;
-    if (addr = search_bgi3(processStartAddress, processStopAddress))
-    {
-      // 有乱码，无法处理。
-      Private::textIndex_ = 3;
-      hp.offset = get_stack(Private::textIndex_);
-      Private::type_ = Private::Type_BGI3;
-      hp.embed_hook_font |= F_GetTextExtentPoint32W;
-      if (addr - processStartAddress == 0x3B860) //[220729][1171051][きゃべつそふと] ジュエリー・ハーツ・アカデミア -We will wing wonder world-，无法处理的乱码，不知道怎么回事。
-        addr = 0;
-    }
-    else if (search_tayutama(&funaddr, &addr))
+    if (search_tayutama(&funaddr, &addr))
     {
 
       switch (funaddr - addr)
@@ -1663,68 +1604,11 @@ namespace
     return NewHook(hp, "BGI5");
   }
 }
-namespace
-{
-  //[220729][1171051][きゃべつそふと] ジュエリー・ハーツ・アカデミア -We will wing wonder world-
-  // int __fastcall sub_438E90(int a1, int *a2, int a3, _DWORD *a4, int a5)
-  bool hook7()
-  {
-    BYTE sig[] = {
-        0x55, 0x8b, 0xec,
-        0x83, 0xe4, 0xf0,
-        0x83, 0xec, XX,
-        0x56,
-        0x57,
-        0x8b, XX, 0x08,
-        0x8b, 0xf2,
-        0x8b, 0xd1,
-        0x81, 0xcf, 0x00, 0x00, 0x00, 0x80,
-        0x8b, 0xcf,
-        0x89, 0x54, 0x24, 0x0c,
-        0xe8, XX4,
-        0x85, 0xc0,
-        0x0f, 0x84, XX4,
-        0x8b, 0x45, 0x08
-
-    };
-    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
-    if (!addr)
-      return false;
-    HookParam hp;
-    hp.address = addr;
-    // hp.offset=get_stack(1);
-    // hp.split=get_stack(3);
-    hp.type = USING_CHAR | CODEC_UTF16 | NO_CONTEXT; //|USING_SPLIT;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-    {
-      switch (stack->stack[3])
-      {
-      case 0xfefefe:
-        hp->user_value = stack->retaddr;
-        buffer->from_t((wchar_t)stack->stack[1]);
-        *split = 1;
-        break;
-      case 0xffffff: // 名字&历史+零散的文字，由于no_context他们被合并，但是和名字和文本是同一个调用地址
-
-        if (hp->user_value == stack->retaddr)
-        {
-          buffer->from_t((wchar_t)stack->stack[1]);
-          *split = 2;
-        }
-        break;
-      case 0xfcfcc0: // 历史
-      default:;
-      }
-    };
-    return NewHook(hp, "bgi7");
-  }
-}
 bool BGI::attach_function()
 {
   if (InsertBGI4Hook())
     return true;
   bool ok = InsertBGI2Hook() || InsertBGI3Hook() || (PcHooks::hookOtherPcFunctions(), InsertBGI1Hook()) || veryold();
-  ok |= hook7();
   ok = InsertBGI7Hook() || InsertBGI5Hook() || InsertBGI6Hook() || ok;
   return ok;
 }
