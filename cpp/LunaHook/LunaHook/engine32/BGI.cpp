@@ -1548,17 +1548,7 @@ bool InsertBGI4Hook_2()
     return false;
   auto addrs = findxref_reverse_checkcallop(addr, processStartAddress, processStopAddress, 0xe8);
   if (1 != addrs.size())
-  {
-    HookParam hp;
-    hp.address = addrs[0];
-    hp.type = USING_STRING;
-    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
-    {
-      StringFilterBetween(buffer, "<", 1, ">", 1);
-    };
-    hp.offset = GETARG1;
-    return NewHook(hp, "BGI");
-  }
+    return false;
   HookParam hp;
   hp.address = addrs[0] + 5;
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_NEW;
