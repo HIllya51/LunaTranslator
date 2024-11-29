@@ -168,7 +168,6 @@ namespace ppsspp
 			return s;
 		}
 	}
-	
 	void ULJM05428(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		auto address = PPSSPP::emu_arg(stack)[1];
@@ -368,6 +367,48 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex("(#[A-Za-z]+\\[(\\d*[.])?\\d+\\])+"), "");
 		buffer->from(s);
 	}
+	void ULJM06040_2(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(\x81k(.*?)\x81l(.*))"), "$1");
+		buffer->from(s);
+	}
+	void ULJM06040_1(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "%K%P", 4);
+		StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);
+		StringReplacer(buffer, "\x84\xa5", 2, "\x81\x5b", 2);
+		StringReplacer(buffer, "\x84\xa7", 2, "\x81\x5b", 2);
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
+		buffer->from(s);
+	}
+	void ULJS00169(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '\n');
+		static std::string last;
+		auto s = buffer->strA();
+		if (s == last)
+			return buffer->clear();
+		last = s;
+	}
+	void ULJM05456(TextBuffer *buffer, HookParam *hp)
+	{
+		static std::string last;
+		auto s = buffer->strA();
+		if (endWith(last, s))
+		{
+			buffer->clear();
+			last = s;
+		}
+		else
+		{
+			last = s;
+			s = s.substr(0, s.size() - 1);
+			s = std::regex_replace(s, std::regex(R"(\$\w\d{5})"), "$1");
+			buffer->from(s);
+		}
+	}
 	void NPJH50380(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::wstring last;
@@ -531,6 +572,18 @@ namespace ppsspp
 		{0x885B7BC, {0, 0, 0, 0, ULJM05823_1, "ULJM06048"}}, // name+text
 		// サモンナイト３
 		{0x89DCF90, {0, 6, 0, 0, NPJH50380, "NPJH50380"}},
+		// Steins;Gate 比翼恋理のだーりん
+		{0x8856968, {0, 4, 0, 0, ULJM06040_1, "ULJM06040"}},
+		{0x889AD70, {0, 1, 0, 0, ULJM06040_2, "ULJM06040"}},
+		// 鋼鉄のガールフレンド特別編ポータブル
+		{0x882AAA4, {0, 1, 0, 0, ULJM05456, "ULJM05456"}},
+		// アイドルマスターSP パーフェクトサン
+		{0x8951A7C, {0, 1, 0, 0, ULJS00169, "ULJS00167"}},
+		// アイドルマスターSP ワンダリングスター
+		{0x8955E54, {0, 0, 0, 0, ULJS00169, "ULJS00168"}},
+		// アイドルマスターSP ミッシングムーン
+		{0x8951AE0, {0, 1, 0, 0, ULJS00169, "ULJS00169"}},
+
 	};
 
 }

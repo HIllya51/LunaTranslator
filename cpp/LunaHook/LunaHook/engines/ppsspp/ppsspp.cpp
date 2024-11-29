@@ -530,11 +530,23 @@ namespace ppsspp
         };
         NewHook(hp, "PPSSPPGameInfo");
     }
+    void trygetgameinwindowtitle()
+    {
+        auto wininfos = get_proc_windows();
+        for (auto &&info : wininfos)
+        {
+            if (info.title.find(L'-') != info.title.npos)
+            {
+                return HostInfo(HOSTINFO::EmuGameName, WideStringToString(info.title.substr(info.title.find(L'-') + 1)).c_str());
+            }
+        }
+    }
     bool hookPPSSPPDoJit()
     {
         auto DoJitPtr = getDoJitAddress();
         if (!DoJitPtr)
             return false;
+        trygetgameinwindowtitle();
         Load_PSP_ISO_StringFromFormat();
         spDefault.isjithook = true;
         spDefault.minAddress = 0;

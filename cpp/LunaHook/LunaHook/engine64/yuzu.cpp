@@ -138,12 +138,46 @@ bool Hook_Network_RoomMember_SendGameInfo()
     }
     return false;
 }
+namespace
+{
+    void trygetgameinwindowtitle()
+    {
+        auto getSecondSubstring = [](const std::wstring &str) -> std::wstring
+        {
+            size_t firstPos = str.find(L'|');
+            if (firstPos == std::wstring::npos)
+                return L"";
+            size_t lastPos = str.rfind(L'|');
+            if (lastPos == std::wstring::npos)
+                return L"";
+            lastPos = str.rfind(L'|', lastPos - 1);
+            if (lastPos == std::wstring::npos)
+                return L"";
+            lastPos = str.rfind(L'(', lastPos - 1);
+            if (lastPos == std::wstring::npos)
+                return L"";
+            size_t start = firstPos + 1;
+            size_t end = lastPos;
+            return str.substr(start, end - start);
+        };
+        auto wininfos = get_proc_windows();
+        for (auto &&info : wininfos)
+        {
+            auto game = getSecondSubstring(info.title);
+            if (game.size())
+            {
+                return HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
+            }
+        }
+    }
+}
 bool yuzu::attach_function()
 {
     ConsoleOutput("[Compatibility] Yuzu 1616+");
     auto DoJitPtr = getDoJitAddress();
     if (!DoJitPtr)
         return false;
+    trygetgameinwindowtitle();
     Hook_Network_RoomMember_SendGameInfo();
     spDefault.isjithook = true;
     spDefault.minAddress = 0;
