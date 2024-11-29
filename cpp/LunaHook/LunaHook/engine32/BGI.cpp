@@ -10,7 +10,7 @@ BGI hook:
   it's likely to be different for different calls.
 ********************************************************************************************/
 namespace
-{      // unnamed
+{ // unnamed
 
   /** jichi 5/12/2014
    *  Sample game:  FORTUNE ARTERIAL, case 2 at 0x41ebd0
@@ -1159,39 +1159,6 @@ namespace
     return NewHook(hp, "EmbedBGI");
   }
 
-  bool InsertBGI3Hook()
-  {
-    /*
-     * Sample games:
-     * https://vndb.org/v28283
-     * https://vndb.org/v30456
-     * https://vndb.org/v33996
-     * https://vndb.org/v34532
-     * https://vndb.org/v36131
-     */
-    bool found = false;
-    const BYTE pattern[] = {
-        0x55,                              // 55               push ebp
-        0x8b, 0xec,                        // 8BEC             mov ebp,esp
-        0x83, 0xe4, 0xf8,                  // 83E4 F8          and esp,FFFFFFF8
-        0x81, 0xec, 0x84, 0x00, 0x00, 0x00 // 81EC 84000000    sub esp,0x84
-    };
-
-    for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
-    {
-      HookParam hp;
-      hp.address = addr;
-      hp.offset = get_stack(2);
-      hp.split = get_stack(1);
-      hp.type = CODEC_UTF16 | USING_SPLIT;
-      ConsoleOutput("INSERT BGI3");
-      found |= NewHook(hp, "BGI3");
-    }
-    if (!found)
-      ConsoleOutput("BGI3: pattern not found");
-    return found;
-  }
-
 } // unnamed
 
 // jichi 5/12/2014: BGI1 and BGI2 game can co-exist, such as 世界と世界の真ん中で
@@ -1426,7 +1393,7 @@ bool BGI::attach_function()
 {
   if (InsertBGI4Hook())
     return true;
-  bool ok = InsertBGI2Hook() || InsertBGI3Hook() || (PcHooks::hookOtherPcFunctions(), InsertBGI1Hook()) || veryold();
+  bool ok = InsertBGI2Hook() || (PcHooks::hookOtherPcFunctions(), InsertBGI1Hook()) || veryold();
   ok = InsertBGI5Hook() || InsertBGI6Hook() || ok;
   return ok;
 }
