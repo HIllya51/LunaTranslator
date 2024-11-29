@@ -245,6 +245,72 @@ namespace ppsspp
 	{
 		StringCharReplacer(buffer, "\\n", 2, '\n');
 	}
+	void ULJM05756(TextBuffer *buffer, HookParam *hp)
+	{
+		static std::string last;
+		auto s = buffer->strA();
+		if (s == last)
+		{
+			last = s;
+			return buffer->clear();
+		}
+		last = s;
+		strReplace(s, "<D>", u8"ー");
+		buffer->from(s);
+	}
+	void NPJH50535(TextBuffer *buffer, HookParam *hp)
+	{
+		static std::string last;
+		auto s = buffer->strA();
+		if (s == last)
+		{
+			last = s;
+			return buffer->clear();
+		}
+		last = s;
+		s = std::regex_replace(s, std::regex(R"(@\d{2})"), "");
+		buffer->from(s);
+	}
+	void ULJS00354(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		static lru_cache<std::string> last(2);
+		if (last.touch(s))
+			return buffer->clear();
+		strReplace(s, "#n", "");
+		s = std::regex_replace(s, std::regex(R"(#R(.*?)\((.*?)\))"), "$1");
+		buffer->from(s);
+	}
+	void ULJM05458(TextBuffer *buffer, HookParam *hp)
+	{
+		static int i = 0;
+		if ((i++ % 2) || all_ascii((char *)buffer->buff, buffer->size))
+			return buffer->clear();
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(\[(.*?)\*(.*?)\])"), "$1");
+		buffer->from(s);
+	}
+	void ULJM05796(TextBuffer *buffer, HookParam *hp)
+	{
+		static std::wstring last;
+		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		strReplace(ws, L"\\", L"");
+		if (last == ws)
+		{
+			buffer->clear();
+			last = ws;
+		}
+		else
+		{
+			if (endWith(last, ws))
+				buffer->clear();
+			else
+			{
+				buffer->from(WideStringToString(ws, 932));
+				last = ws;
+			}
+		}
+	}
 	void NPJH50900(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
@@ -391,6 +457,12 @@ namespace ppsspp
 		if (s == last)
 			return buffer->clear();
 		last = s;
+	}
+	void ULJM05477(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "@c", 2);
+		auto s = buffer->strA();
+		buffer->from(s.substr(1, s.size() - 2));
 	}
 	void ULJM05456(TextBuffer *buffer, HookParam *hp)
 	{
@@ -577,13 +649,24 @@ namespace ppsspp
 		{0x889AD70, {0, 1, 0, 0, ULJM06040_2, "ULJM06040"}},
 		// 鋼鉄のガールフレンド特別編ポータブル
 		{0x882AAA4, {0, 1, 0, 0, ULJM05456, "ULJM05456"}},
+		// 鋼鉄のガールフレンド2ndポータブル
+		{0x8807FAC, {0, 1, 0, 0, ULJM05477, "ULJM05477"}},
 		// アイドルマスターSP パーフェクトサン
 		{0x8951A7C, {0, 1, 0, 0, ULJS00169, "ULJS00167"}},
 		// アイドルマスターSP ワンダリングスター
 		{0x8955E54, {0, 0, 0, 0, ULJS00169, "ULJS00168"}},
 		// アイドルマスターSP ミッシングムーン
 		{0x8951AE0, {0, 1, 0, 0, ULJS00169, "ULJS00169"}},
-
+		// カヌチ 二つの翼
+		{0x88158A0, {0, 0, 0, 0, ULJM05796, "ULJM0579[67]"}}, // ULJM05796 & ULJM05797
+		// うたわれるもの PORTABLE
+		{0x881CC54, {0, 0, 0, 0, ULJM05458, "ULJM05458"}},
+		// とある科学の超電磁砲
+		{0x88363A8, {FULL_STRING, 1, 0, 0, ULJS00354, "ULJS00354"}},
+		// 幻想水滸伝　紡がれし百年の時
+		{0x893FF00, {0, 0, 0, 0, NPJH50535, "NPJH50535"}},
+		// アンチェインブレイズ レクス
+		{0x88FD624, {CODEC_UTF8, 4, 0, 0, ULJM05756, "ULJM05756"}},
 	};
 
 }
