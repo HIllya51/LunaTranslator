@@ -1,4 +1,4 @@
-#include "BGI.h"
+﻿#include "BGI.h"
 //[241129][1305014][Tily] あの日の君を振り向かせて。 DL版 (files)
 void BGI7Filter(TextBuffer *buffer, HookParam *)
 {

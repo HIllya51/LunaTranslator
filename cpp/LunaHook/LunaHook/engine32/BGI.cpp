@@ -1,4 +1,4 @@
-#include "BGI.h"
+﻿#include "BGI.h"
 /********************************************************************************************
 BGI hook:
   Usually game folder contains BGI.*. After first run BGI.gdb appears.
