@@ -103,14 +103,27 @@ class cishubase:
         print(markdown_text)
         lines = markdown_text.split("\n")
         html_lines = []
+        lastli = ""
+        lideep = 0
+
+        def switchli():
+            nonlocal lideep
+            while lideep:
+                html_lines.append("</ul>")
+                lideep -= 1
+            lastli = ""
 
         for line in lines:
-            if line.startswith("# "):
-                html_lines.append(f"<h1>{line[2:]}</h1>")
-            elif line.startswith("## "):
-                html_lines.append(f"<h2>{line[3:]}</h2>")
-            elif line.startswith("### "):
-                html_lines.append(f"<h3>{line[4:]}</h3>")
+            if not line:
+                continue
+            m = re.match(r"#+ ", line)
+            if m:
+                switchli()
+                html_lines.append(
+                    "<h{hi}>{inner}</h{hi}>".format(
+                        hi=m.span()[1] - 1, inner=line[m.span()[1] :]
+                    )
+                )
             else:
 
                 def parsex(line):
@@ -118,26 +131,21 @@ class cishubase:
                     line = re.sub(r"\*(.*?)\*", r"<em>\1</em>", line)
                     return line
 
-                if line.startswith("- ") or line.startswith("* "):
-                    html_lines.append(f"<li>{parsex(line[2:])}</li>")
+                m = re.match(r" *[-\*] ", line)
+                if m:
+                    if lastli != m.group():
+                        if len(lastli) < len(m.group()):
+                            html_lines.append("<ul>")
+                            lideep += 1
+                        else:
+                            html_lines.append("</ul>")
+                            lideep -= 1
+                        lastli = m.group()
+                    html_lines.append("<li>{}</li>".format(parsex(line[m.span()[1] :])))
                 else:
-                    html_lines.append(f"<p>{parsex(line)}</p>")
-        final_html = []
-        in_list = False
-        for line in html_lines:
-            if line.startswith("<li>"):
-                if not in_list:
-                    final_html.append("<ul>")
-                    in_list = True
-                final_html.append(line)
-            elif in_list:
-                final_html.append("</ul>")
-                in_list = False
-                final_html.append(line)
-            else:
-                final_html.append(line)
+                    switchli()
+                    html_lines.append("<p>{}</p>".format(parsex(line)))
 
-        if in_list:
-            final_html.append("</ul>")
+        switchli()
 
-        return "".join(final_html)
+        return "".join(html_lines)
