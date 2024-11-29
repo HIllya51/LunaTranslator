@@ -1528,12 +1528,8 @@ bool InsertBGI6Hook()
 
   return NewHook(hp, "BGI6");
 }
-bool InsertBGIHook()
-{
-  return InsertBGI2Hook() || InsertBGI3Hook() || (PcHooks::hookOtherPcFunctions(), InsertBGI1Hook());
-}
 
-bool InsertBGI4Hook()
+bool InsertBGI4Hook_1()
 {
   /*
     int __cdecl sub_4A3AD0(LPSTR lpMultiByteStr, LPCWCH lpWideCharStr, int a3)
@@ -1569,7 +1565,7 @@ bool InsertBGI4Hook()
 }*/
   const BYTE bytes[] = {
       0xBE, 0xE9, 0xFD, 0x00, 0x00, // cp=65001
-      XX2,
+      0xeb, XX,
       0xBE, 0xA4, 0x03, 0x00, 0x00 // cp=932
   };
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
@@ -1580,25 +1576,69 @@ bool InsertBGI4Hook()
     return false;
   HookParam hp;
   hp.address = addr;
-  // hp.offset=get_reg(regs::eax);
-  // hp.split = get_reg(regs::esp);
-  hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-  {
-    *split = stack->stack[6]; // 不一定对
-    auto sp = *split;
-    if ((sp == 0) || (sp == 1) || ((sp & 0xFFF) == 0x790))
-    {
-      // [240726][1282405][HOOKSOFT] シークレットラブ（仮）
-      // 这作case 1仅当快进时才有文本,其他的在XXXXX790上
-      buffer->from((wchar_t *)stack->stack[2]);
-    }
-  };
-  hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
+  hp.type = CODEC_UTF16 | USING_STRING;
   hp.filter_fun = BGI7Filter;
-  hp.offset = get_stack(2);
+  hp.offset = GETARG2;
   ConsoleOutput("BGI4");
 
   return NewHook(hp, "BGI4");
+}
+
+bool InsertBGI4Hook_2()
+{
+  /*
+    if ( *(unsigned __int8 *)v1 == 239 )
+    {
+      v12 = *((unsigned __int8 *)v1 + 1) | 0xEF00;
+      goto LABEL_16;
+    }
+    if ( *(unsigned __int8 *)v1 == 255 )
+    {
+      v12 = *((unsigned __int8 *)v1 + 1) | 0xF000;
+.text:004863E0                 movzx   eax, byte ptr [ecx]
+.text:004863E3                 or      eax, 0F000h
+.text:004863E8                 jmp     short loc_4863F2
+.text:004863EA ; ---------------------------------------------------------------------------
+.text:004863EA
+.text:004863EA loc_4863EA:                             ; CODE XREF: sub_486310+BB↑j
+.text:004863EA                 movzx   eax, byte ptr [ecx]
+.text:004863ED                 or      eax, 0EF00h*/
+  const BYTE bytes[] = {
+      0x0F, 0xB6, 0x01,
+      0x0D, 0x00, 0xF0, 0x00, 0x00,
+      0xeb, XX,
+      0x0F, 0xB6, 0x01,
+      0x0D, 0x00, 0xEF, 0x00, 0x00};
+  auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = MemDbg::findEnclosingAlignedFunction(addr);
+  if (!addr)
+    return false;
+  auto addrs = findxref_reverse_checkcallop(addr, processStartAddress, processStopAddress, 0xe8);
+  if (1 != addrs.size())
+  {
+    HookParam hp;
+    hp.address = addrs[0];
+    hp.type = USING_STRING;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      StringFilterBetween(buffer, "<", 1, ">", 1);
+    };
+    hp.offset = GETARG1;
+    return NewHook(hp, "BGI");
+  }
+  HookParam hp;
+  hp.address = addrs[0] + 5;
+  hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_NEW;
+  hp.embed_hook_font = F_TextOutW | F_GetTextExtentPoint32W;
+  hp.filter_fun = BGI7Filter;
+  hp.offset = get_reg(regs::eax);
+  return NewHook(hp, "BGI");
+}
+bool InsertBGI4Hook()
+{
+  return InsertBGI4Hook_2() || InsertBGI4Hook_1();
 }
 namespace
 {
@@ -1691,9 +1731,9 @@ namespace
 }
 bool BGI::attach_function()
 {
-  bool b1 = InsertBGIHook();
-  bool b2 = InsertBGI4Hook();
-  bool ok = b1 || b2 || veryold();
+  if (InsertBGI4Hook())
+    return true;
+  bool ok = InsertBGI2Hook() || InsertBGI3Hook() || (PcHooks::hookOtherPcFunctions(), InsertBGI1Hook()) || veryold();
   ok |= hook7();
   ok = InsertBGI7Hook() || InsertBGI5Hook() || InsertBGI6Hook() || ok;
   return ok;

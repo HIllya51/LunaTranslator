@@ -21,11 +21,6 @@ void BGI7Filter(TextBuffer *buffer, HookParam *)
     StringFilterBetween(buffer, L"<", 1, L">", 1);
   }
 }
-void BGI7FilterA(TextBuffer *buffer, HookParam *)
-{
-  auto text = reinterpret_cast<LPCSTR>(buffer->buff);
-  StringFilterBetween(buffer, "<", 1, ">", 1);
-}
 bool BGIattach_function1()
 {
   /*
@@ -69,7 +64,7 @@ CHAR *__fastcall sub_1400F5BC0(LPSTR lpMultiByteStr, LPCWCH lpWideCharStr)
 .text:00000001400F5BFD                 mov     ebx, 3A4h*/
   const BYTE bytes[] = {
       0xBB, 0xE9, 0xFD, 0x00, 0x00, // cp=65001
-      XX2,
+      0xe8,XX,
       0xBB, 0xA4, 0x03, 0x00, 0x00 // cp=932
   };
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
@@ -108,7 +103,7 @@ bool BGIattach_function2()
   const BYTE bytes[] = {
       0x0F, 0xB6, 0x43, 0x01,
       0x0D, 0x00, 0xF0, 0x00, 0x00,
-      XX2,
+      0xeb, XX,
       0x0F, 0xB6, 0x43, 0x01,
       0x0D, 0x00, 0xEF, 0x00, 0x00};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
@@ -123,7 +118,10 @@ bool BGIattach_function2()
     HookParam hp;
     hp.address = addrs[0];
     hp.type = USING_STRING;
-    hp.filter_fun = BGI7FilterA;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      StringFilterBetween(buffer, "<", 1, ">", 1);
+    };
     hp.offset = GETARG1;
     return NewHook(hp, "BGI");
   }
@@ -133,12 +131,6 @@ bool BGIattach_function2()
   hp.embed_hook_font = F_TextOutW | F_GetTextExtentPoint32W;
   hp.filter_fun = BGI7Filter;
   hp.offset = get_reg(regs::rax);
-  static uintptr_t replaceaddr = addr;
-  patch_fun = []()
-  {
-    ReplaceFunction((void *)replaceaddr, +[](LPCCH lpMultiByteStr)
-                                         { return allocateString(StringToWideString(lpMultiByteStr, 932).value_or(L"")); });
-  };
   return NewHook(hp, "BGI");
 }
 bool BGI::attach_function()
