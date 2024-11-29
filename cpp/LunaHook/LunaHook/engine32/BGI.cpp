@@ -1190,71 +1190,6 @@ void BGI56Filter(TextBuffer *buffer, HookParam *)
   }
 }
 
-bool InsertBGI5Hook()
-{
-
-  /*
-   * Sample games:
-   * https://vndb.org/v473
-   */
-  const BYTE bytes[] = {
-      0x90,                  // nop
-      0x81, 0xEC, XX4,       // sub esp,00000920         << hook here
-      0x8B, 0x84, 0x24, XX4, // mov eax,[esp+00000944]
-      0x55,                  // push ebp
-      0x8D, 0x8C, 0x24, XX4  // lea ecx,[esp+000000F4]
-  };
-
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)
-    return false;
-
-  HookParam hp;
-  hp.address = addr + 1;
-  hp.offset = get_reg(regs::ecx);
-  hp.padding = 1;
-  hp.type = USING_STRING;
-  hp.filter_fun = BGI56Filter;
-  ConsoleOutput("INSERT BGI5");
-
-  return NewHook(hp, "BGI5");
-}
-
-bool InsertBGI6Hook()
-{
-
-  /*
-   * Sample games:
-   * https://vndb.org/r96578
-   */
-  const BYTE bytes[] = {
-      0x90,                                     // nop
-      0x6A, 0xFF,                               // push -01            << hook here
-      0x68, XX4,                                // push BGI.exe+87AF8
-      0x64, 0xA1, 0x00, 0x00, 0x00, 0x00,       // mov eax,fs:[00000000]
-      0x50,                                     // push eax
-      0x64, 0x89, 0x25, 0x00, 0x00, 0x00, 0x00, // mov fs:[00000000],esp
-      0x81, 0xEC, XX4,                          // sub esp,000009B4
-      0x8B, 0x84, 0x24, 0xE4, 0x09, 0x00, 0x00  // mov eax,[esp+000009E4]
-  };
-
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)
-    return false;
-
-  HookParam hp;
-  hp.address = addr + 1;
-  hp.offset = get_reg(regs::ecx);
-  hp.padding = 1;
-  hp.type = USING_STRING;
-  hp.filter_fun = BGI56Filter;
-  ConsoleOutput("INSERT BGI6");
-
-  return NewHook(hp, "BGI6");
-}
-
 bool InsertBGI4Hook_1()
 {
   /*
@@ -1362,6 +1297,8 @@ namespace
   {
     // 紅月－くれないつき－
     // あの街の恋の詩
+    // H2O -FOOTPRINTS IN THE SAND-
+
     auto addr = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress);
     if (addr == 0) // 銀行淫～堕ちゆく女達～ //mov     ebp, ds:GetGlyphOutlineA
       addr = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress, false, XX);
@@ -1393,7 +1330,5 @@ bool BGI::attach_function()
 {
   if (InsertBGI4Hook())
     return true;
-  bool ok = InsertBGI2Hook() || (PcHooks::hookOtherPcFunctions(), InsertBGI1Hook()) || veryold();
-  ok = InsertBGI5Hook() || InsertBGI6Hook() || ok;
-  return ok;
+  return InsertBGI2Hook() || (PcHooks::hookOtherPcFunctions(), InsertBGI1Hook()) || veryold();
 }
