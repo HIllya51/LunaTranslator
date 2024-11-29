@@ -735,27 +735,27 @@ bool Engine::isAddressWritable(const wchar_t *p, size_t count)
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
 {
-  std::vector<WindowInfo> *windowList = reinterpret_cast<std::vector<WindowInfo> *>(lParam);
+  auto *hwnds = reinterpret_cast<std::vector<HWND> *>(lParam);
   DWORD processId;
-  GetWindowThreadProcessId(hwnd, &processId);
-  if (processId == GetCurrentProcessId())
-  {
-    auto length = GetWindowTextLengthW(hwnd);
-    auto title = std::vector<WCHAR>(length + 1);
-    GetWindowTextW(hwnd, title.data(), title.size());
-
-    WindowInfo windowInfo;
-    windowInfo.handle = hwnd;
-    windowInfo.title = title.data();
-
-    windowList->push_back(windowInfo);
-  }
+  if (GetWindowThreadProcessId(hwnd, &processId) && (processId == GetCurrentProcessId()))
+    hwnds->push_back(hwnd);
   return TRUE;
 }
 std::vector<WindowInfo> get_proc_windows()
 {
+  std::vector<HWND> hwnds;
   std::vector<WindowInfo> windows;
-  EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&windows));
+  EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&hwnds));
+  for (auto hwnd : hwnds)
+  {
+    WindowInfo windowInfo;
+    windowInfo.handle = hwnd;
+    auto length = GetWindowTextLengthW(hwnd);
+    auto title = std::vector<WCHAR>(length + 1);
+    GetWindowTextW(hwnd, title.data(), title.size());
+    windowInfo.title = title.data();
+    windows.emplace_back(windowInfo);
+  }
   return windows;
 }
 

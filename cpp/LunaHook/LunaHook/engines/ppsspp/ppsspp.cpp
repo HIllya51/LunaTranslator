@@ -275,19 +275,21 @@ namespace ppsspp
     } game_info;
     bool checkiscurrentgame(const emfuncinfo &em)
     {
-        auto wininfos = get_proc_windows();
-        for (auto &&info : wininfos)
+        if (game_info.DISC_ID.size())
         {
-            if (game_info.DISC_ID.size())
+            std::smatch match;
+            return std::regex_match(game_info.DISC_ID, match, std::regex(em._id));
+        }
+        else
+        {
+            auto wininfos = get_proc_windows();
+            for (auto &&info : wininfos)
             {
-                std::smatch match;
-                if (std::regex_match(game_info.DISC_ID, match, std::regex(em._id)))
+                if (std::regex_search(info.title, std::wregex(acastw(em._id))))
                     return true;
             }
-            else if (std::regex_search(info.title, std::wregex(acastw(em._id))))
-                return true;
+            return false;
         }
-        return false;
     }
     std::unordered_set<uintptr_t> breakpoints;
 

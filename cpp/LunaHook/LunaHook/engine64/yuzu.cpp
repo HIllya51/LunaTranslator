@@ -63,21 +63,19 @@ namespace
     } game_info;
     bool checkiscurrentgame(const emfuncinfo &em)
     {
-        auto wininfos = get_proc_windows();
-        for (auto &&info : wininfos)
+        if ((game_info.version.size()) && game_info.name.size() && (game_info.id != 0))
         {
-            if ((game_info.version.size()) && game_info.name.size() && (game_info.id != 0))
-            {
-                // 判断是有效的info
-                auto checkversion = (em._version == 0) || (std::string(em._version) == (game_info.version));
-                auto checkid = (std::stoll(em._id, 0, 16) == game_info.id);
-                if (checkid && checkversion)
-                    return true;
-            }
-            else if ((em._version == 0) || (info.title.find(acastw(em._version)) != info.title.npos))
-                return true;
+            // 判断是有效的info
+            auto checkversion = (em._version == 0) || (std::string(em._version) == (game_info.version));
+            auto checkid = (std::stoll(em._id, 0, 16) == game_info.id);
+            return checkid && checkversion;
         }
-        return false;
+        else
+        {
+            // 加载游戏后在hook，没有办法获取id。
+            // 标题里没有id，只有version，没啥必要判断了，直接true得了。
+            return true;
+        }
     }
 }
 bool Hook_Network_RoomMember_SendGameInfo()
@@ -147,17 +145,11 @@ namespace
             size_t firstPos = str.find(L'|');
             if (firstPos == std::wstring::npos)
                 return L"";
-            size_t lastPos = str.rfind(L'|');
-            if (lastPos == std::wstring::npos)
-                return L"";
-            lastPos = str.rfind(L'|', lastPos - 1);
-            if (lastPos == std::wstring::npos)
-                return L"";
-            lastPos = str.rfind(L'(', lastPos - 1);
-            if (lastPos == std::wstring::npos)
+            size_t nextPos = str.find(L'|', firstPos + 1);
+            if (nextPos == std::wstring::npos)
                 return L"";
             size_t start = firstPos + 1;
-            size_t end = lastPos;
+            size_t end = nextPos;
             return str.substr(start, end - start);
         };
         auto wininfos = get_proc_windows();

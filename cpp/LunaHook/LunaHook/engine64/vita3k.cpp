@@ -4,6 +4,7 @@ namespace
     auto isVirtual = true;
     auto idxDescriptor = isVirtual == true ? 2 : 1;
     auto idxEntrypoint = idxDescriptor + 1;
+    std::string Vita3KGameID;
     uintptr_t getDoJitAddress()
     {
         auto RegisterBlockSig1 = "40 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 E9 48 81 EC 90 00 00 00 48 8B ?? ?? ?? ?? ?? 48 33 C4 48 89 45 07 4D 8B F1 49 8B F0 48 8B FA 48 8B D9 4C 8B 7D 77 48 8B 01 48 8D 55 C7 FF 50 10";
@@ -45,24 +46,60 @@ namespace
     };
     std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks;
 
-    bool checkiscurrentgame(const emfuncinfo &em)
-    {
-        auto wininfos = get_proc_windows();
-        for (auto &&info : wininfos)
-        {
-            if (info.title.find(acastw(em._id)) != info.title.npos)
-                return true;
-        }
-        return false;
-    }
 }
 
+namespace
+{
+    void trygetgameinwindowtitle()
+    {
+
+        HookParam hp;
+        hp.address = 0x3000;
+        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        {
+            static std::wstring last;
+            // vita3k Vulkan模式GetWindowText会卡住
+            auto getSecondSubstring = [](const std::wstring &str) -> std::wstring
+            {
+                size_t firstPos = str.find(L'|');
+                if (firstPos == std::wstring::npos)
+                    return L"";
+                size_t nextPos = str.find(L'|', firstPos + 1);
+                if (nextPos == std::wstring::npos)
+                    return L"";
+                size_t start = firstPos + 1;
+                size_t end = nextPos;
+                return str.substr(start, end - start);
+            };
+            auto wininfos = get_proc_windows();
+            for (auto &&info : wininfos)
+            {
+                auto game = getSecondSubstring(info.title);
+                if (!game.size())
+                    continue;
+                std::wregex reg1(L"\\((.*?)\\)");
+                std::wsmatch match;
+                if (!std::regex_search(game, match, reg1))
+                    return;
+                auto curr = match[1].str();
+                if (last == curr)
+                    return;
+                Vita3KGameID = wcasta(curr);
+                last = curr;
+                return HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
+            }
+        };
+        hp.type = DIRECT_READ;
+        NewHook(hp, "Vita3KGameInfo");
+    }
+}
 bool vita3k::attach_function()
 {
     ConsoleOutput("[Compatibility] Vita3k 0.1.9 3339+");
     auto DoJitPtr = getDoJitAddress();
     if (DoJitPtr == 0)
         return false;
+    trygetgameinwindowtitle();
     spDefault.isjithook = true;
     spDefault.minAddress = 0;
     spDefault.maxAddress = -1;
@@ -84,9 +121,8 @@ bool vita3k::attach_function()
             if (emfunctionhooks.find(em_address) == emfunctionhooks.end())
                 return;
             auto op = emfunctionhooks.at(em_address);
-            if (!(checkiscurrentgame(op)))
+            if (Vita3KGameID.size() && (op._id != Vita3KGameID))
                 return;
-
             HookParam hpinternal;
             hpinternal.address = entrypoint;
             hpinternal.emu_addr = em_address; // 用于生成hcode
