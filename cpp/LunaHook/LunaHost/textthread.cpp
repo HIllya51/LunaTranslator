@@ -65,8 +65,8 @@ void TextThread::Push(BYTE *data, int length)
 		if (hp.type & FULL_STRING && converted.value().size() > 1)
 			buffer.push_back(L'\n');
 	}
-	// else
-	// 	Host::AddConsoleOutput(INVALID_CODEPAGE); //死锁，且没必要
+	else
+		Host::AddConsoleOutput(INVALID_CODEPAGE);
 
 	UpdateFlushTime();
 

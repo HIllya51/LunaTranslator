@@ -50,9 +50,9 @@ namespace
 	Host::ProcessEventHandler OnConnect, OnDisconnect;
 	Host::ThreadEventHandler OnCreate, OnDestroy;
 	Host::HostInfoHandler OnHostInfo = 0;
-	bool has_consolethread = false;
 	Host::HookInsertHandler HookInsert = 0;
 	Host::EmbedCallback embedcallback = 0;
+	TextThread *consolethread = nullptr;
 	void RemoveThreads(std::function<bool(ThreadParam)> removeIf)
 	{
 		std::vector<TextThread *> threadsToRemove;
@@ -218,8 +218,8 @@ namespace Host
 		if (createconsole)
 		{
 			OnCreate(textThreadsByParams->try_emplace(console, console, HookParam{}, CONSOLE).first->second);
+			consolethread = &textThreadsByParams->at(console);
 			Host::AddConsoleOutput(ProjectHomePage);
-			has_consolethread = true;
 		}
 
 		// CreatePipe();
@@ -411,7 +411,7 @@ namespace Host
 		if (OnHostInfo)
 			OnHostInfo(type, std::move(text));
 
-		if (has_consolethread || (type != HOSTINFO::Console))
+		if (consolethread || (type != HOSTINFO::Console))
 		{
 			switch (type)
 			{
@@ -422,8 +422,8 @@ namespace Host
 				text = L"[Game] " + text;
 				break;
 			}
-			if (has_consolethread)
-				GetThread(console).AddSentence(std::move(text));
+			if (consolethread)
+				consolethread->AddSentence(std::move(text));
 			else if (type != HOSTINFO::Console)
 				OnHostInfo(HOSTINFO::Console, std::move(text));
 		}
