@@ -125,15 +125,17 @@ def downloadlr():
 
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {LocaleRe}")
-    subprocess.run(f"7z x {LocaleRe.split('/')[-1]} -oLR")
+    base = LocaleRe.split("/")[-1]
+    fn = os.path.splitext(base)[0]
+    subprocess.run(f"7z x {base}")
     os.makedirs(
         rf"{rootDir}\files\plugins\Locale\Locale_Remulator",
         exist_ok=True,
     )
 
-    p = subprocess.Popen("LR/LRProc.exe")
+    p = subprocess.Popen(f"{fn}/LRProc.exe")
     while 1:
-        if os.path.exists("LR/LRConfig.xml"):
+        if os.path.exists(f"{fn}/LRConfig.xml"):
             break
         time.sleep(0.1)
     p.kill()
@@ -145,7 +147,7 @@ def downloadlr():
         "LRSubMenus.dll",
     ]:
         shutil.move(
-            os.path.join("LR", f),
+            os.path.join(fn, f),
             rf"{rootDir}\files\plugins\Locale\Locale_Remulator",
         )
 
