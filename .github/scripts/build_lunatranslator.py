@@ -136,7 +136,7 @@ def downloadlr():
     for f in [
         "LRHookx64.dll",
         "LRHookx32.dll",
-        "LRConfig.xml",
+        # "LRConfig.xml",
         "LRProc.exe",
         "LRSubMenus.dll",
     ]:
@@ -166,7 +166,7 @@ def downloadLocaleEmulator():
         "LoaderDll.dll",
         "LocaleEmulator.dll",
         "LEProc.exe",
-        "LEConfig.xml",
+        # "LEConfig.xml",
         "LECommonLibrary.dll",
     ]:
         shutil.move(
