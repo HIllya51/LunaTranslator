@@ -254,6 +254,10 @@ namespace
         s = std::regex_replace(s, std::regex(R"(\\n)"), "");
         buffer->from(s);
     }
+    void PCSG00787(TextBuffer *buffer, HookParam *)
+    {
+        CharFilter(buffer, '\n');
+    }
     void FPCSG00912(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -616,7 +620,7 @@ namespace
             // 絶対迷宮 秘密のおやゆび姫
             {0x8003F554, {0, 5, 0, 0, 0, "PCSG00611"}},
             // 鏡界の白雪
-            {0x810286C8, {CODEC_UTF8, 0, 0, 0, 0, "PCSG00787"}},
+            {0x810286C8, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00787"}},
         };
         return 1;
     }();
