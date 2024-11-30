@@ -348,6 +348,16 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"(\[(.*?)\*(.*?)\])"), "$1");
 		buffer->from(s);
 	}
+	void ULJM05691(TextBuffer *buffer, HookParam *hp)
+	{
+		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		if (startWith(ws, L"disc"))
+			return buffer->clear();
+		strReplace(ws, L"\\", L"");
+		strReplace(ws, L"$", L"");
+		strReplace(ws, L"%　&", L"");
+		buffer->from(WideStringToString(ws, 932));
+	}
 	void ULJM05796(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::wstring last;
@@ -828,6 +838,18 @@ namespace ppsspp
 		{0x884B8B8, {0, 0, 0, 0, ULJM05821, "ULJM05936"}},
 		// ユア・メモリーズオフ
 		{0x88EF260, {0, 1, 0, 0, FULJM05603, "ULJM05435"}},
+		// 華ヤカ哉、我ガ一族
+		{0x885138C, {FULL_STRING, 1, 0, 0, ULJM05691, "ULJM05691"}},
+		// 華ヤカ哉、我ガ一族 キネマモザイク
+		{0x8816CE0, {FULL_STRING, 1, 0, 0, ULJM05691, "ULJM05998"}},
+		// 華ヤカ哉、我ガ一族 黄昏ポウラスタ
+		{0x889DD34, {0, 3, 0, 0, ULJM05691, "ULJM06263"}},
+		// マザーグースの秘密の館～Nursery Rhymes for you～
+		{0x8815B34, {0, 1, 0, 0, ULJS00124, "ULJM05892"}},
+		// マザーグースの秘密の館～BLUE LABEL～
+		{0x8831BB4, {0, 1, 0, 0, 0, "ULJM05950"}},
+		// 百鬼夜行～怪談ロマンス～
+		{0x884A634, {0, 1, 0, 0, 0, "ULJM06184"}},
 	};
 
 }
