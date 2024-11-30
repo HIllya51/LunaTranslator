@@ -65,8 +65,8 @@ void TextThread::Push(BYTE *data, int length)
 		if (hp.type & FULL_STRING && converted.value().size() > 1)
 			buffer.push_back(L'\n');
 	}
-	else
-		Host::AddConsoleOutput(INVALID_CODEPAGE);
+	// else
+	// 	Host::AddConsoleOutput(INVALID_CODEPAGE); //死锁，且没必要
 
 	UpdateFlushTime();
 
@@ -94,7 +94,7 @@ void TextThread::UpdateFlushTime(bool recursive)
 	lastPushTime = GetTickCount64();
 	if (!recursive)
 		return;
-	auto&& ths = syncThreads.Acquire().contents;
+	auto &&ths = syncThreads.Acquire().contents;
 	if (ths.find(this) == ths.end())
 		return;
 	for (auto t : ths)

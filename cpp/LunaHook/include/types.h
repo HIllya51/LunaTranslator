@@ -237,13 +237,15 @@ struct TextBuffer
 		if (!c)
 			return;
 		size = strlenEx(c) * sizeof(CharT);
-		strncpyEx((CharT *)buff, c, TEXT_BUFFER_SIZE);
+		if(size)
+			strncpyEx((CharT *)buff, c, TEXT_BUFFER_SIZE);
 	}
 	template <typename StringT, typename = std::enable_if_t<!std::is_pointer_v<StringT>>>
 	void from(const StringT &c)
 	{
 		size = min(TEXT_BUFFER_SIZE, strSize(c));
-		memcpy(buff, c.data(), size);
+		if(size)
+			memcpy(buff, c.data(), size);
 	}
 	template <typename AddrT>
 	void from(const AddrT ptr, size_t t)
@@ -251,7 +253,8 @@ struct TextBuffer
 		if (!ptr || !t)
 			return;
 		size = min(TEXT_BUFFER_SIZE, t);
-		memcpy(buff, (void *)ptr, size);
+		if(size)
+			memcpy(buff, (void *)ptr, size);
 	}
 	template <typename T>
 	void from_t(const T tm)

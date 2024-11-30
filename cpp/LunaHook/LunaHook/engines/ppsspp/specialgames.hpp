@@ -84,6 +84,21 @@ namespace ppsspp
 		buffer->from(s);
 	}
 
+	void ULJM05019(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		auto _1 = s.find("\x81\xa5");
+		auto _2 = s.find("\x81\xa1"); // ■ ▼
+		auto _3 = min(_1, _2);
+		if (_3 == s.npos)
+			return;
+		s = s.substr(0, _1);
+		s = std::regex_replace(s, std::regex(R"(\x81m(.*?)\x81n)"), "");   // ［龍神］
+		s = std::regex_replace(s, std::regex(R"(\x81o(.*?)\x81p)"), "$1"); // ｛龍の宝玉｝
+		strReplace(s, "\n", "");
+		strReplace(s, "\x81\x40", "");
+		buffer->from(s);
+	}
 	void ULJS00124(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, '\n');
@@ -225,6 +240,41 @@ namespace ppsspp
 		if (lastx == last)
 			return buffer->clear();
 		lastx = last;
+	}
+	void NPJH50901(TextBuffer *buffer, HookParam *)
+	{
+		static std::string last;
+		static lru_cache<std::string> lastx(10); // 颜色&注解会把句子分开
+		auto s = buffer->strA();
+		if (endWith(last, s))
+			return buffer->clear();
+		last = s;
+		if (lastx.touch(last))
+			return buffer->clear();
+
+		std::string x;
+		for (int i = 0; i < s.size();)
+		{
+
+			if (s[i] == 0x1b)
+			{
+				if ((BYTE)s[i + 1] == 0xb5)
+					i += 2;
+				else if ((BYTE)s[i + 1] == 0xb4 || (BYTE)s[i + 1] == 0xb6)
+					i += 3;
+				else
+					i += 1;
+			}
+			else
+			{
+				x += s[i];
+				i++;
+			}
+		}
+
+		strReplace(x, "\n", "");
+		strReplace(x, "\x81\x40", "");
+		buffer->from(x);
 	}
 	void FULJM05603(TextBuffer *buffer, HookParam *)
 	{
@@ -469,6 +519,19 @@ namespace ppsspp
 		buffer->from(s);
 	}
 
+	void ULJM05441(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	{
+		auto data = PPSSPP::emu_arg(stack)[1];
+		std::string s;
+		while (*(DWORD *)data)
+		{
+			std::string_view s1 = (char *)data;
+			s += s1;
+			data += s1.size() + 1;
+		}
+		strReplace(s, "\n", "");
+		buffer->from(s);
+	}
 	void QNPJH50909(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		auto data = PPSSPP::emu_arg(stack)[0];
@@ -656,6 +719,8 @@ namespace ppsspp
 		{0x896C3B8, {0, 0, 0, ULJM05428, 0, "ULJM05624"}},
 		// 金色のコルダ2 f
 		{0x89b59dc, {0, 0, 0, ULJM05428, 0, "ULJM05428"}},
+		// 金色のコルダ２ f アンコール
+		{0x89D9FB0, {0, 0, 0, ULJM05428, 0, "ULJM05508"}},
 		// 金色のコルダ
 		{0x886162c, {0, 0, 0, ULJM05428, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
 		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},	   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
@@ -716,8 +781,6 @@ namespace ppsspp
 		{0x889E970, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME
 		// 源狼 GENROH
 		{0x8940DA8, {0, 1, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
-		// 遙かなる時空の中で４ 愛蔵版
-		{0x8955CE0, {0, 0, 0, ULJM05810, 0, "ULJM05810"}},
 		// 十鬼の絆
 		{0x891AAAC, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // text
 		{0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text
@@ -858,6 +921,20 @@ namespace ppsspp
 		{0x8841A98, {0, 8, 0, 0, ULJS00124, "ULJM06235"}},
 		// アブナイ★恋の捜査室
 		{0x8842F84, {0, 1, 0, 0, 0, "ULJM06050"}},
+		// ネオ アンジェリークSpecial
+		{0x8867018, {0, 1, 0, 0, ULJS00124, "ULJM05374"}},
+		// 遙かなる時空の中で～八葉抄～
+		{0x88C1290, {0, 2, 0, 0, ULJS00124, "ULJM06252"}}, // 必须按一下按钮，才能显示
+		// 遙かなる時空の中で２
+		{0x88C0410, {0, 2, 0, 0, ULJM05019, "ULJM05019"}},
+		// 遙かなる時空の中で３ with 十六夜記 愛蔵版
+		{0x89024C8, {0, 0, 0, ULJM05441, 0, "ULJM05441"}},
+		// 遙かなる時空の中で４ 愛蔵版
+		{0x8955CE0, {0, 0, 0, ULJM05810, 0, "ULJM05810"}},
+		// 遙かなる時空の中で５ 風花記
+		{0x8B0449C, {0, 1, 0, 0, ULJS00124, "ULJM06025"}},
+		// 遙かなる時空の中で６
+		{0x89FD41C, {0, 0xf, 0, 0, NPJH50901, "NPJH50901"}},
 
 	};
 
