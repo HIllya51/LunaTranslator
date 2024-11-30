@@ -84,16 +84,34 @@ namespace ppsspp
 		buffer->from(s);
 	}
 
+	void ULJS00124(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '\n');
+	}
+	void ULJM05770(TextBuffer *buffer, HookParam *hp)
+	{
+		std::string s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)"), "$2"); // ｛みす／御簾｝
+		buffer->from(s);
+		CharFilter(buffer, '\n');
+	}
+	void NPJH50215(TextBuffer *buffer, HookParam *hp)
+	{
+		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		strReplace(ws, L"r", L"\n");
+		if (ws.find(L"wc"))
+		{
+			ws = ws.substr(0, ws.find(L"wc"));
+		}
+		ws = std::regex_replace(ws, std::wregex(LR"(l(.*?)\((.*?)\))"), L"$1");
+		buffer->from(WideStringToString(ws, 932));
+	}
+
 	void NPJH50909_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
-		// Remove single line markers
 		ws = std::regex_replace(ws, std::wregex(L"(\\%N)+"), L" ");
-
-		// Remove scale marker
 		ws = std::regex_replace(ws, std::wregex(L"\\%\\@\\%\\d+"), L"");
-
-		// Reformat name
 		std::wsmatch match;
 		if (std::regex_search(ws, match, std::wregex(L"(^[^「]+)「")))
 		{
@@ -191,12 +209,46 @@ namespace ppsspp
 		StringFilter(buffer, "#wa0", 4);
 	}
 
+	void ULJM05565(TextBuffer *buffer, HookParam *)
+	{
+		StringFilter(buffer, "/K", 2);
+		StringCharReplacer(buffer, "\x81\x9b", 2, '\n');
+		if (buffer->size == 0)
+			return;
+		static std::string last, lastx;
+		auto s = buffer->strA();
+		if (startWith(s, "sc"))
+			return buffer->clear();
+		if (endWith(last, s))
+			return buffer->clear();
+		last = s;
+		if (lastx == last)
+			return buffer->clear();
+		lastx = last;
+	}
 	void FULJM05603(TextBuffer *buffer, HookParam *)
 	{
-		StringCharReplacer(buffer, "%N", 2, ' ');
+		StringFilter(buffer, "%N", 2);
 		StringFilter(buffer, "%K", 2);
 		StringFilter(buffer, "%P", 2);
-		StringFilter(buffer, "%O030", 5);
+		StringFilter(buffer, "%V", 2);
+		StringFilter(buffer, "%LC", 3);
+		StringFilter(buffer, "%LE", 3);
+		StringFilter(buffer, "%FS", 3);
+		StringFilter(buffer, "%FE", 3);
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
+		s = std::regex_replace(s, std::regex(R"(%O\d{3})"), "$1");
+		s = std::regex_replace(s, std::regex(R"(%S\d{3})"), "$1");
+		buffer->from(s);
+	}
+	void ULJM05821(TextBuffer *buffer, HookParam *hp)
+	{
+		static lru_cache<std::string> lastx(2);
+		auto s = buffer->strA();
+		if (lastx.touch(s))
+			return buffer->clear();
+		FULJM05603(buffer, hp);
 	}
 
 	void ULJM05810(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -249,7 +301,7 @@ namespace ppsspp
 	}
 	void FNPJH50127(TextBuffer *buffer, HookParam *hp)
 	{
-		StringCharReplacer(buffer, "\\n", 2, '\n');
+		StringFilter(buffer, "\\n", 2);
 	}
 	void ULJM05756(TextBuffer *buffer, HookParam *hp)
 	{
@@ -449,6 +501,14 @@ namespace ppsspp
 	{
 		StringFilter(buffer, "%K", 2);
 		StringFilter(buffer, "%P", 2);
+	}
+	void ULJM06070(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilterBetween(buffer, "[", 1, "]", 1);
+		if (!startWith(buffer->viewA(), "%C"))
+			CharFilter(buffer, '\n');
+		else
+			StringFilter(buffer, "%C", 2);
 	}
 	void ULJM06040_1(TextBuffer *buffer, HookParam *hp)
 	{
@@ -750,6 +810,24 @@ namespace ppsspp
 		{0x8853844, {0, 0xC, 0, 0, 0, "NPJH50273"}},
 		// CLANNAD
 		{0x880F240, {CODEC_UTF16, 0, 0, 0, ULJM05282, "ULJM0533[89]"}}, // ULJM05338 & ULJM05339
+		// 東京鬼祓師　鴉乃杜學園奇譚
+		{0x89F25C8, {0, 1, 0, 0, NPJH50215, "NPJH50215"}},
+		// 雅恋 ～MIYAKO～
+		{0x8812514, {0, 1, 0, 0, ULJM05770, "ULJM05770"}},
+		// 雅恋 ～MIYAKO～ あわゆきのうたげ
+		{0x8811368, {CODEC_UTF8, 1, 0, 0, ULJM06070, "ULJM06070"}},
+		// ナルキッソス～もしも明日があるなら～Portable
+		{0x8857B28, {0, 1, 0, 0, FULJM05603, "ULJM05674"}},
+		// 未来日記　－１３人目の日記所有者－
+		{0x884C30C, {0, 0, 0, 0, ULJM05565, "ULJM05565"}}, // 切换场景时会有很多辣鸡文本
+		// CHAOS;HEAD らぶChu☆Chu!
+		{0x88B5AD8, {0, 0xe, 0, 0, ULJM05821, "ULJM05821"}},
+		// 涼宮ハルヒの約束
+		{0x882C6B4, {0, 6, 0, 0, ULJS00124, "ULJS00124"}},
+		// code_18
+		{0x884B8B8, {0, 0, 0, 0, ULJM05821, "ULJM05936"}},
+		// ユア・メモリーズオフ
+		{0x88EF260, {0, 1, 0, 0, FULJM05603, "ULJM05435"}},
 	};
 
 }
