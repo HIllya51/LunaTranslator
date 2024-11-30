@@ -184,6 +184,12 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"), "");
 		buffer->from(s);
 	}
+	void ULJM05610(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "#cr0", 4);
+		StringFilter(buffer, "#wa1", 4);
+		StringFilter(buffer, "#wa0", 4);
+	}
 
 	void FULJM05603(TextBuffer *buffer, HookParam *)
 	{
@@ -439,15 +445,60 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"(\x81k(.*?)\x81l(.*))"), "$1");
 		buffer->from(s);
 	}
+	void ULJM05874(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "%K", 2);
+		StringFilter(buffer, "%P", 2);
+	}
 	void ULJM06040_1(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "%K%P", 4);
-		StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);
+		StringFilter(buffer, "%K", 2);
+		StringFilter(buffer, "%P", 2);
+		// StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧
+		StringFilter(buffer, "\x81\x99", 2); // ☆
+
 		StringReplacer(buffer, "\x84\xa5", 2, "\x81\x5b", 2);
 		StringReplacer(buffer, "\x84\xa7", 2, "\x81\x5b", 2);
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
 		buffer->from(s);
+	}
+	void ULJM05282(TextBuffer *buffer, HookParam *hp)
+	{
+		static std::wstring last;
+		auto s = buffer->viewW();
+		if (s == last)
+			return buffer->clear();
+		last = s;
+	}
+	void ULJM06343(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		static auto katakanaMap = std::map<std::wstring, std::wstring>{
+			{L"｢", L"「"}, {L"｣", L"」"}, {L"ｧ", L"ぁ"}, {L"ｨ", L"ぃ"}, {L"ｩ", L"ぅ"}, {L"ｪ", L"ぇ"}, {L"ｫ", L"ぉ"}, {L"ｬ", L"ゃ"}, {L"ｭ", L"ゅ"}, {L"ｮ", L"ょ"}, {L"ｱ", L"あ"}, {L"ｲ", L"い"}, {L"ｳ", L"う"}, {L"ｴ", L"え"}, {L"ｵ", L"お"}, {L"ｶ", L"か"}, {L"ｷ", L"き"}, {L"ｸ", L"く"}, {L"ｹ", L"け"}, {L"ｺ", L"こ"}, {L"ｻ", L"さ"}, {L"ｼ", L"し"}, {L"ｽ", L"す"}, {L"ｾ", L"せ"}, {L"ｿ", L"そ"}, {L"ﾀ", L"た"}, {L"ﾁ", L"ち"}, {L"ﾂ", L"つ"}, {L"ﾃ", L"て"}, {L"ﾄ", L"と"}, {L"ﾅ", L"な"}, {L"ﾆ", L"に"}, {L"ﾇ", L"ぬ"}, {L"ﾈ", L"ね"}, {L"ﾉ", L"の"}, {L"ﾊ", L"は"}, {L"ﾋ", L"ひ"}, {L"ﾌ", L"ふ"}, {L"ﾍ", L"へ"}, {L"ﾎ", L"ほ"}, {L"ﾏ", L"ま"}, {L"ﾐ", L"み"}, {L"ﾑ", L"む"}, {L"ﾒ", L"め"}, {L"ﾓ", L"も"}, {L"ﾔ", L"や"}, {L"ﾕ", L"ゆ"}, {L"ﾖ", L"よ"}, {L"ﾗ", L"ら"}, {L"ﾘ", L"り"}, {L"ﾙ", L"る"}, {L"ﾚ", L"れ"}, {L"ﾛ", L"ろ"}, {L"ﾜ", L"わ"}, {L"ｦ", L"を"}, {L"ﾝ", L"ん"}, {L"ｰ", L"ー"}, {L"ｯ", L"っ"}, {L"､", L"、"}, {L"ﾟ", L"？"}, {L"ﾞ", L"！"}, {L"･", L"…"}, {L"?", L"　"}, {L"｡", L"。"}, {L"\uF8F0", L""}, {L"\uFFFD", L""} // invalid (shift_jis A0 <=> EF A3 B0) | FF FD - F8 F0)
+		};
+		auto remap = [](std::string &s)
+		{
+			std::wstring result;
+			auto ws = StringToWideString(s, 932).value();
+			for (auto _c : ws)
+			{
+				std::wstring c;
+				c.push_back(_c);
+				if (katakanaMap.find(c) != katakanaMap.end())
+				{
+					result += katakanaMap[c];
+				}
+				else
+					result += c;
+			}
+			result = std::regex_replace(result, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
+			result = std::regex_replace(result, std::wregex(LR"(\$C\[(.*?)\])"), L"");
+			result = std::regex_replace(result, std::wregex(LR"(\$\w)"), L"");
+			result = std::regex_replace(result, std::wregex(LR"(@)"), L"");
+			return WideStringToString(result, 932);
+		};
+		buffer->from(remap(s));
 	}
 	void ULJS00169(TextBuffer *buffer, HookParam *hp)
 	{
@@ -667,6 +718,38 @@ namespace ppsspp
 		{0x893FF00, {0, 0, 0, 0, NPJH50535, "NPJH50535"}},
 		// アンチェインブレイズ レクス
 		{0x88FD624, {CODEC_UTF8, 4, 0, 0, ULJM05756, "ULJM05756"}},
+		// 密室のサクリファイス　～イトカ：ある閉鎖施設からの脱出～
+		{0x8861A08, {0, 1, 0, 0, 0, "NPJH00065"}},
+		// ココロコネクト ヨチランダム
+		{0x8837BB8, {0, 1, 0, 0, 0, "NPJH50682"}},
+		// 俺の妹がこんなに可愛いわけがない ポータブル が続くわけがない Ｄｉｓｃ１
+		{0x88608B8, {CODEC_UTF16, 2, 0, 0, 0, "NPJH50568"}},
+		// 俺の妹がこんなに可愛いわけがない ポータブル が続くわけがない Ｄｉｓｃ２
+		{0x8860724, {CODEC_UTF16, 2, 0, 0, 0, "NPJH50569"}},
+		// AIR
+		{0x880C774, {CODEC_UTF16, 0, 0, 0, ULJM05282, "ULJM05282"}},
+		// 蝶の毒 華の鎖～大正艶恋異聞～
+		{0x883451C, {0, 0, 0, 0, ULJM06343, "ULJM06343"}},
+		// Black Robinia
+		{0x8850800, {0, 0, 0, 0, 0, "NPJH50394"}},
+		// ワンド　オブ　フォーチュン　ポータブル
+		{0x88878A0, {0, 0, 0, 0, ULJM05943F, "ULJM05689"}},
+		// Remember11 -the age of infinity-
+		{0x881BECC, {0, 0, 0, 0, 0, "ULJM05444"}},
+		// のーふぇいと！ ～only the power of will～
+		{0x889A888, {0, 0, 0, 0, ULJM05610, "ULJM05610"}},
+		// 薄桜鬼 遊戯録弐　祭囃子と隊士達
+		{0x883E84C, {0, 1, 0, 0, ULJM05943F, "ULJM06165"}},
+		// メモリーズオフ ゆびきりの記憶 ふたりの風流庵
+		{0x8863D5C, {0, 3, 0, 0, ULJM05874, "ULJM05874"}},
+		// メモリーズオフ ゆびきりの記憶
+		{0x88A50B0, {0, 1, 0, 0, ULJM06040_1, "ULJM05875"}},
+		// ＣＬＡＮＮＡＤ　光見守る坂道で　上巻
+		{0x8850950, {0, 0xC, 0, 0, 0, "NPJH50266"}},
+		// ＣＬＡＮＮＡＤ　光見守る坂道で　下巻
+		{0x8853844, {0, 0xC, 0, 0, 0, "NPJH50273"}},
+		// CLANNAD
+		{0x880F240, {CODEC_UTF16, 0, 0, 0, ULJM05282, "ULJM0533[89]"}}, // ULJM05338 & ULJM05339
 	};
 
 }
