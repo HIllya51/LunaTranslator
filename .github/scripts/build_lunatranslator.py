@@ -36,8 +36,8 @@ mylinks = {
 }
 
 
-pluginDirs = ["DLL32", "DLL64", "Locale_Remulator", "Magpie", "NTLEAS"]
-pluginDirs_1 = ["DLL32", "DLL64", "NTLEAS"]
+pluginDirs = ["DLL32", "DLL64", "Magpie"]
+pluginDirs_1 = ["DLL32", "DLL64"]
 
 vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
 
@@ -133,12 +133,6 @@ def downloadlr():
         exist_ok=True,
     )
 
-    p = subprocess.Popen(f"{fn}/LRProc.exe")
-    while 1:
-        if os.path.exists(f"{fn}/LRConfig.xml"):
-            break
-        time.sleep(0.1)
-    p.kill()
     for f in [
         "LRHookx64.dll",
         "LRHookx32.dll",
@@ -164,12 +158,6 @@ def downloadLocaleEmulator():
     p = subprocess.Popen("LocaleEmulator/LEInstaller.exe")
     while 1:
         if os.path.exists("LocaleEmulator/LECommonLibrary.dll"):
-            break
-        time.sleep(0.1)
-    p.kill()
-    p = subprocess.Popen("LocaleEmulator/LEProc.exe")
-    while 1:
-        if os.path.exists("LocaleEmulator/LEConfig.xml"):
             break
         time.sleep(0.1)
     p.kill()

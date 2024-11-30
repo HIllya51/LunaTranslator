@@ -28,7 +28,6 @@ py/userconfig
 py/cache
 py/chrome_cache
 py/files/ocr
-py/files/plugins
 py/files/themes
 py/run37.bat
 py/run3732.bat

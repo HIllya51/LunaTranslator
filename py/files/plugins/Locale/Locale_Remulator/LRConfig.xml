@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LRConfig>
+  <Profiles Type="exe">
+    <Profile Name="Run in Japanese" Guid="688d4946-eed5-4983-9915-a0022f0f759c">
+      <Location>ja-JP</Location>
+      <CodePage>932</CodePage>
+      <LCID>1041</LCID>
+      <TimeZone>Tokyo Standard Time</TimeZone>
+      <Bias>540</Bias>
+      <RunAsAdmin>false</RunAsAdmin>
+      <HookIME>false</HookIME>
+      <HookLCID>true</HookLCID>
+    </Profile>
+    <Profile Name="Run in Japanese (Admin)" Guid="2b13d25c-7296-45a2-81a5-590d53aa05e5">
+      <Location>ja-JP</Location>
+      <CodePage>932</CodePage>
+      <LCID>1041</LCID>
+      <TimeZone>Tokyo Standard Time</TimeZone>
+      <Bias>540</Bias>
+      <RunAsAdmin>true</RunAsAdmin>
+      <HookIME>true</HookIME>
+      <HookLCID>true</HookLCID>
+    </Profile>
+    <Profile Name="Run in Taiwan (Admin)" Guid="067132fc-aed1-46f5-bce1-4eda638ce44a">
+      <Location>zh-TW</Location>
+      <CodePage>950</CodePage>
+      <LCID>1028</LCID>
+      <TimeZone>Taipei Standard Time</TimeZone>
+      <Bias>480</Bias>
+      <RunAsAdmin>true</RunAsAdmin>
+      <HookIME>true</HookIME>
+      <HookLCID>true</HookLCID>
+    </Profile>
+    <Profile Name="Run in Korean (Admin)" Guid="e3f96c5f-387f-4ecd-afaa-df5b5ab25364">
+      <Location>ko-KR</Location>
+      <CodePage>949</CodePage>
+      <LCID>1042</LCID>
+      <TimeZone>Korea Standard Time</TimeZone>
+      <Bias>540</Bias>
+      <RunAsAdmin>true</RunAsAdmin>
+      <HookIME>true</HookIME>
+      <HookLCID>true</HookLCID>
+    </Profile>
+  </Profiles>
+</LRConfig>
