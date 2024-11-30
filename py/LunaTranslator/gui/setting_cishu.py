@@ -44,7 +44,7 @@ def gethiragrid(self):
             items[-1]["callback"] = gobject.baseobject.starthira
             _3 = D_getIconButton(
                 callback=functools.partial(
-                    autoinitdialogx,
+                    autoinitdialog,
                     self,
                     globalconfig["hirasetting"][name]["args"],
                     globalconfig["hirasetting"][name]["name"],
