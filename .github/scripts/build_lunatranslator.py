@@ -161,12 +161,17 @@ def downloadLocaleEmulator():
     )
     p = subprocess.Popen("LocaleEmulator/LEInstaller.exe")
     while 1:
-        if os.path.exists("LocaleEmulator/LECommonLibrary.dll") and os.path.exists(
-            "LocaleEmulator/LEConfig.xml"
-        ):
+        if os.path.exists("LocaleEmulator/LECommonLibrary.dll"):
             break
         time.sleep(0.1)
     p.kill()
+    p = subprocess.Popen("LocaleEmulator/LEProc.exe")
+    while 1:
+        if os.path.exists("LocaleEmulator/LEConfig.xml"):
+            break
+        time.sleep(0.1)
+    p.kill()
+
     for f in [
         "LoaderDll.dll",
         "LocaleEmulator.dll",
