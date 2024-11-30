@@ -84,30 +84,6 @@ def downloadBrotli():
     shutil.move("brotli64/brotlidec.dll", f"{rootDir}/files/plugins/DLL64")
 
 
-def downloadlr():
-
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {LocaleRe}")
-    subprocess.run(f"7z x {LocaleRe.split('/')[-1]} -oLR")
-    os.makedirs(
-        rf"{rootDir}\files\plugins\Locale\Locale_Remulator.1.5.4",
-        exist_ok=True,
-    )
-    for _dir, _, _fs in os.walk("LR"):
-        for f in _fs:
-            if f in [
-                "LRHookx64.dll",
-                "LRHookx32.dll",
-                "LRConfig.xml",
-                "LRProc.exe",
-                "LRSubMenus.dll",
-            ]:
-                shutil.move(
-                    os.path.join(_dir, f),
-                    rf"{rootDir}\files\plugins\Locale\Locale_Remulator.1.5.4",
-                )
-
-
 def move_directory_contents(source_dir, destination_dir):
     contents = os.listdir(source_dir)
 
@@ -145,28 +121,63 @@ def downloadmapie():
     move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
 
 
+def downloadlr():
+
+    os.chdir(rootDir + "\\temp")
+    subprocess.run(f"curl -LO {LocaleRe}")
+    subprocess.run(f"7z x {LocaleRe.split('/')[-1]} -oLR")
+    os.makedirs(
+        rf"{rootDir}\files\plugins\Locale\Locale_Remulator",
+        exist_ok=True,
+    )
+
+    p = subprocess.Popen("LR/LRProc.exe")
+    while 1:
+        if os.path.exists("LR/LRConfig.xml"):
+            break
+        time.sleep(0.1)
+    p.kill()
+    for f in [
+        "LRHookx64.dll",
+        "LRHookx32.dll",
+        "LRConfig.xml",
+        "LRProc.exe",
+        "LRSubMenus.dll",
+    ]:
+        shutil.move(
+            os.path.join("LR", f),
+            rf"{rootDir}\files\plugins\Locale\Locale_Remulator",
+        )
+
+
 def downloadLocaleEmulator():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {localeEmulatorFile}")
     subprocess.run(f"7z x {localeEmulatorFile.split('/')[-1]} -oLocaleEmulator")
 
     os.makedirs(
-        rf"{rootDir}\files\plugins\Locale\Locale.Emulator.2.5.0.1",
+        rf"{rootDir}\files\plugins\Locale\Locale.Emulator",
         exist_ok=True,
     )
-    for _dir, _, _fs in os.walk("LocaleEmulator"):
-        for f in _fs:
-            if f in [
-                "LoaderDll.dll",
-                "LocaleEmulator.dll",
-                "LEProc.exe",
-                "LEConfig.xml",
-                "LECommonLibrary.dll",
-            ]:
-                shutil.move(
-                    os.path.join(_dir, f),
-                    rf"{rootDir}\files\plugins\Locale\Locale.Emulator.2.5.0.1",
-                )
+    p = subprocess.Popen("LocaleEmulator/LEInstaller.exe")
+    while 1:
+        if os.path.exists("LocaleEmulator/LECommonLibrary.dll") and os.path.exists(
+            "LocaleEmulator/LEConfig.xml"
+        ):
+            break
+        time.sleep(0.1)
+    p.kill()
+    for f in [
+        "LoaderDll.dll",
+        "LocaleEmulator.dll",
+        "LEProc.exe",
+        "LEConfig.xml",
+        "LECommonLibrary.dll",
+    ]:
+        shutil.move(
+            os.path.join("LocaleEmulator", f),
+            rf"{rootDir}\files\plugins\Locale\Locale.Emulator",
+        )
 
 
 def downloadNtlea():

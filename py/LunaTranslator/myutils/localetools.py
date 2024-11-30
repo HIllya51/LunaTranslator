@@ -54,7 +54,7 @@ class le_internal(LEbase):
         LEProc = globalconfig.get("le_extra_path", "")
         if not (LEProc and os.path.exists(LEProc)):
             LEProc = os.path.abspath(
-                "files/plugins/Locale/Locale.Emulator.2.5.0.1/LEProc.exe"
+                "files/plugins/Locale/Locale.Emulator/LEProc.exe"
             )
         return LEProc
 
@@ -265,7 +265,7 @@ class lr_internal(LEbase):
         LEProc = globalconfig.get("lr_extra_path", "")
         if not (LEProc and os.path.exists(LEProc)):
             LEProc = os.path.abspath(
-                "files/plugins/Locale/Locale_Remulator.1.5.4/LRProc.exe"
+                "files/plugins/Locale/Locale_Remulator/LRProc.exe"
             )
         return LEProc
 
