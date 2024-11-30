@@ -1,18 +1,9 @@
 import windows, os, winsharedutils, re, functools
 from qtsymbols import *
 from myutils.config import savehook_new_data, get_launchpath, globalconfig, get_platform
-from gui.usefulwidget import (
-    getlineedit,
-    getsimplecombobox,
-    getspinbox,
-    getsimpleswitch,
-    SuperCombo,
-    getspinbox,
-    SplitLine,
-    getsimplepatheditor,
-    clearlayout,
-)
-from gui.dynalang import LFormLayout
+from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
+from traceback import print_exc
+import xml.etree.ElementTree as ET
 
 
 class Launcher:
@@ -52,107 +43,90 @@ class LEbase(Launcher):
         self.runX(execheck3264, usearg, dirpath, config)
 
 
-class settingxx:
-    use_which = ...
-
-    def switchidx(self, lay1, lay2, call1, call2, config, idx):
-        clearlayout(lay1)
-        clearlayout(lay2)
-        config[self.use_which] = idx
-        (call1, call2)[1 - idx](lay1, config)
-
-    def settingxx(self, layout, config, call1, call2):
-
-        switch = SuperCombo()
-        switch.addItems(["外部", "内置"])
-        lay1 = LFormLayout()
-        lay2 = LFormLayout()
-        layout.addRow("优先使用", switch)
-        layout.addRow(SplitLine())
-        layout.addRow(lay1)
-        layout.addRow(lay2)
-
-        switch.setCurrentIndex(config.get(self.use_which, 0))
-        switch.currentIndexChanged.connect(
-            functools.partial(self.switchidx, lay1, lay2, call1, call2, config)
-        )
-        switch.currentIndexChanged.emit(switch.currentIndex())
-
-
-class le_internal(LEbase, settingxx):
+class le_internal(LEbase):
     name = "Locale Emulator"
     id = "le"
-    use_which = "le_use_which"
     default = dict(
         LCID=0x11, CodePage=932, RedirectRegistry=False, HookUILanguageAPI=False
     )
 
+    def getlrpath(self):
+        LEProc = globalconfig.get("le_extra_path", "")
+        if not (LEProc and os.path.exists(LEProc)):
+            LEProc = os.path.abspath(
+                "files/plugins/Locale/Locale.Emulator.2.5.0.1/LEProc.exe"
+            )
+        return LEProc
+
     def profiles(self, config):
         _Names = []
         _Guids = []
+        _run_as_admins = []
         exe = config.get("gamepath", None)
 
         def parseone(xmlpath):
-            Names, Guids = [], []
+            Names, Guids, run_as_admins = [], [], []
             with open(xmlpath, "r", encoding="utf8") as ff:
-                for Name, Guid in re.findall('Name="(.*?)" Guid="(.*?)"', ff.read()):
-                    Names.append(Name)
-                    Guids.append(Guid)
-            return Names, Guids
+                root = ET.fromstring(ff.read())
+                profiles = root.find("Profiles").findall("Profile")
 
-        finds = [
-            os.path.join(
-                os.path.dirname(globalconfig.get("le_extra_path", "")), "LEConfig.xml"
-            )
-        ]
+                for profile in profiles:
+                    Names.append(profile.attrib.get("Name"))
+                    Guids.append(profile.attrib.get("Guid"))
+                    run_as_admins.append(
+                        profile.find("RunAsAdmin").text.lower() == "true"
+                    )
+
+            return Names, Guids, run_as_admins
+
+        finds = [os.path.join(os.path.dirname(self.getlrpath()), "LEConfig.xml")]
         if exe:
             finds.append(exe + ".le.config")
         for f in finds:
             try:
-                Names, Guids = parseone(f)
+                Names, Guids, run_as_admins = parseone(f)
                 _Guids += Guids
                 _Names += Names
+                _run_as_admins += run_as_admins
             except:
                 pass
 
-        return _Names, _Guids
+        return _Names, _Guids, _run_as_admins
 
-    def runXX(self, exe, usearg, dirpath, config):
-        LEProc = globalconfig.get("le_extra_path", "")
-        if not LEProc:
-            return
-        guids = self.profiles(config)[1]
-        guids_ = self.profiles({})[1]
+    def runX(self, exe, usearg, dirpath, config):
+        LEProc = self.getlrpath()
+        prof = self.profiles(config)
+        prof_ = self.profiles({})
         guid = config.get("leguid", None)
-        if guid not in guids:
-            guid = guids[0]
-        if guid in guids_:
-            arg = '"{}" -runas {} {}'.format(LEProc, guid, usearg)
+        if guid not in prof[1]:
+            guid = prof[1][0]
+        if guid in prof_[1]:
+            idx = prof_[1].index(guid)
+            admin = prof_[2][idx]
+            arg = "-runas {} {}".format(guid, usearg)
         else:
             # 程序的配置运行
-            arg = '"{}" -run {}'.format(LEProc, usearg)
-        windows.CreateProcess(
+            arg = "-run {}".format(usearg)
+            admin = False
+        windows.ShellExecute(
             None,
+            "runas" if admin else "open",
+            LEProc,
             arg,
-            None,
-            None,
-            False,
-            0,
-            None,
             dirpath,
-            windows.STARTUPINFO(),
+            windows.SW_SHOWNORMAL,
         )
 
     def reselect(self, config, Guids, path):
         globalconfig["le_extra_path"] = path
-        Names, _Guids = self.profiles(config)
+        Names, _Guids, _ = self.profiles(config)
         self.__profiles.clear()
         self.__profiles.addItems(Names)
         Guids.clear()
         Guids.extend(_Guids)
 
-    def settingX(self, layout, config):
-        Names, Guids = self.profiles(config)
+    def setting(self, layout, config):
+        Names, Guids, _ = self.profiles(config)
         self.__profiles = getsimplecombobox(Names, config, "leguid", internal=Guids)
         layout.addRow(
             "路径",
@@ -176,59 +150,12 @@ class le_internal(LEbase, settingxx):
                 continue
             config[k] = v
 
-    def runX(self, exe, usearg, dirpath, config):
-        if config.get(self.use_which, 0) == 0:
 
-            valid = os.path.exists(globalconfig.get("le_extra_path", ""))
-            if valid:
-                return self.runXX(exe, usearg, dirpath, config)
-        shareddllproxy = os.path.abspath("./files/plugins/shareddllproxy32")
-
-        def _get(k):
-            return config.get("LE_" + k, self.default[k])
-
-        param = '{ANSICodePage} {OEMCodePage} {LCID} "{dirname}" {RedirectRegistry} {HookUILanguageAPI}'.format(
-            LCID=_get("LCID"),
-            OEMCodePage=_get("CodePage"),
-            ANSICodePage=_get("CodePage"),
-            dirname=dirpath,
-            RedirectRegistry=int(_get("RedirectRegistry")),
-            HookUILanguageAPI=int(_get("HookUILanguageAPI")),
-        )
-        windows.CreateProcess(
-            None,
-            '"{}" {} {} {}'.format(shareddllproxy, "le", param, usearg),
-            None,
-            None,
-            False,
-            0,
-            None,
-            dirpath,
-            windows.STARTUPINFO(),
-        )
-
-    def setting(self, layout, config):
-        self.settingxx(layout, config, self.setting1, self.settingX)
-
-    def setting1(self, layout, config):
-
-        self.loaddf(config)
-        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "LE_LCID"))
-        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "LE_CodePage"))
-        layout.addRow(
-            "RedirectRegistry", getsimpleswitch(config, "LE_RedirectRegistry")
-        )
-        layout.addRow(
-            "HookUILanguageAPI", getsimpleswitch(config, "LE_HookUILanguageAPI")
-        )
-
-
-class NTLEAS64(LEbase, settingxx):
+class NTLEAS64(LEbase):
     name = "Ntleas"
     id = "ntleas"
     bit = 6
     bit64 = True
-    use_which = "ntleas_use_which"
     default = dict(LCID=0x411, CodePage=932, TimeZone=540)
 
     def loaddf(self, config):
@@ -238,82 +165,40 @@ class NTLEAS64(LEbase, settingxx):
                 continue
             config[k] = v
 
+    def getlrpath(self):
+        LEProc = globalconfig.get("ntleas_extra_path", "")
+        if not (LEProc and os.path.exists(LEProc)):
+            LEProc = os.path.abspath(
+                "files/plugins/Locale/ntleas046_x64/_no_use_for_dir"
+            )
+        return LEProc
+
     def runX(self, exe, usearg, dirpath, config):
-        if config.get(self.use_which, 0) == 0:
-
-            valid = os.path.exists(self.__path())
-            if valid:
-                return self.runXX(exe, usearg, dirpath, config)
-        shareddllproxy = os.path.abspath(
-            ("./files/plugins/shareddllproxy32", "./files/plugins/shareddllproxy64")[
-                self.bit == 6
-            ]
-        )
-
-        def _get(k):
-            return config.get("NT_" + k, self.default[k])
-
-        param = "{dwCompOption} {dwCodePage} {dwLCID} {dwTimeZone}".format(
-            dwCompOption=0,
-            dwCodePage=_get("CodePage"),
-            dwLCID=_get("LCID"),
-            dwTimeZone=-_get("TimeZone"),
-        )
-        windows.CreateProcess(
-            None,
-            '"{}" {} {} {}'.format(shareddllproxy, "ntleas", param, usearg),
-            None,
-            None,
-            False,
-            0,
-            None,
-            dirpath,
-            windows.STARTUPINFO(),
-        )
-
-    def setting1(self, layout, config):
-        self.loaddf(config)
-
-        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "NT_LCID"))
-        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "NT_CodePage"))
-        layout.addRow("TimeZone", getspinbox(0, 0xFFFFF, config, "NT_TimeZone"))
-
-    def setting(self, layout, config):
-        self.settingxx(layout, config, self.setting1, self.settingX)
-
-    def __path(self):
-        return os.path.join(
-            os.path.dirname(globalconfig.get("ntleas_extra_path", "")),
+        LEProc = os.path.join(
+            os.path.dirname(self.getlrpath()),
             ["x86", "x64"][self.bit64],
             "ntleas.exe",
         )
-
-    def runXX(self, exe, usearg, dirpath, config):
-        LEProc = self.__path()
         if not LEProc:
             return
 
-        arg = '"{}"  {} {}'.format(
-            LEProc,
+        arg = "{} {}".format(
             usearg,
             config.get("ntleasparam", '"C932" "L1041" "FMS PGothic" "P4"'),
         )
-        windows.CreateProcess(
+        windows.ShellExecute(
             None,
+            "open",
+            LEProc,
             arg,
-            None,
-            None,
-            False,
-            0,
-            None,
             dirpath,
-            windows.STARTUPINFO(),
+            windows.SW_SHOWNORMAL,
         )
 
     def reselect(self, path):
         globalconfig["ntleas_extra_path"] = path
 
-    def settingX(self, layout, config):
+    def setting(self, layout, config):
         if "ntleasparam" not in config:
             config["ntleasparam"] = '"C932" "L1041" "FMS PGothic" "P4"'
         layout.addRow(
@@ -337,10 +222,9 @@ class NTLEAS32(NTLEAS64):
     bit64 = False
 
 
-class lr_internal(LEbase, settingxx):
+class lr_internal(LEbase):
     name = "Locale Remulator"
     id = "lr"
-    use_which = "lr_use_which"
     default = dict(LCID=0x411, CodePage=932, TimeZone=540, HookIME=False, HookLCID=True)
 
     def loaddf(self, config):
@@ -350,100 +234,69 @@ class lr_internal(LEbase, settingxx):
                 continue
             config[k] = v
 
-    def runX(self, exe, usearg, dirpath, config):
-        if config.get(self.use_which, 0) == 0:
-
-            valid = os.path.exists(globalconfig.get("lr_extra_path", ""))
-            if valid:
-                return self.runXX(exe, usearg, dirpath, config)
-
-        shareddllproxy = os.path.abspath("./files/plugins/shareddllproxy32")
-
-        def _get(k):
-            return config.get("LR_" + k, self.default[k])
-
-        param = "{CodePage} {LCID} {Bias} {HookIME} {HookLCID}".format(
-            LCID=_get("LCID"),
-            CodePage=_get("CodePage"),
-            Bias=_get("TimeZone"),
-            HookIME=int(_get("HookIME")),
-            HookLCID=int(_get("HookLCID")),
-        )
-        windows.CreateProcess(
-            None,
-            '"{}" {} {} {}'.format(shareddllproxy, "LR", param, usearg),
-            None,
-            None,
-            False,
-            0,
-            None,
-            dirpath,
-            windows.STARTUPINFO(),
-        )
-
-    def setting(self, layout, config):
-        self.settingxx(layout, config, self.setting1, self.settingX)
-
-    def setting1(self, layout, config):
-        self.loaddf(config)
-
-        layout.addRow("LCID", getspinbox(0, 0xFFFFF, config, "LR_LCID"))
-        layout.addRow("CodePage", getspinbox(0, 0xFFFFF, config, "LR_CodePage"))
-        layout.addRow("TimeZone", getspinbox(0, 0xFFFFF, config, "LR_TimeZone"))
-        layout.addRow("HookIME", getsimpleswitch(config, "LR_HookIME"))
-        layout.addRow("HookLCID", getsimpleswitch(config, "LR_HookLCID"))
-
     def profiles(self, config):
 
         Names, Guids = [], []
+        run_as_admins = []
         try:
 
             with open(
                 os.path.join(
-                    os.path.dirname(globalconfig.get("lr_extra_path", "")),
+                    os.path.dirname(self.getlrpath()),
                     "LRConfig.xml",
                 ),
                 "r",
                 encoding="utf8",
             ) as ff:
-                for Name, Guid in re.findall('Name="(.*?)" Guid="(.*?)"', ff.read()):
-                    Names.append(Name)
-                    Guids.append(Guid)
-        except:
-            pass
-        return Names, Guids
+                root = ET.fromstring(ff.read())
+                profiles = root.find("Profiles").findall("Profile")
 
-    def runXX(self, exe, usearg, dirpath, config):
+                for profile in profiles:
+                    Names.append(profile.attrib.get("Name"))
+                    Guids.append(profile.attrib.get("Guid"))
+                    run_as_admins.append(
+                        profile.find("RunAsAdmin").text.lower() == "true"
+                    )
+        except:
+            print_exc()
+        return Names, Guids, run_as_admins
+
+    def getlrpath(self):
         LEProc = globalconfig.get("lr_extra_path", "")
-        if not LEProc:
-            return
-        guids = self.profiles(config)[1]
+        if not (LEProc and os.path.exists(LEProc)):
+            LEProc = os.path.abspath(
+                "files/plugins/Locale/Locale_Remulator.1.5.4/LRProc.exe"
+            )
+        return LEProc
+
+    def runX(self, exe, usearg, dirpath, config):
+
+        LEProc = self.getlrpath()
+        prof = self.profiles(config)
         guid = config.get("lrguid", None)
-        if guid not in guids:
-            guid = guids[0]
-        arg = '"{}"  {} {}'.format(LEProc, guid, usearg)
-        windows.CreateProcess(
+        if guid not in prof[1]:
+            guid = prof[1][0]
+        idx = prof[1].index(guid)
+        admin = prof[2][idx]
+        windows.ShellExecute(
             None,
-            arg,
-            None,
-            None,
-            False,
-            0,
-            None,
+            "runas" if admin else "open",
+            LEProc,
+            "{} {}".format(guid, usearg),
             dirpath,
-            windows.STARTUPINFO(),
+            windows.SW_SHOWNORMAL,
         )
 
     def reselect(self, config, Guids, path):
         globalconfig["lr_extra_path"] = path
-        Names, _Guids = self.profiles(config)
+        Names, _Guids, _ = self.profiles(config)
         self.__profiles.clear()
         self.__profiles.addItems(Names)
         Guids.clear()
         Guids.extend(_Guids)
 
-    def settingX(self, layout, config):
-        Names, Guids = self.profiles(config)
+    def setting(self, layout, config):
+        Names, Guids, _ = self.profiles(config)
         self.__profiles = getsimplecombobox(Names, config, "lrguid", internal=Guids)
         layout.addRow(
             "路径",

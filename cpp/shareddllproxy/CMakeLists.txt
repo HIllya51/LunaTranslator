@@ -11,13 +11,13 @@ generate_product_version(
    VERSION_PATCH ${VERSION_PATCH}
 )
 
-set(shareddllproxy_common shareddllproxy.cpp dllinject.cpp ntleas.cpp aspatch.cpp update.cpp ${versioninfo})
+set(shareddllproxy_common shareddllproxy.cpp dllinject.cpp aspatch.cpp update.cpp ${versioninfo})
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	add_executable(shareddllproxy ${shareddllproxy_common})
 
 else()
-	add_executable(shareddllproxy ${shareddllproxy_common} Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp le.cpp neospeech.cpp ../implsapi.cpp  LR.cpp)
+	add_executable(shareddllproxy ${shareddllproxy_common} Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp neospeech.cpp ../implsapi.cpp)
 	add_subdirectory(voiceroid2)
 endif()
 
@@ -28,6 +28,6 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set_target_properties(shareddllproxy PROPERTIES OUTPUT_NAME "shareddllproxy64")
 else()
 	target_precompile_headers(voiceroid2 REUSE_FROM pch) 
-	target_link_libraries(shareddllproxy nlohmann Mfplat mfuuid voiceroid2 Detours)
+	target_link_libraries(shareddllproxy nlohmann Mfplat mfuuid voiceroid2)
 	set_target_properties(shareddllproxy PROPERTIES OUTPUT_NAME "shareddllproxy32")
 endif()

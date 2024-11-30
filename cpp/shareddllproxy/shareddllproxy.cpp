@@ -1,17 +1,14 @@
 ﻿#pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
 
 int dllinjectwmain(int argc, wchar_t *argv[]);
-int ntleaswmain(int argc, wchar_t *wargv[]);
 int updatewmain(int argc, wchar_t *wargv[]);
 bool checkisapatch();
 #ifndef _WIN64
 // int mainmp3(int argc, wchar_t *argv[]);
-int LRwmain(int argc, wchar_t *argv[]);
 int jbjwmain(int argc, wchar_t *argv[]);
 int dreyewmain(int argc, wchar_t *argv[]);
 int kingsoftwmain(int argc, wchar_t *argv[]);
 int voiceroid2wmain(int argc, wchar_t *argv[]);
-int lewmain(int argc, wchar_t *argv[]);
 int neospeech(int argc, wchar_t *argv[]);
 int neospeechlist(int argc, wchar_t *argv[]);
 int eztrans(int argc, wchar_t *argv[]);
@@ -62,13 +59,10 @@ int wmain(int argc, wchar_t *argv[])
     typedef int (*wmaint)(int, wchar_t **);
     std::map<std::wstring, wmaint> fm = {
         {L"dllinject", dllinjectwmain},
-        {L"ntleas", ntleaswmain},
         {L"listpm", listprocessmodule},
         {L"update", updatewmain},
 #ifndef _WIN64
         // {L"mainmp3", mainmp3},
-        {L"LR", LRwmain},
-        {L"le", lewmain},
         {L"jbj7", jbjwmain},
         {L"dreye", dreyewmain},
         {L"kingsoft", kingsoftwmain},

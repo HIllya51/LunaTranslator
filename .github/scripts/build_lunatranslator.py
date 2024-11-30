@@ -90,15 +90,21 @@ def downloadlr():
     subprocess.run(f"curl -LO {LocaleRe}")
     subprocess.run(f"7z x {LocaleRe.split('/')[-1]} -oLR")
     os.makedirs(
-        f"{rootDir}/files/plugins/Locale_Remulator",
+        rf"{rootDir}\files\plugins\Locale\Locale_Remulator.1.5.4",
         exist_ok=True,
     )
     for _dir, _, _fs in os.walk("LR"):
         for f in _fs:
-            if f in ["LRHookx64.dll", "LRHookx32.dll"]:
+            if f in [
+                "LRHookx64.dll",
+                "LRHookx32.dll",
+                "LRConfig.xml",
+                "LRProc.exe",
+                "LRSubMenus.dll",
+            ]:
                 shutil.move(
                     os.path.join(_dir, f),
-                    f"{rootDir}/files/plugins/Locale_Remulator",
+                    rf"{rootDir}\files\plugins\Locale\Locale_Remulator.1.5.4",
                 )
 
 
@@ -123,11 +129,14 @@ def downloadmecab():
     subprocess.run(f"curl -LO {mylinks['mecab.zip']}")
     subprocess.run(f"7z x mecab.zip -oALL")
     move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
+
+
 def downloadmecabxp():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {mylinks['mecab_xp.zip']}")
     subprocess.run(f"7z x mecab_xp.zip -oALL")
     move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
+
 
 def downloadmapie():
     os.chdir(rootDir + "\\temp")
@@ -140,28 +149,37 @@ def downloadLocaleEmulator():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {localeEmulatorFile}")
     subprocess.run(f"7z x {localeEmulatorFile.split('/')[-1]} -oLocaleEmulator")
-    shutil.move(
-        "LocaleEmulator/LoaderDll.dll",
-        f"{rootDir}/files/plugins/LoaderDll.dll",
+
+    os.makedirs(
+        rf"{rootDir}\files\plugins\Locale\Locale.Emulator.2.5.0.1",
+        exist_ok=True,
     )
-    shutil.move(
-        "LocaleEmulator/LocaleEmulator.dll",
-        f"{rootDir}/files/plugins/LocaleEmulator.dll",
-    )
+    for _dir, _, _fs in os.walk("LocaleEmulator"):
+        for f in _fs:
+            if f in [
+                "LoaderDll.dll",
+                "LocaleEmulator.dll",
+                "LEProc.exe",
+                "LEConfig.xml",
+                "LECommonLibrary.dll",
+            ]:
+                shutil.move(
+                    os.path.join(_dir, f),
+                    rf"{rootDir}\files\plugins\Locale\Locale.Emulator.2.5.0.1",
+                )
 
 
 def downloadNtlea():
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO {ntleaFile}")
     subprocess.run(f"7z x {ntleaFile.split('/')[-1]} -ontlea")
-    shutil.move(
-        "ntlea/x86/ntleai.dll",
-        f"{rootDir}/files/plugins/NTLEAS/ntleai.dll",
+
+    os.makedirs(
+        rf"{rootDir}\files\plugins\Locale\ntleas046_x64",
+        exist_ok=True,
     )
-    shutil.move(
-        "ntlea/x64/ntleak.dll",
-        f"{rootDir}/files/plugins/NTLEAS/ntleak.dll",
-    )
+    shutil.copytree("ntlea/x86", rf"{rootDir}\files\plugins\Locale\ntleas046_x64\x86")
+    shutil.copytree("ntlea/x64", rf"{rootDir}\files\plugins\Locale\ntleas046_x64\x64")
 
 
 def downloadCurl():
