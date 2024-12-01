@@ -1,3 +1,4 @@
+from PyQt5.QtGui import QMouseEvent
 from qtsymbols import *
 from myutils.config import globalconfig, static_data
 from rendertext.somefunctions import dataget
@@ -50,6 +51,64 @@ class Qlabel_c(QLabel):
             pass
         self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         return super().leaveEvent(a0)
+
+
+class QTextBrowser_1(QTextBrowser):
+    def __init__(self, parent) -> None:
+        super().__init__(parent)
+        self.pr = None
+        self.prpos = QPoint()
+        self.selectionChanged.connect(self.selectcg)
+
+    def selectcg(self):
+        self.pr = self.textCursor().selectedText()
+
+    def getcurrlabel(self, ev: QMouseEvent):
+        for label in self.parent().searchmasklabels:
+            if not label.geometry().contains(ev.pos()):
+                continue
+            return label
+
+    def mousePressEvent(self, ev: QMouseEvent):
+        self.prpos = ev.pos()
+        return super().mousePressEvent(ev)
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        try:
+            label = self.getcurrlabel(event)
+            if label and label.refmask.callback:
+                if event.button() == Qt.MouseButton.LeftButton:
+                    if self.prpos == event.pos() or not self.pr:
+                        label.refmask.callback(False)
+                elif event.button() == Qt.MouseButton.RightButton:
+                    if not self.pr:
+                        label.refmask.callback(True)
+        except:
+            pass
+        return super().mouseReleaseEvent(event)
+
+    def mouseMoveEvent(self, ev: QMouseEvent):
+        for label in self.parent().searchmasklabels:
+            if label.geometry().contains(ev.pos()):
+                continue
+            try:
+                label.refmask.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+                label.company.refmask.setStyleSheet(
+                    "background-color: rgba(0,0,0,0.01);"
+                )
+            except:
+                pass
+        targetlabel = self.getcurrlabel(ev)
+        if targetlabel:
+            try:
+                targetlabel.refmask.setStyleSheet("background-color: rgba(0,0,0,0.5);")
+                targetlabel.company.refmask.setStyleSheet(
+                    "background-color: rgba(0,0,0,0.5);"
+                )
+            except:
+                pass
+
+        return super().mouseMoveEvent(ev)
 
 
 class TextBrowser(QWidget, dataget):
@@ -125,6 +184,23 @@ class TextBrowser(QWidget, dataget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
+
+        self.savetaglabels = []
+        self.searchmasklabels_clicked = []
+        self.searchmasklabels_clicked2 = []
+        self.searchmasklabels = []
+        self.backcolorlabels = []
+
+        self.yinyinglabels = []
+        self.yinyinglabels_idx = 0
+
+        self.yinyingposline = 0
+        self.lastcolor = None
+        self.iteryinyinglabelsave = {}
+        self.saveiterclasspointer = {}
+        self.extra_height = 0
+        self.cleared = True
+
         self.setAcceptDrops(True)
         self.atback_color = QLabel(self)
         self.atback_color.setMouseTracking(True)
@@ -133,7 +209,7 @@ class TextBrowser(QWidget, dataget):
 
         self.toplabel2 = QLabel(self)
         self.toplabel2.setMouseTracking(True)
-        self.textbrowser = QTextBrowser(self)
+        self.textbrowser = QTextBrowser_1(self)
         self.textbrowser.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.textbrowser.customContextMenuRequested.connect(self.showmenu)
 
@@ -168,20 +244,6 @@ class TextBrowser(QWidget, dataget):
         self.masklabel_top = QLabel(self)
         self.masklabel_top.setMouseTracking(True)
         # self.masklabel_bottom.setStyleSheet('background-color:red')
-        self.savetaglabels = []
-        self.searchmasklabels_clicked = []
-        self.searchmasklabels = []
-        self.backcolorlabels = []
-
-        self.yinyinglabels = []
-        self.yinyinglabels_idx = 0
-
-        self.yinyingposline = 0
-        self.lastcolor = None
-        self.iteryinyinglabelsave = {}
-        self.saveiterclasspointer = {}
-        self.extra_height = 0
-        self.cleared = True
         self.resets1()
 
     def resets1(self):
@@ -201,6 +263,8 @@ class TextBrowser(QWidget, dataget):
         for label in self.searchmasklabels:
             label.hide()
         for label in self.searchmasklabels_clicked:
+            label.hide()
+        for label in self.searchmasklabels_clicked2:
             label.hide()
         for label in self.savetaglabels:
             label.hide()
@@ -652,15 +716,24 @@ class TextBrowser(QWidget, dataget):
             ql = QLabel(self.atback_color)
             ql.setMouseTracking(True)
             self.searchmasklabels.append(ql)
-
-            ql = Qlabel_c(self.textbrowser)
+            ql_1 = QLabel(ql)
+            ql_1.setMouseTracking(True)
+            ql.refmask = ql_1
+            ql_1.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+            self.searchmasklabels_clicked.append(ql_1)
+            ql = Qlabel_c(self.masklabel)
             ql.setMouseTracking(True)
             ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
-            self.searchmasklabels_clicked.append(ql)
+            self.searchmasklabels_clicked2.append(ql)
         if isfenciclick:
-            self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
+            self.searchmasklabels_clicked[labeli].setGeometry(0, 0, pos1[2], pos1[3])
             self.searchmasklabels_clicked[labeli].show()
             self.searchmasklabels_clicked[labeli].callback = functools.partial(
+                gobject.baseobject.clickwordcallback, word
+            )
+            self.searchmasklabels_clicked2[labeli].setGeometry(*pos1)
+            self.searchmasklabels_clicked2[labeli].show()
+            self.searchmasklabels_clicked2[labeli].callback = functools.partial(
                 gobject.baseobject.clickwordcallback, word
             )
         if isshow_fenci and color:
@@ -702,8 +775,15 @@ class TextBrowser(QWidget, dataget):
                 self.searchmasklabels_clicked[labeli].company = (
                     self.searchmasklabels_clicked[labeli - 1]
                 )
+                self.searchmasklabels_clicked2[labeli - 1].company = (
+                    self.searchmasklabels_clicked2[labeli]
+                )
+                self.searchmasklabels_clicked2[labeli].company = (
+                    self.searchmasklabels_clicked2[labeli - 1]
+                )
             else:
                 self.searchmasklabels_clicked[labeli].company = None
+                self.searchmasklabels_clicked2[labeli].company = None
             labeli += 1
 
     def _getfh(self, half, origin=True, getfm=False):
