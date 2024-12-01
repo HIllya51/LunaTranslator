@@ -48,15 +48,9 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
             os.makedirs(dirname, exist_ok=True)
             fname = os.path.join(dirname, tmsp)
         except:
-            fnamebase = "cache/screenshot"
-            if not os.path.exists(fnamebase):
-                fnamebase = windows.SHGetFolderPathW(windows.CSIDL_MYPICTURES)
-                if not (fnamebase and os.path.exists(fnamebase)):
-                    fnamebase = "cache/screenshot"
-                else:
-                    fnamebase = os.path.join(fnamebase, "LunaTranslator")
-            fname = os.path.join(fnamebase, exename, tmsp)
-            os.makedirs(os.path.join(fnamebase, exename), exist_ok=True)
+            fname = gobject.getcachedir(
+                "screenshot/{}/{}".format(exename, tmsp), abspath=False
+            )
 
     def callback_1(callback_origin, uid, tocliponly, p: QPixmap, fn):
         if p.isNull():
