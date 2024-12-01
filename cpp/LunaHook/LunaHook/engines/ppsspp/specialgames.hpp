@@ -935,6 +935,9 @@ namespace ppsspp
 		{0x8B0449C, {0, 1, 0, 0, ULJS00124, "ULJM06025"}},
 		// 遙かなる時空の中で６
 		{0x89FD41C, {0, 0xf, 0, 0, NPJH50901, "NPJH50901"}},
+		// SNOW BOUND LAND
+		{0x88D6180, {0, 0, 0, 0, ULJM05943F, "ULJM06328"}}, // t
+		{0x888AD68, {0, 0, 0, 0, ULJM05943F, "ULJM06328"}}, // n+t
 
 	};
 
