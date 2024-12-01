@@ -50,7 +50,7 @@ namespace
         int padding;
         decltype(HookParam::text_fun) hookfunc;
         decltype(HookParam::filter_fun) filterfun;
-        const char *_id;
+        uint64_t _id;
         const char *_version;
     };
     std::unordered_map<uint64_t, emfuncinfo> emfunctionhooks;
@@ -67,7 +67,7 @@ namespace
         {
             // 判断是有效的info
             auto checkversion = (em._version == 0) || (std::string(em._version) == (game_info.version));
-            auto checkid = (std::stoll(em._id, 0, 16) == game_info.id);
+            auto checkid = em._id == game_info.id;
             return checkid && checkversion;
         }
         else
@@ -77,6 +77,16 @@ namespace
             return true;
         }
     }
+}
+std::string ull2hex(uint64_t u)
+{
+    std::stringstream num;
+    num << std::uppercase
+        << std::hex
+        << std::setw(16)
+        << std::setfill('0')
+        << game_info.id;
+    return num.str();
 }
 bool Hook_Network_RoomMember_SendGameInfo()
 {
@@ -122,13 +132,7 @@ bool Hook_Network_RoomMember_SendGameInfo()
             game_info = *(GameInfo *)stack->rdx;
             if (game_info.id)
             {
-                std::stringstream num;
-                num << std::uppercase
-                    << std::hex
-                    << std::setw(16)
-                    << std::setfill('0')
-                    << game_info.id;
-                HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), num.str().c_str(), game_info.version.c_str());
+                HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
             }
             jitaddrclear();
         };
@@ -203,7 +207,7 @@ bool yuzu::attach_function()
             hpinternal.argidx = op.argidx;
             hpinternal.padding = op.padding;
             hpinternal.jittype = JITTYPE::YUZU;
-            NewHook(hpinternal, op._id);
+            NewHook(hpinternal, ull2hex(op._id).c_str());
         }();
         delayinsertNewHook(em_address);
     };
@@ -2360,1144 +2364,1144 @@ namespace
     {
         emfunctionhooks = {
             // Memories Off
-            {0x8003eeac, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100978013276000", "1.0.0"}},
-            {0x8003eebc, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100978013276000", "1.0.1"}},
+            {0x8003eeac, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100978013276000ull, "1.0.0"}},
+            {0x8003eebc, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100978013276000ull, "1.0.1"}},
             // Memories Off ～それから～
-            {0x8003fb7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100B4A01326E000", "1.0.0"}},
-            {0x8003fb8c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100B4A01326E000", "1.0.1"}},
+            {0x8003fb7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100B4A01326E000ull, "1.0.0"}},
+            {0x8003fb8c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100B4A01326E000ull, "1.0.1"}},
             // ファミコン探偵倶楽部 消えた後継者
-            {0x80052a10, {CODEC_UTF16, 0, 0, mages_readstring<3>, 0, "0100B4500F7AE000", "1.0.0"}},
+            {0x80052a10, {CODEC_UTF16, 0, 0, mages_readstring<3>, 0, 0x0100B4500F7AE000ull, "1.0.0"}},
             // ファミコン探偵倶楽部PartII うしろに立つ少女
-            {0x8004cb30, {CODEC_UTF16, 0, 0, mages_readstring<3>, 0, "010078400F7B0000", "1.0.0"}},
+            {0x8004cb30, {CODEC_UTF16, 0, 0, mages_readstring<3>, 0, 0x010078400F7B0000ull, "1.0.0"}},
             // Memories Off 2nd
-            {0x8003ee0c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100D31013274000", "1.0.0"}},
-            {0x8003ee1c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100D31013274000", "1.0.1"}},
+            {0x8003ee0c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100D31013274000ull, "1.0.0"}},
+            {0x8003ee1c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100D31013274000ull, "1.0.1"}},
             // 想い出にかわる君 ～メモリーズオフ～
-            {0x8003ef6c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100FFA013272000", "1.0.0"}},
-            {0x8003ef7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100FFA013272000", "1.0.1"}},
+            {0x8003ef6c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100FFA013272000ull, "1.0.0"}},
+            {0x8003ef7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100FFA013272000ull, "1.0.1"}},
             // メモリーズオフ6 ～T-wave～
-            {0x80043d7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010047A013268000", "1.0.0"}},
-            {0x80043d5c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010047A013268000", "1.0.1"}},
+            {0x80043d7c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x010047A013268000ull, "1.0.0"}},
+            {0x80043d5c, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x010047A013268000ull, "1.0.1"}},
             // メモリーズオフ ゆびきりの記憶
-            {0x800440ec, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010079C012896000", "1.0.0"}},
+            {0x800440ec, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x010079C012896000ull, "1.0.0"}},
             // Memories Off #5 とぎれたフィルム
-            {0x8003f6ac, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010073901326C000", "1.0.0"}},
-            {0x8003f5fc, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "010073901326C000", "1.0.1"}},
+            {0x8003f6ac, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x010073901326C000ull, "1.0.0"}},
+            {0x8003f5fc, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x010073901326C000ull, "1.0.1"}},
             // シンスメモリーズ 星天の下で
-            {0x80048cc8, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, "0100E94014792000", 0}}, // line + name => join
-            {0x8004f44c, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, "0100E94014792000", 0}}, // fast trophy
-            {0x8004f474, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, "0100E94014792000", 0}}, // prompt
-            {0x80039dc0, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, "0100E94014792000", 0}}, // choice
+            {0x80048cc8, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, 0x0100E94014792000ull, 0}}, // line + name => join
+            {0x8004f44c, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, 0x0100E94014792000ull, 0}}, // fast trophy
+            {0x8004f474, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, 0x0100E94014792000ull, 0}}, // prompt
+            {0x80039dc0, {CODEC_UTF16, 0, 0, mages_readstring<4>, 0, 0x0100E94014792000ull, 0}}, // choice
             // やはりゲームでも俺の青春ラブコメはまちがっている。
-            {0x8005DFB8, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100E0D0154BC000", "1.0.0"}},
+            {0x8005DFB8, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100E0D0154BC000ull, "1.0.0"}},
             // CHAOS;HEAD NOAH
-            {0x80046700, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}},
-            {0x8003A2c0, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}}, // choice
-            {0x8003EAB0, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}}, // TIPS list (menu)
-            {0x8004C648, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}}, // system message
-            {0x80050374, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, "0100957016B90000", "1.0.0"}}, // TIPS (red)
+            {0x80046700, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100957016B90000ull, "1.0.0"}},
+            {0x8003A2c0, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100957016B90000ull, "1.0.0"}}, // choice
+            {0x8003EAB0, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100957016B90000ull, "1.0.0"}}, // TIPS list (menu)
+            {0x8004C648, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100957016B90000ull, "1.0.0"}}, // system message
+            {0x80050374, {CODEC_UTF16, 0, 0, mages_readstring<0>, 0, 0x0100957016B90000ull, "1.0.0"}}, // TIPS (red)
             // 白と黒のアリス
-            {0x80013f20, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
-            {0x80013f94, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
-            {0x8001419c, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
+            {0x80013f20, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
+            {0x80013f94, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
+            {0x8001419c, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
             // 白と黒のアリス -Twilight line-
-            {0x80014260, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
-            {0x800142d4, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
-            {0x800144dc, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, "0100A460141B8000", "1.0.0"}},
+            {0x80014260, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
+            {0x800142d4, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
+            {0x800144dc, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
             // CLANNAD
-            {0x80072d00, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100A3A00CC7E000, "0100A3A00CC7E000", "1.0.0"}},
-            {0x80072d30, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100A3A00CC7E000, "0100A3A00CC7E000", "1.0.7"}},
+            {0x80072d00, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100A3A00CC7E000, 0x0100A3A00CC7E000ull, "1.0.0"}},
+            {0x80072d30, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100A3A00CC7E000, 0x0100A3A00CC7E000ull, "1.0.7"}},
             // VARIABLE BARRICADE NS
-            {0x800e3424, {CODEC_UTF8, 0, 0, 0, F010045C0109F2000, "010045C0109F2000", "1.0.1"}}, //"System Messages + Choices"), //Also includes the names of characters,
-            {0x800fb080, {CODEC_UTF8, 3, 0, 0, F010045C0109F2000, "010045C0109F2000", "1.0.1"}}, // Main Text
+            {0x800e3424, {CODEC_UTF8, 0, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, //"System Messages + Choices"), //Also includes the names of characters,
+            {0x800fb080, {CODEC_UTF8, 3, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, // Main Text
             // AMNESIA for Nintendo Switch
-            {0x805bba5c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100A1E00BFEA000, "0100A1E00BFEA000", "1.0.1"}}, // dialogue
-            {0x805e9930, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100A1E00BFEA000, "0100A1E00BFEA000", "1.0.1"}}, // choice
-            {0x805e7fd8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100A1E00BFEA000, "0100A1E00BFEA000", "1.0.1"}}, // name
+            {0x805bba5c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // dialogue
+            {0x805e9930, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // choice
+            {0x805e7fd8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // name
             // 蝶の毒 華の鎖
-            {0x80095010, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, "0100A1200CA3C000", "2.0.1"}}, // Main Text + Names
+            {0x80095010, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, 0x0100A1200CA3C000ull, "2.0.1"}}, // Main Text + Names
             // Live a Live
-            {0x80a05170, {CODEC_UTF16, 0, 0, 0, F0100982015606000, "0100C29017106000", "1.0.0"}},
+            {0x80a05170, {CODEC_UTF16, 0, 0, 0, F0100982015606000, 0x0100C29017106000ull, "1.0.0"}},
             // さくらの雲＊スカアレットの恋
-            {0x804e4858, {CODEC_UTF8, 3, 1, 0, F01006590155AC000, "01006590155AC000", "1.0.0"}}, // name
-            {0x804e4870, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01006590155AC000", "1.0.0"}}, // dialogue
+            {0x804e4858, {CODEC_UTF8, 3, 1, 0, F01006590155AC000, 0x01006590155AC000ull, "1.0.0"}}, // name
+            {0x804e4870, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01006590155AC000ull, "1.0.0"}}, // dialogue
             // マジェスティック☆マジョリカル
-            {0x80557408, {CODEC_UTF8, 0, 0, 0, F01000200194AE000, "01000200194AE000", "1.0.0"}}, // name
-            {0x8059ee94, {CODEC_UTF8, 3, 0, 0, F01000200194AE000, "01000200194AE000", "1.0.0"}}, // player name
-            {0x80557420, {CODEC_UTF8, 0, 0, 0, F01000200194AE000, "01000200194AE000", "1.0.0"}}, // dialogue
+            {0x80557408, {CODEC_UTF8, 0, 0, 0, F01000200194AE000, 0x01000200194AE000ull, "1.0.0"}}, // name
+            {0x8059ee94, {CODEC_UTF8, 3, 0, 0, F01000200194AE000, 0x01000200194AE000ull, "1.0.0"}}, // player name
+            {0x80557420, {CODEC_UTF8, 0, 0, 0, F01000200194AE000, 0x01000200194AE000ull, "1.0.0"}}, // dialogue
             // マツリカの炯-kEi- 天命胤異伝
-            {0x8017ad54, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, "0100EA001A626000", "1.0.0"}}, // text
-            {0x80174d4c, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, "0100EA001A626000", "1.0.0"}}, // name
+            {0x8017ad54, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, 0x0100EA001A626000ull, "1.0.0"}}, // text
+            {0x80174d4c, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, 0x0100EA001A626000ull, "1.0.0"}}, // name
             // キューピット・パラサイト
-            {0x80057910, {CODEC_UTF32, 2, 0, 0, F0100F7E00DFC8000, "0100F7E00DFC8000", "1.0.1"}}, // name + text
-            {0x80169df0, {CODEC_UTF32, 0, 0, 0, F0100F7E00DFC8000, "0100F7E00DFC8000", "1.0.1"}}, // choice
+            {0x80057910, {CODEC_UTF32, 2, 0, 0, F0100F7E00DFC8000, 0x0100F7E00DFC8000ull, "1.0.1"}}, // name + text
+            {0x80169df0, {CODEC_UTF32, 0, 0, 0, F0100F7E00DFC8000, 0x0100F7E00DFC8000ull, "1.0.1"}}, // choice
             // ラディアンテイル
-            {0x80075190, {CODEC_UTF8, 1, 0, 0, F0100925014864000, "0100925014864000", "1.0.0"}}, // prompt
-            {0x8002fb18, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100925014864000", "1.0.0"}}, // name
-            {0x8002fd7c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100925014864000", "1.0.0"}}, // text
-            {0x8004cf28, {CODEC_UTF8, 1, 0, 0, F0100925014864000, "0100925014864000", "1.0.0"}}, // text
+            {0x80075190, {CODEC_UTF8, 1, 0, 0, F0100925014864000, 0x0100925014864000ull, "1.0.0"}}, // prompt
+            {0x8002fb18, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100925014864000ull, "1.0.0"}}, // name
+            {0x8002fd7c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100925014864000ull, "1.0.0"}}, // text
+            {0x8004cf28, {CODEC_UTF8, 1, 0, 0, F0100925014864000, 0x0100925014864000ull, "1.0.0"}}, // text
             // MUSICUS
-            {0x80462DD4, {CODEC_UTF8, 0, 1, 0, F01006590155AC000, "01000130150FA000", "1.0.0"}}, // name
-            {0x80462DEC, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01000130150FA000", "1.0.0"}}, // dialogue 1
-            {0x80480d4c, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01000130150FA000", "1.0.0"}}, // dialogue 2
-            {0x804798e0, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01000130150FA000", "1.0.0"}}, // choice
+            {0x80462DD4, {CODEC_UTF8, 0, 1, 0, F01006590155AC000, 0x01000130150FA000ull, "1.0.0"}}, // name
+            {0x80462DEC, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01000130150FA000ull, "1.0.0"}}, // dialogue 1
+            {0x80480d4c, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01000130150FA000ull, "1.0.0"}}, // dialogue 2
+            {0x804798e0, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01000130150FA000ull, "1.0.0"}}, // choice
             // Story of Seasons a Wonderful Life
-            {0x80ac4d88, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, "0100936018EB4000", "1.0.3"}}, // Main text
-            {0x808f7e84, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, "0100936018EB4000", "1.0.3"}}, // Item name
-            {0x80bdf804, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, "0100936018EB4000", "1.0.3"}}, // Item description
+            {0x80ac4d88, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, 0x0100936018EB4000ull, "1.0.3"}}, // Main text
+            {0x808f7e84, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, 0x0100936018EB4000ull, "1.0.3"}}, // Item name
+            {0x80bdf804, {CODEC_UTF32, 0, 0, 0, F0100936018EB4000, 0x0100936018EB4000ull, "1.0.3"}}, // Item description
             // 乙女ゲームの破滅フラグしかない悪役令嬢に転生してしまった… 〜波乱を呼ぶ海賊〜
-            {0x81e75940, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100982015606000", "1.0.0"}}, // Hamekai.TalkPresenter$$AddMessageBacklog
-            {0x81c9ae60, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100982015606000", "1.0.0"}}, // Hamekai.ChoicesText$$SetText
-            {0x81eb7dc0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100982015606000", "1.0.0"}}, // Hamekai.ShortStoryTextView$$AddText
+            {0x81e75940, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, 0x0100982015606000ull, "1.0.0"}}, // Hamekai.TalkPresenter$$AddMessageBacklog
+            {0x81c9ae60, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, 0x0100982015606000ull, "1.0.0"}}, // Hamekai.ChoicesText$$SetText
+            {0x81eb7dc0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, 0x0100982015606000ull, "1.0.0"}}, // Hamekai.ShortStoryTextView$$AddText
             // Death end re;Quest
-            {0x80241088, {CODEC_UTF8, 8, 0, 0, F0100AEC013DDA000, "0100AEC013DDA000", "1.0.0"}}, // english ver
+            {0x80241088, {CODEC_UTF8, 8, 0, 0, F0100AEC013DDA000, 0x0100AEC013DDA000ull, "1.0.0"}}, // english ver
             // Death end re;Quest 2
-            {0x80225C3C, {CODEC_UTF8, 8, 0, 0, F010001D015260000, "010001D015260000", "1.0.0"}},
+            {0x80225C3C, {CODEC_UTF8, 8, 0, 0, F010001D015260000, 0x010001D015260000ull, "1.0.0"}},
             // Death end re;Quest Code Z
-            {0x82349188, {CODEC_UTF16, 1, 0, 0, 0, "010054B01BE90000", "1.0.0"}},
-            {0x823DC128, {CODEC_UTF16, 1, 0, 0, 0, "010054B01BE90000", "1.0.2"}},
+            {0x82349188, {CODEC_UTF16, 1, 0, 0, 0, 0x010054B01BE90000ull, "1.0.0"}},
+            {0x823DC128, {CODEC_UTF16, 1, 0, 0, 0, 0x010054B01BE90000ull, "1.0.2"}},
             // ――ッ違う!!!
-            {0x81DD6010, {CODEC_UTF16, 1, -32, 0, 0, "01009A401C1B0000", "1.02"}}, // english ver, only long string, short string can't find.
+            {0x81DD6010, {CODEC_UTF16, 1, -32, 0, 0, 0x01009A401C1B0000ull, "1.02"}}, // english ver, only long string, short string can't find.
             // あかやあかしやあやかしの 綴
-            {0x8176D78C, {CODEC_UTF16, 3, 0, 0, 0, "0100F7801B5DC000", "1.0.0"}},
+            {0x8176D78C, {CODEC_UTF16, 3, 0, 0, 0, 0x0100F7801B5DC000ull, "1.0.0"}},
             // ときめきメモリアル Girl's Side 4th Heart
-            {0x817e7da8, {CODEC_UTF16, 0, 0, T0100B0100E26C000<2, 0>, 0, "0100B0100E26C000", "1.0.0"}}, // name (x1) + dialogue (x2)
-            {0x81429f54, {CODEC_UTF16, 0, 0, T0100B0100E26C000<0, 1>, 0, "0100B0100E26C000", "1.0.0"}}, // choice (x0)
-            {0x8180633c, {CODEC_UTF16, 0, 0, T0100B0100E26C000<1, 2>, 0, "0100B0100E26C000", "1.0.0"}}, // help (x1)
+            {0x817e7da8, {CODEC_UTF16, 0, 0, T0100B0100E26C000<2, 0>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // name (x1) + dialogue (x2)
+            {0x81429f54, {CODEC_UTF16, 0, 0, T0100B0100E26C000<0, 1>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // choice (x0)
+            {0x8180633c, {CODEC_UTF16, 0, 0, T0100B0100E26C000<1, 2>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // help (x1)
             // 13 Sentinels: Aegis Rim
-            {0x80057d18, {CODEC_UTF8, 0, 0, 0, F010045C014650000, "010045C014650000", "1.0.0"}}, // cutscene text
-            {0x8026fec0, {CODEC_UTF8, 1, 0, 0, F010045C014650000, "010045C014650000", "1.0.0"}}, // prompt
-            {0x8014eab4, {CODEC_UTF8, 0, 0, 0, F010045C014650000, "010045C014650000", "1.0.0"}}, // name (combat)
-            {0x801528ec, {CODEC_UTF8, 3, 0, 0, F010045C014650000, "010045C014650000", "1.0.0"}}, // dialogue (combat)
-            {0x80055acc, {CODEC_UTF8, 0, 0, 0, F010045C014650000, "010045C014650000", "1.0.0"}}, // dialogue 2 (speech bubble)
-            {0x802679c8, {CODEC_UTF8, 1, 0, 0, F010045C014650000, "010045C014650000", "1.0.0"}}, // notification
-            {0x8025e210, {CODEC_UTF8, 2, 0, 0, F010045C014650000, "010045C014650000", "1.0.0"}}, // scene context example: 数日前 咲良高校 １年Ｂ組 教室 １９８５年５月"
-            {0x8005c518, {CODEC_UTF8, 0, 0, 0, F010045C014650000, "010045C014650000", "1.0.0"}}, // game help
+            {0x80057d18, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // cutscene text
+            {0x8026fec0, {CODEC_UTF8, 1, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // prompt
+            {0x8014eab4, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // name (combat)
+            {0x801528ec, {CODEC_UTF8, 3, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // dialogue (combat)
+            {0x80055acc, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // dialogue 2 (speech bubble)
+            {0x802679c8, {CODEC_UTF8, 1, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // notification
+            {0x8025e210, {CODEC_UTF8, 2, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // scene context example: 数日前 咲良高校 １年Ｂ組 教室 １９８５年５月"
+            {0x8005c518, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // game help
             // Sea of Stars
-            {0x83e93ca0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, "01008C0016544000", "1.0.45861"}}, // Main text
-            {0x820c3fa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, "01008C0016544000", "1.0.47140"}}, // Main text
+            {0x83e93ca0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, 0x01008C0016544000ull, "1.0.45861"}}, // Main text
+            {0x820c3fa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, 0x01008C0016544000ull, "1.0.47140"}}, // Main text
             // Final Fantasy I
-            {0x81e88040, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01000EA014150000", "1.0.1"}}, // Main text
-            {0x81cae54c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01000EA014150000", "1.0.1"}}, // Intro text
-            {0x81a3e494, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01000EA014150000", "1.0.1"}}, // battle text
-            {0x81952c28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01000EA014150000", "1.0.1"}}, // Location
+            {0x81e88040, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01000EA014150000ull, "1.0.1"}}, // Main text
+            {0x81cae54c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01000EA014150000ull, "1.0.1"}}, // Intro text
+            {0x81a3e494, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01000EA014150000ull, "1.0.1"}}, // battle text
+            {0x81952c28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01000EA014150000ull, "1.0.1"}}, // Location
             // Final Fantasy II
-            {0x8208f4cc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01006B7014156000", "1.0.1"}}, // Main text
-            {0x817e464c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01006B7014156000", "1.0.1"}}, // Intro text
-            {0x81fb6414, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01006B7014156000", "1.0.1"}}, // battle text
+            {0x8208f4cc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01006B7014156000ull, "1.0.1"}}, // Main text
+            {0x817e464c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01006B7014156000ull, "1.0.1"}}, // Intro text
+            {0x81fb6414, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01006B7014156000ull, "1.0.1"}}, // battle text
             // Final Fantasy III
-            {0x82019e84, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01002E2014158000", "1.0.1"}}, // Main text1
-            {0x817ffcfc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01002E2014158000", "1.0.1"}}, // Main text2
-            {0x81b8b7e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01002E2014158000", "1.0.1"}}, // battle text
-            {0x8192c4a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01002E2014158000", "1.0.1"}}, // Location
+            {0x82019e84, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01002E2014158000ull, "1.0.1"}}, // Main text1
+            {0x817ffcfc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01002E2014158000ull, "1.0.1"}}, // Main text2
+            {0x81b8b7e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01002E2014158000ull, "1.0.1"}}, // battle text
+            {0x8192c4a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01002E2014158000ull, "1.0.1"}}, // Location
             // Final Fantasy IV
-            {0x81e44bf4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01004B301415A000", "1.0.2"}}, // Main text
-            {0x819f92c4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01004B301415A000", "1.0.2"}}, // Rolling text
-            {0x81e2e798, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01004B301415A000", "1.0.2"}}, // Battle text
-            {0x81b1e6a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01004B301415A000", "1.0.2"}}, // Location
+            {0x81e44bf4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01004B301415A000ull, "1.0.2"}}, // Main text
+            {0x819f92c4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01004B301415A000ull, "1.0.2"}}, // Rolling text
+            {0x81e2e798, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01004B301415A000ull, "1.0.2"}}, // Battle text
+            {0x81b1e6a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01004B301415A000ull, "1.0.2"}}, // Location
             // Final Fantasy V
-            {0x81d63e24, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100AA201415C000", "1.0.2"}}, // Main text
-            {0x81adfb3c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100AA201415C000", "1.0.2"}}, // Location
-            {0x81a8fda8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100AA201415C000", "1.0.2"}}, // Battle text
+            {0x81d63e24, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100AA201415C000ull, "1.0.2"}}, // Main text
+            {0x81adfb3c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100AA201415C000ull, "1.0.2"}}, // Location
+            {0x81a8fda8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100AA201415C000ull, "1.0.2"}}, // Battle text
             // Final Fantasy VI
-            {0x81e6b350, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100AA001415E000", "1.0.2"}}, // Main text
-            {0x81ab40ec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100AA001415E000", "1.0.2"}}, // Location
-            {0x819b8c88, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100AA001415E000", "1.0.2"}}, // Battle text
+            {0x81e6b350, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100AA001415E000ull, "1.0.2"}}, // Main text
+            {0x81ab40ec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100AA001415E000ull, "1.0.2"}}, // Location
+            {0x819b8c88, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100AA001415E000ull, "1.0.2"}}, // Battle text
             // Final Fantasy IX
-            {0x80034b90, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Main Text
-            {0x802ade64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Battle Text
-            {0x801b1b84, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Descriptions
-            {0x805aa0b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Key Item Name
-            {0x805a75d8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Key Item Content
-            {0x8002f79c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Menu
-            {0x80ca88b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Tutorial1
-            {0x80ca892c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Tutorial2
-            {0x80008d88, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01006F000B056000, "01006F000B056000", "1.0.1"}}, // Location
+            {0x80034b90, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Main Text
+            {0x802ade64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Battle Text
+            {0x801b1b84, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Descriptions
+            {0x805aa0b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Key Item Name
+            {0x805a75d8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Key Item Content
+            {0x8002f79c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Menu
+            {0x80ca88b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Tutorial1
+            {0x80ca892c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Tutorial2
+            {0x80008d88, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01006F000B056000, 0x01006F000B056000ull, "1.0.1"}}, // Location
             // Norn9 Var Commons
-            {0x8003E874, {CODEC_UTF8, 0, 0, 0, F0100068019996000, "0100068019996000", "1.0.0"}}, // English
+            {0x8003E874, {CODEC_UTF8, 0, 0, 0, F0100068019996000, 0x0100068019996000ull, "1.0.0"}}, // English
             // 薄桜鬼 真改 遊戯録　隊士達の大宴会 for Nintendo Switch   三合一
-            {0x80016730, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其一
-            {0x8013AAA0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其二
-            {0x8009C8A0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其三
-            {0x800167B0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其一
-            {0x8013AFA0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其二
-            {0x8009CCE0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, "010046601C024000", "1.0.0"}}, // name+text 其三
+            {0x80016730, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其一
+            {0x8013AAA0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其二
+            {0x8009C8A0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其三
+            {0x800167B0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其一
+            {0x8013AFA0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其二
+            {0x8009CCE0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其三
             // 薄桜鬼SSL ～sweet school life～ for Nintendo Switch
-            {0x8004E71C, {CODEC_UTF8, 1, 0, 0, F01004EB01A328000, "01004EB01A328000", "1.0.0"}},
-            {0x8004EAEC, {CODEC_UTF8, 1, 0, 0, F01004EB01A328000, "01004EB01A328000", "1.0.1"}},
+            {0x8004E71C, {CODEC_UTF8, 1, 0, 0, F01004EB01A328000, 0x01004EB01A328000ull, "1.0.0"}},
+            {0x8004EAEC, {CODEC_UTF8, 1, 0, 0, F01004EB01A328000, 0x01004EB01A328000ull, "1.0.1"}},
             // 薄桜鬼 真改 万葉ノ抄
-            {0x8004E8F0, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100EA601A0A0000", "1.0.0"}},
+            {0x8004E8F0, {CODEC_UTF8, 1, 0, 0, F010001D015260000, 0x0100EA601A0A0000ull, "1.0.0"}},
             // 薄桜鬼 真改 天雲ノ抄
-            {0x8004CACC, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100997017690000", "1.0.0"}},
+            {0x8004CACC, {CODEC_UTF8, 1, 0, 0, F010001D015260000, 0x0100997017690000ull, "1.0.0"}},
             // 薄桜鬼 真改 銀星ノ抄
-            {0x80047F00, {CODEC_UTF8, 1, 0, 0, F010001D015260000, "0100C49010598000", "1.0.0"}},
+            {0x80047F00, {CODEC_UTF8, 1, 0, 0, F010001D015260000, 0x0100C49010598000ull, "1.0.0"}},
             // 薄桜鬼 真改 月影ノ抄
-            {0x8019ecd0, {CODEC_UTF8, 1, 0, 0, F0100E1E00E2AE000, "0100E1E00E2AE000", "1.0.0"}}, // Text
+            {0x8019ecd0, {CODEC_UTF8, 1, 0, 0, F0100E1E00E2AE000, 0x0100E1E00E2AE000ull, "1.0.0"}}, // Text
             // 薄桜鬼　黎明録
-            {0x8002e94c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100D57014692000", "1.0.0"}}, // Text
-            {0x8004c3f4, {CODEC_UTF8, 1, 0, 0, F0100925014864000, "0100D57014692000", "1.0.0"}},
-            {0x8005389c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100D57014692000", "1.0.0"}},
-            {0x80059b68, {CODEC_UTF8, 0, 0, 0, F0100925014864000, "0100D57014692000", "1.0.0"}},
+            {0x8002e94c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100D57014692000ull, "1.0.0"}}, // Text
+            {0x8004c3f4, {CODEC_UTF8, 1, 0, 0, F0100925014864000, 0x0100D57014692000ull, "1.0.0"}},
+            {0x8005389c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100D57014692000ull, "1.0.0"}},
+            {0x80059b68, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100D57014692000ull, "1.0.0"}},
             // Chrono Cross: The Radical Dreamers Edition
-            {0x802b1254, {CODEC_UTF32, 1, 0, 0, 0, "0100AC20128AC000", "1.0.2"}}, // Text
+            {0x802b1254, {CODEC_UTF32, 1, 0, 0, 0, 0x0100AC20128AC000ull, "1.0.2"}}, // Text
             // AIR
-            {0x800a6b10, {CODEC_UTF16, 1, 0, 0, F0100ADC014DA0000, "0100ADC014DA0000", "1.0.1"}}, // Text + Name
+            {0x800a6b10, {CODEC_UTF16, 1, 0, 0, F0100ADC014DA0000, 0x0100ADC014DA0000ull, "1.0.1"}}, // Text + Name
             // 死神と少女
-            {0x21cb08, {0, 1, 0, 0, F0100AFA01750C000, "0100AFA01750C000", "1.0.2"}}, // Text,sjis
+            {0x21cb08, {0, 1, 0, 0, F0100AFA01750C000, 0x0100AFA01750C000ull, "1.0.2"}}, // Text,sjis
             // Octopath Traveler II
-            {0x8088a4d4, {CODEC_UTF16, 0, 0, 0, 0, "0100A3501946E000", "1.0.0"}}, // main text
+            {0x8088a4d4, {CODEC_UTF16, 0, 0, 0, 0, 0x0100A3501946E000ull, "1.0.0"}}, // main text
             // NieR:Automata The End of YoRHa Edition
-            {0x808e7068, {CODEC_UTF16, 3, 0, 0, 0, "0100B8E016F76000", "1.0.2"}}, // Text
+            {0x808e7068, {CODEC_UTF16, 3, 0, 0, 0, 0x0100B8E016F76000ull, "1.0.2"}}, // Text
             // レンドフルール
-            {0x80026434, {CODEC_UTF8, 0, 0, 0, 0, "0100B5800C0E4000", "1.0.0"}}, // Dialogue text
+            {0x80026434, {CODEC_UTF8, 0, 0, 0, 0, 0x0100B5800C0E4000ull, "1.0.0"}}, // Dialogue text
             // Code：Realize ～彩虹の花束～
-            {0x80019c14, {CODEC_UTF8, 0, 0x1c, 0, F010088B01A8FC000, "0100B6900A668000", "1.0.0"}},
-            {0x80041560, {CODEC_UTF8, 1, 0, 0, F010088B01A8FC000, "0100B6900A668000", "1.0.0"}},
-            {0x800458c8, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, "0100B6900A668000", "1.0.0"}},
+            {0x80019c14, {CODEC_UTF8, 0, 0x1c, 0, F010088B01A8FC000, 0x0100B6900A668000ull, "1.0.0"}},
+            {0x80041560, {CODEC_UTF8, 1, 0, 0, F010088B01A8FC000, 0x0100B6900A668000ull, "1.0.0"}},
+            {0x800458c8, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, 0x0100B6900A668000ull, "1.0.0"}},
             // Diabolik Lovers Grand Edition
-            {0x80041080, {CODEC_UTF8, 1, 0, 0, F0100BD700E648000, "0100BD700E648000", "1.0.0"}}, // name
-            {0x80041080, {CODEC_UTF8, 0, 0, 0, F0100BD700E648000, "0100BD700E648000", "1.0.0"}}, // dialogue
-            {0x80041080, {CODEC_UTF8, 2, 0, 0, F0100BD700E648000, "0100BD700E648000", "1.0.0"}}, // choice1
+            {0x80041080, {CODEC_UTF8, 1, 0, 0, F0100BD700E648000, 0x0100BD700E648000ull, "1.0.0"}}, // name
+            {0x80041080, {CODEC_UTF8, 0, 0, 0, F0100BD700E648000, 0x0100BD700E648000ull, "1.0.0"}}, // dialogue
+            {0x80041080, {CODEC_UTF8, 2, 0, 0, F0100BD700E648000, 0x0100BD700E648000ull, "1.0.0"}}, // choice1
             // 忍び、恋うつつ
-            {0x8002aca0, {CODEC_UTF8, 0, 0, 0, F0100C1E0102B8000, "0100C1E0102B8000", "1.0.0"}}, // name
-            {0x8002aea4, {CODEC_UTF8, 0, 0, 0, F0100C1E0102B8000, "0100C1E0102B8000", "1.0.0"}}, // dialogue1
-            {0x8001ca90, {CODEC_UTF8, 2, 0, 0, F0100C1E0102B8000, "0100C1E0102B8000", "1.0.0"}}, // dialogue2
-            {0x80049dbc, {CODEC_UTF8, 1, 0, 0, F0100C1E0102B8000, "0100C1E0102B8000", "1.0.0"}}, // choice
+            {0x8002aca0, {CODEC_UTF8, 0, 0, 0, F0100C1E0102B8000, 0x0100C1E0102B8000ull, "1.0.0"}}, // name
+            {0x8002aea4, {CODEC_UTF8, 0, 0, 0, F0100C1E0102B8000, 0x0100C1E0102B8000ull, "1.0.0"}}, // dialogue1
+            {0x8001ca90, {CODEC_UTF8, 2, 0, 0, F0100C1E0102B8000, 0x0100C1E0102B8000ull, "1.0.0"}}, // dialogue2
+            {0x80049dbc, {CODEC_UTF8, 1, 0, 0, F0100C1E0102B8000, 0x0100C1E0102B8000ull, "1.0.0"}}, // choice
             // 夜、灯す
-            {0xe2748eb0, {CODEC_UTF32, 1, 0, 0, 0, "0100C2901153C000", "1.0.0"}}, // text1
+            {0xe2748eb0, {CODEC_UTF32, 1, 0, 0, 0, 0x0100C2901153C000ull, "1.0.0"}}, // text1
             // Closed Nightmare
-            {0x800c0918, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, "0100D9500A0F6000", "1.0.0"}}, // line + name
-            {0x80070b98, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, "0100D9500A0F6000", "1.0.0"}}, // fast trophy
-            {0x800878fc, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, "0100D9500A0F6000", "1.0.0"}}, // prompt
-            {0x80087aa0, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, "0100D9500A0F6000", "1.0.0"}}, // choice
+            {0x800c0918, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, 0x0100D9500A0F6000ull, "1.0.0"}}, // line + name
+            {0x80070b98, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, 0x0100D9500A0F6000ull, "1.0.0"}}, // fast trophy
+            {0x800878fc, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, 0x0100D9500A0F6000ull, "1.0.0"}}, // prompt
+            {0x80087aa0, {CODEC_UTF8, 0, 0, 0, F0100D9500A0F6000, 0x0100D9500A0F6000ull, "1.0.0"}}, // choice
             // ゆるキャン△ Have a nice day!
-            {0x816d03f8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100982015606000, "0100D12014FC2000", "1.0.0"}}, // dialog / backlog
+            {0x816d03f8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100982015606000, 0x0100D12014FC2000ull, "1.0.0"}}, // dialog / backlog
             // 悪役令嬢は隣国の王太子に溺愛される
-            {0x817b35c4, {CODEC_UTF8, 1, 0, 0, F0100DA201E0DA000, "0100DA201E0DA000", "1.0.0"}}, // Dialogue
+            {0x817b35c4, {CODEC_UTF8, 1, 0, 0, F0100DA201E0DA000, 0x0100DA201E0DA000ull, "1.0.0"}}, // Dialogue
             // ゆのはなSpRING！～Mellow Times～
-            {0x80028178, {CODEC_UTF8, 0, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // name
-            {0x8001b9d8, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // dialogue1
-            {0x8001b9b0, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // dialogue2
-            {0x8004b940, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // dialogue3
-            {0x8004a8d0, {CODEC_UTF8, 1, 0, 0, F0100DE200C0DA000, "0100DE200C0DA000", "1.0.0"}}, // choice
+            {0x80028178, {CODEC_UTF8, 0, 0, 0, F0100DE200C0DA000, 0x0100DE200C0DA000ull, "1.0.0"}}, // name
+            {0x8001b9d8, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, 0x0100DE200C0DA000ull, "1.0.0"}}, // dialogue1
+            {0x8001b9b0, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, 0x0100DE200C0DA000ull, "1.0.0"}}, // dialogue2
+            {0x8004b940, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, 0x0100DE200C0DA000ull, "1.0.0"}}, // dialogue3
+            {0x8004a8d0, {CODEC_UTF8, 1, 0, 0, F0100DE200C0DA000, 0x0100DE200C0DA000ull, "1.0.0"}}, // choice
             // サマータイムレンダ Another Horizon
-            {0x818ebaf0, {CODEC_UTF16, 0, 0x14, 0, F01005940182EC000, "01005940182EC000", "1.0.0"}}, // dialogue
+            {0x818ebaf0, {CODEC_UTF16, 0, 0x14, 0, F01005940182EC000, 0x01005940182EC000ull, "1.0.0"}}, // dialogue
             // あくありうむ。
-            {0x8051a990, {CODEC_UTF8, 0, 1, 0, F01006590155AC000, "0100D11018A7E000", "1.0.0"}}, // name
-            {0x8051a9a8, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "0100D11018A7E000", "1.0.0"}}, // dialogue
-            {0x80500178, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "0100D11018A7E000", "1.0.0"}}, // choice
+            {0x8051a990, {CODEC_UTF8, 0, 1, 0, F01006590155AC000, 0x0100D11018A7E000ull, "1.0.0"}}, // name
+            {0x8051a9a8, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x0100D11018A7E000ull, "1.0.0"}}, // dialogue
+            {0x80500178, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x0100D11018A7E000ull, "1.0.0"}}, // choice
             // AKA
-            {0x8166eb80, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, "0100B0601852A000", "1.0.0"}}, // Main text
-            {0x817d44a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, "0100B0601852A000", "1.0.0"}}, // Letter
-            {0x815cb0f4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, "0100B0601852A000", "1.0.0"}}, // Mission title
-            {0x815cde30, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, "0100B0601852A000", "1.0.0"}}, // Mission description
-            {0x8162a910, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, "0100B0601852A000", "1.0.0"}}, // Craft description
-            {0x817fdca8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, "0100B0601852A000", "1.0.0"}}, // Inventory item name
+            {0x8166eb80, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, 0x0100B0601852A000ull, "1.0.0"}}, // Main text
+            {0x817d44a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, 0x0100B0601852A000ull, "1.0.0"}}, // Letter
+            {0x815cb0f4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, 0x0100B0601852A000ull, "1.0.0"}}, // Mission title
+            {0x815cde30, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, 0x0100B0601852A000ull, "1.0.0"}}, // Mission description
+            {0x8162a910, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, 0x0100B0601852A000ull, "1.0.0"}}, // Craft description
+            {0x817fdca8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0601852A000, 0x0100B0601852A000ull, "1.0.0"}}, // Inventory item name
             // Etrian Odyssey I HD
-            {0x82d57550, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "01008A3016162000", "1.0.2"}}, // Text
-            {0x824ff408, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "01008A3016162000", "1.0.2"}}, // Config Description
-            {0x8296b4e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "01008A3016162000", "1.0.2"}}, // Class Description
-            {0x81b2204c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "01008A3016162000", "1.0.2"}}, // Item Description
+            {0x82d57550, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x01008A3016162000ull, "1.0.2"}}, // Text
+            {0x824ff408, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x01008A3016162000ull, "1.0.2"}}, // Config Description
+            {0x8296b4e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x01008A3016162000ull, "1.0.2"}}, // Class Description
+            {0x81b2204c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x01008A3016162000ull, "1.0.2"}}, // Item Description
             // Etrian Odyssey II HD
-            {0x82f24c70, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "0100B0C016164000", "1.0.2"}}, // Text
-            {0x82cc0988, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "0100B0C016164000", "1.0.2"}}, // Config Description
-            {0x8249acd4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "0100B0C016164000", "1.0.2"}}, // Class Description
-            {0x81b27644, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "0100B0C016164000", "1.0.2"}}, // Item Description
+            {0x82f24c70, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x0100B0C016164000ull, "1.0.2"}}, // Text
+            {0x82cc0988, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x0100B0C016164000ull, "1.0.2"}}, // Config Description
+            {0x8249acd4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x0100B0C016164000ull, "1.0.2"}}, // Class Description
+            {0x81b27644, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x0100B0C016164000ull, "1.0.2"}}, // Item Description
             // Etrian Odyssey III HD
-            {0x83787f04, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "0100D32015A52000", "1.0.2"}}, // Text
-            {0x8206915c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "0100D32015A52000", "1.0.2"}}, // Config Description
-            {0x82e6d1d4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "0100D32015A52000", "1.0.2"}}, // Class Description
-            {0x82bf5d48, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, "0100D32015A52000", "1.0.2"}}, // Item Description
+            {0x83787f04, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x0100D32015A52000ull, "1.0.2"}}, // Text
+            {0x8206915c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x0100D32015A52000ull, "1.0.2"}}, // Config Description
+            {0x82e6d1d4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x0100D32015A52000ull, "1.0.2"}}, // Class Description
+            {0x82bf5d48, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100B0C016164000, 0x0100D32015A52000ull, "1.0.2"}}, // Item Description
             // Fire Emblem Engage
-            {0x8248c550, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, 0, "0100A6301214E000", "1.3.0"}}, // App.Talk3D.TalkLog$$AddLog
-            {0x820C6530, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, 0, "0100A6301214E000", "2.0.0"}}, // App.Talk3D.TalkLog$$AddLog
+            {0x8248c550, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, 0, 0x0100A6301214E000ull, "1.3.0"}}, // App.Talk3D.TalkLog$$AddLog
+            {0x820C6530, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, 0, 0x0100A6301214E000ull, "2.0.0"}}, // App.Talk3D.TalkLog$$AddLog
             // AMNESIA LATER×CROWD for Nintendo Switch
-            {0x800ebc34, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100B5700CDFC000", "1.0.0"}}, // waterfall
-            {0x8014dc64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100B5700CDFC000", "1.0.0"}}, // name
-            {0x80149b10, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100B5700CDFC000", "1.0.0"}}, // dialogue
-            {0x803add50, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, "0100B5700CDFC000", "1.0.0"}}, // choice
+            {0x800ebc34, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // waterfall
+            {0x8014dc64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // name
+            {0x80149b10, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // dialogue
+            {0x803add50, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // choice
             // Natsumon! 20th Century Summer Vacation
-            {0x80db5d34, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, "0100A8401A0A8000", "1.1.0"}}, // tutorial
-            {0x846fa578, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, "0100A8401A0A8000", "1.1.0"}}, // choice
-            {0x8441e800, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, "0100A8401A0A8000", "1.1.0"}}, // examine + dialog
+            {0x80db5d34, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, 0x0100A8401A0A8000ull, "1.1.0"}}, // tutorial
+            {0x846fa578, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, 0x0100A8401A0A8000ull, "1.1.0"}}, // choice
+            {0x8441e800, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, 0x0100A8401A0A8000ull, "1.1.0"}}, // examine + dialog
             // Super Mario RPG
-            {0x81d78c58, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Main Text
-            {0x81dc9cf8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Name
-            {0x81c16b80, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Cutscene
-            {0x821281f0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Special/Item/Menu/Objective Description
-            {0x81cd8148, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Special Name
-            {0x81fc2820, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Item Name Battle
-            {0x81d08d28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Item Name Off-battle
-            {0x82151aac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Shop Item Name
-            {0x81fcc870, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Objective Title
-            {0x821bd328, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Monster List - Name
-            {0x820919b8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Monster List - Description
-            {0x81f56518, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Info
-            {0x82134ce0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Help Category
-            {0x82134f30, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Help Name
-            {0x821372e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Help Description 1
-            {0x82137344, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Help Description 2
-            {0x81d0ee80, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Location
-            {0x82128f64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Album Title
-            {0x81f572a0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<3>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Load/Save Text
-            {0x81d040a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Levelup First Part
-            {0x81d043fc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Levelup Second Part
-            {0x81d04550, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Levelup New Ability Description
-            {0x81fbfa18, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Yoshi Mini-Game Header
-            {0x81fbfa74, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Yoshi Mini-Game Text
-            {0x81cf41b4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, "0100BC0018138000", "1.0.0"}}, // Enemy Special Attacks
+            {0x81d78c58, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Main Text
+            {0x81dc9cf8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Name
+            {0x81c16b80, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Cutscene
+            {0x821281f0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Special/Item/Menu/Objective Description
+            {0x81cd8148, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Special Name
+            {0x81fc2820, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Item Name Battle
+            {0x81d08d28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Item Name Off-battle
+            {0x82151aac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Shop Item Name
+            {0x81fcc870, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Objective Title
+            {0x821bd328, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Monster List - Name
+            {0x820919b8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Monster List - Description
+            {0x81f56518, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Info
+            {0x82134ce0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Help Category
+            {0x82134f30, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Help Name
+            {0x821372e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Help Description 1
+            {0x82137344, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Help Description 2
+            {0x81d0ee80, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Location
+            {0x82128f64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Album Title
+            {0x81f572a0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<3>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Load/Save Text
+            {0x81d040a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Levelup First Part
+            {0x81d043fc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Levelup Second Part
+            {0x81d04550, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Levelup New Ability Description
+            {0x81fbfa18, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Yoshi Mini-Game Header
+            {0x81fbfa74, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Yoshi Mini-Game Text
+            {0x81cf41b4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BC0018138000, 0x0100BC0018138000ull, "1.0.0"}}, // Enemy Special Attacks
             // Trials of Mana
-            {0x800e8abc, {CODEC_UTF16, 1, 0, 0, F0100D7800E9E0000, "0100D7800E9E0000", "1.1.1"}}, // Text
+            {0x800e8abc, {CODEC_UTF16, 1, 0, 0, F0100D7800E9E0000, 0x0100D7800E9E0000ull, "1.1.1"}}, // Text
             // 空蝉の廻
-            {0x821b452c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100DA101D9AA000", "1.0.0"}}, // text1
-            {0x821b456c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100DA101D9AA000", "1.0.0"}}, // text2
-            {0x821b45ac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "0100DA101D9AA000", "1.0.0"}}, // text3
+            {0x821b452c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100DA101D9AA000ull, "1.0.0"}}, // text1
+            {0x821b456c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100DA101D9AA000ull, "1.0.0"}}, // text2
+            {0x821b45ac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x0100DA101D9AA000ull, "1.0.0"}}, // text3
             // バディミッション BOND
-            {0x80046dd0, {0, 0, 0, T0100DB300B996000, 0, "0100DB300B996000", 0}}, // 1.0.0, 1.0.1,sjis
-            {0x80046de0, {0, 0, 0, T0100DB300B996000, 0, "0100DB300B996000", 0}},
+            {0x80046dd0, {0, 0, 0, T0100DB300B996000, 0, 0x0100DB300B996000ull, 0}}, // 1.0.0, 1.0.1,sjis
+            {0x80046de0, {0, 0, 0, T0100DB300B996000, 0, 0x0100DB300B996000ull, 0}},
             // Bravely Default II
-            {0x80b97700, {CODEC_UTF16, 0, 0, 0, 0, "010056F00C7B4000", "1.0.0"}}, // Main Text
-            {0x80bb8d3c, {CODEC_UTF16, 0, 0, 0, 0, "010056F00C7B4000", "1.0.0"}}, // Main Ptc Text
-            {0x810add68, {CODEC_UTF16, 0, 0, 0, 0, "010056F00C7B4000", "1.0.0"}}, // Secondary Text
+            {0x80b97700, {CODEC_UTF16, 0, 0, 0, 0, 0x010056F00C7B4000ull, "1.0.0"}}, // Main Text
+            {0x80bb8d3c, {CODEC_UTF16, 0, 0, 0, 0, 0x010056F00C7B4000ull, "1.0.0"}}, // Main Ptc Text
+            {0x810add68, {CODEC_UTF16, 0, 0, 0, 0, 0x010056F00C7B4000ull, "1.0.0"}}, // Secondary Text
             // 探偵撲滅
-            {0x8011c340, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, "0100CBA014014000", "1.0.0"}}, // Text
-            {0x80064f20, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, "0100CBA014014000", "1.0.0"}}, // Choices
+            {0x8011c340, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, 0x0100CBA014014000ull, "1.0.0"}}, // Text
+            {0x80064f20, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, 0x0100CBA014014000ull, "1.0.0"}}, // Choices
             // Ys X: Nordics
-            {0x80817758, {CODEC_UTF8, 1, 0, 0, F0100CC401A16C000<0>, "0100CC401A16C000", "1.0.4"}}, // Main Text
-            {0x80981e3c, {CODEC_UTF8, 0, 0, 0, F0100CC401A16C000<1>, "0100CC401A16C000", "1.0.4"}}, // Secondary Text
+            {0x80817758, {CODEC_UTF8, 1, 0, 0, F0100CC401A16C000<0>, 0x0100CC401A16C000ull, "1.0.4"}}, // Main Text
+            {0x80981e3c, {CODEC_UTF8, 0, 0, 0, F0100CC401A16C000<1>, 0x0100CC401A16C000ull, "1.0.4"}}, // Secondary Text
             // 9 R.I.P
-            {0x80025360, {CODEC_UTF8, 2, 0, 0, F0100BDD01AAE4000, "0100BDD01AAE4000", "1.0.0"}}, // name
-            {0x80023c60, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, "0100BDD01AAE4000", "1.0.0"}}, // text
-            {0x8005388c, {CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, "0100BDD01AAE4000", "1.0.0"}}, // choice
-            {0x80065010, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, "0100BDD01AAE4000", "1.0.0"}}, // character description
-            {0x8009c780, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, "0100BDD01AAE4000", "1.0.0"}}, // prompt
+            {0x80025360, {CODEC_UTF8, 2, 0, 0, F0100BDD01AAE4000, 0x0100BDD01AAE4000ull, "1.0.0"}}, // name
+            {0x80023c60, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100BDD01AAE4000ull, "1.0.0"}}, // text
+            {0x8005388c, {CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, 0x0100BDD01AAE4000ull, "1.0.0"}}, // choice
+            {0x80065010, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100BDD01AAE4000ull, "1.0.0"}}, // character description
+            {0x8009c780, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100BDD01AAE4000ull, "1.0.0"}}, // prompt
             // キスベル
-            {0x8049d958, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, "0100BD7015E6C000", "1.0.0"}}, // text
+            {0x8049d958, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, 0x0100BD7015E6C000ull, "1.0.0"}}, // text
             // ピオフィオーレの晩鐘 -Ricordo-  CN
-            {0x80015fa0, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerMsg
-            {0x80050d50, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerName
-            {0x8002F430, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerPrompt
-            {0x8002F4F0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerPrompt
-            {0x8002F540, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "0100C310110B4000", "1.0.0"}}, // handlerPrompt
+            {0x80015fa0, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerMsg
+            {0x80050d50, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerName
+            {0x8002F430, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
+            {0x8002F4F0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
+            {0x8002F540, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
             // ピオフィオーレの晩鐘 -Ricordo-
-            {0x800141d0, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerMsg
-            {0x8004ce20, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerName
-            {0x8002be90, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerPrompt
-            {0x8002bf50, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerPrompt
-            {0x8002bfa0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005F700DC56000", "1.0.0"}}, // handlerPrompt
+            {0x800141d0, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerMsg
+            {0x8004ce20, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerName
+            {0x8002be90, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
+            {0x8002bf50, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
+            {0x8002bfa0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
             // ピオフィオーレの晩鐘 -Episodio1926-
-            {0x80019630, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerMsg
-            {0x8005B7B0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerName
-            {0x80039230, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerPrompt
-            {0x800392F0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerPrompt
-            {0x80039340, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01009E30120F4000", "1.0.0"}}, // handlerPrompt
+            {0x80019630, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerMsg
+            {0x8005B7B0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerName
+            {0x80039230, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
+            {0x800392F0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
+            {0x80039340, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
             // Pokémon Let’s Go, Pikachu!
-            {0x8067d9fc, {CODEC_UTF16, 0, 0, 0, F010003F003A34000, "010003F003A34000", "1.0.2"}}, // Text
+            {0x8067d9fc, {CODEC_UTF16, 0, 0, 0, F010003F003A34000, 0x010003F003A34000ull, "1.0.2"}}, // Text
             // イケメン戦国◆時をかける恋 新たなる出逢い
-            {0x813e4fb4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01008BE016CE2000", "1.0.0"}}, // Main Text
-            {0x813e4c60, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01008BE016CE2000", "1.0.0"}}, // Name
-            {0x813b5360, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "01008BE016CE2000", "1.0.0"}}, // Choices
-            {0x81bab9ac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, 0, "01008BE016CE2000", "1.0.0"}}, // Info
+            {0x813e4fb4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01008BE016CE2000ull, "1.0.0"}}, // Main Text
+            {0x813e4c60, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01008BE016CE2000ull, "1.0.0"}}, // Name
+            {0x813b5360, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x01008BE016CE2000ull, "1.0.0"}}, // Choices
+            {0x81bab9ac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, 0, 0x01008BE016CE2000ull, "1.0.0"}}, // Info
             // Shin Megami Tensei V
-            {0x80ce01a4, {CODEC_UTF16, 0, 0, 0, 0, "01006BD0095F4000", "1.0.2"}}, // Text
+            {0x80ce01a4, {CODEC_UTF16, 0, 0, 0, 0, 0x01006BD0095F4000ull, "1.0.2"}}, // Text
             // The Legend of Zelda: Link's Awakening
-            {0x80f57910, {CODEC_UTF8, 1, 0, 0, 0, "01006BB00C6F0000", "1.0.1"}}, // Main Text
+            {0x80f57910, {CODEC_UTF8, 1, 0, 0, 0, 0x01006BB00C6F0000ull, "1.0.1"}}, // Main Text
             // Cendrillon palikA
-            {0x8001ab8c, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, "01006B000A666000", "1.0.0"}}, // name
-            {0x80027b30, {CODEC_UTF8, 0, 0, 0, F0100DE200C0DA000, "01006B000A666000", "1.0.0"}}, // dialogue
+            {0x8001ab8c, {CODEC_UTF8, 2, 0, 0, F0100DE200C0DA000, 0x01006B000A666000ull, "1.0.0"}}, // name
+            {0x80027b30, {CODEC_UTF8, 0, 0, 0, F0100DE200C0DA000, 0x01006B000A666000ull, "1.0.0"}}, // dialogue
             // Crayon Shin-chan Shiro of Coal Town
-            {0x83fab4bc, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F01007B601C608000, "01007B601C608000", "1.0.1"}},
+            {0x83fab4bc, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F01007B601C608000, 0x01007B601C608000ull, "1.0.1"}},
             // 風雨来記4
-            {0x80008c80, {CODEC_UTF32, 1, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Main
-            {0x80012b1c, {CODEC_UTF32, 1, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Wordpad
-            {0x80012ccc, {CODEC_UTF32, 1, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Comments
-            {0x80009f74, {CODEC_UTF32, 1, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Choices
-            {0x80023d64, {CODEC_UTF32, 0, 0, 0, F010046601125A000, "010046601125A000", "1.0.0"}}, // Location
+            {0x80008c80, {CODEC_UTF32, 1, 0, 0, F010046601125A000, 0x010046601125A000ull, "1.0.0"}}, // Main
+            {0x80012b1c, {CODEC_UTF32, 1, 0, 0, F010046601125A000, 0x010046601125A000ull, "1.0.0"}}, // Wordpad
+            {0x80012ccc, {CODEC_UTF32, 1, 0, 0, F010046601125A000, 0x010046601125A000ull, "1.0.0"}}, // Comments
+            {0x80009f74, {CODEC_UTF32, 1, 0, 0, F010046601125A000, 0x010046601125A000ull, "1.0.0"}}, // Choices
+            {0x80023d64, {CODEC_UTF32, 0, 0, 0, F010046601125A000, 0x010046601125A000ull, "1.0.0"}}, // Location
             // 剣が君 for S
-            {0x81477128, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100771013FA8000, "0100771013FA8000", "1.1"}}, // Main Text
-            {0x81470e38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100771013FA8000, "0100771013FA8000", "1.1"}}, // Secondary Text
+            {0x81477128, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100771013FA8000, 0x0100771013FA8000ull, "1.1"}}, // Main Text
+            {0x81470e38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100771013FA8000, 0x0100771013FA8000ull, "1.1"}}, // Secondary Text
             // ANONYMOUS;CODE
-            {0x80011608, {CODEC_UTF8, 1, 0, 0, F0100556015CCC000, "0100556015CCC000", "1.0.0"}}, // dialouge, menu
+            {0x80011608, {CODEC_UTF8, 1, 0, 0, F0100556015CCC000, 0x0100556015CCC000ull, "1.0.0"}}, // dialouge, menu
             // Sugar * Style
-            {0x800ccbc8, {0, 0, 0, 0, 0, "0100325012B70000", "1.0.0"}}, // ret x0 name + text (readShiftJisString), filter is to complex, quit.
+            {0x800ccbc8, {0, 0, 0, 0, 0, 0x0100325012B70000ull, "1.0.0"}}, // ret x0 name + text (readShiftJisString), filter is to complex, quit.
             // Nightshade／百花百狼
-            {0x802999c8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, "010042300C4F6000", "1.0.1"}}, // dialogue
-            {0x8015b544, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010042300C4F6000, "010042300C4F6000", "1.0.1"}}, // name
-            {0x802a2fd4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, "010042300C4F6000", "1.0.1"}}, // choice1
-            {0x802b7900, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, "010042300C4F6000", "1.0.1"}}, // choice2
+            {0x802999c8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}}, // dialogue
+            {0x8015b544, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}}, // name
+            {0x802a2fd4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}}, // choice1
+            {0x802b7900, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}}, // choice2
             // 囚われのパルマ
-            {0x8015b7a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010044800D2EC000, "010044800D2EC000", "1.0.0"}}, // text x0
-            {0x8015b46c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010044800D2EC000, "010044800D2EC000", "1.0.0"}}, // name x1
+            {0x8015b7a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010044800D2EC000, 0x010044800D2EC000ull, "1.0.0"}}, // text x0
+            {0x8015b46c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010044800D2EC000, 0x010044800D2EC000ull, "1.0.0"}}, // name x1
             // Brothers Conflict: Precious Baby
-            {0x8016aecc, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100982015606000, "010037400DAAE000", "1.0.0"}}, // name
-            {0x80126b9c, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100982015606000, "010037400DAAE000", "1.0.0"}}, // dialogue
-            {0x80129160, {CODEC_UTF16, 0, 0, ReadTextAndLenW<2>, F0100982015606000, "010037400DAAE000", "1.0.0"}}, // choice
+            {0x8016aecc, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100982015606000, 0x010037400DAAE000ull, "1.0.0"}}, // name
+            {0x80126b9c, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100982015606000, 0x010037400DAAE000ull, "1.0.0"}}, // dialogue
+            {0x80129160, {CODEC_UTF16, 0, 0, ReadTextAndLenW<2>, F0100982015606000, 0x010037400DAAE000ull, "1.0.0"}}, // choice
             // 絶対階級学園 ~Eden with roses and phantasm~
-            {0x80067b5c, {CODEC_UTF16, 1, 0, 0, F010021300F69E000<0>, "010021300F69E000", "1.0.0"}}, // name+ dialogue main(ADV)+choices
-            {0x80067cd4, {CODEC_UTF16, 1, 0, 0, F010021300F69E000<1>, "010021300F69E000", "1.0.0"}}, // dialogueNVL
+            {0x80067b5c, {CODEC_UTF16, 1, 0, 0, F010021300F69E000<0>, 0x010021300F69E000ull, "1.0.0"}}, // name+ dialogue main(ADV)+choices
+            {0x80067cd4, {CODEC_UTF16, 1, 0, 0, F010021300F69E000<1>, 0x010021300F69E000ull, "1.0.0"}}, // dialogueNVL
             // Dragon Quest Builders 2
-            {0x805f8900, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Main text textbox
-            {0x8068a698, {CODEC_UTF8, 0, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Not press to continue text
-            {0x806e4118, {CODEC_UTF8, 3, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Character creation text
-            {0x8067459c, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Objective progress1
-            {0x800a4f90, {CODEC_UTF8, 0, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Objective progress2
-            {0x8060a1c0, {CODEC_UTF8, 0, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Infos1
-            {0x805f6130, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Infos2
-            {0x80639b6c, {CODEC_UTF8, 2, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Item description
-            {0x807185ac, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Mission1
-            {0x80657e4c, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Mission2
-            {0x80713be0, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Mission3
-            {0x8076ab04, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Tutorial header
-            {0x8076ab2c, {CODEC_UTF8, 1, 0, 0, F010050000705E000, "010050000705E000", "1.7.3"}}, // Tutorial explanation
+            {0x805f8900, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Main text textbox
+            {0x8068a698, {CODEC_UTF8, 0, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Not press to continue text
+            {0x806e4118, {CODEC_UTF8, 3, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Character creation text
+            {0x8067459c, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Objective progress1
+            {0x800a4f90, {CODEC_UTF8, 0, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Objective progress2
+            {0x8060a1c0, {CODEC_UTF8, 0, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Infos1
+            {0x805f6130, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Infos2
+            {0x80639b6c, {CODEC_UTF8, 2, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Item description
+            {0x807185ac, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Mission1
+            {0x80657e4c, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Mission2
+            {0x80713be0, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Mission3
+            {0x8076ab04, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Tutorial header
+            {0x8076ab2c, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Tutorial explanation
             // BUSTAFELLOWS シーズン2
-            {0x819ed3e4, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010037400DAAE000", "1.0.0"}}, // dialogue
-            {0x82159cd0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<1>, F0100874017BE2000, "010037400DAAE000", "1.0.0"}}, // textmessage
-            {0x81e17530, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010037400DAAE000", "1.0.0"}}, // option
-            {0x81e99d64, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010037400DAAE000", "1.0.0"}}, // choice
-            {0x8186f81c, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010037400DAAE000", "1.0.0"}}, // archives
+            {0x819ed3e4, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // dialogue
+            {0x82159cd0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<1>, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // textmessage
+            {0x81e17530, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // option
+            {0x81e99d64, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // choice
+            {0x8186f81c, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // archives
             // 5分後に意外な結末　モノクロームの図書館
-            {0x81fa4890, {CODEC_UTF16, 1, 0X14, 0, F010094601D910000, "010094601D910000", "1.0.1"}}, // book text
-            {0x81fa5250, {CODEC_UTF16, 1, 0X14, 0, F010094601D910000, "010094601D910000", "1.0.1"}}, // book text
-            {0x81b1c68c, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, "010094601D910000", "1.0.1"}}, // choice1
-            {0x81b1c664, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, "010094601D910000", "1.0.1"}}, // choice2
-            {0x81b1e5b0, {CODEC_UTF16, 3, 0X14, 0, F010094601D910000, "010094601D910000", "1.0.1"}}, // dialogue
+            {0x81fa4890, {CODEC_UTF16, 1, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // book text
+            {0x81fa5250, {CODEC_UTF16, 1, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // book text
+            {0x81b1c68c, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // choice1
+            {0x81b1c664, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // choice2
+            {0x81b1e5b0, {CODEC_UTF16, 3, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // dialogue
             // ときめきメモリアル Girl’s Side 2nd Kiss
-            {0x82058848, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // dialogue1
-            {0x82058aa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // dialogue2
-            {0x8205a244, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // dialogue3
-            {0x826ee1d8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // choice
-            {0x8218e258, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // news
-            {0x823b61d4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // mail
-            {0x82253454, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // luckyitem
-            {0x82269240, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // profile1
-            {0x82269138, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // profile2
-            {0x822691ec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // profile3
-            {0x82269198, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, "010079201BD88000", "1.0.1"}}, // profile4
+            {0x82058848, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue1
+            {0x82058aa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue2
+            {0x8205a244, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue3
+            {0x826ee1d8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // choice
+            {0x8218e258, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // news
+            {0x823b61d4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // mail
+            {0x82253454, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // luckyitem
+            {0x82269240, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile1
+            {0x82269138, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile2
+            {0x822691ec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile3
+            {0x82269198, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile4
             // うたの☆プリンスさまっ♪ Repeat LOVE
-            {0x800374a0, {0, 0, 0, 0, F0100068019996000, "010024200E00A000", "1.0.0"}}, // Main Text + Name,sjis
-            {0x8002ea08, {0, 0, 0, 0, F0100068019996000, "010024200E00A000", "1.0.0"}}, // Choices,sjis
+            {0x800374a0, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}}, // Main Text + Name,sjis
+            {0x8002ea08, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}}, // Choices,sjis
             // ワンド オブ フォーチュン Ｒ～ for Nintendo Switch
-            {0x81ed0580, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100DA201E0DA000, "01000C7019E1C000", "1.0.0"}}, // dialogue
-            {0x81f96bac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100DA201E0DA000, "01000C7019E1C000", "1.0.0"}}, // name
-            {0x8250ac28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100DA201E0DA000, "01000C7019E1C000", "1.0.0"}}, // choice
+            {0x81ed0580, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100DA201E0DA000, 0x01000C7019E1C000ull, "1.0.0"}}, // dialogue
+            {0x81f96bac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100DA201E0DA000, 0x01000C7019E1C000ull, "1.0.0"}}, // name
+            {0x8250ac28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100DA201E0DA000, 0x01000C7019E1C000ull, "1.0.0"}}, // choice
             // ワンド オブ フォーチュン Ｒ２ ～時空に沈む黙示録～ for Nintendo Switch
-            {0x821540c4, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100DA201E0DA000, "010088A01A774000", "1.0.0"}}, // dialogue
-            {0x8353e674, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100DA201E0DA000, "010088A01A774000", "1.0.0"}}, // choice
-            {0x835015e8, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100DA201E0DA000, "010088A01A774000", "1.0.0"}}, // name
+            {0x821540c4, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // dialogue
+            {0x8353e674, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // choice
+            {0x835015e8, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // name
             // Yo-kai Watch 4++
-            {0x80a88080, {CODEC_UTF8, 1, 0, 0, F010086C00AF7C000, "010086C00AF7C000", "2.2.0"}}, // All Text
+            {0x80a88080, {CODEC_UTF8, 1, 0, 0, F010086C00AF7C000, 0x010086C00AF7C000ull, "2.2.0"}}, // All Text
             // キューピット・パラサイト -Sweet & Spicy Darling.-
-            {0x80138150, {CODEC_UTF32, 2, 0, 0, F010079C017B98000, "010079C017B98000", "1.0.0"}}, // name + text
-            {0x801a1bf0, {CODEC_UTF32, 0, 0, 0, F010079C017B98000, "010079C017B98000", "1.0.0"}}, // choice
+            {0x80138150, {CODEC_UTF32, 2, 0, 0, F010079C017B98000, 0x010079C017B98000ull, "1.0.0"}}, // name + text
+            {0x801a1bf0, {CODEC_UTF32, 0, 0, 0, F010079C017B98000, 0x010079C017B98000ull, "1.0.0"}}, // choice
             // DesperaDrops
-            {0x8199c95c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010061A01C1CE000, "010061A01C1CE000", "1.0.0"}}, // text1
-            {0x81d5c900, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010061A01C1CE000, "010061A01C1CE000", "1.0.0"}}, // text2
-            {0x820d6324, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010061A01C1CE000, "010061A01C1CE000", "1.0.0"}}, // choice
+            {0x8199c95c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // text1
+            {0x81d5c900, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // text2
+            {0x820d6324, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // choice
             // Dragon Ball Z: Kakarot
-            {0x812a8e28, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Main Text
-            {0x812a8c90, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Name
-            {0x80bfbff0, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Ptc Text
-            {0x80bfbfd4, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Ptc Name
-            {0x8126a538, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Info
-            {0x8106fcbc, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // More Info
-            {0x80fad204, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Hint Part1
-            {0x80fad2d0, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Hint Part2
-            {0x80facf1c, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Loading Title
-            {0x80fad018, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Loading Description
-            {0x81250c50, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Tutorial h1
-            {0x81250df0, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Tutorial h2
-            {0x81251e80, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Tutorial Description1
-            {0x81252214, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Tutorial Description2
-            {0x810ae1c4, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Config Description
-            {0x812a9bb8, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Menu Talk
-            {0x812a9b78, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, "0100EF00134F4000", "1.50"}}, // Menu Name
+            {0x812a8e28, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Main Text
+            {0x812a8c90, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Name
+            {0x80bfbff0, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Ptc Text
+            {0x80bfbfd4, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Ptc Name
+            {0x8126a538, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Info
+            {0x8106fcbc, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // More Info
+            {0x80fad204, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Hint Part1
+            {0x80fad2d0, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Hint Part2
+            {0x80facf1c, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Loading Title
+            {0x80fad018, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Loading Description
+            {0x81250c50, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Tutorial h1
+            {0x81250df0, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Tutorial h2
+            {0x81251e80, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Tutorial Description1
+            {0x81252214, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Tutorial Description2
+            {0x810ae1c4, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Config Description
+            {0x812a9bb8, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Menu Talk
+            {0x812a9b78, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Menu Name
             // Harvestella
-            {0x80af7abc, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Main Text
-            {0x80c0beb8, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Tutorial + News
-            {0x80b87f94, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Tutorial Part 2
-            {0x80e1c378, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Mission Title
-            {0x80a7d7f4, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Mission Description
-            {0x80e39130, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Item Name
-            {0x80e38f80, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Item Description Part1
-            {0x80e38ea8, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, "0100EDD018032000", "1.0.1"}}, // Item Description Part2
+            {0x80af7abc, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, 0x0100EDD018032000ull, "1.0.1"}}, // Main Text
+            {0x80c0beb8, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, 0x0100EDD018032000ull, "1.0.1"}}, // Tutorial + News
+            {0x80b87f94, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, 0x0100EDD018032000ull, "1.0.1"}}, // Tutorial Part 2
+            {0x80e1c378, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, 0x0100EDD018032000ull, "1.0.1"}}, // Mission Title
+            {0x80a7d7f4, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, 0x0100EDD018032000ull, "1.0.1"}}, // Mission Description
+            {0x80e39130, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, 0x0100EDD018032000ull, "1.0.1"}}, // Item Name
+            {0x80e38f80, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, 0x0100EDD018032000ull, "1.0.1"}}, // Item Description Part1
+            {0x80e38ea8, {CODEC_UTF16, 0, 0, 0, F0100B0601852A000, 0x0100EDD018032000ull, "1.0.1"}}, // Item Description Part2
             // 千の刃濤、桃花染の皇姫
-            {0x8003fc90, {CODEC_UTF8, 1, 0, 0, 0, "0100F8A017BAA000", "1.0.0"}}, // text1
-            {0x8017a740, {CODEC_UTF8, 0, 0, 0, 0, "0100F8A017BAA000", "1.0.0"}}, // text2
+            {0x8003fc90, {CODEC_UTF8, 1, 0, 0, 0, 0x0100F8A017BAA000ull, "1.0.0"}}, // text1
+            {0x8017a740, {CODEC_UTF8, 0, 0, 0, 0, 0x0100F8A017BAA000ull, "1.0.0"}}, // text2
             // オランピアソワレ
-            {0x8002ad60, {CODEC_UTF8, 31, 0, 0, F0100C310110B4000, "0100F9D00C186000", "1.0.0"}},
-            {0x8004b9e0, {CODEC_UTF8, 1, 0, 0, F0100C310110B4000, "0100F9D00C186000", "1.0.0"}},
+            {0x8002ad60, {CODEC_UTF8, 31, 0, 0, F0100C310110B4000, 0x0100F9D00C186000ull, "1.0.0"}},
+            {0x8004b9e0, {CODEC_UTF8, 1, 0, 0, F0100C310110B4000, 0x0100F9D00C186000ull, "1.0.0"}},
             // 月影の鎖 -錯乱パラノイア-
-            {0x21801c, {0, 2, 0, 0, F0100F7401AA74000, "0100F7401AA74000", "1.0.0"}}, // text,sjis
-            {0x228fac, {0, 1, 0, 0, F0100F7401AA74000, "0100F7401AA74000", "1.0.0"}}, // choices
-            {0x267f24, {0, 1, 0, 0, F0100F7401AA74000, "0100F7401AA74000", "1.0.0"}}, // dictionary
+            {0x21801c, {0, 2, 0, 0, F0100F7401AA74000, 0x0100F7401AA74000ull, "1.0.0"}}, // text,sjis
+            {0x228fac, {0, 1, 0, 0, F0100F7401AA74000, 0x0100F7401AA74000ull, "1.0.0"}}, // choices
+            {0x267f24, {0, 1, 0, 0, F0100F7401AA74000, 0x0100F7401AA74000ull, "1.0.0"}}, // dictionary
             // Xenoblade Chronicles 2
-            {0x8010b180, {CODEC_UTF8, 1, 0, 0, F01006F000B056000, "0100F3400332C000", "2.0.2"}}, // Text
+            {0x8010b180, {CODEC_UTF8, 1, 0, 0, F01006F000B056000, 0x0100F3400332C000ull, "2.0.2"}}, // Text
             // Kanon
-            {0x800dc524, {CODEC_UTF16, 0, 0, 0, F0100FB7019ADE000, "0100FB7019ADE000", "1.0.0"}}, // Text
+            {0x800dc524, {CODEC_UTF16, 0, 0, 0, F0100FB7019ADE000, 0x0100FB7019ADE000ull, "1.0.0"}}, // Text
             // Princess Arthur
-            {0x80066e10, {0, 2, 0, 0, F0100FC2019346000, "0100FC2019346000", "1.0.0"}}, // Dialogue text ,sjis
-            {0x8001f7d0, {0, 0, 0, 0, F0100FC2019346000, "0100FC2019346000", "1.0.0"}}, // Name
+            {0x80066e10, {0, 2, 0, 0, F0100FC2019346000, 0x0100FC2019346000ull, "1.0.0"}}, // Dialogue text ,sjis
+            {0x8001f7d0, {0, 0, 0, 0, F0100FC2019346000, 0x0100FC2019346000ull, "1.0.0"}}, // Name
             // Layton’s Mystery Journey: Katrielle and the Millionaires’ Conspiracy
-            {0x8025d520, {0, 2, 0, 0, F0100FDB00AA80000, "0100FDB00AA80000", "1.1.0"}}, // All Text ,sjis
+            {0x8025d520, {0, 2, 0, 0, F0100FDB00AA80000, 0x0100FDB00AA80000ull, "1.1.0"}}, // All Text ,sjis
             // Xenoblade Chronicles: Definitive Edition
-            {0x808a5670, {CODEC_UTF8, 1, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Main Text
-            {0x80305968, {CODEC_UTF8, 1, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Choices
-            {0x8029edc8, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Item Name
-            {0x8029ede8, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Item Description
-            {0x8026a454, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Acquired Item Name
-            {0x803c725c, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Acquired Item Notification
-            {0x802794cc, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, "0100FF500E34A000", "1.1.2"}}, // Location Discovered
+            {0x808a5670, {CODEC_UTF8, 1, 0, 0, F0100FF500E34A000, 0x0100FF500E34A000ull, "1.1.2"}}, // Main Text
+            {0x80305968, {CODEC_UTF8, 1, 0, 0, F0100FF500E34A000, 0x0100FF500E34A000ull, "1.1.2"}}, // Choices
+            {0x8029edc8, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, 0x0100FF500E34A000ull, "1.1.2"}}, // Item Name
+            {0x8029ede8, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, 0x0100FF500E34A000ull, "1.1.2"}}, // Item Description
+            {0x8026a454, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, 0x0100FF500E34A000ull, "1.1.2"}}, // Acquired Item Name
+            {0x803c725c, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, 0x0100FF500E34A000ull, "1.1.2"}}, // Acquired Item Notification
+            {0x802794cc, {CODEC_UTF8, 0, 0, 0, F0100FF500E34A000, 0x0100FF500E34A000ull, "1.1.2"}}, // Location Discovered
             // Unicorn Overlord -国王的假日-
-            {0x805ae1f8, {CODEC_UTF8, 1, 0, 0, F01000AE01954A000, "01000AE01954A000", "1.00"}}, // Text
+            {0x805ae1f8, {CODEC_UTF8, 1, 0, 0, F01000AE01954A000, 0x01000AE01954A000ull, "1.00"}}, // Text
             // Octopath Traveler
-            {0x8005ef78, {CODEC_UTF32, 0, 0, 0, 0, "01000E200DC58000", "1.0.0"}}, // Text
+            {0x8005ef78, {CODEC_UTF32, 0, 0, 0, 0, 0x01000E200DC58000ull, "1.0.0"}}, // Text
             // The World Ends with You: Final Remix
-            {0x80706ab8, {CODEC_UTF16, 2, 0, 0, F01006F000B056000, "01001C1009892000", "1.0.0"}}, // Text
+            {0x80706ab8, {CODEC_UTF16, 2, 0, 0, F01006F000B056000, 0x01001C1009892000ull, "1.0.0"}}, // Text
             // JackJanne
-            {0x81f02cd8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100982015606000, "01001DD010A2E800", "1.0.5"}}, // Text
-            {0x821db028, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100982015606000, "01001DD010A2E800", "1.0.5"}}, // choice
+            {0x81f02cd8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100982015606000, 0x01001DD010A2E800ull, "1.0.5"}}, // Text
+            {0x821db028, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100982015606000, 0x01001DD010A2E800ull, "1.0.5"}}, // choice
             // Collar x Malice
-            {0x800444c4, {CODEC_UTF8, 0, 0, 0, 0, "01002B400E9DA000", "1.0.0"}}, // Text
+            {0x800444c4, {CODEC_UTF8, 0, 0, 0, 0, 0x01002B400E9DA000ull, "1.0.0"}}, // Text
             // 神田アリスも推理スル。
-            {0x80041db0, {0, 0, 0, 0, F01003BD013E30000, "01003BD013E30000", "1.0.0"}}, // sjis
+            {0x80041db0, {0, 0, 0, 0, F01003BD013E30000, 0x01003BD013E30000ull, "1.0.0"}}, // sjis
             // Rune Factory 3 Special
-            {0x81fb3364, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Main Text
-            {0x826c0f20, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Aproach
-            {0x81fb3320, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Choices
-            {0x821497e8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Calendar
-            {0x826ba1a0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Info
-            {0x823f6200, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // More Info
-            {0x826c381c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, "01001EF017BE6000", "1.0.4"}}, // Item Select Name
+            {0x81fb3364, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // Main Text
+            {0x826c0f20, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // Aproach
+            {0x81fb3320, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // Choices
+            {0x821497e8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // Calendar
+            {0x826ba1a0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // Info
+            {0x823f6200, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // More Info
+            {0x826c381c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // Item Select Name
             // 囚われのパルマ Refrain
-            {0x80697300, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // text x1
-            {0x806f43c0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // name x0
-            {0x80d2aca4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // choice x0
-            {0x804b04c8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // alert x0
-            {0x804b725c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, "01000EA00D2EE000", "1.0.0"}}, // prompt x0
+            {0x80697300, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // text x1
+            {0x806f43c0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // name x0
+            {0x80d2aca4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // choice x0
+            {0x804b04c8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // alert x0
+            {0x804b725c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // prompt x0
             // 穢翼のユースティア
-            {0x804BEFD0, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01001CC017BB2000", "1.0.0"}}, // x0 - name
-            {0x804BEFE8, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01001CC017BB2000", "1.0.0"}}, // x0 - dialogue
-            {0x804d043c, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "01001CC017BB2000", "1.0.0"}}, // x0 - choice
+            {0x804BEFD0, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01001CC017BB2000ull, "1.0.0"}}, // x0 - name
+            {0x804BEFE8, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01001CC017BB2000ull, "1.0.0"}}, // x0 - dialogue
+            {0x804d043c, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01001CC017BB2000ull, "1.0.0"}}, // x0 - choice
             // 蛇香のライラ ～Allure of MUSK～
-            {0x80167100, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  1. European night
-            {0x801589a0, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
-            {0x801b4300, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  2. Asian night
-            {0x802a9170, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
-            {0x80301e80, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  3. Arabic night
-            {0x803f7a90, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, "010093800DB1C000", "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
+            {0x80167100, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, 0x010093800DB1C000ull, "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  1. European night
+            {0x801589a0, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, 0x010093800DB1C000ull, "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
+            {0x801b4300, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, 0x010093800DB1C000ull, "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  2. Asian night
+            {0x802a9170, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, 0x010093800DB1C000ull, "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
+            {0x80301e80, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, 0x010093800DB1C000ull, "1.0.0"}}, // x1 text + name (unformated), #T1 #T2, #T0  3. Arabic night
+            {0x803f7a90, {CODEC_UTF32, 1, 0, 0, F010093800DB1C000, 0x010093800DB1C000ull, "1.0.0"}}, // x0=x1=choice (sig=SltAdd)
             // ガレリアの地下迷宮と魔女ノ旅団
-            {0x8002f64c, {CODEC_UTF8, 0, 0, 0, 0, "01007010157B4000", "1.0.1"}}, // Main Text
+            {0x8002f64c, {CODEC_UTF8, 0, 0, 0, 0, 0x01007010157B4000ull, "1.0.1"}}, // Main Text
             // Dragon's Dogma: Dark Arisen
-            {0x81023a80, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Main Text
-            {0x8103e140, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Allies + Cutscene Text
-            {0x8103bb10, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // NPC Text
-            {0x80150720, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Intro Message
-            {0x80df90a8, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Info1
-            {0x80ce2bb8, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Info2
-            {0x80292d84, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Info Popup1
-            {0x80cfac6c, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Info Popup2
-            {0x8102d460, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, "010057E00AC56000", "1.0.1"}}, // Description
+            {0x81023a80, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // Main Text
+            {0x8103e140, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // Allies + Cutscene Text
+            {0x8103bb10, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // NPC Text
+            {0x80150720, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // Intro Message
+            {0x80df90a8, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // Info1
+            {0x80ce2bb8, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // Info2
+            {0x80292d84, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // Info Popup1
+            {0x80cfac6c, {CODEC_UTF8, 0, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // Info Popup2
+            {0x8102d460, {CODEC_UTF8, 1, 0, 0, F010057E00AC56000, 0x010057E00AC56000ull, "1.0.1"}}, // Description
             // Yo-kai Watch Jam - Yo-kai Academy Y: Waiwai Gakuen
-            {0x80dd0cec, {CODEC_UTF8, 0, 0, 0, F010051D010FC2000, "010051D010FC2000", "4.0.0"}}, // Dialogue text
-            {0x80e33450, {CODEC_UTF8, 3, 0, 0, F010051D010FC2000, "010051D010FC2000", "4.0.0"}}, // Other Dialogue text
-            {0x80c807c0, {CODEC_UTF8, 0, 0, 0, F010051D010FC2000, "010051D010FC2000", "4.0.0"}}, // Item description etc text
-            {0x808d9a30, {CODEC_UTF8, 0, 0, 0, F010051D010FC2000, "010051D010FC2000", "4.0.0"}}, // Tutorial Text
-            {0x811b95ac, {CODEC_UTF8, 3, 0, 0, F010051D010FC2000, "010051D010FC2000", "4.0.0"}}, // Menu screen
-            {0x80e20290, {CODEC_UTF8, 3, 0, 0, F010051D010FC2000, "010051D010FC2000", "4.0.0"}}, // Opening Song Text etc
-            {0x80c43680, {CODEC_UTF8, 3, 0, 0, F010051D010FC2000, "010051D010FC2000", "4.0.0"}}, // Cutscene Text
+            {0x80dd0cec, {CODEC_UTF8, 0, 0, 0, F010051D010FC2000, 0x010051D010FC2000ull, "4.0.0"}}, // Dialogue text
+            {0x80e33450, {CODEC_UTF8, 3, 0, 0, F010051D010FC2000, 0x010051D010FC2000ull, "4.0.0"}}, // Other Dialogue text
+            {0x80c807c0, {CODEC_UTF8, 0, 0, 0, F010051D010FC2000, 0x010051D010FC2000ull, "4.0.0"}}, // Item description etc text
+            {0x808d9a30, {CODEC_UTF8, 0, 0, 0, F010051D010FC2000, 0x010051D010FC2000ull, "4.0.0"}}, // Tutorial Text
+            {0x811b95ac, {CODEC_UTF8, 3, 0, 0, F010051D010FC2000, 0x010051D010FC2000ull, "4.0.0"}}, // Menu screen
+            {0x80e20290, {CODEC_UTF8, 3, 0, 0, F010051D010FC2000, 0x010051D010FC2000ull, "4.0.0"}}, // Opening Song Text etc
+            {0x80c43680, {CODEC_UTF8, 3, 0, 0, F010051D010FC2000, 0x010051D010FC2000ull, "4.0.0"}}, // Cutscene Text
             // NEO: The World Ends With You
-            {0x81581d6c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010043B013C5C000, "010043B013C5C000", "1.03"}}, // Text
-            {0x818eb248, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010043B013C5C000, "010043B013C5C000", "1.03"}}, // Objective
-            {0x81db84a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010043B013C5C000, "010043B013C5C000", "1.03"}}, // Menu: Collection Item Name
-            {0x81db8660, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010043B013C5C000, "010043B013C5C000", "1.03"}}, // Menu: Collection Item Description
-            {0x81c71a48, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010043B013C5C000, "010043B013C5C000", "1.03"}}, // Tutorial Title
-            {0x81c71b28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010043B013C5C000, "010043B013C5C000", "1.03"}}, // Tutorial Description
+            {0x81581d6c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010043B013C5C000, 0x010043B013C5C000ull, "1.03"}}, // Text
+            {0x818eb248, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010043B013C5C000, 0x010043B013C5C000ull, "1.03"}}, // Objective
+            {0x81db84a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010043B013C5C000, 0x010043B013C5C000ull, "1.03"}}, // Menu: Collection Item Name
+            {0x81db8660, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F010043B013C5C000, 0x010043B013C5C000ull, "1.03"}}, // Menu: Collection Item Description
+            {0x81c71a48, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010043B013C5C000, 0x010043B013C5C000ull, "1.03"}}, // Tutorial Title
+            {0x81c71b28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010043B013C5C000, 0x010043B013C5C000ull, "1.03"}}, // Tutorial Description
             // Eiyuden Chronicle: Rising
-            {0x82480190, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, 0, "010039B015CB6000", "1.02"}}, // Main Text
-            {0x824805d0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, 0, "010039B015CB6000", "1.02"}}, // Name
-            {0x81f05c44, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Intro Text
-            {0x82522ac4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Character Info
-            {0x81b715f4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Info
-            {0x825274d0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, 0, "010039B015CB6000", "1.02"}}, // Info2
-            {0x825269b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Tutorial Title
-            {0x82526a0c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Tutorial Description
-            {0x82523e04, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Objective Title
-            {0x82524160, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Objective Description
-            {0x81f0351c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Location Selection Title
-            {0x81f0358c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Location Selection Description
-            {0x81f0d520, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Quest Title
-            {0x81f0d58c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Quest Description
-            {0x81f00318, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Help Title
-            {0x81f00368, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Help Description
-            {0x81f0866c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, "010039B015CB6000", "1.02"}}, // Config Description
+            {0x82480190, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, 0, 0x010039B015CB6000ull, "1.02"}}, // Main Text
+            {0x824805d0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, 0, 0x010039B015CB6000ull, "1.02"}}, // Name
+            {0x81f05c44, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Intro Text
+            {0x82522ac4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Character Info
+            {0x81b715f4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Info
+            {0x825274d0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, 0, 0x010039B015CB6000ull, "1.02"}}, // Info2
+            {0x825269b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Tutorial Title
+            {0x82526a0c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Tutorial Description
+            {0x82523e04, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Objective Title
+            {0x82524160, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Objective Description
+            {0x81f0351c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Location Selection Title
+            {0x81f0358c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Location Selection Description
+            {0x81f0d520, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Quest Title
+            {0x81f0d58c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Quest Description
+            {0x81f00318, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Help Title
+            {0x81f00368, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Help Description
+            {0x81f0866c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, 0, 0x010039B015CB6000ull, "1.02"}}, // Config Description
             // Ghost Trick: Phantom Detective
-            {0x81448898, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, "010029B018432000", "1.0.0"}}, // Main Text
-            {0x80c540d4, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, "010029B018432000", "1.0.0"}}, // Secondary Text
-            {0x80e50dd4, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, "010029B018432000", "1.0.0"}}, // Object Name
-            {0x80f91c08, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, "010029B018432000", "1.0.0"}}, // Language Selection
-            {0x805c9014, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, "010029B018432000", "1.0.0"}}, // Story/Character Info
+            {0x81448898, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, 0x010029B018432000ull, "1.0.0"}}, // Main Text
+            {0x80c540d4, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, 0x010029B018432000ull, "1.0.0"}}, // Secondary Text
+            {0x80e50dd4, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, 0x010029B018432000ull, "1.0.0"}}, // Object Name
+            {0x80f91c08, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, 0x010029B018432000ull, "1.0.0"}}, // Language Selection
+            {0x805c9014, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, 0x010029B018432000ull, "1.0.0"}}, // Story/Character Info
             // ひぐらしのなく頃に奉
-            {0x800bd6c8, {0, 0, 0, 0, F0100F6A00A684000, "0100F6A00A684000", "1.0.0"}}, // sjis
-            {0x800c2d20, {0, 0, 0, 0, F0100F6A00A684000, "0100F6A00A684000", "1.2.0"}}, // sjis
+            {0x800bd6c8, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, "1.0.0"}}, // sjis
+            {0x800c2d20, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, "1.2.0"}}, // sjis
             // うみねこのなく頃に咲 ～猫箱と夢想の交響曲～
-            {0x800b4560, {CODEC_UTF8, 0, 0, 0, 0, "01006A300BA2C000", "1.0.0"}}, // x0 name + text (bottom, center) - whole line. filter is to complex, quit.
-            {0x801049c0, {CODEC_UTF8, 0, 0, 0, 0, "01006A300BA2C000", "1.0.0"}}, // x0 prompt, bottomLeft
-            {0x80026378, {CODEC_UTF8, 0, 0, 0, 0, "01006A300BA2C000", "1.0.0"}}, // x0 Yes|No
-            {0x801049a8, {CODEC_UTF8, 0, 0, 0, 0, "01006A300BA2C000", "1.0.0"}}, // x0 topLeft (double: ♪ + text)
+            {0x800b4560, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 name + text (bottom, center) - whole line. filter is to complex, quit.
+            {0x801049c0, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 prompt, bottomLeft
+            {0x80026378, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 Yes|No
+            {0x801049a8, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 topLeft (double: ♪ + text)
             // 殺し屋とストロベリー
-            {0x81322cec, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010042300C4F6000, "0100E390145C8000", "1.0.0"}}, // dialogue
-            {0x819b1a78, {CODEC_UTF16, 0, 0, ReadTextAndLenW<2>, F010042300C4F6000, "0100E390145C8000", "1.0.0"}}, // dialogue
-            {0x81314e8c, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010042300C4F6000, "0100E390145C8000", "1.0.0"}}, // dialogue
+            {0x81322cec, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010042300C4F6000, 0x0100E390145C8000ull, "1.0.0"}}, // dialogue
+            {0x819b1a78, {CODEC_UTF16, 0, 0, ReadTextAndLenW<2>, F010042300C4F6000, 0x0100E390145C8000ull, "1.0.0"}}, // dialogue
+            {0x81314e8c, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010042300C4F6000, 0x0100E390145C8000ull, "1.0.0"}}, // dialogue
             // ときめきメモリアル Girl's Side
-            {0x822454a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // dialogue1
-            {0x82247138, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // dialogue2
-            {0x822472e0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // dialogue3
-            {0x82156988, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // choice
-            {0x82642200, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // option1
-            {0x81ecd758, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // option2
-            {0x823185e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // mail
-            {0x823f2edc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // roomDescript
-            {0x821e3cf0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // dateDescript
-            {0x81e20050, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // characterDesc1
-            {0x81e1fe50, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // characterDesc2
-            {0x81e1feb0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // characterDesc3
-            {0x81e1ff04, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // characterDesc4
-            {0x821d03b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<3>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // news
-            {0x82312008, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, "0100D9A01BD86000", "1.0.1"}}, // luckyitem
+            {0x822454a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // dialogue1
+            {0x82247138, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // dialogue2
+            {0x822472e0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // dialogue3
+            {0x82156988, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // choice
+            {0x82642200, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // option1
+            {0x81ecd758, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // option2
+            {0x823185e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // mail
+            {0x823f2edc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // roomDescript
+            {0x821e3cf0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // dateDescript
+            {0x81e20050, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // characterDesc1
+            {0x81e1fe50, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // characterDesc2
+            {0x81e1feb0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // characterDesc3
+            {0x81e1ff04, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // characterDesc4
+            {0x821d03b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<3>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // news
+            {0x82312008, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // luckyitem
             // Triangle Strategy
-            {0x80aadebc, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<0>, "0100CC80140F8000", "1.1.0"}}, // Main Text
-            {0x81358ce4, {CODEC_UTF16, 3, 0, 0, F0100CC80140F8000<1>, "0100CC80140F8000", "1.1.0"}}, // Secondary Text
-            {0x80a38988, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<2>, "0100CC80140F8000", "1.1.0"}}, // Info Contents
-            {0x80aa4aec, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<3>, "0100CC80140F8000", "1.1.0"}}, // Info
-            {0x80b1f300, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<4>, "0100CC80140F8000", "1.1.0"}}, // Difficulty Selection Part1
-            {0x80b1f670, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<5>, "0100CC80140F8000", "1.1.0"}}, // Difficulty Selection Part2
-            {0x80aa48f0, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<6>, "0100CC80140F8000", "1.1.0"}}, // PopUp Message
+            {0x80aadebc, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<0>, 0x0100CC80140F8000ull, "1.1.0"}}, // Main Text
+            {0x81358ce4, {CODEC_UTF16, 3, 0, 0, F0100CC80140F8000<1>, 0x0100CC80140F8000ull, "1.1.0"}}, // Secondary Text
+            {0x80a38988, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<2>, 0x0100CC80140F8000ull, "1.1.0"}}, // Info Contents
+            {0x80aa4aec, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<3>, 0x0100CC80140F8000ull, "1.1.0"}}, // Info
+            {0x80b1f300, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<4>, 0x0100CC80140F8000ull, "1.1.0"}}, // Difficulty Selection Part1
+            {0x80b1f670, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<5>, 0x0100CC80140F8000ull, "1.1.0"}}, // Difficulty Selection Part2
+            {0x80aa48f0, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<6>, 0x0100CC80140F8000ull, "1.1.0"}}, // PopUp Message
             // Xenoblade Chronicles 3
-            {0x80cf6ddc, {CODEC_UTF8, 0, 0, 0, F010074F013262000, "010074F013262000", "2.2.0"}}, // Main Text
-            {0x80e76150, {CODEC_UTF8, 0, 0, 0, F010074F013262000, "010074F013262000", "2.2.0"}}, // Secondary Text
-            {0x807b4ee4, {CODEC_UTF8, 1, 0, 0, F010074F013262000, "010074F013262000", "2.2.0"}}, // Tutorial Description
-            {0x80850218, {CODEC_UTF8, 0, 0, 0, F010074F013262000, "010074F013262000", "2.2.0"}}, // Objective
+            {0x80cf6ddc, {CODEC_UTF8, 0, 0, 0, F010074F013262000, 0x010074F013262000ull, "2.2.0"}}, // Main Text
+            {0x80e76150, {CODEC_UTF8, 0, 0, 0, F010074F013262000, 0x010074F013262000ull, "2.2.0"}}, // Secondary Text
+            {0x807b4ee4, {CODEC_UTF8, 1, 0, 0, F010074F013262000, 0x010074F013262000ull, "2.2.0"}}, // Tutorial Description
+            {0x80850218, {CODEC_UTF8, 0, 0, 0, F010074F013262000, 0x010074F013262000ull, "2.2.0"}}, // Objective
             // CLOCK ZERO 〜終焉の一秒〜
-            {0x8003c290, {0, 0, 0, 0, F0100BDD01AAE4000, "01008C100C572000", "1.0.0"}}, // name,sjis
-            {0x8003c184, {0, 0, 0, 0, F0100BDD01AAE4000, "01008C100C572000", "1.0.0"}}, // dialogue
-            {0x8001f6d0, {0, 0, 0, 0, F0100BDD01AAE4000, "01008C100C572000", "1.0.0"}}, // prompt
+            {0x8003c290, {0, 0, 0, 0, F0100BDD01AAE4000, 0x01008C100C572000ull, "1.0.0"}}, // name,sjis
+            {0x8003c184, {0, 0, 0, 0, F0100BDD01AAE4000, 0x01008C100C572000ull, "1.0.0"}}, // dialogue
+            {0x8001f6d0, {0, 0, 0, 0, F0100BDD01AAE4000, 0x01008C100C572000ull, "1.0.0"}}, // prompt
             // 終遠のヴィルシュ -ErroR:salvation-
-            {0x8001f594, {CODEC_UTF8, 0, 0x1C, 0, F0100C310110B4000, "01005B9014BE0000", "1.0.0"}}, // dialog
-            {0x8001f668, {CODEC_UTF8, 0, 0x1C, 0, F0100C310110B4000, "01005B9014BE0000", "1.0.0"}}, // center
-            {0x8003d540, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, "01005B9014BE0000", "1.0.0"}},    // choice
+            {0x8001f594, {CODEC_UTF8, 0, 0x1C, 0, F0100C310110B4000, 0x01005B9014BE0000ull, "1.0.0"}}, // dialog
+            {0x8001f668, {CODEC_UTF8, 0, 0x1C, 0, F0100C310110B4000, 0x01005B9014BE0000ull, "1.0.0"}}, // center
+            {0x8003d540, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005B9014BE0000ull, "1.0.0"}},    // choice
             // 終遠のヴィルシュ -EpiC:lycoris-
-            {0x8002bf6c, {CODEC_UTF8, 0, 0x1c, 0, FF010061300DF48000_2, "01004D601B0AA000", "1.0.1"}},
-            {0x8004e720, {CODEC_UTF8, 1, 0, 0, FF010061300DF48000_2, "01004D601B0AA000", "1.0.1"}},
+            {0x8002bf6c, {CODEC_UTF8, 0, 0x1c, 0, FF010061300DF48000_2, 0x01004D601B0AA000ull, "1.0.1"}},
+            {0x8004e720, {CODEC_UTF8, 1, 0, 0, FF010061300DF48000_2, 0x01004D601B0AA000ull, "1.0.1"}},
             // スペードの国のアリス ～Wonderful White World～
-            {0x8135d018, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01008C0016544000, "01003FE00E2F8000", "1.0.0"}}, // Text + Name
+            {0x8135d018, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01008C0016544000, 0x01003FE00E2F8000ull, "1.0.0"}}, // Text + Name
             // スペードの国のアリス ～Wonderful Black World～
-            {0x819dbdc8, {CODEC_UTF16, 0, 0x14, 0, F0100AB100E2FA000, "0100AB100E2FA000", "1.0.0"}},
-            {0x81f8e564, {CODEC_UTF16, 1, 0x14, 0, F0100AB100E2FA000, "0100AB100E2FA000", "1.0.0"}},
+            {0x819dbdc8, {CODEC_UTF16, 0, 0x14, 0, F0100AB100E2FA000, 0x0100AB100E2FA000ull, "1.0.0"}},
+            {0x81f8e564, {CODEC_UTF16, 1, 0x14, 0, F0100AB100E2FA000, 0x0100AB100E2FA000ull, "1.0.0"}},
             // 十三支演義 偃月三国伝1・2 for Nintendo Switch (Juuzaengi ~Engetsu Sangokuden~)
-            {0x82031f20, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100DA201E0DA000, "01003D2017FEA000", "1.0.0"}}, // name
-            {0x82ef9550, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100DA201E0DA000, "01003D2017FEA000", "1.0.0"}}, // dialogue
-            {0x83252e0c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100DA201E0DA000, "01003D2017FEA000", "1.0.0"}}, // choice
+            {0x82031f20, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F0100DA201E0DA000, 0x01003D2017FEA000ull, "1.0.0"}}, // name
+            {0x82ef9550, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100DA201E0DA000, 0x01003D2017FEA000ull, "1.0.0"}}, // dialogue
+            {0x83252e0c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100DA201E0DA000, 0x01003D2017FEA000ull, "1.0.0"}}, // choice
             // Tales of Vesperia: Definitive Edition
-            {0x802de170, {CODEC_UTF8, 2, 0, 0, F01002C0008E52000, "01002C0008E52000", "1.0.2"}}, // Ptc Text
-            {0x802cf170, {CODEC_UTF8, 3, 0, 0, F01002C0008E52000, "01002C0008E52000", "1.0.2"}}, // Cutscene
-            {0x8019957c, {CODEC_UTF8, 0, 0, 0, F01002C0008E52000, "01002C0008E52000", "1.0.2"}}, // Conversation
-            {0x802c0600, {CODEC_UTF8, 2, 0, 0, F01002C0008E52000, "01002C0008E52000", "1.0.2"}}, // Info
-            {0x801135fc, {CODEC_UTF8, 0, 0, 0, F01002C0008E52000, "01002C0008E52000", "1.0.2"}}, // Post Battle Text
+            {0x802de170, {CODEC_UTF8, 2, 0, 0, F01002C0008E52000, 0x01002C0008E52000ull, "1.0.2"}}, // Ptc Text
+            {0x802cf170, {CODEC_UTF8, 3, 0, 0, F01002C0008E52000, 0x01002C0008E52000ull, "1.0.2"}}, // Cutscene
+            {0x8019957c, {CODEC_UTF8, 0, 0, 0, F01002C0008E52000, 0x01002C0008E52000ull, "1.0.2"}}, // Conversation
+            {0x802c0600, {CODEC_UTF8, 2, 0, 0, F01002C0008E52000, 0x01002C0008E52000ull, "1.0.2"}}, // Info
+            {0x801135fc, {CODEC_UTF8, 0, 0, 0, F01002C0008E52000, 0x01002C0008E52000ull, "1.0.2"}}, // Post Battle Text
             // Nil Adminari no Tenbin Irodori Nadeshiko
-            {0x8005fd5c, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, "01002BB00A662000", "1.0.0"}},  // name
-            {0x800db0d8, {CODEC_UTF8, 0, 20, 0, F0100BDD01AAE4000, "01002BB00A662000", "1.0.0"}}, // name
+            {0x8005fd5c, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01002BB00A662000ull, "1.0.0"}},  // name
+            {0x800db0d8, {CODEC_UTF8, 0, 20, 0, F0100BDD01AAE4000, 0x01002BB00A662000ull, "1.0.0"}}, // name
             // 華ヤカ哉、我ガ一族 モダンノスタルジィ
-            {0x2509ac, {CODEC_UTF8, 0, 0, T0100B5500CA0C000, F0100B5500CA0C000, "01008DE00C022000", "1.0.0"}},
+            {0x2509ac, {CODEC_UTF8, 0, 0, T0100B5500CA0C000, F0100B5500CA0C000, 0x01008DE00C022000ull, "1.0.0"}},
             // 華ヤカ哉、我ガ一族 幻燈ノスタルジィ
-            {0x27ca10, {CODEC_UTF8, 0, 0, T0100B5500CA0C000, F0100B5500CA0C000, "0100B5500CA0C000", "1.0.0"}}, // x3 (double trigged), name+text, onscreen
+            {0x27ca10, {CODEC_UTF8, 0, 0, T0100B5500CA0C000, F0100B5500CA0C000, 0x0100B5500CA0C000ull, "1.0.0"}}, // x3 (double trigged), name+text, onscreen
             // 超探偵事件簿 レインコード
-            {0x80bf2034, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Dialogue text
-            {0x80c099d4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Cutscene text
-            {0x80cbf1f4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Menu
-            {0x80cbc11c, {CODEC_UTF16, 0, 0, 0, F0100DA201E0DA000, "0100F4401940A000", "1.3.3"}}, // Menu Item Description
-            {0x80cacc14, {CODEC_UTF16, 0, 0, 0, F0100DA201E0DA000, "0100F4401940A000", "1.3.3"}}, // Menu Item Description 2
-            {0x80cd6410, {CODEC_UTF16, 0, 0, 0, F0100DA201E0DA000, "0100F4401940A000", "1.3.3"}}, // Menu Item Description 3
-            {0x80c214d4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Description
-            {0x80cc9908, {CODEC_UTF16, 0, 0, 0, F0100DA201E0DA000, "0100F4401940A000", "1.3.3"}}, // Mini game item description
-            {0x80bce36c, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Tutorial
-            {0x80bcb7d4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Loading Screen information
-            {0x80bf32d8, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, "0100F4401940A000", "1.3.3"}}, // Choices
+            {0x80bf2034, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, 0x0100F4401940A000ull, "1.3.3"}}, // Dialogue text
+            {0x80c099d4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, 0x0100F4401940A000ull, "1.3.3"}}, // Cutscene text
+            {0x80cbf1f4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, 0x0100F4401940A000ull, "1.3.3"}}, // Menu
+            {0x80cbc11c, {CODEC_UTF16, 0, 0, 0, F0100DA201E0DA000, 0x0100F4401940A000ull, "1.3.3"}}, // Menu Item Description
+            {0x80cacc14, {CODEC_UTF16, 0, 0, 0, F0100DA201E0DA000, 0x0100F4401940A000ull, "1.3.3"}}, // Menu Item Description 2
+            {0x80cd6410, {CODEC_UTF16, 0, 0, 0, F0100DA201E0DA000, 0x0100F4401940A000ull, "1.3.3"}}, // Menu Item Description 3
+            {0x80c214d4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, 0x0100F4401940A000ull, "1.3.3"}}, // Description
+            {0x80cc9908, {CODEC_UTF16, 0, 0, 0, F0100DA201E0DA000, 0x0100F4401940A000ull, "1.3.3"}}, // Mini game item description
+            {0x80bce36c, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, 0x0100F4401940A000ull, "1.3.3"}}, // Tutorial
+            {0x80bcb7d4, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, 0x0100F4401940A000ull, "1.3.3"}}, // Loading Screen information
+            {0x80bf32d8, {CODEC_UTF16, 0, 0, 0, F0100F4401940A000, 0x0100F4401940A000ull, "1.3.3"}}, // Choices
             // Fire Emblem: Three Houses
-            {0x8041e6bc, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Main Text
-            {0x805ca570, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Cutscene Text
-            {0x8049f1e8, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Cutscene Text Scroll
-            {0x805ee730, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Info
-            {0x805ee810, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Info Choice
-            {0x80467a60, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Location First Part
-            {0x805f0340, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Location Second Part
-            {0x801faae4, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Action Location
-            {0x803375e8, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Objective
-            {0x805fd870, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Tutorial
-            {0x804022f8, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Request
-            {0x802f7df4, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Quest Description
-            {0x8031af0c, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, "010055D009F78000", "1.2.0"}}, // Aproach Text
+            {0x8041e6bc, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Main Text
+            {0x805ca570, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Cutscene Text
+            {0x8049f1e8, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Cutscene Text Scroll
+            {0x805ee730, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Info
+            {0x805ee810, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Info Choice
+            {0x80467a60, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Location First Part
+            {0x805f0340, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Location Second Part
+            {0x801faae4, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Action Location
+            {0x803375e8, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Objective
+            {0x805fd870, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Tutorial
+            {0x804022f8, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Request
+            {0x802f7df4, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Quest Description
+            {0x8031af0c, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Aproach Text
             // SWEET CLOWN ~午前三時のオカシな道化師~
-            {0x20dbfc, {0, 0, 0x28, 0, F010028D0148E6000, "010028D0148E6000", "1.2.0"}},          // dialog, sjis
-            {0x214978, {0, 2, 0xC, 0, F010028D0148E6000, "010028D0148E6000", "1.2.0"}},           // choices
-            {0x218B40, {FULL_STRING, 1, 0, 0, F010028D0148E6000_2, "010028D0148E6000", "1.0.1"}}, // TEXT
-            {0x20D420, {0, 0, 0, 0, 0, "010028D0148E6000", "1.0.1"}},                             // NAME+TEXT
+            {0x20dbfc, {0, 0, 0x28, 0, F010028D0148E6000, 0x010028D0148E6000ull, "1.2.0"}},          // dialog, sjis
+            {0x214978, {0, 2, 0xC, 0, F010028D0148E6000, 0x010028D0148E6000ull, "1.2.0"}},           // choices
+            {0x218B40, {FULL_STRING, 1, 0, 0, F010028D0148E6000_2, 0x010028D0148E6000ull, "1.0.1"}}, // TEXT
+            {0x20D420, {0, 0, 0, 0, 0, 0x010028D0148E6000ull, "1.0.1"}},                             // NAME+TEXT
             // アナザーコード リコレクション：２つの記憶 / 記憶の扉
-            {0x82dcad30, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Main Text
-            {0x82f2cfb0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Item Description
-            {0x82dcc5fc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Tutorial PopUp Header
-            {0x82dcc61c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Tutorial PopUp Description
-            {0x82f89e78, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Aproach Text
-            {0x82973300, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Chapter
-            {0x82dd2604, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Location
-            {0x82bcb77c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Save Message
-            {0x828ccfec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Acquired Item
-            {0x83237b14, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Question Options
-            {0x82dcee10, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Tutorial Header
-            {0x82dcee38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Tutorial Description
-            {0x82e5cadc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Character Info Name
-            {0x82e5cc38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Character Info Description
-            {0x82871ac8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Letter Message
-            {0x82e4dad4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // アナザーキー
-            {0x82bd65d0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Message Title
-            {0x82bd65f0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Message Content
-            {0x82c1ccf0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Decision Header
-            {0x82c1d218, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Decision1
-            {0x82c1e43c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, "0100CB9018F5A000", "1.0.0"}}, // Decision2
+            {0x82dcad30, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Main Text
+            {0x82f2cfb0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Item Description
+            {0x82dcc5fc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Tutorial PopUp Header
+            {0x82dcc61c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Tutorial PopUp Description
+            {0x82f89e78, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Aproach Text
+            {0x82973300, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Chapter
+            {0x82dd2604, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Location
+            {0x82bcb77c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Save Message
+            {0x828ccfec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Acquired Item
+            {0x83237b14, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Question Options
+            {0x82dcee10, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Tutorial Header
+            {0x82dcee38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Tutorial Description
+            {0x82e5cadc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Character Info Name
+            {0x82e5cc38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Character Info Description
+            {0x82871ac8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Letter Message
+            {0x82e4dad4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // アナザーキー
+            {0x82bd65d0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Message Title
+            {0x82bd65f0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Message Content
+            {0x82c1ccf0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Decision Header
+            {0x82c1d218, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Decision1
+            {0x82c1e43c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Decision2
             // AI：ソムニウム ファイル
-            {0x8165a9a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100C7400CFB4000, "0100C7400CFB4000", "1.0.2"}}, // Main Text + Tutorial
-            {0x80320dd4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100C7400CFB4000, "0100C7400CFB4000", "1.0.2"}}, // Menu Interface Text1
-            {0x80320e20, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100C7400CFB4000, "0100C7400CFB4000", "1.0.2"}}, // Menu Interface Text2
+            {0x8165a9a4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100C7400CFB4000, 0x0100C7400CFB4000ull, "1.0.2"}}, // Main Text + Tutorial
+            {0x80320dd4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100C7400CFB4000, 0x0100C7400CFB4000ull, "1.0.2"}}, // Menu Interface Text1
+            {0x80320e20, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F0100C7400CFB4000, 0x0100C7400CFB4000ull, "1.0.2"}}, // Menu Interface Text2
             // AI: ソムニウムファイル ニルヴァーナイニシアチブ
-            {0x8189ae64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Main Text + Tutorial
-            {0x81813428, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Hover Investigation Text
-            {0x82e122b8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Info
-            {0x82cffff8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Config Description
-            {0x818c3cd8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // File: Names
-            {0x82ea1a38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // File: Contents
-            {0x82cbb1fc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, "0100BD4014D8C000", "1.0.1"}}, // Investigation Choices
+            {0x8189ae64, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, 0x0100BD4014D8C000ull, "1.0.1"}}, // Main Text + Tutorial
+            {0x81813428, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, 0x0100BD4014D8C000ull, "1.0.1"}}, // Hover Investigation Text
+            {0x82e122b8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, 0x0100BD4014D8C000ull, "1.0.1"}}, // Info
+            {0x82cffff8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, 0x0100BD4014D8C000ull, "1.0.1"}}, // Config Description
+            {0x818c3cd8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, 0x0100BD4014D8C000ull, "1.0.1"}}, // File: Names
+            {0x82ea1a38, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, 0x0100BD4014D8C000ull, "1.0.1"}}, // File: Contents
+            {0x82cbb1fc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100BD4014D8C000, 0x0100BD4014D8C000ull, "1.0.1"}}, // Investigation Choices
             // ファタモルガーナの館 -DREAMS OF THE REVENANTS EDITION-
-            {0x8025a998, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, "0100BE40138B8000", "1.0.1"}}, // Main Text
-            {0x801d6050, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, "0100BE40138B8000", "1.0.1"}}, // Choices
+            {0x8025a998, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, 0x0100BE40138B8000ull, "1.0.1"}}, // Main Text
+            {0x801d6050, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01008C0016544000, 0x0100BE40138B8000ull, "1.0.1"}}, // Choices
             // Ni no Kuni II: Revenant Kingdom
-            {0x80ac651c, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, "0100C4E013E5E000", "1.0.0"}}, // Main Text
-            {0x80335ea0, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, "0100C4E013E5E000", "1.0.0"}}, // Name
+            {0x80ac651c, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, 0x0100C4E013E5E000ull, "1.0.0"}}, // Main Text
+            {0x80335ea0, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, 0x0100C4E013E5E000ull, "1.0.0"}}, // Name
             // 遙かなる時空の中で7
-            {0x800102bc, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100CF400F7CE000", "1.0.0"}}, // name, sjis
-            {0x80051f90, {0, 0, 0, T0100CF400F7CE000<1>, F0100CF400F7CE000, "0100CF400F7CE000", "1.0.0"}}, // text
-            {0x80010b48, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100CF400F7CE000", "1.0.0"}}, // prompt
-            {0x80010c80, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100CF400F7CE000", "1.0.0"}}, // choice
+            {0x800102bc, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // name, sjis
+            {0x80051f90, {0, 0, 0, T0100CF400F7CE000<1>, F0100CF400F7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // text
+            {0x80010b48, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // prompt
+            {0x80010c80, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // choice
             // アンジェリーク ルミナライズ
-            {0x80046c04, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100D11018A7E000", "1.0.0"}}, // ingameDialogue, sjis
-            {0x80011284, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100D11018A7E000", "1.0.0"}}, // choice
-            {0x80011140, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, "0100D11018A7E000", "1.0.0"}}, // prompt first
+            {0x80046c04, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // ingameDialogue, sjis
+            {0x80011284, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // choice
+            {0x80011140, {0, 0, 0, T0100CF400F7CE000<0>, F0100CF400F7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // prompt first
             // Star Ocean The Second Story R
-            {0x81d5e4d0, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Main Text + Tutorial
-            {0x81d641b4, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Intro Cutscene
-            {0x824b1f00, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Character Selection Name
-            {0x81d4c670, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Character Selection Lore
-            {0x8203a048, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // General Description
-            {0x82108cd0, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Unique Spot Title
-            {0x827a9848, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Chest Item
-            {0x82756890, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Info
-            {0x82241410, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Menu Talk
-            {0x81d76404, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Secondary Talk
-            {0x821112e0, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Location
-            {0x82111320, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Location Interior
-            {0x81d6ea24, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Special Arts/Spells Name
-            {0x81d6ea68, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Special Arts/Spells Description
-            {0x81d6ed48, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Special Arts/Spells Range
-            {0x81d6eb3c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Special Arts/Spells Effect
-            {0x81d6f880, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Special Arts/Spells Bonus
-            {0x8246d81c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Tactics Name
-            {0x8246d83c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Tactics Description
-            {0x8212101c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Achievements Name
-            {0x82121088, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Achievements Description
-            {0x81d6c480, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Acquired Item1
-            {0x821143f0, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Acquired Item2
-            {0x81d6fb18, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Skill Name
-            {0x81d6fb4c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Skill Description
-            {0x81d6fb7c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Skill Bonus Description
-            {0x8212775c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Item Name
-            {0x82127788, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Item Description
-            {0x821361ac, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Ability Name
-            {0x821361f4, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Ability Range
-            {0x82136218, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Ability Effect
-            {0x8238451c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Strategy Name
-            {0x82134610, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Battle Acquired Item
-            {0x824b5eac, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Item Name
-            {0x824b5f04, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Item Description
-            {0x824b5f54, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Item Effect
-            {0x81d71790, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Item Factor Title
-            {0x824b62c0, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Item Factor Description
-            {0x824c2e2c, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // IC/Specialty Skills Name
-            {0x824c2e54, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // IC/Specialty Skills Description
-            {0x824c2fbc, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // IC/Specialty Skills Level
-            {0x823e7230, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // IC/Specialty Name
-            {0x823e94bc, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // IC/Specialty Description
-            {0x823e9980, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // IC/Specialty Talent
-            {0x823ea9c4, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // IC/Specialty Support Item
-            {0x82243b18, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Enemy Info Skills
-            {0x81d64540, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Guild Mission Description
-            {0x823b4f6c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Guild Mission Reward
-            {0x826facd8, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Challenge Mission Description
-            {0x826f98f8, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Challenge Mission Reward
-            {0x8244af2c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Formation Name
-            {0x8244ae90, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, "010065301A2E0000", "1.0.2"}}, // Formation Description
+            {0x81d5e4d0, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Main Text + Tutorial
+            {0x81d641b4, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Intro Cutscene
+            {0x824b1f00, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Character Selection Name
+            {0x81d4c670, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Character Selection Lore
+            {0x8203a048, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // General Description
+            {0x82108cd0, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Unique Spot Title
+            {0x827a9848, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Chest Item
+            {0x82756890, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Info
+            {0x82241410, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Menu Talk
+            {0x81d76404, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Secondary Talk
+            {0x821112e0, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Location
+            {0x82111320, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Location Interior
+            {0x81d6ea24, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Special Arts/Spells Name
+            {0x81d6ea68, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Special Arts/Spells Description
+            {0x81d6ed48, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Special Arts/Spells Range
+            {0x81d6eb3c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Special Arts/Spells Effect
+            {0x81d6f880, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Special Arts/Spells Bonus
+            {0x8246d81c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Tactics Name
+            {0x8246d83c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Tactics Description
+            {0x8212101c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Achievements Name
+            {0x82121088, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Achievements Description
+            {0x81d6c480, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Acquired Item1
+            {0x821143f0, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Acquired Item2
+            {0x81d6fb18, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Skill Name
+            {0x81d6fb4c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Skill Description
+            {0x81d6fb7c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Skill Bonus Description
+            {0x8212775c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Item Name
+            {0x82127788, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Item Description
+            {0x821361ac, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Ability Name
+            {0x821361f4, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Ability Range
+            {0x82136218, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Ability Effect
+            {0x8238451c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Strategy Name
+            {0x82134610, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Battle Acquired Item
+            {0x824b5eac, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Item Name
+            {0x824b5f04, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Item Description
+            {0x824b5f54, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Item Effect
+            {0x81d71790, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Item Factor Title
+            {0x824b62c0, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Item Factor Description
+            {0x824c2e2c, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // IC/Specialty Skills Name
+            {0x824c2e54, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // IC/Specialty Skills Description
+            {0x824c2fbc, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // IC/Specialty Skills Level
+            {0x823e7230, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // IC/Specialty Name
+            {0x823e94bc, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // IC/Specialty Description
+            {0x823e9980, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // IC/Specialty Talent
+            {0x823ea9c4, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // IC/Specialty Support Item
+            {0x82243b18, {0, 0, 0, ReadTextAndLenDW<1>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Enemy Info Skills
+            {0x81d64540, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Guild Mission Description
+            {0x823b4f6c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Guild Mission Reward
+            {0x826facd8, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Challenge Mission Description
+            {0x826f98f8, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Challenge Mission Reward
+            {0x8244af2c, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Formation Name
+            {0x8244ae90, {0, 0, 0, ReadTextAndLenDW<0>, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Formation Description
             // 魔法使いの夜 通常版
-            {0x80086ba0, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, "010012A017F18000", "1.0.0"}},
-            {0x80086e70, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, "010012A017F18000", "1.0.2"}},
+            {0x80086ba0, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, 0x010012A017F18000ull, "1.0.0"}},
+            {0x80086e70, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, 0x010012A017F18000ull, "1.0.2"}},
             // 月姫 -A piece of blue glass moon-
-            {0x800ac290, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, "01001DC01486A000", 0}}, // 1.0.1,1.0.2
+            {0x800ac290, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, 0x01001DC01486A000ull, 0}}, // 1.0.1,1.0.2
             // 映画 五等分の花嫁　～君と過ごした五つの思い出～ (JP)
-            {0x80011688, {CODEC_UTF8, 1, 0, 0, F01005E9016BDE000, "01005E9016BDE000", "1.0.0"}}, // dialogue, menu, choice, name
+            {0x80011688, {CODEC_UTF8, 1, 0, 0, F01005E9016BDE000, 0x01005E9016BDE000ull, "1.0.0"}}, // dialogue, menu, choice, name
             // FLOWERS 四季
-            {0x8006f940, {CODEC_UTF16, 1, 0, 0, F01002AE00F442000, "01002AE00F442000", "1.0.1"}},
+            {0x8006f940, {CODEC_UTF16, 1, 0, 0, F01002AE00F442000, 0x01002AE00F442000ull, "1.0.1"}},
             // 最悪なる災厄人間に捧ぐ
-            {0x8034EB44, {CODEC_UTF16, 8, 0, 0, F01000A400AF2A000, "01000A400AF2A000", "1.0.0"}}, // text
+            {0x8034EB44, {CODEC_UTF16, 8, 0, 0, F01000A400AF2A000, 0x01000A400AF2A000ull, "1.0.0"}}, // text
             // 神様のような君へ
-            {0x80487CD0, {CODEC_UTF8, 0, 0, 0, F01006B5014E2E000, "01006B5014E2E000", "1.0.0"}}, // text
+            {0x80487CD0, {CODEC_UTF8, 0, 0, 0, F01006B5014E2E000, 0x01006B5014E2E000ull, "1.0.0"}}, // text
             // BUSTAFELLOWS
-            {0x80191b18, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010060800B7A8000", "1.1.3"}}, // Dialogue
-            {0x80191f88, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010060800B7A8000", "1.1.3"}}, // Choice
-            {0x801921a4, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010060800B7A8000", "1.1.3"}}, // Choice 2
-            {0x801935f0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, "010060800B7A8000", "1.1.3"}}, // option
+            {0x80191b18, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Dialogue
+            {0x80191f88, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Choice
+            {0x801921a4, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Choice 2
+            {0x801935f0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // option
             // 猛獣使いと王子様 ～Flower ＆ Snow～ for Nintendo Switch
-            {0x800a1a10, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, "01001B900C0E2000", "1.0.0"}}, // Dialogue 1
-            {0x80058f80, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, "01001B900C0E2000", "1.0.0"}}, // Dialogue 2
+            {0x800a1a10, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, 0x01001B900C0E2000ull, "1.0.0"}}, // Dialogue 1
+            {0x80058f80, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, 0x01001B900C0E2000ull, "1.0.0"}}, // Dialogue 2
             // Detective Pikachu Returns
-            {0x81585750, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F010007500F27C000, "010007500F27C000", "1.0.0"}}, // All Text
+            {0x81585750, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<2>, F010007500F27C000, 0x010007500F27C000ull, "1.0.0"}}, // All Text
             // Dragon Quest Treasures
-            {0x80bd62c4, {CODEC_UTF16, 0, 0, 0, F0100217014266000, "0100217014266000", "1.0.1"}}, // Cutscene
-            {0x80a74b64, {CODEC_UTF16, 0, 0, 0, F0100217014266000, "0100217014266000", "1.0.1"}}, // Ptc Text
-            {0x80a36d18, {CODEC_UTF16, 0, 0, 0, F0100217014266000, "0100217014266000", "1.0.1"}}, // Info
-            {0x80c43878, {CODEC_UTF16, 0, 0, 0, F0100217014266000, "0100217014266000", "1.0.1"}}, // Tutorial Title
-            {0x80c43d50, {CODEC_UTF16, 0, 0, 0, F0100217014266000, "0100217014266000", "1.0.1"}}, // Tutorial Description
-            {0x80a72598, {CODEC_UTF16, 0, 0, 0, F0100217014266000, "0100217014266000", "1.0.1"}}, // Aproach Text
+            {0x80bd62c4, {CODEC_UTF16, 0, 0, 0, F0100217014266000, 0x0100217014266000ull, "1.0.1"}}, // Cutscene
+            {0x80a74b64, {CODEC_UTF16, 0, 0, 0, F0100217014266000, 0x0100217014266000ull, "1.0.1"}}, // Ptc Text
+            {0x80a36d18, {CODEC_UTF16, 0, 0, 0, F0100217014266000, 0x0100217014266000ull, "1.0.1"}}, // Info
+            {0x80c43878, {CODEC_UTF16, 0, 0, 0, F0100217014266000, 0x0100217014266000ull, "1.0.1"}}, // Tutorial Title
+            {0x80c43d50, {CODEC_UTF16, 0, 0, 0, F0100217014266000, 0x0100217014266000ull, "1.0.1"}}, // Tutorial Description
+            {0x80a72598, {CODEC_UTF16, 0, 0, 0, F0100217014266000, 0x0100217014266000ull, "1.0.1"}}, // Aproach Text
             // Rune Factory 4 Special
-            {0x48b268, {CODEC_UTF8, 3, 0, 0, F010027100C79A000, "010027100C79A000", "1.0.1"}}, // All Text
+            {0x48b268, {CODEC_UTF8, 3, 0, 0, F010027100C79A000, 0x010027100C79A000ull, "1.0.1"}}, // All Text
             // The Legend of Zelda: Skyward Sword HD
-            {0x80dc36dc, {CODEC_UTF16 | FULL_STRING, 3, 0, 0, F01001EF017BE6000, "01002DA013484000", "1.0.1"}}, // All Text
+            {0x80dc36dc, {CODEC_UTF16 | FULL_STRING, 3, 0, 0, F01001EF017BE6000, 0x01002DA013484000ull, "1.0.1"}}, // All Text
             // World of Final Fantasy Maxima
-            {0x8068fea0, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, "010072000BD32000", "1.0.0"}}, // Cutscene
-            {0x802c6a48, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, "010072000BD32000", "1.0.0"}}, // Action Text
-            {0x803a523c, {CODEC_UTF8, 1, 0, 0, F010072000BD32000, "010072000BD32000", "1.0.0"}}, // Location
-            {0x8041ed64, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, "010072000BD32000", "1.0.0"}}, // Info
-            {0x802c9f1c, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, "010072000BD32000", "1.0.0"}}, // Chapter First Part
-            {0x802c9f6c, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, "010072000BD32000", "1.0.0"}}, // Chapter Second Part
+            {0x8068fea0, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, 0x010072000BD32000ull, "1.0.0"}}, // Cutscene
+            {0x802c6a48, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, 0x010072000BD32000ull, "1.0.0"}}, // Action Text
+            {0x803a523c, {CODEC_UTF8, 1, 0, 0, F010072000BD32000, 0x010072000BD32000ull, "1.0.0"}}, // Location
+            {0x8041ed64, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, 0x010072000BD32000ull, "1.0.0"}}, // Info
+            {0x802c9f1c, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, 0x010072000BD32000ull, "1.0.0"}}, // Chapter First Part
+            {0x802c9f6c, {CODEC_UTF8, 0, 0, 0, F010072000BD32000, 0x010072000BD32000ull, "1.0.0"}}, // Chapter Second Part
             // Tokyo Xanadu eX+
-            {0x8025135c, {CODEC_UTF8, 1, 0, 0, F010080C01AA22000, "010080C01AA22000", "1.0.0"}}, // Name
-            {0x80251068, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, "010080C01AA22000", "1.0.0"}}, // Main Text
-            {0x802ac86c, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, "010080C01AA22000", "1.0.0"}}, // Action Text
-            {0x802b04b4, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, "010080C01AA22000", "1.0.0"}}, // Choices
-            {0x8013243c, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, "010080C01AA22000", "1.0.0"}}, // Location
-            {0x802b1f3c, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, "010080C01AA22000", "1.0.0"}}, // Info
-            {0x802ab46c, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, "010080C01AA22000", "1.0.0"}}, // Documents
+            {0x8025135c, {CODEC_UTF8, 1, 0, 0, F010080C01AA22000, 0x010080C01AA22000ull, "1.0.0"}}, // Name
+            {0x80251068, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, 0x010080C01AA22000ull, "1.0.0"}}, // Main Text
+            {0x802ac86c, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, 0x010080C01AA22000ull, "1.0.0"}}, // Action Text
+            {0x802b04b4, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, 0x010080C01AA22000ull, "1.0.0"}}, // Choices
+            {0x8013243c, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, 0x010080C01AA22000ull, "1.0.0"}}, // Location
+            {0x802b1f3c, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, 0x010080C01AA22000ull, "1.0.0"}}, // Info
+            {0x802ab46c, {CODEC_UTF8, 0, 0, 0, F010080C01AA22000, 0x010080C01AA22000ull, "1.0.0"}}, // Documents
             // DORAEMON STORY OF SEASONS: Friends of the Great Kingdom
-            {0x839558e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01009B50139A8000, "01009B50139A8000", "1.1.1"}}, // Text
-            {0x8202a9b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01009B50139A8000, "01009B50139A8000", "1.1.1"}}, // Tutorial
+            {0x839558e4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01009B50139A8000, 0x01009B50139A8000ull, "1.1.1"}}, // Text
+            {0x8202a9b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01009B50139A8000, 0x01009B50139A8000ull, "1.1.1"}}, // Tutorial
             // Monster Hunter Stories 2: Wings of Ruin
-            {0x8042fe60, {CODEC_UTF8, 1, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Cutscene
-            {0x804326c0, {CODEC_UTF8, 1, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Ptc Text
-            {0x804d3d44, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Info
-            {0x8045e7c8, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Info Choice
-            {0x805cec4c, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Config Header
-            {0x8078c2d0, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Config Name+
-            {0x805d0858, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Config Description
-            {0x807612d4, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Notice
-            {0x807194a0, {CODEC_UTF8, 1, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Update Content + Tutorial
-            {0x804d687c, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Objective Title
-            {0x804d6a7c, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Objective Description
-            {0x80509900, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Aproach Text
-            {0x8060ee90, {CODEC_UTF8, 1, 0, 0, F0100CB700D438000, "0100CB700D438000", "1.5.2"}}, // Acquired Item
+            {0x8042fe60, {CODEC_UTF8, 1, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Cutscene
+            {0x804326c0, {CODEC_UTF8, 1, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Ptc Text
+            {0x804d3d44, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Info
+            {0x8045e7c8, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Info Choice
+            {0x805cec4c, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Config Header
+            {0x8078c2d0, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Config Name+
+            {0x805d0858, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Config Description
+            {0x807612d4, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Notice
+            {0x807194a0, {CODEC_UTF8, 1, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Update Content + Tutorial
+            {0x804d687c, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Objective Title
+            {0x804d6a7c, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Objective Description
+            {0x80509900, {CODEC_UTF8, 0, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Aproach Text
+            {0x8060ee90, {CODEC_UTF8, 1, 0, 0, F0100CB700D438000, 0x0100CB700D438000ull, "1.5.2"}}, // Acquired Item
             // ２０４５、月より。
-            {0x80016334, {CODEC_UTF8, 1, 0, 0, F01005C301AC5E000, "01005C301AC5E000", "1.0.1"}},
+            {0x80016334, {CODEC_UTF8, 1, 0, 0, F01005C301AC5E000, 0x01005C301AC5E000ull, "1.0.1"}},
             // ヤマノススメ Next Summit ～あの山に、もう一度～
-            {0x806E1444, {CODEC_UTF8, 0, 0, 0, F0100815019488000_text, "0100815019488000", "1.0.0"}},
-            {0x80659EE0, {CODEC_UTF8, 1, 0, 0, F0100815019488000_name, "0100815019488000", "1.0.0"}},
+            {0x806E1444, {CODEC_UTF8, 0, 0, 0, F0100815019488000_text, 0x0100815019488000ull, "1.0.0"}},
+            {0x80659EE0, {CODEC_UTF8, 1, 0, 0, F0100815019488000_name, 0x0100815019488000ull, "1.0.0"}},
             // プリズンプリンセス
-            {0x800eba00, {CODEC_UTF16, 2, 0x14, 0, 0, "0100F4800F872000", "1.0.0"}},
+            {0x800eba00, {CODEC_UTF16, 2, 0x14, 0, 0, 0x0100F4800F872000ull, "1.0.0"}},
             // 泡沫のユークロニア
-            {0x8180de40, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<false>, "010027401A2A2000", "1.0.0"}}, // text box
-            {0x816b61c0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<false>, "010027401A2A2000", "1.0.0"}}, // dictionary
-            {0x815fe594, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<true>, "010027401A2A2000", "1.0.0"}},  // choices
-            {0x81836E0C, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, "010027401A2A2000", "1.0.1"}},
+            {0x8180de40, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<false>, 0x010027401A2A2000ull, "1.0.0"}}, // text box
+            {0x816b61c0, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<false>, 0x010027401A2A2000ull, "1.0.0"}}, // dictionary
+            {0x815fe594, {CODEC_UTF16, 0, 0, ReadTextAndLenW<0>, F010027401A2A2000<true>, 0x010027401A2A2000ull, "1.0.0"}},  // choices
+            {0x81836E0C, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x010027401A2A2000ull, "1.0.1"}},
             // リトルバスターズ！Converted Edition
-            {0x800A97C8, {CODEC_UTF8, 9, 0, 0, F0100943010310000, "0100943010310000", "1.0.0"}},
+            {0x800A97C8, {CODEC_UTF8, 9, 0, 0, F0100943010310000, 0x0100943010310000ull, "1.0.0"}},
             // GrimGrimoire OnceMore
-            {0x80020bd4, {CODEC_UTF8, 0, 0, 0, 0, "01003F5017760000", "1.0.0"}},
-            {0x800375a0, {CODEC_UTF8, 2, 0, 0, 0, "01003F5017760000", "1.0.0"}}, // tutorial
-            {0x800781dc, {CODEC_UTF8, 0, 0, 0, 0, "01003F5017760000", "1.0.0"}}, // Chapter
+            {0x80020bd4, {CODEC_UTF8, 0, 0, 0, 0, 0x01003F5017760000ull, "1.0.0"}},
+            {0x800375a0, {CODEC_UTF8, 2, 0, 0, 0, 0x01003F5017760000ull, "1.0.0"}}, // tutorial
+            {0x800781dc, {CODEC_UTF8, 0, 0, 0, 0, 0x01003F5017760000ull, "1.0.0"}}, // Chapter
             // テミラーナ国の強運姫と悲運騎士団
-            {0x82457970, {CODEC_UTF16, 0, 0x14, 0, F0100A62019078000, "0100A62019078000", "1.0.1"}},
+            {0x82457970, {CODEC_UTF16, 0, 0x14, 0, F0100A62019078000, 0x0100A62019078000ull, "1.0.1"}},
             // 慟哭 そして…
-            {0x8008171c, {0, 0, 0, 0, 0, "01007F000EB36000", "1.0.0"}},
+            {0x8008171c, {0, 0, 0, 0, 0, 0x01007F000EB36000ull, "1.0.0"}},
             // ミストニアの翅望 -The Lost Delight-
-            {0x8246c4ac, {CODEC_UTF16, 0, 0, 0, 0, "01007AD01CB42000", "1.0.0"}},
+            {0x8246c4ac, {CODEC_UTF16, 0, 0, 0, 0, 0x01007AD01CB42000ull, "1.0.0"}},
             // even if TEMPEST 連なるときの暁
-            {0x80031008, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "0100DEF01D0C2000", "1.0.2"}},
-            {0x8002e2cc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "0100DEF01D0C2000", "1.0.2"}},
-            {0x8002e2cc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "0100DEF01D0C2000", "1.0.2"}},
+            {0x80031008, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, 0x0100DEF01D0C2000ull, "1.0.2"}},
+            {0x8002e2cc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, 0x0100DEF01D0C2000ull, "1.0.2"}},
+            {0x8002e2cc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, 0x0100DEF01D0C2000ull, "1.0.2"}},
             // even if TEMPEST 宵闇にかく語りき魔女
-            {0x8001cf80, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "010095E01581C000", "1.0.8"}},
-            {0x800297d0, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "010095E01581C000", "1.0.8"}},
-            {0x8000edcc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, "010095E01581C000", "1.0.8"}},
+            {0x8001cf80, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, 0x010095E01581C000ull, "1.0.8"}},
+            {0x800297d0, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, 0x010095E01581C000ull, "1.0.8"}},
+            {0x8000edcc, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, 0x010095E01581C000ull, "1.0.8"}},
             // 大正×対称アリス all in one
-            {0x80064ab8, {CODEC_UTF16, 1, 0, 0, F010096000CA38000, "010096000CA38000", "1.0.2"}},
-            {0x80064bd4, {CODEC_UTF16, 1, 0, 0, F010096000CA38000, "010096000CA38000", "1.0.2"}},
-            {0x8015f968, {CODEC_UTF16, 0, 0, 0, F010096000CA38000, "010096000CA38000", "1.0.2"}},
+            {0x80064ab8, {CODEC_UTF16, 1, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
+            {0x80064bd4, {CODEC_UTF16, 1, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
+            {0x8015f968, {CODEC_UTF16, 0, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
             // 大正×対称アリス HEADS&TAILS
-            {0x8009bb3c, {CODEC_UTF16, 1, 0, 0, F0100B1F0123B6000, "0100B1F0123B6000", "2.0.0"}},
-            {0x8009bc58, {CODEC_UTF16, 1, 0, 0, F0100B1F0123B6000, "0100B1F0123B6000", "2.0.0"}},
+            {0x8009bb3c, {CODEC_UTF16, 1, 0, 0, F0100B1F0123B6000, 0x0100B1F0123B6000ull, "2.0.0"}},
+            {0x8009bc58, {CODEC_UTF16, 1, 0, 0, F0100B1F0123B6000, 0x0100B1F0123B6000ull, "2.0.0"}},
             // 緋色の欠片 玉依姫奇譚 ～おもいいろの記憶～
-            {0x81922ce8, {CODEC_UTF16, 0, 0x14, 0, F0100EC001DE7E000, "0100EC001DE7E000", "1.0.0"}},
+            {0x81922ce8, {CODEC_UTF16, 0, 0x14, 0, F0100EC001DE7E000, 0x0100EC001DE7E000ull, "1.0.0"}},
             // 幻想マネージュ
-            {0x8124f690, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, "010037500DF38000", "1.0.4"}},
-            {0x811f63f0, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, "010037500DF38000", "1.0.4"}},
-            {0x811917f4, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, "010037500DF38000", "1.0.4"}},
-            {0x81595f90, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, "010037500DF38000", "1.0.4"}},
+            {0x8124f690, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, 0x010037500DF38000ull, "1.0.4"}},
+            {0x811f63f0, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, 0x010037500DF38000ull, "1.0.4"}},
+            {0x811917f4, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, 0x010037500DF38000ull, "1.0.4"}},
+            {0x81595f90, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, 0x010037500DF38000ull, "1.0.4"}},
             // 幻奏喫茶アンシャンテ
-            {0x8002863c, {CODEC_UTF8, 0, 0, 0, 0, "010079200C26E000", "1.0.0"}},
-            {0x80044360, {CODEC_UTF8, 1, 0, 0, 0, "010079200C26E000", "1.0.0"}},
-            {0x8004a1a4, {CODEC_UTF8, 0, 0, 0, F010079200C26E000<0>, "010079200C26E000", "1.0.0"}},
-            {0x8004a394, {CODEC_UTF8, 0, 0, 0, F010079200C26E000<1>, "010079200C26E000", "1.0.0"}},
+            {0x8002863c, {CODEC_UTF8, 0, 0, 0, 0, 0x010079200C26E000ull, "1.0.0"}},
+            {0x80044360, {CODEC_UTF8, 1, 0, 0, 0, 0x010079200C26E000ull, "1.0.0"}},
+            {0x8004a1a4, {CODEC_UTF8, 0, 0, 0, F010079200C26E000<0>, 0x010079200C26E000ull, "1.0.0"}},
+            {0x8004a394, {CODEC_UTF8, 0, 0, 0, F010079200C26E000<1>, 0x010079200C26E000ull, "1.0.0"}},
             // 天獄ストラグル -strayside-
-            {0x801bc678, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, "01002C00177AE000", "1.0.0"}},
-            {0x8016a05c, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, "01002C00177AE000", "1.0.0"}},
-            {0x80140cac, {CODEC_UTF32, 1, 0, 0, F01002C00177AE000, "01002C00177AE000", "1.0.0"}},
-            {0x800e08dc, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, "01002C00177AE000", "1.0.0"}},
+            {0x801bc678, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, 0x01002C00177AE000ull, "1.0.0"}},
+            {0x8016a05c, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, 0x01002C00177AE000ull, "1.0.0"}},
+            {0x80140cac, {CODEC_UTF32, 1, 0, 0, F01002C00177AE000, 0x01002C00177AE000ull, "1.0.0"}},
+            {0x800e08dc, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, 0x01002C00177AE000ull, "1.0.0"}},
             // 明治活劇 ハイカラ流星組 －成敗しませう、世直し稼業－
-            {0x802ab2fc, {CODEC_UTF8, 6, 0, 0, F0100EA100DF92000, "0100EA100DF92000", "1.0.0"}},
+            {0x802ab2fc, {CODEC_UTF8, 6, 0, 0, F0100EA100DF92000, 0x0100EA100DF92000ull, "1.0.0"}},
             // 7'scarlet
-            {0x8177ec00, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, "0100FA001E160000", "1.0.0"}},
-            {0x817754ac, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, "0100FA001E160000", "1.0.0"}},
+            {0x8177ec00, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, 0x0100FA001E160000ull, "1.0.0"}},
+            {0x817754ac, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, 0x0100FA001E160000ull, "1.0.0"}},
             // SympathyKiss (JP)
-            {0x80037d90, {CODEC_UTF8, 0, 0, 0, F0100FA10185B0000, "0100FA10185B0000", "1.0.0"}},
-            {0x80030f24, {CODEC_UTF8, 0, 0, 0, F0100FA10185B0000, "0100FA10185B0000", "1.0.0"}},
-            {0x80054804, {CODEC_UTF8, 1, 0, 0, F0100FA10185B0000, "0100FA10185B0000", "1.0.0"}},
-            {0x80054290, {CODEC_UTF8, 1, 0, 0, F0100FA10185B0000, "0100FA10185B0000", "1.0.0"}},
+            {0x80037d90, {CODEC_UTF8, 0, 0, 0, F0100FA10185B0000, 0x0100FA10185B0000ull, "1.0.0"}},
+            {0x80030f24, {CODEC_UTF8, 0, 0, 0, F0100FA10185B0000, 0x0100FA10185B0000ull, "1.0.0"}},
+            {0x80054804, {CODEC_UTF8, 1, 0, 0, F0100FA10185B0000, 0x0100FA10185B0000ull, "1.0.0"}},
+            {0x80054290, {CODEC_UTF8, 1, 0, 0, F0100FA10185B0000, 0x0100FA10185B0000ull, "1.0.0"}},
             // 君は雪間に希う
-            {0x8013a0f0, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, "010021D01474E000", "1.0.0"}},
-            {0x800319f8, {CODEC_UTF32, 0, 0, 0, F010021D01474E000_2, "010021D01474E000", "1.0.0"}},
-            {0x800488e4, {CODEC_UTF32, 1, 0, 0, F010021D01474E000, "010021D01474E000", "1.0.0"}},
-            {0x800bdb84, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, "010021D01474E000", "1.0.0"}},
-            {0x800e4540, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, "010021D01474E000", "1.0.0"}},
+            {0x8013a0f0, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, 0x010021D01474E000ull, "1.0.0"}},
+            {0x800319f8, {CODEC_UTF32, 0, 0, 0, F010021D01474E000_2, 0x010021D01474E000ull, "1.0.0"}},
+            {0x800488e4, {CODEC_UTF32, 1, 0, 0, F010021D01474E000, 0x010021D01474E000ull, "1.0.0"}},
+            {0x800bdb84, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, 0x010021D01474E000ull, "1.0.0"}},
+            {0x800e4540, {CODEC_UTF32, 0, 0, 0, F010021D01474E000, 0x010021D01474E000ull, "1.0.0"}},
             // DAIROKU：AYAKASHIMORI
-            {0x800e35ec, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, "010061300DF48000", "1.0.1"}},
-            {0x800d103c, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, "010061300DF48000", "1.0.1"}},
-            {0x800f1320, {CODEC_UTF8, 0, 0, T010061300DF48000, FF010061300DF48000_2, "010061300DF48000", "1.0.1"}},
+            {0x800e35ec, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, 0x010061300DF48000ull, "1.0.1"}},
+            {0x800d103c, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, 0x010061300DF48000ull, "1.0.1"}},
+            {0x800f1320, {CODEC_UTF8, 0, 0, T010061300DF48000, FF010061300DF48000_2, 0x010061300DF48000ull, "1.0.1"}},
             // Charade Maniacs
-            {0x8001c460, {CODEC_UTF8, 0, 0x5c, 0, F0100CEF0152DE000, "0100CEF0152DE000", "1.0.0"}},
-            {0x8004c390, {CODEC_UTF8, 1, 0, 0, F0100CEF0152DE000, "0100CEF0152DE000", "1.0.0"}},
-            {0x80050d60, {CODEC_UTF8, 0, 0, 0, F0100CEF0152DE000, "0100CEF0152DE000", "1.0.0"}},
-            {0x8007ee20, {CODEC_UTF8, 0, 0, 0, F0100CEF0152DE000, "0100CEF0152DE000", "1.0.0"}},
+            {0x8001c460, {CODEC_UTF8, 0, 0x5c, 0, F0100CEF0152DE000, 0x0100CEF0152DE000ull, "1.0.0"}},
+            {0x8004c390, {CODEC_UTF8, 1, 0, 0, F0100CEF0152DE000, 0x0100CEF0152DE000ull, "1.0.0"}},
+            {0x80050d60, {CODEC_UTF8, 0, 0, 0, F0100CEF0152DE000, 0x0100CEF0152DE000ull, "1.0.0"}},
+            {0x8007ee20, {CODEC_UTF8, 0, 0, 0, F0100CEF0152DE000, 0x0100CEF0152DE000ull, "1.0.0"}},
             // 花笑む彼と & bloom
-            {0x833e4d84, {CODEC_UTF16, 0, 0x14, 0, F0100DEF01D0C6000, "0100DEF01D0C6000", "1.0.0"}},
-            {0x8335f650, {CODEC_UTF16, 0, 0x14, 0, F0100DEF01D0C6000, "0100DEF01D0C6000", "1.0.0"}},
-            {0x81729520, {CODEC_UTF16, 1, 0x14, 0, F0100DEF01D0C6000_2, "0100DEF01D0C6000", "1.0.0"}},
-            {0x83375938, {CODEC_UTF16, 0, 0, T0100DEF01D0C6000_2, 0, "0100DEF01D0C6000", "1.0.0"}},
+            {0x833e4d84, {CODEC_UTF16, 0, 0x14, 0, F0100DEF01D0C6000, 0x0100DEF01D0C6000ull, "1.0.0"}},
+            {0x8335f650, {CODEC_UTF16, 0, 0x14, 0, F0100DEF01D0C6000, 0x0100DEF01D0C6000ull, "1.0.0"}},
+            {0x81729520, {CODEC_UTF16, 1, 0x14, 0, F0100DEF01D0C6000_2, 0x0100DEF01D0C6000ull, "1.0.0"}},
+            {0x83375938, {CODEC_UTF16, 0, 0, T0100DEF01D0C6000_2, 0, 0x0100DEF01D0C6000ull, "1.0.0"}},
             // Dance with Devils
-            {0x81616034, {CODEC_UTF16, 0, 0x14, 0, F01004E5017C54000, "01004E5017C54000", "1.0.0"}},
-            {0x8185a800, {CODEC_UTF16, 0, 0x14, 0, F01004E5017C54000, "01004E5017C54000", "1.0.0"}},
+            {0x81616034, {CODEC_UTF16, 0, 0x14, 0, F01004E5017C54000, 0x01004E5017C54000ull, "1.0.0"}},
+            {0x8185a800, {CODEC_UTF16, 0, 0x14, 0, F01004E5017C54000, 0x01004E5017C54000ull, "1.0.0"}},
             // My9Swallows TOPSTARS LEAGUE
-            {0x818554ac, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, "01003BB01DF54000", "1.0.0"}},
-            {0x817b76d4, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, "01003BB01DF54000", "1.0.0"}},
-            {0x8187882c, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, "01003BB01DF54000", "1.0.1"}},
-            {0x817b8f64, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, "01003BB01DF54000", "1.0.1"}},
+            {0x818554ac, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, 0x01003BB01DF54000ull, "1.0.0"}},
+            {0x817b76d4, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, 0x01003BB01DF54000ull, "1.0.0"}},
+            {0x8187882c, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, 0x01003BB01DF54000ull, "1.0.1"}},
+            {0x817b8f64, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, 0x01003BB01DF54000ull, "1.0.1"}},
             // 時計仕掛けのアポカリプス
-            {0x8001d9c4, {CODEC_UTF8, 0, 0x1c, 0, F01005AF00E9DC000, "01005AF00E9DC000", "1.0.0"}},
-            {0x8004ca84, {CODEC_UTF8, 1, 0, 0, F01005AF00E9DC000, "01005AF00E9DC000", "1.0.0"}},
-            {0x8005b304, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, "01005AF00E9DC000", "1.0.0"}},
-            {0x8005b310, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, "01005AF00E9DC000", "1.0.0"}},
+            {0x8001d9c4, {CODEC_UTF8, 0, 0x1c, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
+            {0x8004ca84, {CODEC_UTF8, 1, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
+            {0x8005b304, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
+            {0x8005b310, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
             // ラディアンテイル ～ファンファーレ！～
-            {0x8003a880, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, "010088B01A8FC000", "1.0.1"}},
-            {0x8004eb08, {CODEC_UTF8, 1, 0, 0, F010088B01A8FC000, "010088B01A8FC000", "1.0.1"}},
-            {0x8005bff4, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, "010088B01A8FC000", "1.0.1"}},
-            {0x8005f0d4, {CODEC_UTF8, 3, 0, 0, F010088B01A8FC000, "010088B01A8FC000", "1.0.1"}},
+            {0x8003a880, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
+            {0x8004eb08, {CODEC_UTF8, 1, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
+            {0x8005bff4, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
+            {0x8005f0d4, {CODEC_UTF8, 3, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
             // Lover Pretend
-            {0x80034ad0, {CODEC_UTF8, 0, 0, 0, F010032300C562000, "010032300C562000", "1.0.0"}},
-            {0x8004e950, {CODEC_UTF8, 1, 0, 0, F010032300C562000, "010032300C562000", "1.0.0"}},
-            {0x8002e6c4, {CODEC_UTF8, 0, 0, 0, F010032300C562000, "010032300C562000", "1.0.0"}},
-            {0x8005f6ec, {CODEC_UTF8, 0, 0, 0, F010032300C562000, "010032300C562000", "1.0.0"}},
+            {0x80034ad0, {CODEC_UTF8, 0, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
+            {0x8004e950, {CODEC_UTF8, 1, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
+            {0x8002e6c4, {CODEC_UTF8, 0, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
+            {0x8005f6ec, {CODEC_UTF8, 0, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
             // NORN9 ~ノルン+ノネット~ LOFN for Nintendo Switch
-            {0x8002b200, {CODEC_UTF8, 1, 0x18, 0, F010061300DF48000, "01001A500AD6A000", "1.0.0"}},
-            {0x8003d83c, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, "01001A500AD6A000", "1.0.0"}},
-            {0x80047850, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, "01001A500AD6A000", "1.0.0"}},
+            {0x8002b200, {CODEC_UTF8, 1, 0x18, 0, F010061300DF48000, 0x01001A500AD6A000ull, "1.0.0"}},
+            {0x8003d83c, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, 0x01001A500AD6A000ull, "1.0.0"}},
+            {0x80047850, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, 0x01001A500AD6A000ull, "1.0.0"}},
             // 私立ベルばら学園 ～ベルサイユのばらRe*imagination～
-            {0x8001b68c, {CODEC_UTF8, 0, 0x1c, 0, F010027300A660000, "010027300A660000", "1.0.0"}},
-            {0x800460f0, {CODEC_UTF8, 1, 0, 0, F010027300A660000, "010027300A660000", "1.0.0"}},
+            {0x8001b68c, {CODEC_UTF8, 0, 0x1c, 0, F010027300A660000, 0x010027300A660000ull, "1.0.0"}},
+            {0x800460f0, {CODEC_UTF8, 1, 0, 0, F010027300A660000, 0x010027300A660000ull, "1.0.0"}},
             // ひめひび Another Princess Days – White or Black –
-            {0x219ed0, {0, 0, 0, 0, F0100E4000F616000, "0100E4000F616000", "1.0.0"}},
-            {0x21a3e0, {0, 0, 0, 0, F0100E4000F616000, "0100E4000F616000", "1.0.0"}},
+            {0x219ed0, {0, 0, 0, 0, F0100E4000F616000, 0x0100E4000F616000ull, "1.0.0"}},
+            {0x21a3e0, {0, 0, 0, 0, F0100E4000F616000, 0x0100E4000F616000ull, "1.0.0"}},
             // ひめひび -Princess Days-
-            {0x20d7b8, {0, 0, 0, 0, F0100E4000F616000, "0100F8D0129F4000", "1.0.0"}},
-            {0x20da9c, {0, 0, 0, 0, F0100E4000F616000, "0100E4000F616000", "1.0.0"}},
-            {0x20d834, {0, 0, 0, 0, F0100E4000F616000, "0100F8D0129F4000", "1.0.1"}},
-            {0x20dae8, {0, 0, 0, 0, F0100E4000F616000, "0100E4000F616000", "1.0.1"}},
+            {0x20d7b8, {0, 0, 0, 0, F0100E4000F616000, 0x0100F8D0129F4000ull, "1.0.0"}},
+            {0x20da9c, {0, 0, 0, 0, F0100E4000F616000, 0x0100E4000F616000ull, "1.0.0"}},
+            {0x20d834, {0, 0, 0, 0, F0100E4000F616000, 0x0100F8D0129F4000ull, "1.0.1"}},
+            {0x20dae8, {0, 0, 0, 0, F0100E4000F616000, 0x0100E4000F616000ull, "1.0.1"}},
             // オホーツクに消ゆ ～追憶の流氷・涙のニポポ人形～
-            {0x83d4bda0, {CODEC_UTF16, 1, 0x14, 0, F010044701E9BC000, "010044701E9BC000", "1.2.0"}},
-            {0x83d59320, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, "010044701E9BC000", "1.2.0"}},
-            {0x83d22530, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, "010044701E9BC000", "1.2.0"}},
-            {0x83d225c0, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, "010044701E9BC000", "1.2.0"}},
-            {0x83d26fd8, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, "010044701E9BC000", "1.2.0"}},
+            {0x83d4bda0, {CODEC_UTF16, 1, 0x14, 0, F010044701E9BC000, 0x010044701E9BC000ull, "1.2.0"}},
+            {0x83d59320, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, 0x010044701E9BC000ull, "1.2.0"}},
+            {0x83d22530, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, 0x010044701E9BC000ull, "1.2.0"}},
+            {0x83d225c0, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, 0x010044701E9BC000ull, "1.2.0"}},
+            {0x83d26fd8, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, 0x010044701E9BC000ull, "1.2.0"}},
             // トラブル・マギア ～訳アリ少女は未来を勝ち取るために異国の魔法学校へ留学します～
-            {0x8017e6b0, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<1>, F01000BB01CB8A000, "01000BB01CB8A000", "1.0.0"}},
-            {0x80177ae0, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, "01000BB01CB8A000", "1.0.0"}},
-            {0x80122a4c, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, "01000BB01CB8A000", "1.0.0"}},
-            {0x800ba088, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, "01000BB01CB8A000", "1.0.0"}},
+            {0x8017e6b0, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<1>, F01000BB01CB8A000, 0x01000BB01CB8A000ull, "1.0.0"}},
+            {0x80177ae0, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, 0x01000BB01CB8A000ull, "1.0.0"}},
+            {0x80122a4c, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, 0x01000BB01CB8A000ull, "1.0.0"}},
+            {0x800ba088, {CODEC_UTF16, 0, 0, T01000BB01CB8A000<0>, F01000BB01CB8A000, 0x01000BB01CB8A000ull, "1.0.0"}},
             // 燃えよ！ 乙女道士 ～華遊恋語～
-            {0x8005c698, {CODEC_UTF16, 1, 0x20, 0, F01001BA01EBFC000, "01001BA01EBFC000", "1.0.0"}},
-            {0x80051cd0, {CODEC_UTF16, 1, 0, 0, F01001BA01EBFC000, "01001BA01EBFC000", "1.0.0"}},
+            {0x8005c698, {CODEC_UTF16, 1, 0x20, 0, F01001BA01EBFC000, 0x01001BA01EBFC000ull, "1.0.0"}},
+            {0x80051cd0, {CODEC_UTF16, 1, 0, 0, F01001BA01EBFC000, 0x01001BA01EBFC000ull, "1.0.0"}},
             // planetarian～雪圏球～
-            {0x800F32A0, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, 0, "010031C01F410000", "1.0.0"}}, // 各种语言一起都提取出来了
+            {0x800F32A0, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, 0, 0x010031C01F410000ull, "1.0.0"}}, // 各种语言一起都提取出来了
             // planetarian～ちいさなほしのゆめ＆雪圏球～ パッケージ版 英文版
-            {0x801253EC, {CODEC_UTF16, 0xA, 0, 0, 0, "0100F0A01F112000", nullptr}},               // 1.0.0 && 1.0.1 // 中文
-            {0x8012441C, {CODEC_UTF16, 8, 0, 0, F0100F0A01F112000, "0100F0A01F112000", nullptr}}, // 1.0.0 && 1.0.1 // 日文
+            {0x801253EC, {CODEC_UTF16, 0xA, 0, 0, 0, 0x0100F0A01F112000ull, nullptr}},               // 1.0.0 && 1.0.1 // 中文
+            {0x8012441C, {CODEC_UTF16, 8, 0, 0, F0100F0A01F112000, 0x0100F0A01F112000ull, nullptr}}, // 1.0.0 && 1.0.1 // 日文
             // 贄の町
-            {0x818B6078, {CODEC_UTF16, 1, 0, 0, F0100C9001E10C000, "0100C9001E10C000", "1.0.0"}},
+            {0x818B6078, {CODEC_UTF16, 1, 0, 0, F0100C9001E10C000, 0x0100C9001E10C000ull, "1.0.0"}},
             // Honey Vibes
-            {0x81845F80, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100FB301E70A000, "0100FB301E70A000", "1.0.0"}},
+            {0x81845F80, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100FB301E70A000, 0x0100FB301E70A000ull, "1.0.0"}},
             // ワールドエンド・シンドローム
-            {0x805F5F04, {CODEC_UTF16, 2, 0, 0, 0, "01008A30083E2000", "1.0.0"}},
-            {0x800FBA84, {CODEC_UTF16, 2, 0, 0, 0, "01008A30083E2000", "1.0.1"}},
+            {0x805F5F04, {CODEC_UTF16, 2, 0, 0, 0, 0x01008A30083E2000ull, "1.0.0"}},
+            {0x800FBA84, {CODEC_UTF16, 2, 0, 0, 0, 0x01008A30083E2000ull, "1.0.1"}},
             // 果つることなき未来ヨリ
-            {0x8017BE0C, {CODEC_UTF8, 8, 0, 0, aF0100A9B01D4AE000, "0100A9B01D4AE000", "1.0.0"}},  // 英文
-            {0x8017C0B4, {CODEC_UTF16, 8, 0, 0, wF0100A9B01D4AE000, "0100A9B01D4AE000", "1.0.0"}}, // 日文
+            {0x8017BE0C, {CODEC_UTF8, 8, 0, 0, aF0100A9B01D4AE000, 0x0100A9B01D4AE000ull, "1.0.0"}},  // 英文
+            {0x8017C0B4, {CODEC_UTF16, 8, 0, 0, wF0100A9B01D4AE000, 0x0100A9B01D4AE000ull, "1.0.0"}}, // 日文
             // 明治東亰恋伽
-            {0x81898840, {CODEC_UTF16, 3, 0, 0, F010043901E972000, "010043901E972000", "1.0.0"}}, // 日文
+            {0x81898840, {CODEC_UTF16, 3, 0, 0, F010043901E972000, 0x010043901E972000ull, "1.0.0"}}, // 日文
             // 月影の鎖～狂爛モラトリアム～
-            {0x2170B4, {0, 1, 0, 0, F010076501DAEA000, "010076501DAEA000", "1.0.0"}}, // text
-            {0x2179A8, {0, 2, 0, 0, 0, "010076501DAEA000", "1.0.0"}},                 // name+text
-            {0x217950, {0, 0, 0, 0, F0100A250191E8000<false>, "010076501DAEA000", "1.0.0"}},
-            {0x217f64, {0, 0, 0, 0, F0100A250191E8000<true>, "010076501DAEA000", "1.0.0"}},
+            {0x2170B4, {0, 1, 0, 0, F010076501DAEA000, 0x010076501DAEA000ull, "1.0.0"}}, // text
+            {0x2179A8, {0, 2, 0, 0, 0, 0x010076501DAEA000ull, "1.0.0"}},                 // name+text
+            {0x217950, {0, 0, 0, 0, F0100A250191E8000<false>, 0x010076501DAEA000ull, "1.0.0"}},
+            {0x217f64, {0, 0, 0, 0, F0100A250191E8000<true>, 0x010076501DAEA000ull, "1.0.0"}},
             // 神々の悪戯 Unite Edition
-            {0x812BFF40, {CODEC_UTF16, 1, -2, 0, F01006530151F0000, "01006530151F0000", "1.0.0"}}, // 只有第一行
-            {0x812BCEB8, {CODEC_UTF16, 1, -2, 0, F01006530151F0000, "01006530151F0000", "1.0.0"}}, // 只有2&3行
+            {0x812BFF40, {CODEC_UTF16, 1, -2, 0, F01006530151F0000, 0x01006530151F0000ull, "1.0.0"}}, // 只有第一行
+            {0x812BCEB8, {CODEC_UTF16, 1, -2, 0, F01006530151F0000, 0x01006530151F0000ull, "1.0.0"}}, // 只有2&3行
             // 新宿羅生門 ―Rashomon of Shinjuku―
-            {0x80062158, {CODEC_UTF8, 0, 0, 0, F01005A401D766000, "01005A401D766000", "1.0.0"}},
-            {0x80062a74, {CODEC_UTF8, 0, 0, 0, F01005A401D766000_2, "01005A401D766000", "1.0.0"}},
-            {0x800629f4, {CODEC_UTF8, 0, 0, 0, F01005A401D766000_2, "01005A401D766000", "1.0.0"}},
-            {0x800ea870, {CODEC_UTF8, 1, 0, 0, F01005A401D766000_2, "01005A401D766000", "1.0.0"}},
+            {0x80062158, {CODEC_UTF8, 0, 0, 0, F01005A401D766000, 0x01005A401D766000ull, "1.0.0"}},
+            {0x80062a74, {CODEC_UTF8, 0, 0, 0, F01005A401D766000_2, 0x01005A401D766000ull, "1.0.0"}},
+            {0x800629f4, {CODEC_UTF8, 0, 0, 0, F01005A401D766000_2, 0x01005A401D766000ull, "1.0.0"}},
+            {0x800ea870, {CODEC_UTF8, 1, 0, 0, F01005A401D766000_2, 0x01005A401D766000ull, "1.0.0"}},
             // 夏空のモノローグ ～Another Memory～
-            {0x8006007c, {0, 0, 0, 0, F0100FC2019346000, "01000E701DAE8000", "1.0.0"}},
-            {0x800578c4, {0, 1, 0, 0, F0100FC2019346000, "01000E701DAE8000", "1.0.0"}},
+            {0x8006007c, {0, 0, 0, 0, F0100FC2019346000, 0x01000E701DAE8000ull, "1.0.0"}},
+            {0x800578c4, {0, 1, 0, 0, F0100FC2019346000, 0x01000E701DAE8000ull, "1.0.0"}},
             // 真紅の焔 真田忍法帳 for Nintendo Switch
-            {0x800170a0, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, "01008A001C79A000", "1.0.0"}},
-            {0x800220a0, {CODEC_UTF8, 2, 0, 0, F0100FC2019346000, "01008A001C79A000", "1.0.0"}},
-            {0x8004bbd0, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, "01008A001C79A000", "1.0.0"}},
-            {0x80062a20, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, "01008A001C79A000", "1.0.0"}},
-            {0x80064c48, {CODEC_UTF8, 3, 0, 0, F0100FC2019346000, "01008A001C79A000", "1.0.0"}},
+            {0x800170a0, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, 0x01008A001C79A000ull, "1.0.0"}},
+            {0x800220a0, {CODEC_UTF8, 2, 0, 0, F0100FC2019346000, 0x01008A001C79A000ull, "1.0.0"}},
+            {0x8004bbd0, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, 0x01008A001C79A000ull, "1.0.0"}},
+            {0x80062a20, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, 0x01008A001C79A000ull, "1.0.0"}},
+            {0x80064c48, {CODEC_UTF8, 3, 0, 0, F0100FC2019346000, 0x01008A001C79A000ull, "1.0.0"}},
             // 神さまと恋ゴコロ
-            {0x20D838, {0, 7, 0, 0, 0, "0100612019F12000", "1.0.0"}}, // name+text
-            {0x20D030, {0, 1, 0, 0, 0, "0100612019F12000", "1.0.0"}},
+            {0x20D838, {0, 7, 0, 0, 0, 0x0100612019F12000ull, "1.0.0"}}, // name+text
+            {0x20D030, {0, 1, 0, 0, 0, 0x0100612019F12000ull, "1.0.0"}},
             // KLAP!! for Nintendo Switch
-            {0x8004a2d0, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, "0100E8E016D82000", "1.0.0"}},
-            {0x8004970c, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, "0100E8E016D82000", "1.0.0"}},
-            {0x800da5e0, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, "0100E8E016D82000", "1.0.0"}},
-            {0x8003dfac, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, "0100E8E016D82000", "1.0.0"}},
+            {0x8004a2d0, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
+            {0x8004970c, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
+            {0x800da5e0, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
+            {0x8003dfac, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
             // PSYCHIC ECLIPSE-サイキックイクリプス- reload
-            {0x8091B41C, {CODEC_UTF8, 8, 0, 0, 0, "0100A0001B9F0000", "1.0.0"}},               // 提取不到短字符串
-            {0x804FAF5C, {CODEC_UTF8 | FULL_STRING, 1, 0, 0, 0, "0100A0001B9F0000", "1.1.0"}}, // 提取不到短字符串 text+name
-            {0x80887ABC, {CODEC_UTF8, 8, 0, 0, 0, "0100A0001B9F0000", "1.1.0"}},               // 提取不到短字符串
+            {0x8091B41C, {CODEC_UTF8, 8, 0, 0, 0, 0x0100A0001B9F0000ull, "1.0.0"}},               // 提取不到短字符串
+            {0x804FAF5C, {CODEC_UTF8 | FULL_STRING, 1, 0, 0, 0, 0x0100A0001B9F0000ull, "1.1.0"}}, // 提取不到短字符串 text+name
+            {0x80887ABC, {CODEC_UTF8, 8, 0, 0, 0, 0x0100A0001B9F0000ull, "1.1.0"}},               // 提取不到短字符串
             // アイ★チュウ
-            {0x824865C4, {CODEC_UTF16, 3, 0, 0, F01006CC015ECA000, "01006CC015ECA000", "1.14"}},
+            {0x824865C4, {CODEC_UTF16, 3, 0, 0, F01006CC015ECA000, 0x01006CC015ECA000ull, "1.14"}},
             // カエル畑DEつかまえて☆彡
-            {0x2206bc, {0, 0, 0, 0, F0100E5200D1A2000<false>, "0100E5200D1A2000", "1.0.0"}},
-            {0x220cfc, {0, 0, 0, 0, F0100E5200D1A2000<true>, "0100E5200D1A2000", "1.0.0"}},
-            {0x2372b0, {0, 1, 0, 0, F0100E5200D1A2000<false>, "0100E5200D1A2000", "1.0.0"}},
+            {0x2206bc, {0, 0, 0, 0, F0100E5200D1A2000<false>, 0x0100E5200D1A2000ull, "1.0.0"}},
+            {0x220cfc, {0, 0, 0, 0, F0100E5200D1A2000<true>, 0x0100E5200D1A2000ull, "1.0.0"}},
+            {0x2372b0, {0, 1, 0, 0, F0100E5200D1A2000<false>, 0x0100E5200D1A2000ull, "1.0.0"}},
             // カエル畑DEつかまえて・夏 千木良参戦!
-            {0x2210d0, {0, 0, 0, 0, F0100EFE0159C6000<false>, "0100EFE0159C6000", "1.0.0"}},
-            {0x221768, {0, 0, 0, 0, F0100EFE0159C6000<false>, "0100EFE0159C6000", "1.0.0"}},
+            {0x2210d0, {0, 0, 0, 0, F0100EFE0159C6000<false>, 0x0100EFE0159C6000ull, "1.0.0"}},
+            {0x221768, {0, 0, 0, 0, F0100EFE0159C6000<false>, 0x0100EFE0159C6000ull, "1.0.0"}},
             // 片恋いコントラスト ―collection of branch―
-            {0x8004ba20, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
-            {0x800c6eb0, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
-            {0x8017e560, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
-            {0x801f67c0, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
-            {0x802a76c0, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
-            {0x8031fc80, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, "01007FD00DB20000", "1.0.0"}},
+            {0x8004ba20, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, 0x01007FD00DB20000ull, "1.0.0"}},
+            {0x800c6eb0, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, 0x01007FD00DB20000ull, "1.0.0"}},
+            {0x8017e560, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, 0x01007FD00DB20000ull, "1.0.0"}},
+            {0x801f67c0, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, 0x01007FD00DB20000ull, "1.0.0"}},
+            {0x802a76c0, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, 0x01007FD00DB20000ull, "1.0.0"}},
+            {0x8031fc80, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, 0x01007FD00DB20000ull, "1.0.0"}},
             // ジュエリー・ハーツ・アカデミア -We will wing wonder world-
-            {0x805b0714, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, "010064701F37A000", "1.0.0"}},
-            {0x805b0704, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, "010064701F37A000", "1.0.0"}},
+            {0x805b0714, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, 0x010064701F37A000ull, "1.0.0"}},
+            {0x805b0704, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x010064701F37A000ull, "1.0.0"}},
             // 真 流行り神１・２パック
-            {0x80072720, {CODEC_UTF8, 1, 0, 0, F010005F00E036000, "010005F00E036000", "1.0.0"}},
+            {0x80072720, {CODEC_UTF8, 1, 0, 0, F010005F00E036000, 0x010005F00E036000ull, "1.0.0"}},
             // 真流行り神3
-            {0x80082F70, {0, 0, 0, TF0100AA1013B96000, 0, "0100AA1013B96000", nullptr}}, //"1.0.0", "1.0.1"
+            {0x80082F70, {0, 0, 0, TF0100AA1013B96000, 0, 0x0100AA1013B96000ull, nullptr}}, //"1.0.0", "1.0.1"
             // NG
-            {0x228AA4, {0, 6, 0, 0, F01009E600FAF6000, "01009E600FAF6000", "1.0.0"}},
-            {0x228C0C, {0, 6, 0, 0, F01009E600FAF6000, "01009E600FAF6000", "1.0.0"}},
+            {0x228AA4, {0, 6, 0, 0, F01009E600FAF6000, 0x01009E600FAF6000ull, "1.0.0"}},
+            {0x228C0C, {0, 6, 0, 0, F01009E600FAF6000, 0x01009E600FAF6000ull, "1.0.0"}},
             // アサツグトリ
-            {0x8012C824, {CODEC_UTF8, 1, 0, 0, F010060301588A000, "010060301588A000", "1.0.0"}},
-            {0x80095370, {CODEC_UTF8, 4, 0, 0, F010060301588A000, "010060301588A000", "1.0.2"}}, // text only
+            {0x8012C824, {CODEC_UTF8, 1, 0, 0, F010060301588A000, 0x010060301588A000ull, "1.0.0"}},
+            {0x80095370, {CODEC_UTF8, 4, 0, 0, F010060301588A000, 0x010060301588A000ull, "1.0.2"}}, // text only
             // Money Parasite〜嘘つきな女〜
-            {0x2169ac, {0, 0, 0, 0, F0100A250191E8000<false>, "0100A250191E8000", "1.0.0"}},
-            {0x217030, {0, 0, 0, 0, F0100A250191E8000<true>, "0100A250191E8000", "1.0.0"}},
+            {0x2169ac, {0, 0, 0, 0, F0100A250191E8000<false>, 0x0100A250191E8000ull, "1.0.0"}},
+            {0x217030, {0, 0, 0, 0, F0100A250191E8000<true>, 0x0100A250191E8000ull, "1.0.0"}},
             // 三国恋戦記～オトメの兵法！～
-            {0x800644A0, {CODEC_UTF16, 1, 0, 0, F01000EA00B23C000, "01000EA00B23C000", "1.0.0"}},
+            {0x800644A0, {CODEC_UTF16, 1, 0, 0, F01000EA00B23C000, 0x01000EA00B23C000ull, "1.0.0"}},
             // 三国恋戦記～思いでがえし～＋学園恋戦記
-            {0x80153B20, {CODEC_UTF16, 8, 0, 0, F01000EA00B23C000, "01003B6014B38000", "1.0.0"}},
+            {0x80153B20, {CODEC_UTF16, 8, 0, 0, F01000EA00B23C000, 0x01003B6014B38000ull, "1.0.0"}},
             // 殺人探偵ジャック・ザ・リッパー
-            {0x8000ED30, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, "0100A4700BC98000", "1.0.0"}}, // 1.0.0有漏的
-            {0x8000ED1C, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, "0100A4700BC98000", "1.0.0"}},
-            {0x8000ED3C, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, "0100A4700BC98000", "1.0.0"}},
-            {0x8003734C, {CODEC_UTF8, 2, 0, 0, F010027100C79A000, "0100A4700BC98000", "1.0.2"}}, // 完整
+            {0x8000ED30, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, 0x0100A4700BC98000ull, "1.0.0"}}, // 1.0.0有漏的
+            {0x8000ED1C, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, 0x0100A4700BC98000ull, "1.0.0"}},
+            {0x8000ED3C, {CODEC_UTF8, 0, 0, 0, T0100A4700BC98000, 0x0100A4700BC98000ull, "1.0.0"}},
+            {0x8003734C, {CODEC_UTF8, 2, 0, 0, F010027100C79A000, 0x0100A4700BC98000ull, "1.0.2"}}, // 完整
             // サスペクツルーム -警視庁門前署取調班-
-            {0x81397F6C, {CODEC_UTF8, 1, 0, 0, F010069E01A7CE000, "010069E01A7CE000", "1.0.0"}},
+            {0x81397F6C, {CODEC_UTF8, 1, 0, 0, F010069E01A7CE000, 0x010069E01A7CE000ull, "1.0.0"}},
             // Dragon Quest III Hd-2D Remake
-            {0x80c4b094, {CODEC_UTF16, 0, 0, 0, F01003E601E324000, "01003E601E324000", "1.0.1"}},
+            {0x80c4b094, {CODEC_UTF16, 0, 0, 0, F01003E601E324000, 0x01003E601E324000ull, "1.0.1"}},
             // EVE rebirth terror
-            {0x8002CC40, {0, 1, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.0"}},
-            {0x80045918, {0, 0, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.2"}},
-            {0x80045798, {0, 0, 0, 0, F01008BA00F172000, "01008BA00F172000", "1.0.3"}},
+            {0x8002CC40, {0, 1, 0, 0, F01008BA00F172000, 0x01008BA00F172000ull, "1.0.0"}},
+            {0x80045918, {0, 0, 0, 0, F01008BA00F172000, 0x01008BA00F172000ull, "1.0.2"}},
+            {0x80045798, {0, 0, 0, 0, F01008BA00F172000, 0x01008BA00F172000ull, "1.0.3"}},
             // EVE ghost enemies
-            {0x80053900, {0, 1, 0, 0, F01008BA00F172000, "01007BE0160D6000", "1.0.0"}},
-            {0x80052440, {0, 1, 0, 0, F01008BA00F172000, "01007BE0160D6000", "1.0.1"}},
+            {0x80053900, {0, 1, 0, 0, F01008BA00F172000, 0x01007BE0160D6000ull, "1.0.0"}},
+            {0x80052440, {0, 1, 0, 0, F01008BA00F172000, 0x01007BE0160D6000ull, "1.0.1"}},
             // ニル・アドミラリの天秤 色ドリ撫子，二合一，其一
-            {0x8000BDD0, {0, 8, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // text
-            {0x80019260, {0, 0, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // name+text
+            {0x8000BDD0, {0, 8, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // text
+            {0x80019260, {0, 0, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // name+text
             // 其二
-            {0x8006BCC0, {0, 8, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // text
-            {0x8007C1D4, {0, 0, 0, 0, F01002BB00A662000, "01002BB00A662000", "1.0.0"}}, // name+text 这个两作都能提到。实际上只留这一个也行，但它显示完才有，速度慢。
+            {0x8006BCC0, {0, 8, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // text
+            {0x8007C1D4, {0, 0, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // name+text 这个两作都能提到。实际上只留这一个也行，但它显示完才有，速度慢。
             // 八剱伝
-            {0x819ade74, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01007A901E728000, "01007A901E728000", "1.0.1"}},
+            {0x819ade74, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<1>, F01007A901E728000, 0x01007A901E728000ull, "1.0.1"}},
             // 大正メビウスライン大全 三合一
-            {0x800C43D4, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.0"}}, // text
-            {0x800C4468, {0, 0, 0, 0, F0100509013040000, "0100509013040000", "1.0.1"}}, // text
+            {0x800C43D4, {0, 0, 0, 0, F0100509013040000, 0x0100509013040000ull, "1.0.0"}}, // text
+            {0x800C4468, {0, 0, 0, 0, F0100509013040000, 0x0100509013040000ull, "1.0.1"}}, // text
             // 猛獣たちとお姫様 for Nintendo Switch  二合一
-            {0x80115C70, {CODEC_UTF8, 0, 0, 0, F010001D015260000, "010035001D1B2000", "1.0.0"}}, // text
-            {0x80115F20, {CODEC_UTF8, 0, 0, 0, F010001D015260000, "010035001D1B2000", "1.0.1"}}, // text
+            {0x80115C70, {CODEC_UTF8, 0, 0, 0, F010001D015260000, 0x010035001D1B2000ull, "1.0.0"}}, // text
+            {0x80115F20, {CODEC_UTF8, 0, 0, 0, F010001D015260000, 0x010035001D1B2000ull, "1.0.1"}}, // text
             // BEAST Darling! ～けもみみ男子と秘密の寮～
-            {0x80424D50, {CODEC_UTF16, 8, 0, 0, F0100B0601852A000, "010045F00BF64000", "1.0.0"}}, // text
+            {0x80424D50, {CODEC_UTF16, 8, 0, 0, F0100B0601852A000, 0x010045F00BF64000ull, "1.0.0"}}, // text
             // 恋の花咲く百花園
-            {0x211464, {0, 0, 0, 0, F010052300F612000, "010052300F612000", "1.0.0"}}, // text
+            {0x211464, {0, 0, 0, 0, F010052300F612000, 0x010052300F612000ull, "1.0.0"}}, // text
             // 東京24区 -祈-
-            {0x8006F100, {0, 0, 0, 0, F0100CF90151E0000, "0100CF90151E0000", "1.0.0"}}, // text
+            {0x8006F100, {0, 0, 0, 0, F0100CF90151E0000, 0x0100CF90151E0000ull, "1.0.0"}}, // text
             // ディアマジ -魔法少年学科-
-            {0x802B1270, {CODEC_UTF16, 8, 0, 0, F010015600D814000, "010015600D814000", "1.0.0"}}, // text
-            {0x802B19E0, {CODEC_UTF16, 8, 0, 0, F010015600D814000, "010015600D814000", "1.0.1"}}, // text
+            {0x802B1270, {CODEC_UTF16, 8, 0, 0, F010015600D814000, 0x010015600D814000ull, "1.0.0"}}, // text
+            {0x802B19E0, {CODEC_UTF16, 8, 0, 0, F010015600D814000, 0x010015600D814000ull, "1.0.1"}}, // text
             // デスマッチラブコメ！
-            {0x800FB41C, {CODEC_UTF16, 1, -2, 0, F0100AE90109A2000, "0100AE90109A2000", "1.0.0"}},
+            {0x800FB41C, {CODEC_UTF16, 1, -2, 0, F0100AE90109A2000, 0x0100AE90109A2000ull, "1.0.0"}},
             // CROSS†CHANNEL ～For all people～
-            {0x80033250, {0, 0, 0, 0, F0100068019996000, "0100735012AAE000", "1.0.0"}}, // text
+            {0x80033250, {0, 0, 0, 0, F0100068019996000, 0x0100735012AAE000ull, "1.0.0"}}, // text
             // フルキス
-            {0x804988A0, {CODEC_UTF8, 0, 0, 0, F0100FB50156E6000_1, "0100FB50156E6000", "1.0.0"}}, // text
-            {0x804FECD4, {CODEC_UTF8, 1, 0, 0, F0100FB50156E6000_2, "0100FB50156E6000", "1.0.0"}}, // text+name->name
+            {0x804988A0, {CODEC_UTF8, 0, 0, 0, F0100FB50156E6000_1, 0x0100FB50156E6000ull, "1.0.0"}}, // text
+            {0x804FECD4, {CODEC_UTF8, 1, 0, 0, F0100FB50156E6000_2, 0x0100FB50156E6000ull, "1.0.0"}}, // text+name->name
             // フルキスS  1.0.0 & 1.0.1
-            {0x804E7AF0, {CODEC_UTF8, 0, 0, 0, F0100FB50156E6000_1, "0100BEE0156D8000", nullptr}}, // text
-            {0x804FF454, {CODEC_UTF8, 1, 0, 0, F0100FB50156E6000_2, "0100BEE0156D8000", nullptr}}, // text+name->name
+            {0x804E7AF0, {CODEC_UTF8, 0, 0, 0, F0100FB50156E6000_1, 0x0100BEE0156D8000ull, nullptr}}, // text
+            {0x804FF454, {CODEC_UTF8, 1, 0, 0, F0100FB50156E6000_2, 0x0100BEE0156D8000ull, nullptr}}, // text+name->name
             // アーキタイプ・アーカディア
-            {0x817FAC88, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_1, "010019C0155D8000", "1.0.0"}}, // text+name,->name
-            {0x817FAC90, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_2, "010019C0155D8000", "1.0.0"}}, // text+name,->text
-            {0x817E5818, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_1, "010019C0155D8000", "1.0.2"}}, // text+name,->name
-            {0x817E5820, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_2, "010019C0155D8000", "1.0.2"}}, // text+name,->text
+            {0x817FAC88, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_1, 0x010019C0155D8000ull, "1.0.0"}}, // text+name,->name
+            {0x817FAC90, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_2, 0x010019C0155D8000ull, "1.0.0"}}, // text+name,->text
+            {0x817E5818, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_1, 0x010019C0155D8000ull, "1.0.2"}}, // text+name,->name
+            {0x817E5820, {CODEC_UTF16, 8, 0, 0, F010019C0155D8000_2, 0x010019C0155D8000ull, "1.0.2"}}, // text+name,->text
             // 神凪ノ杜
-            {0x8205e150, {CODEC_UTF16, 0, 0x14, 0, F0100B5801D7CE000, "0100B5801D7CE000", "1.0.0"}},
-            {0x820e2e6c, {CODEC_UTF16, 0, 0x14, 0, 0, "0100B5801D7CE000", "1.0.0"}},
+            {0x8205e150, {CODEC_UTF16, 0, 0x14, 0, F0100B5801D7CE000, 0x0100B5801D7CE000ull, "1.0.0"}},
+            {0x820e2e6c, {CODEC_UTF16, 0, 0x14, 0, 0, 0x0100B5801D7CE000ull, "1.0.0"}},
             // シェルノサージュ ～失われた星へ捧ぐ詩～ DX
-            {0x801A1140, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, "010053F0128DC000", "1.0.0"}},
-            {0x801A10A4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, "010053F0128DC000", "1.0.0"}},
-            {0x801A04F4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, "010053F0128DC000", "1.0.1"}},
-            {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, "010053F0128DC000", "1.0.1"}},
+            {0x801A1140, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, 0x010053F0128DC000ull, "1.0.0"}},
+            {0x801A10A4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, 0x010053F0128DC000ull, "1.0.0"}},
+            {0x801A04F4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, 0x010053F0128DC000ull, "1.0.1"}},
+            {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, 0x010053F0128DC000ull, "1.0.1"}},
             // 遙かなる時空の中で６ DX
-            {0x80193FAC, {0, 0, 0, 0, F0100F7700CB82000, "0100F7700CB82000", "1.0.0"}},
+            {0x80193FAC, {0, 0, 0, 0, F0100F7700CB82000, 0x0100F7700CB82000ull, "1.0.0"}},
 
         };
         return 1;
