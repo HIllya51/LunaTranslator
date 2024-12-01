@@ -1896,6 +1896,17 @@ namespace
         }
         last = s;
     }
+    void F0100F7700CB82000(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        static lru_cache<std::string> lastx(10);
+        auto s = buffer->strA();
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        if (lastx.touch(last))
+            return buffer->clear();
+    }
 
     void F010005F00E036000_1(TextBuffer *buffer, HookParam *hp)
     {
@@ -3485,6 +3496,8 @@ namespace
             {0x801A10A4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, "010053F0128DC000", "1.0.0"}},
             {0x801A04F4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, "010053F0128DC000", "1.0.1"}},
             {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, "010053F0128DC000", "1.0.1"}},
+            // 遙かなる時空の中で６ DX
+            {0x80193FAC, {0, 0, 0, 0, F0100F7700CB82000, "0100F7700CB82000", "1.0.0"}},
 
         };
         return 1;
