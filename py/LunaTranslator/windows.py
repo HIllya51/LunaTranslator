@@ -53,6 +53,7 @@ from ctypes.wintypes import (
     USHORT,
 )
 
+HRESULT = LONG
 HWINEVENTHOOK = HANDLE
 LRESULT = LPLONG
 WAIT_TIMEOUT = 258
@@ -962,3 +963,23 @@ SetWinEventHook.argtypes = DWORD, DWORD, HMODULE, WINEVENTPROC, DWORD, DWORD, DW
 PathFileExists = windll.Shlwapi.PathFileExistsW
 PathFileExists.argtypes = (LPCWSTR,)
 PathFileExists.restype = BOOL
+
+_SHGetFolderPathW = _shell32.SHGetFolderPathW
+_SHGetFolderPathW.argtypes = (
+    HWND,
+    c_int,
+    HANDLE,
+    DWORD,
+    LPWSTR,
+)
+_SHGetFolderPathW.restype = HRESULT
+CSIDL_MYPICTURES = 0x27
+SHGFP_TYPE_CURRENT = 0
+S_OK = 0
+
+
+def SHGetFolderPathW(csidl):
+    buff = create_unicode_buffer(MAX_PATH + 100)
+    if _SHGetFolderPathW(None, csidl, None, SHGFP_TYPE_CURRENT, buff) != S_OK:
+        return None
+    return buff.value
