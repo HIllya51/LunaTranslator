@@ -23,7 +23,9 @@ class Qlabel_c(QLabel):
                 try:
                     if self.pr:
                         if event.button() == Qt.MouseButton.LeftButton:
-                            self.callback()
+                            self.callback(False)
+                        elif event.button() == Qt.MouseButton.RightButton:
+                            self.callback(True)
                 except:
                     print_exc()
             self.pr = False
@@ -111,9 +113,9 @@ class TextBrowser(QWidget, dataget):
         menu.addAction(tts)
         menu.addSeparator()
         menu.addAction(copy)
-        action = menu.exec(self.mapToGlobal(p))
+        action = menu.exec(QCursor.pos())
         if action == search:
-            gobject.baseobject.searchwordW.search_word.emit(curr)
+            gobject.baseobject.searchwordW.search_word.emit(curr, False)
         elif action == copy:
             winsharedutils.clipboard_set(curr)
         elif action == tts:
@@ -658,13 +660,9 @@ class TextBrowser(QWidget, dataget):
         if isfenciclick:
             self.searchmasklabels_clicked[labeli].setGeometry(*pos1)
             self.searchmasklabels_clicked[labeli].show()
-            clickfunction = word.get("clickfunction", None)
-            if clickfunction:
-                self.searchmasklabels_clicked[labeli].callback = clickfunction
-            else:
-                self.searchmasklabels_clicked[labeli].callback = functools.partial(
-                    gobject.baseobject.clickwordcallback, word
-                )
+            self.searchmasklabels_clicked[labeli].callback = functools.partial(
+                gobject.baseobject.clickwordcallback, word
+            )
         if isshow_fenci and color:
             self.searchmasklabels[labeli].setGeometry(*pos1)
             self.searchmasklabels[labeli].setStyleSheet(

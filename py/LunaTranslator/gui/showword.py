@@ -846,7 +846,7 @@ class DynamicTreeModel(QStandardItemModel):
         if not self.data(index, isWordNode):
             return
         gobject.baseobject.searchwordW.search_word.emit(
-            self.itemFromIndex(index).text()
+            self.itemFromIndex(index).text(), False
         )
 
 
@@ -976,7 +976,7 @@ class showdiction(LMainWindow):
 
 
 class searchwordW(closeashidewindow):
-    search_word = pyqtSignal(str)
+    search_word = pyqtSignal(str, bool)
     show_dict_result = pyqtSignal(float, str, str)
     search_word_in_new_window = pyqtSignal(str)
 
@@ -1143,7 +1143,9 @@ class searchwordW(closeashidewindow):
         self.tabks = []
         self.setCentralWidget(ww)
         self.textOutput = auto_select_webview(self, True)
-        self.textOutput.add_menu(0, _TR("查词"), self.search_word.emit)
+        self.textOutput.add_menu(
+            0, _TR("查词"), lambda w: self.search_word.emit(w, False)
+        )
         self.textOutput.add_menu(
             1, _TR("在新窗口中查词"), threader(self.search_word_in_new_window.emit)
         )
@@ -1201,11 +1203,13 @@ class searchwordW(closeashidewindow):
             res.insert(idx, {"dict": k, "content": v})
         return res
 
-    def __click_word_search_function(self, word):
+    def __click_word_search_function(self, word, append):
         self.showNormal()
         if self.state != 2:
             return
         word = word.strip()
+        if append:
+            word = self.searchtext.text() + word
         self.searchtext.setText(word)
 
         self.search(word)

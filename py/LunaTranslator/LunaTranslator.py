@@ -948,16 +948,18 @@ class MAINUI:
         )
 
     @threader
-    def clickwordcallback(self, word):
+    def clickwordcallback(self, word, append=False):
         if globalconfig["usewordorigin"] == False:
             word = word["orig"]
         else:
             word = word.get("origorig", word["orig"])
 
         if globalconfig["usecopyword"]:
-            winsharedutils.clipboard_set(word)
+            winsharedutils.clipboard_set(
+                (winsharedutils.clipboard_get() + word) if append else word
+            )
         if globalconfig["usesearchword"]:
-            self.searchwordW.search_word.emit(word)
+            self.searchwordW.search_word.emit(word, append)
 
     def __dontshowintaborsetbackdrop(self, widget):
         window_flags = widget.windowFlags()
