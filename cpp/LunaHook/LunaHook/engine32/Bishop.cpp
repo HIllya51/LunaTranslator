@@ -54,8 +54,26 @@ bool embedbishop()
   HookParam hp;
   hp.address = addr;
   hp.offset = get_stack(2);
-  hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW;
+  hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE;
   hp.embed_hook_font = F_GetGlyphOutlineW;
+  static std::wstring flag;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    if (buffer->buff[0] == L'\\')
+    {
+      flag = buffer->strW().substr(0, 2);
+      buffer->size -= 4;
+      memmove(buffer->buff, buffer->buff + 4, buffer->size);
+    }
+    else
+    {
+      flag.clear();
+    }
+  };
+  hp.embed_fun = [](hook_stack *stack, TextBuffer buffer)
+  {
+    stack->stack[2] = (DWORD)allocateString(flag + buffer.strW());
+  };
   hp.lineSeparator = L"\\n";
   return NewHook(hp, "bishop");
 }
