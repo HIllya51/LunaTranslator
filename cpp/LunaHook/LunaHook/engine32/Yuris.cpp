@@ -259,11 +259,10 @@ static void Yuris6Filter(TextBuffer *buffer, HookParam *)
 {
   auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
-  static std::string prevText;
-
-  if (prevText.length() == buffer->size && prevText.find(text, 0, buffer->size) != std::string::npos) // Check if the string is present in the previous one
+  static std::string last;
+  if (last == buffer->viewA())
     return buffer->clear();
-  prevText.assign(text, buffer->size);
+  last = buffer->viewA();
 
   // ruby ＜手水舎／ちょうずや＞
   if (cpp_strnstr(text, "\x81\x83", buffer->size))
@@ -279,8 +278,11 @@ static void Yuris6Filter(TextBuffer *buffer, HookParam *)
   }
 
   CharReplacer(buffer, '=', '-');
-  StringCharReplacer(buffer, "\xEF\xF0", 2, ' ');
+  StringFilter(buffer, "\xEF\xF0", 2);
+  StringFilter(buffer, "\xEF\xF1", 2);
   StringFilter(buffer, "\xEF\xF2", 2);
+  StringFilter(buffer, "\xEF\xF3", 2);
+  StringFilter(buffer, "\xEF\xF4", 2);
   StringFilter(buffer, "\xEF\xF5", 2);
   StringFilter(buffer, "\x81\x98", 2);
 }
@@ -380,19 +382,35 @@ bool yuris8()
       0x8b, 0x94, 0x24, XX, 0, 0, 0,
       0x8b, 0x8c, 0x24, XX, 0, 0, 0,
       0xe8, XX4};
+  const BYTE bytes2[] = {
+      0x8b, XX,
+      0x8b, 0x94, 0x24, XX, 0, 0, 0,
+      0x8b, 0x8c, 0x24, XX, 0, 0, 0,
+      0xe8, XX4,
+      0xeb, XX,
+      0x8b, XX,
+      0x8b, XX,
+      0x8b, 0x8c, 0x24, XX, 0, 0, 0,
+      0xe8, XX4};
+  // 这两个E8调用的同一个函数，上面的那个更全一点，下面的这个有的会漏。不过无所谓了，其他钩子关于，就不改这个了。
+  int offset = sizeof(bytes) - 5;
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
+  {
+    addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
+    offset = sizeof(bytes2) - 5;
+  }
+  if (!addr)
     return false;
-
   HookParam hp;
-  hp.address = addr + sizeof(bytes) - 5;
+  hp.address = addr + offset;
   hp.type = USING_STRING;
   hp.offset = get_reg(regs::ecx);
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     auto text = buffer->viewA();
     if (std::all_of(text.begin(), text.end(), [](char c)
-                    { return c == '1' || c == '2' || c == 'E'; }))
+                    { return c == '1' || c == '2' || c == 'E' || c == 'C' || c == 'c' || c == 'R' || c == 'P' || c == 'Z'; }))
       return buffer->clear();
   };
   return NewHook(hp, "yuris8");

@@ -109,6 +109,7 @@
 #include "engine32/XUSE.h"
 #include "engine32/RPGMaker.h"
 #include "engine32/EME.h"
+#include "engine32/T2U.h"
 #include "engine32/RRE.h"
 #include "engine32/Sceplay.h"
 #include "engine32/Onscripter.h"
@@ -416,5 +417,6 @@ std::vector<ENGINE *> check_engines()
         new Winters,
         new Aromarie,
         new Moonstone,
+        new T2U,
     };
 }
