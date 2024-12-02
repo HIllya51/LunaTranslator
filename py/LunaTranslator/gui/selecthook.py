@@ -683,10 +683,16 @@ class hookselect(closeashidewindow):
         menu.addAction(remove)
         menu.addAction(copy)
         action = menu.exec(self.tttable.cursor().pos())
-        hc, _, tp = self.querykeyofrow(index)
+        hc, hn, tp = self.querykeyofrow(index)
         if action == remove:
             gobject.baseobject.textsource.Luna_RemoveHook(tp.processId, tp.addr)
-
+            if hn[:8] == "UserHook":
+                try:
+                    savehook_new_data[gobject.baseobject.gameuid][
+                        "needinserthookcode"
+                    ].remove(hc)
+                except:
+                    pass
         elif action == copy:
             winsharedutils.clipboard_set(hc)
 
