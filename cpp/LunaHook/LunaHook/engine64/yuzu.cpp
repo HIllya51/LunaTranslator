@@ -1020,6 +1020,22 @@ namespace
             return buffer->clear();
         last = s;
     }
+    void F010027400BD24000(TextBuffer *buffer, HookParam *hp)
+    {
+        static int i = 0;
+        if (i++ % 2)
+            return buffer->clear();
+        CharFilter(buffer, '\n');
+    }
+    void F010027400BD24000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+        if (buffer->buff[0] == 0x2a || buffer->buff[0] == 0x24 || buffer->buff[0] == 0x18)
+        {
+            memmove(buffer->buff, buffer->buff + 1, buffer->size - 1);
+            buffer->size -= 1;
+        }
+    }
     void F0100B0C016164000(TextBuffer *buffer, HookParam *hp)
     {
 
@@ -1900,6 +1916,25 @@ namespace
         }
         last = s;
     }
+    template <bool name>
+    void F0100D8B019FC0000(TextBuffer *buffer, HookParam *hp)
+    {
+        const char *start;
+        if constexpr (name)
+        {
+            auto v = buffer->viewA();
+            if (!startWith(v, "<name"))
+                return buffer->clear();
+            buffer->from(v.substr(6, v.size() - 6 - 1));
+        }
+        else
+        {
+            if (!startWith(buffer->viewA(), "<text"))
+                return buffer->clear();
+            auto s = buffer->strA();
+            buffer->from(std::regex_replace(s.substr(6, s.size() - 6 - 1), std::regex("/ruby:(.*?)&(.*?)/"), "$1"));
+        }
+    }
     void F0100F7700CB82000(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -2562,6 +2597,9 @@ namespace
             {0x80041080, {CODEC_UTF8, 1, 0, 0, F0100BD700E648000, 0x0100BD700E648000ull, "1.0.0"}}, // name
             {0x80041080, {CODEC_UTF8, 0, 0, 0, F0100BD700E648000, 0x0100BD700E648000ull, "1.0.0"}}, // dialogue
             {0x80041080, {CODEC_UTF8, 2, 0, 0, F0100BD700E648000, 0x0100BD700E648000ull, "1.0.0"}}, // choice1
+            // DIABOLIK LOVERS CHAOS LINEAGE
+            {0x80033A00, {CODEC_UTF8, 0, 0, 0, F010027400BD24000, 0x010027400BD24000ull, "1.0.0"}},
+            {0x8001EEB8, {CODEC_UTF8, 0, 0, 0, F010027400BD24000_1, 0x010027400BD24000ull, "1.0.2"}},
             // 忍び、恋うつつ
             {0x8002aca0, {CODEC_UTF8, 0, 0, 0, F0100C1E0102B8000, 0x0100C1E0102B8000ull, "1.0.0"}}, // name
             {0x8002aea4, {CODEC_UTF8, 0, 0, 0, F0100C1E0102B8000, 0x0100C1E0102B8000ull, "1.0.0"}}, // dialogue1
@@ -3502,6 +3540,9 @@ namespace
             {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, 0x010053F0128DC000ull, "1.0.1"}},
             // 遙かなる時空の中で６ DX
             {0x80193FAC, {0, 0, 0, 0, F0100F7700CB82000, 0x0100F7700CB82000ull, "1.0.0"}},
+            // フローラル・フローラブ
+            {0x80020974, {0, 0, 0, 0, F0100D8B019FC0000<true>, 0x0100D8B019FC0000ull, "1.0.0"}},
+            {0x80020958, {0, 0, 0, 0, F0100D8B019FC0000<false>, 0x0100D8B019FC0000ull, "1.0.0"}},
 
         };
         return 1;
