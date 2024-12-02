@@ -132,7 +132,7 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 	__try
 	{
 		int length = 0, sum = 0;
-		for (; (str[length] || str[length + 1]) && length < MAX_STRING_SIZE; length += 2)
+		for (; *(uint16_t *)(str + length) && length < MAX_STRING_SIZE; length += sizeof(uint16_t))
 			sum += *(uint16_t *)(str + length);
 		if (length > STRING && length < MAX_STRING_SIZE - 1)
 		{
