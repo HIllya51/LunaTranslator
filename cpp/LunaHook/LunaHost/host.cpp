@@ -137,6 +137,11 @@ namespace
 				case HOST_NOTIFICATION_RMVHOOK:
 				{
 					auto info = *(HookRemovedNotif*)buffer;
+					auto sm = Host::GetCommonSharedMem(processId);
+					if (sm) 
+						for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+							if (sm->embedtps[i].use && (sm->embedtps[i].tp.addr==info.address)&&(sm->embedtps[i].tp.processId==processId))
+								ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
 					RemoveThreads([&](ThreadParam tp) { return tp.processId == processId && tp.addr == info.address; });
 				}
 				break;
