@@ -63,7 +63,7 @@ struct PPSSPPFunction
     const char *pattern;  // debug string used within the function
 };
 
-namespace
+namespace PPSSPP
 {
     uintptr_t findleapushalignfuncaddr(uintptr_t addr)
     {
@@ -148,7 +148,7 @@ bool InsertPPSSPPHLEHooks()
         auto addr = MemDbg::findBytes(function.pattern, ::strlen(function.pattern), processStartAddress, processStopAddress);
         if (!addr)
             continue;
-        addr = findleapushalignfuncaddr(addr);
+        addr = PPSSPP::findleapushalignfuncaddr(addr);
 
         if (!addr)
             continue;
@@ -488,7 +488,16 @@ namespace ppsspp
         }
         return true;
     }
-
+    void LoadNativeHooks(const std::string &GameID)
+    {
+        for (auto &&[id, ptr] : nativehooks)
+        {
+            if (id == GameID)
+            {
+                ptr();
+            }
+        }
+    }
     void Load_PSP_ISO_StringFromFormat()
     {
         /*
@@ -529,6 +538,7 @@ namespace ppsspp
             game_info.TITLE = (char *)stack->ARG4;
             HostInfo(HOSTINFO::EmuGameName, "%s %s", stack->ARG3, stack->ARG4);
             jitaddrclear();
+            LoadNativeHooks(game_info.DISC_ID);
         };
         NewHook(hp, "PPSSPPGameInfo");
     }
@@ -537,10 +547,14 @@ namespace ppsspp
         auto wininfos = get_proc_windows();
         for (auto &&info : wininfos)
         {
-            if (info.title.find(L'-') != info.title.npos)
-            {
-                return HostInfo(HOSTINFO::EmuGameName, WideStringToString(info.title.substr(info.title.find(L'-') + 1)).c_str());
-            }
+            if (info.title.find(L'-') == info.title.npos)
+                continue;
+            auto title = WideStringToString(info.title.substr(info.title.find(L'-') + 2));
+            game_info.DISC_ID = title.substr(0, title.find(':') - 1);
+            game_info.TITLE = title.substr(title.find(':') + 2);
+            HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+            LoadNativeHooks(game_info.DISC_ID);
+            return;
         }
     }
     bool hookPPSSPPDoJit()
@@ -588,90 +602,9 @@ namespace ppsspp
         return NewHook(hp, "PPSSPPDoJit");
     }
 }
-namespace
-{
-    // ULJS00035 ULJS00149 流行り神
-    void *findGetPointer()
-    {
-        char GetPointer[] = "Unknown GetPointer %08x PC %08x LR %08x";
-        auto addr = MemDbg::findBytes(GetPointer, sizeof(GetPointer), processStartAddress, processStopAddress);
-        if (!addr)
-            return nullptr;
-        addr = findleapushalignfuncaddr(addr);
-        return (void *)addr;
-    }
-    bool Replace_memcpy()
-    {
-        // static int Replace_memcpy() {
-        // 	u32 destPtr = PARAM(0);
-        // 	u32 srcPtr = PARAM(1);
-        // 	u32 bytes = PARAM(2);
-        static auto GetPointer = (void *(*)(uintptr_t))findGetPointer();
-        if (!GetPointer)
-            return false;
-        ConsoleOutput("GetPointer %p", GetPointer);
-        char ReplaceMemcpy_VideoDecodeRange[] = "ReplaceMemcpy/VideoDecodeRange";
-        auto addr = MemDbg::findBytes(ReplaceMemcpy_VideoDecodeRange, sizeof(ReplaceMemcpy_VideoDecodeRange), processStartAddress, processStopAddress);
-        if (!addr)
-            return false;
-        ConsoleOutput("ReplaceMemcpy/VideoDecodeRange %p", addr);
-#ifndef _WIN64
-        BYTE sig[] = {0xb9, XX4};
-        *(uintptr_t *)(sig + 1) = addr;
-        bool succ = false;
-        for (auto addr : Util::SearchMemory(sig, sizeof(sig), PAGE_EXECUTE, processStartAddress, processStopAddress))
-        {
-            BYTE sig1[] = {
-                0x55, 0x8b, 0xec,
-                0x81, 0xec, XX4,
-                0x8b, 0x0d, XX4};
-            addr = reverseFindBytes(sig1, sizeof(sig1), addr - 0x200, addr);
-            if (!addr)
-                continue;
-            DWORD off_106D180 = *(DWORD *)(addr + sizeof(sig1) - 4);
-            HookParam hp;
-            hp.user_value = *(DWORD *)off_106D180;
-#else
-        bool succ = false;
-        for (auto addr : MemDbg::findleaaddr_all(addr, processStartAddress, processStopAddress))
-        {
-            BYTE sig1[] = {
-                0x48, 0x89, XX, 0x24, 0x18,
-                0x48, 0x89, XX, 0x24, 0x20,
-                0x57,
-                0x48, 0x81, 0xec, XX4,
-                0x48, 0x8b, XX, XX4};
-            addr = reverseFindBytes(sig1, sizeof(sig1), addr - 0x200, addr);
-            if (!addr)
-                continue;
-            DWORD off_140F4C810 = *(DWORD *)(addr + sizeof(sig1) - 4);
-            HookParam hp;
-            hp.user_value = *(uintptr_t *)(off_140F4C810 + addr + sizeof(sig1));
-#endif
-            hp.address = addr;
-            hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buff, auto *split)
-            {
-                auto bytes = *((DWORD *)hp->user_value + 6);
-                auto srcPtr = GetPointer(*((DWORD *)hp->user_value + 5));
-
-                if (!IsShiftjisLeadByte(*(BYTE *)srcPtr))
-                    return;
-                if (bytes != 2)
-                    return;
-                if (bytes != strnlen((char *)srcPtr, TEXT_BUFFER_SIZE))
-                    return;
-                buff->from(srcPtr, bytes);
-            };
-            succ |= NewHook(hp, "Replace_memcpy");
-        }
-        return succ;
-    }
-}
 bool InsertPPSSPPcommonhooks()
 {
-
     auto succ = ppsspp::hookPPSSPPDoJit();
     succ |= InsertPPSSPPHLEHooks();
-    succ |= Replace_memcpy();
     return succ;
 }

@@ -482,8 +482,8 @@ void TextHook::Read()
 	{
 		if (hp.text_fun)
 		{
-			while (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT)
-				hp.text_fun(0, 0, 0, 0);
+			while ((!(hp.type & HOOK_EMPTY)) && (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT))
+				hp.text_fun(0, &hp, 0, 0);
 		}
 		else
 		{

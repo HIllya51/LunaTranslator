@@ -5,28 +5,21 @@ namespace
     auto idxDescriptor = isVirtual == true ? 2 : 1;
     auto idxEntrypoint = idxDescriptor + 1;
     std::string Vita3KGameID;
+    std::atomic<uintptr_t> unindexablehooks_near = 0;
     uintptr_t getDoJitAddress()
     {
-        auto RegisterBlockSig1 = "40 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 E9 48 81 EC 90 00 00 00 48 8B ?? ?? ?? ?? ?? 48 33 C4 48 89 45 07 4D 8B F1 49 8B F0 48 8B FA 48 8B D9 4C 8B 7D 77 48 8B 01 48 8D 55 C7 FF 50 10";
-        auto first = find_pattern(RegisterBlockSig1, processStartAddress, processStopAddress);
+        // Vita3K\external\dynarmic\src\dynarmic\backend\x64\emit_x64.h
+        // BlockDescriptor EmitX64::RegisterBlock(const IR::LocationDescriptor& location_descriptor, CodePtr entrypoint, size_t size);
+        BYTE RegisterBlockSig1[] = {0x40, 0x55, 0x53, 0x56, 0x57, 0x41, 0x54, 0x41, 0x56, 0x41, 0x57, 0x48, 0x8D, 0x6C, 0x24, 0xE9, 0x48, 0x81, 0xEC, 0x90, 0x00, 0x00, 0x00, 0x48, 0x8B, XX, XX, XX, XX, XX, 0x48, 0x33, 0xC4, 0x48, 0x89, 0x45, 0x07, 0x4D, 0x8B, 0xF1, 0x49, 0x8B, 0xF0, 0x48, 0x8B, 0xFA, 0x48, 0x8B, 0xD9, 0x4C, 0x8B, 0x7D, 0x77, 0x48, 0x8B, 0x01, 0x48, 0x8D, 0x55, 0xC7, 0xFF, 0x50, 0x10};
+        auto first = MemDbg::findBytes(RegisterBlockSig1, sizeof(RegisterBlockSig1), processStartAddress, processStopAddress);
         if (first)
             return first;
-        /*
-        // DebugSymbol: RegisterBlock
-        // ?RegisterBlock@EmitX64@X64@Backend@Dynarmic@@IEAA?AUBlockDescriptor@1234@AEBVLocationDescriptor@IR@4@PEBX_K@Z <- new
-        // ?RegisterBlock@EmitX64@X64@Backend@Dynarmic@@IEAA?AUBlockDescriptor@1234@AEBVLocationDescriptor@IR@4@PEBX1_K@Z
-        const symbols = DebugSymbol.findFunctionsMatching(
-            'Dynarmic::Backend::X64::EmitX64::RegisterBlock'
-        );
-        if (symbols.length !== 0) {
-            console.warn('Sym RegisterBlock');
-            return symbols[0];
-        }
-        */
-        auto PatchBlockSig1 = "4C 8B DC 49 89 5B 10 49 89 6B 18 56 57 41 54 41 56 41 57";
-        first = find_pattern(PatchBlockSig1, processStartAddress, processStopAddress);
+
+        BYTE PatchBlockSig1[] = {0x4C, 0x8B, 0xDC, 0x49, 0x89, 0x5B, 0x10, 0x49, 0x89, 0x6B, 0x18, 0x56, 0x57, 0x41, 0x54, 0x41, 0x56, 0x41, 0x57};
+        BYTE PatchBlockSig2[] = {0x4C, 0x8B, 0xDC, 0x49, 0x89, 0x5B, XX, 0x49, 0x89, 0x6B, XX, 0x56, 0x57, 0x41, 0x54, 0x41, 0x56, 0x41, 0x57};
+        first = MemDbg::findBytes(PatchBlockSig1, sizeof(PatchBlockSig1), processStartAddress, processStopAddress);
         if (!first)
-            first = find_pattern("4C 8B DC 49 89 5B ?? 49 89 6B ?? 56 57 41 54 41 56 41 57", processStartAddress, processStopAddress); // 0.1.9 3339
+            first = MemDbg::findBytes(PatchBlockSig2, sizeof(PatchBlockSig2), processStartAddress, processStopAddress); // 0.1.9 3339
         if (first)
         {
             idxDescriptor = 1;
@@ -45,7 +38,7 @@ namespace
         const char *_id;
     };
     std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks;
-
+    std::unordered_map<std::string, std::function<bool(uintptr_t)>> unindexablehooks;
 }
 
 namespace
@@ -86,7 +79,28 @@ namespace
                     return;
                 Vita3KGameID = wcasta(curr);
                 last = curr;
-                return HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
+                HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
+                for (auto &&[id, ptr] : unindexablehooks)
+                {
+                    if (id == Vita3KGameID)
+                    {
+                        HookParam hp;
+                        static int __fake = 0x10;
+                        hp.address = __fake++;
+                        hp.type = DIRECT_READ;
+                        hp.user_value = (uintptr_t)&ptr;
+                        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+                        {
+                            auto __ = unindexablehooks_near.load();
+                            if (!__)
+                                return;
+                            if ((*((decltype(ptr) *)hp->user_value))(__))
+                                hp->type |= HOOK_EMPTY;
+                        };
+                        NewHook(hp, (id + " Loader").c_str());
+                    }
+                }
+                return;
             }
         };
         hp.type = DIRECT_READ;
@@ -109,6 +123,7 @@ bool vita3k::attach_function()
     {
         auto descriptor = *argidx(stack, idxDescriptor + 1); // r8
         auto entrypoint = *argidx(stack, idxEntrypoint + 1); // r9
+        unindexablehooks_near.store(entrypoint);
         auto em_address = *(uint32_t *)descriptor;
         if (em_address < 0x80000000)
             em_address += 0x80000000; // 0.1.9 3339
@@ -504,8 +519,36 @@ namespace
             return buffer->clear();
         last = s;
     }
+
+    bool PCSG00397(uintptr_t funcnear)
+    {
+        BYTE sig[] = {
+            0x41, 0x8b, 0x47, 0x10,
+            0x45, 0x0f, 0xb6, 0x74, 0x05, 0x00,
+            0x45, 0x0f, 0xbe, 0xf6,
+            0x45, 0x89, 0x37,
+            0x31, 0xc0,
+            0x41, 0x83, 0xfe, 0x00};
+        for (auto addr : Util::SearchMemory(sig, sizeof(sig), PAGE_EXECUTE_READWRITE, funcnear - 0x1000000, funcnear + 0x1000000))
+        {
+            HookParam hp;
+            hp.address = addr;
+            hp.type = CODEC_UTF8 | USING_STRING | BREAK_POINT;
+            hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+            {
+                buffer->from((char *)VITA3K::emu_arg(stack)[4]);
+            };
+            return NewHook(hp, "PCSG00397");
+        }
+        return false;
+    }
+
     auto _ = []()
     {
+        unindexablehooks = {
+            // ニセコイ　ヨメイリ！？
+            {"PCSG00397", PCSG00397},
+        };
         emfunctionhooks = {
             // 追放選挙
             {0x8002e176, {0, 0, 0, 0, FPCSG01023, "PCSG01023"}}, // dialogue+name,sjis
