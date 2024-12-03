@@ -5,7 +5,6 @@ namespace
     auto idxDescriptor = isVirtual == true ? 2 : 1;
     auto idxEntrypoint = idxDescriptor + 1;
     std::string Vita3KGameID;
-    std::atomic<uintptr_t> unindexablehooks_near = 0;
     uintptr_t getDoJitAddress()
     {
         // Vita3K\external\dynarmic\src\dynarmic\backend\x64\emit_x64.h
@@ -38,7 +37,6 @@ namespace
         const char *_id;
     };
     std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks;
-    std::unordered_map<std::string, std::function<bool(uintptr_t)>> unindexablehooks;
 }
 
 namespace
@@ -79,28 +77,7 @@ namespace
                     return;
                 Vita3KGameID = wcasta(curr);
                 last = curr;
-                HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
-                for (auto &&[id, ptr] : unindexablehooks)
-                {
-                    if (id == Vita3KGameID)
-                    {
-                        HookParam hp;
-                        static int __fake = 0x10;
-                        hp.address = __fake++;
-                        hp.type = DIRECT_READ;
-                        hp.user_value = (uintptr_t)&ptr;
-                        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-                        {
-                            auto __ = unindexablehooks_near.load();
-                            if (!__)
-                                return;
-                            if ((*((decltype(ptr) *)hp->user_value))(__))
-                                hp->type |= HOOK_EMPTY;
-                        };
-                        NewHook(hp, (id + " Loader").c_str());
-                    }
-                }
-                return;
+                return HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
             }
         };
         hp.type = DIRECT_READ;
@@ -123,7 +100,6 @@ bool vita3k::attach_function()
     {
         auto descriptor = *argidx(stack, idxDescriptor + 1); // r8
         auto entrypoint = *argidx(stack, idxEntrypoint + 1); // r9
-        unindexablehooks_near.store(entrypoint);
         auto em_address = *(uint32_t *)descriptor;
         if (em_address < 0x80000000)
             em_address += 0x80000000; // 0.1.9 3339
@@ -522,7 +498,6 @@ namespace
 
     auto _ = []()
     {
-        unindexablehooks = {};
         emfunctionhooks = {
             // 追放選挙
             {0x8002e176, {0, 0, 0, 0, FPCSG01023, "PCSG01023"}}, // dialogue+name,sjis
