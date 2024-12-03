@@ -210,6 +210,13 @@ namespace ppsspp
 		buffer->from(s);
 	}
 
+	void ULJM06281(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '\n');
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(@\d+r)"), "");
+		buffer->from(s);
+	}
 	void ULJM05943F(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -873,6 +880,10 @@ namespace ppsspp
 		{0x889A888, {0, 0, 0, 0, ULJM05610, "ULJM05610"}},
 		// 薄桜鬼 遊戯録弐　祭囃子と隊士達
 		{0x883E84C, {0, 1, 0, 0, ULJM05943F, "ULJM06165"}},
+		// 裏語 薄桜鬼
+		{0x885DECC, {0, 0, 0, 0, ULJM06281, "ULJM06281"}},
+		// 裏語 薄桜鬼～暁の調べ～
+		{0x88BDFB0, {0, 1, 0, 0, ULJM06281, "ULJM06373"}},
 		// メモリーズオフ ゆびきりの記憶 ふたりの風流庵
 		{0x8863D5C, {0, 3, 0, 0, ULJM05874, "ULJM05874"}},
 		// メモリーズオフ ゆびきりの記憶
