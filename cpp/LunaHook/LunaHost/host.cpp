@@ -2,6 +2,7 @@
 typedef LONG NTSTATUS;
 #include "yapi.hpp"
 #include "Lang/Lang.h"
+#define SEARCH_SJIS_UNSAFE 0
 namespace
 {
 	class ProcessRecord
@@ -121,7 +122,11 @@ namespace
 					}
 					info.hp.type &= ~CODEC_UTF16;
 					if (auto converted = StringToWideString((char*)info.text, info.hp.codepage))
-						if (converted->size() > STRING) 
+#if SEARCH_SJIS_UNSAFE
+						if (converted->size())
+#else
+						if (converted->size() > STRING)
+#endif
 						{
 							wcscpy_s(info.hp.hookcode,HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
 							OnHookFound(info.hp, std::move(converted.value()));

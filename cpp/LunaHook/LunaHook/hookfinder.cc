@@ -1,5 +1,6 @@
 
 #include "MinHook.h"
+#define SEARCH_SJIS_UNSAFE 0
 namespace
 {
 	SearchParam sp;
@@ -95,7 +96,6 @@ namespace
 	constexpr int addr_offset = 50, send_offset = 60, original_offset = 126, registers = 16;
 #endif
 }
-
 bool IsBadReadPtr(void *data)
 {
 	if (data > records.get() && data < records.get() + sp.maxRecords)
@@ -134,13 +134,20 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 		int length = 0, sum = 0;
 		for (; *(uint16_t *)(str + length) && length < MAX_STRING_SIZE; length += sizeof(uint16_t))
 			sum += *(uint16_t *)(str + length);
+#if SEARCH_SJIS_UNSAFE
+		if (((length > STRING) || (IsDBCSLeadByteEx(932, *str))) && length < MAX_STRING_SIZE - 1)
+#else
 		if (length > STRING && length < MAX_STRING_SIZE - 1)
+#endif
 		{
 			// many duplicate results with same address, offset, and third/fourth character will be found: filter them out
 			uint64_t signature = ((uint64_t)i << 56) | ((uint64_t)(str[2] + str[3]) << 48) | address;
+#if SEARCH_SJIS_UNSAFE
+#else
 			if (signatureCache[signature % CACHE_SIZE] == signature)
 				return;
 			signatureCache[signature % CACHE_SIZE] = signature;
+#endif
 			// if there are huge amount of strings that are the same, it's probably garbage: filter them out
 			// can't store all the strings, so use sum as heuristic instead
 			if (_InterlockedIncrement(sumCache + (sum % CACHE_SIZE)) > 25)
@@ -472,13 +479,13 @@ void SearchForHooks(SearchParam spUser)
 			}
 			ConsoleOutput("%p %p",minemaddr,maxemaddr);
 			ConsoleOutput("%p %p",sp.minAddress,sp.maxAddress);
-			#if 0
+#if SEARCH_SJIS_UNSAFE
 				auto f=fopen("1.txt","a");
 				for(auto addr:jitaddr2emuaddr){
 					fprintf(f,"%llx => %llx\n", addr.second.second ,addr.first);
 				}
 				fclose(f);
-			#endif
+#endif
 			for(auto addr:jitaddr2emuaddr){
 				//ConsoleOutput("%llx => %p", addr.second.second ,addr.first);
 				if(addr.second.second>sp.maxAddress||addr.second.second<sp.minAddress)continue;

@@ -488,16 +488,6 @@ namespace ppsspp
         }
         return true;
     }
-    void LoadNativeHooks(const std::string &GameID)
-    {
-        for (auto &&[id, ptr] : nativehooks)
-        {
-            if (id == GameID)
-            {
-                ptr();
-            }
-        }
-    }
     void Load_PSP_ISO_StringFromFormat()
     {
         /*
@@ -538,7 +528,6 @@ namespace ppsspp
             game_info.TITLE = (char *)stack->ARG4;
             HostInfo(HOSTINFO::EmuGameName, "%s %s", stack->ARG3, stack->ARG4);
             jitaddrclear();
-            LoadNativeHooks(game_info.DISC_ID);
         };
         NewHook(hp, "PPSSPPGameInfo");
     }
@@ -553,7 +542,6 @@ namespace ppsspp
             game_info.DISC_ID = title.substr(0, title.find(':') - 1);
             game_info.TITLE = title.substr(title.find(':') + 2);
             HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
-            LoadNativeHooks(game_info.DISC_ID);
             return;
         }
     }

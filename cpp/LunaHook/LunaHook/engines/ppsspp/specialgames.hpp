@@ -1,85 +1,6 @@
 ﻿#include <queue>
 #include "emujitarg.hpp"
 
-namespace PPSSPP
-{
-	uintptr_t findleapushalignfuncaddr(uintptr_t addr);
-	// ULJS00035 ULJS00149 流行り神
-	void *findGetPointer()
-	{
-		char GetPointer[] = "Unknown GetPointer %08x PC %08x LR %08x";
-		auto addr = MemDbg::findBytes(GetPointer, sizeof(GetPointer), processStartAddress, processStopAddress);
-		if (!addr)
-			return nullptr;
-		addr = findleapushalignfuncaddr(addr);
-		return (void *)addr;
-	}
-	void Replace_memcpy()
-	{
-		// static int Replace_memcpy() {
-		// 	u32 destPtr = PARAM(0);
-		// 	u32 srcPtr = PARAM(1);
-		// 	u32 bytes = PARAM(2);
-		static auto GetPointer = (void *(*)(uintptr_t))findGetPointer();
-		if (!GetPointer)
-			return;
-		ConsoleOutput("GetPointer %p", GetPointer);
-		char ReplaceMemcpy_VideoDecodeRange[] = "ReplaceMemcpy/VideoDecodeRange";
-		auto addr = MemDbg::findBytes(ReplaceMemcpy_VideoDecodeRange, sizeof(ReplaceMemcpy_VideoDecodeRange), processStartAddress, processStopAddress);
-		if (!addr)
-			return;
-		ConsoleOutput("ReplaceMemcpy/VideoDecodeRange %p", addr);
-#ifndef _WIN64
-		BYTE sig[] = {0xb9, XX4};
-		*(uintptr_t *)(sig + 1) = addr;
-		for (auto addr : Util::SearchMemory(sig, sizeof(sig), PAGE_EXECUTE, processStartAddress, processStopAddress))
-		{
-			BYTE sig1[] = {
-				0x55, 0x8b, 0xec,
-				0x81, 0xec, XX4,
-				0x8b, 0x0d, XX4};
-			addr = reverseFindBytes(sig1, sizeof(sig1), addr - 0x200, addr);
-			if (!addr)
-				continue;
-			DWORD off_106D180 = *(DWORD *)(addr + sizeof(sig1) - 4);
-			HookParam hp;
-			hp.user_value = *(DWORD *)off_106D180;
-#else
-
-		for (auto addr : MemDbg::findleaaddr_all(addr, processStartAddress, processStopAddress))
-		{
-			BYTE sig1[] = {
-				0x48, 0x89, XX, 0x24, 0x18,
-				0x48, 0x89, XX, 0x24, 0x20,
-				0x57,
-				0x48, 0x81, 0xec, XX4,
-				0x48, 0x8b, XX, XX4};
-			addr = reverseFindBytes(sig1, sizeof(sig1), addr - 0x200, addr);
-			if (!addr)
-				continue;
-			DWORD off_140F4C810 = *(DWORD *)(addr + sizeof(sig1) - 4);
-			HookParam hp;
-			hp.user_value = *(uintptr_t *)(off_140F4C810 + addr + sizeof(sig1));
-#endif
-			hp.address = addr;
-			hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buff, auto *split)
-			{
-				auto bytes = *((DWORD *)hp->user_value + 6);
-				auto srcPtr = GetPointer(*((DWORD *)hp->user_value + 5));
-
-				if (!IsShiftjisLeadByte(*(BYTE *)srcPtr))
-					return;
-				if (bytes != 2)
-					return;
-				if (bytes != strnlen((char *)srcPtr, TEXT_BUFFER_SIZE))
-					return;
-				buff->from(srcPtr, bytes);
-			};
-			NewHook(hp, "Replace_memcpy");
-		}
-	}
-}
-
 namespace ppsspp
 {
 	void ULJS00403_filter(TextBuffer *buffer, HookParam *hp)
@@ -789,15 +710,13 @@ namespace ppsspp
 				return buffer->clear();
 		}
 	}
-	std::unordered_map<std::string, std::function<void()>> nativehooks = {
-		// 流行り神ＰＯＲＴＡＢＬＥ
-		{"ULJS00035", PPSSPP::Replace_memcpy},
-		// 流行り神２ＰＯＲＴＡＢＬＥ
-		{"ULJS00149", PPSSPP::Replace_memcpy},
-		// 流行り神３
-		{"ULJS00204", PPSSPP::Replace_memcpy}, // 乱码太多
-	};
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
+		// 流行り神ＰＯＲＴＡＢＬＥ
+		{0x88081cc, {0, 7, 0, 0, 0, "ULJS00035"}}, // 这三作都是单字符不断刷新，需要用比较复杂的处理
+		// 流行り神２ＰＯＲＴＡＢＬＥ
+		{0x883EAD0, {0, 0, 0, 0, 0, "ULJS00149"}},
+		// 流行り神３
+		{0x885CB50, {0, 3, 0, 0, 0, "ULJS00204"}},
 		// 死神と少女
 		{0x883bf34, {0, 1, 0, 0, ULJS00403_filter, "ULJS00403"}},
 		// アマガミ
