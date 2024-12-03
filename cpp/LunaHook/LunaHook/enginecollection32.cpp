@@ -216,6 +216,7 @@ std::vector<ENGINE *> check_engines()
         new Wolf,
         new Circus1,
         new Circus2,
+        new Circus_old,
         new Cotopha,
         new Artemis,
         new CatSystem,
