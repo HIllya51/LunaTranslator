@@ -520,35 +520,9 @@ namespace
         last = s;
     }
 
-    bool PCSG00397(uintptr_t funcnear)
-    {
-        BYTE sig[] = {
-            0x41, 0x8b, 0x47, 0x10,
-            0x45, 0x0f, 0xb6, 0x74, 0x05, 0x00,
-            0x45, 0x0f, 0xbe, 0xf6,
-            0x45, 0x89, 0x37,
-            0x31, 0xc0,
-            0x41, 0x83, 0xfe, 0x00};
-        for (auto addr : Util::SearchMemory(sig, sizeof(sig), PAGE_EXECUTE_READWRITE, funcnear - 0x1000000, funcnear + 0x1000000))
-        {
-            HookParam hp;
-            hp.address = addr;
-            hp.type = CODEC_UTF8 | USING_STRING | BREAK_POINT;
-            hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-            {
-                buffer->from((char *)VITA3K::emu_arg(stack)[4]);
-            };
-            return NewHook(hp, "PCSG00397");
-        }
-        return false;
-    }
-
     auto _ = []()
     {
-        unindexablehooks = {
-            // ニセコイ　ヨメイリ！？
-            {"PCSG00397", PCSG00397},
-        };
+        unindexablehooks = {};
         emfunctionhooks = {
             // 追放選挙
             {0x8002e176, {0, 0, 0, 0, FPCSG01023, "PCSG01023"}}, // dialogue+name,sjis
@@ -665,6 +639,8 @@ namespace
             // 鏡界の白雪
             {0x810286C8, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00787"}}, // VPK版手动复制安装
             {0x8002BB78, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00787"}}, // zip安装版
+            // ニセコイ　ヨメイリ！？
+            {0x8189e60c, {CODEC_UTF8, 4, 0, 0, 0, "PCSG00397"}},
         };
         return 1;
     }();
