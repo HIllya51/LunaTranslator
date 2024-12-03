@@ -32,7 +32,6 @@ namespace PPSSPP
 #ifndef _WIN64
 		BYTE sig[] = {0xb9, XX4};
 		*(uintptr_t *)(sig + 1) = addr;
-		bool succ = ;
 		for (auto addr : Util::SearchMemory(sig, sizeof(sig), PAGE_EXECUTE, processStartAddress, processStopAddress))
 		{
 			BYTE sig1[] = {

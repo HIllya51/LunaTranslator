@@ -472,13 +472,13 @@ void SearchForHooks(SearchParam spUser)
 			}
 			ConsoleOutput("%p %p",minemaddr,maxemaddr);
 			ConsoleOutput("%p %p",sp.minAddress,sp.maxAddress);
-			if(0){
+			#if 0
 				auto f=fopen("1.txt","a");
 				for(auto addr:jitaddr2emuaddr){
 					fprintf(f,"%llx => %llx\n", addr.second.second ,addr.first);
 				}
 				fclose(f);
-			}
+			#endif
 			for(auto addr:jitaddr2emuaddr){
 				//ConsoleOutput("%llx => %p", addr.second.second ,addr.first);
 				if(addr.second.second>sp.maxAddress||addr.second.second<sp.minAddress)continue;
