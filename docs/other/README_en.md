@@ -36,8 +36,6 @@ Supports almost all conceivable translation engines, including:
 
 - **Offline Translation** Supports **traditional translation** (J Beijing 7, Kingsoft, Yidiantong, ezTrans, Sugoi, MT5) and offline deployed **large model translation** (ChatGPT compatible interface, Sakura large model)
 
-- **Chrome Debug Translation** Supports **traditional translation** (deepl, yandex, youdao, baidu, tencent, bing, caiyun, xiaoniu, alibaba, google) and **large model translation** (chatgpt, deepseek, moonshot, qianwen, chatglm, Theb.ai, DuckDuckGo)
-
 - **Pre-translation** Supports reading pre-translated files, supports translation caching
 
 - **Support for Custom Translation Extensions** Supports extending other translation interfaces using the Python language
