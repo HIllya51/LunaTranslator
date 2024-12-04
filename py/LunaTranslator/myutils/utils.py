@@ -359,7 +359,7 @@ def splittranslatortypes():
     pre, offline, free, dev, api = [], [], [], [], []
     for k in globalconfig["fanyi"]:
         try:
-            {"pre": pre, "offline": offline, "free": free, "dev": dev, "api": api}[
+            {"pre": pre, "offline": offline, "free": free, "api": api}[
                 globalconfig["fanyi"][k].get("type", "free")
             ].append(k)
         except:
@@ -1041,7 +1041,6 @@ def getannotatedapiname(x):
         + {
             "free": "在线翻译",
             "api": "注册在线翻译",
-            "dev": "调试浏览器",
             "pre": "预翻译",
             "offline": "离线翻译",
         }.get(tp, "unknown type")

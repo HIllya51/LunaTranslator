@@ -5,7 +5,6 @@ from myutils.wrapper import threader
 from myutils.utils import checkportavailable
 from myutils.subproc import subproc_w
 import websocket, time, queue, os
-from gui.setting_translate import statuslabelsettext
 
 
 class Commonloadchromium:
@@ -32,18 +31,18 @@ class Commonloadchromium:
         port = globalconfig["debugport"]
         _path = self.getpath()
         if not _path:
-            statuslabelsettext(self, "No Chromium Found")
+            print("No Chromium Found")
             return
         try:
             requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
-            statuslabelsettext(self, "连接成功")
+            print("连接成功")
         except:
             if checkportavailable(port):
-                statuslabelsettext(self, "连接失败")
+                print("连接失败")
                 call = self.gencmd(_path, port)
                 self.engine = subproc_w(call)
             else:
-                statuslabelsettext(self, "端口冲突")
+                print("端口冲突")
 
     def gencmd(self, path, port):
         hash_ = hashlib.md5(path.encode("utf8")).hexdigest()
@@ -63,11 +62,14 @@ class Commonloadchromium:
         return None
 
 
-class basetransdev(basetrans):
+class cdp_helper:
     target_url = None
-    commonloadchromium = Commonloadchromium()
 
-    def check_url_is_translator_url(self, url):
+    @property
+    def using(self):
+        return True
+
+    def check_url_is_translator_url(self, url: str):
         return url.startswith(self.target_url)
 
     def Page_navigate(self, url):
@@ -95,12 +97,11 @@ class basetransdev(basetrans):
             time.sleep(0.1)
 
     #########################################
-    def _private_init(self):
-        self.commonloadchromium.maybeload()
+    def __init__(self):
+        cdp_helper.commonloadchromium.maybeload()
         self._id = 1
         self.sendrecvlock = threading.Lock()
         self._createtarget()
-        super()._private_init()
 
     def _SendRequest(self, method, params, ws=None):
         if self.using == False:
@@ -116,7 +117,7 @@ class basetransdev(basetrans):
                 )
                 res = ws.recv()
             except requests.RequestException:
-                self.commonloadchromium.maybeload()
+                cdp_helper.commonloadchromium.maybeload()
                 raise Exception(_TR("连接失败"))
 
             res = json.loads(res)
@@ -243,3 +244,87 @@ class basetransdev(basetrans):
                 # self._SendRequest('Input.dispatchKeyEvent', {'type': 'keyUp', 'modifiers': 0, 'timestamp': 0, 'text': '', 'unmodifiedText': '', 'keyIdentifier': '', 'code': f'Key{char.upper()}', 'key': char, 'windowsVirtualKeyCode': code, 'nativeVirtualKeyCode': code, 'autoRepeat': False, 'isKeypad': False, 'isSystemKey': False, 'location': 0})
 
         # self._SendRequest("Input.setIgnoreInputEvents", {"ignore": True})
+
+    commonloadchromium = Commonloadchromium()
+
+
+class cdp_helperllm(cdp_helper):
+    jsfile = ...
+    textarea_selector = ...
+    button_selector = ...
+    function1 = ...
+    function2 = ...
+
+    def __init__(self, ref: basetrans) -> None:
+        self.ref = ref
+        super().__init__()
+
+    @property
+    def config(self):
+        return self.ref.config
+
+    @property
+    def using(self):
+        return self.ref.using
+
+    def injectjs(self):
+        with open(
+            os.path.join(os.path.dirname(__file__), self.jsfile),
+            "r",
+            encoding="utf8",
+        ) as ff:
+            js = ff.read() % (
+                self.function1,
+                self.function2,
+            )
+        self.Runtime_evaluate(js)
+
+    def translate(self, content):
+        self.injectjs()
+        prompt = self.ref._gptlike_createsys("use_custom_prompt", "custom_prompt")
+        content = prompt + content
+        self.Runtime_evaluate(
+            "document.querySelector(`{}`).foucs()".format(repr(self.textarea_selector))
+        )
+        self.clear_input()
+        self.send_keys(content)
+        # chatgpt网站没有焦点时，用这个也可以。
+        self.Runtime_evaluate(
+            'textarea=document.querySelector({});textarea.value="";event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);textarea.value=`{}`;event = new Event("input", {{bubbles: true, cancelable: true }});textarea.dispatchEvent(event);'.format(
+                repr(self.textarea_selector), content
+            )
+        )
+
+        try:
+            # 月之暗面
+            while self.Runtime_evaluate(
+                "document.querySelector({}).disabled".format(repr(self.button_selector))
+            )["result"]["value"]:
+                time.sleep(0.1)
+        except:
+            pass
+        self.Runtime_evaluate(
+            "document.querySelector({}).click()".format(repr(self.button_selector))
+        )
+        if self.ref.config["usingstream"]:
+            __ = [""]
+
+            def ___(__):
+                time.sleep(0.1)
+                thistext = self.Runtime_evaluate("thistext")["result"]["value"]
+
+                if thistext.startswith(__[0]):
+                    yield thistext[len(__[0]) :]
+                else:
+                    yield "\0"
+                    yield thistext
+                __[0] = thistext
+
+            while not self.Runtime_evaluate("hasdone")["result"]["value"]:
+                yield from ___(__)
+            yield from ___(__)
+        else:
+            while not self.Runtime_evaluate("hasdone")["result"]["value"]:
+                time.sleep(0.1)
+                continue
+            yield self.Runtime_evaluate("thistext")["result"]["value"]

@@ -23,7 +23,9 @@
 		"args": {
 			"usewhich": 0,
 			"github": "https://github.com/OwO-Network/DeepLX",
-			"api": "http://127.0.0.1:1188/translate"
+			"api": "http://127.0.0.1:1188/translate",
+			"chromepath": "",
+			"debugport": 9222
 		},
 		"argstype": {
 			"github": {
@@ -39,14 +41,134 @@
 				"refcombo_i": 1,
 				"type": "textlist"
 			},
+			"chromepath": {
+				"name": "Chromium_路径",
+				"refcombo": "usewhich",
+				"refcombo_i": 2,
+				"type": "file",
+				"dir": false
+			},
+			"debugport": {
+				"name": "端口号",
+				"refcombo": "usewhich",
+				"refcombo_i": 2,
+				"type": "intspin",
+				"min": 0,
+				"max": 1000000,
+				"step": 1
+			},
 			"usewhich": {
 				"rank": 0,
 				"type": "combo",
 				"name": "类型",
 				"list": [
 					"DeepL",
-					"DeepLX"
+					"DeepLX",
+					"CDP"
 				]
+			}
+		}
+	},
+	"cdp_chatgpt": {
+		"args": {
+			"usewhich": 0,
+			"chromepath": "",
+			"debugport": 9222,
+            "target_url": "https://duckduckgo.com/?t=h_&q=hi&ia=chat",
+			"request_method": 0,
+            "checkneturlfunction": "url.includes(\"v1/chat\")",
+            "extracttextfunction": "thistext += chunk.message?chunk.message:\"\"",
+            "textarea_selector": "textarea",
+            "button_selector": "button[type=\"submit\"]",
+			"S": "",
+			"S2": "",
+			"usingstream": true,
+			"use_custom_prompt": false,
+			"custom_prompt": ""
+		},
+		"argstype": {
+			"chromepath": {
+				"rank": -99,
+				"name": "Chromium_路径",
+				"type": "file",
+				"dir": false
+			},
+			"debugport": {
+				"rank": -98,
+				"name": "端口号",
+				"type": "intspin",
+				"min": 0,
+				"max": 1000000,
+				"step": 1
+			},
+			"usewhich": {
+				"rank": -100,
+				"type": "combo",
+				"name": "类型",
+				"list": [
+					"chatgpt",
+					"mirror"
+				]
+			},
+			"S2": {
+				"rank": -11,
+				"type": "split"
+			},
+			"target_url": {
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"rank": -10
+			},
+			"S": {
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"rank": 0,
+				"type": "split"
+			},
+			"textarea_selector": {
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"rank": -6,
+				"name": "CSS selector for textarea"
+			},
+			"button_selector": {
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"rank": -5,
+				"name": "CSS selector for button"
+			},
+			"extracttextfunction": {
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"rank": -7,
+				"name": "Function2 (extract text in stream chunk)"
+			},
+			"checkneturlfunction": {
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"rank": -8,
+				"name": "Function1 (check if url is backend url)"
+			},
+			"request_method": {
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"rank": -9,
+				"type": "combo",
+				"list": [
+					"fetch",
+					"xhr"
+				]
+			},
+			"usingstream": {
+				"rank": 1,
+				"name": "流式输出",
+				"type": "switch"
+			},
+			"custom_prompt": {
+				"rank": 2,
+				"name": "自定义_promt",
+				"type": "multiline",
+				"refswitch": "use_custom_prompt"
 			}
 		}
 	},

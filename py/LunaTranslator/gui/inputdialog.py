@@ -19,6 +19,7 @@ from gui.usefulwidget import (
     getspinbox,
     SplitLine,
     getIconButton,
+    VisLFormLayout,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -464,7 +465,7 @@ class autoinitdialog__(LDialog):
                 print_exc()
             self.show()
             return
-        formLayout = LFormLayout()
+        formLayout = VisLFormLayout()
         self.setLayout(formLayout)
         regist = {}
 
@@ -596,6 +597,9 @@ class autoinitdialog__(LDialog):
                         )
                     )
                 lineW.addWidget(combo)
+                _w = QWidget()
+                _w.setLayout(lineW)
+                lineW = _w
             elif line["type"] == "okcancel":
                 lineW = QDialogButtonBox(
                     QDialogButtonBox.StandardButton.Ok
@@ -631,7 +635,9 @@ class autoinitdialog__(LDialog):
                 )
 
                 regist[key] = functools.partial(__temp.__getitem__, "k")
-
+                _ = QWidget()
+                _.setLayout(lineW)
+                lineW = _
             elif line["type"] == "switch":
                 lineW = MySwitch(sign=dd[key])
                 regist[key] = lineW.isChecked
@@ -639,7 +645,9 @@ class autoinitdialog__(LDialog):
                 _.addStretch()
                 _.addWidget(lineW)
                 _.addStretch()
-                lineW = _
+                _w = QWidget()
+                _w.setLayout(_)
+                lineW = _w
             elif line["type"] in ["spin", "intspin"]:
 
                 __temp = {"k": dd[key]}
@@ -654,13 +662,6 @@ class autoinitdialog__(LDialog):
                 regist[key] = lineW.value
             elif line["type"] == "split":
                 lineW = SplitLine()
-                formLayout.addRow(lineW)
-                continue
-            refcombo = line.get("refcombo")
-            if refcombo:
-                if refcombo not in cachehasref:
-                    cachehasref[refcombo] = []
-                cachehasref[refcombo].append((lineW, line))
 
             refswitch = line.get("refswitch", None)
             if refswitch:
@@ -675,12 +676,19 @@ class autoinitdialog__(LDialog):
                     lineW.setEnabled(dd[key])
                     hbox.addWidget(switch)
                     hbox.addWidget(lineW)
-                    lineW = hbox
-            if "name" in line:
-                formLayout.addRow(line["name"], lineW)
-            else:
+                    _ = QWidget()
+                    _.setLayout(hbox)
+                    lineW = _
+            if ("name" not in line) or (line["type"] == "split"):
                 formLayout.addRow(lineW)
+            else:
+                formLayout.addRow(line["name"], lineW)
 
+            refcombo = line.get("refcombo")
+            if refcombo:
+                if refcombo not in cachehasref:
+                    cachehasref[refcombo] = []
+                cachehasref[refcombo].append((lineW, line))
         for comboname, refitems in cachehasref.items():
 
             def refcombofunction(refitems, _i):
@@ -692,10 +700,7 @@ class autoinitdialog__(LDialog):
                         vis = linwinfo.get("refcombo_i_r") != _i
                     elif linwinfo.get("refcombo_l") is not None:
                         vis = _i in linwinfo.get("refcombo_l")
-                    w.setVisible(vis)
-                    formLayout.itemAt(formLayout.indexOf(w) - 1).widget().setVisible(
-                        vis
-                    )
+                    formLayout.setRowVisible(w, vis)
 
             cachecombo[comboname].currentIndexChanged.connect(
                 functools.partial(refcombofunction, refitems)
@@ -703,6 +708,7 @@ class autoinitdialog__(LDialog):
             cachecombo[comboname].currentIndexChanged.emit(
                 cachecombo[comboname].currentIndex()
             )
+
         self.show()
 
 

@@ -586,14 +586,14 @@ def loadlanguage():
 def _TR(k: str):
     if not k:
         return ""
-    if isascii(k):
-        return k
-    loadlanguage()
     if "_" in k:
         splits = k.split("_")
         return " ".join([_TR(_) for _ in splits])
     if k.startswith("(") and k.endswith(")"):
         return "(" + _TR(k[1:-1]) + ")"
+    if isascii(k):
+        return k
+    loadlanguage()
     __ = languageshow.get(k)
     if __:
         return __

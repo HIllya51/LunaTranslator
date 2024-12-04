@@ -1773,83 +1773,16 @@
         "deepl": {
             "use": false,
             "color": "blue",
-            "name": "DeepL/DeepLX",
+            "name": "DeepL",
             "useproxy": false,
             "type": "free"
         },
-        "dev_chatgpt": {
+        "cdp_chatgpt": {
             "use": false,
             "color": "blue",
-            "type": "dev",
-            "name": "chatgpt",
-            "is_gpt_like": true
-        },
-        "dev_chatgpt_mirror": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "chatgpt mirror",
-            "is_gpt_like": true
-        },
-        "deepl_dev": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "deepl"
-        },
-        "bing_dev": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "必应"
-        },
-        "baidu_dev": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "百度"
-        },
-        "google_dev": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "谷歌"
-        },
-        "dev_youdao": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "有道"
-        },
-        "dev_sogou": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "搜狗"
-        },
-        "dev_ali": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "阿里"
-        },
-        "dev_yandex": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "yandex"
-        },
-        "dev_niutrans": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "niutrans"
-        },
-        "dev_caiyun": {
-            "use": false,
-            "color": "blue",
-            "type": "dev",
-            "name": "彩云"
+            "name": "CDP_ChatGPT",
+            "useproxy": false,
+            "type": "free"
         },
         "gemini": {
             "type": "api",

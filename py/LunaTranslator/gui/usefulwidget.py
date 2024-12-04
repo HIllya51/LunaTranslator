@@ -2493,3 +2493,50 @@ class LRButton(LPushButton):
             if ev.button() == Qt.MouseButton.RightButton:
                 self.rightclick.emit()
         return super().mouseReleaseEvent(ev)
+
+
+class VisLFormLayout(LFormLayout):
+    # 简易实现
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._row_widgets = {}
+        self._reverse = {}
+        self._row_vis = {}
+
+    def addRow(self, label_or_field, field=None):
+        row_index = self.rowCount()
+        if field is None:
+            super().addRow(label_or_field)
+            field = label_or_field
+            label_or_field = None
+        else:
+            super().addRow(label_or_field, field)
+        self._row_widgets[row_index] = (label_or_field, field)
+        self._row_vis[row_index] = True
+        self._reverse[field] = row_index
+        return row_index
+
+    def setRowVisible(self, row_index, visible):
+        if isinstance(row_index, int):
+            pass
+        elif isinstance(row_index, QWidget):
+            row_index = self._reverse[row_index]
+        if self._row_vis[row_index] == visible:
+            return
+        insert_position = sum(1 for i in range(row_index) if self._row_vis[i])
+        if visible:
+            label, field = self._row_widgets[row_index]
+            if label is not None:
+                super().insertRow(insert_position, label, field)
+            else:
+                super().insertRow(insert_position, field)
+            if not field.isVisible():
+                field.setVisible(True)
+        else:
+            tres = self.takeRow(insert_position)
+            label = tres.labelItem
+            if label is not None:
+                self.removeItem(label)
+                label.widget().deleteLater()
+            tres.fieldItem.widget().hide()
+        self._row_vis[row_index] = visible

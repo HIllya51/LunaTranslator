@@ -63,8 +63,6 @@ def loadvisinternal(btnplus, copy):
         is_gpt_likes, not_is_gpt_like = splitapillm(shoufei)
     elif btnplus == "offline":
         is_gpt_likes, not_is_gpt_like = splitapillm(lixians)
-    elif btnplus == "dev":
-        is_gpt_likes, not_is_gpt_like = splitapillm(develop)
 
     for _ in is_gpt_likes:
         if copy:
@@ -332,12 +330,6 @@ def createmanybtn(self, countnum, btnplus):
                 dynamiclink("{docs_server}/#/zh/guochandamoxing")
             )
         )
-    elif btnplus == "dev":
-        btn.clicked.connect(
-            lambda: gobject.baseobject.openlink(
-                dynamiclink("{docs_server}/#/zh/tiaoshiliulanqi")
-            )
-        )
     hbox.addWidget(btn)
     setattr(self, "btnmany" + btnplus, w)
     return w
@@ -442,18 +434,6 @@ def initsome2(self, l, label=None, btnplus=None):
     return grids
 
 
-def statuslabelsettext(self, text):
-    try:
-        self.statuslabel.setText(text)
-    except:
-        pass
-
-
-def createstatuslabel(self):
-
-    self.statuslabel = LLabel()
-    return self.statuslabel
-
 
 def createbtnexport(self):
 
@@ -543,56 +523,21 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
         {"type": "okcancel"},
     ]
 
-    developgrid = [
-        [
-            (
-                dict(
-                    title="Chromium_设置",
-                    type="grid",
-                    grid=(
-                        [
-                            "路径",
-                            D_getIconButton(
-                                callback=functools.partial(
-                                    autoinitdialog,
-                                    self,
-                                    globalconfig,
-                                    "Chromium_路径",
-                                    800,
-                                    _items,
-                                ),
-                                icon="fa.gear",
-                            ),
-                            "",
-                            "端口号",
-                            D_getspinbox(0, 65535, globalconfig, "debugport"),
-                            "",
-                        ],
-                        [(functools.partial(createstatuslabel, self), 0)],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-    ]
     lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
 
     offlinegrid = initsome2(self, lixians, btnplus="offline")
     onlinegrid = initsome11(self, mianfei)
-    developgrid += initsome2(self, develop, btnplus="dev")
     online_reg_grid += initsome2(self, shoufei, btnplus="api")
     pretransgrid += initsome11(self, pre)
 
     gridlayoutwidget, do = makegrid(grids, delay=True)
     basel.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        ["在线翻译", "注册在线翻译", "离线翻译", "调试浏览器", "预翻译"],
+        ["在线翻译", "注册在线翻译", "离线翻译", "预翻译"],
         [
             functools.partial(makescrollgrid, onlinegrid),
             functools.partial(makescrollgrid, online_reg_grid),
             functools.partial(makescrollgrid, offlinegrid),
-            functools.partial(makescrollgrid, developgrid),
             functools.partial(makescrollgrid, pretransgrid),
         ],
         delay=True,

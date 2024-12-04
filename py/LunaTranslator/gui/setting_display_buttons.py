@@ -82,7 +82,7 @@ def changerank(item, up, sortlist, savelist, savelay):
 
 def createbuttonwidget(self, lay):
     # return table
-    grids = [["显示", "", "", "对齐", "", "图标", "", "图标2", "", "说明"]]
+    grids = [["显示", "", "", "对齐", "", "图标", "", "图标_2", "", "说明"]]
     sortlist = globalconfig["toolbutton"]["rank2"]
     savelist = []
     savelay = []
