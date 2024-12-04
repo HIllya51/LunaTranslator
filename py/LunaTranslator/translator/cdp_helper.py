@@ -66,8 +66,12 @@ class cdp_helper:
     target_url = None
 
     @property
+    def config(self):
+        return self.ref.config
+
+    @property
     def using(self):
-        return True
+        return self.ref.using
 
     def check_url_is_translator_url(self, url: str):
         return url.startswith(self.target_url)
@@ -100,7 +104,7 @@ class cdp_helper:
 
     def __init__(self, ref: basetrans) -> None:
         self.ref = ref
-        cdp_helper.commonloadchromium.maybeload(self.ref.config)
+        cdp_helper.commonloadchromium.maybeload(self.config)
         self._id = 1
         self.sendrecvlock = threading.Lock()
         self._createtarget()
@@ -119,7 +123,7 @@ class cdp_helper:
                 )
                 res = ws.recv()
             except requests.RequestException:
-                cdp_helper.commonloadchromium.maybeload(self.ref.config)
+                cdp_helper.commonloadchromium.maybeload(self.config)
                 raise Exception(_TR("连接失败"))
 
             res = json.loads(res)
@@ -132,7 +136,7 @@ class cdp_helper:
     def _createtarget(self):
         if self.using == False:
             return
-        port = self.ref.config["debugport"]
+        port = self.config["debugport"]
         url = self.target_url
         try:
             infos = requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
@@ -257,14 +261,6 @@ class cdp_helperllm(cdp_helper):
     function1 = ...
     function2 = ...
 
-    @property
-    def config(self):
-        return self.ref.config
-
-    @property
-    def using(self):
-        return self.ref.using
-
     def injectjs(self):
         with open(
             os.path.join(os.path.dirname(__file__), self.jsfile),
@@ -304,7 +300,7 @@ class cdp_helperllm(cdp_helper):
         self.Runtime_evaluate(
             "document.querySelector({}).click()".format(repr(self.button_selector))
         )
-        if self.ref.config["usingstream"]:
+        if self.config["usingstream"]:
             __ = [""]
 
             def ___(__):

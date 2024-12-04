@@ -60,7 +60,7 @@ class cdp_deepl(cdp_helper):
 
     @property
     def using(self):
-        return self.ref.using and self.ref.config["usewhich"] == 2
+        return self.ref.using and self.config["usewhich"] == 2
 
     @property
     def srclang(self):
