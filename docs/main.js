@@ -15,7 +15,6 @@ window.$docsify = {
 
     alias: {
         '/zh/_sidebar.md': '/zh/sidebar.md',
-        '/ru/_sidebar.md': '/ru/sidebar.md',
         '/en/_sidebar.md': '/en/sidebar.md',
         '/_navbar.md': '/navbar.md',
         '/_coverpage.md': '/coverpage.md',
@@ -124,14 +123,6 @@ const navitexts = {
         bit32link: '32位'
 
     },
-    ru: {
-        homepage: 'HomePage',
-        downloadlink: 'Download',
-        vediotutorial: 'Vedio Tutorial',
-        contactme: 'Discord',
-        bit64link: '64-bit',
-        bit32link: '32-bit'
-    },
     en: {
         homepage: 'HomePage',
         downloadlink: 'Download',
@@ -144,12 +135,10 @@ const navitexts = {
 const languagelinks = {
     contactme: {
         zh: 'https://qm.qq.com/q/I5rr3uEpi2',
-        ru: 'https://discord.com/invite/ErtDwVeAbB',
         en: 'https://discord.com/invite/ErtDwVeAbB',
     },
     vediotutorial: {
         zh: 'https://space.bilibili.com/592120404/video',
-        ru: 'https://www.youtube.com/results?search_query=LunaTranslator',
         en: 'https://www.youtube.com/results?search_query=LunaTranslator',
     },
     homepage: {
@@ -220,10 +209,6 @@ function copyToClipboard(text) {
         en: {
             ok: 'Copy to clipboard',
             fail: 'Cannot copy:',
-        },
-        ru: {
-            ok: 'Копировать в буфер обмена',
-            fail: 'Невозможно скопировать:',
         },
     }
 
