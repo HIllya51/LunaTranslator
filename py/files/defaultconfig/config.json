@@ -877,8 +877,6 @@
         "記号": "coral",
         "空白": "white"
     },
-    "chromepath": "",
-    "debugport": 9222,
     "cixingcolorshow": {
         "形容詞": true,
         "形状詞": true,

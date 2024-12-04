@@ -58,10 +58,6 @@ def initDeepLXData(sourceLang: str, targetLang: str):
 class cdp_deepl(cdp_helper):
     target_url = "https://www.deepl.com/en/translator"
 
-    def __init__(self, ref: basetrans) -> None:
-        self.ref = ref
-        super().__init__()
-
     @property
     def using(self):
         return self.ref.using and self.ref.config["usewhich"] == 2

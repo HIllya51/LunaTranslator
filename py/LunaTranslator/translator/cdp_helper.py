@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 import json, requests, threading, hashlib
-from myutils.config import globalconfig, _TR
+from myutils.config import _TR
 from myutils.wrapper import threader
 from myutils.utils import checkportavailable
 from myutils.subproc import subproc_w
@@ -12,8 +12,8 @@ class Commonloadchromium:
         self.task = queue.Queue()
         self.waittaskthread()
 
-    def maybeload(self):
-        self.task.put(0)
+    def maybeload(self, config):
+        self.task.put(config)
 
     @threader
     def waittaskthread(self):
@@ -21,15 +21,15 @@ class Commonloadchromium:
             self.__waittaskthread()
 
     def __waittaskthread(self):
-        _ = self.task.get()
+        config = self.task.get()
         if not self.task.empty():
             return
         time.sleep(0.2)
         if not self.task.empty():
             return
 
-        port = globalconfig["debugport"]
-        _path = self.getpath()
+        port = config["debugport"]
+        _path = self.getpath(config)
         if not _path:
             print("No Chromium Found")
             return
@@ -51,9 +51,9 @@ class Commonloadchromium:
         call = fmt % (path, port, cache)
         return call
 
-    def getpath(self):
+    def getpath(self, config):
         for syspath in [
-            globalconfig["chromepath"],
+            config["chromepath"],
             r"C:\Program Files\Google\Chrome\Application\chrome.exe",
             r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
         ]:
@@ -97,8 +97,10 @@ class cdp_helper:
             time.sleep(0.1)
 
     #########################################
-    def __init__(self):
-        cdp_helper.commonloadchromium.maybeload()
+
+    def __init__(self, ref: basetrans) -> None:
+        self.ref = ref
+        cdp_helper.commonloadchromium.maybeload(self.ref.config)
         self._id = 1
         self.sendrecvlock = threading.Lock()
         self._createtarget()
@@ -117,7 +119,7 @@ class cdp_helper:
                 )
                 res = ws.recv()
             except requests.RequestException:
-                cdp_helper.commonloadchromium.maybeload()
+                cdp_helper.commonloadchromium.maybeload(self.ref.config)
                 raise Exception(_TR("连接失败"))
 
             res = json.loads(res)
@@ -130,7 +132,7 @@ class cdp_helper:
     def _createtarget(self):
         if self.using == False:
             return
-        port = globalconfig["debugport"]
+        port = self.ref.config["debugport"]
         url = self.target_url
         try:
             infos = requests.get("http://127.0.0.1:{}/json/list".format(port)).json()
@@ -254,10 +256,6 @@ class cdp_helperllm(cdp_helper):
     button_selector = ...
     function1 = ...
     function2 = ...
-
-    def __init__(self, ref: basetrans) -> None:
-        self.ref = ref
-        super().__init__()
 
     @property
     def config(self):
