@@ -1448,7 +1448,6 @@
         "shared": [
             "./files/plugins/shareddllproxy32.exe",
             "./files/plugins/shareddllproxy64.exe",
-            "./files/plugins/hookmagpie.dll",
             "./files/plugins/Magpie/Magpie.Core.exe",
             "./files/plugins/LunaHook/LunaHook32.dll",
             "./files/plugins/LunaHook/LunaHost32.dll",

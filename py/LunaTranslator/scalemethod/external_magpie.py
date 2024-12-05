@@ -2,42 +2,27 @@ from scalemethod.base import scalebase
 import os, json
 import windows, winsharedutils
 from myutils.config import globalconfig
-from myutils.hwnd import injectdll
 from myutils.subproc import subproc_w
 import time
 from myutils.wrapper import threader
 
 
 class Method(scalebase):
-    def init(self):
-        self.injectedpids = set()
 
     def runmagpie(self):
-        if windows.FindWindow("Magpie_Hotkey", None) == 0:
+        if not windows.FindWindow("Magpie_Hotkey", None):
             subproc_w(
                 os.path.join(globalconfig["magpiepath"], "Magpie.exe"),
                 cwd=globalconfig["magpiepath"],
                 name="magpie",
             )
-            while windows.FindWindow("Magpie_Hotkey", None) == 0:
+            while not windows.FindWindow("Magpie_Hotkey", None):
                 time.sleep(0.5)
-        if True:
-            pid = windows.GetWindowThreadProcessId(
-                windows.FindWindow("Magpie_Hotkey", None)
-            )
-            if pid in self.injectedpids:
-                return
-            dll = os.path.abspath("./files/plugins/hookmagpie.dll")
-            injectdll([pid], 64, dll)
-            self.injectedpids.add(pid)
 
     @threader
     def _wait_magpie_stop_external(self):
-        while (
-            windows.FindWindow(
-                "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
-            )
-            == 0
+        while not windows.FindWindow(
+            "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
         ):
             time.sleep(0.5)
         while windows.FindWindow(
@@ -45,7 +30,7 @@ class Method(scalebase):
         ):
             time.sleep(0.5)
         self.setuistatus(False)
-    
+
     def changestatus(self, hwnd, full):
 
         configpath = os.path.join(globalconfig["magpiepath"], "config/config.json")
