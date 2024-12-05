@@ -1437,8 +1437,6 @@
     "checkintegrity": {
         "xp": [
             "./files/plugins/shareddllproxy32.exe",
-            "./files/plugins/NTLEAS/ntleak.dll",
-            "./files/plugins/NTLEAS/ntleai.dll",
             "./files/plugins/LunaHook/LunaHook32.dll",
             "./files/plugins/LunaHook/LunaHost32.dll",
             "./files/plugins/DLL32/winsharedutils32.dll",

@@ -1,4 +1,28 @@
 import os, re
+import ast
+
+
+class TypeHintRemover_1(ast.NodeTransformer):
+    def visit_FunctionDef(self, node):
+        node.returns = None
+        if node.args.args:
+            for arg in node.args.args:
+                arg.annotation = None
+        return node
+
+
+class TypeHintRemover_2(ast.NodeTransformer):
+    def visit_AnnAssign(self, node):
+        obj = ast.Assign([node.target], node.value)
+        obj.lineno = node.lineno
+        return obj
+
+
+def typeHintRemover(source):
+    parsed_source = ast.parse(source)
+    transformed = TypeHintRemover_1().visit(parsed_source)
+    transformed = TypeHintRemover_2().visit(transformed)
+    return ast.unparse(transformed)
 
 
 def parsecode(code: str):
@@ -9,10 +33,7 @@ def parsecode(code: str):
     code = re.sub(
         r"(Q[a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+\.([a-zA-Z0-9_]+)([ \)\n,:])", r"\1.\2\3", code
     )
-    # 移除类型注解
-    code = re.sub(r": [a-zA-Z0-9_]+\)", ")", code)
-    code = re.sub(r"([a-zA-Z0-9_]): [a-zA-Z0-9_]+,", r"\1,", code)
-    code = re.sub(r": [a-zA-Z0-9_]+ =", " =", code)
+    code = typeHintRemover(code)
     return code
 
 
