@@ -19,14 +19,8 @@ bool InsertPONScripterHook()
         hp.index = 0xc;
         return NewHook(hp, "PONScripter");
       }
-      else
-        ConsoleOutput("failed to find function start");
     }
-    else
-      ConsoleOutput("failed to find string reference");
   }
-  else
-    ConsoleOutput("failed to find string");
   return false;
 }
 void PONScripterFilter(TextBuffer *buffer, HookParam *)
@@ -73,17 +67,13 @@ bool InsertPONScripterEngHook()
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
-  {
-    ConsoleOutput("PONScripterEng: pattern not found");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr + addr_offset;
   hp.offset = get_reg(regs::eax);
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = PONScripterFilter;
-  ConsoleOutput("INSERT PONScripterEng");
   return NewHook(hp, "PONScripterEng");
 }
 
@@ -107,22 +97,86 @@ bool InsertPONScripterJapHook()
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
-  {
-    ConsoleOutput("PONScripterJap: pattern not found");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr;
   hp.offset = get_reg(regs::edx);
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = PONScripterFilter;
-  ConsoleOutput("INSERT PONScripterJap");
   return NewHook(hp, "PONScripterJap");
+}
+namespace
+{
+  bool pons()
+  {
+    /*
+int __thiscall sub_46A3C0(int *this, void *a2, int a3)
+{
+  int result; // eax
+  int v4; // esi
+  int v5; // [esp+12h] [ebp-26h] BYREF
+  int v6; // [esp+14h] [ebp-24h] BYREF
+  char v7[32]; // [esp+18h] [ebp-20h] BYREF
+
+  result = sub_460780(this + 1, a2, a3); <--findbytes+xref
+  if ( result == -1 )
+  {
+    sub_684AC0("CBString::Failure in concatenate", (int)&v5);
+    sub_65EF20(&v6);
+    sub_683500((char *)&v5 + 1);
+    v4 = sub_6B17C0(8);
+    sub_65EEE0(v7);
+    sub_6B1F70(v4, &ZTIN7Bstrlib17CBStringExceptionE, sub_65EFD0);
+  }
+  return result;
+}
+    */
+    const BYTE bytes[] = {
+        0x55, 0x57, 0x56, 0x53,
+        0x83, 0xec, XX,
+        0x8b, 0x5c, 0x24, XX,
+        0x8b, 0x7c, 0x24, XX,
+        0x8b, 0x74, 0x24, XX,
+        0x85, 0xdb,
+        0x0f, 0x84, XX4,
+        0x8b, 0x43, 0x08,
+        0x85, 0xc0,
+        0x89, 0x44, 0x24, 0x0c,
+        0x0f, 0x84, XX4,
+        0x8b, 0x43, 0x04,
+        0x85, 0xc0,
+        0x78, XX,
+        0x8b, 0x13,
+        0x39, 0xd0,
+        0x7f, XX,
+        0x85, 0xd2,
+        0x7e, XX,
+        0x85, 0xff,
+        0x8d, 0x76, 0x00,
+        0x74, XX,
+        0x89, 0xf5,
+        0xc1, 0xed, 0x1f};
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    auto addrs = findxref_reverse_checkcallop(addr, processStartAddress, processStopAddress, 0xe8);
+    if (1 != addrs.size())
+      return false;
+    for (addr = addrs[0]; (addrs[0] - addr < 0x30) && ((*(BYTE *)addr) != 0x55); addr -= 1)
+      ;
+    if (*(BYTE *)addr != 0x55)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = get_stack(1);
+    hp.type = USING_CHAR | CODEC_UTF8 | DATA_INDIRECT;
+    return NewHook(hp, "PONScripter2");
+  }
 }
 bool PONScripter::attach_function()
 {
 
   bool ok = InsertPONScripterEngHook() && InsertPONScripterJapHook();
-  return ok || InsertPONScripterHook(); // If a language hook is missing, the original code is executed
+  return ok || (pons() || InsertPONScripterHook()); // If a language hook is missing, the original code is executed
 }
