@@ -6,7 +6,7 @@ namespace ppsspp
   struct emfuncinfo
   {
     uint64_t type;
-    int argidx;
+    int offset;
     int padding;
     decltype(HookParam::text_fun)  hookfunc;
     decltype(HookParam::filter_fun) filterfun;

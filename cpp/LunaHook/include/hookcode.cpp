@@ -186,8 +186,6 @@ namespace
 				return {};
 			HCode.erase(0, 1);
 			HCode = HCode.substr(0, HCode.size() - wcslen(L":JIT:UNITY"));
-			hp.argidx = hp.offset;
-			hp.offset = 0;
 			hp.address = 0;
 			hp.type &= ~MODULE_OFFSET;
 			hp.type &= ~FUNCTION_OFFSET;
@@ -223,8 +221,6 @@ namespace
 			if (hp.jittype != JITTYPE::PC)
 			{
 				hp.emu_addr = hp.address;
-				hp.argidx = hp.offset;
-				hp.offset = 0;
 				hp.address = 0;
 				hp.type &= ~MODULE_OFFSET;
 				hp.type &= ~FUNCTION_OFFSET;
@@ -363,14 +359,7 @@ namespace
 		if (hp.split < 0)
 			hp.split += 4;
 
-		if (hp.jittype == JITTYPE::PC)
-		{
-			HCode += HexString(hp.offset);
-		}
-		else
-		{
-			HCode += HexString(hp.argidx);
-		}
+		HCode += HexString(hp.offset);
 
 		if (hp.type & DATA_INDIRECT)
 			HCode += L'*' + HexString(hp.index);

@@ -1,6 +1,6 @@
 
 #include "MinHook.h"
-#define SEARCH_SJIS_UNSAFE 0
+#define DUMP_JIT_ADDR_MAP 0
 namespace
 {
 	SearchParam sp;
@@ -10,7 +10,6 @@ namespace
 	{
 		uint64_t address = 0;
 		uint64_t em_addr = 0;
-		int argidx = 0;
 		intptr_t padding = 0;
 		int offset = 0;
 		JITTYPE jittype;
@@ -134,7 +133,7 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 		int length = 0, sum = 0;
 		for (; *(uint16_t *)(str + length) && length < MAX_STRING_SIZE; length += sizeof(uint16_t))
 			sum += *(uint16_t *)(str + length);
-#if SEARCH_SJIS_UNSAFE
+#if DUMP_JIT_ADDR_MAP
 		if (((length > STRING) || (IsDBCSLeadByteEx(932, *str))) && length < MAX_STRING_SIZE - 1)
 #else
 		if (length > STRING && length < MAX_STRING_SIZE - 1)
@@ -142,7 +141,7 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 		{
 			// many duplicate results with same address, offset, and third/fourth character will be found: filter them out
 			uint64_t signature = ((uint64_t)i << 56) | ((uint64_t)(str[2] + str[3]) << 48) | address;
-#if SEARCH_SJIS_UNSAFE
+#if DUMP_JIT_ADDR_MAP
 #else
 			if (signatureCache[signature % CACHE_SIZE] == signature)
 				return;
@@ -165,7 +164,7 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 				else
 				{
 					records[n].em_addr = em_addr;
-					records[n].argidx = i;
+					records[n].offset = i;
 				}
 
 				for (int j = 0; j < length; ++j)
@@ -290,12 +289,12 @@ void SearchForHooks_Return()
 		hp.codepage = sp.codepage;
 		hp.jittype = records[i].jittype;
 		hp.padding = records[i].padding;
+		hp.offset = records[i].offset;
 
 		if (records[i].jittype == JITTYPE::PC)
 		{
 			if (!records[i].address)
 				continue;
-			hp.offset = records[i].offset;
 			hp.type = CODEC_UTF16 | USING_STRING;
 			hp.address = records[i].address;
 		}
@@ -305,7 +304,6 @@ void SearchForHooks_Return()
 				continue;
 			hp.emu_addr = records[i].em_addr;
 			hp.type = CODEC_UTF16 | USING_STRING | BREAK_POINT | NO_CONTEXT;
-			hp.argidx = records[i].argidx;
 		}
 		NotifyHookFound(hp, (wchar_t *)records[i].text);
 		if (++results % 100'000 == 0)
@@ -479,7 +477,7 @@ void SearchForHooks(SearchParam spUser)
 			}
 			ConsoleOutput("%p %p",minemaddr,maxemaddr);
 			ConsoleOutput("%p %p",sp.minAddress,sp.maxAddress);
-#if SEARCH_SJIS_UNSAFE
+#if DUMP_JIT_ADDR_MAP
 				auto f=fopen("1.txt","a");
 				for(auto addr:jitaddr2emuaddr){
 					fprintf(f,"%llx => %llx\n", addr.second.second ,addr.first);

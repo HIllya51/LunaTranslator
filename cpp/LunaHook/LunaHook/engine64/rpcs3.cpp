@@ -156,7 +156,7 @@ namespace
     struct emfuncinfo
     {
         uint64_t type;
-        int argidx;
+        int offset;
         int padding;
         decltype(HookParam::text_fun) hookfunc;
         decltype(HookParam::filter_fun) filterfun;
@@ -192,7 +192,7 @@ namespace
         hpinternal.type = USING_STRING | NO_CONTEXT | BREAK_POINT | op.type;
         hpinternal.text_fun = op.hookfunc;
         hpinternal.filter_fun = op.filterfun;
-        hpinternal.argidx = op.argidx;
+        hpinternal.offset = op.offset;
         hpinternal.padding = op.padding;
         hpinternal.jittype = JITTYPE::RPCS3;
         NewHook(hpinternal, op._id);

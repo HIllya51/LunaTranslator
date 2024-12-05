@@ -349,7 +349,7 @@ namespace ppsspp
         hpinternal.type = USING_STRING | NO_CONTEXT | BREAK_POINT | op.type;
         hpinternal.text_fun = op.hookfunc;
         hpinternal.filter_fun = op.filterfun;
-        hpinternal.argidx = op.argidx;
+        hpinternal.offset = op.offset;
         hpinternal.padding = op.padding;
         hpinternal.jittype = JITTYPE::PPSSPP;
         NewHook(hpinternal, op._id);

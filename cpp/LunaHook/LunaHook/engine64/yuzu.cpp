@@ -46,7 +46,7 @@ namespace
     struct emfuncinfo
     {
         uint64_t type;
-        int argidx;
+        int offset;
         int padding;
         decltype(HookParam::text_fun) hookfunc;
         decltype(HookParam::filter_fun) filterfun;
@@ -204,7 +204,7 @@ bool yuzu::attach_function()
                 hpinternal.type |= USING_STRING;
             hpinternal.text_fun = op.hookfunc;
             hpinternal.filter_fun = op.filterfun;
-            hpinternal.argidx = op.argidx;
+            hpinternal.offset = op.offset;
             hpinternal.padding = op.padding;
             hpinternal.jittype = JITTYPE::YUZU;
             NewHook(hpinternal, ull2hex(op._id).c_str());

@@ -123,7 +123,6 @@ struct HookParam
 		ZeroMemory(this, sizeof(HookParam));
 	}
 	uint64_t emu_addr;
-	int argidx;
 	JITTYPE jittype;
 	char unityfunctioninfo[1024];
 };

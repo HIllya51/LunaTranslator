@@ -71,7 +71,7 @@ namespace monocommon
         const char *klassName;
         const char *name;
         int argsCount;
-        int argidx;
+        int offset;
         decltype(HookParam::text_fun) text_fun = nullptr;
         bool Embed = false;
         bool isstring = true;
@@ -93,7 +93,7 @@ namespace monocommon
 
         HookParam hp;
         hp.address = addr;
-        hp.argidx = hook.argidx;
+        hp.offset = hook.offset;
         hp.text_fun = (decltype(hp.text_fun))hook.text_fun;
         if (hook.isstring)
         {

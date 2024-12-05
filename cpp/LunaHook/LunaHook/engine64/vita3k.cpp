@@ -30,7 +30,7 @@ namespace
     struct emfuncinfo
     {
         uint64_t type;
-        int argidx;
+        int offset;
         int padding;
         decltype(HookParam::text_fun) hookfunc;
         decltype(HookParam::filter_fun) filterfun;
@@ -117,10 +117,12 @@ bool vita3k::attach_function()
             HookParam hpinternal;
             hpinternal.address = entrypoint;
             hpinternal.emu_addr = em_address; // 用于生成hcode
-            hpinternal.type = USING_STRING | NO_CONTEXT | BREAK_POINT | op.type;
+            hpinternal.type = NO_CONTEXT | BREAK_POINT | op.type;
+            if (!(op.type & USING_CHAR))
+                hpinternal.type |= USING_STRING;
             hpinternal.text_fun = op.hookfunc;
             hpinternal.filter_fun = op.filterfun;
-            hpinternal.argidx = op.argidx;
+            hpinternal.offset = op.offset;
             hpinternal.padding = op.padding;
             hpinternal.jittype = JITTYPE::VITA3K;
             NewHook(hpinternal, op._id);
@@ -245,6 +247,14 @@ namespace
         s = std::regex_replace(s, std::regex(R"(\\n)"), "");
         buffer->from(s);
     }
+    void PCSG00530(TextBuffer *buffer, HookParam *)
+    {
+        StringFilter(buffer, "#n", 2);
+    }
+    void PCSG00833(TextBuffer *buffer, HookParam *)
+    {
+        StringFilter(buffer, u8"　", strlen(u8"　"));
+    }
     void PCSG00787(TextBuffer *buffer, HookParam *)
     {
         CharFilter(buffer, '\n');
@@ -300,6 +310,29 @@ namespace
         strReplace(ws, L"\x02", L"");
         Trim(ws);
         buffer->from(WideStringToString(ws));
+    }
+    void PCSG01011(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = VITA3K::emu_arg(stack)[7];
+        while (*(char *)(address - 1))
+            address -= 1;
+        buffer->from((char *)address);
+        static std::string last;
+        auto s = buffer->strA();
+        if (s == last)
+        {
+            buffer->clear();
+            last = s;
+        }
+        else
+        {
+            last = s;
+            strReplace(s, "\n", "");
+            auto pos = s.find(u8"×");
+            if (pos != s.npos)
+                s = s.substr(pos + strlen(u8"×"));
+            buffer->from(s);
+        }
     }
     void PCSG00912(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -616,6 +649,15 @@ namespace
             {0x8002BB78, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00787"}}, // zip安装版
             // ニセコイ　ヨメイリ！？
             {0x8189e60c, {CODEC_UTF8, 4, 0, 0, 0, "PCSG00397"}},
+            // DIABOLIK LOVERS DARK FATE
+            {0x8002CF8E, {0, 1, 0, 0, PCSG00530, "PCSG00530"}},
+            // DIABOLIK LOVERS LOST EDEN
+            {0x8007443E, {0, 0, 0, 0, 0, "PCSG00910"}},
+            // NORN9 ACT TUNE
+            {0x8001E288, {CODEC_UTF8, 0, 0, 0, PCSG00833, "PCSG00833"}},
+            // 空蝉の廻
+            {0x82535242, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 1, 0, 0, 0, "PCSG01011"}}, // 后缀有人名，需要额外过滤
+            {0x801AE35A, {CODEC_UTF8, 7, 0, PCSG01011, 0, "PCSG01011"}},
         };
         return 1;
     }();

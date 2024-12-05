@@ -190,20 +190,25 @@ uintptr_t queryrelativeret(HookParam &hp, uintptr_t retaddr)
 	return relative;
 }
 
-uintptr_t jitgetaddr(hook_stack *stack, HookParam *hp)
+uintptr_t jitgetaddr(hook_stack *stack, HookParam *hp, bool offset)
 {
+	int off;
+	if (offset)
+		off = hp->offset;
+	else
+		off = hp->split;
 	switch (hp->jittype)
 	{
 #ifdef _WIN64
 	case JITTYPE::RPCS3:
-		return RPCS3::emu_arg(stack)[hp->argidx];
+		return RPCS3::emu_arg(stack)[off];
 	case JITTYPE::VITA3K:
-		return VITA3K::emu_arg(stack)[hp->argidx];
+		return VITA3K::emu_arg(stack)[off];
 	case JITTYPE::YUZU:
-		return YUZU::emu_arg(stack, hp->emu_addr)[hp->argidx];
+		return YUZU::emu_arg(stack, hp->emu_addr)[off];
 #endif
 	case JITTYPE::PPSSPP:
-		return PPSSPP::emu_arg(stack)[hp->argidx];
+		return PPSSPP::emu_arg(stack)[off];
 	default:
 		return 0;
 	}
@@ -280,12 +285,12 @@ void TextHook::Send(uintptr_t lpDataBase)
 
 		if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
 		{
-			lpDataIn = jitgetaddr(stack, &hp);
+			lpDataIn = jitgetaddr(stack, &hp, true);
 			plpdatain = (uintptr_t)&lpDataIn;
 		}
 		else if (hp.jittype == JITTYPE::UNITY)
 		{
-			plpdatain = (uintptr_t)argidx(stack, hp.argidx);
+			plpdatain = (uintptr_t)argidx(stack, hp.offset);
 			lpDataIn = *(uintptr_t *)plpdatain;
 		}
 
@@ -304,7 +309,10 @@ void TextHook::Send(uintptr_t lpDataBase)
 				lpSplit = FIXED_SPLIT_VALUE; // fuse all threads, and prevent floating
 			else if (hp.type & USING_SPLIT)
 			{
-				lpSplit = *(uintptr_t *)(lpDataBase + hp.split);
+				if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
+					lpSplit = jitgetaddr(stack, &hp, false);
+				else
+					lpSplit = *(uintptr_t *)(lpDataBase + hp.split);
 				if (hp.type & SPLIT_INDIRECT)
 					lpSplit = *(uintptr_t *)(lpSplit + hp.split_index);
 			}
@@ -418,7 +426,7 @@ void TextHook::Send(uintptr_t lpDataBase)
 				else if (hp.type & SPECIAL_JIT_STRING)
 				{
 					if (hp.jittype == JITTYPE::UNITY)
-						unity_ui_string_embed_fun(argidx(stack, hp.argidx), buff);
+						unity_ui_string_embed_fun(argidx(stack, hp.offset), buff);
 				}
 			}
 		}
