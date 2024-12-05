@@ -29,10 +29,9 @@ mylinks = {
     "ocr_models": {
         "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
     },
-    "mecab_xp.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab_xp.zip",
-    "mecab.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/mecab.zip",
-    "magpie.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/magpie.zip",
-    "themes.zip": "https://github.com/HIllya51/RESOURCES/releases/download/common/themes.zip",
+    "mecab_xp.zip": "https://github.com/HIllya51/mecab/releases/download/common/mecab_xp.zip",
+    "mecab.zip": "https://github.com/HIllya51/mecab/releases/download/common/mecab.zip",
+    "magpie.zip": "https://github.com/HIllya51/Magpie_CLI/releases/download/common/magpie.zip",
 }
 
 
