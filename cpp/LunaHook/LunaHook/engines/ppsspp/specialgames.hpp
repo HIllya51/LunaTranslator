@@ -217,6 +217,51 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"(@\d+r)"), "");
 		buffer->from(s);
 	}
+	std::wstring ULJM06143Code(std::string s)
+	{
+		std::wstring ws;
+		wchar_t hex[100];
+		for (int i = 0; i < s.size() - 1; i += 2)
+		{
+			// 这个游戏用了一个不知道什么规律的傻逼编码，规律很乱，就这样吧，懒得弄了。
+			auto _this = _byteswap_ushort(*(wchar_t *)(s.c_str() + i));
+			swprintf(hex, L"%04x", _this);
+			if (0) //_this < 0x8200)
+			{
+				auto h = _byteswap_ushort(_this + 0x11e);
+				ws += StringToWideString(std::string((char *)&h, 2), 932).value_or(std::wstring(L"[") + hex + L"]");
+			}
+			else
+			{
+				ws += std::wstring(L"[") + hex + L"]";
+			}
+		}
+		return ws;
+	}
+	void ULJM06143_1(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	{
+		auto cs = (char *)PPSSPP::emu_arg(stack)[2];
+
+		while (*(WORD *)(cs - 1))
+			cs -= 1;
+		cs += 1;
+		std::wstring ws;
+		while (*(char *)cs)
+		{
+			std::string s = cs;
+			if (!IsDBCSLeadByteEx(932, s[0]))
+				ws += StringToWideString(cs, 932).value_or(L"") + L" ";
+			else
+				ws += ULJM06143Code(s);
+			cs += s.size() + 1;
+		}
+		buffer->from(ws);
+	}
+	void ULJM06143(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	{
+		std::string s = (char *)PPSSPP::emu_arg(stack)[1];
+		buffer->from(ULJM06143Code(s));
+	}
 	void ULJM05943F(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -955,6 +1000,9 @@ namespace ppsspp
 		// SNOW BOUND LAND
 		{0x88D6180, {0, 0, 0, 0, ULJM05943F, "ULJM06328"}}, // t
 		{0x888AD68, {0, 0, 0, 0, ULJM05943F, "ULJM06328"}}, // n+t
+		// Confidential Money ～300日で3000万ドル稼ぐ方法～
+		{0x881BD00, {CODEC_UTF16, 1, 0, ULJM06143, 0, "ULJM06143"}},
+		{0x882555C, {CODEC_UTF16, 2, 0, ULJM06143_1, 0, "ULJM06143"}},
 
 	};
 
