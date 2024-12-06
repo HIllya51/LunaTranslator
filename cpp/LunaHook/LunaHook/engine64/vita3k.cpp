@@ -251,6 +251,11 @@ namespace
     {
         StringFilter(buffer, "#n", 2);
     }
+    void PCSG00826(TextBuffer *buffer, HookParam *)
+    {
+        StringFilter(buffer, "#n", 2);
+        StringFilter(buffer, "\x81\x40", 2);
+    }
     void PCSG00833(TextBuffer *buffer, HookParam *)
     {
         StringFilter(buffer, u8"　", strlen(u8"　"));
@@ -278,6 +283,16 @@ namespace
         //.replace(/㍉/g, '!!')
         strReplace(s, "\x87\x60", "");
         strReplace(s, "\x87\x5f", "");
+        buffer->from(s);
+    }
+    void PCSG00472(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        strReplace(s, "\x81\x55", "!?");
+        strReplace(s, "\x81\x54", "!!");
+        strReplace(s, "\x81\x40", "");
+        s = std::regex_replace(s, std::regex("(#n)+"), "");
+        s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
         buffer->from(s);
     }
     void FPCSG00389(TextBuffer *buffer, HookParam *hp)
@@ -651,13 +666,20 @@ namespace
             {0x8189e60c, {CODEC_UTF8, 4, 0, 0, 0, "PCSG00397"}},
             // DIABOLIK LOVERS DARK FATE
             {0x8002CF8E, {0, 1, 0, 0, PCSG00530, "PCSG00530"}},
+            // DIABOLIK LOVERS VANDEAD CARNIVAL
+            {0x8007300E, {0, 5, 0, 0, PCSG00472, "PCSG00472"}},
             // DIABOLIK LOVERS LOST EDEN
             {0x8007443E, {0, 0, 0, 0, 0, "PCSG00910"}},
+            // DIABOLIK LOVERS LUNATIC PARADE
+            {0x800579EE, {0, 0, 0, 0, PCSG00826, "PCSG00826"}},
             // NORN9 ACT TUNE
             {0x8001E288, {CODEC_UTF8, 0, 0, 0, PCSG00833, "PCSG00833"}},
             // 空蝉の廻
             {0x82535242, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 1, 0, 0, 0, "PCSG01011"}}, // 后缀有人名，需要额外过滤
             {0x801AE35A, {CODEC_UTF8, 7, 0, PCSG01011, 0, "PCSG01011"}},
+            // 真紅の焔 真田忍法帳
+            {0x80025064, {CODEC_UTF8, 0, 0, 0, PCSG00833, "PCSG01158"}},
+
         };
         return 1;
     }();
