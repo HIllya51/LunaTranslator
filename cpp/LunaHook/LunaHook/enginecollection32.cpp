@@ -114,7 +114,7 @@
 #include "engine32/Sceplay.h"
 #include "engine32/Onscripter.h"
 #include "engine32/Candy.h"
-#include "engine32/AIL2.h"
+#include "engine32/AIL.h"
 #include "engine32/ApricoT.h"
 #include "engine32/Triangle.h"
 #include "engine32/GASTRO.h"
@@ -253,7 +253,7 @@ std::vector<ENGINE *> check_engines()
         new RRE,
         new Candy,
         new WillowSoft,
-        new AIL2,
+        new AIL,
         new ApricoT,
         new Triangle2,
         new Triangle,
@@ -418,6 +418,5 @@ std::vector<ENGINE *> check_engines()
         new Winters,
         new Aromarie,
         new Moonstone,
-        new T2U,
-    };
+        new T2U};
 }

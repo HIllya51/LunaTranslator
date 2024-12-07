@@ -1,4 +1,4 @@
-#include "AIL2.h"
+#include "AIL.h"
 bool InsertAIL2Hook()
 {
   auto findalign = [](uintptr_t addr1)
@@ -55,9 +55,50 @@ bool InsertAIL2Hook()
 
   return succ;
 }
-bool AIL2::attach_function()
+bool AILold()
 {
-  // アイル
+  // https://vndb.org/v6409
+  //  エルフィーナ～淫夜へと売られた王国で…～
+  // 其实这个同一个函数里面也有 cmp     al, 66h; 'f'这个pattern，不过不太一样。懒得分了就这样吧。
+  BYTE bytes1[] = {
+      /*
+      .text:00431E87                 mov     edx, dword_4AD54C
+  .text:00431E8D                 test    edx, edx
+  .text:00431E8F                 jnz     loc_4326E0      ; jumptable 00431EB0 case 0
+  .text:00431E95                 mov     edx, [esp+3Ch+lpString]
+  .text:00431E99                 mov     dl, [edi+edx]
+  .text:00431E9C                 movsx   esi, dl
+  .text:00431E9F                 cmp     esi, 40h        ; switch 65 cases
+  .text:00431EA2                 ja      def_431EB0      ; jumptable 00431EB0 default case, cases 1-34,38-42,44,46-63
+  .text:00431EA8                 xor     ebx, ebx
+  .text:00431EAA                 mov     bl, ds:byte_43270C[esi]
+  .text:00431EB0                 jmp     ds:jpt_431EB0[ebx*4] ; switch jump
+      */
+      0x8b, 0x54, 0x24, XX,
+      0x8a, 0x14, 0x17,
+      0x0f, 0xbe, 0xf2,
+      0x83, 0xfe, 0x40,
+      0x0f, 0x87, XX4,
+      0x33, 0xdb,
+      0x8a, 0x9e, XX4,
+      0xff, 0x24, 0x9d, XX4};
+  auto addr1 = MemDbg::findBytes(bytes1, sizeof(bytes1), processStartAddress, processStopAddress);
+  if (!addr1)
+    return false;
+  addr1 = MemDbg::findEnclosingAlignedFunction(addr1);
+  if (!addr1)
+    return false;
+  HookParam hp;
+  hp.address = addr1;
+  hp.offset = get_stack(3);
+  hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+  hp.embed_hook_font = F_TextOutA;
 
-  return InsertAIL2Hook();
+  return NewHook(hp, "AIL");
+}
+
+bool AIL::attach_function()
+{
+
+  return InsertAIL2Hook() || AILold();
 }
