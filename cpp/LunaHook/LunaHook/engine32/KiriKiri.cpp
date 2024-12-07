@@ -1252,6 +1252,24 @@ bool InsertKiriKiriZHook3()
 
 namespace
 {
+
+  void KiriKiri4Filter(TextBuffer *buffer, HookParam *)
+  {
+    auto ws = buffer->strW();
+    auto vw = buffer->viewW();
+    if ((!startWith(vw, L"[text]")) && (vw[0] == L'[' && vw[vw.size() - 1] == ']'))
+      return buffer->clear();
+    if (vw[0] == L' ' && vw.size() <= 2)
+      return buffer->clear();
+    if (vw[0] == L'@' || vw[0] == L']')
+      return buffer->clear();
+    if (startWith(vw, L" : ") && endWith(vw, L" : "))
+      return buffer->clear();
+    if (vw == L" line offset ")
+      return buffer->clear();
+    StringFilterBetween(buffer, L"[", 1, L"]", 1);
+  }
+
   bool kagparser()
   {
     auto hm = GetModuleHandle(L"KAGParser.dll");
@@ -1273,19 +1291,7 @@ namespace
     hp.address = addr;
     hp.offset = get_stack(2);
     hp.type = CODEC_UTF16 | USING_STRING;
-    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
-    {
-      auto vw = buffer->viewW();
-      if (vw[0] == L'[' && vw[vw.size() - 1] == ']')
-        return buffer->clear();
-      if (vw[0] == L'@' || vw[0] == L']')
-        return buffer->clear();
-      if (startWith(vw, L" : ") && endWith(vw, L" : "))
-        return buffer->clear();
-      if (vw == L" line offset ")
-        return buffer->clear();
-      StringFilterBetween(buffer, L"[", 1, L"]", 1);
-    };
+    hp.filter_fun = KiriKiri4Filter;
     return NewHook(hp, "KAGParser");
   }
 }
@@ -1759,63 +1765,34 @@ bool InsertKiriKiri3Hook()
   return NewHook(hp, "KiriKiri3");
 }
 
-void KiriKiri4Filter(TextBuffer *buffer, HookParam *)
-{
-  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
-
-  if (text[0] == L'[' || text[0] == L'@' || (buffer->size <= 2 && text[0] == L' '))
-    return buffer->clear();
-
-  if (cpp_wcsnstr(text, L"[", buffer->size / sizeof(wchar_t)))
-  {
-    StringCharReplacer(buffer, L"[r]", 3, L' ');
-    StringFilterBetween(buffer, L"[", 1, L"]\\", 2);
-    // ruby type 1
-    StringFilterBetween(buffer, L"[mruby r=", 9, L"\" text=\"", 8); // [mruby r="ゆきみ" text="由紀美"]
-    // ruby type 2
-    StringFilterBetween(buffer, L"[ruby text=", 11, L"]", 1); // [ruby text="せんがわ" align="e"][ch text="仙川"]
-    StringFilterBetween(buffer, L"[Ruby text", 10, L"]", 1);  // [Ruby text = "Sawano"][ch text="沢野"]
-    StringFilter(buffer, L"[ch text=\"", 10);                 // [ruby text="せんがわ" align="e"][ch text="仙川"]
-    // ruby type 1-2
-    StringFilter(buffer, L"\"]", 2);
-    // end ruby
-    StringFilterBetween(buffer, L"[", 1, L"]", 1);
-  }
-}
-
 bool InsertKiriKiri4Hook()
 {
   /*
-   * Sample games:
-   * https://vndb.org/r114393
-   * https://vndb.org/v2916
-   * https://vndb.org/r117083
-   * https://vndb.org/v3851
-   * https://vndb.org/v7804
-   * https://vndb.org/v11123
-   * https://vndb.org/v18650
-   * https://vndb.org/v38034
-   */
+      v31 = 164;
+      sub_4016D4(a1 + 112, &word_6E6DD8 + 425);
+      ++v32;
+      sub_4016D4(&v34, *(wchar_t **)(a1 + 124));
+  */
   const BYTE bytes[] = {
-      0xE8, XX4,        // call Kansen1._GetExceptDLLinfo+67B      <-- hook here
-      0x8D, 0x45, 0xA4, // lea eax,[ebp-5C]
-      0xFF, 0x45, 0x9C, // inc [ebp-64]
-      0xE8, XX4         // call Kansen1.exe+1D561C
-  };
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+      0x66, 0xc7, 0x45, XX, 0xa4, 0x00,
+      XX, XX, XX,
+      XX, XX, XX4,
+      XX, XX, XX,
+      0xe8, XX4,
+      XX, XX, XX,
+      XX, XX, XX,
+      XX, XX, XX,
+      0x8B, 0x53, XX,
+      0xe8, XX4};
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
-  {
-    ConsoleOutput("KiriKiri4: pattern not found");
     return false;
-  }
 
   HookParam hp = {};
-  hp.address = addr;
+  hp.address = addr + sizeof(bytes) - 5;
   hp.offset = get_reg(regs::edx);
   hp.type = NO_CONTEXT | CODEC_UTF16 | USING_STRING;
   hp.filter_fun = KiriKiri4Filter;
-  ConsoleOutput(" INSERT KiriKiri4");
   return NewHook(hp, "KiriKiri4");
 }
 bool KiriKiri::attach_function()
