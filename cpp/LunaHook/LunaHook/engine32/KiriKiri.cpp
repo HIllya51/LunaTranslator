@@ -1278,7 +1278,7 @@ namespace
       auto vw = buffer->viewW();
       if (vw[0] == L'[' && vw[vw.size() - 1] == ']')
         return buffer->clear();
-      if (vw[0] == L'@')
+      if (vw[0] == L'@' || vw[0] == L']')
         return buffer->clear();
       if (startWith(vw, L" : ") && endWith(vw, L" : "))
         return buffer->clear();
