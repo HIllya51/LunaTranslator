@@ -700,6 +700,11 @@ namespace ppsspp
 		auto s = buffer->strA();
 		buffer->from(s.substr(1, s.size() - 2));
 	}
+	void ULJM06032(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "@n", 2);
+		StringFilter(buffer, "\x81\x90", 2); // ＄
+	}
 	void ULJM05456(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::string last;
@@ -1003,6 +1008,8 @@ namespace ppsspp
 		// Confidential Money ～300日で3000万ドル稼ぐ方法～
 		{0x881BD00, {CODEC_UTF16, 1, 0, ULJM06143, 0, "ULJM06143"}},
 		{0x882555C, {CODEC_UTF16, 2, 0, ULJM06143_1, 0, "ULJM06143"}},
+		// アルカナ・ファミリア 幽霊船の魔術師
+		{0x881A214, {0, 0, 0, 0, ULJM06032, "ULJM06032"}},
 
 	};
 

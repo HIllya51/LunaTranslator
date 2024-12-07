@@ -1036,14 +1036,28 @@ namespace
             buffer->size -= 1;
         }
     }
+    void F0100FD4016528000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (endWith(last, s))
+        {
+            buffer->clear();
+            last = s;
+            return;
+        }
+        last = s;
+        s = std::regex_replace(s, std::regex(R"(@v\d+)"), "");
+        s = std::regex_replace(s, std::regex(R"(@t\d+)"), "");
+        s = std::regex_replace(s, std::regex(R"(@\w+)"), "");
+        buffer->from(s);
+    }
     void F01001BB01E8E2000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
         buffer->from(s);
     }
-
     void F0100B0C016164000(TextBuffer *buffer, HookParam *hp)
     {
 
@@ -1090,7 +1104,8 @@ namespace
     void F0100CB700D438000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(<RUBY><RB>(.*?)<\/RB><RT>(.*?)<\/RT><\/RUBY>)"), "$1");
+        s = std::regex_replace(s, std::regex(R"(<RUBY><RB>(.*?)<\/RB><RT>(.*?)<\/RT><\/RUBY>)"),
+                               "$1");
         s = std::regex_replace(s, std::regex("<[^>]*>"), "");
         static std::string last;
         if (last == s)
@@ -3553,6 +3568,8 @@ namespace
             {0x80020958, {0, 0, 0, 0, F0100D8B019FC0000<false>, 0x0100D8B019FC0000ull, "1.0.0"}},
             // FANTASIAN Neo Dimension
             {0x81719ea0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F01001BB01E8E2000, 0x01001BB01E8E2000ull, "1.0.0"}},
+            // アイキス3cute
+            {0x804C18C4, {CODEC_UTF8, 1, 0, 0, F0100FD4016528000, 0x0100FD4016528000ull, nullptr}}, // 1.0.0 && 1.0.2
 
         };
         return 1;

@@ -1159,18 +1159,17 @@ bool Krkrtextrenderdll()
   if (GetProcAddress(module, "V2Link") == 0)
     return false;
 
-  bool b1 = [module]()
+  auto [minAddress, maxAddress] = Util::QueryModuleLimits(module);
+  bool b1 = [=]()
   {
-    auto [minAddress, maxAddress] = Util::QueryModuleLimits(module);
     BYTE bytes[] = {
         0x81, 0xEC, 0xFC, 0x00, 0x00, 0x00};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return false;
-    ConsoleOutput("textrender %p", addr);
     HookParam hp;
     hp.address = (DWORD)addr;
     hp.offset = get_stack(2);
@@ -1178,9 +1177,8 @@ bool Krkrtextrenderdll()
 
     return NewHook(hp, "krkr_textrender");
   }();
-  bool b2 = [module]()
+  bool b2 = [=]()
   {
-    auto [minAddress, maxAddress] = Util::QueryModuleLimits(module);
     BYTE bytes[] = {
         0xFF, XX,
         0x88, XX, XX, XX,
@@ -1194,9 +1192,8 @@ bool Krkrtextrenderdll()
         0xB0, 0x01,
         0xC3};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
-    ConsoleOutput("textrender %p", addr);
     HookParam hp;
     hp.address = addr - 0xb;
     hp.offset = get_reg(regs::eax);
@@ -1204,52 +1201,39 @@ bool Krkrtextrenderdll()
     hp.filter_fun = KiriKiriZ_msvcFilter;
     return NewHook(hp, "krkr_textrender");
   }();
-  return b1 || b2;
-}
-void KiriKiriZ3Filter(TextBuffer *buffer, HookParam *)
-{
-  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
-
-  CharFilter(buffer, L'\x000A');
-  if (cpp_wcsnstr(text, L"%", buffer->size / sizeof(wchar_t)))
+  auto b3 = [=]()
   {
-    StringFilterBetween(buffer, L"%", 1, L"%", 1);
-  }
-}
-
-bool InsertKiriKiriZHook3()
-{
-
-  /*
-   * Sample games:
-   * https://vndb.org/r109253
-   */
-  const BYTE bytes[] = {
-      0x66, 0x83, 0x3F, 0x00, // cmp word ptr [edi],00          << hook here
-      0x75, 0x06,             // jne Imouto_no_Seiiki.exe+195C1
-      0x33, 0xDB,             // xor ebx,ebx
-      0x89, 0x1E,             // mov [esi],ebx
-      0xEB, 0x1B              // jmp Imouto_no_Seiiki.exe+195DC
+    auto [minAddress, maxAddress] = Util::QueryModuleLimits(module, 0, PAGE_READONLY);
+    char tjs[] = "tTJSVariant::tTJSVariant(const tjs_char *)";
+    auto addr = MemDbg::findBytes(tjs, sizeof(tjs), minAddress, maxAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findPushAddress(addr, minAddress, maxAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = get_stack(2);
+    hp.type = CODEC_UTF16 | USING_STRING | DATA_INDIRECT;
+    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      auto text = *(wchar_t **)stack->stack[2];
+      if (hp->user_value == stack->retaddr)
+        return;
+      if (text[0] == L'%')
+      {
+        hp->user_value = stack->retaddr;
+        return;
+      }
+      buffer->from(text);
+    };
+    return NewHook(hp, "krkr_textrender");
   };
-
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)
-  {
-    ConsoleOutput("KiriKiriZ3: pattern not found");
-    return false;
-  }
-
-  HookParam hp;
-  hp.address = addr;
-  hp.offset = get_reg(regs::edi);
-  hp.split = get_reg(regs::edx);
-  hp.type = NO_CONTEXT | CODEC_UTF16 | USING_STRING | USING_SPLIT;
-  hp.filter_fun = KiriKiriZ3Filter;
-  ConsoleOutput("INSERT KiriKiriZ3");
-  return NewHook(hp, "KiriKiriZ3");
+  return b1 || b2 || b3();
 }
-
 namespace
 {
 
@@ -1298,8 +1282,7 @@ namespace
 bool InsertKiriKiriZHook()
 {
   auto ok = Krkrtextrenderdll();
-  ok = InsertKiriKiriZHook3() || ok;
-  ok = kagparser() || ok;
+  ok = kagparser();
   return InsertKiriKiriZHook2() || InsertKiriKiriZHook1() || ok;
 }
 namespace

@@ -543,7 +543,15 @@ namespace
             return buffer->clear();
         last = s;
     }
-
+    void F010052300F612000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(#r(.*?)\|(.*?)#)"), "$1");
+        s = std::regex_replace(s, std::regex(R"(@r(.*?)@\d)"), "$1");
+        strReplace(s, R"(\c)", "");
+        strReplace(s, R"(\n)", "");
+        buffer->from(s);
+    }
     auto _ = []()
     {
         emfunctionhooks = {
@@ -679,6 +687,10 @@ namespace
             {0x801AE35A, {CODEC_UTF8, 7, 0, PCSG01011, 0, "PCSG01011"}},
             // 真紅の焔 真田忍法帳
             {0x80025064, {CODEC_UTF8, 0, 0, 0, PCSG00833, "PCSG01158"}},
+            // 月影の鎖　～狂爛モラトリアム～
+            {0x8007AA94, {0, 1, 0, 0, F010052300F612000, "PCSG00991"}},
+            // 月影の鎖　～錯乱パラノイア～
+            {0x8000E8E0, {0, 0, 0, 0, F010052300F612000, "PCSG00794"}},
 
         };
         return 1;
