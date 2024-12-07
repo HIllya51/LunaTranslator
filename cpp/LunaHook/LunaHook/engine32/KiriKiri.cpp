@@ -1696,75 +1696,6 @@ namespace
     return NewHook(hp, "Krkr2wcs");
   }
 }
-void KiriKiri3Filter(TextBuffer *buffer, HookParam *)
-{
-  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
-  static std::wstring prevText;
-
-  text[buffer->size / sizeof(wchar_t)] = L'\0'; // clean text
-  if (!prevText.compare(text))
-    return buffer->clear();
-  prevText = text;
-
-  if (cpp_wcsnstr(text, L"[", buffer->size / sizeof(wchar_t)))
-  {
-    StringCharReplacer(buffer, L"[r]", 3, L' ');
-    StringFilterBetween(buffer, L"[", 1, L"]\\", 2);
-    // ruby type 1
-    StringFilterBetween(buffer, L"[mruby r=", 9, L"\" text=\"", 8); // [mruby r="ゆきみ" text="由紀美"]
-    // ruby type 2
-    StringFilterBetween(buffer, L"[ruby text=", 11, L"]", 1); // [ruby text="せんがわ" align="e"][ch text="仙川"]
-    StringFilter(buffer, L"[ch text=\"", 10);                 // [ruby text="せんがわ" align="e"][ch text="仙川"]
-    // ruby type 1-2
-    StringFilter(buffer, L"\"]", 2);
-    // end ruby
-    StringFilter(buffer, L"[heart]", 7);
-  }
-
-  StringCharReplacer(buffer, L"\uff0f", 1, L'\n');
-  if (cpp_wcsnstr(text, L"[", buffer->size / sizeof(wchar_t))) // detect garbage sentence. [ruby text=%r][ch text=%text][macropop]
-    return buffer->clear();
-}
-bool InsertKiriKiri3Hook()
-{
-
-  /*
-   * Sample games:
-   * https://vndb.org/v16190
-   * https://vndb.org/v43048
-   * https://vndb.org/v46112
-   * https://vndb.org/v20491
-   * https://vndb.org/v28695
-   * https://vndb.org/v5549
-   * https://vndb.org/v28513
-   * https://vndb.org/v46499
-   */
-  const BYTE bytes[] = {
-      0x75, 0x09,      // jne GAME.EXE+1D5B37
-      0x8B, 0x85, XX4, // mov eax,[ebp-00000254]
-      0xFF, 0x40, 0x78 // inc [eax+78]
-  };
-
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)
-  {
-    ConsoleOutput("KiriKiri3: pattern not found");
-    return false;
-  }
-
-  HookParam hp;
-  hp.address = addr;
-  hp.offset = get_reg(regs::ecx);
-  hp.index = 0;
-  hp.split = get_reg(regs::eax);
-  hp.split_index = 0;
-  hp.type = CODEC_UTF16 | USING_STRING | USING_SPLIT;
-  hp.filter_fun = KiriKiri3Filter;
-  ConsoleOutput("INSERT KiriKiri3");
-  return NewHook(hp, "KiriKiri3");
-}
-
 bool InsertKiriKiri4Hook()
 {
   /*
@@ -1811,5 +1742,5 @@ bool KiriKiri::attach_function()
   bool b1 = attachkr2(processStartAddress, processStopAddress);
   bool _3 = wcslen_wcscpy();
   auto _ = InsertKiriKiriHook() || InsertKiriKiriZHook() || b1 || _3;
-  return (InsertKiriKiri4Hook() | InsertKiriKiri3Hook()) || _;
+  return InsertKiriKiri4Hook() || _;
 }
