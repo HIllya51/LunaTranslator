@@ -182,13 +182,16 @@ namespace
       hp.address = addr + 6;
       hp.type = USING_STRING | NO_CONTEXT;
       hp.offset = get_reg(regs::eax);
-      hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         auto text = reinterpret_cast<LPSTR>(buffer->buff);
         if (all_ascii(text, buffer->size))
           return buffer->clear();
-
         std::string str = buffer->strA();
+        if (WideStringToString(StringToWideString(str)) == str)
+          hp->type |= CODEC_UTF8;
+        else
+          hp->type &= ~CODEC_UTF8;
         std::string result1 = std::regex_replace(str, std::regex("\\{(.*?)/(.*?)\\}"), "$1");
         buffer->from(result1);
       };
