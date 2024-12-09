@@ -259,7 +259,7 @@ namespace hookmages
     template <int filter>
     void SpecialHookMAGES(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto edx = (uintptr_t)context->base + offset; // regof(edx, esp_base);
+        auto edx = (uintptr_t)context->base[offset]; // regof(edx, esp_base);
 
         auto s = mages::readString(edx, gametype);
 
