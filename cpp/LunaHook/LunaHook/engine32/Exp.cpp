@@ -156,7 +156,7 @@
  *  For long sentences, it first render the first line, then the second line, and so on.
  *  So, the second line is a subtext of the entire dialog.
  */
-static void SpecialHookExp(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookExp(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   static DWORD lasttext;
   // 00258020   55               push ebp  ; jichi: hook here
@@ -167,8 +167,8 @@ static void SpecialHookExp(hook_stack *stack, HookParam *hp, TextBuffer *buffer,
   // 00258031   837d 10 00       cmp dword ptr ss:[ebp+0x10],0x0 ; jichi: compare 0 with arg3, which is size+1
   // 00258035   0f84 ce000000    je .00258109
   // 0025803b   8b10             mov edx,dword ptr ds:[eax] ; move text address to edx
-  DWORD arg1 = stack->stack[1], // mov eax,dword ptr ss:[ebp+0x8]
-        arg3 = stack->stack[3]; // size - 1
+  DWORD arg1 = context->stack[1], // mov eax,dword ptr ss:[ebp+0x8]
+        arg3 = context->stack[3]; // size - 1
   if (arg1 && arg3)
     if (DWORD text = *(DWORD *)arg1)
       if (!(text > lasttext && text < lasttext + VNR_TEXT_CAPACITY)) { // text is not a subtext of lastText
@@ -178,7 +178,7 @@ static void SpecialHookExp(hook_stack *stack, HookParam *hp, TextBuffer *buffer,
         buffer->from((char*)text);
         // Registers are not used as split as all of them are floating at runtime
         //*split = argof(4, esp_base); // arg4, always -8, this will merge all threads and result in repetition
-        *split = stack->stack[7]; // reduce repetition, but still have sub-text repeat
+        *split = context->stack[7]; // reduce repetition, but still have sub-text repeat
       }
 }
 bool InsertExpHook()

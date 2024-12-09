@@ -110,7 +110,7 @@ bool BGIattach_function2()
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_NEW;
   hp.embed_hook_font = F_TextOutW | F_GetTextExtentPoint32W;
   hp.filter_fun = BGI7Filter;
-  hp.offset = get_reg(regs::rax);
+  hp.offset = regoffset(rax);
   return NewHook(hp, "BGI");
 }
 bool BGI::attach_function()

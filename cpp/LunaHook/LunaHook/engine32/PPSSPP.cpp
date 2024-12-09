@@ -39,9 +39,9 @@ LPCSTR _bandailtrim(LPCSTR p)
 
 
 
-static void SpecialPSPHookBandai(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookBandai(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
 
   if (*text) {
@@ -52,7 +52,7 @@ static void SpecialPSPHookBandai(hook_stack* stack,  HookParam *hp, uintptr_t *d
 
     // Issue: The split value will create lots of threads for Shining Hearts
     //*split = regof(ecx, esp_base); // works for Shool Rumble, but mix character name for Shining Hearts
-    *split = stack->edi; // works for Shining Hearts to split character name
+    *split = context->edi; // works for Shining Hearts to split character name
   }
 }
 
@@ -86,7 +86,7 @@ bool InsertBandaiPSPHook()
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT;
-    //hp.offset=get_reg(regs::eax);
+    //hp.offset=regoffset(eax);
     hp.text_fun = SpecialPSPHookBandai;
     ConsoleOutput("BANDAI PSP: INSERT");
     succ|=NewHook(hp, "BANDAI PSP");
@@ -119,13 +119,13 @@ bool InsertBandaiPSPHook()
  *  006db4dc   c3               retn
  *  006db4dd   cc               int3
  */
-static void SpecialPPSSPPHookOtomate(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPPSSPPHookOtomate(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   // 006db4b7   8b42 10          mov eax,dword ptr ds:[edx+0x10] ; jichi: hook here
   // 006db4ba   25 ffffff3f      and eax,0x3fffffff
   // 006db4bf   0305 94411301    add eax,dword ptr ds:[0x1134194]; jichi: ds offset
   // 006db4c5   8d70 01          lea esi,dword ptr ds:[eax+0x1]
-  DWORD edx = stack->edx;
+  DWORD edx = context->edx;
   DWORD eax = *(DWORD *)(edx + 0x10);
   eax &= 0x3fffffff;
   eax += *(DWORD *)hp->user_value;
@@ -137,7 +137,7 @@ static void SpecialPPSSPPHookOtomate(hook_stack* stack,  HookParam *hp, uintptr_
     *data = (DWORD)text;
     *len = _bandaistrlen(text);
 
-    *split = stack->ecx; // the same as Otomate PSP hook
+    *split = context->ecx; // the same as Otomate PSP hook
     //DWORD ecx = regof(ecx, esp_base); // the same as Otomate PSP hook
     //*split = ecx ? ecx : (FIXED_SPLIT_VALUE << 2);
     //*split = ecx & 0xffffff00; // skip cl which is used
@@ -187,9 +187,9 @@ bool InsertOtomatePPSSPPHook()
 /** jichi 7/12/2014 PPSSPP
  *  Tested with PPSSPP 0.9.8.
  */
-void SpecialPSPHook(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+void SpecialPSPHook(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD offset = *(DWORD *)(stack->base + hp->offset);
+  DWORD offset = *(DWORD *)(context->base + hp->offset);
   LPCSTR text = LPCSTR(offset + hp->user_value);
   static LPCSTR lasttext;
   if (*text) {
@@ -198,14 +198,14 @@ void SpecialPSPHook(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_
     if (hp->length_offset == 1)
       *len = 1; // only read 1 byte
     else if (hp->length_offset)
-      *len = *(DWORD *)(stack->base + hp->length_offset);
+      *len = *(DWORD *)(context->base + hp->length_offset);
     else
       *len = ::strlen(text); // should only be applied to hp->type|USING_STRING
     if (hp->type & USING_SPLIT) {
       if (hp->type & FIXING_SPLIT)
         *split = FIXED_SPLIT_VALUE;
       else
-        *split = *(DWORD *)(stack->base + hp->split);
+        *split = *(DWORD *)(context->base + hp->split);
     }
   }
 }
@@ -283,8 +283,8 @@ bool InsertImageepoch2PSPHook()
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT; // UTF-8, though
-    hp.offset=get_reg(regs::eax);
-    hp.split = get_reg(regs::ecx);
+    hp.offset=regoffset(eax);
+    hp.split = regoffset(ecx);
     hp.text_fun = SpecialPSPHook;
     ConsoleOutput("Imageepoch2 PSP: INSERT");
     succ|=NewHook(hp, "Imageepoch2 PSP");
@@ -464,8 +464,8 @@ bool InsertBandaiNamePSPHook()
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT;
-    hp.offset=get_reg(regs::eax);
-    hp.split = get_reg(regs::ebx);
+    hp.offset=regoffset(eax);
+    hp.split = regoffset(ebx);
     hp.text_fun = SpecialPSPHook;
     ConsoleOutput("BANDAI Name PSP: INSERT");
     succ|=NewHook(hp, "BANDAI Name PSP");
@@ -525,13 +525,13 @@ bool InsertBandaiNamePSPHook()
  */
 // TODO: is reverse_strlen a better choice?
 // Read text from esi
-static void SpecialPSPHookOtomate(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookOtomate(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   //static uniquemap uniq;
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value - 2); // -2 to read 1 word more from previous location
   if (*text) {
-    *split = stack->ecx; // this would cause lots of texts, but it works for all games
+    *split = context->ecx; // this would cause lots of texts, but it works for all games
     //*split = regof(ecx, esp_base) & 0xff00; // only use higher bits
     *data = (DWORD)text;
     size_t sz = ::strlen(text);
@@ -643,9 +643,9 @@ bool InsertOtomatePSPHook()
  *  134722e3   cc               int3
  */
 // Read text from esi
-static void SpecialPSPHookIntense(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookIntense(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   DWORD text = eax + hp->user_value;
   if (BYTE c = *(BYTE *)text) { // unsigned char
     *data = text;
@@ -785,14 +785,14 @@ bool InsertIntensePSPHook()
 static inline bool _broccoligarbage_ch(char c) { return c == '^'; }
 
 // Read text from dl
-static void SpecialPSPHookBroccoli(hook_stack* stack,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookBroccoli(hook_context *context,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD text = stack->edx; // edx address
+  DWORD text = context->edx; // edx address
   char c = *(LPCSTR)text;
   if (c && !_broccoligarbage_ch(c)) {
     *data = text;
     *len = 1;
-    *split = stack->ecx;
+    *split = context->ecx;
   }
 }
 
@@ -910,15 +910,15 @@ bool InsertBroccoliPSPHook()
  */
 // Only split text when edi is eax
 // The value of edi is either eax or 0
-static void SpecialPSPHookFelistella(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookFelistella(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   if (text) {
     *len = ::strlen(text); // utf8
     *data = (DWORD)text;
 
-    DWORD edi = stack->edi;
+    DWORD edi = context->edi;
     *split = FIXED_SPLIT_VALUE * (edi == eax ? 4 : 5);
   }
 }
@@ -962,7 +962,7 @@ bool InsertFelistellaPSPHook()
     hp.type = USING_STRING|CODEC_UTF8|USING_SPLIT|NO_CONTEXT; // Fix the split value to merge all threads
     //hp.text_fun = SpecialPSPHook;
     hp.text_fun = SpecialPSPHookFelistella;
-    hp.offset=get_reg(regs::eax);
+    hp.offset=regoffset(eax);
     ConsoleOutput("FELISTELLA PSP: INSERT");
     succ|=NewHook(hp, "FELISTELLA PSP");
   }
@@ -1094,15 +1094,15 @@ size_t _rejetstrlen(LPCSTR text)
 
 } // unnamed namespace
 
-static void SpecialPSPHookAlchemist(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookAlchemist(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   if (*text && !_alchemistgarbage(text)) {
     text = _rejetltrim(text);
     *data = (DWORD)text;
     *len = _rejetstrlen(text);
-    *split = stack->ecx;
+    *split = context->ecx;
   }
 }
 
@@ -1246,12 +1246,12 @@ bool InsertAlchemistPSPHook()
  */
 // Read text from looped address word by word
 // Use reverse search to avoid looping issue assume the text is at fixed address.
-static void SpecialPSPHookKonami(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookKonami(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   //static LPCSTR lasttext; // this value should be the same for the same game
   static size_t lastsize;
 
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR cur = LPCSTR(eax + hp->user_value);
   if (!*cur)
     return;
@@ -1271,7 +1271,7 @@ static void SpecialPSPHookKonami(hook_stack* stack,  HookParam *hp, uintptr_t *d
   *len = lastsize = size;
   *data = (DWORD)text;
 
-  *split = stack->ebx; // ecx changes for each character, ebx is an address, edx is stable, but very large
+  *split = context->ebx; // ecx changes for each character, ebx is an address, edx is stable, but very large
 }
 bool InsertKonamiPSPHook()
 {
@@ -1472,15 +1472,15 @@ size_t _5pbstrlen(LPCSTR text)
 
 } // unnamed namespace
 
-static void SpecialPSPHook5pb(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHook5pb(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   if (*text) {
     text = _5pbltrim(text);
     *data = (DWORD)text;
     *len = _5pbstrlen(text);
-    *split = stack->ecx;
+    *split = context->ecx;
     //*split = FIXED_SPLIT_VALUE; // there is only one thread, no split used
   }
 }
@@ -1644,9 +1644,9 @@ bool Insert5pbPSPHook()
  *  10873a5a   cc               int3
  *  10873a5b   cc               int3
  */
-static void SpecialPSPHookKid(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookKid(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   static LPCSTR lasttext; // Prevent reading the same address multiple times
   if (text != lasttext && *text) {
@@ -1654,7 +1654,7 @@ static void SpecialPSPHookKid(hook_stack* stack,  HookParam *hp, uintptr_t *data
     text = _5pbltrim(text);
     *data = (DWORD)text;
     *len = _5pbstrlen(text);
-    *split = stack->ecx;
+    *split = context->ecx;
   }
 }
 
@@ -1692,8 +1692,8 @@ bool InsertKidPSPHook()
     //hp.address = addr + addr_offset;
     //hp.user_value = *(DWORD *)(hp.address + memory_offset);
     //hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT; // Fix the split value to merge all threads
-    //hp.offset=get_reg(regs::eax);
-    //hp.split = get_reg(regs::ecx);
+    //hp.offset=regoffset(eax);
+    //hp.split = regoffset(ecx);
     //hp.text_fun = SpecialPSPHook;
 
     ConsoleOutput("KID PSP: INSERT");
@@ -1755,16 +1755,16 @@ bool InsertKidPSPHook()
  *  1346d3ed   f0:90            lock nop                                 ; lock prefix is not allowed
  *  1346d3ef   cc               int3
  */
-static void SpecialPSPHookImageepoch(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookImageepoch(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   // 7/25/2014: I tried using uniquemap to eliminate duplication, which does not work
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   DWORD text = eax + hp->user_value;
   static DWORD lasttext; // Prevent reading the same address multiple times
   if (text != lasttext && *(LPCSTR)text) {
     *data = lasttext = text;
     *len = ::strlen((LPCSTR)text); // UTF-8 is null-terminated
-    *split = stack->ecx; // use ecx = "this" to split?
+    *split = context->ecx; // use ecx = "this" to split?
   }
 }
 
@@ -1800,8 +1800,8 @@ bool InsertImageepochPSPHook()
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT; // UTF-8, though
-    hp.offset=get_reg(regs::eax);
-    hp.split = get_reg(regs::ecx);
+    hp.offset=regoffset(eax);
+    hp.split = regoffset(ecx);
     //hp.text_fun = SpecialPSPHook;
     hp.text_fun = SpecialPSPHookImageepoch; // since this function is common, use its own static lasttext for HPF_IgnoreSameAddress
     ConsoleOutput("Imageepoch PSP: INSERT");
@@ -1861,14 +1861,14 @@ bool InsertImageepochPSPHook()
  *  13400f8f   90               nop
  */
 
-static void SpecialPSPHookAlchemist2(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookAlchemist2(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   if (*text && !_alchemistgarbage(text)) {
     *data = (DWORD)text;
     *len = ::strlen(text);
-    *split = stack->ecx;
+    *split = context->ecx;
   }
 }
 
@@ -1984,12 +1984,12 @@ bool InsertAlchemist2PSPHook()
  *  0ed8cf8f   90               nop
  */
 
-static void SpecialPSPHookCyberfront(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookCyberfront(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD splitvalue = stack->edi;
+  DWORD splitvalue = context->edi;
   if (splitvalue < 0x0fff)
     return;
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   if (*text) {
     *data = (DWORD)text;
@@ -2031,7 +2031,7 @@ bool InsertCyberfrontPSPHook()
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT;
-    //hp.offset=get_reg(regs::eax);
+    //hp.offset=regoffset(eax);
     hp.text_fun = SpecialPSPHookCyberfront;
     ConsoleOutput("CYBERFRONT PSP: INSERT");
     succ|=NewHook(hp, "CYBERFRONT PSP");
@@ -2504,7 +2504,7 @@ bool InsertCyberfrontPSPHook()
  *  138d151e   cc               int3
  *  138d151f   cc               int3
  */
-//static void SpecialPSPHookYeti(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+//static void SpecialPSPHookYeti(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 //{
 //  //enum { base = 0x7400000 };
 //  DWORD eax = regof(eax, esp_base);
@@ -2559,7 +2559,7 @@ bool InsertYetiPSPHook()
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|FIXING_SPLIT|NO_CONTEXT; // Fix the split value to merge all threads
     hp.text_fun = SpecialPSPHook;
-    hp.offset=get_reg(regs::eax);
+    hp.offset=regoffset(eax);
     ConsoleOutput("Yeti PSP: INSERT");
     succ|=NewHook(hp, "Yeti PSP");
   }
@@ -2749,16 +2749,16 @@ bool InsertYetiPSPHook()
  *  0ed859f2   90               nop
  */
 // TODO: Is reverse_strlen a better choice?
-static void SpecialPSPHookYeti2(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookYeti2(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   if (BYTE c = *(BYTE *)text) {
     *data = (DWORD)text;
     //*len = text[1] ? 2 : 1;
     *len = ::LeadByteTable[c];
 
-    *split = stack->edx;
+    *split = context->edx;
     //DWORD ecx = regof(ecx, esp_base);
     //*split = ecx ? (FIXED_SPLIT_VALUE << 1) : 0; // << 1 to be unique, non-zero ecx is what I want
   }
@@ -2841,14 +2841,14 @@ bool InsertYeti2PSPHook()
  */
 // Read text from bp
 // TODO: This should be expressed as general hook without extern fun
-static void SpecialPSPHookNippon1(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookNippon1(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  LPCSTR text = LPCSTR(stack->base + hp->offset); // dynamic offset, ebp or esi
+  LPCSTR text = LPCSTR(context->base + hp->offset); // dynamic offset, ebp or esi
   if (*text) {
     *data = (DWORD)text;
     *len = !text[0] ? 0 : !text[1] ? 1 : 2; // bp or si has at most two bytes
     //*len = ::LeadByteTable[*(BYTE *)text] // TODO: Test leadbytetable
-    *split = stack->ecx;
+    *split = context->ecx;
   }
 }
 
@@ -2881,7 +2881,7 @@ bool InsertNippon1PSPHook()
   else {
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset=get_reg(regs::ebp); 
+    hp.offset=regoffset(ebp); 
     hp.type = USING_STRING|NO_CONTEXT;
     hp.text_fun = SpecialPSPHookNippon1;
     ConsoleOutput("Nippon1 PSP: INSERT");
@@ -2971,7 +2971,7 @@ bool InsertNippon2PSPHook()
   else {
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset=get_reg(regs::esi); 
+    hp.offset=regoffset(esi); 
     hp.type = USING_STRING|NO_CONTEXT;
     hp.text_fun = SpecialPSPHookNippon1;
     ConsoleOutput("Nippon2 PSP: INSERT");
@@ -3084,7 +3084,7 @@ bool InsertNippon2PSPHook()
  *  13513fd6   cc               int3
  */
 // Read text from dl
-static void SpecialPSPHookTypeMoon(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookTypeMoon(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   DWORD eax = regof(eax, esp_base);
   DWORD text = eax + hp->user_value - 1; // the text is in the previous byte
@@ -3206,8 +3206,8 @@ bool InsertTecmoPSPHook()
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT;
-    hp.offset=get_reg(regs::eax);
-    hp.split = get_reg(regs::ecx);
+    hp.offset=regoffset(eax);
+    hp.split = regoffset(ecx);
     hp.text_fun = SpecialPSPHook;
     ConsoleOutput("Tecmo PSP: INSERT");
     NewHook(hp, "Tecmo PSP");
@@ -3265,8 +3265,8 @@ bool InsertKadokawaPSPHook()
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT;
-    hp.offset=get_reg(regs::eax);
-    hp.split = get_reg(regs::ecx);
+    hp.offset=regoffset(eax);
+    hp.split = regoffset(ecx);
     hp.length_offset = 1; // byte by byte
     hp.text_fun = SpecialPSPHook;
 
@@ -3328,10 +3328,10 @@ bool InsertKadokawaPSPHook()
  *  140391ba   cc               int3
  */
 // Get bytes in esi
-static void SpecialPSPHookOtomate2(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookOtomate2(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   //static uniquemap uniq;
-  DWORD text = esp_base + get_reg(regs::esi);
+  DWORD text = esp_base + regoffset(esi);
   if (*(LPCSTR *)text) {
     *split = regof(ecx, esp_base); // this would cause lots of texts, but it works for all games
     *data = text;
@@ -3547,8 +3547,8 @@ bool InsertKadokawaNamePSPHook()
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.type = USING_STRING|USING_SPLIT|NO_CONTEXT;
-    hp.offset=get_reg(regs::eax);
-    hp.split = get_reg(regs::edx);
+    hp.offset=regoffset(eax);
+    hp.split = regoffset(edx);
     hp.text_fun = SpecialPSPHook;
 
     //GROWL_DWORD2(hp.address, hp.user_value);

@@ -68,7 +68,7 @@ bool AksysGames::attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING;
   return NewHook(hp, "AksysGames");
 }

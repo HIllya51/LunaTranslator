@@ -26,7 +26,7 @@ bool RPGMaker::attach_function()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_STRING | CODEC_UTF8;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.length_offset = 2;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {

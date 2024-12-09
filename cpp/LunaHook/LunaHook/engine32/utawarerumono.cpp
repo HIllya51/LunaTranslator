@@ -25,7 +25,7 @@ bool utawarerumonoh()
     HookParam hp;
     hp.address = addr;
     hp.lineSeparator = L"\\n";
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
     ConsoleOutput("utawarerumono");
     succ |= NewHook(hp, "utawarerumono");
@@ -44,7 +44,7 @@ bool utawarerumonoh2()
   {
     HookParam hp;
     hp.address = addr + 2;
-    hp.offset = get_reg(regs::esi);
+    hp.offset = regoffset(esi);
     hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
     hp.lineSeparator = L"\\n";
     ConsoleOutput("utawarerumono %p", addr);

@@ -27,7 +27,7 @@ bool sakusesu::attach_function() {
     if (addr == 0)continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(1);
+    hp.offset=stackoffset(1);
     hp.type = USING_STRING; 
     succ|=NewHook(hp, "sakusesu");
     for (auto xrefaddr : findxref_reverse(addr, addr - 0x10000, addr + 0x10000)) {
@@ -35,7 +35,7 @@ bool sakusesu::attach_function() {
       if (xrefaddr == 0)continue;
       HookParam hp;
       hp.address = xrefaddr;
-      hp.offset=get_stack(1);
+      hp.offset=stackoffset(1);
       hp.type = USING_STRING;
       succ|=NewHook(hp, "sakusesu");
     }

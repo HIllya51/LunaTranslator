@@ -19,7 +19,7 @@ bool InsertArtemisHook()
 	{
 		HookParam hp;
 		hp.address = addr + 1;
-		hp.offset = get_reg(regs::rdx);
+		hp.offset = regoffset(rdx);
 		hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
 		ConsoleOutput("INSERT Artemis Hook ");
 		return NewHook(hp, "Artemis");
@@ -44,7 +44,7 @@ bool Artemis64()
 		HookParam hp;
 		hp.address = addr;
 		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE |  EMBED_AFTER_NEW;
-		hp.offset = get_reg(regs::rdx); // rdx
+		hp.offset = regoffset(rdx); // rdx
 		return NewHook(hp, "Artemis64");
 	}
 
@@ -96,8 +96,8 @@ bool Artemis64x()
 		HookParam hp;
 		hp.address = addr + 2;
 		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE |  EMBED_AFTER_NEW | USING_SPLIT | NO_CONTEXT;
-		hp.offset = get_reg(regs::rdx);
-		hp.split = get_reg(regs::rcx);
+		hp.offset = regoffset(rdx);
+		hp.split = regoffset(rcx);
 		succ |= NewHook(hp, "Artemis64x");
 	}
 

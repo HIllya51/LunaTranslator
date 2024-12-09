@@ -27,25 +27,25 @@ bool NNNConfig::attach_function()
 	auto checkoffset = MemDbg::findBytes(check, sizeof(check), funcaddr, funcaddr + 0x20);
 
 	if (checkoffset == 0)
-		offset = get_stack(5);
+		offset = stackoffset(5);
 	else
-		offset = get_stack(6);
+		offset = stackoffset(6);
 	HookParam hp;
 	hp.address = funcaddr;
 	hp.offset = offset;
 	hp.type = USING_STRING;
-	hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		// 当前文本可以过滤重复，上一条文本会按照换行符切分不停刷新。
-		auto data=stack->stack[hp->offset/4];
+		auto data=context->stack[hp->offset/4];
 		static std::unordered_map<uintptr_t, std::string> everythreadlast;
-		if (everythreadlast.find(stack->retaddr) == everythreadlast.end())
-			everythreadlast[stack->retaddr] = "";
+		if (everythreadlast.find(context->retaddr) == everythreadlast.end())
+			everythreadlast[context->retaddr] = "";
 		auto thisstr = std::string((char *)data);
-		if (everythreadlast[stack->retaddr] == thisstr)
+		if (everythreadlast[context->retaddr] == thisstr)
 			return;
-		everythreadlast[stack->retaddr] = thisstr;
-		auto len = everythreadlast[stack->retaddr].size();
+		everythreadlast[context->retaddr] = thisstr;
+		auto len = everythreadlast[context->retaddr].size();
 		buffer->from(data, len);
 	};
 	return NewHook(hp, "NNNhook");

@@ -14,7 +14,7 @@ bool InsertAXLHook()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(4);
+  hp.offset = stackoffset(4);
   hp.type = USING_STRING;
 
   return NewHook(hp, "AXL");
@@ -36,8 +36,8 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
-    hp.split = get_reg(regs::eax);
+    hp.offset = stackoffset(1);
+    hp.split = regoffset(eax);
     hp.type = USING_SPLIT;
 
     return NewHook(hp, "TAILWIND");

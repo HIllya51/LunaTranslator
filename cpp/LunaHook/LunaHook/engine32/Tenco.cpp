@@ -87,7 +87,7 @@ bool InsertTencoHook()
   HookParam hp;
   hp.address = addr + addr_offset;
   hp.index = 4;
-  hp.offset=get_reg(regs::ecx);
+  hp.offset=regoffset(ecx);
   hp.type = NO_CONTEXT|DATA_INDIRECT;
 
   ConsoleOutput("INSERT Tenco");
@@ -108,7 +108,7 @@ bool LWScript() {
   if (addr == 0)return false; 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_reg(regs::edx);
+  hp.offset=regoffset(edx);
   hp.type = USING_STRING;
   return NewHook(hp, "LWScript");
 }
@@ -123,8 +123,8 @@ bool LWScript2() {
   addr = MemDbg::findEnclosingAlignedFunction(addr);
   if (addr == 0)return false;
   int off;
-  if (*(BYTE*)(addr + 3) == 0x4C)get_stack(2);
-  else off=get_reg(regs::ecx);
+  if (*(BYTE*)(addr + 3) == 0x4C)stackoffset(2);
+  else off=regoffset(ecx);
   HookParam hp;
   hp.address = addr;
   hp.offset = off;
@@ -137,7 +137,7 @@ bool LWScript2() {
     if (addr == 0)continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(5);
+    hp.offset=stackoffset(5);
     hp.type = CODEC_ANSI_BE;
     ConsoleOutput("LWScript2_xref %p", addr);
     succ|=NewHook(hp, "LWScript2_xref");

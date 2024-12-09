@@ -40,15 +40,11 @@ namespace
 
     inline void GetPyUnicodeString(PyObject *object, TextBuffer *buffer)
     {
-        if (object == NULL)
+        if (!object)
             return;
-
         auto uformat = PyUnicode_FromObject(object);
-
-        if (uformat == NULL)
-        {
+        if (!uformat)
             return;
-        }
 
         auto fmt = PyUnicode_AS_UNICODE(uformat);
         auto fmtcnt = PyUnicode_GET_SIZE(uformat);
@@ -87,20 +83,17 @@ bool InsertRenpyHook()
                     HookParam hp;
                     hp.address = addr;
                     hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
-                    hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buffer, uintptr_t *split)
+                    hp.text_fun = [](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
                     {
-                        auto format = (PyObject *)stack->ARG1;
+                        auto format = (PyObject *)context->argof(1);
                         GetPyUnicodeString(format, buffer);
                     };
                     if (PyUnicode_FromUnicode)
                     {
                         hp.type |= EMBED_ABLE;
-                        hp.embed_fun = [](hook_stack *stack, TextBuffer buffer)
+                        hp.embed_fun = [](hook_context *context, TextBuffer buffer)
                         {
-                            auto format = (PyObject *)stack->ARG1;
-                            if (!format)
-                                return;
-                            stack->ARG1 = (uintptr_t)PyUnicode_FromUnicode((Py_UNICODE *)buffer.buff, buffer.size / 2);
+                            context->argof(1) = (uintptr_t)PyUnicode_FromUnicode((Py_UNICODE *)buffer.buff, buffer.size / 2);
                         };
                     }
                     return NewHook(hp, "Ren'py");

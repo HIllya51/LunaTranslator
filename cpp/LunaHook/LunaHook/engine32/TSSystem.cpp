@@ -13,7 +13,7 @@ bool TSSystem::attach_function() {
     if(addr==0)continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(1); 
+    hp.offset=stackoffset(1); 
     hp.type = USING_STRING; 
     ok|=NewHook(hp, "TSSystem");
   }  

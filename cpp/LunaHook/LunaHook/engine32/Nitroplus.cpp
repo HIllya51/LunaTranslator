@@ -50,7 +50,7 @@ bool InsertNitroplus2Hook()
 	}
 	HookParam hp;
 	hp.address = addr + addr_offset;
-	hp.offset = get_reg(regs::edx);
+	hp.offset = regoffset(edx);
 	hp.type = CODEC_ANSI_BE;
 	return NewHook(hp, "Nitroplus2");
 }
@@ -93,9 +93,9 @@ namespace
 			hp.address = addr + sizeof(sig2);
 			hp.type = USING_STRING;
 			hp.user_value = 0;
-			hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+			hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 			{
-				auto data = stack->edx;
+				auto data = context->edx;
 				auto l = strlen((char *)data);
 				if (hp->user_value > l)
 					hp->user_value = 0;
@@ -156,7 +156,7 @@ bool InsertNitroplusSysHook()
 
 	HookParam hp;
 	hp.address = addr;
-	hp.offset = get_reg(regs::eax);
+	hp.offset = regoffset(eax);
 	hp.type = USING_STRING;
 	hp.filter_fun = NitroplusSysFilter;
 	return NewHook(hp, "NitroplusSystem");

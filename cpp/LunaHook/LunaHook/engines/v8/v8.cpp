@@ -53,20 +53,20 @@ namespace
 		HookParam hp;
 		hp.address = (uintptr_t)SetClipboardData;
 		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE;
-		hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buffer, uintptr_t *split)
+		hp.text_fun = [](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
 		{
-			HGLOBAL hClipboardData = (HGLOBAL)stack->ARG2;
+			HGLOBAL hClipboardData = (HGLOBAL)context->argof(2);
 			parsebefore((wchar_t *)GlobalLock(hClipboardData), hp, split, buffer);
 			GlobalUnlock(hClipboardData);
 		};
-		hp.embed_fun = [](hook_stack *s, TextBuffer buffer)
+		hp.embed_fun = [](hook_context *s, TextBuffer buffer)
 		{
 			std::wstring transwithfont = parseafter(buffer.viewW());
 			HGLOBAL hClipboardData = GlobalAlloc(GMEM_MOVEABLE, transwithfont.size() * 2 + 2);
 			auto pchData = (wchar_t *)GlobalLock(hClipboardData);
 			wcscpy(pchData, (wchar_t *)transwithfont.c_str());
 			GlobalUnlock(hClipboardData);
-			s->ARG2 = (uintptr_t)hClipboardData;
+			s->argof(2) = (uintptr_t)hClipboardData;
 		};
 		return NewHook(hp, "nwjs/electron rpgmakermv/tyranoscript");
 	}
@@ -78,14 +78,14 @@ namespace
 		HookParam hp;
 		hp.address = (uintptr_t)LUNA_CONTENTBYPASS;
 		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE;
-		hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buffer, uintptr_t *split)
+		hp.text_fun = [](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
 		{
-			parsebefore((wchar_t *)stack->ARG1, hp, split, buffer);
+			parsebefore((wchar_t *)context->argof(1), hp, split, buffer);
 		};
-		hp.embed_fun = [](hook_stack *s, TextBuffer buffer)
+		hp.embed_fun = [](hook_context *s, TextBuffer buffer)
 		{
 			std::wstring transwithfont = parseafter(buffer.viewW());
-			s->ARG1 = (uintptr_t)allocateString(transwithfont);
+			s->argof(1) = (uintptr_t)allocateString(transwithfont);
 		};
 		return NewHook(hp, "nwjs/electron rpgmakermv/tyranoscript");
 	}
@@ -94,7 +94,7 @@ namespace v8script
 {
 	typedef void (*RequestInterrupt_callback)(void *, void *);
 #ifndef _WIN64
-
+#define THISCALL __thiscall
 #define fnRequestInterrupt "?RequestInterrupt@Isolate@v8@@QAEXP6AXPAV12@PAX@Z1@Z"
 #define fnNewFromUtf8_maybelocal "?NewFromUtf8@String@v8@@SA?AV?$MaybeLocal@VString@v8@@@2@PAVIsolate@2@PBDW4NewStringType@2@H@Z"
 #define fnNewFromUtf8_local "?NewFromUtf8@String@v8@@SA?AV?$Local@VString@v8@@@2@PAVIsolate@2@PBDW4NewStringType@12@H@Z"
@@ -106,6 +106,7 @@ namespace v8script
 #define fnRunv_maylocal "?Run@Script@v8@@QAE?AV?$MaybeLocal@VValue@v8@@@2@V?$Local@VContext@v8@@@2@@Z"
 
 #else
+#define THISCALL
 #define fnRequestInterrupt "?RequestInterrupt@Isolate@v8@@QEAAXP6AXPEAV12@PEAX@Z1@Z"
 #define fnNewFromUtf8_maybelocal "?NewFromUtf8@String@v8@@SA?AV?$MaybeLocal@VString@v8@@@2@PEAVIsolate@2@PEBDW4NewStringType@2@H@Z"
 #define fnNewFromUtf8_local "?NewFromUtf8@String@v8@@SA?AV?$Local@VString@v8@@@2@PEAVIsolate@2@PEBDW4NewStringType@12@H@Z"
@@ -231,13 +232,13 @@ namespace v8script
 		return true;
 	}
 
-	void v8runscript_isolate_bypass(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	void v8runscript_isolate_bypass(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 
 		hp->type = HOOK_EMPTY;
 		hp->text_fun = nullptr;
 
-		auto isolate = (void *)stack->ARG2; // 测试正确，且和v8::Isolate::GetCurrent结果相同
+		auto isolate = (void *)context->argof(2); // 测试正确，且和v8::Isolate::GetCurrent结果相同
 		v8runscript_isolate(isolate);
 	}
 	void *v8getcurrisolate(HMODULE hmod)
@@ -309,14 +310,14 @@ namespace
 		HookParam hp;
 		hp.type = USING_STRING | CODEC_UTF8;
 		hp.text_fun =
-			[](hook_stack *stack, HookParam *hp, auto *buffer, uintptr_t *split)
+			[](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
 		{
-			auto length = ((size_t(THISCALL *)(void *))Utf8Length)((void *)stack->THISCALLTHIS);
+			auto length = ((size_t(THISCALL *)(void *))Utf8Length)((void *)context->THISCALLTHIS);
 			if (!length)
 				return;
 			auto u8str = new char[length + 1];
 			int writen;
-			((size_t(THISCALL *)(void *, char *, int, int *, int))WriteUtf8)((void *)stack->THISCALLTHIS, u8str, length, &writen, 0);
+			((size_t(THISCALL *)(void *, char *, int, int *, int))WriteUtf8)((void *)context->THISCALLTHIS, u8str, length, &writen, 0);
 			buffer->from(u8str, length);
 		};
 		hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)

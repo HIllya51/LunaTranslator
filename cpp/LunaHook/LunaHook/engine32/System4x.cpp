@@ -136,8 +136,8 @@ static bool InsertSystem43OldHook(ULONG startAddress, ULONG stopAddress, LPCSTR 
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset = get_stack(1);
-  hp.split = get_reg(regs::esp);
+  hp.offset = stackoffset(1);
+  hp.split = regoffset(esp);
   hp.type = NO_CONTEXT | USING_SPLIT | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
   ConsoleOutput("INSERT System43");
   ConsoleOutput("System43: disable GDI hooks"); // disable hooking to TextOutA, which is cached
@@ -899,8 +899,8 @@ bool InsertSystem43aHook()
     return false;
   HookParam hp;
   hp.address = addr + sizeof(bytes) - 3;
-  hp.offset = get_reg(regs::edx);
-  hp.split = get_reg(regs::esp);
+  hp.offset = regoffset(edx);
+  hp.split = regoffset(esp);
   hp.type = NO_CONTEXT | USING_STRING | USING_SPLIT;
   hp.filter_fun = System43aFilter;
   return NewHook(hp, "System43new");
@@ -926,8 +926,8 @@ bool InsertSystem43bHook()
     return false;
   HookParam hp = {};
   hp.address = addr;
-  hp.offset = get_reg(regs::edx);
-  hp.split = get_stack(12);
+  hp.offset = regoffset(edx);
+  hp.split = stackoffset(12);
   hp.type = USING_STRING | USING_SPLIT;
   NewHook(hp, "System43b");
   return true;
@@ -1031,7 +1031,7 @@ namespace
        *  005D6FA0   8B1C98           MOV EBX,DWORD PTR DS:[EAX+EBX*4]
        */
       std::unordered_set<uint64_t> hashes_;
-      void hookafter2(hook_stack *s, TextBuffer buffer)
+      void hookafter2(hook_context *s, TextBuffer buffer)
       {
         auto newData = buffer.strA();
         static std::string data_;
@@ -1046,7 +1046,7 @@ namespace
 
         hashes_.insert(simplehash::hashCharArray(arg->text));
       }
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         static std::string data_; // persistent storage, which makes this function not thread-safe
 
@@ -1082,7 +1082,7 @@ namespace
         }
         buffer->from(arg->text);
       }
-      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (arg_)
         {
@@ -1529,7 +1529,7 @@ namespace
   class ScenarioHook43 : protected TextHookBase
   {
   public:
-    bool hookBefore(hook_stack*s,void* data, size_t* len,uintptr_t*role)
+    bool hookBefore(hook_context*s,void* data, size_t* len,uintptr_t*role)
     {
       // See ATcode patch:
       // 0070A12E   8B87 B0000000    MOV EAX,DWORD PTR DS:[EDI+0xB0]
@@ -1569,7 +1569,7 @@ namespace
       return write_string_overwrite(data,len,text);
     }
 
-    bool hookAfter(hook_stack*s,void* data, size_t* len,uintptr_t*role)
+    bool hookAfter(hook_context*s,void* data, size_t* len,uintptr_t*role)
     {
       if (arg_) {
         arg_->text = text_;
@@ -1583,7 +1583,7 @@ namespace
   class OtherHook43 : protected TextHookBase
   {
   public:
-    bool hookBefore(hook_stack*s,void* data, size_t* len,uintptr_t*role)
+    bool hookBefore(hook_context*s,void* data, size_t* len,uintptr_t*role)
     {
       if (!enabled_)
         return false;
@@ -1607,7 +1607,7 @@ namespace
       return write_string_overwrite(data,len,text);
     }
 
-    bool hookAfter(hook_stack*s,void* data, size_t* len,uintptr_t*role)
+    bool hookAfter(hook_context*s,void* data, size_t* len,uintptr_t*role)
     {
       if (arg_) {
         arg_->text = text_;
@@ -1619,7 +1619,7 @@ namespace
   };
 
   // Text with fixed size
-  bool fixedTextHook(hook_stack*s,void* data, size_t* len,uintptr_t*role)
+  bool fixedTextHook(hook_context*s,void* data, size_t* len,uintptr_t*role)
   {
     enum { FixedSize = 0x10 };
     struct FixedArgument // first argument of the name hook
@@ -1744,8 +1744,8 @@ namespace
 
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::edx);
-    hp.split = get_reg(regs::esp);
+    hp.offset = regoffset(edx);
+    hp.split = regoffset(esp);
     hp.type = NO_CONTEXT | USING_STRING | USING_SPLIT;
     hp.filter_fun = System42Filter;
     ConsoleOutput("INSERT System42");

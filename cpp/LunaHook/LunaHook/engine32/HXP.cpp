@@ -10,7 +10,7 @@ bool HXP::attach_function() {
     if(addr==0)return false;
     HookParam hp;
     hp.address = (DWORD)addr;
-    hp.offset=get_stack(2);
+    hp.offset=stackoffset(2);
     hp.type = CODEC_ANSI_BE;
     
     return NewHook(hp, "HXP");

@@ -20,7 +20,7 @@ bool UnknownEngine::attach_function() {
   for (auto addr : addrs) { 
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(1);
+    hp.offset=stackoffset(1);
     hp.index=0;
     hp.type = DATA_INDIRECT; 
     succ|=NewHook(hp, "Unknown");

@@ -66,8 +66,8 @@ namespace
           { // jichi 10/12/2013: 83 EC XX   sub esp, XX  See: http://lists.cs.uiuc.edu/pipermail/llvm-commits/Week-of-Mon-20120312.txt
             HookParam hp;
             hp.address = i;
-            hp.offset = get_reg(regs::ecx);
-            hp.split = get_reg(regs::esp);
+            hp.offset = regoffset(ecx);
+            hp.split = regoffset(esp);
             hp.type = DATA_INDIRECT | USING_SPLIT;
             // GROWL_DWORD(hp.address); // jichi 6/5/2014: 淫乱勀��フィのRPG = 0x50a400
             ConsoleOutput("INSERT WolfRPG");
@@ -96,7 +96,7 @@ namespace
     myhp.address = addr + 41;
 
     myhp.type = USING_STRING | NO_CONTEXT;
-    myhp.offset = get_reg(regs::eax);
+    myhp.offset = regoffset(eax);
     myhp.type |= DATA_INDIRECT;
 
     myhp.index = 4;
@@ -122,7 +122,7 @@ namespace
     myhp.address = addr + 16;
 
     myhp.type = USING_STRING | NO_CONTEXT;
-    myhp.offset = get_reg(regs::eax);
+    myhp.offset = regoffset(eax);
     // myhp.type |= DATA_INDIRECT;
 
     //  myhp.index = 4;
@@ -190,7 +190,7 @@ namespace
 
     HookParam hp;
     hp.address = addr + sizeof(bytes) - 1;
-    hp.offset = get_stack(7);
+    hp.offset = stackoffset(7);
     hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
     hp.filter_fun = commonfilter;
     return NewHook(hp, "Wolf5_1");
@@ -216,7 +216,7 @@ namespace
       return true;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(8);
+    hp.offset = stackoffset(8);
     hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
     hp.filter_fun = commonfilter;
     return NewHook(hp, "Wolf5");
@@ -237,7 +237,7 @@ namespace
         continue;
       HookParam hp;
       hp.address = (DWORD)addr;
-      hp.offset = get_stack(3);
+      hp.offset = stackoffset(3);
       hp.type = USING_STRING | CODEC_UTF8;
       hp.filter_fun = commonfilter;
       ok |= NewHook(hp, "Wolf6");
@@ -291,7 +291,7 @@ namespace
         return s;
       }
       std::unordered_set<std::string> dataSet_;
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         // enum { DataQueueCapacity = 30 };
 
@@ -330,7 +330,7 @@ namespace
           }
         }
       }
-      void hookafter2(hook_stack *s, TextBuffer buffer)
+      void hookafter2(hook_context *s, TextBuffer buffer)
       {
 
         auto newData = buffer.strA();
@@ -868,7 +868,7 @@ namespace
         return 0;
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_reg(regs::ecx);
+      hp.offset = regoffset(ecx);
       hp.index = 4;
       hp.text_fun = Private::hookBefore;
       hp.embed_fun = Private::hookafter2;
@@ -905,7 +905,7 @@ namespace
     addr += 31;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_STRING | NO_CONTEXT;
     return NewHook(hp, "Wolf7");
   }

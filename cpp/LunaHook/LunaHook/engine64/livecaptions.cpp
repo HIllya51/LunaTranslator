@@ -27,10 +27,10 @@ bool livecaptions::attach_function()
         HookParam hp;
         hp.address = addr;
         hp.type = USING_STRING | CODEC_UTF8 | FULL_STRING;
-        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
-            auto ptr = stack->rdx;
-            auto size = stack->r8;
+            auto ptr = context->rdx;
+            auto size = context->r8;
             buffer->from(ptr, size);
         };
         succ |= NewHook(hp, "LiveCaptions");

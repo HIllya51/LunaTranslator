@@ -14,7 +14,7 @@ bool akatombo::attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW  | EMBED_DYNA_SJIS;
   return NewHook(hp, "akatombo");
 }

@@ -7,7 +7,7 @@ bool Tomato::attach_function() {
     if (!addr) continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_reg(regs::edx);
+    hp.offset=regoffset(edx);
     hp.type  = DATA_INDIRECT; 
 			hp.index = 0;
     ok|=NewHook(hp, "Tomato");

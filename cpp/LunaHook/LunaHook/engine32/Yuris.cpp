@@ -67,8 +67,8 @@ static bool InsertYuris1Hook()
   // GROWL_DWORD2(i,t);
   HookParam hp;
   hp.address = i + t;
-  hp.offset = get_reg(regs::edi);
-  hp.split = get_reg(regs::eax);
+  hp.offset = regoffset(edi);
+  hp.split = regoffset(eax);
   hp.type = USING_STRING | USING_SPLIT;
   ConsoleOutput("INSERT YU-RIS");
   // GROWL_DWORD(hp.address);
@@ -178,8 +178,8 @@ static bool InsertYuris2Hook()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_STRING | USING_SPLIT | NO_CONTEXT; // disable context that will cause thread split
-  hp.offset = get_stack(3);
-  hp.split = get_stack(5);
+  hp.offset = stackoffset(3);
+  hp.split = stackoffset(5);
 
   ConsoleOutput("INSERT YU-RIS 2");
   return NewHook(hp, "YU-RIS2");
@@ -211,7 +211,7 @@ bool InsertYuris4Hook()
   {
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset = get_reg(regs::edx);
+    hp.offset = regoffset(edx);
     hp.type = USING_STRING;
     ConsoleOutput("INSERT YU-RIS 4");
     found |= NewHook(hp, "YU-RIS4");
@@ -248,7 +248,7 @@ bool InsertYuris5Hook()
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset = get_reg(regs::ecx);
+  hp.offset = regoffset(ecx);
   hp.type = USING_STRING | NO_CONTEXT;
 
   ConsoleOutput("INSERT YU-RIS 5");
@@ -319,7 +319,7 @@ bool InsertYuris6Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.index = 0x38;
   hp.filter_fun = Yuris6Filter;
   hp.type = USING_STRING | NO_CONTEXT | DATA_INDIRECT;
@@ -348,22 +348,22 @@ bool yuris7()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::edx);
+  hp.offset = regoffset(edx);
   hp.type = USING_STRING;
-  hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    if (stack->edi > 0x100)
+    if (context->edi > 0x100)
       return;
-    // if(stack->eax==1)return;
-    if (stack->edi < 0x60 || stack->edi > 0x80)
+    // if(context->eax==1)return;
+    if (context->edi < 0x60 || context->edi > 0x80)
       return;
-    if (strlen((char *)stack->edx) > 2)
+    if (strlen((char *)context->edx) > 2)
       return;
-    if (strcmp((char *)stack->edx, "BG") == 0 || strcmp((char *)stack->edx, "VO") == 0)
+    if (strcmp((char *)context->edx, "BG") == 0 || strcmp((char *)context->edx, "VO") == 0)
       return;
 
-    *split = stack->edi; //|(stack->eax*0x100);//会把人名的引号分开
-    buffer->from(stack->edx, min(2, strlen((char *)stack->edx)));
+    *split = context->edi; //|(context->eax*0x100);//会把人名的引号分开
+    buffer->from(context->edx, min(2, strlen((char *)context->edx)));
   };
   return NewHook(hp, "yuris8");
 }
@@ -405,7 +405,7 @@ bool yuris8()
   HookParam hp;
   hp.address = addr + offset;
   hp.type = USING_STRING;
-  hp.offset = get_reg(regs::ecx);
+  hp.offset = regoffset(ecx);
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     auto text = buffer->viewA();

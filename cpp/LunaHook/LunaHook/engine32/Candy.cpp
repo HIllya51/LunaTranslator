@@ -108,7 +108,7 @@ namespace
           { // mov cl,[edx]; xor eax,eax
             HookParam hp;
             hp.address = j;
-            hp.offset = get_reg(regs::edx);
+            hp.offset = regoffset(edx);
             hp.type = USING_STRING;
             ConsoleOutput("INSERT SystemC#1");
 
@@ -144,13 +144,13 @@ namespace
     else if (addr2 == 0 && addr1 != 0)
     {
       hp.address = addr1;
-      hp.offset = get_reg(regs::edx);
+      hp.offset = regoffset(edx);
       return NewHook(hp, "SystemC");
     }
     else if (addr2 != 0 && addr1 == 0)
     {
       hp.address = addr2;
-      hp.offset = get_stack(1); // jichi: text in arg1
+      hp.offset = stackoffset(1); // jichi: text in arg1
       return NewHook(hp, "SystemC");
     }
     else
@@ -160,10 +160,10 @@ namespace
         addr1 += 5;
       }
       hp.address = addr1;
-      hp.offset = get_reg(regs::edx);
+      hp.offset = regoffset(edx);
       auto succ = NewHook(hp, "SystemC");
       hp.address = addr2;
-      hp.offset = get_stack(1);
+      hp.offset = stackoffset(1);
       succ |= NewHook(hp, "SystemC");
       return succ;
     }
@@ -200,7 +200,7 @@ namespace
   //
   //   HookParam hp;
   //   hp.address = processStartAddress + reladdr + addr_offset;
-  //   hp.offset=get_reg(regs::eax);
+  //   hp.offset=regoffset(eax);
   //   hp.type = USING_STRING|NO_CONTEXT;
   //   NewHook(hp, "Candy");
   //   return true;
@@ -229,9 +229,9 @@ namespace
         HookParam hp;
         hp.type = USING_STRING;
         if (*(BYTE *)addr == 0x55)
-          hp.offset = get_stack(1);
+          hp.offset = stackoffset(1);
         else if (*(BYTE *)addr == 0x56)
-          hp.offset = get_reg(regs::eax);
+          hp.offset = regoffset(eax);
         else
           continue;
         hp.address = addr;
@@ -268,7 +268,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr + 1;
-    hp.offset = get_stack(4);
+    hp.offset = stackoffset(4);
     hp.type = USING_STRING | CODEC_UTF16;
     ConsoleOutput("INSERT SystemC#3");
 
@@ -314,7 +314,7 @@ namespace
       return false;
     HookParam hp;
     hp.type = USING_STRING;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_STRING;
     hp.address = addr;
     return NewHook(hp, "WillowSoft");
@@ -352,7 +352,7 @@ bool WillowSoft::attach_function()
 
   HookParam hp;
   hp.type = USING_STRING;
-  hp.offset = get_stack(2);
+  hp.offset = stackoffset(2);
   hp.type |= DATA_INDIRECT;
   hp.index = 0;
   hp.address = addr;

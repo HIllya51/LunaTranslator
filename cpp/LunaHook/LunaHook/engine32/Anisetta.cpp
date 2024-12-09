@@ -18,7 +18,7 @@ bool Anisetta::attach_function()
   HookParam hp;
   hp.address = addr;
   hp.type = CODEC_ANSI_BE;
-  hp.offset = get_stack(5);
+  hp.offset = stackoffset(5);
 
   return NewHook(hp, "Anisetta");
 }

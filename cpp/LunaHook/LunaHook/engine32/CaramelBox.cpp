@@ -1,8 +1,8 @@
 #include "CaramelBox.h"
 
-static void SpecialHookCaramelBox(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookCaramelBox(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  DWORD reg_ecx = *(DWORD *)(stack->base + hp->offset);
+  DWORD reg_ecx = *(DWORD *)(context->base + hp->offset);
   BYTE *ptr = (BYTE *)reg_ecx;
   buffer_index = 0;
   while (ptr[0])
@@ -86,9 +86,9 @@ bool InsertCaramelBoxHook()
               {
                 pb += 4;
                 if ((pd[0] & 0xffffff) == 0x04c483)
-                  hp.offset = get_stack(1);
+                  hp.offset = stackoffset(1);
                 else
-                  hp.offset = get_reg(regs::ecx);
+                  hp.offset = regoffset(ecx);
                 break;
               }
             }
@@ -137,7 +137,7 @@ bool CaramelBoxMilkAji::attach_function()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_STRING;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
 
   return NewHook(hp, "CaramelBox");
 }
@@ -146,19 +146,19 @@ bool CaramelBox2::attach_function()
   // https://vndb.org/r19777
   // Otoboku - Maidens Are Falling for Me! - Download Edition
   PcHooks::hookGDIFunctions();
-  trigger_fun = [](LPVOID addr1, hook_stack *stack)
+  trigger_fun = [](LPVOID addr1, hook_context *context)
   {
     if (addr1 != TextOutA && addr1 != GetTextExtentPoint32A)
       return false;
-    auto addr = stack->retaddr;
+    auto addr = context->retaddr;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
     if (addr == 0)
       return false;
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | USING_SPLIT;
-    hp.offset = get_stack(2);
-    hp.split = get_stack(2);
+    hp.offset = stackoffset(2);
+    hp.split = stackoffset(2);
     NewHook(hp, "CaramelBox");
     return true;
   };

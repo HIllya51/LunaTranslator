@@ -10,7 +10,7 @@ bool SRPGStudio::attach_function() {
   if(addr==0)return 0;
   HookParam hp;
 	hp.address = (DWORD)addr;
-	hp.offset=get_stack(1); 
+	hp.offset=stackoffset(1); 
 	hp.type = USING_STRING|CODEC_UTF16|EMBED_ABLE|EMBED_AFTER_NEW;
 	return NewHook(hp, "SRPGStudio");
 } 

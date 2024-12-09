@@ -21,7 +21,7 @@ KiriKiri hook:
   char and we insert hook here to extract it.
 ********************************************************************************************/
 #if 0  // jichi 11/12/2013: not used
-static void SpecialHookKiriKiri(hook_stack* stack,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialHookKiriKiri(hook_context *context,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   DWORD p1 =  *(DWORD *)(esp_base - 0x14),
         p2 =  *(DWORD *)(esp_base - 0x18);
@@ -167,9 +167,9 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
                     // ConsoleOutput(str);
                     HookParam hp;
                     hp.address = pt + k + 0x14;
-                    hp.offset = get_reg(regs::ebx);
+                    hp.offset = regoffset(ebx);
                     hp.index = -0x2;
-                    hp.split = get_reg(regs::ecx);
+                    hp.split = regoffset(ecx);
                     hp.type = CODEC_UTF16 | NO_CONTEXT | USING_SPLIT | DATA_INDIRECT;
                     ConsoleOutput("INSERT KiriKiri2");
                     if (!NewHook(hp, "KiriKiri2"))
@@ -185,12 +185,12 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
                       HookParam hp_1;
                       hp_1.address = addr;
                       hp_1.type = CODEC_UTF16 | NO_CONTEXT | USING_CHAR;
-                      hp_1.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+                      hp_1.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
                       {
-                        *split = stack->ecx;
+                        *split = context->ecx;
                         if (*split != 0x16)
                           return;
-                        buffer->from_t(*(WORD *)(stack->ebx - 2));
+                        buffer->from_t(*(WORD *)(context->ebx - 2));
                       };
                       NewHook(hp_1, "KiriKiri2X");
                     }
@@ -205,9 +205,9 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
               // ConsoleOutput(str);
               HookParam hp;
               hp.address = (DWORD)pt + j;
-              hp.offset = get_reg(regs::eax);
+              hp.offset = regoffset(eax);
               hp.index = 0x14;
-              hp.split = get_reg(regs::eax);
+              hp.split = regoffset(eax);
               hp.type = CODEC_UTF16 | DATA_INDIRECT | USING_SPLIT | SPLIT_INDIRECT;
               ConsoleOutput("INSERT KiriKiri1");
               if (!NewHook(hp, "KiriKiri1"))
@@ -245,13 +245,13 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
                         HookParam hp;
                         hp.address = addr;
                         hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-                        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+                        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
                         {
                           // fastcall, a4
-                          auto text = (kirikiri::ttstr *)stack->stack[9];
-                          auto destrect = (kirikiri::tTVPRect *)stack->eax;
+                          auto text = (kirikiri::ttstr *)context->stack[9];
+                          auto destrect = (kirikiri::tTVPRect *)context->eax;
                           //*split=destrect->Bottom-destrect->Top;//split by font size;不知道为什么destrect里面的值是乱七八糟的
-                          *split = stack->ecx; // y. 值似乎不是y，多行不会被分开。
+                          *split = context->ecx; // y. 值似乎不是y，多行不会被分开。
                           buffer->from(text->Ptr->LongString ? text->Ptr->LongString : text->Ptr->ShortString, text->Ptr->Length * 2);
                         };
                         NewHook(hp, "tTVPNativeBaseBitmap::DrawText");
@@ -394,7 +394,7 @@ bool KAGParserFilter(LPVOID data, size_t *size, HookParam *)
   return true;
 }
 
-void SpecialHookKAGParser(hook_stack* stack,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
+void SpecialHookKAGParser(hook_context *context,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   // 6e5622a8   66:833c48 5b     cmp word ptr ds:[eax+ecx*2],0x5b
   DWORD eax = regof(eax, esp_base),
@@ -406,7 +406,7 @@ void SpecialHookKAGParser(hook_stack* stack,  HookParam *, uintptr_t *data, uint
   }
 }
 
-void SpecialHookKAGParserEx(hook_stack* stack,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
+void SpecialHookKAGParserEx(hook_context *context,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   // 10013960   66:833c41 5b     cmp word ptr ds:[ecx+eax*2],0x5b
   DWORD eax = regof(eax, esp_base),
@@ -1049,7 +1049,7 @@ namespace
   {
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::ecx);
+    hp.offset = regoffset(ecx);
     hp.split = hp.offset; // the same logic but diff value as KiriKiri1, use [ecx] as split
     hp.index = 0x14;      // the same as KiriKiri1
     hp.type = CODEC_UTF16 | DATA_INDIRECT | USING_SPLIT | SPLIT_INDIRECT;
@@ -1070,11 +1070,11 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.text_fun =
-        [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       hp->text_fun = nullptr;
       hp->type = HOOK_EMPTY;
-      DWORD addr = stack->stack[0];                             // retaddr
+      DWORD addr = context->stack[0];                             // retaddr
       addr = MemDbg::findEnclosingAlignedFunction(addr, 0x400); // range is around 0x377c50 - 0x377a40 = 0x210
       if (!addr)
       {
@@ -1172,7 +1172,7 @@ bool Krkrtextrenderdll()
       return false;
     HookParam hp;
     hp.address = (DWORD)addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16;
 
     return NewHook(hp, "krkr_textrender");
@@ -1196,7 +1196,7 @@ bool Krkrtextrenderdll()
       return false;
     HookParam hp;
     hp.address = addr - 0xb;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.type = CODEC_UTF16 | USING_STRING;
     hp.filter_fun = KiriKiriZ_msvcFilter;
     return NewHook(hp, "krkr_textrender");
@@ -1216,16 +1216,16 @@ bool Krkrtextrenderdll()
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16 | USING_STRING | DATA_INDIRECT;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      auto text = *(wchar_t **)stack->stack[2];
-      if (hp->user_value == stack->retaddr)
+      auto text = *(wchar_t **)context->stack[2];
+      if (hp->user_value == context->retaddr)
         return;
       if (text[0] == L'%')
       {
-        hp->user_value = stack->retaddr;
+        hp->user_value = context->retaddr;
         return;
       }
       buffer->from(text);
@@ -1273,7 +1273,7 @@ namespace
     auto succ = false;
     HookParam hp = {};
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16 | USING_STRING;
     hp.filter_fun = KiriKiri4Filter;
     return NewHook(hp, "KAGParser");
@@ -1289,7 +1289,7 @@ namespace
 {
   int type = 0;
   std::wstring saveend = L"";
-  void hookafter(hook_stack *s, TextBuffer buffer)
+  void hookafter(hook_context *s, TextBuffer buffer)
   {
 
     auto newText = buffer.strW(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
@@ -1307,7 +1307,7 @@ namespace
     auto text = (LPWSTR)s->esi;
     wcscpy(text, newText.c_str());
   }
-  void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+  void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
   {
     // シロガネオトメ
     auto text = (LPWSTR)s->esi;
@@ -1428,7 +1428,7 @@ namespace Private
     return fullWidthStr;
   }
 
-  void hookBeforez(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void hookBeforez(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
 
     auto text = (LPCSTR)s->ecx;
@@ -1465,7 +1465,7 @@ namespace Private
 
     buffer->from(utf8save);
   }
-  void after(hook_stack *s, TextBuffer buffer)
+  void after(hook_context *s, TextBuffer buffer)
   {
 
     std::string res = buffer.strA(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
@@ -1665,7 +1665,7 @@ namespace
         return buffer->clear();
       buffer->from(t);
     };
-    hp.embed_fun = [](hook_stack *s, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *s, TextBuffer buffer)
     {
       auto t = std::wstring((wchar_t *)s->stack[off / 4]);
       auto newText = buffer.strW();
@@ -1704,7 +1704,7 @@ bool InsertKiriKiri4Hook()
 
   HookParam hp = {};
   hp.address = addr + sizeof(bytes) - 5;
-  hp.offset = get_reg(regs::edx);
+  hp.offset = regoffset(edx);
   hp.type = NO_CONTEXT | CODEC_UTF16 | USING_STRING;
   hp.filter_fun = KiriKiri4Filter;
   return NewHook(hp, "KiriKiri4");

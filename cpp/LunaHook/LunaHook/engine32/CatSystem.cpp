@@ -133,12 +133,12 @@
 // 051ae554   042c4c20
 // 051ae558   0000002c
 
-static void SpecialHookCatSystem3(hook_stack *stack, HookParam *, uintptr_t *data, uintptr_t *split, size_t *len)
+static void SpecialHookCatSystem3(hook_context *context, HookParam *, uintptr_t *data, uintptr_t *split, size_t *len)
 {
   // DWORD ch = *data = *(DWORD *)(esp_base + hp->offset); // arg2
-  DWORD ch = *data = stack->stack[2];
+  DWORD ch = *data = context->stack[2];
   *len = LeadByteTable[(ch >> 8) & 0xff]; // CODEC_ANSI_BE
-  *split = stack->edx >> 16;
+  *split = context->edx >> 16;
 }
 
 bool InsertCatSystemHook()
@@ -151,7 +151,7 @@ bool InsertCatSystemHook()
   //   if (*(DWORD*)i==0xcccccccc) break;
   // if (i==j) return;
   // hp.address=i+4;
-  // hp.offset=get_reg(regs::eax);
+  // hp.offset=regoffset(eax);
   // hp.index=4;
   // hp.type =CODEC_ANSI_BE|DATA_INDIRECT|USING_SPLIT|SPLIT_INDIRECT;
   // hp.length_offset=1;
@@ -173,7 +173,7 @@ bool InsertCatSystemHook()
 
   HookParam hp;
   hp.address = addr + addr_offset; // skip 1 push?
-  hp.offset = get_stack(2);        // text character is in arg2
+  hp.offset = stackoffset(2);        // text character is in arg2
 
   // jichi 12/23/2014: Modify split for new catsystem
   bool newEngine = Util::CheckFile(L"cs2conf.dll");
@@ -183,7 +183,7 @@ bool InsertCatSystemHook()
     // NewHook(hp, "CatSystem3");
     // ConsoleOutput("INSERT CatSystem3");
     hp.type = CODEC_ANSI_BE | USING_SPLIT;
-    hp.split = get_reg(regs::esi);
+    hp.split = regoffset(esi);
     ConsoleOutput("INSERT CatSystem3new");
     return NewHook(hp, "CatSystem3new");
   }
@@ -195,12 +195,12 @@ bool InsertCatSystemHook()
                     0x66, 0x3b, 0xf8};
     if (MemDbg::findBytes(check, sizeof(check), addr, addr + 0x100))
     {
-      hp.split = get_stack(1);
-      hp.offset = get_reg(regs::edx);
+      hp.split = stackoffset(1);
+      hp.offset = regoffset(edx);
     }
     else
     {
-      hp.split = get_reg(regs::edx);
+      hp.split = regoffset(edx);
     }
     hp.type = CODEC_ANSI_BE | USING_SPLIT;
     ConsoleOutput("INSERT CatSystem2");
@@ -234,7 +234,7 @@ bool InsertCatSystem2Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
@@ -254,7 +254,7 @@ namespace
     {
       // String in ecx
       // bool __fastcall isLeadByteChar(const char *s, DWORD edx)
-      // bool  isLeadByteChar(hook_stack*s,void* data, size_t* len,uintptr_t*role)
+      // bool  isLeadByteChar(hook_context*s,void* data, size_t* len,uintptr_t*role)
       // {
       //   auto pc=(CHAR*)s->ecx;
 
@@ -580,7 +580,7 @@ namespace
       }
       LPSTR trimmedText;
       size_t trimmedSize;
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         // static std::unordered_set<uint64_t> hashes_;
         auto text = (LPSTR)s->eax; // arg1
@@ -637,7 +637,7 @@ namespace
         strReplace(oldData, "\\n", "\n");
         buffer->from(oldData);
       }
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         auto newData = buffer.strA();
         strReplace(newData, "\n", "\\n");

@@ -19,7 +19,7 @@ bool bishopmbcjmstojis()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(2);
+  hp.offset = stackoffset(2);
   hp.type = USING_SPLIT | USING_STRING;
 
   return NewHook(hp, "bishop");
@@ -53,7 +53,7 @@ bool embedbishop()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(2);
+  hp.offset = stackoffset(2);
   hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE;
   hp.embed_hook_font = F_GetGlyphOutlineW;
   static std::wstring flag;
@@ -70,9 +70,9 @@ bool embedbishop()
       flag.clear();
     }
   };
-  hp.embed_fun = [](hook_stack *stack, TextBuffer buffer)
+  hp.embed_fun = [](hook_context *context, TextBuffer buffer)
   {
-    stack->stack[2] = (DWORD)allocateString(flag + buffer.strW());
+    context->stack[2] = (DWORD)allocateString(flag + buffer.strW());
   };
   hp.lineSeparator = L"\\n";
   return NewHook(hp, "bishop");
@@ -111,9 +111,9 @@ bool Bishop2attach_function()
       HookParam hp;
       hp.address = addrx1;
       if (_3)
-        hp.offset = get_stack(3);
+        hp.offset = stackoffset(3);
       else
-        hp.offset = get_stack(4);
+        hp.offset = stackoffset(4);
       hp.type = CODEC_UTF16;
 
       ok = NewHook(hp, "Bishop2");

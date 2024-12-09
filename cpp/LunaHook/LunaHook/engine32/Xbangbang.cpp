@@ -9,7 +9,7 @@ bool Xbangbang::attach_function() {
     if (!addr) continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(2);  
+    hp.offset=stackoffset(2);  
     hp.type=USING_STRING;
     ok|=NewHook(hp, "Xbangbang");
   }

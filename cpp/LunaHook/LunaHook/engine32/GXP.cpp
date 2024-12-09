@@ -258,7 +258,7 @@ static bool InsertGXP1Hook()
             hp.address = addr;
             // hp.type = CODEC_UTF16|DATA_INDIRECT;
             hp.type = USING_STRING | CODEC_UTF16 | DATA_INDIRECT | NO_CONTEXT | FIXING_SPLIT; // jichi 4/25/2015: Fixing split
-            hp.offset = get_stack(1);
+            hp.offset = stackoffset(1);
 
             // GROWL_DWORD3(hp.address, processStartAddress, hp.address - processStartAddress);
 
@@ -339,7 +339,7 @@ namespace
     {
       TextUnionW *arg_,
           argValue_;
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
 
         static std::wstring text_; // persistent storage, which makes this function not thread-safe
@@ -353,7 +353,7 @@ namespace
           return;
         buffer->from(text);
       }
-      void hook2a(hook_stack *s, TextBuffer buffer)
+      void hook2a(hook_context *s, TextBuffer buffer)
       {
         auto arg = (TextUnionW *)(s->stack[0] + 4); // arg1 + 0x4
         arg_ = arg;
@@ -364,7 +364,7 @@ namespace
         //   hashes_.insert(Engine::hashWCharArray(arg->text, arg->size));
         //  return true;
       }
-      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (arg_)
         {
@@ -434,7 +434,7 @@ namespace
     {
       TextUnionW *arg_,
           argValue_;
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         static std::wstring text_;            // persistent storage, which makes this function not thread-safe
         auto arg = (TextUnionW *)s->stack[0]; // arg1
@@ -446,7 +446,7 @@ namespace
           return;
         buffer->from(text);
       }
-      void hook2a(hook_stack *s, TextBuffer buffer)
+      void hook2a(hook_context *s, TextBuffer buffer)
       {
         auto arg = (TextUnionW *)s->stack[0]; // arg1 + 0x4
         arg_ = arg;
@@ -455,7 +455,7 @@ namespace
         arg->setText(allocateString(buffer.viewW()));
       }
 
-      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (arg_)
         {
@@ -511,7 +511,7 @@ namespace
   /*
   namespace PopupHook1 { // only for old GXP1 engine
   namespace Private {
-    bool hookBefore(winhook::hook_stack *s)
+    bool hookBefore(winhook::hook_context *s)
     {
       static std::wstring text_; // persistent storage, which makes this function not thread-safe
       auto arg = (TextUnionW *)(s->ecx + 0x1ec); // [ecx + 0x1ec]
@@ -563,7 +563,7 @@ namespace
 
   namespace OtherHook { // for all GXP engines
   namespace Private {
-    bool hookBefore(winhook::hook_stack *s)
+    bool hookBefore(winhook::hook_context *s)
     {
       static std::wstring text_;
       auto text = (LPCWSTR)s->stack[3]; // arg3

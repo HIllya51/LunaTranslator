@@ -16,7 +16,7 @@ bool InsertAnimHook()
     myhp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_OVERWRITE | EMBED_DYNA_SJIS; // /HQ 不使用上下文区分 把所有线程的文本都提取
     myhp.embed_hook_font = F_GetGlyphOutlineA;
     // data_offset
-    myhp.offset = get_reg(regs::ecx);
+    myhp.offset = regoffset(ecx);
     char nameForUser[HOOK_NAME_SIZE] = "Anim";
 
     return NewHook(myhp, nameForUser);
@@ -48,7 +48,7 @@ bool InsertAnim2Hook()
     // 僕がいない間に変貌えられた妻の秘肉 ～ラブラブ新婚妻は他の男に抱かれ淫らに喘ぐ夢を見るか～ 体験版
 
     // data_offset
-    myhp.offset = get_reg(regs::eax);
+    myhp.offset = regoffset(eax);
 
     return NewHook(myhp, "Anim2");
 }
@@ -90,7 +90,7 @@ namespace
 
         HookParam hp;
         hp.address = addr + 1;
-        hp.offset = get_reg(regs::edx);
+        hp.offset = regoffset(edx);
         hp.type = USING_STRING;
         hp.filter_fun = Anim3Filter;
         ConsoleOutput("INSERT Anim3");

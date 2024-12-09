@@ -525,7 +525,7 @@ bool InsertEushullyHook()
   if (thisCaller)
   {
     hp.address = thisCall;
-    hp.offset = get_stack(6);
+    hp.offset = stackoffset(6);
     succ |= NewHook(hp, "ARCGameEngine_other");
   }
   return succ;
@@ -558,8 +558,8 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | USING_SPLIT | NO_CONTEXT; // 必须NO_CONTEXT否则被注音的字会被分开
-    hp.offset = get_stack(5);
-    hp.split = get_stack(1); // name 80000000 各种所有text 0
+    hp.offset = stackoffset(5);
+    hp.split = stackoffset(1); // name 80000000 各种所有text 0
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       StringFilter(buffer, "\xf0\x40", 2);
@@ -574,7 +574,7 @@ namespace
   {
     HookParam hp;
     hp.address = (DWORD)GetStringTypeExW;
-    hp.offset = get_stack(3);
+    hp.offset = stackoffset(3);
     hp.type = USING_STRING | CODEC_UTF16;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
@@ -592,7 +592,7 @@ namespace
     };
     auto succ = NewHook(hp, "eushully");
     hp.address = (DWORD)GetTextExtentPoint32W;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     succ |= NewHook(hp, "eushully");
     return succ;
   }

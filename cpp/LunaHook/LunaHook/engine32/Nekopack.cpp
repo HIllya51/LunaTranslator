@@ -43,7 +43,7 @@ bool InsertNekopackHook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(2);
+  hp.offset=stackoffset(2);
   hp.type = USING_STRING;
 
   ConsoleOutput("INSERT NekoPack");

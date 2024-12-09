@@ -46,11 +46,11 @@ namespace
     {
       // みはる -あるとアナザーストーリー-
       // stdcall , mov     edx, [esp+arg_0]
-      hp.offset = get_stack(3);
+      hp.offset = stackoffset(3);
     }
     else
-      hp.offset = get_stack(2);
-    hp.split = get_reg(regs::esp);
+      hp.offset = stackoffset(2);
+    hp.split = regoffset(esp);
     hp.type = CODEC_ANSI_BE | USING_SPLIT;
 
     ConsoleOutput("INSERT CMVS1");
@@ -177,7 +177,7 @@ namespace
     // reladdr = 0x48ff3;
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset = get_stack(3);
+    hp.offset = stackoffset(3);
     hp.type = CODEC_ANSI_BE;
 
     ConsoleOutput("INSERT CMVS2");
@@ -1192,7 +1192,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = EMBED_ABLE | USING_STRING | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     hp.embed_hook_font = F_GetGlyphOutlineA;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)

@@ -15,10 +15,10 @@ static inline size_t _elf_strlen(LPCSTR p) // limit search address which might b
   return 0; // when len >= VNR_TEXT_CAPACITY
 }
 
-static void SpecialHookElf(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookElf(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   // DWORD arg1 = *(DWORD *)(esp_base + 0x4);
-  DWORD arg1 = stack->stack[1];
+  DWORD arg1 = context->stack[1];
   DWORD arg2_scene = arg1 + 4 * 5,
         arg2_chara = arg1 + 4 * 10;
   DWORD text; //= 0; // This variable will be killed
@@ -181,7 +181,7 @@ namespace
         continue;
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_stack(1);
+      hp.offset = stackoffset(1);
       hp.type = USING_STRING;
 
       return NewHook(hp, "aiwin6");
@@ -222,7 +222,7 @@ namespace
       };
       char nameText_[MaxNameSize + 1];
 
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         auto arg = (TextArgument *)s->stack[0]; // arg1 on the top of the stack
 
@@ -253,7 +253,7 @@ namespace
           //  ::memset(text + oldData.size() - left, 0, left);
         }
       }
-      void hookafter1(hook_stack *s, TextBuffer buffer)
+      void hookafter1(hook_context *s, TextBuffer buffer)
       {
         auto newData = buffer.strA();
         auto arg = (TextArgument *)s->stack[0]; // arg1 on the top of the stack
@@ -281,7 +281,7 @@ namespace
             ::memset(text + oldData.size() - left, 0, left);
         }
       }
-      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (scenarioArg_)
         {
@@ -348,7 +348,7 @@ namespace
 
       // lastCaller = MemDbg::findEnclosingAlignedFunction(lastCaller);
       // Private::attached_ = false;
-      // return winhook::hook_before(lastCaller, [=](winhook::hook_stack *s) -> bool {
+      // return winhook::hook_before(lastCaller, [=](winhook::hook_context *s) -> bool {
       //   if (Private::attached_)
       //     return true;
       //   Private::attached_ = true;
@@ -384,31 +384,31 @@ namespace
       hp.address = addr;
       hp.user_value = check;
       hp.type = USING_STRING | NO_CONTEXT;
-      hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         DWORD ptr;
         switch (hp->user_value)
         {
         case 0x7a:
-          ptr = stack->edx;
+          ptr = context->edx;
           break;
         case 0x7b:
-          ptr = stack->ebx;
+          ptr = context->ebx;
           break;
         case 0x79:
-          ptr = stack->ecx;
+          ptr = context->ecx;
           break;
         case 0x78:
-          ptr = stack->eax;
+          ptr = context->eax;
           break;
         case 0x7e:
-          ptr = stack->esi;
+          ptr = context->esi;
           break;
         case 0x7f:
-          ptr = stack->edi;
+          ptr = context->edi;
           break;
         case 0x7d:
-          ptr = stack->ebp;
+          ptr = context->ebp;
           break;
           // esp:
           // 83 7c 24 14 10
@@ -453,7 +453,7 @@ namespace
     HookParam hp;
     hp.address = addr + 4;
     hp.type = USING_STRING;
-    hp.offset = get_reg(regs::esi);
+    hp.offset = regoffset(esi);
     return NewHook(hp, "Elf4");
   }
 }
@@ -482,7 +482,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_CHAR | CODEC_ANSI_BE | DATA_INDIRECT; // 不可以NO_CONTEXT，因为有彩色可点击文字，会在另一个context有很多垃圾文本
-    hp.offset = get_reg(regs::esp);
+    hp.offset = regoffset(esp);
     hp.index = 0x10;
     return NewHook(hp, "Elf4");
   }
@@ -494,17 +494,17 @@ bool Elf::attach_function()
   return ScenarioHook::attach(processStartAddress, processStopAddress) || _1;
 }
 
-void SpecialHookElf2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+void SpecialHookElf2(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   static DWORD lasttext;
-  DWORD eax = stack->eax;
-  DWORD edx = stack->edx;
+  DWORD eax = context->eax;
+  DWORD edx = context->edx;
   auto c = *(WORD *)(eax + edx);
   if (IsShiftjisWord(c) == false)
   {
     return;
   }
-  *split = stack->stack[1];
+  *split = context->stack[1];
   buffer->from_t(c);
 }
 bool Elf2attach_function()
@@ -545,7 +545,7 @@ bool elf2()
   HookParam hp;
 
   hp.type = NO_CONTEXT | USING_CHAR;
-  hp.offset = get_reg(regs::ebx);
+  hp.offset = regoffset(ebx);
   //[エルフ]あしたの雪之丞 DVD Special Edition
 
   const uint8_t bytes2[] = {
@@ -603,7 +603,7 @@ namespace
     HookParam hp;
     hp.address = addr + sizeof(sig) - 1;
     hp.type = NO_CONTEXT | USING_CHAR | DATA_INDIRECT | CODEC_ANSI_BE;
-    hp.offset = get_reg(regs::ebp);
+    hp.offset = regoffset(ebp);
     hp.index = -4;
     return NewHook(hp, "Elf");
   }
@@ -642,7 +642,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = NO_CONTEXT | USING_CHAR | CODEC_ANSI_BE;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     return NewHook(hp, "Elf");
   }
   bool all()
@@ -675,7 +675,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = NO_CONTEXT | USING_CHAR | CODEC_ANSI_BE;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     return NewHook(hp, "Elf");
   }
 }
@@ -697,10 +697,10 @@ bool ElfFunClubFinal::attach_function()
     HookParam hp;
     hp.address = addr + 4;
     hp.type = CODEC_ANSI_BE | USING_CHAR;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      *split = stack->stack[2] > 8;
-      buffer->from_t((WORD)stack->stack[3]);
+      *split = context->stack[2] > 8;
+      buffer->from_t((WORD)context->stack[3]);
     };
     succ |= NewHook(hp, "ElfFunClubFinal");
   }

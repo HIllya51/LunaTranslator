@@ -5,11 +5,11 @@ bool GuruGuruSMF4::attach_function()
 
   PcHooks::hookGDIFunctions();
   // 奈落の森の花
-  trigger_fun = [](LPVOID addr1, hook_stack *stack)
+  trigger_fun = [](LPVOID addr1, hook_context *context)
   {
     if (addr1 != GetGlyphOutlineW)
       return false;
-    auto addr = MemDbg::findEnclosingAlignedFunction((DWORD)stack->retaddr, 0x500);
+    auto addr = MemDbg::findEnclosingAlignedFunction((DWORD)context->retaddr, 0x500);
     ConsoleOutput("%p", addr);
     if (!addr)
       return true;
@@ -33,7 +33,7 @@ bool GuruGuruSMF4::attach_function()
       return true;
     HookParam hp;
     hp.address = (DWORD)addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16 | USING_STRING;
 
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)

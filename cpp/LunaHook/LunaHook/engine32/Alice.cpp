@@ -48,7 +48,7 @@ static bool InsertAliceHook1(DWORD addr)
       DWORD c = *(BYTE *)s;
       HookParam hp;
       hp.address = j;
-      hp.offset = get_reg(regs::eax);
+      hp.offset = regoffset(eax);
       hp.split = -8 - ((c & 0xf) << 2);
       hp.type = USING_STRING | USING_SPLIT;
       // if (s>j) hp.type^=USING_SPLIT;
@@ -69,7 +69,7 @@ static bool InsertAliceHook2(DWORD addr)
   }
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.index = 0x8;
   hp.type = DATA_INDIRECT;
   ConsoleOutput("INSERT AliceHook2");

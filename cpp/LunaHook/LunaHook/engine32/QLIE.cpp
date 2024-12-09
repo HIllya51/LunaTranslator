@@ -45,8 +45,8 @@ namespace
 
     HookParam hp;
     hp.type = CODEC_UTF16 | DATA_INDIRECT | USING_SPLIT;
-    hp.offset = get_reg(regs::esi);
-    hp.split = get_reg(regs::edi);
+    hp.offset = regoffset(esi);
+    hp.split = regoffset(edi);
     hp.address = addr;
 
     ConsoleOutput("INSERT QLIE3");
@@ -98,7 +98,7 @@ namespace
 
     HookParam hp;
     hp.type = DATA_INDIRECT | NO_CONTEXT; // 0x408
-    hp.offset = get_stack(5);
+    hp.offset = stackoffset(5);
     hp.address = addr;
 
     ConsoleOutput("INSERT QLIE2");
@@ -126,8 +126,8 @@ namespace
             { // push ebp, mov ebp,esp, sub esp,*
               HookParam hp;
               hp.address = j;
-              hp.offset = get_stack(6);
-              hp.split = get_reg(regs::esp);
+              hp.offset = stackoffset(6);
+              hp.split = regoffset(esp);
               hp.type = DATA_INDIRECT | USING_SPLIT;
               ConsoleOutput("INSERT QLIE1");
               return NewHook(hp, "QLiE");
@@ -166,7 +166,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr + 1;
-    hp.offset = get_stack(6);
+    hp.offset = stackoffset(6);
     hp.type = USING_STRING;
     return NewHook(hp, "QLIE4");
   }
@@ -192,7 +192,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::ecx);
+    hp.offset = regoffset(ecx);
     hp.type = USING_STRING;
     return NewHook(hp, "QLIE5");
   }
@@ -237,9 +237,9 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | CODEC_UTF16;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      auto __s = std::wstring_view((wchar_t *)stack->esi);
+      auto __s = std::wstring_view((wchar_t *)context->esi);
       if (startWith(__s, L"[f,3"))
       {
         *split = 2; // history
@@ -658,7 +658,7 @@ namespace
       int trimmedSize;
       char *trimmedText;
       int endtype;
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
 
         auto arg = (TextArgument *)(s->edx - 4);
@@ -731,7 +731,7 @@ namespace
 
         buffer->from(trimmedText, trimmedSize);
       }
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         std::string newData = buffer.strA();
 

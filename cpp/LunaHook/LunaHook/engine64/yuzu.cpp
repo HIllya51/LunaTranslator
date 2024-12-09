@@ -124,12 +124,12 @@ bool Hook_Network_RoomMember_SendGameInfo()
             continue;
         HookParam hp;
         hp.address = addr;
-        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
             // void __fastcall Network::RoomMember::SendGameInfo(
             //     Network::RoomMember *this,
             //     const AnnounceMultiplayerRoom::GameInfo *game_info)
-            game_info = *(GameInfo *)stack->rdx;
+            game_info = *(GameInfo *)context->rdx;
             if (game_info.id)
             {
                 HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
@@ -180,10 +180,10 @@ bool yuzu::attach_function()
     spDefault.maxAddress = -1;
     HookParam hp;
     hp.address = DoJitPtr;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto descriptor = *argidx(stack, idxDescriptor + 1); // r8
-        auto entrypoint = *argidx(stack, idxEntrypoint + 1); // r9
+        auto descriptor = context->argof(idxDescriptor + 1); // r8
+        auto entrypoint = context->argof(idxEntrypoint + 1); // r9
         auto em_address = *(uint64_t *)descriptor;
         if (!entrypoint)
             return;
@@ -238,9 +238,9 @@ namespace
         }
         return numBytes;
     }
-    void T010012A017F18000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void T010012A017F18000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = YUZU::emu_arg(stack)[2];
+        auto address = YUZU::emu_arg(context)[2];
         std::string s, bottom;
         uint32_t c;
         while (true)
@@ -308,22 +308,22 @@ namespace
     }
 
     template <int index>
-    void ReadTextAndLenDW(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void ReadTextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = YUZU::emu_arg(stack)[index];
+        auto address = YUZU::emu_arg(context)[index];
         buffer->from(address + 0x14, (*(DWORD *)(address + 0x10)) * 2);
     }
 
     template <int index>
-    void ReadTextAndLenW(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void ReadTextAndLenW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = YUZU::emu_arg(stack)[index];
+        auto address = YUZU::emu_arg(context)[index];
         buffer->from(address + 0x14, (*(WORD *)(address + 0x10)) * 2);
     }
     template <int idx>
-    void mages_readstring(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void mages_readstring(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto s = mages::readString(YUZU::emu_arg(stack)[0], idx);
+        auto s = mages::readString(YUZU::emu_arg(context)[0], idx);
         buffer->from(s);
     }
 
@@ -793,9 +793,9 @@ namespace
         buffer->from(utf16_to_utf32(s));
     }
     template <int index>
-    void T01000BB01CB8A000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void T01000BB01CB8A000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = YUZU::emu_arg(stack)[index];
+        auto address = YUZU::emu_arg(context)[index];
         std::wstring s;
         while (auto c = *(uint16_t *)address)
         {
@@ -815,18 +815,18 @@ namespace
     }
     std::unordered_map<std::wstring, std::wstring> T0100DEF01D0C6000_dict;
 
-    void T0100DEF01D0C6000_2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void T0100DEF01D0C6000_2(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address1 = YUZU::emu_arg(stack)[0] + 0x14;
-        auto address2 = YUZU::emu_arg(stack)[1] + 0x14;
+        auto address1 = YUZU::emu_arg(context)[0] + 0x14;
+        auto address2 = YUZU::emu_arg(context)[1] + 0x14;
         auto word = std::wstring((wchar_t *)address1);
         auto meaning = std::wstring((wchar_t *)address2);
         T0100DEF01D0C6000_dict[word] = meaning;
     }
-    void T010061300DF48000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void T010061300DF48000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address1 = YUZU::emu_arg(stack)[0];
-        auto address2 = YUZU::emu_arg(stack)[1];
+        auto address1 = YUZU::emu_arg(context)[0];
+        auto address2 = YUZU::emu_arg(context)[1];
         auto word = std::string((char *)address1);
         word = std::regex_replace(word, std::regex(R"(\w+\.\w+)"), "");
         while (!(*(BYTE *)address2))
@@ -838,9 +838,9 @@ namespace
     }
 
     template <int index, int type>
-    void T0100B0100E26C000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void T0100B0100E26C000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = YUZU::emu_arg(stack)[index];
+        auto address = YUZU::emu_arg(context)[index];
         if (type == 2)
             address += 0xA;
         auto length = (*(DWORD *)(address + 0x10)) * 2;
@@ -1450,9 +1450,9 @@ namespace
         s = std::regex_replace(s, std::regex("\\$"), "");
         buffer->from(s);
     }
-    void T0100B5500CA0C000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void T0100B5500CA0C000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = YUZU::emu_arg(stack, hp->emu_addr)[6];
+        auto address = YUZU::emu_arg(context, hp->emu_addr)[6];
         buffer->from(address, *(WORD *)(address - 2));
     }
     void F0100A8401A0A8000(TextBuffer *buffer, HookParam *hp)
@@ -1507,9 +1507,9 @@ namespace
         last = s;
         buffer->from(s);
     }
-    void TF0100AA1013B96000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void TF0100AA1013B96000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto ptr = (char *)(YUZU::emu_arg(stack, hp->emu_addr)[0] + 0xb);
+        auto ptr = (char *)(YUZU::emu_arg(context, hp->emu_addr)[0] + 0xb);
         std::string collect;
         while (*ptr || *(ptr - 1))
             ptr--;
@@ -1535,9 +1535,9 @@ namespace
         buffer->from(collect);
     }
     template <int idx>
-    void T0100CF400F7CE000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void T0100CF400F7CE000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = YUZU::emu_arg(stack)[idx];
+        auto address = YUZU::emu_arg(context)[idx];
         std::string s;
         int i = 0;
         while (1)
@@ -1575,9 +1575,9 @@ namespace
         }
         buffer->from(s);
     }
-    void T0100DB300B996000(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void T0100DB300B996000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = YUZU::emu_arg(stack)[8] + 1;
+        auto address = YUZU::emu_arg(context)[8] + 1;
         std::string s;
         int i = 0;
         while (1)

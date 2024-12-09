@@ -48,8 +48,8 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::edx);
-    hp.split = get_reg(regs::edx);
+    hp.offset = regoffset(edx);
+    hp.split = regoffset(edx);
     hp.type = USING_STRING | USING_SPLIT;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {

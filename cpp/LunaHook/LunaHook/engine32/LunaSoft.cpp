@@ -103,7 +103,7 @@ bool InsertLunaSoftHook()
   }
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING;
   // hp.filter_fun = LunaSoftFilter; // remove \n
   ConsoleOutput("INSERT LunaSoft");
@@ -128,7 +128,7 @@ bool InsertXXkata()
   HookParam hp;
   hp.address = (uint64_t)addr;
   hp.type = USING_STRING | NO_CONTEXT;
-  hp.offset = get_stack(3);
+  hp.offset = stackoffset(3);
   hp.filter_fun = all_ascii_Filter;
   return NewHook(hp, "XXkata");
 }
@@ -158,7 +158,7 @@ namespace
        *  0042F6EB   E9 5E010000      JMP lus004.0042F84E
        *  0042F6F0   8B4D 10          MOV ECX,DWORD PTR SS:[EBP+0x10]
        */
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         auto text = (LPCSTR)s->stack[1]; // arg1
         if (!text || !*text)             // || Util::allAscii(text))
@@ -174,7 +174,7 @@ namespace
           *role = Engine::ScenarioRole;
         buffer->from(oldData);
       }
-      void hookafter1(hook_stack *s, TextBuffer buffer)
+      void hookafter1(hook_context *s, TextBuffer buffer)
       {
         static std::string newData;
         newData = buffer.strA();

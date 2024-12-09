@@ -25,9 +25,9 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_CHAR;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      auto v6 = (int *)stack->ebx - 4;
+      auto v6 = (int *)context->ebx - 4;
       buffer->from_t<WORD>(*v6);
     };
     return NewHook(hp, "DISCOVERY");

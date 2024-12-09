@@ -116,7 +116,7 @@ namespace
 void DoReadPyString(PyObject *fmtstr, HookParam *hp, TextBuffer *buffer)
 {
 
-    if (fmtstr == NULL)
+    if (!fmtstr)
         return;
 
     auto fmtdata = PyUnicode_DATA(fmtstr);
@@ -170,21 +170,18 @@ bool InsertRenpy3Hook()
                     HookParam hp;
                     hp.address = addr;
                     hp.type = NO_CONTEXT | USING_STRING;
-                    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+                    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
                     {
-                        auto fmtstr = (PyObject *)stack->rcx;
+                        auto fmtstr = (PyObject *)context->rcx;
 
                         DoReadPyString(fmtstr, hp, buffer);
                     };
                     if (PyUnicode_FromKindAndData)
                     {
                         hp.type |= EMBED_ABLE | EMBED_CODEC_UTF16;
-                        hp.embed_fun = [](hook_stack *stack, TextBuffer buffer)
+                        hp.embed_fun = [](hook_context *context, TextBuffer buffer)
                         {
-                            auto format = (PyObject *)stack->rcx;
-                            if (!format)
-                                return;
-                            stack->rcx = (uintptr_t)PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer.buff, buffer.size / 2);
+                            context->rcx = (uintptr_t)PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer.buff, buffer.size / 2);
                         };
                     };
                     return NewHook(hp, "python3");

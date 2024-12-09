@@ -11,7 +11,7 @@ bool Suika2_msvcrt()
     HookParam hp;
     hp.address = (uintptr_t)_strdup;
     hp.type = USING_STRING | CODEC_UTF8;
-    hp.offset = get_reg(regs::rcx);
+    hp.offset = regoffset(rcx);
     return NewHook(hp, "Suika2_msvcrt");
 }
 bool Suika2::attach_function()

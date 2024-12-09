@@ -23,7 +23,7 @@ bool InsertTriangleHook()
           {
             HookParam hp;
             hp.address = t;
-            hp.offset = get_stack(1);
+            hp.offset = stackoffset(1);
             hp.type = USING_STRING;
             ConsoleOutput("INSERT Triangle");
             return NewHook(hp, "Triangle");
@@ -40,21 +40,21 @@ bool InsertTriangleHook()
 bool Triangle::attach_function()
 {
   PcHooks::hookGDIFunctions();
-  trigger_fun = [](LPVOID addr, hook_stack *stack)
+  trigger_fun = [](LPVOID addr, hook_context *context)
   {
     // Triangle  やっぱり妹がすきっ！
     if ((DWORD)addr != (DWORD)TextOutA)
       return false;
-    if (auto addr = MemDbg::findEnclosingAlignedFunction(stack->retaddr))
+    if (auto addr = MemDbg::findEnclosingAlignedFunction(context->retaddr))
     {
       if (*(BYTE *)(addr - 2) == 0xeb) // jmp xx, MONSTER PARK～化け物に魅入られし姫～，在函数中间中断
-        addr = MemDbg::findEnclosingAlignedFunction_strict(stack->retaddr);
+        addr = MemDbg::findEnclosingAlignedFunction_strict(context->retaddr);
       if (!addr)
         return true;
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_stack(4);
-      hp.split = get_stack(1);
+      hp.offset = stackoffset(4);
+      hp.split = stackoffset(1);
       hp.type = USING_STRING | USING_SPLIT;
       hp.embed_hook_font = F_TextOutA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
@@ -96,7 +96,7 @@ bool InsertTrianglePixHook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.index = 0;
   hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
   hp.filter_fun = NewLineCharToSpaceFilterA;
@@ -118,7 +118,7 @@ bool Triangle2_attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(5);
+  hp.offset = stackoffset(5);
   hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
   return NewHook(hp, "triangle");
 }
@@ -143,7 +143,7 @@ bool TriangleM1()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(2);
+  hp.offset = stackoffset(2);
   hp.type = USING_STRING | CODEC_UTF16;
   return NewHook(hp, "TriangleM");
 }
@@ -155,7 +155,7 @@ bool TriangleM2()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::ebx);
+  hp.offset = regoffset(ebx);
   hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
   return NewHook(hp, "TriangleM");
 }

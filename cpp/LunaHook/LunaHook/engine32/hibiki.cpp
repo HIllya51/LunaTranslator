@@ -26,7 +26,7 @@ bool hibikihook()
     HookParam hp;
     hp.address = addr;
 
-    hp.offset = get_stack(3);
+    hp.offset = stackoffset(3);
     hp.type = CODEC_UTF16;
 
     ConsoleOutput("INSERT hibiki_extra %p", addr);
@@ -84,7 +84,7 @@ bool InsertYaneSDKHook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.filter_fun = YaneSDKFilter;
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
   ConsoleOutput("INSERT YaneSDK");

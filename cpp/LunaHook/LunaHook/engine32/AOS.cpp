@@ -117,7 +117,7 @@ bool InsertAOS1Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(2);
+  hp.offset = stackoffset(2);
   hp.type = DATA_INDIRECT;
 
   ConsoleOutput("INSERT AOS1");
@@ -165,7 +165,7 @@ bool InsertAOS2Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(2);
+  hp.offset = stackoffset(2);
   hp.type = DATA_INDIRECT;
 
   ConsoleOutput("INSERT AOS2");
@@ -206,28 +206,28 @@ namespace
     return addr;
   }
 }
-regs mov_reg_ebpoffset(int reg)
+int mov_reg_ebpoffset(int reg)
 {
   switch (reg)
   {
   case 0x4B:
-    return regs::ebx;
+    return regoffset(ebx);
   case 0x48:
-    return regs::eax;
+    return regoffset(eax);
   case 0x49:
-    return regs::ecx;
+    return regoffset(ecx);
   case 0x4a:
-    return regs::edx;
+    return regoffset(edx);
   case 0x4c:
-    return regs::ebp;
+    return regoffset(ebp);
   case 0x4d:
-    return regs::esp;
+    return regoffset(esp);
   case 0x4e:
-    return regs::esi;
+    return regoffset(esi);
   case 0x4f:
-    return regs::edi;
+    return regoffset(edi);
   default:
-    return regs::invalid;
+    return -1;
   }
 }
 bool AOS_EX()
@@ -263,16 +263,16 @@ bool AOS_EX()
       continue;
     auto reg = mov_reg_ebpoffset(*(BYTE *)((BYTE *)addr + 5));
     int off;
-    if (reg != regs::invalid)
+    if (reg != -1)
     {
       // usercall
-      off = get_reg(reg);
+      off = reg;
     }
     else if (((*(WORD *)addr)) == 0xec83)
     {
       // 姫様LOVEライフ！
       // 也是usercall，但是第二个参数是栈上。
-      off = get_stack(1);
+      off = stackoffset(1);
     }
     else
     {
@@ -280,12 +280,12 @@ bool AOS_EX()
       BYTE sig[] = {0x89, 0x55, 0xFC};
       if (MemDbg::findBytes(sig, sizeof(sig), addr, addr + 0x20))
       {
-        off = get_reg(regs::edx);
+        off = regoffset(edx);
       }
       else
       {
         // cdecl;
-        off = get_stack(2);
+        off = stackoffset(2);
       }
     }
     HookParam hp;

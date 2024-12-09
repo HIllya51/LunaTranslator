@@ -1,6 +1,6 @@
 #pragma once
 
-inline std::atomic<bool (*)(LPVOID addr, hook_stack *stack)> trigger_fun = nullptr;
+inline std::atomic<bool (*)(LPVOID addr, hook_context *context)> trigger_fun = nullptr;
 
 class TextHook
 {
@@ -19,8 +19,8 @@ private:
 	bool RemoveBreakPoint();
 	bool breakpointcontext(PCONTEXT);
 	void Send(uintptr_t);
-	void Send(hook_stack*);
-	int GetLength(hook_stack *stack, uintptr_t in); // jichi 12/25/2013: Return 0 if failed
+	void Send(hook_context*);
+	int GetLength(hook_context *context, uintptr_t in); // jichi 12/25/2013: Return 0 if failed
 	int HookStrlen(BYTE *data);
 	void RemoveHookCode();
 	void RemoveReadCode();

@@ -27,7 +27,7 @@ bool Ages3ResTHook()
       continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(3);
+    hp.offset = stackoffset(3);
     hp.type = CODEC_UTF16 | USING_STRING | FULL_STRING;
     succ |= NewHook(hp, "Ages3ResT");
   }
@@ -94,7 +94,7 @@ bool Ages3ResTHook_1()
       continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = CODEC_UTF16 | USING_CHAR;
     succ |= NewHook(hp, "Ages3ResT2");
   }

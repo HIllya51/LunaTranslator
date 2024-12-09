@@ -11,7 +11,7 @@ bool MKXPZ::attach_function()
   bool succ = false;
   HookParam hp;
   hp.type = CODEC_UTF8 | USING_STRING | FULL_STRING;
-  hp.offset = get_reg(regs::rdx);
+  hp.offset = regoffset(rdx);
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
     auto s = buffer->strA();

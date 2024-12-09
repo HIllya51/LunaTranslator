@@ -76,8 +76,8 @@ bool InsertArtemis1Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::ecx);
-  hp.split = get_stack(5);
+  hp.offset = regoffset(ecx);
+  hp.split = stackoffset(5);
   hp.type = NO_CONTEXT | DATA_INDIRECT | USING_SPLIT; // 0x418
 
   // hp.address = 0x650a2f;
@@ -140,7 +140,7 @@ bool InsertArtemis2Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING | NO_CONTEXT;
 
   ConsoleOutput("INSERT Artemis2");
@@ -149,7 +149,7 @@ bool InsertArtemis2Hook()
   // Artikash 1/1/2019: Recent games seem to use utf8 encoding instead, other than that the hook is identical.
   // Not sure how to differentiate which games are sjis/utf8 so insert both
   hp.address = addr + 6;
-  hp.offset = get_reg(regs::ebp);
+  hp.offset = regoffset(ebp);
   hp.index = 8; // ebp was also pushed
   hp.type = CODEC_UTF8 | USING_STRING | DATA_INDIRECT;
   succ |= NewHook(hp, "Artemis2");
@@ -207,7 +207,7 @@ bool InsertArtemis3Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING | EMBED_ABLE | CODEC_UTF8 | EMBED_AFTER_NEW;
 
   return NewHook(hp, "EmbedArtemis");
@@ -247,14 +247,14 @@ namespace
           HookParam hp;
           hp.address = funcaddr;
           hp.type = CODEC_ANSI_BE;
-          hp.offset = get_stack(2);
+          hp.offset = stackoffset(2);
           ok |= NewHook(hp, "Artemis4A");
         }
         {
           HookParam hp;
           hp.address = funcaddr + 5;
           hp.type = CODEC_UTF16;
-          hp.offset = get_stack(2);
+          hp.offset = stackoffset(2);
           ok |= NewHook(hp, "Artemis4W");
         }
         return ok;
@@ -376,7 +376,7 @@ namespace
         HookParam hp;
         hp.address = addr;
         hp.type = USING_STRING | CODEC_UTF8;
-        hp.offset = get_stack(1);
+        hp.offset = stackoffset(1);
         return NewHook(hp, "Artemis");
       }
     }

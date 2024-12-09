@@ -10,7 +10,7 @@ bool InsertMBLHook()
     if (DWORD addr = Util::FindCallAndEntryRel(c, processStopAddress - processStartAddress, processStartAddress, fun)) {
       HookParam hp;
       hp.address = addr;
-      hp.offset=get_stack(1);
+      hp.offset=stackoffset(1);
       hp.type = USING_STRING;
       ConsoleOutput("INSERT MBL-Furigana");
       ret|=NewHook(hp, "MBL-Furigana");
@@ -19,8 +19,8 @@ bool InsertMBLHook()
     if (DWORD addr = Util::FindCallAndEntryRel(c, processStopAddress - processStartAddress, processStartAddress, fun)) {
       HookParam hp;
       hp.address = addr;
-      hp.offset=get_stack(1);
-      hp.split = get_reg(regs::esp);
+      hp.offset=stackoffset(1);
+      hp.split = regoffset(esp);
       hp.type = CODEC_ANSI_BE|USING_SPLIT;
       ConsoleOutput("INSERT MBL");
       ret|=NewHook(hp, "MBL");
@@ -40,7 +40,7 @@ bool InsertMEDHook()
           if (t > processStartAddress && t < processStopAddress) {
             HookParam hp;
             hp.address = t;
-            hp.offset=get_reg(regs::eax);
+            hp.offset=regoffset(eax);
             hp.type = CODEC_ANSI_BE;
             ConsoleOutput("INSERT MED");
             return NewHook(hp, "MED");

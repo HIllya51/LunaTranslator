@@ -15,7 +15,7 @@ bool Purple::attach_function() {
   if(*(DWORD*)addr==0xCCCCCCCC)addr+=4;
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1); 
+  hp.offset=stackoffset(1); 
   hp.type = USING_STRING; 
  
   return NewHook(hp, "Purple"); 
@@ -31,7 +31,7 @@ bool Purple2::attach_function() {
   addr+=4;
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1); 
+  hp.offset=stackoffset(1); 
   hp.index=0;
   hp.type = DATA_INDIRECT; 
  

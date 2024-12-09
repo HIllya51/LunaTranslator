@@ -1,5 +1,5 @@
-#include"Bootup.h"
-  
+#include "Bootup.h"
+
 /**
  *  jichi 5/22/2015: Insert Bootup hook
  *  Sample games:
@@ -168,84 +168,89 @@
  *  011318E9   0FAFC1           IMUL EAX,ECX
  *  011318EC   8B7B 0C          MOV EDI,DWORD PTR DS:[EBX+0xC]
  */
-namespace { // unnamed
+namespace
+{ // unnamed
 
-bool InsertBootupGDIHook()
-{
-  bool widechar = true;
-  ULONG addr = MemDbg::findCallerAddressAfterInt3((ULONG)TextOutW, processStartAddress, processStopAddress);
-  if (!addr) {
-    addr = MemDbg::findCallerAddressAfterInt3((ULONG)TextOutA, processStartAddress, processStopAddress);
-    widechar = false;
-  }
-  if (!addr) {
-    ConsoleOutput("BootupGDI: failed to find TextOut");
-    return false;
-  }
-
-  HookParam hp;
-  hp.address = addr;
-  hp.type = USING_SPLIT|NO_CONTEXT|USING_CHAR;   // use NO_CONTEXT to get rid of floating reladdr
-  hp.type |= widechar ? CODEC_UTF16 : CODEC_ANSI_BE; // use context as split is sufficient, but will produce floating split
-  
-
-  hp.offset=get_stack(2); // arg2, character in arg2, could be modified by hook
-  if (widechar)
-    hp.split = get_reg(regs::edx);
-  else
-    hp.split = get_stack(1);
-  hp.text_fun = 
-    [](hook_stack* stack, HookParam* hp, TextBuffer *buffer, uintptr_t *split)
+  bool InsertBootupGDIHook()
+  {
+    bool widechar = true;
+    ULONG addr = MemDbg::findCallerAddressAfterInt3((ULONG)TextOutW, processStartAddress, processStopAddress);
+    if (!addr)
     {
-      DWORD arg2 = stack->stack[2];
-      if ((arg2 & 0xffff0000)) { // if arg2 high bits are there, this is new Bootup game
+      addr = MemDbg::findCallerAddressAfterInt3((ULONG)TextOutA, processStartAddress, processStopAddress);
+      widechar = false;
+    }
+    if (!addr)
+    {
+      ConsoleOutput("BootupGDI: failed to find TextOut");
+      return false;
+    }
+
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_SPLIT | NO_CONTEXT | USING_CHAR;   // use NO_CONTEXT to get rid of floating reladdr
+    hp.type |= widechar ? CODEC_UTF16 : CODEC_ANSI_BE; // use context as split is sufficient, but will produce floating split
+
+    hp.offset = stackoffset(2); // arg2, character in arg2, could be modified by hook
+    if (widechar)
+      hp.split = regoffset(edx);
+    else
+      hp.split = stackoffset(1);
+    hp.text_fun =
+        [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      DWORD arg2 = context->stack[2];
+      if ((arg2 & 0xffff0000))
+      { // if arg2 high bits are there, this is new Bootup game
         hp->type |= DATA_INDIRECT;
-        hp->offset = get_stack(3);
-        hp->split = get_reg(regs::ebx);
+        hp->offset = stackoffset(3);
+        hp->split = regoffset(ebx);
       }
-      hp->text_fun=nullptr;
+      hp->text_fun = nullptr;
     };
 
-  ConsoleOutput("INSERT BootupGDI");
-  
+    ConsoleOutput("INSERT BootupGDI");
 
-  ConsoleOutput("BootupGDI: disable GDI hooks");
-  
-  return NewHook(hp, widechar ? "BootupW" : "BootupA");
-}
-bool InsertBootupLstrHook() // for character name
-{
-  bool widechar = true;
-  ULONG addr = MemDbg::findLastCallerAddressAfterInt3((ULONG)GetCharABCWidthsW, processStartAddress, processStopAddress);
-  if (!addr) {
-    // Do not hook to lstrlenA, which causes text extraction to stop
-    //addr = MemDbg::findLastCallerAddressAfterInt3((ULONG)GetCharABCWidthsA, processStartAddress, processStopAddress);
-    //widechar = false;
-  }
-  if (!addr) {
-    ConsoleOutput("BootupLstr: failed to find GetCharABCWidths");
-    return false;
-  }
-  //GROWL_DWORD2(addr, processStartAddress);
-  //enum { range = 0x200 }; // 0x012A2CCB  - 0x12A2CB0 = 0x1b
-  addr = MemDbg::findCallAddress(widechar ? (ULONG)::lstrlenW : (ULONG)::lstrlenA,
-      processStartAddress, processStopAddress,
-      addr - processStartAddress); //, range); // no range
-  if (!addr) {
-    ConsoleOutput("BootupLstr: failed to find lstrlen");
-    return false;
-  }
+    ConsoleOutput("BootupGDI: disable GDI hooks");
 
-  HookParam hp;
-  hp.address = addr;
-  hp.type = widechar ? (USING_STRING|CODEC_UTF16) : USING_STRING; // use context as split is sufficient, but will produce floating split
-  //hp.type = CODEC_UTF16|NO_CONTEXT|USING_SPLIT; // use text address as split
-  //hp.split = 0;
+    return NewHook(hp, widechar ? "BootupW" : "BootupA");
+  }
+  bool InsertBootupLstrHook() // for character name
+  {
+    bool widechar = true;
+    ULONG addr = MemDbg::findLastCallerAddressAfterInt3((ULONG)GetCharABCWidthsW, processStartAddress, processStopAddress);
+    if (!addr)
+    {
+      // Do not hook to lstrlenA, which causes text extraction to stop
+      // addr = MemDbg::findLastCallerAddressAfterInt3((ULONG)GetCharABCWidthsA, processStartAddress, processStopAddress);
+      // widechar = false;
+    }
+    if (!addr)
+    {
+      ConsoleOutput("BootupLstr: failed to find GetCharABCWidths");
+      return false;
+    }
+    // GROWL_DWORD2(addr, processStartAddress);
+    // enum { range = 0x200 }; // 0x012A2CCB  - 0x12A2CB0 = 0x1b
+    addr = MemDbg::findCallAddress(widechar ? (ULONG)::lstrlenW : (ULONG)::lstrlenA,
+                                   processStartAddress, processStopAddress,
+                                   addr - processStartAddress); //, range); // no range
+    if (!addr)
+    {
+      ConsoleOutput("BootupLstr: failed to find lstrlen");
+      return false;
+    }
 
-  ConsoleOutput("INSERT BootupLstr");
-  
-  return NewHook(hp, widechar ? "BootupLstrW" : "BootupLstrA");
-}
+    HookParam hp;
+    hp.address = addr;
+    hp.type = widechar ? (USING_STRING | CODEC_UTF16) : USING_STRING; // use context as split is sufficient, but will produce floating split
+    // hp.type = CODEC_UTF16|NO_CONTEXT|USING_SPLIT; // use text address as split
+    // hp.split = 0;
+
+    ConsoleOutput("INSERT BootupLstr");
+
+    return NewHook(hp, widechar ? "BootupLstrW" : "BootupLstrA");
+  }
 } // unnamed namespace
 bool InsertBootupHook()
 {
@@ -254,7 +259,8 @@ bool InsertBootupHook()
   return ret;
 }
 
-bool Bootup::attach_function() {
-     
-    return InsertBootupHook();
-}  
+bool Bootup::attach_function()
+{
+
+  return InsertBootupHook();
+}

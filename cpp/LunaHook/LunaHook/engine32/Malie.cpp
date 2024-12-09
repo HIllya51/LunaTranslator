@@ -38,9 +38,9 @@ namespace
     }
     HookParam hp;
     hp.address = j + i;
-    hp.offset = get_reg(regs::ebx);
+    hp.offset = regoffset(ebx);
     hp.index = -0x8;
-    hp.split = get_reg(regs::ebx);
+    hp.split = regoffset(ebx);
     hp.split_index = 0x10;
     hp.type = CODEC_UTF16 | USING_SPLIT | DATA_INDIRECT | SPLIT_INDIRECT;
     ConsoleOutput("INSERT MalieHook1");
@@ -49,14 +49,14 @@ namespace
   }
 
   DWORD malie_furi_flag_; // jichi 8/20/2013: Make it global so that it can be reset
-  void SpecialHookMalie(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookMalie(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    DWORD ch = stack->eax & 0xffff,
-          ptr = stack->edi;
+    DWORD ch = context->eax & 0xffff,
+          ptr = context->edi;
 
     if (malie_furi_flag_)
     {
-      DWORD index = stack->edx;
+      DWORD index = context->edx;
       if (*(WORD *)(ptr + index * 2 - 2) < 0xa)
         malie_furi_flag_ = 0;
     }
@@ -100,7 +100,7 @@ namespace
     malie_furi_flag_ = 0; // reset old malie flag
     HookParam hp;
     hp.address = (DWORD)ptr + 4;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.text_fun = SpecialHookMalie;
     hp.type = USING_SPLIT | CODEC_UTF16 | NO_CONTEXT | USING_CHAR;
     ConsoleOutput("INSERT MalieHook2");
@@ -116,14 +116,14 @@ namespace
    *
    *  3/15/2015: logic modified as the plus operation would create so many threads
    */
-  void SpecialHookMalie2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookMalie2(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    buffer->from_t((WORD)stack->eax);
+    buffer->from_t((WORD)context->eax);
     // CC_UNUSED(data);
     //*len = GetHookDataLength(*hp, esp_base, (DWORD)data);
 
-    DWORD s1 = stack->stack[3], // base split, which is stable
-        s2 = stack->stack[0];   // used to split out furigana, but un stable
+    DWORD s1 = context->stack[3], // base split, which is stable
+        s2 = context->stack[0];   // used to split out furigana, but un stable
     // http://www.binaryhexconverter.com/decimal-to-binary-converter
     // enum : DWORD { mask = 0x14 };
     *split = s1 + (s2 ? 1 : 0);
@@ -197,7 +197,7 @@ namespace
 
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     // hp.split = 0xc; // jichi 12/17/2013: Subcontext removed
     // hp.split = -0xc; // jichi 12/17/2013: This could split the furigana, but will mess up the text
     // hp.type = USING_SPLIT|CODEC_UTF16|NO_CONTEXT;
@@ -300,11 +300,11 @@ namespace
    *  Also need to skip furigana.
    */
 
-  void SpecialHookMalie3(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookMalie3(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     // CC_UNUSED(split);
-    DWORD ecx = stack->ecx, // *(DWORD *)(esp_base + pusha_ecx_off - 4),
-        edx = stack->edx;   // *(DWORD *)(esp_base + pusha_edx_off - 4);
+    DWORD ecx = context->ecx, // *(DWORD *)(esp_base + pusha_ecx_off - 4),
+        edx = context->edx;   // *(DWORD *)(esp_base + pusha_edx_off - 4);
     //*data = ecx + edx*2; // [ecx+edx*2];
     //*len = wcslen((LPCWSTR)data) << 2;
     // There are garbage characters
@@ -481,12 +481,12 @@ namespace
 
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset = get_reg(regs::eax); // pusha_eax_off - 4
+    hp.offset = regoffset(eax); // pusha_eax_off - 4
     // hp.split = 0xc; // jichi 12/17/2013: Subcontext removed
     // hp.type = USING_SPLIT|CODEC_UTF16|NO_CONTEXT;
     //  jichi 12/17/2013: Need extern func for Electro Arms
     //  Though the hook parameter is quit similar to Malie, the original extern function does not work
-    hp.split = get_reg(regs::edx); // jichi 12/17/2013: This could split the furigana, but will mess up the text
+    hp.split = regoffset(edx); // jichi 12/17/2013: This could split the furigana, but will mess up the text
     hp.type = USING_SPLIT | NO_CONTEXT | CODEC_UTF16;
     ConsoleOutput("INSERT Malie4");
     return NewHook(hp, "Malie4");
@@ -509,7 +509,7 @@ namespace
       ConsoleOutput("INSERT Malie5");
       HookParam hp;
       hp.address = addr + 5;
-      hp.offset = get_reg(regs::ecx);
+      hp.offset = regoffset(ecx);
       hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
       return NewHook(hp, "Malie5");
     }
@@ -1111,7 +1111,7 @@ namespace
         strReplace(text, shortPause, "");
       }
       // I need a cache retainer here to make sure same text result in same result
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         static std::string data_;
         static std::unordered_set<uint64_t> hashes_;
@@ -1177,7 +1177,7 @@ namespace
           s->stack[1] = (ULONG)text;
         }
       }
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
 
         static std::string data_;
@@ -1483,7 +1483,7 @@ namespace
   {
     namespace Private
     {
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         static std::wstring fontFace_;
         auto fontFamily = std::wstring(commonsharedmem->fontFamily);
@@ -1695,11 +1695,11 @@ namespace
     }
     return {};
   }
-  void textfun_light(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void textfun_light(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    DWORD eax = stack->eax;
+    DWORD eax = context->eax;
     DWORD ecx = *(DWORD *)eax;
-    DWORD edx = stack->edx;
+    DWORD edx = context->edx;
     auto str = readString(ecx + edx * 2);
     static std::wstring _ws;
     if (_ws == str)

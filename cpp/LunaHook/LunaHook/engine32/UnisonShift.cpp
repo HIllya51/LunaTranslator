@@ -16,7 +16,7 @@ bool InsertUnisonShiftHook()
   ConsoleOutput("UnisonShift %p", addr1);
   HookParam hp;
   hp.address = addr1;
-  hp.offset = get_stack(3);
+  hp.offset = stackoffset(3);
   return NewHook(hp, "UnisonShift");
 }
 bool UnisonShift::attach_function()
@@ -39,7 +39,7 @@ bool InsertUnisonShift2Hook()
     return false;
   HookParam hp;
   hp.address = addr1;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = DATA_INDIRECT;
   hp.index = 0;
   return NewHook(hp, "UnisonShift2");
@@ -106,7 +106,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr1;
-    hp.offset = get_reg(regs::edx);
+    hp.offset = regoffset(edx);
     hp.type = USING_STRING;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {

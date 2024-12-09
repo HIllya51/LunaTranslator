@@ -5,15 +5,15 @@
 // static char* ShinyDaysQueueString[0x10];
 // static int ShinyDaysQueueStringLen[0x10];
 // static int ShinyDaysQueueIndex, ShinyDaysQueueNext;
-static void SpecialGameHookShinyDays(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialGameHookShinyDays(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   static int ShinyDaysQueueStringLen;
   LPWSTR fun_str, text_str;
   DWORD l = 0;
-  auto esp_base = stack->base;
-  fun_str = (LPWSTR)stack->stack[0x13];
-  auto esi = stack->stack[0x1C] + 0x3C;
-  auto edi = stack->stack[0x1D];
+  auto esp_base = context->base;
+  fun_str = (LPWSTR)context->stack[0x13];
+  auto esi = context->stack[0x1C] + 0x3C;
+  auto edi = context->stack[0x1D];
   if (esi <= edi)
   {
     auto tu = (TextUnionW *)esi;

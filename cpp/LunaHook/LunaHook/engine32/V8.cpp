@@ -23,7 +23,7 @@
 *  v8::String::Write+1C- 5D                   - pop ebp
 *  v8::String::Write+1D- C2 1000              - ret 0010 { 16 }
 */
-void SpecialHookV8String(hook_stack*, HookParam *hp, uintptr_t* data, uintptr_t* split, size_t* len)
+void SpecialHookV8String(hook_context*, HookParam *hp, uintptr_t* data, uintptr_t* split, size_t* len)
 {
 	DWORD ecx = *data;
 	DWORD strPtr = *(DWORD*)ecx;
@@ -51,7 +51,7 @@ bool InsertV8Hook(HMODULE module)
 	ConsoleOutput("JavaScript hook is known to be low quality: try searching for hooks if you don't like it");
 	HookParam hp;
 	hp.address = (DWORD)GetProcAddress(module, "?Write@String@v8@@QBEHPAGHHH@Z");
-	hp.offset=get_reg(regs::ecx);
+	hp.offset=regoffset(ecx);
 	hp.type = CODEC_UTF16 | USING_STRING;
 	hp.text_fun = SpecialHookV8String;
 	auto succ=NewHook(hp, "JavaScript");
@@ -87,7 +87,7 @@ bool hookv8addr(HMODULE module) {
 	HookParam hp;
 	hp.address = addr;
 
-	hp.offset=get_reg(regs::eax);
+	hp.offset=regoffset(eax);
 
 	hp.type = CODEC_UTF16 | NO_CONTEXT; 
 

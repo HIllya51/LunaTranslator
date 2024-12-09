@@ -497,7 +497,7 @@ namespace
        */
       bool attachCaller(ULONG addr);
       size_t textSize_;
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         static std::wstring text_; // persistent storage, which makes this function not thread-safe
         textSize_ = 0;
@@ -579,7 +579,7 @@ namespace
         buffer->from(text);
       }
 
-      void hookAfterCaller(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfterCaller(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (textSize_)
           s->eax = textSize_;
@@ -650,8 +650,8 @@ bool InsertCotophaHook1()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
-  hp.split = get_reg(regs::ebp);
+  hp.offset = stackoffset(1);
+  hp.split = regoffset(ebp);
   hp.type = CODEC_UTF16 | USING_SPLIT | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | NO_CONTEXT;
   hp.text_fun = ScenarioHook::Private::hookBefore;
   ConsoleOutput("INSERT Cotopha");
@@ -666,7 +666,7 @@ bool InsertCotophaHook2()
   {
     HookParam hp;
     hp.address = (uintptr_t)addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16 | USING_STRING;
     hp.filter_fun = CotophaFilter;
     return NewHook(hp, "Cotopha2");
@@ -684,7 +684,7 @@ bool InsertCotophaHook3()
   HookParam myhp;
   myhp.address = addr;
   myhp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
-  myhp.offset = get_reg(regs::eax);
+  myhp.offset = regoffset(eax);
 
   return NewHook(myhp, "Cotopha3_EWideString");
 }
@@ -715,7 +715,7 @@ bool InsertCotophaHook4()
 
   HookParam hp = {};
   hp.address = addr + 1;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
   hp.filter_fun = CotophaFilter;
   return NewHook(hp, "Cotopha4");
@@ -775,7 +775,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(3);
+    hp.offset = stackoffset(3);
     hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
     hp.embed_hook_font = F_GetGlyphOutlineW;
     return NewHook(hp, "Cotopha5");

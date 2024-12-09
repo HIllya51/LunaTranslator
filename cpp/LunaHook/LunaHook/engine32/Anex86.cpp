@@ -38,9 +38,9 @@ namespace
       0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97,
       0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9e, 0x00};
 
-  void SpecialHookAnex86(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookAnex86(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    auto ecx = stack->ecx;
+    auto ecx = context->ecx;
     if (*(BYTE *)(ecx + 0xe) != 0)
       return;
     auto lb = *(BYTE *)(ecx + 0xc);
@@ -82,7 +82,7 @@ bool InsertAnex86Hook()
     if (*(BYTE *)(addr - 2) == 0x33 || *(BYTE *)(addr - 2) == 0x31)
       addr = addr - 2;
     hp.address = addr;
-    hp.offset = get_reg(regs::ecx);
+    hp.offset = regoffset(ecx);
     hp.type = USING_CHAR;
     hp.text_fun = SpecialHookAnex86;
     // hp.type = EXTERN_HOOK;

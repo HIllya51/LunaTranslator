@@ -20,7 +20,7 @@ bool Interheart::attach_function() {
     if(asc_956B20[0]=='$' && asc_956B20[1]=='L'){
       HookParam hp;
       hp.address = addr+1+3;
-      hp.offset=get_reg(regs::edx);
+      hp.offset=regoffset(edx);
       hp.type = USING_STRING|NO_CONTEXT;
       ok|=NewHook(hp, "Interheart");
     }

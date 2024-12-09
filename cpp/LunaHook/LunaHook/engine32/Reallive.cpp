@@ -56,12 +56,12 @@ Reallive hook:
  *  012da884   83c4 08          add esp,0x8
  *  012da887   85f6             test esi,esi
  */
-static bool InsertRealliveDynamicHook(LPVOID addr, hook_stack *stack)
+static bool InsertRealliveDynamicHook(LPVOID addr, hook_context *context)
 {
   if (addr != ::GetGlyphOutlineA)
     return false;
   // jichi 5/13/2015: Find the enclosing caller of GetGlyphOutlineA
-  if (DWORD i = stack->ebp)
+  if (DWORD i = context->ebp)
   {
     i = *(DWORD *)(i + 4);
     for (DWORD j = i; j > i - 0x100; j--)
@@ -76,8 +76,8 @@ static bool InsertRealliveDynamicHook(LPVOID addr, hook_stack *stack)
 
         HookParam hp;
         hp.address = j;
-        hp.offset = get_stack(5);
-        hp.split = get_reg(regs::esp);
+        hp.offset = stackoffset(5);
+        hp.split = regoffset(esp);
         hp.type = CODEC_ANSI_BE | USING_SPLIT;
         // GROWL_DWORD(hp.address);
 
@@ -137,7 +137,7 @@ bool InsertRlBabelHook()
 
   HookParam hp;
   hp.address = addr + 1;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   hp.filter_fun = RlBabelFilter;
   ConsoleOutput("INSERT RealLive Babel");
@@ -161,7 +161,7 @@ namespace
 
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::esi);
+    hp.offset = regoffset(esi);
     hp.type = USING_CHAR | CODEC_ANSI_LE;
     return NewHook(hp, "RealLiveX");
   }
@@ -174,7 +174,7 @@ namespace
     HookParam hp;
     hp.address = (DWORD)GetProcAddress(GetModuleHandleA("gdi32.dll"), "GetGlyphOutline");
     hp.type = HOOK_RETURN;
-    hp.text_fun = [](hook_stack *stack, HookParam *hps, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hps, TextBuffer *buffer, uintptr_t *split)
     {
       hps->type = HOOK_EMPTY;
       auto addr = findfuncstart(hps->address);
@@ -189,7 +189,7 @@ namespace
         return;
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_stack(5);
+      hp.offset = stackoffset(5);
       hp.type = USING_CHAR | CODEC_ANSI_BE;
       NewHook(hp, "RealLiveOld");
     };
@@ -227,7 +227,7 @@ bool avg3216dattach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = NO_CONTEXT | DATA_INDIRECT;
   // GROWL_DWORD(hp.address);
   return NewHook(hp, "avg3216d");
@@ -254,7 +254,7 @@ bool avg3216dattach_function2()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING;
   // GROWL_DWORD(hp.address);
   return NewHook(hp, "avg3217d");

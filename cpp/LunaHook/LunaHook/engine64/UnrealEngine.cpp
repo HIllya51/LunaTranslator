@@ -29,7 +29,7 @@ bool InsertENTERGRAM()
   hp.address = addr + 14;
   hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
   hp.filter_fun = ENTERGRAMfilter;
-  hp.offset = get_reg(regs::rsi);
+  hp.offset = regoffset(rsi);
   hp.lineSeparator = L"\\n";
   return NewHook(hp, "UnrealEngine");
 }
@@ -46,7 +46,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
-    hp.offset = get_stack(5);
+    hp.offset = stackoffset(5);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       auto s = buffer->strW();
@@ -121,8 +121,8 @@ namespace
     HookParam hp;
     hp.address = func;
     hp.type = USING_STRING | CODEC_UTF16 | USING_SPLIT; // 会提取出所有TextBlock文字。怎么split都不完美，就这样吧。
-    hp.offset = get_reg(regs::rsi);
-    hp.split = get_reg(regs::rsi); // rcx
+    hp.offset = regoffset(rsi);
+    hp.split = regoffset(rsi); // rcx
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       if (all_ascii((wchar_t *)buffer->buff, buffer->size / 2))

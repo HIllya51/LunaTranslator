@@ -13,13 +13,13 @@ bool InsertGodotHook_X64()
 		myhp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT; // /HQ 不使用上下文区分 把所有线程的文本都提取
 		// myhp.padding = 0xc;//[esp+4]+padding
 		//  data_offset
-		myhp.offset = get_reg(regs::rax);
-		myhp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+		myhp.offset = regoffset(rax);
+		myhp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 		{
-			int len = *(int *)(stack->rax - 4);
-			if (len != wcslen((wchar_t *)stack->rax))
+			int len = *(int *)(context->rax - 4);
+			if (len != wcslen((wchar_t *)context->rax))
 				return;
-			buffer->from(stack->rax, len*2);
+			buffer->from(context->rax, len*2);
 		};
 		char nameForUser[HOOK_NAME_SIZE] = "RichTextLabel_add_text";
 
@@ -52,7 +52,7 @@ bool InsertGodotHook2_X64()
 	{
 		HookParam hp;
 		hp.address = addr;
-		hp.offset = get_reg(regs::rcx);
+		hp.offset = regoffset(rcx);
 		hp.type = USING_STRING | CODEC_UTF16;
 		ConsoleOutput("INSERT Godot2_x64 Hook ");
 		return NewHook(hp, "Godot2_x64");

@@ -32,7 +32,7 @@ bool InsertAIL2Hook()
   HookParam hp;
   hp.address = addr1;
   hp.codepage = 932;
-  hp.offset = get_stack(3);
+  hp.offset = stackoffset(3);
   hp.type = USING_STRING;
   succ |= NewHook(hp, "AIL1");
 
@@ -48,7 +48,7 @@ bool InsertAIL2Hook()
   hp = {};
   hp.address = addr1;
   hp.codepage = 932;
-  hp.offset = get_stack(4);
+  hp.offset = stackoffset(4);
   hp.type = USING_STRING | USING_SPLIT;
   hp.split_index = 0;
   succ |= NewHook(hp, "AIL2");
@@ -90,7 +90,7 @@ bool AILold()
     return false;
   HookParam hp;
   hp.address = addr1;
-  hp.offset = get_stack(3);
+  hp.offset = stackoffset(3);
   hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
   hp.embed_hook_font = F_TextOutA;
 

@@ -22,7 +22,7 @@ bool Ruf::attach_function() {
     if (addr == 0)return false; 
     HookParam hp;
     hp.address = addr;  
-    hp.offset=get_reg(regs::edx); 
+    hp.offset=regoffset(edx); 
     hp.type |= CODEC_ANSI_BE;
     return NewHook(hp, "Ruf");
 } 

@@ -61,7 +61,7 @@ bool CisLugI::attach_function()
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING;
-    hp.offset = get_stack(3);
+    hp.offset = stackoffset(3);
 
     return NewHook(hp, "CisLugI");
 }

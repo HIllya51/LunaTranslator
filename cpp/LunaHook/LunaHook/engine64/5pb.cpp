@@ -9,8 +9,8 @@ namespace
         HookParam hp;
         hp.address = (uintptr_t)GetProcAddress(GetModuleHandleA("ucrtbase.dll"), "strncat");
         hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT | USING_SPLIT;
-        hp.offset = get_stack(2);
-        hp.split = get_stack(1);
+        hp.offset = stackoffset(2);
+        hp.split = stackoffset(1);
         hp.length_offset = 3;
         hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
         {

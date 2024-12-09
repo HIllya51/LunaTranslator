@@ -17,7 +17,7 @@ bool Tarte::attach_function() {
       if(_==0)continue;
       HookParam hp;
       hp.address = addrx1;
-      hp.offset=get_stack(2);   
+      hp.offset=stackoffset(2);   
       hp.type = CODEC_ANSI_BE;
       auto succ=NewHook(hp, "Tarte");
 
@@ -27,7 +27,7 @@ bool Tarte::attach_function() {
         if(addrx11-addrx12<0x30){
           HookParam hp;
           hp.address = addrx12;
-          hp.offset=get_stack(5);   
+          hp.offset=stackoffset(5);   
           hp.type = CODEC_ANSI_BE;
           succ|=NewHook(hp, "Tarte"); 
         }

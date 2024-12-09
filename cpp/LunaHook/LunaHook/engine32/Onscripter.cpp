@@ -18,7 +18,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.type = USING_STRING | CODEC_UTF8;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {

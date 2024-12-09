@@ -407,7 +407,7 @@ bool InsertAbelHook()
       {
         HookParam hp;
         hp.address = j;
-        hp.offset = get_stack(1);
+        hp.offset = stackoffset(1);
         hp.type = USING_STRING | NO_CONTEXT;
         return NewHook(hp, "Abel");
       }

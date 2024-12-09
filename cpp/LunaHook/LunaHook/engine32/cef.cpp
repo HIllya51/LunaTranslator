@@ -21,13 +21,13 @@ typedef struct _cef_string_utf16_t
 	size_t length;
 	void (*dtor)(char16 *str);
 } cef_string_utf16_t;
-static void hook_cef_string_utf16_t(hook_stack *stack, HookParam *hp, TextBuffer *buff, uintptr_t *split)
+static void hook_cef_string_utf16_t(hook_context *context, HookParam *hp, TextBuffer *buff, uintptr_t *split)
 {
-	if (auto p = (_cef_string_utf16_t *)stack->stack[1])
+	if (auto p = (_cef_string_utf16_t *)context->stack[1])
 	{
 		buff->from(p->str, p->length);
 
-		auto s = stack->ecx;
+		auto s = context->ecx;
 		for (int i = 0; i < 0x10; i++) // traverse pointers until a non-readable address is met
 			if (s && !::IsBadReadPtr((LPCVOID)s, sizeof(DWORD)))
 				s = *(DWORD *)s;
@@ -39,13 +39,13 @@ static void hook_cef_string_utf16_t(hook_stack *stack, HookParam *hp, TextBuffer
 			*split = s;
 	}
 }
-static void hook_cef_string_wide_t(hook_stack *stack, HookParam *hp, TextBuffer *buff, uintptr_t *split)
+static void hook_cef_string_wide_t(hook_context *context, HookParam *hp, TextBuffer *buff, uintptr_t *split)
 {
-	if (auto p = (_cef_string_wide_t *)stack->stack[1])
+	if (auto p = (_cef_string_wide_t *)context->stack[1])
 	{
 		buff->from(p->str, p->length);
 
-		auto s = stack->ecx;
+		auto s = context->ecx;
 		for (int i = 0; i < 0x10; i++) // traverse pointers until a non-readable address is met
 			if (s && !::IsBadReadPtr((LPCVOID)s, sizeof(DWORD)))
 				s = *(DWORD *)s;
@@ -57,12 +57,12 @@ static void hook_cef_string_wide_t(hook_stack *stack, HookParam *hp, TextBuffer 
 			*split = s;
 	}
 }
-static void hook_cef_string_utf8_t(hook_stack *stack, HookParam *hp, TextBuffer *buff, uintptr_t *split)
+static void hook_cef_string_utf8_t(hook_context *context, HookParam *hp, TextBuffer *buff, uintptr_t *split)
 {
-	if (auto p = (_cef_string_utf8_t *)stack->stack[1])
+	if (auto p = (_cef_string_utf8_t *)context->stack[1])
 	{
 		buff->from(p->str, p->length);
-		auto s = stack->ecx;
+		auto s = context->ecx;
 		for (int i = 0; i < 0x10; i++) // traverse pointers until a non-readable address is met
 			if (s && !::IsBadReadPtr((LPCVOID)s, sizeof(DWORD)))
 				s = *(DWORD *)s;
@@ -192,7 +192,7 @@ bool libcefhook(HMODULE module)
 		{
 			HookParam hp;
 			hp.address = addr + 4;
-			hp.offset = get_stack(1);
+			hp.offset = stackoffset(1);
 			hp.filter_fun = ceffileter;
 			hp.lineSeparator = L"<br>";
 			hp.length_offset = 2;

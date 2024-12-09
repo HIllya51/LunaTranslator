@@ -152,7 +152,7 @@ namespace
 
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset = get_reg(regs::edx);
+    hp.offset = regoffset(edx);
     hp.type = USING_STRING;
     ConsoleOutput("INSERT 5pb1");
 
@@ -169,10 +169,10 @@ namespace
   }
 
   // 001e9b15   8a10             mov dl,byte ptr ds:[eax]    ; jichi: here, word by word
-  void SpecialHook5pb2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHook5pb2(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     static DWORD lasttext;
-    DWORD text = stack->eax;
+    DWORD text = context->eax;
     if (lasttext == text)
       return;
     BYTE c = *(BYTE *)text;
@@ -318,11 +318,11 @@ namespace
    *  0026B2A5   CC               INT3
    *  0026B2A6   CC               INT3
    */
-  void SpecialHook5pb3(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHook5pb3(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     int index = 0;
     // Text in arg1, name in arg2
-    if (LPCSTR text = (LPCSTR)stack->stack[index + 1])
+    if (LPCSTR text = (LPCSTR)context->stack[index + 1])
       if (*text)
       {
         if (index) // trim spaces in character name
@@ -394,7 +394,7 @@ bool Insert5pbHookex()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::ecx);
+  hp.offset = regoffset(ecx);
   hp.type = CODEC_UTF16;
 
   return NewHook(hp, "5pb");
@@ -410,8 +410,8 @@ bool InsertStuffScriptHook()
   // );
   HookParam hp;
   hp.address = (DWORD)::GetTextExtentPoint32A;
-  hp.offset = get_stack(2); // arg2 lpString
-  hp.split = get_reg(regs::esp);
+  hp.offset = stackoffset(2); // arg2 lpString
+  hp.split = regoffset(esp);
   hp.type = USING_STRING | USING_SPLIT;
   ConsoleOutput("INSERT StuffScriptEngine");
   return NewHook(hp, "StuffScriptEngine");
@@ -469,7 +469,7 @@ bool InsertStuffScript2Hook()
 
   HookParam hp;
   hp.address = addr + 0x11;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.index = 0;
   hp.type = USING_STRING | NO_CONTEXT;
   hp.filter_fun = StuffScript2Filter;
@@ -520,7 +520,7 @@ bool InsertStuffScript3Hook()
 
   HookParam hp = {};
   hp.address = addr + 1;
-  hp.offset = get_reg(regs::ecx);
+  hp.offset = regoffset(ecx);
   hp.type = USING_STRING | NO_CONTEXT;
   hp.filter_fun = StuffScript3Filter;
   NewHook(hp, "StuffScript3");
@@ -579,9 +579,9 @@ bool InsertKaleidoHook()
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset = get_reg(regs::esi);
+  hp.offset = regoffset(esi);
   hp.index = 0;
-  hp.split = get_stack(3);
+  hp.split = stackoffset(3);
   hp.split_index = 0;
   hp.type = USING_STRING | USING_SPLIT;
   hp.filter_fun = KaleidoFilter;
@@ -603,7 +603,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_NEW;
     hp.lineSeparator = L"\\n";
     return NewHook(hp, "5bp");
@@ -653,7 +653,7 @@ namespace
 
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_STRING | CODEC_UTF8;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
@@ -685,8 +685,8 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
-    hp.split = get_stack(2);
+    hp.offset = stackoffset(1);
+    hp.split = stackoffset(2);
     hp.type = USING_SPLIT | USING_STRING | FULL_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW; // 中文显示不出来
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {

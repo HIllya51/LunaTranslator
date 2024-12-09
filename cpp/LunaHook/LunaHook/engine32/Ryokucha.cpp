@@ -1,9 +1,9 @@
 #include "Ryokucha.h"
-static void SpecialHookRyokucha(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookRyokucha(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   for (DWORD i = 1; i < 5; i++)
   {
-    DWORD j = stack->stack[i];
+    DWORD j = context->stack[i];
     if ((j >> 16) == 0 && (j >> 8))
     {
       hp->offset = i << 2;
@@ -14,7 +14,7 @@ static void SpecialHookRyokucha(hook_stack *stack, HookParam *hp, TextBuffer *bu
     }
   }
 }
-bool InsertRyokuchaDynamicHook(LPVOID addr, hook_stack *)
+bool InsertRyokuchaDynamicHook(LPVOID addr, hook_context *)
 {
   if (addr != ::GetGlyphOutlineA)
     return false;
@@ -255,7 +255,7 @@ bool InsertScenarioPlayerHook()
   auto succ = false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   if (
       (addr - start == addr_offset_W) ||
       ((Util::FindImportEntry(processStartAddress, (DWORD)GetGlyphOutlineA) == 0) &&
@@ -305,7 +305,7 @@ bool InsertScenarioPlayerHookx()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = CODEC_UTF16;
   return NewHook(hp, "sutajioryokutyaW");
 }
@@ -338,7 +338,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = CODEC_ANSI_BE;
     return NewHook(hp, "Iyashikei");
   }
@@ -380,7 +380,7 @@ bool Ryokucha2::attach_function()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(6);
+  hp.offset = stackoffset(6);
   hp.type = USING_STRING;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {

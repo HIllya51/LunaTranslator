@@ -26,7 +26,7 @@ bool InsertKiriKiriZHook()
 	{
 		HookParam hp;
 		hp.address = addr + 1;
-		hp.offset = get_reg(regs::rcx);
+		hp.offset = regoffset(rcx);
 		hp.index = 0x18;
 		hp.type = CODEC_UTF16 | DATA_INDIRECT;
 		return NewHook(hp, "KiriKiriZ");
@@ -55,7 +55,7 @@ bool Insertkrkrz64Hook()
 		HookParam hp;
 		hp.address = addr;
 		hp.type = CODEC_UTF16 | DATA_INDIRECT;
-		hp.offset = get_reg(regs::rcx);
+		hp.offset = regoffset(rcx);
 		hp.index = 0x18;
 		ConsoleOutput("krkrz64 %p %x", addr);
 		return NewHook(hp, "krkrz64");

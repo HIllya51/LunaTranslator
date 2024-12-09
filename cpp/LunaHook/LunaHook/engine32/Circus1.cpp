@@ -26,8 +26,8 @@ bool InsertCircusHook1() // jichi 10/2/2013: Change return type to bool
           {
             HookParam hp;
             hp.address = k;
-            hp.offset = get_stack(3);
-            hp.split = get_reg(regs::esp);
+            hp.offset = stackoffset(3);
+            hp.split = regoffset(esp);
             hp.type = DATA_INDIRECT | USING_SPLIT;
             ConsoleOutput("INSERT CIRCUS#1");
 
@@ -75,7 +75,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     hp.embed_hook_font = F_GetGlyphOutlineA;
     return NewHook(hp, "Circus1");
@@ -130,8 +130,8 @@ bool Circus_old::attach_function()
   }
   HookParam hp;
   hp.address = func;
-  hp.offset = get_stack(4);
-  hp.split = get_stack(1);
+  hp.offset = stackoffset(4);
+  hp.split = stackoffset(1);
   hp.type = USING_STRING | USING_SPLIT;
   return NewHook(hp, "Circus");
 }

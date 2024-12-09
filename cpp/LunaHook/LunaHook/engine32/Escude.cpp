@@ -169,9 +169,9 @@ namespace
           return p + 1;
     return text;
   }
-  void SpecialHookEscude(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookEscude(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    DWORD arg1 = stack->stack[1];
+    DWORD arg1 = context->stack[1];
     if (!arg1 || (LONG)arg1 == -1 || ::IsBadWritePtr((LPVOID)arg1, 4)) // this is indispensable
       return;
     LPCSTR text = (LPCSTR) * (DWORD *)(arg1 + 0x20);
@@ -206,7 +206,7 @@ namespace
     }
   };
   LPCSTR trimmedText;
-  void hook_before(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+  void hook_before(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
   {
 
     auto arg = (HookArgument *)s->stack[1];
@@ -216,7 +216,7 @@ namespace
     *role = arg->role();
     buffer->from(trimmedText);
   }
-  void embed_fun(hook_stack *s, TextBuffer buffer)
+  void embed_fun(hook_context *s, TextBuffer buffer)
   {
     static std::string data_;
     data_ = buffer.strA();

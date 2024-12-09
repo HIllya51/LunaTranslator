@@ -3,13 +3,13 @@
 // jichi 6/21/2015
 namespace { // unnamed
 
-void SpecialHookRetouch1(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+void SpecialHookRetouch1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 { 
-  buffer->from((char*)stack->stack[1]);
+  buffer->from((char*)context->stack[1]);
   *split =
-    stack->eax == 0 ? FIXED_SPLIT_VALUE * 2 : // name
-    stack->ebx == 0 ? FIXED_SPLIT_VALUE * 1 : // scenario
-                               stack->eax;//FIXED_SPLIT_VALUE * 3 ; // other //夏への方舟１体験版
+    context->eax == 0 ? FIXED_SPLIT_VALUE * 2 : // name
+    context->ebx == 0 ? FIXED_SPLIT_VALUE * 1 : // scenario
+                               context->eax;//FIXED_SPLIT_VALUE * 3 ; // other //夏への方舟１体験版
 }
 
 bool InsertRetouch1Hook()
@@ -29,7 +29,7 @@ bool InsertRetouch1Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1);
+  hp.offset=stackoffset(1);
   hp.type = USING_STRING|NO_CONTEXT|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
   hp.embed_hook_font=F_GetGlyphOutlineA;
   hp.text_fun = SpecialHookRetouch1;
@@ -54,7 +54,7 @@ bool InsertRetouch2Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1);
+  hp.offset=stackoffset(1);
   hp.type = USING_STRING|NO_CONTEXT|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
   hp.embed_hook_font=F_GetGlyphOutlineA;
   ConsoleOutput("INSERT Retouch");
@@ -85,7 +85,7 @@ bool attach() // attach scenario
   addr = get_jmp_absaddr(addr);
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1); 
+  hp.offset=stackoffset(1); 
   hp.type = USING_STRING|NO_CONTEXT|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
   hp.embed_hook_font=F_GetGlyphOutlineA;
   return NewHook(hp, "RetouchHistory");

@@ -19,7 +19,7 @@ bool VALKYRIA::attach_function()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_STRING;
-  hp.offset = get_stack(5);
+  hp.offset = stackoffset(5);
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     // 实际上是单字符

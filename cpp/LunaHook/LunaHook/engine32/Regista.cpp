@@ -14,7 +14,7 @@ bool old() {
 			if (addr == 0)return false;
 			HookParam hp;
 			hp.address = addr;
-			hp.offset=get_stack(1);
+			hp.offset=stackoffset(1);
 			hp.type = DATA_INDIRECT;
 			hp.index = 0;
 			return NewHook(hp, "Regista");
@@ -40,7 +40,7 @@ bool _2(){
 			if (addr == 0)return false;
 			HookParam hp;
 			hp.address = addr+4;
-			hp.offset=get_reg(regs::edx);  
+			hp.offset=regoffset(edx);  
 			hp.type=USING_STRING;
 			return NewHook(hp, "Regista");
 }

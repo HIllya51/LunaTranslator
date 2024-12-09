@@ -196,10 +196,10 @@ bool PPSSPPinithooksearch(){
 				{
 					hp.type |= NO_CONTEXT | USING_SPLIT | SPLIT_INDIRECT;
 #ifndef _WIN64
-                    hp.split = get_reg(regs::ebp);
-					hp.split_index =get_reg(regs::eax); // this is where PPSSPP 1.8.0 stores its return address stack
+                    hp.split = regoffset(ebp);
+					hp.split_index =regoffset(eax); // this is where PPSSPP 1.8.0 stores its return address stack
 #else
-					hp.split = get_reg(regs::r14);
+					hp.split = regoffset(r14);
 					hp.split_index = -8; // this is where PPSSPP 1.8.0 stores its return address stack
 #endif
 				};
@@ -439,7 +439,7 @@ namespace ppsspp
         };
     }
 
-    void unsafeoncegetJitBlockCache(hook_stack *stack)
+    void unsafeoncegetJitBlockCache(hook_context *context)
     {
 
 // class JitBlockCache : public JitBlockCacheDebugInterface {
@@ -448,11 +448,11 @@ namespace ppsspp
 // std::unordered_multimap<u32, int> proxyBlockMap_; ->64
 // int num_blocks_ = 0;
 #ifdef _WIN64
-        auto num_blocks_ = *(uint32_t *)(stack->rcx + 72 + 16 + 88);
-        auto blocks_ = (JitBlock *)*(uintptr_t *)(stack->rcx + 72 + 16 + 88 - 64 - 8);
+        auto num_blocks_ = *(uint32_t *)(context->rcx + 72 + 16 + 88);
+        auto blocks_ = (JitBlock *)*(uintptr_t *)(context->rcx + 72 + 16 + 88 - 64 - 8);
 #else
-        auto num_blocks_ = *(uint32_t *)(stack->ecx + 88);
-        auto blocks_ = (JitBlock *)*(uintptr_t *)(stack->ecx + 88 - 32 - 4);
+        auto num_blocks_ = *(uint32_t *)(context->ecx + 88);
+        auto blocks_ = (JitBlock *)*(uintptr_t *)(context->ecx + 88 - 32 - 4);
 #endif
         int checkvalid = 0;
         num_blocks_ -= 1; // last one is now dojiting
@@ -475,13 +475,13 @@ namespace ppsspp
 
         return;
     }
-    bool oncegetJitBlockCache(hook_stack *stack)
+    bool oncegetJitBlockCache(hook_context *context)
     {
         // 在游戏中途hook，获取已compiled jit
         // 虽然只有在每次进行jit时才会触发，不过测试后续触发的也挺频繁的。
         __try
         {
-            unsafeoncegetJitBlockCache(stack);
+            unsafeoncegetJitBlockCache(context);
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
@@ -520,13 +520,13 @@ namespace ppsspp
             return;
         HookParam hp;
         hp.address = addr;
-        hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *buff, auto *split)
+        hp.text_fun = [](hook_context *context, HookParam *hp, auto *buff, auto *split)
         {
-            if (strcmp((char *)stack->ARG2, "%s : %s") != 0)
+            if (strcmp((char *)context->argof(2), "%s : %s") != 0)
                 return;
-            game_info.DISC_ID = (char *)stack->ARG3;
-            game_info.TITLE = (char *)stack->ARG4;
-            HostInfo(HOSTINFO::EmuGameName, "%s %s", stack->ARG3, stack->ARG4);
+            game_info.DISC_ID = (char *)context->argof(3);
+            game_info.TITLE = (char *)context->argof(4);
+            HostInfo(HOSTINFO::EmuGameName, "%s %s", context->argof(3), context->argof(4));
             jitaddrclear();
         };
         NewHook(hp, "PPSSPPGameInfo");
@@ -558,24 +558,24 @@ namespace ppsspp
         HookParam hp;
         hp.address = DoJitPtr; // Jit::DoJit
         hp.user_value = (uintptr_t) new uintptr_t;
-        hp.text_fun = [](hook_stack *stack, HookParam *hp, auto *, auto *)
+        hp.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
         {
-            static auto once1 = oncegetJitBlockCache(stack);
-            auto em_address = stack->THISCALLARG1;
+            static auto once1 = oncegetJitBlockCache(context);
+            auto em_address = context->THISCALLARG1;
 
             *(uintptr_t *)(hp->user_value) = em_address;
 
             HookParam hpinternal;
             hpinternal.user_value = hp->user_value;
-            hpinternal.address = stack->retaddr;
-            hpinternal.text_fun = [](hook_stack *stack, HookParam *hp, auto *, auto *)
+            hpinternal.address = context->retaddr;
+            hpinternal.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
             {
                 auto em_address = *(uintptr_t *)(hp->user_value);
                 if (!IsValidAddress(em_address))
                     return;
                 [&]()
                 {
-                    auto ret = stack->LASTRETVAL;
+                    auto ret = context->LASTRETVAL;
                     if (breakpoints.find(ret) != breakpoints.end())
                         return;
                     breakpoints.insert(ret);

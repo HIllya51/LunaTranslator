@@ -27,7 +27,7 @@ bool Aromarie::attach_function()
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_OVERWRITE | EMBED_DYNA_SJIS | NO_CONTEXT;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     return NewHook(hp, "AromarieName");
   }();
   auto text = []()
@@ -66,7 +66,7 @@ bool Aromarie::attach_function()
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS | NO_CONTEXT;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       auto s = buffer->strA();

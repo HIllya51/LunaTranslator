@@ -35,15 +35,15 @@ namespace
     return *(int *)a - *(int *)b;
   }
 
-  void SpecialHookAB2Try(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookAB2Try(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     // DWORD test = *(DWORD*)(esp_base - 0x10);
-    DWORD edx = stack->edx;
+    DWORD edx = context->edx;
     if (edx != 0)
       return;
 
     // NSTRING *s = *(NSTRING **)(esp_base - 8);
-    if (const NSTRING *s = (NSTRING *)stack->eax)
+    if (const NSTRING *s = (NSTRING *)context->eax)
     {
       buffer->from(s->str, s->lenWithoutNull << 1);
       //*split = 0;

@@ -189,9 +189,8 @@ namespace
 			hp.address = 0;
 			hp.type &= ~MODULE_OFFSET;
 			hp.type &= ~FUNCTION_OFFSET;
-			strcpy(hp.function, "");
 			wcscpy(hp.module, L"");
-			strcpy(hp.unityfunctioninfo, wcasta(HCode).c_str());
+			strcpy(hp.function, wcasta(HCode).c_str());
 		}
 		else
 		{
@@ -392,7 +391,7 @@ namespace
 			if (hp.jittype == JITTYPE::UNITY)
 			{
 				HCode += L'@';
-				HCode += acastw(hp.unityfunctioninfo);
+				HCode += acastw(hp.function);
 				HCode += L":JIT:UNITY";
 			}
 			else

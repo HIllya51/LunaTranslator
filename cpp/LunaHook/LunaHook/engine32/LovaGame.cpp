@@ -63,7 +63,7 @@ bool LovaGame::attach_function()
   HookParam hp;
   hp.address = addr + addr_offset;
   //hp.text_fun = SpecialGameHookLova;
-  hp.offset=get_stack(2); // source in arg2
+  hp.offset=stackoffset(2); // source in arg2
   hp.type = USING_STRING|RELATIVE_SPLIT;
   ConsoleOutput("INSERT LOVA");
   return NewHook(hp, "LOVA");

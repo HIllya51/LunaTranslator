@@ -20,7 +20,7 @@ bool Jisatu101::attach_function() {
   if (addr == 0)return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(4);
+  hp.offset = stackoffset(4);
   hp.type = DATA_INDIRECT;
 	hp.index = 0;
   return NewHook(hp, "Jisatu101");

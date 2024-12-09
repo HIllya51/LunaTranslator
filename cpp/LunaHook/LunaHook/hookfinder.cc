@@ -182,7 +182,7 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 	{
 	}
 }
-void Send(char **stack, uintptr_t address)
+void Send(char **strs, uintptr_t address)
 {
 	// it is unsafe to call ANY external functions from this, as they may have been hooked (if called the hook would call this function making an infinite loop)
 	// the exceptions are compiler intrinsics like _InterlockedDecrement
@@ -190,12 +190,12 @@ void Send(char **stack, uintptr_t address)
 		return;
 	for (int i = -registers; i < 10; ++i)
 	{
-		DoSend(i, address, stack[i], 0);
+		DoSend(i, address, strs[i], 0);
 		if (sp.padding)
-			DoSend(i, address, stack[i], sp.padding);
+			DoSend(i, address, strs[i], sp.padding);
 	}
 }
-void SafeSendJitVeh(hook_stack *stack, uintptr_t address, uint64_t em_addr, JITTYPE jittype, intptr_t padding)
+void SafeSendJitVeh(hook_context *context, uintptr_t address, uint64_t em_addr, JITTYPE jittype, intptr_t padding)
 {
 	__try
 	{
@@ -206,17 +206,17 @@ void SafeSendJitVeh(hook_stack *stack, uintptr_t address, uint64_t em_addr, JITT
 			{
 #ifdef _WIN64
 			case JITTYPE::YUZU:
-				str = (char *)YUZU::emu_arg(stack, em_addr)[i];
+				str = (char *)YUZU::emu_arg(context, em_addr)[i];
 				break;
 			case JITTYPE::VITA3K:
-				str = (char *)VITA3K::emu_arg(stack)[i];
+				str = (char *)VITA3K::emu_arg(context)[i];
 				break;
 			case JITTYPE::RPCS3:
-				str = (char *)RPCS3::emu_arg(stack)[i];
+				str = (char *)RPCS3::emu_arg(context)[i];
 				break;
 #endif
 			case JITTYPE::PPSSPP:
-				str = (char *)PPSSPP::emu_arg(stack)[i];
+				str = (char *)PPSSPP::emu_arg(context)[i];
 				break;
 			default:
 				return;
@@ -231,7 +231,7 @@ void SafeSendJitVeh(hook_stack *stack, uintptr_t address, uint64_t em_addr, JITT
 	}
 }
 std::unordered_map<uintptr_t, uint64_t> addresscalledtime;
-bool SendJitVeh(PCONTEXT context, uintptr_t address, uint64_t em_addr, JITTYPE jittype, intptr_t padding)
+bool SendJitVeh(PCONTEXT pcontext, uintptr_t address, uint64_t em_addr, JITTYPE jittype, intptr_t padding)
 {
 	if (safeautoleaveveh)
 		return true;
@@ -243,8 +243,8 @@ bool SendJitVeh(PCONTEXT context, uintptr_t address, uint64_t em_addr, JITTYPE j
 	if (tm - addresscalledtime[address] < 100)
 		return false;
 	addresscalledtime[address] = tm;
-	hook_stack stack = hook_stack::fromContext(context);
-	SafeSendJitVeh(&stack, address, em_addr, jittype, padding);
+	hook_context context = hook_context::fromPCONTEXT(pcontext);
+	SafeSendJitVeh(&context, address, em_addr, jittype, padding);
 	return true;
 }
 std::vector<uintptr_t> GetFunctions(uintptr_t module)

@@ -247,7 +247,7 @@ bool InsertAdobeFlash10Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   // hp.length_offset = 2 * 4; // arg2 might be the length
   hp.type = CODEC_UTF16 | USING_STRING;
   hp.filter_fun = AdobeFlashFilter;
@@ -275,7 +275,7 @@ namespace
 
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(4);
+    hp.offset = stackoffset(4);
     hp.type = CODEC_UTF16 | USING_STRING;
     return NewHook(hp, "Adobe Flash 11");
   }

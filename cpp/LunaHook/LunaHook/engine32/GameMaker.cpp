@@ -30,7 +30,7 @@ bool InsertGameMakerHook()
 
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.type = USING_STRING | NO_CONTEXT;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {

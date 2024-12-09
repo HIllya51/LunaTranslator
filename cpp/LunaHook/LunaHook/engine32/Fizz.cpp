@@ -31,7 +31,7 @@ bool Fizzattach_function1()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(2);
+  hp.offset = stackoffset(2);
   hp.type = USING_CHAR;
   return NewHook(hp, "Fizz");
 }
@@ -60,7 +60,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.filter_fun = all_ascii_Filter;
     return NewHook(hp, "gsd");
   }

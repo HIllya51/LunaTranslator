@@ -134,21 +134,21 @@ LABEL_89:
   HookParam hp_invokeCompileMethodHelper;
   hp_invokeCompileMethodHelper.address = *(int *)(call_invokeCompileMethodHelper + sizeof(sig_call_invokeCompileMethodHelper) - 4) + call_invokeCompileMethodHelper + sizeof(sig_call_invokeCompileMethodHelper);
   hp_invokeCompileMethodHelper.user_value = (uintptr_t) new passinfo{};
-  hp_invokeCompileMethodHelper.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  hp_invokeCompileMethodHelper.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    auto methodInfo = (CORINFO_METHOD_INFO *)stack->r8;
+    auto methodInfo = (CORINFO_METHOD_INFO *)context->r8;
 
     const char *className;
     const char *namespaceName;
     const char *enclosingClassName;
-    auto methodname = getMethodNameFromMetadata((CEEInfo *)stack->rdx, methodInfo->ftn, &className, &namespaceName, &enclosingClassName);
+    auto methodname = getMethodNameFromMetadata((CEEInfo *)context->rdx, methodInfo->ftn, &className, &namespaceName, &enclosingClassName);
     if (!methodname)
     {
       ((passinfo *)hp->user_value)->nativeEntry = 0;
     }
     else
     {
-      ((passinfo *)hp->user_value)->nativeEntry = (void **)stack->stack[5];
+      ((passinfo *)hp->user_value)->nativeEntry = (void **)context->stack[5];
       ((passinfo *)hp->user_value)->methodname = methodname;
       ((passinfo *)hp->user_value)->className = className;
       ((passinfo *)hp->user_value)->namespaceName = namespaceName;
@@ -175,7 +175,7 @@ LABEL_89:
   HookParam hp_call_FlushInstructionCache;
   hp_call_FlushInstructionCache.address = ptr_sig_call_FlushInstructionCache + sizeof(sig_call_FlushInstructionCache) - 6;
   hp_call_FlushInstructionCache.user_value = hp_invokeCompileMethodHelper.user_value;
-  hp_call_FlushInstructionCache.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  hp_call_FlushInstructionCache.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     auto info = (passinfo *)hp->user_value;
     if (!info->nativeEntry)
@@ -188,9 +188,9 @@ LABEL_89:
     // Ryujinx.Cpu.Jit:JitCpuContext:Execute
     HookParam hp_cs_function;
     hp_cs_function.address = *(uintptr_t *)info->nativeEntry;
-    hp_cs_function.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp_cs_function.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      ConsoleOutput("%s\n%p %p %p %p %p %p", hp->name, stack->rcx, stack->rdx, stack->r8, stack->r9, stack->r10, stack->r11);
+      ConsoleOutput("%s\n%p %p %p %p %p %p", hp->name, context->rcx, context->rdx, context->r8, context->r9, context->r10, context->r11);
     };
     NewHook(hp_cs_function, (info->namespaceName + ":" + info->className + ":" + info->methodname).c_str());
   };

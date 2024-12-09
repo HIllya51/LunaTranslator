@@ -26,7 +26,7 @@ bool InsertSekaiProject1Hook()
 
   HookParam hp;
   hp.address = addr + 1;
-  hp.offset=get_stack(1);
+  hp.offset=stackoffset(1);
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
   ConsoleOutput("INSERT SekaiProject1");
   return NewHook(hp, "SekaiProject1");
@@ -56,7 +56,7 @@ bool InsertSekaiProject2Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(21);
+  hp.offset=stackoffset(21);
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
   ConsoleOutput("INSERT SekaiProject2");
   return NewHook(hp, "SekaiProject2");
@@ -88,7 +88,7 @@ bool InsertSekaiProject3Hook()
 
   HookParam hp;
   hp.address = addr + 1;
-  hp.offset=get_stack(1);
+  hp.offset=stackoffset(1);
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
   ConsoleOutput("INSERT SekaiProject3");
   return NewHook(hp, "SekaiProject3");

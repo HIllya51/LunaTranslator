@@ -128,16 +128,16 @@ static bool InsertMinkDynamicHook(LPVOID fun, DWORD frame, DWORD stack)
 
   HookParam hp;
   hp.address = addr; // hook to the beginning of the caller function
-  hp.offset =get_stack(1);
+  hp.offset =stackoffset(1);
   hp.type = CODEC_ANSI_BE;
   return NewHook(hp, "Mink");
 }
 #endif // 0
 
-static void SpecialHookMink(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookMink(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   //DWORD addr = *(DWORD *)(esp_base + hp->offset); // default value
-  DWORD addr = stack->eax;
+  DWORD addr = context->eax;
   if (!IthGetMemoryRange((LPVOID)(addr), 0, 0))
     return;
   DWORD ch = *(DWORD *)addr;
@@ -146,7 +146,7 @@ static void SpecialHookMink(hook_stack *stack, HookParam *hp, TextBuffer *buffer
     return;
 
   // Issue: still have lots of garbage
-  *split = stack->stack[25];
+  *split = context->stack[25];
   //*split = *(DWORD *)(esp_base + 0x48);
   buffer->from(&ch, size);
 }
@@ -175,7 +175,7 @@ bool InsertMinkHook()
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset=get_reg(regs::eax); // -8
+  hp.offset=regoffset(eax); // -8
   hp.split = 0x64;
   hp.type = USING_SPLIT|DATA_INDIRECT|USING_CHAR; // 0x18
   hp.text_fun = SpecialHookMink;
@@ -204,7 +204,7 @@ bool Mink2::attach_function() {
       if (addr == 0)return false;
       HookParam hp;
       hp.address = addr;
-      hp.offset=get_stack(2);  
+      hp.offset=stackoffset(2);  
       hp.length_offset=3;
       hp.type = USING_STRING; 
       found|=NewHook(hp, "Mink");

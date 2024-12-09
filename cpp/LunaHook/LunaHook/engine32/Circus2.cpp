@@ -49,7 +49,7 @@ bool InsertCircusHook2() // jichi 10/2/2013: Change return type to bool
       {
         HookParam hp;
         hp.address = j;
-        hp.offset = get_stack(2);
+        hp.offset = stackoffset(2);
         // hp.filter_fun = CharNewLineFilter; // \n\s* is used to remove new line
         hp.type = USING_STRING;
         // GROWL_DWORD(hp.address); // jichi 6/5/2014: 0x4201d0 for DC3
@@ -83,7 +83,7 @@ namespace
     funcaddr += 4;
     HookParam hp;
     hp.address = funcaddr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_STRING; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
     // hp.embed_hook_font=F_GetGlyphOutlineA;
     // it will split a long to many lines
@@ -133,7 +133,7 @@ namespace
        *  0012F16C   0012F7CC
        *  0012F170   0012F7CC
        */
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         auto newData = buffer.strA();
         LPCSTR text = (LPCSTR)s->stack[2], // arg2
@@ -142,7 +142,7 @@ namespace
           newData.insert(0, std::string(text, trimmedText - text));
         s->stack[2] = (DWORD)allocateString(newData);
       }
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
 
         LPCSTR text = (LPCSTR)s->stack[2], // arg2
@@ -358,8 +358,8 @@ bool InsertCircusHook3()
 
   HookParam hp;
   hp.address = addr + 1;
-  hp.offset = get_reg(regs::esi);
-  hp.split = get_reg(regs::ecx);
+  hp.offset = regoffset(esi);
+  hp.split = regoffset(ecx);
   hp.type = USING_STRING | USING_SPLIT;
   return NewHook(hp, "Circus3");
 }
@@ -395,8 +395,8 @@ bool InsertCircusHook4()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::edx);
-  hp.split = get_stack(4); // arg4
+  hp.offset = regoffset(edx);
+  hp.split = stackoffset(4); // arg4
   hp.padding = 0x40;
   hp.type = USING_STRING | USING_SPLIT;
   hp.filter_fun = CircusFilter;

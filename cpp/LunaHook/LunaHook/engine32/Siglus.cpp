@@ -103,7 +103,7 @@ namespace
 
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.type = CODEC_UTF16;
     // hp.text_fun = SpecialHookSiglus3;
 
@@ -176,10 +176,10 @@ namespace
     // CharReplacer(text, len, 0x300e, 0x300c);
     // CharReplacer(text, len, 0x300f, 0x300d);
   }
-  void SpecialHookSiglus4(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookSiglus4(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     // static uint64_t lastTextHash_;
-    DWORD eax = stack->eax;          // text
+    DWORD eax = context->eax;          // text
     if (!eax || !*(const BYTE *)eax) // empty data
       return;
     DWORD size = *(DWORD *)(eax + 0x10);
@@ -203,7 +203,7 @@ namespace
     // lastTextHash_ = hash;
 
     buffer->from(data, size * 2); // UTF-16
-    DWORD s0 = stack->retaddr;    // use stack[0] as split
+    DWORD s0 = context->retaddr;    // use stack[0] as split
     if (s0 <= 0xff)               // scenario text
       *split = FIXED_SPLIT_VALUE;
     else if (::IsBadReadPtr((LPCVOID)s0, 4))
@@ -214,7 +214,7 @@ namespace
       if (*split == 0x54)
         *split = FIXED_SPLIT_VALUE * 2;
     }
-    *split += stack->stack[1]; // plus stack[1] as split
+    *split += context->stack[1]; // plus stack[1] as split
   }
   bool InsertSiglus4Hook()
   {
@@ -252,7 +252,7 @@ namespace
     hp.type = NO_CONTEXT | CODEC_UTF16;
     hp.text_fun = SpecialHookSiglus4;
     hp.filter_fun = Siglus4Filter;
-    // hp.offset=get_reg(regs::eax);
+    // hp.offset=regoffset(eax);
     // hp.type = CODEC_UTF16|DATA_INDIRECT|USING_SPLIT|NO_CONTEXT;
     // hp.type = CODEC_UTF16|USING_SPLIT|NO_CONTEXT;
 
@@ -378,7 +378,7 @@ namespace
  *  0020F64E   CC               INT3
  *  0020F64F   CC               INT3
  */
-void SpecialHookSiglus4(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+void SpecialHookSiglus4(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   static uint64_t lastTextHash_;
   DWORD arg1 = argof(1, esp_base); // arg1
@@ -1557,16 +1557,16 @@ bool InsertSiglus4Hook()
 
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::esi);
+    hp.offset = regoffset(esi);
     hp.type = CODEC_UTF16 | FIXING_SPLIT; // jichi 6/1/2014: fixing the split value
 
     ConsoleOutput("INSERT Siglus2");
     return NewHook(hp, "SiglusEngine2");
   }
-  static void SpecialHookSiglus1(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  static void SpecialHookSiglus1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     // 写回有乱码
-    auto textu = (TextUnionW *)(stack->ecx + 4);
+    auto textu = (TextUnionW *)(context->ecx + 4);
     buffer->from(textu->getText(), textu->size * 2);
   }
 
@@ -1624,7 +1624,7 @@ bool InsertSiglusHookZ()
     return false;
   HookParam hp;
   hp.address = addr + 2;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = CODEC_UTF16;
   return NewHook(hp, "SiglusHookZ");
 }
@@ -1753,7 +1753,7 @@ namespace
         // return addr;
       }
 
-      void text_fun(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void text_fun(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
 
         auto arg = (TextUnionW *)(type_ == Type1 ? s->ecx : s->stack[1]);
@@ -1761,7 +1761,7 @@ namespace
           return;
         buffer->from(arg->getText(), arg->size * 2);
       }
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         auto arg = (TextUnionW *)(type_ == Type1 ? s->ecx : s->stack[1]);
         auto argValue = *arg;
@@ -1797,7 +1797,7 @@ namespace OtherHook
 
     TextUnionW *arg_,
         argValue_;
-    void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+    void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
     {
       static std::wstring text_;
       auto arg = (TextUnionW *)s->stack[0];
@@ -1831,7 +1831,7 @@ namespace OtherHook
       buffer->from(text, arg->size * 2);
       //           newText = EngineController::instance()->dispatchTextWSTD(oldText, role, sig);
     }
-    void hookafter2(hook_stack *s, TextBuffer buffer)
+    void hookafter2(hook_context *s, TextBuffer buffer)
     {
       auto arg = (TextUnionW *)s->stack[0];
       arg_ = arg;

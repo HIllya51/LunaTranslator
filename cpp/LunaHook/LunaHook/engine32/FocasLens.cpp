@@ -105,9 +105,9 @@
  *  001fabf6   cc               int3
  *  001fabf7   cc               int3
  */
-static void SpecialHookFocasLens(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookFocasLens(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  DWORD addr  = (DWORD)stack->base + get_reg(regs::edx);
+  DWORD addr  = (DWORD)context->base + regoffset(edx);
   if (*(char *)addr) {
     buffer->from(addr, 1);
     *split = FIXED_SPLIT_VALUE;

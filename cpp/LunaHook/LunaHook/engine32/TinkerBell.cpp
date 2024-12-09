@@ -15,7 +15,7 @@ bool InsertTinkerBellHook()
       BYTE t = *(BYTE *)(i - 1);
       if (t == 0x3d || t == 0x2d)
       {
-        hp.offset = get_reg(regs::eax);
+        hp.offset = regoffset(eax);
         hp.address = i - 1;
       }
       else if (*(BYTE *)(i - 2) == 0x81)
@@ -135,13 +135,13 @@ namespace
     hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
     hp.address = addr;
     hp.filter_fun = tkbl_filter;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      auto str = (wchar_t *)stack->ebx;
+      auto str = (wchar_t *)context->ebx;
       *split = (wcschr(str, 0x3010) != nullptr) && (wcschr(str, 0x3011) != nullptr);
       buffer->from(str);
     };
-    hp.offset = get_reg(regs::ebx);
+    hp.offset = regoffset(ebx);
     return NewHook(hp, "tkbl");
   }
 }
@@ -199,7 +199,7 @@ bool InsertWendyBellHook()
   {
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::ebx);
+    hp.offset = regoffset(ebx);
     hp.filter_fun = WendyBell_filter;
     hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
     ConsoleOutput("%p", addr);
@@ -209,7 +209,7 @@ bool InsertWendyBellHook()
       // https://vndb.org/r94776
       // 悪魔と夜と異世界と パッケージ版
       hp.address = 6 + addr;
-      hp.offset = get_reg(regs::edx);
+      hp.offset = regoffset(edx);
       succ |= NewHook(hp, "WendyBell");
     }
   }
@@ -239,7 +239,7 @@ namespace
     {
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_stack(2);
+      hp.offset = stackoffset(2);
       hp.type = CODEC_UTF16 | USING_CHAR | NO_CONTEXT;
       struct savecontext
       {
@@ -298,8 +298,8 @@ bool TinkerBellold::attach_function()
   HookParam hp;
   hp.address = (DWORD)ExtTextOutA;
 
-  hp.offset = get_stack(6);
+  hp.offset = stackoffset(6);
   hp.type = USING_STRING | USING_SPLIT;
-  hp.split = get_stack(5);
+  hp.split = stackoffset(5);
   return NewHook(hp, "TinkerBell");
 }

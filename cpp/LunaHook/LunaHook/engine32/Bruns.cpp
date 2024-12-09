@@ -5,7 +5,7 @@ bool InsertBrunsHook()
   bool success=false;
   if (Util::CheckFile(L"libscr.dll")) {
     HookParam hp;
-    hp.offset=get_stack(1);
+    hp.offset=stackoffset(1);
 	hp.type = CODEC_UTF16;
     //?push_back@?$basic_string@GU?$char_traits@G@std@@V?$allocator@G@2@@std@@QAEXG@Z
 	if (Util::CheckFile(L"msvcp90.dll"))
@@ -56,7 +56,7 @@ bool InsertBrunsHook()
 
               HookParam hp;
               hp.address = t;
-              hp.offset=get_stack(1);
+              hp.offset=stackoffset(1);
               hp.type = CODEC_UTF16|DATA_INDIRECT;
               ConsoleOutput("INSERT Brus#2");
               

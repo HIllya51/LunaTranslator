@@ -71,11 +71,11 @@ bool Moonstone::attach_function()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_STRING;
-  hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    if (stack->edi != 0)
+    if (context->edi != 0)
       return;
-    buffer->from((char *)stack->edx);
+    buffer->from((char *)context->edx);
   };
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {

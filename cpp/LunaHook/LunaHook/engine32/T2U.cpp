@@ -6,7 +6,7 @@ bool T2U::attach_function()
   HookParam hp;
   hp.address = (DWORD)TextOutA; // 这个游戏设置embed_hook_font会卡死
   hp.type = USING_STRING;
-  hp.offset = get_stack(4);
+  hp.offset = stackoffset(4);
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     static lru_cache<std::string> cache(5);

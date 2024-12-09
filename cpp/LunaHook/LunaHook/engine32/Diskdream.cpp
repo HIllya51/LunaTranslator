@@ -16,7 +16,7 @@ bool Diskdream::attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::edx);
+  hp.offset = regoffset(edx);
   hp.type = USING_STRING;
   hp.codepage = 932;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)

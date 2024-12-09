@@ -24,13 +24,13 @@ namespace
         return newstring;
     }
 }
-void commonsolvemonostring(uintptr_t offset, TextBuffer *buffer)
+void commonsolvemonostring(uintptr_t arg, TextBuffer *buffer)
 {
-    auto sw = il2cppfunctions::get_string((void *)offset);
+    auto sw = il2cppfunctions::get_string((void *)arg);
     if (!sw)
-        sw = monofunctions::get_string((void *)offset);
+        sw = monofunctions::get_string((void *)arg);
     if (!sw)
-        sw = readmonostring((void *)offset);
+        sw = readmonostring((void *)arg);
     if (!sw)
         return;
     if (sw.value().size() > TEXT_BUFFER_SIZE)
@@ -38,15 +38,15 @@ void commonsolvemonostring(uintptr_t offset, TextBuffer *buffer)
     buffer->from(sw.value());
 }
 
-void unity_ui_string_embed_fun(uintptr_t *offset, TextBuffer buff)
+void unity_ui_string_embed_fun(uintptr_t &arg, TextBuffer buff)
 {
     auto view = buff.viewW();
     auto newstring = il2cppfunctions::create_string(view);
     if (!newstring)
         newstring = monofunctions::create_string(view);
     if (!newstring)
-        newstring = createmonostring(view, (MonoString *)*offset);
-    *offset = (uintptr_t)newstring;
+        newstring = createmonostring(view, (MonoString *)arg);
+    arg = (uintptr_t)newstring;
 }
 
 uintptr_t tryfindmonoil2cpp(const char *_dll, const char *_namespace, const char *_class, const char *_method, int paramCoun, bool strict)

@@ -11,22 +11,22 @@ namespace ppsspp
 		buffer->from(result);
 	}
 
-	void ULJS00339(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	void ULJS00339(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto a2 = PPSSPP::emu_arg(stack)[0];
+		auto a2 = PPSSPP::emu_arg(context)[0];
 
 		auto vm = *(DWORD *)(a2 + (0x28));
-		vm = *(DWORD *)PPSSPP::emu_addr(stack, vm);
-		vm = *(DWORD *)PPSSPP::emu_addr(stack, vm + 8);
-		uintptr_t address = PPSSPP::emu_addr(stack, vm);
+		vm = *(DWORD *)PPSSPP::emu_addr(context, vm);
+		vm = *(DWORD *)PPSSPP::emu_addr(context, vm + 8);
+		uintptr_t address = PPSSPP::emu_addr(context, vm);
 		auto len1 = *(DWORD *)(address + 4);
 		auto p = address + 0x20;
 		if (len1 > 4 && *(WORD *)(p + 2) == 0)
 		{
 			auto p1 = *(DWORD *)(address + 8);
-			vm = *(DWORD *)PPSSPP::emu_addr(stack, vm);
-			vm = *(DWORD *)PPSSPP::emu_addr(stack, vm + 0xC);
-			p = PPSSPP::emu_addr(stack, vm);
+			vm = *(DWORD *)PPSSPP::emu_addr(context, vm);
+			vm = *(DWORD *)PPSSPP::emu_addr(context, vm + 0xC);
+			p = PPSSPP::emu_addr(context, vm);
 		}
 		static int fm = 0;
 		static std::string pre;
@@ -201,9 +201,9 @@ namespace ppsspp
 			return s;
 		}
 	}
-	void ULJM05428(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	void ULJM05428(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto address = PPSSPP::emu_arg(stack)[1];
+		auto address = PPSSPP::emu_arg(context)[1];
 		bool haveNamve;
 		auto s = Corda::readBinaryString(address, &haveNamve);
 		*split = haveNamve;
@@ -238,9 +238,9 @@ namespace ppsspp
 		}
 		return ws;
 	}
-	void ULJM06143_1(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	void ULJM06143_1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto cs = (char *)PPSSPP::emu_arg(stack)[2];
+		auto cs = (char *)PPSSPP::emu_arg(context)[2];
 
 		while (*(WORD *)(cs - 1))
 			cs -= 1;
@@ -257,9 +257,9 @@ namespace ppsspp
 		}
 		buffer->from(ws);
 	}
-	void ULJM06143(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	void ULJM06143(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		std::string s = (char *)PPSSPP::emu_arg(stack)[1];
+		std::string s = (char *)PPSSPP::emu_arg(context)[1];
 		buffer->from(ULJM06143Code(s));
 	}
 	void ULJM05943F(TextBuffer *buffer, HookParam *hp)
@@ -353,9 +353,9 @@ namespace ppsspp
 		FULJM05603(buffer, hp);
 	}
 
-	void ULJM05810(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	void ULJM05810(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto data = PPSSPP::emu_arg(stack)[0x0f];
+		auto data = PPSSPP::emu_arg(context)[0x0f];
 		data = data + 400;
 		std::string s;
 		while (true)
@@ -571,9 +571,9 @@ namespace ppsspp
 		buffer->from(s);
 	}
 
-	void ULJM05441(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	void ULJM05441(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto data = PPSSPP::emu_arg(stack)[1];
+		auto data = PPSSPP::emu_arg(context)[1];
 		std::string s;
 		while (*(DWORD *)data)
 		{
@@ -584,10 +584,10 @@ namespace ppsspp
 		strReplace(s, "\n", "");
 		buffer->from(s);
 	}
-	void QNPJH50909(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	void QNPJH50909(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto data = PPSSPP::emu_arg(stack)[0];
-		uintptr_t addr = PPSSPP::emu_addr(stack, 0x08975110);
+		auto data = PPSSPP::emu_arg(context)[0];
+		uintptr_t addr = PPSSPP::emu_addr(context, 0x08975110);
 		if (0x6e87 == *(WORD *)data)
 			return;
 		if (0x000a == *(WORD *)data)

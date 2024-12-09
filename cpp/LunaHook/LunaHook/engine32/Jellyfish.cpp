@@ -25,7 +25,7 @@ bool Jellyfish::Jellyfish_attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
@@ -69,12 +69,12 @@ bool Jellyfish::Jellyfish_attach_function2()
   HookParam hp;
   hp.address = maxa; // 0x2F2E1+(DWORD)ism;
   hp.type = USING_CHAR | CODEC_UTF16;
-  hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    if (stack->ARG3 == 3)
+    if (context->argof(3) == 3)
       return;
-    *split = (stack->ARG3) != 0; // 多行文本
-    buffer->from_t((WORD)stack->ARG1);
+    *split = (context->argof(3)) != 0; // 多行文本
+    buffer->from_t((WORD)context->argof(1));
     // 不可以快进，否则会有重复
   };
 
@@ -99,7 +99,7 @@ bool Jellyfish::Jellyfish_attach_function3()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_CHAR;
   return NewHook(hp, "Jellyfish3");
 }

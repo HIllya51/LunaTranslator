@@ -13,7 +13,7 @@ bool YOX::attach_function()
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING;
-    hp.offset = get_stack(26);
+    hp.offset = stackoffset(26);
     ConsoleOutput("yox64 %p", addr);
     return NewHook(hp, "yox64");
   }

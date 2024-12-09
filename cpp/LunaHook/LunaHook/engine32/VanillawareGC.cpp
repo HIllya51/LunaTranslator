@@ -123,14 +123,14 @@ bool _vanillawaregarbage(LPCSTR p)
 }
 } // unnamed namespace
 
-static void SpecialGCHookVanillaware(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialGCHookVanillaware(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  DWORD eax = stack->eax;
+  DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   static LPCSTR lasttext;
   if (lasttext != text && *text && !_vanillawaregarbage(text)) {
     lasttext = text;
-    *split = stack->ecx;
+    *split = context->ecx;
     buffer->from(text);
     //*split = FIXED_SPLIT_VALUE;
   }

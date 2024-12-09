@@ -17,8 +17,8 @@ bool InsertEaglsHook()
   HookParam hp;
   hp.address = (DWORD)::GetGlyphOutlineA;
   hp.type = CODEC_ANSI_BE|USING_SPLIT; // the only difference is the split value
-  hp.offset = get_stack(2);
-  hp.split = get_stack(4);
+  hp.offset = stackoffset(2);
+  hp.split = stackoffset(4);
   //hp.split = arg7_lpmat2;
   ConsoleOutput("INSERT EAGLS");
   

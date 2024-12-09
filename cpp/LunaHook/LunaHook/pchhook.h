@@ -5,7 +5,6 @@
 
 #include "texthook.h"
 #include "main.h"
-#include "stackoffset.hpp"
 #include "util/stringfilters.h"
 #include "memdbg/memsearch.h"
 #include "util/util.h"

@@ -25,10 +25,10 @@ bool TeethingRing_attach_function()
   HookParam hp;
   hp.address = addr; // 0x84C70+(DWORD)GetModuleHandle(0);
   hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
-  hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    auto _this = (void *)stack->THISCALLTHIS;
-    auto a2 = (DWORD *)stack->ARG1;
+    auto _this = (void *)context->THISCALLTHIS;
+    auto a2 = (DWORD *)context->argof(1);
 
     auto v2 = *a2;
     if ((int)*a2 <= 32)
@@ -84,9 +84,9 @@ bool TeethingRing_attach_function2()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
-  hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    auto _this = (DWORD *)stack->THISCALLTHIS;
+    auto _this = (DWORD *)context->THISCALLTHIS;
     auto v13 = _this[6];
     auto v14 = _this + 1;
     DWORD *v16;
@@ -94,7 +94,7 @@ bool TeethingRing_attach_function2()
       v16 = _this + 1;
     else
       v16 = (DWORD *)*v14;
-    auto a2 = stack->ARG1;
+    auto a2 = context->argof(1);
     *split = (DWORD)_this;
     buffer->from((char *)((DWORD)v16 + a2));
   };

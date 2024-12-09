@@ -162,7 +162,7 @@ bool InsertSyuntadaHook()
   }
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset=get_reg(regs::ebp);
+  hp.offset=regoffset(ebp);
   hp.type = CODEC_ANSI_BE; // 0x4
   ConsoleOutput("INSERT Syuntada");
   
@@ -190,7 +190,7 @@ namespace{
     if (!addr)   return false;
     HookParam hp;
     hp.address = addr  ;
-    hp.offset=get_stack(3); 
+    hp.offset=stackoffset(3); 
     hp.type = USING_STRING ;
     return NewHook(hp, "Syuntada"); 
   }

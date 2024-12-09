@@ -44,7 +44,7 @@ namespace
       hp.address = addr;
       hp.type = CODEC_UTF16 | USING_STRING | DATA_INDIRECT;
       hp.index = 0;
-      hp.offset = get_reg(regs::rcx);
+      hp.offset = regoffset(rcx);
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         auto s = buffer->viewW();
@@ -73,7 +73,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = CODEC_UTF16 | USING_STRING;
-    hp.offset = get_stack(6);
+    hp.offset = stackoffset(6);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       if (all_ascii((wchar_t *)buffer->buff, buffer->size / 2))
@@ -125,9 +125,9 @@ namespace
     hp.address = addr;
     hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
     // 包含太多短句，所以无法内嵌
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      auto tu = (TextUnionW *)stack->rdx;
+      auto tu = (TextUnionW *)context->rdx;
       auto str = std::wstring_view(tu->getText(), tu->size);
       if (startWith(str, L"\\n") && endWith(str, L"\\n"))
       {
@@ -168,10 +168,10 @@ namespace
         HookParam hp;
         hp.address = funcaddr;
         hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
           // wstring=TextUnionW for msvc c++17
-          auto tu = (TextUnionW *)stack->rdx;
+          auto tu = (TextUnionW *)context->rdx;
           buffer->from(std::wstring_view(tu->getText(), tu->size));
         };
         hp.filter_fun = commonfilter;

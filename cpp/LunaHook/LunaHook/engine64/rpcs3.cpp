@@ -27,28 +27,28 @@ namespace
         {
             case 0x48:{
                 switch(*(BYTE*)(checkaddr+2)){
-                    case 0xc0:emoffset=get_reg(regs::rax);break;
-                    case 0xc3:emoffset=get_reg(regs::rbx);break;
-                    case 0xc1:emoffset=get_reg(regs::rcx);break;
-                    case 0xc2:emoffset=get_reg(regs::rdx);break;
-                    case 0xc4:emoffset=get_reg(regs::rsp);break;
-                    case 0xc5:emoffset=get_reg(regs::rbp);break;
-                    case 0xc6:emoffset=get_reg(regs::rsi);break;
-                    case 0xc7:emoffset=get_reg(regs::rdi);break;
+                    case 0xc0:emoffset=regoffset(rax);break;
+                    case 0xc3:emoffset=regoffset(rbx);break;
+                    case 0xc1:emoffset=regoffset(rcx);break;
+                    case 0xc2:emoffset=regoffset(rdx);break;
+                    case 0xc4:emoffset=regoffset(rsp);break;
+                    case 0xc5:emoffset=regoffset(rbp);break;
+                    case 0xc6:emoffset=regoffset(rsi);break;
+                    case 0xc7:emoffset=regoffset(rdi);break;
                     default:emoffset=0;
                 }  
             }
             break;
             case 0x49:{
                 switch(*(BYTE*)(checkaddr+2)){
-                    case 0xc0:emoffset=get_reg(regs::r8);break;
-                    case 0xc1:emoffset=get_reg(regs::r9);break;
-                    case 0xc2:emoffset=get_reg(regs::r10);break;
-                    case 0xc3:emoffset=get_reg(regs::r11);break;
-                    case 0xc4:emoffset=get_reg(regs::r12);break;
-                    case 0xc5:emoffset=get_reg(regs::r13);break;
-                    case 0xc6:emoffset=get_reg(regs::r14);break;
-                    case 0xc7:emoffset=get_reg(regs::r15);break;
+                    case 0xc0:emoffset=regoffset(r8);break;
+                    case 0xc1:emoffset=regoffset(r9);break;
+                    case 0xc2:emoffset=regoffset(r10);break;
+                    case 0xc3:emoffset=regoffset(r11);break;
+                    case 0xc4:emoffset=regoffset(r12);break;
+                    case 0xc5:emoffset=regoffset(r13);break;
+                    case 0xc6:emoffset=regoffset(r14);break;
+                    case 0xc7:emoffset=regoffset(r15);break;
                     default:emoffset=0;
                 }
             }
@@ -71,28 +71,28 @@ namespace
         {
             case 0x48:{
                 switch(*(BYTE*)(checkaddr+2)){
-                    case 0x14:jitoffset=get_reg(regs::rdx);break;
-                    case 0x04:jitoffset=get_reg(regs::rax);break;
-                    case 0x1c:jitoffset=get_reg(regs::rbx);break;
-                    case 0x0c:jitoffset=get_reg(regs::rcx);break;
-                    case 0x24:jitoffset=get_reg(regs::rsp);break;
-                    case 0x2c:jitoffset=get_reg(regs::rbp);break;
-                    case 0x34:jitoffset=get_reg(regs::rsi);break;
-                    case 0x3c:jitoffset=get_reg(regs::rdi);break;
+                    case 0x14:jitoffset=regoffset(rdx);break;
+                    case 0x04:jitoffset=regoffset(rax);break;
+                    case 0x1c:jitoffset=regoffset(rbx);break;
+                    case 0x0c:jitoffset=regoffset(rcx);break;
+                    case 0x24:jitoffset=regoffset(rsp);break;
+                    case 0x2c:jitoffset=regoffset(rbp);break;
+                    case 0x34:jitoffset=regoffset(rsi);break;
+                    case 0x3c:jitoffset=regoffset(rdi);break;
                     default:jitoffset=0;
                 }  
             }
             break;
             case 0x4c:{
                 switch(*(BYTE*)(checkaddr+2)){
-                    case 0x04:jitoffset=get_reg(regs::r8);break;
-                    case 0x0c:jitoffset=get_reg(regs::r9);break;
-                    case 0x14:jitoffset=get_reg(regs::r10);break;
-                    case 0x1c:jitoffset=get_reg(regs::r11);break;
-                    case 0x24:jitoffset=get_reg(regs::r12);break;
-                    case 0x2c:jitoffset=get_reg(regs::r13);break;
-                    case 0x34:jitoffset=get_reg(regs::r14);break;
-                    case 0x3c:jitoffset=get_reg(regs::r15);break;
+                    case 0x04:jitoffset=regoffset(r8);break;
+                    case 0x0c:jitoffset=regoffset(r9);break;
+                    case 0x14:jitoffset=regoffset(r10);break;
+                    case 0x1c:jitoffset=regoffset(r11);break;
+                    case 0x24:jitoffset=regoffset(r12);break;
+                    case 0x2c:jitoffset=regoffset(r13);break;
+                    case 0x34:jitoffset=regoffset(r14);break;
+                    case 0x3c:jitoffset=regoffset(r15);break;
                     default:jitoffset=0;
                 }
             }
@@ -212,7 +212,7 @@ namespace
         HookParam hp;
         hp.type = DIRECT_READ;
         hp.address = 0x500000000;
-        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
             for (auto [addr, info] : emfunctionhooks)
             {
@@ -245,10 +245,10 @@ bool rpcs3::attach_function()
     spDefault.maxAddress = -1;
     HookParam hp;
     hp.address = DoJitPtr;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto em_address = stack->rcx; // *(uint32_t*)*(uintptr_t*)(stack->base+emoffset);
-        auto entrypoint = stack->r8;  //*(uintptr_t*)*(uintptr_t*)(stack->base+jitoffset)-0x0008000000000000;
+        auto em_address = context->rcx; // *(uint32_t*)*(uintptr_t*)(context->base+emoffset);
+        auto entrypoint = context->r8;  //*(uintptr_t*)*(uintptr_t*)(context->base+jitoffset)-0x0008000000000000;
         if (!em_address || !entrypoint)
             return;
         dohookemaddr(em_address, entrypoint);

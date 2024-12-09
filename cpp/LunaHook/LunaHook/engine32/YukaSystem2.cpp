@@ -80,10 +80,10 @@ static bool _yk2garbage(const char *p)
 }
 
 // Get text from arg2
-static void SpecialHookYukaSystem2(hook_stack *stack, HookParam *hp, uintptr_t *data, uintptr_t *split, size_t *len)
+static void SpecialHookYukaSystem2(hook_context *context, HookParam *hp, uintptr_t *data, uintptr_t *split, size_t *len)
 {
-  DWORD arg2 = stack->stack[2], // [esp+0x8]
-      arg3 = stack->stack[3];   // [esp+0xc]
+  DWORD arg2 = context->stack[2], // [esp+0x8]
+      arg3 = context->stack[3];   // [esp+0xc]
                                 // arg4 = argof(4, esp_base); // there is no arg4. arg4 is properlly a function pointer
   LPCSTR text = (LPCSTR)arg2;
   if (*text && !_yk2garbage(text))
@@ -116,8 +116,8 @@ bool InsertYukaSystem2Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
-  hp.split = get_stack(2);
+  hp.offset = stackoffset(1);
+  hp.split = stackoffset(2);
   hp.type = USING_SPLIT | USING_STRING | CODEC_UTF8; // UTF-8, though
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
@@ -178,10 +178,10 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_SPLIT | DATA_INDIRECT;
     hp.index = 0;
-    hp.split = get_stack(1);
+    hp.split = stackoffset(1);
     return NewHook(hp, "YukaSystem2");
   }
 }
@@ -224,7 +224,7 @@ namespace __
 
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.type = USING_STRING | KNOWN_UNSTABLE;
     hp.filter_fun = YukaSystem1Filter;
     ConsoleOutput("INSERT YukaSystem1");
@@ -271,7 +271,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_CHAR | DATA_INDIRECT;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {

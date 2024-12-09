@@ -45,9 +45,9 @@ namespace
   // jichi 3/1/2015: hook for new ShinaRio games
 
   char text_buffer_prev[0x1000];
-  void SpecialHookShina2(hook_stack *stack, HookParam *, uintptr_t *data, uintptr_t *split, size_t *len)
+  void SpecialHookShina2(hook_context *context, HookParam *, uintptr_t *data, uintptr_t *split, size_t *len)
   {
-    DWORD ptr = stack->esi; // jichi: esi
+    DWORD ptr = context->esi; // jichi: esi
     *split = ptr;           // [esi]
     char *str = *(char **)(ptr + 0x160);
     strcpy(text_buffer, str);
@@ -91,7 +91,7 @@ namespace
   // Used to merge correct text thread.
   // 1. Only keep threads with 0 and -1 split
   // 2. Skip the thread withb 0 split and with minimum return address
-  // void SpecialHookShina1(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+  // void SpecialHookShina1(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
   //{
   //  static DWORD min_retaddr = -1;
   //  DWORD s = *(DWORD *)(esp_base + hp->split);
@@ -171,7 +171,7 @@ bool InsertShinaHook(int ver)
   {
     PcHooks::hookGDIFunctions();
     // trigger_fun = StackSearchingTrigger<GetGlyphOutlineA, NULL>;
-    trigger_fun = [](LPVOID funcAddr, hook_stack *stack)
+    trigger_fun = [](LPVOID funcAddr, hook_context *context)
     {
       bool ret = false;
       if (funcAddr != GetGlyphOutlineA && funcAddr != GetTextExtentPoint32A)
@@ -179,7 +179,7 @@ bool InsertShinaHook(int ver)
       for (int i = 0; i < 100; ++i)
       {
         // Address of text is somewhere on stack in call to func. Search for it.
-        DWORD addr = *((DWORD *)stack->esp + i);
+        DWORD addr = *((DWORD *)context->esp + i);
         // ConsoleOutput(std::to_string((DWORD)*addr).c_str());
         if (IthGetMemoryRange((void *)addr, nullptr, nullptr) && strlen((char *)addr) > 9)
         {
@@ -632,7 +632,7 @@ namespace
       int hookStackIndex_; // hook argument index on the stack
       int textOffset_;     // distance of the text from the hook argument
       bool backtrackText_; // whether backtrack to find text address
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
 
         std::string newData = buffer.strA();
@@ -697,7 +697,7 @@ namespace
           }
         }
       }
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         DWORD argaddr;
         if (hookStackIndex_ == 1)

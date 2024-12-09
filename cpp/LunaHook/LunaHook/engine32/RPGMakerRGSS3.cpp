@@ -603,7 +603,7 @@ namespace
         LPCSTR oldText_;
         size_t oldSize_;
         std::unordered_set<std::wstring> texts_;
-        void hookafter2(hook_stack *s, TextBuffer buffer)
+        void hookafter2(hook_context *s, TextBuffer buffer)
         {
 
           enum
@@ -652,7 +652,7 @@ namespace
             }
           }
         }
-        void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+        void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
         {
 
           enum
@@ -686,7 +686,7 @@ namespace
             }
           }
         }
-        void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
           if (arg_)
           {
@@ -757,7 +757,7 @@ namespace
           // int size() const { return (*type >> 0xe) & 0x1f; }
         };
 
-        void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+        void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
         {
           *role = Engine::OtherRole;
           auto arg = (HookArgument *)s->stack[2]; // arg2
@@ -774,7 +774,7 @@ namespace
             //   }
           }
         }
-        void hookafter2(hook_stack *s, TextBuffer buffer)
+        void hookafter2(hook_context *s, TextBuffer buffer)
         {
           {
             auto arg = (HookArgument *)s->stack[2]; // arg2
@@ -910,7 +910,7 @@ namespace
       namespace Private
       {
 
-        void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+        void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
         {
           {
             *role = Engine::OtherRole;
@@ -929,7 +929,7 @@ namespace
             }
           }
         }
-        void hookafter2(hook_stack *s, TextBuffer buffer)
+        void hookafter2(hook_context *s, TextBuffer buffer)
         {
           {
             auto retaddr = s->stack[0];
@@ -1376,7 +1376,7 @@ namespace
  */
 namespace DebugHook {
 
-bool beforeStrcpy(winhook::hook_stack *s)
+bool beforeStrcpy(winhook::hook_context *s)
 {
   auto arg = (LPCSTR)s->stack[1]; // arg1
   auto sig = s->stack[0]; // retaddr
@@ -1421,18 +1421,18 @@ bool RPGMakerRGSS3::attach_function()
 bool RPGMakerRGSS300::attach_function()
 {
   PcHooks::hookGDIFunctions();
-  trigger_fun = [](LPVOID addr1, hook_stack *stack)
+  trigger_fun = [](LPVOID addr1, hook_context *context)
   {
     if (addr1 != GetGlyphOutlineW)
       return false;
-    auto addr = stack->retaddr;
+    auto addr = context->retaddr;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
     if (addr == 0)
       return false;
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | CODEC_UTF16;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     NewHook(hp, "RGSS30x.dll");
     return true;
   };

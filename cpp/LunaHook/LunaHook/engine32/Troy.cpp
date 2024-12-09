@@ -18,7 +18,7 @@ bool Troy::attach_function() {
     if (addr == 0)return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(2);
+    hp.offset=stackoffset(2);
     hp.type  = CODEC_ANSI_BE;
     return NewHook(hp, "Troy");
 } 

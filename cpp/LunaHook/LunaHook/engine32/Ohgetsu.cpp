@@ -27,13 +27,13 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_STRING;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      auto text = (LPCSTR)stack->stack[2];
-      auto size = stack->stack[3];
-      *split = stack->stack[0];
+      auto text = (LPCSTR)context->stack[2];
+      auto size = context->stack[3];
+      *split = context->stack[0];
       buffer->from(text, size);
     };
     return NewHook(hp, "Ohgetsu");
@@ -71,12 +71,12 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_STRING;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      *split = stack->stack[0];
-      buffer->from(stack->stack[1], stack->stack[2]);
+      *split = context->stack[0];
+      buffer->from(context->stack[1], context->stack[2]);
     };
     return NewHook(hp, "Ohgetsu");
   }
@@ -93,7 +93,7 @@ namespace
     // reladdr = 0x48ff3;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = CODEC_ANSI_BE;
 
     return NewHook(hp, "Basil");
@@ -131,7 +131,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     hp.embed_hook_font = F_GetGlyphOutlineA;
     return NewHook(hp, "Basil2");
@@ -196,7 +196,7 @@ namespace
     hp.address = addr;
     hp.type = USING_STRING;
     hp.length_offset = 2;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       StringCharReplacer(buffer, "||", 2, '\n');

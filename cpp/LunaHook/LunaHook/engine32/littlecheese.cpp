@@ -15,7 +15,7 @@ bool littlecheese::attach_function() {
     HookParam hp;
     hp.address = addr;
     ConsoleOutput("%p", addr);
-    hp.offset =get_reg(regs::ecx);
+    hp.offset =regoffset(ecx);
     hp.type |= CODEC_ANSI_BE;
     return NewHook(hp, "littlecheese");
 } 

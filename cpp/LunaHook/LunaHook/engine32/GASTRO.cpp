@@ -17,7 +17,7 @@ bool GASTRO::attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(2);
+  hp.offset = stackoffset(2);
   hp.type = USING_STRING;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {

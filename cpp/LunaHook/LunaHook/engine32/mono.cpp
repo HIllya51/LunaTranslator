@@ -20,7 +20,7 @@ bool monobdwgc()
 		ConsoleOutput("monobdwgcdll %p", addr);
 		HookParam hp;
 		hp.address = (DWORD)addr;
-		hp.offset = get_reg(regs::eax);
+		hp.offset = regoffset(eax);
 		hp.type = CODEC_UTF16 | NO_CONTEXT;
 		succ |= NewHook(hp, "monobdwgcdll");
 	}
@@ -43,7 +43,7 @@ bool monodll()
 		ConsoleOutput("monodll %p", addr);
 		HookParam hp;
 		hp.address = (DWORD)addr;
-		hp.offset = get_reg(regs::ebx);
+		hp.offset = regoffset(ebx);
 		hp.type = CODEC_UTF16 | NO_CONTEXT;
 		succ |= NewHook(hp, "monodll");
 	}

@@ -106,7 +106,7 @@ bool InsertAdobeAirHook()
   HookParam hp;
   hp.address = addr + addr_offset;
   // hp.module = module;
-  hp.offset = get_reg(regs::edx);
+  hp.offset = regoffset(edx);
   hp.split = 0xd8;
   // hp.type = USING_SPLIT|MODULE_OFFSET|CODEC_UTF16|DATA_INDIRECT; // 0x5a;
   hp.type = USING_SPLIT | CODEC_UTF16 | DATA_INDIRECT;
@@ -143,7 +143,7 @@ bool AdobeAIRhook2()
     return false;
   HookParam hp;
   hp.address = addr + 3;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING | CODEC_UTF16;
 
   return NewHook(hp, "AdobeAIR");
@@ -165,8 +165,8 @@ bool InsertAIRNovelHook()
     HookParam hp;
     hp.address = func;
     hp.type = CODEC_UTF16 | USING_STRING /*|USING_SPLIT|SPLIT_INDIRECT*/ | DATA_INDIRECT; // Artikash 12/14/2018: doesn't seem to be a good split anymore
-    hp.offset = get_stack(1);
-    hp.split = get_stack(1);
+    hp.offset = stackoffset(1);
+    hp.split = stackoffset(1);
     hp.index = 0x8;
     hp.split_index = 0x4;
     // hp.filter_fun = [](void* str, DWORD* len, HookParam* hp, BYTE index)  // removes some of the garbage threads
@@ -217,7 +217,7 @@ bool adobelair3()
   HookParam hp;
   hp.address = addr;
   hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     // 若当前还有5个字符，则这个句子会显示5次，然后substr(1,len-1)，直到结束，总共显示5+4+3+2+1次

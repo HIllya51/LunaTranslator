@@ -83,8 +83,8 @@ bool InsertNextonHook()
   //addr = 0x768776;
   //addr = 0x7a5319;
 
-  hp.offset=get_reg(regs::edi); 
-  hp.split=get_stack(1);
+  hp.offset=regoffset(edi); 
+  hp.split=stackoffset(1);
   hp.type = CODEC_ANSI_BE|USING_SPLIT; // 0x54
 
   // Indirect is needed for new games,
@@ -175,7 +175,7 @@ namespace Private {
    *  0045BFE9   C3               RETN
    *  0045BFEA   CC               INT3
    */
-  void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+  void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
   {
     static std::string data_;
     auto text = (LPCSTR)s->stack[1]; // arg1
@@ -755,7 +755,7 @@ bool attach(ULONG startAddress, ULONG stopAddress) // attach scenario
    HookParam hp;
     hp.address=addr; 
     hp.type=USING_STRING|EMBED_ABLE|EMBED_AFTER_NEW| EMBED_DYNA_SJIS|NO_CONTEXT;
-    hp.offset=get_stack(1);
+    hp.offset=stackoffset(1);
     hp.text_fun=Private::hookBefore;
     hp.embed_hook_font=F_GetGlyphOutlineA;
     return NewHook(hp,"EmbedNexton");
@@ -1010,7 +1010,7 @@ bool InsertNexton1Hook()
   HookParam hp;
   hp.address = addr + addr_offset;
   //hp.length_offset = 1;
-  hp.offset=get_stack(1); // [esp+4] == arg0
+  hp.offset=stackoffset(1); // [esp+4] == arg0
   hp.type = USING_STRING;
   ConsoleOutput("INSERT NEXTON1");
   return NewHook(hp, "NEXTON1");

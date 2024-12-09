@@ -271,7 +271,7 @@ bool NewHook(HookParam hp, LPCSTR name)
 		return NewHook_1(hp, name);
 	if (hp.jittype == JITTYPE::UNITY)
 	{
-		auto spls = strSplit(hp.unityfunctioninfo, ":");
+		auto spls = strSplit(hp.function, ":");
 		if (spls.size() != 5)
 		{
 			ConsoleOutput("invalid");

@@ -9,7 +9,7 @@ namespace{
       if (!addr) continue;
       HookParam hp;
       hp.address = addr;
-      hp.offset=get_stack(3);  
+      hp.offset=stackoffset(3);  
       hp.type = DATA_INDIRECT;
 			hp.index = 0;
       ok|=NewHook(hp, "VitaminSoft");
@@ -25,7 +25,7 @@ namespace{
       if (!addr) continue;
       HookParam hp;
       hp.address = addr;
-      hp.offset=get_stack(1);  
+      hp.offset=stackoffset(1);  
       hp.type = USING_STRING; 
       ok|=NewHook(hp, "VitaminSoft");
     }

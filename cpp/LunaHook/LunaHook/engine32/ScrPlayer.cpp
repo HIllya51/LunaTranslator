@@ -21,7 +21,7 @@ bool ScrPlayer_attach_function1()
     return false;
   HookParam hp;
   hp.address = func;
-  hp.offset = get_stack(5);
+  hp.offset = stackoffset(5);
   // 会把多行分开导致翻译不对。
   hp.type = USING_STRING; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
   // hp.embed_hook_font=F_GetGlyphOutlineA;
@@ -64,7 +64,7 @@ bool ScrPlayer_attach_function2()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(6);
+  hp.offset = stackoffset(6);
   hp.type = USING_STRING; // 有内部的multibyte函数使得无法内嵌显示中文字符
   return NewHook(hp, "ScrPlayer2");
 }

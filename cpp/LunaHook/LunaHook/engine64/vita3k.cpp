@@ -46,7 +46,7 @@ namespace
 
         HookParam hp;
         hp.address = 0x3000;
-        hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
             static std::wstring last;
             // vita3k Vulkan模式GetWindowText会卡住
@@ -96,10 +96,10 @@ bool vita3k::attach_function()
     spDefault.maxAddress = -1;
     HookParam hp;
     hp.address = DoJitPtr;
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto descriptor = *argidx(stack, idxDescriptor + 1); // r8
-        auto entrypoint = *argidx(stack, idxEntrypoint + 1); // r9
+        auto descriptor = context->argof(idxDescriptor + 1); // r8
+        auto entrypoint = context->argof(idxEntrypoint + 1); // r9
         auto em_address = *(uint32_t *)descriptor;
         if (em_address < 0x80000000)
             em_address += 0x80000000; // 0.1.9 3339
@@ -159,9 +159,9 @@ namespace
     }
 
     template <int index>
-    void ReadU16TextAndLenDW(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void ReadU16TextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = VITA3K::emu_arg(stack)[index];
+        auto address = VITA3K::emu_arg(context)[index];
         buffer->from(address + 0xC, (*(DWORD *)(address + 0x8)) * 2);
     }
 
@@ -199,9 +199,9 @@ namespace
         s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
         buffer->from(s);
     }
-    void TPCSG00903(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void TPCSG00903(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = VITA3K::emu_arg(stack)[0];
+        auto address = VITA3K::emu_arg(context)[0];
         buffer->from(address + 0x1C, (*(DWORD *)(address + 0x14)));
     }
     void FPCSG00903(TextBuffer *buffer, HookParam *hp)
@@ -326,9 +326,9 @@ namespace
         Trim(ws);
         buffer->from(WideStringToString(ws));
     }
-    void PCSG01011(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void PCSG01011(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = VITA3K::emu_arg(stack)[7];
+        auto address = VITA3K::emu_arg(context)[7];
         while (*(char *)(address - 1))
             address -= 1;
         buffer->from((char *)address);
@@ -349,9 +349,9 @@ namespace
             buffer->from(s);
         }
     }
-    void PCSG00912(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void PCSG00912(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = VITA3K::emu_arg(stack)[1];
+        auto address = VITA3K::emu_arg(context)[1];
         std::string final_string = "";
         BYTE pattern[] = {0x47, 0xff, 0xff};
         auto results = MemDbg::findBytes(pattern, sizeof(pattern), address, address + 0x50);
@@ -379,22 +379,22 @@ namespace
         }
         buffer->from(final_string);
     }
-    void TPCSG00291(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void TPCSG00291(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto a2 = VITA3K::emu_arg(stack)[0];
+        auto a2 = VITA3K::emu_arg(context)[0];
 
         auto vm = *(DWORD *)(a2 + (0x28));
-        vm = *(DWORD *)VITA3K::emu_addr(stack, vm);
-        vm = *(DWORD *)VITA3K::emu_addr(stack, vm + 8);
-        uintptr_t address = VITA3K::emu_addr(stack, vm);
+        vm = *(DWORD *)VITA3K::emu_addr(context, vm);
+        vm = *(DWORD *)VITA3K::emu_addr(context, vm + 8);
+        uintptr_t address = VITA3K::emu_addr(context, vm);
         auto len1 = *(DWORD *)(address + 4);
         auto p = address + 0x20;
         if (len1 > 4 && *(WORD *)(p + 2) == 0)
         {
             auto p1 = *(DWORD *)(address + 8);
-            vm = *(DWORD *)VITA3K::emu_addr(stack, vm);
-            vm = *(DWORD *)VITA3K::emu_addr(stack, vm + 0xC);
-            p = VITA3K::emu_addr(stack, vm);
+            vm = *(DWORD *)VITA3K::emu_addr(context, vm);
+            vm = *(DWORD *)VITA3K::emu_addr(context, vm + 0xC);
+            p = VITA3K::emu_addr(context, vm);
         }
         static int fm = 0;
         static std::string pre;

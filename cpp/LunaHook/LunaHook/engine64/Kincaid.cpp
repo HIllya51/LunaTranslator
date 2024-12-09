@@ -26,11 +26,11 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | CODEC_UTF8;
-    hp.offset = get_reg(regs::rax);
-    hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hp.offset = regoffset(rax);
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      if (stack->retaddr == (DWORD)-1){
-        buffer->from((char *)stack->rax);
+      if (context->retaddr == (DWORD)-1){
+        buffer->from((char *)context->rax);
       }
     };
     return NewHook(hp, "Kincaid");

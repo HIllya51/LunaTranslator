@@ -26,9 +26,8 @@ inline SECURITY_ATTRIBUTES allAccess = std::invoke([] // allows non-admin proces
 	SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
 	return SECURITY_ATTRIBUTES{ sizeof(SECURITY_ATTRIBUTES), &sd, FALSE }; });
 
-struct hook_stack
+struct hook_context
 {
-
 #ifndef _WIN64
 	uintptr_t _eflags; // pushfd
 	uintptr_t edi,	   // pushad
@@ -65,79 +64,120 @@ struct hook_stack
 		uintptr_t retaddr;
 		BYTE base[1];
 	};
-	void toContext(PCONTEXT context)
+	void toPCONTEXT(PCONTEXT pcontext)
 	{
 #ifndef _WIN64
-		context->Eax = eax;
-		context->Ecx = ecx;
-		context->Edx = edx;
-		context->Ebx = ebx;
-		context->Esp = esp;
-		context->Ebp = ebp;
-		context->Esi = esi;
-		context->Edi = edi;
-		context->EFlags = eflags;
+		pcontext->Eax = eax;
+		pcontext->Ecx = ecx;
+		pcontext->Edx = edx;
+		pcontext->Ebx = ebx;
+		pcontext->Esp = esp;
+		pcontext->Ebp = ebp;
+		pcontext->Esi = esi;
+		pcontext->Edi = edi;
+		pcontext->EFlags = eflags;
 #else
-		context->Rax = rax;
-		context->Rbx = rbx;
-		context->Rcx = rcx;
-		context->Rdx = rdx;
-		context->Rsp = rsp;
-		context->Rbp = rbp;
-		context->Rsi = rsi;
-		context->Rdi = rdi;
-		context->R8 = r8;
-		context->R9 = r9;
-		context->R10 = r10;
-		context->R11 = r11;
-		context->R12 = r12;
-		context->R13 = r13;
-		context->R14 = r14;
-		context->R15 = r15;
-		context->EFlags = eflags;
+		pcontext->Rax = rax;
+		pcontext->Rbx = rbx;
+		pcontext->Rcx = rcx;
+		pcontext->Rdx = rdx;
+		pcontext->Rsp = rsp;
+		pcontext->Rbp = rbp;
+		pcontext->Rsi = rsi;
+		pcontext->Rdi = rdi;
+		pcontext->R8 = r8;
+		pcontext->R9 = r9;
+		pcontext->R10 = r10;
+		pcontext->R11 = r11;
+		pcontext->R12 = r12;
+		pcontext->R13 = r13;
+		pcontext->R14 = r14;
+		pcontext->R15 = r15;
+		pcontext->EFlags = eflags;
 #endif
 	}
-	static hook_stack fromContext(PCONTEXT context)
+	static hook_context fromPCONTEXT(PCONTEXT pcontext)
 	{
-		hook_stack stack;
+		hook_context context;
 #ifndef _WIN64
-		stack.eax = context->Eax;
-		stack.ecx = context->Ecx;
-		stack.edx = context->Edx;
-		stack.ebx = context->Ebx;
-		stack.esp = context->Esp;
-		stack.ebp = context->Ebp;
-		stack.esi = context->Esi;
-		stack.edi = context->Edi;
-		stack.eflags = context->EFlags;
-		stack.retaddr = *(DWORD *)context->Esp;
+		context.eax = pcontext->Eax;
+		context.ecx = pcontext->Ecx;
+		context.edx = pcontext->Edx;
+		context.ebx = pcontext->Ebx;
+		context.esp = pcontext->Esp;
+		context.ebp = pcontext->Ebp;
+		context.esi = pcontext->Esi;
+		context.edi = pcontext->Edi;
+		context.eflags = pcontext->EFlags;
+		context.retaddr = *(DWORD *)pcontext->Esp;
 #else
-		stack.rax = context->Rax;
-		stack.rbx = context->Rbx;
-		stack.rcx = context->Rcx;
-		stack.rdx = context->Rdx;
-		stack.rsp = context->Rsp;
-		stack.rbp = context->Rbp;
-		stack.rsi = context->Rsi;
-		stack.rdi = context->Rdi;
-		stack.r8 = context->R8;
-		stack.r9 = context->R9;
-		stack.r10 = context->R10;
-		stack.r11 = context->R11;
-		stack.r12 = context->R12;
-		stack.r13 = context->R13;
-		stack.r14 = context->R14;
-		stack.r15 = context->R15;
-		stack.eflags = context->EFlags;
-		stack.retaddr = *(DWORD64 *)context->Rsp;
+		context.rax = pcontext->Rax;
+		context.rbx = pcontext->Rbx;
+		context.rcx = pcontext->Rcx;
+		context.rdx = pcontext->Rdx;
+		context.rsp = pcontext->Rsp;
+		context.rbp = pcontext->Rbp;
+		context.rsi = pcontext->Rsi;
+		context.rdi = pcontext->Rdi;
+		context.r8 = pcontext->R8;
+		context.r9 = pcontext->R9;
+		context.r10 = pcontext->R10;
+		context.r11 = pcontext->R11;
+		context.r12 = pcontext->R12;
+		context.r13 = pcontext->R13;
+		context.r14 = pcontext->R14;
+		context.r15 = pcontext->R15;
+		context.eflags = pcontext->EFlags;
+		context.retaddr = *(DWORD64 *)pcontext->Rsp;
 #endif
-		return stack;
+		return context;
 	}
-	static hook_stack *fromBase(uintptr_t lpDataBase)
+	static hook_context *fromBase(uintptr_t lpDataBase)
 	{
-		return (hook_stack *)(lpDataBase - (uintptr_t)((hook_stack *)0)->base);
+		return (hook_context *)(lpDataBase - offsetof(hook_context, base));
+	}
+	inline uintptr_t &argof(int idx)
+	{
+#ifdef _WIN64
+		auto offset = 0;
+		switch (idx)
+		{
+		case 1:
+			return rcx;
+		case 2:
+			return rdx;
+		case 3:
+			return r8;
+		case 4:
+			return r9;
+		default:
+			return stack[idx];
+		}
+#else
+		return stack[idx];
+#endif
 	}
 };
+#define regoffset(reg) ((int)offsetof(hook_context, reg) - (int)offsetof(hook_context, base))
+#define stackoffset(idx) ((int)offsetof(hook_context, stack[idx]) - (int)offsetof(hook_context, base))
+#ifndef _WIN64
+#define GETARG1 stackoffset(1)
+#define GETARG2 stackoffset(2)
+#define GETARG3 stackoffset(3)
+#define GETARG4 stackoffset(4)
+#define THISCALLARG1 stack[1]
+#define LASTRETVAL eax
+#define THISCALLTHIS ecx
+#else
+#define GETARG1 regoffset(rcx)
+#define GETARG2 regoffset(rdx)
+#define GETARG3 regoffset(r8)
+#define GETARG4 regoffset(r9)
+#define THISCALLARG1 rdx
+#define LASTRETVAL rax
+#define THISCALLTHIS rcx
+#endif
+
 // jichi 3/7/2014: Add guessed comment
 
 #define ALIGNPTR(Y, X) \
@@ -174,9 +214,9 @@ struct HookParam
 	short length_offset;					   // index of the string length
 	ALIGNPTR(uint64_t __1, uintptr_t padding); // padding before string
 	ALIGNPTR(uint64_t __12, uintptr_t user_value);
-	ALIGNPTR(uint64_t __2, void (*text_fun)(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split))
+	ALIGNPTR(uint64_t __2, void (*text_fun)(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split))
 	ALIGNPTR(uint64_t __3, void (*filter_fun)(TextBuffer *buffer, HookParam *hp)); // jichi 10/24/2014: Add filter function. Return false to skip the text
-	ALIGNPTR(uint64_t __7, void (*embed_fun)(hook_stack *stack, TextBuffer buffer));
+	ALIGNPTR(uint64_t __7, void (*embed_fun)(hook_context *context, TextBuffer buffer));
 	uint64_t embed_hook_font;
 	ALIGNPTR(uint64_t __9, const wchar_t *lineSeparator);
 	char name[HOOK_NAME_SIZE];
@@ -187,7 +227,6 @@ struct HookParam
 	}
 	uint64_t emu_addr;
 	JITTYPE jittype;
-	char unityfunctioninfo[1024];
 };
 
 struct ThreadParam

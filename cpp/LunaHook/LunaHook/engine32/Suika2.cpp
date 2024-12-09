@@ -8,7 +8,7 @@ bool Suika2_msvcrt() {
     HookParam hp;
     hp.address=(DWORD)_strdup;
     hp.type=USING_STRING|CODEC_UTF8;
-    hp.offset=get_stack(1);
+    hp.offset=stackoffset(1);
     return NewHook(hp,"Suika2_msvcrt");
     
 } 
@@ -26,7 +26,7 @@ bool Suika2_06x() {
     HookParam hp;
     hp.address=func;
     hp.type=USING_STRING|CODEC_UTF8|NO_CONTEXT;
-    hp.offset=get_stack(2);
+    hp.offset=stackoffset(2);
     return NewHook(hp,"Suika2_06x");
 
 } 

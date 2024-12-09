@@ -52,11 +52,11 @@ namespace
       ConsoleOutput("monobdwgcdll %p", addr);
       HookParam hp;
       hp.address = addr + 4;
-      hp.offset = get_reg(regs::rcx);
+      hp.offset = regoffset(rcx);
       hp.type = CODEC_UTF16 | USING_STRING;
-      hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
-        auto str = std::wstring_view((LPWSTR)stack->rcx);
+        auto str = std::wstring_view((LPWSTR)context->rcx);
         *split = str.find(L"OnShowComplete") != str.npos;
         buffer->from(str);
       };

@@ -15,7 +15,7 @@ bool InsertC4Hook()
   }
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_reg(regs::eax);
+  hp.offset=regoffset(eax);
   hp.type = DATA_INDIRECT|NO_CONTEXT;
   ConsoleOutput("INSERT C4");
   

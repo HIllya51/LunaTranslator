@@ -93,8 +93,8 @@ namespace
           hp.address = SafeFindEnclosingAlignedFunction(i, 0x40);
           if (hp.address)
           {
-            hp.offset = get_stack(3);
-            hp.split = get_reg(regs::esp);
+            hp.offset = stackoffset(3);
+            hp.split = regoffset(esp);
             hp.type = CODEC_ANSI_BE | USING_SPLIT;
             ConsoleOutput("INSERT BGI#1");
 
@@ -111,8 +111,8 @@ namespace
           hp.address = SafeFindEnclosingAlignedFunction(i, 0x40);
           if (hp.address)
           {
-            hp.offset = get_stack(3);
-            hp.split = get_reg(regs::esp);
+            hp.offset = stackoffset(3);
+            hp.split = regoffset(esp);
             hp.type = CODEC_ANSI_BE | USING_SPLIT;
             ConsoleOutput("INSERT BGI#2");
 
@@ -476,7 +476,7 @@ namespace
   //   return r;
   // }
   //
-  // static void SpecialHookBGI2(hook_stack* stack,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
+  // static void SpecialHookBGI2(hook_context *context,  HookParam *hp, uintptr_t *data, uintptr_t *split, size_t*len)
   //{
   //   LPCSTR text = (LPCSTR)*(DWORD *)(esp_base + hp->offset);
   //   if (text) {
@@ -494,7 +494,7 @@ namespace
       Type_BGI3
     } type_;
     int textIndex_; // the i-th of argument on the stack holding the text
-    void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+    void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
     {
       if (type_ == Type_BGI3)
       {
@@ -512,7 +512,7 @@ namespace
         return;
       // In Type 1, split = arg8
       // In Type 2, there is no arg8. However, arg8 seems to be a good split that can differenciate choice and character name
-      // DWORD split = stack->args[3]; // arg4
+      // DWORD split = context->args[3]; // arg4
       // DWORD split = s->stack[8]; // arg8
       // auto sig = Engine::hashThreadSignature(s->stack[0], split);
       // enum { role = Engine::UnknownRole };
@@ -1139,7 +1139,7 @@ namespace
     if (addr == 0)
       return false;
     hp.address = addr;
-    hp.offset = get_stack(Private::textIndex_);
+    hp.offset = stackoffset(Private::textIndex_);
     // jichi 5/12/2014: Using split could distinguish name and choices. But the signature might become unstable
     hp.type = USING_STRING | USING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_NEW | NO_CONTEXT;
 
@@ -1152,7 +1152,7 @@ namespace
       buffer->from(result);
     };
 
-    hp.split = get_stack(8); // pseudo arg8
+    hp.split = stackoffset(8); // pseudo arg8
 
     // GROWL_DWORD2(hp.address, processStartAddress);
 
@@ -1284,7 +1284,7 @@ bool InsertBGI4Hook_2()
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_NEW;
   hp.embed_hook_font = F_TextOutW | F_GetTextExtentPoint32W;
   hp.filter_fun = BGI7Filter;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   return NewHook(hp, "BGI");
 }
 bool InsertBGI4Hook()
@@ -1319,8 +1319,8 @@ namespace
       return false;
     HookParam hp;
     hp.address = funcstart;
-    hp.offset = get_stack(2);
-    hp.split = get_stack(1);
+    hp.offset = stackoffset(2);
+    hp.split = stackoffset(1);
     hp.type = CODEC_ANSI_BE | USING_SPLIT;
 
     return NewHook(hp, "BGI5");

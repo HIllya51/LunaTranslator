@@ -17,13 +17,13 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
-    hp.offset = get_reg(regs::rdi);
+    hp.offset = regoffset(rdi);
     auto succ = NewHook(hp, "Ages7_1");
     if (addr = MemDbg::findEnclosingAlignedFunction(addr))
     {
       hp.address = addr;
       hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
-      hp.offset = get_reg(regs::rbx);
+      hp.offset = regoffset(rbx);
       succ |= NewHook(hp, "Ages7_3");
     }
     return succ;
@@ -41,13 +41,13 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
-    hp.offset = get_reg(regs::rdi);
+    hp.offset = regoffset(rdi);
     auto suc = NewHook(hp, "Ages7_2");
     if (addr = MemDbg::findEnclosingAlignedFunction(addr))
     {
       hp.address = addr;
       hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
-      hp.offset = get_reg(regs::rbx);
+      hp.offset = regoffset(rbx);
       suc |= NewHook(hp, "Ages7_3");
     }
     return suc;
@@ -71,7 +71,7 @@ namespace
     HookParam hp;
     hp.address = addr + 3;
     hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
-    hp.offset = get_reg(regs::rbx);
+    hp.offset = regoffset(rbx);
     return NewHook(hp, "Ages7_4");
   }
   bool all()

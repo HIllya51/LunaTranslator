@@ -20,7 +20,7 @@ bool Winters::attach_function()
   auto target = off + addr + sizeof(bytes);
   HookParam hp;
   hp.address = target;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {

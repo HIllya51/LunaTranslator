@@ -113,7 +113,7 @@ bool InsertMarineHeartHook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(1);
+  hp.offset=stackoffset(1);
   hp.type = USING_STRING|DATA_INDIRECT; // = 9
 
   ConsoleOutput("INSERT MarineHeart");

@@ -27,10 +27,10 @@ bool InsertSysdHook()
 
 	HookParam hp;
 	hp.address = addr;
-	hp.offset = get_reg(regs::esi);
+	hp.offset = regoffset(esi);
 	hp.index = 0;
 	hp.padding = 0x12;
-	hp.split = get_stack(2);
+	hp.split = stackoffset(2);
 	hp.split_index = 0;
 	hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT;
 	hp.filter_fun = [](TextBuffer *buffer, HookParam *)

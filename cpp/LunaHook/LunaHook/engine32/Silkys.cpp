@@ -212,11 +212,11 @@
  *  00A1A197   CC               INT3
  *  00A1A198   CC               INT3
  */
-static void SpecialHookSilkys(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookSilkys(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   // DWORD arg1 = *(DWORD *)(esp_base + 0x4);
-  DWORD arg1 = stack->stack[1],
-        arg2 = stack->stack[2];
+  DWORD arg1 = context->stack[1],
+        arg2 = context->stack[2];
 
   int size = *(DWORD *)(arg1 + 0x14);
   if (size <= 0)
@@ -243,7 +243,7 @@ static void SpecialHookSilkys(hook_stack *stack, HookParam *hp, TextBuffer *buff
   buffer->from(text, size);
   *split = arg2 == 0 ? 1 : 2; // arg2 == 0 ? scenario : name
 }
-void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
 {
   auto arg = (TextUnionA *)(s->stack[0] + sizeof(DWORD)); // arg1
   if (!arg || !arg->isValid())
@@ -259,7 +259,7 @@ void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *rol
 }
 TextUnionA *arg_,
     argValue_;
-void hookafter1(hook_stack *s, TextBuffer buffer)
+void hookafter1(hook_context *s, TextBuffer buffer)
 {
   auto newData = buffer.strA();
   auto arg = (TextUnionA *)(s->stack[0] + sizeof(DWORD)); // arg1
@@ -270,7 +270,7 @@ void hookafter1(hook_stack *s, TextBuffer buffer)
   arg->setText(data_);
 }
 
-void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   if (arg_)
   {
@@ -344,7 +344,7 @@ bool InsertSilkysHook2()
   HookParam hp;
   hp.address = addr + 8;
   hp.type = CODEC_UTF16 | USING_STRING;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     static int idx = 0;
@@ -372,7 +372,7 @@ namespace
       return 0;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.lineSeparator = L"\\n";
     hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW;
     return NewHook(hp, "EmbedSilkysX");
@@ -403,7 +403,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr + sizeof(bytes2);
-    hp.offset = get_reg(regs::edi);
+    hp.offset = regoffset(edi);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       StringCharReplacer(buffer, L"\\i", 2, L'\'');
@@ -438,9 +438,9 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.index = 0;
-    hp.split = get_stack(6);
+    hp.split = stackoffset(6);
     hp.type = USING_SPLIT | DATA_INDIRECT;
     return NewHook(hp, "Silkys3");
   }
@@ -464,8 +464,8 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_CHAR | DATA_INDIRECT | USING_SPLIT;
-    hp.split = get_stack(1);
-    hp.offset = get_stack(1); // thiscall arg1
+    hp.split = stackoffset(1);
+    hp.offset = stackoffset(1); // thiscall arg1
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       static int idx = 0;
@@ -496,7 +496,7 @@ namespace
     HookParam hp;
     hp.address = addr + 2;
     hp.type = USING_CHAR | DATA_INDIRECT | CODEC_UTF16;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       static int idx = 0;
@@ -520,7 +520,7 @@ bool SilkysOld::attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(3);
+  hp.offset = stackoffset(3);
   hp.type = DATA_INDIRECT;
   return NewHook(hp, "SilkysOld");
 }
@@ -576,7 +576,7 @@ bool Siglusold::attach_function()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_CHAR | DATA_INDIRECT;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   auto succ = NewHook(hp, "Siglusold_slow"); // 文本速度是慢速时这个有用，调成快速以后有无法过滤的重复
   auto addrs = findxref_reverse_checkcallop(addr, addr - 0x1000, addr + 0x1000, 0xe8);
   for (auto addr : addrs)
@@ -588,11 +588,11 @@ bool Siglusold::attach_function()
     HookParam hpref;
     hpref.address = addr;
     hpref.codepage = 932;
-    hpref.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    hpref.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      auto a2 = (DWORD *)stack->stack[2];
+      auto a2 = (DWORD *)context->stack[2];
 
-      auto len1 = stack->stack[3]; // 慢速时是1
+      auto len1 = context->stack[3]; // 慢速时是1
       auto len2 = a2[7] - a2[6];
       if (len1 == 0 || len2 == 0)
         return;
@@ -630,8 +630,8 @@ bool Silkyssakura::attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(3);
-  hp.split = get_stack(5);
+  hp.offset = stackoffset(3);
+  hp.split = stackoffset(5);
   hp.type = DATA_INDIRECT | USING_CHAR | USING_SPLIT | CODEC_UTF16;
 
   auto xrefs = findxref_reverse_checkcallop(addr, processStartAddress, processStopAddress, 0xe8);
@@ -648,7 +648,7 @@ bool Silkyssakura::attach_function()
         {
           HookParam hp_embed;
           hp_embed.address = addr;
-          hp_embed.offset = get_stack(2);
+          hp_embed.offset = stackoffset(2);
           hp_embed.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | CODEC_UTF16;
           hp_embed.embed_hook_font = F_GetGlyphOutlineW;
           return NewHook(hp_embed, "embedSilkyssakura"); // 这个是分两层分别绘制文字和阴影，需要两个都内嵌。
@@ -687,7 +687,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::ecx);
+    hp.offset = regoffset(ecx);
     hp.lineSeparator = L"\\n";
     hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     return NewHook(hp, "SilkysX");
@@ -718,7 +718,7 @@ bool Silkysveryveryold_attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.lineSeparator = L"\\n";
   hp.type = USING_STRING;
   return NewHook(hp, "SilkysX");
@@ -756,7 +756,7 @@ bool Aisystem6::attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING | NO_CONTEXT; // 男主自定义人名会被分开
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {

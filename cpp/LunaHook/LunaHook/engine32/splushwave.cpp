@@ -15,7 +15,7 @@ bool splushwave_(const char *buf, int size)
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {

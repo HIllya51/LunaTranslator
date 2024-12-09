@@ -13,7 +13,7 @@ bool GSX1() {
     HookParam hp;
     hp.address=addr;
     hp.type=USING_CHAR|CODEC_UTF16|DATA_INDIRECT;
-    hp.offset=get_stack(4);
+    hp.offset=stackoffset(4);
     return NewHook(hp,"GSX");
 } 
 bool GSX2() { 
@@ -56,12 +56,12 @@ bool GSX2() {
     HookParam hp;
     hp.address=addr;
     hp.type=USING_CHAR;
-    hp.text_fun=[](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
+    hp.text_fun=[](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
       WORD d;
-      if(IsBadReadPtr((VOID*)stack->stack[3],4))
-        d=*(WORD*)stack->stack[4];
+      if(IsBadReadPtr((VOID*)context->stack[3],4))
+        d=*(WORD*)context->stack[4];
       else
-        d=*(WORD*)stack->stack[3];
+        d=*(WORD*)context->stack[3];
       buffer->from_t(d);
     };
     return NewHook(hp,"GSX");

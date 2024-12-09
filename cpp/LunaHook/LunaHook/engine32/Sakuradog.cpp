@@ -19,7 +19,7 @@ bool Sakuradog::attach_function() {
     if (addr == 0)return false; 
     HookParam hp;
     hp.address = addr+6;
-    hp.offset=get_reg(regs::esi);
+    hp.offset=regoffset(esi);
     hp.split=0xe4;
     hp.type = CODEC_ANSI_BE|USING_SPLIT|NO_CONTEXT ;
     return NewHook(hp, "Sakuradog");

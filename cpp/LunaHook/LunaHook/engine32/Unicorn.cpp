@@ -30,7 +30,7 @@ bool InsertUnicornHook()
 
   HookParam hp;
   hp.type = NO_CONTEXT | DATA_INDIRECT;
-  hp.offset = get_reg(regs::edi);
+  hp.offset = regoffset(edi);
   hp.address = addr;
 
   // index = SearchPattern(processStartAddress, size,ins, sizeof(ins));
@@ -88,7 +88,7 @@ namespace
 
       std::string sourceData_;
       LPSTR targetText_;
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         // Sample game:  三極姫4 ～天華繚乱 天命の恋絵巻～
         // 004B76BB   51               PUSH ECX
@@ -172,7 +172,7 @@ namespace
         // oldData.replace("\x81\x40", ""); // remove spaces in the middle of names
         buffer->from(oldData);
       }
-      void hookafter2(hook_stack *s, TextBuffer buffer)
+      void hookafter2(hook_context *s, TextBuffer buffer)
       {
 
         auto newData = buffer.strA();
@@ -223,7 +223,7 @@ namespace
         targetText_ = (LPSTR)s->stack[1]; // arg1
         textCache_.put(simplehash::hashByteArraySTD(newData));
       }
-      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (targetText_)
         {
@@ -482,7 +482,7 @@ namespace
       hp.address = beforeAddress;
       hp.text_fun = Private::hookBefore;
       hp.embed_fun = Private::hookafter2;
-      hp.offset = get_stack(1);
+      hp.offset = stackoffset(1);
       hp.lineSeparator = L"\\n";
       hp.type = EMBED_ABLE | EMBED_DYNA_SJIS;
       hp.embed_hook_font = F_GetGlyphOutlineA;
@@ -509,7 +509,7 @@ namespace
        *  Sample game:  戦極姫6
        *
        */
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         static std::string data_;
         auto retaddr = s->stack[0];
@@ -573,7 +573,7 @@ namespace
             return true;*/
       }
 
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         static std::string data_;
         data_ = buffer.strA();
@@ -823,7 +823,7 @@ bool Unicorn_Anesen::attach_function()
 
   HookParam hp;
   hp.type = USING_STRING;
-  hp.offset = get_stack(4);
+  hp.offset = stackoffset(4);
   hp.address = addr;
 
   return NewHook(hp, "Unicorn_Anesen");

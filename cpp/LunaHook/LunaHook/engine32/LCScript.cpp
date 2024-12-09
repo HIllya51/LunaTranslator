@@ -197,7 +197,7 @@ namespace
        *  01D6B367  5F 57 61 7A 61 5F 4B 6F 63 68 75 00 1C 00 00 00  _Waza_Kochu....
        */
 
-      void hook1(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hook1(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         data_.clear();
 
@@ -268,7 +268,7 @@ namespace
         }
         buffer->from(oldData);
       }
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
 
         int size = s->eax - 1;
@@ -336,7 +336,7 @@ namespace
         s->eax = data_.size() + 1;
         return;
       }
-      void hook2(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hook2(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (!data_.empty())
           s->esi = (ULONG)data_.c_str();

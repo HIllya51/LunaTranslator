@@ -127,12 +127,12 @@ size_t _typemoonstrlen(LPCSTR text)
 } // unnamed namespace
 
 // Use last text size to determine
-static void SpecialPS2HookTypeMoon(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialPS2HookTypeMoon(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   static LPCSTR lasttext; // this value should be the same for the same game
   static size_t lastsize;
 
-  LPCSTR cur = LPCSTR(stack->ecx);
+  LPCSTR cur = LPCSTR(context->ecx);
   if (!*cur)
     return;
 
@@ -405,9 +405,9 @@ bool InsertTypeMoonPS2Hook()
  *  3026e521   31c0             xor eax,eax
  */
 // Use fixed split for this hook
-static void SpecialPS2HookMarvelous(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialPS2HookMarvelous(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  DWORD text = stack->ecx;
+  DWORD text = context->ecx;
   if (BYTE c = *(BYTE *)text) { // BYTE is unsigned 
     buffer->from(text,::LeadByteTable[c]);
     *split = FIXED_SPLIT_VALUE * 3; // merge all threads
@@ -562,13 +562,13 @@ bool InsertMarvelousPS2Hook()
  *  3020745f   8b15 04ac9e01    mov edx,dword ptr ds:[0x19eac04]
  */
 // Use fixed split for this hook
-static void SpecialPS2HookMarvelous2(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialPS2HookMarvelous2(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  DWORD text = stack->edx; // get text in dl: 3020734d   8811  mov byte ptr ds:[ecx],dl
+  DWORD text = context->edx; // get text in dl: 3020734d   8811  mov byte ptr ds:[ecx],dl
   if (BYTE c = *(BYTE *)text) { // BYTE is unsigned
     
     //*split = FIXED_SPLIT_VALUE * 4; // merge all threads
-    *split = stack->esi;
+    *split = context->esi;
     //*split = *(DWORD *)(esp_base + 4*5); // esp[5]
     buffer->from(text, 1);
   }
@@ -664,7 +664,7 @@ bool InsertNamcoPS2Hook()
     HookParam hp;
     hp.address = addr + addr_offset;
     hp.type = USING_STRING|USING_SPLIT; // no context to get rid of return address
-    hp.offset=get_reg(regs::ecx); 
+    hp.offset=regoffset(ecx); 
     hp.split = hp.offset; // use ecx address to split
     ConsoleOutput("Namco PS2: INSERT");
     //GROWL_DWORD(hp.address);
@@ -726,9 +726,9 @@ bool InsertNamcoPS2Hook()
  *  1351351b   cc               int3
  */
 // Read text from esi
-static void SpecialPSPHookSega(hook_stack* stack,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookSega(hook_context *context,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
 {
-  LPCSTR text = LPCSTR(esp_base + get_reg(regs::esi)); // esi address
+  LPCSTR text = LPCSTR(esp_base + regoffset(esi)); // esi address
   if (*text) {
     *data = (DWORD)text;
     *len = !text[0] ? 0 : !text[1] ? 1 : text[2] ? 2 : text[3] ? 3 : 4;
@@ -845,7 +845,7 @@ bool InsertSegaPSPHook()
  *  13400f0a   cc               int3
  *  13400f0b   cc               int3
  */
-static void SpecialPSPHookShade(hook_stack* stack,  HookParam *hp, BYTE, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookShade(hook_context *context,  HookParam *hp, BYTE, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   DWORD eax = regof(eax, esp_base);
   LPCSTR text = LPCSTR(eax + hp->user_value);
@@ -968,7 +968,7 @@ bool InsertShadePSPHook()
  *  13400f02   cc               int3
  */
 // jichi 7/17/2014: Why this function is exactly the same as SpecialPSPHookImageepoch?
-static void SpecialPSPHookAlchemist3(hook_stack* stack,  HookParam *hp, BYTE, uintptr_t *data, uintptr_t *split, size_t*len)
+static void SpecialPSPHookAlchemist3(hook_context *context,  HookParam *hp, BYTE, uintptr_t *data, uintptr_t *split, size_t*len)
 {
   DWORD eax = regof(eax, esp_base);
   DWORD text = eax + hp->user_value;

@@ -70,6 +70,6 @@ return i;
   HookParam hp;
   hp.address = addrx;
   hp.type = USING_STRING;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   return NewHook(hp, "Cage");
 }

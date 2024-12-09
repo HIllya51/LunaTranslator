@@ -1,6 +1,6 @@
 #include "Waffle.h"
 #include "pchhook.h"
-bool InsertWaffleDynamicHook(LPVOID addr, hook_stack *stack)
+bool InsertWaffleDynamicHook(LPVOID addr, hook_context *context)
 {
   ConsoleOutput("WaffleDynamic:triggered");
   if (addr != ::GetTextExtentPoint32A)
@@ -27,7 +27,7 @@ bool InsertWaffleDynamicHook(LPVOID addr, hook_stack *stack)
       {
         HookParam hp;
         hp.address = t;
-        hp.offset = get_stack(2);
+        hp.offset = stackoffset(2);
         hp.index = 4;
         hp.type = DATA_INDIRECT;
         ConsoleOutput("INSERT Dynamic Waffle");
@@ -51,7 +51,7 @@ bool waffleoldhook()
     {
       HookParam hp;
       hp.address = i;
-      hp.offset = get_stack(2);
+      hp.offset = stackoffset(2);
       hp.index = 4;
       hp.split = 0x1e8;
       hp.type = DATA_INDIRECT | USING_SPLIT;
@@ -80,7 +80,7 @@ bool InsertWaffleHook()
   {
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.type = DATA_INDIRECT;
     ConsoleOutput("INSERT WAFFLE2");
     return NewHook(hp, "WAFFLE2");
@@ -104,7 +104,7 @@ bool InsertWaffleHookx()
   HookParam hp;
   hp.address = addr += sizeof(bytes);
   hp.type = NO_CONTEXT | DATA_INDIRECT;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.index = 0;
   return NewHook(hp, "waffle");
 }
@@ -132,7 +132,7 @@ namespace
        */
       TextUnionA *arg_,
           argValue_;
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         static std::string data_; // persistent storage, which makes this function not thread-safe
 
@@ -189,7 +189,7 @@ namespace
         // auto sig = Engine::hashThreadSignature(role, reladdr);
         buffer->from(arg->getText());
       }
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
 
         auto newData = buffer.strA();
@@ -200,7 +200,7 @@ namespace
         data_ = newData;
         arg->setText(data_.c_str(), data_.size());
       }
-      void hookAfter1(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfter1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (arg_)
         {
@@ -538,7 +538,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_STRING;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
@@ -561,7 +561,7 @@ namespace
     {
       HookParam hp;
       hp.address = addr + sizeof(bytes) - 5;
-      hp.offset = get_reg(regs::eax);
+      hp.offset = regoffset(eax);
       hp.type = USING_STRING;
       ok |= NewHook(hp, "waffle4");
     }
@@ -600,7 +600,7 @@ namespace
     HookParam hp;
     hp.address = addr + sizeof(bytes) - 20;
     hp.type = DATA_INDIRECT;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     return NewHook(hp, "waffle3");
   }
 }

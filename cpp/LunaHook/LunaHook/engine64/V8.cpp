@@ -21,9 +21,9 @@ bool InsertV8Hook(HMODULE module)
 		HookParam hp;
 		hp.type = USING_STRING | CODEC_UTF16;
 		hp.address = addr1;
-		hp.text_fun = [](hook_stack* stack, HookParam *hp, uintptr_t* data, uintptr_t* split, size_t* count)
+		hp.text_fun = [](hook_context *context, HookParam *hp, uintptr_t* data, uintptr_t* split, size_t* count)
 		{
-			*data=(*(uintptr_t*)(stack->rcx))+23;
+			*data=(*(uintptr_t*)(context->rcx))+23;
 			int len = *(int*)(*data - 4);
 			if(wcslen((wchar_t*)*data)*2<len)return;
 			*count=len*2;
@@ -35,9 +35,9 @@ bool InsertV8Hook(HMODULE module)
 		HookParam hp;
 		hp.type = USING_STRING | CODEC_UTF16;
 		hp.address = addr2;
-		hp.text_fun = [](hook_stack* stack, HookParam *hp, uintptr_t* data, uintptr_t* split, size_t* count)
+		hp.text_fun = [](hook_context *context, HookParam *hp, uintptr_t* data, uintptr_t* split, size_t* count)
 		{
-			*data=(stack->rcx)+11;
+			*data=(context->rcx)+11;
 			int len = *(int*)(*data - 4);
 			if(wcslen((wchar_t*)*data)*2<len)return;
 			*count=len*2;
@@ -147,7 +147,7 @@ namespace{
 			HookParam hp;
 			hp.address = (uint64_t)addr;
 			hp.type = USING_STRING | CODEC_UTF16 | DATA_INDIRECT;
-			hp.offset=get_reg(regs::rcx);
+			hp.offset=regoffset(rcx);
 			hp.padding = 0xC;
 			hp.index = 0;
 				
@@ -175,9 +175,9 @@ namespace{
 						HookParam hp;
 						hp.address = (uint64_t)subaddr;
 						hp.type = USING_STRING | CODEC_UTF16 ;
-						hp.offset=get_reg(regs::r10);
-						hp.text_fun=[](hook_stack* stack, HookParam* hp, uintptr_t* data, uintptr_t* split, size_t* len){
-							auto text =stack->r10;
+						hp.offset=regoffset(r10);
+						hp.text_fun=[](hook_context *context, HookParam* hp, uintptr_t* data, uintptr_t* split, size_t* len){
+							auto text =context->r10;
 							if(strlen((char*) text)>1){
 								hp->type=USING_STRING|CODEC_UTF8|NO_CONTEXT;
 								*split=0x1;

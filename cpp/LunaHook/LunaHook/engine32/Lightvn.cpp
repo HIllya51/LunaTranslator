@@ -2,7 +2,7 @@
  
 //https://vndb.org/r?f=fwLight_evn-
  
-void SpecialHookLightvnA(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+void SpecialHookLightvnA(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
 	//[Parser::ReadScriptBreak] curline:'"「次は[水縹]<みはなだ>駅、水縹駅――お出口は左側です」' 
 
@@ -10,7 +10,7 @@ void SpecialHookLightvnA(hook_stack *stack, HookParam *hp, TextBuffer *buffer, u
  	//(scenario:T) (script:00.txt, lineNo:30) 
 	//[PARSETOKENS] line:"電車には俺のほかに数人乗っている程度。\c
  	//(scenario:F) (script:00.txt, lineNo:29) 
-	std::string s=(char*)stack->stack[1];
+	std::string s=(char*)context->stack[1];
 	//std::regex _1("\\[Parser::ReadScriptBreak\\] curline:'[\"\\.]([\\s\\S]*?)'([\\s\\S]*?)");//对于多行显示不全
 	//std::regex _2("\\[PARSETOKENS\\] line:([\\s\\S]*?)\\(scenario:([\\s\\S]*?)");
 	std::regex _2("\\[PARSETOKENS\\] line:[-\"\\.]+([\\s\\S]*?)\\(scenario:([\\s\\S]*?)");
@@ -30,9 +30,9 @@ void SpecialHookLightvnA(hook_stack *stack, HookParam *hp, TextBuffer *buffer, u
 	buffer->from(_);
 }
 
-void SpecialHookLightvnW(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+void SpecialHookLightvnW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 { 
-	std::wstring s((wchar_t*)stack->stack[1]); 
+	std::wstring s((wchar_t*)context->stack[1]); 
 	std::wregex _2(L"\\[PARSETOKENS\\] line:[-\"\\.]+([\\s\\S]*?)\\(scenario:([\\s\\S]*?)");
 	std::wregex _3(L"\\[PARSETOKENS\\] line:([\\s\\S]*?)backlogName = '([\\s\\S]*?)'([\\s\\S]*?)");
 	std::wsmatch match; std::wstring _;
@@ -59,7 +59,7 @@ bool InsertLightvnHook()
 		HookParam hp;
 		hp.address = MemDbg::findEnclosingAlignedFunction(addr);
 		hp.type = CODEC_UTF16 | USING_STRING;
-		hp.offset=get_stack(1);
+		hp.offset=stackoffset(1);
 		NewHook(hp, "Light.vn");
 	}*/
 	VirtualProtect(IsDebuggerPresent, 2, PAGE_EXECUTE_READWRITE, DUMMY);
@@ -67,7 +67,7 @@ bool InsertLightvnHook()
 	HookParam hp;
 	hp.address = (uintptr_t)OutputDebugStringA;
 	hp.type = CODEC_UTF8 | USING_STRING;
-	hp.offset=get_stack(1);
+	hp.offset=stackoffset(1);
 	hp.text_fun = SpecialHookLightvnA;
 	auto succ=NewHook(hp, "OutputDebugStringA");
 	hp.address = (uintptr_t)OutputDebugStringW;

@@ -32,7 +32,7 @@ bool InsertDxLibHook()
 
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::esi);
+    hp.offset = regoffset(esi);
     hp.type = USING_STRING;
     hp.filter_fun = DxLibFilter;
     ConsoleOutput(" INSERT DxLib");

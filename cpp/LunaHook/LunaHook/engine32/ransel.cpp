@@ -49,6 +49,6 @@ bool ransel::attach_function() {
   HookParam hp;
   hp.address=addr;
   hp.type=USING_STRING;
-  hp.offset=get_reg(regs::esi);
+  hp.offset=regoffset(esi);
   return NewHook(hp,"ransel");
 } 

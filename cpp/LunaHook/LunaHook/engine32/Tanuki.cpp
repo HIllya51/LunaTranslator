@@ -27,7 +27,7 @@ bool InsertTanukiHook()
         //GROWL_DWORD2(i, j);
         HookParam hp;
         hp.address = j;
-        hp.offset=get_stack(1);
+        hp.offset=stackoffset(1);
         hp.type = USING_STRING | NO_CONTEXT|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
         hp.embed_hook_font=F_GetGlyphOutlineA;
         ConsoleOutput("INSERT TanukiSoft");
@@ -52,7 +52,7 @@ bool InsertTanukiHook2() {
   if (addr == 0)return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_stack(2);
+  hp.offset=stackoffset(2);
   hp.type = USING_STRING;
   ConsoleOutput("Tanuki %p", addr);
   return NewHook(hp, "Tanuki");

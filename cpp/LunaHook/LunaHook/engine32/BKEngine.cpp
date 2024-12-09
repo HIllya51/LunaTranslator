@@ -11,7 +11,7 @@ namespace{
 		hp.address = addr;
 		hp.type = CODEC_UTF16|DATA_INDIRECT;
 		hp.index=0;
-		hp.offset=get_stack(1);
+		hp.offset=stackoffset(1);
 		
 		return NewHook(hp, "BKEngine1");
 	}
@@ -25,7 +25,7 @@ namespace{
 		hp.address = addr;
 		hp.type = CODEC_UTF16|DATA_INDIRECT|NO_CONTEXT;
 		hp.index=0;
-		hp.offset=get_stack(1);
+		hp.offset=stackoffset(1);
 		
 		return NewHook(hp, "BKEngine2");
 	}
@@ -45,7 +45,7 @@ namespace{
 		HookParam hp;
 		hp.address = maxaddr;
 		hp.type = CODEC_UTF16|USING_STRING; 
-		hp.offset=get_reg(regs::edx);
+		hp.offset=regoffset(edx);
 		
 		return NewHook(hp, "BKEngine3");
 	}

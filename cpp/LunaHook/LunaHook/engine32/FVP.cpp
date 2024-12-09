@@ -224,7 +224,7 @@ namespace
        *  026A11A0  7B 00 03 85 00 0F 7C 05 03 6F 00 06 54 11 08 00  {.・|o.T.
        *
        */
-      // bool hookBefore(winhook::hook_stack *s)
+      // bool hookBefore(winhook::hook_context *s)
       // {
       //   static std::string data_; // persistent storage, which makes this function not thread-safe
       //   LPCSTR text = (LPCSTR)s->stack[1]; // arg1
@@ -474,7 +474,7 @@ namespace
         return false;
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_stack(1);
+      hp.offset = stackoffset(1);
       hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
       hp.embed_hook_font = F_DrawTextA | F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)

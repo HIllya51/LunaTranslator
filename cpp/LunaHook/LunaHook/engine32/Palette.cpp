@@ -43,7 +43,7 @@ bool Palette::attach_function() {
     if (!addr)  return false; 
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(1); 
+    hp.offset=stackoffset(1); 
     hp.type = USING_STRING; 
     hp.filter_fun=all_ascii_Filter;
     ConsoleOutput("Please adjust the text display speed to maximum to remove duplicates");

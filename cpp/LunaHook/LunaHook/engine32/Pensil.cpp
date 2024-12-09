@@ -9,8 +9,8 @@ bool InsertPensilHook()
         VirtualProtect((void *)j, 1, PAGE_EXECUTE_READ, DUMMY);
         HookParam hp;
         hp.address = j;
-        hp.offset = get_stack(2);
-        hp.split = get_stack(1);
+        hp.offset = stackoffset(2);
+        hp.split = stackoffset(1);
         hp.type = USING_SPLIT;
         ConsoleOutput("INSERT Pensil");
         return NewHook(hp, "Pensil");
@@ -663,7 +663,7 @@ namespace
         HookParam hp;
         hp.address = addr;
         hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
-        hp.offset = get_stack(2);
+        hp.offset = stackoffset(2);
         hp.filter_fun = pensilfilter;
         hp.embed_hook_font = F_GetGlyphOutlineA;
         return NewHook(hp, "EmbedPensil");
@@ -700,7 +700,7 @@ namespace
       HookParam hp;
       hp.address = addr;
       hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
-      hp.offset = get_stack(1);
+      hp.offset = stackoffset(1);
       hp.filter_fun = pensilfilter;
       hp.embed_hook_font = F_GetGlyphOutlineA;
       return NewHook(hp, "EmbedPensilChoice");
@@ -894,7 +894,7 @@ bool Insert2RMHook()
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset = get_reg(regs::edi);
+  hp.offset = regoffset(edi);
   hp.type = NO_CONTEXT | DATA_INDIRECT;
   ConsoleOutput("INSERT 2RM");
   return NewHook(hp, "2RM");
@@ -924,8 +924,8 @@ namespace
       return 0;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(3);
-    hp.split = get_stack(4);
+    hp.offset = stackoffset(3);
+    hp.split = stackoffset(4);
     hp.type = USING_SPLIT;
     return NewHook(hp, "abalone");
   }

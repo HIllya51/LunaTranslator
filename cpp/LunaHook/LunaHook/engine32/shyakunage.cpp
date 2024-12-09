@@ -11,7 +11,7 @@ bool shyakunage::attach_function() {
 			if (addr == 0)return false; 
 			HookParam hp;
 			hp.address = addr;
-			hp.offset=get_reg(regs::edx);
+			hp.offset=regoffset(edx);
 			hp.type = USING_STRING; 
 			return NewHook(hp, "shyakunage"); 
 }  

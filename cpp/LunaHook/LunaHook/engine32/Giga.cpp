@@ -17,7 +17,7 @@ bool Giga::attach_function() {
   if (addr == 0)return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset =get_stack(4);
+  hp.offset =stackoffset(4);
   hp.type = USING_STRING;
   
   return  NewHook(hp, "Giga");

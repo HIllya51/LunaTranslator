@@ -79,12 +79,12 @@
  *  [f9S30e0u]　が、それ�人間相手�話�� */
 namespace
 { // unnamed
-  void SpecialHookSystemAoi(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookSystemAoi(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     *split = 0; // 8/3/2014 jichi: split is zero, so return address is used as split
     if (hp->type & CODEC_UTF16)
     {
-      LPCWSTR wcs = (LPWSTR)stack->stack[1]; // jichi: text on the top of the stack
+      LPCWSTR wcs = (LPWSTR)context->stack[1]; // jichi: text on the top of the stack
       size_t size = ::wcslen(wcs);
       for (DWORD i = 0; i < size; i++)
         if (wcs[i] == L'>' || wcs[i] == L']')
@@ -99,7 +99,7 @@ namespace
     }
     else
     {
-      LPCSTR cs = (LPCSTR)stack->stack[1]; // jichi: text on the top of the stack
+      LPCSTR cs = (LPCSTR)context->stack[1]; // jichi: text on the top of the stack
       size_t size = ::strlen(cs);
       for (DWORD i = 0; i < size; i++)
         if (cs[i] == '>' || cs[i] == ']')
@@ -133,7 +133,7 @@ namespace
     return ret;
   }
 
-  bool InsertSystemAoiDynamicHook(LPVOID addr, hook_stack *stack)
+  bool InsertSystemAoiDynamicHook(LPVOID addr, hook_context *context)
   {
     int version = GetSystemAoiVersion();
     bool utf16 = true;
@@ -150,8 +150,8 @@ namespace
     Util::GetCodeRange(processStartAddress, &low, &high);
 
     // jichi 2/15/2015: Traverse the stack to dynamically find the ancestor call from the main module
-    const DWORD stop = (stack->esp & 0xffff0000) + 0x10000; // range to traverse the stack
-    for (DWORD i = stack->esp; i < stop; i += 4)
+    const DWORD stop = (context->esp & 0xffff0000) + 0x10000; // range to traverse the stack
+    for (DWORD i = context->esp; i < stop; i += 4)
     {
       DWORD k = *(DWORD *)i;
       if (k > low && k < high && // jichi: if the stack address falls into the code region of the main exe module
@@ -159,7 +159,7 @@ namespace
       { // jichi 10/20/2014: call dword ptr ds
 
         HookParam hp;
-        hp.offset = get_stack(1);
+        hp.offset = stackoffset(1);
         hp.text_fun = SpecialHookSystemAoi; // need to remove garbage
         hp.type = utf16 ? (USING_STRING | CODEC_UTF16) : USING_STRING;
 
@@ -251,7 +251,7 @@ namespace
         }
       return text;
     }
-    void beforeAgsSpriteCreateTextExW(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+    void beforeAgsSpriteCreateTextExW(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
     {
       auto text = (LPWSTR)s->stack[2]; // arg2
       if (!text || !*text || !Engine::isAddressWritable(text))
@@ -264,14 +264,14 @@ namespace
       *role = Engine::OtherRole;
       buffer->from(text);
     }
-    void afterAgsSpriteCreateTextExW(hook_stack *s, TextBuffer buffer)
+    void afterAgsSpriteCreateTextExW(hook_context *s, TextBuffer buffer)
     {
       auto text = (LPWSTR)s->stack[2];
       text = ltrimW(text);
       std::wstring _ = buffer.strW();
       wcscpy((LPWSTR)text, _.c_str());
     }
-    void beforeAgsSpriteCreateTextW(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+    void beforeAgsSpriteCreateTextW(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
     {
       // All threads including character names are linked together
 
@@ -300,21 +300,21 @@ namespace
         }
       buffer->from(text);
     }
-    void afterAgsSpriteCreateTextW(hook_stack *s, TextBuffer buffer)
+    void afterAgsSpriteCreateTextW(hook_context *s, TextBuffer buffer)
     {
       auto text = (LPWSTR)s->stack[1];
       text = ltrimW(text);
       std::wstring _ = buffer.strW();
       wcscpy((LPWSTR)text, _.c_str());
     }
-    void afterAgsSpriteCreateTextA(hook_stack *s, TextBuffer buffer)
+    void afterAgsSpriteCreateTextA(hook_context *s, TextBuffer buffer)
     {
       auto text = (LPSTR)s->stack[1]; // arg1
       text = ltrimA(text);
       std::string _ = buffer.strA();
       strcpy((char *)text, _.c_str());
     }
-    void beforeAgsSpriteCreateTextA(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+    void beforeAgsSpriteCreateTextA(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
     {
       // All threads including character names are linked together
 
@@ -358,7 +358,7 @@ namespace
       HookArgument *arg_;
       LPCSTR text_;
 
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         LPCSTR src = (LPCSTR)s->stack[6]; // original text in arg7
         // LPSTR dest = *(LPSTR *)(s->stack[0] + 0x34); // bad text in arg1+0x34
@@ -367,7 +367,7 @@ namespace
         arg_->text = src;
       }
 
-      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (arg_)
         {
@@ -751,7 +751,7 @@ namespace
     }
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.text_fun = SpecialHookSystemAoi; // 其实已无效（在before的lstrim里有一样的功能。但保留。
 
     hp.type = EMBED_ABLE | USING_STRING | NO_CONTEXT; //|EMBED_AFTER_OVERWRITE;
@@ -770,7 +770,7 @@ namespace
       {
         HookParam hp;
         hp.address = addr;
-        hp.offset = get_stack(2);
+        hp.offset = stackoffset(2);
         hp.type = CODEC_UTF16 | EMBED_ABLE; //|EMBED_AFTER_OVERWRITE;
         hp.text_fun = beforeAgsSpriteCreateTextExW;
         hp.embed_fun = afterAgsSpriteCreateTextExW;

@@ -126,7 +126,7 @@ bool godot35(){
   hp.address = addr+sizeof(sig3);
   
   hp.type = USING_STRING|CODEC_UTF16;
-  hp.text_fun=[](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
+  hp.text_fun=[](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
     /*
     Line &l = p_frame->lines.write[p_line];
 	Item *it = l.from;
@@ -182,8 +182,8 @@ struct ItemText : public Item {
 
       //auto v471 = (int *)((a7 << 6) + *(DWORD *)(a3 + 40));
       
-      if(stack->retaddr!=1)return;//不懂为什么这个是1，按理说返回地址应该一样才对。不管了无所谓
-      auto v471= (DWORD*)stack->eax;
+      if(context->retaddr!=1)return;//不懂为什么这个是1，按理说返回地址应该一样才对。不管了无所谓
+      auto v471= (DWORD*)context->eax;
       auto v481 = *v471;
       auto ptr=*(WCHAR**)(v481 + 28);
       buffer->from(ptr);

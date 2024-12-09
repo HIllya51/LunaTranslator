@@ -14,8 +14,8 @@ bool InsertLucifenHook()
   // );
   HookParam hp;
   hp.address = (DWORD)::GetTextExtentPoint32A;
-  hp.offset = get_stack(2); // arg2 lpString
-  hp.split = get_reg(regs::esp);
+  hp.offset = stackoffset(2); // arg2 lpString
+  hp.split = regoffset(esp);
   hp.length_offset = 3;
   hp.type = USING_STRING | USING_SPLIT;
   ConsoleOutput("INSERT Lucifen");
@@ -35,14 +35,14 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
-    hp.split = get_stack(6);
+    hp.offset = stackoffset(1);
+    hp.split = stackoffset(6);
     hp.type = CODEC_ANSI_BE | USING_SPLIT;
     return NewHook(hp, "Lucifen2");
   }
 }
 
-void hookBefore_navel(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+void hookBefore_navel(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
 
   auto text = std::string((char *)s->stack[1]); // text in arg1
@@ -56,7 +56,7 @@ void hookBefore_navel(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_
 
   buffer->from(text);
 }
-void hookafter_navel(hook_stack *s, TextBuffer buffer)
+void hookafter_navel(hook_context *s, TextBuffer buffer)
 {
   auto text = std::string((char *)s->stack[1]); // text in arg1
   auto split = s->stack[0];                     // retaddr
@@ -292,7 +292,7 @@ namespace
         return ret;
       }
 
-      // bool dispatchNameText(char *text, ULONG split,hook_stack*s,void* data, size_t* len1,uintptr_t*role)
+      // bool dispatchNameText(char *text, ULONG split,hook_context*s,void* data, size_t* len1,uintptr_t*role)
       // {
       //   enum { capacity = 0x10 }; // excluding '\0'
       //   *role = Engine::NameRole ;
@@ -304,7 +304,7 @@ namespace
       //   return true;
       // }
 
-      void dispatchScenarioText(char *text, ULONG split, hook_stack *s, TextBuffer *buffer, uintptr_t *role)
+      void dispatchScenarioText(char *text, ULONG split, hook_context *s, TextBuffer *buffer, uintptr_t *role)
       {
         // text[0] could be \0
         *role = Engine::ScenarioRole;
@@ -320,7 +320,7 @@ namespace
         std::string oldData = parseScenarioText(text, scenarioEnd);
         buffer->from(oldData);
       }
-      bool dispatchNameTextafter(char *text, ULONG split, hook_stack *s, void *data, uintptr_t len1)
+      bool dispatchNameTextafter(char *text, ULONG split, hook_context *s, void *data, uintptr_t len1)
       {
         std::string oldData = text;
         auto newData = std::string((char *)data, len1);
@@ -338,7 +338,7 @@ namespace
         return true;
       }
 
-      void dispatchScenarioTextafter(char *text, ULONG split, hook_stack *s, TextBuffer buffer)
+      void dispatchScenarioTextafter(char *text, ULONG split, hook_context *s, TextBuffer buffer)
       {
         auto scenarioEndAddress = (LPSTR *)(text + 0x1000);
         auto scenarioEnd = *scenarioEndAddress;
@@ -367,14 +367,14 @@ namespace
 
         *scenarioEndAddress = text + newData.size(); // FIXME: THis sometimes does not work
       }
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         auto self = (LPSTR)s->ecx;
         ULONG retaddr = s->stack[0];
         //  bool b1=  dispatchNameText(self + nameOffset_, retaddr,s,data,len1,role);
         dispatchScenarioText(self + scenarioOffset_, retaddr, s, buffer, split);
       }
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         auto self = (LPSTR)s->ecx;
         ULONG retaddr = s->stack[0];
@@ -762,7 +762,7 @@ namespace
     namespace Private
     {
 
-      void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         static std::string data_;
         auto text = (LPCSTR)s->stack[0]; // arg1 is text
@@ -771,7 +771,7 @@ namespace
         *split = Engine::ChoiceRole;
         buffer->from(text);
       }
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         auto newData = buffer.strA();
         strcpy((char *)s->stack[0], newData.c_str());
@@ -963,7 +963,7 @@ namespace
       ;
     return count == limit ? 0 : count;
   }
-  void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     auto text = (LPSTR)s->stack[1]; // arg1 is text
     if (!text || ::strlen(text) <= 2)
@@ -971,7 +971,7 @@ namespace
     *split = Engine::OtherRole;
     buffer->from(text);
   }
-  void hookafter(hook_stack *s, TextBuffer buffer)
+  void hookafter(hook_context *s, TextBuffer buffer)
   {
     auto text = (LPSTR)s->stack[1]; // arg1 is text
 
@@ -1014,7 +1014,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
     hp.embed_fun = hookafter;
     hp.text_fun = hookBefore;

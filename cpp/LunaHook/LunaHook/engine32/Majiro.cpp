@@ -163,18 +163,18 @@ inline DWORD MajiroOldFontSplit(const DWORD *arg) // arg is supposed to be a str
 inline DWORD MajiroNewFontSplit(const DWORD *arg) // arg is supposed to be a string, though
 { return (arg[12] & 0xff) | (arg[16] & 0xffffff00); }
 
-void SpecialHookMajiro(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+void SpecialHookMajiro(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  DWORD arg3 = stack->stack[3]; // text
+  DWORD arg3 = context->stack[3]; // text
   buffer->from((LPCSTR)arg3);
   // IsBadReadPtr is not needed for old Majiro game.
   // I am not sure if it is needed by new Majiro game.
   if (hp->user_value) { // new majiro
-    if (DWORD arg4 = stack->stack[4]) // old majiro
+    if (DWORD arg4 = context->stack[4]) // old majiro
       *split = MajiroNewFontSplit((LPDWORD)arg4);
     else
-      *split = *(DWORD *)(stack->base + 0x5c); // = 4 * 23, caller's caller
-  } else if (DWORD arg1 = stack->stack[1]) // old majiro
+      *split = *(DWORD *)(context->base + 0x5c); // = 4 * 23, caller's caller
+  } else if (DWORD arg1 = context->stack[1]) // old majiro
     *split = MajiroOldFontSplit((LPDWORD)arg1);
 }
 } // unnamed namespace
@@ -230,14 +230,14 @@ bool InsertMajiroHook3x() {
   if (addr == 0)return false; 
   HookParam hp;
   hp.address = addr+8;
-  hp.offset=get_reg(regs::ecx);
+  hp.offset=regoffset(ecx);
   hp.type = USING_STRING | NO_CONTEXT;//|EMBED_ABLE|EMBED_AFTER_OVERWRITE|EMBED_DYNA_SJIS;
   //可以内嵌，但是必须保持「」，且DynamicEncoding编码的文字会被自动替换成引擎内的某的字符，导致可读性低。
   //hp.embed_hook_font=F_TextOutA|F_GetTextExtentPoint32A;
   //https://vndb.org/v17376
   //私が好きなら「好き」って言って！
-  hp.text_fun= [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
-    auto str=(char*)stack->ecx;
+  hp.text_fun= [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
+    auto str=(char*)context->ecx;
     buffer->from(str);
     if((str[0]==0x81)&&(str[1]==0x79))*split=0;
     else *split=1;
@@ -257,7 +257,7 @@ bool InsertMajiro2Hookx() {
   if (addr == 0)return false;
   HookParam hp;
   hp.address = addr ;
-  hp.offset=get_stack(2);
+  hp.offset=stackoffset(2);
   hp.type = USING_STRING ;
   ConsoleOutput("INSERT majiro4 %p",addr);
   return NewHook(hp, "majiro4");
@@ -290,7 +290,7 @@ bool InsertMajiro3Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=get_reg(regs::esi);
+  hp.offset=regoffset(esi);
   hp.type = USING_STRING;
   ConsoleOutput("INSERT Majiro3");
   ConsoleOutput("Majiro3: To separate the text between lines flag the \"Flush delay string spacing\" option");

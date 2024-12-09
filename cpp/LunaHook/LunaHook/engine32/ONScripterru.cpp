@@ -69,7 +69,7 @@ bool InsertONScripterruHook1()
 
   HookParam hp;
   hp.address = addr + 1;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = ONScripterru1Filter;
   ConsoleOutput("INSERT ONScripter-RU 1");
@@ -125,8 +125,8 @@ bool InsertONScripterruHook2()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
-  hp.split = get_reg(regs::esi);
+  hp.offset = regoffset(eax);
+  hp.split = regoffset(esi);
   hp.type = USING_STRING | CODEC_UTF8 | USING_SPLIT | KNOWN_UNSTABLE;
   // hp.type =  USING_STRING | CODEC_UTF8 | USING_SPLIT;
   hp.filter_fun = ONScripterru2Filter;

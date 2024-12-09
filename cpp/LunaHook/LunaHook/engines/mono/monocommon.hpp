@@ -4,11 +4,11 @@
 namespace
 {
 
-    void mscorlib_system_string_InternalSubString_hook_fun(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void mscorlib_system_string_InternalSubString_hook_fun(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        uintptr_t offset = stack->ARG1;
-        uintptr_t startIndex = stack->ARG2;
-        uintptr_t length = stack->ARG3;
+        uintptr_t offset = context->argof(1);
+        uintptr_t startIndex = context->argof(2);
+        uintptr_t length = context->argof(3);
 
         MonoString *string = (MonoString *)offset;
         if (string == 0)
@@ -22,12 +22,12 @@ namespace
     /** jichi 12/26/2014 Mono
      *  Sample game: [141226] ハ�レ�めいと
      */
-    void SpecialHookMonoString(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void SpecialHookMonoString(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        commonsolvemonostring(stack->ARG1, buffer);
+        commonsolvemonostring(context->argof(1), buffer);
 
 #ifndef _WIN64
-        auto s = stack->ecx;
+        auto s = context->ecx;
         for (int i = 0; i < 0x10; i++) // traverse pointers until a non-readable address is met
             if (s && !::IsBadReadPtr((LPCVOID)s, sizeof(DWORD)))
                 s = *(DWORD *)s;
@@ -56,7 +56,7 @@ namespace monocommon
                 hp.address = (uintptr_t)addr;
                 hp.type = USING_STRING | func.hookType;
                 hp.filter_fun = all_ascii_Filter;
-                hp.offset = get_stack(func.textIndex);
+                hp.offset = stackoffset(func.textIndex);
                 hp.text_fun = (decltype(hp.text_fun))func.text_fun;
                 ConsoleOutput("Mono: INSERT");
                 NewHook(hp, func.functionName);
@@ -108,7 +108,7 @@ namespace monocommon
             hp.type = USING_CHAR | CODEC_UTF16;
         }
         hp.jittype = JITTYPE::UNITY;
-        strcpy(hp.unityfunctioninfo, hook.info().c_str());
+        strcpy(hp.function, hook.info().c_str());
         auto succ = NewHook(hp, hook.hookname().c_str());
 #ifdef _WIN64
         if (!succ)

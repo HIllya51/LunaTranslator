@@ -14,7 +14,7 @@ namespace
     {
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_reg(regs::eax);
+      hp.offset = regoffset(eax);
       hp.type = USING_STRING;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
@@ -38,7 +38,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_STRING;
     return NewHook(hp, "AtelierD");
   }

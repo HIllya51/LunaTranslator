@@ -18,10 +18,10 @@ namespace
     characters. It's determining if ebp contains a SHIFT-JIS character. This function is not likely
     to be used in other ways. We simply search for this instruction and place hook around.
   ********************************************************************************************/
-  void SpecialHookRUGP1(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookRUGP1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     // CC_UNUSED(split);
-    DWORD *_stack = (DWORD *)stack->base;
+    DWORD *_stack = (DWORD *)context->base;
     DWORD i, val;
     for (i = 0; i < 4; i++)
     {
@@ -34,7 +34,7 @@ namespace
       hp->offset = i << 2;
       if (i == 2 && hp->user_value != 1)
       {
-        hp->split = get_stack(1);
+        hp->split = stackoffset(1);
         hp->type |= USING_SPLIT;
       }
       buffer->from_t<WORD>(val);
@@ -111,7 +111,7 @@ namespace
           // ConsoleOutput(str);
           HookParam hp;
           hp.address = t;
-          hp.offset = get_stack(1);
+          hp.offset = stackoffset(1);
           hp.type = CODEC_ANSI_BE;
           ConsoleOutput("INSERT rUGP#2");
           return NewHook(hp, "rUGP");
@@ -238,7 +238,7 @@ namespace
 
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.type = NO_CONTEXT | CODEC_ANSI_BE;
     ConsoleOutput("INSERT rUGP2");
     return NewHook(hp, "rUGP2");
@@ -275,15 +275,15 @@ namespace
       {
         HookParam hp;
         hp.address = f2;
-        hp.offset = get_stack(2);
+        hp.offset = stackoffset(2);
         hp.type = CODEC_ANSI_BE;
         return NewHook(hp, "rUGP3");
       }
     }
     HookParam hp;
     hp.address = func;
-    hp.offset = get_stack(2);
-    hp.split = get_stack(1);
+    hp.offset = stackoffset(2);
+    hp.split = stackoffset(1);
     hp.type = NO_CONTEXT | CODEC_ANSI_BE | USING_SPLIT;
     return NewHook(hp, "rUGP3");
   }

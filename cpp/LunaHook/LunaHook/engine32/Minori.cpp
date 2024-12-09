@@ -55,7 +55,7 @@ bool InsertMinori1Hook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::edx);
+  hp.offset = regoffset(edx);
   hp.codepage = 932;
   hp.type = USING_STRING;
   hp.filter_fun = Minori1JapFilter;
@@ -107,7 +107,7 @@ bool InsertMinori2Hook()
   ConsoleOutput(" INSERT Minori2");
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   hp.filter_fun = Minori2Filter;
   ConsoleOutput(" INSERT Minori2");
@@ -394,7 +394,7 @@ namespace
       TextUnionA *arg_,
           argValue_;
       std::unordered_map<uintptr_t, int> addr_role;
-      void hookBeforehookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+      void hookBeforehookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         static std::string data_;
         // auto arg = (TextUnionA *)s->ecx;
@@ -418,7 +418,7 @@ namespace
 
         buffer->from(oldData);
       }
-      void hookafter(hook_stack *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer)
       {
         std::string newData = buffer.strA();
         auto arg = (TextUnionA *)s->stack[0]; // arg1
@@ -438,7 +438,7 @@ namespace
         data_ = newData;
         arg->setText(data_);
       }
-      void hookAfter(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         if (arg_)
         {

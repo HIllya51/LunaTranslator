@@ -30,7 +30,7 @@ bool Sprite_attach_function()
     return false;
   HookParam hp;
   hp.address = addr + sizeof(bytes);
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   return NewHook(hp, "Sprite");
 }
@@ -56,7 +56,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr + sizeof(bytes); // 不知道从哪jump到call MultiByteToWideChar的
-    hp.offset = get_stack(5);
+    hp.offset = stackoffset(5);
     hp.type = USING_STRING;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
@@ -90,7 +90,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_NEW;
     return NewHook(hp, "TextXtra");
   }
@@ -132,7 +132,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = USING_STRING;
     return NewHook(hp, "TextXtra2");
   }

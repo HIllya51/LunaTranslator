@@ -1,10 +1,10 @@
 #include"RRE.h"
 
-static void SpecialRunrunEngine(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialRunrunEngine(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   //CC_UNUSED(split);
-  DWORD eax = stack->eax, // *(DWORD *)(esp_base - 0x8),
-        edx = stack->edx; // *(DWORD *)(esp_base - 0x10);
+  DWORD eax = context->eax, // *(DWORD *)(esp_base - 0x8),
+        edx = context->edx; // *(DWORD *)(esp_base - 0x10);
   DWORD addr = eax + edx; // eax + edx
   buffer->from_t(*(WORD *)(addr));
 }
@@ -24,7 +24,7 @@ bool InsertRREHook()
     ConsoleOutput("INSERT Runrun#1");
     return NewHook(hp, "RunrunEngine Old");
   } else {
-    hp.offset=get_reg(regs::eax);
+    hp.offset=regoffset(eax);
     ConsoleOutput("INSERT Runrun#2");
     return NewHook(hp, "RunrunEngine");
   }

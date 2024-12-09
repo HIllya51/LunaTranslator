@@ -25,9 +25,9 @@ bool CoffeeMaker_attach_function()
   hp.address = addr2;
   hp.type = USING_CHAR | CODEC_ANSI_BE | NO_CONTEXT;
   hp.user_value = addr;
-  hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    auto a2 = stack->stack[1];
+    auto a2 = context->stack[1];
     if (a2 > 0x2bd4)
       return;
     auto sub_429050 = (int(__stdcall *)(signed int a1))hp->user_value;
@@ -53,7 +53,7 @@ bool CoffeeMaker_attach_function2()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1); // get_reg(regs::ecx);//void *__cdecl memcpy(void *a1, const void *Src, size_t Size)
+  hp.offset = stackoffset(1); // regoffset(ecx);//void *__cdecl memcpy(void *a1, const void *Src, size_t Size)
   hp.type = USING_STRING;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {

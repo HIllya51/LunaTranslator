@@ -132,7 +132,7 @@ bool InsertSideBHook()
   HookParam hp;
   hp.address = addr;
   //hp.length_offset = 1;
-  hp.offset=get_stack(1); // [esp+4] == arg1
+  hp.offset=stackoffset(1); // [esp+4] == arg1
   hp.type = USING_STRING|NO_CONTEXT|USING_SPLIT; // NO_CONTEXT && RELATIVE_SPLIT to get rid of floating return address
   hp.split = 0; // use retaddr as split
   ConsoleOutput("INSERT SideB");

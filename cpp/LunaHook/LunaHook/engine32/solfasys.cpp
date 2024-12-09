@@ -20,7 +20,7 @@ bool solfasys1() {
   HookParam hp;
   hp.address=addr;
   hp.type=CODEC_ANSI_BE|USING_CHAR;
-  hp.offset=get_stack(1);
+  hp.offset=stackoffset(1);
   return NewHook(hp,"solfasys");
 } 
 
@@ -44,7 +44,7 @@ bool solfasys2() {
   HookParam hp;
   hp.address=addr;
   hp.type=CODEC_ANSI_BE|USING_CHAR;
-  hp.offset=get_stack(1);
+  hp.offset=stackoffset(1);
   return NewHook(hp,"solfasys");
 } 
 

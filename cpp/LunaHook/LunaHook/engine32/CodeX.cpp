@@ -41,7 +41,7 @@ bool InsertCodeXHook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.index = 0;
   hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_OVERWRITE | NO_CONTEXT; // 无法解决中文乱码
   hp.embed_hook_font = F_GetGlyphOutlineA;
@@ -71,7 +71,7 @@ namespace
         continue;
       HookParam hp;
       hp.address = adr;
-      hp.offset = get_stack(1);
+      hp.offset = stackoffset(1);
       hp.type = CODEC_ANSI_BE;
       succ |= NewHook(hp, "CodeX");
     }
@@ -103,7 +103,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::edx);
+    hp.offset = regoffset(edx);
     hp.type = USING_STRING;
     hp.filter_fun = CodeXFilter;
     return NewHook(hp, "CodeX");
@@ -133,8 +133,8 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
-    hp.split = get_stack(2);
+    hp.offset = stackoffset(1);
+    hp.split = stackoffset(2);
     hp.type = USING_STRING | FULL_STRING | NO_CONTEXT | USING_SPLIT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
     hp.embed_hook_font = F_GetGlyphOutlineA;
     hp.filter_fun = CodeXFilter;

@@ -151,7 +151,7 @@ bool TACTICSattach_function2()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_CHAR | CODEC_ANSI_BE;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     static int idx = 0;
@@ -196,7 +196,7 @@ namespace
     HookParam hp;
     hp.address = addr;
     hp.type = USING_CHAR | CODEC_ANSI_BE | NO_CONTEXT;
-    hp.offset = get_stack(5);
+    hp.offset = stackoffset(5);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       static int idx = 0;

@@ -15,7 +15,7 @@ bool InsertPONScripterHook()
         HookParam hp;
         hp.address = addr;
         hp.type = USING_STRING | CODEC_UTF8 | DATA_INDIRECT;
-        hp.offset = get_stack(1);
+        hp.offset = stackoffset(1);
         hp.index = 0xc;
         return NewHook(hp, "PONScripter");
       }
@@ -71,7 +71,7 @@ bool InsertPONScripterEngHook()
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = PONScripterFilter;
   return NewHook(hp, "PONScripterEng");
@@ -101,7 +101,7 @@ bool InsertPONScripterJapHook()
 
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::edx);
+  hp.offset = regoffset(edx);
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = PONScripterFilter;
   return NewHook(hp, "PONScripterJap");
@@ -169,7 +169,7 @@ int __thiscall sub_46A3C0(int *this, void *a2, int a3)
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_CHAR | CODEC_UTF8 | DATA_INDIRECT;
     return NewHook(hp, "PONScripter2");
   }

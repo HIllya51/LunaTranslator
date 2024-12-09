@@ -19,7 +19,7 @@ bool Interlude::attach_function() {
   if (addr == 0)return false;  
   HookParam hp;
   hp.address = addr ;
-  hp.offset=get_stack(5);
+  hp.offset=stackoffset(5);
   hp.type = CODEC_ANSI_BE ;
   
   return NewHook(hp, "Interlude");

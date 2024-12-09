@@ -12,7 +12,7 @@ bool AbaloneHook()
     return false;
   HookParam hp;
   hp.address = addr + 4;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = DATA_INDIRECT;
   hp.index = 0;
   return NewHook(hp, "AbaloneHook");

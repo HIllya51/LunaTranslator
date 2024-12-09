@@ -27,7 +27,7 @@ bool InsertEMEHook()
   }
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = NO_CONTEXT | DATA_INDIRECT | USING_CHAR;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
@@ -46,11 +46,11 @@ namespace
     // みちくさ～Loitering on the way～
 
     PcHooks::hookGDIFunctions();
-    trigger_fun = [](LPVOID addr, hook_stack *stack)
+    trigger_fun = [](LPVOID addr, hook_context *context)
     {
       if (addr != (LPVOID)GetGlyphOutlineA)
         return false;
-      auto caller = stack->retaddr;
+      auto caller = context->retaddr;
       auto add = MemDbg::findEnclosingAlignedFunction(caller);
       if (!add)
         return true;
@@ -58,7 +58,7 @@ namespace
       hp.address = add;
 
       hp.type = USING_STRING;
-      hp.offset = get_stack(4);
+      hp.offset = stackoffset(4);
       hp.filter_fun = [](TextBuffer *buffer, HookParam *)
       {
         auto xx = buffer->strA();
@@ -122,7 +122,7 @@ namespace
         continue;
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_reg(regs::eax);
+      hp.offset = regoffset(eax);
       hp.type = NO_CONTEXT | DATA_INDIRECT | USING_CHAR;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *)
       {

@@ -202,7 +202,7 @@ namespace
     return text;
   }
   template <int offset = 1>
-  void hookBefore(hook_stack *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     auto str = (LPSTR)(s->stack[offset]); // stack-2:eax
     int len = strlen(str);                // s->ecx;
@@ -216,7 +216,7 @@ namespace
     buffer->from(old);
   }
   template <int offset = 1>
-  void hookafter(hook_stack *s, TextBuffer buffer)
+  void hookafter(hook_context *s, TextBuffer buffer)
   {
 
     auto newData = buffer.strA();
@@ -253,7 +253,7 @@ bool InsertHorkEyeHook()
   {
     HookParam hp;
     hp.address = addr + addr_offset;
-    hp.offset = get_reg(regs::ebx);
+    hp.offset = regoffset(ebx);
     hp.type = USING_STRING | NO_CONTEXT | FIXING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS;
     hp.text_fun = hookBefore<-4 - 1>;
     hp.embed_fun = hookafter<-4 - 1>;
@@ -279,7 +279,7 @@ bool InsertHorkEyeHook()
   {
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
     hp.text_fun = hookBefore<1>;
     hp.embed_fun = hookafter<1>;
@@ -322,7 +322,7 @@ bool InsertHorkEye3Hook()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(1);
+  hp.offset = stackoffset(1);
   hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
   hp.text_fun = hookBefore<1>;
   hp.embed_fun = hookafter<1>;
@@ -356,7 +356,7 @@ bool InsertHorkEye4Hook()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::eax);
+  hp.offset = regoffset(eax);
   hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS;
   hp.text_fun = hookBefore<-1 - 1>;
   hp.embed_fun = hookafter<-1 - 1>;
@@ -384,7 +384,7 @@ bool InsertHorkEye6Hook()
   ConsoleOutput("hk6 %p", addr);
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_stack(3);
+  hp.offset = stackoffset(3);
   hp.type = CODEC_ANSI_BE;
   ConsoleOutput("INSERT HorkEye6 %p", addr);
 

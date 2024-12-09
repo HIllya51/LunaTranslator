@@ -190,7 +190,7 @@ uintptr_t queryrelativeret(HookParam &hp, uintptr_t retaddr)
 	return relative;
 }
 
-uintptr_t jitgetaddr(hook_stack *stack, HookParam *hp, bool offset)
+uintptr_t jitgetaddr(hook_context *context, HookParam *hp, bool offset)
 {
 	int off;
 	if (offset)
@@ -201,14 +201,14 @@ uintptr_t jitgetaddr(hook_stack *stack, HookParam *hp, bool offset)
 	{
 #ifdef _WIN64
 	case JITTYPE::RPCS3:
-		return RPCS3::emu_arg(stack)[off];
+		return RPCS3::emu_arg(context)[off];
 	case JITTYPE::VITA3K:
-		return VITA3K::emu_arg(stack)[off];
+		return VITA3K::emu_arg(context)[off];
 	case JITTYPE::YUZU:
-		return YUZU::emu_arg(stack, hp->emu_addr)[off];
+		return YUZU::emu_arg(context, hp->emu_addr)[off];
 #endif
 	case JITTYPE::PPSSPP:
-		return PPSSPP::emu_arg(stack)[off];
+		return PPSSPP::emu_arg(context)[off];
 	default:
 		return 0;
 	}
@@ -246,9 +246,9 @@ void commonfilter(TextBuffer *buffer, HookParam *hp)
 }
 void TextHook::Send(uintptr_t lpDataBase)
 {
-	Send(hook_stack::fromBase(lpDataBase));
+	Send(hook_context::fromBase(lpDataBase));
 }
-void TextHook::Send(hook_stack *stack)
+void TextHook::Send(hook_context *context)
 {
 	auto buffer = (TextOutput_T *)local_buffer;
 	TextBuffer buff{buffer->data, 0};
@@ -257,16 +257,14 @@ void TextHook::Send(hook_stack *stack)
 	{
 
 		if (auto current_trigger_fun = trigger_fun.exchange(nullptr))
-			if (!current_trigger_fun(location, stack))
+			if (!current_trigger_fun(location, context))
 				trigger_fun = current_trigger_fun;
 
 		if (hp.type & HOOK_RETURN)
 		{
 			hp.type &= ~HOOK_RETURN;
-			hp.address = stack->retaddr;
+			hp.address = context->retaddr;
 			strcat(hp.name, "_Return");
-			// 清除jit hook特征，防止手动插入
-			strcpy(hp.unityfunctioninfo, "");
 			hp.emu_addr = 0;
 			// 清除module
 			hp.type &= ~MODULE_OFFSET;
@@ -282,24 +280,24 @@ void TextHook::Send(hook_stack *stack)
 			__leave; // jichi 10/24/2014: dummy hook only for dynamic hook
 
 		uintptr_t lpSplit = 0,
-				  lpRetn = stack->retaddr,
-				  plpdatain = (uintptr_t)(stack->base + hp.offset),
-				  lpDataIn = *(uintptr_t *)plpdatain;
+				  lpRetn = context->retaddr,
+				  *plpdatain = (uintptr_t *)(context->base + hp.offset),
+				  lpDataIn = *plpdatain;
 
 		if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
 		{
-			lpDataIn = jitgetaddr(stack, &hp, true);
-			plpdatain = (uintptr_t)&lpDataIn;
+			lpDataIn = jitgetaddr(context, &hp, true);
+			plpdatain = &lpDataIn;
 		}
 		else if (hp.jittype == JITTYPE::UNITY)
 		{
-			plpdatain = (uintptr_t)argidx(stack, hp.offset);
-			lpDataIn = *(uintptr_t *)plpdatain;
+			plpdatain = &context->argof(hp.offset);
+			lpDataIn = *plpdatain;
 		}
 
 		if (hp.text_fun)
 		{
-			hp.text_fun(stack, &hp, &buff, &lpSplit);
+			hp.text_fun(context, &hp, &buff, &lpSplit);
 		}
 		else if (hp.type & SPECIAL_JIT_STRING)
 		{
@@ -313,19 +311,19 @@ void TextHook::Send(hook_stack *stack)
 			else if (hp.type & USING_SPLIT)
 			{
 				if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
-					lpSplit = jitgetaddr(stack, &hp, false);
+					lpSplit = jitgetaddr(context, &hp, false);
 				else
-					lpSplit = *(uintptr_t *)(stack->base + hp.split);
+					lpSplit = *(uintptr_t *)(context->base + hp.split);
 				if (hp.type & SPLIT_INDIRECT)
 					lpSplit = *(uintptr_t *)(lpSplit + hp.split_index);
 			}
 			if (hp.type & DATA_INDIRECT)
 			{
-				plpdatain = (lpDataIn + hp.index);
-				lpDataIn = *(uintptr_t *)plpdatain;
+				plpdatain = (uintptr_t *)(lpDataIn + hp.index);
+				lpDataIn = *plpdatain;
 			}
 			lpDataIn += hp.padding;
-			buff.size = GetLength(stack, lpDataIn);
+			buff.size = GetLength(context, lpDataIn);
 		}
 
 		if (buff.size <= 0)
@@ -402,7 +400,7 @@ void TextHook::Send(hook_stack *stack)
 
 		if (canembed && (check_embed_able(tp)))
 		{
-			auto lpCountsave = buff.size;
+			auto size_origin = buff.size;
 			auto zeros = 1;
 			if (hp.type & CODEC_UTF16)
 				zeros = 2;
@@ -412,7 +410,7 @@ void TextHook::Send(hook_stack *stack)
 			{
 				if (hp.type & EMBED_AFTER_NEW)
 				{
-					auto size = max(lpCountsave, buff.size + zeros);
+					auto size = max(size_origin, buff.size + zeros);
 					auto _ = new char[size];
 					memcpy(_, buff.buff, buff.size);
 					memset(_ + buff.size, 0, size - buff.size);
@@ -421,15 +419,14 @@ void TextHook::Send(hook_stack *stack)
 				else if (hp.type & EMBED_AFTER_OVERWRITE)
 				{
 					memcpy((void *)lpDataIn, buff.buff, buff.size);
-
-					memset((char *)lpDataIn + buff.size, 0, max(lpCountsave, zeros));
+					memset((char *)lpDataIn + buff.size, 0, max(size_origin, zeros));
 				}
 				else if (hp.embed_fun)
-					hp.embed_fun(stack, buff);
+					hp.embed_fun(context, buff);
 				else if (hp.type & SPECIAL_JIT_STRING)
 				{
 					if (hp.jittype == JITTYPE::UNITY)
-						unity_ui_string_embed_fun(argidx(stack, hp.offset), buff);
+						unity_ui_string_embed_fun(context->argof(hp.offset), buff);
 				}
 			}
 		}
@@ -445,11 +442,11 @@ void TextHook::Send(hook_stack *stack)
 
 	_InterlockedDecrement((long *)&useCount);
 }
-bool TextHook::breakpointcontext(PCONTEXT context)
+bool TextHook::breakpointcontext(PCONTEXT pcontext)
 {
-	hook_stack stack = hook_stack::fromContext(context);
-	Send(&stack);
-	stack.toContext(context);
+	hook_context context = hook_context::fromPCONTEXT(pcontext);
+	Send(&context);
+	context.toPCONTEXT(pcontext);
 	return true;
 }
 bool TextHook::InsertBreakPoint()
@@ -570,14 +567,14 @@ void TextHook::Clear()
 		delete[] local_buffer;
 }
 
-int TextHook::GetLength(hook_stack *stack, uintptr_t in)
+int TextHook::GetLength(hook_context *context, uintptr_t in)
 {
 	int len;
 	if (hp.type & USING_STRING)
 	{
 		if (hp.length_offset)
 		{
-			len = *((uintptr_t *)stack->base + hp.length_offset);
+			len = *((uintptr_t *)context->base + hp.length_offset);
 			if (len >= 0)
 			{
 				if (hp.type & CODEC_UTF16)

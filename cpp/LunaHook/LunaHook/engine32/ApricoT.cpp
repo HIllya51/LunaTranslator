@@ -63,9 +63,9 @@ Apricot hook:
  *  001aec68   ffffffff
  *  001aec6c   00cb9f40  return to .00cb9f40 from .00cc8030 ; jichi: split here
  */
-static void SpecialHookApricoT(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookApricoT(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  DWORD reg_esi = stack->esi;
+  DWORD reg_esi = context->esi;
   DWORD base = *(DWORD *)(reg_esi + 0x24);
   DWORD index = *(DWORD *)(reg_esi + 0x3c);
   DWORD *script = (DWORD *)(base + index * 4);
@@ -74,7 +74,7 @@ static void SpecialHookApricoT(hook_stack *stack, HookParam *hp, TextBuffer *buf
   // DWORD reg_esp = regof(esp, esp_base);
   //*split = reg_esp;
   //*split = regof(esp, esp_base);
-  DWORD arg = stack->stack[16];                                         // return address
+  DWORD arg = context->stack[16];                                         // return address
   *split = arg > processStartAddress ? arg - processStartAddress : arg; // use relative split value
   //*split = argof(1, esp_base);
   if (script[0] == L'<')

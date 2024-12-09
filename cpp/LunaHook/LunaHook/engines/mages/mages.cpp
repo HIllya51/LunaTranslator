@@ -253,13 +253,13 @@ namespace mages
 namespace hookmages
 {
 
-    regs reg = regs::invalid;
+    int offset = -1;
     int gametype = 0;
 
     template <int filter>
-    void SpecialHookMAGES(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void SpecialHookMAGES(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto edx = regof(reg, stack); // regof(edx, esp_base);
+        auto edx = (uintptr_t)context->base + offset; // regof(edx, esp_base);
 
         auto s = mages::readString(edx, gametype);
 
@@ -306,29 +306,29 @@ namespace hookmages
                     //.text:00431D63 89 0D 20 A9 BF 00             mov     dword_BFA920, ecx
                     // 在加载到内存后，有时变成89 0d 20 a9 8a 00，导致崩溃，且这个没有遇到过，故注释掉。
                 case 3:
-                    reg = regs::ebx;
+                    offset = regoffset(ebx);
                     break;
                 case 1:
-                    reg = regs::ecx;
+                    offset = regoffset(ecx);
                     break;
                 case 2:
-                    reg = regs::edx;
+                    offset = regoffset(edx);
                     break;
                 case 6:
-                    reg = regs::esi;
+                    offset = regoffset(esi);
                     break;
                 case 7:
-                    reg = regs::edi;
+                    offset = regoffset(edi);
                     break;
                 default:
-                    reg = regs::invalid;
+                    offset = -1;
                 }
-                if (reg != regs::invalid)
+                if (offset != -1)
                     break;
             }
             pos += 1;
         }
-        if (reg == regs::invalid)
+        if (offset == -1)
             return false;
         ConsoleOutput("%p", pos - processStartAddress);
         switch (pos - processStartAddress)
@@ -398,13 +398,13 @@ namespace hookmages
             //->rbx
             if ((((*(DWORD *)(pos)) & 0xffffff) == 0x13b60f))
             {
-                reg = regs::rbx; // rbx
+                offset = regoffset(rbx); // rbx
                 // ConsoleOutput("%p",pos-processStartAddress);
                 break;
             }
             pos += 1;
         }
-        if (reg == regs::invalid)
+        if (offset == -1)
             return false;
         switch (pos - processStartAddress)
         {

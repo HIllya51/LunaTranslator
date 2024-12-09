@@ -21,7 +21,7 @@ bool RUNE1() {
   if (addr == 0)return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset=get_reg(regs::eax); 
+    hp.offset=regoffset(eax); 
     hp.type = CODEC_ANSI_BE;  
     return NewHook(hp, "RUNE"); 
 }  
@@ -36,7 +36,7 @@ bool RUNE2(){
   if (addr == 0)return false;
   HookParam hp;
     hp.address = addr;
-    hp.offset=get_stack(1); 
+    hp.offset=stackoffset(1); 
     hp.type = CODEC_ANSI_BE ;
     return NewHook(hp, "RUNE"); 
 }
@@ -62,7 +62,7 @@ bool RUNE3(){
     if(ok) {
       HookParam hp;
       hp.address = start;
-      hp.offset=get_stack(1); 
+      hp.offset=stackoffset(1); 
       hp.type = CODEC_ANSI_BE;
       return NewHook(hp, "RUNE"); 
     }    

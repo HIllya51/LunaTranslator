@@ -90,7 +90,7 @@ namespace
     // way to do an operation on the value of a register BEFORE dereferencing (e.g.
     // (void*)(esp+4) instead of ((void*)esp)+4) we have to go up the stack instead of
     // using the data in the registers
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_STRING;
     ConsoleOutput("INSERT TokyoNecroText");
     return NewHook(hp, "TokyoNecroText");
@@ -157,7 +157,7 @@ namespace
 
     HookParam hp;
     hp.address = function_start;
-    hp.offset = get_stack(1);
+    hp.offset = stackoffset(1);
     hp.type = USING_STRING;
     return NewHook(hp, "TokyoNecroDatabase");
     ConsoleOutput("INSERT TokyoNecroDatabase");
@@ -196,7 +196,7 @@ bool InsertNitroPlusHook()
   {
     HookParam hp;
     hp.address = addr1;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16;
     succ |= NewHook(hp, "NitroPlus");
   }
@@ -204,7 +204,7 @@ bool InsertNitroPlusHook()
   {
     HookParam hp;
     hp.address = addr2;
-    hp.offset = get_stack(2);
+    hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16;
     succ |= NewHook(hp, "NitroPlus");
   }
@@ -465,7 +465,7 @@ namespace
         return false;
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_stack(1);
+      hp.offset = stackoffset(1);
       hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
       hp.filter_fun = all_ascii_Filter;
       return NewHook(hp, "EmbedNitroplus");
@@ -508,12 +508,12 @@ namespace
       HookParam hp;
       hp.address = addr;
       hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
-      hp.text_fun = [](hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
-        auto refaddr = stack->retaddr - (DWORD)GetModuleHandle(0);
+        auto refaddr = context->retaddr - (DWORD)GetModuleHandle(0);
         if (refaddr < 0xb0000 || refaddr > 0xb1000)
           return;
-        buffer->from(stack->stack[1], stack->stack[2]);
+        buffer->from(context->stack[1], context->stack[2]);
       };
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {

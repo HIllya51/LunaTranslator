@@ -27,7 +27,7 @@ bool InsertKissHook() {
 
 	HookParam hp;
 	hp.address = addr;
-	hp.offset=get_reg(regs::esi);
+	hp.offset=regoffset(esi);
 	hp.type = USING_STRING | NO_CONTEXT|EMBED_DYNA_SJIS|EMBED_ABLE|EMBED_AFTER_NEW;
   hp.embed_hook_font=F_GetTextExtentPoint32A|F_ExtTextOutA;
 	ConsoleOutput("INSERT Kiss");

@@ -16,7 +16,7 @@ bool InsertXUSEHook2() {
 
     HookParam hp;
     hp.address = addr  ;
-    hp.offset=get_reg(regs::eax);
+    hp.offset=regoffset(eax);
     hp.type = CODEC_ANSI_BE|NO_CONTEXT | USING_SPLIT;
     hp.split = 0;
     ConsoleOutput("XUSE2 %p", addr);
@@ -47,9 +47,9 @@ bool InsertXUSEHook() {
 
     HookParam hp;
     hp.address = addr + 7;
-    hp.offset=get_reg(regs::edi);
+    hp.offset=regoffset(edi);
     hp.type = CODEC_ANSI_BE | NO_CONTEXT | USING_SPLIT;
-    hp.split = get_stack(3);
+    hp.split = stackoffset(3);
 
     ConsoleOutput("XUSE %p", addr);
 

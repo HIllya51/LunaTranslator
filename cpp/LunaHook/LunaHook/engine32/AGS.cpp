@@ -36,7 +36,7 @@ bool InsertAGSHook()
       continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset = get_reg(regs::eax);
+    hp.offset = regoffset(eax);
     hp.type = USING_STRING;
     ConsoleOutput("INSERT HOOK_AGS %p", addr);
 
@@ -75,7 +75,7 @@ namespace
         HookParam hp;
         hp.address = funcaddr;
         hp.type = DATA_INDIRECT;
-        hp.offset = get_stack(1);
+        hp.offset = stackoffset(1);
         hp.index = 0;
         return NewHook(hp, "AGS");
       }

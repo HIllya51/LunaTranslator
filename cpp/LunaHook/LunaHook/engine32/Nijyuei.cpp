@@ -18,6 +18,6 @@ bool Nijyuei::attach_function() {
   HookParam hp;
   hp.address = addr+5; 
   hp.type = USING_STRING;  
-  hp.offset=get_reg(regs::edx);
+  hp.offset=regoffset(edx);
   return NewHook(hp, "Nijyuei"); 
 } 

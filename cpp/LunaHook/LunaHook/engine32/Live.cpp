@@ -11,7 +11,7 @@ bool InsertLiveDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
   if (j > processStartAddress && j < processStopAddress) {
     HookParam hp;
     hp.address = j;
-    hp.offset = get_reg(regs::edx);
+    hp.offset = regoffset(edx);
     hp.type = CODEC_ANSI_BE;
     ConsoleOutput("INSERT DynamicLive");
     return NewHook(hp, "Live");
@@ -36,7 +36,7 @@ bool InsertLiveHook()
   }
   HookParam hp;
   hp.address = addr;
-  hp.offset = get_reg(regs::edx);
+  hp.offset = regoffset(edx);
   hp.type = CODEC_ANSI_BE;
   ConsoleOutput("INSERT Live");
   return NewHook(hp, "Live");

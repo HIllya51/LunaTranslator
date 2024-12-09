@@ -230,10 +230,10 @@ namespace
     StringFilterBetween(buffer, "<", 1, ">", 1);
     StringFilterBetween(buffer, "{", 1, "}", 1);
   }
-  void SpecialHookTamamo(hook_stack *stack, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  void SpecialHookTamamo(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    auto text = (LPCSTR)stack->stack[1]; // arg2
-    auto size = stack->stack[2];         // arg3
+    auto text = (LPCSTR)context->stack[1]; // arg2
+    auto size = context->stack[2];         // arg3
     if (0 < size && size < VNR_TEXT_CAPACITY && size == ::strlen(text) && !all_ascii(text))
     {
 
@@ -241,7 +241,7 @@ namespace
 
       //*split = argof(8 - 1, esp_base); // use parent return address as split
       //*split = argof(7 - 1, esp_base); // use the address just before parent retaddr
-      *split = stack->stack[5];
+      *split = context->stack[5];
       // if (hp.split)
       //   *split = *(DWORD *)(esp_base + hp.split);
       buffer->from(text, size);
@@ -351,12 +351,12 @@ namespace
         continue;
       HookParam hp;
       hp.address = addr;
-      hp.offset = get_stack(1);
+      hp.offset = stackoffset(1);
       hp.type = USING_STRING;
       hp.filter_fun = Tamamogettext;
       ok |= NewHook(hp, "tamamo_text");
       hp.address = addr + 5;
-      hp.offset = get_stack(3);
+      hp.offset = stackoffset(3);
       hp.filter_fun = Tamamogetname;
       ok |= NewHook(hp, "tamamo_name");
     }
