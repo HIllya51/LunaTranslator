@@ -65,16 +65,79 @@ struct hook_stack
 		uintptr_t retaddr;
 		BYTE base[1];
 	};
-	uintptr_t get_base()
+	void toContext(PCONTEXT context)
 	{
-		return (uintptr_t)this + sizeof(hook_stack) - sizeof(uintptr_t);
+#ifndef _WIN64
+		context->Eax = eax;
+		context->Ecx = ecx;
+		context->Edx = edx;
+		context->Ebx = ebx;
+		context->Esp = esp;
+		context->Ebp = ebp;
+		context->Esi = esi;
+		context->Edi = edi;
+		context->EFlags = eflags;
+#else
+		context->Rax = rax;
+		context->Rbx = rbx;
+		context->Rcx = rcx;
+		context->Rdx = rdx;
+		context->Rsp = rsp;
+		context->Rbp = rbp;
+		context->Rsi = rsi;
+		context->Rdi = rdi;
+		context->R8 = r8;
+		context->R9 = r9;
+		context->R10 = r10;
+		context->R11 = r11;
+		context->R12 = r12;
+		context->R13 = r13;
+		context->R14 = r14;
+		context->R15 = r15;
+		context->EFlags = eflags;
+#endif
+	}
+	static hook_stack fromContext(PCONTEXT context)
+	{
+		hook_stack stack;
+#ifndef _WIN64
+		stack.eax = context->Eax;
+		stack.ecx = context->Ecx;
+		stack.edx = context->Edx;
+		stack.ebx = context->Ebx;
+		stack.esp = context->Esp;
+		stack.ebp = context->Ebp;
+		stack.esi = context->Esi;
+		stack.edi = context->Edi;
+		stack.eflags = context->EFlags;
+		stack.retaddr = *(DWORD *)context->Esp;
+#else
+		stack.rax = context->Rax;
+		stack.rbx = context->Rbx;
+		stack.rcx = context->Rcx;
+		stack.rdx = context->Rdx;
+		stack.rsp = context->Rsp;
+		stack.rbp = context->Rbp;
+		stack.rsi = context->Rsi;
+		stack.rdi = context->Rdi;
+		stack.r8 = context->R8;
+		stack.r9 = context->R9;
+		stack.r10 = context->R10;
+		stack.r11 = context->R11;
+		stack.r12 = context->R12;
+		stack.r13 = context->R13;
+		stack.r14 = context->R14;
+		stack.r15 = context->R15;
+		stack.eflags = context->EFlags;
+		stack.retaddr = *(DWORD64 *)context->Rsp;
+#endif
+		return stack;
+	}
+	static hook_stack *fromBase(uintptr_t lpDataBase)
+	{
+		return (hook_stack *)(lpDataBase - (uintptr_t)((hook_stack *)0)->base);
 	}
 };
-
-inline hook_stack *get_hook_stack(uintptr_t lpDataBase)
-{
-	return (hook_stack *)(lpDataBase - sizeof(hook_stack) + sizeof(uintptr_t));
-}
 // jichi 3/7/2014: Add guessed comment
 
 #define ALIGNPTR(Y, X) \
@@ -236,14 +299,14 @@ struct TextBuffer
 		if (!c)
 			return;
 		size = strlenEx(c) * sizeof(CharT);
-		if(size)
+		if (size)
 			strncpyEx((CharT *)buff, c, TEXT_BUFFER_SIZE);
 	}
 	template <typename StringT, typename = std::enable_if_t<!std::is_pointer_v<StringT>>>
 	void from(const StringT &c)
 	{
 		size = min(TEXT_BUFFER_SIZE, strSize(c));
-		if(size)
+		if (size)
 			memcpy(buff, c.data(), size);
 	}
 	template <typename AddrT>
@@ -252,7 +315,7 @@ struct TextBuffer
 		if (!ptr || !t)
 			return;
 		size = min(TEXT_BUFFER_SIZE, t);
-		if(size)
+		if (size)
 			memcpy(buff, (void *)ptr, size);
 	}
 	template <typename T>

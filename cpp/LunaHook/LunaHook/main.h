@@ -24,9 +24,6 @@ extern std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuad
 void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE);
 void jitaddrclear();
 
-void context_get(hook_stack *, PCONTEXT);
-void context_set(hook_stack *, PCONTEXT);
-
 void delayinsertadd(HookParam, std::string);
 void delayinsertNewHook(uint64_t);
 inline bool safeautoleaveveh = false;

@@ -18,7 +18,8 @@ private:
 	bool InsertBreakPoint();
 	bool RemoveBreakPoint();
 	bool breakpointcontext(PCONTEXT);
-	void Send(uintptr_t dwDatabase);
+	void Send(uintptr_t);
+	void Send(hook_stack*);
 	int GetLength(hook_stack *stack, uintptr_t in); // jichi 12/25/2013: Return 0 if failed
 	int HookStrlen(BYTE *data);
 	void RemoveHookCode();

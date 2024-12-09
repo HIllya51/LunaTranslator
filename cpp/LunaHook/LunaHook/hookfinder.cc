@@ -243,9 +243,8 @@ bool SendJitVeh(PCONTEXT context, uintptr_t address, uint64_t em_addr, JITTYPE j
 	if (tm - addresscalledtime[address] < 100)
 		return false;
 	addresscalledtime[address] = tm;
-	auto stack = std::make_unique<hook_stack>();
-	context_get(stack.get(), context);
-	SafeSendJitVeh(stack.get(), address, em_addr, jittype, padding);
+	hook_stack stack = hook_stack::fromContext(context);
+	SafeSendJitVeh(&stack, address, em_addr, jittype, padding);
 	return true;
 }
 std::vector<uintptr_t> GetFunctions(uintptr_t module)

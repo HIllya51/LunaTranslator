@@ -246,12 +246,15 @@ void commonfilter(TextBuffer *buffer, HookParam *hp)
 }
 void TextHook::Send(uintptr_t lpDataBase)
 {
+	Send(hook_stack::fromBase(lpDataBase));
+}
+void TextHook::Send(hook_stack *stack)
+{
 	auto buffer = (TextOutput_T *)local_buffer;
 	TextBuffer buff{buffer->data, 0};
 	_InterlockedIncrement((long *)&useCount);
 	__try
 	{
-		auto stack = get_hook_stack(lpDataBase);
 
 		if (auto current_trigger_fun = trigger_fun.exchange(nullptr))
 			if (!current_trigger_fun(location, stack))
@@ -280,7 +283,7 @@ void TextHook::Send(uintptr_t lpDataBase)
 
 		uintptr_t lpSplit = 0,
 				  lpRetn = stack->retaddr,
-				  plpdatain = (lpDataBase + hp.offset),
+				  plpdatain = (uintptr_t)(stack->base + hp.offset),
 				  lpDataIn = *(uintptr_t *)plpdatain;
 
 		if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
@@ -312,7 +315,7 @@ void TextHook::Send(uintptr_t lpDataBase)
 				if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
 					lpSplit = jitgetaddr(stack, &hp, false);
 				else
-					lpSplit = *(uintptr_t *)(lpDataBase + hp.split);
+					lpSplit = *(uintptr_t *)(stack->base + hp.split);
 				if (hp.type & SPLIT_INDIRECT)
 					lpSplit = *(uintptr_t *)(lpSplit + hp.split_index);
 			}
@@ -444,11 +447,9 @@ void TextHook::Send(uintptr_t lpDataBase)
 }
 bool TextHook::breakpointcontext(PCONTEXT context)
 {
-	auto stack = std::make_unique<hook_stack>();
-	context_get(stack.get(), context);
-	auto lpDataBase = stack->get_base();
-	Send(lpDataBase);
-	context_set(stack.get(), context);
+	hook_stack stack = hook_stack::fromContext(context);
+	Send(&stack);
+	stack.toContext(context);
 	return true;
 }
 bool TextHook::InsertBreakPoint()
