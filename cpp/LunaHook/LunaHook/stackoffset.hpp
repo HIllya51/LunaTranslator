@@ -159,8 +159,8 @@ inline uintptr_t *argidx(hook_stack *stack, int idx)
 	default:
 		offset = get_stack(idx);
 	}
-	return (uintptr_t *)((uintptr_t)stack + sizeof(hook_stack) - sizeof(uintptr_t) + offset);
+	return (uintptr_t *)(stack->get_base() + offset);
 #else
-	return (uintptr_t *)((uintptr_t)stack + sizeof(hook_stack) - sizeof(uintptr_t) + get_stack(idx));
+	return (uintptr_t *)(stack->get_base() + get_stack(idx));
 #endif
 }
