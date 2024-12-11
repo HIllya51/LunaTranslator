@@ -32,7 +32,6 @@ bool CoffeeMaker_attach_function()
       return;
     auto sub_429050 = (int(__stdcall *)(signed int a1))hp->user_value;
     static int idx = 0;
-    idx += 1;
     if (idx++ % 2)
       buffer->from_t((wchar_t)sub_429050(a2));
   };

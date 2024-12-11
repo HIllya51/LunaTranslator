@@ -26,6 +26,7 @@
 #include "engine32/Fizz.h"
 #include "engine32/Aromarie.h"
 #include "engine32/Ruf.h"
+#include "engine32/antique.h"
 #include "engine32/SYSD.h"
 #include "engine32/Diskdream.h"
 #include "engine32/RPGMakerRGSS3.h"
@@ -418,5 +419,6 @@ std::vector<ENGINE *> check_engines()
         new Winters,
         new Aromarie,
         new Moonstone,
-        new T2U};
+        new T2U,
+        new antique,};
 }
