@@ -93,7 +93,10 @@ class AnkiWindow(QWidget):
     def asyncocr(self, img):
         self.__ocrsettext.emit(ocr_run(img)[0])
 
-    def crop(self):
+    def crophide(self, s=False):
+        if s:
+            self.parent().parent().parent().hide()
+
         def ocroncefunction(rect):
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
             fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
@@ -101,6 +104,8 @@ class AnkiWindow(QWidget):
             self.settextsignal.emit(self.editpath, os.path.abspath(fname))
             if globalconfig["ankiconnect"]["ocrcroped"]:
                 self.asyncocr(img)
+            if s:
+                self.parent().parent().parent().show()
 
         rangeselct_function(ocroncefunction, False)
 
@@ -434,7 +439,11 @@ class AnkiWindow(QWidget):
         soundbutton2 = QPushButton(qtawesome.icon("fa.music"), "")
         soundbutton2.clicked.connect(self.langdu2)
         cropbutton = QPushButton(qtawesome.icon("fa.crop"), "")
-        cropbutton.clicked.connect(self.crop)
+        cropbutton.clicked.connect(functools.partial(self.crophide, False))
+        cropbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        cropbutton.customContextMenuRequested.connect(
+            functools.partial(self.crophide, True)
+        )
 
         grabwindowbtn = QPushButton(qtawesome.icon("fa.camera"), "")
         grabwindowbtn.clicked.connect(
