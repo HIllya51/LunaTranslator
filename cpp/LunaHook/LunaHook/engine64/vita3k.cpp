@@ -120,6 +120,7 @@ bool vita3k::attach_function()
             hpinternal.type = NO_CONTEXT | BREAK_POINT | op.type;
             if (!(op.type & USING_CHAR))
                 hpinternal.type |= USING_STRING;
+            hpinternal.codepage = 932;
             hpinternal.text_fun = op.hookfunc;
             hpinternal.filter_fun = op.filterfun;
             hpinternal.offset = op.offset;

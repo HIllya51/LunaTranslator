@@ -190,6 +190,7 @@ namespace
         hpinternal.address = ret;
         hpinternal.emu_addr = em_address; // 用于生成hcode
         hpinternal.type = USING_STRING | NO_CONTEXT | BREAK_POINT | op.type;
+        hpinternal.codepage = 932;
         hpinternal.text_fun = op.hookfunc;
         hpinternal.filter_fun = op.filterfun;
         hpinternal.offset = op.offset;
