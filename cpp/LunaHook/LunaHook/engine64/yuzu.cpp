@@ -85,7 +85,7 @@ std::string ull2hex(uint64_t u)
         << std::hex
         << std::setw(16)
         << std::setfill('0')
-        << game_info.id;
+        << u;
     return num.str();
 }
 bool Hook_Network_RoomMember_SendGameInfo()
@@ -1717,6 +1717,13 @@ namespace
         buffer->from(s);
     }
 
+    void F0100D9A01BD86000_0(TextBuffer *buffer, HookParam *hp)
+    {
+        static lru_cache<std::string> cache(5);
+        auto s = buffer->strA();
+        if (cache.touch(s))
+            return buffer->clear();
+    }
     void F0100D9A01BD86000(TextBuffer *buffer, HookParam *hp)
     {
 
@@ -2522,10 +2529,6 @@ namespace
             {0x81DD6010, {CODEC_UTF16, 1, -32, 0, 0, 0x01009A401C1B0000ull, "1.02"}}, // english ver, only long string, short string can't find.
             // あかやあかしやあやかしの 綴
             {0x8176D78C, {CODEC_UTF16, 3, 0, 0, 0, 0x0100F7801B5DC000ull, "1.0.0"}},
-            // ときめきメモリアル Girl's Side 4th Heart
-            {0x817e7da8, {CODEC_UTF16, 0, 0, T0100B0100E26C000<2, 0>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // name (x1) + dialogue (x2)
-            {0x81429f54, {CODEC_UTF16, 0, 0, T0100B0100E26C000<0, 1>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // choice (x0)
-            {0x8180633c, {CODEC_UTF16, 0, 0, T0100B0100E26C000<1, 2>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // help (x1)
             // 13 Sentinels: Aegis Rim
             {0x80057d18, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // cutscene text
             {0x8026fec0, {CODEC_UTF8, 1, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // prompt
@@ -2826,18 +2829,6 @@ namespace
             {0x81b1c68c, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // choice1
             {0x81b1c664, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // choice2
             {0x81b1e5b0, {CODEC_UTF16, 3, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // dialogue
-            // ときめきメモリアル Girl’s Side 2nd Kiss
-            {0x82058848, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue1
-            {0x82058aa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue2
-            {0x8205a244, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue3
-            {0x826ee1d8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // choice
-            {0x8218e258, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // news
-            {0x823b61d4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // mail
-            {0x82253454, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // luckyitem
-            {0x82269240, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile1
-            {0x82269138, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile2
-            {0x822691ec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile3
-            {0x82269198, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile4
             // うたの☆プリンスさまっ♪ Repeat LOVE
             {0x800374a0, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}}, // Main Text + Name,sjis
             {0x8002ea08, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}}, // Choices,sjis
@@ -3029,6 +3020,23 @@ namespace
             {0x81e1ff04, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // characterDesc4
             {0x821d03b0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<3>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // news
             {0x82312008, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // luckyitem
+            {0x8093F4F4, {CODEC_UTF8, 1, 0, 0, F0100D9A01BD86000_0, 0x0100D9A01BD86000ull, "1.0.0"}},                  // text
+            // ときめきメモリアル Girl’s Side 2nd Kiss
+            {0x82058848, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue1
+            {0x82058aa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue2
+            {0x8205a244, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue3
+            {0x826ee1d8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // choice
+            {0x8218e258, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // news
+            {0x823b61d4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // mail
+            {0x82253454, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // luckyitem
+            {0x82269240, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile1
+            {0x82269138, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile2
+            {0x822691ec, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile3
+            {0x82269198, {CODEC_UTF16, 0, 0, ReadTextAndLenDW<0>, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // profile4
+            // ときめきメモリアル Girl's Side 4th Heart
+            {0x817e7da8, {CODEC_UTF16, 0, 0, T0100B0100E26C000<2, 0>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // name (x1) + dialogue (x2)
+            {0x81429f54, {CODEC_UTF16, 0, 0, T0100B0100E26C000<0, 1>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // choice (x0)
+            {0x8180633c, {CODEC_UTF16, 0, 0, T0100B0100E26C000<1, 2>, 0, 0x0100B0100E26C000ull, "1.0.0"}}, // help (x1)
             // Triangle Strategy
             {0x80aadebc, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<0>, 0x0100CC80140F8000ull, "1.1.0"}}, // Main Text
             {0x81358ce4, {CODEC_UTF16, 3, 0, 0, F0100CC80140F8000<1>, 0x0100CC80140F8000ull, "1.1.0"}}, // Secondary Text
