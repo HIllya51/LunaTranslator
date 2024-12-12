@@ -806,7 +806,7 @@ namespace
      *  004985CC   CC               INT3
      *  004985CD   CC               INT3
      */
-    bool attach(ULONG startAddress, ULONG stopAddress, HookParamType code)
+    bool attach(ULONG startAddress, ULONG stopAddress, bool utf8)
     {
       const uint8_t bytes[] = {
           0xe8, XX4,  // 004b00dc   e8 7f191300      call .005e1a60 ; jichi: hook after here
@@ -821,10 +821,29 @@ namespace
       HookParam hp;
       hp.address = addr + 5;
       hp.type = USING_STRING | EMBED_ABLE | NO_CONTEXT;
-      if (code)
-        hp.type |= code;
+      if (utf8)
+        hp.type |= CODEC_UTF8;
       else
+      {
         hp.type |= EMBED_DYNA_SJIS;
+
+        static ULONG p;
+        p = Patch::patchEncoding(startAddress, stopAddress);
+        if (p)
+        {
+          hp.type |= EMBED_DYNA_SJIS;
+          hp.embed_hook_font = F_GetGlyphOutlineA;
+          patch_fun = []()
+          {
+            if (*(WORD *)p == 0xc985)
+            { // test ecx,ecx , thiscall
+              ReplaceFunction((PVOID)p, (PVOID)(ULONG)Patch::Private::thiscallisLeadByteChar);
+            }
+            else
+              ReplaceFunction((PVOID)p, (PVOID)(ULONG)Patch::Private::isLeadByteChar);
+          };
+        }
+      }
       hp.text_fun = Private::hookBefore;
       hp.embed_fun = Private::hookafter;
       hp.embed_hook_font = F_GetGlyphOutlineA;
@@ -832,23 +851,6 @@ namespace
       {
         buffer->from(std::regex_replace(buffer->strA(), std::regex(R"(\[(.+?)/.+\])"), "$1"));
       };
-
-      static ULONG p;
-      p = Patch::patchEncoding(startAddress, stopAddress);
-      if (p)
-      {
-        hp.type |= EMBED_DYNA_SJIS;
-        hp.embed_hook_font = F_GetGlyphOutlineA;
-        patch_fun = []()
-        {
-          if (*(WORD *)p == 0xc985)
-          { // test ecx,ecx , thiscall
-            ReplaceFunction((PVOID)p, (PVOID)(ULONG)Patch::Private::thiscallisLeadByteChar);
-          }
-          else
-            ReplaceFunction((PVOID)p, (PVOID)(ULONG)Patch::Private::isLeadByteChar);
-        };
-      }
 
       return NewHook(hp, "EmbedCS2");
     }
@@ -928,14 +930,14 @@ if ( a9 )
 }
 bool CatSystem::attach_function()
 {
-  HookParamType code = CODEC_ANSI_LE;
+  bool utf8 = false;
   auto b1 = InsertCatSystemHook();
   if (!b1)
   {
     b1 |= InsertCatSystem2Hook();
-    code = CODEC_UTF8;
+    utf8 = true;
   }
-  auto embed = ScenarioHook::attach(processStartAddress, processStopAddress, code);
+  auto embed = ScenarioHook::attach(processStartAddress, processStopAddress, utf8);
   b1 = b1 || cs2();
   b1 |= embed;
   return b1;
