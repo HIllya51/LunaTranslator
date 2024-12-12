@@ -166,14 +166,11 @@ bool InsertCatSystemHook()
   }; // skip two leading 0xcc
   ULONG addr = MemDbg::findCallerAddress((ULONG)::GetTextMetricsA, beg, processStartAddress, processStopAddress);
   if (!addr)
-  {
-    ConsoleOutput("CatSystem2: pattern not exist");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr + addr_offset; // skip 1 push?
-  hp.offset = stackoffset(2);        // text character is in arg2
+  hp.offset = stackoffset(2);      // text character is in arg2
 
   // jichi 12/23/2014: Modify split for new catsystem
   bool newEngine = Util::CheckFile(L"cs2conf.dll");
@@ -184,7 +181,6 @@ bool InsertCatSystemHook()
     // ConsoleOutput("INSERT CatSystem3");
     hp.type = CODEC_ANSI_BE | USING_SPLIT;
     hp.split = regoffset(esi);
-    ConsoleOutput("INSERT CatSystem3new");
     return NewHook(hp, "CatSystem3new");
   }
   else
@@ -228,9 +224,7 @@ bool InsertCatSystem2Hook()
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
-  {
     return false;
-  }
 
   HookParam hp;
   hp.address = addr;
@@ -860,6 +854,78 @@ namespace
     }
   }
 } // namespace ScenarioHook
+namespace
+{
+  bool cs2()
+  {
+    // https://vndb.org/v26537
+    const uint8_t bytes[] = {/*
+    .text:0065C10F                 cmp     bx, 20h ; ' '
+.text:0065C113                 jz      loc_65C5A6
+.text:0065C119                 mov     ecx, 8140h
+.text:0065C11E                 cmp     bx, cx
+.text:0065C121                 jnz     short loc_65C140
+.text:0065C123                 jmp     loc_65C5A6
+.text:0065C128 ; ---------------------------------------------------------------------------
+.text:0065C128
+.text:0065C128 loc_65C128:                             ; CODE XREF: sub_65C080+8D↑j
+.text:0065C128                 cmp     bx, 20h ; ' '
+.text:0065C12C                 jz      loc_65C5A6
+.text:0065C132                 mov     ecx, 3000h
+.text:0065C137                 cmp     bx, cx
+.text:0065C13A                 jz      loc_65C5A6
+if ( a9 )
+  {
+    if ( a3 == 32 || a3 == 12288 )
+      return 1;
+  }
+  else if ( a3 == 32 || a3 == 0x8140 )
+  {
+    return 1;
+  }
+*/
+                             0x66, 0x83, 0xfb, 0x20,
+                             0x0f, 0x84, XX4,
+                             0xB9, 0x40, 0x81, 0x00, 0x00,
+                             0x66, 0x3B, 0xD9,
+                             0x75, XX,
+
+                             0xe9, XX4,
+
+                             0x66, 0x83, 0xfb, 0x20,
+                             0x0f, 0x84, XX4,
+                             0xB9, 0x00, 0x30, 0x00, 0x00,
+                             0x66, 0x3B, 0xD9,
+                             0x0f, 0x84, XX4
+
+    };
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_CHAR;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      if (context->stack[8])
+      {
+        hp->type |= CODEC_UTF16;
+        hp->type &= ~CODEC_ANSI_BE;
+      }
+      else
+      {
+        hp->type |= CODEC_ANSI_BE;
+        hp->type &= ~CODEC_UTF16;
+      }
+      auto c = context->stack[2];
+      buffer->from_t<wchar_t>(c);
+    };
+    return NewHook(hp, "catsystem");
+  }
+}
 bool CatSystem::attach_function()
 {
   HookParamType code = CODEC_ANSI_LE;
@@ -870,7 +936,7 @@ bool CatSystem::attach_function()
     code = CODEC_UTF8;
   }
   auto embed = ScenarioHook::attach(processStartAddress, processStopAddress, code);
-
+  b1 = b1 || cs2();
   b1 |= embed;
   return b1;
 }
