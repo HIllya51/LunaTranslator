@@ -70,27 +70,40 @@ namespace
   {
     // D.C.III Dream Days～ダ・カーポIII～ドリームデイズ
     auto entry = Util::FindImportEntry(processStartAddress, (DWORD)GetGlyphOutlineA);
-    DWORD funcaddr = 0;
-    if (entry == 0)
+    if (!entry)
       return false;
-    for (auto addr : Util::SearchMemory(&entry, 4, PAGE_EXECUTE, processStartAddress, processStopAddress))
+    auto addrs = Util::SearchMemory(&entry, 4, PAGE_EXECUTE, processStartAddress, processStopAddress);
+    if (!addrs.size())
+      return false;
+    auto addr = addrs[addrs.size() - 1];
+    DWORD _ = 0xCCCCCCCC;
+    BYTE SIG[] = {0x8B, 0xB4, 0x24, XX2, 0x00, 0x00, 0x80, 0x3E, 0x00};
+    auto funcaddr = reverseFindBytes((BYTE *)&_, 4, addr - 0x1000, addr, 4, true);
+    auto funcaddr2 = reverseFindBytes(SIG, sizeof(SIG), addr - 0x1000, addr);
+    // 有些作不够4个CC对齐，而且不是stack[2]，而是1，且没办法确定是哪个，所以只好这样
+    if (funcaddr)
     {
-      DWORD _ = 0xCCCCCCCC;
-      funcaddr = reverseFindBytes((BYTE *)&_, 4, addr - 0x1000, addr);
-      // funcaddr=MemDbg::findEnclosingAlignedFunction(addr,0x1000);ConsoleOutput("%p",funcaddr);
+      HookParam hp;
+      hp.address = funcaddr;
+      hp.offset = stackoffset(2);
+      hp.type = USING_STRING; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
+      // hp.embed_hook_font=F_GetGlyphOutlineA;
+      // it will split a long to many lines
+      hp.filter_fun = filter;
+      NewHook(hp, "Circus2");
     }
-    if (funcaddr == 0)
-      return false;
-    funcaddr += 4;
-    HookParam hp;
-    hp.address = funcaddr;
-    hp.offset = stackoffset(2);
-    hp.type = USING_STRING; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
-    // hp.embed_hook_font=F_GetGlyphOutlineA;
-    // it will split a long to many lines
-    hp.filter_fun = filter;
-
-    return NewHook(hp, "Circus2");
+    if (funcaddr2)
+    {
+      HookParam hp;
+      hp.address = funcaddr2 + 7;
+      hp.offset = regoffset(esi);
+      hp.type = USING_STRING | NO_CONTEXT; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
+      // hp.embed_hook_font=F_GetGlyphOutlineA;
+      // it will split a long to many lines
+      hp.filter_fun = filter;
+      NewHook(hp, "Circus2");
+    }
+    return funcaddr || funcaddr2;
   }
 }
 
@@ -332,83 +345,11 @@ namespace
   } // namespace ScenarioHook
 
 } // unnamed namespace
-bool InsertCircusHook3()
-{
-  /*
-   * Sample games:
-   * https://vndb.org/v20218
-   */
-  const BYTE bytes[] = {
-      0xCC,                  // int 3
-      0x81, 0xEC, XX4,       // sub esp,000004E0        << hook here
-      0xA1, XX4,             // mov eax,[DSIF.EXE+AD288]
-      0x33, 0xC4,            // xor eax,esp
-      0x89, 0x84, 0x24, XX4, // mov [esp+000004DC],eax
-      0x8B, 0x84, 0x24, XX4, // mov eax,[esp+000004E4]
-      0x53,                  // push ebx
-      0x55,                  // push ebp
-      0x56,                  // push esi
-      0x8B, 0xB4, 0x24, XX4  // mov esi,[esp+000004F4]
-  };
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)
-  {
-    return false;
-  }
 
-  HookParam hp;
-  hp.address = addr + 1;
-  hp.offset = regoffset(esi);
-  hp.split = regoffset(ecx);
-  hp.type = USING_STRING | USING_SPLIT;
-  return NewHook(hp, "Circus3");
-}
-
-void CircusFilter(TextBuffer *buffer, HookParam *)
-{
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
-
-  // ConsoleOutput("debug:Circus: -%.*s-", *len, text);
-  if (buffer->size <= 1 || cpp_strnstr(text, "\\", buffer->size) || (text[0] == '&' && text[1] == 'n'))
-    return buffer->clear();
-
-  CharReplacer(buffer, '\n', ' ');
-}
-
-bool InsertCircusHook4()
-{
-  /*
-   * Sample games:
-   * https://vndb.org/r46909
-   */
-  const BYTE bytes[] = {
-      0x83, 0xF8, 0xFF, // cmp eax,-01        << hook here
-      0x0F, 0x84, XX4,  // je DST.exe+1BCF0
-      0x8B, 0x0D, XX4   // mov ecx,[DST.exe+A41F0]
-  };
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr)
-  {
-    return false;
-  }
-
-  HookParam hp;
-  hp.address = addr;
-  hp.offset = regoffset(edx);
-  hp.split = stackoffset(4); // arg4
-  hp.padding = 0x40;
-  hp.type = USING_STRING | USING_SPLIT;
-  hp.filter_fun = CircusFilter;
-
-  return NewHook(hp, "Circus4");
-}
 bool Circus2::attach_function()
 {
   bool ch2 = InsertCircusHook2();
   bool _1 = ch2 || c2();
-  bool _2 = ch2 || InsertCircusHook3() || InsertCircusHook4();
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);
-  return _1 || embed || _2;
+  return _1 || embed;
 }
