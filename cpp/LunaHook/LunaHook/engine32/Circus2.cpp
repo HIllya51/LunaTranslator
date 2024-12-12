@@ -4,6 +4,7 @@ namespace
   void filter(TextBuffer *buffer, HookParam *hp)
   {
     auto data = buffer->buff;
+    StringFilter(buffer, "@s", 2);
     if (strstr((char *)data, "@i") || strstr((char *)data, "@y"))
       return buffer->clear();
     // ｛てんきゅう／天穹｝
