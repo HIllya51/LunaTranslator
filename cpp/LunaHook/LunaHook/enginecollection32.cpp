@@ -182,6 +182,7 @@
 #include "engine32/Ciel.h"
 #include "engine32/CisLugI.h"
 #include "engine32/A98SYS.h"
+#include "engine32/DAC.h"
 #include "engine32/ACTGS.h"
 #include "engine32/GuruGuruSMF4.h"
 #include "NoEngine.h"
@@ -422,5 +423,6 @@ std::vector<ENGINE *> check_engines()
         new Moonstone,
         new T2U,
         new antique,
-        new BunBun};
+        new BunBun,
+        new DAC};
 }
