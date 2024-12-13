@@ -1,6 +1,4 @@
-#include "engine32/PPSSPP.h"
 #include "engine32/LovaGame.h"
-#include "engine32/PCSX2.h"
 #include "engine32/VanillawareGC.h"
 #include "engine32/V8.h"
 #include "engine32/cef.h"
@@ -188,12 +186,12 @@
 #include "NoEngine.h"
 #include "engines/lua/lua51.h"
 #include "engines/python/Renpy.h"
+#include "engines/ppsspp/ppsspp.h"
 std::vector<ENGINE *> check_engines()
 {
     return {
         new LovaGame,
-        new PPSSPPengine,
-        new PCSX2,
+        new PPSSPPWindows,
         new VanillawareGC,
         new V8,
         new cef,

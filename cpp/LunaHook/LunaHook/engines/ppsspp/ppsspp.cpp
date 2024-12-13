@@ -1,5 +1,4 @@
-
-#include "psputils.hpp"
+#include "ppsspp.h"
 #include "specialgames.hpp"
 // See: https://github.com/hrydgard/ppsspp
 
@@ -591,9 +590,9 @@ namespace ppsspp
         return NewHook(hp, "PPSSPPDoJit");
     }
 }
-bool InsertPPSSPPcommonhooks()
+bool PPSSPPWindows::attach_function()  
 {
     auto succ = ppsspp::hookPPSSPPDoJit();
     succ |= InsertPPSSPPHLEHooks();
     return succ;
-}
+} 

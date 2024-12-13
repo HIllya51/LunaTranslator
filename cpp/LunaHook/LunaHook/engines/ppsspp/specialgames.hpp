@@ -1,5 +1,19 @@
 ﻿#include <queue>
 #include "emujitarg.hpp"
+namespace ppsspp
+{
+
+	struct emfuncinfo
+	{
+		uint64_t type;
+		int offset;
+		int padding;
+		decltype(HookParam::text_fun) hookfunc;
+		decltype(HookParam::filter_fun) filterfun;
+		const char *_id;
+	};
+
+}
 
 namespace ppsspp
 {
@@ -10,7 +24,23 @@ namespace ppsspp
 		result = std::regex_replace(result, std::regex(R"((\\d$|^\@[a-z]+|#.*?#|\$))"), "");
 		buffer->from(result);
 	}
-
+	void ULJS00124_1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	{
+		auto a2 = (char *)PPSSPP::emu_arg(context)[1];
+		auto len = *(BYTE *)(PPSSPP::emu_arg(context)[1] - 2);
+		std::string collect;
+		std::string hex;
+		for (int i = 0; i < len; i++)
+		{
+			if (*(char *)(a2 + i))
+				collect += *(char *)(a2 + i);
+		}
+		strReplace(collect, "\n", "");
+		strReplace(collect, "\r", "");
+		strReplace(collect, "\x01-", "");
+		strReplace(collect, "\x01<", "");
+		buffer->from(collect);
+	}
 	void ULJS00339(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		auto a2 = PPSSPP::emu_arg(context)[0];
@@ -261,6 +291,19 @@ namespace ppsspp
 	{
 		std::string s = (char *)PPSSPP::emu_arg(context)[1];
 		buffer->from(ULJM06143Code(s));
+	}
+	void ULJM06220(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		s = s.substr(s.find("#n"));
+		strReplace(s, "#n", "");
+		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)"), "");
+		buffer->from(s);
+	}
+	void ULJM06266(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		buffer->from(s.substr(0, s.find("#n")));
 	}
 	void ULJM05943F(TextBuffer *buffer, HookParam *hp)
 	{
@@ -748,21 +791,11 @@ namespace ppsspp
 		}
 		last = s;
 	}
-	namespace
+	void ULJM05823_2(TextBuffer *buffer, HookParam *hp)
 	{
-		void ULJM05823_1(TextBuffer *buffer, HookParam *hp)
-		{
-			StringFilter(buffer, "#n", 2);
-			auto s = buffer->strA();
-			s = std::regex_replace(s, std::regex("(#[A-Za-z]+\\[(\\d*[.])?\\d+\\])+"), "");
-			buffer->from(s);
-		}
-		void ULJM05823_2(TextBuffer *buffer, HookParam *hp)
-		{
-			auto s = buffer->viewA();
-			if (s.find("#n") != s.npos)
-				return buffer->clear();
-		}
+		auto s = buffer->viewA();
+		if (s.find("#n") != s.npos)
+			return buffer->clear();
 	}
 	void ULJM05725(TextBuffer *buffer, HookParam *hp)
 	{
@@ -888,7 +921,7 @@ namespace ppsspp
 		// アーメン・ノワール ポータブル
 		{0x883b6a8, {0, 0, 0, 0, ULJM05943F, "ULJM06064"}},
 		// デス・コネクション　ポータブル
-		{0x882AEF4, {0, 0, 0, 0, ULJM05823_1, "ULJM05823"}},
+		{0x882AEF4, {0, 0, 0, 0, ULJM05943F, "ULJM05823"}},
 		{0x88B2464, {0, 0, 0, 0, ULJM05823_2, "ULJM05823"}}, // text+name->name
 		// しらつゆの怪
 		{0x888A26C, {0, 0, 0, 0, ULJM06289, "ULJM06289"}},
@@ -904,19 +937,19 @@ namespace ppsspp
 		{0x886B610, {0, 1, 0, 0, 0, "ULJM06332"}},
 		// S・Y・K ～新説西遊記～ ポータブル
 		{0x88DD918, {0, 0, 0, 0, ULJM05823_2, "ULJM05697"}}, // text+name->name
-		{0x88DA420, {0, 4, 0, 0, ULJM05823_1, "ULJM05697"}},
+		{0x88DA420, {0, 4, 0, 0, ULJM05943F, "ULJM05697"}},
 		// Glass Heart Princess
-		{0x885FA30, {0, 0, 0, 0, ULJM05823_1, "ULJM06196"}},
+		{0x885FA30, {0, 0, 0, 0, ULJM05943F, "ULJM06196"}},
 		// Glass Heart Princess:PLATINUM
-		{0x885D4F0, {0, 0, 0, 0, ULJM05823_1, "ULJM06309"}},
+		{0x885D4F0, {0, 0, 0, 0, ULJM05943F, "ULJM06309"}},
 		// ウィル・オ・ウィスプ ポータブル
-		{0x885DD04, {0, 0, 0, 0, ULJM05823_1, "ULJM05447"}},
+		{0x885DD04, {0, 0, 0, 0, ULJM05943F, "ULJM05447"}},
 		// 華鬼 ～恋い初める刻 永久の印～
-		{0x8829F14, {0, 4, 0, 0, ULJM05823_1, "ULJM05847"}},
+		{0x8829F14, {0, 4, 0, 0, ULJM05943F, "ULJM05847"}},
 		{0x886D270, {0, 0, 0, 0, ULJM05823_2, "ULJM05847"}},
 		// 華鬼 ～夢のつづき～
-		{0x88406CC, {0, 0, 0, 0, ULJM05823_1, "ULJM06048"}}, // text
-		{0x885B7BC, {0, 0, 0, 0, ULJM05823_1, "ULJM06048"}}, // name+text
+		{0x88406CC, {0, 0, 0, 0, ULJM05943F, "ULJM06048"}}, // text
+		{0x885B7BC, {0, 0, 0, 0, ULJM05943F, "ULJM06048"}}, // name+text
 		// サモンナイト３
 		{0x89DCF90, {0, 6, 0, 0, NPJH50380, "NPJH50380"}},
 		// サモンナイト４
@@ -1055,6 +1088,16 @@ namespace ppsspp
 		// いざ、出陣！恋戦 第二幕 ～甲斐編～
 		{0x8945C20, {CODEC_UTF16, 1, 0, 0, ULJM06346, "ULJM06346"}},
 		{0x8804950, {CODEC_UTF16, 1, 0, 0, ULJM06346, "ULJM06347"}},
+		// AMNESIA CROWD
+		{0x8912D30, {0, 0, 0, 0, ULJM06266, "ULJM06266"}},
+		{0x890088C, {0, 1, 0, 0, ULJM05943F, "ULJM06266"}},
+		// 宵夜森ノ姫
+		{0x884C7C8, {0, 1, 0, ULJS00124_1, 0, "ULJM06394"}},
+		// CLOCK ZERO ～終焉の一秒～ Portable
+		{0x886F114, {0, 3, 0, 0, ULJM06289, "ULJM05945"}},
+		// BLACK WOLVES SAGA -Last Hope-
+		{0x883131C, {0, 1, 0, 0, ULJM06220, "ULJM06220"}},
+		{0x8831324, {0, 1, 0, 0, ULJM06266, "ULJM06220"}},
 
 	};
 
