@@ -14,10 +14,21 @@ bool littlecheese::attach_function()
     addr = reverseFindBytes(align, sizeof(align), addr - 0x100, addr);
     if (addr == 0)
         return false;
-    HookParam hp;
-    hp.address = addr;
-    hp.offset = regoffset(ecx);
-    hp.split = regoffset(edx);
-    hp.type = USING_CHAR | CODEC_ANSI_BE | USING_SPLIT;
-    return NewHook(hp, "littlecheese");
+    if (*(DWORD *)(addr - 4) == 0x55575653)
+    {
+        HookParam hp;
+        hp.address = addr - 4;
+        hp.offset = regoffset(ecx);
+        hp.type = USING_CHAR | CODEC_ANSI_BE;
+        return NewHook(hp, "littlecheese");
+    }
+    else
+    {
+        HookParam hp;
+        hp.address = addr;
+        hp.offset = regoffset(ecx);
+        hp.split = regoffset(edx);
+        hp.type = USING_CHAR | CODEC_ANSI_BE | NO_CONTEXT | USING_SPLIT;
+        return NewHook(hp, "littlecheese");
+    }
 }
