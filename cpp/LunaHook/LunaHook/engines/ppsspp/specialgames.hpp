@@ -264,10 +264,22 @@ namespace ppsspp
 	}
 	void ULJM05943F(TextBuffer *buffer, HookParam *hp)
 	{
+		StringFilter(buffer, "#n", 2);
 		auto s = buffer->strA();
-		strReplace(s, "#n", "");
 		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"), "");
 		buffer->from(s);
+	}
+	void ULJM06289(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "\x81\x40", 2);
+		ULJM05943F(buffer, hp);
+	}
+	void ULJM06167(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		if (s == "0")
+			return buffer->clear();
+		ULJM05943F(buffer, hp);
 	}
 	void ULJM05610(TextBuffer *buffer, HookParam *hp)
 	{
@@ -608,14 +620,6 @@ namespace ppsspp
 			last = s;
 		buffer->from(s);
 	}
-	void ULJM06289(TextBuffer *buffer, HookParam *hp)
-	{
-		StringFilter(buffer, "#n", 2);
-		StringFilter(buffer, "\x81\x40", 2);
-		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex("(#[A-Za-z]+\\[(\\d*[.])?\\d+\\])+"), "");
-		buffer->from(s);
-	}
 	void ULJM06040_2(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -760,6 +764,28 @@ namespace ppsspp
 				return buffer->clear();
 		}
 	}
+	void ULJM05725(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		if (s[0] == '#')
+			return buffer->clear();
+	}
+	void ULJM06346(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strW();
+		static bool x = false;
+		if (s.find(L"$playerName;") != s.npos)
+		{
+			x = true;
+			strReplace(s, L"$playerName;", L"華");
+		}
+		else if (x && s == L"華")
+		{
+			x = false;
+			return buffer->clear();
+		}
+		buffer->from(s);
+	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
 		// 流行り神ＰＯＲＴＡＢＬＥ
 		{0x88081cc, {0, 7, 0, 0, 0, "ULJS00035"}}, // 这三作都是单字符不断刷新，需要用比较复杂的处理
@@ -847,6 +873,8 @@ namespace ppsspp
 		// 十鬼の絆
 		{0x891AAAC, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // text
 		{0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text
+		// 十鬼の絆 花結綴り
+		{0x886E354, {0, 0, 0, 0, ULJM06289, "ULJM06301"}}, // name+text
 		// ティンクル☆くるせいだーす STARLIT BRAVE!!
 		{0x88A94BC, {0, 4, 0, 0, 0, "ULJS00315"}}, // text
 		// ティンクル☆くるせいだーす GoGo!
@@ -1012,6 +1040,21 @@ namespace ppsspp
 		{0x882555C, {CODEC_UTF16, 2, 0, ULJM06143_1, 0, "ULJM06143"}},
 		// アルカナ・ファミリア 幽霊船の魔術師
 		{0x881A214, {0, 0, 0, 0, ULJM06032, "ULJM06032"}},
+		// アルカナ・ファミリア ２
+		{0x887493C, {0, 0, 0, 0, ULJM06032, "ULJM06291"}},
+		// 里見八犬伝　八珠之記
+		{0x887FF84, {0, 1, 0, 0, 0, "NPJH50858"}},
+		// 白華の檻～緋色の欠片４～
+		{0x88FE8C0, {0, 0, 0, 0, ULJM05823_2, "ULJM06167"}},
+		{0x894672C, {0, 4, 0, 0, ULJM06167, "ULJM06167"}},
+		// 真・翡翠の雫 緋色の欠片２ ポータブル
+		{0x887CEAC, {0, 0, 0, 0, ULJM06289, "ULJM05725"}},
+		{0x8876794, {0, 0, 0, 0, ULJM05725, "ULJM05725"}},
+		// アラビアンズ・ダウト
+		{0x88406FC, {0, 0, 0, 0, 0, "NPJH50834"}},
+		// いざ、出陣！恋戦 第二幕 ～甲斐編～
+		{0x8945C20, {CODEC_UTF16, 1, 0, 0, ULJM06346, "ULJM06346"}},
+		{0x8804950, {CODEC_UTF16, 1, 0, 0, ULJM06346, "ULJM06347"}},
 
 	};
 

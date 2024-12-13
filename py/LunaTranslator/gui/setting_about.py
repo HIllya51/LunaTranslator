@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     D_getsimplecombobox,
     D_getIconButton,
+    WebivewWidget,
 )
 from gui.dynalang import LLabel
 
@@ -299,6 +300,12 @@ def setTab_aboutlazy(self, basel):
     resourcegrid(self, basel)
 
 
+def changelog(self, basel: QHBoxLayout):
+    _ = WebivewWidget(self)
+    _.navigate(dynamiclink("{main_server}/ChangeLog"))
+    basel.addWidget(_)
+
+
 def setTab_about1(self, basel):
 
     shuominggrid = [
@@ -356,15 +363,12 @@ def setTab_about1(self, basel):
 
 def setTab_about(self, basel):
     tab_widget, do = makesubtab_lazy(
-        [
-            "关于软件",
-            "其他设置",
-            "资源下载",
-        ],
+        ["关于软件", "其他设置", "资源下载", "更新记录"],
         [
             functools.partial(setTab_about1, self),
             functools.partial(setTab_update, self),
             functools.partial(setTab_aboutlazy, self),
+            functools.partial(changelog, self),
         ],
         delay=True,
     )

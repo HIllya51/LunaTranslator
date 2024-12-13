@@ -475,7 +475,7 @@
 			"Temperature": {
 				"type": "spin",
 				"min": 0,
-				"max": 1,
+				"max": 2,
 				"step": 0.1
 			}
 		}
@@ -554,7 +554,7 @@
 			},
 			"frequency_penalty": {
 				"type": "spin",
-				"min": 0,
+				"min": -2,
 				"max": 2,
 				"step": 0.05
 			},
@@ -584,7 +584,7 @@
 			"Temperature": {
 				"type": "spin",
 				"min": 0,
-				"max": 1,
+				"max": 2,
 				"step": 0.1
 			}
 		}
@@ -661,7 +661,7 @@
 			"Temperature": {
 				"type": "spin",
 				"min": 0,
-				"max": 1,
+				"max": 2,
 				"step": 0.1
 			}
 		}
@@ -947,7 +947,7 @@
 			"Temperature": {
 				"type": "spin",
 				"min": 0,
-				"max": 1,
+				"max": 2,
 				"step": 0.1
 			}
 		}
@@ -1037,7 +1037,7 @@
 			},
 			"frequency_penalty": {
 				"type": "spin",
-				"min": 0,
+				"min": -2,
 				"max": 2,
 				"step": 0.05
 			}
@@ -1117,7 +1117,7 @@
 			},
 			"frequency_penalty": {
 				"type": "spin",
-				"min": 0,
+				"min": -2,
 				"max": 2,
 				"step": 0.05
 			},
@@ -1147,7 +1147,7 @@
 			"Temperature": {
 				"type": "spin",
 				"min": 0,
-				"max": 1,
+				"max": 2,
 				"step": 0.1
 			}
 		}
