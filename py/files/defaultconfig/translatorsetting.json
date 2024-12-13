@@ -474,8 +474,8 @@
 			},
 			"Temperature": {
 				"type": "spin",
-				"min": 0,
-				"max": 1,
+				"min": -2,
+				"max": 2,
 				"step": 0.1
 			}
 		}
@@ -583,8 +583,8 @@
 			},
 			"Temperature": {
 				"type": "spin",
-				"min": 0,
-				"max": 1,
+				"min": -2,
+				"max": 2,
 				"step": 0.1
 			}
 		}
@@ -660,8 +660,8 @@
 			},
 			"Temperature": {
 				"type": "spin",
-				"min": 0,
-				"max": 1,
+				"min": -2,
+				"max": 2,
 				"step": 0.1
 			}
 		}
@@ -946,8 +946,8 @@
 			},
 			"Temperature": {
 				"type": "spin",
-				"min": 0,
-				"max": 1,
+				"min": -2,
+				"max": 2,
 				"step": 0.1
 			}
 		}
@@ -1001,7 +1001,7 @@
 			},
 			"temperature": {
 				"type": "spin",
-				"min": 0,
+				"min": -2,
 				"max": 2,
 				"step": 0.1
 			},
@@ -1146,8 +1146,8 @@
 			},
 			"Temperature": {
 				"type": "spin",
-				"min": 0,
-				"max": 1,
+				"min": -2,
+				"max": 2,
 				"step": 0.1
 			}
 		}
