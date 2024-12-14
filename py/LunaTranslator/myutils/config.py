@@ -644,9 +644,6 @@ if mdict_path_dir:
 def autoparsedynamicpath():
     for dic, routine, target in (
         (globalconfig, ("cishu", "mdict", "args"), "paths"),
-        (globalconfig, ("cishu", "edict", "args"), "path"),
-        (globalconfig, ("cishu", "linggesi", "args"), "path"),
-        (globalconfig, ("cishu", "xiaoxueguan", "args"), "path"),
         (globalconfig, ("hirasetting", "mecab", "args"), "path"),
         (globalconfig, ("hirasetting", "mecab", "args"), "path"),
         (globalconfig, ("reader", "voiceroid2", "args"), "path"),
