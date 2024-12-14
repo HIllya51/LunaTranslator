@@ -96,6 +96,7 @@ class AnkiWindow(QWidget):
     def crophide(self, s=False):
         if s:
             self.parent().parent().parent().hide()
+            gobject.baseobject.translation_ui.hide_()
 
         def ocroncefunction(rect):
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
@@ -105,6 +106,7 @@ class AnkiWindow(QWidget):
             if globalconfig["ankiconnect"]["ocrcroped"]:
                 self.asyncocr(img)
             if s:
+                gobject.baseobject.translation_ui.show_()
                 self.parent().parent().parent().show()
 
         rangeselct_function(ocroncefunction, False)
