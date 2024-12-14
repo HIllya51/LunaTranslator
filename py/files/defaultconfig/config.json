@@ -1275,69 +1275,6 @@
             "name": "小学馆",
             "type": "offline"
         },
-        "edict": {
-            "use": false,
-            "name": "EDICT",
-            "args": {
-                "path": "",
-                "distance": 0,
-                "max_num": 10
-            },
-            "argstype": {
-                "path": {
-                    "type": "file",
-                    "name": "路径",
-                    "dir": false,
-                    "filter": "*.db"
-                },
-                "distance": {
-                    "type": "intspin",
-                    "name": "模糊匹配_编辑距离",
-                    "min": 0,
-                    "max": 100,
-                    "step": 1
-                },
-                "max_num": {
-                    "type": "intspin",
-                    "name": "最大结果条数",
-                    "min": 0,
-                    "max": 9999,
-                    "step": 1
-                }
-            },
-            "type": "offline"
-        },
-        "edict2": {
-            "use": false,
-            "name": "EDICT2",
-            "args": {
-                "path": "",
-                "distance": 0,
-                "max_num": 10
-            },
-            "argstype": {
-                "path": {
-                    "type": "file",
-                    "name": "路径",
-                    "dir": false
-                },
-                "distance": {
-                    "type": "intspin",
-                    "name": "模糊匹配_编辑距离",
-                    "min": 0,
-                    "max": 100,
-                    "step": 1
-                },
-                "max_num": {
-                    "type": "intspin",
-                    "name": "最大结果条数",
-                    "min": 0,
-                    "max": 9999,
-                    "step": 1
-                }
-            },
-            "type": "offline"
-        },
         "linggesi": {
             "use": false,
             "name": "灵格斯词典",
