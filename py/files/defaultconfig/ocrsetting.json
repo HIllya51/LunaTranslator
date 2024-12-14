@@ -214,10 +214,10 @@
             "custom_prompt": ""
         },
         "argstype": {
-			"BASE_URL": {
-				"name": "API接口地址",
-				"rank": 0
-			},
+            "BASE_URL": {
+                "name": "API接口地址",
+                "rank": 0
+            },
             "key": {
                 "rank": 2,
                 "name": "API Key"
@@ -322,7 +322,10 @@
     },
     "mangaocr": {
         "args": {
-            "Port": 5665
+            "Port": 5665,
+            "项目仓库": "https://github.com/kha-white/manga-ocr",
+            "整合包_CPU": "{main_server}/Resource/IntegrationPack/manga_ocr/cpu",
+            "整合包_GPU": "{main_server}/Resource/IntegrationPack/manga_ocr/gpu"
         },
         "argstype": {
             "Port": {
@@ -330,6 +333,18 @@
                 "min": 1,
                 "max": 65535,
                 "step": 1
+            },
+            "项目仓库": {
+                "type": "label",
+                "islink": true
+            },
+            "整合包_CPU": {
+                "type": "label",
+                "islink": true
+            },
+            "整合包_GPU": {
+                "type": "label",
+                "islink": true
             }
         }
     }

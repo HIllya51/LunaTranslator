@@ -489,57 +489,6 @@
             ]
         },
         {
-            "name": "OCR",
-            "sources": [
-                {
-                    "name": "本地OCR_语言包",
-                    "links": [
-                        {
-                            "name": "日语",
-                            "link": "{main_server}/Resource/ocr_models/ja.zip"
-                        },
-                        {
-                            "name": "英语",
-                            "link": "{main_server}/Resource/ocr_models/en.zip"
-                        },
-                        {
-                            "name": "简体中文",
-                            "link": "{main_server}/Resource/ocr_models/zh.zip"
-                        },
-                        {
-                            "name": "繁体中文",
-                            "link": "{main_server}/Resource/ocr_models/cht.zip"
-                        },
-                        {
-                            "name": "韩语",
-                            "link": "{main_server}/Resource/ocr_models/ko.zip"
-                        },
-                        {
-                            "name": "俄语",
-                            "link": "{main_server}/Resource/ocr_models/ru.zip"
-                        }
-                    ]
-                },
-                {
-                    "name": "manga-ocr",
-                    "links": [
-                        {
-                            "name": "项目仓库",
-                            "link": "https://github.com/kha-white/manga-ocr"
-                        },
-                        {
-                            "name": "整合包_CPU",
-                            "link": "{main_server}/Resource/IntegrationPack/manga_ocr/cpu"
-                        },
-                        {
-                            "name": "整合包_GPU",
-                            "link": "{main_server}/Resource/IntegrationPack/manga_ocr/gpu"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "name": "辞书",
             "sources": [
                 {
