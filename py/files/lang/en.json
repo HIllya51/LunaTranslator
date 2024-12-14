@@ -753,5 +753,6 @@
     "成功时跳过其他翻译": "Skip other translations when successful",
     "截取指定行数": "Extract the specified number of rows",
     "截取末尾": "Cut to the end",
-    "更新记录": "Update Record"
+    "更新记录": "Update Record",
+    "打开选择文本窗口": "Open the selection text window"
 }

@@ -11,7 +11,7 @@ from myutils.hwnd import (
     getExeIcon,
 )
 from gui.usefulwidget import saveposwindow, getQMessageBox
-from gui.dynalang import LPushButton, LLabel
+from gui.dynalang import LPushButton, LLabel, LCheckBox
 
 
 @Singleton_close
@@ -48,7 +48,9 @@ class AttachProcessDialog(saveposwindow):
         self.setWindowTitle(
             "选择进程_当前权限_" + ("管理员" if windows.IsUserAnAdmin() else "非管理员")
         )
-        self.setWindowIcon(qtawesome.icon(globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"]))
+        self.setWindowIcon(
+            qtawesome.icon(globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"])
+        )
         w = QWidget()
         self.layout1 = QVBoxLayout()
         self.label = LLabel(
@@ -57,7 +59,13 @@ class AttachProcessDialog(saveposwindow):
             )
         )
         self.label.setWordWrap(True)
-        self.button = LPushButton("点击此按钮后点击游戏窗口")
+
+        class __LPushButton(LPushButton):
+            def sizeHint(self):
+                size = super().sizeHint()
+                return QSize(size.width(), 2 * size.height())
+
+        self.button = __LPushButton("点击此按钮后点击游戏窗口")
         self.button.clicked.connect(
             functools.partial(mouseselectwindow, self.setcurrentpidpnamesignal.emit)
         )
@@ -87,6 +95,13 @@ class AttachProcessDialog(saveposwindow):
         refreshbutton = LPushButton("刷新")
         refreshbutton.clicked.connect(self.refreshfunction)
         bottomlayout.addWidget(refreshbutton)
+        autoopen = LCheckBox("打开选择文本窗口")
+        autoopen.setChecked(globalconfig["autoopenselecttext"])
+        autoopen.stateChanged.connect(
+            lambda x: globalconfig.__setitem__("autoopenselecttext", x)
+        )
+        bottomlayout.addStretch(1)
+        bottomlayout.addWidget(autoopen)
         bottomlayout.addWidget(self.buttonBox)
 
         self.layout1.addLayout(bottomlayout)
