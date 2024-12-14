@@ -769,6 +769,13 @@ namespace ppsspp
 		StringFilter(buffer, "@n", 2);
 		StringFilter(buffer, "\x81\x90", 2); // ＄
 	}
+	void ULJM05891(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "@n", 2);
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(@\w\d{4})"), "");
+		buffer->from(s);
+	}
 	void ULJM05456(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::string last;
@@ -785,6 +792,14 @@ namespace ppsspp
 			s = std::regex_replace(s, std::regex(R"(\$\w\d{5})"), "$1");
 			buffer->from(s);
 		}
+	}
+	void NPJH50711(TextBuffer *buffer, HookParam *hp)
+	{
+		//%(モーターパラグライダー%*モーターパラグライダー%)
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(%\((.*?)%\*(.*?)%\))"), "$1");
+		strReplace(s, "%!", "");
+		buffer->from(s);
 	}
 	void ULJS00019(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1175,6 +1190,15 @@ namespace ppsspp
 		{0x895A470, {CODEC_UTF16, 1, 0, 0, ULJM05282, "NPJH50342"}},
 		// スクールランブル ～姉さん事件です！～
 		{0x882C1C0, {0, 1, 0, 0, ULJS00019, "ULJS00019"}},
+		// 水平線まで何マイル？ - ORIGINAL FLIGHT -
+		{0x8922D2C, {0, 3, 0, 0, NPJH50711, "NPJH50711"}},
+		// ガーネット・クレイドル ポータブル ～鍵の姫巫女～
+		{0x88970F4, {0, 0, 0, 0, ULJM05823_2, "ULJM05858"}},
+		{0x8873EB4, {0, 3, 0, 0, ULJM05943F, "ULJM05858"}},
+		// さかあがりハリケーン Portable
+		{0x880AF50, {0, 0, 0, 0, ULJM05891, "ULJM05891"}},
+		// 快盗天使ツインエンジェル～時とセカイの迷宮～
+		{0x880838C, {0, 1, 0, 0, ULJS00124, "ULJM05908"}},
 	};
 
 }
