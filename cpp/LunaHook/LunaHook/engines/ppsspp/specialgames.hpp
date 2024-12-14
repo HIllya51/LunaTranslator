@@ -300,16 +300,27 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)"), "");
 		buffer->from(s);
 	}
+	void NPJH50831_1(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		if (s.find("#n\x81\x75") == s.npos)
+			return buffer->clear();
+		buffer->from(s.substr(0, s.find("#n\x81\x75")));
+	}
 	void ULJM06266(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = buffer->strA();
+		auto s = buffer->viewA();
 		buffer->from(s.substr(0, s.find("#n")));
+	}
+	void NPJH50831(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "#n", 2);
 	}
 	void ULJM05943F(TextBuffer *buffer, HookParam *hp)
 	{
 		StringFilter(buffer, "#n", 2);
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"), "");
+		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)"), "");
 		buffer->from(s);
 	}
 	void ULJM06289(TextBuffer *buffer, HookParam *hp)
@@ -473,6 +484,11 @@ namespace ppsspp
 		strReplace(s, "<D>", u8"ー");
 		buffer->from(s);
 	}
+	void NPJH50224(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '\n');
+		StringCharReplacer(buffer, "*p", 2, '\n');
+	}
 	void NPJH50535(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::string last;
@@ -539,6 +555,7 @@ namespace ppsspp
 	void NPJH50900(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		ws = std::regex_replace(ws, std::wregex(LR"(<(.*?),(.*?)>)"), L"$1");
 		strReplace(ws, L"^", L"");
 		static std::wstring last;
 		if (startWith(ws, last))
@@ -769,6 +786,38 @@ namespace ppsspp
 			buffer->from(s);
 		}
 	}
+	void ULJS00019(TextBuffer *buffer, HookParam *hp)
+	{
+		static std::string last;
+		auto s = buffer->strA();
+		if (endWith(last, s))
+		{
+			buffer->clear();
+			last = s;
+		}
+		else
+		{
+			last = s;
+			strReplace(s, "/K/L", "");
+			strReplace(s, "/t", "");
+			strReplace(s, "\n", "");
+			std::string _s;
+			for (int i = 0; i < s.size() - 1;)
+			{
+				if (s[i + 1] == 'T' && s[i] == '/')
+				{
+					i += 4;
+				}
+				else
+				{
+					_s += s[i];
+					i++;
+				}
+			}
+			_s += s[s.size() - 1];
+			buffer->from(_s);
+		}
+	}
 	void NPJH50380(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::wstring last;
@@ -912,6 +961,8 @@ namespace ppsspp
 		{0x88A94BC, {0, 4, 0, 0, 0, "ULJS00315"}}, // text
 		// ティンクル☆くるせいだーす GoGo!
 		{0x8822F24, {0, 0xe, 0, 0, 0, "ULJS00316"}}, // text
+		// 明治東亰恋伽
+		{0x886CA94, {0, 0, 0, 0, NPJH50900, "NPJH50808"}}, // text
 		// 明治東亰恋伽 トワヰライト・キス
 		{0x884DE44, {0, 0, 0, 0, NPJH50900, "NPJH50900"}}, // text
 		// Never7 -the end of infinity-
@@ -954,6 +1005,8 @@ namespace ppsspp
 		{0x89DCF90, {0, 6, 0, 0, NPJH50380, "NPJH50380"}},
 		// サモンナイト４
 		{0x89E7760, {0, 6, 0, 0, NPJH50380, "NPJH50410"}},
+		// サモンナイト５
+		{0x88C44CC, {CODEC_UTF8, 1, 0, 0, 0, "NPJH50696"}},
 		// STEINS;GATE
 		{0x8870320, {0, 3, 0, 0, ULJM06040_1, "ULJM05887"}},
 		// Steins;Gate 比翼恋理のだーりん
@@ -979,6 +1032,8 @@ namespace ppsspp
 		{0x893FF00, {0, 0, 0, 0, NPJH50535, "NPJH50535"}},
 		// アンチェインブレイズ レクス
 		{0x88FD624, {CODEC_UTF8, 4, 0, 0, ULJM05756, "ULJM05756"}},
+		// 密室のサクリファイス
+		{0x88057D4, {0, 0xd, 0, 0, NPJH50224, "NPJH50224"}},
 		// 密室のサクリファイス　～イトカ：ある閉鎖施設からの脱出～
 		{0x8861A08, {0, 1, 0, 0, 0, "NPJH00065"}},
 		// ココロコネクト ヨチランダム
@@ -1082,6 +1137,9 @@ namespace ppsspp
 		// 白華の檻～緋色の欠片４～
 		{0x88FE8C0, {0, 0, 0, 0, ULJM05823_2, "ULJM06167"}},
 		{0x894672C, {0, 4, 0, 0, ULJM06167, "ULJM06167"}},
+		// 白華の檻 ～緋色の欠片４～ 四季の詩
+		{0x8851EA0, {0, 0, 0, 0, ULJM06266, "ULJM06314"}},
+		{0x88E33E0, {0, 0, 0, 0, ULJM05943F, "ULJM06314"}},
 		// 真・翡翠の雫 緋色の欠片２ ポータブル
 		{0x887CEAC, {0, 0, 0, 0, ULJM06289, "ULJM05725"}},
 		{0x8876794, {0, 0, 0, 0, ULJM05725, "ULJM05725"}},
@@ -1106,7 +1164,17 @@ namespace ppsspp
 		// BLACK WOLVES SAGA -Last Hope-
 		{0x883131C, {0, 1, 0, 0, ULJM06220, "ULJM06220"}},
 		{0x8831324, {0, 1, 0, 0, ULJM06266, "ULJM06220"}},
-
+		// クロノスタシア
+		{0x8812600, {0, 1, 0, 0, ULJS00124, "ULJM06359"}},
+		// フォトカノ
+		{0x88F2030, {0, 1, 0, 0, ULJS00124, "ULJS00378"}},
+		// your diary+
+		{0x884D740, {0, 1, 0, 0, NPJH50831, "NPJH50831"}},
+		{0x8829364, {0, 1, 0, 0, NPJH50831_1, "NPJH50831"}},
+		// シャイニング・ハーツ
+		{0x895A470, {CODEC_UTF16, 1, 0, 0, ULJM05282, "NPJH50342"}},
+		// スクールランブル ～姉さん事件です！～
+		{0x882C1C0, {0, 1, 0, 0, ULJS00019, "ULJS00019"}},
 	};
 
 }
