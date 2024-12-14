@@ -1,5 +1,4 @@
-#include"VanillawareGC.h"
-
+#include "VanillawareGC.h"
 
 /** jichi 7/20/2014 Vanillaware
  *  Tested game: 朧村正
@@ -101,26 +100,28 @@
  *  16094306  ^e9 91f8ffff      jmp 16093b9c
  *  1609430b   cc               int3
  */
-namespace { // unnamed
+namespace
+{ // unnamed
 
-// Return true if the text is a garbage character
-inline bool _vanillawaregarbage_ch(char c)
-{
-  return c == ' ' || c == '.' || c == '/'
-      || c >= '0' && c <= '9'
-      || c >= 'A' && c <= 'z' // also ignore ASCII 91-96: [ \ ] ^ _ `
-  ;
-}
+  // Return true if the text is a garbage character
+  inline bool _vanillawaregarbage_ch(char c)
+  {
+    return c == ' ' || c == '.' || c == '/' || c >= '0' && c <= '9' || c >= 'A' && c <= 'z' // also ignore ASCII 91-96: [ \ ] ^ _ `
+        ;
+  }
 
-// Return true if the text is full of garbage characters
-bool _vanillawaregarbage(LPCSTR p)
-{
-  enum { MAX_LENGTH = VNR_TEXT_CAPACITY };
-  for (int count = 0; *p && count < MAX_LENGTH; count++, p++)
-    if (!_vanillawaregarbage_ch(*p))
-      return false;
-  return true;
-}
+  // Return true if the text is full of garbage characters
+  bool _vanillawaregarbage(LPCSTR p)
+  {
+    enum
+    {
+      MAX_LENGTH = VNR_TEXT_CAPACITY
+    };
+    for (int count = 0; *p && count < MAX_LENGTH; count++, p++)
+      if (!_vanillawaregarbage_ch(*p))
+        return false;
+    return true;
+  }
 } // unnamed namespace
 
 static void SpecialGCHookVanillaware(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -128,7 +129,8 @@ static void SpecialGCHookVanillaware(hook_context *context, HookParam *hp, TextB
   DWORD eax = context->eax;
   LPCSTR text = LPCSTR(eax + hp->user_value);
   static LPCSTR lasttext;
-  if (lasttext != text && *text && !_vanillawaregarbage(text)) {
+  if (lasttext != text && *text && !_vanillawaregarbage(text))
+  {
     lasttext = text;
     *split = context->ecx;
     buffer->from(text);
@@ -136,42 +138,70 @@ static void SpecialGCHookVanillaware(hook_context *context, HookParam *hp, TextB
   }
 }
 
+// jichi 7/17/2014: Search mapped memory for emulators
+ULONG _SafeMatchBytesInMappedMemory(LPCVOID pattern, DWORD patternSize, BYTE wildcard,
+                                    ULONG start, ULONG stop, ULONG step)
+{
+  for (ULONG i = start; i < stop; i += step) // + patternSize to avoid overlap
+    if (ULONG r = SafeFindBytes(pattern, patternSize, i, i + step + patternSize + 1))
+      return r;
+  return 0;
+}
+ULONG SafeMatchBytesInGCMemory(LPCVOID pattern, DWORD patternSize)
+{
+  enum : ULONG
+  {
+    start = MemDbg::MappedMemoryStartAddress // 0x01000000
+    ,
+    stop = MemDbg::MemoryStopAddress // 0x7ffeffff
+    ,
+    step = start
+  };
+  return _SafeMatchBytesInMappedMemory(pattern, patternSize, XX, start, stop, step);
+}
 bool InsertVanillawareGCHook()
 {
   ConsoleOutput("Vanillaware GC: enter");
 
-  const BYTE bytes[] =  {
-    0x83,0xc4, 0x04,                // 16094193   83c4 04          add esp,0x4
-    0xeb, 0x11,                     // 16094196   eb 11            jmp short 160941a9
-    0x8b,0xc1,                      // 16094198   8bc1             mov eax,ecx
-    0x81,0xe0, 0xff,0xff,0xff,0x3f, // 1609419a   81e0 ffffff3f    and eax,0x3fffffff
-    0x0f,0xb6,0x80, XX4,            // 160941a0   0fb680 00000810  movzx eax,byte ptr ds:[eax+0x10080000] ; jichi: hook here
-    0x66,0x90,                      // 160941a7   66:90            nop
-    0x81,0xc6, 0x01,0x00,0x00,0x00  // 160941a9   81c6 01000000    add esi,0x1
-    //0x89,05 80f86701      // 160941af   8905 80f86701    mov dword ptr ds:[0x167f880],eax
-    //0x81,3d 80f86701 00   // 160941b5   813d 80f86701 00>cmp dword ptr ds:[0x167f880],0x0
-    //0xc7,05 8cf86701 00   // 160941bf   c705 8cf86701 00>mov dword ptr ds:[0x167f88c],0x0
-    //0x89,35 90f86701      // 160941c9   8935 90f86701    mov dword ptr ds:[0x167f890],esi
-    //0x7c, 14              // 160941cf   7c 14            jl short 160941e5
-    //0x7f, 09              // 160941d1   7f 09            jg short 160941dc
-    //0xc6,05 0cfb6701 02   // 160941d3   c605 0cfb6701 02 mov byte ptr ds:[0x167fb0c],0x2
-    //0xeb, 26              // 160941da   eb 26            jmp short 16094202
+  const BYTE bytes[] = {
+      0x83, 0xc4, 0x04,                   // 16094193   83c4 04          add esp,0x4
+      0xeb, 0x11,                         // 16094196   eb 11            jmp short 160941a9
+      0x8b, 0xc1,                         // 16094198   8bc1             mov eax,ecx
+      0x81, 0xe0, 0xff, 0xff, 0xff, 0x3f, // 1609419a   81e0 ffffff3f    and eax,0x3fffffff
+      0x0f, 0xb6, 0x80, XX4,              // 160941a0   0fb680 00000810  movzx eax,byte ptr ds:[eax+0x10080000] ; jichi: hook here
+      0x66, 0x90,                         // 160941a7   66:90            nop
+      0x81, 0xc6, 0x01, 0x00, 0x00, 0x00  // 160941a9   81c6 01000000    add esi,0x1
+      // 0x89,05 80f86701      // 160941af   8905 80f86701    mov dword ptr ds:[0x167f880],eax
+      // 0x81,3d 80f86701 00   // 160941b5   813d 80f86701 00>cmp dword ptr ds:[0x167f880],0x0
+      // 0xc7,05 8cf86701 00   // 160941bf   c705 8cf86701 00>mov dword ptr ds:[0x167f88c],0x0
+      // 0x89,35 90f86701      // 160941c9   8935 90f86701    mov dword ptr ds:[0x167f890],esi
+      // 0x7c, 14              // 160941cf   7c 14            jl short 160941e5
+      // 0x7f, 09              // 160941d1   7f 09            jg short 160941dc
+      // 0xc6,05 0cfb6701 02   // 160941d3   c605 0cfb6701 02 mov byte ptr ds:[0x167fb0c],0x2
+      // 0xeb, 26              // 160941da   eb 26            jmp short 16094202
   };
-  enum { memory_offset = 3 }; // 160941a0   0fb680 00000810  movzx eax,byte ptr ds:[eax+0x10080000]
-  enum { addr_offset = 0x160941a0 - 0x16094193 };
+  enum
+  {
+    memory_offset = 3
+  }; // 160941a0   0fb680 00000810  movzx eax,byte ptr ds:[eax+0x10080000]
+  enum
+  {
+    addr_offset = 0x160941a0 - 0x16094193
+  };
 
   DWORD addr = SafeMatchBytesInGCMemory(bytes, sizeof(bytes));
-  auto succ=false;
+  auto succ = false;
   if (!addr)
     ConsoleOutput("Vanillaware GC: pattern not found");
-  else {
+  else
+  {
     HookParam hp;
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.text_fun = SpecialGCHookVanillaware;
-    hp.type = USING_STRING|NO_CONTEXT; // no context is needed to get rid of variant retaddr
+    hp.type = USING_STRING | NO_CONTEXT; // no context is needed to get rid of variant retaddr
     ConsoleOutput("Vanillaware GC: INSERT");
-    succ|=NewHook(hp, "Vanillaware GC");
+    succ |= NewHook(hp, "Vanillaware GC");
   }
 
   ConsoleOutput("Vanillaware GC: leave");
@@ -184,9 +214,10 @@ bool InsertGCHooks()
 {
   // TODO: Add generic hooks
   return InsertVanillawareGCHook();
-  //return false;
+  // return false;
 }
 
-bool VanillawareGC::attach_function() { 
-    return InsertGCHooks();
-} 
+bool VanillawareGC::attach_function()
+{
+  return InsertGCHooks();
+}

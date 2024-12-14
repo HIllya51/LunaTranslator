@@ -392,30 +392,6 @@ uintptr_t SafeFindBytes(LPCVOID pattern, size_t patternSize, uintptr_t lowerBoun
   }
   return r;
 }
-#ifndef _WIN64
-
-// jichi 7/17/2014: Search mapped memory for emulators
-ULONG _SafeMatchBytesInMappedMemory(LPCVOID pattern, DWORD patternSize, BYTE wildcard,
-                                    ULONG start, ULONG stop, ULONG step)
-{
-  for (ULONG i = start; i < stop; i += step) // + patternSize to avoid overlap
-    if (ULONG r = SafeFindBytes(pattern, patternSize, i, i + step + patternSize + 1))
-      return r;
-  return 0;
-}
-ULONG SafeMatchBytesInGCMemory(LPCVOID pattern, DWORD patternSize)
-{
-  enum : ULONG
-  {
-    start = MemDbg::MappedMemoryStartAddress // 0x01000000
-    ,
-    stop = MemDbg::MemoryStopAddress // 0x7ffeffff
-    ,
-    step = start
-  };
-  return _SafeMatchBytesInMappedMemory(pattern, patternSize, XX, start, stop, step);
-}
-#endif
 
 #ifndef _WIN64
 
