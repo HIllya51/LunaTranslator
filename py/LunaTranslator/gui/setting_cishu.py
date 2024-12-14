@@ -168,6 +168,7 @@ def initinternal(self, names):
         i += 1
     if len(line):
         cishugrid.append(line)
+    cishugrid[-1] += [""] * (4 + 4 + 3 - len(cishugrid[-1]))
     return cishugrid
 
 

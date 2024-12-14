@@ -454,41 +454,6 @@
     ],
     "aboutsource": [
         {
-            "name": "离线翻译",
-            "sources": [
-                {
-                    "name": "Sakura大模型",
-                    "links": [
-                        {
-                            "name": "Github",
-                            "link": "https://github.com/SakuraLLM/SakuraLLM"
-                        }
-                    ]
-                },
-                {
-                    "name": "过时的翻译器",
-                    "links": [
-                        {
-                            "name": "J北京7",
-                            "link": "{main_server}/Resource/translate/JBeijing7.zip"
-                        },
-                        {
-                            "name": "金山快译",
-                            "link": "{main_server}/Resource/translate/FastAIT09_Setup.25269.4101.zip"
-                        },
-                        {
-                            "name": "快译通",
-                            "link": "{main_server}/Resource/translate/DR.eye.zip"
-                        },
-                        {
-                            "name": "Sugoi",
-                            "link": "{main_server}/Resource/translate/Sugoi_Translator_V10.1.7z"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "name": "辞书",
             "sources": [
                 {
@@ -514,27 +479,6 @@
                         {
                             "name": "freemdict",
                             "link": "https://search.freemdict.com/"
-                        }
-                    ]
-                },
-                {
-                    "name": "过时的词典",
-                    "links": [
-                        {
-                            "name": "小学馆",
-                            "link": "{main_server}/Resource/dictionary/xiaoxueguan.db"
-                        },
-                        {
-                            "name": "EDICT",
-                            "link": "{main_server}/Resource/dictionary/edict.db"
-                        },
-                        {
-                            "name": "EDICT2",
-                            "link": "{main_server}/Resource/dictionary/edict2"
-                        },
-                        {
-                            "name": "灵格斯词典",
-                            "link": "{main_server}/Resource/dictionary/Lingoes.zip"
                         }
                     ]
                 }

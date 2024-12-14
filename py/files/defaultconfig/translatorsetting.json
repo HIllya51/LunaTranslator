@@ -668,26 +668,36 @@
 	},
 	"jb7": {
 		"args": {
-			"path": ""
+			"path": "",
+            "下载": "{main_server}/Resource/translate/JBeijing7.zip"
 		},
 		"argstype": {
 			"path": {
 				"type": "file",
 				"dir": true,
 				"name": "路径"
-			}
+			},
+            "下载": {
+                "type": "label",
+                "islink": true
+            }
 		}
 	},
 	"kingsoft": {
 		"args": {
-			"path": ""
+			"path": "",
+			"下载": "{main_server}/Resource/translate/FastAIT09_Setup.25269.4101.zip"
 		},
 		"argstype": {
 			"path": {
 				"name": "路径",
 				"type": "file",
 				"dir": true
-			}
+			},
+            "下载": {
+                "type": "label",
+                "islink": true
+            }
 		}
 	},
 	"eztrans": {
@@ -705,14 +715,19 @@
 	},
 	"dreye": {
 		"args": {
-			"path": ""
+			"path": "",
+            "下载": "{main_server}/Resource/translate/DR.eye.zip"
 		},
 		"argstype": {
 			"path": {
 				"name": "路径",
 				"type": "file",
 				"dir": true
-			}
+			},
+            "下载": {
+                "type": "label",
+                "islink": true
+            }
 		}
 	},
 	"rengong": {
