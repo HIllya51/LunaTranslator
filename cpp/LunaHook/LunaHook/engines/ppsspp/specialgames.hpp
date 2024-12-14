@@ -133,6 +133,22 @@ namespace ppsspp
 	{
 		CharFilter(buffer, '\n');
 	}
+	void ULJM06147(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, L'R');
+	}
+	void ULJM05587_2(TextBuffer *buffer, HookParam *hp)
+	{
+		if (buffer->viewW()[0] == L'　' || buffer->viewW()[0] == L'「')
+			return buffer->clear();
+	}
+	void ULJM05587_1(TextBuffer *buffer, HookParam *hp)
+	{
+		if (buffer->viewW()[0] != L'　' && buffer->viewW()[0] != L'「')
+			return buffer->clear();
+		CharFilter(buffer, L'　');
+		CharFilter(buffer, L'\n');
+	}
 	void ULJM05770(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string s = buffer->strA();
@@ -465,6 +481,21 @@ namespace ppsspp
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(#SCL\((.*?)\)(.*?)#ECL)"), "$2");
 		strReplace(s, "\n\r\n", "\n");
+		buffer->from(s);
+	}
+	void ULJM05657(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "@n", 2);
+		auto s = buffer->strA();
+		if (endWith(s, "\x81\x76"))
+			s = "\x81\x75" + s;
+		buffer->from(s);
+	}
+	void ULJS00579(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "\\n", 2);
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(@\w(.*?)@\d)"), "$1");
 		buffer->from(s);
 	}
 	void FNPJH50127(TextBuffer *buffer, HookParam *hp)
@@ -855,6 +886,18 @@ namespace ppsspp
 		}
 		last = s;
 	}
+	void ULJM06258_2(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		buffer->from(strSplit(s, "\n")[1]);
+	}
+	void ULJM06258(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		if (s.find("#n") == s.npos)
+			return buffer->clear();
+		ULJM05943F(buffer, hp);
+	}
 	void ULJM05823_2(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->viewA();
@@ -1069,6 +1112,9 @@ namespace ppsspp
 		{0x881BECC, {0, 0, 0, 0, 0, "ULJM05444"}},
 		// のーふぇいと！ ～only the power of will～
 		{0x889A888, {0, 0, 0, 0, ULJM05610, "ULJM05610"}},
+		// 薄桜鬼 遊戯録
+		{0x8850720, {0, 0, 0, 0, ULJM05943F, "ULJM05663"}},
+		{0x884AB78, {0, 0, 0, 0, ULJM05823_2, "ULJM05663"}},
 		// 薄桜鬼 遊戯録弐　祭囃子と隊士達
 		{0x883E84C, {0, 1, 0, 0, ULJM05943F, "ULJM06165"}},
 		// 裏語 薄桜鬼
@@ -1199,6 +1245,26 @@ namespace ppsspp
 		{0x880AF50, {0, 0, 0, 0, ULJM05891, "ULJM05891"}},
 		// 快盗天使ツインエンジェル～時とセカイの迷宮～
 		{0x880838C, {0, 1, 0, 0, ULJS00124, "ULJM05908"}},
+		// テガミバチ　こころ紡ぐ者へ
+		{0x883172C, {CODEC_UTF16, 1, 0, 0, ULJM05587_1, "ULJM05587"}},
+		{0x88316F8, {CODEC_UTF16, 1, 0, 0, ULJM05587_2, "ULJM05587"}},
+		// 闇からのいざない TENEBRAE I
+		{0x88143A0, {CODEC_UTF16, 2, 0, 0, ULJM06147, "ULJM06147"}},
+		// ＧＡ 芸術科アートデザインクラス Slapstick WONDERLAND
+		{0x8858E44, {0, 0, 0, 0, ULJS00124, "ULJM05672"}},
+		// この部室は帰宅しない部が占拠しました。ぽーたぶる　学園ドッグ・イヤー編
+		{0x88F91DC, {0, 2, 0, 0, FNPJH50127, "ULJM06110"}},
+		// 夏空のモノローグ portable
+		{0x88756D0, {0, 3, 0, 0, NPJH50831, "ULJM06261"}},
+		// 月影の鎖　～狂爛モラトリアム～
+		{0x882CAE8, {0, 4, 0, 0, ULJS00579, "ULJS00599"}},
+		// 月影の鎖　～錯乱パラノイア～
+		{0x882C010, {0, 4, 0, 0, ULJS00579, "ULJS00579"}},
+		// リアルロデ PORTABLE
+		{0x886A92C, {0, 0, 0, 0, ULJM05657, "ULJM05657"}},
+		// Princess Arthur
+		{0x8841D10, {0, 0xE, 0, 0, ULJM06258_2, "ULJM06258"}}, // name+text,显示完后
+		{0x88A844C, {0, 1, 0, 0, ULJM06258, "ULJM06258"}},	   // text
 	};
 
 }
