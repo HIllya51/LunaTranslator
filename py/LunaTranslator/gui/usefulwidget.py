@@ -1810,7 +1810,7 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
             elif len(item) == 3:
                 wid, cols, arg = item
                 if type(wid) == str:
-                    wid = LLabel(wid)
+                    wid = QLabel(wid)
                     if arg == "link":
                         wid.setOpenExternalLinks(True)
                 elif arg == "group":

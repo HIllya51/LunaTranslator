@@ -27,7 +27,7 @@ py/.q_vscode_style
 py/userconfig
 py/cache
 py/chrome_cache
-py/files/ocr
+py/files/ocrmodel
 py/files/plugins
 py/files/themes
 py/run37.bat

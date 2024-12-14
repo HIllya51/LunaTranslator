@@ -251,7 +251,7 @@ def versionlabelmaybesettext(self, x):
 def solvelinkitems(grid, source):
     name = source["name"]
     link = source["link"]
-    grid.append([((name), 1, ""), (makehtml(link), 2, "link")])
+    grid.append([name, (makehtml(link), 2, "link")])
 
 
 def resourcegrid(self, l):
@@ -265,7 +265,7 @@ def resourcegrid(self, l):
 
             __grid = []
             for link in source["links"]:
-                solvelinkitems(__grid, link)
+                __grid.append([link["name"], (makehtml(link["link"]), 2, "link")])
             grid.append(
                 [
                     (

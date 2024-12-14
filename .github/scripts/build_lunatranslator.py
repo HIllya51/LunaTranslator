@@ -207,9 +207,9 @@ def downloadCurl():
 
 def downloadOCRModel():
     os.chdir(rootDir + "\\files")
-    if not os.path.exists("ocr"):
-        os.mkdir("ocr")
-    os.chdir("ocr")
+    if not os.path.exists("ocrmodel"):
+        os.mkdir("ocrmodel")
+    os.chdir("ocrmodel")
     subprocess.run(f"curl -LO {mylinks['ocr_models']['ja.zip']}")
     subprocess.run(f"7z x ja.zip")
     os.remove(f"ja.zip")

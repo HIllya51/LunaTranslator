@@ -754,5 +754,6 @@
     "截取指定行数": "Die angegebene Anzahl von Zeilen extrahieren",
     "截取末尾": "Bis zum Ende geschnitten",
     "更新记录": "Datensatz aktualisieren",
-    "打开选择文本窗口": "Öffnen des Auswahltextfensters"
+    "打开选择文本窗口": "Öffnen des Auswahltextfensters",
+    "成功": "Erfolg"
 }
