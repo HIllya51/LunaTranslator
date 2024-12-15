@@ -561,11 +561,11 @@ static_data["language_list_translator_inner_english"] = [
 ]
 
 
-def getlanguse():
+def getlanguse() -> str:
     return globalconfig["languageuse2"]
 
 
-def langfile(lang):
+def langfile(lang) -> str:
     return "./files/lang/{}.json".format(lang)
 
 
@@ -582,7 +582,7 @@ def loadlanguage():
         languageshow = {}
 
 
-def _TR(k: str):
+def _TR(k: str) -> str:
     if not k:
         return ""
     if "_" in k:

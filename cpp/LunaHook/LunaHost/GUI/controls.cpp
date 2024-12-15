@@ -37,6 +37,36 @@ void checkbox::setcheck(bool b)
 {
     SendMessage(winId, BM_SETCHECK, (WPARAM)BST_CHECKED * b, 0);
 }
+combobox::combobox(mainwindow *parent) : control(parent)
+{
+    winId = CreateWindowEx(0, L"COMBOBOX", NULL, WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST,
+                           0, 0, 0, 0, parent->winId, NULL, NULL, NULL);
+}
+int combobox::additem(const std::wstring &text)
+{
+    return SendMessage(winId, CB_ADDSTRING, 0, (LPARAM)text.c_str());
+}
+int combobox::currentidx()
+{
+    return SendMessage(winId, CB_GETCURSEL, 0, 0);
+}
+void combobox::setcurrent(int idx)
+{
+    SendMessage(winId, CB_SETCURSEL, idx, 0);
+    if (idx != -1)
+        oncurrentchange(idx);
+}
+
+void combobox::dispatch(WPARAM wparam)
+{
+    if (HIWORD(wparam) == CBN_SELCHANGE)
+    {
+        auto idx = currentidx();
+        if (idx != -1)
+            oncurrentchange(idx);
+    }
+}
+
 int spinbox::getcurr()
 {
     return SendMessage(hUpDown, UDM_GETPOS32, 0, 0);

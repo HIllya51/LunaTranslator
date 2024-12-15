@@ -43,3 +43,4 @@
 #include "hookcode.h"
 #include "winevent.hpp"
 #include "lrucache.hpp"
+#include "Lang/Lang.h"

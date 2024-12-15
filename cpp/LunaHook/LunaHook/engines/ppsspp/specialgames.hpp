@@ -219,9 +219,20 @@ namespace ppsspp
 			std::string s;
 			int i = 0;
 			uint8_t c;
-			while ((c = *(uint8_t *)(address + i)) != 0)
+			if (*(BYTE *)(address + i) == 0xaa)
+				i += 1;
+
+			while (true)
 			{
-				if (c == 0x1b)
+				c = *(uint8_t *)(address + i);
+				if (!c)
+				{
+					if (*(uint8_t *)(address + i + 1) == 0xaa)
+						i += 2;
+					else
+						break;
+				}
+				else if (c == 0x1b)
 				{
 					if (*haveName)
 						return s; // (1) skip junk after name
@@ -254,7 +265,7 @@ namespace ppsspp
 	}
 	void ULJM05428(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
-		auto address = PPSSPP::emu_arg(context)[1];
+		auto address = PPSSPP::emu_arg(context)[hp->offset];
 		bool haveNamve;
 		auto s = Corda::readBinaryString(address, &haveNamve);
 		*split = haveNamve;
@@ -963,14 +974,22 @@ namespace ppsspp
 		{0x0891D72C, {CODEC_UTF8, 0, 0, 0, ULJM06119_filter, "ULJM06119"}},
 		// Princess Evangile
 		{0x88506d0, {CODEC_UTF16, 2, 0, 0, ULJM06036_filter, "ULJM06036"}}, // [0x88506d0(2)...0x088507C0(?)] // name text text (line doubled)
+		// 金色のコルダ３ AnotherSky feat.神南
+		{0x883C940, {0, 0, 0, ULJM05428, 0, "NPJH50845"}},
+		// 金色のコルダ３ フルボイス Special
+		{0x8A731B0, {0, 1, 0, ULJM05428, 0, "NPJH50821"}},
+		// 金色のコルダ３ AnotherSky feat.至誠館
+		{0x8A99BD8, {0, 1, 0, ULJM05428, 0, "NPJH50846"}},
+		// 金色のコルダ３ AnotherSky feat.天音学園
+		{0x8AAB770, {0, 1, 0, ULJM05428, 0, "NPJH50847"}},
 		// 金色のコルダ３
-		{0x896C3B8, {0, 0, 0, ULJM05428, 0, "ULJM05624"}},
+		{0x896C3B8, {0, 1, 0, ULJM05428, 0, "ULJM05624"}},
 		// 金色のコルダ2 f
-		{0x89b59dc, {0, 0, 0, ULJM05428, 0, "ULJM05428"}},
+		{0x89b59dc, {0, 1, 0, ULJM05428, 0, "ULJM05428"}},
 		// 金色のコルダ２ f アンコール
-		{0x89D9FB0, {0, 0, 0, ULJM05428, 0, "ULJM05508"}},
+		{0x89D9FB0, {0, 1, 0, ULJM05428, 0, "ULJM05508"}},
 		// 金色のコルダ
-		{0x886162c, {0, 0, 0, ULJM05428, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
+		{0x886162c, {0, 1, 0, ULJM05428, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
 		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},	   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
 		// Sol Trigger
 		{0x8952cfc, {CODEC_UTF8, 0, 0, 0, NPJH50619F, "NPJH50619"}}, // dialog

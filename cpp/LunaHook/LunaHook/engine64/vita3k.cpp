@@ -146,23 +146,27 @@ namespace
         s = std::regex_replace(s, std::regex("\n"), "");
         buffer->from(s);
     }
-    template <int idx>
-    void FPCSG01282(TextBuffer *buffer, HookParam *hp)
+    void FPCSG01282_1(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex("(\\n)+"), " ");
         s = std::regex_replace(s, std::regex("\\d$|^@[a-z]+|#.*?#|\\$"), "");
+        buffer->from(s);
+    }
+    template <int idx>
+    void FPCSG01282(TextBuffer *buffer, HookParam *hp)
+    {
+        FPCSG01282_1(buffer, hp);
         static std::string last;
+        auto s = buffer->viewA();
         if (last == s)
             return buffer->clear();
         last = s;
-        buffer->from(s);
     }
 
-    template <int index>
     void ReadU16TextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto address = VITA3K::emu_arg(context)[index];
+        auto address = VITA3K::emu_arg(context)[hp->offset];
         buffer->from(address + 0xC, (*(DWORD *)(address + 0x8)) * 2);
     }
 
@@ -494,14 +498,9 @@ namespace
         s = std::regex_replace(s, std::regex(R"(#\w.+?])"), "");
         buffer->from(s);
     }
-    template <int idx>
-    void FPCSG00855_2(TextBuffer *buffer, HookParam *hp)
+    void FPCSG00855_2_1(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        static std::string last;
-        if (last == s)
-            return buffer->clear();
-        last = s;
         strReplace(s, u8"Χ", u8"、");
         strReplace(s, u8"Δ", u8"。");
         strReplace(s, u8"Λ", u8"っ");
@@ -515,6 +514,15 @@ namespace
         strReplace(s, u8"Ц", u8"】");
         buffer->from(s);
         FPCSG00855(buffer, hp);
+    }
+    template <int idx>
+    void FPCSG00855_2(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->viewA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        FPCSG00855_2_1(buffer, hp);
     }
     void FPCSG00477(TextBuffer *buffer, HookParam *hp)
     {
@@ -564,9 +572,9 @@ namespace
             {0x80011f1a, {0, 0, 0, 0, FPCSG01282<2>, "PCSG01282"}}, // Name
             {0x8001ebac, {0, 1, 0, 0, FPCSG01282<3>, "PCSG01282"}}, // choices
             // 神凪ノ杜 五月雨綴り
-            {0x828bb50c, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW<0>, 0, "PCSG01268"}}, // dialogue
-            {0x828ba9b6, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW<0>, 0, "PCSG01268"}}, // name
-            {0x8060D376, {CODEC_UTF8, 0, 0, 0, 0, "PCSG01268"}},                       // vita3k v0.2.0 can't find 0x828bb50c && 0x828ba9b6, unknown reason.
+            {0x828bb50c, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW, 0, "PCSG01268"}}, // dialogue
+            {0x828ba9b6, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW, 0, "PCSG01268"}}, // name
+            {0x8060D376, {CODEC_UTF8, 0, 0, 0, 0, "PCSG01268"}},                    // vita3k v0.2.0 can't find 0x828bb50c && 0x828ba9b6, unknown reason.
             // 参千世界遊戯 ~MultiUniverse Myself~
             {0x8005ae24, {0, 0, 0, 0, 0, "PCSG01194"}}, // dialouge+name,sjis,need remap jis char,to complex
             // Marginal #4 Road to Galaxy
@@ -583,9 +591,9 @@ namespace
             {0x80070e30, {0, 2, 0, 0, FPCSG00751, "PCSG00751"}}, // all,sjis
             {0x80070cdc, {0, 1, 0, 0, FPCSG00751, "PCSG00751"}}, // text
             // もし、この世界に神様がいるとするならば。
-            {0x80c1f270, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW<0>, FPCSG00706, "PCSG00706"}}, // dialogue
-            {0x80d48bfc, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW<1>, FPCSG00706, "PCSG00706"}}, // Dictionary1
-            {0x80d48c20, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW<0>, FPCSG00706, "PCSG00706"}}, // Dictionary2
+            {0x80c1f270, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW, FPCSG00706, "PCSG00706"}}, // dialogue
+            {0x80d48bfc, {CODEC_UTF16, 1, 0, ReadU16TextAndLenDW, FPCSG00706, "PCSG00706"}}, // Dictionary1
+            {0x80d48c20, {CODEC_UTF16, 0, 0, ReadU16TextAndLenDW, FPCSG00706, "PCSG00706"}}, // Dictionary2
             // アンジェーリーク ルトゥール
             {0x8008bd1a, {0, 1, 0, 0, FPCSG00696, "PCSG00696"}}, // text1,sjis
             {0x8008cd48, {0, 0, 0, 0, FPCSG00696, "PCSG00696"}}, // text2

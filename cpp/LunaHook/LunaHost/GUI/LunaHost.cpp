@@ -7,9 +7,8 @@
 #include "host.h"
 #include "textthread.h"
 #include "LunaHost.h"
-#include "Lang/Lang.h"
 #include "http.hpp"
-
+extern std::vector<std::tuple<SUPPORT_LANG, std::wstring, std::vector<std::string>>> lang_map;
 bool sendclipboarddata_i(const std::wstring &text, HWND hwnd)
 {
     if (!OpenClipboard((HWND)hwnd))
@@ -64,13 +63,28 @@ void LunaHost::savesettings()
     configs->set("fontsize", uifont.fontsize);
     configs->set("font_italic", uifont.italic);
     configs->set("font_bold", uifont.bold);
+    configs->set("Language", map_from_support_lang(curr_lang));
+}
+
+std::string getdefaultlang()
+{
+    LANGID langid = GetUserDefaultUILanguage();
+    CHAR szLang[100];
+    std::string lang;
+    GetLocaleInfoA(MAKELCID(langid, SORT_DEFAULT), LOCALE_SISO639LANGNAME, szLang, 100);
+    lang += szLang;
+    GetLocaleInfoA(MAKELCID(langid, SORT_DEFAULT), LOCALE_SISO3166CTRYNAME, szLang, 100);
+    lang += "-";
+    lang += szLang;
+    return lang;
 }
 void LunaHost::loadsettings()
 {
+    curr_lang = map_to_support_lang(configs->get("Language", getdefaultlang()).c_str());
     uifont.italic = configs->get("font_italic", false);
     uifont.bold = configs->get("font_bold", false);
     uifont.fontsize = configs->get("fontsize", 14);
-    uifont.fontfamily = StringToWideString(configs->get("DefaultFont2", WideStringToString(std::wstring(DefaultFont))));
+    uifont.fontfamily = StringToWideString(configs->get("DefaultFont2", WideStringToString(TR[DefaultFont])));
     check_toclipboard_selection = configs->get("ToClipboardSelection", false);
     check_toclipboard = configs->get("ToClipboard", false);
     autoattach = configs->get("AutoAttach", false);
@@ -146,12 +160,12 @@ LunaHost::LunaHost()
     loadsettings();
 
     setfont(uifont);
-    btnshowsettionwindow = new button(this, BtnShowSettingWindow);
-    g_selectprocessbutton = new button(this, BtnSelectProcess);
+    btnshowsettionwindow = new button(this, TR[TSetting]);
+    g_selectprocessbutton = new button(this, TR[WndSelectProcess]);
 
     // btnsavehook=new button(this,BtnSaveHook,10,10,10,10);
     // btnsavehook->onclick=std::bind(&LunaHost::btnsavehookscallback,this);
-    btndetachall = new button(this, BtnDetach);
+    btndetachall = new button(this, TR[BtnDetach]);
     btndetachall->onclick = [&]()
     {
         for (auto pid : attachedprocess)
@@ -162,7 +176,7 @@ LunaHost::LunaHost()
     };
 
     g_hEdit_userhook = new lineedit(this);
-    btnplugin = new button(this, BtnPlugin);
+    btnplugin = new button(this, TR[TPlugins]);
 
     plugins = new Pluginmanager(this);
     btnplugin->onclick = [&]()
@@ -171,7 +185,7 @@ LunaHost::LunaHost()
             pluginwindow = new Pluginwindow(this, plugins);
         pluginwindow->show();
     };
-    g_hButton_insert = new button(this, BtnInsertUserHook);
+    g_hButton_insert = new button(this, TR[BtnInsertUserHook]);
     btnshowsettionwindow->onclick = [&]()
     {
         if (settingwindow == 0)
@@ -196,12 +210,12 @@ LunaHost::LunaHost()
         }
         else
         {
-            showtext(NotifyInvalidHookCode, false);
+            showtext(TR[NotifyInvalidHookCode], false);
         }
     };
 
     g_hListBox_listtext = new listview(this, false, false);
-    g_hListBox_listtext->setheader({LIST_HOOK, LIST_TEXT});
+    g_hListBox_listtext->setheader({TR[LIST_HOOK], TR[HS_TEXT]});
     g_hListBox_listtext->oncurrentchange = [&](int idx)
     {
         auto thread_p = g_hListBox_listtext->getdata(idx);
@@ -216,18 +230,18 @@ LunaHost::LunaHost()
         auto tt = (TextThread *)g_hListBox_listtext->getdata(g_hListBox_listtext->currentidx());
 
         Menu menu;
-        menu.add(MenuCopyHookCode, [&, tt]()
+        menu.add(TR[MenuCopyHookCode], [&, tt]()
                  { sendclipboarddata(tt->hp.hookcode, winId); });
         menu.add_sep();
-        menu.add(MenuRemoveHook, [&, tt]()
+        menu.add(TR[MenuRemoveHook], [&, tt]()
                  { Host::RemoveHook(tt->tp.processId, tt->tp.addr); });
-        menu.add(MenuDetachProcess, [&, tt]()
+        menu.add(TR[MenuDetachProcess], [&, tt]()
                  {
          
             Host::DetachProcess(tt->tp.processId);
             userdetachedpids.insert(tt->tp.processId); });
         menu.add_sep();
-        menu.add(MenuRemeberSelect, [&, tt]()
+        menu.add(TR[MenuRemeberSelect], [&, tt]()
                  {
             if(auto pexe=getModuleFilename(tt->tp.processId))
                 savedhookcontext[WideStringToString(pexe.value())]={
@@ -236,7 +250,7 @@ LunaHost::LunaHost()
                     {"ctx2",tt->tp.ctx2},
                     {"name",WideStringToString(tt->name)}
                 }; });
-        menu.add(MenuForgetSelect, [&, tt]()
+        menu.add(TR[MenuForgetSelect], [&, tt]()
                  {
                 if(auto pexe=getModuleFilename(tt->tp.processId))
                         savedhookcontext.erase(WideStringToString(pexe.value())); });
@@ -245,14 +259,6 @@ LunaHost::LunaHost()
 
     g_showtexts = new multilineedit(this);
     g_showtexts->setreadonly(true);
-
-    btnsearchhooks = new button(this, BtnSearchHook);
-    btnsearchhooks->onclick = [&]()
-    {
-        if (hooksearchwindow == 0)
-            hooksearchwindow = new Hooksearchwindow(this);
-        hooksearchwindow->show();
-    };
 
     Host::StartEx(
         std::bind(&LunaHost::on_proc_connect, this, std::placeholders::_1),
@@ -271,9 +277,8 @@ LunaHost::LunaHost()
     mainlayout->addcontrol(btndetachall, 0, 1);
     mainlayout->addcontrol(btnshowsettionwindow, 0, 2);
     mainlayout->addcontrol(btnplugin, 0, 3);
-    mainlayout->addcontrol(g_hEdit_userhook, 1, 0, 1, 2);
-    mainlayout->addcontrol(g_hButton_insert, 1, 2);
-    mainlayout->addcontrol(btnsearchhooks, 1, 3);
+    mainlayout->addcontrol(g_hEdit_userhook, 1, 0, 1, 3);
+    mainlayout->addcontrol(g_hButton_insert, 1, 3);
 
     mainlayout->addcontrol(g_hListBox_listtext, 2, 0, 1, 4);
     mainlayout->addcontrol(g_showtexts, 3, 0, 1, 4);
@@ -282,7 +287,7 @@ LunaHost::LunaHost()
     mainlayout->setfixedheigth(1, 30);
     setlayout(mainlayout);
     setcentral(1200, 800);
-    std::wstring title = WndLunaHostGui;
+    std::wstring title = TR[WndLunaHostGui];
     settext(title);
 
     std::thread([&]()
@@ -313,7 +318,7 @@ LunaHost::LunaHost()
 
     WCHAR vs[32];
 
-    wsprintf(vs, L" | %s v%d.%d.%d", VersionCurrent, LUNA_VERSION[0], LUNA_VERSION[1], LUNA_VERSION[2]);
+    wsprintf(vs, L" | %s v%d.%d.%d", TR[VersionCurrent], LUNA_VERSION[0], LUNA_VERSION[1], LUNA_VERSION[2]);
     title += vs;
     settext(title);
     std::thread([&]()
@@ -328,7 +333,7 @@ LunaHost::LunaHost()
                 try{
                     auto resp=nlohmann::json::parse(WideStringToString(httpRequest.response));
                     std::string ver=resp["version"];
-                    settext(text()+L" | "+VersionLatest+L" "+ StringToWideString(ver));
+                    settext(text()+L" | "+TR[VersionLatest]+L" "+ StringToWideString(ver));
                 }
                 catch(std::exception&e){}
             } })
@@ -417,7 +422,7 @@ void LunaHost::on_info(HOSTINFO type, const std::wstring &warning)
     switch (type)
     {
     case HOSTINFO::Warning:
-        MessageBoxW(winId, warning.c_str(), L"warning", 0);
+        MessageBoxW(winId, warning.c_str(), TR[T_WARNING], 0);
         break;
     }
 }
@@ -481,14 +486,14 @@ Settingwindow::Settingwindow(LunaHost *host) : mainwindow(host)
         TextThread::maxHistorySize = v;
     };
 
-    ckbfilterrepeat = new checkbox(this, LblFilterRepeat);
+    ckbfilterrepeat = new checkbox(this, TR[LblFilterRepeat]);
     ckbfilterrepeat->onclick = [=]()
     {
         TextThread::filterRepetition = ckbfilterrepeat->ischecked();
     };
     ckbfilterrepeat->setcheck(TextThread::filterRepetition);
 
-    g_check_clipboard = new checkbox(this, BtnToClipboard);
+    g_check_clipboard = new checkbox(this, TR[BtnToClipboard]);
     g_check_clipboard->onclick = [=]()
     {
         host->check_toclipboard = g_check_clipboard->ischecked();
@@ -501,21 +506,21 @@ Settingwindow::Settingwindow(LunaHost *host) : mainwindow(host)
     // };
     // copyselect->setcheck(host->check_toclipboard_selection);
 
-    autoattach = new checkbox(this, LblAutoAttach);
+    autoattach = new checkbox(this, TR[LblAutoAttach]);
     autoattach->onclick = [=]()
     {
         host->autoattach = autoattach->ischecked();
     };
     autoattach->setcheck(host->autoattach);
 
-    autoattach_so = new checkbox(this, LblAutoAttach_savedonly);
+    autoattach_so = new checkbox(this, TR[LblAutoAttach_savedonly]);
     autoattach_so->onclick = [=]()
     {
         host->autoattach_savedonly = autoattach_so->ischecked();
     };
     autoattach_so->setcheck(host->autoattach_savedonly);
 
-    readonlycheck = new checkbox(this, BtnReadOnly);
+    readonlycheck = new checkbox(this, TR[BtnReadOnly]);
     readonlycheck->onclick = [=]()
     {
         host->g_showtexts->setreadonly(readonlycheck->ischecked());
@@ -539,7 +544,7 @@ Settingwindow::Settingwindow(LunaHost *host) : mainwindow(host)
     showfont = new lineedit(this);
     showfont->settext(host->uifont.fontfamily);
     showfont->setreadonly(true);
-    selectfont = new button(this, FONTSELECT);
+    selectfont = new button(this, TR[FONTSELECT]);
     selectfont->onclick = [=]()
     {
         FontSelector(winId, host->uifont, [=](const Font &f)
@@ -548,31 +553,42 @@ Settingwindow::Settingwindow(LunaHost *host) : mainwindow(host)
             showfont->settext(f.fontfamily);
             host->setfont(f); });
     };
-
+    language = new combobox(this);
+    for (auto &&[_, l, __] : lang_map)
+    {
+        language->additem(l);
+    }
+    language->setcurrent(curr_lang);
+    language->oncurrentchange = [](int idx)
+    {
+        curr_lang = (decltype(curr_lang))idx;
+    };
     mainlayout = new gridlayout();
-    mainlayout->addcontrol(new label(this, LblFlushDelay), 0, 0);
-    mainlayout->addcontrol(g_timeout, 0, 1);
+    mainlayout->addcontrol(new label(this, TR[LblLanguage]), 0, 0);
+    mainlayout->addcontrol(language, 0, 1);
+    mainlayout->addcontrol(new label(this, TR[LblFlushDelay]), 1, 0);
+    mainlayout->addcontrol(g_timeout, 1, 1);
 
-    mainlayout->addcontrol(new label(this, LblCodePage), 1, 0);
-    mainlayout->addcontrol(g_codepage, 1, 1);
+    mainlayout->addcontrol(new label(this, TR[LblCodePage]), 2, 0);
+    mainlayout->addcontrol(g_codepage, 2, 1);
 
-    mainlayout->addcontrol(new label(this, LblMaxBuff), 2, 0);
-    mainlayout->addcontrol(spinmaxbuffsize, 2, 1);
+    mainlayout->addcontrol(new label(this, TR[LblMaxBuff]), 3, 0);
+    mainlayout->addcontrol(spinmaxbuffsize, 3, 1);
 
-    mainlayout->addcontrol(new label(this, LblMaxHist), 3, 0);
-    mainlayout->addcontrol(spinmaxhistsize, 3, 1);
+    mainlayout->addcontrol(new label(this, TR[LblMaxHist]), 4, 0);
+    mainlayout->addcontrol(spinmaxhistsize, 4, 1);
 
-    mainlayout->addcontrol(ckbfilterrepeat, 4, 0, 1, 2);
-    mainlayout->addcontrol(g_check_clipboard, 5, 0, 1, 2);
-    mainlayout->addcontrol(autoattach, 6, 0, 1, 2);
-    mainlayout->addcontrol(autoattach_so, 7, 0, 1, 2);
-    mainlayout->addcontrol(readonlycheck, 8, 0, 1, 2);
-    mainlayout->addcontrol(showfont, 9, 1);
-    mainlayout->addcontrol(selectfont, 9, 0);
+    mainlayout->addcontrol(ckbfilterrepeat, 5, 0, 1, 2);
+    mainlayout->addcontrol(g_check_clipboard, 6, 0, 1, 2);
+    mainlayout->addcontrol(autoattach, 7, 0, 1, 2);
+    mainlayout->addcontrol(autoattach_so, 8, 0, 1, 2);
+    mainlayout->addcontrol(readonlycheck, 9, 0, 1, 2);
+    mainlayout->addcontrol(showfont, 10, 1);
+    mainlayout->addcontrol(selectfont, 10, 0);
 
     setlayout(mainlayout);
     setcentral(600, 500);
-    settext(WndSetting);
+    settext(TR[TSetting]);
 }
 void Pluginwindow::on_size(int w, int h)
 {
@@ -611,7 +627,7 @@ Pluginwindow::Pluginwindow(mainwindow *p, Pluginmanager *pl) : mainwindow(p), pl
     listplugins->on_menu = [&]()
     {
         Menu menu;
-        menu.add(MenuAddPlugin, [&]()
+        menu.add(TR[MenuAddPlugin], [&]()
                  {
         if(auto f=pluginmanager->selectpluginfile())
             switch (auto res=pluginmanager->addplugin(f.value()))
@@ -621,24 +637,24 @@ Pluginwindow::Pluginwindow(mainwindow *p, Pluginmanager *pl) : mainwindow(p), pl
                 break;
             default:
                 std::map<addpluginresult,LPCWSTR> errorlog={
-                    {addpluginresult::isnotaplugins,InvalidPlugin},
-                    {addpluginresult::invaliddll,InvalidDll},
-                    {addpluginresult::dumplicate,InvalidDump},
+                    {addpluginresult::isnotaplugins,TR[InvalidPlugin]},
+                    {addpluginresult::invaliddll,TR[InvalidDll]},
+                    {addpluginresult::dumplicate,TR[InvalidDump]},
                 };
-                MessageBoxW(winId,errorlog[res],MsgError,0);
+                MessageBoxW(winId,errorlog[res],TR[MsgError],0);
             } });
         auto idx = listplugins->currentidx();
         if (idx != -1)
         {
-            menu.add(MenuRemovePlugin, [&, idx]()
+            menu.add(TR[MenuRemovePlugin], [&, idx]()
                      {
                 pluginmanager->remove((LPCWSTR)listplugins->getdata(idx));
                 listplugins->deleteitem(idx); });
             menu.add_sep();
-            menu.add(MenuPluginRankUp, std::bind(&Pluginwindow::pluginrankmove, this, -1));
-            menu.add(MenuPluginRankDown, std::bind(&Pluginwindow::pluginrankmove, this, 1));
+            menu.add(TR[MenuPluginRankUp], std::bind(&Pluginwindow::pluginrankmove, this, -1));
+            menu.add(TR[MenuPluginRankDown], std::bind(&Pluginwindow::pluginrankmove, this, 1));
             menu.add_sep();
-            menu.add_checkable(MenuPluginEnable, pluginmanager->getenable(idx), [&, idx](bool check)
+            menu.add_checkable(TR[MenuPluginEnable], pluginmanager->getenable(idx), [&, idx](bool check)
                                {
                 pluginmanager->setenable(idx,check);
                 if(check)
@@ -646,7 +662,7 @@ Pluginwindow::Pluginwindow(mainwindow *p, Pluginmanager *pl) : mainwindow(p), pl
                 else
                     pluginmanager->unload((LPCWSTR)listplugins->getdata(idx)); });
             if (pluginmanager->getvisible_setable(idx))
-                menu.add_checkable(MenuPluginVisSetting, pluginmanager->getvisible(idx), [&, idx](bool check)
+                menu.add_checkable(TR[MenuPluginVisSetting], pluginmanager->getvisible(idx), [&, idx](bool check)
                                    { pluginmanager->setvisible(idx, check); });
         }
         return menu;
@@ -656,242 +672,6 @@ Pluginwindow::Pluginwindow(mainwindow *p, Pluginmanager *pl) : mainwindow(p), pl
     {
         listadd(pluginmanager->getname(i));
     }
-    settext(WndPlugins);
+    settext(TR[TPlugins]);
     setcentral(500, 400);
-}
-
-void HooksearchText::call(std::set<DWORD> pids)
-{
-    edittext->settext(L"");
-    checkok->onclick = [&, pids]()
-    {
-        close();
-        auto cp = codepage->getcurr();
-        if (!IsValidCodePage(cp))
-            return;
-        SearchParam sp = {};
-        sp.codepage = cp;
-        wcsncpy_s(sp.text, edittext->text().c_str(), PATTERN_SIZE - 1);
-        for (auto pid : pids)
-            Host::FindHooks(pid, sp);
-    };
-    show();
-}
-HooksearchText::HooksearchText(mainwindow *p) : mainwindow(p)
-{
-    codepage = new spinbox(this, Host::defaultCodepage);
-    codepage->setminmax(0, CP_UTF8);
-
-    edittext = new lineedit(this);
-    checkok = new button(this, BtnOk);
-    layout = new gridlayout();
-    layout->addcontrol(new label(this, HS_TEXT), 0, 0);
-    layout->addcontrol(new label(this, HS_CODEPAGE), 1, 0);
-    layout->addcontrol(edittext, 0, 1);
-    layout->addcontrol(codepage, 1, 1);
-    layout->addcontrol(checkok, 2, 1);
-
-    setlayout(layout);
-    setcentral(500, 200);
-}
-std::wstring tohex(BYTE *bs, int len)
-{
-    std::wstring buffer;
-    for (int i = 0; i < len; i += 1)
-    {
-        buffer.append(FormatString(L"%02hX ", bs[i]));
-    }
-    return buffer;
-}
-std::wstring addr2hex(uintptr_t addr)
-{
-    return FormatString(L"%p", addr);
-}
-void realcallsearchhooks(std::set<DWORD> pids, std::wstring filter, SearchParam sp)
-{
-
-    auto hooks = std::make_shared<std::vector<std::wstring>>();
-
-    try
-    {
-        for (auto processId : pids)
-            Host::FindHooks(processId, sp,
-                            [hooks, filter](HookParam hp, std::wstring text)
-                            {
-                                std::wsmatch matches;
-                                if (std::regex_search(text, matches, std::wregex(filter)))
-                                {
-                                    hooks->emplace_back(std::wstring(hp.hookcode) + L"=>" + text);
-                                }
-                            });
-    }
-    catch (std::exception &e)
-    {
-        // std::wcout<<e.what();
-        return;
-    }
-
-    std::thread([hooks]
-                {
-        for (int lastSize = 0; hooks->size() == 0 || hooks->size() != lastSize; Sleep(2000)) lastSize = hooks->size();
-
-        std::ofstream of;
-        of.open("savehooks.txt");
-        for (auto line:*hooks) of<<WideStringToString(line)<<"\n"; 
-        of.close(); 
-        hooks->clear(); })
-        .detach();
-}
-Hooksearchsetting::Hooksearchsetting(mainwindow *p) : mainwindow(p)
-{
-    layout = new gridlayout();
-    SearchParam sp{};
-    spinduration = new spinbox(this, sp.searchTime);
-    spinoffset = new spinbox(this, sp.offset);
-    spincap = new spinbox(this, sp.maxRecords);
-    spincodepage = new spinbox(this, Host::defaultCodepage);
-    editpattern = new lineedit(this);
-    editpattern->settext(tohex(sp.pattern, sp.length));
-    editmodule = new lineedit(this);
-    editmaxaddr = new lineedit(this);
-    editmaxaddr->settext(addr2hex(sp.maxAddress));
-    editminaddr = new lineedit(this);
-    editminaddr->settext(addr2hex(sp.minAddress));
-    spinpadding = new spinbox(this, 0);
-    editregex = new lineedit(this);
-    start = new button(this, HS_START_HOOK_SEARCH);
-    layout->addcontrol(new label(this, HS_SEARCH_PATTERN), 0, 0);
-    layout->addcontrol(new label(this, HS_SEARCH_DURATION), 1, 0);
-    layout->addcontrol(new label(this, HS_PATTERN_OFFSET), 2, 0);
-    layout->addcontrol(new label(this, HS_MAX_HOOK_SEARCH_RECORDS), 3, 0);
-    layout->addcontrol(new label(this, HS_CODEPAGE), 4, 0);
-    layout->addcontrol(new label(this, HS_SEARCH_MODULE), 5, 0);
-    layout->addcontrol(new label(this, HS_MIN_ADDRESS), 6, 0);
-    layout->addcontrol(new label(this, HS_MAX_ADDRESS), 7, 0);
-    layout->addcontrol(new label(this, HS_STRING_OFFSET), 8, 0);
-    layout->addcontrol(new label(this, HS_HOOK_SEARCH_FILTER), 9, 0);
-    layout->addcontrol(start, 10, 1);
-
-    layout->addcontrol(editpattern, 0, 1);
-    layout->addcontrol(spinduration, 1, 1);
-    layout->addcontrol(spinoffset, 2, 1);
-    layout->addcontrol(spincap, 3, 1);
-    layout->addcontrol(spincodepage, 4, 1);
-    layout->addcontrol(editmodule, 5, 1);
-    layout->addcontrol(editminaddr, 6, 1);
-    layout->addcontrol(editmaxaddr, 7, 1);
-    layout->addcontrol(spinpadding, 8, 1);
-    layout->addcontrol(editregex, 9, 1);
-
-    setlayout(layout);
-    setcentral(1000, 600);
-}
-std::vector<BYTE> hexStringToBytes(const std::wstring &hexString_)
-{
-    auto hexString = hexString_;
-    strReplace(hexString, L" ", L"");
-    strReplace(hexString, L"??", FormatString(L"%02hX", XX));
-    std::vector<BYTE> bytes;
-    if (hexString.length() % 2 != 0)
-    {
-        return {};
-    }
-    for (int i = 0; i < hexString.size() / 2; i++)
-    {
-        auto byteValue = std::stoi(hexString.substr(i * 2, 2), nullptr, 16);
-        bytes.push_back(byteValue);
-    }
-
-    return bytes;
-}
-void Hooksearchsetting::call(std::set<DWORD> pids, std::wstring reg)
-{
-    if (pids.empty())
-        return;
-
-    if (auto filename = getModuleFilename(*pids.begin()))
-        editmodule->settext(std::filesystem::path(filename.value()).filename().wstring());
-    editregex->settext(reg);
-    spincodepage->setcurr(Host::defaultCodepage);
-
-    start->onclick = [&, pids]()
-    {
-        close();
-        SearchParam sp{};
-        sp.searchTime = spinduration->getcurr();
-        sp.offset = spinoffset->getcurr();
-        sp.maxRecords = spincap->getcurr();
-        sp.codepage = spincodepage->getcurr();
-
-        if (editpattern->text().find(L".") == std::wstring::npos)
-        {
-            auto hex = hexStringToBytes(editpattern->text());
-            memcpy(sp.pattern, hex.data(), hex.size());
-            sp.length = hex.size();
-        }
-        else
-        {
-            wcsncpy_s(sp.exportModule, editpattern->text().c_str(), MAX_MODULE_SIZE - 1);
-            sp.length = 1;
-        }
-
-        wcscpy(sp.boundaryModule, editmodule->text().c_str());
-        sp.minAddress = std::stoull(editminaddr->text(), nullptr, 16);
-        sp.maxAddress = std::stoull(editmaxaddr->text(), nullptr, 16);
-        sp.padding = spinpadding->getcurr();
-        realcallsearchhooks(pids, editregex->text(), sp);
-    };
-    show();
-}
-Hooksearchwindow::Hooksearchwindow(LunaHost *host) : mainwindow(host)
-{
-
-    cjkcheck = new checkbox(this, SEARCH_CJK);
-    hs_default = new button(this, HS_START_HOOK_SEARCH);
-    hs_text = new button(this, HS_SEARCH_FOR_TEXT);
-    hs_user = new button(this, HS_SETTINGS);
-
-    layout = new gridlayout();
-    layout->addcontrol(cjkcheck, 0, 0, 1, 3);
-    layout->addcontrol(hs_default, 1, 0);
-    layout->addcontrol(hs_text, 1, 1);
-    layout->addcontrol(hs_user, 1, 2);
-
-    setlayout(layout);
-
-    settext(BtnSearchHook);
-    setcentral(800, 200);
-
-    auto dohooksearchdispatch = [&, host](int type)
-    {
-        close();
-        if (type == 1)
-        {
-            if (hooksearchText == 0)
-                hooksearchText = new HooksearchText(this);
-            hooksearchText->call(host->attachedprocess);
-            return;
-        }
-
-        auto filter = (cjkcheck->ischecked() ? L"[\\u3000-\\ua000]{4,}" : L"[\\u0020-\\u1000]{4,}");
-
-        if (type == 0)
-        {
-            SearchParam sp = {};
-            sp.codepage = Host::defaultCodepage;
-            sp.length = 0;
-            realcallsearchhooks(host->attachedprocess, filter, sp);
-        }
-        else if (type == 2)
-        {
-            if (hooksearchsetting == 0)
-                hooksearchsetting = new Hooksearchsetting(this);
-            hooksearchsetting->call(host->attachedprocess, filter);
-            return;
-        }
-    };
-
-    hs_default->onclick = std::bind(dohooksearchdispatch, 0);
-    hs_text->onclick = std::bind(dohooksearchdispatch, 1);
-    hs_user->onclick = std::bind(dohooksearchdispatch, 2);
 }

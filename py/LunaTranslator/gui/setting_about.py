@@ -379,7 +379,10 @@ def setTab_about(self, basel):
 def changeUIlanguage(_):
     languageChangeEvent = QEvent(QEvent.Type.LanguageChange)
     QApplication.sendEvent(QApplication.instance(), languageChangeEvent)
-
+    try:
+        gobject.baseobject.textsource.setlang()
+    except:
+        pass
 
 def setTab_update(self, basel):
     version = winsharedutils.queryversion(getcurrexe())

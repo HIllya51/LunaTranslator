@@ -18,7 +18,7 @@ bool DAC::attach_function()
   if (!addr)
     return false;
   HookParam hp;
-  hp.address = 0x431040;
+  hp.address = addr;
   hp.offset = stackoffset(2);
   hp.type = USING_STRING;
   hp.user_value = (DWORD) new std::map<DWORD, std::string>;

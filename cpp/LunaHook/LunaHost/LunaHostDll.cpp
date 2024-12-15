@@ -30,6 +30,7 @@ std::optional<T> checkoption(bool check, T &&t)
         return std::move(t);
     return {};
 }
+
 C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent_maybe_embed Create, ThreadEvent Destroy, OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed)
 {
     Host::StartEx(
@@ -70,7 +71,10 @@ C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int default
     TextThread::maxBufferSize = maxBufferSize;
     TextThread::maxHistorySize = maxHistorySize;
 }
-
+C_LUNA_API void Luna_SetLanguage(const char* lang)
+{
+    Host::SetLanguage(lang);
+}
 C_LUNA_API void Luna_InsertPCHooks(DWORD pid, int which)
 {
     Host::InsertPCHooks(pid, which);

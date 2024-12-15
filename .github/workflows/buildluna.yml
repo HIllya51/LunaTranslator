@@ -30,12 +30,12 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python .github/scripts/build_lunahook.py build English winxp_core
+      - run: python .github/scripts/build_lunahook.py build winxp_core
 
       - uses: actions/upload-artifact@v4
         with:
           name: hook_xp
-          path: cpp/LunaHook/builds/Release_English_winxp
+          path: cpp/LunaHook/builds/Release_winxp
 
   hook:
     runs-on: windows-latest
@@ -53,12 +53,12 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python .github/scripts/build_lunahook.py build English ${{matrix.bits}} 1
+      - run: python .github/scripts/build_lunahook.py build ${{matrix.bits}} 1
 
       - uses: actions/upload-artifact@v4
         with:
           name: hook_${{matrix.bits}}
-          path: cpp/LunaHook/builds/Release_English
+          path: cpp/LunaHook/builds/Release
   pyrt:
     runs-on: windows-latest
     strategy:

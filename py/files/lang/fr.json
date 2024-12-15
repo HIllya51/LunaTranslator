@@ -754,5 +754,6 @@
     "更新记录": "Mettre à jour les enregistrements",
     "打开选择文本窗口": "Ouvrir la fenêtre sélectionner le texte",
     "成功": "Succès",
-    "Win32通用钩子": "Win32 crochet universel"
+    "Win32通用钩子": "Win32 crochet universel",
+    "特殊码无效": "Code spécial invalide"
 }

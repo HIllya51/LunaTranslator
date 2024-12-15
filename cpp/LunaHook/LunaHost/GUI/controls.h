@@ -90,6 +90,16 @@ public:
     label(mainwindow *, const std::wstring &);
 };
 
+class combobox : public control
+{
+public:
+    combobox(mainwindow *); 
+    int additem(const std::wstring &);
+    int currentidx();
+    void dispatch(WPARAM);
+    void setcurrent(int idx);
+    std::function<void(int)> oncurrentchange = [](int) {};
+};
 class listbox : public control
 {
 public:

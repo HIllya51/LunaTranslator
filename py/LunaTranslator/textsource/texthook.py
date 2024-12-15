@@ -8,6 +8,7 @@ from myutils.config import (
     savehook_new_data,
     static_data,
     findgameuidofpath,
+    getlanguse,
 )
 from textsource.textsourcebase import basetext
 from myutils.utils import (
@@ -219,6 +220,8 @@ class texthook(basetext):
         self.Luna_RemoveHook.argtypes = DWORD, c_uint64
         self.Luna_Detach = LunaHost.Luna_Detach
         self.Luna_Detach.argtypes = (DWORD,)
+        self.Luna_SetLanguage = LunaHost.Luna_SetLanguage
+        self.Luna_SetLanguage.argtypes = (c_char_p,)
         self.Luna_FindHooks = LunaHost.Luna_FindHooks
         self.Luna_FindHooks.argtypes = (
             DWORD,
@@ -258,6 +261,8 @@ class texthook(basetext):
         self.keepref += procs
         ptrs = [cast(_, c_void_p).value for _ in procs]
         self.Luna_Start(*ptrs)
+        self.setsettings()
+        self.setlang()
 
     def listprocessm(self):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))
@@ -351,7 +356,6 @@ class texthook(basetext):
             except:
                 pass
         self.startsql(sqlitef)
-        self.setsettings()
         if autostart:
             autostarthookcode = savehook_new_data[gameuid]["hook"]
             needinserthookcode = savehook_new_data[gameuid]["needinserthookcode"]
@@ -570,6 +574,9 @@ class texthook(basetext):
         )
         return True
 
+    def setlang(self):
+        self.Luna_SetLanguage(getlanguse().encode())
+
     def setsettings(self):
         self.Luna_Settings(
             self.config["textthreaddelay"],
@@ -639,11 +646,7 @@ class texthook(basetext):
         for pid in self.pids.copy():
             succ = self.Luna_InsertHookCode(pid, hookcode) and succ
         if succ == False:
-            getQMessageBox(
-                gobject.baseobject.hookselectdialog,
-                "Error",
-                "Invalie Hook Code Format!",
-            )
+            getQMessageBox(gobject.baseobject.hookselectdialog, "错误", "特殊码无效")
 
     @threader
     def delaycollectallselectedoutput(self):

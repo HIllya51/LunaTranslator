@@ -60,5 +60,4 @@ goto :main
     )
     call :activate_msvc "%target_arch%" || goto :eof
     msbuild ..\build\x86_xp\LunaHook.sln -p:Configuration=Release
-    msbuild ..\build\x86_zh_xp\LunaHook.sln -p:Configuration=Release
     goto :eof

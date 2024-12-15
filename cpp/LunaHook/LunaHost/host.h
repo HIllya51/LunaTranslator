@@ -17,6 +17,7 @@ namespace Host
 	void DetachProcess(DWORD processId);
 
 	void InsertHook(DWORD processId, HookParam hp);
+	void SetLanguage(const char*);
 	void InsertPCHooks(DWORD processId, int which);
 	void RemoveHook(DWORD processId, uint64_t address);
 	void FindHooks(DWORD processId, SearchParam sp, HookEventHandler HookFound = {});

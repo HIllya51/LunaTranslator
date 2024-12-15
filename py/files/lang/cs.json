@@ -754,5 +754,6 @@
     "更新记录": "Aktualizovat záznam",
     "打开选择文本窗口": "Otevřít textové okno výběru",
     "成功": "úspěch",
-    "Win32通用钩子": "Univerzální hák Win32"
+    "Win32通用钩子": "Univerzální hák Win32",
+    "特殊码无效": "Speciální kód je neplatný"
 }

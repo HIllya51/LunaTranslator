@@ -67,7 +67,7 @@ struct passinfo
 };
 bool Ryujinx::attach_function()
 {
-  HostInfo(HOSTINFO::Warning, "not support ryuujinx, please use yuzu/sudachi instead.");
+  HostInfo(HOSTINFO::Warning, TR[RYUJINXUNSUPPORT]);
   return true;
   /*
   UnsafeJitFunction

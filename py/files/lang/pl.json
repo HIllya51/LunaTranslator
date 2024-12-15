@@ -754,5 +754,6 @@
     "更新记录": "Aktualizuj rekord",
     "打开选择文本窗口": "Otwórz okno tekstowe zaznaczenia",
     "成功": "sukces",
-    "Win32通用钩子": "Uniwersalny hak Win32"
+    "Win32通用钩子": "Uniwersalny hak Win32",
+    "特殊码无效": "Kod specjalny jest nieprawidłowy"
 }

@@ -4,7 +4,6 @@
 #include <fstream>
 #include <commdlg.h>
 #include "LunaHost.h"
-#include "Lang/Lang.h"
 #include "host.h"
 
 std::optional<std::wstring> SelectFile(HWND hwnd, LPCWSTR lpstrFilter)

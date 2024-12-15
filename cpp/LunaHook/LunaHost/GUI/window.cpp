@@ -1,6 +1,5 @@
 #include "window.h"
 #include "controls.h"
-#include "Lang/Lang.h"
 #include <shellapi.h>
 HICON GetExeIcon(const std::wstring &filePath)
 {

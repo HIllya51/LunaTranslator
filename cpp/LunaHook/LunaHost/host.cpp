@@ -1,7 +1,6 @@
 #include "host.h"
 typedef LONG NTSTATUS;
 #include "yapi.hpp"
-#include "Lang/Lang.h"
 #define SEARCH_SJIS_UNSAFE 0
 namespace
 {
@@ -89,25 +88,24 @@ namespace
 		hostPipe = CreateNamedPipeW((std::wstring(HOST_PIPE) + std::to_wstring(pid)).c_str(), PIPE_ACCESS_OUTBOUND, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, PIPE_UNLIMITED_INSTANCES, PIPE_BUFFER_SIZE, 0, MAXDWORD, &allAccess);
 		HANDLE pipeAvailableEvent = CreateEventW(&allAccess, FALSE, FALSE, (std::wstring(PIPE_AVAILABLE_EVENT) + std::to_wstring(pid)).c_str());
 
-		Host::AddConsoleOutput((std::wstring(PIPE_AVAILABLE_EVENT) + std::to_wstring(pid)));
 		SetEvent(pipeAvailableEvent);
 		std::thread([hookPipe, hostPipe, pipeAvailableEvent]
 					{
 			ConnectNamedPipe(hookPipe, nullptr);
 			CloseHandle(pipeAvailableEvent);
+			WORD hookversion[4];
 			BYTE buffer[PIPE_BUFFER_SIZE] = {};
 			DWORD bytesRead, processId;
 			ReadFile(hookPipe, &processId, sizeof(processId), &bytesRead, nullptr);
+			ReadFile(hookPipe, hookversion, sizeof(hookversion), &bytesRead, nullptr); 
+			if(memcmp(hookversion,LUNA_VERSION,sizeof(hookversion))!=0)
+				Host::InfoOutput(HOSTINFO::Warning, TR[UNMATCHABLEVERSION]); 
+
 			processRecordsByIds->try_emplace(processId, processId, hostPipe);
 			OnConnect(processId);
-			Host::AddConsoleOutput(FormatString(PROC_CONN,processId));
-			//CreatePipe();
-			WORD hookversion[4];
-			if( ReadFile(hookPipe, hookversion, sizeof(hookversion), &bytesRead, nullptr)){ 
-					if(memcmp(hookversion,LUNA_VERSION,sizeof(hookversion))!=0)
-						Host::InfoOutput(HOSTINFO::Warning, UNMATCHABLEVERSION);
-			} 
-			 
+			processRecordsByIds->at(processId).Send(curr_lang);
+			Host::AddConsoleOutput(FormatString(TR[PROC_CONN],processId));
+			
 			while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
 				switch (*(HostNotificationType*)buffer)
 				{
@@ -201,7 +199,7 @@ namespace
 
 			RemoveThreads([&](ThreadParam tp) { return tp.processId == processId; });
 			OnDisconnect(processId);
-			Host::AddConsoleOutput(FormatString(PROC_DISCONN,processId));
+			Host::AddConsoleOutput(FormatString(TR[PROC_DISCONN],processId));
 			processRecordsByIds->erase(processId); })
 			.detach();
 	}
@@ -212,6 +210,16 @@ namespace Host
 	std::mutex threadmutex;
 	std::mutex outputmutex;
 	std::mutex procmutex;
+
+	void SetLanguage(const char *lang)
+	{
+		curr_lang = map_to_support_lang(lang);
+		auto &prs = processRecordsByIds.Acquire().contents;
+		for (auto &&[_, record] : prs)
+		{
+			record.Send(SetLanguageCmd(curr_lang));
+		}
+	}
 	void Start(ProcessEventHandler Connect, ProcessEventHandler Disconnect, ThreadEventHandler Create, ThreadEventHandler Destroy, TextThread::OutputCallback Output, bool createconsole)
 	{
 		OnConnect = [=](auto &&...args)
@@ -227,11 +235,10 @@ namespace Host
 
 		if (createconsole)
 		{
-			OnCreate(textThreadsByParams->try_emplace(console, console, HookParam{}, CONSOLE).first->second);
+			OnCreate(textThreadsByParams->try_emplace(console, console, HookParam{}, TR[CONSOLE]).first->second);
 			consolethread = &textThreadsByParams->at(console);
-			Host::AddConsoleOutput(ProjectHomePage);
+			Host::AddConsoleOutput(TR[ProjectHomePage]);
 		}
-
 		// CreatePipe();
 	}
 	void StartEx(std::optional<ProcessEventHandler> Connect,
@@ -281,7 +288,7 @@ namespace Host
 			}
 			else if (GetLastError() == ERROR_ACCESS_DENIED)
 			{
-				AddConsoleOutput(NEED_64_BIT); // https://stackoverflow.com/questions/16091141/createremotethread-access-denied
+				AddConsoleOutput(TR[NEED_64_BIT]); // https://stackoverflow.com/questions/16091141/createremotethread-access-denied
 				succ = false;
 			}
 			VirtualFreeEx(process, remoteData, 0, MEM_RELEASE);
@@ -309,7 +316,7 @@ namespace Host
 		WinMutex(ITH_HOOKMAN_MUTEX_ + std::to_wstring(processId));
 		if (GetLastError() == ERROR_ALREADY_EXISTS)
 		{
-			AddConsoleOutput(ALREADY_INJECTED);
+			AddConsoleOutput(TR[ALREADY_INJECTED]);
 			return false;
 		}
 		return true;
@@ -322,7 +329,6 @@ namespace Host
 		bool proc64 = Is64BitProcess(process);
 		auto dllname = proc64 ? LUNA_HOOK_DLL_64 : LUNA_HOOK_DLL_32;
 		std::wstring location = locationX.size() ? (locationX + L"\\" + dllname) : std::filesystem::path(getModuleFilename().value()).replace_filename(dllname);
-		AddConsoleOutput(location);
 		if (proc64 == x64)
 		{
 			return (SafeInject(process, location));
@@ -348,7 +354,7 @@ namespace Host
 		std::thread([=]
 					{
 			if(InjectDll(processId,locationX))return ;
-			AddConsoleOutput(INJECT_FAILED); })
+			AddConsoleOutput(TR[INJECT_FAILED]); })
 			.detach();
 	}
 
@@ -359,7 +365,6 @@ namespace Host
 			return;
 		prs.at(processId).Send(HOST_COMMAND_DETACH);
 	}
-
 	void InsertPCHooks(DWORD processId, int which)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
@@ -426,7 +431,7 @@ namespace Host
 			switch (type)
 			{
 			case HOSTINFO::Warning:
-				text = L"[Warning] " + text;
+				text = FormatString(L"[%s]", TR[T_WARNING]) + text;
 				break;
 			case HOSTINFO::EmuGameName:
 				text = L"[Game] " + text;

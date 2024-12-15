@@ -3,7 +3,6 @@
 #include <TlHelp32.h>
 #include "host.h"
 #include "LunaHost.h"
-#include "Lang/Lang.h"
 #include <shellapi.h>
 std::unordered_map<std::wstring, std::vector<int>> getprocesslist()
 {
@@ -62,8 +61,8 @@ void processlistwindow::PopulateProcessList(listview *_listbox, std::unordered_m
 processlistwindow::processlistwindow(mainwindow *p) : mainwindow(p)
 {
     g_hEdit = new lineedit(this);
-    g_hButton = new button(this, BtnAttach);
-    g_refreshbutton = new button(this, BtnRefresh);
+    g_hButton = new button(this, TR[BtnAttach]);
+    g_refreshbutton = new button(this, TR[BtnRefresh]);
     g_hButton->onclick = [&]()
     {
         auto str = g_hEdit->text();
@@ -108,7 +107,7 @@ processlistwindow::processlistwindow(mainwindow *p) : mainwindow(p)
         }
         g_hEdit->settext(_);
     };
-    settext(WndSelectProcess);
+    settext(TR[WndSelectProcess]);
     mainlayout = new gridlayout();
     mainlayout->addcontrol(g_hEdit, 0, 0, 1, 2);
     mainlayout->addcontrol(g_hButton, 0, 2);

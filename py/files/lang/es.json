@@ -754,5 +754,6 @@
     "更新记录": "Actualización de registros",
     "打开选择文本窗口": "Abrir la ventana de texto de selección",
     "成功": "éxito",
-    "Win32通用钩子": "Gancho universal Win32"
+    "Win32通用钩子": "Gancho universal Win32",
+    "特殊码无效": "El código especial no es válido"
 }

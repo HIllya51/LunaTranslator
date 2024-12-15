@@ -754,5 +754,6 @@
     "更新记录": "Update Record",
     "打开选择文本窗口": "Open the selection text window",
     "成功": "success",
-    "Win32通用钩子": "Win32 Universal Hook"
+    "Win32通用钩子": "Win32 Universal Hook",
+    "特殊码无效": "The special code is invalid"
 }

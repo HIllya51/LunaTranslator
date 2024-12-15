@@ -39,7 +39,8 @@ DWORD WINAPI Pipe(LPVOID)
 		WriteFile(hookPipe, buffer, sizeof(DWORD), &count, nullptr);
 		WriteFile(hookPipe, LUNA_VERSION, sizeof(LUNA_VERSION), &count, nullptr);
 
-		ConsoleOutput(PIPE_CONNECTED);
+		ReadFile(hostPipe, &curr_lang, sizeof(SUPPORT_LANG), &count, nullptr);
+		ConsoleOutput(TR[PIPE_CONNECTED]);
 		HIJACK();
 		host_connected = true;
 		while (running && ReadFile(hostPipe, buffer, PIPE_BUFFER_SIZE, &count, nullptr))
@@ -59,6 +60,12 @@ DWORD WINAPI Pipe(LPVOID)
 					PcHooks::hookGdiGdiplusD3dxFunctions();
 				else if (info.which == 1)
 					PcHooks::hookOtherPcFunctions();
+			}
+			break;
+			case HOST_COMMAND_SET_LANGUAGE:
+			{
+				auto info = *(SetLanguageCmd *)buffer;
+				curr_lang = info.lang;
 			}
 			break;
 			case HOST_COMMAND_REMOVE_HOOK:
@@ -152,7 +159,7 @@ void NotifyHookFound(HookParam hp, wchar_t *text)
 void NotifyHookRemove(uint64_t addr, LPCSTR name)
 {
 	if (name)
-		ConsoleOutput(REMOVING_HOOK, name);
+		ConsoleOutput(TR[REMOVING_HOOK], name);
 	HookRemovedNotif buffer(addr);
 	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
 }
@@ -232,7 +239,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname)
 
 	if (++currentHook >= MAX_HOOK)
 	{
-		ConsoleOutput(TOO_MANY_HOOKS);
+		ConsoleOutput(TR[TOO_MANY_HOOKS]);
 		return false;
 	}
 	if (lpname && *lpname)
@@ -241,7 +248,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname)
 	wcscpy_s(hp.hookcode, HOOKCODE_LEN, HookCode::Generate(hp, GetCurrentProcessId()).c_str());
 	if (!(*hooks)[currentHook].Insert(hp))
 	{
-		ConsoleOutput(InsertHookFailed, WideStringToString(hp.hookcode).c_str());
+		ConsoleOutput(TR[InsertHookFailed], WideStringToString(hp.hookcode).c_str());
 		(*hooks)[currentHook].Clear();
 		return false;
 	}
@@ -254,7 +261,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname)
 void delayinsertadd(HookParam hp, std::string name)
 {
 	delayinserthook->insert(std::make_pair(hp.emu_addr, std::make_pair(name, hp)));
-	ConsoleOutput(INSERTING_HOOK, name.c_str(), hp.emu_addr);
+	ConsoleOutput(TR[INSERTING_HOOK], name.c_str(), hp.emu_addr);
 }
 void delayinsertNewHook(uint64_t em_address)
 {

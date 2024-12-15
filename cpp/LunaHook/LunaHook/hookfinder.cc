@@ -174,7 +174,7 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 			if (n == sp.maxRecords)
 			{
 				spDefault.maxRecords = sp.maxRecords * 2;
-				ConsoleOutput(OUT_OF_RECORDS_RETRY);
+				ConsoleOutput(TR[OUT_OF_RECORDS_RETRY]);
 			}
 		}
 	}
@@ -281,7 +281,7 @@ void mergevector(std::vector<uintptr_t> &v1, std::vector<uintptr_t> &v2)
 }
 void SearchForHooks_Return()
 {
-	ConsoleOutput(HOOK_SEARCH_FINISHED, sp.maxRecords - recordsAvailable);
+	ConsoleOutput(TR[HOOK_SEARCH_FINISHED], sp.maxRecords - recordsAvailable);
 	for (int i = 0, results = 0; i < sp.maxRecords; ++i)
 	{
 		HookParam hp;
@@ -306,7 +306,7 @@ void SearchForHooks_Return()
 		}
 		NotifyHookFound(hp, (wchar_t *)records[i].text);
 		if (++results % 100'000 == 0)
-			ConsoleOutput(ResultsNum, results);
+			ConsoleOutput(TR[ResultsNum], results);
 	}
 	records.reset();
 	for (int i = 0; i < CACHE_SIZE; ++i)
@@ -321,7 +321,7 @@ void initrecords()
 		}
 		catch (std::bad_alloc)
 		{
-			ConsoleOutput(SearchForHooks_ERROR, sp.maxRecords /= 2);
+			ConsoleOutput(TR[SearchForHooks_ERROR], sp.maxRecords /= 2);
 		}
 	while (!records && sp.maxRecords);
 }
@@ -332,7 +332,7 @@ void SearchForHooks(SearchParam spUser)
 		static std::mutex m;
 		std::scoped_lock lock(m);
 		*(void**)(trampoline + send_offset) = Send;
-		ConsoleOutput(HOOK_SEARCH_INITIALIZING, 0.);
+		ConsoleOutput(TR[HOOK_SEARCH_INITIALIZING], 0.);
 
 		sp = spUser.length == 0 ? spDefault : spUser;
 		sp.codepage=spUser.codepage;
@@ -441,7 +441,7 @@ void SearchForHooks(SearchParam spUser)
 				memcpy(trampolines[i], trampoline, sizeof(trampoline));
 				*(uintptr_t*)(trampolines[i] + addr_offset) = addresses[i];
 				*(void**)(trampolines[i] + original_offset) = original;
-				if (i % 2500 == 0) ConsoleOutput(HOOK_SEARCH_INITIALIZING, 1 + 98. * i / addresses.size());
+				if (i % 2500 == 0) ConsoleOutput(TR[HOOK_SEARCH_INITIALIZING], 1 + 98. * i / addresses.size());
 			}
 			//避免MH_RemoveHook时移除原本已有hook
 			for(int i=0;i<mherroridx.size();i++){
@@ -449,10 +449,10 @@ void SearchForHooks(SearchParam spUser)
 				addresses.erase(addresses.begin()+reverseidx);
 			} 
 
-			ConsoleOutput(HOOK_SEARCH_INITIALIZED, addresses.size());
+			ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], addresses.size());
 			MH_ApplyQueued();
-			ConsoleOutput(HOOK_SEARCH_STARTING);
-			ConsoleOutput(MAKE_GAME_PROCESS_TEXT, sp.searchTime / 1000);
+			ConsoleOutput(TR[HOOK_SEARCH_STARTING]);
+			ConsoleOutput(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
 			Sleep(sp.searchTime);
 			for (auto addr : addresses) MH_QueueDisableHook((void*)addr);
 			MH_ApplyQueued();
@@ -468,7 +468,7 @@ void SearchForHooks(SearchParam spUser)
 			std::vector<uint64_t>successaddr;
 			uintptr_t minemaddr=-1,maxemaddr=0;
 
-			ConsoleOutput(HOOK_SEARCH_INITIALIZED, jitaddr2emuaddr.size());
+			ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], jitaddr2emuaddr.size());
 			
 			for(auto addr:jitaddr2emuaddr){
 				minemaddr=min(minemaddr,addr.second.second);
@@ -490,10 +490,10 @@ void SearchForHooks(SearchParam spUser)
 				//addresses.push_back(addr.first);
 				if(add_veh_hook((void*)addr.first,std::bind(SendJitVeh,std::placeholders::_1,addr.first,addr.second.second,addr.second.first,sp.padding)))
 					successaddr.push_back(addr.first);
-				if (i % 2500 == 0) ConsoleOutput(HOOK_SEARCH_INITIALIZING, 1 + 98. * i / jitaddr2emuaddr.size());
+				if (i % 2500 == 0) ConsoleOutput(TR[HOOK_SEARCH_INITIALIZING], 1 + 98. * i / jitaddr2emuaddr.size());
 			}
-			ConsoleOutput(HOOK_SEARCH_INITIALIZED, i);
-			ConsoleOutput(MAKE_GAME_PROCESS_TEXT, sp.searchTime / 1000);
+			ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], i);
+			ConsoleOutput(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
 			Sleep(sp.searchTime);
 			// for(auto addr:successaddr){
 			// 	remove_veh_hook((void*)addr);
@@ -514,8 +514,8 @@ void SearchForText(wchar_t *text, UINT codepage)
 		WideCharToMultiByte(codepage, 0, text, PATTERN_SIZE, codepageText, PATTERN_SIZE * 4, nullptr, nullptr);
 
 	if (strlen(utf8Text) < 4 || ((codepage != CP_UTF8) && (strlen(codepageText) < 4)) || wcslen(text) < 4)
-		return ConsoleOutput(NOT_ENOUGH_TEXT);
-	ConsoleOutput(HOOK_SEARCH_STARTING);
+		return ConsoleOutput(TR[NOT_ENOUGH_TEXT]);
+	ConsoleOutput(TR[HOOK_SEARCH_STARTING]);
 	auto GenerateHooks = [&](std::vector<uintptr_t> addresses, HookParamType type)
 	{
 		for (auto addr : addresses)
@@ -535,5 +535,5 @@ void SearchForText(wchar_t *text, UINT codepage)
 		GenerateHooks(Util::SearchMemory(codepageText, strlen(codepageText), PAGE_READWRITE), USING_STRING);
 	GenerateHooks(Util::SearchMemory(text, wcslen(text) * sizeof(wchar_t), PAGE_READWRITE), CODEC_UTF16);
 	if (!found)
-		ConsoleOutput(COULD_NOT_FIND);
+		ConsoleOutput(TR[COULD_NOT_FIND]);
 }

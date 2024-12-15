@@ -5,9 +5,6 @@ on:
 jobs:
   build_xp:
     runs-on: windows-2019
-    strategy:
-      matrix:
-        language: [Chinese,English,Russian,TradChinese]
     permissions:
       id-token: write
       attestations: write
@@ -19,12 +16,12 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python .github/scripts/build_lunahook.py build ${{ matrix.language }} winxp
+      - run: python .github/scripts/build_lunahook.py build winxp
       - run: python .github/scripts/packlunahook.py
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.language }}_winxp
+          name: winxp
           path: cpp/LunaHook/builds
   
   build_plugin:
@@ -71,7 +68,6 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        language: [Chinese,English,Russian,TradChinese]
         bits: [64]
     permissions:
       id-token: write
@@ -84,11 +80,11 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python .github/scripts/build_lunahook.py build ${{ matrix.language }} ${{matrix.bits}}
+      - run: python .github/scripts/build_lunahook.py build ${{matrix.bits}}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.language }}_${{matrix.bits}}
+          name: ${{matrix.bits}}
           path: cpp/LunaHook/builds
   
   build:

@@ -258,33 +258,27 @@ struct SearchParam
 	wchar_t text[PATTERN_SIZE] = {};			  // text to search for
 	bool isjithook;
 };
-struct InsertPCHooksCmd
-{
-	InsertPCHooksCmd(int _which) : which(_which) {}
-	HostCommandType command = HOST_COMMAND_INSERT_PC_HOOKS;
-	int which;
-};
-struct InsertHookCmd // From host
-{
-	InsertHookCmd(HookParam hp) : hp(hp) {}
-	HostCommandType command = HOST_COMMAND_NEW_HOOK;
-	HookParam hp;
-};
-struct RemoveHookCmd // From host
-{
-	RemoveHookCmd(uint64_t address) : address(address) {}
-	HostCommandType command = HOST_COMMAND_REMOVE_HOOK;
-	uint64_t address;
-};
+enum SUPPORT_LANG;
 
-struct FindHookCmd // From host
-{
-	FindHookCmd(SearchParam sp) : sp(sp) {}
-	HostCommandType command = HOST_COMMAND_FIND_HOOK;
-	SearchParam sp;
-};
+#define DECLARE_SIMPLE_CMD(structname, type, var, CMD) \
+	struct structname                                  \
+	{                                                  \
+		structname(type _) : var(_) {}                 \
+		decltype(CMD) command = CMD;                   \
+		type var;                                      \
+	};
 
-struct HostInfoNotif // From dll
+// host->hook
+DECLARE_SIMPLE_CMD(SetLanguageCmd, SUPPORT_LANG, lang, HOST_COMMAND_SET_LANGUAGE)
+DECLARE_SIMPLE_CMD(InsertPCHooksCmd, int, which, HOST_COMMAND_INSERT_PC_HOOKS)
+DECLARE_SIMPLE_CMD(InsertHookCmd, HookParam, hp, HOST_COMMAND_NEW_HOOK)
+DECLARE_SIMPLE_CMD(RemoveHookCmd, uint64_t, address, HOST_COMMAND_REMOVE_HOOK)
+DECLARE_SIMPLE_CMD(FindHookCmd, SearchParam, sp, HOST_COMMAND_FIND_HOOK)
+
+// hook->host
+DECLARE_SIMPLE_CMD(HookRemovedNotif, uint64_t, address, HOST_NOTIFICATION_RMVHOOK)
+
+struct HostInfoNotif
 {
 	HostInfoNotif(std::string message = "") { strncpy_s(this->message, message.c_str(), MESSAGE_SIZE - 1); }
 	HostNotificationType command = HOST_NOTIFICATION_TEXT;
@@ -292,7 +286,7 @@ struct HostInfoNotif // From dll
 	char message[MESSAGE_SIZE] = {};
 };
 
-struct HookFoundNotif // From dll
+struct HookFoundNotif
 {
 	HookFoundNotif(HookParam hp, wchar_t *text) : hp(hp) { wcsncpy_s(this->text, text, MESSAGE_SIZE - 1); }
 	HostNotificationType command = HOST_NOTIFICATION_FOUND_HOOK;
@@ -300,14 +294,7 @@ struct HookFoundNotif // From dll
 	wchar_t text[MESSAGE_SIZE] = {}; // though type is wchar_t, may not be encoded in UTF-16 (it's just convenient to use wcs* functions)
 };
 
-struct HookRemovedNotif // From dll
-{
-	HookRemovedNotif(uint64_t address) : address(address) {};
-	HostNotificationType command = HOST_NOTIFICATION_RMVHOOK;
-	uint64_t address;
-};
-
-struct HookInsertingNotif // From dll
+struct HookInsertingNotif
 {
 	HookInsertingNotif(uint64_t addr1) : addr(addr1) {}
 	HostNotificationType command = HOST_NOTIFICATION_INSERTING_HOOK;

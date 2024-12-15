@@ -754,5 +754,6 @@
     "更新记录": "Aggiorna record",
     "打开选择文本窗口": "Apri la finestra del testo di selezione",
     "成功": "successo",
-    "Win32通用钩子": "Win32 Universal Hook"
+    "Win32通用钩子": "Win32 Universal Hook",
+    "特殊码无效": "Il codice speciale non è valido"
 }

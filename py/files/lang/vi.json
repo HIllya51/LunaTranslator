@@ -754,5 +754,6 @@
     "更新记录": "Cập nhật hồ sơ",
     "打开选择文本窗口": "Mở cửa sổ Select Text",
     "成功": "Thành công",
-    "Win32通用钩子": "Win32 phổ Hook"
+    "Win32通用钩子": "Win32 phổ Hook",
+    "特殊码无效": "Mã đặc biệt không hợp lệ"
 }
