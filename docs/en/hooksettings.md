@@ -55,8 +55,8 @@
 ## Dedicated Game Settings
 
 1. #### Additional Hooks
-    1. #### Win32 Text Drawing Function Hook & Win32 String Function Hook
-        When activated, it will manually allow the injection of common function hooks for Win32 into the game.
+    1. #### Win32 Universal Hook
+        After activation, Win32 universal function hooks will be injected into the game, including GDI functions, D3DX functions, and string functions.
         Injecting too many hooks can slow down the game, so these hooks are not injected by default.
         When the correct text cannot be extracted, you can try enabling these two options.
     1. #### Special Codes
