@@ -745,8 +745,6 @@
     "开始": "başlat",
     "最长等待时间": "Maksimum bekleme zamanı",
     "截取行数": "Çizgi sayısını kesin",
-    "Win32文字绘制函数钩子": "Win32 metin çizim fonksiyonu çubuğu",
-    "Win32字符串函数钩子": "Win32 string fonksiyonu",
     "额外的钩子": "Ekstra hücreler",
     "自动前进": "Otomatik İleri",
     "在新窗口中查词": "Yeni pencerede kelimeler arayın",
@@ -755,5 +753,6 @@
     "截取末尾": "Sonuna kesin.",
     "更新记录": "Kayıt Güncelle",
     "打开选择文本窗口": "Seçim metin penceresini aç",
-    "成功": "başarılı"
+    "成功": "başarılı",
+    "Win32通用钩子": "Win32 Universal Hook"
 }

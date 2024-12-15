@@ -745,8 +745,6 @@
     "开始": "start",
     "最长等待时间": "Maximum waiting time",
     "截取行数": "Cut the number of lines",
-    "Win32文字绘制函数钩子": "Win32 text drawing function hook",
-    "Win32字符串函数钩子": "Win32 string function hook",
     "额外的钩子": "Extra hooks",
     "自动前进": "Automatic Forward",
     "在新窗口中查词": "Search for words in a new window",
@@ -755,5 +753,6 @@
     "截取末尾": "Cut to the end",
     "更新记录": "Update Record",
     "打开选择文本窗口": "Open the selection text window",
-    "成功": "success"
+    "成功": "success",
+    "Win32通用钩子": "Win32 Universal Hook"
 }

@@ -745,8 +745,6 @@
     "开始": "Bắt đầu",
     "最长等待时间": "Thời gian chờ tối đa",
     "截取行数": "Số dòng bị chặn",
-    "Win32文字绘制函数钩子": "Win32 Chức năng vẽ văn bản Hook",
-    "Win32字符串函数钩子": "Win32 Chuỗi chức năng Hook",
     "额外的钩子": "Thêm móc",
     "自动前进": "Tự động chuyển tiếp",
     "在新窗口中查词": "Tra từ trong cửa sổ mới",
@@ -755,5 +753,6 @@
     "截取末尾": "Kết thúc cắt",
     "更新记录": "Cập nhật hồ sơ",
     "打开选择文本窗口": "Mở cửa sổ Select Text",
-    "成功": "Thành công"
+    "成功": "Thành công",
+    "Win32通用钩子": "Win32 phổ Hook"
 }

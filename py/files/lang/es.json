@@ -745,8 +745,6 @@
     "开始": "Empezar",
     "最长等待时间": "Tiempo máximo de espera",
     "截取行数": "Número de líneas interceptadas",
-    "Win32文字绘制函数钩子": "Gancho de función de dibujo de texto Win32",
-    "Win32字符串函数钩子": "Gancho de función de cadena Win32",
     "额外的钩子": "Ganchos adicionales",
     "自动前进": "Avance automático",
     "在新窗口中查词": "Buscar palabras en una nueva ventana",
@@ -755,5 +753,6 @@
     "截取末尾": "Fin de la interceptación",
     "更新记录": "Actualización de registros",
     "打开选择文本窗口": "Abrir la ventana de texto de selección",
-    "成功": "éxito"
+    "成功": "éxito",
+    "Win32通用钩子": "Gancho universal Win32"
 }

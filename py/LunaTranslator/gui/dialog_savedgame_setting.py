@@ -814,9 +814,7 @@ class dialog_setting_game_internal(QWidget):
         table.horizontalHeader().setSectionResizeMode(
             1, QHeaderView.ResizeMode.ResizeToContents
         )
-        table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch
-        )
+        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
@@ -1020,22 +1018,17 @@ class dialog_setting_game_internal(QWidget):
         box.setLayout(settinglayout)
         formLayout.addRow(box)
         settinglayout.addRow(
-            "Win32文字绘制函数钩子",
-            getsimpleswitch(
-                savehook_new_data[gameuid],
-                "insertpchooks_GdiGdiplusD3dx",
-                callback=lambda _: (
-                    gobject.baseobject.textsource.InsertPCHooks(0) if _ else None
-                ),
-            ),
-        )
-        settinglayout.addRow(
-            "Win32字符串函数钩子",
+            "Win32通用钩子",
             getsimpleswitch(
                 savehook_new_data[gameuid],
                 "insertpchooks_string",
                 callback=lambda _: (
-                    gobject.baseobject.textsource.InsertPCHooks(1) if _ else None
+                    (
+                        gobject.baseobject.textsource.InsertPCHooks(0),
+                        gobject.baseobject.textsource.InsertPCHooks(1),
+                    )
+                    if _
+                    else None
                 ),
             ),
         )

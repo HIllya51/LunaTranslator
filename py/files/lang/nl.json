@@ -745,8 +745,6 @@
     "开始": "start",
     "最长等待时间": "Maximale wachttijd",
     "截取行数": "Aantal regels snijden",
-    "Win32文字绘制函数钩子": "Win32 teksttekenfunctiehook",
-    "Win32字符串函数钩子": "Win32 tekenfunctiehook",
     "额外的钩子": "Extra haken",
     "自动前进": "Automatisch voorwaarts",
     "在新窗口中查词": "Zoeken naar woorden in een nieuw venster",
@@ -755,5 +753,6 @@
     "截取末尾": "Snijd tot het einde",
     "更新记录": "Record bijwerken",
     "打开选择文本窗口": "Het selectietekstvenster openen",
-    "成功": "succes"
+    "成功": "succes",
+    "Win32通用钩子": "Win32 universele haak"
 }

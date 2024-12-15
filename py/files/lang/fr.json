@@ -745,8 +745,6 @@
     "开始": "Commencer",
     "最长等待时间": "Temps d'attente maximum",
     "截取行数": "Nombre de lignes interceptées",
-    "Win32文字绘制函数钩子": "Win32 crochet de fonction de dessin de texte",
-    "Win32字符串函数钩子": "Crochet de fonction de chaîne Win32",
     "额外的钩子": "Crochets supplémentaires",
     "自动前进": "Avance automatique",
     "在新窗口中查词": "Rechercher des mots dans une nouvelle fenêtre",
@@ -755,5 +753,6 @@
     "截取末尾": "Fin de l'interception",
     "更新记录": "Mettre à jour les enregistrements",
     "打开选择文本窗口": "Ouvrir la fenêtre sélectionner le texte",
-    "成功": "Succès"
+    "成功": "Succès",
+    "Win32通用钩子": "Win32 crochet universel"
 }

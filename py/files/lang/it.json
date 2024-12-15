@@ -745,8 +745,6 @@
     "开始": "inizio",
     "最长等待时间": "Tempo massimo di attesa",
     "截取行数": "Taglia il numero di righe",
-    "Win32文字绘制函数钩子": "Gancio della funzione di disegno del testo Win32",
-    "Win32字符串函数钩子": "Aggancio della funzione stringa Win32",
     "额外的钩子": "Ganci supplementari",
     "自动前进": "Avanti automatico",
     "在新窗口中查词": "Cerca parole in una nuova finestra",
@@ -755,5 +753,6 @@
     "截取末尾": "Taglia fino alla fine",
     "更新记录": "Aggiorna record",
     "打开选择文本窗口": "Apri la finestra del testo di selezione",
-    "成功": "successo"
+    "成功": "successo",
+    "Win32通用钩子": "Win32 Universal Hook"
 }

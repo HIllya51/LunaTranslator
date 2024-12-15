@@ -745,8 +745,6 @@
     "开始": "Start",
     "最长等待时间": "Maximale Wartezeit",
     "截取行数": "Anzahl der Zeilen abschneiden",
-    "Win32文字绘制函数钩子": "Win32 Text Zeichenfunktion Hook",
-    "Win32字符串函数钩子": "Win32 String Function Hook",
     "额外的钩子": "Zusätzliche Haken",
     "自动前进": "Automatisch vorwärts",
     "在新窗口中查词": "Suche nach Wörtern in einem neuen Fenster",
@@ -755,5 +753,6 @@
     "截取末尾": "Bis zum Ende geschnitten",
     "更新记录": "Datensatz aktualisieren",
     "打开选择文本窗口": "Öffnen des Auswahltextfensters",
-    "成功": "Erfolg"
+    "成功": "Erfolg",
+    "Win32通用钩子": "Win32 Universal Hook"
 }

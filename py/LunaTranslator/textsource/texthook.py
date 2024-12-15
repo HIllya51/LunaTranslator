@@ -443,9 +443,8 @@ class texthook(basetext):
             pass
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
-        if savehook_new_data[self.gameuid]["insertpchooks_GdiGdiplusD3dx"]:
-            self.Luna_InsertPCHooks(pid, 0)
         if savehook_new_data[self.gameuid]["insertpchooks_string"]:
+            self.Luna_InsertPCHooks(pid, 0)
             self.Luna_InsertPCHooks(pid, 1)
         gobject.baseobject.displayinfomessage(
             savehook_new_data[self.gameuid]["title"], "<msg_info_refresh>"

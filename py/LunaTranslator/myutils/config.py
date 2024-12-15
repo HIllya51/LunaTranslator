@@ -150,7 +150,6 @@ def getdefaultsavehook(title=None):
         # "leuse": True, 废弃
         "hook": [],
         "inserthooktimeout": 500,
-        "insertpchooks_GdiGdiplusD3dx": False,
         "insertpchooks_string": False,
         "needinserthookcode": [],
         # "allow_tts_auto_names": "",#->v4
