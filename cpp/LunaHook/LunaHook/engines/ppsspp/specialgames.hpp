@@ -133,6 +133,11 @@ namespace ppsspp
 	{
 		CharFilter(buffer, '\n');
 	}
+	void NPJH50899(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '\n');
+		StringFilter(buffer, "\x81\x40", 2);
+	}
 	void ULJM06147(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, L'R');
@@ -338,6 +343,20 @@ namespace ppsspp
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)"), "");
 		buffer->from(s);
+	}
+	void ULJM05867_1(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		if (s.find("#n") == s.npos)
+			return buffer->clear();
+		ULJM05943F(buffer, hp);
+	}
+	void ULJM05867_2(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		if (s.find("#n") != s.npos)
+			return buffer->clear();
+		ULJM05943F(buffer, hp);
 	}
 	void ULJM06289(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1008,6 +1027,9 @@ namespace ppsspp
 		{0x888A358, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME+TEXT
 		{0x88DB214, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // TEXT
 		{0x889E970, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME
+		// S.Y.K ～蓮咲伝～ Portable
+		{0x88FB080, {0, 0, 0, 0, ULJM05867_1, "ULJM05867"}}, // TEXT
+		{0x88FB0B8, {0, 0, 0, 0, ULJM05867_2, "ULJM05867"}}, // NAME
 		// 源狼 GENROH
 		{0x8940DA8, {0, 1, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
 		// 十鬼の絆
@@ -1195,12 +1217,18 @@ namespace ppsspp
 		{0x887493C, {0, 0, 0, 0, ULJM06032, "ULJM06291"}},
 		// 里見八犬伝　八珠之記
 		{0x887FF84, {0, 1, 0, 0, 0, "NPJH50858"}},
+		// 里見八犬伝～村雨丸之記～
+		{0x88750C0, {0, 1, 0, 0, NPJH50899, "NPJH50899"}},
+		// 里見八犬伝～浜路姫之記～
+		{0x886C750, {0, 1, 0, 0, NPJH50899, "NPJH50885"}},
 		// 白華の檻～緋色の欠片４～
 		{0x88FE8C0, {0, 0, 0, 0, ULJM05823_2, "ULJM06167"}},
 		{0x894672C, {0, 4, 0, 0, ULJM06167, "ULJM06167"}},
 		// 白華の檻 ～緋色の欠片４～ 四季の詩
 		{0x8851EA0, {0, 0, 0, 0, ULJM06266, "ULJM06314"}},
 		{0x88E33E0, {0, 0, 0, 0, ULJM05943F, "ULJM06314"}},
+		// 蒼黒の楔 緋色の欠片3 明日への扉
+		{0x894C93C, {0, 1, 0, 0, ULJM06289, "ULJM06072"}},
 		// 真・翡翠の雫 緋色の欠片２ ポータブル
 		{0x887CEAC, {0, 0, 0, 0, ULJM06289, "ULJM05725"}},
 		{0x8876794, {0, 0, 0, 0, ULJM05725, "ULJM05725"}},
@@ -1265,6 +1293,8 @@ namespace ppsspp
 		// Princess Arthur
 		{0x8841D10, {0, 0xE, 0, 0, ULJM06258_2, "ULJM06258"}}, // name+text,显示完后
 		{0x88A844C, {0, 1, 0, 0, ULJM06258, "ULJM06258"}},	   // text
+		// アルコバレーノ！ポータブル
+		{0x88AFECC, {0, 4, 0, 0, ULJM05943F, "ULJM05609"}},
 	};
 
 }

@@ -9,6 +9,7 @@
 #include "engine32/LCScript.h"
 #include "engine32/Cage.h"
 #include "engine32/ONScripterru.h"
+#include "engine32/AbogadoPowers.h"
 #include "engine32/Winters.h"
 #include "engine32/CoffeeMaker.h"
 #include "engine32/TACTICS.h"
@@ -422,5 +423,6 @@ std::vector<ENGINE *> check_engines()
         new T2U,
         new antique,
         new BunBun,
-        new DAC};
+        new DAC,
+        new AbogadoPowers};
 }
