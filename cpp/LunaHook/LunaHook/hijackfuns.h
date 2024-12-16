@@ -2,6 +2,7 @@
 
 namespace Hijack
 {
+  inline bool Disable_Font_Switch = false;
 
 #define DEF_FUN(_fun, _return, ...)                   \
   typedef _return(WINAPI *_fun##_fun_t)(__VA_ARGS__); \

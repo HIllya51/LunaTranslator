@@ -98,6 +98,7 @@ enum HookParamType : uint64_t
 enum HookFontType : unsigned
 {
   DECLARE_VALUE(NOT_HOOK_FONT, 0),
+  NEXT_MASK(DISABLE_FONT_SWITCH),
   NEXT_MASK(F_CreateFontA),
   NEXT_MASK(F_CreateFontW),
   NEXT_MASK(F_CreateFontIndirectA),

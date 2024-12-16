@@ -161,6 +161,19 @@ namespace ppsspp
 		buffer->from(s);
 		CharFilter(buffer, '\n');
 	}
+	void NPJH50754(TextBuffer *buffer, HookParam *hp)
+	{
+		std::string s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(<R(.*?)>(.*?)</R>)"), "$2"); // ｛みす／御簾｝
+		buffer->from(s);
+	}
+	void ULJM06378(TextBuffer *buffer, HookParam *hp)
+	{
+		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		strReplace(ws, L"\\", L"");
+		strReplace(ws, L"$", L"");
+		buffer->from(WideStringToString(ws, 932));
+	}
 	void NPJH50215(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
@@ -187,7 +200,6 @@ namespace ppsspp
 		}
 		buffer->from(WideStringToString(ws, 932));
 	}
-
 	void ULJM06119_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string s = buffer->strA();
@@ -197,7 +209,6 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"(/\n+)"), " ");
 		buffer->from(s);
 	}
-
 	void ULJM06036_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::wstring result = buffer->strW();
@@ -205,7 +216,6 @@ namespace ppsspp
 		result = std::regex_replace(result, std::wregex(LR"(<[A-Z]+>)"), L"");
 		buffer->from(result);
 	}
-
 	namespace Corda
 	{
 		std::string readBinaryString(uintptr_t address, bool *haveName)
@@ -324,6 +334,35 @@ namespace ppsspp
 		std::string s = (char *)PPSSPP::emu_arg(context)[1];
 		buffer->from(ULJM06143Code(s));
 	}
+	void NPJH50902(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	{
+		auto cs = (char *)PPSSPP::emu_arg(context)[3];
+		while (*(WORD *)(cs - 1))
+			cs -= 1;
+		cs += 1;
+		std::string ws;
+		while (*(char *)cs)
+		{
+			std::string s = cs;
+			for (int i = 0; i < s.size();)
+			{
+				if ((BYTE)s[i] == 0x87)
+				{
+					if (((BYTE)s[i + 1] == 0x86) || (BYTE)s[i + 1] == 0x85)
+						ws += "\x81\x5b";
+					i += 2;
+				}
+				else
+				{
+					ws += s[i];
+					i += 1;
+				}
+			}
+			cs += s.size() + 1;
+		}
+		strReplace(ws, "\n", "");
+		buffer->from(ws);
+	}
 	void ULJM06220(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -368,6 +407,13 @@ namespace ppsspp
 		if (s.find("#n") != s.npos)
 			return buffer->clear();
 		ULJM05943F(buffer, hp);
+	}
+	void ULJM05276(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "@y", 2);
+		StringFilter(buffer, "@w", 2);
+		StringFilter(buffer, "\\c", 2);
+		StringFilter(buffer, "\\n", 2);
 	}
 	void ULJM06289(TextBuffer *buffer, HookParam *hp)
 	{
@@ -629,6 +675,13 @@ namespace ppsspp
 			last = ws;
 		buffer->from(WideStringToString(ws, 932));
 	}
+	void ULJM06397(TextBuffer *buffer, HookParam *hp)
+	{
+		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		ws = std::regex_replace(ws, std::wregex(LR"(<(.*?),(.*?)>)"), L"$1");
+		strReplace(ws, L"^", L"");
+		buffer->from(WideStringToString(ws, 932));
+	}
 	void ULJM06129(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -727,6 +780,11 @@ namespace ppsspp
 			return;
 		buffer->from(addr + 0x20, *(DWORD *)(addr + 0x14) * 2);
 	}
+	void NPJH50908(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, L'\n');
+		CharFilter(buffer, L'　');
+	}
 	void ULJM05433(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -752,6 +810,13 @@ namespace ppsspp
 		StringFilter(buffer, "%K", 2);
 		StringFilter(buffer, "%P", 2);
 	}
+	void ULJM05954(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "%K", 2);
+		StringFilter(buffer, "%N", 2);
+		StringFilter(buffer, "%P", 2);
+		StringFilter(buffer, "\x81\x40", 2);
+	}
 	void ULJM06070(TextBuffer *buffer, HookParam *hp)
 	{
 		StringFilterBetween(buffer, "[", 1, "]", 1);
@@ -772,6 +837,25 @@ namespace ppsspp
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
 		buffer->from(s);
+	}
+	void NPJH00122(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		buffer->from(s.substr(14, s.size() - 15));
+	}
+	void ULJM05249(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		buffer->from(s.substr(0, s.find("\x81\x75")));
+	}
+	void ULJM05203(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, L'\n');
+		static std::wstring last;
+		auto s = buffer->viewW();
+		if (s == last)
+			return buffer->clear();
+		last = s;
 	}
 	void ULJM05282(TextBuffer *buffer, HookParam *hp)
 	{
@@ -809,6 +893,38 @@ namespace ppsspp
 			return WideStringToString(result, 932);
 		};
 		buffer->from(remap(s));
+	}
+	void ULJM05758(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		static auto katakanaMap = std::map<std::wstring, std::wstring>{
+			{L"｢", L"「"}, {L"｣", L"」"}, {L"ｧ", L"ぁ"}, {L"ｨ", L"ぃ"}, {L"ｩ", L"ぅ"}, {L"ｪ", L"ぇ"}, {L"ｫ", L"ぉ"}, {L"ｬ", L"ゃ"}, {L"ｭ", L"ゅ"}, {L"ｮ", L"ょ"}, {L"ｱ", L"あ"}, {L"ｲ", L"い"}, {L"ｳ", L"う"}, {L"ｴ", L"え"}, {L"ｵ", L"お"}, {L"ｶ", L"か"}, {L"ｷ", L"き"}, {L"ｸ", L"く"}, {L"ｹ", L"け"}, {L"ｺ", L"こ"}, {L"ｻ", L"さ"}, {L"ｼ", L"し"}, {L"ｽ", L"す"}, {L"ｾ", L"せ"}, {L"ｿ", L"そ"}, {L"ﾀ", L"た"}, {L"ﾁ", L"ち"}, {L"ﾂ", L"つ"}, {L"ﾃ", L"て"}, {L"ﾄ", L"と"}, {L"ﾅ", L"な"}, {L"ﾆ", L"に"}, {L"ﾇ", L"ぬ"}, {L"ﾈ", L"ね"}, {L"ﾉ", L"の"}, {L"ﾊ", L"は"}, {L"ﾋ", L"ひ"}, {L"ﾌ", L"ふ"}, {L"ﾍ", L"へ"}, {L"ﾎ", L"ほ"}, {L"ﾏ", L"ま"}, {L"ﾐ", L"み"}, {L"ﾑ", L"む"}, {L"ﾒ", L"め"}, {L"ﾓ", L"も"}, {L"ﾔ", L"や"}, {L"ﾕ", L"ゆ"}, {L"ﾖ", L"よ"}, {L"ﾗ", L"ら"}, {L"ﾘ", L"り"}, {L"ﾙ", L"る"}, {L"ﾚ", L"れ"}, {L"ﾛ", L"ろ"}, {L"ﾜ", L"わ"}, {L"ｦ", L"を"}, {L"ﾝ", L"ん"}, {L"ｰ", L"ー"}, {L"ｯ", L"っ"}, {L"､", L"、"}, {L"ﾟ", L"？"}, {L"ﾞ", L"！"}, {L"･", L"…"}, {L"?", L"？"}, {L"｡", L"。"}};
+		auto remap = [](std::string &s)
+		{
+			std::wstring result;
+			auto ws = StringToWideString(s, 932).value();
+			for (auto _c : ws)
+			{
+				std::wstring c;
+				c.push_back(_c);
+				if (katakanaMap.find(c) != katakanaMap.end())
+				{
+					result += katakanaMap[c];
+				}
+				else
+					result += c;
+			}
+			return WideStringToString(result, 932);
+		};
+		buffer->from(remap(s));
+	}
+	void ULJM05634(TextBuffer *buffer, HookParam *hp)
+	{
+		static std::string last;
+		auto s = buffer->strA();
+		if (s == last)
+			return buffer->clear();
+		last = s;
 	}
 	void ULJS00169(TextBuffer *buffer, HookParam *hp)
 	{
@@ -916,10 +1032,25 @@ namespace ppsspp
 		}
 		last = s;
 	}
+	void ULJM05741(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		s = s.substr(0, s.size() - 2);
+		if (s.find('#') != s.npos)
+			return buffer->clear();
+		buffer->from(s);
+	}
+	void ULJM05109(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "$$", 2);
+	}
 	void ULJM06258_2(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		buffer->from(strSplit(s, "\n")[1]);
+		auto _ = strSplit(s, "\n");
+		if (_.size() < 2)
+			return buffer->clear();
+		buffer->from(_[1]);
 	}
 	void ULJM06258(TextBuffer *buffer, HookParam *hp)
 	{
@@ -956,7 +1087,22 @@ namespace ppsspp
 		}
 		buffer->from(s);
 	}
+	void ULJM06200(TextBuffer *buffer, HookParam *hp)
+	{
+		NPJH50899(buffer, hp);
+		auto s = buffer->strA();
+		s = s.substr(0, 2) + std::regex_replace(s.substr(2, s.size() - 4), std::regex(R"(\x81\x77(.*?)\x81\x78)"), "$1") + s.substr(s.size() - 2);
+		buffer->from(s);
+	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
+		// Solomon's Ring ～地の章～  ULJM06204
+		// Solomon's Ring ～水の章～  ULJM06203
+		// Solomon's Ring ～風の章～  ULJM06202
+		{0x88052C0, {0, 2, 0, 0, ULJM06200, "ULJM0620[234]"}},
+		// Solomon's Ring ～火の章～
+		{0x88061B0, {0, 2, 0, 0, ULJM06200, "ULJM06200"}},
+		// 神なる君と
+		{0x888F054, {0, 0, 0, 0, ULJM06289, "ULJM05975"}},
 		// DEARDROPS DISTORTION
 		{0x8814110, {USING_CHAR | DATA_INDIRECT, 4, 0, 0, 0, "ULJM05819"}},
 		// 流行り神ＰＯＲＴＡＢＬＥ
@@ -974,8 +1120,6 @@ namespace ppsspp
 		{0x8850b2c, {0, 0, 0, 0, NPJH50909_filter, "ULJM05878"}}, // onscreen toast
 		// Dunamis15
 		{0x0891D72C, {CODEC_UTF8, 0, 0, 0, ULJM06119_filter, "ULJM06119"}},
-		// Princess Evangile
-		{0x88506d0, {CODEC_UTF16, 2, 0, 0, ULJM06036_filter, "ULJM06036"}}, // [0x88506d0(2)...0x088507C0(?)] // name text text (line doubled)
 		// 金色のコルダ３ AnotherSky feat.神南
 		{0x883C940, {0, 0, 0, ULJM05428, 0, "NPJH50845"}},
 		// 金色のコルダ３ フルボイス Special
@@ -1007,6 +1151,8 @@ namespace ppsspp
 		// 神々の悪戯 InFinite
 		{0x088630f8, {0, 0, 0, QNPJH50909, 0, "NPJH50909"}}, // text, choice (debounce trailing 400ms), TODO: better hook
 		{0x0887813c, {0, 3, 4, 0, 0, "NPJH50909"}},			 // Question YN
+		// アンジェリーク ルトゥール
+		{0x88A4970, {CODEC_UTF16, 1, 0, 0, NPJH50908, "NPJH50908"}},
 		// 月華繚乱ROMANCE
 		{0x88eeba4, {0, 0, 0, 0, ULJM05943F, "ULJM05943"}}, // a0 - monologue text
 		{0x8875e0c, {0, 1, 6, 0, ULJM05943F, "ULJM05943"}}, // a1 - dialogue text
@@ -1155,6 +1301,9 @@ namespace ppsspp
 		{0x881BECC, {0, 0, 0, 0, 0, "ULJM05444"}},
 		// のーふぇいと！ ～only the power of will～
 		{0x889A888, {0, 0, 0, 0, ULJM05610, "ULJM05610"}},
+		// 薄桜鬼 黎明録 ポータブル
+		{0x88AA0FC, {0, 0, 0, 0, ULJM05943F, "ULJM05917"}},
+		{0x88ABC14, {0, 0, 0, 0, ULJM05823_2, "ULJM05917"}},
 		// 薄桜鬼 遊戯録
 		{0x8850720, {0, 0, 0, 0, ULJM05943F, "ULJM05663"}},
 		{0x884AB78, {0, 0, 0, 0, ULJM05823_2, "ULJM05663"}},
@@ -1242,6 +1391,8 @@ namespace ppsspp
 		{0x88750C0, {0, 1, 0, 0, NPJH50899, "NPJH50899"}},
 		// 里見八犬伝～浜路姫之記～
 		{0x886C750, {0, 1, 0, 0, NPJH50899, "NPJH50885"}},
+		// 大正鬼譚～言ノ葉櫻～
+		{0x88851E8, {0, 1, 0, 0, 0, "NPJH50886"}},
 		// 白華の檻～緋色の欠片４～
 		{0x88FE8C0, {0, 0, 0, 0, ULJM05823_2, "ULJM06167"}},
 		{0x894672C, {0, 4, 0, 0, ULJM06167, "ULJM06167"}},
@@ -1278,6 +1429,8 @@ namespace ppsspp
 		{0x8812600, {0, 1, 0, 0, ULJS00124, "ULJM06359"}},
 		// フォトカノ
 		{0x88F2030, {0, 1, 0, 0, ULJS00124, "ULJS00378"}},
+		// マーメイド・ゴシック
+		{0x888557C, {0, 1, 0, 0, 0, "NPJH50892"}},
 		// your diary+
 		{0x884D740, {0, 1, 0, 0, NPJH50831, "NPJH50831"}},
 		{0x8829364, {0, 1, 0, 0, NPJH50831_1, "NPJH50831"}},
@@ -1311,11 +1464,65 @@ namespace ppsspp
 		{0x882C010, {0, 4, 0, 0, ULJS00579, "ULJS00579"}},
 		// リアルロデ PORTABLE
 		{0x886A92C, {0, 0, 0, 0, ULJM05657, "ULJM05657"}},
+		// Princess Evangile
+		{0x88506d0, {CODEC_UTF16, 2, 0, 0, ULJM06036_filter, "ULJM06036"}},
 		// Princess Arthur
 		{0x8841D10, {0, 0xE, 0, 0, ULJM06258_2, "ULJM06258"}}, // name+text,显示完后
 		{0x88A844C, {0, 1, 0, 0, ULJM06258, "ULJM06258"}},	   // text
 		// アルコバレーノ！ポータブル
 		{0x88AFECC, {0, 4, 0, 0, ULJM05943F, "ULJM05609"}},
+		// ヒイロノカケラ 新玉依姫伝承 ポータブル
+		{0x883FA7C, {0, 4, 0, 0, ULJM05943F, "ULJM05741"}},
+		{0x8813130, {0, 0xc, 0, 0, ULJM05741, "ULJM05741"}},
+		// 十三支演義 ～偃月三国伝～
+		{0x891BC1C, {0, 0, 0, 0, ULJM06289, "ULJM06090"}},
+		// さくらさくら-HARU URARA-
+		{0x8817C98, {0, 1, 0, 0, ULJM05758, "ULJM05758"}},
+		// どきどきすいこでん
+		{0x88A8FC8, {0, 1, 0, 0, ULJS00124, "ULJS00380"}},
+		// Jewelic Nightmare
+		{0x888BF24, {0, 0, 0, 0, ULJM06289, "ULJM06326"}},
+		// 怪盗アプリコット ポータブル
+		{0x8823474, {0, 1, 0, 0, 0, "ULJM05276"}},
+		{0x8823DF0, {0, 1, 0, 0, ULJM05276, "ULJM05276"}},
+		// EtudePrologue ポータブル
+		{0x881D160, {0, 0, 0, 0, ULJM05276, "ULJM05252"}},
+		{0x8822894, {0, 0, 0, 0, ULJM05276, "ULJM05252"}},
+		{0x881CA64, {0, 6, 0, 0, ULJM05276, "ULJM05252"}},
+		// for Symphony ポータブル
+		{0x8821B50, {0, 1, 0, 0, ULJM05276, "ULJM05258"}},
+		{0x881C354, {0, 0, 0, 0, ULJM05276, "ULJM05258"}},
+		{0x881BC74, {0, 1, 0, 0, ULJM05276, "ULJM05258"}},
+		// Kanon
+		{0x880B6E8, {CODEC_UTF16, 0, 0, 0, ULJM05203, "ULJM05203"}},
+		// Ｌｉｔｔｌｅ　Ａｉｄ　ポータブル
+		{0x8822B6C, {0, 1, 0, 0, 0, "ULJM05249"}},
+		{0x8823314, {0, 1, 0, 0, ULJM05249, "ULJM05249"}},
+		// とびたて！超時空トラぶる花札大作戦
+		{0x8842E48, {0, 2, 0, 0, NPJH00122, "NPJH00122"}},
+		// ふしぎ遊戯 玄武開伝 外伝 鏡の巫女
+		{0x884FC48, {0, 0, 0, 0, ULJM05823_2, "ULJM05175"}},
+		{0x889B8D4, {0, 0, 0, 0, ULJM06258, "ULJM05175"}},
+		// サクラ大戦１＆２
+		{0x8A7F814, {0, 6, 0, 0, ULJM05109, "ULJM05109"}}, // 其一。不支持其二
+		// 白銀のカルと蒼空の女王
+		{0x8859358, {0, 3, 0, 0, ULJM05954, "ULJM05954"}},
+		{0x884F338, {0, 0, 0, 0, ULJM05954, "ULJM05954"}},
+		// カレイドイヴ
+		{0x8837E98, {0, 3, 0, 0, ULJM06397, "ULJM06397"}},
+		// 天神乱漫 Happy Go Lucky !!
+		{0x885C730, {0, 0xe, 0, 0, ULJM05634, "ULJM05634"}},
+		// 学園K -Wonderful School Days-
+		{0x887F838, {0, 1, 0, 0, ULJM06378, "ULJM06378"}},
+		// 学☆王 -THE ROYAL SEVEN STARS- +METEOR
+		{0x880E458, {0, 0, 0, 0, NPJH50754, "NPJH50754"}},
+		// 黒雪姫～スノウ・マジック～
+		{0x8886480, {0, 1, 0, 0, 0, "NPJH50888"}},
+		// ロミオVSジュリエット
+		{0x887B4A4, {0, 1, 0, 0, 0, "ULJM06318"}},
+		// うたの☆プリンスさまっ♪All Star After Secret
+		{0x885F3C0, {0, 3, 0, NPJH50902, 0, "NPJH50902"}},
+
 	};
 
 }

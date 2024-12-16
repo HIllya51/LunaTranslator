@@ -116,6 +116,10 @@ void detachall()
 }
 void solvefont(HookParam hp)
 {
+  if (hp.embed_hook_font & DISABLE_FONT_SWITCH)
+  {
+    Hijack::Disable_Font_Switch = true;
+  }
   if (hp.embed_hook_font)
   {
     attachFunction(hp.embed_hook_font);

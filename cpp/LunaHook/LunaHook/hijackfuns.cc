@@ -37,7 +37,13 @@ DEF_FUN(WideCharToMultiByte)
 #undef DEF_FUN
 
 /** Helper */
-
+namespace
+{
+  inline const wchar_t *maybe_disabled_fontFamily()
+  {
+    return Hijack::Disable_Font_Switch ? L"" : commonsharedmem->fontFamily;
+  }
+}
 namespace
 { // unnamed
   UINT8 systemCharSet()
@@ -45,21 +51,14 @@ namespace
     enum CodePage
     {
       NullCodePage = 0,
-      Utf8CodePage = 65001 // UTF-8
-      ,
-      Utf16CodePage = 1200 // UTF-16
-      ,
-      SjisCodePage = 932 // SHIFT-JIS
-      ,
-      GbkCodePage = 936 // GB2312
-      ,
-      KscCodePage = 949 // EUC-KR
-      ,
-      Big5CodePage = 950 // BIG5
-      ,
-      TisCodePage = 874 // TIS-620
-      ,
-      Koi8CodePage = 866 // KOI8-R
+      Utf8CodePage = 65001, // UTF-8
+      Utf16CodePage = 1200, // UTF-16
+      SjisCodePage = 932,   // SHIFT-JIS
+      GbkCodePage = 936,    // GB2312
+      KscCodePage = 949,    // EUC-KR
+      Big5CodePage = 950,   // BIG5
+      TisCodePage = 874,    // TIS-620
+      Koi8CodePage = 866    // KOI8-R
     };
     auto systemCodePage = ::GetACP();
     switch (systemCodePage)
@@ -131,11 +130,10 @@ namespace
   {
     customizeLogFontA((LOGFONTA *)lplf);
 
-    std::wstring s = commonsharedmem->fontFamily;
+    std::wstring s = maybe_disabled_fontFamily();
     if (!s.empty())
     {
       lplf->lfFaceName[s.size()] = 0;
-      // s->fontFamily.toWCharArray(lplf->lfFaceName);
       memcpy(lplf->lfFaceName, s.c_str(), s.size());
     }
   }
@@ -217,7 +215,7 @@ namespace
   }
   bool isFontCustomized()
   {
-    return commonsharedmem->fontCharSetEnabled || wcslen(commonsharedmem->fontFamily);
+    return commonsharedmem->fontCharSetEnabled || wcslen(maybe_disabled_fontFamily());
   }
   DCFontSwitcher::DCFontSwitcher(HDC hdc)
       : hdc_(hdc), oldFont_(nullptr), newFont_(nullptr), newfontname(L"")
@@ -247,18 +245,18 @@ namespace
 
     customizeLogFontW(&lf);
 
-    if (std::wstring(commonsharedmem->fontFamily).empty())
+    if (std::wstring(maybe_disabled_fontFamily()).empty())
       ::GetTextFaceW(hdc_, LF_FACESIZE, lf.lfFaceName);
     else
     {
-      wcscpy(lf.lfFaceName, commonsharedmem->fontFamily);
+      wcscpy(lf.lfFaceName, maybe_disabled_fontFamily());
     }
     newFont_ = fonts_.get(lf);
-    if ((!newFont_) || (newfontname != std::wstring(commonsharedmem->fontFamily)))
+    if ((!newFont_) || (newfontname != std::wstring(maybe_disabled_fontFamily())))
     {
       newFont_ = Hijack::oldCreateFontIndirectW(&lf);
       fonts_.add(newFont_, lf);
-      newfontname = std::wstring(commonsharedmem->fontFamily);
+      newfontname = std::wstring(maybe_disabled_fontFamily());
     }
     oldFont_ = (HFONT)SelectObject(hdc_, newFont_);
   }
@@ -275,7 +273,7 @@ HFONT WINAPI Hijack::newCreateFontIndirectA(const LOGFONTA *lplf)
   // DOUT("width:" << lplf->lfWidth << ", height:" << lplf->lfHeight << ", weight:" << lplf->lfWeight);
   // if (auto p = HijackHelper::instance()) {
   // auto s = p->settings();
-  std::wstring fontFamily = commonsharedmem->fontFamily;
+  std::wstring fontFamily = maybe_disabled_fontFamily();
   if (lplf && isFontCustomized())
   {
     union
@@ -340,7 +338,7 @@ HFONT WINAPI Hijack::newCreateFontA(int nHeight, int nWidth, int nEscapement, in
       nHeight *= s->fontScale;
     }
     */
-    std::wstring fontFamily = commonsharedmem->fontFamily;
+    std::wstring fontFamily = maybe_disabled_fontFamily();
     if (!fontFamily.empty())
     {
       if (all_ascii(fontFamily.c_str(), fontFamily.size()))
@@ -378,7 +376,7 @@ HFONT WINAPI Hijack::newCreateFontW(int nHeight, int nWidth, int nEscapement, in
       nWidth *= s->fontScale;
       nHeight *= s->fontScale;
     }*/
-    if (!std::wstring(commonsharedmem->fontFamily).empty())
+    if (!std::wstring(maybe_disabled_fontFamily()).empty())
       lpszFace = (LPCWSTR)commonsharedmem;
   }
   return oldCreateFontW(CREATE_FONT_ARGS);

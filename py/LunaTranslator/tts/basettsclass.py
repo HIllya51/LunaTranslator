@@ -38,6 +38,9 @@ class TTSbase:
     @property
     def voice(self):
         _v = self.privateconfig["voice"]
+        if isinstance(self.voicelist[0], tuple):
+            # vits的tuple在json.load后变成list了
+            _v = tuple(_v)
         if _v not in self.voicelist:
             _v = self.voicelist[0]
         return _v
