@@ -173,10 +173,10 @@ std::unordered_map<LANG_STRINGS_HOOK, std::unordered_map<SUPPORT_LANG, const cha
                        {Russian, u8"ПРЕДУПРЕЖДЕНИЕ: внедренный процесс очень мал, возможно, это пустышка!"},
                    }},
     {RYUJINXUNSUPPORT, {
-                           {English, "not support ryuujinx, please use yuzu/sudachi/citron instead."},
-                           {Chinese, u8"不支持ryuujinz，请使用yuzu/sudachi/citron"},
-                           {TradChinese, u8"不支持ryuujinz，請使用yuzu/sudachi/citron"},
-                           {Russian, u8"Не поддерживайте ryuujinz, используйте yuzu / sudachi / citron"},
+                           {English, "not support ryujinx, please use yuzu/sudachi/citron instead."},
+                           {Chinese, u8"不支持ryujinx，请使用yuzu/sudachi/citron"},
+                           {TradChinese, u8"不支持ryujinx，請使用yuzu/sudachi/citron"},
+                           {Russian, u8"Не поддерживайте ryujinx, используйте yuzu / sudachi / citron"},
                        }}
 
 };
