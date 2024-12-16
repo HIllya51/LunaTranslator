@@ -183,6 +183,7 @@
 #include "engine32/A98SYS.h"
 #include "engine32/DAC.h"
 #include "engine32/ACTGS.h"
+#include "engine32/e_Erekiteru.h"
 #include "engine32/GuruGuruSMF4.h"
 #include "NoEngine.h"
 #include "engines/lua/lua51.h"
@@ -424,5 +425,6 @@ std::vector<ENGINE *> check_engines()
         new antique,
         new BunBun,
         new DAC,
-        new AbogadoPowers};
+        new AbogadoPowers,
+        new e_Erekiteru};
 }
