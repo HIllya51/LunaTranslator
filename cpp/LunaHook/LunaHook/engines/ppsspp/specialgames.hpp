@@ -957,6 +957,8 @@ namespace ppsspp
 		buffer->from(s);
 	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
+		// DEARDROPS DISTORTION
+		{0x8814110, {USING_CHAR | DATA_INDIRECT, 4, 0, 0, 0, "ULJM05819"}},
 		// 流行り神ＰＯＲＴＡＢＬＥ
 		{0x88081cc, {0, 7, 0, 0, 0, "ULJS00035"}}, // 这三作都是单字符不断刷新，需要用比较复杂的处理
 		// 流行り神２ＰＯＲＴＡＢＬＥ
