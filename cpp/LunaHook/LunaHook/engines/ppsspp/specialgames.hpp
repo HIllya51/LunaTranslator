@@ -138,6 +138,12 @@ namespace ppsspp
 		CharFilter(buffer, '\n');
 		StringFilter(buffer, "\x81\x40", 2);
 	}
+	void ULJM06006(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "@L", 2);
+		StringFilter(buffer, "@I", 2);
+		StringFilter(buffer, "@P", 2);
+	}
 	void ULJM06147(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, L'R');
@@ -1404,6 +1410,9 @@ namespace ppsspp
 		// 真・翡翠の雫 緋色の欠片２ ポータブル
 		{0x887CEAC, {0, 0, 0, 0, ULJM06289, "ULJM05725"}},
 		{0x8876794, {0, 0, 0, 0, ULJM05725, "ULJM05725"}},
+		// 緋色の欠片ポータブル
+		{0x88665E4, {0, 0, 0, 0, ULJM05943F, "ULJM05399"}},
+		{0x8858770, {0, 4, 0, 0, ULJM05943F, "ULJM05399"}},
 		// アラビアンズ・ダウト
 		{0x88406FC, {0, 0, 0, 0, 0, "NPJH50834"}},
 		// いざ、出陣！恋戦 第二幕 ～甲斐編～
@@ -1522,7 +1531,10 @@ namespace ppsspp
 		{0x887B4A4, {0, 1, 0, 0, 0, "ULJM06318"}},
 		// うたの☆プリンスさまっ♪All Star After Secret
 		{0x885F3C0, {0, 3, 0, NPJH50902, 0, "NPJH50902"}},
-
+		// スカーレッドライダーゼクス
+		{0x8863104, {0, 1, 0, 0, ULJM06006, "ULJM06006"}},
+		// スカーレッドライダーゼクス　スターダストラバーズ
+		{0x8862D80, {0, 1, 0, 0, ULJM06006, "ULJM06007"}},
 	};
 
 }
