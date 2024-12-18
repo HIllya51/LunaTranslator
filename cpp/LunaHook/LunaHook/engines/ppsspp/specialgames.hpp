@@ -1007,6 +1007,21 @@ namespace ppsspp
 		StringFilter(buffer, "@n", 2);
 		StringFilter(buffer, "\x81\x90", 2); // ＄
 	}
+	void ULJS00471(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "@w", 2);
+		StringFilter(buffer, "@k", 2);
+		StringFilter(buffer, "@n", 2);
+		StringFilter(buffer, "\x81\x40", 2);
+	}
+	void ULJS00592(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "<br>", 4);
+		StringFilter(buffer, "\x81\x40", 2);
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(<tips(.*?)>(.*?)</tips>)"), "$2");
+		buffer->from(s);
+	}
 	void ULJM05891(TextBuffer *buffer, HookParam *hp)
 	{
 		StringFilter(buffer, "@n", 2);
@@ -1769,6 +1784,21 @@ namespace ppsspp
 		{0x88196C0, {0, 2, 0, 0, ULJM05639, "ULJM05639"}},
 		// 俺の妹めいかぁEX
 		{0x88CFDA0, {0, 0, 0, 0, ULJS00357, "ULJS00357"}},
+		// VitaminX Detective B6
+		{0x892BC1C, {0, 0xc, 0, 0, ULJS00471, "ULJS00471"}},
+		// VitaminX Evolution Plus
+		{0x884A210, {0, 1, 0, 0, ULJS00471, "ULJS00325"}},
+		{0x884A698, {0, 1, 0, 0, ULJS00471, "ULJS00325"}},
+		// VitaminXtoZ
+		{0x88A5278, {0, 1, 0, 0, ULJS00471, "ULJS00347"}},
+		// VitaminR
+		{0x885C180, {0, 0, 0, 0, ULJS00592, "ULJS00592"}},
+		// VitaminZ Graduation
+		{0x88E4490, {0, 1, 0, 0, ULJS00471, "ULJS00561"}},
+		{0x88C04C4, {0, 1, 0, 0, ULJS00471, "ULJS00561"}},
+		// VitaminZ Revolution
+		{0x88A9330, {0, 1, 0, 0, ULJS00471, "ULJS00278"}},
+		{0x88A674C, {0, 1, 0, 0, ULJS00471, "ULJS00278"}},
 
 	};
 
