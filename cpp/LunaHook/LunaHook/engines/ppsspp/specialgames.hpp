@@ -257,6 +257,8 @@ namespace ppsspp
 					c = *(uint8_t *)(address + (i + 1));
 					if (c == 0x7f)
 						i += 5;
+					else if (c == 0xb4) // 下天の華 夢灯り //NPJH50864
+						i += 6;
 					else
 						i += 2;
 				}
@@ -503,6 +505,7 @@ namespace ppsspp
 		StringFilter(buffer, "%LE", 3);
 		StringFilter(buffer, "%FS", 3);
 		StringFilter(buffer, "%FE", 3);
+		StringFilter(buffer, "%CFFFF", 6);
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
 		s = std::regex_replace(s, std::regex(R"(%O\d{3})"), "$1");
@@ -981,6 +984,20 @@ namespace ppsspp
 			buffer->from(s);
 		}
 	}
+	void NPJH50515(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, L'\n');
+		auto s = buffer->strW();
+		s = std::regex_replace(s, std::wregex(LR"(<CLT \d>(.*?)<CLT>)"), L"$1");
+		buffer->from(s);
+	}
+	void ULJM05574(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(%RS(.*?)%RT(.*?)%RE)"), "$1");
+		strReplace(s, "%N", "");
+		buffer->from(s);
+	}
 	void NPJH50711(TextBuffer *buffer, HookParam *hp)
 	{
 		//%(モーターパラグライダー%*モーターパラグライダー%)
@@ -1112,7 +1129,30 @@ namespace ppsspp
 		s = s.substr(0, 2) + std::regex_replace(s.substr(2, s.size() - 4), std::regex(R"(\x81\x77(.*?)\x81\x78)"), "$1") + s.substr(s.size() - 2);
 		buffer->from(s);
 	}
+	void ULJM06353(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		auto f = s.find("#n#Color");
+		if (f == s.npos)
+			return buffer->clear();
+		s = s.substr(f);
+		s = s.substr(s.rfind("]") + 1);
+		buffer->from(s);
+	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
+		// sceFontGetCharInfo 还有很多无法用JIThook的游戏可以用这个函数，包括有JIThook地址的，但之前没有进行记录，现在进行以下记录，仅用于避免未来重复劳动。
+		// Starry☆Sky～After Spring～Portable //ULJM06207
+		// Starry☆Sky～After Summer～Portable //ULJM06208
+		// Starry☆Sky～After Autumn～Portable //ULJM06209
+		// Starry☆Sky～After Winter～Portable //ULJM06210
+		// 下天の華 夢灯り
+		{0x8841B70, {0, 0, 0, ULJM05428, 0, "NPJH50864"}},
+		// 忍び、恋うつつ
+		{0x88A3E28, {0, 3, 0, 0, ULJM06289, "ULJM06353"}},
+		{0x8890858, {0, 0, 0, 0, ULJM06353, "ULJM06353"}},
+		// 蘭島物語 レアランドストーリー 少女の約定
+		{0x880E840, {CODEC_UTF16, 1, 0, 0, 0, "ULJM05387"}},
+		{0x881542C, {CODEC_UTF16, 1, 0, 0, 0, "ULJM05387"}},
 		// Solomon's Ring ～地の章～  ULJM06204
 		// Solomon's Ring ～水の章～  ULJM06203
 		// Solomon's Ring ～風の章～  ULJM06202
@@ -1552,7 +1592,9 @@ namespace ppsspp
 		// 学☆王 -THE ROYAL SEVEN STARS- +METEOR
 		{0x880E458, {0, 0, 0, 0, NPJH50754, "NPJH50754"}},
 		// 黒雪姫～スノウ・マジック～
-		{0x8886480, {0, 1, 0, 0, 0, "NPJH50888"}},
+		{0x8886480, {0, 1, 0, 0, ULJS00124, "NPJH50888"}},
+		// 黒雪姫～スノウ・ブラック～
+		{0x887FBF0, {0, 1, 0, 0, ULJS00124, "NPJH50866"}},
 		// ロミオVSジュリエット
 		{0x887B4A4, {0, 1, 0, 0, 0, "ULJM06318"}},
 		// うたの☆プリンスさまっ♪All Star After Secret
@@ -1590,6 +1632,20 @@ namespace ppsspp
 		{0x8922460, {0, 1, 0, 0, ULJM06378, "ULJM06375"}},
 		// 乙女的恋革命★ラブレボ!!　100kgからはじまる→恋物語
 		{0x887FC28, {CODEC_UTF16, 7, 0, 0, ULJM05976, "ULJM06237"}},
+		// 11eyes CrossOver
+		{0x89A7C2C, {0, 0, 0, 0, ULJM05574, "ULJM05574"}},
+		// 1/2summer+
+		{0x88225D4, {0, 1, 0, 0, 0, "NPJH50737"}},
+		// TIGER & BUNNY ～HERO'S DAY～
+		{0x88434E0, {0, 0xd, 0, 0, 0, "NPJH50753"}},
+		// ダンガンロンパ　希望の学園と絶望の高校生　PSP® the Best
+		{0x88540B0, {CODEC_UTF16, 0, 0, 0, NPJH50515, "NPJH50515"}},
+		// 12Riven　-the Ψcliminal of integral-
+		{0x8942AD4, {0, 0, 0, 0, FULJM05603, "ULJM05445"}},
+		// リトルウィッチ パルフェ　黒猫魔法店物語
+		{0x8840D18, {0, 0, 0, 0, ULJS00124, "ULJM06019"}},
+		// ＢＬＡＣＫ ＣＯＤＥ　ブラック・コード
+		{0x88733E4, {0, 1, 0, 0, ULJS00124, "NPJH50877"}},
 
 	};
 
