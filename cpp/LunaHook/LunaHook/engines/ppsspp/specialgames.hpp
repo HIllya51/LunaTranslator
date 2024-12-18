@@ -35,6 +35,15 @@ namespace ppsspp
 		strReplace(result, u8"\n　", "");
 		buffer->from(result);
 	}
+	void ULJM05968(TextBuffer *buffer, HookParam *hp)
+	{
+		std::string result = buffer->strA();
+		result = std::regex_replace(result, std::regex(R"(vc\d+)"), " ");
+		result = std::regex_replace(result, std::regex(R"(rb(.*?)rs(.*?)re)"), "$2");
+		strReplace(result, "kw", "");
+		strReplace(result, "cr", "");
+		buffer->from(result);
+	}
 	void ULJS00403_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string result = buffer->strA();
@@ -185,6 +194,13 @@ namespace ppsspp
 		buffer->from(s);
 		CharFilter(buffer, '\n');
 		StringFilter(buffer, "@l", 2);
+	}
+	void ULJM06066(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, L"%K", 2);
+		StringFilter(buffer, L"%N", 2);
+		StringFilter(buffer, L"%P", 2);
+		CharFilter(buffer, L'　');
 	}
 	void NPJH50754(TextBuffer *buffer, HookParam *hp)
 	{
@@ -337,6 +353,30 @@ namespace ppsspp
 		}
 		return ws;
 	}
+	void NPJH50809(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	{
+		auto cs = (char *)PPSSPP::emu_arg(context)[3];
+		if (!*(BYTE *)cs)
+		{
+			while (true)
+			{
+				if (*(BYTE *)(cs))
+				{
+					if (strnlen(cs, 10) > 2)
+						break;
+				}
+				cs += 1;
+			}
+		}
+		else
+		{
+			while (*(WORD *)(cs - 1))
+				cs -= 1;
+			cs += 1;
+		}
+		auto len = *(DWORD *)(cs - 12);
+		buffer->from(cs, len * 2);
+	}
 	void ULJM06143_1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		auto cs = (char *)PPSSPP::emu_arg(context)[2];
@@ -386,6 +426,27 @@ namespace ppsspp
 				}
 			}
 			cs += s.size() + 1;
+		}
+		strReplace(ws, "\n", "");
+		buffer->from(ws);
+	}
+	void NPJH50809F(TextBuffer *buffer, HookParam *hp)
+	{
+		std::string ws;
+		std::string s = buffer->strA();
+		for (int i = 0; i < s.size();)
+		{
+			if ((BYTE)s[i] == 0x87)
+			{
+				if (((BYTE)s[i + 1] == 0x86) || (BYTE)s[i + 1] == 0x85)
+					ws += "\x81\x5b";
+				i += 2;
+			}
+			else
+			{
+				ws += s[i];
+				i += 1;
+			}
 		}
 		strReplace(ws, "\n", "");
 		buffer->from(ws);
@@ -467,6 +528,11 @@ namespace ppsspp
 		StringFilter(buffer, "#wa1", 4);
 		StringFilter(buffer, "#wa0", 4);
 	}
+	void ULJM06052(TextBuffer *buffer, HookParam *)
+	{
+		StringFilter(buffer, "/K", 2);
+		CharFilter(buffer, '\n');
+	}
 	void ULJM05639(TextBuffer *buffer, HookParam *)
 	{
 		StringFilter(buffer, "/K", 2);
@@ -534,6 +600,27 @@ namespace ppsspp
 		strReplace(x, "\x81\x40", "");
 		buffer->from(x);
 	}
+	void ULJS00459(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strW();
+		buffer->from(std::regex_replace(s, std::wregex(LR"(≪RUBY≫(.*?)≪(.*?)≫(.*?)≪/RUBY≫)"), L"$1"));
+	}
+	void ULJM06311_1(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		buffer->from(s.substr(0, s.find("#n#Pos")));
+	}
+	void ULJM06316(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		buffer->from(s.substr(0, s.find("#n#Speed")));
+	}
+	void ULJM06311(TextBuffer *buffer, HookParam *hp)
+	{
+		StringReplacer(buffer, "\x81\x55", 2, "!?", 2);
+		StringReplacer(buffer, "\x81\x54", 2, "!!", 2);
+		ULJM06289(buffer, hp);
+	}
 	void FULJM05603(TextBuffer *buffer, HookParam *)
 	{
 		StringFilter(buffer, "%N", 2);
@@ -551,6 +638,14 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"(%S\d{3})"), "$1");
 		buffer->from(s);
 	}
+	void NPJH50745(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(u8R"(†(.*?)‡(.*?)‡)"), "$2");
+		strReplace(s, "\n", "");
+		strReplace(s, u8"▼", "");
+		buffer->from(s);
+	}
 	void ULJM05821(TextBuffer *buffer, HookParam *hp)
 	{
 		static lru_cache<std::string> lastx(2);
@@ -559,7 +654,6 @@ namespace ppsspp
 			return buffer->clear();
 		FULJM05603(buffer, hp);
 	}
-
 	void ULJM05810(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		auto data = PPSSPP::emu_arg(context)[0x0f];
@@ -658,15 +752,37 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"(@\d{2})"), "");
 		buffer->from(s);
 	}
+	void ULJM05960(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '\n');
+		StringFilter(buffer, "/K", 2);
+		StringFilter(buffer, "\x81\x40", 2);
+		static std::string last;
+		auto s = buffer->strA();
+		if (s == last)
+			return buffer->clear();
+		last = s;
+	}
+	void NPJH50700(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '\n');
+		StringFilter(buffer, "\x81\xa5", 2);
+		StringFilter(buffer, "\x81\x40", 2);
+	}
+	void ULJS00329(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		strReplace(s, "#n", "");
+		s = std::regex_replace(s, std::regex(R"(#R(.*?)\((.*?)\))"), "$1");
+		buffer->from(s);
+	}
 	void ULJS00354(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
 		static lru_cache<std::string> last(2);
 		if (last.touch(s))
 			return buffer->clear();
-		strReplace(s, "#n", "");
-		s = std::regex_replace(s, std::regex(R"(#R(.*?)\((.*?)\))"), "$1");
-		buffer->from(s);
+		ULJS00329(buffer, hp);
 	}
 	void ULJM05458(TextBuffer *buffer, HookParam *hp)
 	{
@@ -837,6 +953,11 @@ namespace ppsspp
 			return;
 		buffer->from(addr + 0x20, *(DWORD *)(addr + 0x14) * 2);
 	}
+	void ULJM06174(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, L'\n');
+		StringFilterBetween(buffer, L"[", 1, L"]", 1);
+	}
 	void ULJM05976(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, L'\n');
@@ -979,6 +1100,20 @@ namespace ppsspp
 		};
 		buffer->from(remap(s));
 	}
+	void ULJM06232(TextBuffer *buffer, HookParam *hp)
+	{
+		ULJM05758(buffer, hp);
+		static std::string last;
+		auto s = buffer->strA();
+		if (endWith(last, s))
+		{
+			last = s;
+			return buffer->clear();
+		}
+		last = s;
+		s = std::regex_replace(s, std::regex(R"(\$t(.*?)@)"), "$1");
+		buffer->from(s);
+	}
 	void ULJM05634(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::string last;
@@ -1006,6 +1141,31 @@ namespace ppsspp
 	{
 		StringFilter(buffer, "@n", 2);
 		StringFilter(buffer, "\x81\x90", 2); // ＄
+	}
+	namespace
+	{
+#pragma optimize("", off)
+		void ULJM06115_C(const char *_) {}
+#pragma optimize("", on)
+		void ULJM06115(TextBuffer *buffer, HookParam *)
+		{
+			auto s = buffer->strA();
+			HookParam hp;
+			hp.address = (uintptr_t)ULJM06115_C;
+			hp.offset = GETARG1;
+			hp.type = USING_STRING;
+			static auto _ = NewHook(hp, "ULJM06115");
+			ULJM06115_C(s.data());
+			buffer->clear();
+		}
+	}
+	void NPJH50489(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, '\n');
+		StringFilter(buffer, "\x81\xa5", 2);
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(\x81\xf7(.*?)\x81\x73(.*?)\x81\x74)"), "$1");
+		buffer->from(s);
 	}
 	void ULJS00471(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1238,7 +1398,9 @@ namespace ppsspp
 		// Starry☆Sky～After Summer～Portable //ULJM06208
 		// Starry☆Sky～After Autumn～Portable //ULJM06209
 		// Starry☆Sky～After Winter～Portable //ULJM06210
-		// アラビアンズ・ロスト
+		// アラビアンズ・ロスト	//ULJM06104
+		// MEMORIES OFF //ULJM05334
+
 		// 黄昏のシンセミア portable
 		{0x8852D04, {CODEC_UTF16, 2, 0, 0, ULJM06192, "ULJM06192"}},
 		// 俺の彼女のウラオモテ ～Pure Sweet Heart～
@@ -1307,6 +1469,8 @@ namespace ppsspp
 		{0x8958490, {0, 0, 0, 0, NPJH50505F, "NPJH50505"}},
 		// Fate/EXTRA
 		{0x88B87F0, {0, 6, 0, 0, FNPJH50247, "NPJH50247"}},
+		// 神々の悪戯
+		{0x88663FC, {0, 0, 0, NPJH50809, NPJH50809F, "NPJH50809"}}, // 缺少自定义人名
 		// 神々の悪戯 InFinite
 		{0x088630f8, {0, 0, 0, QNPJH50909, 0, "NPJH50909"}}, // text, choice (debounce trailing 400ms), TODO: better hook
 		{0x0887813c, {0, 3, 4, 0, 0, "NPJH50909"}},			 // Question YN
@@ -1438,6 +1602,10 @@ namespace ppsspp
 		{0x881CC54, {0, 0, 0, 0, ULJM05458, "ULJM05458"}},
 		// とある科学の超電磁砲
 		{0x88363A8, {FULL_STRING, 1, 0, 0, ULJS00354, "ULJS00354"}},
+		// とある魔術の禁書目録
+		{0x882BB24, {0, 0, 0, 0, ULJS00329, "ULJS00329"}},
+		// とある魔術と科学の群奏活劇
+		{0x882A0C4, {0, 1, 0, 0, NPJH50700, "NPJH50700"}},
 		// 幻想水滸伝　紡がれし百年の時
 		{0x893FF00, {0, 0, 0, 0, NPJH50535, "NPJH50535"}},
 		// アンチェインブレイズ レクス
@@ -1464,6 +1632,8 @@ namespace ppsspp
 		{0x881BECC, {0, 0, 0, 0, 0, "ULJM05444"}},
 		// のーふぇいと！ ～only the power of will～
 		{0x889A888, {0, 0, 0, 0, ULJM05610, "ULJM05610"}},
+		// 薄桜鬼 随想録 ポータブル
+		{0x8874288, {0, 4, 0, 0, ULJM05943F, "ULJM05726"}},
 		// 薄桜鬼 黎明録 ポータブル
 		{0x88AA0FC, {0, 0, 0, 0, ULJM05943F, "ULJM05917"}},
 		{0x88ABC14, {0, 0, 0, 0, ULJM05823_2, "ULJM05917"}},
@@ -1496,6 +1666,8 @@ namespace ppsspp
 		{0x8857B28, {0, 1, 0, 0, FULJM05603, "ULJM05674"}},
 		// 未来日記　－１３人目の日記所有者－
 		{0x884C30C, {0, 0, 0, 0, ULJM05565, "ULJM05565"}}, // 切换场景时会有很多辣鸡文本
+		// 未来日記　１３人目の日記所有者　ＲＥ：ＷＲＩＴＥ
+		{0x8816BFC, {0, 0, 0, 0, ULJM06052, "ULJM06052"}}, // 只能在下一句时提取到上一句
 		// CHAOS;HEAD らぶChu☆Chu!
 		{0x88B5AD8, {0, 0xe, 0, 0, ULJM05821, "ULJM05821"}},
 		// 涼宮ハルヒの約束
@@ -1544,6 +1716,10 @@ namespace ppsspp
 		// Confidential Money ～300日で3000万ドル稼ぐ方法～
 		{0x881BD00, {CODEC_UTF16, 1, 0, ULJM06143, 0, "ULJM06143"}},
 		{0x882555C, {CODEC_UTF16, 2, 0, ULJM06143_1, 0, "ULJM06143"}},
+		// アルカナ・ファミリア フェスタ・レガーロ
+		{0x881A318, {0, 0, 0, 0, ULJM06032, "ULJM06187"}},
+		// アルカナ・ファミリア －La storia della Arcana Famiglia－
+		{0x8817914, {0, 0, 0, 0, ULJM06032, "ULJM05956"}},
 		// アルカナ・ファミリア 幽霊船の魔術師
 		{0x881A214, {0, 0, 0, 0, ULJM06032, "ULJM06032"}},
 		// アルカナ・ファミリア ２
@@ -1755,6 +1931,8 @@ namespace ppsspp
 		{0x88225D4, {0, 1, 0, 0, 0, "NPJH50737"}},
 		// TIGER & BUNNY ～HERO'S DAY～
 		{0x88434E0, {0, 0xd, 0, 0, 0, "NPJH50753"}},
+		// スーパーダンガンロンパ２　さよなら絶望学園
+		{0x88D1A24, {CODEC_UTF16, 0, 0, 0, NPJH50515, "NPJH50631"}},
 		// ダンガンロンパ　希望の学園と絶望の高校生　PSP® the Best
 		{0x88540B0, {CODEC_UTF16, 0, 0, 0, NPJH50515, "NPJH50515"}},
 		// 12Riven　-the Ψcliminal of integral-
@@ -1799,7 +1977,72 @@ namespace ppsspp
 		// VitaminZ Revolution
 		{0x88A9330, {0, 1, 0, 0, ULJS00471, "ULJS00278"}},
 		{0x88A674C, {0, 1, 0, 0, ULJS00471, "ULJS00278"}},
-
+		// あの日見た花の名前を僕達はまだ知らない。
+		{0x8821DBC, {0, 1, 0, 0, ULJM06115, "ULJM06115"}},
+		{0x8821F58, {0, 1, 0, 0, ULJM06115, "ULJM06115"}},
+		// 青の祓魔師 幻刻の迷宮
+		{0x88282D8, {0, 2, 0, 0, NPJH50489, "NPJH50489"}},
+		// 断罪のマリア　～ラ･カンパネラ～
+		{0x8884610, {0, 3, 0, 0, 0, "ULJM06078"}}, // 缺少自定义人名，sceFontGetCharInfo有人名但有别的乱七八糟的东西
+		// 夜明け前より瑠璃色な PORTABLE
+		{0x8864438, {0, 0, 0, 0, 0, "ULJM05625"}},
+		// To LOVEる-とらぶる-　ドキドキ！臨海学校編
+		{0x8863424, {0, 0, 0, 0, ULJS00124, "ULJS00154"}},
+		// うみねこのなく頃に Portable 1
+		{0x884B138, {0, 0, 0, 0, ULJM05968, "ULJM05968"}},
+		// うみねこのなく頃に Portable 2
+		{0x885DF94, {0, 0, 0, 0, ULJM05968, "ULJM05969"}},
+		// 死神稼業～怪談ロマンス～
+		{0x8842490, {0, 1, 0, 0, ULJS00124, "ULJM06259"}},
+		// Stellar☆Theater Portable
+		{0x88817F4, {0, 0, 0, 0, 0, "ULJM06224"}},
+		// Starry☆Sky ～in Spring～ Portable
+		{0x88649A0, {0, 0, 0, 0, ULJM06397, "ULJM05683"}},
+		// 英国探偵ミステリア
+		{0x887AE48, {0, 3, 0, 0, 0, "ULJS00563"}},
+		// D.C.III Plus ～ダ・カーポIII～プラス
+		{0x881301C, {0, 1, 0, 0, ULJM05770, "ULJM06239"}},
+		// 変態王子と笑わない猫。
+		{0x8964190, {CODEC_UTF16, 2, 0, 0, ULJM05282, "ULJM06305"}},
+		// Are you Alice?
+		{0x897B7F4, {0, 0, 0, 0, ULJM06289, "ULJM05848"}},
+		// 加奈～いもうと～
+		{0x8849070, {0, 1, 0, 0, 0, "ULJM05768"}},
+		// さくら荘のペットな彼女
+		{0x8855888, {CODEC_UTF8, 1, 0, 0, NPJH50745, "NPJH50745"}},
+		// DIABOLIK LOVERS MORE,BLOOD
+		{0x8837004, {0, 3, 0, 0, ULJM06311, "ULJM06311"}},
+		{0x883AB80, {0, 1, 0, 0, ULJM06311_1, "ULJM06311"}},
+		// DIABOLIK LOVERS
+		{0x8837608, {0, 0, 0, 0, ULJM06311, "ULJM06163"}},
+		// 僕は友達が少ない　ぽーたぶる
+		{0x8816FD4, {CODEC_UTF16, 2, 0, 0, ULJS00459, "ULJS00459"}},
+		// あさき、ゆめみし
+		{0x881F514, {0, 0, 0, 0, 0, "ULJM05870"}},
+		// BEYOND THE FUTURE - FIX THE TIME ARROWS -
+		{0x8909E64, {CODEC_UTF8, 0xe, 0, 0, ULJM05433, "ULJM05988"}},
+		// デュラララ!! 3way standoff
+		{0x8858BA4, {0, 2, 0, 0, NPJH50700, "ULJS00318"}},
+		// Ｒ－１５ ぽーたぶる
+		{0x8820570, {0, 0xd, 0, 0, ULJM05960, "ULJM05960"}},
+		// キサラギGOLD★STAR - NONSTOP GO GO!! -
+		{0x897AFB0, {0, 0, 0, 0, 0, "ULJM06296"}},
+		// スクール・ウォーズ
+		{0x883EE30, {0, 1, 0, 0, ULJS00124, "ULJM06191"}},
+		// スクール・ウォーズ～卒業戦線～
+		{0x885E3A0, {0, 1, 0, 0, ULJS00124, "ULJM06283"}},
+		// BROTHERS CONFLICT  Brilliant Blue
+		{0x88E7100, {0, 0, 0, 0, ULJM06316, "ULJM06316"}},
+		{0x89781F4, {0, 0, 0, 0, ULJM06289, "ULJM06316"}},
+		// BROTHERS CONFLICT Passion Pink
+		{0x88D85C8, {CODEC_UTF16, 0, 0, 0, ULJM06066, "ULJM06066"}},
+		// 暁の護衛 トリニティ
+		{0x8920768, {CODEC_UTF16, 0, 0, 0, ULJM06174, "ULJM0617[45]"}},
+		// 三国恋戦記
+		{0x8896A0C, {0, 0, 0, 0, ULJM05758, "ULJM0612[34]"}},
+		// グリザイアの果実 -LE FRUIT DE LA GRISAIA-
+		{0x8840324, {0, 4, 0, 0, ULJM06232, "ULJM0623[23]"}},
+		// Dies irae ～Amantes amentes～
+		{0x88E08D0, {0, 3, 0, 0, 0, "ULJM0610[78]"}},
 	};
-
 }
