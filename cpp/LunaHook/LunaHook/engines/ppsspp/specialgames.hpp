@@ -17,6 +17,24 @@ namespace ppsspp
 
 namespace ppsspp
 {
+	void NPJH50796(TextBuffer *buffer, HookParam *hp)
+	{
+		static int i = 0;
+		i++;
+		if (i % 2)
+			return buffer->clear();
+		std::string result = buffer->strA();
+		result = std::regex_replace(result, std::regex(R"(@(.*?)@)"), "$1");
+		buffer->from(result);
+	}
+	void ULJS00600(TextBuffer *buffer, HookParam *hp)
+	{
+		std::string result = buffer->strA();
+		result = std::regex_replace(result, std::regex(R"(%d\d{3})"), "");
+		result = std::regex_replace(result, std::regex(R"(%d\d)"), "");
+		strReplace(result, u8"\n　", "");
+		buffer->from(result);
+	}
 	void ULJS00403_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string result = buffer->strA();
@@ -1139,12 +1157,35 @@ namespace ppsspp
 		s = s.substr(s.rfind("]") + 1);
 		buffer->from(s);
 	}
+	void NPJH50836_1(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(\{ruby:(.*?)&(.*?)\})"), "$1");
+		buffer->from(s);
+	}
+	void NPJH50836_2(TextBuffer *buffer, HookParam *hp)
+	{
+		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		std::wsmatch match;
+		if (std::regex_search(ws, match, std::wregex(L"<12 0,(.*?),(.*?),")))
+		{
+			std::wstring name = match[2].str();
+			return buffer->from(WideStringToString(name, 932));
+		}
+		else
+			buffer->clear();
+	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
 		// sceFontGetCharInfo 还有很多无法用JIThook的游戏可以用这个函数，包括有JIThook地址的，但之前没有进行记录，现在进行以下记录，仅用于避免未来重复劳动。
 		// Starry☆Sky～After Spring～Portable //ULJM06207
 		// Starry☆Sky～After Summer～Portable //ULJM06208
 		// Starry☆Sky～After Autumn～Portable //ULJM06209
 		// Starry☆Sky～After Winter～Portable //ULJM06210
+		// 俺の彼女のウラオモテ ～Pure Sweet Heart～
+		{0x8821550, {0, 0xd, 0, 0, NPJH50836_1, "NPJH50836"}},
+		{0x88208F8, {0, 0, 0, 0, NPJH50836_2, "NPJH50836"}},
+		// 越えざるは紅い花　大河は未来を紡ぐ
+		{0x8871340, {0, 5, 0, 0, 0, "NPJH50867"}}, // 需要自行将自定义人名占位符替换成自定义人名
 		// 下天の華 夢灯り
 		{0x8841B70, {0, 0, 0, ULJM05428, 0, "NPJH50864"}},
 		// 忍び、恋うつつ
@@ -1455,6 +1496,8 @@ namespace ppsspp
 		{0x88851E8, {0, 1, 0, 0, ULJS00124, "NPJH50886"}},
 		// 大正鬼譚
 		{0x88487A4, {0, 1, 0, 0, ULJS00124, "NPJH50833"}},
+		// 大正メビウスライン PORTABLE
+		{0x887EA6C, {0, 1, 0, 0, ULJM06397, "NPJH50863"}},
 		// 魔法使いとご主人様～New Ground～
 		{0x8844208, {0, 0, 0, 0, ULJS00124, "ULJM05951"}},
 		// 魔女王
@@ -1551,6 +1594,8 @@ namespace ppsspp
 		{0x88AFECC, {0, 4, 0, 0, ULJM05943F, "ULJM05609"}},
 		// 十三支演義 ～偃月三国伝～
 		{0x891BC1C, {0, 0, 0, 0, ULJM06289, "ULJM06090"}},
+		// 十三支演義 偃月三国伝2
+		{0x88CF2A4, {0, 0, 0, 0, ULJM06289, "ULJM06367"}},
 		// さくらさくら-HARU URARA-
 		{0x8817C98, {0, 1, 0, 0, ULJM05758, "ULJM05758"}},
 		// どきどきすいこでん
@@ -1596,7 +1641,9 @@ namespace ppsspp
 		// 黒雪姫～スノウ・ブラック～
 		{0x887FBF0, {0, 1, 0, 0, ULJS00124, "NPJH50866"}},
 		// ロミオVSジュリエット
-		{0x887B4A4, {0, 1, 0, 0, 0, "ULJM06318"}},
+		{0x887B4A4, {0, 1, 0, 0, ULJS00124, "ULJM06318"}},
+		// ロミオ＆ジュリエット
+		{0x88696AC, {0, 1, 0, 0, ULJS00124, "NPJH50862"}},
 		// うたの☆プリンスさまっ♪All Star After Secret
 		{0x885F3C0, {0, 3, 0, NPJH50902, 0, "NPJH50902"}},
 		// スカーレッドライダーゼクス
@@ -1646,7 +1693,17 @@ namespace ppsspp
 		{0x8840D18, {0, 0, 0, 0, ULJS00124, "ULJM06019"}},
 		// ＢＬＡＣＫ ＣＯＤＥ　ブラック・コード
 		{0x88733E4, {0, 1, 0, 0, ULJS00124, "NPJH50877"}},
-
+		// 紫影のソナーニルRefrain
+		{0x88126C4, {CODEC_UTF8, 1, 0, 0, ULJS00600, "ULJS00600"}},
+		// スズノネセブン！ Portable
+		{0x883002C, {0, 1, 0, 0, NPJH50796, "NPJH50796"}},
+		{0x8849710, {0, 3, 0, 0, 0, "NPJH50796"}},
+		// シークレット オブ エヴァンゲリオン ポータブル
+		{0x883F774, {0, 0xd, 0, 0, ULJS00124, "ULJM05251"}},
+		// 学園ヘヴン BOY'S LOVE SCRAMBLE!
+		{0x8811044, {CODEC_UTF16, 0, 0, 0, ULJM05203, "ULJM0556[23]"}},
+		// 学園ヘヴン　おかわりっ！
+		{0x8813880, {CODEC_UTF16, 0, 0, 0, ULJM05203, "ULJM05729"}},
 	};
 
 }
