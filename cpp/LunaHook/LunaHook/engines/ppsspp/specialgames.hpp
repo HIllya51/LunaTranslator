@@ -421,6 +421,13 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)"), "");
 		buffer->from(s);
 	}
+	void ULJM05783(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		if (!startWith(s, "#Speed[5]#Effect[0]#Scale[1]#"))
+			return buffer->clear();
+		ULJM05943F(buffer, hp);
+	}
 	void ULJM05867_1(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->viewA();
@@ -460,7 +467,21 @@ namespace ppsspp
 		StringFilter(buffer, "#wa1", 4);
 		StringFilter(buffer, "#wa0", 4);
 	}
-
+	void ULJM05639(TextBuffer *buffer, HookParam *)
+	{
+		StringFilter(buffer, "/K", 2);
+		CharFilter(buffer, '\n');
+		if (buffer->size == 0)
+			return;
+		static std::string last, lastx;
+		auto s = buffer->strA();
+		if (endWith(last, s))
+			return buffer->clear();
+		last = s;
+		if (lastx == last)
+			return buffer->clear();
+		lastx = last;
+	}
 	void ULJM05565(TextBuffer *buffer, HookParam *)
 	{
 		StringFilter(buffer, "/K", 2);
@@ -702,6 +723,14 @@ namespace ppsspp
 		else
 			last = ws;
 		buffer->from(WideStringToString(ws, 932));
+	}
+	void ULJM05795(TextBuffer *buffer, HookParam *hp)
+	{
+		std::string s = buffer->strA();
+		if (startWith(s, "-1"))
+			s = s.substr(2);
+		buffer->from(s);
+		NPJH50900(buffer, hp);
 	}
 	void ULJM06397(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1016,6 +1045,15 @@ namespace ppsspp
 		strReplace(s, "%N", "");
 		buffer->from(s);
 	}
+	void ULJS00357(TextBuffer *buffer, HookParam *hp)
+	{
+		ULJM05574(buffer, hp);
+		static std::string last;
+		auto s = buffer->strA();
+		if (s == last)
+			return buffer->clear();
+		last = s;
+	}
 	void NPJH50711(TextBuffer *buffer, HookParam *hp)
 	{
 		//%(モーターパラグライダー%*モーターパラグライダー%)
@@ -1085,6 +1123,10 @@ namespace ppsspp
 		if (s.find('#') != s.npos)
 			return buffer->clear();
 		buffer->from(s);
+	}
+	void ULJM06192(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "<N>", 3);
 	}
 	void ULJM05109(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1181,6 +1223,9 @@ namespace ppsspp
 		// Starry☆Sky～After Summer～Portable //ULJM06208
 		// Starry☆Sky～After Autumn～Portable //ULJM06209
 		// Starry☆Sky～After Winter～Portable //ULJM06210
+		// アラビアンズ・ロスト
+		// 黄昏のシンセミア portable
+		{0x8852D04, {CODEC_UTF16, 2, 0, 0, ULJM06192, "ULJM06192"}},
 		// 俺の彼女のウラオモテ ～Pure Sweet Heart～
 		{0x8821550, {0, 0xd, 0, 0, NPJH50836_1, "NPJH50836"}},
 		{0x88208F8, {0, 0, 0, 0, NPJH50836_2, "NPJH50836"}},
@@ -1274,10 +1319,12 @@ namespace ppsspp
 		{0x883C77C, {0, 0, 0, 0, FULJM05690, "ULJM05690"}},
 		// Ever17 -the out of infinity- Premium Edition
 		{0x881AD64, {0, 0xd, 0, 0, 0, "ULJM05437"}},
+		// 24時の鐘とシンデレラ～Halloween Wedding～
+		{0x8838304, {0, 0, 0, 0, ULJS00124, "ULJM06168"}},
 		// １２時の鐘とシンデレラ～Halloween Wedding～
-		{0x882A650, {0, 1, 0, 0, 0, "ULJM06023"}},
+		{0x882A650, {0, 1, 0, 0, ULJS00124, "ULJM06023"}},
 		// 0時の鐘とシンデレラ～Halloween Wedding～
-		{0x8855CA0, {0, 1, 0, 0, 0, "ULJM06272"}},
+		{0x8855CA0, {0, 1, 0, 0, ULJS00124, "ULJM06272"}},
 		// セブンスドラゴン２０２０
 		{0x88847A0, {CODEC_UTF8, 1, 0, 0, FNPJH50459, "NPJH50459"}},
 		// セブンスドラゴン２０２０-Ⅱ
@@ -1303,7 +1350,7 @@ namespace ppsspp
 		{0x88DA420, {0, 4, 0, 0, ULJM05943F, "ULJM05697"}},
 		// 源狼 GENROH
 		{0x8940DA8, {0, 1, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
-		// 十鬼の絆
+		// 十鬼の絆 関ヶ原奇譚
 		{0x891AAAC, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // text
 		{0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text
 		// 十鬼の絆 花結綴り
@@ -1666,11 +1713,19 @@ namespace ppsspp
 		{0x890EC60, {0, 3, 0, 0, ULJM05943F, "ULJM05834"}},
 		// ワンド オブ フォーチュン2 FD ～君に捧げるエピローグ～
 		{0x888B11C, {0, 0, 0, 0, ULJM06289, "ULJM06194"}},
+		// ワンド オブ フォーチュン ～未来へのプロローグ～ ポータブル
+		{0x887F2C0, {0, 0, 0, 0, ULJM05943F, "ULJM05783"}},
+		{0x88D4844, {0, 0, 0, 0, ULJM05783, "ULJM05783"}},
 		// グリム・ザ・バウンティハンター
 		{0x88385E0, {0, 1, 0, 0, ULJS00124, "ULJM06116"}},
 		// デザート・キングダム ポータブル
 		{0x88274D0, {0, 1, 0, 0, ULJM05823_2, "ULJM06249"}},
 		{0x88730AC, {0, 1, 0, 0, ULJM05943F, "ULJM06249"}},
+		// 猛獣使いと王子様 Portable
+		{0x88FFEF0, {0, 0, 0, 0, ULJM05943F, "ULJM05895"}},
+		{0x8879C38, {0, 0, 0, 0, ULJM05943F, "ULJM05895"}},
+		// 猛獣使いと王子様　～Snow Bride～　Portable
+		{0x88220A8, {0, 1, 0, 0, ULJM05943F, "ULJM06030"}},
 		// 恋戦隊LOVE＆PEACE　THE Ｐ.Ｓ.Ｐ.
 		{0x8819D18, {0, 1, 0, 0, ULJM05770, "ULJM06073"}},
 		// 智代アフター ～It's a Wonderful Life～CS Edition
@@ -1704,6 +1759,17 @@ namespace ppsspp
 		{0x8811044, {CODEC_UTF16, 0, 0, 0, ULJM05203, "ULJM0556[23]"}},
 		// 学園ヘヴン　おかわりっ！
 		{0x8813880, {CODEC_UTF16, 0, 0, 0, ULJM05203, "ULJM05729"}},
+		// 咎狗の血 T B P
+		{0x8836918, {0, 0xd, 0, 0, ULJM05795, "ULJM05795"}},
+		// いっしょにごはん。PORTABLE
+		{0x883E550, {0, 0, 0, 0, ULJM06289, "ULJM06231"}},
+		// 鬼ごっこ！Portable
+		{0x881D500, {CODEC_UTF16, 3, 0, 0, 0, "NPJH50714"}},
+		// そらのおとしもの　－ドキドキサマーバケーション－
+		{0x88196C0, {0, 2, 0, 0, ULJM05639, "ULJM05639"}},
+		// 俺の妹めいかぁEX
+		{0x88CFDA0, {0, 0, 0, 0, ULJS00357, "ULJS00357"}},
+
 	};
 
 }
