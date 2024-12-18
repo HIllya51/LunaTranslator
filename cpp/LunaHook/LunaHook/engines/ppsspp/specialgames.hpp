@@ -786,6 +786,10 @@ namespace ppsspp
 			return;
 		buffer->from(addr + 0x20, *(DWORD *)(addr + 0x14) * 2);
 	}
+	void ULJM05976(TextBuffer *buffer, HookParam *hp)
+	{
+		CharFilter(buffer, L'\n');
+	}
 	void NPJH50908(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, L'\n');
@@ -1065,6 +1069,13 @@ namespace ppsspp
 			return buffer->clear();
 		ULJM05943F(buffer, hp);
 	}
+	void ULJM05913(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		if (s.find("#n") == s.npos)
+			return buffer->clear();
+		ULJM06289(buffer, hp);
+	}
 	void ULJM05823_2(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->viewA();
@@ -1194,6 +1205,8 @@ namespace ppsspp
 		// ときめきメモリアル4
 		{0x899a510, {0, 2, 0, 0, FNPJH50127, "NPJH50127"}},
 		{0x88719dc, {0, 1, 0, 0, FNPJH50127, "NPJH50127"}},
+		// ときめきメモリアル Girl's Side Premium 3
+		{0x88F09F4, {CODEC_UTF16, 0, 0, 0, ULJM05976, "ULJM05976"}},
 		// オメルタ～沈黙の掟～ THE LEGACY
 		{0x88861C8, {0, 3, 0, 0, 0, "ULJM06393"}},
 		// L.G.S～新説 封神演義～
@@ -1392,13 +1405,19 @@ namespace ppsspp
 		// アルカナ・ファミリア ２
 		{0x887493C, {0, 0, 0, 0, ULJM06032, "ULJM06291"}},
 		// 里見八犬伝　八珠之記
-		{0x887FF84, {0, 1, 0, 0, 0, "NPJH50858"}},
+		{0x887FF84, {0, 1, 0, 0, ULJS00124, "NPJH50858"}},
 		// 里見八犬伝～村雨丸之記～
 		{0x88750C0, {0, 1, 0, 0, NPJH50899, "NPJH50899"}},
 		// 里見八犬伝～浜路姫之記～
 		{0x886C750, {0, 1, 0, 0, NPJH50899, "NPJH50885"}},
 		// 大正鬼譚～言ノ葉櫻～
-		{0x88851E8, {0, 1, 0, 0, 0, "NPJH50886"}},
+		{0x88851E8, {0, 1, 0, 0, ULJS00124, "NPJH50886"}},
+		// 大正鬼譚
+		{0x88487A4, {0, 1, 0, 0, ULJS00124, "NPJH50833"}},
+		// 魔法使いとご主人様～New Ground～
+		{0x8844208, {0, 0, 0, 0, ULJS00124, "ULJM05951"}},
+		// 魔女王
+		{0x88644D4, {0, 1, 0, 0, NPJH50899, "NPJH50879"}},
 		// 白華の檻～緋色の欠片４～
 		{0x88FE8C0, {0, 0, 0, 0, ULJM05823_2, "ULJM06167"}},
 		{0x894672C, {0, 4, 0, 0, ULJM06167, "ULJM06167"}},
@@ -1413,6 +1432,12 @@ namespace ppsspp
 		// 緋色の欠片ポータブル
 		{0x88665E4, {0, 0, 0, 0, ULJM05943F, "ULJM05399"}},
 		{0x8858770, {0, 4, 0, 0, ULJM05943F, "ULJM05399"}},
+		// ヒイロノカケラ 新玉依姫伝承 ポータブル
+		{0x883FA7C, {0, 4, 0, 0, ULJM05943F, "ULJM05741"}},
+		{0x8813130, {0, 0xc, 0, 0, ULJM05741, "ULJM05741"}},
+		// ヒイロノカケラ-Piece of Future-
+		{0x88FAF08, {0, 0, 0, 0, ULJM05823_2, "ULJM05913"}},
+		{0x88FAF20, {0, 1, 0, 0, ULJM05913, "ULJM05913"}},
 		// アラビアンズ・ダウト
 		{0x88406FC, {0, 0, 0, 0, 0, "NPJH50834"}},
 		// いざ、出陣！恋戦 第二幕 ～甲斐編～
@@ -1480,9 +1505,6 @@ namespace ppsspp
 		{0x88A844C, {0, 1, 0, 0, ULJM06258, "ULJM06258"}},	   // text
 		// アルコバレーノ！ポータブル
 		{0x88AFECC, {0, 4, 0, 0, ULJM05943F, "ULJM05609"}},
-		// ヒイロノカケラ 新玉依姫伝承 ポータブル
-		{0x883FA7C, {0, 4, 0, 0, ULJM05943F, "ULJM05741"}},
-		{0x8813130, {0, 0xc, 0, 0, ULJM05741, "ULJM05741"}},
 		// 十三支演義 ～偃月三国伝～
 		{0x891BC1C, {0, 0, 0, 0, ULJM06289, "ULJM06090"}},
 		// さくらさくら-HARU URARA-
@@ -1535,6 +1557,10 @@ namespace ppsspp
 		{0x8863104, {0, 1, 0, 0, ULJM06006, "ULJM06006"}},
 		// スカーレッドライダーゼクス　スターダストラバーズ
 		{0x8862D80, {0, 1, 0, 0, ULJM06006, "ULJM06007"}},
+		// エルクローネのアトリエ ～Dear for Otomate～
+		{0x8893418, {0, 0, 0, 0, ULJM05943F, "ULJM06046"}},
+		// 放課後colorful＊step～ぶんかぶ！～
+		{0x8817AD0, {0, 1, 0, 0, ULJS00124, "ULJM06363"}},
 	};
 
 }
