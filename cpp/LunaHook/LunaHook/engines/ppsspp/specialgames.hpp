@@ -166,6 +166,7 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)"), "$2"); // ｛みす／御簾｝
 		buffer->from(s);
 		CharFilter(buffer, '\n');
+		StringFilter(buffer, "@l", 2);
 	}
 	void NPJH50754(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1194,7 +1195,7 @@ namespace ppsspp
 		{0x881AD64, {0, 0xd, 0, 0, 0, "ULJM05437"}},
 		// １２時の鐘とシンデレラ～Halloween Wedding～
 		{0x882A650, {0, 1, 0, 0, 0, "ULJM06023"}},
-		// 0時の鐘とシンデレラ～Halloween Wedding～ (instance: 2)
+		// 0時の鐘とシンデレラ～Halloween Wedding～
 		{0x8855CA0, {0, 1, 0, 0, 0, "ULJM06272"}},
 		// セブンスドラゴン２０２０
 		{0x88847A0, {CODEC_UTF8, 1, 0, 0, FNPJH50459, "NPJH50459"}},
@@ -1216,6 +1217,9 @@ namespace ppsspp
 		// S.Y.K ～蓮咲伝～ Portable
 		{0x88FB080, {0, 0, 0, 0, ULJM05867_1, "ULJM05867"}}, // TEXT
 		{0x88FB0B8, {0, 0, 0, 0, ULJM05867_2, "ULJM05867"}}, // NAME
+		// S・Y・K ～新説西遊記～ ポータブル
+		{0x88DD918, {0, 0, 0, 0, ULJM05823_2, "ULJM05697"}}, // text+name->name
+		{0x88DA420, {0, 4, 0, 0, ULJM05943F, "ULJM05697"}},
 		// 源狼 GENROH
 		{0x8940DA8, {0, 1, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
 		// 十鬼の絆
@@ -1252,9 +1256,6 @@ namespace ppsspp
 		{0x8881CAC, {0, 1, 0, 0, 0, "NPJH50872"}},
 		// 新装版 ハートの国のアリス～Wonderful Wonder World～
 		{0x886B610, {0, 1, 0, 0, 0, "ULJM06332"}},
-		// S・Y・K ～新説西遊記～ ポータブル
-		{0x88DD918, {0, 0, 0, 0, ULJM05823_2, "ULJM05697"}}, // text+name->name
-		{0x88DA420, {0, 4, 0, 0, ULJM05943F, "ULJM05697"}},
 		// Glass Heart Princess
 		{0x885FA30, {0, 0, 0, 0, ULJM05943F, "ULJM06196"}},
 		// Glass Heart Princess:PLATINUM
@@ -1424,6 +1425,9 @@ namespace ppsspp
 		// 白華の檻 ～緋色の欠片４～ 四季の詩
 		{0x8851EA0, {0, 0, 0, 0, ULJM06266, "ULJM06314"}},
 		{0x88E33E0, {0, 0, 0, 0, ULJM05943F, "ULJM06314"}},
+		// 蒼黒の楔 緋色の欠片３ ポータブル
+		{0x888ACD4, {0, 0, 0, 0, ULJM05823_2, "NPJH50609"}},
+		{0x8885390, {0, 4, 0, 0, ULJM06289, "NPJH50609"}},
 		// 蒼黒の楔 緋色の欠片3 明日への扉
 		{0x894C93C, {0, 1, 0, 0, ULJM06289, "ULJM06072"}},
 		// 真・翡翠の雫 緋色の欠片２ ポータブル
@@ -1561,6 +1565,32 @@ namespace ppsspp
 		{0x8893418, {0, 0, 0, 0, ULJM05943F, "ULJM06046"}},
 		// 放課後colorful＊step～ぶんかぶ！～
 		{0x8817AD0, {0, 1, 0, 0, ULJS00124, "ULJM06363"}},
+		// お菓子な島のピーターパン～Sweet Never Land～
+		{0x8883EE0, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, "ULJM05949"}},
+		// NORN9 ノルン＋ノネット
+		{0x88AF7DC, {0, 0, 0, 0, ULJM05943F, "ULJM06276"}},
+		{0x8852B38, {0, 0, 0, 0, ULJM06289, "ULJM06276"}},
+		// 官能昔話 ポータブル
+		{0x88764EC, {0, 0xc, 0, 0, ULJM05867_1, "ULJM06015"}},
+		{0x88764D4, {0, 0xc, 0, 0, ULJM05823_2, "ULJM06015"}},
+		// Wand of Fortune2
+		{0x890EC60, {0, 3, 0, 0, ULJM05943F, "ULJM05834"}},
+		// ワンド オブ フォーチュン2 FD ～君に捧げるエピローグ～
+		{0x888B11C, {0, 0, 0, 0, ULJM06289, "ULJM06194"}},
+		// グリム・ザ・バウンティハンター
+		{0x88385E0, {0, 1, 0, 0, ULJS00124, "ULJM06116"}},
+		// デザート・キングダム ポータブル
+		{0x88274D0, {0, 1, 0, 0, ULJM05823_2, "ULJM06249"}},
+		{0x88730AC, {0, 1, 0, 0, ULJM05943F, "ULJM06249"}},
+		// 恋戦隊LOVE＆PEACE　THE Ｐ.Ｓ.Ｐ.
+		{0x8819D18, {0, 1, 0, 0, ULJM05770, "ULJM06073"}},
+		// 智代アフター ～It's a Wonderful Life～CS Edition
+		{0x880ED98, {CODEC_UTF16, 0, 0, 0, ULJM05282, "ULJM05411"}},
+		// Enkeltbillet
+		{0x8922460, {0, 1, 0, 0, ULJM06378, "ULJM06375"}},
+		// 乙女的恋革命★ラブレボ!!　100kgからはじまる→恋物語
+		{0x887FC28, {CODEC_UTF16, 7, 0, 0, ULJM05976, "ULJM06237"}},
+
 	};
 
 }
