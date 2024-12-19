@@ -90,7 +90,7 @@ bool Circus1::attach_function()
 bool Circus_old::attach_function()
 {
   //[041213][CIRCUS]最終試験くじら
-  auto call = finddllfunctioncall((DWORD)GetGlyphOutlineA, processStartAddress, processStopAddress);
+  auto call = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress);
   if (!call)
     return false;
   auto func = MemDbg::findEnclosingAlignedFunction(call);

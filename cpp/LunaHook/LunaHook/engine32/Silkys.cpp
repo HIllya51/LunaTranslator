@@ -417,7 +417,7 @@ namespace
   bool saiminset()
   {
     //[230929][1237052][シルキーズSAKURA] 催眠奪女Set パッケージ版
-    auto addr1 = finddllfunctioncall((DWORD)GetGlyphOutlineA, processStartAddress, processStopAddress);
+    auto addr1 = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress);
     if (addr1 == 0)
       return false;
     auto func1 = MemDbg::findEnclosingAlignedFunction(addr1);

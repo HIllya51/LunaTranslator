@@ -431,19 +431,6 @@ std::vector<DWORD> findrelativecall(const BYTE *pattern, int length, DWORD calla
   }
   return save;
 }
-uintptr_t finddllfunctioncall(uintptr_t funcptr, uintptr_t start, uintptr_t end, WORD sig, bool reverse)
-{
-  auto entry = Util::FindImportEntry(start, funcptr);
-  if (entry == 0)
-    return 0;
-  BYTE bytes[] = {0xFF, 0x15, XX4};
-  memcpy(bytes + 2, &entry, 4);
-  memcpy(bytes, &sig, 2);
-  if (reverse)
-    return reverseFindBytes(bytes, sizeof(bytes), start, end);
-  else
-    return MemDbg::findBytes(bytes, sizeof(bytes), start, end);
-}
 uintptr_t findfuncstart(uintptr_t start, uintptr_t range, bool checkalign)
 {
   const BYTE funcstart[] = {

@@ -6,6 +6,7 @@
 #include "engine32/mono.h"
 #include "engine32/Tarte.h"
 #include "engine32/sakanagl.h"
+#include "engine32/H_do_C.h"
 #include "engine32/LCScript.h"
 #include "engine32/Cage.h"
 #include "engine32/ONScripterru.h"
@@ -426,5 +427,7 @@ std::vector<ENGINE *> check_engines()
         new BunBun,
         new DAC,
         new AbogadoPowers,
-        new e_Erekiteru};
+        new e_Erekiteru,
+        new H_do_C
+        };
 }
