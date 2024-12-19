@@ -5,21 +5,18 @@ import re, time
 class OCR(baseocr):
 
     def ocr(self, imagebinary):
-        # https://github.com/AuroraWright/owocr/blob/master/owocr/ocr.py
 
         regex = re.compile(r">AF_initDataCallback\(({key: 'ds:1'.*?)\);</script>")
 
         timestamp = int(time.time() * 1000)
         url = "https://lens.google.com/v3/upload?stcs={}".format(timestamp)
         headers = {
-            "User-Agent": "Mozilla/5.0 (Linux; Android 13; RMX3771) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.144 Mobile Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
         }
-        cookies = {"SOCS": "CAESEwgDEgk0ODE3Nzk3MjQaAmVuIAEaBgiA_LyaBg"}
-
         files = {"encoded_image": ("screenshot.png", imagebinary, "image/png")}
-        res = self.proxysession.post(url, files=files, headers=headers, cookies=cookies)
+        res = self.proxysession.post(url, files=files, headers=headers)
         match = regex.search(res.text)
-        if match == None:
+        if not match:
             return
         sideChannel = "sideChannel"
         null = None
@@ -32,8 +29,5 @@ class OCR(baseocr):
         if "errorHasStatus" in lens_object:
             raise Exception(False, "Unknown Lens error!")
 
-        res = ""
         text = lens_object["data"][3][4][0]
-        if len(text) == 0:
-            return
-        return text[0]
+        return text[0] if text else None
