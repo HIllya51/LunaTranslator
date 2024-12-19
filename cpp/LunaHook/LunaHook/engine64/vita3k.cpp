@@ -702,6 +702,26 @@ namespace
             {0x8000E8E0, {0, 0, 0, 0, F010052300F612000, "PCSG00794"}},
             // 源氏恋絵巻
             {0x8002C640, {CODEC_UTF8, 1, 0, 0, 0, "PCSG00619"}},
+            // Starry☆Sky ~Spring Stories~ / Starry Sky ~Spring Stories~
+            {0x8003542e, {0, 3, 0, 0, FPCSG00912, "PCSG00510"}},
+            {0x80033f2e, {0, 0, 0, 0, FPCSG00912, "PCSG00510"}},
+            {0x8002c5b8, {0, 0, 8, 0, FPCSG00912, "PCSG00510"}},
+            // Starry☆Sky ~Summer Stories~ / Starry Sky ~Summer Stories~
+            {0x80035634, {0, 3, 0, 0, FPCSG00912, "PCSG00916"}},
+            {0x80034114, {0, 0, 0, 0, FPCSG00912, "PCSG00916"}},
+            {0x8002c77a, {0, 0, 8, 0, FPCSG00912, "PCSG00916"}},
+            // Starry☆Sky ~Autumn Stories~ / Starry Sky ~Autumn Stories~
+            {0x80035b10, {0, 3, 0, 0, FPCSG00912, "PCSG00917"}}, // 1.00
+            {0x800345f0, {0, 0, 0, 0, FPCSG00912, "PCSG00917"}},
+            {0x8002cc56, {0, 0, 8, 0, FPCSG00912, "PCSG00917"}},
+            {0x80035b2c, {0, 3, 0, 0, FPCSG00912, "PCSG00917"}}, // 1.01
+            {0x8003460c, {0, 0, 0, 0, FPCSG00912, "PCSG00917"}},
+            {0x8002cc72, {0, 0, 8, 0, FPCSG00912, "PCSG00917"}},
+            // Starry☆Sky ~Winter Stories~ / Starry Sky ~Winter Stories~
+            {0x80035a20, {0, 3, 0, 0, FPCSG00912, "PCSG00918"}},
+            {0x80034500, {0, 0, 0, 0, FPCSG00912, "PCSG00918"}},
+            {0x8002cb66, {0, 0, 8, 0, FPCSG00912, "PCSG00918"}},
+
         };
         return 1;
     }();
