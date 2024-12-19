@@ -102,8 +102,8 @@ namespace
 				Host::InfoOutput(HOSTINFO::Warning, TR[UNMATCHABLEVERSION]); 
 
 			processRecordsByIds->try_emplace(processId, processId, hostPipe);
-			OnConnect(processId);
 			processRecordsByIds->at(processId).Send(curr_lang);
+			OnConnect(processId);
 			Host::AddConsoleOutput(FormatString(TR[PROC_CONN],processId));
 			
 			while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
