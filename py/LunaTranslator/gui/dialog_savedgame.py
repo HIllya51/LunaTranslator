@@ -23,6 +23,7 @@ from gui.usefulwidget import (
     getboxlayout,
     MySwitch,
     Prompt_dialog,
+    IconButton,
     getsimplecombobox,
 )
 from gui.dialog_savedgame_common import (
@@ -48,6 +49,7 @@ from gui.dialog_savedgame_common import (
 class dialog_savedgame_integrated(saveposwindow):
 
     def selectlayout(self, type):
+        self.syssettingbtn.setVisible(type != 2)
         try:
             globalconfig["gamemanager_integrated_internal_layout"] = type
             klass = [
@@ -83,6 +85,7 @@ class dialog_savedgame_integrated(saveposwindow):
             [self.layout1btn, self.layout2btn, self.layout3btn][
                 (type + 2) % 3
             ].setEnabled(True)
+            self.__internal = _
         except:
             print_exc()
 
@@ -99,7 +102,7 @@ class dialog_savedgame_integrated(saveposwindow):
         w, self.internallayout = getboxlayout(
             [], margin0=True, makewidget=True, both=True
         )
-
+        self.__internal = None
         self.internallayout.addWidget(QWidget())
         self.setCentralWidget(w)
         self.layout1btn = MySwitch(self, icon="fa.th")
@@ -108,22 +111,41 @@ class dialog_savedgame_integrated(saveposwindow):
         self.layout1btn.clicked.connect(functools.partial(self.selectlayout, 0))
         self.layout2btn.clicked.connect(functools.partial(self.selectlayout, 1))
         self.layout3btn.clicked.connect(functools.partial(self.selectlayout, 2))
-        self.layout1btn.setFixedSize(QSize(20, 20))
-        self.layout2btn.setFixedSize(QSize(20, 20))
-        self.layout3btn.setFixedSize(QSize(20, 20))
+        self.layout1btn.setFixedSize(QSize(20, 25))
+        self.layout2btn.setFixedSize(QSize(20, 25))
+        self.layout3btn.setFixedSize(QSize(20, 25))
+        self.syssettingbtn = IconButton(icon="fa.gear", parent=self)
+        self.syssettingbtn.setFixedSize(QSize(25, 25))
+        self.syssettingbtn.clicked.connect(self.syssetting)
         self.show()
         self.selectlayout(globalconfig["gamemanager_integrated_internal_layout"])
 
+    def syssetting(self):
+        dialog_syssetting(
+            self.__internal,
+            type_={0: 1, 1: 2}[globalconfig["gamemanager_integrated_internal_layout"]],
+        )
+
     def resizeEvent(self, e: QResizeEvent):
-        self.layout1btn.move(e.size().width() - self.layout1btn.width(), 0)
+        self.layout1btn.move(e.size().width() - self.layout1btn.width() - 5, 0)
         self.layout2btn.move(
-            e.size().width() - self.layout2btn.width() - self.layout1btn.width(), 0
+            e.size().width() - self.layout2btn.width() - self.layout1btn.width() - 5, 0
         )
         self.layout3btn.move(
             e.size().width()
             - self.layout3btn.width()
             - self.layout2btn.width()
-            - self.layout1btn.width(),
+            - self.layout1btn.width()
+            - 5,
+            0,
+        )
+        self.syssettingbtn.move(
+            e.size().width()
+            - self.syssettingbtn.width()
+            - self.layout3btn.width()
+            - self.layout2btn.width()
+            - self.layout1btn.width()
+            - 5,
             0,
         )
 
@@ -188,7 +210,13 @@ class dialog_savedgame_new(QWidget):
         self.flow.deleteLater()
         self.flow = lazyscrollflow()
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
-        self.formLayout.insertWidget(self.formLayout.count() - 1, self.flow)
+        self.flow.setsize(
+            QSize(
+                globalconfig["dialog_savegame_layout"]["itemw"],
+                globalconfig["dialog_savegame_layout"]["itemh"],
+            )
+        )
+        self.formLayout.insertWidget(self.formLayout.count(), self.flow)
         idx = 0
         for k in self.reflist:
             if newtags != self.currtags:
@@ -242,13 +270,11 @@ class dialog_savedgame_new(QWidget):
         gamesetting = LAction(("游戏设置"))
         addgame = LAction(("添加游戏"))
         batchadd = LAction(("批量添加"))
-        othersetting = LAction(("其他设置"))
 
         if self.currentfocusuid:
             exists = os.path.exists(get_launchpath(self.currentfocusuid))
             if exists:
                 menu.addAction(startgame)
-            if exists:
                 menu.addAction(opendir)
             menu.addAction(gamesetting)
             menu.addAction(delgame)
@@ -264,7 +290,6 @@ class dialog_savedgame_new(QWidget):
             menu.addAction(addgame)
             menu.addAction(batchadd)
             menu.addSeparator()
-            menu.addAction(othersetting)
         action = menu.exec(self.mapToGlobal(p))
         if action == startgame:
             startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
@@ -280,8 +305,6 @@ class dialog_savedgame_new(QWidget):
             self.clicked3()
         elif action == batchadd:
             self.clicked3_batch()
-        elif action == othersetting:
-            dialog_syssetting(self)
 
         elif action == editname or action == addlist:
             _dia = Prompt_dialog(
@@ -351,6 +374,19 @@ class dialog_savedgame_new(QWidget):
             ),
         )
 
+    def callchange(self):
+        self.flow.setsize(
+            QSize(
+                globalconfig["dialog_savegame_layout"]["itemw"],
+                globalconfig["dialog_savegame_layout"]["itemh"],
+            )
+        )
+        self.flow.resizeandshow()
+        for _ in self.flow.widgets:
+            if not isinstance(_, ItemWidget):
+                continue
+            _.others()
+
     def setstyle(self):
         key = "savegame_textfont1"
         fontstring = globalconfig.get(key, "")
@@ -416,7 +452,7 @@ class dialog_savedgame_new(QWidget):
         self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
         _ = QLabel()
-        _.setFixedWidth(60)
+        _.setFixedWidth(80)
         layout.addWidget(self.tagswidget)
         layout.addWidget(_)
         formLayout.addLayout(layout)
@@ -425,29 +461,8 @@ class dialog_savedgame_new(QWidget):
         self.customContextMenuRequested.connect(self.showmenu)
         formLayout.addWidget(self.flow)
         self.formLayout = formLayout
-        buttonlayout = QHBoxLayout()
-        self.buttonlayout = buttonlayout
         self.savebutton = []
-        self.simplebutton(
-            "开始游戏",
-            True,
-            lambda: startgamecheck(
-                self, getreflist(self.reftagid), self.currentfocusuid
-            ),
-            True,
-        )
-        self.simplebutton("游戏设置", True, self.showsettingdialog, False)
-        self.simplebutton("删除游戏", True, self.clicked2, False)
-        self.simplebutton("打开目录", True, self.clicked4, True)
 
-        self.simplebutton("添加到列表", True, self.addtolist, False)
-        # if globalconfig["startgamenototop"]:
-        self.simplebutton("左移", True, functools.partial(self.moverank, -1), False)
-        self.simplebutton("右移", True, functools.partial(self.moverank, 1), False)
-        self.simplebutton("添加游戏", False, self.clicked3, 1)
-        self.simplebutton("批量添加", False, self.clicked3_batch, 1)
-        self.simplebutton("其他设置", False, lambda: dialog_syssetting(self), False)
-        formLayout.addLayout(buttonlayout)
         self.idxsave = []
         self.setLayout(formLayout)
         self.activategamenum = 1
@@ -484,6 +499,17 @@ class dialog_savedgame_new(QWidget):
             idx = getreflist(uid).index(gameuid)
             getreflist(uid).insert(0, getreflist(uid).pop(idx))
 
+    def keyPressEvent(self, e: QKeyEvent):
+        if e.key() == Qt.Key.Key_Return:
+            startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
+        elif e.key() == Qt.Key.Key_Delete:
+            self.clicked2()
+        elif e.key() == Qt.Key.Key_Left:
+            self.moverank(-1)
+        elif e.key() == Qt.Key.Key_Right:
+            self.moverank(1)
+        super().keyPressEvent(e)
+
     def moverank(self, dx):
         game = self.currentfocusuid
 
@@ -502,16 +528,6 @@ class dialog_savedgame_new(QWidget):
             dialog_setting_game(self.parent(), self.currentfocusuid)
         except:
             print_exc()
-
-    def simplebutton(self, text, save, callback, exists):
-        button5 = LPushButton(text)
-        button5.setMinimumWidth(10)
-        if save:
-            self.savebutton.append((button5, exists))
-        button5.clicked.connect(callback)
-        button5.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.buttonlayout.addWidget(button5)
-        return button5
 
     def itemfocuschanged(self, b, k):
 
@@ -542,16 +558,9 @@ class dialog_savedgame_new(QWidget):
 
     def newline(self, k, first=False):
 
-        itemw = globalconfig["dialog_savegame_layout"]["itemw"]
-        itemh = globalconfig["dialog_savegame_layout"]["itemh"]
-
         if first:
             self.idxsave.insert(0, k)
-            self.flow.insertwidget(
-                0, (functools.partial(self.getagameitem, k, True), QSize(itemw, itemh))
-            )
+            self.flow.insertwidget(0, functools.partial(self.getagameitem, k, True))
         else:
             self.idxsave.append(k)
-            self.flow.addwidget(
-                (functools.partial(self.getagameitem, k, False), QSize(itemw, itemh))
-            )
+            self.flow.addwidget(functools.partial(self.getagameitem, k, False))

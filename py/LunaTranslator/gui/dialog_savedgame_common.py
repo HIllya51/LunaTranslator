@@ -76,26 +76,26 @@ class ItemWidget(QWidget):
     def resizeEvent(self, a0: QResizeEvent) -> None:
         self.bottommask.resize(a0.size())
         self.maskshowfileexists.resize(a0.size())
+        self.resizex()
+
+    def resizex(self):
+        margin = globalconfig["dialog_savegame_layout"]["margin"]
+        textH = (
+            globalconfig["dialog_savegame_layout"]["textH"]
+            if globalconfig["showgametitle"]
+            else 0
+        )
+        self._w.setFixedHeight(self.height() - textH)
+        self.wrap.setContentsMargins(margin, margin, margin, margin)
+
+    def others(self):
+        self._lb.setText(self.file if globalconfig["showgametitle"] else "")
+        self.resizex()
+        self._img.switch()
 
     def __init__(self, gameuid, pixmap, file) -> None:
         super().__init__()
-        self.itemw = globalconfig["dialog_savegame_layout"]["itemw"]
-        self.itemh = globalconfig["dialog_savegame_layout"]["itemh"]
-        # self.imgw = globalconfig["dialog_savegame_layout"]["imgw"]
-        # self.imgh = globalconfig["dialog_savegame_layout"]["imgh"]
-        # margin = (
-        #     self.itemw - self.imgw
-        # ) // 2  # globalconfig['dialog_savegame_layout']['margin']
-        margin = globalconfig["dialog_savegame_layout"]["margin"]
-        if globalconfig["showgametitle"]:
-            textH = globalconfig["dialog_savegame_layout"]["textH"]
-        else:
-            textH = 0
-        self.imgw = self.itemw - 2 * margin
-        self.imgh = self.itemh - textH - 2 * margin
-        #
-        self.setFixedSize(QSize(self.itemw, self.itemh))
-        # self.setFocusPolicy(Qt.StrongFocus)
+        self.file = file
         self.maskshowfileexists = QLabel(self)
         exists = os.path.exists(get_launchpath(gameuid))
         self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
@@ -104,19 +104,18 @@ class ItemWidget(QWidget):
         self.bottommask.setObjectName("savegame_onselectcolor1")
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
-        self._img = IMGWidget(self.imgw, self.imgh, pixmap)
+        self._img = IMGWidget(pixmap)
         _w = QWidget()
         _w.setStyleSheet("background-color: rgba(255,255,255, 0);")
         wrap = QVBoxLayout()
         _w.setLayout(wrap)
-        _w.setFixedHeight(self.imgh + 2 * margin)
-        wrap.setContentsMargins(margin, margin, margin, margin)
+        self._w = _w
         wrap.addWidget(self._img)
+        self.wrap = wrap
         layout.addWidget(_w)
         layout.setSpacing(0)
         self._lb = QLabel()
-        if globalconfig["showgametitle"]:
-            self._lb.setText(file)
+        self._lb.setText(file if globalconfig["showgametitle"] else "")
         self._lb.setWordWrap(True)
         self._lb.setObjectName("savegame_textfont1")
         self._lb.setAlignment(Qt.AlignmentFlag.AlignHCenter)
@@ -156,10 +155,12 @@ class IMGWidget(QLabel):
         elif globalconfig["imagewrapmode"] == 3:
             return size
 
-    def setimg(self, pixmap):
-        if type(pixmap) != QPixmap:
-            pixmap = pixmap()
-
+    def setimg(self, pixmap: QPixmap):
+        if not (self.height() and self.width()):
+            return
+        if self.__last == (self.size(), globalconfig["imagewrapmode"]):
+            return
+        self.__last = (self.size(), globalconfig["imagewrapmode"])
         rate = self.devicePixelRatioF()
         newpixmap = QPixmap(self.size() * rate)
         newpixmap.setDevicePixelRatio(rate)
@@ -169,7 +170,6 @@ class IMGWidget(QLabel):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.drawPixmap(self.getrect(pixmap.size()), pixmap)
         painter.end()
-
         self.setPixmap(newpixmap)
 
     def getrect(self, size):
@@ -180,11 +180,20 @@ class IMGWidget(QLabel):
         rect.setSize(size)
         return rect
 
-    def __init__(self, w, h, pixmap) -> None:
+    def resizeEvent(self, a0):
+        self.setimg(self._pixmap)
+        return super().resizeEvent(a0)
+
+    def __init__(self, pixmap) -> None:
         super().__init__()
-        self.setFixedSize(QSize(w, h))
         self.setScaledContents(True)
-        self.setimg(pixmap)
+        if type(pixmap) != QPixmap:
+            pixmap = pixmap()
+        self._pixmap = pixmap
+        self.__last = None
+
+    def switch(self):
+        self.setimg(self._pixmap)
 
 
 class ClickableLabel(QLabel):
@@ -592,6 +601,9 @@ class dialog_syssetting(LDialog):
 
         self.parent().setstyle()
 
+    def closeEvent(self, e):
+        self.parent().callchange()
+
     def __init__(self, parent, type_=1) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle("其他设置")
@@ -607,26 +619,11 @@ class dialog_syssetting(LDialog):
             getsimpleswitch(globalconfig, "startgamenototop"),
         )
 
-        if type_ == 1:
-            formLayout.addRow(
-                "显示标题",
-                getsimpleswitch(globalconfig, "showgametitle"),
-            )
-            formLayout.addRow(
-                "缩放",
-                getsimplecombobox(
-                    ["填充", "适应", "拉伸", "居中"],
-                    globalconfig,
-                    "imagewrapmode",
-                ),
-            )
         formLayout.addRow(SplitLine())
         if type_ == 1:
             for key, name in [
                 ("itemw", "宽度"),
                 ("itemh", "高度"),
-                # ("imgw", "图片宽度"),
-                # ("imgh", "图片高度"),
                 ("margin", "边距"),
                 ("textH", "文字区高度"),
             ]:
@@ -643,10 +640,21 @@ class dialog_syssetting(LDialog):
                     isfontselector=True,
                 ),
             )
+            formLayout.addRow(
+                "显示标题",
+                getsimpleswitch(globalconfig, "showgametitle"),
+            )
+            formLayout.addRow(
+                "缩放",
+                getsimplecombobox(
+                    ["填充", "适应", "拉伸", "居中"],
+                    globalconfig,
+                    "imagewrapmode",
+                ),
+            )
 
         elif type_ == 2:
             for key, name in [
-                ("listitemwidth", "宽度"),
                 ("listitemheight", "高度"),
             ]:
                 formLayout.addRow(

@@ -532,8 +532,10 @@
         "transparent": 25,
         "transparentselect": 25,
         "transparentnotexits": 25,
-        "listitemheight": 40,
-        "listitemwidth": 300
+        "listitemwidth_2": [
+            300,
+            500
+        ]
     },
     "gamemanageruseversion": 0,
     "gamemanager_integrated_internal_layout": 0,

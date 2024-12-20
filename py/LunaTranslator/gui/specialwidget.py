@@ -147,6 +147,11 @@ class ScrollArea(QScrollArea):
         visible_rect = QRect(x, y, width, height)
         self.scrolled.emit(visible_rect)
 
+    def keyPressEvent(self, e: QKeyEvent):
+        if e.key() == Qt.Key.Key_Left or e.key() == Qt.Key.Key_Right:
+            return e.ignore()
+        super().keyPressEvent(e)
+
 
 class ScrollFlow(QWidget):
     bgclicked = pyqtSignal()
@@ -345,10 +350,10 @@ class lazyscrollflow(ScrollArea):
                 if not region.intersects(geo):
                     continue
 
-                widfunc, _ = self.widgets[i]
+                widfunc = self.widgets[i]
                 if not widfunc:
                     continue
-                self.widgets[i] = (None, _)
+                self.widgets[i] = None
                 needdos.append((i, widfunc))
         for i, widfunc in needdos:
             try:
@@ -425,48 +430,58 @@ class lazyscrollflow(ScrollArea):
             else:
                 return None
 
+    def setsize(self, size: QSize):
+        self._size = size
+
     def spacing(self):
         return self._spacing
 
+    def anylyze(self, effective_rect: QRect, space_x, N):
+        x = effective_rect.x()
+        for _ in range(N):
+            next_x = x + self._size.width() + space_x
+            if next_x > effective_rect.right():
+                return x
+            x = next_x
+        return x
+
     def fakeresize(self):
-        if self.verticalScrollBar().isVisible():
-            scrollw = self.verticalScrollBar().width()
-        else:
-            scrollw = 0
         with self.lock:
-            # m = self.contentsMargins()
-            rect = QRect()
-            rect.setSize(self.size())
-            effective_rect = rect.adjusted(
-                self._margin, self._margin, -self._margin, -self._margin
-            )  # (+m.left(), +m.top(), -m.right(), -m.bottom())
+            scrollw = (
+                self.verticalScrollBar().width()
+                if self.verticalScrollBar().isVisible()
+                else 0
+            )
+            effective_rect = QRect(
+                self._margin,
+                self._margin,
+                self.width() - 2 * self._margin - scrollw,
+                self.height() - 2 * self._margin,
+            )
             x = effective_rect.x()
             y = effective_rect.y()
-            line_height = 0
+            space_x = self.spacing()
+            space_y = self.spacing()
+            dx = (
+                effective_rect.right()
+                - self.anylyze(effective_rect, space_x, len(self.widgets))
+            ) // 2
             for i, wid in enumerate(self.widgets):
-
-                space_x = self.spacing()
-                space_y = self.spacing()
-
                 if isinstance(wid, QWidget):
-                    sz = wid.size()
                     resize = True
                 else:
-                    _, sz = wid
                     resize = False
-                next_x = x + sz.width() + space_x
-                if next_x > effective_rect.right() - scrollw and line_height > 0:
+                next_x = x + self._size.width() + space_x
+                if next_x > effective_rect.right() and i:
                     x = effective_rect.x()
-                    y = y + line_height + space_y
-                    next_x = x + sz.width() + space_x
-                    line_height = 0
+                    y = y + self._size.height() + space_y
+                    next_x = x + self._size.width() + space_x
                 if resize:
-                    wid.setGeometry(QRect(QPoint(x, y), sz))
-                self.fakegeos[i] = QRect(QPoint(x, y), sz)
+                    wid.setGeometry(QRect(QPoint(x + dx, y), self._size))
+                self.fakegeos[i] = QRect(QPoint(x + dx, y), self._size)
                 x = next_x
-                line_height = max(line_height, sz.height())
 
-            new_height = y + line_height - rect.y() + self._margin
+            new_height = y + self._size.height() + self._margin
         self.internalwid.setFixedHeight(new_height)
 
 
@@ -481,9 +496,17 @@ def has_intersection(interval1, interval2):
 
 
 class delayloadvbox(QWidget):
-    def __init__(self):
+
+    def setheight(self, h):
+        self._h = h
+        self.setFixedHeight(len(self.internal_widgets) * self._h)
+        for _ in self.internal_widgets:
+            if isinstance(_, QWidget):
+                _.resize(_.width(), h)
+
+    def __init__(self, h=1):
         super().__init__()
-        self.internal_itemH = []
+        self._h = h
         self.internal_widgets = []
         self.lock = threading.Lock()
         self.nowvisregion = QRect()
@@ -505,9 +528,9 @@ class delayloadvbox(QWidget):
         ydiff = self.y()
         needdos = []
         with self.lock:
-            for i, h in enumerate(self.internal_itemH):
+            for i in range(len(self.internal_widgets)):
                 ystart = ylastend
-                yend = ystart + h
+                yend = ystart + self._h
                 ylastend = yend
                 if isinstance(self.internal_widgets[i], QWidget):
                     self.internal_widgets[i].move(0, ystart - ydiff)
@@ -519,7 +542,7 @@ class delayloadvbox(QWidget):
                 if not widfunc:
                     continue
                 self.internal_widgets[i] = None
-                needdos.append((i, widfunc, ystart - ydiff, h))
+                needdos.append((i, widfunc, ystart - ydiff, self._h))
 
         for i, widfunc, ystart, h in needdos:
             try:
@@ -541,7 +564,6 @@ class delayloadvbox(QWidget):
     def switchidx(self, idx1, idx2):
         with self.lock:
             self.internal_widgets.insert(idx2, self.internal_widgets.pop(idx1))
-            self.internal_itemH.insert(idx2, self.internal_itemH.pop(idx1))
         self._dovisinternal(False, self.nowvisregion)
 
     def popw(self, i):
@@ -552,8 +574,7 @@ class delayloadvbox(QWidget):
                     w.setParent(None)
                     w.deleteLater()
                 self.internal_widgets.pop(i)
-                self.internal_itemH.pop(i)
-            self.setFixedHeight(sum(self.internal_itemH))
+            self.setFixedHeight(len(self.internal_widgets) * self._h)
             # setFixedHeight会导致上面的闪烁
         self._dovisinternal(False, self.nowvisregion)
 
@@ -562,18 +583,16 @@ class delayloadvbox(QWidget):
             return
         with self.lock:
             self.internal_widgets.insert(0, self.internal_widgets.pop(i))
-            self.internal_itemH.insert(0, self.internal_itemH.pop(i))
         self._dovisinternal(False, self.nowvisregion)
 
-    def insertw(self, i, wf, height):
+    def insertw(self, i, wf):
         refresh = True
         with self.lock:
             if i == -1:
                 refresh = False
                 i = self.len()
-            self.internal_itemH.insert(i, height)
             self.internal_widgets.insert(i, wf)
-            self.setFixedHeight(sum(self.internal_itemH))
+            self.setFixedHeight(len(self.internal_widgets) * self._h)
         if refresh:
             self._dovisinternal(False, self.nowvisregion)
 
@@ -639,6 +658,7 @@ class shrinkableitem(QWidget):
         self.items.setVisible(opened)
         shrinker.setChecked(opened)
         self._ref_p_stackedlist = p
+        self._h = 1
 
     def visheight(self):
         hh = self.btn.height()
@@ -666,8 +686,8 @@ class shrinkableitem(QWidget):
     def switchidx(self, idx1, idx2):
         self.items.switchidx(idx1, idx2)
 
-    def insertw(self, i, wf, height):
-        self.items.insertw(i, wf, height)
+    def insertw(self, i, wf):
+        self.items.insertw(i, wf)
 
     def torank1(self, i):
         self.items.torank1(i)
@@ -684,12 +704,23 @@ class shrinkableitem(QWidget):
     def button(self):
         return self.btn
 
+    def setheight(self, h):
+        self.items.setheight(h)
+
 
 class stackedlist(ScrollArea):
     bgclicked = pyqtSignal()
 
+    def setheight(self, h):
+        for i in range(self.len()):
+            self.w(i).setheight(h)
+        self._h = h
+
     def mousePressEvent(self, _2) -> None:
         self.bgclicked.emit()
+
+    def directshow_1(self):
+        self.doshowlazywidget(True, self.internal.visibleRegion().boundingRect())
 
     def directshow(self):
         QApplication.processEvents()
@@ -704,6 +735,7 @@ class stackedlist(ScrollArea):
 
     def __init__(self):
         super().__init__()
+        self._h = 1
         self.setStyleSheet(
             """QWidget#shit{background-color:transparent;}QScrollArea{background-color:transparent;border:0px}"""
         )
@@ -739,6 +771,7 @@ class stackedlist(ScrollArea):
             region.setHeight(region.height() - self.w(i).visheight())
 
     def insertw(self, i, w: shrinkableitem):
+        w.setheight(self._h)
         self.lay.insertWidget(i, w)
 
     def popw(self, i) -> shrinkableitem:
