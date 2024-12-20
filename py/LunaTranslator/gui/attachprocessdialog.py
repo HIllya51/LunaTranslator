@@ -197,4 +197,5 @@ class AttachProcessDialog(saveposwindow):
                 getQMessageBox(self, "错误", "权限不足，请以管理员权限运行！")
                 return
             self.close()
-            self.callback(self.selectedp, self.windowtext.text())
+            if globalconfig["autoopenselecttext"]:
+                self.callback(self.selectedp, self.windowtext.text())
