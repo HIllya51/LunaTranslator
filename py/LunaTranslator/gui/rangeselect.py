@@ -183,7 +183,10 @@ class rangeselect(QMainWindow):
         self.reset()
 
     def reset(self):
-        winsharedutils.maximum_window(int(self.winId()))
+        if len(QApplication.screens()) == 1:
+            self.setGeometry(QRect(QPoint(0, 0), QApplication.screens()[0].size()))
+        else:
+            winsharedutils.maximum_window(int(self.winId()))
         self.once = True
         self.is_drawing = False
         self.start_point = QPoint()
@@ -201,7 +204,10 @@ class rangeselect(QMainWindow):
         )
 
     def resizeEvent(self, e: QResizeEvent):
-        winsharedutils.maximum_window(int(self.backlabel.winId()))
+        if len(QApplication.screens()) == 1:
+            pass
+        else:
+            winsharedutils.maximum_window(int(self.backlabel.winId()))
         self.backlabel.resize(e.size())
 
     def paintEvent(self, event):
@@ -290,7 +296,7 @@ def rangeselct_function(callback, startauto):
         # 完全销毁旧的实例
         screen_shot_ui.deleteLater()
         screen_shot_ui = None
-    
+
     screen_shot_ui = rangeselect()
     screen_shot_ui.show()
     screen_shot_ui.reset()
