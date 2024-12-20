@@ -107,7 +107,7 @@ bool BGIattach_function2()
     return false;
   HookParam hp;
   hp.address = addrs[0] + 5;
-  hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_NEW;
+  hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
   hp.embed_hook_font = F_TextOutW | F_GetTextExtentPoint32W;
   hp.filter_fun = BGI7Filter;
   hp.offset = regoffset(rax);
