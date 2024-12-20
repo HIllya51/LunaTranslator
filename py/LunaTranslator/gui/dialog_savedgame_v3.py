@@ -842,7 +842,25 @@ class dialog_savedgame_v3(QWidget):
         self.currentfocusuid = None
         self.reftagid = None
         self.reallist = {}
-        self.stack = stackedlist()
+
+        class ___(stackedlist):
+            def keyPressEvent(self, e: QKeyEvent):
+                if e.key() == Qt.Key.Key_Return:
+                    startgamecheck(
+                        self.ref,
+                        getreflist(self.ref.reftagid),
+                        self.ref.currentfocusuid,
+                    )
+                elif e.key() == Qt.Key.Key_Delete:
+                    self.ref.shanchuyouxi()
+                elif e.key() == Qt.Key.Key_Left:
+                    self.ref.moverank(-1)
+                elif e.key() == Qt.Key.Key_Right:
+                    self.ref.moverank(1)
+                super().keyPressEvent(e)
+
+        self.stack = ___()
+        self.stack.ref = self
         self.stack.setheight(
             globalconfig["dialog_savegame_layout"]["listitemheight"] + 1
         )
