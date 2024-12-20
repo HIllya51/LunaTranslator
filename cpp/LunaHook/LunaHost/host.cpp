@@ -81,6 +81,135 @@ namespace
 		}
 		return f64bitProc;
 	}
+	void __handlepipethread(HANDLE hookPipe, HANDLE hostPipe, HANDLE pipeAvailableEvent)
+	{
+		ConnectNamedPipe(hookPipe, nullptr);
+		CloseHandle(pipeAvailableEvent);
+		WORD hookversion[4];
+		BYTE buffer[PIPE_BUFFER_SIZE] = {};
+		DWORD bytesRead, processId;
+		ReadFile(hookPipe, &processId, sizeof(processId), &bytesRead, nullptr);
+		ReadFile(hookPipe, hookversion, sizeof(hookversion), &bytesRead, nullptr);
+		if (memcmp(hookversion, LUNA_VERSION, sizeof(hookversion)) != 0)
+			Host::InfoOutput(HOSTINFO::Warning, TR[UNMATCHABLEVERSION]);
+
+		processRecordsByIds->try_emplace(processId, processId, hostPipe);
+		processRecordsByIds->at(processId).Send(curr_lang);
+		OnConnect(processId);
+		Host::AddConsoleOutput(FormatString(TR[PROC_CONN], processId));
+
+		while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
+			switch (*(HostNotificationType *)buffer)
+			{
+			case HOST_NOTIFICATION_FOUND_HOOK:
+			{
+				auto info = *(HookFoundNotif *)buffer;
+				auto OnHookFound = processRecordsByIds->at(processId).OnHookFound;
+				std::wstring wide = info.text;
+				if (wide.size() > STRING)
+				{
+					wcscpy_s(info.hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
+					OnHookFound(info.hp, std::move(info.text));
+				}
+				if (!(info.hp.type & CSHARP_STRING))
+				{
+					info.hp.type &= ~CODEC_UTF16;
+					if (auto converted = StringToWideString((char *)info.text, info.hp.codepage))
+#if SEARCH_SJIS_UNSAFE
+						if (converted->size())
+#else
+						if (converted->size() > STRING)
+#endif
+						{
+							wcscpy_s(info.hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
+							OnHookFound(info.hp, std::move(converted.value()));
+						}
+					if (auto converted = StringToWideString((char *)info.text, info.hp.codepage = CP_UTF8))
+						if (converted->size() > STRING)
+						{
+							wcscpy_s(info.hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
+							OnHookFound(info.hp, std::move(converted.value()));
+						}
+				}
+			}
+			break;
+			case HOST_NOTIFICATION_RMVHOOK:
+			{
+				auto info = *(HookRemovedNotif *)buffer;
+				auto sm = Host::GetCommonSharedMem(processId);
+				if (sm)
+					for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+						if (sm->embedtps[i].use && (sm->embedtps[i].tp.addr == info.address) && (sm->embedtps[i].tp.processId == processId))
+							ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
+				RemoveThreads([&](ThreadParam tp)
+							  { return tp.processId == processId && tp.addr == info.address; });
+			}
+			break;
+			case HOST_NOTIFICATION_INSERTING_HOOK:
+			{
+				if (HookInsert)
+				{
+					auto info = (HookInsertingNotif *)buffer;
+					HookInsert(processId, info->addr, info->hookcode);
+				}
+			}
+			break;
+			case HOST_NOTIFICATION_TEXT:
+			{
+				auto info = *(HostInfoNotif *)buffer;
+				Host::InfoOutput(info.type, StringToWideString(info.message));
+			}
+			break;
+			default:
+			{
+				auto data = (TextOutput_T *)buffer;
+				auto length = bytesRead - sizeof(TextOutput_T);
+				auto tp = data->tp;
+				auto hp = data->hp;
+				auto _textThreadsByParams = textThreadsByParams.Acquire();
+
+				auto thread = _textThreadsByParams->find(tp);
+				if (thread == _textThreadsByParams->end())
+				{
+					try
+					{
+						thread = _textThreadsByParams->try_emplace(tp, tp, hp).first;
+					}
+					catch (std::out_of_range)
+					{
+						continue;
+					} // probably garbage data in pipe, try again
+					OnCreate(thread->second);
+				}
+
+				thread->second.hp.type = data->type;
+				thread->second.Push(data->data, length);
+
+				if (embedcallback)
+				{
+					auto &hp = thread->second.hp;
+					if (hp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp))
+					{
+						if (auto t = commonparsestring(data->data, length, &hp, Host::defaultCodepage))
+						{
+							auto text = t.value();
+							if (text.size())
+							{
+								embedcallback(text, tp);
+							}
+						}
+					}
+				}
+			}
+			break;
+			}
+
+		RemoveThreads([&](ThreadParam tp)
+					  { return tp.processId == processId; });
+		OnDisconnect(processId);
+		Host::AddConsoleOutput(FormatString(TR[PROC_DISCONN], processId));
+		processRecordsByIds->erase(processId);
+	}
 	void CreatePipe(int pid)
 	{
 		HANDLE
@@ -89,119 +218,7 @@ namespace
 		HANDLE pipeAvailableEvent = CreateEventW(&allAccess, FALSE, FALSE, (std::wstring(PIPE_AVAILABLE_EVENT) + std::to_wstring(pid)).c_str());
 
 		SetEvent(pipeAvailableEvent);
-		std::thread([hookPipe, hostPipe, pipeAvailableEvent]
-					{
-			ConnectNamedPipe(hookPipe, nullptr);
-			CloseHandle(pipeAvailableEvent);
-			WORD hookversion[4];
-			BYTE buffer[PIPE_BUFFER_SIZE] = {};
-			DWORD bytesRead, processId;
-			ReadFile(hookPipe, &processId, sizeof(processId), &bytesRead, nullptr);
-			ReadFile(hookPipe, hookversion, sizeof(hookversion), &bytesRead, nullptr); 
-			if(memcmp(hookversion,LUNA_VERSION,sizeof(hookversion))!=0)
-				Host::InfoOutput(HOSTINFO::Warning, TR[UNMATCHABLEVERSION]); 
-
-			processRecordsByIds->try_emplace(processId, processId, hostPipe);
-			processRecordsByIds->at(processId).Send(curr_lang);
-			OnConnect(processId);
-			Host::AddConsoleOutput(FormatString(TR[PROC_CONN],processId));
-			
-			while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
-				switch (*(HostNotificationType*)buffer)
-				{
-				case HOST_NOTIFICATION_FOUND_HOOK:
-				{
-					auto info = *(HookFoundNotif*)buffer;
-					auto OnHookFound = processRecordsByIds->at(processId).OnHookFound; 
-					std::wstring wide = info.text;
-					if (wide.size() > STRING) {
-						wcscpy_s(info.hp.hookcode,HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
-						OnHookFound(info.hp, std::move(info.text));
-					}
-					info.hp.type &= ~CODEC_UTF16;
-					if (auto converted = StringToWideString((char*)info.text, info.hp.codepage))
-#if SEARCH_SJIS_UNSAFE
-						if (converted->size())
-#else
-						if (converted->size() > STRING)
-#endif
-						{
-							wcscpy_s(info.hp.hookcode,HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
-							OnHookFound(info.hp, std::move(converted.value()));
-						}
-					if (auto converted = StringToWideString((char*)info.text, info.hp.codepage = CP_UTF8))
-						if (converted->size() > STRING)
-						{
-							wcscpy_s(info.hp.hookcode,HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
-							OnHookFound(info.hp, std::move(converted.value()));
-						}
-				}
-				break;
-				case HOST_NOTIFICATION_RMVHOOK:
-				{
-					auto info = *(HookRemovedNotif*)buffer;
-					auto sm = Host::GetCommonSharedMem(processId);
-					if (sm) 
-						for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
-							if (sm->embedtps[i].use && (sm->embedtps[i].tp.addr==info.address)&&(sm->embedtps[i].tp.processId==processId))
-								ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
-					RemoveThreads([&](ThreadParam tp) { return tp.processId == processId && tp.addr == info.address; });
-				}
-				break;
-				case HOST_NOTIFICATION_INSERTING_HOOK:
-				{
-					if(HookInsert){
-						auto info = (HookInsertingNotif*)buffer;
-            			HookInsert(processId, info->addr,info->hookcode);
-					}
-				}
-				break;
-				case HOST_NOTIFICATION_TEXT:
-				{
-					auto info = *(HostInfoNotif*)buffer;
-					Host::InfoOutput(info.type, StringToWideString(info.message)); 
-				}
-				break;
-				default:
-				{
-					auto data=(TextOutput_T*)buffer;
-					auto length= bytesRead - sizeof(TextOutput_T);
-					auto tp = data->tp;
-					auto hp=data->hp;
-					auto _textThreadsByParams=textThreadsByParams.Acquire();
-					
-					auto thread = _textThreadsByParams->find(tp);
-					if (thread == _textThreadsByParams->end())
-					{
-						try { thread = _textThreadsByParams->try_emplace(tp, tp, hp).first; }
-						catch (std::out_of_range) { continue; } // probably garbage data in pipe, try again
-						OnCreate(thread->second);
-					}
-					 
-					thread->second.hp.type=data->type;
-					thread->second.Push(data->data, length);
-
-					if(embedcallback){
-						auto & hp=thread->second.hp;
-						if(hp.type&EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)){
-							if (auto t=commonparsestring(data->data,length,&hp,Host::defaultCodepage)){
-								auto text=t.value();
-								if(text.size()){
-									embedcallback(text,tp);
-								}
-							} 
-						}
-						
-					}
-				}
-				break;
-				}
-
-			RemoveThreads([&](ThreadParam tp) { return tp.processId == processId; });
-			OnDisconnect(processId);
-			Host::AddConsoleOutput(FormatString(TR[PROC_DISCONN],processId));
-			processRecordsByIds->erase(processId); })
-			.detach();
+		std::thread(__handlepipethread, hookPipe, hostPipe, pipeAvailableEvent).detach();
 	}
 }
 

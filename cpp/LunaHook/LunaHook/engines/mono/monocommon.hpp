@@ -24,7 +24,8 @@ namespace
      */
     void SpecialHookMonoString(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        commonsolvemonostring(context->argof(1), buffer);
+        if (auto sw = commonsolvemonostring(context->argof(1)))
+            buffer->from(sw.value());
 
 #ifndef _WIN64
         auto s = context->ecx;
@@ -99,7 +100,7 @@ namespace monocommon
         {
             hp.type = USING_STRING | CODEC_UTF16 | FULL_STRING;
             if (!hp.text_fun)
-                hp.type |= SPECIAL_JIT_STRING;
+                hp.type |= CSHARP_STRING;
             if (hook.Embed)
                 hp.type |= EMBED_ABLE;
         }
@@ -171,7 +172,9 @@ namespace monocommon
                     succ |= NewHook_check(addr, hook);
                 }
                 if (succ)
+                {
                     return true;
+                }
             }
         return false;
     }

@@ -2,16 +2,15 @@
 namespace
 {
 
-	Il2CppClass *get_il2cppclass1(const char *assemblyName, const char *namespaze,
-								  const char *klassName, bool strict)
+	const Il2CppClass *get_il2cppclass1(const char *assemblyName, const char *namespaze,
+										const char *klassName, bool strict)
 	{
 		auto il2cpp_domain = (SafeFptr(il2cpp_domain_get))();
 		if (!il2cpp_domain)
 			return NULL;
-		void *assembly = 0;
 		do
 		{
-			assembly = (SafeFptr(il2cpp_domain_assembly_open))(il2cpp_domain, assemblyName);
+			auto assembly = (SafeFptr(il2cpp_domain_assembly_open))(il2cpp_domain, assemblyName);
 			if (!assembly)
 				break;
 			auto image = (SafeFptr(il2cpp_assembly_get_image))(assembly);
@@ -44,13 +43,39 @@ namespace
 		auto st = (std::vector<Il2CppClass *> *)userData;
 		st->push_back(klass);
 	}
-	std::vector<Il2CppClass *> get_il2cppclass2(const char *namespaze,
-												const char *klassName)
+	std::vector<const Il2CppClass *> loopclass()
 	{
-		std::vector<Il2CppClass *> maybes;
-		std::vector<Il2CppClass *> klasses;
+		std::vector<const Il2CppClass *> klasses;
 		(SafeFptr(il2cpp_class_for_each))(foreach_func, &klasses);
+		if (klasses.size())
+			return klasses;
 
+		auto domain = (SafeFptr(il2cpp_domain_get))();
+		if (!domain)
+			return klasses;
+		size_t assemblyCount = 0;
+		Il2CppAssembly **assemblies = SafeFptr(il2cpp_domain_get_assemblies)(domain, &assemblyCount);
+		for (size_t i = 0; i < assemblyCount; i++)
+		{
+			Il2CppAssembly *assembly = assemblies[i];
+			auto image = SafeFptr(il2cpp_assembly_get_image)(assembly);
+			if (!image)
+				continue;
+			auto classcount = SafeFptr(il2cpp_image_get_class_count)(image);
+			for (auto ci = 0; ci < classcount; ci++)
+			{
+				auto klass = SafeFptr(il2cpp_image_get_class)(image, ci);
+				if (!klass)
+					continue;
+				klasses.push_back(klass);
+			}
+		}
+		return klasses;
+	}
+	std::vector<const Il2CppClass *> get_il2cppclass2(const char *namespaze, const char *klassName)
+	{
+		std::vector<const Il2CppClass *> maybes;
+		auto klasses = loopclass();
 		for (auto klass : klasses)
 		{
 			auto classname = (SafeFptr(il2cpp_class_get_name))(klass);
@@ -86,29 +111,116 @@ namespace
 			(SafeFptr(il2cpp_thread_detach))(thread);
 		}
 	};
-	void tryprintimage(Il2CppClass *klass)
+	std::optional<std::string> getclassinfo(const Il2CppClass *klass)
 	{
 		auto image = (SafeFptr(il2cpp_class_get_image))(klass);
 		if (!image)
-			return;
+			return {};
 		auto imagen = (SafeFptr(il2cpp_image_get_name))(image);
 		auto names = (SafeFptr(il2cpp_class_get_namespace))(klass);
-		if (imagen && names)
-			ConsoleOutput("%s:%s", imagen, names);
+		auto classname = (SafeFptr(il2cpp_class_get_name))(klass);
+		if (imagen && names && classname)
+		{
+			std::string _ = imagen;
+			_ += ":";
+			_ += names;
+			_ += ":";
+			_ += classname;
+			return _;
+		}
+		return {};
 	}
-	uintptr_t getmethodofklass(Il2CppClass *klass, const char *name, int argsCount)
+	std::string getmethodinfo(const MethodInfo *method)
+	{
+		const char *methodName = SafeFptr(il2cpp_method_get_name)(method);
+		std::stringstream info;
+		if (method->methodPointer)
+			info << std::hex << (method->methodPointer - (uintptr_t)il2cppfunctions::game_dll);
+		else
+			info << "??";
+
+		if (methodName) // il2cpp似乎没办法从method查询name
+			info << " " << methodName;
+		info << " (";
+		for (uint32_t i = 0; i < SafeFptr(il2cpp_method_get_param_count)(method); i++)
+		{
+			if (i != 0)
+				info << ", ";
+			if (auto rt = SafeFptr(il2cpp_method_get_param)(method, i))
+				if (auto tp = SafeFptr(il2cpp_type_get_name)(rt))
+					info << tp;
+		}
+		info << ")";
+		if (auto rt = SafeFptr(il2cpp_method_get_return_type)(method))
+			if (auto returntype = SafeFptr(il2cpp_type_get_name)(rt))
+			{
+				info << " -> " << returntype;
+			}
+		return info.str();
+	}
+	uintptr_t getmethodofklass(const Il2CppClass *klass, const char *name, int argsCount)
 	{
 		if (!klass)
 			return NULL;
 		auto ret = (SafeFptr(il2cpp_class_get_method_from_name))(klass, name, argsCount);
+
 		if (!ret)
 			return NULL;
-		tryprintimage(klass);
+		if (auto s = getclassinfo(klass))
+		{
+			ConsoleOutput(s.value().c_str());
+			ConsoleOutput(getmethodinfo(ret).c_str());
+		}
 		return ret->methodPointer;
 	}
 }
+il2cpploopinfo il2cppfunctions::loop_all_methods(bool show)
+{
+	auto thread = AutoThread();
+	if (!thread.thread)
+		return {};
+	auto klasses = loopclass();
+	il2cpploopinfo hps;
+	for (auto klass : klasses)
+	{
+		auto s = getclassinfo(klass);
+		if (!s)
+			continue;
+		if (show)
+			ConsoleOutput(s.value().c_str());
+
+		void *iter = nullptr;
+		while (auto method = SafeFptr(il2cpp_class_get_methods)(klass, &iter))
+		{
+			if (show)
+				ConsoleOutput(getmethodinfo(method).c_str());
+			else
+			{
+				if (method->methodPointer)
+				{
+					for (uint32_t i = 0; i < SafeFptr(il2cpp_method_get_param_count)(method); i++)
+					{
+						if (auto rt = SafeFptr(il2cpp_method_get_param)(method, i))
+							if (auto tp = SafeFptr(il2cpp_type_get_name)(rt))
+								if (strcmp(tp, "System.String") == 0)
+								{
+									hps.push_back({i + 1, method->methodPointer});
+									break;
+								}
+					}
+				}
+			}
+		}
+	}
+	if (show && klasses.size())
+		return {{0, 0}};
+	return hps;
+}
 void il2cppfunctions::init(HMODULE game_module)
 {
+	game_dll = game_module;
+	RESOLVE_IMPORT(il2cpp_type_get_name);
+	RESOLVE_IMPORT(il2cpp_method_get_param_count);
 	RESOLVE_IMPORT(il2cpp_string_new_utf16);
 	RESOLVE_IMPORT(il2cpp_string_chars);
 	RESOLVE_IMPORT(il2cpp_string_length);
@@ -119,6 +231,8 @@ void il2cppfunctions::init(HMODULE game_module)
 	RESOLVE_IMPORT(il2cpp_domain_get);
 	RESOLVE_IMPORT(il2cpp_domain_assembly_open);
 	RESOLVE_IMPORT(il2cpp_assembly_get_image);
+	RESOLVE_IMPORT(il2cpp_image_get_class);
+	RESOLVE_IMPORT(il2cpp_image_get_class_count);
 	RESOLVE_IMPORT(il2cpp_class_from_name);
 	RESOLVE_IMPORT(il2cpp_class_get_methods);
 	RESOLVE_IMPORT(il2cpp_class_get_method_from_name);
@@ -142,6 +256,7 @@ void il2cppfunctions::init(HMODULE game_module)
 	RESOLVE_IMPORT(il2cpp_runtime_invoke);
 	RESOLVE_IMPORT(il2cpp_class_get_name);
 	RESOLVE_IMPORT(il2cpp_class_get_namespace);
+	RESOLVE_IMPORT(il2cpp_method_get_return_type);
 	RESOLVE_IMPORT(il2cpp_domain_get_assemblies);
 }
 uintptr_t il2cppfunctions::get_method_pointer(const char *assemblyName, const char *namespaze,

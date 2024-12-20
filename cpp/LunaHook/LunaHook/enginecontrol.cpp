@@ -86,14 +86,18 @@ bool checkengine()
         bool matched = safematch(m);
         bool attached = matched && safeattach(m);
 
-        //ConsoleOutput("Progress %d/%d, checked engine %s, %s",current,engines.size(),m->getenginename(),infomations[matched+attached]);
-        //ConsoleOutput("Progress %d/%d, %s",current,engines.size(),infomations[matched+attached]);
+        // ConsoleOutput("Progress %d/%d, checked engine %s, %s",current,engines.size(),m->getenginename(),infomations[matched+attached]);
+        // ConsoleOutput("Progress %d/%d, %s",current,engines.size(),infomations[matched+attached]);
         if (matched == false)
             continue;
         ConsoleOutput(TR[MatchedEngine], m->getenginename());
         if (m->is_engine_certain)
         {
             ConsoleOutput(TR[ConfirmStop], m->getenginename());
+            jittypedefault = m->jittype;
+            spDefault.isjithook = true;
+            spDefault.minAddress = 0;
+            spDefault.maxAddress = -1;
             return attached;
         }
 

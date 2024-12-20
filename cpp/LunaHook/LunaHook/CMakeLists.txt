@@ -1,7 +1,7 @@
 include_directories(. util engines)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8) 
 	set(enginessrc 
-		BGI MKXPZ Ryujinx livecaptions Kincaid vita3k rpcs3 yuzu TYPEMOON UnrealEngine AGES7 mono
+		BGI MKXPZ Ryujinx livecaptions Kincaid vita3k rpcs3 yuzu TYPEMOON UnrealEngine AGES7
 		Godot 5pb lucasystem LightVN V8 Artemis KiriKiri YOX CMVS Suika2)
 	set(enginepath "engine64")
 	set(collector "enginecollection64.cpp")
@@ -14,7 +14,7 @@ else()
 		BKEngine Overflow SRPGStudio Suika2 FVP LCScript Ohgetsu RPGMakerRGSS3 ONScripterru OVERDRIVE
 		HXP Palette Purple Ruf RUNE Tarte Tomato Sakuradog Troy VitaminSoft UnknownEngine TSSystem
 		Xbangbang Anisetta Nijyuei Interheart LovaGame Giga Jisatu101 EntisGLS Ciel ACTGS TerraLunar
-		jukujojidai VanillawareGC cef V8 mono PONScripter Bishop sakanagl Lightvn KiriKiri SideB BGI
+		jukujojidai VanillawareGC cef V8 PONScripter Bishop sakanagl Lightvn KiriKiri SideB BGI
 		Bootup morning shyakunage Regista NNNConfig Eushully Majiro littlecheese Elf Silkys CMVS Wolf
 		Circus1 Circus2 Cotopha Artemis CatSystem Atelier Tenco QLIE Pal AIL NeXAS LunaSoft Unicorn
 		Rejet Interlude AdobeAir Retouch Malie Live Nexton Lucifen Waffle TinkerBell SystemAoi Yuris

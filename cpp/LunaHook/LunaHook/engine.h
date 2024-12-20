@@ -10,7 +10,7 @@ class ENGINE
 public:
     const char *enginename;
     bool is_engine_certain; // stop when match a engine ,even if not attached
-
+    JITTYPE jittype;
     enum class CHECK_BY
     {
         ALL_TRUE,
@@ -36,7 +36,7 @@ public:
             return enginename;
         return typeid(*this).name() + 6;
     }
-    ENGINE() : enginename(nullptr), is_engine_certain(true), check_by(CHECK_BY::ALL_TRUE){};
+    ENGINE() : enginename(nullptr), is_engine_certain(true), check_by(CHECK_BY::ALL_TRUE), jittype(JITTYPE::PC) {};
     bool check_function();
 };
 

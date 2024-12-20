@@ -241,9 +241,6 @@ bool rpcs3::attach_function()
     if (DoJitPtr == 0)
         return false;
     unsafeinithooks();
-    spDefault.isjithook = true;
-    spDefault.minAddress = 0;
-    spDefault.maxAddress = -1;
     HookParam hp;
     hp.address = DoJitPtr;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)

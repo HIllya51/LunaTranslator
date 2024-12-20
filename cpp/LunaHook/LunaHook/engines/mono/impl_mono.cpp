@@ -37,9 +37,8 @@ namespace
             return NULL;
         return maybe;
     }
-    std::vector<MonoClass *> mono_findklassby_class(std::vector<MonoImage *> &images, const char *_namespace, const char *_class)
+    std::vector<MonoClass *> loopclass(std::vector<MonoImage *> &images)
     {
-
         std::vector<MonoClass *> maybes;
         for (auto image : images)
         {
@@ -54,32 +53,59 @@ namespace
                 auto klass = (MonoClass *)(SafeFptr(mono_class_get))(image, MONO_TOKEN_TYPE_DEF | i + 1);
                 if (!klass)
                     continue;
-                auto name = (SafeFptr(mono_class_get_name))(klass);
-                if (!name)
-                    continue;
-                if (strcmp(name, _class) != 0)
-                    continue;
                 maybes.push_back(klass);
-                auto namespacename = (SafeFptr(mono_class_get_namespace))(klass);
-                if (!namespacename)
-                    continue;
-                if (strlen(_namespace) && (strcmp(namespacename, _namespace) == 0))
-                {
-                    return {klass};
-                }
             }
         }
         return maybes;
     }
-    void tryprintimage(MonoClass *klass)
+    std::vector<MonoClass *> mono_findklassby_class(std::vector<MonoImage *> &images, const char *_namespace, const char *_class)
+    {
+        std::vector<MonoClass *> maybes;
+        for (auto klass : loopclass(images))
+        {
+            auto name = (SafeFptr(mono_class_get_name))(klass);
+            if (!name)
+                continue;
+            if (strcmp(name, _class) != 0)
+                continue;
+            maybes.push_back(klass);
+            auto namespacename = (SafeFptr(mono_class_get_namespace))(klass);
+            if (!namespacename)
+                continue;
+            if (strlen(_namespace) && (strcmp(namespacename, _namespace) == 0))
+            {
+                return {klass};
+            }
+        }
+        return maybes;
+    }
+    std::optional<std::string> getclassinfo(MonoClass *klass)
     {
         auto image = (SafeFptr(mono_class_get_image))(klass);
         if (!image)
-            return;
+            return {};
         auto imagen = (SafeFptr(mono_image_get_name))(image);
         auto names = (SafeFptr(mono_class_get_namespace))(klass);
-        if (imagen && names)
-            ConsoleOutput("%s:%s", imagen, names);
+        auto classname = (SafeFptr(mono_class_get_name))(klass);
+        if (imagen && names && classname)
+        {
+            std::string _ = imagen;
+            _ += ":";
+            _ += names;
+            _ += ":";
+            _ += classname;
+            return _;
+        }
+        return {};
+    }
+    std::string getmethodinfo(MonoMethod *method)
+    {
+        const char *methodName = SafeFptr(mono_method_get_name)(method); // 谜之没有输出
+        if (!methodName)
+            methodName = SafeFptr(mono_method_full_name)(method, true);
+        if (methodName)
+            return methodName;
+        return "";
     }
     uintptr_t getmethodofklass(MonoClass *klass, const char *name, int argsCount)
     {
@@ -88,7 +114,11 @@ namespace
         auto MonoClassMethod = (SafeFptr(mono_class_get_method_from_name))(klass, name, argsCount);
         if (!MonoClassMethod)
             return NULL;
-        tryprintimage(klass);
+        if (auto s = getclassinfo(klass))
+        {
+            ConsoleOutput(s.value().c_str());
+            ConsoleOutput(getmethodinfo(MonoClassMethod).c_str());
+        }
         return (uintptr_t)(SafeFptr(mono_compile_method))(MonoClassMethod);
     }
     struct AutoThread
@@ -108,9 +138,102 @@ namespace
             (SafeFptr(mono_thread_detach))(thread);
         }
     };
+    void __safe_getxx(monoloopinfo *hps, MonoMethod *method, MonoClass *klass)
+    {
+        if (auto methodName = SafeFptr(mono_method_full_name)(method, true))
+        {
+            if (auto sig = SafeFptr(mono_method_signature)(method))
+            {
+                if (auto cnt = SafeFptr(mono_signature_get_param_count)(sig))
+                {
+                    gpointer itertype = nullptr;
+                    while (auto type = SafeFptr(mono_signature_get_params)(sig, &itertype))
+                    {
+                        if (auto tp = SafeFptr(mono_type_get_name)(type))
+                        {
+                            if (strcmp(tp, "System.String") == 0)
+                            {
+                                if (auto ptr = (uintptr_t)(SafeFptr(mono_compile_method))(method))
+                                {
+                                    std::string meth = methodName;
+                                    if (meth.find(" (") != meth.npos)
+                                    {
+                                        meth = meth.substr(0, meth.find(" ("));
+                                        auto _ = strSplit(meth, ":");
+                                        if (_.size() >= 2)
+                                        {
+                                            auto m = _[_.size() - 1];
+
+                                            auto image = (SafeFptr(mono_class_get_image))(klass);
+                                            auto imagen = (SafeFptr(mono_image_get_name))(image);
+                                            auto names = (SafeFptr(mono_class_get_namespace))(klass);
+                                            auto classname = (SafeFptr(mono_class_get_name))(klass);
+                                            std::string s;
+                                            s = imagen;
+                                            s += ":";
+                                            s += names;
+                                            s += ":";
+                                            s += classname;
+                                            s += ":";
+                                            s += m;
+                                            s += ":";
+                                            s += std::to_string(cnt);
+                                            hps->push_back({ptr, s});
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    void safe_getxx(monoloopinfo *hps, MonoMethod *method, MonoClass *klass)
+    {
+        __try
+        {
+            __safe_getxx(hps, method, klass);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+        }
+    }
+
+}
+monoloopinfo monofunctions::loop_all_methods(bool show)
+{
+    auto thread = AutoThread();
+    if (!thread.thread)
+        return {};
+    monoloopinfo hps;
+    auto klasses = loopclass(mono_loop_images());
+    for (auto klass : klasses)
+    {
+        auto s = getclassinfo(klass);
+        if (!s)
+            continue;
+        if (show)
+            ConsoleOutput(s.value().c_str());
+        gpointer iter = nullptr;
+        while (auto method = SafeFptr(mono_class_get_methods)(klass, &iter))
+        {
+            if (show)
+                ConsoleOutput(getmethodinfo(method).c_str());
+            else
+            {
+                safe_getxx(&hps, method, klass);
+            }
+        }
+    }
+    if (show && klasses.size())
+        return {{0, ""}};
+    return hps;
 }
 void monofunctions::init(HMODULE game_module)
 {
+    RESOLVE_IMPORT(mono_class_get_methods);
     RESOLVE_IMPORT(mono_string_chars);
     RESOLVE_IMPORT(mono_string_length);
     RESOLVE_IMPORT(mono_table_info_get_rows);

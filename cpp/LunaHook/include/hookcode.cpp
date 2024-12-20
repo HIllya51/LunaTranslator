@@ -96,7 +96,7 @@ namespace
 			hp.type |= USING_STRING | CODEC_UTF16;
 			break;
 		case L'M':
-			hp.type |= USING_STRING | CODEC_UTF16 | SPECIAL_JIT_STRING;
+			hp.type |= USING_STRING | CODEC_UTF16 | CSHARP_STRING;
 			break;
 		case L'U':
 			hp.type |= USING_STRING | CODEC_UTF32;
@@ -313,7 +313,7 @@ namespace
 
 		if (hp.type & USING_STRING)
 		{
-			if (hp.type & SPECIAL_JIT_STRING)
+			if (hp.type & CSHARP_STRING)
 				HCode += L'M';
 			else if (hp.type & CODEC_UTF16)
 				HCode += L'Q';

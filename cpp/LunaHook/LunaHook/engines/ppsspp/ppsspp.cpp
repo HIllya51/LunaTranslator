@@ -549,9 +549,6 @@ namespace ppsspp
             return false;
         trygetgameinwindowtitle();
         Load_PSP_ISO_StringFromFormat();
-        spDefault.isjithook = true;
-        spDefault.minAddress = 0;
-        spDefault.maxAddress = -1;
         HookParam hp;
         hp.address = DoJitPtr; // Jit::DoJit
         hp.user_value = (uintptr_t) new uintptr_t;

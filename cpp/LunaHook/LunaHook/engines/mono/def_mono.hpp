@@ -415,7 +415,6 @@ inline MonoTableInfo *(*mono_image_get_table_info)(MonoImage *, int);
 inline int (*mono_table_info_get_rows)(MonoTableInfo *);
 inline gunichar2 *(*mono_string_chars)(MonoString *str);
 inline int (*mono_string_length)(MonoString *str);
-
 namespace monofunctions
 {
 	void init(HMODULE dll);
@@ -424,4 +423,5 @@ namespace monofunctions
 
 	std::optional<std::wstring_view> get_string(void *);
 	void *create_string(std::wstring_view ws);
+	monoloopinfo loop_all_methods(bool show);
 }

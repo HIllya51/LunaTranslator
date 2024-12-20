@@ -5,7 +5,7 @@ class yuzu : public ENGINE
 public:
     yuzu()
     {
-
+        jittype = JITTYPE::YUZU;
         is_engine_certain = false;
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()

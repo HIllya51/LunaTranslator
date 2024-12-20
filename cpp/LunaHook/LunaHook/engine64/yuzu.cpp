@@ -175,9 +175,6 @@ bool yuzu::attach_function()
         return false;
     trygetgameinwindowtitle();
     Hook_Network_RoomMember_SendGameInfo();
-    spDefault.isjithook = true;
-    spDefault.minAddress = 0;
-    spDefault.maxAddress = -1;
     HookParam hp;
     hp.address = DoJitPtr;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)

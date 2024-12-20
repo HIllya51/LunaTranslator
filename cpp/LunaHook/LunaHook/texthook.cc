@@ -289,7 +289,7 @@ void TextHook::Send(hook_context *context)
 			lpDataIn = jitgetaddr(context, &hp, true);
 			plpdatain = &lpDataIn;
 		}
-		else if (hp.jittype == JITTYPE::UNITY)
+		else if (hp.jittype == JITTYPE::UNITY || hp.type & CSHARP_STRING)
 		{
 			plpdatain = &context->argof(hp.offset);
 			lpDataIn = *plpdatain;
@@ -299,10 +299,10 @@ void TextHook::Send(hook_context *context)
 		{
 			hp.text_fun(context, &hp, &buff, &lpSplit);
 		}
-		else if (hp.type & SPECIAL_JIT_STRING)
+		else if (hp.type & CSHARP_STRING)
 		{
-			if (hp.jittype == JITTYPE::UNITY)
-				commonsolvemonostring(lpDataIn, &buff);
+			if (auto sw = commonsolvemonostring(lpDataIn))
+				buff.from(sw.value());
 		}
 		else
 		{
@@ -351,7 +351,7 @@ void TextHook::Send(hook_context *context)
 				*(WORD *)buff.buff = lpDataIn & 0xffff;
 			}
 		}
-		else if ((!hp.text_fun) && (!(hp.type & SPECIAL_JIT_STRING)))
+		else if ((!hp.text_fun) && (!(hp.type & CSHARP_STRING)))
 		{
 			if (lpDataIn == 0)
 				__leave;
@@ -423,10 +423,9 @@ void TextHook::Send(hook_context *context)
 				}
 				else if (hp.embed_fun)
 					hp.embed_fun(context, buff);
-				else if (hp.type & SPECIAL_JIT_STRING)
+				else if (hp.type & CSHARP_STRING)
 				{
-					if (hp.jittype == JITTYPE::UNITY)
-						unity_ui_string_embed_fun(context->argof(hp.offset), buff);
+					unity_ui_string_embed_fun(context->argof(hp.offset), buff);
 				}
 			}
 		}
