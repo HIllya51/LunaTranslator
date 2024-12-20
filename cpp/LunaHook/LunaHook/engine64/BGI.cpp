@@ -54,7 +54,7 @@ CHAR *__fastcall sub_1400F5BC0(LPSTR lpMultiByteStr, LPCWCH lpWideCharStr)
 .text:00000001400F5BFD                 mov     ebx, 3A4h*/
   const BYTE bytes[] = {
       0xBB, 0xE9, 0xFD, 0x00, 0x00, // cp=65001
-      0xe8,XX,
+      0xe8, XX,
       0xBB, 0xA4, 0x03, 0x00, 0x00 // cp=932
   };
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
@@ -108,6 +108,8 @@ bool BGIattach_function2()
   HookParam hp;
   hp.address = addrs[0] + 5;
   hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
+  // 虽然不知道什么原因，但会正确分成三个thread: name+historytext, text, skiptext，且ret值固定，所以不NO_CONTEXT比较好
+  // EnclosingAlignedFunction r8 sjit 会分成2个: name+historytext+skiptext, text，所以不如不align
   hp.embed_hook_font = F_TextOutW | F_GetTextExtentPoint32W;
   hp.filter_fun = BGI7Filter;
   hp.offset = regoffset(rax);
