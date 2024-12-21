@@ -266,6 +266,23 @@ namespace
     {
         CharFilter(buffer, '\n');
     }
+    void PCSG00917(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(u8R"(([^。…？！])　)"), "$1");
+        s = std::regex_replace(s, std::regex(u8R"(^　)"), "");
+        s = std::regex_replace(s, std::regex(u8R"(#n)"), "");
+        buffer->from(s);
+    }
+    void PCSG00938(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(u8R"(([^。…？！])　)"), "$1");
+        s = std::regex_replace(s, std::regex(u8R"(^　)"), "");
+        s = std::regex_replace(s, std::regex(u8R"(#n)"), "");
+        s = std::regex_replace(s, std::regex(u8R"(#\w+\[\d+\]|!)"), "");
+        buffer->from(s);
+    }
     void FPCSG00912(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -718,7 +735,19 @@ namespace
             {0x80035a20, {0, 3, 0, 0, FPCSG00912, "PCSG00918"}},
             {0x80034500, {0, 0, 0, 0, FPCSG00912, "PCSG00918"}},
             {0x8002cb66, {0, 0, 8, 0, FPCSG00912, "PCSG00918"}},
-
+            // ワンドオブフォーチュン R
+            {0x8008128a, {CODEC_UTF8, 0, 0, 0, PCSG00917, "PCSG00917"}}, // 1.00
+            {0x800345f0, {CODEC_UTF8, 0, 0, 0, PCSG00917, "PCSG00917"}},
+            {0x8002cc56, {CODEC_UTF8, 8, 0, 0, PCSG00917, "PCSG00917"}},
+            {0x8008134e, {CODEC_UTF8, 0, 0, 0, PCSG00917, "PCSG00917"}}, // 1.01
+            {0x80081378, {CODEC_UTF8, 0, 0, 0, PCSG00917, "PCSG00917"}},
+            {0x8002cb8c, {CODEC_UTF8, 8, 0, 0, PCSG00917, "PCSG00917"}},
+            // ワンド オブ フォーチュン Ｒ２ ～時空に沈む黙示録～
+            {0x8006c986, {CODEC_UTF8, 0, 0, 0, PCSG00938, "PCSG00938"}},
+            {0x8006c9b0, {CODEC_UTF8, 0, 0, 0, PCSG00938, "PCSG00938"}},
+            {0x8001a860, {CODEC_UTF8, 8, 0, 0, PCSG00938, "PCSG00938"}},
+            {0x80022bd2, {CODEC_UTF8, 4, 0x14, 0, PCSG00938, "PCSG00938"}},
+            {0x80022bf0, {CODEC_UTF8, 5, 0, 0, PCSG00938, "PCSG00938"}},
         };
         return 1;
     }();
