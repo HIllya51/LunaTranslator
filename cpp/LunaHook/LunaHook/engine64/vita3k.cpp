@@ -258,9 +258,19 @@ namespace
         StringFilter(buffer, "#n", 2);
         StringFilter(buffer, "\x81\x40", 2);
     }
+    void PCSG00592(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(#Color\[\d+\])"), "");
+        buffer->from(s);
+    }
     void PCSG00833(TextBuffer *buffer, HookParam *)
     {
         StringFilter(buffer, u8"　", strlen(u8"　"));
+    }
+    void PCSG00855(TextBuffer *buffer, HookParam *)
+    {
+        StringFilter(buffer, u8"#n　", strlen(u8"#n　"));
     }
     void PCSG00787(TextBuffer *buffer, HookParam *)
     {
@@ -748,6 +758,20 @@ namespace
             {0x8001a860, {CODEC_UTF8, 8, 0, 0, PCSG00938, "PCSG00938"}},
             {0x80022bd2, {CODEC_UTF8, 4, 0x14, 0, PCSG00938, "PCSG00938"}},
             {0x80022bf0, {CODEC_UTF8, 5, 0, 0, PCSG00938, "PCSG00938"}},
+            // I DOLL U
+            {0x8000AC70, {CODEC_UTF8, 0, 0, 0, PCSG00833, "PCSG00592"}}, // 需要自己替换#Name[1] #Name[2]
+            {0x8000AE7E, {CODEC_UTF8, 4, 0, 0, PCSG00592, "PCSG00592"}},
+            // ピリオドキューブ～鳥籠のアマデウス～
+            {0x8000BDF2, {CODEC_UTF8, 5, 0, 0, PCSG00530, "PCSG00853"}},
+            // 花朧 ～戦国伝乱奇～
+            {0x80024C08, {CODEC_UTF8, 5, 0, 0, PCSG00592, "PCSG00855"}},
+            {0x8000D544, {CODEC_UTF8, 0, 0, 0, PCSG00855, "PCSG00855"}},
+            // ロミオVSジュリエット 全巻パック
+            {0x80017F50, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00618"}},
+            // １２時の鐘とシンデレラ～シンデレラシリーズ　トリプル全巻パック～
+            {0x8001701C, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00561"}},
+            // ハートの国のアリス～Wonderful Wonder World～
+            {0x8100F0CA, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00614"}}, // 手动解压
         };
         return 1;
     }();
