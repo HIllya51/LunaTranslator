@@ -1,0 +1,31 @@
+**基本的な**
+
+- [ダウンロードと起動](/ja/README.md)
+    - [ソフトウェアが起動しない](/ja/cantstart.md)
+- [基本的な使用方法](/ja/basicuse.md)
+- [ソフトウェアの更新](/ja/update.md)
+- [作者をサポートする](/ja/support.md)
+
+**詳細な**
+
+- [HOOK関連設定](/ja/hooksettings.redirect)
+    - [HOOK設定](/ja/hooksettings.md)
+    - [埋め込み翻訳](/ja/embedtranslate.md)
+    - [XP仮想マシンで古いゲームをプレイしてテキストを抽出して翻訳する](/ja/playonxp.md)
+- [OCR関連設定](/ja/useapis/ocrapi.redirect)
+    - [OCRインターフェース設定](/ja/useapis/ocrapi.md)
+    - [OCR自動化実行方法](/ja/ocrparam.md)
+    - [OCRモードでゲームウィンドウをバインドする](/ja/gooduseocr.md)
+- [翻訳インターフェース設定](/ja/useapis/tsapi.redirect)
+    - [従来のオンライン翻訳インターフェース](/ja/useapis/tsapi.md)
+    - [大規模モデルAPI翻訳](/ja/guochandamoxing.md)
+    - [大規模モデルオフライン翻訳](/ja/offlinellm.md) 
+- [テキスト処理＆翻訳最適化](/ja/textprocess.redirect)
+    - [さまざまなテキスト処理方法の役割と使用方法](/ja/textprocess.md)
+    - [さまざまな翻訳最適化の役割](/ja/transoptimi.md)
+- [音声合成](/ja/ttsofname.md)
+- [形態素解析＆辞書](/ja/qa1.redirect)
+    - [Mecabを使用した形態素解析＆品詞カラー表示](/ja/qa1.md) 
+    - [Anki統合](/ja/qa2.md)
+- [ツールボタン](/ja/alltoolbuttons.md)
+- [ショートカットキー](/ja/fastkeys.md)
