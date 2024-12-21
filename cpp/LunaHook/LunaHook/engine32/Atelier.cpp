@@ -74,7 +74,7 @@ bool InsertAtelierKaguya2Hook()
   HookParam hp;
   hp.address = addr;
   hp.offset = regoffset(eax);
-  hp.type = USING_STRING | EMBED_AFTER_OVERWRITE  | EMBED_ABLE | EMBED_DYNA_SJIS;
+  hp.type = USING_STRING | EMBED_AFTER_OVERWRITE | EMBED_ABLE | EMBED_DYNA_SJIS;
   hp.embed_hook_font = F_TextOutA;
   hp.filter_fun = NewLineCharToSpaceFilterA;
   ConsoleOutput("INSERT Atelier KAGUYA2");
@@ -247,16 +247,18 @@ bool Atelier2attach_function()
 
 bool Atelier2attach_function2()
 {
-  // https://vndb.org/v7264
-  // 禁断の病棟 特殊精神科医 遊佐惣介の診察記録
-  auto addr = MemDbg::findCallerAddressAfterInt3((ULONG)TextOutA, processStartAddress, processStopAddress);
-  if (addr == 0)
-    return 0;
+  auto addr = findiatcallormov((ULONG)TextOutA, processStartAddress, processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  auto faddr = MemDbg::findEnclosingAlignedFunction(addr);
+  if (!faddr)
+    return false;
   HookParam hp;
-  hp.address = addr;
+  hp.address = faddr;
   hp.offset = stackoffset(3);
-  hp.type = USING_STRING | DATA_INDIRECT;
-
+  hp.type = USING_STRING; // https://vndb.org/v13691  // 肉牝R30 ～肉欲に堕ちた牝たち～
+  if (addr - faddr > 0x40)
+    hp.type |= DATA_INDIRECT; // https://vndb.org/v7264  // 禁断の病棟 特殊精神科医 遊佐惣介の診察記録
   return NewHook(hp, "Atelier KAGUYA");
 }
 bool Atelier2::attach_function()
