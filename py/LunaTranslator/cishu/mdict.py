@@ -2651,10 +2651,7 @@ function safe_mdict_entry_call(word){
     if(window.mdict_entry_call)
         window.mdict_entry_call(word)
     else if(window.LUNAJSObject)
-    {
-        if(window.LUNAJSObject.mdict_entry_call)
-            window.LUNAJSObject.mdict_entry_call(word)
-    }
+        window.LUNAJSObject.mdict_entry_call(word)
 }</script>"""
         if self.config["stylehv"] == 0:
             return self.generatehtml_tabswitch(allres) + func
