@@ -135,7 +135,7 @@ namespace
     hp.address = addr;
     hp.offset = stackoffset(1);
     hp.split = stackoffset(2);
-    hp.type = USING_STRING | FULL_STRING | NO_CONTEXT | USING_SPLIT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
+    hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | EMBED_ABLE | EMBED_AFTER_OVERWRITE;
     hp.embed_hook_font = F_GetGlyphOutlineA;
     hp.filter_fun = CodeXFilter;
     return NewHook(hp, "CodeX2");
