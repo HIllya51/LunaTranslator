@@ -1058,8 +1058,7 @@ class searchwordW(closeashidewindow):
         _ = searchwordWx(self.parent())
         _.move(_.pos() + QPoint(20, 20))
         _.show()
-        _.searchtext.setText(word)
-        _.__search_by_click_search_btn()
+        _.search_word.emit(word, False)
 
     def _createnewwindowsearch(self, _):
         word = self.searchtext.text()
@@ -1165,6 +1164,9 @@ class searchwordW(closeashidewindow):
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
+        )
+        self.textOutput.bind(
+            "mdict_entry_call", lambda word: self.search_word.emit(word, False)
         )
         self.cache_results = {}
         self.hiding = True

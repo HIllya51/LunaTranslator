@@ -2,6 +2,7 @@ import math, base64, uuid, gobject
 from cishu.cishubase import DictTree
 from myutils.config import isascii
 
+
 class FlexBuffer:
 
     def __init__(self):
@@ -2306,7 +2307,7 @@ class mdict(cishubase):
 
         func = url.split(r"://")[0]
         if func == "entry":
-            return -1, None
+            return 3, "javascript:(function(){{if(mdict_entry_call)mdict_entry_call(`{}`)}})()".format(url.split(r"://")[1])
         url1 = url.split(r"://")[1]
         url1 = url1.replace("/", "\\")
 
@@ -2412,7 +2413,7 @@ class mdict(cishubase):
         )
         return html_content
 
-    def repairtarget(self, index, base, html_content):
+    def repairtarget(self, index, base, html_content: str):
 
         src_pattern = r'src="([^"]+)"'
         href_pattern = r'href="([^"]+)"'
@@ -2432,6 +2433,8 @@ class mdict(cishubase):
             _type, file_content = file_content
             if _type == -1:
                 continue
+            elif _type == 3:
+                html_content = html_content.replace(url, file_content)
             elif _type == 1:
                 html_content = self.tryparsecss(html_content, url, file_content, divid)
             elif _type == 2:
@@ -2610,12 +2613,16 @@ if (content.style.display === 'block') {
             lis.append(
                 r"""<li><div class="collapsible-header" id="{}" onclick="mdict_flowstyle_clickcallback('{}')">{}</div><div class="collapsible-content" style="{}">
                {}
-            </div></li>""".format(uid,uid,title,extra,res)
+            </div></li>""".format(
+                    uid, uid, title, extra, res
+                )
             )
         content += r"""
 <ul class="collapsible-list">
          {}
-    </ul>""".format(''.join(lis))
+    </ul>""".format(
+            "".join(lis)
+        )
 
         return content
 

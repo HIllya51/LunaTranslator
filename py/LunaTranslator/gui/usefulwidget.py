@@ -1557,6 +1557,10 @@ class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
 
+    def bind(self, funcname, function):
+        self.bindinfo.append((funcname, function))
+        self.internal.bind(funcname, function)
+
     def add_menu(self, index, label, callback):
         self.addmenuinfo.append((index, label, callback))
         self.internal.add_menu(index, label, callback)
@@ -1592,6 +1596,7 @@ class auto_select_webview(QWidget):
     def __init__(self, parent, dyna=False) -> None:
         super().__init__(parent)
         self.addmenuinfo = []
+        self.bindinfo = []
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.internal = None
         layout = QHBoxLayout()
@@ -1628,6 +1633,8 @@ class auto_select_webview(QWidget):
                 self.setHtml(arg)
         for _ in self.addmenuinfo:
             self.internal.add_menu(*_)
+        for _ in self.bindinfo:
+            self.internal.bind(*_)
 
     def _createwebview(self):
         contex = globalconfig["usewebview"]
