@@ -281,3 +281,11 @@ DECLARE_API const wchar_t *html_get_select_text(void *web)
     }
     return L"";
 }
+
+DECLARE_API void html_bind_function(void *web, const wchar_t *name, void (*function)(wchar_t **, int))
+{
+    if (!web)
+        return;
+    auto ww = static_cast<MWebBrowserEx *>(web);
+    ww->jsobj->bindfunction(name, function);
+}

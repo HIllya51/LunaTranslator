@@ -136,6 +136,9 @@ html_add_menu.argtypes = (c_void_p, c_int, c_int, c_wchar_p)
 html_get_select_text = utilsdll.html_get_select_text
 html_get_select_text.argtypes = (c_void_p,)
 html_get_select_text.restype = c_wchar_p
+html_bind_function_FT = CFUNCTYPE(None, POINTER(c_wchar_p), c_int)
+html_bind_function = utilsdll.html_bind_function
+html_bind_function.argtypes = c_void_p, c_wchar_p, html_bind_function_FT
 
 
 _GetLnkTargetPath = utilsdll.GetLnkTargetPath

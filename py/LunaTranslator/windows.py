@@ -860,7 +860,7 @@ IsZoomed = _user32.IsZoomed
 IsZoomed.argtypes = (HWND,)
 IsZoomed.restype = BOOL
 
-WNDPROCTYPE = CFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
+WNDPROCTYPE = WINFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
 
 GWLP_WNDPROC = -4
 if sizeof(c_void_p) == 8:
@@ -920,7 +920,7 @@ def MonitorFromWindow(hwnd, dwFlags=MONITOR_DEFAULTTONEAREST):
     return _MonitorFromWindow(hwnd, dwFlags)
 
 
-WINEVENTPROC = CFUNCTYPE(
+WINEVENTPROC = WINFUNCTYPE(
     None,
     HANDLE,
     DWORD,

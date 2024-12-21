@@ -1458,6 +1458,19 @@ class QWebWrap(abstractwebview):
 class mshtmlWidget(abstractwebview):
     CommandBase = 10086
 
+    def bindhelper(self, func, ppwc, argc):
+        argv = []
+        for i in range(argc):
+            argv.append(ppwc[argc - 1 - i])
+        func(*argv)
+
+    def bind(self, fname, func):
+        __f = winsharedutils.html_bind_function_FT(
+            functools.partial(self.bindhelper, func)
+        )
+        self.bindfs.append(__f)
+        winsharedutils.html_bind_function(self.browser, fname, __f)
+
     def __del__(self):
         if not self.browser:
             return
@@ -1466,6 +1479,7 @@ class mshtmlWidget(abstractwebview):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.callbacks = {}
+        self.bindfs = []
         iswine = checkisusingwine()
         if iswine or (winsharedutils.html_version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0

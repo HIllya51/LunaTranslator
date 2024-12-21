@@ -2307,7 +2307,9 @@ class mdict(cishubase):
 
         func = url.split(r"://")[0]
         if func == "entry":
-            return 3, "javascript:(function(){{if(mdict_entry_call)mdict_entry_call(`{}`)}})()".format(url.split(r"://")[1])
+            return 3, "javascript:safe_mdict_entry_call('{w}')".format(
+                w=url.split(r"://")[1]
+            )
         url1 = url.split(r"://")[1]
         url1 = url1.replace("/", "\\")
 
@@ -2643,10 +2645,21 @@ if (content.style.display === 'block') {
         if len(allres) == 0:
             return
         allres.sort(key=lambda _: -_[0])
+        func = """
+<script>
+function safe_mdict_entry_call(word){
+    if(window.mdict_entry_call)
+        window.mdict_entry_call(word)
+    else if(window.LUNAJSObject)
+    {
+        if(window.LUNAJSObject.mdict_entry_call)
+            window.LUNAJSObject.mdict_entry_call(word)
+    }
+}</script>"""
         if self.config["stylehv"] == 0:
-            return self.generatehtml_tabswitch(allres)
+            return self.generatehtml_tabswitch(allres) + func
         elif self.config["stylehv"] == 1:
-            return self.generatehtml_flow(allres)
+            return self.generatehtml_flow(allres) + func
 
     def tree(self):
         if len(self.builders) == 0:
