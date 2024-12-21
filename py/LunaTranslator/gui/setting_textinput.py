@@ -67,6 +67,7 @@ def gethookgrid_em(self):
         ],
         [
             "显示模式",
+            "",
             D_getsimplecombobox(
                 ["翻译", "原文_翻译", "翻译_原文"],
                 globalconfig["embedded"],
