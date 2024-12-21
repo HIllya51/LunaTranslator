@@ -91,13 +91,16 @@ bool checkengine()
         if (matched == false)
             continue;
         ConsoleOutput(TR[MatchedEngine], m->getenginename());
-        if (m->is_engine_certain)
+        if (attached)
         {
-            ConsoleOutput(TR[ConfirmStop], m->getenginename());
             jittypedefault = m->jittype;
             spDefault.isjithook = true;
             spDefault.minAddress = 0;
             spDefault.maxAddress = -1;
+        }
+        if (m->is_engine_certain)
+        {
+            ConsoleOutput(TR[ConfirmStop], m->getenginename());
             return attached;
         }
 
