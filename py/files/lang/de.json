@@ -755,5 +755,6 @@
     "打开选择文本窗口": "Öffnen des Auswahltextfensters",
     "成功": "Erfolg",
     "Win32通用钩子": "Win32 Universal Hook",
-    "特殊码无效": "Der spezielle Code ist ungültig"
+    "特殊码无效": "Der spezielle Code ist ungültig",
+    "显示模式": "Anzeigemodus"
 }

@@ -525,7 +525,7 @@ class texthook(basetext):
                     if globalconfig["embedded"]["changefont"]
                     else ""
                 ),
-                globalconfig["embedded"]["keeprawtext"],
+                globalconfig["embedded"]["displaymode"],
                 True,
             )
 

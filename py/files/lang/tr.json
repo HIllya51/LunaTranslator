@@ -755,5 +755,6 @@
     "打开选择文本窗口": "Seçim metin penceresini aç",
     "成功": "başarılı",
     "Win32通用钩子": "Win32 Universal Hook",
-    "特殊码无效": "Özel kodu geçersiz."
+    "特殊码无效": "Özel kodu geçersiz.",
+    "显示模式": "Görüntü modusu"
 }

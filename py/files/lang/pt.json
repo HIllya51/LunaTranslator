@@ -755,5 +755,6 @@
     "打开选择文本窗口": "Abrir a janela de texto da selecção",
     "成功": "sucesso",
     "Win32通用钩子": "Gancho Universal Win32",
-    "特殊码无效": "O código especial é inválido"
+    "特殊码无效": "O código especial é inválido",
+    "显示模式": "modo de visualização"
 }

@@ -375,11 +375,16 @@ struct TextBuffer
 		size = 0;
 	}
 };
-
+enum class Displaymode
+{
+	TRANS,
+	ORI_TRANS,
+	TRANS_ORI
+};
 struct CommonSharedMem
 {
 	UINT32 waittime;
-	UINT32 keeprawtext;
+	Displaymode displaymode;
 	uint64_t hash;
 	wchar_t text[1000];
 	bool fontCharSetEnabled;

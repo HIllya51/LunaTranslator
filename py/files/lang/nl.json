@@ -755,5 +755,6 @@
     "打开选择文本窗口": "Het selectietekstvenster openen",
     "成功": "succes",
     "Win32通用钩子": "Win32 universele haak",
-    "特殊码无效": "De speciale code is ongeldig"
+    "特殊码无效": "De speciale code is ongeldig",
+    "显示模式": "weergavemodus"
 }

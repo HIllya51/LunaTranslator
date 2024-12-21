@@ -274,8 +274,17 @@ bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
   if (hp.lineSeparator)
     strReplace(translate, L"\n", hp.lineSeparator);
   translate = adjustSpacesSTD(translate, hp);
-  if (commonsharedmem->keeprawtext)
+  switch (commonsharedmem->displaymode)
+  {
+  case Displaymode::TRANS:
+    break;
+  case Displaymode::ORI_TRANS:
     translate = origin + L" " + translate;
+    break;
+  case Displaymode::TRANS_ORI:
+    translate = translate + L" " + origin;
+    break;
+  }
   solvefont(hp);
   cast_back(hp, buff, translate, false);
   return true;

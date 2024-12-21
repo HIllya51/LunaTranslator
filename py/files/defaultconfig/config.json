@@ -316,7 +316,7 @@
         "use_appointed_translate": false,
         "timeout_translate": 2,
         "trans_kanji": false,
-        "keeprawtext": false,
+        "displaymode": 0,
         "insertspace_policy": 0,
         "changefont": false,
         "changefont_font": "",
