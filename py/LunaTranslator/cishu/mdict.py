@@ -2235,40 +2235,14 @@ class mdict(cishubase):
         # print(html)
         return html
 
-    def get_mime_type_from_magic(self, magic_bytes):
-        if magic_bytes.startswith(b"OggS"):
-            return "audio/ogg"
-        elif magic_bytes.startswith(b"\x1A\x45\xDF\xA3"):  # EBML header (Matroska)
-            return "video/webm"
-        elif (
-            magic_bytes.startswith(b"\x52\x49\x46\x46") and magic_bytes[8:12] == b"WEBP"
-        ):
-            return "image/webp"
-        elif magic_bytes.startswith(b"\xFF\xD8\xFF"):
-            return "image/jpeg"
-        elif magic_bytes.startswith(b"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"):
-            return "image/png"
-        elif magic_bytes.startswith(b"GIF87a") or magic_bytes.startswith(b"GIF89a"):
-            return "image/gif"
-        elif magic_bytes.startswith(b"\x00\x00\x01\xBA") or magic_bytes.startswith(
-            b"\x00\x00\x01\xB3"
-        ):
-            return "video/mpeg"
-        elif magic_bytes.startswith(b"\x49\x44\x33") or magic_bytes.startswith(
-            b"\xFF\xFB"
-        ):
-            return "audio/mpeg"
-        else:
-            return "application/octet-stream"
-
     def parseaudio(self, html_content, url, file_content):
         base64_content = base64.b64encode(file_content).decode("utf-8")
 
         uid = str(uuid.uuid4())
         # with open(uid+'.mp3','wb') as ff:
         #     ff.write(file_content)
-        audio = '<audio controls id="{}" style="display: none"><source src="data:{};base64,{}"></audio>'.format(
-            uid, self.get_mime_type_from_magic(file_content), base64_content
+        audio = '<audio controls id="{}" style="display: none"><source src="data:application/octet-stream;base64,{}"></audio>'.format(
+            uid, base64_content
         )
         html_content = audio + html_content.replace(
             url,
@@ -2278,7 +2252,6 @@ class mdict(cishubase):
 
     def parse_url_in_mdd(self, index: IndexBuilder, url1: str):
         url1 = url1.replace("/", "\\")
-
         if not url1.startswith("\\"):
             if url1.startswith("."):
                 url1 = url1[1:]
@@ -2440,7 +2413,6 @@ class mdict(cishubase):
         for url in src_matches + href_matches:
             if url.startswith("#"):  # a href # 页内跳转
                 continue
-
             try:
                 file_content = self.tryloadurl(index, base, url, tolongvals)
             except:
@@ -2463,9 +2435,10 @@ class mdict(cishubase):
             elif _type == 2:
                 html_content = self.parseaudio(html_content, url, file_content)
             elif _type == 0:
-                base64_content = base64.b64encode(file_content).decode("utf-8")
+                varname = "var_" + hashlib.md5(file_content).hexdigest()
+                tolongvals[varname] = base64.b64encode(file_content).decode()
                 html_content = html_content.replace(
-                    url, "data:application/octet-stream;base64," + base64_content
+                    url,varname
                 )
         return '<div class="{}">{}</div>'.format(divid, html_content)
 
@@ -2504,7 +2477,7 @@ class mdict(cishubase):
             results[i] = self.repairtarget(
                 index, f, results[i], tolongvals, divid, csscollect
             )
-        collectresult = "".join(results) 
+        collectresult = "".join(results)
         if csscollect:
             collectresult += "<style>\n"
             for css in csscollect.values():
@@ -2668,9 +2641,13 @@ if (content.style.display === 'block') {
             return
         allres.sort(key=lambda _: -_[0])
         func = "<script>"
-        for varname, val in tolongvals.items():
-            func += '{}="{}"\n'.format(varname, val)
         func += """
+function replacelongvarsrcs(varval, varname)
+{
+let elements = document.querySelectorAll('[src="'+varname+'"]');
+for(let i=0;i<elements.length;i++)
+    elements[i].src="data:application/octet-stream;base64," + varval 
+}
 function safe_mdict_sound_call(ext, b64){
     if(window.mdict_sound_call)
         window.mdict_sound_call(ext, b64)
@@ -2683,6 +2660,9 @@ function safe_mdict_entry_call(word){
     else if(window.LUNAJSObject)
         window.LUNAJSObject.mdict_entry_call(word)
 }"""
+        for varname, val in tolongvals.items():
+            func += '{}="{}"\n'.format(varname, val)
+            func += 'replacelongvarsrcs({},"{}")\n'.format(varname, varname)
         func += "</script>"
         if self.config["stylehv"] == 0:
             return self.generatehtml_tabswitch(allres) + func
