@@ -2,6 +2,7 @@ import math, base64, uuid, gobject
 from cishu.cishubase import DictTree
 from myutils.config import isascii
 from traceback import print_exc
+from myutils.audioplayer import bass_decode
 
 
 class FlexBuffer:
@@ -2235,21 +2236,6 @@ class mdict(cishubase):
         # print(html)
         return html
 
-    def parseaudio(self, html_content, url, file_content):
-        base64_content = base64.b64encode(file_content).decode("utf-8")
-
-        uid = str(uuid.uuid4())
-        # with open(uid+'.mp3','wb') as ff:
-        #     ff.write(file_content)
-        audio = '<audio controls id="{}" style="display: none"><source src="data:application/octet-stream;base64,{}"></audio>'.format(
-            uid, base64_content
-        )
-        html_content = audio + html_content.replace(
-            url,
-            "javascript:document.getElementById('{}').play()".format(uid),
-        )
-        return html_content
-
     def parse_url_in_mdd(self, index: IndexBuilder, url1: str):
         url1 = url1.replace("/", "\\")
         if not url1.startswith("\\"):
@@ -2282,12 +2268,17 @@ class mdict(cishubase):
                 return
             ext = os.path.splitext(url)[1].lower()
             if ext in (".aac", ".spx"):
-                varname = "var_" + hashlib.md5(file_content).hexdigest()
-                audiob64vals[varname] = base64.b64encode(file_content).decode()
-                return 3, "javascript:safe_mdict_sound_call('{}',{})".format(
-                    ext, varname
-                )
-            return 2, file_content
+                mp3 = bass_decode(file_content, ext)
+                if not mp3:
+                    print(ext, "decode error")
+                    return
+                file_content = mp3
+                ext = ".mp3"
+            varname = "var_" + hashlib.md5(file_content).hexdigest()
+            audiob64vals[varname] = base64.b64encode(file_content).decode()
+            return 3, "javascript:mdict_play_sound('{}',{})".format(
+                ext[1:], varname
+            )
         file_content = self.parse_url_in_mdd(index, url)
         if not file_content:
             return
@@ -2433,8 +2424,6 @@ class mdict(cishubase):
                 if css:
                     csscollect[url] = css
                     html_content = html_content.replace(url, "")
-            elif _type == 2:
-                html_content = self.parseaudio(html_content, url, file_content)
             elif _type == 0:
                 varname = "var_" + hashlib.md5(file_content).hexdigest()
                 hrefsrcvals[varname] = base64.b64encode(file_content).decode()
@@ -2470,7 +2459,7 @@ class mdict(cishubase):
             print_exc()
         if not results:
             return
-        divid = "luna_internal_" + str(uuid.uuid4())
+        divid = "luna_" + str(uuid.uuid4())
         csscollect = {}
         for i in range(len(results)):
             results[i] = self.repairtarget(
@@ -2648,11 +2637,16 @@ let elements = document.querySelectorAll('[src="'+varname+'"]');
 for(let i=0;i<elements.length;i++)
     elements[i].src="data:application/octet-stream;base64," + varval 
 }
-function safe_mdict_sound_call(ext, b64){
-    if(window.mdict_sound_call)
-        window.mdict_sound_call(ext, b64)
-    else if(window.LUNAJSObject)
-        window.LUNAJSObject.mdict_sound_call(ext, b64)
+var lastmusicplayer=false;
+function mdict_play_sound(ext, b64){
+    const music = new Audio();
+    music.src="data:audio/"+ext+";base64,"+b64
+    if(lastmusicplayer!=false)
+    {
+        lastmusicplayer.pause()
+    }
+    lastmusicplayer=music
+    music.play();
 }
 function safe_mdict_entry_call(word){
     if(window.mdict_entry_call)
