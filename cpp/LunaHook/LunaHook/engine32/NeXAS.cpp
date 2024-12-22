@@ -487,9 +487,49 @@ namespace
     return NewHook(hp, "NeXAS3");
   }
 }
-
+namespace
+{
+  //[241219][1299663][エンターグラム] この青空に約束を― Refine
+  bool b4()
+  {
+    BYTE bs[] = {
+        0x8b, 0x45, XX,
+        0x3b, 0xd0,
+        0x0f, 0x84, XX4,
+        0x83, 0x78, 0x14, 0x0f,
+        0x8b, 0x48, 0x10,
+        0x76, 0x02,
+        0x8b, 0x00};
+    auto aV = MemDbg::findBytes(bs, sizeof(bs), processStartAddress, processStopAddress);
+    if (!aV)
+      return false;
+    HookParam hp;
+    hp.address = aV + 3;
+    hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      auto _ = (TextUnionA *)context->eax;
+      buffer->from(_->getText(), _->size);
+    };
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      auto s = buffer->strA();
+      s = std::regex_replace(s, std::regex(R"(@v[_\w\d]{8})"), "");
+      s = std::regex_replace(s, std::regex(R"(@t\d{4})"), "");
+      s = std::regex_replace(s, std::regex(R"(@s\d{4})"), "");
+      s = std::regex_replace(s, std::regex(R"(@m\d{2})"), "");
+      s = std::regex_replace(s, std::regex(R"(@f\d{2})"), "");
+      s = std::regex_replace(s, std::regex(R"(@h[_\d\w]+)"), "");
+      s = std::regex_replace(s, std::regex(R"(@r(.*?)@(.*?)@)"), "$1");
+      strReplace(s, "@n", "");
+      strReplace(s, "@e", "");
+      buffer->from(s);
+    };
+    return NewHook(hp, "NeXAS4");
+  }
+}
 bool NeXAS::attach_function()
 {
-  auto _ = _2() || _3();
+  auto _ = _2() || _3() || b4();
   return InsertNeXASHookA() || InsertNeXASHookW() || _;
 }
