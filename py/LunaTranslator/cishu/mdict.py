@@ -1765,12 +1765,18 @@ class IndexBuilder(object):
         self.makemdds(_filename, _targetfilenamebase)
 
     def makemdds(self, _filename, _targetfilenamebase):
-        for end in (".mdd", ".1.mdd"):
+        i = 0
+        while True:
+            extra = "" if i == 0 else ".%d" % i
+            i += 1
+            end = extra + ".mdd"
             if os.path.isfile(_filename + end):
                 self._mdd_files.append(_filename + end)
                 self._mdd_dbs.append(_targetfilenamebase + end + ".db")
                 if not os.path.isfile(self._mdd_dbs[-1]):
                     self._make_mdd_index(self._mdd_files[-1], self._mdd_dbs[-1])
+            else:
+                break
 
     def _replace_stylesheet(self, txt):
         # substitute stylesheet definition

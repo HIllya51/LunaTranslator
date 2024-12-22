@@ -264,36 +264,33 @@ def downloadbass():
 
     os.chdir(rootDir + "\\temp")
     subprocess.run(f"curl -LO https://www.un4seen.com/files/bass24.zip")
-    subprocess.run(f"7z x bass24.zip -oALL")
+    subprocess.run(f"7z x bass24.zip -obass24")
     shutil.move(
-        "ALL/bass.dll",
+        "bass24/bass.dll",
         f"{rootDir}/files/plugins/DLL32",
     )
     shutil.move(
-        "ALL/x64/bass.dll",
+        "bass24/x64/bass.dll",
         f"{rootDir}/files/plugins/DLL64",
     )
     subprocess.run(f"curl -LO https://www.un4seen.com/files/z/2/bass_spx24.zip")
-    subprocess.run(f"7z x bass_spx24.zip -oALL")
+    subprocess.run(f"7z x bass_spx24.zip -obass_spx24")
     shutil.move(
-        "ALL/bass_spx.dll",
+        "bass_spx24/bass_spx.dll",
         f"{rootDir}/files/plugins/DLL32",
     )
     shutil.move(
-        "ALL/x64/bass_spx.dll",
+        "bass_spx24/x64/bass_spx.dll",
         f"{rootDir}/files/plugins/DLL64",
     )
     subprocess.run(f"curl -LO https://www.un4seen.com/files/z/2/bass_aac24.zip")
-    subprocess.run(f"7z x bass_aac24.zip -oALL")
-    for _dir, _, _fs in os.walk('ALL'):
-        for _f in _fs:
-            print(os.path.normpath(os.path.abspath(os.path.join(_dir, _f))))
+    subprocess.run(f"7z x bass_aac24.zip -obass_aac24")
     shutil.move(
-        "ALL/bass_aac.dll",
+        "bass_aac24/bass_aac.dll",
         f"{rootDir}/files/plugins/DLL32",
     )
     shutil.move(
-        "ALL/x64/bass_aac.dll",
+        "bass_aac24/x64/bass_aac.dll",
         f"{rootDir}/files/plugins/DLL64",
     )
 
