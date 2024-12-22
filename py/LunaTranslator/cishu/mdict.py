@@ -2262,7 +2262,7 @@ class mdict(cishubase):
             return None
         return find[0]
 
-    def tryloadurl(self, index: IndexBuilder, base, url: str, tolongvals: dict):
+    def tryloadurl(self, index: IndexBuilder, base, url: str, audiob64vals: dict):
         _local = os.path.join(base, url)
         iscss = url.lower().endswith(".css")
         _type = 0
@@ -2283,7 +2283,7 @@ class mdict(cishubase):
             ext = os.path.splitext(url)[1].lower()
             if ext in (".aac", ".spx"):
                 varname = "var_" + hashlib.md5(file_content).hexdigest()
-                tolongvals[varname] = base64.b64encode(file_content).decode()
+                audiob64vals[varname] = base64.b64encode(file_content).decode()
                 return 3, "javascript:safe_mdict_sound_call('{}',{})".format(
                     ext, varname
                 )
@@ -2400,7 +2400,8 @@ class mdict(cishubase):
         index,
         fn,
         html_content: str,
-        tolongvals: dict,
+        audiob64vals: dict,
+        hrefsrcvals: dict,
         divid: str,
         csscollect: dict,
     ):
@@ -2414,7 +2415,7 @@ class mdict(cishubase):
             if url.startswith("#"):  # a href # 页内跳转
                 continue
             try:
-                file_content = self.tryloadurl(index, base, url, tolongvals)
+                file_content = self.tryloadurl(index, base, url, audiob64vals)
             except:
                 print_exc()
                 print("unknown", fn, url)
@@ -2436,10 +2437,8 @@ class mdict(cishubase):
                 html_content = self.parseaudio(html_content, url, file_content)
             elif _type == 0:
                 varname = "var_" + hashlib.md5(file_content).hexdigest()
-                tolongvals[varname] = base64.b64encode(file_content).decode()
-                html_content = html_content.replace(
-                    url,varname
-                )
+                hrefsrcvals[varname] = base64.b64encode(file_content).decode()
+                html_content = html_content.replace(url, varname)
         return '<div class="{}">{}</div>'.format(divid, html_content)
 
     def searchthread_internal(self, index, k, __safe):
@@ -2456,7 +2455,7 @@ class mdict(cishubase):
                 allres.append(content)
         return allres
 
-    def searchthread(self, allres, i, word, tolongvals):
+    def searchthread(self, allres, i, word, audiob64vals, hrefsrcvals):
         f, index = self.builders[i]
         results = []
         try:
@@ -2475,7 +2474,7 @@ class mdict(cishubase):
         csscollect = {}
         for i in range(len(results)):
             results[i] = self.repairtarget(
-                index, f, results[i], tolongvals, divid, csscollect
+                index, f, results[i], audiob64vals, hrefsrcvals, divid, csscollect
             )
         collectresult = "".join(results)
         if csscollect:
@@ -2634,9 +2633,10 @@ if (content.style.display === 'block') {
 
     def search(self, word):
         allres = []
-        tolongvals = {}
+        audiob64vals = {}
+        hrefsrcvals = {}
         for i in range(len(self.builders)):
-            self.searchthread(allres, i, word, tolongvals)
+            self.searchthread(allres, i, word, audiob64vals, hrefsrcvals)
         if len(allres) == 0:
             return
         allres.sort(key=lambda _: -_[0])
@@ -2660,7 +2660,9 @@ function safe_mdict_entry_call(word){
     else if(window.LUNAJSObject)
         window.LUNAJSObject.mdict_entry_call(word)
 }"""
-        for varname, val in tolongvals.items():
+        for varname, val in audiob64vals.items():
+            func += '{}="{}"\n'.format(varname, val)
+        for varname, val in hrefsrcvals.items():
             func += '{}="{}"\n'.format(varname, val)
             func += 'replacelongvarsrcs({},"{}")\n'.format(varname, varname)
         func += "</script>"
