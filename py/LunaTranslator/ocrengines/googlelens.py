@@ -1,7 +1,5 @@
 from ocrengines.baseocrclass import baseocr
-import re
-import time
-import random
+import random, time, re
 
 class OCR(baseocr):
     user_agents = [
@@ -37,9 +35,8 @@ class OCR(baseocr):
         
         text = lens_object["data"][3][4][0]
         
-        # Write to a log text file in utf-8 with signature
         if text:
             text_list = list(text[0]) if text else []
             with open("log.txt", "a", encoding="utf-8-sig") as file:
-                file.write("\n".join(text_list) + "\n")
+                file.write(" ".join(text_list) + "\n")
         return text_list if text else None
