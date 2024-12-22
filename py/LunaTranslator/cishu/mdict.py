@@ -2276,7 +2276,7 @@ class mdict(cishubase):
         )
         return html_content
 
-    def tryloadurl(self, index: IndexBuilder, base, url: str):
+    def tryloadurl(self, index: IndexBuilder, base, url: str, tolongvals: dict):
         _local = os.path.join(base, url)
         iscss = url.lower().endswith(".css")
         _type = 0
@@ -2313,8 +2313,10 @@ class mdict(cishubase):
         if func == "sound":
             ext = os.path.splitext(url1)[1].lower()
             if ext in (".aac", ".spx"):
-                return 3, "javascript:safe_mdict_sound_call('{}','{}')".format(
-                    ext, base64.b64encode(file_content).decode()
+                varname = "var_" + base64.b64encode(url1.encode()).hex()
+                tolongvals[varname] = base64.b64encode(file_content).decode()
+                return 3, "javascript:safe_mdict_sound_call('{}',{})".format(
+                    ext, varname
                 )
             _type = 2
         return _type, file_content
@@ -2410,7 +2412,7 @@ class mdict(cishubase):
         )
         return html_content
 
-    def repairtarget(self, index, base, html_content: str):
+    def repairtarget(self, index, base, html_content: str, tolongvals: dict):
         src_pattern = r'src="([^"]+)"'
         href_pattern = r'href="([^"]+)"'
 
@@ -2422,8 +2424,9 @@ class mdict(cishubase):
                 continue
 
             try:
-                file_content = self.tryloadurl(index, base, url)
+                file_content = self.tryloadurl(index, base, url, tolongvals)
             except:
+                print_exc()
                 print("unknown", url)
                 continue
             if not file_content:
@@ -2459,7 +2462,7 @@ class mdict(cishubase):
                 allres.append(content)
         return allres
 
-    def searchthread(self, allres, i, word):
+    def searchthread(self, allres, i, word, tolongvals):
         f, index = self.builders[i]
         results = []
         try:
@@ -2473,7 +2476,9 @@ class mdict(cishubase):
 
             print_exc()
         for i in range(len(results)):
-            results[i] = self.repairtarget(index, os.path.dirname(f), results[i])
+            results[i] = self.repairtarget(
+                index, os.path.dirname(f), results[i], tolongvals
+            )
         if len(results):
             allres.append(
                 (
@@ -2626,23 +2631,16 @@ if (content.style.display === 'block') {
 
     def search(self, word):
         allres = []
-        # threads = []
-        # for i in range(len(self.builders)):
-        #     threads.append(
-        #         threading.Thread(target=self.searchthread, args=(allres, i, word))
-        #     )
-
-        # for _ in threads:
-        #     _.start()
-        # for _ in threads:
-        #     _.join()
+        tolongvals = {}
         for i in range(len(self.builders)):
-            self.searchthread(allres, i, word)
+            self.searchthread(allres, i, word, tolongvals)
         if len(allres) == 0:
             return
         allres.sort(key=lambda _: -_[0])
-        func = """
-<script>
+        func = "<script>"
+        for varname, val in tolongvals.items():
+            func += '{}="{}"\n'.format(varname, val)
+        func += """
 function safe_mdict_sound_call(ext, b64){
     if(window.mdict_sound_call)
         window.mdict_sound_call(ext, b64)
@@ -2654,7 +2652,8 @@ function safe_mdict_entry_call(word){
         window.mdict_entry_call(word)
     else if(window.LUNAJSObject)
         window.LUNAJSObject.mdict_entry_call(word)
-}</script>"""
+}"""
+        func += "</script>"
         if self.config["stylehv"] == 0:
             return self.generatehtml_tabswitch(allres) + func
         elif self.config["stylehv"] == 1:
