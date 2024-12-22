@@ -2276,7 +2276,7 @@ class mdict(cishubase):
         )
         return html_content
 
-    def parse_url_in_mdd(self, url1: str):
+    def parse_url_in_mdd(self, index: IndexBuilder, url1: str):
         url1 = url1.replace("/", "\\")
 
         if not url1.startswith("\\"):
@@ -2284,7 +2284,10 @@ class mdict(cishubase):
                 url1 = url1[1:]
             else:
                 url1 = "\\" + url1
-        return url1
+        find = index.mdd_lookup(url1)
+        if not find:
+            return None
+        return find[0]
 
     def tryloadurl(self, index: IndexBuilder, base, url: str, tolongvals: dict):
         _local = os.path.join(base, url)
@@ -2301,23 +2304,20 @@ class mdict(cishubase):
         if url.startswith("entry://"):
             return 3, "javascript:safe_mdict_entry_call('{}')".format(url[8:])
         if url.startswith("sound://"):
-            url = self.parse_url_in_mdd(url[8:])
-            try:
-                file_content = index.mdd_lookup(url)[0]
-            except:
-                return None
+            file_content = self.parse_url_in_mdd(index, url[8:])
+            if not file_content:
+                return
             ext = os.path.splitext(url)[1].lower()
             if ext in (".aac", ".spx"):
-                varname = "var_" + hashlib.md5(url.encode('utf8')).hexdigest()
+                varname = "var_" + hashlib.md5(file_content).hexdigest()
                 tolongvals[varname] = base64.b64encode(file_content).decode()
                 return 3, "javascript:safe_mdict_sound_call('{}',{})".format(
                     ext, varname
                 )
             return 2, file_content
-        try:
-            file_content = index.mdd_lookup(self.parse_url_in_mdd(url))[0]
-        except:
-            return None
+        file_content = self.parse_url_in_mdd(index, url)
+        if not file_content:
+            return
         return _type, file_content
 
     def shitstylesheet(self, s: str):
