@@ -117,7 +117,7 @@ class TextBrowser(QWidget, dataget):
             # 而且SetCapture后会立即被父窗口把capture夺走，无法后面的释放&移动，所以只能开个线程来弄
             if not self.selectable:
                 self.trackingthread()
-        return windows.WNDPROCTYPE(orig)(hwnd, msg, wp, lp)
+        return windows.WNDPROCTYPE_1(orig)(hwnd, msg, wp, lp)
 
     @tryprint
     def showEvent(self, e):

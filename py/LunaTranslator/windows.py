@@ -861,6 +861,7 @@ IsZoomed.argtypes = (HWND,)
 IsZoomed.restype = BOOL
 
 WNDPROCTYPE = WINFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
+WNDPROCTYPE_1 = CFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
 
 GWLP_WNDPROC = -4
 if sizeof(c_void_p) == 8:
