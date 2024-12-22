@@ -2308,7 +2308,7 @@ class mdict(cishubase):
                 return None
             ext = os.path.splitext(url)[1].lower()
             if ext in (".aac", ".spx"):
-                varname = "var_" + base64.b64encode(url.encode()).hex()
+                varname = "var_" + hashlib.md5(url.encode('utf8')).hexdigest()
                 tolongvals[varname] = base64.b64encode(file_content).decode()
                 return 3, "javascript:safe_mdict_sound_call('{}',{})".format(
                     ext, varname
