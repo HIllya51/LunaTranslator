@@ -285,6 +285,9 @@ def downloadbass():
     )
     subprocess.run(f"curl -LO https://www.un4seen.com/files/z/2/bass_aac24.zip")
     subprocess.run(f"7z x bass_aac24.zip -oALL")
+    for _dir, _, _fs in os.walk('ALL'):
+        for _f in _fs:
+            print(os.path.normpath(os.path.abspath(os.path.join(_dir, _f))))
     shutil.move(
         "ALL/bass_aac.dll",
         f"{rootDir}/files/plugins/DLL32",

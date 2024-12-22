@@ -2078,17 +2078,13 @@ class mdict(cishubase):
 
                 print_exc()
 
-    def init(self):
-        try:
-            with open("userconfig/mdict_config.json", "r", encoding="utf8") as ff:
-                self.extraconf = json.loads(ff.read())
-        except:
-            self.extraconf = {}
-        paths = self.config["paths"]
-
+    def checkpath(self):
+        if self.config["paths"] == self.paths:
+            return
+        self.paths = self.config["paths"]
         self.builders = []
         self.dedump = set()
-        for f in paths:
+        for f in self.paths:
             if f.strip() == "":
                 continue
             if not os.path.exists(f):
@@ -2103,6 +2099,14 @@ class mdict(cishubase):
                     _f = os.path.join(_dir, _f)
                     self.init_once_mdx(_f)
 
+    def init(self):
+        try:
+            with open("userconfig/mdict_config.json", "r", encoding="utf8") as ff:
+                self.extraconf = json.loads(ff.read())
+        except:
+            self.extraconf = {}
+        self.paths = None
+        self.checkpath()
         try:
             with open(
                 gobject.getuserconfigdir("mdict_config.json"), "w", encoding="utf8"
@@ -2333,14 +2337,6 @@ class mdict(cishubase):
                         skip = True
                     idx += 1
 
-            class shitrule(AtRule):
-                def __init__(self, __):
-                    super().__init__(0, 0, " ", " ", [], [])
-                    self.__ = __
-
-                def _serialize_to(self, _):
-                    return _(self.__)
-
             def parserules(rules):
                 # print(stylesheet)
                 for i, rule in enumerate(rules.copy()):
@@ -2348,17 +2344,12 @@ class mdict(cishubase):
                         if not rule.content:
                             # @charset "UTF-8";
                             continue
-                        internal = "".join([_.serialize() for _ in rule.content])
-                        internal = parse_stylesheet(internal, True, True)
+                        internal = parse_stylesheet(rule.content, True, True)
                         if len(internal) and isinstance(internal[0], ParseError):
                             # @font-face
                             continue
                         # @....{ .klas{} }
-                        internal = parserules(internal)
-                        _ = []
-                        rule.content = internal
-                        rule._serialize_to(_.append)
-                        rules[i] = shitrule("".join(_))
+                        rule.content = parserules(internal)
                     elif isinstance(rule, QualifiedRule):
                         parseaqr(rules[i])
                 return rules
@@ -2436,7 +2427,9 @@ class mdict(cishubase):
             # print(keys)
             for k in keys:
                 __safe = []
-                for content in sorted(set(self.searchthread_internal(index, k, __safe))):
+                for content in sorted(
+                    set(self.searchthread_internal(index, k, __safe))
+                ):
                     results.append(self.parseashtml(content))
         except:
 
@@ -2605,6 +2598,7 @@ if (content.style.display === 'block') {
         return content
 
     def search(self, word):
+        self.checkpath()
         allres = []
         audiob64vals = {}
         hrefsrcvals = {}
