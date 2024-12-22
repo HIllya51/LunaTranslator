@@ -39,11 +39,12 @@
 
 
 .tab-widget .tab-button {
-    padding: 10px 20px;
+    padding: 5px 20px;
     background-color: #cccccccc;
     border: none;
     cursor: pointer;
     display: inline-block;
+    line-height: 25px;
 }
 
 .tab-widget .tab-button.active {

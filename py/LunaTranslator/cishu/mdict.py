@@ -2468,17 +2468,22 @@ class mdict(cishubase):
         contents = []
         idx = 0
         for _, foldflow, title, res in allres:
-            idx += 1
+            klass2='tab-pane_mdict_internal'
+            klass1='tab-button_mdict_internal'
+            if idx==0:
+                    klass2+=' active'
+                    klass1+=' active'
             btns.append(
-                """<button type="button" onclick="onclickbtn_mdict_internal('buttonid_mdict_internal{idx}')" id="buttonid_mdict_internal{idx}" class="tab-button_mdict_internal" data-tab="tab_mdict_internal{idx}">{title}</button>""".format(
-                    idx=idx, title=title
+                """<button type="button" onclick="onclickbtn_mdict_internal('buttonid_mdict_internal{idx}')" id="buttonid_mdict_internal{idx}" class="{klass}" data-tab="tab_mdict_internal{idx}">{title}</button>""".format(
+                    idx=idx, title=title, klass=klass1
                 )
             )
             contents.append(
-                """<div id="tab_mdict_internal{idx}" class="tab-pane_mdict_internal">{res}</div>""".format(
-                    idx=idx, res=res
+                """<div id="tab_mdict_internal{idx}" class="{klass}">{res}</div>""".format(
+                    idx=idx, res=res, klass=klass2
                 )
             )
+            idx += 1
         commonstyle = """
 <script>
 function onclickbtn_mdict_internal(_id) {
@@ -2506,11 +2511,12 @@ function onclickbtn_mdict_internal(_id) {
 }
 
 .tab-widget_mdict_internal .tab-button_mdict_internal {
-    padding: 10px 20px;
+    padding: 5px 20px;
     background-color: #cccccccc;
     border: none;
     cursor: pointer;
     display: inline-block;
+    line-height: 25px;
 }
 
 .tab-widget_mdict_internal .tab-button_mdict_internal.active {
@@ -2541,10 +2547,6 @@ function onclickbtn_mdict_internal(_id) {
         </div>
     </div>
 </div>
-<script>
-if(document.querySelectorAll('.tab-widget_mdict_internal .tab-button_mdict_internal').length)
-document.querySelectorAll('.tab-widget_mdict_internal .tab-button_mdict_internal')[0].click()
-</script>
 """.format(
             commonstyle=commonstyle, btns="".join(btns), contents="".join(contents)
         )
@@ -2558,7 +2560,7 @@ document.querySelectorAll('.tab-widget_mdict_internal .tab-button_mdict_internal
     
     .collapsible-header {
         background-color: #dddddd50;
-        padding: 10px;
+        padding: 8px;
         cursor: pointer;
         border: 1px solid #ddd;
         border-bottom: none;

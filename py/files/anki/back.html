@@ -58,7 +58,7 @@
     var scriptElementss = []
     var scriptElementsssrc = []
     for (var iiii = 0; iiii < dictionaryInfo.length; iiii++) {
-        htmltabbuttons += '<button type="button" onclick="onclickbtn(\'' + dictionaryInfo[iiii]['dict'] + '\')" id="luna_dict_btn_' + dictionaryInfo[iiii]['dict'] + '" class="tab-button">' + dictionaryInfo[iiii]['name'] + '</button>'
+        htmltabbuttons += '<button type="button" onclick="onclickbtn(\'' + dictionaryInfo[iiii]['dict'] + '\')" id="luna_dict_btn_' + dictionaryInfo[iiii]['dict'] + '" class="tab-button' + (iiii == 0 ? ' active' : '') + '">' + dictionaryInfo[iiii]['name'] + '</button>'
 
         var tempParent = document.createElement('div');
         tempParent.innerHTML = decodeURIComponent(dictionaryContent[dictionaryInfo[iiii]['dict']]);
@@ -68,7 +68,7 @@
             fragment.appendChild(tempParent.firstChild);
         }
 
-        htmlcontents += '<div id="luna_dict_tab_' + dictionaryInfo[iiii]['dict'] + '" class="tab-pane">' + fragment.innerHTML + '</div>'
+        htmlcontents += '<div id="luna_dict_tab_' + dictionaryInfo[iiii]['dict'] + '" class="tab-pane' + (iiii == 0 ? ' active' : '') + '">' + fragment.innerHTML + '</div>'
         var scriptElements = fragment.getElementsByTagName('script');
 
         for (var jjjj = 0; jjjj < scriptElements.length; jjjj++) {
@@ -85,9 +85,6 @@
             newScript.src = scriptElementsssrc[iiii];
             document.head.appendChild(newScript);
         }
-    }
-    if (dictionaryInfo.length > 0) {
-        onclickbtn(dictionaryInfo[0]['dict'])
     }
 </script>
 <script>
