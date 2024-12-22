@@ -186,7 +186,7 @@ def bass_decode(bs, ext=None):
     header.append(bytes(c_int(size)))
     header.extend(res)
     data = b"".join(header)
-    return winsharedutils.encodemp3(data)
+    return winsharedutils.encodemp3(data, 32)
 
 
 class series_audioplayer:

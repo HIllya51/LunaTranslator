@@ -12,7 +12,7 @@
 
 int stereo = STEREO;
 
-DECLARE_API void encodemp3(void *ptr, size_t size, void (*cb)(void *ptr, size_t size))
+DECLARE_API void encodemp3(void *ptr, size_t size, void (*cb)(void *ptr, size_t size), int bitrate)
 {
     shine_config_t config;
     shine_t s;
@@ -21,7 +21,7 @@ DECLARE_API void encodemp3(void *ptr, size_t size, void (*cb)(void *ptr, size_t 
     /* Set the default MPEG encoding paramters - basically init the struct */
     shine_set_config_mpeg_defaults(&config.mpeg);
 
-    config.mpeg.bitr = 320;
+    config.mpeg.bitr = bitrate; // 8-320;
 
     uint32_t sampleRate = 0;
     uint64_t totalSampleCount = 0;
