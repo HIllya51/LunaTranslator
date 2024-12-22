@@ -1,4 +1,55 @@
+const supportlangs = { zh: '简体中文', en: 'English', ja: '日本語' }
+const langs = {
+    clipboardok: {
+        zh: '已复制到剪贴板',
+        en: 'Copy to clipboard',
+        ja: 'クリップボードにコピーされました'
+    },
+    homepage: {
+        zh: '官方网站',
+        en: 'HomePage',
+        ja: '公式サイト'
 
+    },
+    downloadlink: {
+        zh: '软件下载',
+        en: 'Download',
+        ja: 'ダウンロード'
+    },
+    vediotutorial: {
+        zh: '视频教学',
+        en: 'Vedio Tutorial',
+        ja: 'ビデオチュー'
+    },
+    contactme: {
+        zh: 'QQ群963119821',
+        en: 'Discord',
+        ja: 'Discord'
+    },
+    bit64link: {
+        zh: '64位',
+        en: '64-bit',
+        ja: '64ビット'
+    },
+    bit32link: {
+        zh: '32位',
+        en: '32-bit',
+        ja: '32ビット'
+    },
+}
+
+const languagelinks = {
+    contactme: {
+        zh: 'https://qm.qq.com/q/I5rr3uEpi2',
+        en: 'https://discord.com/invite/ErtDwVeAbB',
+        ja: 'https://discord.com/invite/ErtDwVeAbB',
+    },
+    vediotutorial: {
+        zh: 'https://space.bilibili.com/592120404/video',
+        en: 'https://www.youtube.com/results?search_query=LunaTranslator',
+        ja: 'https://www.youtube.com/results?search_query=LunaTranslator',
+    }
+}
 window.$docsify = {
     // homepage: '/redirect.html',
     requestHeaders: {
@@ -16,6 +67,7 @@ window.$docsify = {
     alias: {
         '/zh/_sidebar.md': '/zh/sidebar.md',
         '/en/_sidebar.md': '/en/sidebar.md',
+        '/ja/_sidebar.md': '/ja/sidebar.md',
         '/_navbar.md': '/navbar.md',
         '/_coverpage.md': '/coverpage.md',
     },
@@ -113,40 +165,20 @@ for (let i = 0; i < dropdowns.length; i++) {
 }
 
 var currentlang = "";
-const navitexts = {
-    zh: {
-        homepage: '官方网站',
-        downloadlink: '软件下载',
-        vediotutorial: '视频教学',
-        contactme: 'QQ群963119821',
-        bit64link: '64位',
-        bit32link: '32位'
 
-    },
-    en: {
-        homepage: 'HomePage',
-        downloadlink: 'Download',
-        vediotutorial: 'Vedio Tutorial',
-        contactme: 'Discord',
-        bit64link: '64-bit',
-        bit32link: '32-bit'
-    }
-}
-const languagelinks = {
-    contactme: {
-        zh: 'https://qm.qq.com/q/I5rr3uEpi2',
-        en: 'https://discord.com/invite/ErtDwVeAbB',
-    },
-    vediotutorial: {
-        zh: 'https://space.bilibili.com/592120404/video',
-        en: 'https://www.youtube.com/results?search_query=LunaTranslator',
-    },
-    homepage: {
-        zh: window.location.protocol + '//' + window.location.hostname.substring(5)
-    }
+for (let lang in supportlangs) {
+    console.log(lang)
+    let a = document.createElement('a')
+    a.classList.add('goodlink')
+    a.classList.add('buttonsize')
+    a.innerText = supportlangs[lang]
+    a.addEventListener('click', function () {
+        switchlang(lang)
+    })
+    document.getElementById('languageswitch').appendChild(a)
 }
 function getcurrlang(url) {
-    for (let key in navitexts) {
+    for (let key in supportlangs) {
         if (url.includes(`/${key}/`)) {
             return key
         }
@@ -159,10 +191,14 @@ function switchlang(lang) {
 function browserlang() {
     let l = navigator.language
     if (l.includes('-')) l = l.split('-')[0]
-    if (navitexts[l]) return l
+    if (supportlangs.includes(l)) return l
     return 'en'
 }
+const titleids = ['homepage', 'downloadlink', 'vediotutorial', 'contactme', 'bit64link', 'bit32link']
+
+
 window.onpopstate = function (event) {
+
     let url = window.location.href;
     if (url.endsWith('.redirect')) {
         window.location.href = url.substring(0, url.length - 9);
@@ -173,7 +209,7 @@ window.onpopstate = function (event) {
         window.location.href += lang + '/'
         return
     }
-    for (let key in navitexts) {
+    for (let key in supportlangs) {
         if (url.endsWith(`/${key}/`)) {
             window.location.href += 'README'
             return
@@ -183,39 +219,19 @@ window.onpopstate = function (event) {
     window.localStorage.currentlang = thislang
     if (thislang != currentlang) {
         currentlang = thislang
-
-        for (let key in navitexts[currentlang]) {
-            document.getElementById(key).innerText = navitexts[currentlang][key]
-
-        }
+        titleids.forEach(key => {
+            document.getElementById(key).innerText = langs[key][currentlang]
+        });
     }
-
+    document.getElementById('homepage').href = window.location.protocol + '//' + window.location.hostname.substring(5)
     for (let _id in languagelinks) {
-        let link = languagelinks[_id][currentlang]
-        if (link === undefined)
-            link = languagelinks[_id].zh
-        document.getElementById(_id).href = link
+        document.getElementById(_id).href = languagelinks[_id][currentlang]
     }
 };
 
 function copyToClipboard(text) {
-    let url = window.location.href;
-    let thislang = getcurrlang(url)
-    const langs = {
-        zh: {
-            ok: '已复制到剪贴板',
-            fail: '无法复制:',
-        },
-        en: {
-            ok: 'Copy to clipboard',
-            fail: 'Cannot copy:',
-        },
-    }
-
     navigator.clipboard.writeText(text).then(function () {
-        showToast(langs[thislang].ok + '\n' + text);
-    }, function (err) {
-        showToast(langs[thislang].fail + err);
+        showToast(langs.clipboardok[currentlang] + '\n' + text);
     });
 }
 showtoastsig = null
