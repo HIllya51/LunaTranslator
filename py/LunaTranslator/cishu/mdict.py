@@ -2320,16 +2320,13 @@ class mdict(cishubase):
             return
         return _type, file_content
 
-    def shitstylesheet(self, s: str):
-        if s.startswith("<style>") and s.endswith("</style>"):
-            return s[7:-8]
-        return s
-
-    def tryparsecss(self, html_content, url, file_content, divid):
+    def tryparsecss(self, file_content, divid):
         try:
             file_content = file_content.decode("utf8")
         except:
-            return html_content
+            return ""
+        if file_content.startswith("<style>") and file_content.endswith("</style>"):
+            file_content = file_content[7:-8]
         try:
             from tinycss2 import parse_stylesheet, serialize
             from tinycss2.ast import (
@@ -2337,10 +2334,23 @@ class mdict(cishubase):
                 WhitespaceToken,
                 AtRule,
                 QualifiedRule,
+                IdentToken,
                 ParseError,
+                Node,
             )
 
-            rules = parse_stylesheet(self.shitstylesheet(file_content), True, True)
+            class KlassToken(Node):
+                type = "ident"
+
+                def __init__(self, line, column, value):
+                    Node.__init__(self, line, column)
+                    self.value = value
+
+                def _serialize_to(self, write):
+                    write(".")
+                    write(self.value)
+
+            rules = parse_stylesheet(file_content, True, True)
 
             def parseaqr(rule: QualifiedRule):
                 start = True
@@ -2354,7 +2364,7 @@ class mdict(cishubase):
                     if start:
                         if token.type == "ident" and token.value == "body":
                             # body
-                            rule.prelude.insert(idx + 1, HashToken(0, 0, divid, True))
+                            rule.prelude.insert(idx + 1, KlassToken(0, 0, divid))
                             rule.prelude.insert(idx + 1, WhitespaceToken(0, 0, " "))
                             idx += 2
                         else:
@@ -2362,7 +2372,7 @@ class mdict(cishubase):
                             # tag
                             # #class tag
                             rule.prelude.insert(idx, WhitespaceToken(0, 0, " "))
-                            rule.prelude.insert(idx, HashToken(0, 0, divid, True))
+                            rule.prelude.insert(idx, KlassToken(0, 0, divid))
                             idx += 2
                         start = False
                     elif token.type == "literal" and token.value == ",":
@@ -2410,20 +2420,23 @@ class mdict(cishubase):
         except:
 
             print_exc()
-        base64_content = base64.b64encode(file_content.encode("utf8")).decode("utf-8")
-        html_content = html_content.replace(
-            url, "data:text/css;base64," + base64_content
-        )
-        return html_content
+        return file_content
 
-    def repairtarget(self, index, fn, html_content: str, tolongvals: dict):
+    def repairtarget(
+        self,
+        index,
+        fn,
+        html_content: str,
+        tolongvals: dict,
+        divid: str,
+        csscollect: dict,
+    ):
         base = os.path.dirname(fn)
         src_pattern = r'src="([^"]+)"'
         href_pattern = r'href="([^"]+)"'
 
         src_matches = re.findall(src_pattern, html_content)
         href_matches = re.findall(href_pattern, html_content)
-        divid = "luna_internal_" + str(uuid.uuid4())
         for url in src_matches + href_matches:
             if url.startswith("#"):  # a href # 页内跳转
                 continue
@@ -2443,7 +2456,10 @@ class mdict(cishubase):
             elif _type == 3:
                 html_content = html_content.replace(url, file_content)
             elif _type == 1:
-                html_content = self.tryparsecss(html_content, url, file_content, divid)
+                css = self.tryparsecss(file_content, divid)
+                if css:
+                    csscollect[url] = css
+                    html_content = html_content.replace(url, "")
             elif _type == 2:
                 html_content = self.parseaudio(html_content, url, file_content)
             elif _type == 0:
@@ -2451,7 +2467,7 @@ class mdict(cishubase):
                 html_content = html_content.replace(
                     url, "data:application/octet-stream;base64," + base64_content
                 )
-        return '<div id="{}">{}</div>'.format(divid, html_content)
+        return '<div class="{}">{}</div>'.format(divid, html_content)
 
     def searchthread_internal(self, index, k, __safe):
         allres = []
@@ -2480,17 +2496,28 @@ class mdict(cishubase):
         except:
 
             print_exc()
+        if not results:
+            return
+        divid = "luna_internal_" + str(uuid.uuid4())
+        csscollect = {}
         for i in range(len(results)):
-            results[i] = self.repairtarget(index, f, results[i], tolongvals)
-        if len(results):
-            allres.append(
-                (
-                    self.getpriority(f),
-                    self.getFoldFlow(f),
-                    self.gettitle(f, index),
-                    "".join(results),
-                )
+            results[i] = self.repairtarget(
+                index, f, results[i], tolongvals, divid, csscollect
             )
+        collectresult = "".join(results) 
+        if csscollect:
+            collectresult += "<style>\n"
+            for css in csscollect.values():
+                collectresult += css + "\n"
+            collectresult += "</style>\n"
+        allres.append(
+            (
+                self.getpriority(f),
+                self.getFoldFlow(f),
+                self.gettitle(f, index),
+                collectresult,
+            )
+        )
 
     def generatehtml_tabswitch(self, allres):
         btns = []
