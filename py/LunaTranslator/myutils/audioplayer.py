@@ -141,7 +141,7 @@ class playonce:
 
 BASS_Init(-1, 44100, 0, 0, 0)
 # https://www.un4seen.com/
-plugins = {".spx": "bass_spx.dll"}
+plugins = {".spx": "bass_spx.dll", ".aac": "bass_aac.dll"}
 
 pluginshandle = {}
 

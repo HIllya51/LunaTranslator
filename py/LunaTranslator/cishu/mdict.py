@@ -2125,7 +2125,7 @@ class mdict(cishubase):
             if dis <= distance:
                 results.append(k)
                 diss[k] = dis
-        return sorted(results, key=lambda x: (diss[x], x))[: self.config["max_num"]]
+        return sorted(results, key=lambda x: diss[x])[: self.config["max_num"]]
 
     def parse_strings(self, input_string):
         parsed_strings = []
@@ -2291,25 +2291,12 @@ class mdict(cishubase):
         try:
             from tinycss2 import parse_stylesheet, serialize
             from tinycss2.ast import (
-                HashToken,
                 WhitespaceToken,
                 AtRule,
                 QualifiedRule,
-                IdentToken,
                 ParseError,
-                Node,
+                LiteralToken,
             )
-
-            class KlassToken(Node):
-                type = "ident"
-
-                def __init__(self, line, column, value):
-                    Node.__init__(self, line, column)
-                    self.value = value
-
-                def _serialize_to(self, write):
-                    write(".")
-                    write(self.value)
 
             rules = parse_stylesheet(file_content, True, True)
 
@@ -2325,7 +2312,9 @@ class mdict(cishubase):
                     if start:
                         if token.type == "ident" and token.value == "body":
                             # body
-                            rule.prelude.insert(idx + 1, KlassToken(0, 0, divid))
+                            rule.prelude.insert(
+                                idx + 1, LiteralToken(0, 0, "." + divid)
+                            )
                             rule.prelude.insert(idx + 1, WhitespaceToken(0, 0, " "))
                             idx += 2
                         else:
@@ -2333,7 +2322,9 @@ class mdict(cishubase):
                             # tag
                             # #class tag
                             rule.prelude.insert(idx, WhitespaceToken(0, 0, " "))
-                            rule.prelude.insert(idx, KlassToken(0, 0, divid))
+                            rule.prelude.insert(
+                                idx, LiteralToken(0, 0, "." + divid + " ")
+                            )
                             idx += 2
                         start = False
                     elif token.type == "literal" and token.value == ",":
@@ -2364,14 +2355,10 @@ class mdict(cishubase):
                             continue
                         # @....{ .klas{} }
                         internal = parserules(internal)
-                        ser = "@"
-                        ser += rule.at_keyword
-                        ser += "{"
-                        for _ in internal:
-                            ser += _.serialize()
-                        ser += "}"
-                        # rule.serialize=functools.partial(__,ser)
-                        rules[i] = shitrule(ser)
+                        _ = []
+                        rule.content = internal
+                        rule._serialize_to(_.append)
+                        rules[i] = shitrule("".join(_))
                     elif isinstance(rule, QualifiedRule):
                         parseaqr(rules[i])
                 return rules
@@ -2449,7 +2436,7 @@ class mdict(cishubase):
             # print(keys)
             for k in keys:
                 __safe = []
-                for content in set(self.searchthread_internal(index, k, __safe)):
+                for content in sorted(set(self.searchthread_internal(index, k, __safe))):
                     results.append(self.parseashtml(content))
         except:
 
