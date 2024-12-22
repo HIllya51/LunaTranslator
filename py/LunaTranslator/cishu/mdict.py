@@ -2125,8 +2125,7 @@ class mdict(cishubase):
             if dis <= distance:
                 results.append(k)
                 diss[k] = dis
-
-        return sorted(results, key=lambda x: diss[x])[: self.config["max_num"]]
+        return sorted(results, key=lambda x: (diss[x], x))[: self.config["max_num"]]
 
     def parse_strings(self, input_string):
         parsed_strings = []
@@ -2276,9 +2275,7 @@ class mdict(cishubase):
                 ext = ".mp3"
             varname = "var_" + hashlib.md5(file_content).hexdigest()
             audiob64vals[varname] = base64.b64encode(file_content).decode()
-            return 3, "javascript:mdict_play_sound('{}',{})".format(
-                ext[1:], varname
-            )
+            return 3, "javascript:mdict_play_sound('{}',{})".format(ext[1:], varname)
         file_content = self.parse_url_in_mdd(index, url)
         if not file_content:
             return
