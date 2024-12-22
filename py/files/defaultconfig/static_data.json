@@ -1334,7 +1334,8 @@
             "./files/plugins/LunaHook/LunaHost32.dll",
             "./files/plugins/DLL32/winsharedutils32.dll",
             "./files/plugins/DLL32/libmecab.dll",
-            "./files/plugins/DLL32/bass.dll"
+            "./files/plugins/DLL32/bass.dll",
+            "./files/plugins/DLL64/bass_spx.dll"
         ],
         "shared": [
             "./files/plugins/shareddllproxy32.exe",
@@ -1352,6 +1353,7 @@
             "./files/plugins/DLL64/libmecab.dll",
             "./files/plugins/DLL64/libcurl-x64.dll",
             "./files/plugins/DLL64/bass.dll",
+            "./files/plugins/DLL64/bass_spx.dll",
             "./files/plugins/DLL64/brotlicommon.dll",
             "./files/plugins/DLL64/brotlidec.dll"
         ],
@@ -1362,6 +1364,7 @@
             "./files/plugins/DLL32/libmecab.dll",
             "./files/plugins/DLL32/libcurl.dll",
             "./files/plugins/DLL32/bass.dll",
+            "./files/plugins/DLL64/bass_spx.dll",
             "./files/plugins/DLL32/brotlicommon.dll",
             "./files/plugins/DLL32/brotlidec.dll"
         ]

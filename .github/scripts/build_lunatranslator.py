@@ -273,6 +273,16 @@ def downloadbass():
         "ALL/x64/bass.dll",
         f"{rootDir}/files/plugins/DLL64",
     )
+    subprocess.run(f"curl -LO https://www.un4seen.com/files/bass_spx24.zip")
+    subprocess.run(f"7z x bass_spx24.zip -oALL")
+    shutil.move(
+        "ALL/bass_spx.dll",
+        f"{rootDir}/files/plugins/DLL32",
+    )
+    shutil.move(
+        "ALL/x64/bass_spx.dll",
+        f"{rootDir}/files/plugins/DLL64",
+    )
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ from ctypes import (
     c_float,
     c_int64,
     c_void_p,
-    c_double,
+    c_char_p,
 )
 
 
@@ -46,6 +46,9 @@ BASS_StreamCreateFile = WINFUNCTYPE(HSTREAM, BOOL, c_void_p, QWORD, QWORD, DWORD
     ("BASS_StreamCreateFile", bass_module)
 )
 BASS_Free = WINFUNCTYPE(BOOL)(("BASS_Free", bass_module))
+BASS_PluginLoad = WINFUNCTYPE(c_ulong, c_char_p, c_ulong)(
+    ("BASS_PluginLoad", bass_module)
+)
 
 
 class playonce:
@@ -94,6 +97,8 @@ class playonce:
 
 
 BASS_Init(-1, 44100, 0, 0, 0)
+# https://www.un4seen.com/
+plugins = {".spx": "bass_spx.dll"}
 
 
 class series_audioplayer:
@@ -106,6 +111,7 @@ class series_audioplayer:
         self.lock.acquire()
         self.timestamp = None
         self.lastcontext = None
+        self.plugins = {}
         threading.Thread(target=self.__dotasks).start()
 
     def stop(self):
@@ -116,9 +122,14 @@ class series_audioplayer:
         except:
             pass
 
-    def play(self, binary, volume, force, timestamp):
-        if timestamp != self.timestamp:
+    def play(self, binary, volume=100, force=False, timestamp=None, ext=None):
+        if timestamp and (timestamp != self.timestamp):
             return
+        self.timestamp = timestamp
+        if ext and plugins.get(ext) and not self.plugins.get(ext):
+            self.plugins[ext] = BASS_PluginLoad(
+                gobject.GetDllpath(plugins.get(ext)).encode("utf8"), 0
+            )
         try:
             self.tasks = (binary, volume, force)
             self.lock.release()
@@ -140,12 +151,10 @@ class series_audioplayer:
                 _playonce = playonce(binary, volume)
                 while _playonce.isplaying:
                     time.sleep(0.1)
-                    if self.tasks:
-                        if globalconfig["ttsnointerrupt"]:
-                            if self.tasks[-1]:
-                                break
-                        else:
-                            break
+                    if self.tasks and not (
+                        globalconfig["ttsnointerrupt"] and (not self.tasks[-1])
+                    ):
+                        break
                 else:
                     if self.playovercallback:
                         self.playovercallback()

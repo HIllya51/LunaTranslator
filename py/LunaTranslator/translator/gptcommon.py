@@ -117,7 +117,13 @@ class gptcommon(basetrans):
             ) and (response.status_code != 200):
                 # application/json
                 # text/html
-                raise Exception(response)
+                raise Exception(
+                    "{code} Error: {text} for url: {url}".format(
+                        code=response.status_code,
+                        text=response.reason,
+                        url=response.url,
+                    )
+                )
             for chunk in response.iter_lines():
                 response_data: str = chunk.decode("utf-8").strip()
                 if not response_data.startswith("data: "):

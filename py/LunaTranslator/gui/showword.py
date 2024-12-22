@@ -1168,6 +1168,7 @@ class searchwordW(closeashidewindow):
         self.textOutput.bind(
             "mdict_entry_call", lambda word: self.search_word.emit(word, False)
         )
+        self.textOutput.bind("mdict_sound_call", self.mdict_sound_call)
         self.cache_results = {}
         self.hiding = True
 
@@ -1185,6 +1186,12 @@ class searchwordW(closeashidewindow):
         self.spliter.setOrientation(Qt.Orientation.Vertical)
 
         self.spliter.addWidget(w)
+
+    def mdict_sound_call(self, ext, soundb64: str):
+
+        gobject.baseobject.audioplayer.play(
+            base64.b64decode(soundb64.encode()), force=True, ext=ext
+        )
 
     def onceaddankiwindow(self, idx):
         if idx == 1:

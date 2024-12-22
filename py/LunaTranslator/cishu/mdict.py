@@ -1,6 +1,7 @@
 import math, base64, uuid, gobject
 from cishu.cishubase import DictTree
 from myutils.config import isascii
+from traceback import print_exc
 
 
 class FlexBuffer:
@@ -1688,13 +1689,13 @@ class IndexBuilder(object):
         fname,
         encoding="",
         passcode=None,
-        force_rebuild=False,
         enable_history=False,
         sql_index=True,
         check=False,
     ):
         self._mdx_file = fname
-        self._mdd_file = ""
+        self._mdd_files = []
+        self._mdd_dbs = []
         self._encoding = ""
         self._stylesheet = {}
         self._title = ""
@@ -1713,12 +1714,9 @@ class IndexBuilder(object):
         _targetfilenamebase = gobject.getcachedir("mdict/index/" + _mdxmd5)
         self._mdx_db = _targetfilenamebase + ".mdx.db"
         # make index anyway
-        if force_rebuild:
+
+        if not os.path.isfile(self._mdx_db):
             self._make_mdx_index(self._mdx_db)
-            if os.path.isfile(_filename + ".mdd"):
-                self._mdd_file = _filename + ".mdd"
-                self._mdd_db = _targetfilenamebase + ".mdd.db"
-                self._make_mdd_index(self._mdd_db)
 
         if os.path.isfile(self._mdx_db):
             # read from META table
@@ -1734,11 +1732,7 @@ class IndexBuilder(object):
                 conn.close()
                 self._make_mdx_index(self._mdx_db)
                 print("mdx.db rebuilt!")
-                if os.path.isfile(_filename + ".mdd"):
-                    self._mdd_file = _filename + ".mdd"
-                    self._mdd_db = _targetfilenamebase + ".mdd.db"
-                    self._make_mdd_index(self._mdd_db)
-                    print("mdd.db rebuilt!")
+                self.makemdds(_filename, _targetfilenamebase)
                 return None
             cursor = conn.execute('SELECT * FROM META WHERE key = "encoding"')
             for cc in cursor:
@@ -1767,15 +1761,15 @@ class IndexBuilder(object):
             #        continue
             #    if cc[0] == 'title':
             #        self._description = cc[1]
-        else:
-            self._make_mdx_index(self._mdx_db)
+        self.makemdds(_filename, _targetfilenamebase)
 
-        if os.path.isfile(_filename + ".mdd"):
-            self._mdd_file = _filename + ".mdd"
-            self._mdd_db = _targetfilenamebase + ".mdd.db"
-            if not os.path.isfile(self._mdd_db):
-                self._make_mdd_index(self._mdd_db)
-        pass
+    def makemdds(self, _filename, _targetfilenamebase):
+        for end in (".mdd", ".1.mdd"):
+            if os.path.isfile(_filename + end):
+                self._mdd_files.append(_filename + end)
+                self._mdd_dbs.append(_targetfilenamebase + end + ".db")
+                if not os.path.isfile(self._mdd_dbs[-1]):
+                    self._make_mdd_index(self._mdd_files[-1], self._mdd_dbs[-1])
 
     def _replace_stylesheet(self, txt):
         # substitute stylesheet definition
@@ -1867,11 +1861,10 @@ class IndexBuilder(object):
         self._title = meta["title"]
         self._description = meta["description"]
 
-    def _make_mdd_index(self, db_name):
+    def _make_mdd_index(self, mdd_file, db_name):
         if os.path.exists(db_name):
             os.remove(db_name)
-        mdd = MDD(self._mdd_file)
-        self._mdd_db = db_name
+        mdd = MDD(mdd_file)
         index_list = mdd.get_index(check_block=self._check)
         conn = sqlite3.connect(db_name)
         c = conn.cursor()
@@ -1990,10 +1983,11 @@ class IndexBuilder(object):
 
     def mdd_lookup(self, keyword, ignorecase=None):
         lookup_result_list = []
-        indexes = self.lookup_indexes(self._mdd_db, keyword, ignorecase)
-        with open(self._mdd_file, "rb") as mdd_file:
-            for index in indexes:
-                lookup_result_list.append(self.get_mdd_by_index(mdd_file, index))
+        for i in range(len(self._mdd_files)):
+            indexes = self.lookup_indexes(self._mdd_dbs[i], keyword, ignorecase)
+            with open(self._mdd_files[i], "rb") as mdd_file:
+                for index in indexes:
+                    lookup_result_list.append(self.get_mdd_by_index(mdd_file, index))
         return lookup_result_list
 
     @staticmethod
@@ -2014,7 +2008,10 @@ class IndexBuilder(object):
             return keys
 
     def get_mdd_keys(self, query=""):
-        return self.get_keys(self._mdd_db, query)
+        _ = []
+        for f in self._mdd_dbs:
+            _.extend(self.get_keys(f, query))
+        return _
 
     def get_mdx_keys(self, query=""):
         return self.get_keys(self._mdx_db, query)
@@ -2077,7 +2074,6 @@ class mdict(cishubase):
 
             except:
                 print(f)
-                from traceback import print_exc
 
                 print_exc()
 
@@ -2292,9 +2288,6 @@ class mdict(cishubase):
                 file_content = f.read()
             return _type, file_content
 
-        if url.startswith("#"):  # a href # 页内跳转
-            return -1, None
-
         url1 = url.replace("/", "\\")
         if not url1.startswith("\\"):
             url1 = "\\" + url1
@@ -2306,11 +2299,9 @@ class mdict(cishubase):
             return _type, file_content
 
         func = url.split(r"://")[0]
-        if func == "entry":
-            return 3, "javascript:safe_mdict_entry_call('{w}')".format(
-                w=url.split(r"://")[1]
-            )
         url1 = url.split(r"://")[1]
+        if func == "entry":
+            return 3, "javascript:safe_mdict_entry_call('{}')".format(url1)
         url1 = url1.replace("/", "\\")
 
         if not url1.startswith("\\"):
@@ -2320,6 +2311,11 @@ class mdict(cishubase):
         except:
             return None
         if func == "sound":
+            ext = os.path.splitext(url1)[1].lower()
+            if ext in (".aac", ".spx"):
+                return 3, "javascript:safe_mdict_sound_call('{}','{}')".format(
+                    ext, base64.b64encode(file_content).decode()
+                )
             _type = 2
         return _type, file_content
 
@@ -2406,7 +2402,6 @@ class mdict(cishubase):
             file_content = serialize(parserules(rules))
             # print(file_content)
         except:
-            from traceback import print_exc
 
             print_exc()
         base64_content = base64.b64encode(file_content.encode("utf8")).decode("utf-8")
@@ -2416,7 +2411,6 @@ class mdict(cishubase):
         return html_content
 
     def repairtarget(self, index, base, html_content: str):
-
         src_pattern = r'src="([^"]+)"'
         href_pattern = r'href="([^"]+)"'
 
@@ -2424,6 +2418,9 @@ class mdict(cishubase):
         href_matches = re.findall(href_pattern, html_content)
         divid = "luna_internal_" + str(uuid.uuid4())
         for url in src_matches + href_matches:
+            if url.startswith("#"):  # a href # 页内跳转
+                continue
+
             try:
                 file_content = self.tryloadurl(index, base, url)
             except:
@@ -2473,7 +2470,6 @@ class mdict(cishubase):
                 for content in set(self.searchthread_internal(index, k, __safe)):
                     results.append(self.parseashtml(content))
         except:
-            from traceback import print_exc
 
             print_exc()
         for i in range(len(results)):
@@ -2647,6 +2643,12 @@ if (content.style.display === 'block') {
         allres.sort(key=lambda _: -_[0])
         func = """
 <script>
+function safe_mdict_sound_call(ext, b64){
+    if(window.mdict_sound_call)
+        window.mdict_sound_call(ext, b64)
+    else if(window.LUNAJSObject)
+        window.LUNAJSObject.mdict_sound_call(ext, b64)
+}
 function safe_mdict_entry_call(word){
     if(window.mdict_entry_call)
         window.mdict_entry_call(word)
