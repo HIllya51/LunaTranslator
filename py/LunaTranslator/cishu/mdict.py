@@ -2426,7 +2426,6 @@ class mdict(cishubase):
             try:
                 file_content = self.tryloadurl(index, base, url, tolongvals)
             except:
-                print_exc()
                 print("unknown", url)
                 continue
             if not file_content:
