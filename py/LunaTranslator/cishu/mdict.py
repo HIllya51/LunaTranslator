@@ -2276,6 +2276,16 @@ class mdict(cishubase):
         )
         return html_content
 
+    def parse_url_in_mdd(self, url1: str):
+        url1 = url1.replace("/", "\\")
+
+        if not url1.startswith("\\"):
+            if url1.startswith("."):
+                url1 = url1[1:]
+            else:
+                url1 = "\\" + url1
+        return url1
+
     def tryloadurl(self, index: IndexBuilder, base, url: str, tolongvals: dict):
         _local = os.path.join(base, url)
         iscss = url.lower().endswith(".css")
@@ -2288,38 +2298,32 @@ class mdict(cishubase):
                 file_content = f.read()
             return _type, file_content
 
-        url1 = url.replace("/", "\\")
-        if not url1.startswith("\\"):
-            url1 = "\\" + url1
-        try:
-            file_content = index.mdd_lookup(url1)[0]
-        except:
-            pass
-        if file_content:
-            return _type, file_content
-
-        func = url.split(r"://")[0]
-        url1 = url.split(r"://")[1]
-        if func == "entry":
-            return 3, "javascript:safe_mdict_entry_call('{}')".format(url1)
-        url1 = url1.replace("/", "\\")
-
-        if not url1.startswith("\\"):
-            url1 = "\\" + url1
-        try:
-            file_content = index.mdd_lookup(url1)[0]
-        except:
-            return None
-        if func == "sound":
-            ext = os.path.splitext(url1)[1].lower()
+        if url.startswith("entry://"):
+            return 3, "javascript:safe_mdict_entry_call('{}')".format(url[8:])
+        if url.startswith("sound://"):
+            url = self.parse_url_in_mdd(url[8:])
+            try:
+                file_content = index.mdd_lookup(url)[0]
+            except:
+                return None
+            ext = os.path.splitext(url)[1].lower()
             if ext in (".aac", ".spx"):
-                varname = "var_" + base64.b64encode(url1.encode()).hex()
+                varname = "var_" + base64.b64encode(url.encode()).hex()
                 tolongvals[varname] = base64.b64encode(file_content).decode()
                 return 3, "javascript:safe_mdict_sound_call('{}',{})".format(
                     ext, varname
                 )
-            _type = 2
+            return 2, file_content
+        try:
+            file_content = index.mdd_lookup(self.parse_url_in_mdd(url))[0]
+        except:
+            return None
         return _type, file_content
+
+    def shitstylesheet(self, s: str):
+        if s.startswith("<style>") and s.endswith("</style>"):
+            return s[7:-8]
+        return s
 
     def tryparsecss(self, html_content, url, file_content, divid):
         try:
@@ -2336,7 +2340,7 @@ class mdict(cishubase):
                 ParseError,
             )
 
-            rules = parse_stylesheet(file_content, True, True)
+            rules = parse_stylesheet(self.shitstylesheet(file_content), True, True)
 
             def parseaqr(rule: QualifiedRule):
                 start = True
@@ -2412,7 +2416,8 @@ class mdict(cishubase):
         )
         return html_content
 
-    def repairtarget(self, index, base, html_content: str, tolongvals: dict):
+    def repairtarget(self, index, fn, html_content: str, tolongvals: dict):
+        base = os.path.dirname(fn)
         src_pattern = r'src="([^"]+)"'
         href_pattern = r'href="([^"]+)"'
 
@@ -2426,10 +2431,11 @@ class mdict(cishubase):
             try:
                 file_content = self.tryloadurl(index, base, url, tolongvals)
             except:
-                print("unknown", url)
+                print_exc()
+                print("unknown", fn, url)
                 continue
             if not file_content:
-                print(url)
+                print(fn, url)
                 continue
             _type, file_content = file_content
             if _type == -1:
@@ -2475,9 +2481,7 @@ class mdict(cishubase):
 
             print_exc()
         for i in range(len(results)):
-            results[i] = self.repairtarget(
-                index, os.path.dirname(f), results[i], tolongvals
-            )
+            results[i] = self.repairtarget(index, f, results[i], tolongvals)
         if len(results):
             allres.append(
                 (
