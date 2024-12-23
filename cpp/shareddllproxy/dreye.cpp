@@ -4,7 +4,6 @@ extern "C"
     typedef int(__stdcall *TranTextFlowCJ)(char *src, char *dest, int, int);
 }
 
-
 int dreyewmain(int argc, wchar_t *argv[])
 {
     SetCurrentDirectory(argv[1]);
@@ -30,12 +29,10 @@ int dreyewmain(int argc, wchar_t *argv[])
         _MTInitCJ(_wtoi(argv[3]));
 
         HANDLE hPipe = CreateNamedPipe(argv[4], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-        
+
         SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[5]));
-        if (ConnectNamedPipe(hPipe, NULL) != NULL)
-        {
-            DWORD len = 0;
-        }
+        if (!ConnectNamedPipe(hPipe, NULL))
+            return 0;
         while (true)
         {
             char src[4096] = {0};

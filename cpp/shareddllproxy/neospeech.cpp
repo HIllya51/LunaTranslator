@@ -35,10 +35,8 @@ int neospeech(int argc, wchar_t *argv[])
     memset(mapview, 0, 1024 * 1024 * 10);
 
     SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
-    if (ConnectNamedPipe(hPipe, NULL) != NULL)
-    {
-        DWORD len = 0;
-    }
+    if (!ConnectNamedPipe(hPipe, NULL))
+        return 0;
     wchar_t text[10000];
     DWORD _;
     while (true)

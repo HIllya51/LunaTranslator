@@ -81,4 +81,4 @@ class TS(basetrans):
         return self.x64(content)
 
     def langmap(self):
-        return {"zh": "SChinese", "cht": "TChinese", "en": "English", "ja": "Japanese"}
+        return {"zh": "SChinese", "cht": "TChinese", "en": "English", "ja": "Japanese", "auto": "Japanese"}

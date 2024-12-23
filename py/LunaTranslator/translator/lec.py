@@ -1,7 +1,6 @@
 from myutils.subproc import subproc_w, autoproc
 from translator.basetranslator import basetrans
-import os, time
-from myutils.config import _TR
+import ctypes, time
 import windows
 
 
@@ -11,18 +10,25 @@ class TS(basetrans):
         self.pair = None
         self.checkpath()
 
+    def langmap(self):
+        return {"auto": "ja"}
+
     def checkpath(self):
 
+        pairs = (self.srclang, self.tgtlang)
+        if pairs == self.pair:
+            return
+        self.pair = pairs
         t = time.time()
         t = str(t)
         pipename = "\\\\.\\Pipe\\dreye_" + t
         waitsignal = "dreyewaitload_" + t
         self.engine = autoproc(
             subproc_w(
-                "./files/plugins/shareddllproxy32.exe atlaswmain   {} {} ".format(
-                    pipename, waitsignal
+                "./files/plugins/shareddllproxy32.exe lec   {} {} {} {}".format(
+                    pipename, waitsignal, self.srclang, self.tgtlang
                 ),
-                name="atlaswmain",
+                name="lec",
             )
         )
 
@@ -42,14 +48,15 @@ class TS(basetrans):
                 None,
             )
         )
-        return True
 
-    def x64(self, content):
+    def x64(self, content: str):
+
         self.checkpath()
-
-        windows.WriteFile(self.hPipe, content.encode("utf-16-le"))
-
-        return windows.ReadFile(self.hPipe, 4096).decode("utf-16-le")
+        l = content.encode("utf-16-le")
+        windows.WriteFile(self.hPipe, bytes(ctypes.c_int(len(l))))
+        windows.WriteFile(self.hPipe, l)
+        size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+        return windows.ReadFile(self.hPipe, size).decode("utf-16-le")
 
     def translate(self, content):
         return self.x64(content)

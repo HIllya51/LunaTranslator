@@ -538,10 +538,8 @@ int atlaswmain(int argc, wchar_t *argv[])
 	HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
 	SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
-	if (ConnectNamedPipe(hPipe, NULL) != NULL)
-	{
-		DWORD len = 0;
-	}
+	if (!ConnectNamedPipe(hPipe, NULL))
+		return 0;
 	while (true)
 	{
 		wchar_t src[4096] = {0};

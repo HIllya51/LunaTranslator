@@ -690,10 +690,8 @@ int eztrans(int argc, wchar_t *argv[])
     TransEngine->Init(_p);
 
     SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[3]));
-    if (ConnectNamedPipe(hPipe, NULL) != NULL)
-    {
-        DWORD len = 0;
-    }
+    if (!ConnectNamedPipe(hPipe, NULL))
+        return 0;
     WCHAR buff[6000];
     while (true)
     {

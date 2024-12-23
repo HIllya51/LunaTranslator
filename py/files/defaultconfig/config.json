@@ -1702,6 +1702,12 @@
             "color": "#1839f0",
             "name": "Atlas"
         },
+        "lec": {
+            "type": "offline",
+            "use": false,
+            "color": "#1839f0",
+            "name": "LEC"
+        },
         "sougou2": {
             "use": false,
             "color": "blue",

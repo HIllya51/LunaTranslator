@@ -17,7 +17,7 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	add_executable(shareddllproxy ${shareddllproxy_common})
 
 else()
-	add_executable(shareddllproxy ${shareddllproxy_common} Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp neospeech.cpp ../implsapi.cpp)
+	add_executable(shareddllproxy ${shareddllproxy_common} lec.cpp Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp neospeech.cpp ../implsapi.cpp)
 	add_subdirectory(voiceroid2)
 endif()
 

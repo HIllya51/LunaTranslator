@@ -4,6 +4,7 @@ int dllinjectwmain(int argc, wchar_t *argv[]);
 int updatewmain(int argc, wchar_t *wargv[]);
 bool checkisapatch();
 #ifndef _WIN64
+int lecwmain(int argc, wchar_t *argv[]);
 int jbjwmain(int argc, wchar_t *argv[]);
 int dreyewmain(int argc, wchar_t *argv[]);
 int kingsoftwmain(int argc, wchar_t *argv[]);
@@ -61,6 +62,7 @@ int wmain(int argc, wchar_t *argv[])
         {L"listpm", listprocessmodule},
         {L"update", updatewmain},
 #ifndef _WIN64
+        {L"lec", lecwmain},
         {L"jbj7", jbjwmain},
         {L"dreye", dreyewmain},
         {L"kingsoft", kingsoftwmain},

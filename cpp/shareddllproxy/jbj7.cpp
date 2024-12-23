@@ -38,10 +38,8 @@ int jbjwmain(int argc, wchar_t *argv[])
     wchar_t *buf = new wchar_t[3000];
 
     SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[3]));
-    if (ConnectNamedPipe(hPipe, NULL) != NULL)
-    {
-        DWORD len = 0;
-    }
+    if (!ConnectNamedPipe(hPipe, NULL))
+        return 0;
     unsigned char intcache[4];
     while (true)
     {

@@ -276,6 +276,20 @@ namespace
     {
         CharFilter(buffer, '\n');
     }
+    void PCSG01068(TextBuffer *buffer, HookParam *hp)
+    {
+        StringCharReplacer(buffer, "\\\\", 2, '\n');
+        CharFilter(buffer, '\\');
+        auto s = buffer->viewA();
+        if (endWith(s, u8"。!"))
+            buffer->from(s.substr(0, s.size() - 1));
+    }
+    void PCSG01167(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(u8R"(<(.*?)>(.*?)\|)"), "$2");
+        buffer->from(s);
+    }
     void PCSG00917(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -772,6 +786,15 @@ namespace
             {0x8001701C, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00561"}},
             // ハートの国のアリス～Wonderful Wonder World～
             {0x8100F0CA, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00614"}}, // 手动解压
+            {0x800173F4, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00614"}},
+            // 新装版魔法使いとご主人様～Wizard and The Master～
+            {0x8001733C, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00580"}},
+            // 円環のメモーリア -カケラ灯し-
+            {0x80029AB2, {0, 0, 0, 0, PCSG01167, "PCSG01167"}},
+            // ネオ アンジェリーク 天使の涙
+            {0x8005426C, {CODEC_UTF8, 0, 0, 0, PCSG01068, "PCSG01068"}},
+            // スカーレッドライダーゼクス Rev.
+            {0x800BEE38, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00745"}},
         };
         return 1;
     }();

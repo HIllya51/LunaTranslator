@@ -11,6 +11,9 @@ class TS(basetrans):
         self.pair = None
         self.checkpath()
 
+    def langmap(self):
+        return {"auto": "ja"}
+
     def checkpath(self):
         if self.config["path"] == "":
             return False
@@ -69,9 +72,7 @@ class TS(basetrans):
             if len(line) == 0:
                 continue
             windows.WriteFile(self.hPipe, line.encode(codes[self.srclang]))
-            ress.append(
-                windows.ReadFile(self.hPipe, 4096).decode(codes[self.tgtlang])
-            )
+            ress.append(windows.ReadFile(self.hPipe, 4096).decode(codes[self.tgtlang]))
         return "\n".join(ress)
 
     def translate(self, content):
