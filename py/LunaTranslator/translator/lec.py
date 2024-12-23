@@ -56,6 +56,8 @@ class TS(basetrans):
         windows.WriteFile(self.hPipe, bytes(ctypes.c_int(len(l))))
         windows.WriteFile(self.hPipe, l)
         size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+        if not size:
+            raise Exception("not installed")
         return windows.ReadFile(self.hPipe, size).decode("utf-16-le")
 
     def translate(self, content):

@@ -531,6 +531,28 @@ wchar_t *TranslateFullLog(wchar_t *otext)
 
 struct AtlasConfig atlcfg;
 
+static void writestring(wchar_t *text, HANDLE hPipe)
+{
+	DWORD _;
+	auto len = text ? (2 * wcslen(text)) : 0;
+	if (!WriteFile(hPipe, &len, 4, &_, NULL))
+		return;
+	if (text)
+		if (!WriteFile(hPipe, text, len, &_, NULL))
+			return;
+}
+static wchar_t *readstring(HANDLE hPipe)
+{
+	DWORD _;
+	int len;
+	if (!ReadFile(hPipe, &len, 4, &_, NULL))
+		return nullptr;
+	wchar_t *otext = new wchar_t[len / 2 + 1];
+	if (!ReadFile(hPipe, otext, len, &_, NULL))
+		return nullptr;
+	otext[len / 2] = 0;
+	return otext;
+}
 HANDLE mutex = NULL;
 int atlaswmain(int argc, wchar_t *argv[])
 {
@@ -542,9 +564,8 @@ int atlaswmain(int argc, wchar_t *argv[])
 		return 0;
 	while (true)
 	{
-		wchar_t src[4096] = {0};
-		DWORD _;
-		if (!ReadFile(hPipe, src, 4096 * 2, &_, NULL))
+		wchar_t *src = readstring(hPipe);
+		if (!src)
 			break;
 
 		if (!mutex)
@@ -583,14 +604,13 @@ int atlaswmain(int argc, wchar_t *argv[])
 			if (!AtlasIsLoaded())
 			{
 				ReleaseMutex(mutex);
-				auto text = L"Atlas Load Failed";
-				WriteFile(hPipe, text, wcslen(text) * 2, &_, NULL);
+				writestring(0, hPipe);
 				return false;
 			}
 		}
 		wchar_t *text = TranslateFull(src, 0, NULL, NULL);
-
-		WriteFile(hPipe, text, wcslen(text) * 2, &_, NULL);
+		writestring(text, hPipe);
+		free(src);
 		free(text);
 		ReleaseMutex(mutex);
 	}

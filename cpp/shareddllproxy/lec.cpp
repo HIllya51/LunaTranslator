@@ -152,11 +152,12 @@ void SetUpLEC()
 static void writestring(wchar_t *text, HANDLE hPipe)
 {
     DWORD _;
-    auto len = 2 * wcslen(text);
+    auto len = text ? (2 * wcslen(text)) : 0;
     if (!WriteFile(hPipe, &len, 4, &_, NULL))
         return;
-    if (!WriteFile(hPipe, text, len, &_, NULL))
-        return;
+    if (text)
+        if (!WriteFile(hPipe, text, len, &_, NULL))
+            return;
 }
 static wchar_t *readstring(HANDLE hPipe)
 {
@@ -195,7 +196,6 @@ int lecwmain(int argc, wchar_t *argv[])
         PATH = "Nova\\JaEn\\EngineDll_je.dll";
     }
     DWORD _;
-    wchar_t __[] = L"not installed";
     while (true)
     {
         wchar_t *otext = readstring(hPipe);
@@ -207,14 +207,14 @@ int lecwmain(int argc, wchar_t *argv[])
             SetUpLEC();
             if (lecState < 0)
             {
-                writestring(__, hPipe);
+                writestring(0, hPipe);
                 continue;
             }
         }
 
         if (lecState < 0)
         {
-            writestring(__, hPipe);
+            writestring(0, hPipe);
             continue;
         }
         wchar_t *text = LECTranslateFull(otext);

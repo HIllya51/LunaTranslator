@@ -1,7 +1,6 @@
 from myutils.subproc import subproc_w, autoproc
 from translator.basetranslator import basetrans
-import os, time
-from myutils.config import _TR
+import ctypes, time
 import windows
 
 
@@ -47,9 +46,13 @@ class TS(basetrans):
     def x64(self, content):
         self.checkpath()
 
-        windows.WriteFile(self.hPipe, content.encode("utf-16-le"))
-
-        return windows.ReadFile(self.hPipe, 4096).decode("utf-16-le")
+        l = content.encode("utf-16-le")
+        windows.WriteFile(self.hPipe, bytes(ctypes.c_int(len(l))))
+        windows.WriteFile(self.hPipe, l)
+        size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+        if not size:
+            raise Exception("not installed")
+        return windows.ReadFile(self.hPipe, size).decode("utf-16-le")
 
     def translate(self, content):
         return self.x64(content)
