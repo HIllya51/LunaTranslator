@@ -170,7 +170,7 @@ def question():
     )
     formLayout.addRow(
         "添加语言包",
-        getboxlayout([combo, btndownload, btninstall], makewidget=True),
+        getboxlayout([combo, btndownload, btninstall], makewidget=True, margin0=True),
     )
     return dialog
 
