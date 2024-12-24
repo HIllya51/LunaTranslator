@@ -387,7 +387,9 @@ class MAINUI:
         maybehaspremt = {}
         skip_other_on_success = False
         fix_rank = globalconfig["fix_translate_rank_rank"].copy()
-        if "rengong" in self.translators:
+        if ("rengong" in self.translators) and (
+            not (is_auto_run and globalconfig["rengong"]["premt"].get("manual", False))
+        ):
             contentraw = self.analyzecontent(text_solved, optimization_params)
             try:
                 res = self.translators["rengong"].translate(contentraw)
@@ -399,7 +401,15 @@ class MAINUI:
                 res and self.translators["rengong"].config["skip_other_on_success"]
             )
 
-        if (not skip_other_on_success) and ("premt" in self.translators):
+        if (
+            (not skip_other_on_success)
+            and ("premt" in self.translators)
+            and (
+                not (
+                    is_auto_run and globalconfig["fanyi"]["premt"].get("manual", False)
+                )
+            )
+        ):
             contentraw = self.analyzecontent(text_solved, optimization_params)
             try:
                 maybehaspremt = self.translators["premt"].translate(contentraw)

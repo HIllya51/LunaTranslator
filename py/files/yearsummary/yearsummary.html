@@ -13,7 +13,13 @@
         .page {
             display: none;
         }
+        .vboxlayout{
+            display: flex; flex-direction: column;
+        }
+        .hboxlayout{
+            display: flex; flex-direction: row;
 
+        }
         .active {
             display: block;
         }
@@ -44,7 +50,6 @@
 
         .container {
             overflow: hide;
-            display: flex;
             padding: 10px;
             gap: 20px;
             height: 100%;
@@ -64,16 +69,12 @@
         .right-box {
             height: 100%;
             flex: 3;
-            display: flex;
-            flex-direction: column;
             gap: 20px;
         }
 
         /* Right Boxes (Detail boxes) */
         .left-box {
             flex: 1;
-            display: flex;
-            flex-direction: column;
             gap: 20px;
         }
 
@@ -131,9 +132,9 @@
 <body>
 
     <div class="page active" id="page1">
-        <div class="container">
+        <div class="container hboxlayout">
             <!-- Left Box (Main content) -->
-            <div class="left-box">
+            <div class="left-box vboxlayout">
                 <div class="box">
                     <h1>今年你一共总玩了 <div class="zitiupup" id="GAMES_YEAR_PLAYED"></div> 个游戏
                     </h1>
@@ -148,7 +149,7 @@
             </div>
 
             <!-- Right Box (Detail Boxes) -->
-            <div class="right-box">
+            <div class="right-box vboxlayout">
 
                 <div class="box" style="height: 100%;">
                     <div class=" imagexx">
@@ -158,13 +159,15 @@
             </div>
         </div>
     </div>
-    <div class="page bigbox" id="page2" style="display: flex; flex-direction: column;">
+    <div class="page bigbox" id="page2">
+        <div class="vboxlayout" style="height: 100%;">
         <h1 style="text-align: center; flex:1">你所玩的游戏的标签</h1>
-        <div style="flex:10;"><div id="wordcloud"></div></div>
+        <div style="flex:10;"><div id="wordcloud"></div></div></div>
     </div>
-    <div class="page bigbox" id="page3" style="display: flex; flex-direction: column;">
+    <div class="page bigbox" id="page3">
+        <div class="vboxlayout" style="height: 100%;">
         <h1 style="text-align: center; flex:1">你所玩的游戏的开发商</h1>
-        <div style="flex:10;"><div id="wordcloud2"></div></div>
+        <div style="flex:10;"><div id="wordcloud2"></div></div></div>
     </div>
     <div class="buttons"> Next</div>
     <script>
@@ -287,7 +290,6 @@
             else {
                 const pages = document.querySelectorAll('.page');
                 pages.forEach(p => p.classList.add('active'));
-
                 document.querySelector('.buttons').style.display = 'none';
             }
         }
