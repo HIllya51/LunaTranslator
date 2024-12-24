@@ -126,7 +126,7 @@ def getinfosbyvid(proxy, vid):
         "vn",
         {
             "filters": ["id", "=", vid],
-            "fields": "tags.rating,tags.name,title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original",
+            "fields": "tags.rating,tags.name,title,titles.title,titles.main,screenshots.url,image.url,developers.name,developers.original,description",
         },
     )
     if js:
@@ -152,6 +152,7 @@ def getinfosbyvid(proxy, vid):
             sc=imgs,
             dev=dev,
             tags=sorted(tags, key=lambda x: -rates[tags.index(x)]),
+            description=js["results"][0]['description']
         )
 
 
@@ -379,4 +380,5 @@ class searcher(common):
             "imagepath_all": img + sc,
             "webtags": infos["tags"],
             "developers": infos["dev"],
+            "description":infos['description']
         }

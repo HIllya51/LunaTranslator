@@ -170,6 +170,9 @@ class searcher(common):
 
         inner = simplehtmlparser(response.text, "div", '<div ref="product_slider_data"')
 
+        description = simplehtmlparser(
+            response.text, "div", '<div class="area-detail-read">'
+        )
         return {
             "title": title,
             "imagepath_all": [
@@ -177,4 +180,5 @@ class searcher(common):
             ],
             "webtags": tags,
             "developers": [devp],
+            'description':description
         }

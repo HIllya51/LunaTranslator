@@ -1,6 +1,6 @@
 from textsource.textsourcebase import basetext
 from myutils.wrapper import threader
-import json, time, os, gobject, re
+import json, time, os, gobject, winsharedutils
 from myutils.config import globalconfig
 
 
@@ -29,8 +29,9 @@ class parsejson:
 
     def load(self):
         for i, k in enumerate(self.data):
-            if self.data[k]:
-                yield i, None
+            if not isinstance(self.data[k], str):
+                continue
+            if winsharedutils.distance_ratio(self.data[k], k) < 0.2:
                 continue
             yield i, k
 

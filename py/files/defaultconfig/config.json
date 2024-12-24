@@ -521,6 +521,7 @@
     "useproxy": true,
     "usesysproxy": true,
     "fullscreenmethod_4": 0,
+    "tagNameRemap": {},
     "dialog_savegame_layout": {
         "itemw": 250,
         "itemh": 350,
@@ -532,6 +533,7 @@
         "transparent": 25,
         "transparentselect": 25,
         "transparentnotexits": 25,
+        "listitemheight": 30,
         "listitemwidth_2": [
             300,
             500
@@ -1181,19 +1183,13 @@
             "use": true,
             "name": "MeCab",
             "args": {
-                "path": "",
-                "downloadlink": "{main_server}/Resource/dictionary/Mecab.zip"
+                "path": ""
             },
             "argstype": {
                 "path": {
                     "type": "file",
                     "name": "路径",
                     "dir": true
-                },
-                "downloadlink": {
-                    "type": "label",
-                    "islink": true,
-                    "name": "下载"
                 }
             },
             "type": "offline"
@@ -1670,7 +1666,7 @@
             "type": "offline",
             "use": false,
             "color": "#1839f0",
-            "name": "Jbeijing7"
+            "name": "J北京7"
         },
         "eztrans": {
             "type": "offline",

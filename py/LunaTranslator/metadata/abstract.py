@@ -157,6 +157,7 @@ class common:
         developers = data.get("developers", [])
         webtags = data.get("webtags", [])
         imagepath_all = data.get("imagepath_all", [])
+        description=data.get('description',None)
         normaled = [
             os.path.abspath(_) for _ in savehook_new_data[gameuid]["imagepath_all"]
         ]
@@ -175,6 +176,8 @@ class common:
             _urls = [_[1] for _ in savehook_new_data[gameuid]["relationlinks"]]
             if _url not in _urls:
                 savehook_new_data[gameuid]["relationlinks"].append((_vis, _url))
+        if description and not savehook_new_data[gameuid].get('description'):
+            savehook_new_data[gameuid]['description']=description
         if namemap:
             dedump = set()
             for _ in savehook_new_data[gameuid]["namemap2"]:

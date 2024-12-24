@@ -149,7 +149,7 @@ void SetUpLEC()
         RegCloseKey(key);
     }
 }
-static void writestring(wchar_t *text, HANDLE hPipe)
+void writestring(const wchar_t *text, HANDLE hPipe)
 {
     DWORD _;
     auto len = text ? (2 * wcslen(text)) : 0;
@@ -159,7 +159,7 @@ static void writestring(wchar_t *text, HANDLE hPipe)
         if (!WriteFile(hPipe, text, len, &_, NULL))
             return;
 }
-static wchar_t *readstring(HANDLE hPipe)
+wchar_t *readstring(HANDLE hPipe)
 {
     DWORD _;
     int len;

@@ -10,6 +10,17 @@ import gobject
 
 
 class playtimemanager:
+    def all(self):
+        res = self.sqlsavegameinfo.execute(
+            "SELECT gameinternalid_v2.gameuid, trace_strict.timestart, trace_strict.timestop FROM gameinternalid_v2 JOIN trace_strict ON gameinternalid_v2.gameinternalid = trace_strict.gameinternalid "
+        ).fetchall()
+        mp = {}
+        for uid, s, e in res:
+            if uid not in mp:
+                mp[uid] = []
+            mp[uid].append((s, e))
+        return mp
+
     def __init__(self):
 
         self.sqlsavegameinfo = sqlite3.connect(
@@ -111,7 +122,9 @@ class playtimemanager:
             gameinternalid = self.get_gameinternalid(uid)
             if uid in dic:
                 self.sqlsavegameinfo.execute(
-                    "UPDATE {} SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)".format(table),
+                    "UPDATE {} SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)".format(
+                        table
+                    ),
                     (_t, gameinternalid, dic[uid]),
                 )
 

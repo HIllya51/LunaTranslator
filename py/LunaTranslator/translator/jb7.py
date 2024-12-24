@@ -67,7 +67,7 @@ class TS(basetrans):
             )
         return True
 
-    def x64(self, content: str):
+    def translate(self, content):
         if self.tgtlang not in ["936", "950"]:
             return ""
         if self.checkpath() == False:
@@ -85,43 +85,6 @@ class TS(basetrans):
             xx = xx.decode("utf-16-le", errors="ignore")
             ress.append(xx)
         return "\n".join(ress)
-
-    def x86(self, content):
-        CODEPAGE_JA = 932
-        CODEPAGE_GB = 936
-        CODEPAGE_BIG5 = 950
-        BUFFER_SIZE = 3000
-        # if globalconfig['fanjian'] in [0,1,4]:
-        #     code=CODEPAGE_GB
-        # else:
-        #     code=CODEPAGE_BIG5
-        code = CODEPAGE_GB
-
-        size = BUFFER_SIZE
-        out = ctypes.create_unicode_buffer(size)
-        buf = ctypes.create_unicode_buffer(size)
-        outsz = ctypes.c_int(size)
-        bufsz = ctypes.c_int(size)
-        try:
-            self.dll.JC_Transfer_Unicode(
-                0,  # int, unknown
-                CODEPAGE_JA,  # uint     from, supposed to be 0x3a4 (cp932)
-                code,  # uint to, eighter cp950 or cp932
-                1,  # int, unknown
-                1,  # int, unknown
-                content,  # python 默认unicode 所有不用u'
-                out,  # wchar_t*
-                ctypes.byref(outsz),  # ∫
-                buf,  # wchar_t*
-                ctypes.byref(bufsz),
-            )  # ∫
-        except:
-            pass
-        return out.value
-
-    def translate(self, content):
-
-        return self.x64(content)
 
     def langmap(self):
         return {"zh": "936", "cht": "950"}

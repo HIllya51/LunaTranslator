@@ -756,5 +756,12 @@
     "成功": "success",
     "Win32通用钩子": "Win32 Universal Hook",
     "特殊码无效": "The special code is invalid",
-    "显示模式": "display mode"
+    "显示模式": "display mode",
+    "内置": "built-in",
+    "信息": "information",
+    "开发商": "Developers",
+    "标签映射": "Label Mapping",
+    "简介": "brief introduction",
+    "全部": "all",
+    "年度总结": "Annual Summary"
 }

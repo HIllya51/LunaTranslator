@@ -756,5 +756,12 @@
     "成功": "sukces",
     "Win32通用钩子": "Uniwersalny hak Win32",
     "特殊码无效": "Kod specjalny jest nieprawidłowy",
-    "显示模式": "tryb wyświetlania"
+    "显示模式": "tryb wyświetlania",
+    "内置": "wbudowany",
+    "信息": "informacje",
+    "开发商": "Deweloperzy",
+    "标签映射": "Mapowanie etykiet",
+    "简介": "krótkie wprowadzenie",
+    "全部": "całość",
+    "年度总结": "Roczne podsumowanie"
 }

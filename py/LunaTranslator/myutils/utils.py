@@ -356,7 +356,7 @@ def checkportavailable(port):
 
 
 def splittranslatortypes():
-    pre, offline, free, dev, api = [], [], [], [], []
+    pre, offline, free, api = [], [], [], []
     for k in globalconfig["fanyi"]:
         try:
             {"pre": pre, "offline": offline, "free": free, "api": api}[
@@ -365,7 +365,7 @@ def splittranslatortypes():
         except:
             pass
 
-    return offline, pre, free, dev, api
+    return offline, pre, free, api
 
 
 def splitocrtypes(dic):

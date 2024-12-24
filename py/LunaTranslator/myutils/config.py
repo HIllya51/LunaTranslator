@@ -200,6 +200,7 @@ def getdefaultsavehook(title=None):
         "imagepath_all": [],
         "developers": [],
         "webtags": [],  # 标签
+       # "description": "",  # 简介
         # "infopath": None,  # 离线存储的主页
     }
     if title and len(title):

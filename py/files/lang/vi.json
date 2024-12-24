@@ -756,5 +756,12 @@
     "成功": "Thành công",
     "Win32通用钩子": "Win32 phổ Hook",
     "特殊码无效": "Mã đặc biệt không hợp lệ",
-    "显示模式": "Chế độ hiển thị"
+    "显示模式": "Chế độ hiển thị",
+    "内置": "Được xây dựng trong",
+    "信息": "Thông tin",
+    "开发商": "Nhà phát triển",
+    "标签映射": "Bản đồ nhãn",
+    "简介": "Giới thiệu",
+    "全部": "Tất cả",
+    "年度总结": "Tóm tắt hàng năm"
 }

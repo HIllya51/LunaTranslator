@@ -4,7 +4,7 @@ from qtsymbols import *
 import functools, uuid
 from datetime import datetime, timedelta
 from traceback import print_exc
-import gobject
+import gobject, winsharedutils
 from myutils.config import (
     savehook_new_data,
     uid2gamepath,
@@ -16,7 +16,7 @@ from myutils.config import (
 )
 from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
-from myutils.wrapper import Singleton, Singleton_close, trypass
+from myutils.wrapper import Singleton, Singleton_close
 from myutils.utils import (
     gamdidchangedtask,
     checkpostlangmatch,
@@ -34,9 +34,10 @@ from gui.inputdialog import (
     autoinitdialog_items,
     postconfigdialog,
 )
-from gui.specialwidget import ScrollFlow, chartwidget
+from gui.specialwidget import chartwidget
 from gui.usefulwidget import (
     TableViewW,
+    FlowWidget,
     getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
@@ -50,6 +51,8 @@ from gui.usefulwidget import (
     getspinbox,
     getsmalllabel,
     listediterline,
+    editswitchTextBrowser,
+    FocusCombo,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -61,6 +64,7 @@ from gui.dynalang import (
     LGroupBox,
 )
 from gui.dialog_savedgame_common import tagitem
+from gui.inputdialog import postconfigdialog_
 
 
 @Singleton
@@ -183,11 +187,11 @@ def maybehavebutton(self, gameuid, post):
             return None
 
 
-def userlabelset():
+def userlabelset(key="usertags"):
     s = set()
     for gameuid in savehook_new_data:
-        s = s.union(savehook_new_data[gameuid]["usertags"])
-    return list(s)
+        s = s.union(savehook_new_data[gameuid][key])
+    return sorted(list(s))
 
 
 class dialog_setting_game_internal(QWidget):
@@ -199,8 +203,9 @@ class dialog_setting_game_internal(QWidget):
         if self.lauchpath:
             self.lauchpath.clear.clicked.emit()
 
-    def __init__(self, parent, gameuid) -> None:
+    def __init__(self, parent, gameuid, keepindexobject=None) -> None:
         super().__init__(parent)
+        self.keepindexobject = keepindexobject
         vbox = QVBoxLayout(self)
         self.lauchpath = None
         formLayout = LFormLayout()
@@ -253,6 +258,11 @@ class dialog_setting_game_internal(QWidget):
             [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
+            initial=(
+                (self.keepindexobject, "p1")
+                if (self.keepindexobject is not None)
+                else None
+            ),
         )
         vbox.addLayout(formLayout)
         vbox.addWidget(methodtab)
@@ -285,12 +295,17 @@ class dialog_setting_game_internal(QWidget):
         functs = [
             ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
             ("统计", functools.partial(self.___tabf2, self.getstatistic)),
-            ("标签", functools.partial(self.___tabf2, self.getlabelsetting)),
+            ("信息", functools.partial(self.___tabf2, self.getlabelsetting)),
         ]
         methodtab, do = makesubtab_lazy(
             [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
+            initial=(
+                (self.keepindexobject, "gamedata")
+                if (self.keepindexobject is not None)
+                else None
+            ),
         )
         vbox.addWidget(methodtab)
         do()
@@ -310,6 +325,11 @@ class dialog_setting_game_internal(QWidget):
             [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
+            initial=(
+                (self.keepindexobject, "gamesetting")
+                if (self.keepindexobject is not None)
+                else None
+            ),
         )
 
         self.methodtab = methodtab
@@ -556,74 +576,106 @@ class dialog_setting_game_internal(QWidget):
                 string = "0"
         return string
 
+    def tagenewitem(
+        self,
+        gameuid,
+        text,
+        refkey,
+        first=False,
+        _type=tagitem.TYPE_SEARCH,
+    ):
+        if _type == tagitem.TYPE_TAG:
+            text = globalconfig["tagNameRemap"].get(text, text)
+        qw = tagitem(text, True, _type)
+
+        def __(gameuid, _qw, refkey, _):
+            t, _, _ = _
+            try:
+                savehook_new_data[gameuid][refkey].remove(t)
+                self.flowwidget.removeWidget(_qw)
+            except:
+                print_exc()
+
+        qw.removesignal.connect(functools.partial(__, gameuid, qw, refkey))
+
+        def safeaddtags(_):
+            try:
+                gobject.global_dialog_savedgame_new.tagswidget.addTag(*_)
+            except:
+                winsharedutils.clipboard_set(_[0])
+
+        qw.labelclicked.connect(safeaddtags)
+        if first:
+            self.flowwidget.insertWidget(self.labelflowmap[refkey], 1, qw)
+        else:
+            self.flowwidget.addWidget(self.labelflowmap[refkey], qw)
+
     def getlabelsetting(self, formLayout: QVBoxLayout, gameuid):
-        self.labelflow = ScrollFlow()
+        self.labelflowmap = {}
+        flowwidget = FlowWidget(groups=4)
+        tagitem.setstyles(flowwidget)
+        self.flowwidget = flowwidget
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(flowwidget)
+        formLayout.addWidget(scroll)
+        self.tagtypes = ["developers", "webtags", "usertags"]
+        self.tagtypes_zh = ["开发商", "标签", "自定义"]
+        self.tagtypes_1 = [
+            tagitem.TYPE_DEVELOPER,
+            tagitem.TYPE_TAG,
+            tagitem.TYPE_USERTAG,
+        ]
 
-        def newitem(text, refkey, first=False, _type=tagitem.TYPE_RAND):
-            qw = tagitem(text, True, _type)
+        def createflows(label, key, _t, index):
+            self.labelflowmap[key] = index
+            flowwidget.addWidget(index, LLabel(label))
+            for tag in savehook_new_data[gameuid][key]:
+                self.tagenewitem(gameuid, tag, key, _type=_t)
 
-            def __(gameuid, _qw, refkey, _):
-                t, _type, _ = _
-                try:
-                    _qw.remove()
-                    savehook_new_data[gameuid][refkey].remove(t)
-                    self.labelflow.removewidget(_qw)
-                except:
-                    print_exc()
+        for i in range(len(self.tagtypes)):
+            createflows(self.tagtypes_zh[i], self.tagtypes[i], self.tagtypes_1[i], i)
+        flowwidget.addWidget(3, LLabel("简介"))
+        edit = editswitchTextBrowser()
+        edit.settext(savehook_new_data[gameuid].get("description", ""))
 
-            qw.removesignal.connect(functools.partial(__, gameuid, qw, refkey))
-
-            def safeaddtags(_):
-                try:
-                    gobject.global_dialog_savedgame_new.tagswidget.addTag(*_)
-                except:
-                    pass
-
-            qw.labelclicked.connect(safeaddtags)
-            if first:
-                self.labelflow.insertwidget(0, qw)
+        def __():
+            if not edit.text().strip():
+                savehook_new_data[gameuid]["description"] = ""
             else:
-                self.labelflow.addwidget(qw)
+                savehook_new_data[gameuid]["description"] = edit.text().strip()
 
-        for tag in savehook_new_data[gameuid]["usertags"]:
-            newitem(tag, "usertags", _type=tagitem.TYPE_USERTAG)
-        for tag in savehook_new_data[gameuid]["developers"]:
-            newitem(tag, "developers", _type=tagitem.TYPE_DEVELOPER)
-        for tag in savehook_new_data[gameuid]["webtags"]:
-            newitem(tag, "webtags", _type=tagitem.TYPE_TAG)
-        formLayout.addWidget(self.labelflow)
-        _dict = {"new": 0}
+        edit.textChanged.connect(__)
+        flowwidget.addWidget(3, edit)
 
-        formLayout.addWidget(self.labelflow)
         button = LPushButton("添加")
-
-        combo = getsimplecombobox(userlabelset(), _dict, "new", static=True)
+        typecombo = getsimplecombobox(self.tagtypes_zh, initial=2)
+        combo = FocusCombo()
         combo.setEditable(True)
-        combo.clearEditText()
+
+        def __(idx):
+            t = combo.currentText()
+            combo.clear()
+            combo.addItems(userlabelset(self.tagtypes[idx]))
+            combo.setCurrentText(t)
+
+        typecombo.currentIndexChanged.connect(__)
+        __(2)
 
         def _add(_):
-            labelset = userlabelset()
             tag = combo.currentText()
-            if (not tag) or (tag in savehook_new_data[gameuid]["usertags"]):
+            tp = self.tagtypes[typecombo.currentIndex()]
+            if (not tag) or (tag in savehook_new_data[gameuid][tp]):
                 return
-            savehook_new_data[gameuid]["usertags"].insert(0, tag)
-            newitem(tag, "usertags", first=True, _type=tagitem.TYPE_USERTAG)
+            savehook_new_data[gameuid][tp].insert(0, tag)
+            self.tagenewitem(
+                gameuid,
+                tag,
+                tp,
+                first=True,
+                _type=self.tagtypes_1[typecombo.currentIndex()],
+            )
             combo.clearEditText()
-            combo.clear()
-            combo.addItems(labelset)
-            try:
-                _ = (
-                    gobject.global_dialog_savedgame_new.tagswidget.lineEdit.currentText()
-                )
-                gobject.global_dialog_savedgame_new.tagswidget.lineEdit.clear()
-                gobject.global_dialog_savedgame_new.tagswidget.lineEdit.addItems(
-                    labelset
-                )
-                gobject.global_dialog_savedgame_new.tagswidget.lineEdit.setCurrentText(
-                    _
-                )
-            except:
-                pass
 
         button.clicked.connect(_add)
 
@@ -631,9 +683,16 @@ class dialog_setting_game_internal(QWidget):
             getboxlayout(
                 [
                     combo,
+                    typecombo,
                     button,
+                    getIconButton(callback=self.edittagremap, icon="fa.gear"),
                 ]
             )
+        )
+
+    def edittagremap(self):
+        postconfigdialog_(
+            self, globalconfig["tagNameRemap"], "标签映射", ["From", "To"]
         )
 
     def createfollowdefault(
@@ -1111,7 +1170,7 @@ def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:
 
 
 @Singleton_close
-class dialog_setting_game(LDialog):
+class dialog_setting_game(QDialog):
 
     def __init__(self, parent, gameuid, setindexhook=0) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)

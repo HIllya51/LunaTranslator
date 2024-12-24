@@ -5,7 +5,7 @@ from myutils.config import globalconfig, static_data, _TR, get_platform
 from myutils.wrapper import threader, tryprint
 from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
-import requests, sys
+import requests, importlib
 import shutil, gobject
 from myutils.proxy import getproxy
 import zipfile, os
@@ -13,12 +13,15 @@ import subprocess
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makescrollgrid,
+    CollapsibleBox,
     makesubtab_lazy,
     D_getsimplecombobox,
+    makegrid,
     D_getIconButton,
     WebivewWidget,
 )
 from gui.dynalang import LLabel
+from gui.setting_year import yearsummary
 
 versionchecktask = queue.Queue()
 
@@ -248,39 +251,6 @@ def versionlabelmaybesettext(self, x):
         self.versionlabel_cache = x
 
 
-def solvelinkitems(grid, source):
-    name = source["name"]
-    link = source["link"]
-    grid.append([name, (makehtml(link), 2, "link")])
-
-
-def resourcegrid(self, l):
-    titles = []
-    makewidgetsfunctions = []
-    for sourcetype in static_data["aboutsource"]:
-        titles.append(sourcetype["name"])
-        sources = sourcetype["sources"]
-        grid = []
-        for source in sources:
-
-            __grid = []
-            for link in source["links"]:
-                __grid.append([link["name"], (makehtml(link["link"]), 2, "link")])
-            grid.append(
-                [
-                    (
-                        dict(title=source.get("name", None), type="grid", grid=__grid),
-                        0,
-                        "group",
-                    )
-                ]
-            )
-        makewidgetsfunctions.append(functools.partial(makescrollgrid, grid))
-    tab, dotab = makesubtab_lazy(titles, makewidgetsfunctions, delay=True)
-    l.addWidget(tab)
-    dotab()
-
-
 def createimageview(self):
     lb = QLabel()
     img = QPixmap.fromImage(QImage("./files/zan.jpg"))
@@ -295,15 +265,58 @@ def createimageview(self):
     return lb
 
 
-def setTab_aboutlazy(self, basel):
-
-    resourcegrid(self, basel)
-
-
 def changelog(self, basel: QHBoxLayout):
     _ = WebivewWidget(self)
     _.navigate(dynamiclink("{main_server}/ChangeLog"))
     basel.addWidget(_)
+
+
+def delayloadlinks(key, box):
+    sources = static_data["aboutsource"][key]
+    grid = []
+    for source in sources:
+        __grid = []
+        function = source.get("function")
+        if function:
+            func = getattr(
+                importlib.import_module(function[0]),
+                function[1],
+            )
+            __grid.append([(func, 0)])
+        else:
+            for link in source["links"]:
+                __grid.append(
+                    [link["name"], (makehtml(link["link"]), 2, "link")]
+                    + ([link.get("about")] if link.get("about") else [])
+                )
+        grid.append(
+            [
+                (
+                    dict(title=source.get("name", None), type="grid", grid=__grid),
+                    0,
+                    "group",
+                )
+            ]
+        )
+    grid = [
+        [
+            (
+                dict(type="grid", grid=grid),
+                0,
+                "group",
+            )
+        ]
+    ]
+    w, do = makegrid(grid, delay=True, w=False)
+    w.setContentsMargins(0, 0, 0, 0)
+    box.content_area.setLayout(w)
+    do()
+
+
+def offlinelinks(key):
+    box = CollapsibleBox("下载")
+    box.setdelayload(functools.partial(delayloadlinks, key))
+    return box
 
 
 def setTab_about1(self, basel):
@@ -363,12 +376,12 @@ def setTab_about1(self, basel):
 
 def setTab_about(self, basel):
     tab_widget, do = makesubtab_lazy(
-        ["关于软件", "其他设置", "资源下载", "更新记录"],
+        ["关于软件", "其他设置", "更新记录", "年度总结"],
         [
             functools.partial(setTab_about1, self),
             functools.partial(setTab_update, self),
-            functools.partial(setTab_aboutlazy, self),
             functools.partial(changelog, self),
+            functools.partial(yearsummary, self),
         ],
         delay=True,
     )
@@ -383,6 +396,7 @@ def changeUIlanguage(_):
         gobject.baseobject.textsource.setlang()
     except:
         pass
+
 
 def setTab_update(self, basel):
     version = winsharedutils.queryversion(getcurrexe())

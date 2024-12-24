@@ -49,7 +49,7 @@ class TS(basetrans):
             )
         )
 
-    def x64(self, content: str):
+    def translate(self, content):
 
         self.checkpath()
         l = content.encode("utf-16-le")
@@ -59,6 +59,3 @@ class TS(basetrans):
         if not size:
             raise Exception("not installed")
         return windows.ReadFile(self.hPipe, size).decode("utf-16-le")
-
-    def translate(self, content):
-        return self.x64(content)

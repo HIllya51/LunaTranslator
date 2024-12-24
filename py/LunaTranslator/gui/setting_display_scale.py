@@ -11,6 +11,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     D_getsimpleswitch,
 )
+from gui.setting_about import offlinelinks
 
 
 def makescalew(self, lay: QVBoxLayout):
@@ -333,6 +334,7 @@ def makescalew(self, lay: QVBoxLayout):
             ),
             ("", 10),
         ],
+        [(functools.partial(offlinelinks, "magpie"),0)],
     ]
 
     commonfsgrid = [

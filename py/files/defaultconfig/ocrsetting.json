@@ -1,18 +1,4 @@
 {
-    "local": {
-        "args": {
-            "": ""
-        },
-        "argstype": {
-            "": {
-                "type": "program",
-                "route": [
-                    "ocrengines.local",
-                    "question"
-                ]
-            }
-        }
-    },
     "youdaodictocr": {
         "args": {
             "Translate": false
@@ -21,20 +7,6 @@
             "Translate": {
                 "type": "switch",
                 "name": "翻译"
-            }
-        }
-    },
-    "windowsocr": {
-        "args": {
-            "": ""
-        },
-        "argstype": {
-            "": {
-                "type": "program",
-                "route": [
-                    "ocrengines.windowsocr",
-                    "question"
-                ]
             }
         }
     },
@@ -322,10 +294,7 @@
     },
     "mangaocr": {
         "args": {
-            "Port": 5665,
-            "项目仓库": "https://github.com/kha-white/manga-ocr",
-            "整合包_CPU": "{main_server}/Resource/IntegrationPack/manga_ocr/cpu",
-            "整合包_GPU": "{main_server}/Resource/IntegrationPack/manga_ocr/gpu"
+            "Port": 5665
         },
         "argstype": {
             "Port": {
@@ -333,18 +302,6 @@
                 "min": 1,
                 "max": 65535,
                 "step": 1
-            },
-            "项目仓库": {
-                "type": "label",
-                "islink": true
-            },
-            "整合包_CPU": {
-                "type": "label",
-                "islink": true
-            },
-            "整合包_GPU": {
-                "type": "label",
-                "islink": true
             }
         }
     }

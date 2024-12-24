@@ -223,26 +223,7 @@ def urlprotocol():
         print_exc()
 
 
-def is64_bit_os():
-    import ctypes
-
-    is64bit = ctypes.c_bool()
-    handle = ctypes.windll.kernel32.GetCurrentProcess()
-    success = ctypes.windll.kernel32.IsWow64Process(handle, ctypes.byref(is64bit))
-    return (success and is64bit).value
-
-
-def disablestdio():
-    import platform
-
-    if (int(platform.version().split(".")[0]) <= 6) and (not is64_bit_os()):
-        # win7 32位，有时候print会谜之报错PermissionError WinError 31
-        sys.stdout = None
-        sys.stderr = None
-
-
 if __name__ == "__main__":
-    disablestdio()
     switchdir()
     prepareqtenv()
     from qtsymbols import QApplication

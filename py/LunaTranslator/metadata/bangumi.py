@@ -346,7 +346,6 @@ class searcher(common):
         response = self.proxysession.get(
             "https://api.bgm.tv/v0/subjects/{}".format(sid), headers=headers
         )
-        print(response.text)
         try:
             response = response.json()
         except:
@@ -384,4 +383,5 @@ class searcher(common):
             "imagepath_all": [imagepath],
             "webtags": vndbtags,
             "developers": developers,
+            "description": response["summary"].replace("\n", "<br>"),
         }

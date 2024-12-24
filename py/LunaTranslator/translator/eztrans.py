@@ -1,7 +1,7 @@
 from translator.basetranslator import basetrans
 from myutils.config import _TR
 import os, time
-import windows
+import windows, ctypes
 from myutils.subproc import subproc_w, autoproc
 
 
@@ -54,7 +54,7 @@ class TS(basetrans):
             )
         return True
 
-    def x64(self, content: str):
+    def translate(self, content):
 
         if self.checkpath() == False:
             raise Exception(_TR("翻译器加载失败"))
@@ -62,14 +62,7 @@ class TS(basetrans):
 
         code1 = content.encode("utf-16-le")
         windows.WriteFile(self.hPipe, code1)
-        xx = windows.ReadFile(self.hPipe, 65535)
-        xx = xx.decode("utf-16-le", errors="ignore")
-
-        return xx
-
-    def translate(self, content):
-
-        return self.x64(content)
-
-    def langmap(self):
-        return {"zh": "936", "cht": "950"}
+        size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+        if not size:
+            raise Exception("not installed")
+        return windows.ReadFile(self.hPipe, size).decode("utf-16-le")

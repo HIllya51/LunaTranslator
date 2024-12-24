@@ -22,6 +22,7 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
 )
 from gui.showword import showdiction
+from gui.setting_about import offlinelinks
 
 
 def setTabcishu(self, basel):
@@ -217,6 +218,7 @@ def setTabcishu_l(self):
         )
     ]
     grids = [
+        [(functools.partial(offlinelinks, "dict"), 0)],
         grids_1,
         grids2,
         [],

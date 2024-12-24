@@ -756,5 +756,12 @@
     "成功": "éxito",
     "Win32通用钩子": "Gancho universal Win32",
     "特殊码无效": "El código especial no es válido",
-    "显示模式": "Modo de visualización"
+    "显示模式": "Modo de visualización",
+    "内置": "Incorporado",
+    "信息": "Información",
+    "开发商": "Desarrolladores",
+    "标签映射": "Mapeo de etiquetas",
+    "简介": "Introducción",
+    "全部": "Todo",
+    "年度总结": "Resumen Anual"
 }

@@ -172,7 +172,6 @@ class searcher(common):
             "https://store.steampowered.com/api/appdetails?appids={}".format(_id),
             proxies=self.proxy,
         ).json()[str(_id)]["data"]
-
         devs = data.get("developers", []) + data.get("publishers", [])
         tagsofficial = [
             _["description"] for _ in data.get("genres", [])
@@ -191,4 +190,5 @@ class searcher(common):
             ],
             "webtags": tagsofficial,
             "developers": devs,
+            "description":data['detailed_description']
         }

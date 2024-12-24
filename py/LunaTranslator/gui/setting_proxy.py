@@ -98,7 +98,7 @@ def makegridW(grid, lay, save=False, savelist=None, savelay=None):
 
 def makeproxytab():
 
-    lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
+    lixians, pre, mianfei, shoufei = splittranslatortypes()
 
     mianfei = getall(l=mianfei, item="fanyi", name="./Lunatranslator/translator/%s.py")
     shoufei = getall(l=shoufei, item="fanyi", name=translate_exits)

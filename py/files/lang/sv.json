@@ -756,5 +756,12 @@
     "成功": "framgång",
     "Win32通用钩子": "Win32 universalkrok",
     "特殊码无效": "Specialkoden är ogiltig",
-    "显示模式": "visningsläge"
+    "显示模式": "visningsläge",
+    "内置": "inbyggd",
+    "信息": "information",
+    "开发商": "Utvecklare",
+    "标签映射": "Etikettmappning",
+    "简介": "kort inledning",
+    "全部": "hela",
+    "年度总结": "Årlig sammanfattning"
 }

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>...</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.1.1/src/wordcloud2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@latest/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@latest/dist/echarts-wordcloud.min.js"></script>
+    <script src="yearsummary.value.js"></script>
+    <style>
+        .page {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .buttons {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: pink;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .page {
+            height: calc(100vh - 100px);
+        }
+
+        #wordcloud,
+        #wordcloud2 {
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            overflow: hide;
+            display: flex;
+            padding: 10px;
+            gap: 20px;
+            height: 100%;
+        }
+
+
+        .left-box h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .left-box p {
+            line-height: 1.6;
+        }
+
+        /* Right Boxes (Detail boxes) */
+        .right-box {
+            height: 100%;
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Right Boxes (Detail boxes) */
+        .left-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .box {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .bigbox {
+            background-color: #ffffff;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .right-box .box h3 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .right-box .box p {
+            line-height: 1.4;
+        }
+
+        .zitiupup {
+            font-size: 1.5em;
+            display: inline-block;
+        }
+
+        .imagecontainer {
+            width: 20%;
+            height: auto;
+            aspect-ratio: 1 / 1.618;
+        }
+
+        .imagexx {
+            height: 100%;
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        #imagetop25 {
+            line-height: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page active" id="page1">
+        <div class="container">
+            <!-- Left Box (Main content) -->
+            <div class="left-box">
+                <div class="box">
+                    <h1>今年你一共总玩了 <div class="zitiupup" id="GAMES_YEAR_PLAYED"></div> 个游戏
+                    </h1>
+                </div>
+                <div class="box" style="flex: 10;">
+                    <h3>今年你的累计游戏时长 <div class="zitiupup" id="TIME_YEAR_PLAYED"></div> 小时，有 <div class="zitiupup"
+                            id="TIME_YEAR_PLAYED_DAY"></div> 天玩了游戏，累计阅读字数达 <div class="zitiupup"
+                            id="COUNT_ZISHU_YEAR_PLAYED"></div>
+                    </h3>
+                    <canvas id="everymonth" width="100%" height="100%"></canvas>
+                </div>
+            </div>
+
+            <!-- Right Box (Detail Boxes) -->
+            <div class="right-box">
+
+                <div class="box" style="height: 100%;">
+                    <div class=" imagexx">
+                        <div id="imagetop25"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page bigbox" id="page2" style="display: flex; flex-direction: column;">
+        <h1 style="text-align: center; flex:1">你所玩的游戏的标签</h1>
+        <div style="flex:10;"><div id="wordcloud"></div></div>
+    </div>
+    <div class="page bigbox" id="page3" style="display: flex; flex-direction: column;">
+        <h1 style="text-align: center; flex:1">你所玩的游戏的开发商</h1>
+        <div style="flex:10;"><div id="wordcloud2"></div></div>
+    </div>
+    <div class="buttons"> Next</div>
+    <script>
+        havedatamonth = []
+        havedatamonth_v = []
+        for (let i = 1; i <= 12; i += 1) {
+            if (everymonth_time[i]) {
+                havedatamonth.push(i)
+                havedatamonth_v.push(everymonth_time[i] / 3600)
+            }
+        }
+        var ctx = document.getElementById('everymonth').getContext('2d');
+        let lastshowmonth = 0;
+        TOP25_TIME_IMAGE_M[0] = TOP25_TIME_IMAGE
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: havedatamonth,
+                datasets: [{
+                    label: '每月游戏时长',
+                    data: havedatamonth_v,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '月'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        text: '小时',
+                        beginAtZero: true
+                    }
+                },
+                onHover: function (event, chartElement) {
+                    let month = 0
+                    if (chartElement.length > 0) {
+                        month = havedatamonth[chartElement[0].index]
+                    }
+                    if (lastshowmonth == month)
+                        return
+                    lastshowmonth = month
+                    document.getElementById('imagetop25').innerHTML = ''
+                    TOP25_TIME_IMAGE_M[month].forEach((path) => {
+                        let img = document.createElement('img')
+                        img.src = path
+                        img.classList.add('imagecontainer')
+                        document.getElementById('imagetop25').appendChild(img)
+                    })
+                },
+            }
+        });
+        document.getElementById('TIME_YEAR_PLAYED_DAY').innerText = TIME_YEAR_PLAYED_DAY
+        document.getElementById('GAMES_YEAR_PLAYED').innerText = GAMES_YEAR_PLAYED
+        document.getElementById('TIME_YEAR_PLAYED').innerText = TIME_YEAR_PLAYED
+        document.getElementById('COUNT_ZISHU_YEAR_PLAYED').innerText = COUNT_ZISHU_YEAR_PLAYED
+        TOP25_TIME_IMAGE.forEach((path) => {
+            let img = document.createElement('img')
+            img.src = path
+            img.classList.add('imagecontainer')
+            document.getElementById('imagetop25').appendChild(img)
+        })
+    </script>
+    <script>
+        document.querySelector('.buttons').addEventListener('click', () => {
+            nextPage()
+        })
+
+        developer_cnt = []
+        webtags_cnt = []
+        for (k in developer) {
+            developer_cnt.push([k,
+                10 * developer[k].length
+            ])
+        }
+        for (k in webtags) {
+            webtags_cnt.push([k,
+                webtags[k].length
+            ])
+        }
+        let currentPage = 1;
+        const totalPages = 3;
+
+        window.addEventListener('resize', () => {
+            WordCloud(document.getElementById('wordcloud'), {
+                list: webtags_cnt
+            });
+            WordCloud(document.getElementById('wordcloud2'), {
+                list: developer_cnt
+            });
+        });
+        function showPage(page) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+
+            // Show the current page
+            document.getElementById('page' + page).classList.add('active');
+            if (page == 2) {
+                WordCloud(document.getElementById('wordcloud'), {
+                    list: webtags_cnt
+                });
+            }
+            if (page == 3) {
+                WordCloud(document.getElementById('wordcloud2'), {
+                    list: developer_cnt
+                });
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                showPage(currentPage);
+            }
+            else {
+                const pages = document.querySelectorAll('.page');
+                pages.forEach(p => p.classList.add('active'));
+
+                document.querySelector('.buttons').style.display = 'none';
+            }
+        }
+
+        // Initialize the first page
+        showPage(currentPage);
+    </script>
+</body>
+
+</html>

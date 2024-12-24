@@ -4,8 +4,7 @@ from myutils.config import _TR, static_data, getlang_inner2show
 from myutils.utils import dynamiclink
 from ocrengines.baseocrclass import baseocr
 from qtsymbols import *
-from gui.usefulwidget import getboxlayout
-from gui.dynalang import LPushButton, LFormLayout, LLabel
+from gui.dynalang import LPushButton, LLabel
 from myutils.utils import getlanguagespace
 
 
@@ -31,8 +30,10 @@ def initsupports():
     return supportmap
 
 
-def question(dialog: QDialog):
-    formLayout = LFormLayout()
+def question():
+    dialog = QWidget()
+    formLayout = QHBoxLayout()
+    formLayout.setContentsMargins(0, 0, 0, 0)
     dialog.setLayout(formLayout)
     _allsupport = initsupports()
     supportlang = LLabel()
@@ -43,9 +44,10 @@ def question(dialog: QDialog):
             dynamiclink("{docs_server}/#/zh/windowsocr")
         )
     )
-    formLayout.addRow(
-        "当前支持的语言", getboxlayout([supportlang, btndownload], makewidget=True)
-    )
+    formLayout.addWidget(LLabel("当前支持的语言"))
+    formLayout.addWidget(supportlang)
+    formLayout.addWidget(btndownload)
+    return dialog
 
 
 class OCR(baseocr):
@@ -85,7 +87,9 @@ class OCR(baseocr):
                 )
             else:
                 uselang = self.srclang
-        ret = winrtutils.OCR_f(imagebinary, self.supportmap[uselang], getlanguagespace(uselang))
+        ret = winrtutils.OCR_f(
+            imagebinary, self.supportmap[uselang], getlanguagespace(uselang)
+        )
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
         return {"box": boxs, "text": texts}

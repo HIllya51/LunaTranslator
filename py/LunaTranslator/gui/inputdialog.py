@@ -452,19 +452,6 @@ class autoinitdialog__(LDialog):
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(title)
         self.resize(QSize(width, 10))
-        for line in lines:
-            if line["type"] != "program":
-                continue
-            try:
-                func = getattr(
-                    importlib.import_module(line["route"][0]),
-                    line["route"][1],
-                )
-                func(self)
-            except:
-                print_exc()
-            self.show()
-            return
         formLayout = VisLFormLayout()
         self.setLayout(formLayout)
         regist = {}

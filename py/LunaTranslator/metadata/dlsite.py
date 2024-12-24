@@ -113,10 +113,14 @@ class searcher(common):
             "https:" + _[0] for _ in re.findall('<div data-src="(.*?)"(.*?)>', inner)
         ]
         print(imags1)
-
+        description = simplehtmlparser(
+            response.text, "div", '<div itemprop="description"'
+        )
+        print(description)
         return {
             "title": title,
             "imagepath_all": [self.dispatchdownloadtask(_) for _ in imags1 + imags2],
             "webtags": tags,
             "developers": [devp],
+            "description": description,
         }

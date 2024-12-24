@@ -756,5 +756,12 @@
     "成功": "succes",
     "Win32通用钩子": "Win32 universele haak",
     "特殊码无效": "De speciale code is ongeldig",
-    "显示模式": "weergavemodus"
+    "显示模式": "weergavemodus",
+    "内置": "ingebouwd",
+    "信息": "informatie",
+    "开发商": "Ontwikkelaars",
+    "标签映射": "Label toewijzing",
+    "简介": "korte inleiding",
+    "全部": "geheel",
+    "年度总结": "Jaarlijkse samenvatting"
 }

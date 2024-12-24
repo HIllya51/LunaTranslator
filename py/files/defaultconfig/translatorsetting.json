@@ -276,19 +276,7 @@
 	},
 	"sugoix": {
 		"args": {
-			"api": "http://127.0.0.1:14366/",
-			"V8": "{main_server}/Resource/translate/Sugoi_Translator_V8.7z",
-			"V10.1": "{main_server}/Resource/translate/Sugoi_Translator_V10.1.7z"
-		},
-		"argstype": {
-			"V8": {
-				"type": "label",
-				"islink": true
-			},
-			"V10.1": {
-				"type": "label",
-				"islink": true
-			}
+			"api": "http://127.0.0.1:14366/"
 		}
 	},
 	"huoshanapi": {
@@ -668,36 +656,26 @@
 	},
 	"jb7": {
 		"args": {
-			"path": "",
-            "下载": "{main_server}/Resource/translate/JBeijing7.zip"
+			"path": ""
 		},
 		"argstype": {
 			"path": {
 				"type": "file",
 				"dir": true,
 				"name": "路径"
-			},
-            "下载": {
-                "type": "label",
-                "islink": true
-            }
+			}
 		}
 	},
 	"kingsoft": {
 		"args": {
-			"path": "",
-			"下载": "{main_server}/Resource/translate/FastAIT09_Setup.25269.4101.zip"
+			"path": ""
 		},
 		"argstype": {
 			"path": {
 				"name": "路径",
 				"type": "file",
 				"dir": true
-			},
-            "下载": {
-                "type": "label",
-                "islink": true
-            }
+			}
 		}
 	},
 	"eztrans": {
@@ -715,19 +693,14 @@
 	},
 	"dreye": {
 		"args": {
-			"path": "",
-            "下载": "{main_server}/Resource/translate/DR.eye.zip"
+			"path": ""
 		},
 		"argstype": {
 			"path": {
 				"name": "路径",
 				"type": "file",
 				"dir": true
-			},
-            "下载": {
-                "type": "label",
-                "islink": true
-            }
+			}
 		}
 	},
 	"rengong": {

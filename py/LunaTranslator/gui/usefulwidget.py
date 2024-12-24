@@ -1,9 +1,9 @@
 from qtsymbols import *
-import os, platform, functools, uuid, json, math, csv, io, pickle
+import os, re, functools, uuid, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import webview_native_handle_kind_t, Webview
-from myutils.config import _TR, globalconfig, _TRL
+from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton_close, tryprint
 from myutils.utils import nowisdark, checkportavailable, checkisusingwine
 from gui.dynalang import (
@@ -913,8 +913,19 @@ def comboboxcallbackwrap(s: SuperCombo, d, k, call, _):
 
 
 def getsimplecombobox(
-    lst, d, k, callback=None, fixedsize=False, internal=None, static=False, emit=False
+    lst,
+    d=None,
+    k=None,
+    callback=None,
+    fixedsize=False,
+    internal=None,
+    static=False,
+    initial=None,
 ):
+    if d is None:
+        d = {}
+    if initial is not None:
+        d[k] = initial
     s = SuperCombo(static=static)
     s.addItems(lst, internal)
 
@@ -1772,8 +1783,14 @@ def makegroupingrid(args):
     if title:
         group.setTitle(title)
     else:
+        _id = "luna" + str(uuid.uuid4())
+        group.setObjectName(_id)
         group.setStyleSheet(
-            "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
+            "QGroupBox#"
+            + _id
+            + "{ margin-top:0px;} QGroupBox#"
+            + _id
+            + ":title {margin-top: 0px;}"
         )
 
     if _type == "grid":
@@ -1858,16 +1875,18 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
         grid.setRowMinimumHeight(nowr, 25)
 
 
-def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False):
+def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False, w=True):
 
     class gridwidget(QWidget):
         pass
 
-    gridlayoutwidget = gridwidget()
+    if w:
+        gridlayoutwidget = gridwidget()
     gridlay = QGridLayout()
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
-    gridlayoutwidget.setLayout(gridlay)
-    gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
+    if w:
+        gridlayoutwidget.setLayout(gridlay)
+        gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
     def do(gridlay, grid, save, savelist, savelay):
         automakegrid(gridlay, grid, save, savelist)
@@ -1875,6 +1894,8 @@ def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False):
             savelay.append(gridlay)
 
     __do = functools.partial(do, gridlay, grid, save, savelist, savelay)
+    if not w:
+        gridlayoutwidget = gridlay
     if not delay:
         __do()
         return gridlayoutwidget
@@ -1899,14 +1920,17 @@ def makescrollgrid(grid, lay, save=False, savelist=None, savelay=None):
 
 
 def makesubtab_lazy(
-    titles=None, functions=None, klass=None, callback=None, delay=False
+    titles=None, functions=None, klass=None, callback=None, delay=False, initial=None
 ):
     if klass:
-        tab = klass()
+        tab: LTabWidget = klass()
     else:
         tab = LTabWidget()
 
-    def __(t, i):
+    def __(t: LTabWidget, initial, i):
+        if initial:
+            object, key = initial
+            object[key] = i
         try:
             w = t.currentWidget()
             if "lazyfunction" in dir(w):
@@ -1917,14 +1941,20 @@ def makesubtab_lazy(
         if callback:
             callback(i)
 
-    tab.currentChanged.connect(functools.partial(__, tab))
+    can = initial and (initial[1] in initial[0])
+    if not can:
+        tab.currentChanged.connect(functools.partial(__, tab, initial))
 
-    def __do(tab, titles, functions):
+    def __do(tab: LTabWidget, titles, functions, initial):
         if titles and functions:
             for i, func in enumerate(functions):
                 tabadd_lazy(tab, titles[i], func)
+        if can:
+            tab.setCurrentIndex(initial[0][initial[1]])
+            tab.currentChanged.connect(functools.partial(__, tab, initial))
+            tab.currentChanged.emit(initial[0][initial[1]])
 
-    ___do = functools.partial(__do, tab, titles, functions)
+    ___do = functools.partial(__do, tab, titles, functions, initial)
     if not delay:
         ___do()
         return tab
@@ -2561,3 +2591,152 @@ class VisLFormLayout(LFormLayout):
                 label.widget().deleteLater()
             tres.fieldItem.widget().hide()
         self._row_vis[row_index] = visible
+
+
+class CollapsibleBox(QWidget):
+    def setdelayload(self, func):
+        self.func = func
+
+    def __init__(self, title="", parent=None):
+        super(CollapsibleBox, self).__init__(parent)
+
+        self.toggle_button = QToolButton(text=title, checkable=True, checked=False)
+        self.toggle_button.setToolButtonStyle(
+            Qt.ToolButtonStyle.ToolButtonTextBesideIcon
+        )
+        self.toggle_button.toggled.connect(self.on_toggled)
+        self.content_area = QWidget()
+        lay = QVBoxLayout(self)
+        lay.setSpacing(0)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(self.toggle_button)
+        lay.addWidget(self.content_area)
+        self.func = None
+        self.collapse()
+
+    def on_toggled(self, checked):
+        if checked:
+            if self.func:
+                self.func(self)
+                self.func = None
+            self.toggle_button.setIcon(qtawesome.icon("fa.chevron-down"))
+            self.content_area.setVisible(True)
+        else:
+            self.toggle_button.setIcon(qtawesome.icon("fa.chevron-right"))
+            self.content_area.setVisible(False)
+
+    def expand(self):
+        self.toggle_button.setChecked(True)
+        self.on_toggled(True)
+
+    def collapse(self):
+        self.toggle_button.setChecked(False)
+        self.on_toggled(False)
+
+
+class editswitchTextBrowser(QWidget):
+    textChanged = pyqtSignal(str)
+
+    def heightForWidth(self, w):
+        return self.browser.heightForWidth(w)
+
+    def resizeEvent(self, a0):
+        self.switch.move(self.width() - self.switch.width(), 0)
+        return super().resizeEvent(a0)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        stack = QStackedWidget()
+        self.edit = QPlainTextEdit()
+        self.browser = QLabel()
+        self.browser.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.browser.setWordWrap(True)
+        self.browser.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextSelectableByMouse
+        )
+        self.edit.textChanged.connect(
+            lambda: (
+                self.browser.setText(
+                    "<html>"
+                    + re.sub(
+                        r'href="([^"]+)"',
+                        "",
+                        re.sub(r'src="([^"]+)"', "", self.edit.toPlainText()),
+                    )
+                    + "</html>"
+                ),
+                self.textChanged.emit(self.edit.toPlainText()),
+            )
+        )
+        stack.addWidget(self.browser)
+        stack.addWidget(self.edit)
+        l = QHBoxLayout()
+        self.setLayout(l)
+        l.setContentsMargins(0, 0, 0, 0)
+        l.addWidget(stack)
+        self.switch = MySwitch(self, icon="fa.edit")
+        self.switch.setFixedSize(QSize(25, 25))
+        self.switch.raise_()
+        self.switch.clicked.connect(lambda c: stack.setCurrentIndex(not c))
+
+    def settext(self, text):
+        self.edit.setPlainText(text)
+
+    def text(self):
+        return self.edit.toPlainText()
+
+
+class FlowWidget(QWidget):
+    def __init__(self, parent=None, groups=3):
+        super().__init__(parent)
+        self.margin = QMargins(5, 5, 5, 5)
+        self.spacing = 5
+        self._item_list = [[] for _ in range(groups)]
+
+    def insertWidget(self, group, index, w: QWidget):
+        w.setParent(self)
+        w.show()
+        self._item_list[group].insert(index, w)
+        self.doresize()
+
+    def addWidget(self, group, w: QWidget):
+        self.insertWidget(group, len(self._item_list[group]), w)
+
+    def removeWidget(self, w: QWidget):
+        for _ in self._item_list:
+            if w in _:
+                _.remove(w)
+                w.deleteLater()
+                self.doresize()
+                break
+
+    def doresize(self):
+        line_height = 0
+        spacing = self.spacing
+        y = self.margin.left()
+        for listi in self._item_list:
+            x = self.margin.top()
+            for i, item in enumerate(listi):
+
+                next_x = x + item.sizeHint().width() + spacing
+                if (
+                    next_x - spacing + self.margin.right() > self.width()
+                    and line_height > 0
+                ):
+                    x = self.margin.top()
+                    y = y + line_height + spacing
+                    next_x = x + item.sizeHint().width() + spacing
+
+                size = item.sizeHint()
+                if (i == len(listi) - 1) and isinstance(item, editswitchTextBrowser):
+                    w = self.width() - self.margin.right() - x
+                    size = QSize(w, max(size.height(), item.heightForWidth(w)))
+
+                item.setGeometry(QRect(QPoint(x, y), size))
+                line_height = max(line_height, size.height())
+                x = next_x
+            y = y + line_height + spacing
+        self.setFixedHeight(y + self.margin.bottom() - spacing)
+
+    def resizeEvent(self, a0):
+        self.doresize()

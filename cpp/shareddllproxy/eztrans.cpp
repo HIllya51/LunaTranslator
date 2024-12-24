@@ -678,6 +678,7 @@ std::optional<std::wstring> CTextProcess::eztrans_proc(const std::wstring &input
     output = HangulDecode(output);
     return output;
 }
+void writestring(const wchar_t *text, HANDLE hPipe);
 
 int eztrans(int argc, wchar_t *argv[])
 {
@@ -700,12 +701,10 @@ int eztrans(int argc, wchar_t *argv[])
         if (!ReadFile(hPipe, buff, 12000, &_, NULL))
             break;
         auto trans = CTextProcess::eztrans_proc(buff);
-        std::wstring res;
         if (trans)
-            res = trans.value();
+            writestring(trans.value().c_str(), hPipe);
         else
-            res = L"translate failed";
-        WriteFile(hPipe, res.data(), 2 * res.size(), &_, NULL);
+            writestring(0, hPipe);
     }
 
     return 0;

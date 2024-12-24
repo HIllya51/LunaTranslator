@@ -13,8 +13,9 @@ class OCR(baseocr):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
         }
+        cookies = {"SOCS": "CAESEwgDEgk0ODE3Nzk3MjQaAmVuIAEaBgiA_LyaBg"}
         files = {"encoded_image": ("screenshot.png", imagebinary, "image/png")}
-        res = self.proxysession.post(url, files=files, headers=headers)
+        res = self.proxysession.post(url, files=files, headers=headers, cookies=cookies)
         match = regex.search(res.text)
         if not match:
             return

@@ -1,8 +1,8 @@
 from qtsymbols import *
 import os, functools
 from traceback import print_exc
-from myutils.wrapper import tryprint, threader, Singleton_close
-from myutils.utils import str2rgba, find_or_create_uid, duplicateconfig
+from myutils.wrapper import threader, Singleton_close
+from myutils.utils import find_or_create_uid, duplicateconfig
 from myutils.hwnd import getExeIcon
 import gobject, hashlib
 from gui.inputdialog import autoinitdialog
@@ -19,13 +19,11 @@ from myutils.config import (
 )
 from gui.usefulwidget import (
     getIconButton,
-    FocusCombo,
     getsimplecombobox,
     getspinbox,
     getcolorbutton,
     getsimpleswitch,
     getsimplepatheditor,
-    FQLineEdit,
     getspinbox,
     selectcolor,
     SplitLine,
@@ -211,12 +209,9 @@ class ClickableLabel(QLabel):
     clicked = pyqtSignal()
 
 
-class tagitem(QWidget):
-    # website
-    TYPE_GLOABL_LIKE = 3
-    TYPE_GAME_LIKE = 1
+class tagitem(QFrame):
     # search game
-    TYPE_RAND = 0
+    TYPE_SEARCH = 0
     TYPE_DEVELOPER = 1
     TYPE_TAG = 2
     TYPE_USERTAG = 3
@@ -224,132 +219,58 @@ class tagitem(QWidget):
     removesignal = pyqtSignal(tuple)
     labelclicked = pyqtSignal(tuple)
 
-    def remove(self):
-        self.hide()
-        _lay = self.layout()
-        _ws = []
-        for i in range(_lay.count()):
-            witem = _lay.itemAt(i)
-            _ws.append(witem.widget())
-        for w in _ws:
-            _lay.removeWidget(w)
+    @staticmethod
+    def setstyles(parent: QWidget):
+        parent.setStyleSheet(
+            """
+            tagitem#red {
+                border: 1px solid red;
+            }
+            tagitem#black {
+                border: 1px solid black;
+            }
+            tagitem#green {
+                border: 1px solid green;
+            }
+            tagitem#blue {
+                border: 1px solid blue;
+            }
+            tagitem#yellow {
+                border: 1px solid yellow;
+            }
+        """
+        )
 
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        if self._type == tagitem.TYPE_RAND:
-            border_color = Qt.GlobalColor.black
-        elif self._type == tagitem.TYPE_DEVELOPER:
-            border_color = Qt.GlobalColor.red
-        elif self._type == tagitem.TYPE_TAG:
-            border_color = Qt.GlobalColor.green
-        elif self._type == tagitem.TYPE_USERTAG:
-            border_color = Qt.GlobalColor.blue
-        elif self._type == tagitem.TYPE_EXISTS:
-            border_color = Qt.GlobalColor.yellow
-        border_width = 1
-        pen = QPen(border_color)
-        pen.setWidth(border_width)
-        painter.setPen(pen)
-        painter.drawRect(self.rect())
-
-    def __init__(self, tag, removeable=True, _type=TYPE_RAND, refdata=None) -> None:
+    def __init__(self, tag, removeable=True, _type=TYPE_SEARCH, refdata=None) -> None:
         super().__init__()
+        if _type == tagitem.TYPE_SEARCH:
+            border_color = "black"
+        elif _type == tagitem.TYPE_DEVELOPER:
+            border_color = "red"
+        elif _type == tagitem.TYPE_TAG:
+            border_color = "green"
+        elif _type == tagitem.TYPE_USERTAG:
+            border_color = "blue"
+        elif _type == tagitem.TYPE_EXISTS:
+            border_color = "yellow"
+        self.setObjectName(border_color)
+
         tagLayout = QHBoxLayout()
         tagLayout.setContentsMargins(0, 0, 0, 0)
         tagLayout.setSpacing(0)
-        self._type = _type
+
         key = (tag, _type, refdata)
         self.setLayout(tagLayout)
         lb = ClickableLabel()
         lb.setStyleSheet("background: transparent;")
         lb.setText(tag)
         lb.clicked.connect(functools.partial(self.labelclicked.emit, key))
-        tagLayout.addWidget(lb)
         if removeable:
             button = getIconButton(
                 functools.partial(self.removesignal.emit, key), icon="fa.times"
             )
             tagLayout.addWidget(button)
-
-
-class TagWidget(QWidget):
-    tagschanged = pyqtSignal(tuple)  # ((tag,type,refdata),)
-    linepressedenter = pyqtSignal(str)
-    tagclicked = pyqtSignal(tuple)  # tag,type,refdata
-
-    def __init__(self, parent=None, exfoucus=True):
-        super().__init__(parent)
-
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        self.setLayout(layout)
-
-        self.lineEdit = FocusCombo()
-        if exfoucus:
-            self.lineEdit.setLineEdit(FQLineEdit())
-            # FQLineEdit导致游戏管理页面里，点击编辑框后，下边界消失。
-            # FQLineEdit仅用于和webview同一窗口内焦点缺失问题，所以既然用不到那就不要多此一举了
-        else:
-            self.lineEdit.setEditable(True)
-        self.lineEdit.lineEdit().returnPressed.connect(
-            lambda: self.linepressedenter.emit(self.lineEdit.currentText())
-        )
-
-        self.lineEdit.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum
-        )
-
-        layout.addWidget(self.lineEdit)
-        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-
-        self.tag2widget = {}
-
-    def addTags(self, tags, signal=True):
-        for key in tags:
-            self.__addTag(key)
-        self.__calltagschanged(signal)
-
-    @tryprint
-    def __addTag(self, key):
-        tag, _type, refdata = key
-        if not tag:
-            return
-        if key in self.tag2widget:
-            return
-        qw = tagitem(tag, _type=_type, refdata=refdata)
-        qw.removesignal.connect(self.removeTag)
-        qw.labelclicked.connect(self.tagclicked.emit)
-        layout = self.layout()
-        layout.insertWidget(layout.count() - 1, qw)
-        self.tag2widget[key] = qw
-        self.lineEdit.setFocus()
-
-    def addTag(self, tag, _type, refdata=None, signal=True):
-        self.__addTag((tag, _type, refdata))
-        self.__calltagschanged(signal)
-
-    @tryprint
-    def __removeTag(self, key):
-        _w = self.tag2widget[key]
-        _w.remove()
-
-        self.layout().removeWidget(_w)
-        self.tag2widget.pop(key)
-
-    def removeTag(self, key, signal=True):
-        self.__removeTag(key)
-        self.__calltagschanged(signal)
-
-    def __calltagschanged(self, signal):
-        if signal:
-            self.tagschanged.emit(tuple(self.tag2widget.keys()))
-
-    def clearTag(self, signal=True):
-        for key in self.tag2widget.copy():
-            self.__removeTag(key)
-        self.__calltagschanged(signal)
+        tagLayout.addWidget(lb)
 
 
 def opendirforgameuid(gameuid):

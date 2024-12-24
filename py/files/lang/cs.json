@@ -756,5 +756,12 @@
     "成功": "úspěch",
     "Win32通用钩子": "Univerzální hák Win32",
     "特殊码无效": "Speciální kód je neplatný",
-    "显示模式": "režim zobrazení"
+    "显示模式": "režim zobrazení",
+    "内置": "vestavěné",
+    "信息": "informace",
+    "开发商": "Vývojáři",
+    "标签映射": "Mapování štítků",
+    "简介": "stručný úvod",
+    "全部": "celý",
+    "年度总结": "Roční shrnutí"
 }

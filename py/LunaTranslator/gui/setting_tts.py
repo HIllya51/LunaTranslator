@@ -9,6 +9,7 @@ from gui.inputdialog import (
     autoinitdialog,
     yuyinzhidingsetting,
 )
+from gui.setting_about import offlinelinks
 from gui.setting_textinput import loadvalidtss
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -131,6 +132,10 @@ def setTab5lz(self):
     grids = []
     offline, online = splitocrtypes(globalconfig["reader"])
     alltrans, alltransvis = loadvalidtss()
+    offilesgrid = getttsgrid(self, offline)
+    offilesgrid += [
+        [(functools.partial(offlinelinks, "tts"), 0)],
+    ]
     grids += [
         [
             (
@@ -143,7 +148,7 @@ def setTab5lz(self):
                                 dict(
                                     title="离线",
                                     type="grid",
-                                    grid=getttsgrid(self, offline),
+                                    grid=offilesgrid,
                                 ),
                                 0,
                                 "group",

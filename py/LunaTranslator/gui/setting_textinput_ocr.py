@@ -28,6 +28,7 @@ import gobject, qtawesome
 from gui.dynalang import LFormLayout, LDialog, LAction
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton_close
+from gui.setting_about import offlinelinks
 
 
 def __label1(self):
@@ -385,14 +386,17 @@ class showocrimage(saveposwindow):
 
 def internal(self):
     offline, online = splitocrtypes(globalconfig["ocr"])
-
+    offgrids = initgridsources(self, offline)
+    offgrids += [
+        [(functools.partial(offlinelinks, "ocr"), 0)],
+    ]
     engines = [
         [
             (
                 dict(
                     title="离线",
                     type="grid",
-                    grid=initgridsources(self, offline),
+                    grid=offgrids,
                 ),
                 0,
                 "group",

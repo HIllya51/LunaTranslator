@@ -669,7 +669,11 @@ class dialog_savedgame_v3(QWidget):
             tabadd_lazy(
                 self.righttop,
                 "设置",
-                lambda v: v.addWidget(dialog_setting_game_internal(self, k)),
+                lambda v: v.addWidget(
+                    dialog_setting_game_internal(
+                        self, k, keepindexobject=self.keepindexobject
+                    )
+                ),
             )
             self.righttop.setCurrentIndex(currvis)
         except:
@@ -835,6 +839,22 @@ class dialog_savedgame_v3(QWidget):
         )
         self.setStyleSheet(style)
 
+    def movefocus(self, dx):
+        uid = self.currentfocusuid
+        idx1 = self.reallist[self.reftagid].index(uid)
+        idx2 = (idx1 + dx) % len(self.reallist[self.reftagid])
+        group0 = self.stack.w(calculatetagidx(self.reftagid))
+        if idx1 == 0 and dx == -1:
+            self.stack.verticalScrollBar().setValue(
+                self.stack.verticalScrollBar().maximum()
+            )
+        else:
+            self.stack.ensureWidgetVisible(group0.w(idx2))
+        try:
+            group0.w(idx2).click()
+        except:
+            pass
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         parent.setWindowTitle("游戏管理")
@@ -842,21 +862,29 @@ class dialog_savedgame_v3(QWidget):
         self.currentfocusuid = None
         self.reftagid = None
         self.reallist = {}
+        self.keepindexobject = {}
 
         class ___(stackedlist):
             def keyPressEvent(self, e: QKeyEvent):
-                if e.key() == Qt.Key.Key_Return:
-                    startgamecheck(
-                        self.ref,
-                        getreflist(self.ref.reftagid),
-                        self.ref.currentfocusuid,
-                    )
-                elif e.key() == Qt.Key.Key_Delete:
-                    self.ref.shanchuyouxi()
-                elif e.key() == Qt.Key.Key_Left:
-                    self.ref.moverank(-1)
-                elif e.key() == Qt.Key.Key_Right:
-                    self.ref.moverank(1)
+                if self.ref.currentfocusuid:
+                    if e.key() == Qt.Key.Key_Return:
+                        startgamecheck(
+                            self.ref,
+                            getreflist(self.ref.reftagid),
+                            self.ref.currentfocusuid,
+                        )
+                    elif e.key() == Qt.Key.Key_Delete:
+                        self.ref.shanchuyouxi()
+                    elif e.key() == Qt.Key.Key_Left:
+                        self.ref.moverank(-1)
+                    elif e.key() == Qt.Key.Key_Right:
+                        self.ref.moverank(1)
+                    elif e.key() == Qt.Key.Key_Down:
+                        self.ref.movefocus(1)
+                        return e.ignore()
+                    elif e.key() == Qt.Key.Key_Up:
+                        self.ref.movefocus(-1)
+                        return e.ignore()
                 super().keyPressEvent(e)
 
         self.stack = ___()
@@ -1047,6 +1075,9 @@ class dialog_savedgame_v3(QWidget):
         )
 
         self.stack.w(calculatetagidx(self.reftagid)).switchidx(idx1, idx2)
+        self.stack.ensureWidgetVisible(
+            self.stack.w(calculatetagidx(self.reftagid)).w(idx2)
+        )
         idx1 = getreflist(self.reftagid).index(uid)
         idx2 = getreflist(self.reftagid).index(uid2)
         getreflist(self.reftagid).insert(idx2, getreflist(self.reftagid).pop(idx1))

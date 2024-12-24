@@ -236,8 +236,7 @@ int PyStand::DetectScript()
 //---------------------------------------------------------------------
 const auto init_script =
 	LR"(
-import sys
-import os
+import os,functools, locale, sys
 PYSTAND = os.environ['PYSTAND']
 PYSTAND_HOME = os.environ['PYSTAND_HOME']
 PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']
@@ -253,26 +252,40 @@ def MessageBox(msg, info = 'Message'):
 os.MessageBox = MessageBox
 #sys.stdout=sys.stderr
 sys.path.insert(0, './LunaTranslator')
-)"
-#ifndef PYSTAND_CONSOLE
-	LR"(
+
+
+def fuckwrite(origin, message):
+	try:
+		if isinstance(message, str):
+			code=locale.getpreferredencoding()
+			origin(message.encode(encoding=code, errors='replace').decode(encoding=code, errors='replace'))
+		else:
+			origin(message)
+	except:
+		return
+		import traceback, io
+		sio = io.StringIO()
+		traceback.print_exc(file = sio)
+		os.MessageBox(sio.getvalue(), message)
+
 try:
 	fd = os.open('CONOUT$', os.O_RDWR | os.O_BINARY)
 	fp = os.fdopen(fd, 'w')
 	sys.stdout = fp
 	sys.stderr = fp
 	attached = True
+	sys.stdout.write = functools.partial(fuckwrite,sys.stdout.write)
+	sys.stderr.write = functools.partial(fuckwrite,sys.stderr.write)
+
 except Exception as e:
     try:
-        fp = open(os.devnull, 'w', errors='ignore') # sometimes FileNotFound Error: [Errno 2]No such file or directory: 'nul'
+        fp = open(os.devnull, 'w', errors='replace') # sometimes FileNotFound Error: [Errno 2]No such file or directory: 'nul'
         sys.stdout = fp
         sys.stderr = fp
         attached = False
     except:
         pass
-)"
-#endif
-	LR"(
+
 sys.argv = [PYSTAND_SCRIPT] + sys.argv[1:]
 text = open(PYSTAND_SCRIPT, 'rb').read()
 environ = {'__file__': PYSTAND_SCRIPT, '__name__': '__main__'}
@@ -324,41 +337,13 @@ int main()
 	{
 		return 3;
 	}
-#ifndef PYSTAND_CONSOLE
-	// winmain下的stderr没有任何卵用，对于崩溃时的stderr根本显示不出来，所以还是用控制台来保存log吧。
+	// print cmd无法显示的字符时，如果使用cmd打开，不论debug还是普通，都会error31崩溃。如果双击打开debug，却不会崩溃
+	// 但因为无法区分是使用cmd打开debug还是双击打开debug，所以干脆都这样吧。
 	if (AttachConsole(ATTACH_PARENT_PROCESS))
 	{
 		freopen("CONOUT$", "w", stdout);
 		freopen("CONOUT$", "w", stderr);
-		int fd = _fileno(stdout);
-		if (fd >= 0)
-		{
-			std::string fn = std::to_string(fd);
-			SetEnvironmentVariableA("PYSTAND_STDOUT", fn.c_str());
-		}
-		fd = _fileno(stdin);
-		if (fd >= 0)
-		{
-			std::string fn = std::to_string(fd);
-			SetEnvironmentVariableA("PYSTAND_STDIN", fn.c_str());
-		}
 	}
-#else
-	SetConsoleOutputCP(CP_UTF8);
-	/*
-	auto getCurrentTimestamp = []
-	{
-		auto now = std::chrono::system_clock::now();
-		std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
-		std::tm now_tm = *std::localtime(&now_time_t);
-		std::ostringstream oss;
-		oss << std::put_time(&now_tm, "log_%Y-%m-%d-%H-%M-%S.txt");
-		return oss.str();
-	};
-	auto curr = getCurrentTimestamp();
-	freopen(curr.c_str(), "a", stderr);
-	*/
-#endif
 	int hr = ps.RunString(init_script);
 	return hr;
 }

@@ -114,6 +114,8 @@ def getallsupports():
 
 
 def dodownload(combo: QComboBox, allsupports: list):
+    if not allsupports:
+        return
     lang = allsupports[combo.currentIndex()]
     gobject.baseobject.openlink(
         dynamiclink("{main_server}/Resource/ocr_models/" + lang + ".zip")
@@ -121,6 +123,8 @@ def dodownload(combo: QComboBox, allsupports: list):
 
 
 def doinstall(self, combo: QComboBox, allsupports: list, parent, callback):
+    if not allsupports:
+        return
     lang = allsupports[combo.currentIndex()]
     f = QFileDialog.getOpenFileName(parent, filter=lang + ".zip")
     fn = f[0]
@@ -135,8 +139,10 @@ def doinstall(self, combo: QComboBox, allsupports: list, parent, callback):
         print_exc()
 
 
-def question(dialog: QDialog):
+def question():
+    dialog = QWidget()
     formLayout = LFormLayout()
+    formLayout.setContentsMargins(0, 0, 0, 0)
     dialog.setLayout(formLayout)
     supportlang = LLabel()
     formLayout.addRow("当前支持的语言", supportlang)
@@ -166,6 +172,7 @@ def question(dialog: QDialog):
         "添加语言包",
         getboxlayout([combo, btndownload, btninstall], makewidget=True),
     )
+    return dialog
 
 
 class OCR(baseocr):

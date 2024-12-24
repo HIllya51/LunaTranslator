@@ -1517,6 +1517,8 @@ namespace ppsspp
 		{0x88F09F4, {CODEC_UTF16, 0, 0, 0, ULJM05976, "ULJM05976"}},
 		// オメルタ～沈黙の掟～ THE LEGACY
 		{0x88861C8, {0, 3, 0, 0, 0, "ULJM06393"}},
+		{0x8885fd8, {0, 0, 0, 0, 0, "ULJM06393"}},
+		{0x88ac3a8, {0, 1, 0, 0, 0, "ULJM06393"}},
 		// L.G.S～新説 封神演義～
 		{0x888A358, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME+TEXT
 		{0x88DB214, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // TEXT
@@ -1534,6 +1536,7 @@ namespace ppsspp
 		{0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text
 		// 十鬼の絆 花結綴り
 		{0x886E354, {0, 0, 0, 0, ULJM06289, "ULJM06301"}}, // name+text
+		{0x88f878c, {0, 0, 0, 0, ULJM06289, "ULJM06301"}},
 		// ティンクル☆くるせいだーす STARLIT BRAVE!!
 		{0x88A94BC, {0, 4, 0, 0, 0, "ULJS00315"}}, // text
 		// ティンクル☆くるせいだーす GoGo!

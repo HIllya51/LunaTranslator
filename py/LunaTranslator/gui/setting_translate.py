@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os
 import gobject, qtawesome, uuid, shutil
-from myutils.config import globalconfig, translatorsetting
+from myutils.config import globalconfig, translatorsetting, static_data
 from myutils.utils import (
     selectdebugfile,
     splittranslatortypes,
@@ -26,6 +26,7 @@ from gui.usefulwidget import (
     makescrollgrid,
 )
 from gui.dynalang import LPushButton, LLabel, LAction
+from gui.setting_about import offlinelinks
 
 
 def deepcopydict(d):
@@ -58,7 +59,7 @@ def splitapillm(l):
 def loadvisinternal(btnplus, copy):
     __vis = []
     __uid = []
-    lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
+    lixians, pre, mianfei, shoufei = splittranslatortypes()
     if btnplus == "api":
         is_gpt_likes, not_is_gpt_like = splitapillm(shoufei)
     elif btnplus == "offline":
@@ -161,6 +162,8 @@ def loadbutton(self, fanyi):
         aclass = "translator." + fanyi
     elif which == 1:
         aclass = "userconfig.copyed." + fanyi
+    else:
+        return
     return autoinitdialogx(
         self,
         translatorsetting[fanyi]["args"],
@@ -222,18 +225,18 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
         ),
     )
 
-    if len(countnum) % 3 == 0:
+    offset = 5 * (len(countnum) % 3)
+    layout.addWidget(name, layout.rowCount() - 1, offset + 0)
+    layout.addWidget(swc, layout.rowCount() - 1, offset + 1)
+    layout.addWidget(color, layout.rowCount() - 1, offset + 2)
+    layout.addWidget(last, layout.rowCount() - 1, offset + 3)
+    if len(countnum) % 3 != 2:
+        layout.addWidget(QLabel(), layout.rowCount() - 1, offset + 4)
+
+    else:
         layout.addWidget(
             getattr(self, "btnmany" + btnplus), layout.rowCount(), 5 * 2, 1, 4
         )
-    offset = 5 * (len(countnum) % 3)
-    layout.addWidget(name, layout.rowCount() - 2, offset + 0)
-    layout.addWidget(swc, layout.rowCount() - 2, offset + 1)
-    layout.addWidget(color, layout.rowCount() - 2, offset + 2)
-    layout.addWidget(last, layout.rowCount() - 2, offset + 3)
-    if len(countnum) % 3 != 2:
-        layout.addWidget(QLabel(), layout.rowCount() - 2, offset + 4)
-
     countnum.append(uid)
 
 
@@ -393,12 +396,12 @@ def initsome11(self, l, label=None, btnplus=False):
     if len(line):
         grids.append(line)
     if btnplus:
-        grids.append(
-            [
-                ("", 10),
-                (functools.partial(createmanybtn, self, countnum, btnplus), 4),
-            ]
-        )
+
+        if i % 3 == 0:
+            grids.append([])
+        if i % 3 != 2:
+            grids[-1].append(("", 5 * (2 - i % 3)))
+        grids[-1].append((functools.partial(createmanybtn, self, countnum, btnplus), 4))
 
     return grids
 
@@ -432,7 +435,6 @@ def initsome2(self, l, label=None, btnplus=None):
         ],
     ]
     return grids
-
 
 
 def createbtnexport(self):
@@ -512,20 +514,11 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
         ],
         [],
     ]
-    _items = [
-        {
-            "type": "file",
-            "dir": False,
-            "filter": "*.exe",
-            "name": "Chromium_路径",
-            "k": "chromepath",
-        },
-        {"type": "okcancel"},
-    ]
 
-    lixians, pre, mianfei, develop, shoufei = splittranslatortypes()
+    lixians, pre, mianfei, shoufei = splittranslatortypes()
 
     offlinegrid = initsome2(self, lixians, btnplus="offline")
+    offlinegrid += [[functools.partial(offlinelinks, "translate")]]
     onlinegrid = initsome11(self, mianfei)
     online_reg_grid += initsome2(self, shoufei, btnplus="api")
     pretransgrid += initsome11(self, pre)

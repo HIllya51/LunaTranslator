@@ -756,5 +756,12 @@
     "成功": "Erfolg",
     "Win32通用钩子": "Win32 Universal Hook",
     "特殊码无效": "Der spezielle Code ist ungültig",
-    "显示模式": "Anzeigemodus"
+    "显示模式": "Anzeigemodus",
+    "内置": "eingebaut",
+    "信息": "Informationen",
+    "开发商": "Entwickler",
+    "标签映射": "Beschriftung",
+    "简介": "kurze Einführung",
+    "全部": "ganz",
+    "年度总结": "Jahreszusammenfassung"
 }

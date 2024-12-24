@@ -4,11 +4,11 @@ from qtsymbols import *
 import os, functools, uuid
 from traceback import print_exc
 import gobject, qtawesome
-from gui.dynalang import LPushButton, LAction
+from gui.dynalang import LAction
 from gui.dialog_savedgame_v3 import dialog_savedgame_v3
 from gui.dialog_savedgame_legacy import dialog_savedgame_legacy
 from gui.dialog_savedgame_setting import dialog_setting_game, userlabelset
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton_close, tryprint
 from gui.specialwidget import lazyscrollflow
 from myutils.utils import str2rgba
 from myutils.config import (
@@ -25,12 +25,13 @@ from gui.usefulwidget import (
     Prompt_dialog,
     IconButton,
     getsimplecombobox,
+    FQLineEdit,
+    FocusCombo,
 )
 from gui.dialog_savedgame_common import (
     ItemWidget,
     dialog_syssetting,
     tagitem,
-    TagWidget,
     startgamecheck,
     loadvisinternal,
     getalistname,
@@ -150,6 +151,108 @@ class dialog_savedgame_integrated(saveposwindow):
         )
 
 
+class TagWidget(QWidget):
+    tagschanged = pyqtSignal(tuple)  # ((tag,type,refdata),)
+    linepressedenter = pyqtSignal(str)
+    tagclicked = pyqtSignal(tuple)  # tag,type,refdata
+
+    def __init__(self, parent=None, exfoucus=True):
+        super().__init__(parent)
+        tagitem.setstyles(self)
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self.setLayout(layout)
+
+        self.lineEdit = FocusCombo()
+        if exfoucus:
+            self.lineEdit.setLineEdit(FQLineEdit())
+            # FQLineEdit导致游戏管理页面里，点击编辑框后，下边界消失。
+            # FQLineEdit仅用于和webview同一窗口内焦点缺失问题，所以既然用不到那就不要多此一举了
+        else:
+            self.lineEdit.setEditable(True)
+        self.lineEdit.lineEdit().returnPressed.connect(
+            lambda: self.linepressedenter.emit(self.lineEdit.currentText())
+        )
+
+        self.lineEdit.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum
+        )
+        self.tagtypes = ["usertags", "developers", "webtags", "usertags"]
+        self.tagtypes_zh = ["全部", "开发商", "标签", "自定义"]
+        self.tagtypes_1 = [
+            tagitem.TYPE_SEARCH,
+            tagitem.TYPE_DEVELOPER,
+            tagitem.TYPE_TAG,
+            tagitem.TYPE_USERTAG,
+        ]
+        layout.addWidget(self.lineEdit)
+
+        def __(idx):
+            t = self.lineEdit.currentText()
+            self.lineEdit.clear()
+            self.lineEdit.addItems(userlabelset(self.tagtypes[idx]))
+            self.lineEdit.setCurrentText(t)
+
+        self.typecombo = getsimplecombobox(self.tagtypes_zh, callback=__)
+        layout.addWidget(self.typecombo)
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+
+        self.tag2widget = {}
+
+        def callback(t):
+            if not t:
+                return
+            self.addTag(t, self.tagtypes_1[self.typecombo.currentIndex()])
+            self.lineEdit.clearEditText()
+
+        self.linepressedenter.connect(callback)
+        self.typecombo.currentIndexChanged.emit(0)
+
+    def addTags(self, tags, signal=True):
+        for key in tags:
+            self.__addTag(key)
+        self.__calltagschanged(signal)
+
+    @tryprint
+    def __addTag(self, key):
+        tag, _type, refdata = key
+        if not tag:
+            return
+        if key in self.tag2widget:
+            return
+        qw = tagitem(tag, _type=_type, refdata=refdata)
+        qw.removesignal.connect(self.removeTag)
+        qw.labelclicked.connect(self.tagclicked.emit)
+        layout = self.layout()
+        layout.insertWidget(layout.count() - 2, qw)
+        self.tag2widget[key] = qw
+        self.lineEdit.setFocus()
+
+    def addTag(self, tag, _type, refdata=None, signal=True):
+        self.__addTag((tag, _type, refdata))
+        self.__calltagschanged(signal)
+
+    @tryprint
+    def __removeTag(self, key):
+        _w = self.tag2widget[key]
+        self.layout().removeWidget(_w)
+        self.tag2widget.pop(key)
+
+    def removeTag(self, key, signal=True):
+        self.__removeTag(key)
+        self.__calltagschanged(signal)
+
+    def __calltagschanged(self, signal):
+        if signal:
+            self.tagschanged.emit(tuple(self.tag2widget.keys()))
+
+    def clearTag(self, signal=True):
+        for key in self.tag2widget.copy():
+            self.__removeTag(key)
+        self.__calltagschanged(signal)
+
+
 class dialog_savedgame_new(QWidget):
 
     def dragEnterEvent(self, event: QDragEnterEvent):
@@ -222,6 +325,10 @@ class dialog_savedgame_new(QWidget):
             if newtags != self.currtags:
                 break
             notshow = False
+            webtags = [
+                globalconfig["tagNameRemap"].get(tag, tag)
+                for tag in savehook_new_data[k]["webtags"]
+            ]
             for tag, _type, _ in tags:
                 if _type == tagitem.TYPE_EXISTS:
                     if os.path.exists(get_launchpath(k)) == False:
@@ -232,16 +339,16 @@ class dialog_savedgame_new(QWidget):
                         notshow = True
                         break
                 elif _type == tagitem.TYPE_TAG:
-                    if tag not in savehook_new_data[k]["webtags"]:
+                    if tag not in webtags:
                         notshow = True
                         break
                 elif _type == tagitem.TYPE_USERTAG:
                     if tag not in savehook_new_data[k]["usertags"]:
                         notshow = True
                         break
-                elif _type == tagitem.TYPE_RAND:
+                elif _type == tagitem.TYPE_SEARCH:
                     if (
-                        tag not in savehook_new_data[k]["webtags"]
+                        tag not in webtags
                         and tag not in savehook_new_data[k]["usertags"]
                         and tag not in savehook_new_data[k]["title"]
                         and tag not in savehook_new_data[k]["developers"]
@@ -431,24 +538,8 @@ class dialog_savedgame_new(QWidget):
         self.reflist = getreflist(globalconfig["currvislistuid"])
         self.reftagid = globalconfig["currvislistuid"]
 
-        def callback(t):
-            if not t:
-                return
-            labelset = userlabelset()
-            if t in labelset:
-                tp = tagitem.TYPE_USERTAG
-            else:
-                tp = tagitem.TYPE_RAND
-            self.tagswidget.addTag(t, tp)
-
-            self.tagswidget.lineEdit.clear()
-            self.tagswidget.lineEdit.addItems(labelset)
-            self.tagswidget.lineEdit.clearEditText()
-
         self.tagswidget = TagWidget(self, exfoucus=False)
-        self.tagswidget.lineEdit.addItems(userlabelset())
-        self.tagswidget.lineEdit.setCurrentText("")
-        self.tagswidget.linepressedenter.connect(callback)
+
         self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
         _ = QLabel()
@@ -500,15 +591,39 @@ class dialog_savedgame_new(QWidget):
             getreflist(uid).insert(0, getreflist(uid).pop(idx))
 
     def keyPressEvent(self, e: QKeyEvent):
-        if e.key() == Qt.Key.Key_Return:
-            startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
-        elif e.key() == Qt.Key.Key_Delete:
-            self.clicked2()
-        elif e.key() == Qt.Key.Key_Left:
-            self.moverank(-1)
-        elif e.key() == Qt.Key.Key_Right:
-            self.moverank(1)
+        if self.currentfocusuid:
+            if e.key() == Qt.Key.Key_Return:
+                startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
+            elif e.key() == Qt.Key.Key_Delete:
+                self.clicked2()
+            elif e.key() == Qt.Key.Key_Left:
+                if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                    self.moverank(-1)
+                else:
+                    self.movefocus(-1)
+            elif e.key() == Qt.Key.Key_Right:
+                if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                    self.moverank(1)
+                else:
+                    self.movefocus(1)
         super().keyPressEvent(e)
+
+    def movefocus(self, dx):
+        game = self.currentfocusuid
+
+        idx1 = self.idxsave.index(game)
+        idx2 = (idx1 + dx) % len(self.idxsave)
+
+        if idx1 == 0 and dx == -1:
+            self.flow.verticalScrollBar().setValue(
+                self.flow.verticalScrollBar().maximum()
+            )
+        else:
+            self.flow.ensureWidgetVisible(self.flow.widget(idx2))
+        try:
+            self.flow.widget(idx2).click()
+        except:
+            pass
 
     def moverank(self, dx):
         game = self.currentfocusuid
@@ -518,7 +633,7 @@ class dialog_savedgame_new(QWidget):
         game2 = self.idxsave[idx2]
         self.idxsave.insert(idx2, self.idxsave.pop(idx1))
         self.flow.switchidx(idx1, idx2)
-
+        # self.flow.ensureWidgetVisible(self.flow.widget(idx2))
         idx1 = self.reflist.index(game)
         idx2 = self.reflist.index(game2)
         self.reflist.insert(idx2, self.reflist.pop(idx1))

@@ -1,6 +1,6 @@
 import windows, os, winsharedutils, re, functools
 from qtsymbols import *
-from myutils.config import savehook_new_data, get_launchpath, globalconfig, get_platform
+from myutils.config import savehook_new_data, get_launchpath, globalconfig, get_platform, _TR
 from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
 from traceback import print_exc
 import xml.etree.ElementTree as ET
@@ -50,9 +50,11 @@ class le_internal(LEbase):
         LCID=0x11, CodePage=932, RedirectRegistry=False, HookUILanguageAPI=False
     )
 
-    def getlrpath(self):
+    def getlrpath(self, show=False):
         LEProc = globalconfig.get("le_extra_path", "")
         if not (LEProc and os.path.exists(LEProc)):
+            if show:
+                return _TR("内置")
             LEProc = os.path.abspath("files/plugins/Locale/Locale.Emulator/LEProc.exe")
         return LEProc
 
@@ -129,14 +131,12 @@ class le_internal(LEbase):
         layout.addRow(
             "路径",
             getsimplepatheditor(
-                self.getlrpath(),
+                self.getlrpath(show=True),
                 False,
                 False,
                 filter1="LEProc.exe",
                 callback=functools.partial(self.reselect, config, Guids),
-                clearset=lambda: os.path.abspath(
-                    "files/plugins/Locale/Locale.Emulator/LEProc.exe"
-                ),
+                clearset=lambda: _TR("内置"),
                 icons=("fa.gear", "fa.refresh"),
             ),
         )
@@ -167,9 +167,11 @@ class NTLEAS64(LEbase):
                 continue
             config[k] = v
 
-    def getlrpath(self):
+    def getlrpath(self, show=False):
         LEProc = globalconfig.get("ntleas_extra_path", "")
         if not (LEProc and os.path.exists(LEProc)):
+            if show:
+                return _TR("内置")
             LEProc = os.path.abspath("files/plugins/Locale/ntleas046_x64/Placeholder")
         return LEProc
 
@@ -204,14 +206,12 @@ class NTLEAS64(LEbase):
         layout.addRow(
             "路径",
             getsimplepatheditor(
-                self.getlrpath(),
+                self.getlrpath(show=True),
                 False,
                 False,
                 filter1="ntleasWin.exe",
                 callback=self.reselect,
-                clearset=lambda: os.path.abspath(
-                    "files/plugins/Locale/ntleas046_x64/Placeholder"
-                ),
+                clearset=lambda: _TR("内置"),
                 icons=("fa.gear", "fa.refresh"),
             ),
         )
@@ -265,9 +265,11 @@ class lr_internal(LEbase):
             print_exc()
         return Names, Guids, run_as_admins
 
-    def getlrpath(self):
+    def getlrpath(self, show=False):
         LEProc = globalconfig.get("lr_extra_path", "")
         if not (LEProc and os.path.exists(LEProc)):
+            if show:
+                return _TR("内置")
             LEProc = os.path.abspath("files/plugins/Locale/Locale_Remulator/LRProc.exe")
         return LEProc
 
@@ -303,14 +305,12 @@ class lr_internal(LEbase):
         layout.addRow(
             "路径",
             getsimplepatheditor(
-                self.getlrpath(),
+                self.getlrpath(show=True),
                 False,
                 False,
                 filter1="LRProc.exe",
                 callback=functools.partial(self.reselect, config, Guids),
-                clearset=lambda: os.path.abspath(
-                    "files/plugins/Locale/Locale_Remulator/LRProc.exe"
-                ),
+                clearset=lambda: _TR("内置"),
                 icons=("fa.gear", "fa.refresh"),
             ),
         )
