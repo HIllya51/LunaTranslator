@@ -266,8 +266,13 @@ def createimageview(self):
 
 
 def changelog(self, basel: QHBoxLayout):
-    _ = WebivewWidget(self)
-    _.navigate(dynamiclink("{main_server}/ChangeLog"))
+    link = dynamiclink("{main_server}/ChangeLog")
+    try:
+        _ = WebivewWidget(self)
+        _.navigate(link)
+    except:
+        _ = QWidget()
+        os.startfile(link)
     basel.addWidget(_)
 
 

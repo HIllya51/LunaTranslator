@@ -193,7 +193,6 @@ def yearsummary(self, basel: QHBoxLayout):
     for m, info in everymonth_uid_time.items():
         tu_m[m] = getimages(info)
     developer, webtags = getallgamelabels(yearinfos)
-    _ = WebivewWidget(self)
     with open("files/yearsummary/yearsummary.value.js", "w", encoding="utf8") as ff2:
         ff2.write(
             r"""
@@ -219,5 +218,11 @@ webtags={webtags}
             )
         )
 
-    _.navigate(os.path.abspath("files/yearsummary/yearsummary.html"))
+    link = os.path.abspath("files/yearsummary/yearsummary.html")
+    try:
+        _ = WebivewWidget(self)
+        _.navigate(link)
+    except:
+        _ = QWidget()
+        os.startfile(link)
     basel.addWidget(_)
