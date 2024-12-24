@@ -152,7 +152,7 @@ def getinfosbyvid(proxy, vid):
             sc=imgs,
             dev=dev,
             tags=sorted(tags, key=lambda x: -rates[tags.index(x)]),
-            description=js["results"][0]['description']
+            description=js["results"][0]["description"],
         )
 
 
@@ -380,5 +380,9 @@ class searcher(common):
             "imagepath_all": img + sc,
             "webtags": infos["tags"],
             "developers": infos["dev"],
-            "description":infos['description']
+            "description": (
+                infos["description"].replace("\n", "<br>")
+                if infos["description"]
+                else None
+            ),
         }
