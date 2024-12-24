@@ -14,13 +14,13 @@ class jisho(cishubase):
         for title, res in allres:
             idx += 1
             btns.append(
-                """<button type="button" onclick="onclickbtn_xxxxxx_internal('buttonid_xxxxx_internal{idx}')" id="buttonid_xxxxx_internal{idx}" class="tab-button_xxxx_internal" data-tab="tab_xxxxx_internal{idx}">{title}</button>""".format(
-                    idx=idx, title=title
+                """<button type="button" onclick="onclickbtn_xxxxxx_internal('buttonid_xxxxx_internal{idx}')" id="buttonid_xxxxx_internal{idx}" class="tab-button_xxxx_internal{klass}" data-tab="tab_xxxxx_internal{idx}">{title}</button>""".format(
+                    idx=idx, title=title, klass='' if idx==0 else ' active'
                 )
             )
             contents.append(
-                """<div id="tab_xxxxx_internal{idx}" class="tab-pane_xxxxx_internal">{res}</div>""".format(
-                    idx=idx, res=res
+                """<div id="tab_xxxxx_internal{idx}" class="tab-pane_xxxxx_internal{klass}">{res}</div>""".format(
+                    idx=idx, res=res,klass='' if idx==0 else ' active'
                 )
             )
         commonstyle = """
@@ -85,10 +85,6 @@ function onclickbtn_xxxxxx_internal(_id) {
         </div>
     </div>
 </div>
-<script>
-if(document.querySelectorAll('.tab-widget_xxxxxx_internal .tab-button_xxxx_internal').length)
-document.querySelectorAll('.tab-widget_xxxxxx_internal .tab-button_xxxx_internal')[0].click()
-</script>
 """.format(
             commonstyle=commonstyle, btns="".join(btns), contents="".join(contents)
         )
