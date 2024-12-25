@@ -34,7 +34,6 @@ from gui.usefulwidget import (
     getIconButton,
     saveposwindow,
     tabadd_lazy,
-    LRButton,
 )
 from gui.dynalang import (
     LPushButton,
@@ -516,9 +515,10 @@ class AnkiWindow(QWidget):
         folder_open3.clicked.connect(functools.partial(self.selecfile2, self.editpath))
 
         def createadd():
-            btn = LRButton("添加")
+            btn = QPushButton("添加")
             btn.clicked.connect(functools.partial(self.errorwrap, False))
-            btn.rightclick.connect(functools.partial(self.errorwrap, True))
+            btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+            btn.customContextMenuRequested.connect(functools.partial(self.errorwrap, True))
             return btn
 
         layout.addLayout(

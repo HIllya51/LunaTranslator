@@ -265,3 +265,18 @@ class LStandardItemModel(QStandardItemModel):
     def removeColumn(self, col):
         self.__ls.pop(col)
         super().removeColumn(col)
+
+
+class LToolButton(QToolButton):
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self._text = self.text()
+        super().setText(_TR(self._text))
+
+    def setText(self, t):
+        self._text = t
+        super().setText(_TR(t))
+
+    def updatelangtext(self):
+        if self._text:
+            super().setText(_TR(self._text))

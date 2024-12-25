@@ -1089,6 +1089,7 @@ class MAINUI:
             fontsize=globalconfig["settingfontsize"] + 4,
             fonttype=globalconfig["settingfonttype"],
         )
+        style+="QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
         self.commonstylebase.setStyleSheet(style)
         font = QFont()
         font.setFamily(globalconfig["settingfonttype"])

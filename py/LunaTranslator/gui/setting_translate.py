@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os
 import gobject, qtawesome, uuid, shutil
-from myutils.config import globalconfig, translatorsetting, static_data
+from myutils.config import globalconfig, translatorsetting
 from myutils.utils import (
     selectdebugfile,
     splittranslatortypes,
@@ -10,12 +10,11 @@ from myutils.utils import (
     dynamicapiname,
 )
 from gui.pretransfile import sqlite2json
-from gui.inputdialog import autoinitdialog, autoinitdialog_items, autoinitdialogx
+from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getspinbox,
     getIconButton,
     D_getcolorbutton,
-    Prompt_dialog,
     getcolorbutton,
     getsimpleswitch,
     D_getIconButton,
@@ -114,44 +113,57 @@ def getalistname(parent, copy, btnplus, callback):
         }
     )
     autoinitdialog(
-        parent,
-        __d,
-        ("删除" if copy else "复制") + "接口",
-        600,
-        __,
+        parent, __d, ("删除" if copy else "复制") + "接口", 600, __, exec_=True
     )
 
 
-def renameapi(qlabel: QLabel, apiuid, _):
+def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _):
     menu = QMenu(qlabel)
     editname = LAction("重命名")
+    delete = LAction("删除")
     menu.addAction(editname)
+    which = translate_exits(apiuid, which=True)
+    if which == 1:
+        menu.addAction(delete)
     action = menu.exec(qlabel.mapToGlobal(_))
+    if action == delete:
+        selectllmcallback_2(self, countnum, btnplus, apiuid, None)
     if action == editname:
         before = dynamicapiname(apiuid)
-        _dia = Prompt_dialog(
-            qlabel,
-            "重命名",
-            "",
-            [
-                [
-                    "名称",
-                    before,
-                ],
-            ],
-        )
+        __d = {"k": before}
 
-        if _dia.exec():
-            title = _dia.text[0].text()
+        def cb(__d):
+            title = __d["k"]
             if title not in ("", before):
                 globalconfig["fanyi"][apiuid]["name_self_set"] = title
                 qlabel.setText(title)
 
+        autoinitdialog(
+            self,
+            __d,
+            "重命名",
+            600,
+            [
+                {
+                    "type": "lineedit",
+                    "name": "名称",
+                    "k": "k",
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(cb, __d),
+                },
+            ],
+            exec_=True,
+        )
 
-def getrenameablellabel(uid):
+
+def getrenameablellabel(uid, self, countnum, btnplus):
     name = LLabel(dynamicapiname(uid))
     name.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-    name.customContextMenuRequested.connect(functools.partial(renameapi, name, uid))
+    name.customContextMenuRequested.connect(
+        functools.partial(renameapi, name, uid, self, countnum, btnplus)
+    )
     return name
 
 
@@ -164,7 +176,7 @@ def loadbutton(self, fanyi):
         aclass = "userconfig.copyed." + fanyi
     else:
         return
-    return autoinitdialogx(
+    return autoinitdialog(
         self,
         translatorsetting[fanyi]["args"],
         dynamicapiname(fanyi),
@@ -203,7 +215,7 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
         icon="fa.gear",
     )
 
-    name = getrenameablellabel(uid)
+    name = getrenameablellabel(uid, self, countnum, btnplus)
     swc = getsimpleswitch(
         globalconfig["fanyi"][uid],
         "use",
@@ -364,7 +376,7 @@ def initsome11(self, l, label=None, btnplus=False):
         else:
             last = ""
         line += [
-            functools.partial(getrenameablellabel, fanyi),
+            functools.partial(getrenameablellabel, fanyi, self, countnum, btnplus),
             D_getsimpleswitch(
                 globalconfig["fanyi"][fanyi],
                 "use",

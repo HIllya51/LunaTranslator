@@ -4,7 +4,6 @@ from myutils.utils import splitocrtypes
 from myutils.config import globalconfig, _TR, get_platform
 from gui.inputdialog import (
     multicolorset,
-    autoinitdialogx,
     autoinitdialog_items,
     autoinitdialog,
 )
@@ -147,7 +146,7 @@ def initinternal(self, names):
             line += [
                 D_getIconButton(
                     callback=functools.partial(
-                        autoinitdialogx,
+                        autoinitdialog,
                         self,
                         globalconfig["cishu"][cishu]["args"],
                         globalconfig["cishu"][cishu]["name"],

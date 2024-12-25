@@ -96,8 +96,8 @@
   N：无视上下文
 
   寄存器的data_offset：
-    * 32位 -4 for EAX, -8 for ECX, -C for EDX, -10 for EBX, -14 for ESP, -18 for EBP, -1C for ESI, -20 for EDI
-    * 64位 -C for RAX, -14 for RBX, -1C for RCX, -24 for RDX, and so on for RSP, RBP, RSI, RDI, R8-R15
+    * 32位 EAX -4, ECX -8, EDX -C, EBX -10, ESP -14, EBP -18, ESI -1C, EDI -20
+    * 64位 RAX -C, RBX -14, RCX -1C, RDX -24, RSP -2C, RBP -34, RSI -3C, RDI -44, R8 -4C, R9 -54, R10 -5C, R11 -64, R12 -6C, R13 -74, R14 -7C, R15 -84
 
 1. #### JIT HOOK
 

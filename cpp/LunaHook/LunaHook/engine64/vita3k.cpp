@@ -522,6 +522,16 @@ namespace
         last = s;
         buffer->from(s);
     }
+    void PCSG01036(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        strReplace(s, "#n", "");
+        buffer->from(s);
+    }
     void FPCSG00815(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -795,6 +805,10 @@ namespace
             {0x8005426C, {CODEC_UTF8, 0, 0, 0, PCSG01068, "PCSG01068"}},
             // スカーレッドライダーゼクス Rev.
             {0x800BEE38, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00745"}},
+            // 緋色の欠片 ～おもいいろの記憶～
+            {0x8007838c, {CODEC_UTF8, 5, 0, 0, PCSG01036, "PCSG01036"}},
+            {0x8001154c, {CODEC_UTF8, 8, 0, 0, PCSG01036, "PCSG01036"}},
+            {0x800879ee, {CODEC_UTF8, 2, 0, 0, PCSG01036, "PCSG01036"}},
         };
         return 1;
     }();

@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools, uuid, threading, shutil, time
 from traceback import print_exc
-import gobject, base64
+import gobject
 from myutils.config import (
     savehook_new_list,
     savehook_new_data,
@@ -18,7 +18,6 @@ from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
 from gui.usefulwidget import (
     pixmapviewer,
     statusbutton,
-    Prompt_dialog,
     makesubtab_lazy,
     tabadd_lazy,
     listediter,
@@ -744,32 +743,8 @@ class dialog_savedgame_v3(QWidget):
         if action == startgame:
             startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
         elif addlist == action:
-            _dia = Prompt_dialog(
-                self,
-                "创建列表",
-                "",
-                [
-                    ["名称", ""],
-                ],
-            )
 
-            if _dia.exec():
-
-                title = _dia.text[0].text()
-                if title != "":
-                    i = calculatetagidx(None)
-                    if action == addlist:
-                        tag = {
-                            "title": title,
-                            "games": [],
-                            "uid": str(uuid.uuid4()),
-                            "opened": True,
-                        }
-                        savegametaged.insert(i, tag)
-                        group0, btn = self.createtaglist(
-                            self.stack, title, tag["uid"], True
-                        )
-                        self.stack.insertw(i, group0)
+            self.createlist(True, None)
 
         elif action == delgame:
             self.shanchuyouxi()
@@ -1002,48 +977,54 @@ class dialog_savedgame_v3(QWidget):
         elif action == Downaction:
             self.taglistrerank(tagid, 1)
         elif action == editname or action == addlist:
-            _dia = Prompt_dialog(
-                self,
-                "修改列表名称" if action == editname else "创建列表",
-                "",
-                [
-                    [
-                        "名称",
-                        (
-                            savegametaged[calculatetagidx(tagid)]["title"]
-                            if action == editname
-                            else ""
-                        ),
-                    ],
-                ],
-            )
-
-            if _dia.exec():
-
-                title = _dia.text[0].text()
-                if title != "":
-                    i = calculatetagidx(tagid)
-                    if action == addlist:
-                        tag = {
-                            "title": title,
-                            "games": [],
-                            "uid": str(uuid.uuid4()),
-                            "opened": True,
-                        }
-                        savegametaged.insert(i, tag)
-                        group0, btn = self.createtaglist(
-                            self.stack, title, tag["uid"], True
-                        )
-                        self.stack.insertw(i, group0)
-                    elif action == editname:
-                        self.stack.w(i).settitle(title)
-                        savegametaged[i]["title"] = title
+            self.createlist(action == addlist, tagid)
 
         elif action == dellist:
             i = calculatetagidx(tagid)
             savegametaged.pop(i)
             self.stack.popw(i)
             self.reallist.pop(tagid)
+
+    def createlist(self, create, tagid):
+        __d = {"k": ("" if create else savegametaged[calculatetagidx(tagid)]["title"])}
+
+        def cb(__d):
+            title = __d["k"]
+            if not title:
+                return
+            i = calculatetagidx(tagid)
+            if create:
+                tag = {
+                    "title": title,
+                    "games": [],
+                    "uid": str(uuid.uuid4()),
+                    "opened": True,
+                }
+                savegametaged.insert(i, tag)
+                group0, btn = self.createtaglist(self.stack, title, tag["uid"], True)
+                self.stack.insertw(i, group0)
+            else:
+                self.stack.w(i).settitle(title)
+                savegametaged[i]["title"] = title
+
+        autoinitdialog(
+            self,
+            __d,
+            "创建列表" if create else "修改列表名称",
+            600,
+            [
+                {
+                    "type": "lineedit",
+                    "name": "名称",
+                    "k": "k",
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(cb, __d),
+                },
+            ],
+            exec_=True,
+        )
 
     def createtaglist(self, p, title, tagid, opened):
 

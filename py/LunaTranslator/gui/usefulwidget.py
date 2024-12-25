@@ -17,6 +17,7 @@ from gui.dynalang import (
     LStandardItemModel,
     LDialog,
     LMainWindow,
+    LToolButton,
 )
 
 
@@ -853,42 +854,6 @@ class resizableframeless(saveposwindow):
         x -= width - w
         y -= height - h
         return x, y, width, height
-
-
-class Prompt_dialog(LDialog):
-    def __init__(self, parent, title, info, items) -> None:
-        super().__init__(parent)
-        self.setWindowFlags(
-            self.windowFlags()
-            & ~Qt.WindowType.WindowContextHelpButtonHint
-            & ~Qt.WindowType.WindowCloseButtonHint
-            | Qt.WindowType.WindowStaysOnTopHint
-        )
-        self.setWindowTitle(title)
-        self.setWindowIcon(qtawesome.icon("fa-question"))
-
-        _layout = QVBoxLayout()
-
-        _layout.addWidget(LLabel(info))
-
-        self.text = []
-        for _ in items:
-
-            le = QLineEdit()
-            le.setText(_[1])
-            self.text.append((le))
-            hl = QHBoxLayout()
-            hl.addWidget(LLabel(_[0]))
-            hl.addWidget(le)
-            _layout.addLayout(hl)
-        button = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
-        button.accepted.connect(self.accept)
-        button.rejected.connect(self.reject)
-        _layout.addWidget(button)
-        self.setLayout(_layout)
-        self.resize(400, 1)
 
 
 def callbackwrap(d, k, call, _):
@@ -1783,15 +1748,7 @@ def makegroupingrid(args):
     if title:
         group.setTitle(title)
     else:
-        _id = "luna" + str(uuid.uuid4())
-        group.setObjectName(_id)
-        group.setStyleSheet(
-            "QGroupBox#"
-            + _id
-            + "{ margin-top:0px;} QGroupBox#"
-            + _id
-            + ":title {margin-top: 0px;}"
-        )
+        group.setObjectName('notitle')
 
     if _type == "grid":
         grid = QGridLayout()
@@ -1875,18 +1832,18 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
         grid.setRowMinimumHeight(nowr, 25)
 
 
-def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False, w=True):
+def makegrid(
+    grid=None, save=False, savelist=None, savelay=None, delay=False
+):
 
     class gridwidget(QWidget):
         pass
 
-    if w:
-        gridlayoutwidget = gridwidget()
+    gridlayoutwidget = gridwidget()
     gridlay = QGridLayout()
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
-    if w:
-        gridlayoutwidget.setLayout(gridlay)
-        gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
+    gridlayoutwidget.setLayout(gridlay)
+    gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
     def do(gridlay, grid, save, savelist, savelay):
         automakegrid(gridlay, grid, save, savelist)
@@ -1894,8 +1851,7 @@ def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False, w=
             savelay.append(gridlay)
 
     __do = functools.partial(do, gridlay, grid, save, savelist, savelay)
-    if not w:
-        gridlayoutwidget = gridlay
+
     if not delay:
         __do()
         return gridlayoutwidget
@@ -2536,16 +2492,6 @@ class FQLineEdit(QLineEdit):
         return super().mousePressEvent(a0)
 
 
-class LRButton(LPushButton):
-    rightclick = pyqtSignal()
-
-    def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
-        if self.rect().contains(ev.pos()):
-            if ev.button() == Qt.MouseButton.RightButton:
-                self.rightclick.emit()
-        return super().mouseReleaseEvent(ev)
-
-
 class VisLFormLayout(LFormLayout):
     # 简易实现
     def __init__(self, *args, **kwargs):
@@ -2593,45 +2539,47 @@ class VisLFormLayout(LFormLayout):
         self._row_vis[row_index] = visible
 
 
-class CollapsibleBox(QWidget):
-    def setdelayload(self, func):
-        self.func = func
-
-    def __init__(self, title="", parent=None):
+class CollapsibleBox(QGroupBox):
+    def __init__(self, delayloadfunction=None, parent=None, margin0=True):
         super(CollapsibleBox, self).__init__(parent)
+        self.setObjectName('notitle')
+        lay = QVBoxLayout(self)
+        if margin0:
+            lay.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(lay)
+        self.func = delayloadfunction
+        self.toggle(False)
 
-        self.toggle_button = QToolButton(text=title, checkable=True, checked=False)
+    def toggle(self, checked):
+        if checked and self.func:
+            self.func(self.layout())
+            self.func = None
+        self.setVisible(checked)
+
+
+class CollapsibleBoxWithButton(QWidget):
+
+    def __init__(self, delayloadfunction=None, title="", parent=None):
+        super(CollapsibleBoxWithButton, self).__init__(parent)
+        self.toggle_button = LToolButton(text=title, checkable=True, checked=False)
         self.toggle_button.setToolButtonStyle(
             Qt.ToolButtonStyle.ToolButtonTextBesideIcon
         )
-        self.toggle_button.toggled.connect(self.on_toggled)
-        self.content_area = QWidget()
+        self.toggle_button.toggled.connect(self.toggled)
+        self.content_area = CollapsibleBox(delayloadfunction, self)
         lay = QVBoxLayout(self)
         lay.setSpacing(0)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.addWidget(self.toggle_button)
         lay.addWidget(self.content_area)
-        self.func = None
-        self.collapse()
+        self.toggled(False)
 
-    def on_toggled(self, checked):
-        if checked:
-            if self.func:
-                self.func(self)
-                self.func = None
-            self.toggle_button.setIcon(qtawesome.icon("fa.chevron-down"))
-            self.content_area.setVisible(True)
-        else:
-            self.toggle_button.setIcon(qtawesome.icon("fa.chevron-right"))
-            self.content_area.setVisible(False)
-
-    def expand(self):
-        self.toggle_button.setChecked(True)
-        self.on_toggled(True)
-
-    def collapse(self):
-        self.toggle_button.setChecked(False)
-        self.on_toggled(False)
+    def toggled(self, checked):
+        self.toggle_button.setChecked(checked)
+        self.content_area.toggle(checked)
+        self.toggle_button.setIcon(
+            qtawesome.icon("fa.chevron-down" if checked else "fa.chevron-right")
+        )
 
 
 class editswitchTextBrowser(QWidget):

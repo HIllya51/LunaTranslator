@@ -172,42 +172,6 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
         )
 
 
-def doinstallqweb(self, dd, base):
-    if not dd["k"].endswith(base):
-        getQMessageBox(self, "错误", "请选择_" + base)
-        return
-    with zipfile.ZipFile(dd["k"]) as zipf:
-        target = gobject.gettempdir("QWebEngine/")
-        zipf.extractall(target)
-        bit = ["x86", "x64"][platform.architecture()[0] == "64bit"]
-        copytree("{}/{}/PyQt5".format(target, bit), "files/runtime/PyQt5")
-    getQMessageBox(self, "成功", "安装成功")
-
-
-def installqwebdialog(self, link):
-    dd = {"k": ""}
-    base = link.split("/")[-1]
-    autoinitdialog(
-        self,
-        dd,
-        "安装_QWebEngine",
-        800,
-        [
-            {
-                "type": "file",
-                "name": "路径",
-                "k": "k",
-                "dir": False,
-                "filter": base,
-            },
-            {
-                "type": "okcancel",
-                "callback": functools.partial(doinstallqweb, self, dd, base),
-            },
-        ],
-    )
-
-
 def resetgroudswitchcallback(self, group):
     if group == "QWebEngine":
         group = "webview"

@@ -13,7 +13,7 @@ import subprocess
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makescrollgrid,
-    CollapsibleBox,
+    CollapsibleBoxWithButton,
     makesubtab_lazy,
     D_getsimplecombobox,
     makegrid,
@@ -276,7 +276,7 @@ def changelog(self, basel: QHBoxLayout):
     basel.addWidget(_)
 
 
-def delayloadlinks(key, box):
+def delayloadlinks(key, lay):
     sources = static_data["aboutsource"][key]
     grid = []
     for source in sources:
@@ -303,24 +303,13 @@ def delayloadlinks(key, box):
                 )
             ]
         )
-    grid = [
-        [
-            (
-                dict(type="grid", grid=grid),
-                0,
-                "group",
-            )
-        ]
-    ]
-    w, do = makegrid(grid, delay=True, w=False)
-    w.setContentsMargins(0, 0, 0, 0)
-    box.content_area.setLayout(w)
+    w, do = makegrid(grid, delay=True)
+    lay.addWidget(w)
     do()
 
 
 def offlinelinks(key):
-    box = CollapsibleBox("下载")
-    box.setdelayload(functools.partial(delayloadlinks, key))
+    box = CollapsibleBoxWithButton(functools.partial(delayloadlinks, key), "下载")
     return box
 
 

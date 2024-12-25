@@ -1,7 +1,6 @@
 import requests, re
 from myutils.utils import (
     simplehtmlparser,
-    simplehtmlparser_all,
     initanewitem,
     gamdidchangedtask,
 )
@@ -11,11 +10,9 @@ import functools
 from qtsymbols import *
 from gui.usefulwidget import getlineedit
 from gui.dialog_savedgame import getreflist, getalistname
-from myutils.wrapper import Singleton_close
 
 
-@Singleton_close
-class steamsettings(QDialog):
+class steamsettings(QFormLayout):
 
     def querylist(self):
 
@@ -76,32 +73,26 @@ class steamsettings(QDialog):
                 gamdidchangedtask(self._ref.typename, self._ref.idname, gameuid)
             reflist.insert(0, gameuid)
 
-    def __getalistname(self, callback, _):
-        getalistname(self, callback)
-
-    def __init__(self, parent, _ref: common, gameuid: str) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+    def __init__(self, layout:QVBoxLayout, _ref: common, gameuid: str) -> None:
+        super().__init__(None)
+        layout.addLayout(self)
         self._ref = _ref
-        self.resize(QSize(800, 10))
-        self.setWindowTitle(self._ref.config_all["name"])
-        fl = QFormLayout(self)
-        fl.addRow("userid", getlineedit(_ref.config, "userid"))
-        fl.addRow(
+        self.addRow("userid", getlineedit(_ref.config, "userid"))
+        self.addRow(
             "cookie:steamLoginSecure", getlineedit(_ref.config, "steamLoginSecure")
         )
 
         btn = QPushButton("wishlist")
         btn.clicked.connect(
-            functools.partial(self.__getalistname, self.getalistname_download)
+            functools.partial(getalistname, btn, self.getalistname_download)
         )
-        fl.addRow(btn)
-        self.show()
+        self.addRow(btn)
 
 
 class searcher(common):
 
-    def querysettingwindow(self, parent, gameuid):
-        steamsettings(parent, self, gameuid)
+    def querysettingwindow(self, gameuid, layout):
+        steamsettings(layout, self, gameuid)
 
     def getidbytitle(self, title):
         response = requests.get(

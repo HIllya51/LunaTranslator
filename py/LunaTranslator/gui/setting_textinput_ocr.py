@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, os
 from myutils.config import globalconfig, ocrsetting, ocrerrorfix, static_data
 from myutils.utils import splitocrtypes, dynamiclink, getimagefilefilter
-from gui.inputdialog import autoinitdialogx, postconfigdialog, autoinitdialog_items
+from gui.inputdialog import postconfigdialog, autoinitdialog_items, autoinitdialog
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -142,7 +142,7 @@ def initgridsources(self, names):
             items = autoinitdialog_items(ocrsetting[name])
             _3 = D_getIconButton(
                 callback=functools.partial(
-                    autoinitdialogx,
+                    autoinitdialog,
                     self,
                     ocrsetting[name]["args"],
                     globalconfig["ocr"][name]["name"],

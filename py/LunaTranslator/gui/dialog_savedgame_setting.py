@@ -49,10 +49,12 @@ from gui.usefulwidget import (
     getsimpleswitch,
     threebuttons,
     getspinbox,
+    CollapsibleBox,
     getsmalllabel,
     listediterline,
     editswitchTextBrowser,
     FocusCombo,
+    VisLFormLayout,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -345,14 +347,15 @@ class dialog_setting_game_internal(QWidget):
             print_exc()
 
     def metadataorigin(self, formLayout: LFormLayout, gameuid):
+        vislf = VisLFormLayout()
+        formLayout.addRow(vislf)
         combo = getsimplecombobox(
             ["无"] + list(targetmod.keys()),
             globalconfig,
             "primitivtemetaorigin",
             internal=[None] + list(targetmod.keys()),
         )
-        formLayout.addRow("首选的", combo)
-        formLayout.addRow(None, QLabel())
+        vislf.addRow("首选的", combo)
 
         def valid(idx, x):
             if x:
@@ -363,6 +366,8 @@ class dialog_setting_game_internal(QWidget):
                     combo.setCurrentIndex(0)
             combo.setRowVisible(idx + 1, x)
 
+        linei = 1
+        notvislineis = []
         for i, key in enumerate(targetmod):
             try:
                 idname = targetmod[key].idname
@@ -402,18 +407,37 @@ class dialog_setting_game_internal(QWidget):
                 continue
             try:
                 __settting = targetmod[key].querysettingwindow
+                coll = CollapsibleBox(
+                    functools.partial(__settting, gameuid), self, margin0=False
+                )
+
+                def _revert(c, li):
+                    vis = c.isVisible()
+                    vislf.setRowVisible(li, not vis)
+                    c.toggle(not vis)
+
                 _vbox_internal.insert(
                     2,
                     getIconButton(
-                        functools.partial(__settting, self, gameuid), icon="fa.gear"
+                        functools.partial(_revert, coll, linei + 1),
+                        icon="fa.gear",
                     ),
                 )
+                vislf.addRow(
+                    key,
+                    getboxlayout(_vbox_internal),
+                )
+                vislf.addRow(coll)
+                notvislineis.append(linei + 1)
+                linei += 2
             except:
-                pass
-            formLayout.addRow(
-                key,
-                getboxlayout(_vbox_internal),
-            )
+                vislf.addRow(
+                    key,
+                    getboxlayout(_vbox_internal),
+                )
+                linei += 1
+        for _ in notvislineis:
+            vislf.setRowVisible(_, False)
 
     def doaddtab(self, wfunct, exe, layout):
         w, do = wfunct(exe)
@@ -1032,6 +1056,7 @@ class dialog_setting_game_internal(QWidget):
                     "callback": functools.partial(__callback, _internal, __d),
                 },
             ],
+            exec_=True,
         )
 
     def getlangtab(self, formLayout: LFormLayout, gameuid):

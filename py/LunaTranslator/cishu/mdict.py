@@ -2378,12 +2378,11 @@ class mdict(cishubase):
         csscollect: dict,
     ):
         base = os.path.dirname(fn)
-        src_pattern = r'src="([^"]+)"'
-        href_pattern = r'href="([^"]+)"'
-
-        src_matches = re.findall(src_pattern, html_content)
-        href_matches = re.findall(href_pattern, html_content)
-        for url in src_matches + href_matches:
+        matches = re.findall('src="([^"]+)"', html_content)
+        matches += re.findall('href="([^"]+)"', html_content)
+        matches += re.findall("""href='([^']+)'""", html_content)
+        matches += re.findall("""src='([^']+)'""", html_content)
+        for url in matches:
             if url.startswith("#"):  # a href # 页内跳转
                 continue
             try:
@@ -2468,11 +2467,11 @@ class mdict(cishubase):
         contents = []
         idx = 0
         for _, foldflow, title, res in allres:
-            klass2='tab-pane_mdict_internal'
-            klass1='tab-button_mdict_internal'
-            if idx==0:
-                    klass2+=' active'
-                    klass1+=' active'
+            klass2 = "tab-pane_mdict_internal"
+            klass1 = "tab-button_mdict_internal"
+            if idx == 0:
+                klass2 += " active"
+                klass1 += " active"
             btns.append(
                 """<button type="button" onclick="onclickbtn_mdict_internal('buttonid_mdict_internal{idx}')" id="buttonid_mdict_internal{idx}" class="{klass}" data-tab="tab_mdict_internal{idx}">{title}</button>""".format(
                     idx=idx, title=title, klass=klass1

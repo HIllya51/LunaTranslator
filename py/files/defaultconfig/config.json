@@ -1438,7 +1438,7 @@
                 "max_num": {
                     "type": "intspin",
                     "name": "最大结果条数",
-                    "min": 0,
+                    "min": 1,
                     "max": 9999,
                     "step": 1
                 },

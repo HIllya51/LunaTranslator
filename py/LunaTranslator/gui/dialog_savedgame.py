@@ -4,6 +4,7 @@ from qtsymbols import *
 import os, functools, uuid
 from traceback import print_exc
 import gobject, qtawesome
+from gui.inputdialog import autoinitdialog
 from gui.dynalang import LAction
 from gui.dialog_savedgame_v3 import dialog_savedgame_v3
 from gui.dialog_savedgame_legacy import dialog_savedgame_legacy
@@ -22,7 +23,6 @@ from gui.usefulwidget import (
     saveposwindow,
     getboxlayout,
     MySwitch,
-    Prompt_dialog,
     IconButton,
     getsimplecombobox,
     FQLineEdit,
@@ -414,25 +414,16 @@ class dialog_savedgame_new(QWidget):
             self.clicked3_batch()
 
         elif action == editname or action == addlist:
-            _dia = Prompt_dialog(
-                self,
-                "修改列表名称" if action == editname else "创建列表",
-                "",
-                [
-                    [
-                        "名称",
-                        (
-                            savegametaged[calculatetagidx(self.reftagid)]["title"]
-                            if action == editname
-                            else ""
-                        ),
-                    ],
-                ],
-            )
+            __d = {
+                "k": (
+                    savegametaged[calculatetagidx(self.reftagid)]["title"]
+                    if action == editname
+                    else ""
+                )
+            }
 
-            if _dia.exec():
-
-                title = _dia.text[0].text()
+            def cb(__d):
+                title = __d["k"]
                 if title != "":
                     i = calculatetagidx(self.reftagid)
                     if action == addlist:
@@ -448,6 +439,25 @@ class dialog_savedgame_new(QWidget):
 
                         savegametaged[i]["title"] = title
                         self.loadcombo(False)
+
+            autoinitdialog(
+                self,
+                __d,
+                "修改列表名称" if action == editname else "创建列表",
+                600,
+                [
+                    {
+                        "type": "lineedit",
+                        "name": "名称",
+                        "k": "k",
+                    },
+                    {
+                        "type": "okcancel",
+                        "callback": functools.partial(cb, __d),
+                    },
+                ],
+                exec_=True,
+            )
         elif action == dellist:
             i = calculatetagidx(self.reftagid)
             savegametaged.pop(i)

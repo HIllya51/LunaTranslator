@@ -93,9 +93,9 @@ class transhist(closeashidewindow):
 
     def refresh(self):
         with self.lock:
-            self.textOutput.clear()
-            for line in self.trace:
-                self.textOutput.appendPlainText(self.visline(line))
+            self.textOutput.setPlainText(
+                "\n".join(self.visline(line) for line in self.trace)
+            )
 
     def visline(self, line):
         ii, line = line

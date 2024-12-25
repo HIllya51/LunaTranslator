@@ -487,6 +487,7 @@ def getalistname(parent, callback, skipid=False, skipidid=None, title="添加到
                     "callback": functools.partial(__wrap, callback, __d, __uid),
                 },
             ],
+            exec_=True
         )
     elif len(__uid):
 

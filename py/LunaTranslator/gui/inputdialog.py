@@ -445,9 +445,17 @@ def autoinitdialog_items(dic):
 
 
 @Singleton_close
-class autoinitdialog__(LDialog):
+class autoinitdialog(LDialog):
     def __init__(
-        self, parent, dd, title, width, lines, modelfile=None, maybehasextrainfo=None
+        self,
+        parent,
+        dd,
+        title,
+        width,
+        lines,
+        modelfile=None,
+        maybehasextrainfo=None,
+        exec_=False,
     ) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(title)
@@ -695,18 +703,10 @@ class autoinitdialog__(LDialog):
             cachecombo[comboname].currentIndexChanged.emit(
                 cachecombo[comboname].currentIndex()
             )
-
-        self.show()
-
-
-def autoinitdialogx(
-    parent, dd, title, width, lines, modelfile, maybehasextrainfo, _=None
-):
-    autoinitdialog__(parent, dd, title, width, lines, modelfile, maybehasextrainfo)
-
-
-def autoinitdialog(parent, dd, title, width, lines, _=None):
-    autoinitdialog__(parent, dd, title, width, lines)
+        if exec_:
+            self.exec_()
+        else:
+            self.show()
 
 
 def getsomepath1(

@@ -6,8 +6,8 @@ import time
 from qtsymbols import *
 from metadata.abstract import common
 from gui.dialog_savedgame import getreflist, getalistname
-from myutils.wrapper import Singleton_close, threader
-from gui.dynalang import LPushButton
+from myutils.wrapper import threader
+from gui.usefulwidget import threebuttons
 
 
 def saferequestvndb(proxy, method, url, json=None, headers=None, failnone=True):
@@ -156,8 +156,7 @@ def getinfosbyvid(proxy, vid):
         )
 
 
-@Singleton_close
-class vndbsettings(QDialog):
+class vndbsettings(QFormLayout):
 
     @property
     def headers(self):
@@ -259,9 +258,6 @@ class vndbsettings(QDialog):
             headers=self.headers,
         )
 
-    def __getalistname(self, title, callback, _):
-        getalistname(self, callback, title=title)
-
     showhide = pyqtSignal(bool)
 
     @threader
@@ -286,17 +282,16 @@ class vndbsettings(QDialog):
             self.showhide.emit(False)
         self.lbinfo.setText(info)
 
-    def __init__(self, parent, _ref: common, gameuid: str) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+    def __init__(self, layout: QVBoxLayout, _ref: common, gameuid: str) -> None:
+        super().__init__(None)
+        layout.addLayout(self)
         self.tm = None
         self._ref = _ref
-        self.resize(QSize(800, 10))
-        self.setWindowTitle(self._ref.config_all["name"])
-        fl = QFormLayout(self)
         vbox = QVBoxLayout()
         s = QLineEdit()
         self.lbinfo = QLabel()
         s.textChanged.connect(self.checkvalid)
+        s.setText(_ref.config["Token"])
         fl2 = QFormLayout()
         fl2.setContentsMargins(0, 0, 0, 0)
         ww = QWidget()
@@ -307,35 +302,29 @@ class vndbsettings(QDialog):
         self._token = s
         vbox.addWidget(s)
         vbox.addWidget(self.lbinfo)
-        fl.addRow("Token", vbox)
-        btn = LPushButton("上传游戏")
-        btn.clicked.connect(
+        self.addRow("Token", vbox)
+        btn = threebuttons(["上传游戏", "上传游戏列表", "获取游戏列表"])
+        btn.btn1clicked.connect(
             functools.partial(self.singleupload_existsoverride, gameuid)
         )
-        fl2.addRow(btn)
-        btn = LPushButton("上传游戏列表")
-        btn.clicked.connect(
+        btn.btn2clicked.connect(
             functools.partial(
-                self.__getalistname, "上传游戏列表", self.getalistname_upload
+                getalistname, btn, self.getalistname_upload, "上传游戏列表"
+            )
+        )
+        btn.btn3clicked.connect(
+            functools.partial(
+                getalistname, btn, self.getalistname_download, "添加到列表"
             )
         )
         fl2.addRow(btn)
-        btn = LPushButton("获取游戏列表")
-        btn.clicked.connect(
-            functools.partial(
-                self.__getalistname, "添加到列表", self.getalistname_download
-            )
-        )
-        fl2.addRow(btn)
-        fl.addRow(ww)
-        s.setText(_ref.config["Token"])
-        self.show()
+        self.addRow(ww)
 
 
 class searcher(common):
 
-    def querysettingwindow(self, parent, gameuid):
-        vndbsettings(parent, self, gameuid)
+    def querysettingwindow(self, gameuid, layout):
+        vndbsettings(layout, self, gameuid)
 
     def refmainpage(self, _id):
         return "https://vndb.org/v{}".format(_id)

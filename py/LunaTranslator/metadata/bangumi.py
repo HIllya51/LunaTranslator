@@ -5,12 +5,11 @@ import functools, time, json, gobject
 from qtsymbols import *
 from metadata.abstract import common
 from gui.dialog_savedgame import getreflist, getalistname
-from myutils.wrapper import Singleton_close, threader
-from gui.dynalang import LPushButton
+from myutils.wrapper import threader
+from gui.usefulwidget import threebuttons
 
 
-@Singleton_close
-class bgmsettings(QDialog):
+class bgmsettings(QFormLayout):
 
     @property
     def headers(self):
@@ -118,10 +117,6 @@ class bgmsettings(QDialog):
         except:
             pass
 
-    def __getalistname(self, title, callback, _):
-        getalistname(self, callback, title=title)
-
-    infosig = pyqtSignal(str)
     showhide = pyqtSignal(bool)
 
     @threader
@@ -229,18 +224,17 @@ class bgmsettings(QDialog):
             print(self._ref.config)
             break
 
-    def __init__(self, parent, _ref: common, gameuid: str) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+    def __init__(self, layout: QVBoxLayout, _ref: common, gameuid: str) -> None:
+        super().__init__(None)
+        layout.addLayout(self)
         self.tm = None
         self._ref = _ref
-        self.resize(QSize(800, 10))
-        self.setWindowTitle(self._ref.config_all["name"])
-        fl = QFormLayout(self)
         vbox = QVBoxLayout()
         hbox = QHBoxLayout()
         s = QLineEdit()
         self.lbinfo = QLabel()
         s.textChanged.connect(self.checkvalid)
+        s.setText(_ref.config["access-token"])
         fl2 = QFormLayout()
         fl2.setContentsMargins(0, 0, 0, 0)
         ww = QWidget()
@@ -255,29 +249,24 @@ class bgmsettings(QDialog):
         hbox.addWidget(oauth)
         oauth.clicked.connect(self.__oauth)
         vbox.addWidget(self.lbinfo)
-        fl.addRow("access-token", vbox)
-        btn = LPushButton("上传游戏")
-        btn.clicked.connect(
+        self.addRow("access-token", vbox)
+
+        btn = threebuttons(["上传游戏", "上传游戏列表", "获取游戏列表"])
+        btn.btn1clicked.connect(
             functools.partial(self.singleupload_existsoverride, gameuid)
         )
-        fl2.addRow(btn)
-        btn = LPushButton("上传游戏列表")
-        btn.clicked.connect(
+        btn.btn2clicked.connect(
             functools.partial(
-                self.__getalistname, "上传游戏列表", self.getalistname_upload
+                getalistname, btn, self.getalistname_upload, "上传游戏列表"
+            )
+        )
+        btn.btn3clicked.connect(
+            functools.partial(
+                getalistname, btn, self.getalistname_download, "添加到列表"
             )
         )
         fl2.addRow(btn)
-        btn = LPushButton("获取游戏列表")
-        btn.clicked.connect(
-            functools.partial(
-                self.__getalistname, "添加到列表", self.getalistname_download
-            )
-        )
-        fl2.addRow(btn)
-        fl.addRow(ww)
-        s.setText(_ref.config["access-token"])
-        self.show()
+        self.addRow(ww)
 
 
 class searcher(common):
@@ -305,8 +294,8 @@ class searcher(common):
                 print(resp)
                 self.config["refresh_token"] = ""
 
-    def querysettingwindow(self, parent, gameuid):
-        bgmsettings(parent, self, gameuid)
+    def querysettingwindow(self, gameuid, layout):
+        bgmsettings(layout, self, gameuid)
 
     def getidbytitle(self, title):
 
