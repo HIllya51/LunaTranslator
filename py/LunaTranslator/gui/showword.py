@@ -515,7 +515,7 @@ class AnkiWindow(QWidget):
         folder_open3.clicked.connect(functools.partial(self.selecfile2, self.editpath))
 
         def createadd():
-            btn = QPushButton("添加")
+            btn = LPushButton("添加")
             btn.clicked.connect(functools.partial(self.errorwrap, False))
             btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             btn.customContextMenuRequested.connect(functools.partial(self.errorwrap, True))
