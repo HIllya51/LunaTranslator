@@ -608,19 +608,16 @@ class dialog_setting_game_internal(QWidget):
         first=False,
         _type=tagitem.TYPE_SEARCH,
     ):
-        if _type == tagitem.TYPE_TAG:
-            text = globalconfig["tagNameRemap"].get(text, text)
-        qw = tagitem(text, True, _type)
+        qw = tagitem(globalconfig["tagNameRemap"].get(text, text) if _type == tagitem.TYPE_TAG else text, True, _type)
 
-        def __(gameuid, _qw, refkey, _):
-            t, _, _ = _
+        def __(text, gameuid, _qw, refkey, _):
             try:
-                savehook_new_data[gameuid][refkey].remove(t)
+                savehook_new_data[gameuid][refkey].remove(text)
                 self.flowwidget.removeWidget(_qw)
             except:
                 print_exc()
 
-        qw.removesignal.connect(functools.partial(__, gameuid, qw, refkey))
+        qw.removesignal.connect(functools.partial(__, text, gameuid, qw, refkey))
 
         def safeaddtags(_):
             try:
