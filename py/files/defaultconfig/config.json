@@ -281,11 +281,7 @@
             "downloadtasks": [],
             "searchfordatatasks": [],
             "useproxy": true,
-            "target": "steamid",
-            "args": {
-                "userid": "",
-                "steamLoginSecure": ""
-            }
+            "target": "steamid"
         }
     },
     "relationlinks": [

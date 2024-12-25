@@ -1,98 +1,10 @@
 import requests, re
-from myutils.utils import (
-    simplehtmlparser,
-    initanewitem,
-    gamdidchangedtask,
-)
+from myutils.utils import simplehtmlparser
 from metadata.abstract import common
-from myutils.config import savehook_new_data
-import functools
 from qtsymbols import *
-from gui.usefulwidget import getlineedit
-from gui.dialog_savedgame import getreflist, getalistname
-
-
-class steamsettings(QFormLayout):
-
-    def querylist(self):
-
-        cookies = {"steamLoginSecure": self._ref.config["steamLoginSecure"]}
-        headers = {
-            "sec-ch-ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "X-Requested-With": "XMLHttpRequest",
-            "sec-ch-ua-mobile": "?0",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-            "sec-ch-ua-platform": '"Windows"',
-        }
-        pagei = 0
-        collect = []
-        while True:
-            params = {
-                "p": pagei,
-                "v": "1",
-            }
-            pagei += 1
-
-            response = requests.get(
-                'https://store.steampowered.com/wishlist/profiles/{}/wishlistdata/'.format(self._ref.config["userid"]),
-                cookies=cookies,
-                params=params,
-                headers=headers,
-            )
-            if len(response.json()) == 0:
-                break
-            for k, v in response.json().items():
-                print(k)
-                print(v["name"])
-                collect.append([k, v["name"]])
-        return collect
-
-    def getalistname_download(self, uid):
-
-        reflist = getreflist(uid)
-        collectresults = self.querylist()
-        thislistvids = [
-            savehook_new_data[gameuid][self._ref.idname] for gameuid in reflist
-        ]
-        collect = {}
-        for gameuid in savehook_new_data:
-            vid = savehook_new_data[gameuid][self._ref.idname]
-            collect[vid] = gameuid
-
-        for item in collectresults:
-            vid, title = item
-            if vid in thislistvids:
-                continue
-
-            if vid in collect:
-                gameuid = collect[vid]
-            else:
-                gameuid = initanewitem(title)
-                savehook_new_data[gameuid][self._ref.idname] = vid
-                gamdidchangedtask(self._ref.typename, self._ref.idname, gameuid)
-            reflist.insert(0, gameuid)
-
-    def __init__(self, layout:QVBoxLayout, _ref: common, gameuid: str) -> None:
-        super().__init__(None)
-        layout.addLayout(self)
-        self._ref = _ref
-        self.addRow("userid", getlineedit(_ref.config, "userid"))
-        self.addRow(
-            "cookie:steamLoginSecure", getlineedit(_ref.config, "steamLoginSecure")
-        )
-
-        btn = QPushButton("wishlist")
-        btn.clicked.connect(
-            functools.partial(getalistname, btn, self.getalistname_download)
-        )
-        self.addRow(btn)
 
 
 class searcher(common):
-
-    def querysettingwindow(self, gameuid, layout):
-        steamsettings(layout, self, gameuid)
 
     def getidbytitle(self, title):
         response = requests.get(
@@ -181,5 +93,5 @@ class searcher(common):
             ],
             "webtags": tagsofficial,
             "developers": devs,
-            "description":data['detailed_description']
+            "description": data["detailed_description"],
         }
