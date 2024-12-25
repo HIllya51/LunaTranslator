@@ -1053,7 +1053,12 @@
             },
             "37": {
                 "use": false,
-                "name": "查词",
+                "name": "取词查词",
+                "keystring": ""
+            },
+            "38": {
+                "use": false,
+                "name": "取词翻译",
                 "keystring": ""
             },
             "_29": {

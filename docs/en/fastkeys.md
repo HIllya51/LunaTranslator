@@ -37,6 +37,9 @@
     When the toolbar is not locked and `Mouse Pass-through Window` is activated, the toolbar will only be displayed when the mouse moves to the **Mouse Pass-through Window button and the area to its left and right**; otherwise, it will be displayed as soon as the mouse enters the translation window.
     If window effects (Aero/Arylic) are used and the toolbar is not locked, the toolbar will be in the z-axis area above the text area, not on the y-axis above the text area. This is because, due to Windows, when window effects are used, if the toolbar is only hidden rather than shrunk to reduce its window height, the hidden toolbar will still be rendered with the Acrylic/Aero background, causing a blank area where the toolbar is located.
 
+1. #### Word selection translation
+    Translate the text currently selected by the mouse
+
 1. #### Show/Hide Translation Window
     N/A
 
@@ -130,7 +133,7 @@
 
 ### **Dictionary Lookup**
 
-1. #### Search for keywords
+1. #### Retrieve and search for words
     Search for words in the text currently selected by the mouse
 
 1. #### Anki Recording
