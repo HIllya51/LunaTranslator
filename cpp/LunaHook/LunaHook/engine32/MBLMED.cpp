@@ -36,6 +36,8 @@ namespace
 {
   bool h1()
   {
+    // https://vndb.org/v14141
+    // おねがい助けて!! 2 ～注がれ続ける精液～
     char sig[] = "\x81\x90\x82\x4f\x00\x81\x90\x82\x50\x00\x81\x90\x82\x51\x00\x81\x90\x82\x52";
     auto asc_76BAAE = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
     if (!asc_76BAAE)
