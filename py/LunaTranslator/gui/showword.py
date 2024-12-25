@@ -947,6 +947,7 @@ class showdiction(LMainWindow):
         self.setWindowTitle("查看")
         self.setWindowIcon(qtawesome.icon("fa.book"))
         self.tree = kpQTreeView(self)
+        self.tree.setUniformRowHeights(True)
         self.tree.setHeaderHidden(True)
         self.tree.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         __c = QWidget()
