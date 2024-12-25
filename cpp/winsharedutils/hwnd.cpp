@@ -1,6 +1,7 @@
-﻿
+﻿#ifndef WINXP
 #include <wil/com.h>
 #include <uiautomation.h>
+#endif
 DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
@@ -160,6 +161,7 @@ DECLARE_API bool check_window_viewable(HWND hwnd)
 
 DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
 {
+#ifndef WINXP
     CoInitialize(nullptr);
     try
     {
@@ -213,4 +215,5 @@ DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
         printf(e.what());
     }
     CoUninitialize();
+#endif
 }

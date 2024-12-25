@@ -19,7 +19,7 @@ target_link_libraries(winsharedutils tinymp3 rapidfuzz wil webview2 Mfplat mfuui
 target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Mmdevapi.dll")
 target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Mfplat.dll")
 else()
-target_link_libraries(winsharedutils tinymp3 wil)
+target_link_libraries(winsharedutils tinymp3)
 endif()
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set_target_properties(winsharedutils PROPERTIES OUTPUT_NAME "winsharedutils64")
