@@ -130,6 +130,9 @@
 
 ### **Dictionary Lookup**
 
+1. #### Search for keywords
+    Search for words in the text currently selected by the mouse
+
 1. #### Anki Recording
     Shortcut key for the recording function in the Anki add interface in the dictionary lookup window.
 

@@ -143,9 +143,8 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
             lineW = getcolorbutton(
                 dd,
                 key,
-                transparent=False,
                 callback=functools.partial(
-                    lambda dd, key, _: selectcolor(
+                    lambda dd, key: selectcolor(
                         self, dd, key, self.miaobian_color_button
                     ),
                     dd,

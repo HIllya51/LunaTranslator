@@ -12,17 +12,17 @@ class jisho(cishubase):
         contents = []
         idx = 0
         for title, res in allres:
-            idx += 1
             btns.append(
                 """<button type="button" onclick="onclickbtn_xxxxxx_internal('buttonid_xxxxx_internal{idx}')" id="buttonid_xxxxx_internal{idx}" class="tab-button_xxxx_internal{klass}" data-tab="tab_xxxxx_internal{idx}">{title}</button>""".format(
-                    idx=idx, title=title, klass='' if idx==0 else ' active'
+                    idx=idx, title=title, klass='' if idx!=0 else ' active'
                 )
             )
             contents.append(
                 """<div id="tab_xxxxx_internal{idx}" class="tab-pane_xxxxx_internal{klass}">{res}</div>""".format(
-                    idx=idx, res=res,klass='' if idx==0 else ' active'
+                    idx=idx, res=res,klass='' if idx!=0 else ' active'
                 )
             )
+            idx += 1
         commonstyle = """
 <script>
 function onclickbtn_xxxxxx_internal(_id) {

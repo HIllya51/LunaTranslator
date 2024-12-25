@@ -421,7 +421,7 @@ class AnkiWindow(QWidget):
             windows.keybd_event(mode, 0, windows.KEYEVENTF_KEYUP, 0)
 
     def startorendrecord(self, ii, target: QLineEdit, idx):
-        if idx == 1:
+        if idx:
             self.recorders[ii] = loopbackrecorder()
             self.simulate_key(ii)
         else:
@@ -478,12 +478,12 @@ class AnkiWindow(QWidget):
 
         self.example.textChanged.connect(__)
         self.remarks = FQPlainTextEdit()
-        recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=["", ""])
-        recordbtn1.statuschanged.connect(
+        recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"])
+        recordbtn1.clicked.connect(
             functools.partial(self.startorendrecord, 1, self.audiopath)
         )
-        recordbtn2 = statusbutton(icons=["fa.microphone", "fa.stop"], colors=["", ""])
-        recordbtn2.statuschanged.connect(
+        recordbtn2 = statusbutton(icons=["fa.microphone", "fa.stop"])
+        recordbtn2.clicked.connect(
             functools.partial(self.startorendrecord, 2, self.audiopath_sentence)
         )
         self.recordbtn1 = recordbtn1
@@ -518,7 +518,9 @@ class AnkiWindow(QWidget):
             btn = LPushButton("添加")
             btn.clicked.connect(functools.partial(self.errorwrap, False))
             btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-            btn.customContextMenuRequested.connect(functools.partial(self.errorwrap, True))
+            btn.customContextMenuRequested.connect(
+                functools.partial(self.errorwrap, True)
+            )
             return btn
 
         layout.addLayout(
@@ -871,7 +873,7 @@ class kpQTreeView(QTreeView):
             super().keyPressEvent(e)
 
 
-class showdiction(LMainWindow):
+class showdiction(QWidget):
     def setwordfilter(self, index=None):
         w = self.word.text()
         if index is None:
@@ -940,33 +942,33 @@ class showdiction(LMainWindow):
         self.word = FQLineEdit()
         self.word.returnPressed.connect(self.setwordfilter)
         wordfilter.addWidget(self.word)
-        butn = getIconButton(self.setwordfilter, "fa.filter")
+        butn = getIconButton(self.setwordfilter, "fa.search")
         wordfilter.addWidget(butn)
-
-        self.resize(400, parent.height())
-        self.setWindowTitle("查看")
-        self.setWindowIcon(qtawesome.icon("fa.book"))
+        refresh = getIconButton(self.refresh, "fa.refresh")
+        wordfilter.addWidget(refresh)
         self.tree = kpQTreeView(self)
         self.tree.setUniformRowHeights(True)
         self.tree.setHeaderHidden(True)
         self.tree.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        __c = QWidget()
         __lay = QVBoxLayout()
-        __c.setLayout(__lay)
+        self.setLayout(__lay)
         __lay.setSpacing(0)
         __lay.setContentsMargins(0, 0, 0, 0)
         __lay.addLayout(wordfilter)
         __lay.addWidget(self.tree)
-        self.setCentralWidget(__c)
 
         self.model = DynamicTreeModel(self.setwordfilter)
         self.tree.setModel(self.model)
         self.tree.expanded.connect(self.model.loadChildren)
-        root = self.model.invisibleRootItem()
         self.tree.doubleClicked.connect(self.model.onDoubleClicked)
         self.tree.enterpressed.connect(self.model.onDoubleClicked)
         self.tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self.showmenu)
+        self.refresh()
+
+    def refresh(self):
+        self.model.clear()
+        root = self.model.invisibleRootItem()
         rows = []
         for k in globalconfig["cishuvisrank"]:
             cishu = gobject.baseobject.cishus[k]
@@ -1089,15 +1091,15 @@ class searchwordW(closeashidewindow):
         self.vboxlayout.addLayout(self.searchlayout)
         self.searchtext = FQLineEdit()
         self.searchtext.textChanged.connect(self.ankiwindow.reset)
-        self.history_last_btn = statusbutton(
-            icons=["fa.arrow-left", "fa.arrow-left"], colors=["", ""]
+
+        self.dictbutton = statusbutton(
+            icons="fa.book", colors=["", globalconfig["buttoncolor2"]]
         )
+        self.history_last_btn = statusbutton(icons=["fa.arrow-left", "fa.arrow-left"])
         self.history_last_btn.clicked.connect(
             functools.partial(self.__move_history_search, -1)
         )
-        self.history_next_btn = statusbutton(
-            icons=["fa.arrow-right", "fa.arrow-right"], colors=["", ""]
-        )
+        self.history_next_btn = statusbutton(icons=["fa.arrow-right", "fa.arrow-right"])
         self.history_next_btn.clicked.connect(
             functools.partial(self.__move_history_search, 1)
         )
@@ -1105,6 +1107,7 @@ class searchwordW(closeashidewindow):
         self.trace_history = []
         self.trace_history_idx = -1
         self.__set_history_btn_able()
+        self.searchlayout.addWidget(self.dictbutton)
         self.searchlayout.addWidget(self.history_last_btn)
         self.searchlayout.addWidget(self.history_next_btn)
         self.searchlayout.addWidget(self.searchtext)
@@ -1126,9 +1129,9 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(soundbutton)
 
         ankiconnect = statusbutton(
-            icons=["fa.adn", "fa.adn"], colors=["", globalconfig["buttoncolor2"]]
+            icons="fa.adn", colors=["", globalconfig["buttoncolor2"]]
         )
-        ankiconnect.statuschanged.connect(self.onceaddankiwindow)
+        ankiconnect.clicked.connect(self.onceaddankiwindow)
         ankiconnect.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         ankiconnect.customContextMenuRequested.connect(
             lambda _: self.ankiwindow.errorwrap()
@@ -1183,12 +1186,29 @@ class searchwordW(closeashidewindow):
         w.setLayout(tablayout)
         self.vboxlayout.addWidget(self.spliter)
         self.isfirstshowanki = True
+        self.isfirstshowdictwidget = True
         self.spliter.setOrientation(Qt.Orientation.Vertical)
 
-        self.spliter.addWidget(w)
+        self.dict_textoutput_spl = QSplitter()
+        self.dict_textoutput_spl.addWidget(w)
+        self.spliter.addWidget(self.dict_textoutput_spl)
+        self.dictbutton.clicked.connect(self.onceaddshowdictwidget)
+
+    def onceaddshowdictwidget(self, idx):
+        if idx:
+            if self.isfirstshowdictwidget:
+                self.showdictwidget = showdiction(self)
+                self.dict_textoutput_spl.insertWidget(0, self.showdictwidget)
+                self.dict_textoutput_spl.setStretchFactor(0, 0)
+                self.dict_textoutput_spl.setStretchFactor(1, 1)
+            else:
+                self.showdictwidget.show()
+        else:
+            self.showdictwidget.hide()
+        self.isfirstshowdictwidget = False
 
     def onceaddankiwindow(self, idx):
-        if idx == 1:
+        if idx:
             if self.isfirstshowanki:
                 self.spliter.addWidget(self.ankiwindow)
                 self.ankiwindow.setMinimumHeight(1)

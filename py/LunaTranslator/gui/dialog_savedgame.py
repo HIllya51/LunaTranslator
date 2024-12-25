@@ -22,8 +22,8 @@ from myutils.config import (
 from gui.usefulwidget import (
     saveposwindow,
     getboxlayout,
-    MySwitch,
     IconButton,
+    statusbutton,
     getsimplecombobox,
     FQLineEdit,
     FocusCombo,
@@ -58,34 +58,22 @@ class dialog_savedgame_integrated(saveposwindow):
                 dialog_savedgame_v3,
                 dialog_savedgame_legacy,
             ][type]
-
-            [self.layout1btn, self.layout2btn, self.layout3btn][(type) % 3].setEnabled(
-                False
-            )
-            [self.layout1btn, self.layout2btn, self.layout3btn][
-                (type + 1) % 3
-            ].setEnabled(False)
-            [self.layout1btn, self.layout2btn, self.layout3btn][
-                (type + 2) % 3
-            ].setEnabled(False)
-            [self.layout1btn, self.layout2btn, self.layout3btn][
-                (type + 1) % 3
-            ].setChecked(False)
-            [self.layout1btn, self.layout2btn, self.layout3btn][
-                (type + 2) % 3
-            ].setChecked(False)
+            btns = [self.layout1btn, self.layout2btn, self.layout3btn]
+            btns[(type + 0) % 3].setEnabled(False)
+            btns[(type + 1) % 3].setEnabled(False)
+            btns[(type + 2) % 3].setEnabled(False)
+            btns[(type + 0) % 3].setChecked(True)
+            btns[(type + 1) % 3].setChecked(False)
+            btns[(type + 2) % 3].setChecked(False)
             _old = self.internallayout.takeAt(0).widget()
             _old.hide()
             _ = klass(self)
             self.internallayout.addWidget(_)
             _.directshow()
             _old.deleteLater()
-            [self.layout1btn, self.layout2btn, self.layout3btn][
-                (type + 1) % 3
-            ].setEnabled(True)
-            [self.layout1btn, self.layout2btn, self.layout3btn][
-                (type + 2) % 3
-            ].setEnabled(True)
+            btns[(type + 0) % 3].setEnabled(False)
+            btns[(type + 1) % 3].setEnabled(True)
+            btns[(type + 2) % 3].setEnabled(True)
             self.__internal = _
         except:
             print_exc()
@@ -106,15 +94,21 @@ class dialog_savedgame_integrated(saveposwindow):
         self.__internal = None
         self.internallayout.addWidget(QWidget())
         self.setCentralWidget(w)
-        self.layout1btn = MySwitch(self, icon="fa.th")
-        self.layout2btn = MySwitch(self, icon="fa.th-list")
-        self.layout3btn = MySwitch(self, icon="fa.list")
-        self.layout1btn.clicked.connect(functools.partial(self.selectlayout, 0))
-        self.layout2btn.clicked.connect(functools.partial(self.selectlayout, 1))
-        self.layout3btn.clicked.connect(functools.partial(self.selectlayout, 2))
-        self.layout1btn.setFixedSize(QSize(20, 25))
-        self.layout2btn.setFixedSize(QSize(20, 25))
-        self.layout3btn.setFixedSize(QSize(20, 25))
+
+        def createbtn(icon, i):
+            btn = statusbutton(
+                p=self,
+                icons=icon,
+                border=False,
+                colors=["", globalconfig["buttoncolor2"]],
+            )
+            btn.clicked.connect(functools.partial(self.selectlayout, i))
+            btn.setFixedSize(QSize(20, 25))
+            return btn
+
+        self.layout1btn = createbtn("fa.th", 0)
+        self.layout2btn = createbtn("fa.th-list", 1)
+        self.layout3btn = createbtn("fa.list", 2)
         self.syssettingbtn = IconButton(icon="fa.gear", parent=self)
         self.syssettingbtn.setFixedSize(QSize(25, 25))
         self.syssettingbtn.clicked.connect(self.syssetting)
@@ -128,16 +122,15 @@ class dialog_savedgame_integrated(saveposwindow):
         )
 
     def resizeEvent(self, e: QResizeEvent):
-        self.layout1btn.move(e.size().width() - self.layout1btn.width() - 5, 0)
+        self.layout1btn.move(e.size().width() - self.layout1btn.width(), 0)
         self.layout2btn.move(
-            e.size().width() - self.layout2btn.width() - self.layout1btn.width() - 5, 0
+            e.size().width() - self.layout2btn.width() - self.layout1btn.width(), 0
         )
         self.layout3btn.move(
             e.size().width()
             - self.layout3btn.width()
             - self.layout2btn.width()
-            - self.layout1btn.width()
-            - 5,
+            - self.layout1btn.width(),
             0,
         )
         self.syssettingbtn.move(
@@ -145,8 +138,7 @@ class dialog_savedgame_integrated(saveposwindow):
             - self.syssettingbtn.width()
             - self.layout3btn.width()
             - self.layout2btn.width()
-            - self.layout1btn.width()
-            - 5,
+            - self.layout1btn.width(),
             0,
         )
 

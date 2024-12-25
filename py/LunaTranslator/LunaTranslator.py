@@ -387,7 +387,6 @@ class MAINUI:
         maybehaspremt = {}
         skip_other_on_success = False
         fix_rank = globalconfig["fix_translate_rank_rank"].copy()
-        print(is_auto_run , globalconfig["fanyi"]["rengong"].get("manual", False))
         if ("rengong" in self.translators) and (
             not (is_auto_run and globalconfig["fanyi"]["rengong"].get("manual", False))
         ):

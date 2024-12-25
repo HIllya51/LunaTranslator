@@ -382,18 +382,18 @@ class viewpixmap_x(QWidget):
         self.centerwidgetlayout = QVBoxLayout()
         audio = QHBoxLayout()
         self.recordbtn = statusbutton(
-            icons=["fa.microphone", "fa.stop"], colors=["", ""]
+            icons=["fa.microphone", "fa.stop"]
         )
-        self.recordbtn.statuschanged.connect(self.startorendrecord)
+        self.recordbtn.clicked.connect(self.startorendrecord)
         self.centerwidget.setLayout(self.centerwidgetlayout)
         self.centerwidgetlayout.addWidget(self.timenothide)
         self.centerwidgetlayout.addWidget(self.pathandopen)
         self.centerwidgetlayout.addWidget(self.commentedit)
         self.centerwidgetlayout.addLayout(audio)
         audio.addWidget(self.recordbtn)
-        self.btnplay = statusbutton(icons=["fa.play", "fa.stop"], colors=["", ""])
+        self.btnplay = statusbutton(icons=["fa.play", "fa.stop"])
         audio.addWidget(self.btnplay)
-        self.btnplay.statuschanged.connect(self.playorstop)
+        self.btnplay.clicked.connect(self.playorstop)
         gobject.baseobject.hualang_recordbtn = self.recordbtn
         self.centerwidget.setVisible(False)
         self.pathview = fadeoutlabel(self)
@@ -419,11 +419,11 @@ class viewpixmap_x(QWidget):
             return False
         return True
 
-    def playorstop(self, idx):
+    def playorstop(self, check):
         if not self.checkplayable():
             return
         mp3 = extradatas["imagerefmp3"][self.currentimage]
-        if idx == 1:
+        if check:
             self.play_context = playonce(mp3, globalconfig["ttscommon"]["volume"])
             self.sigtime = time.time()
 
@@ -439,8 +439,8 @@ class viewpixmap_x(QWidget):
                 return
             self.play_context = None
 
-    def startorendrecord(self, idx):
-        if idx == 1:
+    def startorendrecord(self, check):
+        if check:
             if self.play_context:
                 self.btnplay.click()
             self.btnplay.setEnabled(False)
@@ -897,6 +897,8 @@ class dialog_savedgame_v3(QWidget):
 
         spl.setSizes(globalconfig["dialog_savegame_layout"]["listitemwidth_2"])
         spl.splitterMoved.connect(__)
+        spl.setStretchFactor(0, 0)
+        spl.setStretchFactor(1, 1)
         rightlay.addWidget(self.pixview)
 
         isfirst = True

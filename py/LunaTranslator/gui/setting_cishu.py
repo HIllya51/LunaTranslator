@@ -20,7 +20,6 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     D_getsimplecombobox,
 )
-from gui.showword import showdiction
 from gui.setting_about import offlinelinks
 
 
@@ -300,10 +299,7 @@ def setTabcishu_l(self):
                                 lambda: gobject.baseobject.searchwordW.showsignal.emit(),
                                 "fa.search",
                             ),
-                            D_getIconButton(
-                                lambda: showdiction(self).show(),
-                                "fa.book",
-                            ),
+                            "",
                             "",
                             "辞书显示顺序",
                             D_getIconButton(

@@ -1051,6 +1051,11 @@
                 "name": "复制到剪贴板_翻译",
                 "keystring": ""
             },
+            "37": {
+                "use": false,
+                "name": "查词",
+                "keystring": ""
+            },
             "_29": {
                 "use": false,
                 "name": "Anki_录音",

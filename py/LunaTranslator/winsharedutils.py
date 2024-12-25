@@ -363,3 +363,13 @@ StopCaptureAsync.argtypes = (HANDLE,)
 check_window_viewable = utilsdll.check_window_viewable
 check_window_viewable.argtypes = (HWND,)
 check_window_viewable.restype = c_bool
+_GetSelectedText = utilsdll.GetSelectedText
+_GetSelectedText.argtypes = (c_void_p,)
+
+
+def GetSelectedText():
+    ret = []
+    _GetSelectedText(CFUNCTYPE(None, c_wchar_p)(ret.append))
+    if len(ret):
+        return ret[0]
+    return None

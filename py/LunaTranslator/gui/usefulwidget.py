@@ -643,56 +643,6 @@ class MySwitch(commonsolveevent):
         pass
 
 
-class IconButton(commonsolveevent):
-    clicked = pyqtSignal()
-
-    def sizeHint(self):
-        return QSize(
-            int(1.42 * globalconfig["buttonsize2"]),
-            int(1.42 * globalconfig["buttonsize2"]),
-        )
-
-    def __init__(self, icon, enable=True, qicon=None, parent=None):
-        super().__init__(parent)
-        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.enable = enable
-        self._icon = icon
-        self._qicon = qicon
-
-    def setEnabled(self, enable):
-        self.enable = enable
-        self.update()
-
-    def isEnabled(self):
-        return self.enable
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
-        if self._qicon:
-            icon = self._qicon
-
-        else:
-
-            __ = QColor(globalconfig["buttoncolor2"])
-            if not self.enable:
-                __ = disablecolor(__)
-            icon: QIcon = qtawesome.icon(self._icon, color=__)
-        bigw = self.size().width() - self.sizeHint().width()
-        bigh = self.size().height() - self.sizeHint().height()
-        x = bigw // 2
-        y = bigh // 2
-        painter.drawPixmap(x, y, icon.pixmap(self.sizeHint()))
-
-    def mouseReleaseEvent(self, event) -> None:
-        if not self.enable:
-            return
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.clicked.emit()
-
-
 class resizableframeless(saveposwindow):
     def __init__(self, parent, flags, poslist) -> None:
         super().__init__(parent, poslist, flags)
@@ -971,29 +921,17 @@ def getcolorbutton(
     icon="fa.paint-brush",
     constcolor=None,
     enable=True,
-    transparent=True,
     qicon=None,
     sizefixed=False,
 ):
     if qicon is None:
         qicon = qtawesome.icon(icon, color=constcolor if constcolor else d[key])
-    b = QPushButton()
-    b.setIcon(qicon)
-    b.setEnabled(enable)
+    b = IconButton(None, enable=enable, parent=parent, qicon=qicon)
     sz = int(1.42 * globalconfig["buttonsize2"])
-    b.setIconSize(QSize(sz, sz))
     if sizefixed:
         b.setFixedSize(QSize(sz, sz))
-    if transparent:
-        b.setStyleSheet(
-            """background-color: rgba(255, 255, 255, 0);
-            color: black;
-            border: 0px;
-            font: 100 10pt;"""
-        )
     if callback:
         b.clicked.connect(callback)
-    b.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     if name:
         setattr(parent, name, b)
     return b
@@ -1008,7 +946,6 @@ def D_getcolorbutton(
     icon="fa.paint-brush",
     constcolor=None,
     enable=True,
-    transparent=True,
     qicon=None,
     sizefixed=False,
 ):
@@ -1021,7 +958,6 @@ def D_getcolorbutton(
         icon,
         constcolor,
         enable,
-        transparent,
         qicon,
         sizefixed,
     )
@@ -1748,7 +1684,7 @@ def makegroupingrid(args):
     if title:
         group.setTitle(title)
     else:
-        group.setObjectName('notitle')
+        group.setObjectName("notitle")
 
     if _type == "grid":
         grid = QGridLayout()
@@ -1832,9 +1768,7 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
         grid.setRowMinimumHeight(nowr, 25)
 
 
-def makegrid(
-    grid=None, save=False, savelist=None, savelay=None, delay=False
-):
+def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False):
 
     class gridwidget(QWidget):
         pass
@@ -2389,28 +2323,72 @@ class pixmapviewer(QWidget):
 
 
 class statusbutton(QPushButton):
-    statuschanged = pyqtSignal(int)
 
-    def __init__(self, icons, colors):
-        super().__init__()
-        self.idx = 0
-        self.icons = icons
-        self.colors = colors
-        self.clicked.connect(self.setChecked)
+    def __init__(self, icons, colors=None, border=True, p=None):
+        super().__init__(p)
+        if colors:
+            self.colors = colors
+        else:
+            self.colors = ["", ""]
+        if isinstance(icons, str):
+            self.icons = [icons, icons]
+        else:
+            self.icons = icons
+        self.setCheckable(True)
         self.seticon()
+        self.clicked.connect(self.seticon)
+        if not border:
+            self.setStyleSheet("border:transparent")
 
     def seticon(self):
-        color = QColor(self.colors[self.idx])
+        color = QColor(self.colors[self.isChecked()])
         if not self.isEnabled():
             color = disablecolor(color)
-        icon = qtawesome.icon(self.icons[self.idx], color=color)
+        icon = qtawesome.icon(self.icons[self.isChecked()], color=color)
         self.setIcon(icon)
 
     def setChecked(self, a0):
         super().setChecked(a0)
-        self.idx += 1
-        self.idx %= 2
-        self.statuschanged.emit(self.idx)
+        self.seticon()
+
+    def setEnabled(self, _):
+        super().setEnabled(_)
+        self.seticon()
+
+
+class IconButton(QPushButton):
+    clicked = pyqtSignal()
+
+    def sizeHint(self):
+        return QSize(
+            int(1.42 * globalconfig["buttonsize2"]),
+            int(1.42 * globalconfig["buttonsize2"]),
+        )
+
+    def __init__(self, icon, enable=True, qicon=None, parent=None):
+        super().__init__(parent)
+        super().clicked.connect(self.clicked)
+        self._icon = icon
+        self._qicon = qicon
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setIconSize(self.sizeHint())
+        self.setStyleSheet("border:transparent")
+        self.setEnabled(enable)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+
+    def seticon(self):
+        if self._qicon:
+            icon = self._qicon
+        else:
+            __ = QColor(globalconfig["buttoncolor2"])
+            if not self.isEnabled():
+                __ = disablecolor(__)
+            icon: QIcon = qtawesome.icon(self._icon, color=__)
+        self.setIcon(icon)
+
+    def setChecked(self, a0):
+        super().setChecked(a0)
         self.seticon()
 
     def setEnabled(self, _):
@@ -2542,7 +2520,7 @@ class VisLFormLayout(LFormLayout):
 class CollapsibleBox(QGroupBox):
     def __init__(self, delayloadfunction=None, parent=None, margin0=True):
         super(CollapsibleBox, self).__init__(parent)
-        self.setObjectName('notitle')
+        self.setObjectName("notitle")
         lay = QVBoxLayout(self)
         if margin0:
             lay.setContentsMargins(0, 0, 0, 0)
@@ -2622,10 +2600,15 @@ class editswitchTextBrowser(QWidget):
         self.setLayout(l)
         l.setContentsMargins(0, 0, 0, 0)
         l.addWidget(stack)
-        self.switch = MySwitch(self, icon="fa.edit")
+        self.switch = statusbutton(
+            p=self,
+            icons="fa.edit",
+            colors=["", globalconfig["buttoncolor2"]],
+            border=False,
+        )
         self.switch.setFixedSize(QSize(25, 25))
         self.switch.raise_()
-        self.switch.clicked.connect(lambda c: stack.setCurrentIndex(not c))
+        self.switch.clicked.connect(stack.setCurrentIndex)
 
     def settext(self, text):
         self.edit.setPlainText(text)

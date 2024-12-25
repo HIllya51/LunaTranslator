@@ -39,6 +39,8 @@ class TabWidget(QWidget):
         self.tab_widget.tabBar().hide()
         self.splitter.addWidget(self.list_widget)
         self.splitter.addWidget(self.tab_widget)
+        self.splitter.setStretchFactor(0, 0)
+        self.splitter.setStretchFactor(1, 1)
         self.currentChanged.connect(
             self.tab_widget.setCurrentIndex
         )  # 监听 Tab 切换事件
