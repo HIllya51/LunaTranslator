@@ -2415,7 +2415,6 @@ class mdict(cishubase):
                 print_exc()
                 print("unknown", fn, url)
                 continue
-            print(url, file_content)
             if not file_content:
                 print(fn, url)
                 continue
