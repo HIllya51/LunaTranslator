@@ -2276,7 +2276,7 @@ class mdict(cishubase):
             if not file_content:
                 return
             ext = os.path.splitext(url)[1].lower()
-            if ext in (".aac", ".spx"):
+            if ext in (".aac", ".spx", ".opus"):
                 mp3 = bass_decode(file_content, ext)
                 if not mp3:
                     print(ext, "decode error")

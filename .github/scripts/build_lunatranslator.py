@@ -263,36 +263,24 @@ cmake --build ../build/x86_xp --config Release --target ALL_BUILD -j 14
 def downloadbass():
 
     os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO https://www.un4seen.com/files/bass24.zip")
-    subprocess.run(f"7z x bass24.zip -obass24")
-    shutil.move(
-        "bass24/bass.dll",
-        f"{rootDir}/files/plugins/DLL32",
-    )
-    shutil.move(
-        "bass24/x64/bass.dll",
-        f"{rootDir}/files/plugins/DLL64",
-    )
-    subprocess.run(f"curl -LO https://www.un4seen.com/files/z/2/bass_spx24.zip")
-    subprocess.run(f"7z x bass_spx24.zip -obass_spx24")
-    shutil.move(
-        "bass_spx24/bass_spx.dll",
-        f"{rootDir}/files/plugins/DLL32",
-    )
-    shutil.move(
-        "bass_spx24/x64/bass_spx.dll",
-        f"{rootDir}/files/plugins/DLL64",
-    )
-    subprocess.run(f"curl -LO https://www.un4seen.com/files/z/2/bass_aac24.zip")
-    subprocess.run(f"7z x bass_aac24.zip -obass_aac24")
-    shutil.move(
-        "bass_aac24/bass_aac.dll",
-        f"{rootDir}/files/plugins/DLL32",
-    )
-    shutil.move(
-        "bass_aac24/x64/bass_aac.dll",
-        f"{rootDir}/files/plugins/DLL64",
-    )
+    for link in (
+        "https://www.un4seen.com/files/bass24.zip",
+        "https://www.un4seen.com/files/z/2/bass_spx24.zip",
+        "https://www.un4seen.com/files/z/2/bass_aac24.zip",
+        "https://www.un4seen.com/files/bassopus24.zip",
+    ):
+        name = link.split("/")[-1]
+        d = name.split(".")[0]
+        subprocess.run("curl -LO " + link)
+        subprocess.run(f"7z x {name} -o{d}")
+        shutil.move(
+            f"{d}/{d[:-2]}.dll",
+            f"{rootDir}/files/plugins/DLL32",
+        )
+        shutil.move(
+            f"{d}/x64/{d[:-2]}.dll",
+            f"{rootDir}/files/plugins/DLL64",
+        )
 
 
 if __name__ == "__main__":
