@@ -3,6 +3,24 @@ from cishu.cishubase import DictTree
 from myutils.config import isascii
 from traceback import print_exc
 from myutils.audioplayer import bass_decode
+import json, os
+
+cachejson = None
+
+
+def query_mime(ext):
+    # https://gist.github.com/AshHeskes/6038140
+    global cachejson
+    if not cachejson:
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "file-extension-to-mime-types.json"
+            ),
+            "r",
+            encoding="utf8",
+        ) as ff:
+            cachejson = json.load(ff)
+    return cachejson.get(ext, "application/octet-stream")
 
 
 class FlexBuffer:
@@ -2285,7 +2303,9 @@ class mdict(cishubase):
                 ext = ".mp3"
             varname = "var_" + hashlib.md5(file_content).hexdigest()
             audiob64vals[varname] = base64.b64encode(file_content).decode()
-            return 3, "javascript:mdict_play_sound('{}',{})".format(ext[1:], varname)
+            return 3, "javascript:mdict_play_sound('{}',{})".format(
+                query_mime(ext), varname
+            )
         file_content = self.parse_url_in_mdd(index, url)
         if not file_content:
             return
@@ -2378,11 +2398,15 @@ class mdict(cishubase):
         csscollect: dict,
     ):
         base = os.path.dirname(fn)
-        matches = re.findall('src="([^"]+)"', html_content)
-        matches += re.findall('href="([^"]+)"', html_content)
-        matches += re.findall("""href='([^']+)'""", html_content)
-        matches += re.findall("""src='([^']+)'""", html_content)
-        for url in matches:
+        matches = []
+        for _type, patt in (
+            ("src", 'src="([^"]+)"'),
+            ("href", 'href="([^"]+)"'),
+            ("src", """src='([^']+)'"""),
+            ("href", """href='([^']+)'"""),
+        ):
+            matches += [(_type, _) for _ in re.findall(patt, html_content)]
+        for _type_1, url in matches:
             if url.startswith("#"):  # a href # 页内跳转
                 continue
             try:
@@ -2391,6 +2415,7 @@ class mdict(cishubase):
                 print_exc()
                 print("unknown", fn, url)
                 continue
+            print(url, file_content)
             if not file_content:
                 print(fn, url)
                 continue
@@ -2406,7 +2431,11 @@ class mdict(cishubase):
                     html_content = html_content.replace(url, "")
             elif _type == 0:
                 varname = "var_" + hashlib.md5(file_content).hexdigest()
-                hrefsrcvals[varname] = base64.b64encode(file_content).decode()
+                hrefsrcvals[varname] = (
+                    _type_1,
+                    query_mime(os.path.splitext(url)[1].lower()),
+                    base64.b64encode(file_content).decode(),
+                )
                 html_content = html_content.replace(url, varname)
         return '<div class="{}">{}</div>'.format(divid, html_content)
 
@@ -2618,14 +2647,15 @@ if (content.style.display === 'block') {
         func += """
 function replacelongvarsrcs(varval, varname)
 {
-let elements = document.querySelectorAll('[src="'+varname+'"]');
+let type=varval[0]
+let elements = document.querySelectorAll('['+type+'="'+varname+'"]');
 for(let i=0;i<elements.length;i++)
-    elements[i].src="data:application/octet-stream;base64," + varval 
+    elements[i][type]="data:"+varval[1]+";base64," + varval[2]
 }
 var lastmusicplayer=false;
 function mdict_play_sound(ext, b64){
     const music = new Audio();
-    music.src="data:audio/"+ext+";base64,"+b64
+    music.src="data:"+ext+";base64,"+b64
     if(lastmusicplayer!=false)
     {
         lastmusicplayer.pause()
@@ -2641,8 +2671,8 @@ function safe_mdict_entry_call(word){
 }"""
         for varname, val in audiob64vals.items():
             func += '{}="{}"\n'.format(varname, val)
-        for varname, val in hrefsrcvals.items():
-            func += '{}="{}"\n'.format(varname, val)
+        for varname, (_type, mime, val) in hrefsrcvals.items():
+            func += '{}=["{}","{}","{}"]\n'.format(varname, _type, mime, val)
             func += 'replacelongvarsrcs({},"{}")\n'.format(varname, varname)
         func += "</script>"
         if self.config["stylehv"] == 0:
