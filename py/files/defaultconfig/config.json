@@ -1061,6 +1061,11 @@
                 "name": "取词翻译",
                 "keystring": ""
             },
+            "39": {
+                "use": false,
+                "name": "OCR_查词",
+                "keystring": ""
+            },
             "_29": {
                 "use": false,
                 "name": "Anki_录音",

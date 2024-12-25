@@ -136,6 +136,9 @@
 1. #### Retrieve and search for words
     Search for words in the text currently selected by the mouse
 
+1. #### OCR word search
+    Select the OCR range for one OCR and then search for words
+
 1. #### Anki Recording
     Shortcut key for the recording function in the Anki add interface in the dictionary lookup window.
 

@@ -96,6 +96,7 @@ def registrhotkeys(self):
         "37": lambda: gobject.baseobject.searchwordW.search_word.emit(
             winsharedutils.GetSelectedText(), False
         ),
+        "39": lambda: gobject.baseobject.searchwordW.ocr_once_signal.emit( ),
         "38": lambda: gobject.baseobject.textgetmethod(
             winsharedutils.GetSelectedText(), False
         ),
@@ -114,7 +115,7 @@ hotkeys = [
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
     ["游戏", ["_15", "_20", "_21", "_22", "_25", "_27", "_31"]],
-    ["查词", ["37", "_29", "_30", "_35", "_33"]],
+    ["查词", ["37","39", "_29", "_30", "_35", "_33"]],
 ]
 
 

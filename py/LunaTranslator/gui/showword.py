@@ -993,6 +993,7 @@ class searchwordW(closeashidewindow):
     search_word = pyqtSignal(str, bool)
     show_dict_result = pyqtSignal(float, str, str)
     search_word_in_new_window = pyqtSignal(str)
+    ocr_once_signal = pyqtSignal()
 
     def __init__(self, parent):
         super(searchwordW, self).__init__(parent, globalconfig["sw_geo"])
@@ -1000,7 +1001,21 @@ class searchwordW(closeashidewindow):
         self.search_word.connect(self.__click_word_search_function)
         self.search_word_in_new_window.connect(self.searchwinnewwindow)
         self.show_dict_result.connect(self.__show_dict_result_function)
+        self.ocr_once_signal.connect(
+            lambda: rangeselct_function(self.ocr_do_function, False)
+        )
         self.state = 0
+
+    @threader
+    def ocr_do_function(self, rect):
+        if not rect:
+            return
+        img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        text, infotype = ocr_run(img)
+        if infotype:
+            gobject.baseobject.displayinfomessage(text, infotype)
+        else:
+            self.search_word.emit(text, False)
 
     def __load(self):
         if self.state != 0:
