@@ -232,7 +232,7 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
 #### **WindowsOCR**
 
-## WindowsOCR如何安装额外的语言支持？
+## <div id="windowsocr">WindowsOCR如何安装额外的语言支持？</div>
 
 > WindowsOCR仅支持win10-win11操作系统
 

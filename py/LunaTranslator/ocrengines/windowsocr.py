@@ -41,7 +41,7 @@ def question():
     btndownload = LPushButton("添加语言包")
     btndownload.clicked.connect(
         lambda: gobject.baseobject.openlink(
-            dynamiclink("{docs_server}/#/zh/windowsocr")
+            dynamiclink("{docs_server}/#/zh/useapis/ocrapi?id=windowsocr")
         )
     )
     formLayout.addWidget(LLabel("当前支持的语言"))

@@ -197,7 +197,7 @@ WeChatまたは最新バージョンのQQのインストールが必要です
 
 #### **WindowsOCR**
 
-## WindowsOCRの追加言語サポートをインストールする方法
+## <div id="windowsocr">WindowsOCRの追加言語サポートをインストールする方法</div>
 
 > WindowsOCRはWindows 10およびWindows 11オペレーティングシステムのみをサポートしています。
 

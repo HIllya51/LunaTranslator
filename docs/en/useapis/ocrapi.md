@@ -196,7 +196,7 @@ Requires installation of WeChat or the latest version of QQ
 
 #### **WindowsOCR**
 
-## How to Install Additional Language Support for WindowsOCR?
+## <div id="windowsocr">How to Install Additional Language Support for WindowsOCR?</div>
 
 > WindowsOCR only supports Windows 10 and Windows 11 operating systems.
 
