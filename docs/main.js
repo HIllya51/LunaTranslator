@@ -191,7 +191,7 @@ function switchlang(lang) {
 function browserlang() {
     let l = navigator.language
     if (l.includes('-')) l = l.split('-')[0]
-    if (supportlangs.includes(l)) return l
+    if (supportlangs[l]) return l
     return 'en'
 }
 const titleids = ['homepage', 'downloadlink', 'vediotutorial', 'contactme', 'bit64link', 'bit32link']
