@@ -953,6 +953,17 @@ namespace ppsspp
 			return;
 		buffer->from(addr + 0x20, *(DWORD *)(addr + 0x14) * 2);
 	}
+	void ULJM05701(TextBuffer *buffer, HookParam *hp)
+	{
+		auto ws = buffer->strW();
+		static std::wstring last;
+		if (last == ws)
+			return buffer->clear();
+		last = ws;
+		ws = std::regex_replace(ws, std::wregex(LR"(^\u3010[^\u3011]+\u3011)"), L"");
+		ws = std::regex_replace(ws, std::wregex(LR"(\n\u3000+)"), L"");
+		buffer->from(ws);
+	}
 	void ULJM06174(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, L'\n');
@@ -2047,5 +2058,7 @@ namespace ppsspp
 		{0x8840324, {0, 4, 0, 0, ULJM06232, "ULJM0623[23]"}},
 		// Dies irae ～Amantes amentes～
 		{0x88E08D0, {0, 3, 0, 0, 0, "ULJM0610[78]"}},
+		// 花帰葬
+		{0x88139f4, {CODEC_UTF16, 0, 0, 0, ULJM05701, "ULJM05701"}},
 	};
 }
