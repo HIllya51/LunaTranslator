@@ -970,21 +970,32 @@ class showdiction(QWidget):
         self.model.clear()
         root = self.model.invisibleRootItem()
         rows = []
+        cishus = []
         for k in globalconfig["cishuvisrank"]:
             cishu = gobject.baseobject.cishus[k]
-
             if not hasattr(cishu, "tree"):
                 continue
+            cishus.append(cishu)
+        if len(cishus) == 1:
             try:
-                tree = cishu.tree()
+                for node in cishus[0].tree().childrens():
+                    item = QStandardItem(node.text())
+                    item.setData(node, DictNodeRole)
+                    rows.append(item)
             except:
-                continue
-            if not tree:
-                continue
+                print_exc()
+        else:
+            for cishu in cishus:
+                try:
+                    tree = cishu.tree()
+                except:
+                    continue
+                if not tree:
+                    continue
 
-            item = QStandardItem(globalconfig["cishu"][k]["name"])
-            item.setData(tree, DictNodeRole)
-            rows.append(item)
+                item = QStandardItem(globalconfig["cishu"][k]["name"])
+                item.setData(tree, DictNodeRole)
+                rows.append(item)
         root.appendRows(rows)
         root.setData(len(rows) > 0, DeterminedhasChildren)
 
