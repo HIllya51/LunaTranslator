@@ -94,9 +94,12 @@ bool checkengine()
         if (attached)
         {
             jittypedefault = m->jittype;
-            spDefault.isjithook = true;
-            spDefault.minAddress = 0;
-            spDefault.maxAddress = -1;
+            if (jittypedefault != JITTYPE::PC)
+            {
+                spDefault.isjithook = true;
+                spDefault.minAddress = 0;
+                spDefault.maxAddress = -1;
+            }
         }
         if (m->is_engine_certain)
         {
