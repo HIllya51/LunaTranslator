@@ -1554,6 +1554,8 @@ class auto_select_webview(QWidget):
                 self.navigate(arg)
             elif action == 1:
                 self.setHtml(arg)
+        else:
+            self.clear()
         for _ in self.addmenuinfo:
             self.internal.add_menu(*_)
         for _ in self.bindinfo:
