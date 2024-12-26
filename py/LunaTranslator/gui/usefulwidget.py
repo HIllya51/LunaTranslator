@@ -1096,9 +1096,6 @@ class abstractwebview(QWidget):
     def set_transparent_background(self):
         pass
 
-    def clear(self):
-        self.navigate("about:blank")
-
     def _parsehtml_codec(self, html):
 
         html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head>{}</html>""".format(
@@ -1493,7 +1490,7 @@ class auto_select_webview(QWidget):
 
     def clear(self):
         self.lastaction = None
-        self.internal.clear()
+        self.internal.setHtml(self.internal.parsehtml(""))  # 夜间
 
     def navigate(self, url):
         self.lastaction = 0, url
