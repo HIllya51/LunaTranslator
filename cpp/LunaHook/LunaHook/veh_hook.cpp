@@ -7,9 +7,7 @@ Version: 24-March-2008
 #include <windows.h>
 #include "veh_hook.h"
 #include <mutex>
-char int3bp[] = OPCODE_INT3;
 std::mutex vehlistlock;
-
 struct veh_node
 {
     void *origFunc;
@@ -19,32 +17,34 @@ struct veh_node
     void *baseAddr; // Address of the page in which origFunc resides.
     BYTE origBaseByte;
     DWORD OldProtect;
-    veh_node(void *origFunc, newFuncType newFunc, void *handle, DWORD hooktype) : hooktype(hooktype), handle(handle), newFunc(newFunc), origFunc(origFunc), OldProtect(PAGE_EXECUTE_READWRITE)
+    int usecount;
+    bool removed;
+    veh_node(void *origFunc, newFuncType newFunc, void *handle, DWORD hooktype) : hooktype(hooktype), handle(handle), newFunc(newFunc), origFunc(origFunc), OldProtect(PAGE_EXECUTE_READWRITE), usecount(0), removed(false)
     {
     }
 };
 
 static std::map<void *, veh_node> list;
 
-veh_node *get_veh_node(void *origFunc, int range = 0)
+veh_node *get_veh_node(void *origFunc)
 {
-    for (int i = 0; i <= range; i++)
-    {
-        auto ptr = (void *)((uintptr_t)origFunc - i);
-        if (list.find(ptr) == list.end())
-            continue;
-        return &list.at(ptr);
-    }
-    return nullptr;
+    if (list.find(origFunc) == list.end())
+        return nullptr;
+    return &list.at(origFunc);
 }
 
-bool add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
+bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
 {
-    std::lock_guard _(vehlistlock);
-    // static veh_list_t* list = NULL;
     DWORD oldProtect;
-    if (get_veh_node(origFunc))
-        return false;
+    auto hasexitst = get_veh_node(origFunc); // hookfinder不删除钩子
+    if (hasexitst)
+    {
+        if (!hasexitst->removed)
+            return false;
+        hasexitst->newFunc = newFunc;
+        hasexitst->removed = false;
+        return true;
+    }
     void *handle = AddVectoredExceptionHandler(1, (PVECTORED_EXCEPTION_HANDLER)veh_dispatch);
     veh_node newnode{origFunc, newFunc, handle, hook_type};
 
@@ -56,31 +56,75 @@ bool add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
     {
         return false;
     }
-    memcpy((void *)(&newnode.origBaseByte), (const void *)origFunc, sizeof(BYTE));
-    memcpy((void *)origFunc, (const void *)&int3bp, sizeof(BYTE));
+    newnode.origBaseByte = *(BYTE *)origFunc;
+    *(BYTE *)origFunc = OPCODE_INT3;
     VirtualProtect(origFunc, sizeof(int), newnode.OldProtect, &oldProtect);
     list.emplace(std::make_pair(origFunc, newnode));
     return true;
+}
+
+bool add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
+{
+    std::lock_guard _(vehlistlock);
+    return __add_veh_hook(origFunc, newFunc, hook_type);
+}
+std::vector<void *> add_veh_hook(std::vector<void *> origFuncs, std::vector<newFuncType> newFuncs, DWORD hook_type)
+{
+    std::lock_guard _(vehlistlock);
+    std::vector<void *> succ;
+    for (auto i = 0; i < origFuncs.size(); i++)
+    {
+        if (__add_veh_hook(origFuncs[i], newFuncs[i], hook_type))
+            succ.push_back(origFuncs[i]);
+    }
+    return succ;
 }
 void repair_origin(veh_node *node)
 {
     DWORD _p;
     if (!VirtualProtect(node->origFunc, sizeof(int), PAGE_EXECUTE_READWRITE, &_p))
         return;
-    memcpy((void *)node->origFunc, (const void *)(&node->origBaseByte), sizeof(BYTE));
+    *(BYTE *)node->origFunc = node->origBaseByte;
     VirtualProtect(node->origFunc, sizeof(int), node->OldProtect, &_p);
 }
-bool remove_veh_hook(void *origFunc)
+bool __remove_veh_hook(void *origFunc)
+{
+    veh_node *node = get_veh_node(origFunc);
+    if (!node)
+        return true;
+    if (node->usecount <= 0)
+    {
+        repair_origin(node);
+        RemoveVectoredExceptionHandler(node->handle);
+        list.erase(origFunc);
+        return true;
+    }
+    else
+    {
+        node->removed = true;
+        return false;
+    }
+}
+void remove_veh_hook(void *origFunc)
+{
+    // 仅会在手动移除时被调用
+    while (true)
+    {
+        std::lock_guard _(vehlistlock);
+        if (__remove_veh_hook(origFunc))
+            break;
+    }
+}
+void remove_veh_hook(std::vector<void *> origFuncs)
 {
     std::lock_guard _(vehlistlock);
-    veh_node *node = get_veh_node(origFunc);
-    if (node == NULL)
-        return false;
-    repair_origin(node);
-    RemoveVectoredExceptionHandler(node->handle);
-    return list.erase(origFunc), true;
+    for (auto origFunc : origFuncs)
+    {
+        // hookfinder时，usecount有时会无法归零（例如JIT重新写code），所以仅尝试一次即可
+        __remove_veh_hook(origFunc);
+    }
 }
-
+thread_local veh_node *lastnode;
 LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo)
 {
 
@@ -92,37 +136,34 @@ LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo)
         return EXCEPTION_CONTINUE_SEARCH;
     // Try to find the node associated with the address of the current exception, continue searching for handlers if not found;
 
+    std::lock_guard _(vehlistlock);
     if (Code == STATUS_BREAKPOINT) //&& hooktype == VEH_HK_INT3)
     {
-        veh_node *currnode;
-        {
-            std::lock_guard _(vehlistlock);
-            currnode = get_veh_node(Addr);
-        }
-        if (currnode == NULL)
+        veh_node *currnode = get_veh_node(Addr);
+        if (!currnode)
             return EXCEPTION_CONTINUE_SEARCH;
-
-        if (currnode->newFunc(ExceptionInfo->ContextRecord))
+        lastnode = currnode;
+        repair_origin(currnode);
+        if (!currnode->removed)
         {
-            repair_origin(currnode);
-            ExceptionInfo->ContextRecord->EFlags |= 0x100;
-        }
-        else
-        {
-            remove_veh_hook(Addr);
+            currnode->usecount += 1;
+            if (currnode->newFunc(ExceptionInfo->ContextRecord))
+                ExceptionInfo->ContextRecord->EFlags |= 0x100;
         }
     }
     else if (Code == STATUS_SINGLE_STEP) //&& hooktype == VEH_HK_INT3)
     {
-        std::lock_guard _(vehlistlock);
-        veh_node *currnode = get_veh_node(Addr, 0x10);
-        if (currnode == NULL)
+        if (!lastnode)
             return EXCEPTION_CONTINUE_SEARCH;
-
-        VirtualProtect(Addr, sizeof(int), PAGE_EXECUTE_READWRITE, &currnode->OldProtect);
-        memcpy((void *)currnode->origFunc, (const void *)&int3bp, sizeof(BYTE));
-        VirtualProtect(Addr, sizeof(int), currnode->OldProtect, &oldProtect);
-        ExceptionInfo->ContextRecord->EFlags &= ~0x00000100; // Remove TRACE from EFLAGS
+        if (!lastnode->removed)
+        {
+            VirtualProtect(Addr, sizeof(int), PAGE_EXECUTE_READWRITE, &lastnode->OldProtect);
+            *(BYTE *)lastnode->origFunc = OPCODE_INT3;
+            VirtualProtect(Addr, sizeof(int), lastnode->OldProtect, &oldProtect);
+            ExceptionInfo->ContextRecord->EFlags &= ~0x00000100; // Remove TRACE from EFLAGS
+        }
+        lastnode->usecount -= 1;
+        lastnode = nullptr;
     }
     // else if (Code == STATUS_SINGLE_STEP && hooktype == VEH_HK_HW)
     // {

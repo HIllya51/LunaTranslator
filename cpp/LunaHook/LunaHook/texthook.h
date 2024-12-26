@@ -16,7 +16,6 @@ private:
 	bool InsertHookCode();
 	bool InsertReadCode();
 	bool InsertBreakPoint();
-	bool RemoveBreakPoint();
 	bool breakpointcontext(PCONTEXT);
 	void Send(uintptr_t);
 	void Send(hook_context*);
@@ -24,6 +23,7 @@ private:
 	int HookStrlen(BYTE *data);
 	void RemoveHookCode();
 	void RemoveReadCode();
+	void RemoveBreakPoint();
 	bool waitfornotify(TextBuffer*, ThreadParam tp);
 	void parsenewlineseperator(TextBuffer*);
 	volatile DWORD useCount;

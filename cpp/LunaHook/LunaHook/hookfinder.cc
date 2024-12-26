@@ -1,5 +1,6 @@
 
 #include "MinHook.h"
+#include "veh_hook.h"
 #define DUMP_JIT_ADDR_MAP 0
 namespace
 {
@@ -258,10 +259,6 @@ void SafeSendJitVeh(hook_context *context, uintptr_t address, uint64_t em_addr, 
 std::unordered_map<uintptr_t, uint64_t> addresscalledtime;
 bool SendJitVeh(PCONTEXT pcontext, uintptr_t address, uint64_t em_addr, JITTYPE jittype, intptr_t padding)
 {
-	if (safeautoleaveveh)
-		return true;
-	if (recordsAvailable <= 0)
-		return false;
 	if (addresscalledtime.find(address) == addresscalledtime.end())
 		addresscalledtime[address] = 0;
 	auto tm = GetTickCount64();
@@ -542,9 +539,7 @@ void _SearchForHooks(SearchParam spUser)
 	}
 	else
 	{
-		safeautoleaveveh = false;
 
-		std::vector<uint64_t> successaddr;
 		uintptr_t minemaddr = -1, maxemaddr = 0;
 
 		ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], jitaddr2emuaddr.size());
@@ -564,25 +559,22 @@ void _SearchForHooks(SearchParam spUser)
 		}
 		fclose(f);
 #endif
+		std::vector<newFuncType> funcs;
+		std::vector<void *> successaddr;
 		for (auto addr : jitaddr2emuaddr)
 		{
 			// ConsoleOutput("%llx => %p", addr.second.second ,addr.first);
 			if (addr.second.second > sp.maxAddress || addr.second.second < sp.minAddress)
 				continue;
 
-			// addresses.push_back(addr.first);
-			if (add_veh_hook((void *)addr.first, std::bind(SendJitVeh, std::placeholders::_1, addr.first, addr.second.second, addr.second.first, sp.padding)))
-				successaddr.push_back(addr.first);
-			if (successaddr.size() % 2500 == 0)
-				ConsoleOutput(TR[HOOK_SEARCH_INITIALIZING], 1 + 98. * successaddr.size() / jitaddr2emuaddr.size());
+			funcs.push_back(std::bind(SendJitVeh, std::placeholders::_1, addr.first, addr.second.second, addr.second.first, sp.padding));
+			successaddr.push_back((void *)addr.first);
 		}
+		successaddr = add_veh_hook(successaddr, funcs);
 		ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], successaddr.size());
 		ConsoleOutput(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
 		Sleep(sp.searchTime);
-		// for(auto addr:successaddr){
-		// 	remove_veh_hook((void*)addr);
-		// }
-		safeautoleaveveh = true;
+		remove_veh_hook(successaddr);
 	}
 	SearchForHooks_Return();
 }

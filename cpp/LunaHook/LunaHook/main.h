@@ -27,6 +27,5 @@ void jitaddrclear();
 
 void delayinsertadd(HookParam, std::string);
 void delayinsertNewHook(uint64_t);
-inline bool safeautoleaveveh = false;
 inline bool dont_detach = false;
 inline bool host_connected = false;

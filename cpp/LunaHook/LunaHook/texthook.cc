@@ -1,5 +1,6 @@
 
 #include "MinHook.h"
+#include "veh_hook.h"
 extern WinMutex viewMutex;
 
 // - Unnamed helpers -
@@ -137,13 +138,7 @@ bool TextHook::Insert(HookParam hp)
 	if (hp.type & DIRECT_READ)
 		return InsertReadCode();
 	if (hp.type & BREAK_POINT)
-	{
-		if (InsertBreakPoint())
-			return true;
-		if (safeautoleaveveh)
-			return InsertBreakPoint(); // 搜索特殊码后，不会释放，导致virtualprotect查询失败，重试。
-		return false;
-	}
+		return InsertBreakPoint();
 	return InsertHookCode();
 }
 uintptr_t win64find0000(uintptr_t addr)
@@ -453,9 +448,9 @@ bool TextHook::InsertBreakPoint()
 	// MH_CreateHook 64位unity/yuzu-emu经常 MH_ERROR_MEMORY_ALLOC
 	return add_veh_hook(location, std::bind(&TextHook::breakpointcontext, this, std::placeholders::_1));
 }
-bool TextHook::RemoveBreakPoint()
+void TextHook::RemoveBreakPoint()
 {
-	return remove_veh_hook(location);
+	remove_veh_hook(location);
 }
 bool TextHook::InsertHookCode()
 {

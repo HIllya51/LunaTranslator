@@ -752,6 +752,10 @@ namespace
         StringReplacer(buffer, "#n", 2, " ", 1);
         StringReplacer(buffer, "\n", 1, " ", 1);
     }
+    void F010099901461A000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, "#n", 2);
+    }
     void F0100AEC013DDA000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2476,10 +2480,6 @@ namespace
             // VARIABLE BARRICADE NS
             {0x800e3424, {CODEC_UTF8, 0, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, //"System Messages + Choices"), //Also includes the names of characters,
             {0x800fb080, {CODEC_UTF8, 3, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, // Main Text
-            // AMNESIA for Nintendo Switch
-            {0x805bba5c, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // dialogue
-            {0x805e9930, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // choice
-            {0x805e7fd8, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // name
             // 蝶の毒 華の鎖
             {0x80095010, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, 0x0100A1200CA3C000ull, "2.0.1"}}, // Main Text + Names
             // Live a Live
@@ -2681,6 +2681,12 @@ namespace
             {0x8014dc64, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // name
             {0x80149b10, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // dialogue
             {0x803add50, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // choice
+            // AMNESIA for Nintendo Switch
+            {0x805bba5c, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // dialogue
+            {0x805e9930, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // choice
+            {0x805e7fd8, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // name
+            // AMNESIA World for Nintendo Switch
+            {0x80113520, {CODEC_UTF8, 3, 0, 0, F010099901461A000, 0x010099901461A000ull, "1.0.0"}}, // text
             // Natsumon! 20th Century Summer Vacation
             {0x80db5d34, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, 0x0100A8401A0A8000ull, "1.1.0"}}, // tutorial
             {0x846fa578, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, 0x0100A8401A0A8000ull, "1.1.0"}}, // choice
@@ -3575,6 +3581,8 @@ namespace
             {0x81719ea0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F01001BB01E8E2000, 0x01001BB01E8E2000ull, "1.0.0"}},
             // アイキス3cute
             {0x804C18C4, {CODEC_UTF8, 1, 0, 0, F0100FD4016528000, 0x0100FD4016528000ull, nullptr}}, // 1.0.0 && 1.0.2
+            // OZMAFIA!! VIVACE
+            {0x80058544, {0, 1, 0, 0, F0100509013040000, 0x01002BE0118AE000ull, nullptr}}, // 1.0.0 && 1.0.1
 
         };
         return 1;
