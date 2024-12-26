@@ -2693,7 +2693,7 @@ function safe_mdict_entry_call(word){
                 return self.ref.gettitle(self.f, self.index)
 
             def childrens(self) -> list:
-                return self.index.get_mdx_keys("*")
+                return sorted(list(set(self.index.get_mdx_keys("*"))))
 
         class DictTreeRoot(DictTree):
             def __init__(self, ref) -> None:

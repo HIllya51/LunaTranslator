@@ -831,18 +831,15 @@ class DynamicTreeModel(QStandardItemModel):
         self.setData(index, len(childs) > 0, DeterminedhasChildren)
         thisitem = self.itemFromIndex(index)
         maketuples = tuple((tuple(_) for _ in globalconfig["wordlabel"]))
-        dump = set()
+        rows = []
         for c in childs:
             if isinstance(c, str):
-                if c in dump:
-                    continue
-                dump.add(c)
                 t = c
                 has = False
             else:
                 t = c.text()
                 has = True
-            item = QStandardItem(t)
+            item = QStandardItem(t.replace("\n", ""))
             if has:
                 item.setData(c, DictNodeRole)
             else:
@@ -852,8 +849,9 @@ class DynamicTreeModel(QStandardItemModel):
                 item.setData(
                     QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole
                 )
-            thisitem.appendRow([item])
-        self.ref(index)
+            rows.append(item)
+        thisitem.appendRows(rows)
+        self.ref(index, True)
 
     def onDoubleClicked(self, index: QModelIndex):
         if not self.data(index, isWordNode):
@@ -874,8 +872,10 @@ class kpQTreeView(QTreeView):
 
 
 class showdiction(QWidget):
-    def setwordfilter(self, index=None):
+    def setwordfilter(self, index=None, first=False):
         w = self.word.text()
+        if (not w) and first:
+            return
         if index is None:
             item = self.model.invisibleRootItem()
             index = self.model.indexFromItem(self.model.invisibleRootItem())
@@ -979,7 +979,7 @@ class showdiction(QWidget):
         if len(cishus) == 1:
             try:
                 for node in cishus[0].tree().childrens():
-                    item = QStandardItem(node.text())
+                    item = QStandardItem(node.text().replace("\n", ""))
                     item.setData(node, DictNodeRole)
                     rows.append(item)
             except:
