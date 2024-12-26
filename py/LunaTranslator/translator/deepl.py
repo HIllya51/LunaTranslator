@@ -205,8 +205,8 @@ class TS(basetrans):
                 "Connection": "keep-alive",
             },
             data=postStr,
-        ).json()
+        )
         try:
-            return res["result"]["texts"][0]["text"]
+            return res.json()["result"]["texts"][0]["text"]
         except:
             raise Exception(res)

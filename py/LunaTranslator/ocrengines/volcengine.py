@@ -1,6 +1,5 @@
 import json
 from collections import OrderedDict
-from myutils.commonbase import maybejson
 import requests
 from urllib.parse import urlencode
 from functools import reduce
@@ -436,7 +435,7 @@ class Service(object):
         if resp.status_code == 200:
             return resp.text
         else:
-            raise Exception(maybejson(resp))
+            raise Exception(resp)
 
     def prepare_request(self, api_info, params, doseq=0):
         for key in params:

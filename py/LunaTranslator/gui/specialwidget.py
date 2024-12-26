@@ -274,6 +274,9 @@ class lazyscrollflow(ScrollArea):
     def setsize(self, size: QSize):
         self._size = size
 
+    def setSpacing(self, s):
+        self._spacing = s
+
     def spacing(self):
         return self._spacing
 

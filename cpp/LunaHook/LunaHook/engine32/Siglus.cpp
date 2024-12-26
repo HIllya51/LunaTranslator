@@ -179,7 +179,7 @@ namespace
   void SpecialHookSiglus4(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     // static uint64_t lastTextHash_;
-    DWORD eax = context->eax;          // text
+    DWORD eax = context->eax;        // text
     if (!eax || !*(const BYTE *)eax) // empty data
       return;
     DWORD size = *(DWORD *)(eax + 0x10);
@@ -203,7 +203,7 @@ namespace
     // lastTextHash_ = hash;
 
     buffer->from(data, size * 2); // UTF-16
-    DWORD s0 = context->retaddr;    // use stack[0] as split
+    DWORD s0 = context->retaddr;  // use stack[0] as split
     if (s0 <= 0xff)               // scenario text
       *split = FIXED_SPLIT_VALUE;
     else if (::IsBadReadPtr((LPCVOID)s0, 4))
@@ -1765,8 +1765,7 @@ namespace
       {
         auto arg = (TextUnionW *)(type_ == Type1 ? s->ecx : s->stack[1]);
         auto argValue = *arg;
-        auto newText = new std::wstring(buffer.viewW());
-        arg->setLongText(*newText);
+        arg->setText(buffer.viewW());
 
         // Restoring is indispensible, and as a result, the default hook does not work
         //*arg = argValue;
@@ -1836,9 +1835,7 @@ namespace OtherHook
       auto arg = (TextUnionW *)s->stack[0];
       arg_ = arg;
       argValue_ = *arg;
-      static std::wstring text_;
-      text_ = buffer.viewW();
-      arg->setLongText(text_);
+      arg->setText(buffer.viewW());
     }
 
     ULONG search(ULONG startAddress, ULONG stopAddress)

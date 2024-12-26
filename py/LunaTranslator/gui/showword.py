@@ -802,6 +802,7 @@ DictNodeRole = Qt.ItemDataRole.UserRole + 1
 DeterminedhasChildren = DictNodeRole + 1
 isWordNode = DeterminedhasChildren + 1
 isLabeleddWord = isWordNode + 1
+OriginText = isLabeleddWord + 1
 
 
 class DynamicTreeModel(QStandardItemModel):
@@ -872,22 +873,31 @@ class kpQTreeView(QTreeView):
 
 
 class showdiction(QWidget):
-    def setwordfilter(self, index=None, first=False):
-        w = self.word.text()
-        if (not w) and first:
-            return
+    def setwordfilter(self, index: QModelIndex = None, first=False):
         if index is None:
             item = self.model.invisibleRootItem()
             index = self.model.indexFromItem(self.model.invisibleRootItem())
         else:
             item = self.model.itemFromIndex(index)
+        w = self.word.text()
+
+        if first:
+            item.setData(item.text(), OriginText)
+            if not w:
+                item.setText(item.text() + " ({})".format((item.rowCount())))
+                return
+        cnt = 0
         for i in range(item.rowCount()):
             _item = item.child(i)
             isw = _item.data(isWordNode)
             if isw is None:
                 isw = False
-            self.tree.setRowHidden(i, index, isw and (w not in _item.text()))
+            hide = isw and (w not in _item.text())
+            self.tree.setRowHidden(i, index, hide)
+            cnt += 1 - hide
             self.setwordfilter(self.model.indexFromItem(_item))
+        if item.data(OriginText):
+            item.setText(item.data(OriginText) + " ({})".format(cnt))
 
     def showmenu(self, _):
         idx = self.tree.currentIndex()

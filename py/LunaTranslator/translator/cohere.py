@@ -130,9 +130,9 @@ def list_models(typename, regist):
             "X-Client-Name": "my-cool-project",
         },
         proxies=getproxy(("fanyi", typename)),
-    ).json()
+    ) 
     try:
-        models = js["models"]
+        models = js.json()["models"]
     except:
         raise Exception(js)
     mm = []

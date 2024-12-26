@@ -11,7 +11,7 @@ from myutils.config import (
     globalconfig,
 )
 from myutils.hwnd import clipboard_set_image
-from myutils.utils import str2rgba, get_time_stamp, loopbackrecorder, getimagefilefilter
+from myutils.utils import get_time_stamp, loopbackrecorder, getimagefilefilter
 from myutils.audioplayer import playonce
 from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
@@ -37,11 +37,7 @@ from gui.dialog_savedgame_common import (
     addgamebatch,
     addgamebatch_x,
 )
-from gui.dynalang import (
-    LPushButton,
-    LAction,
-    LLabel,
-)
+from gui.dynalang import LAction, LLabel
 
 
 class clickitem(QWidget):
@@ -104,12 +100,12 @@ class clickitem(QWidget):
         self.bottommask.hide()
         self.bottommask.setObjectName("savegame_onselectcolor1")
         _ = QLabel(self)
-        _.setStyleSheet("""background-color: rgba(255,255,255, 0);""")
+        _.setStyleSheet("background:transparent")
         self.bottomline = _
         _ = QLabel()
         self._ = _
         _.setScaledContents(True)
-        _.setStyleSheet("background-color: rgba(255,255,255, 0);")
+        _.setStyleSheet("background:transparent")
         icon = getpixfunction(uid, small=True, iconfirst=True)
         icon.setDevicePixelRatio(self.devicePixelRatioF())
         _.setPixmap(icon)
@@ -231,7 +227,7 @@ class MyQListWidget(QListWidget):
                     if not index.data(ImageRequestedRole):
                         self.model().setData(index, True, ImageRequestedRole)
                         image = getcachedimage(index.data(PathRole), True)
-                        if image is None:
+                        if image.isNull():
                             self.takeItem(index.row())
                         else:
                             self.item(index.row()).setIcon(QIcon(image))
@@ -381,9 +377,7 @@ class viewpixmap_x(QWidget):
         self.centerwidget = QWidget(self)
         self.centerwidgetlayout = QVBoxLayout()
         audio = QHBoxLayout()
-        self.recordbtn = statusbutton(
-            icons=["fa.microphone", "fa.stop"]
-        )
+        self.recordbtn = statusbutton(icons=["fa.microphone", "fa.stop"])
         self.recordbtn.clicked.connect(self.startorendrecord)
         self.centerwidget.setLayout(self.centerwidgetlayout)
         self.centerwidgetlayout.addWidget(self.timenothide)
@@ -794,23 +788,15 @@ class dialog_savedgame_v3(QWidget):
             _style += "font-size:{}pt;".format(_f.pointSize())
             _style += 'font-family:"{}";'.format(_f.family())
         style = "#{}{{ {} }}".format(key, _style)
-        for exits in [True, False]:
-            c = globalconfig["dialog_savegame_layout"][
-                ("onfilenoexistscolor1", "backcolor1")[exits]
-            ]
-            c = str2rgba(
-                c,
-                globalconfig["dialog_savegame_layout"][
-                    ("transparentnotexits", "transparent")[exits]
-                ],
-            )
 
-            style += "#savegame_exists{}{{background-color:{};}}".format(exits, c)
+        style += "#savegame_existsTrue{{background-color:{};}}".format(
+            globalconfig["dialog_savegame_layout"]["backcolor2"]
+        )
+        style += "#savegame_existsFalse{{background-color:{};}}".format(
+            globalconfig["dialog_savegame_layout"]["onfilenoexistscolor2"]
+        )
         style += "#savegame_onselectcolor1{{background-color: {};}}".format(
-            str2rgba(
-                globalconfig["dialog_savegame_layout"]["onselectcolor1"],
-                globalconfig["dialog_savegame_layout"]["transparentselect"],
-            )
+            globalconfig["dialog_savegame_layout"]["onselectcolor2"]
         )
         self.setStyleSheet(style)
 

@@ -3,7 +3,6 @@ import requests
 from ocrengines.baseocrclass import baseocr
 from myutils.utils import createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
-from myutils.commonbase import maybejson
 
 
 def list_models(typename, regist):
@@ -15,7 +14,7 @@ def list_models(typename, regist):
     try:
         models = resp.json()["models"]
     except:
-        raise Exception(maybejson(resp))
+        raise Exception(resp)
     mm = []
     for m in models:
         name: str = m["name"]

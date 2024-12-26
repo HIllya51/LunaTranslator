@@ -1,7 +1,23 @@
 from traceback import print_exc
-import json
+import json, requests
 from translator.basetranslator import basetrans
 from myutils.utils import createenglishlangmap, checkv1, urlpathjoin
+from myutils.proxy import getproxy
+
+
+def list_models(typename, regist):
+    resp = requests.get(
+        urlpathjoin(checkv1(regist["BASE_URL"]().strip()), "models"),
+        headers={
+            "x-api-key": regist["API_KEY"]().split("|")[0].strip(),
+            "anthropic-version": "2023-06-01",
+        },
+        proxies=getproxy(("fanyi", typename)),
+    )
+    try:
+        return sorted([_["id"] for _ in resp.json()["data"]])
+    except:
+        raise Exception(resp)
 
 
 class TS(basetrans):

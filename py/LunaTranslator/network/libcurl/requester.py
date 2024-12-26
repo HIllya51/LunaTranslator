@@ -1,11 +1,11 @@
 from .libcurl import *
 import threading, functools, queue
 from ctypes import c_long, cast, pointer, POINTER, c_char
-from requests import ResponseBase, Timeout, Requester_common
+from requests import Response, Timeout, Requester_common
 from traceback import print_exc
 
 
-class Response(ResponseBase):
+class Response(Response):
     def __init__(self, stream=False):
         super().__init__(stream)
         self.keeprefs = []
@@ -230,7 +230,7 @@ class Requester(Requester_common):
         if not stream:
             resp.content = b"".join(resp.queue)
 
-        resp.headers, resp.cookies, resp.status_text = self._parseheader2dict(header)
+        resp.headers, resp.cookies, resp.reason = self._parseheader2dict(header)
         resp.status_code = self._getStatusCode(curl)
         resp.url = url
 

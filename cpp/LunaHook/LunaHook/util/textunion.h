@@ -37,24 +37,16 @@ struct TextUnion
     if (_size < ShortTextCapacity)
       ::memcpy(chars, _text, (_size + 1) * sizeof(CharT));
     else
-      text = _text;
+    {
+      text = allocateString(std::basic_string_view<CharT>{_text, _size});
+    }
     capacity = size = _size;
   }
 
-  void setLongText(const CharT *_text, size_t _size)
+  template <typename StringT, typename = std::enable_if_t<!std::is_pointer_v<StringT>>>
+  void setText(const StringT &text)
   {
-    text = _text;
-    size = _size;
-    capacity = max(ShortTextCapacity, _size);
-  }
-
-  void setText(const std::basic_string<CharT> &text)
-  {
-    setText((const CharT *)text.c_str(), text.size());
-  }
-  void setLongText(const std::basic_string<CharT> &text)
-  {
-    setLongText((const CharT *)text.c_str(), text.size());
+    setText(text.data(), text.size());
   }
 };
 

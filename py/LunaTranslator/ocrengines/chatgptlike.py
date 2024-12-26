@@ -2,7 +2,6 @@ from ocrengines.baseocrclass import baseocr
 import base64, requests
 from myutils.utils import createurl, createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
-from myutils.commonbase import maybejson
 
 
 def list_models(typename, regist):
@@ -19,7 +18,7 @@ def list_models(typename, regist):
     try:
         return sorted([_["id"] for _ in resp.json()["data"]])
     except:
-        raise Exception(maybejson(resp))
+        raise Exception(resp)
 
 
 class OCR(baseocr):

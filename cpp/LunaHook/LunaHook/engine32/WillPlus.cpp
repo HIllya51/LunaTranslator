@@ -269,18 +269,12 @@ namespace
   }
   void WillPlus_extra_filter(TextBuffer *buffer, HookParam *)
   {
-
     StringFilter(buffer, L"%XS", 5); // remove %XS followed by 2 chars
     std::wstring str = buffer->strW();
     strReplace(str, L"\\n", L"\n");
-    std::wregex reg1(L"\\{(.*?):(.*?)\\}");
-    std::wstring result1 = std::regex_replace(str, reg1, L"$1");
-
-    std::wregex reg11(L"\\{(.*?);(.*?)\\}");
-    result1 = std::regex_replace(result1, reg11, L"$1");
-
-    std::wregex reg2(L"%[A-Z]+");
-    result1 = std::regex_replace(result1, reg2, L"");
+    std::wstring result1 = std::regex_replace(str, std::wregex(L"\\{(.*?):(.*?)\\}"), L"$1");
+    result1 = std::regex_replace(result1, std::wregex(L"\\{(.*?);(.*?)\\}"), L"$1");
+    result1 = std::regex_replace(result1, std::wregex(L"%[A-Z]+"), L"");
     buffer->from(result1);
   };
   bool InsertWillPlusAHook()
@@ -553,11 +547,8 @@ namespace will3
       lc = 1;
       str = str.substr(3);
     }
-    std::wregex reg1(L"\\{(.*?):(.*?)\\}");
-    str = std::regex_replace(str, reg1, L"$1");
-
-    std::wregex reg11(L"\\{(.*?);(.*?)\\}");
-    str = std::regex_replace(str, reg11, L"$1");
+    str = std::regex_replace(str, std::wregex(L"\\{(.*?):(.*?)\\}"), L"$1");
+    str = std::regex_replace(str, std::wregex(L"\\{(.*?);(.*?)\\}"), L"$1");
 
     buffer->from(str);
   }
@@ -1679,23 +1670,24 @@ namespace
         0x85, 0xC9,       // test ecx,ecx
         0x74, 0x04        // je AdvHD.exe+396C6
     };
-    ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!addr)
-    {
-      ConsoleOutput("WillPlus5: pattern not found");
       return false;
-    }
-
+    //[241227] [とこはな] エロ漫画お姉ちゃん！！ ～ダメダメな姉との甘々コスプレえっちな日々～
+    addr = addr + 5 + *(int *)(addr + 1);
     HookParam hp = {};
     hp.address = addr;
-    hp.offset = regoffset(esi);
-    hp.index = 0;
-    hp.split = regoffset(ebx);
-    hp.split_index = 0;
-    hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | USING_SPLIT;
-    hp.filter_fun = WillPlus_extra_filter;
-    ConsoleOutput("INSERT WillPlus5");
+    hp.type = CODEC_UTF16 | USING_STRING | USING_SPLIT | EMBED_ABLE;
+    hp.embed_hook_font = F_GetGlyphOutlineW;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      buffer->from(((TextUnionW *)context->ecx)->getText());
+      *split = context->ebx;
+    };
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    {
+      ((TextUnionW *)context->ecx)->setText(buffer.viewW());
+    };
     return NewHook(hp, "WillPlus5");
   }
 

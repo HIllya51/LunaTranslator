@@ -28,7 +28,10 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
         fname = ""
         uid = None
     elif callback_origin or tocliponly:
-        fname = gobject.gettempdir(tmsp)
+        if callback_origin:
+            fname = gobject.gettempdir(tmsp)
+        else:
+            fname = ""
         uid = None
     else:
 

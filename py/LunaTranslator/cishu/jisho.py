@@ -7,6 +7,9 @@ from myutils.utils import get_element_by, simplehtmlparser_all
 
 class jisho(cishubase):
 
+    def init(self):
+        self.style = {}
+
     def generatehtml_tabswitch(self, allres):
         btns = []
         contents = []
@@ -14,12 +17,12 @@ class jisho(cishubase):
         for title, res in allres:
             btns.append(
                 """<button type="button" onclick="onclickbtn_xxxxxx_internal('buttonid_xxxxx_internal{idx}')" id="buttonid_xxxxx_internal{idx}" class="tab-button_xxxx_internal{klass}" data-tab="tab_xxxxx_internal{idx}">{title}</button>""".format(
-                    idx=idx, title=title, klass='' if idx!=0 else ' active'
+                    idx=idx, title=title, klass="" if idx != 0 else " active"
                 )
             )
             contents.append(
                 """<div id="tab_xxxxx_internal{idx}" class="tab-pane_xxxxx_internal{klass}">{res}</div>""".format(
-                    idx=idx, res=res,klass='' if idx!=0 else ' active'
+                    idx=idx, res=res, klass="" if idx != 0 else " active"
                 )
             )
             idx += 1
@@ -127,8 +130,10 @@ function onclickbtn_xxxxxx_internal(_id) {
             ss = re.search(
                 'href="https://assets.jisho.org/assets/application(.*)"', html
             )
-            stl = requests.get(ss.group()[6:-1], proxies=self.proxy).text
-            saver["style"] = stl
+            link = ss.group()[6:-1]
+            if not self.style.get(link):
+                self.style[link] = requests.get(link, proxies=self.proxy).text
+            saver["style"] = self.style[link]
             saver["primary"] = get_element_by("id", "result_area", res) + res.replace(
                 get_element_by("id", "main_results", res),
                 get_element_by("id", "primary", res),

@@ -1,7 +1,6 @@
 import re
 import requests, time, urllib
 from translator.basetranslator import basetrans
-from myutils.commonbase import maybejson
 
 
 class Tse:
@@ -170,7 +169,7 @@ class Bing(Tse):
         try:
             return data[0] if is_detail_result else data[0]["translations"][0]["text"]
         except:
-            raise Exception(maybejson(r))
+            raise Exception(r)
 
 
 class TS(basetrans):

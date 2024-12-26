@@ -1,9 +1,8 @@
 from translator.basetranslator import basetrans
-import json, requests, time, hmac, hashlib
+import json, requests, hmac, hashlib
 from datetime import datetime, timezone
 from myutils.utils import createurl, createenglishlangmap, urlpathjoin
 from myutils.proxy import getproxy
-from myutils.commonbase import maybejson
 
 
 def list_models(typename, regist):
@@ -20,7 +19,7 @@ def list_models(typename, regist):
     try:
         return sorted([_["id"] for _ in resp.json()["data"]])
     except:
-        raise Exception(maybejson(resp))
+        raise Exception(resp)
 
 
 class qianfanIAM:
@@ -109,7 +108,7 @@ class gptcommon(basetrans):
             _.update({"Authorization": "Bearer " + self.maybeuse[curkey]})
         return _
 
-    def commonparseresponse(self, query, response: requests.ResponseBase, usingstream):
+    def commonparseresponse(self, query, response: requests.Response, usingstream):
         if usingstream:
             message = ""
             if (
@@ -117,13 +116,7 @@ class gptcommon(basetrans):
             ) and (response.status_code != 200):
                 # application/json
                 # text/html
-                raise Exception(
-                    "{code} Error: {text} for url: {url}".format(
-                        code=response.status_code,
-                        text=response.reason,
-                        url=response.url,
-                    )
-                )
+                raise Exception(response)
             for chunk in response.iter_lines():
                 response_data: str = chunk.decode("utf-8").strip()
                 if not response_data.startswith("data: "):

@@ -9,9 +9,9 @@ def list_models(typename, regist):
         urlpathjoin(regist["BASE_URL"]().strip(), "v1beta/models"),
         params={"key": regist["SECRET_KEY"]().split("|")[0].strip()},
         proxies=getproxy(("fanyi", typename)),
-    ).json()
+    )
     try:
-        models = js["models"]
+        models = js.json()["models"]
     except:
         raise Exception(js)
     mm = []

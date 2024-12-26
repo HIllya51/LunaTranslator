@@ -1,5 +1,5 @@
 from .winhttp import *
-from requests import ResponseBase, Timeout, Requester_common
+from requests import Response, Timeout, Requester_common
 from traceback import print_exc
 import windows
 import gzip, zlib
@@ -13,7 +13,7 @@ except:
     print_exc()
 
 
-class Response(ResponseBase):
+class Response(Response):
     def iter_content_impl(self, chunk_size=1):
         availableSize = DWORD()
         downloadedSize = DWORD()
@@ -44,7 +44,7 @@ class Response(ResponseBase):
 
 
 class Requester(Requester_common):
-    def request(self, *argc, **kwarg) -> ResponseBase:
+    def request(self, *argc, **kwarg) -> Response:
         if kwarg["stream"]:
             # winhttp流式时，没办法判断解压边界
             kwarg["headers"].pop("Accept-Encoding")

@@ -101,7 +101,6 @@ auto allocateString(const StringT &s) -> typename StringT::value_type *
 {
   size_t t = s.size();
   typename StringT::value_type *_data = new typename StringT::value_type[t + 1];
-  strcpyEx(_data, s.data());
   memcpy(_data, s.data(), strSize(s));
   _data[t] = 0;
   return _data;

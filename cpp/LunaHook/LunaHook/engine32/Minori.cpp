@@ -434,9 +434,7 @@ namespace
           newData.append(trimmedText + trimmedSize, suffixSize);
         arg_ = arg;
         argValue_ = *arg;
-        static std::string data_;
-        data_ = newData;
-        arg->setText(data_);
+        arg->setText(newData);
       }
       void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {

@@ -192,13 +192,11 @@ namespace
       void hookafter(hook_context *s, TextBuffer buffer)
       {
 
-        auto newData = buffer.strA();
+        auto newData = buffer.viewA();
         auto arg = (TextUnionA *)(s->stack[0] + sizeof(DWORD)); // arg1
         arg_ = arg;
         argValue_ = *arg;
-        static std::string data_;
-        data_ = newData;
-        arg->setText(data_.c_str(), data_.size());
+        arg->setText(newData);
       }
       void hookAfter1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {

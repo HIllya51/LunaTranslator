@@ -67,7 +67,7 @@ class CaseInsensitiveDict(MutableMapping):
         return str(dict(self.items()))
 
 
-class ResponseBase:
+class Response:
     def __init__(self, stream):
         self.headers = CaseInsensitiveDict()
         self.stream = stream
@@ -259,7 +259,7 @@ class Requester_common:
         stream=None,
         verify=False,
         cert=None,
-    ) -> ResponseBase:
+    ) -> Response:
 
         if auth and isinstance(auth, tuple) and len(auth) == 2:
             headers["Authorization"] = (
@@ -316,7 +316,7 @@ class Requester_common:
             allow_redirects,
         )
 
-    def request_impl(self, *argc) -> ResponseBase: ...
+    def request_impl(self, *argc) -> Response: ...
 
     def _parseheader(self, headers: CaseInsensitiveDict, cookies: dict):
         _x = []

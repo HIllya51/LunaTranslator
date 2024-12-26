@@ -2,7 +2,6 @@ import requests
 from myutils.utils import urlpathjoin, createurl
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
-from myutils.commonbase import maybejson
 from translator.gptcommon import qianfanIAM
 
 
@@ -20,7 +19,7 @@ def list_models(typename, regist):
     try:
         return sorted([_["id"] for _ in resp.json()["data"]])
     except:
-        raise Exception(maybejson(resp))
+        raise Exception(resp)
 
 
 class chatgptlike(cishubase):
@@ -84,7 +83,7 @@ class chatgptlike(cishubase):
             return self.apiurl
         return createurl(self.apiurl)
 
-    def commonparseresponse(self, response: requests.ResponseBase):
+    def commonparseresponse(self, response: requests.Response):
         try:
             message = (
                 response.json()["choices"][0]["message"]["content"]

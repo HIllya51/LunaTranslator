@@ -15,7 +15,6 @@ from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
     loadpostsettingwindowmethod,
-    str2rgba,
     makehtml,
     loadpostsettingwindowmethod_maybe,
     find_or_create_uid,
@@ -86,6 +85,12 @@ class IconLabelX(LIconLabel, ButtonX):
             elif ev.button() == Qt.MouseButton.LeftButton:
                 self.clicked.emit()
         return super().mouseReleaseEvent(ev)
+
+
+def str2rgba(string, alpha100):
+    c = QColor(string)
+    c.setAlphaF(alpha100 / 100)
+    return c.name(QColor.NameFormat.HexArgb)
 
 
 class ButtonBar(QFrame):

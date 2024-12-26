@@ -1,7 +1,8 @@
 from qtsymbols import *
 import functools, importlib
 from traceback import print_exc
-import qtawesome, os, gobject, json
+import qtawesome, os, gobject, requests
+from myutils.commonbase import maybejson
 from myutils.config import globalconfig, _TR
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton_close
@@ -572,7 +573,18 @@ class autoinitdialog(LDialog):
                         dd[refname2line[line["list_cache"]]["k"]] = items
                     except Exception as e:
                         print_exc()
-                        QMessageBox.information(self, str(type(e))[8:-2], str(e))
+                        if e.args and isinstance(e.args[0], requests.Response):
+                            QMessageBox.information(
+                                self,
+                                "{} {}: {}".format(
+                                    e.args[0].status_code,
+                                    e.args[0].reason,
+                                    e.args[0].url,
+                                ),
+                                str(maybejson(e.args[0])),
+                            )
+                        else:
+                            QMessageBox.information(self, str(type(e))[8:-2], str(e))
 
                 if "list_function" in line:
                     items = dd[refname2line[line["list_cache"]]["k"]]

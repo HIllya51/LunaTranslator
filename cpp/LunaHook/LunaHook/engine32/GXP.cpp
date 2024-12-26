@@ -359,7 +359,7 @@ namespace
         arg_ = arg;
         argValue_ = *arg;
 
-        arg->setText(allocateString(buffer.viewW()));
+        arg->setText(buffer.viewW());
         // if (arg->size)
         //   hashes_.insert(Engine::hashWCharArray(arg->text, arg->size));
         //  return true;
@@ -452,7 +452,7 @@ namespace
         arg_ = arg;
         argValue_ = *arg;
 
-        arg->setText(allocateString(buffer.viewW()));
+        arg->setText(buffer.viewW());
       }
 
       void hookAfter(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)

@@ -11,7 +11,6 @@ from gui.dialog_savedgame_legacy import dialog_savedgame_legacy
 from gui.dialog_savedgame_setting import dialog_setting_game, userlabelset
 from myutils.wrapper import Singleton_close, tryprint
 from gui.specialwidget import lazyscrollflow
-from myutils.utils import str2rgba
 from myutils.config import (
     savehook_new_data,
     savegametaged,
@@ -29,7 +28,6 @@ from gui.usefulwidget import (
     FocusCombo,
 )
 from gui.dialog_savedgame_common import (
-    ItemWidget,
     dialog_syssetting,
     tagitem,
     startgamecheck,
@@ -245,6 +243,161 @@ class TagWidget(QWidget):
         self.__calltagschanged(signal)
 
 
+class IMGWidget(QLabel):
+
+    def adaptsize(self, size: QSize):
+
+        if globalconfig["imagewrapmode"] == 0:
+            h, w = size.height(), size.width()
+            r = float(w) / h
+            max_r = float(self.width()) / self.height()
+            if r < max_r:
+                new_w = self.width()
+                new_h = int(new_w / r)
+            else:
+                new_h = self.height()
+                new_w = int(new_h * r)
+            return QSize(new_w, new_h)
+        elif globalconfig["imagewrapmode"] == 1:
+            h, w = size.height(), size.width()
+            r = float(w) / h
+            max_r = float(self.width()) / self.height()
+            if r > max_r:
+                new_w = self.width()
+                new_h = int(new_w / r)
+            else:
+                new_h = self.height()
+                new_w = int(new_h * r)
+            return QSize(new_w, new_h)
+        elif globalconfig["imagewrapmode"] == 2:
+            return self.size()
+        elif globalconfig["imagewrapmode"] == 3:
+            return size
+
+    def setimg(self, pixmap: QPixmap):
+        if not (self.height() and self.width()):
+            return
+        if self.__last == (self.size(), globalconfig["imagewrapmode"]):
+            return
+        self.__last = (self.size(), globalconfig["imagewrapmode"])
+        rate = self.devicePixelRatioF()
+        newpixmap = QPixmap(self.size() * rate)
+        newpixmap.setDevicePixelRatio(rate)
+        newpixmap.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(newpixmap)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.drawPixmap(self.getrect(pixmap.size()), pixmap)
+        painter.end()
+        self.setPixmap(newpixmap)
+
+    def getrect(self, size):
+        size = self.adaptsize(size)
+        rect = QRect()
+        rect.setX(int((self.width() - size.width()) / 2))
+        rect.setY(int((self.height() - size.height()) / 2))
+        rect.setSize(size)
+        return rect
+
+    def resizeEvent(self, a0):
+        self.setimg(self._pixmap)
+        return super().resizeEvent(a0)
+
+    def __init__(self, p, pixmap) -> None:
+        super().__init__(p)
+        self.setScaledContents(True)
+        if type(pixmap) != QPixmap:
+            pixmap = pixmap()
+        self._pixmap = pixmap
+        self.__last = None
+
+    def switch(self):
+        self.setimg(self._pixmap)
+
+
+class ItemWidget(QWidget):
+    focuschanged = pyqtSignal(bool, str)
+    doubleclicked = pyqtSignal(str)
+    globallashfocus = None
+
+    @classmethod
+    def clearfocus(cls):
+        try:  # 可能已被删除
+            if ItemWidget.globallashfocus:
+                ItemWidget.globallashfocus.focusOut()
+        except:
+            pass
+        ItemWidget.globallashfocus = None
+
+    def click(self):
+        try:
+            self.bottommask.show()
+            if self != ItemWidget.globallashfocus:
+                ItemWidget.clearfocus()
+            ItemWidget.globallashfocus = self
+            self.focuschanged.emit(True, self.gameuid)
+        except:
+            print_exc()
+
+    def mousePressEvent(self, ev) -> None:
+        self.click()
+
+    def focusOut(self):
+        self.bottommask.hide()
+        self.focuschanged.emit(False, self.gameuid)
+
+    def mouseDoubleClickEvent(self, e):
+        self.doubleclicked.emit(self.gameuid)
+
+    def resizeEvent(self, a0: QResizeEvent) -> None:
+        self.__w.resize(a0.size())
+        self.bottommask.resize(a0.size())
+        self.maskshowfileexists.resize(a0.size())
+        self._imgsz()
+
+    def others(self):
+        self._lb.setText(self.file if globalconfig["showgametitle"] else "")
+        self._img.switch()
+        self._imgsz()
+
+    def _imgsz(self):
+
+        textH = (
+            globalconfig["dialog_savegame_layout"]["textH"]
+            if globalconfig["showgametitle"]
+            else 0
+        )
+        margin = globalconfig["dialog_savegame_layout"]["margin2"]
+        self._img.setGeometry(
+            margin, margin, self.width() - 2 * margin, self.height() - textH
+        )
+
+    def __init__(self, gameuid, pixmap, file) -> None:
+        super().__init__()
+        self.gameuid = gameuid
+        self.file = file
+        self.maskshowfileexists = QLabel(self)
+        self._img = IMGWidget(self, pixmap)
+        self.__w = QWidget(self)
+        self.__w.setStyleSheet("background:transparent")
+        self._lb = QLabel(self)
+        self._lb.setText(file if globalconfig["showgametitle"] else "")
+        self._lb.setWordWrap(True)
+        self._lb.setObjectName("savegame_textfont1")
+        self._lb.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        l = QVBoxLayout(self.__w)
+        l.setContentsMargins(0, 0, 0, 0)
+        l.addStretch(1)
+        l.addWidget(self._lb)
+        exists = os.path.exists(get_launchpath(gameuid))
+        self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
+        if not exists:
+            self.maskshowfileexists.raise_()
+        self.bottommask = QLabel(self)
+        self.bottommask.hide()
+        self.bottommask.setObjectName("savegame_onselectcolor1")
+
+
 class dialog_savedgame_new(QWidget):
 
     def dragEnterEvent(self, event: QDragEnterEvent):
@@ -311,6 +464,7 @@ class dialog_savedgame_new(QWidget):
                 globalconfig["dialog_savegame_layout"]["itemh"],
             )
         )
+        self.flow.setSpacing(globalconfig["dialog_savegame_layout"]["margin"])
         self.formLayout.insertWidget(self.formLayout.count(), self.flow)
         idx = 0
         for k in self.reflist:
@@ -490,6 +644,7 @@ class dialog_savedgame_new(QWidget):
                 globalconfig["dialog_savegame_layout"]["itemh"],
             )
         )
+        self.flow.setSpacing(globalconfig["dialog_savegame_layout"]["margin"])
         self.flow.resizeandshow()
         for _ in self.flow.widgets:
             if not isinstance(_, ItemWidget):
@@ -506,23 +661,15 @@ class dialog_savedgame_new(QWidget):
             _style += "font-size:{}pt;".format(_f.pointSize())
             _style += 'font-family:"{}";'.format(_f.family())
         style = "#{}{{ {} }}".format(key, _style)
-        for exits in [True, False]:
-            c = globalconfig["dialog_savegame_layout"][
-                ("onfilenoexistscolor1", "backcolor1")[exits]
-            ]
-            c = str2rgba(
-                c,
-                globalconfig["dialog_savegame_layout"][
-                    ("transparentnotexits", "transparent")[exits]
-                ],
-            )
 
-            style += "#savegame_exists{}{{background-color:{};}}".format(exits, c)
+        style += "#savegame_existsTrue{{background-color:{};}}".format(
+            globalconfig["dialog_savegame_layout"]["backcolor2"]
+        )
+        style += "#savegame_existsFalse{{background-color:{};}}".format(
+            globalconfig["dialog_savegame_layout"]["onfilenoexistscolor2"]
+        )
         style += "#savegame_onselectcolor1{{background-color: {};}}".format(
-            str2rgba(
-                globalconfig["dialog_savegame_layout"]["onselectcolor1"],
-                globalconfig["dialog_savegame_layout"]["transparentselect"],
-            )
+            globalconfig["dialog_savegame_layout"]["onselectcolor2"]
         )
         self.setStyleSheet(style)
 

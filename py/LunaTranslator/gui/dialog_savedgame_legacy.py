@@ -237,7 +237,7 @@ class dialog_savedgame_legacy(QWidget):
         bottom.addWidget(button3)
         _ = QLabel()
         _.setFixedHeight(20)
-        _.setStyleSheet("background: transparent;")
+        _.setStyleSheet("background:transparent")
         formLayout.addWidget(_)
         formLayout.addWidget(table)
         formLayout.addLayout(bottom)

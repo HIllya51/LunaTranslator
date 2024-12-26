@@ -122,11 +122,12 @@ def dodownload(combo: QComboBox, allsupports: list):
     )
 
 
-def doinstall(self, combo: QComboBox, allsupports: list, parent, callback):
+def doinstall(self, allsupports: list, parent, callback):
     if not allsupports:
         return
-    lang = allsupports[combo.currentIndex()]
-    f = QFileDialog.getOpenFileName(parent, filter=lang + ".zip")
+    f = QFileDialog.getOpenFileName(
+        parent, filter="model ({})".format(" ".join([_ + ".zip" for _ in allsupports]))
+    )
     fn = f[0]
     if not fn:
         return
@@ -166,7 +167,7 @@ def question():
     btndownload.clicked.connect(functools.partial(dodownload, combo, allsupports))
     btninstall = LPushButton("添加")
     btninstall.clicked.connect(
-        functools.partial(doinstall, dialog, combo, allsupports, dialog, callback)
+        functools.partial(doinstall, combo, allsupports, dialog, callback)
     )
     formLayout.addRow(
         "添加语言包",

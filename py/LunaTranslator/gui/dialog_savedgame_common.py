@@ -37,163 +37,6 @@ def showcountgame(window, num):
         window.setWindowTitle("游戏管理")
 
 
-class ItemWidget(QWidget):
-    focuschanged = pyqtSignal(bool, str)
-    doubleclicked = pyqtSignal(str)
-    globallashfocus = None
-
-    @classmethod
-    def clearfocus(cls):
-        try:  # 可能已被删除
-            if ItemWidget.globallashfocus:
-                ItemWidget.globallashfocus.focusOut()
-        except:
-            pass
-        ItemWidget.globallashfocus = None
-
-    def click(self):
-        try:
-            self.bottommask.show()
-            if self != ItemWidget.globallashfocus:
-                ItemWidget.clearfocus()
-            ItemWidget.globallashfocus = self
-            self.focuschanged.emit(True, self.gameuid)
-        except:
-            print_exc()
-
-    def mousePressEvent(self, ev) -> None:
-        self.click()
-
-    def focusOut(self):
-        self.bottommask.hide()
-        self.focuschanged.emit(False, self.gameuid)
-
-    def mouseDoubleClickEvent(self, e):
-        self.doubleclicked.emit(self.gameuid)
-
-    def resizeEvent(self, a0: QResizeEvent) -> None:
-        self.bottommask.resize(a0.size())
-        self.maskshowfileexists.resize(a0.size())
-        self.resizex()
-
-    def resizex(self):
-        margin = globalconfig["dialog_savegame_layout"]["margin"]
-        textH = (
-            globalconfig["dialog_savegame_layout"]["textH"]
-            if globalconfig["showgametitle"]
-            else 0
-        )
-        self._w.setFixedHeight(self.height() - textH)
-        self.wrap.setContentsMargins(margin, margin, margin, margin)
-
-    def others(self):
-        self._lb.setText(self.file if globalconfig["showgametitle"] else "")
-        self.resizex()
-        self._img.switch()
-
-    def __init__(self, gameuid, pixmap, file) -> None:
-        super().__init__()
-        self.file = file
-        self.maskshowfileexists = QLabel(self)
-        exists = os.path.exists(get_launchpath(gameuid))
-        self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
-        self.bottommask = QLabel(self)
-        self.bottommask.hide()
-        self.bottommask.setObjectName("savegame_onselectcolor1")
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        self._img = IMGWidget(pixmap)
-        _w = QWidget()
-        _w.setStyleSheet("background-color: rgba(255,255,255, 0);")
-        wrap = QVBoxLayout()
-        _w.setLayout(wrap)
-        self._w = _w
-        wrap.addWidget(self._img)
-        self.wrap = wrap
-        layout.addWidget(_w)
-        layout.setSpacing(0)
-        self._lb = QLabel()
-        self._lb.setText(file if globalconfig["showgametitle"] else "")
-        self._lb.setWordWrap(True)
-        self._lb.setObjectName("savegame_textfont1")
-        self._lb.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        layout.addWidget(self._lb)
-        self.setLayout(layout)
-        self.gameuid = gameuid
-
-
-class IMGWidget(QLabel):
-
-    def adaptsize(self, size: QSize):
-
-        if globalconfig["imagewrapmode"] == 0:
-            h, w = size.height(), size.width()
-            r = float(w) / h
-            max_r = float(self.width()) / self.height()
-            if r < max_r:
-                new_w = self.width()
-                new_h = int(new_w / r)
-            else:
-                new_h = self.height()
-                new_w = int(new_h * r)
-            return QSize(new_w, new_h)
-        elif globalconfig["imagewrapmode"] == 1:
-            h, w = size.height(), size.width()
-            r = float(w) / h
-            max_r = float(self.width()) / self.height()
-            if r > max_r:
-                new_w = self.width()
-                new_h = int(new_w / r)
-            else:
-                new_h = self.height()
-                new_w = int(new_h * r)
-            return QSize(new_w, new_h)
-        elif globalconfig["imagewrapmode"] == 2:
-            return self.size()
-        elif globalconfig["imagewrapmode"] == 3:
-            return size
-
-    def setimg(self, pixmap: QPixmap):
-        if not (self.height() and self.width()):
-            return
-        if self.__last == (self.size(), globalconfig["imagewrapmode"]):
-            return
-        self.__last = (self.size(), globalconfig["imagewrapmode"])
-        rate = self.devicePixelRatioF()
-        newpixmap = QPixmap(self.size() * rate)
-        newpixmap.setDevicePixelRatio(rate)
-        newpixmap.fill(Qt.GlobalColor.transparent)
-        painter = QPainter(newpixmap)
-        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.drawPixmap(self.getrect(pixmap.size()), pixmap)
-        painter.end()
-        self.setPixmap(newpixmap)
-
-    def getrect(self, size):
-        size = self.adaptsize(size)
-        rect = QRect()
-        rect.setX(int((self.width() - size.width()) / 2))
-        rect.setY(int((self.height() - size.height()) / 2))
-        rect.setSize(size)
-        return rect
-
-    def resizeEvent(self, a0):
-        self.setimg(self._pixmap)
-        return super().resizeEvent(a0)
-
-    def __init__(self, pixmap) -> None:
-        super().__init__()
-        self.setScaledContents(True)
-        if type(pixmap) != QPixmap:
-            pixmap = pixmap()
-        self._pixmap = pixmap
-        self.__last = None
-
-    def switch(self):
-        self.setimg(self._pixmap)
-
-
 class ClickableLabel(QLabel):
     def __init__(self):
         super().__init__()
@@ -262,7 +105,7 @@ class tagitem(QFrame):
         key = (tag, _type, refdata)
         self.setLayout(tagLayout)
         lb = ClickableLabel()
-        lb.setStyleSheet("background: transparent;")
+        lb.setStyleSheet("background:transparent")
         lb.setText(tag)
         lb.clicked.connect(functools.partial(self.labelclicked.emit, key))
         if removeable:
@@ -327,21 +170,18 @@ def __scaletosize(_pix: QPixmap, tgt):
     _pix.save(tgt)
 
 
-def getcachedimage(src, small):
+def getcachedimage(src, small) -> QPixmap:
     if not small:
-        _pix = QPixmap(src)
-        if _pix.isNull():
-            return None
-        return _pix
+        return QPixmap(src)
     if not os.path.exists(src):
-        return None
+        return QPixmap()
     src2 = gobject.getcachedir("icon2/{}.jpg".format(__b64string(src)))
     _pix = QPixmap(src2)
     if not _pix.isNull():
         return _pix
     _pix = QPixmap(src)
     if _pix.isNull():
-        return None
+        return _pix
     __scaletosize(_pix, src2)
     return _pix
 
@@ -354,7 +194,7 @@ def getpixfunction(kk, small=False, iconfirst=False):
         ):
             src = savehook_new_data[kk].get("currenticon")
             pix = getcachedimage(src, small)
-            if pix:
+            if not pix.isNull():
                 return pix
         _pix = getExeIcon(uid2gamepath[kk], False, cache=True)
         return _pix
@@ -364,11 +204,11 @@ def getpixfunction(kk, small=False, iconfirst=False):
     ):
         src = savehook_new_data[kk].get("currentmainimage")
         pix = getcachedimage(src, small)
-        if pix:
+        if not pix.isNull():
             return pix
     for _ in savehook_new_data[kk]["imagepath_all"]:
         pix = getcachedimage(_, small)
-        if pix:
+        if not pix.isNull():
             return pix
     _pix = getExeIcon(uid2gamepath[kk], False, cache=True)
     return _pix
@@ -487,7 +327,7 @@ def getalistname(parent, callback, skipid=False, skipidid=None, title="添加到
                     "callback": functools.partial(__wrap, callback, __d, __uid),
                 },
             ],
-            exec_=True
+            exec_=True,
         )
     elif len(__uid):
 
@@ -547,6 +387,7 @@ class dialog_syssetting(LDialog):
                 ("itemw", "宽度"),
                 ("itemh", "高度"),
                 ("margin", "边距"),
+                ("margin2", "边距_2"),
                 ("textH", "文字区高度"),
             ]:
                 formLayout.addRow(
@@ -594,10 +435,10 @@ class dialog_syssetting(LDialog):
             )
 
         formLayout.addRow(SplitLine())
-        for key, key2, name in [
-            ("backcolor1", "transparent", "颜色"),
-            ("onselectcolor1", "transparentselect", "选中时颜色"),
-            ("onfilenoexistscolor1", "transparentnotexits", "游戏不存在时颜色"),
+        for key, name in [
+            ("backcolor2", "颜色"),
+            ("onselectcolor2", "选中时颜色"),
+            ("onfilenoexistscolor2", "游戏不存在时颜色"),
         ]:
             formLayout.addRow(
                 name,
@@ -613,19 +454,10 @@ class dialog_syssetting(LDialog):
                         self,
                         key,
                         callback=self.parent().setstyle,
+                        alpha=True,
                     ),
                     name=key,
                     parent=self,
-                ),
-            )
-            formLayout.addRow(
-                name + "_" + "不透明度",
-                getspinbox(
-                    0,
-                    100,
-                    globalconfig["dialog_savegame_layout"],
-                    key2,
-                    callback=lambda _: self.parent().setstyle(),
                 ),
             )
         self.show()

@@ -33,10 +33,10 @@ class proxysession(requests.Session):
         super().__init__()
         self.proxyconf = _key1, _key2
 
-    def request(self, *args, **kwargs) -> maybejson:
+    def request(self, *args, **kwargs):
         kwargs["proxies"] = getproxy(self.proxyconf)
 
-        return maybejson(super().request(*args, **kwargs))
+        return super().request(*args, **kwargs)
 
 
 class commonbase:

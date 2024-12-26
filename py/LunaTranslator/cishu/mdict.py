@@ -2407,7 +2407,11 @@ class mdict(cishubase):
         ):
             matches += [(_type, _) for _ in re.findall(patt, html_content)]
         for _type_1, url in matches:
-            if url.startswith("#"):  # a href # 页内跳转
+            if (
+                url.startswith("#")
+                or url.startswith("https:")
+                or url.startswith("http:")
+            ):
                 continue
             try:
                 file_content = self.tryloadurl(index, base, url, audiob64vals)
@@ -2617,16 +2621,16 @@ if (content.style.display === 'block') {
                 extra = "display: none;"
             uid = str(uuid.uuid4())
             lis.append(
-                r"""<li><div class="collapsible-header" id="{}" onclick="mdict_flowstyle_clickcallback('{}')">{}</div><div class="collapsible-content" style="{}">
+                r"""<div><div class="collapsible-header" id="{}" onclick="mdict_flowstyle_clickcallback('{}')">{}</div><div class="collapsible-content" style="{}">
                {}
-            </div></li>""".format(
+            </div></div>""".format(
                     uid, uid, title, extra, res
                 )
             )
         content += r"""
-<ul class="collapsible-list">
+<div class="collapsible-list">
          {}
-    </ul>""".format(
+    </div>""".format(
             "".join(lis)
         )
 

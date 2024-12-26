@@ -524,10 +524,6 @@
                 "name": "manga-ocr",
                 "links": [
                     {
-                        "name": "项目仓库",
-                        "link": "https://github.com/kha-white/manga-ocr"
-                    },
-                    {
                         "name": "整合包_CPU",
                         "link": "{main_server}/Resource/IntegrationPack/manga_ocr/cpu"
                     },
@@ -562,6 +558,10 @@
                     {
                         "name": "freemdict",
                         "link": "https://search.freemdict.com/"
+                    },
+                    {
+                        "name": "Jitendex",
+                        "link": "https://github.com/stephenmk/stephenmk.github.io/releases/latest/download/jitendex-mdict.zip"
                     }
                 ]
             }
@@ -592,10 +592,6 @@
             {
                 "name": "vits-simple-api",
                 "links": [
-                    {
-                        "name": "Github",
-                        "link": "https://github.com/Artrajz/vits-simple-api/releases"
-                    },
                     {
                         "name": "整合包_CPU",
                         "link": "{main_server}/Resource/IntegrationPack/vits-simple-api/cpu"

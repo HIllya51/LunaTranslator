@@ -2,7 +2,7 @@ import windows
 import os, time
 import codecs, hashlib, shutil
 import socket, gobject, uuid, subprocess, functools
-import importlib, json
+import importlib, json, requests
 from qtsymbols import *
 from string import Formatter
 from ctypes import cast, c_char, POINTER
@@ -340,7 +340,15 @@ def kanjitrans(k):
     return k.translate(kanjichs2ja)
 
 
-def stringfyerror(e):
+def stringfyerror(e: Exception):
+    if e.args and isinstance(e.args[0], requests.Response):
+        from myutils.commonbase import maybejson
+
+        return "{} {}: {}".format(
+            e.args[0].status_code,
+            e.args[0].reason,
+            str(maybejson(e.args[0])).replace("\n", " ").replace("\r", ""),
+        )
     return str(type(e))[8:-2] + " " + str(e).replace("\n", " ").replace("\r", "")
 
 
@@ -697,15 +705,6 @@ def parsekeystringtomodvkcode(keystring, modes=False):
     if modes:
         mode = _modes
     return mode, vkcode
-
-
-def str2rgba(string, alpha100):
-    return "rgba(%s, %s, %s, %s)" % (
-        int(string[1:3], 16),
-        int(string[3:5], 16),
-        int(string[5:7], 16),
-        alpha100 / 100,
-    )
 
 
 def get_time_stamp(ct=None, ms=True):

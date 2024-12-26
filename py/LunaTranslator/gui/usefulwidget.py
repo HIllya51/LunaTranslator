@@ -1010,18 +1010,51 @@ def D_getsimpleswitch(
     )
 
 
+def getColor(color, parent, alpha=False):
+
+    color_dialog = QColorDialog(color, parent)
+    if alpha:
+        color_dialog.setOption(QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
+    layout = color_dialog.layout()
+    clearlayout(layout.itemAt(0).layout().takeAt(0))
+    layout = layout.itemAt(0).layout().itemAt(0).layout().itemAt(2).widget().layout()
+    layout.takeAt(1).widget().hide()
+    layout.takeAt(1).widget().hide()
+    layout.takeAt(1).widget().hide()
+    layout.takeAt(1).widget().hide()
+    layout.takeAt(1).widget().hide()
+    layout.takeAt(1).widget().hide()
+
+    layout.takeAt(layout.count() - 1).widget().hide()
+    layout.takeAt(layout.count() - 1).widget().hide()
+    if not alpha:
+        layout.takeAt(layout.count() - 1).widget().hide()
+        layout.takeAt(layout.count() - 1).widget().hide()
+    if color_dialog.exec_() != QColorDialog.DialogCode.Accepted:
+        return QColor()
+    return color_dialog.selectedColor()
+
+
 def selectcolor(
-    parent, configdict, configkey, button, item=None, name=None, callback=None
+    parent,
+    configdict,
+    configkey,
+    button,
+    item=None,
+    name=None,
+    callback=None,
+    alpha=False,
 ):
 
-    color = QColorDialog.getColor(QColor(configdict[configkey]), parent)
+    color = getColor(QColor(configdict[configkey]), parent, alpha)
     if not color.isValid():
         return
     if button is None:
         button = getattr(item, name)
     button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
-    configdict[configkey] = color.name()
-
+    configdict[configkey] = (
+        color.name(QColor.NameFormat.HexArgb) if alpha else color.name()
+    )
     if callback:
         try:
             callback()
@@ -2443,9 +2476,9 @@ def clearlayout(ll: QLayout):
         item = ll.takeAt(0)
         if not item:
             continue
-        ll.removeItem(item)
         w = item.widget()
         if w:
+            w.hide()
             w.deleteLater()
             continue
         l = item.layout()
