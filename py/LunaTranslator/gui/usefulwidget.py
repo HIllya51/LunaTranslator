@@ -2488,6 +2488,25 @@ def clearlayout(ll: QLayout):
             continue
 
 
+def showhidelayout(ll: QLayout, vis):
+    for _ in range(ll.count()):
+        item = ll.itemAt(_)
+        if not item:
+            continue
+        w = item.widget()
+        if w:
+            if vis:
+                if not w.isVisible():
+                    w.setVisible(True)
+            else:
+                w.setVisible(False)
+            continue
+        l = item.layout()
+        if l:
+            showhidelayout(l, vis)
+            continue
+
+
 class FQPlainTextEdit(QPlainTextEdit):
     def mousePressEvent(self, a0: QMouseEvent) -> None:
         # 点击浏览器后，无法重新获取焦点。
@@ -2526,7 +2545,7 @@ class VisLFormLayout(LFormLayout):
     def setRowVisible(self, row_index, visible):
         if isinstance(row_index, int):
             pass
-        elif isinstance(row_index, QWidget):
+        elif isinstance(row_index, (QWidget, QLayout)):
             row_index = self._reverse[row_index]
         if self._row_vis[row_index] == visible:
             return
@@ -2537,15 +2556,21 @@ class VisLFormLayout(LFormLayout):
                 super().insertRow(insert_position, label, field)
             else:
                 super().insertRow(insert_position, field)
-            if not field.isVisible():
-                field.setVisible(True)
+            if isinstance(field, QWidget):
+                if not field.isVisible():
+                    field.setVisible(True)
+            else:
+                showhidelayout(field, True)
         else:
             tres = self.takeRow(insert_position)
             label = tres.labelItem
             if label is not None:
                 self.removeItem(label)
                 label.widget().deleteLater()
-            tres.fieldItem.widget().hide()
+            if tres.fieldItem.widget():
+                tres.fieldItem.widget().hide()
+            else:
+                showhidelayout(tres.fieldItem.layout(), False)
         self._row_vis[row_index] = visible
 
 
