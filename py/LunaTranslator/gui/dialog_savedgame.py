@@ -275,6 +275,8 @@ class IMGWidget(QLabel):
             return size
 
     def setimg(self, pixmap: QPixmap):
+        if pixmap.isNull():
+            return
         if not (self.height() and self.width()):
             return
         if self.__last == (self.size(), globalconfig["imagewrapmode"]):
@@ -350,7 +352,6 @@ class ItemWidget(QWidget):
         self.doubleclicked.emit(self.gameuid)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
-        self.__w.resize(a0.size())
         self.bottommask.resize(a0.size())
         self.maskshowfileexists.resize(a0.size())
         self._imgsz()
@@ -374,6 +375,24 @@ class ItemWidget(QWidget):
             self.width() - 2 * margin,
             self.height() - textH - 2 * margin,
         )
+        if self._img._pixmap.isNull():
+            self._lb.setGeometry(
+                margin,
+                max(
+                    margin,
+                    self.height() - self._lb.heightForWidth(self.width()) - margin,
+                ),
+                self.width() - 2 * margin,
+                min(self.height() - 2 * margin, self._lb.heightForWidth(self.width())),
+            )
+        else:
+
+            self._lb.setGeometry(
+                margin,
+                self.height() - textH - margin,
+                self.width() - 2 * margin,
+                textH,
+            )
 
     def __init__(self, gameuid, pixmap, file) -> None:
         super().__init__()
@@ -381,17 +400,11 @@ class ItemWidget(QWidget):
         self.file = file
         self.maskshowfileexists = QLabel(self)
         self._img = IMGWidget(self, pixmap)
-        self.__w = QWidget(self)
-        self.__w.setStyleSheet("background:transparent")
         self._lb = QLabel(self)
         self._lb.setText(file if globalconfig["showgametitle"] else "")
         self._lb.setWordWrap(True)
         self._lb.setObjectName("savegame_textfont1")
         self._lb.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        l = QVBoxLayout(self.__w)
-        l.setContentsMargins(0, 0, 0, 0)
-        l.addStretch(1)
-        l.addWidget(self._lb)
         exists = os.path.exists(get_launchpath(gameuid))
         self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
         if not exists:

@@ -202,8 +202,7 @@ def getExeIcon(name: str, icon=True, cache=False):
                 pass
                 # print_exc()
         if succ == False:
-            pixmap = QPixmap(100, 100)
-            pixmap.fill(QColor.fromRgba(0))
+            pixmap = QPixmap()
     if icon:
         return QIcon(pixmap)
     else:
