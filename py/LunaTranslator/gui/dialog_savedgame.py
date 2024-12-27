@@ -369,7 +369,10 @@ class ItemWidget(QWidget):
         )
         margin = globalconfig["dialog_savegame_layout"]["margin2"]
         self._img.setGeometry(
-            margin, margin, self.width() - 2 * margin, self.height() - textH
+            margin,
+            margin,
+            self.width() - 2 * margin,
+            self.height() - textH - 2 * margin,
         )
 
     def __init__(self, gameuid, pixmap, file) -> None:
