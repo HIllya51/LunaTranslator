@@ -186,7 +186,6 @@ class ImageDelegate(QStyledItemDelegate):
 
 
 class MyQListWidget(QListWidget):
-    iscleared = pyqtSignal(bool)
 
     def sethor(self, hor):
         if hor:
@@ -208,11 +207,7 @@ class MyQListWidget(QListWidget):
         self.loadTimer = QTimer(interval=25, timeout=self.loadImage)
         self.loadTimer.start()
 
-    def islg1(self):
-        self.iscleared.emit(self.model().rowCount() > 1)
-
     def loadImage(self):
-        self.islg1()
         try:
             start = self.indexAt(self.viewport().rect().topLeft()).row()
             end = self.indexAt(self.viewport().rect().bottomRight()).row()
@@ -347,20 +342,13 @@ class viewpixmap_x(QWidget):
     def sizeHint(self):
         return QSize(400, 400)
 
-    def setnextable(self, b):
-        self.leftclick.setVisible(b)
-        self.rightclick.setVisible(b)
-
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.pixmapviewer = pixmapviewer(self)
-        self.leftclick = hoverbtn("<-", self)
-        self.rightclick = hoverbtn("->", self)
+        self.pixmapviewer.tolastnext.connect(self.tolastnext)
         self.maybehavecomment = hoverbtn(self)
         self.bottombtn = hoverbtn("开始游戏", self)
         self.bottombtn.clicked.connect(self.startgame)
-        self.leftclick.clicked.connect(lambda: self.tolastnext.emit(-1))
-        self.rightclick.clicked.connect(lambda: self.tolastnext.emit(1))
         self.maybehavecomment.clicked.connect(self.viscomment)
         self.commentedit = QPlainTextEdit(self)
         self.commentedit.textChanged.connect(self.changecommit)
@@ -470,23 +458,11 @@ class viewpixmap_x(QWidget):
         self.pixmapviewer.resize(e.size())
         self.pathview.resize(e.size().width(), self.pathview.height())
         self.infoview.resize(e.size().width(), self.infoview.height())
-        self.leftclick.setGeometry(
-            0,
-            e.size().height() // 10,
-            e.size().width() // 5,
-            7 * e.size().height() // 10,
-        )
         self.bottombtn.setGeometry(
             e.size().width() // 5,
             7 * e.size().height() // 10,
             3 * e.size().width() // 5,
             3 * e.size().height() // 10,
-        )
-        self.rightclick.setGeometry(
-            4 * e.size().width() // 5,
-            e.size().height() // 10,
-            e.size().width() // 5,
-            7 * e.size().height() // 10,
         )
         self.maybehavecomment.setGeometry(
             e.size().width() // 5, 0, 3 * e.size().width() // 5, e.size().height() // 10
@@ -556,7 +532,6 @@ class pixwrapper(QWidget):
         self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.pixview = viewpixmap_x(self)
         self.pixview.startgame.connect(self.startgame)
-        self.previewimages.list.iscleared.connect(self.pixview.setnextable)
         self.spliter = QSplitter(self)
         self.vlayout.addWidget(self.spliter)
         self.setrank(rank)

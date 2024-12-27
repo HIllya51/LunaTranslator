@@ -2277,6 +2277,10 @@ def getsimplepatheditor(
 class pixmapviewer(QWidget):
     tolastnext = pyqtSignal(int)
 
+    def wheelEvent(self, e: QWheelEvent) -> None:
+        self.tolastnext.emit([-1, 1][e.angleDelta().y() < 0])
+        return super().wheelEvent(e)
+
     def __init__(self, p=None) -> None:
         super().__init__(p)
         self.pix = None
