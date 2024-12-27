@@ -604,9 +604,6 @@ class autoinitdialog(LDialog):
                         )
                     )
                 lineW.addWidget(combo)
-                _w = QWidget()
-                _w.setLayout(lineW)
-                lineW = _w
             elif line["type"] == "okcancel":
                 lineW = QDialogButtonBox(
                     QDialogButtonBox.StandardButton.Ok
@@ -642,9 +639,6 @@ class autoinitdialog(LDialog):
                 )
 
                 regist[key] = functools.partial(__temp.__getitem__, "k")
-                _ = QWidget()
-                _.setLayout(lineW)
-                lineW = _
             elif line["type"] == "switch":
                 lineW = MySwitch(sign=dd[key])
                 regist[key] = lineW.isChecked
@@ -652,9 +646,7 @@ class autoinitdialog(LDialog):
                 _.addStretch()
                 _.addWidget(lineW)
                 _.addStretch()
-                _w = QWidget()
-                _w.setLayout(_)
-                lineW = _w
+                lineW = _
             elif line["type"] in ["spin", "intspin"]:
 
                 __temp = {"k": dd[key]}
@@ -683,9 +675,9 @@ class autoinitdialog(LDialog):
                     lineW.setEnabled(dd[key])
                     hbox.addWidget(switch)
                     hbox.addWidget(lineW)
-                    _ = QWidget()
-                    _.setLayout(hbox)
-                    lineW = _
+                    lineW = hbox
+            if isinstance(lineW, QLayout):
+                lineW.setContentsMargins(0, 0, 0, 0)
             if ("name" not in line) or (line["type"] == "split"):
                 formLayout.addRow(lineW)
             else:
