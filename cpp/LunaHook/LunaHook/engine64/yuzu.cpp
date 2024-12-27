@@ -2151,12 +2151,6 @@ namespace
         s = std::regex_replace(s, std::regex("TKY[0-9]{6}_[A-Z][0-9]{2}"), "");
         buffer->from(s);
     }
-    void F0100CF400F7CE000(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\n+"), " ");
-        buffer->from(s);
-    }
     void F01000AE01954A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -3157,15 +3151,17 @@ namespace
             // Ni no Kuni II: Revenant Kingdom
             {0x80ac651c, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, 0x0100C4E013E5E000ull, "1.0.0"}}, // Main Text
             {0x80335ea0, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, 0x0100C4E013E5E000ull, "1.0.0"}}, // Name
+            // 遙かなる時空の中で６ DX
+            {0x80193FAC, {0, 0, 0, 0, F0100F7700CB82000, 0x0100F7700CB82000ull, "1.0.0"}}, // 1.0.0 & 1.0.1
             // 遙かなる時空の中で7
-            {0x800102bc, {0, 0, 0, T0100CF400F7CE000, F0100CF400F7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // name, sjis
-            {0x80051f90, {0, 1, 0, T0100CF400F7CE000, F0100CF400F7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // text
-            {0x80010b48, {0, 0, 0, T0100CF400F7CE000, F0100CF400F7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // prompt
-            {0x80010c80, {0, 0, 0, T0100CF400F7CE000, F0100CF400F7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // choice
+            {0x800102bc, {0, 0, 0, 0, 0, 0x0100CF400F7CE000ull, "1.0.0"}},                                 // name
+            {0x80051f90, {0, 1, 0, T0100CF400F7CE000, F0100B5801D7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // text
+            {0x80010b48, {0, 0, 0, T0100CF400F7CE000, F0100B5801D7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // prompt
+            {0x80010c80, {0, 0, 0, T0100CF400F7CE000, F0100B5801D7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // choice
             // アンジェリーク ルミナライズ
-            {0x80046c04, {0, 0, 0, T0100CF400F7CE000, F0100CF400F7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // ingameDialogue, sjis
-            {0x80011284, {0, 0, 0, T0100CF400F7CE000, F0100CF400F7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // choice
-            {0x80011140, {0, 0, 0, T0100CF400F7CE000, F0100CF400F7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // prompt first
+            {0x80046c04, {0, 0, 0, T0100CF400F7CE000, F0100B5801D7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // ingameDialogue, sjis
+            {0x80011284, {0, 0, 0, T0100CF400F7CE000, F0100B5801D7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // choice
+            {0x80011140, {0, 0, 0, T0100CF400F7CE000, F0100B5801D7CE000, 0x0100D11018A7E000ull, "1.0.0"}}, // prompt first
             // Star Ocean The Second Story R
             {0x81d5e4d0, {0, 1, 0, ReadTextAndLenDW, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Main Text + Tutorial
             {0x81d641b4, {0, 0, 0, ReadTextAndLenDW, F010065301A2E0000, 0x010065301A2E0000ull, "1.0.2"}}, // Intro Cutscene
@@ -3572,8 +3568,6 @@ namespace
             {0x801A10A4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, 0x010053F0128DC000ull, "1.0.0"}},
             {0x801A04F4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, 0x010053F0128DC000ull, "1.0.1"}},
             {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, 0x010053F0128DC000ull, "1.0.1"}},
-            // 遙かなる時空の中で６ DX
-            {0x80193FAC, {0, 0, 0, 0, F0100F7700CB82000, 0x0100F7700CB82000ull, "1.0.0"}},
             // フローラル・フローラブ
             {0x80020974, {0, 0, 0, 0, F0100D8B019FC0000<true>, 0x0100D8B019FC0000ull, "1.0.0"}},
             {0x80020958, {0, 0, 0, 0, F0100D8B019FC0000<false>, 0x0100D8B019FC0000ull, "1.0.0"}},
