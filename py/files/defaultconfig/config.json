@@ -897,7 +897,7 @@
         "空白": false
     },
     "quick_setting": {
-        "use": false,
+        "use": true,
         "all": {
             "36": {
                 "use": false,
