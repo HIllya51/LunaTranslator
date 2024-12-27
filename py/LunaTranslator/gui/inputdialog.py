@@ -691,6 +691,7 @@ class autoinitdialog(LDialog):
         for comboname, refitems in cachehasref.items():
 
             def refcombofunction(refitems, _i):
+                viss = []
                 for w, linwinfo in refitems:
                     vis = True
                     if linwinfo.get("refcombo_i") is not None:
@@ -699,7 +700,12 @@ class autoinitdialog(LDialog):
                         vis = linwinfo.get("refcombo_i_r") != _i
                     elif linwinfo.get("refcombo_l") is not None:
                         vis = _i in linwinfo.get("refcombo_l")
-                    formLayout.setRowVisible(w, vis)
+                    if not vis:
+                        formLayout.setRowVisible(w, False)
+                    else:
+                        viss.append(w)
+                for w in viss:
+                    formLayout.setRowVisible(w, True)
 
             cachecombo[comboname].currentIndexChanged.connect(
                 functools.partial(refcombofunction, refitems)
