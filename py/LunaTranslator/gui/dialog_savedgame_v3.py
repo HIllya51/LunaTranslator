@@ -740,6 +740,9 @@ class dialog_savedgame_v3(QWidget):
     def directshow(self):
         self.stack.directshow()
 
+    def callexists(self, _):
+        pass
+
     def callchange(self):
         self.stack.setheight(
             globalconfig["dialog_savegame_layout"]["listitemheight"] + 1

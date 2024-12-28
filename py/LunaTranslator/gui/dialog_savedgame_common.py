@@ -375,7 +375,7 @@ class dialog_syssetting(LDialog):
 
         formLayout.addRow(
             "隐藏不存在的游戏",
-            getsimpleswitch(globalconfig, "hide_not_exists"),
+            getsimpleswitch(globalconfig, "hide_not_exists", callback=self.parent().callexists),
         )
 
         formLayout.addRow(

@@ -376,7 +376,7 @@ class ItemWidget(QWidget):
         self.l.setSpacing(0)
         self.l.setContentsMargins(
             *([globalconfig["dialog_savegame_layout"]["margin2"]] * 4)
-        ) 
+        )
         for image in savehook_new_data[gameuid]["imagepath_all"]:
             fr = extradatas["imagefrom"].get(image)
             if fr:
@@ -641,6 +641,12 @@ class dialog_savedgame_new(QWidget):
                 static=True,
             ),
         )
+
+    def callexists(self, _):
+        if _:
+            self.tagswidget.addTag(_TR("存在"), tagitem.TYPE_EXISTS)
+        else:
+            self.tagswidget.removeTag((_TR("存在"), tagitem.TYPE_EXISTS, None))
 
     def callchange(self):
         self.flow.setsize(
