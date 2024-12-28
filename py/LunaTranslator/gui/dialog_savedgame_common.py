@@ -404,10 +404,6 @@ class dialog_syssetting(LDialog):
                 ),
             )
             formLayout.addRow(
-                "显示标题",
-                getsimpleswitch(globalconfig, "showgametitle"),
-            )
-            formLayout.addRow(
                 "缩放",
                 getsimplecombobox(
                     ["填充", "适应", "拉伸", "居中"],

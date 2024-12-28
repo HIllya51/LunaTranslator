@@ -441,7 +441,6 @@
     "localeswitchmethod": 0,
     "hide_not_exists": false,
     "startgamenototop": true,
-    "showgametitle": true,
     "extra_space": 0,
     "extra_space_trans": 0,
     "fonttype": "",
@@ -521,8 +520,8 @@
     "dialog_savegame_layout": {
         "itemw": 130,
         "itemh": 190,
-        "margin": 8,
-        "margin2": 8,
+        "margin": 6,
+        "margin2": 6,
         "textH": 0,
         "backcolor2": "#40ffffff",
         "onselectcolor2": "#40007fff",

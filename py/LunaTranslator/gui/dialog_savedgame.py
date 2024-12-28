@@ -354,57 +354,40 @@ class ItemWidget(QWidget):
     def resizeEvent(self, a0: QResizeEvent) -> None:
         self.bottommask.resize(a0.size())
         self.maskshowfileexists.resize(a0.size())
-        self._imgsz()
 
     def others(self):
-        self._lb.setText(self.file if globalconfig["showgametitle"] else "")
-        self._img.switch()
-        self._imgsz()
-
-    def _imgsz(self):
-
-        textH = (
-            globalconfig["dialog_savegame_layout"]["textH"]
-            if globalconfig["showgametitle"]
-            else 0
+        self.l.setContentsMargins(
+            *([globalconfig["dialog_savegame_layout"]["margin2"]] * 4)
         )
-        margin = globalconfig["dialog_savegame_layout"]["margin2"]
-        self._img.setGeometry(
-            margin,
-            margin,
-            self.width() - 2 * margin,
-            self.height() - textH - 2 * margin,
-        )
+
         if self._img._pixmap.isNull():
-            self._lb.setGeometry(
-                margin,
-                max(
-                    margin,
-                    self.height() - self._lb.heightForWidth(self.width()) - margin,
-                ),
-                self.width() - 2 * margin,
-                min(self.height() - 2 * margin, self._lb.heightForWidth(self.width())),
-            )
+            pass
         else:
-
-            self._lb.setGeometry(
-                margin,
-                self.height() - textH - margin,
-                self.width() - 2 * margin,
-                textH,
-            )
+            self._lb.setFixedHeight(globalconfig["dialog_savegame_layout"]["textH"])
+            self._img.switch()
 
     def __init__(self, gameuid, pixmap, file) -> None:
         super().__init__()
         self.gameuid = gameuid
         self.file = file
         self.maskshowfileexists = QLabel(self)
+        self.l = QVBoxLayout(self)
+        self.l.setSpacing(0)
+        self.l.setContentsMargins(
+            *([globalconfig["dialog_savegame_layout"]["margin2"]] * 4)
+        )
         self._img = IMGWidget(self, pixmap)
         self._lb = QLabel(self)
-        self._lb.setText(file if globalconfig["showgametitle"] else "")
+        if self._img._pixmap.isNull():
+            self.l.setAlignment(Qt.AlignmentFlag.AlignBottom)
+        else:
+            self._lb.setFixedHeight(globalconfig["dialog_savegame_layout"]["textH"])
+            self.l.addWidget(self._img)
+        self._lb.setText(file)
         self._lb.setWordWrap(True)
         self._lb.setObjectName("savegame_textfont1")
         self._lb.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.l.addWidget(self._lb)
         exists = os.path.exists(get_launchpath(gameuid))
         self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
         if not exists:
