@@ -225,15 +225,17 @@ class TagWidget(QWidget):
         self.__addTag((tag, _type, refdata))
         self.__calltagschanged(signal)
 
-    @tryprint
     def __removeTag(self, key):
         _w = self.tag2widget[key]
         self.layout().removeWidget(_w)
         self.tag2widget.pop(key)
 
     def removeTag(self, key, signal=True):
-        self.__removeTag(key)
-        self.__calltagschanged(signal)
+        try:
+            self.__removeTag(key)
+            self.__calltagschanged(signal)
+        except:
+            pass
 
     def __calltagschanged(self, signal):
         if signal:
@@ -241,7 +243,10 @@ class TagWidget(QWidget):
 
     def clearTag(self, signal=True):
         for key in self.tag2widget.copy():
-            self.__removeTag(key)
+            try:
+                self.__removeTag(key)
+            except:
+                pass
         self.__calltagschanged(signal)
 
 
