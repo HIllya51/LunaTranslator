@@ -309,12 +309,12 @@ class vndbsettings(QFormLayout):
         )
         btn.btn2clicked.connect(
             functools.partial(
-                getalistname, btn, self.getalistname_upload, "上传游戏列表"
+                getalistname, btn, self.getalistname_upload, title="上传游戏列表"
             )
         )
         btn.btn3clicked.connect(
             functools.partial(
-                getalistname, btn, self.getalistname_download, "添加到列表"
+                getalistname, btn, self.getalistname_download, title="添加到列表"
             )
         )
         fl2.addRow(btn)
