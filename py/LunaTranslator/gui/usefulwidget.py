@@ -89,32 +89,31 @@ class FocusFontCombo(QFontComboBox, FocusCombo):
     pass
 
 
-class FocusSpin(QSpinBox):
+class FocusSpinBase(QAbstractSpinBox):
+
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
     def wheelEvent(self, e: QWheelEvent) -> None:
-
         if not self.hasFocus():
             e.ignore()
             return
         else:
             return super().wheelEvent(e)
 
+    def stepBy(self, steps):
+        _ = super().stepBy(steps)
+        self.stepbysignal.emit(steps)
+        return _
 
-class FocusDoubleSpin(QDoubleSpinBox):
-    def __init__(self, parent: QWidget = None) -> None:
-        super().__init__(parent)
-        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
-    def wheelEvent(self, e: QWheelEvent) -> None:
+class FocusSpin(QSpinBox, FocusSpinBase):
+    stepbysignal = pyqtSignal(int)
 
-        if not self.hasFocus():
-            e.ignore()
-            return
-        else:
-            return super().wheelEvent(e)
+
+class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
+    stepbysignal = pyqtSignal(int)
 
 
 class TableViewW(QTableView):

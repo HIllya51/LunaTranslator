@@ -392,10 +392,9 @@ class dialog_syssetting(LDialog):
                 ("margin2", "边距_2"),
                 ("textH", "文字区高度"),
             ]:
-                formLayout.addRow(
-                    name,
-                    getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
-                )
+                spin = getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key)
+                formLayout.addRow(name, spin)
+                spin.stepbysignal.connect(lambda _: self.parent().callchange())
             formLayout.addRow(
                 "字体",
                 getsimplepatheditor(
@@ -411,6 +410,7 @@ class dialog_syssetting(LDialog):
                     ["填充", "适应", "拉伸", "居中"],
                     globalconfig,
                     "imagewrapmode",
+                    callback=lambda _: self.parent().callchange(),
                 ),
             )
 
@@ -418,10 +418,9 @@ class dialog_syssetting(LDialog):
             for key, name in [
                 ("listitemheight", "高度"),
             ]:
-                formLayout.addRow(
-                    name,
-                    getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key),
-                )
+                spin = getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key)
+                formLayout.addRow(name, spin)
+                spin.stepbysignal.connect(lambda _: self.parent().callchange())
             formLayout.addRow(
                 "字体",
                 getsimplepatheditor(
