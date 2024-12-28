@@ -390,7 +390,7 @@ class ItemWidget(QWidget):
         self._img = IMGWidget(self, getpixfunction(gameuid))
         self._lb = QLabel(self)
         if self._img._pixmap.isNull():
-            self.l.setAlignment(Qt.AlignmentFlag.AlignBottom)
+            self.l.addStretch(1)
         else:
             self._lb.setFixedHeight(globalconfig["dialog_savegame_layout"]["textH"])
             self.l.addWidget(self._img)
@@ -801,6 +801,11 @@ class dialog_savedgame_new(QWidget):
         game2 = self.idxsave[idx2]
         self.idxsave.insert(idx2, self.idxsave.pop(idx1))
         self.flow.switchidx(idx1, idx2)
+    
+        try:
+            self.flow.ensureWidgetVisible(self.flow.widget(idx2))
+        except:
+            pass
         idx1 = self.reflist.index(game)
         idx2 = self.reflist.index(game2)
         self.reflist.insert(idx2, self.reflist.pop(idx1))
