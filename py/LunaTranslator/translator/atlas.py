@@ -44,7 +44,6 @@ class TS(basetrans):
         return True
 
     def translate(self, content):
-        self.checkpath()
 
         l = content.encode("utf-16-le")
         windows.WriteFile(self.hPipe, bytes(ctypes.c_int(len(l))))
