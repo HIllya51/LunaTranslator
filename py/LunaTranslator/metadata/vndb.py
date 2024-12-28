@@ -358,15 +358,12 @@ class searcher(common):
         infos = getinfosbyvid(self.proxy, vid)
         namemap = getcharnamemapbyid(self.proxy, vid)
 
-        img = [
-            self.dispatchdownloadtask(_)
-            for _ in ([infos["img"]] + self.getreleasecvfromhtml(_vid))
-        ]
-        sc = [self.dispatchdownloadtask(_) for _ in infos["sc"]]
         return {
             "namemap": namemap,
             "title": infos["title"],
-            "imagepath_all": img + sc,
+            "images": [infos["img"]]
+            + self.getreleasecvfromhtml(_vid)
+            + infos["sc"],
             "webtags": infos["tags"],
             "developers": infos["dev"],
             "description": (

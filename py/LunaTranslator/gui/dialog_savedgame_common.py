@@ -14,6 +14,7 @@ from myutils.config import (
     uid2gamepath,
     get_launchpath,
     _TR,
+    extradatas,
     savehook_new_list,
     globalconfig,
 )
@@ -171,6 +172,7 @@ def __scaletosize(_pix: QPixmap, tgt):
 
 
 def getcachedimage(src, small) -> QPixmap:
+    src = extradatas["localedpath"].get(src, src)
     if not small:
         return QPixmap(src)
     if not os.path.exists(src):

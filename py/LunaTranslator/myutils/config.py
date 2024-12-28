@@ -124,7 +124,14 @@ except:
 translatorsetting = tryreadconfig("translatorsetting.json")
 ocrsetting = tryreadconfig("ocrsetting.json")
 
-
+if "imagerefmp3" not in extradatas:
+    extradatas["imagerefmp3"] = {}
+if "imagecomment" not in extradatas:
+    extradatas["imagecomment"] = {}
+if "localedpath" not in extradatas:
+    extradatas["localedpath"] = {}
+if "imagefrom" not in extradatas:
+    extradatas["imagefrom"] = {}
 def getdefaultsavehook(title=None):
     default = {
         "gamepath": "",  # 不要直接访问，要通过uid2gamepath来间接访问
@@ -694,7 +701,7 @@ def safesave(fname, js, beatiful=True):
             ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False, indent=4))
         else:
             # savegamedata 1w条时，indent=4要2秒，不indent 0.37秒，不ensure_ascii 0.27秒，用不着数据库了
-            ff.write(json.dumps(js, sort_keys=False))
+            ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False))
     if os.path.exists(fname):
         os.remove(fname)
     shutil.copy(fname + ".tmp", fname)

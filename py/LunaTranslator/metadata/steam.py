@@ -88,9 +88,7 @@ class searcher(common):
         )
         return {
             "title": data["name"],
-            "imagepath_all": [
-                self.dispatchdownloadtask(re.sub("\\?t=(\\d+)", "", _)) for _ in images
-            ],
+            "images": [re.sub("\\?t=(\\d+)", "", _) for _ in images],
             "webtags": tagsofficial,
             "developers": devs,
             "description": data["detailed_description"],

@@ -11,7 +11,12 @@ from myutils.config import (
     globalconfig,
 )
 from myutils.hwnd import clipboard_set_image
-from myutils.utils import get_time_stamp, loopbackrecorder, getimagefilefilter
+from myutils.utils import (
+    get_time_stamp,
+    loopbackrecorder,
+    getimagefilefilter,
+    targetmod,
+)
 from myutils.audioplayer import playonce
 from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
@@ -106,6 +111,10 @@ class clickitem(QWidget):
         self._ = _
         _.setScaledContents(True)
         _.setStyleSheet("background:transparent")
+        for image in savehook_new_data[uid]["imagepath_all"]:
+            fr = extradatas["imagefrom"].get(image)
+            if fr:
+                targetmod.get(fr).dispatchdownloadtask(image)
         icon = getpixfunction(uid, small=True, iconfirst=True)
         icon.setDevicePixelRatio(self.devicePixelRatioF())
         _.setPixmap(icon)
@@ -293,7 +302,7 @@ class previewimages(QWidget):
         self.list.takeItem(idx)
         if delfile:
             try:
-                os.remove(path)
+                os.remove(extradatas["localedpath"].get(path, path))
             except:
                 pass
 
@@ -352,24 +361,12 @@ class viewpixmap_x(QWidget):
         self.maybehavecomment.clicked.connect(self.viscomment)
         self.commentedit = QPlainTextEdit(self)
         self.commentedit.textChanged.connect(self.changecommit)
-        self.timenothide = QLabel(self)
-        self.timenothide.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.pathandopen = QPushButton(self)
-        self.pathandopen.clicked.connect(
-            lambda: (
-                os.startfile(os.path.abspath(self.currentimage))
-                if self.currentimage
-                else ""
-            )
-        )
         self.centerwidget = QWidget(self)
         self.centerwidgetlayout = QVBoxLayout()
         audio = QHBoxLayout()
         self.recordbtn = statusbutton(icons=["fa.microphone", "fa.stop"])
         self.recordbtn.clicked.connect(self.startorendrecord)
         self.centerwidget.setLayout(self.centerwidgetlayout)
-        self.centerwidgetlayout.addWidget(self.timenothide)
-        self.centerwidgetlayout.addWidget(self.pathandopen)
         self.centerwidgetlayout.addWidget(self.commentedit)
         self.centerwidgetlayout.addLayout(audio)
         audio.addWidget(self.recordbtn)
@@ -435,8 +432,6 @@ class viewpixmap_x(QWidget):
                     return
                 tgt = image + os.path.splitext(path)[1]
                 shutil.copy(path, tgt)
-                if "imagerefmp3" not in extradatas:
-                    extradatas["imagerefmp3"] = {}
                 extradatas["imagerefmp3"][image] = tgt
 
                 self.btnplay.setEnabled(self.checkplayable())
@@ -447,8 +442,6 @@ class viewpixmap_x(QWidget):
             self.recorder = None
 
     def changecommit(self):
-        if "imagecomment" not in extradatas:
-            extradatas["imagecomment"] = {}
         extradatas["imagecomment"][self.currentimage] = self.commentedit.toPlainText()
 
     def viscomment(self):
@@ -483,21 +476,21 @@ class viewpixmap_x(QWidget):
 
         self.currentimage = path
         self.centerwidget.setVisible(False)
-        self.pathandopen.setText(path)
         self.pathview.setText(path)
         try:
-            timestamp = get_time_stamp(ct=os.path.getctime(path), ms=False)
+            timestamp = get_time_stamp(
+                ct=os.path.getctime(extradatas["localedpath"].get(path, path)), ms=False
+            )
         except:
             timestamp = None
         self.infoview.setText(timestamp)
         self.commentedit.setPlainText(extradatas.get("imagecomment", {}).get(path, ""))
-        self.timenothide.setText(timestamp)
         if not path:
             pixmap = QPixmap()
         else:
-            pixmap = QPixmap.fromImage(QImage(path))
-            if pixmap is None or pixmap.isNull():
-                pixmap = QPixmap()
+            pixmap = QPixmap.fromImage(
+                QImage(extradatas["localedpath"].get(path, path))
+            )
         self.pixmapviewer.showpixmap(pixmap)
         self.btnplay.setEnabled(self.checkplayable())
 
@@ -566,7 +559,7 @@ class pixwrapper(QWidget):
         deleteimage_x = LAction("删除图片文件")
         hualang = LAction("画廊")
         pos = LAction("位置")
-        if curr and os.path.exists(curr):
+        if curr and os.path.exists(extradatas["localedpath"].get(curr, curr)):
             menu.addAction(setimage)
             menu.addAction(seticon)
             menu.addAction(copyimage)
@@ -580,7 +573,7 @@ class pixwrapper(QWidget):
         if action == deleteimage:
             self.removecurrent(False)
         elif copyimage == action:
-            clipboard_set_image(curr)
+            clipboard_set_image(extradatas["localedpath"].get(curr, curr))
         elif action == deleteimage_x:
             self.removecurrent(True)
         elif action == pos:

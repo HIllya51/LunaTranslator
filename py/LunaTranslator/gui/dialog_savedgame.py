@@ -9,6 +9,7 @@ from gui.dynalang import LAction
 from gui.dialog_savedgame_v3 import dialog_savedgame_v3
 from gui.dialog_savedgame_legacy import dialog_savedgame_legacy
 from gui.dialog_savedgame_setting import dialog_setting_game, userlabelset
+from myutils.utils import targetmod
 from myutils.wrapper import Singleton_close, tryprint
 from gui.specialwidget import lazyscrollflow
 from myutils.config import (
@@ -17,6 +18,7 @@ from myutils.config import (
     _TR,
     get_launchpath,
     globalconfig,
+    extradatas,
 )
 from gui.usefulwidget import (
     saveposwindow,
@@ -366,24 +368,28 @@ class ItemWidget(QWidget):
             self._lb.setFixedHeight(globalconfig["dialog_savegame_layout"]["textH"])
             self._img.switch()
 
-    def __init__(self, gameuid, pixmap, file) -> None:
+    def __init__(self, gameuid) -> None:
         super().__init__()
         self.gameuid = gameuid
-        self.file = file
         self.maskshowfileexists = QLabel(self)
         self.l = QVBoxLayout(self)
         self.l.setSpacing(0)
         self.l.setContentsMargins(
             *([globalconfig["dialog_savegame_layout"]["margin2"]] * 4)
-        )
-        self._img = IMGWidget(self, pixmap)
+        ) 
+        for image in savehook_new_data[gameuid]["imagepath_all"]:
+            fr = extradatas["imagefrom"].get(image)
+            if fr:
+                targetmod.get(fr).dispatchdownloadtask(image)
+
+        self._img = IMGWidget(self, getpixfunction(gameuid))
         self._lb = QLabel(self)
         if self._img._pixmap.isNull():
             self.l.setAlignment(Qt.AlignmentFlag.AlignBottom)
         else:
             self._lb.setFixedHeight(globalconfig["dialog_savegame_layout"]["textH"])
             self.l.addWidget(self._img)
-        self._lb.setText(file)
+        self._lb.setText(savehook_new_data[gameuid]["title"])
         self._lb.setWordWrap(True)
         self._lb.setObjectName("savegame_textfont1")
         self._lb.setAlignment(Qt.AlignmentFlag.AlignHCenter)
@@ -808,9 +814,7 @@ class dialog_savedgame_new(QWidget):
             _btn.setEnabled(_able1)
 
     def getagameitem(self, k, focus):
-        gameitem = ItemWidget(
-            k, functools.partial(getpixfunction, k), savehook_new_data[k]["title"]
-        )
+        gameitem = ItemWidget(k)
         gameitem.doubleclicked.connect(
             functools.partial(startgamecheck, self, getreflist(self.reftagid))
         )

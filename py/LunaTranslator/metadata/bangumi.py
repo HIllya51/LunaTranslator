@@ -339,10 +339,6 @@ class searcher(common):
             response = response.json()
         except:
             return {}
-        try:
-            imagepath = self.dispatchdownloadtask(response["images"]["large"])
-        except:
-            imagepath = []
 
         vndbtags = [_["name"] for _ in response["tags"]]
         developers = []
@@ -369,7 +365,7 @@ class searcher(common):
         return {
             "namemap": namemaps,
             "title": response["name"],
-            "imagepath_all": [imagepath],
+            "images": [response["images"]["large"]],
             "webtags": vndbtags,
             "developers": developers,
             "description": response["summary"].replace("\n", "<br>"),

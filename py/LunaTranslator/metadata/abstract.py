@@ -2,7 +2,7 @@ import os, hashlib, queue, gobject
 from myutils.proxy import getproxy
 from threading import Thread
 from myutils.commonbase import proxysession
-from myutils.config import globalconfig, savehook_new_data, namemapcast
+from myutils.config import globalconfig, savehook_new_data, namemapcast, extradatas
 from myutils.utils import getlangtgt
 from traceback import print_exc
 from requests import RequestException
@@ -113,9 +113,9 @@ class common:
                 self.__tasks_downloadimg.put(pair)
 
     def __do_download_img(self, url, save):
-        print(url, save)
         if os.path.exists(save):
             return
+        print(url, save)
         headers = {
             "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
             "Referer": "https://vndb.org/",
@@ -156,18 +156,16 @@ class common:
         namemap = data.get("namemap", None)
         developers = data.get("developers", [])
         webtags = data.get("webtags", [])
-        imagepath_all = data.get("imagepath_all", [])
-        description=data.get('description',None)
-        normaled = [
-            os.path.abspath(_) for _ in savehook_new_data[gameuid]["imagepath_all"]
-        ]
-        for _ in imagepath_all:
-            if _ is None:
+        images = data.get("images", [])
+        description = data.get("description", None)
+        for _ in images:
+            if not _:
                 continue
-            norm = os.path.abspath(_)
-            if norm not in normaled:
-                normaled.append(norm)
-                savehook_new_data[gameuid]["imagepath_all"].append(_)
+            extradatas["localedpath"][_] = self.dispatchdownloadtask(_)
+            extradatas["imagefrom"][_] = self.typename
+            if _ in savehook_new_data[gameuid]["imagepath_all"]:
+                continue
+            savehook_new_data[gameuid]["imagepath_all"].append(_)
         if title:
             if not savehook_new_data[gameuid]["istitlesetted"]:
                 savehook_new_data[gameuid]["title"] = title
@@ -176,8 +174,8 @@ class common:
             _urls = [_[1] for _ in savehook_new_data[gameuid]["relationlinks"]]
             if _url not in _urls:
                 savehook_new_data[gameuid]["relationlinks"].append((_vis, _url))
-        if description and not savehook_new_data[gameuid].get('description'):
-            savehook_new_data[gameuid]['description']=description
+        if description and not savehook_new_data[gameuid].get("description"):
+            savehook_new_data[gameuid]["description"] = description
         if namemap:
             dedump = set()
             for _ in savehook_new_data[gameuid]["namemap2"]:

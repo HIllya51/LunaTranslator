@@ -4,7 +4,7 @@ import gobject
 import os
 from gui.usefulwidget import WebivewWidget
 from datetime import datetime, timedelta
-from myutils.config import savehook_new_data, globalconfig
+from myutils.config import savehook_new_data, globalconfig, extradatas
 
 timestamps = [1609459200, 1672531200, 1704067200, 1720032000]
 
@@ -114,16 +114,34 @@ def everymonths_game_images(everymonth):
     return months
 
 
-def getuidimage(uid):
+def getuidimage_local(uid):
     data = savehook_new_data.get(uid)
     if not data:
         return
     main = savehook_new_data[uid].get("currentmainimage")
-    if (main in savehook_new_data[uid]["imagepath_all"]) and os.path.exists(main):
+    if (main in savehook_new_data[uid]["imagepath_all"]) and os.path.exists(
+        extradatas["localedpath"].get(main, main)
+    ):
         return os.path.abspath(main)
     else:
         for _ in savehook_new_data[uid]["imagepath_all"]:
-            if os.path.exists(_):
+            if os.path.exists(extradatas["localedpath"].get(_, _)):
+                return os.path.abspath(_)
+
+
+def getuidimage(uid):
+    l = getuidimage_local(uid)
+    if l:
+        return l
+    data = savehook_new_data.get(uid)
+    if not data:
+        return
+    main = savehook_new_data[uid].get("currentmainimage")
+    if (main in savehook_new_data[uid]["imagepath_all"]) and main.startswith("http"):
+        return main
+    else:
+        for _ in savehook_new_data[uid]["imagepath_all"]:
+            if _.startswith("http"):
                 return os.path.abspath(_)
 
 
