@@ -32,6 +32,7 @@ class japandict(cishubase):
         res = get_element_by("class", "list-group list-group-flush", html)
         if not res:
             return
+        res = re.sub('href="(.*?)"', 'href="https://www.japandict.com\\1"', res)
         ts = []
         styles = '<link rel="stylesheet" href="https://www.japandict.com/static/css/japandict.ac087f3ecbc8.css" type="text/css"><link rel="preload" href="https://www.japandict.com/static/JapaneseRadicals-Regular.woff2" as="font"><link rel="preload" href="https://www.japandict.com/static/radicals_font.woff" as="font">'
         for link in re.findall('href="(.*?)"', styles):
