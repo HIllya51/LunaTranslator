@@ -7,7 +7,7 @@ from gui.usefulwidget import (
     TableViewW,
     D_getsimpleswitch,
     D_getIconButton,
-    getcolorbutton,
+    getIconButton,
 )
 from gui.dialog_savedgame_setting import dialog_setting_game
 from gui.dynalang import LPushButton, LStandardItemModel
@@ -121,7 +121,7 @@ class dialog_savedgame_legacy(QWidget):
             savehook_new_list.pop(idx)
             self.savelist.pop(idx)
             self.model.removeRow(self.table.currentIndex().row())
-            showcountgame(self.parent_,len(self.savelist))
+            showcountgame(self.parent_, len(self.savelist))
         except:
             pass
 
@@ -132,7 +132,7 @@ class dialog_savedgame_legacy(QWidget):
             self.model.removeRow(idx)
         self.newline(0, uid)
         self.table.setCurrentIndex(self.model.index(0, 0))
-        showcountgame(self.parent_,len(self.savelist))
+        showcountgame(self.parent_, len(self.savelist))
 
     def clicked3(self):
         addgamesingle(self, self.addgame, savehook_new_list)
@@ -145,12 +145,10 @@ class dialog_savedgame_legacy(QWidget):
         )
 
     def delayloadicon(self, k):
-        return getcolorbutton(
-            "",
-            "",
-            functools.partial(opendirforgameuid, k),
-            qicon=getExeIcon(get_launchpath(k), cache=True),
-        )
+        icon = getExeIcon(get_launchpath(k), cache=True)
+        if icon.isNull():
+            return
+        return getIconButton(functools.partial(opendirforgameuid, k), qicon=icon)
 
     def callback_leuse(self, k, use):
         if use:
@@ -218,8 +216,7 @@ class dialog_savedgame_legacy(QWidget):
             self.newline(row, k)
             self.savelist.append(k)
 
-        
-        showcountgame(self.parent_,len(self.savelist))
+        showcountgame(self.parent_, len(self.savelist))
         self.table.starttraceir()
         bottom = QHBoxLayout()
 
