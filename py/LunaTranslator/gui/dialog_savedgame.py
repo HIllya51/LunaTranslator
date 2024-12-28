@@ -773,7 +773,10 @@ class dialog_savedgame_new(QWidget):
                 self.flow.verticalScrollBar().maximum()
             )
         else:
-            self.flow.ensureWidgetVisible(self.flow.widget(idx2))
+            try:
+                self.flow.ensureWidgetVisible(self.flow.widget(idx2))
+            except:
+                pass
         try:
             self.flow.widget(idx2).click()
         except:
@@ -787,7 +790,6 @@ class dialog_savedgame_new(QWidget):
         game2 = self.idxsave[idx2]
         self.idxsave.insert(idx2, self.idxsave.pop(idx1))
         self.flow.switchidx(idx1, idx2)
-        # self.flow.ensureWidgetVisible(self.flow.widget(idx2))
         idx1 = self.reflist.index(game)
         idx2 = self.reflist.index(game2)
         self.reflist.insert(idx2, self.reflist.pop(idx1))

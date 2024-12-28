@@ -778,7 +778,10 @@ class dialog_savedgame_v3(QWidget):
                 self.stack.verticalScrollBar().maximum()
             )
         else:
-            self.stack.ensureWidgetVisible(group0.w(idx2))
+            try:
+                self.stack.ensureWidgetVisible(group0.w(idx2))
+            except:
+                pass
         try:
             group0.w(idx2).click()
         except:
@@ -1012,9 +1015,12 @@ class dialog_savedgame_v3(QWidget):
         )
 
         self.stack.w(calculatetagidx(self.reftagid)).switchidx(idx1, idx2)
-        self.stack.ensureWidgetVisible(
-            self.stack.w(calculatetagidx(self.reftagid)).w(idx2)
-        )
+        try:
+            self.stack.ensureWidgetVisible(
+                self.stack.w(calculatetagidx(self.reftagid)).w(idx2)
+            )
+        except:
+            pass
         idx1 = getreflist(self.reftagid).index(uid)
         idx2 = getreflist(self.reftagid).index(uid2)
         getreflist(self.reftagid).insert(idx2, getreflist(self.reftagid).pop(idx1))
