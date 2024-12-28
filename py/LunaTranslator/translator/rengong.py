@@ -27,7 +27,10 @@ class TS(basetrans):
             return
         with open(pp, "r", encoding="utf8") as f:
             try:
-                self.json.update(json.load(f))
+                for k, v in json.load(f).items():
+                    if k not in self.json:
+                        self.json[k] = []
+                    self.json[k].append(v)
             except:
                 pass
 
@@ -47,7 +50,7 @@ class TS(basetrans):
             self.unsafegetcurrentgameconfig(), tuple(self.config["jsonfile"])
         )
 
-    def analyze_result(self, obj):
+    def analyze_result__(self, obj):
         if type(obj) == str:
             return obj
         if type(obj) != dict:
@@ -62,6 +65,14 @@ class TS(basetrans):
             return savet
 
         return None
+
+    def analyze_result(self, obj):
+        _x = []
+        for _ in obj:
+            __ = self.analyze_result__(_)
+            if __:
+                _x.append(__)
+        return _x
 
     def delayloadlines(self):
         if self.lines is not None:
@@ -110,8 +121,8 @@ class TS(basetrans):
             line = self.tryfindtranslate(line, self.json, self.lines)
             if not line:
                 return None
-            collect.append(line)
-        return "\n".join(collect)
+            collect.append("\n".join(line))
+        return collect
 
     def translate(self, content):
         self.checkfilechanged(
@@ -122,4 +133,4 @@ class TS(basetrans):
             res = self.tryfindtranslate_single(content)
         if not res:
             raise Exception("can't find: " + content)
-        return res
+        return "\n".join(res)
