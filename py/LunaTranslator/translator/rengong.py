@@ -78,18 +78,22 @@ class TS(basetrans):
         if self.lines is not None:
             return
         self.lines = {}
-        for k, v in self.json.items():
+        for k, vs in self.json.items():
             if "\n" not in k:
                 continue
-            v = self.analyze_result(v)
-            if not v:
+            vs = self.analyze_result(vs)
+            if not vs:
                 continue
             ks = k.split("\n")
-            vs = v.split("\n")
-            if len(ks) != len(vs):
-                continue
-            for i in range(len(ks)):
-                self.lines[ks[i]] = vs[i]
+
+            vss = [v.split("\n") for v in vs]
+            for vs in vss:
+                if len(ks) != len(vs):
+                    continue
+                for i in range(len(ks)):
+                    if ks[i] not in self.lines:
+                        self.lines[ks[i]] = []
+                    self.lines[ks[i]].append(vs[i])
 
     def tryfindtranslate(self, content: str, _js: dict, _js2: dict = None):
         if globalconfig["premtsimi2"] < 100:
@@ -129,7 +133,7 @@ class TS(basetrans):
             self.unsafegetcurrentgameconfig(), tuple(self.config["jsonfile"])
         )
         res = self.tryfindtranslate(content, self.json)
-        if (not res) and ("\n" in content):
+        if not res:
             res = self.tryfindtranslate_single(content)
         if not res:
             raise Exception("can't find: " + content)
