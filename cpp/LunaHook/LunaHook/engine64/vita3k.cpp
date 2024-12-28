@@ -369,6 +369,13 @@ namespace
         Trim(ws);
         buffer->from(WideStringToString(ws));
     }
+    void PCSG01046(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto len = (*(DWORD *)(VITA3K::emu_arg(context)[0] + 8)) * 2;
+        auto pre = VITA3K::emu_arg(context)[0] + 0xC;
+        buffer->from(pre, len);
+        StringFilter(buffer, L"<br>", 4);
+    }
     void PCSG01011(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = VITA3K::emu_arg(context)[7];
@@ -809,6 +816,19 @@ namespace
             {0x8007838c, {CODEC_UTF8, 5, 0, 0, PCSG01036, "PCSG01036"}},
             {0x8001154c, {CODEC_UTF8, 8, 0, 0, PCSG01036, "PCSG01036"}},
             {0x800879ee, {CODEC_UTF8, 2, 0, 0, PCSG01036, "PCSG01036"}},
+            // 嘘月シャングリラ
+            {0x81e1f5c8, {CODEC_UTF16, 0, 0, PCSG01046, 0, "PCSG01046"}},
+            {0x81e4a514, {CODEC_UTF16, 0, 0, PCSG01046, 0, "PCSG01046"}},
+            // 罪喰い～千の呪い、千の祈り～ for V
+            {0x80080cd0, {0, 0, 0, 0, 0, "PCSG01019"}},
+            {0x8001c73e, {0, 1, 0, 0, 0, "PCSG01019"}},
+            // LOVE:QUIZ ~恋する乙女のファイナルアンサー~
+            {0x8003acba, {CODEC_UTF16, 0, 0, 0, 0, "PCSG00667"}},
+            {0x80016dd6, {CODEC_UTF16, 1, 0, 0, 0, "PCSG00667"}},
+            // DRAMAtical Murder
+            {0x8004630a, {0, 0, 0, 0, FPCSG00852, "PCSG00420"}},
+            {0x8003eed2, {0, 0, 0, 0, FPCSG00852, "PCSG00420"}},
+
         };
         return 1;
     }();
