@@ -200,19 +200,14 @@ DECLARE_API void _SetTheme(
 DECLARE_API bool isDark()
 {
 #ifndef WINXP
-    HKEY hKey;
-    const char *subKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
-    if (RegOpenKeyExA(HKEY_CURRENT_USER, subKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
-    {
-        DWORD value;
-        DWORD dataSize = sizeof(DWORD);
-        if (RegQueryValueExA(hKey, "AppsUseLightTheme", 0, NULL, (LPBYTE)&value, &dataSize) == ERROR_SUCCESS)
-        {
-            RegCloseKey(hKey);
-            return 1 - value;
-        }
-        RegCloseKey(hKey);
-    }
+    constexpr auto subKey = LR"(Software\Microsoft\Windows\CurrentVersion\Themes\Personalize)";
+    CRegKey hKey;
+    if (ERROR_SUCCESS != hKey.Open(HKEY_CURRENT_USER, subKey, KEY_READ))
+        return false;
+
+    DWORD value;
+    if (ERROR_SUCCESS != hKey.QueryDWORDValue(L"AppsUseLightTheme", value))
+        return false;
+    return 1 - value;
 #endif
-    return false;
 }

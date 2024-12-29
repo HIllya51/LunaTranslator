@@ -12,23 +12,13 @@
 
 BOOL GetIEVersion(LPWSTR pszVersion, DWORD cchVersionMax)
 {
-    pszVersion[0] = 0;
-    HKEY hKey = NULL;
-    RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Internet Explorer", 0,
-                  KEY_READ, &hKey);
-    if (hKey)
-    {
-        DWORD cb = cchVersionMax * sizeof(WCHAR);
-        LONG ret = RegQueryValueExW(hKey, L"svcVersion", NULL, NULL, (LPBYTE)pszVersion, &cb);
-        if (ret != ERROR_SUCCESS)
-        {
-            ret = RegQueryValueExW(hKey, L"Version", NULL, NULL, (LPBYTE)pszVersion, &cb);
-        }
-        RegCloseKey(hKey);
-
-        return ret == ERROR_SUCCESS;
-    }
-
+    CRegKey hKey;
+    if (ERROR_SUCCESS != hKey.Open(HKEY_LOCAL_MACHINE, LR"(SOFTWARE\Microsoft\Internet Explorer)", KEY_READ))
+        return FALSE;
+    DWORD cb = cchVersionMax * sizeof(WCHAR);
+    if ((ERROR_SUCCESS == hKey.QueryStringValue(L"svcVersion", pszVersion, &cb)) ||
+        (ERROR_SUCCESS == hKey.QueryStringValue(L"Version", pszVersion, &cb)))
+        return TRUE;
     return FALSE;
 }
 static DWORD getemulation()
@@ -69,42 +59,29 @@ static DWORD getemulation()
 BOOL DoSetBrowserEmulation(DWORD dwValue)
 {
     static const TCHAR s_szFeatureControl[] =
-        TEXT("SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl");
+        TEXT(R"(SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl)");
 
     TCHAR szPath[MAX_PATH], *pchFileName;
     GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath));
     pchFileName = PathFindFileName(szPath);
 
-    BOOL bOK = FALSE;
-    HKEY hkeyControl = NULL;
-    RegOpenKeyEx(HKEY_CURRENT_USER, s_szFeatureControl, 0, KEY_ALL_ACCESS, &hkeyControl);
-    if (hkeyControl)
+    CRegKey hkeyControl;
+    if (ERROR_SUCCESS != hkeyControl.Open(HKEY_CURRENT_USER, s_szFeatureControl, KEY_ALL_ACCESS))
+        return FALSE;
+
+    CRegKey hkeyEmulation;
+    if (ERROR_SUCCESS != hkeyEmulation.Create(hkeyControl, TEXT("FEATURE_BROWSER_EMULATION"), 0, 0, KEY_ALL_ACCESS, NULL, NULL))
+        return FALSE;
+
+    if (dwValue)
     {
-        HKEY hkeyEmulation = NULL;
-        RegCreateKeyEx(hkeyControl, TEXT("FEATURE_BROWSER_EMULATION"), 0, NULL, 0,
-                       KEY_ALL_ACCESS, NULL, &hkeyEmulation, NULL);
-        if (hkeyEmulation)
-        {
-            if (dwValue)
-            {
-                DWORD value = dwValue, size = sizeof(value);
-                LONG result = RegSetValueEx(hkeyEmulation, pchFileName, 0,
-                                            REG_DWORD, (LPBYTE)&value, size);
-                bOK = (result == ERROR_SUCCESS);
-            }
-            else
-            {
-                RegDeleteValue(hkeyEmulation, pchFileName);
-                bOK = TRUE;
-            }
-
-            RegCloseKey(hkeyEmulation);
-        }
-
-        RegCloseKey(hkeyControl);
+        return ERROR_SUCCESS == hkeyEmulation.SetValue(dwValue, pchFileName);
     }
-
-    return bOK;
+    else
+    {
+        hkeyEmulation.DeleteValue(pchFileName);
+        return TRUE;
+    }
 }
 class MWebBrowserEx : public MWebBrowser
 {
@@ -215,14 +192,14 @@ DECLARE_API void html_release(void *web)
     // ww->Release(); Destroy减少引用计数，自动del
 }
 
-DECLARE_API const wchar_t *html_get_current_url(void *web)
+DECLARE_API void html_get_current_url(void *web, void (*cb)(LPCWSTR))
 {
     if (!web)
-        return L"";
+        return;
     auto ww = static_cast<MWebBrowserEx *>(web);
-    wchar_t *_u;
-    ww->get_LocationURL(&_u);
-    return _u;
+    CComBSTR _u;
+    CHECK_FAILURE_NORET(ww->get_LocationURL(&_u));
+    cb(_u);
 }
 
 DECLARE_API void html_set_html(void *web, wchar_t *html)
@@ -243,40 +220,20 @@ DECLARE_API void html_add_menu(void *web, int index, int command, const wchar_t 
     auto ptr = ww->menuitems.begin() + index;
     ww->menuitems.insert(ptr, {_label, command});
 }
-BSTR GetSelectedText(IHTMLDocument2 *pHTMLDoc2)
-{
-    CComPtr<IHTMLSelectionObject> pSelectionObj = nullptr;
-    HRESULT hr = pHTMLDoc2->get_selection(&pSelectionObj);
-    if (FAILED(hr) || pSelectionObj == nullptr)
-    {
-        return nullptr;
-    }
-
-    CComPtr<IHTMLTxtRange> pTxtRange = nullptr;
-    hr = pSelectionObj->createRange((IDispatch **)&pTxtRange);
-    if (FAILED(hr) || pTxtRange == nullptr)
-    {
-        return nullptr;
-    }
-
-    BSTR selectedText = nullptr;
-    hr = pTxtRange->get_text(&selectedText);
-
-    return selectedText;
-}
-DECLARE_API const wchar_t *html_get_select_text(void *web)
+DECLARE_API void html_get_select_text(void *web, void (*cb)(LPCWSTR))
 {
     if (!web)
-        return L"";
+        return;
     auto ww = static_cast<MWebBrowserEx *>(web);
-
-    if (CComPtr<IHTMLDocument2> pDocument = ww->GetIHTMLDocument2())
-    {
-        auto text = GetSelectedText(pDocument);
-        // 不需要free，free会崩溃
-        return text;
-    }
-    return L"";
+    CComPtr<IHTMLDocument2> pDocument;
+    CHECK_FAILURE_NORET(ww->GetIHTMLDocument2(&pDocument));
+    CComPtr<IHTMLSelectionObject> pSelectionObj;
+    CHECK_FAILURE_NORET(pDocument->get_selection(&pSelectionObj));
+    CComPtr<IHTMLTxtRange> pTxtRange;
+    CHECK_FAILURE_NORET(pSelectionObj->createRange((IDispatch **)&pTxtRange));
+    CComBSTR selectedText;
+    CHECK_FAILURE_NORET(pTxtRange->get_text(&selectedText));
+    cb(selectedText);
 }
 
 DECLARE_API void html_bind_function(void *web, const wchar_t *name, void (*function)(wchar_t **, int))
@@ -300,18 +257,14 @@ DECLARE_API void html_eval(void *web, const wchar_t *js)
     if (!web)
         return;
     auto ww = static_cast<MWebBrowserEx *>(web);
-    CComPtr<IHTMLDocument2> pDocument = ww->GetIHTMLDocument2();
-    if (!pDocument)
-        return;
+    CComPtr<IHTMLDocument2> pDocument;
+    CHECK_FAILURE_NORET(ww->GetIHTMLDocument2(&pDocument));
     CComPtr<IDispatch> scriptDispatch;
-    if (FAILED(pDocument->get_Script(&scriptDispatch)))
-        return;
+    CHECK_FAILURE_NORET(pDocument->get_Script(&scriptDispatch));
     DISPID dispid;
     CComBSTR evalStr = L"eval";
-    if (scriptDispatch->GetIDsOfNames(IID_NULL, &evalStr, 1,
-                                      LOCALE_SYSTEM_DEFAULT, &dispid) != S_OK)
-
-        return;
+    CHECK_FAILURE_NORET(scriptDispatch->GetIDsOfNames(IID_NULL, &evalStr, 1,
+                                                      LOCALE_SYSTEM_DEFAULT, &dispid) != S_OK);
 
     DISPPARAMS params;
     VARIANT arg;

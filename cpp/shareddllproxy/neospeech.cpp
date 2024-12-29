@@ -1,10 +1,11 @@
 ﻿std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume);
-
 std::vector<std::wstring> _List(const wchar_t *token);
+extern wchar_t SPCAT_VOICES_7[];
+extern wchar_t SPCAT_VOICES_10[];
 int neospeechlist(int argc, wchar_t *argv[])
 {
     FILE *f = _wfopen(argv[1], L"wb");
-    for (auto key : {L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices", L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices"})
+    for (auto key : {SPCAT_VOICES_7, SPCAT_VOICES_10})
     {
         auto speechs = _List(key);
         for (int i = 0; i < speechs.size(); i++)

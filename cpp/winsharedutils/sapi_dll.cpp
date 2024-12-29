@@ -1,14 +1,10 @@
 ﻿
-
 std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume);
-
 std::vector<std::wstring> _List(const wchar_t *token);
-
+extern wchar_t SPCAT_VOICES_7[];
+extern wchar_t SPCAT_VOICES_10[];
 namespace SAPI
 {
-
-    constexpr wchar_t SPCAT_VOICES_7[] = L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech\\Voices";
-    constexpr wchar_t SPCAT_VOICES_10[] = L"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Speech_OneCore\\Voices";
 
     std::vector<std::wstring> List(int version)
     {

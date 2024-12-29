@@ -163,15 +163,9 @@ IWebBrowser2 *MWebBrowser::GetIWebBrowser2()
     return m_web_browser2;
 }
 
-IHTMLDocument2 *MWebBrowser::GetIHTMLDocument2()
+HRESULT MWebBrowser::GetIHTMLDocument2(IHTMLDocument2 **p)
 {
-    IDispatch *pDisp;
-    m_web_browser2->get_Document(&pDisp);
-    if (pDisp)
-    {
-        return static_cast<IHTMLDocument2 *>(pDisp);
-    }
-    return NULL;
+    return m_web_browser2->get_Document((IDispatch **)p);
 }
 
 HWND MWebBrowser::GetControlWindow()
@@ -221,7 +215,7 @@ HRESULT MWebBrowser::CreateBrowser(HWND hwndParent)
     RECT rc;
     ::SetRectEmpty(&rc);
     CHECK_FAILURE(m_ole_object->DoVerb(OLEIVERB_INPLACEACTIVATE, NULL, this, 0,
-                              m_hwndParent, &rc));
+                                       m_hwndParent, &rc));
 
     CHECK_FAILURE(m_ole_object.QueryInterface(&m_web_browser2));
     HWND hwnd = GetControlWindow();
@@ -1002,30 +996,20 @@ HRESULT MWebBrowser::GetTypeInfoCount(UINT *pctinfo) { return E_FAIL; }
 HRESULT MWebBrowser::GetTypeInfo(UINT, LCID, ITypeInfo **) { return E_FAIL; }
 HRESULT MWebBrowser::GetIDsOfNames(REFIID riid, LPOLESTR *rgszNames, UINT cNames, LCID lcid, DISPID *rgDispId) { return E_FAIL; }
 
-void AddCustomObject(IHTMLDocument2 *doc, IDispatch *custObj, std::wstring name)
+HRESULT MWebBrowser::AddCustomObject(IDispatch *custObj, std::wstring name)
 {
-    CComPtr<IHTMLDocument2> _doc = doc;
-    if (doc == NULL)
-        return;
+    CComPtr<IHTMLDocument2> doc;
+    CHECK_FAILURE(GetIHTMLDocument2(&doc));
 
     CComPtr<IHTMLWindow2> win = NULL;
-    _doc->get_parentWindow(&win);
-
-    if (!win)
-        return;
+    CHECK_FAILURE(doc->get_parentWindow(&win));
 
     CComPtr<IDispatchEx> winEx;
-    HRESULT hr = win.QueryInterface(&winEx);
-
-    if (FAILED(hr) || !winEx)
-        return;
+    CHECK_FAILURE(win.QueryInterface(&winEx));
 
     DISPID dispid;
     CComBSTR bname = name.c_str();
-    hr = winEx->GetDispID(bname, fdexNameEnsure, &dispid);
-
-    if (FAILED(hr))
-        return;
+    CHECK_FAILURE(winEx->GetDispID(bname, fdexNameEnsure, &dispid));
 
     DISPID namedArgs[] = {DISPID_PROPERTYPUT};
     DISPPARAMS params;
@@ -1036,10 +1020,7 @@ void AddCustomObject(IHTMLDocument2 *doc, IDispatch *custObj, std::wstring name)
     params.cArgs = 1;
     params.cNamedArgs = 1;
 
-    hr = winEx->InvokeEx(dispid, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYPUT, &params, NULL, NULL, NULL);
-
-    if (FAILED(hr))
-        return;
+    return winEx->InvokeEx(dispid, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYPUT, &params, NULL, NULL, NULL);
 }
 HRESULT MWebBrowser::Invoke(DISPID dispIdMember, REFIID, LCID, WORD,
                             DISPPARAMS *pDispParams, VARIANT *pVarResult,
@@ -1048,9 +1029,8 @@ HRESULT MWebBrowser::Invoke(DISPID dispIdMember, REFIID, LCID, WORD,
     if (dispIdMember == DISPID_DOCUMENTCOMPLETE)
         return OnCompleted(pDispParams);
     else if (dispIdMember == DISPID_NAVIGATECOMPLETE2)
-        return AddCustomObject(GetIHTMLDocument2(), jsobj, L"LUNAJSObject"), S_OK;
-    else
-        return S_OK;
+        return AddCustomObject(jsobj, L"LUNAJSObject"), S_OK;
+    return S_OK;
 }
 HRESULT MWebBrowser::OnCompleted(DISPPARAMS *args)
 {

@@ -39,7 +39,7 @@ std::wstring stolower(const std::wstring &s1)
 std::vector<DWORD> EnumerateProcesses(const std::wstring &exe)
 {
 
-    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    AutoHandle hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (hSnapshot == INVALID_HANDLE_VALUE)
     {
         return {};
@@ -50,7 +50,6 @@ std::vector<DWORD> EnumerateProcesses(const std::wstring &exe)
 
     if (!Process32First(hSnapshot, &pe32))
     {
-        CloseHandle(hSnapshot);
         return {};
     }
     std::vector<DWORD> pids;
@@ -60,7 +59,6 @@ std::vector<DWORD> EnumerateProcesses(const std::wstring &exe)
             pids.push_back(pe32.th32ProcessID);
     } while (Process32Next(hSnapshot, &pe32));
 
-    CloseHandle(hSnapshot);
     return pids;
 }
 enum
