@@ -48,7 +48,7 @@ struct CO_INIT
     HRESULT hr;
     CO_INIT()
     {
-        HRESULT hr = ::CoInitialize(NULL);
+        hr = ::CoInitialize(NULL);
     }
     operator HRESULT()
     {
