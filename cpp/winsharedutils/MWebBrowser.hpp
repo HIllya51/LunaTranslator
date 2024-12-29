@@ -84,7 +84,6 @@ public:
 
     HRESULT get_Application(IDispatch **ppApplication) const;
     HRESULT get_LocationURL(BSTR *bstrURL) const;
-    HRESULT get_mimeType(BSTR *bstrMIME) const;
     HRESULT put_Silent(VARIANT_BOOL bSilent);
     BOOL is_busy() const;
     HRESULT ZoomUp();
@@ -241,10 +240,10 @@ protected:
     HWND m_hwndParent;
     HWND m_hwndCtrl;
     HWND m_hwndIEServer;
-    IWebBrowser2 *m_web_browser2;
-    IOleObject *m_ole_object;
-    IOleInPlaceObject *m_ole_inplace_object;
-    IDocHostUIHandler *m_pDocHostUIHandler;
+    CComPtr<IWebBrowser2> m_web_browser2;
+    CComPtr<IOleObject> m_ole_object;
+    CComPtr<IOleInPlaceObject> m_ole_inplace_object;
+    CComPtr<IDocHostUIHandler> m_pDocHostUIHandler;
     RECT m_rc;
     HRESULT m_hr;
     BOOL m_bAllowInsecure;

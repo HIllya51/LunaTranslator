@@ -1,9 +1,9 @@
 
 std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume)
 {
-    ISpVoice *pVoice = NULL;
     if (FAILED(::CoInitialize(NULL)))
         return {};
+    CComPtr<ISpVoice> pVoice = NULL;
     std::optional<std::vector<byte>> ret = {};
     do
     {
@@ -13,7 +13,7 @@ std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *to
             ret = {};
             break;
         }
-        IEnumSpObjectTokens *pSpEnumTokens = NULL;
+        CComPtr<IEnumSpObjectTokens> pSpEnumTokens = NULL;
         if (SUCCEEDED(SpEnumTokens(token, NULL, NULL, &pSpEnumTokens)))
         {
             ULONG ulTokensNumber = 0;
@@ -60,9 +60,6 @@ std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *to
             }
             pVoice->SetOutput(cpWavStream, TRUE);
             pVoice->Speak(Content.c_str(), SPF_IS_XML, NULL);
-            pVoice->Release();
-            pSpEnumTokens->Release();
-            pVoice = NULL;
 
             /*To verify that the data has been written correctly, uncomment this, you should hear the voice.
             cpVoice->SetOutput(NULL, FALSE);
@@ -74,7 +71,7 @@ std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *to
             hr = cpWavStream->Seek(a, STREAM_SEEK_SET, NULL);
 
             // get the base istream from the ispstream
-            IStream *pIstream;
+            CComPtr<IStream> pIstream;
             cpWavStream->GetBaseStream(&pIstream);
 
             // calculate the size that is to be read
@@ -131,7 +128,6 @@ std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *to
                 cout << endl;
             */
             ret = std::move(datas);
-            pIstream->Release();
         }
 
     } while (0);
@@ -144,9 +140,9 @@ std::vector<std::wstring> _List(const wchar_t *token)
 {
     if (FAILED(::CoInitialize(NULL)))
         return {};
-    ISpVoice *pSpVoice = NULL;
+    CComPtr<ISpVoice> pSpVoice = NULL;
     std::vector<std::wstring> ret;
-    IEnumSpObjectTokens *pSpEnumTokens = NULL;
+    CComPtr<IEnumSpObjectTokens> pSpEnumTokens = NULL;
     if (FAILED(CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pSpVoice)))
     {
         return {};
@@ -155,7 +151,7 @@ std::vector<std::wstring> _List(const wchar_t *token)
     {
         ULONG ulTokensNumber = 0;
         pSpEnumTokens->GetCount(&ulTokensNumber);
-        ISpObjectToken *m_pISpObjectToken;
+        CComPtr<ISpObjectToken> m_pISpObjectToken;
         for (ULONG i = 0; i < ulTokensNumber; i++)
         {
             pSpEnumTokens->Item(i, &m_pISpObjectToken);
@@ -168,15 +164,10 @@ std::vector<std::wstring> _List(const wchar_t *token)
                     ret.emplace_back(pszVoiceName);
                     CoTaskMemFree(pszVoiceName);
                 }
-
                 CoTaskMemFree(pszVoiceId);
             }
         }
-        m_pISpObjectToken->Release();
-
-        pSpEnumTokens->Release();
     }
-    pSpVoice->Release();
     ::CoUninitialize();
     return ret;
 }

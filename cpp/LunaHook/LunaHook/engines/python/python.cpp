@@ -1,5 +1,6 @@
 #include "python.h"
 #include <dwrite.h>
+#include <atlbase.h>
 extern "C" __declspec(dllexport) const wchar_t *luna_internal_renpy_call_host(const wchar_t *text, int split)
 {
     return text;
@@ -139,23 +140,17 @@ namespace
         _COM_Outptr_ IUnknown **factory);
     std::list<WCHAR *> get_fonts_path(LPCWSTR family_name, BOOL is_bold, BOOL is_italic, BYTE charset)
     {
-        std::list<WCHAR *> fonts_filename_list;
         HRESULT hr;
 
-        IDWriteFactory *dwrite_factory;
+        CComPtr<IDWriteFactory> dwrite_factory;
         hr = fnDWriteCreateFactory(DWRITE_FACTORY_TYPE_ISOLATED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown **>(&dwrite_factory));
         if (FAILED(hr))
-        {
-            return fonts_filename_list;
-        }
+            return {};
 
-        IDWriteGdiInterop *gdi_interop;
+        CComPtr<IDWriteGdiInterop> gdi_interop;
         hr = dwrite_factory->GetGdiInterop(&gdi_interop);
         if (FAILED(hr))
-        {
-            dwrite_factory->Release();
-            return fonts_filename_list;
-        }
+            return {};
 
         LOGFONT lf;
         memset(&lf, 0, sizeof(lf));
@@ -172,97 +167,56 @@ namespace
         HDC hdc = CreateCompatibleDC(NULL);
         HFONT hOldFont = SelectFont(hdc, hFont);
 
-        IDWriteFontFace *font_face;
+        CComPtr<IDWriteFontFace> font_face;
         hr = gdi_interop->CreateFontFaceFromHdc(hdc, &font_face);
         if (FAILED(hr))
-        {
-            gdi_interop->Release();
-            dwrite_factory->Release();
-            return fonts_filename_list;
-        }
+            return {};
 
         UINT file_count;
         hr = font_face->GetFiles(&file_count, NULL);
         if (FAILED(hr))
-        {
-            font_face->Release();
-            gdi_interop->Release();
-            dwrite_factory->Release();
-            return fonts_filename_list;
-        }
+            return {};
 
-        IDWriteFontFile **font_files = new IDWriteFontFile *[file_count];
-        hr = font_face->GetFiles(&file_count, font_files);
+        auto font_files_1 = std::make_unique<IDWriteFontFile *[]>(file_count);
+        hr = font_face->GetFiles(&file_count, font_files_1.get());
         if (FAILED(hr))
-        {
-            font_face->Release();
-            gdi_interop->Release();
-            dwrite_factory->Release();
-            return fonts_filename_list;
-        }
-
+            return {};
+        auto font_files = std::make_unique<CComPtr<IDWriteFontFile>[]>(file_count);
+        for (auto i = 0; i < file_count; i++)
+            font_files[i].Attach(font_files_1[i]);
+        std::list<WCHAR *> fonts_filename_list;
         for (int i = 0; i < file_count; i++)
         {
             LPCVOID font_file_reference_key;
             UINT font_file_reference_key_size;
             hr = font_files[i]->GetReferenceKey(&font_file_reference_key, &font_file_reference_key_size);
             if (FAILED(hr))
-            {
-                font_files[i]->Release();
                 continue;
-            }
 
-            IDWriteFontFileLoader *loader;
+            CComPtr<IDWriteFontFileLoader> loader;
             hr = font_files[i]->GetLoader(&loader);
             if (FAILED(hr))
-            {
-                font_files[i]->Release();
                 continue;
-            }
 
-            IDWriteLocalFontFileLoader *local_loader;
-            hr = loader->QueryInterface(__uuidof(IDWriteLocalFontFileLoader), (void **)&local_loader);
+            CComPtr<IDWriteLocalFontFileLoader> local_loader;
+            hr = loader.QueryInterface(&local_loader);
             if (FAILED(hr))
-            {
-                loader->Release();
-                font_files[i]->Release();
                 continue;
-            }
 
             UINT32 path_length;
             hr = local_loader->GetFilePathLengthFromKey(font_file_reference_key, font_file_reference_key_size, &path_length);
             if (FAILED(hr))
-            {
-                local_loader->Release();
-                loader->Release();
-                font_files[i]->Release();
                 continue;
-            }
 
             WCHAR *path = new WCHAR[path_length + 1];
             hr = local_loader->GetFilePathFromKey(font_file_reference_key, font_file_reference_key_size, path, path_length + 1);
             if (FAILED(hr))
-            {
-                local_loader->Release();
-                loader->Release();
-                font_files[i]->Release();
                 continue;
-            }
-
             fonts_filename_list.push_back(path);
-
-            local_loader->Release();
-            loader->Release();
-            font_files[i]->Release();
         }
-
-        font_face->Release();
-        gdi_interop->Release();
         SelectObject(hdc, hOldFont);
         ReleaseDC(NULL, hdc);
         DeleteObject(hFont);
-
-        dwrite_factory->Release();
 
         return fonts_filename_list;
     }

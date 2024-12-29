@@ -6,14 +6,13 @@ DECLARE_API void GetLnkTargetPath(wchar_t *lnkFilePath, wchar_t *path, wchar_t *
     wcscpy(iconpath, L"");
     CoInitialize(NULL);
 
-    IShellLink *shellLink;
+    CComPtr<IShellLink> shellLink;
     HRESULT hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *)&shellLink);
 
     if (SUCCEEDED(hr))
     {
-        IPersistFile *persistFile;
-        hr = shellLink->QueryInterface(IID_IPersistFile, (LPVOID *)&persistFile);
-
+        CComPtr<IPersistFile> persistFile;
+        auto hr = shellLink.QueryInterface(&persistFile);
         if (SUCCEEDED(hr))
         {
             WCHAR wsz[MAX_PATH];
@@ -44,11 +43,7 @@ DECLARE_API void GetLnkTargetPath(wchar_t *lnkFilePath, wchar_t *path, wchar_t *
                         wcscpy(path, L"");
                 }
             }
-
-            persistFile->Release();
         }
-
-        shellLink->Release();
     }
 
     CoUninitialize();

@@ -201,14 +201,12 @@ DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
         }
 
         // 提取文本
-        BSTR text;
+        wil::unique_bstr text;
         if (FAILED(range->GetText(-1, &text)) || !text)
         {
             throw std::runtime_error("无法提取选定的文本.");
         }
-        std::wstring selectedText(text, SysStringLen(text));
-        SysFreeString(text);
-        cb(selectedText.c_str());
+        cb(text.get());
     }
     catch (std::exception &e)
     {

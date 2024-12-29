@@ -1399,6 +1399,9 @@ class QWebWrap(abstractwebview):
 class mshtmlWidget(abstractwebview):
     CommandBase = 10086
 
+    def eval(self, js):
+        winsharedutils.html_eval(self.browser, js)
+
     def bindhelper(self, func, ppwc, argc):
         argv = []
         for i in range(argc):

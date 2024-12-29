@@ -245,16 +245,15 @@ DECLARE_API void html_add_menu(void *web, int index, int command, const wchar_t 
 }
 BSTR GetSelectedText(IHTMLDocument2 *pHTMLDoc2)
 {
-    IHTMLSelectionObject *pSelectionObj = nullptr;
+    CComPtr<IHTMLSelectionObject> pSelectionObj = nullptr;
     HRESULT hr = pHTMLDoc2->get_selection(&pSelectionObj);
     if (FAILED(hr) || pSelectionObj == nullptr)
     {
         return nullptr;
     }
 
-    IHTMLTxtRange *pTxtRange = nullptr;
+    CComPtr<IHTMLTxtRange> pTxtRange = nullptr;
     hr = pSelectionObj->createRange((IDispatch **)&pTxtRange);
-    pSelectionObj->Release();
     if (FAILED(hr) || pTxtRange == nullptr)
     {
         return nullptr;
@@ -262,7 +261,6 @@ BSTR GetSelectedText(IHTMLDocument2 *pHTMLDoc2)
 
     BSTR selectedText = nullptr;
     hr = pTxtRange->get_text(&selectedText);
-    pTxtRange->Release();
 
     return selectedText;
 }
@@ -272,10 +270,9 @@ DECLARE_API const wchar_t *html_get_select_text(void *web)
         return L"";
     auto ww = static_cast<MWebBrowserEx *>(web);
 
-    if (IHTMLDocument2 *pDocument = ww->GetIHTMLDocument2())
+    if (CComPtr<IHTMLDocument2> pDocument = ww->GetIHTMLDocument2())
     {
         auto text = GetSelectedText(pDocument);
-        pDocument->Release();
         // 不需要free，free会崩溃
         return text;
     }
@@ -296,4 +293,50 @@ DECLARE_API HWND html_get_ie(void *web)
         return nullptr;
     auto ww = static_cast<MWebBrowserEx *>(web);
     return ww->GetIEServerWindow();
+}
+
+DECLARE_API void html_eval(void *web, const wchar_t *js)
+{
+    if (!web)
+        return;
+    auto ww = static_cast<MWebBrowserEx *>(web);
+    CComPtr<IHTMLDocument2> pDocument = ww->GetIHTMLDocument2();
+    if (!pDocument)
+        return;
+    CComPtr<IDispatch> scriptDispatch;
+    if (FAILED(pDocument->get_Script(&scriptDispatch)))
+        return;
+    DISPID dispid;
+    BSTR evalStr = SysAllocString(L"eval");
+    if (scriptDispatch->GetIDsOfNames(IID_NULL, &evalStr, 1,
+                                      LOCALE_SYSTEM_DEFAULT, &dispid) != S_OK)
+    {
+        SysFreeString(evalStr);
+        return;
+    }
+    SysFreeString(evalStr);
+
+    DISPPARAMS params;
+    VARIANT arg;
+    VARIANT result;
+    EXCEPINFO excepInfo;
+    UINT nArgErr = (UINT)-1;
+    params.cArgs = 1;
+    params.cNamedArgs = 0;
+    params.rgvarg = &arg;
+    arg.vt = VT_BSTR;
+    static const wchar_t *prologue = L"(function(){";
+    static const wchar_t *epilogue = L";})();";
+    int n = wcslen(prologue) + wcslen(epilogue) + wcslen(js) + 1;
+    auto eval = std::make_unique<wchar_t[]>(n);
+    _snwprintf(eval.get(), n, L"%s%s%s", prologue, js, epilogue);
+    arg.bstrVal = SysAllocString(eval.get());
+    if (scriptDispatch->Invoke(
+            dispid, IID_NULL, 0, DISPATCH_METHOD,
+            &params, &result, &excepInfo, &nArgErr) != S_OK)
+    {
+        SysFreeString(arg.bstrVal);
+        return;
+    }
+    SysFreeString(arg.bstrVal);
 }
