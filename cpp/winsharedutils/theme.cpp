@@ -209,5 +209,7 @@ DECLARE_API bool isDark()
     if (ERROR_SUCCESS != hKey.QueryDWORDValue(L"AppsUseLightTheme", value))
         return false;
     return 1 - value;
+#else
+    return false;
 #endif
 }
