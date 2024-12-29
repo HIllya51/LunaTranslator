@@ -162,7 +162,8 @@ DECLARE_API bool check_window_viewable(HWND hwnd)
 DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
 {
 #ifndef WINXP
-    CoInitialize(nullptr);
+    CO_INIT co;
+    CHECK_FAILURE_NORET(co);
     try
     {
         // 初始化 COM
@@ -212,6 +213,5 @@ DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
     {
         printf(e.what());
     }
-    CoUninitialize();
 #endif
 }

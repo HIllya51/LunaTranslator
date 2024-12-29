@@ -7,9 +7,6 @@
 #include <wrl/implements.h>
 using namespace Microsoft::WRL;
 #include <WebView2.h>
-#define CHECK_FAILURE(x) \
-    if (FAILED((x)))     \
-        return x;
 
 #endif
 DECLARE_API void set_transparent_background(void *m_host)

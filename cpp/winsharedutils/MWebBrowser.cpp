@@ -211,48 +211,19 @@ HRESULT MWebBrowser::CreateBrowser(HWND hwndParent)
 {
     m_hwndParent = hwndParent;
 
-    HRESULT hr;
-    hr = ::OleCreate(CLSID_WebBrowser, IID_IOleObject, OLERENDER_DRAW, NULL,
-                     this, this, (void **)&m_ole_object);
-    if (FAILED(hr))
-    {
-        assert(0);
-        return hr;
-    }
+    CHECK_FAILURE(OleCreate(CLSID_WebBrowser, IID_IOleObject, OLERENDER_DRAW, NULL,
+                            this, this, (void **)&m_ole_object));
 
     m_ole_object.QueryInterface(&m_pDocHostUIHandler);
 
-    hr = m_ole_object->SetClientSite(this);
-    if (FAILED(hr))
-    {
-        assert(0);
-        return hr;
-    }
-
-    hr = ::OleSetContainedObject(m_ole_object, TRUE);
-    if (FAILED(hr))
-    {
-        assert(0);
-        return hr;
-    }
-
+    CHECK_FAILURE(m_ole_object->SetClientSite(this));
+    CHECK_FAILURE(OleSetContainedObject(m_ole_object, TRUE));
     RECT rc;
     ::SetRectEmpty(&rc);
-    hr = m_ole_object->DoVerb(OLEIVERB_INPLACEACTIVATE, NULL, this, 0,
-                              m_hwndParent, &rc);
-    if (FAILED(hr))
-    {
-        assert(0);
-        return hr;
-    }
+    CHECK_FAILURE(m_ole_object->DoVerb(OLEIVERB_INPLACEACTIVATE, NULL, this, 0,
+                              m_hwndParent, &rc));
 
-    hr = m_ole_object.QueryInterface(&m_web_browser2);
-    if (FAILED(hr))
-    {
-        assert(0);
-        return hr;
-    }
-
+    CHECK_FAILURE(m_ole_object.QueryInterface(&m_web_browser2));
     HWND hwnd = GetControlWindow();
 
     DWORD exstyle = GetWindowLong(hwnd, GWL_EXSTYLE);
