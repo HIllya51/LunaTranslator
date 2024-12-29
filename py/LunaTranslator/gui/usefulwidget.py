@@ -1428,7 +1428,7 @@ class mshtmlWidget(abstractwebview):
         self.curr_url = None
         t = QTimer(self)
         t.setInterval(100)
-        t.timeout.connect(self.__getcurrenturl)
+        t.timeout.connect(self.__getcurrent)
         t.timeout.emit()
         t.start()
         self.add_menu(0, _TR("复制"), winsharedutils.clipboard_set)
@@ -1449,11 +1449,19 @@ class mshtmlWidget(abstractwebview):
                 func(winsharedutils.html_get_select_text(self.browser))
         return windows.WNDPROCTYPE(orig)(hwnd, msg, wp, lp)
 
-    def __getcurrenturl(self):
+    def __getcurrent(self):
         _u = winsharedutils.html_get_current_url(self.browser)
         if self.curr_url != _u:
             self.curr_url = _u
             self.on_load.emit(_u)
+        if (
+            windows.GetAsyncKeyState(windows.VK_CONTROL)
+            and windows.GetAsyncKeyState(67)
+            and winsharedutils.html_get_ie(self.browser) == windows.GetFocus()
+        ):
+            winsharedutils.clipboard_set(
+                winsharedutils.html_get_select_text(self.browser)
+            )
 
     def navigate(self, url):
         winsharedutils.html_navigate(self.browser, url)

@@ -139,7 +139,9 @@ html_get_select_text.restype = c_wchar_p
 html_bind_function_FT = CFUNCTYPE(None, POINTER(c_wchar_p), c_int)
 html_bind_function = utilsdll.html_bind_function
 html_bind_function.argtypes = c_void_p, c_wchar_p, html_bind_function_FT
-
+html_get_ie = utilsdll.html_get_ie
+html_get_ie.argtypes = (c_void_p,)
+html_get_ie.restype = HWND
 
 _GetLnkTargetPath = utilsdll.GetLnkTargetPath
 _GetLnkTargetPath.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_wchar_p

@@ -289,3 +289,11 @@ DECLARE_API void html_bind_function(void *web, const wchar_t *name, void (*funct
     auto ww = static_cast<MWebBrowserEx *>(web);
     ww->jsobj->bindfunction(name, function);
 }
+
+DECLARE_API HWND html_get_ie(void *web)
+{
+    if (!web)
+        return nullptr;
+    auto ww = static_cast<MWebBrowserEx *>(web);
+    return ww->GetIEServerWindow();
+}
