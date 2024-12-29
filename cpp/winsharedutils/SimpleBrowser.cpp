@@ -307,14 +307,11 @@ DECLARE_API void html_eval(void *web, const wchar_t *js)
     if (FAILED(pDocument->get_Script(&scriptDispatch)))
         return;
     DISPID dispid;
-    BSTR evalStr = SysAllocString(L"eval");
+    CComBSTR evalStr = L"eval";
     if (scriptDispatch->GetIDsOfNames(IID_NULL, &evalStr, 1,
                                       LOCALE_SYSTEM_DEFAULT, &dispid) != S_OK)
-    {
-        SysFreeString(evalStr);
+
         return;
-    }
-    SysFreeString(evalStr);
 
     DISPPARAMS params;
     VARIANT arg;
@@ -330,13 +327,9 @@ DECLARE_API void html_eval(void *web, const wchar_t *js)
     int n = wcslen(prologue) + wcslen(epilogue) + wcslen(js) + 1;
     auto eval = std::make_unique<wchar_t[]>(n);
     _snwprintf(eval.get(), n, L"%s%s%s", prologue, js, epilogue);
-    arg.bstrVal = SysAllocString(eval.get());
-    if (scriptDispatch->Invoke(
-            dispid, IID_NULL, 0, DISPATCH_METHOD,
-            &params, &result, &excepInfo, &nArgErr) != S_OK)
-    {
-        SysFreeString(arg.bstrVal);
-        return;
-    }
-    SysFreeString(arg.bstrVal);
+    CComBSTR bstrVal = eval.get();
+    arg.bstrVal = bstrVal;
+    scriptDispatch->Invoke(
+        dispid, IID_NULL, 0, DISPATCH_METHOD,
+        &params, &result, &excepInfo, &nArgErr);
 }

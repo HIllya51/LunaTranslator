@@ -1050,7 +1050,8 @@ void AddCustomObject(IHTMLDocument2 *doc, IDispatch *custObj, std::wstring name)
         return;
 
     DISPID dispid;
-    hr = winEx->GetDispID(name.data(), fdexNameEnsure, &dispid);
+    CComBSTR bname = name.c_str();
+    hr = winEx->GetDispID(bname, fdexNameEnsure, &dispid);
 
     if (FAILED(hr))
         return;
