@@ -407,7 +407,7 @@ class AnkiWindow(QWidget):
         )
 
         layout.addRow(
-            "MP3 kbps",
+            "MP3 bitrate",
             getsimplecombobox(
                 [str(8 * i) for i in range(1, 320 // 8 + 1)],
                 globalconfig,
