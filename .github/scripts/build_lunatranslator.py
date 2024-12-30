@@ -268,6 +268,9 @@ def downloadbass():
         "https://www.un4seen.com/files/z/2/bass_spx24.zip",
         "https://www.un4seen.com/files/z/2/bass_aac24.zip",
         "https://www.un4seen.com/files/bassopus24.zip",
+        "https://www.un4seen.com/files/bassenc24.zip",
+        "https://www.un4seen.com/files/bassenc_mp324.zip",
+        "https://www.un4seen.com/files/bassenc_opus24.zip",
     ):
         name = link.split("/")[-1]
         d = name.split(".")[0]

@@ -34,6 +34,7 @@ from gui.usefulwidget import (
     getIconButton,
     saveposwindow,
     tabadd_lazy,
+    VisLFormLayout,
 )
 from gui.dynalang import (
     LPushButton,
@@ -45,6 +46,7 @@ from gui.dynalang import (
     LMainWindow,
     LAction,
 )
+from myutils.audioplayer import bass_code_cast
 
 
 def getimageformat():
@@ -62,7 +64,8 @@ class AnkiWindow(QWidget):
     def callbacktts(self, edit, sig, data):
         if sig != edit.sig:
             return
-        fname = gobject.gettempdir(str(uuid.uuid4()) + ".mp3")
+        data, ext = bass_code_cast(data, "mp3")
+        fname = gobject.gettempdir(str(uuid.uuid4()) + "." + ext)
         with open(fname, "wb") as ff:
             ff.write(data)
         self.settextsignal.emit(edit, os.path.abspath(fname))
@@ -330,7 +333,7 @@ class AnkiWindow(QWidget):
             ff.write(model_css)
 
     def creatsetdtab(self, baselay):
-        layout = LFormLayout()
+        layout = VisLFormLayout()
         wid = QWidget()
         wid.setLayout(layout)
         baselay.addWidget(wid)
@@ -384,6 +387,39 @@ class AnkiWindow(QWidget):
             "成功添加后关闭窗口",
             getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
         )
+        cnt = layout.rowCount() + 1
+
+        def __(xx):
+            i = ["mp3", "opus"].index(xx)
+            layout.setRowVisible(cnt + 0, False)
+            layout.setRowVisible(cnt + 1, False)
+            layout.setRowVisible(cnt + i, True)
+
+        layout.addRow(
+            "音频编码",
+            getsimplecombobox(
+                ["mp3", "opus(ogg)"],
+                globalconfig,
+                "audioformat",
+                internal=["mp3", "opus"],
+                callback=__,
+            ),
+        )
+
+        layout.addRow(
+            "MP3 kbps",
+            getsimplecombobox(
+                [str(8 * i) for i in range(1, 320 // 8 + 1)],
+                globalconfig,
+                "mp3kbps",
+                internal=[8 * i for i in range(1, 320 // 8 + 1)],
+            ),
+        )
+        layout.addRow(
+            "OPUS bitrate",
+            getspinbox(6, 256, globalconfig, "opusbitrate"),
+        )
+        __(globalconfig["audioformat"])
 
     def vistranslate_rank(self):
         listediter(
@@ -1208,8 +1244,13 @@ class searchwordW(closeashidewindow):
         self.textOutput.bind(
             "mdict_entry_call", lambda word: self.search_word.emit(word, False)
         )
+        self.textOutput.bind(
+            "mdict_audio_call",
+            lambda b64: gobject.baseobject.audioplayer.play(
+                base64.b64decode(b64.encode()), force=True
+            ),
+        )
         self.cache_results = {}
-        self.hiding = True
 
         self.spliter = QSplitter()
 

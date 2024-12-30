@@ -33,7 +33,7 @@ from gui.usefulwidget import (
 
 def showcountgame(window, num):
     if num:
-        window.setWindowTitle("游戏管理____-_" + str(num))
+        window.setWindowTitle("游戏管理__-__" + str(num))
     else:
         window.setWindowTitle("游戏管理")
 

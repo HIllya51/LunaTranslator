@@ -484,6 +484,9 @@
         "tags": []
     },
     "imageformat": -1,
+    "mp3kbps": 64,
+    "opusbitrate": 10,
+    "audioformat": "mp3",
     "ankiwindow": [
         100,
         100,
@@ -1250,29 +1253,29 @@
     },
     "cishu": {
         "mojidict": {
-            "use": false,
+            "use": true,
             "name": "Moji辞书",
             "useproxy": false
         },
         "youdao": {
-            "use": false,
+            "use": true,
             "name": "有道词典",
             "useproxy": false
         },
         "jisho": {
-            "use": false,
+            "use": true,
             "name": "jisho"
         },
         "japandict": {
-            "use": false,
+            "use": true,
             "name": "JapanDict"
         },
         "weblio": {
-            "use": false,
+            "use": true,
             "name": "weblio"
         },
         "goo": {
-            "use": false,
+            "use": true,
             "name": "goo"
         },
         "gemini": {

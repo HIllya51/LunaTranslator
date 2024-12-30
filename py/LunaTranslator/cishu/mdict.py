@@ -1,8 +1,8 @@
 import math, base64, uuid, gobject
 from cishu.cishubase import DictTree
-from myutils.config import isascii
+from myutils.config import isascii, globalconfig
 from traceback import print_exc
-from myutils.audioplayer import bass_decode
+from myutils.audioplayer import bass_code_cast
 import json, os
 
 cachejson = None
@@ -2293,18 +2293,14 @@ class mdict(cishubase):
             file_content = self.parse_url_in_mdd(index, url[8:])
             if not file_content:
                 return
-            ext = os.path.splitext(url)[1].lower()
-            if ext in (".aac", ".spx", ".opus"):
-                mp3 = bass_decode(file_content, ext)
-                if not mp3:
-                    print(ext, "decode error")
-                    return
-                file_content = mp3
-                ext = ".mp3"
+            ext = os.path.splitext(url)[1].lower()[1:]
+            if True:  # ext in ("aac", "spx", "opus"):
+                new, ext = bass_code_cast(file_content, fr=ext)
+                file_content = new
             varname = "var_" + hashlib.md5(file_content).hexdigest()
             audiob64vals[varname] = base64.b64encode(file_content).decode()
             return 3, "javascript:mdict_play_sound('{}',{})".format(
-                query_mime(ext), varname
+                query_mime("." + ext), varname
             )
         file_content = self.parse_url_in_mdd(index, url)
         if not file_content:
@@ -2515,7 +2511,7 @@ class mdict(cishubase):
                 )
             )
             idx += 1
-        commonstyle = """
+        res = """
 <script>
 function onclickbtn_mdict_internal(_id) {
     tabPanes = document.querySelectorAll('.tab-widget_mdict_internal .tab-pane_mdict_internal');
@@ -2562,12 +2558,7 @@ function onclickbtn_mdict_internal(_id) {
     display: block;
 }
 </style>
-"""
-
-        res = """
-    {commonstyle}
 <div class="tab-widget_mdict_internal">
-
     <div class="centerdiv_mdict_internal"><div>
         {btns}
     </div>
@@ -2579,7 +2570,7 @@ function onclickbtn_mdict_internal(_id) {
     </div>
 </div>
 """.format(
-            commonstyle=commonstyle, btns="".join(btns), contents="".join(contents)
+            btns="".join(btns), contents="".join(contents)
         )
         return res
 
@@ -2601,8 +2592,7 @@ function onclickbtn_mdict_internal(_id) {
         display: none;
         padding: 10px;
         border: 1px solid #ddd;
-    }</style>"""
-        content += """
+    }</style>
 <script>
 function mdict_flowstyle_clickcallback(_id)
 {
@@ -2657,6 +2647,12 @@ for(let i=0;i<elements.length;i++)
 }
 var lastmusicplayer=false;
 function mdict_play_sound(ext, b64){
+
+if(window.mdict_audio_call)
+        window.mdict_audio_call(b64)
+    else if(window.LUNAJSObject)
+        window.LUNAJSObject.mdict_audio_call(b64)
+    else{
     const music = new Audio();
     music.src="data:"+ext+";base64,"+b64
     if(lastmusicplayer!=false)
@@ -2665,6 +2661,7 @@ function mdict_play_sound(ext, b64){
     }
     lastmusicplayer=music
     music.play();
+    }
 }
 function safe_mdict_entry_call(word){
     if(window.mdict_entry_call)

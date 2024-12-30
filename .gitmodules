@@ -7,9 +7,6 @@
 [submodule "src/plugins/libs/wechat-ocr"]
 	path = cpp/libs/wechat-ocr
 	url = https://github.com/swigger/wechat-ocr
-[submodule "src/plugins/libs/tinymp3"]
-	path = cpp/libs/tinymp3
-	url = https://github.com/HIllya51/tinymp3
 [submodule "src/plugins/libs/Clipper2"]
 	path = cpp/libs/Clipper2
 	url = https://github.com/AngusJohnson/Clipper2

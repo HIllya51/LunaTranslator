@@ -1,4 +1,3 @@
-from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 import functools, threading
 from myutils.config import savehook_new_list, savehook_new_data, get_launchpath

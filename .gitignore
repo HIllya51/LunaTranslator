@@ -37,6 +37,7 @@ cpp/LunaHook/builds
 cpp/builds
 cpp/libs/webview2
 cpp/.vscode/settings.json
+cpp/libs/bass
 cpp/libs/opencv-static/windows-x86
 cpp/libs/opencv-static/windows-x64
 cpp/libs/onnxruntime-static/windows-x86

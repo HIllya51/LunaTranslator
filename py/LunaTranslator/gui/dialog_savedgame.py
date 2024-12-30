@@ -1,5 +1,3 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 import os, functools, uuid
 from traceback import print_exc
@@ -26,6 +24,7 @@ from gui.usefulwidget import (
     IconButton,
     statusbutton,
     getsimplecombobox,
+    threeswitch,
     FQLineEdit,
     FocusCombo,
 )
@@ -50,30 +49,20 @@ from gui.dialog_savedgame_common import (
 class dialog_savedgame_integrated(saveposwindow):
 
     def selectlayout(self, type):
-        self.syssettingbtn.setVisible(type != 2)
+        self.syssettingbtn.setVisible(type != 0)
         try:
             globalconfig["gamemanager_integrated_internal_layout"] = type
             klass = [
-                dialog_savedgame_new,
-                dialog_savedgame_v3,
                 dialog_savedgame_legacy,
+                dialog_savedgame_v3,
+                dialog_savedgame_new,
             ][type]
-            btns = [self.layout1btn, self.layout2btn, self.layout3btn]
-            btns[(type + 0) % 3].setEnabled(False)
-            btns[(type + 1) % 3].setEnabled(False)
-            btns[(type + 2) % 3].setEnabled(False)
-            btns[(type + 0) % 3].setChecked(True)
-            btns[(type + 1) % 3].setChecked(False)
-            btns[(type + 2) % 3].setChecked(False)
             _old = self.internallayout.takeAt(0).widget()
             _old.hide()
             _ = klass(self)
             self.internallayout.addWidget(_)
             _.directshow()
             _old.deleteLater()
-            btns[(type + 0) % 3].setEnabled(False)
-            btns[(type + 1) % 3].setEnabled(True)
-            btns[(type + 2) % 3].setEnabled(True)
             self.__internal = _
         except:
             print_exc()
@@ -95,25 +84,13 @@ class dialog_savedgame_integrated(saveposwindow):
         self.internallayout.addWidget(QWidget())
         self.setCentralWidget(w)
 
-        def createbtn(icon, i):
-            btn = statusbutton(
-                p=self,
-                icons=icon,
-                border=False,
-                colors=["", globalconfig["buttoncolor2"]],
-            )
-            btn.clicked.connect(functools.partial(self.selectlayout, i))
-            btn.setFixedSize(QSize(20, 25))
-            return btn
-
-        self.layout1btn = createbtn("fa.th", 0)
-        self.layout2btn = createbtn("fa.th-list", 1)
-        self.layout3btn = createbtn("fa.list", 2)
+        self.switch = threeswitch(self, icons=["fa.list", "fa.th-list", "fa.th"])
+        self.switch.btnclicked.connect(self.selectlayout)
         self.syssettingbtn = IconButton(icon="fa.gear", parent=self)
         self.syssettingbtn.setFixedSize(QSize(25, 25))
         self.syssettingbtn.clicked.connect(self.syssetting)
         self.show()
-        self.selectlayout(globalconfig["gamemanager_integrated_internal_layout"])
+        self.switch.selectlayout(globalconfig["gamemanager_integrated_internal_layout"])
 
     def syssetting(self):
         dialog_syssetting(
@@ -122,25 +99,10 @@ class dialog_savedgame_integrated(saveposwindow):
         )
 
     def resizeEvent(self, e: QResizeEvent):
-        self.layout1btn.move(e.size().width() - self.layout1btn.width(), 0)
-        self.layout2btn.move(
-            e.size().width() - self.layout2btn.width() - self.layout1btn.width(), 0
-        )
-        self.layout3btn.move(
-            e.size().width()
-            - self.layout3btn.width()
-            - self.layout2btn.width()
-            - self.layout1btn.width(),
-            0,
-        )
-        self.syssettingbtn.move(
-            e.size().width()
-            - self.syssettingbtn.width()
-            - self.layout3btn.width()
-            - self.layout2btn.width()
-            - self.layout1btn.width(),
-            0,
-        )
+        x = e.size().width() - self.switch.width()
+        self.switch.move(x, 0)
+        x -= self.syssettingbtn.width()
+        self.syssettingbtn.move(x, 0)
 
 
 class TagWidget(QWidget):
@@ -801,7 +763,7 @@ class dialog_savedgame_new(QWidget):
         game2 = self.idxsave[idx2]
         self.idxsave.insert(idx2, self.idxsave.pop(idx1))
         self.flow.switchidx(idx1, idx2)
-    
+
         try:
             self.flow.ensureWidgetVisible(self.flow.widget(idx2))
         except:

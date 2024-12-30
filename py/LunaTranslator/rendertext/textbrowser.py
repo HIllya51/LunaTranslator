@@ -1,4 +1,3 @@
-from PyQt5.QtGui import QMouseEvent
 from qtsymbols import *
 from myutils.config import globalconfig, static_data
 from rendertext.somefunctions import dataget
@@ -459,7 +458,7 @@ class TextBrowser(QWidget, dataget):
 
             layout = QTextLayout()
             layout.setFont(font)
-            layout.setTextOption(QTextOption(Qt.AlignLeft))
+            layout.setTextOption(QTextOption(Qt.AlignmentFlag.AlignLeft))
             layout.setText(linetext)
             layout.beginLayout()
             newtag = []

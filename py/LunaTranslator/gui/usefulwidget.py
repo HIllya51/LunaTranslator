@@ -1617,6 +1617,43 @@ class auto_select_webview(QWidget):
         return browser
 
 
+class threeswitch(QWidget):
+    btnclicked = pyqtSignal(int)
+
+    def selectlayout(self, i):
+        self.btns[(i + 0) % 3].setEnabled(False)
+        self.btns[(i + 1) % 3].setEnabled(False)
+        self.btns[(i + 2) % 3].setEnabled(False)
+        self.btns[(i + 0) % 3].setChecked(True)
+        self.btns[(i + 1) % 3].setChecked(False)
+        self.btns[(i + 2) % 3].setChecked(False)
+        self.btnclicked.emit(i)
+        self.btns[(i + 1) % 3].setEnabled(True)
+        self.btns[(i + 2) % 3].setEnabled(True)
+
+    def __init__(self, p, icons):
+        super().__init__(p)
+        self.btns = []
+        for i, icon in enumerate(icons):
+            btn = statusbutton(
+                p=self,
+                icons=icon,
+                border=False,
+                colors=["", globalconfig["buttoncolor2"]],
+            )
+            btn.clicked.connect(functools.partial(self.selectlayout, i))
+            btn.setFixedSize(QSize(20, 25))
+            self.btns.append(btn)
+        self.setFixedSize(QSize(60, 75))
+
+    def resizeEvent(self, a0):
+        x, y = 0, 0
+        for btn in self.btns:
+            btn.move(x, y)
+            x += btn.width()
+        return super().resizeEvent(a0)
+
+
 class threebuttons(QWidget):
     btn1clicked = pyqtSignal()
     btn2clicked = pyqtSignal()

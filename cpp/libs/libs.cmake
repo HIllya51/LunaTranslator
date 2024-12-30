@@ -12,7 +12,6 @@ else()
     add_library(wil INTERFACE)
     target_include_directories(wil INTERFACE ${CMAKE_CURRENT_LIST_DIR}/wil/include)
 
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tinymp3 ${CMAKE_BINARY_DIR}/tinymp3)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/rapidfuzz-cpp ${CMAKE_BINARY_DIR}/rapidfuzz-cpp)
 
 

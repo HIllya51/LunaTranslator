@@ -1,5 +1,3 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget
 from qtsymbols import *
 import functools, uuid
 from datetime import datetime, timedelta

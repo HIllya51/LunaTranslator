@@ -21,6 +21,7 @@ import threading, winreg
 import re, heapq, winsharedutils
 from myutils.wrapper import tryprint, threader
 from html.parser import HTMLParser
+from myutils.audioplayer import bass_code_cast
 
 
 def qimage2binary(qimage: QImage, fmt="BMP"):
@@ -839,17 +840,11 @@ class loopbackrecorder:
         wav = self.capture.stop()
         if not wav:
             return callback("")
-        mp3 = winsharedutils.encodemp3(wav)
-        if not mp3:
-            file = gobject.gettempdir(str(time.time()) + ".wav")
-            with open(file, "wb") as ff:
-                ff.write(wav)
-            callback(file)
-        else:
-            file = gobject.gettempdir(str(time.time()) + ".mp3")
-            with open(file, "wb") as ff:
-                ff.write(mp3)
-            callback(file)
+        new, ext = bass_code_cast(wav, "wav")
+        file = gobject.gettempdir(str(time.time()) + "." + ext)
+        with open(file, "wb") as ff:
+            ff.write(new)
+        callback(file)
 
 
 def copytree(src, dst, copy_function=shutil.copy2):

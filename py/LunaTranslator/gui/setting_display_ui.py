@@ -306,15 +306,6 @@ def mainuisetting(self):
                             ),
                         ],
                         [
-                            "圆角_半径",
-                            D_getspinbox(
-                                0,
-                                100,
-                                globalconfig,
-                                "yuanjiao_r",
-                                callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
-                            ),
-                            "",
                             "可选取的",
                             D_getsimpleswitch(
                                 globalconfig,
@@ -324,6 +315,15 @@ def mainuisetting(self):
                                 ),
                                 parent=self,
                                 name="selectable_btn",
+                            ),
+                            "",
+                            "圆角_半径",
+                            D_getspinbox(
+                                0,
+                                100,
+                                globalconfig,
+                                "yuanjiao_r",
+                                callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
                             ),
                         ],
                     ),

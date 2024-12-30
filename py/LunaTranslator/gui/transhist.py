@@ -39,7 +39,6 @@ class transhist(closeashidewindow):
         self.textOutput = textOutput
         self.setCentralWidget(self.textOutput)
 
-        self.hiding = True
 
     def showmenu(self, tb, p):
         menu = QMenu(self)

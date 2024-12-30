@@ -16,11 +16,16 @@ class goo(cishubase):
 
         xx = "".join(xx).replace('href="/', 'href="https://dictionary.goo.ne.jp/')
         if not self.style:
-            self.style = requests.get(
-                "https://dictionary.goo.ne.jp/mix/css/app.css", proxies=self.proxy
-            ).text
+            self.style = (
+                requests.get(
+                    "https://dictionary.goo.ne.jp/mix/css/app.css", proxies=self.proxy
+                )
+                .text.replace("width:1004px", "")
+                .replace("width:1024px", "")
+                .replace("width:644px", "")
+            )
 
         if len(xx):
-            return '<div style="text-align: center;"><a href="{}">link</a><style>{}</style></div><div id="NR-main-in">{}</div>'.format(
+            return '<div style="text-align: center;"><a href="{}">link</a><style>{}</style></div><div id="NR-wrapper"><div id="NR-wrapper-in" class="cx">{}</div></div>'.format(
                 url, self.style, xx
             )

@@ -48,7 +48,7 @@ class ButtonX(QWidget):
         super().__init__(*argc)
         self.reflayout = None
         self.setMouseTracking(True)
-        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
 
     def showinlayout(self, layout):
 
