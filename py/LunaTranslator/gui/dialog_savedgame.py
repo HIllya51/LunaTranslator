@@ -95,7 +95,7 @@ class dialog_savedgame_integrated(saveposwindow):
     def syssetting(self):
         dialog_syssetting(
             self.__internal,
-            type_={0: 1, 1: 2}[globalconfig["gamemanager_integrated_internal_layout"]],
+            type_=globalconfig["gamemanager_integrated_internal_layout"],
         )
 
     def resizeEvent(self, e: QResizeEvent):
