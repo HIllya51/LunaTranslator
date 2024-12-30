@@ -1,4 +1,4 @@
-PyQt5==5.15.11
+PyQt5==5.15.10
 PyQt5-Qt5==5.15.2
 webviewpy==1.4.0
 tinycss2
