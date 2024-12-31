@@ -2313,82 +2313,6 @@ class mdict(cishubase):
             return
         return _type, file_content
 
-    def tryparsecss(self, file_content, divid):
-        try:
-            file_content = file_content.decode("utf8")
-        except:
-            return ""
-        if file_content.startswith("<style>") and file_content.endswith("</style>"):
-            file_content = file_content[7:-8]
-        try:
-            from tinycss2 import parse_stylesheet, serialize
-            from tinycss2.ast import (
-                WhitespaceToken,
-                AtRule,
-                QualifiedRule,
-                ParseError,
-                LiteralToken,
-            )
-
-            rules = parse_stylesheet(file_content, True, True)
-
-            def parseaqr(rule: QualifiedRule):
-                start = True
-                idx = 0
-                skip = False
-                for token in rule.prelude.copy():
-                    if skip and token.type == "whitespace":
-                        skip = False
-                        idx += 1
-                        continue
-                    if start:
-                        if token.type == "ident" and token.value == "body":
-                            # body
-                            rule.prelude.insert(
-                                idx + 1, LiteralToken(0, 0, "." + divid)
-                            )
-                            rule.prelude.insert(idx + 1, WhitespaceToken(0, 0, " "))
-                            idx += 2
-                        else:
-                            # .id tag
-                            # tag
-                            # #class tag
-                            rule.prelude.insert(idx, WhitespaceToken(0, 0, " "))
-                            rule.prelude.insert(
-                                idx, LiteralToken(0, 0, "." + divid + " ")
-                            )
-                            idx += 2
-                        start = False
-                    elif token.type == "literal" and token.value == ",":
-                        # 有多个限定符
-                        start = True
-                        skip = True
-                    idx += 1
-
-            def parserules(rules):
-                # print(stylesheet)
-                for i, rule in enumerate(rules.copy()):
-                    if isinstance(rule, AtRule):
-                        if not rule.content:
-                            # @charset "UTF-8";
-                            continue
-                        internal = parse_stylesheet(rule.content, True, True)
-                        if len(internal) and isinstance(internal[0], ParseError):
-                            # @font-face
-                            continue
-                        # @....{ .klas{} }
-                        rule.content = parserules(internal)
-                    elif isinstance(rule, QualifiedRule):
-                        parseaqr(rules[i])
-                return rules
-
-            file_content = serialize(parserules(rules))
-            # print(file_content)
-        except:
-
-            print_exc()
-        return file_content
-
     def repairtarget(
         self,
         index,
@@ -2396,7 +2320,7 @@ class mdict(cishubase):
         html_content: str,
         audiob64vals: dict,
         hrefsrcvals: dict,
-        divid: str,
+        divclass: str,
         csscollect: dict,
     ):
         base = os.path.dirname(fn)
@@ -2430,7 +2354,9 @@ class mdict(cishubase):
             elif _type == 3:
                 html_content = html_content.replace(url, file_content)
             elif _type == 1:
-                css = self.tryparsecss(file_content, divid)
+                css = self.parse_stylesheet(
+                    file_content.decode("utf8", errors="ignore"), divclass
+                )
                 if css:
                     csscollect[url] = css
                     html_content = html_content.replace(url, "")
@@ -2442,7 +2368,7 @@ class mdict(cishubase):
                     base64.b64encode(file_content).decode(),
                 )
                 html_content = html_content.replace(url, varname)
-        return '<div class="{}">{}</div>'.format(divid, html_content)
+        return '<div class="{}">{}</div>'.format(divclass, html_content)
 
     def searchthread_internal(self, index, k, __safe):
         allres = []
@@ -2475,11 +2401,11 @@ class mdict(cishubase):
             print_exc()
         if not results:
             return
-        divid = "luna_" + str(uuid.uuid4())
+        divclass = "luna_" + str(uuid.uuid4())
         csscollect = {}
         for i in range(len(results)):
             results[i] = self.repairtarget(
-                index, f, results[i], audiob64vals, hrefsrcvals, divid, csscollect
+                index, f, results[i], audiob64vals, hrefsrcvals, divclass, csscollect
             )
         collectresult = "".join(results)
         if csscollect:
@@ -2544,7 +2470,7 @@ function onclickbtn_mdict_internal(_id) {
 }
 
 .tab-widget_mdict_internal .tab-button_mdict_internal {
-    padding: 5px 20px;
+    padding: 10px 20px;
     background-color: #cccccccc;
     border: none;
     cursor: pointer;
@@ -2558,12 +2484,14 @@ function onclickbtn_mdict_internal(_id) {
 
 .tab-widget_mdict_internal .tab-content_mdict_internal .tab-pane_mdict_internal {
     display: none;
+    padding: 10px;
 }
 
 .tab-widget_mdict_internal .tab-content_mdict_internal .tab-pane_mdict_internal.active {
     display: block;
 }
-</style>
+</style>"""
+        res += """
 <div class="tab-widget_mdict_internal">
     <div class="centerdiv_mdict_internal"><div>
         {btns}

@@ -10,7 +10,15 @@ from myutils.utils import (
     create_langmap,
 )
 from myutils.commonbase import ArgsEmptyExc, proxysession
-import re
+import re, uuid
+from tinycss2 import parse_stylesheet, serialize
+from tinycss2.ast import (
+    WhitespaceToken,
+    AtRule,
+    QualifiedRule,
+    ParseError,
+    LiteralToken,
+)
 
 
 class DictTree:
@@ -149,3 +157,68 @@ class cishubase:
         switchli()
 
         return "".join(html_lines)
+
+    def __parseaqr(self, rule: QualifiedRule, divclass):
+        start = True
+        idx = 0
+        skip = False
+        for token in rule.prelude.copy():
+            if skip and token.type == "whitespace":
+                skip = False
+                idx += 1
+                continue
+            if start:
+                if token.type == "ident" and token.value == "body":
+                    # body
+                    rule.prelude.insert(idx + 1, LiteralToken(0, 0, "." + divclass))
+                    rule.prelude.insert(idx + 1, WhitespaceToken(0, 0, " "))
+                    idx += 2
+                else:
+                    # .id tag
+                    # tag
+                    # #class tag
+                    rule.prelude.insert(idx, WhitespaceToken(0, 0, " "))
+                    rule.prelude.insert(idx, LiteralToken(0, 0, "." + divclass + " "))
+                    idx += 2
+                start = False
+            elif token.type == "literal" and token.value == ",":
+                # 有多个限定符
+                start = True
+                skip = True
+            idx += 1
+
+    def __parserules(self, rules, divclass):
+        # print(stylesheet)
+        for i, rule in enumerate(rules.copy()):
+            if isinstance(rule, AtRule):
+                if not rule.content:
+                    # @charset "UTF-8";
+                    continue
+                internal = parse_stylesheet(rule.content, True, True)
+                if len(internal) and isinstance(internal[0], ParseError):
+                    # @font-face
+                    continue
+                # @....{ .klas{} }
+                rule.content = self.__parserules(internal, divclass)
+            elif isinstance(rule, QualifiedRule):
+                self.__parseaqr(rules[i], divclass)
+        return rules
+
+    def parse_stylesheet(self, file_content: str, divclass=None):
+        if divclass is None:
+            _divclass = "luna" + str(uuid.uuid4())
+        else:
+            _divclass = divclass
+        if file_content.startswith("<style>") and file_content.endswith("</style>"):
+            file_content = file_content[7:-8]
+        try:
+            rules = parse_stylesheet(file_content, True, True)
+            file_content = serialize(self.__parserules(rules, _divclass))
+            # print(file_content)
+        except:
+
+            print_exc()
+        if divclass is None:
+            return file_content, _divclass
+        else:
+            return file_content

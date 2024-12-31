@@ -1,4 +1,4 @@
-import requests, re, json
+import requests, re, json, uuid
 
 from cishu.cishubase import cishubase
 
@@ -563,12 +563,12 @@ def mojiclicksearch(self, word):
     spell = '<div class="spell" style="font-size: 18px;">{}</div>'.format(spell)
     _type = re.match("\\[(.*?)\\]", excerpt).groups()[0]
     _type = '<p class="type">{}</p>'.format(_type)
-
+    klass = "luna" + str(uuid.uuid4())
     for i in range(len(collect)):
         collect[i] = "<p>{}. {}</p>".format(i + 1, collect[i])
     detail = """<div class="detail">{}{}</div>""".format(_type, "".join(collect))
-    result = '<div class="cloud-result">{}{}</div>'.format(spell, detail)
-    result += style
+    result = '<div class="{}">{}{}</div>'.format(klass, spell, detail)
+    result += style.replace("cloud-result", klass)
     return result
 
 
@@ -635,4 +635,5 @@ class mojidict(cishubase):
             result += mojizonghe(self, word)
         except:
             pass
-        return result
+        if result:
+            return '<div style="padding:10px">{}</div>'.format(result)

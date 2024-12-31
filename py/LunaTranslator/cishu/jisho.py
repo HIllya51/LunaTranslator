@@ -163,6 +163,7 @@ function onclickbtn_xxxxxx_internal(_id) {
             res.append(("Others", saver["secondary"]))
         if not res:
             return
-        return "<style>{}</style>".format(
-            saver.get("style", "")
-        ) + self.generatehtml_tabswitch(res)
+        style, klass = self.parse_stylesheet(saver.get("style", ""))
+        return '<style>{}</style><div class="{}">{}</div>'.format(
+            style, klass, self.generatehtml_tabswitch(res)
+        )

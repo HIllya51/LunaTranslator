@@ -114,8 +114,18 @@ def findenclose(text, tag):
             text = text[len(tage) :]
             collect += tage
         else:
-            collect += text[0]
-            text = text[1:]
+            _1 = text.find(tags)
+            _2 = text.find(tage)
+            if _1 != -1 and _2 != -1:
+                m = min(_1, _2)
+            elif _1 != -1:
+                m = _1
+            elif _2 != -1:
+                m = _2
+            else:
+                break
+            collect += text[:m]
+            text = text[m:]
         if i == 0:
             break
 

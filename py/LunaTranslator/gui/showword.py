@@ -1121,7 +1121,7 @@ class searchwordW(closeashidewindow):
             html = self.cache_results[self.tabks[idx]]
         except:
             return
-        self.textOutput.setHtml(html)
+        self.textOutput.setHtml("<style>body{margin:0}</style>" + html)
 
     def searchwinnewwindow(self, word):
 
