@@ -1703,6 +1703,24 @@ import hashlib
 
 class IndexBuilder(object):
     # todo: enable history
+    def checkinfo(self, fn):
+        return "{}{}".format(os.path.getmtime(fn), os.path.getsize(fn))
+
+    def checkneedupdate(self, md, db):
+        if not os.path.isfile(db):
+            return True
+        need = True
+        try:
+            with open(db + ".txt", "r") as ff:
+                need = self.checkinfo(md) != ff.read()
+        except:
+            pass
+        return need
+
+    def checkneedupdateafter(self, md, db):
+        with open(db + ".txt", "w") as ff:
+            ff.write(self.checkinfo(md))
+
     def __init__(
         self,
         fname,
@@ -1734,8 +1752,7 @@ class IndexBuilder(object):
         self._mdx_db = _targetfilenamebase + ".mdx.db"
         # make index anyway
 
-        if not os.path.isfile(self._mdx_db):
-            self._make_mdx_index(self._mdx_db)
+        self._make_mdx_index_checked(self._mdx_db)
 
         if os.path.isfile(self._mdx_db):
             # read from META table
@@ -1745,14 +1762,6 @@ class IndexBuilder(object):
             # 判断有无版本号
             for cc in cursor:
                 self._version = cc[1]
-            ################# if not version in fo #############
-            if not self._version:
-                print("version info not found")
-                conn.close()
-                self._make_mdx_index(self._mdx_db)
-                print("mdx.db rebuilt!")
-                self.makemdds(_filename, _targetfilenamebase)
-                return None
             cursor = conn.execute('SELECT * FROM META WHERE key = "encoding"')
             for cc in cursor:
                 self._encoding = cc[1]
@@ -1768,18 +1777,6 @@ class IndexBuilder(object):
             for cc in cursor:
                 self._description = cc[1]
 
-            # for cc in cursor:
-            #    if cc[0] == 'encoding':
-            #        self._encoding = cc[1]
-            #        continue
-            #    if cc[0] == 'stylesheet':
-            #        self._stylesheet = json.loads(cc[1])
-            #        continue
-            #    if cc[0] == 'title':
-            #        self._title = cc[1]
-            #        continue
-            #    if cc[0] == 'title':
-            #        self._description = cc[1]
         self.makemdds(_filename, _targetfilenamebase)
 
     def makemdds(self, _filename, _targetfilenamebase):
@@ -1791,8 +1788,7 @@ class IndexBuilder(object):
             if os.path.isfile(_filename + end):
                 self._mdd_files.append(_filename + end)
                 self._mdd_dbs.append(_targetfilenamebase + end + ".db")
-                if not os.path.isfile(self._mdd_dbs[-1]):
-                    self._make_mdd_index(self._mdd_files[-1], self._mdd_dbs[-1])
+                self._make_mdd_index_checked(self._mdd_files[-1], self._mdd_dbs[-1])
             else:
                 break
 
@@ -1808,6 +1804,16 @@ class IndexBuilder(object):
             else:
                 txt_styled = txt_styled + style[0] + p + style[1]
         return txt_styled
+
+    def _make_mdd_index_checked(self, mdd, db_name):
+        if self.checkneedupdate(mdd, db_name):
+            self._make_mdd_index(mdd, db_name)
+            self.checkneedupdateafter(mdd, db_name)
+
+    def _make_mdx_index_checked(self, db_name):
+        if self.checkneedupdate(self._mdx_file, db_name):
+            self._make_mdx_index(db_name)
+            self.checkneedupdateafter(self._mdx_file, db_name)
 
     def _make_mdx_index(self, db_name):
         if os.path.exists(db_name):
