@@ -136,7 +136,7 @@ struct hook_context
 	{
 		return (hook_context *)(lpDataBase - offsetof(hook_context, base));
 	}
-	inline uintptr_t &argof(int idx)
+	constexpr uintptr_t &argof(int idx)
 	{
 #ifdef _WIN64
 		auto offset = 0;
@@ -158,21 +158,15 @@ struct hook_context
 #endif
 	}
 };
-#define regoffset(reg) ((int)offsetof(hook_context, reg) - (int)offsetof(hook_context, base))
-#define stackoffset(idx) ((int)offsetof(hook_context, stack[idx]) - (int)offsetof(hook_context, base))
+#define ___baseoffset (int)offsetof(hook_context, base)
+#define regoffset(reg) ((int)offsetof(hook_context, reg) - ___baseoffset)
+#define stackoffset(idx) ((int)offsetof(hook_context, stack[idx]) - ___baseoffset)
+#define GETARG(i) (((int)(size_t) & reinterpret_cast<char const volatile &>((((hook_context *)0)->argof(i)))) - ___baseoffset)
 #ifndef _WIN64
-#define GETARG1 stackoffset(1)
-#define GETARG2 stackoffset(2)
-#define GETARG3 stackoffset(3)
-#define GETARG4 stackoffset(4)
 #define THISCALLARG1 stack[1]
 #define LASTRETVAL eax
 #define THISCALLTHIS ecx
 #else
-#define GETARG1 regoffset(rcx)
-#define GETARG2 regoffset(rdx)
-#define GETARG3 regoffset(r8)
-#define GETARG4 regoffset(r9)
 #define THISCALLARG1 rdx
 #define LASTRETVAL rax
 #define THISCALLTHIS rcx

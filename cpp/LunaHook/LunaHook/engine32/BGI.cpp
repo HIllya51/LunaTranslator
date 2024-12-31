@@ -1239,7 +1239,7 @@ bool InsertBGI4Hook_1()
   hp.address = addr;
   hp.type = CODEC_UTF16 | USING_STRING;
   hp.filter_fun = BGI7Filter;
-  hp.offset = GETARG2;
+  hp.offset = GETARG(2);
   ConsoleOutput("BGI4");
 
   return NewHook(hp, "BGI4");

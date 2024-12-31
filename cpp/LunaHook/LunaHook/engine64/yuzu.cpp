@@ -2054,7 +2054,7 @@ namespace
             auto s = buffer->strA();
             HookParam hp;
             hp.address = (uintptr_t)F01009E600FAF6000_collect;
-            hp.offset = GETARG1;
+            hp.offset = GETARG(1);
             hp.type = USING_STRING;
             hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
             {
@@ -2246,7 +2246,7 @@ namespace
             auto s = buffer->strA();
             HookParam hp;
             hp.address = (uintptr_t)TT0100A4700BC98000;
-            hp.offset = GETARG1;
+            hp.offset = GETARG(1);
             hp.type = CODEC_UTF8 | USING_STRING;
             static auto _ = NewHook(hp, "0100A4700BC98000");
             TT0100A4700BC98000(s.c_str());
@@ -2265,7 +2265,7 @@ namespace
             strReplace(s, L"/player", L"");
             HookParam hp;
             hp.address = (uintptr_t)F01006530151F0000_collect;
-            hp.offset = GETARG1;
+            hp.offset = GETARG(1);
             hp.type = CODEC_UTF16 | USING_STRING;
             static auto _ = NewHook(hp, "01006530151F0000");
             F01006530151F0000_collect(s.c_str());

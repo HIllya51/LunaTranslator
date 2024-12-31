@@ -67,7 +67,7 @@ CHAR *__fastcall sub_1400F5BC0(LPSTR lpMultiByteStr, LPCWCH lpWideCharStr)
   hp.address = addr;
   hp.type = CODEC_UTF16 | USING_STRING;
   hp.filter_fun = BGI7Filter;
-  hp.offset = GETARG2;
+  hp.offset = GETARG(2);
   return NewHook(hp, "BGI");
 }
 

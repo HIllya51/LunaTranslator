@@ -64,8 +64,8 @@ namespace
     {
         HookParam hp_internal;
         hp_internal.address = (uintptr_t)luna_internal_renpy_call_host;
-        hp_internal.offset = GETARG1;
-        hp_internal.split = GETARG2;
+        hp_internal.offset = GETARG(1);
+        hp_internal.split = GETARG(2);
         hp_internal.type = USING_SPLIT | USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW | NO_CONTEXT;
         NewHook(hp_internal, "luna_internal_renpy_call_host");
         PyRunScript(LoadResData(L"renpy_hook_text", L"PYSOURCE").c_str());

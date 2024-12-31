@@ -109,31 +109,31 @@ bool InsertPPSSPPHLEHooks()
     auto functions = std::vector<PPSSPPFunction>{
 
         // https://github.com/hrydgard/ppsspp/blob/master/Core/HLE/sceCcc.cpp
-        // {"sceCccStrlenSJIS", GETARG1, USING_STRING, 0, "sceCccStrlenSJIS("},
-        // {"sceCccStrlenUTF8", GETARG1, CODEC_UTF8 | USING_STRING, 0, "sceCccStrlenUTF8("},
-        // {"sceCccStrlenUTF16", GETARG1, CODEC_UTF16 | USING_STRING, 0, "sceCccStrlenUTF16("},
+        // {"sceCccStrlenSJIS", GETARG(1), USING_STRING, 0, "sceCccStrlenSJIS("},
+        // {"sceCccStrlenUTF8", GETARG(1), CODEC_UTF8 | USING_STRING, 0, "sceCccStrlenUTF8("},
+        // {"sceCccStrlenUTF16", GETARG(1), CODEC_UTF16 | USING_STRING, 0, "sceCccStrlenUTF16("},
 
-        // {"sceCccSJIStoUTF8", GETARG3, USING_STRING, 0, "sceCccSJIStoUTF8("},
-        // {"sceCccSJIStoUTF16", GETARG3, USING_STRING, 0, "sceCccSJIStoUTF16("},
-        // {"sceCccUTF8toSJIS", GETARG3, CODEC_UTF8 | USING_STRING, 0, "sceCccUTF8toSJIS("},
-        // {"sceCccUTF8toUTF16", GETARG3, CODEC_UTF8 | USING_STRING, 0, "sceCccUTF8toUTF16("},
-        // {"sceCccUTF16toSJIS", GETARG3, CODEC_UTF16 | USING_STRING, 0, "sceCccUTF16toSJIS("},
-        // {"sceCccUTF16toUTF8", GETARG3, CODEC_UTF16 | USING_STRING, 0, "sceCccUTF16toUTF8("},
+        // {"sceCccSJIStoUTF8", GETARG(3), USING_STRING, 0, "sceCccSJIStoUTF8("},
+        // {"sceCccSJIStoUTF16", GETARG(3), USING_STRING, 0, "sceCccSJIStoUTF16("},
+        // {"sceCccUTF8toSJIS", GETARG(3), CODEC_UTF8 | USING_STRING, 0, "sceCccUTF8toSJIS("},
+        // {"sceCccUTF8toUTF16", GETARG(3), CODEC_UTF8 | USING_STRING, 0, "sceCccUTF8toUTF16("},
+        // {"sceCccUTF16toSJIS", GETARG(3), CODEC_UTF16 | USING_STRING, 0, "sceCccUTF16toSJIS("},
+        // {"sceCccUTF16toUTF8", GETARG(3), CODEC_UTF16 | USING_STRING, 0, "sceCccUTF16toUTF8("},
 
         // https://github.com/hrydgard/ppsspp/blob/master/Core/HLE/sceFont.cpp
-        {"sceFontGetCharInfo", GETARG2, CODEC_UTF16, GETARG1, "sceFontGetCharInfo("},
-        {"sceFontGetShadowInfo", GETARG2, CODEC_UTF16, GETARG1, "sceFontGetShadowInfo("},
-        {"sceFontGetCharImageRect", GETARG2, CODEC_UTF16, GETARG1, "sceFontGetCharImageRect("},
-        {"sceFontGetShadowImageRect", GETARG2, CODEC_UTF16, GETARG1, "sceFontGetShadowImageRect("},
-        {"sceFontGetCharGlyphImage", GETARG2, CODEC_UTF16, GETARG1, "sceFontGetCharGlyphImage("},
-        //{"sceFontGetCharGlyphImage_Clip", GETARG2, CODEC_UTF16, GETARG1, "sceFontGetCharGlyphImage_Clip("},
-        {"sceFontGetShadowGlyphImage", GETARG2, CODEC_UTF16, GETARG1, "sceFontGetShadowGlyphImage("},
-        //{"sceFontGetShadowGlyphImage_Clip", GETARG2, CODEC_UTF16, GETARG1, "sceFontGetShadowGlyphImage_Clip("},
+        {"sceFontGetCharInfo", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetCharInfo("},
+        {"sceFontGetShadowInfo", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetShadowInfo("},
+        {"sceFontGetCharImageRect", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetCharImageRect("},
+        {"sceFontGetShadowImageRect", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetShadowImageRect("},
+        {"sceFontGetCharGlyphImage", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetCharGlyphImage("},
+        //{"sceFontGetCharGlyphImage_Clip", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetCharGlyphImage_Clip("},
+        {"sceFontGetShadowGlyphImage", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetShadowGlyphImage("},
+        //{"sceFontGetShadowGlyphImage_Clip", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetShadowGlyphImage_Clip("},
 
         // https://github.com/hrydgard/ppsspp/blob/master/Core/HLE/sceKernelInterrupt.cpp
-        // {"sysclib_strcat", GETARG2, USING_STRING, 0, "Untested sysclib_strcat("},
-        // {"sysclib_strcpy", GETARG2, USING_STRING, 0, "Untested sysclib_strcpy("},
-        // {"sysclib_strlen", GETARG1, USING_STRING, 0, "Untested sysclib_strlen("}
+        // {"sysclib_strcat", GETARG(2), USING_STRING, 0, "Untested sysclib_strcat("},
+        // {"sysclib_strcpy", GETARG(2), USING_STRING, 0, "Untested sysclib_strcpy("},
+        // {"sysclib_strlen", GETARG(1), USING_STRING, 0, "Untested sysclib_strlen("}
 
     };
     auto succ = false;

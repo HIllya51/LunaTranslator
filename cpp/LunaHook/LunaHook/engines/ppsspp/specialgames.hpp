@@ -1163,7 +1163,7 @@ namespace ppsspp
 			auto s = buffer->strA();
 			HookParam hp;
 			hp.address = (uintptr_t)ULJM06115_C;
-			hp.offset = GETARG1;
+			hp.offset = GETARG(1);
 			hp.type = USING_STRING;
 			static auto _ = NewHook(hp, "ULJM06115");
 			ULJM06115_C(s.data());
