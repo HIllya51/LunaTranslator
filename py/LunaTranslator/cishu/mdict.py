@@ -1704,7 +1704,7 @@ import hashlib
 class IndexBuilder(object):
     # todo: enable history
     def checkinfo(self, fn):
-        return "{}{}".format(os.path.getmtime(fn), os.path.getsize(fn))
+        return "{}_{}".format(os.path.getmtime(fn), os.path.getsize(fn))
 
     def checkneedupdate(self, md, db):
         if not os.path.isfile(db):
