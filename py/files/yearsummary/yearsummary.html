@@ -13,13 +13,18 @@
         .page {
             display: none;
         }
-        .vboxlayout{
-            display: flex; flex-direction: column;
+
+        .vboxlayout {
+            display: flex;
+            flex-direction: column;
         }
-        .hboxlayout{
-            display: flex; flex-direction: row;
+
+        .hboxlayout {
+            display: flex;
+            flex-direction: row;
 
         }
+
         .active {
             display: block;
         }
@@ -114,7 +119,7 @@
         .imagecontainer {
             width: 20%;
             height: auto;
-            aspect-ratio: 1 / 1.618;
+            aspect-ratio: 1 / 1.5;
         }
 
         .imagexx {
@@ -161,23 +166,32 @@
     </div>
     <div class="page bigbox" id="page2">
         <div class="vboxlayout" style="height: 100%;">
-        <h1 style="text-align: center; flex:1">你所玩的游戏的标签</h1>
-        <div style="flex:10;"><div id="wordcloud"></div></div></div>
+            <h1 style="text-align: center; flex:1">你所玩的游戏的标签</h1>
+            <div style="flex:10;">
+                <div id="wordcloud"></div>
+            </div>
+        </div>
     </div>
     <div class="page bigbox" id="page3">
         <div class="vboxlayout" style="height: 100%;">
-        <h1 style="text-align: center; flex:1">你所玩的游戏的开发商</h1>
-        <div style="flex:10;"><div id="wordcloud2"></div></div></div>
+            <h1 style="text-align: center; flex:1">你所玩的游戏的开发商</h1>
+            <div style="flex:10;">
+                <div id="wordcloud2"></div>
+            </div>
+        </div>
     </div>
     <div class="buttons"> Next</div>
     <script>
         havedatamonth = []
         havedatamonth_v = []
-        for (let i = 1; i <= 12; i += 1) {
-            if (everymonth_time[i]) {
-                havedatamonth.push(i)
-                havedatamonth_v.push(everymonth_time[i] / 3600)
+        let month = new Date().getMonth() + 1;
+        for (let i = 0; i < 12; i += 1) {
+            if (everymonth_time[month]) {
+                havedatamonth.push(month)
+                havedatamonth_v.push(everymonth_time[month] / 3600)
             }
+            month -= 1;
+            if (month == 0) month = 12;
         }
         var ctx = document.getElementById('everymonth').getContext('2d');
         let lastshowmonth = 0;

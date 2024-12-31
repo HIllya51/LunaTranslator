@@ -54,20 +54,14 @@ def calc_uid_times(inf):
     return everytimes
 
 
-def spliteverygameinmothon(yearinfos):
-    allmonths = []
-    for uid in yearinfos:
-        everydays = split_range_into_days(yearinfos, uidx=uid)
-        everymonth = group_by_month(everydays)
-
-
 def getthisyearinfo(allinfos):
-    current_year = datetime.now().year
+    current_year = datetime.now().year * 12 + datetime.now().month
     yearinfos = {}
     for uid, ls in allinfos.items():
         yearinfos[uid] = []
         for s, e in ls:
-            if datetime.fromtimestamp(s).year == current_year:
+            date = datetime.fromtimestamp(s)
+            if date.year * 12 + date.month + 12 >= current_year:
                 yearinfos[uid].append((s, e))
         if len(yearinfos[uid]) == 0:
             yearinfos.pop(uid)
@@ -122,11 +116,11 @@ def getuidimage_local(uid):
     if (main in savehook_new_data[uid]["imagepath_all"]) and os.path.exists(
         extradatas["localedpath"].get(main, main)
     ):
-        return os.path.abspath(main)
+        return os.path.abspath(extradatas["localedpath"].get(main, main))
     else:
         for _ in savehook_new_data[uid]["imagepath_all"]:
             if os.path.exists(extradatas["localedpath"].get(_, _)):
-                return os.path.abspath(_)
+                return os.path.abspath(extradatas["localedpath"].get(_, _))
 
 
 def getuidimage(uid):
