@@ -59,7 +59,6 @@
     "打开目录": "Otevřít adresář",
     "字体样式": "Styl písma",
     "搜索文本过短！": "Vyhledávací text je příliš krátký!",
-    "的OCR模型": "Model OCR",
     "小学馆": "Sál základní školy",
     "光标": "kurzor",
     "项目网站": "Webové stránky projektu",
@@ -766,5 +765,6 @@
     "年度总结": "Roční shrnutí",
     "取词翻译": "Překlad výběru slova",
     "取词查词": "Načíst a vyhledávat slova",
-    "音频编码": "Kódování zvuku"
+    "音频编码": "Kódování zvuku",
+    "系统未安装当前语言的OCR模型": "OCR model pro aktuální jazyk není nainstalován v systému"
 }

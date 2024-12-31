@@ -281,7 +281,6 @@
     "找不到重要组件：": "Aucun composant important trouvé:",
     "请重新下载并关闭杀毒软件后重试": "Veuillez réessayer après le téléchargement et la fermeture du logiciel antivirus",
     "系统未安装": "Le système n'est pas installé",
-    "的OCR模型": "Le modèle ocr",
     "有道TTS": "Avec tts",
     "不支持的键位": "Clés non supportées",
     "快捷键冲突": "Conflit de touches de raccourci",
@@ -766,5 +765,6 @@
     "年度总结": "Résumé annuel",
     "取词翻译": "Traduction des mots",
     "取词查词": "Recherche de mots",
-    "音频编码": "Codage audio"
+    "音频编码": "Codage audio",
+    "系统未安装当前语言的OCR模型": "Le système n'a pas installé le modèle OCR pour la langue actuelle"
 }

@@ -281,7 +281,6 @@
     "找不到重要组件：": "Không tìm thấy thành phần quan trọng:",
     "请重新下载并关闭杀毒软件后重试": "Vui lòng tải xuống và thử lại sau khi tắt phần mềm diệt virus",
     "系统未安装": "Hệ thống không được cài đặt",
-    "的OCR模型": "Mô hình OCR",
     "有道TTS": "Có TTS",
     "不支持的键位": "Các phím không được hỗ trợ",
     "快捷键冲突": "Xung đột phím tắt",
@@ -766,5 +765,6 @@
     "年度总结": "Tóm tắt hàng năm",
     "取词翻译": "Dịch thuật lấy từ",
     "取词查词": "Tìm kiếm từ",
-    "音频编码": "Mã hóa âm thanh"
+    "音频编码": "Mã hóa âm thanh",
+    "系统未安装当前语言的OCR模型": "Hệ thống không cài đặt mô hình OCR cho ngôn ngữ hiện tại"
 }

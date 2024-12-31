@@ -281,7 +281,6 @@
     "找不到重要组件：": "Nie znaleziono ważnego komponentu:",
     "请重新下载并关闭杀毒软件后重试": "Pobierz i zamknij oprogramowanie antywirusowe ponownie i spróbuj ponownie",
     "系统未安装": "System nie zainstalowany",
-    "的OCR模型": "Model OCR dla",
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Nieobsługiwana pozycja klucza",
     "快捷键冲突": "Konflikt kluczy skrótów",
@@ -766,5 +765,6 @@
     "年度总结": "Roczne podsumowanie",
     "取词翻译": "Tłumaczenie wyboru słowa",
     "取词查词": "Pobieranie i wyszukiwanie słów",
-    "音频编码": "Kodowanie dźwięku"
+    "音频编码": "Kodowanie dźwięku",
+    "系统未安装当前语言的OCR模型": "Model OCR dla bieżącego języka nie jest zainstalowany w systemie"
 }

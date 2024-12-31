@@ -281,7 +281,6 @@
     "找不到重要组件：": "Important Component Not Found:",
     "请重新下载并关闭杀毒软件后重试": "Please re-download and try again with antivirus disabled",
     "系统未安装": "System Not Installed",
-    "的OCR模型": "OCR Model",
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Unsupported Key Position",
     "快捷键冲突": "Hotkey Conflict",
@@ -766,5 +765,6 @@
     "年度总结": "Annual Summary",
     "取词翻译": "Word selection translation",
     "取词查词": "Retrieve and search for words",
-    "音频编码": "audio coding"
+    "音频编码": "audio coding",
+    "系统未安装当前语言的OCR模型": "The OCR model for the current language is not installed in the system"
 }

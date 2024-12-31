@@ -59,7 +59,6 @@
     "打开目录": "Verzeichnis öffnen",
     "字体样式": "Schriftart",
     "搜索文本过短！": "Der Suchtext ist zu kurz!",
-    "的OCR模型": "Das OCR-Modell",
     "小学馆": "Grundschulsaal",
     "光标": "Cursor",
     "项目网站": "Website des Projekts",
@@ -766,5 +765,6 @@
     "年度总结": "Jahreszusammenfassung",
     "取词翻译": "Übersetzung der Wortauswahl",
     "取词查词": "Wörter abrufen und suchen",
-    "音频编码": "Audio-Codierung"
+    "音频编码": "Audio-Codierung",
+    "系统未安装当前语言的OCR模型": "Das OCR-Modell für die aktuelle Sprache ist nicht im System installiert"
 }

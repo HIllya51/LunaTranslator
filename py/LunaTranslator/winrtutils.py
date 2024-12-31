@@ -60,8 +60,16 @@ def getlanguagelist():
     if not winrtutilsdll:
         return []
     ret = []
-    _getlanguagelist(CFUNCTYPE(None, c_wchar_p)(ret.append))
+    _getlanguagelist(
+        CFUNCTYPE(None, c_wchar_p, c_wchar_p)(lambda t, d: ret.append((t, d)))
+    )
     return ret
+
+
+def check_language_valid(l):
+    if not winrtutilsdll:
+        return False
+    return _check_language_valid(l)
 
 
 def winrt_capture_window(hwnd):

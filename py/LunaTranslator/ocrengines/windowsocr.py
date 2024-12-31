@@ -1,6 +1,6 @@
 import gobject
 import winrtutils
-from myutils.config import _TR, static_data, getlang_inner2show
+from myutils.config import _TR, static_data
 from myutils.utils import dynamiclink
 from ocrengines.baseocrclass import baseocr
 from qtsymbols import *
@@ -8,36 +8,13 @@ from gui.dynalang import LPushButton, LLabel
 from myutils.utils import getlanguagespace
 
 
-def initsupports():
-    _allsupport = winrtutils.getlanguagelist()
-    supportmap = {}
-    for lang in [_["code"] for _ in static_data["lang_list_all"]] + [
-        "zh-Hans",
-        "zh-Hant",
-    ]:
-        if lang == "zh" or lang == "cht":
-            continue
-        for s in _allsupport:
-            if s.startswith(lang) or lang.startswith(s):
-                supportmap[lang] = s
-                break
-    if "zh-Hans" in supportmap:
-        v = supportmap.pop("zh-Hans")
-        supportmap["zh"] = v
-    if "zh-Hant" in supportmap:
-        v = supportmap.pop("zh-Hant")
-        supportmap["cht"] = v
-    return supportmap
-
-
 def question():
     dialog = QWidget()
     formLayout = QHBoxLayout()
     formLayout.setContentsMargins(0, 0, 0, 0)
     dialog.setLayout(formLayout)
-    _allsupport = initsupports()
-    supportlang = LLabel()
-    supportlang.setText("_,_".join([getlang_inner2show(f) for f in _allsupport]))
+    supportlang = QLabel()
+    supportlang.setText(", ".join([_[1] for _ in winrtutils.getlanguagelist()]))
     btndownload = LPushButton("添加语言包")
     btndownload.clicked.connect(
         lambda: gobject.baseobject.openlink(
@@ -53,43 +30,29 @@ def question():
 class OCR(baseocr):
 
     def langmap(self):
-        return {"cht": "cht"}
-
-    def initocr(self):
-        self.supportmap = initsupports()
+        return {"zh": "zh-Hans", "cht": "zh-Hant"}
 
     def ocr(self, imagebinary):
-        if len(self.supportmap) == 0:
+        supports = [_[0] for _ in winrtutils.getlanguagelist()]
+        if len(supports) == 0:
 
             raise Exception(_TR("无可用语言"))
         if self.srclang == "auto":
-            if len(self.supportmap) == 1:
-                uselang = list(self.supportmap.values())[0]
+            if len(supports) == 1:
+                uselang = supports[0]
             else:
                 self.raise_cant_be_auto_lang()
         else:
-            if self.srclang not in self.supportmap:
-
-                _allsupport = initsupports()
-                idx = [_["code"] for _ in static_data["lang_list_all"]].index(
-                    self.srclang
-                )
+            if not winrtutils.check_language_valid(self.srclang):
                 raise Exception(
-                    _TR("系统未安装")
-                    + ' "'
-                    + _TR([_["zh"] for _ in static_data["lang_list_all"]][idx])
-                    + '" '
-                    + _TR("的OCR模型")
+                    _TR("系统未安装当前语言的OCR模型")
                     + "\n"
                     + _TR("当前支持的语言")
                     + ": "
-                    + ", ".join([_TR(getlang_inner2show(f)) for f in _allsupport])
+                    + ", ".join([_[1] for _ in winrtutils.getlanguagelist()])
                 )
-            else:
-                uselang = self.srclang
-        ret = winrtutils.OCR_f(
-            imagebinary, self.supportmap[uselang], getlanguagespace(uselang)
-        )
+            uselang = self.srclang
+        ret = winrtutils.OCR_f(imagebinary, uselang, getlanguagespace(uselang))
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
         return {"box": boxs, "text": texts}

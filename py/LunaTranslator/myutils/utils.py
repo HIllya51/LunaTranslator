@@ -91,7 +91,7 @@ def getlangtgt():
 def getlanguagespace(lang=None):
     if lang is None:
         lang = getlanguse()
-    return "" if (lang in ("zh", "ja", "cht")) else " "
+    return "" if (lang.split("-")[0] in ("zh", "ja", "cht")) else " "
 
 
 def findenclose(text, tag):

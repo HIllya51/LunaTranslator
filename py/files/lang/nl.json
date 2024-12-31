@@ -59,7 +59,6 @@
     "打开目录": "Map openen",
     "字体样式": "Lettertypestijl",
     "搜索文本过短！": "De zoektekst is te kort!",
-    "的OCR模型": "Het OCR-model",
     "小学馆": "Hal van de basisschool",
     "光标": "cursor",
     "项目网站": "Website van het project",
@@ -766,5 +765,6 @@
     "年度总结": "Jaarlijkse samenvatting",
     "取词翻译": "Woordselectie vertaling",
     "取词查词": "Woorden ophalen en zoeken",
-    "音频编码": "Audiocodering"
+    "音频编码": "Audiocodering",
+    "系统未安装当前语言的OCR模型": "Het OCR-model voor de huidige taal is niet geïnstalleerd in het systeem"
 }

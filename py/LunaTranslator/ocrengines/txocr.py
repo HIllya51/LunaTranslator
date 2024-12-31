@@ -1,6 +1,7 @@
 from hashlib import sha1
 import time, random, hmac, base64, uuid, hashlib, json
 from ocrengines.baseocrclass import baseocr
+import zhconv
 
 
 class OCR(baseocr):
@@ -18,9 +19,8 @@ class OCR(baseocr):
         except:
             return "ap-beijing"
 
-    @property
-    def langocr(self):
-        s = self.srclang_1
+    def langmap(self):
+        # https://cloud.tencent.com/document/product/866/33526
         return {
             "zh": "zh",
             "cht": "zh",
@@ -38,18 +38,19 @@ class OCR(baseocr):
             "hu": "hun",
             "th": "tha",
             "ar": "ara",
-        }.get(s, "auto")
+        }
 
-    def langmap(self):
-        # https://cloud.tencent.com/document/product/551/17232
-        return {"cht": "zh-TW"}
+    @property
+    def langocr(self):
+        s = self.srclang_1
+        return self.langmap().get(s, "auto")
 
     def ocr_fy(self, imagebinary):
         self.checkempty(["SecretId", "SecretKey"])
 
         encodestr = str(base64.b64encode(imagebinary), "utf-8")
         req_para = {
-            "Source": self.srclang,
+            "Source": self.langocr,
             "Target": self.tgtlang,
             "ProjectId": int(self.config["ProjectId"]),
             "Data": encodestr,
@@ -140,26 +141,16 @@ class OCR(baseocr):
                 for _ in r.json()["Response"]["ImageRecord"]["Value"]
             ]
             texts = [
-                _["TargetText"] for _ in r.json()["Response"]["ImageRecord"]["Value"]
+                (
+                    zhconv.convert(_["TargetText"], "zh-tw")
+                    if ("cht" == self.tgtlang_1)
+                    else _["TargetText"]
+                )
+                for _ in r.json()["Response"]["ImageRecord"]["Value"]
             ]
             return {"box": boxs, "text": texts, "isocrtranslate": True}
         except:
             raise Exception(r)
-
-    def langmap(self):
-        # https://cloud.tencent.com/document/product/866/33526
-        return {
-            "ja": "jap",
-            "ko": "kor",
-            "en": "auto",
-            "ru": "rus",
-            "es": "spa",
-            "fr": "fre",
-            "vi": "vie",
-            "it": "ita",
-            "ar": "ara",
-            "th": "tha",
-        }
 
     def ocr_ocr(self, imagebinary):
         self.checkempty(["SecretId", "SecretKey"])

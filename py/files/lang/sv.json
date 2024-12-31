@@ -59,7 +59,6 @@
     "打开目录": "Öppna katalog",
     "字体样式": "Teckensnittsstil",
     "搜索文本过短！": "Söktexten är för kort!",
-    "的OCR模型": "OCR-modellen",
     "小学馆": "Elementary School Hall",
     "光标": "markör",
     "项目网站": "Projektets webbplats",
@@ -766,5 +765,6 @@
     "年度总结": "Årlig sammanfattning",
     "取词翻译": "Ordmarkeringsöversättning",
     "取词查词": "Hämta och sök efter ord",
-    "音频编码": "Ljudkodning"
+    "音频编码": "Ljudkodning",
+    "系统未安装当前语言的OCR模型": "OCR-modellen för det aktuella språket är inte installerad i systemet"
 }

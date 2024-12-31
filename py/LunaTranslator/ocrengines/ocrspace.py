@@ -13,7 +13,12 @@ class OCR(baseocr):
             "es": "spa",
             "fr": "fre",
             "ru": "rus",
-            "cht": "cht",
+            "ar": "ara",
+            "de": "ger",
+            "tr": "tur",
+            "sv": "swe",
+            "es": "spa",
+            "pt": "por",
         }
 
     def ocr(self, imagebinary):

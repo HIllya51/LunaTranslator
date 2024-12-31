@@ -281,7 +281,6 @@
     "找不到重要组件：": "Önemli komponent bulunamadı:",
     "请重新下载并关闭杀毒软件后重试": "Lütfen antivirüs yazılımını tekrar indirin ve tekrar deneyin",
     "系统未安装": "Sistem kurulmadı",
-    "的OCR模型": "OCR modeli için",
     "有道TTS": "Youdao TTS",
     "不支持的键位": "Desteklenmeyen anahtar pozisyonu",
     "快捷键冲突": "Kısayol tuş çatışması",
@@ -766,5 +765,6 @@
     "年度总结": "Yıllık Toplantı",
     "取词翻译": "Kelime seçimi çevirimi",
     "取词查词": "Kelimeleri alın ve arayın",
-    "音频编码": "Ses Kodlama"
+    "音频编码": "Ses Kodlama",
+    "系统未安装当前语言的OCR模型": "Ağımdaki dilin OCR modeli sistemde kurulmadı."
 }
