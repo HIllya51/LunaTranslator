@@ -30,6 +30,7 @@
     "updateCheckDate": 17121608925479923,
     "duplicateFrameDetectionMode": 1,
     "enableStatisticsForDynamicDetection": false,
+    "minFrameRate": 0.0,
     "scalingModes": [
         {
             "name": "Lanczos",

@@ -766,5 +766,6 @@
     "取词翻译": "Übersetzung der Wortauswahl",
     "取词查词": "Wörter abrufen und suchen",
     "音频编码": "Audio-Codierung",
-    "系统未安装当前语言的OCR模型": "Das OCR-Modell für die aktuelle Sprache ist nicht im System installiert"
+    "系统未安装当前语言的OCR模型": "Das OCR-Modell für die aktuelle Sprache ist nicht im System installiert",
+    "最小帧率": "Minimale Bildrate"
 }

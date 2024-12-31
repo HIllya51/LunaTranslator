@@ -766,5 +766,6 @@
     "取词翻译": "Ordmarkeringsöversättning",
     "取词查词": "Hämta och sök efter ord",
     "音频编码": "Ljudkodning",
-    "系统未安装当前语言的OCR模型": "OCR-modellen för det aktuella språket är inte installerad i systemet"
+    "系统未安装当前语言的OCR模型": "OCR-modellen för det aktuella språket är inte installerad i systemet",
+    "最小帧率": "Minsta ramfrekvens"
 }

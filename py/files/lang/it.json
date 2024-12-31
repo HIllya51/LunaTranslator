@@ -766,5 +766,6 @@
     "取词翻译": "Traduzione della selezione delle parole",
     "取词查词": "Recupera e cerca parole",
     "音频编码": "Codificazione audio",
-    "系统未安装当前语言的OCR模型": "Il modello OCR per la lingua corrente non è installato nel sistema"
+    "系统未安装当前语言的OCR模型": "Il modello OCR per la lingua corrente non è installato nel sistema",
+    "最小帧率": "Tasso minimo di inquadratura"
 }
