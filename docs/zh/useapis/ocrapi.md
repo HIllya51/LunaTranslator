@@ -236,19 +236,50 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
 > WindowsOCR仅支持win10-win11操作系统
 
-1. 打开设置
+### 如何查询 OCR 语言包
 
-1. 打开“时间和语言”
+若要返回所有支持的语言包的列表，请以管理员身份打开 PowerShell（右键单击，然后选择“以管理员身份运行”），并输入以下命令：
 
-    ![img](https://image.lunatranslator.org/zh/windowsocr/3.png)
+`Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }`
 
-1. 打开“语言和区域”，点击“首选语言”->“添加语言”
+示例输出：
 
-    ![img](https://image.lunatranslator.org/zh/windowsocr/2.png)
+```
+Name  : Language.OCR~~~el-GR~0.0.1.0
+State : NotPresent
 
-1. 安装所需语言
+Name  : Language.OCR~~~en-GB~0.0.1.0
+State : NotPresent
 
-    ![img](https://image.lunatranslator.org/zh/windowsocr/1.png)
+Name  : Language.OCR~~~en-US~0.0.1.0
+State : Installed
 
+Name  : Language.OCR~~~es-ES~0.0.1.0
+State : NotPresent
+
+Name  : Language.OCR~~~es-MX~0.0.1.0
+State : NotPresent
+```
+
+语言和位置为缩写形式，因此“en-US”表示“英语-美国”，“en-GB”则表示“英语-英国”。 如果某个语言在输出中不可用，则 OCR 不支持该语言。 必须先安装 `State: NotPresent` 语言。
+
+### 如何安装 OCR 语言包
+
+以下为安装“en-US”OCR 包的命令：
+
+`$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
+
+`$Capability | Add-WindowsCapability -Online`
+
+### 如何移除 OCR 语言包
+
+以下为移除“en-US”OCR 包的命令：
+
+`$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
+
+`$Capability | Remove-WindowsCapability -Online`
+
+https://learn.microsoft.com/zh-cn/windows/powertoys/text-extractor#supported-languages
 
 <!-- tabs:end -->
+

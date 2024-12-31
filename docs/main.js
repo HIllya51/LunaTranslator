@@ -138,9 +138,10 @@ window.$docsify = {
             hook.doneEach(() => {
                 var elements = document.querySelectorAll('code');
                 elements.forEach(function (element) {
-                    if (!(window.location.href.endsWith('guochandamoxing') || window.location.href.endsWith('baipiaojiekou'))) return
+                    if (!(window.location.href.includes('guochandamoxing') || window.location.href.includes('ocrapi'))) return
                     element.addEventListener('click', function () {
-                        copyToClipboard(element.innerText)
+                        if (element.innerText.split('\n').length == 1)
+                            copyToClipboard(element.innerText)
                     });
                 });
             })

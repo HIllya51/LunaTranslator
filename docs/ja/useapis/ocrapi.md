@@ -201,18 +201,49 @@ WeChatまたは最新バージョンのQQのインストールが必要です
 
 > WindowsOCRはWindows 10およびWindows 11オペレーティングシステムのみをサポートしています。
 
-1. 設定を開きます。
+### OCR 言語パックのクエリを実行する方法
 
-1. 「時刻と言語」を開きます。
+サポートされているすべての言語パックの一覧を返すには、管理者として PowerShell を開き (右クリックし、[管理者として実行] を選択します)、次のコマンドを入力します。
 
-    ![img](https://image.lunatranslator.org/zh/windowsocr/3.png)
+`Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }`
 
-1. 「言語と地域」を開き、「優先する言語」->「言語を追加」をクリックします。
+出力例:
 
-    ![img](https://image.lunatranslator.org/zh/windowsocr/2.png)
+```
+Name  : Language.OCR~~~el-GR~0.0.1.0
+State : NotPresent
 
-1. 必要な言語をインストールします。
+Name  : Language.OCR~~~en-GB~0.0.1.0
+State : NotPresent
 
-    ![img](https://image.lunatranslator.org/zh/windowsocr/1.png)
+Name  : Language.OCR~~~en-US~0.0.1.0
+State : Installed
+
+Name  : Language.OCR~~~es-ES~0.0.1.0
+State : NotPresent
+
+Name  : Language.OCR~~~es-MX~0.0.1.0
+State : NotPresent
+```
+
+言語と場所は省略されているため、"en-US" は "English-United States" になり、"en-GB" は "English-Great Britain" になります。 出力で使用できない言語は、OCR ではサポートされません。 `State: NotPresent` 言語を最初にインストールする必要があります。
+
+### OCR 言語パックをインストールする方法
+
+次のコマンドは、"en-US" 用の OCR パックをインストールします:
+
+`$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
+
+`$Capability | Add-WindowsCapability -Online`
+
+### OCR 言語パックを削除する方法
+
+次のコマンドは、"en-US" の OCR パックを削除します:
+
+`$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
+
+`$Capability | Remove-WindowsCapability -Online`
+
+https://learn.microsoft.com/ja-jp/windows/powertoys/text-extractor#supported-languages
 
 <!-- tabs:end -->
