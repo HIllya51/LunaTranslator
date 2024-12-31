@@ -134,7 +134,7 @@ def doinstall(self, allsupports: list, parent, callback):
     try:
         with zipfile.ZipFile(fn) as zipf:
             zipf.extractall("cache/ocrmodel")
-        getQMessageBox(self, "成功", "安装成功")
+        getQMessageBox(self, "成功", "添加成功")
         callback()
     except:
         print_exc()
