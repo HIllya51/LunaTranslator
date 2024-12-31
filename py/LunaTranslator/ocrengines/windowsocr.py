@@ -10,13 +10,15 @@ from myutils.utils import getlanguagespace
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 from gui.usefulwidget import SuperCombo, getboxlayout
 import threading, qtawesome
+from myutils.subproc import subproc_w
 
 
 def getallsupports():
     _ = (
-        subprocess.run(
+        subproc_w(
             "powershell Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }",
-            stdout=subprocess.PIPE,
+            needstdio=True,
+            run=True,
         )
         .stdout.decode()
         .splitlines()
