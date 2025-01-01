@@ -153,7 +153,6 @@ class OCR(baseocr):
             "zh": "CHN_ENG",
             "en": "ENG",
             "ja": "JAP",
-            "en": "ENG",
             "ko": "KOR",
             "fr": "FRE",
             "es": "SPA",
@@ -236,6 +235,11 @@ class OCR(baseocr):
             "detect_direction": int(globalconfig["verticalocr"]) != 0,
             "language_type": self.srclang,
         }
+
+        if self.config["接口"] in [0, 1]:
+            if self.srclang_1 == "auto":
+                data["detect_language"] = True
+                data.pop("language_type")
         interfacetype = self.config["接口"]
 
         url = [
