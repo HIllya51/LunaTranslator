@@ -2440,8 +2440,6 @@ class statusbutton(QPushButton):
 
 
 class IconButton(QPushButton):
-    clicked = pyqtSignal()
-
     def sizeHint(self):
         return QSize(
             int(1.42 * globalconfig["buttonsize2"]),
@@ -2450,7 +2448,6 @@ class IconButton(QPushButton):
 
     def __init__(self, icon, enable=True, qicon=None, parent=None):
         super().__init__(parent)
-        super().clicked.connect(self.clicked)
         self._icon = icon
         self._qicon = qicon
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
