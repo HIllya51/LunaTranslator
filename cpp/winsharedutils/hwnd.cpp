@@ -66,22 +66,29 @@ DECLARE_API HWND getpidhwndfirst(DWORD pid)
     EnumWindows(EnumWindowsProc, (LPARAM)&info);
     return info.hwnd;
 }
-
+namespace
+{
+    BOOL Is64BitOS()
+    {
+        SYSTEM_INFO systemInfo = {0};
+        GetNativeSystemInfo(&systemInfo);
+        return systemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || systemInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64;
+    }
+}
 DECLARE_API bool Is64bit(DWORD pid)
 {
-    SYSTEM_INFO sysinfo;
-    GetNativeSystemInfo(&sysinfo);
-    if (sysinfo.wProcessorArchitecture == 9 || sysinfo.wProcessorArchitecture == 6)
-    {
-        auto hprocess = AutoHandle(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid));
-        // 進程的控制碼。 控制碼必須具有PROCESS_QUERY_INFORMATION或PROCESS_QUERY_LIMITED_INFORMATION存取權限。 如需詳細資訊，請參閱 處理安全性和存取權限。
-        // Windows Server 2003 和 Windows XP： 控制碼必須具有PROCESS_QUERY_INFORMATION存取權限。
-        BOOL b;
-        IsWow64Process(hprocess, &b);
-        return !b;
-    }
-    else
+    if (!Is64BitOS())
         return false;
+#ifndef WINXP
+    auto hprocess = AutoHandle(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid));
+#else
+    auto hprocess = AutoHandle(OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid));
+#endif
+    // 進程的控制碼。 控制碼必須具有PROCESS_QUERY_INFORMATION或PROCESS_QUERY_LIMITED_INFORMATION存取權限。 如需詳細資訊，請參閱 處理安全性和存取權限。
+    // Windows Server 2003 和 Windows XP： 控制碼必須具有PROCESS_QUERY_INFORMATION存取權限。
+    BOOL f64bitProc = false;
+    f64bitProc = !(IsWow64Process(hprocess, &f64bitProc) && f64bitProc);
+    return f64bitProc;
 }
 
 DECLARE_API void getprocesses(void (*cb)(DWORD, const wchar_t *))
