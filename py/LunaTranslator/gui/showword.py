@@ -495,6 +495,29 @@ class AnkiWindow(QWidget):
             clearbtn.clicked.connect(lambda: target.clear())
             return clearbtn
 
+        class ctrlbedit(FQPlainTextEdit):
+            def keyPressEvent(self, e):
+                if (
+                    e.modifiers() == Qt.KeyboardModifier.ControlModifier
+                    and e.key() == Qt.Key.Key_B
+                ):
+                    cursor = self.textCursor()
+                    if cursor.hasSelection():
+                        selected_text = cursor.selectedText()
+                        new_text = "<b>{}</b>".format(selected_text)
+
+                        start = cursor.selectionStart()
+
+                        cursor.beginEditBlock()
+                        cursor.insertText(new_text)
+                        cursor.endEditBlock()
+                        cursor.setPosition(start, QTextCursor.MoveMode.MoveAnchor)
+                        cursor.setPosition(
+                            start + len(new_text), QTextCursor.MoveMode.KeepAnchor
+                        )
+                        self.setTextCursor(cursor)
+                return super().keyPressEvent(e)
+
         self.audiopath = QLineEdit()
         self.audiopath.setReadOnly(True)
         self.audiopath_sentence = QLineEdit()
@@ -503,8 +526,8 @@ class AnkiWindow(QWidget):
         self.editpath.setReadOnly(True)
         self.viewimagelabel = pixmapviewer()
         self.editpath.textChanged.connect(self.wrappedpixmap)
-        self.example = FQPlainTextEdit()
-        self.zhuyinedit = FQPlainTextEdit()
+        self.example = ctrlbedit()
+        self.zhuyinedit = ctrlbedit()
         self.wordedit = FQLineEdit()
         self.wordedit.textChanged.connect(self.wordedit_t)
         self.example.hiras = None
@@ -513,7 +536,7 @@ class AnkiWindow(QWidget):
             self.example.hiras = None
 
         self.example.textChanged.connect(__)
-        self.remarks = FQPlainTextEdit()
+        self.remarks = ctrlbedit()
         recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"])
         recordbtn1.clicked.connect(
             functools.partial(self.startorendrecord, 1, self.audiopath)

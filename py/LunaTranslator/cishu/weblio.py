@@ -39,8 +39,9 @@ class weblio(cishubase):
 
     def makelink(self, link):
         if not self.style.get(link):
-            html = requests.get(
+            req = requests.get(
                 link,
                 proxies=self.proxy,
-            ).text
+            )
+            html = req.text if req.status_code == 200 else ""
             self.style[link] = html
