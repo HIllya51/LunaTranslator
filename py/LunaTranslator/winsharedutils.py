@@ -9,17 +9,14 @@ from ctypes import (
     c_int,
     c_void_p,
     cast,
-    memmove,
     create_unicode_buffer,
-    create_string_buffer,
     c_size_t,
     windll,
     c_double,
     c_char,
     CFUNCTYPE,
-    c_long,
 )
-from ctypes.wintypes import WORD, HWND, DWORD, RECT, UINT, HANDLE
+from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE
 import gobject, windows, functools
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
@@ -172,17 +169,6 @@ def GetLnkTargetPath(lnk):
     dirp = create_unicode_buffer(MAX_PATH + 1)
     _GetLnkTargetPath(lnk, exe, arg, icon, dirp)
     return exe.value, arg.value, icon.value, dirp.value
-
-
-_otsu_binary = utilsdll.otsu_binary
-_otsu_binary.argtypes = c_void_p, c_int
-
-
-def otsu_binary(image, thresh):
-    buf = create_string_buffer(len(image))
-    memmove(buf, image, len(image))
-    _otsu_binary(buf, thresh)
-    return buf
 
 
 _extracticon2data = utilsdll.extracticon2data

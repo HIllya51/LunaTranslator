@@ -10,7 +10,7 @@ generate_product_version(
    VERSION_MINOR ${VERSION_MINOR}
    VERSION_PATCH ${VERSION_PATCH}
 )
-add_library(winsharedutils MODULE webview2_extra.cpp AreoAcrylic.cpp screenshot.cpp ../implsapi.cpp hwnd.cpp globalmessagelistener.cpp theme.cpp version.cpp otsu.cpp clipboard.cpp lnk.cpp levenshtein.cpp muteprocess.cpp sapi_dll.cpp simplemecab.cpp 
+add_library(winsharedutils MODULE webview2_extra.cpp AreoAcrylic.cpp screenshot.cpp ../implsapi.cpp hwnd.cpp globalmessagelistener.cpp theme.cpp version.cpp clipboard.cpp lnk.cpp levenshtein.cpp muteprocess.cpp sapi_dll.cpp simplemecab.cpp 
 applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp
 SimpleBrowser.cpp MWebBrowser.cpp icon.cpp ${versioninfo})
 target_precompile_headers(winsharedutils REUSE_FROM pch)
