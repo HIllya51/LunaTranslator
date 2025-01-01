@@ -22,6 +22,26 @@ class weblio(cishubase):
         join = '<div ID="base" style="overflow-x: hidden; min-width: 0; margin:0;">{}</div>'.format(
             "".join(collect)
         )
+        for shit in simplehtmlparser_all(join, "script", "<script"):
+            join = join.replace(shit, "")
+
+        def removeklass(join, klass):
+            while True:
+                sig = "class=" + klass
+                fnd = join.find(sig)
+                if fnd == -1:
+                    break
+                start = join.rfind("<img", None, fnd)
+                if start == -1:
+                    break
+                end = join.find(">", fnd)
+                if end == -1:
+                    break
+                join = join[:start] + join[end + 1 :]
+            return join
+
+        join = removeklass(join, "lgDictLg")
+        join = removeklass(join, "lgDictSp")
         links = []
         style = simplehtmlparser(html, "style", "<style>")[7:-8]
         for link in simplehtmlparser_all(html, "link", '<link rel="stylesheet"'):
