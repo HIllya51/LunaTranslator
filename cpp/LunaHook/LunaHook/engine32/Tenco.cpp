@@ -1,4 +1,4 @@
-#include"Tenco.h"
+#include "Tenco.h"
 
 /**
  *  jichi 4/1/2014: Insert AU hook
@@ -69,86 +69,137 @@
 bool InsertTencoHook()
 {
   const BYTE bytes[] = {
-    0x6a, 0x00,                     // 004ad7f8  |> 6a 00          |push 0x0
-    0x8d,0x8f, 0xb0,0x00,0x00,0x00, // 004ad7fa  |. 8d8f b0000000  |lea ecx,dword ptr ds:[edi+0xb0]
-    0x83,0xc8, 0xff,                // 004ad800  |. 83c8 ff        |or eax,0xffffffff
-    0x8d,0x5c,0x24, 0x24,           // 004ad803  |. 8d5c24 24      |lea ebx,dword ptr ss:[esp+0x24]
-    0xe8 //740cf6ff                 // 004ad807  |. e8 740cf6ff    |call 英雼�戦.0040e480     ; jichi: hook here
+      0x6a, 0x00,                         // 004ad7f8  |> 6a 00          |push 0x0
+      0x8d, 0x8f, 0xb0, 0x00, 0x00, 0x00, // 004ad7fa  |. 8d8f b0000000  |lea ecx,dword ptr ds:[edi+0xb0]
+      0x83, 0xc8, 0xff,                   // 004ad800  |. 83c8 ff        |or eax,0xffffffff
+      0x8d, 0x5c, 0x24, 0x24,             // 004ad803  |. 8d5c24 24      |lea ebx,dword ptr ss:[esp+0x24]
+      0xe8                                // 740cf6ff                 // 004ad807  |. e8 740cf6ff    |call 英雼�戦.0040e480     ; jichi: hook here
   };
-  enum { addr_offset = sizeof(bytes) - 1 };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  //reladdr = 0x4ad807;
-  if (!addr) {
-    ConsoleOutput("Tenco: pattern not found");
+  // reladdr = 0x4ad807;
+  if (!addr)
     return false;
-  }
 
   HookParam hp;
-  hp.address = addr + addr_offset;
+  hp.address = addr + sizeof(bytes) - 1;
   hp.index = 4;
-  hp.offset=regoffset(ecx);
-  hp.type = NO_CONTEXT|DATA_INDIRECT;
+  hp.offset = regoffset(ecx);
+  hp.type = NO_CONTEXT | DATA_INDIRECT;
 
   ConsoleOutput("INSERT Tenco");
   return NewHook(hp, "Tenco");
 }
-bool LWScript() { 
+bool LWScript()
+{
   BYTE bytes[] = {
-      0x33,0xdb,
+      0x33, 0xdb,
       0x53,
-      0x8d,0x87,XX4,
+      0x8d, 0x87, XX4,
       0x50,
       0x55,
       0x57,
-      0xe8
-  };
+      0xe8};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("LWScript %p", addr);
-  if (addr == 0)return false; 
+  if (!addr)
+    return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset=regoffset(edx);
+  hp.offset = regoffset(edx);
   hp.type = USING_STRING;
   return NewHook(hp, "LWScript");
 }
-bool LWScript2() {
+bool LWScript2()
+{
   BYTE bytes[] = {
-      0x66,0xC1,0xE8,0x08,
-      0x3C,0x81
-  };
+      0x66, 0xC1, 0xE8, 0x08,
+      0x3C, 0x81};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("LWScript2 %p", addr);
-  if (addr == 0)return false; 
+  if (addr == 0)
+    return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)return false;
+  if (addr == 0)
+    return false;
   int off;
-  if (*(BYTE*)(addr + 3) == 0x4C)stackoffset(2);
-  else off=regoffset(ecx);
+  if (*(BYTE *)(addr + 3) == 0x4C)
+    stackoffset(2);
+  else
+    off = regoffset(ecx);
   HookParam hp;
   hp.address = addr;
   hp.offset = off;
   hp.type = CODEC_ANSI_BE;
-  auto succ=NewHook(hp, "LWScript2");
+  auto succ = NewHook(hp, "LWScript2");
 
-  auto addrs=findxref_reverse(addr, addr - 0x10000,addr);
-  for (auto addr : addrs) {
+  auto addrs = findxref_reverse(addr, addr - 0x10000, addr);
+  for (auto addr : addrs)
+  {
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)continue;
+    if (addr == 0)
+      continue;
     HookParam hp;
     hp.address = addr;
-    hp.offset=stackoffset(5);
+    hp.offset = stackoffset(5);
     hp.type = CODEC_ANSI_BE;
-    ConsoleOutput("LWScript2_xref %p", addr);
-    succ|=NewHook(hp, "LWScript2_xref");
+    succ |= NewHook(hp, "LWScript2_xref");
   }
   return succ;
 }
-		
-bool Tenco::attach_function() {
-  
-    bool b3= InsertTencoHook();
-    bool b1=LWScript();
-    bool b2=LWScript2();
-    return b1||b2||b3;
-} 
+namespace
+{
+  // https://vndb.org/r64724
+  bool h()
+  {
+    BYTE bytes[] = {
+        0x83, 0x7e, 0x18, 0x10,
+        0x8d, 0x7e, 0x04,
+        0x72, 0x04,
+        0x8b, 0x07,
+        0xeb, 0x02,
+        0x8b, 0xc7,
+        0x80, 0x3c, 0x18, 0x3c,
+        0x75, XX,
+        0x43,
+        0x3b, 0x5e, 0x14};
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = findfuncstart(addr, 0x100, true);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = regoffset(edx);
+    hp.type = USING_STRING;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      DWORD *a2 = (DWORD *)context->stack[2];
+      auto v6 = a2;
+      auto v8 = v6 + 1;
+      DWORD *v9;
+      if (v6[6] < 0x10u)
+        v9 = v6 + 1;
+      else
+        v9 = (DWORD *)*v8;
+      buffer->from((char *)v9, v6[5]);
+      *split = *(DWORD *)context->eax;
+    };
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      // StringFilterBetween(buffer, "<", 1, ">", 1); //<BR>
+      buffer->from(std::regex_replace(buffer->strA(), std::regex(R"(<.*?>)"), " "));
+      StringFilterBetween(buffer, "(", 1, ")", 1);
+      StringFilter(buffer, "&,", 1);
+      StringFilter(buffer, "&.", 1);
+    };
+    return NewHook(hp, "Tenco");
+  }
+}
+bool Tenco::attach_function()
+{
+
+  bool b3 = InsertTencoHook();
+  bool b1 = LWScript();
+  bool b2 = LWScript2();
+  return b1 || b2 || b3 || h();
+}
