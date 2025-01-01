@@ -194,10 +194,6 @@ def gethookgrid(self):
                 2,
             ),
         ],
-        [
-            "使用YAPI注入",
-            D_getsimpleswitch(globalconfig, "use_yapi"),
-        ],
     ]
 
     return grids

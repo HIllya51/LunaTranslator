@@ -70,28 +70,7 @@ class ocrtext(basetext):
             _r.traceoffsetsignal.emit(curr)
 
     def setrect(self, rect):
-        p1, p2 = rect
-        h1 = windows.WindowFromPoint(windows.POINT(*p1))
-        h2 = windows.WindowFromPoint(windows.POINT(*p2))
-        h3 = windows.WindowFromPoint(windows.POINT(p1[0], p2[1]))
-        h4 = windows.WindowFromPoint(windows.POINT(p2[0], p1[1]))
-
         self.range_ui[-1].setrect(rect)
-        if not globalconfig["ocrautobindhwnd"]:
-            return
-        if gobject.baseobject.hwnd:
-            return
-        usehwnds = []
-        for _ in (h1, h2, h3, h4):
-            if windows.GetWindowThreadProcessId(_) == os.getpid():
-                continue
-            usehwnds.append(_)
-
-        if not usehwnds:
-            return
-        hwnd, count = Counter(usehwnds).most_common()[0]
-        if count == len(usehwnds):
-            gobject.baseobject.hwnd = hwnd
 
     def setstyle(self):
         [_.setstyle() for _ in self.range_ui]

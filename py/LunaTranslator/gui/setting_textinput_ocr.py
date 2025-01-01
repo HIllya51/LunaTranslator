@@ -509,10 +509,6 @@ def internal(self):
             D_getsimpleswitch(globalconfig, "showrangeafterrangeselect"),
         ],
         [
-            "选取OCR范围后自动绑定窗口",
-            D_getsimpleswitch(globalconfig, "ocrautobindhwnd"),
-        ],
-        [
             "选取OCR范围时不透明度",
             (
                 D_getspinbox(

@@ -32,25 +32,6 @@
 
   Received historical text is cached. When viewing the content of a text item in the text selection window, the historical cached text is queried. If there are too many text items or the text refreshes repeatedly, it will cause too much cached text, making it more sluggish to view text (sometimes even when not viewing). In fact, most of the cached text here is useless; useful historical text can be viewed in historical translations. You can arbitrarily lower this value (default is 1000000, but it can be lowered to 1000).
 
-1. ####  Use YAPI Injection
-
-  This option can sometimes slightly improve comfort, but it may have compatibility issues, so it is not recommended.
-
-  <details>
-    <summary>Detailed Explanation</summary>
-  When injecting a DLL into a game, the process injecting the DLL and the process being injected usually need to have the same bitness.
-
-  To solve this problem, Luna generally uses shareddllproxy32 and shareddllproxy64 to inject DLLs into games of different bitness.
-
-  However, when this proxy process runs, it may be intercepted by antivirus software for a while, causing stuttering or failure to run and needing to run again. In this case, you can use YAPI to directly use the main process of Luna for DLL injection.
-
-  In YAPI, if the game process and the Luna process have the same bitness, it will inject normally; if the bitness is different, it will use a special shellcode to achieve injection. This is also one reason why LunaHost32.dll is more likely to be detected by antivirus software.
-
-  Using YAPI injection is relatively smoother. However, it may be incompatible on ARM tablets.
-
-  When Luna runs with low privileges and the game runs with administrator privileges, this option will be ineffective, and it will fall back to the original mode and request permissions for injection.
-  </details>
-
 ## Default Settings and Game-specific Settings
 ## Dedicated Game Settings
 

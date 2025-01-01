@@ -50,10 +50,12 @@ C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, Thread
         checkoption(embed, [=](const std::wstring &output, const ThreadParam &tp)
                     { embed(output.c_str(), tp); }));
 }
+#if 0
 C_LUNA_API void Luna_Inject(DWORD pid, LPCWSTR basepath)
 {
     Host::InjectProcess(pid, basepath);
 }
+#endif
 C_LUNA_API bool Luna_CreatePipeAndCheck(DWORD pid)
 {
     return Host::CreatePipeAndCheck(pid);

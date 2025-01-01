@@ -1,6 +1,4 @@
 #include "host.h"
-typedef LONG NTSTATUS;
-#include "yapi.hpp"
 #define SEARCH_SJIS_UNSAFE 0
 namespace
 {
@@ -30,10 +28,7 @@ namespace
 				.detach();
 		}
 
-		Host::HookEventHandler OnHookFound = [](HookParam hp, std::wstring text)
-		{
-			Host::AddConsoleOutput(std::wstring(hp.hookcode) + L": " + text);
-		};
+		Host::HookEventHandler OnHookFound = [](auto, auto) {};
 
 		CommonSharedMem *commonsharedmem;
 
@@ -71,15 +66,6 @@ namespace
 			OnDestroy(*thread);
 			textThreadsByParams->erase(thread->tp);
 		}
-	}
-	BOOL Is64BitProcess(HANDLE ph)
-	{
-		BOOL f64bitProc = FALSE;
-		if (detail::Is64BitOS())
-		{
-			f64bitProc = !(IsWow64Process(ph, &f64bitProc) && f64bitProc);
-		}
-		return f64bitProc;
 	}
 	void __handlepipethread(HANDLE hookPipe, HANDLE hostPipe, HANDLE pipeAvailableEvent)
 	{
@@ -281,50 +267,6 @@ namespace Host
 			embedcallback = [=](auto &&...args)
 			{std::lock_guard _(outputmutex);embed.value()(std::forward<decltype(args)>(args)...); };
 	}
-	constexpr auto PROCESS_INJECT_ACCESS = (PROCESS_CREATE_THREAD |
-											PROCESS_QUERY_INFORMATION |
-											PROCESS_VM_OPERATION |
-											PROCESS_VM_WRITE |
-											PROCESS_VM_READ);
-	bool SafeInject(HANDLE process, const std::wstring &location)
-	{
-// #ifdef _WIN64
-#if 0
-			BOOL invalidProcess = FALSE;
-			IsWow64Process(process, &invalidProcess);
-			if (invalidProcess) return AddConsoleOutput(NEED_32_BIT);
-#endif
-		bool succ = false;
-		if (LPVOID remoteData = VirtualAllocEx(process, nullptr, (location.size() + 1) * sizeof(wchar_t), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE))
-		{
-			WriteProcessMemory(process, remoteData, location.c_str(), (location.size() + 1) * sizeof(wchar_t), nullptr);
-			if (AutoHandle<> thread = CreateRemoteThread(process, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryW, remoteData, 0, nullptr))
-			{
-				WaitForSingleObject(thread, INFINITE);
-				succ = true;
-			}
-			else if (GetLastError() == ERROR_ACCESS_DENIED)
-			{
-				AddConsoleOutput(TR[NEED_64_BIT]); // https://stackoverflow.com/questions/16091141/createremotethread-access-denied
-				succ = false;
-			}
-			VirtualFreeEx(process, remoteData, 0, MEM_RELEASE);
-		}
-		return succ;
-	}
-	bool UnSafeInject(HANDLE process, const std::wstring &location)
-	{
-
-		DWORD64 injectedDll;
-		yapi::YAPICall LoadLibraryW(process, _T("kernel32.dll"), "LoadLibraryW");
-		if (x64)
-			injectedDll = LoadLibraryW.Dw64()(location.c_str());
-		else
-			injectedDll = LoadLibraryW(location.c_str());
-		if (injectedDll)
-			return true;
-		return false;
-	}
 	bool CheckProcess(DWORD processId)
 	{
 		if (processId == GetCurrentProcessId())
@@ -338,43 +280,11 @@ namespace Host
 		}
 		return true;
 	}
-	bool InjectDll(DWORD processId, const std::wstring locationX)
-	{
-		AutoHandle<> process = OpenProcess(PROCESS_INJECT_ACCESS, FALSE, processId);
-		if (!process)
-			return false;
-		bool proc64 = Is64BitProcess(process);
-		auto dllname = proc64 ? LUNA_HOOK_DLL_64 : LUNA_HOOK_DLL_32;
-		std::wstring location = locationX.size() ? (locationX + L"\\" + dllname) : std::filesystem::path(getModuleFilename().value()).replace_filename(dllname);
-		if (proc64 == x64)
-		{
-			return (SafeInject(process, location));
-		}
-		else
-		{
-			return (UnSafeInject(process, location));
-		}
-	}
 	bool CreatePipeAndCheck(DWORD processId)
 	{
 		CreatePipe(processId);
 		return CheckProcess(processId);
 	}
-
-	void InjectProcess(DWORD processId, const std::wstring locationX)
-	{
-
-		auto check = CreatePipeAndCheck(processId);
-		if (check == false)
-			return;
-
-		std::thread([=]
-					{
-			if(InjectDll(processId,locationX))return ;
-			AddConsoleOutput(TR[INJECT_FAILED]); })
-			.detach();
-	}
-
 	void DetachProcess(DWORD processId)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;

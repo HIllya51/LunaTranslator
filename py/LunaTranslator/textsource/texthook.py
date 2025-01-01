@@ -12,14 +12,13 @@ from myutils.config import (
 )
 from textsource.textsourcebase import basetext
 from myutils.utils import (
-    checkchaos,
     getfilemd5,
     getlangtgt,
     getlanguagespace,
     kanjitrans,
     safe_escape,
 )
-from myutils.hwnd import injectdll, test_injectable, ListProcess, getpidexe
+from myutils.hwnd import injectdll, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
 import subprocess, requests
@@ -208,8 +207,6 @@ class texthook(basetext):
             c_void_p,
             c_void_p,
         )
-        self.Luna_Inject = LunaHost.Luna_Inject
-        self.Luna_Inject.argtypes = DWORD, LPCWSTR
         self.Luna_CreatePipeAndCheck = LunaHost.Luna_CreatePipeAndCheck
         self.Luna_CreatePipeAndCheck.argtypes = (DWORD,)
         self.Luna_CreatePipeAndCheck.restype = c_bool
@@ -390,14 +387,10 @@ class texthook(basetext):
             self.autohookmonitorthread()
 
     def start_unsafe(self, pids):
-        caninject = test_injectable(pids)
         injectpids = []
         for pid in pids:
-            if caninject and globalconfig["use_yapi"]:
-                self.Luna_Inject(pid, os.path.abspath("./files/plugins/LunaHook"))
-            else:
-                if self.Luna_CreatePipeAndCheck(pid):
-                    injectpids.append(pid)
+            if self.Luna_CreatePipeAndCheck(pid):
+                injectpids.append(pid)
         if len(injectpids):
             arch = ["32", "64"][self.is64bit]
             dll = os.path.abspath(
