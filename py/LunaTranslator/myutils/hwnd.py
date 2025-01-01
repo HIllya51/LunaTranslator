@@ -73,8 +73,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
     if not hwnd:
         return
     hwnd = windows.GetAncestor(hwnd)
-    _ = windows.GetClientRect(hwnd)
-    p = gdi_screenshot(0, 0, _[2], _[3], hwnd)
+    p = gdi_screenshot(-1, -1, -1, -1, hwnd)
     callback(p, fname + "_gdi." + app)
     isshit = (not callback_origin) and (not tocliponly)
     if p.isNull() or isshit:
@@ -265,16 +264,7 @@ def safepixmap(bs):
     return pixmap
 
 
-def hwndratex(hwnd):
-    _dpi = windows.GetDpiForWindow(hwnd)
-    mdpi = winsharedutils.GetMonitorDpiScaling(hwnd)
-    return mdpi / _dpi
-
-
 def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
-    if hwnd:
-        rate = hwndratex(hwnd)
-        x1, y1, x2, y2 = (int(_ / rate) for _ in (x1, y1, x2, y2))
     bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2, hwnd)
     return safepixmap(bs)
 

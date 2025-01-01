@@ -110,46 +110,6 @@ DECLARE_API void getprocesses(void (*cb)(DWORD, const wchar_t *))
     }
 }
 
-typedef enum MONITOR_DPI_TYPE
-{
-    MDT_EFFECTIVE_DPI = 0,
-    MDT_ANGULAR_DPI = 1,
-    MDT_RAW_DPI = 2,
-    MDT_DEFAULT = MDT_EFFECTIVE_DPI
-} MONITOR_DPI_TYPE;
-DECLARE_API UINT GetMonitorDpiScaling(HWND hwnd)
-{
-    HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-    if (!hMonitor)
-        return 96;
-    auto pGetDpiForMonitor = (HRESULT(STDAPICALLTYPE *)(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *))GetProcAddress(GetModuleHandleA("Shcore.dll"), "GetDpiForMonitor");
-    if (pGetDpiForMonitor)
-    {
-        UINT dpiX = 0;
-        UINT dpiY = 0;
-        HRESULT hr = pGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
-        if (FAILED(hr))
-            return 96;
-        else
-            return dpiX;
-    }
-    else
-    {
-        MONITORINFOEX info;
-        info.cbSize = sizeof(MONITORINFOEX);
-        if (!GetMonitorInfo(hMonitor, &info))
-            return 96;
-        HDC hdc = GetDC(NULL);
-        HDC hdcMonitor = CreateCompatibleDC(hdc);
-        HDC hdcMonitorScreen = CreateIC(TEXT("DISPLAY"), info.szDevice, NULL, 0);
-        int dpiX = GetDeviceCaps(hdcMonitorScreen, LOGPIXELSX);
-        DeleteDC(hdcMonitor);
-        DeleteDC(hdcMonitorScreen);
-        ReleaseDC(NULL, hdc);
-        return dpiX;
-    }
-}
-
 DECLARE_API bool check_window_viewable(HWND hwnd)
 {
     RECT windowRect;

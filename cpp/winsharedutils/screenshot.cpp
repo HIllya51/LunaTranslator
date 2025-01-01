@@ -90,12 +90,95 @@ std::vector<byte> SaveBitmapToBuffer(HBITMAP hBitmap)
 
     return data;
 }
+namespace
+{
+
+    typedef enum MONITOR_DPI_TYPE
+    {
+        MDT_EFFECTIVE_DPI = 0,
+        MDT_ANGULAR_DPI = 1,
+        MDT_RAW_DPI = 2,
+        MDT_DEFAULT = MDT_EFFECTIVE_DPI
+    } MONITOR_DPI_TYPE;
+    UINT GetMonitorDpiScaling(HWND hwnd)
+    {
+        HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+        if (!hMonitor)
+            return 96;
+        auto pGetDpiForMonitor = (HRESULT(STDAPICALLTYPE *)(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *))GetProcAddress(GetModuleHandleA("Shcore.dll"), "GetDpiForMonitor");
+        if (pGetDpiForMonitor)
+        {
+            UINT dpiX = 0;
+            UINT dpiY = 0;
+            HRESULT hr = pGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
+            if (FAILED(hr))
+                return 96;
+            else
+                return dpiX;
+        }
+        else
+        {
+            MONITORINFOEX info;
+            info.cbSize = sizeof(MONITORINFOEX);
+            if (!GetMonitorInfo(hMonitor, &info))
+                return 96;
+            HDC hdc = GetDC(NULL);
+            HDC hdcMonitor = CreateCompatibleDC(hdc);
+            HDC hdcMonitorScreen = CreateIC(TEXT("DISPLAY"), info.szDevice, NULL, 0);
+            int dpiX = GetDeviceCaps(hdcMonitorScreen, LOGPIXELSX);
+            DeleteDC(hdcMonitor);
+            DeleteDC(hdcMonitorScreen);
+            ReleaseDC(NULL, hdc);
+            return dpiX;
+        }
+    }
+    bool checkempty(HWND hwnd, RECT &rect)
+    {
+        if (rect.bottom == rect.top || rect.left == rect.right)
+        {
+            if (rect.top == -1 && rect.left == -1)
+            {
+                if (hwnd)
+                {
+                    GetClientRect(hwnd, &rect);
+                    if (rect.bottom == rect.top || rect.left == rect.right)
+                        return true;
+                }
+                else
+                    return true;
+            }
+            else
+                return true;
+        }
+        return false;
+    }
+    typedef UINT(WINAPI *tGetDpiForWindow)(HWND hwnd);
+    float dpiscale(HWND hwnd)
+    {
+        UINT dpi = 96;
+        auto pGetDpiForWindow = (tGetDpiForWindow)GetProcAddress(GetModuleHandle(L"user32.dll"), "GetDpiForWindow");
+        if (pGetDpiForWindow)
+        {
+            dpi = pGetDpiForWindow(hwnd);
+        }
+        auto mdpi = GetMonitorDpiScaling(hwnd);
+        return 1.0f * dpi / mdpi;
+    }
+}
 DECLARE_API void gdi_screenshot(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
 {
-    if (rect.bottom == rect.top || rect.left == rect.right)
+    if (checkempty(hwnd, rect))
         return;
     if (!hwnd)
         hwnd = GetDesktopWindow();
+    else
+    {
+        auto rate = dpiscale(hwnd);
+        rect.bottom *= rate;
+        rect.right *= rate;
+        rect.left *= rate;
+        rect.top *= rate;
+    }
     auto hdc = GetDC(hwnd);
     if (!hdc)
         return;

@@ -257,8 +257,6 @@ _MoveWindow.argtypes = c_int, c_int, c_int, c_int, c_int, c_bool
 
 SetForegroundWindow = _user32.SetForegroundWindow
 SetForegroundWindow.argtypes = (HWND,)
-_GetClientRect = _user32.GetClientRect
-_GetClientRect.argtypes = c_int, POINTER(RECT)
 
 FindWindow = _user32.FindWindowW
 FindWindow.argtypes = LPCWSTR, LPCWSTR
@@ -267,8 +265,6 @@ SetFocus = _user32.SetFocus
 SetFocus.argtypes = (HWND,)
 GetFocus = _user32.GetFocus
 GetFocus.restype = HWND
-_EnumWindows = _user32.EnumWindows
-_EnumWindows.argtypes = WNDENUMPROC, c_void_p
 _ShellExecuteW = _shell32.ShellExecuteW
 _ShellExecuteW.argtypes = c_void_p, c_wchar_p, c_wchar_p, c_wchar_p, c_wchar_p, c_int
 _OpenProcess = _kernel32.OpenProcess
@@ -474,22 +470,6 @@ def GetWindowRect(hwnd):
         return None
 
 
-def GetClientRect(hwnd):
-    _rect = RECT()
-    _GetClientRect(hwnd, pointer(_rect))
-    return (_rect.left, _rect.top, _rect.right, _rect.bottom)
-
-
-def GetDpiForWindow(hwnd):
-    try:
-        _GetDpiForWindow = _user32.GetDpiForWindow
-        _GetDpiForWindow.argtypes = (HWND,)
-        _GetDpiForWindow.restype = UINT
-        return _GetDpiForWindow(hwnd)
-    except:
-        return 96
-
-
 def GetCursorPos():
     _p = POINT()
     _GetCursorPos(pointer(_p))
@@ -509,10 +489,6 @@ def GetWindowText(hwnd):
 
 def MoveWindow(hwnd, X, Y, w, h, bRepaint):
     return _MoveWindow(hwnd, X, Y, w, h, bRepaint)
-
-
-def EnumWindows(lpEnumFunc, lParam):
-    return _EnumWindows(WNDENUMPROC(lpEnumFunc), 0)
 
 
 def ShellExecute(hwnd: int, op: str, file: str, params: str, _dir: str, bShow):
@@ -747,15 +723,6 @@ _GetAncestor.restype = HWND
 
 def GetAncestor(hwnd):
     return _GetAncestor(hwnd, GA_ROOT)
-
-
-def GetDpiForWindow(hwnd):
-    try:
-        _GetDpiForWindow = _user32.GetDpiForWindow
-    except:
-        return 96
-
-    return _GetDpiForWindow(hwnd)
 
 
 _ScreenToClient = _user32.ScreenToClient

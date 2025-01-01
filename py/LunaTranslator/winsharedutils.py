@@ -351,12 +351,6 @@ clipboard_callback.restype = HWND
 clipboard_callback_stop = utilsdll.clipboard_callback_stop
 clipboard_callback_stop.argtypes = (HWND,)
 clipboard_callback_type = CFUNCTYPE(None, c_wchar_p, c_bool)
-
-
-GetMonitorDpiScaling = utilsdll.GetMonitorDpiScaling
-GetMonitorDpiScaling.argtypes = (HWND,)
-GetMonitorDpiScaling.restype = UINT
-
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)
