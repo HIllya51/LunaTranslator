@@ -289,7 +289,23 @@
         "args": {
             "APPId": "",
             "APISecret": "",
-            "APIKey": ""
+            "APIKey": "",
+            "interface": "hh_ocr_recognize_doc"
+        },
+        "argstype": {
+            "interface": {
+                "rank": 0,
+                "name": "接口",
+                "type": "combo",
+                "list": [
+                    "通用文字识别 intsig",
+                    "印刷文字识别（多语种）"
+                ],
+                "internal": [
+                    "hh_ocr_recognize_doc",
+                    "ocr"
+                ]
+            }
         }
     },
     "mangaocr": {

@@ -767,5 +767,7 @@
     "取词查词": "Pobieranie i wyszukiwanie słów",
     "音频编码": "Kodowanie dźwięku",
     "系统未安装当前语言的OCR模型": "Model OCR dla bieżącego języka nie jest zainstalowany w systemie",
-    "最小帧率": "Minimalna częstotliwość klatek"
+    "最小帧率": "Minimalna częstotliwość klatek",
+    "印刷文字识别（多语种）": "Rozpoznawanie tekstu drukowania (wielojęzyczne)",
+    "通用文字识别 intsig": "Uniwersalne rozpoznawanie tekstu Intsig"
 }

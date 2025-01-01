@@ -767,5 +767,7 @@
     "取词查词": "Recherche de mots",
     "音频编码": "Codage audio",
     "系统未安装当前语言的OCR模型": "Le système n'a pas installé le modèle OCR pour la langue actuelle",
-    "最小帧率": "Framerate minimum"
+    "最小帧率": "Framerate minimum",
+    "印刷文字识别（多语种）": "Reconnaissance de texte imprimée (multilingue)",
+    "通用文字识别 intsig": "Reconnaissance de texte générique intsig"
 }

@@ -767,5 +767,7 @@
     "取词查词": "Tìm kiếm từ",
     "音频编码": "Mã hóa âm thanh",
     "系统未安装当前语言的OCR模型": "Hệ thống không cài đặt mô hình OCR cho ngôn ngữ hiện tại",
-    "最小帧率": "Tỷ lệ khung hình tối thiểu"
+    "最小帧率": "Tỷ lệ khung hình tối thiểu",
+    "印刷文字识别（多语种）": "Nhận dạng văn bản in (đa ngôn ngữ)",
+    "通用文字识别 intsig": "Nhận dạng văn bản chung intsig"
 }

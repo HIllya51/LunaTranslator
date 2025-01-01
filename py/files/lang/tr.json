@@ -767,5 +767,7 @@
     "取词查词": "Kelimeleri alın ve arayın",
     "音频编码": "Ses Kodlama",
     "系统未安装当前语言的OCR模型": "Ağımdaki dilin OCR modeli sistemde kurulmadı.",
-    "最小帧率": "En az fotoğraf hızı"
+    "最小帧率": "En az fotoğraf hızı",
+    "印刷文字识别（多语种）": "Metin tanımlaması (çoklu dil)",
+    "通用文字识别 intsig": "Universal Text Recognition Intsig"
 }

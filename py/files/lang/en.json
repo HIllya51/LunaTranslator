@@ -767,5 +767,7 @@
     "取词查词": "Retrieve and search for words",
     "音频编码": "audio coding",
     "系统未安装当前语言的OCR模型": "The OCR model for the current language is not installed in the system",
-    "最小帧率": "Minimum frame rate"
+    "最小帧率": "Minimum frame rate",
+    "印刷文字识别（多语种）": "Printing text recognition (multilingual)",
+    "通用文字识别 intsig": "Universal Text Recognition Intsig"
 }

@@ -767,5 +767,7 @@
     "取词查词": "Recupera e cerca parole",
     "音频编码": "Codificazione audio",
     "系统未安装当前语言的OCR模型": "Il modello OCR per la lingua corrente non è installato nel sistema",
-    "最小帧率": "Tasso minimo di inquadratura"
+    "最小帧率": "Tasso minimo di inquadratura",
+    "印刷文字识别（多语种）": "Riconoscimento del testo stampato (multilingue)",
+    "通用文字识别 intsig": "Riconoscimento universale del testo Intsig"
 }

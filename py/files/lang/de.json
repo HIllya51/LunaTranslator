@@ -767,5 +767,7 @@
     "取词查词": "Wörter abrufen und suchen",
     "音频编码": "Audio-Codierung",
     "系统未安装当前语言的OCR模型": "Das OCR-Modell für die aktuelle Sprache ist nicht im System installiert",
-    "最小帧率": "Minimale Bildrate"
+    "最小帧率": "Minimale Bildrate",
+    "印刷文字识别（多语种）": "Drucktexterkennung (mehrsprachig)",
+    "通用文字识别 intsig": "Universelle Texterkennung Intsig"
 }

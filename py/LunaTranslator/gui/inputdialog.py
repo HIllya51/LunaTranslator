@@ -549,8 +549,21 @@ class autoinitdialog(LDialog):
                 else:
                     items = line["list"]
                 lineW.addItems(items)
-                lineW.setCurrentIndex(dd.get(key, 0))
-                regist[key] = lineW.currentIndex
+
+                if "internal" in line:
+                    lineW.setCurrentIndex(
+                        line["internal"].index(dd.get(key))
+                        if dd.get(key) in line["internal"]
+                        else 0
+                    )
+
+                    def __(lineW, line):
+                        return line["internal"][lineW.currentIndex()]
+
+                    regist[key] = functools.partial(__, lineW, line)
+                else:
+                    lineW.setCurrentIndex(dd.get(key, 0))
+                    regist[key] = lineW.currentIndex
                 cachecombo[key] = lineW
             elif line["type"] == "lineedit_or_combo":
                 line1 = QLineEdit()

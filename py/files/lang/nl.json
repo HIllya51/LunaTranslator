@@ -767,5 +767,7 @@
     "取词查词": "Woorden ophalen en zoeken",
     "音频编码": "Audiocodering",
     "系统未安装当前语言的OCR模型": "Het OCR-model voor de huidige taal is niet geïnstalleerd in het systeem",
-    "最小帧率": "Minimumframesnelheid"
+    "最小帧率": "Minimumframesnelheid",
+    "印刷文字识别（多语种）": "Tekstherkenning afdrukken (meertalig)",
+    "通用文字识别 intsig": "Universele tekstherkenning Intsig"
 }
