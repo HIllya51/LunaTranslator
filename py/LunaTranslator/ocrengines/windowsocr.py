@@ -47,7 +47,7 @@ def loadlist(combo: _SuperCombo):
     combo.setlist.emit(lang, inter)
 
 
-def installx(combo: _SuperCombo, btninstall):
+def installx(combo: _SuperCombo, btninstall, supportlang):
     if combo.currentIndex() == -1:
         return
     btninstall.setEnabled(False)
@@ -62,6 +62,7 @@ def installx(combo: _SuperCombo, btninstall):
     combo.setlist.emit(lang, inter)
     btninstall.setEnabled(True)
     combo.setEnabled(True)
+    supportlang.setText(", ".join([_[1] for _ in winrtutils.getlanguagelist()]))
 
 
 def question():
@@ -90,7 +91,9 @@ def question():
         combo.setlist.connect(combo.addItems)
         btninstall = LPushButton("添加")
         btninstall.clicked.connect(
-            lambda: threading.Thread(target=installx, args=(combo, btninstall)).start()
+            lambda: threading.Thread(
+                target=installx, args=(combo, btninstall, supportlang)
+            ).start()
         )
         lst.append(combo)
         lst.append(btninstall)
