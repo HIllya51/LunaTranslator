@@ -20,7 +20,7 @@ from ctypes import (
     c_long,
 )
 from ctypes.wintypes import WORD, HWND, DWORD, RECT, UINT, HANDLE
-import gobject, windows
+import gobject, windows, functools
 
 utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
 
@@ -371,3 +371,9 @@ def GetSelectedText():
     if len(ret):
         return ret[0]
     return None
+
+
+get_allAccess_ptr = utilsdll.get_allAccess_ptr
+get_allAccess_ptr.restype = c_void_p
+windows.CreateEvent = functools.partial(windows.CreateEvent, psecu=get_allAccess_ptr())
+windows.CreateMutex = functools.partial(windows.CreateMutex, psecu=get_allAccess_ptr())

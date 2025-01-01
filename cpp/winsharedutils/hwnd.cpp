@@ -182,3 +182,8 @@ DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
     }
 #endif
 }
+
+DECLARE_API void *get_allAccess_ptr()
+{
+    return &allAccess;
+}

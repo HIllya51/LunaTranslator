@@ -519,82 +519,20 @@ SetEvent.argtypes = (HANDLE,)
 SetEvent.restype = BOOL
 
 
-class ACLStruct(Structure):
-    _fields_ = [
-        ("AclRevision", c_byte),
-        ("Sbz1", c_byte),
-        ("AclSize", WORD),
-        ("AceCount", WORD),
-        ("Sbz2", WORD),
-    ]
-
-
-class SID_IDENTIFIER_AUTHORITYStruct(Structure):
-    _fields_ = [("Value", c_byte * 6)]
-
-
-class SIDStruct(Structure):
-    _fields_ = [
-        ("Revision", c_byte),
-        ("SubAuthorityCount", c_byte),
-        ("IdentifierAuthority", SID_IDENTIFIER_AUTHORITYStruct),
-        ("SubAuthority", DWORD * 1),
-    ]
-
-
-class SECURITY_DESCRIPTORStruct(Structure):
-    _fields_ = [
-        ("Revision", c_byte),
-        ("Sbz1", c_byte),
-        ("Control", WORD),
-        ("Owner", POINTER(SIDStruct)),
-        ("Group", POINTER(SIDStruct)),
-        ("Sacl", POINTER(ACLStruct)),
-        ("Dacl", POINTER(ACLStruct)),
-    ]
-
-
-class SECURITY_ATTRIBUTESStruct(Structure):
-    _fields_ = [
-        ("nLength", DWORD),
-        ("lpSecurityDescriptor", POINTER(SECURITY_DESCRIPTORStruct)),
-        ("bInheritHandle", BOOL),
-    ]
-
-
-_InitializeSecurityDescriptor = _Advapi32.InitializeSecurityDescriptor
-_InitializeSecurityDescriptor.argtypes = [c_void_p, DWORD]
-_InitializeSecurityDescriptor.restype = BOOL
-_SetSecurityDescriptorDacl = _Advapi32.SetSecurityDescriptorDacl
-_SetSecurityDescriptorDacl.argtypes = [c_void_p, BOOL, c_void_p, BOOL]
-
-
-def get_SECURITY_ATTRIBUTES():
-    sd = SECURITY_DESCRIPTORStruct()
-    _InitializeSecurityDescriptor(pointer(sd), 1)
-
-    _SetSecurityDescriptorDacl(pointer(sd), True, None, False)
-    allacc = SECURITY_ATTRIBUTESStruct()
-    allacc.nLength = sizeof(allacc)
-    allacc.bInheritHandle = False
-    allacc.lpSecurityDescriptor = pointer(sd)
-    return allacc
-
-
 _CreateEventW = _kernel32.CreateEventW
-_CreateEventW.argtypes = POINTER(SECURITY_ATTRIBUTESStruct), c_bool, c_bool, c_wchar_p
+_CreateEventW.argtypes = c_void_p, c_bool, c_bool, c_wchar_p
 
 
-def CreateEvent(bManualReset, bInitialState, lpName, secu=get_SECURITY_ATTRIBUTES()):
-    return _CreateEventW(pointer(secu), bManualReset, bInitialState, lpName)
+def CreateEvent(bManualReset, bInitialState, lpName, psecu=None):
+    return _CreateEventW(psecu, bManualReset, bInitialState, lpName)
 
 
 _CreateMutexW = _kernel32.CreateMutexW
-_CreateMutexW.argtypes = POINTER(SECURITY_ATTRIBUTESStruct), BOOL, LPCWSTR
+_CreateMutexW.argtypes = c_void_p, BOOL, LPCWSTR
 
 
-def CreateMutex(bInitialOwner, lpName, secu=get_SECURITY_ATTRIBUTES()):
-    return _CreateMutexW(pointer(secu), bInitialOwner, lpName)
+def CreateMutex(bInitialOwner, lpName, psecu=None):
+    return _CreateMutexW(psecu, bInitialOwner, lpName)
 
 
 GetLastError = _kernel32.GetLastError
@@ -637,7 +575,7 @@ _CreateFileW.argtypes = (
     c_wchar_p,
     c_uint,
     c_uint,
-    POINTER(SECURITY_ATTRIBUTESStruct),
+    c_void_p,
     c_uint,
     c_uint,
     c_void_p,
@@ -933,23 +871,3 @@ SetWinEventHook.argtypes = DWORD, DWORD, HMODULE, WINEVENTPROC, DWORD, DWORD, DW
 PathFileExists = windll.Shlwapi.PathFileExistsW
 PathFileExists.argtypes = (LPCWSTR,)
 PathFileExists.restype = BOOL
-
-_SHGetFolderPathW = _shell32.SHGetFolderPathW
-_SHGetFolderPathW.argtypes = (
-    HWND,
-    c_int,
-    HANDLE,
-    DWORD,
-    LPWSTR,
-)
-_SHGetFolderPathW.restype = HRESULT
-CSIDL_MYPICTURES = 0x27
-SHGFP_TYPE_CURRENT = 0
-S_OK = 0
-
-
-def SHGetFolderPathW(csidl):
-    buff = create_unicode_buffer(MAX_PATH + 100)
-    if _SHGetFolderPathW(None, csidl, None, SHGFP_TYPE_CURRENT, buff) != S_OK:
-        return None
-    return buff.value
