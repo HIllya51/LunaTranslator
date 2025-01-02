@@ -164,7 +164,7 @@ DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
     HANDLE hsema = CreateSemaphoreW(0, 0, 10, 0);
     HWND hwnd;
 
-    std::thread(std::bind(clipboard_callback_1, callback, hsema, &hwnd)).detach();
+    std::thread(clipboard_callback_1, callback, hsema, &hwnd).detach();
 
     WaitForSingleObject(hsema, INFINITE);
     CloseHandle(hsema);

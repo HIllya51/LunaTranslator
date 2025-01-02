@@ -123,30 +123,16 @@ html_resize = utilsdll.html_resize
 html_resize.argtypes = c_void_p, c_uint, c_uint, c_uint, c_uint
 html_release = utilsdll.html_release
 html_release.argtypes = (c_void_p,)
-_html_get_current_url = utilsdll.html_get_current_url
-_html_get_current_url.argtypes = (c_void_p, c_void_p)
+html_get_current_url = utilsdll.html_get_current_url
+html_get_current_url.argtypes = (c_void_p, c_void_p)
 html_set_html = utilsdll.html_set_html
 html_set_html.argtypes = (c_void_p, c_wchar_p)
 html_add_menu = utilsdll.html_add_menu
-html_add_menu.argtypes = (c_void_p, c_int, c_int, c_wchar_p)
-_html_get_select_text = utilsdll.html_get_select_text
-_html_get_select_text.argtypes = (c_void_p, c_void_p)
-
-
-def html_get_current_url(__):
-    _ = []
-    _html_get_current_url(__, CFUNCTYPE(None, c_wchar_p)(_.append))
-    if _:
-        return _[0]
-    return ""
-
-
-def html_get_select_text(__):
-    _ = []
-    _html_get_select_text(__, CFUNCTYPE(None, c_wchar_p)(_.append))
-    if _:
-        return _[0]
-    return ""
+html_add_menu_cb = CFUNCTYPE(c_void_p, c_wchar_p)
+html_add_menu.argtypes = (c_void_p, c_int, c_wchar_p, html_add_menu_cb)
+html_get_select_text = utilsdll.html_get_select_text
+html_get_select_text_cb = CFUNCTYPE(None, c_wchar_p)
+html_get_select_text.argtypes = (c_void_p, c_void_p)
 
 
 html_bind_function_FT = CFUNCTYPE(None, POINTER(c_wchar_p), c_int)

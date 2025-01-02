@@ -89,6 +89,8 @@ class MWebBrowserEx : public MWebBrowser
 
 public:
     std::vector<std::tuple<std::optional<std::wstring>, int>> menuitems;
+    std::map<int, void (*)(LPCWSTR)> menucallbacks;
+    UINT CommandBase = 10086;
     static MWebBrowserEx *Create(HWND _hwndParent);
     // IDocHostUIHandler interface
     STDMETHODIMP ShowContextMenu(
@@ -96,6 +98,19 @@ public:
         POINT *ppt,
         IUnknown *pcmdtReserved,
         IDispatch *pdispReserved);
+    HRESULT getselectedtext(LPWSTR *selectedText)
+    {
+        CComPtr<IHTMLDocument2> pDocument;
+        CHECK_FAILURE(GetIHTMLDocument2(&pDocument));
+        CComPtr<IHTMLSelectionObject> pSelectionObj;
+        CHECK_FAILURE(pDocument->get_selection(&pSelectionObj));
+        CComPtr<IHTMLTxtRange> pTxtRange;
+        CHECK_FAILURE(pSelectionObj->createRange((IDispatch **)&pTxtRange));
+        CHECK_FAILURE(pTxtRange->get_text(selectedText));
+        if (!*selectedText)
+            return -1;
+        return S_OK;
+    }
 
 protected:
     MWebBrowserEx(HWND _hwndParent);
@@ -103,6 +118,25 @@ protected:
 MWebBrowserEx::MWebBrowserEx(HWND _hwndParent) : MWebBrowser(_hwndParent), hwndParent(_hwndParent)
 {
 }
+LRESULT CALLBACK Extra_Menu_Handle(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+{
+    auto proc = (WNDPROC)GetProp(hwnd, L"GWLP_WNDPROC");
+    auto thisptr = (MWebBrowserEx *)GetProp(hwnd, L"THIS_PTR");
+    if (msg == WM_COMMAND)
+    {
+        if (thisptr->menucallbacks.find((int)wp) != thisptr->menucallbacks.end())
+        {
+            [&]()
+            {
+                CComBSTR selectedText;
+                CHECK_FAILURE_NORET(thisptr->getselectedtext(&selectedText));
+                thisptr->menucallbacks[(int)wp](selectedText);
+            }();
+        }
+    }
+    return proc(hwnd, msg, wp, lp);
+}
+
 MWebBrowserEx *MWebBrowserEx::Create(HWND _hwndParent)
 {
     MWebBrowserEx *pBrowser = new MWebBrowserEx(_hwndParent);
@@ -111,6 +145,10 @@ MWebBrowserEx *MWebBrowserEx::Create(HWND _hwndParent)
         pBrowser->Release();
         pBrowser = NULL;
     }
+    auto hwnd = pBrowser->GetControlWindow();
+    SetProp(_hwndParent, L"GWLP_WNDPROC", (HANDLE)GetWindowLongPtr(_hwndParent, GWLP_WNDPROC));
+    SetProp(_hwndParent, L"THIS_PTR", (HANDLE)pBrowser);
+    SetWindowLongPtr(_hwndParent, GWLP_WNDPROC, (ULONG_PTR)Extra_Menu_Handle);
     return pBrowser;
 }
 STDMETHODIMP MWebBrowserEx::ShowContextMenu(
@@ -209,7 +247,7 @@ DECLARE_API void html_set_html(void *web, wchar_t *html)
     auto ww = static_cast<MWebBrowserEx *>(web);
     ww->SetHtml(html);
 }
-DECLARE_API void html_add_menu(void *web, int index, int command, const wchar_t *label)
+DECLARE_API void html_add_menu(void *web, int index, const wchar_t *label, void (*callback)(const wchar_t *))
 {
     if (!web)
         return;
@@ -218,21 +256,17 @@ DECLARE_API void html_add_menu(void *web, int index, int command, const wchar_t 
     if (label)
         _label = label;
     auto ptr = ww->menuitems.begin() + index;
+    auto command = ww->CommandBase++;
     ww->menuitems.insert(ptr, {_label, command});
+    ww->menucallbacks[command] = callback;
 }
 DECLARE_API void html_get_select_text(void *web, void (*cb)(LPCWSTR))
 {
     if (!web)
         return;
     auto ww = static_cast<MWebBrowserEx *>(web);
-    CComPtr<IHTMLDocument2> pDocument;
-    CHECK_FAILURE_NORET(ww->GetIHTMLDocument2(&pDocument));
-    CComPtr<IHTMLSelectionObject> pSelectionObj;
-    CHECK_FAILURE_NORET(pDocument->get_selection(&pSelectionObj));
-    CComPtr<IHTMLTxtRange> pTxtRange;
-    CHECK_FAILURE_NORET(pSelectionObj->createRange((IDispatch **)&pTxtRange));
     CComBSTR selectedText;
-    CHECK_FAILURE_NORET(pTxtRange->get_text(&selectedText));
+    CHECK_FAILURE_NORET(ww->getselectedtext(&selectedText));
     cb(selectedText);
 }
 

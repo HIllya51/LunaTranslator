@@ -56,7 +56,7 @@ void globalmessagelistener_1(void *callback)
 DECLARE_API void globalmessagelistener(void *callback)
 {
 #ifndef WINXP
-    std::thread(std::bind(globalmessagelistener_1, callback)).detach();
+    std::thread(globalmessagelistener_1, callback).detach();
 #endif
 }
 
