@@ -1197,7 +1197,7 @@
             "argstype": {
                 "path": {
                     "type": "file",
-                    "name": "路径",
+                    "name": "unidic_路径",
                     "dir": true
                 }
             },

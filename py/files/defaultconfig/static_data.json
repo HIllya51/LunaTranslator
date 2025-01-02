@@ -539,12 +539,12 @@
                 "name": "MeCab",
                 "links": [
                     {
-                        "name": "MeCab",
-                        "link": "{main_server}/Resource/dictionary/Mecab.zip"
+                        "name": "unidic-2.1.2",
+                        "link": "https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip"
                     },
                     {
-                        "name": "Unidic",
-                        "link": "https://clrd.ninjal.ac.jp/unidic/"
+                        "name": "unidic",
+                        "link": "https://clrd.ninjal.ac.jp/unidic/en/"
                     }
                 ]
             },
