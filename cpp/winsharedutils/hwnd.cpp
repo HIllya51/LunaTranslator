@@ -26,18 +26,20 @@ DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 
 DECLARE_API bool pid_running(DWORD pid)
 {
-    DWORD code;
+    CHandle hprocess{OpenProcess(
 #ifndef WINXP
-    GetExitCodeProcess(AutoHandle(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid)), &code);
+        PROCESS_QUERY_LIMITED_INFORMATION,
 #else
-    GetExitCodeProcess(AutoHandle(OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid)), &code);
+        PROCESS_QUERY_INFORMATION,
 #endif
+        FALSE, pid)};
+    if (!hprocess)
+        return false;
+    DWORD code;
+    GetExitCodeProcess(hprocess, &code);
     // 句柄必須具有 PROCESS_QUERY_INFORMATION 或 PROCESS_QUERY_LIMITED_INFORMATION 訪問許可權。 如需詳細資訊，請參閱 處理安全性和訪問許可權。
     // Windows Server 2003 和 Windows XP： 句柄必須具有 PROCESS_QUERY_INFORMATION 訪問許可權。
     return code == STILL_ACTIVE;
-    // auto process = AutoHandle(OpenProcess(SYNCHRONIZE, FALSE, pid));
-    // DWORD ret = WaitForSingleObject(process, 0);
-    // return ret == WAIT_TIMEOUT;
 }
 
 struct __EnumWindowsProc
@@ -79,11 +81,13 @@ DECLARE_API bool Is64bit(DWORD pid)
 {
     if (!Is64BitOS())
         return false;
+    CHandle hprocess{OpenProcess(
 #ifndef WINXP
-    auto hprocess = AutoHandle(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid));
+        PROCESS_QUERY_LIMITED_INFORMATION,
 #else
-    auto hprocess = AutoHandle(OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid));
+        PROCESS_QUERY_INFORMATION,
 #endif
+        FALSE, pid)};
     // 進程的控制碼。 控制碼必須具有PROCESS_QUERY_INFORMATION或PROCESS_QUERY_LIMITED_INFORMATION存取權限。 如需詳細資訊，請參閱 處理安全性和存取權限。
     // Windows Server 2003 和 Windows XP： 控制碼必須具有PROCESS_QUERY_INFORMATION存取權限。
     BOOL f64bitProc = false;
@@ -94,7 +98,7 @@ DECLARE_API bool Is64bit(DWORD pid)
 DECLARE_API void getprocesses(void (*cb)(DWORD, const wchar_t *))
 {
     std::unordered_map<std::wstring, std::vector<int>> exe_pid;
-    AutoHandle hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    CHandle hSnapshot{CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)};
     if (hSnapshot == INVALID_HANDLE_VALUE)
         return;
 

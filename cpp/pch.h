@@ -12,6 +12,7 @@
 #include <mmdeviceapi.h>
 #include <Psapi.h>
 #include <atlbase.h>
+#include <atlsync.h>
 
 #include <iostream>
 #include <string>

@@ -1,20 +1,4 @@
-struct AutoHandle
-{
-    HANDLE _handle;
-    AutoHandle(HANDLE handle) : _handle(handle) {};
-    ~AutoHandle()
-    {
-        CloseHandle(_handle);
-    }
-    operator HANDLE()
-    {
-        return _handle;
-    }
-    operator bool()
-    {
-        return _handle == INVALID_HANDLE_VALUE;
-    }
-};
+
 inline SECURITY_ATTRIBUTES allAccess = std::invoke([] // allows non-admin processes to access kernel objects made by admin processes
                                                    {
 	static SECURITY_DESCRIPTOR sd = {};

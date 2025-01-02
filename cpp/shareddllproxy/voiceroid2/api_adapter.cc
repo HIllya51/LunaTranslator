@@ -26,12 +26,10 @@ namespace ebyroid
 
   ApiAdapter *ApiAdapter::Create(const char *dllpath)
   {
-    printf("dllpath %s\n", dllpath);
     HINSTANCE handle = LoadLibraryA(dllpath);
     if (handle == nullptr)
     {
       char m[128];
-      printf("load error\n");
       std::snprintf(m,
                     128,
                     "LoadLibrary failed with code %d (Check out the voiceroid path setting)",
@@ -52,7 +50,6 @@ namespace ebyroid
     adapter->text_to_speech_ = LoadProc<ApiTextToSpeech>(handle, "_AITalkAPI_TextToSpeech@12");
     adapter->close_speech_ = LoadProc<ApiCloseSpeech>(handle, "_AITalkAPI_CloseSpeech@8");
     adapter->get_data_ = LoadProc<ApiGetData>(handle, "_AITalkAPI_GetData@16");
-    printf("load dll ok\n");
     return adapter;
   }
 

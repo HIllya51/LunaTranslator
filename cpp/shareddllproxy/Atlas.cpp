@@ -489,51 +489,10 @@ char *TranslateFull(char *otext, int freeText, int NeedAbort(int line, int lines
 	return out;
 }
 
-static wchar_t *logFile = 0;
-void SetLogFile(wchar_t *file)
-{
-	logFile = file;
-}
-
-wchar_t *TranslateFullLog(wchar_t *otext)
-{
-	if (logFile && logFile[0])
-	{
-		HANDLE hMutex = CreateMutex(0, 0, L"TRAG Logging Super Mutext +10 from Outer Space");
-		DWORD res;
-		if (hMutex)
-			res = WaitForSingleObject(hMutex, 2000);
-		HANDLE hFile = CreateFile(logFile, GENERIC_WRITE, FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0);
-		if (hFile != INVALID_HANDLE_VALUE)
-		{
-			DWORD junk;
-			if (GetLastError() == ERROR_ALREADY_EXISTS)
-				SetFilePointer(hFile, 0, 0, FILE_END);
-			else
-			{
-				wchar_t bom = 0xFEFF;
-				WriteFile(hFile, &bom, sizeof(wchar_t), &junk, 0);
-			}
-			WriteFile(hFile, otext, sizeof(wchar_t) * wcslen(otext), &junk, 0);
-			WriteFile(hFile, L"\r\n", sizeof(wchar_t) * 2, &junk, 0);
-			CloseHandle(hFile);
-		}
-		if (hMutex)
-		{
-			// Prolly not needed.
-			if (WAIT_OBJECT_0 == res)
-				ReleaseMutex(hMutex);
-			CloseHandle(hMutex);
-		}
-	}
-	return TranslateFull(otext);
-}
-
 struct AtlasConfig atlcfg;
 
 void writestring(const wchar_t *text, HANDLE hPipe);
 wchar_t *readstring(HANDLE hPipe);
-HANDLE mutex = NULL;
 int atlaswmain(int argc, wchar_t *argv[])
 {
 
@@ -548,33 +507,6 @@ int atlaswmain(int argc, wchar_t *argv[])
 		if (!src)
 			break;
 
-		if (!mutex)
-		{
-			mutex = CreateMutex(NULL, FALSE, NULL);
-			if (!mutex)
-			{
-				return false;
-			}
-		}
-		bool waitingForMutex = true;
-		while (waitingForMutex)
-		{
-			switch (WaitForSingleObject(mutex, INFINITE))
-			{
-			case WAIT_OBJECT_0:
-			{
-				waitingForMutex = false;
-				break;
-			}
-			case WAIT_ABANDONED:
-			{
-				return false;
-			}
-			default:
-			{
-			}
-			}
-		}
 		if (!AtlasIsLoaded())
 		{
 			// atlcfg.flags = ~BREAK_ON_SINGLE_LINE_BREAKS;
@@ -583,7 +515,6 @@ int atlaswmain(int argc, wchar_t *argv[])
 			InitAtlas(atlcfg, ATLAS_JAP_TO_ENG);
 			if (!AtlasIsLoaded())
 			{
-				ReleaseMutex(mutex);
 				writestring(0, hPipe);
 				return false;
 			}
@@ -592,7 +523,6 @@ int atlaswmain(int argc, wchar_t *argv[])
 		writestring(text, hPipe);
 		free(src);
 		free(text);
-		ReleaseMutex(mutex);
 	}
 
 	return 0;

@@ -39,7 +39,7 @@ std::wstring stolower(const std::wstring &s1)
 std::vector<DWORD> EnumerateProcesses(const std::wstring &exe)
 {
 
-    AutoHandle hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    CHandle hSnapshot{CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)};
     if (hSnapshot == INVALID_HANDLE_VALUE)
     {
         return {};

@@ -1,7 +1,6 @@
 #ifndef EBYROID_H
 #define EBYROID_H
 
-
 namespace ebyroid
 {
 
@@ -24,8 +23,8 @@ namespace ebyroid
     ~Ebyroid();
 
     static Ebyroid *Create(const std::string &base_dir, const std::string &dllpath, const std::string &voice, float volume, float speed);
-    int Hiragana(const unsigned char *inbytes, unsigned char **outbytes, size_t *outsize);
-    int Speech(const unsigned char *inbytes, int16_t **outbytes, size_t *outsize, uint32_t mode = 0u);
+    int Hiragana(const char *inbytes, std::vector<char> &);
+    int Speech(const char *inbytes, std::vector<int16_t> &, uint32_t mode = 0u);
     int Convert(const ConvertParams &params,
                 const unsigned char *inbytes,
                 int16_t **outbytes,
@@ -36,20 +35,27 @@ namespace ebyroid
     ApiAdapter *api_adapter_;
   };
 
+  template <typename T>
   class Response
   {
   public:
-    Response(ApiAdapter *adapter) : api_adapter_(adapter) {}
-    void Write(char *bytes, uint32_t size);
-    void Write16(int16_t *shorts, uint32_t size);
-    std::vector<unsigned char> End();
-    std::vector<int16_t> End16();
+    Response(ApiAdapter *adapter) : api_adapter_(adapter)
+    {
+      event.Create(NULL, FALSE, FALSE, NULL);
+    }
+    void Write(T *bytes, size_t size)
+    {
+      buffer_.insert(std::end(buffer_), bytes, bytes + size);
+    }
+    std::vector<T> End()
+    {
+      return std::move(buffer_);
+    }
     ApiAdapter *api_adapter() { return api_adapter_; };
-
+    CEvent event;
   private:
     ApiAdapter *api_adapter_;
-    std::vector<unsigned char> buffer_;
-    std::vector<int16_t> buffer_16_;
+    std::vector<T> buffer_;
   };
 
 } // namespace ebyroid

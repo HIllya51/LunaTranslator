@@ -55,10 +55,10 @@ std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *to
 
         ULONG bytesRead; //	this will tell the number of bytes that have been read
         std::vector<byte> datas;
-        datas.resize(sSize + 0x3ea);
+        datas.resize(sSize + 46);
         auto pBuffer = datas.data(); // buffer to read the data
         // memcpy(pBuffer,&wavHeader,sizeof(WAV_HEADER));
-        int fsize = sSize + 0x3ea;
+        int fsize = sSize + 46;
         int ptr = 0;
         memcpy(pBuffer, "RIFF", 4);
         ptr += 4;

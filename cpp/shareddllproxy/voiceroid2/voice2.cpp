@@ -28,14 +28,11 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
     SetEvent(CreateEventA(&allAccess, FALSE, FALSE, argv[4]));
     ConnectNamedPipe(hPipe, NULL);
     int freq1;
-    unsigned char input_j[4096] = {0};
+    char input_j[4096] = {0};
     DWORD _;
     while (true)
     {
         ZeroMemory(input_j, sizeof(input_j));
-        unsigned char *out;
-        size_t output_size;
-        int16_t *out2;
 
         if (!ReadFile(hPipe, input_j, 4096, &_, NULL))
             break;
@@ -51,8 +48,8 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
             {
                 delete ebyroid;
             }
-            ebyroid = Ebyroid::Create((const char *)argv[1], //"C:\\dataH\\Yukari2",
-                                      (const char *)argv[2],
+            ebyroid = Ebyroid::Create(argv[1], //"C:\\dataH\\Yukari2",
+                                      argv[2],
                                       voice.c_str(),
                                       2,
                                       rate); // 1); //0.1-2,0.5-4
@@ -65,10 +62,12 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
             freq1 = 44100;
         else
             freq1 = 22050;
-        // int result = ebyroid->Hiragana((const unsigned char*)UnicodeToShift_jis(input), &out, &output_size);
-        int result = ebyroid->Hiragana((const unsigned char *)input_j, &out, &output_size);
-
-        result = ebyroid->Speech(out, &out2, &output_size);
+        std::vector<char> output;
+        int result = ebyroid->Hiragana(input_j, output);
+        output.push_back(0);
+        std::vector<int16_t> binary;
+        result = ebyroid->Speech(output.data(), binary);
+        size_t output_size = binary.size() * 2;
         int fsize = output_size + 44;
         if (fsize > 1024 * 1024 * 10)
         {
@@ -98,12 +97,9 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
             ptr += 4;
             memcpy(mapview + ptr, &output_size, 4);
             ptr += 4;
-            memcpy(mapview + ptr, out2, output_size);
+            memcpy(mapview + ptr, binary.data(), output_size);
         }
         WriteFile(hPipe, &fsize, 4, &_, NULL);
-
-        free(out);
-        free(out2);
     }
     return 0;
 }

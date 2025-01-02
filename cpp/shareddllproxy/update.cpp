@@ -5,13 +5,13 @@ int updatewmain(int argc, wchar_t *argv[])
     if (argc <= 1)
         return 0;
     SetProcessDPIAware();
-    AutoHandle hMutex = CreateMutex(NULL, FALSE, L"LUNA_UPDATER_SINGLE");
+    CHandle hMutex{CreateMutex(NULL, FALSE, L"LUNA_UPDATER_SINGLE")};
 
     if (GetLastError() == ERROR_ALREADY_EXISTS)
         return 0;
     while (true)
     {
-        AutoHandle semaphore = CreateMutex(NULL, FALSE, L"LUNA_UPDATER_BLOCK");
+        CHandle semaphore{CreateMutex(NULL, FALSE, L"LUNA_UPDATER_BLOCK")};
         if (GetLastError() != ERROR_ALREADY_EXISTS)
             break;
         Sleep(1000);

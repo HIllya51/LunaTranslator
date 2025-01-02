@@ -34,28 +34,17 @@ namespace ebyroid
     return ebyroid;
   }
 
-  int Ebyroid::Hiragana(const unsigned char *inbytes, unsigned char **outbytes, size_t *outsize)
+  int Ebyroid::Hiragana(const char *inbytes, std::vector<char> &output)
   {
-    Response *const response = new Response(api_adapter_);
-    printf("1\n");
+    Response<char> response{api_adapter_};
     TJobParam param;
     param.mode_in_out = IOMODE_PLAIN_TO_AIKANA;
-    param.user_data = response;
+    param.user_data = &response;
 
-    char eventname[32];
-    std::sprintf(eventname, "TTKLOCK:%p", response);
-    printf("12\n");
-    HANDLE event = CreateEventA(NULL, TRUE, FALSE, eventname);
-    printf("3\n");
     int32_t job_id;
-    ResultCode result = api_adapter_->TextToKana(&job_id, &param, (const char *)inbytes);
-    printf("4\n");
+    ResultCode result = api_adapter_->TextToKana(&job_id, &param, inbytes);
     if (result != ERR_SUCCESS)
     {
-      delete response;
-      printf("%d\n", result);
-      ResetEvent(event);
-      CloseHandle(event);
       static const char *format = "TextToKana failed with the result code %d\n"
                                   "Given inbytes: %s";
 
@@ -63,53 +52,33 @@ namespace ebyroid
       std::snprintf(m, 0xFFFF, format, result, inbytes);
       throw std::runtime_error(m);
     }
-    printf("6\n");
-    WaitForSingleObject(event, INFINITE);
-    ResetEvent(event);
-    CloseHandle(event);
-    printf("8\n");
+    WaitForSingleObject(response.event, INFINITE);
     // finalize
     result = api_adapter_->CloseKana(job_id);
     if (result != ERR_SUCCESS)
     {
-      delete response;
       throw std::runtime_error("wtf");
     }
 
     // write to output memory
-    vector<unsigned char> buffer = response->End();
-    *outsize = buffer.size();
-    *outbytes = (unsigned char *)malloc(buffer.size() + 1);
-    std::copy(buffer.begin(), buffer.end(), *outbytes);
-    *(*outbytes + buffer.size()) = '\0';
-
-    delete response;
+    output = response.End();
     return 0;
   }
 
-  int Ebyroid::Speech(const unsigned char *inbytes,
-                      int16_t **outbytes,
-                      size_t *outsize,
-                      uint32_t mode)
+  int Ebyroid::Speech(const char *inbytes, std::vector<int16_t> &output, uint32_t mode)
   {
-    Response *const response = new Response(api_adapter_);
+    Response<int16_t> response{api_adapter_};
 
     TJobParam param;
     param.mode_in_out = mode == 0u ? IOMODE_AIKANA_TO_WAVE : (JobInOut)mode;
-    param.user_data = response;
+    param.user_data = &response;
 
-    char eventname[32];
-    sprintf(eventname, "TTSLOCK:%p", response);
-    HANDLE event = CreateEventA(NULL, TRUE, FALSE, eventname);
 
     int32_t job_id;
-    ResultCode result = api_adapter_->TextToSpeech(&job_id, &param, (const char *)inbytes);
+    ResultCode result = api_adapter_->TextToSpeech(&job_id, &param, inbytes);
 
     if (result != ERR_SUCCESS)
     {
-      delete response;
-      ResetEvent(event);
-      CloseHandle(event);
       static const char *format = "TextToSpeech failed with the result code %d\n"
                                   "Given inbytes: %s";
       char m[0xFFFF];
@@ -117,47 +86,19 @@ namespace ebyroid
       throw std::runtime_error(m);
     }
 
-    WaitForSingleObject(event, INFINITE);
-    ResetEvent(event);
-    CloseHandle(event);
+    WaitForSingleObject(response.event, INFINITE);
 
     // finalize
     result = api_adapter_->CloseSpeech(job_id);
     if (result != ERR_SUCCESS)
     {
-      delete response;
       throw std::runtime_error("wtf");
     }
 
     // write to output memory
-    vector<int16_t> buffer = response->End16();
-    *outsize = buffer.size() * 2; // sizeof(int16_t) == 2
-    *outbytes = (int16_t *)malloc(buffer.size() * 2 + 1);
-    std::copy(buffer.begin(), buffer.end(), *outbytes);
-    *((char *)*outbytes + (buffer.size() * 2)) = '\0';
+    output = response.End();
 
-    delete response;
     return 0;
-  }
-
-  void Response::Write(char *bytes, uint32_t size)
-  {
-    buffer_.insert(std::end(buffer_), bytes, bytes + size);
-  }
-
-  void Response::Write16(int16_t *shorts, uint32_t size)
-  {
-    buffer_16_.insert(std::end(buffer_16_), shorts, shorts + size);
-  }
-
-  vector<unsigned char> Response::End()
-  {
-    return std::move(buffer_);
-  }
-
-  vector<int16_t> Response::End16()
-  {
-    return std::move(buffer_16_);
   }
 
   namespace
@@ -167,8 +108,7 @@ namespace ebyroid
     {
       SettingsBuilder builder(base_dir, voice);
       Settings settings = builder.Build();
-
-      ApiAdapter *adapter = ApiAdapter::Create(dllpath.c_str());
+      std::unique_ptr<ApiAdapter> adapter{ApiAdapter::Create(dllpath.c_str())};
 
       TConfig config;
       config.hz_voice_db = settings.frequency;
@@ -184,39 +124,17 @@ namespace ebyroid
         config.code_auth_seed = "PROJECT-VOICeVIO-SFE";
         result = adapter->Init(&config);
       }
-      printf("init %d\n", result);
       if (result != ERR_SUCCESS)
       {
-        delete adapter;
         string message = "API initialization failed with code ";
         message += std::to_string(result);
         throw std::runtime_error(message);
       }
-      /*pair<bool, string>xx = WithDirecory(settings.base_dir, [adapter, settings]() {
-          ResultCode result = adapter->LangLoad(settings.language_dir);
-          printf("laod lang %d\n", result);
-          if (result != ERR_SUCCESS) {
-              char m[64];
-              std::snprintf(m, 64, "API LangLoad failed (could not load language) with code %d", result);
-              return pair<bool, string>(true, string(m));
-          }
-          return pair<bool, string>(false, string());
-          });*/
-      bool x = SetCurrentDirectoryA(settings.base_dir);
       SetDllDirectoryA(settings.base_dir);
-      printf("%d\n", x);
-      wchar_t buffer[1000] = {0};
-      DWORD sz = 1000;
-      GetCurrentDirectoryW(sz, buffer);
-      wprintf(L"%s\n", buffer);
       result = adapter->LangLoad(settings.language_dir);
-      printf("%s %s \n", settings.base_dir, settings.language_dir);
-      printf("loadvoice %d\n", result);
       result = adapter->VoiceLoad(settings.voice_name);
-      printf("loadvoice %s %d\n", settings.voice_name, result);
       if (result != ERR_SUCCESS)
       {
-        delete adapter;
         string message = "API Load Voice failed (Could not load voice data) with code ";
         message += std::to_string(result);
         throw std::runtime_error(message);
@@ -225,96 +143,73 @@ namespace ebyroid
       result = adapter->GetParam((void *)0, &param_size);
       if (result != ERR_INSUFFICIENT)
       { // NOTE: Code -20 is expected here
-        delete adapter;
         string message = "API Get Param failed (Could not acquire the size) with code ";
         message += std::to_string(result);
         throw std::runtime_error(message);
       }
-
-      printf("param->size %d\n", param_size);
-      if (param_size == 500)
+      if (param_size == sizeof(TTtsParam))
       { // voiceroid2
-        char *param_buffer = new char[param_size];
-        TTtsParam *param = (TTtsParam *)param_buffer;
+        TTtsParam param;
         // TTtsParam* param = (TTtsParam*) param_buffer;
-        param->size = param_size;
-        result = adapter->GetParam(param, &param_size);
-        printf("%s %d\n", "GetParam", result);
+        param.size = param_size;
+        result = adapter->GetParam(&param, &param_size);
         if (result != ERR_SUCCESS)
         {
-          delete[] param_buffer;
-          delete adapter;
           string message = "API Get Param failed with code ";
           message += std::to_string(result);
           throw std::runtime_error(message);
         }
-        param->extend_format = BOTH;
-        param->proc_text_buf = HiraganaCallback;
-        param->proc_raw_buf = SpeechCallback;
-        param->proc_event_tts = nullptr;
-        param->len_raw_buf_bytes = kConfigRawbufSize;
+        param.extend_format = BOTH;
+        param.proc_text_buf = HiraganaCallback;
+        param.proc_raw_buf = SpeechCallback;
+        param.proc_event_tts = nullptr;
+        param.len_raw_buf_bytes = kConfigRawbufSize;
 
-        param->volume = volume;
-        printf("1\n");
-        param->speaker[0].volume = volume;
-        /*param->speaker[0].pitch = 1.111;
-        param->speaker[0].pause_middle = 80;
-        param->speaker[0].pause_sentence = 200;
-        param->speaker[0].pause_long = 100;
-        param->speaker[0].range = 0.893;*/
-        param->speaker[0].speed = speed;
-        //printf("2 %d %d\n", volume, speed);
-        result = adapter->SetParam(param);
-        printf("3 %d\n", result);
+        param.volume = volume;
+        param.speaker[0].volume = volume;
+        /*param.speaker[0].pitch = 1.111;
+        param.speaker[0].pause_middle = 80;
+        param.speaker[0].pause_sentence = 200;
+        param.speaker[0].pause_long = 100;
+        param.speaker[0].range = 0.893;*/
+        param.speaker[0].speed = speed;
+        result = adapter->SetParam(&param);
         if (result != ERR_SUCCESS)
         {
-          delete[] param_buffer;
-          delete adapter;
           string message = "API Set Param failed with code ";
           message += std::to_string(result);
           throw std::runtime_error(message);
         }
-        printf("3\n");
-        delete[] param_buffer;
       }
-      else if (param_size == 416)
+      else if (param_size == sizeof(AITalk_TTtsParam))
       { // voiceroid+
-        char *param_buffer = new char[param_size];
-        AITalk_TTtsParam *param = (AITalk_TTtsParam *)param_buffer;
+        AITalk_TTtsParam param;
         // TTtsParam* param = (TTtsParam*) param_buffer;
-        param->size = param_size;
-        result = adapter->GetParam(param, &param_size);
+        param.size = param_size;
+        result = adapter->GetParam(&param, &param_size);
         if (result != ERR_SUCCESS)
         {
-          delete[] param_buffer;
-          delete adapter;
           string message = "API Get Param failed with code ";
           message += std::to_string(result);
           throw std::runtime_error(message);
         }
-        printf("numSpeakers %d\n", param->numSpeakers);
-        param->proc_text_buf = HiraganaCallback;
-        param->proc_raw_buf = SpeechCallback;
-        param->proc_event_tts = nullptr;
-        param->lenRawBufBytes = kConfigRawbufSize;
+        param.proc_text_buf = HiraganaCallback;
+        param.proc_raw_buf = SpeechCallback;
+        param.proc_event_tts = nullptr;
+        param.lenRawBufBytes = kConfigRawbufSize;
 
-        param->volume = volume;
-        result = adapter->SetParam(param);
-        printf("SetParam ok %d\n", result);
+        param.volume = volume;
+        result = adapter->SetParam(&param);
         if (result != ERR_SUCCESS)
         {
-          delete[] param_buffer;
-          delete adapter;
           string message = "API Set Param failed with code ";
           message += std::to_string(result);
-          printf("%s\n", message.c_str());
           throw std::runtime_error(message);
         }
-        delete[] param_buffer;
       }
-
-      printf("%s  \n", "setparam all ok");
-      return adapter;
+      auto _ = adapter.get();
+      adapter.release();
+      return _;
     }
 
     inline pair<bool, string> WithDirecory(const char *dir, function<pair<bool, string>(void)> yield)
@@ -360,7 +255,7 @@ namespace ebyroid
     }
     int __stdcall HiraganaCallback(EventReasonCode reason_code, int32_t job_id, IntPtr user_data)
     {
-      Response *const response = (Response *)user_data;
+      auto response = (Response<char> *)user_data;
       ApiAdapter *api_adapter = response->api_adapter();
 
       if (reason_code != TEXTBUF_FULL && reason_code != TEXTBUF_FLUSH && reason_code != TEXTBUF_CLOSE)
@@ -370,7 +265,7 @@ namespace ebyroid
       }
 
       static constexpr int kBufferSize = 0x1000;
-      char *buffer = new char[kBufferSize];
+      char buffer[kBufferSize];
       while (true)
       {
         uint32_t size, pos;
@@ -386,14 +281,10 @@ namespace ebyroid
           break;
         }
       }
-      delete[] buffer;
 
       if (reason_code == TEXTBUF_CLOSE)
       {
-        char eventname[32];
-        sprintf(eventname, "TTKLOCK:%p", response);
-        HANDLE event = OpenEventA(EVENT_ALL_ACCESS, FALSE, eventname);
-        SetEvent(event);
+        response->event.Set();
       }
       return 0;
     }
@@ -403,7 +294,7 @@ namespace ebyroid
                                  uint64_t tick,
                                  IntPtr user_data)
     {
-      Response *const response = (Response *)user_data;
+      auto response = (Response<int16_t> *)user_data;
       ApiAdapter *api_adapter = response->api_adapter();
 
       if (reason_code != RAWBUF_FULL && reason_code != RAWBUF_FLUSH && reason_code != RAWBUF_CLOSE)
@@ -413,7 +304,7 @@ namespace ebyroid
       }
 
       static constexpr int kBufferSize = 0xFFFF;
-      int16_t *buffer = new int16_t[kBufferSize];
+      int16_t buffer[kBufferSize];
       while (true)
       {
         uint32_t size, pos;
@@ -422,20 +313,16 @@ namespace ebyroid
         {
           break;
         }
-        response->Write16(buffer, size);
+        response->Write(buffer, size);
         if (kBufferSize > size)
         {
           break;
         }
       }
-      delete[] buffer;
 
       if (reason_code == RAWBUF_CLOSE)
       {
-        char eventname[32];
-        sprintf(eventname, "TTSLOCK:%p", response);
-        HANDLE event = OpenEventA(EVENT_ALL_ACCESS, FALSE, eventname);
-        SetEvent(event);
+        response->event.Set();
       }
       return 0;
     }

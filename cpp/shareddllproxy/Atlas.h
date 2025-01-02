@@ -39,9 +39,6 @@ char *TranslateFull(char *otext, int freeText = 0, int NeedAbort(int line, int l
 
 int AtlasIsLoaded();
 
-// dirty hack
-void SetLogFile(wchar_t *file);
-wchar_t *TranslateFullLog(wchar_t *otext);
 /*
 wchar_t path[MAX_PATH];
 GetCurrentDirectory(MAX_PATH, path);
