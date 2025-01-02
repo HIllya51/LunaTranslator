@@ -1265,10 +1265,10 @@ class searchwordW(closeashidewindow):
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
         )
         self.textOutput.bind(
-            "mdict_entry_call", lambda word: self.search_word.emit(word, False)
+            "luna_search_word", lambda word: self.search_word.emit(word, False)
         )
         self.textOutput.bind(
-            "mdict_audio_call",
+            "luna_audio_play_b64",
             lambda b64: gobject.baseobject.audioplayer.play(
                 base64.b64decode(b64.encode()), force=True
             ),

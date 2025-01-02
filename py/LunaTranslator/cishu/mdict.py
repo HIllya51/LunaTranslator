@@ -2294,7 +2294,7 @@ class mdict(cishubase):
             return _type, file_content
 
         if url.startswith("entry://"):
-            return 3, "javascript:safe_mdict_entry_call('{}')".format(url[8:])
+            return 3, "javascript:safe_mdict_search_word('{}')".format(url[8:])
         if url.startswith("sound://"):
             file_content = self.parse_url_in_mdd(index, url[8:])
             if not file_content:
@@ -2582,10 +2582,10 @@ for(let i=0;i<elements.length;i++)
 var lastmusicplayer=false;
 function mdict_play_sound(ext, b64){
 
-if(window.mdict_audio_call)
-        window.mdict_audio_call(b64)
+if(window.luna_audio_play_b64)
+        window.luna_audio_play_b64(b64)
     else if(window.LUNAJSObject)
-        window.LUNAJSObject.mdict_audio_call(b64)
+        window.LUNAJSObject.luna_audio_play_b64(b64)
     else{
     const music = new Audio();
     music.src="data:"+ext+";base64,"+b64
@@ -2597,11 +2597,11 @@ if(window.mdict_audio_call)
     music.play();
     }
 }
-function safe_mdict_entry_call(word){
-    if(window.mdict_entry_call)
-        window.mdict_entry_call(word)
+function safe_mdict_search_word(word){
+    if(window.luna_search_word)
+        window.luna_search_word(word)
     else if(window.LUNAJSObject)
-        window.LUNAJSObject.mdict_entry_call(word)
+        window.LUNAJSObject.luna_search_word(word)
 }"""
         for varname, val in audiob64vals.items():
             func += '{}="{}"\n'.format(varname, val)
