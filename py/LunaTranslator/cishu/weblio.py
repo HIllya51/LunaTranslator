@@ -15,6 +15,8 @@ class weblio(cishubase):
         html = requests.get(url, proxies=self.proxy).text
         head = simplehtmlparser_all(html, "div", '<div class="pbarT">')
         content = simplehtmlparser_all(html, "div", '<div class="kijiWrp">')
+        if not content:
+            return
         collect = []
         for i, xx in enumerate(head):
             xx = re.sub('src="//(.*?)"', 'src="https://\\1"', xx + content[i])
