@@ -145,7 +145,6 @@ MWebBrowserEx *MWebBrowserEx::Create(HWND _hwndParent)
         pBrowser->Release();
         pBrowser = NULL;
     }
-    auto hwnd = pBrowser->GetControlWindow();
     SetProp(_hwndParent, L"GWLP_WNDPROC", (HANDLE)GetWindowLongPtr(_hwndParent, GWLP_WNDPROC));
     SetProp(_hwndParent, L"THIS_PTR", (HANDLE)pBrowser);
     SetWindowLongPtr(_hwndParent, GWLP_WNDPROC, (ULONG_PTR)Extra_Menu_Handle);
