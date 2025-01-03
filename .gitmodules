@@ -13,3 +13,6 @@
 [submodule "py/files/LunaTranslator_qss"]
 	path = py/files/LunaTranslator_qss
 	url = https://github.com/HIllya51/LunaTranslator_qss.git
+[submodule "cpp/wcocr/wechat-ocr"]
+	path = cpp/wcocr/wechat-ocr
+	url = https://github.com/swigger/wechat-ocr
