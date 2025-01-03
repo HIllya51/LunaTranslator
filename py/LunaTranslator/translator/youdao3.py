@@ -11,7 +11,6 @@ class TS(basetrans):
             "ko": "KR",
             "es": "SP",
             "ru": "RU",
-            "auto": "AUTO",
         }
 
     def inittranslator(self):
@@ -39,7 +38,11 @@ class TS(basetrans):
     def translate(self, content):
         data = {
             "inputtext": content,
-            "type": self.srclang + "2" + self.tgtlang,
+            "type": (
+                (self.srclang + "2" + self.tgtlang)
+                if self.srclang_1 != "auto"
+                else "AUTO"
+            ),
         }
 
         headers = {
