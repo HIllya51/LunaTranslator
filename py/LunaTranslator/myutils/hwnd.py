@@ -6,19 +6,6 @@ import os, subprocess, functools
 import time, winrtutils, winsharedutils, hashlib
 from myutils.config import savehook_new_data, globalconfig
 from myutils.wrapper import threader
-from myutils.utils import qimage2binary
-
-
-def clipboard_set_image(p: QImage):
-    if not p:
-        return
-    if isinstance(p, str):
-        qimg = QImage()
-        qimg.load(p)
-        p = qimg
-    if p.isNull():
-        return
-    winsharedutils.clipboard_set_image(qimage2binary(p))
 
 
 @threader
@@ -59,7 +46,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
         if p.isNull():
             return
         if tocliponly:
-            clipboard_set_image(p)
+            gobject.baseobject.clipboardhelper.setPixmap.emit(p)
             return
         p.save(fn)
         if callback_origin:

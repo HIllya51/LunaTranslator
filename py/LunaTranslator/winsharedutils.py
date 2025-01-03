@@ -54,15 +54,6 @@ mecab_parse.restype = c_bool
 mecab_end = utilsdll.mecab_end
 mecab_end.argtypes = (c_void_p,)
 
-_clipboard_get = utilsdll.clipboard_get
-_clipboard_get.argtypes = (c_void_p,)
-_clipboard_get.restype = c_bool
-_clipboard_set = utilsdll.clipboard_set
-_clipboard_set.argtypes = (HWND, c_wchar_p)
-_clipboard_set_image = utilsdll.clipboard_set_image
-_clipboard_set_image.argtypes = (HWND, c_void_p, c_size_t)
-_clipboard_set_image.restype = c_bool
-
 
 def SAPI_List(v):
     ret = []
@@ -90,26 +81,6 @@ def distance(s1, s2):
 
 def distance_ratio(s1, s2):
     return levenshtein_ratio(len(s1), s1, len(s2), s2)
-
-
-clphwnd = windll.user32.CreateWindowExW(0, "STATIC", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-
-
-def clipboard_set(text):
-    global clphwnd
-    return _clipboard_set(clphwnd, text)
-
-
-def clipboard_set_image(bytes_):
-    global clphwnd
-    return _clipboard_set_image(clphwnd, bytes_, len(bytes_))
-
-
-def clipboard_get():
-    ret = []
-    if not _clipboard_get(CFUNCTYPE(None, c_wchar_p)(ret.append)):
-        return ""
-    return ret[0]
 
 
 html_version = utilsdll.html_version
@@ -317,12 +288,6 @@ add_ContextMenuRequested.argtypes = (
 add_ContextMenuRequested.restype = c_void_p
 remove_ContextMenuRequested = utilsdll.remove_ContextMenuRequested
 remove_ContextMenuRequested.argtypes = c_void_p, c_void_p
-clipboard_callback = utilsdll.clipboard_callback
-clipboard_callback.argtypes = (c_void_p,)
-clipboard_callback.restype = HWND
-clipboard_callback_stop = utilsdll.clipboard_callback_stop
-clipboard_callback_stop.argtypes = (HWND,)
-clipboard_callback_type = CFUNCTYPE(None, c_wchar_p, c_bool)
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)

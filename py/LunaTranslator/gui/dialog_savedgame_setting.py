@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, uuid
 from datetime import datetime, timedelta
 from traceback import print_exc
-import gobject, winsharedutils
+import gobject
 from myutils.config import (
     savehook_new_data,
     uid2gamepath,
@@ -621,7 +621,7 @@ class dialog_setting_game_internal(QWidget):
             try:
                 gobject.global_dialog_savedgame_new.tagswidget.addTag(*_)
             except:
-                winsharedutils.clipboard_set(_[0])
+                gobject.baseobject.clipboardhelper.setText.emit(_[0])
 
         qw.labelclicked.connect(safeaddtags)
         if first:

@@ -318,13 +318,13 @@ class TableViewW(QTableView):
             csv_writer.writerow(row)
         csv_str = output.getvalue()
         output.close()
-        winsharedutils.clipboard_set(csv_str)
+        gobject.baseobject.clipboardhelper.setText.emit(csv_str)
 
     def pastetable(self):
         current = self.currentIndex()
         if not current.isValid():
             return
-        string = winsharedutils.clipboard_get()
+        string = QApplication.clipboard().text("plain")[0]
         try:
             csv_file = io.StringIO(string)
             csv_reader = csv.reader(csv_file, delimiter="\t")
@@ -1433,7 +1433,7 @@ class mshtmlWidget(abstractwebview):
         t.timeout.connect(self.__getcurrent)
         t.timeout.emit()
         t.start()
-        self.add_menu(0, _TR("复制"), winsharedutils.clipboard_set)
+        self.add_menu(0, _TR("复制"), gobject.baseobject.clipboardhelper.setText.emit)
         self.add_menu(0, None, lambda: 1)
 
     def __getcurrent(self):
@@ -1450,7 +1450,7 @@ class mshtmlWidget(abstractwebview):
             and windows.GetAsyncKeyState(67)
             and winsharedutils.html_get_ie(self.browser) == windows.GetFocus()
         ):
-            cb = winsharedutils.html_get_select_text_cb(winsharedutils.clipboard_set)
+            cb = winsharedutils.html_get_select_text_cb(gobject.baseobject.clipboardhelper.setText.emit)
             winsharedutils.html_get_select_text(self.browser, cb)
 
     def navigate(self, url):
@@ -1941,7 +1941,7 @@ class listediter(LDialog):
             self.hcmodel.removeRow(curr.row())
             self.internalrealname.pop(curr.row())
         elif action == copy:
-            winsharedutils.clipboard_set(self.hcmodel.itemFromIndex(curr).text())
+            gobject.baseobject.clipboardhelper.setText.emit(self.hcmodel.itemFromIndex(curr).text())
 
         elif action == up:
 

@@ -566,7 +566,7 @@ class TranslatorWindow(resizableframeless):
             ("setting", lambda: gobject.baseobject.settin_ui.showsignal.emit()),
             (
                 "copy",
-                lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
+                lambda: gobject.baseobject.clipboardhelper.setText.emit(gobject.baseobject.currenttext),
             ),
             ("edit", gobject.baseobject.createedittextui),
             ("edittrans", lambda: edittrans(gobject.baseobject.commonstylebase)),
@@ -700,7 +700,7 @@ class TranslatorWindow(resizableframeless):
             (
                 "copy_once",
                 lambda: gobject.baseobject.textgetmethod(
-                    winsharedutils.clipboard_get(), False
+                    QApplication.clipboard().text("plain")[0], False
                 ),
             ),
             (

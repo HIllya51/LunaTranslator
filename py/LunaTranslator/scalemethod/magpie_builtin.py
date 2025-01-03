@@ -5,6 +5,7 @@ from myutils.config import globalconfig, magpie_config
 from myutils.subproc import subproc_w
 import winsharedutils
 
+
 class Method(scalebase):
     def saveconfig(self):
         with open(self.jspath, "w", encoding="utf-8") as ff:
@@ -12,13 +13,14 @@ class Method(scalebase):
                 json.dumps(magpie_config, ensure_ascii=False, sort_keys=False, indent=4)
             )
 
-     
-    def messagecallback(self ,msg, status):
-        if msg==1:
+    def messagecallback(self, msg, status):
+        if msg == 1:
             self.setuistatus(int(bool(status)))
 
     def init(self):
-        self.messagecallback__ = winsharedutils.globalmessagelistener_cb(self.messagecallback)
+        self.messagecallback__ = winsharedutils.globalmessagelistener_cb(
+            self.messagecallback
+        )
         winsharedutils.globalmessagelistener(self.messagecallback__)
         self.jspath = gobject.gettempdir("magpie.config.json")
         self.engine = subproc_w(
@@ -35,6 +37,8 @@ class Method(scalebase):
         windows.SendMessage(
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_Exit"),
+            None,
+            None,
         )
 
     def changestatus(self, hwnd, full):
@@ -54,5 +58,7 @@ class Method(scalebase):
             windows.SendMessage(
                 windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
                 windows.RegisterWindowMessage("Magpie_Core_CLI_Message_Stop"),
+                None,
+                None,
             )
         return False

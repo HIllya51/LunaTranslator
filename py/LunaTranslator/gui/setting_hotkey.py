@@ -49,7 +49,9 @@ def registrhotkeys(self):
         "_1": gobject.baseobject.translation_ui.startTranslater,
         "_2": gobject.baseobject.translation_ui.changeTranslateMode,
         "_3": self.showsignal.emit,
-        "_4": lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
+        "_4": lambda: gobject.baseobject.clipboardhelper.setText.emit(
+            gobject.baseobject.currenttext
+        ),
         "_5": gobject.baseobject.translation_ui.changeshowhiderawsig.emit,
         "_51": gobject.baseobject.translation_ui.changeshowhidetranssig.emit,
         "_6": lambda: gobject.baseobject.transhis.showsignal.emit(),
@@ -73,13 +75,15 @@ def registrhotkeys(self):
         "_25": lambda: windows.SendMessage(
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
+            None,
+            None,
         ),
         "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
         "_26_1": lambda: gobject.baseobject.translation_ui.ocr_do_function(
             gobject.baseobject.translation_ui.ocr_once_follow_rect
         ),
         "_27": gobject.baseobject.translation_ui.simulate_key_enter,
-        "_28": lambda: winsharedutils.clipboard_set(
+        "_28": lambda: gobject.baseobject.clipboardhelper.setText.emit(
             gobject.baseobject.currenttranslate
         ),
         "_29": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn1.click(),
@@ -91,12 +95,12 @@ def registrhotkeys(self):
             QPoint()
         ),
         "36": lambda: gobject.baseobject.textgetmethod(
-            winsharedutils.clipboard_get(), False
+            QApplication.clipboard().text("plain")[0], False
         ),
         "37": lambda: gobject.baseobject.searchwordW.search_word.emit(
             winsharedutils.GetSelectedText(), False
         ),
-        "39": lambda: gobject.baseobject.searchwordW.ocr_once_signal.emit( ),
+        "39": lambda: gobject.baseobject.searchwordW.ocr_once_signal.emit(),
         "38": lambda: gobject.baseobject.textgetmethod(
             winsharedutils.GetSelectedText(), False
         ),
@@ -115,7 +119,7 @@ hotkeys = [
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
     ["游戏", ["_15", "_20", "_21", "_22", "_25", "_27", "_31"]],
-    ["查词", ["37","39", "_29", "_30", "_35", "_33"]],
+    ["查词", ["37", "39", "_29", "_30", "_35", "_33"]],
 ]
 
 
