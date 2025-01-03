@@ -334,7 +334,7 @@ if __name__ == "__main__":
             os.makedirs("../../py/files/plugins/DLL32", exist_ok=True)
             shutil.copy("../builds/_x86/shareddllproxy32.exe", "../../py/files/plugins")
             shutil.copy(
-                "../builds/_x86/winsharedutils32.dll", "../../py/files/plugins/DLL32"
+                "../builds/_x86/winsharedutils.dll", "../../py/files/plugins/DLL32"
             )
             os.chdir(rootDir)
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
@@ -372,20 +372,20 @@ if __name__ == "__main__":
 
         os.makedirs("../../py/files/plugins/DLL32", exist_ok=True)
         shutil.copy("../builds/_x86/shareddllproxy32.exe", "../../py/files/plugins")
-        shutil.copy("../builds/_x86/winrtutils32.dll", "../../py/files/plugins/DLL32")
+        shutil.copy("../builds/_x86/winrtutils.dll", "../../py/files/plugins/DLL32")
         shutil.copy(
-            "../builds/_x86/winsharedutils32.dll", "../../py/files/plugins/DLL32"
+            "../builds/_x86/winsharedutils.dll", "../../py/files/plugins/DLL32"
         )
         shutil.copy("../builds/_x86/wcocr.dll", "../../py/files/plugins/DLL32")
-        shutil.copy("../builds/_x86/LunaOCR32.dll", "../../py/files/plugins/DLL32")
+        shutil.copy("../builds/_x86/LunaOCR.dll", "../../py/files/plugins/DLL32")
         os.makedirs("../../py/files/plugins/DLL64", exist_ok=True)
         shutil.copy("../builds/_x64/shareddllproxy64.exe", "../../py/files/plugins")
-        shutil.copy("../builds/_x64/winrtutils64.dll", "../../py/files/plugins/DLL64")
+        shutil.copy("../builds/_x64/winrtutils.dll", "../../py/files/plugins/DLL64")
         shutil.copy(
-            "../builds/_x64/winsharedutils64.dll", "../../py/files/plugins/DLL64"
+            "../builds/_x64/winsharedutils.dll", "../../py/files/plugins/DLL64"
         )
         shutil.copy("../builds/_x64/wcocr.dll", "../../py/files/plugins/DLL64")
-        shutil.copy("../builds/_x64/LunaOCR64.dll", "../../py/files/plugins/DLL64")
+        shutil.copy("../builds/_x64/LunaOCR.dll", "../../py/files/plugins/DLL64")
 
         if arch == "x86":
             os.chdir(rootDir)
