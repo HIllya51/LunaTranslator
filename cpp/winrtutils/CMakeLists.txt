@@ -13,9 +13,3 @@ generate_product_version(
 add_library(winrtutils MODULE winrtsnapshot.cpp winrtocr.cpp ${versioninfo})
 target_precompile_headers(winrtutils REUSE_FROM pch) 
 target_link_libraries(winrtutils wil dwmapi)
-if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-	set_target_properties(winrtutils PROPERTIES OUTPUT_NAME "winrtutils64")
-else()
-	set_target_properties(winrtutils PROPERTIES OUTPUT_NAME "winrtutils32")
-endif()
-

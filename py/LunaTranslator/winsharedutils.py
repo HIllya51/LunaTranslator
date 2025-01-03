@@ -19,7 +19,7 @@ from ctypes import (
 from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE
 import gobject, windows, functools
 
-utilsdll = CDLL(gobject.GetDllpath(("winsharedutils32.dll", "winsharedutils64.dll")))
+utilsdll = CDLL(gobject.GetDllpath("winsharedutils.dll"))
 
 
 SetProcessMute = utilsdll.SetProcessMute

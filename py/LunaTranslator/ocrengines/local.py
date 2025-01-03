@@ -36,7 +36,7 @@ class ocrpoints(Structure):
 
 class ocrwrapper:
     def __init__(self, det, rec, key) -> None:
-        self.dll = CDLL(gobject.GetDllpath(("LunaOCR32.dll", "LunaOCR64.dll")))
+        self.dll = CDLL(gobject.GetDllpath("LunaOCR.dll"))
         self.pOcrObj = None
         self.__OcrInit(det, rec, key)
 
