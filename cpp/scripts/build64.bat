@@ -4,4 +4,4 @@ cmake --build ..\build\x64 --config Release --target ALL_BUILD -j 14
 
 copy ..\builds\_x64\shareddllproxy64.exe ..\..\py\files\plugins
 copy ..\builds\_x64\hookmagpie.dll ..\..\py\files\plugins
-robocopy ..\builds\_x64 ..\..\py\files\plugins\DLL64
+robocopy ..\builds\_x64 ..\..\py\files\plugins\DLL64 *.pyd *.dll

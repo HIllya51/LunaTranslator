@@ -1,14 +1,6 @@
 
 project(winrtutils)
 
-generate_product_version(
-   versioninfo
-   NAME "LunaTranslator winrtutils"
-   COMPANY_COPYRIGHT "HIllya51 (C) 2024"
-   VERSION_MAJOR ${VERSION_MAJOR}
-   VERSION_MINOR ${VERSION_MINOR}
-   VERSION_PATCH ${VERSION_PATCH}
-)
 
 add_library(winrtutils MODULE winrtsnapshot.cpp winrtocr.cpp ${versioninfo})
 target_precompile_headers(winrtutils REUSE_FROM pch) 

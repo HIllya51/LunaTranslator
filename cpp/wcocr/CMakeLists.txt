@@ -4,7 +4,7 @@ project(wcocr)
 set(wcocr_src wechat-ocr/src/mojocall.cpp wechat-ocr/src/ocr_common.pb.cc  wechat-ocr/src/ocr_wx3.pb.cc wechat-ocr/src/ocr_wx4.pb.cc wechat-ocr/src/wechatocr.cpp)
 
 
-add_library(wcocr MODULE wcocr.cpp ${wcocr_src})
+add_library(wcocr MODULE wcocr.cpp ${wcocr_src} ${versioninfo})
 target_include_directories(wcocr PUBLIC wechat-ocr/vs.proj PUBLIC wechat-ocr/src PRIVATE wechat-ocr/spt)
 
 target_compile_options(wcocr

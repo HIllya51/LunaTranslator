@@ -4,15 +4,6 @@ project(LUNA)
 option(PYSTAND_CONSOLE "Build PyStand as a console application." OFF)
 
 
-generate_product_version(
-   versioninfo
-   NAME "LunaTranslator"
-   COMPANY_COPYRIGHT "HIllya51 (C) 2024"
-   VERSION_MAJOR ${VERSION_MAJOR}
-   VERSION_MINOR ${VERSION_MINOR}
-   VERSION_PATCH ${VERSION_PATCH}
-)
-
 set(sources PyStand.cpp luna.rc ${versioninfo})
 
 add_executable(LunaTranslator_debug ${sources})

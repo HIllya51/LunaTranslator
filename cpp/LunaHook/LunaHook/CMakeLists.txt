@@ -53,18 +53,9 @@ set(texthook_src
 add_subdirectory(util)
 add_subdirectory(engines)
 
-generate_product_version(
-   versioninfohook
-   NAME "LunaHook"
-   COMPANY_COPYRIGHT "HIllya51 (C) 2024"
-   ICON ${PATH_TO_APPLICATION_ICON}
-   VERSION_MAJOR ${VERSION_MAJOR}
-   VERSION_MINOR ${VERSION_MINOR}
-   VERSION_PATCH ${VERSION_PATCH}
-   VERSION_REVISION ${VERSION_REVISION}
-)
 
-add_library(LunaHook MODULE ${texthook_src} resource.rc ${versioninfohook})
+
+add_library(LunaHook MODULE ${texthook_src} resource.rc ${versioninfo})
 
 target_precompile_headers(LunaHook REUSE_FROM pchhook) 
 

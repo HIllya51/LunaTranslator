@@ -1,14 +1,5 @@
 project(LunaOCR)
 
-generate_product_version(
-   versioninfo
-   NAME "LunaTranslator OCR"
-   COMPANY_COPYRIGHT "HIllya51 (C) 2024"
-   VERSION_MAJOR ${VERSION_MAJOR}
-   VERSION_MINOR ${VERSION_MINOR}
-   VERSION_PATCH ${VERSION_PATCH}
-)
-
 find_package(OnnxRuntime REQUIRED)
 set(OpenCV_STATIC ON)
 find_package(OpenCV REQUIRED)

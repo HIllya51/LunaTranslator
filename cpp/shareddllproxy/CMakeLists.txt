@@ -2,15 +2,6 @@
 project(shareddllproxy)
  
 
-generate_product_version(
-   versioninfo
-   NAME "LunaTranslator shareddllproxy"
-   COMPANY_COPYRIGHT "HIllya51 (C) 2024"
-   VERSION_MAJOR ${VERSION_MAJOR}
-   VERSION_MINOR ${VERSION_MINOR}
-   VERSION_PATCH ${VERSION_PATCH}
-)
-
 set(shareddllproxy_common shareddllproxy.cpp dllinject.cpp aspatch.cpp update.cpp ${versioninfo})
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
