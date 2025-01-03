@@ -95,16 +95,6 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	SetEnvironmentVariableW(L"PYSTAND_HOME", _home.c_str());
 	SetEnvironmentVariableW(L"PYSTAND_RUNTIME", _runtime.c_str());
 
-	// unnecessary to init PYSTAND_SCRIPT here.
-#if 0
-	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
-#endif
-
-#if 0
-	wprintf(L"%s - %s\n", _pystand.c_str(), path);
-	MessageBoxW(NULL, _pystand.c_str(), _home.c_str(), MB_OK);
-#endif
-
 	return true;
 }
 
@@ -223,7 +213,9 @@ int PyStand::DetectScript()
 		return -1;
 	}
 	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
-
+	std::vector<wchar_t> buffer(MAX_PATH);
+	GetModuleFileNameW(GetModuleHandle(0), buffer.data(), MAX_PATH);
+	SetEnvironmentVariableW(L"LUNA_EXE_NAME", buffer.data());
 	return 0;
 }
 

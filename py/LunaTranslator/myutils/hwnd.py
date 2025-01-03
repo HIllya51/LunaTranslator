@@ -124,7 +124,8 @@ def getpidexe(pid):
 
 
 def getcurrexe():
-    return getpidexe(os.getpid())
+    # getpidexe(os.getpid())谜之有人获取到的结果是None，无法理解，那就先回档吧。
+    return os.environ.get("LUNA_EXE_NAME", getpidexe(os.getpid()))
 
 
 def test_injectable_1(pid):
