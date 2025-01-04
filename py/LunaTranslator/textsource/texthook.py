@@ -429,9 +429,10 @@ class texthook(basetext):
     def injectproc(self, injecttimeout, pids):
         if injecttimeout:
             time.sleep(injecttimeout)
-            if set(pids) != set(ListProcess(self.gamepath)):
+            _list = ListProcess(self.gamepath)
+            if set(pids) != set(_list):
                 # 部分cef/v8引擎的游戏，会在一段启动时间后，启动子进程用于渲染
-                return self.injectproc(injecttimeout, pids)
+                return self.injectproc(injecttimeout, _list)
 
         if self.ending:
             return

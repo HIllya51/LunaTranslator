@@ -185,6 +185,8 @@ def versioncheckthread(self):
         else:
             sversion = _version[0]
         self.versiontextsignal.emit(sversion)
+        if getcurrexe().endswith("python.exe"):
+            continue
         version = winsharedutils.queryversion(getcurrexe())
         need = (
             version
