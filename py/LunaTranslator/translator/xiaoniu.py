@@ -1,9 +1,10 @@
 from translator.basetranslator import basetrans
 
+from language import Languages
 
 class TS(basetrans):
     def langmap(self):
-        return {"cht": "cht"}
+        return {Languages.TradChinese: "cht"}
 
     def translate(self, query):
         self.checkempty(["apikey"])

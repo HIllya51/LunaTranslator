@@ -3,6 +3,7 @@ from myutils.config import globalconfig
 from ocrengines.baseocrclass import baseocr
 import random, zhconv
 from hashlib import md5
+from language import Languages
 
 
 class OCR(baseocr):
@@ -30,7 +31,7 @@ class OCR(baseocr):
             text = [
                 (
                     zhconv.convert(_["dst"], "zh-tw")
-                    if ("cht" == self.tgtlang_1)
+                    if (Languages.TradChinese == self.tgtlang_1)
                     else _["dst"]
                 )
                 for _ in js["data"]["content"]
@@ -97,7 +98,7 @@ class OCR(baseocr):
             text = [
                 (
                     zhconv.convert(_["dst"], "zh-tw")
-                    if ("cht" == self.tgtlang_1)
+                    if (Languages.TradChinese == self.tgtlang_1)
                     else _["dst"]
                 )
                 for _ in js["data"]["content"]
@@ -120,53 +121,48 @@ class OCR(baseocr):
             raise Exception(response)
 
     @property
-    def srclangx(self):
+    def __x(self):
         return {
-            "cht": "zh",
-            "es": "spa",
-            "ko": "kor",
-            "fr": "fra",
-            "ja": "jp",
-            "vi": "vie",
-            "uk": "ukr",
-            "ar": "ara",
-            "sv": "swe",
-        }.get(self.srclang_1, self.srclang_1)
+            Languages.TradChinese: "zh",
+            Languages.Spanish: "spa",
+            Languages.Korean: "kor",
+            Languages.French: "fra",
+            Languages.Japanese: "jp",
+            Languages.Vietnamese: "vie",
+            Languages.Ukrainian: "ukr",
+            Languages.Arabic: "ara",
+            Languages.Swedish: "swe",
+        }
+
+    @property
+    def srclangx(self):
+        return self.__x.get(self.srclang_1, self.srclang_1)
 
     @property
     def tgtlangx(self):
-        return {
-            "cht": "zh",
-            "es": "spa",
-            "ko": "kor",
-            "fr": "fra",
-            "ja": "jp",
-            "vi": "vie",
-            "uk": "ukr",
-            "ar": "ara",
-        }.get(self.tgtlang_1, self.tgtlang_1)
+        return self.__x.get(self.tgtlang_1, self.tgtlang_1)
 
     def langmap(self):
         return {
-            "auto": "auto_detect",
-            "cht": "CHN_ENG",
-            "zh": "CHN_ENG",
-            "en": "ENG",
-            "ja": "JAP",
-            "ko": "KOR",
-            "fr": "FRE",
-            "es": "SPA",
-            "pt": "POR",
-            "de": "GER",
-            "it": "ITA",
-            "ru": "RUS",
-            "nl": "DUT",
-            "sv": "SWE",
-            "pl": "POL",
-            "tr": "TUR",
-            "th": "THA",
-            "vi": "VIE",
-            "ar": "ARA",
+            Languages.Auto: "auto_detect",
+            Languages.TradChinese: "CHN_ENG",
+            Languages.Chinese: "CHN_ENG",
+            Languages.English: "ENG",
+            Languages.Japanese: "JAP",
+            Languages.Korean: "KOR",
+            Languages.French: "FRE",
+            Languages.Spanish: "SPA",
+            Languages.Portuguese: "POR",
+            Languages.German: "GER",
+            Languages.Italian: "ITA",
+            Languages.Russian: "RUS",
+            Languages.Dutch: "DUT",
+            Languages.Swedish: "SWE",
+            Languages.Polish: "POL",
+            Languages.Turkish: "TUR",
+            Languages.Thai: "THA",
+            Languages.Vietnamese: "VIE",
+            Languages.Arabic: "ARA",
         }
 
     def initocr(self):
@@ -237,7 +233,7 @@ class OCR(baseocr):
         }
 
         if self.config["接口"] in [0, 1]:
-            if self.srclang_1 == "auto":
+            if self.srclang_1 == Languages.Auto:
                 data["detect_language"] = True
                 data.pop("language_type")
         interfacetype = self.config["接口"]

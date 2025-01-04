@@ -1,11 +1,12 @@
 import re
-from urllib.parse import quote
+
+from language import Languages
 from translator.basetranslator import basetrans
 
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-CHS"}
+        return {Languages.Chinese: "zh-CHS"}
 
     def translate(self, content):
 

@@ -24,6 +24,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     makegrid,
 )
+from myutils.keycode import vkcode_map
 import gobject, qtawesome
 from gui.dynalang import LFormLayout, LDialog, LAction
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
@@ -90,7 +91,7 @@ class triggereditor(LDialog):
         formLayout = QVBoxLayout()
         self.setLayout(formLayout)
         formLayout.addWidget(self.hctable)
-        self.vkeys = list(static_data["vkcode_map"].keys())
+        self.vkeys = list(vkcode_map.keys())
         for row, k in enumerate(self.list):  # 2
             self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem()])
             combo = SuperCombo()

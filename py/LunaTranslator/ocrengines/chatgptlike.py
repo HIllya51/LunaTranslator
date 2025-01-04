@@ -1,6 +1,7 @@
 from ocrengines.baseocrclass import baseocr
 import base64, requests
-from myutils.utils import createurl, createenglishlangmap, urlpathjoin
+from language import Languages
+from myutils.utils import createurl, urlpathjoin
 from myutils.proxy import getproxy
 
 
@@ -24,7 +25,7 @@ def list_models(typename, regist):
 class OCR(baseocr):
 
     def langmap(self):
-        return createenglishlangmap()
+        return Languages.createenglishlangmap()
 
     def createdata(self, message):
         temperature = self.config["Temperature"]

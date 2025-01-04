@@ -3,6 +3,7 @@ from translator.cdp_helper import cdp_helper
 import random
 import time, json
 from urllib.parse import quote
+from language import Languages
 
 
 def getRandomNumber():
@@ -64,18 +65,18 @@ class cdp_deepl(cdp_helper):
 
     @property
     def srclang(self):
-        if self.ref.srclang_1 == "cht":
+        if self.ref.srclang_1 == Languages.TradChinese:
             return "zh"
         return self.ref.srclang_1
 
     @property
     def tgtlang(self):
-        if self.ref.tgtlang_1 == "cht":
+        if self.ref.tgtlang_1 == Languages.TradChinese:
             return "zh-hant"
         return self.ref.tgtlang_1
 
     def translate(self, content):
-        if self.srclang == "auto":
+        if self.srclang == Languages.Auto:
             self.Runtime_evaluate(
                 'document.querySelector("#translator-source-clear-button").click()'
             )
@@ -130,13 +131,13 @@ class TS(basetrans):
 
     @property
     def srclang(self):
-        if self.srclang_1 == "cht":
+        if self.srclang_1 == Languages.TradChinese:
             return "ZH"
         return self.srclang_1.upper()
 
     @property
     def tgtlang(self):
-        if self.tgtlang_1 == "cht":
+        if self.tgtlang_1 == Languages.TradChinese:
             return "ZH-HANT"
         return self.tgtlang_1.upper()
 

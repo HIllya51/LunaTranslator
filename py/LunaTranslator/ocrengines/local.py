@@ -14,6 +14,7 @@ from ctypes import (
     CFUNCTYPE,
 )
 import os
+from language import Languages
 import gobject, functools
 from traceback import print_exc
 from qtsymbols import *
@@ -179,7 +180,7 @@ def question():
 class OCR(baseocr):
 
     def langmap(self):
-        return {"cht": "cht"}
+        return {Languages.TradChinese: "cht"}
 
     def initocr(self):
         self._ocr = None
@@ -189,7 +190,7 @@ class OCR(baseocr):
     def checkchange(self):
         if self._savelang == self.srclang:
             return
-        if self.srclang == "auto":
+        if self.srclang == Languages.Auto:
             validlangs = getallsupports()
             if len(validlangs) == 1:
                 uselang = validlangs[0]

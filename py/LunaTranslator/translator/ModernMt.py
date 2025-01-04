@@ -1,6 +1,7 @@
 import requests, re, hashlib
 from translator.basetranslator import basetrans
 import time, urllib
+from language import Languages
 
 
 class Tse:
@@ -144,7 +145,7 @@ class ModernMt(Tse):
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-CN", "cht": "zh-TW"}
+        return {Languages.Chinese: "zh-CN", Languages.TradChinese: "zh-TW"}
 
     def inittranslator(self):
         self.engine = ModernMt()

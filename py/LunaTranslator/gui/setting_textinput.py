@@ -8,13 +8,12 @@ from myutils.config import (
     savehook_new_data,
     get_launchpath,
     savehook_new_list,
-    static_data,
     get_platform,
 )
-
+from textsource.texthook import codepage_display
 from traceback import print_exc
 from gui.pretransfile import sqlite2json2
-from gui.codeacceptdialog import codeacceptdialog
+from language import TransLanguages
 from gui.setting_textinput_ocr import getocrgrid_table
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.usefulwidget import (
@@ -145,7 +144,7 @@ def gethookgrid(self):
             "代码页",
             (
                 D_getsimplecombobox(
-                    static_data["codepage_display"],
+                    codepage_display,
                     globalconfig,
                     "codepage_index",
                     lambda x: gobject.baseobject.textsource.setsettings(),
@@ -514,11 +513,10 @@ def setTablanglz():
             "源语言",
             (
                 D_getsimplecombobox(
-                    ["自动"] + [_["zh"] for _ in static_data["lang_list_all"]],
+                    ["自动"] + [_.zhsname for _ in TransLanguages],
                     globalconfig,
                     "srclang4",
-                    internal=["auto"]
-                    + [_["code"] for _ in static_data["lang_list_all"]],
+                    internal=["auto"] + [_.code for _ in TransLanguages],
                 ),
                 5,
             ),
@@ -526,10 +524,10 @@ def setTablanglz():
             "目标语言",
             (
                 D_getsimplecombobox(
-                    [_["zh"] for _ in static_data["lang_list_all"]],
+                    [_.zhsname for _ in TransLanguages],
                     globalconfig,
                     "tgtlang4",
-                    internal=[_["code"] for _ in static_data["lang_list_all"]],
+                    internal=[_.code for _ in TransLanguages],
                 ),
                 5,
             ),

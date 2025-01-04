@@ -9,6 +9,7 @@ import datetime
 import pytz
 import hashlib
 import sys
+from language import Languages
 from urllib.parse import quote
 
 
@@ -398,7 +399,7 @@ def trans(TextList, k_access_key, k_secret_key, src, tgt, proxy):
         "TargetLanguage": tgt,
         "TextList": [TextList],
     }
-    if src != "auto":
+    if src != Languages.Auto:
         body.update({"SourceLanguage": src})
     res = service.json("translate", {}, json.dumps(body), proxy)
     return res
@@ -406,7 +407,7 @@ def trans(TextList, k_access_key, k_secret_key, src, tgt, proxy):
 
 class TS(basetrans):
     def langmap(self):
-        return {"cht": "zh-Hant"}
+        return {Languages.TradChinese: "zh-Hant"}
 
     def translate(self, query):
         self.checkempty(["Access Key ID", "Secret Access Key"])

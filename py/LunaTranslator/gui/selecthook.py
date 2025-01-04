@@ -3,6 +3,7 @@ import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, windows, gobject
+from textsource.texthook import codepage_display, codepage_real
 from myutils.config import savehook_new_data, static_data, globalconfig, _TR, isascii
 from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
 from gui.dialog_savedgame import dialog_setting_game
@@ -125,11 +126,11 @@ class searchhookparam(LDialog):
         usestruct = gobject.baseobject.textsource.defaultsp()
         if idx == 0:
             usestruct.length = 0
-            usestruct.codepage = static_data["codepage_real"][self.codepagesave["spcp"]]
+            usestruct.codepage = codepage_real[self.codepagesave["spcp"]]
             # sp = spUser.length == 0 ? spDefault : spUser;
         elif idx == 1:  # 0默认
             # usestruct.codepage=self.codepage.value()
-            usestruct.codepage = static_data["codepage_real"][self.codepagesave["spcp"]]
+            usestruct.codepage = codepage_real[self.codepagesave["spcp"]]
             usestruct.text = self.searchtext.text()[:30]
             if len(usestruct.text) < 4:
                 getQMessageBox(self, "警告", "搜索文本过短！", True)
@@ -178,7 +179,7 @@ class searchhookparam(LDialog):
                 )
             usestruct.padding = dumpvalues["stroffset"]
             usestruct.offset = dumpvalues["offset"]
-            usestruct.codepage = static_data["codepage_real"][
+            usestruct.codepage = codepage_real[
                 self.codepagesave["spcp"]
             ]  # dumpvalues[6]
             usestruct.searchTime = dumpvalues["time"] * 1000  # dumpvalues[7]
@@ -223,9 +224,7 @@ class searchhookparam(LDialog):
             ].get("codepage_index", globalconfig["codepage_index"])
         self.codepagesave = {"spcp": cp}
         layout1.addWidget(
-            getsimplecombobox(
-                static_data["codepage_display"], self.codepagesave, "spcp"
-            )
+            getsimplecombobox(codepage_display, self.codepagesave, "spcp")
         )
 
         mainlayout.addLayout(layout1)

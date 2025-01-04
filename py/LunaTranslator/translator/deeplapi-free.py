@@ -1,18 +1,19 @@
 from urllib import parse
 from translator.basetranslator import basetrans
+from language import Languages
 
 
 class TS(basetrans):
 
     @property
     def srclang(self):
-        if self.srclang_1 == "cht":
+        if self.srclang_1 == Languages.TradChinese:
             return "ZH"
         return self.srclang_1.upper()
 
     @property
     def tgtlang(self):
-        if self.tgtlang_1 == "cht":
+        if self.tgtlang_1 == Languages.TradChinese:
             return "ZH-HANT"
         return self.tgtlang_1.upper()
 
@@ -32,7 +33,7 @@ class TS(basetrans):
         }
 
         data = "text=" + parse.quote(query) + "&target_lang=" + self.tgtlang
-        if self.srclang != "auto":
+        if self.srclang != Languages.Auto:
             data += "&source_lang=" + self.srclang
         response = self.proxysession.post(
             endpoint, headers=headers, verify=False, data=data

@@ -1,6 +1,7 @@
 import re
 import requests, time, urllib
 from translator.basetranslator import basetrans
+from language import Languages
 
 
 class Tse:
@@ -174,7 +175,7 @@ class Bing(Tse):
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-Hans", "cht": "zh-Hant", "auto": "auto-detect"}
+        return {Languages.Chinese: "zh-Hans", Languages.TradChinese: "zh-Hant", Languages.Auto: "auto-detect"}
 
     def inittranslator(self):
         self.engine = Bing()

@@ -1,12 +1,13 @@
 from translator.basetranslator import basetrans
-from myutils.utils import createenglishlangmap, urlpathjoin
+from myutils.utils import urlpathjoin
 import json, requests
+from language import Languages
 from myutils.proxy import getproxy
 
 
 class TS(basetrans):
     def langmap(self):
-        return createenglishlangmap()
+        return Languages.createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []

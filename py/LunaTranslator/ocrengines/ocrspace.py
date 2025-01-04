@@ -1,4 +1,5 @@
 import base64
+from language import Languages
 from ocrengines.baseocrclass import baseocr
 
 
@@ -6,19 +7,19 @@ class OCR(baseocr):
 
     def langmap(self):
         return {
-            "ja": "jpn",
-            "zh": "chs",
-            "en": "eng",
-            "ko": "kor",
-            "es": "spa",
-            "fr": "fre",
-            "ru": "rus",
-            "ar": "ara",
-            "de": "ger",
-            "tr": "tur",
-            "sv": "swe",
-            "es": "spa",
-            "pt": "por",
+            Languages.Japanese: "jpn",
+            Languages.Chinese: "chs",
+            Languages.English: "eng",
+            Languages.Korean: "kor",
+            Languages.Spanish: "spa",
+            Languages.French: "fre",
+            Languages.Russian: "rus",
+            Languages.Arabic: "ara",
+            Languages.German: "ger",
+            Languages.Turkish: "tur",
+            Languages.Swedish : "swe",
+            Languages.Spanish: "spa",
+            Languages.Portuguese: "por",
         }
 
     def ocr(self, imagebinary):

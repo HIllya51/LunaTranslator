@@ -4,6 +4,7 @@ import base64
 import random
 import hashlib
 import hmac
+from language import Languages
 
 
 def get_string_to_sign(method, endpoint, params):
@@ -19,7 +20,7 @@ def sign_str(key, s, method):
 
 class TS(basetrans):
     def langmap(self):
-        return {"cht": "zh-TW"}
+        return {Languages.TradChinese: "zh-TW"}
 
     def trans_tencent(self, q, secret_id, secret_key, fromLang="auto", toLang="en"):
 

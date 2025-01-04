@@ -3,6 +3,7 @@ import functools, uuid
 from datetime import datetime, timedelta
 from traceback import print_exc
 import gobject
+from language import TransLanguages
 from myutils.config import (
     savehook_new_data,
     uid2gamepath,
@@ -12,6 +13,7 @@ from myutils.config import (
     globalconfig,
     static_data,
 )
+from textsource.texthook import codepage_display
 from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton, Singleton_close
@@ -606,7 +608,15 @@ class dialog_setting_game_internal(QWidget):
         first=False,
         _type=tagitem.TYPE_SEARCH,
     ):
-        qw = tagitem(globalconfig["tagNameRemap"].get(text, text) if _type == tagitem.TYPE_TAG else text, True, _type)
+        qw = tagitem(
+            (
+                globalconfig["tagNameRemap"].get(text, text)
+                if _type == tagitem.TYPE_TAG
+                else text
+            ),
+            True,
+            _type,
+        )
 
         def __(text, gameuid, _qw, refkey, _):
             try:
@@ -1069,19 +1079,19 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.addRow(
             "源语言",
             getsimplecombobox(
-                ["自动"] + [_["zh"] for _ in static_data["lang_list_all"]],
+                ["自动"] + [_.zhsname for _ in TransLanguages],
                 savehook_new_data[gameuid],
                 "private_srclang_2",
-                internal=["auto"] + [_["code"] for _ in static_data["lang_list_all"]],
+                internal=["auto"] + [_.code for _ in TransLanguages],
             ),
         )
         formLayout2.addRow(
             "目标语言",
             getsimplecombobox(
-                [_["zh"] for _ in static_data["lang_list_all"]],
+                [_.zhsname for _ in TransLanguages],
                 savehook_new_data[gameuid],
                 "private_tgtlang_2",
-                internal=[_["code"] for _ in static_data["lang_list_all"]],
+                internal=[_.code for _ in TransLanguages],
             ),
         )
 
@@ -1142,7 +1152,7 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.addRow(
             "代码页",
             getsimplecombobox(
-                static_data["codepage_display"],
+                codepage_display,
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "codepage_index",
                 lambda x: gobject.baseobject.textsource.setsettings(),

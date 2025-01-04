@@ -6,10 +6,10 @@ from myutils.utils import dynamiclink
 from ocrengines.baseocrclass import baseocr
 from qtsymbols import *
 from gui.dynalang import LPushButton, LLabel
-from myutils.utils import getlanguagespace
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 from gui.usefulwidget import SuperCombo, getboxlayout
 import threading, qtawesome
+from language import Languages
 from myutils.subproc import subproc_w
 
 
@@ -114,15 +114,22 @@ def question():
 
 class OCR(baseocr):
 
+    def getlanguagespace(self, lang: str):
+        lang = lang.split("-")[0]
+        try:
+            return Languages.fromcode(lang).space
+        except:
+            return " "
+
     def langmap(self):
-        return {"zh": "zh-Hans", "cht": "zh-Hant"}
+        return {Languages.Chinese: "zh-Hans", Languages.TradChinese: "zh-Hant"}
 
     def ocr(self, imagebinary):
         supports = [_[0] for _ in winrtutils.getlanguagelist()]
         if len(supports) == 0:
 
             raise Exception(_TR("无可用语言"))
-        if self.srclang == "auto":
+        if self.srclang == Languages.Auto:
             if len(supports) == 1:
                 uselang = supports[0]
             else:
@@ -137,7 +144,7 @@ class OCR(baseocr):
                     + ", ".join([_[1] for _ in winrtutils.getlanguagelist()])
                 )
             uselang = self.srclang
-        ret = winrtutils.OCR_f(imagebinary, uselang, getlanguagespace(uselang))
+        ret = winrtutils.OCR_f(imagebinary, uselang, self.getlanguagespace(uselang))
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
         return {"box": boxs, "text": texts}

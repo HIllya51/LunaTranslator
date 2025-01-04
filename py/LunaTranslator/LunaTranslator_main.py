@@ -90,6 +90,7 @@ def checklang():
         QVBoxLayout,
         QPushButton,
     )
+    from language import UILanguages
     import qtawesome
 
     class languageset(QDialog):
@@ -109,9 +110,7 @@ def checklang():
             self.setFont(font)
             self.current = "zh"
             language_listcombox = QComboBox()
-            inner, vis = [_[1] for _ in static_data["language_list_show"]], [
-                _[0] for _ in static_data["language_list_show"]
-            ]
+            inner, vis = [_.code for _ in UILanguages], [_.nativename for _ in UILanguages]
             language_listcombox.addItems(vis)
             language_listcombox.currentIndexChanged.connect(
                 lambda x: setattr(self, "current", inner[x])

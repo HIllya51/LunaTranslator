@@ -1,13 +1,14 @@
 from myutils.proxy import getproxy
-from myutils.utils import getlangtgt, getlangsrc, getlanguagespace, create_langmap
+from myutils.utils import getlangtgt, getlangsrc, getlanguse
 from myutils.config import _TR
 from myutils.wrapper import stripwrapper
+from language import Languages
 import requests
 
 
 class ArgsEmptyExc(Exception):
     def __init__(self, valuelist) -> None:
-        super().__init__(" , ".join(valuelist) + getlanguagespace() + _TR("不能为空"))
+        super().__init__(" , ".join(valuelist) + getlanguse().space + _TR("不能为空"))
 
 
 class maybejson:
@@ -57,11 +58,11 @@ class commonbase:
         return self.langmap_.get(l, l)
 
     @property
-    def srclang_1(self) -> str:
+    def srclang_1(self) -> Languages:
         return getlangsrc()
 
     @property
-    def tgtlang_1(self) -> str:
+    def tgtlang_1(self) -> Languages:
         return getlangtgt()
 
     @property
@@ -95,7 +96,7 @@ class commonbase:
 
     @property
     def langmap_(self):
-        return create_langmap(self.langmap())
+        return Languages.create_langmap(self.langmap())
 
     def __init__(self, typename) -> None:
         self.typename = typename

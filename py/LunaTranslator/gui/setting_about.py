@@ -20,6 +20,7 @@ from gui.usefulwidget import (
     D_getIconButton,
     WebivewWidget,
 )
+from language import UILanguages, Languages
 from gui.dynalang import LLabel
 from gui.setting_year import yearsummary
 
@@ -323,7 +324,7 @@ def setTab_about1(self, basel):
             makehtml("{docs_server}/"),
         ],
     ]
-    if getlanguse() == "zh":
+    if getlanguse() == Languages.Chinese:
         shuominggrid += [
             [
                 "交流群",
@@ -400,9 +401,7 @@ def setTab_update(self, basel):
         versionstring = ("v{}.{}.{}  {}").format(
             version[0], version[1], version[2], platform.architecture()[0]
         )
-    inner, vis = [_[1] for _ in static_data["language_list_show"]], [
-        _[0] for _ in static_data["language_list_show"]
-    ]
+    inner, vis = [_.code for _ in UILanguages], [_.nativename for _ in UILanguages]
     grid2 = [
         [
             (

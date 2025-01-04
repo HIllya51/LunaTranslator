@@ -73,7 +73,7 @@ C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int default
     TextThread::maxBufferSize = maxBufferSize;
     TextThread::maxHistorySize = maxHistorySize;
 }
-C_LUNA_API void Luna_SetLanguage(const char* lang)
+C_LUNA_API void Luna_SetLanguage(const char *lang)
 {
     Host::SetLanguage(lang);
 }
@@ -113,7 +113,7 @@ C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet
     sm->waittime = waittime;
     sm->fontCharSet = fontCharSet;
     sm->fontCharSetEnabled = fontCharSetEnabled;
-    wcscpy_s(sm->fontFamily, 100, fontFamily);
+    wcscpy_s(sm->fontFamily, ARRAYSIZE(sm->fontFamily), fontFamily);
     sm->displaymode = displaymode;
     sm->fastskipignore = fastskipignore;
 }

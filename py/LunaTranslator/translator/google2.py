@@ -1,10 +1,11 @@
 import re, html
 from translator.basetranslator import basetrans
+from language import Languages
 
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-CN", "cht": "zh-TW"}
+        return {Languages.Chinese: "zh-CN", Languages.TradChinese: "zh-TW"}
 
     def translate(self, content):
 

@@ -3,6 +3,7 @@ from translator.basetranslator import basetrans
 from myutils.config import _TR
 import os, time
 import windows
+from language import Languages
 
 
 class TS(basetrans):
@@ -78,4 +79,10 @@ class TS(basetrans):
         return "\n".join(ress)
 
     def langmap(self):
-        return {"zh": "SChinese", "cht": "TChinese", "en": "English", "ja": "Japanese", "auto": "Japanese"}
+        return {
+            Languages.Chinese: "SChinese",
+            Languages.TradChinese: "TChinese",
+            Languages.English: "English",
+            Languages.Japanese: "Japanese",
+            Languages.Auto: "Japanese",
+        }

@@ -2,11 +2,12 @@ import time
 import hashlib
 from translator.basetranslator import basetrans
 import uuid
+from language import Languages
 
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-CHS"}
+        return {Languages.Chinese: "zh-CHS"}
 
     def translate(self, content):
         self.checkempty(["APP_KEY", "APP_SECRET"])

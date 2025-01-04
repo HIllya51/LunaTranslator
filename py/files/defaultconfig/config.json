@@ -346,7 +346,7 @@
     "textthreaddelay": 500,
     "maxBufferSize": 3000,
     "maxHistorySize": 1000000,
-    "yuanjiao_r": 5,
+    "yuanjiao_r": 0,
     "qwebinspectgeo": [
         100,
         100,
@@ -1629,11 +1629,6 @@
             "use": false,
             "color": "#0000ff",
             "name": "阿里"
-        },
-        "youdao": {
-            "use": false,
-            "color": "blue",
-            "name": "有道"
         },
         "youdaodict": {
             "use": false,

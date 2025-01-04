@@ -4,6 +4,7 @@ import os, time
 import windows
 from myutils.config import _TR
 from myutils.subproc import subproc_w, autoproc
+from language import Languages
 
 
 class TS(basetrans):
@@ -87,4 +88,4 @@ class TS(basetrans):
         return "\n".join(ress)
 
     def langmap(self):
-        return {"zh": "936", "cht": "950"}
+        return {Languages.Chinese: "936", Languages.TradChinese: "950"}

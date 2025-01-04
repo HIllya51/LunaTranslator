@@ -1,6 +1,6 @@
 from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR
-from myutils.utils import getlanguagespace
 from myutils.commonbase import commonbase
+from language import Languages
 
 
 class baseocr(commonbase):
@@ -25,7 +25,7 @@ class baseocr(commonbase):
 
     @property
     def space_1(self):
-        return getlanguagespace(self.srclang_1)
+        return self.srclang_1.space
 
     ############################################################
     _globalconfig_key = "ocr"
@@ -109,7 +109,7 @@ class baseocr(commonbase):
     ########################################################
     def raise_cant_be_auto_lang(self):
         l = self.srclang_1
-        if l == "auto":
+        if l == Languages.Auto:
             raise Exception(_TR("当前OCR引擎不支持设置语言为自动"))
 
     def level2init(self):

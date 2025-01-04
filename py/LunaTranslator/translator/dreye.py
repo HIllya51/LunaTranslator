@@ -3,6 +3,7 @@ from translator.basetranslator import basetrans
 from myutils.config import _TR
 import os, time
 import windows
+from language import Languages
 
 
 class TS(basetrans):
@@ -12,7 +13,7 @@ class TS(basetrans):
         self.checkpath()
 
     def langmap(self):
-        return {"auto": "ja"}
+        return {Languages.Auto: "ja"}
 
     def checkpath(self):
         if self.config["path"] == "":
@@ -66,7 +67,7 @@ class TS(basetrans):
 
         if self.checkpath() == False:
             raise Exception(_TR("翻译器加载失败"))
-        codes = {"zh": "gbk", "ja": "shift-jis", "en": "utf8"}
+        codes = {Languages.Chinese: "gbk", Languages.Japanese: "shift-jis", Languages.English: "utf8"}
         ress = []
         for line in content.split("\n"):
             if len(line) == 0:

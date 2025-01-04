@@ -2,6 +2,7 @@ from hashlib import sha1
 import time, random, hmac, base64, uuid, hashlib, json
 from ocrengines.baseocrclass import baseocr
 import zhconv
+from language import Languages
 
 
 class OCR(baseocr):
@@ -22,22 +23,22 @@ class OCR(baseocr):
     def langmap(self):
         # https://cloud.tencent.com/document/product/866/33526
         return {
-            "zh": "zh",
-            "cht": "zh",
-            "ja": "jap",
-            "ko": "kor",
-            "es": "spa",
-            "fr": "fre",
-            "de": "ger",
-            "pt": "por",
-            "vi": "vie",
-            "ru": "rus",
-            "it": "ita",
-            "it": "hol",
-            "sv": "swe",
-            "hu": "hun",
-            "th": "tha",
-            "ar": "ara",
+            Languages.Chinese: "zh",
+            Languages.TradChinese: "zh",
+            Languages.Japanese: "jap",
+            Languages.Korean: "kor",
+            Languages.Spanish: "spa",
+            Languages.French: "fre",
+            Languages.German: "ger",
+            Languages.Portuguese: "por",
+            Languages.Vietnamese: "vie",
+            Languages.Russian: "rus",
+            Languages.Italian: "ita",
+            Languages.Italian: "hol",
+            Languages.Swedish : "swe",
+            Languages.Hungarian: "hun",
+            Languages.Thai: "tha",
+            Languages.Arabic: "ara",
         }
 
     @property
@@ -143,7 +144,7 @@ class OCR(baseocr):
             texts = [
                 (
                     zhconv.convert(_["TargetText"], "zh-tw")
-                    if ("cht" == self.tgtlang_1)
+                    if (Languages.TradChinese == self.tgtlang_1)
                     else _["TargetText"]
                 )
                 for _ in r.json()["Response"]["ImageRecord"]["Value"]

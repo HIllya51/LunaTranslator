@@ -4,17 +4,18 @@ import re, os
 from cishu.cishubase import cishubase
 from myutils.utils import get_element_by, simplehtmlparser, getlangsrc
 from myutils.config import isascii
+from language import Languages
 
 
 class youdao(cishubase):
 
     def search(self, word: str):
         lang = getlangsrc()
-        if lang == "auto":
+        if lang == Languages.Auto:
             if isascii(word):
-                lang = "en"
+                lang = Languages.English
             else:
-                lang = "ja"
+                lang = Languages.Japanese
         url = "https://dict.youdao.com/result?word={}&lang={}".format(quote(word), lang)
         text = requests.get(url, proxies=self.proxy).text
         if not get_element_by("class", "word-head", text):

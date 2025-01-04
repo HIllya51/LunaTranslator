@@ -1,8 +1,9 @@
 from traceback import print_exc
 import json, requests
 from translator.basetranslator import basetrans
-from myutils.utils import createenglishlangmap, checkv1, urlpathjoin
+from myutils.utils import checkv1, urlpathjoin
 from myutils.proxy import getproxy
+from language import Languages
 
 
 def list_models(typename, regist):
@@ -22,7 +23,7 @@ def list_models(typename, regist):
 
 class TS(basetrans):
     def langmap(self):
-        return createenglishlangmap()
+        return Languages.createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []

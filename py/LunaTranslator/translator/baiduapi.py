@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 import hashlib
-import urllib
+from language import Languages
 import random
 
 
@@ -12,16 +12,16 @@ class TS(basetrans):
 
     def langmap(self):
         return {
-            "es": "spa",
-            "ko": "kor",
-            "fr": "fra",
-            "ja": "jp",
-            "cht": "cht",
-            "vi": "vie",
-            "uk": "ukr",
-            "ar": "ara",
-            "sv": "swe",
-            "la": "lat",
+            Languages.Spanish: "spa",
+            Languages.Korean: "kor",
+            Languages.French: "fra",
+            Languages.Japanese: "jp",
+            Languages.TradChinese: "cht",
+            Languages.Vietnamese: "vie",
+            Languages.Ukrainian: "ukr",
+            Languages.Arabic: "ara",
+            Languages.Swedish : "swe",
+            Languages.Latin: "lat",
         }
 
     def translate(self, query):

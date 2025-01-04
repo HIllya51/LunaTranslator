@@ -1,6 +1,7 @@
 import json
 import os, time, uuid, shutil, sys, platform
 from traceback import print_exc
+from language import TransLanguages, Languages
 
 
 def isascii(s: str):
@@ -132,6 +133,8 @@ if "localedpath" not in extradatas:
     extradatas["localedpath"] = {}
 if "imagefrom" not in extradatas:
     extradatas["imagefrom"] = {}
+
+
 def getdefaultsavehook(title=None):
     default = {
         "gamepath": "",  # 不要直接访问，要通过uid2gamepath来间接访问
@@ -207,7 +210,7 @@ def getdefaultsavehook(title=None):
         "imagepath_all": [],
         "developers": [],
         "webtags": [],  # 标签
-       # "description": "",  # 简介
+        # "description": "",  # 简介
         # "infopath": None,  # 离线存储的主页
     }
     if title and len(title):
@@ -560,17 +563,15 @@ language_last = None
 
 languageshow = {}
 
-static_data["language_list_translator_inner"] = [
-    _["code"] for _ in static_data["lang_list_all"]
-]
+static_data["language_list_translator_inner"] = [_.code for _ in TransLanguages]
 
 static_data["language_list_translator_inner_english"] = [
-    _["en"] for _ in static_data["lang_list_all"]
+    _.engname for _ in TransLanguages
 ]
 
 
-def getlanguse() -> str:
-    return globalconfig["languageuse2"]
+def getlanguse() -> Languages:
+    return Languages.fromcode(globalconfig["languageuse2"])
 
 
 def langfile(lang) -> str:
@@ -687,8 +688,8 @@ def _TRL(kk):
 def getlang_inner2show(langcode):
     return dict(
         zip(
-            [_["code"] for _ in static_data["lang_list_all"]],
-            [_["zh"] for _ in static_data["lang_list_all"]],
+            [_.code for _ in TransLanguages],
+            [_.zhsname for _ in TransLanguages],
         )
     ).get(langcode, "??")
 

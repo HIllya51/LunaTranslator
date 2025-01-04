@@ -11,20 +11,13 @@ from myutils.config import (
     getlanguse,
 )
 from textsource.textsourcebase import basetext
-from myutils.utils import (
-    getfilemd5,
-    getlangtgt,
-    getlanguagespace,
-    kanjitrans,
-    safe_escape,
-)
+from myutils.utils import getfilemd5, getlangtgt, safe_escape
+from myutils.kanjitrans import kanjitrans
 from myutils.hwnd import injectdll, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
 import subprocess, requests
 from myutils.proxy import getproxy
-
-
 from ctypes import (
     CDLL,
     CFUNCTYPE,
@@ -46,9 +39,42 @@ from ctypes import (
 from ctypes.wintypes import DWORD, LPCWSTR
 from gui.usefulwidget import getQMessageBox
 
-MAX_MODULE_SIZE = 120
-HOOK_NAME_SIZE = 60
-HOOKCODE_LEN = 500
+codepage_real = [
+    932,
+    65001,
+    936,
+    950,
+    949,
+    1258,
+    874,
+    1256,
+    1255,
+    1254,
+    1253,
+    1257,
+    1250,
+    1251,
+    1252,
+    437,
+]
+codepage_display = [
+    "日语_(CP932,SHIFT-JIS)",
+    "UTF8_(CP65001)",
+    "简体中文_(CP936,GBK)",
+    "繁体中文_(CP950,BIG5)",
+    "韩语_(CP949,EUC-KR)",
+    "越南语_(CP1258)",
+    "泰语_(CP874)",
+    "阿拉伯语_(CP1256)",
+    "希伯来语_(CP1255)",
+    "土耳其语_(CP1254)",
+    "希腊语_(CP1253)",
+    "北欧_(CP1257)",
+    "中东欧_(CP1250)",
+    "西里尔_(CP1251)",
+    "拉丁_(CP1252)",
+    "英语_(CP437)",
+]
 
 
 class ThreadParam(Structure):
@@ -105,7 +131,7 @@ def splitembedlines(trans: str):
         length = globalconfig["embedded"]["limittextlength_length"]
         lines = trans.split("\n")
         newlines = []
-        space = getlanguagespace(getlangtgt())
+        space = getlangtgt().space
         for line in lines:
             line = line.split(space) if space else line
             while len(line):
@@ -582,7 +608,7 @@ class texthook(basetext):
     def codepage(self):
         try:
             cpi = self.config["codepage_index"]
-            cp = static_data["codepage_real"][cpi]
+            cp = codepage_real[cpi]
         except:
             cp = 932
         return cp

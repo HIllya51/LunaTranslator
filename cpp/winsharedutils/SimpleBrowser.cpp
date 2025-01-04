@@ -277,12 +277,12 @@ DECLARE_API void html_bind_function(void *web, const wchar_t *name, void (*funct
     ww->jsobj->bindfunction(name, function);
 }
 
-DECLARE_API HWND html_get_ie(void *web)
+DECLARE_API bool html_check_ctrlc(void *web)
 {
     if (!web)
-        return nullptr;
+        return false;
     auto ww = static_cast<MWebBrowserEx *>(web);
-    return ww->GetIEServerWindow();
+    return GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(67) && (ww->GetIEServerWindow() == GetFocus());
 }
 
 DECLARE_API void html_eval(void *web, const wchar_t *js)

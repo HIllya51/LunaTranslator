@@ -17,6 +17,8 @@ from myutils.config import (
     getdefaultsavehook,
     gamepath2uid_index,
 )
+from myutils.keycode import vkcode_map, mod_map
+from language import Languages
 import threading, winreg
 import re, heapq, winsharedutils
 from myutils.wrapper import tryprint, threader
@@ -79,19 +81,13 @@ def translate_exits(fanyi, which=False):
         return None
 
 
-def getlangsrc():
-    return __internal__getlang("private_srclang_2", "srclang4")
+def getlangsrc() -> Languages:
+    return Languages.fromcode(__internal__getlang("private_srclang_2", "srclang4"))
 
 
-def getlangtgt():
+def getlangtgt() -> Languages:
 
-    return __internal__getlang("private_tgtlang_2", "tgtlang4")
-
-
-def getlanguagespace(lang=None):
-    if lang is None:
-        lang = getlanguse()
-    return "" if (lang.split("-")[0] in ("zh", "ja", "cht")) else " "
+    return Languages.fromcode(__internal__getlang("private_tgtlang_2", "tgtlang4"))
 
 
 def findenclose(text, tag):
@@ -344,13 +340,6 @@ def find_or_create_uid(targetlist, gamepath: str, title=None):
         return intarget
 
 
-kanjichs2ja = str.maketrans(static_data["kanjichs2ja"])
-
-
-def kanjitrans(k):
-    return k.translate(kanjichs2ja)
-
-
 def stringfyerror(e: Exception):
     if e.args and isinstance(e.args[0], requests.Response):
         from myutils.commonbase import maybejson
@@ -400,12 +389,6 @@ def splitocrtypes(dic):
     return offline, online
 
 
-def argsort(l):
-    ll = list(range(len(l)))
-    ll.sort(key=lambda x: l[x])
-    return ll
-
-
 def selectdebugfile(path: str, ismypost=False):
     if ismypost:
         path = "./userconfig/posts/{}.py".format(path)
@@ -428,15 +411,6 @@ def selectdebugfile(path: str, ismypost=False):
         target=subprocess.run, args=("notepad " + os.path.normpath(p),)
     ).start()
     return p
-
-
-def checkencoding(code):
-
-    try:
-        codecs.lookup(code)
-        return True
-    except LookupError:
-        return False
 
 
 def getfilemd5(file, default="0"):
@@ -700,15 +674,15 @@ def parsekeystringtomodvkcode(keystring, modes=False):
     ksl = keystring.split("+")
     ksl = ksl + keys
     unsupports = []
-    if ksl[-1].upper() in static_data["vkcode_map"]:
-        vkcode = static_data["vkcode_map"][ksl[-1].upper()]
+    if ksl[-1].upper() in vkcode_map:
+        vkcode = vkcode_map[ksl[-1].upper()]
     else:
         unsupports.append(ksl[-1])
 
     for k in ksl[:-1]:
-        if k.upper() in static_data["mod_map"]:
-            mode = mode | static_data["mod_map"][k.upper()]
-            _modes.append(static_data["mod_map"][k.upper()])
+        if k.upper() in mod_map:
+            mode = mode | mod_map[k.upper()]
+            _modes.append(mod_map[k.upper()])
         else:
             unsupports.append(k)
     if len(unsupports):
@@ -924,27 +898,9 @@ def createurl(url: str):
     return url
 
 
-def create_langmap(langmap):
-    _ = dict(
-        zip(
-            [_["code"] for _ in static_data["lang_list_all"]],
-            [_["code"] for _ in static_data["lang_list_all"]],
-        )
-    )
-    _.update({"cht": "zh", "auto": "auto"})
-    _.update(langmap)
-    return _
-
-
 def createenglishlangmap():
-    mp = dict(
-        zip(
-            [_["code"] for _ in static_data["lang_list_all"]],
-            [_["en"] for _ in static_data["lang_list_all"]],
-        )
-    )
-    mp.update({"auto": ""})
-    return mp
+    # 兼容性保留
+    return Languages.createenglishlangmap()
 
 
 class IDParser(HTMLParser):

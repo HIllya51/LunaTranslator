@@ -14,9 +14,6 @@ class TS(basetrans):
     def using_gpt_dict(self):
         return self.config["prompt_version"] in [1, 2]
 
-    def langmap(self):
-        return {"zh": "zh-CN"}
-
     def __init__(self, typename):
         super().__init__(typename)
         self.context = []

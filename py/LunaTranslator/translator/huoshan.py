@@ -1,10 +1,11 @@
-import json
+
+from language import Languages
 from translator.basetranslator import basetrans
 
 
 class TS(basetrans):
     def langmap(self):
-        return {"cht": "zh-Hant"}
+        return {Languages.TradChinese: "zh-Hant"}
 
     def translate(self, content):
 

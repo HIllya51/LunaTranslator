@@ -1,6 +1,5 @@
 from qtsymbols import *
-import functools
-from myutils.utils import checkencoding
+import functools, codecs
 from myutils.config import globalconfig
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import (
@@ -21,6 +20,15 @@ nowsuppertcodes = [
     "其他",
 ]
 nowsuppertcodespy = ["SHIFT-JIS", "GBK", "BIG5", "EUC-KR", "ASCII"]
+
+
+def checkencoding(code):
+
+    try:
+        codecs.lookup(code)
+        return True
+    except LookupError:
+        return False
 
 
 @Singleton_close

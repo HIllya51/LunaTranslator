@@ -2,11 +2,12 @@ import requests
 import urllib
 from urllib.parse import quote_plus
 from translator.basetranslator import basetrans
+from language import Languages
 
 
 class TS(basetrans):
     def langmap(self):
-        return {"cht": "zh_HANT"}
+        return {Languages.TradChinese: "zh_HANT"}
 
     # def inittranslator(self):
     # res=requests.get(self.config['host'],headers=

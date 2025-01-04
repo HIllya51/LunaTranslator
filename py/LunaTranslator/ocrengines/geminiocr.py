@@ -1,8 +1,9 @@
 import base64
 import requests
 from ocrengines.baseocrclass import baseocr
-from myutils.utils import createenglishlangmap, urlpathjoin
+from myutils.utils import urlpathjoin
 from myutils.proxy import getproxy
+from language import Languages
 
 
 def list_models(typename, regist):
@@ -29,7 +30,7 @@ def list_models(typename, regist):
 
 class OCR(baseocr):
     def langmap(self):
-        return createenglishlangmap()
+        return Languages.createenglishlangmap()
 
     def ocr(self, imagebinary):
         self.checkempty(["key"])

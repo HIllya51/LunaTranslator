@@ -24,6 +24,7 @@ from myutils.utils import (
     translate_exits,
     safe_escape,
 )
+from language import Languages
 from myutils.wrapper import threader, tryprint
 from gui.showword import searchwordW
 from myutils.hwnd import getpidexe, getExeIcon, getcurrexe
@@ -1107,7 +1108,7 @@ class MAINUI:
         font.setPointSizeF(globalconfig["settingfontsize"])
         QApplication.instance().setFont(font)
 
-    def get_font_default(self, lang: str, issetting: bool) -> str:
+    def get_font_default(self, lang: Languages, issetting: bool) -> str:
         # global font_default_used
         # if lang in font_default_used.keys():
         #     return font_default_used[lang]
@@ -1140,7 +1141,7 @@ class MAINUI:
         # font_default_used["lang"] = font_default
         return font_default
 
-    def set_font_default(self, lang: str, fonttype: str) -> None:
+    def set_font_default(self, lang: Languages, fonttype: str) -> None:
         globalconfig[fonttype] = self.get_font_default(
             lang, True if fonttype == "settingfonttype" else False
         )
@@ -1148,7 +1149,7 @@ class MAINUI:
     def parsedefaultfont(self):
         for k in ["fonttype", "fonttype2", "settingfonttype"]:
             if globalconfig[k] == "":
-                l = "ja" if k == "fonttype" else getlanguse()
+                l = Languages.Japanese if k == "fonttype" else getlanguse()
                 self.set_font_default(l, k)
                 # globalconfig[k] = QFontDatabase.systemFont(
                 #     QFontDatabase.SystemFont.GeneralFont

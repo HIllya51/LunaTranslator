@@ -2,6 +2,7 @@ from myutils.subproc import subproc_w, autoproc
 from translator.basetranslator import basetrans
 import ctypes, time
 import windows
+from language import Languages
 
 
 class TS(basetrans):
@@ -11,7 +12,7 @@ class TS(basetrans):
         self.checkpath()
 
     def langmap(self):
-        return {"auto": "ja"}
+        return {Languages.Auto: "ja"}
 
     def checkpath(self):
 

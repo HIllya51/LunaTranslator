@@ -1,6 +1,6 @@
 from traceback import print_exc
 import json, requests
-from myutils.utils import createenglishlangmap
+from language import Languages
 from translator.basetranslator import basetrans
 from myutils.proxy import getproxy
 
@@ -41,7 +41,7 @@ from myutils.proxy import getproxy
 
 class TS(basetrans):
     def langmap(self):
-        return createenglishlangmap()
+        return Languages.createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []

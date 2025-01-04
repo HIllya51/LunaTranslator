@@ -2,13 +2,7 @@ from myutils.config import globalconfig
 from myutils.wrapper import threader
 from traceback import print_exc
 from myutils.proxy import getproxy
-from myutils.utils import (
-    SafeFormatter,
-    createenglishlangmap,
-    getlangtgt,
-    getlangsrc,
-    create_langmap,
-)
+from myutils.utils import SafeFormatter, getlangtgt, getlangsrc
 from myutils.commonbase import ArgsEmptyExc, proxysession
 import re, uuid
 from tinycss2 import parse_stylesheet, serialize
@@ -19,6 +13,7 @@ from tinycss2.ast import (
     ParseError,
     LiteralToken,
 )
+from language import Languages
 
 
 class DictTree:
@@ -89,7 +84,7 @@ class cishubase:
             template = "You are a professional dictionary assistant whose task is to help users search for information such as the meaning, pronunciation, etymology, synonyms, antonyms, and example sentences of {srclang} words. You should be able to handle queries in multiple languages and provide in-depth information or simple definitions according to user needs. You should reply in {tgtlang}."
         tgt = getlangtgt()
         src = getlangsrc()
-        langmap = create_langmap(createenglishlangmap())
+        langmap = Languages.create_langmap(Languages.createenglishlangmap())
         tgtlang = langmap.get(tgt, tgt)
         srclang = langmap.get(src, src)
         return fmt.format(template, srclang=srclang, tgtlang=tgtlang)

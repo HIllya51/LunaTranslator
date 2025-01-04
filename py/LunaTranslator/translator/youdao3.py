@@ -1,16 +1,17 @@
 from translator.basetranslator import basetrans
 import re
+from language import Languages
 
 
 class TS(basetrans):
     def langmap(self):
         return {
-            "zh": "ZH_CN",
-            "ja": "JA",
-            "en": "EN",
-            "ko": "KR",
-            "es": "SP",
-            "ru": "RU",
+            Languages.Chinese: "ZH_CN",
+            Languages.Japanese: "JA",
+            Languages.English: "EN",
+            Languages.Korean: "KR",
+            Languages.Spanish: "SP",
+            Languages.Russian: "RU",
         }
 
     def inittranslator(self):

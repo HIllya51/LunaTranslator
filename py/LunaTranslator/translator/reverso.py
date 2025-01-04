@@ -1,32 +1,10 @@
 import requests
 import urllib
-import random
-import time
+from translator.basetranslator import basetrans
+from language import Languages
 
 
 class Tse:
-    def __init__(self):
-        self.author = "Ulion.Tse"
-        self.begin_time = time.time()
-        self.default_session_seconds = 1.5e3
-        self.transform_en_translator_pool = (
-            "Itranslate",
-            "Lingvanex",
-        )
-        self.auto_pool = (
-            "auto",
-            "auto-detect",
-        )
-        self.zh_pool = (
-            "zh",
-            "zh-CN",
-            "zh-CHS",
-            "zh-Hans",
-            "zh-Hans_CN",
-            "cn",
-            "chi",
-        )
-
     @staticmethod
     def get_headers(
         host_url: str,
@@ -72,35 +50,17 @@ class Reverso(Tse):
             self.host_url, if_api=True, if_json_for_api=True
         )
         self.session = None
-        self.language_map = None
-        self.decrypt_language_map = None
-        self.query_count = 0
-        self.output_zh = "zh"  # 'chi', because there are self.language_tran
-        self.input_limit = 2000
 
     def reverso_api(
         self,
+        __,
         query_text: str,
         from_language: str = "auto",
         to_language: str = "en",
         **kwargs
     ):
         proxies = kwargs.get("proxies", None)
-        is_detail_result = kwargs.get("is_detail_result", False)
-        sleep_seconds = kwargs.get("sleep_seconds", random.random())
-        update_session_after_seconds = kwargs.get(
-            "update_session_after_seconds", self.default_session_seconds
-        )
-
-        not_update_cond_time = (
-            1 if time.time() - self.begin_time < update_session_after_seconds else 0
-        )
-        if not (
-            self.session
-            and not_update_cond_time
-            and self.language_map
-            and self.decrypt_language_map
-        ):
+        if not (self.session):
             self.session = requests.Session()
             host_html = self.session.get(
                 self.host_url,
@@ -117,7 +77,7 @@ class Reverso(Tse):
                 "contextResults": "true",
                 "languageDetection": "true",
                 "sentenceSplitter": "true",
-                "origin": "translation.web",
+                "origin": ["translation.web", "contextweb"][__],
             },
         }
         r = self.session.post(
@@ -126,43 +86,52 @@ class Reverso(Tse):
             headers=self.api_headers,
             proxies=proxies,
         )
-        r.raise_for_status()
-        data = r.json()
-        time.sleep(sleep_seconds)
-        self.query_count += 1
-        return data if is_detail_result else "".join(data["translation"])
-
-
-from myutils.languageguesser import guess
-from translator.basetranslator import basetrans
+        return r.json()
 
 
 class TS(basetrans):
 
     def langmap(self):
         return {
-            "zh": "chi",
-            "en": "eng",
-            "es": "spa",
-            "fr": "fra",
-            "ko": "kor",
-            "ru": "rus",
-            "ja": "jpn",
+            Languages.Chinese: "chi",
+            Languages.English: "eng",
+            Languages.Spanish: "spa",
+            Languages.French: "fra",
+            Languages.Korean: "kor",
+            Languages.Russian: "rus",
+            Languages.Japanese: "jpn",
         }
 
     def inittranslator(self):
         self.engine = Reverso()
-        self.engine._ = None
+        self.mostmaybelang = "jpn"
 
     def translate(self, content):
-        if self.srclang != "auto":
-            src = self.srclang
+        if self.srclang == Languages.Auto:
+            src = self.mostmaybelang
         else:
-            gs = guess(content)
-            src = self.langmap_.get(gs, gs)
-        return self.engine.reverso_api(
+            src = self.srclang
+
+        data = self.engine.reverso_api(
+            self.config["origin"],
             content,
             src,
             self.tgtlang,
             proxies=self.proxy,
         )
+        if self.srclang == Languages.Auto:
+            det = data["languageDetection"]["detectedLanguage"]
+            if det == src:
+                return "".join(data["translation"])
+            else:
+                self.mostmaybelang = det
+                data = self.engine.reverso_api(
+                    self.config["origin"],
+                    content,
+                    det,
+                    self.tgtlang,
+                    proxies=self.proxy,
+                )
+                return "".join(data["translation"])
+        else:
+            return "".join(data["translation"])

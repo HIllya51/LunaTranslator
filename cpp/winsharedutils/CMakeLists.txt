@@ -11,4 +11,5 @@ target_link_libraries(winsharedutils rapidfuzz wil webview2 Mfplat mfuuid Mmdeva
 target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Mmdevapi.dll")
 target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Mfplat.dll")
 else()
+target_link_libraries(winsharedutils ${YY_Thunks_for_WinXP})
 endif()

@@ -6,7 +6,7 @@ from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run, ocr_init, qimage2binary
 import time, gobject
 from qtsymbols import *
-from collections import Counter
+from myutils.keycode import vkcode_map
 from textsource.textsourcebase import basetext
 
 
@@ -102,9 +102,7 @@ class ocrtext(basetext):
                 triggered = False
                 this = tuple(
                     (
-                        windows.GetAsyncKeyState(
-                            static_data["vkcode_map"][line["vkey"]]
-                        )
+                        windows.GetAsyncKeyState(vkcode_map[line["vkey"]])
                         for line in globalconfig["ocr_trigger_events"]
                     )
                 )

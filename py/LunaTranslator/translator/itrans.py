@@ -2,6 +2,7 @@ import requests
 import re
 import urllib
 import time
+from language import Languages
 
 
 class Tse:
@@ -135,11 +136,11 @@ from translator.basetranslator import basetrans
 class TS(basetrans):
     def langmap(self):
         return {
-            "en": "en-UK",
-            "zh": "zh-CN",
-            "es": "es-ES",
-            "fr": "fr-FR",
-            "cht": "zh-TW",
+            Languages.English: "en-UK",
+            Languages.Chinese: "zh-CN",
+            Languages.Spanish: "es-ES",
+            Languages.French: "fr-FR",
+            Languages.TradChinese: "zh-TW",
         }
 
     def inittranslator(self):

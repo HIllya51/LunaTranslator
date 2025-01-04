@@ -14,6 +14,7 @@ from myutils.utils import (
     dynamicapiname,
 )
 from myutils.commonbase import ArgsEmptyExc, commonbase
+from language import Languages
 
 
 class Interrupted(Exception):
@@ -157,11 +158,11 @@ class basetrans(commonbase):
                 src, trans = task
                 self.sqlwrite2.execute(
                     "DELETE from cache WHERE (srclang,tgtlang,source)=(?,?,?)",
-                    (self.srclang_1, self.tgtlang_1, src),
+                    (str(self.srclang_1), str(self.tgtlang_1), src),
                 )
                 self.sqlwrite2.execute(
                     "INSERT into cache VALUES(?,?,?,?)",
-                    (self.srclang_1, self.tgtlang_1, src, trans),
+                    (str(self.srclang_1), str(self.tgtlang_1), src, trans),
                 )
             except:
                 print_exc()
@@ -179,7 +180,7 @@ class basetrans(commonbase):
     @property
     def needzhconv(self):
         # The API does not support direct translation to Traditional Chinese, only Simplified Chinese can be translated first and then converted to Traditional Chinese
-        return self.tgtlang_1 == "cht" and "cht" not in self.langmap()
+        return self.tgtlang_1 == Languages.TradChinese and Languages.TradChinese not in self.langmap()
 
     @property
     def using(self):
@@ -311,7 +312,6 @@ class basetrans(commonbase):
 
     def maybezhconvwrapper(self, callback):
         def __maybeshow(callback, res, is_iter_res):
-
             if self.needzhconv:
                 res = zhconv.convert(res, "zh-tw")
             callback(res, is_iter_res)

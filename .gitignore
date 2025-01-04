@@ -25,6 +25,7 @@ temp/
 py/.cache
 py/.q_vscode_style
 py/userconfig
+py/userconfig1
 py/cache
 py/chrome_cache
 py/files/ocrmodel

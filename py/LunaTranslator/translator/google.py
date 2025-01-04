@@ -1,4 +1,5 @@
-from urllib.parse import urlencode
+
+from language import Languages
 import json
 
 from translator.basetranslator import basetrans
@@ -7,7 +8,7 @@ import time
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-CN", "cht": "zh-TW"}
+        return {Languages.Chinese: "zh-CN", Languages.TradChinese: "zh-TW"}
 
     def inittranslator(self):
 

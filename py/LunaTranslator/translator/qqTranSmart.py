@@ -1,6 +1,7 @@
 import requests, re, uuid
 from translator.basetranslator import basetrans
 import time, urllib
+from language import Languages
 
 
 class Tse:
@@ -184,7 +185,7 @@ class QQTranSmart(Tse):
 
 class TS(basetrans):
     def langmap(self):
-        return {"cht": "zh-tw"}
+        return {Languages.TradChinese: "zh-tw"}
 
     def inittranslator(self):
         self.engine = QQTranSmart()

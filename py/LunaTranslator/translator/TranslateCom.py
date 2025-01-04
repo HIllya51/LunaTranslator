@@ -2,6 +2,7 @@ import requests
 import urllib
 import random
 import time
+from language import Languages
 
 
 class Tse:
@@ -117,7 +118,7 @@ class TranslateCom(Tse):
             )
             self.language_description = lang_r.json()
 
-        if from_language == "auto":
+        if from_language == Languages.Auto:
             detect_form = {"text_to_translate": query_text}
             r_detect = self.session.post(
                 self.lang_detect_url,
@@ -155,7 +156,7 @@ from translator.basetranslator import basetrans
 
 class TS(basetrans):
     def langmap(self):
-        return {"cht": "zh-TW"}
+        return {Languages.TradChinese: "zh-TW"}
 
     def inittranslator(self):
         self.engine = TranslateCom()

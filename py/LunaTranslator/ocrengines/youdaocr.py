@@ -4,11 +4,12 @@ import uuid
 import time
 import hashlib
 from ocrengines.baseocrclass import baseocr
+from language import Languages
 
 
 class OCR(baseocr):
     def langmap(self):
-        return {"zh": "zh-CHS", "cht": "zh-CHT"}
+        return {Languages.Chinese: "zh-CHS", Languages.TradChinese: "zh-CHT"}
 
     def freetest(self, imagebinary):
         headers = {

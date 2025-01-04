@@ -6,6 +6,7 @@ from time import mktime
 import hashlib
 import base64
 import hmac
+from language import Languages
 from urllib.parse import urlencode
 import json
 
@@ -165,7 +166,7 @@ def get_result2(url, appid, apisecret, apikey, sess, bina, lang):
 
 class OCR(baseocr):
     def langmap(self):
-        return {"zh": "ch_en", "en": "ch_en", "cht": "ch_en"}
+        return {Languages.Chinese: "ch_en", Languages.English: "ch_en", Languages.TradChinese: "ch_en"}
 
     def ocr(self, imagebinary):
         self.checkempty(["APPId", "APISecret", "APIKey"])
@@ -182,7 +183,7 @@ class OCR(baseocr):
                 apikey,
             )
         elif self.config["interface"] == "ocr":
-            if self.srclang_1 == "auto":
+            if self.srclang_1 == Languages.Auto:
                 self.raise_cant_be_auto_lang()
             boxs, texts = get_result2(
                 "https://cn-east-1.api.xf-yun.com/v1/ocr",

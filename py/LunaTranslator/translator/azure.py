@@ -1,4 +1,5 @@
 from translator.basetranslator import basetrans
+from language import Languages
 import uuid
 
 
@@ -17,7 +18,7 @@ class TS(basetrans):
         path = "/translate"
         constructed_url = endpoint + path
         params = {"api-version": "3.0", "to": self.tgtlang}
-        if self.srclang != "auto":
+        if self.srclang != Languages.Auto:
             params.update({"from": self.srclang})
 
         headers = {

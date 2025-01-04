@@ -1,10 +1,11 @@
 import time, hashlib
 from translator.basetranslator import basetrans
 
+from language import Languages
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-CHS", "cht": "zh-CHT"}
+        return {Languages.Chinese: "zh-CHS", Languages.TradChinese: "zh-CHT"}
 
     def signx(self):
         tm = str(int(time.time() * 1000))

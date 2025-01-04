@@ -1,8 +1,9 @@
 from translator.basetranslator import basetrans
 import json, requests, hmac, hashlib
 from datetime import datetime, timezone
-from myutils.utils import createurl, createenglishlangmap, urlpathjoin
+from myutils.utils import createurl, urlpathjoin
 from myutils.proxy import getproxy
+from language import Languages
 
 
 def list_models(typename, regist):
@@ -62,7 +63,7 @@ class gptcommon(basetrans):
         ).strip()
 
     def langmap(self):
-        return createenglishlangmap()
+        return Languages.createenglishlangmap()
 
     def __init__(self, typename):
         self.context = []

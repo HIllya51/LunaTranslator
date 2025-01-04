@@ -7,7 +7,6 @@ from myutils.utils import (
     checkmd5reloadmodule,
     LRUCache,
     getlangsrc,
-    getlanguagespace,
     parsemayberegexreplace,
     safe_escape,
     is_ascii_symbo,
@@ -203,8 +202,7 @@ def _4_f(line):
 
 
 def _6_fEX(line: str):
-    srclang = getlangsrc()
-    white = getlanguagespace(srclang)
+    white = getlangsrc().space
     while True:
         curr = line
         for _ in "\r\n\u2928\u2029":

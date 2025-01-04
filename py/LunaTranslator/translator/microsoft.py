@@ -10,6 +10,7 @@ from urllib.parse import quote
 import json
 from urllib.parse import quote
 import json
+from language import Languages
 
 
 def translate_async(text, to_language, from_language=None, self=None):
@@ -18,7 +19,7 @@ def translate_async(text, to_language, from_language=None, self=None):
     url = "{}/translate?api-version={}&to={}".format(
         _apiEndpoint, _apiVersion, to_language
     )
-    if from_language != "auto":
+    if from_language != Languages.Auto:
         url += "&from={}".format(from_language)
     _privateKey = [
         0xA2,
@@ -153,7 +154,7 @@ def base64_url_decode(text):
 
 class TS(basetrans):
     def langmap(self):
-        return {"zh": "zh-CN", "cht": "zh-TW"}
+        return {Languages.Chinese: "zh-CN", Languages.TradChinese: "zh-TW"}
 
     def translate(self, content):
 

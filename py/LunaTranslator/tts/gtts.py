@@ -604,5 +604,5 @@ class TTS(TTSbase):
         return [""], [""]
 
     def speak(self, content, rate, voice):
-        tts = gTTS(self, content, lang=getlangsrc())
+        tts = gTTS(self, content, lang=str(getlangsrc()))
         return tts.save()

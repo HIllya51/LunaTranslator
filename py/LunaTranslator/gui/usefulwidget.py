@@ -1445,12 +1445,10 @@ class mshtmlWidget(abstractwebview):
         cb = winsharedutils.html_get_select_text_cb(__)
         winsharedutils.html_get_current_url(self.browser, cb)
 
-        if (
-            windows.GetAsyncKeyState(windows.VK_CONTROL)
-            and windows.GetAsyncKeyState(67)
-            and winsharedutils.html_get_ie(self.browser) == windows.GetFocus()
-        ):
-            cb = winsharedutils.html_get_select_text_cb(gobject.baseobject.clipboardhelper.setText.emit)
+        if winsharedutils.html_check_ctrlc(self.browser):
+            cb = winsharedutils.html_get_select_text_cb(
+                gobject.baseobject.clipboardhelper.setText.emit
+            )
             winsharedutils.html_get_select_text(self.browser, cb)
 
     def navigate(self, url):
@@ -1941,7 +1939,9 @@ class listediter(LDialog):
             self.hcmodel.removeRow(curr.row())
             self.internalrealname.pop(curr.row())
         elif action == copy:
-            gobject.baseobject.clipboardhelper.setText.emit(self.hcmodel.itemFromIndex(curr).text())
+            gobject.baseobject.clipboardhelper.setText.emit(
+                self.hcmodel.itemFromIndex(curr).text()
+            )
 
         elif action == up:
 

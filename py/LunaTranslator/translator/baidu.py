@@ -1,5 +1,5 @@
 import requests
-import re
+from language import Languages
 from translator.basetranslator import basetrans
 import time, urllib
 
@@ -128,16 +128,16 @@ class BaiduV1(Tse):
 class TS(basetrans):
     def langmap(self):
         return {
-            "es": "spa",
-            "ko": "kor",
-            "fr": "fra",
-            "ja": "jp",
-            "cht": "cht",
-            "vi": "vie",
-            "uk": "ukr",
-            "ar": "ara",
-            "sv": "swe",
-            "la": "lat",
+            Languages.Spanish: "spa",
+            Languages.Korean: "kor",
+            Languages.French: "fra",
+            Languages.Japanese: "jp",
+            Languages.TradChinese: "cht",
+            Languages.Vietnamese: "vie",
+            Languages.Ukrainian: "ukr",
+            Languages.Arabic: "ara",
+            Languages.Swedish : "swe",
+            Languages.Latin: "lat",
         }
 
     def inittranslator(self):

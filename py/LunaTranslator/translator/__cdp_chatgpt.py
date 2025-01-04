@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 from translator.cdp_helper import cdp_helperllm
-from myutils.utils import createenglishlangmap
+from language import Languages
 
 class chatgpt(cdp_helperllm):
     target_url = "https://chatgpt.com/"
@@ -43,7 +43,7 @@ class chatgpt_mirror(cdp_helperllm):
 class TS(basetrans):
 
     def langmap(self):
-        return createenglishlangmap()
+        return Languages.createenglishlangmap()
 
     def inittranslator(self):
         self.devtool = None
