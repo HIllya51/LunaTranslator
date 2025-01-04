@@ -304,7 +304,7 @@ def _remove_not_in_ja_bracket(line):
 
 def lines_threshold(line, args):
     sps = line.split("\n")
-    if len(sps) > args["maxzishu"]:
+    if len(sps) >= abs(args["maxzishu"]):
         if args.get("cut_reverse", True):
             return "\n".join(sps[-args["maxzishu"] :])
         else:

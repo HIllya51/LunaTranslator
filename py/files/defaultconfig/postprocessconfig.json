@@ -41,7 +41,7 @@
             "maxzishu": {
                 "name": "截取行数",
                 "type": "intspin",
-                "min": 0,
+                "min": -99999999,
                 "max": 99999999,
                 "step": 1
             },
