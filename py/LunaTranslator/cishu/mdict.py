@@ -1265,7 +1265,7 @@ class MDD(MDict):
                 # decompress
                 header = b"\xf0" + pack(">I", decompressed_size)
                 record_block = lzo.decompress(
-                    record_block_compressed[start + 8 : end],
+                    record_block_compressed[8:],
                     initSize=decompressed_size,
                     blockSize=1308672,
                 )
@@ -1353,7 +1353,7 @@ class MDD(MDict):
                 header = b"\xf0" + pack(">I", decompressed_size)
                 if check_block:
                     record_block = lzo.decompress(
-                        record_block_compressed[start + 8 : end],
+                        record_block_compressed[8:],
                         initSize=decompressed_size,
                         blockSize=1308672,
                     )
