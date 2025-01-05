@@ -2,13 +2,14 @@ import requests
 from urllib.parse import quote
 import re, threading
 from cishu.cishubase import cishubase
-from myutils.utils import get_element_by, simplehtmlparser_all
+from myutils.utils import get_element_by, simplehtmlparser_all, localcachehelper
 
 
 class jisho(cishubase):
 
     def init(self):
-        self.style = {}
+        self.style = localcachehelper("cishucss/jisho")
+        self.klass = "lunajishocsswrapper"
 
     def generatehtml_tabswitch(self, allres):
         btns = []
@@ -132,7 +133,9 @@ function onclickbtn_xxxxxx_internal(_id) {
             )
             link = ss.group()[6:-1]
             if not self.style.get(link):
-                self.style[link] = requests.get(link, proxies=self.proxy).text
+                self.style[link] = self.parse_stylesheet(
+                    requests.get(link, proxies=self.proxy).text, self.klass
+                )
             saver["style"] = self.style[link]
             saver["primary"] = get_element_by("id", "result_area", res) + res.replace(
                 get_element_by("id", "main_results", res),
@@ -163,7 +166,6 @@ function onclickbtn_xxxxxx_internal(_id) {
             res.append(("Others", saver["secondary"]))
         if not res:
             return
-        style, klass = self.parse_stylesheet(saver.get("style", ""))
         return '<style>{}</style><div class="{}">{}</div>'.format(
-            style, klass, self.generatehtml_tabswitch(res)
+            saver.get("style", ""), self.klass, self.generatehtml_tabswitch(res)
         )

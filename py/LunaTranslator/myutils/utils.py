@@ -26,6 +26,35 @@ from html.parser import HTMLParser
 from myutils.audioplayer import bass_code_cast
 
 
+class localcachehelper:
+    def __init__(self, name):
+        self.name = name
+        self.cache = {}
+
+    def __getitem__(self, url: str):
+        _ = self.cache.get(url)
+        if _:
+            return _
+        b64 = hashlib.md5(url.encode("utf8")).hexdigest()
+        fn = gobject.getcachedir(os.path.join(self.name, b64))
+        if not os.path.isfile(fn):
+            return None
+        with open(fn, "r", encoding="utf8") as ff:
+            data = ff.read()
+        self.cache[url] = data
+        return data
+
+    def __setitem__(self, url: str, data):
+        self.cache[url] = data
+        b64 = hashlib.md5(url.encode("utf8")).hexdigest()
+        fn = gobject.getcachedir(os.path.join(self.name, b64))
+        with open(fn, "w", encoding="utf8") as ff:
+            ff.write(data)
+
+    get = __getitem__
+    set = __setitem__
+
+
 def qimage2binary(qimage: QImage, fmt="BMP"):
     byte_array = QByteArray()
     buffer = QBuffer(byte_array)

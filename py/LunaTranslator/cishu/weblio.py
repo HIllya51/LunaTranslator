@@ -1,14 +1,15 @@
 import requests
 from urllib.parse import quote, unquote
 from cishu.cishubase import cishubase
-from myutils.utils import simplehtmlparser_all, simplehtmlparser
+from myutils.utils import simplehtmlparser_all, simplehtmlparser, localcachehelper
 import re, threading
 
 
 class weblio(cishubase):
 
     def init(self):
-        self.style = {}
+        self.cache = localcachehelper("cishucss/weblio")
+        self.klass = "lunawebliocsswrapper"
 
     def search(self, word):
         url = "https://www.weblio.jp/content/" + quote(word)
@@ -51,7 +52,7 @@ class weblio(cishubase):
             return '''href="javascript:safe_weblio_search_word('{}')"'''.format(word)
 
         join = re.sub('href="https://www.weblio.jp/content/(.*?)"', __, join)
-        join+=r'''
+        join += r"""
 <script>
 function safe_weblio_search_word(word){
     if(window.luna_search_word)
@@ -59,7 +60,7 @@ function safe_weblio_search_word(word){
     else if(window.LUNAJSObject)
         window.LUNAJSObject.luna_search_word(word)
 }</script>
-'''
+"""
         links = []
         style = simplehtmlparser(html, "style", "<style>")[7:-8]
         for link in simplehtmlparser_all(html, "link", '<link rel="stylesheet"'):
@@ -71,15 +72,14 @@ function safe_weblio_search_word(word){
             ts[-1].start()
         for t in ts:
             t.join()
-        style += "".join(self.style.get(link, "") for link in links)
-        style, klass = self.parse_stylesheet(style)
-        return '<style>{}</style><div class="{}">{}</div>'.format(style, klass, join)
+        style += "".join(self.cache.get(link) for link in links)
+        return '<style>{}</style><div class="{}">{}</div>'.format(style, self.klass, join)
 
     def makelink(self, link):
-        if not self.style.get(link):
+        if not self.cache.get(link):
             req = requests.get(
                 link,
                 proxies=self.proxy,
             )
             html = req.text if req.status_code == 200 else ""
-            self.style[link] = html
+            self.cache[link] = self.parse_stylesheet(html, self.klass)
