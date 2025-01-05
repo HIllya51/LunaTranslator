@@ -17,8 +17,11 @@ class _LanguageInfo:
     def __hash__(self):
         return self.code.__hash__()
 
+    def upper(self):
+        return self.code.upper()
+
     def lower(self):
-        return self.code
+        return self.code.lower()
 
     def encode(self, *argc, **kwargv):
         return self.code.encode(*argc, **kwargv)
