@@ -1262,14 +1262,17 @@
         },
         "jisho": {
             "use": true,
+            "useproxy": false,
             "name": "jisho"
         },
         "japandict": {
             "use": true,
+            "useproxy": false,
             "name": "JapanDict"
         },
         "weblio": {
             "use": true,
+            "useproxy": false,
             "name": "weblio"
         },
         "goo": {
@@ -1513,18 +1516,22 @@
         },
         "baiduocr_X": {
             "use": false,
+            "useproxy": false,
             "name": "百度"
         },
         "txocr": {
             "use": false,
+            "useproxy": false,
             "name": "腾讯"
         },
         "ocrspace": {
             "use": false,
+            "useproxy": false,
             "name": "ocrspace"
         },
         "docsumo": {
             "use": false,
+            "useproxy": false,
             "name": "docsumo"
         },
         "googlecloudvision": {
@@ -1537,10 +1544,12 @@
         },
         "xunfei": {
             "use": false,
+            "useproxy": false,
             "name": "讯飞"
         },
         "youdaocr": {
             "use": false,
+            "useproxy": false,
             "name": "有道"
         },
         "youdaodictocr": {
@@ -1549,6 +1558,7 @@
         },
         "volcengine": {
             "use": false,
+            "useproxy": false,
             "name": "火山"
         },
         "mangaocr": {
@@ -1581,6 +1591,7 @@
         "microsoft": {
             "use": false,
             "color": "gray",
+            "useproxy": false,
             "name": "microsoft"
         },
         "azure": {
@@ -1592,16 +1603,19 @@
         "baidu_ai": {
             "use": true,
             "color": "#ff65db",
+            "useproxy": false,
             "name": "百度_v2"
         },
         "baidu": {
             "use": false,
             "color": "#ff65db",
+            "useproxy": false,
             "name": "百度_v1"
         },
         "bing": {
             "use": false,
             "color": "#000ff0",
+            "useproxy": false,
             "name": "必应"
         },
         "google": {
@@ -1612,11 +1626,13 @@
         "ModernMt": {
             "use": false,
             "color": "#ff0000",
+            "useproxy": false,
             "name": "ModernMt"
         },
         "qqTranSmart": {
             "use": false,
             "color": "#ff0000",
+            "useproxy": false,
             "name": "qqTranSmart"
         },
         "googleapi": {
@@ -1628,10 +1644,12 @@
         "ali": {
             "use": false,
             "color": "#0000ff",
+            "useproxy": false,
             "name": "阿里"
         },
         "youdaodict": {
             "use": false,
+            "useproxy": false,
             "color": "#95a5ff",
             "name": "有道词典"
         },
@@ -1642,6 +1660,7 @@
         },
         "caiyun": {
             "use": false,
+            "useproxy": false,
             "color": "blue",
             "name": "彩云"
         },
@@ -1711,69 +1730,82 @@
         "sougou2": {
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "搜狗"
         },
         "youdao3": {
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "有道_v3"
         },
         "itrans": {
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "itrans"
         },
         "lingva": {
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "lingva"
         },
         "reverso": {
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "reverso"
         },
         "TranslateCom": {
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "TranslateCom"
         },
         "baiduapi": {
             "type": "api",
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "百度"
         },
         "aliyunapi": {
             "type": "api",
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "阿里"
         },
         "tencentapi": {
             "type": "api",
             "use": false,
+            "useproxy": false,
             "color": "blue",
             "name": "腾讯"
         },
         "yandexapi": {
             "type": "api",
             "use": false,
+            "useproxy": false,
             "color": "blue",
             "name": "yandex"
         },
         "yandex": {
             "use": false,
+            "useproxy": false,
             "color": "blue",
             "name": "yandex"
         },
         "qqimt": {
             "use": false,
+            "useproxy": false,
             "color": "blue",
             "name": "qqimt"
         },
         "xiaoniu": {
             "type": "api",
+            "useproxy": false,
             "use": false,
             "color": "blue",
             "name": "小牛"
@@ -1781,11 +1813,13 @@
         "huoshan": {
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "火山"
         },
         "caiyunapi": {
             "type": "api",
             "use": false,
+            "useproxy": false,
             "color": "blue",
             "name": "彩云"
         },
@@ -1793,10 +1827,12 @@
             "type": "api",
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "火山"
         },
         "papago": {
             "use": false,
+            "useproxy": false,
             "color": "blue",
             "name": "papago"
         },
@@ -1822,11 +1858,13 @@
             "type": "api",
             "use": false,
             "color": "blue",
+            "useproxy": false,
             "name": "有道"
         },
         "hwcloud": {
             "type": "api",
             "use": false,
+            "useproxy": false,
             "color": "blue",
             "name": "华为云"
         },
@@ -1861,8 +1899,7 @@
             "use": false,
             "type": "api",
             "color": "blue",
-            "name": "IBM",
-            "useproxy": true
+            "name": "IBM"
         },
         "sakura": {
             "use": false,

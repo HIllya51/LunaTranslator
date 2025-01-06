@@ -1895,7 +1895,7 @@ namespace
         auto ws = StringToWideString(buffer->viewA(), 932).value();
         if (startWith(ws, L"_SELZ"))
         {
-            auto _ = split(strSplit(s, L");")[0], L",");
+            auto _ = strSplit(strSplit(ws, L");")[0], L",");
             std::wstring wss;
             for (int i = 2; i < _.size(); i++)
             {
@@ -1903,7 +1903,7 @@ namespace
                     wss += L"\r\n";
                 wss += _[i];
             }
-            buffer->from(WideStringToString(wws, 932));
+            buffer->from(WideStringToString(wss, 932));
         }
         else
             buffer->clear();
