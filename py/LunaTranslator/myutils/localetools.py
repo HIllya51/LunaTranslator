@@ -1,6 +1,12 @@
 import windows, os, winsharedutils, re, functools
 from qtsymbols import *
-from myutils.config import savehook_new_data, get_launchpath, globalconfig, get_platform, _TR
+from myutils.config import (
+    savehook_new_data,
+    get_launchpath,
+    globalconfig,
+    get_platform,
+    _TR,
+)
 from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
 from traceback import print_exc
 import xml.etree.ElementTree as ET
@@ -377,8 +383,9 @@ else:
     x64tools = [lr_internal, NTLEAS64, CommandLine, Direct]
 
 
-def getgamecamptools(gameexe):
-    b = windows.GetBinaryType(gameexe)
+def getgamecamptools(gameexe, b=None):
+    if b is None:
+        b = windows.GetBinaryType(gameexe)
     if b == 6:
         _methods = x64tools
     else:
@@ -399,10 +406,11 @@ def fundlauncher(_id):
 
 def localeswitchedrun(gameuid):
     config = savehook_new_data[gameuid]
-    launch_method = config.get("launch_method", None)
     gameexe = get_launchpath(gameuid)
     gameexe = os.path.abspath(gameexe)
-    tools = getgamecamptools(gameexe)
+    b = windows.GetBinaryType(gameexe)
+    launch_method = config.get("launch_method", {6: "direct", 0: "le"}.get(b))
+    tools = getgamecamptools(gameexe, b)
     ids = [_.id for _ in tools]
     if launch_method not in ids:
         index = 0
