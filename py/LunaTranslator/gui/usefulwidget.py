@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, re, functools, uuid, json, math, csv, io, pickle
+import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject
 from webviewpy import webview_native_handle_kind_t, Webview
@@ -1503,6 +1503,10 @@ class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
 
+    def eval(self, js):
+        self.internal.eval(js)
+        self.evals.append(js)
+
     def bind(self, funcname, function):
         self.bindinfo.append((funcname, function))
         self.internal.bind(funcname, function)
@@ -1527,7 +1531,8 @@ class auto_select_webview(QWidget):
         if len(html) < self.internal.html_limit:
             self.internal.setHtml(html)
         else:
-            lastcachehtml = gobject.gettempdir(str(uuid.uuid4()) + ".html")
+            md5 = hashlib.md5(html.encode("utf8", errors="ignore")).hexdigest()
+            lastcachehtml = gobject.gettempdir(md5 + ".html")
             with open(lastcachehtml, "w", encoding="utf8") as ff:
                 ff.write(html)
             self.internal.navigate(lastcachehtml)
@@ -1542,6 +1547,7 @@ class auto_select_webview(QWidget):
     def __init__(self, parent, dyna=False) -> None:
         super().__init__(parent)
         self.addmenuinfo = []
+        self.evals = []
         self.bindinfo = []
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.internal = None
@@ -1571,6 +1577,15 @@ class auto_select_webview(QWidget):
         self.internal.on_load.connect(self.on_load)
         self.internal.on_ZoomFactorChanged.connect(self.internalzoomchanged)
         self.layout().addWidget(self.internal)
+        for _ in self.addmenuinfo:
+            self.internal.add_menu(*_)
+        for _ in self.bindinfo:
+            self.internal.bind(*_)
+        for _ in self.evals:
+            self.internal.eval(_)
+        self.reloaddata()
+
+    def reloaddata(self):
         if self.lastaction:
             action, arg = self.lastaction
             if action == 0:
@@ -1579,10 +1594,6 @@ class auto_select_webview(QWidget):
                 self.setHtml(arg)
         else:
             self.clear()
-        for _ in self.addmenuinfo:
-            self.internal.add_menu(*_)
-        for _ in self.bindinfo:
-            self.internal.bind(*_)
 
     def _createwebview(self):
         contex = globalconfig["usewebview"]

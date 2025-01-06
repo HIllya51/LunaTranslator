@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
+
+            body {
+                background-color: rgb(44, 44, 44);
+                color: white;
+            }
+        }
+    </style>
+</head>
+<div id="luna_root_div"></div>
+<script>
+    const rootdivid = 'luna_root_div';
+    function _clear_all() {
+        document.getElementById(rootdivid).innerHTML = "";
+    }
+
+    function _runScript(script) {
+        let newScript = document.createElement('script');
+        newScript.innerHTML = script.innerHTML;
+        let src = script.getAttribute('src');
+        if (src) newScript.setAttribute('src', src);
+        document.head.appendChild(newScript);
+        document.head.removeChild(newScript);
+    }
+
+    function _setHTMLWithScript(container, rawHTML) {
+        container.innerHTML = rawHTML;
+        let scripts = container.querySelectorAll('script');
+        for (let script of scripts) {
+            _runScript(script);
+        }
+    }
+    function _set_extra_html(htmlx) {
+        _setHTMLWithScript(document.getElementById(rootdivid), decodeURIComponent(htmlx))
+
+    }
+</script>
+
+</html>

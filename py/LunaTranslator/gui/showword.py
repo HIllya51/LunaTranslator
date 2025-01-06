@@ -2,7 +2,7 @@ from qtsymbols import *
 import json, time, functools, os, base64, uuid
 from urllib.parse import quote
 from traceback import print_exc
-import qtawesome, requests, gobject, windows
+import qtawesome, requests, gobject, windows, hashlib
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, static_data, _TR
@@ -20,6 +20,8 @@ from gui.usefulwidget import (
     statusbutton,
     getQMessageBox,
     auto_select_webview,
+    WebivewWidget,
+    mshtmlWidget,
     getboxlayout,
     getspinbox,
     getsimplecombobox,
@@ -36,16 +38,7 @@ from gui.usefulwidget import (
     tabadd_lazy,
     VisLFormLayout,
 )
-from gui.dynalang import (
-    LPushButton,
-    LLabel,
-    LTabWidget,
-    LTabBar,
-    LFormLayout,
-    LLabel,
-    LMainWindow,
-    LAction,
-)
+from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
 from myutils.audioplayer import bass_code_cast
 
 
@@ -1069,6 +1062,70 @@ class showdiction(QWidget):
         root.setData(len(rows) > 0, DeterminedhasChildren)
 
 
+class showwordfastwebview(auto_select_webview):
+    def reloaddata(self):
+        if isinstance(self.internal, mshtmlWidget):
+            super().reloaddata()
+
+    def _maybecreate_internal(self):
+        self.needreset = True
+        super()._maybecreate_internal()
+        if isinstance(self.internal, WebivewWidget):
+            if self.lastaction:
+                super().reloaddata()
+            else:
+                self.setframework()
+
+    def __init__(self, parent, dyna=False):
+        self.needreset = False
+        super().__init__(parent, dyna)
+        self.on_load.connect(self.checkurlchange)
+
+    def setframework(self, html=None):
+        path = os.path.join(os.path.dirname(__file__), "showwordfast.html")
+        if html:
+            with open(path, "r", encoding="utf8") as ff:
+                html = ff.read().replace(
+                    '<div id="luna_root_div"></div>',
+                    '<div id="luna_root_div">{}</div>'.format(html),
+                )
+            md5 = hashlib.md5(html.encode("utf8", errors="ignore")).hexdigest()
+            path = gobject.gettempdir(md5 + ".html")
+            with open(path, "w", encoding="utf8") as ff:
+                ff.write(html)
+        self.internal.navigate(os.path.abspath(path))
+
+    def checkurlchange(self, url: str):
+        if url == "about:blank":
+            pass
+        elif not url.startswith("file:"):
+            self.needreset = True
+
+    def setHtml(self, html):
+        # webview2 sethtml谜之很慢，navigate和eval比较快
+        if isinstance(self.internal, mshtmlWidget):
+            super().setHtml(html)
+        elif isinstance(self.internal, WebivewWidget):
+            self.lastaction = 1, html
+            self.internal.set_zoom(self.internalsavedzoom)
+            if self.needreset:
+                self.needreset = False
+                self.setframework(html)
+            else:
+                self.internal.eval("_clear_all()")
+                self.internal.eval("_set_extra_html('{}')".format(quote(html)))
+
+    def clear(self):
+        if isinstance(self.internal, mshtmlWidget):
+            super().clear()
+        elif isinstance(self.internal, WebivewWidget):
+            self.lastaction = None
+            if self.needreset:
+                self.needreset = False
+                self.setframework()
+            self.internal.eval("_clear_all()")
+
+
 class searchwordW(closeashidewindow):
     search_word = pyqtSignal(str, bool)
     show_dict_result = pyqtSignal(float, str, str)
@@ -1144,7 +1201,8 @@ class searchwordW(closeashidewindow):
             html = self.cache_results[self.tabks[idx]]
         except:
             return
-        self.textOutput.setHtml("<style>body{margin:0}</style>" + html)
+        html = "<style>body{margin:0}</style>" + html
+        self.textOutput.setHtml(html)
 
     def searchwinnewwindow(self, word):
 
@@ -1251,7 +1309,7 @@ class searchwordW(closeashidewindow):
         self.tab.currentChanged.connect(__)
         self.tabks = []
         self.setCentralWidget(ww)
-        self.textOutput = auto_select_webview(self, True)
+        self.textOutput = showwordfastwebview(self, True)
         self.textOutput.add_menu(
             0, _TR("查词"), lambda w: self.search_word.emit(w, False)
         )
@@ -1401,7 +1459,6 @@ class searchwordW(closeashidewindow):
         self.tabks.clear()
         self.textOutput.clear()
         self.cache_results.clear()
-
         self.thisps.clear()
         self.hasclicked = False
         pxx = 999
