@@ -176,10 +176,9 @@ namespace
       }
       void hookafter1(hook_context *s, TextBuffer buffer)
       {
-        static std::string newData;
-        newData = buffer.strA();
-        newData = cache_.put(newData).first;
-        s->stack[1] = (ULONG)newData.c_str(); // arg1
+        auto newData = buffer.strA();
+        cache_.put(newData);
+        s->stack[1] = (ULONG)allocateString(newData); // arg1
       }
     } // namespace Private
 

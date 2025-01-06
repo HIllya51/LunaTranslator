@@ -746,10 +746,8 @@ namespace
           newData = newData + "[n]";
         else if (endtype == 2)
           newData = newData + "[c]";
-        static std::string data_;
-        data_ = newData;
-        s->edx = (ULONG)data_.c_str(); // reset arg1
-        *(DWORD *)(s->edx - 4) = data_.size();
+        s->edx = (ULONG)allocateString(newData); // reset arg1
+        *(DWORD *)(s->edx - 4) = newData.size();
         // arg->size = data_.size(); // no idea why this will crash ...
 
         //*(DWORD *)(s->edx - 4) = newData.size() + trimmedText - text;

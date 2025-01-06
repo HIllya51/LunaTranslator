@@ -1113,7 +1113,6 @@ namespace
       // I need a cache retainer here to make sure same text result in same result
       void hookafter(hook_context *s, TextBuffer buffer)
       {
-        static std::string data_;
         static std::unordered_set<uint64_t> hashes_;
         auto text = (LPCWSTR)s->stack[1];
         if (!text || !*text || !(text[0] == 0x7 && text[1] == 0x8) && all_ascii(text))
@@ -1171,10 +1170,8 @@ namespace
           data.push_back(0);
           data.push_back(0);
           data.push_back(0);
-          data_ = data;
-          text = (LPCWSTR)data_.c_str();
 
-          s->stack[1] = (ULONG)text;
+          s->stack[1] = (ULONG)allocateString(data);
         }
       }
       void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)

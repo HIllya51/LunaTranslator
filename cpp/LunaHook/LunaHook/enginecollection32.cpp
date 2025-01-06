@@ -428,6 +428,7 @@ std::vector<ENGINE *> check_engines()
         new DAC,
         new AbogadoPowers,
         new e_Erekiteru,
-        new H_do_C
+        new H_do_C,
+        new Mink3,
         };
 }

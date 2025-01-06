@@ -211,13 +211,11 @@ namespace
       }
       void hookafter(hook_context *s, TextBuffer buffer)
       {
-        static std::string data_;
         std::string newData = buffer.strA();
-        data_ = newData;
         int capacity = s->stack[1]; // arg 2, should always be 0x1000
-        if (data_.size() >= capacity)
-          data_ = data_.substr(0, capacity - 1);
-        s->stack[2] = (ULONG)data_.c_str(); // arg 3
+        if (newData.size() >= capacity)
+          newData = newData.substr(0, capacity - 1);
+        s->stack[2] = (ULONG)allocateString(newData); // arg 3
       }
     } // namespace Private
 

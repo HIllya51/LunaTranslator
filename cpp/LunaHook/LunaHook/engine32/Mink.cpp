@@ -1,4 +1,4 @@
-#include"Mink.h"
+#include "Mink.h"
 /** 12/23/2014 jichi: Mink games (not sure the engine name)
  *  Sample game:
  *  - [130111] [Mink EGO] お�ちも�にはぜったい言えなぁ�ぁ�つなこと�-- /HB-4*0:64@45164A
@@ -103,7 +103,7 @@
  *  004516dd   8a4c11 1d        mov cl,byte ptr ds:[ecx+edx+0x1d]
  */
 
-#if 0 // hook to the caller of dynamic GetGlyphOutlineA
+#if 0  // hook to the caller of dynamic GetGlyphOutlineA
 /**
  *  @param  addr  function address
  *  @param  frame  real address of the function, supposed to be the same as addr
@@ -136,7 +136,7 @@ static bool InsertMinkDynamicHook(LPVOID fun, DWORD frame, DWORD stack)
 
 static void SpecialHookMink(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  //DWORD addr = *(DWORD *)(esp_base + hp->offset); // default value
+  // DWORD addr = *(DWORD *)(esp_base + hp->offset); // default value
   DWORD addr = context->eax;
   if (!IthGetMemoryRange((LPVOID)(addr), 0, 0))
     return;
@@ -154,64 +154,110 @@ static void SpecialHookMink(hook_context *context, HookParam *hp, TextBuffer *bu
 bool InsertMinkHook()
 {
   const BYTE bytes[] = {
-    0x38,0x18,              // 00451648   3818             cmp byte ptr ds:[eax],bl
-    0x75, 0x14,             // 0045164a   75 14            jnz short .00451660         ; jichi: hook here
-    0x38,0x5d, 0xf4,        // 0045164c   385d f4          cmp byte ptr ss:[ebp-0xc],bl
-    0x74, 0x07,             // 0045164f   74 07            je short .00451658
-    0x8b,0x45, 0xf0,        // 00451651   8b45 f0          mov eax,dword ptr ss:[ebp-0x10]
-    0x83,0x60, 0x70, 0xfd,  // 00451654   8360 70 fd       and dword ptr ds:[eax+0x70],0xfffffffd
-    0x8b,0x45, 0x08         // 00451658   8b45 08          mov eax,dword ptr ss:[ebp+0x8]
+      0x38, 0x18,             // 00451648   3818             cmp byte ptr ds:[eax],bl
+      0x75, 0x14,             // 0045164a   75 14            jnz short .00451660         ; jichi: hook here
+      0x38, 0x5d, 0xf4,       // 0045164c   385d f4          cmp byte ptr ss:[ebp-0xc],bl
+      0x74, 0x07,             // 0045164f   74 07            je short .00451658
+      0x8b, 0x45, 0xf0,       // 00451651   8b45 f0          mov eax,dword ptr ss:[ebp-0x10]
+      0x83, 0x60, 0x70, 0xfd, // 00451654   8360 70 fd       and dword ptr ds:[eax+0x70],0xfffffffd
+      0x8b, 0x45, 0x08        // 00451658   8b45 08          mov eax,dword ptr ss:[ebp+0x8]
   };
-  enum { addr_offset = 2 };
+  enum
+  {
+    addr_offset = 2
+  };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  //ULONG addr = 0x45164a;
-  //ULONG addr = 0x451648;
-  //ULONG addr = 0x4521a8;
-  //GROWL_DWORD(addr);
-  if (!addr) {
+  // ULONG addr = 0x45164a;
+  // ULONG addr = 0x451648;
+  // ULONG addr = 0x4521a8;
+  // GROWL_DWORD(addr);
+  if (!addr)
+  {
     ConsoleOutput("Mink: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset=regoffset(eax); // -8
+  hp.offset = regoffset(eax); // -8
   hp.split = 0x64;
-  hp.type = USING_SPLIT|DATA_INDIRECT|USING_CHAR; // 0x18
+  hp.type = USING_SPLIT | DATA_INDIRECT | USING_CHAR; // 0x18
   hp.text_fun = SpecialHookMink;
   ConsoleOutput("INSERT Mink");
   return NewHook(hp, "Mink");
 
-  //ConsoleOutput("Mink: disable GDI hooks");
+  // ConsoleOutput("Mink: disable GDI hooks");
   //
 }
 
-bool Mink2::attach_function() {  
+bool Mink2::attach_function()
+{
   const BYTE pattern[] = {
-    //破談屋
-    //https://vndb.org/v2719
-    0xF7,0xC7,0x03,0x00,0x00,0x00,
-    0x75,XX,
-    0xC1,0xE9,0x02,
-    0x83,0xE2,0x03,
-    0x83,0xF9,0x08,
-    0x72,XX
-  };
-  bool found=false;
+      // 破談屋
+      // https://vndb.org/v2719
+      0xF7, 0xC7, 0x03, 0x00, 0x00, 0x00,
+      0x75, XX,
+      0xC1, 0xE9, 0x02,
+      0x83, 0xE2, 0x03,
+      0x83, 0xF9, 0x08,
+      0x72, XX};
+  bool found = false;
   for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
   {
-      addr = MemDbg::findEnclosingAlignedFunction(addr,0x100);
-      if (addr == 0)return false;
-      HookParam hp;
-      hp.address = addr;
-      hp.offset=stackoffset(2);  
-      hp.length_offset=3;
-      hp.type = USING_STRING; 
-      found|=NewHook(hp, "Mink");
-  } 
-  return  found;
-} 
-bool Mink::attach_function() {  
-    
-    return InsertMinkHook();
-} 
+    addr = MemDbg::findEnclosingAlignedFunction(addr, 0x100);
+    if (addr == 0)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(2);
+    hp.length_offset = 3;
+    hp.type = USING_STRING;
+    found |= NewHook(hp, "Mink");
+  }
+  return found;
+}
+bool Mink::attach_function()
+{
+
+  return InsertMinkHook();
+}
+
+bool Mink3::attach_function()
+{
+  const BYTE pattern[] = {
+      // 夜勤病棟 復刻版+
+      0xff, 0x15, XX4,
+      0x33, 0xdb,
+      0x89, 0x44, 0x24, XX,
+      0x85, 0xc0,
+      0x7e, XX,
+      0x8a, 0x07,
+      0x8d, 0x4c, 0x24, 0x10,
+      0x50,
+      0xe8, XX4,
+      0x83, 0xf8, 0x02,
+      0x75, 0x08,
+      0x03, 0xd8,
+      0x03, 0xf8,
+      0x03, 0xf0,
+      0xeb, XX,
+      0x57,
+      0x8b, 0xcd,
+      0xe8, XX4,
+      0x25, 0xff, 0x00, 0x00, 0x00,
+      0x83, 0xe8, 0x00};
+  auto addr = MemDbg::findBytes(pattern, sizeof(pattern), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = MemDbg::findEnclosingAlignedFunction(addr, 0x100);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = stackoffset(1);
+  hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_OVERWRITE | EMBED_DYNA_SJIS;
+  hp.embed_hook_font = F_TextOutA;
+  hp.lineSeparator = L"\\n";
+  PcHooks::hookGDIFunctions(TextOutA);
+  return NewHook(hp, "Mink");
+}

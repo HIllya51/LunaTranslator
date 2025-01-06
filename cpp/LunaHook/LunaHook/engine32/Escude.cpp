@@ -218,12 +218,11 @@ namespace
   }
   void embed_fun(hook_context *s, TextBuffer buffer)
   {
-    static std::string data_;
-    data_ = buffer.strA();
+    auto data_ = buffer.strA();
     auto arg = (HookArgument *)s->stack[1];
     if (trimmedText != arg->text)
       data_.insert(0, std::string(arg->text, trimmedText - arg->text));
-    arg->text = data_.c_str();
+    arg->text = allocateString(data_);
   }
 } // unnamed namespace
 bool InsertEscudeHook()

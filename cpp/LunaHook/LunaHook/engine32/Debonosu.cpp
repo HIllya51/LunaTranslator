@@ -23,16 +23,15 @@ namespace
   }
   void embed_fun(hook_context *s, TextBuffer buffer)
   {
-    static std::string ts;
-    ts = buffer.viewA();
+    auto ts = allocateString(buffer.viewA());
 
     if (_type == 1)
     {
-      s->stack[1] = (DWORD)ts.c_str();
+      s->stack[1] = (DWORD)ts;
     }
     else
     {
-      s->ecx = (DWORD)ts.c_str();
+      s->ecx = (DWORD)ts;
     }
   }
   bool InsertDebonosuScenarioHook()

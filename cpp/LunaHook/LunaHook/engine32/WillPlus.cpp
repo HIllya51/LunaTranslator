@@ -834,7 +834,7 @@ namespace
       if (suffixSize)
         newText.append(std::wstring(trimmedText + trimmedSize, suffixSize));
       info->text_ = newText;
-      s->stack[info->stackIndex_] = (ULONG)info->text_.c_str();
+      s->stack[info->stackIndex_] = (ULONG)allocateString(info->text_);
     }
     // explicit TextHookW(int hookStackIndex, int role = Engine::UnknownRole) : stackIndex_(hookStackIndex), role_(role) {}
     template <int _type>

@@ -150,27 +150,6 @@
             "Secret Access Key": ""
         }
     },
-    "tesseract5": {
-        "args": {
-            "路径": "",
-            "语言": 0,
-            "附加参数": "--psm 6"
-        },
-        "argstype": {
-            "路径": {
-                "type": "file",
-                "dir": false,
-                "filter": "tesseract.exe"
-            },
-            "语言": {
-                "type": "combo",
-                "list_function": [
-                    "ocrengines.tesseract5",
-                    "list_langs"
-                ]
-            }
-        }
-    },
     "googlecloudvision": {
         "args": {
             "key": ""

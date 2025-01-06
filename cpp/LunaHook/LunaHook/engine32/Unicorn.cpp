@@ -575,9 +575,8 @@ namespace
 
       void hookafter(hook_context *s, TextBuffer buffer)
       {
-        static std::string data_;
-        data_ = buffer.strA();
-        s->stack[1] = (ULONG)data_.c_str();
+        auto data_ = buffer.strA();
+        s->stack[1] = (ULONG)allocateString(data_);
         s->stack[2] = data_.size();
       }
     } // namespace Private

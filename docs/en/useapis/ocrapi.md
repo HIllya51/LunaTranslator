@@ -245,4 +245,8 @@ The following commands remove the OCR pack for "en-US":
 
 https://learn.microsoft.com/en-us/windows/powertoys/text-extractor#supported-languages
 
+#### **Tesseract5**
+
+https://github.com/tesseract-ocr/tesseract/releases
+
 <!-- tabs:end -->

@@ -1764,11 +1764,7 @@ namespace
       void hookafter(hook_context *s, TextBuffer buffer)
       {
         auto arg = (TextUnionW *)(type_ == Type1 ? s->ecx : s->stack[1]);
-        auto argValue = *arg;
         arg->setText(buffer.viewW());
-
-        // Restoring is indispensible, and as a result, the default hook does not work
-        //*arg = argValue;
       }
     }
     bool attach(ULONG startAddress, ULONG stopAddress) // attach scenario
@@ -1794,8 +1790,6 @@ namespace OtherHook
   namespace Private
   {
 
-    TextUnionW *arg_,
-        argValue_;
     void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
     {
       static std::wstring text_;
@@ -1833,8 +1827,6 @@ namespace OtherHook
     void hookafter2(hook_context *s, TextBuffer buffer)
     {
       auto arg = (TextUnionW *)s->stack[0];
-      arg_ = arg;
-      argValue_ = *arg;
       arg->setText(buffer.viewW());
     }
 

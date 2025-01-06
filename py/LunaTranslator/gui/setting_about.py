@@ -294,7 +294,10 @@ def delayloadlinks(key, lay):
         else:
             for link in source["links"]:
                 __grid.append(
-                    [link["name"], (makehtml(link["link"]), 2, "link")]
+                    [
+                        link["name"],
+                        (makehtml(link["link"], link.get("vis", None)), 2, "link"),
+                    ]
                     + ([link.get("about")] if link.get("about") else [])
                 )
         grid.append(

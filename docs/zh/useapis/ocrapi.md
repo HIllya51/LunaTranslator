@@ -281,5 +281,9 @@ State : NotPresent
 
 https://learn.microsoft.com/zh-cn/windows/powertoys/text-extractor#supported-languages
 
+#### **Tesseract5**
+
+https://github.com/tesseract-ocr/tesseract/releases
+
 <!-- tabs:end -->
 

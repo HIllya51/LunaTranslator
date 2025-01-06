@@ -211,7 +211,6 @@ namespace
         char nameText[1]; // +4*10+4*3, could be bad address though
       };
 
-      std::string data_;
       TextArgument *scenarioArg_,
           *nameArg_;
       LPCSTR scenarioText_;
@@ -265,10 +264,9 @@ namespace
           auto text = arg->scenarioText;
           if (!Engine::isAddressReadable(text))
             return;
-          data_ = newData;
           scenarioArg_ = arg;
           scenarioText_ = arg->scenarioText;
-          arg->scenarioText = (LPCSTR)data_.c_str();
+          arg->scenarioText = (LPCSTR)allocateString(newData);
         }
         else if (arg->nameFlag == 0)
         {
