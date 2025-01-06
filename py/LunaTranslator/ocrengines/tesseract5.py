@@ -28,7 +28,7 @@ class OCR(baseocr):
 
     def list_langs(self):
         if not (self.path and os.path.exists(self.path)):
-            raise Exception(_TR("路径不存在"))
+            raise Exception(_TR("not installed"))
         res = subproc_w(
             '"{}" --list-langs'.format(self.path),
             needstdio=True,
