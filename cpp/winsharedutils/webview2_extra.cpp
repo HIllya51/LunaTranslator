@@ -7,7 +7,9 @@
 #include <wrl/implements.h>
 using namespace Microsoft::WRL;
 #include <WebView2.h>
-
+#else
+typedef int COREWEBVIEW2_PREFERRED_COLOR_SCHEME;
+typedef int EventRegistrationToken;
 #endif
 DECLARE_API void set_transparent_background(void *m_host)
 {
@@ -24,9 +26,9 @@ DECLARE_API void set_transparent_background(void *m_host)
 #endif
 }
 
-#ifndef WINXP
 DECLARE_API void put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {
+#ifndef WINXP
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
     wil::com_ptr<ICoreWebView2> coreWebView2;
     [&]()
@@ -41,12 +43,8 @@ DECLARE_API void put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_C
         }
         return S_OK;
     }();
-}
-#else
-DECLARE_API void put_PreferredColorScheme(void *m_host, int scheme)
-{
-}
 #endif
+}
 DECLARE_API void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
 {
 #ifndef WINXP
@@ -72,10 +70,9 @@ DECLARE_API void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
     return NULL;
 #endif
 }
-DECLARE_API void remove_ZoomFactorChanged(void *m_host, void *m_zoomFactorChangedToken)
+DECLARE_API void remove_ZoomFactorChanged(void *m_host, EventRegistrationToken *token)
 {
 #ifndef WINXP
-    auto token = reinterpret_cast<EventRegistrationToken *>(m_zoomFactorChangedToken);
     reinterpret_cast<ICoreWebView2Controller *>(m_host)->remove_ZoomFactorChanged(*token);
     delete token;
 #endif
@@ -97,10 +94,9 @@ DECLARE_API void put_ZoomFactor(void *m_host, double zoomFactor)
 #endif
 }
 // https://github.com/MicrosoftEdge/WebView2Feedback/blob/main/specs/WebMessageObjects.md
-DECLARE_API void remove_WebMessageReceived(void *m_host, void *m_webMessageReceivedToken)
+DECLARE_API void remove_WebMessageReceived(void *m_host, EventRegistrationToken *token)
 {
 #ifndef WINXP
-    auto token = reinterpret_cast<EventRegistrationToken *>(m_webMessageReceivedToken);
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
     wil::com_ptr<ICoreWebView2> m_webView;
     [&]()
@@ -185,13 +181,11 @@ DECLARE_API void *add_WebMessageReceived(void *m_host, void (*callback)(const wc
 #endif
 }
 
-#ifndef WINXP
 struct contextcallbackdatas
 {
     EventRegistrationToken contextMenuRequestedToken;
     std::vector<std::pair<std::wstring, void (*)(const wchar_t *)>> menus;
 };
-#endif
 // https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/how-to/context-menus?tabs=cpp
 // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2_11?view=webview2-1.0.2849.39
 DECLARE_API void add_menu_list(void *ptr, int index, const wchar_t *label, void (*callback)(const wchar_t *))
@@ -286,10 +280,9 @@ DECLARE_API void *add_ContextMenuRequested(void *m_host)
     return NULL;
 #endif
 }
-DECLARE_API void remove_ContextMenuRequested(void *m_host, void *data)
+DECLARE_API void remove_ContextMenuRequested(void *m_host, contextcallbackdatas *data)
 {
 #ifndef WINXP
-    auto token = reinterpret_cast<contextcallbackdatas *>(data);
     wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
     wil::com_ptr<ICoreWebView2> m_webView;
     [&]()
@@ -298,9 +291,9 @@ DECLARE_API void remove_ContextMenuRequested(void *m_host, void *data)
         auto m_webView2_11 = m_webView.try_query<ICoreWebView2_11>();
         if (!m_webView2_11)
             return S_OK;
-        CHECK_FAILURE(m_webView2_11->remove_ContextMenuRequested(token->contextMenuRequestedToken));
+        CHECK_FAILURE(m_webView2_11->remove_ContextMenuRequested(data->contextMenuRequestedToken));
         return S_OK;
     }();
-    delete token;
+    delete data;
 #endif
 }
