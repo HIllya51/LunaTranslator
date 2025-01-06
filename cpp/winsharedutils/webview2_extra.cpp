@@ -189,16 +189,22 @@ DECLARE_API void *add_WebMessageReceived(void *m_host, void (*callback)(const wc
 struct contextcallbackdatas
 {
     EventRegistrationToken contextMenuRequestedToken;
-    std::wstring label;
+    std::vector<std::pair<std::wstring, void (*)(const wchar_t *)>> menus;
 };
 #endif
 // https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/how-to/context-menus?tabs=cpp
 // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2_11?view=webview2-1.0.2849.39
-DECLARE_API void *add_ContextMenuRequested(void *m_host, int index, const wchar_t *label, void (*callback)(const wchar_t *))
+DECLARE_API void add_menu_list(void *ptr, int index, const wchar_t *label, void (*callback)(const wchar_t *))
+{
+    if (!ptr)
+        return;
+    auto token = reinterpret_cast<contextcallbackdatas *>(ptr);
+    token->menus.insert(token->menus.begin() + index, std::make_pair(label, callback));
+}
+DECLARE_API void *add_ContextMenuRequested(void *m_host)
 {
 #ifndef WINXP
     contextcallbackdatas *data = new contextcallbackdatas;
-    data->label = label; // 持久化
     [=]()
     {
         wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
@@ -235,40 +241,40 @@ DECLARE_API void *add_ContextMenuRequested(void *m_host, int index, const wchar_
                     UINT32 itemsCount;
                     CHECK_FAILURE(items->get_Count(&itemsCount));
                     // Adding a custom context menu item for the page that will display the page's URI.
-                    wil::com_ptr<ICoreWebView2ContextMenuItem> newMenuItem;
-                    if (data->label.size())
+                    UINT idx = 0;
+                    for (auto &&[label, callback] : data->menus)
                     {
-                        CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(
-                            data->label.c_str(),
-                            nullptr,
-                            COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
-                        newMenuItem->add_CustomItemSelected(
-                            Callback<ICoreWebView2CustomItemSelectedEventHandler>(
-                                [=](
-                                    ICoreWebView2ContextMenuItem *sender,
-                                    IUnknown *args)
-                                {
-                                    wil::unique_cotaskmem_string selecttext;
-                                    CHECK_FAILURE(target->get_SelectionText(&selecttext));
-                                    callback(selecttext.get());
-                                    return S_OK;
-                                })
-                                .Get(),
-                            nullptr);
+                        wil::com_ptr<ICoreWebView2ContextMenuItem> newMenuItem;
+                        if (label.size())
+                        {
+                            CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(
+                                label.c_str(),
+                                nullptr,
+                                COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+                            newMenuItem->add_CustomItemSelected(
+                                Callback<ICoreWebView2CustomItemSelectedEventHandler>(
+                                    [=, &callback](
+                                        ICoreWebView2ContextMenuItem *sender,
+                                        IUnknown *args)
+                                    {
+                                        wil::unique_cotaskmem_string selecttext;
+                                        CHECK_FAILURE(target->get_SelectionText(&selecttext));
+                                        callback(selecttext.get());
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                nullptr);
+                        }
+                        else
+                        {
+                            CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(
+                                L"",
+                                nullptr,
+                                COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
+                        }
+                        CHECK_FAILURE(items->InsertValueAtIndex(idx++, newMenuItem.get()));
                     }
-                    else
-                    {
-                        CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(
-                            L"",
-                            nullptr,
-                            COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
-                    }
-                    UINT idx;
-                    if (index == -1)
-                        idx = itemsCount;
-                    else
-                        idx = index;
-                    CHECK_FAILURE(items->InsertValueAtIndex(idx, newMenuItem.get()));
+
                     return S_OK;
                 })
                 .Get(),

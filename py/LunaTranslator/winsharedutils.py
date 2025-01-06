@@ -279,15 +279,12 @@ remove_WebMessageReceived = utilsdll.remove_WebMessageReceived
 remove_WebMessageReceived.argtypes = c_void_p, c_void_p
 add_ContextMenuRequested_cb = CFUNCTYPE(c_void_p, c_wchar_p)
 add_ContextMenuRequested = utilsdll.add_ContextMenuRequested
-add_ContextMenuRequested.argtypes = (
-    c_void_p,
-    c_int,
-    c_wchar_p,
-    add_ContextMenuRequested_cb,
-)
+add_ContextMenuRequested.argtypes = (c_void_p,)
 add_ContextMenuRequested.restype = c_void_p
 remove_ContextMenuRequested = utilsdll.remove_ContextMenuRequested
 remove_ContextMenuRequested.argtypes = c_void_p, c_void_p
+add_menu_list = utilsdll.add_menu_list
+add_menu_list.argtypes = (c_void_p, c_int, c_wchar_p, add_ContextMenuRequested_cb)
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)

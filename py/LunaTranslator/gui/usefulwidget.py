@@ -1188,8 +1188,7 @@ class WebivewWidget(abstractwebview):
         winsharedutils.remove_WebMessageReceived(
             self.get_controller(), self.m_webMessageReceivedToken
         )
-        for m in self.addmenu_infos:
-            winsharedutils.remove_ContextMenuRequested(self.get_controller(), m)
+        winsharedutils.remove_ContextMenuRequested(self.get_controller(), self.menudata)
 
     def bind(self, fname, func):
         self.webview.bind(fname, func)
@@ -1210,19 +1209,15 @@ class WebivewWidget(abstractwebview):
     def add_menu(self, index, label, callback):
         __ = winsharedutils.add_ContextMenuRequested_cb(callback)
         self.callbacks.append(__)
-        self.addmenu_infos.append(
-            winsharedutils.add_ContextMenuRequested(
-                self.get_controller(), index, label, __
-            )
-        )
+        winsharedutils.add_menu_list(self.menudata, index, label, __)
 
     def __init__(self, parent=None, debug=True, usedarklight=True) -> None:
         super().__init__(parent)
         self.webview = None
         self.callbacks = []
-        self.addmenu_infos = []
         self.webview = Webview(debug=debug, window=int(self.winId()))
         self.m_webMessageReceivedToken = None
+        self.menudata = winsharedutils.add_ContextMenuRequested(self.get_controller())
         self.zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(
             self.on_ZoomFactorChanged.emit
         )
