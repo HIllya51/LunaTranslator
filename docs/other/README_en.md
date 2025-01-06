@@ -34,7 +34,7 @@ Supports almost all conceivable translation engines, including:
 
 - **Registered Online Translation** Supports user-registered **traditional translation** (Baidu, Tencent, Youdao, Xiaoniu, Caiyun, Volcano, DeepL, yandex, google, ibm, Azure) and **large model translation** (ChatGPT compatible interface, claude, cohere, gemini, Baidu Qianfan, Tencent Hunyuan)
 
-- **Offline Translation** Supports **traditional translation** (J Beijing 7, Kingsoft, Yidiantong, ezTrans, Sugoi, MT5) and offline deployed **large model translation** (ChatGPT compatible interface, Sakura large model)
+- **Offline Translation** Supports **traditional translation** (J Beijing 7, Kingsoft, Yidiantong, ezTrans, Sugoi, Atlas, LEC) and offline deployed **large model translation** (ChatGPT compatible interface, Sakura large model)
 
 - **Pre-translation** Supports reading pre-translated files, supports translation caching
 

@@ -34,7 +34,7 @@
 
 - **注册在线翻译** 支持使用用户注册的 **传统翻译** ( 百度、腾讯、有道、小牛、彩云、火山、DeepL、yandex、google、ibm、Azure ) 和 **大模型翻译** ( ChatGPT兼容接口、claude、cohere、gemini、百度千帆、腾讯混元 ) 
 
-- **离线翻译** 支持 **传统翻译** ( J北京7、金山快译、译典通、ezTrans、Sugoi、MT5 ) 和离线部署的 **大模型翻译** ( ChatGPT兼容接口、Sakura大模型 ) 
+- **离线翻译** 支持 **传统翻译** ( J北京7、金山快译、译典通、ezTrans、Sugoi、Atlas、LEC ) 和离线部署的 **大模型翻译** ( ChatGPT兼容接口、Sakura大模型 ) 
 
 - **预翻译** 支持读取预翻译文件，支持翻译缓存
 
