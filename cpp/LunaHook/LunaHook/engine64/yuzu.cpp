@@ -1890,6 +1890,24 @@ namespace
         strReplace(ws, L"^", L"");
         buffer->from(WideStringToString(ws, 932));
     }
+    void F01005090130400002(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        if (startWith(ws, L"_SELZ"))
+        {
+            auto _ = split(strSplit(s, L");")[0], L",");
+            std::wstring wss;
+            for (int i = 2; i < _.size(); i++)
+            {
+                if (wss.size())
+                    wss += L"\r\n";
+                wss += _[i];
+            }
+            buffer->from(WideStringToString(wws, 932));
+        }
+        else
+            buffer->clear();
+    }
     void F01002BB00A662000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -3584,6 +3602,7 @@ namespace
             {0x804C18C4, {CODEC_UTF8, 1, 0, 0, F0100FD4016528000, 0x0100FD4016528000ull, nullptr}}, // 1.0.0 && 1.0.2
             // OZMAFIA!! VIVACE
             {0x80058544, {0, 1, 0, 0, F0100509013040000, 0x01002BE0118AE000ull, nullptr}}, // 1.0.0 && 1.0.1
+            {0x8005b1f4, {0, 0, 0, 0, F01005090130400002, 0x01002BE0118AE000ull, nullptr}},
             // Tokimeki Memorial Girl’s Side 3rd Story for Nintendo Switch
             {0x82270d80, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
             {0x82270c60, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
