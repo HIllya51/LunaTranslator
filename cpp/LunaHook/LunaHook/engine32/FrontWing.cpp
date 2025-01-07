@@ -47,8 +47,14 @@ bool FrontWing2_attach_function()
   hp.type = USING_STRING;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    auto s = strSplit(buffer->strA(), "\n")[0];
+    auto __ = strSplit(buffer->strA(), "\n");
+    std::string s;
+    for (auto i = 0; (i < __.size()) && (__[i].size() > 1); i++)
+    {
+      s += __[i];
+    }
     auto ws = StringToWideString(s, 932).value();
+    strReplace(ws, L"\r", L"");
     ws = std::regex_replace(ws, std::wregex(LR"([\w\d]*\\[\w\d]*\\[\w\d_]*)"), L"");
     ws = std::regex_replace(ws, std::wregex(LR"(\[rb,(.*?),(.*?)\])"), L"$1");
     ws = std::regex_replace(ws, std::wregex(L",(.*?),(.*?)"), L"$1$2");
