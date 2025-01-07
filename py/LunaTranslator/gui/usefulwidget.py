@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
-import windows, qtawesome, winsharedutils, gobject
+import windows, qtawesome, winsharedutils, gobject, threading
 from webviewpy import webview_native_handle_kind_t, Webview
 from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton_close, tryprint
@@ -1100,6 +1100,9 @@ class abstractwebview(QWidget):
     html_limit = 2 * 1024 * 1024
 
     # 必须的接口
+    def getHtml(self, callback):
+        return
+
     def setHtml(self, html):
         pass
 
@@ -1180,6 +1183,14 @@ class WebivewWidget(abstractwebview):
     html_limit = 1572834
     # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
     dropfilecallback = pyqtSignal(str)
+
+    def getHtml(self, callback):
+        def __(html):
+            callback(json.loads(html))
+
+        cb = winsharedutils.html_get_select_text_cb(__)
+        winsharedutils.get_root_html(self.get_controller(), cb)
+        self.callbacks.append(cb)
 
     def __del__(self):
         if not self.webview:
@@ -1392,6 +1403,10 @@ class QWebWrap(abstractwebview):
 
 
 class mshtmlWidget(abstractwebview):
+    def getHtml(self, callback):
+        cb = winsharedutils.html_get_select_text_cb(callback)
+        winsharedutils.html_get_html(self.browser, cb)
+        self.callbacks.append(cb)
 
     def eval(self, js):
         winsharedutils.html_eval(self.browser, js)
@@ -1505,7 +1520,6 @@ class auto_select_webview(QWidget):
 
     def eval(self, js):
         self.internal.eval(js)
-        self.evals.append(js)
 
     def bind(self, funcname, function):
         self.bindinfo.append((funcname, function))
@@ -1516,16 +1530,13 @@ class auto_select_webview(QWidget):
         self.internal.add_menu(index, label, callback)
 
     def clear(self):
-        self.lastaction = None
         self.internal.setHtml(self.internal.parsehtml(""))  # 夜间
 
     def navigate(self, url):
-        self.lastaction = 0, url
         self.internal.set_zoom(self.internalsavedzoom)
         self.internal.navigate(url)
 
     def setHtml(self, html):
-        self.lastaction = 1, html
         self.internal.set_zoom(self.internalsavedzoom)
         html = self.internal.parsehtml(html)
         if len(html) < self.internal.html_limit:
@@ -1547,15 +1558,14 @@ class auto_select_webview(QWidget):
     def __init__(self, parent, dyna=False) -> None:
         super().__init__(parent)
         self.addmenuinfo = []
-        self.evals = []
         self.bindinfo = []
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.internal = None
+        self.saveurl = None
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
         self.internalsavedzoom = 1
-        self.lastaction = None
         self._maybecreate_internal()
         if dyna:
             switchtypes.append(self)
@@ -1569,31 +1579,36 @@ class auto_select_webview(QWidget):
         self.internalsavedzoom = zoom
         self.on_ZoomFactorChanged.emit(zoom)
 
-    def _maybecreate_internal(self):
-        if self.internal:
-            self.layout().removeWidget(self.internal)
+    def _gethtmlcallback(self, html):
+        self.layout().removeWidget(self.internal)
+        self._createinternal()
+        self.internal.setHtml(html)
+
+    def _on_load(self, url):
+        self.saveurl = url
+        self.on_load.emit(url)
+
+    def _createinternal(self):
         self.internal = self._createwebview()
         self.internal.set_zoom(self.internalsavedzoom)
-        self.internal.on_load.connect(self.on_load)
+        self.internal.on_load.connect(self._on_load)
         self.internal.on_ZoomFactorChanged.connect(self.internalzoomchanged)
         self.layout().addWidget(self.internal)
         for _ in self.addmenuinfo:
             self.internal.add_menu(*_)
         for _ in self.bindinfo:
             self.internal.bind(*_)
-        for _ in self.evals:
-            self.internal.eval(_)
-        self.reloaddata()
 
-    def reloaddata(self):
-        if self.lastaction:
-            action, arg = self.lastaction
-            if action == 0:
-                self.navigate(arg)
-            elif action == 1:
-                self.setHtml(arg)
-        else:
-            self.clear()
+    def _maybecreate_internal(self):
+        if self.internal:
+            if self.saveurl and self.saveurl != "about:blank":
+                self.layout().removeWidget(self.internal)
+                self._createinternal()
+                self.internal.navigate(self.saveurl)
+            else:
+                self.internal.getHtml(self._gethtmlcallback)
+            return
+        self._createinternal()
 
     def _createwebview(self):
         contex = globalconfig["usewebview"]

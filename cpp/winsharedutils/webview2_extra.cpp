@@ -10,13 +10,14 @@ using namespace Microsoft::WRL;
 #else
 typedef int COREWEBVIEW2_PREFERRED_COLOR_SCHEME;
 typedef int EventRegistrationToken;
+typedef int ICoreWebView2Controller;
 #endif
-DECLARE_API void set_transparent_background(void *m_host)
+DECLARE_API void set_transparent_background(ICoreWebView2Controller *m_host)
 {
 #ifndef WINXP
     COREWEBVIEW2_COLOR color;
     ZeroMemory(&color, sizeof(color));
-    wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+    wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
     wil::com_ptr<ICoreWebView2Controller2> coreWebView2 =
         m_controller.try_query<ICoreWebView2Controller2>();
     if (coreWebView2)
@@ -26,10 +27,10 @@ DECLARE_API void set_transparent_background(void *m_host)
 #endif
 }
 
-DECLARE_API void put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
+DECLARE_API void put_PreferredColorScheme(ICoreWebView2Controller *m_host, COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {
 #ifndef WINXP
-    wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+    wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
     wil::com_ptr<ICoreWebView2> coreWebView2;
     [&]()
     {
@@ -45,13 +46,13 @@ DECLARE_API void put_PreferredColorScheme(void *m_host, COREWEBVIEW2_PREFERRED_C
     }();
 #endif
 }
-DECLARE_API void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
+DECLARE_API void *add_ZoomFactorChanged(ICoreWebView2Controller *m_host, void (*signal)(double))
 {
 #ifndef WINXP
     EventRegistrationToken *m_zoomFactorChangedToken = new EventRegistrationToken;
     // Register a handler for the ZoomFactorChanged event.
     // This handler just announces the new level of zoom on the window's title bar.
-    reinterpret_cast<ICoreWebView2Controller *>(m_host)->add_ZoomFactorChanged(
+    m_host->add_ZoomFactorChanged(
         Callback<ICoreWebView2ZoomFactorChangedEventHandler>(
             [signal](ICoreWebView2Controller *sender, IUnknown *args) -> HRESULT
             {
@@ -70,34 +71,34 @@ DECLARE_API void *add_ZoomFactorChanged(void *m_host, void (*signal)(double))
     return NULL;
 #endif
 }
-DECLARE_API void remove_ZoomFactorChanged(void *m_host, EventRegistrationToken *token)
+DECLARE_API void remove_ZoomFactorChanged(ICoreWebView2Controller *m_host, EventRegistrationToken *token)
 {
 #ifndef WINXP
-    reinterpret_cast<ICoreWebView2Controller *>(m_host)->remove_ZoomFactorChanged(*token);
+    m_host->remove_ZoomFactorChanged(*token);
     delete token;
 #endif
 }
-DECLARE_API double get_ZoomFactor(void *m_host)
+DECLARE_API double get_ZoomFactor(ICoreWebView2Controller *m_host)
 {
 #ifndef WINXP
     double zoomFactor;
-    reinterpret_cast<ICoreWebView2Controller *>(m_host)->get_ZoomFactor(&zoomFactor);
+    m_host->get_ZoomFactor(&zoomFactor);
     return zoomFactor;
 #else
     return 1;
 #endif
 }
-DECLARE_API void put_ZoomFactor(void *m_host, double zoomFactor)
+DECLARE_API void put_ZoomFactor(ICoreWebView2Controller *m_host, double zoomFactor)
 {
 #ifndef WINXP
-    reinterpret_cast<ICoreWebView2Controller *>(m_host)->put_ZoomFactor(zoomFactor);
+    m_host->put_ZoomFactor(zoomFactor);
 #endif
 }
 // https://github.com/MicrosoftEdge/WebView2Feedback/blob/main/specs/WebMessageObjects.md
-DECLARE_API void remove_WebMessageReceived(void *m_host, EventRegistrationToken *token)
+DECLARE_API void remove_WebMessageReceived(ICoreWebView2Controller *m_host, EventRegistrationToken *token)
 {
 #ifndef WINXP
-    wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+    wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
     wil::com_ptr<ICoreWebView2> m_webView;
     [&]()
     {
@@ -109,10 +110,10 @@ DECLARE_API void remove_WebMessageReceived(void *m_host, EventRegistrationToken 
 #endif
 }
 
-DECLARE_API void *add_WebMessageReceived(void *m_host, void (*callback)(const wchar_t *))
+DECLARE_API void *add_WebMessageReceived(ICoreWebView2Controller *m_host, void (*callback)(const wchar_t *))
 {
 #ifndef WINXP
-    wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+    wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
     wil::com_ptr<ICoreWebView2Controller4> coreWebView4 =
         m_controller.try_query<ICoreWebView2Controller4>();
     if (coreWebView4)
@@ -188,20 +189,19 @@ struct contextcallbackdatas
 };
 // https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/how-to/context-menus?tabs=cpp
 // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2_11?view=webview2-1.0.2849.39
-DECLARE_API void add_menu_list(void *ptr, int index, const wchar_t *label, void (*callback)(const wchar_t *))
+DECLARE_API void add_menu_list(contextcallbackdatas *ptr, int index, const wchar_t *label, void (*callback)(const wchar_t *))
 {
     if (!ptr)
         return;
-    auto token = reinterpret_cast<contextcallbackdatas *>(ptr);
-    token->menus.insert(token->menus.begin() + index, std::make_pair(label, callback));
+    ptr->menus.insert(ptr->menus.begin() + index, std::make_pair(label, callback));
 }
-DECLARE_API void *add_ContextMenuRequested(void *m_host)
+DECLARE_API void *add_ContextMenuRequested(ICoreWebView2Controller *m_host)
 {
 #ifndef WINXP
     contextcallbackdatas *data = new contextcallbackdatas;
     [=]()
     {
-        wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+        wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
         wil::com_ptr<ICoreWebView2> m_webView;
         CHECK_FAILURE(m_controller->get_CoreWebView2(&m_webView));
         auto m_webView2_11 = m_webView.try_query<ICoreWebView2_11>();
@@ -280,10 +280,10 @@ DECLARE_API void *add_ContextMenuRequested(void *m_host)
     return NULL;
 #endif
 }
-DECLARE_API void remove_ContextMenuRequested(void *m_host, contextcallbackdatas *data)
+DECLARE_API void remove_ContextMenuRequested(ICoreWebView2Controller *m_host, contextcallbackdatas *data)
 {
 #ifndef WINXP
-    wil::com_ptr<ICoreWebView2Controller> m_controller(reinterpret_cast<ICoreWebView2Controller *>(m_host));
+    wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
     wil::com_ptr<ICoreWebView2> m_webView;
     [&]()
     {
@@ -295,5 +295,22 @@ DECLARE_API void remove_ContextMenuRequested(void *m_host, contextcallbackdatas 
         return S_OK;
     }();
     delete data;
+#endif
+}
+DECLARE_API void get_root_html(ICoreWebView2Controller *m_host, void (*cb)(LPCWSTR))
+{
+#ifndef WINXP
+    wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
+    wil::com_ptr<ICoreWebView2> m_webView;
+
+    CHECK_FAILURE_NORET(m_controller->get_CoreWebView2(&m_webView));
+    CHECK_FAILURE_NORET(m_webView->ExecuteScript(L"document.documentElement.outerHTML", Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
+                                                                                            [=](HRESULT errorCode,
+                                                                                                LPCWSTR resultObjectAsJson)
+                                                                                            {
+                                                                                                cb(resultObjectAsJson);
+                                                                                                return S_OK;
+                                                                                            })
+                                                                                            .Get()));
 #endif
 }

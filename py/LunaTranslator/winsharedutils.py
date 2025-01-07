@@ -105,7 +105,8 @@ html_get_select_text = utilsdll.html_get_select_text
 html_get_select_text_cb = CFUNCTYPE(None, c_wchar_p)
 html_get_select_text.argtypes = (c_void_p, c_void_p)
 
-
+html_get_html = utilsdll.html_get_html
+html_get_html.argtypes = (c_void_p, c_void_p)
 html_bind_function_FT = CFUNCTYPE(None, POINTER(c_wchar_p), c_int)
 html_bind_function = utilsdll.html_bind_function
 html_bind_function.argtypes = c_void_p, c_wchar_p, html_bind_function_FT
@@ -285,6 +286,8 @@ remove_ContextMenuRequested = utilsdll.remove_ContextMenuRequested
 remove_ContextMenuRequested.argtypes = c_void_p, c_void_p
 add_menu_list = utilsdll.add_menu_list
 add_menu_list.argtypes = (c_void_p, c_int, c_wchar_p, add_ContextMenuRequested_cb)
+get_root_html = utilsdll.get_root_html
+get_root_html.argtypes = c_void_p, c_void_p
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)

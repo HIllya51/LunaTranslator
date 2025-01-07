@@ -16,20 +16,18 @@ DECLARE_API void *wcocr_init(const wchar_t *wexe, const wchar_t *wwcdir)
     }
 }
 
-DECLARE_API void wcocr_destroy(void *pobj)
+DECLARE_API void wcocr_destroy(CWeChatOCR *pobj)
 {
     if (!pobj)
         return;
-    auto obj = reinterpret_cast<CWeChatOCR *>(pobj);
-    delete obj;
+    delete pobj;
 }
-DECLARE_API bool wcocr_ocr(void *pobj, const char *u8path, void (*cb)(int, int, int, int, LPCSTR))
+DECLARE_API bool wcocr_ocr(CWeChatOCR *pobj, const char *u8path, void (*cb)(int, int, int, int, LPCSTR))
 {
     if (!pobj)
         return false;
-    auto obj = reinterpret_cast<CWeChatOCR *>(pobj);
     CWeChatOCR::result_t res;
-    if (!obj->doOCR(u8path, &res))
+    if (!pobj->doOCR(u8path, &res))
         return false;
     for (auto &blk : res.ocr_response)
     {

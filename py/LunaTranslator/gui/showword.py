@@ -1063,67 +1063,15 @@ class showdiction(QWidget):
 
 
 class showwordfastwebview(auto_select_webview):
-    def reloaddata(self):
-        if isinstance(self.internal, mshtmlWidget):
-            super().reloaddata()
-
-    def _maybecreate_internal(self):
-        self.needreset = True
-        super()._maybecreate_internal()
-        if isinstance(self.internal, WebivewWidget):
-            if self.lastaction:
-                super().reloaddata()
-            else:
-                self.setframework()
 
     def __init__(self, parent, dyna=False):
-        self.needreset = False
         super().__init__(parent, dyna)
-        self.on_load.connect(self.checkurlchange)
 
-    def setframework(self, html=None):
-        path = os.path.join(os.path.dirname(__file__), "showwordfast.html")
-        if html:
-            with open(path, "r", encoding="utf8") as ff:
-                html = ff.read().replace(
-                    '<div id="luna_root_div"></div>',
-                    '<div id="luna_root_div">{}</div>'.format(html),
-                )
-            md5 = hashlib.md5(html.encode("utf8", errors="ignore")).hexdigest()
-            path = gobject.gettempdir(md5 + ".html")
-            with open(path, "w", encoding="utf8") as ff:
-                ff.write(html)
-        self.internal.navigate(os.path.abspath(path))
-
-    def checkurlchange(self, url: str):
-        if url == "about:blank":
-            pass
-        elif not url.startswith("file:"):
-            self.needreset = True
-
-    def setHtml(self, html):
-        # webview2 sethtml谜之很慢，navigate和eval比较快
-        if isinstance(self.internal, mshtmlWidget):
-            super().setHtml(html)
-        elif isinstance(self.internal, WebivewWidget):
-            self.lastaction = 1, html
-            self.internal.set_zoom(self.internalsavedzoom)
-            if self.needreset:
-                self.needreset = False
-                self.setframework(html)
-            else:
-                self.internal.eval("_clear_all()")
-                self.internal.eval("_set_extra_html('{}')".format(quote(html)))
-
-    def clear(self):
-        if isinstance(self.internal, mshtmlWidget):
-            super().clear()
-        elif isinstance(self.internal, WebivewWidget):
-            self.lastaction = None
-            if self.needreset:
-                self.needreset = False
-                self.setframework()
-            self.internal.eval("_clear_all()")
+    def _createwebview(self):
+        web = super()._createwebview()
+        if isinstance(web, WebivewWidget):
+            web.html_limit = 1
+        return web
 
 
 class searchwordW(closeashidewindow):

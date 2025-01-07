@@ -201,18 +201,16 @@ DECLARE_API void *html_new(HWND parent)
     return s_pWebBrowser;
 }
 
-DECLARE_API void html_navigate(void *web, wchar_t *path)
+DECLARE_API void html_navigate(MWebBrowserEx *ww, wchar_t *path)
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     ww->Navigate2(path);
 }
-DECLARE_API void html_resize(void *web, int x, int y, int w, int h)
+DECLARE_API void html_resize(MWebBrowserEx *ww, int x, int y, int w, int h)
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     RECT r;
     r.left = x;
     r.top = y;
@@ -220,37 +218,33 @@ DECLARE_API void html_resize(void *web, int x, int y, int w, int h)
     r.bottom = y + h;
     ww->MoveWindow(r);
 }
-DECLARE_API void html_release(void *web)
+DECLARE_API void html_release(MWebBrowserEx *ww)
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     ww->Destroy();
     // ww->Release(); Destroy减少引用计数，自动del
 }
 
-DECLARE_API void html_get_current_url(void *web, void (*cb)(LPCWSTR))
+DECLARE_API void html_get_current_url(MWebBrowserEx *ww, void (*cb)(LPCWSTR))
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     CComBSTR _u;
     CHECK_FAILURE_NORET(ww->get_LocationURL(&_u));
     cb(_u);
 }
 
-DECLARE_API void html_set_html(void *web, wchar_t *html)
+DECLARE_API void html_set_html(MWebBrowserEx *ww, wchar_t *html)
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     ww->SetHtml(html);
 }
-DECLARE_API void html_add_menu(void *web, int index, const wchar_t *label, void (*callback)(const wchar_t *))
+DECLARE_API void html_add_menu(MWebBrowserEx *ww, int index, const wchar_t *label, void (*callback)(const wchar_t *))
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     std::optional<std::wstring> _label;
     if (label)
         _label = label;
@@ -259,37 +253,33 @@ DECLARE_API void html_add_menu(void *web, int index, const wchar_t *label, void 
     ww->menuitems.insert(ptr, {_label, command});
     ww->menucallbacks[command] = callback;
 }
-DECLARE_API void html_get_select_text(void *web, void (*cb)(LPCWSTR))
+DECLARE_API void html_get_select_text(MWebBrowserEx *ww, void (*cb)(LPCWSTR))
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     CComBSTR selectedText;
     CHECK_FAILURE_NORET(ww->getselectedtext(&selectedText));
     cb(selectedText);
 }
 
-DECLARE_API void html_bind_function(void *web, const wchar_t *name, void (*function)(wchar_t **, int))
+DECLARE_API void html_bind_function(MWebBrowserEx *ww, const wchar_t *name, void (*function)(wchar_t **, int))
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     ww->jsobj->bindfunction(name, function);
 }
 
-DECLARE_API bool html_check_ctrlc(void *web)
+DECLARE_API bool html_check_ctrlc(MWebBrowserEx *ww)
 {
-    if (!web)
+    if (!ww)
         return false;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     return GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(67) && (ww->GetIEServerWindow() == GetFocus());
 }
 
-DECLARE_API void html_eval(void *web, const wchar_t *js)
+DECLARE_API void html_eval(MWebBrowserEx *ww, const wchar_t *js)
 {
-    if (!web)
+    if (!ww)
         return;
-    auto ww = static_cast<MWebBrowserEx *>(web);
     CComPtr<IHTMLDocument2> pDocument;
     CHECK_FAILURE_NORET(ww->GetIHTMLDocument2(&pDocument));
     CComPtr<IDispatch> scriptDispatch;
@@ -318,4 +308,18 @@ DECLARE_API void html_eval(void *web, const wchar_t *js)
     scriptDispatch->Invoke(
         dispid, IID_NULL, 0, DISPATCH_METHOD,
         &params, &result, &excepInfo, &nArgErr);
+}
+DECLARE_API void html_get_html(MWebBrowserEx *ww, void (*cb)(LPCWSTR))
+{
+    if (!ww)
+        return;
+    CComPtr<IHTMLDocument2> pDocument;
+    CHECK_FAILURE_NORET(ww->GetIHTMLDocument2(&pDocument));
+    CComPtr<IHTMLDocument3> pDocument3;
+    CHECK_FAILURE_NORET(pDocument.QueryInterface(&pDocument3));
+    CComPtr<IHTMLElement> ele;
+    CHECK_FAILURE_NORET(pDocument3->get_documentElement(&ele));
+    CComBSTR data;
+    CHECK_FAILURE_NORET(ele->get_outerHTML(&data));
+    cb(data);
 }
