@@ -28,12 +28,12 @@ class parsejson:
         self.data[k] = ts
 
     def load(self):
-        for i, k in enumerate(self.data):
+        for k in self.data:
             if not isinstance(self.data[k], str):
                 continue
             if winsharedutils.distance_ratio(self.data[k], k) < 0.2:
                 continue
-            yield i, k
+            yield k
 
 
 class parsetxt:
@@ -60,8 +60,8 @@ class parsetxt:
         self.data[index] = ts
 
     def load(self):
-        for i, k in enumerate(self.data):
-            yield i, k
+        for k in self.data:
+            yield k
 
 
 class parsesrt:
@@ -90,8 +90,40 @@ class parsesrt:
         self.blocks[index] = "\n".join(self.blocks[index].split("\n")[:2]) + "\n" + ts
 
     def load(self):
-        for i, k in enumerate(self.blocks):
-            yield i, "\n".join(k.split("\n")[2:])
+        for k in self.blocks:
+            yield "\n".join(k.split("\n")[2:])
+
+
+class parsevtt:
+    def __del__(self):
+        with open(
+            os.path.join(
+                os.path.dirname(self.file), "luna_" + os.path.basename(self.file)
+            ),
+            "w",
+            encoding="utf8",
+        ) as ff:
+            ff.write("\n".join(self.header + self.blocks))
+
+    def __init__(self, file):
+        self.file = file
+        with open(file, "r", encoding="utf8") as ff:
+            text = ff.read()
+            lines = text.split("\n")
+            if lines[0] != "WEBVTT":
+                raise Exception("invalid")
+            self.header = lines[:2]
+            self.blocks = lines[2:]
+
+    def __len__(self):
+        return (len(self.blocks) + 1) // 3
+
+    def save(self, index, k, ts):
+        self.blocks[3 * index + 1] = ts
+
+    def load(self):
+        for i in range((len(self.blocks) + 1) // 3):
+            yield self.blocks[3 * i + 1]
 
 
 class parselrc:
@@ -118,8 +150,8 @@ class parselrc:
         self.data[index] = self.data[index][: self.data[index].find("]") + 1] + ts
 
     def load(self):
-        for i, a in enumerate(self.data):
-            yield i, a[a.find("]") + 1 :]
+        for a in self.data:
+            yield a[a.find("]") + 1 :]
 
 
 class filetrans(basetext):
@@ -159,10 +191,12 @@ class filetrans(basetext):
             file = parselrc(file)
         elif file.lower().endswith(".srt"):
             file = parsesrt(file)
+        elif file.lower().endswith(".vtt"):
+            file = parsevtt(file)
         gobject.baseobject.settin_ui.progresssignal3.emit(len(file))
         gobject.baseobject.settin_ui.progresssignal2.emit("", 0)
 
-        for index, line in file.load():
+        for index, line in enumerate(file.load()):
             if self.ending:
                 return
             while not self.isautorunning:
