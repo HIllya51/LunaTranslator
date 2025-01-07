@@ -655,6 +655,13 @@ namespace
         }
         buffer->from(utf16_to_utf32(s));
     }
+    void F0100AAF020664000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = utf32_to_utf16(buffer->viewU());
+        s = std::regex_replace(s, std::wregex(LR"(\n)"), L" ");
+        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
+        buffer->from(utf16_to_utf32(s));
+    }
     void F0100F7E00DFC8000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
@@ -664,7 +671,6 @@ namespace
         s = std::regex_replace(s, std::wregex(L"#P\\(.*\\)"), L"");
         buffer->from(utf16_to_utf32(s));
     }
-
     void F0100982015606000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -2413,6 +2419,15 @@ namespace
         s = std::regex_replace(s, std::wregex(LR"(%)"), L"");
         buffer->from(s);
     }
+    void F0100BBA00B23E000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = std::regex_replace(s, std::wregex(LR"((^`)|(#\w+\[(\d*\.?\d+)\])|(\$K\d+)|(\$C\[\d+\]))"), L"");
+        s = std::regex_replace(s, std::wregex(LR"(\$\[([^\$\/]*)\$\/[^\$]*\$]|([^\$\/]*)\$\/[^\$]*\$\])"), L"");
+        s = std::regex_replace(s, std::wregex(LR"(@)"), L"");
+        s = std::regex_replace(s, std::wregex(LR"($2)"), L"凛");
+        buffer->from(s);
+    }
     void F010091C01BD8A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -3603,7 +3618,7 @@ namespace
             // OZMAFIA!! VIVACE
             {0x80058544, {0, 1, 0, 0, F0100509013040000, 0x01002BE0118AE000ull, nullptr}}, // 1.0.0 && 1.0.1
             {0x8005b1f4, {0, 0, 0, 0, F01005090130400002, 0x01002BE0118AE000ull, nullptr}},
-            // Tokimeki Memorial Girl’s Side 3rd Story for Nintendo Switch
+            // ときめきメモリアル Girl's Side 3rd Story for Nintendo Switch
             {0x82270d80, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
             {0x82270c60, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
             {0x81b6d300, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
@@ -3623,6 +3638,15 @@ namespace
             {0x822153cc, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
             {0x8221573c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
             {0x82215584, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
+            // アパシー 男子校であった怖い話
+            {0x8008eb00, {CODEC_UTF32, 1, 0, 0, F0100AAF020664000, 0x0100AAF020664000ull, "1.0.1"}},
+            {0x80009388, {CODEC_UTF32, 10, 0, 0, F0100AAF020664000, 0x0100AAF020664000ull, "1.0.1"}},
+            {0x80014a64, {CODEC_UTF32, 0, 0, 0, F0100AAF020664000, 0x0100AAF020664000ull, "1.0.1"}},
+            // 吉原彼岸花
+            {0x800818f8, {CODEC_UTF16, 9, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
+            {0x8004deb4, {CODEC_UTF16, 0, 0, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
+            {0x8013b498, {CODEC_UTF16, 8, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
+            {0x8013b4cc, {CODEC_UTF16, 8, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
         };
         return 1;
     }();
