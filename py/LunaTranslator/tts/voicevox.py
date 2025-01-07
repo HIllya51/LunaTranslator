@@ -1,7 +1,7 @@
 import time
 import requests, json
 from traceback import print_exc
-from tts.basettsclass import TTSbase
+from tts.basettsclass import TTSbase, SpeechParam
 
 
 class TTS(TTSbase):
@@ -26,11 +26,10 @@ class TTS(TTSbase):
         }
 
         response = requests.get(
-            "http://127.0.0.1:{}/speakers".format(self.config['Port']),
+            "http://127.0.0.1:{}/speakers".format(self.config["Port"]),
             headers=headers,
             proxies={"http": None, "https": None},
         ).json()
-        print(response)
         vis = []
         idxs = []
         for speaker in response:
@@ -42,30 +41,36 @@ class TTS(TTSbase):
 
         return idxs, vis
 
-    def speak(self, content, rate, voice):
+    def speak(self, content, voice, param: SpeechParam):
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
+        # 0.5-1-2
+        if param.speed > 0:
+            rate = 1 + param.speed / 10
+        else:
+            rate = 1 + param.speed / 20
+        # -0.15-0.15
+        pitch = 0.015 * param.pitch
         params = {"speaker": voice, "text": content}
 
         response = requests.post(
-            "http://localhost:{}/audio_query".format(self.config['Port']),
+            "http://localhost:{}/audio_query".format(self.config["Port"]),
             params=params,
             headers=headers,
             proxies={"http": None, "https": None},
         )
-        print(response.json())
         headers = {
             "Content-Type": "application/json",
         }
-        params = {
-            "speaker": voice,
-        }
+        resp = response.json()
+        resp.update({"speedScale": rate, "pitchScale": pitch})
+        params = {"speaker": voice}
         response = requests.post(
-            "http://localhost:{}/synthesis".format(self.config['Port']),
+            "http://localhost:{}/synthesis".format(self.config["Port"]),
             params=params,
             headers=headers,
-            data=json.dumps(response.json()),
+            json=resp,
         )
         return response.content

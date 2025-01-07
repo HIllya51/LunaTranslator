@@ -765,5 +765,6 @@
     "系统未安装当前语言的OCR模型": "OCR-modellen för det aktuella språket är inte installerad i systemet",
     "最小帧率": "Minsta ramfrekvens",
     "印刷文字识别（多语种）": "Skriva ut textigenkänning (flerspråkig)",
-    "通用文字识别 intsig": "Universal textigenkänning Intsig"
+    "通用文字识别 intsig": "Universal textigenkänning Intsig",
+    "音高": "pitch"
 }

@@ -1,7 +1,7 @@
 import time
 import os
 import windows
-from tts.basettsclass import TTSbase
+from tts.basettsclass import TTSbase, SpeechParam
 from ctypes import cast, POINTER, c_char, c_int32, c_float
 from myutils.subproc import subproc_w, autoproc
 
@@ -102,18 +102,23 @@ class TTS(TTSbase):
         )
 
     def linear_map(self, x):
+        # 0.5-4
+        if x >= 0:
+            x = 0.3 * x + 1.0
+        else:
+            x = 0.05 * x + 1.0
+        return x
+
+    def linear_map2(self, x):
+        # 0.5-2
         if x >= 0:
             x = 0.1 * x + 1.0
         else:
             x = 0.05 * x + 1.0
         return x
 
-    def speak(self, content, rate, voice):
+    def speak(self, content, voice, speed: SpeechParam):
 
-        if voice.endswith("_44"):
-            _2 = self.linear_map(rate)
-        elif voice.endswith("_22"):
-            _2 = 0
         __ = []
         for c in content:
             try:
@@ -124,7 +129,8 @@ class TTS(TTSbase):
         if not code1:
             return
         windows.WriteFile(self.hPipe, voice.encode())
-        windows.WriteFile(self.hPipe, bytes(c_float(_2)))
+        windows.WriteFile(self.hPipe, bytes(c_float(self.linear_map(speed.speed))))
+        windows.WriteFile(self.hPipe, bytes(c_float(self.linear_map2(speed.pitch))))
         windows.WriteFile(self.hPipe, code1)
 
         size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value

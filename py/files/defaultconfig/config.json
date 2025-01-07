@@ -1101,13 +1101,20 @@
             "use": true,
             "voice": "",
             "name": "WindowsTTS",
-            "type": "offline"
+            "type": "offline",
+            "arg_not_sup": [
+                "pitch"
+            ]
         },
         "huoshantts": {
             "use": false,
             "voice": "",
             "name": "火山TTS",
-            "useproxy": false
+            "useproxy": false,
+            "arg_not_sup": [
+                "pitch",
+                "rate"
+            ]
         },
         "edgetts": {
             "use": false,
@@ -1118,13 +1125,20 @@
             "use": false,
             "voice": "",
             "name": "有道TTS",
-            "useproxy": false
+            "useproxy": false,
+            "arg_not_sup": [
+                "pitch",
+                "rate"
+            ]
         },
         "NeoSpeech": {
             "use": false,
             "voice": "",
             "name": "NeoSpeech",
-            "type": "offline"
+            "type": "offline",
+            "arg_not_sup": [
+                "pitch"
+            ]
         },
         "voiceroid2": {
             "use": false,
@@ -1168,13 +1182,20 @@
             "args": {
                 "URL": "http://127.0.0.1:23456",
                 "voices": "/voice/speakers",
-                "speak": "/voice/{model_lower}?text={text}&id={id}&lang=auto&prompt_lang=auto&format=wav&preset=default"
-            }
+                "speak": "/voice/{model_lower}?text={text}&id={id}&length={speed}&lang=auto&prompt_lang=auto&format=wav&preset=default"
+            },
+            "arg_not_sup": [
+                "pitch"
+            ]
         },
         "gtts": {
             "use": false,
             "name": "GoogleTTS",
-            "voice": ""
+            "voice": "",
+            "arg_not_sup": [
+                "rate",
+                "pitch"
+            ]
         }
     },
     "update": {
@@ -1473,7 +1494,8 @@
     "usecopyword": false,
     "usewordorigin": false,
     "ttscommon": {
-        "rate": 1.0,
+        "rate": 0,
+        "pitch": 0,
         "volume": 100.0,
         "tts_repair": false,
         "tts_repair_use_at_translate": false,

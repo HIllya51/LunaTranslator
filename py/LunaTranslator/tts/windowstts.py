@@ -1,5 +1,5 @@
 import winsharedutils
-from tts.basettsclass import TTSbase
+from tts.basettsclass import TTSbase, SpeechParam
 
 
 class TTS(TTSbase):
@@ -11,11 +11,11 @@ class TTS(TTSbase):
         for _ in range(len(self._7)):
             __.append((7, _))
         for _ in range(len(self._10)):
-            __.append((7, _))
+            __.append((10, _))
         return __, (self._7 + self._10)
 
-    def speak(self, content, rate, voice):
+    def speak(self, content, voice, param:SpeechParam):
         version, voice_idx = voice
 
-        data = winsharedutils.SAPI_Speak(content, version, voice_idx, rate, 100)
+        data = winsharedutils.SAPI_Speak(content, version, voice_idx, param.speed, 100)
         return data

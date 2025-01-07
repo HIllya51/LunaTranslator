@@ -40,21 +40,19 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
         float _rate;
         if (!ReadFile(hPipe, &_rate, 4, &_, NULL))
             break;
-        if ((voice != last) || (rate != _rate))
+        float _pitch;
+        if (!ReadFile(hPipe, &_pitch, 4, &_, NULL))
+            break;
+        if (voice != last)
         {
-            last = voice;
-            rate = _rate;
             if (ebyroid)
-            {
                 delete ebyroid;
-            }
-            ebyroid = Ebyroid::Create(argv[1], //"C:\\dataH\\Yukari2",
+            ebyroid = Ebyroid::Create(argv[1],
                                       argv[2],
-                                      voice.c_str(),
-                                      2,
-                                      rate); // 1); //0.1-2,0.5-4
+                                      voice.c_str());
+            last = voice;
         }
-
+        ebyroid->Setparam(2, _rate, _pitch); // 0.5-4, 0.5-2
         ZeroMemory(input_j, sizeof(input_j));
         if (!ReadFile(hPipe, input_j, 4096, &_, NULL))
             break;

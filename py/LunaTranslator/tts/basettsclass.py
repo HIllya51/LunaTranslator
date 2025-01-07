@@ -6,6 +6,12 @@ from myutils.proxy import getproxy
 from myutils.utils import LRUCache
 
 
+class SpeechParam:
+    def __init__(self, speed, pitch):
+        self.speed = speed
+        self.pitch = pitch
+
+
 class TTSbase:
     typename = None
 
@@ -14,7 +20,7 @@ class TTSbase:
         # 分别返回内部标识名,显示
         return [], []
 
-    def speak(self, content, rate, voice):
+    def speak(self, content, voice, param: SpeechParam):
         return None  # fname ,若为None则是不需要文件直接朗读
 
     ####################
@@ -28,12 +34,18 @@ class TTSbase:
         return globalconfig["reader"][self.typename]["args"]
 
     @property
+    def arg_not_sup(self):
+        return globalconfig["reader"][self.typename].get("arg_not_sup", [])
+
+    @property
     def volume(self):
         return globalconfig["ttscommon"]["volume"]
 
     @property
-    def rate(self):
-        return globalconfig["ttscommon"]["rate"]
+    def param(self):
+        return SpeechParam(
+            globalconfig["ttscommon"]["rate"], globalconfig["ttscommon"]["pitch"]
+        )
 
     @property
     def voice(self):
@@ -85,11 +97,11 @@ class TTSbase:
         if len(self.voicelist) == 0:
             return
         try:
-            key = content, self.rate, self.voice
+            key = content, self.voice, self.param
             data = self.LRUCache.get(key)
             if data:
                 return callback(data)
-            data = self.speak(content, self.rate, self.voice)
+            data = self.speak(content, self.voice, self.param)
             if data:
                 callback(data)
                 self.LRUCache.put(key, data)

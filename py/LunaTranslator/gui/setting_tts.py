@@ -9,6 +9,7 @@ from gui.inputdialog import (
     autoinitdialog,
     yuyinzhidingsetting,
 )
+from tts.basettsclass import TTSbase
 from gui.setting_about import offlinelinks
 from gui.setting_textinput import loadvalidtss
 from gui.usefulwidget import (
@@ -19,19 +20,37 @@ from gui.usefulwidget import (
     yuitsu_switch,
     FocusCombo,
     D_getsimpleswitch,
+    getboxlayout,
+    getsmalllabel,
 )
 
 
-def showvoicelist(self, obj):
+def showvoicelist(self, obj: TTSbase):
 
     if obj is None:
         try:
             self.voicecombo.clear()
         except:
             pass
+        try:
+            self.pitch____.setEnabled(False)
+        except:
+            pass
+        try:
+            self.rate____.setEnabled(False)
+        except:
+            pass
         return
     vl = obj.voiceshowlist
     idx = obj.voicelist.index(obj.voice)
+    try:
+        self.pitch____.setEnabled("pitch" not in obj.arg_not_sup)
+    except:
+        self.pitch____c = "pitch" not in obj.arg_not_sup
+    try:
+        self.rate____.setEnabled("rate" not in obj.arg_not_sup)
+    except:
+        self.rate____c = "rate" not in obj.arg_not_sup
     try:
 
         self.voicecombo.clear()
@@ -41,12 +60,58 @@ def showvoicelist(self, obj):
         self.voicecombo_cache = vl, idx
 
 
-def changevoice(self, text):
+def changevoice(self, _):
     if gobject.baseobject.reader is None:
         return
     gobject.baseobject.reader.voice = gobject.baseobject.reader.voicelist[
         self.voicecombo.currentIndex()
     ]
+
+
+def createrate(self):
+    self.rate____ = getboxlayout(
+        [
+            "语速_(-10~10)",
+            D_getspinbox(
+                -10,
+                10,
+                globalconfig["ttscommon"],
+                "rate",
+                step=0.5,
+                double=True,
+            ),
+        ],
+        margin0=True,
+        makewidget=True,
+    )
+    try:
+        self.rate____.setEnabled(self.rate____c)
+    except:
+        self.rate____.setEnabled(False)
+    return self.rate____
+
+
+def createpitch(self):
+    self.pitch____ = getboxlayout(
+        [
+            "音高_(-10~10)",
+            D_getspinbox(
+                -10,
+                10,
+                globalconfig["ttscommon"],
+                "pitch",
+                step=0.5,
+                double=True,
+            ),
+        ],
+        margin0=True,
+        makewidget=True,
+    )
+    try:
+        self.pitch____.setEnabled(self.pitch____c)
+    except:
+        self.pitch____.setEnabled(False)
+    return self.pitch____
 
 
 def createvoicecombo(self):
@@ -178,15 +243,36 @@ def setTab5lz(self):
                     type="grid",
                     grid=[
                         [
-                            "选择声音",
-                            (functools.partial(createvoicecombo, self), 0),
+                            getsmalllabel("选择声音"),
+                            (functools.partial(createvoicecombo, self)),
                         ],
                         [
-                            "语速_(-10~10)",
-                            D_getspinbox(-10, 10, globalconfig["ttscommon"], "rate"),
-                            "",
-                            "音量_(0~100)",
-                            D_getspinbox(0, 100, globalconfig["ttscommon"], "volume"),
+                            (
+                                getboxlayout(
+                                    [
+                                        functools.partial(createrate, self),
+                                        "",
+                                        getboxlayout(
+                                            [
+                                                "音量_(0~100)",
+                                                D_getspinbox(
+                                                    0,
+                                                    100,
+                                                    globalconfig["ttscommon"],
+                                                    "volume",
+                                                ),
+                                            ],
+                                            margin0=True,
+                                            makewidget=True,
+                                        ),
+                                        "",
+                                        functools.partial(createpitch, self),
+                                    ],
+                                    margin0=True,
+                                    makewidget=True,
+                                ),
+                                -1,
+                            )
                         ],
                     ],
                 ),

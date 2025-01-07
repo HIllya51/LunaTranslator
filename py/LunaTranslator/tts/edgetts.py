@@ -8,7 +8,7 @@ import uuid, hashlib
 import time
 import requests
 import time
-from tts.basettsclass import TTSbase
+from tts.basettsclass import TTSbase, SpeechParam
 
 # https://github.com/rany2/edge-tts
 
@@ -116,8 +116,8 @@ class TTS(TTSbase):
         ).json()
         return [_["ShortName"] for _ in alllist], [_["FriendlyName"] for _ in alllist]
 
-    def speak(self, content, rate, voice):
-        return transferMsTTSData(rate, content, voice, self.proxy)
+    def speak(self, content, voice, param: SpeechParam):
+        return transferMsTTSData(content, voice, self.proxy, param)
 
 
 # Fix the time to match Americanisms
@@ -190,7 +190,7 @@ def ssml_headers_plus_data(request_id: str, timestamp: str, ssml: str) -> str:
     )
 
 
-def mkssml(text, voice: str, rate: str) -> str:
+def mkssml(text, voice: str, rate: str, pitch: str) -> str:
     """
     Creates a SSML string from the given parameters.
 
@@ -199,9 +199,8 @@ def mkssml(text, voice: str, rate: str) -> str:
     """
     if isinstance(text, bytes):
         text = text.decode("utf-8")
-
-    ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>" "<voice name='{}'><prosody pitch='+0Hz' rate='{}'>".format(
-        voice, rate
+    ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>" "<voice name='{}'><prosody pitch='{}Hz' rate='{}'>".format(
+        voice, pitch, rate
     ) + "{}</prosody></voice></speak>".format(
         text
     )
@@ -218,7 +217,7 @@ def connect_id() -> str:
     return str(uuid.uuid4()).replace("-", "")
 
 
-def transferMsTTSData(rate, content, voice, proxy):
+def transferMsTTSData(content, voice, proxy, param: SpeechParam):
 
     proxy = proxy["https"]
     if proxy:
@@ -245,11 +244,21 @@ def transferMsTTSData(rate, content, voice, proxy):
         '"outputFormat":"audio-24khz-48kbitrate-mono-mp3"'
         "}}}}\r\n"
     )
+    pc = str(int(param.pitch * 10))
+    if param.pitch >= 0:
+        pc = "+" + pc
+    else:
+        pc = pc
     ws.send(
         ssml_headers_plus_data(
             connect_id(),
             date,
-            mkssml(content, voice, str(int((rate) / 20 * 100)) + "%"),
+            mkssml(
+                content,
+                voice,
+                str(int((param.speed) / 10 * 100)) + "%",
+                pc,
+            ),
         )
     )
 

@@ -6,7 +6,7 @@ class TTS(TTSbase):
     def getvoicelist(self):
         return ["ja", "zh", "en"], ["Japanese","Chinese","English"]
 
-    def speak(self, content, rate, voice):
+    def speak(self, content, voice, _):
 
         headers = {
             "Accept": "*/*",

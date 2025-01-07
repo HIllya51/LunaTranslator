@@ -765,5 +765,6 @@
     "系统未安装当前语言的OCR模型": "El sistema no instala el modelo OCR del idioma actual",
     "最小帧率": "Tasa mínima de fotogramas",
     "印刷文字识别（多语种）": "Reconocimiento de texto impreso (multilingüe)",
-    "通用文字识别 intsig": "Reconocimiento de texto universal intsig"
+    "通用文字识别 intsig": "Reconocimiento de texto universal intsig",
+    "音高": "Tono"
 }

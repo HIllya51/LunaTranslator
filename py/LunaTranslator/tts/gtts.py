@@ -603,6 +603,6 @@ class TTS(TTSbase):
     def getvoicelist(self):
         return [""], [""]
 
-    def speak(self, content, rate, voice):
+    def speak(self, content, voice, _):
         tts = gTTS(self, content, lang=str(getlangsrc()))
         return tts.save()

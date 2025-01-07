@@ -1,7 +1,7 @@
 import time
 import os
 import windows
-from tts.basettsclass import TTSbase
+from tts.basettsclass import TTSbase, SpeechParam
 import ctypes, subprocess, gobject
 from myutils.subproc import subproc_w, autoproc
 from ctypes import cast, POINTER, c_char, c_int32
@@ -67,9 +67,9 @@ class TTS(TTSbase):
             vis.append(datas[i * 3])
         return internal, vis
 
-    def speak(self, content, rate, voice):
+    def speak(self, content, voice, param:SpeechParam):
         hkey, idx = voice
-        windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(rate)))
+        windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(param.speed)))
         windows.WriteFile(self.hPipe, content.encode("utf-16-le"))
         windows.WriteFile(self.hPipe, hkey.encode("utf-16-le"))
         windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(int(idx))))

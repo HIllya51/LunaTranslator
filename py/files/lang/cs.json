@@ -765,5 +765,6 @@
     "系统未安装当前语言的OCR模型": "OCR model pro aktuální jazyk není nainstalován v systému",
     "最小帧率": "Minimální snímková frekvence",
     "印刷文字识别（多语种）": "Rozpoznávání tisku textu (vícejazyčné)",
-    "通用文字识别 intsig": "Univerzální rozpoznávání textu Intsig"
+    "通用文字识别 intsig": "Univerzální rozpoznávání textu Intsig",
+    "音高": "výška"
 }

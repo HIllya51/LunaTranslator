@@ -22,7 +22,7 @@ class TTS(TTSbase):
         ]
         return _, _
 
-    def speak(self, content, rate, voice):
+    def speak(self, content, voice, _):
 
         headers = {
             "authority": "translate.volcengine.com",

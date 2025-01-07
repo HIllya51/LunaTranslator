@@ -15,7 +15,7 @@ namespace ebyroid
   namespace
   {
 
-    ApiAdapter *NewAdapter(const string &, const string &, const string &, float, float);
+    ApiAdapter *NewAdapter(const string &, const string &, const string &);
     int __stdcall HiraganaCallback(EventReasonCode, int32_t, IntPtr);
     int __stdcall SpeechCallback(EventReasonCode, int32_t, uint64_t, IntPtr);
     inline pair<bool, string> WithDirecory(const char *dir, function<pair<bool, string>(void)> yield);
@@ -26,10 +26,10 @@ namespace ebyroid
     delete api_adapter_;
   }
 
-  Ebyroid *Ebyroid::Create(const string &base_dir, const string &dllpath, const string &voice, float volume, float speed)
+  Ebyroid *Ebyroid::Create(const string &base_dir, const string &dllpath, const string &voice)
   {
 
-    ApiAdapter *adapter = NewAdapter(base_dir, dllpath, voice, volume, speed);
+    ApiAdapter *adapter = NewAdapter(base_dir, dllpath, voice);
     Ebyroid *ebyroid = new Ebyroid(adapter);
     return ebyroid;
   }
@@ -64,7 +64,81 @@ namespace ebyroid
     output = response.End();
     return 0;
   }
+  void Ebyroid::Setparam(float volume, float speed, float pitch)
+  {
+    uint32_t param_size = 0;
+    auto result = api_adapter_->GetParam((void *)0, &param_size);
+    if (result != ERR_INSUFFICIENT)
+    { // NOTE: Code -20 is expected here
+      string message = "API Get Param failed (Could not acquire the size) with code ";
+      message += std::to_string(result);
+      throw std::runtime_error(message);
+    }
+    if (param_size == sizeof(TTtsParam))
+    { // voiceroid2
+      TTtsParam param;
+      // TTtsParam* param = (TTtsParam*) param_buffer;
+      param.size = param_size;
+      result = api_adapter_->GetParam(&param, &param_size);
+      if (result != ERR_SUCCESS)
+      {
+        string message = "API Get Param failed with code ";
+        message += std::to_string(result);
+        throw std::runtime_error(message);
+      }
+      param.extend_format = BOTH;
+      param.proc_text_buf = HiraganaCallback;
+      param.proc_raw_buf = SpeechCallback;
+      param.proc_event_tts = nullptr;
+      param.len_raw_buf_bytes = kConfigRawbufSize;
 
+      param.volume = volume;
+      param.speaker[0].volume = volume;
+      /*
+      param.speaker[0].pause_middle = 80;
+      param.speaker[0].pause_sentence = 200;
+      param.speaker[0].pause_long = 100;
+      param.speaker[0].range = 0.893;*/
+      param.speaker[0].speed = speed;
+      param.speaker[0].pitch = pitch;
+      result = api_adapter_->SetParam(&param);
+      if (result != ERR_SUCCESS)
+      {
+        string message = "API Set Param failed with code ";
+        message += std::to_string(result);
+        throw std::runtime_error(message);
+      }
+    }
+    else if (param_size == sizeof(AITalk_TTtsParam))
+    { // voiceroid+
+      AITalk_TTtsParam param;
+      // TTtsParam* param = (TTtsParam*) param_buffer;
+      param.size = param_size;
+      result = api_adapter_->GetParam(&param, &param_size);
+      if (result != ERR_SUCCESS)
+      {
+        string message = "API Get Param failed with code ";
+        message += std::to_string(result);
+        throw std::runtime_error(message);
+      }
+      param.proc_text_buf = HiraganaCallback;
+      param.proc_raw_buf = SpeechCallback;
+      param.proc_event_tts = nullptr;
+      param.lenRawBufBytes = kConfigRawbufSize;
+
+      param.volume = volume;
+      param.Speaker[0].volume = volume;
+      param.Speaker[0].speed = speed;
+      param.Speaker[0].pitch = pitch;
+      result = api_adapter_->SetParam(&param);
+      if (result != ERR_SUCCESS)
+      {
+        string message = "API Set Param failed with code ";
+        message += std::to_string(result);
+        throw std::runtime_error(message);
+      }
+    }
+  }
   int Ebyroid::Speech(const char *inbytes, std::vector<int16_t> &output, uint32_t mode)
   {
     Response<int16_t> response{api_adapter_};
@@ -72,7 +146,6 @@ namespace ebyroid
     TJobParam param;
     param.mode_in_out = mode == 0u ? IOMODE_AIKANA_TO_WAVE : (JobInOut)mode;
     param.user_data = &response;
-
 
     int32_t job_id;
     ResultCode result = api_adapter_->TextToSpeech(&job_id, &param, inbytes);
@@ -104,7 +177,7 @@ namespace ebyroid
   namespace
   {
 
-    ApiAdapter *NewAdapter(const string &base_dir, const string &dllpath, const string &voice, float volume, float speed)
+    ApiAdapter *NewAdapter(const string &base_dir, const string &dllpath, const string &voice)
     {
       SettingsBuilder builder(base_dir, voice);
       Settings settings = builder.Build();
@@ -139,74 +212,7 @@ namespace ebyroid
         message += std::to_string(result);
         throw std::runtime_error(message);
       }
-      uint32_t param_size = 0;
-      result = adapter->GetParam((void *)0, &param_size);
-      if (result != ERR_INSUFFICIENT)
-      { // NOTE: Code -20 is expected here
-        string message = "API Get Param failed (Could not acquire the size) with code ";
-        message += std::to_string(result);
-        throw std::runtime_error(message);
-      }
-      if (param_size == sizeof(TTtsParam))
-      { // voiceroid2
-        TTtsParam param;
-        // TTtsParam* param = (TTtsParam*) param_buffer;
-        param.size = param_size;
-        result = adapter->GetParam(&param, &param_size);
-        if (result != ERR_SUCCESS)
-        {
-          string message = "API Get Param failed with code ";
-          message += std::to_string(result);
-          throw std::runtime_error(message);
-        }
-        param.extend_format = BOTH;
-        param.proc_text_buf = HiraganaCallback;
-        param.proc_raw_buf = SpeechCallback;
-        param.proc_event_tts = nullptr;
-        param.len_raw_buf_bytes = kConfigRawbufSize;
 
-        param.volume = volume;
-        param.speaker[0].volume = volume;
-        /*param.speaker[0].pitch = 1.111;
-        param.speaker[0].pause_middle = 80;
-        param.speaker[0].pause_sentence = 200;
-        param.speaker[0].pause_long = 100;
-        param.speaker[0].range = 0.893;*/
-        param.speaker[0].speed = speed;
-        result = adapter->SetParam(&param);
-        if (result != ERR_SUCCESS)
-        {
-          string message = "API Set Param failed with code ";
-          message += std::to_string(result);
-          throw std::runtime_error(message);
-        }
-      }
-      else if (param_size == sizeof(AITalk_TTtsParam))
-      { // voiceroid+
-        AITalk_TTtsParam param;
-        // TTtsParam* param = (TTtsParam*) param_buffer;
-        param.size = param_size;
-        result = adapter->GetParam(&param, &param_size);
-        if (result != ERR_SUCCESS)
-        {
-          string message = "API Get Param failed with code ";
-          message += std::to_string(result);
-          throw std::runtime_error(message);
-        }
-        param.proc_text_buf = HiraganaCallback;
-        param.proc_raw_buf = SpeechCallback;
-        param.proc_event_tts = nullptr;
-        param.lenRawBufBytes = kConfigRawbufSize;
-
-        param.volume = volume;
-        result = adapter->SetParam(&param);
-        if (result != ERR_SUCCESS)
-        {
-          string message = "API Set Param failed with code ";
-          message += std::to_string(result);
-          throw std::runtime_error(message);
-        }
-      }
       auto _ = adapter.get();
       adapter.release();
       return _;

@@ -22,17 +22,14 @@ namespace ebyroid
     Ebyroid(Ebyroid &&) = delete;
     ~Ebyroid();
 
-    static Ebyroid *Create(const std::string &base_dir, const std::string &dllpath, const std::string &voice, float volume, float speed);
+    static Ebyroid *Create(const std::string &base_dir, const std::string &dllpath, const std::string &voice);
     int Hiragana(const char *inbytes, std::vector<char> &);
     int Speech(const char *inbytes, std::vector<int16_t> &, uint32_t mode = 0u);
-    int Convert(const ConvertParams &params,
-                const unsigned char *inbytes,
-                int16_t **outbytes,
-                size_t *outsize);
-
   private:
     Ebyroid(ApiAdapter *api_adapter) : api_adapter_(api_adapter) {}
     ApiAdapter *api_adapter_;
+  public:
+    void Setparam(float volume, float speed, float pitch);
   };
 
   template <typename T>
