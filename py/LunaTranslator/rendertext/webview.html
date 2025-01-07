@@ -2,12 +2,23 @@
 </div>
 <div id="luna_extra_html_div">
 </div>
+<div class="overlay" id="overlay"></div>
 <script>
 
     const rootdivid = 'luna_root_div';
     const extra_html_divid = "luna_extra_html_div";
 </script>
 <style>
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        display: block;
+    }
+
     body {
         overflow: auto;
         margin-top: 0;
@@ -334,8 +345,11 @@
                             safe_calllunaclickedword(JSON.parse(this.getAttribute('word')))
                         })
 
-                        style.innerHTML += `#${div.id}:hover {
-  background-color: rgba(0,0,0,0.5);
+                        style.innerHTML += `#${div.id} {
+  z-index: 2000;position: relative;
+}
+  #${div.id}:hover {
+  background-color: rgba(0,0,0,0.5);  
 }`
 
                     }
@@ -400,9 +414,14 @@
         _setHTMLWithScript(document.getElementById(extra_html_divid), decodeURIComponent(htmlx))
 
     }
+    function _setselectable(b) {
+        document.getElementById(rootdivid).style.userSelect = b ? 'text' : 'none';
+        document.getElementById('overlay').style.display = b ? 'none' : 'block';
+    }
 </script>
 <script>
     //api
+    setselectable = _setselectable
     showhideorigin = _showhideorigin
     showhidetranslate = _showhidetranslate
     showhidetranslatorname = _showhidetranslatorname

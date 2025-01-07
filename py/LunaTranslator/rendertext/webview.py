@@ -39,6 +39,7 @@ class TextBrowser(QWidget, dataget):
 
     def setselectable(self, b):
         self.selectable = b
+        self.debugeval('setselectable({})'.format(int(b)))
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
