@@ -43,9 +43,9 @@ bool ransel::attach_function() {
     0xe8,XX4  //SendMessageA->__imp_SendMessageA
   };
   auto addr=MemDbg::findBytes(sig,sizeof(sig),processStartAddress,processStopAddress);
-  if(addr==0)return false;
+  if(!addr)return false;
   addr=findfuncstart(addr,0x20);
-  if(addr==0)return false;
+  if(!addr)return false;
   HookParam hp;
   hp.address=addr;
   hp.type=USING_STRING;

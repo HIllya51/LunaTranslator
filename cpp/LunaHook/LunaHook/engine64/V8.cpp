@@ -92,16 +92,16 @@ namespace{
 			BYTE sig4[]={XX,0x00,0x24,0xA0,0xFC};
 
 			addr=forwardsearch(sig1,sizeof(sig1),addr,0x20);
-			if(addr==0)continue;
+			if(!addr)continue;
 			
 			addr=forwardsearch(sig2,sizeof(sig2),addr,0x100);
-			if(addr==0)continue;
+			if(!addr)continue;
 			
 			addr=forwardsearch(sig3,sizeof(sig3),addr,0x20);
-			if(addr==0)continue;
+			if(!addr)continue;
 			
 			addr=forwardsearch(sig4,sizeof(sig4),addr,0x20);
-			if(addr==0)continue;
+			if(!addr)continue;
 			auto off=andregimm((BYTE*)addrsave);
 			if(off==regs::invalid)continue;
 			HookParam hp;
@@ -164,7 +164,7 @@ namespace{
 		char innerHTML[]="innerHTML";
 		auto addr = MemDbg::findBytes(innerHTML, sizeof(innerHTML),  processStartAddress, processStopAddress);
 		ConsoleOutput("%x",addr);
-		if(addr==0)return false;
+		if(!addr)return false;
 		bool ok=false;
 		for(auto _addr=processStartAddress+4;_addr<processStopAddress;_addr+=1){
 			if((_addr+*(int*)(_addr-4) )==addr){

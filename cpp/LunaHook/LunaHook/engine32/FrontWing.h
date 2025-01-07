@@ -39,7 +39,7 @@ public:
   {
     //[071227][フロントウイング] タイムリープ
     check_by = CHECK_BY::FILE_ALL;
-    check_by_target = check_by_list{L"MDT/*.dat", L"BGM.dat", L"CHIP.dat", L"ef.dat", L"Init.dat", L"SE.dat"};
+    check_by_target = check_by_list{L"MDT\\*.dat", L"BGM.dat", L"CHIP.dat", L"ef.dat", L"Init.dat", L"SE.dat"};
   };
   bool attach_function();
 };

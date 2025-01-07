@@ -9,7 +9,7 @@ bool GSX1() {
   //http://www.mirai-soft.com/products/persona/download.html
   //https://dlsoft.dmm.co.jp/detail/stone_0015/
     ULONG addr = MemDbg::findCallerAddress((ULONG)::GetCharWidth32W, 0xec8b55, processStartAddress, processStopAddress);
-    if(addr==0)return false;
+    if(!addr)return false;
     HookParam hp;
     hp.address=addr;
     hp.type=USING_CHAR|CODEC_UTF16|DATA_INDIRECT;
@@ -36,14 +36,14 @@ bool GSX2() {
   //仁義なき乙女 体验版
   //https://dlsoft.dmm.co.jp/detail/stone_0031/
     ULONG addr = findiatcallormov((DWORD)GetGlyphOutlineA,processStartAddress, processStartAddress, processStopAddress,false,XX);
-    if(addr==0)
+    if(!addr)
       addr = findiatcallormov((DWORD)GetGlyphOutlineA,processStartAddress, processStartAddress, processStopAddress);
-    if(addr==0)return false;
+    if(!addr)return false;
     auto addr1=findfuncstart(addr);
     auto addr2=MemDbg::findEnclosingAlignedFunction(addr);
     if(addr1) addr=addr1;
     else addr=addr2;
-    if(addr==0)return false;
+    if(!addr)return false;
     auto xrefs=findxref_reverse_checkcallop(addr,processStartAddress,processStopAddress,0xe8);
     if(xrefs.size()!=2)return false;
     addr=xrefs[1];
@@ -51,7 +51,7 @@ bool GSX2() {
     addr2=MemDbg::findEnclosingAlignedFunction(addr);
     if(addr1)addr=addr1;
     else addr=addr2;
-    if(addr==0)return false;
+    if(!addr)return false;
     ConsoleOutput("%p",addr);
     HookParam hp;
     hp.address=addr;

@@ -13,7 +13,7 @@ bool Nijyuei::attach_function() {
 
   };
   auto addr=MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if(addr==0)return false;
+  if(!addr)return false;
    
   HookParam hp;
   hp.address = addr+5; 

@@ -19,6 +19,7 @@
 #include "engine32/VALKYRIA.h"
 #include "engine32/Moonstone.h"
 #include "engine32/mirage.h"
+#include "engine32/RScript.h"
 #include "engine32/Sprite.h"
 #include "engine32/PONScripter.h"
 #include "engine32/Stronger.h"
@@ -431,5 +432,6 @@ std::vector<ENGINE *> check_engines()
         new H_do_C,
         new Mink3,
         new FrontWing2,
+        new RScript,
         };
 }

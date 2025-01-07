@@ -7,7 +7,7 @@ bool SRPGStudio::attach_function() {
   auto dll=GetModuleHandleW(L"OLEAUT32.dll");
   if(dll==0)return 0;
   auto addr=GetProcAddress(dll,"SysAllocString");
-  if(addr==0)return 0;
+  if(!addr)return 0;
   HookParam hp;
 	hp.address = (DWORD)addr;
 	hp.offset=stackoffset(1); 

@@ -10,7 +10,7 @@ bool TSSystem::attach_function() {
   auto addrs = Util::SearchMemory(bytes, sizeof(bytes), PAGE_EXECUTE, processStartAddress, processStopAddress); 
   for (auto addr : addrs) { 
     addr=MemDbg::findEnclosingAlignedFunction(addr);
-    if(addr==0)continue;
+    if(!addr)continue;
     HookParam hp;
     hp.address = addr;
     hp.offset=stackoffset(1); 

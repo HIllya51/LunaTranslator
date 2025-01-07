@@ -11,7 +11,7 @@ bool Speed::attach_function() {
   BYTE sig4[]={ 0xFF,0xD6  };
   for(auto p:std::vector<std::pair<BYTE*,int>>{{sig1,sizeof(sig1)},{sig2,sizeof(sig2)},{sig3,sizeof(sig3)},{sig4,sizeof(sig4)}}){
     addr=MemDbg::findBytes(p.first, p.second, addr, addr+0x40);
-    if(addr==0)return false;
+    if(!addr)return false;
   }
   addr = MemDbg::findEnclosingAlignedFunction(addr);
   if (addr == 0)return false;
