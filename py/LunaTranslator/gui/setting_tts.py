@@ -250,8 +250,6 @@ def setTab5lz(self):
                             (
                                 getboxlayout(
                                     [
-                                        functools.partial(createrate, self),
-                                        "",
                                         getboxlayout(
                                             [
                                                 "音量_(0~100)",
@@ -265,6 +263,8 @@ def setTab5lz(self):
                                             margin0=True,
                                             makewidget=True,
                                         ),
+                                        "",
+                                        functools.partial(createrate, self),
                                         "",
                                         functools.partial(createpitch, self),
                                     ],
