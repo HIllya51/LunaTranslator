@@ -430,5 +430,6 @@ std::vector<ENGINE *> check_engines()
         new e_Erekiteru,
         new H_do_C,
         new Mink3,
+        new FrontWing2,
         };
 }

@@ -81,16 +81,18 @@ bool checkengine()
     int current = 0;
     for (auto m : engines)
     {
+        std::unique_ptr<ENGINE> __m;
+        __m.reset(m);
         current += 1;
 
         bool matched = safematch(m);
-        bool attached = matched && safeattach(m);
 
         // ConsoleOutput("Progress %d/%d, checked engine %s, %s",current,engines.size(),m->getenginename(),infomations[matched+attached]);
         // ConsoleOutput("Progress %d/%d, %s",current,engines.size(),infomations[matched+attached]);
-        if (matched == false)
+        if (!matched)
             continue;
         ConsoleOutput(TR[MatchedEngine], m->getenginename());
+        bool attached = safeattach(m);
         if (attached)
         {
             jittypedefault = m->jittype;
@@ -100,6 +102,7 @@ bool checkengine()
                 spDefault.minAddress = 0;
                 spDefault.maxAddress = -1;
             }
+            __m.release();
         }
         if (m->is_engine_certain)
         {
