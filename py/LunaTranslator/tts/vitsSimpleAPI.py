@@ -20,7 +20,7 @@ class TTS(TTSbase):
                 internal.append((modelType, item["id"], item["name"]))
         return internal, voicelist
 
-    def speak(self, content, voice, param:SpeechParam):
+    def speak(self, content, voice, param: SpeechParam):
         if param.speed > 0:
             rate = 1 - param.speed / 15
         else:
@@ -32,7 +32,7 @@ class TTS(TTSbase):
             model=model,
             id=idx,
             text=encoded_content,
-            rate=rate,
+            speed=rate,
         )
         response = requests.get(urlpathjoin(self.config["URL"], speak)).content
 
