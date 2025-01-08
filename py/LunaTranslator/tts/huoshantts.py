@@ -6,21 +6,51 @@ from tts.basettsclass import TTSbase
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        _= [
+        _ = [
             "jp_male_satoshi",
             "jp_female_mai",
             "zh_male_rap",
-            "zh_female_sichuan",
-            "zh_male_xiaoming",
             "zh_male_zhubo",
             "zh_female_zhubo",
+            "tts.other.BV021_streaming",
+            "tts.other.BV026_streaming",
+            "tts.other.BV025_streaming",
+            "zh_female_sichuan",
+            "zh_male_xiaoming",
             "zh_female_qingxin",
             "zh_female_story",
             "en_male_adam",
+            "tts.other.BV027_streaming",
             "en_male_bob",
+            "tts.other.BV032_TOBI_streaming",
+            "tts.other.BV516_streaming",
             "en_female_sarah",
+            "fr_male_enzo",
+            "tts.other.BV078_streaming",
         ]
-        return _, _
+        _v = [
+            "jp_日语男声",
+            "jp_日语女声",
+            "zh_嘻哈歌手",
+            "zh_男主播",
+            "zh_女主播",
+            "zh_东北男声",
+            "zh_粤语男声",
+            "zh_台湾女声",
+            "zh_四川女声",
+            "zh_影视配音",
+            "zh_清新女声",
+            "zh_少儿故事",
+            "en_美式男声",
+            "en_美式女声",
+            "en_英式男声",
+            "en_英式女声",
+            "en_澳洲男声",
+            "en_澳洲女声",
+            "fr_法语男声",
+            "fr_法语女声",
+        ]
+        return _, _v
 
     def speak(self, content, voice, _):
 
