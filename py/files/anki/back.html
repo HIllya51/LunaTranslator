@@ -57,6 +57,9 @@
     var htmlcontents = ''
     var scriptElementss = []
     var scriptElementsssrc = []
+    if (dictionaryInfo.length == 1) {
+        document.getElementById('tab_buttons').style.display = 'none'
+    }
     for (var iiii = 0; iiii < dictionaryInfo.length; iiii++) {
         htmltabbuttons += '<button type="button" onclick="onclickbtn(\'' + dictionaryInfo[iiii]['dict'] + '\')" id="luna_dict_btn_' + dictionaryInfo[iiii]['dict'] + '" class="tab-button' + (iiii == 0 ? ' active' : '') + '">' + dictionaryInfo[iiii]['name'] + '</button>'
 

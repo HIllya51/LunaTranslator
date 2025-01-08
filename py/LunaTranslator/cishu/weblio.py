@@ -62,7 +62,7 @@ function safe_weblio_search_word(word){
 }</script>
 """
         links = []
-        style = simplehtmlparser(html, "style", "<style>")[7:-8]
+        style = self.parse_stylesheet(simplehtmlparser(html, "style", "<style>")[7:-8], self.klass)
         for link in simplehtmlparser_all(html, "link", '<link rel="stylesheet"'):
             for _ in re.findall('href="(.*?)"', link):
                 links.append("https:" + _)

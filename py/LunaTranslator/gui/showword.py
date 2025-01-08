@@ -813,11 +813,13 @@ class AnkiWindow(QWidget):
             ("screenshot", self.editpath.text()),
         ]:
             if len(_):
+                with open(_, "rb") as ff:
+                    b64 = base64.b64encode(ff.read()).decode()
                 media.append(
                     [
                         {
-                            "path": _,
-                            "filename": str(uuid.uuid4()) + os.path.basename(_),
+                            "data": b64,
+                            "filename": str(uuid.uuid4()) + os.path.splitext(_)[1],
                             "fields": [k],
                         }
                     ]
