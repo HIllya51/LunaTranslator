@@ -2,7 +2,7 @@ from qtsymbols import *
 import json, time, functools, os, base64, uuid
 from urllib.parse import quote
 from traceback import print_exc
-import qtawesome, requests, gobject, windows, hashlib
+import qtawesome, requests, gobject, windows, winsharedutils
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, static_data, _TR
@@ -971,7 +971,7 @@ class showdiction(QWidget):
         if action == search:
             self.model.onDoubleClicked(idx)
         elif copy == action:
-            gobject.baseobject.clipboardhelper.setText.emit(item.text())
+            winsharedutils.clipboard_set(item.text())
         elif action == label:
             if not idx.data(isLabeleddWord):
                 item.setData(True, isLabeleddWord)

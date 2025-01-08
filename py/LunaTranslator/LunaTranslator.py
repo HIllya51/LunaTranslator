@@ -53,18 +53,6 @@ from gui.dynalang import LAction, LMenu
 from gui.setting_textinput_ocr import showocrimage
 
 
-class _clipboardhelper(QObject):
-    setText = pyqtSignal(str)
-    setPixmap = pyqtSignal(QPixmap)
-    setImage = pyqtSignal(QImage)
-
-    def __init__(self):
-        super().__init__()
-        self.setPixmap.connect(QApplication.clipboard().setPixmap)
-        self.setImage.connect(QApplication.clipboard().setImage)
-        self.setText.connect(QApplication.clipboard().setText)
-
-
 class MAINUI:
     def __init__(self) -> None:
         super().__init__()
@@ -99,7 +87,7 @@ class MAINUI:
         self.autoswitchgameuid = True
         self.istriggertoupdate = False
         self.thishastranslated = True
-    
+
     @threader
     def ttsautoforward(self):
         if not globalconfig["ttsautoforward"]:
@@ -978,8 +966,8 @@ class MAINUI:
             word = word.get("origorig", word["orig"])
 
         if globalconfig["usecopyword"]:
-            gobject.baseobject.clipboardhelper.setText.emit(
-                (QApplication.clipboard().text("plain")[0] + word) if append else word
+            winsharedutils.clipboard_set(
+                (winsharedutils.clipboard_get() + word) if append else word
             )
         if globalconfig["usesearchword"]:
             self.searchwordW.search_word.emit(word, append)
@@ -1156,7 +1144,6 @@ class MAINUI:
                 # ).family()
 
     def loadui(self):
-        self.clipboardhelper = _clipboardhelper()
         self.installeventfillter()
         self.parsedefaultfont()
         self.loadmetadatas()

@@ -1,23 +1,22 @@
 from textsource.textsourcebase import basetext
 from myutils.config import globalconfig
-import gobject
-from qtsymbols import *
+import winsharedutils, gobject
 
 
 class copyboard(basetext):
 
     def end(self):
-        QApplication.clipboard().disconnect()
+        winsharedutils.clipboard_callback_stop(self.__hwnd)
 
-    def __callback(self):
-        clipboard = QApplication.clipboard()
-        if globalconfig["excule_from_self"] and clipboard.ownsClipboard():
+    def __callback(self, string, ismy):
+        if globalconfig["excule_from_self"] and ismy:
             return
-        self.dispatchtext(clipboard.text("plain")[0])
+        self.dispatchtext(string)
 
     def init(self) -> None:
         self.startsql(gobject.gettranslationrecorddir("0_copy.sqlite"))
-        QApplication.clipboard().dataChanged.connect(self.__callback)
+        self.__ref = winsharedutils.clipboard_callback_type(self.__callback)
+        self.__hwnd = winsharedutils.clipboard_callback(self.__ref)
 
     def gettextonce(self):
-        return QApplication.clipboard().text("plain")[0]
+        return winsharedutils.clipboard_get()

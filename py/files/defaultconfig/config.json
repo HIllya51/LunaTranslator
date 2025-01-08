@@ -1182,7 +1182,12 @@
             "args": {
                 "URL": "http://127.0.0.1:23456",
                 "voices": "/voice/speakers",
-                "speak": "/voice/{model_lower}?text={text}&id={id}&length={speed}&lang=auto&prompt_lang=auto&format=wav&preset=default"
+                "speak2": "/voice/{model_lower}?text={text}&id={id}&length={length}&lang=auto&prompt_lang=auto&format=wav&preset=default"
+            },
+            "argstype": {
+                "speak2": {
+                    "name": "speak"
+                }
             },
             "arg_not_sup": [
                 "pitch"

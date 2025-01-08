@@ -272,8 +272,8 @@ _OpenProcess.argtypes = c_uint, c_bool, c_uint
 CloseHandle = _kernel32.CloseHandle
 CloseHandle.argtypes = (HANDLE,)
 CloseHandle.restype = BOOL
-SendMessage = _user32.SendMessageW
-SendMessage.argtypes = c_int, c_uint, c_void_p, c_void_p
+_SendMessage = _user32.SendMessageW
+_SendMessage.argtypes = c_int, c_uint, c_void_p, c_void_p
 _keybd_event = _user32.keybd_event
 _keybd_event.argtypes = c_byte, c_byte, c_uint, c_void_p
 RegisterWindowMessage = _user32.RegisterWindowMessageW
@@ -281,6 +281,8 @@ RegisterWindowMessage.argtypes = (LPCWSTR,)
 RegisterWindowMessage.restype = UINT
 _GetWindowThreadProcessId = _user32.GetWindowThreadProcessId
 _GetWindowThreadProcessId.argtypes = HWND, c_void_p
+GetClipboardOwner = _user32.GetClipboardOwner
+GetClipboardOwner.restype = HWND
 try:
     _GetModuleFileNameExW = _psapi.GetModuleFileNameExW
 except:
@@ -495,6 +497,10 @@ def ShellExecute(hwnd: int, op: str, file: str, params: str, _dir: str, bShow):
 
 def OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId):
     return _OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId)
+
+
+def SendMessage(hwnd, message, wp=None, lp=None):
+    return _SendMessage(hwnd, message, wp, lp)
 
 
 def keybd_event(bVk, bScan, dwFlags, _):

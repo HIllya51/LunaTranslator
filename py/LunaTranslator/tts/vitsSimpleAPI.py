@@ -15,24 +15,27 @@ class TTS(TTSbase):
         for modelType in modelTypes:
             vits_data = responseVits[modelType]
             for item in vits_data:
-                model_info = "{}_{}_{}".format(modelType, item["id"], item["name"])
+                lang_str = "/".join(item["lang"])
+                model_info = "{}_{}_{}_{}".format(
+                    modelType, item["id"], item["name"], lang_str
+                )
                 voicelist.append(model_info)
                 internal.append((modelType, item["id"], item["name"]))
         return internal, voicelist
 
     def speak(self, content, voice, param: SpeechParam):
         if param.speed > 0:
-            rate = 1 - param.speed / 15
+            length = 1 - param.speed / 15
         else:
-            rate = 1 - param.speed / 5
+            length = 1 - param.speed / 5
         encoded_content = quote(content)
         model, idx, _ = voice
-        speak = self.config["speak"].format(
+        speak = self.config["speak2"].format(
             model_lower=model.lower(),
             model=model,
             id=idx,
             text=encoded_content,
-            speed=rate,
+            length=length,
         )
         response = requests.get(urlpathjoin(self.config["URL"], speak)).content
 

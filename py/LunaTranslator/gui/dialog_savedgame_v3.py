@@ -10,6 +10,7 @@ from myutils.config import (
     extradatas,
     globalconfig,
 )
+from myutils.hwnd import clipboard_set_image
 from myutils.utils import (
     get_time_stamp,
     loopbackrecorder,
@@ -572,9 +573,7 @@ class pixwrapper(QWidget):
         if action == deleteimage:
             self.removecurrent(False)
         elif copyimage == action:
-            gobject.baseobject.clipboardhelper.setImage.emit(
-                QImage(extradatas["localedpath"].get(curr, curr))
-            )
+            clipboard_set_image(extradatas["localedpath"].get(curr, curr))
         elif action == deleteimage_x:
             self.removecurrent(True)
         elif action == pos:

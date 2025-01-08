@@ -1,7 +1,6 @@
 from textoutput.outputerbase import Base
 from myutils.config import globalconfig
-import gobject
-from qtsymbols import *
+import winsharedutils
 
 
 class Outputer(Base):
@@ -10,4 +9,5 @@ class Outputer(Base):
             not globalconfig["excule_from_self"]
         ):
             return
-        gobject.baseobject.clipboardhelper.setText.emit(text)
+
+        winsharedutils.clipboard_set(text)

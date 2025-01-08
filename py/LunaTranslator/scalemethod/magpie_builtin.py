@@ -37,8 +37,6 @@ class Method(scalebase):
         windows.SendMessage(
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_Exit"),
-            None,
-            None,
         )
 
     def changestatus(self, hwnd, full):
@@ -58,7 +56,5 @@ class Method(scalebase):
             windows.SendMessage(
                 windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
                 windows.RegisterWindowMessage("Magpie_Core_CLI_Message_Stop"),
-                None,
-                None,
             )
         return False

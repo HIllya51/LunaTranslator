@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
-import qtawesome, windows, gobject
+import qtawesome, windows, winsharedutils, gobject
 from textsource.texthook import codepage_display, codepage_real
 from myutils.config import savehook_new_data, static_data, globalconfig, _TR, isascii
 from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
@@ -693,7 +693,7 @@ class hookselect(closeashidewindow):
                 except:
                     pass
         elif action == copy:
-            gobject.baseobject.clipboardhelper.setText.emit(hc)
+            winsharedutils.clipboard_set(hc)
 
     def opensolvetext(self):
         try:

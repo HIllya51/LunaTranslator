@@ -2,7 +2,7 @@
 project(winsharedutils)
 
 
-add_library(winsharedutils MODULE webview2_extra.cpp AreoAcrylic.cpp screenshot.cpp ../implsapi.cpp hwnd.cpp globalmessagelistener.cpp theme.cpp version.cpp lnk.cpp levenshtein.cpp muteprocess.cpp sapi_dll.cpp simplemecab.cpp 
+add_library(winsharedutils MODULE clipboard.cpp webview2_extra.cpp AreoAcrylic.cpp screenshot.cpp ../implsapi.cpp hwnd.cpp globalmessagelistener.cpp theme.cpp version.cpp lnk.cpp levenshtein.cpp muteprocess.cpp sapi_dll.cpp simplemecab.cpp 
 applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp
 SimpleBrowser.cpp MWebBrowser.cpp icon.cpp ${versioninfo})
 target_precompile_headers(winsharedutils REUSE_FROM pch)

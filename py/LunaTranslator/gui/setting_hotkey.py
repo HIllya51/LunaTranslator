@@ -49,9 +49,7 @@ def registrhotkeys(self):
         "_1": gobject.baseobject.translation_ui.startTranslater,
         "_2": gobject.baseobject.translation_ui.changeTranslateMode,
         "_3": self.showsignal.emit,
-        "_4": lambda: gobject.baseobject.clipboardhelper.setText.emit(
-            gobject.baseobject.currenttext
-        ),
+        "_4": lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
         "_5": gobject.baseobject.translation_ui.changeshowhiderawsig.emit,
         "_51": gobject.baseobject.translation_ui.changeshowhidetranssig.emit,
         "_6": lambda: gobject.baseobject.transhis.showsignal.emit(),
@@ -75,15 +73,13 @@ def registrhotkeys(self):
         "_25": lambda: windows.SendMessage(
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
-            None,
-            None,
         ),
         "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
         "_26_1": lambda: gobject.baseobject.translation_ui.ocr_do_function(
             gobject.baseobject.translation_ui.ocr_once_follow_rect
         ),
         "_27": gobject.baseobject.translation_ui.simulate_key_enter,
-        "_28": lambda: gobject.baseobject.clipboardhelper.setText.emit(
+        "_28": lambda: winsharedutils.clipboard_set(
             gobject.baseobject.currenttranslate
         ),
         "_29": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn1.click(),
@@ -95,7 +91,7 @@ def registrhotkeys(self):
             QPoint()
         ),
         "36": lambda: gobject.baseobject.textgetmethod(
-            QApplication.clipboard().text("plain")[0], False
+            winsharedutils.clipboard_get(), False
         ),
         "37": lambda: gobject.baseobject.searchwordW.search_word.emit(
             winsharedutils.GetSelectedText(), False

@@ -20,9 +20,11 @@ bool tryopenclipboard(HWND hwnd = 0)
 
 std::optional<std::wstring> clipboard_get_internal()
 {
-    std::optional<std::wstring> data = {};
+    if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
+        return {};
     if (tryopenclipboard() == false)
         return {};
+    std::optional<std::wstring> data = {};
     do
     {
         HANDLE hData = GetClipboardData(CF_UNICODETEXT);
@@ -80,7 +82,13 @@ DECLARE_API bool clipboard_set(HWND hwnd, wchar_t *text)
     CloseClipboard();
     return success;
 }
-
+inline bool iscurrentowndclipboard()
+{
+    auto ohwnd = GetClipboardOwner();
+    DWORD pid;
+    GetWindowThreadProcessId(ohwnd, &pid);
+    return pid == GetCurrentProcessId();
+}
 static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE hsema, HWND *hwnd)
 {
     const wchar_t CLASS_NAME[] = L"LunaClipboardListener";
@@ -91,14 +99,12 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
         static auto callbackx = [](HWND hWnd)
         {
             auto data = clipboard_get_internal();
+            if (!data)
+                return;
             auto callback_ = reinterpret_cast<decltype(callback)>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
-            if (data && callback_)
-            {
-                auto ohwnd = GetClipboardOwner();
-                DWORD pid;
-                GetWindowThreadProcessId(ohwnd, &pid);
-                callback_(data.value().c_str(), pid == GetCurrentProcessId());
-            }
+            if (!callback_)
+                return;
+            callback_(data.value().c_str(), iscurrentowndclipboard());
         };
 #ifndef WINXP
         if (WM_CLIPBOARDUPDATE == message)
@@ -158,9 +164,9 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
         DispatchMessage(&msg);
     }
 }
-#ifndef WINXP
 DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
 {
+#ifndef WINXP
     HANDLE hsema = CreateSemaphoreW(0, 0, 10, 0);
     HWND hwnd;
 
@@ -172,31 +178,26 @@ DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
         return hwnd;
     else
         return NULL;
-}
 #else
-static int running = false;
-DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
-{
-    running = true;
-    std::thread([=]()
+    static HANDLE clipboardUpdate;
+    clipboardUpdate = CreateEventW(nullptr, FALSE, TRUE, NULL);
+    auto __ = SetWindowsHookExW(WH_GETMESSAGE, [](int statusCode, WPARAM wParam, LPARAM lParam)
+                                {
+			if (statusCode == HC_ACTION && wParam == PM_REMOVE && ((MSG*)lParam)->message == WM_CLIPBOARDUPDATE) SetEvent(clipboardUpdate);
+			return CallNextHookEx(NULL, statusCode, wParam, lParam); }, NULL, GetCurrentThreadId());
+    std::thread([=]
                 {
-        std::wstring last;
-        while(running){
-            Sleep(100);
-            auto data = clipboard_get_internal();
-            if(data){
-                if(last==data.value())continue;
-                last=data.value();
-                auto ohwnd = GetClipboardOwner();
-                DWORD pid;
-                GetWindowThreadProcessId(ohwnd, &pid);
-                callback(data.value().c_str(), pid == GetCurrentProcessId());
-            }
-        } })
+			while (WaitForSingleObject(clipboardUpdate, INFINITE) == WAIT_OBJECT_0)
+			{
+                auto data = clipboard_get_internal(); 
+                if(data)
+                callback(data.value().c_str(), iscurrentowndclipboard());
+			}
+			throw; })
         .detach();
-    return NULL;
-}
+    return (HWND) new std::pair<HANDLE, HHOOK>{clipboardUpdate, __};
 #endif
+}
 DECLARE_API void clipboard_callback_stop(HWND hwnd)
 {
 #ifndef WINXP
@@ -205,7 +206,10 @@ DECLARE_API void clipboard_callback_stop(HWND hwnd)
     RemoveClipboardFormatListener(hwnd);
     DestroyWindow(hwnd);
 #else
-    running = false;
+    auto __ = (std::pair<HANDLE, HHOOK> *)(hwnd);
+    UnhookWindowsHookEx(__->second);
+    CloseHandle(__->first);
+    delete __;
 #endif
 }
 

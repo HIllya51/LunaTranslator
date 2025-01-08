@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools
-import qtawesome, gobject, threading
+import qtawesome, winsharedutils, threading
 from myutils.config import globalconfig
 from myutils.utils import get_time_stamp
 from gui.usefulwidget import closeashidewindow
@@ -70,7 +70,7 @@ class transhist(closeashidewindow):
         if action == qingkong:
             tb.clear()
         elif action == copy:
-            gobject.baseobject.clipboardhelper.setText.emit(self.textOutput.textCursor().selectedText())
+            winsharedutils.clipboard_set(self.textOutput.textCursor().selectedText())
         elif action == baocun:
             ff = QFileDialog.getSaveFileName(self, directory="save.txt")
             if ff[0] == "":
