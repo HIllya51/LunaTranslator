@@ -85,6 +85,8 @@ class WebSocket:
         return ishttps, server, port, path
 
     def _parseheader(self, headers):
+        if not headers:
+            return WINHTTP_NO_ADDITIONAL_HEADERS
         _x = []
         for k in sorted(headers.keys()):
             _x.append("{}: {}".format(k, headers[k]))
