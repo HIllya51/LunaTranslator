@@ -1,6 +1,7 @@
 import requests
 
 global_port = 999
+global_host = "127.0.0.1"
 
 
 class AnkiException(Exception):
@@ -13,7 +14,7 @@ class AnkiModelExists(AnkiException):
 
 def invoke(action, **params):
     response = requests.get(
-        "http://127.0.0.1:{}".format(global_port),
+        "http://{}:{}".format(global_host, global_port),
         json={"action": action, "params": params, "version": 6},
     ).json()
     if len(response) != 2:

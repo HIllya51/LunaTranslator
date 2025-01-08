@@ -465,6 +465,7 @@
     "is_tracetime_strict": true,
     "jiamingcolor": "black",
     "ankiconnect": {
+        "host": "127.0.0.1",
         "port": 8765,
         "DeckName_i": 0,
         "DeckNameS": [

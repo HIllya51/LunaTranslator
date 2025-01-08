@@ -768,6 +768,7 @@ class AnkiWindow(QWidget):
         autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
         allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
         anki.global_port = globalconfig["ankiconnect"]["port"]
+        anki.global_host = globalconfig["ankiconnect"]["host"]
         ModelName = globalconfig["ankiconnect"]["ModelName6"]
         try:
             DeckName = globalconfig["ankiconnect"]["DeckNameS"][
