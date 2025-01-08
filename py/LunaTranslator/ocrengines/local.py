@@ -119,7 +119,7 @@ def dodownload(combo: QComboBox, allsupports: list):
         return
     lang = allsupports[combo.currentIndex()]
     gobject.baseobject.openlink(
-        dynamiclink("{main_server}/Resource/ocr_models/" + lang + ".zip")
+        dynamiclink("{main_server}") + "/Resource/ocr_models/{}.zip".format(lang)
     )
 
 
@@ -127,7 +127,7 @@ def doinstall(self, allsupports: list, parent, callback):
     if not allsupports:
         return
     f = QFileDialog.getOpenFileName(
-        parent, filter="model ({})".format(" ".join([_ + ".zip" for _ in allsupports]))
+        parent, filter="model ({})".format(" ".join(["{}.zip".format(_) for _ in allsupports]))
     )
     fn = f[0]
     if not fn:
@@ -147,6 +147,7 @@ def question():
     formLayout.setContentsMargins(0, 0, 0, 0)
     dialog.setLayout(formLayout)
     supportlang = LLabel()
+    supportlang.setWordWrap(True)
     formLayout.addRow("当前支持的语言", supportlang)
     combo = SuperCombo()
     allsupports = []
