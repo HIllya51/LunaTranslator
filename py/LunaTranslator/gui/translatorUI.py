@@ -27,7 +27,7 @@ from myutils.hwnd import (
 )
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
-from gui.textbrowser import Textbrowser
+from gui.textbrowser import Textbrowser, TextType
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import (
     resizableframeless,
@@ -253,7 +253,7 @@ class TranslatorWindow(resizableframeless):
     displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(dict)
-    displaystatus = pyqtSignal(str, bool, bool)
+    displaystatus = pyqtSignal(str, int)
     showhideuisignal = pyqtSignal()
     toolbarhidedelaysignal = pyqtSignal()
     showsavegame_signal = pyqtSignal()
@@ -346,7 +346,7 @@ class TranslatorWindow(resizableframeless):
                 clear=clear,
                 text=res,
                 color=color,
-                origin=False,
+                texttype=TextType.Translate,
                 iter_context=iter_context,
             )
 
@@ -378,12 +378,17 @@ class TranslatorWindow(resizableframeless):
             flags=(isshowhira, isshow_fenci, isfenciclick),
         )
 
-    def showstatus(self, res, isredorrawtextcolor, clear):
-        if isredorrawtextcolor:
-            color = "red"
-        else:
+    def showstatus(self, res, t: TextType):
+        if t == TextType.Info:
             color = globalconfig["rawtextcolor"]
-        self.showline(clear=clear, text=res, color=color, origin=False)
+            clear = True
+        elif t == TextType.Error_origin:
+            color = "red"
+            clear = True
+        elif t == TextType.Error_translator:
+            color = "red"
+            clear = False
+        self.showline(clear=clear, text=res, color=color, texttype=t)
 
     def cleartext(self, text):
         text = text.replace("\t", " ")
@@ -400,7 +405,7 @@ class TranslatorWindow(resizableframeless):
     def showline(self, **kwargs):  # clear,res,color ,type_=1,origin=True):
         name = kwargs.get("name", "")
         clear = kwargs.get("clear", True)
-        origin = kwargs.get("origin", True)
+        texttype = kwargs.get("texttype", TextType.Origin)
         text = kwargs.get("text", None)
         color = kwargs.get("color", "black")
         iter_context = kwargs.get("iter_context", None)
@@ -420,11 +425,11 @@ class TranslatorWindow(resizableframeless):
             iter_res_status = 0
         if iter_res_status:
             self.translate_text.iter_append(
-                iter_context_class, origin, atcenter, name, text, color
+                iter_context_class, texttype, atcenter, name, text, color
             )
         else:
             self.translate_text.append(
-                origin,
+                texttype,
                 atcenter,
                 name,
                 text,

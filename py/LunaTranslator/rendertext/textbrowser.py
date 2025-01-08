@@ -5,6 +5,7 @@ import gobject, functools, importlib, winsharedutils
 from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
+from gui.textbrowser import TextType
 
 
 class Qlabel_c(QLabel):
@@ -291,9 +292,9 @@ class TextBrowser(QWidget, dataget):
     def setselectable(self, b):
         self.masklabel.setHidden(b)
 
-    def _createqfont(self, origin):
+    def _createqfont(self, textype: TextType):
 
-        fm, fs, bold = self._getfontinfo(origin)
+        fm, fs, bold = self._getfontinfo(textype)
         font = QFont()
         font.setFamily(fm)
         font.setPointSizeF(fs)
@@ -321,10 +322,19 @@ class TextBrowser(QWidget, dataget):
     def showhideorigin(self, show):
         self.parent().refreshcontent()
 
-    def checkskip(self, origin):
-        if origin and not globalconfig["isshowrawtext"]:
+    def showhideerror(self, show):
+        self.parent().refreshcontent()
+
+    def checkskip(self, texttype: TextType):
+        if (texttype in (TextType.Origin,)) and (not globalconfig["isshowrawtext"]):
             return True
-        if (not origin) and (not globalconfig["showfanyi"]):
+        if (texttype in (TextType.Translate, TextType.Error_translator)) and (
+            not globalconfig["showfanyi"]
+        ):
+            return True
+        if (texttype in (TextType.Error_translator, TextType.Error_origin)) and (
+            not globalconfig["showtranexception"]
+        ):
             return True
         return False
 
@@ -341,12 +351,14 @@ class TextBrowser(QWidget, dataget):
             i += 1
         return i
 
-    def iter_append(self, iter_context_class, origin, atcenter, name, text, color):
-        if self.checkskip(origin):
+    def iter_append(
+        self, iter_context_class, texttype: TextType, atcenter, name, text, color
+    ):
+        if self.checkskip(texttype):
             return
         text = self.checkaddname(name, text)
         if iter_context_class not in self.saveiterclasspointer:
-            self._textbrowser_append(origin, atcenter, "", [], color)
+            self._textbrowser_append(texttype, atcenter, "", [], color)
             self.saveiterclasspointer[iter_context_class] = {
                 "currtext": "",
                 "curr": self._getcurrpointer(),
@@ -384,24 +396,24 @@ class TextBrowser(QWidget, dataget):
             iter_context_class,
             self.saveiterclasspointer[iter_context_class]["start"],
             text,
-            self._createqfont(origin),
+            self._createqfont(texttype),
         )
         self.cleared = False
 
-    def append(self, origin, atcenter, name, text, tag, flags, color):
-        if self.checkskip(origin):
+    def append(self, texttype: TextType, atcenter, name, text, tag, flags, color):
+        if self.checkskip(texttype):
             return
         text = self.checkaddname(name, text)
         if len(tag):
             isshowhira, isshow_fenci, isfenciclick = flags
-            font = self._createqfont(origin)
+            font = self._createqfont(texttype)
             textlines, linetags = self._splitlinestags(font, tag, text)
             text = "\n".join(textlines)
             tag = self._join_tags(linetags, True)
             tagshow = tag if isshowhira else []
         else:
             tagshow = []
-        self._textbrowser_append(origin, atcenter, text, tagshow, color)
+        self._textbrowser_append(texttype, atcenter, text, tagshow, color)
         if len(tag) and (isshow_fenci or isfenciclick):
             self.addsearchwordmask(isshow_fenci, isfenciclick, tag)
         self.cleared = False
@@ -409,9 +421,11 @@ class TextBrowser(QWidget, dataget):
     def _getqalignment(self, atcenter):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
 
-    def _textbrowser_append(self, origin, atcenter, text: str, tag: list, color):
+    def _textbrowser_append(
+        self, texttype: TextType, atcenter, text: str, tag: list, color
+    ):
         self.textbrowser.document().blockSignals(True)
-        font = self._createqfont(origin)
+        font = self._createqfont(texttype)
         self._setnextfont(font, self.cleared)
         self.textbrowser.setAlignment(self._getqalignment(atcenter))
 
@@ -424,7 +438,7 @@ class TextBrowser(QWidget, dataget):
         if hastag:
             self._setlineheight_x(blockcount, blockcount_after, self._split_tags(tag))
         else:
-            self._setlineheight(blockcount, blockcount_after, origin)
+            self._setlineheight(blockcount, blockcount_after, texttype)
         self.textbrowser.document().blockSignals(False)
         self.textbrowser.document().contentsChanged.emit()
         if hastag:
@@ -553,8 +567,8 @@ class TextBrowser(QWidget, dataget):
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
 
-    def _setlineheight(self, b1, b2, origin):
-        if origin:
+    def _setlineheight(self, b1, b2, textype: TextType):
+        if textype == TextType.Origin:
             fh = globalconfig["extra_space"]
         else:
             fh = globalconfig["extra_space_trans"]
@@ -785,10 +799,10 @@ class TextBrowser(QWidget, dataget):
                 self.searchmasklabels_clicked2[labeli].company = None
             labeli += 1
 
-    def _getfh(self, half, origin=True, getfm=False):
+    def _getfh(self, half, texttype: TextType = TextType.Origin, getfm=False):
 
         font = QFont()
-        fm, fs, bold = self._getfontinfo(origin)
+        fm, fs, bold = self._getfontinfo(texttype)
         font.setBold(bold)
         font.setFamily(fm)
         if half:

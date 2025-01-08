@@ -238,6 +238,8 @@
         return wrap
     }
 </script>
+<style id="maybeshowerror">
+</style>
 <style id="maybeshoworigin">
 </style>
 <style id="maybeshowtranslate">
@@ -255,19 +257,37 @@
         document.getElementById('maybeshowtranslate').innerHTML = css;
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
     }
+    function _showhideerror(show) {
+        let css = ['.lunatranslator_error{   display: none;    }', '.lunatranslator_error{   display: block;    }'][show]
+        document.getElementById('maybeshowerror').innerHTML = css;
+        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+    }
     function _showhideorigin(show) {
         let css = ['.lunatranslator_origin{   display: none;    }', '.lunatranslator_origin{   display: block;    }'][show]
         document.getElementById('maybeshoworigin').innerHTML = css;
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
     }
-    function _create_div_line_id(_id, origin) {
+    function _create_div_line_id(_id, texttype) {
         let div = document.createElement("div");
         div.id = _id;
-        if (1 == origin) {
+        if (texttype == 0) {
             div.classList.add('lunatranslator_origin')
         }
-        else {
+        else if (texttype == 1) {
             div.classList.add('lunatranslator_translate')
+        }
+        else if (texttype == 2) {
+             
+        }
+        else if (texttype == 3) {
+            div.classList.add('lunatranslator_error')
+        }
+        else if (texttype == 4) {
+            div.classList.add('lunatranslator_translate')
+            let divx=document.createElement('div')
+            divx.classList.add('lunatranslator_error')
+            divx.appendChild(div)
+            div=divx
         }
         document.getElementById(rootdivid).appendChild(div);
     }
@@ -422,6 +442,7 @@
 <script>
     //api
     setselectable = _setselectable
+    showhideerror = _showhideerror
     showhideorigin = _showhideorigin
     showhidetranslate = _showhidetranslate
     showhidetranslatorname = _showhidetranslatorname

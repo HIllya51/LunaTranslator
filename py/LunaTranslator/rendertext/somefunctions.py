@@ -1,5 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
+from gui.textbrowser import TextType
 
 
 class dataget:
@@ -24,8 +25,8 @@ class dataget:
         r, g, b, a = color
         return "rgba({}, {}, {}, {})".format(r, g, b, a)
 
-    def _getfontinfo(self, origin):
-        if origin:
+    def _getfontinfo(self, textype: TextType):
+        if textype == TextType.Origin:
             fm = globalconfig["fonttype"]
             fs = globalconfig["fontsizeori"]
             bold = globalconfig["showbold"]
@@ -36,7 +37,7 @@ class dataget:
         return fm, fs, bold
 
     def _getfontinfo_kana(self):
-        fm, fs, bold = self._getfontinfo(True)
+        fm, fs, bold = self._getfontinfo(TextType.Origin)
         return fm, fs * globalconfig["kanarate"], bold
 
     def _getkanacolor(self):

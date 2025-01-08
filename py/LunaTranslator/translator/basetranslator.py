@@ -106,7 +106,7 @@ class basetrans(commonbase):
                 dynamicapiname(self.typename)
                 + " init translator failed : "
                 + str(stringfyerror(e)),
-                "<msg_error_not_refresh>",
+                "<msg_error_Translator>",
             )
             print_exc()
 
@@ -426,7 +426,7 @@ class basetrans(commonbase):
                         checktutukufunction=checktutukufunction,
                     )
             except Exception as e:
-                if not (self.using and globalconfig["showtranexception"]):
+                if not (self.using):
                     continue
                 if isinstance(e, ArgsEmptyExc):
                     msg = str(e)

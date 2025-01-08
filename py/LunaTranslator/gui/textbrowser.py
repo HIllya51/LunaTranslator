@@ -6,6 +6,14 @@ from gui.usefulwidget import getQMessageBox
 from traceback import print_exc
 
 
+class TextType:
+    Origin = 0
+    Translate = 1
+    Info = 2
+    Error_origin = 3
+    Error_translator = 4
+
+
 class Textbrowser(QFrame):
     contentsChanged = pyqtSignal(QSize)
     dropfilecallback = pyqtSignal(str)
@@ -57,6 +65,7 @@ class Textbrowser(QFrame):
         self.textbrowser.resize(size)
         self.textbrowser.show()
         self.textbrowser.setselectable(globalconfig["selectable"])
+        self.textbrowser.showhideerror(globalconfig["showtranexception"])
         self.textbrowser.showhideorigin(globalconfig["isshowrawtext"])
         self.textbrowser.showhidetranslatorname(globalconfig["showfanyisource"])
         self.textbrowser.showhidetranslate(globalconfig["showfanyi"])
@@ -83,21 +92,34 @@ class Textbrowser(QFrame):
         self.trace = []
         self.loadinternal()
 
-    def iter_append(self, iter_context_class, origin, atcenter, name, text, color):
+    def iter_append(
+        self, iter_context_class, texttype: TextType, atcenter, name, text, color
+    ):
         self.trace.append(
-            (1, (iter_context_class, origin, atcenter, name, text, color))
+            (1, (iter_context_class, texttype, atcenter, name, text, color))
         )
         self.cleared = False
         self.textbrowser.iter_append(
-            iter_context_class, origin, atcenter, name, text, color
+            iter_context_class, texttype, atcenter, name, text, color
         )
 
-    def append(self, origin, atcenter, name, text, tag, flags, color):
+    def append(self, texttype: TextType, atcenter, name, text, tag, flags, color):
         self.trace.append(
-            (0, (origin, atcenter, name, text, copy.deepcopy(tag), flags, color))
+            (
+                0,
+                (
+                    texttype,
+                    atcenter,
+                    name,
+                    text,
+                    copy.deepcopy(tag),
+                    flags,
+                    color,
+                ),
+            )
         )
         self.cleared = False
-        self.textbrowser.append(origin, atcenter, name, text, tag, flags, color)
+        self.textbrowser.append(texttype, atcenter, name, text, tag, flags, color)
 
     def clear(self):
         self.cleared = True

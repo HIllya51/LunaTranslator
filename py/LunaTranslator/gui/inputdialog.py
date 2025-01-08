@@ -253,14 +253,16 @@ class yuyinzhidingsetting(LDialog):
             [
                 QStandardItem(),
                 QStandardItem(),
+                QStandardItem(),
                 QStandardItem(item["key"]),
                 QStandardItem(),
             ],
         )
-        self.table.setindexdata(self.model.index(row, 0), item["regex"])
+        self.table.setindexdata(self.model.index(row, 0), item.get("range", 0))
+        self.table.setindexdata(self.model.index(row, 1), item["regex"])
 
-        self.table.setindexdata(self.model.index(row, 1), item["condition"])
-        self.table.setindexdata(self.model.index(row, 3), item["target"])
+        self.table.setindexdata(self.model.index(row, 2), item["condition"])
+        self.table.setindexdata(self.model.index(row, 4), item["target"])
 
     def createacombox(self, config):
         com = SuperCombo()
@@ -318,23 +320,19 @@ class yuyinzhidingsetting(LDialog):
         formLayout = QVBoxLayout(self)  # 配置layout
 
         self.model = LStandardItemModel()
-        self.model.setHorizontalHeaderLabels(["正则", "条件", "目标", "指定为"])
+        self.model.setHorizontalHeaderLabels(["范围", "正则", "条件", "目标", "指定为"])
         table = TableViewW(self, updown=True, copypaste=True)
         table.setModel(self.model)
-        table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-        table.horizontalHeader().setSectionResizeMode(
-            3, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.ResizeToContents
-        )
+        table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
+        for _ in [0, 1, 2, 4]:
+            table.horizontalHeader().setSectionResizeMode(
+                _, QHeaderView.ResizeMode.ResizeToContents
+            )
         table.getindexdata = self.__getindexwidgetdata
         table.setindexdata = self.__setindexwidget
         table.insertplainrow = lambda row: self.newline(
-            row, {"key": "", "condition": 0, "regex": False, "target": "skip"}
+            row,
+            {"key": "", "condition": 0, "regex": False, "target": "skip", "range": 0},
         )
         self.table = table
         for row, item in enumerate(reflist):
@@ -378,9 +376,18 @@ class yuyinzhidingsetting(LDialog):
 
     def __setindexwidget(self, index: QModelIndex, data):
         if index.column() == 0:
+            try:
+                data = int(data)
+            except:
+                data = 0
+            data = {"range": data}
+            self.table.setIndexWidget(
+                index, getsimplecombobox(["全部", "原文", "翻译"], data, "range")
+            )
+        elif index.column() == 1:
             data = {"regex": self.table.compatiblebool(data)}
             self.table.setIndexWidget(index, getsimpleswitch(data, "regex"))
-        elif index.column() == 1:
+        elif index.column() == 2:
             try:
                 data = int(data)
             except:
@@ -389,7 +396,7 @@ class yuyinzhidingsetting(LDialog):
             self.table.setIndexWidget(
                 index, getsimplecombobox(["首尾", "包含"], data, "condition")
             )
-        elif index.column() == 3:
+        elif index.column() == 4:
             if data in ["default", "skip"]:
                 pass
             else:
@@ -403,28 +410,31 @@ class yuyinzhidingsetting(LDialog):
 
     def __getindexwidgetdata(self, index: QModelIndex):
         if index.column() == 0:
-            return self.table.indexWidgetX(index).isChecked()
-        if index.column() == 1:
             return self.table.indexWidgetX(index).currentIndex()
-        if index.column() == 3:
+        if index.column() == 1:
+            return self.table.indexWidgetX(index).isChecked()
+        if index.column() == 2:
+            return self.table.indexWidgetX(index).currentIndex()
+        if index.column() == 4:
             return self.table.indexWidgetX(index).target
         return self.model.itemFromIndex(index).text()
 
     def apply(self):
-        self.table.dedumpmodel(2)
+        self.table.dedumpmodel(3)
         rows = self.model.rowCount()
         self.reflist.clear()
         for row in range(rows):
-            k = self.table.getdata(row, 2)
-            switch = self.table.getdata(row, 0)
-            con = self.table.getdata(row, 1)
-            con2 = self.table.getdata(row, 3)
+            k = self.table.getdata(row, 3)
+            switch = self.table.getdata(row, 1)
+            con = self.table.getdata(row, 2)
+            con2 = self.table.getdata(row, 4)
             self.reflist.append(
                 {
                     "key": k,
                     "condition": con,
                     "regex": switch,
                     "target": con2,
+                    "range": self.table.getdata(row, 0),
                 }
             )
 

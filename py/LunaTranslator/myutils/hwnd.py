@@ -86,9 +86,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
         _()
 
     if isshit:
-        gobject.baseobject.translation_ui.displaystatus.emit(
-            "saved to " + fname, False, True
-        )
+        gobject.baseobject.displayinfomessage("saved to " + fname, "<msg_info_refresh>")
 
         hwnd = windows.FindWindow(
             "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
@@ -102,8 +100,8 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
             _()
     elif tocliponly:
-        gobject.baseobject.translation_ui.displaystatus.emit(
-            "saved to clipboard", False, True
+        gobject.baseobject.displayinfomessage(
+            "saved to clipboard", "<msg_info_refresh>"
         )
 
 

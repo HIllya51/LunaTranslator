@@ -111,4 +111,4 @@ def ocr_run(qimage: QImage):
             + " "
             + msg
         )
-        return text, "<msg_error_refresh>"
+        return text, "<msg_error_Origin>"

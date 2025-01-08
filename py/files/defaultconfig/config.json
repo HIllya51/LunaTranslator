@@ -1116,6 +1116,16 @@
                 "rate"
             ]
         },
+        "bcuttts": {
+            "use": false,
+            "voice": "",
+            "name": "BCUT TTS",
+            "useproxy": false,
+            "arg_not_sup": [
+                "pitch",
+                "rate"
+            ]
+        },
         "edgetts": {
             "use": false,
             "voice": "",

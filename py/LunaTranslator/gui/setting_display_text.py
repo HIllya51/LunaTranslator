@@ -39,6 +39,10 @@ def __changeuibuttonstate(self, x):
         pass
 
 
+def changeshowerrorstate(self, x):
+    gobject.baseobject.translation_ui.translate_text.textbrowser.showhideerror(x)
+
+
 def createtextfontcom(key):
     font_comboBox = FocusFontCombo()
     font_comboBox.currentTextChanged.connect(lambda x: globalconfig.__setitem__(key, x))
@@ -418,7 +422,11 @@ def xianshigrid_style(self):
                             ),
                             "",
                             "显示错误信息",
-                            D_getsimpleswitch(globalconfig, "showtranexception"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "showtranexception",
+                                callback=lambda x: changeshowerrorstate(self, x),
+                            ),
                         ],
                     ),
                 ),

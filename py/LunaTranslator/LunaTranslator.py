@@ -51,6 +51,7 @@ from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
 from gui.setting_textinput_ocr import showocrimage
+from gui.textbrowser import TextType
 
 
 class MAINUI:
@@ -64,6 +65,7 @@ class MAINUI:
         self.currenttext = ""
         self.currenttranslate = ""
         self.currentread = ""
+        self.currentread_from_origin = None
         self.refresh_on_get_trans_signature = 0
         self.currentsignature = None
         self.isrunning = True
@@ -267,16 +269,17 @@ class MAINUI:
             self.currenttext = text
             self.currenttranslate = text
             self.currentread = text
+            self.currentread_from_origin = False
             return
         else:
             msgs = [
-                ("<msg_info_refresh>", False, True),
-                ("<msg_error_not_refresh>", True, False),
-                ("<msg_error_refresh>", True, True),
+                ("<msg_info_refresh>", TextType.Info),
+                ("<msg_error_Translator>", TextType.Error_translator),
+                ("<msg_error_Origin>", TextType.Error_origin),
             ]
-            for msg, color, refresh in msgs:
+            for msg, t in msgs:
                 if infotype == msg:
-                    self.translation_ui.displaystatus.emit(text, color, refresh)
+                    self.translation_ui.displaystatus.emit(text, t)
                     return
 
     def maybeneedtranslateshowhidetranslate(self):
@@ -329,7 +332,7 @@ class MAINUI:
                 if not text:
                     return
             except Exception as e:
-                self.translation_ui.displaystatus.emit(stringfyerror(e), True, True)
+                self.translation_ui.displaystatus.emit(stringfyerror(e), TextType.Error_origin)
                 return
 
         if is_auto_run and (
@@ -357,6 +360,7 @@ class MAINUI:
             self.currenttranslate = ""
             if globalconfig["read_raw"]:
                 self.currentread = text
+                self.currentread_from_origin = True
                 which = self.__usewhich()
                 if which.get(
                     "tts_repair_use_at_translate",
@@ -554,8 +558,7 @@ class MAINUI:
                 if currentsignature == self.currentsignature:
                     self.translation_ui.displaystatus.emit(
                         apiname + " " + res,
-                        True,
-                        False,
+                        TextType.Error_translator
                     )
                 if len(usefultranslators) == 0:
                     safe_callback("")
@@ -592,6 +595,7 @@ class MAINUI:
                         and globalconfig["read_translator2"] == classname
                     ):
                         self.currentread = res
+                        self.currentread_from_origin = False
                         self.readcurrent()
 
                     if globalconfig["textoutput_trans"]:
@@ -628,9 +632,12 @@ class MAINUI:
             text = parsemayberegexreplace(usedict["tts_repair_regex"], text)
         return text
 
-    def matchwhich(self, dic: dict, res: str):
+    def matchwhich(self, dic: dict, res: str, isorigin: bool):
 
         for item in dic:
+            range_ = item.get("range", 0)
+            if ((range_ == 1) and (not isorigin)) or ((range_ == 1) and isorigin):
+                continue
             if item["regex"]:
                 retext = safe_escape(item["key"])
                 if item["condition"] == 1:
@@ -659,16 +666,17 @@ class MAINUI:
                         return item
         return None
 
-    def ttsskip(self, text, usedict) -> dict:
+    def ttsskip(self, text, usedict, isorigin) -> dict:
         if usedict["tts_skip"]:
-            return self.matchwhich(usedict["tts_skip_regex"], text)
+            return self.matchwhich(usedict["tts_skip_regex"], text, isorigin)
         return None
 
     @threader
-    def __readcurrent(self, text1, text2, force=False):
+    def __readcurrent(self, text2, force=False):
         if (not force) and (not globalconfig["autoread"]):
             return
-        matchitme = self.ttsskip(text1, self.__usewhich())
+        text1 = self.currentread
+        matchitme = self.ttsskip(text1, self.__usewhich(), self.currentread_from_origin)
         reader = None
         if matchitme is None:
             reader = self.reader
@@ -710,10 +718,10 @@ class MAINUI:
     def readcurrent(self, force=False, needresult=False):
         if needresult:
             text = self.ttsrepair(self.currentread, self.__usewhich())
-            self.__readcurrent(self.currentread, text, force)
+            self.__readcurrent(text, force)
             return text
         else:
-            self.__readcurrent(self.currentread, None, force)
+            self.__readcurrent(None, force)
 
     def loadreader(self, use, privateconfig=None, init=True, uid=None):
         aclass = importlib.import_module("tts." + use).TTS
@@ -865,7 +873,7 @@ class MAINUI:
         except Exception as e:
             self.displayinfomessage(
                 dynamicapiname(classname) + " import failed : " + str(stringfyerror(e)),
-                "<msg_error_not_refresh>",
+                "<msg_error_Translator>",
             )
             raise e
 

@@ -6,6 +6,7 @@ from myutils.utils import threader
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import tryprint, threader
 from gui.usefulwidget import WebivewWidget
+from gui.textbrowser import TextType
 
 testsavejs = False
 
@@ -39,7 +40,7 @@ class TextBrowser(QWidget, dataget):
 
     def setselectable(self, b):
         self.selectable = b
-        self.debugeval('setselectable({})'.format(int(b)))
+        self.debugeval("setselectable({})".format(int(b)))
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -152,11 +153,14 @@ class TextBrowser(QWidget, dataget):
     def showhideorigin(self, show):
         self.debugeval('showhideorigin("{}")'.format(int(show)))
 
+    def showhideerror(self, show):
+        self.debugeval('showhideerror("{}")'.format(int(show)))
+
     def showhidetranslatorname(self, show):
         self.debugeval('showhidetranslatorname("{}")'.format(int(show)))
 
-    def create_div_line_id(self, _id, origin):
-        self.debugeval('create_div_line_id("{}","{}")'.format(_id, int(origin)))
+    def create_div_line_id(self, _id, textype: TextType):
+        self.debugeval('create_div_line_id("{}",{})'.format(_id, textype))
 
     def clear_all(self):
         self.debugeval("clear_all()")
@@ -202,25 +206,26 @@ class TextBrowser(QWidget, dataget):
 
     # native api end
 
-    def iter_append(self, iter_context_class, origin, atcenter, name, text, color):
+    def iter_append(
+        self, iter_context_class, textype: TextType, atcenter, name, text, color
+    ):
 
         if iter_context_class not in self.saveiterclasspointer:
-            _id = self.createtextlineid(origin)
+            _id = self.createtextlineid(textype)
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
-        self._webview_append(_id, origin, atcenter, name, text, [], [], color)
+        self._webview_append(_id, textype, atcenter, name, text, [], [], color)
 
-    def createtextlineid(self, origin):
+    def createtextlineid(self, textype: TextType):
 
         _id = "luna_{}".format(uuid.uuid4())
-        self.create_div_line_id(_id, origin)
+        self.create_div_line_id(_id, textype)
         return _id
 
-    def append(self, origin, atcenter, name, text, tag, flags, color):
-
-        _id = self.createtextlineid(origin)
-        self._webview_append(_id, origin, atcenter, name, text, tag, flags, color)
+    def append(self, textype: TextType, atcenter, name, text, tag, flags, color):
+        _id = self.createtextlineid(textype)
+        self._webview_append(_id, textype, atcenter, name, text, tag, flags, color)
 
     def measureH(self, font_family, font_size):
         font = QFont()
@@ -240,13 +245,15 @@ class TextBrowser(QWidget, dataget):
         return currenttype
 
     def _webview_append(
-        self, _id, origin, atcenter, name: str, text: str, tag, flags, color
+        self, _id, textype: TextType, atcenter, name: str, text: str, tag, flags, color
     ):
-        fmori, fsori, boldori = self._getfontinfo(origin)
+        fmori, fsori, boldori = self._getfontinfo(textype)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
         kanacolor = self._getkanacolor()
         line_height = self.measureH(fmori, fsori) + (
-            globalconfig["extra_space"] if origin else globalconfig["extra_space_trans"]
+            globalconfig["extra_space"]
+            if (textype == TextType.Origin)
+            else globalconfig["extra_space_trans"]
         )
         style = self._getstylevalid()
 
