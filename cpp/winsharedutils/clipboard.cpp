@@ -192,8 +192,7 @@ DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
                 auto data = clipboard_get_internal(); 
                 if(data)
                 callback(data.value().c_str(), iscurrentowndclipboard());
-			}
-			throw; })
+			} })
         .detach();
     return (HWND) new std::pair<HANDLE, HHOOK>{clipboardUpdate, __};
 #endif
