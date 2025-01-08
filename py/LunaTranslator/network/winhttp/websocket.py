@@ -84,10 +84,11 @@ class WebSocket:
             path += "?" + query
         return ishttps, server, port, path
 
-    def _parseheader(self, header):
-        if header is None:
-            return WINHTTP_NO_ADDITIONAL_HEADERS
-        return "\r\n".join(header)
+    def _parseheader(self, headers):
+        _x = []
+        for k in sorted(headers.keys()):
+            _x.append("{}: {}".format(k, headers[k]))
+        return "\r\n".join(_x)
 
     def _setproxy(self, hsess, http_proxy_host, http_proxy_port):
         if http_proxy_host is None or http_proxy_port is None:
