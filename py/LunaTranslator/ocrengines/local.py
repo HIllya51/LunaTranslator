@@ -154,7 +154,16 @@ def question():
     def callback():
         langs = getallsupports()
         supportlang.setText("_,_".join([getlang_inner2show(f) for f in langs]))
-        _allsupports = ["ja", "en", "zh", "cht", "ko", "ru"]
+        _allsupports = [
+            Languages.Japanese,
+            Languages.English,
+            Languages.Chinese,
+            Languages.TradChinese,
+            Languages.Korean,
+            Languages.Russian,
+            Languages.Arabic,
+            Languages.Ukrainian,
+        ]
         allsupports.clear()
         for l in _allsupports:
             if l not in langs:
