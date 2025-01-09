@@ -18,8 +18,7 @@ struct veh_node
     BYTE origBaseByte;
     DWORD OldProtect;
     int usecount;
-    bool removed;
-    veh_node(void *origFunc, newFuncType newFunc, void *handle, DWORD hooktype) : hooktype(hooktype), handle(handle), newFunc(newFunc), origFunc(origFunc), OldProtect(PAGE_EXECUTE_READWRITE), usecount(0), removed(false)
+    veh_node(void *origFunc, newFuncType newFunc, void *handle, DWORD hooktype) : hooktype(hooktype), handle(handle), newFunc(newFunc), origFunc(origFunc), OldProtect(PAGE_EXECUTE_READWRITE), usecount(0)
     {
     }
 };
@@ -36,14 +35,9 @@ veh_node *get_veh_node(void *origFunc)
 bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
 {
     DWORD oldProtect;
-    auto hasexitst = get_veh_node(origFunc); // hookfinder不删除钩子
-    if (hasexitst)
+    if (get_veh_node(origFunc))
     {
-        if (!hasexitst->removed)
-            return false;
-        hasexitst->newFunc = newFunc;
-        hasexitst->removed = false;
-        return true;
+        return false;
     }
     void *handle = AddVectoredExceptionHandler(1, (PVECTORED_EXCEPTION_HANDLER)veh_dispatch);
     veh_node newnode{origFunc, newFunc, handle, hook_type};
@@ -87,43 +81,18 @@ void repair_origin(veh_node *node)
     *(BYTE *)node->origFunc = node->origBaseByte;
     VirtualProtect(node->origFunc, sizeof(int), node->OldProtect, &_p);
 }
-bool __remove_veh_hook(void *origFunc)
+bool remove_veh_hook(void *origFunc)
 {
+    std::lock_guard _(vehlistlock);
     veh_node *node = get_veh_node(origFunc);
     if (!node)
         return true;
-    if (node->usecount <= 0)
-    {
-        repair_origin(node);
-        RemoveVectoredExceptionHandler(node->handle);
-        list.erase(origFunc);
-        return true;
-    }
-    else
-    {
-        node->removed = true;
+    if (node->usecount > 0)
         return false;
-    }
-}
-void remove_veh_hook(void *origFunc)
-{
-    // 仅会在手动移除时被调用
-    // while (true)
-    // {
-    //     std::lock_guard _(vehlistlock);
-    if (__remove_veh_hook(origFunc))
-        ;
-    //    break;
-    //}
-}
-void remove_veh_hook(std::vector<void *> origFuncs)
-{
-    std::lock_guard _(vehlistlock);
-    for (auto origFunc : origFuncs)
-    {
-        // hookfinder时，usecount有时会无法归零（例如JIT重新写code），所以仅尝试一次即可
-        __remove_veh_hook(origFunc);
-    }
+    repair_origin(node);
+    RemoveVectoredExceptionHandler(node->handle);
+    list.erase(origFunc);
+    return true;
 }
 thread_local veh_node *lastnode;
 LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo)
@@ -143,37 +112,28 @@ LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo)
         veh_node *currnode = get_veh_node(Addr);
         if (!currnode)
             return EXCEPTION_CONTINUE_SEARCH;
+        currnode->usecount += 1;
         lastnode = currnode;
         repair_origin(currnode);
-        if (!currnode->removed)
+        if (currnode->newFunc(ExceptionInfo->ContextRecord))
+            ExceptionInfo->ContextRecord->EFlags |= 0x100;
+        else
         {
-            currnode->usecount += 1;
-            if (currnode->newFunc(ExceptionInfo->ContextRecord))
-                ExceptionInfo->ContextRecord->EFlags |= 0x100;
+            currnode->usecount -= 1;
+            lastnode = nullptr;
         }
     }
     else if (Code == STATUS_SINGLE_STEP) //&& hooktype == VEH_HK_INT3)
     {
         if (!lastnode)
             return EXCEPTION_CONTINUE_SEARCH;
-        if (!lastnode->removed)
-        {
-            VirtualProtect(Addr, sizeof(int), PAGE_EXECUTE_READWRITE, &lastnode->OldProtect);
-            *(BYTE *)lastnode->origFunc = OPCODE_INT3;
-            VirtualProtect(Addr, sizeof(int), lastnode->OldProtect, &oldProtect);
-            ExceptionInfo->ContextRecord->EFlags &= ~0x00000100; // Remove TRACE from EFLAGS
-        }
+
+        VirtualProtect(Addr, sizeof(int), PAGE_EXECUTE_READWRITE, &lastnode->OldProtect);
+        *(BYTE *)lastnode->origFunc = OPCODE_INT3;
+        VirtualProtect(Addr, sizeof(int), lastnode->OldProtect, &oldProtect);
+        ExceptionInfo->ContextRecord->EFlags &= ~0x00000100; // Remove TRACE from EFLAGS
         lastnode->usecount -= 1;
         lastnode = nullptr;
     }
-    // else if (Code == STATUS_SINGLE_STEP && hooktype == VEH_HK_HW)
-    // {
-    //     currnode->newFunc(ExceptionInfo->ContextRecord);
-    // }
-    // else if (Code == STATUS_SINGLE_STEP && hooktype == VEH_HK_MEM)
-    // {
-
-    //     currnode->newFunc(ExceptionInfo->ContextRecord);
-    // }
     return EXCEPTION_CONTINUE_EXECUTION;
 }

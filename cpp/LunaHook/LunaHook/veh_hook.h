@@ -23,9 +23,8 @@ using newFuncType = std::function<bool(PCONTEXT)>;
 
 // VEH hook interface functions for creating and removing hooks.
 bool add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type = VEH_HK_INT3);
-std::vector<void *> add_veh_hook(std::vector<void *>origFuncs, std::vector<newFuncType> newFuncs, DWORD hook_type = VEH_HK_INT3);
-void remove_veh_hook(void *origFunc);
-void remove_veh_hook(std::vector<void *>origFuncs);
+std::vector<void *> add_veh_hook(std::vector<void *> origFuncs, std::vector<newFuncType> newFuncs, DWORD hook_type = VEH_HK_INT3);
+bool remove_veh_hook(void *origFunc);
 
 // The VEH dispathing function is called by Windows every time an exception is encountered.
 // the function dispatches calls to the correct inctercept function.
