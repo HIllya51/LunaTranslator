@@ -1466,8 +1466,8 @@
             "args": {
                 "paths": [],
                 "distance": 0,
-                "max_num": 10,
-                "stylehv": 0
+                "max_num": 2,
+                "stylehv": 1
             },
             "argstype": {
                 "paths": {
