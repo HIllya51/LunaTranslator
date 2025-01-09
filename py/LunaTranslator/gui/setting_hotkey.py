@@ -131,6 +131,7 @@ def setTab_quick(self, l: QVBoxLayout):
                     "use",
                     callback=functools.partial(__enable, self),
                 ),
+                "",
             ],
             makewidget=True,
         )
