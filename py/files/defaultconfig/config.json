@@ -1503,6 +1503,7 @@
             "type": "offline"
         }
     },
+    "force_rect": false,
     "darklight2": 0,
     "darktheme2": "PyQtDarkTheme",
     "lighttheme2": "PyQtDarkTheme",

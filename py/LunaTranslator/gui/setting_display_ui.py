@@ -661,6 +661,14 @@ def otheruisetting(self):
                                 static=True,
                             ),
                         ],
+                        [
+                            "强制直角",
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "force_rect",
+                                callback=lambda _: gobject.baseobject.cornerornot(),
+                            ),
+                        ],
                     ),
                 ),
                 0,

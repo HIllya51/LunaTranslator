@@ -150,7 +150,7 @@ DECLARE_API bool setbackdropX(HWND hwnd, bool good, bool dark)
 	if (GetOSversion() <= 6)
 		return false;
 
-	DWORD corner_ = good ? 2 : 0;
+	DWORD corner_ = good ? DWMWCP_ROUND : DWMWCP_DEFAULT;
 	DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner_, sizeof(corner_));
 
 	common if (!good)

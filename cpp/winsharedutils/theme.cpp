@@ -163,12 +163,16 @@ DECLARE_API void setdwmextendframe(HWND hwnd)
 DECLARE_API void _SetTheme(
     HWND _hWnd,
     bool dark,
-    int backdrop)
+    int backdrop,
+    bool rect)
 {
 #ifndef WINXP
     // printf("%d %d\n",GetOSversion(),GetOSBuild());
     if (GetOSversion() <= 6) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
         return;
+
+    auto value1 = rect ? DWMWCP_DONOTROUND : DWMWCP_DEFAULT;
+    DwmSetWindowAttribute(_hWnd, DWMWA_WINDOW_CORNER_PREFERENCE, &value1, sizeof(value1));
     // auto _isBackgroundSolidColor = backdrop == WindowBackdrop::SolidColor;
     // if (Win32Helper::GetOSVersion().Is22H2OrNewer() &&
     //     _isBackgroundSolidColor != (backdrop == WindowBackdrop::SolidColor))

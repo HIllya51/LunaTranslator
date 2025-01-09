@@ -766,5 +766,6 @@
     "最小帧率": "Minimum frame rate",
     "印刷文字识别（多语种）": "Printing text recognition (multilingual)",
     "通用文字识别 intsig": "Universal Text Recognition Intsig",
-    "音高": "pitch"
+    "音高": "pitch",
+    "强制直角": "Forced right angle"
 }

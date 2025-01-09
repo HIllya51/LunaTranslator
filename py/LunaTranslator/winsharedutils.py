@@ -210,7 +210,7 @@ setdwmextendframe = utilsdll.setdwmextendframe
 setdwmextendframe.argtypes = (HWND,)
 
 SetTheme = utilsdll._SetTheme
-SetTheme.argtypes = HWND, c_bool, c_int
+SetTheme.argtypes = HWND, c_bool, c_int, c_bool
 
 
 getprocesses = utilsdll.getprocesses

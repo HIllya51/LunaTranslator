@@ -766,5 +766,6 @@
     "最小帧率": "Tỷ lệ khung hình tối thiểu",
     "印刷文字识别（多语种）": "Nhận dạng văn bản in (đa ngôn ngữ)",
     "通用文字识别 intsig": "Nhận dạng văn bản chung intsig",
-    "音高": "Cao độ"
+    "音高": "Cao độ",
+    "强制直角": "Buộc góc phải"
 }

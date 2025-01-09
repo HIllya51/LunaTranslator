@@ -965,7 +965,10 @@ class MAINUI:
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
         winsharedutils.SetTheme(
-            int(widget.winId()), dark, globalconfig["WindowBackdrop"]
+            int(widget.winId()),
+            dark,
+            globalconfig["WindowBackdrop"],
+            globalconfig["force_rect"],
         )
         if ismenulist:
             darklight = ["light", "dark"][self.currentisdark]
@@ -1061,6 +1064,10 @@ class MAINUI:
     def setshowintab(self):
         for widget in QApplication.topLevelWidgets():
             self.setshowintab_checked(widget)
+
+    def cornerornot(self):
+        for widget in QApplication.topLevelWidgets():
+            self.setdarkandbackdrop(widget, self.currentisdark)
 
     def setcommonstylesheet(self):
 

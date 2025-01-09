@@ -766,5 +766,6 @@
     "最小帧率": "Framerate minimum",
     "印刷文字识别（多语种）": "Reconnaissance de texte imprimée (multilingue)",
     "通用文字识别 intsig": "Reconnaissance de texte générique intsig",
-    "音高": "Hauteur de ton"
+    "音高": "Hauteur de ton",
+    "强制直角": "Angle droit forcé"
 }
