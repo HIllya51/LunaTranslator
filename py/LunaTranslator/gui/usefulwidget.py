@@ -902,7 +902,7 @@ def getIconButton(callback=None, icon="fa.paint-brush", enable=True, qicon=None)
     b = IconButton(icon, enable, qicon)
 
     if callback:
-        b.clicked.connect(callback)
+        b.clicked_1.connect(callback)
 
     return b
 
@@ -2444,6 +2444,8 @@ class statusbutton(QPushButton):
 
 
 class IconButton(QPushButton):
+    clicked_1 = pyqtSignal()
+
     def sizeHint(self):
         return QSize(
             int(1.42 * globalconfig["buttonsize2"]),
@@ -2453,6 +2455,7 @@ class IconButton(QPushButton):
     def __init__(self, icon, enable=True, qicon=None, parent=None):
         super().__init__(parent)
         self._icon = icon
+        self.clicked.connect(self.clicked_1)
         self._qicon = qicon
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
