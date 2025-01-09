@@ -1223,7 +1223,7 @@ class WebivewWidget(abstractwebview):
         self.callbacks.append(__)
         winsharedutils.add_menu_list(self.menudata, index, label, __)
 
-    def __init__(self, parent=None, debug=True, usedarklight=True) -> None:
+    def __init__(self, parent=None, debug=True) -> None:
         super().__init__(parent)
         self.webview = None
         self.callbacks = []
@@ -1244,13 +1244,13 @@ class WebivewWidget(abstractwebview):
         )
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
-        if usedarklight:
-            self.__darkstate = None
-            t = QTimer(self)
-            t.setInterval(100)
-            t.timeout.connect(self.__darkstatechecker)
-            t.timeout.emit()
-            t.start()
+        
+        self.__darkstate = None
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.__darkstatechecker)
+        t.timeout.emit()
+        t.start()
 
         self.add_menu(0, "", lambda _: None)
 

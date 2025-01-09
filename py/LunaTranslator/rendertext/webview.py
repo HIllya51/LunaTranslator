@@ -46,7 +46,7 @@ class TextBrowser(QWidget, dataget):
         super().__init__(parent)
         self.selectable = False
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
-        self.webivewwidget = WebivewWidget(self, usedarklight=False)
+        self.webivewwidget = WebivewWidget(self)
 
         webviewhwnd = self.webivewwidget.get_hwnd()
         self.wndproc = windows.WNDPROCTYPE(
