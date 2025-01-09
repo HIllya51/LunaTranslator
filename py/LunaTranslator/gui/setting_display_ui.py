@@ -139,10 +139,15 @@ def wrapedsetstylecallback(_dark, self, func):
 def checkthemeissetable(self, dark: bool):
     try:
         darklight = ["light", "dark"][dark]
-        idx = globalconfig[darklight + "theme"] - int(not dark)
-        if idx == -1:
+        name = globalconfig[darklight + "theme2"]
+        _fn = None
+        for n in static_data["themes"][darklight]:
+            if n["name"] == name:
+                _fn = n["file"]
+                break
+
+        if not _fn:
             return None
-        _fn = static_data["themes"][darklight][idx]["file"]
 
         if _fn.endswith(".py"):
             try:
@@ -603,12 +608,13 @@ def otheruisetting(self):
                                 D_getsimplecombobox(
                                     ["默认"] + themelist("light"),
                                     globalconfig,
-                                    "lighttheme",
+                                    "lighttheme2",
                                     functools.partial(
                                         checkthemesettingvisandapply,
                                         self,
                                         False,
                                     ),
+                                    internal=["default"] + themelist("light"),
                                 ),
                                 functools.partial(createbtnthemelight, self),
                             ),
@@ -619,12 +625,13 @@ def otheruisetting(self):
                                 D_getsimplecombobox(
                                     themelist("dark"),
                                     globalconfig,
-                                    "darktheme",
+                                    "darktheme2",
                                     functools.partial(
                                         checkthemesettingvisandapply,
                                         self,
                                         True,
                                     ),
+                                    internal=themelist("dark"),
                                 ),
                                 functools.partial(createbtnthemedark, self),
                             ),

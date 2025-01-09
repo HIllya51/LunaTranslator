@@ -1,7 +1,7 @@
 ﻿
 // https://github.com/Blinue/Xaml-Islands-Cpp/blob/main/src/XamlIslandsCpp/XamlWindow.h
 
-static uint32_t GetOSversion() noexcept
+uint32_t GetOSversion() noexcept
 {
     HMODULE hNtDll = GetModuleHandle(L"ntdll.dll");
     if (!hNtDll)

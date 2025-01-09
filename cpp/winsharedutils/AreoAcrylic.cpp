@@ -26,7 +26,8 @@ typedef enum _WINDOWCOMPOSITIONATTRIB
 	WCA_FREEZE_REPRESENTATION = 20,
 	WCA_EVER_UNCLOAKED = 21,
 	WCA_VISUAL_OWNER = 22,
-	WCA_LAST = 23
+	WCA_LAST = 23,
+	WCA_USEDARKMODECOLORS = 26
 } WINDOWCOMPOSITIONATTRIB;
 
 typedef struct _WINDOWCOMPOSITIONATTRIBDATA
@@ -139,5 +140,46 @@ DECLARE_API bool clearEffect(HWND hwnd)
 	return setWindowCompositionAttribute(hwnd, &winCompAttrData);
 #else
 	return false;
+#endif
+}
+uint32_t GetOSversion() noexcept;
+
+DECLARE_API bool setbackdropX(HWND hwnd, bool corner, bool dark)
+{
+#ifndef WINXP
+	if (GetOSversion() <= 6)
+		return false;
+	ACCENT_POLICY accent;
+	accent.AccentState = ACCENT_ENABLE_ACRYLICBLURBEHIND;
+
+	CRegKey key;
+	if (ERROR_SUCCESS != key.Open(HKEY_CURRENT_USER, LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent)"))
+		return false;
+	DWORD accent_int;
+	if (ERROR_SUCCESS != key.QueryDWORDValue(L"AccentColorMenu", accent_int))
+		return false;
+	if (dark)
+		accent.GradientColor = 0x40212121;
+	else
+		accent.GradientColor = 0x40f7f7fa;
+	WINDOWCOMPOSITIONATTRIBDATA data;
+	data.Attrib = WCA_ACCENT_POLICY;
+	data.cbData = sizeof(accent);
+	data.pvData = &accent;
+	auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)GetProcAddress(GetModuleHandle(L"user32.dll"), "SetWindowCompositionAttribute");
+	if (!setWindowCompositionAttribute)
+		return false;
+	setWindowCompositionAttribute(hwnd, &data);
+
+	if (dark)
+	{
+		data.Attrib = WCA_USEDARKMODECOLORS;
+		setWindowCompositionAttribute(hwnd, &data);
+	}
+
+	DWORD corner_ = corner ? 2 : 0;
+	DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner_, sizeof(corner_));
+
+	return true;
 #endif
 }

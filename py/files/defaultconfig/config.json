@@ -1504,8 +1504,8 @@
         }
     },
     "darklight2": 0,
-    "darktheme": 0,
-    "lighttheme": 1,
+    "darktheme2": "PyQtDarkTheme",
+    "lighttheme2": "PyQtDarkTheme",
     "usesearchword": false,
     "usecopyword": false,
     "usewordorigin": false,

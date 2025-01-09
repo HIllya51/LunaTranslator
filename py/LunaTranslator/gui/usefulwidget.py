@@ -1014,21 +1014,22 @@ def getColor(color, parent, alpha=False):
     color_dialog = QColorDialog(color, parent)
     if alpha:
         color_dialog.setOption(QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
-    layout = color_dialog.layout()
-    clearlayout(layout.itemAt(0).layout().takeAt(0))
-    layout = layout.itemAt(0).layout().itemAt(0).layout().itemAt(2).widget().layout()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
+    if alpha:
+        layout = color_dialog.layout()
+        clearlayout(layout.itemAt(0).layout().takeAt(0))
+        layout = layout.itemAt(0).layout().itemAt(0).layout().itemAt(2).widget().layout()
+        layout.takeAt(1).widget().hide()
+        layout.takeAt(1).widget().hide()
+        layout.takeAt(1).widget().hide()
+        layout.takeAt(1).widget().hide()
+        layout.takeAt(1).widget().hide()
+        layout.takeAt(1).widget().hide()
 
-    layout.takeAt(layout.count() - 1).widget().hide()
-    layout.takeAt(layout.count() - 1).widget().hide()
-    if not alpha:
         layout.takeAt(layout.count() - 1).widget().hide()
         layout.takeAt(layout.count() - 1).widget().hide()
+        if not alpha:
+            layout.takeAt(layout.count() - 1).widget().hide()
+            layout.takeAt(layout.count() - 1).widget().hide()
     if color_dialog.exec_() != QColorDialog.DialogCode.Accepted:
         return QColor()
     return color_dialog.selectedColor()

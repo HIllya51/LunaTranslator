@@ -278,7 +278,8 @@ def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
 
 maximum_window = utilsdll.maximum_window
 maximum_window.argtypes = (HWND,)
-
+setbackdropX = utilsdll.setbackdropX
+setbackdropX.argtypes = HWND, c_bool, c_bool
 setAeroEffect = utilsdll.setAeroEffect
 setAeroEffect.argtypes = (HWND, c_bool)
 setAcrylicEffect = utilsdll.setAcrylicEffect

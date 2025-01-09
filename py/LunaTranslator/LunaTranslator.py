@@ -332,7 +332,9 @@ class MAINUI:
                 if not text:
                     return
             except Exception as e:
-                self.translation_ui.displaystatus.emit(stringfyerror(e), TextType.Error_origin)
+                self.translation_ui.displaystatus.emit(
+                    stringfyerror(e), TextType.Error_origin
+                )
                 return
 
         if is_auto_run and (
@@ -557,8 +559,7 @@ class MAINUI:
             if iserror:
                 if currentsignature == self.currentsignature:
                     self.translation_ui.displaystatus.emit(
-                        apiname + " " + res,
-                        TextType.Error_translator
+                        apiname + " " + res, TextType.Error_translator
                     )
                 if len(usefultranslators) == 0:
                     safe_callback("")
@@ -960,11 +961,18 @@ class MAINUI:
             print_exc()
 
     def setdarkandbackdrop(self, widget, dark):
-        if self.__dontshowintaborsetbackdrop(widget):
+        ismenulist = isinstance(widget, (QMenu,)) or (type(widget) == QFrame)
+        if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
         winsharedutils.SetTheme(
             int(widget.winId()), dark, globalconfig["WindowBackdrop"]
         )
+        if ismenulist:
+            darklight = ["light", "dark"][self.currentisdark]
+            name = globalconfig[darklight + "theme2"]
+            if name == "QTWin11":
+                # 这个东西会导致其他主题看起来很怪，而且没办法撤销
+                winsharedutils.setbackdropX(int(widget.winId()), True, dark)
 
     @threader
     def clickwordcallback(self, word, append=False):
@@ -1068,10 +1076,15 @@ class MAINUI:
         style = ""
         for _ in (0,):
             try:
-                idx = globalconfig[darklight + "theme"] - int(not dark)
-                if idx == -1:
+                name = globalconfig[darklight + "theme2"]
+                _fn = None
+                for n in static_data["themes"][darklight]:
+                    if n["name"] == name:
+                        _fn = n["file"]
+                        break
+
+                if not _fn:
                     break
-                _fn = static_data["themes"][darklight][idx]["file"]
 
                 if _fn.endswith(".py"):
                     style = importlib.import_module(
