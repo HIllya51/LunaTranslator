@@ -970,9 +970,7 @@ class MAINUI:
         if ismenulist:
             darklight = ["light", "dark"][self.currentisdark]
             name = globalconfig[darklight + "theme2"]
-            if name == "QTWin11":
-                # 这个东西会导致其他主题看起来很怪，而且没办法撤销
-                winsharedutils.setbackdropX(int(widget.winId()), True, dark)
+            winsharedutils.setbackdropX(int(widget.winId()), name == "QTWin11", dark)
 
     @threader
     def clickwordcallback(self, word, append=False):
