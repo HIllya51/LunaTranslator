@@ -83,6 +83,8 @@
 
 * [uyjulian/AtlasTranslate](https://github.com/uyjulian/AtlasTranslate)
 
+* [ilius/pyglossary](https://github.com/ilius/pyglossary)
+
 </details>
 
 

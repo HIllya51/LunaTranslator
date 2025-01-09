@@ -54,11 +54,12 @@ function onclickbtn_xxxxxx_internal(_id) {
 }
 
 .tab-widget_xxxxxx_internal .tab-button_xxxx_internal {
-    padding: 10px 20px;
+    padding: 7px 15px;
     background-color: #cccccccc;
     border: none;
     cursor: pointer;
     display: inline-block;
+    line-height: 20px;
 }
 
 .tab-widget_xxxxxx_internal .tab-button_xxxx_internal.active {

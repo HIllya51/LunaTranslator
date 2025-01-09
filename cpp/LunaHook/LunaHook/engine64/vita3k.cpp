@@ -592,6 +592,13 @@ namespace
         strReplace(ws, L"^", L"");
         buffer->from(WideStringToString(ws, 932));
     }
+    void PCSG01151(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        strReplace(ws, L"^", L"");
+        strReplace(ws, L"　", L"");
+        buffer->from(WideStringToString(ws, 932));
+    }
     void FPCSG01066(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -828,6 +835,8 @@ namespace
             // DRAMAtical Murder
             {0x8004630a, {0, 0, 0, 0, FPCSG00852, "PCSG00420"}},
             {0x8003eed2, {0, 0, 0, 0, FPCSG00852, "PCSG00420"}},
+            // GALTIA V Edition
+            {0x8001B7AA, {0, 0, 0, 0, PCSG01151, "PCSG01151"}},
 
         };
         return 1;
