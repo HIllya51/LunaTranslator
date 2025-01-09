@@ -2,7 +2,7 @@
 
 #### 国内免魔法上网下载链接（若连不上github可以用该链接下载）
 
-下载64位版 <a href="https://lunatranslator.org/Resource/DownloadLuna/64" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 下载32位版 <a href="https://lunatranslator.org/Resource/DownloadLuna/32" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
+下载64位版 <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/64')" ><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 下载32位版 <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/32')"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
 
 #### Github Release下载
 

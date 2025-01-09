@@ -246,4 +246,8 @@ function showToast(message) {
         if (showtoastsig == thissig)
             toast.style.display = "none";
     }, 3000);
-} 
+}
+
+function openlink(url) {
+    window.open(window.location.protocol + '//' + window.location.hostname.substring(5) + '/' + url, "_blank")
+}
