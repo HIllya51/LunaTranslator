@@ -1,4 +1,3 @@
-
 from language import Languages
 from translator.basetranslator import basetrans
 
@@ -23,12 +22,13 @@ class TS(basetrans):
 
         json_data = {
             "text": content,
-            "source_language": self.srclang,
             "target_language": self.tgtlang,
             "enable_user_glossary": False,
             "glossary_list": [],
             "category": "",
         }
+        if self.srclang != Languages.Auto:
+            json_data["source_language"] = self.srclang
         response = self.proxysession.post(
             "https://translate.volcengine.com/crx/translate/v1/",
             headers=headers,
