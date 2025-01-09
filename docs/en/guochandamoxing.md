@@ -76,7 +76,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **API Endpoint** `https://api.cerebras.ai/v1/chat/completions`
 
-**Model** Supports `llama3.1-8b` `llama3.1-70b`
+**Model** Supports `llama3.1-8b` `llama3.1-70b` `llama-3.3-70b`
 
 **API Key** After selecting a model and sending a message on [https://inference.cerebras.ai](https://inference.cerebras.ai/), you can intercept the request and check the current `Headers` -> `Request Headers` -> `Authorization` value, which is `Bearer demo-xxxxhahaha`, where `demo-xxxxhahaha` is the API Key.
 

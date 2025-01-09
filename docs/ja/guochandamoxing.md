@@ -76,7 +76,7 @@
 
 **APIインターフェースアドレス** `https://api.cerebras.ai/v1/chat/completions` 
 
-**model** `llama3.1-8b` `llama3.1-70b`をサポート
+**model** `llama3.1-8b` `llama3.1-70b` `llama-3.3-70b` をサポート
 
 **API Key** [https://inference.cerebras.ai](https://inference.cerebras.ai/)でモデルを選択し、任意のメッセージを送信した後、パケットをキャプチャして現在の`ヘッダー` -> `リクエストヘッダー` -> `Authorization`の値を確認します。これは`Bearer demo-xxxxhahaha`であり、その中の`demo-xxxxhahaha`がAPI Keyです。
 

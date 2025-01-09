@@ -77,7 +77,7 @@
 
 **API接口地址** `https://api.cerebras.ai/v1/chat/completions` 
 
-**model** 支持`llama3.1-8b` `llama3.1-70b`
+**model** 支持`llama3.1-8b` `llama3.1-70b` `llama-3.3-70b`
 
 **API Key** 在 [https://inference.cerebras.ai](https://inference.cerebras.ai/) 选择模型随意发送消息后进行抓包，查看当前 `标头` -> `请求标头` -> `Authorization` 的值，其为 `Bearer demo-xxxxhahaha` ，其中 `demo-xxxxhahaha` 即为API Key
 
