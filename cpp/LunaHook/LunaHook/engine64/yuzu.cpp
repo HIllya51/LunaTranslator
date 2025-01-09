@@ -3647,6 +3647,8 @@ namespace
             {0x8004deb4, {CODEC_UTF16, 0, 0, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
             {0x8013b498, {CODEC_UTF16, 8, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
             {0x8013b4cc, {CODEC_UTF16, 8, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
+            // ラッキードッグ１
+            {0x8016837C, {CODEC_UTF16, 8, 0, 0, 0, 0x0100813014B3A000ull, "1.0.0"}},
         };
         return 1;
     }();
