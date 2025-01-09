@@ -892,6 +892,21 @@ namespace ppsspp
 		strReplace(s, "#n", "");
 		buffer->from(s);
 	}
+	void ULJM05703(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		s = std::regex_replace(s, std::regex(R"(#Kana\[(.*?),(.*?)\])"), "$1");
+		strReplace(s, "\x81\x40", "");
+		buffer->from(s);
+		ULJM05943F(buffer, hp);
+	}
+	void ULJM05915(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->strA();
+		strReplace(s, "#n#", "\n#");
+		buffer->from(s);
+		ULJM05943F(buffer, hp);
+	}
 	void FULJM05889(TextBuffer *buffer, HookParam *)
 	{
 		auto text = reinterpret_cast<LPSTR>(buffer->buff);
@@ -929,7 +944,6 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex("\\n+"), "");
 		buffer->from(s);
 	}
-
 	void ULJM05441(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		auto data = PPSSPP::emu_arg(context)[1];
@@ -1718,6 +1732,8 @@ namespace ppsspp
 		{0x88C0410, {0, 2, 0, 0, ULJM05019, "ULJM05019"}},
 		// 遙かなる時空の中で３ with 十六夜記 愛蔵版
 		{0x89024C8, {0, 0, 0, ULJM05441, 0, "ULJM05441"}},
+		// 遙かなる時空の中で３ 運命の迷宮 愛蔵版
+		{0x89081f4, {0, 0, 0, ULJM05441, 0, "ULJM05547"}},
 		// 遙かなる時空の中で４ 愛蔵版
 		{0x8955CE0, {0, 0, 0, ULJM05810, 0, "ULJM05810"}},
 		// 遙かなる時空の中で５ 風花記
@@ -2060,5 +2076,11 @@ namespace ppsspp
 		{0x88E08D0, {0, 3, 0, 0, 0, "ULJM0610[78]"}},
 		// 花帰葬
 		{0x88139f4, {CODEC_UTF16, 0, 0, 0, ULJM05701, "ULJM05701"}},
+		// 死神所業～怪談ロマンス～
+		{0x8857390, {0, 1, 0, 0, 0, "ULJM06334"}},
+		// 二世の契り
+		{0x888D34C, {0, 3, 0, 0, ULJM05703, "ULJM05703"}},
+		// 二世の契り　想い出の先へ
+		{0x88744A8, {0, 3, 0, 0, ULJM05915, "ULJM05915"}},
 	};
 }

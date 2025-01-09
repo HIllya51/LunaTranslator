@@ -108,12 +108,13 @@ bool __remove_veh_hook(void *origFunc)
 void remove_veh_hook(void *origFunc)
 {
     // 仅会在手动移除时被调用
-    while (true)
-    {
-        std::lock_guard _(vehlistlock);
-        if (__remove_veh_hook(origFunc))
-            break;
-    }
+    // while (true)
+    // {
+    //     std::lock_guard _(vehlistlock);
+    if (__remove_veh_hook(origFunc))
+        ;
+    //    break;
+    //}
 }
 void remove_veh_hook(std::vector<void *> origFuncs)
 {

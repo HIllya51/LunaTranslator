@@ -443,10 +443,14 @@ bool TextHook::breakpointcontext(PCONTEXT pcontext)
 	context.toPCONTEXT(pcontext);
 	return true;
 }
+extern bool safeleave;
 bool TextHook::InsertBreakPoint()
 {
 	// MH_CreateHook 64位unity/yuzu-emu经常 MH_ERROR_MEMORY_ALLOC
-	return add_veh_hook(location, std::bind(&TextHook::breakpointcontext, this, std::placeholders::_1));
+	for (int i = 0; i < 1 + safeleave; i++)
+		if (add_veh_hook(location, std::bind(&TextHook::breakpointcontext, this, std::placeholders::_1)))
+			return true;
+	return false;
 }
 void TextHook::RemoveBreakPoint()
 {

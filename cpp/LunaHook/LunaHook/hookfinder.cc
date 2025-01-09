@@ -256,9 +256,12 @@ void SafeSendJitVeh(hook_context *context, uintptr_t address, uint64_t em_addr, 
 	{
 	}
 }
+bool safeleave = false;
 std::unordered_map<uintptr_t, uint64_t> addresscalledtime;
 bool SendJitVeh(PCONTEXT pcontext, uintptr_t address, uint64_t em_addr, JITTYPE jittype, intptr_t padding)
 {
+	if (safeleave)
+		return false;
 	if (addresscalledtime.find(address) == addresscalledtime.end())
 		addresscalledtime[address] = 0;
 	auto tm = GetTickCount64();
@@ -555,10 +558,11 @@ void _SearchForHooks(SearchParam spUser)
 		auto f = fopen("1.txt", "a");
 		for (auto addr : jitaddr2emuaddr)
 		{
-			fprintf(f, "%llx => %llx\n", addr.second.second, addr.first);
+			fprintf(f, "%llx => %p\n", addr.second.second, addr.first);
 		}
 		fclose(f);
 #endif
+		safeleave = false;
 		std::vector<newFuncType> funcs;
 		std::vector<void *> successaddr;
 		for (auto addr : jitaddr2emuaddr)
@@ -574,7 +578,9 @@ void _SearchForHooks(SearchParam spUser)
 		ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], successaddr.size());
 		ConsoleOutput(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
 		Sleep(sp.searchTime);
-		remove_veh_hook(successaddr);
+		// remove_veh_hook(successaddr);
+		// remove_veh_hook还是有问题，容易崩
+		safeleave = true;
 	}
 	SearchForHooks_Return();
 }
