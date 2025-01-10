@@ -151,5 +151,5 @@ def ripemd128(message: bytes) -> bytes:
 	return struct.pack("<LLLL", h0, h1, h2, h3)
 
 
-def hexstr(bstr):
-	return "".join(f"{b:02x}" for b in bstr)
+# def hexstr(bstr):
+# 	return "".join(f"{b:02x}" for b in bstr)

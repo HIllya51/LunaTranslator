@@ -125,12 +125,12 @@ class MDict:
 
 		#self._key_list = self._read_keys()
 
-	def __repr__(self):
-		return (
-			f"MDict({self._fname!r}, "
-			f"encoding={self._encoding!r}, "
-			f"passcode={self._passcode})"
-		)
+	# def __repr__(self):
+	# 	return (
+	# 		f"MDict({self._fname!r}, "
+	# 		f"encoding={self._encoding!r}, "
+	# 		f"passcode={self._passcode})"
+	# 	)
 
 	@property
 	def filename(self):
@@ -191,7 +191,7 @@ class MDict:
 				+ data[encryption_size:]
 			)
 		else:
-			raise ValueError(f"encryption method {encryption_method} not supported")
+			raise ValueError("encryption method {} not supported".format(encryption_method))
 
 		# check adler checksum over decrypted data
 		if self._version >= 3:
@@ -206,7 +206,7 @@ class MDict:
 		elif compression_method == 2:
 			decompressed_block = zlib.decompress(decrypted_block)
 		else:
-			raise ValueError(f"compression method {compression_method} not supported")
+			raise ValueError("compression method {} not supported".format(compression_method))
 
 		# check adler checksum over decompressed data
 		if self._version < 3:
@@ -438,7 +438,7 @@ class MDict:
 			elif block_type == 0x04000000:
 				self._key_index_offset = block_offset
 			else:
-				raise RuntimeError(f"Unknown block type {block_type}")
+				raise RuntimeError("Unknown block type {}".format(block_type))
 			f.seek(block_size, 1)
 			# test the end of file
 			if f.read(4):
@@ -635,7 +635,6 @@ class MDict:
 				)
 			except zlib.error:
 				log.error("zlib decompress error")
-				log.debug(f"record_block_compressed = {record_block_compressed!r}")
 				continue
 			# split record block according to the offset info from key block
 			while i < len(self._key_list):
@@ -670,7 +669,6 @@ class MDict:
 			)
 		except zlib.error:
 			log.error("zlib decompress error")
-			log.debug(f"record_block_compressed = {record_block_compressed!r}")
 			
 		# split record block according to the offset info from key block
 		data = record_block[
@@ -729,7 +727,7 @@ class MDX(MDict):
 			try:
 				style = self._stylesheet[key]
 			except KeyError:
-				log.error(f'invalid stylesheet key "{key}"')
+				log.error('invalid stylesheet key "{}"'.format(key))
 				continue
 			if p and p[-1] == "\n":
 				txt_styled = txt_styled + style[0] + p.rstrip() + style[1] + "\r\n"
