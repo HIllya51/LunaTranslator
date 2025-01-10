@@ -50,13 +50,11 @@ class IndexBuilder(object):
         fname,
         passcode=None,
         enable_history=False,
-        sql_index=True,
     ):
 
         self._mdx_file = fname
         self._mdict_mdds = []
         self._mdd_dbs = []
-        self._sql_index = sql_index
         _filename, _file_extension = os.path.splitext(fname)
         assert _file_extension == ".mdx"
         assert os.path.isfile(fname)
@@ -67,7 +65,7 @@ class IndexBuilder(object):
             + hashlib.md5(_filename.encode("utf8")).hexdigest()
         )
         _targetfilenamebase = gobject.getcachedir("mdict/index/" + _mdxmd5)
-        self._mdx_db = _targetfilenamebase + ".mdx.v2.db"
+        self._mdx_db = _targetfilenamebase + ".mdx.v3.db"
         # make index anyway
 
         self._make_mdx_index_checked(self._mdx_db)
@@ -82,7 +80,7 @@ class IndexBuilder(object):
             if os.path.isfile(_filename + end):
                 mdd = MDD(_filename + end)
                 self._mdict_mdds.append(mdd)
-                self._mdd_dbs.append(_targetfilenamebase + end + ".v2.db")
+                self._mdd_dbs.append(_targetfilenamebase + end + ".v3.db")
                 self._make_mdd_index_checked(mdd, self._mdd_dbs[-1])
             else:
                 break
@@ -130,12 +128,14 @@ class IndexBuilder(object):
             for item in index_list
         ]
         c.executemany("INSERT INTO MDX_INDEX VALUES (?,?,?,?,?,?,?)", tuple_list)
-        if self._sql_index and not ismdx:
-            c.execute(
-                """
-                CREATE UNIQUE INDEX key_index ON MDX_INDEX (key_text)
-                """
+
+        c.execute(
+            """
+                CREATE{} INDEX key_index ON MDX_INDEX (key_text)
+                """.format(
+                " UNIQUE" if (not ismdx) else ""
             )
+        )
 
         conn.commit()
         conn.close()
