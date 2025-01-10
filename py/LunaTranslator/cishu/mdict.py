@@ -160,9 +160,9 @@ class IndexBuilder(object):
                 index["file_pos"] = result[1]
                 index["compressed_size"] = result[2]
                 index["decompressed_size"] = result[3]
-                index["record_start"] = result[5]
-                index["record_end"] = result[6]
-                index["offset"] = result[7]
+                index["record_start"] = result[4]
+                index["record_end"] = result[5]
+                index["offset"] = result[6]
                 indexes.append(index)
         return indexes
 

@@ -1568,6 +1568,7 @@ class auto_select_webview(QWidget):
         self._maybecreate_internal()
         if dyna:
             switchtypes.append(self)
+        self.setHtml("")
 
     @staticmethod
     def switchtype():
