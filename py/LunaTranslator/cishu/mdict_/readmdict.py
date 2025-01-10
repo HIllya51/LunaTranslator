@@ -36,7 +36,7 @@ from .ripemd128 import ripemd128
 # 	import lzo
 # except ImportError:
 # 	lzo = None
-from . import lzo
+from cishu.mdict_ import lzo
 
 # xxhash is used for engine version >= 3.0
 try:
