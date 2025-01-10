@@ -6,6 +6,7 @@ from myutils.audioplayer import bass_code_cast
 import json, os, re
 from cishu.mdict_.readmdict import MDX, MDD, MDict
 import hashlib, sqlite3
+import winsharedutils
 
 cachejson = None
 
@@ -305,13 +306,14 @@ class mdict(cishubase):
         except:
             pass
 
-    def querycomplex(self, word, distance, index):
+    def querycomplex(self, word, distance, index: IndexBuilder):
+
+        if not distance:
+            return sorted(index.get_mdx_keys(word))[: self.config["max_num"]]
         results = []
         diss = {}
-        import winsharedutils
-
         dedump = set()
-        for k in index("*" + word + "*"):
+        for k in index.get_mdx_keys("*" + word + "*"):
             if k in dedump:
                 continue
             dedump.add(k)
@@ -422,7 +424,7 @@ class mdict(cishubase):
                 html_content = html_content.replace(url, varname)
         return '<div class="{}">{}</div>'.format(divclass, html_content)
 
-    def searchthread_internal(self, index, k, __safe):
+    def searchthread_internal(self, index:IndexBuilder, k, __safe):
         allres = []
         if k in __safe:  # 避免循环引用
             return []
@@ -440,8 +442,7 @@ class mdict(cishubase):
         f, index = self.builders[i]
         results = []
         try:
-            keys = self.querycomplex(word, self.getdistance(f), index.get_mdx_keys)
-            # print(keys)
+            keys = self.querycomplex(word, self.getdistance(f), index)
             for k in keys:
                 __safe = []
                 for content in sorted(
