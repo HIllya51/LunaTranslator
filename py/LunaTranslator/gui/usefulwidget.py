@@ -1017,7 +1017,9 @@ def getColor(color, parent, alpha=False):
     if alpha:
         layout = color_dialog.layout()
         clearlayout(layout.itemAt(0).layout().takeAt(0))
-        layout = layout.itemAt(0).layout().itemAt(0).layout().itemAt(2).widget().layout()
+        layout = (
+            layout.itemAt(0).layout().itemAt(0).layout().itemAt(2).widget().layout()
+        )
         layout.takeAt(1).widget().hide()
         layout.takeAt(1).widget().hide()
         layout.takeAt(1).widget().hide()
@@ -1147,8 +1149,7 @@ class abstractwebview(QWidget):
     def _parsehtml_dark(self, html):
         if nowisdark():
             html = (
-                html
-                + """
+                """
     <style>
         body 
         { 
@@ -1156,13 +1157,13 @@ class abstractwebview(QWidget):
             color: white; 
         }
     </style>"""
+                + html
             )
         return html
 
     def _parsehtml_dark_auto(self, html):
         return (
-            html
-            + """
+            """
 <style>
 @media (prefers-color-scheme: dark) 
 {
@@ -1177,6 +1178,7 @@ class abstractwebview(QWidget):
 }
 </style>
 """
+            + html
         )
 
 
@@ -1244,7 +1246,7 @@ class WebivewWidget(abstractwebview):
         )
         self.webview.bind("__on_load", self._on_load)
         self.webview.init("""window.__on_load(window.location.href)""")
-        
+
         self.__darkstate = None
         t = QTimer(self)
         t.setInterval(100)
