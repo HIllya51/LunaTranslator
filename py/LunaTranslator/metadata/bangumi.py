@@ -235,10 +235,9 @@ class bgmsettings(QFormLayout):
         self.lbinfo = QLabel()
         s.textChanged.connect(self.checkvalid)
         s.setText(_ref.config["access-token"])
-        fl2 = QFormLayout()
-        fl2.setContentsMargins(0, 0, 0, 0)
         ww = QWidget()
-        ww.setLayout(fl2)
+        fl2 = QFormLayout(ww)
+        fl2.setContentsMargins(0, 0, 0, 0)
         ww.hide()
         self.fl2 = ww
         self.showhide.connect(self.fl2.setVisible)

@@ -93,7 +93,7 @@ class clickitem(QWidget):
         super().__init__()
 
         self.uid = uid
-        self.lay = QHBoxLayout()
+        self.lay = QHBoxLayout(self)
         self.lay.setSpacing(0)
         lay1 = QHBoxLayout()
         self.lay1 = lay1
@@ -125,7 +125,6 @@ class clickitem(QWidget):
         self._2 = _
         _.setObjectName("savegame_textfont2")
         self.lay.addWidget(_)
-        self.setLayout(self.lay)
 
 
 class fadeoutlabel(QLabel):
@@ -257,12 +256,11 @@ class previewimages(QWidget):
 
     def __init__(self, p) -> None:
         super().__init__(p)
-        self.lay = QHBoxLayout()
+        self.lay = QHBoxLayout(self)
         self.lay.setContentsMargins(0, 0, 0, 0)
         self.list = MyQListWidget(self)
         self.list.currentRowChanged.connect(self._visidx)
         self.lay.addWidget(self.list)
-        self.setLayout(self.lay)
 
     def tolastnext(self, dx):
         if self.list.count() == 0:
@@ -362,11 +360,10 @@ class viewpixmap_x(QWidget):
         self.commentedit = QPlainTextEdit(self)
         self.commentedit.textChanged.connect(self.changecommit)
         self.centerwidget = QWidget(self)
-        self.centerwidgetlayout = QVBoxLayout()
+        self.centerwidgetlayout = QVBoxLayout(self.centerwidget)
         audio = QHBoxLayout()
         self.recordbtn = statusbutton(icons=["fa.microphone", "fa.stop"])
         self.recordbtn.clicked.connect(self.startorendrecord)
-        self.centerwidget.setLayout(self.centerwidgetlayout)
         self.centerwidgetlayout.addWidget(self.commentedit)
         self.centerwidgetlayout.addLayout(audio)
         audio.addWidget(self.recordbtn)
@@ -530,7 +527,6 @@ class pixwrapper(QWidget):
         self.setrank(rank)
         self.sethor(hor)
         self.pixview.tolastnext.connect(self.previewimages.tolastnext)
-        self.setLayout(self.vlayout)
         self.previewimages.changepixmappath.connect(self.changepixmappath)
         self.previewimages.removepath.connect(self.removepath)
         self.k = None
@@ -833,9 +829,8 @@ class dialog_savedgame_v3(QWidget):
         self.stack.bgclicked.connect(clickitem.clearfocus)
         self.setstyle()
         spl = QSplitter()
-        _l = QHBoxLayout()
+        _l = QHBoxLayout(self)
         _l.addWidget(spl)
-        self.setLayout(_l)
 
         spl.addWidget(self.stack)
         self.righttop = makesubtab_lazy()
@@ -846,9 +841,8 @@ class dialog_savedgame_v3(QWidget):
             )
         )
         _w = QWidget()
-        rightlay = QVBoxLayout()
+        rightlay = QVBoxLayout(_w)
         rightlay.setContentsMargins(0, 0, 0, 0)
-        _w.setLayout(rightlay)
         self.righttop.addTab(_w, "画廊")
         spl.addWidget(self.righttop)
 

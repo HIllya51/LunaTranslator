@@ -52,7 +52,7 @@ class AttachProcessDialog(saveposwindow):
             qtawesome.icon(globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"])
         )
         w = QWidget()
-        self.layout1 = QVBoxLayout()
+        self.layout1 = QVBoxLayout(w)
         self.label = LLabel(
             (
                 "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件"
@@ -105,7 +105,6 @@ class AttachProcessDialog(saveposwindow):
         bottomlayout.addWidget(self.buttonBox)
 
         self.layout1.addLayout(bottomlayout)
-        w.setLayout(self.layout1)
         self.setCentralWidget(w)
 
         self.buttonBox.accepted.connect(self.accept)

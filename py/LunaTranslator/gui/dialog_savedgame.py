@@ -113,10 +113,8 @@ class TagWidget(QWidget):
     def __init__(self, parent=None, exfoucus=True):
         super().__init__(parent)
         tagitem.setstyles(self)
-        layout = QHBoxLayout()
+        layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-
-        self.setLayout(layout)
 
         self.lineEdit = FocusCombo()
         if exfoucus:
@@ -656,7 +654,7 @@ class dialog_savedgame_new(QWidget):
         self._parent = parent
         self.setstyle()
         gobject.global_dialog_savedgame_new = self
-        formLayout = QVBoxLayout()
+        formLayout = QVBoxLayout(self)
         layout = QHBoxLayout()
         self.setAcceptDrops(True)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -682,7 +680,6 @@ class dialog_savedgame_new(QWidget):
         self.savebutton = []
 
         self.idxsave = []
-        self.setLayout(formLayout)
         self.activategamenum = 1
         self.itemfocuschanged(False, None)
         if globalconfig["hide_not_exists"]:

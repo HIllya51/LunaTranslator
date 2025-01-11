@@ -36,7 +36,8 @@ def delaysetcomparetext(self, s, x):
 
 def getcomparelayout(self):
 
-    layout = QHBoxLayout()
+    w = QWidget()
+    layout = QHBoxLayout(w)
     fromtext = QPlainTextEdit()
     totext = QPlainTextEdit()
     solvebutton = getIconButton(
@@ -47,8 +48,6 @@ def getcomparelayout(self):
     layout.addWidget(fromtext)
     layout.addWidget(solvebutton)
     layout.addWidget(totext)
-    w = QWidget()
-    w.setLayout(layout)
     self.__fromtext = fromtext
     self.__totext = totext
     try:

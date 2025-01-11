@@ -47,7 +47,6 @@ def sqlite2json2(
     dialog.setWindowTitle("导出翻译记录为json文件")
     dialog.resize(QSize(800, 10))
     formLayout = LFormLayout(dialog)  # 配置layout
-    dialog.setLayout(formLayout)
 
     combo = SuperCombo()
     combo.addItems([getannotatedapiname(_) for _ in _collect], _collect)

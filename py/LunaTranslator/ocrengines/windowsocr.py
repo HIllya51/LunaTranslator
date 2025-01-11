@@ -67,9 +67,8 @@ def installx(combo: _SuperCombo, btninstall, supportlang):
 
 def question():
     dialog = QWidget()
-    formLayout = LFormLayout()
+    formLayout = LFormLayout(dialog)
     formLayout.setContentsMargins(0, 0, 0, 0)
-    dialog.setLayout(formLayout)
     supportlang = QLabel()
     supportlang.setText(", ".join([_[1] for _ in winrtutils.getlanguagelist()]))
     supportlang.setWordWrap(True)

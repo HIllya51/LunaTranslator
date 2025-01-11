@@ -253,8 +253,7 @@ class TableViewW(QTableView):
         if w is None:
             return
         __w = QWidget()
-        __l = QHBoxLayout()
-        __w.setLayout(__l)
+        __l = QHBoxLayout(__w)
         __l.setContentsMargins(0, 0, 0, 0)
         __l.addWidget(w)
         super().setIndexWidget(index, __w)
@@ -1067,7 +1066,8 @@ def selectcolor(
 def getboxlayout(
     widgets, lc=QHBoxLayout, margin0=False, makewidget=False, delay=False, both=False
 ):
-    cp_layout = lc()
+    w = QWidget() if makewidget else None
+    cp_layout = lc(w)
 
     def __do(cp_layout, widgets):
         for w in widgets:
@@ -1085,9 +1085,6 @@ def getboxlayout(
         cp_layout.setContentsMargins(0, 0, 0, 0)
     if not delay:
         _do()
-    if makewidget:
-        w = QWidget()
-        w.setLayout(cp_layout)
     if delay:
         return w, _do
     if both:
@@ -1563,9 +1560,8 @@ class auto_select_webview(QWidget):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.internal = None
         self.saveurl = None
-        layout = QHBoxLayout()
+        layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(layout)
         self.internalsavedzoom = 1
         self._maybecreate_internal()
         if dyna:
@@ -1671,9 +1667,8 @@ class threebuttons(QWidget):
 
     def __init__(self, texts=None):
         super().__init__()
-        layout = QHBoxLayout()
+        layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(layout)
         if len(texts) >= 1:
             button = LPushButton(self)
             button.setText(texts[0])
@@ -1704,8 +1699,7 @@ class threebuttons(QWidget):
 
 def tabadd_lazy(tab, title, getrealwidgetfunction):
     q = QWidget()
-    v = QVBoxLayout()
-    q.setLayout(v)
+    v = QVBoxLayout(q)
     v.setContentsMargins(0, 0, 0, 0)
     q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     tab.addTab(q, title)
@@ -1774,14 +1768,12 @@ def makegroupingrid(args):
         group.setObjectName("notitle")
 
     if _type == "grid":
-        grid = QGridLayout()
-        group.setLayout(grid)
+        grid = QGridLayout(group)
         automakegrid(grid, lis)
         if internallayoutname:
             setattr(parent, internallayoutname, grid)
     elif _type == "form":
-        lay = LFormLayout()
-        group.setLayout(lay)
+        lay = LFormLayout(group)
         makeforms(lay, lis)
         if internallayoutname:
             setattr(parent, internallayoutname, lay)
@@ -1861,9 +1853,8 @@ def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False):
         pass
 
     gridlayoutwidget = gridwidget()
-    gridlay = QGridLayout()
+    gridlay = QGridLayout(gridlayoutwidget)
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
-    gridlayoutwidget.setLayout(gridlay)
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
     def do(gridlay, grid, save, savelist, savelay):
@@ -2021,8 +2012,7 @@ class listediter(LDialog):
             table.customContextMenuRequested.connect(self.showmenu)
             self.hctable = table
             self.internalrealname = []
-            formLayout = QVBoxLayout()
-            self.setLayout(formLayout)
+            formLayout = QVBoxLayout(self)
             formLayout.addWidget(self.hctable)
             for row, k in enumerate(lst):  # 2
                 try:
@@ -2191,10 +2181,9 @@ class listediterline(QWidget):
         self.edit = ClickableLine()
         self.reflist = reflist
         self.setText("|".join(reflist))
-        hbox = QHBoxLayout()
+        hbox = QHBoxLayout(self)
         hbox.setContentsMargins(0, 0, 0, 0)
         hbox.addWidget(self.edit)
-        self.setLayout(hbox)
         callback = functools.partial(
             listediter,
             self,
@@ -2640,7 +2629,6 @@ class CollapsibleBox(QGroupBox):
         lay = QVBoxLayout(self)
         if margin0:
             lay.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(lay)
         self.func = delayloadfunction
         self.toggle(False)
 
@@ -2712,8 +2700,7 @@ class editswitchTextBrowser(QWidget):
         )
         stack.addWidget(self.browser)
         stack.addWidget(self.edit)
-        l = QHBoxLayout()
-        self.setLayout(l)
+        l = QHBoxLayout(self)
         l.setContentsMargins(0, 0, 0, 0)
         l.addWidget(stack)
         self.switch = statusbutton(

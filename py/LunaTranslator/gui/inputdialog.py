@@ -471,8 +471,7 @@ class autoinitdialog(LDialog):
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(title)
         self.resize(QSize(width, 10))
-        formLayout = VisLFormLayout()
-        self.setLayout(formLayout)
+        formLayout = VisLFormLayout(self)
         regist = {}
 
         def save(callback=None):

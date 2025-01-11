@@ -81,14 +81,13 @@ class extrahtml(saveposwindow):
         self.btn_apply = LPushButton("测试")
         self.btn_apply.clicked.connect(self.applyhtml)
         self.vistext = QPlainTextEdit()
-        lay = QVBoxLayout()
+        w = QWidget()
+        lay = QVBoxLayout(w)
         hl = QHBoxLayout()
         hl.addWidget(self.btn_save)
         hl.addWidget(self.btn_apply)
         lay.addWidget(self.vistext)
         lay.addLayout(hl)
-        w = QWidget()
-        w.setLayout(lay)
         self.setCentralWidget(w)
         self.tryload()
         self.show()
@@ -233,8 +232,7 @@ def creategoodfontwid(self):
     self.goodfontsettingsWidget.setStyleSheet(
         "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
     )
-    self.goodfontsettingsformlayout = LFormLayout()
-    self.goodfontsettingsWidget.setLayout(self.goodfontsettingsformlayout)
+    self.goodfontsettingsformlayout = LFormLayout(self.goodfontsettingsWidget)
     resetgroudswitchcallback(self, globalconfig["rendertext_using"])
     return self.goodfontsettingsWidget
 

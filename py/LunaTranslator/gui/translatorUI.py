@@ -97,21 +97,20 @@ class ButtonBar(QFrame):
     def __init__(self, *argc):
         super().__init__(*argc)
 
-        def __(p=None):
-            _ = QHBoxLayout()
+        def __(p=None, pp=None):
+            _ = QHBoxLayout(pp)
             _.setContentsMargins(0, 0, 0, 0)
             _.setSpacing(0)
             if p is not None:
                 p.addLayout(_)
             return _
 
-        self.threelayout = __()
+        self.threelayout = __(pp=self)
         self._left = __(self.threelayout)
         self.threelayout.addStretch()
         self._center = __(self.threelayout)
         self.threelayout.addStretch()
         self._right = __(self.threelayout)
-        self.setLayout(self.threelayout)
         self.cntbtn = 0
         self.buttons = {}
         self.stylebuttons = {}
@@ -893,8 +892,7 @@ class TranslatorWindow(resizableframeless):
                 _self.setWindowTitle("打开链接")
                 l = QLabel(makehtml(_link, show=_link))
                 l.setOpenExternalLinks(True)
-                la = QHBoxLayout()
-                _self.setLayout(la)
+                la = QHBoxLayout(_self)
                 la.addWidget(l)
                 _self.exec()
 

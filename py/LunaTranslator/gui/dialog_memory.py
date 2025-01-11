@@ -30,7 +30,8 @@ class dialog_memory(saveposwindow):
         )
         self.setWindowTitle("备忘录")
         self.setWindowIcon(qtawesome.icon(globalconfig["toolbutton"]["buttons"]["memory"]["icon"]))
-        formLayout = QVBoxLayout()  #
+        _w = QWidget()
+        formLayout = QVBoxLayout(_w)  #
         self.showtext = QTextEdit()
         self.rwpath = gobject.getuserconfigdir(
             "memory/{}.html".format(gobject.baseobject.gameuid)
@@ -57,7 +58,5 @@ class dialog_memory(saveposwindow):
         self.showtext.textChanged.connect(self.save)
         x.addWidget(insertpicbtn)
         formLayout.addLayout(x)
-        _w = QWidget()
-        _w.setLayout(formLayout)
         self.setCentralWidget(_w)
         self.show()

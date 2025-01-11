@@ -88,8 +88,7 @@ class triggereditor(LDialog):
         table.customContextMenuRequested.connect(self.showmenu)
         self.hctable = table
         self.internalrealname = []
-        formLayout = QVBoxLayout()
-        self.setLayout(formLayout)
+        formLayout = QVBoxLayout(self)
         formLayout.addWidget(self.hctable)
         self.vkeys = list(vkcode_map.keys())
         for row, k in enumerate(self.list):  # 2
@@ -282,8 +281,7 @@ def _ocrparam(self):
     self._ocrparam.setStyleSheet(
         "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
     )
-    self._ocrparaml = LFormLayout()
-    self._ocrparam.setLayout(self._ocrparaml)
+    self._ocrparaml = LFormLayout(self._ocrparam)
     _ocrparam_create(self, globalconfig["ocr_auto_method"])
     return self._ocrparam
 
@@ -334,10 +332,9 @@ class showocrimage(saveposwindow):
         self.setWindowTitle("查看")
         self.originlabel = pixmapviewer()
         qw = QWidget()
-        self.layout1 = QVBoxLayout()
+        self.layout1 = QVBoxLayout(qw)
         self.setAcceptDrops(True)
         self.setCentralWidget(qw)
-        qw.setLayout(self.layout1)
         icon = getIconButton(callback=self.openff, icon="fa.folder-open")
         button = getIconButton(callback=self.retest, icon="fa.rotate-right")
         hb = QHBoxLayout()

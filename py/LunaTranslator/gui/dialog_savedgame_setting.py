@@ -211,7 +211,6 @@ class dialog_setting_game_internal(QWidget):
         vbox = QVBoxLayout(self)
         self.lauchpath = None
         formLayout = LFormLayout()
-        self.setLayout(vbox)
         self.gameuid = gameuid
         formLayout.addRow(
             "路径",
@@ -272,23 +271,20 @@ class dialog_setting_game_internal(QWidget):
 
     def ___tabf(self, function, gameuid):
         _w = QWidget()
-        formLayout = LFormLayout()
-        _w.setLayout(formLayout)
+        formLayout = LFormLayout(_w)
         do = functools.partial(function, formLayout, gameuid)
         return _w, do
 
     def ___tabf2(self, function, gameuid):
         _w = QWidget()
-        formLayout = QVBoxLayout()
-        _w.setLayout(formLayout)
+        formLayout = QVBoxLayout(_w)
         do = functools.partial(function, formLayout, gameuid)
         return _w, do
 
     def ___tabf3(self, function, gameuid):
         _w = QWidget()
-        formLayout = QVBoxLayout()
+        formLayout = QVBoxLayout(_w)
         formLayout.setContentsMargins(0, 0, 0, 0)
-        _w.setLayout(formLayout)
         do = functools.partial(function, formLayout, gameuid)
         return _w, do
 
@@ -453,8 +449,7 @@ class dialog_setting_game_internal(QWidget):
 
     def starttab(self, formLayout: LFormLayout, gameuid):
         box = QGroupBox()
-        settinglayout = LFormLayout()
-        box.setLayout(settinglayout)
+        settinglayout = LFormLayout(box)
 
         def __(box, layout, config, uid):
             clearlayout(layout)
@@ -753,9 +748,8 @@ class dialog_setting_game_internal(QWidget):
         )
         __extraw.setEnabled(not dic[key])
         formLayout.addRow(__extraw)
-        formLayout2 = klass()
+        formLayout2 = klass(__extraw)
         formLayout2.setContentsMargins(0, 0, 0, 0)
-        __extraw.setLayout(formLayout2)
         return formLayout2
 
     def getttssetting(self, formLayout: LFormLayout, gameuid):
@@ -1103,8 +1097,7 @@ class dialog_setting_game_internal(QWidget):
         )
         box = LGroupBox()
         box.setTitle("额外的钩子")
-        settinglayout = LFormLayout()
-        box.setLayout(settinglayout)
+        settinglayout = LFormLayout(box)
         formLayout.addRow(box)
         settinglayout.addRow(
             "Win32通用钩子",
@@ -1131,8 +1124,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         box = QGroupBox()
-        settinglayout = LFormLayout()
-        box.setLayout(settinglayout)
+        settinglayout = LFormLayout(box)
         formLayout.addRow(box)
         for k in [
             "codepage_index",
@@ -1213,7 +1205,6 @@ class dialog_setting_game(QDialog):
         _.methodtab.setCurrentIndex(setindexhook)
         _.setMinimumWidth(600)
         l = QHBoxLayout(self)
-        self.setLayout(l)
         l.addWidget(_)
         l.setContentsMargins(0, 0, 0, 0)
         self.show()

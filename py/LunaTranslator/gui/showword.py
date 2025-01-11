@@ -118,11 +118,10 @@ class AnkiWindow(QWidget):
         tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
         tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
 
-        l = QHBoxLayout()
+        l = QHBoxLayout(self)
         l.setContentsMargins(0, 0, 0, 0)
         l.setSpacing(0)
         l.addWidget(self.tabs)
-        self.setLayout(l)
         self.refreshhtml.connect(self.refreshhtmlfunction)
         self.tabs.currentChanged.connect(self.ifshowrefresh)
 
@@ -325,10 +324,9 @@ class AnkiWindow(QWidget):
         ) as ff:
             ff.write(model_css)
 
-    def creatsetdtab(self, baselay):
-        layout = VisLFormLayout()
+    def creatsetdtab(self, baselay: QVBoxLayout):
         wid = QWidget()
-        wid.setLayout(layout)
+        layout = VisLFormLayout(wid)
         baselay.addWidget(wid)
         layout.addRow(
             "端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
@@ -460,9 +458,8 @@ class AnkiWindow(QWidget):
 
     def createaddtab(self):
         self.recorders = {}
-        layout = QVBoxLayout()
         wid = QWidget()
-        wid.setLayout(layout)
+        layout = QVBoxLayout(wid)
         soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
         soundbutton.clicked.connect(self.langdu)
 
@@ -1015,8 +1012,7 @@ class showdiction(QWidget):
         self.tree.setUniformRowHeights(True)
         self.tree.setHeaderHidden(True)
         self.tree.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        __lay = QVBoxLayout()
-        self.setLayout(__lay)
+        __lay = QVBoxLayout(self)
         __lay.setSpacing(0)
         __lay.setContentsMargins(0, 0, 0, 0)
         __lay.addLayout(wordfilter)
@@ -1066,10 +1062,6 @@ class showdiction(QWidget):
 
 
 class showwordfastwebview(auto_select_webview):
-
-    def __init__(self, parent, dyna=False):
-        super().__init__(parent, dyna)
-
     def _createwebview(self):
         web = super()._createwebview()
         if isinstance(web, WebivewWidget):
@@ -1147,6 +1139,7 @@ class searchwordW(closeashidewindow):
                 self.hasclicked = True
 
     def tabclicked(self, idx):
+        self.tab.setCurrentIndex(idx)
         self.hasclicked = True
         try:
             html = self.cache_results[self.tabks[idx]]
@@ -1189,8 +1182,7 @@ class searchwordW(closeashidewindow):
         self.thisps = {}
         self.hasclicked = False
         ww = QWidget(self)
-        self.vboxlayout = QVBoxLayout()
-        ww.setLayout(self.vboxlayout)
+        self.vboxlayout = QVBoxLayout(ww)
         self.searchlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchlayout)
         self.searchtext = FQLineEdit()
@@ -1285,14 +1277,12 @@ class searchwordW(closeashidewindow):
         self.cache_results = {}
 
         self.spliter = QSplitter()
-
-        tablayout = QVBoxLayout()
+        w = QWidget()
+        tablayout = QVBoxLayout(w)
         tablayout.setContentsMargins(0, 0, 0, 0)
         tablayout.setSpacing(0)
         tablayout.addWidget(self.tab)
         tablayout.addWidget(self.textOutput)
-        w = QWidget()
-        w.setLayout(tablayout)
         self.vboxlayout.addWidget(self.spliter)
         self.isfirstshowanki = True
         self.isfirstshowdictwidget = True

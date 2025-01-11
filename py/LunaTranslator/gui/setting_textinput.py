@@ -242,7 +242,6 @@ def selectgameuid(self):
     dialog.setWindowTitle("选择游戏")
     dialog.resize(QSize(800, 10))
     formLayout = LFormLayout(dialog)
-    dialog.setLayout(formLayout)
     _internal = []
     _vis = []
     for gameuid in savehook_new_list:

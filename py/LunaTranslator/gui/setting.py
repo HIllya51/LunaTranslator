@@ -27,10 +27,9 @@ class TabWidget(QWidget):
 
     def __init__(self, parent=None):
         super(TabWidget, self).__init__(parent)
-        layout = QHBoxLayout()
+        layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
-        self.setLayout(layout)
         self.splitter = QSplitter()
         layout.addWidget(self.splitter)
         self.list_widget = LListWidget(self)

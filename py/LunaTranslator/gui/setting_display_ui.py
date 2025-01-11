@@ -48,9 +48,8 @@ def createhorizontal_slider(self):
         functools.partial(changeHorizontal, self)
     )
     w = QWidget()
-    hb = QHBoxLayout()
+    hb = QHBoxLayout(w)
     hb.setContentsMargins(0, 0, 0, 0)
-    w.setLayout(hb)
 
     self.horizontal_slider_label = QLabel()
     self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent"]))

@@ -489,9 +489,8 @@ class shownumQPushButton(QPushButton):
 class shrinkableitem(QWidget):
     def __init__(self, p, shrinker: shownumQPushButton, opened):
         super().__init__(p)
-        self.lay = QVBoxLayout()
+        self.lay = QVBoxLayout(self)
         # self.setSizePolicy(QSizePolicy.Policy.Expanding,QSizePolicy.Policy.Fixed)
-        self.setLayout(self.lay)
         self.lay.setContentsMargins(0, 0, 0, 0)
         self.lay.setSpacing(0)
         self.btn = shrinker
@@ -587,18 +586,16 @@ class stackedlist(ScrollArea):
         internal = QWidget()
         internal.setObjectName("shit")
         self.setWidget(internal)
-        self.lay = QVBoxLayout()
+        self.setWidgetResizable(True)
+        self.lay = QVBoxLayout(internal)
         self.lay.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.lay.setSpacing(0)
         self.lay.setContentsMargins(0, 0, 0, 0)
-        internal.setLayout(self.lay)
         self.widgets = []
         self.fakegeos = []
         self._spacing = 6
         self._margin = self._spacing  # 9
         self.lock = threading.Lock()
-        self.setWidgetResizable(True)
-        self.setWidget(internal)
         self.internal = internal
         self.scrolled.connect(lambda _: self.doshowlazywidget(True, _))
         self.saveregion = QRect()

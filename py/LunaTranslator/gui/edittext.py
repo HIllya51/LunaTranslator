@@ -34,10 +34,9 @@ class edittext(saveposwindow):
         self.textOutput.setUndoRedoEnabled(True)
         self.textOutput.setReadOnly(False)
 
-        qv = QHBoxLayout()
         w = QWidget()
+        qv = QHBoxLayout(w)
         self.setCentralWidget(w)
-        w.setLayout(qv)
 
         bt1 = QPushButton(
             icon=qtawesome.icon("fa.rotate-right", color=globalconfig["buttoncolor"])
@@ -147,10 +146,9 @@ class edittrans(LMainWindow):
         self.setWindowIcon(qtawesome.icon("fa.edit"))
 
         self.textOutput = ctrlenter(self)
-        qv = QHBoxLayout()
         w = QWidget()
+        qv = QHBoxLayout(w)
         self.setCentralWidget(w)
-        w.setLayout(qv)
         self.textOutput.enterpressed.connect(self.submitfunction)
         submit = LPushButton("确定")
         inter, vis = loadvalidtss()

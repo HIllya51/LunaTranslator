@@ -41,11 +41,10 @@ def getformlayoutw(w=None, cls=LFormLayout, hide=False):
         _w = QWidget()
     else:
         _w = w
-    _l = cls()
+    _l = cls(_w)
     if hide:
         _w.hide()
     _l.setContentsMargins(0, 0, 0, 0)
-    _w.setLayout(_l)
     return _w, _l
 
 
@@ -209,10 +208,9 @@ class searchhookparam(LDialog):
             windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
         )
         self.setWindowTitle("搜索设置")
-        mainlayout = QVBoxLayout()
+        mainlayout = QVBoxLayout(self)
         checks = QButtonGroup_switch_widegt(self)
         self.searchmethod = checks
-        self.setLayout(mainlayout)
 
         layout1 = QHBoxLayout()
         layout1.addWidget(LLabel("代码页"))
@@ -556,8 +554,7 @@ class hookselect(closeashidewindow):
         self.setWindowIcon(
             qtawesome.icon(globalconfig["toolbutton"]["buttons"]["selecttext"]["icon"])
         )
-        self.hboxlayout = QHBoxLayout()
-        self.widget.setLayout(self.hboxlayout)
+        self.hboxlayout = QHBoxLayout(self.widget)
         self.vboxlayout = QVBoxLayout()
         self.hboxlayout.addLayout(self.vboxlayout)
         self.ttCombomodelmodel = LStandardItemModel()

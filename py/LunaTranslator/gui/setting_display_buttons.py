@@ -27,8 +27,7 @@ class dialog_selecticon(LDialog):
         ) as ff:
             js = json.load(ff)
 
-        layout = QGridLayout()
-        self.setLayout(layout)
+        layout = QGridLayout(self)
         for i, name in enumerate(js):
             layout.addWidget(
                 getIconButton(

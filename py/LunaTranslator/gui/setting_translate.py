@@ -314,10 +314,9 @@ def btndeccallback(self, countnum, btnplus):
 
 
 def createmanybtn(self, countnum, btnplus):
-    hbox = QHBoxLayout()
-    hbox.setContentsMargins(0, 0, 0, 0)
     w = Shit()
-    w.setLayout(hbox)
+    hbox = QHBoxLayout(w)
+    hbox.setContentsMargins(0, 0, 0, 0)
 
     btn = QPushButton(self)
     btn.setIcon(qtawesome.icon("fa.plus"))

@@ -99,12 +99,11 @@ class tagitem(QFrame):
             border_color = "yellow"
         self.setObjectName(border_color)
 
-        tagLayout = QHBoxLayout()
+        tagLayout = QHBoxLayout(self)
         tagLayout.setContentsMargins(0, 0, 0, 0)
         tagLayout.setSpacing(0)
 
         key = (tag, _type, refdata)
-        self.setLayout(tagLayout)
         lb = ClickableLabel()
         lb.setStyleSheet("background:transparent")
         lb.setText(tag)

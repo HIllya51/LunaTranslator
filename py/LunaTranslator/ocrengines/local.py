@@ -143,9 +143,8 @@ def doinstall(self, allsupports: list, parent, callback):
 
 def question():
     dialog = QWidget()
-    formLayout = LFormLayout()
+    formLayout = LFormLayout(dialog)
     formLayout.setContentsMargins(0, 0, 0, 0)
-    dialog.setLayout(formLayout)
     supportlang = LLabel()
     supportlang.setWordWrap(True)
     formLayout.addRow("当前支持的语言", supportlang)
