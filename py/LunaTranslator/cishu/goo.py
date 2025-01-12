@@ -1,4 +1,3 @@
-import requests
 from urllib.parse import quote
 import re
 from myutils.utils import localcachehelper
@@ -13,14 +12,14 @@ class goo(cishubase):
 
     def search(self, word):
         url = "https://dictionary.goo.ne.jp/srch/all/{}/m1u/".format(quote(word))
-        x = requests.get(url, proxies=self.proxy).text
+        x = self.proxysession.get(url).text
         xx = re.findall("<section>([\\s\\S]*?)</section>", x)
         if not xx:
             return
         xx = "".join(xx).replace('href="/', 'href="https://dictionary.goo.ne.jp/')
         cssurl = "https://dictionary.goo.ne.jp/mix/css/app.css"
         if not self.cache[cssurl]:
-            origin = requests.get(cssurl, proxies=self.proxy).text
+            origin = self.proxysession.get(cssurl).text
             origin = (
                 origin.replace("width:1004px", "")
                 .replace("width:1024px", "")

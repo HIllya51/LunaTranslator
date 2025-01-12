@@ -1,12 +1,11 @@
 import json
 from collections import OrderedDict
-import requests
 from urllib.parse import urlencode
 from functools import reduce
 import hmac, base64
 import datetime
 import pytz
-import hashlib, os
+import hashlib
 import sys, threading
 from urllib.parse import quote
 
@@ -382,8 +381,7 @@ class ApiInfo(object):
 class Service(object):
     def __init__(self, service_info, api_info):
         self.service_info = service_info
-        self.api_info = api_info
-        self.session = requests.session()
+        self.api_info = api_info 
 
     def set_ak(self, ak):
         self.service_info.credentials.set_ak(ak)
@@ -414,7 +412,7 @@ class Service(object):
 
         return SignerV4.sign_url(r, self.service_info.credentials)
 
-    def post(self, api, params, form, proxy):
+    def post(self, api, params, form, session):
         if not (api in self.api_info):
             raise Exception("no such api")
         api_info = self.api_info[api]
@@ -426,11 +424,10 @@ class Service(object):
 
         url = r.build()
 
-        resp = self.session.post(
+        resp = session.post(
             url,
             headers=r.headers,
             data=r.form,
-            proxies=proxy,
         )
         if resp.status_code == 200:
             return resp.text
@@ -511,10 +508,10 @@ class VisualService(Service):
         )
         return service_info
 
-    def common_handler(self, api, form, proxy):
+    def common_handler(self, api, form, session):
         params = dict()
         try:
-            res = self.post(api, params, form, proxy)
+            res = self.post(api, params, form, session)
             res_json = json.loads(res)
             return res_json
         except Exception as e:
@@ -525,9 +522,9 @@ class VisualService(Service):
             except:
                 raise Exception(str(e))
 
-    def ocr_api(self, action, form, proxy):
+    def ocr_api(self, action, form, session):
         try:
-            res_json = self.common_handler(action, form, proxy)
+            res_json = self.common_handler(action, form, session)
             return res_json
         except Exception as e:
             raise Exception(str(e))
@@ -561,7 +558,7 @@ class OCR(baseocr):
 
         b64 = base64.b64encode(imagebinary)
         form["image_base64"] = b64
-        resp = visual_service.ocr_api("MultiLanguageOCR", form, self.proxy)
+        resp = visual_service.ocr_api("MultiLanguageOCR", form, self.proxysession)
         try:
             texts = [box["text"] for box in resp["data"]["ocr_infos"]]
             boxs = self.flatten4point(

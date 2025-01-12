@@ -1,4 +1,3 @@
-import requests
 from urllib.parse import quote
 import re, threading
 from cishu.cishubase import cishubase
@@ -99,10 +98,7 @@ function onclickbtn_xxxxxx_internal(_id) {
 
         link = "https://jisho.org/{}/{}".format(key, quote(word))
         url = link
-        html = requests.get(
-            url,
-            proxies=self.proxy,
-        ).text
+        html = self.proxysession.get(url).text
 
         if get_element_by("id", "no-matches", html):
             return
@@ -135,7 +131,7 @@ function onclickbtn_xxxxxx_internal(_id) {
             link = ss.group()[6:-1]
             if not self.style.get(link):
                 self.style[link] = self.parse_stylesheet(
-                    requests.get(link, proxies=self.proxy).text, self.klass
+                    self.proxysession.get(link).text, self.klass
                 )
             saver["style"] = self.style[link]
             saver["primary"] = get_element_by("id", "result_area", res) + res.replace(

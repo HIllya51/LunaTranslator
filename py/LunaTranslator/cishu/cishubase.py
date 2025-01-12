@@ -1,9 +1,8 @@
 from myutils.config import globalconfig
 from myutils.wrapper import threader
 from traceback import print_exc
-from myutils.proxy import getproxy
-from myutils.utils import SafeFormatter, getlangtgt, getlangsrc
-from myutils.commonbase import ArgsEmptyExc, proxysession
+from myutils.utils import SafeFormatter
+from myutils.commonbase import commonbase
 import re, uuid
 from tinycss2 import parse_stylesheet, serialize
 from tinycss2.ast import (
@@ -13,7 +12,6 @@ from tinycss2.ast import (
     ParseError,
     LiteralToken,
 )
-from language import Languages
 
 
 class DictTree:
@@ -21,8 +19,7 @@ class DictTree:
     def childrens(self) -> list: ...
 
 
-class cishubase:
-    typename = None
+class cishubase(commonbase):
 
     def init(self):
         pass
@@ -30,13 +27,8 @@ class cishubase:
     def search(self, word):
         return word
 
-    @property
-    def proxy(self):
-        return getproxy(("cishu", self.typename))
-
     def __init__(self, typename) -> None:
-        self.typename = typename
-        self.proxysession = proxysession("cishu", self.typename)
+        super().__init__(typename)
         self.callback = print
         self.needinit = True
         try:
@@ -44,6 +36,9 @@ class cishubase:
             self.needinit = False
         except:
             print_exc()
+
+    _globalconfig_key = "cishu"
+    _setting_dict = globalconfig["cishu"]
 
     @threader
     def safesearch(self, sentence, callback):
@@ -64,10 +59,6 @@ class cishubase:
         except:
             pass
 
-    @property
-    def config(self):
-        return globalconfig["cishu"][self.typename]["args"]
-
     def _gptlike_createquery(self, query, usekey, tempk):
         user_prompt = (
             self.config.get(tempk, "") if self.config.get(usekey, False) else ""
@@ -82,25 +73,8 @@ class cishubase:
             template = self.config[tempk]
         else:
             template = "You are a professional dictionary assistant whose task is to help users search for information such as the meaning, pronunciation, etymology, synonyms, antonyms, and example sentences of {srclang} words. You should be able to handle queries in multiple languages and provide in-depth information or simple definitions according to user needs. You should reply in {tgtlang}."
-        tgt = getlangtgt()
-        src = getlangsrc()
-        langmap = Languages.create_langmap(Languages.createenglishlangmap())
-        tgtlang = langmap.get(tgt, tgt)
-        srclang = langmap.get(src, src)
-        return fmt.format(template, srclang=srclang, tgtlang=tgtlang)
 
-    def checkempty(self, items):
-        emptys = []
-        for item in items:
-            if (self.config[item]) == "":
-                emptys.append(item)
-        if len(emptys):
-            emptys_s = []
-            argstype = self.config.get("argstype", {})
-            for e in emptys:
-                name = argstype.get(e, {}).get("name", e)
-                emptys_s.append(name)
-            raise ArgsEmptyExc(emptys_s)
+        return fmt.format(template, srclang=self.srclang, tgtlang=self.tgtlang)
 
     def markdown_to_html(self, markdown_text: str):
         print(markdown_text)

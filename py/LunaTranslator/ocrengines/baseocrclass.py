@@ -112,6 +112,10 @@ class baseocr(commonbase):
         if l == Languages.Auto:
             raise Exception(_TR("当前OCR引擎不支持设置语言为自动"))
 
+    def __init__(self, typename):
+        super().__init__(typename)
+        self.level2init()
+
     def level2init(self):
         self.needinit = True
         try:

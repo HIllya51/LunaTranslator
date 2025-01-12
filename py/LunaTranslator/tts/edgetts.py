@@ -1,4 +1,3 @@
-import requests
 import pytz
 import websocket
 from datetime import datetime
@@ -6,7 +5,6 @@ import time
 import re
 import uuid, hashlib
 import time
-import requests
 import time
 from tts.basettsclass import TTSbase, SpeechParam
 
@@ -107,12 +105,11 @@ class DRM:
 class TTS(TTSbase):
 
     def getvoicelist(self):
-        alllist = requests.get(
+        alllist = self.proxysession.get(
             "{}&Sec-MS-GEC={}&Sec-MS-GEC-Version={}".format(
                 VOICE_LIST, DRM.generate_sec_ms_gec(), SEC_MS_GEC_VERSION
             ),
             headers=VOICE_HEADERS,
-            proxies=self.proxy,
         ).json()
         return [_["ShortName"] for _ in alllist], [_["FriendlyName"] for _ in alllist]
 

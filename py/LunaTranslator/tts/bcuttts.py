@@ -1,4 +1,3 @@
-import requests
 from tts.basettsclass import TTSbase, SpeechParam
 
 
@@ -17,11 +16,10 @@ class TTS(TTSbase):
             "build": "2180020",
         }
 
-        response = requests.get(
+        response = self.proxysession.get(
             "https://member.bilibili.com/x/mvp/material/list",
             params=params,
             headers=headers,
-            proxies=self.proxy,
         )
 
         vis, inter = [], []
@@ -59,16 +57,14 @@ class TTS(TTSbase):
             },
         }
 
-        response = requests.post(
+        response = self.proxysession.post(
             "https://member.bilibili.com/x/material/rubick-interface/sync-task",
             headers=headers,
             json=json_data,
-            proxies=self.proxy,
         )
 
-        response = requests.get(
+        response = self.proxysession.get(
             response.json()["data"]["result"]["results"][0]["url"],
             headers=headers,
-            proxies=self.proxy,
         )
         return response.content

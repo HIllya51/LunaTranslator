@@ -4,6 +4,8 @@ from myutils.wrapper import threader
 from traceback import print_exc
 from myutils.proxy import getproxy
 from myutils.utils import LRUCache
+from myutils.commonbase import commonbase
+
 
 
 class SpeechParam:
@@ -12,9 +14,7 @@ class SpeechParam:
         self.pitch = pitch
 
 
-class TTSbase:
-    typename = None
-
+class TTSbase(commonbase):
     def init(self): ...
     def getvoicelist(self):
         # 分别返回内部标识名,显示
@@ -24,15 +24,6 @@ class TTSbase:
         return None  # fname ,若为None则是不需要文件直接朗读
 
     ####################
-    # 一些可能需要的属性
-    @property
-    def proxy(self):
-        return getproxy(("reader", self.typename))
-
-    @property
-    def config(self):
-        return globalconfig["reader"][self.typename]["args"]
-
     @property
     def arg_not_sup(self):
         return globalconfig["reader"][self.typename].get("arg_not_sup", [])
@@ -63,10 +54,12 @@ class TTSbase:
 
     ########################
 
+    _globalconfig_key = "reader"
+    _setting_dict = globalconfig["reader"]
     def __init__(
         self, typename, playaudiofunction, privateconfig=None, init=True, uid=None
     ) -> None:
-        self.typename = typename
+        super().__init__(typename)
         self.playaudiofunction = playaudiofunction
         self.uid = uid
         self.LRUCache = LRUCache(3)

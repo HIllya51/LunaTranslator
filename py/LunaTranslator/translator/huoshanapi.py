@@ -1,6 +1,5 @@
 import json
 from collections import OrderedDict
-import requests
 from translator.basetranslator import basetrans
 from urllib.parse import urlencode
 from functools import reduce
@@ -311,9 +310,8 @@ class Service(object):
     def __init__(self, service_info, api_info):
         self.service_info = service_info
         self.api_info = api_info
-        self.session = requests.session()
 
-    def json(self, api, params, body, proxy):
+    def json(self, api, params, body, session):
         if not (api in self.api_info):
             raise Exception("no such api")
         api_info = self.api_info[api]
@@ -324,11 +322,10 @@ class Service(object):
         SignerV4.sign(r, self.service_info.credentials)
 
         url = r.build()
-        resp = self.session.post(
+        resp = session.post(
             url,
             headers=r.headers,
             data=r.body.encode("utf8").decode("latin1"),
-            proxies=proxy,
         )
         if resp.status_code == 200:
             return json.dumps(resp.json())
@@ -383,7 +380,7 @@ class Service(object):
         return od
 
 
-def trans(TextList, k_access_key, k_secret_key, src, tgt, proxy):
+def trans(TextList, k_access_key, k_secret_key, src, tgt, session):
 
     k_service_info = ServiceInfo(
         "open.volcengineapi.com",
@@ -401,7 +398,7 @@ def trans(TextList, k_access_key, k_secret_key, src, tgt, proxy):
     }
     if src != Languages.Auto:
         body.update({"SourceLanguage": src})
-    res = service.json("translate", {}, json.dumps(body), proxy)
+    res = service.json("translate", {}, json.dumps(body), session)
     return res
 
 
@@ -414,7 +411,7 @@ class TS(basetrans):
 
         keyid = self.multiapikeycurrent["Access Key ID"]
         acckey = self.multiapikeycurrent["Secret Access Key"]
-        res = trans(query, keyid, acckey, self.srclang, self.tgtlang, self.proxy)
+        res = trans(query, keyid, acckey, self.srclang, self.tgtlang, self.proxysession)
         try:
 
             return "\n".join(

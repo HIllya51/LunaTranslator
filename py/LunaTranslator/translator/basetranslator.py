@@ -90,7 +90,8 @@ class basetrans(commonbase):
     using_gpt_dict = False
     _compatible_flag_is_sakura_less_than_5_52_3 = True
 
-    def level2init(self):
+    def __init__(self, typename):
+        super().__init__(typename)
         if (self.transtype == "offline") and (not self.is_gpt_like):
             globalconfig["fanyi"][self.typename]["useproxy"] = False
         self.multiapikeycurrentidx = -1

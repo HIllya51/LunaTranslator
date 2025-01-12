@@ -1,6 +1,3 @@
-import time
-import requests, json
-from traceback import print_exc
 from tts.basettsclass import TTSbase, SpeechParam
 
 
@@ -25,10 +22,9 @@ class TTS(TTSbase):
             "sec-ch-ua-platform": '"Windows"',
         }
 
-        response = requests.get(
+        response = self.proxysession.get(
             "http://127.0.0.1:{}/speakers".format(self.config["Port"]),
             headers=headers,
-            proxies={"http": None, "https": None},
         ).json()
         vis = []
         idxs = []
@@ -55,11 +51,10 @@ class TTS(TTSbase):
         pitch = 0.015 * param.pitch
         params = {"speaker": voice, "text": content}
 
-        response = requests.post(
+        response = self.proxysession.post(
             "http://localhost:{}/audio_query".format(self.config["Port"]),
             params=params,
             headers=headers,
-            proxies={"http": None, "https": None},
         )
         headers = {
             "Content-Type": "application/json",
@@ -67,7 +62,7 @@ class TTS(TTSbase):
         resp = response.json()
         resp.update({"speedScale": rate, "pitchScale": pitch})
         params = {"speaker": voice}
-        response = requests.post(
+        response = self.proxysession.post(
             "http://localhost:{}/synthesis".format(self.config["Port"]),
             params=params,
             headers=headers,

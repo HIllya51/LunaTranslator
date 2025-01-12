@@ -101,10 +101,6 @@ class commonbase:
     def __init__(self, typename) -> None:
         self.typename = typename
         self.renewsesion()
-        self.level2init()
 
     def renewsesion(self):
         self.proxysession = proxysession(self._globalconfig_key, self.typename)
-
-    def level2init(self):
-        pass

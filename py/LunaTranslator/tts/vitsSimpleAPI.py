@@ -1,4 +1,3 @@
-import requests
 from myutils.utils import urlpathjoin
 from tts.basettsclass import TTSbase, SpeechParam
 from urllib.parse import quote
@@ -6,7 +5,7 @@ from urllib.parse import quote
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        responseVits = requests.get(
+        responseVits = self.proxysession.get(
             urlpathjoin(self.config["URL"], self.config["voices"])
         ).json()
         voicelist = []
@@ -37,6 +36,6 @@ class TTS(TTSbase):
             text=encoded_content,
             length=length,
         )
-        response = requests.get(urlpathjoin(self.config["URL"], speak)).content
+        response = self.proxysession.get(urlpathjoin(self.config["URL"], speak)).content
 
         return response

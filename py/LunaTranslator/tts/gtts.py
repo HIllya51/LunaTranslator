@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import base64
-import json, time
-import logging, os
+import json
+import logging
 import re
 import urllib
-import requests
 
 _langs = {
     "af": "Afrikaans",
@@ -415,8 +414,8 @@ class gTTS:
 
         # Language
         self.lang_check = lang_check
+        lang = str(self.ref.srclang)
         self.lang = lang
-
         if self.lang_check:
             # Fallback lang in case it is deprecated
             self.lang = _fallback_deprecated_lang(lang)
@@ -438,7 +437,6 @@ class gTTS:
         # Pre-processors and tokenizer
         self.pre_processor_funcs = pre_processor_funcs
         self.tokenizer_func = tokenizer_func
-
 
     def _tokenize(self, text):
         # Pre-clean
@@ -486,11 +484,10 @@ class gTTS:
             log.debug("data-%i: %s", idx, data)
 
             # Request
-            r = requests.post(
+            r = self.ref.proxysession.post(
                 url=translate_url,
                 data=data,
                 headers=self.GOOGLE_TTS_HEADERS,
-                proxies=self.ref.proxy,
             )
 
             # Prepare request
@@ -507,12 +504,6 @@ class gTTS:
         return "f.req={}&".format(urllib.parse.quote(espaced_rpc))
 
     def stream(self):
-        try:
-            requests.packages.urllib3.disable_warnings(
-                requests.packages.urllib3.exceptions.InsecureRequestWarning
-            )
-        except:
-            pass
 
         prepared_requests = self._prepare_requests()
         for idx, r in enumerate(prepared_requests):
@@ -596,13 +587,11 @@ class gTTSError(Exception):
 
 from tts.basettsclass import TTSbase
 
-from myutils.utils import getlangsrc
-
 
 class TTS(TTSbase):
     def getvoicelist(self):
         return [""], [""]
 
     def speak(self, content, voice, _):
-        tts = gTTS(self, content, lang=str(getlangsrc()))
+        tts = gTTS(self, content)
         return tts.save()

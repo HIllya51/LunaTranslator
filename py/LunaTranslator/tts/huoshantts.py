@@ -1,5 +1,3 @@
-from traceback import print_exc
-import requests
 import base64
 from tts.basettsclass import TTSbase
 
@@ -69,11 +67,10 @@ class TTS(TTSbase):
             "text": content,
             "speaker": voice,
         }  #
-        response = requests.post(
+        response = self.proxysession.post(
             "https://translate.volcengine.com/crx/tts/v1/",
             headers=headers,
             json=json_data,
-            proxies=self.proxy,
         )
         b64 = base64.b64decode(response.json()["audio"]["data"])
 

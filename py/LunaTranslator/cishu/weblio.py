@@ -1,4 +1,3 @@
-import requests
 from urllib.parse import quote, unquote
 from cishu.cishubase import cishubase
 from myutils.utils import simplehtmlparser_all, simplehtmlparser, localcachehelper
@@ -13,7 +12,7 @@ class weblio(cishubase):
 
     def search(self, word):
         url = "https://www.weblio.jp/content/" + quote(word)
-        html = requests.get(url, proxies=self.proxy).text
+        html = self.proxysession.get(url).text
         head = simplehtmlparser_all(html, "div", '<div class="pbarT">')
         content = simplehtmlparser_all(html, "div", '<div class="kijiWrp">')
         if not content:
@@ -62,7 +61,9 @@ function safe_weblio_search_word(word){
 }</script>
 """
         links = []
-        style = self.parse_stylesheet(simplehtmlparser(html, "style", "<style>")[7:-8], self.klass)
+        style = self.parse_stylesheet(
+            simplehtmlparser(html, "style", "<style>")[7:-8], self.klass
+        )
         for link in simplehtmlparser_all(html, "link", '<link rel="stylesheet"'):
             for _ in re.findall('href="(.*?)"', link):
                 links.append("https:" + _)
@@ -73,13 +74,12 @@ function safe_weblio_search_word(word){
         for t in ts:
             t.join()
         style += "".join(self.cache.get(link) for link in links)
-        return '<style>{}</style><div class="{}">{}</div>'.format(style, self.klass, join)
+        return '<style>{}</style><div class="{}">{}</div>'.format(
+            style, self.klass, join
+        )
 
     def makelink(self, link):
         if not self.cache.get(link):
-            req = requests.get(
-                link,
-                proxies=self.proxy,
-            )
+            req = self.proxysession.get(link)
             html = req.text if req.status_code == 200 else ""
             self.cache[link] = self.parse_stylesheet(html, self.klass)

@@ -1,10 +1,9 @@
-import requests
 from tts.basettsclass import TTSbase
 
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        return ["ja", "zh", "en"], ["Japanese","Chinese","English"]
+        return ["ja", "zh", "en"], ["Japanese", "Chinese", "English"]
 
     def speak(self, content, voice, _):
 
@@ -28,10 +27,9 @@ class TTS(TTSbase):
             "le": voice,
         }
 
-        response = requests.get(
+        response = self.proxysession.get(
             "https://dict.youdao.com/dictvoice",
             params=params,
             headers=headers,
-            proxies=self.proxy,
         ).content
         return response

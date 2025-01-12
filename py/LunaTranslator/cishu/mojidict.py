@@ -1,4 +1,4 @@
-import requests, re, json, uuid
+import re, json, uuid
 
 from cishu.cishubase import cishubase
 
@@ -33,11 +33,10 @@ def mojiclicksearch(self, word):
         ensure_ascii=False,
     ).encode()
 
-    response = requests.post(
+    response = self.proxysession.post(
         "https://api.mojidict.com/parse/functions/word-clickSearchV2",
         headers=headers,
         data=data,
-        proxies=self.proxy,
     )
 
     result = response.json()["result"]["result"]
@@ -573,7 +572,7 @@ def mojiclicksearch(self, word):
 
 
 def mojizonghe(self, word):
-    response = requests.post(
+    response = self.proxysession.post(
         "https://api.mojidict.com/parse/functions/union-api",
         json={
             "functions": [
@@ -610,7 +609,6 @@ def mojizonghe(self, word):
             "sec-fetch-site": "same-site",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
         },
-        proxies=self.proxy,
     )
 
     result = ""
