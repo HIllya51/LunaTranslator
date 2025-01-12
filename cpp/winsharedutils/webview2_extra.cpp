@@ -302,15 +302,22 @@ DECLARE_API void get_root_html(ICoreWebView2Controller *m_host, void (*cb)(LPCWS
 #ifndef WINXP
     wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
     wil::com_ptr<ICoreWebView2> m_webView;
+    wil::unique_handle asyncMethodCompleteEvent(CreateEvent(nullptr, false, false, nullptr));
 
     CHECK_FAILURE_NORET(m_controller->get_CoreWebView2(&m_webView));
-    CHECK_FAILURE_NORET(m_webView->ExecuteScript(L"document.documentElement.outerHTML", Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
-                                                                                            [=](HRESULT errorCode,
-                                                                                                LPCWSTR resultObjectAsJson)
-                                                                                            {
-                                                                                                cb(resultObjectAsJson);
-                                                                                                return S_OK;
-                                                                                            })
-                                                                                            .Get()));
+    CHECK_FAILURE_NORET(
+        m_webView->ExecuteScript(
+            L"document.documentElement.outerHTML",
+            Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
+                [=, asyncMethodCompleteEventHandle = asyncMethodCompleteEvent.get()](HRESULT errorCode, LPCWSTR resultObjectAsJson)
+                {
+                    SetEvent(asyncMethodCompleteEventHandle);
+                    cb(resultObjectAsJson);
+                    return S_OK;
+                })
+                .Get()));
+    DWORD handleIndex = 0;
+    CoWaitForMultipleHandles(COWAIT_DISPATCH_WINDOW_MESSAGES | COWAIT_DISPATCH_CALLS | COWAIT_INPUTAVAILABLE,
+                             INFINITE, 1, asyncMethodCompleteEvent.addressof(), &handleIndex);
 #endif
 }
