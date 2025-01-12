@@ -22,9 +22,7 @@ from gui.usefulwidget import (
     saveposwindow,
     getboxlayout,
     IconButton,
-    statusbutton,
     getsimplecombobox,
-    threeswitch,
     FQLineEdit,
     FocusCombo,
 )
@@ -43,6 +41,36 @@ from gui.dialog_savedgame_common import (
     addgamebatch,
     addgamebatch_x,
 )
+
+
+class threeswitch(QWidget):
+    btnclicked = pyqtSignal(int)
+
+    def selectlayout(self, i):
+        try:
+            self.btns[(i + 0) % 3].setEnabled(False)
+            self.btns[(i + 1) % 3].setEnabled(False)
+            self.btns[(i + 2) % 3].setEnabled(False)
+            self.btns[(i + 0) % 3].setChecked(True)
+            self.btns[(i + 1) % 3].setChecked(False)
+            self.btns[(i + 2) % 3].setChecked(False)
+            self.btnclicked.emit(i)
+            self.btns[(i + 1) % 3].setEnabled(True)
+            self.btns[(i + 2) % 3].setEnabled(True)
+        except:
+            pass
+
+    def __init__(self, p, icons):
+        super().__init__(p)
+        self.btns = []
+        hv = QHBoxLayout(self)
+        hv.setContentsMargins(0, 0, 0, 0)
+        hv.setSpacing(0)
+        for i, icon in enumerate(icons):
+            btn = IconButton(parent=self, icon=icon, checkable=True)
+            btn.clicked.connect(functools.partial(self.selectlayout, i))
+            self.btns.append(btn)
+            hv.addWidget(btn)
 
 
 @Singleton_close
@@ -67,6 +95,17 @@ class dialog_savedgame_integrated(saveposwindow):
         except:
             print_exc()
 
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.FontChange:
+            h = QFontMetricsF(self.font()).height()
+            h = int(h * gobject.Consts.btnscale)
+            sz = QSize(h, h)
+            self.syssettingbtn.setFixedSize(sz)
+            sz = QSize(h * 3, h)
+            self.switch.setFixedSize(sz)
+            self.do_resize()
+        return super().event(a0)
+
     def __init__(self, parent) -> None:
         super().__init__(
             parent,
@@ -85,6 +124,7 @@ class dialog_savedgame_integrated(saveposwindow):
         self.setCentralWidget(w)
 
         self.switch = threeswitch(self, icons=["fa.list", "fa.th-list", "fa.th"])
+        self.switch.setFixedSize(QSize(75, 25))
         self.switch.btnclicked.connect(self.selectlayout)
         self.syssettingbtn = IconButton(icon="fa.gear", parent=self)
         self.syssettingbtn.setFixedSize(QSize(25, 25))
@@ -99,7 +139,10 @@ class dialog_savedgame_integrated(saveposwindow):
         )
 
     def resizeEvent(self, e: QResizeEvent):
-        x = e.size().width() - self.switch.width()
+        self.do_resize()
+
+    def do_resize(self):
+        x = self.width() - self.switch.width()
         self.switch.move(x, 0)
         x -= self.syssettingbtn.width()
         self.syssettingbtn.move(x, 0)
@@ -649,6 +692,13 @@ class dialog_savedgame_new(QWidget):
         )
         self.setStyleSheet(style)
 
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.FontChange:
+            h = QFontMetricsF(self.font()).height()
+            h = int(h * gobject.Consts.btnscale)
+            self.___.setFixedWidth(4 * h)
+        return super().event(a0)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self._parent = parent
@@ -668,7 +718,8 @@ class dialog_savedgame_new(QWidget):
         self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
         _ = QLabel()
-        _.setFixedWidth(80)
+        _.setFixedWidth(100)
+        self.___ = _
         layout.addWidget(self.tagswidget)
         layout.addWidget(_)
         formLayout.addLayout(layout)

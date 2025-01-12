@@ -23,6 +23,7 @@ from gui.usefulwidget import (
     makegrid,
     makesubtab_lazy,
     makescrollgrid,
+    IconButton
 )
 from gui.dynalang import LPushButton, LLabel, LAction
 from gui.setting_about import offlinelinks
@@ -261,15 +262,7 @@ def btnpluscallback(self, countnum, btnplus):
     )
 
 
-def createbtn(self, countnum, btnplus):
-    btn = QPushButton(self)
-    btn.setIcon(qtawesome.icon("fa.plus"))
-    btn.clicked.connect(functools.partial(btnpluscallback, self, countnum, btnplus))
-    setattr(self, "btnadd" + btnplus, btn)
-    return btn
-
-
-class Shit(QWidget):
+class Shit(QGroupBox):
     pass
 
 
@@ -318,20 +311,17 @@ def createmanybtn(self, countnum, btnplus):
     hbox = QHBoxLayout(w)
     hbox.setContentsMargins(0, 0, 0, 0)
 
-    btn = QPushButton(self)
-    btn.setIcon(qtawesome.icon("fa.plus"))
+    btn = IconButton("fa.plus")
     btn.clicked.connect(functools.partial(btnpluscallback, self, countnum, btnplus))
 
     hbox.addWidget(btn)
 
-    btn = QPushButton(self)
-    btn.setIcon(qtawesome.icon("fa.minus"))
+    btn = IconButton("fa.minus")
     btn.clicked.connect(functools.partial(btndeccallback, self, countnum, btnplus))
 
     hbox.addWidget(btn)
 
-    btn = QPushButton(self)
-    btn.setIcon(qtawesome.icon("fa.question"))
+    btn = IconButton("fa.question")
     if btnplus == "offline":
         btn.clicked.connect(
             lambda: gobject.baseobject.openlink(

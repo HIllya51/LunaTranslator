@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, threading
+import functools, threading, gobject
 from myutils.config import savehook_new_list, savehook_new_data, get_launchpath
 from myutils.hwnd import getExeIcon
 from gui.usefulwidget import (
@@ -234,6 +234,14 @@ class dialog_savedgame_legacy(QWidget):
         _ = QLabel()
         _.setFixedHeight(20)
         _.setStyleSheet("background:transparent")
+        self.___ = _
         formLayout.addWidget(_)
         formLayout.addWidget(table)
         formLayout.addLayout(bottom)
+
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.FontChange:
+            h = QFontMetricsF(self.font()).height()
+            h = int(h * gobject.Consts.btnscale)
+            self.___.setFixedHeight(h)
+        return super().event(a0)

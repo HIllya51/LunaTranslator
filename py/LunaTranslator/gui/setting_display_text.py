@@ -298,7 +298,7 @@ def xianshigrid_style(self):
                                             "",
                                             "字体大小",
                                             D_getspinbox(
-                                                1,
+                                                5,
                                                 100,
                                                 globalconfig,
                                                 "fontsizeori",

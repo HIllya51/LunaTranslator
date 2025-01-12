@@ -8,7 +8,7 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {
-            // flutter of birds～鳥達の羽ばたき～
+            // flutter of birds～鳥達の羽ばたき～ WIN10版本
             // https://vndb.org/v2379
             // 很奇怪，FindFirstFileW在win7上true，在win11上false，但PathFileExists在两者都是true
             auto paks = {L"data.arc", L"effect.arc", L"mes.arc"};

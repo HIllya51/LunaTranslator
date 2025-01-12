@@ -51,3 +51,9 @@ global_dialog_savedgame_new = None
 global_dialog_setting_game = None
 serverindex = 0
 edittrans = None
+
+
+class Consts:
+    buttoncolor = "#FF69B4"
+    buttoncolor_disable = "#afafaf"
+    btnscale = 1.2

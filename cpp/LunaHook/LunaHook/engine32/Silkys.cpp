@@ -721,10 +721,49 @@ bool Silkysveryveryold_attach_function()
   hp.type = USING_STRING;
   return NewHook(hp, "SilkysX");
 }
+namespace
+{
 
+  // flutter of birds～鳥達の羽ばたき～ 旧版本
+  // https://vndb.org/v2379
+  bool bird()
+  {
+    const BYTE bytes[] = {
+        0x8b, 0x45, 0xf4,
+        0x33, 0xc9,
+        0x8a, 0x88, XX4,
+        0x81, 0xf9, 0x81, 0x00, 0x00, 0x00,
+        0x0f, 0x85, XX4,
+        0x8b, 0x55, 0xf4,
+        0x33, 0xc0,
+        0x8a, 0x82, XX4,
+        0x83, 0xf8, 0x75,
+        0x74, 0x14,
+        0x8b, 0x4d, 0xf4,
+        0x33, 0xd2,
+        0x8a, 0x91, XX4,
+        0x83, 0xfa, 0x77,
+        0x0f, 0x85, XX4,
+        0x8b, 0x45, 0xf4,
+        0x50};
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = findfuncstart(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+    hp.embed_hook_font = F_TextOutA;
+    hp.offset = stackoffset(1);
+    hp.lineSeparator = L"\\n";
+    return NewHook(hp, "SilkysX");
+  }
+}
 bool Silkysveryveryold::attach_function()
 {
-  return Silkysveryveryold_attach_function() || fob2();
+  return Silkysveryveryold_attach_function() || fob2() || bird();
 }
 
 bool Aisystem6::attach_function()

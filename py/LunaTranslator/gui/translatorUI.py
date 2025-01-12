@@ -29,28 +29,27 @@ from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser, TextType
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import (
-    resizableframeless,
-    getQMessageBox,
-    LIconLabel,
-    findnearestscreen,
-)
+from gui.usefulwidget import resizableframeless, getQMessageBox, findnearestscreen
 from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.dialog_savedgame_setting import favorites, calculate_centered_rect
 from gui.dialog_savedgame_common import startgame
-from gui.dynalang import LDialog
+from gui.dynalang import LDialog, LLabel
 
 
-class ButtonX(QWidget):
+class IconLabelX(LLabel):
+    clicked = pyqtSignal()
+    rightclick = pyqtSignal()
 
     def __init__(self, *argc):
         super().__init__(*argc)
         self.reflayout = None
+        self._icon = QIcon()
+        self._size = QSize()
         self.setMouseTracking(True)
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
 
-    def showinlayout(self, layout):
+    def showinlayout(self, layout: QHBoxLayout):
 
         layout.addWidget(self)
         self.show()
@@ -64,15 +63,37 @@ class ButtonX(QWidget):
         _.removeWidget(self)
         self.hide()
 
-    def resizeEvent(self, e):
+    def resizeEvent(self, e: QResizeEvent):
         h = int(e.size().height() / 1.5)
         self.setFixedWidth(int(self.height() * 2 / 1.5))
         self.setIconSize(QSize(h, h))
 
+    def setIcon(self, icon: QIcon):
+        self._icon = icon
+        self.update()
 
-class IconLabelX(LIconLabel, ButtonX):
-    clicked = pyqtSignal()
-    rightclick = pyqtSignal()
+    def setIconSize(self, size: QSize):
+        self._size = size
+        self.update()
+
+    def paintEvent(self, a0: QPaintEvent) -> None:
+
+        painter = QPainter(self)
+        if self._size.isEmpty():
+            return
+        rect = QRect(
+            (self.width() - self._size.width()) // 2,
+            (self.height() - self._size.height()) // 2,
+            self._size.width(),
+            self._size.height(),
+        )
+        self._icon.paint(
+            painter,
+            rect,
+            Qt.AlignmentFlag.AlignCenter,
+            QIcon.Mode.Normal,
+            QIcon.State.On,
+        )
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
         if QObject.receivers(self, self.clicked) == 0:

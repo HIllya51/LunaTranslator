@@ -474,6 +474,7 @@ class texthook(basetext):
             savehook_new_data[self.gameuid]["title"], "<msg_info_refresh>"
         )
         self.flashembedsettings(pid)
+        self.setsettings()
 
     def InsertPCHooks(self, which):
         for pid in self.pids:

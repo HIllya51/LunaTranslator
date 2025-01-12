@@ -3,7 +3,12 @@ import threading, windows
 import gobject, qtawesome, os, json
 from myutils.config import globalconfig, savehook_new_data, translatorsetting
 from myutils.wrapper import Singleton_close
-from gui.usefulwidget import saveposwindow, getsimplecombobox
+from gui.usefulwidget import (
+    saveposwindow,
+    getsimplecombobox,
+    getIconButton,
+    IconButton,
+)
 from gui.dynalang import LPushButton, LMainWindow
 from gui.setting_textinput import loadvalidtss
 
@@ -19,7 +24,6 @@ class edittext(saveposwindow):
     def __init__(self, parent, cached):
         super().__init__(parent, poslist=globalconfig["edit_geo"])
         self.setupUi()
-
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.setWindowTitle("编辑")
@@ -38,23 +42,11 @@ class edittext(saveposwindow):
         qv = QHBoxLayout(w)
         self.setCentralWidget(w)
 
-        bt1 = QPushButton(
-            icon=qtawesome.icon("fa.rotate-right", color=globalconfig["buttoncolor"])
-        )
-        bt2 = QPushButton(
-            icon=qtawesome.icon(
-                "fa.forward" if gobject.baseobject.edittextui_sync else "fa.play",
-                color=(
-                    "#FF69B4"
-                    if gobject.baseobject.edittextui_sync
-                    else globalconfig["buttoncolor"]
-                ),
-            )
-        )
-
+        bt1 = getIconButton(icon="fa.rotate-right")
+        bt2 = IconButton(icon=["fa.play", "fa.forward"], checkable=True)
+        bt2.setChecked(True)
         self.bt2 = bt2
         self.bt1 = bt1
-        bt2.clicked.connect(self.changestate)
         bt1.clicked.connect(self.run)
         qvb = QVBoxLayout()
         qvb.addWidget(bt1)
@@ -69,21 +61,8 @@ class edittext(saveposwindow):
             args=(self.textOutput.toPlainText(), False),
         ).start()
 
-    def changestate(self):
-        gobject.baseobject.edittextui_sync = not gobject.baseobject.edittextui_sync
-        self.bt2.setIcon(
-            qtawesome.icon(
-                "fa.forward" if gobject.baseobject.edittextui_sync else "fa.play",
-                color=(
-                    "#FF69B4"
-                    if gobject.baseobject.edittextui_sync
-                    else globalconfig["buttoncolor"]
-                ),
-            )
-        )
-
     def getnewsentence(self, sentence):
-        if gobject.baseobject.edittextui_sync:
+        if self.bt2.isChecked():
             self.textOutput.setPlainText(sentence)
 
 

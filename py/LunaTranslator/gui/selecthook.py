@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     FocusSpin,
     FocusCombo,
+    IconButton,
     TableViewW,
 )
 from gui.dynalang import (
@@ -612,7 +613,7 @@ class hookselect(closeashidewindow):
         self.userhookinsert.clicked.connect(self.inserthook)
         self.searchtextlayout.addWidget(self.userhookinsert)
 
-        self.userhookinsert = QPushButton(icon=qtawesome.icon("fa.question"))
+        self.userhookinsert = IconButton("fa.question")
         self.userhookinsert.clicked.connect(
             lambda: gobject.baseobject.openlink(
                 dynamiclink("{docs_server}/#/zh/hooksettings?id=hookcode")

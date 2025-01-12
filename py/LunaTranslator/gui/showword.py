@@ -17,11 +17,10 @@ from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import (
     closeashidewindow,
-    statusbutton,
     getQMessageBox,
     auto_select_webview,
     WebivewWidget,
-    mshtmlWidget,
+    IconButton,
     getboxlayout,
     getspinbox,
     getsimplecombobox,
@@ -460,19 +459,19 @@ class AnkiWindow(QWidget):
         self.recorders = {}
         wid = QWidget()
         layout = QVBoxLayout(wid)
-        soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
+        soundbutton = IconButton("fa.music")
         soundbutton.clicked.connect(self.langdu)
 
-        soundbutton2 = QPushButton(qtawesome.icon("fa.music"), "")
+        soundbutton2 = IconButton("fa.music")
         soundbutton2.clicked.connect(self.langdu2)
-        cropbutton = QPushButton(qtawesome.icon("fa.crop"), "")
+        cropbutton = IconButton("fa.crop")
         cropbutton.clicked.connect(functools.partial(self.crophide, False))
         cropbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         cropbutton.customContextMenuRequested.connect(
             functools.partial(self.crophide, True)
         )
 
-        grabwindowbtn = QPushButton(qtawesome.icon("fa.camera"), "")
+        grabwindowbtn = IconButton("fa.camera")
         grabwindowbtn.clicked.connect(
             lambda: grabwindow(
                 getimageformat(),
@@ -481,7 +480,7 @@ class AnkiWindow(QWidget):
         )
 
         def createtbn(target: QLineEdit):
-            clearbtn = QPushButton(qtawesome.icon("fa.times"), "")
+            clearbtn = IconButton("fa.times")
             clearbtn.clicked.connect(lambda: target.clear())
             return clearbtn
 
@@ -527,11 +526,11 @@ class AnkiWindow(QWidget):
 
         self.example.textChanged.connect(__)
         self.remarks = ctrlbedit()
-        recordbtn1 = statusbutton(icons=["fa.microphone", "fa.stop"])
+        recordbtn1 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True)
         recordbtn1.clicked.connect(
             functools.partial(self.startorendrecord, 1, self.audiopath)
         )
-        recordbtn2 = statusbutton(icons=["fa.microphone", "fa.stop"])
+        recordbtn2 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True)
         recordbtn2.clicked.connect(
             functools.partial(self.startorendrecord, 2, self.audiopath_sentence)
         )
@@ -554,13 +553,13 @@ class AnkiWindow(QWidget):
 
         lb = QLabel("DeckName")
         lb.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-        folder_open = QPushButton(qtawesome.icon("fa.folder-open"), "")
+        folder_open = IconButton("fa.folder-open")
         folder_open.clicked.connect(functools.partial(self.selecfile, self.audiopath))
-        folder_open2 = QPushButton(qtawesome.icon("fa.folder-open"), "")
+        folder_open2 = IconButton("fa.folder-open")
         folder_open2.clicked.connect(
             functools.partial(self.selecfile, self.audiopath_sentence)
         )
-        folder_open3 = QPushButton(qtawesome.icon("fa.folder-open"), "")
+        folder_open3 = IconButton("fa.folder-open")
         folder_open3.clicked.connect(functools.partial(self.selecfile2, self.editpath))
 
         def createadd():
@@ -1175,6 +1174,18 @@ class searchwordW(closeashidewindow):
         if action == auto:
             globalconfig["is_search_word_auto_tts"] = auto.isChecked()
 
+    def historymenu(self):
+        menu = QMenu(self)
+        __ = []
+        for word in self.historys:
+            act = QAction(word)
+            __.append(act)
+            menu.addAction(act)
+        action = menu.exec(QCursor.pos())
+        if action:
+            self.searchtext.setText(action.text())
+            self.search(action.text())
+
     def setupUi(self):
         self.setWindowTitle("查词")
         self.ankiwindow = AnkiWindow(self)
@@ -1188,34 +1199,24 @@ class searchwordW(closeashidewindow):
         self.searchtext = FQLineEdit()
         self.searchtext.textChanged.connect(self.ankiwindow.reset)
 
-        self.dictbutton = statusbutton(
-            icons="fa.book", colors=["", globalconfig["buttoncolor2"]]
-        )
-        self.history_last_btn = statusbutton(icons=["fa.arrow-left", "fa.arrow-left"])
-        self.history_last_btn.clicked.connect(
-            functools.partial(self.__move_history_search, -1)
-        )
-        self.history_next_btn = statusbutton(icons=["fa.arrow-right", "fa.arrow-right"])
-        self.history_next_btn.clicked.connect(
-            functools.partial(self.__move_history_search, 1)
-        )
+        self.dictbutton = IconButton(icon="fa.book", checkable=True)
+        self.historys = []
+        self.history_btn = IconButton(icon="fa.history")
+        self.history_btn.setEnabled(False)
+        self.history_btn.clicked.connect(self.historymenu)
 
-        self.trace_history = []
-        self.trace_history_idx = -1
-        self.__set_history_btn_able()
         self.searchlayout.addWidget(self.dictbutton)
-        self.searchlayout.addWidget(self.history_last_btn)
-        self.searchlayout.addWidget(self.history_next_btn)
+        self.searchlayout.addWidget(self.history_btn)
         self.searchlayout.addWidget(self.searchtext)
-        searchbutton = QPushButton(qtawesome.icon("fa.search"), "")
+        searchbutton = IconButton("fa.search")
         searchbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         searchbutton.customContextMenuRequested.connect(self._createnewwindowsearch)
         self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
 
-        searchbutton.clicked.connect(self.__search_by_click_search_btn)
+        searchbutton.clicked.connect(lambda: self.search(self.searchtext.text()))
         self.searchlayout.addWidget(searchbutton)
 
-        soundbutton = QPushButton(qtawesome.icon("fa.music"), "")
+        soundbutton = IconButton("fa.music")
         soundbutton.clicked.connect(
             lambda: gobject.baseobject.read_text(self.searchtext.text())
         )
@@ -1224,9 +1225,7 @@ class searchwordW(closeashidewindow):
         self.soundbutton = soundbutton
         self.searchlayout.addWidget(soundbutton)
 
-        ankiconnect = statusbutton(
-            icons="fa.adn", colors=["", globalconfig["buttoncolor2"]]
-        )
+        ankiconnect = IconButton(icon="fa.adn", checkable=True)
         ankiconnect.clicked.connect(self.onceaddankiwindow)
         ankiconnect.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         ankiconnect.customContextMenuRequested.connect(
@@ -1344,12 +1343,7 @@ class searchwordW(closeashidewindow):
         if append:
             word = self.searchtext.text() + word
         self.searchtext.setText(word)
-
         self.search(word)
-        if len(self.trace_history) == 0 or self.trace_history[-1] != word:
-            self.trace_history.append(word)
-        self.trace_history_idx = len(self.trace_history) - 1
-        self.__set_history_btn_able()
         self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
@@ -1364,34 +1358,19 @@ class searchwordW(closeashidewindow):
                 ),
             )
 
-    def __set_history_btn_able(self):
-        self.history_next_btn.setEnabled(
-            self.trace_history_idx < len(self.trace_history) - 1
-        )
-        self.history_last_btn.setEnabled(self.trace_history_idx > 0)
-
-    def __move_history_search(self, offset):
-        self.trace_history_idx += offset
-        word = self.trace_history[self.trace_history_idx]
-        self.__set_history_btn_able()
-        self.searchtext.setText(word)
-        self.search(word)
-
-    def __search_by_click_search_btn(self):
-        word = self.searchtext.text()
-        self.search(word)
-
-        if len(self.trace_history) == 0 or self.trace_history[-1] != word:
-            self.trace_history.append(word)
-        self.trace_history_idx = len(self.trace_history) - 1
-        self.__set_history_btn_able()
+    def __parsehistory(self, word):
+        if word in self.historys:
+            self.historys.remove(word)
+        self.historys.insert(0, word)
+        self.history_btn.setEnabled(True)
 
     def search(self, word):
         current = time.time()
         self.current = current
         word = word.strip()
-        if word == "":
+        if not word:
             return
+        self.__parsehistory(word)
         if globalconfig["is_search_word_auto_tts"]:
             gobject.baseobject.read_text(self.searchtext.text())
         self.ankiwindow.reset(word)

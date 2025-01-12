@@ -76,7 +76,6 @@ class MAINUI:
         self.AttachProcessDialog = None
         self.edittextui = None
         self.edittextui_cached = None
-        self.edittextui_sync = True
         self.notifyonce = set()
         self.audioplayer = series_audioplayer(playovercallback=self.ttsautoforward)
         self._internal_reader = None

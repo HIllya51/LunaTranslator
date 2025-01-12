@@ -21,6 +21,7 @@ from gui.usefulwidget import (
     SplitLine,
     getIconButton,
     VisLFormLayout,
+    getcolorbutton,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -797,14 +798,13 @@ class multicolorset(LDialog):
                 functools.partial(globalconfig["cixingcolorshow"].__setitem__, k)
             )
 
-            p = QPushButton(
-                qtawesome.icon("fa.paint-brush", color=globalconfig["cixingcolor"][k]),
-                "",
+            p = getcolorbutton(
+                globalconfig["cixingcolor"],
+                k,
+                name="miaobian_color_button",
+                parent=self,
             )
 
-            p.setIconSize(QSize(20, 20))
-
-            p.setStyleSheet("background: transparent;")
             p.clicked.connect(
                 functools.partial(selectcolor, self, globalconfig["cixingcolor"], k, p)
             )

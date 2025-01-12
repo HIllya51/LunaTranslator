@@ -532,10 +532,11 @@ def otheruisetting(self):
                         [
                             "字体",
                             (createfontcombo, 0),
-                            "",
+                        ],
+                        [
                             "字体大小",
                             D_getspinbox(
-                                1,
+                                5,
                                 100,
                                 globalconfig,
                                 "settingfontsize",
@@ -543,36 +544,6 @@ def otheruisetting(self):
                                 step=0.1,
                                 callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                             ),
-                        ],
-                        [
-                            "按钮颜色",
-                            D_getcolorbutton(
-                                globalconfig,
-                                "buttoncolor2",
-                                callback=lambda: selectcolor(
-                                    self,
-                                    globalconfig,
-                                    "buttoncolor2",
-                                    self.buttoncolorbutton2,
-                                ),
-                                name="buttoncolorbutton2",
-                                parent=self,
-                            ),
-                            D_getcolorbutton(
-                                globalconfig,
-                                "buttoncolor3",
-                                callback=lambda: selectcolor(
-                                    self,
-                                    globalconfig,
-                                    "buttoncolor3",
-                                    self.buttoncolorbutton3,
-                                ),
-                                name="buttoncolorbutton3",
-                                parent=self,
-                            ),
-                            "",
-                            "按钮大小",
-                            D_getspinbox(5, 100, globalconfig, "buttonsize2"),
                             "",
                             "任务栏中显示",
                             D_getsimpleswitch(

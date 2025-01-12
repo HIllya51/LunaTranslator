@@ -32,9 +32,7 @@ class dialog_selecticon(LDialog):
             layout.addWidget(
                 getIconButton(
                     functools.partial(self.selectcallback, "fa." + name),
-                    qicon=qtawesome.icon(
-                        "fa." + name, color=globalconfig["buttoncolor2"]
-                    ),
+                    icon="fa." + name,
                 ),
                 i // 30,
                 i % 30,
@@ -124,10 +122,7 @@ def createbuttonwidget(self, lay):
                     globalconfig["toolbutton"]["buttons"][k],
                     "icon",
                 ),
-                qicon=qtawesome.icon(
-                    globalconfig["toolbutton"]["buttons"][k]["icon"],
-                    color=globalconfig["buttoncolor2"],
-                ),
+                icon=globalconfig["toolbutton"]["buttons"][k]["icon"],
             ),
             getsmalllabel(),
         ]
@@ -140,10 +135,7 @@ def createbuttonwidget(self, lay):
                         globalconfig["toolbutton"]["buttons"][k],
                         "icon2",
                     ),
-                    qicon=qtawesome.icon(
-                        globalconfig["toolbutton"]["buttons"][k]["icon2"],
-                        color=globalconfig["buttoncolor2"],
-                    ),
+                    icon=globalconfig["toolbutton"]["buttons"][k]["icon2"],
                 ),
             )
         else:

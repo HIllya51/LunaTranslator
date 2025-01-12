@@ -362,7 +362,7 @@ namespace
 } // unnamed namespace
 namespace
 {
-  // flutter of birds～鳥達の羽ばたき～
+  // flutter of birds～鳥達の羽ばたき～ WIN10版本
   // https://vndb.org/v2379
   // 需要注意的是，不能把文本跳到最快，不然2~4行无法显示。
   // 这个有一大堆候选

@@ -22,7 +22,7 @@ from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
 from gui.usefulwidget import (
     pixmapviewer,
-    statusbutton,
+    IconButton,
     makesubtab_lazy,
     tabadd_lazy,
     listediter,
@@ -362,12 +362,12 @@ class viewpixmap_x(QWidget):
         self.centerwidget = QWidget(self)
         self.centerwidgetlayout = QVBoxLayout(self.centerwidget)
         audio = QHBoxLayout()
-        self.recordbtn = statusbutton(icons=["fa.microphone", "fa.stop"])
+        self.recordbtn = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True)
         self.recordbtn.clicked.connect(self.startorendrecord)
         self.centerwidgetlayout.addWidget(self.commentedit)
         self.centerwidgetlayout.addLayout(audio)
         audio.addWidget(self.recordbtn)
-        self.btnplay = statusbutton(icons=["fa.play", "fa.stop"])
+        self.btnplay = IconButton(icon=["fa.play", "fa.stop"], checkable=True)
         audio.addWidget(self.btnplay)
         self.btnplay.clicked.connect(self.playorstop)
         gobject.baseobject.hualang_recordbtn = self.recordbtn

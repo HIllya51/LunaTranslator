@@ -7,7 +7,7 @@ from ocrengines.baseocrclass import baseocr
 from qtsymbols import *
 from gui.dynalang import LPushButton, LLabel
 from gui.dynalang import LPushButton, LFormLayout, LLabel
-from gui.usefulwidget import SuperCombo, getboxlayout
+from gui.usefulwidget import SuperCombo, getboxlayout, IconButton
 import threading, qtawesome
 from language import Languages
 from myutils.subproc import subproc_w
@@ -97,7 +97,7 @@ def question():
         lst.append(combo)
         lst.append(btninstall)
         threading.Thread(target=loadlist, args=(combo,)).start()
-        btndownload = QPushButton(icon=qtawesome.icon("fa.question"))
+        btndownload = IconButton("fa.question")
         btndownload.clicked.connect(
             lambda: gobject.baseobject.openlink(
                 dynamiclink("{docs_server}/#/zh/useapis/ocrapi?id=windowsocr")
