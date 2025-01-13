@@ -1,7 +1,6 @@
-﻿#ifndef WINXP
-#include <wil/com.h>
+﻿
 #include <uiautomation.h>
-#endif
+
 DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
@@ -132,59 +131,57 @@ DECLARE_API bool check_window_viewable(HWND hwnd)
 
 DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
 {
-#ifndef WINXP
     CO_INIT co;
     CHECK_FAILURE_NORET(co);
     try
     {
         // 初始化 COM
-        wil::com_ptr<IUIAutomation> automation;
+        CComPtr<IUIAutomation> automation;
         if (FAILED(CoCreateInstance(CLSID_CUIAutomation, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&automation))) || !automation)
         {
             throw std::runtime_error("无法初始化 UI Automation.");
         }
 
         // 获取焦点元素
-        wil::com_ptr<IUIAutomationElement> focusedElement;
+        CComPtr<IUIAutomationElement> focusedElement;
         if (FAILED(automation->GetFocusedElement(&focusedElement)) || !focusedElement)
         {
             throw std::runtime_error("无法获取当前焦点元素.");
         }
 
         // 检查是否支持 TextPattern
-        wil::com_ptr<IUIAutomationTextPattern> textPattern;
+        CComPtr<IUIAutomationTextPattern> textPattern;
         if (FAILED(focusedElement->GetCurrentPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern))) || !textPattern)
         {
             throw std::runtime_error("当前元素不支持 TextPattern.");
         }
 
         // 获取选定的文本范围
-        wil::com_ptr<IUIAutomationTextRangeArray> selection;
+        CComPtr<IUIAutomationTextRangeArray> selection;
         if (FAILED(textPattern->GetSelection(&selection)) || !selection)
         {
             throw std::runtime_error("无法获取选定的文本范围.");
         }
 
         // 获取第一个选定范围
-        wil::com_ptr<IUIAutomationTextRange> range;
+        CComPtr<IUIAutomationTextRange> range;
         if (FAILED(selection->GetElement(0, &range)) || !range)
         {
             throw std::runtime_error("没有选定文本.");
         }
 
         // 提取文本
-        wil::unique_bstr text;
+        CComBSTR text;
         if (FAILED(range->GetText(-1, &text)) || !text)
         {
             throw std::runtime_error("无法提取选定的文本.");
         }
-        cb(text.get());
+        cb(text);
     }
     catch (std::exception &e)
     {
         printf(e.what());
     }
-#endif
 }
 
 DECLARE_API void *get_allAccess_ptr()
