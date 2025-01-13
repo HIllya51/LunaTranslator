@@ -6,20 +6,8 @@
                 "name": "PyQtDarkTheme"
             },
             {
-                "file": "QDarkStyleSheet/dark.py",
-                "name": "QDarkStyleSheet"
-            },
-            {
                 "file": "QTWin11/dark.py",
                 "name": "QTWin11"
-            },
-            {
-                "file": "QtVSCodeStyle/dark.py",
-                "name": "QtVSCodeStyle Dark"
-            },
-            {
-                "file": "qt_material/dark.py",
-                "name": "qt-material"
             }
         ],
         "light": [
@@ -28,20 +16,8 @@
                 "name": "PyQtDarkTheme"
             },
             {
-                "file": "QDarkStyleSheet/light.py",
-                "name": "QDarkStyleSheet"
-            },
-            {
                 "file": "QTWin11/light.py",
                 "name": "QTWin11"
-            },
-            {
-                "file": "QtVSCodeStyle/light.py",
-                "name": "QtVSCodeStyle Light"
-            },
-            {
-                "file": "qt_material/light.py",
-                "name": "qt-material"
             }
         ]
     },

@@ -35,11 +35,18 @@ class transhist(closeashidewindow):
         )
         textOutput.setUndoRedoEnabled(False)
         textOutput.setReadOnly(True)
-
         self.textOutput = textOutput
+        self.setf()
         self.setCentralWidget(self.textOutput)
-
-
+    def setf(self):
+        key = "histfont"
+        fontstring = globalconfig.get(key, "")
+        if fontstring:
+            _f = QFont()
+            _f.fromString(fontstring)
+            _style = "font-size:{}pt;".format(_f.pointSize())
+            _style += 'font-family:"{}";'.format(_f.family())
+            self.textOutput.setStyleSheet(_style)
     def showmenu(self, tb, p):
         menu = QMenu(self)
         qingkong = LAction("清空")
@@ -55,12 +62,14 @@ class transhist(closeashidewindow):
         hidetime.setCheckable(True)
         hidetime.setChecked(not self.hidetime)
         scrolltoend = LAction("滚动到最后")
+        font = LAction("字体")
         if len(self.textOutput.textCursor().selectedText()):
             menu.addAction(copy)
             menu.addSeparator()
         menu.addAction(qingkong)
         menu.addAction(baocun)
         menu.addAction(scrolltoend)
+        menu.addAction(font)
         menu.addSeparator()
         menu.addAction(hideshowraw)
         menu.addAction(hideshowapi)
@@ -80,6 +89,16 @@ class transhist(closeashidewindow):
         elif action == hideshowraw:
             self.hiderawflag = not self.hiderawflag
             self.refresh()
+        elif action == font:
+            f = QFont()
+            cur = globalconfig.get("histfont")
+            if cur:
+                f.fromString(cur)
+            font, ok = QFontDialog.getFont(f, self)
+            if ok:
+                _s = font.toString()
+                globalconfig["histfont"] = _s
+                self.setf()
         elif action == hidetime:
             self.hidetime = not self.hidetime
             self.refresh()
