@@ -2,7 +2,6 @@ from scalemethod.base import scalebase
 import os, json
 import windows, winsharedutils
 from myutils.config import globalconfig
-from myutils.subproc import subproc_w
 import time
 from myutils.wrapper import threader
 
@@ -11,10 +10,9 @@ class Method(scalebase):
 
     def runmagpie(self):
         if not windows.FindWindow("Magpie_Hotkey", None):
-            subproc_w(
+            self.engine = winsharedutils.AutoKillProcess(
                 os.path.join(globalconfig["magpiepath"], "Magpie.exe"),
-                cwd=globalconfig["magpiepath"],
-                name="magpie",
+                globalconfig["magpiepath"],
             )
             while not windows.FindWindow("Magpie_Hotkey", None):
                 time.sleep(0.5)

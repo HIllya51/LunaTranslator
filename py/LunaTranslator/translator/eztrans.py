@@ -1,8 +1,7 @@
 from translator.basetranslator import basetrans
 from myutils.config import _TR
 import os, time
-import windows, ctypes
-from myutils.subproc import subproc_w, autoproc
+import windows, ctypes, winsharedutils
 
 
 class TS(basetrans):
@@ -25,15 +24,12 @@ class TS(basetrans):
             pipename = "\\\\.\\Pipe\\xxx_" + t
             waitsignal = "waitload_" + t
 
-            self.engine = autoproc(
-                subproc_w(
-                    './files/plugins/shareddllproxy32.exe eztrans "{}" {} {} '.format(
-                        os.path.normpath(os.path.dirname(self.path)),
-                        pipename,
-                        waitsignal,
-                    ),
-                    name="eztrans",
-                )
+            self.engine = winsharedutils.AutoKillProcess(
+                './files/plugins/shareddllproxy32.exe eztrans "{}" {} {}'.format(
+                    os.path.normpath(os.path.dirname(self.path)),
+                    pipename,
+                    waitsignal,
+                ),
             )
 
             windows.WaitForSingleObject(

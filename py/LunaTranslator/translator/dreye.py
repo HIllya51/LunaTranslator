@@ -1,8 +1,7 @@
-from myutils.subproc import subproc_w, autoproc
 from translator.basetranslator import basetrans
 from myutils.config import _TR
 import os, time
-import windows
+import windows, winsharedutils
 from language import Languages
 
 
@@ -36,13 +35,10 @@ class TS(basetrans):
             else:
                 path2 = os.path.join(path, "TransCOMEC.dll")
 
-            self.engine = autoproc(
-                subproc_w(
-                    './files/plugins/shareddllproxy32.exe dreye "{}"  "{}" {} {} {} '.format(
-                        path, path2, str(mp[pairs]), pipename, waitsignal
-                    ),
-                    name="dreye",
-                )
+            self.engine = winsharedutils.AutoKillProcess(
+                './files/plugins/shareddllproxy32.exe dreye "{}" "{}" {} {} {}'.format(
+                    path, path2, str(mp[pairs]), pipename, waitsignal
+                ),
             )
 
             windows.WaitForSingleObject(
@@ -67,7 +63,11 @@ class TS(basetrans):
 
         if self.checkpath() == False:
             raise Exception(_TR("翻译器加载失败"))
-        codes = {Languages.Chinese: "gbk", Languages.Japanese: "shift-jis", Languages.English: "utf8"}
+        codes = {
+            Languages.Chinese: "gbk",
+            Languages.Japanese: "shift-jis",
+            Languages.English: "utf8",
+        }
         ress = []
         for line in content.split("\n"):
             if len(line) == 0:

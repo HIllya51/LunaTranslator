@@ -1,9 +1,8 @@
 from translator.basetranslator import basetrans
 import ctypes
 import os, time
-import windows
+import windows, winsharedutils
 from myutils.config import _TR
-from myutils.subproc import subproc_w, autoproc
 from language import Languages
 
 
@@ -41,14 +40,11 @@ class TS(basetrans):
             pipename = "\\\\.\\Pipe\\jbj7_" + t
             waitsignal = "jbjwaitload_" + t
 
-            self.engine = autoproc(
-                subproc_w(
-                    './files/plugins/shareddllproxy32.exe jbj7 "{}" {} {} '.format(
-                        self.dllpath, pipename, waitsignal
-                    )
-                    + dictpath,
-                    name="jbj7",
+            self.engine = winsharedutils.AutoKillProcess(
+                './files/plugins/shareddllproxy32.exe jbj7 "{}" {} {}'.format(
+                    self.dllpath, pipename, waitsignal
                 )
+                + dictpath,
             )
             windows.WaitForSingleObject(
                 windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),

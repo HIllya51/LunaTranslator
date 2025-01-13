@@ -191,3 +191,28 @@ DECLARE_API void *get_allAccess_ptr()
 {
     return &allAccess;
 }
+DECLARE_API HANDLE createprocess(LPCWSTR command, LPCWSTR path, DWORD *pid)
+{
+    // 防止进程意外退出时，子进程僵死
+    std::wstring _ = command;
+    STARTUPINFO si = {sizeof(si)};
+    si.dwFlags |= STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
+    PROCESS_INFORMATION pi;
+    HANDLE hJob = CreateJobObject(NULL, NULL);
+    if (!hJob)
+        return NULL;
+    if (!CreateProcessW(NULL, _.data(), NULL, NULL, FALSE, 0, NULL, path, &si, &pi))
+        return NULL;
+    CHandle _1{pi.hProcess}, _2{pi.hThread};
+    *pid = pi.dwProcessId;
+    if (!AssignProcessToJobObject(hJob, pi.hProcess))
+        return NULL;
+    // 设置Job Object选项，使父进程退出时子进程自动终止
+    JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = {0};
+    jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+    if (!SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli)))
+        return NULL;
+    // closehandle会关闭子进程
+    return hJob;
+}

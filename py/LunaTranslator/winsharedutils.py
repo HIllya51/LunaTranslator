@@ -350,3 +350,18 @@ get_allAccess_ptr = utilsdll.get_allAccess_ptr
 get_allAccess_ptr.restype = c_void_p
 windows.CreateEvent = functools.partial(windows.CreateEvent, psecu=get_allAccess_ptr())
 windows.CreateMutex = functools.partial(windows.CreateMutex, psecu=get_allAccess_ptr())
+
+createprocess = utilsdll.createprocess
+createprocess.argtypes = c_wchar_p, c_wchar_p, POINTER(DWORD)
+createprocess.restype = HANDLE
+
+
+class AutoKillProcess_:
+    def __init__(self, handle, pid):
+        self.handle = windows.AutoHandle(handle)
+        self.pid = pid
+
+
+def AutoKillProcess(command, path=None):
+    pid = DWORD()
+    return AutoKillProcess_(createprocess(command, path, pointer(pid)), pid.value)

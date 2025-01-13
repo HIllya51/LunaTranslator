@@ -1,9 +1,8 @@
 import time
 import os
-import windows
+import windows, winsharedutils
 from tts.basettsclass import TTSbase, SpeechParam
 from ctypes import cast, POINTER, c_char, c_int32, c_float
-from myutils.subproc import subproc_w, autoproc
 
 
 class TTS(TTSbase):
@@ -59,17 +58,14 @@ class TTS(TTSbase):
         waitsignal = "voiceroid2waitload_" + t
         mapname = "voiceroid2filemap" + t
 
-        self.engine = autoproc(
-            subproc_w(
-                '"{}" voiceroid2 "{}" "{}" {} {} {}'.format(
-                    exepath,
-                    self.config["path"],
-                    dllpath,
-                    pipename,
-                    waitsignal,
-                    mapname,
-                ),
-                name=str(time.time()),
+        self.engine = winsharedutils.AutoKillProcess(
+            '"{}" voiceroid2 "{}" "{}" {} {} {}'.format(
+                exepath,
+                self.config["path"],
+                dllpath,
+                pipename,
+                waitsignal,
+                mapname,
             )
         )
         windows.WaitForSingleObject(

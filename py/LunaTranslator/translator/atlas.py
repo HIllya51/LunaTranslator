@@ -1,7 +1,6 @@
-from myutils.subproc import subproc_w, autoproc
 from translator.basetranslator import basetrans
 import ctypes, time
-import windows
+import windows, winsharedutils
 
 
 class TS(basetrans):
@@ -16,13 +15,10 @@ class TS(basetrans):
         t = str(t)
         pipename = "\\\\.\\Pipe\\dreye_" + t
         waitsignal = "dreyewaitload_" + t
-        self.engine = autoproc(
-            subproc_w(
-                "./files/plugins/shareddllproxy32.exe atlaswmain   {} {} ".format(
-                    pipename, waitsignal
-                ),
-                name="atlaswmain",
-            )
+        self.engine = winsharedutils.AutoKillProcess(
+            "./files/plugins/shareddllproxy32.exe atlaswmain {} {}".format(
+                pipename, waitsignal
+            ),
         )
 
         windows.WaitForSingleObject(

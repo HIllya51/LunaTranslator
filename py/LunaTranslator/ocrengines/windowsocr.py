@@ -1,6 +1,6 @@
 import gobject
 import winrtutils, windows, re
-import subprocess
+from myutils.hwnd import subprochiderun
 from myutils.config import _TR
 from myutils.utils import dynamiclink
 from ocrengines.baseocrclass import baseocr
@@ -8,21 +8,14 @@ from qtsymbols import *
 from gui.dynalang import LPushButton, LLabel
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 from gui.usefulwidget import SuperCombo, getboxlayout, IconButton
-import threading, qtawesome
+import threading, subprocess
 from language import Languages
-from myutils.subproc import subproc_w
 
 
 def getallsupports():
-    _ = (
-        subproc_w(
-            "powershell Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }",
-            needstdio=True,
-            run=True,
-        )
-        .stdout.decode()
-        .splitlines()
-    )
+    _ = subprochiderun(
+        "powershell Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }",
+    ).stdout.splitlines()
     langs = []
     langsinter = []
     for i in range(len(_)):

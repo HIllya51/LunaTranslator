@@ -2,7 +2,6 @@ from scalemethod.base import scalebase
 import json
 import windows, gobject
 from myutils.config import globalconfig, magpie_config
-from myutils.subproc import subproc_w
 import winsharedutils
 
 
@@ -23,9 +22,9 @@ class Method(scalebase):
         )
         winsharedutils.globalmessagelistener(self.messagecallback__)
         self.jspath = gobject.gettempdir("magpie.config.json")
-        self.engine = subproc_w(
+        self.engine = winsharedutils.AutoKillProcess(
             './files/plugins/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
-            cwd="./files/plugins/Magpie/",
+            "./files/plugins/Magpie/",
         )
         waitsignal = "Magpie_notify_prepared_ok_" + str(self.engine.pid)
         windows.WaitForSingleObject(

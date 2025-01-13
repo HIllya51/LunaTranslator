@@ -1,8 +1,7 @@
-from myutils.subproc import subproc_w, autoproc
 from translator.basetranslator import basetrans
 from myutils.config import _TR
 import os, time
-import windows
+import windows, winsharedutils
 from language import Languages
 
 
@@ -38,13 +37,10 @@ class TS(basetrans):
             t = str(t)
             pipename = "\\\\.\\Pipe\\ks_" + t
             waitsignal = "kswaitload_" + t
-            self.engine = autoproc(
-                subproc_w(
-                    './files/plugins/shareddllproxy32.exe kingsoft "{}"  "{}"   {} {} '.format(
-                        self.path, self.path2, pipename, waitsignal
-                    ),
-                    name="ks",
-                )
+            self.engine = winsharedutils.AutoKillProcess(
+                './files/plugins/shareddllproxy32.exe kingsoft "{}" "{}" {} {}'.format(
+                    self.path, self.path2, pipename, waitsignal
+                ),
             )
 
             windows.WaitForSingleObject(

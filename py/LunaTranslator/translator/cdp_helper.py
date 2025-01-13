@@ -3,8 +3,7 @@ import json, requests, threading, hashlib
 from myutils.config import _TR
 from myutils.wrapper import threader
 from myutils.utils import checkportavailable
-from myutils.subproc import subproc_w
-import websocket, time, queue, os
+import websocket, time, queue, os, subprocess
 
 
 class Commonloadchromium:
@@ -40,7 +39,7 @@ class Commonloadchromium:
             if checkportavailable(port):
                 print("连接失败")
                 call = self.gencmd(_path, port)
-                self.engine = subproc_w(call)
+                subprocess.Popen(call)
             else:
                 print("端口冲突")
 

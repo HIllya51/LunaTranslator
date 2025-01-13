@@ -1,7 +1,7 @@
 import windows
 import os, time
 import codecs, hashlib, shutil
-import socket, gobject, uuid, subprocess, functools
+import socket, gobject, uuid, functools
 import importlib, json, requests
 from qtsymbols import *
 from string import Formatter
@@ -436,9 +436,7 @@ def selectdebugfile(path: str, ismypost=False):
             "LunaTranslator/myutils/template/" + tgt,
             p,
         )
-    threading.Thread(
-        target=subprocess.run, args=("notepad " + os.path.normpath(p),)
-    ).start()
+    windows.ShellExecute(None, "open", "notepad", os.path.normpath(p), None, windows.SW_SHOW)
     return p
 
 

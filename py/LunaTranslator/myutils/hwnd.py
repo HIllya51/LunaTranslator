@@ -271,3 +271,21 @@ def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
 def winrt_capture_window(hwnd):
     bs = winrtutils.winrt_capture_window(hwnd)
     return safepixmap(bs)
+
+
+def subprochiderun(cmd, cwd=None, encoding='utf8') -> subprocess.CompletedProcess:
+
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = subprocess.SW_HIDE
+
+    ss = subprocess.run(
+        cmd,
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        startupinfo=startupinfo,
+        encoding=encoding,
+    )
+
+    return ss

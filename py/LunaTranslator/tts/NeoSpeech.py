@@ -1,9 +1,8 @@
 import time
 import os
-import windows
+import windows, winsharedutils
 from tts.basettsclass import TTSbase, SpeechParam
 import ctypes, subprocess, gobject
-from myutils.subproc import subproc_w, autoproc
 from ctypes import cast, POINTER, c_char, c_int32
 
 
@@ -16,9 +15,9 @@ class TTS(TTSbase):
         waitsignal = "voiceroid2waitload_" + t
         mapname = "voiceroid2filemap" + t
 
-        cmd = '"{}" neospeech  {} {} {}'.format(exepath, pipename, waitsignal, mapname)
+        cmd = '"{}" neospeech {} {} {}'.format(exepath, pipename, waitsignal, mapname)
 
-        self.engine = autoproc(subproc_w(cmd, name=str(time.time())))
+        self.engine = winsharedutils.AutoKillProcess(cmd)
 
         windows.WaitForSingleObject(
             windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),
@@ -67,7 +66,7 @@ class TTS(TTSbase):
             vis.append(datas[i * 3])
         return internal, vis
 
-    def speak(self, content, voice, param:SpeechParam):
+    def speak(self, content, voice, param: SpeechParam):
         hkey, idx = voice
         windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(param.speed)))
         windows.WriteFile(self.hPipe, content.encode("utf-16-le"))

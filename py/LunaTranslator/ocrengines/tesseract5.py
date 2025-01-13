@@ -1,7 +1,7 @@
 import os, uuid, gobject, winreg
+from myutils.hwnd import subprochiderun
 from myutils.config import _TR, globalconfig
 from ocrengines.baseocrclass import baseocr
-from myutils.subproc import subproc_w
 from language import Languages
 
 
@@ -29,12 +29,7 @@ class OCR(baseocr):
     def list_langs(self):
         if not (self.path and os.path.exists(self.path)):
             raise Exception(_TR("not installed"))
-        res = subproc_w(
-            '"{}" --list-langs'.format(self.path),
-            needstdio=True,
-            run=True,
-            encoding="utf8",
-        ).stdout
+        res = subprochiderun('"{}" --list-langs'.format(self.path)).stdout
         return res.split("\n")[1:-1]
 
     def langmap(self):
@@ -86,12 +81,7 @@ class OCR(baseocr):
             with open(fname, "wb") as ff:
                 ff.write(imagebinary)
             imgfile = os.path.abspath(fname)
-            _ = subproc_w(
-                '"{}" "{}" stdout -l osd --psm 0'.format(self.path, imgfile),
-                needstdio=True,
-                encoding="utf8",
-                run=True,
-            )
+            _ = subprochiderun('"{}" "{}" stdout -l osd --psm 0'.format(self.path, imgfile))
             err = _.stderr
             if len(err):
                 pass
@@ -103,11 +93,8 @@ class OCR(baseocr):
             with open(fname, "wb") as ff:
                 ff.write(imagebinary)
             imgfile = os.path.abspath(fname)
-        _ = subproc_w(
-            '"{}" "{}" - -l {} --psm {}'.format(self.path, imgfile, lang, psm),
-            needstdio=True,
-            encoding="utf8",
-            run=True,
+        _ = subprochiderun(
+            '"{}" "{}" - -l {} --psm {}'.format(self.path, imgfile, lang, psm)
         )
         os.remove(imgfile)
         res = _.stdout

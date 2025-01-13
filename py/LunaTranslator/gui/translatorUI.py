@@ -11,7 +11,6 @@ from myutils.config import (
     savehook_new_list,
 )
 from gui.dialog_savedgame import dialog_setting_game
-from myutils.subproc import endsubprocs
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
     loadpostsettingwindowmethod,
@@ -1439,7 +1438,6 @@ class TranslatorWindow(resizableframeless):
             self.hide()
 
             gobject.baseobject.textsource = None
-            endsubprocs()
             gobject.baseobject.destroytray()
             handle = windows.CreateMutex(False, "LUNASAVECONFIGUPDATE")
             if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
