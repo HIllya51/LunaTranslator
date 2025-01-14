@@ -27,29 +27,10 @@ if __name__ == "__main__":
     with open("./files/lang/" + f, "r", encoding="utf8") as ff:
         js = ff.read()
         js = json.loads(js)
-
     xxx = {
-        "ru": "ru",
         "en": "en",
-        "es": "spa",
-        "ko": "kor",
-        "fr": "fra",
         "cht": "cht",
-        "ja": "jp",
-        "vi": "vie",
-        "tr": "tr",
-        "pl": "pl",
-        "uk": "ukr",
-        "it": "it",
-        "ar": "ara",
-        "th": "th",
-        "de": "de",
-        "sv": "swe",
-        "nl": "nl",
-        "cs": "cs",
-        "pt": "pt",
     }
-
     needpop = []
     for k in js:
         kk = False
@@ -66,12 +47,10 @@ if __name__ == "__main__":
     with open(f"./files/lang/" + f, "w", encoding="utf8") as ff:
         ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False, indent=4))
     a = TS1("baiduapi")
-    for kk in xxx:
-        with open(f"./files/lang/{kk}.json", "r", encoding="utf8") as ff:
+    for kk in os.listdir("./files/lang"):
+        with open(f"./files/lang/{kk}", "r", encoding="utf8") as ff:
 
             jsen = json.loads(ff.read())
-
-        a.tgtlang = xxx[kk]
 
         needpop = []
         for k in jsen:
@@ -80,14 +59,19 @@ if __name__ == "__main__":
         print(kk, needpop)
         for k in needpop:
             jsen.pop(k)
-        with open(f"./files/lang/{kk}.json", "w", encoding="utf8") as ff:
+        with open(f"./files/lang/{kk}", "w", encoding="utf8") as ff:
             ff.write(json.dumps(jsen, ensure_ascii=False, sort_keys=False, indent=4))
+
         for k in js:
 
             if k not in jsen or jsen[k] == "":
-                jsen[k] = list(a.translate(k))[0]
-                print(k, jsen[k])
-                with open(f"./files/lang/{kk}.json", "w", encoding="utf8") as ff:
+                a.tgtlang = xxx.get(kk.split(".")[0])
+                if not a.tgtlang:
+                    jsen[k] = ""
+                else:
+                    jsen[k] = list(a.translate(k))[0]
+                    print(k, jsen[k])
+                with open(f"./files/lang/{kk}", "w", encoding="utf8") as ff:
                     ff.write(
                         json.dumps(jsen, ensure_ascii=False, sort_keys=False, indent=4)
                     )

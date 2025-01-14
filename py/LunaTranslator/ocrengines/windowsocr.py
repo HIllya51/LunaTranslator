@@ -1,7 +1,7 @@
 import gobject
 import winrtutils, windows, re
 from myutils.hwnd import subprochiderun
-from myutils.config import _TR
+from myutils.config import _TR, getlang_inner2show
 from myutils.utils import dynamiclink
 from ocrengines.baseocrclass import baseocr
 from qtsymbols import *
@@ -129,11 +129,12 @@ class OCR(baseocr):
         else:
             if not winrtutils.check_language_valid(self.srclang):
                 raise Exception(
-                    _TR("系统未安装当前语言的OCR模型")
-                    + "\n"
-                    + _TR("当前支持的语言")
-                    + ": "
-                    + ", ".join([_[1] for _ in winrtutils.getlanguagelist()])
+                    _TR(
+                        "系统未安装“{currlang}”的OCR模型\n当前支持的语言：{langs}"
+                    ).format(
+                        currlang=_TR(getlang_inner2show(self.srclang_1)),
+                        langs=", ".join([_[1] for _ in winrtutils.getlanguagelist()]),
+                    )
                 )
             uselang = self.srclang
         ret = winrtutils.OCR_f(imagebinary, uselang, self.getlanguagespace(uselang))

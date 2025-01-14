@@ -436,7 +436,9 @@ def selectdebugfile(path: str, ismypost=False):
             "LunaTranslator/myutils/template/" + tgt,
             p,
         )
-    windows.ShellExecute(None, "open", "notepad", os.path.normpath(p), None, windows.SW_SHOW)
+    windows.ShellExecute(
+        None, "open", "notepad", os.path.normpath(p), None, windows.SW_SHOW
+    )
     return p
 
 
@@ -917,11 +919,11 @@ def urlpathjoin(*argc):
     return "/".join(urlx)
 
 
-def createurl(url: str):
-    if url.endswith("/chat/completions"):
+def createurl(url: str, checkend="/chat/completions"):
+    if url.endswith(checkend):
         pass
     else:
-        url = urlpathjoin(checkv1(url), "/chat/completions")
+        url = urlpathjoin(checkv1(url), checkend)
     return url
 
 

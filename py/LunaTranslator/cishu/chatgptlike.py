@@ -28,9 +28,7 @@ class chatgptlike(cishubase):
 
     @property
     def apiurl(self):
-        return self.config.get(
-            "API接口地址", self.config.get("OPENAI_API_BASE", "")
-        ).strip()
+        return self.config["API接口地址"].strip()
 
     def createdata(self, message):
         temperature = self.config["Temperature"]

@@ -110,7 +110,9 @@ def checklang():
             self.setFont(font)
             self.current = "zh"
             language_listcombox = QComboBox()
-            inner, vis = [_.code for _ in UILanguages], [_.nativename for _ in UILanguages]
+            inner, vis = [_.code for _ in UILanguages], [
+                _.nativename for _ in UILanguages
+            ]
             language_listcombox.addItems(vis)
             language_listcombox.currentIndexChanged.connect(
                 lambda x: setattr(self, "current", inner[x])
@@ -155,11 +157,9 @@ def checkintegrity():
     if len(collect):
         msg = QMessageBox()
         msg.setText(
-            _TR("找不到重要组件：")
-            + "\n"
-            + "\n".join(collect)
-            + "\n"
-            + _TR("请重新下载并关闭杀毒软件后重试")
+            _TR("找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试").format(
+                modules="\n".join(collect)
+            )
         )
         msg.setWindowTitle(_TR("错误"))
         msg.exec()

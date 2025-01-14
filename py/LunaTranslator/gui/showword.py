@@ -103,7 +103,7 @@ class AnkiWindow(QWidget):
                 gobject.baseobject.translation_ui.show_()
                 self.parent().parent().parent().show()
 
-        rangeselct_function(ocroncefunction, False)
+        rangeselct_function(ocroncefunction)
 
     def __init__(self, p) -> None:
         super().__init__()
@@ -1081,7 +1081,7 @@ class searchwordW(closeashidewindow):
         self.search_word_in_new_window.connect(self.searchwinnewwindow)
         self.show_dict_result.connect(self.__show_dict_result_function)
         self.ocr_once_signal.connect(
-            lambda: rangeselct_function(self.ocr_do_function, False)
+            lambda: rangeselct_function(self.ocr_do_function)
         )
         self.state = 0
 

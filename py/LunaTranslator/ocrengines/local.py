@@ -127,7 +127,8 @@ def doinstall(self, allsupports: list, parent, callback):
     if not allsupports:
         return
     f = QFileDialog.getOpenFileName(
-        parent, filter="model ({})".format(" ".join(["{}.zip".format(_) for _ in allsupports]))
+        parent,
+        filter="model ({})".format(" ".join(["{}.zip".format(_) for _ in allsupports])),
     )
     fn = f[0]
     if not fn:
@@ -212,15 +213,12 @@ class OCR(baseocr):
                 uselang = self.srclang
             else:
                 raise Exception(
-                    _TR("未添加")
-                    + ' "'
-                    + _TR(getlang_inner2show(self.srclang))
-                    + '" '
-                    + _TR("的OCR模型")
-                    + "\n"
-                    + _TR("当前支持的语言")
-                    + ": "
-                    + ", ".join([_TR(getlang_inner2show(f)) for f in getallsupports()])
+                    _TR("未添加“{currlang}”的OCR模型\n当前支持的语言：{langs}").format(
+                        currlang=_TR(getlang_inner2show(self.srclang)),
+                        langs=", ".join(
+                            [_TR(getlang_inner2show(f)) for f in getallsupports()]
+                        ),
+                    )
                 )
 
         self._ocr = None

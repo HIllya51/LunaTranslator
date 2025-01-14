@@ -156,6 +156,8 @@ def getttsgrid(self, names):
                     globalconfig["reader"][name]["name"],
                     800,
                     items,
+                    "tts." + name,
+                    name,
                 ),
                 icon="fa.gear",
             )

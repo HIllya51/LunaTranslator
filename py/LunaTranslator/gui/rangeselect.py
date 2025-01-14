@@ -193,7 +193,6 @@ class rangeselect(QMainWindow):
         self.end_point = QPoint()
         self.__start = None
         self.__end = None
-        self.startauto = False
         self.rectlabel.resize(0, 0)
         self.rectlabel.setStyleSheet(
             " border:%spx solid %s; background-color: rgba(0,0,0, 0)"
@@ -237,20 +236,17 @@ class rangeselect(QMainWindow):
             self.once = False
             self.close()
         elif event.button() == Qt.MouseButton.LeftButton:
-            if self.startauto:
-                self.callbackfunction(event)
-            else:
-                self.end_point = self.start_point = event.pos()
-                self.is_drawing = True
-                self.__start = self.__end = windows.GetCursorPos()
+            self.end_point = self.start_point = event.pos()
+            self.is_drawing = True
+            self.__start = self.__end = windows.GetCursorPos()
 
     def mouseMoveEvent(self, event):
 
-        if self.startauto and self.is_drawing == False:
+        if not self.is_drawing:
             self.is_drawing = True
             self.end_point = self.start_point = event.pos()
             self.__start = self.__end = windows.GetCursorPos()
-        if self.is_drawing:
+        else:
             self.end_point = event.pos()
             self.__end = windows.GetCursorPos()
             self.update()
@@ -290,7 +286,7 @@ class rangeselect(QMainWindow):
 screen_shot_ui = None
 
 
-def rangeselct_function(callback, startauto):
+def rangeselct_function(callback):
     global screen_shot_ui
     if screen_shot_ui is not None:
         # 完全销毁旧的实例
@@ -302,4 +298,3 @@ def rangeselct_function(callback, startauto):
     screen_shot_ui.reset()
     screen_shot_ui.callback = callback
     windows.SetFocus(int(screen_shot_ui.winId()))
-    screen_shot_ui.startauto = startauto

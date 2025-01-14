@@ -1018,11 +1018,6 @@
                 "name": "游戏静音",
                 "keystring": ""
             },
-            "_23": {
-                "use": false,
-                "name": "选取OCR范围——立即",
-                "keystring": ""
-            },
             "_25": {
                 "use": false,
                 "name": "Magpie_游戏内叠加层",
@@ -1124,6 +1119,54 @@
                 "pitch",
                 "rate"
             ]
+        },
+        "chatgpttts": {
+            "use": false,
+            "voice": "",
+            "name": "ChatGPT_兼容接口",
+            "arg_not_sup": [
+                "pitch"
+            ],
+            "args": {
+                "model": "gpt-4o-mini",
+                "modellistcache": [],
+                "API接口地址": "https://api.openai.com",
+                "SECRET_KEY": "",
+                "voice_list": [
+                    "alloy",
+                    "ash",
+                    "coral",
+                    "echo",
+                    "fable",
+                    "onyx",
+                    "nova",
+                    "sage",
+                    "shimmer"
+                ]
+            },
+            "argstype": {
+                "API接口地址": {
+                    "rank": 0
+                },
+                "SECRET_KEY": {
+                    "rank": 1,
+                    "name": "API Key",
+                    "type": "textlist"
+                },
+                "model": {
+                    "rank": 2,
+                    "type": "lineedit_or_combo",
+                    "list_function": "list_models",
+                    "list_cache": "modellistcache"
+                },
+                "modellistcache": {
+                    "type": "list_cache"
+                },
+                "voice_list": {
+                    "name": "支持的声音",
+                    "type": "textlist"
+                }
+            }
         },
         "edgetts": {
             "use": false,

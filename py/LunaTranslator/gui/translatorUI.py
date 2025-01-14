@@ -15,6 +15,7 @@ from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
     loadpostsettingwindowmethod,
     makehtml,
+    getlangsrc,
     loadpostsettingwindowmethod_maybe,
     find_or_create_uid,
 )
@@ -276,7 +277,7 @@ class TranslatorWindow(resizableframeless):
     showhideuisignal = pyqtSignal()
     toolbarhidedelaysignal = pyqtSignal()
     showsavegame_signal = pyqtSignal()
-    clickRange_signal = pyqtSignal(bool)
+    clickRange_signal = pyqtSignal()
     showhide_signal = pyqtSignal()
     clear_signal_1 = pyqtSignal()
     bindcropwindow_signal = pyqtSignal()
@@ -524,7 +525,7 @@ class TranslatorWindow(resizableframeless):
             self.ocr_once_follow_rect = rect
             self.ocr_do_function(rect)
 
-        rangeselct_function(ocroncefunction, False)
+        rangeselct_function(ocroncefunction)
 
     @threader
     def simulate_key_enter(self):
@@ -676,10 +677,10 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "selectocrrange",
-                lambda: self.clickRange(False),
+                self.clickRange,
                 None,
                 None,
-                lambda: self.clickRangeclear(False),
+                self.clickRangeclear,
             ),
             (
                 "hideocrrange",
@@ -725,6 +726,14 @@ class TranslatorWindow(resizableframeless):
                 "copy_once",
                 lambda: gobject.baseobject.textgetmethod(
                     winsharedutils.clipboard_get(), False
+                ),
+                None,
+                None,
+                lambda: gobject.baseobject.textgetmethod(
+                    gobject.baseobject.currenttext
+                    + (getlangsrc().space if gobject.baseobject.currenttext else "")
+                    + winsharedutils.clipboard_get(),
+                    False,
                 ),
             ),
             (
@@ -1305,18 +1314,18 @@ class TranslatorWindow(resizableframeless):
                 self.smooth_resizer2.setEndValue(size)
                 self.smooth_resizer2.start()
 
-    def clickRange(self, auto):
+    def clickRange(self):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
             return
         self.showhidestate = False
 
-        rangeselct_function(functools.partial(self.afterrange, False), auto)
+        rangeselct_function(functools.partial(self.afterrange, False))
 
-    def clickRangeclear(self, auto):
+    def clickRangeclear(self):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
             return
         self.showhidestate = False
-        rangeselct_function(functools.partial(self.afterrange, True), auto)
+        rangeselct_function(functools.partial(self.afterrange, True))
 
     @tryprint
     def afterrange(self, clear, rect):

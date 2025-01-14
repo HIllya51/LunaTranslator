@@ -71,10 +71,6 @@
     **Only available in OCR mode**<br>
     Clear all selected ranges
 
-1. #### Select OCR Range - Immediate
-    **Available only in OCR mode**<br>
-    The difference from `Select OCR Range` is that it requires one less mouse click.
-
 1. #### Perform OCR Once
     Similar to `Read Clipboard`, regardless of the current default text input source, it will first select the OCR range, then perform OCR once, and then proceed with the translation process.
     Generally used for, in HOOK mode, temporarily using OCR to translate selection branches when encountering them, or in OCR mode, temporarily recognizing a new occasional position.

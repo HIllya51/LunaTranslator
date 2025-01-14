@@ -43,6 +43,7 @@ class ocrtext(basetext):
         self.savelastrecimg.clear()
         self.lastocrtime.clear()
         self.savelasttext.clear()
+        globalconfig["ocrregions"].clear()
 
     def leaveone(self):
         for _ in self.range_ui[:-1]:
