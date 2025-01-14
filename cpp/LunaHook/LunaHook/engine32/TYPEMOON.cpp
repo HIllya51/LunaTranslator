@@ -151,7 +151,7 @@ bool TYPEMOON::attach_function()
   if (!addr)
     return false;
   HookParam hp;
-  hp.address = 0x44CC80;
+  hp.address = addr;
   hp.type = USING_STRING | NO_CONTEXT;
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
