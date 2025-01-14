@@ -18,9 +18,7 @@ def list_models(typename, regist):
         proxies=getproxy(("reader", typename)),
     )
     try:
-        return sorted(
-            [_["id"] for _ in resp.json()["data"] if _["id"].startswith("tts")]
-        )
+        return sorted([_["id"] for _ in resp.json()["data"]])
     except:
         raise Exception(resp)
 
