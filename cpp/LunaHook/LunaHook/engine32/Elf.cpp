@@ -381,7 +381,7 @@ namespace
       HookParam hp;
       hp.address = addr;
       hp.user_value = check;
-      hp.type = USING_STRING | NO_CONTEXT;
+      hp.type = USING_STRING | NO_CONTEXT | BREAK_POINT; // 有壳minhook太慢了
       hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
       {
         DWORD ptr;
