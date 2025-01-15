@@ -452,13 +452,10 @@ def check_maybe_unc_file(v: str):
     res = check_unc_file(v)
     if res:
         return res
-    nt = parseuncex(v, VOLUME_NAME_NT)
-    # 按照文档所说，这个之后QueryDosDevice是可以转成X:\xxxx的，然而实测经常查不到
-    if nt:
-        nt = check_unc_file(nt)
-        if nt:
-            return nt
+    # 有时候GetModuleFileNameExW返回的就是VOLUME_NAME_GUID（例如sshfs），无法再次用GetFinalPathNameByHandleW（返回NOne），但是可以QueryDosDevice查询到
+    # mac上parallel返回的NT路径无法用QueryDosDevice查询到（应该是需要再额外查注册表处理一下才行的，所以只好用GetFinalPathNameByHandleW去查DOS路径
     dos = parseuncex(v, VOLUME_NAME_DOS)
+    # 按照文档所说，VOLUME_NAME_NT之后QueryDosDevice是可以转成X:\xxxx的，然而实测经常查不到根本没卵用
     # 获取的结果是\\?\的UNC路径。虽然没办法转成X:\xxxx，但实测可以管用。
     if dos:
         return dos
