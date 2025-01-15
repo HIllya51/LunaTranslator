@@ -348,7 +348,7 @@ def get_logical_drivers():
         return []
 
     if buffsize < result:
-        buffer = create_unicode_buffer(result)
+        buffer = create_unicode_buffer(result + 1)
         result = _GetLogicalDriveStringsW(result, buffer)
 
     drivers = buffer[:result].split("\0")
@@ -409,29 +409,41 @@ except:
     GetFinalPathNameByHandleW = None
 
 
+class AutoHandle(HANDLE):
+    def __new__(cls, value) -> None:
+        instance = super().__new__(cls, value)
+        return instance
+
+    def __del__(self):
+        if self:
+            CloseHandle(self)
+
+    def __bool__(self):
+        return (self.value != INVALID_HANDLE_VALUE) and (self.value != None)
+
+
 def parseuncex(v: str, t):
-    hFile = CreateFile(
-        v,
-        GENERIC_READ,
-        FILE_SHARE_READ,
-        None,
-        OPEN_EXISTING,
-        FILE_ATTRIBUTE_NORMAL,
-        None,
+    hFile = AutoHandle(
+        CreateFile(
+            v,
+            GENERIC_READ,
+            FILE_SHARE_READ,
+            None,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            None,
+        )
     )
     if not GetFinalPathNameByHandleW:
         return
-    if hFile == INVALID_HANDLE_VALUE:
-        return None
-
-    szFinalPath = create_unicode_buffer(65535)
-
-    result = GetFinalPathNameByHandleW(hFile, szFinalPath, 65535, t)
-    CloseHandle(hFile)
-    if result == 0:
-        return None
-
-    return szFinalPath.value
+    if not hFile:
+        return
+    sz = GetFinalPathNameByHandleW(hFile, None, 0, t)
+    if not sz:
+        return
+    buff = create_unicode_buffer(sz + 1)
+    GetFinalPathNameByHandleW(hFile, buff, sz, t)
+    return buff.value
 
 
 def check_maybe_unc_file(v: str):
@@ -711,19 +723,6 @@ def ScreenToClient(hwnd, x, y):
     P.y = int(y)
     _ScreenToClient(hwnd, pointer(P))
     return (P.x, P.y)
-
-
-class AutoHandle(HANDLE):
-    def __new__(cls, value) -> None:
-        instance = super().__new__(cls, value)
-        return instance
-
-    def __del__(self):
-        if self:
-            CloseHandle(self)
-
-    def __bool__(self):
-        return (self.value != INVALID_HANDLE_VALUE) and (self.value != None)
 
 
 _MapVirtualKey = _user32.MapVirtualKeyW
