@@ -86,13 +86,12 @@ NMPWAIT_WAIT_FOREVER = -1
 SECURITY_DESCRIPTOR_REVISION = 1
 PIPE_UNLIMITED_INSTANCES = 255
 PIPE_WAIT = 0
-GENERIC_READ = -2147483648
+GENERIC_READ = 0x80000000
 GENERIC_WRITE = 1073741824
 PIPE_READMODE_MESSAGE = 2
 PIPE_TYPE_MESSAGE = 4
 OPEN_EXISTING = 3
 PIPE_ACCESS_DUPLEX = 3
-FILE_ATTRIBUTE_NORMAL = 128
 SW_SHOWMINNOACTIVE = 7
 SW_SHOWNA = 8
 SW_RESTORE = 9
@@ -113,10 +112,14 @@ SWP_NOSIZE = 1
 SW_SHOW = 5
 WS_MAXIMIZE = 16777216
 NMPWAIT_WAIT_FOREVER = -1
-GENERIC_READ = -2147483648
-GENERIC_WRITE = 1073741824
-OPEN_EXISTING = 3
-FILE_ATTRIBUTE_NORMAL = 128
+
+FILE_SHARE_READ = 0x00000001
+FILE_ATTRIBUTE_NORMAL = 0x80
+INVALID_HANDLE_VALUE = -1
+MAX_PATH = 260
+VOLUME_NAME_DOS = 0x0
+VOLUME_NAME_NT = 0x2
+
 STANDARD_RIGHTS_REQUIRED = 983040
 SYNCHRONIZE = 1048576
 PROCESS_ALL_ACCESS = STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 4095
@@ -323,7 +326,6 @@ except:
 _GetLongPathName = _kernel32.GetLongPathNameW
 _GetLongPathName.argtypes = (LPCWSTR, LPWSTR, DWORD)
 _GetLongPathName.restype = DWORD
-MAX_PATH = 260
 
 
 def GetLongPathName(file):
@@ -371,14 +373,83 @@ def check_unc_file(v: str):
             ).contents.lpUniversalName
             if v.startswith(prefixnetwork):
                 return A + v[len(prefixnetwork) :]
-    return v
+    return None
+
+
+_CreateFileW = _kernel32.CreateFileW
+_CreateFileW.argtypes = (LPCWSTR, DWORD, DWORD, LPCVOID, DWORD, DWORD, HANDLE)
+_CreateFileW.restype = HANDLE
+
+
+def CreateFile(
+    fileName,
+    desiredAccess,
+    shareMode,
+    attributes,
+    CreationDisposition,
+    flagsAndAttributes,
+    hTemplateFile,
+):
+    return _CreateFileW(
+        fileName,
+        desiredAccess,
+        shareMode,
+        attributes,
+        CreationDisposition,
+        flagsAndAttributes,
+        hTemplateFile,
+    )
+
+
+try:
+    GetFinalPathNameByHandleW = _kernel32.GetFinalPathNameByHandleW
+    GetFinalPathNameByHandleW.argtypes = (HANDLE, LPWSTR, DWORD, DWORD)
+    GetFinalPathNameByHandleW.restype = DWORD
+except:
+    GetFinalPathNameByHandleW = None
+
+
+def parseuncex(v: str, t):
+    hFile = CreateFile(
+        v,
+        GENERIC_READ,
+        FILE_SHARE_READ,
+        None,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL,
+        None,
+    )
+    if not GetFinalPathNameByHandleW:
+        return
+    if hFile == INVALID_HANDLE_VALUE:
+        return None
+
+    szFinalPath = create_unicode_buffer(65535)
+
+    result = GetFinalPathNameByHandleW(hFile, szFinalPath, MAX_PATH, t)
+    CloseHandle(hFile)
+    if result == 0:
+        return None
+
+    return szFinalPath.value
 
 
 def check_maybe_unc_file(v: str):
-    if v.startswith("\\"):
-        v = check_unc_file(v)
-        if v.startswith("\\"):
-            return None
+    if not v.startswith("\\"):
+        return v
+    res = check_unc_file(v)
+    if res:
+        return res
+    nt = parseuncex(v, VOLUME_NAME_NT)
+    # 按照文档所说，这个之后QueryDosDevice是可以转成X:\xxxx的，然而实测经常查不到
+    if nt:
+        nt = check_unc_file(nt)
+        if nt:
+            return nt
+    dos = parseuncex(v, VOLUME_NAME_DOS)
+    # 获取的结果是\\?\的UNC路径。虽然没办法转成X:\xxxx，但实测可以管用。
+    if dos:
+        return dos
     return v
 
 
@@ -570,39 +641,6 @@ def WriteFile(handle, _bytes):
     return _WriteFile(handle, c_char_p(_bytes), len(_bytes), pointer(dwread), None)
 
 
-_CreateFileW = _kernel32.CreateFileW
-_CreateFileW.argtypes = (
-    c_wchar_p,
-    c_uint,
-    c_uint,
-    c_void_p,
-    c_uint,
-    c_uint,
-    c_void_p,
-)
-_CreateFileW.restype = HANDLE
-
-
-def CreateFile(
-    fileName,
-    desiredAccess,
-    shareMode,
-    attributes,
-    CreationDisposition,
-    flagsAndAttributes,
-    hTemplateFile,
-):
-    return _CreateFileW(
-        fileName,
-        desiredAccess,
-        shareMode,
-        attributes,
-        CreationDisposition,
-        flagsAndAttributes,
-        hTemplateFile,
-    )
-
-
 WaitNamedPipe = _kernel32.WaitNamedPipeW
 WaitNamedPipe.argtypes = LPCWSTR, DWORD
 WaitNamedPipe.restype = BOOL
@@ -673,9 +711,6 @@ def ScreenToClient(hwnd, x, y):
     P.y = int(y)
     _ScreenToClient(hwnd, pointer(P))
     return (P.x, P.y)
-
-
-INVALID_HANDLE_VALUE = -1
 
 
 class AutoHandle(HANDLE):
