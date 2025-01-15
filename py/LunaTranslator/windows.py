@@ -426,7 +426,7 @@ def parseuncex(v: str, t):
 
     szFinalPath = create_unicode_buffer(65535)
 
-    result = GetFinalPathNameByHandleW(hFile, szFinalPath, MAX_PATH, t)
+    result = GetFinalPathNameByHandleW(hFile, szFinalPath, 65535, t)
     CloseHandle(hFile)
     if result == 0:
         return None
