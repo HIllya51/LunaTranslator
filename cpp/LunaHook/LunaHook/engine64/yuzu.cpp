@@ -2419,6 +2419,12 @@ namespace
         s = std::regex_replace(s, std::wregex(LR"(%)"), L"");
         buffer->from(s);
     }
+    void F01005DE00CA34000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = std::regex_replace(s, std::wregex(LR"(\$t(.*?)@)"), L"【$1】");
+        buffer->from(s);
+    }
     void F0100BBA00B23E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -3649,6 +3655,8 @@ namespace
             {0x8013b4cc, {CODEC_UTF16, 8, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
             // ラッキードッグ１
             {0x8016837C, {CODEC_UTF16, 8, 0, 0, 0, 0x0100813014B3A000ull, "1.0.0"}},
+            // オメガヴァンパイア
+            {0x800677AC, {CODEC_UTF16, 1, 0, 0, F01005DE00CA34000, 0x01005DE00CA34000ull, "1.0.0"}},
         };
         return 1;
     }();
