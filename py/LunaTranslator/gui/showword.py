@@ -1032,7 +1032,7 @@ class showdiction(QWidget):
         rows = []
         cishus = []
         for k in globalconfig["cishuvisrank"]:
-            cishu = gobject.baseobject.cishus[k]
+            cishu = gobject.baseobject.cishus.get(k)
             if not hasattr(cishu, "tree"):
                 continue
             cishus.append(cishu)
