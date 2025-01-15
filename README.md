@@ -30,7 +30,7 @@
 
 支持几乎所有能想得到的翻译引擎，包括： 
 
-- **免费在线翻译** 支持使用百度、必应、谷歌、阿里、有道、彩云、搜狗、讯飞、腾讯、字节、火山、DeepL/DeepLX、papago、yandex、lingva、reverso、TranslateCom、ModernMT
+- **免费在线翻译** 支持使用百度、必应、谷歌、阿里、有道、彩云、腾讯、火山、DeepL/DeepLX、papago、yandex、lingva、reverso、TranslateCom、ModernMT
 
 - **注册在线翻译** 支持使用用户注册的 **传统翻译** ( 百度、腾讯、有道、小牛、彩云、火山、DeepL、yandex、google、ibm、Azure ) 和 **大模型翻译** ( ChatGPT兼容接口、claude、cohere、gemini、百度千帆、腾讯混元 ) 
 

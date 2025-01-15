@@ -1,4 +1,5 @@
 from language import Languages
+from html import unescape
 from translator.basetranslator import basetrans
 
 
@@ -29,7 +30,7 @@ class TS(basetrans):
         )
         try:
             data = r.json()
-            return data["translated_text"]
+            return unescape(data["translated_text"])
         except:
             raise Exception(r)
 

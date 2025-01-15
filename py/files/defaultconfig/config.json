@@ -1807,12 +1807,6 @@
             "color": "#1839f0",
             "name": "LEC"
         },
-        "sougou2": {
-            "use": false,
-            "color": "blue",
-            "useproxy": false,
-            "name": "搜狗"
-        },
         "youdao3": {
             "use": false,
             "color": "blue",
