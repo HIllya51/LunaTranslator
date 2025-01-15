@@ -45,7 +45,7 @@
 
 - **离线TTS** 支持WindowsTTS、VoiceRoid2/VoiceRoid+、NeoSpeech、VOICEVOX、VITS
 
-- **在线TTS** 支持火山TTS、有道TTS、EdgeTTS、谷歌TTS
+- **在线TTS** 支持火山TTS、有道TTS、EdgeTTS、谷歌TTS、OpenAI
 
 
 #### 日语学习

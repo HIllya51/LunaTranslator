@@ -44,7 +44,7 @@ Supports almost all conceivable translation engines, including:
 
 - **Offline TTS** Supports WindowsTTS, VoiceRoid2/VoiceRoid+, NeoSpeech, VOICEVOX, VITS
 
-- **Online TTS** Supports Volcano TTS, Youdao TTS, Edge TTS, Google TTS
+- **Online TTS** Supports Volcano TTS, Youdao TTS, Edge TTS, Google TTS, OpenAI
 
 #### Japanese Learning
 
