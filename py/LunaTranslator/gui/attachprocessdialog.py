@@ -23,6 +23,9 @@ class AttachProcessDialog(saveposwindow):
         if pid == os.getpid():
             return
         name = getpidexe(pid)
+        if not name:
+            getQMessageBox(self, "错误", "权限不足，请以管理员权限运行！")
+            return
         _pids = ListProcess(name)
         self.processEdit.setText(name)
         self.processIdEdit.setText(",".join([str(pid) for pid in _pids]))
