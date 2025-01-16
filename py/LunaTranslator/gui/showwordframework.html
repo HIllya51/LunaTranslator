@@ -108,10 +108,10 @@
         safe_luna_recheck_current_html()
     }
     function safe_luna_recheck_current_html() {
-        const prevHovered = document.querySelector('.element-hover');
-        if (prevHovered) {
-            prevHovered.classList.remove('element-hover');
-        }
+        // const prevHovered = document.querySelector('.element-hover');
+        // if (prevHovered) {
+        //     prevHovered.classList.remove('element-hover');
+        // }
         if (window.luna_recheck_current_html)
             window.luna_recheck_current_html()
         else if (window.LUNAJSObject)
@@ -119,14 +119,13 @@
     }
 
     var highlightMode = false;
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'H' && e.shiftKey && e.ctrlKey) {
-            highlightMode = !highlightMode;
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (highlightMode) {
+    function switch_hightlightmode() {
+        console.log(highlightMode)
+        highlightMode = !highlightMode;
+    }
+    if (document.addEventListener) {
+        function handleClick(e) {
+            if (!highlightMode) return
             e.preventDefault();
             e.stopPropagation();
             const element = e.target;
@@ -139,21 +138,28 @@
             element.classList.remove('element-hover');
             safe_luna_recheck_current_html()
         }
-    }, true);
+        document.addEventListener('click', handleClick);
 
+        function handleMouseMove(e) {
+            const prevHovered = document.querySelector('.element-hover');
+            if (prevHovered) {
+                prevHovered.classList.remove('element-hover');
+            }
+            if (!highlightMode) return
+            const target = e.target;
+            if (!target.classList.contains('element-selected')) {
+                target.classList.add('element-hover');
+            }
+        }
+        document.addEventListener('mousemove', handleMouseMove);
 
-    function handleMouseMove(e) {
-        const prevHovered = document.querySelector('.element-hover');
-        if (prevHovered) {
-            prevHovered.classList.remove('element-hover');
+        function handlekeydown(e) {
+            if (e.key === 'H' && e.shiftKey && e.ctrlKey) {
+                switch_hightlightmode();
+            }
         }
-        if (!highlightMode) return
-        const target = e.target;
-        if (!target.classList.contains('element-selected')) {
-            target.classList.add('element-hover');
-        }
+        document.addEventListener('keydown', handlekeydown);
     }
-    document.addEventListener('mousemove', handleMouseMove);
 </script>
 <style>
     .element-hover {
