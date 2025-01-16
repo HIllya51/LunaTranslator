@@ -13,7 +13,7 @@
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0.5, rgba(255, 255, 255, 0.7));
 }
 
-#VPContent a {
+.main a {
     display: inline-block;
 }
 
@@ -21,7 +21,7 @@
     display: none;
 }
 
-#VPContent h2 {
+.main h2 {
     border-width: 0 0 1px 0;
     border-style: solid;
     border-color: gainsboro;
