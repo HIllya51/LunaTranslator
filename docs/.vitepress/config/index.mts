@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { en } from './en'
 import { zh, zhSearch } from './zh'
-import { ja } from './ja'
+import { ja, jaSearch } from './ja'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 
 // https://vitepress.dev/reference/site-config
@@ -40,6 +40,7 @@ function openlink(url) {
       provider: 'local', options: {
         locales: {
           ...zhSearch,
+          ...jaSearch,
         }
       }
     },

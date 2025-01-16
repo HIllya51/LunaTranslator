@@ -1,8 +1,70 @@
 import { defineConfig } from 'vitepress'
-
+export const jaSearch = {
+    ja: {
+        placeholder: 'ドキュメントを検索',
+        translations: {
+            button: {
+                buttonText: 'ドキュメントを検索',
+                buttonAriaLabel: 'ドキュメントを検索'
+            },
+            modal: {
+                searchBox: {
+                    resetButtonTitle: '検索条件をクリア',
+                    resetButtonAriaLabel: '検索条件をクリア',
+                    cancelButtonText: 'キャンセル',
+                    cancelButtonAriaLabel: 'キャンセル'
+                },
+                startScreen: {
+                    recentSearchesTitle: '検索履歴',
+                    noRecentSearchesText: '検索履歴はありません',
+                    saveRecentSearchButtonTitle: '検索履歴に保存',
+                    removeRecentSearchButtonTitle: '検索履歴から削除',
+                    favoriteSearchesTitle: 'お気に入り',
+                    removeFavoriteSearchButtonTitle: 'お気に入りから削除'
+                },
+                errorScreen: {
+                    titleText: '結果を取得できません',
+                    helpText: 'ネットワーク接続を確認してください'
+                },
+                footer: {
+                    selectText: '選択',
+                    navigateText: '切り替え',
+                    closeText: '閉じる',
+                    searchByText: '検索プロバイダ'
+                },
+                noResultsScreen: {
+                    noResultsText: '関連する結果が見つかりません',
+                    suggestedQueryText: '以下のクエリを試してみてください',
+                    reportMissingResultsText: 'このクエリに結果があるべきだと思いますか？',
+                    reportMissingResultsLinkText: 'フィードバックを送信'
+                }
+            }
+        }
+    }
+}
 export const ja = defineConfig({
-
     themeConfig: {
+        outline: {
+            label: "ページナビゲーション"
+        },
+
+        editLink: {
+            pattern: 'https://github.com/HIllya51/LunaTranslator/edit/main/docs/:path',
+            text: 'GitHubでこのページを編集'
+        },
+
+        docFooter: {
+            prev: '前のページ',
+            next: '次のページ'
+        },
+
+        lastUpdated: {
+            text: '最終更新日',
+            formatOptions: {
+                dateStyle: 'short',
+                timeStyle: 'medium'
+            }
+        },
         nav: [
             { text: "公式サイト", link: "/README" },
             { text: "ビデオチュー", link: "https://www.youtube.com/results?search_query=LunaTranslator" },
