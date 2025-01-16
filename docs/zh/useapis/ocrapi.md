@@ -231,11 +231,12 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
 == WindowsOCR
 
-## <div id="windowsocr">WindowsOCR如何安装额外的语言支持？</div>
+### WindowsOCR如何安装额外的语言支持？
 
-> WindowsOCR仅支持win10-win11操作系统
+>[!WARNING]
+>WindowsOCR仅支持win10-win11操作系统
 
-### 如何查询 OCR 语言包
+#### 如何查询 OCR 语言包
 
 若要返回所有支持的语言包的列表，请以管理员身份打开 PowerShell（右键单击，然后选择“以管理员身份运行”），并输入以下命令：
 
@@ -262,7 +263,7 @@ State : NotPresent
 
 语言和位置为缩写形式，因此“en-US”表示“英语-美国”，“en-GB”则表示“英语-英国”。 如果某个语言在输出中不可用，则 OCR 不支持该语言。 必须先安装 `State: NotPresent` 语言。
 
-### 如何安装 OCR 语言包
+#### 如何安装 OCR 语言包
 
 以下为安装“en-US”OCR 包的命令：
 
@@ -270,7 +271,7 @@ State : NotPresent
 
 `$Capability | Add-WindowsCapability -Online`
 
-### 如何移除 OCR 语言包
+#### 如何移除 OCR 语言包
 
 以下为移除“en-US”OCR 包的命令：
 

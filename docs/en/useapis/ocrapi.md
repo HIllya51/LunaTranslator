@@ -200,11 +200,12 @@ Requires installation of WeChat or the latest version of QQ
 
 == WindowsOCR
 
-## <div id="windowsocr">How to Install Additional Language Support for WindowsOCR?</div>
+### How to Install Additional Language Support for WindowsOCR?
 
+>[!WARNING]
 > WindowsOCR only supports Windows 10 and Windows 11 operating systems.
 
-### How to query for OCR language packs
+#### How to query for OCR language packs
 
 To return the list of all supported language packs, open PowerShell as an Administrator (right-click, then select "Run as Administrator") and enter the following command:
 
@@ -231,7 +232,7 @@ State : NotPresent
 
 The language and location is abbreviated, so "en-US" would be "English-United States" and "en-GB" would be "English-Great Britain". If a language is not available in the output, then it's not supported by OCR. `State: NotPresent` languages must be installed first.
 
-### How to install an OCR language pack
+#### How to install an OCR language pack
 
 The following commands install the OCR pack for "en-US":
 
@@ -239,7 +240,7 @@ The following commands install the OCR pack for "en-US":
 
 `$Capability | Add-WindowsCapability -Online`
 
-### How to remove an OCR language pack
+#### How to remove an OCR language pack
 
 The following commands remove the OCR pack for "en-US":
 

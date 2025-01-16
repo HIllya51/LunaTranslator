@@ -199,11 +199,12 @@ WeChatまたは最新バージョンのQQのインストールが必要です
 
 == WindowsOCR
 
-## <div id="windowsocr">WindowsOCRの追加言語サポートをインストールする方法</div>
+### WindowsOCRの追加言語サポートをインストールする方法
 
+>[!WARNING]
 > WindowsOCRはWindows 10およびWindows 11オペレーティングシステムのみをサポートしています。
 
-### OCR 言語パックのクエリを実行する方法
+#### OCR 言語パックのクエリを実行する方法
 
 サポートされているすべての言語パックの一覧を返すには、管理者として PowerShell を開き (右クリックし、[管理者として実行] を選択します)、次のコマンドを入力します。
 
@@ -230,7 +231,7 @@ State : NotPresent
 
 言語と場所は省略されているため、"en-US" は "English-United States" になり、"en-GB" は "English-Great Britain" になります。 出力で使用できない言語は、OCR ではサポートされません。 `State: NotPresent` 言語を最初にインストールする必要があります。
 
-### OCR 言語パックをインストールする方法
+#### OCR 言語パックをインストールする方法
 
 次のコマンドは、"en-US" 用の OCR パックをインストールします:
 
@@ -238,7 +239,7 @@ State : NotPresent
 
 `$Capability | Add-WindowsCapability -Online`
 
-### OCR 言語パックを削除する方法
+#### OCR 言語パックを削除する方法
 
 次のコマンドは、"en-US" の OCR パックを削除します:
 
