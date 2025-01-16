@@ -12,14 +12,21 @@
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0.5, rgba(255, 255, 255, 0.7));
 }
-.vp-doc h2{
-    margin-top: 0 !important;
-    border-top: none !important;
-}
-a, img{
+
+#VPContent a {
     display: inline-block;
 }
-.custom-block-title
-{
+
+.custom-block-title {
     display: none;
+}
+
+#VPContent h2 {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: gainsboro;
+    margin-top: 0 !important;
+    line-height: 1.7;
+    font-size: 1.7em;
+    font-weight: 400;
 }
