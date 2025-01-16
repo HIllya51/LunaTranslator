@@ -1,10 +1,10 @@
-## Detailed Explanation of Shortcut Keys
+::: tip
+ To use shortcut keys, you first need to activate `Use Shortcut Keys`, then activate the specific shortcut key you want to use, and set its key combination.
+:::
 
-### To use shortcut keys, you first need to activate `Use Shortcut Keys`, then activate the specific shortcut key you want to use, and set its key combination.
+::: tabs
 
-<!-- tabs:start -->
-
-### **General**
+== General
 
 1. #### Manual Translation
     Reads input once from the current text input source and performs translation.
@@ -46,9 +46,10 @@
 1. #### Exit
     N/A
 
-### **HOOK**
+== HOOK
 
-**Available only in HOOK mode**
+>[!WARNING]
+>Available only in HOOK mode
 
 1. #### Select Game
     Pops up the game process selection window to select the game process to HOOK.
@@ -57,18 +58,21 @@
     Pops up the game text selection window to select which HOOKed text to translate.
     However, the text selection window will automatically pop up after selecting the process, and is actually used to change the selected text or modify some settings.
 
-### **OCR**
+== OCR
 
 1. #### Select OCR Range
-    **Available only in OCR mode**<br>
+    **Available only in OCR mode**
+    
     In OCR mode, selects the OCR area, or changes the OCR area, or when `OCR Settings` -> `Other` -> `Multi-region Mode` is activated, adds a new OCR area.
 
 1. #### Show/Hide Range Box
-    **Available only in OCR mode**<br>
+    **Available only in OCR mode**
+    
     When no OCR range is selected, using this shortcut key will display the OCR range and automatically set the OCR range to the last selected OCR.
 
 1. ###### Clear OCR range
-    **Only available in OCR mode**<br>
+    **Only available in OCR mode**
+    
     Clear all selected ranges
 
 1. #### Perform OCR Once
@@ -78,7 +82,7 @@
 1. #### Perform OCR Again
     After using `Perform OCR Once`, using this shortcut key will perform OCR again in the original position without reselecting the recognition area.
 
-### **Clipboard**
+== Clipboard
 
 1. #### Read Clipboard
     The actual meaning is that regardless of the current default text input source, it reads text once from the clipboard and passes it to the subsequent translation/TTS/... process.
@@ -89,7 +93,7 @@
 1. #### Copy Translation to Clipboard
     Copies the translation instead of the original text to the clipboard.
 
-### **TTS**
+== TTS
 
 1. #### Auto Read
     Toggles whether to automatically read aloud.
@@ -101,7 +105,7 @@
 1. #### Read Interrupt
     Interrupts the reading.
 
-### **Game**
+== Game
 
 1. #### Bind Window (Click to Cancel)
     After binding the game window, `Window Scaling`, `Window Screenshot`, `Game Mute`, `Follow Game Window` -> `Cancel Topmost When Game Loses Focus` and `Move Synchronously When Game Window Moves`, as well as recording game time, become available.
@@ -127,7 +131,7 @@
 1. #### Gallery Recording
     Shortcut key for a recording function in game management.
 
-### **Dictionary Lookup**
+== Dictionary Lookup
 
 1. #### Retrieve and search for words
     Search for words in the text currently selected by the mouse
@@ -147,4 +151,4 @@
 1. #### Read Word
     Reads the word in the current dictionary lookup window.
 
-<!-- tabs:end -->
+:::

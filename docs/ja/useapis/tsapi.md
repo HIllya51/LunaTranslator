@@ -1,8 +1,8 @@
 ## オンライン翻訳APIの登録
 
-<!-- tabs:start -->
+::: tabs
 
-#### **百度**
+== 百度
 
 #### 百度翻訳オープンプラットフォーム
 
@@ -12,7 +12,7 @@ https://fanyi-api.baidu.com/product/11
 
 https://ai.baidu.com/ai-doc/MT/ykqq95r2y
 
-#### **腾讯**
+== 腾讯
 
 ### コントロールパネルにログイン
 
@@ -39,7 +39,7 @@ https://ai.baidu.com/ai-doc/MT/ykqq95r2y
 
 https://cloud.tencent.com/document/product/551/104415
 
-#### **有道**
+== 有道
 
 ### ステップ1：開発者になる
 
@@ -69,13 +69,13 @@ https://cloud.tencent.com/document/product/551/104415
 
 https://ai.youdao.com/doc.s#guide
 
-#### **阿里**
+== 阿里
 
 **サービスの開通** https://www.aliyun.com/product/ai/alimt
 
 **キーの作成** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
 
-#### **彩云**
+== 彩云
 
 テストする場合は、`3975l6lr5pcbvidl6jl2`をテストトークンとして使用できます。このトークンの可用性は保証されないため、継続的に使用する場合は正式なトークンを申請してください。
 
@@ -85,7 +85,7 @@ https://ai.youdao.com/doc.s#guide
 
 https://docs.caiyunapp.com/lingocloud-api/#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C
 
-#### **火山**
+== 火山
 
 ### サービスの開通
 
@@ -123,15 +123,15 @@ https://docs.caiyunapp.com/lingocloud-api/#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%
 
 https://www.volcengine.com/docs/4640/127684
 
-#### **Google**
+== Google
 
 https://cloud.google.com/translate/docs/basic/translating-text
 
-#### **DeepL**
+== DeepL
 
 https://www.deepl.com/en/products/api
 
-#### **Azure**
+== Azure
 
 https://learn.microsoft.com/en-us/azure/ai-services/translator/reference/v3-0-reference#authentication
 
@@ -139,30 +139,30 @@ https://learn.microsoft.com/en-us/azure/ai-services/translator/reference/v3-0-re
 
 **Location** Ocp-Apim-Subscription-Region
 
-#### **小牛**
+== 小牛
 
 https://niutrans.com/cloud/api/list
 
-#### **yandex**
+== yandex
 
 https://yandex.cloud/en/services/translate
 
-#### **华为云**
+== 华为云
 
 https://www.huaweicloud.com/product/nlpmt.html
 
-#### **IBM**
+== IBM
 
 https://cloud.ibm.com/apidocs/language-translator
 
-<!-- tabs:end -->
+:::
 
 
 ## 登録不要のオンライン翻訳
 
-<!-- tabs:start -->
+::: tabs
 
-#### **DeepL/DeepLX**
+== DeepL/DeepLX
 
 `DeepL`と`DeepLX`の2種類があります。
 
@@ -170,8 +170,8 @@ https://cloud.ibm.com/apidocs/language-translator
 
 `DeepLX`は[DeepLX](https://github.com/OwO-Network/DeepLX)からダウンロードして自己ホストし、`DeepLX api`を入力して使用します。
 
-#### **lingva**
+== lingva
 
 デフォルトのホストは`translate.plausibility.cloud`ですが、[lingva-translate](https://github.com/thedaviddelta/lingva-translate)からダウンロードして自己ホストし、自分のドメインを入力して使用することもできます。
 
-<!-- tabs:end -->
+:::

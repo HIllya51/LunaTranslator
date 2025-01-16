@@ -1,6 +1,4 @@
-## 大規模モデルのオフライン翻訳の使用方法
-
-### ChatGPT互換インターフェース
+## ChatGPT互換インターフェース
 
 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[ollama](https://github.com/ollama/ollama)、[one-api](https://github.com/songquanpeng/one-api)などのツールを使用してモデルをデプロイし、アドレスとモデルを入力することができます。
 

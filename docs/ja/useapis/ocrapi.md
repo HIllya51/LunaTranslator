@@ -1,8 +1,8 @@
 ## オンラインOCR
 
-<!-- tabs:start -->
+::: tabs
 
-#### **百度**
+== 百度
 
 #### 百度智能云 OCR
 
@@ -16,7 +16,7 @@ https://ai.baidu.com/ai-doc/MT/dkifdqg54
 
 https://fanyi-api.baidu.com/product/22
 
-#### **腾讯**
+== 腾讯
 
 #### OCR 一般印刷体認識
 
@@ -26,7 +26,7 @@ https://cloud.tencent.com/document/product/866/33526
 
 https://cloud.tencent.com/document/product/551/17232
 
-#### **有道**
+== 有道
 
 ### ステップ1：開発者になる
 
@@ -56,7 +56,7 @@ https://cloud.tencent.com/document/product/551/17232
 
 https://ai.youdao.com/doc.s#guide
 
-#### **火山**
+== 火山
 
 #### ステップ1：開発者になる
 
@@ -120,7 +120,7 @@ STEP2：認証が完了したら、ビジュアルインテリジェンスコン
 
 https://www.volcengine.com/docs/6790/116978
 
-#### **讯飞**
+== 讯飞
 
 ### ステップ1：開発者として登録する
 
@@ -134,8 +134,8 @@ https://www.volcengine.com/docs/6790/116978
 
 アプリケーションに名前を付け、関連情報を入力します。送信ボタンをクリックすると、アプリケーションが作成されます。
 
-?>**注意**<br>
-旧バージョンのコンソールでは、後続のSDKまたはAPI統合のためにアプリケーションのオペレーティングシステムプラットフォームタイプを指定する必要がありましたが、新バージョンの更新後、この操作は不要になり、1つのアプリケーションで全てのインターフェースを管理できます。
+> [!WARNING]
+>旧バージョンのコンソールでは、後続のSDKまたはAPI統合のためにアプリケーションのオペレーティングシステムプラットフォームタイプを指定する必要がありましたが、新バージョンの更新後、この操作は不要になり、1つのアプリケーションで全てのインターフェースを管理できます。
 
 アプリケーションが作成されると、左側のサービスリストから使用するサービスを選択できます。サービス管理パネルでは、利用可能なクォータ、履歴使用量、サービスインターフェースの検証情報、および呼び出せるAPIとSDKを確認できます。
 
@@ -143,8 +143,8 @@ https://www.volcengine.com/docs/6790/116978
 
 ![](https://www.xfyun.cn/doc/assets/img/manage2.cc025e41.png)
 
-?>**注意**<br>
-すべてのサービス管理パネルが同じではありません。異なるサービスには異なる管理パネルの構成があります。また、すべてのサービスにSDKとAPIインターフェースがあるわけではありません。一部のサービスにはAPIインターフェースのみがあり、他のサービスにはSDKのみがあります。詳細は対応するサービス管理ページで確認できます。
+> [!WARNING]
+>すべてのサービス管理パネルが同じではありません。異なるサービスには異なる管理パネルの構成があります。また、すべてのサービスにSDKとAPIインターフェースがあるわけではありません。一部のサービスにはAPIインターフェースのみがあり、他のサービスにはSDKのみがあります。詳細は対応するサービス管理ページで確認できます。
 
 讯飞オープンプラットフォームは1つのアカウントで複数のアプリケーションを作成することをサポートしています。アプリケーションリストページに戻ってアプリケーションを切り替えるには、ページの左上のアプリケーション名の上にある戻るボタン、または右上の個人メニューの「マイアプリケーション」をクリックします。アプリケーションリストでアプリケーションを選択し、その名前をクリックしてそのアプリケーションに対応するサービス管理ページに入ります。
 
@@ -152,50 +152,50 @@ https://www.volcengine.com/docs/6790/116978
 
 ![](https://www.xfyun.cn/doc/assets/img/BACK.75999ee8.png)
 
-?>**注意**<br>
-アカウントに複数のアプリケーションがある場合、最後に操作したアプリケーションが記録され、讯飞オープンプラットフォームに戻ったときにさまざまなサービス操作のデフォルトアプリケーションとして設定されます。
+> [!WARNING]
+>アカウントに複数のアプリケーションがある場合、最後に操作したアプリケーションが記録され、讯飞オープンプラットフォームに戻ったときにさまざまなサービス操作のデフォルトアプリケーションとして設定されます。
 
 https://www.xfyun.cn/doc/platform/quickguide.html
 
-#### **Google Cloud Vision**
+== Google Cloud Vision
 
 https://cloud.google.com/vision/docs
 
-#### **docsumo**
+== docsumo
 
 https://www.docsumo.com/
 
-#### **ocrspace**
+== ocrspace
 
 https://ocr.space/
 
-#### **Gemini**
+== Gemini
 
-[翻訳](/ja/guochandamoxing?id=gemini)と同じ
+[翻訳](/ja/guochandamoxing.html#特定プラットフォームの専用インターフェース)と同じ
 
-#### **ChatGPT互換インターフェース**
+== ChatGPT互換インターフェース
 
-[翻訳](/ja/guochandamoxing?id=chatgpt互換インターフェース)と同じ
+[翻訳](/ja/guochandamoxing.html#chatgpt互換インターフェース)と同じ
 
-<!-- tabs:end -->
+:::
 
 
 ## オフラインOCR
 
 
-<!-- tabs:start -->
+::: tabs
 
-#### **manga-ocr**
+== manga-ocr
 
 CPU統合パッケージ https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/cpu
 
 GPU統合パッケージ https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
-#### **WeChat/QQ OCR**
+== WeChat/QQ OCR
 
 WeChatまたは最新バージョンのQQのインストールが必要です
 
-#### **WindowsOCR**
+== WindowsOCR
 
 ## <div id="windowsocr">WindowsOCRの追加言語サポートをインストールする方法</div>
 
@@ -246,8 +246,8 @@ State : NotPresent
 
 https://learn.microsoft.com/ja-jp/windows/powertoys/text-extractor#supported-languages
 
-#### **Tesseract5**
+== Tesseract5
 
 https://github.com/tesseract-ocr/tesseract/releases
 
-<!-- tabs:end -->
+:::

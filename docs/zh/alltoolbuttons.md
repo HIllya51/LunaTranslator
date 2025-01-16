@@ -28,16 +28,19 @@
 
 1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> 手动翻译
     实际意义是，从当前的文本输入源，读取一次输入，并执行翻译。
+    
     例如如果当前是OCR模式，会再执行一次OCR。
 
 1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 自动翻译
     实际意义是，暂停/继续自动从当前的文本输入源读取文本。
+
     例如如果当前是HOOK模式，会暂停读取游戏文本；当前是OCR模式，暂停自动识别图像；如果当前是剪贴板模式，会暂停自动读取剪贴板。
 
 1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> 打开设置
     略
 1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> 读取剪贴板
     这个的实际意义是，不管当前的默认文本输入源是什么，都从剪贴板读取一次文本，并传给之后的翻译/tts/...流程
+
     右击按钮会追加读取到的文本到当前文本之后。
 1. #### <i class="fa fa-heart"></i> <i class="fa fa-icon fa-rotate-right"></i> 收藏夹
     可以为每个游戏，单独创建一个小的收藏夹。会包含自动查询元数据收藏游戏的vndb/bangumi/dlsite/等页面，也可以手动再添加一些和这个游戏关联的网页进去（例如游戏攻略的网页，除了用备忘录外，也可以用这个功能进行收藏），方便查看。免去了在浏览器里创建收藏夹进行管理的麻烦。
@@ -128,7 +131,9 @@
 
 1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> 朗读
     左击按钮会对当前文本进行语音合成。
-右击该按钮会中断朗读。
+
+    右击该按钮会中断朗读。
+
     该朗读会无视`跳过`（如果在`语音指定`中，匹配当前文本目标为`跳过`，则使用按钮进行朗读时，会无视跳过，强制进行朗读）
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 复制到剪贴板
     复制当前提取到的文本到剪贴板一次。如果想要自动提取到剪贴板，应当激活`文本输入`->`文本输出`->`剪贴板`->`自动输出`。

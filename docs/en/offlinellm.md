@@ -1,7 +1,4 @@
-## How to Use Large Model Offline Translation?
-
-
-### ChatGPT Compatible Interface
+## ChatGPT Compatible Interface
 
 
 You can also use tools like [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [one-api](https://github.com/songquanpeng/one-api) to deploy models, and then fill in the address and model.

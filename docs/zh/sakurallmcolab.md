@@ -29,10 +29,10 @@
 
 ### 2. 部署到在线GPU平台
 
-<!-- tabs:start -->
+::: tabs
 
 
-### **飞桨Ai Studio**
+== 飞桨Ai Studio
 
 * 免费额度为每日登录领取4小时，并且可以通过一些积分任务获取更多时长
 
@@ -76,7 +76,7 @@
 </details>
 
 
-### **Google Colab**
+== Google Colab
 
 * 免费时长约为每天四小时，具体时长根据账号历史用量波动
 
@@ -115,4 +115,4 @@
   <img src="https://image.lunatranslator.org/zh/sakurallm/colab6.png">
 </details>
 
-<!-- tabs:end -->
+:::

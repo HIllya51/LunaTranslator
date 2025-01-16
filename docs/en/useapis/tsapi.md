@@ -2,9 +2,9 @@
 
 ## Register for Online Translation
 
-<!-- tabs:start -->
+::: tabs
 
-#### **Baidu**
+== Baidu
 
 #### Baidu Translation Open Platform
 
@@ -14,7 +14,7 @@ https://fanyi-api.baidu.com/product/11
 
 https://ai.baidu.com/ai-doc/MT/ykqq95r2y
 
-#### **Tencent**
+== Tencent
 
 ### Log in to the Console
 
@@ -41,7 +41,7 @@ Click the **Create Key** button, and in the pop-up window, view your Secretid an
 
 https://cloud.tencent.com/document/product/551/104415
 
-#### **Youdao**
+== Youdao
 
 ### Step 1: Become a Developer
 
@@ -71,13 +71,13 @@ Click the service name on the left side of the console to enter the service deta
 
 https://ai.youdao.com/doc.s#guide
 
-#### **Alibaba**
+== Alibaba
 
 **Activate service** https://www.aliyun.com/product/ai/alimt
 
 **Create Key** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
 
-#### **Caiyun**
+== Caiyun
 
 If you want to test, you can use `3975l6lr5pcbvidl6jl2` as a test Token. We do not guarantee the availability of this Token, so if you intend to use it continuously, please apply for a formal Token.
 
@@ -87,7 +87,7 @@ New users receive a free translation quota of 1 million characters, valid for on
 
 https://docs.caiyunapp.com/lingocloud-api/#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C
 
-#### **Volcano Engine**
+== Volcano Engine
 
 ### Activate the Service
 
@@ -125,15 +125,15 @@ Click the account in the upper right corner, select [Key Management] from the dr
 
 https://www.volcengine.com/docs/4640/127684
 
-#### **Google**
+== Google
 
 https://cloud.google.com/translate/docs/basic/translating-text
 
-#### **DeepL**
+== DeepL
 
 https://www.deepl.com/en/products/api
 
-#### **Azure**
+== Azure
 
 https://learn.microsoft.com/en-us/azure/ai-services/translator/reference/v3-0-reference#authentication
 
@@ -141,29 +141,29 @@ https://learn.microsoft.com/en-us/azure/ai-services/translator/reference/v3-0-re
 
 **Location** Ocp-Apim-Subscription-Region
 
-#### **NiuTrans**
+== NiuTrans
 
 https://niutrans.com/cloud/api/list
 
-#### **Yandex**
+== Yandex
 
 https://yandex.cloud/en/services/translate
 
-#### **Huawei Cloud**
+== Huawei Cloud
 
 https://www.huaweicloud.com/product/nlpmt.html
 
-#### **IBM**
+== IBM
 
 https://cloud.ibm.com/apidocs/language-translator
 
-<!-- tabs:end -->
+:::
 
 ## No-Registration Online Translation
 
-<!-- tabs:start -->
+::: tabs
 
-#### **DeepL/DeepLX**
+== DeepL/DeepLX
 
 There are two types: `DeepL` and `DeepLX`.
 
@@ -171,8 +171,8 @@ There are two types: `DeepL` and `DeepLX`.
 
 `DeepLX` requires downloading and deploying [DeepLX](https://github.com/OwO-Network/DeepLX) yourself, and entering the `DeepLX api` to use.
 
-#### **Lingva**
+== Lingva
 
 The default host is `translate.plausibility.cloud`, or you can deploy [Lingva Translate](https://github.com/thedaviddelta/lingva-translate) yourself and enter your own domain.
 
-<!-- tabs:end -->
+:::

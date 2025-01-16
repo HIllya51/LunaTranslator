@@ -1,8 +1,12 @@
 ## Functions and Usage of Various Text Processing Methods
 
-> Generally, in HOOK mode, sometimes incorrect text is read, such as repeated text or other messy text. In such cases, text processing is needed to resolve the issue.
+::: info
+Generally, in HOOK mode, sometimes incorrect text is read, such as repeated text or other messy text. In such cases, text processing is needed to resolve the issue.
+:::
 
-> If there are very complex error forms, you can activate multiple processing methods and adjust their execution order to obtain a rich combination of processing methods.
+::: tip
+If there are very complex error forms, you can activate multiple processing methods and adjust their execution order to obtain a rich combination of processing methods.
+:::
 
 1. #### Filter Non-Japanese Character Set Characters in Text
 

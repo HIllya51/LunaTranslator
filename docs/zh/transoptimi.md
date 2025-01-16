@@ -22,7 +22,7 @@
     ::: details 设置游戏的专用词条
     建议使用：
     ![img](https://image.lunatranslator.org/zh/transoptimi/2.png)
-      而不是：
+    而不是：
     ![img](https://image.lunatranslator.org/zh/transoptimi/3.png)
     :::
     ::: details sakura大模型设置prompt格式为v0.10pre1（支持gpt词典）
@@ -31,7 +31,7 @@
 
 1. #### 翻译结果修正
 
-  这个方法是，在翻译完毕后，可以对翻译的结果进行一定的修正，并可以使用整个表达式进行复杂的修正。
+    这个方法是，在翻译完毕后，可以对翻译的结果进行一定的修正，并可以使用整个表达式进行复杂的修正。
 
 ## 游戏专用翻译优化
 
