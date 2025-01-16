@@ -119,13 +119,14 @@
 
 1. #### Window Screenshot
     Can take a screenshot of the bound window (default takes two screenshots, GDI and Winrt, both of which may fail). The best part is that if Magpie is currently being used for scaling, it will also take a screenshot of the scaled window.
-    See [Practical Functions](/zh/usefulsmalltools.md?id=窗口截图amp画廊amp录音，捕捉每个精彩瞬间) for details.
 
 1. #### Game Mute
     After binding the game window (not just in HOOK mode, but also in OCR or clipboard mode, as long as the game window is bound), you can mute the game with one click, saving the trouble of muting the game in the system volume mixer.
 
 1. #### Magpie In-game Overlay
-    **Valid only when using the built-in Magpie to scale the window**
+    ::: info
+    Valid only when using the built-in Magpie to scale the window
+    :::
     Shows/hides the in-game overlay of the built-in Magpie.
 
 1. #### Gallery Recording
