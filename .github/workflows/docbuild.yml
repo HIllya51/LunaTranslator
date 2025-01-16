@@ -29,7 +29,6 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 20
-          cache: npm
       - uses: actions/configure-pages@v4
       - run: |
           npm install
