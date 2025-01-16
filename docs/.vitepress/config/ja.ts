@@ -78,62 +78,62 @@ export const ja = defineConfig({
             {
                 text: '基本的な',
                 items: [
-                    { text: 'ダウンロードと起動', link: '/ja/README' },
-                    { text: 'ソフトウェアが起動しない', link: '/ja/cantstart' },
-                    { text: '基本的な使用方法', link: '/ja/basicuse' },
-                    { text: 'ソフトウェアの更新', link: '/ja/update' },
-                    { text: '作者をサポートする', link: '/ja/support' }
+                    { text: 'ダウンロードと起動', link: './README' },
+                    { text: 'ソフトウェアが起動しない', link: './cantstart' },
+                    { text: '基本的な使用方法', link: './basicuse' },
+                    { text: 'ソフトウェアの更新', link: './update' },
+                    { text: '作者をサポートする', link: './support' }
                 ]
             },
             {
                 text: '詳細な',
                 items: [
                     {
-                        text: 'HOOK関連設定', link: '/ja/hooksettings',
+                        text: 'HOOK関連設定', link: './hooksettings',
                         collapsed: true,
                         items: [
-                            { text: 'HOOK設定', link: '/ja/hooksettings' },
-                            { text: '埋め込み翻訳', link: '/ja/embedtranslate' },
-                            { text: 'XP仮想マシンで古いゲームをプレイしてテキストを抽出して翻訳する', link: '/ja/playonxp' }
+                            { text: 'HOOK設定', link: './hooksettings' },
+                            { text: '埋め込み翻訳', link: './embedtranslate' },
+                            { text: 'XP仮想マシンで古いゲームをプレイしてテキストを抽出して翻訳する', link: './playonxp' }
                         ]
                     },
                     {
-                        text: 'OCR関連設定', link: '/ja/useapis/ocrapi',
+                        text: 'OCR関連設定', link: './useapis/ocrapi',
                         collapsed: true,
                         items: [
-                            { text: 'OCRインターフェース設定', link: '/ja/useapis/ocrapi' },
-                            { text: 'OCR自動化実行方法', link: '/ja/ocrparam' },
-                            { text: 'OCRモードでゲームウィンドウをバインドする', link: '/ja/gooduseocr' }
+                            { text: 'OCRインターフェース設定', link: './useapis/ocrapi' },
+                            { text: 'OCR自動化実行方法', link: './ocrparam' },
+                            { text: 'OCRモードでゲームウィンドウをバインドする', link: './gooduseocr' }
                         ]
                     },
                     {
-                        text: '翻訳インターフェース設定', link: '/ja/useapis/tsapi',
+                        text: '翻訳インターフェース設定', link: './useapis/tsapi',
                         collapsed: true,
                         items: [
-                            { text: '従来のオンライン翻訳インターフェース', link: '/ja/useapis/tsapi' },
-                            { text: '大規模モデルAPI翻訳', link: '/ja/guochandamoxing' },
-                            { text: '大規模モデルオフライン翻訳', link: '/ja/offlinellm' }
+                            { text: '従来のオンライン翻訳インターフェース', link: './useapis/tsapi' },
+                            { text: '大規模モデルAPI翻訳', link: './guochandamoxing' },
+                            { text: '大規模モデルオフライン翻訳', link: './offlinellm' }
                         ]
                     },
                     {
-                        text: 'テキスト処理＆翻訳最適化', link: '/ja/textprocess',
+                        text: 'テキスト処理＆翻訳最適化', link: './textprocess',
                         collapsed: true,
                         items: [
-                            { text: 'さまざまなテキスト処理方法の役割と使用方法', link: '/ja/textprocess' },
-                            { text: 'さまざまな翻訳最適化の役割', link: '/ja/transoptimi' }
+                            { text: 'さまざまなテキスト処理方法の役割と使用方法', link: './textprocess' },
+                            { text: 'さまざまな翻訳最適化の役割', link: './transoptimi' }
                         ]
                     },
-                    { text: '音声合成', link: '/ja/ttsofname' },
+                    { text: '音声合成', link: './ttsofname' },
                     {
-                        text: '形態素解析＆辞書', link: '/ja/qa1',
+                        text: '形態素解析＆辞書', link: './qa1',
                         collapsed: true,
                         items: [
-                            { text: 'Mecabを使用した形態素解析＆品詞カラー表示', link: '/ja/qa1' },
-                            { text: 'Anki統合', link: '/ja/qa2' }
+                            { text: 'Mecabを使用した形態素解析＆品詞カラー表示', link: './qa1' },
+                            { text: 'Anki統合', link: './qa2' }
                         ]
                     },
-                    { text: 'ツールボタン', link: '/ja/alltoolbuttons' },
-                    { text: 'ショートカットキー', link: '/ja/fastkeys' }
+                    { text: 'ツールボタン', link: './alltoolbuttons' },
+                    { text: 'ショートカットキー', link: './fastkeys' }
                 ]
             }
         ]

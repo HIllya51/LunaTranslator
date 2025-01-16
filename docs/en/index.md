@@ -12,10 +12,10 @@ hero:
   actions:  
     - theme: brand  
       text: Download and Start  
-      link: /zh/README  
+      link: ./README  
     - theme: alt  
       text: Basic Usage  
-      link: /zh/basicuse  
+      link: ./basicuse  
     - theme: alt  
       text: Github  
       link: https://github.com/HIllya51/LunaTranslator  

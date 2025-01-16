@@ -20,62 +20,62 @@ export const en = defineConfig({
             {
                 text: 'Basic',
                 items: [
-                    { text: 'Download and Launch', link: '/en/README' },
-                    { text: 'Unable to Start the Software', link: '/en/cantstart' },
-                    { text: 'Basic Usage', link: '/en/basicuse' },
-                    { text: 'Software Update', link: '/en/update' },
-                    { text: 'Support the Author', link: '/en/support' }
+                    { text: 'Download and Launch', link: './README' },
+                    { text: 'Unable to Start the Software', link: './cantstart' },
+                    { text: 'Basic Usage', link: './basicuse' },
+                    { text: 'Software Update', link: './update' },
+                    { text: 'Support the Author', link: './support' }
                 ]
             },
             {
                 text: 'Detailed',
                 items: [
                     {
-                        text: 'HOOK Related Settings', link: '/en/hooksettings',
+                        text: 'HOOK Related Settings', link: './hooksettings',
                         collapsed: true,
                         items: [
-                            { text: 'HOOK Settings', link: '/en/hooksettings' },
-                            { text: 'Embedded Translation', link: '/en/embedtranslate' },
-                            { text: 'Playing Old Games on XP Virtual Machine and Extracting Text for Translation', link: '/en/playonxp' }
+                            { text: 'HOOK Settings', link: './hooksettings' },
+                            { text: 'Embedded Translation', link: './embedtranslate' },
+                            { text: 'Playing Old Games on XP Virtual Machine and Extracting Text for Translation', link: './playonxp' }
                         ]
                     },
                     {
-                        text: 'OCR Related Settings', link: '/en/useapis/ocrapi',
+                        text: 'OCR Related Settings', link: './useapis/ocrapi',
                         collapsed: true,
                         items: [
-                            { text: 'OCR interface settings', link: '/en/useapis/ocrapi' },
-                            { text: 'OCR Automation Execution Methods', link: '/en/ocrparam' },
-                            { text: 'Binding Game Window in OCR Mode', link: '/en/gooduseocr' }
+                            { text: 'OCR interface settings', link: './useapis/ocrapi' },
+                            { text: 'OCR Automation Execution Methods', link: './ocrparam' },
+                            { text: 'Binding Game Window in OCR Mode', link: './gooduseocr' }
                         ]
                     },
                     {
-                        text: 'Translation interface settings', link: '/en/useapis/tsapi',
+                        text: 'Translation interface settings', link: './useapis/tsapi',
                         collapsed: true,
                         items: [
-                            { text: 'Traditional online translation interface', link: '/en/useapis/tsapi' },
-                            { text: 'Large Model API for Translation', link: '/en/guochandamoxing' },
-                            { text: 'Large Model Offline Translation', link: '/en/offlinellm' }
+                            { text: 'Traditional online translation interface', link: './useapis/tsapi' },
+                            { text: 'Large Model API for Translation', link: './guochandamoxing' },
+                            { text: 'Large Model Offline Translation', link: './offlinellm' }
                         ]
                     },
                     {
-                        text: 'Text Processing & Translation Optimization', link: '/en/textprocess',
+                        text: 'Text Processing & Translation Optimization', link: './textprocess',
                         collapsed: true,
                         items: [
-                            { text: 'Functions and Usage of Various Text Processing Methods', link: '/en/textprocess' },
-                            { text: 'Functions of Various Translation Optimizations', link: '/en/transoptimi' }
+                            { text: 'Functions and Usage of Various Text Processing Methods', link: './textprocess' },
+                            { text: 'Functions of Various Translation Optimizations', link: './transoptimi' }
                         ]
                     },
-                    { text: 'Speech Synthesis', link: '/en/ttsofname' },
+                    { text: 'Speech Synthesis', link: './ttsofname' },
                     {
-                        text: 'Tokenization & Dictionary', link: '/en/qa1',
+                        text: 'Tokenization & Dictionary', link: './qa1',
                         collapsed: true,
                         items: [
-                            { text: 'Using Mecab for Tokenization & Part-of-Speech Color Annotation', link: '/en/qa1' },
-                            { text: 'Anki Integration', link: '/en/qa2' }
+                            { text: 'Using Mecab for Tokenization & Part-of-Speech Color Annotation', link: './qa1' },
+                            { text: 'Anki Integration', link: './qa2' }
                         ]
                     },
-                    { text: 'Tool Buttons', link: '/en/alltoolbuttons' },
-                    { text: 'Shortcut Keys', link: '/en/fastkeys' }
+                    { text: 'Tool Buttons', link: './alltoolbuttons' },
+                    { text: 'Shortcut Keys', link: './fastkeys' }
                 ]
             }
         ]
