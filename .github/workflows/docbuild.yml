@@ -23,15 +23,14 @@ jobs:
         with: 
           fetch-depth: '0'
           ref: main
-
       - run: |
           cd docs
       - uses: actions/setup-node@master
         with:
           node-version: 20
-          cache: npm
       - uses: actions/configure-pages@v4
       - run: |
+          cd docs
           npm install
           npm run docs:build
           cp index.html .vitepress/dist
