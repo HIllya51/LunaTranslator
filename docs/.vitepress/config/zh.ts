@@ -49,6 +49,10 @@ export const zh = defineConfig({
             level: [2, 3],
             label: "页面导航"
         },
+        footer: {
+            message: "<a href='support'>支持作者</a>",
+            copyright: `基于 GPLv3 许可发布`
+        },
 
         editLink: {
             pattern: 'https://github.com/HIllya51/LunaTranslator/edit/main/docs/:path',

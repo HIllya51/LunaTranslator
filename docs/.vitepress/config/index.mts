@@ -46,11 +46,6 @@ function openlink(url) {
         }
       }
     },
-    footer: {
-      message: 'Made with ❤️️ love by <a href="https://github.com/HIllya51">HIllya51</a>.',
-      copyright: 'Code licensed under MIT, documentation under <a href=\"https://creativecommons.org/licenses/by-sa/4.0/deed.en\">CC BY-SA 4.0</a>.</br>Art image from <a href=\"https://www.pixiv.net/artworks/92978748">Pixiv</a>.'
-    },
-
     logo: 'https://image.lunatranslator.org/luna.ico'
   },
 

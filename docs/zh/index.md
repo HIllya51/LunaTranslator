@@ -21,23 +21,20 @@ hero:
       link: https://github.com/HIllya51/LunaTranslator
 
 features:
-  - icon: 🎮
-    title: GalGame 专用
-    details: 针对GalGame进行优化，支持灵活的取词方式，提升翻译效率
-  - icon: 📝
-    title: HOOK & OCR 支持
-    details: 支持HOOK和OCR两种方式，帮助快速提取游戏文本进行翻译
-  - icon: 📚
-    title: 词典与Anki集成
-    details: 方便配置词典和Anki，学习日语更高效
-  - icon: 📋
-    title: 剪贴板翻译
-    details: 通过剪贴板快速获取选中内容，轻松实现实时翻译
-  - icon: 🔧
-    title: 高度可配置
+  - title: HOOK
+    details: 主要使用HOOK提取游戏文本，几乎适配了所有的常见和冷门的视觉小说
+  - title: 内嵌翻译
+    details: 部分游戏还可以直接内嵌翻译到游戏中，以获取沉浸式体验
+  - title: HOOK模拟器
+    details: 对NS/PSP/PSV/PS3上的大部分游戏，支持HOOK模拟器直接读取游戏文本
+  - title: OCR
+    details: 内置较高精度的OCR模型，并支持许多其他在线&离线OCR引擎，以便灵活的读取任意文本
+  - title: 丰富的翻译接口
+    details: 支持几乎所有翻译引擎，包括大语言模型翻译、离线翻译等
+  - title: 词典与Anki集成
+    details: 支持Mecab，支持MDict及在线词典，支持AnkiConnect
+  - title: 语音合成
+    details: 支持大量在线&离线语音合成引擎
+  - title: 高度可配置
     details: 提供丰富的配置选项，让你根据个人需求定制翻译体验
-  - icon: 🌍
-    title: 适合学习日语
-    details: 特别适合日语学习者，帮助你在游戏中不断提升日语水平
----
 

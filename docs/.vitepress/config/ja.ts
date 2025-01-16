@@ -48,7 +48,10 @@ export const ja = defineConfig({
             level: [2, 3],
             label: "ページナビゲーション"
         },
-
+        footer: {
+            message: "<a href='support'>作者を支援する</a>",
+            copyright: `GPLv3ライセンスに基づいて公開`
+        },
         editLink: {
             pattern: 'https://github.com/HIllya51/LunaTranslator/edit/main/docs/:path',
             text: 'GitHubでこのページを編集'

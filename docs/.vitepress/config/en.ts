@@ -3,6 +3,10 @@ import { defineConfig } from 'vitepress'
 export const en = defineConfig({
 
     themeConfig: {
+        footer: {
+            message: "<a href='support'>Support the author</a>",
+            copyright: `Released under the GPLv3 license`
+        },
         nav: [
             { text: "HomePage", link: "https://lunatranslator.org/" },
             { text: "Vedio Tutorial", link: "https://www.youtube.com/results?search_query=LunaTranslator" },
