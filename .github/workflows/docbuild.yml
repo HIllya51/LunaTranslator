@@ -23,7 +23,6 @@ jobs:
         with: 
           fetch-depth: '0'
           ref: main
-
       - run: |
           cd docs
       - uses: actions/setup-node@master
