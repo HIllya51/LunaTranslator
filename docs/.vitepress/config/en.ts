@@ -1,18 +1,10 @@
 import { defineConfig } from 'vitepress'
 
 export const en = defineConfig({
-    lang: 'en-US',
-    description: 'LunaTranslator',
 
     themeConfig: {
         nav: [
             { text: "HomePage", link: "https://lunatranslator.org/" },
-            {
-                text: "Download", items: [
-                    { text: "64bit", link: "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" },
-                    { text: "32bit", link: "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" }
-                ]
-            },
             { text: "Vedio Tutorial", link: "https://www.youtube.com/results?search_query=LunaTranslator" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" }
         ],
@@ -31,7 +23,8 @@ export const en = defineConfig({
                 text: 'Detailed',
                 items: [
                     {
-                        text: 'HOOK Related Settings',
+                        text: 'HOOK Related Settings', link: '/en/hooksettings',
+                        collapsed: true,
                         items: [
                             { text: 'HOOK Settings', link: '/en/hooksettings' },
                             { text: 'Embedded Translation', link: '/en/embedtranslate' },
@@ -39,7 +32,8 @@ export const en = defineConfig({
                         ]
                     },
                     {
-                        text: 'OCR Related Settings',
+                        text: 'OCR Related Settings', link: '/en/useapis/ocrapi',
+                        collapsed: true,
                         items: [
                             { text: 'OCR interface settings', link: '/en/useapis/ocrapi' },
                             { text: 'OCR Automation Execution Methods', link: '/en/ocrparam' },
@@ -47,7 +41,8 @@ export const en = defineConfig({
                         ]
                     },
                     {
-                        text: 'Translation interface settings',
+                        text: 'Translation interface settings', link: '/en/useapis/tsapi',
+                        collapsed: true,
                         items: [
                             { text: 'Traditional online translation interface', link: '/en/useapis/tsapi' },
                             { text: 'Large Model API for Translation', link: '/en/guochandamoxing' },
@@ -55,7 +50,8 @@ export const en = defineConfig({
                         ]
                     },
                     {
-                        text: 'Text Processing & Translation Optimization',
+                        text: 'Text Processing & Translation Optimization', link: '/en/textprocess',
+                        collapsed: true,
                         items: [
                             { text: 'Functions and Usage of Various Text Processing Methods', link: '/en/textprocess' },
                             { text: 'Functions of Various Translation Optimizations', link: '/en/transoptimi' }
@@ -63,7 +59,8 @@ export const en = defineConfig({
                     },
                     { text: 'Speech Synthesis', link: '/en/ttsofname' },
                     {
-                        text: 'Tokenization & Dictionary',
+                        text: 'Tokenization & Dictionary', link: '/en/qa1',
+                        collapsed: true,
                         items: [
                             { text: 'Using Mecab for Tokenization & Part-of-Speech Color Annotation', link: '/en/qa1' },
                             { text: 'Anki Integration', link: '/en/qa2' }

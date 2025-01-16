@@ -1,8 +1,6 @@
 import { defineConfig } from 'vitepress'
 
 export const zh = defineConfig({
-    lang: 'zh-CN',
-    description: 'LunaTranslator',
     themeConfig: {
         outline: {
             label: "页面导航"
@@ -10,12 +8,6 @@ export const zh = defineConfig({
 
         nav: [
             { text: "官方网站", link: "https://lunatranslator.org/" },
-            {
-                text: "软件下载", items: [
-                    { text: "64位", link: "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" },
-                    { text: "32位", link: "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" }
-                ]
-            },
             { text: "视频教学", link: "https://space.bilibili.com/592120404/video" },
             { text: "QQ群963119821", link: "https://qm.qq.com/q/I5rr3uEpi2" }
         ],

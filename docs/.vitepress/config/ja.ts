@@ -1,18 +1,10 @@
 import { defineConfig } from 'vitepress'
 
 export const ja = defineConfig({
-    lang: 'ja',
-    description: 'LunaTranslator',
 
     themeConfig: {
         nav: [
             { text: "公式サイト", link: "/README" },
-            {
-                text: "ダウンロード", items: [
-                    { text: "64ビット", link: "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" },
-                    { text: "32ビット", link: "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" }
-                ]
-            },
             { text: "ビデオチュー", link: "https://www.youtube.com/results?search_query=LunaTranslator" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" }
         ],
@@ -31,7 +23,8 @@ export const ja = defineConfig({
                 text: '詳細な',
                 items: [
                     {
-                        text: 'HOOK関連設定',
+                        text: 'HOOK関連設定', link: '/ja/hooksettings',
+                        collapsed: true,
                         items: [
                             { text: 'HOOK設定', link: '/ja/hooksettings' },
                             { text: '埋め込み翻訳', link: '/ja/embedtranslate' },
@@ -39,7 +32,8 @@ export const ja = defineConfig({
                         ]
                     },
                     {
-                        text: 'OCR関連設定',
+                        text: 'OCR関連設定', link: '/ja/useapis/ocrapi',
+                        collapsed: true,
                         items: [
                             { text: 'OCRインターフェース設定', link: '/ja/useapis/ocrapi' },
                             { text: 'OCR自動化実行方法', link: '/ja/ocrparam' },
@@ -47,7 +41,8 @@ export const ja = defineConfig({
                         ]
                     },
                     {
-                        text: '翻訳インターフェース設定',
+                        text: '翻訳インターフェース設定', link: '/ja/useapis/tsapi',
+                        collapsed: true,
                         items: [
                             { text: '従来のオンライン翻訳インターフェース', link: '/ja/useapis/tsapi' },
                             { text: '大規模モデルAPI翻訳', link: '/ja/guochandamoxing' },
@@ -55,7 +50,8 @@ export const ja = defineConfig({
                         ]
                     },
                     {
-                        text: 'テキスト処理＆翻訳最適化',
+                        text: 'テキスト処理＆翻訳最適化', link: '/ja/textprocess',
+                        collapsed: true,
                         items: [
                             { text: 'さまざまなテキスト処理方法の役割と使用方法', link: '/ja/textprocess' },
                             { text: 'さまざまな翻訳最適化の役割', link: '/ja/transoptimi' }
@@ -63,7 +59,8 @@ export const ja = defineConfig({
                     },
                     { text: '音声合成', link: '/ja/ttsofname' },
                     {
-                        text: '形態素解析＆辞書',
+                        text: '形態素解析＆辞書', link: '/ja/qa1',
+                        collapsed: true,
                         items: [
                             { text: 'Mecabを使用した形態素解析＆品詞カラー表示', link: '/ja/qa1' },
                             { text: 'Anki統合', link: '/ja/qa2' }
