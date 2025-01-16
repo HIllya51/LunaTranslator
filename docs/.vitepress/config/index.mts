@@ -35,12 +35,14 @@ function openlink(url) {
     socialLinks: [
       { icon: 'github', link: 'https://github.com/HIllya51/LunaTranslator' }
     ],
-
+    outline: {
+      level: [2, 3],
+    },
     search: {
       provider: 'local', options: {
         locales: {
           ...zhSearch,
-          ...jaSearch,
+          ...jaSearch
         }
       }
     },

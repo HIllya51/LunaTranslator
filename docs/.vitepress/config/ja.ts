@@ -45,6 +45,7 @@ export const jaSearch = {
 export const ja = defineConfig({
     themeConfig: {
         outline: {
+            level: [2, 3],
             label: "ページナビゲーション"
         },
 

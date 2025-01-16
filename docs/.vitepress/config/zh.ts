@@ -46,14 +46,15 @@ export const zhSearch = {
 export const zh = defineConfig({
     themeConfig: {
         outline: {
+            level: [2, 3],
             label: "页面导航"
         },
 
         editLink: {
             pattern: 'https://github.com/HIllya51/LunaTranslator/edit/main/docs/:path',
             text: '在 GitHub 上编辑此页面'
-          },
-      
+        },
+
         docFooter: {
             prev: '上一页',
             next: '下一页'

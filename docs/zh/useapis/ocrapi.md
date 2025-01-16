@@ -194,7 +194,7 @@ CPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/cpu
 
 GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
-### 国内mangaocr整合包无法启动怎么办？
+#### 国内mangaocr整合包无法启动怎么办？
 
 首次启动start.bat时，会尝试从huggingface上下载模型，但是国内你懂的。
 
