@@ -67,8 +67,8 @@ class Textbrowser(QFrame):
         self.textbrowser.setselectable(globalconfig["selectable"])
         self.textbrowser.showhideerror(globalconfig["showtranexception"])
         self.textbrowser.showhideorigin(globalconfig["isshowrawtext"])
-        self.textbrowser.showhidetranslatorname(globalconfig["showfanyisource"])
         self.textbrowser.showhidetranslate(globalconfig["showfanyi"])
+        self.textbrowser.showatcenter(globalconfig["showatcenter"])
         self.refreshcontent()
 
     def normdropfilepath(self, file):
@@ -92,24 +92,24 @@ class Textbrowser(QFrame):
         self.trace = []
         self.loadinternal()
 
-    def iter_append(
-        self, iter_context_class, texttype: TextType, atcenter, name, text, color
-    ):
-        self.trace.append(
-            (1, (iter_context_class, texttype, atcenter, name, text, color))
-        )
+    def iter_append(self, iter_context_class, texttype: TextType, name, text, color):
+        self.trace.append((1, (iter_context_class, texttype, name, text, color)))
         self.cleared = False
         self.textbrowser.iter_append(
-            iter_context_class, texttype, atcenter, name, text, color
+            iter_context_class, texttype, self.checkaddname(name, text), color
         )
 
-    def append(self, texttype: TextType, atcenter, name, text, tag, flags, color):
+    def checkaddname(self, name, text):
+        if name and globalconfig["showfanyisource"]:
+            text = name + " " + text
+        return text
+
+    def append(self, texttype: TextType, name, text, tag, flags, color):
         self.trace.append(
             (
                 0,
                 (
                     texttype,
-                    atcenter,
                     name,
                     text,
                     copy.deepcopy(tag),
@@ -119,7 +119,9 @@ class Textbrowser(QFrame):
             )
         )
         self.cleared = False
-        self.textbrowser.append(texttype, atcenter, name, text, tag, flags, color)
+        self.textbrowser.append(
+            texttype, self.checkaddname(name, text), tag, flags, color
+        )
 
     def clear(self):
         self.cleared = True

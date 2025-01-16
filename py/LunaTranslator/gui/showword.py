@@ -1080,9 +1080,7 @@ class searchwordW(closeashidewindow):
         self.search_word.connect(self.__click_word_search_function)
         self.search_word_in_new_window.connect(self.searchwinnewwindow)
         self.show_dict_result.connect(self.__show_dict_result_function)
-        self.ocr_once_signal.connect(
-            lambda: rangeselct_function(self.ocr_do_function)
-        )
+        self.ocr_once_signal.connect(lambda: rangeselct_function(self.ocr_do_function))
         self.state = 0
 
     @threader
@@ -1141,10 +1139,14 @@ class searchwordW(closeashidewindow):
         self.tab.setCurrentIndex(idx)
         self.hasclicked = True
         try:
-            html = self.cache_results[self.tabks[idx]]
+            k = self.tabks[idx]
+            html = self.cache_results_highlighted.get(k, self.cache_results[k])
         except:
             return
-        html = "<style>body{margin:0}</style>" + html
+        path = os.path.join(os.path.dirname(__file__), "showwordframework.html")
+        with open(path, "r", encoding="utf8") as ff:
+            frame = ff.read()
+        html = frame.replace("__luna_dict_internal_view__", html)
         self.textOutput.setHtml(html)
 
     def searchwinnewwindow(self, word):
@@ -1236,6 +1238,8 @@ class searchwordW(closeashidewindow):
 
         self.tab = CustomTabBar()
         self.tab.tabBarClicked.connect(self.tabclicked)
+        self.tab.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tab.customContextMenuRequested.connect(self.tabmenu)
         self.tabcurrentindex = -1
 
         def __(idx):
@@ -1260,9 +1264,15 @@ class searchwordW(closeashidewindow):
         )
         self.textOutput.add_menu(2, _TR("翻译"), gobject.baseobject.textgetmethod)
         self.textOutput.add_menu(3, _TR("朗读"), gobject.baseobject.read_text)
+        self.textOutput.add_menu(
+            4, _TR("加亮"), lambda _: self.textOutput.eval("highlightSelection()")
+        )
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
+        )
+        self.textOutput.bind(
+            "luna_recheck_current_html", self.luna_recheck_current_html
         )
         self.textOutput.bind(
             "luna_search_word", lambda word: self.search_word.emit(word, False)
@@ -1274,6 +1284,7 @@ class searchwordW(closeashidewindow):
             ),
         )
         self.cache_results = {}
+        self.cache_results_highlighted = {}
 
         self.spliter = QSplitter()
         w = QWidget()
@@ -1291,6 +1302,22 @@ class searchwordW(closeashidewindow):
         self.dict_textoutput_spl.addWidget(w)
         self.spliter.addWidget(self.dict_textoutput_spl)
         self.dictbutton.clicked.connect(self.onceaddshowdictwidget)
+
+    def tabmenu(self, _):
+        menu = QMenu(self)
+        revert = LAction("还原")
+        menu.addAction(revert)
+        action = menu.exec(QCursor.pos())
+        if action == revert:
+            k = self.tabks[self.tab.currentIndex()]
+            if k in self.cache_results_highlighted:
+                self.cache_results_highlighted.pop(k)
+                self.tabclicked(self.tab.currentIndex())
+
+    def luna_recheck_current_html(self):
+        self.cache_results_highlighted[self.tabks[self.tab.currentIndex()]] = (
+            self.textOutput.internal.getHtml("luna_dict_internal_view")
+        )
 
     def onceaddshowdictwidget(self, idx):
         if idx:
@@ -1320,9 +1347,10 @@ class searchwordW(closeashidewindow):
     def generate_dictionarys(self):
         res = []
         tabks = []
-        for k, v in self.cache_results.items():
+        for k in self.cache_results:
             if k in globalconfig["ignoredict"]:
                 continue
+            v = self.cache_results_highlighted.get(k, self.cache_results[k])
             if len(v) == 0:
                 continue
             thisp = self.thisps.get(k, 0)
@@ -1379,6 +1407,7 @@ class searchwordW(closeashidewindow):
         self.tabks.clear()
         self.textOutput.clear()
         self.cache_results.clear()
+        self.cache_results_highlighted.clear()
         self.thisps.clear()
         self.hasclicked = False
         pxx = 999

@@ -171,7 +171,7 @@ STDMETHODIMP MWebBrowserEx::ShowContextMenu(
             {
                 AppendMenu(hMenu, MF_STRING, std::get<1>(item), std::get<0>(item).value().c_str());
             }
-            else
+            else if (idx)
                 AppendMenu(hMenu, MF_SEPARATOR, 0, nullptr);
             idx += 1;
         }
@@ -309,7 +309,7 @@ DECLARE_API void html_eval(MWebBrowserEx *ww, const wchar_t *js)
         dispid, IID_NULL, 0, DISPATCH_METHOD,
         &params, &result, &excepInfo, &nArgErr);
 }
-DECLARE_API void html_get_html(MWebBrowserEx *ww, void (*cb)(LPCWSTR))
+DECLARE_API void html_get_html(MWebBrowserEx *ww, void (*cb)(LPCWSTR), LPWSTR elementid)
 {
     if (!ww)
         return;
@@ -318,7 +318,14 @@ DECLARE_API void html_get_html(MWebBrowserEx *ww, void (*cb)(LPCWSTR))
     CComPtr<IHTMLDocument3> pDocument3;
     CHECK_FAILURE_NORET(pDocument.QueryInterface(&pDocument3));
     CComPtr<IHTMLElement> ele;
-    CHECK_FAILURE_NORET(pDocument3->get_documentElement(&ele));
+    if (!elementid)
+    {
+        CHECK_FAILURE_NORET(pDocument3->get_documentElement(&ele));
+    }
+    else
+    {
+        CHECK_FAILURE_NORET(pDocument3->getElementById(elementid, &ele));
+    }
     CComBSTR data;
     CHECK_FAILURE_NORET(ele->get_outerHTML(&data));
     cb(data);

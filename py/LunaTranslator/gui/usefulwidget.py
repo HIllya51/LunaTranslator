@@ -1073,7 +1073,7 @@ class abstractwebview(QWidget):
     html_limit = 2 * 1024 * 1024
 
     # 必须的接口
-    def getHtml(self):
+    def getHtml(self, elementid):
         return
 
     def setHtml(self, html):
@@ -1157,10 +1157,10 @@ class WebivewWidget(abstractwebview):
     # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
     dropfilecallback = pyqtSignal(str)
 
-    def getHtml(self):
+    def getHtml(self, elementid):
         _ = []
         cb = winsharedutils.html_get_select_text_cb(_.append)
-        winsharedutils.get_root_html(self.get_controller(), cb)
+        winsharedutils.get_webview_html(self.get_controller(), cb, elementid)
         if not _:
             return ""
         return json.loads(_[0])
@@ -1376,10 +1376,10 @@ class QWebWrap(abstractwebview):
 
 
 class mshtmlWidget(abstractwebview):
-    def getHtml(self):
+    def getHtml(self, elementid):
         _ = []
         cb = winsharedutils.html_get_select_text_cb(_.append)
-        winsharedutils.html_get_html(self.browser, cb)
+        winsharedutils.html_get_html(self.browser, cb, elementid)
         if not _:
             return ""
         return _[0]
@@ -1492,6 +1492,9 @@ class auto_select_webview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
 
+    def getHtml(self, elementid):
+        return self.internal.getHtml(elementid)
+
     def eval(self, js):
         self.internal.eval(js)
 
@@ -1553,7 +1556,7 @@ class auto_select_webview(QWidget):
         self.internalsavedzoom = zoom
         self.on_ZoomFactorChanged.emit(zoom)
 
-    def _on_load(self, url):
+    def _on_load(self, url: str):
         self.saveurl = url
         self.on_load.emit(url)
 
@@ -1573,11 +1576,15 @@ class auto_select_webview(QWidget):
     def _maybecreate_internal(self):
         if not self.internal:
             return self._createinternal()
-        if self.saveurl and self.saveurl != "about:blank":
+        if (
+            self.saveurl
+            and (self.saveurl != "about:blank")
+            and (not self.saveurl.startswith("file:///"))
+        ):
             self._createinternal()
             self.internal.navigate(self.saveurl)
         else:
-            html = self.internal.getHtml()
+            html = self.internal.getHtml(None)
             self._createinternal()
             self.internal.setHtml(html)
 

@@ -397,7 +397,13 @@ def xianshigrid_style(self):
                     grid=(
                         [
                             "居中显示",
-                            D_getsimpleswitch(globalconfig, "showatcenter"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "showatcenter",
+                                callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.showatcenter(
+                                    x
+                                ),
+                            ),
                             "",
                             "收到翻译时才刷新",
                             D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),

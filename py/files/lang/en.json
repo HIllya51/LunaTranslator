@@ -766,5 +766,7 @@
     "支持的声音": "Supporting voices",
     "未添加“{currlang}”的OCR模型\n当前支持的语言：{langs}": "OCR model without adding '{currlang}'\nCurrent supported languages: {langs}",
     "系统未安装“{currlang}”的OCR模型\n当前支持的语言：{langs}": "The OCR model for '{currlang}' is not installed in the system\nCurrent supported languages: {langs}",
-    "找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试": "Important components not found:\n{modules}\nPlease download and close the antivirus software again and try again"
+    "找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试": "Important components not found:\n{modules}\nPlease download and close the antivirus software again and try again",
+    "加亮": "Highlight",
+    "还原": "restore"
 }

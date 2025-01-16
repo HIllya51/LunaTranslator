@@ -297,7 +297,7 @@ DECLARE_API void remove_ContextMenuRequested(ICoreWebView2Controller *m_host, co
     delete data;
 #endif
 }
-DECLARE_API void get_root_html(ICoreWebView2Controller *m_host, void (*cb)(LPCWSTR))
+DECLARE_API void get_webview_html(ICoreWebView2Controller *m_host, void (*cb)(LPCWSTR), LPCWSTR elementid)
 {
 #ifndef WINXP
     wil::com_ptr<ICoreWebView2Controller> m_controller(m_host);
@@ -307,7 +307,7 @@ DECLARE_API void get_root_html(ICoreWebView2Controller *m_host, void (*cb)(LPCWS
     CHECK_FAILURE_NORET(m_controller->get_CoreWebView2(&m_webView));
     CHECK_FAILURE_NORET(
         m_webView->ExecuteScript(
-            L"document.documentElement.outerHTML",
+            elementid ? ((std::wstring(L"document.getElementById('") + std::wstring(elementid) + std::wstring(L"').innerHTML")).c_str()) : L"document.documentElement.outerHTML",
             Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
                 [=, asyncMethodCompleteEventHandle = asyncMethodCompleteEvent.get()](HRESULT errorCode, LPCWSTR resultObjectAsJson)
                 {

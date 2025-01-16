@@ -147,6 +147,9 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.eval(js)
 
     # js api
+    def showatcenter(self, show):
+        self.debugeval('showatcenter("{}")'.format(int(show)))
+
     def showhidetranslate(self, show):
         self.debugeval('showhidetranslate("{}")'.format(int(show)))
 
@@ -155,9 +158,6 @@ class TextBrowser(QWidget, dataget):
 
     def showhideerror(self, show):
         self.debugeval('showhideerror("{}")'.format(int(show)))
-
-    def showhidetranslatorname(self, show):
-        self.debugeval('showhidetranslatorname("{}")'.format(int(show)))
 
     def create_div_line_id(self, _id, textype: TextType):
         self.debugeval('create_div_line_id("{}",{})'.format(_id, textype))
@@ -172,14 +172,13 @@ class TextBrowser(QWidget, dataget):
         html = quote(html)
         self.debugeval('set_extra_html("{}")'.format(html))
 
-    def create_internal_text(self, style, styleargs, _id, name, text, args):
-        name = quote(name)
+    def create_internal_text(self, style, styleargs, _id, text, args):
         text = quote(text)
         args = quote(json.dumps(args))
         styleargs = quote(json.dumps(styleargs))
         self.debugeval(
-            'create_internal_text("{}","{}","{}","{}","{}","{}");'.format(
-                style, styleargs, _id, name, text, args
+            'create_internal_text("{}","{}","{}","{}","{}");'.format(
+                style, styleargs, _id, text, args
             )
         )
 
@@ -206,16 +205,14 @@ class TextBrowser(QWidget, dataget):
 
     # native api end
 
-    def iter_append(
-        self, iter_context_class, textype: TextType, atcenter, name, text, color
-    ):
+    def iter_append(self, iter_context_class, textype: TextType, text, color):
 
         if iter_context_class not in self.saveiterclasspointer:
             _id = self.createtextlineid(textype)
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
-        self._webview_append(_id, textype, atcenter, name, text, [], [], color)
+        self._webview_append(_id, textype, text, [], [], color)
 
     def createtextlineid(self, textype: TextType):
 
@@ -223,9 +220,9 @@ class TextBrowser(QWidget, dataget):
         self.create_div_line_id(_id, textype)
         return _id
 
-    def append(self, textype: TextType, atcenter, name, text, tag, flags, color):
+    def append(self, textype: TextType, text, tag, flags, color):
         _id = self.createtextlineid(textype)
-        self._webview_append(_id, textype, atcenter, name, text, tag, flags, color)
+        self._webview_append(_id, textype, text, tag, flags, color)
 
     def measureH(self, font_family, font_size):
         font = QFont()
@@ -244,9 +241,7 @@ class TextBrowser(QWidget, dataget):
             ]["webview"][0]
         return currenttype
 
-    def _webview_append(
-        self, _id, textype: TextType, atcenter, name: str, text: str, tag, flags, color
-    ):
+    def _webview_append(self, _id, textype: TextType, text: str, tag, flags, color):
         fmori, fsori, boldori = self._getfontinfo(textype)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
         kanacolor = self._getkanacolor()
@@ -265,7 +260,6 @@ class TextBrowser(QWidget, dataget):
                     color1 = self._randomcolor(word)
                     word["color"] = color1
             args = dict(
-                atcenter=atcenter,
                 fmori=fmori,
                 fsori=fsori,
                 boldori=boldori,
@@ -287,7 +281,6 @@ class TextBrowser(QWidget, dataget):
                 text = text[len(sig) :]
 
             args = dict(
-                atcenter=atcenter,
                 fontFamily=fmori,
                 fontSize=fsori,
                 bold=boldori,
@@ -296,7 +289,7 @@ class TextBrowser(QWidget, dataget):
                 userawhtml=userawhtml,
             )
 
-            self.create_internal_text(style, styleargs, _id, name, text, args)
+            self.create_internal_text(style, styleargs, _id, text, args)
 
     def clear(self):
 

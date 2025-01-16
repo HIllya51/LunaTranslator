@@ -424,7 +424,7 @@ class mdict(cishubase):
                 html_content = html_content.replace(url, varname)
         return '<div class="{}">{}</div>'.format(divclass, html_content)
 
-    def searchthread_internal(self, index:IndexBuilder, k, __safe):
+    def searchthread_internal(self, index: IndexBuilder, k, __safe):
         allres = []
         if k in __safe:  # 避免循环引用
             return []
@@ -658,9 +658,11 @@ function safe_mdict_search_word(word){
 }"""
         for varname, val in audiob64vals.items():
             func += '{}="{}"\n'.format(varname, val)
+        func += "</script><script id='replacelongvarsrcs_1'>"
         for varname, (_type, mime, val) in hrefsrcvals.items():
             func += '{}=["{}","{}","{}"]\n'.format(varname, _type, mime, val)
             func += 'replacelongvarsrcs({},"{}")\n'.format(varname, varname)
+        func += 'document.getElementById("replacelongvarsrcs_1").remove()'
         func += "</script>"
         if self.config["stylehv"] == 0:
             return self.generatehtml_tabswitch(allres) + func

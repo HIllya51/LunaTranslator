@@ -75,7 +75,7 @@
         ele.style.fontFamily = args.fontFamily
         ele.style.fontSize = args.fontSize + 'pt'
         ele.style.fontWeight = args.bold ? "bold" : ""
-        ele.style.textAlign = args.atcenter ? "center" : ""
+        ele.classList.add('centercontrol')
     }
     function maybesethtml(ele, args, text) {
         if (args.userawhtml)
@@ -184,20 +184,15 @@
     function dispatch_text_style_line(style, styleargs, text, args) {
         let ele = regist_style_imp[style](styleargs, text, args);
         if (args.userawhtml) {
-            if (args.atcenter) {
-                let wrap = document.createElement('div')
-                wrap.style.textAlign = "center"
-                wrap.appendChild(ele)
-                return wrap
-            }
-            return ele
+            let wrap = document.createElement('div')
+            wrap.classList.add('centercontrol')
+            wrap.appendChild(ele)
+            return wrap
         }
         let wrap = document.createElement('div')
         wrap.style.whiteSpace = 'pre-wrap'
         wrap.appendChild(ele)
-        if (args.atcenter) {
-            wrap.style.textAlign = "center"
-        }
+        wrap.classList.add('centercontrol')
         return wrap
     }
     function dispatch_text_style_inlineblock(style, styleargs, text, args) {
@@ -207,33 +202,13 @@
         div.appendChild(l)
         return div
     }
-    function addnameblock(style, styleargs, index, name, text, args) {
-        if (index == 0 && name.length) {
-            let userawhtml = args.userawhtml
-            args.userawhtml = false
-            let div = dispatch_text_style_line(style, styleargs, name + " ", args)
-            let divx = document.createElement('div')
-            divx.classList.add('lunatranslator_translator_name')
-            divx.appendChild(div)
-            args.userawhtml = userawhtml
-            let div2 = document.createElement('div')
-            div2.appendChild(divx)
-            let textdiv = dispatch_text_style_inlineblock(style, styleargs, text, args)
-            div2.appendChild(textdiv)
-            if (args.atcenter) {
-                div2.style.textAlign = "center"
-            }
-            return div2
-        }
-        return dispatch_text_style_line(style, styleargs, text, args)
-    }
-    function dispatch_text_style(style, styleargs, name, text, args) {
+    function dispatch_text_style(style, styleargs, _, text, args) {
         if (!text.includes('\n'))
-            return addnameblock(style, styleargs, 0, name, text, args)
+            return dispatch_text_style_line(style, styleargs, text, args)
         let lines = text.split('\n')
         let wrap = document.createElement('div')
         lines.forEach((line, index) => {
-            wrap.appendChild(addnameblock(style, styleargs, index, name, line, args))
+            wrap.appendChild(dispatch_text_style_line(style, styleargs, line, args))
         })
         return wrap
     }
@@ -244,12 +219,12 @@
 </style>
 <style id="maybeshowtranslate">
 </style>
-<style id="maybeshowtranslatorname">
+<style id="maybeshowatcenter">
 </style>
 <script>
-    function _showhidetranslatorname(show) {
-        let css = ['.lunatranslator_translator_name{   display: none;    }', '.lunatranslator_translator_name{   display: inline-block;    }'][show]
-        document.getElementById('maybeshowtranslatorname').innerHTML = css;
+    function _showatcenter(center) {
+        let css = ['', '.centercontrol{ text-align: center; }'][center]
+        document.getElementById('maybeshowatcenter').innerHTML = css;
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
     }
     function _showhidetranslate(show) {
@@ -277,28 +252,27 @@
             div.classList.add('lunatranslator_translate')
         }
         else if (texttype == 2) {
-             
+
         }
         else if (texttype == 3) {
             div.classList.add('lunatranslator_error')
         }
         else if (texttype == 4) {
             div.classList.add('lunatranslator_translate')
-            let divx=document.createElement('div')
+            let divx = document.createElement('div')
             divx.classList.add('lunatranslator_error')
             divx.appendChild(div)
-            div=divx
+            div = divx
         }
         document.getElementById(rootdivid).appendChild(div);
     }
-    function _create_internal_text(style, styleargsjson, _id, nameu, textu, argsjson) {
+    function _create_internal_text(style, styleargsjson, _id, textu, argsjson) {
         let ele = document.getElementById(_id)
         ele.innerHTML = ''
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
-        let name = decodeURIComponent(nameu)
         let text = decodeURIComponent(textu)
-        let innerele = dispatch_text_style(style, styleargs, name, text, args)
+        let innerele = dispatch_text_style(style, styleargs, "", text, args)
         ele.appendChild(innerele)
         safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
     }
@@ -328,7 +302,6 @@
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let tag = JSON.parse(decodeURIComponent(tagjson))
-        let atcenter = args.atcenter
         let fmori = args.fmori
         let fsori = args.fsori
         let boldori = args.boldori
@@ -342,13 +315,12 @@
         let isfenciclick = args.isfenciclick
         let line_height = args.line_height
         let ele = document.getElementById(_id)
-        if (atcenter)
-            ele.style.textAlign = "center"
+        ele.classList.add('centercontrol')
         let tags = _splittags(tag)
         tags.forEach(tag => {
             let mayberuby = []
             tag.forEach(word => {
-                let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { atcenter: true, fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
+                let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
 
                 if ((isshow_fenci || isfenciclick) && word.hira.trim().length) {
                     let div = document.createElement('div')
@@ -384,7 +356,7 @@
                     let rt = document.createElement('rt')
 
                     if ((word.orig != word.hira)) {
-                        rt.appendChild(dispatch_text_style_inlineblock(style, styleargs, word.hira, { atcenter: true, fontFamily: fmkana, fontSize: fskana, bold: boldkana, color: kanacolor, lineHeight: 0 }))
+                        rt.appendChild(dispatch_text_style_inlineblock(style, styleargs, word.hira, { fontFamily: fmkana, fontSize: fskana, bold: boldkana, color: kanacolor, lineHeight: 0 }))
 
                     }
                     mayberuby.push(rt)
@@ -445,7 +417,7 @@
     showhideerror = _showhideerror
     showhideorigin = _showhideorigin
     showhidetranslate = _showhidetranslate
-    showhidetranslatorname = _showhidetranslatorname
+    showatcenter = _showatcenter
     create_div_line_id = _create_div_line_id;
     create_internal_text = _create_internal_text;
     create_internal_rubytext = _create_internal_rubytext;

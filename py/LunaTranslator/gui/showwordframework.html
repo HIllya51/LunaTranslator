@@ -1,0 +1,117 @@
+<style>
+    body {
+        margin: 0
+    }
+</style>
+<script>//https://stackoverflow.com/questions/304837/javascript-user-selection-highlighting
+    function getSafeRanges(dangerous) {
+        var a = dangerous.commonAncestorContainer;
+        // Starts -- Work inward from the start, selecting the largest safe range
+        var s = new Array(0), rs = new Array(0);
+        if (dangerous.startContainer != a)
+            for (var i = dangerous.startContainer; i != a; i = i.parentNode)
+                s.push(i)
+                    ;
+        if (0 < s.length) for (var i = 0; i < s.length; i++) {
+            var xs = document.createRange();
+            if (i) {
+                xs.setStartAfter(s[i - 1]);
+                xs.setEndAfter(s[i].lastChild);
+            }
+            else {
+                xs.setStart(s[i], dangerous.startOffset);
+                xs.setEndAfter(
+                    (s[i].nodeType == Node.TEXT_NODE)
+                        ? s[i] : s[i].lastChild
+                );
+            }
+            rs.push(xs);
+        }
+
+        // Ends -- basically the same code reversed
+        var e = new Array(0), re = new Array(0);
+        if (dangerous.endContainer != a)
+            for (var i = dangerous.endContainer; i != a; i = i.parentNode)
+                e.push(i)
+                    ;
+        if (0 < e.length) for (var i = 0; i < e.length; i++) {
+            var xe = document.createRange();
+            if (i) {
+                xe.setStartBefore(e[i].firstChild);
+                xe.setEndBefore(e[i - 1]);
+            }
+            else {
+                xe.setStartBefore(
+                    (e[i].nodeType == Node.TEXT_NODE)
+                        ? e[i] : e[i].firstChild
+                );
+                xe.setEnd(e[i], dangerous.endOffset);
+            }
+            re.unshift(xe);
+        }
+
+        // Middle -- the uncaptured middle
+        if ((0 < s.length) && (0 < e.length)) {
+            var xm = document.createRange();
+            xm.setStartAfter(s[s.length - 1]);
+            xm.setEndBefore(e[e.length - 1]);
+        }
+        else {
+            return [dangerous];
+        }
+
+        // Concat
+        rs.push(xm);
+        response = rs.concat(re);
+
+        // Send to Console
+        return response;
+    }
+    function getElementWrappedByRange(range) {
+        // 检查 startContainer 和 endContainer 是否是同一个父节点
+        if (range.startContainer !== range.endContainer) {
+            return null;
+        }
+
+        // 检查 startOffset 和 endOffset 是否指向同一个元素
+        if (range.startOffset + 1 !== range.endOffset) {
+            return null;
+        }
+        // 获取被包裹的元素
+        const wrappedElement = range.startContainer.childNodes[range.startOffset];
+
+        // 确保获取的节点是一个元素节点
+        if (wrappedElement && wrappedElement.nodeType === Node.ELEMENT_NODE) {
+            return wrappedElement;
+        }
+
+        return null;
+    }
+    function highlightRange(range) {
+        // let ele = getElementWrappedByRange(range)
+        // if (ele) {
+        //     ele.style.backgroundColor = 'yellow'
+        // }
+        // else 
+        {
+            const span = document.createElement('mark');
+            //跨行时有时会谜之不管用，可能是被子节点的样式覆盖了
+            range.surroundContents(span);
+        }
+    }
+    function highlightSelection() {
+        var userSelection = window.getSelection().getRangeAt(0);
+        var safeRanges = getSafeRanges(userSelection);
+        for (var i = 0; i < safeRanges.length; i++) {
+            highlightRange(safeRanges[i]);
+        }
+        safe_luna_recheck_current_html()
+    }
+    function safe_luna_recheck_current_html() {
+        if (window.luna_recheck_current_html)
+            window.luna_recheck_current_html()
+        else if (window.LUNAJSObject)
+            window.LUNAJSObject.luna_recheck_current_html()
+    }
+</script>
+<div id="luna_dict_internal_view">__luna_dict_internal_view__</div>

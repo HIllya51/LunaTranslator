@@ -437,26 +437,16 @@ class TranslatorWindow(resizableframeless):
         if text is None:
             return
         text = self.cleartext(text)
-        atcenter = globalconfig["showatcenter"]
-
         if iter_context:
             iter_res_status, iter_context_class = iter_context
         else:
             iter_res_status = 0
         if iter_res_status:
             self.translate_text.iter_append(
-                iter_context_class, texttype, atcenter, name, text, color
+                iter_context_class, texttype, name, text, color
             )
         else:
-            self.translate_text.append(
-                texttype,
-                atcenter,
-                name,
-                text,
-                hira,
-                flags,
-                color,
-            )
+            self.translate_text.append(texttype, name, text, hira, flags, color)
         if globalconfig["autodisappear"]:
             flag = (globalconfig["showintab"] and self.isMinimized()) or (
                 not globalconfig["showintab"] and self.isHidden()
