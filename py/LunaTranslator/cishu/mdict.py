@@ -5,7 +5,7 @@ from traceback import print_exc
 from myutils.audioplayer import bass_code_cast
 import json, os, re
 from cishu.mdict_.readmdict import MDX, MDD, MDict
-import hashlib, sqlite3
+import hashlib, sqlite3, functools
 import winsharedutils
 
 cachejson = None
@@ -367,6 +367,56 @@ class mdict(cishubase):
             return
         return _type, file_content
 
+    def subcallback(
+        self,
+        index,
+        fn,
+        base,
+        audiob64vals: dict,
+        hrefsrcvals: dict,
+        divclass: str,
+        csscollect: dict,
+        match: re.Match,
+    ):
+        url: str = match.groups()[0]
+        matchall: str = match.group()
+        if url.startswith("#") or url.startswith("https:") or url.startswith("http:"):
+            return matchall
+        _type_1 = matchall.split("=")[0]
+        try:
+            file_content = self.tryloadurl(index, base, url, audiob64vals)
+        except:
+            print_exc()
+            print("unknown", fn, url)
+            return matchall
+        if not file_content:
+            print(fn, url)
+            return matchall
+        _type, file_content = file_content
+        if _type == -1:
+            return matchall
+        elif _type == 3:
+            return matchall.replace(url, file_content)
+        elif _type == 1:
+            css = self.parse_stylesheet(
+                file_content.decode("utf8", errors="ignore"), divclass
+            )
+            if css:
+                csscollect[url] = css
+                return None
+            else:
+                return matchall
+        elif _type == 0:
+            varname = "var_" + hashlib.md5(file_content).hexdigest()
+            hrefsrcvals[varname] = (
+                _type_1,
+                query_mime(os.path.splitext(url)[1].lower()),
+                base64.b64encode(file_content).decode(),
+            )
+            return matchall.replace(url, varname)
+
+        return matchall
+
     def repairtarget(
         self,
         index,
@@ -378,50 +428,24 @@ class mdict(cishubase):
         csscollect: dict,
     ):
         base = os.path.dirname(fn)
-        matches = []
-        for _type, patt in (
-            ("src", 'src="([^"]+)"'),
-            ("href", 'href="([^"]+)"'),
-            ("src", """src='([^']+)'"""),
-            ("href", """href='([^']+)'"""),
+        parser = functools.partial(
+            self.subcallback,
+            index,
+            fn,
+            base,
+            audiob64vals,
+            hrefsrcvals,
+            divclass,
+            csscollect,
+        )
+        for patt in (
+            'src="([^"]+)"',
+            'href="([^"]+)"',
+            """src='([^']+)'""",
+            """href='([^']+)'""",
         ):
-            matches += [(_type, _) for _ in re.findall(patt, html_content)]
-        for _type_1, url in matches:
-            if (
-                url.startswith("#")
-                or url.startswith("https:")
-                or url.startswith("http:")
-            ):
-                continue
-            try:
-                file_content = self.tryloadurl(index, base, url, audiob64vals)
-            except:
-                print_exc()
-                print("unknown", fn, url)
-                continue
-            if not file_content:
-                print(fn, url)
-                continue
-            _type, file_content = file_content
-            if _type == -1:
-                continue
-            elif _type == 3:
-                html_content = html_content.replace(url, file_content)
-            elif _type == 1:
-                css = self.parse_stylesheet(
-                    file_content.decode("utf8", errors="ignore"), divclass
-                )
-                if css:
-                    csscollect[url] = css
-                    html_content = html_content.replace(url, "")
-            elif _type == 0:
-                varname = "var_" + hashlib.md5(file_content).hexdigest()
-                hrefsrcvals[varname] = (
-                    _type_1,
-                    query_mime(os.path.splitext(url)[1].lower()),
-                    base64.b64encode(file_content).decode(),
-                )
-                html_content = html_content.replace(url, varname)
+            html_content = re.sub(patt, parser, html_content)
+
         return '<div class="{}">{}</div>'.format(divclass, html_content)
 
     def searchthread_internal(self, index: IndexBuilder, k, __safe):
@@ -441,10 +465,10 @@ class mdict(cishubase):
     def searchthread(self, allres, i, word, audiob64vals, hrefsrcvals):
         f, index = self.builders[i]
         results = []
+        __safe = []
         try:
             keys = self.querycomplex(word, self.getdistance(f), index)
             for k in keys:
-                __safe = []
                 for content in sorted(
                     set(self.searchthread_internal(index, k, __safe))
                 ):
