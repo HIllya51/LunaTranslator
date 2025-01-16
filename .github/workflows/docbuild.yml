@@ -2,9 +2,9 @@ name: docbuild
 
 on:
     push:
-        paths: [ 'docs/**']
+        paths: [ 'docs/**', '.github/workflows/docbuild.yml']
     pull_request:
-        paths: [ 'docs/**']
+        paths: [ 'docs/**', '.github/workflows/docbuild.yml']
 
 permissions:
   contents: read
