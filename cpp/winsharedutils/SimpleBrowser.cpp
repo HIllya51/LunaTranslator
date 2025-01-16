@@ -89,7 +89,9 @@ class MWebBrowserEx : public MWebBrowser
 
 public:
     std::vector<std::tuple<std::optional<std::wstring>, int>> menuitems;
+    std::vector<std::tuple<std::optional<std::wstring>, int>> menuitems_noselect;
     std::map<int, void (*)(LPCWSTR)> menucallbacks;
+    std::map<int, void (*)()> menucallbacks_noselect;
     UINT CommandBase = 10086;
     static MWebBrowserEx *Create(HWND _hwndParent);
     // IDocHostUIHandler interface
@@ -133,6 +135,10 @@ LRESULT CALLBACK Extra_Menu_Handle(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
                 thisptr->menucallbacks[(int)wp](selectedText);
             }();
         }
+        else if (thisptr->menucallbacks_noselect.find((int)wp) != thisptr->menucallbacks_noselect.end())
+        {
+            thisptr->menucallbacks_noselect[(int)wp]();
+        }
     }
     return proc(hwnd, msg, wp, lp);
 }
@@ -159,6 +165,26 @@ STDMETHODIMP MWebBrowserEx::ShowContextMenu(
     HMENU hMenu = NULL;
     switch (dwID)
     {
+    case CONTEXT_MENU_DEFAULT:
+    {
+        if (!menuitems_noselect.size())
+            return S_FALSE;
+        HMENU hMenu = CreatePopupMenu();
+        int idx = 0;
+        for (auto &item : menuitems_noselect)
+        {
+            if (std::get<0>(item))
+            {
+                AppendMenu(hMenu, MF_STRING, std::get<1>(item), std::get<0>(item).value().c_str());
+            }
+            else if (idx)
+                AppendMenu(hMenu, MF_SEPARATOR, 0, nullptr);
+            idx += 1;
+        }
+        TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON, ppt->x, ppt->y, 0, hwndParent, nullptr);
+        DestroyMenu(hMenu);
+        return S_OK;
+    }
     case CONTEXT_MENU_TEXTSELECT:
     {
         if (!menuitems.size())
@@ -252,6 +278,18 @@ DECLARE_API void html_add_menu(MWebBrowserEx *ww, int index, const wchar_t *labe
     auto command = ww->CommandBase++;
     ww->menuitems.insert(ptr, {_label, command});
     ww->menucallbacks[command] = callback;
+}
+DECLARE_API void html_add_menu_noselect(MWebBrowserEx *ww, int index, const wchar_t *label, void (*callback)())
+{
+    if (!ww)
+        return;
+    std::optional<std::wstring> _label;
+    if (label)
+        _label = label;
+    auto ptr = ww->menuitems_noselect.begin() + index;
+    auto command = ww->CommandBase++;
+    ww->menuitems_noselect.insert(ptr, {_label, command});
+    ww->menucallbacks_noselect[command] = callback;
 }
 DECLARE_API void html_get_select_text(MWebBrowserEx *ww, void (*cb)(LPCWSTR))
 {

@@ -94,7 +94,9 @@
         // }
         // else 
         {
-            const span = document.createElement('mark');
+            //const span = document.createElement('mark');
+            const span = document.createElement('span');
+            span.classList.add('hightlight2')
             //跨行时有时会谜之不管用，可能是被子节点的样式覆盖了
             range.surroundContents(span);
         }
@@ -122,6 +124,18 @@
     function switch_hightlightmode() {
         console.log(highlightMode)
         highlightMode = !highlightMode;
+        if (!highlightMode) removeelewithclass('element-hover')
+    }
+    function removeelewithclass(klass) {
+        while (true) {
+            let eles2 = document.getElementsByClassName(klass)
+            if (eles2.length == 0) break
+            eles2[0].classList.remove(klass)
+        }
+    }
+    function clear_hightlight() {
+        removeelewithclass('hightlight')
+        removeelewithclass('hightlight2')
     }
     if (document.addEventListener) {
         function handleClick(e) {
@@ -141,10 +155,7 @@
         document.addEventListener('click', handleClick);
 
         function handleMouseMove(e) {
-            const prevHovered = document.querySelector('.element-hover');
-            if (prevHovered) {
-                prevHovered.classList.remove('element-hover');
-            }
+            removeelewithclass('element-hover')
             if (!highlightMode) return
             const target = e.target;
             if (!target.classList.contains('element-selected')) {
@@ -173,6 +184,10 @@
             background-color: yellow;
             outline: 2px solid #ffd700 !important;
             outline-offset: 2px !important;
+        }
+
+        .hightlight2 {
+            background-color: yellow;
         }
     </style>
     __luna_dict_internal_view__

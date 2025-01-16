@@ -1085,6 +1085,9 @@ class abstractwebview(QWidget):
     def add_menu(self, index, label, callback):
         pass
 
+    def add_menu_noselect(self, index, label, callback):
+        pass
+
     #
     def parsehtml(self, html):
         pass
@@ -1194,6 +1197,11 @@ class WebivewWidget(abstractwebview):
         __ = winsharedutils.add_ContextMenuRequested_cb(callback)
         self.callbacks.append(__)
         winsharedutils.add_menu_list(self.menudata, index, label, __)
+
+    def add_menu_noselect(self, index, label, callback):
+        __ = winsharedutils.add_ContextMenuRequested_cb2(callback)
+        self.callbacks.append(__)
+        winsharedutils.add_menu_list_noselect(self.menudata, index, label, __)
 
     def __init__(self, parent=None, debug=True) -> None:
         super().__init__(parent)
@@ -1453,6 +1461,11 @@ class mshtmlWidget(abstractwebview):
         self.callbacks.append(cb)
         winsharedutils.html_add_menu(self.browser, index, label, cb)
 
+    def add_menu_noselect(self, index, label, callback):
+        cb = winsharedutils.html_add_menu_cb2(callback)
+        self.callbacks.append(cb)
+        winsharedutils.html_add_menu_noselect(self.browser, index, label, cb)
+
 
 class CustomKeySequenceEdit(QKeySequenceEdit):
     changeedvent = pyqtSignal(str)
@@ -1506,6 +1519,10 @@ class auto_select_webview(QWidget):
         self.addmenuinfo.append((index, label, callback))
         self.internal.add_menu(index, label, callback)
 
+    def add_menu_noselect(self, index, label, callback):
+        self.addmenuinfo_noselect.append((index, label, callback))
+        self.internal.add_menu_noselect(index, label, callback)
+
     def clear(self):
         self.internal.setHtml(self.internal.parsehtml(""))  # 夜间
 
@@ -1535,6 +1552,7 @@ class auto_select_webview(QWidget):
     def __init__(self, parent, dyna=False) -> None:
         super().__init__(parent)
         self.addmenuinfo = []
+        self.addmenuinfo_noselect = []
         self.bindinfo = []
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.internal = None
@@ -1570,6 +1588,8 @@ class auto_select_webview(QWidget):
         self.layout().addWidget(self.internal)
         for _ in self.addmenuinfo:
             self.internal.add_menu(*_)
+        for _ in self.addmenuinfo_noselect:
+            self.internal.add_menu_noselect(*_)
         for _ in self.bindinfo:
             self.internal.bind(*_)
 
