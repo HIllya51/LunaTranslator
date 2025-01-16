@@ -900,6 +900,10 @@ namespace ppsspp
 		buffer->from(s);
 		ULJM05943F(buffer, hp);
 	}
+	void ULJM06183(TextBuffer *buffer, HookParam *hp)
+	{
+		StringFilter(buffer, "%n", 2);
+	}
 	void ULJM05915(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
@@ -2082,5 +2086,7 @@ namespace ppsspp
 		{0x888D34C, {0, 3, 0, 0, ULJM05703, "ULJM05703"}},
 		// 二世の契り　想い出の先へ
 		{0x88744A8, {0, 3, 0, 0, ULJM05915, "ULJM05915"}},
+		// 君が主で執事が俺で～お仕え日記～ぽーたぶる
+		{0x882135C, {0, 1, 0, 0, ULJM06183, "ULJM06183"}},
 	};
 }
