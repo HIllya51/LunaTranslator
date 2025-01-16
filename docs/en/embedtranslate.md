@@ -1,6 +1,6 @@
 # Embedded Translation
 
-## How to Use Embedded Translation?
+## How to use
 
 ::: danger
  First, not all games support embedding. Second, embedding may cause the game to crash.
@@ -39,7 +39,7 @@ After unchecking this setting, Simplified Chinese can be displayed correctly. Ho
 
 ![img](https://image.lunatranslator.org/zh/embed/good.png) 
 
-## Some Other Settings
+## Embedded Translation Settings
 
 1. #### Keep Original Text
 

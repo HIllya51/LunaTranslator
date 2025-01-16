@@ -39,7 +39,7 @@
 
 ![img](https://image.lunatranslator.org/zh/embed/good.png)
 
-## 一些其他设置
+## 内嵌翻译设置
 
 1. #### 保留原文
 
