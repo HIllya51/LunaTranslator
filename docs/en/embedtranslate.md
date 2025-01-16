@@ -1,10 +1,10 @@
 # Embedded Translation
 
+## How to Use Embedded Translation?
+
 ::: danger
  First, not all games support embedding. Second, embedding may cause the game to crash.
 :::
-
-## How to Use Embedded Translation?
 
 ::: details If the 'Embed' line is not available in the text selection, it means embedding is not supported.
 ![img](https://image.lunatranslator.org/zh/embed/noembed.png) 

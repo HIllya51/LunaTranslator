@@ -1,10 +1,10 @@
 # 内嵌翻译
 
+## 使用方法
+
 ::: danger
 首先，不是所有游戏都支持内嵌。其次，内嵌有一定可能会导致游戏崩溃
 :::
-
-## 使用方法
 
 ::: details 如果选择文本中没有内嵌这一行，就说明不支持内嵌 
 ![img](https://image.lunatranslator.org/zh/embed/noembed.png) 

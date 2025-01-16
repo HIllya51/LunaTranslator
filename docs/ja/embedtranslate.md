@@ -1,5 +1,7 @@
 # 埋め込み翻訳
 
+## 埋め込み翻訳の使い方
+
 ::: danger
  まず、すべてのゲームが埋め込みをサポートしているわけではありません。次に、埋め込みが原因でゲームがクラッシュする可能性があります。
 :::
@@ -8,8 +10,6 @@
 ![img](https://image.lunatranslator.org/zh/embed/noembed.png) 
 ![img](https://image.lunatranslator.org/zh/embed/someembed.png) 
 :::
-
-## 埋め込み翻訳の使い方
 
 埋め込みをサポートしているゲームの場合、埋め込みをサポートしているテキストエントリを選択してアクティブにします。
 
