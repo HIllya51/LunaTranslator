@@ -208,7 +208,9 @@ WeChatまたは最新バージョンのQQのインストールが必要です
 
 サポートされているすべての言語パックの一覧を返すには、管理者として PowerShell を開き (右クリックし、[管理者として実行] を選択します)、次のコマンドを入力します。
 
-`Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }`
+```
+Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }
+```
 
 出力例:
 
@@ -235,17 +237,19 @@ State : NotPresent
 
 次のコマンドは、"en-US" 用の OCR パックをインストールします:
 
-`$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
-
-`$Capability | Add-WindowsCapability -Online`
+```
+$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
+$Capability | Add-WindowsCapability -Online
+```
 
 #### OCR 言語パックを削除する方法
 
 次のコマンドは、"en-US" の OCR パックを削除します:
 
-`$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
-
-`$Capability | Remove-WindowsCapability -Online`
+```
+$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }
+$Capability | Remove-WindowsCapability -Online
+```
 
 https://learn.microsoft.com/ja-jp/windows/powertoys/text-extractor#supported-languages
 

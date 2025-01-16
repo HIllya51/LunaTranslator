@@ -209,7 +209,9 @@ Requires installation of WeChat or the latest version of QQ
 
 To return the list of all supported language packs, open PowerShell as an Administrator (right-click, then select "Run as Administrator") and enter the following command:
 
-`Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }`
+```
+Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }
+```
 
 An example output:
 
@@ -236,17 +238,19 @@ The language and location is abbreviated, so "en-US" would be "English-United St
 
 The following commands install the OCR pack for "en-US":
 
-`$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
-
-`$Capability | Add-WindowsCapability -Online`
+```
+$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
+$Capability | Add-WindowsCapability -Online
+```
 
 #### How to remove an OCR language pack
 
 The following commands remove the OCR pack for "en-US":
 
-`$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
-
-`$Capability | Remove-WindowsCapability -Online`
+```
+$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }
+$Capability | Remove-WindowsCapability -Online
+```
 
 https://learn.microsoft.com/en-us/windows/powertoys/text-extractor#supported-languages
 
