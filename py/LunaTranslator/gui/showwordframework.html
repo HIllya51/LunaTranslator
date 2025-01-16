@@ -108,6 +108,10 @@
         safe_luna_recheck_current_html()
     }
     function safe_luna_recheck_current_html() {
+        const prevHovered = document.querySelector('.element-hover');
+        if (prevHovered) {
+            prevHovered.classList.remove('element-hover');
+        }
         if (window.luna_recheck_current_html)
             window.luna_recheck_current_html()
         else if (window.LUNAJSObject)
@@ -131,14 +135,38 @@
             } else {
                 element.classList.add('hightlight')
             }
+
+            element.classList.remove('element-hover');
             safe_luna_recheck_current_html()
         }
     }, true);
+
+
+    function handleMouseMove(e) {
+        const prevHovered = document.querySelector('.element-hover');
+        if (prevHovered) {
+            prevHovered.classList.remove('element-hover');
+        }
+        if (!highlightMode) return
+        const target = e.target;
+        if (!target.classList.contains('element-selected')) {
+            target.classList.add('element-hover');
+        }
+    }
+    document.addEventListener('mousemove', handleMouseMove);
 </script>
+<style>
+    .element-hover {
+        outline: 2px dashed #ffd700 !important;
+        outline-offset: 2px !important;
+    }
+</style>
 <div id="luna_dict_internal_view">
     <style>
         .hightlight {
             background-color: yellow;
+            outline: 2px solid #ffd700 !important;
+            outline-offset: 2px !important;
         }
     </style>
     __luna_dict_internal_view__

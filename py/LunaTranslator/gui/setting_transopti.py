@@ -63,7 +63,7 @@ def setTab7_lazy(self, basel):
         [
             D_getIconButton(
                 lambda: gobject.baseobject.openlink(
-                    dynamiclink("{docs_server}/#/zh/textprocess")
+                    dynamiclink("{docs_server}/zh/textprocess.html")
                 ),
                 "fa.question",
             ),
@@ -178,7 +178,7 @@ def setTab7_lazy(self, basel):
         [
             D_getIconButton(
                 lambda: gobject.baseobject.openlink(
-                    dynamiclink("{docs_server}/#/zh/transoptimi")
+                    dynamiclink("{docs_server}/zh/transoptimi.html")
                 ),
                 "fa.question",
             )

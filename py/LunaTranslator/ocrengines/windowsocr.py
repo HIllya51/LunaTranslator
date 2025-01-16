@@ -74,7 +74,7 @@ def question():
         btndownload = LPushButton("添加语言包")
         btndownload.clicked.connect(
             lambda: gobject.baseobject.openlink(
-                dynamiclink("{docs_server}/#/zh/useapis/ocrapi?id=windowsocr")
+                dynamiclink("{docs_server}/zh/useapis/ocrapi.html#离线ocr")
             )
         )
         lst.append(btndownload)
@@ -93,7 +93,7 @@ def question():
         btndownload = IconButton("fa.question")
         btndownload.clicked.connect(
             lambda: gobject.baseobject.openlink(
-                dynamiclink("{docs_server}/#/zh/useapis/ocrapi?id=windowsocr")
+                dynamiclink("{docs_server}/zh/useapis/ocrapi.html#离线ocr")
             )
         )
         lst.append(btndownload)
