@@ -113,5 +113,33 @@
         else if (window.LUNAJSObject)
             window.LUNAJSObject.luna_recheck_current_html()
     }
+
+    var highlightMode = false;
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'H' && e.shiftKey && e.ctrlKey) {
+            highlightMode = !highlightMode;
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (highlightMode) {
+            e.preventDefault();
+            e.stopPropagation();
+            const element = e.target;
+            if (element.classList.contains('hightlight')) {
+                element.classList.remove('hightlight')
+            } else {
+                element.classList.add('hightlight')
+            }
+            safe_luna_recheck_current_html()
+        }
+    }, true);
 </script>
-<div id="luna_dict_internal_view">__luna_dict_internal_view__</div>
+<div id="luna_dict_internal_view">
+    <style>
+        .hightlight {
+            background-color: yellow;
+        }
+    </style>
+    __luna_dict_internal_view__
+</div>
