@@ -1,3 +1,5 @@
+# 基本的な使用方法
+
 起動後のインターフェースは以下の通りです。
 
 ![img](https://image.lunatranslator.org/zh/basicuse/startup2.png)

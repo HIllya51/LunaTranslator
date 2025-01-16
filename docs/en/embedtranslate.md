@@ -1,3 +1,5 @@
+# Embedded Translation
+
 ::: danger
  First, not all games support embedding. Second, embedding may cause the game to crash.
 :::

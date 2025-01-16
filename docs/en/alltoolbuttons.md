@@ -1,4 +1,4 @@
-## Detailed Explanation of Tool Buttons
+# Tool Buttons
 
 ::: info
  All buttons can be hidden or displayed in `Display Settings` -> `Tool Buttons`.

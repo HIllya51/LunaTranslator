@@ -1,4 +1,4 @@
-## How to Automatically Add Words to Anki
+# Anki Integration
 
 1. Install Anki, https://apps.ankiweb.net/ go to the homepage to download and install.
 

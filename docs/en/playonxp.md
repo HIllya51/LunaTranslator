@@ -1,4 +1,4 @@
-## Playing Old Games on an XP Virtual Machine and Extracting Text for Translation
+# Playing Old Games on XP Virtual Machine and Extracting Text for Translation
 
 **1. Extracting and Translating Text Using Windows XP Adaptation in a Virtual Machine**
 

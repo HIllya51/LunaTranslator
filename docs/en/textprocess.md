@@ -1,4 +1,4 @@
-## Functions and Usage of Various Text Processing Methods
+# Functions and Usage of Various Text Processing Methods
 
 ::: info
 Generally, in HOOK mode, sometimes incorrect text is read, such as repeated text or other messy text. In such cases, text processing is needed to resolve the issue.

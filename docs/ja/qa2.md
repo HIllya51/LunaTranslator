@@ -1,4 +1,4 @@
-## Ankiに自動で単語を追加する方法
+# Anki統合
 
 1. Ankiをインストールします。https://apps.ankiweb.net/ からダウンロードしてインストールします。
 

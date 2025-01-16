@@ -1,3 +1,5 @@
+# OCR Automation Execution Methods
+
 To accommodate the different text refresh methods of various games, the software offers four distinct methods to automatically capture screenshots from the game at a certain frequency.
 
 

@@ -1,4 +1,4 @@
-## Bind Game Window for OCR Mode
+# Binding Game Window in OCR Mode
 
 By default, `Automatically bind window after selecting OCR range` is activated; when the four corners of the selection frame belong to a single window HWND, it will automatically bind to that window.
 

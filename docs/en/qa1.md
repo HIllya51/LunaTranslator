@@ -1,4 +1,4 @@
-## How to Use Mecab Tokenization & Part-of-Speech Color Highlighting
+# Using Mecab for Tokenization & Part-of-Speech Color Annotation
 
 First, you need to download the Mecab dictionary. Download the [default version](https://lunatranslator.org/Resource/dictionary/Mecab.zip) or the [official latest version](https://clrd.ninjal.ac.jp/unidic/), and unzip it.
 

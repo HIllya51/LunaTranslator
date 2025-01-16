@@ -3,9 +3,10 @@ import { useRouter } from 'vitepress'
 import { watch } from "vue"
 import './style.css';
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
-
+import Layout from './giscus.vue'
 export default {
     ...DefaultTheme,
+    Layout: Layout,
     enhanceApp({ app }) {
         enhanceAppWithTabs(app)
     },

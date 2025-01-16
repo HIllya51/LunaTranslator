@@ -1,4 +1,6 @@
-## HOOK Settings
+# HOOK Settings
+
+## General Settings
 
 1. ####  Code Page
 

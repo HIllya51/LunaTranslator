@@ -1,3 +1,5 @@
+# Software Update
+
 ## Manual Update
 
 After downloaded the new version, unzip and overwrite to the previous directory. Do not delete the userconfig folder, otherwise, you will lose your previous settings!!

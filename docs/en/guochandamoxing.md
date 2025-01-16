@@ -1,3 +1,5 @@
+# Large Model API for Translation
+
 ::: details How to use multiple ChatGPT-compatible interfaces (or dedicated interfaces) simultaneously?
 If you simply have multiple different keys and want to poll them, just separate them with a `|`.
 

@@ -1,3 +1,5 @@
+# OCR interface settings
+
 ## Online OCR
 
 ::: tabs

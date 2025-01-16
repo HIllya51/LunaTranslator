@@ -1,3 +1,5 @@
+# 无法启动软件
+
 ## 找不到重要组件
 
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg) 

@@ -1,3 +1,5 @@
+# Shortcut Keys
+
 ::: tip
  To use shortcut keys, you first need to activate `Use Shortcut Keys`, then activate the specific shortcut key you want to use, and set its key combination.
 :::

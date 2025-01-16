@@ -1,4 +1,4 @@
-## 如何使用Mecab分词&词性颜色标注
+# 使用Mecab分词&词性颜色标注
 
 首先需要下载mecab词典。下载[默认版本](https://lunatranslator.org/Resource/dictionary/Mecab.zip)，或者[官方最新版本](https://clrd.ninjal.ac.jp/unidic/)，解压。
 

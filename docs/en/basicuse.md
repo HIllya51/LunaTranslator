@@ -1,3 +1,5 @@
+# Basic Usage
+
 The interface after launching is as follows.
 
 ![img](https://image.lunatranslator.org/zh/basicuse/startup2.png)

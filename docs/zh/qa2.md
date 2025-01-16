@@ -1,4 +1,4 @@
-## 如何自动划词进anki
+# Anki集成
 
 1. 安装 anki, https://apps.ankiweb.net/ 去主页下载安装
 
