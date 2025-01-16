@@ -35,7 +35,6 @@ jobs:
           npm run docs:build
           cp index.html .vitepress/dist
           cd ..
-          git checkout -b docbuild
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs/.vitepress/dist
