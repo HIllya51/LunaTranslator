@@ -1,0 +1,36 @@
+name: docbuild
+
+on:
+    push:
+        paths: [ 'docs/**']
+    pull_request:
+        paths: [ 'docs/**']
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with: 
+          fetch-depth: '0'
+          ref: main
+
+      - uses: actions/setup-node@master
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: |
+          cd docs
+          npm install
+          npm run build
+          git checkout -b docbuild
