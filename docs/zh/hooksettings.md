@@ -2,42 +2,44 @@
 
 1. #### 代码页
 
-  ?> 这一设置当且仅当从游戏中提取的文本是**HOOK引擎内部未指定编码**的**多字节字符串**时才有意义，当HOOK引擎内部已经指定了代码页，或者文本是**宽字符字符串**或者**UTF32**字符串时，这一设置没有任何意义
+    ::: info
+    这一设置当且仅当从游戏中提取的文本是**HOOK引擎内部未指定编码**的**多字节字符串**时才有意义，当HOOK引擎内部已经指定了代码页，或者文本是**宽字符字符串**或者**UTF32**字符串时，这一设置没有任何意义
+    :::
 
-  这一设置一般没有修改的必要，当且仅当部分古老引擎(例如Yuris)的官方中文版可能会有GBK/BIG5/UTF8。如果找不到正确的文本，直接向我发[issue](https://lunatranslator.org/Resource/game_support)，修改这个设置通常是徒劳的。
+    这一设置一般没有修改的必要，当且仅当部分古老引擎(例如Yuris)的官方中文版可能会有GBK/BIG5/UTF8。如果找不到正确的文本，直接向我发[issue](https://lunatranslator.org/Resource/game_support)，修改这个设置通常是徒劳的。
 
 1. #### 刷新延迟
 
-  ?> 相对来说，这个算是最实用的选项了
+    如果你面临以下情况之一：
 
-  如果你面临以下情况之一：
+        1. 文本每次就提取出一两个字；
+        2. 文本每次提取出一行，然后把上一行顶掉，最后只显示最后一行；
+        3. 文本正确，但是提取的好慢；
 
-      1. 文本每次就提取出一两个字；
-      2. 文本每次提取出一行，然后把上一行顶掉，最后只显示最后一行；
-      3. 文本正确，但是提取的好慢；
+    那么你需要调整这个选项。
 
-  那么你需要调整这个选项。
+    对于**1、2**两种情况，因为游戏文本显示的太慢了，而刷新延迟太低，导致每提取到一两个字、或者提取到一行文本，就立即刷新出来了。对此，你需要做的是，**提高刷新延迟**，或者提高游戏的文显示速度。
 
-  对于**1、2**两种情况，因为游戏文本显示的太慢了，而刷新延迟太低，导致每提取到一两个字、或者提取到一行文本，就立即刷新出来了。对此，你需要做的是，**提高刷新延迟**，或者提高游戏的文显示速度。
-
-  对于**3**，你可以**适当的降低刷新延迟**，降低值的同时注意不要出现**1、2**的情况。
+    对于**3**，你可以**适当的降低刷新延迟**，降低值的同时注意不要出现**1、2**的情况。
 
 1. #### 最大缓冲区长度
 
-  有时，文本会反复的不停刷新，这时，如果刷新延迟较高且不能降低，会导致一直接收文本直到文本填满缓冲区、或不再刷新以满足刷新延迟(通常是游戏失去焦点时才停止刷新，因此一般是等到填满缓冲区)。
+    有时，文本会反复的不停刷新，这时，如果刷新延迟较高且不能降低，会导致一直接收文本直到文本填满缓冲区、或不再刷新以满足刷新延迟(通常是游戏失去焦点时才停止刷新，因此一般是等到填满缓冲区)。
 
-  为了解决这个问题，可以适当降低缓冲区长度，且要注意不要使缓冲区长度过低到小于实际文本长度。
+    为了解决这个问题，可以适当降低缓冲区长度，且要注意不要使缓冲区长度过低到小于实际文本长度。
 
 1. #### 最大缓存文本长度
 
-  接收到的历史文本会被缓存下来，当在文本选择窗口中，查看某条文本的内容时，会查询历史缓存文本。如果文本条目过多，或因文本反复刷新，会导致缓存的文本过多，查看文本时会变得较为卡顿(有时甚至不查看时也会卡顿)。实际上这里缓存的大部分都是无用文本，有用的历史文本可以在历史翻译里面查看，可以将这个数值随意调低（默认是1000000，但其实调到1000就行）。
+    接收到的历史文本会被缓存下来，当在文本选择窗口中，查看某条文本的内容时，会查询历史缓存文本。如果文本条目过多，或因文本反复刷新，会导致缓存的文本过多，查看文本时会变得较为卡顿(有时甚至不查看时也会卡顿)。实际上这里缓存的大部分都是无用文本，有用的历史文本可以在历史翻译里面查看，可以将这个数值随意调低（默认是1000000，但其实调到1000就行）。
 
 ## 游戏的专用设置
 
 1. #### 额外的钩子
     1. #### Win32通用钩子
         激活后，将会一定向游戏中注入Win32的通用函数钩子，包括GDI函数、D3DX函数、字符串函数。
+
         注入太多的钩子可能导致游戏速度变慢，因此默认不会注入这些钩子。
+
         当无法提取到正确的文本时，可以尝试激活这两个选项。
     1. #### 特殊码
         当**插入特殊码**并**选中特殊码的文本**时，才会记录这个条特殊码，下一次启动时会自动插入这条特殊码。这个设置中记录了之前记录的所有特殊码，可以在其中添加或删除特殊码。
@@ -50,63 +52,60 @@
 
     若要对游戏进行专用HOOK设置，需要在**游戏管理**中，打开**游戏设置**界面，在其中的游戏设置选择卡中，切换到HOOK子选项卡，取消**跟随默认**后，即可为游戏设置专用的HOOK设置。
 
-![img](https://image.lunatranslator.org/zh/gamesettings/1.jpg)
+    ::: details
+    ![img](https://image.lunatranslator.org/zh/gamesettings/1.jpg)
 
-![img](https://image.lunatranslator.org/zh/gamesettings/2.png)
+    ![img](https://image.lunatranslator.org/zh/gamesettings/2.png)
+    :::
 
-
-## 附录
-
-### 特殊码格式
-
-<a id="hookcode"></a>
+## 特殊码格式
 
 1. #### HOOK
 
-  {H|B}{A|B|C|W|I|S|Q|U|V}[F][N][codepage#][padding+]data_offset[*deref_offset][:split_offset[*deref_offset]]@addr[:module[:func]]
+    `{H|B}{A|B|C|W|I|S|Q|U|V}[F][N][codepage#][padding+]data_offset[*deref_offset][:split_offset[*deref_offset]]@addr[:module[:func]]`
 
-  H是inlineHook，B是vehhook
+    H是inlineHook，B是vehhook
 
-  单字符：A/B是小端/大端的mbcs，C是UTF8，W是UTF16，I是UTF32。
+    单字符：A/B是小端/大端的mbcs，C是UTF8，W是UTF16，I是UTF32。
 
-  字符串：S是默认ascii字符串，Q是UTF16，U是UTF32，V是UTF8。
+    字符串：S是默认ascii字符串，Q是UTF16，U是UTF32，V是UTF8。
 
-  F：每次读取字符串后添加换行符
+    F：每次读取字符串后添加换行符
 
-  N：无视上下文
+    N：无视上下文
 
-  寄存器的data_offset：
-    * 32位 EAX -4, ECX -8, EDX -C, EBX -10, ESP -14, EBP -18, ESI -1C, EDI -20
-    * 64位 RAX -C, RBX -14, RCX -1C, RDX -24, RSP -2C, RBP -34, RSI -3C, RDI -44, R8 -4C, R9 -54, R10 -5C, R11 -64, R12 -6C, R13 -74, R14 -7C, R15 -84
+    寄存器的data_offset：
+      * 32位 EAX -4, ECX -8, EDX -C, EBX -10, ESP -14, EBP -18, ESI -1C, EDI -20
+      * 64位 RAX -C, RBX -14, RCX -1C, RDX -24, RSP -2C, RBP -34, RSI -3C, RDI -44, R8 -4C, R9 -54, R10 -5C, R11 -64, R12 -6C, R13 -74, R14 -7C, R15 -84
 
 1. #### JIT HOOK
 
-  {H|B}{A|B|C|W|I|S|Q|M|U|V}[F][N][codepage#][padding+]arg_index[*deref_offset][:split_offset[*deref_offset]]@{info}:JIT:{UNITY|YUZU|PPSSPP|VITA3K|RPCS3}
+    `{H|B}{A|B|C|W|I|S|Q|M|U|V}[F][N][codepage#][padding+]arg_index[*deref_offset][:split_offset[*deref_offset]]@{info}:JIT:{UNITY|YUZU|PPSSPP|VITA3K|RPCS3}`
 
-  arg_index是JIT函数的参数index。M为C#字符串，仅UNITY可用。
+    arg_index是JIT函数的参数index。M为C#字符串，仅UNITY可用。
 
-  UNITY的info为：[程序集]:[命名空间]:[类名]:[函数名]:[参数量]
+    UNITY的info为：[程序集]:[命名空间]:[类名]:[函数名]:[参数量]
 
-  YUZU/PPSSPP/VITA3K/RPCS3的info为被模拟地址
+    YUZU/PPSSPP/VITA3K/RPCS3的info为被模拟地址
 
 1. #### 内嵌
 
-  E[D][S][N|O]HOOKCODE
+    `E[D][S][N|O]HOOKCODE`
 
-  E是使用内嵌的标注，HOOKCODE是JIT特殊码或HOOK特殊码。
+    E是使用内嵌的标注，HOOKCODE是JIT特殊码或HOOK特殊码。
 
-  D：写入时转换中文字符为日语字符集
+    D：写入时转换中文字符为日语字符集
 
-  S：提取时使用HOOKCODE指定的文本提取方式
+    S：提取时使用HOOKCODE指定的文本提取方式
 
-  N：写入时创建新的字符串并交换字符串指针
+    N：写入时创建新的字符串并交换字符串指针
 
-  O：写入时在原字符串上覆写
+    O：写入时在原字符串上覆写
 
 1. #### 直接内存读取
 
-  R{S|Q|V|U}[codepage#]@addr
+    `R{S|Q|V|U}[codepage#]@addr`
 
-  R是直接内存读取的标志
+    R是直接内存读取的标志
 
-  S是默认ascii字符串，Q是UTF16，U是UTF32，V是UTF8
+    S是默认ascii字符串，Q是UTF16，U是UTF32，V是UTF8

@@ -1,29 +1,34 @@
-## 如何使用大模型API翻译
+::: details 同时使用多个ChatGPT兼容接口（或专用接口）？
+如果只是有多个不同的密钥想要轮询，只需用|分割就可以了。
 
+但有时想要同时使用多个不同的api接口地址/prompt/model/参数等来对比翻译效果。方法是：
 
-<details>
-  <summary>同时使用多个ChatGPT兼容接口（或专用接口）？</summary>
-  如果只是有多个不同的密钥想要轮询，只需用|分割就可以了。<br>
-  但有时想要同时使用多个不同的api接口地址/prompt/model/参数等来对比翻译效果。方法是：<br>
-  点击右下方的“+”按钮
-  <img src="https://image.lunatranslator.org/zh/damoxing/extraapi1.png">
-  弹出一个窗口，选择ChatGPT兼容接口（或专用接口），并为之取个名字。这样会复制一份当前ChatGPT兼容接口（或专用接口）的设置和api。
-  <img src="https://image.lunatranslator.org/zh/damoxing/extraapi2.png">
-  激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
-  <img src="https://image.lunatranslator.org/zh/damoxing/extraapi3.png">
-</details>
+点击右下方的“+”按钮
+![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
+弹出一个窗口，选择ChatGPT兼容接口（或专用接口），并为之取个名字。这样会复制一份当前ChatGPT兼容接口（或专用接口）的设置和api。
+![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
+激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
+![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
+:::
 
->**model**可以在下拉列表中选取，且部分接口可以根据**API接口地址**和**API Key**动态获取模型列表，填好这两项后点击**model**旁的刷新按钮即可获取可用的模型列表。如果平台不支持拉取模型的接口，且默认列表中没有要用的模型，那么请参照接口官方文档手动填写模型。
+::: tip
+**model**可以在下拉列表中选取，且部分接口可以根据**API接口地址**和**API Key**动态获取模型列表，填好这两项后点击**model**旁的刷新按钮即可获取可用的模型列表。
 
-### ChatGPT兼容接口
+如果平台不支持拉取模型的接口，且默认列表中没有要用的模型，那么请参照接口官方文档手动填写模型。
+:::
 
->绝大多数大模型平台都是使用ChatGPT兼容接口。<br>由于平台各种各样，不可能一一列举。对于其他没有列举出来的接口，请自行查阅其文档来填写对应参数。
+## ChatGPT兼容接口
 
-#### 外国大模型接口
+::: info
+绝大多数大模型平台都是使用ChatGPT兼容接口。
+由于平台各种各样，不可能一一列举。对于其他没有列举出来的接口，请自行查阅其文档来填写对应参数。
+:::
 
-<!-- tabs:start -->
+### 外国大模型接口
 
-### **OpenAI**
+::: tabs
+
+== OpenAI
 
 **API接口地址** `https://api.openai.com/v1` 
 
@@ -31,13 +36,13 @@
 
 **model** https://platform.openai.com/docs/models
 
-### **x.ai**
+== x.ai
 
 **API接口地址** `https://api.x.ai/`
 
 **API Key** https://console.x.ai/
 
-### **groq**
+== groq
 
 **API接口地址** `https://api.groq.com/openai/v1/chat/completions`
 
@@ -45,7 +50,7 @@
 
 **model** https://console.groq.com/docs/models 填写`Model ID`
 
-### **OpenRouter**
+== OpenRouter
 
 **API接口地址** `https://openrouter.ai/api/v1/chat/completions`
 
@@ -53,7 +58,7 @@
 
 **model** https://openrouter.ai/docs/models
 
-### **Mistral AI**
+== Mistral AI
 
 **API接口地址** `https://api.mistral.ai/v1/chat/completions`
 
@@ -61,19 +66,19 @@
 
 **model** https://docs.mistral.ai/getting-started/models/
 
-### **Azure**
+== Azure
 
 **API接口地址** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
 
 其中，将`{endpoint}`和`{deployName}`替换成你的endpoint和deployName
 
-### **deepinfra**
+== deepinfra
 
 **API接口地址** `https://api.deepinfra.com/v1/openai/chat/completions` 
 
 **API Key** https://deepinfra.com/dash/api_keys
 
-### **cerebras**
+== cerebras
 
 **API接口地址** `https://api.cerebras.ai/v1/chat/completions` 
 
@@ -83,14 +88,13 @@
 
 ![img](https://image.lunatranslator.org/zh/damoxing/cerebras.png) 
 
-<!-- tabs:end -->
+:::
 
-#### 国产大模型接口
+### 国产大模型接口
 
+::: tabs
 
-<!-- tabs:start -->
-
-### **DeepSeek**
+== DeepSeek
 
 **API接口地址** `https://api.deepseek.com`
 
@@ -98,7 +102,7 @@
 
 **model** https://platform.deepseek.com/api-docs/zh-cn/pricing
 
-### **阿里云百炼大模型**
+== 阿里云百炼大模型
 
 **API接口地址** `https://dashscope.aliyuncs.com/compatible-mode/v1`
 
@@ -106,7 +110,7 @@
 
 **model** https://help.aliyun.com/zh/model-studio/getting-started/models
 
-### **字节跳动豆包大模型**
+== 字节跳动豆包大模型
 
 **API接口地址** `https://ark.cn-beijing.volces.com/api/v3`
 
@@ -117,7 +121,7 @@
 ![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
 
 
-### **月之暗面**
+== 月之暗面
 
 **API接口地址** `https://api.moonshot.cn`
 
@@ -125,7 +129,7 @@
 
 **model** https://platform.moonshot.cn/docs/intro
 
-### **智谱AI**
+== 智谱AI
 
 **API接口地址** `https://open.bigmodel.cn/api/paas/v4/chat/completions`
 
@@ -133,7 +137,7 @@
 
 **model** https://bigmodel.cn/dev/howuse/model
 
-### **零一万物**
+== 零一万物
 
 **API接口地址** `https://api.lingyiwanwu.com`
 
@@ -141,7 +145,7 @@
 
 **model** https://platform.lingyiwanwu.com/docs/api-reference#list-models
  
-### **硅基流动**
+== 硅基流动
 
 **API接口地址** `https://api.siliconflow.cn`
 
@@ -149,7 +153,7 @@
 
 **model** https://docs.siliconflow.cn/docs/model-names
 
-### **讯飞星火大模型**
+== 讯飞星火大模型
 
 **API接口地址** `https://spark-api-open.xf-yun.com/v1`
 
@@ -157,7 +161,7 @@
 
 **model** https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-2-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0
 
-### **腾讯混元大模型**
+== 腾讯混元大模型
 
 **API接口地址** `https://api.hunyuan.cloud.tencent.com/v1`
 <!-- 
@@ -166,7 +170,7 @@
 
 **model** https://cloud.tencent.com/document/product/1729/97731
 
-### **百度千帆大模型**
+== 百度千帆大模型
 
 **API接口地址** `https://qianfan.baidubce.com/v2`
 
@@ -174,20 +178,20 @@
 
 **model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
 
-!> **API Key**请使用百度智能云IAM的Access Key、Secret Key来生成接口的BearerToken后作为**API Key**填入，或者按照`{Access Key}:{Secret Key}`的格式直接将两者一起填入**API Key**中。注意，不是千帆ModelBuilder的旧版v1版本接口的API Key、Secret Key，两者不能通用。
+>[!WARNING]
+>**API Key**请使用百度智能云IAM的Access Key、Secret Key来生成接口的BearerToken后作为**API Key**填入，或者按照`{Access Key}:{Secret Key}`的格式直接将两者一起填入**API Key**中。注意，不是千帆ModelBuilder的旧版v1版本接口的API Key、Secret Key，两者不能通用。
 
-<!-- tabs:end -->
+:::
 
-### 特定平台的专用接口
+## 特定平台的专用接口
 
+::: info
+部分大模型平台不完全兼容ChatGPT接口，请在专用接口中填写参数使用。
+::: 
 
->部分大模型平台不完全兼容ChatGPT接口，请在专用接口中填写参数使用。
+::: tabs
 
-<!-- tabs:start -->
-
-### **gemini**
-
-<a id="gemini"></a>
+== gemini
 
 **API接口地址** `https://generativelanguage.googleapis.com`
 
@@ -196,7 +200,7 @@
 **model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
 
 
-### **claude**
+== claude
 
 **API接口地址** `https://api.anthropic.com`
 
@@ -204,10 +208,10 @@
 
 **model**  https://docs.anthropic.com/en/docs/about-claude/models
 
-### **cohere**
+== cohere
 
 **API Key** https://dashboard.cohere.com/api-keys
 
 **model** https://docs.cohere.com/docs/models
 
-<!-- tabs:end -->
+:::

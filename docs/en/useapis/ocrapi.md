@@ -1,8 +1,8 @@
 ## Online OCR
 
-<!-- tabs:start -->
+::: tabs
 
-#### **Baidu**
+== Baidu
 
 #### Baidu Intelligent Cloud OCR
 
@@ -16,7 +16,7 @@ https://ai.baidu.com/ai-doc/MT/dkifdqg54
 
 https://fanyi-api.baidu.com/product/22
 
-#### **Tencent**
+== Tencent
 
 #### General Printed Text Recognition
 
@@ -26,7 +26,7 @@ https://cloud.tencent.com/document/product/866/33526
 
 https://cloud.tencent.com/document/product/551/17232
 
-#### **Youdao**
+== Youdao
 
 ### Step 1: Become a Developer
 
@@ -56,7 +56,7 @@ Click the service name on the left side of the console to enter the service deta
 
 https://ai.youdao.com/doc.s#guide
 
-#### **Volcano Engine**
+== Volcano Engine
 
 #### Step 1: Become a Developer
 
@@ -120,7 +120,7 @@ To obtain: Click the account in the upper right corner, select [Key Management] 
 
 https://www.volcengine.com/docs/6790/116978
 
-#### **Xunfei**
+== Xunfei
 
 ### Step 1: Register as a Developer
 
@@ -134,8 +134,8 @@ Log in to the platform and go to the console through the "Console" in the upper 
 
 Name your application and fill in the relevant information. After clicking the submit button, your application will be created.
 
-?>**Note**<br>
-In the old version of the console, you needed to specify the operating system platform type of the application for subsequent SDK or API integration. However, after the update to the new version, this operation is no longer required, and all interfaces can be managed through one application.
+> [!WARNING]
+>In the old version of the console, you needed to specify the operating system platform type of the application for subsequent SDK or API integration. However, after the update to the new version, this operation is no longer required, and all interfaces can be managed through one application.
 
 After the application is created, you can choose the service you want to use through the service list on the left. In the service management panel, you will see the available quota, historical usage, verification information for the service interface, and the APIs and SDKs that can be called.
 
@@ -143,8 +143,10 @@ After the application is created, you can choose the service you want to use thr
 
 [](https://www.xfyun.cn/doc/assets/img/manage2.cc025e41.png)
 
-?>**Note**<br>
-Not every service management panel is the same. Different services have different compositions of their management panels. Also, not all services have both SDK and API interfaces; some services only have API interfaces, while others only have SDKs. Specifics can be found on the corresponding service management page.
+
+> [!WARNING]
+>Not every service management panel is the same. Different services have different compositions of their management panels. Also, not all services have both SDK and API interfaces; some services only have API interfaces, while others only have SDKs. Specifics can be found on the corresponding service management page.
+
 
 The Xunfei Open Platform supports creating multiple applications with one account. To return to the application list page and switch applications, click the return button above the application name in the upper left corner of the page, or the "My Applications" in the personal menu in the top right. In the application list, select an application and click its name to enter the service management page corresponding to that application.
 
@@ -152,49 +154,49 @@ The same application APPID can be used across multiple businesses without restri
 
 [](https://www.xfyun.cn/doc/assets/img/BACK.75999ee8.png)
 
-?>**Note**<br>
-If your account has multiple applications, the last application you operated will be recorded and set as the default application when you return to the Xunfei Open Platform for various service operations.
+> [!WARNING]
+>If your account has multiple applications, the last application you operated will be recorded and set as the default application when you return to the Xunfei Open Platform for various service operations.
 
 https://www.xfyun.cn/doc/platform/quickguide.html
 
-#### **Google Cloud Vision**
+== Google Cloud Vision
 
 https://cloud.google.com/vision/docs
 
-#### **Docsumo**
+== Docsumo
 
 https://www.docsumo.com/
 
-#### **Ocr.space**
+== Ocr.space
 
 https://ocr.space/
 
-#### **Gemini**
+== Gemini
 
-Same as [Translation](/en/guochandamoxing?id=gemini)
+Same as [Translation](/en/guochandamoxing.html#dedicated-interfaces-for-specific-platforms)
 
-#### **ChatGPT Compatible Interface**
+== ChatGPT Compatible Interface
 
-Same as [Translation](/en/guochandamoxing?id=chatgpt-compatible-interface)
+Same as [Translation](/en/guochandamoxing.html#chatgpt-compatible-interfaces)
 
-<!-- tabs:end -->
+:::
 
 ## Offline OCR
 
-<!-- tabs:start -->
+::: tabs
 
-#### **Manga-OCR**
+== Manga-OCR
 
 CPU Integration Package https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/cpu
 
 GPU Integration Package https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
-#### **WeChat/QQ OCR**
+== WeChat/QQ OCR
 
 Requires installation of WeChat or the latest version of QQ
 
 
-#### **WindowsOCR**
+== WindowsOCR
 
 ## <div id="windowsocr">How to Install Additional Language Support for WindowsOCR?</div>
 
@@ -245,8 +247,8 @@ The following commands remove the OCR pack for "en-US":
 
 https://learn.microsoft.com/en-us/windows/powertoys/text-extractor#supported-languages
 
-#### **Tesseract5**
+== Tesseract5
 
 https://github.com/tesseract-ocr/tesseract/releases
 
-<!-- tabs:end -->
+:::

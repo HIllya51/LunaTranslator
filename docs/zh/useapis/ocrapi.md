@@ -1,8 +1,8 @@
 ## 在线OCR
 
-<!-- tabs:start -->
+::: tabs
 
-#### **百度**
+== 百度
 
 #### 百度智能云 OCR
 
@@ -16,7 +16,7 @@ https://ai.baidu.com/ai-doc/MT/dkifdqg54
 
 https://fanyi-api.baidu.com/product/22
 
-#### **腾讯**
+== 腾讯
 
 #### OCR 通用印刷体识别
 
@@ -26,7 +26,7 @@ https://cloud.tencent.com/document/product/866/33526
 
 https://cloud.tencent.com/document/product/551/17232
 
-#### **有道**
+== 有道
 
 ### 第一步：成为开发者 
 
@@ -56,7 +56,7 @@ https://cloud.tencent.com/document/product/551/17232
 
 https://ai.youdao.com/doc.s#guide
 
-#### **火山**
+== 火山
 
 #### 步骤1：成为开发者
 
@@ -123,7 +123,7 @@ STEP2：完成认证后，进入视觉智能控制台，选择接入能力
 
 https://www.volcengine.com/docs/6790/116978
 
-#### **讯飞**
+== 讯飞
 
 ### 第一步：注册成为开发者
 
@@ -137,17 +137,16 @@ https://www.volcengine.com/docs/6790/116978
 
 请为您的应用起一个名字，并填写相关的信息。点击提交按钮后，应用就创建完毕。
 
-?>**请注意**<br>
-在旧版本的控制台中，需要指定一个应用的操作系统平台类型，用于后续的SDK或API接入。而新版本更新后，这项操作已经不需要，可以通过一个应用管理全部的接口了。
-
+> [!WARNING]
+>在旧版本的控制台中，需要指定一个应用的操作系统平台类型，用于后续的SDK或API接入。而新版本更新后，这项操作已经不需要，可以通过一个应用管理全部的接口了。
 应用创建完成之后，您就可以通过左侧的服务列表，选择您要使用的服务。在服务管理面板中，您将看到这个服务对应的可用量、历史用量、服务接口的验证信息，还有可以调用的API和SDK了。
 
 ![](https://www.xfyun.cn/doc/assets/img/manage1.469e7fa3.png)
 
 ![](https://www.xfyun.cn/doc/assets/img/manage2.cc025e41.png)
 
-?>**请注意**<br>
-并不是每个服务的管理面板都相同，不同的服务，有不同的管理面板的构成。另外也不是同时都具有SDK和API接口，有些服务只有API接口，而有些服务只有SDK。具体的可在对应的服务管理页中查看。
+> [!WARNING]
+>并不是每个服务的管理面板都相同，不同的服务，有不同的管理面板的构成。另外也不是同时都具有SDK和API接口，有些服务只有API接口，而有些服务只有SDK。具体的可在对应的服务管理页中查看。
 
 讯飞开放平台支持一个账户创建多个应用。当您需要返回应用列表页切换应用，可以点击页面左上角应用名称上方的返回按钮，或顶部右侧个人菜单中的「我的应用」。进入应用列表后，选择一个应用点击应用名称，即可进入这个应用对应的服务管理页。
 
@@ -155,49 +154,47 @@ https://www.volcengine.com/docs/6790/116978
 
 ![](https://www.xfyun.cn/doc/assets/img/BACK.75999ee8.png)
 
-?>**请注意**<br>
-若您的账号下有多个应用，您最后一次操作的应用将会被记录下来，作为下次回到讯飞开放平台时，各个服务操作的“默认选择”的应用。
-
+> [!WARNING]
+>若您的账号下有多个应用，您最后一次操作的应用将会被记录下来，作为下次回到讯飞开放平台时，各个服务操作的“默认选择”的应用。
 
 https://www.xfyun.cn/doc/platform/quickguide.html
 
 
-#### **Google Cloud Vision**
+== Google Cloud Vision
 
 https://cloud.google.com/vision/docs
 
-#### **docsumo**
+== docsumo
 
 https://www.docsumo.com/
 
-#### **ocrspace**
+== ocrspace
 
 https://ocr.space/
 
-#### **Gemini**
+== Gemini
 
-和[翻译](/zh/guochandamoxing?id=gemini)相同
+和[翻译](/zh/guochandamoxing.html#特定平台的专用接口)相同
 
-#### **ChatGPT兼容接口**
+== ChatGPT兼容接口
 
-和[翻译](/zh/guochandamoxing?id=chatgpt兼容接口)相同
+和[翻译](/zh/guochandamoxing.html#chatgpt兼容接口)相同
 
-
-<!-- tabs:end -->
+:::
 
 
 ## 离线OCR
 
 
-<!-- tabs:start -->
+::: tabs
 
-#### **manga-ocr**
+== manga-ocr
 
 CPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/cpu
 
 GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
-## 国内mangaocr整合包无法启动怎么办？
+#### 国内mangaocr整合包无法启动怎么办？
 
 首次启动start.bat时，会尝试从huggingface上下载模型，但是国内你懂的。
 
@@ -226,11 +223,11 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
 等待一会儿首次运行的下载模型和每次运行都需要的加载模型。显示“`* Running on http://127.0.0.1:5665`”表示服务已正常启动。
 
-#### **WeChat/QQ OCR**
+== WeChat/QQ OCR
 
 需要安装微信或新版QQ
 
-#### **WindowsOCR**
+== WindowsOCR
 
 ## <div id="windowsocr">WindowsOCR如何安装额外的语言支持？</div>
 
@@ -281,9 +278,8 @@ State : NotPresent
 
 https://learn.microsoft.com/zh-cn/windows/powertoys/text-extractor#supported-languages
 
-#### **Tesseract5**
+== Tesseract5
 
 https://github.com/tesseract-ocr/tesseract/releases
 
-<!-- tabs:end -->
-
+:::

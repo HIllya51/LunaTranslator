@@ -1,12 +1,12 @@
-## 如何使用大模型离线翻译？
+## Sakura大模型
 
-### Sakura大模型
-
-> 推荐使用，配置简单，效果好，也可以纯cpu运行轻量模型
+::: tip
+推荐使用，配置简单，效果好，也可以纯cpu运行轻量模型 
+:::
 
 部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki
 
-### ChatGPT兼容接口
+## ChatGPT兼容接口
 
 可以将**Sakura大模型**地址和模型填到这个的参数里面使用（相比起来只是多了些预设prompt等参数，其他无区别）
 

@@ -1,6 +1,16 @@
-## OCR Automation Execution Methods
+To accommodate the different text refresh methods of various games, the software offers four distinct methods to automatically capture screenshots from the game at a certain frequency.
 
-### Analyze Image Update
+
+## Periodic Execution
+
+::: tip
+If you find the parameters of the other settings difficult to understand, please use this method instead, as it is the simplest approach.
+:::
+
+This method executes periodically based on the “Execution Interval” and uses the “Text Similarity Threshold” to avoid translating the same text repeatedly.
+
+
+## Analyze Image Update
 
 This method utilizes parameters such as “Image Stability Threshold,” “Image Consistency Threshold,” and “Text Similarity Threshold.”
 
@@ -27,17 +37,12 @@ This method utilizes parameters such as “Image Stability Threshold,” “Imag
     After each OCR invocation, the current OCR result is compared to the previous OCR result (using edit distance). Only when the edit distance is greater than the threshold will the text be outputted.
 
 
-### Periodic Execution
-
-This method executes periodically based on the “Execution Interval” and uses the “Text Similarity Threshold” to avoid translating the same text repeatedly.
-
-
-### Analyze Image Update + Periodic Execution
+## Analyze Image Update + Periodic Execution
 
 Combining the above two methods, OCR is executed at least once every “Execution Interval.” It also employs the “Text Similarity Threshold” to avoid translating identical text. Additionally, OCR is performed within intervals based on “Analyze Image Update,” resetting the interval timer.
 
 
-### Mouse/Keyboard Trigger + Wait for Stability
+## Mouse/Keyboard Trigger + Wait for Stability
 
 1. #### Trigger Events
 

@@ -52,3 +52,6 @@ cpp/LunaHook/scripts/YY-Thunks-1.0.7-Binary.zip
 cpp/libs/YY-Thunks
 py/LunaTranslator/.vscode/settings.json
 py/files/yearsummary/yearsummary.value.js
+docs/.vitepress/cache
+docs/node_modules
+docs/.vitepress/dist

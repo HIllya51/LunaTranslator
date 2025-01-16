@@ -1,0 +1,32 @@
+/* .vitepress/theme/custom.css */
+:root {
+    --vp-home-hero-name-color: transparent;
+    --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #bd34fe, #41d1ff);
+}
+
+.VPImage.image-src {
+    border-radius: 25px;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0.5, rgba(255, 255, 255, 0.7));
+}
+
+.main a {
+    display: inline-block;
+}
+
+.custom-block-title {
+    display: none;
+}
+
+.main h2 {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: gainsboro;
+    margin-top: 0 !important;
+    line-height: 1.7;
+    font-size: 1.7em;
+    font-weight: 400;
+}
