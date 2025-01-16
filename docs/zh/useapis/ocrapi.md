@@ -1,8 +1,8 @@
 ## 在线OCR
 
-<!-- tabs:start -->
+::: tabs
 
-#### **百度**
+== 百度
 
 #### 百度智能云 OCR
 
@@ -16,7 +16,7 @@ https://ai.baidu.com/ai-doc/MT/dkifdqg54
 
 https://fanyi-api.baidu.com/product/22
 
-#### **腾讯**
+== 腾讯
 
 #### OCR 通用印刷体识别
 
@@ -26,7 +26,7 @@ https://cloud.tencent.com/document/product/866/33526
 
 https://cloud.tencent.com/document/product/551/17232
 
-#### **有道**
+== 有道
 
 ### 第一步：成为开发者 
 
@@ -56,7 +56,7 @@ https://cloud.tencent.com/document/product/551/17232
 
 https://ai.youdao.com/doc.s#guide
 
-#### **火山**
+== 火山
 
 #### 步骤1：成为开发者
 
@@ -123,7 +123,7 @@ STEP2：完成认证后，进入视觉智能控制台，选择接入能力
 
 https://www.volcengine.com/docs/6790/116978
 
-#### **讯飞**
+== 讯飞
 
 ### 第一步：注册成为开发者
 
@@ -162,42 +162,41 @@ https://www.volcengine.com/docs/6790/116978
 https://www.xfyun.cn/doc/platform/quickguide.html
 
 
-#### **Google Cloud Vision**
+== Google Cloud Vision
 
 https://cloud.google.com/vision/docs
 
-#### **docsumo**
+== docsumo
 
 https://www.docsumo.com/
 
-#### **ocrspace**
+== ocrspace
 
 https://ocr.space/
 
-#### **Gemini**
+== Gemini
 
-和[翻译](/zh/guochandamoxing?id=gemini)相同
+和[翻译](/zh/guochandamoxing.html#特定平台的专用接口)相同
 
-#### **ChatGPT兼容接口**
+== ChatGPT兼容接口
 
-和[翻译](/zh/guochandamoxing?id=chatgpt兼容接口)相同
+和[翻译](/zh/guochandamoxing.html#chatgpt兼容接口)相同
 
-
-<!-- tabs:end -->
+:::
 
 
 ## 离线OCR
 
 
-<!-- tabs:start -->
+::: tabs
 
-#### **manga-ocr**
+== manga-ocr
 
 CPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/cpu
 
 GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
-## 国内mangaocr整合包无法启动怎么办？
+### 国内mangaocr整合包无法启动怎么办？
 
 首次启动start.bat时，会尝试从huggingface上下载模型，但是国内你懂的。
 
@@ -226,11 +225,11 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
 等待一会儿首次运行的下载模型和每次运行都需要的加载模型。显示“`* Running on http://127.0.0.1:5665`”表示服务已正常启动。
 
-#### **WeChat/QQ OCR**
+== WeChat/QQ OCR
 
 需要安装微信或新版QQ
 
-#### **WindowsOCR**
+== WindowsOCR
 
 ## <div id="windowsocr">WindowsOCR如何安装额外的语言支持？</div>
 
@@ -281,9 +280,8 @@ State : NotPresent
 
 https://learn.microsoft.com/zh-cn/windows/powertoys/text-extractor#supported-languages
 
-#### **Tesseract5**
+== Tesseract5
 
 https://github.com/tesseract-ocr/tesseract/releases
 
-<!-- tabs:end -->
-
+:::

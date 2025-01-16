@@ -2,9 +2,9 @@
 ## 注册在线翻译
 
 
-<!-- tabs:start -->
+::: tabs
 
-#### **百度**
+== 百度
 
 #### 百度翻译开放平台
 
@@ -14,7 +14,7 @@ https://fanyi-api.baidu.com/product/11
 
 https://ai.baidu.com/ai-doc/MT/ykqq95r2y
 
-#### **腾讯**
+== 腾讯
 
 ### 登录控制台
 
@@ -41,7 +41,7 @@ https://ai.baidu.com/ai-doc/MT/ykqq95r2y
 
 https://cloud.tencent.com/document/product/551/104415
 
-#### **有道**
+== 有道
 
 ### 第一步：成为开发者 
 
@@ -71,13 +71,13 @@ https://cloud.tencent.com/document/product/551/104415
 
 https://ai.youdao.com/doc.s#guide
 
-#### **阿里**
+== 阿里
 
 **开通服务** https://www.aliyun.com/product/ai/alimt
 
 **创建密钥** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
 
-#### **彩云**
+== 彩云
 
 如果你要测试，可以使用 `3975l6lr5pcbvidl6jl2` 作为测试 Token，我们不保证该 Token 的可用性，所以如果要持续使用，还请申请正式 Token。
 
@@ -87,7 +87,7 @@ https://ai.youdao.com/doc.s#guide
 
 https://docs.caiyunapp.com/lingocloud-api/#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C
 
-#### **火山**
+== 火山
 
 ### 开通服务
 
@@ -125,15 +125,15 @@ https://docs.caiyunapp.com/lingocloud-api/#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%
 
 https://www.volcengine.com/docs/4640/127684
 
-#### **谷歌**
+== 谷歌
 
 https://cloud.google.com/translate/docs/basic/translating-text
 
-#### **DeepL**
+== DeepL
 
 https://www.deepl.com/en/products/api
 
-#### **Azure**
+== Azure
 
 
 https://learn.microsoft.com/en-us/azure/ai-services/translator/reference/v3-0-reference#authentication
@@ -142,31 +142,31 @@ https://learn.microsoft.com/en-us/azure/ai-services/translator/reference/v3-0-re
 
 **Location** Ocp-Apim-Subscription-Region
 
-#### **小牛**
+== 小牛
 
 https://niutrans.com/cloud/api/list
 
-#### **yandex**
+== yandex
 
 https://yandex.cloud/en/services/translate
 
-#### **华为云**
+== 华为云
 
 https://www.huaweicloud.com/product/nlpmt.html
 
 
-#### **IBM**
+== IBM
 
 https://cloud.ibm.com/apidocs/language-translator
 
-<!-- tabs:end -->
+:::
 
 
 ## 免注册在线翻译
 
-<!-- tabs:start -->
+::: tabs
 
-#### **DeepL/DeepLX**
+== DeepL/DeepLX
 
 有`DeepL`和`DeepLX`两种类型
 
@@ -174,8 +174,8 @@ https://cloud.ibm.com/apidocs/language-translator
 
 `DeepLX`需要在[DeepLX](https://github.com/OwO-Network/DeepLX)下载后自行部署，并填入`DeepLX api`以使用。
 
-#### **lingva**
+== lingva
 
 默认host为`translate.plausibility.cloud`，也可以在[lingva-translate](https://github.com/thedaviddelta/lingva-translate)自行部署后填入自己的域名。
 
-<!-- tabs:end -->
+:::

@@ -171,7 +171,7 @@ https://ocr.space/
 
 #### **Gemini**
 
-Same as [Translation](/en/guochandamoxing?id=gemini)
+Same as [Translation](/en/guochandamoxing)
 
 #### **ChatGPT Compatible Interface**
 

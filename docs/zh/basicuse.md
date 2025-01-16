@@ -1,6 +1,4 @@
 
-## 最基本的使用
- 
 启动后的界面如下。
 
 ![img](https://image.lunatranslator.org/zh/basicuse/startup2.png) 
