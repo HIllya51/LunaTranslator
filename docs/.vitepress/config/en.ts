@@ -8,6 +8,10 @@ export const en = defineConfig({
             { text: "Vedio Tutorial", link: "https://www.youtube.com/results?search_query=LunaTranslator" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" }
         ],
+        editLink: {
+            pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
+            text: 'Edit this page on GitHub'
+        },
         sidebar: [
             {
                 text: 'Basic',
