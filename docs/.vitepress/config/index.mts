@@ -20,6 +20,9 @@ window.onload = function () {
     }
   }
 }
+function openlink(url) {
+    window.open(window.location.protocol + '//' + window.location.hostname.substring(5) + '/' + url, "_blank")
+}
       `]
   ],
   rewrites: {
