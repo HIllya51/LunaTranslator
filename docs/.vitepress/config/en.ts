@@ -9,7 +9,7 @@ export const en = defineConfig({
         nav: [
             { text: "HomePage", link: "https://lunatranslator.org/" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
-            { text: "Support Author", link: "/en/support" },
+            { text: "Sponsorship", link: "/en/support" },
         ],
         editLink: {
             pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
@@ -23,7 +23,7 @@ export const en = defineConfig({
                     { text: 'Unable to Start the Software', link: '/en/cantstart' },
                     { text: 'Basic Usage', link: '/en/basicuse' },
                     { text: 'Software Update', link: '/en/update' },
-                    { text: 'Support Author', link: '/en/support' }
+                    { text: 'Sponsorship', link: '/en/support' }
                 ]
             },
             {

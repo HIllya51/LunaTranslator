@@ -54,6 +54,6 @@ Supports almost all conceivable translation engines, including:
 
 - **Anki** Supports one-click addition of words to Anki
 
-## Support author
+## Sponsorship
  
 If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
