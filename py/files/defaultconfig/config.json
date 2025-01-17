@@ -16,7 +16,7 @@
     "read_translator2": "",
     "disappear_delay": 5,
     "network": 1,
-    "useextrahtml": true,
+    "useextrahtml": false,
     "ocrselectalpha": 0.3,
     "is_search_word_auto_tts": false,
     "network_websocket": 1,
