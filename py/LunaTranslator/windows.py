@@ -788,24 +788,6 @@ IsZoomed = _user32.IsZoomed
 IsZoomed.argtypes = (HWND,)
 IsZoomed.restype = BOOL
 
-WNDPROCTYPE = WINFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
-WNDPROCTYPE_1 = CFUNCTYPE(INT, HWND, INT, WPARAM, LPARAM)
-
-GWLP_WNDPROC = -4
-if sizeof(c_void_p) == 8:
-    SetWindowLongPtr = _user32.SetWindowLongPtrW
-    GetWindowLongPtr = _user32.GetWindowLongPtrW
-else:
-    SetWindowLongPtr = _user32.SetWindowLongW
-    GetWindowLongPtr = _user32.GetWindowLongW
-SetWindowLongPtr.argtypes = HWND, INT, c_void_p
-SetWindowLongPtr.restype = c_void_p
-GetWindowLongPtr.argtypes = HWND, INT
-GetWindowLongPtr.restype = c_void_p
-WM_LBUTTONDOWN = 0x0201
-WM_COMMAND = 0x0111
-WM_LBUTTONUP = 0x0202
-WM_MOUSEMOVE = 0x0200
 
 FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x100
 FORMAT_MESSAGE_FROM_HMODULE = 0x800
