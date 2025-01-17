@@ -287,7 +287,7 @@ class TextBrowser(QWidget, dataget):
         fmori, fsori, boldori = self._getfontinfo(textype)
         fmkana, fskana, boldkana = self._getfontinfo_kana()
         kanacolor = self._getkanacolor()
-        line_height = self.measureH(fmori, fsori) + (
+        lineHeight = self.measureH(fmori, fsori) + (
             globalconfig["extra_space"]
             if (textype == TextType.Origin)
             else globalconfig["extra_space_trans"]
@@ -313,7 +313,7 @@ class TextBrowser(QWidget, dataget):
                 isshowhira=isshowhira,
                 isshow_fenci=isshow_fenci,
                 isfenciclick=isfenciclick,
-                line_height=line_height,
+                lineHeight=lineHeight,
             )
             self.create_internal_rubytext(style, styleargs, _id, tag, args)
         else:
@@ -327,7 +327,7 @@ class TextBrowser(QWidget, dataget):
                 fontSize=fsori,
                 bold=boldori,
                 color=color,
-                lineHeight=line_height,
+                lineHeight=lineHeight,
                 userawhtml=userawhtml,
             )
 

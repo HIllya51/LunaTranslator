@@ -73,7 +73,6 @@
         return 'luna' + Math.random().toString(36).substr(2, 9);
     }
     function commoninit_font_align_height(ele, args) {
-        //字体使用pt，高度/距离使用px
         if (args.lineHeight > 0)
             ele.style.lineHeight = args.lineHeight + 'px'
         ele.style.fontFamily = args.fontFamily
@@ -316,14 +315,14 @@
         let isshowhira = args.isshowhira
         let isshow_fenci = args.isshow_fenci
         let isfenciclick = args.isfenciclick
-        let line_height = args.line_height
+        let lineHeight = args.lineHeight
         let ele = document.getElementById(_id)
         ele.classList.add('centercontrol')
         let tags = _splittags(tag)
         tags.forEach(tag => {
             let mayberuby = []
             tag.forEach(word => {
-                let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: line_height })
+                let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: lineHeight })
 
                 if ((isshow_fenci || isfenciclick) && word.hira.trim().length) {
                     let div = document.createElement('div')
