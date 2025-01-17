@@ -44,9 +44,7 @@ class TextBrowser(QWidget, dataget):
             _TR("朗读"),
             lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
         )
-        self.webivewwidget.add_menu_noselect(
-            0, _TR("清空"), lambda: self.parent().clear()
-        )
+        self.webivewwidget.add_menu_noselect(0, _TR("清空"), self.___cleartext)
         self.webivewwidget.set_transparent_background()
         self.webivewwidget.dropfilecallback.connect(self.dropfilecallback)
         self.webivewwidget.bind(
@@ -60,6 +58,10 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer = {}
         self.isfirst = True
         self.flags = {}
+
+    def ___cleartext(self):
+        self.parent().clear()
+        gobject.baseobject.currenttext = ""
 
     def resetflags(self):
         for k, v in self.flags.items():

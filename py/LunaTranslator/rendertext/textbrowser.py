@@ -192,6 +192,7 @@ class TextBrowser(QWidget, dataget):
         action = menu.exec(QCursor.pos())
         if action == search:
             self.parent().clear()
+            gobject.baseobject.currenttext = ""
 
     def showmenu(self, p):
         curr = self.textbrowser.textCursor().selectedText()
