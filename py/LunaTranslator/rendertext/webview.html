@@ -1,15 +1,6 @@
-<div id="luna_root_div">
-</div>
-<div id="luna_extra_html_div">
-</div>
+<div id="luna_root_div"></div>
 <div id="luna_overlay_div"></div>
 <div id="luna_atback_div"></div>
-<script>
-    const atbackid = 'luna_atback_div';
-    const overlayid = 'luna_overlay_div';
-    const rootdivid = 'luna_root_div';
-    const extra_html_divid = "luna_extra_html_div";
-</script>
 <style>
     #luna_overlay_div {
         position: absolute;
@@ -276,7 +267,7 @@
             divx.appendChild(div)
             div = divx
         }
-        document.getElementById(rootdivid).appendChild(div);
+        document.getElementById('luna_root_div').appendChild(div);
     }
     function _create_internal_text(style, styleargsjson, _id, textu, argsjson) {
         let ele = document.getElementById(_id)
@@ -396,31 +387,11 @@
 
     }
     function _clear_all() {
-        document.getElementById(rootdivid).innerHTML = "";
-    }
-    function _runScript(script) {
-        let newScript = document.createElement('script');
-        newScript.innerHTML = script.innerHTML;
-        let src = script.getAttribute('src');
-        if (src) newScript.setAttribute('src', src);
-        document.head.appendChild(newScript);
-        document.head.removeChild(newScript);
-    }
-
-    function _setHTMLWithScript(container, rawHTML) {
-        container.innerHTML = rawHTML;
-        let scripts = container.querySelectorAll('script');
-        for (let script of scripts) {
-            _runScript(script);
-        }
-    }
-    function _set_extra_html(htmlx) {
-        _setHTMLWithScript(document.getElementById(extra_html_divid), decodeURIComponent(htmlx))
-
+        document.getElementById('luna_root_div').innerHTML = "";
     }
     function _setselectable(b) {
-        document.getElementById(rootdivid).style.userSelect = b ? 'text' : 'none';
-        document.getElementById(overlayid).style.display = b ? 'none' : 'block';
+        document.getElementById('luna_root_div').style.userSelect = b ? 'text' : 'none';
+        document.getElementById('luna_overlay_div').style.display = b ? 'none' : 'block';
     }
     function isPointOverText(x, y) {
         //https://stackoverflow.com/questions/10389459/is-there-a-way-to-detect-if-im-hovering-over-text
@@ -460,12 +431,18 @@
         if (window.calllunaMouseRelease)
             window.calllunaMouseRelease(e.button, e.clientX, e.clientY)
     });
+    document.addEventListener('mouseleave', function (e) {
+        if (window.calllunaMouseRelease)
+            window.calllunaMouseRelease(e.button, e.clientX, e.clientY)
+    });
     function _switchcursor(cursor) {
-        document.getElementById(atbackid).style.cursor = cursor
-        document.getElementById(overlayid).style.cursor = cursor
+        document.getElementById('luna_atback_div').style.cursor = cursor
+        document.getElementById('luna_overlay_div').style.cursor = cursor
+        document.body.style.cursor = cursor
 
     }
 </script>
+__PLACEHOLDER_EXTRA_HTML_
 <script>
     //api
     setselectable = _setselectable
@@ -477,9 +454,10 @@
     create_internal_text = _create_internal_text;
     create_internal_rubytext = _create_internal_rubytext;
     clear_all = _clear_all
-    set_extra_html = _set_extra_html
     switchcursor = _switchcursor
 </script>
 
 <script>
+    if (window.calllunaloadready)
+        window.calllunaloadready()
 </script>

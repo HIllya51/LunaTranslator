@@ -39,15 +39,14 @@ class TextBrowser(QWidget, dataget):
             _TR("翻译"),
             lambda w: gobject.baseobject.textgetmethod(w.replace("\n", "").strip()),
         )
-        self.webivewwidget.navigate(
-            os.path.abspath(r"LunaTranslator\rendertext\webview.html")
-        )
         self.webivewwidget.add_menu(
             2,
             _TR("朗读"),
             lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
         )
-        self.webivewwidget.add_menu_noselect(0, _TR("清空"), self.clear)
+        self.webivewwidget.add_menu_noselect(
+            0, _TR("清空"), lambda: self.parent().clear()
+        )
         self.webivewwidget.set_transparent_background()
         self.webivewwidget.dropfilecallback.connect(self.dropfilecallback)
         self.webivewwidget.bind(
@@ -57,8 +56,15 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.bind("calllunaMousePress", self.calllunaMousePress)
         self.webivewwidget.bind("calllunaMouseRelease", self.calllunaMouseRelease)
         self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
+        self.webivewwidget.bind("calllunaloadready", self.resetflags)
         self.saveiterclasspointer = {}
         self.isfirst = True
+        self.flags = {}
+
+    def resetflags(self):
+        for k, v in self.flags.items():
+            self.debugeval("{}({})".format(k, int(v)))
+        self.parent().refreshcontent()
 
     def switchcursor(self, cursor):
         cursor_map = {
@@ -93,11 +99,28 @@ class TextBrowser(QWidget, dataget):
         if not isinstance(self.webivewwidget, WebivewWidget):
             return
         self.isfirst = False
-        self.loadextra(0)
-        self.webivewwidget.on_load.connect(self.loadextra)
+        self.loadex()
         gobject.baseobject.translation_ui.cursorSet.connect(self.switchcursor)
 
-    def loadextra(self, _):
+    def loadex(self, extra=None):
+        if not extra:
+            extra = self.loadextra()
+            extra = extra if extra else ""
+        with open(
+            r"LunaTranslator\rendertext\webview.html", "r", encoding="utf8"
+        ) as ff:
+            html = ff.read().replace("__PLACEHOLDER_EXTRA_HTML_", extra)
+        with open(
+            r"LunaTranslator\rendertext\webview_parsed.html", "w", encoding="utf8"
+        ) as ff:
+            ff.write(html)
+        self.webivewwidget.navigate(
+            os.path.abspath(r"LunaTranslator\rendertext\webview_parsed.html")
+        )
+
+    def loadextra(self):
+        if not globalconfig["useextrahtml"]:
+            return
         for _ in [
             "userconfig/extrahtml.html",
             r"LunaTranslator\rendertext\exampleextrahtml.html",
@@ -105,8 +128,7 @@ class TextBrowser(QWidget, dataget):
             if not os.path.exists(_):
                 continue
             with open(_, "r", encoding="utf8") as ff:
-                self.set_extra_html(ff.read())
-            break
+                return ff.read()
 
     def debugeval(self, js):
         # print(js)
@@ -115,31 +137,29 @@ class TextBrowser(QWidget, dataget):
     # js api
     def setselectable(self, b):
         self.debugeval("setselectable({})".format(int(b)))
+        self.flags["setselectable"] = b
 
     def showatcenter(self, show):
-        self.debugeval('showatcenter("{}")'.format(int(show)))
+        self.debugeval("showatcenter({})".format(int(show)))
+        self.flags["showatcenter"] = show
 
     def showhidetranslate(self, show):
-        self.debugeval('showhidetranslate("{}")'.format(int(show)))
+        self.debugeval("showhidetranslate({})".format(int(show)))
+        self.flags["showhidetranslate"] = show
 
     def showhideorigin(self, show):
-        self.debugeval('showhideorigin("{}")'.format(int(show)))
+        self.debugeval("showhideorigin({})".format(int(show)))
+        self.flags["showhideorigin"] = show
 
     def showhideerror(self, show):
-        self.debugeval('showhideerror("{}")'.format(int(show)))
+        self.debugeval("showhideerror({})".format(int(show)))
+        self.flags["showhideerror"] = show
 
     def create_div_line_id(self, _id, textype: TextType):
         self.debugeval('create_div_line_id("{}",{})'.format(_id, textype))
 
     def clear_all(self):
         self.debugeval("clear_all()")
-
-    def set_extra_html(self, html):
-        if not globalconfig["useextrahtml"]:
-            self.debugeval('set_extra_html("")')
-            return
-        html = quote(html)
-        self.debugeval('set_extra_html("{}")'.format(html))
 
     def create_internal_text(self, style, styleargs, _id, text, args):
         text = quote(text)

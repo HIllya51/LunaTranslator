@@ -55,3 +55,4 @@ py/files/yearsummary/yearsummary.value.js
 docs/.vitepress/cache
 docs/node_modules
 docs/.vitepress/dist
+py/LunaTranslator/rendertext/webview_parsed.html

@@ -62,7 +62,7 @@ class extrahtml(saveposwindow):
 
     @tryprint
     def applyhtml(self, _):
-        gobject.baseobject.translation_ui.translate_text.textbrowser.set_extra_html(
+        gobject.baseobject.translation_ui.translate_text.textbrowser.loadex(
             self.vistext.toPlainText()
         )
 
@@ -188,9 +188,7 @@ def resetgroudswitchcallback(self, group):
             globalconfig,
             "useextrahtml",
             callback=lambda x: [
-                gobject.baseobject.translation_ui.translate_text.textbrowser.loadextra(
-                    0
-                ),
+                gobject.baseobject.translation_ui.translate_text.textbrowser.loadex(),
                 _btn.setEnabled(x),
             ],
         )
