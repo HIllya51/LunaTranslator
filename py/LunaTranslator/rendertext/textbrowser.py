@@ -72,6 +72,10 @@ class QTextBrowser_1(QTextEdit):
             return label
 
     def mousePressEvent(self, ev: QMouseEvent):
+        if ev.button() == Qt.MouseButton.LeftButton:
+            c = self.textCursor()
+            c.clearSelection()
+            self.setTextCursor(c)
         self.prpos = ev.pos()
         if self.ismousehastext(ev):
             return super().mousePressEvent(ev)
