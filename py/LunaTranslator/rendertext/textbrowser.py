@@ -67,6 +67,8 @@ class QTextBrowser_1(QTextEdit):
 
     def getcurrlabel(self, ev: QMouseEvent):
         for label in self.parent().searchmasklabels:
+            if not label.isVisible():
+                continue
             if not label.geometry().contains(ev.pos()):
                 continue
             return label
