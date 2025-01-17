@@ -49,7 +49,6 @@ export const ja = defineConfig({
             label: "ページナビゲーション"
         },
         footer: {
-            message: "<a href='support'>作者を支援する</a>",
             copyright: `GPLv3ライセンスに基づいて公開`
         },
         editLink: {
@@ -71,8 +70,8 @@ export const ja = defineConfig({
         },
         nav: [
             { text: "公式サイト", link: "/README" },
-            { text: "ビデオチュー", link: "https://www.youtube.com/results?search_query=LunaTranslator" },
-            { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" }
+            { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
+            { text: "作者を支援する", link: "/ja/support" },
         ],
         sidebar: [
             {
@@ -82,7 +81,7 @@ export const ja = defineConfig({
                     { text: 'ソフトウェアが起動しない', link: '/ja/cantstart' },
                     { text: '基本的な使用方法', link: '/ja/basicuse' },
                     { text: 'ソフトウェアの更新', link: '/ja/update' },
-                    { text: '作者をサポートする', link: '/ja/support' }
+                    { text: '作者を支援する', link: '/ja/support' }
                 ]
             },
             {

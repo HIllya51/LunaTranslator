@@ -50,7 +50,6 @@ export const zh = defineConfig({
             label: "页面导航"
         },
         footer: {
-            message: "<a href='support'>支持作者</a>",
             copyright: `基于 GPLv3 许可发布`
         },
 
@@ -74,7 +73,8 @@ export const zh = defineConfig({
         nav: [
             { text: "官方网站", link: "https://lunatranslator.org/" },
             { text: "视频教学", link: "https://space.bilibili.com/592120404/video" },
-            { text: "QQ群963119821", link: "https://qm.qq.com/q/I5rr3uEpi2" }
+            { text: "QQ群963119821", link: "https://qm.qq.com/q/I5rr3uEpi2" },
+            { text: "支持作者", link: "/zh/support" },
         ],
         sidebar: [
             {

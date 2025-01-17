@@ -4,13 +4,12 @@ export const en = defineConfig({
 
     themeConfig: {
         footer: {
-            message: "<a href='support'>Support the author</a>",
             copyright: `Released under the GPLv3 license`
         },
         nav: [
             { text: "HomePage", link: "https://lunatranslator.org/" },
-            { text: "Vedio Tutorial", link: "https://www.youtube.com/results?search_query=LunaTranslator" },
-            { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" }
+            { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
+            { text: "Support Author", link: "/en/support" },
         ],
         editLink: {
             pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
