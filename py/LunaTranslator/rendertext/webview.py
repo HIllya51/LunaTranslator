@@ -184,9 +184,6 @@ class TextBrowser(QWidget, dataget):
         )
 
     def calllunaheightchange(self, h):
-        extra_space = globalconfig["extra_space"]
-        extra_space_trans = globalconfig["extra_space_trans"]
-        h += -min(0, extra_space, extra_space_trans)
         self.contentsChanged.emit(
             QSize(
                 self.width(),
