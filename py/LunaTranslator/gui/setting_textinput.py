@@ -127,7 +127,6 @@ def gethookgrid_em(self):
                 callback=lambda: listediter(
                     self,
                     "正则匹配",
-                    "正则",
                     globalconfig["embedded"]["safecheckregexs"],
                 ),
                 icon="fa.gear",

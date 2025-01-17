@@ -198,7 +198,7 @@ class TableViewW(QTableView):
             if index.row() in skip:
                 continue
             skip.append(index.row())
-        skip = reversed(sorted(skip))
+        skip = list(reversed(sorted(skip)))
 
         for row in skip:
             self.model().removeRow(row)
@@ -1940,7 +1940,6 @@ class listediter(LDialog):
         self,
         parent,
         title,
-        header,
         lst,
         closecallback=None,
         ispathsedit=None,
@@ -1960,13 +1959,10 @@ class listediter(LDialog):
         try:
             self.setWindowTitle(title)
             model = LStandardItemModel()
-            model.setHorizontalHeaderLabels([header])
             self.hcmodel = model
             self.namemapfunction = namemapfunction
             table = TableViewW()
-            table.horizontalHeader().setSectionResizeMode(
-                QHeaderView.ResizeMode.ResizeToContents
-            )
+            table.horizontalHeader().setVisible(False)
             table.horizontalHeader().setStretchLastSection(True)
             if isrankeditor or (not (ispathsedit is None)) or self.candidates:
                 table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -2143,19 +2139,27 @@ class listediterline(QWidget):
     def setText(self, t):
         return self.edit.setText(t)
 
-    def __init__(self, name, header, reflist, ispathsedit=None, directedit=False):
+    def __init__(
+        self,
+        name,
+        reflist,
+        ispathsedit=None,
+        directedit=False,
+        specialklass=None,
+    ):
         super().__init__()
         self.edit = ClickableLine()
         self.reflist = reflist
-        self.setText("|".join(reflist))
+        self.setText("|".join((str(_) for _ in reflist)))
         hbox = QHBoxLayout(self)
         hbox.setContentsMargins(0, 0, 0, 0)
         hbox.addWidget(self.edit)
+        if not specialklass:
+            specialklass = listediter
         callback = functools.partial(
-            listediter,
+            specialklass,
             self,
             name,
-            header,
             reflist,
             closecallback=self.callback,
             ispathsedit=ispathsedit,
@@ -2180,7 +2184,7 @@ class listediterline(QWidget):
 
     def callback(self, changed):
         if changed:
-            self.setText("|".join(self.reflist))
+            self.setText("|".join((str(_) for _ in self.reflist)))
         if self.directedit:
             self.edit.setReadOnly(False)
 
@@ -2225,7 +2229,6 @@ def getsimplepatheditor(
     if multi:
         e = listediterline(
             name,
-            header,
             reflist,
             dict(isdir=isdir, multi=False, filter1=filter1, dirorfile=dirorfile),
         )

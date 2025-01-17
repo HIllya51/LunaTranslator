@@ -816,7 +816,6 @@ class dialog_setting_game_internal(QWidget):
                 (showname),
                 listediterline(
                     showname,
-                    showname,
                     savehook_new_data[gameuid][key],
                     ispathsedit=dict(filter1=filt),
                 ),
@@ -1041,12 +1040,12 @@ class dialog_setting_game_internal(QWidget):
         autoinitdialog(
             self,
             __d,
-            ("预处理方法"),
+            "预处理方法",
             400,
             [
                 {
                     "type": "combo",
-                    "name": ("预处理方法"),
+                    "name": "预处理方法",
                     "k": "k",
                     "list": __viss,
                 },
@@ -1118,8 +1117,7 @@ class dialog_setting_game_internal(QWidget):
         settinglayout.addRow(
             "特殊码",
             listediterline(
-                ("特殊码"),
-                ("特殊码"),
+                "特殊码",
                 savehook_new_data[gameuid]["needinserthookcode"],
             ),
         )
@@ -1181,6 +1179,73 @@ class dialog_setting_game_internal(QWidget):
                 callback=lambda x: gobject.baseobject.textsource.setsettings(),
             ),
         )
+
+        if savehook_new_data[gameuid].get("embedablehook"):
+            box = QGroupBox()
+            settinglayout = LFormLayout(box)
+
+            settinglayout.addRow(
+                "内嵌翻译上下文",
+                listediterline(
+                    "内嵌翻译上下文",
+                    savehook_new_data[gameuid]["embedablehook"],
+                    specialklass=embeddisabler,
+                ),
+            )
+            formLayout.addRow(box)
+
+
+@Singleton_close
+class embeddisabler(LDialog):
+
+    def __init__(
+        self,
+        parent,
+        name,
+        lst,
+        closecallback=None,
+        **useless,
+    ) -> None:
+        super().__init__(parent)
+        self.setWindowFlags(
+            self.windowFlags() & ~Qt.WindowType.WindowContextHelpButtonHint
+        )
+        self.lst = lst
+        self.closecallback = closecallback
+
+        self.setWindowTitle(name)
+        model = LStandardItemModel()
+        self.hcmodel = model
+        table = TableViewW()
+        table.horizontalHeader().setVisible(False)
+        table.horizontalHeader().setStretchLastSection(True)
+        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setWordWrap(False)
+        table.setModel(model)
+
+        self.hctable = table
+        formLayout = QVBoxLayout(self)
+        formLayout.addWidget(self.hctable)
+        for row, k in enumerate(lst):
+            item = QStandardItem(str(k))
+            self.hcmodel.insertRow(row, [item])
+        self.buttons = threebuttons(texts=["删除行"])
+        self.buttons.btn1clicked.connect(self.clicked2)
+        formLayout.addWidget(self.buttons)
+        self.resize(600, self.sizeHint().height())
+        self.show()
+        self.changed = False
+
+    def clicked2(self):
+        skip = self.hctable.removeselectedrows()
+        for row in skip:
+            self.lst.pop(row)
+            self.changed = True
+
+    def closeEvent(self, a0):
+        self.closecallback(self.changed)
 
 
 def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:

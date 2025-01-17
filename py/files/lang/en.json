@@ -770,5 +770,6 @@
     "加亮": "Highlight",
     "还原": "restore",
     "加亮模式": "Highlight mode",
-    "清除加亮": "Clear Highlight"
+    "清除加亮": "Clear Highlight",
+    "内嵌翻译上下文": "Embedded translation context"
 }

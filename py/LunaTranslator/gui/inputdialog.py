@@ -532,12 +532,7 @@ class autoinitdialog(LDialog):
                     __list = dd[key].split("|")
                 else:
                     __list = dd[key].copy()
-                lineW = listediterline(
-                    line["name"],
-                    line.get("header", line["name"]),
-                    __list,
-                    directedit=directedit,
-                )
+                lineW = listediterline(line["name"], __list, directedit=directedit)
 
                 def __getv(l, directedit):
                     if directedit:

@@ -269,8 +269,7 @@ def vistranslate_rank(self):
         globalconfig["fix_translate_rank_rank"].pop(_)
     listediter(
         self,
-        ("显示顺序"),
-        ("显示顺序"),
+        "显示顺序",
         globalconfig["fix_translate_rank_rank"],
         isrankeditor=True,
         namemapfunction=lambda k: _TR(getannotatedapiname(k)),

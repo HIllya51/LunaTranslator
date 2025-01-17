@@ -415,7 +415,6 @@ class AnkiWindow(QWidget):
         listediter(
             self,
             "不添加辞书",
-            "不添加辞书",
             globalconfig["ignoredict"],
             candidates=list(globalconfig["cishu"].keys()),
             namemapfunction=lambda k: globalconfig["cishu"][k]["name"],
@@ -585,7 +584,6 @@ class AnkiWindow(QWidget):
                                                 lambda: listediter(
                                                     self,
                                                     "DeckName",
-                                                    "DeckName",
                                                     globalconfig["ankiconnect"][
                                                         "DeckNameS"
                                                     ],
@@ -624,9 +622,7 @@ class AnkiWindow(QWidget):
                                 [
                                     LLabel("标签"),
                                     listediterline(
-                                        "标签",
-                                        "标签",
-                                        globalconfig["ankiconnect"]["tags"],
+                                        "标签", globalconfig["ankiconnect"]["tags"]
                                     ),
                                 ]
                             ),

@@ -112,7 +112,6 @@ def vistranslate_rank(self):
     listediter(
         self,
         "显示顺序",
-        "显示顺序",
         globalconfig["cishuvisrank"],
         isrankeditor=True,
         namemapfunction=lambda k: _TR(globalconfig["cishu"][k]["name"]),
@@ -234,10 +233,10 @@ def setTabcishu_l(self):
                     enable=globalconfig["isshowrawtext"],
                     grid=(
                         [
-                            ("显示注音"),
+                            "显示注音",
                             D_getsimpleswitch(globalconfig, "isshowhira"),
                             "",
-                            ("颜色"),
+                            "颜色",
                             D_getcolorbutton(
                                 globalconfig,
                                 "jiamingcolor",
@@ -274,10 +273,10 @@ def setTabcishu_l(self):
                                 "hira_vis_type",
                             ),
                             "",
-                            ("语法加亮"),
+                            "语法加亮",
                             D_getsimpleswitch(globalconfig, "show_fenci"),
                             "",
-                            ("词性颜色"),
+                            "词性颜色",
                             D_getIconButton(
                                 callback=lambda: multicolorset(self),
                                 icon="fa.gear",
@@ -311,21 +310,21 @@ def setTabcishu_l(self):
                             "",
                         ],
                         [
-                            ("点击单词查词"),
+                            "点击单词查词",
                             (
                                 D_getsimpleswitch(globalconfig, "usesearchword"),
                                 1,
                             ),
                             "",
                             "",
-                            ("点击单词复制"),
+                            "点击单词复制",
                             (
                                 D_getsimpleswitch(globalconfig, "usecopyword"),
                                 1,
                             ),
                             "",
                             "",
-                            ("使用原型查询"),
+                            "使用原型查询",
                             (
                                 D_getsimpleswitch(globalconfig, "usewordorigin"),
                                 1,
