@@ -50,7 +50,7 @@ Supports almost all conceivable translation engines, including:
 
 - **Japanese Word Segmentation and Kana Display** Supports word segmentation and kana display using Mecab, etc.
 
-- **Vocabulary Lookup** Supports **offline dictionaries** (MDICT, Shougakukan, Lingoes Dictionary, EDICT/EDICT2) and **online dictionaries** (Youdao, weblio, Goo, Moji, jisho, JapanDict) for word lookup
+- **Vocabulary Lookup** Supports **offline dictionaries** (MDICT) and **online dictionaries** (Youdao, weblio, Goo, Moji, jisho, JapanDict, ChatGPT) for word lookup
 
 - **Anki** Supports one-click addition of words to Anki
 

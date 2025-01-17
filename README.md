@@ -52,7 +52,7 @@
 
 - **日语分词及假名显示** 支持使用 Mecab 等分词和显示假名
 
-- **查词** 支持使用 **离线辞书** ( MDICT、小学馆、灵格斯词典、EDICT/EDICT2 ) 和 **在线辞书** ( 有道、weblio、Goo、Moji、jisho、JapanDict ) 进行单词查询
+- **查词** 支持使用 **离线辞书** ( MDICT ) 和 **在线辞书** ( 有道、weblio、Goo、Moji、jisho、JapanDict、ChatGPT) 进行单词查询
 
 - **Anki** 支持使用一键添加单词到anki中
 
