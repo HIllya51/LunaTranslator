@@ -335,9 +335,9 @@ class TextBrowser(QWidget, dataget):
     def setselectable(self, b):
         self.masklabel.setHidden(b)
 
-    def _createqfont(self, textype: TextType):
+    def _createqfont(self, texttype: TextType):
 
-        fm, fs, bold = self._getfontinfo(textype)
+        fm, fs, bold = self._getfontinfo(texttype)
         font = QFont()
         font.setFamily(fm)
         font.setPointSizeF(fs)
@@ -603,8 +603,8 @@ class TextBrowser(QWidget, dataget):
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
 
-    def _setlineheight(self, b1, b2, textype: TextType):
-        if textype == TextType.Origin:
+    def _setlineheight(self, b1, b2, texttype: TextType):
+        if texttype == TextType.Origin:
             fh = globalconfig["extra_space"]
         else:
             fh = globalconfig["extra_space_trans"]

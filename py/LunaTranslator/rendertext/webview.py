@@ -158,8 +158,8 @@ class TextBrowser(QWidget, dataget):
         self.debugeval("showhideerror({})".format(int(show)))
         self.flags["showhideerror"] = show
 
-    def create_div_line_id(self, _id, textype: TextType):
-        self.debugeval('create_div_line_id("{}",{})'.format(_id, textype))
+    def create_div_line_id(self, _id, texttype: TextType):
+        self.debugeval('create_div_line_id("{}",{})'.format(_id, texttype))
 
     def clear_all(self):
         self.debugeval("clear_all()")
@@ -266,24 +266,24 @@ class TextBrowser(QWidget, dataget):
         args = quote(json.dumps(args))
         self.debugeval('setfontstyle("{}");'.format(args))
 
-    def iter_append(self, iter_context_class, textype: TextType, text, color):
+    def iter_append(self, iter_context_class, texttype: TextType, text, color):
 
         if iter_context_class not in self.saveiterclasspointer:
-            _id = self.createtextlineid(textype)
+            _id = self.createtextlineid(texttype)
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
-        self._webview_append(_id, textype, text, [], [], color)
+        self._webview_append(_id, text, [], [], color)
 
-    def createtextlineid(self, textype: TextType):
+    def createtextlineid(self, texttype: TextType):
 
         _id = "luna_{}".format(uuid.uuid4())
-        self.create_div_line_id(_id, textype)
+        self.create_div_line_id(_id, texttype)
         return _id
 
-    def append(self, textype: TextType, text, tag, flags, color):
-        _id = self.createtextlineid(textype)
-        self._webview_append(_id, textype, text, tag, flags, color)
+    def append(self, texttype: TextType, text, tag, flags, color):
+        _id = self.createtextlineid(texttype)
+        self._webview_append(_id, text, tag, flags, color)
 
     def measureH(self, font_family, font_size, bold):
         font = QFont()
@@ -302,20 +302,16 @@ class TextBrowser(QWidget, dataget):
             ]["webview"][0]
         return currenttype
 
-    def _webview_append(self, _id, textype: TextType, text: str, tag, flags, color):
-        _, fsori, _ = self._getfontinfo(textype)
+    def _webview_append(self, _id, text: str, tag, flags, color):
         style = self._getstylevalid()
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
         if len(tag):
-            _, fskana, _ = self._getfontinfo_kana()
             isshowhira, isshow_fenci, isfenciclick = flags
             if isshow_fenci:
                 for word in tag:
                     color1 = self._randomcolor(word)
                     word["color"] = color1
             args = dict(
-                fontSize=fsori,
-                fontSize_kana=fskana,
                 color=color,
                 kanacolor=self._getkanacolor(),
                 isshowhira=isshowhira,
@@ -329,11 +325,7 @@ class TextBrowser(QWidget, dataget):
             if userawhtml:
                 text = text.replace(sig, "")
 
-            args = dict(
-                fontSize=fsori,
-                color=color,
-                userawhtml=userawhtml,
-            )
+            args = dict(color=color, userawhtml=userawhtml)
 
             self.create_internal_text(style, styleargs, _id, text, args)
 

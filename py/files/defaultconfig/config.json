@@ -38,7 +38,7 @@
                 "args": {
                     "fillcolor": "#eeeeee",
                     "shadowforce": 10,
-                    "shadowR": 0.25,
+                    "shadowR": 0.20,
                     "shadowR_ex": 0
                 },
                 "argstype": {
@@ -93,7 +93,7 @@
                 "name": "描边字体",
                 "args": {
                     "fillcolor": "#eeeeee",
-                    "width_rate": 0.3,
+                    "width_rate": 0.2,
                     "width": 0,
                     "trace": 0,
                     "reverse": true

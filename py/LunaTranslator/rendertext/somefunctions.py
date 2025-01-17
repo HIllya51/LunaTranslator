@@ -25,8 +25,8 @@ class dataget:
         r, g, b, a = color
         return "rgba({}, {}, {}, {})".format(r, g, b, a)
 
-    def _getfontinfo(self, textype: TextType):
-        if textype == TextType.Origin:
+    def _getfontinfo(self, texttype: TextType):
+        if texttype == TextType.Origin:
             fm = globalconfig["fonttype"]
             fs = globalconfig["fontsizeori"]
             bold = globalconfig["showbold"]
