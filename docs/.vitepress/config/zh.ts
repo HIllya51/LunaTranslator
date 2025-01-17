@@ -50,7 +50,7 @@ export const zh = defineConfig({
             label: "页面导航"
         },
         footer: {
-            copyright: `基于 GPLv3 许可发布`
+            copyright: `基于 <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a> 许可发布`
         },
 
         editLink: {

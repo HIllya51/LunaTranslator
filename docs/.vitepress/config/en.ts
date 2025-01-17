@@ -4,7 +4,7 @@ export const en = defineConfig({
 
     themeConfig: {
         footer: {
-            copyright: `Released under the GPLv3 license`
+            copyright: `Released under the <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a> license`
         },
         nav: [
             { text: "HomePage", link: "https://lunatranslator.org/" },
