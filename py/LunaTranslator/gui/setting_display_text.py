@@ -1,15 +1,13 @@
 from qtsymbols import *
-import functools, platform
-import gobject, os, zipfile
+import functools
+import gobject, os
 from myutils.config import globalconfig, static_data, _TR, get_platform
-from gui.inputdialog import autoinitdialog
 from myutils.wrapper import tryprint
-from myutils.utils import dynamiclink, translate_exits, copytree, getannotatedapiname
+from myutils.utils import translate_exits, getannotatedapiname
 from gui.usefulwidget import (
     getsimplecombobox,
     Singleton_close,
     saveposwindow,
-    getQMessageBox,
     D_getspinbox,
     D_getIconButton,
     clearlayout,
@@ -43,9 +41,17 @@ def changeshowerrorstate(self, x):
     gobject.baseobject.translation_ui.translate_text.textbrowser.showhideerror(x)
 
 
+def mayberealtimesetfont(_=None):
+    gobject.baseobject.translation_ui.translate_text.textbrowser.setfontstyle()
+
+
 def createtextfontcom(key):
+    def _f(key, x):
+        globalconfig[key] = x
+        mayberealtimesetfont()
+
     font_comboBox = FocusFontCombo()
-    font_comboBox.currentTextChanged.connect(lambda x: globalconfig.__setitem__(key, x))
+    font_comboBox.currentTextChanged.connect(functools.partial(_f, key))
     font_comboBox.setCurrentFont(QFont(globalconfig[key]))
     return font_comboBox
 
@@ -302,16 +308,25 @@ def xianshigrid_style(self):
                                                 "fontsizeori",
                                                 double=True,
                                                 step=0.1,
+                                                callback=mayberealtimesetfont,
                                             ),
                                         ],
                                         [
                                             "行间距",
                                             D_getspinbox(
-                                                -100, 100, globalconfig, "extra_space"
+                                                -100,
+                                                100,
+                                                globalconfig,
+                                                "extra_space",
+                                                callback=mayberealtimesetfont,
                                             ),
                                             "",
                                             "加粗",
-                                            D_getsimpleswitch(globalconfig, "showbold"),
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "showbold",
+                                                callback=mayberealtimesetfont,
+                                            ),
                                             "",
                                             "颜色",
                                             D_getcolorbutton(
@@ -356,6 +371,7 @@ def xianshigrid_style(self):
                                                 "fontsize",
                                                 double=True,
                                                 step=0.1,
+                                                callback=mayberealtimesetfont,
                                             ),
                                         ],
                                         [
@@ -365,11 +381,14 @@ def xianshigrid_style(self):
                                                 100,
                                                 globalconfig,
                                                 "extra_space_trans",
+                                                callback=mayberealtimesetfont,
                                             ),
                                             "",
                                             "加粗",
                                             D_getsimpleswitch(
-                                                globalconfig, "showbold_trans"
+                                                globalconfig,
+                                                "showbold_trans",
+                                                callback=mayberealtimesetfont,
                                             ),
                                             "",
                                             "",

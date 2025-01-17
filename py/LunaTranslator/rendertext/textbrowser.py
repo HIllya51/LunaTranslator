@@ -369,6 +369,9 @@ class TextBrowser(QWidget, dataget):
     def showhideerror(self, show):
         self.parent().refreshcontent()
 
+    def setfontstyle(self):
+        pass
+
     def checkskip(self, texttype: TextType):
         if (texttype in (TextType.Origin,)) and (not globalconfig["isshowrawtext"]):
             return True

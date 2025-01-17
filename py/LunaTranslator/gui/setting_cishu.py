@@ -171,6 +171,10 @@ def initinternal(self, names):
     return cishugrid
 
 
+def mayberealtimesetfont(_=None):
+    gobject.baseobject.translation_ui.translate_text.textbrowser.setfontstyle()
+
+
 def setTabcishu_l(self):
 
     grids_1 = [
@@ -231,10 +235,7 @@ def setTabcishu_l(self):
                     grid=(
                         [
                             ("显示注音"),
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "isshowhira",
-                            ),
+                            D_getsimpleswitch(globalconfig, "isshowhira"),
                             "",
                             ("颜色"),
                             D_getcolorbutton(
@@ -258,6 +259,7 @@ def setTabcishu_l(self):
                                 "kanarate",
                                 double=True,
                                 step=0.05,
+                                callback=mayberealtimesetfont,
                             ),
                         ],
                         [

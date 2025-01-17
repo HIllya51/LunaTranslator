@@ -66,6 +66,7 @@ class TextBrowser(QWidget, dataget):
     def resetflags(self):
         for k, v in self.flags.items():
             self.debugeval("{}({})".format(k, int(v)))
+        self.setfontstyle()
         self.parent().refreshcontent()
 
     def switchcursor(self, cursor):
@@ -243,6 +244,27 @@ class TextBrowser(QWidget, dataget):
         QApplication.sendEvent(self, event)
 
     # native api end
+    def setfontstyle(self):
+        def __loadfont(argc, extra):
+            fm, fs, bold = argc
+            return dict(
+                fontFamily=fm,
+                fontSize=fs,
+                bold=bold,
+                lineHeight=max(1, self.measureH(*argc) + extra),
+            )
+
+        args = dict(
+            origin=__loadfont(
+                self._getfontinfo(TextType.Origin), globalconfig["extra_space"]
+            ),
+            trans=__loadfont(
+                self._getfontinfo(TextType.Translate), globalconfig["extra_space_trans"]
+            ),
+            hira=__loadfont(self._getfontinfo_kana(), 0),
+        )
+        args = quote(json.dumps(args))
+        self.debugeval('setfontstyle("{}");'.format(args))
 
     def iter_append(self, iter_context_class, textype: TextType, text, color):
 
@@ -263,12 +285,12 @@ class TextBrowser(QWidget, dataget):
         _id = self.createtextlineid(textype)
         self._webview_append(_id, textype, text, tag, flags, color)
 
-    def measureH(self, font_family, font_size):
+    def measureH(self, font_family, font_size, bold):
         font = QFont()
         font.setFamily(font_family)
         font.setPointSizeF(font_size)
+        font.setBold(bold)
         fmetrics = QFontMetrics(font)
-
         return fmetrics.height()
 
     def _getstylevalid(self):
@@ -281,50 +303,35 @@ class TextBrowser(QWidget, dataget):
         return currenttype
 
     def _webview_append(self, _id, textype: TextType, text: str, tag, flags, color):
-        fmori, fsori, boldori = self._getfontinfo(textype)
-        fmkana, fskana, boldkana = self._getfontinfo_kana()
-        kanacolor = self._getkanacolor()
-        lineHeight = self.measureH(fmori, fsori) + (
-            globalconfig["extra_space"]
-            if (textype == TextType.Origin)
-            else globalconfig["extra_space_trans"]
-        )
+        _, fsori, _ = self._getfontinfo(textype)
         style = self._getstylevalid()
-
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
         if len(tag):
+            _, fskana, _ = self._getfontinfo_kana()
             isshowhira, isshow_fenci, isfenciclick = flags
             if isshow_fenci:
                 for word in tag:
                     color1 = self._randomcolor(word)
                     word["color"] = color1
             args = dict(
-                fmori=fmori,
-                fsori=fsori,
-                boldori=boldori,
+                fontSize=fsori,
+                fontSize_kana=fskana,
                 color=color,
-                fmkana=fmkana,
-                fskana=fskana,
-                boldkana=boldkana,
-                kanacolor=kanacolor,
+                kanacolor=self._getkanacolor(),
                 isshowhira=isshowhira,
                 isshow_fenci=isshow_fenci,
                 isfenciclick=isfenciclick,
-                lineHeight=lineHeight,
             )
             self.create_internal_rubytext(style, styleargs, _id, tag, args)
         else:
             sig = "LUNASHOWHTML"
-            userawhtml = text.startswith(sig)
+            userawhtml = sig in text
             if userawhtml:
-                text = text[len(sig) :]
+                text = text.replace(sig, "")
 
             args = dict(
-                fontFamily=fmori,
                 fontSize=fsori,
-                bold=boldori,
                 color=color,
-                lineHeight=lineHeight,
                 userawhtml=userawhtml,
             )
 

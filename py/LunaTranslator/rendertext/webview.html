@@ -72,14 +72,6 @@
     function _simpleuid() {
         return 'luna' + Math.random().toString(36).substr(2, 9);
     }
-    function commoninit_font_align_height(ele, args) {
-        if (args.lineHeight > 0)
-            ele.style.lineHeight = args.lineHeight + 'px'
-        ele.style.fontFamily = args.fontFamily
-        ele.style.fontSize = args.fontSize + 'pt'
-        ele.style.fontWeight = args.bold ? "bold" : ""
-        ele.classList.add('centercontrol')
-    }
     function maybesethtml(ele, args, text) {
         if (args.userawhtml)
             ele.innerHTML = text
@@ -90,15 +82,12 @@
         let ele = document.createElement('div')
         maybesethtml(ele, args, text)
         ele.style.color = args.color
-        commoninit_font_align_height(ele, args)
         return ele
     }
     function yinying_create_internal(styleargs, text, args) {
         let ele = document.createElement('div')
         maybesethtml(ele, args, text)
         ele.style.color = styleargs.fillcolor
-        commoninit_font_align_height(ele, args)
-
         let ntimes = ""
         for (let i = 0; i < styleargs.shadowforce; i++) {
             ntimes += `0px 0px ${args.fontSize * styleargs.shadowR + styleargs.shadowR_ex}px ${args.color}`
@@ -119,7 +108,6 @@
         let ele = document.createElement('div')
         maybesethtml(ele, args, text)
         ele.style.color = styleargs.fillcolor
-        commoninit_font_align_height(ele, args)
         let _id = _simpleuid()
         ele.id = _id
         let style = document.createElement('style')
@@ -137,7 +125,6 @@
         let ele = document.createElement('div')
         let _id = _simpleuid()
         ele.id = _id
-        commoninit_font_align_height(ele, args)
         let style = document.createElement('style')
         style.innerHTML = `
          #${_id}{
@@ -185,7 +172,9 @@
         miaobian1: miaobian12_common,
     }
     function dispatch_text_style_line(style, styleargs, text, args) {
+        console.log(text, args)
         let ele = regist_style_imp[style](styleargs, text, args);
+        ele.classList.add('centercontrol')
         if (args.userawhtml) {
             let wrap = document.createElement('div')
             wrap.classList.add('centercontrol')
@@ -223,6 +212,7 @@
 <style id="maybeshowtranslate">
 </style>
 <style id="maybeshowatcenter"></style>
+<style id="styleforfont"></style>
 <script>
     function _showatcenter(center) {
         let css = ['', '.centercontrol{ text-align: center; }'][center]
@@ -230,17 +220,17 @@
         safe_calllunaheightchange()
     }
     function _showhidetranslate(show) {
-        let css = ['.lunatranslator_translate{   display: none;    }', '.lunatranslator_translate{   display: block;    }'][show]
+        let css = ['.lunatranslator_translate{   display: none;    }', '.lunatranslator_translate{}'][show]
         document.getElementById('maybeshowtranslate').innerHTML = css;
         safe_calllunaheightchange()
     }
     function _showhideerror(show) {
-        let css = ['.lunatranslator_error{   display: none;    }', '.lunatranslator_error{   display: block;    }'][show]
+        let css = ['.lunatranslator_error{   display: none;    }', '.lunatranslator_error{}'][show]
         document.getElementById('maybeshowerror').innerHTML = css;
         safe_calllunaheightchange()
     }
     function _showhideorigin(show) {
-        let css = ['.lunatranslator_origin{   display: none;    }', '.lunatranslator_origin{   display: block;    }'][show]
+        let css = ['.lunatranslator_origin{   display: none;    }', '.lunatranslator_origin{}'][show]
         document.getElementById('maybeshoworigin').innerHTML = css;
         safe_calllunaheightchange()
     }
@@ -249,17 +239,21 @@
         div.id = _id;
         if (texttype == 0) {
             div.classList.add('lunatranslator_origin')
+            div.classList.add('klass_font_origin')
         }
         else if (texttype == 1) {
             div.classList.add('lunatranslator_translate')
+            div.classList.add('klass_font_trans')
         }
         else if (texttype == 2) {
-
+            div.classList.add('klass_font_trans')
         }
         else if (texttype == 3) {
             div.classList.add('lunatranslator_error')
+            div.classList.add('klass_font_trans')
         }
         else if (texttype == 4) {
+            div.classList.add('klass_font_trans')
             div.classList.add('lunatranslator_translate')
             let divx = document.createElement('div')
             divx.classList.add('lunatranslator_error')
@@ -304,25 +298,20 @@
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let tag = JSON.parse(decodeURIComponent(tagjson))
-        let fmori = args.fmori
-        let fsori = args.fsori
-        let boldori = args.boldori
+        let fontSize = args.fontSize
         let color = args.color
-        let fmkana = args.fmkana
-        let fskana = args.fskana
-        let boldkana = args.boldkana
+        let fontSize_kana = args.fontSize_kana
         let kanacolor = args.kanacolor
         let isshowhira = args.isshowhira
         let isshow_fenci = args.isshow_fenci
         let isfenciclick = args.isfenciclick
-        let lineHeight = args.lineHeight
         let ele = document.getElementById(_id)
         ele.classList.add('centercontrol')
         let tags = _splittags(tag)
         tags.forEach(tag => {
             let mayberuby = []
             tag.forEach(word => {
-                let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { fontFamily: fmori, fontSize: fsori, bold: boldori, color: color, lineHeight: lineHeight })
+                let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { fontSize: fontSize, color: color })
 
                 if ((isshow_fenci || isfenciclick) && word.hira.trim().length) {
                     let div = document.createElement('div')
@@ -349,7 +338,6 @@
                     }
                     div.appendChild(style)
                     div.appendChild(eleori)
-
                     mayberuby.push(div)
                 } else {
                     mayberuby.push(eleori)
@@ -358,8 +346,8 @@
                     let rt = document.createElement('rt')
 
                     if ((word.orig != word.hira)) {
-                        rt.appendChild(dispatch_text_style_inlineblock(style, styleargs, word.hira, { fontFamily: fmkana, fontSize: fskana, bold: boldkana, color: kanacolor, lineHeight: 0 }))
-
+                        rt.appendChild(dispatch_text_style_inlineblock(style, styleargs, word.hira, { fontSize: fontSize_kana, color: kanacolor }))
+                        rt.classList.add('klass_font_hira')
                     }
                     mayberuby.push(rt)
                 }
@@ -439,6 +427,26 @@
         document.getElementById('luna_overlay_div').style.cursor = cursor
 
     }
+    function _setfontstyle_which(t, args) {
+        let fontFamily = args.fontFamily
+        let fontSize = args.fontSize
+        let bold = args.bold
+        let lineHeight = args.lineHeight
+        return `.${t}{
+        font-size: ${fontSize}pt;
+        font-family: ${fontFamily};
+        ${bold ? "font-weight: bold;" : ""}
+        line-height: ${lineHeight}px;
+        }`
+    }
+    function _setfontstyle(argsjson) {
+        let args = JSON.parse(decodeURIComponent(argsjson))
+        let style = _setfontstyle_which('klass_font_origin', args.origin)
+        style += _setfontstyle_which('klass_font_trans', args.trans)
+        style += _setfontstyle_which('klass_font_hira', args.hira)
+        document.getElementById('styleforfont').innerHTML = style
+        safe_calllunaheightchange()
+    }
 </script>
 __PLACEHOLDER_EXTRA_HTML_
 <script>
@@ -448,6 +456,7 @@ __PLACEHOLDER_EXTRA_HTML_
     showhideorigin = _showhideorigin
     showhidetranslate = _showhidetranslate
     showatcenter = _showatcenter
+    setfontstyle = _setfontstyle
     create_div_line_id = _create_div_line_id;
     create_internal_text = _create_internal_text;
     create_internal_rubytext = _create_internal_rubytext;
