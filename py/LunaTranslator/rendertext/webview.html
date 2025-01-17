@@ -2,14 +2,16 @@
 </div>
 <div id="luna_extra_html_div">
 </div>
-<div class="overlay" id="overlay"></div>
+<div id="luna_overlay_div"></div>
+<div id="luna_atback_div"></div>
 <script>
-
+    const atbackid = 'luna_atback_div';
+    const overlayid = 'luna_overlay_div';
     const rootdivid = 'luna_root_div';
     const extra_html_divid = "luna_extra_html_div";
 </script>
 <style>
-    .overlay {
+    #luna_overlay_div {
         position: absolute;
         top: 0;
         left: 0;
@@ -19,10 +21,18 @@
         display: block;
     }
 
+    #luna_atback_div {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1000;
+        display: block;
+    }
+
     body {
         overflow: auto;
-        margin-top: 0;
-        margin-bottom: 0;
         /* word-break: break-all; */
     }
 
@@ -51,7 +61,10 @@
 </script>
 <script>
     //nativte api
-    function safe_calllunaheightchange(h) {
+    function safe_calllunaheightchange() {
+        let h = document.getElementById('luna_root_div').offsetHeight
+        const computedStyle = window.getComputedStyle(document.body);
+        h += parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom)
         let _call = window.calllunaheightchange;
         if (!_call)
             _call = console.log;
@@ -219,28 +232,27 @@
 </style>
 <style id="maybeshowtranslate">
 </style>
-<style id="maybeshowatcenter">
-</style>
+<style id="maybeshowatcenter"></style>
 <script>
     function _showatcenter(center) {
         let css = ['', '.centercontrol{ text-align: center; }'][center]
         document.getElementById('maybeshowatcenter').innerHTML = css;
-        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+        safe_calllunaheightchange()
     }
     function _showhidetranslate(show) {
         let css = ['.lunatranslator_translate{   display: none;    }', '.lunatranslator_translate{   display: block;    }'][show]
         document.getElementById('maybeshowtranslate').innerHTML = css;
-        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+        safe_calllunaheightchange()
     }
     function _showhideerror(show) {
         let css = ['.lunatranslator_error{   display: none;    }', '.lunatranslator_error{   display: block;    }'][show]
         document.getElementById('maybeshowerror').innerHTML = css;
-        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+        safe_calllunaheightchange()
     }
     function _showhideorigin(show) {
         let css = ['.lunatranslator_origin{   display: none;    }', '.lunatranslator_origin{   display: block;    }'][show]
         document.getElementById('maybeshoworigin').innerHTML = css;
-        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+        safe_calllunaheightchange()
     }
     function _create_div_line_id(_id, texttype) {
         let div = document.createElement("div");
@@ -274,7 +286,7 @@
         let text = decodeURIComponent(textu)
         let innerele = dispatch_text_style(style, styleargs, "", text, args)
         ele.appendChild(innerele)
-        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+        safe_calllunaheightchange()
     }
     function _splittags(tag) {
         let result = [];
@@ -380,7 +392,7 @@
             }
             ele.appendChild(div)
         })
-        safe_calllunaheightchange(document.getElementById(rootdivid).offsetHeight)
+        safe_calllunaheightchange()
 
     }
     function _clear_all() {
@@ -408,7 +420,50 @@
     }
     function _setselectable(b) {
         document.getElementById(rootdivid).style.userSelect = b ? 'text' : 'none';
-        document.getElementById('overlay').style.display = b ? 'none' : 'block';
+        document.getElementById(overlayid).style.display = b ? 'none' : 'block';
+    }
+    function isPointOverText(x, y) {
+        //https://stackoverflow.com/questions/10389459/is-there-a-way-to-detect-if-im-hovering-over-text
+        const element = document.elementFromPoint(x, y);
+        if (element == null) return false;
+        const nodes = element.childNodes;
+        for (let i = 0, node; (node = nodes[i++]);) {
+            if (node.nodeType === 3) {
+                const range = document.createRange();
+                range.selectNode(node);
+                const rects = range.getClientRects();
+                for (let j = 0, rect; (rect = rects[j++]);) {
+                    if (
+                        x > rect.left &&
+                        x < rect.right &&
+                        y > rect.top &&
+                        y < rect.bottom
+                    ) {
+                        if (node.nodeType === Node.TEXT_NODE) return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    document.addEventListener('mousemove', function (e) {
+        if (window.calllunaMouseMove)
+            window.calllunaMouseMove(e.clientX, e.clientY)
+
+    });
+    document.addEventListener('mousedown', function (e) {
+        if (!isPointOverText(e.clientX, e.clientY))
+            if (window.calllunaMousePress)
+                window.calllunaMousePress(e.button, e.clientX, e.clientY)
+    });
+    document.addEventListener('mouseup', function (e) {
+        if (window.calllunaMouseRelease)
+            window.calllunaMouseRelease(e.button, e.clientX, e.clientY)
+    });
+    function _switchcursor(cursor) {
+        document.getElementById(atbackid).style.cursor = cursor
+        document.getElementById(overlayid).style.cursor = cursor
+
     }
 </script>
 <script>
@@ -423,6 +478,7 @@
     create_internal_rubytext = _create_internal_rubytext;
     clear_all = _clear_all
     set_extra_html = _set_extra_html
+    switchcursor = _switchcursor
 </script>
 
 <script>

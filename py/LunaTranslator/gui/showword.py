@@ -1179,7 +1179,7 @@ class searchwordW(closeashidewindow):
     def historymenu(self):
         menu = QMenu(self)
         __ = []
-        for word in self.historys:
+        for word in self.historys[:16]:
             act = QAction(word)
             __.append(act)
             menu.addAction(act)

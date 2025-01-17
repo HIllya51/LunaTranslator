@@ -621,12 +621,18 @@ class MySwitch(QWidget):
 
 
 class resizableframeless(saveposwindow):
+    cursorSet = pyqtSignal(Qt.CursorShape)
+
     def __init__(self, parent, flags, poslist) -> None:
         super().__init__(parent, poslist, flags)
         self.setMouseTracking(True)
 
         self._padding = 5
         self.resetflags()
+
+    def setCursor(self, a0):
+        super().setCursor(a0)
+        self.cursorSet.emit(a0)
 
     def isdoingsomething(self):
         return (
@@ -1210,9 +1216,7 @@ class WebivewWidget(abstractwebview):
         self.webview = Webview(debug=debug, window=int(self.winId()))
         self.m_webMessageReceivedToken = None
         self.menudata = winsharedutils.add_ContextMenuRequested(self.get_controller())
-        self.zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(
-            self.on_ZoomFactorChanged.emit
-        )
+        self.zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(self.zoomchange)
         self.__token = winsharedutils.add_ZoomFactorChanged(
             self.get_controller(), self.zoomfunc
         )
@@ -1233,6 +1237,13 @@ class WebivewWidget(abstractwebview):
         t.start()
 
         self.add_menu(0, "", lambda _: None)
+        self.add_menu_noselect(0, "", lambda: None)
+        self.cachezoom = 1
+
+    def zoomchange(self, zoom):
+        self.cachezoom = zoom
+        self.on_ZoomFactorChanged.emit(zoom)
+        self.set_zoom(zoom)  # 置为默认值，档navi/sethtml时才能保持
 
     def __darkstatechecker(self):
         dl = globalconfig["darklight2"]
@@ -1243,9 +1254,11 @@ class WebivewWidget(abstractwebview):
 
     def set_zoom(self, zoom):
         winsharedutils.put_ZoomFactor(self.get_controller(), zoom)
+        self.cachezoom = winsharedutils.get_ZoomFactor(self.get_controller())
 
     def get_zoom(self):
-        return winsharedutils.get_ZoomFactor(self.get_controller())
+        # winsharedutils.get_ZoomFactor(self.get_controller()) 性能略差
+        return self.cachezoom
 
     def _on_load(self, href):
         self.on_load.emit(href)
@@ -1527,11 +1540,9 @@ class auto_select_webview(QWidget):
         self.internal.setHtml(self.internal.parsehtml(""))  # 夜间
 
     def navigate(self, url):
-        self.internal.set_zoom(self.internalsavedzoom)
         self.internal.navigate(url)
 
     def setHtml(self, html):
-        self.internal.set_zoom(self.internalsavedzoom)
         html = self.internal.parsehtml(html)
         if len(html) < self.internal.html_limit:
             self.internal.setHtml(html)
@@ -1543,7 +1554,6 @@ class auto_select_webview(QWidget):
             self.internal.navigate(lastcachehtml)
 
     def set_zoom(self, zoom):
-        self.internalsavedzoom = zoom
         self.internal.set_zoom(zoom)
 
     def sizeHint(self):
@@ -1559,7 +1569,6 @@ class auto_select_webview(QWidget):
         self.saveurl = None
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.internalsavedzoom = 1
         self._maybecreate_internal()
         if dyna:
             switchtypes.append(self)
@@ -1570,10 +1579,6 @@ class auto_select_webview(QWidget):
         for _ in switchtypes:
             _._maybecreate_internal()
 
-    def internalzoomchanged(self, zoom):
-        self.internalsavedzoom = zoom
-        self.on_ZoomFactorChanged.emit(zoom)
-
     def _on_load(self, url: str):
         self.saveurl = url
         self.on_load.emit(url)
@@ -1582,9 +1587,8 @@ class auto_select_webview(QWidget):
         if self.internal:
             self.layout().removeWidget(self.internal)
         self.internal = self._createwebview()
-        self.internal.set_zoom(self.internalsavedzoom)
         self.internal.on_load.connect(self._on_load)
-        self.internal.on_ZoomFactorChanged.connect(self.internalzoomchanged)
+        self.internal.on_ZoomFactorChanged.connect(self.on_ZoomFactorChanged)
         self.layout().addWidget(self.internal)
         for _ in self.addmenuinfo:
             self.internal.add_menu(*_)

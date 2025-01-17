@@ -14,58 +14,17 @@ testsavejs = False
 class TextBrowser(QWidget, dataget):
     dropfilecallback = pyqtSignal(str)
     contentsChanged = pyqtSignal(QSize)
-    _padding = 5
-
-    def __makeborder(self, size: QSize):
-        _padding = self._padding
-        self.masklabel_top.setGeometry(0, 0, size.width(), _padding)
-
-        self.masklabel_left.setGeometry(0, 0, _padding, size.height())
-        self.masklabel_right.setGeometry(
-            self.width() - _padding, 0, _padding, size.height()
-        )
-        self.masklabel_bottom.setGeometry(
-            0, size.height() - _padding, size.width(), _padding
-        )
 
     @tryprint
     def resizeEvent(self, event: QResizeEvent):
-        self.webivewwidget.setGeometry(
-            self._padding,
-            self._padding,
-            event.size().width() - 2 * self._padding,
-            event.size().height() - 2 * self._padding,
-        )
-        self.__makeborder(event.size())
-
-    def setselectable(self, b):
-        self.selectable = b
-        self.debugeval("setselectable({})".format(int(b)))
+        self.webivewwidget.resize(event.size())
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.selectable = False
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
         self.webivewwidget = WebivewWidget(self)
-
-        webviewhwnd = self.webivewwidget.get_hwnd()
-        self.wndproc = windows.WNDPROCTYPE(
-            functools.partial(
-                self.extrahandle,
-                windows.GetWindowLongPtr(webviewhwnd, windows.GWLP_WNDPROC),
-            )
-        )
-        windows.SetWindowLongPtr(webviewhwnd, windows.GWLP_WNDPROC, self.wndproc)
-        self.webivewwidget.add_menu(
-            0,
-            _TR("朗读"),
-            lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
-        )
-        self.webivewwidget.add_menu(
-            0,
-            _TR("翻译"),
-            lambda w: gobject.baseobject.textgetmethod(w.replace("\n", "").strip()),
-        )
+        self.webivewwidget.move(0, 0)
+        self.setMouseTracking(True)
         self.webivewwidget.add_menu(
             0,
             _TR("查词"),
@@ -75,51 +34,57 @@ class TextBrowser(QWidget, dataget):
                 )
             ),
         )
-        self.masklabel_left = QLabel(self)
-        self.masklabel_left.setMouseTracking(True)
-        # self.masklabel_left.setStyleSheet('background-color:red')
-        self.masklabel_right = QLabel(self)
-        # self.masklabel_right.setStyleSheet('background-color:red')
-        self.masklabel_right.setMouseTracking(True)
-        self.masklabel_bottom = QLabel(self)
-        self.masklabel_bottom.setMouseTracking(True)
-        self.masklabel_top = QLabel(self)
-        self.masklabel_top.setMouseTracking(True)
-        # self.masklabel_bottom.setStyleSheet('background-color:red')
+        self.webivewwidget.add_menu(
+            1,
+            _TR("翻译"),
+            lambda w: gobject.baseobject.textgetmethod(w.replace("\n", "").strip()),
+        )
         self.webivewwidget.navigate(
             os.path.abspath(r"LunaTranslator\rendertext\webview.html")
         )
+        self.webivewwidget.add_menu(
+            2,
+            _TR("朗读"),
+            lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
+        )
+        self.webivewwidget.add_menu_noselect(0, _TR("清空"), self.clear)
         self.webivewwidget.set_transparent_background()
         self.webivewwidget.dropfilecallback.connect(self.dropfilecallback)
         self.webivewwidget.bind(
             "calllunaclickedword", gobject.baseobject.clickwordcallback
         )
+        self.webivewwidget.bind("calllunaMouseMove", self.calllunaMouseMove)
+        self.webivewwidget.bind("calllunaMousePress", self.calllunaMousePress)
+        self.webivewwidget.bind("calllunaMouseRelease", self.calllunaMouseRelease)
         self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
         self.saveiterclasspointer = {}
         self.isfirst = True
 
-    @threader
-    def trackingthread(self):
-        pos = gobject.baseobject.translation_ui.pos()
-        gobject.baseobject.translation_ui._move_drag = True
-        cus = QCursor.pos()
-        while True:
-            keystate = windows.GetKeyState(windows.VK_LBUTTON)
-            if keystate >= 0:
-                break
-            gobject.baseobject.translation_ui.move_signal.emit(
-                pos + QCursor.pos() - cus
-            )
-            time.sleep(0.01)
-        gobject.baseobject.translation_ui._move_drag = False
-
-    def extrahandle(self, orig, hwnd, msg, wp, lp):
-        if wp == windows.WM_LBUTTONDOWN:
-            # 因为有父窗口，所以msg是WM_PARENTNOTIFY，wp才是WM_LBUTTONDOWN
-            # 而且SetCapture后会立即被父窗口把capture夺走，无法后面的释放&移动，所以只能开个线程来弄
-            if not self.selectable:
-                self.trackingthread()
-        return windows.WNDPROCTYPE_1(orig)(hwnd, msg, wp, lp)
+    def switchcursor(self, cursor):
+        cursor_map = {
+            Qt.CursorShape.ArrowCursor: "default",
+            Qt.CursorShape.UpArrowCursor: "n-resize",
+            Qt.CursorShape.CrossCursor: "crosshair",
+            Qt.CursorShape.WaitCursor: "wait",
+            Qt.CursorShape.IBeamCursor: "text",
+            Qt.CursorShape.SizeVerCursor: "ns-resize",
+            Qt.CursorShape.SizeHorCursor: "ew-resize",
+            Qt.CursorShape.SizeBDiagCursor: "nesw-resize",
+            Qt.CursorShape.SizeFDiagCursor: "nwse-resize",
+            Qt.CursorShape.SizeAllCursor: "move",
+            Qt.CursorShape.BlankCursor: "none",
+            Qt.CursorShape.SplitVCursor: "row-resize",
+            Qt.CursorShape.SplitHCursor: "col-resize",
+            Qt.CursorShape.PointingHandCursor: "pointer",
+            Qt.CursorShape.ForbiddenCursor: "not-allowed",
+            Qt.CursorShape.WhatsThisCursor: "help",
+            Qt.CursorShape.BusyCursor: "progress",
+            Qt.CursorShape.OpenHandCursor: "grab",
+            Qt.CursorShape.ClosedHandCursor: "grabbing",
+        }
+        self.webivewwidget.eval(
+            'switchcursor("{}")'.format(cursor_map.get(cursor, "default"))
+        )
 
     @tryprint
     def showEvent(self, e):
@@ -130,6 +95,7 @@ class TextBrowser(QWidget, dataget):
         self.isfirst = False
         self.loadextra(0)
         self.webivewwidget.on_load.connect(self.loadextra)
+        gobject.baseobject.translation_ui.cursorSet.connect(self.switchcursor)
 
     def loadextra(self, _):
         for _ in [
@@ -147,6 +113,9 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.eval(js)
 
     # js api
+    def setselectable(self, b):
+        self.debugeval("setselectable({})".format(int(b)))
+
     def showatcenter(self, show):
         self.debugeval('showatcenter("{}")'.format(int(show)))
 
@@ -198,10 +167,61 @@ class TextBrowser(QWidget, dataget):
         h += -min(0, extra_space, extra_space_trans)
         self.contentsChanged.emit(
             QSize(
-                self._padding * 2 + self.width(),
-                1 + self._padding * 2 + int(h * self.webivewwidget.get_zoom()),
+                self.width(),
+                int(h * self.webivewwidget.get_zoom()),
             )
         )
+
+    def parsemousebutton(self, i):
+        btn_map = {
+            0: Qt.MouseButton.LeftButton,
+            1: Qt.MouseButton.MiddleButton,
+            2: Qt.MouseButton.RightButton,
+            3: Qt.MouseButton.BackButton,
+            4: Qt.MouseButton.ForwardButton,
+        }
+        return btn_map.get(i, Qt.MouseButton.NoButton)
+
+    def parsexyaspos(self, x, y):
+        zoom = self.webivewwidget.get_zoom()
+        x = zoom * x
+        y = zoom * y
+        return QPointF(x, y)
+
+    def calllunaMousePress(self, btn, x, y):
+        pos = self.parsexyaspos(x, y)
+        btn = self.parsemousebutton(btn)
+        event = QMouseEvent(
+            QEvent.Type.MouseButtonPress,
+            pos,
+            btn,
+            btn,
+            Qt.KeyboardModifier.NoModifier,
+        )
+        QApplication.sendEvent(self, event)
+
+    def calllunaMouseRelease(self, btn, x, y):
+        pos = self.parsexyaspos(x, y)
+        btn = self.parsemousebutton(btn)
+        event = QMouseEvent(
+            QEvent.Type.MouseButtonRelease,
+            pos,
+            btn,
+            btn,
+            Qt.KeyboardModifier.NoModifier,
+        )
+        QApplication.sendEvent(self, event)
+
+    def calllunaMouseMove(self, x, y):
+        pos = self.parsexyaspos(x, y)
+        event = QMouseEvent(
+            QEvent.Type.MouseMove,
+            pos,
+            Qt.MouseButton.NoButton,
+            Qt.MouseButton.NoButton,
+            Qt.KeyboardModifier.NoModifier,
+        )
+        QApplication.sendEvent(self, event)
 
     # native api end
 

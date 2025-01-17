@@ -131,45 +131,44 @@ DECLARE_API void *add_WebMessageReceived(ICoreWebView2Controller *m_host, void (
                 {
                     wil::unique_cotaskmem_string message;
                     CHECK_FAILURE(args->TryGetWebMessageAsString(&message));
-                    if (std::wstring(L"FilesDropped") == message.get())
+                    do
                     {
+                        if (std::wstring(L"FilesDropped") != message.get())
+                            break;
                         wil::com_ptr<ICoreWebView2WebMessageReceivedEventArgs2> args2 =
                             wil::com_ptr<ICoreWebView2WebMessageReceivedEventArgs>(args)
                                 .query<ICoreWebView2WebMessageReceivedEventArgs2>();
-                        if (args2)
-                        {
-                            wil::com_ptr<ICoreWebView2ObjectCollectionView>
-                                objectsCollection;
-                            CHECK_FAILURE(args2->get_AdditionalObjects(&objectsCollection));
-                            unsigned int length;
-                            CHECK_FAILURE(objectsCollection->get_Count(&length));
-                            std::vector<std::wstring> paths;
+                        if (!args2)
+                            break;
+                        wil::com_ptr<ICoreWebView2ObjectCollectionView> objectsCollection;
+                        CHECK_FAILURE(args2->get_AdditionalObjects(&objectsCollection));
+                        if (!objectsCollection)
+                            break;
+                        unsigned int length;
+                        CHECK_FAILURE(objectsCollection->get_Count(&length));
+                        std::vector<std::wstring> paths;
 
-                            for (unsigned int i = 0; i < length; i++)
-                            {
-                                wil::com_ptr<IUnknown> object;
-                                CHECK_FAILURE(objectsCollection->GetValueAtIndex(i, &object));
-                                // Note that objects can be null.
-                                if (object)
-                                {
-                                    wil::com_ptr<ICoreWebView2File> file =
-                                        object.query<ICoreWebView2File>();
-                                    if (file)
-                                    {
-                                        // Add the file to message to be sent back to webview
-                                        wil::unique_cotaskmem_string path;
-                                        CHECK_FAILURE(file->get_Path(&path));
-                                        paths.push_back(path.get());
-                                    }
-                                }
-                            }
-                            // ProcessPaths(paths);
-                            if (paths.size())
-                            {
-                                callback(paths[0].c_str());
-                            }
+                        for (unsigned int i = 0; i < length; i++)
+                        {
+                            wil::com_ptr<IUnknown> object;
+                            CHECK_FAILURE(objectsCollection->GetValueAtIndex(i, &object));
+                            // Note that objects can be null.
+                            if (!object)
+                                continue;
+                            wil::com_ptr<ICoreWebView2File> file = object.query<ICoreWebView2File>();
+                            if (!file)
+                                continue;
+                            // Add the file to message to be sent back to webview
+                            wil::unique_cotaskmem_string path;
+                            CHECK_FAILURE(file->get_Path(&path));
+                            paths.push_back(path.get());
                         }
-                    }
+                        // ProcessPaths(paths);
+                        if (!paths.size())
+                            break;
+                        callback(paths[0].c_str());
+
+                    } while (0);
                     return S_OK;
                 })
                 .Get(),

@@ -53,12 +53,14 @@ class Qlabel_c(QLabel):
         return super().leaveEvent(a0)
 
 
-class QTextBrowser_1(QTextBrowser):
+class QTextBrowser_1(QTextEdit):
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self.pr = None
+        self.setReadOnly(True)
         self.prpos = QPoint()
         self.selectionChanged.connect(self.selectcg)
+        self.ignorecount = 0
 
     def selectcg(self):
         self.pr = self.textCursor().selectedText()
@@ -71,7 +73,11 @@ class QTextBrowser_1(QTextBrowser):
 
     def mousePressEvent(self, ev: QMouseEvent):
         self.prpos = ev.pos()
-        return super().mousePressEvent(ev)
+        if self.ismousehastext(ev):
+            return super().mousePressEvent(ev)
+        else:
+            self.ignorecount += 1
+            ev.ignore()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         try:
@@ -85,7 +91,25 @@ class QTextBrowser_1(QTextBrowser):
                         label.refmask.callback(True)
         except:
             pass
-        return super().mouseReleaseEvent(event)
+        if self.ignorecount:
+            self.ignorecount -= 1
+            event.ignore()
+        else:
+            return super().mouseReleaseEvent(event)
+
+    def ismousehastext(self, ev: QMouseEvent):
+        cursor = self.cursorForPosition(ev.pos())
+        rect1 = self.cursorRect(cursor)
+        cursor.movePosition(QTextCursor.MoveOperation.NextCharacter)
+        rect2 = self.cursorRect(cursor)
+        cursor.movePosition(QTextCursor.MoveOperation.PreviousCharacter)
+        cursor.movePosition(QTextCursor.MoveOperation.PreviousCharacter)
+        rect3 = self.cursorRect(cursor)
+        if rect1.y() == rect2.y():
+            rect1 = rect1.united(rect2)
+        if rect1.y() == rect3.y():
+            rect1 = rect1.united(rect3)
+        return rect1.contains(ev.pos())
 
     def mouseMoveEvent(self, ev: QMouseEvent):
         for label in self.parent().searchmasklabels:
@@ -107,8 +131,14 @@ class QTextBrowser_1(QTextBrowser):
                 )
             except:
                 pass
-
-        return super().mouseMoveEvent(ev)
+        if not self.ismousehastext(ev):
+            self.viewport().setCursor(Qt.CursorShape.ArrowCursor)
+        else:
+            self.viewport().setCursor(Qt.CursorShape.IBeamCursor)
+        if self.ignorecount:
+            ev.ignore()
+        else:
+            return super().mouseMoveEvent(ev)
 
 
 class TextBrowser(QWidget, dataget):
@@ -130,8 +160,6 @@ class TextBrowser(QWidget, dataget):
         self.dropfilecallback.emit(file)
 
     def __makeborder(self, size: QSize):
-        # border是用来当可选取时，用来拖动的
-        # webview2的绘制和qt的绘制不兼容，qt的半透明对他无效，必须缩放，否则遮挡，所以还是各写一份吧。
         _padding = self._padding
         self.masklabel_top.setGeometry(0, 0, size.width(), _padding)
 
@@ -157,10 +185,18 @@ class TextBrowser(QWidget, dataget):
 
         self.__makeborder(event.size())
 
+    def menunoselect(self):
+        menu = QMenu(gobject.baseobject.commonstylebase)
+        search = LAction(("清空"))
+        menu.addAction(search)
+        action = menu.exec(QCursor.pos())
+        if action == search:
+            self.clear()
+
     def showmenu(self, p):
         curr = self.textbrowser.textCursor().selectedText()
         if not curr:
-            return
+            return self.menunoselect()
         menu = QMenu(gobject.baseobject.commonstylebase)
 
         search = LAction(("查词"))
@@ -233,6 +269,8 @@ class TextBrowser(QWidget, dataget):
         )
         self.masklabel = QLabel(self.textbrowser)
         self.masklabel.setMouseTracking(True)
+        self.masklabel.customContextMenuRequested.connect(self.menunoselect)
+        self.masklabel.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.masklabel_left = QLabel(self)
         self.masklabel_left.setMouseTracking(True)
         # self.masklabel_left.setStyleSheet('background-color:red')
@@ -740,11 +778,12 @@ class TextBrowser(QWidget, dataget):
                 gobject.baseobject.clickwordcallback, word
             )
         if isshow_fenci and color:
-            self.searchmasklabels[labeli].setGeometry(*pos1)
-            self.searchmasklabels[labeli].setStyleSheet(
-                "background-color: {};".format(color)
-            )
-            self.searchmasklabels[labeli].show()
+            style = "background-color: {};".format(color)
+        else:
+            style = "background:transparent"
+        self.searchmasklabels[labeli].setGeometry(*pos1)
+        self.searchmasklabels[labeli].setStyleSheet(style)
+        self.searchmasklabels[labeli].show()
 
     def addsearchwordmask(self, isshow_fenci, isfenciclick, x):
         if len(x) == 0:

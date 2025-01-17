@@ -310,13 +310,15 @@ class MAINUI:
 
     def textgetmethod_1(
         self,
-        text,
+        text: str,
         is_auto_run=True,
         waitforresultcallback=None,
         waitforresultcallbackengine=None,
         donttrans=False,
     ):
         if not text:
+            return
+        if not text.strip():
             return
         if is_auto_run and text == self.currenttext:
             return

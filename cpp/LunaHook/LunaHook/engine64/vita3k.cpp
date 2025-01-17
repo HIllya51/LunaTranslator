@@ -592,6 +592,13 @@ namespace
         strReplace(ws, L"^", L"");
         buffer->from(WideStringToString(ws, 932));
     }
+    template <int __>
+    void PCSG00451(TextBuffer *buffer, HookParam *hp)
+    {
+        static int i = 0;
+        if (i++ % 2 == 0)
+            buffer->clear();
+    }
     void PCSG01151(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
@@ -837,6 +844,9 @@ namespace
             {0x8003eed2, {0, 0, 0, 0, FPCSG00852, "PCSG00420"}},
             // GALTIA V Edition
             {0x8001B7AA, {0, 0, 0, 0, PCSG01151, "PCSG01151"}},
+            // ハナヤマタ　よさこいLIVE！
+            {0x810789EE, {CODEC_UTF16, 3, 0, 0, PCSG00451<1>, "PCSG00451"}},
+            {0x81078B22, {CODEC_UTF16, 1, 0, 0, PCSG00451<0>, "PCSG00451"}},
 
         };
         return 1;
