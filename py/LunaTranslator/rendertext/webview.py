@@ -290,7 +290,7 @@ class TextBrowser(QWidget, dataget):
         font.setFamily(font_family)
         font.setPointSizeF(font_size)
         font.setBold(bold)
-        fmetrics = QFontMetrics(font)
+        fmetrics = QFontMetricsF(font)
         return fmetrics.height()
 
     def _getstylevalid(self):
