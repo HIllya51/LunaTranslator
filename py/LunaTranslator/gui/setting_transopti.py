@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, gobject
+import functools, gobject, os
 from myutils.post import POSTSOLVE
 from myutils.utils import (
     selectdebugfile,
@@ -62,7 +62,7 @@ def setTab7_lazy(self, basel):
     grids = [
         [
             D_getIconButton(
-                lambda: gobject.baseobject.openlink(
+                lambda: os.startfile(
                     dynamiclink("{docs_server}/{lang}/textprocess.html")
                 ),
                 "fa.question",
@@ -177,7 +177,7 @@ def setTab7_lazy(self, basel):
     grids2 = [
         [
             D_getIconButton(
-                lambda: gobject.baseobject.openlink(
+                lambda: os.startfile(
                     dynamiclink("{docs_server}/{lang}/transoptimi.html")
                 ),
                 "fa.question",

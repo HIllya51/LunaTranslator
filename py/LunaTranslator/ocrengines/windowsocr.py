@@ -1,5 +1,5 @@
 import gobject
-import winrtutils, windows, re
+import winrtutils, windows, re, os
 from myutils.hwnd import subprochiderun
 from myutils.config import _TR, getlang_inner2show
 from myutils.utils import dynamiclink
@@ -73,7 +73,7 @@ def question():
         lst.append(nopri)
         btndownload = LPushButton("添加语言包")
         btndownload.clicked.connect(
-            lambda: gobject.baseobject.openlink(
+            lambda: os.startfile(
                 dynamiclink("{docs_server}/{lang}/useapis/ocrapi.html#离线ocr")
             )
         )
@@ -92,7 +92,7 @@ def question():
         threading.Thread(target=loadlist, args=(combo,)).start()
         btndownload = IconButton("fa.question")
         btndownload.clicked.connect(
-            lambda: gobject.baseobject.openlink(
+            lambda: os.startfile(
                 dynamiclink("{docs_server}/{lang}/useapis/ocrapi.html#离线ocr")
             )
         )

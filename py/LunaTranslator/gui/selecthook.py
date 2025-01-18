@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
-import qtawesome, windows, winsharedutils, gobject
+import qtawesome, windows, winsharedutils, gobject, os
 from textsource.texthook import codepage_display, codepage_real
 from myutils.config import savehook_new_data, static_data, globalconfig, _TR, isascii
 from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
@@ -601,7 +601,7 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addLayout(self.searchtextlayout)
         __ = LPushButton("游戏适配")
         __.clicked.connect(
-            lambda: gobject.baseobject.openlink(
+            lambda: os.startfile(
                 dynamiclink("{main_server}/Resource/game_support")
             )
         )
@@ -615,7 +615,7 @@ class hookselect(closeashidewindow):
 
         self.userhookinsert = IconButton("fa.question")
         self.userhookinsert.clicked.connect(
-            lambda: gobject.baseobject.openlink(
+            lambda: os.startfile(
                 dynamiclink("{docs_server}/zh/hooksettings.html#特殊码格式")
             )
         )

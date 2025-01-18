@@ -118,7 +118,7 @@ def dodownload(combo: QComboBox, allsupports: list):
     if not allsupports:
         return
     lang = allsupports[combo.currentIndex()]
-    gobject.baseobject.openlink(
+    os.startfile(
         dynamiclink("{main_server}") + "/Resource/ocr_models/{}.zip".format(lang)
     )
 

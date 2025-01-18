@@ -771,5 +771,6 @@
     "还原": "restore",
     "加亮模式": "Highlight mode",
     "清除加亮": "Clear Highlight",
-    "内嵌翻译上下文": "Embedded translation context"
+    "内嵌翻译上下文": "Embedded translation context",
+    "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "Unable to find Webview2Runtime!\nPlease install Webview2Runtime, or download the fixed version and extract it to the software directory."
 }

@@ -1236,7 +1236,18 @@ class WebivewWidget(abstractwebview):
         FixedRuntime = self.findFixedRuntime()
         if FixedRuntime:
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
-        self.webview = Webview(debug=debug, window=int(self.winId()))
+        try:
+            self.webview = Webview(debug=debug, window=int(self.winId()))
+        except Exception as e:
+            getQMessageBox(
+                gobject.baseobject.commonstylebase,
+                "错误",
+                "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。",
+            )
+            os.startfile(
+                "https://developer.microsoft.com/microsoft-edge/webview2"
+            )
+            raise e
         self.m_webMessageReceivedToken = None
         self.menudata = winsharedutils.add_ContextMenuRequested(self.get_controller())
         self.zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(self.zoomchange)
@@ -1303,120 +1314,6 @@ class WebivewWidget(abstractwebview):
 
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
-
-
-class QWebWrap(abstractwebview):
-
-    def __init__(self, p=None) -> None:
-        super().__init__(p)
-        if isqt5:
-            from PyQt5.QtWebEngineWidgets import QWebEngineView
-        else:
-            from PyQt6.QtWebEngineWidgets import QWebEngineView
-        if "QTWEBENGINE_REMOTE_DEBUGGING" not in os.environ:
-            DEBUG_PORT = 5588
-            for i in range(100):
-                if checkportavailable(DEBUG_PORT):
-                    break
-                DEBUG_PORT += 1
-            os.environ["QTWEBENGINE_REMOTE_DEBUGGING"] = str(DEBUG_PORT)
-        self.DEBUG_URL = (
-            "http://127.0.0.1:%s" % os.environ["QTWEBENGINE_REMOTE_DEBUGGING"]
-        )
-        self.internal = QWebEngineView(self)
-        self.internal.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.internal.customContextMenuRequested.connect(self._qwmenu)
-        self.internal.loadFinished.connect(self._loadFinish)
-        self.internal_zoom = 1
-        t = QTimer(self)
-        t.setInterval(100)
-        t.timeout.connect(self.__getzoomfactor)
-        t.timeout.emit()
-        t.start()
-
-    def _qwmenu(self, pos):
-
-        if isqt5:
-            from PyQt5.QtWebEngineWidgets import QWebEnginePage, QWebEngineView
-
-            web_menu = self.internal.page().createStandardContextMenu()
-        else:
-            from PyQt6.QtWebEngineWidgets import QWebEngineView
-            from PyQt6.QtWebEngineCore import QWebEnginePage
-
-            web_menu = self.internal.createStandardContextMenu()
-        loadinspector = QAction("Inspect")
-        if (
-            self.internal.page().action(QWebEnginePage.WebAction.InspectElement)
-            not in web_menu.actions()
-        ):
-            web_menu.addAction(loadinspector)
-        action = web_menu.exec(self.internal.mapToGlobal(pos))
-
-        if action == loadinspector:
-
-            class QMW(saveposwindow):
-                def closeEvent(_self, e):
-                    self.internal.page().setDevToolsPage(None)
-                    super(QMW, _self).closeEvent(e)
-
-                def __init__(_self) -> None:
-                    super().__init__(
-                        gobject.baseobject.commonstylebase,
-                        poslist=globalconfig["qwebinspectgeo"],
-                    )
-                    _self.setWindowTitle("Inspect")
-                    _self.internal = QWebEngineView(_self)
-                    _self.setCentralWidget(_self.internal)
-                    _self.internal.load(QUrl(self.DEBUG_URL))
-                    self.internal.page().setDevToolsPage(_self.internal.page())
-                    self.internal.page().triggerAction(
-                        QWebEnginePage.WebAction.InspectElement
-                    )
-
-                    _self.show()
-
-            QMW()
-
-    def _loadFinish(self):
-        self.on_load.emit(self.internal.url().url())
-
-    def eval(self, js, retsaver=None):
-        if not retsaver:
-            retsaver = lambda _: 1
-        self.internal.page().runJavaScript(js, retsaver)
-
-    def set_transparent_background(self):
-        self.internal.page().setBackgroundColor(Qt.GlobalColor.transparent)
-
-    def set_zoom(self, zoom):
-        self.internal_zoom = zoom
-        self.internal.setZoomFactor(zoom)
-
-    def get_zoom(self):
-        return self.internal.zoomFactor()
-
-    def __getzoomfactor(self):
-        z = self.internal.zoomFactor()
-        if z != self.internal_zoom:
-            self.internal_zoom = z
-            self.on_ZoomFactorChanged.emit(z)
-
-    def navigate(self, url: str):
-
-        if not url.lower().startswith("http"):
-            url = url.replace("\\", "/")
-        self.internal.load(QUrl(url))
-
-    def setHtml(self, html):
-        self.internal.setHtml(html)
-
-    @tryprint
-    def resizeEvent(self, a0: QResizeEvent) -> None:
-        self.internal.resize(a0.size())
-
-    def parsehtml(self, html):
-        return self._parsehtml_codec(self._parsehtml_dark(html))
 
 
 class mshtmlWidget(abstractwebview):

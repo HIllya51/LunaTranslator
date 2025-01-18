@@ -184,7 +184,7 @@ class bgmsettings(QFormLayout):
             os.remove(bangumioauth)
         except:
             pass
-        gobject.baseobject.openlink(
+        os.startfile(
             "https://bgm.tv/oauth/authorize?client_id={}&response_type=code&redirect_uri=lunatranslator://bangumioauth".format(
                 static_data["bangumi_oauth"]["client_id"]
             )

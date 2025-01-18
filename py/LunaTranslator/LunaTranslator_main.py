@@ -14,9 +14,25 @@ def dopathexists(file: str):
     return bool(windows.PathFileExists(os.path.abspath(file)))
 
 
+originstartfile = os.startfile
+
+
+def fakestartfile(f):
+    if f.startswith("http"):
+
+        from myutils.utils import checkisusingwine
+
+        if checkisusingwine():
+            print(f)
+            return
+    originstartfile(f)
+
+
 def overridepathexists():
     # win7上，如果假如没有D盘，然后os.path.exists("D:/...")，就会弹窗说不存在D盘
     os.path.exists = dopathexists
+
+    os.startfile = fakestartfile
 
 
 def prepareqtenv():

@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, uuid
+import functools, uuid, os
 from datetime import datetime, timedelta
 from traceback import print_exc
 from language import TransLanguages
@@ -336,7 +336,7 @@ class dialog_setting_game_internal(QWidget):
 
     def openrefmainpage(self, key, idname, gameuid):
         try:
-            gobject.baseobject.openlink(
+            os.startfile(
                 targetmod[key].refmainpage(savehook_new_data[gameuid][idname])
             )
         except:

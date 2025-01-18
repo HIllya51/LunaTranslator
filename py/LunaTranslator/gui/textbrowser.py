@@ -1,6 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
-import importlib, copy, os
+import importlib, copy, os, windows
 from webviewpy import webview_exception
 from gui.usefulwidget import getQMessageBox
 from traceback import print_exc
@@ -41,20 +41,7 @@ class Textbrowser(QFrame):
             tb = importlib.import_module("rendertext." + __).TextBrowser
             self.textbrowser = tb(self)
         except Exception as e:
-            if isinstance(e, webview_exception):
-                getQMessageBox(
-                    self,
-                    "错误",
-                    "can't find Webview2 runtime!",
-                )
-            elif isinstance(e, (ImportError, ModuleNotFoundError)):
-                getQMessageBox(
-                    None,
-                    "错误",
-                    "can't find QWebEngine!",
-                )
-            else:
-                print_exc()
+            print_exc()
             globalconfig["rendertext_using"] = "textbrowser"
             tb = importlib.import_module("rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)

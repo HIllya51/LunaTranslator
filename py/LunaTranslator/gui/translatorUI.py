@@ -558,7 +558,7 @@ class TranslatorWindow(resizableframeless):
         action = menu.exec(QCursor.pos())
         link = maps.get(action)
         if link:
-            gobject.baseobject.openlink(link)
+            os.startfile(link)
 
     def addbuttons(self):
         def simulate_key_ctrl():
