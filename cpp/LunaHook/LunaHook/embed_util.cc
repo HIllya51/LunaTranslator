@@ -113,6 +113,15 @@ void detachall()
     if (MH_OK == MH_DisableHook((LPVOID)info.addr))
       MH_RemoveHook((LPVOID)info.addr);
   }
+
+  if (!patch_fun_ptrs_patch_once.load())
+  {
+    for (auto &&[ptr1, ptr2] : patch_fun_ptrs)
+    {
+      if (MH_OK == MH_DisableHook(ptr1))
+        MH_RemoveHook(ptr1);
+    }
+  }
 }
 void solvefont(HookParam hp)
 {
@@ -133,6 +142,14 @@ void solvefont(HookParam hp)
   {
     current_patch_fun();
     dont_detach = true;
+  }
+  if (auto cur_patch_fun_ptrs_patch_once = patch_fun_ptrs_patch_once.exchange(false))
+  {
+    // 理论上搞个激活内嵌的行的使用计数是可以更早的detach的，但感觉好麻烦，算了。
+    for (auto &&[ptr1, ptr2] : patch_fun_ptrs)
+    {
+      ReplaceFunction(ptr1, ptr2);
+    }
   }
 }
 static std::wstring alwaysInsertSpacesSTD(const std::wstring &text)

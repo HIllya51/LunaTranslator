@@ -28,6 +28,8 @@ namespace Engine
     };
 }
 inline std::atomic<void (*)()> patch_fun = nullptr;
+inline std::vector<std::pair<void *, void *>> patch_fun_ptrs = {};
+inline std::atomic<bool> patch_fun_ptrs_patch_once = true;
 bool ReplaceFunction(PVOID oldf, PVOID newf, PVOID *pOrigin = nullptr);
 bool check_embed_able(const ThreadParam &tp);
 bool checktranslatedok(TextBuffer buff);

@@ -827,21 +827,15 @@ namespace
       {
         hp.type |= EMBED_DYNA_SJIS;
 
-        static ULONG p;
-        p = Patch::patchEncoding(startAddress, stopAddress);
+        auto p = Patch::patchEncoding(startAddress, stopAddress);
         if (p)
         {
           hp.type |= EMBED_DYNA_SJIS;
           hp.embed_hook_font = F_GetGlyphOutlineA;
-          patch_fun = []()
-          {
-            if (*(WORD *)p == 0xc985)
-            { // test ecx,ecx , thiscall
-              ReplaceFunction((PVOID)p, (PVOID)(ULONG)Patch::Private::thiscallisLeadByteChar);
-            }
-            else
-              ReplaceFunction((PVOID)p, (PVOID)(ULONG)Patch::Private::isLeadByteChar);
-          };
+          if (*(WORD *)p == 0xc985)
+            patch_fun_ptrs = {{(void *)p, (PVOID)(ULONG)Patch::Private::thiscallisLeadByteChar}};
+          else
+            patch_fun_ptrs = {{(void *)p, (PVOID)(ULONG)Patch::Private::isLeadByteChar}};
         }
       }
       hp.text_fun = Private::hookBefore;

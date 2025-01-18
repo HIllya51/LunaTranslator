@@ -59,8 +59,8 @@ bool RScript::attach_function()
   auto addrX = MemDbg::findBytes(bytes2, sizeof(bytes2), faddr, addr);
   if (!addrX)
     return false;
-  static auto __ismbblead = *(int *)(addrX + 2 + 2 + 6 + 3 + 1 + 1) + addrX + 2 + 2 + 6 + 3 + 1 + 5;
-  static auto __ismbbtrail = *(int *)(addrX + sizeof(bytes2) - 4) + addrX + sizeof(bytes2);
+  auto __ismbblead = *(int *)(addrX + 2 + 2 + 6 + 3 + 1 + 1) + addrX + 2 + 2 + 6 + 3 + 1 + 5;
+  auto __ismbbtrail = *(int *)(addrX + sizeof(bytes2) - 4) + addrX + sizeof(bytes2);
   ConsoleOutput("%p", __ismbblead);
   ConsoleOutput("%p", __ismbbtrail);
   HookParam hp;
@@ -69,12 +69,9 @@ bool RScript::attach_function()
   hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
   hp.embed_hook_font = F_GetGlyphOutlineA | F_GetTextExtentPoint32A;
   hp.lineSeparator = L"^n";
-  patch_fun = []()
-  {
-    ReplaceFunction((void *)__ismbblead, +[](BYTE b)
-                                         { return b != '^'; });
-    ReplaceFunction((void *)__ismbbtrail, +[](BYTE b)
-                                          { return b != '^'; });
-  };
+  patch_fun_ptrs = {{(void *)__ismbblead, +[](BYTE b)
+                                          { return b != '^'; }},
+                    {(void *)__ismbbtrail, +[](BYTE b)
+                                           { return b != '^'; }}};
   return NewHook(hp, "RScript");
 }

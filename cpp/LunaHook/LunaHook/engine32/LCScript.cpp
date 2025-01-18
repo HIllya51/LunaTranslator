@@ -682,15 +682,10 @@ namespace
       hp.embed_hook_font = F_GetGlyphOutlineA;
       if (dyna)
       {
-        static ULONG dynas;
-        dynas = dyna;
         hp.type |= EMBED_DYNA_SJIS;
         hp.embed_hook_font = F_GetGlyphOutlineA;
-        patch_fun = []()
-        {
-          ReplaceFunction((PVOID)dynas, (PVOID)(ULONG)isLeadByteChar);
-          dynamiccodec->setMinimumSecondByte(6); //// skip 0x1,0x2,0x3 in case dynamic encoding could crash the game
-        };
+        dynamiccodec->setMinimumSecondByte(6); //// skip 0x1,0x2,0x3 in case dynamic encoding could crash the game
+        patch_fun_ptrs = {{(void *)dyna, (PVOID)(ULONG)isLeadByteChar}};
       }
       auto succ = NewHook(hp, "EmbedLCSE");
       hp.address = addr2 + 4;

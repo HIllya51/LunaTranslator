@@ -257,8 +257,8 @@ LABEL_3:
     auto addrX = MemDbg::findBytes(bytes2, sizeof(bytes2), faddr, addr);
     if (!addrX)
       return false;
-    static auto __ismbblead = *(int *)(addrX + 2 + 2 + 6 + 3 + 1 + 1) + addrX + 2 + 2 + 6 + 3 + 1 + 5;
-    static auto __ismbbtrail = *(int *)(addrX + sizeof(bytes2) - 4) + addrX + sizeof(bytes2);
+    auto __ismbblead = *(int *)(addrX + 2 + 2 + 6 + 3 + 1 + 1) + addrX + 2 + 2 + 6 + 3 + 1 + 5;
+    auto __ismbbtrail = *(int *)(addrX + sizeof(bytes2) - 4) + addrX + sizeof(bytes2);
     ConsoleOutput("%p", __ismbblead);
     ConsoleOutput("%p", __ismbbtrail);
     HookParam hp;
@@ -278,13 +278,10 @@ LABEL_3:
       result = std::regex_replace(result, std::wregex(LR"(\^\w)"), L"");
       buffer->from(WideStringToString(result, 932));
     };
-    patch_fun = []()
-    {
-      ReplaceFunction((void *)__ismbblead, +[](BYTE b)
-                                           { return b != '^'; });
-      ReplaceFunction((void *)__ismbbtrail, +[](BYTE b)
-                                            { return true; });
-    };
+    patch_fun_ptrs = {{(void *)__ismbblead, +[](BYTE b)
+                                            { return b != '^'; }},
+                      {(void *)__ismbbtrail, +[](BYTE b)
+                                             { return true; }}};
     return NewHook(hp, "CodeX");
   }
 }
