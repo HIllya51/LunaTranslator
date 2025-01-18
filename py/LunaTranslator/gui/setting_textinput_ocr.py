@@ -417,7 +417,7 @@ def internal(self):
             "自动化执行方法",
             D_getIconButton(
                 callback=lambda: gobject.baseobject.openlink(
-                    dynamiclink("{docs_server}/zh/ocrparam.html")
+                    dynamiclink("{docs_server}/{lang}/ocrparam.html")
                 ),
                 icon="fa.question",
             ),

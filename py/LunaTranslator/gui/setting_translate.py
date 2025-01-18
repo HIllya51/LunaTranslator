@@ -325,13 +325,13 @@ def createmanybtn(self, countnum, btnplus):
     if btnplus == "offline":
         btn.clicked.connect(
             lambda: gobject.baseobject.openlink(
-                dynamiclink("{docs_server}/zh/offlinellm.html")
+                dynamiclink("{docs_server}/{lang}/offlinellm.html")
             )
         )
     elif btnplus == "api":
         btn.clicked.connect(
             lambda: gobject.baseobject.openlink(
-                dynamiclink("{docs_server}/zh/guochandamoxing.html")
+                dynamiclink("{docs_server}/{lang}/guochandamoxing.html")
             )
         )
     hbox.addWidget(btn)

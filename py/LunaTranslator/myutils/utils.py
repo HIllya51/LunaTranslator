@@ -532,6 +532,7 @@ def dynamiclink(text):
     return text.format(
         main_server=static_data["main_server"][gobject.serverindex],
         docs_server=static_data["docs_server"][gobject.serverindex],
+        lang=getlanguse(),
     )
 
 

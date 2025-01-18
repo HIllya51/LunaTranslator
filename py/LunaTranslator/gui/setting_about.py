@@ -326,7 +326,7 @@ def setTab_about1(self, basel):
         ["项目网站", makehtml("{main_server}/")],
         [
             "使用说明",
-            makehtml("{docs_server}/"),
+            makehtml("{docs_server}/{lang}", show="https://docs.lunatranslator.org/"),
         ],
     ]
     if getlanguse() == Languages.Chinese:
