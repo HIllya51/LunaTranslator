@@ -1240,7 +1240,6 @@ class WebivewWidget(abstractwebview):
 
     def __init__(self, parent=None, debug=True) -> None:
         super().__init__(parent)
-        x
         self.webview = None
         self.callbacks = []
         FixedRuntime = self.findFixedRuntime()
