@@ -9,7 +9,7 @@ class chartwidget(QWidget):
         super().__init__()
 
         font = QFont("Arial", 10)
-        fmetrics = QFontMetrics(font)
+        fmetrics = QFontMetricsF(font)
 
         fhall = fmetrics.height()
         self.font = font

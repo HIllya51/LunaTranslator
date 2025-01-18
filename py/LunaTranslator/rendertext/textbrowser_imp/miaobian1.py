@@ -35,7 +35,7 @@ class TextLine(base):
         )
 
         pix = QPixmap(self.size())
-        font_m = QFontMetrics(font)
+        font_m = QFontMetricsF(font)
         pen = QPen(
             self.m_outLineColor,
             fontOutLineWidth,

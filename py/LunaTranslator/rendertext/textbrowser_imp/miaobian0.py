@@ -13,7 +13,7 @@ class TextLine(base):
 
         text = self.text()
         font = self.font()
-        font_m = QFontMetrics(font)
+        font_m = QFontMetricsF(font)
         path = QPainterPath()
         path.addText(
             fontOutLineWidth,

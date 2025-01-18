@@ -11,7 +11,7 @@ class TextLine(base):
 
         text = self.text()
         font = self.font()
-        font_m = QFontMetrics(font)
+        font_m = QFontMetricsF(font)
         path.addText(
             0,
             font_m.ascent(),

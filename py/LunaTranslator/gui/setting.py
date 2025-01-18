@@ -129,10 +129,11 @@ class Setting(closeashidewindow):
             fn = QFont()
             fn.setPointSizeF(globalconfig["settingfontsize"] + 4)
             fn.setFamily(globalconfig["settingfonttype"])
-            fm = QFontMetrics(fn)
+            fm = QFontMetricsF(fn)
             for title in _TRL(self.tab_widget.titles):
                 width = max(fm.size(0, title).width(), width)
             width += 50
+            width = int(width)
             self.tab_widget.splitter.setSizes([width, self.tab_widget.width() - width])
 
         def __(_):
