@@ -1,4 +1,4 @@
 PyQt6==6.8.0
 PyQt6-Qt6==6.8.0
-webviewpy==1.4.0
+webviewpy==1.5.0
 tinycss2
