@@ -43,7 +43,7 @@ class Textbrowser(QFrame):
         except Exception as e:
             if isinstance(e, webview_exception):
                 getQMessageBox(
-                    None,
+                    self,
                     "错误",
                     "can't find Webview2 runtime!",
                 )
