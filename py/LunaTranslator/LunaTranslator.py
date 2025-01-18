@@ -1175,17 +1175,7 @@ class MAINUI:
         self.parsedefaultfont()
         self.loadmetadatas()
 
-        class commonstylebase(QWidget):
-            setstylesheetsignal = pyqtSignal()
-
-            def __init__(__, _=None) -> None:
-                super().__init__(_)
-                __.setstylesheetsignal.connect(self.setcommonstylesheet)
-
-        self.commonstylebase = commonstylebase()
-        self.setcommonstylesheet()
         self.translation_ui = TranslatorWindow()
-        self.commonstylebase.setParent(self.translation_ui)
         winsharedutils.showintab(
             int(self.translation_ui.winId()), globalconfig["showintab"], True
         )
@@ -1201,6 +1191,15 @@ class MAINUI:
         self.starthira()
         self.startoutputer()
 
+        class commonstylebase(QWidget):
+            setstylesheetsignal = pyqtSignal()
+
+            def __init__(__, _=None) -> None:
+                super().__init__(_)
+                __.setstylesheetsignal.connect(self.setcommonstylesheet)
+
+        self.commonstylebase = commonstylebase(self.translation_ui)
+        self.setcommonstylesheet()
         self.settin_ui = Setting(self.commonstylebase)
         self.transhis = transhist(self.commonstylebase)
         self.startreader()
