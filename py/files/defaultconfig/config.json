@@ -3,8 +3,6 @@
     "lastapppath": null,
     "ocrafterrangeselect": true,
     "excule_from_self": true,
-    "excule_from_exe": [],
-    "only_from_exe": [],
     "showrangeafterrangeselect": true,
     "autodisappear": false,
     "WindowBackdrop": 3,
@@ -20,7 +18,6 @@
     "ocrselectalpha": 0.3,
     "is_search_word_auto_tts": false,
     "network_websocket": 1,
-    "webview_textbrowser": false,
     "imagewrapmode": 0,
     "primitivtemetaorigin": "vid",
     "rendertext_using": "textbrowser",
@@ -289,7 +286,6 @@
             "https://vndb.org/"
         ]
     ],
-    "hooklossless": true,
     "textoutputer": {
         "clipboard": {
             "use": false
@@ -347,12 +343,6 @@
     "maxBufferSize": 3000,
     "maxHistorySize": 1000000,
     "yuanjiao_r": 0,
-    "qwebinspectgeo": [
-        100,
-        100,
-        800,
-        400
-    ],
     "transuigeo": [
         500,
         500,
@@ -406,18 +396,6 @@
         100,
         1200,
         600
-    ],
-    "savegamedialoggeo3": [
-        100,
-        100,
-        1200,
-        600
-    ],
-    "browserwidget": [
-        100,
-        100,
-        1300,
-        800
     ],
     "sw_geo": [
         100,
@@ -486,12 +464,6 @@
     "mp3kbps": 64,
     "opusbitrate": 10,
     "audioformat": "mp3",
-    "ankiwindow": [
-        100,
-        100,
-        600,
-        600
-    ],
     "settingfonttype": "",
     "setting_geo_2": [
         100,
