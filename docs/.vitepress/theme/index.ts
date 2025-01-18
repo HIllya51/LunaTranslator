@@ -1,12 +1,18 @@
 import DefaultTheme from 'vitepress/theme';
 import { useRouter } from 'vitepress'
-import { watch } from "vue"
+import { watch, h } from "vue"
 import './style.css';
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
-import Layout from './giscus.vue'
+import giscus from './giscus.vue'
+import notfound from './notfound.vue';
 export default {
     ...DefaultTheme,
-    Layout: Layout,
+    Layout() {
+        return h(DefaultTheme.Layout, null, {
+            'not-found': () => h(notfound),
+            'doc-after': () => h(giscus)
+        })
+    },
     enhanceApp({ app }) {
         enhanceAppWithTabs(app)
     },

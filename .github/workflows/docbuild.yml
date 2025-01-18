@@ -33,7 +33,6 @@ jobs:
           cd docs
           npm install
           npm run docs:build
-          cp index.html .vitepress/dist
           cd ..
       - uses: actions/upload-pages-artifact@v3
         with:
