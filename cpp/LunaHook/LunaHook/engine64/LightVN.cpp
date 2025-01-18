@@ -36,7 +36,7 @@ namespace
       ConsoleOutput("LightVN %p", addr);
       const BYTE aligned[] = {0xCC, 0xCC, 0xCC, 0xCC};
       addr = reverseFindBytes(aligned, sizeof(aligned), addr - 0x100, addr);
-      if (addr == 0)
+      if (!addr)
         continue;
       addr += 4;
       ConsoleOutput("LightVN %p", addr);
@@ -65,10 +65,10 @@ namespace
         0x76, XX,
         0x48, XX, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F};
     auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return 0;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return 0;
     HookParam hp;
     hp.address = addr;
@@ -116,10 +116,10 @@ namespace
         0x48, 0x8b, 0xcb,
         0xe8};
     auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return 0;
     addr = MemDbg::findEnclosingAlignedFunction_strict(addr);
-    if (addr == 0)
+    if (!addr)
       return 0;
     HookParam hp;
     hp.address = addr;

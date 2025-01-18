@@ -10,11 +10,11 @@ namespace
         0x66, 0x90};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     ConsoleOutput("%p", addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
     ConsoleOutput("%p", addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

@@ -24,7 +24,7 @@ bool Sprite_attach_function()
       XX,
       0xE8, XX4};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   if (((*(int *)(addr + 22)) + addr + 22) != ((*(int *)(addr + 35)) + addr + 35))
     return false;
@@ -52,7 +52,7 @@ namespace
         0xff, 0x15, XX4 // MultiByteToWideChar
     };
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), s, e);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr + sizeof(bytes); // 不知道从哪jump到call MultiByteToWideChar的
@@ -83,10 +83,10 @@ namespace
         0x66, 0x85, 0xc0,
         0x74};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), s, e);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = findfuncstart(addr, 0x100);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -128,7 +128,7 @@ namespace
         0x66, 0x85, 0xc0,
         0x74, XX};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), s, e);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

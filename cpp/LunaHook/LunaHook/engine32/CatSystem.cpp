@@ -816,7 +816,7 @@ namespace
                       // XX2, XX, 0x00,0x00,0x00 // 004b00ea   8d9b 00000000    lea ebx,dword ptr ds:[ebx]
       };
       ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-      if (addr == 0)
+      if (!addr)
         return false;
       HookParam hp;
       hp.address = addr + 5;

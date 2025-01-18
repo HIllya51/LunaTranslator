@@ -129,10 +129,10 @@ bool CaramelBoxMilkAji::attach_function()
       0x6B, 0xC0, 0x44,
       0x6B, 0xC0, 0x03};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -152,7 +152,7 @@ bool CaramelBox2::attach_function()
       return false;
     auto addr = context->retaddr;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

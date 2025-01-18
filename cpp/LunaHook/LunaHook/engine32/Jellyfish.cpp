@@ -18,10 +18,10 @@ bool Jellyfish::Jellyfish_attach_function()
       XX,
   };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), minaddr, maxaddr);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr, 0x1000);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

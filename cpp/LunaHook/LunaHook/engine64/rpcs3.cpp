@@ -145,7 +145,7 @@ namespace
             return 0;
         auto addr = MemDbg::findleaaddr(logstrptr, processStartAddress, processStopAddress);
         ConsoleOutput("%p", addr);
-        if (addr == 0)
+        if (!addr)
             return 0;
         // ff cc cc cc,find不到。。
         BYTE start[] = {XX, 0xCC, 0xCC, 0xCC};

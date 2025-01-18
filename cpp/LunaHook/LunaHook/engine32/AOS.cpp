@@ -183,11 +183,11 @@ namespace
 
   DWORD calladdr(DWORD addr)
   {
-    if (addr == 0)
+    if (!addr)
       return 0;
     BYTE callop[] = {0xe8};
     addr = reverseFindBytes(callop, sizeof(callop), addr - 0x20, addr);
-    if (addr == 0)
+    if (!addr)
       return 0;
     auto calladdr = *(int *)((char *)addr + 1);
     ConsoleOutput("calladdr %p", calladdr);
@@ -200,7 +200,7 @@ namespace
   DWORD lastcall()
   {
     auto addr = findiatcallormov((DWORD)TextOutA, processStartAddress, processStartAddress, processStopAddress, true);
-    if (addr == 0)
+    if (!addr)
       return 0;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
     return addr;
@@ -259,7 +259,7 @@ bool AOS_EX()
   addrs.push_back(lastcall());
   for (auto addr : addrs)
   {
-    if (addr == 0)
+    if (!addr)
       continue;
     auto reg = mov_reg_ebpoffset(*(BYTE *)((BYTE *)addr + 5));
     int off;

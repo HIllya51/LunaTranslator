@@ -123,7 +123,7 @@ bool InsertXXkata()
 
   // HSNc@0:user32.dll:wsprintfA
   auto addr = GetProcAddress(GetModuleHandleW(L"user32.dll"), "wsprintfA");
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = (uint64_t)addr;

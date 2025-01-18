@@ -1539,7 +1539,7 @@ dl 16
         return (DWORD)0;
       }(addr + 1, stopAddress);
       // ConsoleOutput("%p",0x400000+addr-startAddress);
-      if (addr == 0)
+      if (!addr)
         continue;
       auto check = [](DWORD addr, DWORD stopAddress)
       {
@@ -1629,12 +1629,12 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
     static int off;
     off = 8;
-    if (addr == 0)
+    if (!addr)
     {
       addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
       off = 4;
     }
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

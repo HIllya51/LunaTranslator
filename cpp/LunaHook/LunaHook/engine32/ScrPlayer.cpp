@@ -12,10 +12,10 @@ bool ScrPlayer_attach_function1()
       0x3d, 0x40, 0x81, 0x00, 0x00,
       0x74, XX};
   auto addr = MemDbg::findBytes(check, sizeof(check), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   if (addr != func)
     return false;
@@ -60,7 +60,7 @@ bool ScrPlayer_attach_function2()
       0x89, 0x4c, 0x24, 0x04,
       0x0f, 0x84, XX4};
   auto addr = MemDbg::findBytes(bs, sizeof(bs), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

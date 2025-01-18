@@ -16,7 +16,7 @@ bool Sakuradog::attach_function() {
       }; 
     memcpy(bytes2+sizeof(bytes2)-4,&entry,4);    
     auto addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-    if (addr == 0)return false; 
+    if (!addr)return false; 
     HookParam hp;
     hp.address = addr+6;
     hp.offset=regoffset(esi);

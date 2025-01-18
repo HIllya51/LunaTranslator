@@ -8,7 +8,7 @@ bool AbaloneHook()
       0x74};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   ConsoleOutput("AbaloneHook %p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr + 4;

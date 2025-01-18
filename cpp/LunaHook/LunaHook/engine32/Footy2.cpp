@@ -10,7 +10,7 @@ bool insertstrcpyhook()
   for (auto addr : addrs)
   {
     addr = reverseFindBytes(funcstart, sizeof(funcstart), addr - 0x100, addr);
-    if (addr == 0)
+    if (!addr)
       continue;
     HookParam hp;
     hp.address = addr;

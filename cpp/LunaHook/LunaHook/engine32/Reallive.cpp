@@ -217,10 +217,10 @@ bool avg3216dattach_function()
       0x75, XX,
       0x80, 0x7e, 0x01, 0x7a};
   auto addr = MemDbg::findBytes(pattern2, sizeof(pattern2), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   auto check = MemDbg::findBytes(pattern1, sizeof(pattern1), addr, addr + 0x200);
   if (check == 0)
@@ -247,10 +247,10 @@ bool avg3216dattach_function2()
       0x80, 0xf9, 0xfc,
       0x76, 0x0d};
   auto addr = MemDbg::findBytes(pattern2, sizeof(pattern2), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = findfuncstart(addr, 0x200, true);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

@@ -280,14 +280,14 @@ namespace hookmages
         BYTE dialogSig1[] = {
             0x85, XX, 0x74, XX, 0x83, XX, 0x01, 0x74, XX, 0x83, XX, 0x04, 0x74, XX, 0xc7, 0x05, XX, XX, XX, XX, 0x01, 0x00, 0x00, 0x00};
         auto addr = MemDbg::findBytes(dialogSig1, sizeof(dialogSig1), processStartAddress, processStopAddress);
-        if (addr == 0)
+        if (!addr)
         {
             dialogSigOffset = 3;
             BYTE dialogSig2[] = {
                 0x57, 0x85, XX, 0x74, XX, 0x83, XX, 0x01, 0x74, XX, 0x83, XX, 0x04};
             addr = MemDbg::findBytes(dialogSig2, sizeof(dialogSig2), processStartAddress, processStopAddress);
         }
-        if (addr == 0)
+        if (!addr)
             return false;
         auto pos = addr + dialogSigOffset;
         //.text:00431D3F 74 16                         jz      short loc_431D57
@@ -385,7 +385,7 @@ namespace hookmages
             0x85, XX, 0x74, XX, 0x41, 0x83, XX, 0x01, 0x74, XX, 0x41, 0x83, XX, 0x04, 0x74, XX, 0x41};
         auto addr = MemDbg::findBytes(dialogSig1, sizeof(dialogSig1), processStartAddress, processStopAddress);
         ConsoleOutput("%p", addr);
-        if (addr == 0)
+        if (!addr)
             return false;
         auto pos = addr + dialogSigOffset;
         auto jzoff = *(BYTE *)(pos + 1);

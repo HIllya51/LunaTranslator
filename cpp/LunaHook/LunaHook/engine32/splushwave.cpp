@@ -3,15 +3,15 @@ bool splushwave_(const char *buf, int size)
 {
   auto addr = MemDbg::findBytes(buf, size, processStartAddress, processStopAddress);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findPushAddress(addr, processStartAddress, processStopAddress);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

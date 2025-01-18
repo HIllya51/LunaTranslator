@@ -290,18 +290,18 @@ bool InsertScenarioPlayerHookx()
       0xC1, 0xE8, 0x02, 0x25, 0x01, 0xFF, 0xFF, 0xFF, 0x89, 0x45, XX};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   auto addrs = findxref_reverse_checkcallop(addr, addr - 0x1000, addr, 0xe9);
   if (addrs.size() != 1)
     return false;
   addr = addrs[0];
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -334,7 +334,7 @@ namespace
         0x8B, 0xCE,
         0xE8, XX4};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -371,11 +371,11 @@ bool Ryokucha2::attach_function()
       0x8b, XX2, 0x2b, 0xd1, 0xc1, 0xfa, 0x02, 0x3b, 0xd0, 0x76};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
 
   HookParam hp;

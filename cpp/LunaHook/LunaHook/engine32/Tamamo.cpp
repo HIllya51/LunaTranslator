@@ -338,7 +338,7 @@ namespace
     // 閃光の騎士 ～カリスティアナイト～
     char face[] = "face_%s_%s.png";
     auto addr = MemDbg::findBytes(face, sizeof(face), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     bool ok = false;
 

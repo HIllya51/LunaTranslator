@@ -13,9 +13,9 @@ bool Troy::attach_function() {
       0x80,0xFB,0xF1 
     };
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minaddr, maxaddr);  
-    if (addr == 0)return false;
+    if (!addr)return false;
     addr=MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)return false;
+    if (!addr)return false;
     HookParam hp;
     hp.address = addr;
     hp.offset=stackoffset(2);

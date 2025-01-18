@@ -1136,7 +1136,7 @@ namespace
       Private::type_ = Private::Type1;
       Private::textIndex_ = 3; // use arg3, name = "BGI";
     }
-    if (addr == 0)
+    if (!addr)
       return false;
     hp.address = addr;
     hp.offset = stackoffset(Private::textIndex_);
@@ -1230,10 +1230,10 @@ bool InsertBGI4Hook_1()
       0xBE, 0xA4, 0x03, 0x00, 0x00 // cp=932
   };
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -1300,12 +1300,12 @@ namespace
     // H2O -FOOTPRINTS IN THE SAND-
 
     auto addr = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress);
-    if (addr == 0) // 銀行淫～堕ちゆく女達～ //mov     ebp, ds:GetGlyphOutlineA
+    if (!addr) // 銀行淫～堕ちゆく女達～ //mov     ebp, ds:GetGlyphOutlineA
       addr = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress, false, XX);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     auto xrefs = findxref_reverse_checkcallop(addr, addr - 0x1000, addr + 0x1000, 0xe8);
     if (xrefs.size() != 1)

@@ -58,10 +58,10 @@ bool IGScript1attach_function()
   HMODULE module = GetModuleHandleW(L"Script.dll");
   auto [minAddress, maxAddress] = Util::QueryModuleLimits(module);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr, 0x100);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

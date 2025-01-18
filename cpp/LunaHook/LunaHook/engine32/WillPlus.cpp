@@ -579,12 +579,12 @@ bool InsertWillPlus4Hook()
       0xc7, 0x47, 0x78, 0x00, 0x00, 0x00, 0x00};
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 
-  if (addr == 0)
+  if (!addr)
     return false;
 
   addr = MemDbg::findEnclosingFunctionBeforeDword(0x83dc8b53, addr, MemDbg::MaximumFunctionSize, 1);
 
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -668,7 +668,7 @@ bool insertwillplus6()
       0xff, 0x75, 0xdc};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 
-  if (addr == 0)
+  if (!addr)
     return false;
   addr += sizeof(bytes);
   ConsoleOutput("%p %p %p", addr, processStartAddress, processStopAddress);
@@ -713,7 +713,7 @@ bool willX()
       0x81, 0xFE, 0x96, 0x81, 0x00, 0x00};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 
-  if (addr == 0)
+  if (!addr)
     return false;
   auto succ = false;
   {
@@ -841,7 +841,7 @@ namespace
     bool attach(const uint8_t *pattern, size_t patternSize, ULONG startAddress, ULONG stopAddress, int hookStackIndex, int role = Engine::UnknownRole)
     {
       ULONG addr = MemDbg::findBytes(pattern, patternSize, startAddress, stopAddress);
-      if (addr == 0)
+      if (!addr)
         return false;
       HookParam hp;
       hp.address = addr;
@@ -1555,7 +1555,7 @@ namespace
           0x81, 0xec, 0x14, 0x08, 0x00, 0x00 // 0042B5E0   81EC 14080000    SUB ESP,0x814	; jichi: text in eax, name in eax - 1024, able to copy
       };
       ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-      if (addr == 0)
+      if (!addr)
         return false;
       HookParam hp;
       hp.address = addr;
@@ -1611,7 +1611,7 @@ namespace
     bool attach(ULONG startAddress, ULONG stopAddress)
     {
       ULONG addr = MemDbg::findCallerAddressAfterInt3((ULONG)::GetGlyphOutlineA, startAddress, stopAddress);
-      if (addr == 0)
+      if (!addr)
         return false;
       HookParam hp;
       hp.address = addr;
@@ -1777,13 +1777,13 @@ bool Willold::attach_function()
   // https://vndb.org/v17755
   // 凌辱鬼
   auto addr = MemDbg::findLongJumpAddress((ULONG)TextOutA, processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findNearCallAddress(addr, processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = findfuncstart(addr, 0x200);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

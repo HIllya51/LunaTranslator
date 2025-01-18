@@ -318,7 +318,7 @@ bool InsertHorkEye3Hook()
       };
 
   auto addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -340,7 +340,7 @@ bool InsertHorkEye4Hook()
           0x1b, 0xc0,
           0x83, 0xc0, 0x02};
   auto addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   const BYTE bytebetter[] = {
       0x8b, XX, XX, XX,
@@ -352,7 +352,7 @@ bool InsertHorkEye4Hook()
     addr = addr1;
   else
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -374,12 +374,12 @@ bool InsertHorkEye6Hook()
           0x52,
           0xe8};
   auto addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   ConsoleOutput("hk6 %p", addr);
   const BYTE start[] = {0x6A, 0xFF};
   addr = reverseFindBytes(start, sizeof(start), addr - 0x1000, addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   ConsoleOutput("hk6 %p", addr);
   HookParam hp;

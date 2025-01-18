@@ -7,11 +7,11 @@ bool old() {
 			};
 			auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress); 
 			ConsoleOutput("%p", addr);
-			if (addr == 0)return false;
+			if (!addr)return false;
 			
 			addr = findfuncstart(addr,0x40);
 			ConsoleOutput("%p", addr);
-			if (addr == 0)return false;
+			if (!addr)return false;
 			HookParam hp;
 			hp.address = addr;
 			hp.offset=stackoffset(1);
@@ -32,12 +32,12 @@ bool _2(){
 			};
 			auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress); 
 			ConsoleOutput("%p", addr);
-			if (addr == 0)return false;
+			if (!addr)return false;
 			const BYTE start[] = {
 				0xCC,0xCC,0xCC,0xCC
 			};
 			addr = reverseFindBytes(start, sizeof(start), addr - 0x40, addr);
-			if (addr == 0)return false;
+			if (!addr)return false;
 			HookParam hp;
 			hp.address = addr+4;
 			hp.offset=regoffset(edx);  

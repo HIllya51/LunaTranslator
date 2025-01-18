@@ -223,7 +223,7 @@ namespace
       if ((*(BYTE *)(addr - 1) == 0x3c) || ((*(BYTE *)(addr - 2) == 0x83) && (*(BYTE *)(addr - 1) == 0xf9)))
       {
         addr = MemDbg::findEnclosingAlignedFunction(addr);
-        if (addr == 0)
+        if (!addr)
           continue;
         ConsoleOutput("!%x", addr);
         HookParam hp;
@@ -307,10 +307,10 @@ namespace
         0x83, 0x7D, 0xF8, 0x20,
         0x74, XX};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction(addr, 0x20);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.type = USING_STRING;
@@ -344,10 +344,10 @@ bool WillowSoft::attach_function()
       0xF7, 0xC2, 0x00, 0x00, 0x00, 0xFF,
       XX2};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
 
   HookParam hp;

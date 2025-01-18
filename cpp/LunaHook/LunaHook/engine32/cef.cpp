@@ -112,7 +112,7 @@ bool InsertlibcefHook(HMODULE module)
 	{
 		if (FARPROC addr = ::GetProcAddress(module, func.functionName))
 		{
-			if (addr == 0)
+			if (!addr)
 				continue;
 			hp.address = (DWORD)addr;
 			hp.type = func.hookType;

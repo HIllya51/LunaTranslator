@@ -385,12 +385,12 @@ bool Insert5pbHookex()
   const BYTE bytes[] = {
       0x0F, 0xB6, 0xC2, 0x35, 0xC5, 0x9D, 0x1C, 0x81};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   const BYTE start[] = {
       0x55, 0x8b, 0xec, 0x83, 0xe4};
   addr = reverseFindBytes(start, sizeof(start), addr - 0x40, addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -599,7 +599,7 @@ namespace
     if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -628,7 +628,7 @@ namespace
       for (auto addr : Util::SearchMemory(sigsz.first, sigsz.second, PAGE_EXECUTE, processStartAddress, processStopAddress))
       {
         addr = MemDbg::findEnclosingAlignedFunction(addr);
-        if (addr == 0)
+        if (!addr)
           continue;
         if (addr_hit.find(addr) == addr_hit.end())
         {

@@ -181,7 +181,7 @@ namespace
         0xFF, 0x77, 0x18,
         0xE8};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     auto off = (*((DWORD *)(sizeof(bytes) + addr)));
     auto _calladdr = addr + sizeof(bytes) + 4 + off;
@@ -206,11 +206,11 @@ namespace
         0x8d, XX2,
         0xe8};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
 
-    if (addr == 0)
+    if (!addr)
       return false;
     if (hook5_1(addr))
       return true;
@@ -233,7 +233,7 @@ namespace
     {
       addr = MemDbg::findEnclosingAlignedFunction(addr);
 
-      if (addr == 0)
+      if (!addr)
         continue;
       HookParam hp;
       hp.address = (DWORD)addr;
@@ -864,7 +864,7 @@ namespace
       // addr = MemDbg::findNearCallAddress(addr, startAddress, stopAddress);
       // if (!addr)
       //   return false;
-      if (addr == 0)
+      if (!addr)
         return 0;
       HookParam hp;
       hp.address = addr;

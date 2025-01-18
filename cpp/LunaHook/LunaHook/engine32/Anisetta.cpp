@@ -10,10 +10,10 @@ bool Anisetta::attach_function()
       0x25, 0x58, 0x02, 0x00, 0x00,
       0x05, 0x90, 0x01, 0x00, 0x00};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

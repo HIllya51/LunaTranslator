@@ -29,10 +29,10 @@ namespace
       // 例外：
       // みはる -あるとアナザーストーリー-
       addr = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress, false, XX);
-      if (addr == 0)
+      if (!addr)
         return false;
       addr = MemDbg::findEnclosingAlignedFunction(addr);
-      if (addr == 0)
+      if (!addr)
         return false;
     }
 
@@ -1185,10 +1185,10 @@ namespace
   bool attach(const uint8_t pattern[], int patternSize, DWORD startAddress, DWORD stopAddress)
   {
     ULONG addr = MemDbg::findBytes(pattern, patternSize, startAddress, stopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction_strict(addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

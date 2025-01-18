@@ -115,10 +115,10 @@ bool LWScript2()
       0x66, 0xC1, 0xE8, 0x08,
       0x3C, 0x81};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   int off;
   if (*(BYTE *)(addr + 3) == 0x4C)
@@ -135,7 +135,7 @@ bool LWScript2()
   for (auto addr : addrs)
   {
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       continue;
     HookParam hp;
     hp.address = addr;

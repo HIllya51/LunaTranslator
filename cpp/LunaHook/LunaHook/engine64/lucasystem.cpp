@@ -29,7 +29,7 @@ bool InsertIG64Hook2()
     auto addr2 = reverseFindBytes(sig2, sizeof(sig2), addr - 0x10000, addr);
     ConsoleOutput("%p %p", addr1, addr2);
     addr = max(addr1, addr2);
-    if (addr == 0)
+    if (!addr)
       continue;
     if (addr == addr1)
       addr += 2;

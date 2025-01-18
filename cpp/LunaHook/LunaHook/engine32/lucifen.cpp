@@ -29,9 +29,9 @@ namespace
     // まじかるカナン -RISEA-
     auto oldoutline = (ULONG)GetProcAddress(GetModuleHandle(L"gdi32.dll"), "GetGlyphOutline");
     auto addr = MemDbg::findCallerAddress(oldoutline, 0xec8b55, processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       addr = MemDbg::findCallerAddress((ULONG)GetGlyphOutlineA, 0xec8b55, processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -137,7 +137,7 @@ bool attach_navel(ULONG startAddress, ULONG stopAddress) // attach scenario
       0x83, 0xc3, 0x04,
       0xb1, 0x01};
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
 
   addr = MemDbg::findEnclosingAlignedFunction(addr);
@@ -944,7 +944,7 @@ namespace
           0x8a, 0x44, 0x24, 0x13              // 00442488   8a4424 13        mov al,byte ptr ss:[esp+0x13]
       };
       ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-      if (addr == 0)
+      if (!addr)
         return false;
       HookParam hp;
       hp.address = addr;
@@ -1010,7 +1010,7 @@ namespace
         0x8b, 0x85, 0x74, 0x20, 0x00, 0x00  // 00461cbe   8b85 74200000    mov eax,dword ptr ss:[ebp+0x2074]
     };
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

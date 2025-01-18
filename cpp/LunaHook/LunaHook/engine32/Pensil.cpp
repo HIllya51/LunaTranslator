@@ -917,10 +917,10 @@ namespace
         0xd9, 0x50, XX,
         0xd9, 0x58, XX};
     auto addr = MemDbg::findBytes(bs, sizeof(bs), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return 0;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return 0;
     HookParam hp;
     hp.address = addr;

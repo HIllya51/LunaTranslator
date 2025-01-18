@@ -49,7 +49,7 @@ bool Insertkrkrz64Hook()
 		ConsoleOutput("krkrz64 %p", addr);
 		const BYTE funcstart[] = {0xcc, 0xcc, 0xcc, 0xcc};
 		addr = reverseFindBytes(funcstart, sizeof(funcstart), addr - 0x1000, addr);
-		if (addr == 0)
+		if (!addr)
 			continue;
 		addr += 4;
 		HookParam hp;

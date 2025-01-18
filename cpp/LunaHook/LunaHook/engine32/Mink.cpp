@@ -172,10 +172,7 @@ bool InsertMinkHook()
   // ULONG addr = 0x4521a8;
   // GROWL_DWORD(addr);
   if (!addr)
-  {
-    ConsoleOutput("Mink: pattern not found");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr + addr_offset;
@@ -183,7 +180,6 @@ bool InsertMinkHook()
   hp.split = 0x64;
   hp.type = USING_SPLIT | DATA_INDIRECT | USING_CHAR; // 0x18
   hp.text_fun = SpecialHookMink;
-  ConsoleOutput("INSERT Mink");
   return NewHook(hp, "Mink");
 
   // ConsoleOutput("Mink: disable GDI hooks");
@@ -205,7 +201,7 @@ bool Mink2::attach_function()
   for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
   {
     addr = MemDbg::findEnclosingAlignedFunction(addr, 0x100);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -216,10 +212,54 @@ bool Mink2::attach_function()
   }
   return found;
 }
+namespace
+{
+  bool mink1()
+  {
+    // https://vndb.org/r30973
+    // 催眠学級 HD
+    const BYTE pattern[] = {
+        0xf7, 0xc3, 0x00, 0xff, 0x00, 0x00,
+        0x74, XX,
+        0x33, 0xd2,
+        0x8d, 0xbe, XX4,
+        0x66, 0x89, 0x17,
+        0x33, 0xc9,
+        0x33, 0xc0,
+        0x83, 0xca, 0xff,
+        0x66, 0x89, 0x8e, XX4,
+        0x66, 0x89, 0x96, XX4,
+        0xb9, 0x01, 0x00, 0x00, 0x00,
+        0x33, 0xd2};
+    bool succ = false;
+    for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
+    {
+      addr = MemDbg::findEnclosingAlignedFunction(addr);
+      if (!addr)
+        continue;
+      HookParam hp;
+      hp.address = addr;
+      hp.type = CODEC_ANSI_BE | USING_CHAR;
+      hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      {
+        *split = context->argof(3);
+        static int _0 = 0, _4 = 0;
+        if (*split == 0)
+          if (_0++ % 3 != 0)
+            return;
+        if (*split == 4)
+          if (_4++ % 3 != 0)
+            return;
+        buffer->from_t(context->argof(1));
+      };
+      succ |= NewHook(hp, "Mink");
+    }
+    return succ;
+  }
+}
 bool Mink::attach_function()
 {
-
-  return InsertMinkHook();
+  return mink1() || InsertMinkHook();
 }
 
 bool Mink3::attach_function()

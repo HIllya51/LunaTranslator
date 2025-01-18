@@ -15,12 +15,12 @@ bool utawarerumonoh()
   auto succ = false;
   for (auto addr : {addr1, addr2})
   {
-    if (addr == 0)
+    if (!addr)
       continue;
     const BYTE funcstart[] = {
         0x51, 0x53};
     addr = reverseFindBytes(funcstart, sizeof(funcstart), addr - 0x100, addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

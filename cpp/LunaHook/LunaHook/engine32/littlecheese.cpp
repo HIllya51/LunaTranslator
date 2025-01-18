@@ -8,11 +8,11 @@ bool littlecheese::attach_function()
     const BYTE bytes81[] = {
         0x81, 0xFA, 0x40, 0x81, 0x00, 0x00, 0x75};
     auto addr = MemDbg::findBytes(bytes81, sizeof(bytes81), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
         return false;
     const BYTE align[] = {0x83, 0xC4}; // add esp xxx
     addr = reverseFindBytes(align, sizeof(align), addr - 0x100, addr);
-    if (addr == 0)
+    if (!addr)
         return false;
     HookParam hp;
     hp.offset = regoffset(ecx);

@@ -46,7 +46,7 @@ namespace
     {
       const BYTE align[] = {0xCC, 0xCC, 0xCC, 0xCC};
       addr = reverseFindBytes(align, sizeof(align), addr - 0x100, addr);
-      if (addr == 0)
+      if (!addr)
         continue;
 
       ConsoleOutput("monobdwgcdll %p", addr);

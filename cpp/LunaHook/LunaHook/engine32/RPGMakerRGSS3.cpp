@@ -1343,7 +1343,7 @@ namespace
         bool attach(ULONG startAddress, ULONG stopAddress) // attach other text
         {
           ULONG addr = MemDbg::findCallerAddressAfterInt3((ULONG)::GetGlyphOutlineW, startAddress, stopAddress);
-          if (addr == 0)
+          if (!addr)
             return 0;
           HookParam hp;
           hp.address = addr;
@@ -1427,7 +1427,7 @@ bool RPGMakerRGSS300::attach_function()
       return false;
     auto addr = context->retaddr;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

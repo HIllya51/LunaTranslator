@@ -157,12 +157,12 @@ namespace
         XX2};
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 
-    if (addr == 0)
+    if (!addr)
       return false;
     const BYTE funcstart[] = {
         0x90, 0x55, 0x8b, 0xec};
     addr = reverseFindBytes(funcstart, sizeof(funcstart), addr - 0x100, addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr + 1;
@@ -185,10 +185,10 @@ namespace
         XX2};
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = findfuncstart(addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -232,7 +232,7 @@ namespace
         0x8d, 0x45, 0xfc,
         0x8b, 0x55, 0xfc};
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

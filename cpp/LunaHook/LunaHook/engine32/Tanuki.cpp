@@ -46,10 +46,10 @@ bool InsertTanukiHook2() {
   };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   ConsoleOutput("Tanuki %p", addr);
-  if (addr == 0)return false;
+  if (!addr)return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr,0x1000);
 
-  if (addr == 0)return false;
+  if (!addr)return false;
   HookParam hp;
   hp.address = addr;
   hp.offset=stackoffset(2);

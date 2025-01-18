@@ -22,9 +22,9 @@ bool sakusesu::attach_function() {
   auto succ=false;
   for (auto bs : { bytesa0,bytes80,bytesc0 }) {
     auto addr = MemDbg::findBytes(bs, 3, processStartAddress, processStopAddress);
-    if (addr == 0)continue;
+    if (!addr)continue;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)continue;
+    if (!addr)continue;
     HookParam hp;
     hp.address = addr;
     hp.offset=stackoffset(1);

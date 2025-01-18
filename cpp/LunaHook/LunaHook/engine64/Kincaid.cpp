@@ -21,7 +21,7 @@ namespace
         0x48, 0x8b, 0xcf,
         0xe8, XX4};
     auto addr = MemDbg::findBytes(b1, sizeof(b1), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

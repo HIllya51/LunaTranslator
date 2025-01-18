@@ -134,12 +134,12 @@ bool AdobeAIRhook2()
       0x81, 0xC7, 0xE0, 0xFF, 0x00, 0x00};
   auto addr = MemDbg::findBytes(bs, sizeof(bs), minAddress, maxAddress);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   const BYTE start[] = {0xC2, 0x10, 0x00}; // retn    10h，+3
   addr = reverseFindBytes(start, 3, addr - 0x1000, addr);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr + 3;

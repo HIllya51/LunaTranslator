@@ -99,7 +99,7 @@ bool InsertWaffleHookx()
       // HBN-4*0@12F147:maid3.exe
   };
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr += sizeof(bytes);
@@ -593,7 +593,7 @@ namespace
         0x84, 0xc0,
         0x75, XX};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr + sizeof(bytes) - 20;

@@ -177,7 +177,7 @@ namespace
       if ((word_4C285C) != 0x7581)
         continue;
       addr = findfuncstart(addr, 0x200);
-      if (addr == 0)
+      if (!addr)
         continue;
       HookParam hp;
       hp.address = addr;
@@ -690,7 +690,7 @@ bool ElfFunClubFinal::attach_function()
   {
     BYTE s[] = {XX, 0xCC, 0xCC, 0xCC};
     addr = reverseFindBytes(s, 4, addr - 0x100, addr);
-    if (addr == 0)
+    if (!addr)
       continue;
     HookParam hp;
     hp.address = addr + 4;

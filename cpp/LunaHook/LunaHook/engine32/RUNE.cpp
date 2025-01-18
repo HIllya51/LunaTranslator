@@ -18,7 +18,7 @@ bool RUNE1() {
   };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   
-  if (addr == 0)return false;
+  if (!addr)return false;
     HookParam hp;
     hp.address = addr;
     hp.offset=regoffset(eax); 
@@ -28,12 +28,12 @@ bool RUNE1() {
 bool RUNE2(){
   //ANGEL CORE
   auto addr = findiatcallormov((DWORD)GetGlyphOutlineA,processStartAddress,processStartAddress, processStopAddress);
-  if (addr == 0)return false;
+  if (!addr)return false;
   BYTE sig1[]={ 0x81,0xe1,0x01,0x00,0x00,0x80,XX2,0x49,0x83,0xc9,0xfe,0x41 }; 
   auto _=MemDbg::findBytes(sig1, sizeof(sig1), addr, addr+0x100);
   if (_ == 0)return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)return false;
+  if (!addr)return false;
   HookParam hp;
     hp.address = addr;
     hp.offset=stackoffset(1); 

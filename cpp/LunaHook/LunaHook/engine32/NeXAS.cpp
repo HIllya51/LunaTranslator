@@ -421,7 +421,7 @@ namespace
         0x33, 0xdb,
         0x3c, 0x40};
     auto addr = MemDbg::findBytes(bs, sizeof(bs), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return 0;
     HookParam hp;
     hp.address = addr + 9;
@@ -453,10 +453,10 @@ namespace
     if (!aV)
       return false;
     auto addr = MemDbg::findPushAddress(aV, processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return 0;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return 0;
     HookParam hp;
     hp.address = addr;

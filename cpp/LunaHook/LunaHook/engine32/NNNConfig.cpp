@@ -8,7 +8,7 @@ bool NNNConfig::attach_function()
 	const BYTE bytes[] = {
 		0x68, 0xE8, 0x03, 0x00, 0x00, 0x6a, 0x00};
 	auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-	if (addr == 0)
+	if (!addr)
 		return false;
 
 	addr = addr + sizeof(bytes);

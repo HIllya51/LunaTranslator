@@ -69,7 +69,7 @@ namespace
         0xE8, 0x6C, 0xE1, 0xF4, 0xFF, // E8 6CE1F4FF       - call TokyoNecro.exe+35E0
     };
     ULONG addr = MemDbg::findBytes(bytecodes, sizeof(bytecodes), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
     {
       ConsoleOutput("TokyoNecro: pattern not found");
       return false;
@@ -141,7 +141,7 @@ namespace
         0xE8, 0x0C, 0xE2, 0xF4, 0xFF, // E8 6CE1F4FF       - call TokyoNecro.exe+35E0
     };
     ULONG addr = MemDbg::findBytes(bytecodes, sizeof(bytecodes), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
     {
       ConsoleOutput("TokyoNecro: pattern not found");
       return false;

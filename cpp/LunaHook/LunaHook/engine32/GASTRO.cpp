@@ -23,7 +23,7 @@ bool GASTRO_attach_function1()
       0x8B, 0xD9, 0x8B,
       0x74, XX};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

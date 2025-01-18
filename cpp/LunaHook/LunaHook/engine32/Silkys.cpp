@@ -330,14 +330,14 @@ bool InsertSilkysHook2()
 {
   //[230825] [コンフィチュールソフト] ギャル×オタ ～織川きららはお世話したい～
   auto addr = MemDbg::findCallerAddressAfterInt3((DWORD)GetCharacterPlacementW, processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   BYTE sig[] = {
       0x8b, 0x80, XX4,
       0xff, 0xd0,
       0x8b, 0xf0};
   addr = MemDbg::findBytes(sig, sizeof(sig), addr, addr + 0x100);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr + 8;
@@ -363,7 +363,7 @@ namespace
         0xC7, 0x45, 0x08, 0x14, 0x20, 0x00, 0x00,
         0x8D, 0x49, 0x00};
     auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = findfuncstart(addr);
     if (!addr)
@@ -432,7 +432,7 @@ namespace
       return false;
     auto addr2 = xrefs[0];
     auto addr = MemDbg::findEnclosingAlignedFunction(addr2);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -455,7 +455,7 @@ namespace
         0x80, 0xFA, 0x9F,
         0x76, XX};
     auto addr = MemDbg::findCallerAddress((ULONG)GetGlyphOutlineA, 0xec8b55, processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     if (MemDbg::findBytes(check, sizeof(check), addr, addr + 0x100) == 0)
       return false;
@@ -514,7 +514,7 @@ bool SilkysOld::attach_function()
 {
   // 愛姉妹・蕾…汚してください
   auto addr = MemDbg::findCallerAddressAfterInt3((DWORD)TextOutA, processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -566,10 +566,10 @@ bool Siglusold::attach_function()
       0x87,
   };
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction_strict(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
@@ -581,7 +581,7 @@ bool Siglusold::attach_function()
   {
     // 寻找调用者，速度为快速时调用者有正确的文本
     addr = MemDbg::findEnclosingAlignedFunction_strict(addr);
-    if (addr == 0)
+    if (!addr)
       continue;
     HookParam hpref;
     hpref.address = addr;
@@ -624,7 +624,7 @@ bool Siglusold::attach_function()
 bool Silkyssakura::attach_function()
 {
   auto addr = MemDbg::findCallerAddressAfterInt3((DWORD)GetGlyphOutlineW, processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

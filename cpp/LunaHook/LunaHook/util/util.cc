@@ -511,7 +511,7 @@ std::vector<uintptr_t> findxref_reverse_checkcallop(uintptr_t addr, uintptr_t fr
   // op可以为E8 call E9 jump
   // 上面的版本其实就应该checkcallop的，之前忘了，但不敢乱改破坏之前的了，不然还要重新测试。
   std::vector<uintptr_t> res;
-  if (addr == 0)
+  if (!addr)
     return res;
   uintptr_t now = to;
   while (now > from)
@@ -534,7 +534,7 @@ std::vector<uintptr_t> findxref_reverse_checkcallop(uintptr_t addr, uintptr_t fr
 std::vector<uintptr_t> findxref_reverse(uintptr_t addr, uintptr_t from, uintptr_t to)
 {
   std::vector<uintptr_t> res;
-  if (addr == 0)
+  if (!addr)
     return res;
   uintptr_t now = to;
   while (now > from)

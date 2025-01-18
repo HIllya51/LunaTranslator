@@ -131,19 +131,19 @@ namespace{
 				0x41,0x57,0x41,0x56,0x41,0x55,0x41,0x54
 		};
 		addr=reverseFindBytes(start, sizeof(start), addr - 0x1000, addr);
-		if (addr == 0)return {};
+		if (!addr)return {};
 		addr += 1; 
 		addrs = findxref_reverse(addr, addr - 0x10000, addr + 0x10000);
 		if (addrs.size() != 1)return {};
 		addr = addrs[0]; 
 		
 		addr = reverseFindBytes(start2, sizeof(start2), addr - 0x1000, addr);
-		if (addr == 0)return {};
+		if (!addr)return {};
 		addrs = findxref_reverse(addr, addr - 0x10000, addr + 0x10000);
 		std::vector<HookParam> save;
 		for (auto addr : addrs) {
 			addr = reverseFindBytes(start2, sizeof(start2), addr - 0x1000, addr);
-			if (addr == 0)continue;
+			if (!addr)continue;
 			HookParam hp;
 			hp.address = (uint64_t)addr;
 			hp.type = USING_STRING | CODEC_UTF16 | DATA_INDIRECT;

@@ -15,11 +15,11 @@ bool Ruf::attach_function() {
         0x81,0x6D,0xF4,0x00,0x80,0x00,0x00, 
     }; 
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    if (addr == 0) 
+    if (!addr) 
         addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-    if (addr == 0)return false; 
+    if (!addr)return false; 
     addr = findfuncstart(addr);
-    if (addr == 0)return false; 
+    if (!addr)return false; 
     HookParam hp;
     hp.address = addr;  
     hp.offset=regoffset(edx); 

@@ -4,7 +4,7 @@ bool VALKYRIA::attach_function()
 {
   auto addr = findiatcallormov((DWORD)GetTextExtentPoint32A, processStartAddress, processStartAddress, processStopAddress);
   ConsoleOutput("%p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   BYTE sehstart[] = {
       0x6a, 0xff,
@@ -14,7 +14,7 @@ bool VALKYRIA::attach_function()
       0x81, 0xec, XX4,
       0xa1, XX4};
   addr = reverseFindBytes(sehstart, sizeof(sehstart), addr - 0x400, addr, 0, true);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;

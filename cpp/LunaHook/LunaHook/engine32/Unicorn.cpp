@@ -814,10 +814,10 @@ bool Unicorn_Anesen::attach_function()
       0x81, 0xFF, 0x40, 0x81, 0x00, 0x00,
       0x0F, 0x84};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (addr == 0)
+  if (!addr)
     return false;
 
   HookParam hp;

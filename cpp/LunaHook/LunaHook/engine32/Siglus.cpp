@@ -1620,7 +1620,7 @@ bool InsertSiglusHookZ()
       0x66, 0x89, 0x04, 0x72};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   ConsoleOutput("SiglusHookZ %p", addr);
-  if (addr == 0)
+  if (!addr)
     return false;
   HookParam hp;
   hp.address = addr + 2;
@@ -1855,7 +1855,7 @@ namespace OtherHook
   bool attach(ULONG startAddress, ULONG stopAddress)
   {
     ULONG addr = Private::search(startAddress, stopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

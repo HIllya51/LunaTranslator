@@ -19,7 +19,7 @@ namespace
     while (addr)
     {
       addr = MemDbg::findBytes(bytes, sizeof(bytes), addr + 1, processStopAddress);
-      if (addr == 0)
+      if (!addr)
         continue;
       auto f = MemDbg::findEnclosingAlignedFunction(addr);
       if (f == 0)

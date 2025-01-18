@@ -15,9 +15,9 @@ bool Jisatu101::attach_function() {
     0x74
   };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)return false;
+  if (!addr)return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr,0x100);
-  if (addr == 0)return false;
+  if (!addr)return false;
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(4);

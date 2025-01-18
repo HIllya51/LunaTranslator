@@ -385,7 +385,7 @@ namespace
         addr_offset = sizeof(bytes) - 1
       };
       ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-      if (addr == 0)
+      if (!addr)
         return false;
       HookParam hp;
       hp.address = addr + addr_offset;

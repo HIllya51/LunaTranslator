@@ -120,7 +120,7 @@ bool Hook_Network_RoomMember_SendGameInfo()
     {
         addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
         // 有两个，但另一个离起始很远
-        if (addr == 0)
+        if (!addr)
             continue;
         HookParam hp;
         hp.address = addr;

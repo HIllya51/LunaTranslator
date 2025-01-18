@@ -12,7 +12,7 @@ namespace
 
     };
     auto addr = MemDbg::findBytes(b1, sizeof(b1), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -36,7 +36,7 @@ namespace
         0x48, XX2, 0xb0, 0x01, 0x00, 0x00,
         XX2, 0xc0, 0x08, 0x00, 0x00};
     auto addr = MemDbg::findBytes(b1, sizeof(b1), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
@@ -66,7 +66,7 @@ namespace
         0x48, 0xc1, 0xf8, 0x03,
         0x48, 0x85, 0xc0};
     auto addr = MemDbg::findBytes(b1, sizeof(b1), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr + 3;

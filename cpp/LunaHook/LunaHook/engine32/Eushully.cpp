@@ -550,10 +550,10 @@ namespace
         0xc6, 0x45, XX, 0x00,
         0xc6, 0x45, XX, 0x03};
     auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
-    if (addr == 0)
+    if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (addr == 0)
+    if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;

@@ -36,7 +36,7 @@ bool InsertShinyDaysGameHook()
       0xff, 0x83, 0x70, 0x03, 0x00, 0x00, 0x33, 0xf6,
       0xc6, 0x84, 0x24, 0x90, 0x02, 0x00, 0x00, 0x02};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr == 0)
+  if (!addr)
     return false;
 
   HookParam hp;

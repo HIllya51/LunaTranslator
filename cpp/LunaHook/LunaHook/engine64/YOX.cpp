@@ -8,7 +8,7 @@ bool YOX::attach_function()
   ConsoleOutput("%p %p", processStartAddress, processStopAddress);
   for (auto addr : addrs)
   {
-    if (addr == 0)
+    if (!addr)
       continue;
     HookParam hp;
     hp.address = addr;
