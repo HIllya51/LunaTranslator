@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
-import windows, qtawesome, winsharedutils, gobject, threading
+import windows, qtawesome, winsharedutils, gobject, platform
 from webviewpy import webview_native_handle_kind_t, Webview
 from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton_close, tryprint
@@ -1209,10 +1209,33 @@ class WebivewWidget(abstractwebview):
         self.callbacks.append(__)
         winsharedutils.add_menu_list_noselect(self.menudata, index, label, __)
 
+    def findFixedRuntime(self):
+        isbit64 = platform.architecture()[0] == "64bit"
+        maxversion = (0, 0, 0, 0)
+        maxvf = None
+        for f in os.listdir("."):
+            exe = os.path.join(f, "msedgewebview2.exe")
+            if not os.path.exists(exe):
+                continue
+            b = windows.GetBinaryType(exe)
+            if (isbit64 and b == 0) or ((not isbit64) and b == 6):
+                continue
+            version = winsharedutils.queryversion(exe)
+            if not version:
+                continue
+            print(version, f)
+            if version > maxversion:
+                maxversion = version
+                maxvf = os.path.abspath(f)
+        return maxvf
+
     def __init__(self, parent=None, debug=True) -> None:
         super().__init__(parent)
         self.webview = None
         self.callbacks = []
+        FixedRuntime = self.findFixedRuntime()
+        if FixedRuntime:
+            os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
         self.webview = Webview(debug=debug, window=int(self.winId()))
         self.m_webMessageReceivedToken = None
         self.menudata = winsharedutils.add_ContextMenuRequested(self.get_controller())
