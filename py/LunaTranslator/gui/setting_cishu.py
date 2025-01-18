@@ -86,9 +86,9 @@ def gethiragrid(self):
     return grids
 
 
-def _checkmaybefailed(self, idx):
-    self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
+def _checkmaybefailed(self, _):
     auto_select_webview.switchtype()
+    self.seletengeinecombo_1.setCurrentIndex(globalconfig["usewebview"])
 
 
 def _createseletengeinecombo_1(self):
@@ -104,7 +104,6 @@ def _createseletengeinecombo_1(self):
         callback=functools.partial(_checkmaybefailed, self),
         static=True,
     )
-    self.seletengeinecombo_1.lastindex = self.seletengeinecombo_1.currentIndex()
     return self.seletengeinecombo_1
 
 

@@ -181,12 +181,9 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
 
 
 def resetgroudswitchcallback(self, group):
-    if group == "QWebEngine":
-        group = "webview"
     clearlayout(self.goodfontsettingsformlayout)
 
     goodfontgroupswitch = SuperCombo()
-    self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     if group == "webview":
         _btn = LPushButton("编辑")
         _btn.clicked.connect(lambda: extrahtml(self))
@@ -227,7 +224,11 @@ def resetgroudswitchcallback(self, group):
             globalconfig["rendertext_using_internal"][group]
         )
     )
-    gobject.baseobject.translation_ui.translate_text.loadinternal()
+    gobject.baseobject.translation_ui.translate_text.loadinternal(shoudong=True)
+    visengine_internal = ["textbrowser", "webview"]
+    self.seletengeinecombo.setCurrentIndex(
+        visengine_internal.index(globalconfig["rendertext_using"])
+    )
 
 
 def creategoodfontwid(self):
@@ -256,7 +257,6 @@ def _createseletengeinecombo(self):
         callback=functools.partial(resetgroudswitchcallback, self),
         static=True,
     )
-    self.seletengeinecombo.lastindex = self.seletengeinecombo.currentIndex()
     return self.seletengeinecombo
 
 

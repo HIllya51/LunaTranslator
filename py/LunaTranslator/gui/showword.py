@@ -1057,8 +1057,8 @@ class showdiction(QWidget):
 
 
 class showwordfastwebview(auto_select_webview):
-    def _createwebview(self):
-        web = super()._createwebview()
+    def _createwebview(self, *argc, **kw):
+        web = super()._createwebview(*argc, **kw)
         if isinstance(web, WebivewWidget):
             web.html_limit = 1
         return web

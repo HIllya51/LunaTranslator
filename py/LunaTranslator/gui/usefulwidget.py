@@ -1229,25 +1229,24 @@ class WebivewWidget(abstractwebview):
                 maxvf = os.path.abspath(f)
         return maxvf
 
+    @staticmethod
+    def showError():
+        getQMessageBox(
+            gobject.baseobject.commonstylebase,
+            "错误",
+            "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。",
+        )
+        os.startfile("https://developer.microsoft.com/microsoft-edge/webview2")
+
     def __init__(self, parent=None, debug=True) -> None:
         super().__init__(parent)
+        x
         self.webview = None
         self.callbacks = []
         FixedRuntime = self.findFixedRuntime()
         if FixedRuntime:
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
-        try:
-            self.webview = Webview(debug=debug, window=int(self.winId()))
-        except Exception as e:
-            getQMessageBox(
-                gobject.baseobject.commonstylebase,
-                "错误",
-                "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。",
-            )
-            os.startfile(
-                "https://developer.microsoft.com/microsoft-edge/webview2"
-            )
-            raise e
+        self.webview = Webview(debug=debug, window=int(self.winId()))
         self.m_webMessageReceivedToken = None
         self.menudata = winsharedutils.add_ContextMenuRequested(self.get_controller())
         self.zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(self.zoomchange)
@@ -1496,17 +1495,17 @@ class auto_select_webview(QWidget):
 
     @staticmethod
     def switchtype():
-        for _ in switchtypes:
-            _._maybecreate_internal()
+        for i, _ in enumerate(switchtypes):
+            _._maybecreate_internal(shoudong=True if i == 0 else False)
 
     def _on_load(self, url: str):
         self.saveurl = url
         self.on_load.emit(url)
 
-    def _createinternal(self):
+    def _createinternal(self, shoudong=False):
         if self.internal:
             self.layout().removeWidget(self.internal)
-        self.internal = self._createwebview()
+        self.internal = self._createwebview(shoudong=shoudong)
         self.internal.on_load.connect(self._on_load)
         self.internal.on_ZoomFactorChanged.connect(self.on_ZoomFactorChanged)
         self.layout().addWidget(self.internal)
@@ -1517,31 +1516,34 @@ class auto_select_webview(QWidget):
         for _ in self.bindinfo:
             self.internal.bind(*_)
 
-    def _maybecreate_internal(self):
+    def _maybecreate_internal(self, shoudong=False):
         if not self.internal:
-            return self._createinternal()
+            return self._createinternal(shoudong=shoudong)
         if (
             self.saveurl
             and (self.saveurl != "about:blank")
             and (not self.saveurl.startswith("file:///"))
         ):
-            self._createinternal()
+            self._createinternal(shoudong=shoudong)
             self.internal.navigate(self.saveurl)
         else:
             html = self.internal.getHtml(None)
-            self._createinternal()
+            self._createinternal(shoudong=shoudong)
             self.internal.setHtml(html)
 
-    def _createwebview(self):
+    def _createwebview(self, shoudong=False):
         contex = globalconfig["usewebview"]
-        try:
-            if contex == 0:
-                browser = mshtmlWidget()
-            else:
-                browser = WebivewWidget()
-        except:
-            print_exc()
+        if contex == 0:
             browser = mshtmlWidget()
+        else:
+            try:
+                browser = WebivewWidget()
+            except:
+                print_exc()
+                if shoudong:
+                    WebivewWidget.showError()
+                browser = mshtmlWidget()
+                globalconfig["usewebview"] = 0
         return browser
 
 

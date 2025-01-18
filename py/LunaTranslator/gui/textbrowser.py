@@ -1,9 +1,8 @@
 from qtsymbols import *
 from myutils.config import globalconfig
-import importlib, copy, os, windows
-from webviewpy import webview_exception
-from gui.usefulwidget import getQMessageBox
+import importlib, copy, os
 from traceback import print_exc
+from gui.usefulwidget import WebivewWidget
 
 
 class TextType:
@@ -24,7 +23,7 @@ class Textbrowser(QFrame):
     def _contentsChanged(self, size: QSize):
         self.contentsChanged.emit(size)
 
-    def loadinternal(self):
+    def loadinternal(self, shoudong=False):
         __ = globalconfig["rendertext_using"]
         if self.curr_eng == __:
             return
@@ -35,13 +34,13 @@ class Textbrowser(QFrame):
             self.textbrowser.contentsChanged.disconnect()
             self.textbrowser.dropfilecallback.disconnect()
             self.textbrowser.deleteLater()
-        if __ == "QWebEngine":
-            __ = "webview"
         try:
             tb = importlib.import_module("rendertext." + __).TextBrowser
             self.textbrowser = tb(self)
-        except Exception as e:
+        except:
             print_exc()
+            if shoudong:
+                WebivewWidget.showError()
             globalconfig["rendertext_using"] = "textbrowser"
             tb = importlib.import_module("rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
