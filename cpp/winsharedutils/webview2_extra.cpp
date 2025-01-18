@@ -137,7 +137,7 @@ DECLARE_API void *add_WebMessageReceived(ICoreWebView2Controller *m_host, void (
                             break;
                         wil::com_ptr<ICoreWebView2WebMessageReceivedEventArgs2> args2 =
                             wil::com_ptr<ICoreWebView2WebMessageReceivedEventArgs>(args)
-                                .query<ICoreWebView2WebMessageReceivedEventArgs2>();
+                                .try_query<ICoreWebView2WebMessageReceivedEventArgs2>();
                         if (!args2)
                             break;
                         wil::com_ptr<ICoreWebView2ObjectCollectionView> objectsCollection;
@@ -155,7 +155,7 @@ DECLARE_API void *add_WebMessageReceived(ICoreWebView2Controller *m_host, void (
                             // Note that objects can be null.
                             if (!object)
                                 continue;
-                            wil::com_ptr<ICoreWebView2File> file = object.query<ICoreWebView2File>();
+                            wil::com_ptr<ICoreWebView2File> file = object.try_query<ICoreWebView2File>();
                             if (!file)
                                 continue;
                             // Add the file to message to be sent back to webview
