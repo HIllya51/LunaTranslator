@@ -215,7 +215,7 @@ def getpixfunction(kk, small=False, iconfirst=False):
     return _pix
 
 
-def startgamecheck(self, reflist, gameuid):
+def startgamecheck(self: QWidget, reflist: list, gameuid):
     if not gameuid:
         return
     if not os.path.exists(get_launchpath(gameuid)):
@@ -223,7 +223,7 @@ def startgamecheck(self, reflist, gameuid):
     if globalconfig["startgamenototop"] == False:
         idx = reflist.index(gameuid)
         reflist.insert(0, reflist.pop(idx))
-    self.parent().parent().close()
+    self.window().close()
     startgame(gameuid)
 
 
@@ -374,7 +374,9 @@ class dialog_syssetting(LDialog):
 
         formLayout.addRow(
             "隐藏不存在的游戏",
-            getsimpleswitch(globalconfig, "hide_not_exists", callback=self.parent().callexists),
+            getsimpleswitch(
+                globalconfig, "hide_not_exists", callback=self.parent().callexists
+            ),
         )
 
         formLayout.addRow(

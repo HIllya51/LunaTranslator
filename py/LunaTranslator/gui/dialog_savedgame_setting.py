@@ -1273,12 +1273,3 @@ class dialog_setting_game(QDialog):
         l.addWidget(_)
         l.setContentsMargins(0, 0, 0, 0)
         self.show()
-        try:
-            self.setGeometry(
-                calculate_centered_rect(
-                    gobject.global_dialog_savedgame_new.parent().parent().geometry(),
-                    self.size(),
-                )
-            )
-        except:
-            pass

@@ -1227,7 +1227,7 @@ class WebviewWidget(abstractwebview):
             if version > maxversion:
                 maxversion = version
                 maxvf = os.path.abspath(f)
-        print(maxvf)
+                print(maxversion, f)
         return maxvf
 
     @staticmethod

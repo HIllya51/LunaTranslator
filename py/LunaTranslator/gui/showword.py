@@ -89,7 +89,7 @@ class AnkiWindow(QWidget):
 
     def crophide(self, s=False):
         if s:
-            self.parent().parent().parent().hide()
+            self.window().hide()
             gobject.baseobject.translation_ui.hide_()
 
         def ocroncefunction(rect):
@@ -101,7 +101,7 @@ class AnkiWindow(QWidget):
                 self.asyncocr(img)
             if s:
                 gobject.baseobject.translation_ui.show_()
-                self.parent().parent().parent().show()
+                self.window().show()
 
         rangeselct_function(ocroncefunction)
 
