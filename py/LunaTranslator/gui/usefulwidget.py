@@ -1161,7 +1161,7 @@ class abstractwebview(QWidget):
         )
 
 
-class WebivewWidget(abstractwebview):
+class WebviewWidget(abstractwebview):
     html_limit = 1572834
     # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
     dropfilecallback = pyqtSignal(str)
@@ -1539,11 +1539,11 @@ class auto_select_webview(QWidget):
             browser = mshtmlWidget()
         else:
             try:
-                browser = WebivewWidget()
+                browser = WebviewWidget()
             except:
                 print_exc()
                 if shoudong:
-                    WebivewWidget.showError()
+                    WebviewWidget.showError()
                 browser = mshtmlWidget()
                 globalconfig["usewebview"] = 0
         return browser

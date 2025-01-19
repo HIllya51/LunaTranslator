@@ -18,7 +18,7 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     makegrid,
     D_getIconButton,
-    WebivewWidget,
+    WebviewWidget,
 )
 from language import UILanguages, Languages
 from gui.dynalang import LLabel
@@ -271,7 +271,7 @@ def createimageview(self):
 def changelog(self, basel: QHBoxLayout):
     link = dynamiclink("{main_server}/ChangeLog")
     try:
-        _ = WebivewWidget(self)
+        _ = WebviewWidget(self)
         _.navigate(link)
     except:
         _ = QWidget()

@@ -2,7 +2,7 @@ from qtsymbols import *
 from myutils.config import globalconfig
 import importlib, copy, os
 from traceback import print_exc
-from gui.usefulwidget import WebivewWidget
+from gui.usefulwidget import WebviewWidget
 
 
 class TextType:
@@ -40,7 +40,7 @@ class Textbrowser(QFrame):
         except:
             print_exc()
             if shoudong:
-                WebivewWidget.showError()
+                WebviewWidget.showError()
             globalconfig["rendertext_using"] = "textbrowser"
             tb = importlib.import_module("rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)

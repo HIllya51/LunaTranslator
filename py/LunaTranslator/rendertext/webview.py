@@ -5,7 +5,7 @@ from urllib.parse import quote
 from myutils.utils import threader
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import tryprint, threader
-from gui.usefulwidget import WebivewWidget
+from gui.usefulwidget import WebviewWidget
 from gui.textbrowser import TextType
 
 testsavejs = False
@@ -22,7 +22,7 @@ class TextBrowser(QWidget, dataget):
     def __init__(self, parent) -> None:
         super().__init__(parent)
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
-        self.webivewwidget = WebivewWidget(self)
+        self.webivewwidget = WebviewWidget(self)
         self.webivewwidget.move(0, 0)
         self.setMouseTracking(True)
         self.webivewwidget.add_menu(
@@ -99,7 +99,7 @@ class TextBrowser(QWidget, dataget):
     def showEvent(self, e):
         if not self.isfirst:
             return
-        if not isinstance(self.webivewwidget, WebivewWidget):
+        if not isinstance(self.webivewwidget, WebviewWidget):
             return
         self.isfirst = False
         self.loadex()

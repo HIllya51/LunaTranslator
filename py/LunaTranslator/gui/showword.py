@@ -19,7 +19,7 @@ from gui.usefulwidget import (
     closeashidewindow,
     getQMessageBox,
     auto_select_webview,
-    WebivewWidget,
+    WebviewWidget,
     IconButton,
     getboxlayout,
     getspinbox,
@@ -1059,7 +1059,7 @@ class showdiction(QWidget):
 class showwordfastwebview(auto_select_webview):
     def _createwebview(self, *argc, **kw):
         web = super()._createwebview(*argc, **kw)
-        if isinstance(web, WebivewWidget):
+        if isinstance(web, WebviewWidget):
             web.html_limit = 1
         return web
 

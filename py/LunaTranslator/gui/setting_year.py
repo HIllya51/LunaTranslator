@@ -2,7 +2,7 @@ from qtsymbols import *
 import queue
 import gobject
 import os
-from gui.usefulwidget import WebivewWidget
+from gui.usefulwidget import WebviewWidget
 from datetime import datetime, timedelta
 from myutils.config import savehook_new_data, globalconfig, extradatas
 
@@ -232,7 +232,7 @@ webtags={webtags}
 
     link = os.path.abspath("files/yearsummary/yearsummary.html")
     try:
-        _ = WebivewWidget(self)
+        _ = WebviewWidget(self)
         _.navigate(link)
     except:
         _ = QWidget()
