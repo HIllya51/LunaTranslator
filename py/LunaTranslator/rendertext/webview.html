@@ -104,18 +104,6 @@
         ele.appendChild(style)
         return ele
     }
-    function miaobian0_create_internal(styleargs, text, args) {
-
-        let ele = document.createElement('div')
-        maybesethtml(ele, args, text)
-        ele.style.color = styleargs.fillcolor
-        let _id = _simpleuid()
-        ele.id = _id
-        let style = document.createElement('style')
-        style.innerText = `#${_id}{-webkit-text-stroke: ${styleargs.width}px var(--${args.color});}`
-        ele.appendChild(style)
-        return ele
-    }
     function miaobian12_common(styleargs, text, args) {
         let c2 = `var(--${args.color})`
         let c1 = styleargs.fillcolor
@@ -169,7 +157,6 @@
     regist_style_imp = {
         normal: normal_create_internal,
         yinying: yinying_create_internal,
-        miaobian0: miaobian0_create_internal,
         miaobian1: miaobian12_common,
     }
     function dispatch_text_style_line(style, styleargs, text, args) {
