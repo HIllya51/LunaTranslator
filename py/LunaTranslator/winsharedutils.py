@@ -259,13 +259,25 @@ isDark.restype = c_bool
 
 
 _gdi_screenshot = utilsdll.gdi_screenshot
-_gdi_screenshot.argtypes = HWND, RECT, c_void_p
+_gdi_screenshot.argtypes = HWND, c_void_p
 
-crop_image = utilsdll.crop_image
-crop_image.argtypes = HWND, RECT, c_void_p
+_crop_image = utilsdll.crop_image
+_crop_image.argtypes = HWND, RECT, c_void_p
 
 
-def __gdi_screenshot(f, x1, y1, x2, y2, hwnd=None):
+def gdi_screenshot(hwnd):
+    ret = []
+
+    def cb(ptr, size):
+        ret.append(cast(ptr, POINTER(c_char))[:size])
+
+    _gdi_screenshot(hwnd, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    if len(ret) == 0:
+        return None
+    return ret[0]
+
+
+def crop_image(x1, y1, x2, y2, hwnd=None):
     rect = RECT()
     rect.left = x1
     rect.top = y1
@@ -276,14 +288,11 @@ def __gdi_screenshot(f, x1, y1, x2, y2, hwnd=None):
     def cb(ptr, size):
         ret.append(cast(ptr, POINTER(c_char))[:size])
 
-    f(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    _crop_image(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
     if len(ret) == 0:
         return None
     return ret[0]
 
-
-gdi_screenshot = functools.partial(__gdi_screenshot, _gdi_screenshot)
-crop_image = functools.partial(__gdi_screenshot, crop_image)
 
 maximum_window = utilsdll.maximum_window
 maximum_window.argtypes = (HWND,)

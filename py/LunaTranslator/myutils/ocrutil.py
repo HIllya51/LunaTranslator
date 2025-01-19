@@ -2,14 +2,14 @@ import os, importlib
 from myutils.config import globalconfig, _TR
 from qtsymbols import *
 from myutils.commonbase import ArgsEmptyExc
-from myutils.hwnd import crop_image
+from myutils.hwnd import safepixmap
 from myutils.utils import stringfyerror, qimage2binary
 from traceback import print_exc
-import threading, gobject
+import threading, gobject, winsharedutils
 
 
 def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
-    pix = crop_image(x1, y1, x2, y2, hwnd)
+    pix = safepixmap(winsharedutils.crop_image(x1, y1, x2, y2, hwnd))
     image = pix.toImage()
     gobject.baseobject.maybesetimage(image)
     return image

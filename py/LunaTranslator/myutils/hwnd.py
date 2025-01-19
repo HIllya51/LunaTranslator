@@ -73,14 +73,14 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
     if not hwnd:
         return
     hwnd = windows.GetAncestor(hwnd)
-    p = gdi_screenshot(-1, -1, -1, -1, hwnd)
+    p = safepixmap(winsharedutils.gdi_screenshot(hwnd))
     callback(p, fname + "_gdi." + app)
     isshit = (not callback_origin) and (not tocliponly)
     if p.isNull() or isshit:
 
         @threader
         def _():
-            p = winrt_capture_window(hwnd)
+            p = safepixmap(winrtutils.winrt_capture_window(hwnd))
             callback(p, fname + "_winrt." + app)
 
         _()
@@ -95,7 +95,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
             @threader
             def _():
-                p = winrt_capture_window(hwnd)
+                p = safepixmap(winrtutils.winrt_capture_window(hwnd))
                 callback(p, fname + "_winrt_magpie." + app)
 
             _()
@@ -261,21 +261,6 @@ def safepixmap(bs):
     if pixmap.isNull():
         return QPixmap()
     return pixmap
-
-
-def crop_image(x1, y1, x2, y2, hwnd=None):
-    bs = winsharedutils.crop_image(x1, y1, x2, y2, hwnd)
-    return safepixmap(bs)
-
-
-def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
-    bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2, hwnd)
-    return safepixmap(bs)
-
-
-def winrt_capture_window(hwnd):
-    bs = winrtutils.winrt_capture_window(hwnd)
-    return safepixmap(bs)
 
 
 def subprochiderun(cmd, cwd=None, encoding="utf8") -> subprocess.CompletedProcess:

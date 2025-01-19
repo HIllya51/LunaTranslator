@@ -184,8 +184,9 @@ std::vector<byte> __gdi_screenshot(HWND hwnd, RECT rect)
     ReleaseDC(hwnd, hdc);
     return std::move(bf);
 }
-DECLARE_API void gdi_screenshot(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
+DECLARE_API void gdi_screenshot(HWND hwnd, void (*cb)(byte *, size_t))
 {
+    RECT rect{-1, -1, -1, -1};
     auto bf = __gdi_screenshot(hwnd, rect);
     if (bf.size())
         cb(bf.data(), bf.size());
