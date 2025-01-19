@@ -40,5 +40,3 @@ class dataget:
         fm, fs, bold = self._getfontinfo(TextType.Origin)
         return fm, fs * globalconfig["kanarate"], bold
 
-    def _getkanacolor(self):
-        return globalconfig["jiamingcolor"]

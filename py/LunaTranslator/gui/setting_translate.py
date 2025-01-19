@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, os
-import gobject, qtawesome, uuid, shutil
+import gobject, uuid, shutil
 from myutils.config import globalconfig, translatorsetting
 from myutils.utils import (
     selectdebugfile,
@@ -23,7 +23,7 @@ from gui.usefulwidget import (
     makegrid,
     makesubtab_lazy,
     makescrollgrid,
-    IconButton
+    IconButton,
 )
 from gui.dynalang import LPushButton, LLabel, LAction
 from gui.setting_about import offlinelinks
@@ -324,9 +324,7 @@ def createmanybtn(self, countnum, btnplus):
     btn = IconButton("fa.question")
     if btnplus == "offline":
         btn.clicked.connect(
-            lambda: os.startfile(
-                dynamiclink("{docs_server}/{lang}/offlinellm.html")
-            )
+            lambda: os.startfile(dynamiclink("{docs_server}/{lang}/offlinellm.html"))
         )
     elif btnplus == "api":
         btn.clicked.connect(
@@ -384,6 +382,7 @@ def initsome11(self, l, label=None, btnplus=False):
                     None,
                     self,
                     "fanyicolor_" + fanyi,
+                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolors,
                 ),
             ),
             last,

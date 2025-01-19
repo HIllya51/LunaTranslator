@@ -27,7 +27,7 @@ from myutils.hwnd import (
 )
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
-from gui.textbrowser import Textbrowser, TextType
+from gui.textbrowser import Textbrowser, TextType, SpecialColor, TranslateColor
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, getQMessageBox, findnearestscreen
 from gui.edittext import edittrans
@@ -272,7 +272,7 @@ class TranslatorWindow(resizableframeless):
     displaylink = pyqtSignal(str)
     displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
-    displayraw1 = pyqtSignal(dict)
+    displayraw1 = pyqtSignal(str)
     displaystatus = pyqtSignal(str, int)
     showhideuisignal = pyqtSignal()
     toolbarhidedelaysignal = pyqtSignal()
@@ -373,12 +373,9 @@ class TranslatorWindow(resizableframeless):
         except:
             print_exc()
 
-    def showraw(self, kwargs):
-        text = kwargs.get("text")
-        color = kwargs.get("color")
-
+    def showraw(self, text):
+        color = SpecialColor.RawTextColor
         clear = True
-
         hira = []
         isshowhira = isshow_fenci = isfenciclick = False
 
@@ -400,13 +397,13 @@ class TranslatorWindow(resizableframeless):
 
     def showstatus(self, res, t: TextType):
         if t == TextType.Info:
-            color = globalconfig["rawtextcolor"]
+            color = SpecialColor.RawTextColor
             clear = True
         elif t == TextType.Error_origin:
-            color = "red"
+            color = SpecialColor.ErrorColor
             clear = True
         elif t == TextType.Error_translator:
-            color = "red"
+            color = SpecialColor.ErrorColor
             clear = False
         self.showline(clear=clear, text=res, color=color, texttype=t)
 
@@ -427,7 +424,7 @@ class TranslatorWindow(resizableframeless):
         clear = kwargs.get("clear", True)
         texttype = kwargs.get("texttype", TextType.Origin)
         text = kwargs.get("text", None)
-        color = kwargs.get("color", "black")
+        color = kwargs.get("color", SpecialColor.DefaultColor)
         iter_context = kwargs.get("iter_context", None)
         hira = kwargs.get("hira", [])
         flags = kwargs.get("flags", None)

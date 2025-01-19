@@ -336,6 +336,7 @@ def xianshigrid_style(self):
                                                     globalconfig,
                                                     "rawtextcolor",
                                                     self.original_color_button,
+                                                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolors,
                                                 ),
                                                 name="original_color_button",
                                                 parent=self,

@@ -1,12 +1,12 @@
 from qtsymbols import *
 from rendertext.somefunctions import dataget
-import gobject, uuid, json, os, functools, windows, time
+import gobject, uuid, json, os
 from urllib.parse import quote
 from myutils.utils import threader
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import tryprint, threader
 from gui.usefulwidget import WebviewWidget
-from gui.textbrowser import TextType
+from gui.textbrowser import TextType, ColorControl, SpecialColor
 
 testsavejs = False
 
@@ -58,6 +58,7 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer = {}
         self.isfirst = True
         self.flags = {}
+        self.colorset = set()
 
     def ___cleartext(self):
         self.parent().clear()
@@ -266,7 +267,9 @@ class TextBrowser(QWidget, dataget):
         args = quote(json.dumps(args))
         self.debugeval('setfontstyle("{}");'.format(args))
 
-    def iter_append(self, iter_context_class, texttype: TextType, text, color):
+    def iter_append(
+        self, iter_context_class, texttype: TextType, text, color: ColorControl
+    ):
 
         if iter_context_class not in self.saveiterclasspointer:
             _id = self.createtextlineid(texttype)
@@ -281,7 +284,7 @@ class TextBrowser(QWidget, dataget):
         self.create_div_line_id(_id, texttype)
         return _id
 
-    def append(self, texttype: TextType, text, tag, flags, color):
+    def append(self, texttype: TextType, text, tag, flags, color: ColorControl):
         _id = self.createtextlineid(texttype)
         self._webview_append(_id, text, tag, flags, color)
 
@@ -302,8 +305,22 @@ class TextBrowser(QWidget, dataget):
             ]["webview"][0]
         return currenttype
 
-    def _webview_append(self, _id, text: str, tag, flags, color):
+    def setcolors(self):
+        print(self.colorset)
+        mp = {}
+        for color in self.colorset:
+            mp[color.asklass()] = color.get()
+        self.debugeval("setcolors('{}')".format(quote(json.dumps(mp))))
+
+    def _setcolors(self, color: ColorControl = None):
+        if color in self.colorset:
+            return
+        self.colorset.add(color)
+        self.setcolors()
+
+    def _webview_append(self, _id, text: str, tag, flags, color: ColorControl):
         style = self._getstylevalid()
+        self._setcolors(color)
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
         if len(tag):
             isshowhira, isshow_fenci, isfenciclick = flags
@@ -311,9 +328,10 @@ class TextBrowser(QWidget, dataget):
                 for word in tag:
                     color1 = self._randomcolor(word)
                     word["color"] = color1
+            self._setcolors(SpecialColor.KanaColor)
             args = dict(
-                color=color,
-                kanacolor=self._getkanacolor(),
+                color=color.asklass(),
+                kanacolor=SpecialColor.KanaColor.asklass(),
                 isshowhira=isshowhira,
                 isshow_fenci=isshow_fenci,
                 isfenciclick=isfenciclick,
@@ -325,7 +343,7 @@ class TextBrowser(QWidget, dataget):
             if userawhtml:
                 text = text.replace(sig, "")
 
-            args = dict(color=color, userawhtml=userawhtml)
+            args = dict(color=color.asklass(), userawhtml=userawhtml)
 
             self.create_internal_text(style, styleargs, _id, text, args)
 

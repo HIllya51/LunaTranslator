@@ -51,7 +51,7 @@ from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
 from gui.setting_textinput_ocr import showocrimage
-from gui.textbrowser import TextType
+from gui.textbrowser import TextType, SpecialColor, TranslateColor
 
 
 class MAINUI:
@@ -260,7 +260,7 @@ class MAINUI:
         if infotype == "<notrans>":
             self.translation_ui.displayres.emit(
                 dict(
-                    color=globalconfig["rawtextcolor"],
+                    color=SpecialColor.RawTextColor,
                     res=text,
                     clear=True,
                 )
@@ -346,9 +346,7 @@ class MAINUI:
             if len(text) > globalconfig["maxlength"]:
                 text = text[: globalconfig["maxlength"]] + "……"
 
-            self.translation_ui.displayraw1.emit(
-                dict(text=text, color=globalconfig["rawtextcolor"])
-            )
+            self.translation_ui.displayraw1.emit(text)
             return
 
         try:
@@ -376,8 +374,7 @@ class MAINUI:
                 self.dispatchoutputer(text)
 
             _showrawfunction_unsafe = functools.partial(
-                self.translation_ui.displayraw1.emit,
-                dict(text=text, color=globalconfig["rawtextcolor"]),
+                self.translation_ui.displayraw1.emit, text
             )
             self.thishastranslated = globalconfig["showfanyi"]
         _showrawfunction = lambda: (
@@ -484,10 +481,11 @@ class MAINUI:
     def _delaypreparefixrank(self, _showrawfunction, real_fix_rank):
         _showrawfunction()
         for engine in real_fix_rank:
-            colorx = globalconfig["fanyi"].get(engine, globalconfig["fanyi"]["premt"])
+            if engine not in globalconfig:
+                engine = "premt"
             displayreskwargs = dict(
                 name="",
-                color=colorx["color"],
+                color=TranslateColor(engine),
                 res="",
                 iter_context=(1, engine),
             )
@@ -583,7 +581,7 @@ class MAINUI:
             ):
                 displayreskwargs = dict(
                     name=apiname,
-                    color=globalconfig["fanyi"][classname]["color"],
+                    color=TranslateColor(classname),
                     res=res,
                     iter_context=(iter_res_status, classname),
                 )

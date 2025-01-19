@@ -5,7 +5,7 @@ import gobject, functools, importlib, winsharedutils
 from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
-from gui.textbrowser import TextType
+from gui.textbrowser import TextType, ColorControl, SpecialColor
 
 
 class Qlabel_c(QLabel):
@@ -374,6 +374,9 @@ class TextBrowser(QWidget, dataget):
     def setfontstyle(self):
         pass
 
+    def setcolors(self):
+        pass
+
     def checkskip(self, texttype: TextType):
         if (texttype in (TextType.Origin,)) and (not globalconfig["isshowrawtext"]):
             return True
@@ -395,7 +398,9 @@ class TextBrowser(QWidget, dataget):
             i += 1
         return i
 
-    def iter_append(self, iter_context_class, texttype: TextType, text, color):
+    def iter_append(
+        self, iter_context_class, texttype: TextType, text, color: ColorControl
+    ):
         if self.checkskip(texttype):
             return
         if iter_context_class not in self.saveiterclasspointer:
@@ -441,7 +446,7 @@ class TextBrowser(QWidget, dataget):
         )
         self.cleared = False
 
-    def append(self, texttype: TextType, text, tag, flags, color):
+    def append(self, texttype: TextType, text, tag, flags, color: ColorControl):
         if self.checkskip(texttype):
             return
         if len(tag):
@@ -461,7 +466,9 @@ class TextBrowser(QWidget, dataget):
     def _getqalignment(self, atcenter):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
 
-    def _textbrowser_append(self, texttype: TextType, text: str, tag: list, color):
+    def _textbrowser_append(
+        self, texttype: TextType, text: str, tag: list, color: ColorControl
+    ):
         self.textbrowser.document().blockSignals(True)
         font = self._createqfont(texttype)
         self._setnextfont(font, self.cleared)
@@ -637,7 +644,9 @@ class TextBrowser(QWidget, dataget):
         self.textcursor.setPosition(p2, QTextCursor.MoveMode.KeepAnchor)
         self.textcursor.removeSelectedText()
 
-    def _showyinyingtext2(self, color, iter_context_class, pos, text, font):
+    def _showyinyingtext2(
+        self, color: ColorControl, iter_context_class, pos, text, font
+    ):
         if iter_context_class not in self.iteryinyinglabelsave:
             self.iteryinyinglabelsave[iter_context_class] = []
         for label in self.iteryinyinglabelsave[iter_context_class]:
@@ -670,7 +679,7 @@ class TextBrowser(QWidget, dataget):
                 )
             _ = self.iteryinyinglabelsave[iter_context_class][i]
             if _.text() != subtext[i]:
-                _.setColor(color)
+                _.setColor(color.get())
                 _.setText(subtext[i])
                 _.setFont(font)
                 _.adjustSize()
@@ -724,7 +733,7 @@ class TextBrowser(QWidget, dataget):
     def maxvisheight(self):
         return QApplication.primaryScreen().virtualGeometry().height() * 2
 
-    def _showyinyingtext(self, b1, b2, color, font):
+    def _showyinyingtext(self, b1, b2, color: ColorControl, font):
         linei = self.yinyingposline
 
         doc = self.textbrowser.document()
@@ -752,7 +761,7 @@ class TextBrowser(QWidget, dataget):
                     self.yinyinglabels.append(self.currentclass(self.toplabel2))
                 _ = self.yinyinglabels[self.yinyinglabels_idx]
                 self.yinyinglabels_idx += 1
-                _.setColor(color)
+                _.setColor(color.get())
                 _.setText(block.text()[s : s + l])
                 _.setFont(font)
                 _.adjustSize()
@@ -762,7 +771,9 @@ class TextBrowser(QWidget, dataget):
                 linei += 1
         self.yinyingposline = linei
 
-    def _add_searchlabel(self, isfenciclick, isshow_fenci, labeli, pos1, word, color):
+    def _add_searchlabel(
+        self, isfenciclick, isshow_fenci, labeli, pos1, word, color: ColorControl
+    ):
         if labeli >= len(self.searchmasklabels_clicked):
             ql = QLabel(self.atback_color)
             ql.setMouseTracking(True)
@@ -788,7 +799,7 @@ class TextBrowser(QWidget, dataget):
                 gobject.baseobject.clickwordcallback, word
             )
         if isshow_fenci and color:
-            style = "background-color: {};".format(color)
+            style = "background-color: {};".format(color.get())
         else:
             style = "background:transparent"
         self.searchmasklabels[labeli].setGeometry(*pos1)
@@ -924,7 +935,7 @@ class TextBrowser(QWidget, dataget):
         if idx >= len(self.savetaglabels):
             self.savetaglabels.append(self.currentclass(self.atback2))
         _: base = self.savetaglabels[idx]
-        color = self._getkanacolor()
+        color = SpecialColor.KanaColor.get()
         _.setColor(color)
         _.setText(word["hira"])
         origin = word["orig_X"]

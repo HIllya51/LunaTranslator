@@ -244,6 +244,7 @@ def setTabcishu_l(self):
                                     globalconfig,
                                     "jiamingcolor",
                                     self.jiamingcolor_b,
+                                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolors,
                                 ),
                                 name="jiamingcolor_b",
                                 parent=self,

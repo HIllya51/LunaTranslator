@@ -36,6 +36,7 @@
     }
 </style>
 
+<style id="colorcontroller"></style>
 <script>document.addEventListener('DOMContentLoaded', () => {
         //https://github.com/MicrosoftEdge/WebView2Feedback/blob/main/specs/WebMessageObjects.md
 
@@ -81,7 +82,7 @@
     function normal_create_internal(styleargs, text, args) {
         let ele = document.createElement('div')
         maybesethtml(ele, args, text)
-        ele.style.color = args.color
+        ele.style.color = `var(--${args.color})`
         return ele
     }
     function yinying_create_internal(styleargs, text, args) {
@@ -90,7 +91,7 @@
         ele.style.color = styleargs.fillcolor
         let ntimes = ""
         for (let i = 0; i < styleargs.shadowforce; i++) {
-            ntimes += `0px 0px calc(${styleargs.shadowR}em + ${styleargs.shadowR_ex}px) ${args.color}`
+            ntimes += `0px 0px calc(${styleargs.shadowR}em + ${styleargs.shadowR_ex}px) var(--${args.color})`
             if (i == styleargs.shadowforce - 1)
                 ntimes += ";"
             else
@@ -111,16 +112,16 @@
         let _id = _simpleuid()
         ele.id = _id
         let style = document.createElement('style')
-        style.innerText = `#${_id}{-webkit-text-stroke: ${styleargs.width}px ${args.color};}`
+        style.innerText = `#${_id}{-webkit-text-stroke: ${styleargs.width}px var(--${args.color});}`
         ele.appendChild(style)
         return ele
     }
     function miaobian12_common(styleargs, text, args) {
-        let c2 = args.color
+        let c2 = `var(--${args.color})`
         let c1 = styleargs.fillcolor
         if (styleargs.reverse) {
             c2 = styleargs.fillcolor
-            c1 = args.color
+            c1 = `var(--${args.color})`
         }
         let ele = document.createElement('div')
         let _id = _simpleuid()
@@ -172,7 +173,6 @@
         miaobian1: miaobian12_common,
     }
     function dispatch_text_style_line(style, styleargs, text, args) {
-        console.log(text, args)
         let ele = regist_style_imp[style](styleargs, text, args);
         ele.classList.add('centercontrol')
         if (args.userawhtml) {
@@ -444,6 +444,19 @@
         document.getElementById('styleforfont').innerHTML = style
         safe_calllunaheightchange()
     }
+    function _setcolors(colorsjs) {
+        let colors = JSON.parse(decodeURIComponent(colorsjs))
+        console.log(colors)
+        let style = ''
+        for (let klass in colors) {
+            style += ` 
+        --${klass}:${colors[klass]};
+        `
+        }
+        document.getElementById('colorcontroller').innerHTML = `:root {
+  ${style}
+}`
+    }
 </script>
 __PLACEHOLDER_EXTRA_HTML_
 <script>
@@ -459,6 +472,7 @@ __PLACEHOLDER_EXTRA_HTML_
     create_internal_rubytext = _create_internal_rubytext;
     clear_all = _clear_all
     switchcursor = _switchcursor
+    setcolors = _setcolors
 </script>
 
 <script>

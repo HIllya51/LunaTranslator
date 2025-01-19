@@ -13,6 +13,68 @@ class TextType:
     Error_translator = 4
 
 
+class ColorControl:
+    RAW_TEXT_COLOR = 0
+    TS_COLOR = 1
+    ERROR_COLOR = 2
+    COLOR_DEFAULT = 2
+    KANA_COLOR = 3
+
+    def __init__(self, T, klass=None):
+        self.type = T
+        self.klass = klass
+
+    def get(self):
+        if self.type == self.RAW_TEXT_COLOR:
+            return globalconfig["rawtextcolor"]
+        if self.type == self.KANA_COLOR:
+            return globalconfig["jiamingcolor"]
+        if self.type == self.ERROR_COLOR:
+            return "red"
+        if self.type == self.COLOR_DEFAULT:
+            return "black"
+        if self.type == self.TS_COLOR:
+            return globalconfig["fanyi"].get(self.klass, {}).get("color", "black")
+
+    def asklass(self):
+        if self.type == self.RAW_TEXT_COLOR:
+            return "ColorControl_RAW_TEXT_COLOR"
+        if self.type == self.KANA_COLOR:
+            return "ColorControl_KANA_COLOR"
+        if self.type == self.ERROR_COLOR:
+            return "ColorControl_ERROR_COLOR"
+        if self.type == self.COLOR_DEFAULT:
+            return "ColorControl_COLOR_DEFAULT"
+        if self.type == self.TS_COLOR:
+            return "ColorControl_TS_COLOR_{}".format(self.klass)
+
+    def _tuple_(self):
+        if self.klass:
+            return (self.type, self.klass)
+        return self.type
+
+    def __repr__(self):
+        return str(self._tuple_())
+
+    def __hash__(self):
+        return self._tuple_().__hash__()
+
+    def __eq__(self, value):
+        return self._tuple_() == value._tuple_()
+
+
+class TranslateColor(ColorControl):
+    def __init__(self, klass):
+        super().__init__(ColorControl.TS_COLOR, klass)
+
+
+class SpecialColor:
+    RawTextColor = ColorControl(ColorControl.RAW_TEXT_COLOR)
+    ErrorColor = ColorControl(ColorControl.ERROR_COLOR)
+    DefaultColor = ColorControl(ColorControl.COLOR_DEFAULT)
+    KanaColor = ColorControl(ColorControl.KANA_COLOR)
+
+
 class Textbrowser(QFrame):
     contentsChanged = pyqtSignal(QSize)
     dropfilecallback = pyqtSignal(str)
@@ -87,7 +149,9 @@ class Textbrowser(QFrame):
         self.trace = []
         self.loadinternal()
 
-    def iter_append(self, iter_context_class, texttype: TextType, name, text, color):
+    def iter_append(
+        self, iter_context_class, texttype: TextType, name, text, color: ColorControl
+    ):
         self.trace.append((1, (iter_context_class, texttype, name, text, color)))
         self.cleared = False
         self.textbrowser.iter_append(
@@ -99,7 +163,7 @@ class Textbrowser(QFrame):
             text = name + " " + text
         return text
 
-    def append(self, texttype: TextType, name, text, tag, flags, color):
+    def append(self, texttype: TextType, name, text, tag, flags, color: ColorControl):
         self.trace.append(
             (
                 0,

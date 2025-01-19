@@ -9,6 +9,7 @@ from gui.usefulwidget import (
     getIconButton,
     IconButton,
 )
+from gui.textbrowser import TranslateColor
 from gui.dynalang import LPushButton, LMainWindow
 from gui.setting_textinput import loadvalidtss
 
@@ -157,7 +158,7 @@ class edittrans(LMainWindow):
             )
             displayreskwargs = dict(
                 name=globalconfig["fanyi"]["realtime_edit"]["name"],
-                color=globalconfig["fanyi"]["realtime_edit"]["color"],
+                color=TranslateColor("realtime_edit"),
                 res=text,
                 iter_context=(1, "realtime_edit_directvis_fakeclass"),
             )
