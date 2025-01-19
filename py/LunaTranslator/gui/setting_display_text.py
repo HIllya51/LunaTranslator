@@ -100,8 +100,6 @@ class extrahtml(saveposwindow):
 
 
 def mayberefreshe():
-    if globalconfig["rendertext_using"] == "textbrowser":
-        return
     gobject.baseobject.translation_ui.translate_text.refreshcontent()
 
 

@@ -372,10 +372,10 @@ class TextBrowser(QWidget, dataget):
         self.parent().refreshcontent()
 
     def setfontstyle(self):
-        pass
+        self.parent().refreshcontent()
 
     def setcolors(self):
-        pass
+        self.parent().refreshcontent()
 
     def checkskip(self, texttype: TextType):
         if (texttype in (TextType.Origin,)) and (not globalconfig["isshowrawtext"]):
