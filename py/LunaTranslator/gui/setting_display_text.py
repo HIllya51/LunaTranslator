@@ -100,7 +100,10 @@ class extrahtml(saveposwindow):
 
 
 def mayberefreshe():
-    gobject.baseobject.translation_ui.translate_text.refreshcontent()
+    if globalconfig["rendertext_using"] == "textbrowser":
+        gobject.baseobject.translation_ui.translate_text.refreshcontent()
+    else:
+        gobject.baseobject.translation_ui.translate_text.textbrowser.setcolors()
 
 
 def createinternalfontsettings(self, forml: LFormLayout, group, _type):

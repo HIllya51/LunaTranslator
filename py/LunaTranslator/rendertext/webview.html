@@ -99,37 +99,40 @@
         ele.style.color = `var(--${args.color})`
         return ele
     }
-    function yinying_create_internal(styleargs, text, args) {
-        let ele = document.createElement('div')
-        maybesethtml(ele, args, text)
-        ele.style.color = styleargs.fillcolor
+    function createyinyingstyle(styleargs, _id, color) {
         let ntimes = ""
         for (let i = 0; i < styleargs.shadowforce; i++) {
-            ntimes += `0px 0px calc(${styleargs.shadowR}em + ${styleargs.shadowR_ex}px) var(--${args.color})`
+            ntimes += `0px 0px calc(${styleargs.shadowR}em + ${styleargs.shadowR_ex}px) var(--${color})`
             if (i == styleargs.shadowforce - 1)
                 ntimes += ";"
             else
                 ntimes += ","
         }
+        return `#${_id}{text-shadow:${ntimes}}`
+    }
+    function yinying_create_internal(styleargs, text, args) {
+        let ele = document.createElement('div')
+        maybesethtml(ele, args, text)
+        ele.style.color = `var(--YINYING_FILLCOLOR)`
         let _id = _simpleuid()
         ele.id = _id
         let style = document.createElement('style')
-        style.innerText = `#${_id}{text-shadow:${ntimes}}`
+        style.innerHTML = createyinyingstyle(styleargs, _id, args.color)
+        style.classList.add('yinyingstyleklass')
+        style.setAttribute('__color', args.color)
+        style.setAttribute('__id', _id)
         ele.appendChild(style)
         return ele
     }
-    function miaobian12_common(styleargs, text, args) {
-        let c2 = `var(--${args.color})`
-        let c1 = styleargs.fillcolor
+    function createmiaobianstyle(styleargs, _id, color) {
+
+        let c2 = `var(--${color})`
+        let c1 = `var(--miaobianfillcolor)`
         if (styleargs.reverse) {
-            c2 = styleargs.fillcolor
-            c1 = `var(--${args.color})`
+            c2 = `var(--miaobianfillcolor)`
+            c1 = `var(--${color})`
         }
-        let ele = document.createElement('div')
-        let _id = _simpleuid()
-        ele.id = _id
-        let style = document.createElement('style')
-        style.innerHTML = `
+        let innerHTML = `
          #${_id}{
     display: grid;
     }
@@ -142,8 +145,8 @@
     color: ${c2};
     z-index: 2;
   }`
-        for (let i = 0; i < 1 + styleargs.trace * 10; i++) {
-            style.innerHTML += `#${_id} .stroken${i}{
+        for (let i = 0; i < Math.round(1 + styleargs.trace * 10); i++) {
+            innerHTML += `#${_id} .stroken${i}{
     color: ${c1};
     -webkit-text-stroke: calc(${styleargs.width_rate}em + ${styleargs.width}px) ${c1};
     position: relative;
@@ -153,13 +156,28 @@
   user-select: none;
   }`
         }
+        return innerHTML
+    }
+    function miaobian12_common(styleargs, text, args) {
+        let ele = document.createElement('div')
+        let _id = _simpleuid()
+        ele.id = _id
+        let style = document.createElement('style')
+        style.innerHTML = createmiaobianstyle(styleargs, _id, args.color)
+        style.setAttribute('__color', args.color)
+        style.setAttribute('__id', _id)
+        style.classList.add('miaobiaostyleklass')
         ele.appendChild(style)
         let p = document.createElement('div')
         maybesethtml(p, args, text)
         p.classList.add('nostroken')
         ele.appendChild(p)
+        ele.classList.add('miaobiaostyleele')
+        ele.setAttribute('__save_usehtml', args.userawhtml)
+        ele.setAttribute('__save_text', text)
+        ele.setAttribute('__save_n', Math.round(1 + styleargs.trace * 10))
 
-        for (let i = 0; i < 1 + styleargs.trace * 10; i++) {
+        for (let i = 0; i < Math.round(1 + styleargs.trace * 10); i++) {
             let p = document.createElement('div')
             maybesethtml(p, args, text)
             p.classList.add(`stroken${i}`)
@@ -445,10 +463,66 @@
         document.getElementById('styleforfont').innerHTML = style
         safe_calllunaheightchange()
     }
+    function yinying_dynamic(styleargs) {
+        document.querySelectorAll('.yinyingstyleklass').forEach(
+            (ele) => {
+                let __color = ele.getAttribute('__color')
+                let __id = ele.getAttribute('__id')
+                ele.innerHTML = createyinyingstyle(styleargs, __id, __color)
+            }
+        )
+        return `--YINYING_FILLCOLOR:${styleargs.fillcolor};`
+    }
+    function miaobian12_dynamic(styleargs) {
+        document.querySelectorAll('.miaobiaostyleklass').forEach(
+            (ele) => {
+                let __color = ele.getAttribute('__color')
+                let __id = ele.getAttribute('__id')
+                ele.innerHTML = createmiaobianstyle(styleargs, __id, __color)
+            }
+        )
+        document.querySelectorAll('.miaobiaostyleele').forEach(
+            (ele) => {
+                let targetlen = Math.round(1 + styleargs.trace * 10)
+                let __save_n = parseInt(ele.getAttribute('__save_n'))
+                ele.setAttribute('__save_n', targetlen)
+                console.log(targetlen, __save_n)
+                if (__save_n > targetlen) {
+                    for (let i = targetlen; i < __save_n; i++) {
+                        ele.querySelectorAll(`.stroken${i}`).forEach(
+                            (e) => {
+                                ele.removeChild(e)
+                            }
+                        )
+                    }
+                }
+                else {
+                    let __save_usehtml = ele.getAttribute('__save_usehtml')
+                    let __save_text = ele.getAttribute('__save_text')
+
+                    for (let i = __save_n; i < targetlen; i++) {
+                        let p = document.createElement('div')
+                        if (__save_usehtml)
+                            p.innerHTML = __save_text
+                        else
+                            p.innerText = __save_text
+                        p.classList.add(`stroken${i}`)
+                        ele.appendChild(p)
+                    }
+                }
+            }
+        )
+        return `--miaobianfillcolor:${styleargs.fillcolor};`
+    }
+    regist_style_dynamic = {
+        normal: (_) => "",
+        yinying: yinying_dynamic,
+        miaobian1: miaobian12_dynamic,
+    }
     function setcolors(colorsjs) {
-        let colors = JSON.parse(decodeURIComponent(colorsjs))
-        console.log(colors)
-        let style = ''
+        let info = JSON.parse(decodeURIComponent(colorsjs))
+        let colors = info.color
+        let style = regist_style_dynamic[info.style](info.styleargs)
         for (let klass in colors) {
             style += ` 
         --${klass}:${colors[klass]};
@@ -457,6 +531,7 @@
         document.getElementById('colorcontroller').innerHTML = `:root {
   ${style}
 }`
+        safe_calllunaheightchange()
     }
 </script>
 <script>
