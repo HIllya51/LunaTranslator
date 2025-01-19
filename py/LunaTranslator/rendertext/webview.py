@@ -73,6 +73,12 @@ class TextBrowser(QWidget, dataget):
         self.setfontstyle()
         self.parent().refreshcontent()
 
+    def refreshcontent_before(self):
+        self.debugeval("refreshcontent_before()")
+
+    def refreshcontent_after(self):
+        self.debugeval("refreshcontent_after()")
+
     def switchcursor(self, cursor):
         cursor_map = {
             Qt.CursorShape.ArrowCursor: "default",

@@ -53,10 +53,24 @@
 </script>
 <script>
     //nativte api
+    var sizeignore = false
+    var cacheheight = 0
+    function refreshcontent_before() {
+        sizeignore = true
+    }
+    function refreshcontent_after() {
+        sizeignore = false
+        let _call = window.calllunaheightchange;
+        if (!_call)
+            _call = console.log;
+        _call(cacheheight)
+    }
     function safe_calllunaheightchange() {
         let h = document.getElementById('luna_root_div').offsetHeight
         const computedStyle = window.getComputedStyle(document.body);
         h += parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom)
+        cacheheight = h
+        if (sizeignore) return
         let _call = window.calllunaheightchange;
         if (!_call)
             _call = console.log;
@@ -201,27 +215,27 @@
 <style id="maybeshowatcenter"></style>
 <style id="styleforfont"></style>
 <script>
-    function _showatcenter(center) {
+    function showatcenter(center) {
         let css = ['', '.centercontrol{ text-align: center; }'][center]
         document.getElementById('maybeshowatcenter').innerHTML = css;
         safe_calllunaheightchange()
     }
-    function _showhidetranslate(show) {
+    function showhidetranslate(show) {
         let css = ['.lunatranslator_translate{   display: none;    }', '.lunatranslator_translate{}'][show]
         document.getElementById('maybeshowtranslate').innerHTML = css;
         safe_calllunaheightchange()
     }
-    function _showhideerror(show) {
+    function showhideerror(show) {
         let css = ['.lunatranslator_error{   display: none;    }', '.lunatranslator_error{}'][show]
         document.getElementById('maybeshowerror').innerHTML = css;
         safe_calllunaheightchange()
     }
-    function _showhideorigin(show) {
+    function showhideorigin(show) {
         let css = ['.lunatranslator_origin{   display: none;    }', '.lunatranslator_origin{}'][show]
         document.getElementById('maybeshoworigin').innerHTML = css;
         safe_calllunaheightchange()
     }
-    function _create_div_line_id(_id, texttype) {
+    function create_div_line_id(_id, texttype) {
         let div = document.createElement("div");
         div.id = _id;
         if (texttype == 0) {
@@ -249,7 +263,7 @@
         }
         document.getElementById('luna_root_div').appendChild(div);
     }
-    function _create_internal_text(style, styleargsjson, _id, textu, argsjson) {
+    function create_internal_text(style, styleargsjson, _id, textu, argsjson) {
         let ele = document.getElementById(_id)
         ele.innerHTML = ''
         let args = JSON.parse(decodeURIComponent(argsjson))
@@ -280,7 +294,7 @@
 
         return result
     }
-    function _create_internal_rubytext(style, styleargsjson, _id, tagjson, argsjson) {
+    function create_internal_rubytext(style, styleargsjson, _id, tagjson, argsjson) {
 
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
@@ -357,10 +371,10 @@
         safe_calllunaheightchange()
 
     }
-    function _clear_all() {
+    function clear_all() {
         document.getElementById('luna_root_div').innerHTML = "";
     }
-    function _setselectable(b) {
+    function setselectable(b) {
         document.getElementById('luna_root_div').style.userSelect = b ? 'text' : 'none';
         document.getElementById('luna_overlay_div').style.display = b ? 'none' : 'block';
     }
@@ -406,7 +420,7 @@
         if (window.calllunaMouseRelease)
             window.calllunaMouseRelease(e.button, e.clientX, e.clientY)
     });
-    function _switchcursor(cursor) {
+    function switchcursor(cursor) {
         document.getElementById('luna_atback_div').style.cursor = cursor
         document.getElementById('luna_overlay_div').style.cursor = cursor
 
@@ -423,7 +437,7 @@
         line-height: ${lineHeight}px;
         }`
     }
-    function _setfontstyle(argsjson) {
+    function setfontstyle(argsjson) {
         let args = JSON.parse(decodeURIComponent(argsjson))
         let style = _setfontstyle_which('klass_font_origin', args.origin)
         style += _setfontstyle_which('klass_font_trans', args.trans)
@@ -431,7 +445,7 @@
         document.getElementById('styleforfont').innerHTML = style
         safe_calllunaheightchange()
     }
-    function _setcolors(colorsjs) {
+    function setcolors(colorsjs) {
         let colors = JSON.parse(decodeURIComponent(colorsjs))
         console.log(colors)
         let style = ''
@@ -446,23 +460,7 @@
     }
 </script>
 <script>
-    //api
-    setselectable = _setselectable
-    showhideerror = _showhideerror
-    showhideorigin = _showhideorigin
-    showhidetranslate = _showhidetranslate
-    showatcenter = _showatcenter
-    setfontstyle = _setfontstyle
-    create_div_line_id = _create_div_line_id;
-    create_internal_text = _create_internal_text;
-    create_internal_rubytext = _create_internal_rubytext;
-    clear_all = _clear_all
-    switchcursor = _switchcursor
-    setcolors = _setcolors
-</script>
-
-<script>
     if (window.calllunaloadready)
         window.calllunaloadready()
 </script>
-    __PLACEHOLDER_EXTRA_HTML_
+__PLACEHOLDER_EXTRA_HTML_
