@@ -252,7 +252,7 @@ def setTabcishu_l(self):
                             "",
                             "字体缩放",
                             D_getspinbox(
-                                0.05,
+                                0.1,
                                 1,
                                 globalconfig,
                                 "kanarate",
