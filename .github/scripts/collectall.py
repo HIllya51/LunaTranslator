@@ -64,29 +64,29 @@ for f in collect:
         print(f, imports)
         if len(imports) == 0:
             continue
-        # with open(f, "rb") as ff:
-        #     bs = bytearray(ff.read())
-        # for _dll, offset in imports:
-        #     if _dll.lower().startswith("api-ms-win-core"):
-        #         # 其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
-        #         _target = "kernel32.dll"
-        #     elif _dll.lower().startswith("api-ms-win-crt"):
-        #         _target = "ucrtbase.dll"
-        #     else:
-        #         continue
-        #     _dll = _dll.encode()
-        #     _target = _target.encode()
-        #     # print(len(bs))
-        #     bs[offset : offset + len(_dll)] = _target + b"\0" * (
-        #         len(_dll) - len(_target)
-        #     )
-        #     # print(len(bs))
-        # with open(f, "wb") as ff:
-        #     ff.write(bs)
-        for _dll, _ in imports:
-            collectapisets.add(_dll)
-for api in collectapisets:
-    copycheck(rf"{downlevel}\{api}", targetdir + "/files/runtime")
+        with open(f, "rb") as ff:
+            bs = bytearray(ff.read())
+        for _dll, offset in imports:
+            if _dll.lower().startswith("api-ms-win-core"):
+                # 其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
+                _target = "kernel32.dll"
+            elif _dll.lower().startswith("api-ms-win-crt"):
+                _target = "ucrtbase.dll"
+            else:
+                continue
+            _dll = _dll.encode()
+            _target = _target.encode()
+            # print(len(bs))
+            bs[offset : offset + len(_dll)] = _target + b"\0" * (
+                len(_dll) - len(_target)
+            )
+            # print(len(bs))
+        with open(f, "wb") as ff:
+            ff.write(bs)
+#         for _dll, _ in imports:
+#             collectapisets.add(_dll)
+# for api in collectapisets:
+#     copycheck(rf"{downlevel}\{api}", targetdir + "/files/runtime")
 target = os.path.basename(targetdir)
 os.chdir(os.path.dirname(targetdir))
 if os.path.exists(rf"{target}.zip"):
