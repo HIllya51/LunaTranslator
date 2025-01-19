@@ -4,6 +4,13 @@
 <head>
     <link rel="icon" href="https://image.lunatranslator.org/luna.ico" type="image/x-icon">
     <script>
+        const supportlangs = ['zh', 'en', 'ja']
+        function browserlang() {
+            let l = navigator.language
+            if (l.includes('-')) l = l.split('-')[0]
+            if (supportlangs.includes(l)) return l
+            return 'en'
+        }
         let lang = window.localStorage.currentlang ? window.localStorage.currentlang : browserlang()
         window.location.pathname = `/${lang}/`
     </script>
