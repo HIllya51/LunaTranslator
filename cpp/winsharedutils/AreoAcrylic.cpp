@@ -1,6 +1,6 @@
 ﻿
 #include <dwmapi.h>
-
+#include "osversion.hpp"
 typedef enum _WINDOWCOMPOSITIONATTRIB
 {
 	CA_UNDEFINED = 0,
@@ -142,12 +142,11 @@ DECLARE_API bool clearEffect(HWND hwnd)
 	return false;
 #endif
 }
-uint32_t GetOSversion() noexcept;
 
 DECLARE_API bool setbackdropX(HWND hwnd, bool good, bool dark)
 {
 #ifndef WINXP
-	if (GetOSversion() <= 6)
+	if (GetOSVersion().IsWin7or8())
 		return false;
 
 	DWORD corner_ = good ? DWMWCP_ROUND : DWMWCP_DEFAULT;

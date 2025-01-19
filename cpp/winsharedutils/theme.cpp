@@ -1,90 +1,6 @@
 ﻿
 // https://github.com/Blinue/Xaml-Islands-Cpp/blob/main/src/XamlIslandsCpp/XamlWindow.h
-
-uint32_t GetOSversion() noexcept
-{
-    HMODULE hNtDll = GetModuleHandle(L"ntdll.dll");
-    if (!hNtDll)
-    {
-        return 0;
-    }
-
-    auto rtlGetVersion = (LONG(WINAPI *)(PRTL_OSVERSIONINFOW))GetProcAddress(hNtDll, "RtlGetVersion");
-    if (rtlGetVersion == nullptr)
-    {
-        // assert(false);
-        return 0;
-    }
-
-    RTL_OSVERSIONINFOW version{};
-    version.dwOSVersionInfoSize = sizeof(version);
-    rtlGetVersion(&version);
-
-    return version.dwMajorVersion;
-}
-
-static uint32_t GetOSBuild() noexcept
-{
-    HMODULE hNtDll = GetModuleHandle(L"ntdll.dll");
-    if (!hNtDll)
-    {
-        return 0;
-    }
-
-    auto rtlGetVersion = (LONG(WINAPI *)(PRTL_OSVERSIONINFOW))GetProcAddress(hNtDll, "RtlGetVersion");
-    if (rtlGetVersion == nullptr)
-    {
-        // assert(false);
-        return 0;
-    }
-
-    RTL_OSVERSIONINFOW version{};
-    version.dwOSVersionInfoSize = sizeof(version);
-    rtlGetVersion(&version);
-
-    return version.dwBuildNumber;
-}
-struct Win32Helper
-{
-    struct OSVersion
-    {
-        constexpr OSVersion(uint32_t build) : _build(build) {}
-
-        bool Is20H1OrNewer() const noexcept
-        {
-            return _build >= 19041;
-        }
-
-        // 下面为 Win11
-        // 不考虑代号相同的 Win10
-
-        bool IsWin11() const noexcept
-        {
-            return Is21H2OrNewer();
-        }
-
-        bool Is21H2OrNewer() const noexcept
-        {
-            return _build >= 22000;
-        }
-
-        bool Is22H2OrNewer() const noexcept
-        {
-            return _build >= 22621;
-        }
-
-    private:
-        uint32_t _build = 0;
-    };
-
-    static OSVersion GetOSVersion() noexcept;
-};
-Win32Helper::OSVersion Win32Helper::GetOSVersion() noexcept
-{
-    static OSVersion version = GetOSBuild();
-    return version;
-}
-
+#include "osversion.hpp"
 enum class PreferredAppMode
 {
     Default,
@@ -144,7 +60,7 @@ static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
     BOOL value = darkBorder;
     DwmSetWindowAttribute(
         hWnd,
-        Win32Helper::GetOSVersion().Is20H1OrNewer() ? DWMWA_USE_IMMERSIVE_DARK_MODE : DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1,
+        GetOSVersion().Is20H1OrNewer() ? DWMWA_USE_IMMERSIVE_DARK_MODE : DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1,
         &value,
         sizeof(value));
 
@@ -168,7 +84,7 @@ DECLARE_API void _SetTheme(
 {
 #ifndef WINXP
     // printf("%d %d\n",GetOSversion(),GetOSBuild());
-    if (GetOSversion() <= 6) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
+    if (GetOSVersion().IsWin7or8()) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
         return;
 
     auto value1 = rect ? DWMWCP_DONOTROUND : DWMWCP_DEFAULT;
@@ -183,7 +99,7 @@ DECLARE_API void _SetTheme(
     //  Win10 中即使在亮色主题下我们也使用暗色边框，这也是 UWP 窗口的行为
     SetWindowTheme(
         _hWnd,
-        Win32Helper::GetOSVersion().IsWin11() ? dark : true,
+        GetOSVersion().IsWin11() ? dark : true,
         dark);
 
     // if (!Win32Helper::GetOSVersion().Is22H2OrNewer())
