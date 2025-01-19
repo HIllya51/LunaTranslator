@@ -1,6 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
-import importlib, copy, os
+import importlib, copy, os, platform
 from traceback import print_exc
 from gui.usefulwidget import WebviewWidget
 
@@ -44,6 +44,15 @@ class Textbrowser(QFrame):
             globalconfig["rendertext_using"] = "textbrowser"
             tb = importlib.import_module("rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
+
+        if (platform.system() == "Windows") and (
+            int(platform.version().split(".")[0]) <= 6
+        ):
+            # win7不可以同时FramelessWindowHint和WA_TranslucentBackground，否则会导致无法显示
+            self.window().setAttribute(
+                Qt.WidgetAttribute.WA_TranslucentBackground,
+                globalconfig["rendertext_using"] == "textbrowser",
+            )
         self.textbrowser.move(0, 0)
         self.textbrowser.setMouseTracking(True)
         self.textbrowser.contentsChanged.connect(self._contentsChanged)
