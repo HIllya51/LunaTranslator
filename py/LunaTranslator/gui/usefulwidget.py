@@ -1246,6 +1246,8 @@ class WebivewWidget(abstractwebview):
         FixedRuntime = self.findFixedRuntime()
         if FixedRuntime:
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
+            # 在共享路径上无法运行
+            os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
         self.webview = Webview(debug=debug, window=int(self.winId()))
         self.m_webMessageReceivedToken = None
         self.menudata = winsharedutils.add_ContextMenuRequested(self.get_controller())
