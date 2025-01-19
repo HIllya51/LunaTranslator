@@ -460,11 +460,10 @@
             "./files/plugins/shareddllproxy64.exe",
             "./files/plugins/Magpie/Magpie.Core.exe",
             "./files/plugins/LunaHook/LunaHook32.dll",
-            "./files/plugins/LunaHook/LunaHost32.dll",
-            "./files/plugins/LunaHook/LunaHook64.dll",
-            "./files/plugins/LunaHook/LunaHost64.dll"
+            "./files/plugins/LunaHook/LunaHook64.dll"
         ],
         "64": [
+            "./files/plugins/LunaHook/LunaHost64.dll",
             "./files/plugins/DLL64/winsharedutils.dll",
             "./files/plugins/DLL64/winrtutils.dll",
             "./files/plugins/DLL64/LunaOCR.dll",
@@ -477,6 +476,7 @@
             "./files/plugins/DLL64/brotlidec.dll"
         ],
         "32": [
+            "./files/plugins/LunaHook/LunaHost32.dll",
             "./files/plugins/DLL32/winsharedutils.dll",
             "./files/plugins/DLL32/winrtutils.dll",
             "./files/plugins/DLL32/LunaOCR.dll",

@@ -107,10 +107,9 @@ class Textbrowser(QFrame):
             tb = importlib.import_module("rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
 
-        if (platform.system() == "Windows") and (
-            int(platform.version().split(".")[0]) <= 6
-        ):
+        if tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 1):
             # win7不可以同时FramelessWindowHint和WA_TranslucentBackground，否则会导致无法显示
+            # win8没问题
             self.window().setAttribute(
                 Qt.WidgetAttribute.WA_TranslucentBackground,
                 globalconfig["rendertext_using"] == "textbrowser",

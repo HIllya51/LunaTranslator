@@ -13,7 +13,7 @@ from ctypes import (
 import platform, gobject, threading
 
 try:
-    if platform.system() != "Windows" or int(platform.version().split(".")[0]) <= 6:
+    if int(platform.version().split(".")[0]) <= 6:
         raise Exception()
     winrtutilsdll = CDLL(gobject.GetDllpath("winrtutils.dll"))
 except:

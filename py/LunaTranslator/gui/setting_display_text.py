@@ -100,10 +100,7 @@ class extrahtml(saveposwindow):
 
 
 def mayberefreshe():
-    if globalconfig["rendertext_using"] == "textbrowser":
-        gobject.baseobject.translation_ui.translate_text.refreshcontent()
-    else:
-        gobject.baseobject.translation_ui.translate_text.textbrowser.setcolors()
+    gobject.baseobject.translation_ui.translate_text.textbrowser.setcolorstyle()
 
 
 def createinternalfontsettings(self, forml: LFormLayout, group, _type):
@@ -355,7 +352,7 @@ def xianshigrid_style(self):
                                                     globalconfig,
                                                     "rawtextcolor",
                                                     self.original_color_button,
-                                                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolors,
+                                                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolorstyle,
                                                 ),
                                                 name="original_color_button",
                                                 parent=self,

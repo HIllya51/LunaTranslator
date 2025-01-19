@@ -309,20 +309,20 @@ class TextBrowser(QWidget, dataget):
             ]["webview"][0]
         return currenttype
 
-    def setcolors(self):
+    def setcolorstyle(self):
         mp = {}
         for color in self.colorset:
             mp[color.asklass()] = color.get()
         style = self._getstylevalid()
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
         infos = dict(color=mp, style=style, styleargs=styleargs)
-        self.debugeval("setcolors('{}')".format(quote(json.dumps(infos))))
+        self.debugeval("setcolorstyle('{}')".format(quote(json.dumps(infos))))
 
     def _setcolors(self, color: ColorControl = None):
         if color in self.colorset:
             return
         self.colorset.add(color)
-        self.setcolors()
+        self.setcolorstyle()
 
     def _webview_append(self, _id, text: str, tag, flags, color: ColorControl):
         self._setcolors(color)

@@ -9,11 +9,13 @@ if sys.argv[1] == "32":
     launch = r"..\cpp\builds\_x86"
     baddll = "DLL64"
     pyrt = "../build/pyrt_x86/runtime"
+    downlevel = r"C:\Windows\SysWOW64\downlevel"
 else:
     baddll = "DLL32"
     launch = r"..\cpp\builds\_x64"
     targetdir = r"build\LunaTranslator"
     pyrt = "../build/pyrt_x64/runtime"
+    downlevel = r"C:\Windows\system32\downlevel"
 
 
 def copycheck(src, tgt):
@@ -49,6 +51,8 @@ collect = []
 for _dir, _, fs in os.walk(targetdir):
     for f in fs:
         collect.append(os.path.join(_dir, f))
+
+collectapisets = set()
 for f in collect:
     if f.endswith(".pyc") or f.endswith("Thumbs.db"):
         os.remove(f)
@@ -60,26 +64,29 @@ for f in collect:
         print(f, imports)
         if len(imports) == 0:
             continue
-        with open(f, "rb") as ff:
-            bs = bytearray(ff.read())
-        for _dll, offset in imports:
-            if _dll.lower().startswith("api-ms-win-core"):
-                # 其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
-                _target = "kernel32.dll"
-            elif _dll.lower().startswith("api-ms-win-crt"):
-                _target = "ucrtbase.dll"
-            else:
-                continue
-            _dll = _dll.encode()
-            _target = _target.encode()
-            # print(len(bs))
-            bs[offset : offset + len(_dll)] = _target + b"\0" * (
-                len(_dll) - len(_target)
-            )
-            # print(len(bs))
-        with open(f, "wb") as ff:
-            ff.write(bs)
-
+        # with open(f, "rb") as ff:
+        #     bs = bytearray(ff.read())
+        # for _dll, offset in imports:
+        #     if _dll.lower().startswith("api-ms-win-core"):
+        #         # 其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
+        #         _target = "kernel32.dll"
+        #     elif _dll.lower().startswith("api-ms-win-crt"):
+        #         _target = "ucrtbase.dll"
+        #     else:
+        #         continue
+        #     _dll = _dll.encode()
+        #     _target = _target.encode()
+        #     # print(len(bs))
+        #     bs[offset : offset + len(_dll)] = _target + b"\0" * (
+        #         len(_dll) - len(_target)
+        #     )
+        #     # print(len(bs))
+        # with open(f, "wb") as ff:
+        #     ff.write(bs)
+        for _dll, _ in imports:
+            collectapisets.add(_dll)
+for api in collectapisets:
+    copycheck(rf"{downlevel}\{api}", targetdir + "/files/runtime")
 target = os.path.basename(targetdir)
 os.chdir(os.path.dirname(targetdir))
 if os.path.exists(rf"{target}.zip"):
