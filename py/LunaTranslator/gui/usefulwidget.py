@@ -1233,7 +1233,7 @@ class WebviewWidget(abstractwebview):
     @staticmethod
     def showError():
         getQMessageBox(
-            gobject.baseobject.commonstylebase,
+            gobject.baseobject.settin_ui,
             "错误",
             "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。",
         )
