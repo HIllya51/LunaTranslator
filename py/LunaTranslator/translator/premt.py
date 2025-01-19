@@ -55,7 +55,7 @@ class TS(basetrans):
             for line in ret:
                 text = line[1]
                 trans = line[2]
-                dis = winsharedutils.distance_ratio(content, text)
+                dis = winsharedutils.similarity(content, text)
                 if dis > maxsim:
                     maxsim = dis
                     if maxsim * 100 >= globalconfig["premtsimi2"]:

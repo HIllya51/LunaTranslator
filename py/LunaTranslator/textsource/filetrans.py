@@ -24,14 +24,16 @@ class parsejson:
     def __len__(self):
         return len(self.data)
 
-    def save(self, index, k, ts):
+    def save(self, _, k, ts):
         self.data[k] = ts
 
     def load(self):
         for k in self.data:
-            if not isinstance(self.data[k], str):
+            if not (isinstance(k, str) and (self.data[k], str)):
+                yield None
                 continue
-            if winsharedutils.distance_ratio(self.data[k], k) < 0.2:
+            if self.data[k] and winsharedutils.similarity(self.data[k], k) < 0.2:
+                yield None
                 continue
             yield k
 

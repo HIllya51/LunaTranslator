@@ -168,16 +168,16 @@ DECLARE_API size_t levenshtein_distance(size_t len1, const wchar_t *string1,
     return lev_u_edit_distance(len1, string1, len2, string2, 0);
 #endif
 }
-DECLARE_API double levenshtein_ratio(size_t len1, const wchar_t *string1,
+DECLARE_API double levenshtein_normalized_similarity(size_t len1, const wchar_t *string1,
                                      size_t len2, const wchar_t *string2)
 {
 #ifndef WINXP
-    auto ldist = levenshtein_distance(len1, string1, len2, string2);
+    return rapidfuzz::levenshtein_normalized_similarity(std::wstring_view(string1, len1), std::wstring_view(string2, len2));
 #else
     auto ldist = lev_u_edit_distance(len1, string1, len2, string2, 1);
-#endif
-    auto lensum = len1 + len2;
+    auto lensum = std::max(len1, len2);
     if (lensum == 0)
         return 0;
     return (double)(lensum - ldist) / lensum;
+#endif
 }

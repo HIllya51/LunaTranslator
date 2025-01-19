@@ -104,7 +104,7 @@ class TS(basetrans):
                 if not jx:
                     continue
                 for jc in jx:
-                    dis = winsharedutils.distance_ratio(content, jc)
+                    dis = winsharedutils.similarity(content, jc)
                     if dis > maxsim:
                         maxsim = dis
                         if maxsim * 100 >= globalconfig["premtsimi2"]:
