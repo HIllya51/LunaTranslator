@@ -53,8 +53,8 @@ int listprocessmodule(int argc, wchar_t *argv[])
 
 int wmain(int argc, wchar_t *argv[])
 {
-    // if (checkisapatch())
-    //     return 1;
+    if (checkisapatch())
+        return 1;
     auto argv0 = std::wstring(argv[1]);
     typedef int (*wmaint)(int, wchar_t **);
     std::map<std::wstring, wmaint> fm = {
