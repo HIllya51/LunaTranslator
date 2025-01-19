@@ -99,6 +99,12 @@ class extrahtml(saveposwindow):
         self.show()
 
 
+def mayberefreshe():
+    if globalconfig["rendertext_using"] == "textbrowser":
+        return
+    gobject.baseobject.translation_ui.translate_text.refreshcontent()
+
+
 def createinternalfontsettings(self, forml: LFormLayout, group, _type):
     need = globalconfig["rendertext_using_internal"][group] != _type
     globalconfig["rendertext_using_internal"][group] = _type
@@ -132,6 +138,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                                 keyx,
                                 True,
                                 widthline.get("step", 0.1),
+                                callback=lambda _: mayberefreshe(),
                             ),
                             __,
                             getspinbox(
@@ -141,6 +148,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                                 key,
                                 True,
                                 line.get("step", 0.1),
+                                callback=lambda _: mayberefreshe(),
                             ),
                         ]
                     ),
@@ -154,7 +162,11 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 key,
                 callback=functools.partial(
                     lambda dd, key: selectcolor(
-                        self, dd, key, self.miaobian_color_button
+                        self,
+                        dd,
+                        key,
+                        self.miaobian_color_button,
+                        callback=mayberefreshe,
                     ),
                     dd,
                     key,
@@ -170,10 +182,16 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 key,
                 _type == "spin",
                 line.get("step", 0.1),
+                callback=lambda _: mayberefreshe(),
             )
         elif _type == "switch":
             lineW = MySwitch(sign=dd[key])
-            lineW.clicked.connect(functools.partial(dd.__setitem__, key))
+
+            def __(dd, key, x):
+                dd[key] = x
+                mayberefreshe()
+
+            lineW.clicked.connect(functools.partial(__, dd, key))
         forml.addRow(
             name,
             lineW,

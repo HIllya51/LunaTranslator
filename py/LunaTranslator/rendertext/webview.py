@@ -65,6 +65,7 @@ class TextBrowser(QWidget, dataget):
         gobject.baseobject.currenttext = ""
 
     def resetflags(self):
+        self.colorset.clear()
         for k, v in self.flags.items():
             self.debugeval("{}({})".format(k, int(v)))
         self.setfontstyle()
@@ -306,7 +307,6 @@ class TextBrowser(QWidget, dataget):
         return currenttype
 
     def setcolors(self):
-        print(self.colorset)
         mp = {}
         for color in self.colorset:
             mp[color.asklass()] = color.get()
