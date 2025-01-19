@@ -699,19 +699,6 @@ _GetAncestor.restype = HWND
 def GetAncestor(hwnd):
     return _GetAncestor(hwnd, GA_ROOT)
 
-
-_ScreenToClient = _user32.ScreenToClient
-_ScreenToClient.argtypes = c_void_p, POINTER(POINT)
-
-
-def ScreenToClient(hwnd, x, y):
-    P = POINT()
-    P.x = int(x)
-    P.y = int(y)
-    _ScreenToClient(hwnd, pointer(P))
-    return (P.x, P.y)
-
-
 _MapVirtualKey = _user32.MapVirtualKeyW
 _MapVirtualKey.argtypes = UINT, UINT
 _MapVirtualKey.restype = UINT

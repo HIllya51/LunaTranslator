@@ -263,6 +263,11 @@ def safepixmap(bs):
     return pixmap
 
 
+def crop_image(x1, y1, x2, y2, hwnd=None):
+    bs = winsharedutils.crop_image(x1, y1, x2, y2, hwnd)
+    return safepixmap(bs)
+
+
 def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
     bs = winsharedutils.gdi_screenshot(x1, y1, x2, y2, hwnd)
     return safepixmap(bs)
@@ -273,7 +278,7 @@ def winrt_capture_window(hwnd):
     return safepixmap(bs)
 
 
-def subprochiderun(cmd, cwd=None, encoding='utf8') -> subprocess.CompletedProcess:
+def subprochiderun(cmd, cwd=None, encoding="utf8") -> subprocess.CompletedProcess:
 
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW

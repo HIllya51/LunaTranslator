@@ -261,8 +261,11 @@ isDark.restype = c_bool
 _gdi_screenshot = utilsdll.gdi_screenshot
 _gdi_screenshot.argtypes = HWND, RECT, c_void_p
 
+crop_image = utilsdll.crop_image
+crop_image.argtypes = HWND, RECT, c_void_p
 
-def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
+
+def __gdi_screenshot(f, x1, y1, x2, y2, hwnd=None):
     rect = RECT()
     rect.left = x1
     rect.top = y1
@@ -273,11 +276,14 @@ def gdi_screenshot(x1, y1, x2, y2, hwnd=None):
     def cb(ptr, size):
         ret.append(cast(ptr, POINTER(c_char))[:size])
 
-    _gdi_screenshot(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    f(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
     if len(ret) == 0:
         return None
     return ret[0]
 
+
+gdi_screenshot = functools.partial(__gdi_screenshot, _gdi_screenshot)
+crop_image = functools.partial(__gdi_screenshot, crop_image)
 
 maximum_window = utilsdll.maximum_window
 maximum_window.argtypes = (HWND,)
@@ -321,7 +327,12 @@ add_menu_list = utilsdll.add_menu_list
 add_menu_list.argtypes = (c_void_p, c_int, c_wchar_p, add_ContextMenuRequested_cb)
 add_ContextMenuRequested_cb2 = CFUNCTYPE(c_void_p)
 add_menu_list_noselect = utilsdll.add_menu_list_noselect
-add_menu_list_noselect.argtypes = (c_void_p, c_int, c_wchar_p, add_ContextMenuRequested_cb2)
+add_menu_list_noselect.argtypes = (
+    c_void_p,
+    c_int,
+    c_wchar_p,
+    add_ContextMenuRequested_cb2,
+)
 get_webview_html = utilsdll.get_webview_html
 get_webview_html.argtypes = c_void_p, c_void_p, c_wchar_p
 clipboard_callback = utilsdll.clipboard_callback
