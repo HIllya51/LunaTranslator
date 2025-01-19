@@ -57,7 +57,6 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.bind("calllunaloadready", self.resetflags)
         self.saveiterclasspointer = {}
         self.isfirst = True
-        self.flags = {}
         self.colorset = set()
 
     def ___cleartext(self):
@@ -66,8 +65,11 @@ class TextBrowser(QWidget, dataget):
 
     def resetflags(self):
         self.colorset.clear()
-        for k, v in self.flags.items():
-            self.debugeval("{}({})".format(k, int(v)))
+        self.setselectable(globalconfig["selectable"])
+        self.showhideerror(globalconfig["showtranexception"])
+        self.showhideorigin(globalconfig["isshowrawtext"])
+        self.showhidetranslate(globalconfig["showfanyi"])
+        self.showatcenter(globalconfig["showatcenter"])
         self.setfontstyle()
         self.parent().refreshcontent()
 
@@ -142,23 +144,18 @@ class TextBrowser(QWidget, dataget):
     # js api
     def setselectable(self, b):
         self.debugeval("setselectable({})".format(int(b)))
-        self.flags["setselectable"] = b
 
     def showatcenter(self, show):
         self.debugeval("showatcenter({})".format(int(show)))
-        self.flags["showatcenter"] = show
 
     def showhidetranslate(self, show):
         self.debugeval("showhidetranslate({})".format(int(show)))
-        self.flags["showhidetranslate"] = show
 
     def showhideorigin(self, show):
         self.debugeval("showhideorigin({})".format(int(show)))
-        self.flags["showhideorigin"] = show
 
     def showhideerror(self, show):
         self.debugeval("showhideerror({})".format(int(show)))
-        self.flags["showhideerror"] = show
 
     def create_div_line_id(self, _id, texttype: TextType):
         self.debugeval('create_div_line_id("{}",{})'.format(_id, texttype))

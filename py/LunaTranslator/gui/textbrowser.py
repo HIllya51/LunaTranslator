@@ -121,11 +121,6 @@ class Textbrowser(QFrame):
         self.textbrowser.dropfilecallback.connect(self.normdropfilepath)
         self.textbrowser.resize(size)
         self.textbrowser.show()
-        self.textbrowser.setselectable(globalconfig["selectable"])
-        self.textbrowser.showhideerror(globalconfig["showtranexception"])
-        self.textbrowser.showhideorigin(globalconfig["isshowrawtext"])
-        self.textbrowser.showhidetranslate(globalconfig["showfanyi"])
-        self.textbrowser.showatcenter(globalconfig["showatcenter"])
         self.refreshcontent()
 
     def normdropfilepath(self, file):
