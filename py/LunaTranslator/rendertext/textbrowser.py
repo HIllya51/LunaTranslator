@@ -32,7 +32,7 @@ class Qlabel_c(QLabel):
             self.pr = False
         except:
             print_exc()
-        # return super().mouseReleaseEvent(event)
+        return super().mouseReleaseEvent(event)
 
     def enterEvent(self, a0) -> None:
         try:
@@ -86,6 +86,7 @@ class QTextBrowser_1(QTextEdit):
             ev.ignore()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         try:
             label = self.getcurrlabel(event)
             if label and label.refmask.callback:
@@ -95,6 +96,8 @@ class QTextBrowser_1(QTextEdit):
                 elif event.button() == Qt.MouseButton.RightButton:
                     if not self.pr:
                         label.refmask.callback(True)
+                        self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+                        return event.ignore()
         except:
             pass
         if self.ignorecount:
