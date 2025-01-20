@@ -2045,6 +2045,12 @@ namespace
         last = s;
         buffer->from(parse(s));
     }
+    void F0100A0001B9F0000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(\w+\.png)"), "");
+        buffer->from(s);
+    }
     void F0100FC2019346000(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, "#n", 2);
@@ -3513,9 +3519,9 @@ namespace
             {0x800da5e0, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
             {0x8003dfac, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
             // PSYCHIC ECLIPSE-サイキックイクリプス- reload
-            {0x8091B41C, {CODEC_UTF8, 8, 0, 0, 0, 0x0100A0001B9F0000ull, "1.0.0"}},               // 提取不到短字符串
-            {0x804FAF5C, {CODEC_UTF8 | FULL_STRING, 1, 0, 0, 0, 0x0100A0001B9F0000ull, "1.1.0"}}, // 提取不到短字符串 text+name
-            {0x80887ABC, {CODEC_UTF8, 8, 0, 0, 0, 0x0100A0001B9F0000ull, "1.1.0"}},               // 提取不到短字符串
+            {0x8058ED70, {CODEC_UTF8, 0, 0, 0, F0100A0001B9F0000, 0x0100A0001B9F0000ull, "1.0.0"}}, // text+name 少量短句提取不到
+            {0x804FAF5C, {CODEC_UTF8 | FULL_STRING, 1, 0, 0, 0, 0x0100A0001B9F0000ull, "1.1.0"}},   // 提取不到短字符串 text+name
+            {0x80887ABC, {CODEC_UTF8, 8, 0, 0, 0, 0x0100A0001B9F0000ull, "1.1.0"}},                 // 提取不到短字符串
             // アイ★チュウ
             {0x824865C4, {CODEC_UTF16, 3, 0, 0, F01006CC015ECA000, 0x01006CC015ECA000ull, "1.14"}},
             // カエル畑DEつかまえて☆彡
