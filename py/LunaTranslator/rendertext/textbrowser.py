@@ -294,6 +294,7 @@ class TextBrowser(QWidget, dataget):
         self.masklabel_top.setMouseTracking(True)
         # self.masklabel_bottom.setStyleSheet('background-color:red')
         self.resets1()
+        self.setselectable(globalconfig["selectable"])
 
     def resets1(self):
         self.currenttype = globalconfig["rendertext_using_internal"]["textbrowser"]

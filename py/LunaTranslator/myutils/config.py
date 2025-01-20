@@ -224,6 +224,12 @@ if "xxxcast" not in globalconfig:
     globalconfig["xxxcast"] = True
     needcast = True
 
+if "rendertext_using" not in globalconfig:
+    v = platform.version().split(".")
+    is21h2 = int(v[0]) >= 10 and int(v[-1]) >= 22000
+    globalconfig["rendertext_using"] = ["textbrowser", "webview"][is21h2]
+
+
 # fmt: off
 oldlanguage = ["zh","ja","en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar","th","bo","de","sv","nl"]
 # fmt: on
