@@ -45,9 +45,13 @@
             document.body.addEventListener(eventName, (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                if (window.calllunaMouseRelease)
+                    window.calllunaMouseRelease(e.button, e.clientX, e.clientY)
             }, false);
         });
-        document.body.addEventListener('drop', (e) => { chrome.webview.postMessageWithAdditionalObjects("FilesDropped", e.dataTransfer.files); }, false);
+        document.body.addEventListener('drop', (e) => {
+            chrome.webview.postMessageWithAdditionalObjects("FilesDropped", e.dataTransfer.files);
+        }, false);
 
     });
 </script>
