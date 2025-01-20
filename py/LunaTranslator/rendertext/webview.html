@@ -45,8 +45,6 @@
             document.body.addEventListener(eventName, (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                if (window.calllunaMouseRelease)
-                    window.calllunaMouseRelease(e.button, e.clientX, e.clientY)
             }, false);
         });
         document.body.addEventListener('drop', (e) => {
@@ -430,9 +428,12 @@
 
     });
     document.addEventListener('mousedown', function (e) {
-        if (!isPointOverText(e.clientX, e.clientY))
+        if (e.button == 0)
+            window.getSelection().removeAllRanges()
+        if (!isPointOverText(e.clientX, e.clientY)) {
             if (window.calllunaMousePress)
                 window.calllunaMousePress(e.button, e.clientX, e.clientY)
+        }
     });
     document.addEventListener('mouseup', function (e) {
         if (window.calllunaMouseRelease)
