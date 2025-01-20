@@ -32,7 +32,7 @@ class Qlabel_c(QLabel):
             self.pr = False
         except:
             print_exc()
-        return super().mouseReleaseEvent(event)
+        # return super().mouseReleaseEvent(event)
 
     def enterEvent(self, a0) -> None:
         try:
