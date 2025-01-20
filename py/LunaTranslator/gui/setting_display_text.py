@@ -107,7 +107,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
     need = globalconfig["rendertext_using_internal"][group] != _type
     globalconfig["rendertext_using_internal"][group] = _type
     if need:
-        gobject.baseobject.translation_ui.translate_text.refreshcontent()
+        gobject.baseobject.translation_ui.translate_text.textbrowser.resetstyle()
     __internal = globalconfig["rendertext"][group][_type]
     dd = __internal.get("args", {})
 

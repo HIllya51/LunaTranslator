@@ -248,6 +248,10 @@ class TextBrowser(QWidget, dataget):
         )
         QApplication.sendEvent(self, event)
 
+    def resetstyle(self):
+        self.parent().refreshcontent()
+        self.setcolorstyle()
+
     # native api end
     def setfontstyle(self):
         def __loadfont(argc, extra):
