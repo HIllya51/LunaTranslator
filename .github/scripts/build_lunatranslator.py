@@ -358,10 +358,6 @@ if __name__ == "__main__":
             f"{rootDir}/files/plugins/LunaHook",
             dirs_exist_ok=True,
         )
-        if arch == "x86":
-            os.remove(f"{rootDir}/files/plugins/LunaHook/LunaHost64.dll")
-        else:
-            os.remove(f"{rootDir}/files/plugins/LunaHook/LunaHost32.dll")
         shutil.copytree(
             f"{rootDir}/../build/cpp_x64",
             f"{rootDir}/../cpp/builds",
