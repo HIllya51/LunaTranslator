@@ -237,7 +237,7 @@ class TextBrowser(QWidget, dataget):
         self.searchmasklabels_clicked2 = []
         self.searchmasklabels = []
         self.backcolorlabels = []
-        self.showatcenterflag = True
+        self.showatcenterflag = globalconfig["showatcenter"]
         self.yinyinglabels = []
         self.yinyinglabels_idx = 0
 
