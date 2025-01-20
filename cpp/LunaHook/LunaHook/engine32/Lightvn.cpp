@@ -146,7 +146,77 @@ namespace
 		return NewHook(hp, "Light.VN");
 	}
 }
+namespace
+{
+	bool veryold()
+	{
+		// https://vndb.org/v25877
+		//  私のアリス
+
+		/*
+		Concurrency::details::_CancellationTokenRegistration *__thiscall sub_10093E10(
+		Concurrency::details::_CancellationTokenRegistration *this,
+		Concurrency::details::_CancellationTokenRegistration *a2)
+{
+  int v2; // eax
+  int v4; // [esp-4h] [ebp-Ch]
+  char v6; // [esp+6h] [ebp-2h] BYREF
+  char v7; // [esp+7h] [ebp-1h] BYREF
+
+  if ( this != a2 )
+  {
+	v4 = sub_101095C0(&v7);
+	v2 = sub_101095C0(&v6);
+	sub_10088180(v2, v4);
+	std::wstring::assign(a2);
+  }
+  return this;
+}
+		*/
+		auto [minAddress, maxAddress] = Util::QueryModuleLimits(GetModuleHandle(L"Engine.dll"));
+		const BYTE BYTES[] = {
+			0x55, 0x8b, 0xec,
+			0x83, 0xec, 0x08,
+			0x89, 0x4d, 0xf8,
+			0x8b, 0x45, 0xf8,
+			0x3b, 0x45, 0x08,
+			0x74, XX,
+			0x8d, 0x4d, 0xff,
+			0x51,
+			0x8b, 0x4d, 0x08,
+			0xe8, XX4,
+			0x50,
+			0x8d, 0x55, 0xfe,
+			0x52,
+			0x8b, 0x4d, 0xf8,
+			0xe8, XX4,
+			0x50,
+			0xe8, XX4,
+			0x83, 0xc4, 0x08,
+			0x0f, 0xb6, 0xc0,
+			0x85, 0xc0,
+			0x74, XX,
+			0x33, 0xc9,
+			0x74, XX,
+			0x6a, 0x00,
+			0x6a, 0x01};
+		auto addr = MemDbg::findBytes(BYTES, sizeof(BYTES), minAddress, maxAddress);
+		if (!addr)
+			return false;
+		HookParam hp;
+		hp.address = addr;
+		hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+		{
+			if (context->stack[1] != context->THISCALLTHIS)
+			{
+				buffer->from(((TextUnionW *)context->stack[1])->getText());
+			}
+		};
+		hp.type = USING_STRING | CODEC_UTF16;
+		return NewHook(hp, "Light.VN");
+	}
+}
 bool Lightvn::attach_function()
 {
-	return InsertLightvnHook() | _1();
+	return InsertLightvnHook() | (_1() || veryold());
 }
