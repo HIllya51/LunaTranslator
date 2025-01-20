@@ -1237,7 +1237,12 @@ class WebviewWidget(abstractwebview):
             "错误",
             "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。",
         )
-        os.startfile("https://developer.microsoft.com/microsoft-edge/webview2")
+        if int(platform.version().split(".")[0]) <= 6:
+            os.startfile(
+                "https://archive.org/download/microsoft-edge-web-view-2-runtime-installer-v109.0.1518.78"
+            )
+        else:
+            os.startfile("https://developer.microsoft.com/microsoft-edge/webview2")
 
     def __init__(self, parent=None, debug=True) -> None:
         super().__init__(parent)

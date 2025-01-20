@@ -28,8 +28,8 @@ if __name__ == "__main__":
         js = ff.read()
         js = json.loads(js)
     xxx = {
-        "en": "en",
-        "cht": "cht",
+        # "en": "en",
+        # "cht": "cht",
     }
     needpop = []
     for k in js:

@@ -17,7 +17,7 @@ class websocketserver:
 
     def __init__(self, port):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind(("localhost", port))
+        self.server_socket.bind(("0.0.0.0", port))
         self.connectedsockets = []
         self.errorsocks = []
         self.listen()

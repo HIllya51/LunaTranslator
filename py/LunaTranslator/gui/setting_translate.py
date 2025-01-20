@@ -382,7 +382,7 @@ def initsome11(self, l, label=None, btnplus=False):
                     None,
                     self,
                     "fanyicolor_" + fanyi,
-                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolors,
+                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolorstyle,
                 ),
             ),
             last,

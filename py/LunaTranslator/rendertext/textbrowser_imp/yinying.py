@@ -18,6 +18,7 @@ class CachedQGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
         self.shadow_pixmap = QPixmap()
         self.x = x
         self.savey = None  # iterappend中被移动而不需重绘
+        self.lastppppy = None
 
     def draw(self, painter):
         if self.shadow_pixmap.isNull():
@@ -31,10 +32,11 @@ class CachedQGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
             for _ in range(self.x):
                 super().draw(shadow_painter)
             self.savey = self.parent().y()
+            self.lastppppy = self.parent().parent().parent().parent().y()
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.drawPixmap(
             -int(self.parent().x()) - self.parent().movedx,  # 阿拉伯语绘制偏移
-            -self.parent().parent().parent().parent().y() - self.savey,
+            -self.lastppppy - self.savey,
             self.shadow_pixmap,
         )
 

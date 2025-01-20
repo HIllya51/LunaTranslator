@@ -56,15 +56,6 @@ def gethookgrid_em(self):
     alltrans, alltransvis = loadvalidtss()
     grids = [
         [
-            "导出翻译补丁",
-            D_getIconButton(
-                callback=lambda: exportchspatch(self),
-                icon="fa.gear",
-            ),
-            "",
-            "",
-        ],
-        [
             "显示模式",
             "",
             D_getsimplecombobox(
@@ -131,6 +122,15 @@ def gethookgrid_em(self):
                 ),
                 icon="fa.gear",
             ),
+        ],
+        [
+            "导出翻译补丁",
+            D_getIconButton(
+                callback=lambda: exportchspatch(self),
+                icon="fa.gear",
+            ),
+            "",
+            "",
         ],
     ]
 

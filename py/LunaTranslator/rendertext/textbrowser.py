@@ -388,7 +388,7 @@ class TextBrowser(QWidget, dataget):
     def setfontstyle(self):
         self.parent().refreshcontent()
 
-    def setcolors(self):
+    def setcolorstyle(self):
         self.parent().refreshcontent()
 
     def checkskip(self, texttype: TextType):
