@@ -785,9 +785,7 @@ class TextBrowser(QWidget, dataget):
                 linei += 1
         self.yinyingposline = linei
 
-    def _add_searchlabel(
-        self, isfenciclick, isshow_fenci, labeli, pos1, word, color: ColorControl
-    ):
+    def _add_searchlabel(self, isfenciclick, isshow_fenci, labeli, pos1, word, color):
         if labeli >= len(self.searchmasklabels_clicked):
             ql = QLabel(self.atback_color)
             ql.setMouseTracking(True)
@@ -813,7 +811,7 @@ class TextBrowser(QWidget, dataget):
                 gobject.baseobject.clickwordcallback, word
             )
         if isshow_fenci and color:
-            style = "background-color: {};".format(color.get())
+            style = "background-color: {};".format(color)
         else:
             style = "background:transparent"
         self.searchmasklabels[labeli].setGeometry(*pos1)
