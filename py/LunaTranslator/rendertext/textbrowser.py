@@ -381,13 +381,13 @@ class TextBrowser(QWidget, dataget):
         self.parent().refreshcontent()
 
     def showhidetranslate(self, show):
-        self.parent().refreshcontent()
+        self.parent().refreshcontent(lock=False)
 
     def showhideorigin(self, show):
-        self.parent().refreshcontent()
+        self.parent().refreshcontent(lock=False)
 
     def showhideerror(self, show):
-        self.parent().refreshcontent()
+        self.parent().refreshcontent(lock=False)
 
     def setfontstyle(self):
         self.parent().refreshcontent()
