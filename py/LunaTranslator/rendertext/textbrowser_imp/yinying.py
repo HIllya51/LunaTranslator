@@ -60,7 +60,7 @@ class TextLine(TextLabel_0):
 
         shadow2 = CachedQGraphicsDropShadowEffect_multi(self, deepth)
 
-        shadow2.setBlurRadius(width)
+        shadow2.setBlurRadius(max(1, width))
         shadow2.setOffset(0)
         shadow2.setColor(QColor(colorshadow))
         self.setGraphicsEffect(shadow2)
