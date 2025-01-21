@@ -92,8 +92,10 @@
     function maybesethtml(ele, args, text) {
         if (args.userawhtml)
             ele.innerHTML = text
-        else
+        else {
             ele.innerText = text
+            ele.style.whiteSpace = 'pre-wrap'
+        }
     }
     function createnameandtext(name, text, args) {
         let ele = document.createElement('span')
@@ -204,39 +206,12 @@
         yinying: yinying_create_internal,
         miaobian1: miaobian12_common,
     }
-    function dispatch_text_style_line(style, styleargs, name, text, args) {
-        let ele = regist_style_imp[style](styleargs, name, text, args);
-        ele.classList.add('centercontrol')
-        if (args.userawhtml) {
-            let wrap = document.createElement('div')
-            wrap.classList.add('centercontrol')
-            wrap.appendChild(ele)
-            return wrap
-        }
-        let wrap = document.createElement('div')
-        wrap.style.whiteSpace = 'pre-wrap'
-        wrap.appendChild(ele)
-        wrap.classList.add('centercontrol')
-        return wrap
-    }
     function dispatch_text_style_inlineblock(style, styleargs, text, args) {
-        let l = dispatch_text_style_line(style, styleargs, "", text, args)
+        let l = regist_style_imp[style](styleargs, name, text, args);
         let div = document.createElement('div')
         div.style.display = 'inline-block'
         div.appendChild(l)
         return div
-    }
-    function dispatch_text_style(style, styleargs, name, text, args) {
-        if (!text.includes('\n'))
-            return dispatch_text_style_line(style, styleargs, name, text, args)
-        let lines = text.split('\n')
-        let wrap = document.createElement('div')
-        let i = 0
-        lines.forEach((line, index) => {
-            wrap.appendChild(dispatch_text_style_line(style, styleargs, i == 0 ? name : "", line, args))
-            i += 1
-        })
-        return wrap
     }
 </script>
 <style id="maybeshowerror">
@@ -301,6 +276,7 @@
             divx.appendChild(div)
             div = divx
         }
+        div.classList.add('centercontrol')
         document.getElementById('luna_root_div').appendChild(div);
     }
     function create_internal_text(style, styleargsjson, _id, nameu, textu, argsjson) {
@@ -310,7 +286,7 @@
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let name = decodeURIComponent(nameu)
         let text = decodeURIComponent(textu)
-        let innerele = dispatch_text_style(style, styleargs, name, text, args)
+        let innerele = regist_style_imp[style](styleargs, name, text, args);
         ele.appendChild(innerele)
         safe_calllunaheightchange()
     }
@@ -346,7 +322,6 @@
         let isshow_fenci = args.isshow_fenci
         let isfenciclick = args.isfenciclick
         let ele = document.getElementById(_id)
-        ele.classList.add('centercontrol')
         let tags = _splittags(tag)
         tags.forEach(tag => {
             let mayberuby = []
