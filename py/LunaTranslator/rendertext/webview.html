@@ -99,10 +99,12 @@
     }
     function createnameandtext(name, text, args) {
         let ele = document.createElement('span')
+        ele.classList.add('lunatranslator_text_all')
         maybesethtml(ele, args, text)
         if (name.length) {
             let spanx = document.createElement('span')
             spanx.classList.add('lunatranslator_name')
+            spanx.classList.add('lunatranslator_text_all')
             spanx.innerText = name + " "
             let __x = document.createElement('span')
             __x.appendChild(spanx)
@@ -252,7 +254,10 @@
     }
     function create_div_line_id(_id, texttype) {
         let div = document.createElement("div");
-        div.id = _id;
+        let span = document.createElement('span')
+        span.id = _id;
+        span.classList.add('lunatranslator_text')
+        div.appendChild(span)
         if (texttype == 0) {
             div.classList.add('lunatranslator_origin')
             div.classList.add('klass_font_origin')
