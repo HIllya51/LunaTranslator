@@ -276,6 +276,8 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
+        self.customContextMenuRequested.connect(self.menunoselect)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.masklabel = QLabel(self.textbrowser)
         self.masklabel.setMouseTracking(True)
         self.masklabel.customContextMenuRequested.connect(self.menunoselect)
