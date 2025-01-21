@@ -95,9 +95,22 @@
         else
             ele.innerText = text
     }
-    function normal_create_internal(styleargs, text, args) {
+    function createnameandtext(name, text, args) {
         let ele = document.createElement('span')
         maybesethtml(ele, args, text)
+        if (name.length) {
+            let spanx = document.createElement('span')
+            spanx.classList.add('lunatranslator_name')
+            spanx.innerText = name + " "
+            let __x = document.createElement('span')
+            __x.appendChild(spanx)
+            __x.appendChild(ele)
+            ele = __x
+        }
+        return ele
+    }
+    function normal_create_internal(styleargs, name, text, args) {
+        let ele = createnameandtext(name, text, args)
         ele.style.color = `var(--${args.color})`
         return ele
     }
@@ -112,9 +125,8 @@
         }
         return `#${_id}{text-shadow:${ntimes}}`
     }
-    function yinying_create_internal(styleargs, text, args) {
-        let ele = document.createElement('span')
-        maybesethtml(ele, args, text)
+    function yinying_create_internal(styleargs, name, text, args) {
+        let ele = createnameandtext(name, text, args)
         ele.style.color = `var(--YINYING_FILLCOLOR)`
         let _id = _simpleuid()
         ele.id = _id
@@ -160,7 +172,7 @@
         }
         return innerHTML
     }
-    function miaobian12_common(styleargs, text, args) {
+    function miaobian12_common(styleargs, name, text, args) {
         let ele = document.createElement('span')
         let _id = _simpleuid()
         ele.id = _id
@@ -170,18 +182,17 @@
         style.setAttribute('__id', _id)
         style.classList.add('miaobiaostyleklass')
         ele.appendChild(style)
-        let p = document.createElement('span')
-        maybesethtml(p, args, text)
+        let p = createnameandtext(name, text, args)
         p.classList.add('nostroken')
         ele.appendChild(p)
         ele.classList.add('miaobiaostyleele')
         ele.setAttribute('__save_usehtml', args.userawhtml)
         ele.setAttribute('__save_text', text)
+        ele.setAttribute('__save_name', name)
         ele.setAttribute('__save_n', Math.round(1 + styleargs.trace * 10))
 
         for (let i = 0; i < Math.round(1 + styleargs.trace * 10); i++) {
-            let p = document.createElement('span')
-            maybesethtml(p, args, text)
+            let p = createnameandtext(name, text, args)
             p.classList.add(`stroken${i}`)
             ele.appendChild(p)
         }
@@ -194,17 +205,7 @@
         miaobian1: miaobian12_common,
     }
     function dispatch_text_style_line(style, styleargs, name, text, args) {
-        let ele = regist_style_imp[style](styleargs, text, args);
-        if (name.length) {
-            let nameele = regist_style_imp[style](styleargs, name + " ", args);
-            let spanx = document.createElement('span')
-            spanx.classList.add('lunatranslator_name')
-            spanx.appendChild(nameele)
-            let __x = document.createElement('div')
-            __x.appendChild(spanx)
-            __x.appendChild(ele)
-            ele = __x
-        }
+        let ele = regist_style_imp[style](styleargs, name, text, args);
         ele.classList.add('centercontrol')
         if (args.userawhtml) {
             let wrap = document.createElement('div')
@@ -539,13 +540,10 @@
                 else {
                     let __save_usehtml = ele.getAttribute('__save_usehtml')
                     let __save_text = ele.getAttribute('__save_text')
+                    let __save_name = ele.getAttribute('__save_name')
 
                     for (let i = __save_n; i < targetlen; i++) {
-                        let p = document.createElement('div')
-                        if (__save_usehtml)
-                            p.innerHTML = __save_text
-                        else
-                            p.innerText = __save_text
+                        let p = createnameandtext(__save_name, __save_text, { userawhtml: __save_usehtml })
                         p.classList.add(`stroken${i}`)
                         ele.appendChild(p)
                     }
