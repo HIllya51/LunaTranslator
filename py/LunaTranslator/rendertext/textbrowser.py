@@ -393,7 +393,7 @@ class TextBrowser(QWidget, dataget):
             label.maybestylechanged()
         for label in self.yinyinglabels:
             label.maybestylechanged()
-        for labels in self.iteryinyinglabelsave:
+        for labels in self.iteryinyinglabelsave.values():
             for label in labels:
                 label.maybestylechanged()
 
