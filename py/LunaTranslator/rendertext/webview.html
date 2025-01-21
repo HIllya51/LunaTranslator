@@ -191,7 +191,7 @@
         p.classList.add('nostroken')
         ele.appendChild(p)
         ele.classList.add('miaobiaostyleele')
-        ele.setAttribute('__save_usehtml', args.userawhtml)
+        ele.setAttribute('__save_args', JSON.stringify(args))
         ele.setAttribute('__save_text', text)
         ele.setAttribute('__save_name', name)
         ele.setAttribute('__save_n', Math.round(1 + styleargs.trace * 10))
@@ -517,11 +517,11 @@
                     }
                 }
                 else {
-                    let __save_usehtml = ele.getAttribute('__save_usehtml') == 'undefined'
+                    let __save_args = JSON.parse(ele.getAttribute('__save_args'))
                     let __save_text = ele.getAttribute('__save_text')
                     let __save_name = ele.getAttribute('__save_name')
                     for (let i = __save_n; i < targetlen; i++) {
-                        let p = createnameandtext(__save_name, __save_text, { userawhtml: __save_usehtml })
+                        let p = createnameandtext(__save_name, __save_text, __save_args)
                         p.classList.add(`stroken${i}`)
                         ele.appendChild(p)
                     }
