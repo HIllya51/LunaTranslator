@@ -341,16 +341,13 @@
                 eleori.classList.add(uid)
                 eleori.lineHeight = 'normal'
                 let style = document.createElement('style')
-                if (isshow_fenci)
-                    style.innerHTML += `.${uid} {
-  background-color: ${word.color};
-}`
                 if (isfenciclick) {
                     eleori.setAttribute('word', JSON.stringify(word))
                     eleori.addEventListener('click', function (e) {
                         safe_calllunaclickedword(JSON.parse(this.getAttribute('word')))
                     })
                     style.innerHTML += `.${uid} {
+    background: ${isshow_fenci ? word.color : "rgba(0,0,0,0)"};
   z-index: 2000;position: relative;
 }
   .${uid}:hover {
