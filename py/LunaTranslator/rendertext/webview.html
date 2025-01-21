@@ -378,6 +378,7 @@
     function clear_all() {
         document.getElementById('luna_root_div').innerHTML = "";
     }
+    _clear_all = clear_all //保留符号
     function setselectable(b) {
         document.getElementById('luna_root_div').style.userSelect = b ? 'text' : 'none';
         document.getElementById('luna_overlay_div').style.display = b ? 'none' : 'block';
