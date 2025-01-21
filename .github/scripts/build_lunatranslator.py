@@ -326,6 +326,7 @@ if __name__ == "__main__":
         createPluginDirs(0 if arch == "xp" else 1)
         downloadNtlea()
         downloadbass()
+        downloadluna()
         os.chdir(rootDir)
         if arch == "xp":
             downloadmecabxp()
