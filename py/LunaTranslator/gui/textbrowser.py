@@ -150,14 +150,7 @@ class Textbrowser(QFrame):
     ):
         self.trace.append((1, (iter_context_class, texttype, name, text, color)))
         self.cleared = False
-        self.textbrowser.iter_append(
-            iter_context_class, texttype, self.checkaddname(name, text), color
-        )
-
-    def checkaddname(self, name, text):
-        if name and globalconfig["showfanyisource"]:
-            text = name + " " + text
-        return text
+        self.textbrowser.iter_append(iter_context_class, texttype, name, text, color)
 
     def append(self, texttype: TextType, name, text, tag, flags, color: ColorControl):
         self.trace.append(
@@ -174,9 +167,7 @@ class Textbrowser(QFrame):
             )
         )
         self.cleared = False
-        self.textbrowser.append(
-            texttype, self.checkaddname(name, text), tag, flags, color
-        )
+        self.textbrowser.append(texttype, name, text, tag, flags, color)
 
     def clear(self):
         self.cleared = True

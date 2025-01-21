@@ -69,6 +69,7 @@ class TextBrowser(QWidget, dataget):
         self.showhideerror(globalconfig["showtranexception"])
         self.showhideorigin(globalconfig["isshowrawtext"])
         self.showhidetranslate(globalconfig["showfanyi"])
+        self.showhidename(globalconfig["showfanyisource"])
         self.showatcenter(globalconfig["showatcenter"])
         self.setfontstyle()
         self.parent().refreshcontent()
@@ -154,6 +155,9 @@ class TextBrowser(QWidget, dataget):
     def showatcenter(self, show):
         self.debugeval("showatcenter({})".format(int(show)))
 
+    def showhidename(self, show):
+        self.debugeval("showhidename({})".format(int(show)))
+
     def showhidetranslate(self, show):
         self.debugeval("showhidetranslate({})".format(int(show)))
 
@@ -169,13 +173,14 @@ class TextBrowser(QWidget, dataget):
     def clear_all(self):
         self.debugeval("clear_all()")
 
-    def create_internal_text(self, style, styleargs, _id, text, args):
+    def create_internal_text(self, style, styleargs, _id, name, text, args):
+        name = quote(name)
         text = quote(text)
         args = quote(json.dumps(args))
         styleargs = quote(json.dumps(styleargs))
         self.debugeval(
-            'create_internal_text("{}","{}","{}","{}","{}");'.format(
-                style, styleargs, _id, text, args
+            'create_internal_text("{}","{}","{}","{}","{}","{}");'.format(
+                style, styleargs, _id, name, text, args
             )
         )
 
@@ -276,7 +281,7 @@ class TextBrowser(QWidget, dataget):
         self.debugeval('setfontstyle("{}");'.format(args))
 
     def iter_append(
-        self, iter_context_class, texttype: TextType, text, color: ColorControl
+        self, iter_context_class, texttype: TextType, name, text, color: ColorControl
     ):
 
         if iter_context_class not in self.saveiterclasspointer:
@@ -284,7 +289,7 @@ class TextBrowser(QWidget, dataget):
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
-        self._webview_append(_id, text, [], [], color)
+        self._webview_append(_id, name, text, [], [], color)
 
     def createtextlineid(self, texttype: TextType):
 
@@ -292,9 +297,9 @@ class TextBrowser(QWidget, dataget):
         self.create_div_line_id(_id, texttype)
         return _id
 
-    def append(self, texttype: TextType, text, tag, flags, color: ColorControl):
+    def append(self, texttype: TextType, name, text, tag, flags, color: ColorControl):
         _id = self.createtextlineid(texttype)
-        self._webview_append(_id, text, tag, flags, color)
+        self._webview_append(_id, name, text, tag, flags, color)
 
     def measureH(self, font_family, font_size, bold):
         font = QFont()
@@ -328,7 +333,7 @@ class TextBrowser(QWidget, dataget):
         self.colorset.add(color)
         self.setcolorstyle()
 
-    def _webview_append(self, _id, text: str, tag, flags, color: ColorControl):
+    def _webview_append(self, _id, name, text: str, tag, flags, color: ColorControl):
         self._setcolors(color)
         style = self._getstylevalid()
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
@@ -349,13 +354,13 @@ class TextBrowser(QWidget, dataget):
             self.create_internal_rubytext(style, styleargs, _id, tag, args)
         else:
             sig = "LUNASHOWHTML"
-            userawhtml = sig in text
+            userawhtml = text.startswith(sig)
             if userawhtml:
-                text = text.replace(sig, "")
+                text = text[len(sig) :]
 
             args = dict(color=color.asklass(), userawhtml=userawhtml)
 
-            self.create_internal_text(style, styleargs, _id, text, args)
+            self.create_internal_text(style, styleargs, _id, name, text, args)
 
     def clear(self):
 

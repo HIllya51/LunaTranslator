@@ -376,6 +376,9 @@ class TextBrowser(QWidget, dataget):
     def showhidetranslate(self, show):
         self.parent().refreshcontent()
 
+    def showhidename(self, _):
+        self.parent().refreshcontent()
+
     def showhideorigin(self, show):
         self.parent().refreshcontent()
 
@@ -418,11 +421,17 @@ class TextBrowser(QWidget, dataget):
             i += 1
         return i
 
+    def checkaddname(self, name, text):
+        if name and globalconfig["showfanyisource"]:
+            text = name + " " + text
+        return text
+
     def iter_append(
-        self, iter_context_class, texttype: TextType, text, color: ColorControl
+        self, iter_context_class, texttype: TextType, name, text, color: ColorControl
     ):
         if self.checkskip(texttype):
             return
+        text = self.checkaddname(name, text)
         if iter_context_class not in self.saveiterclasspointer:
             self._textbrowser_append(texttype, "", [], color)
             self.saveiterclasspointer[iter_context_class] = {
@@ -466,9 +475,10 @@ class TextBrowser(QWidget, dataget):
         )
         self.cleared = False
 
-    def append(self, texttype: TextType, text, tag, flags, color: ColorControl):
+    def append(self, texttype: TextType, name, text, tag, flags, color: ColorControl):
         if self.checkskip(texttype):
             return
+        text = self.checkaddname(name, text)
         if len(tag):
             isshowhira, isshow_fenci, isfenciclick = flags
             font = self._createqfont(texttype)

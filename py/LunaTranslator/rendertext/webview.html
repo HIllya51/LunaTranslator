@@ -96,7 +96,7 @@
             ele.innerText = text
     }
     function normal_create_internal(styleargs, text, args) {
-        let ele = document.createElement('div')
+        let ele = document.createElement('span')
         maybesethtml(ele, args, text)
         ele.style.color = `var(--${args.color})`
         return ele
@@ -113,7 +113,7 @@
         return `#${_id}{text-shadow:${ntimes}}`
     }
     function yinying_create_internal(styleargs, text, args) {
-        let ele = document.createElement('div')
+        let ele = document.createElement('span')
         maybesethtml(ele, args, text)
         ele.style.color = `var(--YINYING_FILLCOLOR)`
         let _id = _simpleuid()
@@ -161,7 +161,7 @@
         return innerHTML
     }
     function miaobian12_common(styleargs, text, args) {
-        let ele = document.createElement('div')
+        let ele = document.createElement('span')
         let _id = _simpleuid()
         ele.id = _id
         let style = document.createElement('style')
@@ -170,7 +170,7 @@
         style.setAttribute('__id', _id)
         style.classList.add('miaobiaostyleklass')
         ele.appendChild(style)
-        let p = document.createElement('div')
+        let p = document.createElement('span')
         maybesethtml(p, args, text)
         p.classList.add('nostroken')
         ele.appendChild(p)
@@ -180,7 +180,7 @@
         ele.setAttribute('__save_n', Math.round(1 + styleargs.trace * 10))
 
         for (let i = 0; i < Math.round(1 + styleargs.trace * 10); i++) {
-            let p = document.createElement('div')
+            let p = document.createElement('span')
             maybesethtml(p, args, text)
             p.classList.add(`stroken${i}`)
             ele.appendChild(p)
@@ -193,8 +193,16 @@
         yinying: yinying_create_internal,
         miaobian1: miaobian12_common,
     }
-    function dispatch_text_style_line(style, styleargs, text, args) {
+    function dispatch_text_style_line(style, styleargs, name, text, args) {
         let ele = regist_style_imp[style](styleargs, text, args);
+        if (name.length) {
+            let nameele = regist_style_imp[style](styleargs, name + " ", args);
+            nameele.classList.add('lunatranslator_name')
+            let __x = document.createElement('div')
+            __x.appendChild(nameele)
+            __x.appendChild(ele)
+            ele = __x
+        }
         ele.classList.add('centercontrol')
         if (args.userawhtml) {
             let wrap = document.createElement('div')
@@ -209,19 +217,21 @@
         return wrap
     }
     function dispatch_text_style_inlineblock(style, styleargs, text, args) {
-        let l = dispatch_text_style_line(style, styleargs, text, args)
+        let l = dispatch_text_style_line(style, styleargs, "", text, args)
         let div = document.createElement('div')
         div.style.display = 'inline-block'
         div.appendChild(l)
         return div
     }
-    function dispatch_text_style(style, styleargs, _, text, args) {
+    function dispatch_text_style(style, styleargs, name, text, args) {
         if (!text.includes('\n'))
-            return dispatch_text_style_line(style, styleargs, text, args)
+            return dispatch_text_style_line(style, styleargs, name, text, args)
         let lines = text.split('\n')
         let wrap = document.createElement('div')
+        let i = 0
         lines.forEach((line, index) => {
-            wrap.appendChild(dispatch_text_style_line(style, styleargs, line, args))
+            wrap.appendChild(dispatch_text_style_line(style, styleargs, i == 0 ? name : "", line, args))
+            i += 1
         })
         return wrap
     }
@@ -232,12 +242,19 @@
 </style>
 <style id="maybeshowtranslate">
 </style>
+<style id="maybeshowname">
+</style>
 <style id="maybeshowatcenter"></style>
 <style id="styleforfont"></style>
 <script>
     function showatcenter(center) {
         let css = ['', '.centercontrol{ text-align: center; }'][center]
         document.getElementById('maybeshowatcenter').innerHTML = css;
+        safe_calllunaheightchange()
+    }
+    function showhidename(show) {
+        let css = ['.lunatranslator_name{   display: none;    }', '.lunatranslator_name{}'][show]
+        document.getElementById('maybeshowname').innerHTML = css;
         safe_calllunaheightchange()
     }
     function showhidetranslate(show) {
@@ -283,13 +300,14 @@
         }
         document.getElementById('luna_root_div').appendChild(div);
     }
-    function create_internal_text(style, styleargsjson, _id, textu, argsjson) {
+    function create_internal_text(style, styleargsjson, _id, nameu, textu, argsjson) {
         let ele = document.getElementById(_id)
         ele.innerHTML = ''
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
+        let name = decodeURIComponent(nameu)
         let text = decodeURIComponent(textu)
-        let innerele = dispatch_text_style(style, styleargs, "", text, args)
+        let innerele = dispatch_text_style(style, styleargs, name, text, args)
         ele.appendChild(innerele)
         safe_calllunaheightchange()
     }

@@ -468,7 +468,7 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
             D_getsimpleswitch(
                 globalconfig,
                 "showfanyisource",
-                callback=lambda x: gobject.baseobject.translation_ui.translate_text.refreshcontent(),
+                callback=gobject.baseobject.translation_ui.translate_text.textbrowser.showhidename,
             ),
             "",
             "使用翻译缓存",
