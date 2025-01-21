@@ -6,7 +6,7 @@ from myutils.utils import threader
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import tryprint, threader
 from gui.usefulwidget import WebviewWidget
-from gui.textbrowser import TextType, ColorControl, SpecialColor
+from gui.textbrowser import TextType, ColorControl, SpecialColor, FenciColor
 
 testsavejs = False
 
@@ -71,6 +71,8 @@ class TextBrowser(QWidget, dataget):
         self.showhidetranslate(globalconfig["showfanyi"])
         self.showhidename(globalconfig["showfanyisource"])
         self.showatcenter(globalconfig["showatcenter"])
+        self.showhideclick()
+        self.showhidert(globalconfig["isshowhira"])
         self.setfontstyle()
         self.parent().refreshcontent()
 
@@ -157,6 +159,13 @@ class TextBrowser(QWidget, dataget):
 
     def showatcenter(self, show):
         self.debugeval("showatcenter({})".format(int(show)))
+
+    def showhidert(self, show):
+        self.debugeval("showhidert({})".format(int(show)))
+
+    def showhideclick(self, _=None):
+        show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
+        self.debugeval("showhideclick({})".format(int(show)))
 
     def showhidename(self, show):
         self.debugeval("showhidename({})".format(int(show)))
@@ -292,7 +301,7 @@ class TextBrowser(QWidget, dataget):
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
-        self._webview_append(_id, name, text, [], [], color)
+        self._webview_append(_id, name, text, [], color)
 
     def createtextlineid(self, texttype: TextType):
 
@@ -300,9 +309,9 @@ class TextBrowser(QWidget, dataget):
         self.create_div_line_id(_id, texttype)
         return _id
 
-    def append(self, texttype: TextType, name, text, tag, flags, color: ColorControl):
+    def append(self, texttype: TextType, name, text, tag, _, color: ColorControl):
         _id = self.createtextlineid(texttype)
-        self._webview_append(_id, name, text, tag, flags, color)
+        self._webview_append(_id, name, text, tag, color)
 
     def measureH(self, font_family, font_size, bold):
         font = QFont()
@@ -321,7 +330,7 @@ class TextBrowser(QWidget, dataget):
             ]["webview"][0]
         return currenttype
 
-    def setcolorstyle(self):
+    def setcolorstyle(self, _=None):
         mp = {}
         for color in self.colorset:
             mp[color.asklass()] = color.get()
@@ -336,23 +345,19 @@ class TextBrowser(QWidget, dataget):
         self.colorset.add(color)
         self.setcolorstyle()
 
-    def _webview_append(self, _id, name, text: str, tag, flags, color: ColorControl):
+    def _webview_append(self, _id, name, text: str, tag, color: ColorControl):
         self._setcolors(color)
         style = self._getstylevalid()
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
         if len(tag):
-            isshowhira, isshow_fenci, isfenciclick = flags
-            if isshow_fenci:
-                for word in tag:
-                    color1 = self._randomcolor(word)
-                    word["color"] = color1
+            for word in tag:
+                color1 = FenciColor(word)
+                word["color"] = color1.asklass()
+                self._setcolors(color1)
             self._setcolors(SpecialColor.KanaColor)
             args = dict(
                 color=color.asklass(),
                 kanacolor=SpecialColor.KanaColor.asklass(),
-                isshowhira=isshowhira,
-                isshow_fenci=isshow_fenci,
-                isfenciclick=isfenciclick,
             )
             self.create_internal_rubytext(style, styleargs, _id, tag, args)
         else:

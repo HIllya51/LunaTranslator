@@ -285,9 +285,9 @@ class MAINUI:
         if globalconfig["showfanyi"]:
             if not self.thishastranslated:
                 self.textgetmethod(self.currenttext, is_auto_run=False)
-            self.translation_ui.translate_text.textbrowser.showhidetranslate(True)
+            self.translation_ui.translate_text.showhidetranslate(True)
         else:
-            self.translation_ui.translate_text.textbrowser.showhidetranslate(False)
+            self.translation_ui.translate_text.showhidetranslate(False)
 
     def textgetmethod(
         self,

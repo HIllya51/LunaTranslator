@@ -768,10 +768,13 @@ class multicolorset(LDialog):
         _hori = QHBoxLayout()
         l = LLabel("不透明度")
         _hori.addWidget(l)
-        _s = FocusSpin()
-        _s.setValue(globalconfig["showcixing_touming"])
-        _s.setMinimum(1)
-        _s.setMaximum(100)
+        _s = getspinbox(
+            1,
+            100,
+            d=globalconfig,
+            key="showcixing_touming",
+            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+        )
         _hori.addWidget(_s)
         formLayout.addRow(_hori)
         _s.valueChanged.connect(
@@ -788,9 +791,10 @@ class multicolorset(LDialog):
 
             hori.addWidget(l)
 
-            b = MySwitch(sign=globalconfig["cixingcolorshow"][k])
-            b.clicked.connect(
-                functools.partial(globalconfig["cixingcolorshow"].__setitem__, k)
+            b = getsimpleswitch(
+                d=globalconfig["cixingcolorshow"],
+                key=k,
+                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
             )
 
             p = getcolorbutton(
@@ -801,7 +805,14 @@ class multicolorset(LDialog):
             )
 
             p.clicked.connect(
-                functools.partial(selectcolor, self, globalconfig["cixingcolor"], k, p)
+                functools.partial(
+                    selectcolor,
+                    self,
+                    globalconfig["cixingcolor"],
+                    k,
+                    p,
+                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                )
             )
             hori.addWidget(b)
             hori.addWidget(p)

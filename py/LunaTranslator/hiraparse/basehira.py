@@ -11,6 +11,10 @@ roma_s=["a","i","u","e","o","ka","ki","ku","ke","ko","sa","shi","su","se","so","
 # fmt: on
 
 
+castkata2hira = str.maketrans(allkata, allhira)
+casthira2kata = str.maketrans(allhira, allkata)
+
+
 class basehira:
     def init(self):
         pass
@@ -20,8 +24,6 @@ class basehira:
 
     def __init__(self, typename) -> None:
         self.typename = typename
-        self.castkata2hira = str.maketrans(allkata, allhira)
-        self.casthira2kata = str.maketrans(allhira, allkata)
         self.needinit = True
         self.init()
         self.needinit = False
@@ -87,13 +89,16 @@ class basehira:
             __parsekonge.append(word)
             if len(end):
                 __parsekonge.append({"orig": end, "hira": end})
-        hira = __parsekonge
+        return __parsekonge
+
+    @staticmethod
+    def parseastarget(hira):
         for _1 in range(len(hira)):
             _ = len(hira) - 1 - _1
             if globalconfig["hira_vis_type"] == 0:
-                hira[_]["hira"] = hira[_]["hira"].translate(self.castkata2hira)
+                hira[_]["hira"] = hira[_]["hira"].translate(castkata2hira)
             elif globalconfig["hira_vis_type"] == 1:
-                hira[_]["hira"] = hira[_]["hira"].translate(self.casthira2kata)
+                hira[_]["hira"] = hira[_]["hira"].translate(casthira2kata)
             elif globalconfig["hira_vis_type"] == 2:
                 __kanas = [hira_s, kata_s]
                 target = roma_s
@@ -103,5 +108,4 @@ class basehira:
                         hira[_]["hira"] = hira[_]["hira"].replace(
                             _ka[_reverse_idx], target[_reverse_idx]
                         )
-
         return hira

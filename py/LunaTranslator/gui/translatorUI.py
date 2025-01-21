@@ -984,7 +984,7 @@ class TranslatorWindow(resizableframeless):
         self.translate_text.move(0, 0)
         self.translate_text.dropfilecallback.connect(self.dropfilecallback)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
-        self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
+        self.translate_text.setselectable(globalconfig["selectable"])
         self.titlebar.raise_()
         t = QTimer(self)
         t.setInterval(25)
@@ -1019,7 +1019,7 @@ class TranslatorWindow(resizableframeless):
             gobject.baseobject.settin_ui.selectable_btn.clicksignal.emit()
         except:
             globalconfig["selectable"] = not globalconfig["selectable"]
-            self.translate_text.textbrowser.setselectable(globalconfig["selectable"])
+            self.translate_text.setselectable(globalconfig["selectable"])
             self.refreshtoolicon()
 
     def createborderradiusstring(self, r, merge, top=False):
@@ -1217,9 +1217,7 @@ class TranslatorWindow(resizableframeless):
         except:
             globalconfig["isshowrawtext"] = not globalconfig["isshowrawtext"]
             self.refreshtoolicon()
-            self.translate_text.textbrowser.showhideorigin(
-                globalconfig["isshowrawtext"]
-            )
+            self.translate_text.showhideorigin(globalconfig["isshowrawtext"])
             try:
                 gobject.baseobject.settin_ui.fenyinsettings.setEnabled(
                     globalconfig["isshowrawtext"]

@@ -169,10 +169,6 @@ def initinternal(self, names):
     return cishugrid
 
 
-def mayberealtimesetfont(_=None):
-    gobject.baseobject.translation_ui.translate_text.textbrowser.setfontstyle()
-
-
 def setTabcishu_l(self):
 
     grids_1 = [
@@ -233,7 +229,11 @@ def setTabcishu_l(self):
                     grid=(
                         [
                             "显示注音",
-                            D_getsimpleswitch(globalconfig, "isshowhira"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "isshowhira",
+                                callback=gobject.baseobject.translation_ui.translate_text.showhidert,
+                            ),
                             "",
                             "颜色",
                             D_getcolorbutton(
@@ -244,7 +244,7 @@ def setTabcishu_l(self):
                                     globalconfig,
                                     "jiamingcolor",
                                     self.jiamingcolor_b,
-                                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolorstyle,
+                                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                                 ),
                                 name="jiamingcolor_b",
                                 parent=self,
@@ -258,7 +258,7 @@ def setTabcishu_l(self):
                                 "kanarate",
                                 double=True,
                                 step=0.05,
-                                callback=mayberealtimesetfont,
+                                callback=gobject.baseobject.translation_ui.translate_text.setfontstyle,
                             ),
                         ],
                         [
@@ -271,10 +271,15 @@ def setTabcishu_l(self):
                                 ],
                                 globalconfig,
                                 "hira_vis_type",
+                                callback=lambda _: gobject.baseobject.translation_ui.translate_text.refreshcontent(),
                             ),
                             "",
                             "语法加亮",
-                            D_getsimpleswitch(globalconfig, "show_fenci"),
+                            D_getsimpleswitch(
+                                globalconfig,
+                                "show_fenci",
+                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                            ),
                             "",
                             "词性颜色",
                             D_getIconButton(
@@ -312,14 +317,22 @@ def setTabcishu_l(self):
                         [
                             "点击单词查词",
                             (
-                                D_getsimpleswitch(globalconfig, "usesearchword"),
+                                D_getsimpleswitch(
+                                    globalconfig,
+                                    "usesearchword",
+                                    callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                ),
                                 1,
                             ),
                             "",
                             "",
                             "点击单词复制",
                             (
-                                D_getsimpleswitch(globalconfig, "usecopyword"),
+                                D_getsimpleswitch(
+                                    globalconfig,
+                                    "usecopyword",
+                                    callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                ),
                                 1,
                             ),
                             "",

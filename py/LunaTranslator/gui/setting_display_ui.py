@@ -275,7 +275,7 @@ def uisetting(self, l):
 
 def __changeselectablestate(self, x):
     gobject.baseobject.translation_ui.refreshtoolicon()
-    gobject.baseobject.translation_ui.translate_text.textbrowser.setselectable(x)
+    gobject.baseobject.translation_ui.translate_text.setselectable(x)
 
 
 def mainuisetting(self):

@@ -90,8 +90,9 @@
         return 'luna' + Math.random().toString(36).substr(2, 9);
     }
     function maybesethtml(ele, args, text) {
-        if (args.userawhtml)
+        if (args.userawhtml) {
             ele.innerHTML = text
+        }
         else {
             ele.innerText = text
             ele.style.whiteSpace = 'pre-wrap'
@@ -200,7 +201,7 @@
             p.classList.add(`stroken${i}`)
             ele.appendChild(p)
         }
-        return ele
+        return makeinlineblock(ele)
 
     }
     regist_style_imp = {
@@ -223,12 +224,34 @@
 </style>
 <style id="maybeshowname">
 </style>
+<style id="maybeshowrt">
+</style>
+<style id="maybeshowclick">
+</style>
 <style id="maybeshowatcenter"></style>
 <style id="styleforfont"></style>
 <script>
     function showatcenter(center) {
         let css = ['', '.centercontrol{ text-align: center; }'][center]
         document.getElementById('maybeshowatcenter').innerHTML = css;
+        safe_calllunaheightchange()
+    }
+    function showhidert(show) {
+        let css = ['.lunatranslator_rt{   display: none;    }', '.lunatranslator_rt{}'][show]
+        document.getElementById('maybeshowrt').innerHTML = css;
+        safe_calllunaheightchange()
+    }
+    function showhideclick(show) {
+        let css = ['', `
+    .lunatranslator_clickword {
+        z-index: 2000;
+        position: relative;
+    }
+
+    .lunatranslator_clickword:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+    }  `][show]
+        document.getElementById('maybeshowclick').innerHTML = css;
         safe_calllunaheightchange()
     }
     function showhidename(show) {
@@ -322,9 +345,6 @@
         let tags = JSON.parse(decodeURIComponent(tagjson))
         let color = args.color
         let kanacolor = args.kanacolor
-        let isshowhira = args.isshowhira
-        let isshow_fenci = args.isshow_fenci
-        let isfenciclick = args.isfenciclick
         let ele = document.getElementById(_id)
         tags.forEach(word => {
             if (word.orig == '\n') {
@@ -333,36 +353,33 @@
             }
             let eleori = regist_style_imp[style](styleargs, '', word.orig, { color: color })
             eleori = makeinlineblock(eleori)//使其他字体和描边字体的对齐一致
-            if ((isshow_fenci || isfenciclick) && word.hira.trim().length) {
-                let uid = _simpleuid()
-                let mark = document.createElement('mark')
-                mark.appendChild(eleori)
-                eleori = mark
-                eleori.classList.add(uid)
-                eleori.lineHeight = 'normal'
-                let style = document.createElement('style')
-                if (isfenciclick) {
-                    eleori.setAttribute('word', JSON.stringify(word))
-                    eleori.addEventListener('click', function (e) {
-                        safe_calllunaclickedword(JSON.parse(this.getAttribute('word')))
-                    })
-                    style.innerHTML += `.${uid} {
-    background: ${isshow_fenci ? word.color : "rgba(0,0,0,0)"};
-  z-index: 2000;position: relative;
-}
-  .${uid}:hover {
-  background-color: rgba(0,0,0,0.5);  
-}`
-                }
-                eleori.appendChild(style)
+            if (!word.hira.trim().length) {
+                ele.appendChild(eleori)
+                return
             }
-            if (isshowhira && (word.orig != word.hira) && (word.hira.trim().length)) {
+            let uid = _simpleuid()
+            let mark = document.createElement('mark')
+            mark.appendChild(eleori)
+            eleori = mark
+            eleori.classList.add(uid)
+            let style1 = document.createElement('style')
+            style1.innerHTML += `.${uid} {background: var(--${word.color}); } `
+
+            eleori.setAttribute('word', JSON.stringify(word))
+            eleori.addEventListener('click', function (e) {
+                safe_calllunaclickedword(JSON.parse(this.getAttribute('word')))
+            })
+            eleori.classList.add('lunatranslator_clickword')
+            eleori.appendChild(style1)
+
+            if ((word.orig != word.hira) && (word.hira.trim().length)) {
 
                 let ruby = document.createElement('ruby')
                 ruby.appendChild(eleori)
                 let rt = document.createElement('rt')
                 rt.appendChild(makeinlineblock(regist_style_imp[style](styleargs, '', word.hira, { color: kanacolor })))
                 rt.classList.add('klass_font_hira')
+                rt.classList.add('lunatranslator_rt')
                 ruby.appendChild(rt)
                 eleori = ruby
             }
@@ -500,10 +517,9 @@
                     }
                 }
                 else {
-                    let __save_usehtml = ele.getAttribute('__save_usehtml')
+                    let __save_usehtml = ele.getAttribute('__save_usehtml') == 'undefined'
                     let __save_text = ele.getAttribute('__save_text')
                     let __save_name = ele.getAttribute('__save_name')
-
                     for (let i = __save_n; i < targetlen; i++) {
                         let p = createnameandtext(__save_name, __save_text, { userawhtml: __save_usehtml })
                         p.classList.add(`stroken${i}`)

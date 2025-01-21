@@ -382,7 +382,7 @@ def initsome11(self, l, label=None, btnplus=False):
                     None,
                     self,
                     "fanyicolor_" + fanyi,
-                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolorstyle,
+                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                 ),
             ),
             last,
@@ -468,7 +468,7 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
             D_getsimpleswitch(
                 globalconfig,
                 "showfanyisource",
-                callback=gobject.baseobject.translation_ui.translate_text.textbrowser.showhidename,
+                callback=gobject.baseobject.translation_ui.translate_text.showhidename,
             ),
             "",
             "使用翻译缓存",

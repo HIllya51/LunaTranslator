@@ -5,7 +5,7 @@ import gobject, functools, importlib, winsharedutils
 from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
-from gui.textbrowser import TextType, ColorControl, SpecialColor
+from gui.textbrowser import TextType, ColorControl, SpecialColor, FenciColor
 
 
 class Qlabel_c(QLabel):
@@ -51,6 +51,26 @@ class Qlabel_c(QLabel):
             pass
         self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
         return super().leaveEvent(a0)
+
+
+class FenciQLabel(QLabel):
+    def __init__(self, *argc, **kw):
+        self.last = None
+        self.color = None
+        super().__init__(*argc, **kw)
+
+    def setColor(self, color: ColorControl):
+        style = "background-color: {};".format(color.get())
+        self.last = color.get()
+        self.color = color
+        self.setStyleSheet(style)
+
+    def maybestylechanged(self):
+        if not self.isVisible():
+            return
+        if self.last == self.color.get():
+            return
+        self.setColor(self.color)
 
 
 class QTextBrowser_1(QTextEdit):
@@ -132,7 +152,7 @@ class QTextBrowser_1(QTextEdit):
             except:
                 pass
         targetlabel = self.getcurrlabel(ev)
-        if targetlabel:
+        if targetlabel and targetlabel.isVisible():
             try:
                 targetlabel.refmask.setStyleSheet("background-color: rgba(0,0,0,0.5);")
                 targetlabel.company.refmask.setStyleSheet(
@@ -233,6 +253,7 @@ class TextBrowser(QWidget, dataget):
         self.savetaglabels = []
         self.searchmasklabels_clicked = []
         self.searchmasklabels_clicked2 = []
+        self.searchmasklabels_clicked_num = 0
         self.searchmasklabels = []
         self.backcolorlabels = []
         self.showatcenterflag = globalconfig["showatcenter"]
@@ -309,7 +330,7 @@ class TextBrowser(QWidget, dataget):
         self.currentclass = functools.partial(__.TextLine, self.currenttype)
 
     def resets(self):
-
+        self.searchmasklabels_clicked_num = 0
         for label in self.searchmasklabels:
             label.hide()
         for label in self.searchmasklabels_clicked:
@@ -376,6 +397,9 @@ class TextBrowser(QWidget, dataget):
     def showhidetranslate(self, show):
         self.parent().refreshcontent()
 
+    def showhidert(self, _):
+        pass
+
     def showhidename(self, _):
         self.parent().refreshcontent()
 
@@ -391,7 +415,9 @@ class TextBrowser(QWidget, dataget):
     def resetstyle(self):
         self.parent().refreshcontent()
 
-    def setcolorstyle(self):
+    def setcolorstyle(self, _=None):
+        for label in self.searchmasklabels:
+            label.maybestylechanged()
         for label in self.savetaglabels:
             label.maybestylechanged()
         for label in self.yinyinglabels:
@@ -480,7 +506,7 @@ class TextBrowser(QWidget, dataget):
             return
         text = self.checkaddname(name, text)
         if len(tag):
-            isshowhira, isshow_fenci, isfenciclick = flags
+            isshowhira, _, _ = flags
             font = self._createqfont(texttype)
             textlines, linetags = self._splitlinestags(font, tag, text)
             text = "\n".join(textlines)
@@ -489,8 +515,8 @@ class TextBrowser(QWidget, dataget):
         else:
             tagshow = []
         self._textbrowser_append(texttype, text, tagshow, color)
-        if len(tag) and (isshow_fenci or isfenciclick):
-            self.addsearchwordmask(isshow_fenci, isfenciclick, tag)
+        if len(tag):
+            self.addsearchwordmask(tag)
         self.cleared = False
 
     def _getqalignment(self, atcenter):
@@ -801,9 +827,9 @@ class TextBrowser(QWidget, dataget):
                 linei += 1
         self.yinyingposline = linei
 
-    def _add_searchlabel(self, isfenciclick, isshow_fenci, labeli, pos1, word, color):
+    def _add_searchlabel(self, labeli, pos1, word, color: ColorControl):
         if labeli >= len(self.searchmasklabels_clicked):
-            ql = QLabel(self.atback_color)
+            ql = FenciQLabel(self.atback_color)
             ql.setMouseTracking(True)
             self.searchmasklabels.append(ql)
             ql_1 = QLabel(ql)
@@ -815,26 +841,31 @@ class TextBrowser(QWidget, dataget):
             ql.setMouseTracking(True)
             ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
             self.searchmasklabels_clicked2.append(ql)
-        if isfenciclick:
-            self.searchmasklabels_clicked[labeli].setGeometry(0, 0, pos1[2], pos1[3])
-            self.searchmasklabels_clicked[labeli].show()
-            self.searchmasklabels_clicked[labeli].callback = functools.partial(
-                gobject.baseobject.clickwordcallback, word
-            )
-            self.searchmasklabels_clicked2[labeli].setGeometry(*pos1)
-            self.searchmasklabels_clicked2[labeli].show()
-            self.searchmasklabels_clicked2[labeli].callback = functools.partial(
-                gobject.baseobject.clickwordcallback, word
-            )
-        if isshow_fenci and color:
-            style = "background-color: {};".format(color)
-        else:
-            style = "background:transparent"
+        self.searchmasklabels_clicked[labeli].setGeometry(0, 0, pos1[2], pos1[3])
+        self.searchmasklabels_clicked[labeli].callback = functools.partial(
+            gobject.baseobject.clickwordcallback, word
+        )
+        self.searchmasklabels_clicked2[labeli].setGeometry(*pos1)
+        self.searchmasklabels_clicked2[labeli].callback = functools.partial(
+            gobject.baseobject.clickwordcallback, word
+        )
         self.searchmasklabels[labeli].setGeometry(*pos1)
-        self.searchmasklabels[labeli].setStyleSheet(style)
-        self.searchmasklabels[labeli].show()
+        self.searchmasklabels[labeli].setColor(color)
+        self.showhideclick_i(labeli)
 
-    def addsearchwordmask(self, isshow_fenci, isfenciclick, x):
+    def showhideclick(self, _=None):
+        show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
+        for i in range(self.searchmasklabels_clicked_num):
+            self.searchmasklabels_clicked[i].setVisible(show)
+            self.searchmasklabels_clicked2[i].setVisible(show)
+
+    def showhideclick_i(self, i):
+        show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
+        self.searchmasklabels_clicked[i].setVisible(show)
+        self.searchmasklabels_clicked2[i].setVisible(show)
+        self.searchmasklabels[i].setVisible(True)
+
+    def addsearchwordmask(self, x):
         if len(x) == 0:
             return
         pos = 0
@@ -855,10 +886,10 @@ class TextBrowser(QWidget, dataget):
             if len(word["hira"].strip()) == 0:
                 continue
             tl2 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
-            color = self._randomcolor(word)
+            color = FenciColor(word)
             dyna_h = int((heigth + tl2.y() - tl1.y()) / 2)
-            pos1 = tl1.x() + 1, tl1.y(), tl2.x() - tl1.x() - 2, dyna_h
-            self._add_searchlabel(isfenciclick, isshow_fenci, labeli, pos1, word, color)
+            pos1 = tl1.x(), tl1.y(), tl2.x() - tl1.x(), dyna_h
+            self._add_searchlabel(labeli, pos1, word, color)
             if word.get("ref", False):
                 self.searchmasklabels_clicked[labeli - 1].company = (
                     self.searchmasklabels_clicked[labeli]
@@ -876,6 +907,7 @@ class TextBrowser(QWidget, dataget):
                 self.searchmasklabels_clicked[labeli].company = None
                 self.searchmasklabels_clicked2[labeli].company = None
             labeli += 1
+            self.searchmasklabels_clicked_num += 1
 
     def _getfh(self, half, texttype: TextType = TextType.Origin, getfm=False):
 

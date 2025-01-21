@@ -30,7 +30,7 @@ from gui.dynalang import LPushButton, LFormLayout
 
 def __changeuibuttonstate(self, x):
     gobject.baseobject.translation_ui.refreshtoolicon()
-    gobject.baseobject.translation_ui.translate_text.textbrowser.showhideorigin(x)
+    gobject.baseobject.translation_ui.translate_text.showhideorigin(x)
     try:
         self.fenyinsettings.setEnabled(x)
     except:
@@ -38,11 +38,11 @@ def __changeuibuttonstate(self, x):
 
 
 def changeshowerrorstate(self, x):
-    gobject.baseobject.translation_ui.translate_text.textbrowser.showhideerror(x)
+    gobject.baseobject.translation_ui.translate_text.showhideerror(x)
 
 
 def mayberealtimesetfont(_=None):
-    gobject.baseobject.translation_ui.translate_text.textbrowser.setfontstyle()
+    gobject.baseobject.translation_ui.translate_text.setfontstyle()
 
 
 def createtextfontcom(key):
@@ -99,15 +99,11 @@ class extrahtml(saveposwindow):
         self.show()
 
 
-def mayberefreshe():
-    gobject.baseobject.translation_ui.translate_text.textbrowser.setcolorstyle()
-
-
 def createinternalfontsettings(self, forml: LFormLayout, group, _type):
     need = globalconfig["rendertext_using_internal"][group] != _type
     globalconfig["rendertext_using_internal"][group] = _type
     if need:
-        gobject.baseobject.translation_ui.translate_text.textbrowser.resetstyle()
+        gobject.baseobject.translation_ui.translate_text.resetstyle()
     __internal = globalconfig["rendertext"][group][_type]
     dd = __internal.get("args", {})
 
@@ -136,7 +132,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                                 keyx,
                                 True,
                                 widthline.get("step", 0.1),
-                                callback=lambda _: mayberefreshe(),
+                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                             ),
                             __,
                             getspinbox(
@@ -146,7 +142,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                                 key,
                                 True,
                                 line.get("step", 0.1),
-                                callback=lambda _: mayberefreshe(),
+                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                             ),
                         ]
                     ),
@@ -164,7 +160,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                         dd,
                         key,
                         self.miaobian_color_button,
-                        callback=mayberefreshe,
+                        callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                     ),
                     dd,
                     key,
@@ -180,16 +176,15 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 key,
                 _type == "spin",
                 line.get("step", 0.1),
-                callback=lambda _: mayberefreshe(),
+                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
             )
         elif _type == "switch":
-            lineW = MySwitch(sign=dd[key])
+            lineW = getsimpleswitch(
+                d=dd,
+                key=key,
+                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+            )
 
-            def __(dd, key, x):
-                dd[key] = x
-                mayberefreshe()
-
-            lineW.clicked.connect(functools.partial(__, dd, key))
         forml.addRow(
             name,
             lineW,
@@ -352,7 +347,7 @@ def xianshigrid_style(self):
                                                     globalconfig,
                                                     "rawtextcolor",
                                                     self.original_color_button,
-                                                    callback=gobject.baseobject.translation_ui.translate_text.textbrowser.setcolorstyle,
+                                                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                                                 ),
                                                 name="original_color_button",
                                                 parent=self,
@@ -433,9 +428,7 @@ def xianshigrid_style(self):
                             D_getsimpleswitch(
                                 globalconfig,
                                 "showatcenter",
-                                callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.showatcenter(
-                                    x
-                                ),
+                                callback=gobject.baseobject.translation_ui.translate_text.showatcenter,
                             ),
                             "",
                             "收到翻译时才刷新",
