@@ -209,7 +209,7 @@
         miaobian1: miaobian12_common,
     }
     function dispatch_text_style_inlineblock(style, styleargs, text, args) {
-        let l = regist_style_imp[style](styleargs, name, text, args);
+        let l = regist_style_imp[style](styleargs, '', text, args);
         let div = document.createElement('div')
         div.style.display = 'inline-block'
         div.appendChild(l)
