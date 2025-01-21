@@ -665,7 +665,7 @@ class TextBrowser(QWidget, dataget):
         self.textcursor.removeSelectedText()
 
     def _showyinyingtext2(
-        self, color: ColorControl, iter_context_class, pos, text, font
+        self, color: ColorControl, iter_context_class, pos, text, font: QFont
     ):
         if iter_context_class not in self.iteryinyinglabelsave:
             self.iteryinyinglabelsave[iter_context_class] = []
@@ -698,7 +698,7 @@ class TextBrowser(QWidget, dataget):
                     self.currentclass(self.toplabel2)
                 )
             _ = self.iteryinyinglabelsave[iter_context_class][i]
-            if _.text() != subtext[i]:
+            if (_.text() != subtext[i]) or (_.font().toString != font.toString()):
                 _.setColor(color)
                 _.setText(subtext[i])
                 _.setFont(font)
