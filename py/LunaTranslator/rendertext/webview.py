@@ -265,7 +265,7 @@ class TextBrowser(QWidget, dataget):
                 fontFamily=fm,
                 fontSize=fs,
                 bold=bold,
-                lineHeight=max(1, self.measureH(*argc) + extra),
+                extra=extra,
             )
 
         args = dict(

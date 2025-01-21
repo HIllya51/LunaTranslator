@@ -138,7 +138,7 @@
          #${_id}{
     display: grid;
     }
-        #${_id} div{ 
+        #${_id} span{ 
   margin: 0;
   grid-column: 1;
   grid-row: 1;
@@ -197,9 +197,11 @@
         let ele = regist_style_imp[style](styleargs, text, args);
         if (name.length) {
             let nameele = regist_style_imp[style](styleargs, name + " ", args);
-            nameele.classList.add('lunatranslator_name')
+            let spanx = document.createElement('span')
+            spanx.classList.add('lunatranslator_name')
+            spanx.appendChild(nameele)
             let __x = document.createElement('div')
-            __x.appendChild(nameele)
+            __x.appendChild(spanx)
             __x.appendChild(ele)
             ele = __x
         }
@@ -466,17 +468,29 @@
         document.getElementById('luna_overlay_div').style.cursor = cursor
 
     }
+    function measureheight(t, args) {
+        let span = document.createElement('span')
+        document.body.appendChild(span)
+        span.classList.add(t)
+        span.innerHTML += "<br>";
+        //字体大小为小数时，offsetheight有舍入误差
+        let lineHeight = args.extra ? (span.offsetHeight + args.extra + 'px') : 'normal'
+        document.body.removeChild(span)
+        document.getElementById('styleforfont').innerHTML += `.${t} span{
+        line-height: ${lineHeight};
+        }
+        `
+    }
     function _setfontstyle_which(t, args) {
         let fontFamily = args.fontFamily
         let fontSize = args.fontSize
         let bold = args.bold
-        let lineHeight = args.lineHeight
         return `.${t}{
         font-size: ${fontSize}pt;
         font-family: ${fontFamily};
-        ${bold ? "font-weight: bold;" : ""}
-        line-height: ${lineHeight}px;
-        }`
+        ${bold ? "font-weight: bold;" : ""} 
+        }
+        `
     }
     function setfontstyle(argsjson) {
         let args = JSON.parse(decodeURIComponent(argsjson))
@@ -484,6 +498,9 @@
         style += _setfontstyle_which('klass_font_trans', args.trans)
         style += _setfontstyle_which('klass_font_hira', args.hira)
         document.getElementById('styleforfont').innerHTML = style
+        measureheight('klass_font_origin', args.origin)
+        measureheight('klass_font_trans', args.trans)
+        measureheight('klass_font_hira', args.hira)
         safe_calllunaheightchange()
     }
     function yinying_dynamic(styleargs) {
