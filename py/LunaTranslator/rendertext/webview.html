@@ -208,11 +208,10 @@
         yinying: yinying_create_internal,
         miaobian1: miaobian12_common,
     }
-    function dispatch_text_style_inlineblock(style, styleargs, text, args) {
-        let l = regist_style_imp[style](styleargs, '', text, args);
+    function makeinlineblock(ele) {
         let div = document.createElement('div')
         div.style.display = 'inline-block'
-        div.appendChild(l)
+        div.appendChild(ele)
         return div
     }
 </script>
@@ -327,45 +326,45 @@
         let isshow_fenci = args.isshow_fenci
         let isfenciclick = args.isfenciclick
         let ele = document.getElementById(_id)
-
         tags.forEach(word => {
             if (word.orig == '\n') {
                 ele.appendChild(document.createElement('br'))
                 return
             }
-            let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { color: color })
-
+            let eleori = regist_style_imp[style](styleargs, '', word.orig, { color: color })
+            eleori = makeinlineblock(eleori)//使其他字体和描边字体的对齐一致
             if ((isshow_fenci || isfenciclick) && word.hira.trim().length) {
-                let div = document.createElement('div')
-                div.style.display = 'inline-block'
-                div.id = _simpleuid()
+                let uid = _simpleuid()
+                let mark = document.createElement('mark')
+                mark.appendChild(eleori)
+                eleori = mark
+                eleori.classList.add(uid)
+                eleori.lineHeight = 'normal'
                 let style = document.createElement('style')
                 if (isshow_fenci)
-                    style.innerHTML += `#${div.id} {
+                    style.innerHTML += `.${uid} {
   background-color: ${word.color};
 }`
                 if (isfenciclick) {
-                    div.setAttribute('word', JSON.stringify(word))
-                    div.addEventListener('click', function (e) {
+                    eleori.setAttribute('word', JSON.stringify(word))
+                    eleori.addEventListener('click', function (e) {
                         safe_calllunaclickedword(JSON.parse(this.getAttribute('word')))
                     })
-                    style.innerHTML += `#${div.id} {
+                    style.innerHTML += `.${uid} {
   z-index: 2000;position: relative;
 }
-  #${div.id}:hover {
+  .${uid}:hover {
   background-color: rgba(0,0,0,0.5);  
 }`
                 }
-                div.appendChild(style)
-                div.appendChild(eleori)
-                eleori = div
+                eleori.appendChild(style)
             }
             if (isshowhira && (word.orig != word.hira) && (word.hira.trim().length)) {
 
                 let ruby = document.createElement('ruby')
                 ruby.appendChild(eleori)
                 let rt = document.createElement('rt')
-                rt.appendChild(dispatch_text_style_inlineblock(style, styleargs, word.hira, { color: kanacolor }))
+                rt.appendChild(makeinlineblock(regist_style_imp[style](styleargs, '', word.hira, { color: kanacolor })))
                 rt.classList.add('klass_font_hira')
                 ruby.appendChild(rt)
                 eleori = ruby
@@ -439,9 +438,9 @@
         span.classList.add(t)
         span.innerHTML += "<br>";
         //字体大小为小数时，offsetheight有舍入误差
-        let lineHeight = args.extra ? (span.offsetHeight + args.extra + 'px') : 'normal'
+        let lineHeight = args.extra ? (Math.max(1, span.offsetHeight + args.extra) + 'px') : 'normal'
         document.body.removeChild(span)
-        document.getElementById('styleforfont').innerHTML += `.${t} span{
+        document.getElementById('styleforfont').innerHTML += `.${t}{
         line-height: ${lineHeight};
         }
         `
@@ -465,7 +464,10 @@
         document.getElementById('styleforfont').innerHTML = style
         measureheight('klass_font_origin', args.origin)
         measureheight('klass_font_trans', args.trans)
-        measureheight('klass_font_hira', args.hira)
+        document.getElementById('styleforfont').innerHTML += `.klass_font_hira{
+        line-height: normal;
+        }
+        `
         safe_calllunaheightchange()
     }
     function yinying_dynamic(styleargs) {
@@ -491,7 +493,6 @@
                 let targetlen = Math.round(1 + styleargs.trace * 10)
                 let __save_n = parseInt(ele.getAttribute('__save_n'))
                 ele.setAttribute('__save_n', targetlen)
-                console.log(targetlen, __save_n)
                 if (__save_n > targetlen) {
                     for (let i = targetlen; i < __save_n; i++) {
                         ele.querySelectorAll(`.stroken${i}`).forEach(
