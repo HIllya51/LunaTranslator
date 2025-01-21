@@ -481,7 +481,7 @@ class MAINUI:
     def _delaypreparefixrank(self, _showrawfunction, real_fix_rank):
         _showrawfunction()
         for engine in real_fix_rank:
-            if engine not in globalconfig:
+            if engine not in globalconfig["fanyi"]:
                 engine = "premt"
             displayreskwargs = dict(
                 name="",
