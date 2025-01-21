@@ -926,7 +926,7 @@ class TextBrowser(QWidget, dataget):
     def _dyna_merge_label(self, line):
         if len(line) <= 1:
             return
-        rects = [(label.x(), label.x() + label.width()) for label in line]
+        rects = [(label.realx(), label.realx() + label.realw()) for label in line]
 
         for i in range(len(line) - 1):
             if not self.has_intersection(rects[i], rects[i + 1]):
@@ -959,7 +959,7 @@ class TextBrowser(QWidget, dataget):
         center = tl1.x() + w_origin / 2
         _.setFont(font)
         _.adjustSize()
-        w = _.width()
+        w = _.realw()
         _.move(int(center - w / 2), y + self.labeloffset_y)
         _.show()
         return _

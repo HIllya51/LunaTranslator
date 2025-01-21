@@ -12,10 +12,10 @@ class base(QWidget):
         pass
 
     def moveoffset(self):
-        return self.config.get("width", 0), self.config.get("width", 0)
+        return 0, 0
 
     def extraWH(self):
-        return 2 * self.config.get("width", 0), 2 * self.config.get("width", 0)
+        return 0, 0
 
     @property
     def config(self):
@@ -54,6 +54,13 @@ class base(QWidget):
         self._pix = None
         self._m_text = ""
         self.realmove = QPoint()
+        self.realsize = QSize()
+
+    def realx(self):
+        return self.realmove.x()
+
+    def realw(self):
+        return self.realsize.width()
 
     def adjustSize(self):
         self._pix = None
@@ -61,10 +68,10 @@ class base(QWidget):
         text = self.text()
         font_m = QFontMetricsF(font)
         w, h = self.extraWH()
-        self.resize(
-            int(font_m.size(0, text).width() + w),
-            int(font_m.height() + h),
-        )
+        size = QSizeF(font_m.size(0, text).width(), font_m.height())
+        sizex = size + QSizeF(w, h)
+        self.resize(sizex.toSize())
+        self.realsize = size.toSize()
         self.setShadow()
         self._stylestates = self.stylestates
 
