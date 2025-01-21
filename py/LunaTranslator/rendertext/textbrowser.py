@@ -182,9 +182,6 @@ class TextBrowser(QWidget, dataget):
 
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
-        self.cachesize = sz
-        if self.sizeignore:
-            return
         visheight = int(sz.height() + self.extra_height)
         self.textbrowser.resize(self.width(), visheight)
         self.contentsChanged.emit(QSize(sz.width(), visheight + self.labeloffset_y))
@@ -233,8 +230,6 @@ class TextBrowser(QWidget, dataget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.cachesize = QSize()
-        self.sizeignore = False
         self.savetaglabels = []
         self.searchmasklabels_clicked = []
         self.searchmasklabels_clicked2 = []
@@ -367,27 +362,23 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.setTextCursor(c)
 
     def refreshcontent_before(self):
-        self.sizeignore = True
+        pass
 
     def refreshcontent_after(self):
-        self.sizeignore = False
-        sz = self.cachesize
-        visheight = int(sz.height() + self.extra_height)
-        self.textbrowser.resize(self.width(), visheight)
-        self.contentsChanged.emit(QSize(sz.width(), visheight + self.labeloffset_y))
+        pass
 
     def showatcenter(self, center):
         self.showatcenterflag = center
         self.parent().refreshcontent()
 
     def showhidetranslate(self, show):
-        self.parent().refreshcontent(lock=False)
+        self.parent().refreshcontent()
 
     def showhideorigin(self, show):
-        self.parent().refreshcontent(lock=False)
+        self.parent().refreshcontent()
 
     def showhideerror(self, show):
-        self.parent().refreshcontent(lock=False)
+        self.parent().refreshcontent()
 
     def setfontstyle(self):
         self.parent().refreshcontent()

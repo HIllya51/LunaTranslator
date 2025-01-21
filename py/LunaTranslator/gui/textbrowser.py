@@ -120,14 +120,13 @@ class Textbrowser(QFrame):
         self.textbrowser.dropfilecallback.connect(self.normdropfilepath)
         self.textbrowser.resize(size)
         self.textbrowser.show()
-        self.refreshcontent(lock=False)
+        self.refreshcontent()
 
     def normdropfilepath(self, file):
         self.dropfilecallback.emit(os.path.normpath(file))
 
-    def refreshcontent(self, lock=True):
-        if lock:
-            self.textbrowser.refreshcontent_before()
+    def refreshcontent(self):
+        self.textbrowser.refreshcontent_before()
         traces = self.trace.copy()
         self.clear()
         for t, trace in traces:
@@ -135,8 +134,7 @@ class Textbrowser(QFrame):
                 self.append(*trace)
             elif t == 1:
                 self.iter_append(*trace)
-        if lock:
-            self.textbrowser.refreshcontent_after()
+        self.textbrowser.refreshcontent_after()
 
     def __init__(self, parent):
         super().__init__(parent)
