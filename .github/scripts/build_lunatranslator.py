@@ -205,6 +205,15 @@ def downloadCurl():
     )
 
 
+def downloadluna():
+    subprocess.run(f"curl -LO https://image.lunatranslator.org/luna.jpg")
+
+    shutil.move(
+        f"luna.jpg",
+        f"{rootDir}/LunaTranslator/rendertext",
+    )
+
+
 def downloadOCRModel():
     os.chdir(rootDir + "\\files")
     if not os.path.exists("ocrmodel"):
@@ -373,17 +382,13 @@ if __name__ == "__main__":
         os.makedirs("../../py/files/plugins/DLL32", exist_ok=True)
         shutil.copy("../builds/_x86/shareddllproxy32.exe", "../../py/files/plugins")
         shutil.copy("../builds/_x86/winrtutils.dll", "../../py/files/plugins/DLL32")
-        shutil.copy(
-            "../builds/_x86/winsharedutils.dll", "../../py/files/plugins/DLL32"
-        )
+        shutil.copy("../builds/_x86/winsharedutils.dll", "../../py/files/plugins/DLL32")
         shutil.copy("../builds/_x86/wcocr.dll", "../../py/files/plugins/DLL32")
         shutil.copy("../builds/_x86/LunaOCR.dll", "../../py/files/plugins/DLL32")
         os.makedirs("../../py/files/plugins/DLL64", exist_ok=True)
         shutil.copy("../builds/_x64/shareddllproxy64.exe", "../../py/files/plugins")
         shutil.copy("../builds/_x64/winrtutils.dll", "../../py/files/plugins/DLL64")
-        shutil.copy(
-            "../builds/_x64/winsharedutils.dll", "../../py/files/plugins/DLL64"
-        )
+        shutil.copy("../builds/_x64/winsharedutils.dll", "../../py/files/plugins/DLL64")
         shutil.copy("../builds/_x64/wcocr.dll", "../../py/files/plugins/DLL64")
         shutil.copy("../builds/_x64/LunaOCR.dll", "../../py/files/plugins/DLL64")
 

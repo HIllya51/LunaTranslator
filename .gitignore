@@ -56,3 +56,4 @@ docs/.vitepress/cache
 docs/node_modules
 docs/.vitepress/dist
 py/LunaTranslator/rendertext/webview_parsed.html
+py/LunaTranslator/rendertext/luna.jpg
