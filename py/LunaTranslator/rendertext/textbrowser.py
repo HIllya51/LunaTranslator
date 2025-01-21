@@ -396,7 +396,13 @@ class TextBrowser(QWidget, dataget):
         self.parent().refreshcontent()
 
     def setcolorstyle(self):
-        self.parent().refreshcontent()
+        for label in self.savetaglabels:
+            label.maybestylechanged()
+        for label in self.yinyinglabels:
+            label.maybestylechanged()
+        for labels in self.iteryinyinglabelsave:
+            for label in labels:
+                label.maybestylechanged()
 
     def checkskip(self, texttype: TextType):
         if (texttype in (TextType.Origin,)) and (not globalconfig["isshowrawtext"]):
@@ -700,7 +706,7 @@ class TextBrowser(QWidget, dataget):
                 )
             _ = self.iteryinyinglabelsave[iter_context_class][i]
             if _.text() != subtext[i]:
-                _.setColor(color.get())
+                _.setColor(color)
                 _.setText(subtext[i])
                 _.setFont(font)
                 _.adjustSize()
@@ -782,7 +788,7 @@ class TextBrowser(QWidget, dataget):
                     self.yinyinglabels.append(self.currentclass(self.toplabel2))
                 _ = self.yinyinglabels[self.yinyinglabels_idx]
                 self.yinyinglabels_idx += 1
-                _.setColor(color.get())
+                _.setColor(color)
                 _.setText(block.text()[s : s + l])
                 _.setFont(font)
                 _.adjustSize()
@@ -954,8 +960,7 @@ class TextBrowser(QWidget, dataget):
         if idx >= len(self.savetaglabels):
             self.savetaglabels.append(self.currentclass(self.atback2))
         _: base = self.savetaglabels[idx]
-        color = SpecialColor.KanaColor.get()
-        _.setColor(color)
+        _.setColor(SpecialColor.KanaColor)
         _.setText(word["hira"])
         origin = word["orig_X"]
         w_origin = fontori_m.size(0, origin).width()

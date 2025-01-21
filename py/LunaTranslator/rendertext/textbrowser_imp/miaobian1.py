@@ -3,6 +3,17 @@ from rendertext.textbrowser_imp.base import base
 
 
 class TextLine(base):
+    @property
+    def stylestates(self):
+        return (
+            self._basecolor.get(),
+            self.config["fillcolor"],
+            self.config["reverse"],
+            self.config["trace"],
+            self.config["width"],
+            self.config["width_rate"],
+        )
+
     def moveoffset(self):
         font = self.font()
         fontOutLineWidth = (
@@ -20,7 +31,7 @@ class TextLine(base):
         return (fontOutLineWidth, fontOutLineWidth)
 
     def colorpair(self):
-        _ = QColor(self.config["fillcolor"]), QColor(self.basecolor)
+        _ = QColor(self.config["fillcolor"]), self.basecolor
         if self.config["reverse"]:
             _ = reversed(_)
         return _

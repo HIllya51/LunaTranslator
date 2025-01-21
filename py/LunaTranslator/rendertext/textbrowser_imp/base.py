@@ -1,6 +1,7 @@
 from qtsymbols import *
 from myutils.config import globalconfig
 import unicodedata
+from gui.textbrowser import ColorControl, SpecialColor
 
 
 class base(QWidget):
@@ -22,17 +23,31 @@ class base(QWidget):
 
     @property
     def basecolor(self):
-        return self._basecolor
+        return QColor(self._basecolor.get())
 
-    def setColor(self, color: str):
+    def setColor(self, color: ColorControl):
         if color is None:
-            self._basecolor = QColor()
+            self._basecolor = SpecialColor.DefaultColor
         else:
-            self._basecolor = QColor(color)
+            self._basecolor = color
+
+    @property
+    def stylestates(self):
+        return self._basecolor.get()
+
+    def maybestylechanged(self):
+        if not self.isVisible():
+            return
+        if self._stylestates == self.stylestates:
+            return
+        self.move(self.x(), self.y())
+        self.adjustSize()
+        self.update()
 
     def __init__(self, typename, parent):
         super().__init__(parent)
-        self._basecolor = QColor()
+        self._stylestates = None
+        self._basecolor = SpecialColor.DefaultColor
         self.typename = typename
         self.movedy = 0
         self.movedx = 0
@@ -50,6 +65,7 @@ class base(QWidget):
             int(font_m.height() + h),
         )
         self.setShadow()
+        self._stylestates = self.stylestates
 
     def move(self, x: int, y: int):
         self.movedx = 0
@@ -81,7 +97,7 @@ class base(QWidget):
         return x - self.movedx
 
     def pos(self) -> QPoint:
-        return QPoint(self.x(), self.y())
+        return QPointF(self.x(), self.y()).toPoint()
 
     def clearShadow(self):
         self.setGraphicsEffect(None)

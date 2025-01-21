@@ -43,6 +43,16 @@ class CachedQGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):
 
 class TextLine(TextLabel_0):
 
+    @property
+    def stylestates(self):
+        return (
+            self._basecolor.get(),
+            self.config["fillcolor"],
+            self.config["shadowR"],
+            self.config["shadowR_ex"],
+            self.config["shadowforce"],
+        )
+
     def usingcolor(self):
         return QColor(self.config["fillcolor"])
 
