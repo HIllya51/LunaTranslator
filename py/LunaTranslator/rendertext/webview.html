@@ -320,74 +320,57 @@
 
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
-        let tag = JSON.parse(decodeURIComponent(tagjson))
+        let tags = JSON.parse(decodeURIComponent(tagjson))
         let color = args.color
         let kanacolor = args.kanacolor
         let isshowhira = args.isshowhira
         let isshow_fenci = args.isshow_fenci
         let isfenciclick = args.isfenciclick
         let ele = document.getElementById(_id)
-        let tags = _splittags(tag)
-        tags.forEach(tag => {
-            let mayberuby = []
-            tag.forEach(word => {
-                let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { color: color })
 
-                if ((isshow_fenci || isfenciclick) && word.hira.trim().length) {
-                    let div = document.createElement('div')
-                    div.style.display = 'inline-block'
-                    div.id = _simpleuid()
-                    let style = document.createElement('style')
-                    if (isshow_fenci)
-                        style.innerHTML += `#${div.id} {
+        tags.forEach(word => {
+            if (word.orig == '\n') {
+                ele.appendChild(document.createElement('br'))
+                return
+            }
+            let eleori = dispatch_text_style_inlineblock(style, styleargs, word.orig, { color: color })
+
+            if ((isshow_fenci || isfenciclick) && word.hira.trim().length) {
+                let div = document.createElement('div')
+                div.style.display = 'inline-block'
+                div.id = _simpleuid()
+                let style = document.createElement('style')
+                if (isshow_fenci)
+                    style.innerHTML += `#${div.id} {
   background-color: ${word.color};
 }`
-                    if (isfenciclick) {
-                        div.setAttribute('word', JSON.stringify(word))
-                        div.addEventListener('click', function (e) {
-                            safe_calllunaclickedword(JSON.parse(this.getAttribute('word')))
-                        })
-
-                        style.innerHTML += `#${div.id} {
+                if (isfenciclick) {
+                    div.setAttribute('word', JSON.stringify(word))
+                    div.addEventListener('click', function (e) {
+                        safe_calllunaclickedword(JSON.parse(this.getAttribute('word')))
+                    })
+                    style.innerHTML += `#${div.id} {
   z-index: 2000;position: relative;
 }
   #${div.id}:hover {
   background-color: rgba(0,0,0,0.5);  
 }`
-                    }
-                    div.appendChild(style)
-                    div.appendChild(eleori)
-                    mayberuby.push(div)
-                } else {
-                    mayberuby.push(eleori)
                 }
-                if (isshowhira) {
-                    let rt = document.createElement('rt')
-
-                    if ((word.orig != word.hira)) {
-                        rt.appendChild(dispatch_text_style_inlineblock(style, styleargs, word.hira, { color: kanacolor }))
-                        rt.classList.add('klass_font_hira')
-                    }
-                    mayberuby.push(rt)
-                }
-            })
-            let div = document.createElement('div')
-            if (isshowhira) {
+                div.appendChild(style)
+                div.appendChild(eleori)
+                eleori = div
+            }
+            if (isshowhira && (word.orig != word.hira) && (word.hira.trim().length)) {
 
                 let ruby = document.createElement('ruby')
-                mayberuby.forEach(e => {
-                    ruby.appendChild(e)
-                });
-                div.appendChild(ruby)
-                ele.appendChild(div)
+                ruby.appendChild(eleori)
+                let rt = document.createElement('rt')
+                rt.appendChild(dispatch_text_style_inlineblock(style, styleargs, word.hira, { color: kanacolor }))
+                rt.classList.add('klass_font_hira')
+                ruby.appendChild(rt)
+                eleori = ruby
             }
-            else {
-
-                mayberuby.forEach(e => {
-                    div.appendChild(e)
-                });
-            }
-            ele.appendChild(div)
+            ele.appendChild(eleori)
         })
         safe_calllunaheightchange()
 
