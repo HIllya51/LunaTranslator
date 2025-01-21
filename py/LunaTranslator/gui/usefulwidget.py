@@ -622,6 +622,7 @@ class MySwitch(QWidget):
 
 class resizableframeless(saveposwindow):
     cursorSet = pyqtSignal(Qt.CursorShape)
+    isCornerDragging = pyqtSignal(bool)
 
     def __init__(self, parent, flags, poslist) -> None:
         super().__init__(parent, poslist, flags)
@@ -685,20 +686,28 @@ class resizableframeless(saveposwindow):
         pos = event.pos()
         if self._corner_youxia.contains(pos):
             self._corner_drag_youxia = True
+            self.isCornerDragging.emit(True)
         elif self._right_rect.contains(pos):
             self._right_drag = True
+            self.isCornerDragging.emit(True)
         elif self._left_rect.contains(pos):
             self._left_drag = True
+            self.isCornerDragging.emit(True)
         elif self._top_rect.contains(pos):
             self._top_drag = True
+            self.isCornerDragging.emit(True)
         elif self._bottom_rect.contains(pos):
             self._bottom_drag = True
+            self.isCornerDragging.emit(True)
         elif self._corner_zuoxia.contains(pos):
             self._corner_drag_zuoxia = True
+            self.isCornerDragging.emit(True)
         elif self._corner_youshang.contains(pos):
             self._corner_drag_youshang = True
+            self.isCornerDragging.emit(True)
         elif self._corner_zuoshang.contains(pos):
             self._corner_drag_zuoshang = True
+            self.isCornerDragging.emit(True)
         else:
             self._move_drag = True
             self.move_DragPosition = gpos - self.pos()
@@ -777,6 +786,7 @@ class resizableframeless(saveposwindow):
 
     def mouseReleaseEvent(self, e: QMouseEvent):
         self.resetflags()
+        self.isCornerDragging.emit(False)
 
     def setgeokeepminsize(self, *argc):
         self.setGeometry(*self.calculatexywh(*argc))
