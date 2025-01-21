@@ -40,7 +40,7 @@ class base(QWidget):
             return
         if self._stylestates == self.stylestates:
             return
-        self.move(self.x(), self.y())
+        self.move(self.realmove.x(), self.realmove.y())
         self.adjustSize()
         self.update()
 
@@ -53,6 +53,7 @@ class base(QWidget):
         self.movedx = 0
         self._pix = None
         self._m_text = ""
+        self.realmove = QPoint()
 
     def adjustSize(self):
         self._pix = None
@@ -67,7 +68,8 @@ class base(QWidget):
         self.setShadow()
         self._stylestates = self.stylestates
 
-    def move(self, x: int, y: int):
+    def move(self, x: float, y: float):
+        self.realmove = QPointF(x, y).toPoint()
         self.movedx = 0
         self.movedy = 0
         dx, dy = self.moveoffset()
@@ -86,7 +88,7 @@ class base(QWidget):
         else:
             self.movedx -= dx
         self.movedy -= dy
-        super().move(QPoint(int(x + self.movedx), int(y + self.movedy)))
+        super().move(QPointF(x + self.movedx, y + self.movedy).toPoint())
 
     def y(self):
         y = super().y()
