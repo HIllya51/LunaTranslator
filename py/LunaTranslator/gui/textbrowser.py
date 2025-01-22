@@ -192,7 +192,7 @@ class Textbrowser(QFrame):
         self.cleared = False
         self.textbrowser.iter_append(iter_context_class, texttype, name, text, color)
 
-    def append(self, texttype: TextType, name, text, tag, flags, color: ColorControl):
+    def append(self, texttype: TextType, name, text, tag, color: ColorControl):
         self.trace.append(
             (
                 0,
@@ -201,14 +201,13 @@ class Textbrowser(QFrame):
                     name,
                     text,
                     copy.deepcopy(tag),
-                    flags,
                     color,
                 ),
             )
         )
         self.cleared = False
         self.textbrowser.append(
-            texttype, name, text, basehira.parseastarget(tag), flags, color
+            texttype, name, text, basehira.parseastarget(tag), color
         )
 
     def clear(self):

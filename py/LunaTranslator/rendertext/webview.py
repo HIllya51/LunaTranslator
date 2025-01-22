@@ -309,7 +309,7 @@ class TextBrowser(QWidget, dataget):
         self.create_div_line_id(_id, texttype)
         return _id
 
-    def append(self, texttype: TextType, name, text, tag, _, color: ColorControl):
+    def append(self, texttype: TextType, name, text, tag, color: ColorControl):
         _id = self.createtextlineid(texttype)
         self._webview_append(_id, name, text, tag, color)
 

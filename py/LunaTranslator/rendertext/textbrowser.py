@@ -399,7 +399,7 @@ class TextBrowser(QWidget, dataget):
         self.parent().refreshcontent()
 
     def showhidert(self, _):
-        pass
+        self.parent().refreshcontent()
 
     def showhidename(self, _):
         self.parent().refreshcontent()
@@ -502,12 +502,12 @@ class TextBrowser(QWidget, dataget):
         )
         self.cleared = False
 
-    def append(self, texttype: TextType, name, text, tag, flags, color: ColorControl):
+    def append(self, texttype: TextType, name, text, tag, color: ColorControl):
         if self.checkskip(texttype):
             return
         text = self.checkaddname(name, text)
         if len(tag):
-            isshowhira, _, _ = flags
+            isshowhira = globalconfig["isshowhira"]
             font = self._createqfont(texttype)
             textlines, linetags = self._splitlinestags(font, tag, text)
             text = "\n".join(textlines)

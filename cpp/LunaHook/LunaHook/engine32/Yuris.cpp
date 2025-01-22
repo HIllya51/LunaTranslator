@@ -10,7 +10,7 @@ YU-RIS hook:
 ********************************************************************************************/
 
 // bool InsertWhirlpoolHook() // jichi: 12/27/2014: Renamed to YU-RIS
-static bool InsertYuris1Hook()
+bool Yuris::InsertYuris1Hook()
 {
   // IthBreak();
   DWORD entry = Util::FindCallAndEntryBoth((DWORD)TextOutA, processStopAddress - processStartAddress, processStartAddress, 0xec83);
@@ -159,7 +159,7 @@ static bool InsertYuris1Hook()
  *
  *  Runtime stack: The first dword after arguments on the stack seems to be good split value.
  */
-static bool InsertYuris2Hook()
+bool Yuris::InsertYuris2Hook()
 {
   ULONG addr = MemDbg::findCallAddress((ULONG)::TextOutA, processStartAddress, processStopAddress);
   if (!addr)
@@ -185,7 +185,7 @@ static bool InsertYuris2Hook()
   return NewHook(hp, "YU-RIS2");
 }
 
-bool InsertYuris4Hook()
+bool Yuris::InsertYuris4Hook()
 {
 
   /*
@@ -221,7 +221,7 @@ bool InsertYuris4Hook()
   return found;
 }
 
-bool InsertYuris5Hook()
+bool Yuris::InsertYuris5Hook()
 {
 
   /*
@@ -255,7 +255,7 @@ bool InsertYuris5Hook()
   return NewHook(hp, "YU-RIS5");
 }
 
-static void Yuris6Filter(TextBuffer *buffer, HookParam *)
+static void Yuris6Filter(TextBuffer *buffer, HookParam *hp)
 {
   auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
@@ -264,29 +264,38 @@ static void Yuris6Filter(TextBuffer *buffer, HookParam *)
     return buffer->clear();
   last = buffer->viewA();
 
-  // ruby ＜手水舎／ちょうずや＞
-  if (cpp_strnstr(text, "\x81\x83", buffer->size))
-  {                                                            // \x81\x83 -> '＜'
-    StringFilterBetween(buffer, "\x81\x5E", 2, "\x81\x84", 2); // \x81\x5E -> '／' , \x81\x84 -> '＞'
-    StringFilter(buffer, "\x81\x83", 2);                       // \x81\x83 -> '＜'
+  if (hp->codepage == CP_UTF8 || hp->type & CODEC_UTF8)
+  {
+    buffer->from(std::regex_replace(buffer->strA(), std::regex(u8R"(≪(.*?)／(.*?)≫)"), "$1"));
+    buffer->from(std::regex_replace(buffer->strA(), std::regex(u8R"(＜(.*?)／(.*?)＞)"), "$1"));
   }
-  // ruby ≪美桜／姉さん≫
-  else if (cpp_strnstr(text, "\x81\xE1", buffer->size))
-  {                                                            // \x81\xE1 -> '≪'
-    StringFilterBetween(buffer, "\x81\x5E", 2, "\x81\xE2", 2); // \x81\x5E -> '／' , \x81\xE2 -> '≫'
-    StringFilter(buffer, "\x81\xE1", 2);                       // \x81\xE1 -> '≪'
-  }
+  else
+  {
 
-  CharReplacer(buffer, '=', '-');
-  StringFilter(buffer, "\xEF\xF0", 2);
-  StringFilter(buffer, "\xEF\xF1", 2);
-  StringFilter(buffer, "\xEF\xF2", 2);
-  StringFilter(buffer, "\xEF\xF3", 2);
-  StringFilter(buffer, "\xEF\xF4", 2);
-  StringFilter(buffer, "\xEF\xF5", 2);
-  StringFilter(buffer, "\x81\x98", 2);
+    // ruby ＜手水舎／ちょうずや＞
+    if (cpp_strnstr(text, "\x81\x83", buffer->size))
+    {                                                            // \x81\x83 -> '＜'
+      StringFilterBetween(buffer, "\x81\x5E", 2, "\x81\x84", 2); // \x81\x5E -> '／' , \x81\x84 -> '＞'
+      StringFilter(buffer, "\x81\x83", 2);                       // \x81\x83 -> '＜'
+    }
+    // ruby ≪美桜／姉さん≫
+    else if (cpp_strnstr(text, "\x81\xE1", buffer->size))
+    {                                                            // \x81\xE1 -> '≪'
+      StringFilterBetween(buffer, "\x81\x5E", 2, "\x81\xE2", 2); // \x81\x5E -> '／' , \x81\xE2 -> '≫'
+      StringFilter(buffer, "\x81\xE1", 2);                       // \x81\xE1 -> '≪'
+    }
+
+    CharReplacer(buffer, '=', '-');
+    StringFilter(buffer, "\xEF\xF0", 2);
+    StringFilter(buffer, "\xEF\xF1", 2);
+    StringFilter(buffer, "\xEF\xF2", 2);
+    StringFilter(buffer, "\xEF\xF3", 2);
+    StringFilter(buffer, "\xEF\xF4", 2);
+    StringFilter(buffer, "\xEF\xF5", 2);
+    StringFilter(buffer, "\x81\x98", 2);
+  }
 }
-bool InsertYuris6Hook()
+bool Yuris::InsertYuris6Hook()
 {
 
   /*
@@ -308,10 +317,6 @@ bool InsertYuris6Hook()
       0x84, 0xD2  // test dl,dl
   };
 
-  enum
-  {
-    addr_offset = 0
-  };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
@@ -323,11 +328,10 @@ bool InsertYuris6Hook()
   hp.index = 0x38;
   hp.filter_fun = Yuris6Filter;
   hp.type = USING_STRING | NO_CONTEXT | DATA_INDIRECT;
-
-  ConsoleOutput("INSERT YU-RIS 6");
+  hp.codepage = codepage;
   return NewHook(hp, "YU-RIS6");
 }
-bool yuris7()
+bool Yuris::yuris7()
 {
   // 猫忍えくすはーとSPIN!
   // 夏空あすてりずむ
@@ -365,9 +369,17 @@ bool yuris7()
     *split = context->edi; //|(context->eax*0x100);//会把人名的引号分开
     buffer->from(context->edx, min(2, strlen((char *)context->edx)));
   };
-  return NewHook(hp, "yuris8");
+  hp.codepage = codepage;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    auto text = buffer->viewA();
+    if (std::all_of(text.begin(), text.end(), [](char c)
+                    { return c == '1' || c == '2' || c == 'E' || c == 'C' || c == 'c' || c == 'R' || c == 'B' || c == 'P' || c == 'Z'; }))
+      return buffer->clear();
+  };
+  return NewHook(hp, "yuris7");
 }
-bool yuris8()
+bool Yuris::yuris8()
 {
   // けもの道☆ガーリッシュスクエア LOVE+PLUS
   // https://vndb.org/v36773
@@ -406,16 +418,17 @@ bool yuris8()
   hp.address = addr + offset;
   hp.type = USING_STRING;
   hp.offset = regoffset(ecx);
+  hp.codepage = codepage;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     auto text = buffer->viewA();
     if (std::all_of(text.begin(), text.end(), [](char c)
-                    { return c == '1' || c == '2' || c == 'E' || c == 'C' || c == 'c' || c == 'R' || c == 'P' || c == 'Z'; }))
+                    { return c == '1' || c == '2' || c == 'E' || c == 'C' || c == 'c' || c == 'R' || c == 'B' || c == 'P' || c == 'Z'; }))
       return buffer->clear();
   };
   return NewHook(hp, "yuris8");
 }
-bool InsertYurisHook()
+UINT Yuris::codepagechecker()
 {
   auto wcmb = Util::FindImportEntry(processStartAddress, (DWORD)WideCharToMultiByte);
   if (!wcmb)
@@ -431,7 +444,7 @@ bool InsertYurisHook()
 }
 bool Yuris::attach_function()
 {
-  codepage = codepagechecker(); // 这一检测可能不是安全的，但在测试的多个游戏上结果正确
+  codepage = codepagechecker();
   bool ok = InsertYuris1Hook();
   ok = InsertYuris2Hook() || ok;
   ok = InsertYuris4Hook() || ok;
@@ -440,10 +453,4 @@ bool Yuris::attach_function()
   ok = yuris7() || ok;
   ok = yuris8() || ok;
   return ok;
-}
-
-bool Yuris::attach_function()
-{
-
-  return InsertYurisHook();
 }

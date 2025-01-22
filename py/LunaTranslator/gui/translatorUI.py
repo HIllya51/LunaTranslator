@@ -392,7 +392,6 @@ class TranslatorWindow(resizableframeless):
             text=text,
             color=color,
             hira=hira,
-            flags=(isshowhira, isshow_fenci, isfenciclick),
         )
 
     def showstatus(self, res, t: TextType):
@@ -427,7 +426,6 @@ class TranslatorWindow(resizableframeless):
         color = kwargs.get("color", SpecialColor.DefaultColor)
         iter_context = kwargs.get("iter_context", None)
         hira = kwargs.get("hira", [])
-        flags = kwargs.get("flags", None)
 
         if clear:
             self.translate_text.clear()
@@ -443,7 +441,7 @@ class TranslatorWindow(resizableframeless):
                 iter_context_class, texttype, name, text, color
             )
         else:
-            self.translate_text.append(texttype, name, text, hira, flags, color)
+            self.translate_text.append(texttype, name, text, hira, color)
         if globalconfig["autodisappear"]:
             flag = (globalconfig["showintab"] and self.isMinimized()) or (
                 not globalconfig["showintab"] and self.isHidden()
