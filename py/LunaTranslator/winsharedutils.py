@@ -17,9 +17,15 @@ from ctypes import (
     CFUNCTYPE,
 )
 from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE
-import gobject, windows, functools
+import platform, windows, functools, os
 
-utilsdll = CDLL(gobject.GetDllpath("winsharedutils.dll"))
+isbit64 = platform.architecture()[0] == "64bit"
+utilsdll = CDLL(
+    os.path.join(
+        os.path.abspath("files/plugins/DLL" + ("32", "64")[isbit64]),
+        "winsharedutils.dll",
+    )
+)
 
 
 SetProcessMute = utilsdll.SetProcessMute
@@ -304,6 +310,17 @@ setAcrylicEffect = utilsdll.setAcrylicEffect
 setAcrylicEffect.argtypes = (HWND, c_bool)
 clearEffect = utilsdll.clearEffect
 clearEffect.argtypes = (HWND,)
+_detect_webview2_version = utilsdll.detect_webview2_version
+_detect_webview2_version.argtypes = c_wchar_p, c_void_p
+
+
+def detect_webview2_version(directory=None):
+    _ = []
+    _f = CFUNCTYPE(c_void_p, c_wchar_p)(_.append)
+    _detect_webview2_version(directory, _f)
+    if _:
+        return tuple(int(_) for _ in _[0].split("."))
+
 
 add_ZoomFactorChanged_CALLBACK = CFUNCTYPE(None, c_double)
 add_ZoomFactorChanged = utilsdll.add_ZoomFactorChanged

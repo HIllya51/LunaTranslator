@@ -117,7 +117,7 @@ class TextBrowser(QWidget, dataget):
         self.isfirst = False
         self.loadex()
         gobject.baseobject.translation_ui.cursorSet.connect(self.switchcursor)
-        gobject.baseobject.translation_ui.isCornerDragging.connect(
+        gobject.baseobject.translation_ui.isDragging.connect(
             lambda b: self.setselectable(False if b else globalconfig["selectable"])
         )
 

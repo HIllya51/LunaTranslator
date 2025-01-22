@@ -17,7 +17,11 @@ else()
 
     add_library(webview2 INTERFACE)
     target_include_directories(webview2 INTERFACE ${CMAKE_CURRENT_LIST_DIR}/webview2/Microsoft.Web.WebView2.1.0.2535.41/build/native/include)
-
+    if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+        target_link_libraries(webview2 INTERFACE ${CMAKE_CURRENT_LIST_DIR}/webview2/Microsoft.Web.WebView2.1.0.2535.41/build/native/x64/WebView2LoaderStatic.lib)
+    else()
+        target_link_libraries(webview2 INTERFACE ${CMAKE_CURRENT_LIST_DIR}/webview2/Microsoft.Web.WebView2.1.0.2535.41/build/native/x86/WebView2LoaderStatic.lib)
+    endif()
 
     option(USE_VCLTL "USE_VCLTL" ON)
     if(USE_VCLTL)

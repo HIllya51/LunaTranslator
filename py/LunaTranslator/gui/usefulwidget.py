@@ -3,9 +3,9 @@ import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject, platform
 from webviewpy import webview_native_handle_kind_t, Webview
-from myutils.config import _TR, globalconfig
-from myutils.wrapper import Singleton_close, tryprint
-from myutils.utils import nowisdark, checkportavailable, checkisusingwine
+from myutils.config import _TR, globalconfig, findFixedRuntime
+from myutils.wrapper import Singleton_close
+from myutils.utils import nowisdark, checkisusingwine
 from gui.dynalang import (
     LLabel,
     LMessageBox,
@@ -622,7 +622,7 @@ class MySwitch(QWidget):
 
 class resizableframeless(saveposwindow):
     cursorSet = pyqtSignal(Qt.CursorShape)
-    isCornerDragging = pyqtSignal(bool)
+    isDragging = pyqtSignal(bool)
 
     def __init__(self, parent, flags, poslist) -> None:
         super().__init__(parent, poslist, flags)
@@ -686,28 +686,28 @@ class resizableframeless(saveposwindow):
         pos = event.pos()
         if self._corner_youxia.contains(pos):
             self._corner_drag_youxia = True
-            self.isCornerDragging.emit(True)
+            self.isDragging.emit(True)
         elif self._right_rect.contains(pos):
             self._right_drag = True
-            self.isCornerDragging.emit(True)
+            self.isDragging.emit(True)
         elif self._left_rect.contains(pos):
             self._left_drag = True
-            self.isCornerDragging.emit(True)
+            self.isDragging.emit(True)
         elif self._top_rect.contains(pos):
             self._top_drag = True
-            self.isCornerDragging.emit(True)
+            self.isDragging.emit(True)
         elif self._bottom_rect.contains(pos):
             self._bottom_drag = True
-            self.isCornerDragging.emit(True)
+            self.isDragging.emit(True)
         elif self._corner_zuoxia.contains(pos):
             self._corner_drag_zuoxia = True
-            self.isCornerDragging.emit(True)
+            self.isDragging.emit(True)
         elif self._corner_youshang.contains(pos):
             self._corner_drag_youshang = True
-            self.isCornerDragging.emit(True)
+            self.isDragging.emit(True)
         elif self._corner_zuoshang.contains(pos):
             self._corner_drag_zuoshang = True
-            self.isCornerDragging.emit(True)
+            self.isDragging.emit(True)
         else:
             self._move_drag = True
             self.move_DragPosition = gpos - self.pos()
@@ -782,11 +782,12 @@ class resizableframeless(saveposwindow):
         elif self._corner_drag_youxia:
             self.resize(pos.x(), pos.y())
         elif self._move_drag:
+            self.isDragging.emit(True)
             self.move(gpos - self.move_DragPosition)
 
     def mouseReleaseEvent(self, e: QMouseEvent):
         self.resetflags()
-        self.isCornerDragging.emit(False)
+        self.isDragging.emit(False)
 
     def setgeokeepminsize(self, *argc):
         self.setGeometry(*self.calculatexywh(*argc))
@@ -1219,27 +1220,6 @@ class WebviewWidget(abstractwebview):
         self.callbacks.append(__)
         winsharedutils.add_menu_list_noselect(self.menudata, index, label, __)
 
-    def findFixedRuntime(self):
-        isbit64 = platform.architecture()[0] == "64bit"
-        maxversion = (0, 0, 0, 0)
-        maxvf = None
-        for f in os.listdir("."):
-            exe = os.path.join(f, "msedgewebview2.exe")
-            if not os.path.exists(exe):
-                continue
-            b = windows.GetBinaryType(exe)
-            if (isbit64 and b == 0) or ((not isbit64) and b == 6):
-                continue
-            version = winsharedutils.queryversion(exe)
-            if not version:
-                continue
-            print(version, f)
-            if version > maxversion:
-                maxversion = version
-                maxvf = os.path.abspath(f)
-                print(maxversion, f)
-        return maxvf
-
     @staticmethod
     def showError():
         getQMessageBox(
@@ -1258,7 +1238,7 @@ class WebviewWidget(abstractwebview):
         super().__init__(parent)
         self.webview = None
         self.callbacks = []
-        FixedRuntime = self.findFixedRuntime()
+        FixedRuntime = findFixedRuntime()
         if FixedRuntime:
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
             # 在共享路径上无法运行

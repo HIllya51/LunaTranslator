@@ -2,6 +2,7 @@ import json
 import os, time, uuid, shutil, sys, platform
 from traceback import print_exc
 from language import TransLanguages, Languages
+import winsharedutils
 
 
 def isascii(s: str):
@@ -224,11 +225,40 @@ if "xxxcast" not in globalconfig:
     globalconfig["xxxcast"] = True
     needcast = True
 
+
+def findFixedRuntime():
+    maxversion = (0, 0, 0, 0)
+    maxvf = None
+    for f in os.listdir("."):
+        f = os.path.abspath(f)
+        version = winsharedutils.detect_webview2_version(f)
+        # 这个API似乎可以检测runtime是否是有效的，比自己查询版本更好
+        if not version:
+            continue
+        if version > maxversion:
+            maxversion = version
+            maxvf = f
+            print(maxversion, f)
+    return maxvf
+
+
 if "rendertext_using" not in globalconfig:
     v = platform.version().split(".")
-    is21h2 = int(v[0]) >= 10 and int(v[-1]) >= 22000
-    globalconfig["rendertext_using"] = ["textbrowser", "webview"][is21h2]
-
+    iswin8later = tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 1)
+    webview2version = winsharedutils.detect_webview2_version()
+    if iswin8later:
+        if findFixedRuntime():
+            # 如果手动放置，那一定选手动的，不管功能完不完整。
+            globalconfig["rendertext_using"] = "webview"
+        else:
+            if webview2version and webview2version >= (100, 0, 0, 0):
+                # <=99的功能不完整
+                globalconfig["rendertext_using"] = "webview"
+            else:
+                globalconfig["rendertext_using"] = "textbrowser"
+    else:
+        # win7上无边框窗口渲染有问题，所以一定不优先
+        globalconfig["rendertext_using"] = "textbrowser"
 
 # fmt: off
 oldlanguage = ["zh","ja","en","ru","es","ko","fr","cht","vi","tr","pl","uk","it","ar","th","bo","de","sv","nl"]

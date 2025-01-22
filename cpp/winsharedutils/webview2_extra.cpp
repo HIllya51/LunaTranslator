@@ -362,3 +362,13 @@ DECLARE_API void get_webview_html(ICoreWebView2Controller *m_host, void (*cb)(LP
                              INFINITE, 1, asyncMethodCompleteEvent.addressof(), &handleIndex);
 #endif
 }
+
+DECLARE_API void detect_webview2_version(LPCWSTR dir, void (*cb)(LPCWSTR))
+{
+#ifndef WINXP
+    wil::unique_cotaskmem_string version;
+    if (FAILED(GetAvailableCoreWebView2BrowserVersionString(dir, &version)))
+        return;
+    cb(version.get());
+#endif
+}
