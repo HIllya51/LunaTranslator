@@ -577,6 +577,7 @@ namespace
         static std::string last;
         if (last == s)
             return buffer->clear();
+        last = s;
         FPCSG00855_2_1(buffer, hp);
     }
     void FPCSG00477(TextBuffer *buffer, HookParam *hp)
@@ -591,6 +592,18 @@ namespace
         auto ws = StringToWideString(buffer->viewA(), 932).value();
         strReplace(ws, L"^", L"");
         buffer->from(WideStringToString(ws, 932));
+    }
+    void PCSG00829(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        static std::wstring last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        strReplace(s, L"\\n　", L"");
+        strReplace(s, L"\\n", L"");
+        s = std::regex_replace(s, std::wregex(LR"(\[(.*?),\d\])"), L"");
+        buffer->from(s);
     }
     template <int __>
     void PCSG00451(TextBuffer *buffer, HookParam *hp)
@@ -847,6 +860,8 @@ namespace
             // ハナヤマタ　よさこいLIVE！
             {0x810789EE, {CODEC_UTF16, 3, 0, 0, PCSG00451<1>, "PCSG00451"}},
             {0x81078B22, {CODEC_UTF16, 1, 0, 0, PCSG00451<0>, "PCSG00451"}},
+            // 喧嘩番長 乙女
+            {0x800086C0, {CODEC_UTF16, 0, 0, 0, PCSG00829, "PCSG00829"}}, // 缺少部分
 
         };
         return 1;
