@@ -92,8 +92,9 @@ class AnkiWindow(QWidget):
             self.window().hide()
             gobject.baseobject.translation_ui.hide_()
 
-        def ocroncefunction(rect):
-            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        def ocroncefunction(rect, img=None):
+            if not img:
+                img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
             fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
             img.save(fname)
             self.settextsignal.emit(self.editpath, os.path.abspath(fname))
@@ -1080,10 +1081,11 @@ class searchwordW(closeashidewindow):
         self.state = 0
 
     @threader
-    def ocr_do_function(self, rect):
+    def ocr_do_function(self, rect, img=None):
         if not rect:
             return
-        img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        if not img:
+            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
         text, infotype = ocr_run(img)
         if infotype:
             gobject.baseobject.displayinfomessage(text, infotype)

@@ -495,10 +495,11 @@ class TranslatorWindow(resizableframeless):
         self.changeextendstated()
 
     @threader
-    def ocr_do_function(self, rect):
+    def ocr_do_function(self, rect, img=None):
         if not rect:
             return
-        img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        if not img:
+            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
         text, infotype = ocr_run(img)
         if infotype:
             gobject.baseobject.displayinfomessage(text, infotype)
@@ -506,9 +507,9 @@ class TranslatorWindow(resizableframeless):
             gobject.baseobject.textgetmethod(text, False)
 
     def ocr_once_function(self):
-        def ocroncefunction(rect):
+        def ocroncefunction(rect, img=None):
             self.ocr_once_follow_rect = rect
-            self.ocr_do_function(rect)
+            self.ocr_do_function(rect, img)
 
         rangeselct_function(ocroncefunction)
 
@@ -1302,16 +1303,16 @@ class TranslatorWindow(resizableframeless):
             return
         self.showhidestate = False
 
-        rangeselct_function(functools.partial(self.afterrange, False))
+        rangeselct_function(functools.partial(self.afterrange, False), False)
 
     def clickRangeclear(self):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
             return
         self.showhidestate = False
-        rangeselct_function(functools.partial(self.afterrange, True))
+        rangeselct_function(functools.partial(self.afterrange, True), False)
 
     @tryprint
-    def afterrange(self, clear, rect):
+    def afterrange(self, clear, rect, img=None):
         if clear or not globalconfig["multiregion"]:
             gobject.baseobject.textsource.clearrange()
         gobject.baseobject.textsource.newrangeadjustor()

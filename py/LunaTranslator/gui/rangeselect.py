@@ -283,17 +283,147 @@ class rangeselect(QMainWindow):
             self.callbackfunction(event)
 
 
+class rangeselect_1(QMainWindow):
+    def __init__(self, xx):
+
+        super(rangeselect_1, self).__init__()
+        self.xx = xx
+        self.setWindowFlags(
+            Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.WindowStaysOnTopHint
+            | Qt.WindowType.Tool
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.backlabel = QLabel(self)
+        self.backlabel.move(0, 0)
+        self.backlabel2 = QLabel(self)
+        self.backlabel2.move(0, 0)
+        self.rectlabel = QLabel(self)
+        # self.setWindowOpacity(0.5)
+        self.setMouseTracking(True)
+        self.setCursor(Qt.CursorShape.CrossCursor)
+
+    def reset(self):
+        screen = QApplication.primaryScreen()
+        self.setGeometry(QRect(QPoint(0, 0), screen.size()))
+
+        screen_geometry = screen.geometry()
+        if self.xx:
+            screenshot = screen.grabWindow(
+                0,
+                screen_geometry.x(),
+                screen_geometry.y(),
+                screen_geometry.width(),
+                screen_geometry.height(),
+            )
+            self.screenshot = screenshot
+            self.backlabel.setPixmap(screenshot)
+        self.once = True
+        self.is_drawing = False
+        self.start_point = QPoint()
+        self.end_point = QPoint()
+        self.rectlabel.resize(0, 0)
+        self.rectlabel.setStyleSheet(
+            " border:%spx solid %s; background-color: rgba(0,0,0, 0)"
+            % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"])
+        )
+        self.backlabel2.setStyleSheet(
+            "background-color: rgba(255,255,255, %s)" % globalconfig["ocrselectalpha"]
+        )
+
+    def resizeEvent(self, e: QResizeEvent):
+        self.backlabel.resize(e.size())
+        self.backlabel2.resize(e.size())
+
+    def paintEvent(self, event):
+
+        if self.is_drawing:
+
+            pp = QPainter(self)
+            pen = QPen(QColor(globalconfig["ocrrangecolor"]))
+            pen.setWidth(globalconfig["ocrrangewidth"])
+            pp.setPen(pen)
+            _x1 = self.start_point.x()
+            _y1 = self.start_point.y()
+            _x2 = self.end_point.x()
+            _y2 = self.end_point.y()
+            _sp = QPoint(
+                min(_x1, _x2) - globalconfig["ocrrangewidth"],
+                min(_y1, _y2) - globalconfig["ocrrangewidth"],
+            )
+            _ep = QPoint(
+                max(_x1, _x2) + globalconfig["ocrrangewidth"],
+                max(_y1, _y2) + globalconfig["ocrrangewidth"],
+            )
+            self.rectlabel.setGeometry(QRect(_sp, _ep))
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.RightButton:
+            self.once = False
+            self.close()
+        elif event.button() == Qt.MouseButton.LeftButton:
+            self.end_point = self.start_point = event.pos()
+            self.is_drawing = True
+
+    def mouseMoveEvent(self, event):
+
+        if not self.is_drawing:
+            self.is_drawing = True
+            self.end_point = self.start_point = event.pos()
+        else:
+            self.end_point = event.pos()
+            self.update()
+
+    def getRange(self):
+        x1, y1, x2, y2 = (
+            self.start_point.x() * self.devicePixelRatioF(),
+            self.start_point.y() * self.devicePixelRatioF(),
+            self.end_point.x() * self.devicePixelRatioF(),
+            self.end_point.y() * self.devicePixelRatioF(),
+        )
+
+        x1, x2 = min(x1, x2), max(x1, x2)
+        y1, y2 = min(y1, y2), max(y1, y2)
+
+        return ((int(x1), int(y1)), (int(x2), int(y2)))
+
+    def callbackfunction(self, event):
+        if not self.once:
+            return
+        self.once = False
+        self.end_point = event.pos()
+        self.close()
+        try:
+            (x1, y1), (x2, y2) = self.getRange()
+            self.callback(
+                self.getRange(),
+                (
+                    self.screenshot.copy(QRect(QPoint(x1, y1), QPoint(x2, y2)))
+                    if self.xx
+                    else None
+                ),
+            )
+        except:
+            print_exc()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.callbackfunction(event)
+
+
 screen_shot_ui = None
 
 
-def rangeselct_function(callback):
+def rangeselct_function(callback, x=True):
     global screen_shot_ui
     if screen_shot_ui is not None:
         # 完全销毁旧的实例
         screen_shot_ui.deleteLater()
         screen_shot_ui = None
-
-    screen_shot_ui = rangeselect()
+    if len(QApplication.screens()) == 1:
+        screen_shot_ui = rangeselect_1(x)
+    else:
+        screen_shot_ui = rangeselect()
     screen_shot_ui.show()
     screen_shot_ui.reset()
     screen_shot_ui.callback = callback
