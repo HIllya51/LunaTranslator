@@ -223,13 +223,12 @@ bool avg3216dattach_function()
   if (!addr)
     return false;
   auto check = MemDbg::findBytes(pattern1, sizeof(pattern1), addr, addr + 0x200);
-  if (check == 0)
+  if (!check)
     return false;
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(1);
   hp.type = NO_CONTEXT | DATA_INDIRECT;
-  // GROWL_DWORD(hp.address);
   return NewHook(hp, "avg3216d");
 }
 
@@ -256,7 +255,15 @@ bool avg3216dattach_function2()
   hp.address = addr;
   hp.offset = stackoffset(1);
   hp.type = USING_STRING;
-  // GROWL_DWORD(hp.address);
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    // いいなり
+    // https://vndb.org/r17019
+    if (startWith(buffer->viewA(), "\x81\x7a"))
+    {
+      buffer->from(buffer->viewA().substr(2));
+    }
+  };
   return NewHook(hp, "avg3217d");
 }
 bool avg3216d::attach_function()

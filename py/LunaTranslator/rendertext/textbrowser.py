@@ -85,11 +85,11 @@ class QTextBrowser_1(QTextEdit):
     def selectcg(self):
         self.pr = self.textCursor().selectedText()
 
-    def getcurrlabel(self, ev: QMouseEvent):
+    def getcurrlabel(self, pos: QPoint):
         for label in self.parent().searchmasklabels:
             if not label.isVisible():
                 continue
-            if not label.geometry().contains(ev.pos()):
+            if not label.geometry().contains(pos):
                 continue
             return label
 
@@ -106,9 +106,8 @@ class QTextBrowser_1(QTextEdit):
             ev.ignore()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         try:
-            label = self.getcurrlabel(event)
+            label = self.getcurrlabel(event.pos())
             if label and label.refmask.callback:
                 if event.button() == Qt.MouseButton.LeftButton:
                     if self.prpos == event.pos() or not self.pr:
@@ -116,7 +115,6 @@ class QTextBrowser_1(QTextEdit):
                 elif event.button() == Qt.MouseButton.RightButton:
                     if not self.pr:
                         label.refmask.callback(True)
-                        self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
                         return event.ignore()
         except:
             pass
@@ -151,7 +149,7 @@ class QTextBrowser_1(QTextEdit):
                 )
             except:
                 pass
-        targetlabel = self.getcurrlabel(ev)
+        targetlabel = self.getcurrlabel(ev.pos())
         if targetlabel and targetlabel.isVisible():
             try:
                 targetlabel.refmask.setStyleSheet("background-color: rgba(0,0,0,0.5);")
@@ -214,7 +212,10 @@ class TextBrowser(QWidget, dataget):
 
         self.__makeborder(event.size())
 
-    def menunoselect(self):
+    def menunoselect(self, p):
+        currlabel = self.textbrowser.getcurrlabel(p)
+        if currlabel and currlabel.isVisible():
+            return
         menu = QMenu(gobject.baseobject.commonstylebase)
         search = LAction(("清空"))
         menu.addAction(search)
@@ -226,7 +227,7 @@ class TextBrowser(QWidget, dataget):
     def showmenu(self, p):
         curr = self.textbrowser.textCursor().selectedText()
         if not curr:
-            return self.menunoselect()
+            return self.menunoselect(p)
         menu = QMenu(gobject.baseobject.commonstylebase)
 
         search = LAction(("查词"))
