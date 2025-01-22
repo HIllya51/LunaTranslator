@@ -1,4 +1,4 @@
-#include "Yuris.h"
+﻿#include "Yuris.h"
 /********************************************************************************************
 YU-RIS hook:
   Becomes common recently. I first encounter this game in Whirlpool games.
@@ -417,6 +417,21 @@ bool yuris8()
 }
 bool InsertYurisHook()
 {
+  auto wcmb = Util::FindImportEntry(processStartAddress, (DWORD)WideCharToMultiByte);
+  if (!wcmb)
+    return false;
+  // 国际版会有一个wcmb(932)的调用，日文版没有
+  BYTE check[] = {
+      0x68, 0xA4, 0x03, 0x00, 0x00,
+      0xff, 0x15, XX4};
+  *(int *)(check + 5 + 2) = wcmb;
+  if (!MemDbg::findBytes(check, sizeof(check), processStartAddress, processStopAddress))
+    return 0;
+  return CP_UTF8;
+}
+bool Yuris::attach_function()
+{
+  codepage = codepagechecker(); // 这一检测可能不是安全的，但在测试的多个游戏上结果正确
   bool ok = InsertYuris1Hook();
   ok = InsertYuris2Hook() || ok;
   ok = InsertYuris4Hook() || ok;
