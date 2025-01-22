@@ -125,7 +125,10 @@ void TextThread::Flush()
 	{
 		sentence.erase(std::remove(sentence.begin(), sentence.end(), 0), sentence.end());
 		if (Output(*this, sentence))
+		{
 			storage->append(sentence + L"\n");
+			latest->assign(sentence.c_str());
+		}
 	}
 
 	std::scoped_lock lock(bufferMutex);

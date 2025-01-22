@@ -21,6 +21,7 @@ public:
 	void Push(const wchar_t *data);
 
 	Synchronized<std::wstring> storage;
+	Synchronized<std::wstring> latest;
 	const int64_t handle;
 	const std::wstring name;
 	const ThreadParam tp;

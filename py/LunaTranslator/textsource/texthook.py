@@ -270,7 +270,7 @@ class texthook(basetext):
         self.Luna_embedcallback.argtypes = ThreadParam, LPCWSTR, LPCWSTR
 
         self.Luna_QueryThreadHistory = LunaHost.Luna_QueryThreadHistory
-        self.Luna_QueryThreadHistory.argtypes = (ThreadParam, c_void_p)
+        self.Luna_QueryThreadHistory.argtypes = (ThreadParam, c_bool, c_void_p)
         procs = [
             ProcessEvent(self.onprocconnect),
             ProcessEvent(self.removeproc),
@@ -403,9 +403,9 @@ class texthook(basetext):
             gobject.baseobject.hookselectdialog.realshowhide.emit(True)
         self.injectproc(injecttimeout, pids)
 
-    def QueryThreadHistory(self, tp):
+    def QueryThreadHistory(self, tp, _latest=False):
         ret = []
-        self.Luna_QueryThreadHistory(tp, QueryHistoryCallback(ret.append))
+        self.Luna_QueryThreadHistory(tp, _latest, QueryHistoryCallback(ret.append))
         return ret[0]
 
     def removeproc(self, pid):
@@ -680,15 +680,16 @@ class texthook(basetext):
             if len(self.multiselectedcollector) == 0:
                 continue
             with self.multiselectedcollectorlock:
-                try:
-                    self.multiselectedcollector.sort(
-                        key=lambda xx: self.selectedhook.index(xx[0])
-                    )
-                except:
-                    pass
-                _collector = "\n".join([_[1] for _ in self.multiselectedcollector])
-                self.dispatchtext(_collector)
+                self.dispatchtextlines(self.multiselectedcollector)
                 self.multiselectedcollector.clear()
+
+    def dispatchtextlines(self, keyandtexts):
+        try:
+            keyandtexts.sort(key=lambda xx: self.selectedhook.index(xx[0]))
+        except:
+            pass
+        _collector = "\n".join([_[1] for _ in keyandtexts])
+        self.dispatchtext(_collector)
 
     def dispatchtext_multiline_delayed(self, key, text):
         with self.multiselectedcollectorlock:

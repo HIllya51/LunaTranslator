@@ -601,9 +601,7 @@ class hookselect(closeashidewindow):
         self.vboxlayout.addLayout(self.searchtextlayout)
         __ = LPushButton("游戏适配")
         __.clicked.connect(
-            lambda: os.startfile(
-                dynamiclink("{main_server}/Resource/game_support")
-            )
+            lambda: os.startfile(dynamiclink("{main_server}/Resource/game_support"))
         )
         self.searchtextlayout.addWidget(__)
 
@@ -836,6 +834,14 @@ class hookselect(closeashidewindow):
             savehook_new_data[gobject.baseobject.gameuid].update(
                 {"hook": gobject.baseobject.textsource.serialselectedhook()}
             )
+
+            directshowcollect = []
+            for key in gobject.baseobject.textsource.selectedhook:
+                hc, hn, tp = key
+                directshowcollect.append(
+                    (key, gobject.baseobject.textsource.QueryThreadHistory(tp, True))
+                )
+            gobject.baseobject.textsource.dispatchtextlines(directshowcollect)
         except:
             print_exc()
 
