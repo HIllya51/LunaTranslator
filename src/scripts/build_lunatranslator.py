@@ -111,7 +111,8 @@ def downloadmecab(arch):
         subprocess.run("7z x -y mecab.zip")
     os.chdir(rootDir)
     fuckmove("scripts/temp/ALL/DLL32/libmecab.dll", "files/plugins/DLL32")
-    fuckmove("scripts/temp/ALL/DLL64/libmecab.dll", "files/plugins/DLL64")
+    if arch != "xp":
+        fuckmove("scripts/temp/ALL/DLL64/libmecab.dll", "files/plugins/DLL64")
 
 
 def downloadmapie():
