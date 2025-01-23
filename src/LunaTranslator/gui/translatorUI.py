@@ -538,7 +538,7 @@ class TranslatorWindow(resizableframeless):
         maps = {}
         if gameuid:
             for name, link in savehook_new_data[gameuid]["relationlinks"]:
-                act = QAction(name)
+                act = QAction(name, menu)
                 maps[act] = link
                 menu.addAction(act)
         if (
@@ -548,7 +548,7 @@ class TranslatorWindow(resizableframeless):
         ):
             menu.addSeparator()
         for name, link in globalconfig["relationlinks"]:
-            act = QAction(name)
+            act = QAction(name, menu)
             maps[act] = link
             menu.addAction(act)
         action = menu.exec(QCursor.pos())

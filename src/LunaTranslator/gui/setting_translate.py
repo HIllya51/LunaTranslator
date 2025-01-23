@@ -120,8 +120,8 @@ def getalistname(parent, copy, btnplus, callback):
 
 def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _):
     menu = QMenu(qlabel)
-    editname = LAction("重命名")
-    delete = LAction("删除")
+    editname = LAction("重命名", menu)
+    delete = LAction("删除", menu)
     menu.addAction(editname)
     which = translate_exits(apiuid, which=True)
     if which == 1:

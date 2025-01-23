@@ -76,7 +76,7 @@ class rangeadjust(Mainw):
 
     def showmenu(self, p):
         menu = QMenu(self)
-        close = LAction(("关闭"))
+        close = LAction("关闭", menu)
         menu.addAction(close)
         action = menu.exec(QCursor.pos())
         if action == close:

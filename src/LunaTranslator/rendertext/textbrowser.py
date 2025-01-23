@@ -217,7 +217,7 @@ class TextBrowser(QWidget, dataget):
         if currlabel and currlabel.isVisible():
             return
         menu = QMenu(gobject.baseobject.commonstylebase)
-        search = LAction(("清空"))
+        search = LAction("清空", menu)
         menu.addAction(search)
         action = menu.exec(QCursor.pos())
         if action == search:
@@ -230,10 +230,10 @@ class TextBrowser(QWidget, dataget):
             return self.menunoselect(p)
         menu = QMenu(gobject.baseobject.commonstylebase)
 
-        search = LAction(("查词"))
-        translate = LAction(("翻译"))
-        tts = LAction(("朗读"))
-        copy = LAction(("复制"))
+        search = LAction("查词", menu)
+        translate = LAction("翻译", menu)
+        tts = LAction("朗读", menu)
+        copy = LAction("复制", menu)
         menu.addAction(search)
         menu.addAction(translate)
         menu.addAction(tts)

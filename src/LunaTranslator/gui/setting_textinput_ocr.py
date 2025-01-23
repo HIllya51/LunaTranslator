@@ -58,7 +58,7 @@ class triggereditor(LDialog):
         if r < 0:
             return
         menu = QMenu(self.hctable)
-        remove = LAction("删除")
+        remove = LAction("删除", menu)
         menu.addAction(remove)
         action = menu.exec(self.hctable.cursor().pos())
 

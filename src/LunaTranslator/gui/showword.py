@@ -954,9 +954,9 @@ class showdiction(QWidget):
         isw = idx.data(isWordNode)
         item = self.model.itemFromIndex(idx)
         menu = QMenu(self)
-        copy = LAction("复制")
-        search = LAction("查词")
-        label = LAction("标记")
+        copy = LAction("复制", menu)
+        search = LAction("查词", menu)
+        label = LAction("标记", menu)
         label.setCheckable(True)
         menu.addAction(copy)
         if isw:
@@ -1166,7 +1166,7 @@ class searchwordW(closeashidewindow):
     def showmenu_auto_sound(self, _):
 
         menu = QMenu(self)
-        auto = LAction("自动")
+        auto = LAction("自动", menu)
         auto.setCheckable(True)
         auto.setChecked(globalconfig["is_search_word_auto_tts"])
         menu.addAction(auto)
@@ -1178,7 +1178,7 @@ class searchwordW(closeashidewindow):
         menu = QMenu(self)
         __ = []
         for word in self.historys[:16]:
-            act = QAction(word)
+            act = QAction(word, menu)
             __.append(act)
             menu.addAction(act)
         action = menu.exec(QCursor.pos())
@@ -1309,7 +1309,7 @@ class searchwordW(closeashidewindow):
 
     def tabmenu(self, _):
         menu = QMenu(self)
-        revert = LAction("还原")
+        revert = LAction("还原", menu)
         menu.addAction(revert)
         action = menu.exec(QCursor.pos())
         if action == revert:

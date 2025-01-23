@@ -130,10 +130,10 @@ class TableViewW(QTableView):
         if not self.currentIndex().isValid():
             return
         menu = QMenu(self)
-        up = LAction("上移")
-        down = LAction("下移")
-        copy = LAction("复制")
-        paste = LAction("粘贴")
+        up = LAction("上移", menu)
+        down = LAction("下移", menu)
+        copy = LAction("复制", menu)
+        paste = LAction("粘贴", menu)
         if self.updown:
             menu.addAction(up)
             menu.addAction(down)
@@ -1823,10 +1823,10 @@ class listediter(LDialog):
         if not curr.isValid():
             return
         menu = QMenu(self.hctable)
-        remove = LAction("删除")
-        copy = LAction("复制")
-        up = LAction("上移")
-        down = LAction("下移")
+        remove = LAction("删除", menu)
+        copy = LAction("复制", menu)
+        up = LAction("上移", menu)
+        down = LAction("下移", menu)
         if not (self.isrankeditor):
             menu.addAction(remove)
             menu.addAction(copy)

@@ -525,17 +525,17 @@ class dialog_savedgame_new(QWidget):
     def showmenu(self, p):
         menu = QMenu(self)
 
-        editname = LAction(("修改列表名称"))
-        addlist = LAction(("创建列表"))
-        dellist = LAction(("删除列表"))
+        editname = LAction("修改列表名称", menu)
+        addlist = LAction("创建列表", menu)
+        dellist = LAction("删除列表", menu)
 
-        startgame = LAction(("开始游戏"))
-        delgame = LAction(("删除游戏"))
-        opendir = LAction(("打开目录"))
-        addtolist = LAction(("添加到列表"))
-        gamesetting = LAction(("游戏设置"))
-        addgame = LAction(("添加游戏"))
-        batchadd = LAction(("批量添加"))
+        startgame = LAction("开始游戏", menu)
+        delgame = LAction("删除游戏", menu)
+        opendir = LAction("打开目录", menu)
+        addtolist = LAction("添加到列表", menu)
+        gamesetting = LAction("游戏设置", menu)
+        addgame = LAction("添加游戏", menu)
+        batchadd = LAction("批量添加", menu)
 
         if self.currentfocusuid:
             exists = os.path.exists(get_launchpath(self.currentfocusuid))

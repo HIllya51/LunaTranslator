@@ -673,8 +673,8 @@ class hookselect(closeashidewindow):
         if not index.isValid():
             return
         menu = QMenu(self.tttable)
-        remove = LAction(("移除"))
-        copy = LAction(("复制特殊码"))
+        remove = LAction("移除", menu)
+        copy = LAction("复制特殊码", menu)
         menu.addAction(remove)
         menu.addAction(copy)
         action = menu.exec(self.tttable.cursor().pos())

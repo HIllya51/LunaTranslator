@@ -544,17 +544,17 @@ class pixwrapper(QWidget):
     def menu(self, _1, _):
         menu = QMenu(self)
 
-        setimage = LAction("设为封面")
+        setimage = LAction("设为封面", menu)
         curr = savehook_new_data[self.k]["currentvisimage"]
         curricon = savehook_new_data[self.k].get("currenticon")
-        seticon = LAction("设为图标")
+        seticon = LAction("设为图标", menu)
         seticon.setCheckable(True)
         seticon.setChecked(curr == curricon)
-        deleteimage = LAction("删除图片")
-        copyimage = LAction("复制图片")
-        deleteimage_x = LAction("删除图片文件")
-        hualang = LAction("画廊")
-        pos = LAction("位置")
+        deleteimage = LAction("删除图片", menu)
+        copyimage = LAction("复制图片", menu)
+        deleteimage_x = LAction("删除图片文件", menu)
+        hualang = LAction("画廊", menu)
+        pos = LAction("位置", menu)
         if curr and os.path.exists(extradatas["localedpath"].get(curr, curr)):
             menu.addAction(setimage)
             menu.addAction(seticon)
@@ -672,11 +672,11 @@ class dialog_savedgame_v3(QWidget):
     def stack_showmenu(self, p):
         menu = QMenu(self)
 
-        addlist = LAction("创建列表")
-        startgame = LAction("开始游戏")
-        delgame = LAction("删除游戏")
-        opendir = LAction("打开目录")
-        addtolist = LAction("添加到列表")
+        addlist = LAction("创建列表", menu)
+        startgame = LAction("开始游戏", menu)
+        delgame = LAction("删除游戏", menu)
+        opendir = LAction("打开目录", menu)
+        addtolist = LAction("添加到列表", menu)
         if not self.currentfocusuid:
 
             menu.addAction(addlist)
@@ -903,13 +903,13 @@ class dialog_savedgame_v3(QWidget):
         self.currentfocusuid = None
         self.reftagid = tagid
         menu = QMenu(self)
-        editname = LAction("修改列表名称")
-        addlist = LAction("创建列表")
-        dellist = LAction("删除列表")
-        Upaction = LAction("上移")
-        Downaction = LAction("下移")
-        addgame = LAction("添加游戏")
-        batchadd = LAction("批量添加")
+        editname = LAction("修改列表名称", menu)
+        addlist = LAction("创建列表", menu)
+        dellist = LAction("删除列表", menu)
+        Upaction = LAction("上移", menu)
+        Downaction = LAction("下移", menu)
+        addgame = LAction("添加游戏", menu)
+        batchadd = LAction("批量添加", menu)
         menu.addAction(Upaction)
         menu.addAction(Downaction)
         menu.addSeparator()

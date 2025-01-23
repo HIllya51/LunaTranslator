@@ -926,9 +926,9 @@ class dialog_setting_game_internal(QWidget):
         if r < 0:
             return
         menu = QMenu(self.__textprocinternaltable)
-        remove = LAction(("删除"))
-        up = LAction("上移")
-        down = LAction("下移")
+        remove = LAction("删除", menu)
+        up = LAction("上移", menu)
+        down = LAction("下移", menu)
         menu.addAction(remove)
         menu.addAction(up)
         menu.addAction(down)
