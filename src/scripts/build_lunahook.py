@@ -4,7 +4,7 @@ import subprocess
 rootDir = os.path.dirname(__file__)
 if not rootDir:
     rootDir = os.path.abspath(".")
-rootDir = os.path.abspath(os.path.join(rootDir, "../../src/cpp/LunaHook"))
+rootDir = os.path.abspath(os.path.join(rootDir, "../cpp/LunaHook"))
 if len(sys.argv) and sys.argv[1] == "loadversion":
     os.chdir(rootDir)
     with open("CMakeLists.txt", "r", encoding="utf8") as ff:
