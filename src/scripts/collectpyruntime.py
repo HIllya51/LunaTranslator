@@ -9,7 +9,7 @@ if not rootDir:
 else:
     rootDir = os.path.abspath(rootDir)
 rootthisfiledir=rootDir
-rootDir=os.path.abspath(os.path.join(rootDir,'../../py'))
+rootDir=os.path.abspath(os.path.join(rootDir,'../../src'))
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = platform.architecture()[0] == "32bit"

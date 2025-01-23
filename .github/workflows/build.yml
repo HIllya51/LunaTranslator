@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    paths: [ '.github/scripts/**','.github/workflows/**','py/**','cpp/**']
+    paths: [ '.github/workflows/**','src/**']
   pull_request:
-    paths: [ '.github/scripts/**','.github/workflows/**','py/**','cpp/**']
+    paths: [ '.github/workflows/**','src/**']
 
 jobs:
   buildluna:

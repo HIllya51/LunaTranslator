@@ -6,13 +6,13 @@ from importanalysis import importanalysis
 x86 = platform.architecture()[0] == "32bit"
 if sys.argv[1] == "32":
     targetdir = r"build\LunaTranslator_x86"
-    launch = r"..\cpp\builds\_x86"
+    launch = "../src/cpp/builds/_x86"
     baddll = "DLL64"
     pyrt = "../build/pyrt_x86/runtime"
     downlevel = r"C:\Windows\SysWOW64\downlevel"
 else:
     baddll = "DLL32"
-    launch = r"..\cpp\builds\_x64"
+    launch = "../src/cpp/builds/_x64"
     targetdir = r"build\LunaTranslator"
     pyrt = "../build/pyrt_x64/runtime"
     downlevel = r"C:\Windows\system32\downlevel"

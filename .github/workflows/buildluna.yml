@@ -12,11 +12,11 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python .github/scripts/build_lunatranslator.py cpp xp
+      - run:  python src/scripts/build_lunatranslator.py cpp xp
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_xp
-          path: cpp/builds
+          path: src/cpp/builds
   hook_xp:
     runs-on: windows-2019
     permissions:
@@ -25,17 +25,17 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init cpp/libs/minhook
-      - run: git submodule update cpp/libs/minhook
+      - run: git submodule init src/cpp/libs/minhook
+      - run: git submodule update src/cpp/libs/minhook
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python .github/scripts/build_lunahook.py build winxp_core
+      - run: python src/scripts/build_lunahook.py build winxp_core
 
       - uses: actions/upload-artifact@v4
         with:
           name: hook_xp
-          path: cpp/LunaHook/builds/Release_winxp
+          path: src/cpp/LunaHook/builds/Release_winxp
 
   hook:
     runs-on: windows-latest
@@ -48,17 +48,17 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init cpp/libs/minhook
-      - run: git submodule update cpp/libs/minhook
+      - run: git submodule init src/cpp/libs/minhook
+      - run: git submodule update src/cpp/libs/minhook
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python .github/scripts/build_lunahook.py build ${{matrix.bits}} 1
+      - run: python src/scripts/build_lunahook.py build ${{matrix.bits}} 1
 
       - uses: actions/upload-artifact@v4
         with:
           name: hook_${{matrix.bits}}
-          path: cpp/LunaHook/builds/Release
+          path: src/cpp/LunaHook/builds/Release
   pyrt:
     runs-on: windows-latest
     strategy:
@@ -71,11 +71,11 @@ jobs:
           python-version: '3.7.9'
           architecture: ${{ matrix.architecture }}
       
-      - run:  python .github/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} 3.7.9
+      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
           name: pyrt_${{ matrix.architecture }}
-          path: py/pyrt
+          path: src/pyrt
   build_cpp:
     runs-on: windows-latest
     strategy:
@@ -89,11 +89,11 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python .github/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }}
+      - run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_${{ matrix.architecture }}
-          path: cpp/builds
+          path: src/cpp/builds
           
   
   merge:
@@ -108,28 +108,28 @@ jobs:
             fname: LunaTranslator
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init py/files/LunaTranslator_qss
-      - run: git submodule update py/files/LunaTranslator_qss
+      - run: git submodule init src/files/LunaTranslator_qss
+      - run: git submodule update src/files/LunaTranslator_qss
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - run:  python .github/scripts/build_lunatranslator.py merge ${{ matrix.architecture }}
+      - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
-          path: py/build/${{matrix.fname}}.zip
+          path: src/build/${{matrix.fname}}.zip
   merge_xp:
     runs-on: windows-latest
     needs: [build_cpp_xp,hook_xp]
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init py/files/LunaTranslator_qss
-      - run: git submodule update py/files/LunaTranslator_qss
+      - run: git submodule init src/files/LunaTranslator_qss
+      - run: git submodule update src/files/LunaTranslator_qss
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - run:  python .github/scripts/build_lunatranslator.py merge xp
+      - run:  python src/scripts/build_lunatranslator.py merge xp
       - uses: actions/upload-artifact@v4
         with:
           name: LunaTranslator_x86_winxp
-          path: py/build/LunaTranslator_x86_winxp.zip
+          path: src/build/LunaTranslator_x86_winxp.zip
