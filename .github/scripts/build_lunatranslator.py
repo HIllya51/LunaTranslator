@@ -13,7 +13,7 @@ rootthisfiledir = rootDir
 rootDir = os.path.abspath(os.path.join(rootDir, "../../src"))
 if sys.argv[1] == "loadversion":
     os.chdir(rootDir)
-    with open("../src/cpp/version.cmake", "r", encoding="utf8") as ff:
+    with open("cpp/version.cmake", "r", encoding="utf8") as ff:
         pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
         match = re.findall(pattern, ff.read())[0]
         version_major, version_minor, version_patch = match
@@ -236,7 +236,7 @@ def get_url_as_json(url):
 
 
 def buildPlugins(arch):
-    os.chdir(rootDir + "/../src/cpp/scripts")
+    os.chdir(rootDir + "/cpp/scripts")
     subprocess.run("python fetchwebview2.py")
     if arch == "x86":
         subprocess.run(
@@ -332,7 +332,7 @@ if __name__ == "__main__":
             downloadmecabxp()
             shutil.copytree(
                 f"{rootDir}/../build/cpp_xp",
-                f"{rootDir}/../src/cpp/builds",
+                f"{rootDir}/cpp/builds",
                 dirs_exist_ok=True,
             )
             shutil.copytree(
