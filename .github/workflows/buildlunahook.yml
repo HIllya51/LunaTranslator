@@ -11,8 +11,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init cpp/libs/minhook
-      - run: git submodule update cpp/libs/minhook
+      - run: git submodule init src/cpp/libs/minhook
+      - run: git submodule update src/cpp/libs/minhook
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: winxp
-          path: cpp/LunaHook/builds
+          path: src/cpp/LunaHook/builds
   
   build_plugin:
     runs-on: windows-latest
@@ -57,11 +57,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: plugin${{ matrix.bits }}
-          path: cpp/LunaHook/builds/plugin${{ matrix.bits }}.zip
+          path: src/cpp/LunaHook/builds/plugin${{ matrix.bits }}.zip
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: LunaHook
-          files: cpp/LunaHook/builds/plugin${{ matrix.bits }}.zip
+          files: src/cpp/LunaHook/builds/plugin${{ matrix.bits }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build_x:
@@ -75,8 +75,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init cpp/libs/minhook
-      - run: git submodule update cpp/libs/minhook
+      - run: git submodule init src/cpp/libs/minhook
+      - run: git submodule update src/cpp/libs/minhook
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
@@ -85,7 +85,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ${{matrix.bits}}
-          path: cpp/LunaHook/builds
+          path: src/cpp/LunaHook/builds
   
   build:
     runs-on: windows-latest
@@ -94,11 +94,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-            path: cpp/LunaHook/build
+            path: src/cpp/LunaHook/build
       - run: python .github/scripts/build_lunahook.py merge
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: LunaHook
-          files: cpp/LunaHook/builds/*
+          files: src/cpp/LunaHook/builds/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

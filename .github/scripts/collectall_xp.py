@@ -6,7 +6,7 @@ os.system("git clone --depth 1 https://github.com/HIllya51/py3.4_pyqt5.5.1")
 os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
 
 targetdir = r"build\LunaTranslator_x86_winxp"
-launch = r"..\cpp\builds\_x86"
+launch = "../src/cpp/builds/_x86"
 baddll = "DLL64"
 
 
