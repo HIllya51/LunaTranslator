@@ -10,7 +10,7 @@ if not rootDir:
 else:
     rootDir = os.path.abspath(rootDir)
 rootthisfiledir = rootDir
-rootDir = os.path.abspath(os.path.join(rootDir, "../../src"))
+rootDir = os.path.abspath(os.path.join(rootDir, ".."))
 
 
 def fuckmove(src, tgt):
@@ -24,9 +24,6 @@ def fuckmove(src, tgt):
             shutil.copytree(src, tgt, dirs_exist_ok=True)
 
 
-print(sys.version)
-print(__file__)
-print(rootDir)
 
 mylinks = {
     "ocr_models": {
