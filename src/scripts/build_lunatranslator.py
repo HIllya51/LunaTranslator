@@ -105,7 +105,7 @@ def downloadmecab(arch):
     os.chdir(f"{rootDir}/scripts/temp")
     if arch == "xp":
         subprocess.run(f"curl -C - -LO {mylinks['mecab_xp.zip']}")
-        subprocess.run("7z x -y mecab_xp.zip -oALL")
+        subprocess.run("7z x -y mecab_xp.zip")
     else:
         subprocess.run(f"curl -C - -LO {mylinks['mecab.zip']}")
         subprocess.run("7z x -y mecab.zip")
