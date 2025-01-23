@@ -321,7 +321,7 @@ if __name__ == "__main__":
         downloadalls(sys.argv[2] if len(sys.argv) >= 3 else "")
     elif sys.argv[1] == "loadversion":
         os.chdir(rootDir)
-        with open("cpp/version.cmake", "r", encoding="utf8") as ff:
+        with open("src/cpp/version.cmake", "r", encoding="utf8") as ff:
             pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
             match = re.findall(pattern, ff.read())[0]
             version_major, version_minor, version_patch = match
