@@ -93,7 +93,7 @@ public:
 class combobox : public control
 {
 public:
-    combobox(mainwindow *); 
+    combobox(mainwindow *);
     int additem(const std::wstring &);
     int currentidx();
     void dispatch(WPARAM);

@@ -1,7 +1,6 @@
 #ifndef API_SETTINGS_H
 #define API_SETTINGS_H
 
-
 namespace ebyroid
 {
 

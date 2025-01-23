@@ -3,20 +3,20 @@
 // 1/27/2013 jichi
 
 // Include typedef of BYTE
-//#include <windef.h>
-//#include <windows.h>
+// #include <windef.h>
+// #include <windows.h>
 
-//#ifdef QT_CORE_LIB
-//# include <qt_windows.h>
-//#else
-//# include <windows.h>
-//#endif
+// #ifdef QT_CORE_LIB
+// # include <qt_windows.h>
+// #else
+// # include <windows.h>
+// #endif
 
 #ifndef DISASM_BEGIN_NAMESPACE
-# define DISASM_BEGIN_NAMESPACE
+#define DISASM_BEGIN_NAMESPACE
 #endif
 #ifndef DISASM_END_NAMESPACE
-# define DISASM_END_NAMESPACE
+#define DISASM_END_NAMESPACE
 #endif
 
 DISASM_BEGIN_NAMESPACE

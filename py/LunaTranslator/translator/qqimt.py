@@ -5,22 +5,22 @@ import uuid, time
 class TS(basetrans):
 
     def translate(self, query):
-                
+
         headers = {
-            'accept': 'application/json, text/plain, */*',
-            'accept-language': 'zh-CN,zh;q=0.9,ar;q=0.8,sq;q=0.7,ru;q=0.6',
-            'content-type': 'application/json',
-            'origin': 'https://transmart.qq.com',
-            'priority': 'u=1, i',
-            'referer': 'https://transmart.qq.com/zh-CN/index?sourcelang=zh&targetlang=en&source=%E6%B5%8B%E8%AF%951%0A%E6%B5%8B%E8%AF%951%E8%AF%B7%E6%B1%82',
-            'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-origin',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-            'x-requested-with': 'XMLHttpRequest',
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "zh-CN,zh;q=0.9,ar;q=0.8,sq;q=0.7,ru;q=0.6",
+            "content-type": "application/json",
+            "origin": "https://transmart.qq.com",
+            "priority": "u=1, i",
+            "referer": "https://transmart.qq.com/zh-CN/index?sourcelang=zh&targetlang=en&source=%E6%B5%8B%E8%AF%951%0A%E6%B5%8B%E8%AF%951%E8%AF%B7%E6%B1%82",
+            "sec-ch-ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "x-requested-with": "XMLHttpRequest",
         }
 
         json_data = {

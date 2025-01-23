@@ -35,7 +35,7 @@ int kingsoftwmain(int argc, wchar_t *argv[])
         ret = setBasicDictPathW(key, path);
 
         HANDLE hPipe = CreateNamedPipe(argv[3], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-        
+
         SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[4]));
         ConnectNamedPipe(hPipe, NULL);
         while (true)

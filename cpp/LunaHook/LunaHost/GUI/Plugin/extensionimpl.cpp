@@ -1,6 +1,6 @@
 #include "extension.h"
 
-bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo);
+bool ProcessSentence(std::wstring &sentence, SentenceInfo sentenceInfo);
 
 /*
 	You shouldn't mess with this or even look at it unless you're certain you know what you're doing.
@@ -13,15 +13,16 @@ bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo);
 	This function may be run concurrently with itself: please make sure it's thread safe.
 	It will not be run concurrently with DllMain.
 */
-extern "C" __declspec(dllexport) wchar_t* OnNewSentence(wchar_t* sentence, const InfoForExtension* sentenceInfo)
+extern "C" __declspec(dllexport) wchar_t *OnNewSentence(wchar_t *sentence, const InfoForExtension *sentenceInfo)
 {
 	try
 	{
 		std::wstring sentenceCopy(sentence);
 		int oldSize = sentenceCopy.size();
-		if (ProcessSentence(sentenceCopy, SentenceInfo{ sentenceInfo }))
+		if (ProcessSentence(sentenceCopy, SentenceInfo{sentenceInfo}))
 		{
-			if (sentenceCopy.size() > oldSize) sentence = (wchar_t*)HeapReAlloc(GetProcessHeap(), HEAP_GENERATE_EXCEPTIONS, sentence, (sentenceCopy.size() + 1) * sizeof(wchar_t));
+			if (sentenceCopy.size() > oldSize)
+				sentence = (wchar_t *)HeapReAlloc(GetProcessHeap(), HEAP_GENERATE_EXCEPTIONS, sentence, (sentenceCopy.size() + 1) * sizeof(wchar_t));
 			wcscpy_s(sentence, sentenceCopy.size() + 1, sentenceCopy.c_str());
 		}
 	}
@@ -38,6 +39,6 @@ This API is not necessary, but when the plugin contains a configuration window, 
 /*
 extern "C" __declspec(dllexport) void VisSetting(bool vis)
 {
-	
+
 }
 */

@@ -166,7 +166,11 @@ def get_result2(url, appid, apisecret, apikey, sess, bina, lang):
 
 class OCR(baseocr):
     def langmap(self):
-        return {Languages.Chinese: "ch_en", Languages.English: "ch_en", Languages.TradChinese: "ch_en"}
+        return {
+            Languages.Chinese: "ch_en",
+            Languages.English: "ch_en",
+            Languages.TradChinese: "ch_en",
+        }
 
     def ocr(self, imagebinary):
         self.checkempty(["APPId", "APISecret", "APIKey"])

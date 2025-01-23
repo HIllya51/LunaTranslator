@@ -48,7 +48,7 @@ namespace
   void SpecialHookShina2(hook_context *context, HookParam *, uintptr_t *data, uintptr_t *split, size_t *len)
   {
     DWORD ptr = context->esi; // jichi: esi
-    *split = ptr;           // [esi]
+    *split = ptr;             // [esi]
     char *str = *(char **)(ptr + 0x160);
     strcpy(text_buffer, str);
     int skip = 0;

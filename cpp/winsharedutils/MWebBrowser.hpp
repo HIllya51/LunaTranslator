@@ -78,7 +78,7 @@ public:
     void Destroy();
     BOOL TranslateAccelerator(LPMSG pMsg);
     IWebBrowser2 *GetIWebBrowser2();
-    HRESULT GetIHTMLDocument2(IHTMLDocument2**);
+    HRESULT GetIHTMLDocument2(IHTMLDocument2 **);
     void AllowInsecure(BOOL bAllow);
     HRESULT Quit();
     HRESULT AddCustomObject(IDispatch *custObj, std::wstring name);

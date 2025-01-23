@@ -20,7 +20,6 @@ void StringCharReplacer(TextBuffer *buffer, const wchar_t *src, size_t srclen, w
 void StringReplacer(TextBuffer *buffer, const char *src, size_t srclen, const char *dst, size_t dstlen);
 void StringReplacer(TextBuffer *buffer, const wchar_t *src, size_t srclen, const wchar_t *dst, size_t dstlen);
 
-void NewLineCharToSpaceFilterA(TextBuffer *buffer, HookParam*);
+void NewLineCharToSpaceFilterA(TextBuffer *buffer, HookParam *);
 
-void all_ascii_Filter(TextBuffer *buffer, HookParam*);
-
+void all_ascii_Filter(TextBuffer *buffer, HookParam *);

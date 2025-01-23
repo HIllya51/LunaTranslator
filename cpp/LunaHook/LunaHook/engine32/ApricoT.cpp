@@ -74,7 +74,7 @@ static void SpecialHookApricoT(hook_context *context, HookParam *hp, TextBuffer 
   // DWORD reg_esp = regof(esp, esp_base);
   //*split = reg_esp;
   //*split = regof(esp, esp_base);
-  DWORD arg = context->stack[16];                                         // return address
+  DWORD arg = context->stack[16];                                       // return address
   *split = arg > processStartAddress ? arg - processStartAddress : arg; // use relative split value
   //*split = argof(1, esp_base);
   if (script[0] == L'<')

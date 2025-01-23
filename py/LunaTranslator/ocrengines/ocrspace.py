@@ -17,7 +17,7 @@ class OCR(baseocr):
             Languages.Arabic: "ara",
             Languages.German: "ger",
             Languages.Turkish: "tur",
-            Languages.Swedish : "swe",
+            Languages.Swedish: "swe",
             Languages.Spanish: "spa",
             Languages.Portuguese: "por",
         }

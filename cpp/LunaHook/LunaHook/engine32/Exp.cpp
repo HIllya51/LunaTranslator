@@ -1,4 +1,4 @@
-#include"Exp.h"
+#include "Exp.h"
 
 /** jichi 9/8/2014 EXP, http://www.exp-inc.jp
  *  Maker: EXP, 5pb
@@ -168,14 +168,15 @@ static void SpecialHookExp(hook_context *context, HookParam *hp, TextBuffer *buf
   // 00258035   0f84 ce000000    je .00258109
   // 0025803b   8b10             mov edx,dword ptr ds:[eax] ; move text address to edx
   DWORD arg1 = context->stack[1], // mov eax,dword ptr ss:[ebp+0x8]
-        arg3 = context->stack[3]; // size - 1
+      arg3 = context->stack[3];   // size - 1
   if (arg1 && arg3)
     if (DWORD text = *(DWORD *)arg1)
-      if (!(text > lasttext && text < lasttext + VNR_TEXT_CAPACITY)) { // text is not a subtext of lastText
-       lasttext = text; // mov edx,dword ptr ds:[eax]
+      if (!(text > lasttext && text < lasttext + VNR_TEXT_CAPACITY))
+      {                  // text is not a subtext of lastText
+        lasttext = text; // mov edx,dword ptr ds:[eax]
         //*len = arg3 - 1; // the last char is the '\0', so -1, but this value is not reliable
-        
-        buffer->from((char*)text);
+
+        buffer->from((char *)text);
         // Registers are not used as split as all of them are floating at runtime
         //*split = argof(4, esp_base); // arg4, always -8, this will merge all threads and result in repetition
         *split = context->stack[7]; // reduce repetition, but still have sub-text repeat
@@ -184,47 +185,50 @@ static void SpecialHookExp(hook_context *context, HookParam *hp, TextBuffer *buf
 bool InsertExpHook()
 {
   const BYTE bytes[] = {
-    0x55,                   // 00258020   55               push ebp  ; jichi: hook here, function starts, text in [arg1], size+1 in arg3
-    0x8b,0xec,              // 00258021   8bec             mov ebp,esp
-    0x8b,0x45, 0x08,        // 00258023   8b45 08          mov eax,dword ptr ss:[ebp+0x8]
-    0x83,0xec, 0x08,        // 00258026   83ec 08          sub esp,0x8
-    0x85,0xc0,              // 00258029   85c0             test eax,eax
-    0x0f,0x84, XX4,         // 0025802b   0f84 d8000000    je .00258109
-    0x83,0x7d, 0x10, 0x00,  // 00258031   837d 10 00       cmp dword ptr ss:[ebp+0x10],0x0
-    0x0f,0x84, XX4,         // 00258035   0f84 ce000000    je .00258109
-    0x8b,0x10,              // 0025803b   8b10             mov edx,dword ptr ds:[eax] ; jichi: edx is the text
-    0x8b,0x45, 0x0c,        // 0025803d   8b45 0c          mov eax,dword ptr ss:[ebp+0xc]
-    0x53,                   // 00258040   53               push ebx
-    0x56,                   // 00258041   56               push esi
-    0xc7,0x45, 0xf8, 0x00,0x00,0x00,0x00,   // 00258042   c745 f8 00000000 mov dword ptr ss:[ebp-0x8],0x0
-    0x89,0x45, 0xfc,        // 00258049   8945 fc          mov dword ptr ss:[ebp-0x4],eax
-    0x57,                   // 0025804c   57               push edi
-    0x8d,0x49, 0x00,        // 0025804d   8d49 00          lea ecx,dword ptr ds:[ecx]
-    0x8a,0x0a               // 00258050   8a0a             mov cl,byte ptr ds:[edx]  ; jichi: text accessed in edx
+      0x55,                                     // 00258020   55               push ebp  ; jichi: hook here, function starts, text in [arg1], size+1 in arg3
+      0x8b, 0xec,                               // 00258021   8bec             mov ebp,esp
+      0x8b, 0x45, 0x08,                         // 00258023   8b45 08          mov eax,dword ptr ss:[ebp+0x8]
+      0x83, 0xec, 0x08,                         // 00258026   83ec 08          sub esp,0x8
+      0x85, 0xc0,                               // 00258029   85c0             test eax,eax
+      0x0f, 0x84, XX4,                          // 0025802b   0f84 d8000000    je .00258109
+      0x83, 0x7d, 0x10, 0x00,                   // 00258031   837d 10 00       cmp dword ptr ss:[ebp+0x10],0x0
+      0x0f, 0x84, XX4,                          // 00258035   0f84 ce000000    je .00258109
+      0x8b, 0x10,                               // 0025803b   8b10             mov edx,dword ptr ds:[eax] ; jichi: edx is the text
+      0x8b, 0x45, 0x0c,                         // 0025803d   8b45 0c          mov eax,dword ptr ss:[ebp+0xc]
+      0x53,                                     // 00258040   53               push ebx
+      0x56,                                     // 00258041   56               push esi
+      0xc7, 0x45, 0xf8, 0x00, 0x00, 0x00, 0x00, // 00258042   c745 f8 00000000 mov dword ptr ss:[ebp-0x8],0x0
+      0x89, 0x45, 0xfc,                         // 00258049   8945 fc          mov dword ptr ss:[ebp-0x4],eax
+      0x57,                                     // 0025804c   57               push edi
+      0x8d, 0x49, 0x00,                         // 0025804d   8d49 00          lea ecx,dword ptr ds:[ecx]
+      0x8a, 0x0a                                // 00258050   8a0a             mov cl,byte ptr ds:[edx]  ; jichi: text accessed in edx
   };
-  enum { addr_offset = 0 };
+  enum
+  {
+    addr_offset = 0
+  };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  //GROWL_DWORD(addr);
-  if (!addr) {
+  // GROWL_DWORD(addr);
+  if (!addr)
+  {
     ConsoleOutput("EXP: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.type = NO_CONTEXT|USING_STRING; // NO_CONTEXT to get rid of floating address
+  hp.type = NO_CONTEXT | USING_STRING; // NO_CONTEXT to get rid of floating address
   hp.text_fun = SpecialHookExp;
   ConsoleOutput("INSERT EXP");
-  
 
   ConsoleOutput("EXP: disable GDI hooks"); // There are no GDI functions hooked though
-  
+
   return NewHook(hp, "EXP"); // FIXME: text displayed line by line
 }
 
+bool Exp::attach_function()
+{
 
-bool Exp::attach_function() {  
-    
-    return InsertExpHook();
-} 
+  return InsertExpHook();
+}

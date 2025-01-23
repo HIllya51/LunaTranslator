@@ -155,7 +155,7 @@ bool InsertTaskforce2Hook()
   HookParam hp;
   hp.address = addr + addr_offset;
   hp.offset = regoffset(ecx); // text in ecx
-  hp.type = USING_STRING;         // 0x41
+  hp.type = USING_STRING;     // 0x41
   hp.filter_fun = all_ascii_Filter;
   // GROWL_DWORD(hp.address);
   // hp.address = 0x1948e9 + processStartAddress;

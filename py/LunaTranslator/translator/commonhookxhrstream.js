@@ -10,7 +10,7 @@
 
         newxhr.open = function () {
             var url = arguments[1]
-            if (%s) {
+            if (% s) {
                 window.hasdone = false;
                 window.thistext = ''
                 newxhr.onprogress_ori = newxhr.onprogress
@@ -35,7 +35,7 @@
                         }
                         try {
                             const chunk = JSON.parse(line.substring(6));
-                                %s
+                                % s
                         } catch {
 
                         }

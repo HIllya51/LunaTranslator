@@ -38,21 +38,21 @@ FILESUBTYPE    0x0
 class RScript : public ENGINE
 {
 public:
-    RScript()
+  RScript()
+  {
+    check_by = CHECK_BY::CUSTOM;
+    check_by_target = []()
     {
-        check_by = CHECK_BY::CUSTOM;
-        check_by_target = []()
-        {
-            auto _ = {
-                L"grpe\\*.lim",
-                L"grps\\*.lim",
-                L"grpo\\*.lim",
-                L"scr\\*.gsc",
-            };
-            auto checkfile = std::all_of(_.begin(), _.end(), Util::CheckFile);
-            return checkfile && Util::SearchResourceString(L"RScript");
-        };
-        is_engine_certain = false;
+      auto _ = {
+          L"grpe\\*.lim",
+          L"grps\\*.lim",
+          L"grpo\\*.lim",
+          L"scr\\*.gsc",
+      };
+      auto checkfile = std::all_of(_.begin(), _.end(), Util::CheckFile);
+      return checkfile && Util::SearchResourceString(L"RScript");
     };
-    bool attach_function();
+    is_engine_certain = false;
+  };
+  bool attach_function();
 };

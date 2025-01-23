@@ -39,11 +39,11 @@ FILESUBTYPE    0x0
 class Sceplay : public ENGINE
 {
 public:
-    Sceplay()
-    {
+  Sceplay()
+  {
 
-        check_by = CHECK_BY::RESOURCE_STR;
-        check_by_target = L"Sceplay";
-    };
-    bool attach_function();
+    check_by = CHECK_BY::RESOURCE_STR;
+    check_by_target = L"Sceplay";
+  };
+  bool attach_function();
 };

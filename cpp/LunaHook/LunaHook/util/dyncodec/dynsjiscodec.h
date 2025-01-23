@@ -1,18 +1,17 @@
 #ifndef QTDYNCODEC_DYNSJIS_H
 #define QTDYNCODEC_DYNSJIS_H
 
-
 #define SK_DECLARE_PRIVATE(_class) \
-  friend class _class; \
-  typedef _class D; \
+  friend class _class;             \
+  typedef _class D;                \
   D *const d_;
 
-# define SK_DISABLE_COPY(_class) \
-  _class(const _class &); \
+#define SK_DISABLE_COPY(_class) \
+  _class(const _class &);       \
   _class &operator=(const _class &);
- 
+
 #define SK_CLASS(_self) \
-  typedef _self Self; \
+  typedef _self Self;   \
   Self *self() const { return const_cast<Self *>(this); }
 
 class DynamicShiftJISCodecPrivate;
@@ -45,15 +44,15 @@ public:
    *  @param  text
    *  @param* dynamic  whether there are unencodable character
    *  @return  data
-   */ 
-  std::string encodeSTD(const std::wstring& text, bool* dynamic = nullptr) const;
+   */
+  std::string encodeSTD(const std::wstring &text, bool *dynamic = nullptr) const;
 
   /**
    *  @param  data
    *  @param* dynamic  whether there are undecodable character
    *  @return  text
    */
-  std::wstring decode(const std::string&data, bool *dynamic = nullptr) const;
+  std::wstring decode(const std::string &data, bool *dynamic = nullptr) const;
 };
 
 #endif // QTDYNCODEC_DYNSJIS_H

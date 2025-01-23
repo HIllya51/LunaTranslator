@@ -1,5 +1,4 @@
-#include"Syuntada.h"
-
+#include "Syuntada.h"
 
 /** jichi 2/6/2015 Syuntada
  *  Sample game: [140816] [平安亭] カノジョのお母さん�好きですか-- /HA-18@6944C:kanojo.exe
@@ -145,57 +144,64 @@
 bool InsertSyuntadaHook()
 {
   const BYTE bytes[] = {
-    0x4a,                           // 0046943d   4a               dec edx
-    0x23,0xd1,                      // 0046943e   23d1             and edx,ecx
-    0x69,0xd2, 0x00,0x0f,0x00,0x00, // 00469440   69d2 000f0000    imul edx,edx,0xf00
-    0x8b,0xca,                      // 00469446   8bca             mov ecx,edx
-    0x89,0x4c,0x24, 0x24,           // 00469448   894c24 24        mov dword ptr ss:[esp+0x24],ecx
-    0x85,0xff,                      // 0046944c   85ff             test edi,edi    ; jichi: hook here
-    0x74, 0x3a                      // 0046944e   74 3a            je short .0046948a
+      0x4a,                               // 0046943d   4a               dec edx
+      0x23, 0xd1,                         // 0046943e   23d1             and edx,ecx
+      0x69, 0xd2, 0x00, 0x0f, 0x00, 0x00, // 00469440   69d2 000f0000    imul edx,edx,0xf00
+      0x8b, 0xca,                         // 00469446   8bca             mov ecx,edx
+      0x89, 0x4c, 0x24, 0x24,             // 00469448   894c24 24        mov dword ptr ss:[esp+0x24],ecx
+      0x85, 0xff,                         // 0046944c   85ff             test edi,edi    ; jichi: hook here
+      0x74, 0x3a                          // 0046944e   74 3a            je short .0046948a
   };
-  enum { addr_offset = 0x0046944c - 0x0046943d };
+  enum
+  {
+    addr_offset = 0x0046944c - 0x0046943d
+  };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  //GROWL(addr);
-  if (!addr) {
+  // GROWL(addr);
+  if (!addr)
+  {
     ConsoleOutput("Syuntada: pattern not found");
     return false;
   }
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.offset=regoffset(ebp);
+  hp.offset = regoffset(ebp);
   hp.type = CODEC_ANSI_BE; // 0x4
   ConsoleOutput("INSERT Syuntada");
-  
 
   // TextOutA will produce repeated texts
   ConsoleOutput("Syuntada: disable GDI hooks");
-  
+
   return NewHook(hp, "Syuntada");
 }
-namespace{
-  bool __(){
-    //平凡な奥さんは好きですか～真面目な主婦をエッチ漬けにしちゃおう!～
-    //奪母姦
-    //友達のお母さんは好きですか？～息子の友人にハマったオバちゃん妻～
-     const BYTE bytes[] = {
-      0x81,0xFD,0x41,0x81,0x00,0x00 ,
-      0x7C,XX,
-      0x81 ,0xFD ,0x9A ,0x82 ,0x00 ,0x00 ,
-      0x7E
-    }; 
+namespace
+{
+  bool __()
+  {
+    // 平凡な奥さんは好きですか～真面目な主婦をエッチ漬けにしちゃおう!～
+    // 奪母姦
+    // 友達のお母さんは好きですか？～息子の友人にハマったオバちゃん妻～
+    const BYTE bytes[] = {
+        0x81, 0xFD, 0x41, 0x81, 0x00, 0x00,
+        0x7C, XX,
+        0x81, 0xFD, 0x9A, 0x82, 0x00, 0x00,
+        0x7E};
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-    
-    if (!addr)   return false; 
-    addr = MemDbg::findEnclosingAlignedFunction(addr,0x1000);
-    if (!addr)   return false;
+
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr, 0x1000);
+    if (!addr)
+      return false;
     HookParam hp;
-    hp.address = addr  ;
-    hp.offset=stackoffset(3); 
-    hp.type = USING_STRING ;
-    return NewHook(hp, "Syuntada"); 
+    hp.address = addr;
+    hp.offset = stackoffset(3);
+    hp.type = USING_STRING;
+    return NewHook(hp, "Syuntada");
   }
 }
-bool Syuntada::attach_function() {  
-    
-    return InsertSyuntadaHook()||__();
-} 
+bool Syuntada::attach_function()
+{
+
+  return InsertSyuntadaHook() || __();
+}

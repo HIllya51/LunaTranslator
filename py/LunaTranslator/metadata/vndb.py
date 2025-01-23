@@ -360,9 +360,7 @@ class searcher(common):
         return {
             "namemap": namemap,
             "title": infos["title"],
-            "images": [infos["img"]]
-            + self.getreleasecvfromhtml(_vid)
-            + infos["sc"],
+            "images": [infos["img"]] + self.getreleasecvfromhtml(_vid) + infos["sc"],
             "webtags": infos["tags"],
             "developers": infos["dev"],
             "description": (

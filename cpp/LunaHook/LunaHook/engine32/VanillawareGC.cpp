@@ -171,14 +171,14 @@ bool InsertVanillawareGCHook()
       0x0f, 0xb6, 0x80, XX4,              // 160941a0   0fb680 00000810  movzx eax,byte ptr ds:[eax+0x10080000] ; jichi: hook here
       0x66, 0x90,                         // 160941a7   66:90            nop
       0x81, 0xc6, 0x01, 0x00, 0x00, 0x00  // 160941a9   81c6 01000000    add esi,0x1
-      // 0x89,05 80f86701      // 160941af   8905 80f86701    mov dword ptr ds:[0x167f880],eax
-      // 0x81,3d 80f86701 00   // 160941b5   813d 80f86701 00>cmp dword ptr ds:[0x167f880],0x0
-      // 0xc7,05 8cf86701 00   // 160941bf   c705 8cf86701 00>mov dword ptr ds:[0x167f88c],0x0
-      // 0x89,35 90f86701      // 160941c9   8935 90f86701    mov dword ptr ds:[0x167f890],esi
-      // 0x7c, 14              // 160941cf   7c 14            jl short 160941e5
-      // 0x7f, 09              // 160941d1   7f 09            jg short 160941dc
-      // 0xc6,05 0cfb6701 02   // 160941d3   c605 0cfb6701 02 mov byte ptr ds:[0x167fb0c],0x2
-      // 0xeb, 26              // 160941da   eb 26            jmp short 16094202
+                                          // 0x89,05 80f86701      // 160941af   8905 80f86701    mov dword ptr ds:[0x167f880],eax
+                                          // 0x81,3d 80f86701 00   // 160941b5   813d 80f86701 00>cmp dword ptr ds:[0x167f880],0x0
+                                          // 0xc7,05 8cf86701 00   // 160941bf   c705 8cf86701 00>mov dword ptr ds:[0x167f88c],0x0
+                                          // 0x89,35 90f86701      // 160941c9   8935 90f86701    mov dword ptr ds:[0x167f890],esi
+                                          // 0x7c, 14              // 160941cf   7c 14            jl short 160941e5
+                                          // 0x7f, 09              // 160941d1   7f 09            jg short 160941dc
+                                          // 0xc6,05 0cfb6701 02   // 160941d3   c605 0cfb6701 02 mov byte ptr ds:[0x167fb0c],0x2
+                                          // 0xeb, 26              // 160941da   eb 26            jmp short 16094202
   };
   enum
   {

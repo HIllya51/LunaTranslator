@@ -37,7 +37,7 @@ bool NNNConfig::attach_function()
 	hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		// 当前文本可以过滤重复，上一条文本会按照换行符切分不停刷新。
-		auto data=context->stack[hp->offset/4];
+		auto data = context->stack[hp->offset / 4];
 		static std::unordered_map<uintptr_t, std::string> everythreadlast;
 		if (everythreadlast.find(context->retaddr) == everythreadlast.end())
 			everythreadlast[context->retaddr] = "";

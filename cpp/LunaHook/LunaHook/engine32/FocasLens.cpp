@@ -1,5 +1,4 @@
-#include"FocasLens.h"
-
+#include "FocasLens.h"
 
 /** jichi 2/6/2015 FocasLens (Touhou)
  *  Sample game: [141227] [FocasLens] 幻想人形演�
@@ -107,8 +106,9 @@
  */
 static void SpecialHookFocasLens(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  DWORD addr  = (DWORD)context->base + regoffset(edx);
-  if (*(char *)addr) {
+  DWORD addr = (DWORD)context->base + regoffset(edx);
+  if (*(char *)addr)
+  {
     buffer->from(addr, 1);
     *split = FIXED_SPLIT_VALUE;
   }
@@ -116,31 +116,35 @@ static void SpecialHookFocasLens(hook_context *context, HookParam *hp, TextBuffe
 bool InsertFocasLensHook()
 {
   const BYTE bytes[] = {
-    0x8a,0x14,0x02, // 001fabb9   8a1402           mov dl,byte ptr ds:[edx+eax]
-    0x88,0x14,0x06, // 001fabbc   881406           mov byte ptr ds:[esi+eax],dl    ; jichi: text is in dl in byte
-    0x40,           // 001fabbf   40               inc eax
-    0x3b,0xc3       // 001fabc0   3bc3             cmp eax,ebx
+      0x8a, 0x14, 0x02, // 001fabb9   8a1402           mov dl,byte ptr ds:[edx+eax]
+      0x88, 0x14, 0x06, // 001fabbc   881406           mov byte ptr ds:[esi+eax],dl    ; jichi: text is in dl in byte
+      0x40,             // 001fabbf   40               inc eax
+      0x3b, 0xc3        // 001fabc0   3bc3             cmp eax,ebx
   };
-  enum { addr_offset = 0x001fabbc - 0x001fabb9 };
+  enum
+  {
+    addr_offset = 0x001fabbc - 0x001fabb9
+  };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  //GROWL(addr);
-  if (!addr) {
+  // GROWL(addr);
+  if (!addr)
+  {
     ConsoleOutput("FocasLens: pattern not found");
     return false;
   }
   HookParam hp;
   hp.address = addr + addr_offset;
-  hp.text_fun = SpecialHookFocasLens; // use special hook to force byte access
-  hp.type = USING_STRING|USING_SPLIT|FIXING_SPLIT|NO_CONTEXT; // no context to get rid of relative function address
+  hp.text_fun = SpecialHookFocasLens;                               // use special hook to force byte access
+  hp.type = USING_STRING | USING_SPLIT | FIXING_SPLIT | NO_CONTEXT; // no context to get rid of relative function address
   ConsoleOutput("INSERT FocasLens");
-  
 
   // GDI functions are kept in case the font is not cached
   //
   return NewHook(hp, "FocasLens");
 }
 
-bool FocasLens::attach_function() {  
-     
-    return InsertFocasLensHook();
-} 
+bool FocasLens::attach_function()
+{
+
+  return InsertFocasLensHook();
+}

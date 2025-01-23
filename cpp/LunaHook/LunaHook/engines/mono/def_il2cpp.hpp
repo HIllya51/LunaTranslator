@@ -527,7 +527,7 @@ inline MethodInfo *(*il2cpp_class_get_methods)(const Il2CppClass *klass, void **
 inline const MethodInfo *(*il2cpp_class_get_method_from_name)(const Il2CppClass *klass, const char *name, int argsCount);
 inline MethodInfo *(*il2cpp_method_get_from_reflection)(Il2CppObject *ref);
 inline const Il2CppType *(*il2cpp_method_get_param)(const MethodInfo *method, uint32_t index);
-inline char* (*il2cpp_type_get_name)(const Il2CppType *type);
+inline char *(*il2cpp_type_get_name)(const Il2CppType *type);
 inline Il2CppObject *(*il2cpp_object_new)(Il2CppClass *klass);
 inline void (*il2cpp_add_internal_call)(const char *name, uintptr_t pointer);
 inline Il2CppArraySize *(*il2cpp_array_new)(Il2CppClass *klass, uintptr_t count);

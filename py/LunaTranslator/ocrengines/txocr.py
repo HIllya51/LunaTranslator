@@ -35,7 +35,7 @@ class OCR(baseocr):
             Languages.Russian: "rus",
             Languages.Italian: "ita",
             Languages.Italian: "hol",
-            Languages.Swedish : "swe",
+            Languages.Swedish: "swe",
             Languages.Hungarian: "hun",
             Languages.Thai: "tha",
             Languages.Arabic: "ara",

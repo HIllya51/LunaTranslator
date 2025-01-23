@@ -29,12 +29,14 @@
 //   }
 // }
 
-class ransel:public ENGINE{
-    public:
-    ransel(){
-        is_engine_certain=false;
-        check_by=CHECK_BY::RESOURCE_STR;
-        check_by_target=L"Adventure Game Engine";
+class ransel : public ENGINE
+{
+public:
+    ransel()
+    {
+        is_engine_certain = false;
+        check_by = CHECK_BY::RESOURCE_STR;
+        check_by_target = L"Adventure Game Engine";
     };
-     bool attach_function();
+    bool attach_function();
 };

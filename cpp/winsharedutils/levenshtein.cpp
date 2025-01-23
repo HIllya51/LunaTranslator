@@ -169,7 +169,7 @@ DECLARE_API size_t levenshtein_distance(size_t len1, const wchar_t *string1,
 #endif
 }
 DECLARE_API double levenshtein_normalized_similarity(size_t len1, const wchar_t *string1,
-                                     size_t len2, const wchar_t *string2)
+                                                     size_t len2, const wchar_t *string2)
 {
 #ifndef WINXP
     return rapidfuzz::levenshtein_normalized_similarity(std::wstring_view(string1, len1), std::wstring_view(string2, len2));

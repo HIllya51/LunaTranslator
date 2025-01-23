@@ -38,6 +38,7 @@ class transhist(closeashidewindow):
         self.textOutput = textOutput
         self.setf()
         self.setCentralWidget(self.textOutput)
+
     def setf(self):
         key = "histfont"
         fontstring = globalconfig.get(key, "")
@@ -47,6 +48,7 @@ class transhist(closeashidewindow):
             _style = "font-size:{}pt;".format(_f.pointSize())
             _style += 'font-family:"{}";'.format(_f.family())
             self.textOutput.setStyleSheet(_style)
+
     def showmenu(self, tb, p):
         menu = QMenu(self)
         qingkong = LAction("清空")

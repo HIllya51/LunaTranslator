@@ -334,7 +334,9 @@ class TS(basetrans):
             "User-Agent": "huaweicloud-usdk-python/3.0",
         }
         r.host = end
-        r.resource_path = "/v1/{}/machine-translation/text-translation".format(project_id)
+        r.resource_path = "/v1/{}/machine-translation/text-translation".format(
+            project_id
+        )
         r.method = "POST"
         r.body = body
         r = Signer((ak, sk)).sign(r)

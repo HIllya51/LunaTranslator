@@ -381,7 +381,7 @@ class ApiInfo(object):
 class Service(object):
     def __init__(self, service_info, api_info):
         self.service_info = service_info
-        self.api_info = api_info 
+        self.api_info = api_info
 
     def set_ak(self, ak):
         self.service_info.credentials.set_ak(ak)

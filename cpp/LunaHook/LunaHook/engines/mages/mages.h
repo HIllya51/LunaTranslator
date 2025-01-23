@@ -1,8 +1,10 @@
 ﻿
-namespace mages{
-  
-    std::wstring readString(uintptr_t address,int _idx) ;
+namespace mages
+{
+
+    std::wstring readString(uintptr_t address, int _idx);
 }
-namespace hookmages{
+namespace hookmages
+{
     bool MAGES();
 }

@@ -1,6 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#define NOMINMAX   
+#define NOMINMAX
 #define _CRT_STDIO_ARBITRARY_WIDE_SPECIFIERS 1
 #include <windows.h>
 #include <Shobjidl.h>
@@ -72,12 +72,11 @@
 
 #include <memory>
 
-
 #pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "Psapi.lib")
 #pragma comment(lib, "Version.lib")
 
-#include"common.hpp"
+#include "common.hpp"
 
 #define DECLARE_API extern "C" __declspec(dllexport)

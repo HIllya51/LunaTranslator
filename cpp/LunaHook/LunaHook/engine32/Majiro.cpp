@@ -1,4 +1,4 @@
-#include"Majiro.h"
+#include "Majiro.h"
 
 /** jichi 12/28/2014: new Majiro hook pattern
  *
@@ -151,32 +151,39 @@
  *  00EC5480  53                                               S
  */
 
-namespace { // unnamed
+namespace
+{ // unnamed
 
-// These values are the same as the assembly logic of ITH:
-//     ([eax+0x28] & 0xff) | (([eax+0x48] >> 1) & 0xffffff00)
-// 0x28 = 10 * 4, 0x48 = 18 / 4
-inline DWORD MajiroOldFontSplit(const DWORD *arg) // arg is supposed to be a string, though
-{ return (arg[10] & 0xff) | ((arg[18] >> 1) & 0xffffff00); }
+  // These values are the same as the assembly logic of ITH:
+  //     ([eax+0x28] & 0xff) | (([eax+0x48] >> 1) & 0xffffff00)
+  // 0x28 = 10 * 4, 0x48 = 18 / 4
+  inline DWORD MajiroOldFontSplit(const DWORD *arg) // arg is supposed to be a string, though
+  {
+    return (arg[10] & 0xff) | ((arg[18] >> 1) & 0xffffff00);
+  }
 
-// Remove lower bytes use 0xffffff00, which are different for furigana
-inline DWORD MajiroNewFontSplit(const DWORD *arg) // arg is supposed to be a string, though
-{ return (arg[12] & 0xff) | (arg[16] & 0xffffff00); }
+  // Remove lower bytes use 0xffffff00, which are different for furigana
+  inline DWORD MajiroNewFontSplit(const DWORD *arg) // arg is supposed to be a string, though
+  {
+    return (arg[12] & 0xff) | (arg[16] & 0xffffff00);
+  }
 
-void SpecialHookMajiro(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-{
-  DWORD arg3 = context->stack[3]; // text
-  buffer->from((LPCSTR)arg3);
-  // IsBadReadPtr is not needed for old Majiro game.
-  // I am not sure if it is needed by new Majiro game.
-  if (hp->user_value) { // new majiro
-    if (DWORD arg4 = context->stack[4]) // old majiro
-      *split = MajiroNewFontSplit((LPDWORD)arg4);
-    else
-      *split = *(DWORD *)(context->base + 0x5c); // = 4 * 23, caller's caller
-  } else if (DWORD arg1 = context->stack[1]) // old majiro
-    *split = MajiroOldFontSplit((LPDWORD)arg1);
-}
+  void SpecialHookMajiro(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    DWORD arg3 = context->stack[3]; // text
+    buffer->from((LPCSTR)arg3);
+    // IsBadReadPtr is not needed for old Majiro game.
+    // I am not sure if it is needed by new Majiro game.
+    if (hp->user_value)
+    {                                     // new majiro
+      if (DWORD arg4 = context->stack[4]) // old majiro
+        *split = MajiroNewFontSplit((LPDWORD)arg4);
+      else
+        *split = *(DWORD *)(context->base + 0x5c); // = 4 * 23, caller's caller
+    }
+    else if (DWORD arg1 = context->stack[1]) // old majiro
+      *split = MajiroOldFontSplit((LPDWORD)arg1);
+  }
 } // unnamed namespace
 bool InsertMajiroHook()
 {
@@ -184,20 +191,25 @@ bool InsertMajiroHook()
   // That function draws all texts.
   //
   // jichi 11/28/2014: Add new function signature
-  const DWORD funcs[] = { // caller patterns
-    0xec81,     // sub esp = 0x81,0xec byte old majiro
-    0x83ec8b55,  // mov ebp,esp, sub esp,*  new majiro
-    
-    0x5348ec83   
-    // sub     esp, 48h, push    ebx
-    //MOON CHILDe 
-    //https://vndb.org/v1568
-    
+  const DWORD funcs[] = {
+      // caller patterns
+      0xec81,     // sub esp = 0x81,0xec byte old majiro
+      0x83ec8b55, // mov ebp,esp, sub esp,*  new majiro
+
+      0x5348ec83
+      // sub     esp, 48h, push    ebx
+      // MOON CHILDe
+      // https://vndb.org/v1568
+
   };
-  enum { FunctionCount = sizeof(funcs) / sizeof(*funcs) };
+  enum
+  {
+    FunctionCount = sizeof(funcs) / sizeof(*funcs)
+  };
   ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::TextOutA, funcs, FunctionCount, processStartAddress, processStopAddress);
-  //ULONG addr = MemDbg::findCallerAddress((ULONG)::TextOutA, 0x83ec8b55, processStartAddress, processStopAddress);
-  if (!addr) {
+  // ULONG addr = MemDbg::findCallerAddress((ULONG)::TextOutA, 0x83ec8b55, processStartAddress, processStopAddress);
+  if (!addr)
+  {
     ConsoleOutput("Majiro: failed");
     return false;
   }
@@ -205,102 +217,118 @@ bool InsertMajiroHook()
   bool newMajiro = 0x55 == *(BYTE *)addr;
 
   HookParam hp;
-  //hp.type|=USING_STRING|USING_SPLIT|SPLIT_INDIRECT;
+  // hp.type|=USING_STRING|USING_SPLIT|SPLIT_INDIRECT;
   hp.address = addr;
   hp.text_fun = SpecialHookMajiro;
   hp.user_value = newMajiro;
-  if (newMajiro) {
+  if (newMajiro)
+  {
     hp.type = NO_CONTEXT; // do not use return address for new majiro
     ConsoleOutput("INSERT Majiro2");
     return NewHook(hp, "Majiro2");
-  } else {
+  }
+  else
+  {
     ConsoleOutput("INSERT Majiro");
     return NewHook(hp, "Majiro");
   }
-  //RegisterEngineType(ENGINE_MAJIRO);
+  // RegisterEngineType(ENGINE_MAJIRO);
 }
-bool InsertMajiroHook3x() {
+bool InsertMajiroHook3x()
+{
   const BYTE bytes[] = {
-        0x8b,0x08,
-        0x0f,0xbf,0x19,
-        0x83,0xc1,0x02, 
+      0x8b,
+      0x08,
+      0x0f,
+      0xbf,
+      0x19,
+      0x83,
+      0xc1,
+      0x02,
   };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 
-  if (!addr)return false; 
+  if (!addr)
+    return false;
   HookParam hp;
-  hp.address = addr+8;
-  hp.offset=regoffset(ecx);
-  hp.type = USING_STRING | NO_CONTEXT;//|EMBED_ABLE|EMBED_AFTER_OVERWRITE|EMBED_DYNA_SJIS;
-  //可以内嵌，但是必须保持「」，且DynamicEncoding编码的文字会被自动替换成引擎内的某的字符，导致可读性低。
-  //hp.embed_hook_font=F_TextOutA|F_GetTextExtentPoint32A;
-  //https://vndb.org/v17376
-  //私が好きなら「好き」って言って！
-  hp.text_fun= [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split){
-    auto str=(char*)context->ecx;
+  hp.address = addr + 8;
+  hp.offset = regoffset(ecx);
+  hp.type = USING_STRING | NO_CONTEXT; //|EMBED_ABLE|EMBED_AFTER_OVERWRITE|EMBED_DYNA_SJIS;
+  // 可以内嵌，但是必须保持「」，且DynamicEncoding编码的文字会被自动替换成引擎内的某的字符，导致可读性低。
+  // hp.embed_hook_font=F_TextOutA|F_GetTextExtentPoint32A;
+  // https://vndb.org/v17376
+  // 私が好きなら「好き」って言って！
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    auto str = (char *)context->ecx;
     buffer->from(str);
-    if((str[0]==0x81)&&(str[1]==0x79))*split=0;
-    else *split=1;
-     
-  };   
+    if ((str[0] == 0x81) && (str[1] == 0x79))
+      *split = 0;
+    else
+      *split = 1;
+  };
   return NewHook(hp, "majiro3");
 }
-bool InsertMajiro2Hookx() {
-  //Scarlett～スカーレット～
+bool InsertMajiro2Hookx()
+{
+  // Scarlett～スカーレット～
   const BYTE bytes[] = {
-    0x83,0xE2,0x03,0x03,0xC2,0xC1,0xF8,0x02,0x81,0xF9,0x00,0x01,0x00,0x00
-  };
+      0x83, 0xE2, 0x03, 0x03, 0xC2, 0xC1, 0xF8, 0x02, 0x81, 0xF9, 0x00, 0x01, 0x00, 0x00};
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 
-  if (!addr)return false; 
+  if (!addr)
+    return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (!addr)return false;
+  if (!addr)
+    return false;
   HookParam hp;
-  hp.address = addr ;
-  hp.offset=stackoffset(2);
-  hp.type = USING_STRING ;
-  ConsoleOutput("INSERT majiro4 %p",addr);
+  hp.address = addr;
+  hp.offset = stackoffset(2);
+  hp.type = USING_STRING;
+  ConsoleOutput("INSERT majiro4 %p", addr);
   return NewHook(hp, "majiro4");
 }
-bool InsertMajiro3Hook() 
+bool InsertMajiro3Hook()
 {
-  
+
   /*
-  * Sample games:
-  * Narcissu 10th Anniversary Anthology Project
-  * https://vndb.org/v10
-  * https://vndb.org/v70
-  * https://vndb.org/v18738
-  * https://vndb.org/v18739
-  * https://vndb.org/v18736
-  */
+   * Sample games:
+   * Narcissu 10th Anniversary Anthology Project
+   * https://vndb.org/v10
+   * https://vndb.org/v70
+   * https://vndb.org/v18738
+   * https://vndb.org/v18739
+   * https://vndb.org/v18736
+   */
   const BYTE bytes[] = {
-    0xC1, 0xE9, 0x02,        // shr ecx,02     << hook here
-    0xF3, 0xA5,              // repe movsd 
-    0x8B, 0xCA,              // mov ecx,edx
-    0x8D, 0x95, XX4          // lea edx,[ebp-00000404]
+      0xC1, 0xE9, 0x02, // shr ecx,02     << hook here
+      0xF3, 0xA5,       // repe movsd
+      0x8B, 0xCA,       // mov ecx,edx
+      0x8D, 0x95, XX4   // lea edx,[ebp-00000404]
   };
 
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  if (!addr) {
+  if (!addr)
+  {
     ConsoleOutput("Majiro3: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr;
-  hp.offset=regoffset(esi);
+  hp.offset = regoffset(esi);
   hp.type = USING_STRING;
   ConsoleOutput("INSERT Majiro3");
   ConsoleOutput("Majiro3: To separate the text between lines flag the \"Flush delay string spacing\" option");
   return NewHook(hp, "Majiro3");
 }
-bool Majiro::attach_function() {
-    
-    bool b1= InsertMajiroHook();
-    bool b2=InsertMajiroHook3x();
-    bool b3=InsertMajiro2Hookx();
-    bool b4=InsertMajiro3Hook();
-    return b1||b2||b3||b4;
-}  
+bool Majiro::attach_function()
+{
+
+  bool b1 = InsertMajiroHook();
+  bool b2 = InsertMajiroHook3x();
+  bool b3 = InsertMajiro2Hookx();
+  bool b4 = InsertMajiro3Hook();
+  return b1 || b2 || b3 || b4;
+}

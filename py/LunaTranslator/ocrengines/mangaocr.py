@@ -2,6 +2,7 @@ import requests
 from ocrengines.baseocrclass import baseocr
 import os, uuid, gobject
 
+
 class OCR(baseocr):
 
     def ocr(self, imagebinary):
@@ -15,7 +16,9 @@ class OCR(baseocr):
         absolute_img_path = os.path.abspath(fname)
         params = {"image_path": absolute_img_path}
 
-        response = self.proxysession.get("http://127.0.0.1:{}/image".format(self.port), params=params)
+        response = self.proxysession.get(
+            "http://127.0.0.1:{}/image".format(self.port), params=params
+        )
         os.remove(absolute_img_path)
         try:
             return response.json()["text"]

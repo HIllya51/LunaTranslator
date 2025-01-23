@@ -84,7 +84,7 @@ static void SpecialHookYukaSystem2(hook_context *context, HookParam *hp, uintptr
 {
   DWORD arg2 = context->stack[2], // [esp+0x8]
       arg3 = context->stack[3];   // [esp+0xc]
-                                // arg4 = argof(4, esp_base); // there is no arg4. arg4 is properlly a function pointer
+                                  // arg4 = argof(4, esp_base); // there is no arg4. arg4 is properlly a function pointer
   LPCSTR text = (LPCSTR)arg2;
   if (*text && !_yk2garbage(text))
   { // I am sure this could be null

@@ -7,7 +7,6 @@ from myutils.utils import LRUCache
 from myutils.commonbase import commonbase
 
 
-
 class SpeechParam:
     def __init__(self, speed, pitch):
         self.speed = speed
@@ -56,6 +55,7 @@ class TTSbase(commonbase):
 
     _globalconfig_key = "reader"
     _setting_dict = globalconfig["reader"]
+
     def __init__(
         self, typename, playaudiofunction, privateconfig=None, init=True, uid=None
     ) -> None:

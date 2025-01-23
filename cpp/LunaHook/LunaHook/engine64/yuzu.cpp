@@ -1255,7 +1255,7 @@ namespace
         s = std::regex_replace(s, std::regex(R"((#Ruby\[)([^,]+).([^\]]+).)"), "$2");
         s = std::regex_replace(s, std::regex(R"((\\n)+)"), "");
         s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"), "");
-        s = std::regex_replace(s, std::regex(R"((<color=.*>(.*)<\/color>)"), "$1");
+        s = std::regex_replace(s, std::regex(R"(<color=.*>(.*)<\/color>)"), "$1");
         buffer->from(s);
     }
     void F010027300A660000(TextBuffer *buffer, HookParam *hp)
@@ -2424,6 +2424,24 @@ namespace
         s = std::regex_replace(s, std::wregex(LR"($$R)"), L"");
         s = std::regex_replace(s, std::wregex(LR"(%)"), L"");
         buffer->from(s);
+    }
+    void F01008A401FEB6000_2(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = std::regex_replace(buffer->strW(), std::wregex(LR"(<color=.*>(.*)<\/color>)"), L"$1");
+        buffer->from(std::regex_replace(ws, std::wregex(LR"([\r\n]+)"), L""));
+    }
+    bool F01008A401FEB6000_3;
+    void F01008A401FEB6000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        if (F01008A401FEB6000_3)
+            return buffer->clear();
+        F01008A401FEB6000_2(buffer, hp);
+        F01008A401FEB6000_3 = false;
+    }
+    void F01008A401FEB6000(TextBuffer *buffer, HookParam *hp)
+    {
+        F01008A401FEB6000_3 = true;
+        F01008A401FEB6000_2(buffer, hp);
     }
     void F01005DE00CA34000(TextBuffer *buffer, HookParam *hp)
     {
@@ -3666,6 +3684,10 @@ namespace
             {0x8016837C, {CODEC_UTF16, 8, 0, 0, 0, 0x0100813014B3A000ull, "1.0.0"}},
             // オメガヴァンパイア
             {0x800677AC, {CODEC_UTF16, 1, 0, 0, F01005DE00CA34000, 0x01005DE00CA34000ull, "1.0.0"}},
+            // ミステリーの歩き方
+            {0x818703d4, {CODEC_UTF16, 2, 0x14, 0, F01008A401FEB6000_1, 0x01008A401FEB6000ull, "1.0.0"}},
+            {0x8180d928, {CODEC_UTF16, 0, 0x14, 0, F01008A401FEB6000, 0x01008A401FEB6000ull, "1.0.0"}},
+            {0x8180c1e8, {CODEC_UTF16, 0, 0x14, 0, F01008A401FEB6000_2, 0x01008A401FEB6000ull, "1.0.0"}},
         };
         return 1;
     }();

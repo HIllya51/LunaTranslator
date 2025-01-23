@@ -1,4 +1,4 @@
-#include"ransel.h"
+#include "ransel.h"
 // [020726][苺みるく] たんぽぽ ～Everything Nice～ (bin+cue)
 // HS-8@4B377C
 // int __fastcall sub_4B377C(int a1, char *a2)
@@ -34,21 +34,24 @@
 //   lParam[5] = a4;
 //   return SendMessageA(hWnd, 0x102Eu, wParam, (LPARAM)lParam);
 // }
-bool ransel::attach_function() { 
-  BYTE sig[]={
-    XX,
-    XX,
-    0x68,0x2e,0x10,0x00,0x00,
-    XX,
-    0xe8,XX4  //SendMessageA->__imp_SendMessageA
+bool ransel::attach_function()
+{
+  BYTE sig[] = {
+      XX,
+      XX,
+      0x68, 0x2e, 0x10, 0x00, 0x00,
+      XX,
+      0xe8, XX4 // SendMessageA->__imp_SendMessageA
   };
-  auto addr=MemDbg::findBytes(sig,sizeof(sig),processStartAddress,processStopAddress);
-  if(!addr)return false;
-  addr=findfuncstart(addr,0x20);
-  if(!addr)return false;
+  auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = findfuncstart(addr, 0x20);
+  if (!addr)
+    return false;
   HookParam hp;
-  hp.address=addr;
-  hp.type=USING_STRING;
-  hp.offset=regoffset(esi);
-  return NewHook(hp,"ransel");
-} 
+  hp.address = addr;
+  hp.type = USING_STRING;
+  hp.offset = regoffset(esi);
+  return NewHook(hp, "ransel");
+}

@@ -66,7 +66,9 @@ class TS(basetrans):
                 "message": "ok",
             }
         )
-        self._gpt_common_parse_context(message, self.context, self.config["附带上下文个数"])
+        self._gpt_common_parse_context(
+            message, self.context, self.config["附带上下文个数"]
+        )
         prefill = self._gptlike_create_prefill("prefill_use", "prefill")
         if prefill:
             message.append({"role": "CHATBOT", "message": prefill})
@@ -130,7 +132,7 @@ def list_models(typename, regist):
             "X-Client-Name": "my-cool-project",
         },
         proxies=getproxy(("fanyi", typename)),
-    ) 
+    )
     try:
         models = js.json()["models"]
     except:

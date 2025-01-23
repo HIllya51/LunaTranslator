@@ -3,6 +3,7 @@ from translator.basetranslator import basetrans
 
 from language import Languages
 
+
 class TS(basetrans):
     def langmap(self):
         return {Languages.Chinese: "zh-CHS", Languages.TradChinese: "zh-CHT"}

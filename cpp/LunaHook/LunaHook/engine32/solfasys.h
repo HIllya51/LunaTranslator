@@ -1,6 +1,6 @@
 
-//https://vndb.org/v5183
-//朝っぱらから発情家族
+// https://vndb.org/v5183
+// 朝っぱらから発情家族
 
 /*
 {
@@ -26,8 +26,8 @@
 }
 */
 
-//https://vndb.org/v5175
-//ななちゃんといっしょ
+// https://vndb.org/v5175
+// ななちゃんといっしょ
 
 /*
 {
@@ -52,15 +52,18 @@
   }
 }
 */
-class solfasys:public ENGINE{
-    public:
-    solfasys(){
-        
-        check_by=CHECK_BY::CUSTOM;
-        check_by_target=[](){
-          return Util::SearchResourceString(L"Solfa Novel System")||Util::SearchResourceString(L"Solfa Standard Novel System");
-        }; 
-        is_engine_certain=false;
+class solfasys : public ENGINE
+{
+public:
+  solfasys()
+  {
+
+    check_by = CHECK_BY::CUSTOM;
+    check_by_target = []()
+    {
+      return Util::SearchResourceString(L"Solfa Novel System") || Util::SearchResourceString(L"Solfa Standard Novel System");
     };
-     bool attach_function();
+    is_engine_certain = false;
+  };
+  bool attach_function();
 };

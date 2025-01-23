@@ -81,7 +81,9 @@ class OCR(baseocr):
             with open(fname, "wb") as ff:
                 ff.write(imagebinary)
             imgfile = os.path.abspath(fname)
-            _ = subprochiderun('"{}" "{}" stdout -l osd --psm 0'.format(self.path, imgfile))
+            _ = subprochiderun(
+                '"{}" "{}" stdout -l osd --psm 0'.format(self.path, imgfile)
+            )
             err = _.stderr
             if len(err):
                 pass

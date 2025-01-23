@@ -18,14 +18,14 @@ private:
 	bool InsertBreakPoint();
 	bool breakpointcontext(PCONTEXT);
 	void Send(uintptr_t);
-	void Send(hook_context*);
+	void Send(hook_context *);
 	int GetLength(hook_context *context, uintptr_t in); // jichi 12/25/2013: Return 0 if failed
 	int HookStrlen(BYTE *data);
 	void RemoveHookCode();
 	void RemoveReadCode();
 	void RemoveBreakPoint();
-	bool waitfornotify(TextBuffer*, ThreadParam tp);
-	void parsenewlineseperator(TextBuffer*);
+	bool waitfornotify(TextBuffer *, ThreadParam tp);
+	void parsenewlineseperator(TextBuffer *);
 	volatile DWORD useCount;
 	ALIGNPTR(uint64_t __1, HANDLE readerThread);
 	ALIGNPTR(uint64_t __2, HANDLE readerEvent);

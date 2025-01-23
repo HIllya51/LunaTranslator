@@ -181,7 +181,10 @@ class basetrans(commonbase):
     @property
     def needzhconv(self):
         # The API does not support direct translation to Traditional Chinese, only Simplified Chinese can be translated first and then converted to Traditional Chinese
-        return self.tgtlang_1 == Languages.TradChinese and Languages.TradChinese not in self.langmap()
+        return (
+            self.tgtlang_1 == Languages.TradChinese
+            and Languages.TradChinese not in self.langmap()
+        )
 
     @property
     def using(self):

@@ -6,7 +6,7 @@
     const originalFetch = window.fetch;
     window.fetch = function (url, init) {
         const fetchPromise = originalFetch.apply(this, arguments);
-        if (!%s) return fetchPromise;
+        if (!% s) return fetchPromise;
         window.hasdone = false;
         window.thistext = ''
         fetchPromise.then(response => {
@@ -33,7 +33,7 @@
                         }
                         try {
                             const chunk = JSON.parse(line.substring(6));
-                                %s
+                                % s
                         } catch {
 
                         }

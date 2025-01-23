@@ -68,7 +68,7 @@ class Process:
                 continue
             gpt_dict.append(gpt)
             used.append((src, gpt["dst"]))
-        
+
         self.zhanweifu = 0
         japanese1, mp1 = self.process_before1(japanese, used)
 

@@ -1,5 +1,5 @@
-#include"SideB.h"
-  
+#include "SideB.h"
+
 /** jichi 8/2/2014 side-B
  *  Sample games:
  *  - [side-B] メルトピア -- /HS-4@B4452:Martopia.exe
@@ -102,44 +102,53 @@
 bool InsertSideBHook()
 {
   const BYTE bytes[] = {
-    0x64,0xa3, 0x00,0x00,0x00,0x00,       // 00f64435   64:a3 00000000   mov dword ptr fs:[0],eax
-    0x8b,0xf9,                            // 00f6443b   8bf9             mov edi,ecx
-    0x8b,0x4d, 0x08,                      // 00f6443d   8b4d 08          mov ecx,dword ptr ss:[ebp+0x8]
-    0x33,0xdb,                            // 00f64440   33db             xor ebx,ebx
-    0x3b,0xcb,                            // 00f64442   3bcb             cmp ecx,ebx
-    0x74, 0x40,                           // 00f64444   74 40            je short martopia.00f64486
-    0x8b,0xc1,                            // 00f64446   8bc1             mov eax,ecx
-    0xc7,0x45, 0xe8, 0x0f,0x00,0x00,0x00, // 00f64448   c745 e8 0f000000 mov dword ptr ss:[ebp-0x18],0xf
-    0x89,0x5d, 0xe4,                      // 00f6444f   895d e4          mov dword ptr ss:[ebp-0x1c],ebx
-    0x88,0x5d, 0xd4                       // 00f64452   885d d4          mov byte ptr ss:[ebp-0x2c],bl
+      0x64, 0xa3, 0x00, 0x00, 0x00, 0x00,       // 00f64435   64:a3 00000000   mov dword ptr fs:[0],eax
+      0x8b, 0xf9,                               // 00f6443b   8bf9             mov edi,ecx
+      0x8b, 0x4d, 0x08,                         // 00f6443d   8b4d 08          mov ecx,dword ptr ss:[ebp+0x8]
+      0x33, 0xdb,                               // 00f64440   33db             xor ebx,ebx
+      0x3b, 0xcb,                               // 00f64442   3bcb             cmp ecx,ebx
+      0x74, 0x40,                               // 00f64444   74 40            je short martopia.00f64486
+      0x8b, 0xc1,                               // 00f64446   8bc1             mov eax,ecx
+      0xc7, 0x45, 0xe8, 0x0f, 0x00, 0x00, 0x00, // 00f64448   c745 e8 0f000000 mov dword ptr ss:[ebp-0x18],0xf
+      0x89, 0x5d, 0xe4,                         // 00f6444f   895d e4          mov dword ptr ss:[ebp-0x1c],ebx
+      0x88, 0x5d, 0xd4                          // 00f64452   885d d4          mov byte ptr ss:[ebp-0x2c],bl
   };
-  enum { addr_offset = 0x00f64410 - 0x00f64435 }; // distance to the beginning of the function
+  enum
+  {
+    addr_offset = 0x00f64410 - 0x00f64435
+  }; // distance to the beginning of the function
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  //GROWL_DWORD(addr); // supposed to be 0x4010e0
-  if (!addr) {
+  // GROWL_DWORD(addr); // supposed to be 0x4010e0
+  if (!addr)
+  {
     ConsoleOutput("SideB: pattern not found");
     return false;
   }
   addr += addr_offset;
-  enum : BYTE { push_ebp = 0x55 };  // 011d4c80  /$ 55             push ebp
-  if (*(BYTE *)addr != push_ebp) {
+  enum : BYTE
+  {
+    push_ebp = 0x55
+  }; // 011d4c80  /$ 55             push ebp
+  if (*(BYTE *)addr != push_ebp)
+  {
     ConsoleOutput("SideB: pattern found but the function offset is invalid");
     return false;
   }
-  //GROWL_DWORD(addr);
+  // GROWL_DWORD(addr);
 
   HookParam hp;
   hp.address = addr;
-  //hp.length_offset = 1;
-  hp.offset=stackoffset(1); // [esp+4] == arg1
-  hp.type = USING_STRING|NO_CONTEXT|USING_SPLIT; // NO_CONTEXT && RELATIVE_SPLIT to get rid of floating return address
-  hp.split = 0; // use retaddr as split
+  // hp.length_offset = 1;
+  hp.offset = stackoffset(1);                        // [esp+4] == arg1
+  hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT; // NO_CONTEXT && RELATIVE_SPLIT to get rid of floating return address
+  hp.split = 0;                                      // use retaddr as split
   ConsoleOutput("INSERT SideB");
   return NewHook(hp, "SideB");
 }
 
-bool SideB::attach_function() {
-    
-    return InsertSideBHook();
-}  
+bool SideB::attach_function()
+{
+
+  return InsertSideBHook();
+}

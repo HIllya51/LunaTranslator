@@ -25,9 +25,11 @@ namespace ebyroid
     static Ebyroid *Create(const std::string &base_dir, const std::string &dllpath, const std::string &voice);
     int Hiragana(const char *inbytes, std::vector<char> &);
     int Speech(const char *inbytes, std::vector<int16_t> &, uint32_t mode = 0u);
+
   private:
     Ebyroid(ApiAdapter *api_adapter) : api_adapter_(api_adapter) {}
     ApiAdapter *api_adapter_;
+
   public:
     void Setparam(float volume, float speed, float pitch);
   };
@@ -50,6 +52,7 @@ namespace ebyroid
     }
     ApiAdapter *api_adapter() { return api_adapter_; };
     CEvent event;
+
   private:
     ApiAdapter *api_adapter_;
     std::vector<T> buffer_;

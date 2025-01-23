@@ -41,8 +41,7 @@ namespace
       hp->text_fun = nullptr;
       // hp->type &= ~EXTERN_HOOK;
     }
-     
-  }
+    }
 
   // jichi 10/1/2013: Change return type to bool
   bool InsertRUGP1Hook()

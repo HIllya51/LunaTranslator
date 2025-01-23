@@ -2,7 +2,7 @@
 #include "extension.h"
 #include <QPlainTextEdit>
 
-extern const char* LOAD_SCRIPT;
+extern const char *LOAD_SCRIPT;
 
 constexpr auto STYLE_SAVE_FILE = u8"Textractor.qss";
 
@@ -20,7 +20,7 @@ public:
 
 		resize(800, 600);
 		setWindowTitle("Styler");
-		//QMetaObject::invokeMethod(this, &QWidget::show, Qt::QueuedConnection);
+		// QMetaObject::invokeMethod(this, &QWidget::show, Qt::QueuedConnection);
 
 		LoadScript();
 	}
@@ -43,20 +43,19 @@ private:
 		QTextFile(STYLE_SAVE_FILE, QIODevice::WriteOnly | QIODevice::Truncate).write(scriptEditor.toPlainText().toUtf8());
 	}
 
-	QHBoxLayout layout{ this };
-	QPlainTextEdit scriptEditor{ QTextFile(STYLE_SAVE_FILE, QIODevice::ReadOnly).readAll(), this };
-	QPushButton loadButton{ LOAD_SCRIPT, this };
+	QHBoxLayout layout{this};
+	QPlainTextEdit scriptEditor{QTextFile(STYLE_SAVE_FILE, QIODevice::ReadOnly).readAll(), this};
+	QPushButton loadButton{LOAD_SCRIPT, this};
 } window;
 
-bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
+bool ProcessSentence(std::wstring &sentence, SentenceInfo sentenceInfo)
 {
 	return false;
 }
 
-
 extern "C" __declspec(dllexport) void VisSetting(bool vis)
 {
-	if(vis)
+	if (vis)
 		QMetaObject::invokeMethod(&window, &QWidget::show, Qt::QueuedConnection);
 	else
 		QMetaObject::invokeMethod(&window, &QWidget::hide, Qt::QueuedConnection);

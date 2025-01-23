@@ -14,7 +14,7 @@ class TTS(TTSbase):
             __.append((10, _))
         return __, (self._7 + self._10)
 
-    def speak(self, content, voice, param:SpeechParam):
+    def speak(self, content, voice, param: SpeechParam):
         version, voice_idx = voice
 
         data = winsharedutils.SAPI_Speak(content, version, voice_idx, param.speed, 100)

@@ -18,7 +18,7 @@ namespace
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW ;
+    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
     hp.offset = regoffset(r8);
     return NewHook(hp, "typemoon");
   }

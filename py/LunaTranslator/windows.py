@@ -13,8 +13,6 @@ from ctypes import (
     c_bool,
     c_ushort,
     create_string_buffer,
-    CFUNCTYPE,
-    c_short,
     Structure,
     WINFUNCTYPE,
     sizeof,
@@ -27,21 +25,12 @@ from ctypes.wintypes import (
     POINT,
     HWND,
     BOOL,
-    WORD,
     DWORD,
     LONG,
-    MSG,
-    PHKEY,
-    HKEY,
-    LPDWORD,
-    LPBYTE,
     HMONITOR,
     LPCVOID,
     LPMSG,
     LPWSTR,
-    WPARAM,
-    LPARAM,
-    INT,
     LPCWSTR,
     HANDLE,
     UINT,
@@ -50,13 +39,11 @@ from ctypes.wintypes import (
     LPLONG,
     HDC,
     SHORT,
-    USHORT,
 )
 
 HRESULT = LONG
 HWINEVENTHOOK = HANDLE
 LRESULT = LPLONG
-WAIT_TIMEOUT = 258
 SW_HIDE = 0
 SW_SHOWNORMAL = 1
 SW_SHOWNOACTIVATE = 4
@@ -133,10 +120,10 @@ PROCESS_INJECT_ACCESS = (
 )
 KEYEVENTF_KEYUP = 2
 GWL_STYLE = -16
-GWL_EXSTYLE = -20  
-WS_EX_TRANSPARENT = 0x00000020  
+GWL_EXSTYLE = -20
+WS_EX_TRANSPARENT = 0x00000020
 WS_EX_TOPMOST = 0x00000008
-SW_SHOWMAXIMIZED = 3   
+SW_SHOWMAXIMIZED = 3
 WM_HOTKEY = 0x0312
 
 VK_LBUTTON = 1
@@ -148,20 +135,6 @@ VK_MENU = 0x12
 
 WM_KEYDOWN = 0x0100
 WM_KEYUP = 0x0101
-
-WNDENUMPROC = WINFUNCTYPE(c_bool, c_void_p, c_void_p)
-
-
-class WINDOWPLACEMENT(Structure):
-    _fields_ = [
-        ("length", c_uint),
-        ("flags", c_uint),
-        ("showCmd", c_uint),
-        ("ptMinPosition", POINT),
-        ("ptMaxPosition", POINT),
-        ("rcNormalPosition", RECT),
-        ("rcDevice", RECT),
-    ]
 
 
 class STARTUPINFO(Structure):
@@ -698,6 +671,7 @@ _GetAncestor.restype = HWND
 
 def GetAncestor(hwnd):
     return _GetAncestor(hwnd, GA_ROOT)
+
 
 _MapVirtualKey = _user32.MapVirtualKeyW
 _MapVirtualKey.argtypes = UINT, UINT

@@ -29,7 +29,9 @@ class dialog_memory(saveposwindow):
             poslist=globalconfig["memorydialoggeo"],
         )
         self.setWindowTitle("备忘录")
-        self.setWindowIcon(qtawesome.icon(globalconfig["toolbutton"]["buttons"]["memory"]["icon"]))
+        self.setWindowIcon(
+            qtawesome.icon(globalconfig["toolbutton"]["buttons"]["memory"]["icon"])
+        )
         _w = QWidget()
         formLayout = QVBoxLayout(_w)  #
         self.showtext = QTextEdit()

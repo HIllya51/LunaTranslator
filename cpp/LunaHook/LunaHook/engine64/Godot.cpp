@@ -19,7 +19,7 @@ bool InsertGodotHook_X64()
 			int len = *(int *)(context->rax - 4);
 			if (len != wcslen((wchar_t *)context->rax))
 				return;
-			buffer->from(context->rax, len*2);
+			buffer->from(context->rax, len * 2);
 		};
 		char nameForUser[HOOK_NAME_SIZE] = "RichTextLabel_add_text";
 

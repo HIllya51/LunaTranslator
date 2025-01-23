@@ -1,5 +1,4 @@
-#include"Eagls.h"
-
+#include "Eagls.h"
 
 /** jichi 7/26/2014: E.A.G.L.S engine for TechArts games (SQUEEZ, May-Be Soft)
  *  Sample games: [May-Be Soft] ちぽ�んじ� *  Should also work for SQUEEZ's 孕ませシリーズ
@@ -12,20 +11,20 @@
  */
 bool InsertEaglsHook()
 {
- 
+
   // Modify the split for GetGlyphOutlineA
   HookParam hp;
   hp.address = (DWORD)::GetGlyphOutlineA;
-  hp.type = CODEC_ANSI_BE|USING_SPLIT; // the only difference is the split value
+  hp.type = CODEC_ANSI_BE | USING_SPLIT; // the only difference is the split value
   hp.offset = stackoffset(2);
   hp.split = stackoffset(4);
-  //hp.split = arg7_lpmat2;
+  // hp.split = arg7_lpmat2;
   ConsoleOutput("INSERT EAGLS");
-  
+
   return NewHook(hp, "EAGLS");
 }
 
-
-bool Eagls::attach_function() {  
-    return InsertEaglsHook();
-} 
+bool Eagls::attach_function()
+{
+  return InsertEaglsHook();
+}

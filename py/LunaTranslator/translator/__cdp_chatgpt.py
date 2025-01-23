@@ -2,6 +2,7 @@ from translator.basetranslator import basetrans
 from translator.cdp_helper import cdp_helperllm
 from language import Languages
 
+
 class chatgpt(cdp_helperllm):
     target_url = "https://chatgpt.com/"
     jsfile = "commonhookfetchstream.js"

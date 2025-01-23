@@ -20,7 +20,7 @@ class TS(basetrans):
             Languages.Vietnamese: "vie",
             Languages.Ukrainian: "ukr",
             Languages.Arabic: "ara",
-            Languages.Swedish : "swe",
+            Languages.Swedish: "swe",
             Languages.Latin: "lat",
         }
 

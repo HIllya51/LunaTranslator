@@ -1,12 +1,14 @@
 ﻿#include "extension.h"
 
-std::vector<int> GenerateSuffixArray(const std::wstring& text)
+std::vector<int> GenerateSuffixArray(const std::wstring &text)
 {
 	std::vector<int> suffixArray(text.size());
-	for (int i = 0; i < text.size(); ++i) suffixArray[i] = i;
+	for (int i = 0; i < text.size(); ++i)
+		suffixArray[i] = i;
 	// The below code is a more efficient way of doing this:
 	// std::sort(suffixArray.begin(), suffixArray.end(), [&](int a, int b) { return wcscmp(text.c_str() + a, text.c_str() + b) > 0; });
-	std::stable_sort(suffixArray.begin(), suffixArray.end(), [&](int a, int b) { return text[a] > text[b]; });
+	std::stable_sort(suffixArray.begin(), suffixArray.end(), [&](int a, int b)
+					 { return text[a] > text[b]; });
 	std::vector<int> eqClasses(text.begin(), text.end());
 	std::vector<int> count(text.size());
 	for (int length = 1; length < text.size(); length *= 2)
@@ -18,18 +20,20 @@ std::vector<int> GenerateSuffixArray(const std::wstring& text)
 		{
 			int currentSuffix = suffixArray[i], lastSuffix = suffixArray[i - 1];
 			if (currentSuffix + length < text.size() && prevEqClasses[currentSuffix] == prevEqClasses[lastSuffix] &&
-				prevEqClasses[currentSuffix + length / 2] == prevEqClasses[lastSuffix + length / 2]
-			)
+				prevEqClasses[currentSuffix + length / 2] == prevEqClasses[lastSuffix + length / 2])
 				eqClasses[currentSuffix] = eqClasses[lastSuffix];
-			else eqClasses[currentSuffix] = i;
+			else
+				eqClasses[currentSuffix] = i;
 		}
 
 		// Sort within equivalence class based on order of following suffix after length (orders up to length * 2)
-		for (int i = 0; i < text.size(); ++i) count[i] = i;
+		for (int i = 0; i < text.size(); ++i)
+			count[i] = i;
 		for (auto suffix : std::vector(suffixArray))
 		{
 			int precedingSuffix = suffix - length;
-			if (precedingSuffix >= 0) suffixArray[count[eqClasses[precedingSuffix]]++] = precedingSuffix;
+			if (precedingSuffix >= 0)
+				suffixArray[count[eqClasses[precedingSuffix]]++] = precedingSuffix;
 		}
 	}
 	for (int i = 0; i + 1 < text.size(); ++i)
@@ -39,9 +43,10 @@ std::vector<int> GenerateSuffixArray(const std::wstring& text)
 
 constexpr wchar_t ERASED = 0xf246; // inside Unicode private use area
 
-bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
+bool ProcessSentence(std::wstring &sentence, SentenceInfo sentenceInfo)
 {
-	if (sentenceInfo["text number"] == 0) return false;
+	if (sentenceInfo["text number"] == 0)
+		return false;
 
 	// This algorithm looks for repeating substrings (in other words, common prefixes among the set of suffixes) of the sentence with length > 6
 	// It then looks for any regions of characters at least twice as long as the substring made up only of characters in the substring, and erases them
@@ -52,22 +57,29 @@ bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
 	{
 		int commonPrefixLength = 0;
 		for (int j = suffixArray[i], k = suffixArray[i + 1]; j < sentence.size() && k < sentence.size(); ++j, ++k)
-			if (sentence[j] != ERASED && sentence[j] == sentence[k]) commonPrefixLength += 1;
-			else break;
+			if (sentence[j] != ERASED && sentence[j] == sentence[k])
+				commonPrefixLength += 1;
+			else
+				break;
 
 		if (commonPrefixLength > 6)
 		{
 			std::wstring substring(sentence, suffixArray[i], commonPrefixLength);
 			bool substringCharMap[0x10000] = {};
-			for (auto ch : substring) substringCharMap[ch] = true;
+			for (auto ch : substring)
+				substringCharMap[ch] = true;
 
 			for (int regionSize = 0, j = 0; j <= sentence.size(); ++j)
-				if (substringCharMap[sentence[j]]) regionSize += 1;
+				if (substringCharMap[sentence[j]])
+					regionSize += 1;
 				else if (regionSize >= commonPrefixLength * 2)
-					while (regionSize > 0) sentence[j - regionSize--] = ERASED;
-				else regionSize = 0;
+					while (regionSize > 0)
+						sentence[j - regionSize--] = ERASED;
+				else
+					regionSize = 0;
 
-			if (!wcsstr(sentence.c_str(), substring.c_str())) std::copy(substring.begin(), substring.end(), sentence.begin() + max(suffixArray[i], suffixArray[i + 1]));
+			if (!wcsstr(sentence.c_str(), substring.c_str()))
+				std::copy(substring.begin(), substring.end(), sentence.begin() + max(suffixArray[i], suffixArray[i + 1]));
 		}
 	}
 	sentence.erase(std::remove(sentence.begin(), sentence.end(), ERASED), sentence.end());
@@ -76,22 +88,21 @@ bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
 
 TEST(
 	{
-		InfoForExtension nonConsole[] = { { "text number", 1 }, {} };
+		InfoForExtension nonConsole[] = {{"text number", 1}, {}};
 
 		std::wstring cyclicRepeats = L"Name: '_abcdefg_abcdefg_abcdefg_abcdefg_abcdefg'";
 		std::wstring buildupRepeats = L"Name: '__a_ab_abc_abcd_abcde_abcdef_abcdefg'";
 		std::wstring breakdownRepeats = L"Name: '_abcdefg_abcdef_abcde_abcd_abc_ab_a_'";
-		ProcessSentence(cyclicRepeats, { nonConsole });
-		ProcessSentence(buildupRepeats, { nonConsole });
-		ProcessSentence(breakdownRepeats, { nonConsole });
+		ProcessSentence(cyclicRepeats, {nonConsole});
+		ProcessSentence(buildupRepeats, {nonConsole});
+		ProcessSentence(breakdownRepeats, {nonConsole});
 		assert(cyclicRepeats == L"Name: '_abcdefg'");
 		assert(buildupRepeats == L"Name: '_abcdefg'");
 		assert(breakdownRepeats == L"Name: '_abcdefg'");
 
 		std::wstring empty = L"", one = L" ", normal = L"This is a normal sentence. はい";
-		ProcessSentence(empty, { nonConsole });
-		ProcessSentence(one, { nonConsole });
-		ProcessSentence(normal, { nonConsole });
+		ProcessSentence(empty, {nonConsole});
+		ProcessSentence(one, {nonConsole});
+		ProcessSentence(normal, {nonConsole});
 		assert(empty == L"" && one == L" " && normal == L"This is a normal sentence. はい");
-	}
-);
+	});

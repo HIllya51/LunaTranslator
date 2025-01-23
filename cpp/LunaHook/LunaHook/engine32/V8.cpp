@@ -1,5 +1,5 @@
-#include"V8.h"
-#include"v8/v8.h"
+#include "V8.h"
+#include "v8/v8.h"
 #if 0
 /**
 *  Artikash 7/15/2018: Insert Tyranobuilder hook
@@ -93,10 +93,10 @@ bool hookv8addr(HMODULE module) {
 
 	return NewHook(hp, "electronW");
 }
-		
 
 #endif
-bool V8::attach_function_() {
-	
+bool V8::attach_function_()
+{
+
 	return tryhookv8();
-} 
+}

@@ -16,40 +16,41 @@
 #include <QScrollArea>
 #include <QAbstractNativeEventFilter>
 
-extern const char* EXTRA_WINDOW_INFO;
-extern const char* TOPMOST;
-extern const char* OPACITY;
-extern const char* SHOW_ORIGINAL;
-extern const char* ORIGINAL_AFTER_TRANSLATION;
-extern const char* SIZE_LOCK;
-extern const char* POSITION_LOCK;
-extern const char* CENTERED_TEXT;
-extern const char* AUTO_RESIZE_WINDOW_HEIGHT;
-extern const char* CLICK_THROUGH;
-extern const char* HIDE_MOUSEOVER;
-extern const char* DICTIONARY;
-extern const char* DICTIONARY_INSTRUCTIONS;
-extern const char* BG_COLOR;
-extern const char* TEXT_COLOR;
-extern const char* TEXT_OUTLINE;
-extern const char* OUTLINE_COLOR;
-extern const char* OUTLINE_SIZE;
-extern const char* OUTLINE_SIZE_INFO;
-extern const char* FONT;
+extern const char *EXTRA_WINDOW_INFO;
+extern const char *TOPMOST;
+extern const char *OPACITY;
+extern const char *SHOW_ORIGINAL;
+extern const char *ORIGINAL_AFTER_TRANSLATION;
+extern const char *SIZE_LOCK;
+extern const char *POSITION_LOCK;
+extern const char *CENTERED_TEXT;
+extern const char *AUTO_RESIZE_WINDOW_HEIGHT;
+extern const char *CLICK_THROUGH;
+extern const char *HIDE_MOUSEOVER;
+extern const char *DICTIONARY;
+extern const char *DICTIONARY_INSTRUCTIONS;
+extern const char *BG_COLOR;
+extern const char *TEXT_COLOR;
+extern const char *TEXT_OUTLINE;
+extern const char *OUTLINE_COLOR;
+extern const char *OUTLINE_SIZE;
+extern const char *OUTLINE_SIZE_INFO;
+extern const char *FONT;
 
 constexpr auto DICTIONARY_SAVE_FILE = u8"SavedDictionary.txt";
 constexpr int CLICK_THROUGH_HOTKEY = 0xc0d0;
 
-QColor colorPrompt(QWidget* parent, QColor default, const QString& title, bool customOpacity = true)
+QColor colorPrompt(QWidget *parent, QColor default, const QString &title, bool customOpacity = true)
 {
 	QColor color = QColorDialog::getColor(default, parent, title);
-	if (customOpacity) color.setAlpha(255 * QInputDialog::getDouble(parent, title, OPACITY, default.alpha() / 255.0, 0, 1, 3, nullptr, Qt::WindowCloseButtonHint));
+	if (customOpacity)
+		color.setAlpha(255 * QInputDialog::getDouble(parent, title, OPACITY, default.alpha() / 255.0, 0, 1, 3, nullptr, Qt::WindowCloseButtonHint));
 	return color;
 }
 
 struct PrettyWindow : QDialog, Localizer
 {
-	PrettyWindow(const char* name)
+	PrettyWindow(const char *name)
 	{
 		ui.setupUi(this);
 		ui.display->setGraphicsEffect(outliner = new Outliner);
@@ -58,23 +59,29 @@ struct PrettyWindow : QDialog, Localizer
 
 		settings.beginGroup(name);
 		QFont font = ui.display->font();
-		if (font.fromString(settings.value(FONT, font.toString()).toString())) ui.display->setFont(font);
+		if (font.fromString(settings.value(FONT, font.toString()).toString()))
+			ui.display->setFont(font);
 		SetBackgroundColor(settings.value(BG_COLOR, backgroundColor).value<QColor>());
 		SetTextColor(settings.value(TEXT_COLOR, TextColor()).value<QColor>());
 		outliner->color = settings.value(OUTLINE_COLOR, outliner->color).value<QColor>();
 		outliner->size = settings.value(OUTLINE_SIZE, outliner->size).toDouble();
 		autoHide = settings.value(HIDE_MOUSEOVER, autoHide).toBool();
 		menu.addAction(FONT, this, &PrettyWindow::RequestFont);
-		menu.addAction(BG_COLOR, [this] { SetBackgroundColor(colorPrompt(this, backgroundColor, BG_COLOR)); });
-		menu.addAction(TEXT_COLOR, [this] { SetTextColor(colorPrompt(this, TextColor(), TEXT_COLOR)); });
-		QAction* outlineAction = menu.addAction(TEXT_OUTLINE, this, &PrettyWindow::SetOutline);
+		menu.addAction(BG_COLOR, [this]
+					   { SetBackgroundColor(colorPrompt(this, backgroundColor, BG_COLOR)); });
+		menu.addAction(TEXT_COLOR, [this]
+					   { SetTextColor(colorPrompt(this, TextColor(), TEXT_COLOR)); });
+		QAction *outlineAction = menu.addAction(TEXT_OUTLINE, this, &PrettyWindow::SetOutline);
 		outlineAction->setCheckable(true);
 		outlineAction->setChecked(outliner->size >= 0);
-		QAction* autoHideAction = menu.addAction(HIDE_MOUSEOVER, this, [this](bool autoHide) { settings.setValue(HIDE_MOUSEOVER, this->autoHide = autoHide); });
+		QAction *autoHideAction = menu.addAction(HIDE_MOUSEOVER, this, [this](bool autoHide)
+												 { settings.setValue(HIDE_MOUSEOVER, this->autoHide = autoHide); });
 		autoHideAction->setCheckable(true);
 		autoHideAction->setChecked(autoHide);
-		connect(this, &QDialog::customContextMenuRequested, [this](QPoint point) { menu.exec(mapToGlobal(point)); });
-		connect(ui.display, &QLabel::customContextMenuRequested, [this](QPoint point) { menu.exec(ui.display->mapToGlobal(point)); });
+		connect(this, &QDialog::customContextMenuRequested, [this](QPoint point)
+				{ menu.exec(mapToGlobal(point)); });
+		connect(ui.display, &QLabel::customContextMenuRequested, [this](QPoint point)
+				{ menu.exec(ui.display->mapToGlobal(point)); });
 		startTimer(50);
 	}
 
@@ -86,16 +93,19 @@ struct PrettyWindow : QDialog, Localizer
 	Ui::ExtraWindow ui;
 
 protected:
-	void timerEvent(QTimerEvent*) override
+	void timerEvent(QTimerEvent *) override
 	{
 		if (autoHide && geometry().contains(QCursor::pos()))
 		{
 			if (!hidden)
 			{
-				if (backgroundColor.alphaF() > 0.05) backgroundColor.setAlphaF(0.05);
-				if (outliner->color.alphaF() > 0.05) outliner->color.setAlphaF(0.05);
+				if (backgroundColor.alphaF() > 0.05)
+					backgroundColor.setAlphaF(0.05);
+				if (outliner->color.alphaF() > 0.05)
+					outliner->color.setAlphaF(0.05);
 				QColor hiddenTextColor = TextColor();
-				if (hiddenTextColor.alphaF() > 0.05) hiddenTextColor.setAlphaF(0.05);
+				if (hiddenTextColor.alphaF() > 0.05)
+					hiddenTextColor.setAlphaF(0.05);
 				ui.display->setPalette(QPalette(hiddenTextColor, {}, {}, {}, {}, {}, {}));
 				hidden = true;
 				repaint();
@@ -111,8 +121,8 @@ protected:
 		}
 	}
 
-	QMenu menu{ ui.display };
-	Settings settings{ this };
+	QMenu menu{ui.display};
+	Settings settings{this};
 
 private:
 	void RequestFont()
@@ -126,8 +136,10 @@ private:
 
 	void SetBackgroundColor(QColor color)
 	{
-		if (!color.isValid()) return;
-		if (color.alpha() == 0) color.setAlpha(1);
+		if (!color.isValid())
+			return;
+		if (color.alpha() == 0)
+			color.setAlpha(1);
 		backgroundColor = color;
 		repaint();
 		settings.setValue(BG_COLOR, color.name(QColor::HexArgb));
@@ -140,7 +152,8 @@ private:
 
 	void SetTextColor(QColor color)
 	{
-		if (!color.isValid()) return;
+		if (!color.isValid())
+			return;
 		ui.display->setPalette(QPalette(color, {}, {}, {}, {}, {}, {}));
 		settings.setValue(TEXT_COLOR, color.name(QColor::HexArgb));
 	};
@@ -150,30 +163,33 @@ private:
 		if (enable)
 		{
 			QColor color = colorPrompt(this, outliner->color, OUTLINE_COLOR);
-			if (color.isValid()) outliner->color = color;
+			if (color.isValid())
+				outliner->color = color;
 			outliner->size = QInputDialog::getDouble(this, OUTLINE_SIZE, OUTLINE_SIZE_INFO, -outliner->size, 0, INT_MAX, 2, nullptr, Qt::WindowCloseButtonHint);
 		}
-		else outliner->size = -outliner->size;
+		else
+			outliner->size = -outliner->size;
 		settings.setValue(OUTLINE_COLOR, outliner->color.name(QColor::HexArgb));
 		settings.setValue(OUTLINE_SIZE, outliner->size);
 	}
 
-	void paintEvent(QPaintEvent*) override
+	void paintEvent(QPaintEvent *) override
 	{
 		QPainter(this).fillRect(rect(), backgroundColor);
 	}
 
 	bool autoHide = false, hidden = false;
-	QColor backgroundColor{ palette().window().color() };
+	QColor backgroundColor{palette().window().color()};
 	struct Outliner : QGraphicsEffect
 	{
-		void draw(QPainter* painter) override
+		void draw(QPainter *painter) override
 		{
-			if (size < 0) return drawSource(painter);
+			if (size < 0)
+				return drawSource(painter);
 			QPoint offset;
 			QPixmap pixmap = sourcePixmap(Qt::LogicalCoordinates, &offset);
 			offset.setX(offset.x() + size);
-			for (auto offset2 : Array<QPointF>{ { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 }, { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } })
+			for (auto offset2 : Array<QPointF>{{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}})
 			{
 				QImage outline = pixmap.toImage();
 				QPainter outlinePainter(&outline);
@@ -183,9 +199,9 @@ private:
 			}
 			painter->drawPixmap(offset, pixmap);
 		}
-		QColor color{ Qt::black };
+		QColor color{Qt::black};
 		double size = -0.5;
-	}* outliner;
+	} *outliner;
 };
 
 class ExtraWindow : public PrettyWindow, QAbstractNativeEventFilter
@@ -194,18 +210,19 @@ public:
 	ExtraWindow() : PrettyWindow("Extra Window")
 	{
 		ui.display->setTextFormat(Qt::PlainText);
-		if (settings.contains(WINDOW) && QApplication::screenAt(settings.value(WINDOW).toRect().bottomRight())) setGeometry(settings.value(WINDOW).toRect());
+		if (settings.contains(WINDOW) && QApplication::screenAt(settings.value(WINDOW).toRect().bottomRight()))
+			setGeometry(settings.value(WINDOW).toRect());
 
-		for (auto [name, default, slot] : Array<const char*, bool, void(ExtraWindow::*)(bool)>{
-			{ TOPMOST, false, &ExtraWindow::SetTopmost },
-			{ SIZE_LOCK, false, &ExtraWindow::SetSizeLock },
-			{ POSITION_LOCK, false, &ExtraWindow::SetPositionLock },
-			{ CENTERED_TEXT, false, &ExtraWindow::SetCenteredText },
-			{ AUTO_RESIZE_WINDOW_HEIGHT, false, &ExtraWindow::SetAutoResize },
-			{ SHOW_ORIGINAL, true, &ExtraWindow::SetShowOriginal },
-			{ ORIGINAL_AFTER_TRANSLATION, true, &ExtraWindow::SetShowOriginalAfterTranslation },
-			{ DICTIONARY, false, &ExtraWindow::SetUseDictionary },
-		})
+		for (auto [name, default, slot] : Array<const char *, bool, void (ExtraWindow::*)(bool)>{
+				 {TOPMOST, false, &ExtraWindow::SetTopmost},
+				 {SIZE_LOCK, false, &ExtraWindow::SetSizeLock},
+				 {POSITION_LOCK, false, &ExtraWindow::SetPositionLock},
+				 {CENTERED_TEXT, false, &ExtraWindow::SetCenteredText},
+				 {AUTO_RESIZE_WINDOW_HEIGHT, false, &ExtraWindow::SetAutoResize},
+				 {SHOW_ORIGINAL, true, &ExtraWindow::SetShowOriginal},
+				 {ORIGINAL_AFTER_TRANSLATION, true, &ExtraWindow::SetShowOriginalAfterTranslation},
+				 {DICTIONARY, false, &ExtraWindow::SetUseDictionary},
+			 })
 		{
 			// delay processing anything until Textractor has finished initializing
 			QMetaObject::invokeMethod(this, std::bind(slot, this, default = settings.value(name, default).toBool()), Qt::QueuedConnection);
@@ -220,11 +237,10 @@ public:
 		qApp->installNativeEventFilter(this);
 
 		QMetaObject::invokeMethod(this, [this]
-		{
+								  {
 			RegisterHotKey((HWND)winId(), CLICK_THROUGH_HOTKEY, MOD_ALT | MOD_NOREPEAT, 0x58);
 			show();
-			AddSentence(EXTRA_WINDOW_INFO);
-		}, Qt::QueuedConnection);
+			AddSentence(EXTRA_WINDOW_INFO); }, Qt::QueuedConnection);
 	}
 
 	~ExtraWindow()
@@ -237,7 +253,8 @@ public:
 		sanitize(sentence);
 		sentence.chop(std::distance(std::remove(sentence.begin(), sentence.end(), QChar::Tabulation), sentence.end()));
 		sentenceHistory.push_back(sentence);
-		if (sentenceHistory.size() > 1000) sentenceHistory.erase(sentenceHistory.begin());
+		if (sentenceHistory.size() > 1000)
+			sentenceHistory.erase(sentenceHistory.begin());
 		historyIndex = sentenceHistory.size() - 1;
 		DisplaySentence();
 	}
@@ -245,11 +262,14 @@ public:
 private:
 	void DisplaySentence()
 	{
-		if (sentenceHistory.empty()) return;
+		if (sentenceHistory.empty())
+			return;
 		QString sentence = sentenceHistory[historyIndex];
 		if (sentence.contains(u8"\x200b \n"))
-			if (!showOriginal) sentence = sentence.split(u8"\x200b \n")[1];
-			else if (showOriginalAfterTranslation) sentence = sentence.split(u8"\x200b \n")[1] + "\n" + sentence.split(u8"\x200b \n")[0];
+			if (!showOriginal)
+				sentence = sentence.split(u8"\x200b \n")[1];
+			else if (showOriginalAfterTranslation)
+				sentence = sentence.split(u8"\x200b \n")[1] + "\n" + sentence.split(u8"\x200b \n")[0];
 
 		if (sizeLock && !autoResize)
 		{
@@ -263,7 +283,8 @@ private:
 					last = mid;
 					low = mid + 1;
 				}
-				else high = mid - 1;
+				else
+					high = mid - 1;
 			}
 			sentence = sentence.left(last);
 		}
@@ -271,13 +292,12 @@ private:
 		ui.display->setText(sentence);
 		if (autoResize)
 			resize(width(), height() - ui.display->height() +
-				QFontMetrics(ui.display->font(), ui.display).boundingRect(0, 0, ui.display->width(), INT_MAX, Qt::TextWordWrap, sentence).height()
-			);
+								QFontMetrics(ui.display->font(), ui.display).boundingRect(0, 0, ui.display->width(), INT_MAX, Qt::TextWordWrap, sentence).height());
 	}
 
 	void SetTopmost(bool topmost)
 	{
-		for (auto window : { winId(), dictionaryWindow.winId() })
+		for (auto window : {winId(), dictionaryWindow.winId()})
 			SetWindowPos((HWND)window, topmost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		settings.setValue(TOPMOST, topmost);
 	};
@@ -334,11 +354,13 @@ private:
 	void ToggleClickThrough()
 	{
 		clickThrough = !clickThrough;
-		for (auto window : { winId(), dictionaryWindow.winId() })
+		for (auto window : {winId(), dictionaryWindow.winId()})
 		{
 			unsigned exStyle = GetWindowLongPtrW((HWND)window, GWL_EXSTYLE);
-			if (clickThrough) exStyle |= WS_EX_TRANSPARENT;
-			else exStyle &= ~WS_EX_TRANSPARENT;
+			if (clickThrough)
+				exStyle |= WS_EX_TRANSPARENT;
+			else
+				exStyle &= ~WS_EX_TRANSPARENT;
 			SetWindowLongPtrW((HWND)window, GWL_EXSTYLE, exStyle);
 		}
 	};
@@ -346,7 +368,7 @@ private:
 	void ShowDictionary(QPoint mouse)
 	{
 		QString sentence = ui.display->text();
-		const QFont& font = ui.display->font();
+		const QFont &font = ui.display->font();
 		if (cachedDisplayInfo.CompareExchange(ui.display))
 		{
 			QFontMetrics fontMetrics(font, ui.display);
@@ -356,69 +378,79 @@ private:
 			{
 				int block = 1;
 				for (int charHeight = fontMetrics.boundingRect(0, 0, 1, INT_MAX, flags, sentence.mid(i, 1)).height();
-					i + block < sentence.size() && fontMetrics.boundingRect(0, 0, 1, INT_MAX, flags, sentence.mid(i, block + 1)).height() < charHeight * 1.5; ++block);
+					 i + block < sentence.size() && fontMetrics.boundingRect(0, 0, 1, INT_MAX, flags, sentence.mid(i, block + 1)).height() < charHeight * 1.5; ++block)
+					;
 				auto boundingRect = fontMetrics.boundingRect(0, 0, ui.display->width(), INT_MAX, flags, sentence.left(i + block));
 				if (boundingRect.height() > height)
 				{
 					height = boundingRect.height();
 					lineBreak = i;
 				}
-				textPositionMap.push_back({
-					fontMetrics.boundingRect(0, 0, ui.display->width(), INT_MAX, flags, sentence.mid(lineBreak, i - lineBreak + 1)).right() + 1,
-					height
-				});
+				textPositionMap.push_back({fontMetrics.boundingRect(0, 0, ui.display->width(), INT_MAX, flags, sentence.mid(lineBreak, i - lineBreak + 1)).right() + 1,
+										   height});
 			}
 		}
 		int i;
-		for (i = 0; i < textPositionMap.size(); ++i) if (textPositionMap[i].y() > mouse.y() && textPositionMap[i].x() > mouse.x()) break;
-		if (i == textPositionMap.size() || (mouse - textPositionMap[i]).manhattanLength() > font.pointSize() * 3) return dictionaryWindow.hide();
-		if (sentence.mid(i) == dictionaryWindow.term) return dictionaryWindow.ShowDefinition();
+		for (i = 0; i < textPositionMap.size(); ++i)
+			if (textPositionMap[i].y() > mouse.y() && textPositionMap[i].x() > mouse.x())
+				break;
+		if (i == textPositionMap.size() || (mouse - textPositionMap[i]).manhattanLength() > font.pointSize() * 3)
+			return dictionaryWindow.hide();
+		if (sentence.mid(i) == dictionaryWindow.term)
+			return dictionaryWindow.ShowDefinition();
 		dictionaryWindow.ui.display->setFixedWidth(ui.display->width() * 3 / 4);
 		dictionaryWindow.SetTerm(sentence.mid(i));
 		int left = i == 0 ? 0 : textPositionMap[i - 1].x(), right = textPositionMap[i].x(),
 			x = textPositionMap[i].x() > ui.display->width() / 2 ? -dictionaryWindow.width() + (right * 3 + left) / 4 : (left * 3 + right) / 4, y = 0;
-		for (auto point : textPositionMap) if (point.y() > y && point.y() < textPositionMap[i].y()) y = point.y();
+		for (auto point : textPositionMap)
+			if (point.y() > y && point.y() < textPositionMap[i].y())
+				y = point.y();
 		dictionaryWindow.move(ui.display->mapToGlobal(QPoint(x, y - dictionaryWindow.height())));
 	}
 
-	bool nativeEventFilter(const QByteArray&, void* message, long* result) override
+	bool nativeEventFilter(const QByteArray &, void *message, long *result) override
 	{
-		auto msg = (MSG*)message;
+		auto msg = (MSG *)message;
 		if (msg->message == WM_HOTKEY)
-			if (msg->wParam == CLICK_THROUGH_HOTKEY) return ToggleClickThrough(), true;
+			if (msg->wParam == CLICK_THROUGH_HOTKEY)
+				return ToggleClickThrough(), true;
 		return false;
 	}
 
-	bool eventFilter(QObject*, QEvent* event) override
+	bool eventFilter(QObject *, QEvent *event) override
 	{
-		if (event->type() == QEvent::MouseButtonPress) mousePressEvent((QMouseEvent*)event);
+		if (event->type() == QEvent::MouseButtonPress)
+			mousePressEvent((QMouseEvent *)event);
 		return false;
 	}
 
-	void timerEvent(QTimerEvent* event) override
+	void timerEvent(QTimerEvent *event) override
 	{
 		if (useDictionary && QCursor::pos() != oldPos && (!dictionaryWindow.isVisible() || !dictionaryWindow.geometry().contains(QCursor::pos())))
 			ShowDictionary(ui.display->mapFromGlobal(QCursor::pos()));
 		PrettyWindow::timerEvent(event);
 	}
 
-	void mousePressEvent(QMouseEvent* event) override
+	void mousePressEvent(QMouseEvent *event) override
 	{
 		dictionaryWindow.hide();
 		oldPos = event->globalPos();
 	}
 
-	void mouseMoveEvent(QMouseEvent* event) override
+	void mouseMoveEvent(QMouseEvent *event) override
 	{
-		if (!posLock) move(pos() + event->globalPos() - oldPos);
+		if (!posLock)
+			move(pos() + event->globalPos() - oldPos);
 		oldPos = event->globalPos();
 	}
 
-	void wheelEvent(QWheelEvent* event) override
+	void wheelEvent(QWheelEvent *event) override
 	{
 		int scroll = event->angleDelta().y();
-		if (scroll > 0 && historyIndex > 0) --historyIndex;
-		if (scroll < 0 && historyIndex + 1 < sentenceHistory.size()) ++historyIndex;
+		if (scroll > 0 && historyIndex > 0)
+			--historyIndex;
+		if (scroll < 0 && historyIndex + 1 < sentenceHistory.size())
+			++historyIndex;
 		DisplaySentence();
 	}
 
@@ -428,9 +460,10 @@ private:
 	class
 	{
 	public:
-		bool CompareExchange(QLabel* display)
+		bool CompareExchange(QLabel *display)
 		{
-			if (display->text() == text && display->font() == font && display->width() == width && display->alignment() == alignment) return false;
+			if (display->text() == text && display->font() == font && display->width() == width && display->alignment() == alignment)
+				return false;
 			text = display->text();
 			font = display->font();
 			width = display->width();
@@ -454,17 +487,21 @@ private:
 	public:
 		DictionaryWindow() : PrettyWindow("Dictionary Window")
 		{
-			ui.display->setSizePolicy({ QSizePolicy::Fixed, QSizePolicy::Minimum });
+			ui.display->setSizePolicy({QSizePolicy::Fixed, QSizePolicy::Minimum});
 		}
 
 		void UpdateDictionary()
 		{
 			try
 			{
-				if (dictionaryFileLastWrite == std::filesystem::last_write_time(DICTIONARY_SAVE_FILE)) return;
+				if (dictionaryFileLastWrite == std::filesystem::last_write_time(DICTIONARY_SAVE_FILE))
+					return;
 				dictionaryFileLastWrite = std::filesystem::last_write_time(DICTIONARY_SAVE_FILE);
 			}
-			catch (std::filesystem::filesystem_error) { return; }
+			catch (std::filesystem::filesystem_error)
+			{
+				return;
+			}
 
 			dictionary.clear();
 			charStorage.clear();
@@ -478,34 +515,35 @@ private:
 
 			charStorage.reserve(std::filesystem::file_size(DICTIONARY_SAVE_FILE));
 			std::ifstream stream(DICTIONARY_SAVE_FILE);
-			BlockMarkupIterator savedDictionary(stream, Array<std::string_view>{ "|TERM|", "|DEFINITION|" });
+			BlockMarkupIterator savedDictionary(stream, Array<std::string_view>{"|TERM|", "|DEFINITION|"});
 			while (auto read = savedDictionary.Next())
 			{
-				const auto& [terms, definition] = read.value();
+				const auto &[terms, definition] = read.value();
 				auto storedDefinition = StoreCopy(definition);
 				std::string_view termsView = terms;
 				size_t start = 0, end = termsView.find("|TERM|");
 				while (end != std::string::npos)
 				{
-					dictionary.push_back(DictionaryEntry{ StoreCopy(termsView.substr(start, end - start)), storedDefinition });
+					dictionary.push_back(DictionaryEntry{StoreCopy(termsView.substr(start, end - start)), storedDefinition});
 					start = end + 6;
 					end = termsView.find("|TERM|", start);
 				}
-				dictionary.push_back(DictionaryEntry{ StoreCopy(termsView.substr(start)), storedDefinition });
+				dictionary.push_back(DictionaryEntry{StoreCopy(termsView.substr(start)), storedDefinition});
 			}
 			std::stable_sort(dictionary.begin(), dictionary.end());
 
 			inflections.clear();
 			stream.seekg(0);
-			BlockMarkupIterator savedInflections(stream, Array<std::string_view>{ "|ROOT|", "|INFLECTS TO|", "|NAME|" });
+			BlockMarkupIterator savedInflections(stream, Array<std::string_view>{"|ROOT|", "|INFLECTS TO|", "|NAME|"});
 			while (auto read = savedInflections.Next())
 			{
-				const auto& [root, inflectsTo, name] = read.value();
+				const auto &[root, inflectsTo, name] = read.value();
 				if (!inflections.emplace_back(Inflection{
-					S(root),
-					QRegularExpression(QRegularExpression::anchoredPattern(S(inflectsTo)), QRegularExpression::UseUnicodePropertiesOption),
-					S(name)
-				}).inflectsTo.isValid()) TEXTRACTOR_MESSAGE(L"Invalid regex: %s", StringToWideString(inflectsTo));
+												  S(root),
+												  QRegularExpression(QRegularExpression::anchoredPattern(S(inflectsTo)), QRegularExpression::UseUnicodePropertiesOption),
+												  S(name)})
+						 .inflectsTo.isValid())
+					TEXTRACTOR_MESSAGE(L"Invalid regex: %s", StringToWideString(inflectsTo));
 			}
 		}
 
@@ -515,24 +553,20 @@ private:
 			UpdateDictionary();
 			definitions.clear();
 			definitionIndex = 0;
-			std::unordered_set<const char*> foundDefinitions;
+			std::unordered_set<const char *> foundDefinitions;
 			for (term = term.left(100); !term.isEmpty(); term.chop(1))
-				for (const auto& [rootTerm, definition, inflections] : LookupDefinitions(term, foundDefinitions))
+				for (const auto &[rootTerm, definition, inflections] : LookupDefinitions(term, foundDefinitions))
 					definitions.push_back(
-						QStringLiteral("<h3>%1 (%5/%6)</h3><small>%2%3</small>%4").arg(
-							term.split("<<")[0].toHtmlEscaped(),
-							rootTerm.split("<<")[0].toHtmlEscaped(),
-							inflections.join(""),
-							definition
-						)
-					);
-			for (int i = 0; i < definitions.size(); ++i) definitions[i] = definitions[i].arg(i + 1).arg(definitions.size());
+						QStringLiteral("<h3>%1 (%5/%6)</h3><small>%2%3</small>%4").arg(term.split("<<")[0].toHtmlEscaped(), rootTerm.split("<<")[0].toHtmlEscaped(), inflections.join(""), definition));
+			for (int i = 0; i < definitions.size(); ++i)
+				definitions[i] = definitions[i].arg(i + 1).arg(definitions.size());
 			ShowDefinition();
 		}
 
 		void ShowDefinition()
 		{
-			if (definitions.empty()) return hide();
+			if (definitions.empty())
+				return hide();
 			ui.display->setText(definitions[definitionIndex]);
 			adjustSize();
 			resize(width(), 1);
@@ -541,8 +575,8 @@ private:
 
 		struct DictionaryEntry
 		{
-			const char* term;
-			const char* definition;
+			const char *term;
+			const char *definition;
 			bool operator<(DictionaryEntry other) const { return strcmp(term, other.term) < 0; }
 		};
 		std::vector<DictionaryEntry> dictionary;
@@ -555,27 +589,33 @@ private:
 			QString definition;
 			QStringList inflectionsUsed;
 		};
-		std::vector<LookupResult> LookupDefinitions(QString term, std::unordered_set<const char*>& foundDefinitions, QStringList inflectionsUsed = {})
+		std::vector<LookupResult> LookupDefinitions(QString term, std::unordered_set<const char *> &foundDefinitions, QStringList inflectionsUsed = {})
 		{
 			std::vector<LookupResult> results;
-			for (auto [it, end] = std::equal_range(dictionary.begin(), dictionary.end(), DictionaryEntry{ term.toUtf8() }); it != end; ++it)
-				if (foundDefinitions.emplace(it->definition).second) results.push_back({ term, it->definition, inflectionsUsed });
-			for (const auto& inflection : inflections) if (auto match = inflection.inflectsTo.match(term); match.hasMatch())
-			{
-				QStringList currentInflectionsUsed = inflectionsUsed;
-				currentInflectionsUsed.push_front(inflection.name);
-				QString root;
-				for (const auto& ch : inflection.root) root += ch.isDigit() ? match.captured(ch.digitValue()) : ch;
-				for (const auto& definition : LookupDefinitions(root, foundDefinitions, currentInflectionsUsed)) results.push_back(definition);
-			}
+			for (auto [it, end] = std::equal_range(dictionary.begin(), dictionary.end(), DictionaryEntry{term.toUtf8()}); it != end; ++it)
+				if (foundDefinitions.emplace(it->definition).second)
+					results.push_back({term, it->definition, inflectionsUsed});
+			for (const auto &inflection : inflections)
+				if (auto match = inflection.inflectsTo.match(term); match.hasMatch())
+				{
+					QStringList currentInflectionsUsed = inflectionsUsed;
+					currentInflectionsUsed.push_front(inflection.name);
+					QString root;
+					for (const auto &ch : inflection.root)
+						root += ch.isDigit() ? match.captured(ch.digitValue()) : ch;
+					for (const auto &definition : LookupDefinitions(root, foundDefinitions, currentInflectionsUsed))
+						results.push_back(definition);
+				}
 			return results;
 		}
 
-		void wheelEvent(QWheelEvent* event) override
+		void wheelEvent(QWheelEvent *event) override
 		{
 			int scroll = event->angleDelta().y();
-			if (scroll > 0 && definitionIndex > 0) definitionIndex -= 1;
-			if (scroll < 0 && definitionIndex + 1 < definitions.size()) definitionIndex += 1;
+			if (scroll > 0 && definitionIndex > 0)
+				definitionIndex -= 1;
+			if (scroll < 0 && definitionIndex + 1 < definitions.size())
+				definitionIndex += 1;
 			int oldHeight = height();
 			ShowDefinition();
 			move(x(), y() + oldHeight - height());
@@ -596,9 +636,10 @@ private:
 	} dictionaryWindow;
 } extraWindow;
 
-bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
+bool ProcessSentence(std::wstring &sentence, SentenceInfo sentenceInfo)
 {
 	if (sentenceInfo["current select"] && sentenceInfo["text number"] != 0)
-		QMetaObject::invokeMethod(&extraWindow, [sentence = S(sentence)] { extraWindow.AddSentence(sentence); });
+		QMetaObject::invokeMethod(&extraWindow, [sentence = S(sentence)]
+								  { extraWindow.AddSentence(sentence); });
 	return false;
 }

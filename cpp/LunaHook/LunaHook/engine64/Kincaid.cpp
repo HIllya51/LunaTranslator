@@ -29,7 +29,8 @@ namespace
     hp.offset = regoffset(rax);
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      if (context->retaddr == (DWORD)-1){
+      if (context->retaddr == (DWORD)-1)
+      {
         buffer->from((char *)context->rax);
       }
     };

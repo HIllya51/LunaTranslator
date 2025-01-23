@@ -133,10 +133,10 @@ bool InsertAOS2Hook()
       0x53,       // 00C4E7E3  |.  53            PUSH EBX
       0x55,       // 00C4E7E4  |.  55            PUSH EBP
       0x8b, 0x2d  //, XX4,           // 00C4E7E5  |.  8B2D 40A3CF00 MOV EBP,DWORD PTR DS:[0CFA340] ; mireado: some time changing 40A3CF00 => 40A3C000
-      // 0x89,0x07,             // 00C4E7EB  |.  8907          MOV DWORD PTR DS:[EDI],EAX
-      // 0x89,0x47, 0x04       // 00C4E7ED  |.  8947 04       MOV DWORD PTR DS:[EDI+4],EAX
-      // 0x56,                  // 00C4E7F0  |.  56            PUSH ESI
-      // 0x8b,0x75, 0x44        // 00C4E7F1  |.  8B75 44       MOV ESI,DWORD PTR SS:[EBP+44]
+                  // 0x89,0x07,             // 00C4E7EB  |.  8907          MOV DWORD PTR DS:[EDI],EAX
+                  // 0x89,0x47, 0x04       // 00C4E7ED  |.  8947 04       MOV DWORD PTR DS:[EDI+4],EAX
+                  // 0x56,                  // 00C4E7F0  |.  56            PUSH ESI
+                  // 0x8b,0x75, 0x44        // 00C4E7F1  |.  8B75 44       MOV ESI,DWORD PTR SS:[EBP+44]
   };
 
   enum

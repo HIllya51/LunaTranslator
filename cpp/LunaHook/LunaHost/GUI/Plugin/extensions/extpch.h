@@ -29,17 +29,27 @@
 #include <cassert>
 #include <variant>
 
+template <typename T, typename... Xs>
+struct ArrayImpl
+{
+	using Type = std::tuple<T, Xs...>[];
+};
+template <typename T>
+struct ArrayImpl<T>
+{
+	using Type = T[];
+};
+template <typename... Ts>
+using Array = typename ArrayImpl<Ts...>::Type;
 
-template <typename T, typename... Xs> struct ArrayImpl { using Type = std::tuple<T, Xs...>[]; };
-template <typename T> struct ArrayImpl<T> { using Type = T[]; };
-template <typename... Ts> using Array = typename ArrayImpl<Ts...>::Type;
-
-template <auto F> using Functor = std::integral_constant<std::remove_reference_t<decltype(F)>, F>; // shouldn't need remove_reference_t but MSVC is bugged
+template <auto F>
+using Functor = std::integral_constant<std::remove_reference_t<decltype(F)>, F>; // shouldn't need remove_reference_t but MSVC is bugged
 
 struct PermissivePointer
 {
-	template <typename T> operator T*() { return (T*)p; }
-	void* p;
+	template <typename T>
+	operator T *() { return (T *)p; }
+	void *p;
 };
 
 template <typename HandleCloser = Functor<CloseHandle>>
@@ -48,29 +58,41 @@ class AutoHandle
 public:
 	AutoHandle(HANDLE h) : h(h) {}
 	operator HANDLE() { return h.get(); }
-	PHANDLE operator&() { static_assert(sizeof(*this) == sizeof(HANDLE)); assert(!h); return (PHANDLE)this; }
+	PHANDLE operator&()
+	{
+		static_assert(sizeof(*this) == sizeof(HANDLE));
+		assert(!h);
+		return (PHANDLE)this;
+	}
 	operator bool() { return h.get() != NULL && h.get() != INVALID_HANDLE_VALUE; }
 
 private:
-	struct HandleCleaner { void operator()(void* h) { if (h != INVALID_HANDLE_VALUE) HandleCloser()(PermissivePointer{ h }); } };
+	struct HandleCleaner
+	{
+		void operator()(void *h)
+		{
+			if (h != INVALID_HANDLE_VALUE)
+				HandleCloser()(PermissivePointer{h});
+		}
+	};
 	std::unique_ptr<void, HandleCleaner> h;
 };
 
-template<typename T, typename M = std::mutex>
+template <typename T, typename M = std::mutex>
 class Synchronized
 {
 public:
 	template <typename... Args>
-	Synchronized(Args&&... args) : contents(std::forward<Args>(args)...) {}
+	Synchronized(Args &&...args) : contents(std::forward<Args>(args)...) {}
 
 	struct Locker
 	{
-		T* operator->() { return &contents; }
+		T *operator->() { return &contents; }
 		std::unique_lock<M> lock;
-		T& contents;
+		T &contents;
 	};
 
-	Locker Acquire() { return { std::unique_lock(m), contents }; }
+	Locker Acquire() { return {std::unique_lock(m), contents}; }
 	Locker operator->() { return Acquire(); }
 	T Copy() { return Acquire().contents; }
 
@@ -80,34 +102,46 @@ private:
 };
 
 template <typename F>
-void SpawnThread(const F& f) // works in DllMain unlike std thread
+void SpawnThread(const F &f) // works in DllMain unlike std thread
 {
-	F* copy = new F(f);
-	CloseHandle(CreateThread(nullptr, 0, [](void* copy)
-	{
+	F *copy = new F(f);
+	CloseHandle(CreateThread(nullptr, 0, [](void *copy)
+							 {
 		(*(F*)copy)();
 		delete (F*)copy;
-		return 0UL;
-	}, copy, 0, nullptr));
+		return 0UL; }, copy, 0, nullptr));
 }
 
 inline struct
 {
 	inline static BYTE DUMMY[100];
-	template <typename T> operator T*() { static_assert(sizeof(T) < sizeof(DUMMY)); return (T*)DUMMY; }
+	template <typename T>
+	operator T *()
+	{
+		static_assert(sizeof(T) < sizeof(DUMMY));
+		return (T *)DUMMY;
+	}
 } DUMMY;
 
-inline auto Swallow = [](auto&&...) {};
+inline auto Swallow = [](auto &&...) {};
 
-template <typename T> std::optional<std::remove_cv_t<T>> Copy(T* ptr) { if (ptr) return *ptr; return {}; }
+template <typename T>
+std::optional<std::remove_cv_t<T>> Copy(T *ptr)
+{
+	if (ptr)
+		return *ptr;
+	return {};
+}
 
-template <typename T> inline auto FormatArg(T arg) { return arg; }
-template <typename C> inline auto FormatArg(const std::basic_string<C>& arg) { return arg.c_str(); }
+template <typename T>
+inline auto FormatArg(T arg) { return arg; }
+template <typename C>
+inline auto FormatArg(const std::basic_string<C> &arg) { return arg.c_str(); }
 
 #pragma warning(push)
-#pragma warning(disable: 4996)
+#pragma warning(disable : 4996)
 template <typename... Args>
-inline std::string FormatString(const char* format, const Args&... args)
+inline std::string FormatString(const char *format, const Args &...args)
 {
 	std::string buffer(snprintf(nullptr, 0, format, FormatArg(args)...), '\0');
 	sprintf(buffer.data(), format, FormatArg(args)...);
@@ -115,7 +149,7 @@ inline std::string FormatString(const char* format, const Args&... args)
 }
 
 template <typename... Args>
-inline std::wstring FormatString(const wchar_t* format, const Args&... args)
+inline std::wstring FormatString(const wchar_t *format, const Args &...args)
 {
 	std::wstring buffer(_snwprintf(nullptr, 0, format, FormatArg(args)...), L'\0');
 	_swprintf(buffer.data(), format, FormatArg(args)...);
@@ -123,13 +157,13 @@ inline std::wstring FormatString(const wchar_t* format, const Args&... args)
 }
 #pragma warning(pop)
 
-inline void Trim(std::wstring& text)
+inline void Trim(std::wstring &text)
 {
 	text.erase(text.begin(), std::find_if_not(text.begin(), text.end(), iswspace));
 	text.erase(std::find_if_not(text.rbegin(), text.rend(), iswspace).base(), text.end());
 }
 
-inline std::optional<std::wstring> StringToWideString(const std::string& text, UINT encoding)
+inline std::optional<std::wstring> StringToWideString(const std::string &text, UINT encoding)
 {
 	std::vector<wchar_t> buffer(text.size() + 1);
 	if (int length = MultiByteToWideChar(encoding, 0, text.c_str(), text.size() + 1, buffer.data(), buffer.size()))
@@ -137,14 +171,14 @@ inline std::optional<std::wstring> StringToWideString(const std::string& text, U
 	return {};
 }
 
-inline std::wstring StringToWideString(const std::string& text)
+inline std::wstring StringToWideString(const std::string &text)
 {
 	std::vector<wchar_t> buffer(text.size() + 1);
 	MultiByteToWideChar(CP_UTF8, 0, text.c_str(), -1, buffer.data(), buffer.size());
 	return buffer.data();
 }
 
-inline std::string WideStringToString(const std::wstring& text)
+inline std::string WideStringToString(const std::wstring &text)
 {
 	std::vector<char> buffer((text.size() + 1) * 4);
 	WideCharToMultiByte(CP_UTF8, 0, text.c_str(), -1, buffer.data(), buffer.size(), nullptr, nullptr);
@@ -152,10 +186,14 @@ inline std::string WideStringToString(const std::wstring& text)
 }
 
 template <typename... Args>
-inline void TEXTRACTOR_MESSAGE(const wchar_t* format, const Args&... args) { MessageBoxW(NULL, FormatString(format, args...).c_str(), L"Textractor", MB_OK); }
+inline void TEXTRACTOR_MESSAGE(const wchar_t *format, const Args &...args) { MessageBoxW(NULL, FormatString(format, args...).c_str(), L"Textractor", MB_OK); }
 
 template <typename... Args>
-inline void TEXTRACTOR_DEBUG(const wchar_t* format, const Args&... args) { SpawnThread([=] { TEXTRACTOR_MESSAGE(format, args...); }); }
+inline void TEXTRACTOR_DEBUG(const wchar_t *format, const Args &...args)
+{
+	SpawnThread([=]
+				{ TEXTRACTOR_MESSAGE(format, args...); });
+}
 
 void Localize();
 
@@ -169,14 +207,16 @@ inline std::optional<std::wstring> getModuleFilename(DWORD processId, HMODULE mo
 {
 	std::vector<wchar_t> buffer(MAX_PATH);
 	if (AutoHandle<> process = OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, FALSE, processId))
-		if (GetModuleFileNameExW(process, module, buffer.data(), MAX_PATH)) return buffer.data();
+		if (GetModuleFileNameExW(process, module, buffer.data(), MAX_PATH))
+			return buffer.data();
 	return {};
 }
 
 inline std::optional<std::wstring> getModuleFilename(HMODULE module = NULL)
 {
 	std::vector<wchar_t> buffer(MAX_PATH);
-	if (GetModuleFileNameW(module, buffer.data(), MAX_PATH)) return buffer.data();
+	if (GetModuleFileNameW(module, buffer.data(), MAX_PATH))
+		return buffer.data();
 	return {};
 }
 
@@ -186,6 +226,7 @@ inline std::vector<std::pair<DWORD, std::optional<std::wstring>>> GetAllProcesse
 	DWORD spaceUsed = 0;
 	EnumProcesses(processIds.data(), 10000 * sizeof(DWORD), &spaceUsed);
 	std::vector<std::pair<DWORD, std::optional<std::wstring>>> processes;
-	for (int i = 0; i < spaceUsed / sizeof(DWORD); ++i) processes.push_back({ processIds[i], getModuleFilename(processIds[i]) });
+	for (int i = 0; i < spaceUsed / sizeof(DWORD); ++i)
+		processes.push_back({processIds[i], getModuleFilename(processIds[i])});
 	return processes;
 }

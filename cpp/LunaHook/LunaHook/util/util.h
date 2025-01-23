@@ -55,7 +55,6 @@ uintptr_t SafeFindEnclosingAlignedFunction(uintptr_t addr, uintptr_t range);
 uintptr_t SafeFindBytes(LPCVOID pattern, size_t patternSize, uintptr_t lowerBound, uintptr_t upperBound);
 #ifndef _WIN64
 
-
 std::vector<DWORD> findrelativecall(const BYTE *pattern, int length, DWORD calladdress, DWORD start, DWORD end);
 uintptr_t findfuncstart(uintptr_t addr, uintptr_t range = 0x100, bool checkalign = false);
 uintptr_t findiatcallormov(uintptr_t addr, DWORD hmodule, uintptr_t start, uintptr_t end, bool reverse = false, BYTE movreg = 0);
@@ -105,7 +104,6 @@ auto allocateString(const StringT &s) -> typename StringT::value_type *
   _data[t] = 0;
   return _data;
 }
-
 
 bool IsShiftjisWord(WORD w);
 bool IsShiftjisLeadByte(BYTE b);

@@ -3,12 +3,12 @@
 #include "ui_threadlinker.h"
 #include <QKeyEvent>
 
-extern const char* THREAD_LINKER;
-extern const char* LINK;
-extern const char* UNLINK;
-extern const char* THREAD_LINK_FROM;
-extern const char* THREAD_LINK_TO;
-extern const char* HEXADECIMAL;
+extern const char *THREAD_LINKER;
+extern const char *LINK;
+extern const char *UNLINK;
+extern const char *THREAD_LINK_FROM;
+extern const char *THREAD_LINK_TO;
+extern const char *HEXADECIMAL;
 
 std::unordered_map<int64_t, std::unordered_set<int64_t>> links;
 std::unordered_set<int64_t> universalLinks, empty;
@@ -27,7 +27,7 @@ public:
 		connect(ui.unlinkButton, &QPushButton::clicked, this, &Window::Unlink);
 
 		setWindowTitle(THREAD_LINKER);
-		//QMetaObject::invokeMethod(this, &QWidget::show, Qt::QueuedConnection);
+		// QMetaObject::invokeMethod(this, &QWidget::show, Qt::QueuedConnection);
 	}
 
 private:
@@ -59,31 +59,29 @@ private:
 		}
 	}
 
-	void keyPressEvent(QKeyEvent* event) override
+	void keyPressEvent(QKeyEvent *event) override
 	{
-		if (event->key() == Qt::Key_Delete) Unlink();
+		if (event->key() == Qt::Key_Delete)
+			Unlink();
 	}
 
 	Ui::LinkWindow ui;
 } window;
 
-bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
+bool ProcessSentence(std::wstring &sentence, SentenceInfo sentenceInfo)
 {
 	concurrency::reader_writer_lock::scoped_lock_read readLock(m);
 	auto action = separateSentences ? sentenceInfo["add sentence"] : sentenceInfo["add text"];
 	auto it = links.find(sentenceInfo["text number"]);
-	for (const auto& linkSet : { it != links.end() ? it->second : empty, sentenceInfo["text number"] > 1 ? universalLinks : empty })
+	for (const auto &linkSet : {it != links.end() ? it->second : empty, sentenceInfo["text number"] > 1 ? universalLinks : empty})
 		for (auto link : linkSet)
-			((void(*)(int64_t, const wchar_t*))action)(link, sentence.c_str());
+			((void (*)(int64_t, const wchar_t *))action)(link, sentence.c_str());
 	return false;
 }
 
-
-
-
 extern "C" __declspec(dllexport) void VisSetting(bool vis)
 {
-	if(vis)
+	if (vis)
 		QMetaObject::invokeMethod(&window, &QWidget::show, Qt::QueuedConnection);
 	else
 		QMetaObject::invokeMethod(&window, &QWidget::hide, Qt::QueuedConnection);

@@ -1189,8 +1189,12 @@ class TranslatorWindow(resizableframeless):
             globalconfig["backtransparent"] = not globalconfig["backtransparent"]
             self.set_color_transparency()
             try:
-                gobject.baseobject.settin_ui.horizontal_slider.setEnabled(not globalconfig["backtransparent"])
-                gobject.baseobject.settin_ui.horizontal_slider_label.setEnabled(not globalconfig["backtransparent"])
+                gobject.baseobject.settin_ui.horizontal_slider.setEnabled(
+                    not globalconfig["backtransparent"]
+                )
+                gobject.baseobject.settin_ui.horizontal_slider_label.setEnabled(
+                    not globalconfig["backtransparent"]
+                )
             except:
                 pass
         self.refreshtoolicon()

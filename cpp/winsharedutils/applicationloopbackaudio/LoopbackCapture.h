@@ -14,11 +14,10 @@
 
 using namespace Microsoft::WRL;
 
-class CLoopbackCapture :
-    public RuntimeClass< RuntimeClassFlags< ClassicCom >, FtmBase, IActivateAudioInterfaceCompletionHandler >
+class CLoopbackCapture : public RuntimeClass<RuntimeClassFlags<ClassicCom>, FtmBase, IActivateAudioInterfaceCompletionHandler>
 {
 public:
-    //CLoopbackCapture() = default;
+    // CLoopbackCapture() = default;
     ~CLoopbackCapture();
 
     HRESULT StartCaptureAsync(DWORD processId, bool includeProcessTree);
@@ -30,12 +29,14 @@ public:
     METHODASYNCCALLBACK(CLoopbackCapture, FinishCapture, OnFinishCapture);
 
     // IActivateAudioInterfaceCompletionHandler
-    STDMETHOD(ActivateCompleted)(IActivateAudioInterfaceAsyncOperation* operation);
+    STDMETHOD(ActivateCompleted)
+    (IActivateAudioInterfaceAsyncOperation *operation);
 
     std::string buffer;
+
 private:
     // NB: All states >= Initialized will allow some methods
-        // to be called successfully on the Audio Client
+    // to be called successfully on the Audio Client
     enum class DeviceState
     {
         Uninitialized,
@@ -47,10 +48,10 @@ private:
         Stopped,
     };
 
-    HRESULT OnStartCapture(IMFAsyncResult* pResult);
-    HRESULT OnStopCapture(IMFAsyncResult* pResult);
-    HRESULT OnFinishCapture(IMFAsyncResult* pResult);
-    HRESULT OnSampleReady(IMFAsyncResult* pResult);
+    HRESULT OnStartCapture(IMFAsyncResult *pResult);
+    HRESULT OnStopCapture(IMFAsyncResult *pResult);
+    HRESULT OnFinishCapture(IMFAsyncResult *pResult);
+    HRESULT OnSampleReady(IMFAsyncResult *pResult);
 
     HRESULT InitializeLoopbackCapture();
     HRESULT CreateWAVFile();
@@ -79,7 +80,7 @@ private:
     // and the ActivateCompleted callback.
     HRESULT m_activateResult = E_UNEXPECTED;
 
-    DeviceState m_DeviceState{ DeviceState::Uninitialized };
+    DeviceState m_DeviceState{DeviceState::Uninitialized};
     wil::unique_event_nothrow m_hActivateCompleted;
     wil::unique_event_nothrow m_hCaptureStopped;
 };

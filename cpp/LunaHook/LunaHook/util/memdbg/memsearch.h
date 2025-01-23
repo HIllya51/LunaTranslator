@@ -6,23 +6,32 @@
 
 #include "memdbg/memdbg.h"
 #ifndef MEMDBG_NO_STL
-# include <functional>
+#include <functional>
 #endif // MEMDBG_NO_STL
 
 MEMDBG_BEGIN_NAMESPACE
 
 /// Estimated maximum size of the caller function, the same as ITH FindCallAndEntryAbs
-enum { MaximumFunctionSize = 0x800 };
+enum
+{
+  MaximumFunctionSize = 0x800
+};
 
 /// Offset added to the beginning of the searched address
-enum { MemoryPaddingOffset = 0x1000 };
+enum
+{
+  MemoryPaddingOffset = 0x1000
+};
 
-enum { MemoryAlignedStep = 0x10 };
+enum
+{
+  MemoryAlignedStep = 0x10
+};
 
 #ifndef MEMDBG_NO_STL
 ///  Iterate address and return false if abort iteration.
-typedef std::function<bool (dword_t)> address_fun_t;
-typedef std::function<bool (dword_t, dword_t)> address2_fun_t;
+typedef std::function<bool(dword_t)> address_fun_t;
+typedef std::function<bool(dword_t, dword_t)> address2_fun_t;
 
 /**
  *  Iterate all call and caller addresses
@@ -112,15 +121,23 @@ dword_t findLastNearCallAddress(dword_t funcAddr, dword_t lowerBound, dword_t up
 
 ///  Default to far call, for backward compatibility
 inline dword_t findCallAddress(dword_t funcAddr, dword_t lowerBound, dword_t upperBound, dword_t offset = MemoryPaddingOffset, dword_t range = 0)
-{ return findFarCallAddress(funcAddr, lowerBound, upperBound, offset, range); }
+{
+  return findFarCallAddress(funcAddr, lowerBound, upperBound, offset, range);
+}
 inline dword_t findLastCallAddress(dword_t funcAddr, dword_t lowerBound, dword_t upperBound, dword_t offset = MemoryPaddingOffset, dword_t range = 0)
-{ return findLastFarCallAddress(funcAddr, lowerBound, upperBound, offset, range); }
+{
+  return findLastFarCallAddress(funcAddr, lowerBound, upperBound, offset, range);
+}
 
 ///  Default to long jump, for backward compatibility
 inline dword_t findJumpAddress(dword_t funcAddr, dword_t lowerBound, dword_t upperBound, dword_t offset = MemoryPaddingOffset, dword_t range = 0)
-{ return findLongJumpAddress(funcAddr, lowerBound, upperBound, offset, range); }
+{
+  return findLongJumpAddress(funcAddr, lowerBound, upperBound, offset, range);
+}
 inline dword_t findLastJumpAddress(dword_t funcAddr, dword_t lowerBound, dword_t upperBound, dword_t offset = MemoryPaddingOffset, dword_t range = 0)
-{ return findLastLongJumpAddress(funcAddr, lowerBound, upperBound, offset, range); }
+{
+  return findLastLongJumpAddress(funcAddr, lowerBound, upperBound, offset, range);
+}
 
 ///  Push value >= 0xff
 dword_t findPushDwordAddress(dword_t value, dword_t lowerBound, dword_t upperBound);
@@ -130,10 +147,12 @@ dword_t findPushByteAddress(byte_t value, dword_t lowerBound, dword_t upperBound
 
 ///  Default to push DWORD
 inline dword_t findPushAddress(dword_t value, dword_t lowerBound, dword_t upperBound)
-{ return findPushDwordAddress(value, lowerBound, upperBound); }
+{
+  return findPushDwordAddress(value, lowerBound, upperBound);
+}
 
-uint64_t findleaaddr(uint64_t addr,uint64_t start,uint64_t end);
-std::vector<uint64_t> findleaaddr_all(uint64_t addr,uint64_t start,uint64_t end);
+uint64_t findleaaddr(uint64_t addr, uint64_t start, uint64_t end);
+std::vector<uint64_t> findleaaddr_all(uint64_t addr, uint64_t start, uint64_t end);
 /**
  *  Return the enclosing function address outside the given address.
  *  The same as ITH FindEntryAligned().
@@ -175,12 +194,17 @@ uintptr_t findBytes(const void *pattern, uintptr_t patternSize, uintptr_t lowerB
 // http://msdn.microsoft.com/en-us/library/windows/hardware/ff560042%28v=vs.85%29.aspx
 // http://codesequoia.wordpress.com/2008/11/28/understand-process-address-space-usage/
 // http://stackoverflow.com/questions/17244912/open-process-with-debug-privileges-and-read-write-memory
-enum MemoryRange : dword_t {
-  UserMemoryStartAddress = 0, UserMemoryStopAddress = 0x7ffeffff
-  , KernelMemoryStartAddress = 0x80000000, KernelMemoryStopAddress = 0xffffffff
-  , MappedMemoryStartAddress = 0x01000000
+enum MemoryRange : dword_t
+{
+  UserMemoryStartAddress = 0,
+  UserMemoryStopAddress = 0x7ffeffff,
+  KernelMemoryStartAddress = 0x80000000,
+  KernelMemoryStopAddress = 0xffffffff,
+  MappedMemoryStartAddress = 0x01000000
 
-  , MemoryStartAddress = UserMemoryStartAddress, MemoryStopAddress = UserMemoryStopAddress
+  ,
+  MemoryStartAddress = UserMemoryStartAddress,
+  MemoryStopAddress = UserMemoryStopAddress
 };
 
 #if 0 // not used

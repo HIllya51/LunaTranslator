@@ -22,7 +22,7 @@ bool A98SYS::attach_function()
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(1);
-  hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW  | EMBED_DYNA_SJIS;
+  hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
   hp.embed_hook_font = F_ExtTextOutA;
 
   return NewHook(hp, "A98SYS");

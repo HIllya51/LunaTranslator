@@ -1074,7 +1074,7 @@ namespace
     {
       hp->text_fun = nullptr;
       hp->type = HOOK_EMPTY;
-      DWORD addr = context->stack[0];                             // retaddr
+      DWORD addr = context->stack[0];                           // retaddr
       addr = MemDbg::findEnclosingAlignedFunction(addr, 0x400); // range is around 0x377c50 - 0x377a40 = 0x210
       if (!addr)
       {

@@ -2,6 +2,7 @@ from translator.basetranslator import basetrans
 
 from language import Languages
 
+
 class TS(basetrans):
 
     def translate(self, content):

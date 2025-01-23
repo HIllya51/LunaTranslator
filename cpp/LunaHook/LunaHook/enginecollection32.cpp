@@ -16,7 +16,7 @@
 #include "engine32/splushwave.h"
 #include "engine32/FrontWing.h"
 #include "engine32/GSX.h"
-#include"engine32/TYPEMOON.h"
+#include "engine32/TYPEMOON.h"
 #include "engine32/VALKYRIA.h"
 #include "engine32/Moonstone.h"
 #include "engine32/mirage.h"
@@ -434,6 +434,5 @@ std::vector<ENGINE *> check_engines()
         new Mink3,
         new FrontWing2,
         new RScript,
-        new TYPEMOON
-        };
+        new TYPEMOON};
 }
