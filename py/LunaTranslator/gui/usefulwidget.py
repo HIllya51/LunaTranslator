@@ -2108,6 +2108,12 @@ class listediterline(QWidget):
             self.edit.setReadOnly(False)
 
 
+def mayberelpath(path):
+    if os.path.commonpath((os.getcwd(), path)) == os.getcwd():
+        return os.path.relpath(path)
+    return os.path.normpath(path)
+
+
 def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):
     if isdir:
         res = QFileDialog.getExistingDirectory(directory=directory)
@@ -2119,9 +2125,9 @@ def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=Non
     if not res:
         return
     if isinstance(res, list):
-        res = [os.path.normpath(_) for _ in res]
+        res = [mayberelpath(_) for _ in res]
     else:
-        res = os.path.normpath(res)
+        res = mayberelpath(res)
     if edit:
         edit.setText("|".join(res) if isinstance(res, list) else res)
     if callback:

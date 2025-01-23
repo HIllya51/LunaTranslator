@@ -26,7 +26,7 @@ class TS(basetrans):
 
             self.engine = winsharedutils.AutoKillProcess(
                 './files/plugins/shareddllproxy32.exe eztrans "{}" {} {}'.format(
-                    os.path.normpath(os.path.dirname(self.path)),
+                    os.path.normpath(os.path.dirname(os.path.abspath(self.path))),
                     pipename,
                     waitsignal,
                 ),

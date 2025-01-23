@@ -49,8 +49,8 @@ class TTS(TTSbase):
         return vv
 
     def init(self):
-        dllpath = os.path.join(self.config["path"], "aitalked.dll")
-        exepath = os.path.join(os.getcwd(), "files/plugins/shareddllproxy32.exe")
+        dllpath = os.path.abspath(os.path.join(self.config["path"], "aitalked.dll"))
+        exepath = os.path.abspath("files/plugins/shareddllproxy32.exe")
 
         t = time.time()
         t = str(t)
@@ -61,7 +61,7 @@ class TTS(TTSbase):
         self.engine = winsharedutils.AutoKillProcess(
             '"{}" voiceroid2 "{}" "{}" {} {} {}'.format(
                 exepath,
-                self.config["path"],
+                os.path.abspath(self.config["path"]),
                 dllpath,
                 pipename,
                 waitsignal,

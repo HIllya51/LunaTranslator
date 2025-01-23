@@ -1,6 +1,6 @@
 from qtsymbols import *
 from rendertext.somefunctions import dataget
-import gobject, uuid, json, os
+import gobject, uuid, json, os, functools
 from urllib.parse import quote
 from myutils.utils import threader
 from myutils.config import globalconfig, static_data, _TR
@@ -55,6 +55,10 @@ class TextBrowser(QWidget, dataget):
         self.webivewwidget.bind("calllunaMouseRelease", self.calllunaMouseRelease)
         self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
         self.webivewwidget.bind("calllunaloadready", self.resetflags)
+        self.webivewwidget.set_zoom(globalconfig["ZoomFactor2"])
+        self.webivewwidget.on_ZoomFactorChanged.connect(
+            functools.partial(globalconfig.__setitem__, "ZoomFactor2")
+        )
         self.saveiterclasspointer = {}
         self.isfirst = True
         self.colorset = set()

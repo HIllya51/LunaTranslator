@@ -1066,7 +1066,6 @@ class TranslatorWindow(resizableframeless):
         )
         bottomr3 = self.createborderradiusstring(use_r2, False)
         bottomr = self.createborderradiusstring(rate * use_r2, True, True)
-
         self.translate_text.setStyleSheet(
             "Textbrowser{border-width: 0;%s;background-color: %s}"
             % (
@@ -1189,6 +1188,11 @@ class TranslatorWindow(resizableframeless):
         elif idx == 1:
             globalconfig["backtransparent"] = not globalconfig["backtransparent"]
             self.set_color_transparency()
+            try:
+                gobject.baseobject.settin_ui.horizontal_slider.setEnabled(not globalconfig["backtransparent"])
+                gobject.baseobject.settin_ui.horizontal_slider_label.setEnabled(not globalconfig["backtransparent"])
+            except:
+                pass
         self.refreshtoolicon()
 
     def showhideocrrange(self):

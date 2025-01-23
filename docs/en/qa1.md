@@ -1,11 +1,11 @@
-# Using Mecab for Tokenization & Part-of-Speech Color Annotation
+# Using Mecab for Word Segmentation & Part-of-Speech Color Highlighting
 
-First, you need to download the Mecab dictionary. Download the [default version](https://lunatranslator.org/Resource/dictionary/Mecab.zip) or the [official latest version](https://clrd.ninjal.ac.jp/unidic/), and unzip it.
+First, you need to download the Unidic dictionary for Mecab. Download the [commonly used version](https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip) or the [official latest version](https://clrd.ninjal.ac.jp/unidic/).
 
-Then, activate **Mecab** in the Dictionary Settings and set the dictionary path.
+Unzip it into the software's directory, and it will be automatically detected. Alternatively, you can unzip it to any location and set the extraction path manually.
 
 ![img](https://image.lunatranslator.org/zh/mecab.png)
 
-Then, activate **display phonetic symbols** (default activated) and **syntax highlighting**
+Next, enable **Furigana Display** (enabled by default) and **Syntax Highlighting**.
 
 ![img](https://image.lunatranslator.org/zh/fenci.png)

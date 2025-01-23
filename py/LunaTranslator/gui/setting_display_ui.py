@@ -65,6 +65,8 @@ def createhorizontal_slider(self):
     )
 
     hb.addWidget(sw)
+    self.horizontal_slider.setEnabled(not globalconfig["backtransparent"])
+    self.horizontal_slider_label.setEnabled(not globalconfig["backtransparent"])
     return w
 
 

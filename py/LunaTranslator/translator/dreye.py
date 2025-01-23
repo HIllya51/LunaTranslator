@@ -29,7 +29,7 @@ class TS(basetrans):
             pipename = "\\\\.\\Pipe\\dreye_" + t
             waitsignal = "dreyewaitload_" + t
             mp = {("zh", "en"): 2, ("en", "zh"): 1, ("zh", "ja"): 3, ("ja", "zh"): 10}
-            path = os.path.join(self.path, "DreyeMT\\SDK\\bin")
+            path = os.path.abspath(os.path.join(self.path, "DreyeMT\\SDK\\bin"))
             if mp[pairs] in [3, 10]:
                 path2 = os.path.join(path, "TransCOM.dll")
             else:

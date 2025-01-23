@@ -245,10 +245,10 @@ class mdict(cishubase):
     def init_once_mdx(self, f):
         if not os.path.isfile(f):
             return
-        f = os.path.abspath(f)
-        if f in self.dedump:
+        absf = os.path.abspath(f)
+        if absf in self.dedump:
             return
-        self.dedump.add(f)
+        self.dedump.add(absf)
         _ = self.extraconf[f] = self.extraconf.get(f, {})
         _["priority"] = _.get("priority", 100)  # 越大展示的越靠前
         _["distance"] = _.get(

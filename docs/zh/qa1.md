@@ -1,8 +1,8 @@
 # 使用Mecab分词&词性颜色标注
 
-首先需要下载mecab词典。下载[默认版本](https://lunatranslator.org/Resource/dictionary/Mecab.zip)，或者[官方最新版本](https://clrd.ninjal.ac.jp/unidic/)，解压。
+首先需要下载mecab的unidic词典。下载[常用版本](https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip)，或者[官方最新版本](https://clrd.ninjal.ac.jp/unidic/)。
 
-然后在辞书设置中激活**Mecab**，并设置词典路径
+解压到软件所在目录中，会自动检测。或者解压到任意路径后设置解压到底路径。
 
 ![img](https://image.lunatranslator.org/zh/mecab.png)
 

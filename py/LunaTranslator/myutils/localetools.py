@@ -61,8 +61,8 @@ class le_internal(LEbase):
         if not (LEProc and os.path.exists(LEProc)):
             if show:
                 return _TR("内置")
-            LEProc = os.path.abspath("files/plugins/Locale/Locale.Emulator/LEProc.exe")
-        return LEProc
+            LEProc = "files/plugins/Locale/Locale.Emulator/LEProc.exe"
+        return os.path.abspath(LEProc)
 
     def profiles(self, config):
         _Names = []
@@ -178,8 +178,8 @@ class NTLEAS64(LEbase):
         if not (LEProc and os.path.exists(LEProc)):
             if show:
                 return _TR("内置")
-            LEProc = os.path.abspath("files/plugins/Locale/ntleas046_x64/Placeholder")
-        return LEProc
+            LEProc = "files/plugins/Locale/ntleas046_x64/Placeholder"
+        return os.path.abspath(LEProc)
 
     def runX(self, exe, usearg, dirpath, config):
         LEProc = os.path.join(
@@ -276,8 +276,8 @@ class lr_internal(LEbase):
         if not (LEProc and os.path.exists(LEProc)):
             if show:
                 return _TR("内置")
-            LEProc = os.path.abspath("files/plugins/Locale/Locale_Remulator/LRProc.exe")
-        return LEProc
+            LEProc = "files/plugins/Locale/Locale_Remulator/LRProc.exe"
+        return os.path.abspath(LEProc)
 
     def runX(self, exe, usearg, dirpath, config):
 

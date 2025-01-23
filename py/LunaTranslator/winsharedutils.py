@@ -56,7 +56,9 @@ mecab_parse_cb = CFUNCTYPE(None, c_char_p, c_char_p)
 mecab_parse = utilsdll.mecab_parse
 mecab_parse.argtypes = (c_void_p, c_char_p, mecab_parse_cb)
 mecab_parse.restype = c_bool
-
+mecab_dictionary_codec = utilsdll.mecab_dictionary_codec
+mecab_dictionary_codec.argtypes = (c_void_p,)
+mecab_dictionary_codec.restype = c_char_p
 mecab_end = utilsdll.mecab_end
 mecab_end.argtypes = (c_void_p,)
 

@@ -29,10 +29,10 @@ class TS(basetrans):
                     if base == "Jcuser":
                         paths.add(os.path.dirname(path))
 
-            self.dllpath = os.path.join(self.path, "JBJCT.dll")
+            self.dllpath = os.path.abspath(os.path.join(self.path, "JBJCT.dll"))
             dictpath = ""
             for d in sorted(list(paths), key=lambda x: -len(x))[:3]:
-                d = os.path.join(d, "Jcuser")
+                d = os.path.abspath(os.path.join(d, "Jcuser"))
                 dictpath += ' "{}" '.format(d)
 
             t = time.time()

@@ -227,6 +227,10 @@ if "xxxcast" not in globalconfig:
 
 
 def findFixedRuntime():
+    hasset = os.environ.get("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER")
+    if hasset:
+        # 已设置的环境变量会影响检测。直接返回就行了
+        return hasset
     maxversion = (0, 0, 0, 0)
     maxvf = None
     for f in os.listdir("."):
@@ -643,75 +647,6 @@ def _TR(k: str) -> str:
         return __
     languageshow[k] = ""
     return k
-
-
-lastapppath = globalconfig["lastapppath"]
-thisapppath = os.path.normpath(os.getcwd())
-
-if lastapppath is None:
-    lastapppath = thisapppath
-else:
-    lastapppath = os.path.normpath(lastapppath)
-
-globalconfig["lastapppath"] = thisapppath
-
-
-def dynamicrelativepath(abspath):
-    if os.path.exists(abspath):
-        return abspath
-    _ = os.path.normpath(abspath)
-    if _.startswith(lastapppath):
-        np = thisapppath + _[len(lastapppath) :]
-        if os.path.exists(np):
-            return np
-    return abspath
-
-
-def parsetarget(dict_, key):
-    t = dict_[key]
-
-    if isinstance(t, list):
-        t = [dynamicrelativepath(_) for _ in t]
-    else:
-        t = dynamicrelativepath(t)
-    dict_[key] = t
-
-
-mdict_path_dir = (
-    globalconfig.get("cishu", {}).get("mdict", {}).get("args", {}).get("path_dir", None)
-)
-if mdict_path_dir:
-    globalconfig["cishu"]["mdict"]["args"]["paths"].append(mdict_path_dir)
-    globalconfig["cishu"]["mdict"]["args"].pop("path_dir")
-
-
-def autoparsedynamicpath():
-    for dic, routine, target in (
-        (globalconfig, ("cishu", "mdict", "args"), "paths"),
-        (globalconfig, ("hirasetting", "mecab", "args"), "path"),
-        (globalconfig, ("hirasetting", "mecab", "args"), "path"),
-        (globalconfig, ("reader", "voiceroid2", "args"), "path"),
-        (translatorsetting, ("dreye", "args"), "path"),
-        (translatorsetting, ("jb7", "args"), "path"),
-        (translatorsetting, ("kingsoft", "args"), "path"),
-        (translatorsetting, ("ort_sp", "args"), "path"),
-        (translatorsetting, ("premt", "args"), "sqlitefile"),
-        (translatorsetting, ("rengong", "args"), "jsonfile"),
-    ):
-        try:
-            for _k in routine:
-                dic = dic.get(_k, None)
-                if dic is None:
-                    break
-            if dic is None:
-                continue
-            parsetarget(dic, target)
-        except:
-            print_exc()
-
-
-if thisapppath != lastapppath:
-    autoparsedynamicpath()
 
 
 def _TRL(kk):

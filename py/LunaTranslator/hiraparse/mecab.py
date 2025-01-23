@@ -24,30 +24,23 @@ from myutils.config import isascii
 
 
 class mecabwrap:
-    def testcodec(self, mecabpath):
-        default = "shift-jis"
-        dirrc = os.path.join(mecabpath, "dicrc")
-        if not os.path.exists(dirrc):
-            return default
-        with open(dirrc, "rb") as ff:
-            lines = ff.read().split(b"\n")
-        for test in ["dictionary-charset", "config-charset"]:
-            for line in lines:
-                try:
-                    line = line.decode()
-                except:
-                    continue
-                if test in line.lower():
-                    return line.split("=")[1].strip()
-        return default
 
     def __init__(self, mecabpath) -> None:
-        if not os.path.exists(mecabpath):
-            mecabpath = r"C:\Program Files (x86)\MeCab\dic\ipadic"
-        self.codec = self.testcodec(mecabpath)
-        self.kks = winsharedutils.mecab_init(
-            mecabpath.encode("utf8"), gobject.GetDllpath("libmecab.dll")
+
+        maybepaths = (
+            [mecabpath]
+            + os.listdir(".")
+            + [".", r"C:\Program Files (x86)\MeCab\dic\ipadic"]
         )
+        for _ in maybepaths:
+            self.kks = winsharedutils.mecab_init(
+                os.path.abspath(_).encode("utf8"), gobject.GetDllpath("libmecab.dll")
+            )
+            if self.kks:
+                self.codec = winsharedutils.mecab_dictionary_codec(self.kks).decode()
+                return
+
+        raise Exception("not find")
 
     def __del__(self):
         winsharedutils.mecab_end(self.kks)
@@ -71,8 +64,6 @@ class mecabwrap:
 class mecab(basehira):
     def init(self) -> None:
         mecabpath = self.config["path"]
-        if not os.path.exists(mecabpath):
-            raise Exception("no exits " + mecabpath)
         self.kks = mecabwrap(mecabpath)
 
     def parse(self, text):

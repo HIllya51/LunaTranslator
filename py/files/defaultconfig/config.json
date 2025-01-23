@@ -1,6 +1,5 @@
 {
     "autoopenselecttext": true,
-    "lastapppath": null,
     "ocrafterrangeselect": true,
     "excule_from_self": true,
     "showrangeafterrangeselect": true,
@@ -1932,6 +1931,7 @@
         }
     },
     "ZoomFactor": 1,
+    "ZoomFactor2": 1,
     "realtime_edit_target": "realtime_edit",
     "magpiepath": "",
     "movefollow": false,

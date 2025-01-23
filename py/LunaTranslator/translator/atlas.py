@@ -5,11 +5,6 @@ import windows, winsharedutils
 
 class TS(basetrans):
     def inittranslator(self):
-        self.path = None
-        self.pair = None
-        self.checkpath()
-
-    def checkpath(self):
 
         t = time.time()
         t = str(t)
@@ -37,7 +32,6 @@ class TS(basetrans):
                 None,
             )
         )
-        return True
 
     def translate(self, content):
 

@@ -58,3 +58,5 @@ docs/.vitepress/dist
 py/LunaTranslator/rendertext/webview_parsed.html
 py/LunaTranslator/rendertext/luna.jpg
 py/Microsoft.WebView2.FixedVersionRuntime.*
+py/mdx
+py/translation_record
