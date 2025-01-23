@@ -27,7 +27,7 @@ from myutils.hwnd import (
 )
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
-from gui.textbrowser import Textbrowser, TextType, SpecialColor, TranslateColor
+from gui.textbrowser import Textbrowser, TextType, SpecialColor
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, getQMessageBox, findnearestscreen
 from gui.edittext import edittrans
@@ -160,40 +160,30 @@ class ButtonBar(QFrame):
 
     def setstyle(self, bottomr, bottomr3):
 
-        self.setStyleSheet(
-            "#titlebar{border-width: 0;%s;background-color: %s}"
-            % (
-                bottomr,
-                str2rgba(
-                    globalconfig["backcolor_tool"], globalconfig["transparent_tool"]
-                ),
-            )
-        )
-        for _type in self.stylebuttons:
-            style = """
-            IconLabelX{
+        style = """IconLabelX:focus {{outline: 0px;}}
+            IconLabelX{{
                 background-color: rgba(255, 255, 255, 0);
-                color: black;%s;
-                border: 0px;
-                font: 100 10pt;
-            }
-            IconLabelX:hover{
-                background-color: %s;
-                border: 0px;%s;
-                font: 100 10pt;
-            }
-            IconLabelX:focus {outline: 0px;}
-            """ % (
-                bottomr3,
-                (
-                    globalconfig["button_color_normal"],
-                    globalconfig["button_color_close"],
-                )[_type - 1],
-                bottomr3,
-            )
-
-            for btn in self.stylebuttons[_type]:
-                btn.setStyleSheet(style)
+                border: 0px;{bottomr3};
+            }}
+            IconLabelX#IconLabelX2:hover{{
+                background-color: {color0};
+                border: 0px;{bottomr3};
+            }}
+            IconLabelX#IconLabelX1:hover{{
+                background-color: {color1};
+                border: 0px;{bottomr3};
+            }}
+            #titlebar{{border-width: 0;{bottomr};background-color: {color2}}}
+        """.format(
+            bottomr3=bottomr3,
+            color1=globalconfig["button_color_normal"],
+            color0=globalconfig["button_color_close"],
+            bottomr=bottomr,
+            color2=str2rgba(
+                globalconfig["backcolor_tool"], globalconfig["transparent_tool"]
+            ),
+        )
+        self.setStyleSheet(style)
 
     def takusanbuttons(
         self,
@@ -223,6 +213,7 @@ class ButtonBar(QFrame):
         if _type not in self.stylebuttons:
             self.stylebuttons[_type] = []
         self.stylebuttons[_type].append(button)
+        button.setObjectName("IconLabelX{}".format(_type))
         button.reflayout = None
         button.belong = belong
         self.buttons[name] = button
