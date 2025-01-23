@@ -341,7 +341,7 @@ if __name__ == "__main__":
                 dirs_exist_ok=True,
             )
             os.chdir(rootDir)
-            os.makedirs("cpp/builds/files/plugins/DLL32", exist_ok=True)
+            os.makedirs("files/plugins/DLL32", exist_ok=True)
             shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
             shutil.copy("cpp/builds/_x86/winsharedutils.dll", "files/plugins/DLL32")
             os.chdir(rootDir)
@@ -383,7 +383,7 @@ if __name__ == "__main__":
         shutil.copy("cpp/builds/_x86/winsharedutils.dll", "files/plugins/DLL32")
         shutil.copy("cpp/builds/_x86/wcocr.dll", "files/plugins/DLL32")
         shutil.copy("cpp/builds/_x86/LunaOCR.dll", "files/plugins/DLL32")
-        os.makedirs("cpp/builds/files/plugins/DLL64", exist_ok=True)
+        os.makedirs("files/plugins/DLL64", exist_ok=True)
         shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files/plugins")
         shutil.copy("cpp/builds/_x64/winrtutils.dll", "files/plugins/DLL64")
         shutil.copy("cpp/builds/_x64/winsharedutils.dll", "files/plugins/DLL64")
