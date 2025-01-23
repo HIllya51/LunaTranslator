@@ -341,10 +341,10 @@ if __name__ == "__main__":
                 dirs_exist_ok=True,
             )
             os.chdir(rootDir)
-            os.makedirs("cpp/buildsfiles/plugins/DLL32", exist_ok=True)
-            shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "cpp/buildsfiles/plugins")
+            os.makedirs("cpp/builds/files/plugins/DLL32", exist_ok=True)
+            shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "cpp/builds/files/plugins")
             shutil.copy(
-                "cpp/builds/_x86/winsharedutils.dll", "cpp/buildsfiles/plugins/DLL32"
+                "cpp/builds/_x86/winsharedutils.dll", "cpp/builds/files/plugins/DLL32"
             )
             os.chdir(rootDir)
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
@@ -380,17 +380,17 @@ if __name__ == "__main__":
         )
 
         os.makedirs("files/plugins/DLL32", exist_ok=True)
-        shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "cpp/buildsfiles/plugins")
-        shutil.copy("cpp/builds/_x86/winrtutils.dll", "cpp/buildsfiles/plugins/DLL32")
-        shutil.copy("cpp/builds/_x86/winsharedutils.dll", "cpp/buildsfiles/plugins/DLL32")
-        shutil.copy("cpp/builds/_x86/wcocr.dll", "cpp/buildsfiles/plugins/DLL32")
-        shutil.copy("cpp/builds/_x86/LunaOCR.dll", "cpp/buildsfiles/plugins/DLL32")
-        os.makedirs("cpp/buildsfiles/plugins/DLL64", exist_ok=True)
-        shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "cpp/buildsfiles/plugins")
-        shutil.copy("cpp/builds/_x64/winrtutils.dll", "cpp/buildsfiles/plugins/DLL64")
-        shutil.copy("cpp/builds/_x64/winsharedutils.dll", "cpp/buildsfiles/plugins/DLL64")
-        shutil.copy("cpp/builds/_x64/wcocr.dll", "cpp/buildsfiles/plugins/DLL64")
-        shutil.copy("cpp/builds/_x64/LunaOCR.dll", "cpp/buildsfiles/plugins/DLL64")
+        shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "cpp/builds/files/plugins")
+        shutil.copy("cpp/builds/_x86/winrtutils.dll", "cpp/builds/files/plugins/DLL32")
+        shutil.copy("cpp/builds/_x86/winsharedutils.dll", "cpp/builds/files/plugins/DLL32")
+        shutil.copy("cpp/builds/_x86/wcocr.dll", "cpp/builds/files/plugins/DLL32")
+        shutil.copy("cpp/builds/_x86/LunaOCR.dll", "cpp/builds/files/plugins/DLL32")
+        os.makedirs("cpp/builds/files/plugins/DLL64", exist_ok=True)
+        shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "cpp/builds/files/plugins")
+        shutil.copy("cpp/builds/_x64/winrtutils.dll", "cpp/builds/files/plugins/DLL64")
+        shutil.copy("cpp/builds/_x64/winsharedutils.dll", "cpp/builds/files/plugins/DLL64")
+        shutil.copy("cpp/builds/_x64/wcocr.dll", "cpp/builds/files/plugins/DLL64")
+        shutil.copy("cpp/builds/_x64/LunaOCR.dll", "cpp/builds/files/plugins/DLL64")
 
         if arch == "x86":
             os.chdir(rootDir)
