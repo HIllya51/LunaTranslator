@@ -143,6 +143,13 @@ class LListWidget(QListWidget):
             if isinstance(item, LListWidgetItem):
                 item.updatelangtext()
 
+    def wheelEvent(self, e: QWheelEvent) -> None:
+        self.setCurrentRow(
+            (self.currentRow() + [-1, 1][e.angleDelta().y() < 0] + self.count())
+            % self.count()
+        )
+        return super().wheelEvent(e)
+
 
 class LFormLayout(QFormLayout):
     def addRow(self, *argc):
