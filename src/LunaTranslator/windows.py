@@ -30,6 +30,7 @@ from ctypes.wintypes import (
     HMONITOR,
     LPCVOID,
     LPMSG,
+    MSG,
     LPWSTR,
     LPCWSTR,
     HANDLE,

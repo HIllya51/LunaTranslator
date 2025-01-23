@@ -60,3 +60,5 @@ src/LunaTranslator/rendertext/luna.jpg
 src/Microsoft.WebView2.FixedVersionRuntime.*
 src/mdx
 src/translation_record
+src/cpp/libs/YY-Thunks-1.0.7-Binary.zip
+src/temp

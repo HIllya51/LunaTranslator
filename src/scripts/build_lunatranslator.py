@@ -2,7 +2,7 @@ import os, sys, re, json
 import shutil, json
 import subprocess, time
 import urllib.request
-from urllib.parse import urljoin
+from traceback import print_exc
 
 rootDir = os.path.dirname(__file__)
 if not rootDir:
@@ -11,15 +11,18 @@ else:
     rootDir = os.path.abspath(rootDir)
 rootthisfiledir = rootDir
 rootDir = os.path.abspath(os.path.join(rootDir, "../../src"))
-if sys.argv[1] == "loadversion":
-    os.chdir(rootDir)
-    with open("cpp/version.cmake", "r", encoding="utf8") as ff:
-        pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
-        match = re.findall(pattern, ff.read())[0]
-        version_major, version_minor, version_patch = match
-        versionstring = f"v{version_major}.{version_minor}.{version_patch}"
-        print("version=" + versionstring)
-        exit()
+
+
+def fuckmove(src, tgt):
+    print(src, tgt)
+    try:
+        shutil.move(src, tgt)
+    except:
+        try:
+            shutil.copy(src, tgt)
+        except:
+            shutil.copytree(src, tgt, dirs_exist_ok=True)
+
 
 print(sys.version)
 print(__file__)
@@ -44,7 +47,6 @@ brotliFile32 = "https://github.com/google/brotli/releases/latest/download/brotli
 brotliFile64 = "https://github.com/google/brotli/releases/latest/download/brotli-x64-windows-dynamic.zip"
 
 localeEmulatorFile = "https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip"
-ntleaFile = "https://github.com/zxyacb/ntlea/releases/download/0.46/ntleas046_x64.7z"
 LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
 
 curlFile32 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win32-mingw.zip"
@@ -58,29 +60,30 @@ def createPluginDirs(which):
     if not os.path.exists("plugins"):
         os.mkdir("plugins")
     os.chdir("plugins")
-    for pluginDir in [pluginDirs_1, pluginDirs][which]:
+    for pluginDir in [pluginDirs_1, pluginDirs][which != "xp"]:
         if not os.path.exists(pluginDir):
             os.mkdir(pluginDir)
+    os.chdir(rootDir)
 
 
 def installVCLTL():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {vcltlFile}")
-    subprocess.run(f"7z x {vcltlFile.split('/')[-1]} -oVC-LTL5")
+    subprocess.run(f"curl -C - -LO {vcltlFile}")
+    subprocess.run(f"7z x -y {vcltlFile.split('/')[-1]} -oVC-LTL5")
     os.chdir("VC-LTL5")
     subprocess.run("cmd /c Install.cmd")
 
 
 def downloadBrotli():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {brotliFile32}")
-    subprocess.run(f"curl -LO {brotliFile64}")
-    subprocess.run(f"7z x {brotliFile32.split('/')[-1]} -obrotli32")
-    subprocess.run(f"7z x {brotliFile64.split('/')[-1]} -obrotli64")
-    shutil.move("brotli32/brotlicommon.dll", f"{rootDir}/files/plugins/DLL32")
-    shutil.move("brotli32/brotlidec.dll", f"{rootDir}/files/plugins/DLL32")
-    shutil.move("brotli64/brotlicommon.dll", f"{rootDir}/files/plugins/DLL64")
-    shutil.move("brotli64/brotlidec.dll", f"{rootDir}/files/plugins/DLL64")
+    os.chdir(f"{rootDir}/temp")
+    subprocess.run(f"curl -C - -LO {brotliFile32}")
+    subprocess.run(f"curl -C - -LO {brotliFile64}")
+    subprocess.run(f"7z x -y {brotliFile32.split('/')[-1]} -obrotli32")
+    subprocess.run(f"7z x -y {brotliFile64.split('/')[-1]} -obrotli64")
+    os.chdir(rootDir)
+    fuckmove("temp/brotli32/brotlicommon.dll", "files/plugins/DLL32")
+    fuckmove("temp/brotli32/brotlidec.dll", "files/plugins/DLL32")
+    fuckmove("temp/brotli64/brotlicommon.dll", "files/plugins/DLL64")
+    fuckmove("temp/brotli64/brotlidec.dll", "files/plugins/DLL64")
 
 
 def move_directory_contents(source_dir, destination_dir):
@@ -91,46 +94,43 @@ def move_directory_contents(source_dir, destination_dir):
             continue
         item_path = os.path.join(source_dir, item)
         try:
-            shutil.move(item_path, destination_dir)
+            fuckmove(item_path, destination_dir)
         except:
             for k in os.listdir(item_path):
-                shutil.move(
+                fuckmove(
                     os.path.join(item_path, k), os.path.join(destination_dir, item)
                 )
 
 
-def downloadmecab():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {mylinks['mecab.zip']}")
-    subprocess.run(f"7z x mecab.zip -oALL")
-    move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
-
-
-def downloadmecabxp():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {mylinks['mecab_xp.zip']}")
-    subprocess.run(f"7z x mecab_xp.zip -oALL")
-    move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
+def downloadmecab(arch):
+    os.chdir(f"{rootDir}/temp")
+    if arch == "xp":
+        subprocess.run(f"curl -C - -LO {mylinks['mecab_xp.zip']}")
+        subprocess.run("7z x -y mecab_xp.zip -oALL")
+    else:
+        subprocess.run(f"curl -C - -LO {mylinks['mecab.zip']}")
+        subprocess.run("7z x -y mecab.zip -oALL")
+    os.chdir(rootDir)
+    move_directory_contents("temp/ALL/ALL", "files/plugins")
 
 
 def downloadmapie():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {mylinks['magpie.zip']}")
-    subprocess.run(f"7z x magpie.zip -oALL")
-    move_directory_contents("ALL/ALL", f"{rootDir}/files/plugins")
+    os.chdir(f"{rootDir}/temp")
+    subprocess.run(f"curl -C - -LO {mylinks['magpie.zip']}")
+    subprocess.run(f"7z x -y magpie.zip -oALL")
+    os.chdir(rootDir)
+    move_directory_contents("temp/ALL/ALL", "files/plugins")
 
 
 def downloadlr():
 
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {LocaleRe}")
+    os.chdir(f"{rootDir}/temp")
+    subprocess.run(f"curl -C - -LO {LocaleRe}")
     base = LocaleRe.split("/")[-1]
     fn = os.path.splitext(base)[0]
-    subprocess.run(f"7z x {base}")
-    os.makedirs(
-        rf"{rootDir}\files\plugins\Locale\Locale_Remulator",
-        exist_ok=True,
-    )
+    subprocess.run(f"7z x -y {base}")
+    os.chdir(rootDir)
+    os.makedirs("files/plugins/Locale/Locale_Remulator", exist_ok=True)
 
     for f in [
         "LRHookx64.dll",
@@ -139,21 +139,14 @@ def downloadlr():
         "LRProc.exe",
         "LRSubMenus.dll",
     ]:
-        shutil.move(
-            os.path.join(fn, f),
-            rf"{rootDir}\files\plugins\Locale\Locale_Remulator",
-        )
+        fuckmove(os.path.join("temp", fn, f), "files/plugins/Locale/Locale_Remulator")
 
 
 def downloadLocaleEmulator():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {localeEmulatorFile}")
-    subprocess.run(f"7z x {localeEmulatorFile.split('/')[-1]} -oLocaleEmulator")
+    os.chdir(f"{rootDir}/temp")
+    subprocess.run(f"curl -C - -LO {localeEmulatorFile}")
+    subprocess.run(f"7z x -y {localeEmulatorFile.split('/')[-1]} -oLocaleEmulator")
 
-    os.makedirs(
-        rf"{rootDir}\files\plugins\Locale\Locale.Emulator",
-        exist_ok=True,
-    )
     p = subprocess.Popen("LocaleEmulator/LEInstaller.exe")
     while 1:
         if os.path.exists("LocaleEmulator/LECommonLibrary.dll"):
@@ -168,50 +161,51 @@ def downloadLocaleEmulator():
         # "LEConfig.xml",
         "LECommonLibrary.dll",
     ]:
-        shutil.move(
-            os.path.join("LocaleEmulator", f),
-            rf"{rootDir}\files\plugins\Locale\Locale.Emulator",
+        os.chdir(rootDir)
+        os.makedirs(
+            "files/plugins/Locale/Locale.Emulator",
+            exist_ok=True,
+        )
+        fuckmove(
+            os.path.join("temp/LocaleEmulator", f),
+            "files/plugins/Locale/Locale.Emulator",
         )
 
 
 def downloadNtlea():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {ntleaFile}")
-    subprocess.run(f"7z x {ntleaFile.split('/')[-1]} -ontlea")
-
-    os.makedirs(
-        rf"{rootDir}\files\plugins\Locale\ntleas046_x64",
-        exist_ok=True,
+    os.chdir(f"{rootDir}/temp")
+    ntleaFile = (
+        "https://github.com/zxyacb/ntlea/releases/download/0.46/ntleas046_x64.7z"
     )
-    shutil.copytree("ntlea/x86", rf"{rootDir}\files\plugins\Locale\ntleas046_x64\x86")
-    shutil.copytree("ntlea/x64", rf"{rootDir}\files\plugins\Locale\ntleas046_x64\x64")
+    subprocess.run(f"curl -C - -LO {ntleaFile}")
+    subprocess.run(f"7z x -y {ntleaFile.split('/')[-1]} -ontlea")
+
+    os.chdir(rootDir)
+    os.makedirs("files/plugins/Locale/ntleas046_x64", exist_ok=True)
+    shutil.copytree(
+        "temp/ntlea/x86", "files/plugins/Locale/ntleas046_x64/x86", dirs_exist_ok=True
+    )
+    shutil.copytree(
+        "temp/ntlea/x64", "files/plugins/Locale/ntleas046_x64/x64", dirs_exist_ok=True
+    )
 
 
 def downloadCurl():
-    os.chdir(rootDir + "\\temp")
-    subprocess.run(f"curl -LO {curlFile32}")
-    subprocess.run(f"curl -LO {curlFile64}")
-    subprocess.run(f"7z x {curlFile32.split('/')[-1]}")
-    subprocess.run(f"7z x {curlFile64.split('/')[-1]}")
+    os.chdir(f"{rootDir}/temp")
+    subprocess.run(f"curl -C - -LO {curlFile32}")
+    subprocess.run(f"curl -C - -LO {curlFile64}")
+    subprocess.run(f"7z x -y {curlFile32.split('/')[-1]}")
+    subprocess.run(f"7z x -y {curlFile64.split('/')[-1]}")
+    os.chdir(rootDir)
     outputDirName32 = curlFile32.split("/")[-1].replace(".zip", "")
-    shutil.move(
-        f"{outputDirName32}/bin/libcurl.dll",
-        f"{rootDir}/files/plugins/DLL32",
-    )
+    fuckmove(f"temp/{outputDirName32}/bin/libcurl.dll", "files/plugins/DLL32")
     outputDirName64 = curlFile64.split("/")[-1].replace(".zip", "")
-    shutil.move(
-        f"{outputDirName64}/bin/libcurl-x64.dll",
-        f"{rootDir}/files/plugins/DLL64",
-    )
+    fuckmove(f"temp/{outputDirName64}/bin/libcurl-x64.dll", "files/plugins/DLL64")
 
 
 def downloadluna():
-    subprocess.run(f"curl -LO https://image.lunatranslator.org/luna.jpg")
-
-    shutil.move(
-        f"luna.jpg",
-        f"{rootDir}/LunaTranslator/rendertext",
-    )
+    os.chdir(rootDir)
+    subprocess.run("curl -C - -LO https://image.lunatranslator.org/luna.jpg -o LunaTranslator/rendertext/luna.jpg")
 
 
 def downloadOCRModel():
@@ -219,9 +213,10 @@ def downloadOCRModel():
     if not os.path.exists("ocrmodel"):
         os.mkdir("ocrmodel")
     os.chdir("ocrmodel")
-    subprocess.run(f"curl -LO {mylinks['ocr_models']['ja.zip']}")
-    subprocess.run(f"7z x ja.zip")
+    subprocess.run(f"curl -C - -LO {mylinks['ocr_models']['ja.zip']}")
+    subprocess.run(f"7z x -y ja.zip")
     os.remove(f"ja.zip")
+    os.chdir(rootDir)
 
 
 def get_url_as_json(url):
@@ -271,7 +266,6 @@ cmake --build ../build/x86_xp --config Release --target ALL_BUILD -j 14
 
 def downloadbass():
 
-    os.chdir(rootDir + "\\temp")
     for link in (
         "https://www.un4seen.com/files/bass24.zip",
         "https://www.un4seen.com/files/z/2/bass_spx24.zip",
@@ -281,30 +275,52 @@ def downloadbass():
         "https://www.un4seen.com/files/bassenc_mp324.zip",
         "https://www.un4seen.com/files/bassenc_opus24.zip",
     ):
+        os.chdir(f"{rootDir}/temp")
         name = link.split("/")[-1]
         d = name.split(".")[0]
-        subprocess.run("curl -LO " + link)
-        subprocess.run(f"7z x {name} -o{d}")
-        shutil.move(
-            f"{d}/{d[:-2]}.dll",
-            f"{rootDir}/files/plugins/DLL32",
-        )
-        shutil.move(
-            f"{d}/x64/{d[:-2]}.dll",
-            f"{rootDir}/files/plugins/DLL64",
-        )
+        subprocess.run("curl -C - -LO " + link)
+        subprocess.run(f"7z x -y {name} -o{d}")
+        os.chdir(rootDir)
+        fuckmove(f"temp/{d}/{d[:-2]}.dll", "files/plugins/DLL32")
+        fuckmove(f"temp/{d}/x64/{d[:-2]}.dll", "files/plugins/DLL64")
+
+
+def downloadalls(arch):
+    os.chdir(rootDir)
+    os.makedirs("temp", exist_ok=True)
+    createPluginDirs(arch)
+    downloadmecab(arch)
+    downloadmapie()
+    downloadNtlea()
+    downloadbass()
+    downloadluna()
+    downloadLocaleEmulator()
+    downloadBrotli()
+    downloadCurl()
+    downloadOCRModel()
+    downloadlr()
 
 
 if __name__ == "__main__":
     os.chdir(rootDir)
-    os.makedirs("temp", exist_ok=True)
-    arch = sys.argv[2]
-    if sys.argv[1] == "cpp":
+
+    if sys.argv[1] == "download":
+        downloadalls(sys.argv[2] if len(sys.argv) >= 3 else "")
+    elif sys.argv[1] == "loadversion":
+        os.chdir(rootDir)
+        with open("cpp/version.cmake", "r", encoding="utf8") as ff:
+            pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
+            match = re.findall(pattern, ff.read())[0]
+            version_major, version_minor, version_patch = match
+            versionstring = f"v{version_major}.{version_minor}.{version_patch}"
+            print("version=" + versionstring)
+            exit()
+    elif sys.argv[1] == "cpp":
         installVCLTL()
-        buildPlugins(arch)
+        buildPlugins(sys.argv[2])
     elif sys.argv[1] == "pyrt":
         version = sys.argv[3]
-        if arch == "x86":
+        if sys.argv[2] == "x86":
             py37Path = (
                 f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x86\\python.exe"
             )
@@ -323,59 +339,27 @@ if __name__ == "__main__":
             f"{py37Path} {os.path.join(rootthisfiledir,'collectpyruntime.py')}"
         )
     elif sys.argv[1] == "merge":
-        createPluginDirs(0 if arch == "xp" else 1)
-        downloadNtlea()
-        downloadbass()
-        downloadluna()
+        downloadalls(sys.argv[2])
+
         os.chdir(rootDir)
-        if arch == "xp":
-            downloadmecabxp()
+        if sys.argv[2] == "xp":
+            shutil.copytree("../build/cpp_xp", "cpp/builds", dirs_exist_ok=True)
             shutil.copytree(
-                f"{rootDir}/../build/cpp_xp",
-                f"{rootDir}/cpp/builds",
-                dirs_exist_ok=True,
+                "../build/hook_xp", "files/plugins/LunaHook", dirs_exist_ok=True
             )
-            shutil.copytree(
-                f"{rootDir}/../build/hook_xp",
-                f"{rootDir}/files/plugins/LunaHook",
-                dirs_exist_ok=True,
-            )
-            os.chdir(rootDir)
             os.makedirs("files/plugins/DLL32", exist_ok=True)
             shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
             shutil.copy("cpp/builds/_x86/winsharedutils.dll", "files/plugins/DLL32")
-            os.chdir(rootDir)
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
             exit()
-        downloadmecab()
-        downloadLocaleEmulator()
-        downloadBrotli()
-        downloadCurl()
-        downloadOCRModel()
-        downloadmapie()
-        downloadlr()
-
-        os.chdir(rootDir)
         shutil.copytree(
-            f"{rootDir}/../build/hook_64",
-            f"{rootDir}/files/plugins/LunaHook",
-            dirs_exist_ok=True,
+            "../build/hook_64", "files/plugins/LunaHook", dirs_exist_ok=True
         )
         shutil.copytree(
-            f"{rootDir}/../build/hook_32",
-            f"{rootDir}/files/plugins/LunaHook",
-            dirs_exist_ok=True,
+            "../build/hook_32", "files/plugins/LunaHook", dirs_exist_ok=True
         )
-        shutil.copytree(
-            f"{rootDir}/../build/cpp_x64",
-            f"{rootDir}/cpp/builds",
-            dirs_exist_ok=True,
-        )
-        shutil.copytree(
-            f"{rootDir}/../build/cpp_x86",
-            f"{rootDir}/cpp/builds",
-            dirs_exist_ok=True,
-        )
+        shutil.copytree("../build/cpp_x64", "cpp/builds", dirs_exist_ok=True)
+        shutil.copytree("../build/cpp_x86", "cpp/builds", dirs_exist_ok=True)
 
         os.makedirs("files/plugins/DLL32", exist_ok=True)
         shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
@@ -390,9 +374,7 @@ if __name__ == "__main__":
         shutil.copy("cpp/builds/_x64/wcocr.dll", "files/plugins/DLL64")
         shutil.copy("cpp/builds/_x64/LunaOCR.dll", "files/plugins/DLL64")
 
-        if arch == "x86":
-            os.chdir(rootDir)
+        if sys.argv[2] == "x86":
             os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 32")
         else:
-            os.chdir(rootDir)
             os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 64")
