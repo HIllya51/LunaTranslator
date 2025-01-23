@@ -38,8 +38,7 @@ mylinks = {
 }
 
 
-pluginDirs = ["DLL32", "DLL64", "Magpie"]
-pluginDirs_1 = ["DLL32", "DLL64"]
+pluginDirs = ["DLL32", "DLL64"]
 
 vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
 
@@ -55,12 +54,12 @@ curlFile64 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 
-def createPluginDirs(which):
+def createPluginDirs():
     os.chdir(rootDir + "\\files")
     if not os.path.exists("plugins"):
         os.mkdir("plugins")
     os.chdir("plugins")
-    for pluginDir in [pluginDirs_1, pluginDirs][which != "xp"]:
+    for pluginDir in pluginDirs:
         if not os.path.exists(pluginDir):
             os.mkdir(pluginDir)
     os.chdir(rootDir)
@@ -74,16 +73,16 @@ def installVCLTL():
 
 
 def downloadBrotli():
-    os.chdir(f"{rootDir}/temp")
+    os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {brotliFile32}")
     subprocess.run(f"curl -C - -LO {brotliFile64}")
     subprocess.run(f"7z x -y {brotliFile32.split('/')[-1]} -obrotli32")
     subprocess.run(f"7z x -y {brotliFile64.split('/')[-1]} -obrotli64")
     os.chdir(rootDir)
-    fuckmove("temp/brotli32/brotlicommon.dll", "files/plugins/DLL32")
-    fuckmove("temp/brotli32/brotlidec.dll", "files/plugins/DLL32")
-    fuckmove("temp/brotli64/brotlicommon.dll", "files/plugins/DLL64")
-    fuckmove("temp/brotli64/brotlidec.dll", "files/plugins/DLL64")
+    fuckmove("scripts/temp/brotli32/brotlicommon.dll", "files/plugins/DLL32")
+    fuckmove("scripts/temp/brotli32/brotlidec.dll", "files/plugins/DLL32")
+    fuckmove("scripts/temp/brotli64/brotlicommon.dll", "files/plugins/DLL64")
+    fuckmove("scripts/temp/brotli64/brotlidec.dll", "files/plugins/DLL64")
 
 
 def move_directory_contents(source_dir, destination_dir):
@@ -103,28 +102,29 @@ def move_directory_contents(source_dir, destination_dir):
 
 
 def downloadmecab(arch):
-    os.chdir(f"{rootDir}/temp")
+    os.chdir(f"{rootDir}/scripts/temp")
     if arch == "xp":
         subprocess.run(f"curl -C - -LO {mylinks['mecab_xp.zip']}")
         subprocess.run("7z x -y mecab_xp.zip -oALL")
     else:
         subprocess.run(f"curl -C - -LO {mylinks['mecab.zip']}")
-        subprocess.run("7z x -y mecab.zip -oALL")
+        subprocess.run("7z x -y mecab.zip")
     os.chdir(rootDir)
-    move_directory_contents("temp/ALL/ALL", "files/plugins")
+    fuckmove("scripts/temp/ALL/DLL32/libmecab.dll", "files/plugins/DLL32")
+    fuckmove("scripts/temp/ALL/DLL64/libmecab.dll", "files/plugins/DLL64")
 
 
 def downloadmapie():
-    os.chdir(f"{rootDir}/temp")
+    os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {mylinks['magpie.zip']}")
     subprocess.run(f"7z x -y magpie.zip -oALL")
     os.chdir(rootDir)
-    move_directory_contents("temp/ALL/ALL", "files/plugins")
+    move_directory_contents("scripts/temp/ALL/ALL", "files/plugins/Magpie")
 
 
 def downloadlr():
 
-    os.chdir(f"{rootDir}/temp")
+    os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {LocaleRe}")
     base = LocaleRe.split("/")[-1]
     fn = os.path.splitext(base)[0]
@@ -139,11 +139,13 @@ def downloadlr():
         "LRProc.exe",
         "LRSubMenus.dll",
     ]:
-        fuckmove(os.path.join("temp", fn, f), "files/plugins/Locale/Locale_Remulator")
+        fuckmove(
+            os.path.join("scripts/temp", fn, f), "files/plugins/Locale/Locale_Remulator"
+        )
 
 
 def downloadLocaleEmulator():
-    os.chdir(f"{rootDir}/temp")
+    os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {localeEmulatorFile}")
     subprocess.run(f"7z x -y {localeEmulatorFile.split('/')[-1]} -oLocaleEmulator")
 
@@ -167,13 +169,13 @@ def downloadLocaleEmulator():
             exist_ok=True,
         )
         fuckmove(
-            os.path.join("temp/LocaleEmulator", f),
+            os.path.join("scripts/temp/LocaleEmulator", f),
             "files/plugins/Locale/Locale.Emulator",
         )
 
 
 def downloadNtlea():
-    os.chdir(f"{rootDir}/temp")
+    os.chdir(f"{rootDir}/scripts/temp")
     ntleaFile = (
         "https://github.com/zxyacb/ntlea/releases/download/0.46/ntleas046_x64.7z"
     )
@@ -183,29 +185,37 @@ def downloadNtlea():
     os.chdir(rootDir)
     os.makedirs("files/plugins/Locale/ntleas046_x64", exist_ok=True)
     shutil.copytree(
-        "temp/ntlea/x86", "files/plugins/Locale/ntleas046_x64/x86", dirs_exist_ok=True
+        "scripts/temp/ntlea/x86",
+        "files/plugins/Locale/ntleas046_x64/x86",
+        dirs_exist_ok=True,
     )
     shutil.copytree(
-        "temp/ntlea/x64", "files/plugins/Locale/ntleas046_x64/x64", dirs_exist_ok=True
+        "scripts/temp/ntlea/x64",
+        "files/plugins/Locale/ntleas046_x64/x64",
+        dirs_exist_ok=True,
     )
 
 
 def downloadCurl():
-    os.chdir(f"{rootDir}/temp")
+    os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {curlFile32}")
     subprocess.run(f"curl -C - -LO {curlFile64}")
     subprocess.run(f"7z x -y {curlFile32.split('/')[-1]}")
     subprocess.run(f"7z x -y {curlFile64.split('/')[-1]}")
     os.chdir(rootDir)
     outputDirName32 = curlFile32.split("/")[-1].replace(".zip", "")
-    fuckmove(f"temp/{outputDirName32}/bin/libcurl.dll", "files/plugins/DLL32")
+    fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/plugins/DLL32")
     outputDirName64 = curlFile64.split("/")[-1].replace(".zip", "")
-    fuckmove(f"temp/{outputDirName64}/bin/libcurl-x64.dll", "files/plugins/DLL64")
+    fuckmove(
+        f"scripts/temp/{outputDirName64}/bin/libcurl-x64.dll", "files/plugins/DLL64"
+    )
 
 
 def downloadluna():
     os.chdir(rootDir)
-    subprocess.run("curl -C - -LO https://image.lunatranslator.org/luna.jpg -o LunaTranslator/rendertext/luna.jpg")
+    os.chdir("LunaTranslator/rendertext")
+    subprocess.run("curl -C - -LO https://image.lunatranslator.org/luna.jpg")
+    os.chdir(rootDir)
 
 
 def downloadOCRModel():
@@ -275,24 +285,26 @@ def downloadbass():
         "https://www.un4seen.com/files/bassenc_mp324.zip",
         "https://www.un4seen.com/files/bassenc_opus24.zip",
     ):
-        os.chdir(f"{rootDir}/temp")
+        os.chdir(f"{rootDir}/scripts/temp")
         name = link.split("/")[-1]
         d = name.split(".")[0]
         subprocess.run("curl -C - -LO " + link)
         subprocess.run(f"7z x -y {name} -o{d}")
         os.chdir(rootDir)
-        fuckmove(f"temp/{d}/{d[:-2]}.dll", "files/plugins/DLL32")
-        fuckmove(f"temp/{d}/x64/{d[:-2]}.dll", "files/plugins/DLL64")
+        fuckmove(f"scripts/temp/{d}/{d[:-2]}.dll", "files/plugins/DLL32")
+        fuckmove(f"scripts/temp/{d}/x64/{d[:-2]}.dll", "files/plugins/DLL64")
 
 
 def downloadalls(arch):
     os.chdir(rootDir)
-    os.makedirs("temp", exist_ok=True)
-    createPluginDirs(arch)
+    os.makedirs("scripts/temp", exist_ok=True)
+    createPluginDirs()
     downloadmecab(arch)
-    downloadmapie()
     downloadNtlea()
     downloadbass()
+    if arch == "xp":
+        return
+    downloadmapie()
     downloadluna()
     downloadLocaleEmulator()
     downloadBrotli()
