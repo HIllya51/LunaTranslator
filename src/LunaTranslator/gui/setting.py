@@ -22,6 +22,23 @@ from gui.dynalang import LListWidgetItem, LListWidget
 class TabWidget(QWidget):
     currentChanged = pyqtSignal(int)
 
+    def adjust_list_widget_width(self, list_widget: LListWidget):
+
+        font_metrics = list_widget.fontMetrics()
+        max_width = 0
+        for i in range(list_widget.count()):
+            item = list_widget.item(i)
+            width = font_metrics.width(item.text() + "  ")
+            max_width = max(max_width, width)
+            item.setSizeHint(QSize(0, int(font_metrics.height() * 2)))
+
+        list_widget.setFixedWidth(max_width)
+
+    def changeEvent(self, a0: QEvent):
+        if a0.type() in (QEvent.Type.LanguageChange, QEvent.Type.FontChange):
+            self.adjust_list_widget_width(self.list_widget)
+        return super().changeEvent(a0)
+
     def setCurrentIndex(self, idx):
         self.list_widget.setCurrentRow(idx)
 
@@ -30,19 +47,13 @@ class TabWidget(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
-        self.splitter = QSplitter()
-        layout.addWidget(self.splitter)
         self.list_widget = LListWidget(self)
         self.list_widget.setStyleSheet("QListWidget:focus {outline: 0px;}")
         self.tab_widget = QTabWidget(self)
         self.tab_widget.tabBar().hide()
-        self.splitter.addWidget(self.list_widget)
-        self.splitter.addWidget(self.tab_widget)
-        self.splitter.setStretchFactor(0, 0)
-        self.splitter.setStretchFactor(1, 1)
-        self.currentChanged.connect(
-            self.tab_widget.setCurrentIndex
-        )  # 监听 Tab 切换事件
+        layout.addWidget(self.list_widget)
+        layout.addWidget(self.tab_widget)
+        self.currentChanged.connect(self.tab_widget.setCurrentIndex)
         self.list_widget.currentRowChanged.connect(self.currentChanged)
         self.idx = 0
         self.titles = []
@@ -52,7 +63,6 @@ class TabWidget(QWidget):
         self.tab_widget.addTab(widget, title)
         item = LListWidgetItem(title)
         item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-        item.setSizeHint(QSize(self.tab_widget.width(), 50))
         self.list_widget.addItem(item)
         if self.idx == 0:
             self.list_widget.setCurrentRow(0)
@@ -121,22 +131,3 @@ class Setting(closeashidewindow):
         )
         self.setCentralWidget(self.tab_widget)
         do()
-
-        if globalconfig.get("setting_split"):
-            self.tab_widget.splitter.setSizes(globalconfig["setting_split"])
-        else:
-            width = 0
-            fn = QFont()
-            fn.setPointSizeF(globalconfig["settingfontsize"] + 4)
-            fn.setFamily(globalconfig["settingfonttype"])
-            fm = QFontMetricsF(fn)
-            for title in _TRL(self.tab_widget.titles):
-                width = max(fm.size(0, title).width(), width)
-            width += 50
-            width = int(width)
-            self.tab_widget.splitter.setSizes([width, self.tab_widget.width() - width])
-
-        def __(_):
-            globalconfig["setting_split"] = self.tab_widget.splitter.sizes()
-
-        self.tab_widget.splitter.splitterMoved.connect(__)
