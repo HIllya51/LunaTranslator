@@ -28,9 +28,9 @@ class TabWidget(QWidget):
         max_width = 0
         for i in range(list_widget.count()):
             item = list_widget.item(i)
-            width = font_metrics.width(item.text() + "  ")
+            width = font_metrics.width(item.text() + item.text()[0] + item.text()[-1])
             max_width = max(max_width, width)
-            item.setSizeHint(QSize(0, int(font_metrics.height() * 2)))
+            item.setSizeHint(QSize(0, int(font_metrics.ascent() * 2)))
 
         list_widget.setFixedWidth(max_width)
 
