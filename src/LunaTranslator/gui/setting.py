@@ -48,7 +48,7 @@ class TabWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.list_widget = LListWidget(self)
-        self.list_widget.setStyleSheet("QListWidget:focus {outline: 0px;}")
+        self.list_widget.setStyleSheet("QListWidget:focus {outline: 0px;} QListWidget {border: none;}")
         self.tab_widget = QTabWidget(self)
         self.tab_widget.tabBar().hide()
         layout.addWidget(self.list_widget)
