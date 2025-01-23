@@ -29,7 +29,6 @@ src/userconfig1
 src/cache
 src/chrome_cache
 src/files/ocrmodel
-src/files/plugins
 src/files/themes
 src/run37.bat
 src/run3732.bat

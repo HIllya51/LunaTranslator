@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LEConfig>
+  <Profiles>
+    <Profile Name="Run in Japanese" Guid="10fd7363-085f-489e-a3f7-48d7cffa513a" MainMenu="false">
+      <Parameter></Parameter>
+      <Location>ja-JP</Location>
+      <Timezone>Tokyo Standard Time</Timezone>
+      <RunAsAdmin>false</RunAsAdmin>
+      <RedirectRegistry>true</RedirectRegistry>
+      <IsAdvancedRedirection>false</IsAdvancedRedirection>
+      <RunWithSuspend>false</RunWithSuspend>
+    </Profile>
+    <Profile Name="Run in Japanese (Admin)" Guid="b68acb2b-a3d2-4076-b764-1073d64f0deb" MainMenu="false">
+      <Parameter></Parameter>
+      <Location>ja-JP</Location>
+      <Timezone>Tokyo Standard Time</Timezone>
+      <RunAsAdmin>true</RunAsAdmin>
+      <RedirectRegistry>true</RedirectRegistry>
+      <IsAdvancedRedirection>false</IsAdvancedRedirection>
+      <RunWithSuspend>false</RunWithSuspend>
+    </Profile>
+  </Profiles>
+</LEConfig>
