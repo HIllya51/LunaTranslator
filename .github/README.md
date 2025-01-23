@@ -6,10 +6,10 @@
     <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
 </p>
 
-### [使用说明](https://docs.lunatranslator.org/) [视频教程](https://space.bilibili.com/592120404/video) <a href="https://qm.qq.com/q/I5rr3uEpi2"><img src="https://img.shields.io/badge/QQ群-963119821-FF007C"></a> <a href="https://discord.com/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C"></a>
+### [使用说明](https://docs.lunatranslator.org/) [视频教程](https://space.bilibili.com/592120404/video) <a href="https://qm.qq.com/q/I5rr3uEpi2"><img src="https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge"></a> <a href="https://discord.com/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge"></a>
 
  
-### 简体中文  | [English](docs/other/README_en.md) | [Other Language](docs/other/otherlang.md) 
+### 简体中文  | [English](README_en.md) | [Other Language](otherlang.md) 
 
 > **一款galgame翻译器**
 
