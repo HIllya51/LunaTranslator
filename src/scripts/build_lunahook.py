@@ -5,15 +5,7 @@ rootDir = os.path.dirname(__file__)
 if not rootDir:
     rootDir = os.path.abspath(".")
 rootDir = os.path.abspath(os.path.join(rootDir, "../cpp/LunaHook"))
-if len(sys.argv) and sys.argv[1] == "loadversion":
-    os.chdir(rootDir)
-    with open("CMakeLists.txt", "r", encoding="utf8") as ff:
-        pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
-        match = re.findall(pattern, ff.read())[0]
-        version_major, version_minor, version_patch = match
-        versionstring = f"v{version_major}.{version_minor}.{version_patch}"
-        print("version=" + versionstring)
-        exit()
+
 if len(sys.argv) and sys.argv[1] == "merge":
     os.chdir(rootDir)
     os.mkdir("../build")
