@@ -12,7 +12,7 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python .github/scripts/build_lunatranslator.py cpp xp
+      - run:  python src/scripts/build_lunatranslator.py cpp xp
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_xp
@@ -30,7 +30,7 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python .github/scripts/build_lunahook.py build winxp_core
+      - run: python src/scripts/build_lunahook.py build winxp_core
 
       - uses: actions/upload-artifact@v4
         with:
@@ -53,7 +53,7 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python .github/scripts/build_lunahook.py build ${{matrix.bits}} 1
+      - run: python src/scripts/build_lunahook.py build ${{matrix.bits}} 1
 
       - uses: actions/upload-artifact@v4
         with:
@@ -71,7 +71,7 @@ jobs:
           python-version: '3.7.9'
           architecture: ${{ matrix.architecture }}
       
-      - run:  python .github/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} 3.7.9
+      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} 3.7.9
       - uses: actions/upload-artifact@v4
         with:
           name: pyrt_${{ matrix.architecture }}
@@ -89,7 +89,7 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python .github/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }}
+      - run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_${{ matrix.architecture }}
@@ -113,7 +113,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - run:  python .github/scripts/build_lunatranslator.py merge ${{ matrix.architecture }}
+      - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
@@ -128,7 +128,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - run:  python .github/scripts/build_lunatranslator.py merge xp
+      - run:  python src/scripts/build_lunatranslator.py merge xp
       - uses: actions/upload-artifact@v4
         with:
           name: LunaTranslator_x86_winxp
