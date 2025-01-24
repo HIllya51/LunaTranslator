@@ -14,18 +14,6 @@ std::unordered_map<LANG_STRINGS_HOST, std::unordered_map<SUPPORT_LANG, const wch
                                {TradChinese, L"已經注入"},
                                {Russian, L"Уже внедрено"},
                            }},
-        {NEED_32_BIT, {
-                          {English, L"architecture mismatch: only x86 can inject this process"},
-                          {Chinese, L"架构不匹配: 请尝试使用32位注入此进程"},
-                          {TradChinese, L"架構不匹配：請嘗試使用 32 位元注入此處理程序"},
-                          {Russian, L"Неверная архетектура: тут нужно x86"},
-                      }},
-        {NEED_64_BIT, {
-                          {English, L"architecture mismatch: only x64 can inject this process"},
-                          {Chinese, L"架构不匹配: 请尝试使用64位注入此进程"},
-                          {TradChinese, L"架構不匹配：請嘗試使用 64 位元注入此處理程序"},
-                          {Russian, L"Неверная архетектура: тут нужно x64"},
-                      }},
         {INJECT_FAILED, {
                             {English, L"couldn't inject"},
                             {Chinese, L"注入失败"},

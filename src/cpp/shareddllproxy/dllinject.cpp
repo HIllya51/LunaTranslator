@@ -21,7 +21,9 @@
         if (remoteData == 0)
             return 0;
         WriteProcessMemory(hProcess, remoteData, argv[argc - 1], size, 0);
-        auto hThread = CreateRemoteThread(hProcess, 0, 0, (LPTHREAD_START_ROUTINE)LoadLibraryW, remoteData, 0, 0);
+        auto pThreadProc = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "LoadLibraryW");
+        // yythunks似乎会修改导入表，导致地址不是共享的地址
+        auto hThread = CreateRemoteThread(hProcess, 0, 0, pThreadProc, remoteData, 0, 0);
         // if (hThread == 0) return 0;很奇怪，为0但是成功
         WaitForSingleObject(hThread, 10000);
         CloseHandle(hThread);

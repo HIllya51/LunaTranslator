@@ -22,14 +22,15 @@ namespace
         if (LPVOID remoteData = VirtualAllocEx(process, nullptr, (location.size() + 1) * sizeof(wchar_t), MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE))
         {
             WriteProcessMemory(process, remoteData, location.c_str(), (location.size() + 1) * sizeof(wchar_t), nullptr);
-            if (AutoHandle<> thread = CreateRemoteThread(process, nullptr, 0, (LPTHREAD_START_ROUTINE)LoadLibraryW, remoteData, 0, nullptr))
+            auto pThreadProc = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "LoadLibraryW");
+            if (AutoHandle<> thread = CreateRemoteThread(process, nullptr, 0, pThreadProc, remoteData, 0, nullptr))
             {
                 WaitForSingleObject(thread, INFINITE);
                 succ = true;
             }
             else if (GetLastError() == ERROR_ACCESS_DENIED)
             {
-                Host::AddConsoleOutput(TR[NEED_64_BIT]); // https://stackoverflow.com/questions/16091141/createremotethread-access-denied
+                // Host::AddConsoleOutput(TR[NEED_64_BIT]); // https://stackoverflow.com/questions/16091141/createremotethread-access-denied
                 succ = false;
             }
             VirtualFreeEx(process, remoteData, 0, MEM_RELEASE);

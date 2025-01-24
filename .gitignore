@@ -17,6 +17,8 @@
 Thumbs.db
 *.recipe
 *.wav 
+*.zip
+*.7z
 build/
 
 temp/
@@ -43,12 +45,7 @@ src/cpp/libs/opencv-static/windows-x86
 src/cpp/libs/opencv-static/windows-x64
 src/cpp/libs/onnxruntime-static/windows-x86
 src/cpp/libs/onnxruntime-static/windows-x64
-src/cpp/libs/opencv-static.zip
-src/cpp/libs/onnxruntime-static.zip
-src/cpp/libs/onnxruntime-static/onnxruntime-static.7z
-src/cpp/libs/opencv-static/opencv-static.7z
 src/cpp/LunaHook/.vscode/settings.json
-src/cpp/LunaHook/scripts/YY-Thunks-1.0.7-Binary.zip
 src/cpp/libs/YY-Thunks
 src/LunaTranslator/.vscode/settings.json
 src/files/yearsummary/yearsummary.value.js
@@ -59,5 +56,4 @@ src/LunaTranslator/rendertext/webview_parsed.html
 src/Microsoft.WebView2.FixedVersionRuntime.*
 src/mdx
 src/translation_record
-src/cpp/libs/YY-Thunks-1.0.7-Binary.zip
 src/scripts/temp
