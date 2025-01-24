@@ -1,4 +1,5 @@
 ﻿
+static const wchar_t CLASS_NAME[] = L"LunaClipboardListener";
 
 bool tryopenclipboard(HWND hwnd = 0)
 {
@@ -52,7 +53,6 @@ DECLARE_API bool clipboard_get(void (*cb)(const wchar_t *))
 DECLARE_API bool clipboard_set(HWND hwnd, wchar_t *text)
 {
     bool success = false;
-    // static HWND hwnd=CreateWindowExA(0,"STATIC",0,0,0,0,0,0,0,0,0,0);
     if (tryopenclipboard(hwnd) == false)
         return false;
     EmptyClipboard();
@@ -89,62 +89,31 @@ inline bool iscurrentowndclipboard()
     GetWindowThreadProcessId(ohwnd, &pid);
     return pid == GetCurrentProcessId();
 }
+static void callbackx(HWND hWnd)
+{
+    auto data = clipboard_get_internal();
+    if (!data)
+        return;
+    auto callback_ = (void (*)(const wchar_t *, bool))(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
+    if (!callback_)
+        return;
+    callback_(data.value().c_str(), iscurrentowndclipboard());
+};
+static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    if (WM_CLIPBOARDUPDATE == message)
+        callbackx(hWnd);
+    return DefWindowProc(hWnd, message, wParam, lParam);
+}
+
 static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE hsema, HWND *hwnd)
 {
-    const wchar_t CLASS_NAME[] = L"LunaClipboardListener";
-
     WNDCLASS wc = {};
-    wc.lpfnWndProc = [](HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-    {
-        static auto callbackx = [](HWND hWnd)
-        {
-            auto data = clipboard_get_internal();
-            if (!data)
-                return;
-            auto callback_ = reinterpret_cast<decltype(callback)>(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
-            if (!callback_)
-                return;
-            callback_(data.value().c_str(), iscurrentowndclipboard());
-        };
-#ifndef WINXP
-        if (WM_CLIPBOARDUPDATE == message)
-        {
-            callbackx(hWnd);
-        }
-#else
-        // 根据文档，这样做是正确的，且在win11下管用。但到xp上就读不到了。。
-        static HWND nextviewer;
-        switch (message)
-        {
-        case WM_CREATE:
-        {
-            nextviewer = SetClipboardViewer(hWnd);
-        }
-        break;
-        case WM_CHANGECBCHAIN:
-        {
-            if ((HWND)wParam == nextviewer)
-                nextviewer = (HWND)lParam;
-            if (nextviewer)
-                SendMessage(nextviewer, message, wParam, lParam);
-        }
-        break;
-        case WM_DESTROY:
-        {
-            ChangeClipboardChain(hWnd, nextviewer);
-        }
-        }
-#endif
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    };
-    wc.hInstance = GetModuleHandle(0);
+    wc.lpfnWndProc = WNDPROC_1;
     wc.lpszClassName = CLASS_NAME;
-
-    static auto _ = RegisterClass(&wc);
-    HWND hWnd = CreateWindowEx(
-        WS_EX_CLIENTEDGE, CLASS_NAME, CLASS_NAME, WS_OVERLAPPEDWINDOW,
-        0, 0, 0, 0,
-        NULL, NULL, GetModuleHandle(0), 0);
+    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)wc.lpfnWndProc, &wc.hInstance);
+    RegisterClass(&wc);
+    HWND hWnd = CreateWindowEx(0, CLASS_NAME, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, wc.hInstance, nullptr);
 
     SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)callback);
 
@@ -157,52 +126,111 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
         DispatchMessage(&msg);
     }
 }
+
+#ifndef WINXP
+#define addClipboardFormatListener AddClipboardFormatListener
+#define removeClipboardFormatListener RemoveClipboardFormatListener
+#else
+#ifndef __C65AB19A_FFA2_4BB6_B2D2_508A6509AD7A__
+#define __C65AB19A_FFA2_4BB6_B2D2_508A6509AD7A__
+struct INFO_EFB07CE8_C478_475C_9B6D_1862D6400474
+{
+    HWND hwndNextViewer = NULL;
+    HWND Listener = NULL;
+};
+auto KLASS_4420FB75_2931_459E_BA36_B2484F6DC9EE = TEXT("4420FB75_2931_459E_BA36_B2484F6DC9EE");
+auto PROP_5B7BE8DE_E87B_4FC7_8562_48E4E42880DB = TEXT("5B7BE8DE_E87B_4FC7_8562_48E4E42880DB");
+LRESULT CALLBACK WNDPROC_8DDD0332_D337_4F76_AF3C_D0CF23E94191(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    switch (msg)
+    {
+    case WM_DRAWCLIPBOARD:
+    case WM_CHANGECBCHAIN:
+    case WM_DESTROY:
+    {
+        auto info = reinterpret_cast<INFO_EFB07CE8_C478_475C_9B6D_1862D6400474 *>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+        if (!info)
+            return DefWindowProc(hwnd, msg, wParam, lParam);
+        switch (msg)
+        {
+        case WM_DRAWCLIPBOARD:
+        {
+            if (info->hwndNextViewer)
+                SendMessage(info->hwndNextViewer, msg, wParam, lParam);
+            PostMessage(info->Listener, WM_CLIPBOARDUPDATE, 0, 0);
+        }
+        break;
+        case WM_CHANGECBCHAIN:
+        {
+            if (((HWND)wParam == info->hwndNextViewer))
+                info->hwndNextViewer = (HWND)lParam;
+            else if (info->hwndNextViewer)
+                SendMessage(info->hwndNextViewer, msg, wParam, lParam);
+        }
+        break;
+        case WM_DESTROY:
+        {
+            if (info->hwndNextViewer)
+                ChangeClipboardChain(hwnd, info->hwndNextViewer);
+            delete info;
+        }
+        break;
+        }
+    }
+    break;
+    default:
+        return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
+    return 0;
+}
+#endif
+BOOL addClipboardFormatListener(HWND _hWnd)
+{
+    WNDCLASS wc = {};
+    ZeroMemory(&wc, sizeof(WNDCLASS));
+    wc.lpfnWndProc = WNDPROC_8DDD0332_D337_4F76_AF3C_D0CF23E94191;
+    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)wc.lpfnWndProc, &wc.hInstance);
+    wc.lpszClassName = KLASS_4420FB75_2931_459E_BA36_B2484F6DC9EE;
+    RegisterClass(&wc);
+    auto hwnd = CreateWindowEx(0, KLASS_4420FB75_2931_459E_BA36_B2484F6DC9EE, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, wc.hInstance, nullptr);
+    if (!hwnd)
+        return FALSE;
+    auto info = new INFO_EFB07CE8_C478_475C_9B6D_1862D6400474{};
+    info->Listener = _hWnd;
+    info->hwndNextViewer = SetClipboardViewer(hwnd); // WM_DRAWCLIPBOARD会立即通知一次，但AddClipboardFormatListener不会
+    SetWindowLongPtrW(hwnd, GWLP_USERDATA, (LONG_PTR)info);
+    SetProp(_hWnd, PROP_5B7BE8DE_E87B_4FC7_8562_48E4E42880DB, hwnd);
+    return TRUE;
+}
+BOOL removeClipboardFormatListener(HWND _hWnd)
+{
+    auto hwnd = (HWND)GetProp(_hWnd, PROP_5B7BE8DE_E87B_4FC7_8562_48E4E42880DB);
+    if (!hwnd)
+        return TRUE;
+    DestroyWindow(hwnd);
+    RemoveProp(_hWnd, PROP_5B7BE8DE_E87B_4FC7_8562_48E4E42880DB);
+    return TRUE;
+}
+#endif
+
 DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
 {
-#ifndef WINXP
     HANDLE hsema = CreateSemaphoreW(0, 0, 10, 0);
     HWND hwnd;
-
     std::thread(clipboard_callback_1, callback, hsema, &hwnd).detach();
 
     WaitForSingleObject(hsema, INFINITE);
     CloseHandle(hsema);
-    if (AddClipboardFormatListener(hwnd))
+    if (addClipboardFormatListener(hwnd))
         return hwnd;
-    else
-        return NULL;
-#else
-    static HANDLE clipboardUpdate;
-    clipboardUpdate = CreateEventW(nullptr, FALSE, FALSE, NULL);
-    auto __ = SetWindowsHookExW(WH_GETMESSAGE, [](int statusCode, WPARAM wParam, LPARAM lParam)
-                                {
-			if (statusCode == HC_ACTION && wParam == PM_REMOVE && ((MSG*)lParam)->message == WM_CLIPBOARDUPDATE) SetEvent(clipboardUpdate);
-			return CallNextHookEx(NULL, statusCode, wParam, lParam); }, NULL, GetCurrentThreadId());
-    std::thread([=]
-                {
-			while (WaitForSingleObject(clipboardUpdate, INFINITE) == WAIT_OBJECT_0)
-			{
-                auto data = clipboard_get_internal(); 
-                if(data)
-                callback(data.value().c_str(), iscurrentowndclipboard());
-			} })
-        .detach();
-    return (HWND) new std::pair<HANDLE, HHOOK>{clipboardUpdate, __};
-#endif
+    return NULL;
 }
 DECLARE_API void clipboard_callback_stop(HWND hwnd)
 {
-#ifndef WINXP
     if (!hwnd)
         return;
-    RemoveClipboardFormatListener(hwnd);
+    removeClipboardFormatListener(hwnd);
     DestroyWindow(hwnd);
-#else
-    auto __ = (std::pair<HANDLE, HHOOK> *)(hwnd);
-    UnhookWindowsHookEx(__->second);
-    CloseHandle(__->first);
-    delete __;
-#endif
 }
 
 DECLARE_API bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
