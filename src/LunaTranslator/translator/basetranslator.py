@@ -158,7 +158,7 @@ class basetrans(commonbase):
             try:
                 src, trans = task
                 self.sqlwrite2.execute(
-                    "DELETE from cache WHERE (srclang,tgtlang,source)=(?,?,?)",
+                    "DELETE from cache WHERE (srclang=? and tgtlang=? and source=?)",
                     (str(self.srclang_1), str(self.tgtlang_1), src),
                 )
                 self.sqlwrite2.execute(
@@ -211,13 +211,20 @@ class basetrans(commonbase):
     def longtermcacheget(self, src):
         try:
             ret = self.sqlwrite2.execute(
-                "SELECT trans FROM cache WHERE (((srclang,tgtlang)=(?,?) or (srclang,tgtlang)=(?,?)) and (source= ?))",
-                (self.srclang_1, self.tgtlang_1, self.srclang, self.tgtlang, src),
+                "SELECT trans FROM cache WHERE (( (srclang=? and tgtlang=?) or  (srclang=? and tgtlang=?)) and source=?)",
+                (
+                    str(self.srclang_1),
+                    str(self.tgtlang_1),
+                    str(self.srclang),
+                    str(self.tgtlang),
+                    src,
+                ),
             ).fetchone()
             if ret:
                 return ret[0]
             return None
         except:
+            print_exc()
             return None
 
     def longtermcacheset(self, src, tgt):
