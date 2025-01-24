@@ -22,8 +22,8 @@ from gui.dynalang import LListWidgetItem, LListWidget
 class TabWidget(QWidget):
     currentChanged = pyqtSignal(int)
 
-    def adjust_list_widget_width(self, list_widget: LListWidget):
-
+    def adjust_list_widget_width(self):
+        list_widget = self.list_widget
         font_metrics = list_widget.fontMetrics()
         max_width = 0
         for i in range(list_widget.count()):
@@ -31,12 +31,11 @@ class TabWidget(QWidget):
             width = font_metrics.width(item.text() + item.text()[0] + item.text()[-1])
             max_width = max(max_width, width)
             item.setSizeHint(QSize(0, int(font_metrics.ascent() * 2)))
-
         list_widget.setFixedWidth(max_width)
 
     def changeEvent(self, a0: QEvent):
         if a0.type() in (QEvent.Type.LanguageChange, QEvent.Type.FontChange):
-            self.adjust_list_widget_width(self.list_widget)
+            self.adjust_list_widget_width()
         return super().changeEvent(a0)
 
     def setCurrentIndex(self, idx):
@@ -133,3 +132,4 @@ class Setting(closeashidewindow):
         )
         self.setCentralWidget(self.tab_widget)
         do()
+        self.tab_widget.adjust_list_widget_width()

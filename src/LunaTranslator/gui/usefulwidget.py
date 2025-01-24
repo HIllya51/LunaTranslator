@@ -500,14 +500,13 @@ class MySwitch(QWidget):
             self.setEnabled(not self.isEnabled())
             return True
         elif a0.type() == QEvent.Type.FontChange:
-            h = QFontMetricsF(self.font()).height()
-            sz = QSize(
-                int(1.62 * h * gobject.Consts.btnscale),
-                int(h * gobject.Consts.btnscale),
-            )
-            self.setFixedSize(sz)
-
+            self.__loadsize()
         return super().event(a0)
+
+    def __loadsize(self):
+        h = QFontMetricsF(self.font()).height()
+        sz = QSizeF(1.62 * h * gobject.Consts.btnscale, h * gobject.Consts.btnscale)
+        self.setFixedSize(sz.toSize())
 
     def click(self):
         self.setChecked(not self.checked)
@@ -529,6 +528,7 @@ class MySwitch(QWidget):
         self.animation.valueChanged.connect(self.update11)
         self.animation.finished.connect(self.onAnimationFinished)
         self.enable = enable
+        self.__loadsize()
 
     def setEnabled(self, enable):
         self.enable = enable

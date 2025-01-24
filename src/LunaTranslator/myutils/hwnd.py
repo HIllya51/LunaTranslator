@@ -106,19 +106,20 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
 
 def getpidexe(pid):
-    hproc = windows.AutoHandle(
-        windows.OpenProcess(windows.PROCESS_ALL_ACCESS, False, pid)
-    )
-    if not hproc:
-
-        hproc = windows.AutoHandle(
-            windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
-        )
-    if not hproc:
-        name_ = None
-    else:
+    for _ in (
+        windows.PROCESS_ALL_ACCESS,  # 如果能这个，那最好，因为一些特殊路径在这个权限下可以不需要处理
+        windows.PROCESS_QUERY_INFORMATION
+        | windows.PROCESS_VM_READ,  # GetModuleFileNameExW
+        windows.PROCESS_QUERY_INFORMATION,  # XP
+        windows.PROCESS_QUERY_LIMITED_INFORMATION,
+    ):
+        hproc = windows.AutoHandle(windows.OpenProcess(_, False, pid))
+        if not hproc:
+            continue
         name_ = windows.GetProcessFileName(hproc)
-    return name_
+        if name_:
+            return name_
+    return None
 
 
 def getcurrexe():

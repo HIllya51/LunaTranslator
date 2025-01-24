@@ -81,8 +81,6 @@ bool checkengine()
     int current = 0;
     for (auto m : engines)
     {
-        std::unique_ptr<ENGINE> __m;
-        __m.reset(m);
         current += 1;
 
         bool matched = safematch(m);
@@ -102,7 +100,6 @@ bool checkengine()
                 spDefault.minAddress = 0;
                 spDefault.maxAddress = -1;
             }
-            __m.release();
         }
         if (m->is_engine_certain)
         {

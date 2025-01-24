@@ -386,7 +386,7 @@ class AutoHandle(HANDLE):
         return (self.value != INVALID_HANDLE_VALUE) and (self.value != None)
 
 
-def parseuncex(v: str, t):
+def parseuncex(v: str, t) -> str:
     hFile = AutoHandle(
         CreateFile(
             v,
@@ -422,6 +422,9 @@ def check_maybe_unc_file(v: str):
     # 按照文档所说，VOLUME_NAME_NT之后QueryDosDevice是可以转成X:\xxxx的，然而实测经常查不到根本没卵用
     # 获取的结果是\\?\的UNC路径。虽然没办法转成X:\xxxx，但实测可以管用。
     if dos:
+        if dos.startswith("\\\\?\\"):
+            # 虽然这个东西很真实，但实际上大部分程序根本不适配，他只在长路径下实际有意义，否则反而使一些东西运行不正常
+            dos = dos[4:]
         return dos
     return v
 
@@ -430,13 +433,14 @@ def _GetProcessFileName(hHandle):
     w = create_unicode_buffer(65535)
     # 我佛了，太混乱了，不同权限获取的东西完全不一样
     size = DWORD(65535)
+    # 这三者越前面的越直接得到好路径，后面的经常得到辣鸡路径
     if (
-        _GetModuleFileNameExW(hHandle, None, w, 65535) == 0
+        (_GetModuleFileNameExW(hHandle, None, w, 65535) == 0)
         and (
-            _QueryFullProcessImageNameW != 0
-            and _QueryFullProcessImageNameW(hHandle, 0, w, pointer(size)) == 0
+            _QueryFullProcessImageNameW == 0
+            or _QueryFullProcessImageNameW(hHandle, 0, w, pointer(size)) == 0
         )
-        and _GetProcessImageFileNameW(hHandle, w, 65535) == 0
+        and (_GetProcessImageFileNameW(hHandle, w, 65535) == 0)
     ):
         return
 

@@ -133,13 +133,6 @@ static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE
         {
             ChangeClipboardChain(hWnd, nextviewer);
         }
-        break;
-        case WM_DRAWCLIPBOARD:
-        {
-            callbackx(hWnd);
-            if (nextviewer)
-                SendMessage(nextviewer, message, wParam, lParam);
-        }
         }
 #endif
         return DefWindowProc(hWnd, message, wParam, lParam);
@@ -180,7 +173,7 @@ DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
         return NULL;
 #else
     static HANDLE clipboardUpdate;
-    clipboardUpdate = CreateEventW(nullptr, FALSE, TRUE, NULL);
+    clipboardUpdate = CreateEventW(nullptr, FALSE, FALSE, NULL);
     auto __ = SetWindowsHookExW(WH_GETMESSAGE, [](int statusCode, WPARAM wParam, LPARAM lParam)
                                 {
 			if (statusCode == HC_ACTION && wParam == PM_REMOVE && ((MSG*)lParam)->message == WM_CLIPBOARDUPDATE) SetEvent(clipboardUpdate);

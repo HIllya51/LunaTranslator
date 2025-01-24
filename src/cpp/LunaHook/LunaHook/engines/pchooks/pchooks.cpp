@@ -14,7 +14,35 @@
 
 constexpr short arg_sz = (short)sizeof(void *);
 std::set<void *> hookonce;
+
+#ifndef WINXP
 std::mutex hookoncelock;
+#else
+class SimpleMutex
+{
+public:
+  SimpleMutex()
+  {
+    mutex = CreateMutex(NULL, FALSE, NULL);
+  }
+  ~SimpleMutex()
+  {
+    CloseHandle(mutex);
+  }
+  void lock()
+  {
+    WaitForSingleObject(mutex, INFINITE);
+  }
+  void unlock()
+  {
+    ReleaseMutex(mutex);
+  }
+
+private:
+  HANDLE mutex;
+};
+SimpleMutex hookoncelock; // xp上这个谜之导致dll free时崩溃。虽然这个锁其实没啥必要，但还是保留一下吧。
+#endif
 #define NEW_HOOK(ptr, _dll, _fun, _data, _data_ind, _split_off, _split_ind, _type, _len_off)                       \
   {                                                                                                                \
     HookParam hp;                                                                                                  \

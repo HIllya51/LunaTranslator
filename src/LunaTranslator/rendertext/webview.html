@@ -209,6 +209,9 @@
         yinying: yinying_create_internal,
         miaobian1: miaobian12_common,
     }
+    function dispatch_text_style(style, styleargs, name, text, args) {
+        return regist_style_imp[style](styleargs, name, text, args)
+    }
     function makeinlineblock(ele) {
         let div = document.createElement('div')
         div.style.display = 'inline-block'
@@ -313,7 +316,7 @@
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let name = decodeURIComponent(nameu)
         let text = decodeURIComponent(textu)
-        let innerele = regist_style_imp[style](styleargs, name, text, args);
+        let innerele = dispatch_text_style(style, styleargs, name, text, args);
         ele.appendChild(innerele)
         safe_calllunaheightchange()
     }
@@ -351,7 +354,7 @@
                 ele.appendChild(document.createElement('br'))
                 return
             }
-            let eleori = regist_style_imp[style](styleargs, '', word.orig, { color: color })
+            let eleori = dispatch_text_style(style, styleargs, '', word.orig, { color: color })
             eleori = makeinlineblock(eleori)//使其他字体和描边字体的对齐一致
             if (!word.hira.trim().length) {
                 ele.appendChild(eleori)
@@ -377,7 +380,7 @@
                 let ruby = document.createElement('ruby')
                 ruby.appendChild(eleori)
                 let rt = document.createElement('rt')
-                rt.appendChild(makeinlineblock(regist_style_imp[style](styleargs, '', word.hira, { color: kanacolor })))
+                rt.appendChild(makeinlineblock(dispatch_text_style(style, styleargs, '', word.hira, { color: kanacolor })))
                 rt.classList.add('klass_font_hira')
                 rt.classList.add('lunatranslator_rt')
                 ruby.appendChild(rt)
