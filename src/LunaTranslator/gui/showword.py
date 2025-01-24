@@ -12,6 +12,7 @@ from myutils.utils import (
     getimageformatlist,
     getimagefilefilter,
 )
+from hiraparse.basehira import basehira
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
@@ -235,7 +236,8 @@ class AnkiWindow(QWidget):
         example = self.example.toPlainText()
         if globalconfig["ankiconnect"]["boldword"]:
             if self.example.hiras is None:
-                self.example.hiras = gobject.baseobject.parsehira(example)
+                _hs = gobject.baseobject.parsehira(example)
+                self.example.hiras = basehira.parseastarget(_hs)
             collect = []
             for hira in self.example.hiras:
                 if hira["orig"] == word or hira.get("origorig", None) == word:
@@ -713,9 +715,8 @@ class AnkiWindow(QWidget):
     def wordedit_t(self, text):
         self.currentword = text
         if text and len(text):
-            self.zhuyinedit.setPlainText(
-                self.makerubyhtml(gobject.baseobject.parsehira(text))
-            )
+            _hs = gobject.baseobject.parsehira(text)
+            self.zhuyinedit.setPlainText(self.makerubyhtml(basehira.parseastarget(_hs)))
         else:
             self.zhuyinedit.clear()
 
