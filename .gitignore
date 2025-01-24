@@ -56,7 +56,6 @@ docs/.vitepress/cache
 docs/node_modules
 docs/.vitepress/dist
 src/LunaTranslator/rendertext/webview_parsed.html
-src/LunaTranslator/rendertext/luna.jpg
 src/Microsoft.WebView2.FixedVersionRuntime.*
 src/mdx
 src/translation_record

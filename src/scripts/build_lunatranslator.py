@@ -209,13 +209,6 @@ def downloadCurl():
     )
 
 
-def downloadluna():
-    os.chdir(rootDir)
-    os.chdir("LunaTranslator/rendertext")
-    subprocess.run("curl -C - -LO https://image.lunatranslator.org/luna.jpg")
-    os.chdir(rootDir)
-
-
 def downloadOCRModel():
     os.chdir(rootDir + "\\files")
     if not os.path.exists("ocrmodel"):
@@ -300,7 +293,6 @@ def downloadalls(arch):
     if arch == "xp":
         return
     downloadmapie()
-    downloadluna()
     downloadLocaleEmulator()
     downloadBrotli()
     downloadCurl()
