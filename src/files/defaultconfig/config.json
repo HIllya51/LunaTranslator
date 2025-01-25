@@ -447,7 +447,6 @@
     "ocrrangewidth": 2,
     "useproxy": true,
     "usesysproxy": true,
-    "fullscreenmethod_4": 0,
     "tagNameRemap": {},
     "dialog_savegame_layout": {
         "itemw": 130,
@@ -1933,7 +1932,6 @@
     "ZoomFactor": 1,
     "ZoomFactor2": 1,
     "realtime_edit_target": "realtime_edit",
-    "magpiepath": "",
     "movefollow": false,
     "focusnotop": false,
     "autostarthook": true,

@@ -1,20 +1,9 @@
 from qtsymbols import *
-import functools
-from myutils.config import globalconfig, magpie_config, static_data
-from gui.inputdialog import getsomepath1
-from gui.usefulwidget import (
-    D_getsimplecombobox,
-    makegrid,
-    D_getspinbox,
-    D_getIconButton,
-    makesubtab_lazy,
-    makescrollgrid,
-    D_getsimpleswitch,
-)
-from gui.setting_about import offlinelinks
+from myutils.config import globalconfig, magpie_config
+from gui.usefulwidget import D_getsimplecombobox, D_getspinbox, D_getsimpleswitch
 
 
-def makescalew(self, lay: QVBoxLayout):
+def makescalew():
 
     innermagpie = [
         [
@@ -324,55 +313,4 @@ def makescalew(self, lay: QVBoxLayout):
         ],
     ]
 
-    losslessgrid = [
-        [
-            ("Magpie_路径", 4),
-            (
-                D_getIconButton(
-                    callback=lambda: getsomepath1(
-                        self,
-                        "Magpie_路径",
-                        globalconfig,
-                        "magpiepath",
-                        "Magpie_路径",
-                        isdir=True,
-                    ),
-                    icon="fa.gear",
-                ),
-                1,
-            ),
-            ("", 10),
-        ],
-        [(functools.partial(offlinelinks, "magpie"), 0)],
-    ]
-
-    commonfsgrid = [
-        [
-            ("缩放方式", 4),
-            (
-                D_getsimplecombobox(
-                    static_data["scalemethods_vis"],
-                    globalconfig,
-                    "fullscreenmethod_4",
-                    static=True,
-                ),
-                6,
-            ),
-        ],
-        [
-            (
-                lambda: makesubtab_lazy(
-                    ["Magpie", "外部缩放软件"],
-                    [
-                        functools.partial(makescrollgrid, innermagpie),
-                        functools.partial(makescrollgrid, losslessgrid),
-                    ],
-                    delay=True,
-                ),
-                0,
-            )
-        ],
-    ]
-    gw, gd = makegrid(commonfsgrid, delay=True)
-    lay.addWidget(gw)
-    gd()
+    return innermagpie

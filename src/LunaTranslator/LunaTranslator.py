@@ -1203,7 +1203,6 @@ class MAINUI:
         self.startreader()
         self.searchwordW = searchwordW(self.commonstylebase)
         self.hookselectdialog = hookselect(self.commonstylebase)
-        self.starttextsource()
         threading.Thread(
             target=minmaxmoveobservefunc, args=(self.translation_ui,)
         ).start()
@@ -1211,6 +1210,7 @@ class MAINUI:
             self.messagecallback
         )
         winsharedutils.globalmessagelistener(self.messagecallback__)
+        self.starttextsource()
         self.inittray()
         self.playtimemanager = playtimemanager()
         self.__count = 0
@@ -1235,20 +1235,23 @@ class MAINUI:
             return
         return os.startfile(file)
 
-    def messagecallback(self, msg, param):
+    def messagecallback(self, msg: int, boolvalue: bool, strvalue: str):
         if msg == 0:
             if globalconfig["darklight2"] == 0:
                 if self.__count % 2:
                     self.commonstylebase.setstylesheetsignal.emit()
                 self.__count += 1
         elif msg == 1:
-            if bool(param):
+            if boolvalue:
                 self.translation_ui.settop()
             else:
                 if not globalconfig["keepontop"]:
                     self.translation_ui.canceltop()
+            self.translation_ui.magpiecallback.emit(boolvalue)
         elif msg == 2:
             self.translation_ui.closesignal.emit()
+        elif msg == 3:
+            self.translation_ui.clipboardcallback.emit(boolvalue, strvalue)
 
     def _dowhenwndcreate(self, obj):
         hwnd = obj.winId()

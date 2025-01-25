@@ -438,6 +438,32 @@ def internal(self):
         ],
         [(functools.partial(_ocrparam, self), 0)],
     ]
+    reco = [
+        [
+            "识别方向",
+            (
+                D_getsimplecombobox(
+                    ["横向", "竖向", "自适应"], globalconfig, "verticalocr"
+                ),
+                2,
+            ),
+            "",
+            D_getIconButton(
+                gobject.baseobject.createshowocrimage,
+                icon="fa.picture-o",
+            ),
+            "",
+            "",
+        ],
+        [
+            "多重区域模式",
+            D_getsimpleswitch(
+                globalconfig,
+                "multiregion",
+                callback=lambda _: gobject.baseobject.textsource.leaveone(),
+            ),
+        ],
+    ]
     after = [
         [
             (("合并多行识别结果"), 12),
@@ -461,14 +487,6 @@ def internal(self):
     ]
 
     others = [
-        [
-            "多重区域模式",
-            D_getsimpleswitch(
-                globalconfig,
-                "multiregion",
-                callback=lambda _: gobject.baseobject.textsource.leaveone(),
-            ),
-        ],
         [
             "范围框颜色",
             D_getcolorbutton(
@@ -524,6 +542,13 @@ def internal(self):
     allothers = [
         [
             (
+                dict(title="识别设置", type="grid", grid=reco),
+                0,
+                "group",
+            )
+        ],
+        [
+            (
                 dict(title="后处理", type="grid", grid=after),
                 0,
                 "group",
@@ -551,19 +576,6 @@ def internal(self):
 
 def getocrgrid_table(self, basel: QVBoxLayout):
     grids = [
-        [
-            "识别方向",
-            D_getsimplecombobox(
-                ["横向", "竖向", "自适应"], globalconfig, "verticalocr"
-            ),
-            "",
-            D_getIconButton(
-                gobject.baseobject.createshowocrimage,
-                icon="fa.picture-o",
-            ),
-            "",
-            "",
-        ],
         [(functools.partial(internal, self), 0)],
     ]
 

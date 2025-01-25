@@ -1,26 +1,52 @@
-from scalemethod.base import scalebase
 import json
 import windows, gobject
 from myutils.config import globalconfig, magpie_config
 import winsharedutils
+from myutils.wrapper import threader
 
 
-class Method(scalebase):
+class MagpieBuiltin:
+    def __init__(self, setuistatus) -> None:
+        self._setuistatus = setuistatus
+        self.full = True
+        self.hwnd = None
+        self.hasend = False
+        self.init()
+
+    def setuistatus(self, current):
+        if self.hasend:
+            return
+        self._setuistatus(current)
+        self.full = not current
+
+    @threader
+    def callstatuschange(self, hwnd):
+        self.callstatuschange_(hwnd)
+
+    def callstatuschange_(self, hwnd):
+        hwnd = windows.GetAncestor(hwnd)
+        self.hwnd = hwnd
+        if self.changestatus(hwnd, self.full):
+            self.setuistatus(self.full)
+
+    @threader
+    def endX(self):
+        self.hasend = True
+        ret = False
+        if not self.full and self.hwnd:
+            self.callstatuschange_(self.hwnd)
+            ret = True
+        self.end()
+
+        return ret
+
     def saveconfig(self):
         with open(self.jspath, "w", encoding="utf-8") as ff:
             ff.write(
                 json.dumps(magpie_config, ensure_ascii=False, sort_keys=False, indent=4)
             )
 
-    def messagecallback(self, msg, status):
-        if msg == 1:
-            self.setuistatus(int(bool(status)))
-
     def init(self):
-        self.messagecallback__ = winsharedutils.globalmessagelistener_cb(
-            self.messagecallback
-        )
-        winsharedutils.globalmessagelistener(self.messagecallback__)
         self.jspath = gobject.gettempdir("magpie.config.json")
         self.engine = winsharedutils.AutoKillProcess(
             './files/plugins/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
@@ -37,6 +63,7 @@ class Method(scalebase):
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_Exit"),
         )
+        # gobject.baseobject.translation_ui.magpiecallback.disconnect()
 
     def changestatus(self, hwnd, full):
         if full:

@@ -14,7 +14,7 @@ def setTabThree_lazy(self, basel):
         lambda l: makescrollgrid(xianshigrid_style(self), l),
         functools.partial(uisetting, self),
         functools.partial(createbuttonwidget, self),
-        functools.partial(makescalew, self),
+        lambda l: makescrollgrid(makescalew(), l),
     ]
     if get_platform() == "xp":
         titles.pop(3)

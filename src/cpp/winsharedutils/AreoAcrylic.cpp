@@ -73,99 +73,112 @@ BOOL
 
 typedef BOOL(WINAPI *pfnSetWindowCompositionAttribute)(HWND, WINDOWCOMPOSITIONATTRIBDATA *);
 
-#define common                                                                                                                                              \
-	ACCENT_POLICY accentPolicy;                                                                                                                             \
-	WINDOWCOMPOSITIONATTRIBDATA winCompAttrData;                                                                                                            \
-	ZeroMemory(&accentPolicy, sizeof(accentPolicy));                                                                                                        \
-	ZeroMemory(&winCompAttrData, sizeof(winCompAttrData));                                                                                                  \
-	winCompAttrData.Attrib = WCA_ACCENT_POLICY;                                                                                                             \
-	winCompAttrData.cbData = sizeof(accentPolicy);                                                                                                          \
-	winCompAttrData.pvData = &accentPolicy;                                                                                                                 \
-	auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)GetProcAddress(GetModuleHandle(L"user32.dll"), "SetWindowCompositionAttribute"); \
-	if (!setWindowCompositionAttribute)                                                                                                                     \
-		return false;
+#define common                                                                                                             \
+	ACCENT_POLICY accentPolicy;                                                                                            \
+	WINDOWCOMPOSITIONATTRIBDATA winCompAttrData;                                                                           \
+	ZeroMemory(&accentPolicy, sizeof(accentPolicy));                                                                       \
+	ZeroMemory(&winCompAttrData, sizeof(winCompAttrData));                                                                 \
+	winCompAttrData.Attrib = WCA_ACCENT_POLICY;                                                                            \
+	winCompAttrData.cbData = sizeof(accentPolicy);                                                                         \
+	winCompAttrData.pvData = &accentPolicy;                                                                                \
+	auto setWindowCompositionAttribute =                                                                                   \
+		(pfnSetWindowCompositionAttribute)GetProcAddress(GetModuleHandle(L"user32.dll"), "SetWindowCompositionAttribute"); \
+	if (!setWindowCompositionAttribute)                                                                                    \
+		return;
 
-DECLARE_API bool setAcrylicEffect(HWND hwnd, bool isEnableShadow)
+DECLARE_API void setAcrylicEffect(HWND hwnd, bool isEnableShadow)
 {
-#ifndef WINXP
+	if (GetOSVersion().IsleWinVista())
+		return;
 	// win7全都用areo
-	DWM_BLURBEHIND bb = {0};
-	bb.dwFlags = DWM_BB_ENABLE;
-	bb.fEnable = true;
-	bb.hRgnBlur = NULL;
-	DwmEnableBlurBehindWindow(hwnd, &bb);
 
-	DWORD gradientColor = 0x00FfFfFf; // ABGR
-	common
-
+	if (GetOSVersion().IsleWin8())
+	{
+		DWM_BLURBEHIND bb = {0};
+		bb.dwFlags = DWM_BB_ENABLE;
+		bb.fEnable = true;
+		bb.hRgnBlur = NULL;
+		DwmEnableBlurBehindWindow(hwnd, &bb);
+	}
+	else
+	{
+		DWORD gradientColor = 0x00FfFfFf; // ABGR
+		common;
 		accentPolicy.AccentState = ACCENT_ENABLE_ACRYLICBLURBEHIND;
-	accentPolicy.GradientColor = gradientColor;
-	auto accentFlags = isEnableShadow ? (DWORD(0x20 | 0x40 | 0x80 | 0x100)) : 0;
-	accentPolicy.AccentFlags = accentFlags;
-	return setWindowCompositionAttribute(hwnd, &winCompAttrData);
-#else
-	return false;
-#endif
+		accentPolicy.GradientColor = gradientColor;
+		auto accentFlags = isEnableShadow ? (DWORD(0x20 | 0x40 | 0x80 | 0x100)) : 0;
+		accentPolicy.AccentFlags = accentFlags;
+		setWindowCompositionAttribute(hwnd, &winCompAttrData);
+	}
 }
-DECLARE_API bool setAeroEffect(HWND hwnd, bool isEnableShadow)
+DECLARE_API void setAeroEffect(HWND hwnd, bool isEnableShadow)
 {
-#ifndef WINXP
-	DWM_BLURBEHIND bb = {0};
-	bb.dwFlags = DWM_BB_ENABLE;
-	bb.fEnable = true;
-	bb.hRgnBlur = NULL;
-	DwmEnableBlurBehindWindow(hwnd, &bb);
-
-	common
-
+	if (GetOSVersion().IsleWinVista())
+		return;
+	if (GetOSVersion().IsleWin8())
+	{
+		DWM_BLURBEHIND bb = {0};
+		bb.dwFlags = DWM_BB_ENABLE;
+		bb.fEnable = true;
+		bb.hRgnBlur = NULL;
+		DwmEnableBlurBehindWindow(hwnd, &bb);
+	}
+	else
+	{
+		common;
 		accentPolicy.AccentState = ACCENT_ENABLE_BLURBEHIND;
-	auto accentFlags = isEnableShadow ? (DWORD(0x20 | 0x40 | 0x80 | 0x100)) : 0;
-	accentPolicy.AccentFlags = accentFlags;
-	return setWindowCompositionAttribute(hwnd, &winCompAttrData);
-#else
-	return false;
-#endif
+		auto accentFlags = isEnableShadow ? (DWORD(0x20 | 0x40 | 0x80 | 0x100)) : 0;
+		accentPolicy.AccentFlags = accentFlags;
+		setWindowCompositionAttribute(hwnd, &winCompAttrData);
+	}
 }
-DECLARE_API bool clearEffect(HWND hwnd)
+DECLARE_API void clearEffect(HWND hwnd)
 {
-#ifndef WINXP
-	DWM_BLURBEHIND bb = {0};
-	bb.dwFlags = DWM_BB_ENABLE;
-	bb.fEnable = false;
-	bb.hRgnBlur = NULL;
-	DwmEnableBlurBehindWindow(hwnd, &bb);
-
-	common
+	if (GetOSVersion().IsleWinVista())
+		return;
+	if (GetOSVersion().IsleWin8())
+	{
+		DWM_BLURBEHIND bb = {0};
+		bb.dwFlags = DWM_BB_ENABLE;
+		bb.fEnable = false;
+		bb.hRgnBlur = NULL;
+		DwmEnableBlurBehindWindow(hwnd, &bb);
+	}
+	else
+	{
+		common;
 		accentPolicy.AccentState = ACCENT_DISABLED;
-	return setWindowCompositionAttribute(hwnd, &winCompAttrData);
-#else
-	return false;
-#endif
+		setWindowCompositionAttribute(hwnd, &winCompAttrData);
+	}
 }
-
-DECLARE_API bool setbackdropX(HWND hwnd, bool good, bool dark)
+#ifdef WINXP
+#define DWMWCP_DEFAULT 0
+#define DWMWCP_ROUND 2
+#define DWMWA_WINDOW_CORNER_PREFERENCE 33
+#endif
+DECLARE_API void setbackdropX(HWND hwnd, bool good, bool dark)
 {
-#ifndef WINXP
-	if (GetOSVersion().IsWin7or8())
-		return false;
+	if (GetOSVersion().IsleWin8())
+		return;
 
 	DWORD corner_ = good ? DWMWCP_ROUND : DWMWCP_DEFAULT;
 	DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner_, sizeof(corner_));
 
-	common if (!good)
+	common;
+	if (!good)
 	{
-
 		accentPolicy.AccentState = ACCENT_DISABLED;
-		return setWindowCompositionAttribute(hwnd, &winCompAttrData);
+		setWindowCompositionAttribute(hwnd, &winCompAttrData);
+		return;
 	}
 	accentPolicy.AccentState = ACCENT_ENABLE_ACRYLICBLURBEHIND;
 
 	CRegKey key;
 	if (ERROR_SUCCESS != key.Open(HKEY_CURRENT_USER, LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent)"))
-		return false;
+		return;
 	DWORD accent_int;
 	if (ERROR_SUCCESS != key.QueryDWORDValue(L"AccentColorMenu", accent_int))
-		return false;
+		return;
 	if (dark)
 		accentPolicy.GradientColor = 0x40212121;
 	else
@@ -177,7 +190,4 @@ DECLARE_API bool setbackdropX(HWND hwnd, bool good, bool dark)
 		winCompAttrData.Attrib = WCA_USEDARKMODECOLORS;
 		setWindowCompositionAttribute(hwnd, &winCompAttrData);
 	}
-
-#endif
-	return true;
 }

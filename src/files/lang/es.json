@@ -385,11 +385,9 @@
     "Sakura大模型": "Gran modelo Sakura",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Traducción utilizando la información anterior (generalmente tiene un cierto efecto de mejora, pero puede causar lentitud)",
     "窗口缩放": "Ampliación de la ventana",
-    "缩放方式": "Modo de zoom",
     "去除重复字符": "Eliminar caracteres duplicados",
     "游戏内叠加层": "Capa superpuesta en el juego",
     "内联效果参数": "Parámetros de efecto en línea",
-    "外部缩放软件": "Software de zoom externo",
     "保持非重复字符": "Mantener caracteres no repetitivos",
     "多重区域模式": "Modelo multiregional",
     "关闭": "Cierre",
@@ -772,5 +770,6 @@
     "加亮模式": "",
     "清除加亮": "",
     "内嵌翻译上下文": "",
-    "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": ""
+    "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "",
+    "识别设置": ""
 }

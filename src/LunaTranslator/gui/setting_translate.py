@@ -535,5 +535,6 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
     )
     basel.addWidget(tab)
 
+    basel.setSpacing(0)
     do()
     dotab()

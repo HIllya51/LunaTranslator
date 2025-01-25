@@ -10,6 +10,7 @@ from myutils.config import (
     savehook_new_data,
     savehook_new_list,
 )
+from myutils.magpie_builtin import MagpieBuiltin
 from gui.dialog_savedgame import dialog_setting_game
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
@@ -283,6 +284,8 @@ class TranslatorWindow(resizableframeless):
     hotkeyuse_selectprocsignal = pyqtSignal()
     changeshowhiderawsig = pyqtSignal()
     changeshowhidetranssig = pyqtSignal()
+    magpiecallback = pyqtSignal(bool)
+    clipboardcallback = pyqtSignal(bool, str)
 
     @threader
     def tracewindowposthread(self):
@@ -875,8 +878,6 @@ class TranslatorWindow(resizableframeless):
         self.enter_sig = 0
         self.fullscreenmanager_busy = False
         self.isletgamefullscreened = False
-        self.fullscreenmanager = None
-        self.fullscreenmethod = None
         self.showhidestate = False
         self.autohidestart = False
         self.processismuteed = False
@@ -948,6 +949,9 @@ class TranslatorWindow(resizableframeless):
             flags=flags,
             poslist=globalconfig["transuigeo"],
         )  # 设置为顶级窗口，无边框
+
+        self.fullscreenmanager = MagpieBuiltin(self._externalfsend)
+        self.magpiecallback.connect(lambda _: self.fullscreenmanager.setuistatus(_))
         icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)
@@ -1098,26 +1102,7 @@ class TranslatorWindow(resizableframeless):
                 _pid = windows.GetWindowThreadProcessId(_hwnd)
                 if _pid == os.getpid():
                     return
-            # self.isletgamefullscreened = not self.isletgamefullscreened
-            # self.refreshtoolicon()
-            skip = False
-            if (self.fullscreenmanager is None) or (
-                self.fullscreenmethod != globalconfig["fullscreenmethod_4"]
-            ):
-
-                self.fullscreenmethod = globalconfig["fullscreenmethod_4"]
-
-                if self.fullscreenmanager:
-                    skip = self.fullscreenmanager.endX()
-                self.fullscreenmanager = importlib.import_module(
-                    "scalemethod."
-                    + static_data["scalemethods"][globalconfig["fullscreenmethod_4"]]
-                ).Method(self._externalfsend)
-            if skip:
-                return
-            self.fullscreenmanager.callstatuschange(
-                _hwnd
-            )  # , self.isletgamefullscreened)
+            self.fullscreenmanager.callstatuschange(_hwnd)
         except:
             print_exc()
         self.fullscreenmanager_busy = False

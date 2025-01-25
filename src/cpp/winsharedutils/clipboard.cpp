@@ -1,6 +1,4 @@
 ﻿
-static const wchar_t CLASS_NAME[] = L"LunaClipboardListener";
-
 bool tryopenclipboard(HWND hwnd = 0)
 {
     bool success = false;
@@ -89,43 +87,6 @@ inline bool iscurrentowndclipboard()
     GetWindowThreadProcessId(ohwnd, &pid);
     return pid == GetCurrentProcessId();
 }
-static void callbackx(HWND hWnd)
-{
-    auto data = clipboard_get_internal();
-    if (!data)
-        return;
-    auto callback_ = (void (*)(const wchar_t *, bool))(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
-    if (!callback_)
-        return;
-    callback_(data.value().c_str(), iscurrentowndclipboard());
-};
-static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    if (WM_CLIPBOARDUPDATE == message)
-        callbackx(hWnd);
-    return DefWindowProc(hWnd, message, wParam, lParam);
-}
-
-static void clipboard_callback_1(void (*callback)(const wchar_t *, bool), HANDLE hsema, HWND *hwnd)
-{
-    WNDCLASS wc = {};
-    wc.lpfnWndProc = WNDPROC_1;
-    wc.lpszClassName = CLASS_NAME;
-    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)wc.lpfnWndProc, &wc.hInstance);
-    RegisterClass(&wc);
-    HWND hWnd = CreateWindowEx(0, CLASS_NAME, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, wc.hInstance, nullptr);
-
-    SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)callback);
-
-    *hwnd = hWnd;
-    ReleaseSemaphore(hsema, 1, 0);
-    MSG msg = {};
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-}
 
 #ifndef WINXP
 #define addClipboardFormatListener AddClipboardFormatListener
@@ -213,26 +174,67 @@ BOOL removeClipboardFormatListener(HWND _hWnd)
 }
 #endif
 
-DECLARE_API HWND clipboard_callback(void (*callback)(const wchar_t *, bool))
+static auto LUNA_UPDATE_PREPARED_OK = RegisterWindowMessage(L"LUNA_UPDATE_PREPARED_OK");
+static auto WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");
+bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
-    HANDLE hsema = CreateSemaphoreW(0, 0, 10, 0);
-    HWND hwnd;
-    std::thread(clipboard_callback_1, callback, hsema, &hwnd).detach();
-
-    WaitForSingleObject(hsema, INFINITE);
-    CloseHandle(hsema);
-    if (addClipboardFormatListener(hwnd))
-        return hwnd;
-    return NULL;
+    return lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL;
 }
-DECLARE_API void clipboard_callback_stop(HWND hwnd)
+typedef void (*callbackT)(int, bool, const wchar_t *);
+static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if (!hwnd)
-        return;
-    removeClipboardFormatListener(hwnd);
-    DestroyWindow(hwnd);
+    auto callback = (callbackT)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+    if (callback)
+    {
+        if (WM_SETTINGCHANGE == message)
+        {
+            if (IsColorSchemeChangeMessage(lParam))
+                callback(0, false, NULL);
+        }
+        else if (message == WM_MAGPIE_SCALINGCHANGED)
+        {
+            callback(1, (bool)wParam, NULL);
+        }
+        else if (message == LUNA_UPDATE_PREPARED_OK)
+        {
+            callback(2, false, NULL);
+        }
+        else if (WM_CLIPBOARDUPDATE == message)
+        {
+            auto data = clipboard_get_internal();
+            if (data)
+                callback(3, iscurrentowndclipboard(), data.value().c_str());
+        }
+    }
+    return DefWindowProc(hWnd, message, wParam, lParam);
 }
-
+static HWND globalmessagehwnd;
+DECLARE_API void startclipboardlisten()
+{
+    addClipboardFormatListener(globalmessagehwnd);
+}
+DECLARE_API void stopclipboardlisten()
+{
+    removeClipboardFormatListener(globalmessagehwnd);
+}
+DECLARE_API void globalmessagelistener(callbackT callback)
+{
+    const wchar_t CLASS_NAME[] = L"globalmessagelistener";
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = WNDPROC_1;
+    wc.lpszClassName = CLASS_NAME;
+    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)wc.lpfnWndProc, &wc.hInstance);
+    RegisterClass(&wc);
+    HWND hWnd = CreateWindowEx(0, CLASS_NAME, NULL, 0, 0, 0, 0, 0, 0, nullptr, wc.hInstance, nullptr); // HWND_MESSAGE会收不到。
+    globalmessagehwnd = hWnd;
+    SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)callback);
+    ChangeWindowMessageFilterEx(hWnd, LUNA_UPDATE_PREPARED_OK, MSGFLT_ALLOW, nullptr);
+    ChangeWindowMessageFilterEx(hWnd, WM_MAGPIE_SCALINGCHANGED, MSGFLT_ALLOW, nullptr);
+}
+DECLARE_API void dispatchcloseevent()
+{
+    PostMessage(HWND_BROADCAST, LUNA_UPDATE_PREPARED_OK, 0, 0);
+}
 DECLARE_API bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
 {
     size -= sizeof(BITMAPFILEHEADER);

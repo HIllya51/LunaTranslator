@@ -44,9 +44,27 @@ static bool InitApis() noexcept
     return initok();
 }
 
+#ifdef WINXP
+#define DWMWCP_DEFAULT 0
+#define DWMWCP_DONOTROUND 1
+#define DWMWA_WINDOW_CORNER_PREFERENCE 33
+#define DWMWA_SYSTEMBACKDROP_TYPE 38
+#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
+// Types used with DWMWA_SYSTEMBACKDROP_TYPE
+enum DWM_SYSTEMBACKDROP_TYPE
+{
+    DWMSBT_AUTO,            // [Default] Let DWM automatically decide the system-drawn backdrop for this window.
+    DWMSBT_NONE,            // Do not draw any system backdrop.
+    DWMSBT_MAINWINDOW,      // Draw the backdrop material effect corresponding to a long-lived window.
+    DWMSBT_TRANSIENTWINDOW, // Draw the backdrop material effect corresponding to a transient window.
+    DWMSBT_TABBEDWINDOW,    // Draw the backdrop material effect corresponding to a window with a tabbed title bar.
+};
+
+#endif
 static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
 {
-#ifndef WINXP
+    if (GetOSVersion().IsleWin8())
+        return;
     if (!InitApis())
         return;
 
@@ -60,20 +78,17 @@ static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
     BOOL value = darkBorder;
     DwmSetWindowAttribute(
         hWnd,
-        GetOSVersion().Is20H1OrNewer() ? DWMWA_USE_IMMERSIVE_DARK_MODE : DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1,
+        GetOSVersion().Isge20H1() ? DWMWA_USE_IMMERSIVE_DARK_MODE : DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1,
         &value,
         sizeof(value));
 
     RefreshImmersiveColorPolicyState();
     FlushMenuThemes();
-#endif
 }
 DECLARE_API void setdwmextendframe(HWND hwnd)
 {
-#ifndef WINXP
     MARGINS mar{-1, -1, -1, -1};
     DwmExtendFrameIntoClientArea(hwnd, &mar);
-#endif
 }
 
 DECLARE_API void _SetTheme(
@@ -82,15 +97,14 @@ DECLARE_API void _SetTheme(
     int backdrop,
     bool rect)
 {
-#ifndef WINXP
     // printf("%d %d\n",GetOSversion(),GetOSBuild());
-    if (GetOSVersion().IsWin7or8()) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
+    if (GetOSVersion().IsleWin8()) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
         return;
 
     auto value1 = rect ? DWMWCP_DONOTROUND : DWMWCP_DEFAULT;
     DwmSetWindowAttribute(_hWnd, DWMWA_WINDOW_CORNER_PREFERENCE, &value1, sizeof(value1));
     // auto _isBackgroundSolidColor = backdrop == WindowBackdrop::SolidColor;
-    // if (Win32Helper::GetOSVersion().Is22H2OrNewer() &&
+    // if (Win32Helper::GetOSVersion().Isge22H2() &&
     //     _isBackgroundSolidColor != (backdrop == WindowBackdrop::SolidColor))
     // {
     //     return true;
@@ -102,7 +116,7 @@ DECLARE_API void _SetTheme(
         GetOSVersion().IsWin11() ? dark : true,
         dark);
 
-    // if (!Win32Helper::GetOSVersion().Is22H2OrNewer())
+    // if (!Win32Helper::GetOSVersion().Isge22H2())
     // {
     //     return false;
     // }
@@ -114,12 +128,10 @@ DECLARE_API void _SetTheme(
     DWM_SYSTEMBACKDROP_TYPE value = BACKDROP_MAP[backdrop];
     // 不管操作系统版本了，硬设置就行，测试不会崩溃，让系统自己处理。
     DwmSetWindowAttribute(_hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &value, sizeof(value));
-#endif
 }
 
 DECLARE_API bool isDark()
 {
-#ifndef WINXP
     constexpr auto subKey = LR"(Software\Microsoft\Windows\CurrentVersion\Themes\Personalize)";
     CRegKey hKey;
     if (ERROR_SUCCESS != hKey.Open(HKEY_CURRENT_USER, subKey, KEY_READ))
@@ -129,7 +141,4 @@ DECLARE_API bool isDark()
     if (ERROR_SUCCESS != hKey.QueryDWORDValue(L"AppsUseLightTheme", value))
         return false;
     return 1 - value;
-#else
-    return false;
-#endif
 }

@@ -489,14 +489,6 @@
             "./files/plugins/DLL32/brotlidec.dll"
         ]
     },
-    "scalemethods": [
-        "magpie_builtin",
-        "external_magpie"
-    ],
-    "scalemethods_vis": [
-        "Magpie",
-        "Magpie_External"
-    ],
     "transoptimi": [
         {
             "name": "vndbnamemap",

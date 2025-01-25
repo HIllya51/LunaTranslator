@@ -633,5 +633,6 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         delay=True,
     )
     basel.addWidget(tab)
+    basel.setSpacing(0)
     do()
     dotab()

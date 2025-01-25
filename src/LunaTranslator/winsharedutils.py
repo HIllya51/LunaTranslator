@@ -212,7 +212,9 @@ def queryversion(exe):
     return None
 
 
-globalmessagelistener_cb = CFUNCTYPE(None, c_int, c_void_p)
+startclipboardlisten = utilsdll.startclipboardlisten
+stopclipboardlisten = utilsdll.stopclipboardlisten
+globalmessagelistener_cb = CFUNCTYPE(None, c_int, c_bool, c_wchar_p)
 globalmessagelistener = utilsdll.globalmessagelistener
 globalmessagelistener.argtypes = (globalmessagelistener_cb,)
 dispatchcloseevent = utilsdll.dispatchcloseevent
@@ -363,12 +365,6 @@ add_menu_list_noselect.argtypes = (
 )
 get_webview_html = utilsdll.get_webview_html
 get_webview_html.argtypes = c_void_p, c_void_p, c_wchar_p
-clipboard_callback = utilsdll.clipboard_callback
-clipboard_callback.argtypes = (c_void_p,)
-clipboard_callback.restype = HWND
-clipboard_callback_stop = utilsdll.clipboard_callback_stop
-clipboard_callback_stop.argtypes = (HWND,)
-clipboard_callback_type = CFUNCTYPE(None, c_wchar_p, c_bool)
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)

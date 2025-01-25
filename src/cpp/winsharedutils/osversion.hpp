@@ -1,7 +1,7 @@
 ﻿
 struct OSVersion
 {
-    bool Is20H1OrNewer() const noexcept
+    bool Isge20H1() const noexcept
     {
         return version.dwBuildNumber >= 19041;
     }
@@ -11,21 +11,29 @@ struct OSVersion
 
     bool IsWin11() const noexcept
     {
-        return Is21H2OrNewer();
+        return Isge21H2();
     }
 
-    bool Is21H2OrNewer() const noexcept
+    bool Isge21H2() const noexcept
     {
         return version.dwBuildNumber >= 22000;
     }
 
-    bool Is22H2OrNewer() const noexcept
+    bool Isge22H2() const noexcept
     {
         return version.dwBuildNumber >= 22621;
     }
-    bool IsWin7or8() const noexcept
+    bool IsleWin8() const noexcept
     {
         return version.dwMajorVersion <= 6;
+    }
+    bool IsleWinVista() const noexcept
+    {
+        return (version.dwMajorVersion < 6) || (version.dwMajorVersion == 6 && version.dwMinorVersion == 0);
+    }
+    bool IsleWinXP() const noexcept
+    {
+        return version.dwMajorVersion <= 5;
     }
     RTL_OSVERSIONINFOW version;
 };

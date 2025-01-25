@@ -1,5 +1,6 @@
 ﻿
 #include <uiautomation.h>
+#include "osversion.hpp"
 
 DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 {
@@ -22,16 +23,14 @@ DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
     }
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }
-
+#ifndef WINXP
+#define FUCKPRIVI PROCESS_QUERY_LIMITED_INFORMATION
+#else
+#define FUCKPRIVI (GetOSVersion().IsleWinXP() ? PROCESS_QUERY_INFORMATION : PROCESS_QUERY_LIMITED_INFORMATION)
+#endif
 DECLARE_API bool pid_running(DWORD pid)
 {
-    CHandle hprocess{OpenProcess(
-#ifndef WINXP
-        PROCESS_QUERY_LIMITED_INFORMATION,
-#else
-        PROCESS_QUERY_INFORMATION,
-#endif
-        FALSE, pid)};
+    CHandle hprocess{OpenProcess(FUCKPRIVI, FALSE, pid)};
     if (!hprocess)
         return false;
     DWORD code;
@@ -80,13 +79,7 @@ DECLARE_API bool Is64bit(DWORD pid)
 {
     if (!Is64BitOS())
         return false;
-    CHandle hprocess{OpenProcess(
-#ifndef WINXP
-        PROCESS_QUERY_LIMITED_INFORMATION,
-#else
-        PROCESS_QUERY_INFORMATION,
-#endif
-        FALSE, pid)};
+    CHandle hprocess{OpenProcess(FUCKPRIVI, FALSE, pid)};
     // 進程的控制碼。 控制碼必須具有PROCESS_QUERY_INFORMATION或PROCESS_QUERY_LIMITED_INFORMATION存取權限。 如需詳細資訊，請參閱 處理安全性和存取權限。
     // Windows Server 2003 和 Windows XP： 控制碼必須具有PROCESS_QUERY_INFORMATION存取權限。
     BOOL f64bitProc = false;

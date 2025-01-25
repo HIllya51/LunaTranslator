@@ -393,11 +393,9 @@
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Översätt med hjälp av informationen i föregående text (vanligtvis med viss förbättring, men kan resultera i långsammare översättning)",
     "历史翻译": "Historisk översättning",
     "窗口缩放": "Fönsterskalning",
-    "缩放方式": "Skalningsmetod",
     "去除重复字符": "Ta bort dubbletter",
     "游戏内叠加层": "Överläggningslager i spelet",
     "内联效果参数": "Parametrar för inline effekt",
-    "外部缩放软件": "Extern skalningsprogram",
     "保持非重复字符": "Behåll tecken som inte upprepas",
     "多重区域模式": "Flerregionalt sätt",
     "关闭": "stäng",
@@ -772,5 +770,6 @@
     "加亮模式": "",
     "清除加亮": "",
     "内嵌翻译上下文": "",
-    "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": ""
+    "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "",
+    "识别设置": ""
 }

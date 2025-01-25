@@ -393,11 +393,9 @@
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Přeložit pomocí informací uvedených v předchozím textu (obvykle s určitým zlepšením, ale může vést k pomalejšímu překladu)",
     "历史翻译": "Historický překlad",
     "窗口缩放": "Měřítko okna",
-    "缩放方式": "Metoda škálování",
     "去除重复字符": "Odstranit duplicitní znaky",
     "游戏内叠加层": "Vrstva překrytí ve hře",
     "内联效果参数": "Parametry vnitřního efektu",
-    "外部缩放软件": "Externí software pro škálování",
     "保持非重复字符": "Zachovat neopakující se znaky",
     "多重区域模式": "Víceregionální režim",
     "关闭": "zavřít",
@@ -772,5 +770,6 @@
     "加亮模式": "",
     "清除加亮": "",
     "内嵌翻译上下文": "",
-    "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": ""
+    "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "",
+    "识别设置": ""
 }
