@@ -398,7 +398,9 @@ class rangeselect_1(QMainWindow):
             self.callback(
                 self.getRange(),
                 (
-                    self.screenshot.copy(QRect(QPoint(x1, y1), QPoint(x2, y2)))
+                    self.screenshot.copy(
+                        QRect(QPoint(x1, y1), QPoint(x2, y2))
+                    ).toImage()
                     if self.xx
                     else None
                 ),

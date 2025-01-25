@@ -551,7 +551,7 @@
                 "align": 2
             },
             "backtransbutton": {
-                "use": true,
+                "use": false,
                 "tip": "背景窗口透明",
                 "icon": "fa.lightbulb-o",
                 "align": 2

@@ -9,10 +9,7 @@ import threading, gobject, winsharedutils
 
 
 def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
-    pix = safepixmap(winsharedutils.crop_image(x1, y1, x2, y2, hwnd))
-    image = pix.toImage()
-    gobject.baseobject.maybesetimage(image)
-    return image
+    return safepixmap(winsharedutils.crop_image(x1, y1, x2, y2, hwnd)).toImage()
 
 
 _nowuseocrx = None
@@ -56,6 +53,7 @@ def __ocr_init():
 
 
 def ocr_run(qimage: QImage):
+    gobject.baseobject.maybesetimage(qimage)
     image = qimage2binary(qimage, "PNG")
     if not image:
         return "", None
