@@ -575,12 +575,9 @@ def internal(self):
 
 
 def getocrgrid_table(self, basel: QVBoxLayout):
-    grids = [
-        [(functools.partial(internal, self), 0)],
-    ]
 
     self.ocrswitchs = {}
 
-    gridlayoutwidget, do = makegrid(grids, delay=True)
+    gridlayoutwidget, do = internal(self)
     basel.addWidget(gridlayoutwidget)
     do()
