@@ -876,7 +876,7 @@ class TranslatorWindow(resizableframeless):
 
     def initvalues(self):
         self.enter_sig = 0
-        self.fullscreenmanager_busy = False
+        self.fullscreenmanager_busy = threading.Lock()
         self.isletgamefullscreened = False
         self.showhidestate = False
         self.autohidestart = False
@@ -950,7 +950,7 @@ class TranslatorWindow(resizableframeless):
             poslist=globalconfig["transuigeo"],
         )  # 设置为顶级窗口，无边框
 
-        self.fullscreenmanager = MagpieBuiltin(self._externalfsend)
+        self.fullscreenmanager = None
         self.magpiecallback.connect(lambda _: self.fullscreenmanager.setuistatus(_))
         icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
@@ -1091,21 +1091,20 @@ class TranslatorWindow(resizableframeless):
 
     @threader
     def _fullsgame(self):
-        if self.fullscreenmanager_busy:
-            return
-        self.fullscreenmanager_busy = True
-        try:
-            if gobject.baseobject.hwnd:
-                _hwnd = gobject.baseobject.hwnd
-            else:
-                _hwnd = windows.GetForegroundWindow()
-                _pid = windows.GetWindowThreadProcessId(_hwnd)
-                if _pid == os.getpid():
-                    return
-            self.fullscreenmanager.callstatuschange(_hwnd)
-        except:
-            print_exc()
-        self.fullscreenmanager_busy = False
+        with self.fullscreenmanager_busy:
+            try:
+                if gobject.baseobject.hwnd:
+                    _hwnd = gobject.baseobject.hwnd
+                else:
+                    _hwnd = windows.GetForegroundWindow()
+                    _pid = windows.GetWindowThreadProcessId(_hwnd)
+                    if _pid == os.getpid():
+                        return
+                if not self.fullscreenmanager:
+                    self.fullscreenmanager = MagpieBuiltin(self._externalfsend)
+                self.fullscreenmanager.callstatuschange(_hwnd)
+            except:
+                print_exc()
 
     @property
     def mousetranscheckrect(self):
