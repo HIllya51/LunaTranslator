@@ -2109,8 +2109,13 @@ class listediterline(QWidget):
 
 
 def mayberelpath(path):
-    if os.path.commonpath((os.getcwd(), path)) == os.getcwd():
-        return os.path.relpath(path)
+    try:
+        # https://bugs.python.org/issue36689
+        # commonpath在低版本上不能跨盘比较
+        if os.path.commonpath((os.getcwd(), path)) == os.getcwd():
+            return os.path.relpath(path)
+    except:
+        pass
     return os.path.normpath(path)
 
 
