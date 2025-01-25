@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from traceback import print_exc
 from language import TransLanguages
 import gobject, winsharedutils
+import copy
 from myutils.config import (
     savehook_new_data,
     uid2gamepath,
@@ -970,7 +971,7 @@ class dialog_setting_game_internal(QWidget):
             "save_text_process_info"
         ]["postprocessconfig"]
         if _internal not in __dict:
-            __dict[_internal] = postprocessconfig[_internal]
+            __dict[_internal] = copy.deepcopy(postprocessconfig[_internal])
             __dict[_internal]["use"] = True
         btn = maybehavebutton(self, self.__privatetextproc_gameuid, _internal)
 

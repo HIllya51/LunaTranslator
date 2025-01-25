@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, os
-import gobject, uuid, shutil
+import gobject, uuid, shutil, copy
 from myutils.config import globalconfig, translatorsetting
 from myutils.utils import (
     selectdebugfile,
@@ -27,21 +27,6 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LPushButton, LLabel, LAction
 from gui.setting_about import offlinelinks
-
-
-def deepcopydict(d):
-    if isinstance(d, dict):
-        nd = {}
-        for k in d:
-            nd[k] = deepcopydict(d[k])
-        return nd
-    elif isinstance(d, list):
-        nd = []
-        for k in d:
-            nd.append(deepcopydict(k))
-        return nd
-    else:
-        return d
 
 
 def splitapillm(l):
@@ -199,7 +184,7 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
     except:
         shutil.copy(_f12, _f2)
 
-    globalconfig["fanyi"][uid] = deepcopydict(globalconfig["fanyi"][fanyi])
+    globalconfig["fanyi"][uid] = copy.deepcopy(globalconfig["fanyi"][fanyi])
     globalconfig["fanyi"][uid]["use"] = False
 
     if not name:
@@ -207,7 +192,7 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
     globalconfig["fanyi"][uid]["name"] = name
     globalconfig["fanyi"][uid]["type"] = btnplus
     if fanyi in translatorsetting:
-        translatorsetting[uid] = deepcopydict(translatorsetting[fanyi])
+        translatorsetting[uid] = copy.deepcopy(translatorsetting[fanyi])
 
     layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
 

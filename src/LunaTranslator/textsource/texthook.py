@@ -688,7 +688,7 @@ class texthook(basetext):
             keyandtexts.sort(key=lambda xx: self.selectedhook.index(xx[0]))
         except:
             pass
-        _collector = "\n".join([_[1] for _ in keyandtexts])
+        _collector = globalconfig["multihookmergeby"].join([_[1] for _ in keyandtexts])
         self.dispatchtext(_collector)
 
     def dispatchtext_multiline_delayed(self, key, text):
