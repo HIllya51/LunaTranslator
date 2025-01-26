@@ -1,6 +1,3 @@
-[submodule "src/plugins/libs/wil"]
-	path = src/cpp/libs/wil
-	url = https://github.com/microsoft/wil.git
 [submodule "src/plugins/libs/rapidfuzz-cpp"]
 	path = src/cpp/libs/rapidfuzz-cpp
 	url = https://github.com/rapidfuzz/rapidfuzz-cpp

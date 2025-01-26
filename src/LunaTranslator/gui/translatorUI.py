@@ -951,7 +951,7 @@ class TranslatorWindow(resizableframeless):
         )  # 设置为顶级窗口，无边框
 
         self.fullscreenmanager = None
-        self.magpiecallback.connect(lambda _: self.fullscreenmanager.setuistatus(_))
+        self.magpiecallback.connect(lambda _: self.fullscreenmanager.setuistatus(_) if self.fullscreenmanager else None)
         icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)

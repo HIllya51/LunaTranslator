@@ -9,8 +9,6 @@ else()
     # add_library(Detours ${CMAKE_CURRENT_LIST_DIR}/Detours/src/creatwth.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/detours.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/modules.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/disasm.cpp)
     # target_include_directories(Detours PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Detours/src)
 
-    add_library(wil INTERFACE)
-    target_include_directories(wil INTERFACE ${CMAKE_CURRENT_LIST_DIR}/wil/include)
 
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/rapidfuzz-cpp ${CMAKE_BINARY_DIR}/rapidfuzz-cpp)
 

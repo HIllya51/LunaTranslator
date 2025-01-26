@@ -7,8 +7,6 @@
 #include <mfapi.h>
 
 #include <wrl\implements.h>
-#include <wil\com.h>
-#include <wil\result.h>
 
 #include "Common.h"
 
@@ -63,15 +61,15 @@ private:
 
     HRESULT SetDeviceStateErrorIfFailed(HRESULT hr);
 
-    wil::com_ptr_nothrow<IAudioClient> m_AudioClient;
+    CComPtr<IAudioClient> m_AudioClient;
     WAVEFORMATEX m_CaptureFormat{};
     UINT32 m_BufferFrames = 0;
-    wil::com_ptr_nothrow<IAudioCaptureClient> m_AudioCaptureClient;
-    wil::com_ptr_nothrow<IMFAsyncResult> m_SampleReadyAsyncResult;
+    CComPtr<IAudioCaptureClient> m_AudioCaptureClient;
+    CComPtr<IMFAsyncResult> m_SampleReadyAsyncResult;
 
-    wil::unique_event_nothrow m_SampleReadyEvent;
+    CEvent m_SampleReadyEvent;
     MFWORKITEM_KEY m_SampleReadyKey = 0;
-    wil::critical_section m_CritSec;
+    std::mutex m_CritSec;
     DWORD m_dwQueueID = 0;
     DWORD m_cbHeaderSize = 0;
     DWORD m_cbDataSize = 0;
@@ -81,6 +79,6 @@ private:
     HRESULT m_activateResult = E_UNEXPECTED;
 
     DeviceState m_DeviceState{DeviceState::Uninitialized};
-    wil::unique_event_nothrow m_hActivateCompleted;
-    wil::unique_event_nothrow m_hCaptureStopped;
+    CEvent m_hActivateCompleted;
+    CEvent m_hCaptureStopped;
 };

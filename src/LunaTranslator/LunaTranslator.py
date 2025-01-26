@@ -817,7 +817,8 @@ class MAINUI:
                 self.textsource = classes[use]()
 
     @threader
-    def starthira(self, use=None, checked=True):
+    def starthira(self, _=None, checked=True):
+        self.hira_ = None
         if checked:
             hirasettingbase = globalconfig["hirasetting"]
             _hira = None
@@ -831,17 +832,11 @@ class MAINUI:
                     _hira = importlib.import_module("hiraparse." + name)
                     _hira = getattr(_hira, name)
                     break
-
             try:
                 if _hira:
                     self.hira_ = _hira(name)
-                else:
-                    self.hira_ = None
             except:
                 print_exc()
-                self.hira_ = None
-        else:
-            self.hira_ = None
 
     @threader
     def startoutputer_re(self, klass):

@@ -7,7 +7,7 @@ applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp
 SimpleBrowser.cpp MWebBrowser.cpp icon.cpp ${versioninfo})
 target_precompile_headers(winsharedutils REUSE_FROM pch)
 if(NOT WINXP)
-target_link_libraries(winsharedutils rapidfuzz wil webview2 Mfplat mfuuid Mmdevapi dwmapi)
+target_link_libraries(winsharedutils rapidfuzz webview2 Mfplat mfuuid Mmdevapi dwmapi)
 target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Mmdevapi.dll")
 target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Mfplat.dll")
 else()
