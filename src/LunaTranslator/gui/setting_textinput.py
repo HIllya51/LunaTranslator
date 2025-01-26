@@ -123,15 +123,6 @@ def gethookgrid_em(self):
                 icon="fa.gear",
             ),
         ],
-        [
-            "导出翻译补丁",
-            D_getIconButton(
-                callback=lambda: exportchspatch(self),
-                icon="fa.gear",
-            ),
-            "",
-            "",
-        ],
     ]
 
     return grids
