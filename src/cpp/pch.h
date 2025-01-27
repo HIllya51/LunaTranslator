@@ -28,6 +28,7 @@
 #include <queue>
 #include <thread>
 #include <cmath>
+#include <atomic>
 
 #include <cwchar>
 #include <comdef.h>
