@@ -85,25 +85,6 @@ class webview2_com_handler : public ComImpl<ICoreWebView2NavigationStartingEvent
 
 public:
     webview2_com_handler(WebView2 *ref) : ref(ref) {}
-    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void **ppvObj)
-    {
-        if (riid == __uuidof(ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler))
-            *ppvObj = static_cast<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler *>(this);
-        else if (riid == __uuidof(ICoreWebView2ZoomFactorChangedEventHandler))
-            *ppvObj = static_cast<ICoreWebView2ZoomFactorChangedEventHandler *>(this);
-        else if (riid == __uuidof(ICoreWebView2CreateCoreWebView2ControllerCompletedHandler))
-            *ppvObj = static_cast<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler *>(this);
-        else if (riid == __uuidof(ICoreWebView2WebMessageReceivedEventHandler))
-            *ppvObj = static_cast<ICoreWebView2WebMessageReceivedEventHandler *>(this);
-        else if (riid == __uuidof(ICoreWebView2ContextMenuRequestedEventHandler))
-            *ppvObj = static_cast<ICoreWebView2ContextMenuRequestedEventHandler *>(this);
-        else if (riid == __uuidof(ICoreWebView2PermissionRequestedEventHandler))
-            *ppvObj = static_cast<ICoreWebView2PermissionRequestedEventHandler *>(this);
-        else
-            return E_NOINTERFACE;
-        AddRef();
-        return S_OK;
-    }
     // ICoreWebView2NavigationStartingEventHandler
     HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, ICoreWebView2NavigationStartingEventArgs *args)
     {
