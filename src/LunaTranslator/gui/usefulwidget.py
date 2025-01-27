@@ -2,7 +2,6 @@ from qtsymbols import *
 import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject, platform
-from webviewpy import webview_native_handle_kind_t, Webview
 from myutils.config import _TR, globalconfig, findFixedRuntime
 from myutils.wrapper import Singleton_close
 from myutils.utils import nowisdark, checkisusingwine
@@ -1121,9 +1120,6 @@ class abstractwebview(QWidget):
     def eval(self, js, retsaver=None):
         pass
 
-    def set_transparent_background(self):
-        pass
-
     def _parsehtml_codec(self, html):
 
         html = """<html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head>{}</html>""".format(
@@ -1180,45 +1176,30 @@ class WebviewWidget(abstractwebview):
     def getHtml(self, elementid):
         _ = []
         cb = winsharedutils.html_get_select_text_cb(_.append)
-        winsharedutils.get_webview_html(self.get_controller(), cb, elementid)
+        winsharedutils.webview2_query_element_html(self.webview, elementid, cb)
         if not _:
             return ""
         return json.loads(_[0])
 
     def __del__(self):
-        if not self.webview:
-            return
-        winsharedutils.remove_ZoomFactorChanged(self.get_controller(), self.__token)
-        winsharedutils.remove_WebMessageReceived(
-            self.get_controller(), self.m_webMessageReceivedToken
-        )
-        winsharedutils.remove_ContextMenuRequested(self.get_controller(), self.menudata)
+        winsharedutils.webview2_destroy(self.webview)
 
     def bind(self, fname, func):
-        self.webview.bind(fname, func)
+        self.binds[fname] = func
+        winsharedutils.webview2_bind(self.webview, fname)
 
     def eval(self, js):
-        self.webview.eval(js)
-
-    def get_controller(self):
-        return self.webview.get_native_handle(
-            webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_BROWSER_CONTROLLER
-        )
-
-    def get_hwnd(self):
-        return self.webview.get_native_handle(
-            webview_native_handle_kind_t.WEBVIEW_NATIVE_HANDLE_KIND_UI_WIDGET
-        )
+        winsharedutils.webview2_evaljs(self.webview, js, None)
 
     def add_menu(self, index, label, callback):
-        __ = winsharedutils.add_ContextMenuRequested_cb(callback)
+        __ = winsharedutils.webview2_add_menu_CALLBACK(callback)
         self.callbacks.append(__)
-        winsharedutils.add_menu_list(self.menudata, index, label, __)
+        winsharedutils.webview2_add_menu(self.webview, index, label, __)
 
     def add_menu_noselect(self, index, label, callback):
-        __ = winsharedutils.add_ContextMenuRequested_cb2(callback)
+        __ = winsharedutils.webview2_add_menu_noselect_CALLBACK(callback)
         self.callbacks.append(__)
-        winsharedutils.add_menu_list_noselect(self.menudata, index, label, __)
+        winsharedutils.webview2_add_menu_noselect(self.webview, index, label, __)
 
     @staticmethod
     def showError():
@@ -1234,30 +1215,32 @@ class WebviewWidget(abstractwebview):
         else:
             os.startfile("https://developer.microsoft.com/microsoft-edge/webview2")
 
-    def __init__(self, parent=None, debug=True) -> None:
+    def __init__(self, parent=None, transp=False) -> None:
         super().__init__(parent)
         self.webview = None
+        self.binds = {}
         self.callbacks = []
         FixedRuntime = findFixedRuntime()
         if FixedRuntime:
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
             # 在共享路径上无法运行
             os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
-        self.webview = Webview(debug=debug, window=int(self.winId()))
-        self.m_webMessageReceivedToken = None
-        self.menudata = winsharedutils.add_ContextMenuRequested(self.get_controller())
-        self.zoomfunc = winsharedutils.add_ZoomFactorChanged_CALLBACK(self.zoomchange)
-        self.__token = winsharedutils.add_ZoomFactorChanged(
-            self.get_controller(), self.zoomfunc
+        self.webview = winsharedutils.webview2_create(int(self.winId()), transp)
+        self.zoomchange_callback = winsharedutils.zoomchange_callback_t(self.zoomchange)
+        self.navigating_callback = winsharedutils.navigating_callback_t(
+            self.on_load.emit
         )
-        self.dropfilecallback__ref = winsharedutils.add_WebMessageReceived_cb(
-            self.dropfilecallback.emit
+        self.webmessage_callback = winsharedutils.webmessage_callback_t(
+            self.webmessage_callback_f
         )
-        self.m_webMessageReceivedToken = winsharedutils.add_WebMessageReceived(
-            self.get_controller(), self.dropfilecallback__ref
+        self.FilesDropped_callback = winsharedutils.FilesDropped_callback_t(self.dropfilecallback.emit)
+        winsharedutils.webview2_set_observe_ptrs(
+            self.webview,
+            self.zoomchange_callback,
+            self.navigating_callback,
+            self.webmessage_callback,
+            self.FilesDropped_callback,
         )
-        self.webview.bind("__on_load", self._on_load)
-        self.webview.init("""window.__on_load(window.location.href)""")
 
         self.__darkstate = None
         t = QTimer(self)
@@ -1270,6 +1253,12 @@ class WebviewWidget(abstractwebview):
         self.add_menu_noselect(0, "", lambda: None)
         self.cachezoom = 1
 
+    def webmessage_callback_f(self, js:str):
+        js=json.loads(js)
+        method=js.get('method')
+        args=js.get('args')
+        self.binds[method](*args)
+
     def zoomchange(self, zoom):
         self.cachezoom = zoom
         self.on_ZoomFactorChanged.emit(zoom)
@@ -1280,33 +1269,27 @@ class WebviewWidget(abstractwebview):
         if dl == self.__darkstate:
             return
         self.__darkstate = dl
-        winsharedutils.put_PreferredColorScheme(self.get_controller(), dl)
+        winsharedutils.webview2_put_PreferredColorScheme(self.webview, dl)
 
     def set_zoom(self, zoom):
-        winsharedutils.put_ZoomFactor(self.get_controller(), zoom)
-        self.cachezoom = winsharedutils.get_ZoomFactor(self.get_controller())
+        winsharedutils.webview2_put_ZoomFactor(self.webview, zoom)
+        self.cachezoom = winsharedutils.webview2_get_ZoomFactor(self.webview)
 
     def get_zoom(self):
         # winsharedutils.get_ZoomFactor(self.get_controller()) 性能略差
         return self.cachezoom
 
-    def _on_load(self, href):
-        self.on_load.emit(href)
-
     def navigate(self, url):
-        self.webview.navigate(url)
+        winsharedutils.webview2_navigate(self.webview, url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
-        if self.webview:
-            hwnd = self.get_hwnd()
-            size = a0.size() * self.devicePixelRatioF()
-            windows.MoveWindow(hwnd, 0, 0, size.width(), size.height(), True)
+        r = self.devicePixelRatioF()
+        winsharedutils.webview2_resize(
+            self.webview, int(r * a0.size().width()), int(r * a0.size().height())
+        )
 
     def setHtml(self, html):
-        self.webview.set_html(html)
-
-    def set_transparent_background(self):
-        winsharedutils.set_transparent_background(self.get_controller())
+        winsharedutils.webview2_sethtml(self.webview, html)
 
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
@@ -1324,7 +1307,7 @@ class mshtmlWidget(abstractwebview):
     def eval(self, js):
         winsharedutils.html_eval(self.browser, js)
 
-    def bindhelper(self, func, ppwc, argc):
+    def __bindhelper(self, func, ppwc, argc):
         argv = []
         for i in range(argc):
             argv.append(ppwc[argc - 1 - i])
@@ -1332,7 +1315,7 @@ class mshtmlWidget(abstractwebview):
 
     def bind(self, fname, func):
         __f = winsharedutils.html_bind_function_FT(
-            functools.partial(self.bindhelper, func)
+            functools.partial(self.__bindhelper, func)
         )
         self.bindfs.append(__f)
         winsharedutils.html_bind_function(self.browser, fname, __f)

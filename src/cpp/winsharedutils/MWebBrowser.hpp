@@ -7,21 +7,15 @@
 
 #define INITGUID
 
-class JSObject : public IDispatch
+class JSObject : public ComImpl<IUnknown, IDispatch>
 {
 private:
     typedef std::function<void(wchar_t **, int)> functiontype;
     std::map<DISPID, functiontype> funcmap;
     std::map<std::wstring, DISPID> funcnames;
-    long ref = 0;
 
 public:
     void bindfunction(const std::wstring &, functiontype);
-
-    // IUnknown
-    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void **ppv);
-    virtual ULONG STDMETHODCALLTYPE AddRef();
-    virtual ULONG STDMETHODCALLTYPE Release();
 
     // IDispatch
     virtual HRESULT STDMETHODCALLTYPE GetTypeInfoCount(UINT *pctinfo);
@@ -34,17 +28,16 @@ public:
                                              EXCEPINFO *pExcepInfo, UINT *puArgErr);
 };
 
-class MWebBrowser : public IDispatch,
-                    public IOleClientSite,
-                    public IOleInPlaceSite,
-                    public IStorage,
-                    public IServiceProvider,
-                    public IHttpSecurity,
-                    public IDocHostUIHandler
+class MWebBrowser : public ComImpl<IUnknown, IDispatch,
+                                   IOleClientSite,
+                                   IOleInPlaceSite,
+                                   IStorage,
+                                   IServiceProvider,
+                                   IHttpSecurity,
+                                   IDocHostUIHandler>
 {
-
 public:
-    JSObject *jsobj;
+    CComPtr<JSObject> jsobj;
     static MWebBrowser *Create(HWND hwndParent);
     HRESULT OnCompleted(DISPPARAMS *args);
 
@@ -90,13 +83,6 @@ public:
     HRESULT ZoomDown();
     HRESULT Zoom100();
     HRESULT ZoomPercents(LONG percents);
-
-    // IUnknown interface
-    STDMETHODIMP QueryInterface(REFIID riid, void **ppvObj);
-    STDMETHODIMP_(ULONG)
-    AddRef();
-    STDMETHODIMP_(ULONG)
-    Release();
 
     // IOleWindow interface
     STDMETHODIMP GetWindow(HWND *phwnd);
@@ -236,7 +222,6 @@ public:
     STDMETHODIMP FilterDataObject(IDataObject *pDO, IDataObject **ppDORet);
 
 protected:
-    LONG m_nRefCount;
     HWND m_hwndParent;
     HWND m_hwndCtrl;
     HWND m_hwndIEServer;
@@ -250,7 +235,6 @@ protected:
     LONG m_nZoomPercents;
 
     MWebBrowser(HWND hwndParent);
-    virtual ~MWebBrowser();
 
     HRESULT CreateBrowser(HWND hwndParent);
     BOOL IsCreated() const;

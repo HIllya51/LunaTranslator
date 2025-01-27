@@ -21,43 +21,7 @@ void JSObject::bindfunction(const std::wstring &funcname, functiontype function)
     auto curr = DISPID_VALUE + 1 + funcnames.size();
     funcnames[funcname] = curr;
     funcmap[curr] = function;
-}
-HRESULT STDMETHODCALLTYPE JSObject::QueryInterface(REFIID riid, void **ppv)
-{
-    *ppv = NULL;
-
-    if (riid == IID_IUnknown || riid == IID_IDispatch)
-    {
-        *ppv = static_cast<IDispatch *>(this);
-    }
-
-    if (*ppv != NULL)
-    {
-        AddRef();
-        return S_OK;
-    }
-
-    return E_NOINTERFACE;
-}
-
-ULONG STDMETHODCALLTYPE JSObject::AddRef()
-{
-    return InterlockedIncrement(&ref);
-}
-
-ULONG STDMETHODCALLTYPE JSObject::Release()
-{
-    int tmp = InterlockedDecrement(&ref);
-
-    if (tmp == 0)
-    {
-        // OutputDebugString("JSObject::Release(): delete this");
-        delete this;
-    }
-
-    return tmp;
-}
-
+} 
 HRESULT STDMETHODCALLTYPE JSObject::GetTypeInfoCount(UINT *pctinfo)
 {
     *pctinfo = 0;
@@ -116,8 +80,7 @@ HRESULT STDMETHODCALLTYPE JSObject::Invoke(DISPID dispIdMember, REFIID riid,
     return E_FAIL;
 }
 
-MWebBrowser::MWebBrowser(HWND hwndParent) : m_nRefCount(0),
-                                            m_hwndParent(NULL),
+MWebBrowser::MWebBrowser(HWND hwndParent) : m_hwndParent(NULL),
                                             m_hwndCtrl(NULL),
                                             m_hwndIEServer(NULL),
                                             m_web_browser2(NULL),
@@ -140,22 +103,11 @@ MWebBrowser::MWebBrowser(HWND hwndParent) : m_nRefCount(0),
     QueryInterface(IID_IUnknown, (void **)&punk);
     callback->Advise(punk, &eventCookie);
     jsobj = new JSObject();
-    jsobj->AddRef();
 }
 
 BOOL MWebBrowser::IsCreated() const
 {
     return m_hr == S_OK;
-}
-
-MWebBrowser::~MWebBrowser()
-{
-    if (jsobj)
-    {
-        jsobj->Release();
-        delete jsobj;
-        jsobj = NULL;
-    }
 }
 
 IWebBrowser2 *MWebBrowser::GetIWebBrowser2()
@@ -537,57 +489,7 @@ HRESULT MWebBrowser::ZoomPercents(LONG percents)
     }
     return hr;
 }
-
-// IUnknown interface
-
-STDMETHODIMP MWebBrowser::QueryInterface(REFIID riid, void **ppvObj)
-{
-    if (riid == __uuidof(IUnknown))
-    {
-        *ppvObj = static_cast<IOleClientSite *>(this);
-    }
-    else if (riid == __uuidof(IOleInPlaceSite))
-    {
-        *ppvObj = static_cast<IOleInPlaceSite *>(this);
-    }
-    else if (riid == __uuidof(IServiceProvider))
-    {
-        *ppvObj = static_cast<IServiceProvider *>(this);
-    }
-    else if (riid == __uuidof(IDocHostUIHandler))
-    {
-        *ppvObj = static_cast<IDocHostUIHandler *>(this);
-    }
-    else if (riid == __uuidof(IDispatch))
-        *ppvObj = static_cast<IDispatch *>(this);
-    else if (riid == __uuidof(IOleClientSite))
-        *ppvObj = static_cast<IOleClientSite *>(this);
-    else
-    {
-        return E_NOINTERFACE;
-    }
-
-    AddRef();
-    return S_OK;
-}
-
-STDMETHODIMP_(ULONG)
-MWebBrowser::AddRef()
-{
-    m_nRefCount++;
-    return m_nRefCount;
-}
-
-STDMETHODIMP_(ULONG)
-MWebBrowser::Release()
-{
-    --m_nRefCount;
-    if (m_nRefCount != 0)
-        return m_nRefCount;
-
-    delete this;
-    return 0;
-}
+ 
 
 // IOleWindow interface
 

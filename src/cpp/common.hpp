@@ -44,3 +44,45 @@ struct CO_INIT
             CoUninitialize();
     }
 };
+
+template <typename... Bases>
+class ComImpl : public Bases...
+{
+private:
+    ULONG m_ref_count{0};
+    template <typename First, typename... Rest>
+    void *get_interface(REFIID riid)
+    {
+        if (riid == __uuidof(First))
+            return static_cast<First *>(this);
+        if constexpr (sizeof...(Rest) > 0)
+        {
+            return get_interface<Rest...>(riid);
+        }
+        return nullptr;
+    }
+
+public:
+    ULONG STDMETHODCALLTYPE AddRef() { return InterlockedIncrement(&m_ref_count); }
+    ULONG STDMETHODCALLTYPE Release()
+    {
+        ULONG tmp = InterlockedDecrement(&m_ref_count);
+        if (!tmp)
+        {
+            delete this;
+        }
+        return tmp;
+    }
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void **ppvObj)
+    {
+        if (ppvObj == nullptr)
+            return E_POINTER;
+        *ppvObj = nullptr;
+        void *pInterface = get_interface<Bases...>(riid);
+        if (!pInterface)
+            return E_NOINTERFACE;
+        *ppvObj = pInterface;
+        AddRef();
+        return S_OK;
+    }
+};

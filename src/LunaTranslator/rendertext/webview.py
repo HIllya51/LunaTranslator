@@ -22,7 +22,7 @@ class TextBrowser(QWidget, dataget):
     def __init__(self, parent) -> None:
         super().__init__(parent)
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
-        self.webivewwidget = WebviewWidget(self)
+        self.webivewwidget = WebviewWidget(self, True)
         self.webivewwidget.move(0, 0)
         self.setMouseTracking(True)
         self.webivewwidget.add_menu(
@@ -45,7 +45,6 @@ class TextBrowser(QWidget, dataget):
             lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
         )
         self.webivewwidget.add_menu_noselect(0, _TR("清空"), self.___cleartext)
-        self.webivewwidget.set_transparent_background()
         self.webivewwidget.dropfilecallback.connect(self.dropfilecallback)
         self.webivewwidget.bind(
             "calllunaclickedword", gobject.baseobject.clickwordcallback

@@ -314,57 +314,75 @@ setAcrylicEffect = utilsdll.setAcrylicEffect
 setAcrylicEffect.argtypes = (HWND, c_bool)
 clearEffect = utilsdll.clearEffect
 clearEffect.argtypes = (HWND,)
-_detect_webview2_version = utilsdll.detect_webview2_version
-_detect_webview2_version.argtypes = c_wchar_p, c_void_p
+
+
+_webview2_detect_version = utilsdll.webview2_detect_version
+_webview2_detect_version.argtypes = c_wchar_p, c_void_p
 
 
 def detect_webview2_version(directory=None):
     _ = []
     _f = CFUNCTYPE(c_void_p, c_wchar_p)(_.append)
-    _detect_webview2_version(directory, _f)
+    _webview2_detect_version(directory, _f)
     if _:
         return tuple(int(_) for _ in _[0].split("."))
 
 
-add_ZoomFactorChanged_CALLBACK = CFUNCTYPE(None, c_double)
-add_ZoomFactorChanged = utilsdll.add_ZoomFactorChanged
-add_ZoomFactorChanged.argtypes = (c_void_p, c_void_p)
-add_ZoomFactorChanged.restype = c_void_p
-remove_ZoomFactorChanged = utilsdll.remove_ZoomFactorChanged
-remove_ZoomFactorChanged.argtypes = c_void_p, c_void_p
-get_ZoomFactor = utilsdll.get_ZoomFactor
-get_ZoomFactor.argtypes = (c_void_p,)
-get_ZoomFactor.restype = c_double
-put_ZoomFactor = utilsdll.put_ZoomFactor
-put_ZoomFactor.argtypes = c_void_p, c_double
-put_PreferredColorScheme = utilsdll.put_PreferredColorScheme
-put_PreferredColorScheme.argtypes = c_void_p, c_int
-set_transparent_background = utilsdll.set_transparent_background
-set_transparent_background.argtypes = (c_void_p,)
-add_WebMessageReceived = utilsdll.add_WebMessageReceived
-add_WebMessageReceived_cb = CFUNCTYPE(c_void_p, c_wchar_p)
-add_WebMessageReceived.argtypes = (c_void_p, add_WebMessageReceived_cb)
-add_WebMessageReceived.restype = c_void_p
-remove_WebMessageReceived = utilsdll.remove_WebMessageReceived
-remove_WebMessageReceived.argtypes = c_void_p, c_void_p
-add_ContextMenuRequested_cb = CFUNCTYPE(c_void_p, c_wchar_p)
-add_ContextMenuRequested = utilsdll.add_ContextMenuRequested
-add_ContextMenuRequested.argtypes = (c_void_p,)
-add_ContextMenuRequested.restype = c_void_p
-remove_ContextMenuRequested = utilsdll.remove_ContextMenuRequested
-remove_ContextMenuRequested.argtypes = c_void_p, c_void_p
-add_menu_list = utilsdll.add_menu_list
-add_menu_list.argtypes = (c_void_p, c_int, c_wchar_p, add_ContextMenuRequested_cb)
-add_ContextMenuRequested_cb2 = CFUNCTYPE(c_void_p)
-add_menu_list_noselect = utilsdll.add_menu_list_noselect
-add_menu_list_noselect.argtypes = (
-    c_void_p,
+WebView2PTR = c_void_p
+webview2_create = utilsdll.webview2_create
+webview2_create.argtypes = (HWND, c_bool)
+webview2_create.restype = WebView2PTR
+webview2_destroy = utilsdll.webview2_destroy
+webview2_destroy.argtypes = (WebView2PTR,)
+webview2_resize = utilsdll.webview2_resize
+webview2_resize.argtypes = WebView2PTR, c_int, c_int
+webview2_add_menu_noselect = utilsdll.webview2_add_menu_noselect
+webview2_add_menu_noselect_CALLBACK = CFUNCTYPE(None)
+webview2_add_menu_noselect.argtypes = (
+    WebView2PTR,
     c_int,
     c_wchar_p,
-    add_ContextMenuRequested_cb2,
+    webview2_add_menu_noselect_CALLBACK,
 )
-get_webview_html = utilsdll.get_webview_html
-get_webview_html.argtypes = c_void_p, c_void_p, c_wchar_p
+webview2_add_menu = utilsdll.webview2_add_menu
+webview2_add_menu_CALLBACK = CFUNCTYPE(None, c_wchar_p)
+webview2_add_menu.argtypes = (
+    WebView2PTR,
+    c_int,
+    c_wchar_p,
+    webview2_add_menu_CALLBACK,
+)
+webview2_evaljs = utilsdll.webview2_evaljs
+webview2_evaljs_CALLBACK = CFUNCTYPE(None, c_wchar_p)
+webview2_evaljs.argtypes = WebView2PTR, c_wchar_p, c_void_p
+webview2_query_element_html = utilsdll.webview2_query_element_html
+webview2_query_element_html.argtypes = WebView2PTR, c_wchar_p, c_void_p
+webview2_set_observe_ptrs = utilsdll.webview2_set_observe_ptrs
+zoomchange_callback_t = CFUNCTYPE(None, c_double)
+navigating_callback_t = CFUNCTYPE(None, c_wchar_p)
+webmessage_callback_t = CFUNCTYPE(None, c_wchar_p)
+FilesDropped_callback_t = CFUNCTYPE(None, c_wchar_p)
+webview2_set_observe_ptrs.argtypes = (
+    WebView2PTR,
+    zoomchange_callback_t,
+    navigating_callback_t,
+    webmessage_callback_t,
+    FilesDropped_callback_t
+)
+webview2_bind = utilsdll.webview2_bind
+webview2_bind.argtypes = WebView2PTR, c_wchar_p
+webview2_navigate = utilsdll.webview2_navigate
+webview2_navigate.argtypes = WebView2PTR, c_wchar_p
+webview2_sethtml = utilsdll.webview2_sethtml
+webview2_sethtml.argtypes = WebView2PTR, c_wchar_p
+webview2_put_PreferredColorScheme = utilsdll.webview2_put_PreferredColorScheme
+webview2_put_PreferredColorScheme.argtypes = WebView2PTR, c_int
+webview2_put_ZoomFactor = utilsdll.webview2_put_ZoomFactor
+webview2_put_ZoomFactor.argtypes = WebView2PTR, c_double
+webview2_get_ZoomFactor = utilsdll.webview2_get_ZoomFactor
+webview2_get_ZoomFactor.argtypes = (WebView2PTR,)
+webview2_get_ZoomFactor.restype = c_double
+
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)
