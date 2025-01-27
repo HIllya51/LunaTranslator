@@ -1175,7 +1175,7 @@ class WebviewWidget(abstractwebview):
 
     def getHtml(self, elementid):
         _ = []
-        cb = winsharedutils.html_get_select_text_cb(_.append)
+        cb = winsharedutils.webview2_evaljs_CALLBACK(_.append)
         winsharedutils.webview2_query_element_html(self.webview, elementid, cb)
         if not _:
             return ""
