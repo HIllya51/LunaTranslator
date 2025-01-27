@@ -213,7 +213,7 @@ DECLARE_API DWORD html_version()
 {
     return getemulation();
 }
-DECLARE_API void *html_new(HWND parent)
+DECLARE_API MWebBrowserEx *html_new(HWND parent)
 {
     DoSetBrowserEmulation(getemulation());
     auto s_pWebBrowser = MWebBrowserEx::Create(parent);

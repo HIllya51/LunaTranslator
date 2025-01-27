@@ -1174,9 +1174,13 @@ class WebviewWidget(abstractwebview):
     dropfilecallback = pyqtSignal(str)
 
     def getHtml(self, elementid):
+        # 不可以在bind函数里调用，否则会阻塞
         _ = []
-        cb = winsharedutils.webview2_evaljs_CALLBACK(_.append)
-        winsharedutils.webview2_query_element_html(self.webview, elementid, cb)
+        if elementid:
+            js = "document.getElementById('{}').innerHTML".format(elementid)
+        else:
+            js = "document.documentElement.outerHTML"
+        self.eval(js, _.append)
         if not _:
             return ""
         return json.loads(_[0])
@@ -1188,8 +1192,9 @@ class WebviewWidget(abstractwebview):
         self.binds[fname] = func
         winsharedutils.webview2_bind(self.webview, fname)
 
-    def eval(self, js):
-        winsharedutils.webview2_evaljs(self.webview, js, None)
+    def eval(self, js, callback=None):
+        cb = winsharedutils.webview2_evaljs_CALLBACK(callback) if callback else None
+        winsharedutils.webview2_evaljs(self.webview, js, cb)
 
     def add_menu(self, index, label, callback):
         __ = winsharedutils.webview2_add_menu_CALLBACK(callback)
@@ -1226,14 +1231,16 @@ class WebviewWidget(abstractwebview):
             # 在共享路径上无法运行
             os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
         self.webview = winsharedutils.webview2_create(int(self.winId()), transp)
-        self.zoomchange_callback = winsharedutils.zoomchange_callback_t(self.zoomchange)
-        self.navigating_callback = winsharedutils.navigating_callback_t(
+        self.zoomchange_callback = winsharedutils.webview2_zoomchange_callback_t(self.zoomchange)
+        self.navigating_callback = winsharedutils.webview2_navigating_callback_t(
             self.on_load.emit
         )
-        self.webmessage_callback = winsharedutils.webmessage_callback_t(
+        self.webmessage_callback = winsharedutils.webview2_webmessage_callback_t(
             self.webmessage_callback_f
         )
-        self.FilesDropped_callback = winsharedutils.FilesDropped_callback_t(self.dropfilecallback.emit)
+        self.FilesDropped_callback = winsharedutils.webview2_FilesDropped_callback_t(
+            self.dropfilecallback.emit
+        )
         winsharedutils.webview2_set_observe_ptrs(
             self.webview,
             self.zoomchange_callback,
@@ -1253,11 +1260,17 @@ class WebviewWidget(abstractwebview):
         self.add_menu_noselect(0, "", lambda: None)
         self.cachezoom = 1
 
-    def webmessage_callback_f(self, js:str):
-        js=json.loads(js)
-        method=js.get('method')
-        args=js.get('args')
-        self.binds[method](*args)
+    def webmessage_callback_f(self, js: str):
+        # 其实不应该在这里处理回调，否则例如如果在这里用getHTML，会卡死。
+        # 应该用PostMessageW(m_message_window, WM_APP, 0, (LPARAM) func)传出去再处理才对。
+        # 但是暂时没问题，就先这样吧。
+        try:
+            js = json.loads(js)
+            method = js.get("method")
+            args = js.get("args")
+            self.binds[method](*args)
+        except:
+            print_exc()
 
     def zoomchange(self, zoom):
         self.cachezoom = zoom

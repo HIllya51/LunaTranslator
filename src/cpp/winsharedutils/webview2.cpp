@@ -29,7 +29,7 @@ DECLARE_API void webview2_add_menu(WebView2 *web, int index, const wchar_t *labe
 {
     if (!web)
         return;
-    web->menus.insert(web->menus.begin() + index, std::make_pair(label,  callback));
+    web->menus.insert(web->menus.begin() + index, std::make_pair(label, callback));
 }
 DECLARE_API void webview2_add_menu_noselect(WebView2 *web, int index, const wchar_t *label, contextmenu_notext_callback_t callback)
 {
@@ -80,12 +80,6 @@ DECLARE_API void webview2_evaljs(WebView2 *web, const wchar_t *js, evaljs_callba
     }
     else
         web->m_webView->ExecuteScript(js, nullptr);
-}
-
-DECLARE_API void webview2_query_element_html(WebView2 *web, LPCWSTR elementid, evaljs_callback_t cb)
-{
-    std::wstring js = elementid ? ((std::wstring(L"document.getElementById('") + std::wstring(elementid) + std::wstring(L"').innerHTML")).c_str()) : L"document.documentElement.outerHTML";
-    webview2_evaljs(web, js.c_str(), cb);
 }
 
 DECLARE_API void webview2_set_observe_ptrs(WebView2 *web, zoomchange_callback_t zoomchange_callback, navigating_callback_t navigating_callback, webmessage_callback_t webmessage_callback, FilesDropped_callback_t FilesDropped_callback)

@@ -120,41 +120,6 @@ def clipboard_get():
     return ret[0]
 
 
-html_version = utilsdll.html_version
-html_version.restype = DWORD
-html_new = utilsdll.html_new
-html_new.argtypes = (c_void_p,)
-html_new.restype = c_void_p
-html_navigate = utilsdll.html_navigate
-html_navigate.argtypes = c_void_p, c_wchar_p
-html_resize = utilsdll.html_resize
-html_resize.argtypes = c_void_p, c_uint, c_uint, c_uint, c_uint
-html_release = utilsdll.html_release
-html_release.argtypes = (c_void_p,)
-html_get_current_url = utilsdll.html_get_current_url
-html_get_current_url.argtypes = (c_void_p, c_void_p)
-html_set_html = utilsdll.html_set_html
-html_set_html.argtypes = (c_void_p, c_wchar_p)
-html_add_menu = utilsdll.html_add_menu
-html_add_menu_cb = CFUNCTYPE(c_void_p, c_wchar_p)
-html_add_menu.argtypes = (c_void_p, c_int, c_wchar_p, html_add_menu_cb)
-html_add_menu_noselect = utilsdll.html_add_menu_noselect
-html_add_menu_cb2 = CFUNCTYPE(c_void_p)
-html_add_menu_noselect.argtypes = (c_void_p, c_int, c_wchar_p, html_add_menu_cb2)
-html_get_select_text = utilsdll.html_get_select_text
-html_get_select_text_cb = CFUNCTYPE(None, c_wchar_p)
-html_get_select_text.argtypes = (c_void_p, c_void_p)
-
-html_get_html = utilsdll.html_get_html
-html_get_html.argtypes = (c_void_p, c_void_p, c_wchar_p)
-html_bind_function_FT = CFUNCTYPE(None, POINTER(c_wchar_p), c_int)
-html_bind_function = utilsdll.html_bind_function
-html_bind_function.argtypes = c_void_p, c_wchar_p, html_bind_function_FT
-html_check_ctrlc = utilsdll.html_check_ctrlc
-html_check_ctrlc.argtypes = (c_void_p,)
-html_check_ctrlc.restype = c_bool
-html_eval = utilsdll.html_eval
-html_eval.argtypes = c_void_p, c_wchar_p
 _GetLnkTargetPath = utilsdll.GetLnkTargetPath
 _GetLnkTargetPath.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_wchar_p
 
@@ -328,6 +293,45 @@ def detect_webview2_version(directory=None):
         return tuple(int(_) for _ in _[0].split("."))
 
 
+# MSHTML
+MSHTMLptr = c_void_p
+html_version = utilsdll.html_version
+html_version.restype = DWORD
+html_new = utilsdll.html_new
+html_new.argtypes = (HWND,)
+html_new.restype = MSHTMLptr
+html_navigate = utilsdll.html_navigate
+html_navigate.argtypes = MSHTMLptr, c_wchar_p
+html_resize = utilsdll.html_resize
+html_resize.argtypes = MSHTMLptr, c_uint, c_uint, c_uint, c_uint
+html_release = utilsdll.html_release
+html_release.argtypes = (MSHTMLptr,)
+html_get_current_url = utilsdll.html_get_current_url
+html_get_current_url.argtypes = (MSHTMLptr, c_void_p)
+html_set_html = utilsdll.html_set_html
+html_set_html.argtypes = (MSHTMLptr, c_wchar_p)
+html_add_menu = utilsdll.html_add_menu
+html_add_menu_cb = CFUNCTYPE(c_void_p, c_wchar_p)
+html_add_menu.argtypes = (MSHTMLptr, c_int, c_wchar_p, html_add_menu_cb)
+html_add_menu_noselect = utilsdll.html_add_menu_noselect
+html_add_menu_cb2 = CFUNCTYPE(c_void_p)
+html_add_menu_noselect.argtypes = (MSHTMLptr, c_int, c_wchar_p, html_add_menu_cb2)
+html_get_select_text = utilsdll.html_get_select_text
+html_get_select_text_cb = CFUNCTYPE(None, c_wchar_p)
+html_get_select_text.argtypes = (MSHTMLptr, c_void_p)
+html_get_html = utilsdll.html_get_html
+html_get_html.argtypes = (MSHTMLptr, c_void_p, c_wchar_p)
+html_bind_function_FT = CFUNCTYPE(None, POINTER(c_wchar_p), c_int)
+html_bind_function = utilsdll.html_bind_function
+html_bind_function.argtypes = MSHTMLptr, c_wchar_p, html_bind_function_FT
+html_check_ctrlc = utilsdll.html_check_ctrlc
+html_check_ctrlc.argtypes = (MSHTMLptr,)
+html_check_ctrlc.restype = c_bool
+html_eval = utilsdll.html_eval
+html_eval.argtypes = MSHTMLptr, c_wchar_p
+# MSHTML
+
+# WebView2
 WebView2PTR = c_void_p
 webview2_create = utilsdll.webview2_create
 webview2_create.argtypes = (HWND, c_bool)
@@ -355,19 +359,17 @@ webview2_add_menu.argtypes = (
 webview2_evaljs = utilsdll.webview2_evaljs
 webview2_evaljs_CALLBACK = CFUNCTYPE(None, c_wchar_p)
 webview2_evaljs.argtypes = WebView2PTR, c_wchar_p, c_void_p
-webview2_query_element_html = utilsdll.webview2_query_element_html
-webview2_query_element_html.argtypes = WebView2PTR, c_wchar_p, webview2_evaljs_CALLBACK
 webview2_set_observe_ptrs = utilsdll.webview2_set_observe_ptrs
-zoomchange_callback_t = CFUNCTYPE(None, c_double)
-navigating_callback_t = CFUNCTYPE(None, c_wchar_p)
-webmessage_callback_t = CFUNCTYPE(None, c_wchar_p)
-FilesDropped_callback_t = CFUNCTYPE(None, c_wchar_p)
+webview2_zoomchange_callback_t = CFUNCTYPE(None, c_double)
+webview2_navigating_callback_t = CFUNCTYPE(None, c_wchar_p)
+webview2_webmessage_callback_t = CFUNCTYPE(None, c_wchar_p)
+webview2_FilesDropped_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_set_observe_ptrs.argtypes = (
     WebView2PTR,
-    zoomchange_callback_t,
-    navigating_callback_t,
-    webmessage_callback_t,
-    FilesDropped_callback_t
+    webview2_zoomchange_callback_t,
+    webview2_navigating_callback_t,
+    webview2_webmessage_callback_t,
+    webview2_FilesDropped_callback_t,
 )
 webview2_bind = utilsdll.webview2_bind
 webview2_bind.argtypes = WebView2PTR, c_wchar_p
@@ -382,6 +384,7 @@ webview2_put_ZoomFactor.argtypes = WebView2PTR, c_double
 webview2_get_ZoomFactor = utilsdll.webview2_get_ZoomFactor
 webview2_get_ZoomFactor.argtypes = (WebView2PTR,)
 webview2_get_ZoomFactor.restype = c_double
+# WebView2
 
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync

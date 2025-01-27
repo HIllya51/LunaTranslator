@@ -1319,10 +1319,8 @@ class searchwordW(closeashidewindow):
                 self.cache_results_highlighted.pop(k)
                 self.tabclicked(self.tab.currentIndex())
 
-    def luna_recheck_current_html(self):
-        self.cache_results_highlighted[self.tabks[self.tab.currentIndex()]] = (
-            self.textOutput.internal.getHtml("luna_dict_internal_view")
-        )
+    def luna_recheck_current_html(self, html):
+        self.cache_results_highlighted[self.tabks[self.tab.currentIndex()]] = html
 
     def onceaddshowdictwidget(self, idx):
         if idx:

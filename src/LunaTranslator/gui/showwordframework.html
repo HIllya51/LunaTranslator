@@ -115,9 +115,9 @@
         //     prevHovered.classList.remove('element-hover');
         // }
         if (window.luna_recheck_current_html)
-            window.luna_recheck_current_html()
+            window.luna_recheck_current_html(document.getElementById('luna_dict_internal_view').innerHTML)
         else if (window.LUNAJSObject)
-            window.LUNAJSObject.luna_recheck_current_html()
+            window.LUNAJSObject.luna_recheck_current_html(document.getElementById('luna_dict_internal_view').innerHTML)
     }
 
     var highlightMode = false;
