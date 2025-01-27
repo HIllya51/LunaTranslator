@@ -68,7 +68,7 @@ struct WebView2
     WebView2(HWND parent, bool);
     HWND parent;
     bool backgroundtransparent;
-    CoAsyncTaskWaiter WaitForCreateCoreWebView2Environment, WaitForCreateCoreWebView2Controller;
+    std::atomic_flag waitforloadflag = ATOMIC_FLAG_INIT;
     CComPtr<ICoreWebView2Controller> m_webViewController;
     CComPtr<ICoreWebView2> m_webView;
     CComPtr<webview2_com_handler> handler;
@@ -78,6 +78,9 @@ struct WebView2
     navigating_callback_t navigating_callback;
     webmessage_callback_t webmessage_callback;
     FilesDropped_callback_t FilesDropped_callback;
+
+    void WaitForLoad();
+    std::optional<std::wstring> UserDir();
 };
 class webview2_com_handler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>
 {
@@ -148,7 +151,7 @@ public:
             settings->put_AreDefaultContextMenusEnabled(TRUE);
             settings->put_IsStatusBarEnabled(FALSE);
         }();
-        ref->WaitForCreateCoreWebView2Controller.Set();
+        ref->waitforloadflag.clear();
         return S_OK;
     }
     // ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler
@@ -161,10 +164,7 @@ public:
             return S_OK;
         }();
         if (FAILED(hr))
-        {
-            ref->WaitForCreateCoreWebView2Controller.Set();
-        }
-        ref->WaitForCreateCoreWebView2Environment.Set();
+            ref->waitforloadflag.clear();
         return S_OK;
     }
     // ICoreWebView2PermissionRequestedEventHandler
@@ -288,15 +288,42 @@ public:
         return S_OK;
     }
 };
+void WebView2::WaitForLoad()
+{
+    // win7上CoWaitForMultipleHandles似乎有点毛病
+    MSG msg;
+    while (waitforloadflag.test_and_set() && GetMessageW(&msg, nullptr, 0, 0) >= 0)
+    {
+        if (msg.message == WM_QUIT || msg.message == WM_DESTROY)
+            break;
+        TranslateMessage(&msg);
+        DispatchMessageW(&msg);
+    }
+}
+std::optional<std::wstring> WebView2::UserDir()
+{
+    wchar_t currentExePath[MAX_PATH];
+    GetModuleFileNameW(nullptr, currentExePath, MAX_PATH);
+    wchar_t *currentExeName = PathFindFileNameW(currentExePath);
+
+    wchar_t dataPath[MAX_PATH];
+    if (!SUCCEEDED(SHGetFolderPathW(nullptr, CSIDL_APPDATA, nullptr, 0, dataPath)))
+    {
+        return {};
+    }
+    wchar_t userDataFolder[MAX_PATH];
+    PathCombineW(userDataFolder, dataPath, currentExeName);
+    return userDataFolder;
+}
+
 WebView2::WebView2(HWND parent, bool backgroundtransparent) : parent(parent), backgroundtransparent(backgroundtransparent)
 {
+    waitforloadflag.test_and_set();
     handler = new webview2_com_handler{this};
-    HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr, handler);
+    auto dir = UserDir();
+    HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(nullptr, dir ? dir.value().c_str() : nullptr, nullptr, handler);
     if (SUCCEEDED(hr))
-    {
-        WaitForCreateCoreWebView2Environment.Wait();
-        WaitForCreateCoreWebView2Controller.Wait();
-    }
+        WaitForLoad();
     if (!(SUCCEEDED(hr) && m_webView && m_webViewController))
         throw std::exception{};
 }

@@ -1231,6 +1231,8 @@ class WebviewWidget(abstractwebview):
             # 在共享路径上无法运行
             os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
         self.webview = winsharedutils.webview2_create(int(self.winId()), transp)
+        if not self.webview:
+            raise Exception
         self.zoomchange_callback = winsharedutils.webview2_zoomchange_callback_t(self.zoomchange)
         self.navigating_callback = winsharedutils.webview2_navigating_callback_t(
             self.on_load.emit
@@ -1334,8 +1336,6 @@ class mshtmlWidget(abstractwebview):
         winsharedutils.html_bind_function(self.browser, fname, __f)
 
     def __del__(self):
-        if not self.browser:
-            return
         winsharedutils.html_release(self.browser)
 
     def __init__(self, parent=None) -> None:
