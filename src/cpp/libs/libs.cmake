@@ -10,7 +10,9 @@ else()
     # target_include_directories(Detours PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Detours/src)
 
 
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/rapidfuzz-cpp ${CMAKE_BINARY_DIR}/rapidfuzz-cpp)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/rapidfuzz-cpp)
+
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src)
 
 
     add_library(webview2 INTERFACE)

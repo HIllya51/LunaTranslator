@@ -29,8 +29,6 @@ mylinks = {
     "ocr_models": {
         "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
     },
-    "mecab_xp.zip": "https://github.com/HIllya51/mecab/releases/download/common/mecab_xp.zip",
-    "mecab.zip": "https://github.com/HIllya51/mecab/releases/download/common/mecab.zip",
     "magpie.zip": "https://github.com/HIllya51/Magpie_CLI/releases/download/common/magpie.zip",
 }
 
@@ -96,20 +94,6 @@ def move_directory_contents(source_dir, destination_dir):
                 fuckmove(
                     os.path.join(item_path, k), os.path.join(destination_dir, item)
                 )
-
-
-def downloadmecab(arch):
-    os.chdir(f"{rootDir}/scripts/temp")
-    if arch == "xp":
-        subprocess.run(f"curl -C - -LO {mylinks['mecab_xp.zip']}")
-        subprocess.run("7z x -y mecab_xp.zip")
-    else:
-        subprocess.run(f"curl -C - -LO {mylinks['mecab.zip']}")
-        subprocess.run("7z x -y mecab.zip")
-    os.chdir(rootDir)
-    fuckmove("scripts/temp/ALL/DLL32/libmecab.dll", "files/plugins/DLL32")
-    if arch != "xp":
-        fuckmove("scripts/temp/ALL/DLL64/libmecab.dll", "files/plugins/DLL64")
 
 
 def downloadmapie():
@@ -287,7 +271,6 @@ def downloadalls(arch):
     os.chdir(rootDir)
     os.makedirs("scripts/temp", exist_ok=True)
     createPluginDirs()
-    downloadmecab(arch)
     downloadNtlea()
     downloadbass()
     if arch == "xp":

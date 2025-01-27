@@ -1,4 +1,4 @@
-
+#if 0
 /**
  * DictionaryInfo structure
  */
@@ -212,22 +212,22 @@ DECLARE_API mecab_t *mecab_init(char *utf8path, wchar_t *mepath)
     char *argv[] = {"fugashi", "-C", "-r", "nul", "-d", utf8path, "-Owakati"};
     return mecab_new(ARRAYSIZE(argv), argv);
 }
-DECLARE_API void mecab_end(mecab_t *trigger)
+DECLARE_API void mecab_end(mecab_t *tagger)
 {
-    if (!trigger)
+    if (!tagger)
         return;
     mecab_destroy = (decltype(mecab_destroy))GetProcAddress(mecablib, "mecab_destroy");
-    mecab_destroy(trigger);
+    mecab_destroy(tagger);
 }
 
-DECLARE_API bool mecab_parse(mecab_t *trigger, char *utf8string, void (*callback)(const char *, const char *))
+DECLARE_API bool mecab_parse(mecab_t *tagger, char *utf8string, void (*callback)(const char *, const char *))
 {
-    if (!trigger)
+    if (!tagger)
         return false;
     mecab_sparse_tonode = (decltype(mecab_sparse_tonode))GetProcAddress(mecablib, "mecab_sparse_tonode");
 
     std::string cstr = utf8string;
-    auto node = mecab_sparse_tonode((mecab_t *)trigger, cstr.c_str());
+    auto node = mecab_sparse_tonode((mecab_t *)tagger, cstr.c_str());
 
     while (node->next)
     {
@@ -240,10 +240,55 @@ DECLARE_API bool mecab_parse(mecab_t *trigger, char *utf8string, void (*callback
     return true;
 }
 
-DECLARE_API const char *mecab_dictionary_codec(mecab_t *trigger)
+DECLARE_API const char *mecab_dictionary_codec(mecab_t *tagger)
 {
-    if (!trigger)
+    if (!tagger)
         return nullptr;
     mecab_dictionary_info = (decltype(mecab_dictionary_info))GetProcAddress(mecablib, "mecab_dictionary_info");
-    return mecab_dictionary_info(trigger)->charset;
+    return mecab_dictionary_info(tagger)->charset;
+}
+#endif
+
+#include <mecab.h>
+DECLARE_API MeCab::Tagger *mecab_init(char *utf8path, wchar_t *mepath)
+{
+    char *argv[] = {"fugashi", "-C", "-r", "nul", "-d", utf8path, "-Owakati"};
+    MeCab::Tagger *tagger = MeCab::Tagger::create(ARRAYSIZE(argv), argv);
+    if (!tagger)
+    {
+        return 0;
+    }
+    return tagger;
+}
+DECLARE_API void mecab_end(MeCab::Tagger *tagger)
+{
+    if (!tagger)
+        return;
+    delete tagger;
+}
+
+DECLARE_API bool mecab_parse(MeCab::Tagger *tagger, char *utf8string, void (*callback)(const char *, const char *))
+{
+    if (!tagger)
+        return false;
+
+    std::string cstr = utf8string;
+    auto node = tagger->parseToNode(cstr.c_str());
+
+    while (node->next)
+    {
+        node = node->next;
+        if (node->stat == MECAB_EOS_NODE)
+            break;
+        std::string surf = std::string(node->surface, node->length);
+        callback(surf.c_str(), node->feature);
+    }
+    return true;
+}
+
+DECLARE_API const char *mecab_dictionary_codec(MeCab::Tagger *tagger)
+{
+    if (!tagger)
+        return nullptr;
+    return tagger->dictionary_info()->charset;
 }

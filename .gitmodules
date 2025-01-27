@@ -13,3 +13,6 @@
 [submodule "cpp/wcocr/wechat-ocr"]
 	path = src/cpp/wcocr/wechat-ocr
 	url = https://github.com/swigger/wechat-ocr
+[submodule "src/cpp/libs/mecab"]
+	path = src/cpp/libs/mecab
+	url = https://github.com/HIllya51/mecab
