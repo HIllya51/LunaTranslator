@@ -40,6 +40,7 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
 from myutils.audioplayer import bass_code_cast
+from gui.dialog_savedgame import threeswitch
 
 
 def getimageformat():
@@ -125,6 +126,37 @@ class AnkiWindow(QWidget):
         l.addWidget(self.tabs)
         self.refreshhtml.connect(self.refreshhtmlfunction)
         self.tabs.currentChanged.connect(self.ifshowrefresh)
+        self.orientswitch = threeswitch(self, icons=["fa.arrows-h", "fa.arrows-v"])
+        self.orientswitch.selectlayout(globalconfig["anki_Orientation_V"])
+        self.orientswitch.btnclicked.connect(self.selectlayout)
+        self.setsize()
+
+    def selectlayout(self, i):
+        globalconfig["anki_Orientation_V"] = i
+        self.refsearchw.spliter.setOrientation(
+            Qt.Orientation.Vertical
+            if globalconfig["anki_Orientation_V"]
+            else Qt.Orientation.Horizontal
+        )
+
+    def resizeEvent(self, e: QResizeEvent):
+        self.do_resize()
+
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.FontChange:
+            self.setsize()
+        return super().event(a0)
+
+    def do_resize(self):
+        x = self.width() - self.orientswitch.width()
+        self.orientswitch.move(x, 0)
+
+    def setsize(self):
+        h = QFontMetricsF(self.font()).height()
+        h = int(h * gobject.Consts.btnscale)
+        sz = QSize(h * 2, h)
+        self.orientswitch.setFixedSize(sz)
+        self.do_resize()
 
     def ifshowrefresh(self, idx):
         if idx == 2:
@@ -162,7 +194,7 @@ class AnkiWindow(QWidget):
         html = '<style>{}</style><div class="card">{}</div>'.format(model_css, html)
         self.htmlbrowser.setHtml(html)
 
-    def creattemplatetab(self, baselay):
+    def creattemplatetab(self, baselay: QVBoxLayout):
 
         spliter = QSplitter()
         baselay.addWidget(spliter)
@@ -1295,14 +1327,29 @@ class searchwordW(closeashidewindow):
         tablayout.addWidget(self.tab)
         tablayout.addWidget(self.textOutput)
         self.vboxlayout.addWidget(self.spliter)
-        self.isfirstshowanki = True
         self.isfirstshowdictwidget = True
-        self.spliter.setOrientation(Qt.Orientation.Vertical)
+        self.spliter.setOrientation(
+            Qt.Orientation.Vertical
+            if globalconfig["anki_Orientation_V"]
+            else Qt.Orientation.Horizontal
+        )
 
         self.dict_textoutput_spl = QSplitter()
         self.dict_textoutput_spl.addWidget(w)
         self.spliter.addWidget(self.dict_textoutput_spl)
         self.dictbutton.clicked.connect(self.onceaddshowdictwidget)
+        self.spliter.addWidget(self.ankiwindow)
+        self.ankiwindow.setVisible(False)
+
+        def __(_):
+            globalconfig["ankisplit"] = self.spliter.sizes()
+
+        self.spliter.setSizes(globalconfig["ankisplit"])
+        self.spliter.splitterMoved.connect(__)
+        self.spliter.setStretchFactor(0, 1)
+        self.spliter.setStretchFactor(1, 0)
+        self.ankiwindow.setMinimumHeight(1)
+        self.ankiwindow.setMinimumWidth(1)
 
     def clear_hightlight(self):
         self.textOutput.eval("clear_hightlight()")
@@ -1320,6 +1367,12 @@ class searchwordW(closeashidewindow):
                 self.dict_textoutput_spl.insertWidget(0, self.showdictwidget)
                 self.dict_textoutput_spl.setStretchFactor(0, 0)
                 self.dict_textoutput_spl.setStretchFactor(1, 1)
+
+                def __(_):
+                    globalconfig["mdictsplit"] = self.dict_textoutput_spl.sizes()
+
+                self.dict_textoutput_spl.setSizes(globalconfig["mdictsplit"])
+                self.dict_textoutput_spl.splitterMoved.connect(__)
             else:
                 self.showdictwidget.show()
         else:
@@ -1328,15 +1381,9 @@ class searchwordW(closeashidewindow):
 
     def onceaddankiwindow(self, idx):
         if idx:
-            if self.isfirstshowanki:
-                self.spliter.addWidget(self.ankiwindow)
-                self.ankiwindow.setMinimumHeight(1)
-                self.ankiwindow.setMinimumWidth(1)
-            else:
-                self.ankiwindow.show()
+            self.ankiwindow.show()
         else:
             self.ankiwindow.hide()
-        self.isfirstshowanki = False
 
     def generate_dictionarys(self):
         res = []

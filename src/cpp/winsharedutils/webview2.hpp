@@ -82,7 +82,7 @@ struct WebView2
     void WaitForLoad();
     std::optional<std::wstring> UserDir();
 };
-class webview2_com_handler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>
+class webview2_com_handler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler>
 {
     WebView2 *ref;
 
@@ -139,6 +139,8 @@ public:
             ref->m_webView->add_WebMessageReceived(this, &token);
             ref->m_webView->add_PermissionRequested(this, &token);
             ref->m_webView->add_NavigationStarting(this, &token);
+            ref->m_webView->AddScriptToExecuteOnDocumentCreated(L"window.LUNAJSObject={}", nullptr);
+            ref->m_webView->add_NewWindowRequested(this, &token);
             [&]()
             {
                 CComPtr<ICoreWebView2_11> m_webView2_11;
@@ -152,6 +154,15 @@ public:
             settings->put_IsStatusBarEnabled(FALSE);
         }();
         ref->waitforloadflag.clear();
+        return S_OK;
+    }
+    // ICoreWebView2NewWindowRequestedEventHandler
+    HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, ICoreWebView2NewWindowRequestedEventArgs *args)
+    {
+        CComHeapPtr<WCHAR> uri{};
+        CHECK_FAILURE(args->get_Uri(&uri));
+        CHECK_FAILURE(args->put_Handled(TRUE));
+        ShellExecute(NULL, TEXT("open"), uri, NULL, NULL, SW_SHOW);
         return S_OK;
     }
     // ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler

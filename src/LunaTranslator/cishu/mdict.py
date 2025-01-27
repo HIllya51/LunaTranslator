@@ -659,10 +659,8 @@ for(let i=0;i<elements.length;i++)
 var lastmusicplayer=false;
 function mdict_play_sound(ext, b64){
 
-if(window.luna_audio_play_b64)
-        window.luna_audio_play_b64(b64)
-    else if(window.LUNAJSObject)
-        window.LUNAJSObject.luna_audio_play_b64(b64)
+if(window.LUNAJSObject)
+        LUNAJSObject.luna_audio_play_b64(b64)
     else{
     const music = new Audio();
     music.src="data:"+ext+";base64,"+b64
@@ -675,10 +673,8 @@ if(window.luna_audio_play_b64)
     }
 }
 function safe_mdict_search_word(word){
-    if(window.luna_search_word)
-        window.luna_search_word(word)
-    else if(window.LUNAJSObject)
-        window.LUNAJSObject.luna_search_word(word)
+   if(window.LUNAJSObject)
+        LUNAJSObject.luna_search_word(word)
 }"""
         for varname, val in audiob64vals.items():
             func += '{}="{}"\n'.format(varname, val)

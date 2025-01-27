@@ -16,11 +16,9 @@ class goo(cishubase):
         xx = re.findall("<section>([\\s\\S]*?)</section>", x)
         if not xx:
             return
-        xx = (
-            "".join(xx)
-            .replace('href="/', 'href="https://dictionary.goo.ne.jp/')
-            .replace('src="/', 'src="https://dictionary.goo.ne.jp/')
-        )
+        xx = "".join(xx)
+        xx = xx.replace('href="/', 'href="https://dictionary.goo.ne.jp/')
+        xx = xx.replace('src="/', 'src="https://dictionary.goo.ne.jp/')
         cssurl = "https://dictionary.goo.ne.jp/mix/css/app.css"
         if not self.cache[cssurl]:
             origin = self.proxysession.get(cssurl).text

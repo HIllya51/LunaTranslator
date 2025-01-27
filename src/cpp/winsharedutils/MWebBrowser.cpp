@@ -21,7 +21,7 @@ void JSObject::bindfunction(const std::wstring &funcname, functiontype function)
     auto curr = DISPID_VALUE + 1 + funcnames.size();
     funcnames[funcname] = curr;
     funcmap[curr] = function;
-} 
+}
 HRESULT STDMETHODCALLTYPE JSObject::GetTypeInfoCount(UINT *pctinfo)
 {
     *pctinfo = 0;
@@ -489,7 +489,6 @@ HRESULT MWebBrowser::ZoomPercents(LONG percents)
     }
     return hr;
 }
- 
 
 // IOleWindow interface
 
@@ -932,6 +931,18 @@ HRESULT MWebBrowser::Invoke(DISPID dispIdMember, REFIID, LCID, WORD,
         return OnCompleted(pDispParams);
     else if (dispIdMember == DISPID_NAVIGATECOMPLETE2)
         return AddCustomObject(jsobj, L"LUNAJSObject"), S_OK;
+    else if (dispIdMember == DISPID_NEWWINDOW2 || dispIdMember == DISPID_NEWWINDOW3)
+    {
+        // https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/platform-apis/aa768288(v=vs.85)
+        // https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/platform-apis/aa768287(v=vs.85)
+        if (pDispParams && pDispParams->cArgs > 0)
+        {
+            if (pDispParams->rgvarg[0].vt == VT_BSTR)
+                ShellExecute(nullptr, L"open", pDispParams->rgvarg[0].bstrVal, nullptr, nullptr, SW_SHOWNORMAL);
+            *(pDispParams->rgvarg[0].pboolVal) = VARIANT_TRUE;
+            return S_OK;
+        }
+    }
     return S_OK;
 }
 HRESULT MWebBrowser::OnCompleted(DISPPARAMS *args)

@@ -54,10 +54,8 @@ class weblio(cishubase):
         join += r"""
 <script>
 function safe_weblio_search_word(word){
-    if(window.luna_search_word)
-        window.luna_search_word(word)
-    else if(window.LUNAJSObject)
-        window.LUNAJSObject.luna_search_word(word)
+    if(window.LUNAJSObject)
+        LUNAJSObject.luna_search_word(word)
 }</script>
 """
         links = []

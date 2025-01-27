@@ -2,7 +2,7 @@
 project(shareddllproxy)
  
 
-set(shareddllproxy_common shareddllproxy.cpp dllinject.cpp aspatch.cpp update.cpp ${versioninfo})
+set(shareddllproxy_common shareddllproxy.cpp dllinject.cpp update.cpp ${versioninfo})
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	add_executable(shareddllproxy ${shareddllproxy_common})

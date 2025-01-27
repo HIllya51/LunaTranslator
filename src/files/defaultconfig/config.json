@@ -464,6 +464,15 @@
             500
         ]
     },
+    "ankisplit": [
+        400,
+        400
+    ],
+    "mdictsplit": [
+        400,
+        400
+    ],
+    "anki_Orientation_V": true,
     "gamemanageruseversion": 0,
     "gamemanager_integrated_internal_layout": 2,
     "profiles_index": 0,

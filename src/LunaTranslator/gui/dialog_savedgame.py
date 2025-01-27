@@ -48,15 +48,13 @@ class threeswitch(QWidget):
 
     def selectlayout(self, i):
         try:
-            self.btns[(i + 0) % 3].setEnabled(False)
-            self.btns[(i + 1) % 3].setEnabled(False)
-            self.btns[(i + 2) % 3].setEnabled(False)
-            self.btns[(i + 0) % 3].setChecked(True)
-            self.btns[(i + 1) % 3].setChecked(False)
-            self.btns[(i + 2) % 3].setChecked(False)
+            for _ in range(len(self.btns)):
+                self.btns[(i + _) % len(self.btns)].setEnabled(False)
+            for _ in range(len(self.btns)):
+                self.btns[(i + _) % len(self.btns)].setChecked(_ == 0)
             self.btnclicked.emit(i)
-            self.btns[(i + 1) % 3].setEnabled(True)
-            self.btns[(i + 2) % 3].setEnabled(True)
+            for _ in range(1, len(self.btns)):
+                self.btns[(i + _) % len(self.btns)].setEnabled(True)
         except:
             pass
 
@@ -97,13 +95,7 @@ class dialog_savedgame_integrated(saveposwindow):
 
     def event(self, a0: QEvent) -> bool:
         if a0.type() == QEvent.Type.FontChange:
-            h = QFontMetricsF(self.font()).height()
-            h = int(h * gobject.Consts.btnscale)
-            sz = QSize(h, h)
-            self.syssettingbtn.setFixedSize(sz)
-            sz = QSize(h * 3, h)
-            self.switch.setFixedSize(sz)
-            self.do_resize()
+            self.setsize()
         return super().event(a0)
 
     def __init__(self, parent) -> None:
@@ -124,13 +116,21 @@ class dialog_savedgame_integrated(saveposwindow):
         self.setCentralWidget(w)
 
         self.switch = threeswitch(self, icons=["fa.list", "fa.th-list", "fa.th"])
-        self.switch.setFixedSize(QSize(75, 25))
         self.switch.btnclicked.connect(self.selectlayout)
         self.syssettingbtn = IconButton(icon="fa.gear", parent=self)
-        self.syssettingbtn.setFixedSize(QSize(25, 25))
         self.syssettingbtn.clicked.connect(self.syssetting)
+        self.setsize()
         self.show()
         self.switch.selectlayout(globalconfig["gamemanager_integrated_internal_layout"])
+
+    def setsize(self):
+        h = QFontMetricsF(self.font()).height()
+        h = int(h * gobject.Consts.btnscale)
+        sz = QSize(h, h)
+        self.syssettingbtn.setFixedSize(sz)
+        sz = QSize(h * 3, h)
+        self.switch.setFixedSize(sz)
+        self.do_resize()
 
     def syssetting(self):
         dialog_syssetting(

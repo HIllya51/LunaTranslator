@@ -110,6 +110,6 @@ DECLARE_API void webview2_bind(WebView2 *web, LPCWSTR funcname)
 {
     if (!web)
         return;
-    std::wstring js = std::wstring{} + L"window." + funcname + L" = function(){window.chrome.webview.postMessage({    method: '" + funcname + L"',    args: Array.prototype.slice.call(arguments)});};";
+    std::wstring js = std::wstring{} + L"window.LUNAJSObject." + funcname + L" = function(){window.chrome.webview.postMessage({    method: '" + funcname + L"',    args: Array.prototype.slice.call(arguments)});};";
     CHECK_FAILURE_NORET(web->m_webView->AddScriptToExecuteOnDocumentCreated(js.c_str(), nullptr));
 }

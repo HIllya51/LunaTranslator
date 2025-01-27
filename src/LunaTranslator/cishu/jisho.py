@@ -92,6 +92,8 @@ function onclickbtn_xxxxxx_internal(_id) {
 """.format(
             commonstyle=commonstyle, btns="".join(btns), contents="".join(contents)
         )
+        res = res.replace('href="/', 'href="https://jisho.org/')
+        res = res.replace('src="/', 'src="https://jisho.org/')
         return res
 
     def paradown(self, word, key, saver):

@@ -62,10 +62,8 @@
     }
     function refreshcontent_after() {
         sizeignore = false
-        let _call = window.calllunaheightchange;
-        if (!_call)
-            _call = console.log;
-        _call(cacheheight)
+        if (window.LUNAJSObject)
+            LUNAJSObject.calllunaheightchange(cacheheight)
     }
     function safe_calllunaheightchange() {
         let h = document.getElementById('luna_root_div').offsetHeight
@@ -73,16 +71,12 @@
         h += parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom)
         cacheheight = h
         if (sizeignore) return
-        let _call = window.calllunaheightchange;
-        if (!_call)
-            _call = console.log;
-        _call(h)
+        if (window.LUNAJSObject)
+            LUNAJSObject.calllunaheightchange(h)
     }
     function safe_calllunaclickedword(word) {
-        let _call = window.calllunaclickedword;
-        if (!_call)
-            _call = console.log;
-        _call(word)
+        if (window.LUNAJSObject)
+            LUNAJSObject.calllunaclickedword(word)
     }
 </script>
 <script>
@@ -424,25 +418,25 @@
         return false;
     }
     document.addEventListener('mousemove', function (e) {
-        if (window.calllunaMouseMove)
-            window.calllunaMouseMove(e.clientX, e.clientY)
+        if (window.LUNAJSObject)
+            LUNAJSObject.calllunaMouseMove(e.clientX, e.clientY)
 
     });
     document.addEventListener('mousedown', function (e) {
         if (e.button == 0)
             window.getSelection().removeAllRanges()
         if (!isPointOverText(e.clientX, e.clientY)) {
-            if (window.calllunaMousePress)
-                window.calllunaMousePress(e.button, e.clientX, e.clientY)
+            if (window.LUNAJSObject)
+                LUNAJSObject.calllunaMousePress(e.button, e.clientX, e.clientY)
         }
     });
     document.addEventListener('mouseup', function (e) {
-        if (window.calllunaMouseRelease)
-            window.calllunaMouseRelease(e.button, e.clientX, e.clientY)
+        if (window.LUNAJSObject)
+            LUNAJSObject.calllunaMouseRelease(e.button, e.clientX, e.clientY)
     });
     document.addEventListener('mouseleave', function (e) {
-        if (window.calllunaMouseRelease)
-            window.calllunaMouseRelease(e.button, e.clientX, e.clientY)
+        if (window.LUNAJSObject)
+            LUNAJSObject.calllunaMouseRelease(e.button, e.clientX, e.clientY)
     });
     function switchcursor(cursor) {
         document.getElementById('luna_atback_div').style.cursor = cursor
@@ -554,7 +548,7 @@
     }
 </script>
 <script>
-    if (window.calllunaloadready)
-        window.calllunaloadready()
+    if (window.LUNAJSObject)
+        LUNAJSObject.calllunaloadready()
 </script>
 __PLACEHOLDER_EXTRA_HTML_
