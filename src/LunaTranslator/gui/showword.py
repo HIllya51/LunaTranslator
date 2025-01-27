@@ -1237,8 +1237,6 @@ class searchwordW(closeashidewindow):
 
         self.tab = CustomTabBar()
         self.tab.tabBarClicked.connect(self.tabclicked)
-        self.tab.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.tab.customContextMenuRequested.connect(self.tabmenu)
         self.tabcurrentindex = -1
 
         def __(idx):
@@ -1269,9 +1267,7 @@ class searchwordW(closeashidewindow):
         self.textOutput.add_menu_noselect(
             0, _TR("加亮模式"), lambda: self.textOutput.eval("switch_hightlightmode()")
         )
-        self.textOutput.add_menu_noselect(
-            1, _TR("清除加亮"), lambda: self.textOutput.eval("clear_hightlight()")
-        )
+        self.textOutput.add_menu_noselect(1, _TR("清除加亮"), self.clear_hightlight)
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
@@ -1308,16 +1304,11 @@ class searchwordW(closeashidewindow):
         self.spliter.addWidget(self.dict_textoutput_spl)
         self.dictbutton.clicked.connect(self.onceaddshowdictwidget)
 
-    def tabmenu(self, _):
-        menu = QMenu(self)
-        revert = LAction("还原", menu)
-        menu.addAction(revert)
-        action = menu.exec(QCursor.pos())
-        if action == revert:
-            k = self.tabks[self.tab.currentIndex()]
-            if k in self.cache_results_highlighted:
-                self.cache_results_highlighted.pop(k)
-                self.tabclicked(self.tab.currentIndex())
+    def clear_hightlight(self):
+        self.textOutput.eval("clear_hightlight()")
+        k = self.tabks[self.tab.currentIndex()]
+        if k in self.cache_results_highlighted:
+            self.cache_results_highlighted.pop(k)
 
     def luna_recheck_current_html(self, html):
         self.cache_results_highlighted[self.tabks[self.tab.currentIndex()]] = html
