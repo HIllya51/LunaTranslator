@@ -1177,6 +1177,10 @@ class MAINUI:
         self.mainuiloadafter()
 
     def mainuiloadafter(self):
+        self.messagecallback__ = winsharedutils.globalmessagelistener_cb(
+            self.messagecallback
+        )
+        winsharedutils.globalmessagelistener(self.messagecallback__)
         self.__checkmutethread()
         self.safeloadprocessmodels()
         self.prepare()
@@ -1201,10 +1205,6 @@ class MAINUI:
         threading.Thread(
             target=minmaxmoveobservefunc, args=(self.translation_ui,)
         ).start()
-        self.messagecallback__ = winsharedutils.globalmessagelistener_cb(
-            self.messagecallback
-        )
-        winsharedutils.globalmessagelistener(self.messagecallback__)
         self.starttextsource()
         self.inittray()
         self.playtimemanager = playtimemanager()

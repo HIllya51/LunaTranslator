@@ -694,7 +694,7 @@ class unsupportkey(Exception):
     pass
 
 
-def parsekeystringtomodvkcode(keystring, modes=False):
+def parsekeystringtomodvkcode(keystring: str, modes=False):
     keys = []
     mode = 0
     _modes = []

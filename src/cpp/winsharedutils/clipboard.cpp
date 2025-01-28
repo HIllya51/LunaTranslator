@@ -176,11 +176,21 @@ BOOL removeClipboardFormatListener(HWND _hWnd)
 
 static auto LUNA_UPDATE_PREPARED_OK = RegisterWindowMessage(L"LUNA_UPDATE_PREPARED_OK");
 static auto WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");
+static auto WM_SYS_HOTKEY = RegisterWindowMessage(L"SYS_HOTKEY_REG_UNREG");
 bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
     return lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL;
 }
 typedef void (*callbackT)(int, bool, const wchar_t *);
+static int unique_id = 1;
+typedef void (*hotkeycallback_t)();
+static std::map<int, hotkeycallback_t> keybinds;
+struct hotkeymessageLP
+{
+    UINT fsModifiers;
+    UINT vk;
+    hotkeycallback_t callback;
+};
 static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     auto callback = (callbackT)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
@@ -204,6 +214,36 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
             auto data = clipboard_get_internal();
             if (data)
                 callback(3, iscurrentowndclipboard(), data.value().c_str());
+        }
+        else if (WM_HOTKEY == message)
+        {
+            auto _unique_id = (int)(wParam);
+            auto _ = keybinds.find(_unique_id);
+            if (_ == keybinds.end())
+                return 0;
+            _->second();
+        }
+        else if (WM_SYS_HOTKEY == message)
+        {
+            if ((UINT)wParam == 1)
+            {
+                auto info = (hotkeymessageLP *)(lParam);
+                unique_id += 1;
+                auto succ = RegisterHotKey(hWnd, unique_id, info->fsModifiers, info->vk);
+                if (succ)
+                {
+                    keybinds[unique_id] = info->callback;
+                    return unique_id;
+                }
+                return 0;
+            }
+            else
+            {
+                UnregisterHotKey(hWnd, (int)lParam);
+                auto _ = keybinds.find((int)lParam);
+                if (_ != keybinds.end())
+                    keybinds.erase(_);
+            }
         }
     }
     return DefWindowProc(hWnd, message, wParam, lParam);
@@ -259,4 +299,16 @@ DECLARE_API bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
     }
     CloseClipboard();
     return true;
+}
+
+DECLARE_API int registhotkey(UINT fsModifiers, UINT vk, hotkeycallback_t callback)
+{
+    auto info = new hotkeymessageLP{fsModifiers, vk, callback};
+    auto ret = SendMessage(globalmessagehwnd, WM_SYS_HOTKEY, 1, (LPARAM)info);
+    delete info;
+    return ret;
+}
+DECLARE_API void unregisthotkey(int _id)
+{
+    SendMessage(globalmessagehwnd, WM_SYS_HOTKEY, 0, (LPARAM)_id);
 }

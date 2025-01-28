@@ -16,7 +16,7 @@ from ctypes import (
     c_char,
     CFUNCTYPE,
 )
-from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE
+from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT
 import platform, windows, functools, os
 
 isbit64 = platform.architecture()[0] == "64bit"
@@ -427,3 +427,29 @@ class AutoKillProcess_:
 def AutoKillProcess(command, path=None):
     pid = DWORD()
     return AutoKillProcess_(createprocess(command, path, pointer(pid)), pid.value)
+
+
+_registhotkey = utilsdll.registhotkey
+hotkeycallback_t = CFUNCTYPE(None)
+_registhotkey.argtypes = UINT, UINT, hotkeycallback_t
+_registhotkey.restype = c_int
+_unregisthotkey = utilsdll.unregisthotkey
+_unregisthotkey.argtypes = (c_int,)
+__hotkeycallback_s = {}
+
+
+def registhotkey(_, cb):
+    mod, vk = _
+    cb = hotkeycallback_t(cb)
+    uid = _registhotkey(mod, vk, cb)
+    if uid:
+        __hotkeycallback_s[uid] = cb
+    return uid
+
+
+def unregisthotkey(uid):
+    _unregisthotkey(uid)
+    try:
+        __hotkeycallback_s.pop(uid)
+    except:
+        pass

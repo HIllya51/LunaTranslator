@@ -2,7 +2,6 @@ from qtsymbols import *
 import functools
 import gobject, windows, winsharedutils
 from myutils.config import globalconfig, get_platform
-from myutils.winsyshotkey import SystemHotkey, registerException
 from myutils.hwnd import grabwindow
 from myutils.utils import parsekeystringtomodvkcode, unsupportkey
 from gui.usefulwidget import (
@@ -41,7 +40,6 @@ def autoreadswitch(self):
 
 
 def registrhotkeys(self):
-    self.hotkeymanager = SystemHotkey()
     self.referlabels = {}
     self.referlabels_data = {}
     self.registok = {}
@@ -190,7 +188,7 @@ def regist_or_not_key(self, name):
     maybesetreferlabels(self, name, "")
 
     if name in self.registok:
-        self.hotkeymanager.unregister(self.registok[name])
+        winsharedutils.unregisthotkey(self.registok[name])
 
     keystring = globalconfig["quick_setting"]["all"][name]["keystring"]
     if keystring == "" or (
@@ -206,9 +204,9 @@ def regist_or_not_key(self, name):
     except unsupportkey as e:
         maybesetreferlabels(self, name, ("不支持的键位_") + ",".join(e.args[0]))
         return
+    uid = winsharedutils.registhotkey((mode, vkcode), self.bindfunctions[name])
 
-    try:
-        self.hotkeymanager.register((mode, vkcode), callback=self.bindfunctions[name])
-        self.registok[name] = (mode, vkcode)
-    except registerException:
+    if not uid:
         maybesetreferlabels(self, name, ("快捷键冲突"))
+    else:
+        self.registok[name] = uid

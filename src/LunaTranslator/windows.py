@@ -125,7 +125,6 @@ GWL_EXSTYLE = -20
 WS_EX_TRANSPARENT = 0x00000020
 WS_EX_TOPMOST = 0x00000008
 SW_SHOWMAXIMIZED = 3
-WM_HOTKEY = 0x0312
 
 VK_LBUTTON = 1
 VK_RBUTTON = 2
@@ -809,17 +808,6 @@ WINEVENTPROC = WINFUNCTYPE(
 )
 
 
-PM_REMOVE = 0x0001
-
-PeekMessageA = _user32.PeekMessageA
-PeekMessageA.argtypes = LPMSG, HWND, UINT, UINT, UINT
-PeekMessageA.restype = BOOL
-RegisterHotKey = _user32.RegisterHotKey
-RegisterHotKey.argtypes = HWND, c_int, UINT, UINT
-RegisterHotKey.restype = BOOL
-UnregisterHotKey = _user32.UnregisterHotKey
-UnregisterHotKey.restype = BOOL
-UnregisterHotKey.argtypes = HWND, c_int
 
 UnhookWindowsHookEx = _user32.UnhookWindowsHookEx
 UnhookWindowsHookEx.argtypes = (HHOOK,)
