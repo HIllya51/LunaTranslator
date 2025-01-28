@@ -104,7 +104,7 @@ class FenciColor(ColorControl):
 
     def asklass(self):
         return "ColorControl_FENCI_COLOR_{}".format(
-            str(self.klass).encode("utf8").hex()
+            "".join(format(x, "02x") for x in str(self.klass).encode("utf8"))
         )
 
 

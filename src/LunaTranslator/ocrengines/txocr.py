@@ -106,7 +106,8 @@ class OCR(baseocr):
         kDate = sha256(date.encode(), ("TC3" + self.config["SecretKey"]).encode())
         kService = sha256(service.encode(), kDate)
         kSigning = sha256("tc3_request".encode(), kService)
-        signature = sha256(stringToSign.encode(), kSigning).hex()
+        signature = sha256(stringToSign.encode(), kSigning)
+        signature = "".join(format(c, "02x") for c in signature)
         authorization = (
             algorithm
             + " "

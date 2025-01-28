@@ -269,9 +269,7 @@ class Signer(object):
         )
 
     def _hex(self, data):
-        if 0:
-            return "".join("{:02x}".format(ord(c)) for c in ensure_binary(data))
-        return data.hex()
+        return "".join(format(c, "02x") for c in ensure_binary(data))
 
 
 class Req:
