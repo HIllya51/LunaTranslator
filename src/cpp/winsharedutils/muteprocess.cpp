@@ -1,178 +1,106 @@
-
-
-class CAudioMgr
+﻿
+DWORD currentprocess = 0;
+typedef void (*MonitorPidVolume_callback_t)(BOOL);
+MonitorPidVolume_callback_t MonitorPidVolume_callback = nullptr;
+CComPtr<IAudioSessionManager2> sessionManager = nullptr;
+CComPtr<IAudioSessionControl2> savesession2 = nullptr;
+class AudioSessionEvents : public ComImpl<IAudioSessionEvents>
 {
 public:
-    CAudioMgr();
-    ~CAudioMgr();
-
-public:
-    BOOL SetProcessMute(DWORD Pid, bool mute);
-    bool GetProcessMute(DWORD Pid);
-
-private:
-    BOOL __GetAudioSessionMgr2();
-
-private:
-    HRESULT m_hRes;
-    IAudioSessionManager2 *m_lpAudioSessionMgr;
+    HRESULT STDMETHODCALLTYPE OnDisplayNameChanged(LPCWSTR, LPCGUID) { return S_OK; }
+    HRESULT STDMETHODCALLTYPE OnIconPathChanged(LPCWSTR, LPCGUID) { return S_OK; }
+    HRESULT STDMETHODCALLTYPE OnSimpleVolumeChanged(float volume, BOOL mute, LPCGUID context)
+    {
+        if (MonitorPidVolume_callback)
+            MonitorPidVolume_callback(mute);
+        return S_OK;
+    }
+    HRESULT STDMETHODCALLTYPE OnChannelVolumeChanged(DWORD, float[], DWORD, LPCGUID) { return S_OK; }
+    HRESULT STDMETHODCALLTYPE OnGroupingParamChanged(LPCGUID, LPCGUID) { return S_OK; }
+    HRESULT STDMETHODCALLTYPE OnStateChanged(AudioSessionState) { return S_OK; }
+    HRESULT STDMETHODCALLTYPE OnSessionDisconnected(AudioSessionDisconnectReason) { return S_OK; }
 };
-CAudioMgr::CAudioMgr()
-    : m_hRes(ERROR_SUCCESS), m_lpAudioSessionMgr(NULL)
+CComPtr<AudioSessionEvents> sessionEvents;
+static void NotifyDirectly(const CComPtr<IAudioSessionControl2> &sess2)
 {
-    ::CoInitialize(NULL);
+    if (!MonitorPidVolume_callback)
+        return;
+    CComPtr<ISimpleAudioVolume> pSimpleAudioVolume;
+    CHECK_FAILURE_NORET(sess2.QueryInterface(&pSimpleAudioVolume));
+    BOOL mute = FALSE;
+    CHECK_FAILURE_NORET(pSimpleAudioVolume->GetMute(&mute));
+    MonitorPidVolume_callback(mute);
 }
-
-CAudioMgr::~CAudioMgr()
+class AudioSessionNotification : public ComImpl<IAudioSessionNotification>
 {
-    ::CoUninitialize();
-}
-
-bool CAudioMgr::GetProcessMute(DWORD Pid)
-{
-    if (!this->__GetAudioSessionMgr2() || m_lpAudioSessionMgr == NULL)
+public:
+    STDMETHODIMP OnSessionCreated(IAudioSessionControl *pNewSession)
     {
-        return FALSE;
+        CComPtr<IAudioSessionControl2> session2;
+        CHECK_FAILURE(pNewSession->QueryInterface(&session2));
+        DWORD pid;
+        CHECK_FAILURE(session2->GetProcessId(&pid));
+        if (currentprocess == pid)
+        {
+            savesession2 = session2;
+            CHECK_FAILURE(session2->RegisterAudioSessionNotification(sessionEvents));
+            NotifyDirectly(session2);
+        }
+        return S_OK;
     }
+};
+CComPtr<AudioSessionNotification> notification;
 
+static HRESULT GetSessionForPid(DWORD pid, CComPtr<IAudioSessionControl2> &sess2)
+{
     CComPtr<IAudioSessionEnumerator> pAudioSessionEnumerator;
-    m_hRes = m_lpAudioSessionMgr->GetSessionEnumerator(&pAudioSessionEnumerator);
-    if (FAILED(m_hRes) || pAudioSessionEnumerator == NULL)
-    {
-        return FALSE;
-    }
+    CHECK_FAILURE(sessionManager->GetSessionEnumerator(&pAudioSessionEnumerator));
 
     int nCount = 0;
-    m_hRes = pAudioSessionEnumerator->GetCount(&nCount);
+    CHECK_FAILURE(pAudioSessionEnumerator->GetCount(&nCount));
 
     for (int i = 0; i < nCount; ++i)
     {
         CComPtr<IAudioSessionControl> pAudioSessionControl;
-        m_hRes = pAudioSessionEnumerator->GetSession(i, &pAudioSessionControl);
-        if (FAILED(m_hRes) || pAudioSessionControl == NULL)
-        {
-            continue;
-        }
+        CHECK_FAILURE_CONTINUE(pAudioSessionEnumerator->GetSession(i, &pAudioSessionControl));
 
-        CComQIPtr<IAudioSessionControl2> pAudioSessionControl2(pAudioSessionControl);
-        if (pAudioSessionControl2 == NULL)
-        {
-            continue;
-        }
-
+        CComPtr<IAudioSessionControl2> pAudioSessionControl2;
+        CHECK_FAILURE_CONTINUE(pAudioSessionControl->QueryInterface(&pAudioSessionControl2));
         DWORD dwPid = 0;
-        m_hRes = pAudioSessionControl2->GetProcessId(&dwPid);
-        if (FAILED(m_hRes))
+        CHECK_FAILURE_CONTINUE(pAudioSessionControl2->GetProcessId(&dwPid));
+        if (dwPid == pid)
         {
-            continue;
-        }
-
-        if (dwPid == Pid)
-        {
-            CComQIPtr<ISimpleAudioVolume> pSimpleAudioVolume(pAudioSessionControl2);
-            if (pSimpleAudioVolume == NULL)
-            {
-                continue;
-            }
-            BOOL mute;
-            m_hRes = pSimpleAudioVolume->GetMute(&mute);
-            return mute;
+            sess2 = pAudioSessionControl2;
+            return S_OK;
         }
     }
-
-    return false;
+    return E_FAIL;
 }
-BOOL CAudioMgr::SetProcessMute(DWORD Pid, bool mute)
+DECLARE_API void SetCurrProcessMute(bool mute)
 {
-    if (!this->__GetAudioSessionMgr2() || m_lpAudioSessionMgr == NULL)
-    {
-        return FALSE;
-    }
-
+    CHECK_FAILURE_NORET(GetSessionForPid(currentprocess, savesession2));
+    CComPtr<ISimpleAudioVolume> pSimpleAudioVolume;
+    CHECK_FAILURE_NORET(savesession2.QueryInterface(&pSimpleAudioVolume));
+    pSimpleAudioVolume->SetMute(mute, NULL);
+}
+DECLARE_API void MonitorPidVolume(DWORD Pid)
+{
+    currentprocess = Pid;
+    CHECK_FAILURE_NORET(GetSessionForPid(Pid, savesession2));
+    CHECK_FAILURE_NORET(savesession2->RegisterAudioSessionNotification(sessionEvents));
+    NotifyDirectly(savesession2);
+}
+DECLARE_API void StartMonitorVolume(MonitorPidVolume_callback_t callback)
+{
+    MonitorPidVolume_callback = callback;
+    notification = new AudioSessionNotification{};
+    sessionEvents = new AudioSessionEvents{};
+    CComPtr<IMMDeviceEnumerator> enumerator;
+    CHECK_FAILURE_NORET(enumerator.CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL));
+    CComPtr<IMMDevice> device;
+    CHECK_FAILURE_NORET(enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device));
+    CHECK_FAILURE_NORET(device->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL, NULL, (void **)&sessionManager));
+    CHECK_FAILURE_NORET(sessionManager->RegisterSessionNotification(notification));
     CComPtr<IAudioSessionEnumerator> pAudioSessionEnumerator;
-    m_hRes = m_lpAudioSessionMgr->GetSessionEnumerator(&pAudioSessionEnumerator);
-    if (FAILED(m_hRes) || pAudioSessionEnumerator == NULL)
-    {
-        return FALSE;
-    }
-
-    int nCount = 0;
-    m_hRes = pAudioSessionEnumerator->GetCount(&nCount);
-
-    for (int i = 0; i < nCount; ++i)
-    {
-        CComPtr<IAudioSessionControl> pAudioSessionControl;
-        m_hRes = pAudioSessionEnumerator->GetSession(i, &pAudioSessionControl);
-        if (FAILED(m_hRes) || pAudioSessionControl == NULL)
-        {
-            continue;
-        }
-
-        CComQIPtr<IAudioSessionControl2> pAudioSessionControl2(pAudioSessionControl);
-        if (pAudioSessionControl2 == NULL)
-        {
-            continue;
-        }
-
-        DWORD dwPid = 0;
-        m_hRes = pAudioSessionControl2->GetProcessId(&dwPid);
-        if (FAILED(m_hRes))
-        {
-            continue;
-        }
-
-        if (dwPid == Pid)
-        {
-            CComQIPtr<ISimpleAudioVolume> pSimpleAudioVolume(pAudioSessionControl2);
-            if (pSimpleAudioVolume == NULL)
-            {
-                continue;
-            }
-            m_hRes = pSimpleAudioVolume->SetMute(mute, NULL);
-            break;
-        }
-    }
-
-    return SUCCEEDED(m_hRes);
-}
-
-BOOL CAudioMgr::__GetAudioSessionMgr2()
-{
-    if (m_lpAudioSessionMgr == NULL)
-    {
-        CComPtr<IMMDeviceEnumerator> pMMDeviceEnumerator;
-
-        m_hRes = pMMDeviceEnumerator.CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL);
-        if (FAILED(m_hRes) || (pMMDeviceEnumerator == NULL))
-        {
-            return FALSE;
-        }
-
-        CComPtr<IMMDevice> pDefaultDevice;
-        m_hRes = pMMDeviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &pDefaultDevice);
-        if (FAILED(m_hRes) || pDefaultDevice == NULL)
-        {
-            return FALSE;
-        }
-
-        m_hRes = pDefaultDevice->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL, NULL, (void **)&m_lpAudioSessionMgr);
-        if (FAILED(m_hRes) || (m_lpAudioSessionMgr == NULL))
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
-
-DECLARE_API BOOL SetProcessMute(DWORD Pid, bool mute)
-{
-    CAudioMgr AudioMgr;
-    return AudioMgr.SetProcessMute(Pid, mute);
-}
-
-DECLARE_API bool GetProcessMute(DWORD Pid)
-{
-    CAudioMgr AudioMgr;
-    return AudioMgr.GetProcessMute(Pid);
+    CHECK_FAILURE_NORET(sessionManager->GetSessionEnumerator(&pAudioSessionEnumerator)); // 必须的，否则不管用，不知道为何。
 }

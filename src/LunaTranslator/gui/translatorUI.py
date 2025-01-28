@@ -1078,12 +1078,7 @@ class TranslatorWindow(resizableframeless):
         self.titlebar.setstyle(bottomr, bottomr3)
 
     def muteprocessfuntion(self):
-        pid = windows.GetWindowThreadProcessId(gobject.baseobject.hwnd)
-        if not pid:
-            return
-        self.processismuteed = not self.processismuteed
-        self.refreshtoolicon()
-        winsharedutils.SetProcessMute(pid, self.processismuteed)
+        winsharedutils.SetCurrProcessMute(not self.processismuteed)
 
     def _externalfsend(self, current):
         self.isletgamefullscreened = current

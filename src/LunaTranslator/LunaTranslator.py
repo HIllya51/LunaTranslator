@@ -162,8 +162,7 @@ class MAINUI:
         else:
             _pid = windows.GetWindowThreadProcessId(__hwnd)
             if _pid:
-                _mute = winsharedutils.GetProcessMute(_pid)
-                self.translation_ui.processismuteed = _mute
+                winsharedutils.MonitorPidVolume(_pid)
                 self.translation_ui.isbindedwindow = True
                 self.translation_ui.refreshtooliconsignal.emit()
                 try:
@@ -1181,7 +1180,10 @@ class MAINUI:
             self.messagecallback
         )
         winsharedutils.globalmessagelistener(self.messagecallback__)
-        self.__checkmutethread()
+        self.MonitorPidVolume_callback = winsharedutils.MonitorPidVolume_callback_t(
+            self.MonitorPidVolume_callback_f
+        )
+        winsharedutils.StartMonitorVolume(self.MonitorPidVolume_callback)
         self.safeloadprocessmodels()
         self.prepare()
         self.startxiaoxueguan()
@@ -1210,19 +1212,9 @@ class MAINUI:
         self.playtimemanager = playtimemanager()
         self.__count = 0
 
-    @threader
-    def __checkmutethread(self):
-        while True:
-            time.sleep(0.5)
-            if not self.hwnd:
-                continue
-            pid = windows.GetWindowThreadProcessId(self.hwnd)
-            if not pid:
-                continue
-            _mute = winsharedutils.GetProcessMute(pid)
-            if self.translation_ui.processismuteed != _mute:
-                self.translation_ui.processismuteed = _mute
-                self.translation_ui.refreshtooliconsignal.emit()
+    def MonitorPidVolume_callback_f(self, mute):
+        self.translation_ui.processismuteed = mute
+        self.translation_ui.refreshtooliconsignal.emit()
 
     def openlink(self, file):
         if file.startswith("http") and checkisusingwine():

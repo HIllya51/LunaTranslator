@@ -26,6 +26,9 @@ inline std::string WideStringToString(const std::wstring &text, UINT cp = CP_UTF
 #define CHECK_FAILURE_NORET(x) \
     if (FAILED((x)))           \
         return;
+#define CHECK_FAILURE_CONTINUE(x) \
+    if (FAILED((x)))           \
+        continue;
 
 struct CO_INIT
 {

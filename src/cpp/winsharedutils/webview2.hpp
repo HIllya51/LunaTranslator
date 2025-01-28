@@ -208,15 +208,15 @@ public:
             for (unsigned int i = 0; i < length; i++)
             {
                 CComPtr<IUnknown> object;
-                CHECK_FAILURE(objectsCollection->GetValueAtIndex(i, &object));
+                CHECK_FAILURE_CONTINUE(objectsCollection->GetValueAtIndex(i, &object));
                 // Note that objects can be null.
                 if (!object)
                     continue;
                 CComPtr<ICoreWebView2File> file;
-                CHECK_FAILURE(object.QueryInterface(&file));
+                CHECK_FAILURE_CONTINUE(object.QueryInterface(&file));
                 // Add the file to message to be sent back to webview
                 CComHeapPtr<WCHAR> path;
-                CHECK_FAILURE(file->get_Path(&path));
+                CHECK_FAILURE_CONTINUE(file->get_Path(&path));
                 if (ref->FilesDropped_callback)
                     ref->FilesDropped_callback(path);
                 break;
@@ -269,14 +269,14 @@ public:
                 CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
                 if (label.size())
                 {
-                    CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(label.c_str(), nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+                    CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(label.c_str(), nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
                     newMenuItem->add_CustomItemSelected(new CustomItemSelectedEventHandler_1(callback, target), nullptr);
                 }
                 else
                 {
-                    CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
+                    CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
                 }
-                CHECK_FAILURE(items->InsertValueAtIndex(idx++, newMenuItem));
+                CHECK_FAILURE_CONTINUE(items->InsertValueAtIndex(idx++, newMenuItem));
             }
         }
         else
@@ -286,14 +286,14 @@ public:
                 CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
                 if (label.size())
                 {
-                    CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(label.c_str(), nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+                    CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(label.c_str(), nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
                     newMenuItem->add_CustomItemSelected(new CustomItemSelectedEventHandler_2(callback), nullptr);
                 }
                 else
                 {
-                    CHECK_FAILURE(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
+                    CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
                 }
-                CHECK_FAILURE(items->InsertValueAtIndex(idx++, newMenuItem));
+                CHECK_FAILURE_CONTINUE(items->InsertValueAtIndex(idx++, newMenuItem));
             }
         }
         return S_OK;

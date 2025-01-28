@@ -16,7 +16,7 @@ from ctypes import (
     c_char,
     CFUNCTYPE,
 )
-from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT
+from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL
 import platform, windows, functools, os
 
 isbit64 = platform.architecture()[0] == "64bit"
@@ -28,12 +28,13 @@ utilsdll = CDLL(
 )
 
 
-SetProcessMute = utilsdll.SetProcessMute
-SetProcessMute.argtypes = c_uint, c_bool
-
-GetProcessMute = utilsdll.GetProcessMute
-GetProcessMute.restype = c_bool
-
+SetCurrProcessMute = utilsdll.SetCurrProcessMute
+SetCurrProcessMute.argtypes = c_bool,
+MonitorPidVolume = utilsdll.MonitorPidVolume
+MonitorPidVolume.argtypes = (DWORD,)
+MonitorPidVolume_callback_t = CFUNCTYPE(None, BOOL)
+StartMonitorVolume = utilsdll.StartMonitorVolume
+StartMonitorVolume.argtypes = (MonitorPidVolume_callback_t,)
 _SAPI_List = utilsdll.SAPI_List
 _SAPI_List.argtypes = (c_uint, c_void_p)
 
