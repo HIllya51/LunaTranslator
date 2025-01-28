@@ -6,7 +6,7 @@ bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
     return lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL;
 }
-typedef void (*callbackT)(int, bool, const wchar_t *);
+typedef void (*WindowMessageCallback_t)(int, bool, const wchar_t *);
 static int unique_id = 1;
 typedef void (*hotkeycallback_t)();
 static std::map<int, hotkeycallback_t> keybinds;
@@ -18,7 +18,7 @@ struct hotkeymessageLP
 };
 static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    auto callback = (callbackT)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+    auto callback = (WindowMessageCallback_t)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
     if (callback)
     {
         if (WM_SETTINGCHANGE == message)
@@ -96,11 +96,7 @@ static VOID CALLBACK WinEventHookPROC(
     if (WinEventHookCALLBACK)
         WinEventHookCALLBACK(event, hwnd, idObject);
 }
-DECLARE_API void SetWinEventHookCALLBACK(WinEventHookCALLBACK_t callback)
-{
-    WinEventHookCALLBACK = callback;
-}
-DECLARE_API void globalmessagelistener(callbackT callback)
+DECLARE_API void globalmessagelistener(WinEventHookCALLBACK_t callback1, WindowMessageCallback_t callback)
 {
     const wchar_t CLASS_NAME[] = L"globalmessagelistener";
     WNDCLASS wc = {};
@@ -113,6 +109,7 @@ DECLARE_API void globalmessagelistener(callbackT callback)
     SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)callback);
     ChangeWindowMessageFilterEx(hWnd, LUNA_UPDATE_PREPARED_OK, MSGFLT_ALLOW, nullptr);
     ChangeWindowMessageFilterEx(hWnd, WM_MAGPIE_SCALINGCHANGED, MSGFLT_ALLOW, nullptr);
+    WinEventHookCALLBACK = callback1;
     SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, wc.hInstance, WinEventHookPROC, 0, 0, 0);
     SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_DESTROY, wc.hInstance, WinEventHookPROC, 0, 0, 0);
 }

@@ -1175,10 +1175,13 @@ class MAINUI:
         self.mainuiloadafter()
 
     def mainuiloadafter(self):
-        self.messagecallback__ = winsharedutils.globalmessagelistener_cb(
-            self.messagecallback
+        self.WindowMessageCallback_ptr = winsharedutils.WindowMessageCallback_t(
+            self.WindowMessageCallback
         )
-        winsharedutils.globalmessagelistener(self.messagecallback__)
+        self.WinEventHookCALLBACK_ptr = winsharedutils.WinEventHookCALLBACK_t(
+            self.WinEventHookCALLBACK
+        )
+        winsharedutils.globalmessagelistener(self.WinEventHookCALLBACK_ptr,self.WindowMessageCallback_ptr)
         self.MonitorPidVolume_callback = winsharedutils.MonitorPidVolume_callback_t(
             self.MonitorPidVolume_callback_f
         )
@@ -1207,10 +1210,6 @@ class MAINUI:
         self.inittray()
         self.playtimemanager = playtimemanager()
         self.__count = 0
-        self.WinEventHookCALLBACK_ptr = winsharedutils.WinEventHookCALLBACK_t(
-            self.WinEventHookCALLBACK
-        )
-        winsharedutils.SetWinEventHookCALLBACK(self.WinEventHookCALLBACK_ptr)
 
     def WinEventHookCALLBACK(self, event, hwnd, idObject):
         try:
@@ -1261,7 +1260,7 @@ class MAINUI:
             return
         return os.startfile(file)
 
-    def messagecallback(self, msg: int, boolvalue: bool, strvalue: str):
+    def WindowMessageCallback(self, msg: int, boolvalue: bool, strvalue: str):
         if msg == 0:
             if globalconfig["darklight2"] == 0:
                 if self.__count % 2:

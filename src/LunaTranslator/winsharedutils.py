@@ -26,9 +26,6 @@ utilsdll = CDLL(
         "winsharedutils.dll",
     )
 )
-WinEventHookCALLBACK_t = CFUNCTYPE(None, DWORD, HWND, LONG)
-SetWinEventHookCALLBACK = utilsdll.SetWinEventHookCALLBACK
-SetWinEventHookCALLBACK.argtypes = (WinEventHookCALLBACK_t,)
 SetCurrProcessMute = utilsdll.SetCurrProcessMute
 SetCurrProcessMute.argtypes = (c_bool,)
 MonitorPidVolume = utilsdll.MonitorPidVolume
@@ -181,9 +178,13 @@ def queryversion(exe):
 
 startclipboardlisten = utilsdll.startclipboardlisten
 stopclipboardlisten = utilsdll.stopclipboardlisten
-globalmessagelistener_cb = CFUNCTYPE(None, c_int, c_bool, c_wchar_p)
+WindowMessageCallback_t = CFUNCTYPE(None, c_int, c_bool, c_wchar_p)
+WinEventHookCALLBACK_t = CFUNCTYPE(None, DWORD, HWND, LONG)
 globalmessagelistener = utilsdll.globalmessagelistener
-globalmessagelistener.argtypes = (globalmessagelistener_cb,)
+globalmessagelistener.argtypes = (
+    WinEventHookCALLBACK_t,
+    WindowMessageCallback_t,
+)
 dispatchcloseevent = utilsdll.dispatchcloseevent
 
 setdwmextendframe = utilsdll.setdwmextendframe
