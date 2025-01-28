@@ -612,6 +612,13 @@ namespace
         if (i++ % 2 == 0)
             buffer->clear();
     }
+    void PCSG01196(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        strReplace(ws, L"^", L"\n");
+        ws = std::regex_replace(ws, std::wregex(LR"(<(.*?)>(.*?)|)"), L"$2");
+        buffer->from(WideStringToString(ws, 932));
+    }
     void PCSG01151(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
@@ -862,6 +869,8 @@ namespace
             {0x81078B22, {CODEC_UTF16, 1, 0, 0, PCSG00451<0>, "PCSG00451"}},
             // 喧嘩番長 乙女
             {0x800086C0, {CODEC_UTF16, 0, 0, 0, PCSG00829, "PCSG00829"}}, // 缺少部分
+            // sweet pool
+            {0x8003D5B6, {0, 0, 0, 0, PCSG01196, "PCSG01196"}},
 
         };
         return 1;
