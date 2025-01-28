@@ -93,12 +93,8 @@ def _checkmaybefailed(self, _):
 
 def _createseletengeinecombo_1(self):
 
-    webviews = ["MSHTML", "WebView2"]
-
-    if get_platform() == "xp":
-        webviews = ["MSHTML"]
     self.seletengeinecombo_1 = getsimplecombobox(
-        webviews,
+        ["MSHTML", "WebView2"],
         globalconfig,
         "usewebview",
         callback=functools.partial(_checkmaybefailed, self),

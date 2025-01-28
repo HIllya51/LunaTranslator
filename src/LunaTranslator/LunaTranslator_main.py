@@ -63,15 +63,6 @@ def prepareqtenv():
         if get_platform() != "xp":
             QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
-    if os.path.exists("./files/runtime/PyQt5/Qt5/bin/Qt5WebEngineCore.dll"):
-        # maybe use qwebengine
-
-        QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
-        if not isqt5:
-            # devtool
-            QApplication.setAttribute(
-                Qt.ApplicationAttribute.AA_DontCreateNativeWidgetSiblings
-            )
     if get_platform() != "xp":
         QApplication.setHighDpiScaleFactorRoundingPolicy(
             Qt.HighDpiScaleFactorRoundingPolicy.PassThrough

@@ -255,16 +255,11 @@ def creategoodfontwid(self):
 
 def _createseletengeinecombo(self):
 
-    visengine = ["Qt", "Webview2"]
-    visengine_internal = ["textbrowser", "webview"]
-    if get_platform() == "xp":
-        visengine.pop(1)
-        visengine_internal.pop(1)
     self.seletengeinecombo = getsimplecombobox(
-        visengine,
+        ["Qt", "Webview2"],
         globalconfig,
         "rendertext_using",
-        internal=visengine_internal,
+        internal=["textbrowser", "webview"],
         callback=functools.partial(resetgroudswitchcallback, self),
         static=True,
     )
