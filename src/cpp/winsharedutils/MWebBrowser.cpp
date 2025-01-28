@@ -733,6 +733,29 @@ STDMETHODIMP MWebBrowser::Stat(STATSTG *pstatstg, DWORD grfStatFlag)
     return E_NOTIMPL;
 }
 
+// IServiceProvider interface
+
+STDMETHODIMP MWebBrowser::QueryService(
+    REFGUID guidService,
+    REFIID riid,
+    void **ppvObject)
+{
+    *ppvObject = NULL;
+
+    if (riid == __uuidof(IWindowForBindingUI) ||
+        riid == __uuidof(IHttpSecurity))
+    {
+        *ppvObject = static_cast<IHttpSecurity *>(this);
+    }
+    else
+    {
+        return E_NOTIMPL;
+    }
+
+    AddRef();
+    return S_OK;
+}
+
 // IWindowForBindingUI interface
 
 STDMETHODIMP MWebBrowser::GetWindow(REFGUID rguidReason, HWND *phwnd)
