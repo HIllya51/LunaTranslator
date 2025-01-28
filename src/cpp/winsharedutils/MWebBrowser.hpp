@@ -33,7 +33,7 @@ class MWebBrowser : public ComImpl<IUnknown, IDispatch,
                                    IOleInPlaceSite,
                                    IStorage,
                                    IServiceProvider,
-                                   IHttpSecurity,
+                                   IHttpSecurity, IWindowForBindingUI,
                                    IDocHostUIHandler>
 {
 public:
