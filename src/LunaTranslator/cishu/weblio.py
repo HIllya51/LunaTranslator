@@ -64,7 +64,7 @@ function safe_weblio_search_word(word){
         )
         for link in simplehtmlparser_all(html, "link", '<link rel="stylesheet"'):
             for _ in re.findall('href="(.*?)"', link):
-                links.append("https:" + _)
+                links.append(_)
         ts = []
         for _ in links:
             ts.append(threading.Thread(target=self.makelink, args=(_,)))
