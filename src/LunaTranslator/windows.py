@@ -796,35 +796,6 @@ def MonitorFromWindow(hwnd, dwFlags=MONITOR_DEFAULTTONEAREST):
     return _MonitorFromWindow(hwnd, dwFlags)
 
 
-WINEVENTPROC = WINFUNCTYPE(
-    None,
-    HANDLE,
-    DWORD,
-    HWND,
-    LONG,
-    LONG,
-    DWORD,
-    DWORD,
-)
-
-
-
-UnhookWindowsHookEx = _user32.UnhookWindowsHookEx
-UnhookWindowsHookEx.argtypes = (HHOOK,)
-UnhookWindowsHookEx.restype = BOOL
-TranslateMessage = _user32.TranslateMessage
-TranslateMessage.argtypes = (LPMSG,)
-TranslateMessage.restype = BOOL
-DispatchMessageW = _user32.DispatchMessageW
-DispatchMessageW.argtypes = (LPMSG,)
-DispatchMessageW.restype = LRESULT
-GetMessageW = _user32.GetMessageW
-GetMessageW.argtypes = LPMSG, HWND, UINT, UINT
-GetMessageW.restype = BOOL
-SetWinEventHook = _user32.SetWinEventHook
-SetWinEventHook.restype = HWINEVENTHOOK
-SetWinEventHook.argtypes = DWORD, DWORD, HMODULE, WINEVENTPROC, DWORD, DWORD, DWORD
-
 PathFileExists = windll.Shlwapi.PathFileExistsW
 PathFileExists.argtypes = (LPCWSTR,)
 PathFileExists.restype = BOOL

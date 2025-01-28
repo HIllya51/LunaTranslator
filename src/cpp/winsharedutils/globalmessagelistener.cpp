@@ -82,6 +82,24 @@ DECLARE_API void stopclipboardlisten()
 {
     removeClipboardFormatListener(globalmessagehwnd);
 }
+typedef void (*WinEventHookCALLBACK_t)(DWORD event, HWND hwnd, LONG idObject);
+WinEventHookCALLBACK_t WinEventHookCALLBACK = nullptr;
+static VOID CALLBACK WinEventHookPROC(
+    HWINEVENTHOOK hWinEventHook,
+    DWORD event,
+    HWND hwnd,
+    LONG idObject,
+    LONG idChild,
+    DWORD idEventThread,
+    DWORD dwmsEventTime)
+{
+    if (WinEventHookCALLBACK)
+        WinEventHookCALLBACK(event, hwnd, idObject);
+}
+DECLARE_API void SetWinEventHookCALLBACK(WinEventHookCALLBACK_t callback)
+{
+    WinEventHookCALLBACK = callback;
+}
 DECLARE_API void globalmessagelistener(callbackT callback)
 {
     const wchar_t CLASS_NAME[] = L"globalmessagelistener";
@@ -95,6 +113,8 @@ DECLARE_API void globalmessagelistener(callbackT callback)
     SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)callback);
     ChangeWindowMessageFilterEx(hWnd, LUNA_UPDATE_PREPARED_OK, MSGFLT_ALLOW, nullptr);
     ChangeWindowMessageFilterEx(hWnd, WM_MAGPIE_SCALINGCHANGED, MSGFLT_ALLOW, nullptr);
+    SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, wc.hInstance, WinEventHookPROC, 0, 0, 0);
+    SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_DESTROY, wc.hInstance, WinEventHookPROC, 0, 0, 0);
 }
 DECLARE_API void dispatchcloseevent()
 {

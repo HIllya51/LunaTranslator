@@ -16,7 +16,7 @@ from ctypes import (
     c_char,
     CFUNCTYPE,
 )
-from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL
+from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG
 import platform, windows, functools, os
 
 isbit64 = platform.architecture()[0] == "64bit"
@@ -26,10 +26,11 @@ utilsdll = CDLL(
         "winsharedutils.dll",
     )
 )
-
-
+WinEventHookCALLBACK_t = CFUNCTYPE(None, DWORD, HWND, LONG)
+SetWinEventHookCALLBACK = utilsdll.SetWinEventHookCALLBACK
+SetWinEventHookCALLBACK.argtypes = (WinEventHookCALLBACK_t,)
 SetCurrProcessMute = utilsdll.SetCurrProcessMute
-SetCurrProcessMute.argtypes = c_bool,
+SetCurrProcessMute.argtypes = (c_bool,)
 MonitorPidVolume = utilsdll.MonitorPidVolume
 MonitorPidVolume.argtypes = (DWORD,)
 MonitorPidVolume_callback_t = CFUNCTYPE(None, BOOL)

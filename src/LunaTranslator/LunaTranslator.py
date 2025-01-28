@@ -14,7 +14,6 @@ from myutils.config import (
     isascii,
 )
 from myutils.utils import (
-    minmaxmoveobservefunc,
     parsemayberegexreplace,
     find_or_create_uid,
     checkisusingwine,
@@ -1204,13 +1203,53 @@ class MAINUI:
         self.startreader()
         self.searchwordW = searchwordW(self.commonstylebase)
         self.hookselectdialog = hookselect(self.commonstylebase)
-        threading.Thread(
-            target=minmaxmoveobservefunc, args=(self.translation_ui,)
-        ).start()
         self.starttextsource()
         self.inittray()
         self.playtimemanager = playtimemanager()
         self.__count = 0
+        self.WinEventHookCALLBACK_ptr = winsharedutils.WinEventHookCALLBACK_t(
+            self.WinEventHookCALLBACK
+        )
+        winsharedutils.SetWinEventHookCALLBACK(self.WinEventHookCALLBACK_ptr)
+
+    def WinEventHookCALLBACK(self, event, hwnd, idObject):
+        try:
+            myhwnd = self.hwnd
+            if not myhwnd:
+                return
+            if (
+                event == windows.EVENT_OBJECT_DESTROY
+                and idObject == windows.OBJID_WINDOW
+            ):
+                if hwnd == myhwnd:
+                    self.hwnd = None
+                    return
+            p_pids = windows.GetWindowThreadProcessId(myhwnd)
+            if not p_pids:
+                # 有时候谜之没有EVENT_OBJECT_DESTROY/僵尸进程
+                self.hwnd = None
+                return
+            _focusp = windows.GetWindowThreadProcessId(hwnd)
+            if event != windows.EVENT_SYSTEM_FOREGROUND:
+                return
+            if not (globalconfig["keepontop"] and globalconfig["focusnotop"]):
+                return
+            if _focusp == os.getpid():
+                return
+            if windows.FindWindow(
+                "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
+            ):
+                return
+            if _focusp == p_pids:
+                self.translation_ui.thistimenotsetop = False
+                self.translation_ui.settop()
+            else:
+                self.translation_ui.thistimenotsetop = True
+                self.translation_ui.canceltop()
+                self.translation_ui.settop(most=False)
+
+        except:
+            print_exc()
 
     def MonitorPidVolume_callback_f(self, mute):
         self.translation_ui.processismuteed = mute
