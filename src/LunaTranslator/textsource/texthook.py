@@ -11,7 +11,7 @@ from myutils.config import (
     getlanguse,
 )
 from textsource.textsourcebase import basetext
-from myutils.utils import getfilemd5, getlangtgt, safe_escape
+from myutils.utils import getlangtgt, safe_escape
 from myutils.kanjitrans import kanjitrans
 from myutils.hwnd import injectdll, ListProcess, getpidexe
 from myutils.wrapper import threader
@@ -371,13 +371,6 @@ class texthook(basetext):
         sqlitef = gobject.gettranslationrecorddir(
             "{}_{}.sqlite".format(_filename, gameuid)
         )
-        if os.path.exists(sqlitef) == False:
-            md5 = getfilemd5(gamepath)
-            f2 = gobject.gettranslationrecorddir("{}_{}.sqlite".format(_filename, md5))
-            try:
-                os.rename(f2, sqlitef)
-            except:
-                pass
         self.startsql(sqlitef)
         if autostart:
             autostarthookcode = savehook_new_data[gameuid]["hook"]

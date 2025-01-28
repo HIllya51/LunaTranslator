@@ -1,8 +1,8 @@
 from qtsymbols import *
 import gobject, os, qtawesome
-from myutils.config import globalconfig, uid2gamepath
+from myutils.config import globalconfig
 from myutils.wrapper import Singleton_close
-from myutils.utils import getfilemd5, getimagefilefilter
+from myutils.utils import getimagefilefilter
 from gui.usefulwidget import saveposwindow
 from gui.dynalang import LPushButton
 
@@ -39,13 +39,6 @@ class dialog_memory(saveposwindow):
             "memory/{}.html".format(gobject.baseobject.gameuid)
         )
         try:
-            if os.path.exists(self.rwpath) == False:
-                md5 = getfilemd5(uid2gamepath[gobject.baseobject.gameuid])
-                f2 = gobject.getuserconfigdir("memory/{}.html".format(md5))
-                try:
-                    os.rename(f2, self.rwpath)
-                except:
-                    pass
             with open(self.rwpath, "r", encoding="utf8") as ff:
                 text = ff.read()
         except:

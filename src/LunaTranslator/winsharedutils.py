@@ -17,7 +17,7 @@ from ctypes import (
     CFUNCTYPE,
 )
 from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG
-import platform, windows, functools, os
+import platform, windows, functools, os, threading
 
 isbit64 = platform.architecture()[0] == "64bit"
 utilsdll = CDLL(
@@ -64,10 +64,10 @@ mecab_end.argtypes = (c_void_p,)
 _clipboard_get = utilsdll.clipboard_get
 _clipboard_get.argtypes = (c_void_p,)
 _clipboard_get.restype = c_bool
-_clipboard_set = utilsdll.clipboard_set
-_clipboard_set.argtypes = (HWND, c_wchar_p)
+clipboard_set = utilsdll.clipboard_set
+clipboard_set.argtypes = (c_wchar_p,)
 _clipboard_set_image = utilsdll.clipboard_set_image
-_clipboard_set_image.argtypes = (HWND, c_void_p, c_size_t)
+_clipboard_set_image.argtypes = (c_void_p, c_size_t)
 _clipboard_set_image.restype = c_bool
 
 
@@ -99,17 +99,8 @@ def similarity(s1, s2):
     return levenshtein_normalized_similarity(len(s1), s1, len(s2), s2)
 
 
-clphwnd = windll.user32.CreateWindowExW(0, "STATIC", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-
-
-def clipboard_set(text):
-    global clphwnd
-    return _clipboard_set(clphwnd, text)
-
-
 def clipboard_set_image(bytes_):
-    global clphwnd
-    return _clipboard_set_image(clphwnd, bytes_, len(bytes_))
+    return _clipboard_set_image(bytes_, len(bytes_))
 
 
 def clipboard_get():
@@ -284,18 +275,6 @@ clearEffect = utilsdll.clearEffect
 clearEffect.argtypes = (HWND,)
 
 
-_webview2_detect_version = utilsdll.webview2_detect_version
-_webview2_detect_version.argtypes = c_wchar_p, c_void_p
-
-
-def detect_webview2_version(directory=None):
-    _ = []
-    _f = CFUNCTYPE(c_void_p, c_wchar_p)(_.append)
-    _webview2_detect_version(directory, _f)
-    if _:
-        return tuple(int(_) for _ in _[0].split("."))
-
-
 # MSHTML
 MSHTMLptr = c_void_p
 html_version = utilsdll.html_version
@@ -387,14 +366,59 @@ webview2_put_ZoomFactor.argtypes = WebView2PTR, c_double
 webview2_get_ZoomFactor = utilsdll.webview2_get_ZoomFactor
 webview2_get_ZoomFactor.argtypes = (WebView2PTR,)
 webview2_get_ZoomFactor.restype = c_double
+
+_webview2_detect_version = utilsdll.webview2_detect_version
+_webview2_detect_version.argtypes = c_wchar_p, c_void_p
+
+
+def detect_webview2_version(directory=None):
+    _ = []
+    _f = CFUNCTYPE(c_void_p, c_wchar_p)(_.append)
+    _webview2_detect_version(directory, _f)
+    if _:
+        return tuple(int(_) for _ in _[0].split("."))
+
+
 # WebView2
 
+# LoopBack
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)
 StartCaptureAsync.restype = HANDLE
 StopCaptureAsync = utilsdll.StopCaptureAsync
 StopCaptureAsync.argtypes = (HANDLE,)
+
+
+class audiocapture:
+    def __datacollect(self, ptr, size):
+        self.data = cast(ptr, POINTER(c_char))[:size]
+        self.stoped.release()
+
+    def stop(self):
+        _ = self.mutex
+        if _:
+            self.mutex = None
+            StopCaptureAsync(_)
+            self.stoped.acquire()
+        _ = self.data
+        self.data = None
+        return _
+
+    def __del__(self):
+        self.stop()
+
+    def __init__(self) -> None:
+
+        self.mutex = None
+        self.stoped = threading.Lock()
+        self.stoped.acquire()
+        self.data = None
+        self.cb1 = StartCaptureAsync_cb(self.__datacollect)
+        self.mutex = StartCaptureAsync(self.cb1)
+
+
+# LoopBack
 
 check_window_viewable = utilsdll.check_window_viewable
 check_window_viewable.argtypes = (HWND,)

@@ -31,7 +31,7 @@ class localcachehelper:
         self.name = name
         self.cache = {}
 
-    def __getitem__(self, url: str):
+    def __getitem__(self, url: str) -> "str|None":
         _ = self.cache.get(url)
         if _:
             return _
@@ -44,7 +44,7 @@ class localcachehelper:
         self.cache[url] = data
         return data
 
-    def __setitem__(self, url: str, data):
+    def __setitem__(self, url: str, data: str):
         self.cache[url] = data
         b64 = hashlib.md5(url.encode("utf8")).hexdigest()
         fn = gobject.getcachedir(os.path.join(self.name, b64))
@@ -55,7 +55,7 @@ class localcachehelper:
     set = __setitem__
 
 
-def qimage2binary(qimage: QImage, fmt="BMP"):
+def qimage2binary(qimage: QImage, fmt="BMP") -> bytes:
     byte_array = QByteArray()
     buffer = QBuffer(byte_array)
     buffer.open(QBuffer.OpenModeFlag.WriteOnly)
@@ -65,7 +65,7 @@ def qimage2binary(qimage: QImage, fmt="BMP"):
     return image_data
 
 
-def checkisusingwine():
+def checkisusingwine() -> bool:
     iswine = True
     try:
         winreg.OpenKeyEx(
@@ -79,7 +79,7 @@ def checkisusingwine():
     return iswine
 
 
-def __internal__getlang(k1, k2):
+def __internal__getlang(k1: str, k2: str) -> str:
     try:
         for _ in (0,):
             gameuid = gobject.baseobject.gameuid
@@ -119,7 +119,7 @@ def getlangtgt() -> Languages:
     return Languages.fromcode(__internal__getlang("private_tgtlang_2", "tgtlang4"))
 
 
-def findenclose(text, tag):
+def findenclose(text: str, tag: str) -> str:
     i = 0
     if tag == "link":
         tags = "<link"
@@ -157,13 +157,13 @@ def findenclose(text, tag):
     return collect
 
 
-def simplehtmlparser(text, tag, sign):
+def simplehtmlparser(text: str, tag: str, sign: str) -> str:
     text = text[text.find(sign) :]
     inner = findenclose(text, tag)
     return inner
 
 
-def simplehtmlparser_all(text, tag, sign):
+def simplehtmlparser_all(text: str, tag: str, sign: str) -> "list[str]":
     inners = []
     while True:
         idx = text.find(sign)
@@ -176,7 +176,7 @@ def simplehtmlparser_all(text, tag, sign):
     return inners
 
 
-def nowisdark():
+def nowisdark() -> bool:
     dl = globalconfig["darklight2"]
     if dl == 1:
         dark = False
@@ -442,17 +442,7 @@ def selectdebugfile(path: str, ismypost=False):
     return p
 
 
-def getfilemd5(file, default="0"):
-    try:
-        with open(file, "rb") as ff:
-            bs = ff.read(1024 * 1024 * 32)  # 32mb，有些游戏会把几个G打包成单文件
-        md5 = hashlib.md5(bs).hexdigest()
-        return md5
-    except:
-        return default
-
-
-def dynamiclink(text):
+def dynamiclink(text: str) -> str:
     return text.format(
         main_server=static_data["main_server"][gobject.serverindex],
         docs_server=static_data["docs_server"][gobject.serverindex],
@@ -460,7 +450,7 @@ def dynamiclink(text):
     )
 
 
-def makehtml(text, show=None):
+def makehtml(text: str, show=None) -> str:
 
     if text[-8:] == "releases":
         __ = False
@@ -489,7 +479,7 @@ class autosql(sqlite3.Connection):
         self.close()
 
 
-def safe_escape(string: str):
+def safe_escape(string: str) -> str:
     try:
         return codecs.escape_decode(bytes(string, "utf-8"))[0].decode("utf-8")
     except:
@@ -497,7 +487,7 @@ def safe_escape(string: str):
         return string
 
 
-def case_insensitive_replace(text, old, new):
+def case_insensitive_replace(text: str, old: str, new: str) -> str:
     def replace_match(_):
         return new
 
@@ -505,7 +495,7 @@ def case_insensitive_replace(text, old, new):
 
 
 @tryprint
-def parsemayberegexreplace(lst: list, line: str):
+def parsemayberegexreplace(lst: list, line: str) -> str:
     for fil in lst:
         regex = fil.get("regex", False)
         escape = fil.get("escape", regex)
@@ -711,7 +701,17 @@ class LRUCache:
 globalcachedmodule = {}
 
 
-def checkmd5reloadmodule(filename, module):
+def getfilemd5(file: str, default="0") -> str:
+    try:
+        with open(file, "rb") as ff:
+            bs = ff.read()
+        md5 = hashlib.md5(bs).hexdigest()
+        return md5
+    except:
+        return default
+
+
+def checkmd5reloadmodule(filename: str, module: str):
     if not os.path.exists(filename):
         # reload重新加载不存在的文件时不会报错。
         return True, None
@@ -736,38 +736,10 @@ def checkmd5reloadmodule(filename, module):
         return False, globalcachedmodule.get(key, {}).get("module", None)
 
 
-class audiocapture:
-    def __datacollect(self, ptr, size):
-        self.data = cast(ptr, POINTER(c_char))[:size]
-        self.stoped.release()
-
-    def stop(self):
-        _ = self.mutex
-        if _:
-            self.mutex = None
-            winsharedutils.StopCaptureAsync(_)
-            self.stoped.acquire()
-        _ = self.data
-        self.data = None
-        return _
-
-    def __del__(self):
-        self.stop()
-
-    def __init__(self) -> None:
-
-        self.mutex = None
-        self.stoped = threading.Lock()
-        self.stoped.acquire()
-        self.data = None
-        self.cb1 = winsharedutils.StartCaptureAsync_cb(self.__datacollect)
-        self.mutex = winsharedutils.StartCaptureAsync(self.cb1)
-
-
 class loopbackrecorder:
     def __init__(self):
         try:
-            self.capture = audiocapture()
+            self.capture = winsharedutils.audiocapture()
         except:
             self.capture = None
 

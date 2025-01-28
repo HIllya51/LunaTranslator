@@ -73,7 +73,7 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     }
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
-static HWND globalmessagehwnd;
+HWND globalmessagehwnd;
 DECLARE_API void startclipboardlisten()
 {
     addClipboardFormatListener(globalmessagehwnd);
@@ -83,7 +83,7 @@ DECLARE_API void stopclipboardlisten()
     removeClipboardFormatListener(globalmessagehwnd);
 }
 typedef void (*WinEventHookCALLBACK_t)(DWORD event, HWND hwnd, LONG idObject);
-WinEventHookCALLBACK_t WinEventHookCALLBACK = nullptr;
+static WinEventHookCALLBACK_t WinEventHookCALLBACK = nullptr;
 static VOID CALLBACK WinEventHookPROC(
     HWINEVENTHOOK hWinEventHook,
     DWORD event,

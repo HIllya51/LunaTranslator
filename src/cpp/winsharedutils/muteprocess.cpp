@@ -1,9 +1,12 @@
 ﻿
-DWORD currentprocess = 0;
 typedef void (*MonitorPidVolume_callback_t)(BOOL);
-MonitorPidVolume_callback_t MonitorPidVolume_callback = nullptr;
-CComPtr<IAudioSessionManager2> sessionManager = nullptr;
-CComPtr<IAudioSessionControl2> savesession2 = nullptr;
+namespace
+{
+    DWORD currentprocess = 0;
+    MonitorPidVolume_callback_t MonitorPidVolume_callback = nullptr;
+    CComPtr<IAudioSessionManager2> sessionManager = nullptr;
+    CComPtr<IAudioSessionControl2> savesession2 = nullptr;
+}
 class AudioSessionEvents : public ComImpl<IAudioSessionEvents>
 {
 public:
@@ -20,7 +23,7 @@ public:
     HRESULT STDMETHODCALLTYPE OnStateChanged(AudioSessionState) { return S_OK; }
     HRESULT STDMETHODCALLTYPE OnSessionDisconnected(AudioSessionDisconnectReason) { return S_OK; }
 };
-CComPtr<AudioSessionEvents> sessionEvents;
+static CComPtr<AudioSessionEvents> sessionEvents;
 static void NotifyDirectly(const CComPtr<IAudioSessionControl2> &sess2)
 {
     if (!MonitorPidVolume_callback)
@@ -49,7 +52,7 @@ public:
         return S_OK;
     }
 };
-CComPtr<AudioSessionNotification> notification;
+static CComPtr<AudioSessionNotification> notification;
 
 static HRESULT GetSessionForPid(DWORD pid, CComPtr<IAudioSessionControl2> &sess2)
 {

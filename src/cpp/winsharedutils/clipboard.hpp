@@ -47,11 +47,12 @@ DECLARE_API bool clipboard_get(void (*cb)(const wchar_t *))
     cb(data.value().c_str());
     return true;
 }
+extern HWND globalmessagehwnd;
 
-DECLARE_API bool clipboard_set(HWND hwnd, wchar_t *text)
+DECLARE_API bool clipboard_set(wchar_t *text)
 {
     bool success = false;
-    if (tryopenclipboard(hwnd) == false)
+    if (tryopenclipboard(globalmessagehwnd) == false)
         return false;
     EmptyClipboard();
     do
@@ -174,7 +175,7 @@ BOOL removeClipboardFormatListener(HWND _hWnd)
 }
 #endif
 
-DECLARE_API bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
+DECLARE_API bool clipboard_set_image(void *ptr, size_t size)
 {
     size -= sizeof(BITMAPFILEHEADER);
     HGLOBAL hDib = GlobalAlloc(GMEM_MOVEABLE, size);
@@ -187,7 +188,7 @@ DECLARE_API bool clipboard_set_image(HWND hwnd, void *ptr, size_t size)
         return false;
     }
     memcpy((char *)pDib, (char *)ptr + sizeof(BITMAPFILEHEADER), size);
-    if (tryopenclipboard(hwnd) == false)
+    if (tryopenclipboard(globalmessagehwnd) == false)
         return false;
     EmptyClipboard();
     if (!SetClipboardData(CF_DIB, hDib))
