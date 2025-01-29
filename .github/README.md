@@ -1,16 +1,13 @@
-# <center> LunaTranslator </center>
+# <p> LunaTranslator </p>
   
-<center>
-    <img src="https://img.shields.io/github/license/HIllya51/LunaTranslator?style=for-the-badge">
-    <a href="https://qm.qq.com/q/I5rr3uEpi2"><img src="https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge"></a> <a href="https://discord.com/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge"></a>
-</center>
+<p align="center">    <img src="https://img.shields.io/github/license/HIllya51/LunaTranslator?style=for-the-badge">    <a href="https://qm.qq.com/q/I5rr3uEpi2"><img src="https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge"></a> <a href="https://discord.com/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge"></a></p>
 
-### <center>[使用说明](https://docs.lunatranslator.org/) [视频教程](https://space.bilibili.com/592120404/video) <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a></center>
-
-### <center> 简体中文  | [English](README_en.md) | [Other Language](otherlang.md)</center>
+### <p align="center">[使用说明](https://docs.lunatranslator.org/) [视频教程](https://space.bilibili.com/592120404/video) <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a></p>
 
 
-> <center> <strong>一款galgame翻译器</strong> </center>
+### <p align="center">简体中文  | [English](README_en.md) | [Other Language](otherlang.md)</p>
+
+> <p> <strong>一款galgame翻译器</strong> </p>
 
 ### 功能支持
 
