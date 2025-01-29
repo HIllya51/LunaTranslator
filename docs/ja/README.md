@@ -2,9 +2,15 @@
 
 ## ダウンロード
 
-#### Github Releaseダウンロード
+### Windows 7 以降のシステム
 
-64ビット版をダウンロード <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip" target="_blank"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 32ビット版をダウンロード <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
+64ビット <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/64')" ><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 
+
+32ビット <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/32')"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
+
+### Windows XP & Vista システム
+
+32ビット <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_winxp.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
 ::: danger
 間違えてソースコードをダウンロードしないようにしてください！
