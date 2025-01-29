@@ -95,8 +95,7 @@ export const zh = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'HOOK设置', link: '/zh/hooksettings' },
-                            { text: '内嵌翻译', link: '/zh/embedtranslate' },
-                            { text: '在XP虚拟机上玩古老游戏并提取文本翻译', link: '/zh/playonxp' }
+                            { text: '内嵌翻译', link: '/zh/embedtranslate' }
                         ]
                     },
                     {

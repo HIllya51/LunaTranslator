@@ -34,8 +34,7 @@ export const en = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'HOOK Settings', link: '/en/hooksettings' },
-                            { text: 'Embedded Translation', link: '/en/embedtranslate' },
-                            { text: 'Playing Old Games on XP Virtual Machine and Extracting Text for Translation', link: '/en/playonxp' }
+                            { text: 'Embedded Translation', link: '/en/embedtranslate' }
                         ]
                     },
                     {
