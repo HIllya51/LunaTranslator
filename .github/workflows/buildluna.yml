@@ -95,6 +95,10 @@ jobs:
   merge:
     runs-on: windows-latest
     needs: [pyrt,build_cpp,hook]
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
     strategy:
       matrix:
         include:
@@ -110,6 +114,9 @@ jobs:
         with:
             path: build
       - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.architecture }}
+      - uses: actions/attest-build-provenance@v2.2.0
+        with:
+            subject-path: src/build/${{matrix.fname}}.zip
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.fname }}
@@ -117,6 +124,10 @@ jobs:
   merge_xp:
     runs-on: windows-latest
     needs: [build_cpp_xp,hook_xp]
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
@@ -125,6 +136,9 @@ jobs:
         with:
             path: build
       - run:  python src/scripts/build_lunatranslator.py merge xp
+      - uses: actions/attest-build-provenance@v2.2.0
+        with:
+            subject-path: src/build/LunaTranslator_x86_winxp.zip
       - uses: actions/upload-artifact@v4
         with:
           name: LunaTranslator_x86_winxp
