@@ -464,7 +464,6 @@
         "64": [
             "./files/plugins/LunaHook/LunaHost64.dll",
             "./files/plugins/DLL64/winsharedutils.dll",
-            "./files/plugins/DLL64/winrtutils.dll",
             "./files/plugins/DLL64/LunaOCR.dll",
             "./files/plugins/DLL64/libcurl-x64.dll",
             "./files/plugins/DLL64/bass.dll",
@@ -476,7 +475,6 @@
         "32": [
             "./files/plugins/LunaHook/LunaHost32.dll",
             "./files/plugins/DLL32/winsharedutils.dll",
-            "./files/plugins/DLL32/winrtutils.dll",
             "./files/plugins/DLL32/LunaOCR.dll",
             "./files/plugins/DLL32/libcurl.dll",
             "./files/plugins/DLL32/bass.dll",
