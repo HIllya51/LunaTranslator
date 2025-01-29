@@ -60,7 +60,7 @@
 
 <img src='../src/files/zan.jpg' style="height: 400px !important;">
 
-### 开源协议
+### LICENSE
 
 ![img](https://img.shields.io/github/license/HIllya51/LunaTranslator?style=for-the-badge)
 
