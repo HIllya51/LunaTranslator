@@ -6,9 +6,9 @@
 
 > **一款galgame翻译器**
 
-### 功能支持
+## 功能支持
 
-##### 文本输入
+#### 文本输入
 
 - **HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
 
@@ -19,7 +19,7 @@
 
 - **文本输出** 提取的文本可以输出到剪贴板、Websocket，以供其他程序使用。
 
-##### 翻译器
+#### 翻译器
 
 支持几乎所有能想得到的翻译引擎，包括： 
 
@@ -34,14 +34,14 @@
 - **支持自定义翻译扩展** 支持使用python语言扩展其他翻译接口
  
 
-##### 语音合成
+#### 语音合成
 
 - **离线TTS** 支持WindowsTTS、VoiceRoid2/VoiceRoid+、NeoSpeech、VOICEVOX、VITS
 
 - **在线TTS** 支持火山TTS、有道TTS、EdgeTTS、谷歌TTS、OpenAI
 
 
-##### 日语学习
+#### 日语学习
 
 - **日语分词及假名显示** 支持使用 Mecab 等分词和显示假名
 
@@ -50,13 +50,13 @@
 - **Anki** 支持使用一键添加单词到anki中
 
  
-### 支持作者
+## 支持作者
 
 如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~
 
 <img src='../src/files/zan.jpg' style="height: 400px !important;">
 
-### 开源许可
+## 开源许可
 
 LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 
