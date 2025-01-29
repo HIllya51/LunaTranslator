@@ -92,8 +92,7 @@ export const ja = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'HOOK設定', link: '/ja/hooksettings' },
-                            { text: '埋め込み翻訳', link: '/ja/embedtranslate' },
-                            { text: 'XP仮想マシンで古いゲームをプレイしてテキストを抽出して翻訳する', link: '/ja/playonxp' }
+                            { text: '埋め込み翻訳', link: '/ja/embedtranslate' }
                         ]
                     },
                     {
