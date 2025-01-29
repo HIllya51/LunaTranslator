@@ -60,10 +60,12 @@
 
 <img src='../src/files/zan.jpg' style="height: 400px !important;">
 
-### LICENSE ![img](https://img.shields.io/github/license/HIllya51/LunaTranslator)
+### 开源许可
+
+LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 
 <details>
-<summary>引用</summary>
+<summary>引用的项目</summary>
 
 * ![img](https://img.shields.io/github/license/RapidAI/RapidOcrOnnx) [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
 * ![img](https://img.shields.io/github/license/PaddlePaddle/PaddleOCR) [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
