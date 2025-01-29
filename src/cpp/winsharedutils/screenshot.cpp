@@ -104,39 +104,31 @@ namespace
     typedef UINT(WINAPI *tGetDpiForWindow)(HWND hwnd);
     typedef HRESULT(STDAPICALLTYPE *tGetDpiForMonitor)(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *);
 
-    UINT GetMonitorDpiScaling(HWND hwnd)
+    UINT GetHWNDDpi(HWND hwnd)
     {
-        HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-        if (!hMonitor)
-            return USER_DEFAULT_SCREEN_DPI;
-        auto pGetDpiForMonitor = (tGetDpiForMonitor)GetProcAddress(GetModuleHandleA("Shcore.dll"), "GetDpiForMonitor");
-        if (pGetDpiForMonitor)
+        if (auto pGetDpiForWindow = (tGetDpiForWindow)GetProcAddress(GetModuleHandle(L"user32.dll"), "GetDpiForWindow"))
+            return pGetDpiForWindow(hwnd);
+
+        if (auto pGetDpiForMonitor = (tGetDpiForMonitor)GetProcAddress(GetModuleHandleA("Shcore.dll"), "GetDpiForMonitor"))
         {
-            UINT dpiX = 0;
-            UINT dpiY = 0;
-            HRESULT hr = pGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
-            if (SUCCEEDED(hr))
-                return dpiX;
+            HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            if (hMonitor)
+            {
+                UINT dpiX = 0;
+                UINT dpiY = 0;
+                HRESULT hr = pGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
+                if (SUCCEEDED(hr))
+                    return dpiX;
+            }
         }
-        MONITORINFOEX info;
-        info.cbSize = sizeof(MONITORINFOEX);
-        if (!GetMonitorInfo(hMonitor, &info))
-            return USER_DEFAULT_SCREEN_DPI;
-        HDC hdc = GetDC(NULL);
-        HDC hdcMonitor = CreateCompatibleDC(hdc);
-        HDC hdcMonitorScreen = CreateIC(TEXT("DISPLAY"), info.szDevice, NULL, 0);
-        int dpiX = GetDeviceCaps(hdcMonitorScreen, LOGPIXELSX);
-        DeleteDC(hdcMonitor);
-        DeleteDC(hdcMonitorScreen);
-        ReleaseDC(NULL, hdc);
-        return dpiX;
-    }
-    UINT GetHWNDDpiScaling(HWND hwnd)
-    {
-        auto pGetDpiForWindow = (tGetDpiForWindow)GetProcAddress(GetModuleHandle(L"user32.dll"), "GetDpiForWindow");
-        if (!pGetDpiForWindow)
-            return 0;
-        return pGetDpiForWindow(hwnd);
+
+        if (HDC hdc = GetDC(hwnd))
+        {
+            int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+            ReleaseDC(NULL, hdc);
+            return dpiX;
+        }
+        return USER_DEFAULT_SCREEN_DPI;
     }
 
     bool checkempty(HWND hwnd, RECT &rect)
@@ -151,16 +143,8 @@ namespace
             return true;
         return rect.bottom == rect.top || rect.left == rect.right;
     }
-    float dpiscale(HWND hwnd)
-    {
-        auto dpi = GetHWNDDpiScaling(hwnd);
-        if (!dpi)
-            return 1;
-        auto mdpi = GetMonitorDpiScaling(hwnd);
-        return 1.0f * dpi / mdpi;
-    }
 }
-
+extern HWND globalmessagehwnd;
 std::vector<byte> __gdi_screenshot(HWND hwnd, RECT rect)
 {
     if (checkempty(hwnd, rect))
@@ -169,11 +153,12 @@ std::vector<byte> __gdi_screenshot(HWND hwnd, RECT rect)
         hwnd = GetDesktopWindow();
     else
     {
-        auto rate = dpiscale(hwnd);
-        rect.bottom *= rate;
-        rect.right *= rate;
-        rect.left *= rate;
-        rect.top *= rate;
+        auto dpi = GetHWNDDpi(hwnd);
+        auto thisdpi = GetHWNDDpi(globalmessagehwnd);
+        rect.bottom = MulDiv(rect.bottom, dpi, thisdpi);
+        rect.right = MulDiv(rect.right, dpi, thisdpi);
+        rect.left = MulDiv(rect.left, dpi, thisdpi);
+        rect.top = MulDiv(rect.top, dpi, thisdpi);
     }
     auto hdc = GetDC(hwnd);
     if (!hdc)
