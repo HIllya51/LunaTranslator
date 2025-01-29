@@ -1,4 +1,4 @@
-# <p> LunaTranslator </p>
+# <p align="center"> LunaTranslator </p>
   
 <p align="center">    <img src="https://img.shields.io/github/license/HIllya51/LunaTranslator?style=for-the-badge">    <a href="https://qm.qq.com/q/I5rr3uEpi2"><img src="https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge"></a> <a href="https://discord.com/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge"></a></p>
 
@@ -7,7 +7,8 @@
 
 ### <p align="center">简体中文  | [English](README_en.md) | [Other Language](otherlang.md)</p>
 
-> <p> <strong>一款galgame翻译器</strong> </p>
+
+> <p align="center"> <strong>一款galgame翻译器</strong> </p>
 
 ### 功能支持
 
@@ -58,29 +59,20 @@
 <summary>点击查看</summary>
 
 * [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
-
 * [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
-
-* [UlionTse/translators](https://github.com/UlionTse/translators)
-
 * [Blinue/Magpie](https://github.com/Blinue/Magpie)
-
 * [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
-
 * [xupefei/Locale-Emulator](https://github.com/xupefei/Locale-Emulator)
-
 * [InWILL/Locale_Remulator](https://github.com/InWILL/Locale_Remulator)
-
 * [zxyacb/ntlea](https://github.com/zxyacb/ntlea)
-
 * [Chuyu-Team/YY-Thunks](https://github.com/Chuyu-Team/YY-Thunks)
-
+* [Chuyu-Team/VC-LTL5](https://github.com/Chuyu-Team/VC-LTL5)
 * [@KirpichKrasniy](https://github.com/KirpichKrasniy)
-
 * [uyjulian/AtlasTranslate](https://github.com/uyjulian/AtlasTranslate)
-
 * [ilius/pyglossary](https://github.com/ilius/pyglossary)
-
+* [ikegami-yukino/mecab](https://github.com/ikegami-yukino/mecab)
+* [AngusJohnson/Clipper2](https://github.com/AngusJohnson/Clipper2)
+* [rapidfuzz/rapidfuzz-cpp](https://github.com/rapidfuzz/rapidfuzz-cpp)
 </details>
 
 
