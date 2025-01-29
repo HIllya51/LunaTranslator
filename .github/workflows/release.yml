@@ -16,9 +16,22 @@ jobs:
         run: python src/scripts/build_lunatranslator.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
 
   release:
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
     runs-on: windows-latest
     needs: [buildluna,loadversion]
     steps:
+      - uses: actions/attest-build-provenance@v2.2.0
+        with:
+            subject-name: LunaTranslator_x86_winxp
+      - uses: actions/attest-build-provenance@v2.2.0
+        with:
+            subject-name: LunaTranslator_x86
+      - uses: actions/attest-build-provenance@v2.2.0
+        with:
+            subject-name: LunaTranslator
       - uses: actions/download-artifact@v4
         with:
             path: build
