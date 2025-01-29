@@ -1,6 +1,6 @@
 # <p align="center"> LunaTranslator </p>
   
-<p align="center">    <img src="https://img.shields.io/github/license/HIllya51/LunaTranslator?style=for-the-badge">    <a href="https://qm.qq.com/q/I5rr3uEpi2"><img src="https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge"></a> <a href="https://discord.com/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge"></a></p>
+<p align="center">     <a href="https://qm.qq.com/q/I5rr3uEpi2"><img src="https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge"></a> <a href="https://discord.com/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge"></a></p>
 
 ### <p align="center">[使用说明](https://docs.lunatranslator.org/) [视频教程](https://space.bilibili.com/592120404/video) [软件下载](https://docs.lunatranslator.org/zh/README.html)</p>
 
@@ -53,29 +53,6 @@
 
 - **Anki** 支持使用一键添加单词到anki中
 
-### 引用
-
-<details>
-<summary>点击查看</summary>
-
-* [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
-* [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
-* [Blinue/Magpie](https://github.com/Blinue/Magpie)
-* [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
-* [xupefei/Locale-Emulator](https://github.com/xupefei/Locale-Emulator)
-* [InWILL/Locale_Remulator](https://github.com/InWILL/Locale_Remulator)
-* [zxyacb/ntlea](https://github.com/zxyacb/ntlea)
-* [Chuyu-Team/YY-Thunks](https://github.com/Chuyu-Team/YY-Thunks)
-* [Chuyu-Team/VC-LTL5](https://github.com/Chuyu-Team/VC-LTL5)
-* [@KirpichKrasniy](https://github.com/KirpichKrasniy)
-* [uyjulian/AtlasTranslate](https://github.com/uyjulian/AtlasTranslate)
-* [ilius/pyglossary](https://github.com/ilius/pyglossary)
-* [ikegami-yukino/mecab](https://github.com/ikegami-yukino/mecab)
-* [AngusJohnson/Clipper2](https://github.com/AngusJohnson/Clipper2)
-* [rapidfuzz/rapidfuzz-cpp](https://github.com/rapidfuzz/rapidfuzz-cpp)
-</details>
-
-
  
 ### 支持作者
 
@@ -83,3 +60,25 @@
 
 <img src='../src/files/zan.jpg' style="height: 400px !important;">
 
+### 开源协议
+
+![img](https://img.shields.io/github/license/HIllya51/LunaTranslator?style=for-the-badge)
+
+<details>
+<summary>引用</summary>
+
+![img](https://img.shields.io/github/license/RapidAI/RapidOcrOnnx) [RapidAI/RapidOcrOnnx](https://github.com/RapidAI/RapidOcrOnnx)
+![img](https://img.shields.io/github/license/PaddlePaddle/PaddleOCR) [PaddlePaddle/PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR)
+![img](https://img.shields.io/github/license/Blinue/Magpie) [Blinue/Magpie](https://github.com/Blinue/Magpie)
+![img](https://img.shields.io/github/license/nanokina/ebyroid) [nanokina/ebyroid](https://github.com/nanokina/ebyroid)
+![img](https://img.shields.io/github/license/xupefei/Locale-Emulator) [xupefei/Locale-Emulator](https://github.com/xupefei/Locale-Emulator)
+![img](https://img.shields.io/github/license/InWILL/Locale_Remulator) [InWILL/Locale_Remulator](https://github.com/InWILL/Locale_Remulator)
+![img](https://img.shields.io/github/license/zxyacb/ntlea) [zxyacb/ntlea](https://github.com/zxyacb/ntlea)
+![img](https://img.shields.io/github/license/Chuyu-Team/YY-Thunks) [Chuyu-Team/YY-Thunks](https://github.com/Chuyu-Team/YY-Thunks)
+![img](https://img.shields.io/github/license/Chuyu-Team/VC-LTL5) [Chuyu-Team/VC-LTL5](https://github.com/Chuyu-Team/VC-LTL5)
+![img](https://img.shields.io/github/license/uyjulian/AtlasTranslate) [uyjulian/AtlasTranslate](https://github.com/uyjulian/AtlasTranslate)
+![img](https://img.shields.io/github/license/ilius/pyglossary) [ilius/pyglossary](https://github.com/ilius/pyglossary)
+![img](https://img.shields.io/github/license/ikegami-yukino/mecab) [ikegami-yukino/mecab](https://github.com/ikegami-yukino/mecab)
+![img](https://img.shields.io/github/license/AngusJohnson/Clipper2) [AngusJohnson/Clipper2](https://github.com/AngusJohnson/Clipper2)
+![img](https://img.shields.io/github/license/rapidfuzz/rapidfuzz-cpp) [rapidfuzz/rapidfuzz-cpp](https://github.com/rapidfuzz/rapidfuzz-cpp)
+</details>
