@@ -3,7 +3,7 @@ import threading
 from qtsymbols import *
 import gobject
 import os, subprocess, functools
-import time, winrtutils, winsharedutils, hashlib
+import time, winsharedutils, hashlib
 from myutils.config import savehook_new_data, globalconfig
 from myutils.wrapper import threader
 from myutils.utils import qimage2binary
@@ -80,7 +80,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
         @threader
         def _():
-            p = safepixmap(winrtutils.winrt_capture_window(hwnd))
+            p = safepixmap(winsharedutils.winrt_capture_window(hwnd))
             callback(p, fname + "_winrt." + app)
 
         _()
@@ -95,7 +95,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
             @threader
             def _():
-                p = safepixmap(winrtutils.winrt_capture_window(hwnd))
+                p = safepixmap(winsharedutils.winrt_capture_window(hwnd))
                 callback(p, fname + "_winrt_magpie." + app)
 
             _()

@@ -12,40 +12,10 @@
 #include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 #include <winrt/Windows.Graphics.Imaging.h>
-#include <winrt/Windows.Security.Authorization.AppCapabilityAccess.h>
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.Storage.Pickers.h>
 #include <winrt/Windows.Storage.Streams.h>
-#include <roerrorapi.h>
-#include <gdiplus.h>
-// #include "ImageFormatConversion.hpp"
 
-#pragma comment(lib, "windowsapp.lib")
-#pragma comment(lib, "DXGI.lib")
-#pragma comment(lib, "gdiplus.lib")
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "Windowscodecs.lib")
-int GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
-{
-    UINT num = 0;  // number of image encoders
-    UINT size = 0; // size of the image encoder array in bytes
-    Gdiplus::GetImageEncodersSize(&num, &size);
-    if (size == 0)
-        return -1; // Failure
-
-    auto pImageCodecInfo = std::make_unique<Gdiplus::ImageCodecInfo[]>(num);
-    GetImageEncoders(num, size, pImageCodecInfo.get());
-
-    for (UINT j = 0; j < num; ++j)
-    {
-        if (wcscmp(pImageCodecInfo[j].MimeType, format) == 0)
-        {
-            *pClsid = pImageCodecInfo[j].Clsid;
-            return j; // Success
-        }
-    }
-    return -1; // Failure
-}
 void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
 {
     HMODULE hModule = GetModuleHandle(TEXT("d3d11.dll"));
@@ -207,8 +177,13 @@ DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
         style_ex &= ~WS_EX_TOOLWINDOW;
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
     }
-
-    capture_window(hwnd, cb);
+    try
+    {
+        capture_window(hwnd, cb);
+    }
+    catch (...)
+    {
+    }
     if (needset)
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex_save);
 }

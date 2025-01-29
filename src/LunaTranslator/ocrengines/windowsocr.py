@@ -1,5 +1,5 @@
-import gobject
-import winrtutils, windows, re, os
+import winsharedutils
+import windows, re, os
 from myutils.hwnd import subprochiderun
 from myutils.config import _TR, getlang_inner2show
 from myutils.utils import dynamiclink
@@ -55,7 +55,7 @@ def installx(combo: _SuperCombo, btninstall, supportlang):
     combo.setlist.emit(lang, inter)
     btninstall.setEnabled(True)
     combo.setEnabled(True)
-    supportlang.setText(", ".join([_[1] for _ in winrtutils.getlanguagelist()]))
+    supportlang.setText(", ".join([_[1] for _ in winsharedutils.getlanguagelist()]))
 
 
 def question():
@@ -63,7 +63,7 @@ def question():
     formLayout = LFormLayout(dialog)
     formLayout.setContentsMargins(0, 0, 0, 0)
     supportlang = QLabel()
-    supportlang.setText(", ".join([_[1] for _ in winrtutils.getlanguagelist()]))
+    supportlang.setText(", ".join([_[1] for _ in winsharedutils.getlanguagelist()]))
     supportlang.setWordWrap(True)
     formLayout.addRow("当前支持的语言", supportlang)
 
@@ -117,7 +117,7 @@ class OCR(baseocr):
         return {Languages.Chinese: "zh-Hans", Languages.TradChinese: "zh-Hant"}
 
     def ocr(self, imagebinary):
-        supports = [_[0] for _ in winrtutils.getlanguagelist()]
+        supports = [_[0] for _ in winsharedutils.getlanguagelist()]
         if len(supports) == 0:
 
             raise Exception(_TR("无可用语言"))
@@ -127,17 +127,17 @@ class OCR(baseocr):
             else:
                 self.raise_cant_be_auto_lang()
         else:
-            if not winrtutils.check_language_valid(self.srclang):
+            if not winsharedutils.check_language_valid(self.srclang):
                 raise Exception(
                     _TR(
                         "系统未安装“{currlang}”的OCR模型\n当前支持的语言：{langs}"
                     ).format(
                         currlang=_TR(getlang_inner2show(self.srclang_1)),
-                        langs=", ".join([_[1] for _ in winrtutils.getlanguagelist()]),
+                        langs=", ".join([_[1] for _ in winsharedutils.getlanguagelist()]),
                     )
                 )
             uselang = self.srclang
-        ret = winrtutils.OCR_f(imagebinary, uselang, self.getlanguagespace(uselang))
+        ret = winsharedutils.OCR_f(imagebinary, uselang, self.getlanguagespace(uselang))
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
         return {"box": boxs, "text": texts}
