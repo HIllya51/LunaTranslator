@@ -15,11 +15,15 @@ from gui.usefulwidget import (
     listediter,
     D_getIconButton,
     auto_select_webview,
+    getboxlayout,
     selectcolor,
     D_getspinbox,
     D_getcolorbutton,
+    getIconButton,
+    getsimpleswitch,
     D_getsimplecombobox,
 )
+from gui.setting_display_text import Exteditor, alertwhenrestart
 from gui.setting_about import offlinelinks
 
 
@@ -50,7 +54,6 @@ def gethiragrid(self):
                     800,
                     items,
                 ),
-                icon="fa.gear",
             )
 
         else:
@@ -89,6 +92,22 @@ def gethiragrid(self):
 def _checkmaybefailed(self, _):
     auto_select_webview.switchtype()
     self.seletengeinecombo_1.setCurrentIndex(globalconfig["usewebview"])
+    self.fuckshit111.setVisible(globalconfig["usewebview"] == 1)
+
+
+def createmaybeshowuseplugins(self):
+    _btn2 = getIconButton(callback=functools.partial(Exteditor, self))
+    switch2 = getsimpleswitch(
+        globalconfig, "webviewLoadExt", callback=lambda x: alertwhenrestart(self, x)
+    )
+    self.fuckshit__1 = switch2
+    _ = getboxlayout(
+        ["附加浏览器插件", switch2, _btn2, ""], makewidget=True, margin0=True
+    )
+    _.setParent(self)
+    _.setVisible(globalconfig["usewebview"] == 1)
+    self.fuckshit111 = _
+    return _
 
 
 def _createseletengeinecombo_1(self):
@@ -148,7 +167,6 @@ def initinternal(self, names):
                         "cishu." + cishu,
                         cishu,
                     ),
-                    icon="fa.gear",
                 ),
             ]
         else:
@@ -278,10 +296,7 @@ def setTabcishu_l(self):
                             ),
                             "",
                             "词性颜色",
-                            D_getIconButton(
-                                callback=lambda: multicolorset(self),
-                                icon="fa.gear",
-                            ),
+                            D_getIconButton(callback=lambda: multicolorset(self)),
                         ],
                     ),
                 ),
@@ -298,16 +313,12 @@ def setTabcishu_l(self):
                         [
                             "查词",
                             D_getIconButton(
-                                lambda: gobject.baseobject.searchwordW.showsignal.emit(),
-                                "fa.search",
+                                lambda: gobject.baseobject.searchwordW.showsignal.emit()
                             ),
                             "",
                             "",
                             "辞书显示顺序",
-                            D_getIconButton(
-                                functools.partial(vistranslate_rank, self),
-                                "fa.gear",
-                            ),
+                            D_getIconButton(functools.partial(vistranslate_rank, self)),
                             "",
                         ],
                         [
@@ -346,6 +357,7 @@ def setTabcishu_l(self):
                                 0,
                             ),
                         ],
+                        [(functools.partial(createmaybeshowuseplugins, self), 0)],
                     ],
                 ),
                 0,

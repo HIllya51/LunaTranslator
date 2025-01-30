@@ -142,16 +142,13 @@ def maybehavebutton(self, gameuid, post):
                 selectdebugfile,
                 save_text_process_info["mypost"],
                 ismypost=True,
-            ),
-            icon="fa.gear",
+            )
         )
     else:
         if post not in postprocessconfig:
             return
         if post == "_remove_chaos":
-            return getIconButton(
-                icon="fa.gear", callback=lambda: codeacceptdialog(self)
-            )
+            return getIconButton(callback=lambda: codeacceptdialog(self))
         elif "args" in postprocessconfig[post]:
             if post == "stringreplace":
                 callback = functools.partial(
@@ -185,7 +182,7 @@ def maybehavebutton(self, gameuid, post):
                     600,
                     items,
                 )
-            return getIconButton(callback=callback, icon="fa.gear")
+            return getIconButton(callback=callback)
         else:
             return None
 
@@ -413,10 +410,7 @@ class dialog_setting_game_internal(QWidget):
 
                 _vbox_internal.insert(
                     2,
-                    getIconButton(
-                        functools.partial(_revert, coll, linei + 1),
-                        icon="fa.gear",
-                    ),
+                    getIconButton(functools.partial(_revert, coll, linei + 1)),
                 )
                 vislf.addRow(
                     key,
@@ -708,7 +702,7 @@ class dialog_setting_game_internal(QWidget):
                     combo,
                     typecombo,
                     button,
-                    getIconButton(callback=self.edittagremap, icon="fa.gear"),
+                    getIconButton(callback=self.edittagremap),
                 ]
             )
         )
@@ -767,8 +761,7 @@ class dialog_setting_game_internal(QWidget):
                     getIconButton(
                         callback=lambda: yuyinzhidingsetting(
                             self, savehook_new_data[gameuid]["tts_skip_regex"]
-                        ),
-                        icon="fa.gear",
+                        )
                     ),
                     QLabel(),
                 ],
@@ -787,8 +780,7 @@ class dialog_setting_game_internal(QWidget):
                             savehook_new_data[gameuid]["tts_repair_regex"],
                             "语音修正",
                             ["正则", "转义", "原文", "替换"],
-                        ),
-                        icon="fa.gear",
+                        )
                     ),
                     QLabel(),
                     getsimpleswitch(
@@ -863,8 +855,7 @@ class dialog_setting_game_internal(QWidget):
                 )
                 vbox.addWidget(
                     getIconButton(
-                        callback=functools.partial(__, setting, self, gameuid),
-                        icon="fa.gear",
+                        callback=functools.partial(__, setting, self, gameuid)
                     ),
                     i + 1,
                     2,

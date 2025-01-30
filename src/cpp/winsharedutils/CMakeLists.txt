@@ -8,6 +8,7 @@ set(winrtsource winrt/xp.cpp)
 endif()
 add_library(winsharedutils MODULE globalmessagelistener.cpp webview2.cpp AreoAcrylic.cpp screenshot.cpp ../implsapi.cpp hwnd.cpp theme.cpp version.cpp lnk.cpp levenshtein.cpp muteprocess.cpp sapi_dll.cpp simplemecab.cpp 
 applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp
+webview2_impl.cpp
 SimpleBrowser.cpp MWebBrowser.cpp icon.cpp ${versioninfo}
 ${winrtsource})
 target_precompile_headers(winsharedutils REUSE_FROM pch)

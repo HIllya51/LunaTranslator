@@ -316,7 +316,7 @@ html_eval.argtypes = MSHTMLptr, c_wchar_p
 # WebView2
 WebView2PTR = c_void_p
 webview2_create = utilsdll.webview2_create
-webview2_create.argtypes = (HWND, c_bool)
+webview2_create.argtypes = (HWND, c_bool, c_bool)
 webview2_create.restype = WebView2PTR
 webview2_destroy = utilsdll.webview2_destroy
 webview2_destroy.argtypes = (WebView2PTR,)
@@ -378,6 +378,16 @@ def detect_webview2_version(directory=None):
     if _:
         return tuple(int(_) for _ in _[0].split("."))
 
+
+webview2_ext_add = utilsdll.webview2_ext_add
+webview2_ext_add.argtypes = WebView2PTR, c_wchar_p
+webview2_list_ext_CALLBACK_T = CFUNCTYPE(None, c_wchar_p, c_wchar_p, BOOL)
+webview2_ext_list = utilsdll.webview2_ext_list
+webview2_ext_list.argtypes = WebView2PTR, webview2_list_ext_CALLBACK_T
+webview2_ext_enable = utilsdll.webview2_ext_enable
+webview2_ext_enable.argtypes = (WebView2PTR, c_wchar_p, BOOL)
+webview2_ext_rm = utilsdll.webview2_ext_rm
+webview2_ext_rm.argtypes = WebView2PTR, c_wchar_p
 
 # WebView2
 

@@ -515,7 +515,6 @@
     "手动翻译": "Traduzione manuale",
     "显示引擎": "Motore di visualizzazione",
     "阴影字体": "Carattere ombra",
-    "额外的html": "HTML aggiuntivo",
     "测试": "prova",
     "范围框颜色": "Colore della casella intervallo",
     "主题": "tema",
@@ -771,5 +770,7 @@
     "清除加亮": "",
     "内嵌翻译上下文": "",
     "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "",
-    "识别设置": ""
+    "识别设置": "",
+    "附加HTML": "",
+    "附加浏览器插件": ""
 }

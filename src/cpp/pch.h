@@ -13,7 +13,7 @@
 #include <Psapi.h>
 #include <atlbase.h>
 #include <atlsync.h>
-
+#include <variant>
 #include <iostream>
 #include <string>
 #include <vector>

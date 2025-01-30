@@ -515,7 +515,6 @@
     "手动翻译": "Traduction manuelle",
     "显示引擎": "Moteur d'affichage",
     "阴影字体": "Shadow font",
-    "额外的html": "Html supplémentaire",
     "测试": "Test",
     "范围框颜色": "Gamme Box couleur",
     "主题": "Thèmes",
@@ -771,5 +770,7 @@
     "清除加亮": "",
     "内嵌翻译上下文": "",
     "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "",
-    "识别设置": ""
+    "识别设置": "",
+    "附加HTML": "",
+    "附加浏览器插件": ""
 }

@@ -1,0 +1,467 @@
+﻿#include "webview2_impl.hpp"
+
+struct CoAsyncTaskWaiter
+{
+    CEvent event;
+    CoAsyncTaskWaiter()
+    {
+        event.Create(nullptr, false, false, nullptr);
+    }
+    void Set()
+    {
+        SetEvent(event);
+    }
+    void Wait()
+    {
+        DWORD handleIndex = 0;
+        CoWaitForMultipleHandles(COWAIT_DISPATCH_WINDOW_MESSAGES | COWAIT_DISPATCH_CALLS | COWAIT_INPUTAVAILABLE, INFINITE, 1, &event.m_h, &handleIndex);
+    }
+};
+
+class JSEvalCallback : public ComImpl<ICoreWebView2ExecuteScriptCompletedHandler>
+{
+public:
+    CoAsyncTaskWaiter waitforexec;
+    evaljs_callback_t cb;
+    JSEvalCallback(evaljs_callback_t cb) : cb(cb) {}
+    // ICoreWebView2CreateCoreWebView2ControllerCompletedHandler
+    HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode, LPCWSTR resultObjectAsJson)
+    {
+        cb(resultObjectAsJson);
+        waitforexec.Set();
+        return S_OK;
+    }
+};
+class AddExtCallback : public ComImpl<ICoreWebView2ProfileAddBrowserExtensionCompletedHandler>
+{
+public:
+    CoAsyncTaskWaiter waitforexec;
+    // ICoreWebView2ProfileAddBrowserExtensionCompletedHandler
+    HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode, ICoreWebView2BrowserExtension *extension)
+    {
+        waitforexec.Set();
+        return S_OK;
+    }
+};
+class ListExtCallback : public ComImpl<ICoreWebView2ProfileGetBrowserExtensionsCompletedHandler, ICoreWebView2BrowserExtensionEnableCompletedHandler, ICoreWebView2BrowserExtensionRemoveCompletedHandler>
+{
+public:
+    CoAsyncTaskWaiter waitforexec;
+    List_Ext_callback_t cb;
+    std::wstring idenable;
+    std::wstring idremove;
+    BOOL dosome;
+    ListExtCallback(List_Ext_callback_t cb, LPCWSTR _idenable = nullptr, BOOL dosome = TRUE, LPCWSTR _idremove = nullptr) : idremove(_idremove ? _idremove : L""), idenable(_idenable ? _idenable : L""), dosome(dosome), cb(cb) {}
+    // ICoreWebView2BrowserExtensionEnableCompletedHandler
+    HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode)
+    {
+        return S_OK;
+    }
+    HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode, ICoreWebView2BrowserExtensionList *extensionList)
+    {
+        [&]()
+        {
+            UINT count;
+            CHECK_FAILURE_NORET(extensionList->get_Count(&count));
+            for (UINT i = 0; i < count; i++)
+            {
+                CComPtr<ICoreWebView2BrowserExtension> ext;
+                CHECK_FAILURE_CONTINUE(extensionList->GetValueAtIndex(i, &ext));
+                CComHeapPtr<WCHAR> id{};
+                CHECK_FAILURE_CONTINUE(ext->get_Id(&id));
+                if (cb)
+                {
+                    BOOL isEnabled;
+                    CComHeapPtr<WCHAR> name{};
+                    CHECK_FAILURE_CONTINUE(ext->get_Name(&name));
+                    CHECK_FAILURE_CONTINUE(ext->get_IsEnabled(&isEnabled));
+                    cb(id, name, isEnabled);
+                }
+                else if (idenable.size())
+                {
+                    if (wcscmp(idenable.c_str(), id) == 0)
+                    {
+                        ext->Enable(dosome, this);
+                    }
+                }
+                else if (idremove.size())
+                {
+                    if (wcscmp(idremove.c_str(), id) == 0)
+                    {
+                        ext->Remove(this);
+                    }
+                }
+            }
+        }();
+        waitforexec.Set();
+        return S_OK;
+    }
+};
+// ICoreWebView2CustomItemSelectedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2ContextMenuItem *sender, IUnknown *args)
+{
+    INT32 commandid;
+    CHECK_FAILURE(sender->get_CommandId(&commandid));
+    auto find = ref->menuscallback.find(commandid);
+    if (find == ref->menuscallback.end())
+        return E_FAIL;
+    if (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT)
+    {
+        std::get<contextmenu_callback_t>(find->second)(CurrSelectText);
+    }
+    else
+    {
+        std::get<contextmenu_notext_callback_t>(find->second)();
+    }
+    return S_OK;
+}
+// ICoreWebView2NavigationStartingEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICoreWebView2NavigationStartingEventArgs *args)
+{
+    auto StartsWith = [](const wchar_t *str, const wchar_t *prefix)
+    {
+        if (str == nullptr || prefix == nullptr)
+        {
+            return false;
+        }
+        while (*prefix)
+        {
+            if (*str != *prefix)
+            {
+                return false;
+            }
+            str++;
+            prefix++;
+        }
+        return true;
+    };
+    CComHeapPtr<WCHAR> uri{};
+    CHECK_FAILURE(args->get_Uri(&uri));
+    if (ref->navigating_callback && (!StartsWith(uri, L"data:text/html")))
+        ref->navigating_callback(uri);
+    return S_OK;
+}
+
+// ICoreWebView2CreateCoreWebView2ControllerCompletedHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebView2Controller *controller)
+{
+    [&]()
+    {
+        CHECK_FAILURE_NORET(result);
+        ::EventRegistrationToken token;
+        ref->m_webViewController = controller;
+        ref->m_webViewController->put_IsVisible(TRUE);
+        ref->m_webViewController->add_ZoomFactorChanged(this, &token);
+        [&]()
+        {
+            if (!ref->backgroundtransparent)
+                return;
+            COREWEBVIEW2_COLOR color;
+            ZeroMemory(&color, sizeof(color));
+            CComPtr<ICoreWebView2Controller2> coreWebView2;
+            CHECK_FAILURE_NORET(ref->m_webViewController.QueryInterface(&coreWebView2));
+            coreWebView2->put_DefaultBackgroundColor(color);
+        }();
+        CHECK_FAILURE_NORET(ref->m_webViewController->get_CoreWebView2(&ref->m_webView));
+        ref->m_webView->add_WebMessageReceived(this, &token);
+        ref->m_webView->add_PermissionRequested(this, &token);
+        ref->m_webView->add_NavigationStarting(this, &token);
+        ref->m_webView->AddScriptToExecuteOnDocumentCreated(L"window.LUNAJSObject={}", nullptr);
+        ref->m_webView->add_NewWindowRequested(this, &token);
+        [&]()
+        {
+            CComPtr<ICoreWebView2_11> m_webView2_11;
+            CHECK_FAILURE_NORET(ref->m_webView.QueryInterface(&m_webView2_11));
+            m_webView2_11->add_ContextMenuRequested(this, &token);
+        }();
+        CComPtr<ICoreWebView2Settings> settings;
+        CHECK_FAILURE_NORET(ref->m_webView->get_Settings(&settings));
+        settings->put_AreDevToolsEnabled(TRUE);
+        settings->put_AreDefaultContextMenusEnabled(TRUE);
+        settings->put_IsStatusBarEnabled(FALSE);
+    }();
+    ref->waitforloadflag.clear();
+    return S_OK;
+}
+// ICoreWebView2NewWindowRequestedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICoreWebView2NewWindowRequestedEventArgs *args)
+{
+    CComHeapPtr<WCHAR> uri{};
+    CHECK_FAILURE(args->get_Uri(&uri));
+    CHECK_FAILURE(args->put_Handled(TRUE));
+    ShellExecute(NULL, TEXT("open"), uri, NULL, NULL, SW_SHOW);
+    return S_OK;
+}
+// ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebView2Environment *env)
+{
+    auto hr = [=]()
+    {
+        CHECK_FAILURE(result);
+        CHECK_FAILURE(env->CreateCoreWebView2Controller(ref->parent, this));
+        ref->m_env = env;
+        return S_OK;
+    }();
+    if (FAILED(hr))
+        ref->waitforloadflag.clear();
+    return S_OK;
+}
+// ICoreWebView2PermissionRequestedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *, ICoreWebView2PermissionRequestedEventArgs *args)
+{
+    COREWEBVIEW2_PERMISSION_KIND kind;
+    args->get_PermissionKind(&kind);
+    if (kind == COREWEBVIEW2_PERMISSION_KIND_CLIPBOARD_READ)
+    {
+        args->put_State(COREWEBVIEW2_PERMISSION_STATE_ALLOW);
+    }
+    return S_OK;
+}
+// ICoreWebView2WebMessageReceivedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICoreWebView2WebMessageReceivedEventArgs *args)
+{
+    CComHeapPtr<WCHAR> message{};
+    CHECK_FAILURE(args->get_WebMessageAsJson(&message));
+    if (wcscmp(L"\"FilesDropped\"", message) == 0)
+    {
+        CComPtr<ICoreWebView2WebMessageReceivedEventArgs2> args2;
+        CHECK_FAILURE(args->QueryInterface(&args2));
+        CComPtr<ICoreWebView2ObjectCollectionView> objectsCollection;
+        CHECK_FAILURE(args2->get_AdditionalObjects(&objectsCollection));
+        if (!objectsCollection)
+            return S_OK;
+        unsigned int length;
+        CHECK_FAILURE(objectsCollection->get_Count(&length));
+
+        for (unsigned int i = 0; i < length; i++)
+        {
+            CComPtr<IUnknown> object;
+            CHECK_FAILURE_CONTINUE(objectsCollection->GetValueAtIndex(i, &object));
+            // Note that objects can be null.
+            if (!object)
+                continue;
+            CComPtr<ICoreWebView2File> file;
+            CHECK_FAILURE_CONTINUE(object.QueryInterface(&file));
+            // Add the file to message to be sent back to webview
+            CComHeapPtr<WCHAR> path;
+            CHECK_FAILURE_CONTINUE(file->get_Path(&path));
+            if (ref->FilesDropped_callback)
+                ref->FilesDropped_callback(path);
+            break;
+        }
+    }
+    else
+    {
+        if (ref->webmessage_callback)
+            ref->webmessage_callback(message);
+    }
+    return S_OK;
+}
+// ICoreWebView2ZoomFactorChangedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2Controller *sender, IUnknown *args)
+{
+    double zoomFactor;
+    CHECK_FAILURE(sender->get_ZoomFactor(&zoomFactor));
+    if (ref->zoomchange_callback)
+        ref->zoomchange_callback(zoomFactor);
+    return S_OK;
+}
+// ICoreWebView2ContextMenuRequestedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICoreWebView2ContextMenuRequestedEventArgs *args)
+{
+    CComPtr<ICoreWebView2ContextMenuTarget> target;
+    CHECK_FAILURE(args->get_ContextMenuTarget(&target));
+    BOOL hasselection;
+    CHECK_FAILURE(target->get_Kind(&targetKind));
+    CHECK_FAILURE(target->get_HasSelection(&hasselection));
+    if (!(((hasselection && (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT))) ||
+          (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_PAGE)))
+        return S_OK;
+    CComPtr<ICoreWebView2ContextMenuItemCollection> items;
+    CHECK_FAILURE(args->get_MenuItems(&items));
+    if (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT)
+    {
+        CHECK_FAILURE(target->get_SelectionText(&CurrSelectText));
+    }
+    UINT idx = 0;
+    for (auto &&item : (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT ? ref->menus : ref->menus_noselect))
+    {
+        CHECK_FAILURE_CONTINUE(items->InsertValueAtIndex(idx++, item));
+    }
+    return S_OK;
+}
+void WebView2::WaitForLoad()
+{
+    // win7上CoWaitForMultipleHandles似乎有点毛病
+    MSG msg;
+    while (waitforloadflag.test_and_set() && GetMessageW(&msg, nullptr, 0, 0) >= 0)
+    {
+        if (msg.message == WM_QUIT || msg.message == WM_DESTROY)
+            break;
+        TranslateMessage(&msg);
+        DispatchMessageW(&msg);
+    }
+}
+std::optional<std::wstring> WebView2::UserDir()
+{
+    // wchar_t currentExePath[MAX_PATH];
+    // GetModuleFileNameW(nullptr, currentExePath, MAX_PATH);
+    // wchar_t *currentExeName = PathFindFileNameW(currentExePath);
+
+    wchar_t dataPath[MAX_PATH];
+    if (!SUCCEEDED(SHGetFolderPathW(nullptr, CSIDL_APPDATA, nullptr, 0, dataPath)))
+    {
+        return {};
+    }
+    wchar_t userDataFolder[MAX_PATH];
+    PathCombineW(userDataFolder, dataPath, L"LunaTranslator");
+    return userDataFolder;
+}
+
+#ifndef WINXP
+#include <WebView2EnvironmentOptions.h>
+#endif
+WebView2::WebView2(HWND parent, bool backgroundtransparent, bool loadextension) : parent(parent), backgroundtransparent(backgroundtransparent)
+{
+    waitforloadflag.test_and_set();
+    handler = new WebView2ComHandler{this};
+    auto dir = UserDir();
+#ifndef WINXP
+    auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+    auto optionptr = options.Get();
+#else
+    auto optionptr = nullptr;
+#endif
+    [&]()
+    {
+        auto ext = loadextension ? L"--embedded-browser-webview-enable-extension" : L"";
+#ifndef WINXP
+        if (options && SUCCEEDED(options->put_AreBrowserExtensionsEnabled(loadextension)))
+            return;
+        if (options && SUCCEEDED(options->put_AdditionalBrowserArguments(ext)))
+            return;
+#endif
+        SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", ext);
+    }();
+
+    HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(nullptr, dir ? dir.value().c_str() : nullptr, optionptr, handler);
+    if (SUCCEEDED(hr))
+        WaitForLoad();
+    if (!(SUCCEEDED(hr) && m_env && m_webView && m_webViewController))
+        throw std::exception{};
+}
+
+void WebView2::AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback)
+{
+    INT32 commandid;
+    CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
+    CComPtr<ICoreWebView2Environment9> webviewEnvironment_5;
+    CHECK_FAILURE_NORET(m_env.QueryInterface(&webviewEnvironment_5));
+    if (label && wcslen(label))
+    {
+        CHECK_FAILURE_NORET(webviewEnvironment_5->CreateContextMenuItem(label, nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+        newMenuItem->add_CustomItemSelected(handler, nullptr);
+    }
+    else
+    {
+        CHECK_FAILURE_NORET(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
+    }
+    CHECK_FAILURE_NORET(newMenuItem->get_CommandId(&commandid));
+    menuscallback[commandid] = callback;
+    auto &whichmenu = (std::get_if<contextmenu_callback_t>(&callback)) ? menus : menus_noselect;
+    whichmenu.insert(whichmenu.begin() + index, newMenuItem);
+}
+HRESULT WebView2::ExtensionGetProfile7(ICoreWebView2Profile7 **profile7)
+{
+    CComPtr<ICoreWebView2_13> web13;
+    CHECK_FAILURE(m_webView.QueryInterface(&web13));
+    CComPtr<ICoreWebView2Profile> profile;
+    CHECK_FAILURE(web13->get_Profile(&profile));
+    CHECK_FAILURE(profile.QueryInterface(profile7));
+    return S_OK;
+}
+void WebView2::AddExtension(LPCWSTR extpath)
+{
+    CComPtr<ICoreWebView2Profile7> profile7;
+    CHECK_FAILURE_NORET(ExtensionGetProfile7(&profile7));
+    CComPtr<AddExtCallback> callback = new AddExtCallback();
+    CHECK_FAILURE_NORET(profile7->AddBrowserExtension(extpath, callback));
+    callback->waitforexec.Wait();
+}
+void WebView2::ListExtension(List_Ext_callback_t cb)
+{
+    CComPtr<ICoreWebView2Profile7> profile7;
+    CHECK_FAILURE_NORET(ExtensionGetProfile7(&profile7));
+    CComPtr<ListExtCallback> exts = new ListExtCallback(cb);
+    CHECK_FAILURE_NORET(profile7->GetBrowserExtensions(exts));
+    exts->waitforexec.Wait();
+}
+void WebView2::EnableExtension(LPCWSTR id, BOOL enable)
+{
+    CComPtr<ICoreWebView2Profile7> profile7;
+    CHECK_FAILURE_NORET(ExtensionGetProfile7(&profile7));
+    CComPtr<ListExtCallback> exts = new ListExtCallback(nullptr, id, enable);
+    CHECK_FAILURE_NORET(profile7->GetBrowserExtensions(exts));
+    exts->waitforexec.Wait();
+}
+void WebView2::RemoveExtension(LPCWSTR id)
+{
+    CComPtr<ICoreWebView2Profile7> profile7;
+    CHECK_FAILURE_NORET(ExtensionGetProfile7(&profile7));
+    CComPtr<ListExtCallback> exts = new ListExtCallback(nullptr, nullptr, FALSE, id);
+    CHECK_FAILURE_NORET(profile7->GetBrowserExtensions(exts));
+    exts->waitforexec.Wait();
+}
+void WebView2::put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
+{
+
+    CComPtr<ICoreWebView2_13> webView2_13;
+    CHECK_FAILURE_NORET(m_webView.QueryInterface(&webView2_13));
+    CComPtr<ICoreWebView2Profile> profile;
+    CHECK_FAILURE_NORET(webView2_13->get_Profile(&profile));
+    CHECK_FAILURE_NORET(profile->put_PreferredColorScheme(scheme));
+}
+
+void WebView2::Resize(int w, int h)
+{
+
+    RECT rect{0, 0, w, h};
+    m_webViewController->put_Bounds(rect);
+}
+
+double WebView2::get_ZoomFactor()
+{
+    double zoomFactor;
+    m_webViewController->get_ZoomFactor(&zoomFactor);
+    return zoomFactor;
+}
+void WebView2::put_ZoomFactor(double zoomFactor)
+{
+    m_webViewController->put_ZoomFactor(zoomFactor);
+}
+
+void WebView2::EvalJS(const wchar_t *js, evaljs_callback_t cb)
+{
+    if (cb)
+    {
+        CComPtr<JSEvalCallback> callback = new JSEvalCallback{cb};
+        CHECK_FAILURE_NORET(m_webView->ExecuteScript(js, callback));
+        callback->waitforexec.Wait();
+    }
+    else
+        m_webView->ExecuteScript(js, nullptr);
+}
+
+void WebView2::Navigate(LPCWSTR uri)
+{
+    m_webView->Navigate(uri);
+}
+void WebView2::SetHTML(LPCWSTR html)
+{
+    m_webView->NavigateToString(html);
+}
+void WebView2::Bind(LPCWSTR funcname)
+{
+    std::wstring js = std::wstring{} + L"window.LUNAJSObject." + funcname + L" = function(){window.chrome.webview.postMessage({    method: '" + funcname + L"',    args: Array.prototype.slice.call(arguments)});};";
+    CHECK_FAILURE_NORET(m_webView->AddScriptToExecuteOnDocumentCreated(js.c_str(), nullptr));
+}

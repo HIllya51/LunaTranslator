@@ -108,15 +108,13 @@ def setTab7_lazy(self, basel):
     for i, post in enumerate(sortlist):
         if post == "_11":
             config = D_getIconButton(
-                callback=lambda: selectdebugfile("./userconfig/mypost.py"),
-                icon="fa.gear",
+                callback=lambda: selectdebugfile("./userconfig/mypost.py")
             )
         else:
             if post not in postprocessconfig:
                 continue
             if post == "_remove_chaos":
                 config = D_getIconButton(
-                    icon="fa.gear",
                     callback=lambda: codeacceptdialog(self),
                 )
             elif "args" in postprocessconfig[post]:
@@ -149,10 +147,7 @@ def setTab7_lazy(self, basel):
                         600,
                         items,
                     )
-                config = D_getIconButton(
-                    callback=callback,
-                    icon="fa.gear",
-                )
+                config = D_getIconButton(callback=callback)
             else:
                 config = ""
 
@@ -198,10 +193,7 @@ def setTab7_lazy(self, basel):
 
             if setting:
                 grids2[-1].append(
-                    D_getIconButton(
-                        callback=functools.partial(__, setting, self),
-                        icon="fa.gear",
-                    )
+                    D_getIconButton(callback=functools.partial(__, setting, self))
                 )
     grids2 += [[("", 15)]]
 

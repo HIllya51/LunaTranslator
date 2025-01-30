@@ -183,7 +183,7 @@ class dialog_savedgame_legacy(QWidget):
         self.table.setIndexWidget(
             self.model.index(row, 2),
             D_getIconButton(
-                functools.partial(self.showsettingdialog, k), icon="fa.gear"
+                functools.partial(self.showsettingdialog, k)
             ),
         )
 

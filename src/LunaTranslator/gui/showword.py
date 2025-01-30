@@ -407,10 +407,7 @@ class AnkiWindow(QWidget):
             "例句中加粗单词",
             getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
         )
-        layout.addRow(
-            "不添加辞书",
-            getIconButton(self.vistranslate_rank, "fa.gear"),
-        )
+        layout.addRow("不添加辞书", getIconButton(self.vistranslate_rank))
         layout.addRow(
             "成功添加后关闭窗口",
             getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
@@ -628,8 +625,7 @@ class AnkiWindow(QWidget):
                                                     closecallback=functools.partial(
                                                         refreshcombo, combox
                                                     ),
-                                                ),
-                                                icon="fa.gear",
+                                                )
                                             ),
                                             combox,
                                         ]

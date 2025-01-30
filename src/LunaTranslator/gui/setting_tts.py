@@ -158,8 +158,7 @@ def getttsgrid(self, names):
                     items,
                     "tts." + name,
                     name,
-                ),
-                icon="fa.gear",
+                )
             )
 
         else:
@@ -361,8 +360,7 @@ def setTab5lz(self):
                                                     globalconfig["ttscommon"][
                                                         "tts_skip_regex"
                                                     ],
-                                                ),
-                                                icon="fa.gear",
+                                                )
                                             ),
                                         ],
                                         [
@@ -378,8 +376,7 @@ def setTab5lz(self):
                                                     ],
                                                     "语音修正",
                                                     ["正则", "转义", "原文", "替换"],
-                                                ),
-                                                icon="fa.gear",
+                                                )
                                             ),
                                             "",
                                             D_getsimpleswitch(

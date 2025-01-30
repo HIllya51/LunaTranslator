@@ -1,4 +1,5 @@
 {
+    "webviewLoadExt": false,
     "multihookmergeby": "\n",
     "autoopenselecttext": true,
     "ocrafterrangeselect": true,

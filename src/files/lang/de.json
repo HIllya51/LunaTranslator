@@ -521,7 +521,6 @@
     "最大行数": "Maximale Anzahl von Zeilen",
     "显示引擎": "Anzeigemotor",
     "阴影字体": "Schattenschrift",
-    "额外的html": "Zusätzliches HTML",
     "测试": "Prüfung",
     "跟随游戏窗口": "Folgen Sie dem Spielfenster",
     "主题": "Thema",
@@ -771,5 +770,7 @@
     "清除加亮": "",
     "内嵌翻译上下文": "",
     "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "",
-    "识别设置": ""
+    "识别设置": "",
+    "附加HTML": "",
+    "附加浏览器插件": ""
 }

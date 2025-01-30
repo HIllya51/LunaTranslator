@@ -125,9 +125,9 @@ class Textbrowser(QFrame):
     def _contentsChanged(self, size: QSize):
         self.contentsChanged.emit(size)
 
-    def loadinternal(self, shoudong=False):
+    def loadinternal(self, shoudong=False, forceReload=False):
         __ = globalconfig["rendertext_using"]
-        if self.curr_eng == __:
+        if (not forceReload) and (self.curr_eng == __):
             return
         self.curr_eng = __
         size = self.size()

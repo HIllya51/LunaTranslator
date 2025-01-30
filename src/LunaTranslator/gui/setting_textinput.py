@@ -119,8 +119,7 @@ def gethookgrid_em(self):
                     self,
                     "正则匹配",
                     globalconfig["embedded"]["safecheckregexs"],
-                ),
-                icon="fa.gear",
+                )
             ),
         ],
     ]

@@ -462,7 +462,6 @@ def setTab_update(self, basel):
                                         "./files/lang/{}.json".format(getlanguse())
                                     )
                                 ),
-                                icon="fa.gear",
                             ),
                         ],
                     ],

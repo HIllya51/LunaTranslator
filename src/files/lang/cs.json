@@ -521,7 +521,6 @@
     "最大行数": "Maximální počet řádků",
     "显示引擎": "Zobrazovací motor",
     "阴影字体": "Stínové písmo",
-    "额外的html": "Další HTML",
     "测试": "zkouška",
     "跟随游戏窗口": "Sledujte okno hry",
     "主题": "téma",
@@ -771,5 +770,7 @@
     "清除加亮": "",
     "内嵌翻译上下文": "",
     "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "",
-    "识别设置": ""
+    "识别设置": "",
+    "附加HTML": "",
+    "附加浏览器插件": ""
 }

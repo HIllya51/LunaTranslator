@@ -205,7 +205,7 @@ def checkthemesettingvisandapply_1(self, _dark):
 def createbtnthemelight(self):
     lightsetting = checkthemeissetable(self, False)
     self.lightsetting = lightsetting
-    self.btnthemelight = getIconButton(icon="fa.gear")
+    self.btnthemelight = getIconButton()
     try:
         if not self.lightsetting:
             self.btnthemelight.hide()
@@ -223,9 +223,7 @@ def createbtnthemelight(self):
 def createbtnthemedark(self):
     darksetting = checkthemeissetable(self, True)
     self.darksetting = darksetting
-    self.btnthemedark = getIconButton(
-        icon="fa.gear",
-    )
+    self.btnthemedark = getIconButton()
     try:
         if not self.darksetting:
             self.btnthemedark.hide()

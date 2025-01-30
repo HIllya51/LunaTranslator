@@ -252,7 +252,7 @@ bool rpcs3::attach_function()
         dohookemaddr(em_address, entrypoint);
         delayinsertNewHook(em_address);
     };
-    return NewHook(hp, "vita3kjit");
+    return NewHook(hp, "rpcs3jit");
 }
 
 namespace

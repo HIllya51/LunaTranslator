@@ -196,10 +196,7 @@ def selectllmcallback(self, countnum, btnplus, fanyi, name):
 
     layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
 
-    last = getIconButton(
-        callback=functools.partial(loadbutton, self, uid),
-        icon="fa.gear",
-    )
+    last = getIconButton(callback=functools.partial(loadbutton, self, uid))
 
     name = getrenameablellabel(uid, self, countnum, btnplus)
     swc = getsimpleswitch(
@@ -336,14 +333,10 @@ def initsome11(self, l, label=None, btnplus=False):
         i += 1
         countnum.append(fanyi)
         if fanyi in translatorsetting:
-            last = D_getIconButton(
-                callback=functools.partial(loadbutton, self, fanyi),
-                icon="fa.gear",
-            )
+            last = D_getIconButton(callback=functools.partial(loadbutton, self, fanyi))
         elif fanyi == "selfbuild":
             last = D_getIconButton(
-                callback=lambda: selectdebugfile("./userconfig/selfbuild.py"),
-                icon="fa.gear",
+                callback=lambda: selectdebugfile("./userconfig/selfbuild.py")
             )
         else:
             last = ""

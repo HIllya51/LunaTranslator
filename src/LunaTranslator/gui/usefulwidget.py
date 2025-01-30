@@ -891,7 +891,7 @@ def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None):
     return lambda: getspinbox(mini, maxi, d, key, double, step, callback)
 
 
-def getIconButton(callback=None, icon="fa.paint-brush", enable=True, qicon=None):
+def getIconButton(callback=None, icon="fa.gear", enable=True, qicon=None):
 
     b = IconButton(icon, enable, qicon)
 
@@ -901,7 +901,7 @@ def getIconButton(callback=None, icon="fa.paint-brush", enable=True, qicon=None)
     return b
 
 
-def D_getIconButton(callback=None, icon="fa.paint-brush", enable=True, qicon=None):
+def D_getIconButton(callback=None, icon="fa.gear", enable=True, qicon=None):
     return lambda: getIconButton(callback, icon, enable, qicon)
 
 
@@ -1220,6 +1220,36 @@ class WebviewWidget(abstractwebview):
         else:
             os.startfile("https://developer.microsoft.com/microsoft-edge/webview2")
 
+    # 切换是否加载插件理论上是可以在进程内切换的，先切回Qt再切回Webview2就能正常加载。但是不知道为什么直接重新加载却会失败。
+    # 盲猜应该是可能需要一个目录下的所有进程都结束之后才能进行切换，且同一个目录的所有Enviroment同一刻必须使用相同的启动参数
+    # 因此对于主窗口和辞书窗口，必须同时加载或不加载。所以还是把这个作为static的值吧。
+    webviewLoadExt = globalconfig["webviewLoadExt"]
+    LastPtr = None
+
+    class Extensions:
+        @staticmethod
+        def List():
+            collect = []
+
+            def __(_, _1, _2):
+                collect.append((_, _1, _2))
+
+            _ = winsharedutils.webview2_list_ext_CALLBACK_T(__)
+            winsharedutils.webview2_ext_list(WebviewWidget.LastPtr, _)
+            return collect
+
+        @staticmethod
+        def Enable(_id, enable):
+            winsharedutils.webview2_ext_enable(WebviewWidget.LastPtr, _id, enable)
+
+        @staticmethod
+        def Remove(_id):
+            winsharedutils.webview2_ext_rm(WebviewWidget.LastPtr, _id)
+
+        @staticmethod
+        def Add(path):
+            winsharedutils.webview2_ext_add(WebviewWidget.LastPtr, path)
+
     def __init__(self, parent=None, transp=False) -> None:
         super().__init__(parent)
         self.webview = None
@@ -1230,10 +1260,15 @@ class WebviewWidget(abstractwebview):
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
             # 在共享路径上无法运行
             os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
-        self.webview = winsharedutils.webview2_create(int(self.winId()), transp)
+        self.webview = winsharedutils.webview2_create(
+            int(self.winId()), transp, WebviewWidget.webviewLoadExt
+        )
+        WebviewWidget.LastPtr = self.webview
         if not self.webview:
             raise Exception
-        self.zoomchange_callback = winsharedutils.webview2_zoomchange_callback_t(self.zoomchange)
+        self.zoomchange_callback = winsharedutils.webview2_zoomchange_callback_t(
+            self.zoomchange
+        )
         self.navigating_callback = winsharedutils.webview2_navigating_callback_t(
             self.on_load.emit
         )
@@ -1250,7 +1285,6 @@ class WebviewWidget(abstractwebview):
             self.webmessage_callback,
             self.FilesDropped_callback,
         )
-
         self.__darkstate = None
         t = QTimer(self)
         t.setInterval(100)
@@ -2092,7 +2126,7 @@ class listediterline(QWidget):
                 self.edit.setReadOnly(True)
                 callback()
 
-            hbox.addWidget(getIconButton(icon="fa.gear", callback=__2))
+            hbox.addWidget(getIconButton(callback=__2))
         else:
             self.edit.setReadOnly(True)
             self.edit.clicked.connect(callback)

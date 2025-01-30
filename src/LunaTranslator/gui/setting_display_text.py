@@ -1,8 +1,8 @@
 from qtsymbols import *
 import functools
 import gobject, os
-from myutils.config import globalconfig, static_data, _TR, get_platform
-from myutils.wrapper import tryprint
+from myutils.config import globalconfig, static_data, _TR
+from myutils.wrapper import tryprint, threader
 from myutils.utils import translate_exits, getannotatedapiname
 from gui.usefulwidget import (
     getsimplecombobox,
@@ -14,9 +14,10 @@ from gui.usefulwidget import (
     getboxlayout,
     D_getcolorbutton,
     getcolorbutton,
-    MySwitch,
+    getIconButton,
     getsimpleswitch,
     D_getsimpleswitch,
+    TableViewW,
     selectcolor,
     listediter,
     FocusFontCombo,
@@ -24,8 +25,9 @@ from gui.usefulwidget import (
     getspinbox,
     getsmalllabel,
     SplitLine,
+    WebviewWidget,
 )
-from gui.dynalang import LPushButton, LFormLayout
+from gui.dynalang import LPushButton, LFormLayout, LDialog, LStandardItemModel
 
 
 def __changeuibuttonstate(self, x):
@@ -80,7 +82,7 @@ class extrahtml(saveposwindow):
 
     def __init__(self, parent) -> None:
         super().__init__(parent, poslist=globalconfig["geo_extrahtml"])
-        self.setWindowTitle("额外的html")
+        self.setWindowTitle("附加HTML")
 
         self.btn_save = LPushButton("保存")
         self.btn_save.clicked.connect(self.savehtml)
@@ -191,13 +193,121 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
         )
 
 
+def alertwhenrestart(self, x):
+    QMessageBox.information(
+        self,
+        _TR("注意"),
+        _TR("将在重新启动后生效！"),
+    )
+    try:
+        self.fuckshit__1.setChecked(x)
+    except:
+        pass
+    try:
+        self.fuckshit__2.setChecked(x)
+    except:
+        pass
+
+
+@Singleton_close
+class Exteditor(LDialog):
+    def __init__(self, parent) -> None:
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowTitle("浏览器插件")
+        self.resize(QSize(600, 400))
+
+        model = LStandardItemModel()
+        model.setHorizontalHeaderLabels(["ID", "名称", "禁用", "移除"])
+
+        table = TableViewW()
+
+        table.setModel(model)
+        table.horizontalHeader().setSectionResizeMode(
+            2, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(
+            3, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setWordWrap(False)
+        vbox = QVBoxLayout(self)
+        vbox.addWidget(table)
+        btn = LPushButton("添加")
+        btn.clicked.connect(self.Addext)
+        vbox.addWidget(btn)
+        self.show()
+        self.model = model
+        self.table = table
+        self.listexts()
+
+    def Addext(self):
+        chromes = os.path.join(
+            os.environ["LOCALAPPDATA"], r"Google\Chrome\User Data\Default\Extensions"
+        )
+        edges = os.path.join(
+            os.environ["LOCALAPPDATA"], r"Microsoft\Edge\User Data\Default\Extensions"
+        )
+        if os.path.exists(chromes):
+            path = chromes
+        elif os.path.exists(edges):
+            path = edges
+        else:
+            path = ""
+        res = QFileDialog.getExistingDirectory(
+            self, None, path, options=QFileDialog.Option.DontResolveSymlinks
+        )
+        if not res:
+            return
+        WebviewWidget.Extensions.Add(res)
+        self.listexts()
+
+    def listexts(self):
+        self.model.removeRows(0, self.model.rowCount())
+
+        for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions.List()):
+            self.model.appendRow(
+                [
+                    QStandardItem(_id),
+                    QStandardItem(name),
+                    QStandardItem(""),
+                    QStandardItem(""),
+                ]
+            )
+            d = {"1": able}
+            self.table.setIndexWidget(
+                self.model.index(_i, 2),
+                getsimpleswitch(
+                    d,
+                    "1",
+                    callback=functools.partial(self.enablex, _id, not able),
+                ),
+            )
+            self.table.setIndexWidget(
+                self.model.index(_i, 3),
+                getIconButton(
+                    callback=functools.partial(self.removex, _id),
+                    icon="fa.times",
+                ),
+            )
+
+    def enablex(self, _id, able, _):
+        WebviewWidget.Extensions.Enable(_id, able)
+        self.listexts()
+
+    def removex(self, _id):
+        WebviewWidget.Extensions.Remove(_id)
+        self.listexts()
+
+
 def resetgroudswitchcallback(self, group):
     clearlayout(self.goodfontsettingsformlayout)
 
     goodfontgroupswitch = SuperCombo()
     if group == "webview":
-        _btn = LPushButton("编辑")
-        _btn.clicked.connect(lambda: extrahtml(self))
+        _btn = getIconButton(callback=functools.partial(extrahtml, self))
         switch = getsimpleswitch(
             globalconfig,
             "useextrahtml",
@@ -207,9 +317,15 @@ def resetgroudswitchcallback(self, group):
             ],
         )
         _btn.setEnabled(globalconfig["useextrahtml"])
+        _btn2 = getIconButton(callback=functools.partial(Exteditor, self))
+        switch2 = getsimpleswitch(
+            globalconfig, "webviewLoadExt", callback=lambda x: alertwhenrestart(self, x)
+        )
+        self.fuckshit__2 = switch2
         self.goodfontsettingsformlayout.addRow(
-            "额外的html",
-            getboxlayout([switch, _btn]),
+            getboxlayout(
+                ["附加HTML", switch, _btn, "", "附加浏览器插件", switch2, _btn2, ""]
+            ),
         )
         self.goodfontsettingsformlayout.addRow(SplitLine())
 
@@ -431,10 +547,7 @@ def xianshigrid_style(self):
                             "",
                             "固定翻译显示顺序",
                             D_getsimpleswitch(globalconfig, "fix_translate_rank"),
-                            D_getIconButton(
-                                functools.partial(vistranslate_rank, self),
-                                "fa.gear",
-                            ),
+                            D_getIconButton(functools.partial(vistranslate_rank, self)),
                         ],
                         [
                             "显示原文",

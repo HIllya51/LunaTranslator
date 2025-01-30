@@ -521,7 +521,6 @@
     "最大行数": "Maximaal aantal rijen",
     "显示引擎": "Weergavemotor",
     "阴影字体": "Schaduwlettertype",
-    "额外的html": "Extra HTML",
     "测试": "test",
     "跟随游戏窗口": "Volg het spelvenster",
     "主题": "thema",
@@ -771,5 +770,7 @@
     "清除加亮": "",
     "内嵌翻译上下文": "",
     "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "",
-    "识别设置": ""
+    "识别设置": "",
+    "附加HTML": "",
+    "附加浏览器插件": ""
 }

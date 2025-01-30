@@ -150,8 +150,7 @@ def initgridsources(self, names):
                     items,
                     "ocrengines." + name,
                     name,
-                ),
-                icon="fa.gear",
+                )
             )
         else:
             _3 = ""
@@ -208,14 +207,7 @@ def _ocrparam_create(self, idx):
     if idx in [3]:
         self._ocrparaml.addRow(
             "触发事件",
-            getboxlayout(
-                [
-                    D_getIconButton(
-                        functools.partial(triggereditor, self),
-                        "fa.gear",
-                    ),
-                ]
-            ),
+            getboxlayout([D_getIconButton(functools.partial(triggereditor, self))]),
         )
         self._ocrparaml.addRow(
             "延迟_(s)",
@@ -480,8 +472,7 @@ def internal(self):
                     ocrerrorfix["args"]["替换内容"],
                     "易错内容修正",
                     ["原文内容", "替换为"],
-                ),
-                icon="fa.gear",
+                )
             ),
         ],
     ]
