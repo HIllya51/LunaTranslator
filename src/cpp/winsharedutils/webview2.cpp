@@ -1,15 +1,19 @@
 ﻿#include "webview2_impl.hpp"
 
-DECLARE_API WebView2 *webview2_create(HRESULT *hr, HWND parent, bool backgroundtransparent, bool loadextension)
+DECLARE_API HRESULT webview2_create(WebView2 **web, HWND parent, bool backgroundtransparent, bool loadextension)
 {
+    *web = nullptr;
     auto _ = new WebView2(parent, backgroundtransparent);
-    *hr = _->init(loadextension);
-    if (FAILED(*hr))
+    if (!_)
+        return E_POINTER;
+    auto hr = _->init(loadextension);
+    if (FAILED(hr))
     {
         delete _;
         _ = nullptr;
     }
-    return _;
+    *web = _;
+    return hr;
 }
 DECLARE_API HRESULT webview2_ext_add(WebView2 *web, LPCWSTR extpath)
 {
@@ -17,22 +21,22 @@ DECLARE_API HRESULT webview2_ext_add(WebView2 *web, LPCWSTR extpath)
         return E_POINTER;
     return web->AddExtension(extpath);
 }
-DECLARE_API void webview2_ext_list(WebView2 *web, List_Ext_callback_t cb)
+DECLARE_API HRESULT webview2_ext_list(WebView2 *web, List_Ext_callback_t cb)
 {
     if (!web)
-        return;
+        return E_POINTER;
     return web->ListExtensionDoSomething(cb, nullptr, FALSE, FALSE);
 }
-DECLARE_API void webview2_ext_enable(WebView2 *web, LPCWSTR id, BOOL enable)
+DECLARE_API HRESULT webview2_ext_enable(WebView2 *web, LPCWSTR id, BOOL enable)
 {
     if (!web)
-        return;
+        return E_POINTER;
     return web->ListExtensionDoSomething(nullptr, id, FALSE, enable);
 }
-DECLARE_API void webview2_ext_rm(WebView2 *web, LPCWSTR id)
+DECLARE_API HRESULT webview2_ext_rm(WebView2 *web, LPCWSTR id)
 {
     if (!web)
-        return;
+        return E_POINTER;
     return web->ListExtensionDoSomething(nullptr, id, TRUE, FALSE);
 }
 DECLARE_API void webview2_destroy(WebView2 *web)

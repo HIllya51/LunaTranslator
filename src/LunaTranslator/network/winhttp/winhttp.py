@@ -224,9 +224,7 @@ class WinhttpException(RequestException):
         super().__init__(error)
 
 
-def MaybeRaiseException(error=None):
-    if error is None:
-        error = windows.GetLastError()
+def MaybeRaiseException(error):
     if error == ERROR_SUCCESS:
         return
     exception = WinhttpException(error)
@@ -235,13 +233,18 @@ def MaybeRaiseException(error=None):
     raise exception
 
 
+def MaybeRaiseException0(succ):
+    if succ == 0:
+        MaybeRaiseException(windows.GetLastError())
+
+
 def winhttpsetproxy(hreq, proxy):
     proxyInfo = WINHTTP_PROXY_INFO()
     proxyInfo.dwAccessType = WINHTTP_ACCESS_TYPE_NAMED_PROXY
     proxyInfo.lpszProxy = proxy
     proxyInfo.lpszProxyBypass = None
-    succ = WinHttpSetOption(
-        hreq, WINHTTP_OPTION_PROXY, pointer(proxyInfo), sizeof(proxyInfo)
+    MaybeRaiseException0(
+        WinHttpSetOption(
+            hreq, WINHTTP_OPTION_PROXY, pointer(proxyInfo), sizeof(proxyInfo)
+        )
     )
-    if succ == 0:
-        MaybeRaiseException()

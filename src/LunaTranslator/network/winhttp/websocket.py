@@ -113,14 +113,12 @@ class WebSocket:
                 0,
             )
         )
-        if self.hSession == 0:
-            MaybeRaiseException()
+        MaybeRaiseException0(self.hSession)
         self._setproxy(self.hSession, http_proxy_host, http_proxy_port)
         self.hConnect = AutoWinHttpHandle(
             WinHttpConnect(self.hSession, server, port, 0)
         )
-        if self.hConnect == 0:
-            MaybeRaiseException()
+        MaybeRaiseException0(self.hConnect)
         hRequest = AutoWinHttpHandle(
             WinHttpOpenRequest(
                 self.hConnect,
@@ -132,27 +130,23 @@ class WebSocket:
                 flag,
             )
         )
-        if hRequest == 0:
-            MaybeRaiseException()
-        fStatus = WinHttpSetOption(
-            hRequest, WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET, NULL, 0
+        MaybeRaiseException0(hRequest)
+        MaybeRaiseException0(
+            WinHttpSetOption(hRequest, WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET, NULL, 0)
         )
-
-        if fStatus == 0:
-            MaybeRaiseException()
-        fStatus = WinHttpSendRequest(
-            hRequest, self._parseheader(header), -1, WINHTTP_NO_REQUEST_DATA, 0, 0, None
+        MaybeRaiseException0(
+            WinHttpSendRequest(
+                hRequest,
+                self._parseheader(header),
+                -1,
+                WINHTTP_NO_REQUEST_DATA,
+                0,
+                0,
+                None,
+            )
         )
-
-        if fStatus == 0:
-            MaybeRaiseException()
-        fStatus = WinHttpReceiveResponse(hRequest, 0)
-
-        if fStatus == 0:
-            MaybeRaiseException()
+        MaybeRaiseException0(WinHttpReceiveResponse(hRequest, 0))
         self.hWebSocketHandle = AutoWinHttpHandle(
             WinHttpWebSocketCompleteUpgrade(hRequest, NULL)
         )
-
-        if self.hWebSocketHandle == 0:
-            MaybeRaiseException()
+        MaybeRaiseException0(self.hWebSocketHandle)

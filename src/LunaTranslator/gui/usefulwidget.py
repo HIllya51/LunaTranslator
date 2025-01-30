@@ -1201,29 +1201,41 @@ class WebviewWidget(abstractwebview):
     webviewLoadExt = globalconfig["webviewLoadExt"]
     LastPtr = None
 
-    class Extensions:
-        @staticmethod
-        def List():
-            collect = []
+    @staticmethod
+    def CHECK_FAILURE(hr):
+        if hr < 0:
+            raise Exception(windows.FormatMessage(hr, None))
 
-            def __(_, _1, _2):
-                collect.append((_, _1, _2))
+    @staticmethod
+    def Extensions_List():
+        collect = []
 
-            _ = winsharedutils.webview2_list_ext_CALLBACK_T(__)
+        def __(_, _1, _2):
+            collect.append((_, _1, _2))
+
+        _ = winsharedutils.webview2_list_ext_CALLBACK_T(__)
+        WebviewWidget.CHECK_FAILURE(
             winsharedutils.webview2_ext_list(WebviewWidget.LastPtr, _)
-            return collect
+        )
+        return collect
 
-        @staticmethod
-        def Enable(_id, enable):
+    @staticmethod
+    def Extensions_Enable(_id, enable):
+        WebviewWidget.CHECK_FAILURE(
             winsharedutils.webview2_ext_enable(WebviewWidget.LastPtr, _id, enable)
+        )
 
-        @staticmethod
-        def Remove(_id):
+    @staticmethod
+    def Extensions_Remove(_id):
+        WebviewWidget.CHECK_FAILURE(
             winsharedutils.webview2_ext_rm(WebviewWidget.LastPtr, _id)
+        )
 
-        @staticmethod
-        def Add(path):
-            return winsharedutils.webview2_ext_add(WebviewWidget.LastPtr, path)
+    @staticmethod
+    def Extensions_Add(path):
+        WebviewWidget.CHECK_FAILURE(
+            winsharedutils.webview2_ext_add(WebviewWidget.LastPtr, path)
+        )
 
     @staticmethod
     def findFixedRuntime():
@@ -1256,17 +1268,15 @@ class WebviewWidget(abstractwebview):
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
             # 在共享路径上无法运行
             os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
-        hresult = windows.LONG()
-        self.webview = winsharedutils.webview2_create(
-            windows.pointer(hresult),
-            int(self.winId()),
-            transp,
-            WebviewWidget.webviewLoadExt,
-        )
-        if (hresult.value < 0) or (not self.webview):
-            raise Exception(
-                windows.FormatMessage(windows.DWORD.from_buffer_copy(hresult))
+        self.webview = winsharedutils.WebView2PTR()
+        WebviewWidget.CHECK_FAILURE(
+            winsharedutils.webview2_create(
+                windows.pointer(self.webview),
+                int(self.winId()),
+                transp,
+                WebviewWidget.webviewLoadExt,
             )
+        )
         WebviewWidget.LastPtr = self.webview
         self.zoomchange_callback = winsharedutils.webview2_zoomchange_callback_t(
             self.zoomchange

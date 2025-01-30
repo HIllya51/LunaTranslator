@@ -3,7 +3,6 @@ import functools
 import gobject, os
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import tryprint
-import windows
 from myutils.utils import translate_exits, getannotatedapiname
 from gui.usefulwidget import (
     getsimplecombobox,
@@ -237,14 +236,14 @@ class Exteditor(LDialog):
         vbox = QVBoxLayout(self)
         vbox.addWidget(table)
         btn = LPushButton("添加")
-        btn.clicked.connect(self.Addext)
+        btn.clicked.connect(functools.partial(self.tryMessage, self.Addext))
         vbox.addWidget(btn)
         self.show()
         self.model = model
         self.table = table
-        self.listexts()
+        self.tryMessage(self.listexts)
 
-    def Addext(self):
+    def Addext(self, *_):
         chromes = os.path.join(
             os.environ["LOCALAPPDATA"], r"Google\Chrome\User Data\Default\Extensions"
         )
@@ -270,15 +269,13 @@ class Exteditor(LDialog):
         )
         if not res:
             return
-        hr = WebviewWidget.Extensions.Add(res)
-        if hr < 0:
-            QMessageBox.critical(self, _TR("错误"), windows.FormatMessage(hr, None))
+
+        WebviewWidget.Extensions_Add(res)
         self.listexts()
 
     def listexts(self):
         self.model.removeRows(0, self.model.rowCount())
-
-        for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions.List()):
+        for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions_List()):
             self.model.appendRow(
                 [
                     QStandardItem(_id),
@@ -293,24 +290,32 @@ class Exteditor(LDialog):
                 getsimpleswitch(
                     d,
                     "1",
-                    callback=functools.partial(self.enablex, _id, not able),
+                    callback=functools.partial(
+                        self.tryMessage, self.enablex, _id, not able
+                    ),
                 ),
             )
             self.table.setIndexWidget(
                 self.model.index(_i, 3),
                 getIconButton(
-                    callback=functools.partial(self.removex, _id),
+                    callback=functools.partial(self.tryMessage, self.removex, _id),
                     icon="fa.times",
                 ),
             )
 
     def enablex(self, _id, able, _):
-        WebviewWidget.Extensions.Enable(_id, able)
+        WebviewWidget.Extensions_Enable(_id, able)
         self.listexts()
 
     def removex(self, _id):
-        WebviewWidget.Extensions.Remove(_id)
+        WebviewWidget.Extensions_Remove(_id)
         self.listexts()
+
+    def tryMessage(self, func, *args):
+        try:
+            func(*args)
+        except Exception as e:
+            QMessageBox.critical(self, _TR("错误"), str(e))
 
 
 def resetgroudswitchcallback(self, group):

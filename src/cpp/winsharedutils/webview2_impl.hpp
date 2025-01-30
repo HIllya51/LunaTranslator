@@ -59,7 +59,7 @@ class WebView2
     typedef std::variant<contextmenu_callback_t, contextmenu_notext_callback_t> contextmenu_callback_t_ex;
     std::map<INT32, contextmenu_callback_t_ex> menuscallback;
     std::optional<std::wstring> UserDir();
-    HRESULT CreateCoreWebView2EnvironmentError, CreateCoreWebView2ControllerError;
+    HRESULT CreateCoreWebView2EnvironmentError = S_OK, CreateCoreWebView2ControllerError = S_OK;
 
 public:
     zoomchange_callback_t zoomchange_callback;
@@ -80,7 +80,7 @@ public:
     void Bind(LPCWSTR funcname);
 
     HRESULT AddExtension(LPCWSTR);
-    void ListExtensionDoSomething(List_Ext_callback_t, LPCWSTR, BOOL, BOOL);
+    HRESULT ListExtensionDoSomething(List_Ext_callback_t, LPCWSTR, BOOL, BOOL);
 
 private:
     HRESULT ExtensionGetProfile7(ICoreWebView2Profile7 **profile7);

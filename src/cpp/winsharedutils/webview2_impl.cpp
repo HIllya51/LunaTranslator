@@ -51,19 +51,22 @@ public:
     List_Ext_callback_t cb;
     std::wstring idfuck;
     BOOL remove, enable;
+    HRESULT listerror = S_OK;
+    HRESULT editerror = S_OK;
     ListExtCallback(List_Ext_callback_t cb, LPCWSTR id1 = nullptr, BOOL remove = FALSE, BOOL enable = FALSE) : idfuck(id1 ? id1 : L""), remove(remove), enable(enable), cb(cb) {}
     // ICoreWebView2BrowserExtensionEnableCompletedHandler
     HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode)
     {
-        return S_OK;
+        editerror = errorCode;
+        return errorCode;
     }
     HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode, ICoreWebView2BrowserExtensionList *extensionList)
     {
-        [&]()
+        listerror = [&]()
         {
-            CHECK_FAILURE_NORET(errorCode);
+            CHECK_FAILURE(errorCode);
             UINT count;
-            CHECK_FAILURE_NORET(extensionList->get_Count(&count));
+            CHECK_FAILURE(extensionList->get_Count(&count));
             for (UINT i = 0; i < count; i++)
             {
                 CComPtr<ICoreWebView2BrowserExtension> ext;
@@ -86,9 +89,10 @@ public:
                         ext->Enable(enable, this);
                 }
             }
+            return S_OK;
         }();
         waitforexec.Set();
-        return S_OK;
+        return listerror;
     }
 };
 // ICoreWebView2CustomItemSelectedEventHandler
@@ -388,13 +392,16 @@ HRESULT WebView2::AddExtension(LPCWSTR extpath)
     CHECK_FAILURE(callback->error);
     return S_OK;
 }
-void WebView2::ListExtensionDoSomething(List_Ext_callback_t cb, LPCWSTR id, BOOL remove, BOOL enable)
+HRESULT WebView2::ListExtensionDoSomething(List_Ext_callback_t cb, LPCWSTR id, BOOL remove, BOOL enable)
 {
     CComPtr<ICoreWebView2Profile7> profile7;
-    CHECK_FAILURE_NORET(ExtensionGetProfile7(&profile7));
+    CHECK_FAILURE(ExtensionGetProfile7(&profile7));
     CComPtr<ListExtCallback> exts = new ListExtCallback(cb, id, remove, enable);
-    CHECK_FAILURE_NORET(profile7->GetBrowserExtensions(exts));
+    CHECK_FAILURE(profile7->GetBrowserExtensions(exts));
     exts->waitforexec.Wait();
+    CHECK_FAILURE(exts->listerror);
+    CHECK_FAILURE(exts->editerror);
+    return S_OK;
 }
 void WebView2::put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {

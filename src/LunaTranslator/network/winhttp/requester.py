@@ -19,18 +19,15 @@ class Response(Response):
         downloadedSize = DWORD()
         downloadeddata = b""
         while True:
-            succ = WinHttpQueryDataAvailable(self.hreq, pointer(availableSize))
-            if succ == 0:
-                MaybeRaiseException()
+            MaybeRaiseException0(
+                WinHttpQueryDataAvailable(self.hreq, pointer(availableSize))
+            )
             if availableSize.value == 0:
                 break
             buff = create_string_buffer(availableSize.value)
-            succ = WinHttpReadData(
-                self.hreq, buff, availableSize, pointer(downloadedSize)
+            MaybeRaiseException0(
+                WinHttpReadData(self.hreq, buff, availableSize, pointer(downloadedSize))
             )
-            if succ == 0:
-                MaybeRaiseException()
-
             if chunk_size:
                 downloadeddata += buff[: downloadedSize.value]
                 while len(downloadeddata) > chunk_size:
@@ -77,16 +74,16 @@ class Requester(Requester_common):
     def _getStatusCode(self, hreq):
         dwSize = DWORD(sizeof(DWORD))
         dwStatusCode = DWORD()
-        bResults = WinHttpQueryHeaders(
-            hreq,
-            WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
-            None,
-            pointer(dwStatusCode),
-            pointer(dwSize),
-            None,
+        MaybeRaiseException0(
+            WinHttpQueryHeaders(
+                hreq,
+                WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
+                None,
+                pointer(dwStatusCode),
+                pointer(dwSize),
+                None,
+            )
         )
-        if bResults == 0:
-            MaybeRaiseException()
         return dwStatusCode.value
 
     def _set_proxy(self, hsess, proxy):
@@ -122,8 +119,7 @@ class Requester(Requester_common):
                 0,
             )
         )
-        if self.hSession == 0:
-            MaybeRaiseException()
+        MaybeRaiseException0(self.hSession)
 
     def request_impl(
         self,
@@ -147,8 +143,7 @@ class Requester(Requester_common):
         headers = "\r\n".join(headers)
 
         hConnect = AutoWinHttpHandle(WinHttpConnect(self.hSession, server, port, 0))
-        if hConnect == 0:
-            MaybeRaiseException()
+        MaybeRaiseException0(hConnect)
         hRequest = AutoWinHttpHandle(
             WinHttpOpenRequest(
                 hConnect,
@@ -163,20 +158,16 @@ class Requester(Requester_common):
         tconnect = timeout[0]
         tsendrecv = timeout[1]
         WinHttpSetTimeouts(hRequest, tconnect, tconnect, tsendrecv, tsendrecv)
-        if hRequest == 0:
-            MaybeRaiseException()
+        MaybeRaiseException0(hRequest)
         self._set_verify(hRequest, verify)
         self._set_proxy(hRequest, proxy)
         self._set_allow_redirects(hRequest, allow_redirects)
-        succ = WinHttpSendRequest(
-            hRequest, headers, -1, databytes, len(databytes), len(databytes), None
+        MaybeRaiseException0(
+            WinHttpSendRequest(
+                hRequest, headers, -1, databytes, len(databytes), len(databytes), None
+            )
         )
-        if succ == 0:
-            MaybeRaiseException()
-
-        succ = WinHttpReceiveResponse(hRequest, None)
-        if succ == 0:
-            MaybeRaiseException()
+        MaybeRaiseException0(WinHttpReceiveResponse(hRequest, None))
         resp = Response(stream)
         resp.headers, resp.cookies, resp.reason = self._parseheader2dict(
             self._getheaders(hRequest)
@@ -193,17 +184,15 @@ class Requester(Requester_common):
         downloadedSize = DWORD()
         downloadeddata = b""
         while True:
-            succ = WinHttpQueryDataAvailable(hRequest, pointer(availableSize))
-            if succ == 0:
-                MaybeRaiseException()
+            MaybeRaiseException0(
+                WinHttpQueryDataAvailable(hRequest, pointer(availableSize))
+            )
             if availableSize.value == 0:
                 break
             buff = create_string_buffer(availableSize.value)
-            succ = WinHttpReadData(
-                hRequest, buff, availableSize, pointer(downloadedSize)
+            MaybeRaiseException0(
+                WinHttpReadData(hRequest, buff, availableSize, pointer(downloadedSize))
             )
-            if succ == 0:
-                MaybeRaiseException()
             downloadeddata += buff[: downloadedSize.value]
         resp.content = self.decompress(downloadeddata, resp.headers)
 
