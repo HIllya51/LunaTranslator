@@ -1181,7 +1181,9 @@ class MAINUI:
         self.WinEventHookCALLBACK_ptr = winsharedutils.WinEventHookCALLBACK_t(
             self.WinEventHookCALLBACK
         )
-        winsharedutils.globalmessagelistener(self.WinEventHookCALLBACK_ptr,self.WindowMessageCallback_ptr)
+        winsharedutils.globalmessagelistener(
+            self.WinEventHookCALLBACK_ptr, self.WindowMessageCallback_ptr
+        )
         self.MonitorPidVolume_callback = winsharedutils.MonitorPidVolume_callback_t(
             self.MonitorPidVolume_callback_f
         )
@@ -1279,6 +1281,8 @@ class MAINUI:
             self.translation_ui.clipboardcallback.emit(boolvalue, strvalue)
 
     def _dowhenwndcreate(self, obj):
+        if not isinstance(obj, QWidget):
+            return
         hwnd = obj.winId()
         if not hwnd:  # window create/destroy,when destroy winId is None
             return
