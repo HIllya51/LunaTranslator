@@ -421,6 +421,7 @@ def splitocrtypes(dic):
 def selectdebugfile(path: str, ismypost=False):
     if ismypost:
         path = "./userconfig/posts/{}.py".format(path)
+
     p = os.path.abspath((path))
     os.makedirs(os.path.dirname(p), exist_ok=True)
     print(path)
@@ -429,6 +430,7 @@ def selectdebugfile(path: str, ismypost=False):
             "./userconfig/selfbuild.py": "selfbuild.py",
             "./userconfig/mypost.py": "mypost.py",
             "./userconfig/myprocess.py": "myprocess.py",
+            "./userconfig/myanki.py": "myanki.py",
         }.get(path)
         if ismypost:
             tgt = "mypost.py"
@@ -712,6 +714,7 @@ def getfilemd5(file: str, default="0") -> str:
 
 
 def checkmd5reloadmodule(filename: str, module: str):
+    # -> isnew, option<module>
     if not os.path.exists(filename):
         # reload重新加载不存在的文件时不会报错。
         return True, None

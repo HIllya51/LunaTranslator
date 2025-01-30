@@ -1,12 +1,12 @@
 from qtsymbols import *
-import time, functools, threading, os, importlib, shutil, uuid
+import time, functools, threading, os, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, winsharedutils
 from myutils.wrapper import threader, tryprint
 from myutils.config import (
     globalconfig,
     saveallconfig,
-    static_data,
+    _TR,
     savehook_new_data,
     savehook_new_list,
 )
@@ -20,17 +20,12 @@ from myutils.utils import (
     loadpostsettingwindowmethod_maybe,
     find_or_create_uid,
 )
-from myutils.hwnd import (
-    mouseselectwindow,
-    grabwindow,
-    getExeIcon,
-    getcurrexe,
-)
+from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.textbrowser import Textbrowser, TextType, SpecialColor
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless, getQMessageBox, findnearestscreen
+from gui.usefulwidget import resizableframeless, findnearestscreen
 from gui.edittext import edittrans
 from gui.dialog_savedgame import dialog_savedgame_integrated
 from gui.dialog_savedgame_setting import favorites, calculate_centered_rect
@@ -890,7 +885,7 @@ class TranslatorWindow(resizableframeless):
         QToolTip.showText(QCursor.pos(), string, self)
 
     def displaymessagebox_f(self, string1, string2):
-        getQMessageBox(self, string1, string2)
+        QMessageBox.information(self, _TR(string1), _TR(string2))
 
     def displaylink_f(self, link):
         class linkviewer(LDialog):
@@ -951,7 +946,13 @@ class TranslatorWindow(resizableframeless):
         )  # 设置为顶级窗口，无边框
 
         self.fullscreenmanager = None
-        self.magpiecallback.connect(lambda _: self.fullscreenmanager.setuistatus(_) if self.fullscreenmanager else None)
+        self.magpiecallback.connect(
+            lambda _: (
+                self.fullscreenmanager.setuistatus(_)
+                if self.fullscreenmanager
+                else None
+            )
+        )
         icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
         # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
         self.setWindowIcon(icon)

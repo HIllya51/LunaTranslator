@@ -4,7 +4,7 @@ import gobject, uuid, json, os, functools
 from urllib.parse import quote
 from myutils.utils import threader
 from myutils.config import globalconfig, static_data, _TR
-from myutils.wrapper import tryprint, threader
+from myutils.wrapper import trypass, threader
 from gui.usefulwidget import WebviewWidget
 from gui.textbrowser import TextType, ColorControl, SpecialColor, FenciColor
 
@@ -15,7 +15,7 @@ class TextBrowser(QWidget, dataget):
     dropfilecallback = pyqtSignal(str)
     contentsChanged = pyqtSignal(QSize)
 
-    @tryprint
+    @trypass
     def resizeEvent(self, event: QResizeEvent):
         self.webivewwidget.resize(event.size())
 
@@ -111,7 +111,7 @@ class TextBrowser(QWidget, dataget):
             'switchcursor("{}")'.format(cursor_map.get(cursor, "default"))
         )
 
-    @tryprint
+    @trypass
     def showEvent(self, e):
         if not self.isfirst:
             return

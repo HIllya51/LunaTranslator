@@ -2,12 +2,11 @@ from qtsymbols import *
 import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject, platform
-from myutils.config import _TR, globalconfig, findFixedRuntime
+from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton_close
 from myutils.utils import nowisdark, checkisusingwine
 from gui.dynalang import (
     LLabel,
-    LMessageBox,
     LPushButton,
     LAction,
     LGroupBox,
@@ -345,34 +344,6 @@ class TableViewW(QTableView):
         except:
             print_exc()
             self.setindexdata(current, string)
-
-
-def getQMessageBox(
-    parent=None,
-    title="",
-    text="",
-    useok=True,
-    usecancel=False,
-    okcallback=None,
-    cancelcallback=None,
-):
-    msgBox = LMessageBox(parent)
-    msgBox.setWindowTitle((title))
-    msgBox.setText((text))
-    btn = 0
-    if useok:
-        btn |= QMessageBox.StandardButton.Ok
-    if usecancel:
-        btn |= QMessageBox.StandardButton.Cancel
-
-    msgBox.setStandardButtons(btn)
-    msgBox.setDefaultButton(QMessageBox.StandardButton.Ok)
-    ret = msgBox.exec()
-
-    if ret == QMessageBox.StandardButton.Ok and okcallback:
-        okcallback()
-    elif ret == QMessageBox.StandardButton.Cancel and cancelcallback:
-        cancelcallback()
 
 
 def findnearestscreen(rect: QRect):
@@ -1207,11 +1178,15 @@ class WebviewWidget(abstractwebview):
         winsharedutils.webview2_add_menu_noselect(self.webview, index, label, __)
 
     @staticmethod
-    def showError():
-        getQMessageBox(
+    def showError(e: Exception):
+        QMessageBox.critical(
             gobject.baseobject.settin_ui,
-            "错误",
-            "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。",
+            _TR("错误"),
+            str(e)
+            + "\n\n"
+            + _TR(
+                "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。"
+            ),
         )
         if int(platform.version().split(".")[0]) <= 6:
             os.startfile(
@@ -1248,24 +1223,51 @@ class WebviewWidget(abstractwebview):
 
         @staticmethod
         def Add(path):
-            winsharedutils.webview2_ext_add(WebviewWidget.LastPtr, path)
+            return winsharedutils.webview2_ext_add(WebviewWidget.LastPtr, path)
+
+    @staticmethod
+    def findFixedRuntime():
+        hasset = os.environ.get("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER")
+        if hasset:
+            # 已设置的环境变量会影响检测。直接返回就行了
+            return hasset
+        maxversion = (0, 0, 0, 0)
+        maxvf = None
+
+        for f in os.listdir("."):
+            f = os.path.abspath(f)
+            version = winsharedutils.detect_webview2_version(f)
+            # 这个API似乎可以检测runtime是否是有效的，比自己查询版本更好
+            if not version:
+                continue
+            if version > maxversion:
+                maxversion = version
+                maxvf = f
+                print(maxversion, f)
+        return maxvf
 
     def __init__(self, parent=None, transp=False) -> None:
         super().__init__(parent)
         self.webview = None
         self.binds = {}
         self.callbacks = []
-        FixedRuntime = findFixedRuntime()
+        FixedRuntime = WebviewWidget.findFixedRuntime()
         if FixedRuntime:
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
             # 在共享路径上无法运行
             os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
+        hresult = windows.LONG()
         self.webview = winsharedutils.webview2_create(
-            int(self.winId()), transp, WebviewWidget.webviewLoadExt
+            windows.pointer(hresult),
+            int(self.winId()),
+            transp,
+            WebviewWidget.webviewLoadExt,
         )
+        if (hresult.value < 0) or (not self.webview):
+            raise Exception(
+                windows.FormatMessage(windows.DWORD.from_buffer_copy(hresult))
+            )
         WebviewWidget.LastPtr = self.webview
-        if not self.webview:
-            raise Exception
         self.zoomchange_callback = winsharedutils.webview2_zoomchange_callback_t(
             self.zoomchange
         )
@@ -1565,10 +1567,10 @@ class auto_select_webview(QWidget):
         else:
             try:
                 browser = WebviewWidget()
-            except:
+            except Exception as e:
                 print_exc()
                 if shoudong:
-                    WebviewWidget.showError()
+                    WebviewWidget.showError(e)
                 browser = mshtmlWidget()
                 globalconfig["usewebview"] = 0
         return browser

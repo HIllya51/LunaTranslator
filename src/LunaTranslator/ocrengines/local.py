@@ -18,7 +18,7 @@ from language import Languages
 import gobject, functools
 from traceback import print_exc
 from qtsymbols import *
-from gui.usefulwidget import SuperCombo, getboxlayout, getQMessageBox
+from gui.usefulwidget import SuperCombo, getboxlayout
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 
 
@@ -136,7 +136,7 @@ def doinstall(self, allsupports: list, parent, callback):
     try:
         with zipfile.ZipFile(fn) as zipf:
             zipf.extractall("cache/ocrmodel")
-        getQMessageBox(self, "成功", "添加成功")
+        QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
         callback()
     except:
         print_exc()

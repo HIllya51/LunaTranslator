@@ -31,27 +31,6 @@ class LLabel(QLabel):
         super().setToolTip(_TR(t))
 
 
-class LMessageBox(QMessageBox):
-    def __init__(self, *argc, **kwarg):
-        super().__init__(*argc, **kwarg)
-        self._title = None
-        self._text = None
-
-    def setText(self, t):
-        self._text = t
-        super().setText(_TR(t))
-
-    def setWindowTitle(self, t):
-        self._title = t
-        super().setWindowTitle(_TR(t))
-
-    def updatelangtext(self):
-        if self._title:
-            super().setWindowTitle(_TR(self._title))
-        if self._text:
-            super().setText(_TR(self._text))
-
-
 class LPushButton(QPushButton):
     def __init__(self, *argc):
         self._text = None

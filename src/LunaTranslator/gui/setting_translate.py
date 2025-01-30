@@ -336,7 +336,8 @@ def initsome11(self, l, label=None, btnplus=False):
             last = D_getIconButton(callback=functools.partial(loadbutton, self, fanyi))
         elif fanyi == "selfbuild":
             last = D_getIconButton(
-                callback=lambda: selectdebugfile("./userconfig/selfbuild.py")
+                callback=lambda: selectdebugfile("./userconfig/selfbuild.py"),
+                icon="fa.edit",
             )
         else:
             last = ""

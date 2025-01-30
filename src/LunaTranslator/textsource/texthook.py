@@ -1,6 +1,7 @@
 import threading
 import re, os
 import time, gobject, windows
+from qtsymbols import *
 import zhconv, functools
 from winsharedutils import Is64bit
 from myutils.config import (
@@ -9,6 +10,7 @@ from myutils.config import (
     static_data,
     findgameuidofpath,
     getlanguse,
+    _TR,
 )
 from textsource.textsourcebase import basetext
 from myutils.utils import getlangtgt, safe_escape
@@ -37,7 +39,6 @@ from ctypes import (
     c_char,
 )
 from ctypes.wintypes import DWORD, LPCWSTR
-from gui.usefulwidget import getQMessageBox
 
 codepage_real = [
     932,
@@ -660,7 +661,7 @@ class texthook(basetext):
         for pid in self.pids.copy():
             succ = self.Luna_InsertHookCode(pid, hookcode) and succ
         if succ == False:
-            getQMessageBox(gobject.baseobject.hookselectdialog, "错误", "特殊码无效")
+            QMessageBox.critical(gobject.baseobject.hookselectdialog, _TR("错误"), _TR("特殊码无效"))
 
     @threader
     def delaycollectallselectedoutput(self):

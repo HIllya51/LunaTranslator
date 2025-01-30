@@ -114,6 +114,26 @@ class SpecialColor:
     DefaultColor = ColorControl(ColorControl.COLOR_DEFAULT)
     KanaColor = ColorControl(ColorControl.KANA_COLOR)
 
+def checkusewhich():
+    if "rendertext_using" not in globalconfig:
+        v = platform.version().split(".")
+        import winsharedutils
+
+        iswin8later = tuple(int(_) for _ in platform.version().split(".")[:2]) >= (6, 2)
+        webview2version = winsharedutils.detect_webview2_version()
+        if iswin8later:
+            if WebviewWidget.findFixedRuntime():
+                # 如果手动放置，那一定选手动的，不管功能完不完整。
+                globalconfig["rendertext_using"] = "webview"
+            else:
+                if webview2version and webview2version >= (100, 0, 0, 0):
+                    # <=99的功能不完整
+                    globalconfig["rendertext_using"] = "webview"
+                else:
+                    globalconfig["rendertext_using"] = "textbrowser"
+        else:
+            # win7上无边框窗口渲染有问题，所以一定不优先
+            globalconfig["rendertext_using"] = "textbrowser"
 
 class Textbrowser(QFrame):
     contentsChanged = pyqtSignal(QSize)
@@ -126,6 +146,7 @@ class Textbrowser(QFrame):
         self.contentsChanged.emit(size)
 
     def loadinternal(self, shoudong=False, forceReload=False):
+        checkusewhich()
         __ = globalconfig["rendertext_using"]
         if (not forceReload) and (self.curr_eng == __):
             return
@@ -139,10 +160,10 @@ class Textbrowser(QFrame):
         try:
             tb = importlib.import_module("rendertext." + __).TextBrowser
             self.textbrowser = tb(self)
-        except:
+        except Exception as e:
             print_exc()
             if shoudong:
-                WebviewWidget.showError()
+                WebviewWidget.showError(e)
             globalconfig["rendertext_using"] = "textbrowser"
             tb = importlib.import_module("rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)

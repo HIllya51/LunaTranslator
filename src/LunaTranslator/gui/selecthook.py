@@ -4,12 +4,11 @@ from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, windows, winsharedutils, gobject, os
 from textsource.texthook import codepage_display, codepage_real
-from myutils.config import savehook_new_data, static_data, globalconfig, _TR, isascii
+from myutils.config import savehook_new_data, globalconfig, _TR, isascii
 from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
 from gui.dialog_savedgame import dialog_setting_game
 from gui.usefulwidget import (
     closeashidewindow,
-    getQMessageBox,
     getsimplecombobox,
     MySwitch,
     getsimpleswitch,
@@ -133,7 +132,7 @@ class searchhookparam(LDialog):
             usestruct.codepage = codepage_real[self.codepagesave["spcp"]]
             usestruct.text = self.searchtext.text()[:30]
             if len(usestruct.text) < 4:
-                getQMessageBox(self, "警告", "搜索文本过短！", True)
+                QMessageBox.information(self, _TR("警告"), _TR("搜索文本过短！"))
                 return
         elif idx == 2:
             dumpvalues = {}
@@ -152,7 +151,7 @@ class searchhookparam(LDialog):
                 try:
                     p = pattern.replace(" ", "").replace("??", "11")
                     if ("?" in p) or (len(p) % 2 != 0):
-                        getQMessageBox(self, "警告", "无效", True)
+                        QMessageBox.information(self, _TR("警告"), _TR("无效"))
                         raise
                     bs = bytes.fromhex(p)
                     usestruct.pattern = bs[:30]
@@ -764,14 +763,8 @@ class hookselect(closeashidewindow):
             return
         if globalconfig["sourcestatus2"]["texthook"]["use"] == False:
             return
-        getQMessageBox(
-            self,
-            "警告",
-            "该功能可能会导致游戏崩溃！",
-            True,
-            True,
-            lambda: searchhookparam(self),
-        )
+        QMessageBox.warning(self, _TR("警告"), _TR("该功能可能会导致游戏崩溃！"))
+        searchhookparam(self)
 
     def findhookchecked(self):
         if gobject.baseobject.textsource.pids:
@@ -875,11 +868,7 @@ class hookselect(closeashidewindow):
                 self.sysOutput, get_time_stamp() + " " + sentence
             )
         elif info == HOSTINFO.Warning:
-            getQMessageBox(
-                self,
-                "警告",
-                sentence,
-            )
+            QMessageBox.warning(self, _TR("警告"), sentence)
         elif info == HOSTINFO.EmuGameName:
             gobject.baseobject.displayinfomessage(sentence, "<msg_info_refresh>")
 

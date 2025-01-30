@@ -138,11 +138,12 @@ def maybehavebutton(self, gameuid, post):
         if "mypost" not in save_text_process_info:
             save_text_process_info["mypost"] = str(uuid.uuid4()).replace("-", "_")
         return getIconButton(
+            icon="fa.edit",
             callback=functools.partial(
                 selectdebugfile,
                 save_text_process_info["mypost"],
                 ismypost=True,
-            )
+            ),
         )
     else:
         if post not in postprocessconfig:

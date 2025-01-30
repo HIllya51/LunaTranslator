@@ -8,9 +8,11 @@ from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, static_data, _TR
 from myutils.utils import (
     loopbackrecorder,
+    selectdebugfile,
     parsekeystringtomodvkcode,
     getimageformatlist,
     getimagefilefilter,
+    checkmd5reloadmodule,
 )
 from hiraparse.basehira import basehira
 from myutils.wrapper import threader, tryprint
@@ -18,7 +20,6 @@ from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import (
     closeashidewindow,
-    getQMessageBox,
     auto_select_webview,
     WebviewWidget,
     IconButton,
@@ -296,6 +297,13 @@ class AnkiWindow(QWidget):
             "example_sentence": example.replace("\n", "<br>"),
             "remarks": remarks.replace("\n", "<br>"),
         }
+        if globalconfig["usecustomankigen"]:
+            module = checkmd5reloadmodule("./userconfig/myanki.py", "myanki")[1]
+            if module:
+                try:
+                    fields = module.ParseFieldsData(fields)
+                except:
+                    print_exc()
         return fields
 
     def loadfakefields(self):
@@ -379,6 +387,23 @@ class AnkiWindow(QWidget):
         layout.addRow(
             "添加时更新模板",
             getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
+        )
+        layout.addRow(
+            "自定义Anki生成脚本",
+            getboxlayout(
+                [
+                    getsimpleswitch(globalconfig, "usecustomankigen"),
+                    getIconButton(
+                        callback=functools.partial(
+                            selectdebugfile, "./userconfig/myanki.py"
+                        ),
+                        icon="fa.edit",
+                    ),
+                    "",
+                ],
+                makewidget=True,
+                margin0=True,
+            ),
         )
         layout.addRow(
             "截图后进行OCR",
@@ -761,13 +786,13 @@ class AnkiWindow(QWidget):
         try:
             self.addanki()
             if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
-                self.refsearchw.close()
+                self.window().close()
             else:
-                QToolTip.showText(QCursor.pos(), "添加成功", self)
+                QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
         except requests.RequestException:
-            getQMessageBox(self.refsearchw, "错误", "无法连接到anki")
+            QMessageBox.critical(self, _TR("错误"), _TR("无法连接到anki"))
         except anki.AnkiException as e:
-            getQMessageBox(self.refsearchw, "错误", str(e))
+            QMessageBox.critical(self, _TR("错误"), str(e))
         except:
             print_exc()
 
@@ -804,10 +829,18 @@ class AnkiWindow(QWidget):
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
         tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)
+        fields = static_data["model_fileds"]
+        if globalconfig["usecustomankigen"]:
+            module = checkmd5reloadmodule("./userconfig/myanki.py", "myanki")[1]
+            if module:
+                try:
+                    fields = module.AnkiFields(fields)
+                except:
+                    print_exc()
         try:
             model = anki.Model.create(
                 ModelName,
-                static_data["model_fileds"],
+                fields,
                 model_css,
                 False,
                 [

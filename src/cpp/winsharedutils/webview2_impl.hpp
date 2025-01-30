@@ -16,8 +16,7 @@ typedef void (*List_Ext_callback_t)(LPCWSTR, LPCWSTR, BOOL);
 #endif
 
 class WebView2;
-class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler,
-                                          ICoreWebView2CustomItemSelectedEventHandler>
+class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler, ICoreWebView2CustomItemSelectedEventHandler>
 {
     WebView2 *ref;
     CComHeapPtr<WCHAR> CurrSelectText;
@@ -60,6 +59,7 @@ class WebView2
     typedef std::variant<contextmenu_callback_t, contextmenu_notext_callback_t> contextmenu_callback_t_ex;
     std::map<INT32, contextmenu_callback_t_ex> menuscallback;
     std::optional<std::wstring> UserDir();
+    HRESULT CreateCoreWebView2EnvironmentError, CreateCoreWebView2ControllerError;
 
 public:
     zoomchange_callback_t zoomchange_callback;
@@ -68,7 +68,8 @@ public:
     FilesDropped_callback_t FilesDropped_callback;
     void WaitForLoad();
     void AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback);
-    WebView2(HWND parent, bool, bool);
+    WebView2(HWND parent, bool);
+    HRESULT init(bool);
     void put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME);
     void Resize(int, int);
     double get_ZoomFactor();
@@ -78,10 +79,8 @@ public:
     void SetHTML(LPCWSTR);
     void Bind(LPCWSTR funcname);
 
-    void AddExtension(LPCWSTR);
-    void ListExtension(List_Ext_callback_t);
-    void EnableExtension(LPCWSTR, BOOL);
-    void RemoveExtension(LPCWSTR);
+    HRESULT AddExtension(LPCWSTR);
+    void ListExtensionDoSomething(List_Ext_callback_t, LPCWSTR, BOOL, BOOL);
 
 private:
     HRESULT ExtensionGetProfile7(ICoreWebView2Profile7 **profile7);

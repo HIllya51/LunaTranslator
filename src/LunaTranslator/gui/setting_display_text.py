@@ -2,7 +2,8 @@ from qtsymbols import *
 import functools
 import gobject, os
 from myutils.config import globalconfig, static_data, _TR
-from myutils.wrapper import tryprint, threader
+from myutils.wrapper import tryprint
+import windows
 from myutils.utils import translate_exits, getannotatedapiname
 from gui.usefulwidget import (
     getsimplecombobox,
@@ -269,7 +270,9 @@ class Exteditor(LDialog):
         )
         if not res:
             return
-        WebviewWidget.Extensions.Add(res)
+        hr = WebviewWidget.Extensions.Add(res)
+        if hr < 0:
+            QMessageBox.critical(self, _TR("错误"), windows.FormatMessage(hr, None))
         self.listexts()
 
     def listexts(self):
@@ -315,16 +318,14 @@ def resetgroudswitchcallback(self, group):
 
     goodfontgroupswitch = SuperCombo()
     if group == "webview":
-        _btn = getIconButton(callback=functools.partial(extrahtml, self))
+        _btn = getIconButton(
+            callback=functools.partial(extrahtml, self), icon="fa.edit"
+        )
         switch = getsimpleswitch(
             globalconfig,
             "useextrahtml",
-            callback=lambda x: [
-                gobject.baseobject.translation_ui.translate_text.textbrowser.loadex(),
-                _btn.setEnabled(x),
-            ],
+            callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.loadex(),
         )
-        _btn.setEnabled(globalconfig["useextrahtml"])
         _btn2 = getIconButton(callback=functools.partial(Exteditor, self))
         switch2 = getsimpleswitch(
             globalconfig, "webviewLoadExt", callback=lambda x: alertwhenrestart(self, x)

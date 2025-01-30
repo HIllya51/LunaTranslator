@@ -3,7 +3,7 @@ import sqlite3, os, json, functools
 from traceback import print_exc
 from myutils.config import globalconfig, _TR
 from myutils.utils import autosql, getannotatedapiname
-from gui.usefulwidget import getQMessageBox, SuperCombo
+from gui.usefulwidget import SuperCombo
 from gui.dynalang import LFormLayout, LPushButton, LDialog
 from textsource.texthook import splitembedlines
 from collections import Counter
@@ -37,7 +37,7 @@ def sqlite2json2(
             collect.extend(list(mtjs.keys()))
     except:
         print_exc()
-        getQMessageBox(self, "错误", "所选文件格式错误！")
+        QMessageBox.critical(self, _TR("错误"), _TR("所选文件格式错误！"))
         return
     _collect = []
     for _, __ in Counter(collect).most_common():

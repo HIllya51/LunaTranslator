@@ -364,6 +364,8 @@ DECLARE_API void html_get_html(MWebBrowserEx *ww, void (*cb)(LPCWSTR), LPWSTR el
     {
         CHECK_FAILURE_NORET(pDocument3->getElementById(elementid, &ele));
     }
+    if (!ele)
+        return;
     CComBSTR data;
     CHECK_FAILURE_NORET(ele->get_outerHTML(&data));
     cb(data);

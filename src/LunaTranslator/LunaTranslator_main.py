@@ -162,14 +162,13 @@ def checkintegrity():
         if os.path.exists(f) == False:
             collect.append(os.path.normpath(os.path.abspath(f)))
     if len(collect):
-        msg = QMessageBox()
-        msg.setText(
+        QMessageBox.critical(
+            None,
+            _TR("错误"),
             _TR("找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试").format(
                 modules="\n".join(collect)
-            )
+            ),
         )
-        msg.setWindowTitle(_TR("错误"))
-        msg.exec()
         os._exit(0)
 
 

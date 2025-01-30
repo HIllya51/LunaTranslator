@@ -2,15 +2,10 @@ from qtsymbols import *
 import os, functools
 import windows, qtawesome, gobject
 from winsharedutils import getpidhwndfirst
-from myutils.config import globalconfig
+from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton_close
-from myutils.hwnd import (
-    getpidexe,
-    ListProcess,
-    mouseselectwindow,
-    getExeIcon,
-)
-from gui.usefulwidget import saveposwindow, getQMessageBox
+from myutils.hwnd import getpidexe, ListProcess, mouseselectwindow, getExeIcon
+from gui.usefulwidget import saveposwindow
 from gui.dynalang import LPushButton, LLabel, LCheckBox
 
 
@@ -24,7 +19,9 @@ class AttachProcessDialog(saveposwindow):
             return
         name = getpidexe(pid)
         if not name:
-            getQMessageBox(self, "错误", "权限不足，请以管理员权限运行！")
+            QMessageBox.critical(
+                self, _TR("错误"), _TR("权限不足，请以管理员权限运行！")
+            )
             return
         _pids = ListProcess(name)
         self.processEdit.setText(name)
@@ -196,7 +193,9 @@ class AttachProcessDialog(saveposwindow):
             self.close()
         else:
             if self.selectedp[1] is None:
-                getQMessageBox(self, "错误", "权限不足，请以管理员权限运行！")
+                QMessageBox.critical(
+                    self, _TR("错误"), _TR("权限不足，请以管理员权限运行！")
+                )
                 return
             self.close()
             self.callback(self.selectedp, self.windowtext.text())

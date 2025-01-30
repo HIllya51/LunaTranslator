@@ -323,7 +323,7 @@ def _remove_chaos(line):
 
 def _mypostloader(line, file, module):
 
-    isnew, _ = checkmd5reloadmodule(file, module)
+    _ = checkmd5reloadmodule(file, module)[1]
     # 这个是单独函数的模块，不需要用isnew来判断是否需要重新初始化
     if not _:
         return line

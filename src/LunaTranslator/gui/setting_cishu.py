@@ -1,7 +1,7 @@
 import functools, os
 import gobject
 from myutils.utils import splitocrtypes
-from myutils.config import globalconfig, _TR, get_platform
+from myutils.config import globalconfig, _TR
 from gui.inputdialog import (
     multicolorset,
     autoinitdialog_items,

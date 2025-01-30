@@ -17,11 +17,11 @@
     "network": 1,
     "useextrahtml": false,
     "ocrselectalpha": 0.3,
+    "usecustomankigen": false,
     "is_search_word_auto_tts": false,
     "network_websocket": 1,
     "imagewrapmode": 0,
     "primitivtemetaorigin": "vid",
-    "rendertext_using": "textbrowser",
     "rendertext_using_internal": {
         "webview": "yinying",
         "textbrowser": "yinying"
@@ -1559,6 +1559,10 @@
         "googlecloudvision": {
             "use": false,
             "name": "Google Cloud Vision"
+        },
+        "googlelens": {
+            "use": false,
+            "name": "Google Lens"
         },
         "xunfei": {
             "use": false,

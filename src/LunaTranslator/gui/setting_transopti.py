@@ -108,7 +108,8 @@ def setTab7_lazy(self, basel):
     for i, post in enumerate(sortlist):
         if post == "_11":
             config = D_getIconButton(
-                callback=lambda: selectdebugfile("./userconfig/mypost.py")
+                callback=lambda: selectdebugfile("./userconfig/mypost.py"),
+                icon="fa.edit",
             )
         else:
             if post not in postprocessconfig:
@@ -192,9 +193,10 @@ def setTab7_lazy(self, basel):
                 return _f(_1)
 
             if setting:
-                grids2[-1].append(
-                    D_getIconButton(callback=functools.partial(__, setting, self))
-                )
+                kwarg = dict(callback=functools.partial(__, setting, self))
+                if name == "myprocess":
+                    kwarg.update(dict(icon="fa.edit"))
+                grids2[-1].append(D_getIconButton(**kwarg))
     grids2 += [[("", 15)]]
 
     def ___(lay: QVBoxLayout):
