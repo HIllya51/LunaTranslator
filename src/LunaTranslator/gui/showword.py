@@ -90,9 +90,12 @@ class AnkiWindow(QWidget):
         self.__ocrsettext.emit(ocr_run(img)[0])
 
     def crophide(self, s=False):
+        currpos = gobject.baseobject.translation_ui.pos()
+        currpos2 = self.window().pos()
+        # hide会有隐藏动画残影
         if s:
-            self.window().hide()
-            gobject.baseobject.translation_ui.hide_()
+            self.window().move(-9999, -9999)
+            gobject.baseobject.translation_ui.move(-9999, -9999)
 
         def ocroncefunction(rect, img=None):
             if not img:
@@ -103,8 +106,8 @@ class AnkiWindow(QWidget):
             if globalconfig["ankiconnect"]["ocrcroped"]:
                 self.asyncocr(img)
             if s:
-                gobject.baseobject.translation_ui.show_()
-                self.window().show()
+                gobject.baseobject.translation_ui.move(currpos)
+                self.window().move(currpos2)
 
         rangeselct_function(ocroncefunction)
 
