@@ -1,12 +1,5 @@
-#ifndef WINXP
-#include <shlobj.h>
-#include <wchar.h>
-#include <iostream>
-#include <audioclientactivationparams.h>
 
 #include "LoopbackCapture.h"
-
-#define BITS_PER_BYTE 8
 
 HRESULT CLoopbackCapture::SetDeviceStateErrorIfFailed(HRESULT hr)
 {
@@ -401,4 +394,3 @@ HRESULT CLoopbackCapture::OnAudioSampleRequested()
 
     return S_OK;
 }
-#endif

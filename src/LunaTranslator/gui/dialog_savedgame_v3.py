@@ -416,27 +416,25 @@ class viewpixmap_x(QWidget):
             self.play_context = None
 
     def startorendrecord(self, check):
+        if not self.currentimage:
+            return
         if check:
             if self.play_context:
                 self.btnplay.click()
             self.btnplay.setEnabled(False)
             self.recorder = loopbackrecorder()
         else:
-            self.btnplay.setEnabled(False)
-
-            def _cb(image, path):
-                if not image:
-                    return
-                tgt = image + os.path.splitext(path)[1]
-                shutil.copy(path, tgt)
-                extradatas["imagerefmp3"][image] = tgt
-
-                self.btnplay.setEnabled(self.checkplayable())
-
             if not self.recorder:
                 return
-            self.recorder.end(callback=functools.partial(_cb, self.currentimage))
+            self.btnplay.setEnabled(False)
+            file = self.recorder.stop_save()
             self.recorder = None
+            if file:
+                tgt = self.currentimage + os.path.splitext(file)[1]
+                shutil.copy(file, tgt)
+                extradatas["imagerefmp3"][self.currentimage] = tgt
+
+            self.btnplay.setEnabled(self.checkplayable())
 
     def changecommit(self):
         extradatas["imagecomment"][self.currentimage] = self.commentedit.toPlainText()

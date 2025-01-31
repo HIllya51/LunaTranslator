@@ -742,22 +742,22 @@ def checkmd5reloadmodule(filename: str, module: str):
 class loopbackrecorder:
     def __init__(self):
         try:
-            self.capture = winsharedutils.audiocapture()
+            self.capture = winsharedutils.loopbackrecorder()
         except:
             self.capture = None
 
-    @threader
-    def end(self, callback):
+    def stop_save(self):
         if not self.capture:
-            return callback("")
-        wav = self.capture.stop()
+            return None
+        self.capture.stop()
+        wav = self.capture.data
         if not wav:
-            return callback("")
+            return None
         new, ext = bass_code_cast(wav, "wav")
         file = gobject.gettempdir(str(time.time()) + "." + ext)
         with open(file, "wb") as ff:
             ff.write(new)
-        callback(file)
+        return file
 
 
 def copytree(src, dst, copy_function=shutil.copy2):

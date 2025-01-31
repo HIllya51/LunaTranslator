@@ -1,26 +1,17 @@
 
-#ifndef WINXP
 #include "LoopbackCapture.h"
-DECLARE_API HANDLE StartCaptureAsync(void (*datacb)(void *ptr, size_t size))
+DECLARE_API CLoopbackCapture *StartCaptureAsync()
 {
-    auto mutex = CreateSemaphoreW(NULL, 0, 1, NULL);
-    std::thread([=]()
-                {
-        CLoopbackCapture loopbackCapture;
-    loopbackCapture.StartCaptureAsync(GetCurrentProcessId(), false);
-    WaitForSingleObject(mutex, INFINITE);
-    CloseHandle(mutex);
-    loopbackCapture.StopCaptureAsync();
-    datacb(loopbackCapture.buffer.data(), loopbackCapture.buffer.size()); })
-        .detach();
-    return mutex;
+    auto _ = new CLoopbackCapture;
+    _->AddRef();
+    _->StartCaptureAsync(GetCurrentProcessId(), false);
+    return _;
 }
-#else
-DECLARE_API HANDLE StartCaptureAsync(void (*datacb)(void *ptr, size_t size)) { return NULL; }
-#endif
-DECLARE_API void StopCaptureAsync(HANDLE m)
+DECLARE_API void StopCaptureAsync(CLoopbackCapture *ptr, void (*datacb)(void *ptr, size_t size))
 {
-    if (!m)
+    if (!ptr)
         return;
-    ReleaseSemaphore(m, 1, NULL);
+    ptr->StopCaptureAsync();
+    datacb(ptr->buffer.data(), ptr->buffer.size());
+    ptr->Release();
 }

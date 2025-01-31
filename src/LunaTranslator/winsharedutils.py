@@ -402,38 +402,26 @@ webview2_ext_rm.restype = LONG
 # LoopBack
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
-StartCaptureAsync.argtypes = (StartCaptureAsync_cb,)
-StartCaptureAsync.restype = HANDLE
+StartCaptureAsync.restype = c_void_p
 StopCaptureAsync = utilsdll.StopCaptureAsync
-StopCaptureAsync.argtypes = (HANDLE,)
+StopCaptureAsync.argtypes = (c_void_p, StartCaptureAsync_cb)
 
 
-class audiocapture:
+class loopbackrecorder:
     def __datacollect(self, ptr, size):
         self.data = cast(ptr, POINTER(c_char))[:size]
-        self.stoped.release()
 
     def stop(self):
-        _ = self.mutex
-        if _:
-            self.mutex = None
-            StopCaptureAsync(_)
-            self.stoped.acquire()
-        _ = self.data
-        self.data = None
-        return _
+        __ = StartCaptureAsync_cb(self.__datacollect)
+        StopCaptureAsync(self.ptr, __)
+        self.ptr = None
 
     def __del__(self):
         self.stop()
 
     def __init__(self) -> None:
-
-        self.mutex = None
-        self.stoped = threading.Lock()
-        self.stoped.acquire()
         self.data = None
-        self.cb1 = StartCaptureAsync_cb(self.__datacollect)
-        self.mutex = StartCaptureAsync(self.cb1)
+        self.ptr = StartCaptureAsync()
 
 
 # LoopBack

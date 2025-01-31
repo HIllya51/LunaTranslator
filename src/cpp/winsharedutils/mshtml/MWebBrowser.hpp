@@ -7,7 +7,7 @@
 
 #define INITGUID
 
-class JSObject : public ComImpl<IUnknown, IDispatch>
+class JSObject : public ComImpl<IDispatch>
 {
 private:
     typedef std::function<void(wchar_t **, int)> functiontype;
@@ -28,7 +28,7 @@ public:
                                              EXCEPINFO *pExcepInfo, UINT *puArgErr);
 };
 
-class MWebBrowser : public ComImpl<IUnknown, IDispatch,
+class MWebBrowser : public ComImpl<IDispatch,
                                    IOleClientSite,
                                    IOleInPlaceSite,
                                    IStorage,

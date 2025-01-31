@@ -65,8 +65,26 @@ BASS_ChannelGetData = WINFUNCTYPE(DWORD, DWORD, c_void_p, DWORD)(
 )
 
 
+__loadoncelock = threading.Lock()
+__hasload = False
+
+
+def _loadbassonce():
+    with __loadoncelock:
+        global __hasload
+        if __hasload:
+            return
+        __hasload = True
+        BASS_Init(-1, 44100, 0, 0, 0)
+        # https://www.un4seen.com/
+        plugins = ["bass_spx.dll", "bass_aac.dll", "bassopus.dll"]
+        for _ in plugins:
+            BASS_PluginLoad(gobject.GetDllpath(_).encode("utf8"), 0)
+
+
 class playonce:
     def __init__(self, fileormem, volume) -> None:
+        _loadbassonce()
         self.handle = None
         self.channel_length = 0
         self.__play(fileormem, volume)
@@ -108,13 +126,6 @@ class playonce:
             return
         self.handle = None
         BASS_StreamFree(_)
-
-
-BASS_Init(-1, 44100, 0, 0, 0)
-# https://www.un4seen.com/
-plugins = ["bass_spx.dll", "bass_aac.dll", "bassopus.dll"]
-for _ in plugins:
-    BASS_PluginLoad(gobject.GetDllpath(_).encode("utf8"), 0)
 
 
 def ENCODEPROCEXF(ret: list, _, _1, buffer, size, _2, _3):
@@ -161,6 +172,7 @@ def load_enc_func(ext):
 
 
 def bass_code_cast(bs, fr="mp3"):
+    _loadbassonce()
     # fr没啥用，仅用来给出编码失败时的用来占位的后缀，以少写代码
     to = globalconfig["audioformat"]
     _ = load_enc_func(to)

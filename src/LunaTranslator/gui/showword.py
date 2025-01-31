@@ -510,9 +510,9 @@ class AnkiWindow(QWidget):
             self.recorders[ii] = loopbackrecorder()
             self.simulate_key(ii)
         else:
-            self.recorders[ii].end(
-                callback=functools.partial(self.settextsignal.emit, target)
-            )
+            file = self.recorders[ii].stop_save()
+            self.recorders[ii] = None
+            self.settextsignal.emit(target, file)
 
     def createaddtab(self):
         self.recorders = {}

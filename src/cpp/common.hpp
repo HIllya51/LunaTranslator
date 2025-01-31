@@ -62,6 +62,8 @@ private:
         {
             return get_interface<Rest...>(riid);
         }
+        else if (riid == __uuidof(IUnknown))
+            return this;
         return nullptr;
     }
 
