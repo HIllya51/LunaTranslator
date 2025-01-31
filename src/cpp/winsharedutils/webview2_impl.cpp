@@ -83,15 +83,7 @@ public:
                 }
                 else if (idfuck.size() && (wcscmp(idfuck.c_str(), id) == 0))
                 {
-                    if (remove)
-                    {
-                        CHECK_FAILURE(ext->Remove(this));
-                    }
-                    else
-                    {
-                        CHECK_FAILURE(ext->Enable(enable, this));
-                    }
-                    break;
+                    return remove ? ext->Remove(this) : ext->Enable(enable, this);
                 }
             }
             return S_OK;
@@ -328,26 +320,16 @@ HRESULT WebView2::init(bool loadextension)
     waitforloadflag.test_and_set();
     handler = new WebView2ComHandler{this};
     auto dir = UserDir();
+    ICoreWebView2EnvironmentOptions *optionptr = nullptr;
+    auto ext = loadextension ? L"--embedded-browser-webview-enable-extension" : L"";
 #ifndef WINXP
     auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
-    auto optionptr = options.Get();
-#else
-    auto optionptr = nullptr;
-#endif
-    [&]()
-    {
-        auto ext = loadextension ? L"--embedded-browser-webview-enable-extension" : L"";
-#ifndef WINXP
-        Microsoft::WRL::ComPtr<ICoreWebView2EnvironmentOptions> options1;
-        Microsoft::WRL::ComPtr<ICoreWebView2EnvironmentOptions6> options6;
-        // 必须用这个才能进行add，否则只能list/remove/enable
-        if (options && SUCCEEDED(options.As(&options6)) && SUCCEEDED(options6->put_AreBrowserExtensionsEnabled(loadextension)))
-            return;
-        if (options && SUCCEEDED(options.As(&options1)) && SUCCEEDED(options1->put_AdditionalBrowserArguments(ext)))
-            return;
+    // 必须用这个才能进行add，否则只能list/remove/enable
+    if (options && SUCCEEDED(options->put_AreBrowserExtensionsEnabled(loadextension)) && SUCCEEDED(options->put_AdditionalBrowserArguments(ext)))
+        optionptr = options.Get();
+    else
 #endif
         SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", ext);
-    }();
     CHECK_FAILURE(CreateCoreWebView2EnvironmentWithOptions(nullptr, dir ? dir.value().c_str() : nullptr, optionptr, handler));
     WaitForLoad();
     CHECK_FAILURE(CreateCoreWebView2EnvironmentError);
