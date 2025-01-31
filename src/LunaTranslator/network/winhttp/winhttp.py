@@ -242,7 +242,7 @@ def winhttpsetproxy(hreq, proxy):
     proxyInfo = WINHTTP_PROXY_INFO()
     proxyInfo.dwAccessType = WINHTTP_ACCESS_TYPE_NAMED_PROXY
     proxyInfo.lpszProxy = proxy
-    proxyInfo.lpszProxyBypass = None
+    proxyInfo.lpszProxyBypass = "<local>"
     MaybeRaiseException0(
         WinHttpSetOption(
             hreq, WINHTTP_OPTION_PROXY, pointer(proxyInfo), sizeof(proxyInfo)
