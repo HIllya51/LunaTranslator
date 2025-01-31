@@ -84,9 +84,14 @@ public:
                 else if (idfuck.size() && (wcscmp(idfuck.c_str(), id) == 0))
                 {
                     if (remove)
-                        ext->Remove(this);
+                    {
+                        CHECK_FAILURE(ext->Remove(this));
+                    }
                     else
-                        ext->Enable(enable, this);
+                    {
+                        CHECK_FAILURE(ext->Enable(enable, this));
+                    }
+                    break;
                 }
             }
             return S_OK;
