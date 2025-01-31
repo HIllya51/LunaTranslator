@@ -1252,6 +1252,8 @@ class WebviewWidget(abstractwebview):
             # 这个API似乎可以检测runtime是否是有效的，比自己查询版本更好
             if not version:
                 continue
+            if (version[0] > 109) and (int(platform.version().split(".")[0]) <= 6):
+                continue
             if version > maxversion:
                 maxversion = version
                 maxvf = f
