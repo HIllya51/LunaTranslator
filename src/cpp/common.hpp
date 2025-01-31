@@ -27,7 +27,7 @@ inline std::string WideStringToString(const std::wstring &text, UINT cp = CP_UTF
     if (FAILED((x)))           \
         return;
 #define CHECK_FAILURE_CONTINUE(x) \
-    if (FAILED((x)))           \
+    if (FAILED((x)))              \
         continue;
 
 struct CO_INIT
@@ -66,6 +66,14 @@ private:
     }
 
 public:
+    void operator delete(void *ptr) noexcept
+    {
+        CoTaskMemFree(ptr);
+    }
+    void *operator new(size_t size)
+    {
+        return CoTaskMemAlloc(size);
+    }
     ULONG STDMETHODCALLTYPE AddRef() { return InterlockedIncrement(&m_ref_count); }
     ULONG STDMETHODCALLTYPE Release()
     {
