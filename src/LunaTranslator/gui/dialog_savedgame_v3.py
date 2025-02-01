@@ -436,7 +436,7 @@ class viewpixmap_x(QWidget):
             file = self.recorder.stop_save()
             self.recorder = None
             if file:
-                tgt = self.currentimage + os.path.splitext(file)[1]
+                tgt = extradatas["localedpath"].get(self.currentimage, self.currentimage) + os.path.splitext(file)[1]
                 shutil.copy(file, tgt)
                 extradatas["imagerefmp3"][self.currentimage] = tgt
 
