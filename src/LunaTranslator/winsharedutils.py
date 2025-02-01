@@ -14,6 +14,7 @@ from ctypes import (
     c_double,
     c_char,
     CFUNCTYPE,
+    WinDLL,
 )
 from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG
 import platform, windows, functools, os, threading
@@ -402,7 +403,8 @@ webview2_ext_rm.restype = LONG
 # LoopBack
 StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
-StartCaptureAsync.restype = c_void_p
+StartCaptureAsync.argtypes = (POINTER(c_void_p),)
+StartCaptureAsync.restype = LONG
 StopCaptureAsync = utilsdll.StopCaptureAsync
 StopCaptureAsync.argtypes = (c_void_p, StartCaptureAsync_cb)
 
@@ -421,7 +423,8 @@ class loopbackrecorder:
 
     def __init__(self) -> None:
         self.data = None
-        self.ptr = StartCaptureAsync()
+        self.ptr = c_void_p()
+        windows.CHECK_FAILURE(StartCaptureAsync(pointer(self.ptr)))
 
 
 # LoopBack

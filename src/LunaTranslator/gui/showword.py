@@ -505,11 +505,19 @@ class AnkiWindow(QWidget):
         for mode in modes:
             windows.keybd_event(mode, 0, windows.KEYEVENTF_KEYUP, 0)
 
-    def startorendrecord(self, ii, target: QLineEdit, idx):
+    def startorendrecord(self, btn: QPushButton, ii, target: QLineEdit, idx):
         if idx:
-            self.recorders[ii] = loopbackrecorder()
+            try:
+                self.recorders[ii] = loopbackrecorder()
+            except Exception as e:
+                self.recorders[ii] = None
+                QMessageBox.critical(self, _TR("错误"), str(e))
+                btn.click()
+                return
             self.simulate_key(ii)
         else:
+            if not self.recorders[ii]:
+                return
             file = self.recorders[ii].stop_save()
             self.recorders[ii] = None
             self.settextsignal.emit(target, file)
@@ -587,11 +595,13 @@ class AnkiWindow(QWidget):
         self.remarks = ctrlbedit()
         recordbtn1 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True)
         recordbtn1.clicked.connect(
-            functools.partial(self.startorendrecord, 1, self.audiopath)
+            functools.partial(self.startorendrecord, recordbtn1, 1, self.audiopath)
         )
         recordbtn2 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True)
         recordbtn2.clicked.connect(
-            functools.partial(self.startorendrecord, 2, self.audiopath_sentence)
+            functools.partial(
+                self.startorendrecord, recordbtn2, 2, self.audiopath_sentence
+            )
         )
         self.recordbtn1 = recordbtn1
         self.recordbtn2 = recordbtn2

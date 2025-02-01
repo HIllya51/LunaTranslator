@@ -1,11 +1,14 @@
 
 #include "LoopbackCapture.h"
-DECLARE_API CLoopbackCapture *StartCaptureAsync()
+DECLARE_API HRESULT StartCaptureAsync(CLoopbackCapture **ptr)
 {
-    auto _ = new CLoopbackCapture;
-    _->AddRef();
-    _->StartCaptureAsync(GetCurrentProcessId(), false);
-    return _;
+    *ptr = nullptr;
+    CComPtr<CLoopbackCapture> _ = new CLoopbackCapture;
+    if (!_)
+        return E_POINTER;
+    CHECK_FAILURE(_->StartCaptureAsync(GetCurrentProcessId(), false));
+    *ptr = _.Detach();
+    return S_OK;
 }
 DECLARE_API void StopCaptureAsync(CLoopbackCapture *ptr, void (*datacb)(void *ptr, size_t size))
 {

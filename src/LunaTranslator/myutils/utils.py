@@ -741,10 +741,7 @@ def checkmd5reloadmodule(filename: str, module: str):
 
 class loopbackrecorder:
     def __init__(self):
-        try:
-            self.capture = winsharedutils.loopbackrecorder()
-        except:
-            self.capture = None
+        self.capture = winsharedutils.loopbackrecorder()
 
     def stop_save(self):
         if not self.capture:

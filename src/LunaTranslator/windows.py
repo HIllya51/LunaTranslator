@@ -795,3 +795,12 @@ def MonitorFromWindow(hwnd, dwFlags=MONITOR_DEFAULTTONEAREST):
 PathFileExists = windll.Shlwapi.PathFileExistsW
 PathFileExists.argtypes = (LPCWSTR,)
 PathFileExists.restype = BOOL
+
+
+class HRESULT_ERROR(Exception):
+    pass
+
+
+def CHECK_FAILURE(hr, module=None):
+    if hr < 0:
+        raise HRESULT_ERROR(FormatMessage(hr, module))

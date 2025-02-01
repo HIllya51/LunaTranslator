@@ -8,6 +8,7 @@ from myutils.config import (
     savegametaged,
     get_launchpath,
     extradatas,
+    _TR,
     globalconfig,
 )
 from myutils.hwnd import clipboard_set_image
@@ -422,7 +423,12 @@ class viewpixmap_x(QWidget):
             if self.play_context:
                 self.btnplay.click()
             self.btnplay.setEnabled(False)
-            self.recorder = loopbackrecorder()
+            try:
+                self.recorder = loopbackrecorder()
+            except Exception as e:
+                self.recorder = None
+                QMessageBox.critical(self, _TR("错误"), str(e))
+                self.recordbtn.click()
         else:
             if not self.recorder:
                 return
