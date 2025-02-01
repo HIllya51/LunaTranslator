@@ -1,6 +1,6 @@
 #ifndef WINXP
-#include <roapi.h>
 #include <winstring.h>
+#include <roapi.h>
 #include <shcore.h>
 #include <windows.foundation.collections.h>
 #include <windows.globalization.h>
@@ -31,7 +31,7 @@ using ABI::Windows::Storage::Streams::IRandomAccessStream;
 #else
 #include "xp.hpp"
 #endif
-
+#include "common.hpp"
 template <class OperationT, class HandlerT, class ResultT>
 struct CompleteCallback : ComImpl<HandlerT>
 {
@@ -73,34 +73,6 @@ STDAPI CreateRandomAccessStreamOverStream(_In_ IStream *stream, _In_ BSOS_OPTION
     return ((decltype(&CreateRandomAccessStreamOverStream))(func))(stream, options, riid, ppv);
 }
 
-struct AutoHString
-{
-    HSTRING hstr = nullptr;
-    AutoHString()
-    {
-    }
-    AutoHString(LPCWSTR wstr)
-    {
-        WindowsCreateString(wstr, lstrlenW(wstr), &hstr);
-    }
-    ~AutoHString()
-    {
-        if (hstr)
-            WindowsDeleteString(hstr);
-    }
-    operator HSTRING()
-    {
-        return hstr;
-    }
-    HSTRING *operator&() throw()
-    {
-        return &hstr;
-    }
-    operator const WCHAR *()
-    {
-        return WindowsGetStringRawBuffer(hstr, NULL);
-    }
-};
 static HRESULT CreateLanguage(ILanguage **language, LPCWSTR Lang)
 {
     CComPtr<ILanguageFactory> language_factory;

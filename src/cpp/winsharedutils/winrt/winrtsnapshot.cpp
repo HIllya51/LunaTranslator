@@ -1,21 +1,65 @@
-﻿#ifndef WINXP
+﻿#include <d3d11.h>
 #include <dxgi.h>
+#ifndef WINXP
+#include <winstring.h>
+#include <roapi.h>
 #include <inspectable.h>
-#include <dxgi1_2.h>
-#include <d3d11.h>
-#include <winrt/Windows.System.h>
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.Foundation.Collections.h>
-#include <winrt/Windows.Graphics.Capture.h>
 #include <Windows.Graphics.Capture.Interop.h>
 #include <windows.graphics.directx.direct3d11.interop.h>
-#include <winrt/Windows.Foundation.Metadata.h>
-#include <winrt/Windows.Graphics.DirectX.h>
-#include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
-#include <winrt/Windows.Graphics.Imaging.h>
-#include <winrt/Windows.Storage.h>
-#include <winrt/Windows.Storage.Pickers.h>
-#include <winrt/Windows.Storage.Streams.h>
+#include <windows.graphics.directx.direct3d11.h>
+#include <windows.graphics.directx.direct3d11.h>
+using ABI::Windows::Foundation::GetActivationFactory;
+using ABI::Windows::Foundation::IClosable;
+using ABI::Windows::Graphics::SizeInt32;
+using ABI::Windows::Graphics::Capture::Direct3D11CaptureFramePool;
+using ABI::Windows::Graphics::Capture::GraphicsCaptureItem;
+using ABI::Windows::Graphics::Capture::IDirect3D11CaptureFrame;
+using ABI::Windows::Graphics::Capture::IDirect3D11CaptureFramePool;
+using ABI::Windows::Graphics::Capture::IDirect3D11CaptureFramePoolStatics;
+using ABI::Windows::Graphics::Capture::IGraphicsCaptureItem;
+using ABI::Windows::Graphics::Capture::IGraphicsCaptureItemStatics;
+using ABI::Windows::Graphics::Capture::IGraphicsCaptureSession;
+using ABI::Windows::Graphics::Capture::IGraphicsCaptureSession2;
+using ABI::Windows::Graphics::DirectX::DirectXPixelFormat;
+using ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice;
+using ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DSurface;
+using Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess;
+#else
+#include "xp.hpp"
+#endif
+#include "common.hpp"
+
+_Use_decl_annotations_
+    HRESULT
+    GetTextureFromSurface(
+        IDirect3DSurface *pSurface,
+        ID3D11Texture2D **ppTexture)
+{
+    CComPtr<IDirect3DDxgiInterfaceAccess> spDXGIInterfaceAccess;
+    CHECK_FAILURE(pSurface->QueryInterface(IID_PPV_ARGS(&spDXGIInterfaceAccess)));
+    CHECK_FAILURE(spDXGIInterfaceAccess->GetInterface(IID_PPV_ARGS(ppTexture)));
+    return S_OK;
+}
+struct FrameArrivedCallback : ComImpl<__FITypedEventHandler_2_Windows__CGraphics__CCapture__CDirect3D11CaptureFramePool_IInspectable>
+{
+    CComPtr<ID3D11Texture2D> &texture;
+    std::atomic_flag &waitforloadflag;
+    bool once = false;
+    FrameArrivedCallback(CComPtr<ID3D11Texture2D> &texture, std::atomic_flag &waitforloadflag) : waitforloadflag(waitforloadflag), texture(texture) {}
+    HRESULT STDMETHODCALLTYPE Invoke(IDirect3D11CaptureFramePool *frame_pool, IInspectable *args)
+    {
+        if (once)
+            return S_OK;
+        CComPtr<IDirect3D11CaptureFrame> frame;
+        CHECK_FAILURE(frame_pool->TryGetNextFrame(&frame));
+        CComPtr<IDirect3DSurface> surface;
+        CHECK_FAILURE(frame->get_Surface(&surface));
+        CHECK_FAILURE(GetTextureFromSurface(surface, &texture));
+        once = true;
+        waitforloadflag.clear();
+        return S_OK;
+    }
+};
 
 void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
 {
@@ -33,96 +77,73 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
     // init_apartment(winrt::apartment_type::multi_threaded);
 
     // Create Direct 3D Device
-    winrt::com_ptr<ID3D11Device> d3d_device;
+    CComPtr<ID3D11Device> d3d_device;
 
-    winrt::check_hresult(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT,
-                                           nullptr, 0, D3D11_SDK_VERSION, d3d_device.put(), nullptr, nullptr));
+    CHECK_FAILURE_NORET(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+                                          nullptr, 0, D3D11_SDK_VERSION, &d3d_device, nullptr, nullptr));
 
-    winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device;
-    const auto dxgiDevice = d3d_device.as<IDXGIDevice>();
+    CComPtr<IDirect3DDevice> device;
+    CComPtr<IDXGIDevice> dxgiDevice;
+    CHECK_FAILURE_NORET(d3d_device.QueryInterface(&dxgiDevice));
+
     {
-        winrt::com_ptr<IInspectable> inspectable;
-        winrt::check_hresult(CreateDirect3D11DeviceFromDXGIDevice(dxgiDevice.get(), inspectable.put()));
-        device = inspectable.as<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice>();
+        CComPtr<IInspectable> inspectable;
+        CHECK_FAILURE_NORET(CreateDirect3D11DeviceFromDXGIDevice(dxgiDevice, &inspectable));
+        CHECK_FAILURE_NORET(inspectable.QueryInterface(&device));
     }
 
-    auto idxgi_device2 = dxgiDevice.as<IDXGIDevice2>();
-    winrt::com_ptr<IDXGIAdapter> adapter;
-    winrt::check_hresult(idxgi_device2->GetParent(winrt::guid_of<IDXGIAdapter>(), adapter.put_void()));
-    winrt::com_ptr<IDXGIFactory2> factory;
-    winrt::check_hresult(adapter->GetParent(winrt::guid_of<IDXGIFactory2>(), factory.put_void()));
-
-    winrt::com_ptr<ID3D11DeviceContext> d3d_context;
-    d3d_device->GetImmediateContext(d3d_context.put());
+    CComPtr<ID3D11DeviceContext> d3d_context;
+    d3d_device->GetImmediateContext(&d3d_context);
 
     RECT rect{};
-    DwmGetWindowAttribute(window_handle, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
-    const auto size = winrt::Windows::Graphics::SizeInt32{rect.right - rect.left, rect.bottom - rect.top};
+    CHECK_FAILURE_NORET(DwmGetWindowAttribute(window_handle, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT)));
+    const auto size = SizeInt32{rect.right - rect.left, rect.bottom - rect.top};
 
-    winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool m_frame_pool =
-        winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::Create(
-            device,
-            winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
-            2,
-            size);
+    CComPtr<IDirect3D11CaptureFramePoolStatics> framepoolstatics;
+    CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Graphics_Capture_Direct3D11CaptureFramePool), &framepoolstatics));
+    CComPtr<IDirect3D11CaptureFramePool> m_frame_pool;
+    CHECK_FAILURE_NORET(framepoolstatics->Create(device, DirectXPixelFormat::DirectXPixelFormat_B8G8R8A8UIntNormalized, 2, size, &m_frame_pool));
+    CComPtr<IGraphicsCaptureItemInterop> interop_factory;
+    CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Graphics_Capture_GraphicsCaptureItem), &interop_factory));
+    CComPtr<IGraphicsCaptureItem> capture_item = {nullptr};
+    CHECK_FAILURE_NORET(interop_factory->CreateForWindow(window_handle, IID_PPV_ARGS(&capture_item)));
 
-    const auto activation_factory = winrt::get_activation_factory<
-        winrt::Windows::Graphics::Capture::GraphicsCaptureItem>();
-    auto interop_factory = activation_factory.as<IGraphicsCaptureItemInterop>();
-    winrt::Windows::Graphics::Capture::GraphicsCaptureItem capture_item = {nullptr};
-    interop_factory->CreateForWindow(window_handle, winrt::guid_of<ABI::Windows::Graphics::Capture::IGraphicsCaptureItem>(),
-                                     winrt::put_abi(capture_item));
+    CComPtr<ID3D11Texture2D> texture;
+    CComPtr<IGraphicsCaptureSession> session;
+    CHECK_FAILURE_NORET(m_frame_pool->CreateCaptureSession(capture_item, &session));
+    CComPtr<IGraphicsCaptureSession2> session2;
+    if (SUCCEEDED(session.QueryInterface(&session2)))
+        session2->put_IsCursorCaptureEnabled(false);
+    EventRegistrationToken token;
+    std::atomic_flag waitforloadflag = ATOMIC_FLAG_INIT;
+    waitforloadflag.test_and_set();
+    CComPtr<FrameArrivedCallback> arrivedCallback = new FrameArrivedCallback{texture, waitforloadflag};
+    CHECK_FAILURE_NORET(m_frame_pool->add_FrameArrived(arrivedCallback, &token));
 
-    auto is_frame_arrived = false;
-    winrt::com_ptr<ID3D11Texture2D> texture;
-    const auto session = m_frame_pool.CreateCaptureSession(capture_item);
-    session.IsCursorCaptureEnabled(false);
-    m_frame_pool.FrameArrived([&](auto &frame_pool, auto &)
-                              {
-            if (is_frame_arrived)
-            {
-                return;
-            }
-            auto frame = frame_pool.TryGetNextFrame();
-
-            struct __declspec(uuid("A9B3D012-3DF2-4EE3-B8D1-8695F457D3C1"))
-                IDirect3DDxgiInterfaceAccess : ::IUnknown
-            {
-                virtual HRESULT __stdcall GetInterface(GUID const& id, void** object) = 0;
-            };
-
-            auto access = frame.Surface().as<IDirect3DDxgiInterfaceAccess>();
-            access->GetInterface(winrt::guid_of<ID3D11Texture2D>(), texture.put_void());
-            is_frame_arrived = true;
-            return; });
-    session.StartCapture();
-
-    // Message pump
+    CHECK_FAILURE_NORET(session->StartCapture());
     MSG message;
-    while (!is_frame_arrived)
+    while (waitforloadflag.test_and_set())
     {
         if (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE) > 0)
         {
             DispatchMessage(&message);
         }
     }
-
-    session.Close();
-
+    CComPtr<IClosable> closer;
+    session.QueryInterface(&closer);
+    closer->Close();
     D3D11_TEXTURE2D_DESC captured_texture_desc;
     texture->GetDesc(&captured_texture_desc);
-
     captured_texture_desc.Usage = D3D11_USAGE_STAGING;
     captured_texture_desc.BindFlags = 0;
     captured_texture_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
     captured_texture_desc.MiscFlags = 0;
+    CComPtr<ID3D11Texture2D> user_texture = nullptr;
+    CHECK_FAILURE_NORET(d3d_device->CreateTexture2D(&captured_texture_desc, nullptr, &user_texture));
 
-    winrt::com_ptr<ID3D11Texture2D> user_texture = nullptr;
-    winrt::check_hresult(d3d_device->CreateTexture2D(&captured_texture_desc, nullptr, user_texture.put()));
-
-    d3d_context->CopyResource(user_texture.get(), texture.get());
+    d3d_context->CopyResource(user_texture, texture);
     D3D11_MAPPED_SUBRESOURCE resource;
-    winrt::check_hresult(d3d_context->Map(user_texture.get(), NULL, D3D11_MAP_READ, 0, &resource));
+    CHECK_FAILURE_NORET(d3d_context->Map(user_texture, NULL, D3D11_MAP_READ, 0, &resource));
 
     BITMAPINFO l_bmp_info;
 
@@ -149,7 +170,7 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
         sptr += resource.RowPitch;
         dptr -= l_bmp_row_pitch;
     }
-    d3d_context->Unmap(user_texture.get(), NULL);
+    d3d_context->Unmap(user_texture, NULL);
     BITMAPFILEHEADER bmfh;
     memset(&bmfh, 0, sizeof(BITMAPFILEHEADER));
     bmfh.bfType = 0x4D42; // 'BM'
@@ -178,19 +199,7 @@ DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
         style_ex &= ~WS_EX_TOOLWINDOW;
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
     }
-    try
-    {
-        capture_window(hwnd, cb);
-    }
-    catch (...)
-    {
-    }
+    capture_window(hwnd, cb);
     if (needset)
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex_save);
 }
-
-#else
-DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
-{
-}
-#endif
