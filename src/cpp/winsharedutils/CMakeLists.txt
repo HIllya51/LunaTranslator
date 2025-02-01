@@ -1,12 +1,7 @@
 
 project(winsharedutils)
 
-if(NOT WINXP)
 set(winrt_src winrt/winrtocr.cpp winrt/winrtsnapshot.cpp)
-else()
-set(winrt_src winrt/xp.cpp)
-endif()
-
 set(mshtml_src mshtml/SimpleBrowser.cpp mshtml/MWebBrowser.cpp)
 set(webview2_src webview2/webview2.cpp webview2/webview2_impl.cpp)
 set(loopback_src applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp applicationloopbackaudio/xpdef.cpp)

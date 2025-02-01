@@ -9,12 +9,6 @@ typedef void (*webmessage_callback_t)(LPCWSTR);
 typedef void (*FilesDropped_callback_t)(LPCWSTR);
 typedef void (*List_Ext_callback_t)(LPCWSTR, LPCWSTR, BOOL);
 
-#ifdef WINXP
-#define COWAIT_INPUTAVAILABLE 4
-#define COWAIT_DISPATCH_CALLS 8
-#define COWAIT_DISPATCH_WINDOW_MESSAGES 0x10
-#endif
-
 class WebView2;
 class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler, ICoreWebView2CustomItemSelectedEventHandler>
 {

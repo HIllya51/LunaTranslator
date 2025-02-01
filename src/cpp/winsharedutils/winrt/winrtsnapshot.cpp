@@ -1,4 +1,5 @@
-﻿#include <dxgi.h>
+﻿#ifndef WINXP
+#include <dxgi.h>
 #include <inspectable.h>
 #include <dxgi1_2.h>
 #include <d3d11.h>
@@ -187,3 +188,9 @@ DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
     if (needset)
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex_save);
 }
+
+#else
+DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
+{
+}
+#endif

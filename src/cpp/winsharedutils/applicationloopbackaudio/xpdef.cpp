@@ -1,13 +1,7 @@
 #ifdef WINXP
 #include <mfapi.h>
 #include "xpdef.hpp"
-static void *loadproc(LPCWSTR lib, LPCSTR func)
-{
-    auto plib = (LoadLibraryW(lib));
-    if (!plib)
-        return nullptr;
-    return GetProcAddress(plib, func);
-}
+void *loadproc(LPCWSTR lib, LPCSTR func);
 
 STDAPI ActivateAudioInterfaceAsync(
     _In_ LPCWSTR deviceInterfacePath,

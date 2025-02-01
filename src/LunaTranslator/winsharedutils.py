@@ -492,61 +492,62 @@ def unregisthotkey(uid):
 
 
 # winrt
-_OCR_f = utilsdll.OCR
-_OCR_f.argtypes = c_void_p, c_size_t, c_wchar_p, c_wchar_p, c_void_p
+winrt_OCR = utilsdll.winrt_OCR
+winrt_OCR.argtypes = c_void_p, c_size_t, c_wchar_p, c_wchar_p, c_void_p
 
-check_language_valid = utilsdll.check_language_valid
-check_language_valid.argtypes = (c_wchar_p,)
-check_language_valid.restype = c_bool
+winrt_OCR_check_language_valid = utilsdll.winrt_OCR_check_language_valid
+winrt_OCR_check_language_valid.argtypes = (c_wchar_p,)
+winrt_OCR_check_language_valid.restype = c_bool
 
-_getlanguagelist = utilsdll.getlanguagelist
-_getlanguagelist.argtypes = (c_void_p,)
+winrt_OCR_get_AvailableRecognizerLanguages = (
+    utilsdll.winrt_OCR_get_AvailableRecognizerLanguages
+)
+winrt_OCR_get_AvailableRecognizerLanguages.argtypes = (c_void_p,)
+
+winrt_capture_window = utilsdll.winrt_capture_window
+winrt_capture_window.argtypes = c_void_p, c_void_p
 
 
-def OCR_f(data, lang, space):
-    ret = []
+class WinRT:
+    @staticmethod
+    def OCR_check_language_valid(lang: str) -> bool:
+        return winrt_OCR_check_language_valid(lang)
 
-    def cb(x1, y1, x2, y2, text):
-        ret.append((text, x1, y1, x2, y2))
+    @staticmethod
+    def OCR(data: bytes, lang: str, space: str):
+        ret = []
 
-    t = threading.Thread(
-        target=_OCR_f,
-        args=(
+        def cb(x1, y1, x2, y2, text):
+            ret.append((text, x1, y1, x2, y2))
+
+        winrt_OCR(
             data,
             len(data),
             lang,
             space,
             CFUNCTYPE(None, c_uint, c_uint, c_uint, c_uint, c_wchar_p)(cb),
-        ),
-    )
-    t.start()
-    t.join()
-    # 如果不这样，就会在在ui线程执行时，BitmapDecoder::CreateAsync(memoryStream).get()等Async函数会导致阻塞卡住。
-    return ret
+        )
+        return ret
 
+    @staticmethod
+    def OCR_get_AvailableRecognizerLanguages():
+        ret = []
+        winrt_OCR_get_AvailableRecognizerLanguages(
+            CFUNCTYPE(None, c_wchar_p, c_wchar_p)(lambda t, d: ret.append((t, d)))
+        )
+        return ret
 
-_winrt_capture_window = utilsdll.winrt_capture_window
-_winrt_capture_window.argtypes = c_void_p, c_void_p
+    @staticmethod
+    def capture_window(hwnd):
+        ret = []
 
+        def cb(ptr, size):
+            ret.append(cast(ptr, POINTER(c_char))[:size])
 
-def getlanguagelist():
-    ret = []
-    _getlanguagelist(
-        CFUNCTYPE(None, c_wchar_p, c_wchar_p)(lambda t, d: ret.append((t, d)))
-    )
-    return ret
-
-
-def winrt_capture_window(hwnd):
-    ret = []
-
-    def cb(ptr, size):
-        ret.append(cast(ptr, POINTER(c_char))[:size])
-
-    _winrt_capture_window(hwnd, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
-    if len(ret):
-        return ret[0]
-    return None
+        winrt_capture_window(hwnd, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+        if len(ret):
+            return ret[0]
+        return None
 
 
 # winrt

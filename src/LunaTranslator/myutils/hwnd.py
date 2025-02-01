@@ -80,7 +80,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
         @threader
         def _():
-            p = safepixmap(winsharedutils.winrt_capture_window(hwnd))
+            p = safepixmap(winsharedutils.WinRT.capture_window(hwnd))
             callback(p, fname + "_winrt." + app)
 
         _()
@@ -95,7 +95,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
             @threader
             def _():
-                p = safepixmap(winsharedutils.winrt_capture_window(hwnd))
+                p = safepixmap(winsharedutils.WinRT.capture_window(hwnd))
                 callback(p, fname + "_winrt_magpie." + app)
 
             _()

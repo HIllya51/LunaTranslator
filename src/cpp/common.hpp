@@ -99,3 +99,27 @@ public:
         return S_OK;
     }
 };
+
+#ifdef WINXP
+#define COWAIT_INPUTAVAILABLE 4
+#define COWAIT_DISPATCH_CALLS 8
+#define COWAIT_DISPATCH_WINDOW_MESSAGES 0x10
+#endif
+
+struct CoAsyncTaskWaiter
+{
+    CEvent event;
+    CoAsyncTaskWaiter()
+    {
+        event.Create(nullptr, false, false, nullptr);
+    }
+    void Set()
+    {
+        SetEvent(event);
+    }
+    void Wait()
+    {
+        DWORD handleIndex = 0;
+        CoWaitForMultipleHandles(COWAIT_DISPATCH_WINDOW_MESSAGES | COWAIT_DISPATCH_CALLS | COWAIT_INPUTAVAILABLE, INFINITE, 1, &event.m_h, &handleIndex);
+    }
+};
