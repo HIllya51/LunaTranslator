@@ -46,7 +46,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
 
         try:
             if not screenshot_savepath:
-                raise
+                raise Exception()
             dirname = screenshot_savepath.format(exename=exename)
             os.makedirs(dirname, exist_ok=True)
             fname = os.path.join(dirname, tmsp)

@@ -69,9 +69,9 @@ class TTSbase(commonbase):
             self.privateconfig = privateconfig
         self.voicelist, self.voiceshowlist = self.getvoicelist()
         if len(self.voicelist) != len(self.voiceshowlist):
-            raise
+            raise Exception()
         if len(self.voicelist) == 0:
-            raise
+            raise Exception()
         if init:
             self.init()
 

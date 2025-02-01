@@ -844,7 +844,7 @@ class postconfigdialog_(LDialog):
                     item[key] = self.table.getdata(row, _i)
                 self.configdict.append(item)
         else:
-            raise
+            raise Exception()
 
     def __init__(self, parent, configdict, title, headers, dictkeys=None) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -869,7 +869,7 @@ class postconfigdialog_(LDialog):
                     model.setItem(row, _i, item)
                 row += 1
         else:
-            raise
+            raise Exception()
         model.setHorizontalHeaderLabels(headers)
         table = TableViewW(self, copypaste=True, updown=True)
         table.setModel(model)

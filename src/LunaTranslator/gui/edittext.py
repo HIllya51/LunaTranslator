@@ -105,7 +105,7 @@ class edittrans(LMainWindow):
         self.followhwnd = gobject.baseobject.hwnd
         rect = windows.GetWindowRect(self.followhwnd)
         if rect is None:
-            raise
+            raise Exception()
         t = QTimer(self)
         t.setInterval(100)
         t.timeout.connect(self.follow)

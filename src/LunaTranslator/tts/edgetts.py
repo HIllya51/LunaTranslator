@@ -274,7 +274,7 @@ def transferMsTTSData(content, voice, proxy, param: SpeechParam):
                     needle = b"Path:audio\r\n"
                     idx = response.find(needle)
                     if idx == -1:
-                        raise
+                        raise Exception()
                     start_ind = idx + len(needle)
                     audio_stream += response[start_ind:]
                 except:

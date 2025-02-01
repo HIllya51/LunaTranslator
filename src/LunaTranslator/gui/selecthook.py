@@ -152,7 +152,7 @@ class searchhookparam(LDialog):
                     p = pattern.replace(" ", "").replace("??", "11")
                     if ("?" in p) or (len(p) % 2 != 0):
                         QMessageBox.information(self, _TR("警告"), _TR("无效"))
-                        raise
+                        raise Exception()
                     bs = bytes.fromhex(p)
                     usestruct.pattern = bs[:30]
                     usestruct.length = len(bs)
