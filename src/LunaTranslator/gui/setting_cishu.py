@@ -313,7 +313,8 @@ def setTabcishu_l(self):
                         [
                             "查词",
                             D_getIconButton(
-                                lambda: gobject.baseobject.searchwordW.showsignal.emit()
+                                lambda: gobject.baseobject.searchwordW.showsignal.emit(),
+                                icon="fa.search",
                             ),
                             "",
                             "",
