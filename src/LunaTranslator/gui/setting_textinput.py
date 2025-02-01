@@ -564,8 +564,6 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         ("ocr", "OCR"),
         ("copy", "剪贴板"),
     ]
-    if get_platform() == "xp":
-        _rank.pop(1)
     __ = []
     for key, name in _rank:
         __.append(getsmalllabel(name))
@@ -614,9 +612,6 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         lambda l: makescrollgrid(outputgrid(self), l),
     ]
 
-    if get_platform() == "xp":
-        titles.pop(1)
-        funcs.pop(1)
     tab, dotab = makesubtab_lazy(
         titles,
         funcs,

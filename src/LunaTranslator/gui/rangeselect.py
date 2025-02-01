@@ -168,6 +168,7 @@ class rangeselect(QMainWindow):
     def __init__(self, parent=None):
 
         super(rangeselect, self).__init__(parent)
+        self.is_drawing = False
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint
             | Qt.WindowType.WindowStaysOnTopHint

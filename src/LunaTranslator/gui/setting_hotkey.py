@@ -117,8 +117,6 @@ hotkeys = [
 
 
 def setTab_quick(self, l: QVBoxLayout):
-    if get_platform() == "xp":
-        hotkeys.pop(2)
     l.addWidget(
         getboxlayout(
             [

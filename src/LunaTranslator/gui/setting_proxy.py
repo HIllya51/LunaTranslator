@@ -147,9 +147,6 @@ def makeproxytab():
         functools.partial(makegridW, lixians),
         functools.partial(makegridW, github),
     ]
-    if get_platform() == "xp":
-        titles.pop(2)
-        funcs.pop(2)
     tab, dotab = makesubtab_lazy(
         titles,
         funcs,
