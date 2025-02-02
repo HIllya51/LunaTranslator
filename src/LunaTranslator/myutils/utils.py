@@ -430,7 +430,7 @@ def selectdebugfile(path: str, ismypost=False):
             "./userconfig/selfbuild.py": "selfbuild.py",
             "./userconfig/mypost.py": "mypost.py",
             "./userconfig/myprocess.py": "myprocess.py",
-            "./userconfig/myanki.py": "myanki.py",
+            "./userconfig/myanki_v2.py": "myanki_v2.py",
         }.get(path)
         if ismypost:
             tgt = "mypost.py"

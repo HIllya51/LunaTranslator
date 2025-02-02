@@ -192,9 +192,9 @@ class AnkiWindow(QWidget):
             self.previewtab.currentIndex()
         ].toPlainText()
         model_css = self.csstext.toPlainText()
-        fields = self.loadfileds()
-        fields.update(self.loadfakefields())
-        html = self.parse_template(html, fields)
+        text_fields, audios, pictures = self.getfieldsdataall()
+        text_fields.update(self.parseaudiopictures(audios, pictures))
+        html = self.parse_template(html, text_fields)
         html = '<style>{}</style><div class="card">{}</div>'.format(model_css, html)
         self.htmlbrowser.setHtml(html)
 
@@ -297,13 +297,24 @@ class AnkiWindow(QWidget):
             "example_sentence": example.replace("\n", "<br>"),
             "remarks": remarks.replace("\n", "<br>"),
         }
-        if globalconfig["usecustomankigen"]:
-            module = checkmd5reloadmodule("./userconfig/myanki.py", "myanki")[1]
-            if module:
-                try:
-                    fields = module.ParseFieldsData(fields)
-                except:
-                    print_exc()
+        return fields
+
+    def parseaudiopictures(self, audios: list, pictures: list):
+        fields = {}
+        for i, targets in enumerate([audios, pictures]):
+            for target in targets:
+                b64 = target.get("data")
+                if not b64:
+                    continue
+                uid = str(uuid.uuid4())
+                if i == 0:
+                    html = """<button onclick='document.getElementById("{uid}").play()'>play audio<audio controls id="{uid}" style="display: none"><source src="data:audio/mpeg;base64,{b64}"></audio></button>""".format(
+                        b64=b64, uid=uid
+                    )
+                else:
+                    html = '<img src="data:image/png;base64,{}">'.format(b64)
+                for field in target["fields"]:
+                    fields[field] = html
         return fields
 
     def loadfakefields(self):
@@ -395,7 +406,7 @@ class AnkiWindow(QWidget):
                     getsimpleswitch(globalconfig, "usecustomankigen"),
                     getIconButton(
                         callback=functools.partial(
-                            selectdebugfile, "./userconfig/myanki.py"
+                            selectdebugfile, "./userconfig/myanki_v2.py"
                         ),
                         icon="fa.edit",
                     ),
@@ -841,7 +852,7 @@ class AnkiWindow(QWidget):
         anki.Deck.create(DeckName)
         fields = static_data["model_fileds"]
         if globalconfig["usecustomankigen"]:
-            module = checkmd5reloadmodule("./userconfig/myanki.py", "myanki")[1]
+            module = checkmd5reloadmodule("./userconfig/myanki_v2.py", "myanki_v2")[1]
             if module:
                 try:
                     fields = module.AnkiFields(fields)
@@ -873,8 +884,18 @@ class AnkiWindow(QWidget):
                         }
                     }
                 )
+        text_fields, audios, pictures = self.getfieldsdataall()
+        anki.Note.add(
+            DeckName, ModelName, text_fields, allowDuplicate, tags, audios, pictures
+        )
+
+    def getfieldsdataall(self):
+        text_fields = self.loadfileds()
+        audios, pictures = self.loadankilikemediafield()
+        return self.custompass(text_fields, audios, pictures)
+
+    def loadankilikemediafield(self):
         media = []
-        tempfiles = []
         for k, _ in [
             ("audio_for_word", self.audiopath.text()),
             ("audio_for_example_sentence", self.audiopath_sentence.text()),
@@ -892,19 +913,23 @@ class AnkiWindow(QWidget):
                         }
                     ]
                 )
-                tempfiles.append(_)
             else:
                 media.append([])
+        audios = media[0] + media[1]
+        pictures = media[2]
+        return audios, pictures
 
-        anki.Note.add(
-            DeckName,
-            ModelName,
-            self.loadfileds(),
-            allowDuplicate,
-            tags,
-            media[0] + media[1],
-            media[2],
-        )
+    def custompass(self, text_fields: dict, audios: list, pictures: list):
+        if globalconfig["usecustomankigen"]:
+            module = checkmd5reloadmodule("./userconfig/myanki_v2.py", "myanki_v2")[1]
+            if module:
+                try:
+                    text_fields, audios, pictures = module.ParseFieldsData(
+                        text_fields, audios, pictures
+                    )
+                except:
+                    print_exc()
+        return text_fields, audios, pictures
 
 
 class CustomTabBar(LTabBar):
