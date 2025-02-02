@@ -133,5 +133,5 @@ namespace
 }
 bool UnrealEngine::attach_function()
 {
-  return InsertENTERGRAM() || ue5() || xxx();
+  return (InsertENTERGRAM() || ue5()) | xxx();
 }
