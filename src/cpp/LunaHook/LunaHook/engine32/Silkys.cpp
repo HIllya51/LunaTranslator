@@ -761,9 +761,112 @@ namespace
     return NewHook(hp, "SilkysX");
   }
 }
+namespace
+{
+  /*
+  call->sub_413050->hook
+  else if ( byte_4510E6 == 1 )
+  {
+    if ( *((_WORD *)&dword_452104 + dword_4510E8) == 29811 && !sub_414A90() )
+    {
+      sub_414A80(1);
+      sub_414AF0(*((_WORD *)&word_452102 + dword_4510E8));
+      sub_415AF0();
+      sub_413050((const char *)(2 * (dword_451084 + *((unsigned __int16 *)&dword_452104 + dword_4510E8 + 1)) + 4530432));
+      byte_44A10C = 1;
+    }
+    sub_40A3C0();
+    v2 = 5 * ((unsigned __int8)byte_44A10B * (unsigned __int8)sub_406DF0() + 75);
+    v0 = sub_423820() + 4 * v2;
+    dword_44A0D0 = v0;
+  }
+
+  else if ( byte_4510E6 == 1 )
+  {
+    if ( *((_WORD *)&dword_452104 + dword_4510E8) == 29811 && !sub_414A90() )
+    {
+      sub_414A80(1);
+      sub_413050((const char *)(2 * (dword_451084 + *((unsigned __int16 *)&dword_452104 + dword_4510E8 + 1)) + 4530432));
+      byte_44A10C = 1;
+    }
+    dword_44A0D0 = sub_423820();
+    sub_40A3C0();
+    LOBYTE(v0) = sub_413030(0);
+  }
+  */
+  // v5188
+  // 肉体転移
+  bool old2()
+  {
+    BYTE sig1[] = {
+        0x66, 0x81, 0x3c, 0x55, 0x04, 0x21, 0x45, 0x00, 0x73, 0x74};
+    ULONG addr = MemDbg::findBytes(sig1, sizeof(sig1), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    BYTE sig2[] = {
+        0x33, XX,                // xor     eax, eax||  xor     edx, edx
+        0x66, 0x8b, XX, XX, XX4, // mov     ax, word ptr dword_452104+2[ecx*2]||mov     dx, word ptr dword_452104+2[eax*2]
+        0x03, XX,                // add     eax, edx||  add     edx, esi
+        0x8d, XX, XX, XX4,       // lea     edx, ds:452100h[eax*2]||lea     ecx, ds:452100h[edx*2]
+        XX,                      // push    edx||push    ecx
+        0xe8, XX4};
+    addr = MemDbg::findBytes(sig2, sizeof(sig2), addr, addr + 0x100);
+    if (!addr)
+      return false;
+    auto target = addr + sizeof(sig2) - 5;
+    target = target + 5 + (*(int *)(target + 1));
+    HookParam hp;
+    hp.address = target;
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS;
+    hp.offset = stackoffset(1);
+    hp.lineSeparator = L"\\n";
+    static bool isnewlinefirst = false;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      // 格式是:人名\n每一行text。每一行的text可以过滤掉。如果人名为空也可以过滤掉。
+      StringReplacer(buffer, "\x84\xa5\x84\xa7", 4, "\x81\x5b\x81\x5b", 4);
+      StringCharReplacer(buffer, "\\n", 2, '\n');
+      std::string result;
+      bool hasFirstNewline = false;
+      for (char c : buffer->viewA())
+      {
+        if (c == '\n')
+        {
+          if (!hasFirstNewline)
+          {
+            result += c;
+            hasFirstNewline = true;
+          }
+        }
+        else
+          result += c;
+      }
+      if (result[0] == '\n')
+      {
+        isnewlinefirst = true;
+        result = result.substr(1);
+      }
+      else
+      {
+        isnewlinefirst = false;
+      }
+      buffer->from(result);
+    };
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    {
+      auto va = buffer.strA();
+      if (isnewlinefirst)
+      {
+        va = "\\n" + va;
+      }
+      context->argof(1) = (DWORD)allocateString(va);
+    };
+    return NewHook(hp, "SilkysX");
+  }
+}
 bool Silkysveryveryold::attach_function()
 {
-  return Silkysveryveryold_attach_function() || fob2() || bird();
+  return Silkysveryveryold_attach_function() || fob2() || bird() || old2();
 }
 
 bool Aisystem6::attach_function()
