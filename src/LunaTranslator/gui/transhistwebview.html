@@ -42,6 +42,11 @@
     function clear() {
         document.getElementById('rootele').innerHTML = ""
     }
+
+    var isScrollAtBottom = true
+    document.addEventListener('scroll', () => {
+        isScrollAtBottom = Math.abs(document.body.scrollTop + document.body.clientHeight - document.body.scrollHeight) <= 1
+    })
     function getnewsentence(time, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
@@ -53,6 +58,9 @@
         span.appendChild(sent)
         span.classList.add('origin')
         document.getElementById('rootele').appendChild(span)
+        if (isScrollAtBottom) {
+            scrollend()
+        }
     }
     function getnewtrans(time, api, sentence) {
         let span = document.createElement('div')
@@ -69,6 +77,15 @@
         span.appendChild(sent)
         span.classList.add('trans')
         document.getElementById('rootele').appendChild(span)
+        if (isScrollAtBottom) {
+            scrollend()
+        }
+    }
+    function scrollend() {
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
     }
     if (window.LUNAJSObject)
         LUNAJSObject.calllunaloadready()
