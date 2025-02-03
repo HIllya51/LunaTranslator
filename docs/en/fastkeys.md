@@ -138,6 +138,9 @@
 
 1. #### Retrieve and search for words
     Search for words in the text currently selected by the mouse
+    
+1. #### Word Lookup in a New Window  
+    Look up the currently selected text by the mouse in a new search window to avoid overwriting the ongoing search.
 
 1. #### OCR word search
     Select the OCR range for one OCR and then search for words

@@ -57,3 +57,4 @@ src/Microsoft.WebView2.FixedVersionRuntime.*
 src/mdx
 src/translation_record
 src/scripts/temp
+src/LunaTranslator/gui/transhistwebview_parsed.html

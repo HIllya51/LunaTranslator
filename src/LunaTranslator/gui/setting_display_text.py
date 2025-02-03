@@ -62,28 +62,26 @@ def createtextfontcom(key):
 class extrahtml(saveposwindow):
     def tryload(self):
 
-        use = "userconfig/extrahtml.html"
+        use = gobject.getuserconfigdir(self.fn)
         if os.path.exists(use) == False:
-            use = r"LunaTranslator\rendertext\exampleextrahtml.html"
+            use = self.fneg
         with open(use, "r", encoding="utf8") as ff:
             self.vistext.setPlainText(ff.read())
 
     @tryprint
     def applyhtml(self, _):
-        gobject.baseobject.translation_ui.translate_text.textbrowser.loadex(
-            self.vistext.toPlainText()
-        )
+        self.tester.loadex(self.vistext.toPlainText())
 
     def savehtml(self):
-        with open(
-            gobject.getuserconfigdir("extrahtml.html"), "w", encoding="utf8"
-        ) as ff:
+        with open(gobject.getuserconfigdir(self.fn), "w", encoding="utf8") as ff:
             ff.write(self.vistext.toPlainText())
 
-    def __init__(self, parent) -> None:
+    def __init__(self, parent, fn, fneg, tester) -> None:
         super().__init__(parent, poslist=globalconfig["geo_extrahtml"])
         self.setWindowTitle("附加HTML")
-
+        self.tester = tester
+        self.fneg = fneg
+        self.fn = fn
         self.btn_save = LPushButton("保存")
         self.btn_save.clicked.connect(self.savehtml)
         self.btn_apply = LPushButton("测试")
@@ -324,7 +322,14 @@ def resetgroudswitchcallback(self, group):
     goodfontgroupswitch = SuperCombo()
     if group == "webview":
         _btn = getIconButton(
-            callback=functools.partial(extrahtml, self), icon="fa.edit"
+            callback=functools.partial(
+                extrahtml,
+                self,
+                "extrahtml.html",
+                r"LunaTranslator\rendertext\exampleextrahtml.html",
+                gobject.baseobject.translation_ui.translate_text.textbrowser,
+            ),
+            icon="fa.edit",
         )
         switch = getsimpleswitch(
             globalconfig,

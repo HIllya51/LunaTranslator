@@ -997,6 +997,11 @@
                 "name": "取词查词",
                 "keystring": ""
             },
+            "40": {
+                "use": false,
+                "name": "取词查词_在新窗口中",
+                "keystring": ""
+            },
             "38": {
                 "use": false,
                 "name": "取词翻译",

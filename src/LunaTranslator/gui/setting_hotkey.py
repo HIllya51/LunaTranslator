@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
 import gobject, windows, winsharedutils
-from myutils.config import globalconfig, get_platform
+from myutils.config import globalconfig, _TR
 from myutils.hwnd import grabwindow
 from myutils.utils import parsekeystringtomodvkcode, unsupportkey
 from gui.usefulwidget import (
@@ -37,6 +37,14 @@ def autoreadswitch(self):
         self.autoread.clicksignal.emit()
     except:
         globalconfig["autoread"] = not globalconfig["autoread"]
+
+
+def safeGet():
+    t = winsharedutils.GetSelectedText()
+    if not t:
+        QMessageBox.warning(gobject.baseobject.commonstylebase, _TR("失败"), _TR("取词失败"))
+        raise Exception()
+    return t
 
 
 def registrhotkeys(self):
@@ -90,12 +98,11 @@ def registrhotkeys(self):
         "36": lambda: gobject.baseobject.textgetmethod(
             winsharedutils.clipboard_get(), False
         ),
-        "37": lambda: gobject.baseobject.searchwordW.search_word.emit(
-            winsharedutils.GetSelectedText(), False
-        ),
+        "37": lambda: gobject.baseobject.searchwordW.search_word.emit(safeGet(), False),
         "39": lambda: gobject.baseobject.searchwordW.ocr_once_signal.emit(),
-        "38": lambda: gobject.baseobject.textgetmethod(
-            winsharedutils.GetSelectedText(), False
+        "38": lambda: gobject.baseobject.textgetmethod(safeGet(), False),
+        "40": lambda: gobject.baseobject.searchwordW.search_word_in_new_window.emit(
+            safeGet()
         ),
     }
     for name in self.bindfunctions:
@@ -112,7 +119,7 @@ hotkeys = [
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
     ["游戏", ["_15", "_20", "_21", "_22", "_25", "_27", "_31"]],
-    ["查词", ["37", "39", "_29", "_30", "_35", "_33"]],
+    ["查词", ["37", "40", "39", "_29", "_30", "_35", "_33"]],
 ]
 
 

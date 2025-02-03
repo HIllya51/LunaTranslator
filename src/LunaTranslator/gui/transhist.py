@@ -1,18 +1,19 @@
 from qtsymbols import *
 import gobject, os
-import qtawesome, winsharedutils
+import qtawesome, winsharedutils, functools
 from myutils.config import globalconfig
 from myutils.utils import get_time_stamp
 from gui.usefulwidget import closeashidewindow, WebviewWidget
 from gui.dynalang import LAction
 from urllib.parse import quote
 from myutils.wrapper import threader
+from gui.setting_display_text import extrahtml
 
 
 class wvtranshist(WebviewWidget):
     def __init__(self, p):
         super().__init__(p)
-        self.navigate(os.path.abspath(r"LunaTranslator\gui\transhistwebview.html"))
+        self.loadex()
         self.bind("calllunaloadready", self.setflags)
         self.add_menu_noselect(0, "清空", self.clear)
         self.add_menu_noselect(1, "字体", self.seletcfont)
@@ -47,7 +48,18 @@ class wvtranshist(WebviewWidget):
             True,
             lambda: globalconfig["history"]["usewebview2"],
         )
-        self.add_menu_noselect(8)
+        self.add_menu_noselect(
+            8,
+            "附加HTML",
+            functools.partial(
+                extrahtml,
+                self,
+                "extrahtml_transhist",
+                r"LunaTranslator\gui\exampleextrahtml.html",
+                self,
+            ),
+        )
+        self.add_menu_noselect(9)
 
         self.add_menu(
             0,
@@ -61,6 +73,32 @@ class wvtranshist(WebviewWidget):
         self.add_menu(1, "翻译", gobject.baseobject.textgetmethod)
         self.add_menu(2, "朗读", gobject.baseobject.read_text)
         self.add_menu(3)
+
+    def loadex(self, extra=None):
+        if not extra:
+            extra = self.loadextra()
+            extra = extra if extra else ""
+        with open(
+            r"LunaTranslator\gui\transhistwebview.html", "r", encoding="utf8"
+        ) as ff:
+            html = ff.read().replace("__PLACEHOLDER_EXTRA_HTML_", extra)
+        with open(
+            r"LunaTranslator\gui\transhistwebview_parsed.html", "w", encoding="utf8"
+        ) as ff:
+            ff.write(html)
+        self.navigate(
+            os.path.abspath(r"LunaTranslator\gui\transhistwebview_parsed.html")
+        )
+
+    def loadextra(self):
+        for _ in [
+            "userconfig/extrahtml_transhist.html",
+            r"LunaTranslator\gui\exampleextrahtml.html",
+        ]:
+            if not os.path.exists(_):
+                continue
+            with open(_, "r", encoding="utf8") as ff:
+                return ff.read()
 
     def seletcfont(self):
         f = QFont()
@@ -161,7 +199,7 @@ class wvtranshist(WebviewWidget):
         )
 
     def debugeval(self, js):
-        print(js)
+        # print(js)
         self.eval(js)
 
 
