@@ -41,6 +41,19 @@ def tryreadconfig(path, default=None):
             return default if default else {}
 
 
+def tryreadconfig_1(path, default=None, pathold=None):
+    try:
+        if not pathold:
+            raise Exception()
+        pathold = os.path.join("userconfig", pathold)
+        with open(pathold, "r", encoding="utf-8") as ff:
+            old = json.load(ff)
+        os.remove(pathold)
+        return old
+    except:
+        return tryreadconfig(path, default)
+
+
 def tryreadconfig2(path):
     path = os.path.join("files/defaultconfig", path)
     with open(path, "r", encoding="utf-8") as ff:
@@ -52,14 +65,14 @@ static_data = tryreadconfig2("static_data.json")
 defaultpost = tryreadconfig2("postprocessconfig.json")
 defaultglobalconfig = tryreadconfig2("config.json")
 defaulterrorfix = tryreadconfig2("transerrorfixdictconfig.json")
-dfmagpie_config = tryreadconfig2("magpie_config.json")
+dfmagpie_config = tryreadconfig2("Magpie/config.json")
 translatordfsetting = tryreadconfig2("translatorsetting.json")
 ocrdfsetting = tryreadconfig2("ocrsetting.json")
 ocrerrorfixdefault = tryreadconfig2("ocrerrorfix.json")
 
 ocrerrorfix = tryreadconfig("ocrerrorfix.json")
 globalconfig = tryreadconfig("config.json")
-magpie_config = tryreadconfig("magpie_config.json")
+magpie_config = tryreadconfig_1("Magpie/config.json", pathold="magpie_config.json")
 postprocessconfig = tryreadconfig("postprocessconfig.json")
 
 transerrorfixdictconfig = tryreadconfig("transerrorfixdictconfig.json")
@@ -645,7 +658,8 @@ def safesave(fname, js, beatiful=True):
 def saveallconfig(test=False):
 
     safesave("./userconfig/config.json", globalconfig)
-    safesave("./userconfig/magpie_config.json", magpie_config)
+    os.makedirs("./userconfig/Magpie", exist_ok=True)
+    safesave("./userconfig/Magpie/config.json", magpie_config)
     safesave("./userconfig/postprocessconfig.json", postprocessconfig)
     safesave("./userconfig/transerrorfixdictconfig.json", transerrorfixdictconfig)
     safesave("./userconfig/translatorsetting.json", translatorsetting)

@@ -1,21 +1,22 @@
 {
-    "language": "",
-    "theme": 2,
+    "language": "zh-hans",
+    "theme": 0,
     "windowPos": {
-        "centerX": 1188.0,
-        "centerY": 902.0,
+        "centerX": 860.0,
+        "centerY": 855.5,
         "width": 998.6666870117188,
-        "height": 604.0,
+        "height": 494.0,
         "maximized": false
     },
     "shortcuts": {
-        "scale": 2129,
+        "scale": 593,
         "overlay": 2372
     },
     "autoRestore": false,
     "countdownSeconds": 3,
     "developerMode": false,
     "debugMode": false,
+    "benchmarkMode": false,
     "disableEffectCache": false,
     "disableFontCache": false,
     "saveEffectSources": false,
@@ -27,10 +28,11 @@
     "inlineParams": false,
     "autoCheckForUpdates": true,
     "checkForPreviewUpdates": false,
-    "updateCheckDate": 17121608925479923,
+    "updateCheckDate": 17207839076769319,
     "duplicateFrameDetectionMode": 1,
     "enableStatisticsForDynamicDetection": false,
-    "minFrameRate": 0.0,
+    "minFrameRate": 10.0,
+    "disableFP16": false,
     "scalingModes": [
         {
             "name": "Lanczos",
@@ -124,15 +126,19 @@
     ],
     "profiles": [
         {
-            "scalingMode": 0,
+            "scalingMode": 4,
             "captureMethod": 0,
             "multiMonitorUsage": 0,
-            "graphicsCard": -1,
+            "graphicsCardId": {
+                "idx": -1,
+                "vendorId": 0,
+                "deviceId": 0
+            },
             "frameRateLimiterEnabled": false,
             "maxFrameRate": 60.0,
             "disableWindowResizing": false,
             "3DGameMode": false,
-            "showFPS": false,
+            "showFPS": true,
             "captureTitleBar": false,
             "adjustCursorSpeed": false,
             "drawCursor": true,

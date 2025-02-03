@@ -59,10 +59,11 @@ def makescalew():
             (
                 dict(
                     title="性能",
+                    type="grid",
                     grid=(
                         [
                             [
-                                "显示帧率",
+                                ("显示帧率", 4),
                                 D_getsimpleswitch(
                                     magpie_config["profiles"][
                                         globalconfig["profiles_index"]
@@ -71,15 +72,14 @@ def makescalew():
                                 ),
                             ],
                             [
-                                "限制帧率",
+                                ("限制帧率", 4),
                                 D_getsimpleswitch(
                                     magpie_config["profiles"][
                                         globalconfig["profiles_index"]
                                     ],
                                     "frameRateLimiterEnabled",
                                 ),
-                            ],
-                            [
+                                "",
                                 "最大帧率",
                                 D_getspinbox(
                                     0,
@@ -141,19 +141,19 @@ def makescalew():
             (
                 dict(
                     title="光标",
+                    type="grid",
                     grid=(
                         [
                             [
-                                "绘制光标",
+                                ("绘制光标", 4),
                                 D_getsimpleswitch(
                                     magpie_config["profiles"][
                                         globalconfig["profiles_index"]
                                     ],
                                     "drawCursor",
                                 ),
-                            ],
-                            [
-                                "绘制光标_缩放系数",
+                                "",
+                                "缩放系数",
                                 D_getsimplecombobox(
                                     [
                                         "0.5x",
@@ -171,7 +171,10 @@ def makescalew():
                                 ),
                             ],
                             [
-                                "绘制光标_插值算法",
+                                ("", 4),
+                                "",
+                                "",
+                                "插值算法",
                                 D_getsimplecombobox(
                                     ["最邻近", "双线性"],
                                     magpie_config["profiles"][
@@ -181,7 +184,7 @@ def makescalew():
                                 ),
                             ],
                             [
-                                "缩放时调整光标速度",
+                                ("缩放时调整光标速度", 4),
                                 D_getsimpleswitch(
                                     magpie_config["profiles"][
                                         globalconfig["profiles_index"]
@@ -202,15 +205,6 @@ def makescalew():
                     title="高级",
                     grid=(
                         [
-                            [
-                                "禁用DirectFlip",
-                                D_getsimpleswitch(
-                                    magpie_config["profiles"][
-                                        globalconfig["profiles_index"]
-                                    ],
-                                    "disableDirectFlip",
-                                ),
-                            ],
                             [
                                 "允许缩放最大化或全屏的窗口",
                                 D_getsimpleswitch(
@@ -241,6 +235,15 @@ def makescalew():
                                     internal=[0, 5, 10, 20, 30],
                                 ),
                             ],
+                            [
+                                "禁用DirectFlip",
+                                D_getsimpleswitch(
+                                    magpie_config["profiles"][
+                                        globalconfig["profiles_index"]
+                                    ],
+                                    "disableDirectFlip",
+                                ),
+                            ],
                         ]
                     ),
                 ),
@@ -262,17 +265,17 @@ def makescalew():
                                 ),
                             ],
                             [
+                                "性能测试模式",
+                                D_getsimpleswitch(
+                                    magpie_config,
+                                    "benchmarkMode",
+                                ),
+                            ],
+                            [
                                 "禁用效果缓存",
                                 D_getsimpleswitch(
                                     magpie_config,
                                     "disableEffectCache",
-                                ),
-                            ],
-                            [
-                                "禁用字体缓存",
-                                D_getsimpleswitch(
-                                    magpie_config,
-                                    "disableFontCache",
                                 ),
                             ],
                             [
@@ -287,6 +290,20 @@ def makescalew():
                                 D_getsimpleswitch(
                                     magpie_config,
                                     "warningsAreErrors",
+                                ),
+                            ],
+                            [
+                                "禁止在着色器中使用 FP16",
+                                D_getsimpleswitch(
+                                    magpie_config,
+                                    "disableFP16",
+                                ),
+                            ],
+                            [
+                                "禁用字体缓存",
+                                D_getsimpleswitch(
+                                    magpie_config,
+                                    "disableFontCache",
                                 ),
                             ],
                             [
