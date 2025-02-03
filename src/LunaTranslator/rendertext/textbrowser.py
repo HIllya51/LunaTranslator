@@ -1,11 +1,16 @@
 from qtsymbols import *
 from myutils.config import globalconfig, static_data
-from rendertext.somefunctions import dataget
+from rendertext.texttype import (
+    dataget,
+    TextType,
+    ColorControl,
+    SpecialColor,
+    FenciColor,
+)
 import gobject, functools, importlib, winsharedutils
 from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
-from gui.textbrowser import TextType, ColorControl, SpecialColor, FenciColor
 
 
 class Qlabel_c(QLabel):

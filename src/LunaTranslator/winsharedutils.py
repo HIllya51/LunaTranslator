@@ -294,10 +294,10 @@ html_set_html = utilsdll.html_set_html
 html_set_html.argtypes = (MSHTMLptr, c_wchar_p)
 html_add_menu = utilsdll.html_add_menu
 html_add_menu_cb = CFUNCTYPE(c_void_p, c_wchar_p)
-html_add_menu.argtypes = (MSHTMLptr, c_int, c_wchar_p, html_add_menu_cb)
+html_add_menu.argtypes = (MSHTMLptr, c_int, c_wchar_p, c_void_p)
 html_add_menu_noselect = utilsdll.html_add_menu_noselect
 html_add_menu_cb2 = CFUNCTYPE(c_void_p)
-html_add_menu_noselect.argtypes = (MSHTMLptr, c_int, c_wchar_p, html_add_menu_cb2)
+html_add_menu_noselect.argtypes = (MSHTMLptr, c_int, c_wchar_p, c_void_p)
 html_get_select_text = utilsdll.html_get_select_text
 html_get_select_text_cb = CFUNCTYPE(None, c_wchar_p)
 html_get_select_text.argtypes = (MSHTMLptr, c_void_p)
@@ -329,11 +329,14 @@ webview2_resize = utilsdll.webview2_resize
 webview2_resize.argtypes = WebView2PTR, c_int, c_int
 webview2_add_menu_noselect = utilsdll.webview2_add_menu_noselect
 webview2_add_menu_noselect_CALLBACK = CFUNCTYPE(None)
+webview2_add_menu_noselect_getchecked = CFUNCTYPE(c_bool)
 webview2_add_menu_noselect.argtypes = (
     WebView2PTR,
     c_int,
     c_wchar_p,
-    webview2_add_menu_noselect_CALLBACK,
+    c_void_p,
+    c_bool,
+    c_void_p,
 )
 webview2_add_menu = utilsdll.webview2_add_menu
 webview2_add_menu_CALLBACK = CFUNCTYPE(None, c_wchar_p)
@@ -341,7 +344,7 @@ webview2_add_menu.argtypes = (
     WebView2PTR,
     c_int,
     c_wchar_p,
-    webview2_add_menu_CALLBACK,
+    c_void_p,
 )
 webview2_evaljs = utilsdll.webview2_evaljs
 webview2_evaljs_CALLBACK = CFUNCTYPE(None, c_wchar_p)

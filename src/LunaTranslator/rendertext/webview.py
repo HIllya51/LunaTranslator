@@ -1,31 +1,29 @@
 from qtsymbols import *
-from rendertext.somefunctions import dataget
+from rendertext.texttype import (
+    dataget,
+    TextType,
+    ColorControl,
+    SpecialColor,
+    FenciColor,
+)
 import gobject, uuid, json, os, functools
 from urllib.parse import quote
-from myutils.utils import threader
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import trypass, threader
 from gui.usefulwidget import WebviewWidget
-from gui.textbrowser import TextType, ColorControl, SpecialColor, FenciColor
 
 testsavejs = False
 
 
-class TextBrowser(QWidget, dataget):
+class TextBrowser(WebviewWidget, dataget):
     dropfilecallback = pyqtSignal(str)
     contentsChanged = pyqtSignal(QSize)
 
-    @trypass
-    def resizeEvent(self, event: QResizeEvent):
-        self.webivewwidget.resize(event.size())
-
     def __init__(self, parent) -> None:
-        super().__init__(parent)
+        super().__init__(parent, transp=True)
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
-        self.webivewwidget = WebviewWidget(self, True)
-        self.webivewwidget.move(0, 0)
         self.setMouseTracking(True)
-        self.webivewwidget.add_menu(
+        self.add_menu(
             0,
             _TR("查词"),
             threader(
@@ -34,28 +32,26 @@ class TextBrowser(QWidget, dataget):
                 )
             ),
         )
-        self.webivewwidget.add_menu(
+        self.add_menu(
             1,
             _TR("翻译"),
             lambda w: gobject.baseobject.textgetmethod(w.replace("\n", "").strip()),
         )
-        self.webivewwidget.add_menu(
+        self.add_menu(
             2,
             _TR("朗读"),
             lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
         )
-        self.webivewwidget.add_menu_noselect(0, _TR("清空"), self.___cleartext)
-        self.webivewwidget.dropfilecallback.connect(self.dropfilecallback)
-        self.webivewwidget.bind(
-            "calllunaclickedword", gobject.baseobject.clickwordcallback
-        )
-        self.webivewwidget.bind("calllunaMouseMove", self.calllunaMouseMove)
-        self.webivewwidget.bind("calllunaMousePress", self.calllunaMousePress)
-        self.webivewwidget.bind("calllunaMouseRelease", self.calllunaMouseRelease)
-        self.webivewwidget.bind("calllunaheightchange", self.calllunaheightchange)
-        self.webivewwidget.bind("calllunaloadready", self.resetflags)
-        self.webivewwidget.set_zoom(globalconfig["ZoomFactor2"])
-        self.webivewwidget.on_ZoomFactorChanged.connect(
+        self.add_menu_noselect(0, _TR("清空"), self.___cleartext)
+        self.dropfilecallback.connect(self.dropfilecallback)
+        self.bind("calllunaclickedword", gobject.baseobject.clickwordcallback)
+        self.bind("calllunaMouseMove", self.calllunaMouseMove)
+        self.bind("calllunaMousePress", self.calllunaMousePress)
+        self.bind("calllunaMouseRelease", self.calllunaMouseRelease)
+        self.bind("calllunaheightchange", self.calllunaheightchange)
+        self.bind("calllunaloadready", self.resetflags)
+        self.set_zoom(globalconfig["ZoomFactor2"])
+        self.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor2")
         )
         self.saveiterclasspointer = {}
@@ -107,15 +103,13 @@ class TextBrowser(QWidget, dataget):
             Qt.CursorShape.OpenHandCursor: "grab",
             Qt.CursorShape.ClosedHandCursor: "grabbing",
         }
-        self.webivewwidget.eval(
-            'switchcursor("{}")'.format(cursor_map.get(cursor, "default"))
-        )
+        self.eval('switchcursor("{}")'.format(cursor_map.get(cursor, "default")))
 
     @trypass
     def showEvent(self, e):
         if not self.isfirst:
             return
-        if not isinstance(self.webivewwidget, WebviewWidget):
+        if not isinstance(self, WebviewWidget):
             return
         self.isfirst = False
         self.loadex()
@@ -136,9 +130,7 @@ class TextBrowser(QWidget, dataget):
             r"LunaTranslator\rendertext\webview_parsed.html", "w", encoding="utf8"
         ) as ff:
             ff.write(html)
-        self.webivewwidget.navigate(
-            os.path.abspath(r"LunaTranslator\rendertext\webview_parsed.html")
-        )
+        self.navigate(os.path.abspath(r"LunaTranslator\rendertext\webview_parsed.html"))
 
     def loadextra(self):
         if not globalconfig["useextrahtml"]:
@@ -154,7 +146,7 @@ class TextBrowser(QWidget, dataget):
 
     def debugeval(self, js):
         # print(js)
-        self.webivewwidget.eval(js)
+        self.eval(js)
 
     # js api
     def setselectable(self, b):
@@ -213,7 +205,7 @@ class TextBrowser(QWidget, dataget):
         self.contentsChanged.emit(
             QSize(
                 self.width(),
-                int(h * self.webivewwidget.get_zoom()),
+                int(h * self.get_zoom()),
             )
         )
 
@@ -228,7 +220,7 @@ class TextBrowser(QWidget, dataget):
         return btn_map.get(i, Qt.MouseButton.NoButton)
 
     def parsexyaspos(self, x, y):
-        zoom = self.webivewwidget.get_zoom()
+        zoom = self.get_zoom()
         x = zoom * x
         y = zoom * y
         return QPointF(x, y)

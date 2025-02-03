@@ -1,0 +1,75 @@
+<style id="origincontroller">
+</style>
+<style id="transcontroller">
+</style>
+<style id="timecontroller">
+</style>
+<style id="fontcontroller">
+</style>
+<div id="rootele" style="word-wrap: break-word;"></div>
+<style>
+    @media (prefers-color-scheme: dark) {
+        :root {
+            color-scheme: dark;
+        }
+
+        body {
+            background-color: rgb(44, 44, 44);
+            color: white;
+        }
+    }
+</style>
+<script>
+    function setfont(font) {
+        document.getElementById('fontcontroller').innerHTML = decodeURIComponent(font);
+    }
+    function showhideorigin(show) {
+        let css = ['.origin{   display: none;    }', '.origin{}'][show]
+        document.getElementById('origincontroller').innerHTML = css;
+    }
+    function showhidetrans(show) {
+        let css = ['.trans{   display: none;    }', '.trans{}'][show]
+        document.getElementById('transcontroller').innerHTML = css;
+    }
+    function showhidetime(show) {
+        let css = ['.gettime{   display: none;    }', '.gettime{}'][show]
+        document.getElementById('timecontroller').innerHTML = css;
+    }
+    function addbr() {
+        if (document.getElementById('rootele').innerHTML.length)
+            document.getElementById('rootele').appendChild(document.createElement('br'))
+    }
+    function clear() {
+        document.getElementById('rootele').innerHTML = ""
+    }
+    function getnewsentence(time, sentence) {
+        let span = document.createElement('div')
+        let times = document.createElement('span')
+        times.innerText = decodeURIComponent(time)
+        times.classList.add('gettime')
+        span.appendChild(times)
+        let sent = document.createElement('span')
+        sent.innerText = decodeURIComponent(sentence)
+        span.appendChild(sent)
+        span.classList.add('origin')
+        document.getElementById('rootele').appendChild(span)
+    }
+    function getnewtrans(time, api, sentence) {
+        let span = document.createElement('div')
+        let times = document.createElement('span')
+        times.innerText = decodeURIComponent(time)
+        times.classList.add('gettime')
+        span.appendChild(times)
+        let apis = document.createElement('span')
+        apis.innerText = decodeURIComponent(api)
+        apis.classList.add('apiname')
+        span.appendChild(apis)
+        let sent = document.createElement('span')
+        sent.innerText = decodeURIComponent(sentence)
+        span.appendChild(sent)
+        span.classList.add('trans')
+        document.getElementById('rootele').appendChild(span)
+    }
+    if (window.LUNAJSObject)
+        LUNAJSObject.calllunaloadready()
+</script>

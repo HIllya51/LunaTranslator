@@ -1363,13 +1363,21 @@ class searchwordW(closeashidewindow):
         self.textOutput.add_menu(
             4, _TR("加亮"), lambda _: self.textOutput.eval("highlightSelection()")
         )
+        self.ishightlight = False
         self.textOutput.add_menu_noselect(
-            0, _TR("加亮模式"), lambda: self.textOutput.eval("switch_hightlightmode()")
+            0,
+            _TR("加亮模式"),
+            lambda: self.textOutput.eval("switch_hightlightmode()"),
+            checkable=True,
+            getchecked=lambda: self.callvalue(),
         )
         self.textOutput.add_menu_noselect(1, _TR("清除加亮"), self.clear_hightlight)
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
+        )
+        self.textOutput.bind(
+            "switch_hightlightmode_callback", self.switch_hightlightmode_callback
         )
         self.textOutput.bind(
             "luna_recheck_current_html", self.luna_recheck_current_html
@@ -1418,7 +1426,19 @@ class searchwordW(closeashidewindow):
         self.ankiwindow.setMinimumHeight(1)
         self.ankiwindow.setMinimumWidth(1)
 
+    def callvalue(self):
+        if isinstance(self.textOutput.internal, WebviewWidget):
+            self.textOutput.eval("iswebview2=true")
+            return self.ishightlight
+        # mshtml会死锁。
+        self.ishightlight = not self.ishightlight
+        return self.ishightlight
+
+    def switch_hightlightmode_callback(self, ishightlight):
+        self.ishightlight = ishightlight
+
     def clear_hightlight(self):
+        print("?")
         self.textOutput.eval("clear_hightlight()")
         k = self.tabks[self.tab.currentIndex()]
         if k in self.cache_results_highlighted:

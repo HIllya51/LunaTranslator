@@ -391,7 +391,6 @@
     "日语注音方案": "Japans fonetisch alfabet",
     "Sakura大模型": "Groot model Sakura",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Vertalen met behulp van de informatie in de vorige tekst (meestal met enige verbetering, maar kan resulteren in tragere vertaling)",
-    "历史翻译": "Historische vertaling",
     "窗口缩放": "Vensterschalen",
     "去除重复字符": "Dubbele tekens verwijderen",
     "游戏内叠加层": "Overlaylaag in het spel",
@@ -435,7 +434,6 @@
     "检测重复帧": "Dubbele frames detecteren",
     "启用动态检测统计": "Dynamische detectiestatistieken inschakelen",
     "不被打断": "Niet onderbroken",
-    "显示/隐藏历史翻译": "Historische vertalingen tonen/verbergen",
     "文本输出": "Tekst-uitvoer",
     "缩放": "zoomen",
     "填充": "vulling",
@@ -779,5 +777,9 @@
     "禁用": "",
     "自定义Anki生成脚本": "",
     "性能测试模式": "",
-    "禁止在着色器中使用 FP16": ""
+    "禁止在着色器中使用 FP16": "",
+    "显示翻译": "",
+    "历史文本": "",
+    "显示/隐藏历史文本": "",
+    "使用Webview2显示": ""
 }

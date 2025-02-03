@@ -27,8 +27,8 @@
     If translation has already been performed, turning it off will hide the translation results, and turning it back on will redisplay the current translation results.
     If no translation has been performed and it is switched from hidden to displayed, it will trigger translation for the current sentence.
 
-1. #### Show/Hide Historical Translations
-    Opens or closes the historical translations window.
+1. #### Show/Hide History Text  
+    Open or close the history text window.  
 
 1. #### Mouse Pass-through Window
     Toggles the mouse pass-through window state.

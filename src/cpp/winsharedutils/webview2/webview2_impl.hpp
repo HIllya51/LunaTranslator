@@ -3,6 +3,7 @@
 typedef void (*evaljs_callback_t)(LPCWSTR);
 typedef void (*navigating_callback_t)(LPCWSTR);
 typedef void (*contextmenu_callback_t)(LPCWSTR);
+typedef bool (*contextmenu_getchecked)();
 typedef void (*contextmenu_notext_callback_t)();
 typedef void (*zoomchange_callback_t)(double);
 typedef void (*webmessage_callback_t)(LPCWSTR);
@@ -51,7 +52,7 @@ class WebView2
     std::vector<CComPtr<ICoreWebView2ContextMenuItem>> menus;
     std::vector<CComPtr<ICoreWebView2ContextMenuItem>> menus_noselect;
     typedef std::variant<contextmenu_callback_t, contextmenu_notext_callback_t> contextmenu_callback_t_ex;
-    std::map<INT32, contextmenu_callback_t_ex> menuscallback;
+    std::map<INT32, std::pair<contextmenu_callback_t_ex, contextmenu_getchecked>> menuscallback;
     std::optional<std::wstring> UserDir();
     HRESULT CreateCoreWebView2EnvironmentError = S_OK, CreateCoreWebView2ControllerError = S_OK;
 
@@ -61,7 +62,7 @@ public:
     webmessage_callback_t webmessage_callback;
     FilesDropped_callback_t FilesDropped_callback;
     void WaitForLoad();
-    void AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback);
+    void AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback, bool checkable = false, contextmenu_getchecked getchecked = nullptr);
     WebView2(HWND parent, bool);
     HRESULT init(bool);
     void put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME);

@@ -31,7 +31,7 @@
 
 1. ####  Maximum Cached Text Length
 
-    Received historical text is cached. When viewing the content of a text item in the text selection window, the historical cached text is queried. If there are too many text items or the text refreshes repeatedly, it will cause too much cached text, making it more sluggish to view text (sometimes even when not viewing). In fact, most of the cached text here is useless; useful historical text can be viewed in historical translations. You can arbitrarily lower this value (default is 1000000, but it can be lowered to 1000).
+    Received historical text is cached. When viewing the content of a text item in the text selection window, the historical cached text is queried. If there are too many text items or the text refreshes repeatedly, it will cause too much cached text, making it more sluggish to view text (sometimes even when not viewing). In fact, most of the cached text here is useless; useful historical text can be viewed in historical text window. You can arbitrarily lower this value (default is 1000000, but it can be lowered to 1000).
 
 ## Dedicated Game Settings
 

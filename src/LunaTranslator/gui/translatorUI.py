@@ -23,7 +23,8 @@ from myutils.utils import (
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
 from gui.setting_about import doupdate
 from gui.dialog_memory import dialog_memory
-from gui.textbrowser import Textbrowser, TextType, SpecialColor
+from rendertext.texttype import TextType, SpecialColor
+from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, findnearestscreen
 from gui.edittext import edittrans

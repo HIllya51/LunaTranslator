@@ -50,7 +50,7 @@ from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
 from gui.setting_textinput_ocr import showocrimage
-from gui.textbrowser import TextType, SpecialColor, TranslateColor
+from rendertext.texttype import TextType, SpecialColor, TranslateColor
 
 
 class MAINUI:

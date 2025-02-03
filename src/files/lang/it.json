@@ -1,5 +1,4 @@
 {
-    "历史翻译": "Traduzione storica",
     "搜索": "ricerca",
     "小学馆": "Sala della scuola elementare",
     "灵格斯词典": "Dizionario lingo",
@@ -426,7 +425,6 @@
     "检测重复帧": "Rileva quadri duplicati",
     "启用动态检测统计": "Abilita statistiche di rilevamento dinamico",
     "不被打断": "Non interrotto",
-    "显示/隐藏历史翻译": "Mostra/nasconde traduzioni storiche",
     "文本输出": "Output testo",
     "缩放": "zoom",
     "填充": "riempimento",
@@ -779,5 +777,9 @@
     "禁用": "",
     "自定义Anki生成脚本": "",
     "性能测试模式": "",
-    "禁止在着色器中使用 FP16": ""
+    "禁止在着色器中使用 FP16": "",
+    "显示翻译": "",
+    "历史文本": "",
+    "显示/隐藏历史文本": "",
+    "使用Webview2显示": ""
 }

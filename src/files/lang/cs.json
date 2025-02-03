@@ -391,7 +391,6 @@
     "日语注音方案": "Schéma japonských fonetických abeced",
     "Sakura大模型": "Velký model Sakura",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Přeložit pomocí informací uvedených v předchozím textu (obvykle s určitým zlepšením, ale může vést k pomalejšímu překladu)",
-    "历史翻译": "Historický překlad",
     "窗口缩放": "Měřítko okna",
     "去除重复字符": "Odstranit duplicitní znaky",
     "游戏内叠加层": "Vrstva překrytí ve hře",
@@ -435,7 +434,6 @@
     "检测重复帧": "Detekce duplicitních snímků",
     "启用动态检测统计": "Povolit statistiky dynamické detekce",
     "不被打断": "Nepřerušeno",
-    "显示/隐藏历史翻译": "Zobrazit/skrýt historické překlady",
     "文本输出": "Textový výstup",
     "缩放": "zoom",
     "填充": "vyplnit",
@@ -779,5 +777,9 @@
     "禁用": "",
     "自定义Anki生成脚本": "",
     "性能测试模式": "",
-    "禁止在着色器中使用 FP16": ""
+    "禁止在着色器中使用 FP16": "",
+    "显示翻译": "",
+    "历史文本": "",
+    "显示/隐藏历史文本": "",
+    "使用Webview2显示": ""
 }

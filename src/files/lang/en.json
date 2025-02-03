@@ -1,5 +1,4 @@
 {
-    "历史翻译": "Translation History",
     "获取中": "Retrieving",
     "获取失败": "Retrieval Failed",
     "查词": "Look Up Word",
@@ -425,7 +424,6 @@
     "检测重复帧": "Detect Duplicate Frames",
     "启用动态检测统计": "Enable Dynamic Detection Statistics",
     "不被打断": "Don't Interrupt",
-    "显示/隐藏历史翻译": "Show/Hide Translation History",
     "文本输出": "Text Output",
     "缩放": "Scale",
     "填充": "Fill",
@@ -779,5 +777,9 @@
     "禁用": "",
     "自定义Anki生成脚本": "",
     "性能测试模式": "",
-    "禁止在着色器中使用 FP16": ""
+    "禁止在着色器中使用 FP16": "",
+    "显示翻译": "",
+    "历史文本": "",
+    "显示/隐藏历史文本": "",
+    "使用Webview2显示": ""
 }

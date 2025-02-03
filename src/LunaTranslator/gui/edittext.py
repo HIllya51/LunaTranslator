@@ -9,7 +9,7 @@ from gui.usefulwidget import (
     getIconButton,
     IconButton,
 )
-from gui.textbrowser import TranslateColor
+from rendertext.texttype import TranslateColor
 from gui.dynalang import LPushButton, LMainWindow
 from gui.setting_textinput import loadvalidtss
 
@@ -165,7 +165,7 @@ class edittrans(LMainWindow):
             gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
             displayreskwargs.update(
                 dict(iter_context=(2, "realtime_edit_directvis_fakeclass"))
-            )  # 显示到历史翻译
+            )
             gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
             self.textOutput.clear()
             if globalconfig["realtime_edit_target"] == "rengong":

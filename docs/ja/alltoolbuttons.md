@@ -138,8 +138,8 @@
     この音読は`スキップ`を無視します（`音声設定`で現在のテキストターゲットが`スキップ`として一致している場合、ボタンを使用して音読すると、スキップを無視して強制的に音読します）。
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> クリップボードにコピー
     現在抽出されたテキストを1回クリップボードにコピーします。自動的にクリップボードに抽出する場合は、`テキスト入力` -> `テキスト出力` -> `クリップボード` -> `自動出力`を有効にする必要があります。
-1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻訳履歴を表示/非表示
-    翻訳履歴ウィンドウを開くまたは閉じる。
+1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 表示/非表示 履歴テキスト  
+    履歴テキストのウィンドウを開くまたは閉じます。
 1. #### <i class="fa fa-gamepad"></i> <i class="fa fa-icon fa-rotate-right"></i> ゲーム管理
     ゲーム管理インターフェースを開く。
 1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 編集

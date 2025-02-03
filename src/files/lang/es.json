@@ -1,5 +1,4 @@
 {
-    "历史翻译": "Traducción histórica",
     "搜索": "Buscar",
     "小学馆": "Pabellón de la escuela primaria",
     "灵格斯词典": "Diccionario Lingus",
@@ -426,7 +425,6 @@
     "检测重复帧": "Detección de cuadros duplicados",
     "启用动态检测统计": "Activar estadísticas de detección dinámica",
     "不被打断": "Sin ser interrumpido",
-    "显示/隐藏历史翻译": "Mostrar / ocultar la traducción histórica",
     "文本输出": "Salida de texto",
     "缩放": "Zoom",
     "填充": "Relleno",
@@ -779,5 +777,9 @@
     "禁用": "",
     "自定义Anki生成脚本": "",
     "性能测试模式": "",
-    "禁止在着色器中使用 FP16": ""
+    "禁止在着色器中使用 FP16": "",
+    "显示翻译": "",
+    "历史文本": "",
+    "显示/隐藏历史文本": "",
+    "使用Webview2显示": ""
 }

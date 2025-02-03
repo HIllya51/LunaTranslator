@@ -119,11 +119,20 @@
     }
 
     var highlightMode = false;
+    var iswebview2 = false;
+    function callvalue() {
+        if (window.LUNAJSObject)
+            LUNAJSObject.switch_hightlightmode_callback(highlightMode)
+    }
     function switch_hightlightmode() {
         console.log(highlightMode)
         highlightMode = !highlightMode;
         if (!highlightMode) removeelewithclass('element-hover')
+        if (iswebview2) {
+            callvalue()
+        }
     }
+    callvalue()
     function removeelewithclass(klass) {
         while (true) {
             let eles2 = document.getElementsByClassName(klass)
