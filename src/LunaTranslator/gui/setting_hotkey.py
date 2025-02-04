@@ -42,7 +42,9 @@ def autoreadswitch(self):
 def safeGet():
     t = winsharedutils.GetSelectedText()
     if not t:
-        QMessageBox.warning(gobject.baseobject.commonstylebase, _TR("失败"), _TR("取词失败"))
+        QToolTip.showText(
+            QCursor.pos(), _TR("取词失败"), gobject.baseobject.commonstylebase
+        )
         raise Exception()
     return t
 
