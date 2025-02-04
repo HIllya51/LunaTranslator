@@ -180,7 +180,7 @@ def downloadNtlea():
 def downloadCurl(arch):
     if arch == "xp":
         subprocess.run(
-            "curl https://github.com/test123456654321/RESOURCES/releases/download/dictionary/libcurl.dll"
+            "curl -C - -LO https://github.com/test123456654321/RESOURCES/releases/download/dictionary/libcurl.dll"
         )
         shutil.copy("libcurl.dll", rootDir + "/files/plugins/DLL32")
         return
