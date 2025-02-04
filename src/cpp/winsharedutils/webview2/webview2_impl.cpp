@@ -163,16 +163,11 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler2::Invoke(HRESULT errorCode, IStream
     if (!ref->IconChanged_callback)
         return S_OK;
     CHECK_FAILURE(errorCode);
-    LARGE_INTEGER _;
-    ZeroMemory(&_, sizeof(_));
     ULARGE_INTEGER curr;
-    CHECK_FAILURE(faviconStream->Seek(_, STREAM_SEEK_END, &curr));
-    std::vector<byte> data;
-    data.resize(curr.LowPart);
-    CHECK_FAILURE(faviconStream->Seek(_, STREAM_SEEK_SET, &curr));
-    ULONG __;
-    CHECK_FAILURE(faviconStream->Read(data.data(), data.size(), &__));
-    ref->IconChanged_callback(data.data(), data.size());
+    CHECK_FAILURE(IStream_Size(faviconStream, &curr));
+    auto data = std::make_unique<byte[]>(curr.LowPart);
+    CHECK_FAILURE(IStream_Read(faviconStream, data.get(), curr.LowPart));
+    ref->IconChanged_callback(data.get(), curr.LowPart);
     return S_OK;
 }
 // ICoreWebView2FaviconChangedEventHandler
