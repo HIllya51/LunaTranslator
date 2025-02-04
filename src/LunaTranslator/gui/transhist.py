@@ -1,7 +1,7 @@
 from qtsymbols import *
 import gobject, os
 import qtawesome, winsharedutils, functools
-from myutils.config import globalconfig
+from myutils.config import globalconfig, _TR
 from myutils.utils import get_time_stamp
 from gui.usefulwidget import closeashidewindow, WebviewWidget
 from gui.dynalang import LAction
@@ -18,27 +18,27 @@ class wvtranshist(WebviewWidget):
         super().__init__(p)
         self.loadex()
         self.bind("calllunaloadready", self.setflags)
-        self.add_menu_noselect(0, "清空", self.clear)
-        self.add_menu_noselect(1, "滚动到最后", self.scrollend)
-        self.add_menu_noselect(2, "字体", self.seletcfont)
+        self.add_menu_noselect(0, _TR("清空"), self.clear)
+        self.add_menu_noselect(1, _TR("滚动到最后"), self.scrollend)
+        self.add_menu_noselect(2, _TR("字体"), self.seletcfont)
         self.add_menu_noselect(3)
         self.add_menu_noselect(
             4,
-            "显示原文",
+            _TR("显示原文"),
             self.showhideraw,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showorigin"],
         )
         self.add_menu_noselect(
             5,
-            "显示翻译",
+            _TR("显示翻译"),
             self.showtrans,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtrans"],
         )
         self.add_menu_noselect(
             6,
-            "显示时间",
+            _TR("显示时间"),
             self.showhidetime,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtime"],
@@ -47,14 +47,14 @@ class wvtranshist(WebviewWidget):
 
         self.add_menu_noselect(
             8,
-            "使用Webview2显示",
+            _TR("使用Webview2显示"),
             self.useweb,
             True,
             lambda: globalconfig["history"]["usewebview2"],
         )
         self.add_menu_noselect(
             9,
-            "附加HTML",
+            _TR("附加HTML"),
             functools.partial(
                 extrahtml,
                 self,
@@ -67,15 +67,15 @@ class wvtranshist(WebviewWidget):
 
         self.add_menu(
             0,
-            "查词",
+            _TR("查词"),
             threader(
                 lambda w: gobject.baseobject.searchwordW.search_word.emit(
                     w.replace("\n", "").strip(), False
                 )
             ),
         )
-        self.add_menu(1, "翻译", gobject.baseobject.textgetmethod)
-        self.add_menu(2, "朗读", gobject.baseobject.read_text)
+        self.add_menu(1, _TR("翻译"), gobject.baseobject.textgetmethod)
+        self.add_menu(2, _TR("朗读"), gobject.baseobject.read_text)
         self.add_menu(3)
 
     def loadex(self, extra=None):
