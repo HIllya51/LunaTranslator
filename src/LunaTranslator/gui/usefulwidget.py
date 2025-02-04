@@ -1243,12 +1243,12 @@ class WebviewWidget(abstractwebview):
     def Extensions_Manifest_Info(extid: str):
         path = WebviewWidget.__ExtensionDir(extid)
         if not path:
-            return {}
+            return
         path1 = os.path.join(path, "manifest.json")
-        data = {}
         try:
             with open(path1, "r", encoding="utf8") as ff:
                 manifest = json.load(ff)
+            data = {}
             try:
                 icons = manifest["icons"]
                 icon = icons[str(max((int(_) for _ in icons)))]
@@ -1261,10 +1261,9 @@ class WebviewWidget(abstractwebview):
                 data["url"] = url
             except:
                 pass
-
+            return data
         except:
-            pass
-        return data
+            return
 
     @staticmethod
     def Extensions_List():
