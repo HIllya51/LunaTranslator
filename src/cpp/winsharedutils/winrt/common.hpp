@@ -1,15 +1,20 @@
 #pragma once
-struct AutoHString
+struct AutoHStringRef
 {
     HSTRING hstr = nullptr;
-    AutoHString()
+    HSTRING_HEADER hh;
+    AutoHStringRef()
     {
     }
-    AutoHString(LPCWSTR wstr)
+    AutoHStringRef(LPCWSTR wstr)
     {
-        WindowsCreateString(wstr, lstrlenW(wstr), &hstr);
+        WindowsCreateStringReference(wstr, lstrlenW(wstr), &hh, &hstr);
     }
-    ~AutoHString()
+    AutoHStringRef(LPCWSTR wstr, size_t len)
+    {
+        WindowsCreateStringReference(wstr, len, &hh, &hstr);
+    }
+    ~AutoHStringRef()
     {
         if (hstr)
             WindowsDeleteString(hstr);
@@ -27,3 +32,5 @@ struct AutoHString
         return WindowsGetStringRawBuffer(hstr, NULL);
     }
 };
+
+#define AutoHStringRefX(x) AutoHStringRef(x, ARRAYSIZE(x) - 1)

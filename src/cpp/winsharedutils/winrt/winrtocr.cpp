@@ -61,8 +61,8 @@ HRESULT await(OperationT *pAsync, ResultT **ppResult)
 static HRESULT CreateLanguage(ILanguage **language, LPCWSTR Lang)
 {
     CComPtr<ILanguageFactory> language_factory;
-    CHECK_FAILURE(GetActivationFactory(AutoHString(RuntimeClass_Windows_Globalization_Language), &language_factory));
-    CHECK_FAILURE(language_factory->CreateLanguage(AutoHString(Lang), language));
+    CHECK_FAILURE(GetActivationFactory(AutoHStringRefX(RuntimeClass_Windows_Globalization_Language), &language_factory));
+    CHECK_FAILURE(language_factory->CreateLanguage(AutoHStringRef(Lang), language));
     return S_OK;
 }
 DECLARE_API bool winrt_OCR_check_language_valid(LPCWSTR Lang)
@@ -73,7 +73,7 @@ DECLARE_API bool winrt_OCR_check_language_valid(LPCWSTR Lang)
         CComPtr<ILanguage> language;
         CHECK_FAILURE(CreateLanguage(&language, Lang));
         CComPtr<IOcrEngineStatics> engine_factory;
-        CHECK_FAILURE(GetActivationFactory(AutoHString(RuntimeClass_Windows_Media_Ocr_OcrEngine), &engine_factory))
+        CHECK_FAILURE(GetActivationFactory(AutoHStringRefX(RuntimeClass_Windows_Media_Ocr_OcrEngine), &engine_factory))
         CHECK_FAILURE(engine_factory->IsLanguageSupported(language, &is_supported));
         return S_OK;
     }();
@@ -84,7 +84,7 @@ DECLARE_API bool winrt_OCR_check_language_valid(LPCWSTR Lang)
 DECLARE_API void winrt_OCR_get_AvailableRecognizerLanguages(void (*cb)(LPCWSTR, LPCWSTR))
 {
     CComPtr<IOcrEngineStatics> engine_factory;
-    CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Media_Ocr_OcrEngine), &engine_factory))
+    CHECK_FAILURE_NORET(GetActivationFactory(AutoHStringRefX(RuntimeClass_Windows_Media_Ocr_OcrEngine), &engine_factory))
     CComPtr<IVectorView<Language *>> languages;
     CHECK_FAILURE_NORET(engine_factory->get_AvailableRecognizerLanguages(&languages));
     UINT size;
@@ -93,7 +93,7 @@ DECLARE_API void winrt_OCR_get_AvailableRecognizerLanguages(void (*cb)(LPCWSTR, 
     {
         CComPtr<ILanguage> language;
         CHECK_FAILURE_CONTINUE(languages->GetAt(i, &language));
-        AutoHString LanguageTag, DisplayName;
+        AutoHStringRef LanguageTag, DisplayName;
         CHECK_FAILURE_CONTINUE(language->get_LanguageTag(&LanguageTag));
         CHECK_FAILURE_CONTINUE(language->get_DisplayName(&DisplayName));
         cb(LanguageTag, DisplayName);
@@ -104,7 +104,7 @@ DECLARE_API void winrt_OCR(const BYTE *ptr, size_t size, LPCWSTR lang, LPCWSTR s
     CComPtr<ILanguage> language;
     CHECK_FAILURE_NORET(CreateLanguage(&language, lang));
     CComPtr<IOcrEngineStatics> engine_factory;
-    CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Media_Ocr_OcrEngine), &engine_factory))
+    CHECK_FAILURE_NORET(GetActivationFactory(AutoHStringRefX(RuntimeClass_Windows_Media_Ocr_OcrEngine), &engine_factory))
     CComPtr<IOcrEngine> ocrEngine;
     CHECK_FAILURE_NORET(engine_factory->TryCreateFromLanguage(language, &ocrEngine));
     auto ms = SHCreateMemStream(ptr, size);
@@ -115,7 +115,7 @@ DECLARE_API void winrt_OCR(const BYTE *ptr, size_t size, LPCWSTR lang, LPCWSTR s
     CComPtr<IRandomAccessStream> memoryStream;
     CHECK_FAILURE_NORET(CreateRandomAccessStreamOverStream(mscom, BSOS_DEFAULT, IID_PPV_ARGS(&memoryStream)));
     CComPtr<IBitmapDecoderStatics> decoderfactory;
-    CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Graphics_Imaging_BitmapDecoder), &decoderfactory));
+    CHECK_FAILURE_NORET(GetActivationFactory(AutoHStringRefX(RuntimeClass_Windows_Graphics_Imaging_BitmapDecoder), &decoderfactory));
     // CComPtr<IAsyncOperation<BitmapDecoder *>> decoder;
     CComPtr<__FIAsyncOperation_1_Windows__CGraphics__CImaging__CBitmapDecoder> decoder;
     CHECK_FAILURE_NORET(decoderfactory->CreateAsync(memoryStream, &decoder));
@@ -160,7 +160,7 @@ DECLARE_API void winrt_OCR(const BYTE *ptr, size_t size, LPCWSTR lang, LPCWSTR s
             CHECK_FAILURE_CONTINUE(pOcrWords->GetAt(j, &pOcrWord));
             ABI::Windows::Foundation::Rect rect;
             CHECK_FAILURE_CONTINUE(pOcrWord->get_BoundingRect(&rect));
-            AutoHString htext;
+            AutoHStringRef htext;
             CHECK_FAILURE_CONTINUE(pOcrWord->get_Text(&htext));
             xx += (PCWSTR)htext;
             x1 = std::min((unsigned int)rect.X, x1);

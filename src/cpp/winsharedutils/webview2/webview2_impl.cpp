@@ -260,7 +260,7 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebVie
     {
         CHECK_FAILURE(result);
         CHECK_FAILURE(env->CreateCoreWebView2Controller(ref->parent, this));
-        ref->m_env.Attach(env);
+        ref->m_env = env;
         return S_OK;
     }();
     ref->CreateCoreWebView2EnvironmentError = hr;
