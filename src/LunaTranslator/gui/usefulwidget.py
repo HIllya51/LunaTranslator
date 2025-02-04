@@ -1072,7 +1072,9 @@ class abstractwebview(QWidget):
     def add_menu(self, index=0, label=None, callback=None):
         pass
 
-    def add_menu_noselect(self, index=0, label=None, callback=None, checkable=False, getchecked=None):
+    def add_menu_noselect(
+        self, index=0, label=None, callback=None, checkable=False, getchecked=None
+    ):
         pass
 
     #
@@ -1172,8 +1174,14 @@ class WebviewWidget(abstractwebview):
         self.callbacks.append(__)
         winsharedutils.webview2_add_menu(self.webview, index, label, __)
 
-    def add_menu_noselect(self, index=0, label=None, callback=None, checkable=False, getchecked=None):
-        __ = winsharedutils.webview2_add_menu_noselect_CALLBACK(callback) if callback else None
+    def add_menu_noselect(
+        self, index=0, label=None, callback=None, checkable=False, getchecked=None
+    ):
+        __ = (
+            winsharedutils.webview2_add_menu_noselect_CALLBACK(callback)
+            if callback
+            else None
+        )
         self.callbacks.append(__)
         __1 = (
             winsharedutils.webview2_add_menu_noselect_getchecked(getchecked)
@@ -1207,7 +1215,56 @@ class WebviewWidget(abstractwebview):
     # 盲猜应该是可能需要一个目录下的所有进程都结束之后才能进行切换，且同一个目录的所有Enviroment同一刻必须使用相同的启动参数
     # 因此对于主窗口和辞书窗口，必须同时加载或不加载。所以还是把这个作为static的值吧。
     webviewLoadExt = globalconfig["webviewLoadExt"]
-    LastPtr = None
+    LastPtrs = []
+
+    @staticmethod
+    def __getuserdir():
+        _ = []
+        __ = winsharedutils.webview2_get_userdir_callback(_.append)
+        winsharedutils.webview2_get_userdir(WebviewWidget.LastPtrs[0], __)
+        if _:
+            return _[0]
+
+    @staticmethod
+    def __ExtensionDir(extid: str):
+        path = WebviewWidget.__getuserdir()
+        if not path:
+            return
+        path = os.path.join(path, "EBWebView/Default/Secure Preferences")
+        try:
+            with open(path, "r", encoding="utf8") as ff:
+                js = json.load(ff)
+            path = js["extensions"]["settings"][extid]["path"]
+            return path
+        except:
+            pass
+
+    @staticmethod
+    def Extensions_Manifest_Info(extid: str):
+        path = WebviewWidget.__ExtensionDir(extid)
+        if not path:
+            return {}
+        path1 = os.path.join(path, "manifest.json")
+        data = {}
+        try:
+            with open(path1, "r", encoding="utf8") as ff:
+                manifest = json.load(ff)
+            try:
+                icons = manifest["icons"]
+                icon = icons[str(max((int(_) for _ in icons)))]
+                data["icon"] = os.path.join(path, icon)
+            except:
+                pass
+            try:
+                path = manifest["options_ui"]["page"]
+                url = "chrome-extension://{}/{}".format(extid, path)
+                data["url"] = url
+            except:
+                pass
+
+        except:
+            pass
+        return data
 
     @staticmethod
     def Extensions_List():
@@ -1218,26 +1275,26 @@ class WebviewWidget(abstractwebview):
 
         _ = winsharedutils.webview2_list_ext_CALLBACK_T(__)
         windows.CHECK_FAILURE(
-            winsharedutils.webview2_ext_list(WebviewWidget.LastPtr, _)
+            winsharedutils.webview2_ext_list(WebviewWidget.LastPtrs[0], _)
         )
         return collect
 
     @staticmethod
     def Extensions_Enable(_id, enable):
         windows.CHECK_FAILURE(
-            winsharedutils.webview2_ext_enable(WebviewWidget.LastPtr, _id, enable)
+            winsharedutils.webview2_ext_enable(WebviewWidget.LastPtrs[0], _id, enable)
         )
 
     @staticmethod
     def Extensions_Remove(_id):
         windows.CHECK_FAILURE(
-            winsharedutils.webview2_ext_rm(WebviewWidget.LastPtr, _id)
+            winsharedutils.webview2_ext_rm(WebviewWidget.LastPtrs[0], _id)
         )
 
     @staticmethod
     def Extensions_Add(path):
         windows.CHECK_FAILURE(
-            winsharedutils.webview2_ext_add(WebviewWidget.LastPtr, path)
+            winsharedutils.webview2_ext_add(WebviewWidget.LastPtrs[0], path)
         )
 
     @staticmethod
@@ -1282,7 +1339,10 @@ class WebviewWidget(abstractwebview):
                 WebviewWidget.webviewLoadExt,
             )
         )
-        WebviewWidget.LastPtr = self.webview
+        WebviewWidget.LastPtrs.append(self.webview)
+        self.destroyed.connect(
+            functools.partial(WebviewWidget.LastPtrs.remove, self.webview)
+        )
         self.zoomchange_callback = winsharedutils.webview2_zoomchange_callback_t(
             self.zoomchange
         )
@@ -1437,7 +1497,9 @@ class mshtmlWidget(abstractwebview):
         self.callbacks.append(cb)
         winsharedutils.html_add_menu(self.browser, index, label, cb)
 
-    def add_menu_noselect(self, index=0, label=None, callback=None, checkable=False, getchecked=None):
+    def add_menu_noselect(
+        self, index=0, label=None, callback=None, checkable=False, getchecked=None
+    ):
         cb = winsharedutils.html_add_menu_cb2(callback) if callback else None
         self.callbacks.append(cb)
         winsharedutils.html_add_menu_noselect(self.browser, index, label, cb)
@@ -1495,8 +1557,12 @@ class auto_select_webview(QWidget):
         self.addmenuinfo.append((index, label, callback))
         self.internal.add_menu(index, label, callback)
 
-    def add_menu_noselect(self, index=0, label=None, callback=None, checkable=False, getchecked=None):
-        self.addmenuinfo_noselect.append((index, label, callback, checkable, getchecked))
+    def add_menu_noselect(
+        self, index=0, label=None, callback=None, checkable=False, getchecked=None
+    ):
+        self.addmenuinfo_noselect.append(
+            (index, label, callback, checkable, getchecked)
+        )
         self.internal.add_menu_noselect(index, label, callback, checkable, getchecked)
 
     def clear(self):

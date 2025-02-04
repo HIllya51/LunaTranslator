@@ -73,6 +73,7 @@ public:
     void Navigate(LPCWSTR);
     void SetHTML(LPCWSTR);
     void Bind(LPCWSTR funcname);
+    std::wstring GetUserDataFolder();
 
     HRESULT AddExtension(LPCWSTR);
     HRESULT ListExtensionDoSomething(List_Ext_callback_t, LPCWSTR, BOOL, BOOL);

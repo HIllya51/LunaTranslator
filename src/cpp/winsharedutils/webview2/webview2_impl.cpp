@@ -341,7 +341,22 @@ HRESULT WebView2::init(bool loadextension)
 WebView2::WebView2(HWND parent, bool backgroundtransparent) : parent(parent), backgroundtransparent(backgroundtransparent)
 {
 }
-
+std::wstring WebView2::GetUserDataFolder()
+{
+    std::wstring result;
+    auto hr = [&]()
+    {
+        CComPtr<ICoreWebView2Environment7> env;
+        CHECK_FAILURE(m_env.QueryInterface(&env));
+        CComHeapPtr<WCHAR> data;
+        CHECK_FAILURE(env->get_UserDataFolder(&data));
+        result = data;
+        return S_OK;
+    }();
+    if (SUCCEEDED(hr))
+        return result;
+    return UserDir().value_or(L"");
+}
 void WebView2::AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback, bool checkable, contextmenu_getchecked getchecked)
 {
     INT32 commandid;

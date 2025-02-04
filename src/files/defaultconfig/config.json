@@ -312,6 +312,12 @@
     "maxBufferSize": 3000,
     "maxHistorySize": 1000000,
     "yuanjiao_r": 0,
+    "extensionsetting": [
+        500,
+        500,
+        800,
+        800
+    ],
     "transuigeo": [
         500,
         500,

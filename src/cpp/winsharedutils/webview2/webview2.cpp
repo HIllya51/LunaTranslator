@@ -125,3 +125,10 @@ DECLARE_API void webview2_bind(WebView2 *web, LPCWSTR funcname)
         return;
     web->Bind(funcname);
 }
+
+DECLARE_API void webview2_get_userdir(WebView2 *web, void (*cb)(LPCWSTR))
+{
+    if (!web)
+        return;
+    cb(web->GetUserDataFolder().c_str());
+}

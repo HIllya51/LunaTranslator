@@ -403,7 +403,9 @@ webview2_ext_enable.restype = LONG
 webview2_ext_rm = utilsdll.webview2_ext_rm
 webview2_ext_rm.argtypes = WebView2PTR, c_wchar_p
 webview2_ext_rm.restype = LONG
-
+webview2_get_userdir = utilsdll.webview2_get_userdir
+webview2_get_userdir_callback = CFUNCTYPE(None, c_wchar_p)
+webview2_get_userdir.argtypes = WebView2PTR, webview2_get_userdir_callback
 # WebView2
 
 # LoopBack

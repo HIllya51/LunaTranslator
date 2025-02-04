@@ -14,6 +14,7 @@ from gui.usefulwidget import (
     getboxlayout,
     D_getcolorbutton,
     getcolorbutton,
+    saveposwindow,
     getIconButton,
     getsimpleswitch,
     D_getsimpleswitch,
@@ -208,6 +209,19 @@ def alertwhenrestart(self, x):
 
 
 @Singleton_close
+class ExtensionSetting(saveposwindow):
+    def __init__(self, parent, name, settingurl, icon):
+        super().__init__(parent, globalconfig["extensionsetting"])
+        self.w = WebviewWidget(self)
+        self.setWindowTitle(name)
+        self.w.navigate(settingurl)
+        if icon:
+            self.setWindowIcon(QIcon(icon))
+        self.setCentralWidget(self.w)
+        self.show()
+
+
+@Singleton_close
 class Exteditor(LDialog):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -215,18 +229,24 @@ class Exteditor(LDialog):
         self.resize(QSize(600, 400))
 
         model = LStandardItemModel()
-        model.setHorizontalHeaderLabels(["ID", "名称", "禁用", "移除"])
+        model.setHorizontalHeaderLabels(["移除", "", "名称", "禁用", "设置"])
 
         table = TableViewW()
 
         table.setModel(model)
         table.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeMode.ResizeToContents
+            0, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.ResizeToContents
         )
         table.horizontalHeader().setSectionResizeMode(
             3, QHeaderView.ResizeMode.ResizeToContents
         )
-        table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        table.horizontalHeader().setSectionResizeMode(
+            4, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
@@ -274,9 +294,11 @@ class Exteditor(LDialog):
     def listexts(self):
         self.model.removeRows(0, self.model.rowCount())
         for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions_List()):
+            info = WebviewWidget.Extensions_Manifest_Info(_id)
             self.model.appendRow(
                 [
-                    QStandardItem(_id),
+                    QStandardItem(""),
+                    QStandardItem(""),
                     QStandardItem(name),
                     QStandardItem(""),
                     QStandardItem(""),
@@ -284,7 +306,7 @@ class Exteditor(LDialog):
             )
             d = {"1": able}
             self.table.setIndexWidget(
-                self.model.index(_i, 2),
+                self.model.index(_i, 3),
                 getsimpleswitch(
                     d,
                     "1",
@@ -294,12 +316,28 @@ class Exteditor(LDialog):
                 ),
             )
             self.table.setIndexWidget(
-                self.model.index(_i, 3),
+                self.model.index(_i, 0),
                 getIconButton(
                     callback=functools.partial(self.tryMessage, self.removex, _id),
                     icon="fa.times",
                 ),
             )
+
+            setting = info.get("url")
+            if setting:
+                self.table.setIndexWidget(
+                    self.model.index(_i, 4),
+                    getIconButton(
+                        callback=functools.partial(
+                            ExtensionSetting, self, name, setting, info.get("icon")
+                        ),
+                    ),
+                )
+            icon = info.get("icon")
+            if icon:
+                self.table.setIndexWidget(
+                    self.model.index(_i, 1), getIconButton(qicon=QIcon(icon))
+                )
 
     def enablex(self, _id, able, _):
         WebviewWidget.Extensions_Enable(_id, able)
