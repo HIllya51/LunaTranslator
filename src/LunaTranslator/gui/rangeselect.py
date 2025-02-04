@@ -287,6 +287,7 @@ class rangeselect(QMainWindow):
 class rangeselect_1(QMainWindow):
     def __init__(self, xx):
 
+        self.is_drawing = False
         super(rangeselect_1, self).__init__()
         self.xx = xx
         self.setWindowFlags(

@@ -1,7 +1,7 @@
 from .winhttp import *
 from requests import Response, Timeout, Requester_common
 from traceback import print_exc
-import windows
+from myutils.config import get_platform
 import gzip, zlib
 from ctypes import pointer, create_string_buffer, create_unicode_buffer
 
@@ -41,6 +41,8 @@ class Response(Response):
 
 
 class Requester(Requester_common):
+    Accept_Encoding = ("gzip, deflate, br", "gzip, deflate")[get_platform() == "xp"]
+
     def request(self, *argc, **kwarg) -> Response:
         if kwarg["stream"]:
             # winhttp流式时，没办法判断解压边界

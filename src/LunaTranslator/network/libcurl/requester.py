@@ -2,6 +2,7 @@ from .libcurl import *
 import threading, functools, queue
 from ctypes import c_long, cast, pointer, POINTER, c_char
 from requests import Response, Timeout, Requester_common
+from myutils.config import get_platform
 from traceback import print_exc
 
 
@@ -45,7 +46,7 @@ class autostatus:
 
 class Requester(Requester_common):
 
-    Accept_Encoding = "gzip, deflate, br, zstd"
+    Accept_Encoding = ("gzip, deflate, br, zstd", "")[get_platform() == "xp"]
 
     def __init__(self) -> None:
         # 用tls不太行，因为为了防止阻塞，每次请求都是完全重新开的线程，会100%重新initcurl

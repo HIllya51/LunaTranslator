@@ -190,7 +190,7 @@ class Response:
 
 
 class Requester_common:
-    Accept_Encoding = "gzip, deflate, br"
+    Accept_Encoding = ...
     default_UA = default_UA
 
     @staticmethod
