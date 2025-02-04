@@ -295,8 +295,6 @@ class Exteditor(LDialog):
         self.model.removeRows(0, self.model.rowCount())
         for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions_List()):
             info = WebviewWidget.Extensions_Manifest_Info(_id)
-            if info is None:
-                continue
             _i = self.model.rowCount()
             self.model.appendRow(
                 [
@@ -325,7 +323,8 @@ class Exteditor(LDialog):
                     icon="fa.times",
                 ),
             )
-
+            if not info:
+                continue
             setting = info.get("url")
             if setting:
                 self.table.setIndexWidget(
