@@ -1,18 +1,10 @@
 from qtsymbols import *
-import functools, os, json
-import windows, gobject
+import functools
+import gobject
 from myutils.utils import translate_exits, getannotatedapiname
-from myutils.config import (
-    globalconfig,
-    _TR,
-    savehook_new_data,
-    get_launchpath,
-    savehook_new_list,
-    get_platform,
-)
+from myutils.config import globalconfig
 from textsource.texthook import codepage_display
 from traceback import print_exc
-from gui.pretransfile import sqlite2json2
 from language import TransLanguages
 from gui.setting_textinput_ocr import getocrgrid_table
 from gui.dialog_savedgame import dialog_savedgame_integrated
@@ -27,11 +19,9 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     makesubtab_lazy,
     makescrollgrid,
-    FocusCombo,
     FocusFontCombo,
     getsmalllabel,
 )
-from gui.dynalang import LDialog, LFormLayout
 
 
 def __create(self):
@@ -185,107 +175,6 @@ def gethookgrid(self):
     ]
 
     return grids
-
-
-def doexportchspatch(exe, gameuid):
-
-    b = windows.GetBinaryType(exe)
-    is64 = b == 6
-    arch = ["32", "64"][is64]
-
-    dllhook = os.path.abspath("./files/plugins/LunaHook/LunaHook{}.dll".format(arch))
-    dllhost = os.path.abspath(
-        "./files/plugins/LunaHook/LunaHost{}.dll".format(arch, arch)
-    )
-    runner = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(arch))
-
-    windows.CopyFile(
-        dllhook, os.path.join(os.path.dirname(exe), os.path.basename(dllhook)), False
-    )
-    windows.CopyFile(
-        dllhost, os.path.join(os.path.dirname(exe), os.path.basename(dllhost)), False
-    )
-    windows.CopyFile(runner, os.path.join(os.path.dirname(exe), "LunaPatch.exe"), False)
-
-    embedconfig = {
-        "translation_file": "translation.json",
-        "target_exe": os.path.basename(exe),
-        "target_exe2": os.path.basename(exe),
-        "startup_argument": None,
-        "inject_timeout": 1000,
-        "embedhook": savehook_new_data[gameuid]["embedablehook"],
-        "embedsettings": globalconfig["embedded"],
-    }
-    try:
-        with open(
-            os.path.join(os.path.dirname(exe), "LunaPatch.json"), "w", encoding="utf8"
-        ) as ff:
-            ff.write(json.dumps(embedconfig, ensure_ascii=False, indent=4))
-    except:
-        pass
-
-
-def selectgameuid(self):
-
-    dialog = LDialog(self, Qt.WindowType.WindowCloseButtonHint)  # 自定义一个dialog
-    dialog.setWindowTitle("选择游戏")
-    dialog.resize(QSize(800, 10))
-    formLayout = LFormLayout(dialog)
-    _internal = []
-    _vis = []
-    for gameuid in savehook_new_list:
-        if not savehook_new_data[gameuid]["embedablehook"]:
-            continue
-        exe = get_launchpath(gameuid)
-        if not exe.lower().endswith(".exe"):
-            continue
-        if not os.path.exists(exe):
-            continue
-        _vis.append(savehook_new_data[gameuid]["title"])
-        _internal.append(gameuid)
-
-    combo = FocusCombo()
-    combo.addItems(_vis)
-
-    formLayout.addRow("选择游戏", combo)
-
-    button = QDialogButtonBox(
-        QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-    )
-    formLayout.addRow(button)
-    button.rejected.connect(dialog.close)
-    button.accepted.connect(dialog.accept)
-    button.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
-    button.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
-    if dialog.exec():
-        if not _internal:
-            return None
-        return _internal[combo.currentIndex()]
-
-
-def exportchspatch(self):
-    gameuid = selectgameuid(self)
-    if gameuid is None:
-        return
-    exe = get_launchpath(gameuid)
-    doexportchspatch(exe, gameuid)
-
-    f = QFileDialog.getOpenFileName(
-        self,
-        caption=_TR("选择预翻译文件"),
-        directory="translation_record",
-        filter="*.sqlite",
-    )
-    sqlfname_all = f[0]
-    if not sqlfname_all:
-        return
-    sqlite2json2(
-        self,
-        sqlfname_all,
-        os.path.join(os.path.dirname(exe), "translation.json"),
-        existsmerge=True,
-        isforembed=True,
-    )
 
 
 def creategamefont_comboBox():

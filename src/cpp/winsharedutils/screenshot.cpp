@@ -92,45 +92,6 @@ std::vector<byte> SaveBitmapToBuffer(HBITMAP hBitmap)
 }
 namespace
 {
-
-    typedef enum MONITOR_DPI_TYPE
-    {
-        MDT_EFFECTIVE_DPI = 0,
-        MDT_ANGULAR_DPI = 1,
-        MDT_RAW_DPI = 2,
-        MDT_DEFAULT = MDT_EFFECTIVE_DPI
-    } MONITOR_DPI_TYPE;
-
-    typedef UINT(WINAPI *tGetDpiForWindow)(HWND hwnd);
-    typedef HRESULT(STDAPICALLTYPE *tGetDpiForMonitor)(HMONITOR, MONITOR_DPI_TYPE, UINT *, UINT *);
-
-    UINT GetHWNDDpi(HWND hwnd)
-    {
-        if (auto pGetDpiForWindow = (tGetDpiForWindow)GetProcAddress(GetModuleHandle(L"user32.dll"), "GetDpiForWindow"))
-            return pGetDpiForWindow(hwnd);
-
-        if (auto pGetDpiForMonitor = (tGetDpiForMonitor)GetProcAddress(GetModuleHandleA("Shcore.dll"), "GetDpiForMonitor"))
-        {
-            HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-            if (hMonitor)
-            {
-                UINT dpiX = 0;
-                UINT dpiY = 0;
-                HRESULT hr = pGetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
-                if (SUCCEEDED(hr))
-                    return dpiX;
-            }
-        }
-
-        if (HDC hdc = GetDC(hwnd))
-        {
-            int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
-            ReleaseDC(NULL, hdc);
-            return dpiX;
-        }
-        return USER_DEFAULT_SCREEN_DPI;
-    }
-
     bool checkempty(HWND hwnd, RECT &rect)
     {
         if (rect.bottom != rect.top && rect.left != rect.right)
@@ -145,6 +106,13 @@ namespace
     }
 }
 extern HWND globalmessagehwnd;
+#ifdef WINXP
+extern "C" WINUSERAPI
+    UINT
+        WINAPI
+        GetDpiForWindow(
+            _In_ HWND hwnd);
+#endif
 std::vector<byte> __gdi_screenshot(HWND hwnd, RECT rect)
 {
     if (checkempty(hwnd, rect))
@@ -153,8 +121,8 @@ std::vector<byte> __gdi_screenshot(HWND hwnd, RECT rect)
         hwnd = GetDesktopWindow();
     else
     {
-        auto dpi = GetHWNDDpi(hwnd);
-        auto thisdpi = GetHWNDDpi(globalmessagehwnd);
+        auto dpi = GetDpiForWindow(hwnd); // 链接到yythunks里的实现也是一样的
+        auto thisdpi = GetDpiForWindow(globalmessagehwnd);
         rect.bottom = MulDiv(rect.bottom, dpi, thisdpi);
         rect.right = MulDiv(rect.right, dpi, thisdpi);
         rect.left = MulDiv(rect.left, dpi, thisdpi);

@@ -58,21 +58,6 @@ HRESULT await(OperationT *pAsync, ResultT **ppResult)
     co.Wait();
     return hrCallback;
 }
-void *loadproc(LPCWSTR lib, LPCSTR func)
-{
-    auto plib = (LoadLibraryW(lib));
-    if (!plib)
-        return nullptr;
-    return GetProcAddress(plib, func);
-}
-STDAPI CreateRandomAccessStreamOverStream(_In_ IStream *stream, _In_ BSOS_OPTIONS options, _In_ REFIID riid, _COM_Outptr_ void **ppv)
-{
-    auto func = loadproc(L"shcore.dll", "CreateRandomAccessStreamOverStream");
-    if (!func)
-        return E_NOTIMPL;
-    return ((decltype(&CreateRandomAccessStreamOverStream))(func))(stream, options, riid, ppv);
-}
-
 static HRESULT CreateLanguage(ILanguage **language, LPCWSTR Lang)
 {
     CComPtr<ILanguageFactory> language_factory;

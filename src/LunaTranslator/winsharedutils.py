@@ -16,7 +16,7 @@ from ctypes import (
     CFUNCTYPE,
     WinDLL,
 )
-from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG
+from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG, LPCWSTR
 import platform, windows, functools, os, threading
 
 isbit64 = platform.architecture()[0] == "64bit"
@@ -26,6 +26,9 @@ utilsdll = CDLL(
         "winsharedutils.dll",
     )
 )
+
+OpenFileEx = utilsdll.OpenFileEx
+OpenFileEx.argtypes = (LPCWSTR,)
 SetCurrProcessMute = utilsdll.SetCurrProcessMute
 SetCurrProcessMute.argtypes = (c_bool,)
 MonitorPidVolume = utilsdll.MonitorPidVolume

@@ -206,3 +206,14 @@ DECLARE_API HANDLE createprocess(LPCWSTR command, LPCWSTR path, DWORD *pid)
     // closehandle会关闭子进程
     return hJob;
 }
+
+DECLARE_API void OpenFileEx(LPCWSTR file)
+{
+    OPENASINFO INFO;
+    INFO.pcszFile = file;
+    INFO.oaifInFlags = OAIF_EXEC;
+    if (FAILED(SHOpenWithDialog(NULL, &INFO)))
+    {
+        ShellExecuteW(NULL, L"open", file, NULL, NULL, SW_SHOWNORMAL);
+    }
+}

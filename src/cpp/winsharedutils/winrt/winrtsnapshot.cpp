@@ -26,6 +26,9 @@ using ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DSurface;
 using Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess;
 #else
 #include "xp.hpp"
+STDAPI CreateDirect3D11DeviceFromDXGIDevice(
+    _In_ IDXGIDevice *dxgiDevice,
+    _COM_Outptr_ IInspectable **graphicsDevice);
 #endif
 #include "common.hpp"
 
@@ -63,16 +66,6 @@ struct FrameArrivedCallback : ComImpl<__FITypedEventHandler_2_Windows__CGraphics
 
 void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
 {
-    HMODULE hModule = GetModuleHandle(TEXT("d3d11.dll"));
-    if (!hModule)
-        hModule = LoadLibrary(TEXT("d3d11.dll"));
-    HRESULT typedef(_stdcall * CreateDirect3D11DeviceFromDXGIDevice_t)(
-        _In_ IDXGIDevice * dxgiDevice,
-        _COM_Outptr_ IInspectable * *graphicsDevice);
-    CreateDirect3D11DeviceFromDXGIDevice_t CreateDirect3D11DeviceFromDXGIDevice = reinterpret_cast<CreateDirect3D11DeviceFromDXGIDevice_t>(
-        GetProcAddress(hModule, "CreateDirect3D11DeviceFromDXGIDevice"));
-    if (CreateDirect3D11DeviceFromDXGIDevice == NULL)
-        return;
     // Init COM
     // init_apartment(winrt::apartment_type::multi_threaded);
 

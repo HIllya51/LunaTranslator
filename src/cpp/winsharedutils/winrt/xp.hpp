@@ -104,21 +104,13 @@ extern const __declspec(selectany) _Null_terminated_ WCHAR RuntimeClass_Windows_
 MIDL_INTERFACE("689e0708-7eef-483f-963f-da938818e073")
 ISoftwareBitmap : public IInspectable{};
 
-void *loadproc(LPCWSTR lib, LPCSTR func);
-inline _Check_return_
+extern "C" _Check_return_
     HRESULT
         WINAPI
         RoGetActivationFactory(
             _In_ HSTRING activatableClassId,
             _In_ REFIID iid,
-            _COM_Outptr_ void **factory)
-
-{
-    auto func = loadproc(L"Combase.dll", "RoGetActivationFactory");
-    if (!func)
-        return E_NOTIMPL;
-    return ((decltype(&RoGetActivationFactory))(func))(activatableClassId, iid, factory);
-}
+            _COM_Outptr_ void **factory);
 template <class T>
 _Check_return_ __inline HRESULT GetActivationFactory(
     _In_ HSTRING activatableClassId,

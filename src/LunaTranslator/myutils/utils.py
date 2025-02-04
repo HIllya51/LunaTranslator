@@ -438,9 +438,7 @@ def selectdebugfile(path: str, ismypost=False):
             "LunaTranslator/myutils/template/" + tgt,
             p,
         )
-    windows.ShellExecute(
-        None, "open", "notepad", os.path.normpath(p), None, windows.SW_SHOW
-    )
+    winsharedutils.OpenFileEx(os.path.normpath(p))
     return p
 
 
