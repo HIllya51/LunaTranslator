@@ -24,7 +24,6 @@ def fuckmove(src, tgt):
             shutil.copytree(src, tgt, dirs_exist_ok=True)
 
 
-
 mylinks = {
     "ocr_models": {
         "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
@@ -178,7 +177,13 @@ def downloadNtlea():
     )
 
 
-def downloadCurl():
+def downloadCurl(arch):
+    if arch == "xp":
+        subprocess.run(
+            "curl https://github.com/test123456654321/RESOURCES/releases/download/dictionary/libcurl.dll"
+        )
+        shutil.copy("libcurl.dll", rootDir + "/files/plugins/DLL32")
+        return
     os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {curlFile32}")
     subprocess.run(f"curl -C - -LO {curlFile64}")
@@ -273,12 +278,12 @@ def downloadalls(arch):
     createPluginDirs()
     downloadNtlea()
     downloadbass()
+    downloadCurl(arch)
     if arch == "xp":
         return
     downloadmapie()
     downloadLocaleEmulator()
     downloadBrotli()
-    downloadCurl()
     downloadOCRModel()
     downloadlr()
 
