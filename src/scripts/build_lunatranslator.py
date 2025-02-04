@@ -343,6 +343,8 @@ if __name__ == "__main__":
         shutil.copy("cpp/builds/_x64/LunaOCR.dll", "files/plugins/DLL64")
 
         if sys.argv[2] == "x86":
+            os.remove("files/plugins/LunaHook/LunaHost64.dll")
             os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 32")
         else:
+            os.remove("files/plugins/LunaHook/LunaHost32.dll")
             os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 64")
