@@ -98,11 +98,6 @@ def doupdate():
 def updatemethod_checkalready(size, savep, sha256):
     if not os.path.exists(savep):
         return False
-    if get_platform() != "xp":
-        # requests旧版本重定向的resp.headers不正确
-        stats = os.stat(savep)
-        if stats.st_size != size:
-            return False
     if not sha256:
         return True
     with open(savep, "rb") as ff:
