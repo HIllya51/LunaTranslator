@@ -417,7 +417,6 @@ class saveposwindow(LMainWindow):
 
     def closeEvent(self, event: QCloseEvent):
         self.__checked_savepos()
-        super().closeEvent(event)
 
 
 class closeashidewindow(saveposwindow):
