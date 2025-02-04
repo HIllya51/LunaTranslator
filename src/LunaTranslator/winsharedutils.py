@@ -354,15 +354,19 @@ webview2_evaljs_CALLBACK = CFUNCTYPE(None, c_wchar_p)
 webview2_evaljs.argtypes = WebView2PTR, c_wchar_p, c_void_p
 webview2_set_observe_ptrs = utilsdll.webview2_set_observe_ptrs
 webview2_zoomchange_callback_t = CFUNCTYPE(None, c_double)
-webview2_navigating_callback_t = CFUNCTYPE(None, c_wchar_p)
+webview2_navigating_callback_t = CFUNCTYPE(None, c_wchar_p, c_bool)
 webview2_webmessage_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_FilesDropped_callback_t = CFUNCTYPE(None, c_wchar_p)
+webview2_titlechange_callback_t = CFUNCTYPE(None, c_wchar_p)
+webview2_IconChanged_callback_t = CFUNCTYPE(None, c_void_p, c_size_t)
 webview2_set_observe_ptrs.argtypes = (
     WebView2PTR,
     webview2_zoomchange_callback_t,
     webview2_navigating_callback_t,
     webview2_webmessage_callback_t,
     webview2_FilesDropped_callback_t,
+    webview2_titlechange_callback_t,
+    webview2_IconChanged_callback_t
 )
 webview2_bind = utilsdll.webview2_bind
 webview2_bind.argtypes = WebView2PTR, c_wchar_p

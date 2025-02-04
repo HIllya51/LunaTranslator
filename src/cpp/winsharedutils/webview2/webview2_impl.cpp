@@ -118,11 +118,71 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
 {
     CComHeapPtr<WCHAR> uri{};
     CHECK_FAILURE(args->get_Uri(&uri));
-    if (ref->navigating_callback && (!StartsWith(uri, L"data:text/html")))
-        ref->navigating_callback(uri);
+    if (ref->navigating_callback)
+    {
+        if (!StartsWith(uri, L"data:text/html"))
+        {
+            auto isextension = StartsWith(uri, L"chrome-extension://");
+            std::call_once(navigatingfirst, [&]()
+                           { isextensionsettignwindow = isextension; });
+            if (isextension)
+            {
+                if (!isextensionsettignwindow)
+                {
+                    args->put_Cancel(TRUE);
+                    ref->navigating_callback(uri, true);
+                }
+                else
+                {
+                    ref->navigating_callback(uri, false);
+                }
+            }
+            else
+            {
+                ref->navigating_callback(uri, false);
+            }
+        }
+    }
+    return S_OK;
+}
+// ICoreWebView2DocumentTitleChangedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, IUnknown *args)
+{
+    CComHeapPtr<WCHAR> uri;
+    CHECK_FAILURE(sender->get_DocumentTitle(&uri));
+    if (ref->titlechange_callback)
+    {
+        ref->titlechange_callback(uri);
+    }
     return S_OK;
 }
 
+// ICoreWebView2GetFaviconCompletedHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler2::Invoke(HRESULT errorCode, IStream *faviconStream)
+{
+    if (!ref->IconChanged_callback)
+        return S_OK;
+    CHECK_FAILURE(errorCode);
+    LARGE_INTEGER _;
+    ZeroMemory(&_, sizeof(_));
+    ULARGE_INTEGER curr;
+    CHECK_FAILURE(faviconStream->Seek(_, STREAM_SEEK_END, &curr));
+    std::vector<byte> data;
+    data.resize(curr.LowPart);
+    CHECK_FAILURE(faviconStream->Seek(_, STREAM_SEEK_SET, &curr));
+    ULONG __;
+    CHECK_FAILURE(faviconStream->Read(data.data(), data.size(), &__));
+    ref->IconChanged_callback(data.data(), data.size());
+    return S_OK;
+}
+// ICoreWebView2FaviconChangedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler2::Invoke(ICoreWebView2 *sender, IUnknown *args)
+{
+    CComPtr<ICoreWebView2_15> w215;
+    CHECK_FAILURE(sender->QueryInterface(IID_PPV_ARGS(&w215)));
+    CHECK_FAILURE(w215->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG, this));
+    return S_OK;
+}
 // ICoreWebView2CreateCoreWebView2ControllerCompletedHandler
 HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebView2Controller *controller)
 {
@@ -149,11 +209,19 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebVie
         ref->m_webView->add_NavigationStarting(this, &token);
         ref->m_webView->AddScriptToExecuteOnDocumentCreated(L"window.LUNAJSObject={}", nullptr);
         ref->m_webView->add_NewWindowRequested(this, &token);
+        ref->m_webView->add_DocumentTitleChanged(this, &token);
         [&]()
         {
             CComPtr<ICoreWebView2_11> m_webView2_11;
             CHECK_FAILURE_NORET(ref->m_webView.QueryInterface(&m_webView2_11));
             m_webView2_11->add_ContextMenuRequested(this, &token);
+        }();
+        [&]()
+        {
+            otherhandler = new WebView2ComHandler2{ref};
+            CComPtr<ICoreWebView2_15> m_webView2_15;
+            CHECK_FAILURE_NORET(ref->m_webView.QueryInterface(&m_webView2_15));
+            m_webView2_15->add_FaviconChanged(otherhandler, &token);
         }();
         CComPtr<ICoreWebView2Settings> settings;
         CHECK_FAILURE_NORET(ref->m_webView->get_Settings(&settings));
@@ -170,9 +238,17 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
 {
     CComHeapPtr<WCHAR> uri{};
     CHECK_FAILURE(args->get_Uri(&uri));
-    if (!StartsWith(uri, L"chrome-extension://"))
+    CHECK_FAILURE(args->put_Handled(TRUE));
+    if (StartsWith(uri, L"chrome-extension://"))
     {
-        CHECK_FAILURE(args->put_Handled(TRUE));
+        ref->navigating_callback(uri, true);
+    }
+    else if (StartsWith(uri, L"chrome://"))
+    {
+        ref->m_webView->Navigate(uri);
+    }
+    else
+    {
         ShellExecute(NULL, TEXT("open"), uri, NULL, NULL, SW_SHOW);
     }
     return S_OK;
@@ -184,7 +260,7 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebVie
     {
         CHECK_FAILURE(result);
         CHECK_FAILURE(env->CreateCoreWebView2Controller(ref->parent, this));
-        ref->m_env = env;
+        ref->m_env.Attach(env);
         return S_OK;
     }();
     ref->CreateCoreWebView2EnvironmentError = hr;

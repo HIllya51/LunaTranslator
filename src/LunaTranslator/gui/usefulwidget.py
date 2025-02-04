@@ -1,10 +1,11 @@
 from qtsymbols import *
 import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
-import windows, qtawesome, winsharedutils, gobject, platform
+import windows, qtawesome, winsharedutils, gobject, platform, threading
 from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton_close
 from myutils.utils import nowisdark, checkisusingwine
+from ctypes import POINTER, cast, c_char
 from gui.dynalang import (
     LLabel,
     LPushButton,
@@ -408,12 +409,15 @@ class saveposwindow(LMainWindow):
 
     def resizeEvent(self, a0) -> None:
         self.__checked_savepos()
+        super().resizeEvent(a0)
 
     def moveEvent(self, a0) -> None:
         self.__checked_savepos()
+        super().moveEvent(a0)
 
     def closeEvent(self, event: QCloseEvent):
         self.__checked_savepos()
+        super().closeEvent(event)
 
 
 class closeashidewindow(saveposwindow):
@@ -1141,10 +1145,104 @@ class abstractwebview(QWidget):
         )
 
 
+SingleExtensionSetting = None
+
+
+class MiddleClickTab(QTabWidget):
+    midclicked = pyqtSignal(int)
+
+    def mouseReleaseEvent(self, a0: QMouseEvent):
+        if a0.button() == Qt.MouseButton.MiddleButton:
+            i = self.tabBar().tabAt(a0.pos())
+            if i != -1:
+                self.midclicked.emit(i)
+        return super().mouseReleaseEvent(a0)
+
+
+class SingleExtensionSetting_(saveposwindow):
+    def __init__(self, parent):
+        super().__init__(parent, globalconfig["extensionsetting"])
+        self.tabw = MiddleClickTab(self)
+        self.tabw.setTabsClosable(True)
+        self.tabw.tabCloseRequested.connect(self.close_tab)
+        self.tabw.currentChanged.connect(self.changetab)
+        self.tabw.midclicked.connect(self.close_tab)
+        self.setCentralWidget(self.tabw)
+
+    def closeEvent(self, event):
+        global SingleExtensionSetting
+        SingleExtensionSetting = None
+        self.deleteLater()
+        return super().closeEvent(event)
+
+    def gamename(self, w, url):
+        return "{}  [{}]".format(w.name, url) if w.name else url
+
+    def changetab(self, i):
+        self.setWindowIcon(self.tabw.tabIcon(i))
+        self.settitle(i)
+
+    def settitle(self, i):
+        self.setWindowTitle(
+            "{}  [{}]".format(self.tabw.tabText(i), self.tabw.widget(i).url)
+        )
+
+    def close_tab(self, i):
+        w = self.tabw.widget(i)
+        self.tabw.removeTab(i)
+        w.deleteLater()
+        self.tabw.tabBar().setVisible(self.tabw.count() > 1)
+        if self.tabw.count() == 0:
+            self.close()
+
+    def titlechange(self, w: QWidget, t: str):
+        i = self.tabw.indexOf(w)
+        self.tabw.setTabText(i, t)
+        if i == self.tabw.currentIndex():
+            self.settitle(i)
+
+    def urlchange(self, w: QWidget, url: str):
+        i = self.tabw.indexOf(w)
+        if i == self.tabw.currentIndex():
+            self.settitle(i)
+
+    def iconchange(self, w: QWidget, icon: QIcon):
+        i = self.tabw.indexOf(w)
+        self.tabw.setTabIcon(i, icon)
+        if i == self.tabw.currentIndex():
+            self.setWindowIcon(icon)
+
+    def createpage(self, name, settingurl, icon):
+        w = WebviewWidget(self)
+        w.name = name
+        w.titlechanged.connect(functools.partial(self.titlechange, w))
+        w.IconChanged.connect(functools.partial(self.iconchange, w))
+        w.on_load.connect(functools.partial(self.urlchange, w))
+        w.navigate(settingurl)
+        idx = self.tabw.currentIndex() + 1
+        self.tabw.insertTab(idx, w, self.gamename(w, settingurl))
+        self.tabw.tabBar().setVisible(self.tabw.count() > 1)
+
+        self.tabw.setTabIcon(idx, QIcon(icon) if icon else qtawesome.icon("fa.gear"))
+        self.tabw.setCurrentIndex(idx)
+        self.changetab(self.tabw.currentIndex())
+        self.show()
+
+
+def ExtensionSetting(parent, name, settingurl, icon):
+    global SingleExtensionSetting
+    if not SingleExtensionSetting:
+        SingleExtensionSetting = SingleExtensionSetting_(parent)
+    SingleExtensionSetting.createpage(name, settingurl, icon)
+
+
 class WebviewWidget(abstractwebview):
     html_limit = 1572834
     # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
     dropfilecallback = pyqtSignal(str)
+    loadextensionwindow = pyqtSignal(str)
+    titlechanged = pyqtSignal(str)
+    IconChanged = pyqtSignal(QIcon)
 
     def getHtml(self, elementid):
         # 不可以在bind函数里调用，否则会阻塞
@@ -1249,6 +1347,7 @@ class WebviewWidget(abstractwebview):
             with open(path1, "r", encoding="utf8") as ff:
                 manifest = json.load(ff)
             data = {}
+            data["path"] = path
             try:
                 icons = manifest["icons"]
                 icon = icons[str(max((int(_) for _ in icons)))]
@@ -1319,11 +1418,16 @@ class WebviewWidget(abstractwebview):
                 print(maxversion, f)
         return maxvf
 
+    @staticmethod
+    def onDestroy(ptr):
+        WebviewWidget.LastPtrs.remove(ptr)
+
     def __init__(self, parent=None, transp=False) -> None:
         super().__init__(parent)
         self.webview = None
         self.binds = {}
         self.callbacks = []
+        self.url = ""
         FixedRuntime = WebviewWidget.findFixedRuntime()
         if FixedRuntime:
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
@@ -1338,29 +1442,29 @@ class WebviewWidget(abstractwebview):
                 WebviewWidget.webviewLoadExt,
             )
         )
+        self.loadextensionwindow.connect(self.__loadextensionwindow)
         WebviewWidget.LastPtrs.append(self.webview)
-        self.destroyed.connect(
-            functools.partial(WebviewWidget.LastPtrs.remove, self.webview)
+        self.destroyed.connect(functools.partial(WebviewWidget.onDestroy, self.webview))
+        self.monitorptrs = []
+        self.monitorptrs.append(
+            winsharedutils.webview2_zoomchange_callback_t(self.zoomchange)
         )
-        self.zoomchange_callback = winsharedutils.webview2_zoomchange_callback_t(
-            self.zoomchange
+        self.monitorptrs.append(
+            winsharedutils.webview2_navigating_callback_t(self.__on_load)
         )
-        self.navigating_callback = winsharedutils.webview2_navigating_callback_t(
-            self.on_load.emit
+        self.monitorptrs.append(
+            winsharedutils.webview2_webmessage_callback_t(self.webmessage_callback_f)
         )
-        self.webmessage_callback = winsharedutils.webview2_webmessage_callback_t(
-            self.webmessage_callback_f
+        self.monitorptrs.append(
+            winsharedutils.webview2_FilesDropped_callback_t(self.dropfilecallback.emit)
         )
-        self.FilesDropped_callback = winsharedutils.webview2_FilesDropped_callback_t(
-            self.dropfilecallback.emit
+        self.monitorptrs.append(
+            winsharedutils.webview2_titlechange_callback_t(self.titlechanged.emit)
         )
-        winsharedutils.webview2_set_observe_ptrs(
-            self.webview,
-            self.zoomchange_callback,
-            self.navigating_callback,
-            self.webmessage_callback,
-            self.FilesDropped_callback,
+        self.monitorptrs.append(
+            winsharedutils.webview2_IconChanged_callback_t(self.IconChangedF)
         )
+        winsharedutils.webview2_set_observe_ptrs(self.webview, *self.monitorptrs)
         self.__darkstate = None
         t = QTimer(self)
         t.setInterval(100)
@@ -1371,6 +1475,22 @@ class WebviewWidget(abstractwebview):
         self.add_menu()
         self.add_menu_noselect()
         self.cachezoom = 1
+
+    def IconChangedF(self, ptr, size):
+        pixmap = QPixmap()
+        pixmap.loadFromData(cast(ptr, POINTER(c_char))[:size])
+        if not pixmap.isNull():
+            self.IconChanged.emit(QIcon(pixmap))
+
+    def __on_load(self, url: str, loadinnew: bool):
+        if loadinnew:
+            threading.Thread(target=self.loadextensionwindow.emit, args=(url,)).start()
+        else:
+            self.on_load.emit(url)
+            self.url = url
+
+    def __loadextensionwindow(self, url: str):
+        ExtensionSetting(self, None, url, None)
 
     def webmessage_callback_f(self, js: str):
         # 其实不应该在这里处理回调，否则例如如果在这里用getHTML，会卡死。

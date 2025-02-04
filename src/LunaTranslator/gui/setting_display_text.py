@@ -27,6 +27,7 @@ from gui.usefulwidget import (
     getsmalllabel,
     SplitLine,
     WebviewWidget,
+    ExtensionSetting,
 )
 from gui.dynalang import LPushButton, LFormLayout, LDialog, LStandardItemModel
 
@@ -209,19 +210,6 @@ def alertwhenrestart(self, x):
 
 
 @Singleton_close
-class ExtensionSetting(saveposwindow):
-    def __init__(self, parent, name, settingurl, icon):
-        super().__init__(parent, globalconfig["extensionsetting"])
-        self.w = WebviewWidget(self)
-        self.setWindowTitle(name)
-        self.w.navigate(settingurl)
-        if icon:
-            self.setWindowIcon(QIcon(icon))
-        self.setCentralWidget(self.w)
-        self.show()
-
-
-@Singleton_close
 class Exteditor(LDialog):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -294,7 +282,7 @@ class Exteditor(LDialog):
     def listexts(self):
         self.model.removeRows(0, self.model.rowCount())
         for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions_List()):
-            info = WebviewWidget.Extensions_Manifest_Info(_id)
+
             _i = self.model.rowCount()
             self.model.appendRow(
                 [
@@ -323,23 +311,51 @@ class Exteditor(LDialog):
                     icon="fa.times",
                 ),
             )
-            if not info:
-                continue
-            setting = info.get("url")
-            if setting:
-                self.table.setIndexWidget(
+            t = QTimer(self)
+            t.setInterval(1000)
+            t.timeout.connect(
+                functools.partial(
+                    self.checkinfo,
+                    _id,
+                    self.model.index(_i, 1),
+                    self.model.index(_i, 3),
                     self.model.index(_i, 4),
-                    getIconButton(
-                        callback=functools.partial(
-                            ExtensionSetting, self, name, setting, info.get("icon")
-                        ),
+                    name,
+                    t,
+                )
+            )
+            t.start(0)
+
+    def checkinfo(
+        self, _id, i1: QModelIndex, i3: QModelIndex, i4: QModelIndex, name, t: QTimer
+    ):
+        if not (i1.isValid() and i4.isValid()):
+            return t.stop()
+        info = WebviewWidget.Extensions_Manifest_Info(_id)
+        if info is None:
+            return
+        setting = info.get("url")
+        if setting:
+            self.table.setIndexWidget(
+                i4,
+                getIconButton(
+                    callback=functools.partial(
+                        ExtensionSetting, self, name, setting, info.get("icon")
                     ),
-                )
-            icon = info.get("icon")
-            if icon:
-                self.table.setIndexWidget(
-                    self.model.index(_i, 1), getIconButton(qicon=QIcon(icon))
-                )
+                    enable=self.table.indexWidgetX(i3).isChecked(),
+                ),
+            )
+        icon = info.get("icon")
+        if icon:
+            self.table.setIndexWidget(
+                i1,
+                getIconButton(
+                    qicon=QIcon(icon),
+                    callback=functools.partial(os.startfile, info["path"]),
+                    enable=self.table.indexWidgetX(i3).isChecked(),
+                ),
+            )
+        t.stop()
 
     def enablex(self, _id, able, _):
         WebviewWidget.Extensions_Enable(_id, able)

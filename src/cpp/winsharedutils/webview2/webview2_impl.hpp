@@ -1,7 +1,8 @@
 ﻿
 #include <WebView2.h>
 typedef void (*evaljs_callback_t)(LPCWSTR);
-typedef void (*navigating_callback_t)(LPCWSTR);
+typedef void (*navigating_callback_t)(LPCWSTR, bool);
+typedef void (*titlechange_callback_t)(LPCWSTR);
 typedef void (*contextmenu_callback_t)(LPCWSTR);
 typedef bool (*contextmenu_getchecked)();
 typedef void (*contextmenu_notext_callback_t)();
@@ -9,16 +10,33 @@ typedef void (*zoomchange_callback_t)(double);
 typedef void (*webmessage_callback_t)(LPCWSTR);
 typedef void (*FilesDropped_callback_t)(LPCWSTR);
 typedef void (*List_Ext_callback_t)(LPCWSTR, LPCWSTR, BOOL);
+typedef void (*IconChanged_callback_t)(const byte*, size_t);
 
 class WebView2;
-class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler, ICoreWebView2CustomItemSelectedEventHandler>
+class WebView2ComHandler2 : public ComImpl<ICoreWebView2FaviconChangedEventHandler, ICoreWebView2GetFaviconCompletedHandler>
+{
+    WebView2 *ref;
+
+public:
+    WebView2ComHandler2(WebView2 *ref) : ref(ref) {}
+    // ICoreWebView2FaviconChangedEventHandler
+    HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, IUnknown *args);
+    // ICoreWebView2GetFaviconCompletedHandler
+    HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode, IStream *faviconStream);
+};
+class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler, ICoreWebView2CustomItemSelectedEventHandler, ICoreWebView2DocumentTitleChangedEventHandler>
 {
     WebView2 *ref;
     CComHeapPtr<WCHAR> CurrSelectText;
     COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND targetKind;
+    std::once_flag navigatingfirst;
+    bool isextensionsettignwindow;
+    CComPtr<WebView2ComHandler2> otherhandler;
 
 public:
     WebView2ComHandler(WebView2 *ref) : ref(ref) {}
+    // ICoreWebView2DocumentTitleChangedEventHandler
+    HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, IUnknown *args);
     // ICoreWebView2CustomItemSelectedEventHandler
     HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2ContextMenuItem *sender, IUnknown *args);
     // ICoreWebView2NavigationStartingEventHandler
@@ -55,12 +73,15 @@ class WebView2
     std::map<INT32, std::pair<contextmenu_callback_t_ex, contextmenu_getchecked>> menuscallback;
     std::optional<std::wstring> UserDir();
     HRESULT CreateCoreWebView2EnvironmentError = S_OK, CreateCoreWebView2ControllerError = S_OK;
+    LONG chromeextensionpage = 0;
 
 public:
     zoomchange_callback_t zoomchange_callback;
     navigating_callback_t navigating_callback;
     webmessage_callback_t webmessage_callback;
     FilesDropped_callback_t FilesDropped_callback;
+    titlechange_callback_t titlechange_callback;
+    IconChanged_callback_t IconChanged_callback;
     void WaitForLoad();
     void AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback, bool checkable = false, contextmenu_getchecked getchecked = nullptr);
     WebView2(HWND parent, bool);

@@ -95,7 +95,7 @@ DECLARE_API void webview2_evaljs(WebView2 *web, const wchar_t *js, evaljs_callba
     web->EvalJS(js, cb);
 }
 
-DECLARE_API void webview2_set_observe_ptrs(WebView2 *web, zoomchange_callback_t zoomchange_callback, navigating_callback_t navigating_callback, webmessage_callback_t webmessage_callback, FilesDropped_callback_t FilesDropped_callback)
+DECLARE_API void webview2_set_observe_ptrs(WebView2 *web, zoomchange_callback_t zoomchange_callback, navigating_callback_t navigating_callback, webmessage_callback_t webmessage_callback, FilesDropped_callback_t FilesDropped_callback, titlechange_callback_t titlechange_callback, IconChanged_callback_t IconChanged_callback)
 {
     if (!web)
         return;
@@ -103,6 +103,8 @@ DECLARE_API void webview2_set_observe_ptrs(WebView2 *web, zoomchange_callback_t 
     web->navigating_callback = navigating_callback;
     web->webmessage_callback = webmessage_callback;
     web->FilesDropped_callback = FilesDropped_callback;
+    web->titlechange_callback = titlechange_callback;
+    web->IconChanged_callback = IconChanged_callback;
 }
 
 DECLARE_API void webview2_navigate(WebView2 *web, LPCWSTR uri)
