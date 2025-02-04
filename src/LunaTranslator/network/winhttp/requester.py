@@ -1,16 +1,8 @@
 from .winhttp import *
-from requests import Response, Timeout, Requester_common
+from requests import Response, Requester_common
 from traceback import print_exc
-from myutils.config import get_platform
-import gzip, zlib
+import gzip, zlib, platform
 from ctypes import pointer, create_string_buffer, create_unicode_buffer
-
-try:
-    from .brotli_dec import decompress
-except:
-    from traceback import print_exc
-
-    print_exc()
 
 
 class Response(Response):
@@ -41,13 +33,7 @@ class Response(Response):
 
 
 class Requester(Requester_common):
-    Accept_Encoding = ("gzip, deflate, br", "gzip, deflate")[get_platform() == "xp"]
-
-    def request(self, *argc, **kwarg) -> Response:
-        if kwarg["stream"]:
-            # winhttp流式时，没办法判断解压边界
-            kwarg["headers"].pop("Accept-Encoding")
-        return super().request(*argc, **kwarg)
+    Accept_Encoding = "gzip, deflate"
 
     def _getheaders(self, hreq):
         dwSize = DWORD()
@@ -111,6 +97,17 @@ class Requester(Requester_common):
             hRequest, WINHTTP_OPTION_REDIRECT_POLICY, pointer(dwFlags), sizeof(dwFlags)
         )
 
+    def _set_auto_decompress(self, hRequest):
+        if tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 2):
+            return
+
+        dwFlags = DWORD(
+            WINHTTP_DECOMPRESSION_FLAG_GZIP | WINHTTP_DECOMPRESSION_FLAG_DEFLATE
+        )
+        return WinHttpSetOption(
+            hRequest, WINHTTP_OPTION_DECOMPRESSION, pointer(dwFlags), sizeof(dwFlags)
+        )
+
     def __init__(self) -> None:
         self.hSession = AutoWinHttpHandle(
             WinHttpOpen(
@@ -140,9 +137,7 @@ class Requester(Requester_common):
         timeout,
         allow_redirects,
     ):
-        headers = self._parseheader(_headers, cookies)
         flag = WINHTTP_FLAG_SECURE if scheme == "https" else 0
-        headers = "\r\n".join(headers)
 
         hConnect = AutoWinHttpHandle(WinHttpConnect(self.hSession, server, port, 0))
         MaybeRaiseException0(hConnect)
@@ -164,6 +159,11 @@ class Requester(Requester_common):
         self._set_verify(hRequest, verify)
         self._set_proxy(hRequest, proxy)
         self._set_allow_redirects(hRequest, allow_redirects)
+        autodec = self._set_auto_decompress(hRequest)
+        if stream and not (autodec):
+            _headers.pop("Accept-Encoding")
+        headers = self._parseheader(_headers, cookies)
+        headers = "\r\n".join(headers)
         MaybeRaiseException0(
             WinHttpSendRequest(
                 hRequest, headers, -1, databytes, len(databytes), len(databytes), None
@@ -174,7 +174,6 @@ class Requester(Requester_common):
         resp.headers, resp.cookies, resp.reason = self._parseheader2dict(
             self._getheaders(hRequest)
         )
-
         resp.status_code = self._getStatusCode(hRequest)
         resp.url = url
         if stream:
@@ -196,8 +195,10 @@ class Requester(Requester_common):
                 WinHttpReadData(hRequest, buff, availableSize, pointer(downloadedSize))
             )
             downloadeddata += buff[: downloadedSize.value]
-        resp.content = self.decompress(downloadeddata, resp.headers)
-
+        if autodec:
+            resp.content = downloadeddata
+        else:
+            resp.content = self.decompress(downloadeddata, resp.headers)
         return resp
 
     def decompress(self, data, headers):
@@ -210,8 +211,6 @@ class Requester(Requester_common):
                 data = gzip.decompress(data)
             elif encode == "deflate":
                 data = zlib.decompress(data, -zlib.MAX_WBITS)
-            elif encode == "br":
-                data = decompress(data)
             return data
         except:
             print_exc()

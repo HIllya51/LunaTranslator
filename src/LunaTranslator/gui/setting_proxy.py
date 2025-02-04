@@ -193,6 +193,7 @@ def setTab_proxy(self, l):
         )
     ]
     grids = [
+        grids1,
         [
             (
                 dict(

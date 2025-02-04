@@ -1,9 +1,8 @@
 from .libcurl import *
 import threading, functools, queue
 from ctypes import c_long, cast, pointer, POINTER, c_char
-from requests import Response, Timeout, Requester_common
+from requests import Response, Requester_common
 from myutils.config import get_platform
-from traceback import print_exc
 
 
 class Response(Response):

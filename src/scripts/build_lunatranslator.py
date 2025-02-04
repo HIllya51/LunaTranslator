@@ -36,8 +36,6 @@ pluginDirs = ["DLL32", "DLL64"]
 
 vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
 
-brotliFile32 = "https://github.com/google/brotli/releases/latest/download/brotli-x86-windows-dynamic.zip"
-brotliFile64 = "https://github.com/google/brotli/releases/latest/download/brotli-x64-windows-dynamic.zip"
 
 localeEmulatorFile = "https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip"
 LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
@@ -64,19 +62,6 @@ def installVCLTL():
     subprocess.run(f"7z x -y {vcltlFile.split('/')[-1]} -oVC-LTL5")
     os.chdir("VC-LTL5")
     subprocess.run("cmd /c Install.cmd")
-
-
-def downloadBrotli():
-    os.chdir(f"{rootDir}/scripts/temp")
-    subprocess.run(f"curl -C - -LO {brotliFile32}")
-    subprocess.run(f"curl -C - -LO {brotliFile64}")
-    subprocess.run(f"7z x -y {brotliFile32.split('/')[-1]} -obrotli32")
-    subprocess.run(f"7z x -y {brotliFile64.split('/')[-1]} -obrotli64")
-    os.chdir(rootDir)
-    fuckmove("scripts/temp/brotli32/brotlicommon.dll", "files/plugins/DLL32")
-    fuckmove("scripts/temp/brotli32/brotlidec.dll", "files/plugins/DLL32")
-    fuckmove("scripts/temp/brotli64/brotlicommon.dll", "files/plugins/DLL64")
-    fuckmove("scripts/temp/brotli64/brotlidec.dll", "files/plugins/DLL64")
 
 
 def move_directory_contents(source_dir, destination_dir):
@@ -283,7 +268,6 @@ def downloadalls(arch):
         return
     downloadmapie()
     downloadLocaleEmulator()
-    downloadBrotli()
     downloadOCRModel()
     downloadlr()
 
