@@ -176,8 +176,8 @@ class AnkiWindow(QWidget):
                     field = template[i + 2 : end_index].strip()
                     if field in data:
                         result += str(data[field])
-                    else:
-                        result += template[i : end_index + 2]
+                    # else:
+                    #     result += template[i : end_index + 2]
                     i = end_index + 2
                 else:
                     result += template[i:]
@@ -288,7 +288,10 @@ class AnkiWindow(QWidget):
             dictionaryInfo.append(
                 {"dict": _["dict"], "name": globalconfig["cishu"][_["dict"]]["name"]}
             )
-            dictionaryContent[_["dict"]] = quote(_["content"])
+
+            dictionaryContent[_["dict"]] = quote(
+                _["content"] + self.refsearchw.loadmdictfoldstate(_["dict"])
+            )
         fields = {
             "word": word,
             "rubytextHtml": ruby,
@@ -1245,7 +1248,24 @@ class searchwordW(closeashidewindow):
         with open(path, "r", encoding="utf8") as ff:
             frame = ff.read()
         html = frame.replace("__luna_dict_internal_view__", html)
+        html += self.loadmdictfoldstate(k)
         self.textOutput.setHtml(html)
+
+    def loadmdictfoldstate(self, k):
+        if k != "mdict":
+            return ""
+        if not self.savemdictfoldstate:
+            return ""
+        datas = []
+        for _id, fold in self.savemdictfoldstate.items():
+            datas.append(
+                "document.getElementById('{}').nextElementSibling.style.display='{}';".format(
+                    _id, ("block", "none")[fold]
+                )
+            )
+        if not datas:
+            return ""
+        return """<script>{}</script>""".format("".join(datas))
 
     def searchwinnewwindow(self, word):
 
@@ -1376,9 +1396,11 @@ class searchwordW(closeashidewindow):
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
         )
+        self.savemdictfoldstate = {}
         self.textOutput.bind(
             "switch_hightlightmode_callback", self.switch_hightlightmode_callback
         )
+        self.textOutput.bind("mdict_fold_callback", self.mdict_fold_callback)
         self.textOutput.bind(
             "luna_recheck_current_html", self.luna_recheck_current_html
         )
@@ -1426,6 +1448,9 @@ class searchwordW(closeashidewindow):
         self.ankiwindow.setMinimumHeight(1)
         self.ankiwindow.setMinimumWidth(1)
 
+    def mdict_fold_callback(self, i, display):
+        self.savemdictfoldstate[i] = display == "none"
+
     def callvalue(self):
         if isinstance(self.textOutput.internal, WebviewWidget):
             self.textOutput.eval("iswebview2=true")
@@ -1438,7 +1463,6 @@ class searchwordW(closeashidewindow):
         self.ishightlight = ishightlight
 
     def clear_hightlight(self):
-        print("?")
         self.textOutput.eval("clear_hightlight()")
         k = self.tabks[self.tab.currentIndex()]
         if k in self.cache_results_highlighted:
@@ -1536,6 +1560,7 @@ class searchwordW(closeashidewindow):
         self.textOutput.clear()
         self.cache_results.clear()
         self.cache_results_highlighted.clear()
+        self.savemdictfoldstate.clear()
         self.thisps.clear()
         self.hasclicked = False
         pxx = 999

@@ -496,6 +496,7 @@ class mdict(cishubase):
                 self.getFoldFlow(f),
                 self.gettitle(f, index),
                 collectresult,
+                f,
             )
         )
 
@@ -503,7 +504,7 @@ class mdict(cishubase):
         btns = []
         contents = []
         idx = 0
-        for _, foldflow, title, res in allres:
+        for _, foldflow, title, res, __ in allres:
             klass2 = "tab-pane_mdict_internal"
             klass1 = "tab-button_mdict_internal"
             if idx == 0:
@@ -613,14 +614,16 @@ if (content.style.display === 'block') {
 } else {
     content.style.display = 'block';
 }
+if(window.LUNAJSObject)
+        LUNAJSObject.mdict_fold_callback(_id,content.style.display)
 }</script>"""
         lis = []
 
-        for _, foldflow, title, res in allres:
+        for _, foldflow, title, res, f in allres:
             extra = "display: block;"
             if foldflow:
                 extra = "display: none;"
-            uid = str(uuid.uuid4())
+            uid = hashlib.md5(f.encode()).hexdigest()
             lis.append(
                 r"""<div><div class="collapsible-header" id="{}" onclick="mdict_flowstyle_clickcallback('{}')">{}</div><div class="collapsible-content" style="{}">
                {}

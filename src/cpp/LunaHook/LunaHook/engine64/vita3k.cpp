@@ -612,6 +612,24 @@ namespace
         if (i++ % 2 == 0)
             buffer->clear();
     }
+    static std::string PCSG00535;
+    void PCSG00535_1(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        PCSG00535 = std::move(buffer->strA());
+        StringFilter(buffer, "\\f", 2);
+        StringCharReplacer(buffer, "\\n", 2, '\n');
+        if (last == PCSG00535)
+        {
+            buffer->clear();
+        }
+        last = PCSG00535;
+    }
+    void PCSG00535_2(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->viewA() == PCSG00535)
+            buffer->clear();
+    }
     void PCSG01196(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
@@ -871,6 +889,9 @@ namespace
             {0x800086C0, {CODEC_UTF16, 0, 0, 0, PCSG00829, "PCSG00829"}}, // 缺少部分
             // sweet pool
             {0x8003D5B6, {0, 0, 0, 0, PCSG01196, "PCSG01196"}},
+            // 学園ヘヴン BOY'S LOVE SCRAMBLE!
+            {0x80060E58, {0, 2, 0, 0, PCSG00535_1, "PCSG00535"}},
+            {0x80083A94, {0, 2, 0, 0, PCSG00535_2, "PCSG00535"}},
 
         };
         return 1;
