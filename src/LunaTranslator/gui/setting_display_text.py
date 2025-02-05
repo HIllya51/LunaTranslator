@@ -340,7 +340,7 @@ class Exteditor(LDialog):
                 i4,
                 getIconButton(
                     callback=functools.partial(
-                        ExtensionSetting, self, name, setting, info.get("icon")
+                        ExtensionSetting, name, setting, info.get("icon")
                     ),
                     enable=self.table.indexWidgetX(i3).isChecked(),
                 ),

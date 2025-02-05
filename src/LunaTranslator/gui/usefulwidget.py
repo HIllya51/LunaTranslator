@@ -1232,10 +1232,10 @@ class SingleExtensionSetting_(saveposwindow):
         self.show()
 
 
-def ExtensionSetting(parent, name, settingurl, icon):
+def ExtensionSetting(name, settingurl, icon):
     global SingleExtensionSetting
     if not SingleExtensionSetting:
-        SingleExtensionSetting = SingleExtensionSetting_(parent)
+        SingleExtensionSetting = SingleExtensionSetting_(gobject.baseobject.commonstylebase)
     SingleExtensionSetting.createpage(name, settingurl, icon)
 
 
@@ -1499,7 +1499,7 @@ class WebviewWidget(abstractwebview):
             self.url = url
 
     def __loadextensionwindow(self, url: str):
-        ExtensionSetting(self, None, url, None)
+        ExtensionSetting(None, url, None)
 
     def webmessage_callback_f(self, js: str):
         # 其实不应该在这里处理回调，否则例如如果在这里用getHTML，会卡死。
