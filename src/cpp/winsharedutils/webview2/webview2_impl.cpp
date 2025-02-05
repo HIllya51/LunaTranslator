@@ -286,6 +286,8 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
     CHECK_FAILURE(args->get_WebMessageAsJson(&message));
     if (wcscmp(L"\"FilesDropped\"", message) == 0)
     {
+        if (!ref->FilesDropped_callback)
+            return S_OK;
         CComPtr<ICoreWebView2WebMessageReceivedEventArgs2> args2;
         CHECK_FAILURE(args->QueryInterface(&args2));
         CComPtr<ICoreWebView2ObjectCollectionView> objectsCollection;
@@ -307,8 +309,7 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
             // Add the file to message to be sent back to webview
             CComHeapPtr<WCHAR> path;
             CHECK_FAILURE_CONTINUE(file->get_Path(&path));
-            if (ref->FilesDropped_callback)
-                ref->FilesDropped_callback(path);
+            ref->FilesDropped_callback(path);
             break;
         }
     }

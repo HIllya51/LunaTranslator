@@ -6,6 +6,7 @@ from myutils.config import globalconfig, static_data
 from myutils.utils import nowisdark
 from gui.usefulwidget import (
     D_getsimplecombobox,
+    WebviewWidget,
     D_getspinbox,
     D_getcolorbutton,
     getIconButton,
@@ -276,6 +277,11 @@ def uisetting(self, l):
 def __changeselectablestate(self, x):
     gobject.baseobject.translation_ui.refreshtoolicon()
     gobject.baseobject.translation_ui.translate_text.setselectable(x)
+
+
+def switch_webview2_darklight():
+    for widget in QApplication.allWidgets():
+        QApplication.postEvent(widget, QEvent(QEvent.Type.User + 1))
 
 
 def mainuisetting(self):
@@ -595,7 +601,10 @@ def otheruisetting(self):
                                 ["跟随系统", "明亮", "黑暗"],
                                 globalconfig,
                                 "darklight2",
-                                lambda _: gobject.baseobject.setcommonstylesheet(),
+                                lambda _: (
+                                    gobject.baseobject.setcommonstylesheet(),
+                                    switch_webview2_darklight(),
+                                ),
                             ),
                         ],
                         [

@@ -1431,6 +1431,13 @@ class WebviewWidget(abstractwebview):
         WebviewWidget.LastPtrs.remove(ptr)
         winsharedutils.webview2_destroy(ptr)
 
+    def event(self, a0: QEvent):
+        if a0.type() == QEvent.Type.User + 1:
+            winsharedutils.webview2_put_PreferredColorScheme(
+                self.webview, globalconfig["darklight2"]
+            )
+        return super().event(a0)
+
     def __init__(self, parent=None, transp=False) -> None:
         super().__init__(parent)
         self.webview = None
@@ -1450,6 +1457,9 @@ class WebviewWidget(abstractwebview):
                 transp,
                 WebviewWidget.webviewLoadExt,
             )
+        )
+        winsharedutils.webview2_put_PreferredColorScheme(
+            self.webview, globalconfig["darklight2"]
         )
         self.loadextensionwindow.connect(self.__loadextensionwindow)
         WebviewWidget.LastPtrs.append(self.webview)
@@ -1474,12 +1484,6 @@ class WebviewWidget(abstractwebview):
             winsharedutils.webview2_IconChanged_callback_t(self.IconChangedF)
         )
         winsharedutils.webview2_set_observe_ptrs(self.webview, *self.monitorptrs)
-        self.__darkstate = None
-        t = QTimer(self)
-        t.setInterval(100)
-        t.timeout.connect(self.__darkstatechecker)
-        t.timeout.emit()
-        t.start()
 
         self.add_menu()
         self.add_menu_noselect()
@@ -1517,13 +1521,6 @@ class WebviewWidget(abstractwebview):
         self.cachezoom = zoom
         self.on_ZoomFactorChanged.emit(zoom)
         self.set_zoom(zoom)  # 置为默认值，档navi/sethtml时才能保持
-
-    def __darkstatechecker(self):
-        dl = globalconfig["darklight2"]
-        if dl == self.__darkstate:
-            return
-        self.__darkstate = dl
-        winsharedutils.webview2_put_PreferredColorScheme(self.webview, dl)
 
     def set_zoom(self, zoom):
         winsharedutils.webview2_put_ZoomFactor(self.webview, zoom)
