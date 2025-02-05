@@ -127,30 +127,26 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
         CHECK_FAILURE_NORET(args3->get_NavigationKind(&kind));
         skip = COREWEBVIEW2_NAVIGATION_KIND_RELOAD == kind;
     }();
-    if (ref->navigating_callback)
+    if (skip || (!ref->navigating_callback) || StartsWith(uri, L"data:text/html"))
+        return S_OK;
+    auto isextension = StartsWith(uri, L"chrome-extension://");
+    std::call_once(navigatingfirst, [&]()
+                   { isextensionsettignwindow = isextension; });
+    if (isextension)
     {
-        if (!StartsWith(uri, L"data:text/html"))
+        if (!isextensionsettignwindow)
         {
-            auto isextension = StartsWith(uri, L"chrome-extension://");
-            std::call_once(navigatingfirst, [&]()
-                           { isextensionsettignwindow = isextension; });
-            if (isextension)
-            {
-                if (!isextensionsettignwindow)
-                {
-                    args->put_Cancel(TRUE);
-                    ref->navigating_callback(uri, true);
-                }
-                else
-                {
-                    ref->navigating_callback(uri, false);
-                }
-            }
-            else
-            {
-                ref->navigating_callback(uri, false);
-            }
+            args->put_Cancel(TRUE);
+            ref->navigating_callback(uri, true);
         }
+        else
+        {
+            ref->navigating_callback(uri, false);
+        }
+    }
+    else
+    {
+        ref->navigating_callback(uri, false);
     }
     return S_OK;
 }
