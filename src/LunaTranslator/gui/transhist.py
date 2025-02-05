@@ -335,8 +335,12 @@ class Qtranshist(QPlainTextEdit):
                 collect += line
                 seted = True
         self.setPlainText(collect)
-        scrollbar = self.verticalScrollBar()
-        scrollbar.setValue(scrollbar.maximum())
+        self.move_cursor_to_end()
+
+    def move_cursor_to_end(self):
+        cursor = self.textCursor()
+        cursor.movePosition(QTextCursor.MoveOperation.End)
+        self.setTextCursor(cursor)
 
     def visline(self, line):
         ii, line = line
