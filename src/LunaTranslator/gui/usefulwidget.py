@@ -1235,7 +1235,9 @@ class SingleExtensionSetting_(saveposwindow):
 def ExtensionSetting(name, settingurl, icon):
     global SingleExtensionSetting
     if not SingleExtensionSetting:
-        SingleExtensionSetting = SingleExtensionSetting_(gobject.baseobject.commonstylebase)
+        SingleExtensionSetting = SingleExtensionSetting_(
+            gobject.baseobject.commonstylebase
+        )
     SingleExtensionSetting.createpage(name, settingurl, icon)
 
 
@@ -1258,9 +1260,6 @@ class WebviewWidget(abstractwebview):
         if not _:
             return ""
         return json.loads(_[0])
-
-    def __del__(self):
-        winsharedutils.webview2_destroy(self.webview)
 
     def bind(self, fname, func):
         self.binds[fname] = func
@@ -1430,6 +1429,7 @@ class WebviewWidget(abstractwebview):
     @staticmethod
     def onDestroy(ptr):
         WebviewWidget.LastPtrs.remove(ptr)
+        winsharedutils.webview2_destroy(ptr)
 
     def __init__(self, parent=None, transp=False) -> None:
         super().__init__(parent)
@@ -1574,8 +1574,9 @@ class mshtmlWidget(abstractwebview):
         self.bindfs.append(__f)
         winsharedutils.html_bind_function(self.browser, fname, __f)
 
-    def __del__(self):
-        winsharedutils.html_release(self.browser)
+    @staticmethod
+    def onDestroy(ptr):
+        winsharedutils.html_release(ptr)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -1585,6 +1586,7 @@ class mshtmlWidget(abstractwebview):
         if iswine or (winsharedutils.html_version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0
         self.browser = winsharedutils.html_new(int(self.winId()))
+        self.destroyed.connect(functools.partial(mshtmlWidget, self.browser))
         self.curr_url = None
         t = QTimer(self)
         t.setInterval(100)

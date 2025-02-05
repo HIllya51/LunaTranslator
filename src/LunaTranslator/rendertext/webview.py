@@ -18,6 +18,8 @@ testsavejs = False
 class TextBrowser(WebviewWidget, dataget):
     dropfilecallback = pyqtSignal(str)
     contentsChanged = pyqtSignal(QSize)
+    _switchcursor = pyqtSignal(Qt.CursorShape)
+    _isDragging = pyqtSignal(bool)
 
     def __init__(self, parent) -> None:
         super().__init__(parent, transp=True)
@@ -57,6 +59,13 @@ class TextBrowser(WebviewWidget, dataget):
         self.saveiterclasspointer = {}
         self.isfirst = True
         self.colorset = set()
+        self.window().cursorSet.connect(self._switchcursor)
+        self._switchcursor.connect(self.switchcursor)
+        self.window().isDragging.connect(self._isDragging)
+        self._isDragging.connect(
+            lambda b: self.setselectable(False if b else globalconfig["selectable"])
+        )
+        self.loadex()
 
     def ___cleartext(self):
         self.parent().clear()
@@ -104,19 +113,6 @@ class TextBrowser(WebviewWidget, dataget):
             Qt.CursorShape.ClosedHandCursor: "grabbing",
         }
         self.eval('switchcursor("{}")'.format(cursor_map.get(cursor, "default")))
-
-    @trypass
-    def showEvent(self, e):
-        if not self.isfirst:
-            return
-        if not isinstance(self, WebviewWidget):
-            return
-        self.isfirst = False
-        self.loadex()
-        gobject.baseobject.translation_ui.cursorSet.connect(self.switchcursor)
-        gobject.baseobject.translation_ui.isDragging.connect(
-            lambda b: self.setselectable(False if b else globalconfig["selectable"])
-        )
 
     def loadex(self, extra=None):
         if not extra:
