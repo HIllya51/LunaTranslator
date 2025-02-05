@@ -7,6 +7,7 @@ from gui.usefulwidget import closeashidewindow, WebviewWidget
 from gui.dynalang import LAction
 from urllib.parse import quote
 from myutils.wrapper import threader
+from traceback import print_exc
 from gui.setting_display_text import extrahtml
 
 
@@ -16,7 +17,6 @@ class wvtranshist(WebviewWidget):
 
     def __init__(self, p):
         super().__init__(p)
-        self.loadex()
         self.bind("calllunaloadready", self.setflags)
         self.add_menu_noselect(0, _TR("清空"), self.clear)
         self.add_menu_noselect(1, _TR("滚动到最后"), self.scrollend)
@@ -77,6 +77,7 @@ class wvtranshist(WebviewWidget):
         self.add_menu(1, _TR("翻译"), gobject.baseobject.textgetmethod)
         self.add_menu(2, _TR("朗读"), gobject.baseobject.read_text)
         self.add_menu(3)
+        self.loadex()
 
     def loadex(self, extra=None):
         if not extra:
@@ -264,7 +265,7 @@ class Qtranshist(QPlainTextEdit):
             globalconfig["history"]["usewebview2"] = not globalconfig["history"][
                 "usewebview2"
             ]
-            self.parent().loadviewer()
+            self.parent().loadviewer(True)
         elif action == search:
             gobject.baseobject.searchwordW.search_word.emit(
                 self.textCursor().selectedText(), False
@@ -375,32 +376,49 @@ class transhist(closeashidewindow):
         super(transhist, self).__init__(parent, globalconfig["hist_geo"])
         self.trace = []
         self.textOutput = None
-        self.setupUi()
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.getnewtranssignal.connect(self.getnewtrans)
         self.setWindowTitle("历史文本")
-
-    def setupUi(self):
         self.setWindowIcon(qtawesome.icon("fa.rotate-left"))
+        self.state = 0
+
+    def __load(self):
+        if self.state != 0:
+            return
+        self.state = 1
         self.loadviewer()
+        self.state = 2
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        self.__load()
 
     def getnewsentence(self, sentence):
         tm = get_time_stamp()
         self.trace.append((0, (tm, sentence)))
-        self.textOutput.getnewsentence(self.trace[-1])
+        if self.state == 2:
+            self.textOutput.getnewsentence(self.trace[-1])
 
     def getnewtrans(self, api, sentence):
         tm = get_time_stamp()
         self.trace.append((1, (tm, api, sentence)))
-        self.textOutput.getnewtrans(self.trace[-1])
+        if self.state == 2:
+            self.textOutput.getnewtrans(self.trace[-1])
 
-    def loadviewer(self):
+    def loadviewer(self, shoudong=False):
         if self.textOutput:
             self.textOutput.hide()
             self.textOutput.deleteLater()
         if globalconfig["history"]["usewebview2"]:
-            self.textOutput = wvtranshist(self)
+            try:
+                self.textOutput = wvtranshist(self)
+            except Exception as e:
+                print_exc()
+                if shoudong:
+                    WebviewWidget.showError(e)
+                globalconfig["history"]["usewebview2"] = False
+                self.textOutput = Qtranshist(self)
         else:
             self.textOutput = Qtranshist(self)
         self.setCentralWidget(self.textOutput)

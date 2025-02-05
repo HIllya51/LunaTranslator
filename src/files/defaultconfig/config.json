@@ -4,7 +4,7 @@
         "showtrans": true,
         "showtime": false,
         "showapi": true,
-        "usewebview2": false
+        "usewebview2": true
     },
     "webviewLoadExt": false,
     "multihookmergeby": "\n",

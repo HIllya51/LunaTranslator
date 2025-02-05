@@ -39,9 +39,6 @@ def autoreadswitch(self):
         globalconfig["autoread"] = not globalconfig["autoread"]
 
 
-laspos = None
-
-
 def safeGet():
 
     t = winsharedutils.GetSelectedText()
@@ -49,12 +46,7 @@ def safeGet():
         QToolTip.showText(
             QCursor.pos(), _TR("取词失败"), gobject.baseobject.commonstylebase
         )
-        global laspos
-        print(laspos, QCursor.pos())
-        same = laspos != QCursor.pos()
-        laspos = QCursor.pos()
-        if same:
-            raise Exception()
+        t = ""
     return t
 
 

@@ -147,6 +147,7 @@
     if (document.addEventListener) {
         function handleClick(e) {
             if (!highlightMode) return
+            if (e.target.classList.contains('collapsible-header')) return
             e.preventDefault();
             e.stopPropagation();
             const element = e.target;
@@ -165,7 +166,7 @@
             removeelewithclass('element-hover')
             if (!highlightMode) return
             const target = e.target;
-            if (!target.classList.contains('element-selected')) {
+            if (!(target.classList.contains('element-selected') || target.classList.contains('collapsible-header'))) {
                 target.classList.add('element-hover');
             }
         }

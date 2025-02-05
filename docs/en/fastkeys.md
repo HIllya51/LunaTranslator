@@ -138,13 +138,9 @@
 
 1. #### Retrieve and search for words
     Search for words in the text currently selected by the mouse
-    
-    If the word retrieval fails, then do not move the mouse and trigger the shortcut key again, which will force the word search window to open
-    
+
 1. #### Word Lookup in a New Window  
     Look up the currently selected text by the mouse in a new search window to avoid overwriting the ongoing search.
-
-    If the word retrieval fails, then without moving the mouse and triggering the shortcut key again, a word search window will be forcibly created
 
 1. #### OCR word search
     Select the OCR range for one OCR and then search for words
