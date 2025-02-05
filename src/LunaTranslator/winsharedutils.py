@@ -366,7 +366,7 @@ webview2_set_observe_ptrs.argtypes = (
     webview2_webmessage_callback_t,
     webview2_FilesDropped_callback_t,
     webview2_titlechange_callback_t,
-    webview2_IconChanged_callback_t
+    webview2_IconChanged_callback_t,
 )
 webview2_bind = utilsdll.webview2_bind
 webview2_bind.argtypes = WebView2PTR, c_wchar_p
@@ -410,6 +410,8 @@ webview2_ext_rm.restype = LONG
 webview2_get_userdir = utilsdll.webview2_get_userdir
 webview2_get_userdir_callback = CFUNCTYPE(None, c_wchar_p)
 webview2_get_userdir.argtypes = WebView2PTR, webview2_get_userdir_callback
+webview2_reload = utilsdll.webview2_reload
+webview2_reload.argtypes = (WebView2PTR,)
 # WebView2
 
 # LoopBack

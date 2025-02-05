@@ -39,7 +39,7 @@ _Use_decl_annotations_
         ID3D11Texture2D **ppTexture)
 {
     CComPtr<IDirect3DDxgiInterfaceAccess> spDXGIInterfaceAccess;
-    CHECK_FAILURE(pSurface->QueryInterface(IID_PPV_ARGS(&spDXGIInterfaceAccess)));
+    CHECK_FAILURE(pSurface->QueryInterface(&spDXGIInterfaceAccess));
     CHECK_FAILURE(spDXGIInterfaceAccess->GetInterface(IID_PPV_ARGS(ppTexture)));
     return S_OK;
 }

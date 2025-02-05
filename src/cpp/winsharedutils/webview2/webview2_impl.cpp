@@ -118,6 +118,15 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
 {
     CComHeapPtr<WCHAR> uri{};
     CHECK_FAILURE(args->get_Uri(&uri));
+    bool skip = false;
+    [&]()
+    {
+        CComPtr<ICoreWebView2NavigationStartingEventArgs3> args3;
+        CHECK_FAILURE_NORET(args->QueryInterface(&args3));
+        COREWEBVIEW2_NAVIGATION_KIND kind;
+        CHECK_FAILURE_NORET(args3->get_NavigationKind(&kind));
+        skip = COREWEBVIEW2_NAVIGATION_KIND_RELOAD == kind;
+    }();
     if (ref->navigating_callback)
     {
         if (!StartsWith(uri, L"data:text/html"))
@@ -174,7 +183,7 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler2::Invoke(HRESULT errorCode, IStream
 HRESULT STDMETHODCALLTYPE WebView2ComHandler2::Invoke(ICoreWebView2 *sender, IUnknown *args)
 {
     CComPtr<ICoreWebView2_15> w215;
-    CHECK_FAILURE(sender->QueryInterface(IID_PPV_ARGS(&w215)));
+    CHECK_FAILURE(sender->QueryInterface(&w215));
     CHECK_FAILURE(w215->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG, this));
     return S_OK;
 }
@@ -528,4 +537,8 @@ void WebView2::Bind(LPCWSTR funcname)
 {
     std::wstring js = std::wstring{} + L"window.LUNAJSObject." + funcname + L" = function(){window.chrome.webview.postMessage({    method: '" + funcname + L"',    args: Array.prototype.slice.call(arguments)});};";
     CHECK_FAILURE_NORET(m_webView->AddScriptToExecuteOnDocumentCreated(js.c_str(), nullptr));
+}
+void WebView2::Reload()
+{
+    m_webView->Reload();
 }

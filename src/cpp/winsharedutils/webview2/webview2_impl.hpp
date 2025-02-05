@@ -98,6 +98,7 @@ public:
 
     HRESULT AddExtension(LPCWSTR);
     HRESULT ListExtensionDoSomething(List_Ext_callback_t, LPCWSTR, BOOL, BOOL);
+    void Reload();
 
 private:
     HRESULT ExtensionGetProfile7(ICoreWebView2Profile7 **profile7);

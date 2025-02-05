@@ -134,3 +134,10 @@ DECLARE_API void webview2_get_userdir(WebView2 *web, void (*cb)(LPCWSTR))
         return;
     cb(web->GetUserDataFolder().c_str());
 }
+
+DECLARE_API void webview2_reload(WebView2 *web)
+{
+    if (!web)
+        return;
+    web->Reload();
+}

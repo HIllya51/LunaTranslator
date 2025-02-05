@@ -1385,18 +1385,24 @@ class WebviewWidget(abstractwebview):
         windows.CHECK_FAILURE(
             winsharedutils.webview2_ext_enable(WebviewWidget.LastPtrs[0], _id, enable)
         )
+        for _ in WebviewWidget.LastPtrs:
+            winsharedutils.webview2_reload(_)
 
     @staticmethod
     def Extensions_Remove(_id):
         windows.CHECK_FAILURE(
             winsharedutils.webview2_ext_rm(WebviewWidget.LastPtrs[0], _id)
         )
+        for _ in WebviewWidget.LastPtrs:
+            winsharedutils.webview2_reload(_)
 
     @staticmethod
     def Extensions_Add(path):
         windows.CHECK_FAILURE(
             winsharedutils.webview2_ext_add(WebviewWidget.LastPtrs[0], path)
         )
+        for _ in WebviewWidget.LastPtrs:
+            winsharedutils.webview2_reload(_)
 
     @staticmethod
     def findFixedRuntime():
