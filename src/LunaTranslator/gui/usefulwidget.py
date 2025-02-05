@@ -1167,10 +1167,14 @@ class SingleExtensionSetting_(saveposwindow):
         self.tabw.currentChanged.connect(self.changetab)
         self.tabw.midclicked.connect(self.close_tab)
         self.setCentralWidget(self.tabw)
+        self.destroyed.connect(SingleExtensionSetting_.ondestroyed)
 
-    def closeEvent(self, event):
+    @staticmethod
+    def ondestroyed():
         global SingleExtensionSetting
         SingleExtensionSetting = None
+
+    def closeEvent(self, event):
         self.deleteLater()
         return super().closeEvent(event)
 

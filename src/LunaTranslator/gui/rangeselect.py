@@ -165,6 +165,11 @@ class rangeadjust(Mainw):
 
 
 class rangeselect(QMainWindow):
+
+    def closeEvent(self, a0):
+        self.deleteLater()
+        return super().closeEvent(a0)
+
     def __init__(self, parent=None):
 
         super(rangeselect, self).__init__(parent)
@@ -285,10 +290,10 @@ class rangeselect(QMainWindow):
 
 
 class rangeselect_1(QMainWindow):
-    def __init__(self, xx):
+    def __init__(self, p, xx):
 
         self.is_drawing = False
-        super(rangeselect_1, self).__init__()
+        super(rangeselect_1, self).__init__(p)
         self.xx = xx
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint
@@ -383,7 +388,6 @@ class rangeselect_1(QMainWindow):
             self.end_point.x() * self.devicePixelRatioF(),
             self.end_point.y() * self.devicePixelRatioF(),
         )
-
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
 
@@ -397,16 +401,12 @@ class rangeselect_1(QMainWindow):
         self.close()
         try:
             (x1, y1), (x2, y2) = self.getRange()
-            self.callback(
-                self.getRange(),
-                (
-                    self.screenshot.copy(
-                        QRect(QPoint(x1, y1), QPoint(x2, y2))
-                    ).toImage()
-                    if self.xx
-                    else None
-                ),
-            )
+            img = None
+            if self.xx and (x1 != x2 and y1 != y2):
+                img = self.screenshot.copy(
+                    QRect(QPoint(x1, y1), QPoint(x2, y2))
+                ).toImage()
+            self.callback(self.getRange(), img)
         except:
             print_exc()
 
@@ -414,20 +414,16 @@ class rangeselect_1(QMainWindow):
         if event.button() == Qt.MouseButton.LeftButton:
             self.callbackfunction(event)
 
-
-screen_shot_ui = None
+    def closeEvent(self, a0):
+        self.deleteLater()
+        return super().closeEvent(a0)
 
 
 def rangeselct_function(callback, x=True):
-    global screen_shot_ui
-    if screen_shot_ui is not None:
-        # 完全销毁旧的实例
-        screen_shot_ui.deleteLater()
-        screen_shot_ui = None
     if len(QApplication.screens()) == 1:
-        screen_shot_ui = rangeselect_1(x)
+        screen_shot_ui = rangeselect_1(gobject.baseobject.translation_ui, x)
     else:
-        screen_shot_ui = rangeselect()
+        screen_shot_ui = rangeselect(gobject.baseobject.translation_ui)
     screen_shot_ui.show()
     screen_shot_ui.reset()
     screen_shot_ui.callback = callback
