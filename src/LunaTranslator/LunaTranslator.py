@@ -15,6 +15,7 @@ from myutils.config import (
 )
 from myutils.utils import (
     parsemayberegexreplace,
+    dynamiclink,
     find_or_create_uid,
     checkisusingwine,
     checkpostusing,
@@ -1175,6 +1176,10 @@ class MAINUI:
         self.mainuiloadafter()
 
     def mainuiloadafter(self):
+        version = str(winsharedutils.queryversion(getcurrexe()))
+        if version != globalconfig["load_doc_everytimes"]:
+            os.startfile(dynamiclink("{docs_server}"))
+            globalconfig["load_doc_everytimes"] = version
         self.WindowMessageCallback_ptr = winsharedutils.WindowMessageCallback_t(
             self.WindowMessageCallback
         )

@@ -7,6 +7,7 @@
 <style id="fontcontroller">
 </style>
 <div id="rootele" style="white-space: pre-wrap;"></div>
+<div id="observe_item"></div>
 <style>
     @media (prefers-color-scheme: dark) {
         :root {
@@ -44,9 +45,17 @@
     }
 
     var isScrollAtBottom = true
-    document.addEventListener('scroll', () => {
-        isScrollAtBottom = Math.abs(document.body.scrollTop + document.body.clientHeight - document.body.scrollHeight) <= 1
-    })
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            isScrollAtBottom = entry.isIntersecting
+        });
+    }, {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    });
+    observer.observe(document.querySelector('#observe_item'));
+
     function getnewsentence(time, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
@@ -84,7 +93,7 @@
     function scrollend() {
         window.scrollTo({
             top: document.body.scrollHeight,
-            behavior: 'smooth'
+            behavior: 'instant'
         });
     }
     if (window.LUNAJSObject)

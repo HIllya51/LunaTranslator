@@ -18,10 +18,9 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     makegrid,
     D_getIconButton,
-    WebviewWidget,
 )
 from language import UILanguages, Languages
-from gui.dynalang import LLabel
+from gui.dynalang import LLabel, LPushButton
 from gui.setting_year import yearsummary
 
 versionchecktask = queue.Queue()
@@ -209,7 +208,7 @@ def createdownloadprogress(self):
     self.downloadprogress = QProgressBar()
 
     self.downloadprogress.setRange(0, 10000)
-
+    self.downloadprogress.setVisible(False)
     self.downloadprogress.setAlignment(
         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
     )
@@ -221,6 +220,8 @@ def createdownloadprogress(self):
             return
         self.downloadprogress.setValue(val)
         self.downloadprogress.setFormat(text)
+        if val or text:
+            self.downloadprogress.setVisible(True)
 
     self.downloadprogresstimer = QTimer(self.downloadprogress)
     self.downloadprogresstimer.timeout.connect(functools.partial(__cb, self))
@@ -263,17 +264,6 @@ def createimageview(self):
     return lb
 
 
-def changelog(self, basel: QHBoxLayout):
-    link = dynamiclink("{main_server}/ChangeLog")
-    try:
-        _ = WebviewWidget(self)
-        _.navigate(link)
-    except:
-        _ = QWidget()
-        os.startfile(link)
-    basel.addWidget(_)
-
-
 def delayloadlinks(key, lay):
     sources = static_data["aboutsource"][key]
     grid = []
@@ -311,6 +301,13 @@ def delayloadlinks(key, lay):
 
 def offlinelinks(key):
     box = CollapsibleBoxWithButton(functools.partial(delayloadlinks, key), "下载")
+    return box
+
+
+def updatelog():
+
+    box = LPushButton("更新记录")
+    box.clicked.connect(lambda: os.startfile(dynamiclink("{main_server}/ChangeLog")))
     return box
 
 
@@ -371,11 +368,10 @@ def setTab_about1(self, basel):
 
 def setTab_about(self, basel):
     tab_widget, do = makesubtab_lazy(
-        ["关于软件", "其他设置", "更新记录", "年度总结"],
+        ["关于软件", "其他设置", "年度总结"],
         [
             functools.partial(setTab_about1, self),
             functools.partial(setTab_update, self),
-            functools.partial(changelog, self),
             functools.partial(yearsummary, self),
         ],
         delay=True,
@@ -426,7 +422,7 @@ def setTab_update(self, basel):
                             "",
                             "最新版本",
                             functools.partial(createversionlabel, self),
-                            "",
+                            functools.partial(updatelog),
                         ],
                         [(functools.partial(createdownloadprogress, self), 0)],
                     ],

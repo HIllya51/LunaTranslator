@@ -436,7 +436,10 @@ class viewpixmap_x(QWidget):
             file = self.recorder.stop_save()
             self.recorder = None
             if file:
-                tgt = extradatas["localedpath"].get(self.currentimage, self.currentimage) + os.path.splitext(file)[1]
+                tgt = (
+                    extradatas["localedpath"].get(self.currentimage, self.currentimage)
+                    + os.path.splitext(file)[1]
+                )
                 shutil.copy(file, tgt)
                 extradatas["imagerefmp3"][self.currentimage] = tgt
 
@@ -833,6 +836,7 @@ class dialog_savedgame_v3(QWidget):
         self.setstyle()
         spl = QSplitter()
         _l = QHBoxLayout(self)
+        _l.setContentsMargins(0, 0, 0, 0)
         _l.addWidget(spl)
 
         spl.addWidget(self.stack)
