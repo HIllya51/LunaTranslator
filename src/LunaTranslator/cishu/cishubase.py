@@ -131,7 +131,12 @@ class cishubase(commonbase):
         start = True
         idx = 0
         skip = False
+        skiproot = False
         for token in rule.prelude.copy():
+            if skiproot:
+                skiproot = False
+                idx += 1
+                continue
             if skip and token.type == "whitespace":
                 skip = False
                 idx += 1
@@ -143,6 +148,11 @@ class cishubase(commonbase):
                     rule.prelude.insert(idx + 1, WhitespaceToken(0, 0, " "))
                     idx += 2
                 else:
+                    if token.type == "literal" and token.value == ":":
+                        # :root
+                        skiproot = True
+                        idx += 1
+                        continue
                     # .id tag
                     # tag
                     # #class tag

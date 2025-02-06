@@ -16,11 +16,13 @@ class jpdb(cishubase):
 
         res = simplehtmlparser(text, "div", '<div class="results search">')
         if not res:
+            res = simplehtmlparser(text, "div", '<div class="results details">')
+        if not res:
             return
         res = res.replace('<i class="ti ti-volume"></i>', "")  # 播音图标无法跨域访问
         res = re.sub('href="/(.*?)"', 'href="https://jpdb.io/\\1"', res)
-        res = '<div class="container bugfix" style="padding-top:16px;padding-bottom:16px;">{}</div>'.format(
-            res
+        res = '<div class="{}"><div class="container bugfix" style="padding-top:16px;padding-bottom:16px;">{}</div></div>'.format(
+            self.klass, res
         )
 
         csss = re.findall('<link rel="stylesheet" media="screen" href="(.*?)" />', text)
@@ -29,11 +31,13 @@ class jpdb(cishubase):
             link = "https://jpdb.io" + link
             if not self.style[link]:
                 css = self.proxysession.get(link).text
-                # css = self.parse_stylesheet(css, self.klass) parse了样式会不正确。先不parse了，影响不大。
+                if css.startswith("@font-face"):
+                    # 这个又大又没卵用
+                    continue
+                css = css.replace("width:100%;", "")
+                css = self.parse_stylesheet(css, self.klass)
                 self.style[link] = css
-            if self.style[link].startswith("@font-face"):
-                # 这个又大又没卵用
-                continue
+
             cssall += self.style[link]
         cssall = "<style>{}</style>".format(cssall)
         return res + cssall
