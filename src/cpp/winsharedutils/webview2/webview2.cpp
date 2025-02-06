@@ -23,7 +23,7 @@ DECLARE_API HRESULT webview2_ext_add(LPCWSTR extpath)
 {
     auto begin = WebView2::save_ptrs.begin();
     if (begin == WebView2::save_ptrs.end())
-        return E_POINTER;
+        return E_ACCESSDENIED;
     CHECK_FAILURE((*begin)->AddExtension(extpath));
     for (auto web : WebView2::save_ptrs)
     {
@@ -35,14 +35,14 @@ DECLARE_API HRESULT webview2_ext_list(List_Ext_callback_t cb)
 {
     auto begin = WebView2::save_ptrs.begin();
     if (begin == WebView2::save_ptrs.end())
-        return E_POINTER;
+        return E_ACCESSDENIED;
     return (*begin)->ListExtensionDoSomething(cb, nullptr, FALSE, FALSE);
 }
 DECLARE_API HRESULT webview2_ext_enable(LPCWSTR id, BOOL enable)
 {
     auto begin = WebView2::save_ptrs.begin();
     if (begin == WebView2::save_ptrs.end())
-        return E_POINTER;
+        return E_ACCESSDENIED;
     CHECK_FAILURE((*begin)->ListExtensionDoSomething(nullptr, id, FALSE, enable));
     for (auto web : WebView2::save_ptrs)
     {
@@ -54,7 +54,7 @@ DECLARE_API HRESULT webview2_ext_rm(LPCWSTR id)
 {
     auto begin = WebView2::save_ptrs.begin();
     if (begin == WebView2::save_ptrs.end())
-        return E_POINTER;
+        return E_ACCESSDENIED;
     CHECK_FAILURE((*begin)->ListExtensionDoSomething(nullptr, id, TRUE, FALSE));
     for (auto web : WebView2::save_ptrs)
     {
