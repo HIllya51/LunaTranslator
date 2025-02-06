@@ -76,12 +76,12 @@ class WebView2
     LONG chromeextensionpage = 0;
 
 public:
-    zoomchange_callback_t zoomchange_callback;
-    navigating_callback_t navigating_callback;
-    webmessage_callback_t webmessage_callback;
-    FilesDropped_callback_t FilesDropped_callback;
-    titlechange_callback_t titlechange_callback;
-    IconChanged_callback_t IconChanged_callback;
+    zoomchange_callback_t zoomchange_callback = nullptr;
+    navigating_callback_t navigating_callback = nullptr;
+    webmessage_callback_t webmessage_callback = nullptr;
+    FilesDropped_callback_t FilesDropped_callback = nullptr;
+    titlechange_callback_t titlechange_callback = nullptr;
+    IconChanged_callback_t IconChanged_callback = nullptr;
     void WaitForLoad();
     void AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback, bool checkable = false, contextmenu_getchecked getchecked = nullptr);
     WebView2(HWND parent, bool);
