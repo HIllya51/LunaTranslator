@@ -1304,6 +1304,11 @@
             "useproxy": false,
             "name": "jisho"
         },
+        "jpdb": {
+            "use": true,
+            "useproxy": false,
+            "name": "jpdb"
+        },
         "japandict": {
             "use": true,
             "useproxy": false,
