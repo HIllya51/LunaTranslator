@@ -1315,13 +1315,12 @@ class WebviewWidget(abstractwebview):
     # 盲猜应该是可能需要一个目录下的所有进程都结束之后才能进行切换，且同一个目录的所有Enviroment同一刻必须使用相同的启动参数
     # 因此对于主窗口和辞书窗口，必须同时加载或不加载。所以还是把这个作为static的值吧。
     webviewLoadExt = globalconfig["webviewLoadExt"]
-    LastPtrs = []
 
     @staticmethod
     def __getuserdir():
         _ = []
         __ = winsharedutils.webview2_get_userdir_callback(_.append)
-        winsharedutils.webview2_get_userdir(WebviewWidget.LastPtrs[0], __)
+        winsharedutils.webview2_get_userdir(__)
         if _:
             return _[0]
 
@@ -1374,34 +1373,20 @@ class WebviewWidget(abstractwebview):
             collect.append((_, _1, _2))
 
         _ = winsharedutils.webview2_list_ext_CALLBACK_T(__)
-        windows.CHECK_FAILURE(
-            winsharedutils.webview2_ext_list(WebviewWidget.LastPtrs[0], _)
-        )
+        windows.CHECK_FAILURE(winsharedutils.webview2_ext_list(_))
         return collect
 
     @staticmethod
     def Extensions_Enable(_id, enable):
-        windows.CHECK_FAILURE(
-            winsharedutils.webview2_ext_enable(WebviewWidget.LastPtrs[0], _id, enable)
-        )
-        for _ in WebviewWidget.LastPtrs:
-            winsharedutils.webview2_reload(_)
+        windows.CHECK_FAILURE(winsharedutils.webview2_ext_enable(_id, enable))
 
     @staticmethod
     def Extensions_Remove(_id):
-        windows.CHECK_FAILURE(
-            winsharedutils.webview2_ext_rm(WebviewWidget.LastPtrs[0], _id)
-        )
-        for _ in WebviewWidget.LastPtrs:
-            winsharedutils.webview2_reload(_)
+        windows.CHECK_FAILURE(winsharedutils.webview2_ext_rm(_id))
 
     @staticmethod
     def Extensions_Add(path):
-        windows.CHECK_FAILURE(
-            winsharedutils.webview2_ext_add(WebviewWidget.LastPtrs[0], path)
-        )
-        for _ in WebviewWidget.LastPtrs:
-            winsharedutils.webview2_reload(_)
+        windows.CHECK_FAILURE(winsharedutils.webview2_ext_add(path))
 
     @staticmethod
     def findFixedRuntime():
@@ -1428,7 +1413,6 @@ class WebviewWidget(abstractwebview):
 
     @staticmethod
     def onDestroy(ptr):
-        WebviewWidget.LastPtrs.remove(ptr)
         winsharedutils.webview2_destroy(ptr)
 
     def event(self, a0: QEvent):
@@ -1462,7 +1446,6 @@ class WebviewWidget(abstractwebview):
             self.webview, globalconfig["darklight2"]
         )
         self.loadextensionwindow.connect(self.__loadextensionwindow)
-        WebviewWidget.LastPtrs.append(self.webview)
         self.destroyed.connect(functools.partial(WebviewWidget.onDestroy, self.webview))
         self.monitorptrs = []
         self.monitorptrs.append(

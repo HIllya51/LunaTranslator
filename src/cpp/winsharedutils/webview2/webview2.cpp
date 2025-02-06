@@ -12,38 +12,62 @@ DECLARE_API HRESULT webview2_create(WebView2 **web, HWND parent, bool background
         delete _;
         _ = nullptr;
     }
+    else
+    {
+        WebView2::save_ptrs.insert(_);
+    }
     *web = _;
     return hr;
 }
-DECLARE_API HRESULT webview2_ext_add(WebView2 *web, LPCWSTR extpath)
+DECLARE_API HRESULT webview2_ext_add(LPCWSTR extpath)
 {
-    if (!web)
+    auto begin = WebView2::save_ptrs.begin();
+    if (begin == WebView2::save_ptrs.end())
         return E_POINTER;
-    return web->AddExtension(extpath);
+    CHECK_FAILURE((*begin)->AddExtension(extpath));
+    for (auto web : WebView2::save_ptrs)
+    {
+        web->Reload();
+    }
+    return S_OK;
 }
-DECLARE_API HRESULT webview2_ext_list(WebView2 *web, List_Ext_callback_t cb)
+DECLARE_API HRESULT webview2_ext_list(List_Ext_callback_t cb)
 {
-    if (!web)
+    auto begin = WebView2::save_ptrs.begin();
+    if (begin == WebView2::save_ptrs.end())
         return E_POINTER;
-    return web->ListExtensionDoSomething(cb, nullptr, FALSE, FALSE);
+    return (*begin)->ListExtensionDoSomething(cb, nullptr, FALSE, FALSE);
 }
-DECLARE_API HRESULT webview2_ext_enable(WebView2 *web, LPCWSTR id, BOOL enable)
+DECLARE_API HRESULT webview2_ext_enable(LPCWSTR id, BOOL enable)
 {
-    if (!web)
+    auto begin = WebView2::save_ptrs.begin();
+    if (begin == WebView2::save_ptrs.end())
         return E_POINTER;
-    return web->ListExtensionDoSomething(nullptr, id, FALSE, enable);
+    CHECK_FAILURE((*begin)->ListExtensionDoSomething(nullptr, id, FALSE, enable));
+    for (auto web : WebView2::save_ptrs)
+    {
+        web->Reload();
+    }
+    return S_OK;
 }
-DECLARE_API HRESULT webview2_ext_rm(WebView2 *web, LPCWSTR id)
+DECLARE_API HRESULT webview2_ext_rm(LPCWSTR id)
 {
-    if (!web)
+    auto begin = WebView2::save_ptrs.begin();
+    if (begin == WebView2::save_ptrs.end())
         return E_POINTER;
-    return web->ListExtensionDoSomething(nullptr, id, TRUE, FALSE);
+    CHECK_FAILURE((*begin)->ListExtensionDoSomething(nullptr, id, TRUE, FALSE));
+    for (auto web : WebView2::save_ptrs)
+    {
+        web->Reload();
+    }
+    return S_OK;
 }
 DECLARE_API void webview2_destroy(WebView2 *web)
 {
     if (!web)
         return;
     delete web;
+    WebView2::save_ptrs.erase(web);
 }
 DECLARE_API void webview2_resize(WebView2 *web, int w, int h)
 {
@@ -128,16 +152,10 @@ DECLARE_API void webview2_bind(WebView2 *web, LPCWSTR funcname)
     web->Bind(funcname);
 }
 
-DECLARE_API void webview2_get_userdir(WebView2 *web, void (*cb)(LPCWSTR))
+DECLARE_API void webview2_get_userdir(void (*cb)(LPCWSTR))
 {
-    if (!web)
+    auto begin = WebView2::save_ptrs.begin();
+    if (begin == WebView2::save_ptrs.end())
         return;
-    cb(web->GetUserDataFolder().c_str());
-}
-
-DECLARE_API void webview2_reload(WebView2 *web)
-{
-    if (!web)
-        return;
-    web->Reload();
+    cb((*begin)->GetUserDataFolder().c_str());
 }

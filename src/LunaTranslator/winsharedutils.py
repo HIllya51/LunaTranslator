@@ -395,23 +395,21 @@ def detect_webview2_version(directory=None):
 
 
 webview2_ext_add = utilsdll.webview2_ext_add
-webview2_ext_add.argtypes = WebView2PTR, c_wchar_p
+webview2_ext_add.argtypes = (c_wchar_p,)
 webview2_ext_add.restype = LONG
 webview2_list_ext_CALLBACK_T = CFUNCTYPE(None, c_wchar_p, c_wchar_p, BOOL)
 webview2_ext_list = utilsdll.webview2_ext_list
-webview2_ext_list.argtypes = WebView2PTR, webview2_list_ext_CALLBACK_T
+webview2_ext_list.argtypes = (webview2_list_ext_CALLBACK_T,)
 webview2_ext_list.restype = LONG
 webview2_ext_enable = utilsdll.webview2_ext_enable
-webview2_ext_enable.argtypes = (WebView2PTR, c_wchar_p, BOOL)
+webview2_ext_enable.argtypes = (c_wchar_p, BOOL)
 webview2_ext_enable.restype = LONG
 webview2_ext_rm = utilsdll.webview2_ext_rm
-webview2_ext_rm.argtypes = WebView2PTR, c_wchar_p
+webview2_ext_rm.argtypes = (c_wchar_p,)
 webview2_ext_rm.restype = LONG
 webview2_get_userdir = utilsdll.webview2_get_userdir
 webview2_get_userdir_callback = CFUNCTYPE(None, c_wchar_p)
-webview2_get_userdir.argtypes = WebView2PTR, webview2_get_userdir_callback
-webview2_reload = utilsdll.webview2_reload
-webview2_reload.argtypes = (WebView2PTR,)
+webview2_get_userdir.argtypes = (webview2_get_userdir_callback,)
 # WebView2
 
 # LoopBack
