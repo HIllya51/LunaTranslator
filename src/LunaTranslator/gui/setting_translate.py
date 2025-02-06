@@ -306,12 +306,12 @@ def createmanybtn(self, countnum, btnplus):
     btn = IconButton("fa.question")
     if btnplus == "offline":
         btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("{docs_server}/{lang}/offlinellm.html"))
+            lambda: os.startfile(dynamiclink("{docs_server}/offlinellm.html"))
         )
     elif btnplus == "api":
         btn.clicked.connect(
             lambda: os.startfile(
-                dynamiclink("{docs_server}/{lang}/guochandamoxing.html")
+                dynamiclink("{docs_server}/guochandamoxing.html")
             )
         )
     hbox.addWidget(btn)

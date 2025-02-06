@@ -15,12 +15,12 @@ function urlcheck() {
     console.log(url)
     let sps = url.split('/')
     console.log(sps)
-    if (sps.length >= 3) {
-        if (supportlangs.includes(sps[1])) {
-            window.location.pathname = `/${sps[1]}/`
+    if (sps.length >= 2) {
+        if (!supportlangs.includes(sps[1])) {
+            window.location.pathname = `/${cachedlang()}/` + sps.slice(1).join('/')
         }
         else {
-            window.location.pathname = `/${cachedlang()}/` + sps.slice(2).join('/')
+            window.location.pathname = `/${sps[1]}/`
         }
     }
     else {

@@ -63,7 +63,7 @@ def setTab7_lazy(self, basel):
         [
             D_getIconButton(
                 lambda: os.startfile(
-                    dynamiclink("{docs_server}/{lang}/textprocess.html")
+                    dynamiclink("{docs_server}/textprocess.html")
                 ),
                 "fa.question",
             ),
@@ -174,7 +174,7 @@ def setTab7_lazy(self, basel):
         [
             D_getIconButton(
                 lambda: os.startfile(
-                    dynamiclink("{docs_server}/{lang}/transoptimi.html")
+                    dynamiclink("{docs_server}/transoptimi.html")
                 ),
                 "fa.question",
             )

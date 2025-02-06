@@ -409,7 +409,7 @@ def internal(self):
             "自动化执行方法",
             D_getIconButton(
                 callback=lambda: os.startfile(
-                    dynamiclink("{docs_server}/{lang}/ocrparam.html")
+                    dynamiclink("{docs_server}/ocrparam.html")
                 ),
                 icon="fa.question",
             ),
