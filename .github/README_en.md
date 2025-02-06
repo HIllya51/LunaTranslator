@@ -2,7 +2,7 @@
 
 ### [简体中文](README.md) | English | [Other Language](otherlang.md) 
 
-### [User Manual](https://docs.lunatranslator.org/) | [Software Download](https://docs.lunatranslator.org/en/README.html) | [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB)
+### [User Manual](https://docs.lunatranslator.org/) | [Software Download](https://docs.lunatranslator.org/README.html) | [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB)
 
 
 > **A galgame translation tool**
