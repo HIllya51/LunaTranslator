@@ -543,5 +543,112 @@
     "bangumi_oauth": {
         "client_id": "bgm31536662bc84ee9a9",
         "client_secret": "b4ca9f5dc7c3819bff163843e1b5cdb0"
-    }
+    },
+    "API_URL_PRESETS": [
+        {
+            "vis": "OpenAI",
+            "value": "https://api.openai.com",
+            "icon": "files/llm_icons/openai.svg"
+        },
+        {
+            "vis": "DeepSeek",
+            "value": "https://api.deepseek.com",
+            "icon": "files/llm_icons/deepseek.svg"
+        },
+        {
+            "vis": "Gemini",
+            "value": "https://generativelanguage.googleapis.com",
+            "icon": "files/llm_icons/gemini.svg"
+        },
+        {
+            "vis": "claude",
+            "value": "https://api.anthropic.com/v1/messages",
+            "icon": "files/llm_icons/claude.svg"
+        },
+        {
+            "vis": "阿里云百炼大模型",
+            "value": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "icon": "files/llm_icons/qwen.svg"
+        },
+        {
+            "vis": "字节跳动豆包大模型",
+            "value": "https://ark.cn-beijing.volces.com/api/v3",
+            "icon": "files/llm_icons/doubao.svg"
+        },
+        {
+            "vis": "腾讯混元大模型",
+            "value": "https://api.hunyuan.cloud.tencent.com/v1",
+            "icon": "files/llm_icons/hunyuan.svg"
+        },
+        {
+            "vis": "硅基流动",
+            "value": "https://api.siliconflow.cn",
+            "icon": "files/llm_icons/siliconflow.svg"
+        },
+        {
+            "vis": "cohere",
+            "value": "https://api.cohere.com/v2/chat",
+            "icon": "files/llm_icons/cohere.svg"
+        },
+        {
+            "vis": "OpenRouter",
+            "value": "https://openrouter.ai/api/v1",
+            "icon": "files/llm_icons/openrouter.svg"
+        },
+        {
+            "vis": "groq",
+            "value": "https://api.groq.com/openai/v1",
+            "icon": "files/llm_icons/groq.svg"
+        },
+        {
+            "vis": "Mistral AI",
+            "value": "https://api.mistral.ai/v1",
+            "icon": "files/llm_icons/mistral.svg"
+        },
+        {
+            "vis": "x.ai",
+            "value": "https://api.x.ai/",
+            "icon": "files/llm_icons/xai.svg"
+        },
+        {
+            "vis": "月之暗面",
+            "value": "https://api.moonshot.cn",
+            "icon": "files/llm_icons/moonshot.svg"
+        },
+        {
+            "vis": "智谱AI",
+            "value": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+            "icon": "files/llm_icons/zhipu.svg"
+        },
+        {
+            "vis": "讯飞星火大模型",
+            "value": "https://spark-api-open.xf-yun.com/v1",
+            "icon": "files/llm_icons/xunfei.ico"
+        },
+        {
+            "vis": "百度千帆大模型",
+            "value": "https://qianfan.baidubce.com/v2",
+            "icon": "files/llm_icons/wenxin.svg"
+        },
+        {
+            "vis": "零一万物",
+            "value": "https://api.lingyiwanwu.com",
+            "icon": "files/llm_icons/lyww.svg"
+        },
+        {
+            "vis": "cerebras",
+            "value": "https://api.cerebras.ai/v1",
+            "icon": "files/llm_icons/cerebras.png"
+        },
+        {
+            "vis": "deepinfra",
+            "value": "https://api.deepinfra.com/v1/openai/chat/completions",
+            "icon": "files/llm_icons/deepinfra.webp"
+        },
+        {
+            "vis": "MiniMax",
+            "value": "https://api.minimax.chat/v1",
+            "icon": "files/llm_icons/minimax.svg"
+        }
+    ]
 }

@@ -1,29 +1,26 @@
 # 大模型API翻译
 
-::: details 同时使用多个ChatGPT兼容接口（或专用接口）？
+::: details 同时使用多个大模型接口？
 如果只是有多个不同的密钥想要轮询，只需用|分割就可以了。
 
 但有时想要同时使用多个不同的api接口地址/prompt/model/参数等来对比翻译效果。方法是：
 
 点击右下方的“+”按钮
 ![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
-弹出一个窗口，选择ChatGPT兼容接口（或专用接口），并为之取个名字。这样会复制一份当前ChatGPT兼容接口（或专用接口）的设置和api。
+弹出一个窗口，选择大模型通用接口，并为之取个名字。这样会复制一份当前大模型通用接口的设置和api。
 ![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
 激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
 ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
+:::
+
+::: info
+大部分**API接口地址**可以在下拉列表中选取，但可能会有遗漏。对于其他没有列举出来的接口，请自行查阅其文档来填写。
 :::
 
 ::: tip
 **model**可以在下拉列表中选取，且部分接口可以根据**API接口地址**和**API Key**动态获取模型列表，填好这两项后点击**model**旁的刷新按钮即可获取可用的模型列表。
 
 如果平台不支持拉取模型的接口，且默认列表中没有要用的模型，那么请参照接口官方文档手动填写模型。
-:::
-
-## ChatGPT兼容接口
-
-::: info
-绝大多数大模型平台都是使用ChatGPT兼容接口。
-由于平台各种各样，不可能一一列举。对于其他没有列举出来的接口，请自行查阅其文档来填写对应参数。
 :::
 
 ### 外国大模型接口
@@ -37,6 +34,30 @@
 **API Key** https://platform.openai.com/api-keys
 
 **model** https://platform.openai.com/docs/models
+
+== Gemini
+
+**API接口地址** `https://generativelanguage.googleapis.com`
+
+**API Key** https://aistudio.google.com/app/apikey
+
+**model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
+
+== claude
+
+**API接口地址** `https://api.anthropic.com/v1/messages`
+
+**API Key** https://console.anthropic.com/
+
+**model**  https://docs.anthropic.com/en/docs/about-claude/models
+
+== cohere
+
+**API接口地址** `https://api.cohere.com/v2/chat`
+
+**API Key** https://dashboard.cohere.com/api-keys
+
+**model** https://docs.cohere.com/docs/models
 
 == x.ai
 
@@ -190,38 +211,5 @@
 **API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
 
 **model** https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4
-
-:::
-
-## 特定平台的专用接口
-
-::: info
-部分大模型平台不完全兼容ChatGPT接口，请在专用接口中填写参数使用。
-::: 
-
-::: tabs
-
-== gemini
-
-**API接口地址** `https://generativelanguage.googleapis.com`
-
-**API Key** https://aistudio.google.com/app/apikey
-
-**model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
-
-
-== claude
-
-**API接口地址** `https://api.anthropic.com`
-
-**API Key** https://console.anthropic.com/
-
-**model**  https://docs.anthropic.com/en/docs/about-claude/models
-
-== cohere
-
-**API Key** https://dashboard.cohere.com/api-keys
-
-**model** https://docs.cohere.com/docs/models
 
 :::

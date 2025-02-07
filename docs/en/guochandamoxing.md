@@ -1,45 +1,63 @@
-# Large Model API for Translation
+# Large Model API Translation
 
-::: details How to use multiple ChatGPT-compatible interfaces (or dedicated interfaces) simultaneously?
-If you simply have multiple different keys and want to poll them, just separate them with a `|`.
+::: details Using Multiple Large Model Interfaces Simultaneously?
+If you only have multiple different keys and want to poll them, simply separate them with `|`.
 
-However, sometimes you want to use multiple different API addresses/prompts/models/parameters at the same time to compare translation effects. The method is:
+However, sometimes you may want to use multiple different API interface addresses, prompts, models, or parameters simultaneously to compare translation results. Here's how:
 
-Click the "+" button at the bottom right
-![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
-A window will pop up, select ChatGPT-compatible interface (or dedicated interface), and give it a name. This will copy the current ChatGPT-compatible interface (or dedicated interface) settings and API.
-![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
-Activate the copied interface and you can make individual settings. The copied interface can run with the original interface, allowing you to use multiple different settings.
-![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
+1. Click the "+" button at the bottom right.
+   ![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
+2. A window will pop up. Select the general large model interface and give it a name. This will duplicate the current settings and API of the general large model interface.
+   ![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
+3. Activate the duplicated interface and configure it separately. The duplicated interface can run alongside the original one, allowing you to use multiple different settings simultaneously.
+   ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
+:::
+
+::: info
+Most **API interface addresses** can be selected from the dropdown list, but some may be missing. For other interfaces not listed, please refer to their documentation to fill in the details.
 :::
 
 ::: tip
-**model** can be selected from a dropdown list, and some interfaces can dynamically fetch the model list based on the **API Interface Address** and **API Key**. After filling in these two fields, click the refresh button next to **model** to obtain the available model list. 
+**Model** can be selected from the dropdown list, and some interfaces can dynamically fetch the model list based on the **API interface address** and **API Key**. After filling in these two fields, click the refresh button next to **model** to get the available model list.
 
-If the platform does not support the model retrieval interface and the default list does not include the required model, please refer to the official API documentation to manually enter the model.
-
+If the platform does not support fetching models via an API and the default list does not include the model you need, please refer to the official documentation of the interface to manually fill in the model.
 :::
 
-## ChatGPT-Compatible Interfaces
-
-
-::: info
-Most large model platforms use ChatGPT-compatible interfaces.
-
-Since there are so many platforms, it's impossible to list them all. For other interfaces not listed, please refer to their documentation to fill in the corresponding parameters.
-:::
-
-#### Foreign Large Model Interfaces
+### Foreign Large Model Interfaces
 
 ::: tabs
 
 == OpenAI
 
-**API Interface Address** `https://api.openai.com/v1` 
+**API Interface Address** `https://api.openai.com/v1`
 
 **API Key** https://platform.openai.com/api-keys
 
-**model** https://platform.openai.com/docs/models
+**Model** https://platform.openai.com/docs/models
+
+== Gemini
+
+**API Interface Address** `https://generativelanguage.googleapis.com`
+
+**API Key** https://aistudio.google.com/app/apikey
+
+**Model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
+
+== Claude
+
+**API Interface Address** `https://api.anthropic.com/v1/messages`
+
+**API Key** https://console.anthropic.com/
+
+**Model** https://docs.anthropic.com/en/docs/about-claude/models
+
+== Cohere
+
+**API Interface Address** `https://api.cohere.com/v2/chat`
+
+**API Key** https://dashboard.cohere.com/api-keys
+
+**Model** https://docs.cohere.com/docs/models
 
 == x.ai
 
@@ -47,123 +65,123 @@ Since there are so many platforms, it's impossible to list them all. For other i
 
 **API Key** https://console.x.ai/
 
-== groq
+== Groq
 
-**API Interface Address** `https://api.groq.com/openai/v1/chat/completions` 
+**API Interface Address** `https://api.groq.com/openai/v1/chat/completions`
 
-**API Key** https://console.groq.com/keys 
+**API Key** https://console.groq.com/keys
 
-**model** https://console.groq.com/docs/models  Fill in `Model ID`
+**Model** https://console.groq.com/docs/models Fill in the `Model ID`
 
 == OpenRouter
 
-**API Interface Address** `https://openrouter.ai/api/v1/chat/completions` 
+**API Interface Address** `https://openrouter.ai/api/v1/chat/completions`
 
-**API Key** https://openrouter.ai/settings/keys 
+**API Key** https://openrouter.ai/settings/keys
 
-**model** https://openrouter.ai/docs/models 
+**Model** https://openrouter.ai/docs/models
 
 == Mistral AI
 
-**API Interface Address** `https://api.mistral.ai/v1/chat/completions` 
+**API Interface Address** `https://api.mistral.ai/v1/chat/completions`
 
-**API Key** https://console.mistral.ai/api-keys/ 
+**API Key** https://console.mistral.ai/api-keys/
 
-**model** https://docs.mistral.ai/getting-started/models/ 
+**Model** https://docs.mistral.ai/getting-started/models/
 
 == Azure
 
-**API Endpoint URL** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
+**API Interface Address** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
 
 Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
-== DeepInfra
+== Deepinfra
 
-**API Endpoint** `https://api.deepinfra.com/v1/openai/chat/completions`
+**API Interface Address** `https://api.deepinfra.com/v1/openai/chat/completions`
 
 **API Key** https://deepinfra.com/dash/api_keys
 
 == Cerebras
 
-**API Endpoint** `https://api.cerebras.ai/v1/chat/completions`
+**API Interface Address** `https://api.cerebras.ai/v1/chat/completions`
 
-**Model** Supports `llama3.1-8b` `llama3.1-70b` `llama-3.3-70b`
+**Model** Supports `llama3.1-8b`, `llama3.1-70b`, `llama-3.3-70b`
 
-**API Key** After selecting a model and sending a message on [https://inference.cerebras.ai](https://inference.cerebras.ai/), you can intercept the request and check the current `Headers` -> `Request Headers` -> `Authorization` value, which is `Bearer demo-xxxxhahaha`, where `demo-xxxxhahaha` is the API Key.
+**API Key** Go to [https://inference.cerebras.ai](https://inference.cerebras.ai/), select a model, send a message, and then capture the request. Check the `Headers` -> `Request Headers` -> `Authorization` value, which will be `Bearer demo-xxxxhahaha`. The `demo-xxxxhahaha` part is the API Key.
 
-![Cerebras API Key](https://image.lunatranslator.org/zh/damoxing/cerebras.png)
+![img](https://image.lunatranslator.org/zh/damoxing/cerebras.png)
 
 :::
 
-#### Domestic Large Model Interfaces
+### Domestic Large Model Interfaces
 
 ::: tabs
 
 == DeepSeek
 
-**API Interface Address** `https://api.deepseek.com` 
+**API Interface Address** `https://api.deepseek.com`
 
-**API Key** https://platform.deepseek.com/api_keys 
+**API Key** https://platform.deepseek.com/api_keys
 
-**model** https://platform.deepseek.com/api-docs/zh-cn/pricing 
+**Model** https://platform.deepseek.com/api-docs/zh-cn/pricing
 
 == Alibaba Cloud Bailian Large Model
 
-**API Interface Address** `https://dashscope.aliyuncs.com/compatible-mode/v1` 
+**API Interface Address** `https://dashscope.aliyuncs.com/compatible-mode/v1`
 
-**API Key** https://bailian.console.aliyun.com/?apiKey=1#/api-key 
+**API Key** https://bailian.console.aliyun.com/?apiKey=1#/api-key
 
-**model** https://help.aliyun.com/zh/model-studio/getting-started/models
+**Model** https://help.aliyun.com/zh/model-studio/getting-started/models
 
-== ByteDance DouBao Large Model
+== ByteDance Doubao Large Model
 
-**API Interface Address** `https://ark.cn-beijing.volces.com/api/v3` 
+**API Interface Address** `https://ark.cn-beijing.volces.com/api/v3`
 
-**API Key** [Create API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D) to obtain 
+**API Key** [Create API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D) to obtain.
 
-**model** [Create Inference Access Point](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10), fill in **Access Point** instead of **Model** 
+**Model** After [creating an inference endpoint](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10), fill in the **endpoint** instead of the **model**.
 
-![img](https://image.lunatranslator.org/zh/damoxing/doubao.png) 
+![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
 
 == Moonshot AI
 
-**API Interface Address** `https://api.moonshot.cn` 
+**API Interface Address** `https://api.moonshot.cn`
 
-**API Key** https://platform.moonshot.cn/console/api-keys 
+**API Key** https://platform.moonshot.cn/console/api-keys
 
-**model** https://platform.moonshot.cn/docs/intro 
+**Model** https://platform.moonshot.cn/docs/intro
 
 == Zhipu AI
 
-**API Interface Address** `https://open.bigmodel.cn/api/paas/v4/chat/completions` 
+**API Interface Address** `https://open.bigmodel.cn/api/paas/v4/chat/completions`
 
-**API Key** https://bigmodel.cn/usercenter/apikeys 
+**API Key** https://bigmodel.cn/usercenter/apikeys
 
-**model** https://bigmodel.cn/dev/howuse/model 
+**Model** https://bigmodel.cn/dev/howuse/model
 
-== Lingyiwanwu
+== Lingyi Wanwu
 
-**API Interface Address** `https://api.lingyiwanwu.com` 
+**API Interface Address** `https://api.lingyiwanwu.com`
 
-**API Key** https://platform.lingyiwanwu.com/apikeys 
+**API Key** https://platform.lingyiwanwu.com/apikeys
 
-**model** https://platform.lingyiwanwu.com/docs/api-reference#list-models 
+**Model** https://platform.lingyiwanwu.com/docs/api-reference#list-models
 
 == SiliconFlow
 
-**API Interface Address** `https://api.siliconflow.cn` 
+**API Interface Address** `https://api.siliconflow.cn`
 
-**API Key** https://cloud-hk.siliconflow.cn/account/ak 
+**API Key** https://cloud-hk.siliconflow.cn/account/ak
 
-**model** https://docs.siliconflow.cn/docs/model-names 
+**Model** https://docs.siliconflow.cn/docs/model-names
 
 == iFlytek Spark Large Model
 
-**API Interface Address** `https://spark-api-open.xf-yun.com/v1` 
+**API Interface Address** `https://spark-api-open.xf-yun.com/v1`
 
-**API Key** Refer to the [official documentation](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B7%E6%B1%82%E6%B1%82%E8%AF%B7%E6%B1%82%E6%B1%82%E8%AF%B7%E6%B1%82) to obtain **APIKey** and **APISecret**, fill in according to the format of **APIKey:APISecret** 
+**API Key** Refer to the [official documentation](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E) to obtain the **APIKey** and **APISecret**, then fill in the format `APIKey:APISecret`.
 
-**model** https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-2-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0 
+**Model** https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-2-%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0
 
 == Tencent Hunyuan Large Model
 
@@ -171,7 +189,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **API Key** Refer to the [official documentation](https://cloud.tencent.com/document/product/1729/111008)
 
-**model** https://cloud.tencent.com/document/product/1729/97731
+**Model** https://cloud.tencent.com/document/product/1729/97731
 
 == Baidu Qianfan Large Model
 
@@ -179,10 +197,10 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **API Key** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps
 
-**model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
+**Model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
 
 >[!WARNING]
->For the **API Key**, please use the Access Key and Secret Key from Baidu AI Cloud IAM to generate a Bearer Token, which should then be entered as the **API Key**, or directly enter both in the format `{Access Key}:{Secret Key}` in the **API Key** field. Note that this is different from the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder; they are not interchangeable.
+>**API Key** should be generated using Baidu Intelligent Cloud IAM's Access Key and Secret Key to create the BearerToken for the interface, or directly fill in the format `{Access Key}:{Secret Key}` in the **API Key** field. Note that this is not the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder; they are not interchangeable.
 
 == MiniMax
 
@@ -190,40 +208,6 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
 
-**model** https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4
-
-:::
-
-## Dedicated Interfaces for Specific Platforms
-
-::: info
-Some large model platforms are not fully compatible with the ChatGPT interface, please fill in the parameters to use in the dedicated interface.
-:::
-
-::: tabs
-
-== gemini
-
-<a id="gemini"></a>
-
-**API Interface Address** `https://generativelanguage.googleapis.com`
-
-**API Key** https://aistudio.google.com/app/apikey 
-
-**model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models 
-
-== claude
-
-**API Interface Address** `https://api.anthropic.com` 
-
-**API Key** https://console.anthropic.com/ 
-
-**model**  https://docs.anthropic.com/en/docs/about-claude/models 
-
-== cohere
-
-**API Key** https://dashboard.cohere.com/api-keys 
-
-**model** https://docs.cohere.com/docs/models 
+**Model** https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4
 
 :::

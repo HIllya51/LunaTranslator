@@ -1,26 +1,16 @@
 from tts.basettsclass import TTSbase, SpeechParam
-from myutils.utils import urlpathjoin, createurl
+from myutils.utils import createurl, common_list_models
 from myutils.proxy import getproxy
 import requests
 
 
 def list_models(typename, regist):
-    resp = requests.get(
-        urlpathjoin(
-            createurl(regist["API接口地址"]().strip(), checkend="/audio/speech")[
-                : -len("audio/speech")
-            ],
-            "models",
-        ),
-        headers={
-            "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()
-        },
-        proxies=getproxy(("reader", typename)),
+    return common_list_models(
+        getproxy(("reader", typename)),
+        regist["API接口地址"](),
+        regist["SECRET_KEY"]().split("|")[0],
+        checkend="/audio/speech",
     )
-    try:
-        return sorted([_["id"] for _ in resp.json()["data"]])
-    except:
-        raise Exception(resp)
 
 
 class TTS(TTSbase):

@@ -1,25 +1,16 @@
 from ocrengines.baseocrclass import baseocr
-import base64, requests
+import base64
 from language import Languages
-from myutils.utils import createurl, urlpathjoin
+from myutils.utils import createurl, common_list_models, common_parse_normal_response
 from myutils.proxy import getproxy
 
 
 def list_models(typename, regist):
-    resp = requests.get(
-        urlpathjoin(
-            createurl(regist["apiurl"]().strip())[: -len("chat/completions")],
-            "models",
-        ),
-        headers={
-            "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()
-        },
-        proxies=getproxy(("ocr", typename)),
+    return common_list_models(
+        getproxy(("ocr", typename)),
+        regist["apiurl"](),
+        regist["SECRET_KEY"]().split("|")[0],
     )
-    try:
-        return sorted([_["id"] for _ in resp.json()["data"]])
-    except:
-        raise Exception(resp)
 
 
 class OCR(baseocr):
@@ -39,21 +30,43 @@ class OCR(baseocr):
             # stop=None,
             top_p=self.config["top_p"],
             temperature=temperature,
-            frequency_penalty=self.config["frequency_penalty"],
         )
+        if ("api.mistral.ai" not in self.config["apiurl"]) and (
+            "generativelanguage.googleapis.com/v1beta/openai/"
+            not in self.config["apiurl"]
+        ):
+            data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         return data
 
     def createheaders(self):
         return {"Authorization": "Bearer " + self.config["SECRET_KEY"]}
 
-    def ocr(self, imagebinary):
+    def ocr_gemini(self, prompt, base64_image):
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": prompt},
+                        {
+                            "inlineData": {
+                                "mimeType": "image/png",
+                                "data": base64_image,
+                            }
+                        },
+                    ]
+                }
+            ]
+        }
+        response = self.proxysession.post(
+            "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(
+                self.config["model"], self.config["SECRET_KEY"]
+            ),
+            json=payload,
+        )
+        return response
 
-        if self.config["use_custom_prompt"]:
-            prompt = self.config["custom_prompt"]
-        else:
-            prompt = "Recognize the {} text in the picture.".format(self.srclang)
+    def ocr_normal(self, prompt, base64_image):
 
-        base64_image = base64.b64encode(imagebinary).decode("utf-8")
         message = [
             {
                 "role": "user",
@@ -71,19 +84,23 @@ class OCR(baseocr):
         ]
 
         response = self.proxysession.post(
-            self.createurl(),
+            createurl(self.config["apiurl"]),
             headers=self.createheaders(),
             json=self.createdata(message),
         )
-        try:
-            message = (
-                response.json()["choices"][0]["message"]["content"]
-                .replace("\n\n", "\n")
-                .strip()
-            )
-            return message
-        except:
-            raise Exception(response)
+        return response
 
-    def createurl(self):
-        return createurl(self.config["apiurl"])
+    def ocr(self, imagebinary):
+
+        if self.config["use_custom_prompt"]:
+            prompt = self.config["custom_prompt"]
+        else:
+            prompt = "Recognize the {} text in the picture.".format(self.srclang)
+
+        base64_image = base64.b64encode(imagebinary).decode("utf-8")
+
+        if self.config["apiurl"] == "https://generativelanguage.googleapis.com":
+            response = self.ocr_gemini(prompt, base64_image)
+        else:
+            response = self.ocr_normal(prompt, base64_image)
+        return common_parse_normal_response(response, self.config["apiurl"])

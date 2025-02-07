@@ -1,25 +1,15 @@
-import requests
-from myutils.utils import urlpathjoin, createurl
+from myutils.utils import createurl, common_list_models, common_parse_normal_response
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 from translator.gptcommon import qianfanIAM
 
 
 def list_models(typename, regist):
-    resp = requests.get(
-        urlpathjoin(
-            createurl(regist["API接口地址"]().strip())[: -len("chat/completions")],
-            "models",
-        ),
-        headers={
-            "Authorization": "Bearer " + regist["SECRET_KEY"]().split("|")[0].strip()
-        },
-        proxies=getproxy(("cishu", typename)),
+    return common_list_models(
+        getproxy(("cishu", typename)),
+        regist["API接口地址"](),
+        regist["SECRET_KEY"]().split("|")[0],
     )
-    try:
-        return sorted([_["id"] for _ in resp.json()["data"]])
-    except:
-        raise Exception(resp)
 
 
 class chatgptlike(cishubase):
@@ -46,11 +36,8 @@ class chatgptlike(cishubase):
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         return data
 
-    def search(self, word):
-        query = self._gptlike_createquery(
-            word, "use_user_user_prompt", "user_user_prompt"
-        )
-        sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
+    def search_1(self, sysprompt, query):
+
         message = [{"role": "system", "content": sysprompt}]
         message.append({"role": "user", "content": query})
         response = self.proxysession.post(
@@ -58,7 +45,22 @@ class chatgptlike(cishubase):
             headers=self.createheaders(),
             json=self.createdata(message),
         )
-        return self.markdown_to_html(self.commonparseresponse(response))
+        return response
+
+    def search(self, word):
+        query = self._gptlike_createquery(
+            word, "use_user_user_prompt", "user_user_prompt"
+        )
+        sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
+        if self.config["API接口地址"] == "https://generativelanguage.googleapis.com":
+            resp = self.query_gemini(sysprompt, query)
+        if self.config["API接口地址"] == "https://api.anthropic.com/v1/messages":
+            resp = self.query_cld(sysprompt, query)
+        else:
+            resp = self.search_1(sysprompt, query)
+        return self.markdown_to_html(
+            common_parse_normal_response(resp, self.config["API接口地址"])
+        )
 
     def createheaders(self):
         _ = {}
@@ -81,13 +83,76 @@ class chatgptlike(cishubase):
             return self.apiurl
         return createurl(self.apiurl)
 
-    def commonparseresponse(self, response: requests.Response):
-        try:
-            message = (
-                response.json()["choices"][0]["message"]["content"]
-                .replace("\n\n", "\n")
-                .strip()
-            )
-        except:
-            raise Exception(response)
-        return message
+    def query_cld(self, sysprompt, query):
+        temperature = self.config["Temperature"]
+
+        message = []
+        message.append({"role": "user", "content": query})
+        headers = {
+            "anthropic-version": "2023-06-01",
+            "accept": "application/json",
+            "content-type": "application/json",
+            "X-Api-Key": self.config["SECRET_KEY"],
+        }
+        data = dict(
+            model=self.config["model"],
+            messages=message,
+            system=sysprompt,
+            max_tokens=self.config["max_tokens"],
+            temperature=temperature,
+        )
+        response = self.proxysession.post(
+            "https://api.anthropic.com/v1/messages",
+            headers=headers,
+            json=data,
+        )
+        return response
+
+    def query_gemini(self, sysprompt, query):
+        safety = {
+            "safety_settings": [
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_NONE",
+                },
+            ]
+        }
+        gen_config = {
+            "generationConfig": {
+                "stopSequences": [" \n"],
+                "temperature": self.config["Temperature"],
+            }
+        }
+        sys_message = {"systemInstruction": {"parts": {"text": sysprompt}}}
+        contents = {"contents": [{"role": "user", "parts": [{"text": query}]}]}
+
+        payload = {}
+        payload.update(contents)
+        payload.update(safety)
+        payload.update(sys_message)
+        payload.update(gen_config)
+
+        # Set up the request headers and URL
+        headers = {"Content-Type": "application/json"}
+        # by default https://generativelanguage.googleapis.com/v1
+        # Send the request
+        response = self.proxysession.post(
+            "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(
+                self.config["model"], self.config["SECRET_KEY"]
+            ),
+            headers=headers,
+            json=payload,
+        )
+        return response

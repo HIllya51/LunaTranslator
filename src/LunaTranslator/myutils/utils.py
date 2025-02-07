@@ -814,11 +814,101 @@ def urlpathjoin(*argc):
 
 
 def createurl(url: str, checkend="/chat/completions"):
+    if url == "https://api.cohere.com/v2/chat":
+        return url
     if url.endswith(checkend):
         pass
     else:
+        ex = "/chat/completions"
+        if url.endswith(ex):
+            url = url[: -len(ex)]
         url = urlpathjoin(checkv1(url), checkend)
     return url
+
+
+def parsecoheremodellist(proxies, apikey):
+    js = requests.get(
+        "https://api.cohere.com/v1/models",
+        headers={"Authorization": "Bearer {}".format(apikey.strip())},
+        proxies=proxies,
+    )
+    try:
+        models = js.json()["models"]
+    except:
+        raise Exception(js)
+    mm = []
+    for m in models:
+        endpoints = m["endpoints"]
+        if "chat" not in endpoints:
+            continue
+        mm.append(m["name"])
+    return sorted(mm)
+
+
+def parsegeminimodellist(proxies, apikey):
+    js = requests.get(
+        "https://generativelanguage.googleapis.com/v1beta/models",
+        params={"key": apikey},
+        proxies=proxies,
+    )
+    try:
+        models = js.json()["models"]
+    except:
+        raise Exception(js)
+    mm = []
+    for m in models:
+        name: str = m["name"]
+        supportedGenerationMethods: list = m["supportedGenerationMethods"]
+        if "generateContent" not in supportedGenerationMethods:
+            continue
+        if name.startswith("models/"):
+            name = name[7:]
+        mm.append(name)
+    return sorted(mm)
+
+
+def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/completions"):
+    if apiurl == "https://api.anthropic.com/v1/messages":
+        return [
+            "claude-3-5-sonnet-latest",
+            "claude-3-5-sonnet-20241022",
+            "claude-3-5-sonnet-20240620",
+            "claude-3-opus-latest",
+            "claude-3-opus-20240229",
+            "claude-3-sonnet-20240229",
+            "claude-3-haiku-20240307",
+            "claude-2.1",
+            "claude-2.0",
+            "claude-instant-1.2",
+        ]
+    elif apiurl == "https://api.cohere.com/v2/chat":
+        return parsecoheremodellist(proxies, apikey)
+    elif apiurl == "https://generativelanguage.googleapis.com":
+        return parsegeminimodellist(proxies, apikey)
+    params = dict(headers={"Authorization": "Bearer {}".format(apikey.strip())})
+    modellink = urlpathjoin(
+        createurl(apiurl.strip(), checkend=checkend)[: -len(checkend) + 1],
+        "models",
+    )
+    resp = requests.get(modellink, proxies=proxies, **params)
+    try:
+        return sorted([_["id"] for _ in resp.json()["data"]])
+    except:
+        raise Exception(resp)
+
+
+def common_parse_normal_response(response: requests.Response, apiurl: None):
+    try:
+        if apiurl == "https://api.cohere.com/v2/chat":
+            return response.json()["message"]["content"][0]["text"]
+        elif apiurl == "https://api.anthropic.com/v1/messages":
+            return response.json()["content"][0]["text"]
+        elif apiurl == "https://generativelanguage.googleapis.com":
+            return response.json()["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            return response.json()["choices"][0]["message"]["content"]
+    except:
+        raise Exception(response)
 
 
 def createenglishlangmap():
