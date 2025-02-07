@@ -142,6 +142,10 @@ class AttachProcessDialog(saveposwindow):
                 icon = self.iconcache[pexe]
             else:
                 icon = getExeIcon(pexe)
+                if icon.isNull():
+                    img = QPixmap(QSize(100, 100))
+                    img.fill(Qt.GlobalColor.transparent)
+                    icon = QIcon(img)
                 self.iconcache[pexe] = icon
             item = QStandardItem(icon, pexe)
             item.setEditable(False)
