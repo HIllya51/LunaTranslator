@@ -435,8 +435,15 @@
             LUNAJSObject.calllunaMouseRelease(e.button, e.clientX, e.clientY)
     });
     document.addEventListener('mouseleave', function (e) {
-        if (window.LUNAJSObject)
+        if (window.LUNAJSObject) {
             LUNAJSObject.calllunaMouseRelease(e.button, e.clientX, e.clientY)
+            LUNAJSObject.calllunaLeave()
+        }
+    });
+    document.addEventListener('mouseenter', function (e) {
+        if (window.LUNAJSObject) {
+            LUNAJSObject.calllunaEnter()
+        }
     });
     function switchcursor(cursor) {
         document.getElementById('luna_atback_div').style.cursor = cursor

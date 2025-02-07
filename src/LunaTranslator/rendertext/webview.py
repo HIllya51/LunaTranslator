@@ -49,6 +49,8 @@ class TextBrowser(WebviewWidget, dataget):
         self.bind("calllunaMousePress", self.calllunaMousePress)
         self.bind("calllunaMouseRelease", self.calllunaMouseRelease)
         self.bind("calllunaheightchange", self.calllunaheightchange)
+        self.bind("calllunaEnter", self.calllunaEnter)
+        self.bind("calllunaLeave", self.calllunaLeave)
         self.bind("calllunaloadready", self.resetflags)
         self.set_zoom(globalconfig["ZoomFactor2"])
         self.on_ZoomFactorChanged.connect(
@@ -230,6 +232,12 @@ class TextBrowser(WebviewWidget, dataget):
             Qt.KeyboardModifier.NoModifier,
         )
         QApplication.sendEvent(self, event)
+
+    def calllunaEnter(self):
+        QApplication.sendEvent(self.window(), QEvent(QEvent.Type.Enter))
+
+    def calllunaLeave(self):
+        QApplication.sendEvent(self.window(), QEvent(QEvent.Type.Leave))
 
     def calllunaMouseRelease(self, btn, x, y):
         pos = self.parsexyaspos(x, y)
