@@ -186,6 +186,14 @@
 >[!WARNING]
 > **API Key**は、百度智能云IAMのAccess Key、Secret Keyを使用してインターフェースのBearerTokenを生成し、**API Key**として入力してください。または、`{Access Key}:{Secret Key}`の形式で両方を一緒に**API Key**に入力してください。注意：これは千帆ModelBuilderの旧版v1バージョンのAPI Key、Secret Keyではなく、互換性がありません。
 
+== MiniMax
+
+**APIインターフェースアドレス** `https://api.minimax.chat/v1`
+
+**API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
+
+**model** https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4
+
 :::
 
 ## 特定プラットフォームの専用インターフェース

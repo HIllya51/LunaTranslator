@@ -74,12 +74,12 @@
 			"usewhich": 0,
 			"chromepath": "",
 			"debugport": 9222,
-            "target_url": "https://duckduckgo.com/?t=h_&q=hi&ia=chat",
+			"target_url": "https://duckduckgo.com/?t=h_&q=hi&ia=chat",
 			"request_method": 0,
-            "checkneturlfunction": "url.includes(\"v1/chat\")",
-            "extracttextfunction": "thistext += chunk.message?chunk.message:\"\"",
-            "textarea_selector": "textarea",
-            "button_selector": "button[type=\"submit\"]",
+			"checkneturlfunction": "url.includes(\"v1/chat\")",
+			"extracttextfunction": "thistext += chunk.message?chunk.message:\"\"",
+			"textarea_selector": "textarea",
+			"button_selector": "button[type=\"submit\"]",
 			"S": "",
 			"S2": "",
 			"usingstream": true,
@@ -520,7 +520,86 @@
 				"rank": 5.12
 			},
 			"API接口地址": {
-				"rank": 0
+				"rank": 0,
+				"type": "listedit_with_name",
+				"list": [
+					{
+						"vis": "OpenAI",
+						"value": "https://api.openai.com"
+					},
+					{
+						"vis": "DeepSeek",
+						"value": "https://api.deepseek.com"
+					},
+					{
+						"vis": "阿里云百炼大模型",
+						"value": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+					},
+					{
+						"vis": "字节跳动豆包大模型",
+						"value": "https://ark.cn-beijing.volces.com/api/v3"
+					},
+					{
+						"vis": "腾讯混元大模型",
+						"value": "https://api.hunyuan.cloud.tencent.com/v1"
+					},
+					{
+						"vis": "硅基流动",
+						"value": "https://api.siliconflow.cn"
+					},
+					{
+						"vis": "OpenRouter",
+						"value": "https://openrouter.ai/api/v1/chat/completions"
+					},
+					{
+						"vis": "groq",
+						"value": "https://api.groq.com/openai/v1/chat/completions"
+					},
+					{
+						"vis": "Mistral AI",
+						"value": "https://api.mistral.ai/v1/chat/completions"
+					},
+					{
+						"vis": "x.ai",
+						"value": "https://api.x.ai/"
+					},
+					{
+						"vis": "月之暗面",
+						"value": "https://api.moonshot.cn"
+					},
+					{
+						"vis": "智谱AI",
+						"value": "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+					},
+					{
+						"vis": "讯飞星火大模型",
+						"value": "https://spark-api-open.xf-yun.com/v1"
+					},
+					{
+						"vis": "百度千帆大模型",
+						"value": "https://qianfan.baidubce.com/v2"
+					},
+					{
+						"vis": "零一万物",
+						"value": "https://api.lingyiwanwu.com"
+					},
+					{
+						"vis": "cerebras",
+						"value": "https://api.cerebras.ai/v1/chat/completions"
+					},
+					{
+						"vis": "deepinfra",
+						"value": "https://api.deepinfra.com/v1/openai/chat/completions"
+					},
+					{
+						"vis": "Poe",
+						"value": "http://api.poe.com/v1"
+					},
+					{
+						"vis": "MiniMax",
+						"value": "https://api.minimax.chat/v1"
+					}
+				]
 			},
 			"SECRET_KEY": {
 				"rank": 1,

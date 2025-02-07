@@ -570,6 +570,24 @@ class autoinitdialog(LDialog):
                     lineW.setCurrentIndex(dd.get(key, 0))
                     regist[key] = lineW.currentIndex
                 cachecombo[key] = lineW
+            elif line["type"] == "listedit_with_name":
+                line1 = QLineEdit()
+                lineW = QHBoxLayout()
+                combo = SuperCombo()
+                combo.setLineEdit(line1)
+                vis = [_["vis"] + "_({})".format(_["value"]) for _ in line["list"]]
+                value = [_["value"] for _ in line["list"]]
+
+                def __(combo: SuperCombo, index):
+                    combo.setCurrentText(combo.getIndexData(index))
+
+                combo.currentIndexChanged.connect(functools.partial(__, combo))
+                combo.addItems(vis, value)
+                if dd[key] in value:
+                    combo.setCurrentIndex(value.index(dd[key]))
+                combo.setCurrentText(dd[key])
+                regist[key] = combo.currentText
+                lineW.addWidget(combo)
             elif line["type"] == "lineedit_or_combo":
                 line1 = QLineEdit()
                 lineW = QHBoxLayout()

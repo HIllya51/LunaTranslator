@@ -184,6 +184,14 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 >[!WARNING]
 >For the **API Key**, please use the Access Key and Secret Key from Baidu AI Cloud IAM to generate a Bearer Token, which should then be entered as the **API Key**, or directly enter both in the format `{Access Key}:{Secret Key}` in the **API Key** field. Note that this is different from the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder; they are not interchangeable.
 
+== MiniMax
+
+**API Interface Address** `https://api.minimax.chat/v1`
+
+**API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
+
+**model** https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4
+
 :::
 
 ## Dedicated Interfaces for Specific Platforms

@@ -183,6 +183,14 @@
 >[!WARNING]
 >**API Key**请使用百度智能云IAM的Access Key、Secret Key来生成接口的BearerToken后作为**API Key**填入，或者按照`{Access Key}:{Secret Key}`的格式直接将两者一起填入**API Key**中。注意，不是千帆ModelBuilder的旧版v1版本接口的API Key、Secret Key，两者不能通用。
 
+== MiniMax
+
+**API接口地址** `https://api.minimax.chat/v1`
+
+**API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
+
+**model** https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4
+
 :::
 
 ## 特定平台的专用接口
