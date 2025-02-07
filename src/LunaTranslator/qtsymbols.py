@@ -12,10 +12,13 @@ except:
     #print_exc()
     from PyQt6 import QtSvg
     from PyQt6.QtWidgets import QFrame,QListView,QCheckBox,QAbstractItemView,QTextEdit,QTableView,QHeaderView,QColorDialog,QSpinBox,QDoubleSpinBox,QComboBox,QDialogButtonBox,QMainWindow,QMessageBox,QDialog,QGridLayout,QTextBrowser,QGraphicsDropShadowEffect,QWidget,QScrollArea,QApplication,QPushButton,QSystemTrayIcon,QPlainTextEdit,QMenu,QFileDialog,QKeySequenceEdit,QLabel,QSpacerItem,QWidgetItem,QLayout,QTextBrowser,QLineEdit,QFormLayout,QSizePolicy,QTabWidget,QTabBar,QSplitter,QListWidget,QListWidgetItem,QHBoxLayout,QVBoxLayout,QSizeGrip,QFontComboBox,QProgressBar,QRadioButton,QButtonGroup,QSlider,QToolTip,QGroupBox,QGraphicsOpacityEffect,QStackedWidget,QTreeView,QToolButton,QAbstractSpinBox,QStyledItemDelegate,QStyleOptionViewItem,QFontDialog
-    from PyQt6.QtGui import QIconEngine,QIntValidator,QAction,QStandardItem,QStandardItemModel,QImageWriter,QIcon,QTextCharFormat,QTextBlockFormat,QResizeEvent,QTextCursor,QFontMetricsF,QMouseEvent,QImage,QPainter,QRegion,QCloseEvent,QFontDatabase,QKeySequence,QPixmap,QCursor,QColor,QFont,QPen,QPainterPath,QBrush,QFontMetrics,QShowEvent,QWheelEvent,QPaintEvent,QTextLayout, QTextOption,QKeyEvent,QInputMethodEvent,QValidator,QDragEnterEvent,QDropEvent,QTransform,QRegExpValidator
-    from PyQt6.QtCore import QObject,pyqtSignal,Qt,QSize,QByteArray,QBuffer,QPointF,QPoint,QRect,QEvent,QModelIndex,QTimer,QRectF,QVariantAnimation,QUrl,QPropertyAnimation,QLocale,QMargins,QSignalBlocker,QRegExp,QSizeF
+    from PyQt6.QtGui import QIconEngine,QIntValidator,QAction,QStandardItem,QStandardItemModel,QImageWriter,QIcon,QTextCharFormat,QTextBlockFormat,QResizeEvent,QTextCursor,QFontMetricsF,QMouseEvent,QImage,QPainter,QRegion,QCloseEvent,QFontDatabase,QKeySequence,QPixmap,QCursor,QColor,QFont,QPen,QPainterPath,QBrush,QFontMetrics,QShowEvent,QWheelEvent,QPaintEvent,QTextLayout, QTextOption,QKeyEvent,QInputMethodEvent,QValidator,QDragEnterEvent,QDropEvent,QTransform,QRegularExpressionValidator 
+    from PyQt6.QtCore import QObject,pyqtSignal,Qt,QSize,QByteArray,QBuffer,QPointF,QPoint,QRect,QEvent,QModelIndex,QTimer,QRectF,QVariantAnimation,QUrl,QPropertyAnimation,QLocale,QMargins,QSignalBlocker,QRegularExpression,QSizeF
     isqt5 = False
 
     class LineHeightTypes:
         LineDistanceHeight=QTextBlockFormat.LineHeightTypes.LineDistanceHeight.value
         FixedHeight=QTextBlockFormat.LineHeightTypes.FixedHeight.value
+
+    QRegExp=QRegularExpression
+    QRegExpValidator=QRegularExpressionValidator
