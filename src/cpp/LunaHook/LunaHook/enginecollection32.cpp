@@ -150,6 +150,7 @@
 #include "engine32/solfasys.h"
 #include "engine32/Anim.h"
 #include "engine32/Nitroplus2.h"
+#include "engine32/MixwillSoft.h"
 #include "engine32/Reallive.h"
 #include "engine32/jukujojidai.h"
 #include "engine32/Siglus.h"
@@ -436,5 +437,6 @@ std::vector<ENGINE *> check_engines()
         new FrontWing2,
         new RScript,
         new TYPEMOON,
-        new TAKUYO};
+        new TAKUYO,
+        new MixwillSoft};
 }
