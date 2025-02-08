@@ -56,6 +56,8 @@ static CComPtr<AudioSessionNotification> notification;
 
 static HRESULT GetSessionForPid(DWORD pid, CComPtr<IAudioSessionControl2> &sess2)
 {
+    if (!sessionManager)
+        return E_FAIL;
     CComPtr<IAudioSessionEnumerator> pAudioSessionEnumerator;
     CHECK_FAILURE(sessionManager->GetSessionEnumerator(&pAudioSessionEnumerator));
 
