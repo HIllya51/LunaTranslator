@@ -66,6 +66,12 @@ class mecab(basehira):
         mecabpath = self.config["path"]
         self.kks = mecabwrap(mecabpath)
 
+    def maybeenglish(self, field: str):
+        _ = field.split("-")
+        if len(_) == 2:
+            if isascii(_[1]):
+                return _[1]
+
     def parse(self, text):
         start = 0
         result = []
@@ -75,16 +81,28 @@ class mecab(basehira):
             pos1 = fields[0]
             if len(fields) == 26:
                 kana = fields[17]
-                origorig = fields[7]
+                origorig = fields[10]
+                eng = self.maybeenglish(fields[7])
+                if eng:
+                    kana = eng
             elif len(fields) == 29:
                 kana = fields[20]
-                origorig = fields[7]
+                origorig = fields[10]
+                eng = self.maybeenglish(fields[7])
+                if eng:
+                    kana = eng
             elif len(fields) == 17:
                 kana = fields[9]
                 origorig = fields[7]
+                eng = self.maybeenglish(origorig)
+                if eng:
+                    kana = eng
             elif len(fields) == 9:
                 kana = fields[8]
                 origorig = fields[6]
+                eng = self.maybeenglish(origorig)
+                if eng:
+                    kana = eng
             elif len(fields) == 6:  # 英文
                 kana = origorig = node
             l = 0
@@ -93,25 +111,12 @@ class mecab(basehira):
                 l += 1
             orig = text[start : start + l]
             start += l
-            hira = kana  # .translate(self.h2k)
 
-            if hira == "*":
-                hira = ""
-            # print(node.feature)
-            if "-" in origorig:
-                try:
-                    maybe_english = origorig.split("-")[1]
-                    if isascii(maybe_english):
-                        # コンビニを --> コンビニ-convenience
-                        hira = origorig = maybe_english
-                    else:
-                        # 腰を引いて --> 引く-他動詞
-                        origorig = origorig.split("-")[0]
-                except:
-                    pass
+            if kana == "*":
+                kana = ""
 
             result.append(
-                {"orig": orig, "hira": hira, "cixing": pos1, "origorig": origorig}
+                {"orig": orig, "hira": kana, "cixing": pos1, "origorig": origorig}
             )
         extras = text[start:]
         if len(extras):

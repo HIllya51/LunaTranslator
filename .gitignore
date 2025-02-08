@@ -35,6 +35,7 @@ src/files/plugins
 src/files/themes
 src/run37.bat
 src/run3732.bat
+src/unidic-mecab-2.1.2_bin
 src/cpp/LunaHook/build
 src/cpp/LunaHook/builds
 src/cpp/builds
