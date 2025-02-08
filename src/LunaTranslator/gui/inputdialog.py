@@ -1,9 +1,9 @@
 from qtsymbols import *
 import functools, importlib
 from traceback import print_exc
-import qtawesome, os, gobject, requests
+import os, gobject, requests
 from myutils.commonbase import maybejson
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig, _TR, static_data
 from myutils.utils import makehtml
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import (
@@ -14,7 +14,6 @@ from gui.usefulwidget import (
     listediterline,
     TableViewW,
     getsimplepatheditor,
-    FocusSpin,
     SuperCombo,
     getsimplecombobox,
     getspinbox,
@@ -456,6 +455,32 @@ def autoinitdialog_items(dic):
     return items
 
 
+class SuperComboX(SuperCombo):
+    def paintEvent(self, e):
+        # https://stackoverflow.com/questions/45546155/hide-icon-from-the-label-of-qcombobox
+        painter = QStylePainter(self)
+        painter.setPen(self.palette().color(QPalette.ColorRole.Text))
+
+        opt = QStyleOptionComboBox()
+        self.initStyleOption(opt)
+
+        painter.drawComplexControl(QStyle.ComplexControl.CC_ComboBox, opt)
+
+        opt.currentIcon = QIcon()
+
+        if self.lineEdit():
+            le = self.lineEdit()
+            edit_rect = self.style().subControlRect(
+                QStyle.ComplexControl.CC_ComboBox,
+                opt,
+                QStyle.SubControl.SC_ComboBoxEditField,
+                self,
+            )
+            le.setGeometry(edit_rect)
+        else:
+            painter.drawControl(QStyle.ControlElement.CE_ComboBoxLabel, opt)
+
+
 @Singleton_close
 class autoinitdialog(LDialog):
     def __init__(
@@ -573,16 +598,20 @@ class autoinitdialog(LDialog):
             elif line["type"] == "listedit_with_name":
                 line1 = QLineEdit()
                 lineW = QHBoxLayout()
-                combo = SuperCombo()
+                combo = SuperComboX()
                 combo.setLineEdit(line1)
-                vis = [_["vis"] + "_({})".format(_["value"]) for _ in line["list"]]
-                value = [_["value"] for _ in line["list"]]
+                vis = [
+                    _["vis"] + "_({})".format(_["value"])
+                    for _ in static_data["API_URL_PRESETS"]
+                ]
+                value = [_["value"] for _ in static_data["API_URL_PRESETS"]]
+                icons = [QIcon(_["icon"]) for _ in static_data["API_URL_PRESETS"]]
 
                 def __(combo: SuperCombo, index):
                     combo.setCurrentText(combo.getIndexData(index))
 
-                combo.currentIndexChanged.connect(functools.partial(__, combo))
-                combo.addItems(vis, value)
+                combo.activated.connect(functools.partial(__, combo))
+                combo.addItems(vis, value, icons)
                 if dd[key] in value:
                     combo.setCurrentIndex(value.index(dd[key]))
                 combo.setCurrentText(dd[key])

@@ -171,13 +171,9 @@ https://www.docsumo.com/
 
 https://ocr.space/
 
-== Gemini
+== 大規模モデルの汎用インターフェース
 
-[翻訳](/ja/guochandamoxing.html#特定プラットフォームの専用インターフェース)と同じ
-
-== ChatGPT互換インターフェース
-
-[翻訳](/ja/guochandamoxing.html#chatgpt互換インターフェース)と同じ
+[翻訳](/ja/guochandamoxing.html)と同じ
 
 :::
 

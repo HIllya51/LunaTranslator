@@ -173,13 +173,9 @@ https://www.docsumo.com/
 
 https://ocr.space/
 
-== Gemini
+== General Large Model Interface
 
-Same as [Translation](/en/guochandamoxing.html#dedicated-interfaces-for-specific-platforms)
-
-== ChatGPT Compatible Interface
-
-Same as [Translation](/en/guochandamoxing.html#chatgpt-compatible-interfaces)
+Same as [Translation](/en/guochandamoxing.html)
 
 :::
 

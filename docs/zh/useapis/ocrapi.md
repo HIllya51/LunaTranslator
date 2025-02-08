@@ -174,13 +174,9 @@ https://www.docsumo.com/
 
 https://ocr.space/
 
-== Gemini
+== 大模型通用接口
 
-和[翻译](/zh/guochandamoxing.html#特定平台的专用接口)相同
-
-== ChatGPT兼容接口
-
-和[翻译](/zh/guochandamoxing.html#chatgpt兼容接口)相同
+和[翻译](/zh/guochandamoxing.html)相同
 
 :::
 

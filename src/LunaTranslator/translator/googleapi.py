@@ -10,13 +10,13 @@ class TS(basetrans):
         self.checkempty(["key"])
 
         key = self.multiapikeycurrent["key"]
-
         params = {
             "key": key,
-            "source": self.srclang,
             "target": self.tgtlang,
             "q": (query),
         }
+        if self.srclang != Languages.Auto:
+            params["source"] = self.srclang
         response = self.proxysession.get(
             "https://translation.googleapis.com/language/translate/v2/", params=params
         )

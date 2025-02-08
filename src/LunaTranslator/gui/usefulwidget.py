@@ -46,8 +46,12 @@ class SuperCombo(FocusCombo):
         self.vu = QListView()
         self.setView(self.vu)
 
-    def addItem(self, item, internal=None):
-        item1 = QStandardItem(_TR(item) if not self.static else item)
+    def addItem(self, item, internal=None, icon=None):
+        text = _TR(item) if not self.static else item
+        if icon:
+            item1 = QStandardItem(icon, text)
+        else:
+            item1 = QStandardItem(text)
         item1.setData(item, self.Visoriginrole)
         item1.setData(internal, self.Internalrole)
         self.mo.appendRow(item1)
@@ -55,12 +59,13 @@ class SuperCombo(FocusCombo):
     def clear(self):
         self.mo.clear()
 
-    def addItems(self, items, internals=None):
+    def addItems(self, items, internals=None, icons=None):
         for i, item in enumerate(items):
             iternal = None
             if internals and i < len(internals):
                 iternal = internals[i]
-            self.addItem(item, iternal)
+            icon = icons[i] if icons else None
+            self.addItem(item, iternal, icon=icon)
 
     def updatelangtext(self):
         if self.static:
