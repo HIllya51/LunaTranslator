@@ -84,7 +84,7 @@ class mecab(basehira):
                 origorig = fields[7]
             elif len(fields) == 9:
                 kana = fields[8]
-                origorig = fields[7]
+                origorig = fields[6]
             elif len(fields) == 6:  # 英文
                 kana = origorig = node
             l = 0
