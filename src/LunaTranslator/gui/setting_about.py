@@ -145,7 +145,7 @@ def updatemethod(urls, self):
             prg100 = prg / 100
             sz = int(1000 * (int(size / 1024) / 1024)) / 1000
             self.downloadprogress_cache = (
-                "总大小{} MB 进度 {:0.2f}% ".format(sz, prg100),
+                _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
                 prg,
             )
 

@@ -12,7 +12,7 @@ class Process:
         return noundictconfigdialog1(
             parent_window,
             transerrorfixdictconfig["dict_v2"],
-            "翻译结果修正_设置",
+            "翻译结果修正",
             ["正则", "转义", "翻译", "替换"],
         )
 

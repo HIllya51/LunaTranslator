@@ -13,7 +13,7 @@ class Process:
             noundictconfigdialog1(
                 parent_window,
                 globalconfig["global_namemap2"],
-                "专有名词翻译_直接替换_设置",
+                "专有名词翻译_直接替换",
                 ["正则", "转义", "原文", "翻译"],
             ),
         )
