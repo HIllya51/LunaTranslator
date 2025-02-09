@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools
+import functools, winsharedutils
 import gobject, os
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import tryprint
@@ -29,7 +29,7 @@ from gui.usefulwidget import (
     WebviewWidget,
     ExtensionSetting,
 )
-from gui.dynalang import LPushButton, LFormLayout, LDialog, LStandardItemModel
+from gui.dynalang import LPushButton, LFormLayout, LDialog, LStandardItemModel, LAction
 
 
 def __changeuibuttonstate(self, x):
@@ -239,6 +239,8 @@ class Exteditor(LDialog):
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
         table.setWordWrap(False)
+        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        table.customContextMenuRequested.connect(self.__menu)
         vbox = QVBoxLayout(self)
         vbox.addWidget(table)
         btn = LPushButton("添加")
@@ -279,16 +281,35 @@ class Exteditor(LDialog):
         WebviewWidget.Extensions_Add(res)
         self.listexts()
 
+    def __menu(self, _):
+        curr = self.table.currentIndex()
+        if not curr.isValid():
+            return
+        if curr.column() != 2:
+            return
+        menu = QMenu(self.table)
+        copyid = LAction("复制_ID", menu)
+
+        menu.addAction(copyid)
+        action = menu.exec(self.table.cursor().pos())
+
+        if action == copyid:
+            winsharedutils.clipboard_set(
+                self.table.model().data(curr, Qt.ItemDataRole.UserRole + 10)
+            )
+
     def listexts(self):
         self.model.removeRows(0, self.model.rowCount())
         for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions_List()):
 
             _i = self.model.rowCount()
+            item = QStandardItem(name)
+            item.setData(_id, Qt.ItemDataRole.UserRole + 10)
             self.model.appendRow(
                 [
                     QStandardItem(""),
                     QStandardItem(""),
-                    QStandardItem(name),
+                    item,
                     QStandardItem(""),
                     QStandardItem(""),
                 ]
