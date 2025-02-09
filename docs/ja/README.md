@@ -10,7 +10,7 @@
 
 ### Windows XP & Vista システム
 
-32ビット <a href="https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_winxp.zip" target="_blank"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
+32ビット <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/xp')"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
 ::: danger
 間違えてソースコードをダウンロードしないようにしてください！
