@@ -810,6 +810,8 @@ class AnkiWindow(QWidget):
         try:
             self.addanki()
             if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
+                if self.isVisible():
+                    self.refsearchw.ankiconnect.click()
                 self.window().close()
             else:
                 QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
