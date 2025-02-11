@@ -57,6 +57,10 @@ namespace ebyroid
       string language_dir = base_dir_ + kWinDelimit + "Lang" + kWinDelimit + Lang_;
       if (!PathFileExistsA(language_dir.c_str()))
       {
+        language_dir = base_dir_ + kWinDelimit + "Lang" + kWinDelimit + "standard_" + Lang_;
+      }
+      if (!PathFileExistsA(language_dir.c_str()))
+      {
         language_dir = base_dir_ + kWinDelimit + "Lang" + kWinDelimit + "standard";
       }
 #ifdef _WIN64
