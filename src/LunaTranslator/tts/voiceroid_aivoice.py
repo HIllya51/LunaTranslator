@@ -13,7 +13,7 @@ class TTS(TTSbase):
         self.cacheDialect = {}
         voicelist = []
         vis = []
-        path = os.path.dirname(self.config["path2"])
+        path = os.path.dirname(self.findtarget(self.config["path"]))
         # AIVoice试用版语音路径在上一层
         for l in [
             os.path.join(path, "Voice"),
@@ -78,10 +78,16 @@ class TTS(TTSbase):
             pass
         return None
 
+    def findtarget(self, path):
+        for _dir, _, _fs in os.walk(path):
+            for _f in _fs:
+                if _f.lower() == "aitalked.dll":
+                    return os.path.abspath(os.path.join(_dir, _f))
+
     def init(self):
         # voiceroid+ & voiceroid2 & AIVoice -> aitalked.dll
         # AIVoice2 -> aitalk_engine.dll
-        dllpath = self.config["path2"]
+        dllpath = self.findtarget(self.config["path"])
         if not os.path.isfile(dllpath):
             raise Exception()
 
@@ -98,7 +104,7 @@ class TTS(TTSbase):
         self.engine = winsharedutils.AutoKillProcess(
             '"{}" voiceroid2 "{}" "{}" {} {} {} {} {}'.format(
                 exepath,
-                os.path.abspath(os.path.dirname(self.config["path2"])),
+                os.path.dirname(dllpath),
                 dllpath,
                 pipename,
                 waitsignal,

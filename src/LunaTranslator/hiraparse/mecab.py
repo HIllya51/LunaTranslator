@@ -39,7 +39,16 @@ class mecabwrap:
             if self.kks:
                 self.codec = winsharedutils.mecab_dictionary_codec(self.kks).decode()
                 return
-
+        for i, (_dir, _, _fs) in enumerate(os.walk(mecabpath)):
+            if not i:
+                continue
+            self.kks = winsharedutils.mecab_init(
+                os.path.abspath(_dir).encode("utf8"),
+                gobject.GetDllpath("libmecab.dll"),
+            )
+            if self.kks:
+                self.codec = winsharedutils.mecab_dictionary_codec(self.kks).decode()
+                return
         raise Exception("not find")
 
     def __del__(self):

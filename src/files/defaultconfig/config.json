@@ -1161,14 +1161,13 @@
             "name": "VoiceRoid2/VoiceRoid+",
             "type": "offline",
             "args": {
-                "path2": ""
+                "path": ""
             },
             "argstype": {
-                "path2": {
+                "path": {
                     "type": "file",
                     "name": "路径",
-                    "dir": false,
-                    "filter": "aitalked.dll"
+                    "dir": true
                 }
             }
         },
