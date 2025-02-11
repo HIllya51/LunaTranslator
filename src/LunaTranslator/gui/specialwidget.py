@@ -66,17 +66,26 @@ class chartwidget(QWidget):
 
             # 纵坐标
             for i, label in enumerate(y_labels):
-                y = int(ymargin + height - i * (height / 5))
-                painter.drawLine(xmargin - self.scalelinelen, y, xmargin, y)
+                y = ymargin + height - i * (height / 5)
+                painter.drawLine(
+                    QPointF(xmargin - self.scalelinelen, y), QPointF(xmargin, y)
+                )
                 painter.drawText(
-                    xmargin - self.scalelinelen - self.fmetrics.size(0, label).width(),
-                    y + 5,
+                    QPointF(
+                        xmargin
+                        - self.scalelinelen
+                        - self.fmetrics.size(0, label).width(),
+                        y + 5,
+                    ),
                     label,
                 )
 
-            painter.drawLine(xmargin, ymargin, xmargin, ymargin + height)  # Y轴
             painter.drawLine(
-                xmargin, ymargin + height, xmargin + width, ymargin + height
+                QPointF(xmargin, ymargin), QPointF(xmargin, ymargin + height)
+            )  # Y轴
+            painter.drawLine(
+                QPointF(xmargin, ymargin + height),
+                QPointF(xmargin + width, ymargin + height),
             )  # X轴
 
             # 计算数据点在绘图区域中的坐标
@@ -100,24 +109,25 @@ class chartwidget(QWidget):
                 if self.data[i + 1][1]:  #!=0
                     text = self.ytext(self.data[i + 1][1])
                     W = self.fmetrics.size(0, text).width()
-                    newrect = QRect(x2 - W // 2, y2 - 10, W, texth)
+                    newrect = QRectF(x2 - W // 2, y2 - 10, W, texth)
                     if any(_.intersected(newrect) for _ in rects):
                         continue
                     else:
                         rects.append(newrect)
-                        painter.drawText(x2 - W // 2, y2 - 10, text)  # value
+                        painter.drawText(QPointF(x2 - W / 2, y2 - 10), text)  # value
             lastx2 = -999
             for i, (x, y) in enumerate(points):
-                painter.drawLine(x, ymargin + height, x, ymargin + height + 5)  # 刻度线
+                painter.drawLine(
+                    QPointF(x, ymargin + height), QPointF(x, ymargin + height + 5)
+                )  # 刻度线
 
                 thisw = self.fmetrics.size(0, x_labels[i]).width()
-                thisx = x - thisw // 2
+                thisx = x - thisw / 2
 
                 if thisx > lastx2:
 
                     painter.drawText(
-                        thisx,
-                        ymargin + height + 20,
+                        QPointF(thisx, ymargin + height + 20),
                         x_labels[i],
                     )  # 标签
                     lastx2 = thisx + thisw

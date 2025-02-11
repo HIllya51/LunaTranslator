@@ -1161,10 +1161,10 @@
             "name": "VoiceRoid2/VoiceRoid+",
             "type": "offline",
             "args": {
-                "path": ""
+                "path2": ""
             },
             "argstype": {
-                "path": {
+                "path2": {
                     "type": "file",
                     "name": "路径",
                     "dir": false,
