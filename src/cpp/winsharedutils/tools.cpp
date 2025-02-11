@@ -12,7 +12,7 @@ DECLARE_API double levenshtein_normalized_similarity(size_t len1, const wchar_t 
     return rapidfuzz::levenshtein_normalized_similarity(std::wstring_view(string1, len1), std::wstring_view(string2, len2));
 }
 
-DECLARE_API MeCab::Tagger *mecab_init(char *utf8path, wchar_t *mepath)
+DECLARE_API MeCab::Tagger *mecab_init(char *utf8path)
 {
     char *argv[] = {"fugashi", "-C", "-r", "nul", "-d", utf8path, "-Owakati"};
     MeCab::Tagger *tagger = MeCab::Tagger::create(ARRAYSIZE(argv), argv);

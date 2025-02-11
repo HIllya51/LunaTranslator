@@ -79,10 +79,10 @@ class TTS(TTSbase):
         return None
 
     def findtarget(self, path):
-        for _dir, _, _fs in os.walk(path):
-            for _f in _fs:
-                if _f.lower() == "aitalked.dll":
-                    return os.path.abspath(os.path.join(_dir, _f))
+        for _dir, _, __ in os.walk(path):
+            dll = os.path.join(_dir, "aitalked.dll")
+            if os.path.isfile(dll):
+                return os.path.abspath(dll)
 
     def init(self):
         # voiceroid+ & voiceroid2 & AIVoice -> aitalked.dll

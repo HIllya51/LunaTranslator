@@ -26,29 +26,18 @@ from myutils.config import isascii
 class mecabwrap:
 
     def __init__(self, mecabpath) -> None:
-
-        maybepaths = (
-            [mecabpath]
-            + os.listdir(".")
-            + [".", r"C:\Program Files (x86)\MeCab\dic\ipadic"]
-        )
-        for _ in maybepaths:
-            self.kks = winsharedutils.mecab_init(
-                os.path.abspath(_).encode("utf8"), gobject.GetDllpath("libmecab.dll")
-            )
-            if self.kks:
-                self.codec = winsharedutils.mecab_dictionary_codec(self.kks).decode()
-                return
-        for i, (_dir, _, _fs) in enumerate(os.walk(mecabpath)):
-            if not i:
-                continue
-            self.kks = winsharedutils.mecab_init(
-                os.path.abspath(_dir).encode("utf8"),
-                gobject.GetDllpath("libmecab.dll"),
-            )
-            if self.kks:
-                self.codec = winsharedutils.mecab_dictionary_codec(self.kks).decode()
-                return
+        for ___ in (mecabpath, "."):
+            for i, (_dir, _, __) in enumerate(os.walk(___)):
+                if not i:
+                    continue
+                self.kks = winsharedutils.mecab_init(
+                    os.path.abspath(_dir).encode("utf8")
+                )
+                if self.kks:
+                    self.codec = winsharedutils.mecab_dictionary_codec(
+                        self.kks
+                    ).decode()
+                    return
         raise Exception("not find")
 
     def __del__(self):

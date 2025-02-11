@@ -53,7 +53,7 @@ levenshtein_normalized_similarity.argtypes = c_size_t, c_wchar_p, c_size_t, c_wc
 levenshtein_normalized_similarity.restype = c_double
 
 mecab_init = utilsdll.mecab_init
-mecab_init.argtypes = c_char_p, c_wchar_p
+mecab_init.argtypes = (c_char_p,)
 mecab_init.restype = c_void_p
 mecab_parse_cb = CFUNCTYPE(None, c_char_p, c_char_p)
 mecab_parse = utilsdll.mecab_parse
