@@ -19,6 +19,8 @@ class jpdb(cishubase):
             res = simplehtmlparser(text, "div", '<div class="results details">')
         if not res:
             return
+        if "<div" not in res[1:]:
+            return
         res = res.replace('<i class="ti ti-volume"></i>', "")  # 播音图标无法跨域访问
         res = re.sub('href="/(.*?)"', 'href="https://jpdb.io/\\1"', res)
         res = '<div class="{}"><div class="container bugfix" style="padding-top:16px;padding-bottom:16px;">{}</div></div>'.format(
