@@ -10,6 +10,7 @@ from ctypes import (
     c_void_p,
     cast,
     create_unicode_buffer,
+    create_string_buffer,
     c_size_t,
     c_double,
     c_char,
@@ -563,3 +564,16 @@ class WinRT:
 
 
 # winrt
+_AES_decrypt = utilsdll.AES_decrypt
+_AES_decrypt.argtypes = c_void_p, c_void_p, c_void_p, c_size_t
+
+
+def AES_decrypt(key: bytes, iv: bytes, data: bytes) -> bytes:
+    buff = create_string_buffer(data)
+    _AES_decrypt(key, iv, buff, len(data))
+    return bytes(buff)[:-1]
+
+
+IsDLLBit64 = utilsdll.IsDLLBit64
+IsDLLBit64.argtypes = (c_wchar_p,)
+IsDLLBit64.restype = c_bool

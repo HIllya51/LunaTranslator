@@ -7,7 +7,6 @@ using ebyroid::Ebyroid;
 
 int voiceroid2wmain(int argc, wchar_t *wargv[])
 {
-
     char **argv = new char *[argc];
     for (int i = 0; i < argc; i++)
     {
@@ -17,7 +16,6 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
     }
     HANDLE hPipe = CreateNamedPipeA(argv[3], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
-    Ebyroid *ebyroid = nullptr;
 
     std::string last;
     float rate = -1;
@@ -27,6 +25,8 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
     memset(mapview, 0, 1024 * 1024 * 10);
     SetEvent(CreateEventA(&allAccess, FALSE, FALSE, argv[4]));
     ConnectNamedPipe(hPipe, NULL);
+    Ebyroid *ebyroid = Ebyroid::Create(argv[1], argv[2], argv[6], argv[7]);
+
     int freq1;
     char input_j[4096] = {0};
     DWORD _;
@@ -37,6 +37,11 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
         if (!ReadFile(hPipe, input_j, 4096, &_, NULL))
             break;
         std::string voice = (char *)input_j;
+        ZeroMemory(input_j, sizeof(input_j));
+
+        if (!ReadFile(hPipe, input_j, 4096, &_, NULL))
+            break;
+        std::string lang = (char *)input_j;
         float _rate;
         if (!ReadFile(hPipe, &_rate, 4, &_, NULL))
             break;
@@ -47,9 +52,7 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
         {
             if (ebyroid)
                 delete ebyroid;
-            ebyroid = Ebyroid::Create(argv[1],
-                                      argv[2],
-                                      voice.c_str());
+            ebyroid = Ebyroid::Create(argv[1], argv[2], voice, lang);
             last = voice;
         }
         ebyroid->Setparam(2, _rate, _pitch); // 0.5-4, 0.5-2

@@ -807,30 +807,29 @@ def getsimplecombobox(
     fixedsize=False,
     internal=None,
     static=False,
-    initial=None,
+    default=None,
 ):
     if d is None:
         d = {}
-    if initial is not None:
-        d[k] = initial
+    initvar = d.get(k, default)
     s = SuperCombo(static=static)
     s.addItems(lst, internal)
 
     if internal:
         if len(internal):
-            if (k not in d) or (d[k] not in internal):
-                d[k] = internal[0]
+            if (k not in d) or (initvar not in internal):
+                initvar = internal[0]
 
-            s.setCurrentIndex(internal.index(d[k]))
+            s.setCurrentIndex(internal.index(initvar))
         s.currentIndexChanged.connect(
             functools.partial(comboboxcallbackwrap, s, d, k, callback)
         )
     else:
         if len(lst):
-            if (k not in d) or (d[k] >= len(lst)):
-                d[k] = 0
+            if (k not in d) or (initvar >= len(lst)):
+                initvar = 0
 
-            s.setCurrentIndex(d[k])
+            s.setCurrentIndex(initvar)
         s.currentIndexChanged.connect(functools.partial(callbackwrap, d, k, callback))
     if fixedsize:
         s.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -851,17 +850,20 @@ def getlineedit(d, key, callback=None, readonly=False):
     return s
 
 
-def getspinbox(mini, maxi, d, key, double=False, step=1, callback=None):
+def getspinbox(
+    mini, maxi, d: dict, key: str, double=False, step=1, callback=None, default=None
+):
+    initvar = d.get(key, default)
     if double:
         s = FocusDoubleSpin()
         s.setDecimals(math.ceil(-math.log10(step)))
     else:
         s = FocusSpin()
-        d[key] = int(d[key])
+        initvar = int(initvar)
     s.setMinimum(mini)
     s.setMaximum(maxi)
     s.setSingleStep(step)
-    s.setValue(d[key])
+    s.setValue(initvar)
     s.valueChanged.connect(functools.partial(callbackwrap, d, key, callback))
     return s
 
@@ -940,13 +942,17 @@ def yuitsu_switch(parent, configdict, dictobjectn, key, callback, checked):
 
 
 def getsimpleswitch(
-    d, key, enable=True, callback=None, name=None, pair=None, parent=None, default=None
+    d: dict,
+    key: str,
+    enable=True,
+    callback=None,
+    name=None,
+    pair=None,
+    parent=None,
+    default=None,
 ):
-    if default:
-        if key not in d:
-            d[key] = default
-
-    b = MySwitch(sign=d[key], enable=enable)
+    initvar = d.get(key, default)
+    b = MySwitch(sign=initvar, enable=enable)
     b.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     b.clicked.connect(functools.partial(callbackwrap, d, key, callback))
     if pair:
@@ -2843,3 +2849,27 @@ class FlowWidget(QWidget):
 
     def resizeEvent(self, a0):
         self.doresize()
+
+
+class ClickableLabel(LLabel):
+    def __init__(self, *argc, **kw):
+        super().__init__(*argc, **kw)
+        self.setClickable(True)
+        self.setStyleSheet(
+            r"""ClickableLabel{
+                background:transparent
+            }
+            ClickableLabel:hover{
+                background-color: rgba(128,128,128,0.3)
+            }"""
+            ""
+        )
+
+    def setClickable(self, clickable: bool):
+        self._clickable = clickable
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if self._clickable and event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit()
+
+    clicked = pyqtSignal()

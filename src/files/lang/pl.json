@@ -24,7 +24,6 @@
     "谷歌": "Google",
     "阿里": "Ali.",
     "有道": "Youdao.",
-    "有道2": "Youdao 2.",
     "彩云": "tęcząca chmura",
     "金山快译": "Szybkie tłumaczenie Jinshan",
     "快译通": "Kuaiyitong.",
@@ -169,7 +168,6 @@
     "飞书": "list anonimowy",
     "编辑": "edytuj",
     "移动": "ruchy",
-    "设置Token": "Ustaw token",
     "该功能可能会导致游戏崩溃！": "Ta funkcja może spowodować awarię gry!",
     "警告": "ostrzeżenie",
     "文字更新分析": "Analiza aktualizacji tekstu",
@@ -231,7 +229,6 @@
     "删除": "usunąć",
     "自动切换到模式": "Automatyczne przełączenie do trybu",
     "不切换": "Nie przełączaj",
-    "当前MD5": "Aktualny MD5",
     "修改": "modyfikuj",
     "翻译结果修正": "Korekta wyników tłumaczenia",
     "过滤文本中的非日语字符集字符": "Filtruj znaki niejapońskiego zestawu znaków w tekście",
@@ -242,7 +239,6 @@
     "自动获取系统代理": "Automatyczne pozyskiwanie agentów systemowych",
     "游戏设置": "Ustawienia gry",
     "显示错误信息": "Wyświetlanie komunikatów o błędach",
-    "问题反馈": "Informacje zwrotne dotyczące problemu",
     "附带上下文个数": "Liczba kontekstów towarzyszących",
     "备忘录": "memorandum",
     "插入图片": "Wstaw obrazek",
@@ -792,5 +788,7 @@
     "大模型通用接口": "",
     "总大小": "",
     "进度": "",
-    "范围": ""
+    "范围": "",
+    "字体设置": "",
+    "成功添加后隐藏Anki页面": ""
 }

@@ -10,7 +10,6 @@
     "翻译优化": "Translation Optimization",
     "替换为": "Replace With",
     "目标语言": "Target Language",
-    "有道2": "Youdao 2",
     "显示原文": "Show Original Text",
     "居中显示": "Center Display",
     "预翻译": "Pre-translation",
@@ -169,7 +168,6 @@
     "飞书": "Feishu",
     "编辑": "Edit",
     "移动": "Move",
-    "设置Token": "Set Token",
     "该功能可能会导致游戏崩溃！": "This feature may cause the game to crash!",
     "警告": "Warning",
     "文字更新分析": "Text Update Analysis",
@@ -232,7 +230,6 @@
     "自动切换到模式": "Switch to Mode",
     "不切换": "Don't Switch",
     "显示": "Show",
-    "当前MD5": "Current MD5",
     "修改": "Modify",
     "翻译结果修正": "Translation Result Correction",
     "过滤文本中的非日语字符集字符": "Filter Non-Japanese Character Characters in Text",
@@ -242,7 +239,6 @@
     "自动获取系统代理": "Detect System Proxy",
     "游戏设置": "Game Settings",
     "显示错误信息": "Show Error Message",
-    "问题反馈": "Report a Problem",
     "附带上下文个数": "Number of Context Lines to Include",
     "备忘录": "Memo",
     "插入图片": "Insert Image",
@@ -792,5 +788,7 @@
     "大模型通用接口": "",
     "总大小": "",
     "进度": "",
-    "范围": ""
+    "范围": "",
+    "字体设置": "",
+    "成功添加后隐藏Anki页面": ""
 }

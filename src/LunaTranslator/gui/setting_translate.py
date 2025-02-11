@@ -22,10 +22,15 @@ from gui.usefulwidget import (
     selectcolor,
     makegrid,
     makesubtab_lazy,
+    getspinbox,
+    ClickableLabel,
+    automakegrid,
+    FocusFontCombo,
+    getsmalllabel,
     makescrollgrid,
     IconButton,
 )
-from gui.dynalang import LPushButton, LLabel, LAction
+from gui.dynalang import LPushButton, LLabel, LAction, LDialog
 from gui.setting_about import offlinelinks
 
 
@@ -103,18 +108,87 @@ def getalistname(parent, copy, btnplus, callback):
     )
 
 
-def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _):
+class SpecialFont(LDialog):
+    def __init__(self, apiuid, p):
+        super().__init__(p, Qt.WindowType.WindowCloseButtonHint)
+        self.apiuid = apiuid
+        self.setWindowTitle(dynamicapiname(apiuid) + "_字体设置")
+        self.resize(500, 1)
+        box = QGridLayout(self)
+        grid = []
+        grid.append(["", "", "", "跟随默认"])
+        if "privatefont" not in globalconfig["fanyi"][apiuid]:
+            globalconfig["fanyi"][apiuid]["privatefont"] = {}
+        dd = globalconfig["fanyi"][apiuid]["privatefont"]
+        for i in range(3):
+            if i == 0:
+                t = "字体"
+                k = "fontfamily"
+                w = QPushButton()
+
+                def _f(dd, key, x):
+                    dd[key] = x
+                    self.resetfont()
+
+                w = FocusFontCombo()
+                w.setCurrentFont(QFont(dd.get(k, globalconfig["fonttype2"])))
+                w.currentTextChanged.connect(functools.partial(_f, dd, k))
+            elif i == 1:
+                t = "字体大小"
+                k = "fontsize"
+                w = getspinbox(
+                    1,
+                    100,
+                    dd,
+                    k,
+                    double=True,
+                    step=0.1,
+                    default=globalconfig[k],
+                    callback=self.resetfont,
+                )
+            elif i == 2:
+                t = "加粗"
+                k = "showbold"
+                w = getsimpleswitch(
+                    dd, k, default=globalconfig[k], callback=self.resetfont
+                )
+            w.setEnabled(not dd.get(k + "_df", True))
+            switch = D_getsimpleswitch(
+                dd,
+                k + "_df",
+                callback=functools.partial(self.disableclear, w),
+                default=True,
+            )
+            grid.append([getsmalllabel(t), w, "", switch])
+        automakegrid(box, grid)
+
+    def disableclear(self, w: QWidget, _):
+        w.setEnabled(not _)
+        self.resetfont()
+
+    def resetfont(self, _=None):
+        gobject.baseobject.translation_ui.translate_text.setfontextra(self.apiuid)
+
+
+def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
     menu = QMenu(qlabel)
     editname = LAction("重命名", menu)
+    specialfont = LAction("字体设置", menu)
     delete = LAction("删除", menu)
+    copy = LAction("复制", menu)
     menu.addAction(editname)
+    menu.addAction(specialfont)
     which = translate_exits(apiuid, which=True)
+    is_gpt_like = globalconfig["fanyi"][apiuid].get("is_gpt_like", False)
+    if is_gpt_like:
+        menu.addSeparator()
+        menu.addAction(copy)
     if which == 1:
         menu.addAction(delete)
-    action = menu.exec(qlabel.mapToGlobal(_))
+    action = menu.exec(QCursor.pos())
     if action == delete:
         selectllmcallback_2(self, countnum, btnplus, apiuid, None)
-    if action == editname:
+    elif action == editname:
         before = dynamicapiname(apiuid)
         __d = {"k": before}
 
@@ -142,14 +216,16 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _):
             ],
             exec_=True,
         )
+    elif action == specialfont:
+        SpecialFont(apiuid, self).exec()
+    elif action == copy:
+        selectllmcallback(self, countnum, btnplus, apiuid, None)
 
 
 def getrenameablellabel(uid, self, countnum, btnplus):
-    name = LLabel(dynamicapiname(uid))
-    name.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-    name.customContextMenuRequested.connect(
-        functools.partial(renameapi, name, uid, self, countnum, btnplus)
-    )
+    name = ClickableLabel(dynamicapiname(uid))
+    fn = functools.partial(renameapi, name, uid, self, countnum, btnplus)
+    name.clicked.connect(fn)
     return name
 
 
@@ -310,9 +386,7 @@ def createmanybtn(self, countnum, btnplus):
         )
     elif btnplus == "api":
         btn.clicked.connect(
-            lambda: os.startfile(
-                dynamiclink("{docs_server}/guochandamoxing.html")
-            )
+            lambda: os.startfile(dynamiclink("{docs_server}/guochandamoxing.html"))
         )
     hbox.addWidget(btn)
     setattr(self, "btnmany" + btnplus, w)

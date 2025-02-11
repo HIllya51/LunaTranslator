@@ -667,7 +667,7 @@ class dialog_setting_game_internal(QWidget):
         flowwidget.addWidget(3, edit)
 
         button = LPushButton("添加")
-        typecombo = getsimplecombobox(self.tagtypes_zh, initial=2)
+        typecombo = getsimplecombobox(self.tagtypes_zh, default=2)
         combo = FocusCombo()
         combo.setEditable(True)
 
@@ -750,10 +750,6 @@ class dialog_setting_game_internal(QWidget):
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid], "tts_follow_default", formLayout
         )
-        if "tts_repair_use_at_translate" not in savehook_new_data[gameuid]:
-            savehook_new_data[gameuid]["tts_repair_use_at_translate"] = globalconfig[
-                "ttscommon"
-            ]["tts_repair"]
         formLayout2.addRow(
             "语音指定",
             getboxlayout(
@@ -785,7 +781,9 @@ class dialog_setting_game_internal(QWidget):
                     ),
                     QLabel(),
                     getsimpleswitch(
-                        savehook_new_data[gameuid], "tts_repair_use_at_translate"
+                        savehook_new_data[gameuid],
+                        "tts_repair_use_at_translate",
+                        default=globalconfig["ttscommon"]["tts_repair"],
                     ),
                     LLabel("作用于翻译"),
                 ],
@@ -1115,14 +1113,6 @@ class dialog_setting_game_internal(QWidget):
         box = QGroupBox()
         settinglayout = LFormLayout(box)
         formLayout.addRow(box)
-        for k in [
-            "codepage_index",
-            "textthreaddelay",
-            "maxBufferSize",
-            "maxHistorySize",
-        ]:
-            if k not in savehook_new_data[gameuid]["hooksetting_private"]:
-                savehook_new_data[gameuid]["hooksetting_private"][k] = globalconfig[k]
 
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid],
@@ -1136,7 +1126,8 @@ class dialog_setting_game_internal(QWidget):
                 codepage_display,
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "codepage_index",
-                lambda x: gobject.baseobject.textsource.setsettings(),
+                lambda _: gobject.baseobject.textsource.setsettings(),
+                default=globalconfig["codepage_index"],
             ),
         )
 
@@ -1147,7 +1138,8 @@ class dialog_setting_game_internal(QWidget):
                 10000,
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "textthreaddelay",
-                callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                callback=lambda _: gobject.baseobject.textsource.setsettings(),
+                default=globalconfig["textthreaddelay"],
             ),
         )
         formLayout2.addRow(
@@ -1157,7 +1149,8 @@ class dialog_setting_game_internal(QWidget):
                 1000000,
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "maxBufferSize",
-                callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                callback=lambda _: gobject.baseobject.textsource.setsettings(),
+                default=globalconfig["maxBufferSize"],
             ),
         )
         formLayout2.addRow(
@@ -1167,7 +1160,8 @@ class dialog_setting_game_internal(QWidget):
                 1000000000,
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "maxHistorySize",
-                callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                callback=lambda _: gobject.baseobject.textsource.setsettings(),
+                default=globalconfig["maxHistorySize"],
             ),
         )
 

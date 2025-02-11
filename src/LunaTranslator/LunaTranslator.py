@@ -487,6 +487,7 @@ class MAINUI:
                 color=TranslateColor(engine),
                 res="",
                 iter_context=(1, engine),
+                klass=engine,
             )
             self.translation_ui.displayres.emit(displayreskwargs)
 
@@ -583,6 +584,7 @@ class MAINUI:
                     color=TranslateColor(classname),
                     res=res,
                     iter_context=(iter_res_status, classname),
+                    klass=classname,
                 )
                 self.translation_ui.displayres.emit(displayreskwargs)
             if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止

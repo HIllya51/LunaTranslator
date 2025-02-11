@@ -257,17 +257,13 @@
     "判定詞": "Domord",
     "翻译设置": "Översättningsinställningar",
     "不透明度": "Opacitet",
-    "有道2": "Youdao 2",
     "形容詞": "Adjektiv",
     "附带上下文个数": "Antal åtföljande sammanhang",
     "选择文件夹": "Välj katalog",
     "最短翻译字数": "Minsta antal översättningsord",
-    "问题反馈": "Problemåterkoppling",
     "缩放时调整光标速度": "Justera markörens hastighet vid zoomning",
-    "当前MD5": "Nuvarande MD5",
     "土耳其语": "Turkiska",
     "朗读": "Läsa högt",
-    "设置Token": "Ange tecken",
     "备忘录": "memorandum",
     "自定义python处理": "Anpassa Python- behandling",
     "東北ずん子/东北俊子": "Dongbei Kunzi/Dongbei Junzi",
@@ -792,5 +788,7 @@
     "大模型通用接口": "",
     "总大小": "",
     "进度": "",
-    "范围": ""
+    "范围": "",
+    "字体设置": "",
+    "成功添加后隐藏Anki页面": ""
 }

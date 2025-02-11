@@ -350,7 +350,7 @@ class TranslatorWindow(resizableframeless):
             res = kwargs.get("res")
             iter_context = kwargs.get("iter_context", None)
             clear = kwargs.get("clear", False)
-
+            klass = kwargs.get("klass", None)
             self.showline(
                 name=name,
                 clear=clear,
@@ -358,6 +358,7 @@ class TranslatorWindow(resizableframeless):
                 color=color,
                 texttype=TextType.Translate,
                 iter_context=iter_context,
+                klass=klass,
             )
 
         except:
@@ -416,7 +417,7 @@ class TranslatorWindow(resizableframeless):
         color = kwargs.get("color", SpecialColor.DefaultColor)
         iter_context = kwargs.get("iter_context", None)
         hira = kwargs.get("hira", [])
-
+        klass = kwargs.get("klass", None)
         if clear:
             self.translate_text.clear()
         if text is None:
@@ -428,10 +429,10 @@ class TranslatorWindow(resizableframeless):
             iter_res_status = 0
         if iter_res_status:
             self.translate_text.iter_append(
-                iter_context_class, texttype, name, text, color
+                iter_context_class, texttype, name, text, color, klass
             )
         else:
-            self.translate_text.append(texttype, name, text, hira, color)
+            self.translate_text.append(texttype, name, text, hira, color, klass)
         if globalconfig["autodisappear"]:
             flag = (globalconfig["showintab"] and self.isMinimized()) or (
                 not globalconfig["showintab"] and self.isHidden()

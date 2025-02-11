@@ -1,4 +1,4 @@
-﻿
+﻿#include <dbghelp.h>
 #include <uiautomation.h>
 #include "osversion.hpp"
 
@@ -216,4 +216,35 @@ DECLARE_API void OpenFileEx(LPCWSTR file)
     {
         ShellExecuteW(NULL, L"open", file, NULL, NULL, SW_SHOWNORMAL);
     }
+}
+DECLARE_API bool IsDLLBit64(LPCWSTR file)
+{
+    CHandle hFile{CreateFileW(file, GENERIC_READ, FILE_SHARE_READ, 0,
+                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0)};
+    if (!hFile)
+        return false;
+    CHandle hMap{CreateFileMappingW(
+        hFile,
+        NULL,          // security attrs
+        PAGE_READONLY, // protection flags
+        0,             // max size - high DWORD
+        0,             // max size - low DWORD
+        NULL)};        // mapping name - not used
+    if (!hMap)
+        return false;
+
+    // next, map the file to our address space
+    void *mapAddr = MapViewOfFileEx(
+        hMap,          // mapping object
+        FILE_MAP_READ, // desired access
+        0,             // loc to map - hi DWORD
+        0,             // loc to map - lo DWORD
+        0,             // #bytes to map - 0=all
+        NULL);         // suggested map addr
+    if (!mapAddr)
+        return false;
+    auto peHdr = ImageNtHeader(mapAddr);
+    auto is64 = peHdr->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64;
+    UnmapViewOfFile(mapAddr);
+    return is64;
 }

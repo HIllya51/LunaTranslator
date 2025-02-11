@@ -451,6 +451,10 @@ class AnkiWindow(QWidget):
             "成功添加后关闭窗口",
             getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
         )
+        layout.addRow(
+            "成功添加后隐藏Anki页面",
+            getsimpleswitch(globalconfig["ankiconnect"], "addsuccautocloseEx"),
+        )
         cnt = layout.rowCount() + 1
 
         def __(xx):
@@ -634,7 +638,7 @@ class AnkiWindow(QWidget):
                 globalconfig["ankiconnect"]["DeckNameS"].append("lunadeck")
             combo.addItems(globalconfig["ankiconnect"]["DeckNameS"])
 
-        lb = QLabel("DeckName")
+        lb = QLabel("Deck")
         lb.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
         folder_open = IconButton("fa.folder-open")
         folder_open.clicked.connect(functools.partial(self.selecfile, self.audiopath))
@@ -809,12 +813,11 @@ class AnkiWindow(QWidget):
     def errorwrap(self, close=False):
         try:
             self.addanki()
+            if globalconfig["ankiconnect"]["addsuccautocloseEx"] and self.isVisible():
+                self.refsearchw.ankiconnect.click()
             if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
-                if self.isVisible():
-                    self.refsearchw.ankiconnect.click()
                 self.window().close()
-            else:
-                QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
+            QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
         except requests.RequestException:
             QMessageBox.critical(self, _TR("错误"), _TR("无法连接到anki"))
         except anki.AnkiException as e:

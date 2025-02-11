@@ -433,6 +433,7 @@
         "autoruntts2": false,
         "autocrop": false,
         "addsuccautoclose": false,
+        "addsuccautocloseEx": false,
         "boldword": false,
         "tags": []
     },
@@ -1166,7 +1167,8 @@
                 "path": {
                     "type": "file",
                     "name": "路径",
-                    "dir": true
+                    "dir": false,
+                    "filter": "aitalked.dll"
                 }
             }
         },
@@ -1603,7 +1605,12 @@
         "google": {
             "use": false,
             "color": "#ff0000",
-            "name": "谷歌"
+            "name": "谷歌_v1"
+        },
+        "google2": {
+            "use": false,
+            "color": "#95a5ff",
+            "name": "谷歌_v2"
         },
         "ModernMt": {
             "use": false,

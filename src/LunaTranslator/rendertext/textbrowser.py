@@ -369,9 +369,17 @@ class TextBrowser(QWidget, dataget):
     def setselectable(self, b):
         self.masklabel.setHidden(b)
 
-    def _createqfont(self, texttype: TextType):
-
+    def _createqfont(self, texttype: TextType, klass):
         fm, fs, bold = self._getfontinfo(texttype)
+        if klass:
+            data = globalconfig["fanyi"][klass].get("privatefont", {})
+            if (not data.get("fontfamily_df", True)) and ("fontfamily" in data):
+                fm = data["fontfamily"]
+            if (not data.get("fontsize_df", True)) and ("fontsize" in data):
+                fs = data["fontsize"]
+            if (not data.get("showbold_df", True)) and ("showbold" in data):
+                bold = data["showbold"]
+
         font = QFont()
         font.setFamily(fm)
         font.setPointSizeF(fs)
@@ -421,6 +429,9 @@ class TextBrowser(QWidget, dataget):
     def resetstyle(self):
         self.parent().refreshcontent()
 
+    def setfontextra(self, klass: str):
+        self.parent().refreshcontent()
+
     def setcolorstyle(self, _=None):
         for label in self.searchmasklabels:
             label.maybestylechanged()
@@ -459,13 +470,19 @@ class TextBrowser(QWidget, dataget):
         return text
 
     def iter_append(
-        self, iter_context_class, texttype: TextType, name, text, color: ColorControl
+        self,
+        iter_context_class,
+        texttype: TextType,
+        name,
+        text,
+        color: ColorControl,
+        klass,
     ):
         if self.checkskip(texttype):
             return
         text = self.checkaddname(name, text)
         if iter_context_class not in self.saveiterclasspointer:
-            self._textbrowser_append(texttype, "", [], color)
+            self._textbrowser_append(texttype, "", [], color, klass)
             self.saveiterclasspointer[iter_context_class] = {
                 "currtext": "",
                 "curr": self._getcurrpointer(),
@@ -491,36 +508,36 @@ class TextBrowser(QWidget, dataget):
         currcurrent = self._getcurrpointer()
         self.saveiterclasspointer[iter_context_class]["curr"] = currcurrent
         currchange = currcurrent - currbefore
-        for klass in self.saveiterclasspointer:
-            if klass == iter_context_class:
+        for _klass in self.saveiterclasspointer:
+            if _klass == iter_context_class:
                 continue
-            if self.saveiterclasspointer[klass]["curr"] > currbefore:
-                self.saveiterclasspointer[klass]["curr"] += currchange
-                self.saveiterclasspointer[klass]["start"] += currchange
+            if self.saveiterclasspointer[_klass]["curr"] > currbefore:
+                self.saveiterclasspointer[_klass]["curr"] += currchange
+                self.saveiterclasspointer[_klass]["start"] += currchange
 
         self._showyinyingtext2(
             color,
             iter_context_class,
             self.saveiterclasspointer[iter_context_class]["start"],
             text,
-            self._createqfont(texttype),
+            self._createqfont(texttype, klass),
         )
         self.cleared = False
 
-    def append(self, texttype: TextType, name, text, tag, color: ColorControl):
+    def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
         if self.checkskip(texttype):
             return
         text = self.checkaddname(name, text)
         if len(tag):
             isshowhira = globalconfig["isshowhira"]
-            font = self._createqfont(texttype)
+            font = self._createqfont(texttype, klass)
             textlines, linetags = self._splitlinestags(font, tag, text)
             text = "\n".join(textlines)
             tag = self._join_tags(linetags, True)
             tagshow = tag if isshowhira else []
         else:
             tagshow = []
-        self._textbrowser_append(texttype, text, tagshow, color)
+        self._textbrowser_append(texttype, text, tagshow, color, klass)
         if len(tag):
             self.addsearchwordmask(tag)
         self.cleared = False
@@ -529,10 +546,10 @@ class TextBrowser(QWidget, dataget):
         return Qt.AlignmentFlag.AlignCenter if atcenter else Qt.AlignmentFlag.AlignLeft
 
     def _textbrowser_append(
-        self, texttype: TextType, text: str, tag: list, color: ColorControl
+        self, texttype: TextType, text: str, tag: list, color: ColorControl, klass: str
     ):
         self.textbrowser.document().blockSignals(True)
-        font = self._createqfont(texttype)
+        font = self._createqfont(texttype, klass)
         self._setnextfont(font, self.cleared)
         self.textbrowser.setAlignment(self._getqalignment(self.showatcenterflag))
 
@@ -795,7 +812,7 @@ class TextBrowser(QWidget, dataget):
     def maxvisheight(self):
         return QApplication.primaryScreen().virtualGeometry().height() * 2
 
-    def _showyinyingtext(self, b1, b2, color: ColorControl, font):
+    def _showyinyingtext(self, b1, b2, color: ColorControl, font: QFont):
         linei = self.yinyingposline
 
         doc = self.textbrowser.document()

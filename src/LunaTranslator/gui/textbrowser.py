@@ -103,13 +103,21 @@ class Textbrowser(QFrame):
         self.loadinternal()
 
     def iter_append(
-        self, iter_context_class, texttype: TextType, name, text, color: ColorControl
+        self,
+        iter_context_class,
+        texttype: TextType,
+        name,
+        text,
+        color: ColorControl,
+        klass,
     ):
-        self.trace.append((1, (iter_context_class, texttype, name, text, color)))
+        self.trace.append((1, (iter_context_class, texttype, name, text, color, klass)))
         self.cleared = False
-        self.textbrowser.iter_append(iter_context_class, texttype, name, text, color)
+        self.textbrowser.iter_append(
+            iter_context_class, texttype, name, text, color, klass
+        )
 
-    def append(self, texttype: TextType, name, text, tag, color: ColorControl):
+    def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
         self.trace.append(
             (
                 0,
@@ -119,12 +127,13 @@ class Textbrowser(QFrame):
                     text,
                     copy.deepcopy(tag),
                     color,
+                    klass,
                 ),
             )
         )
         self.cleared = False
         self.textbrowser.append(
-            texttype, name, text, basehira.parseastarget(tag), color
+            texttype, name, text, basehira.parseastarget(tag), color, klass
         )
 
     def clear(self):
@@ -137,6 +146,9 @@ class Textbrowser(QFrame):
 
     def setfontstyle(self, _=None):
         self.textbrowser.setfontstyle()
+
+    def setfontextra(self, klass):
+        self.textbrowser.setfontextra(klass)
 
     def showhidert(self, _):
         self.textbrowser.showhidert(_)

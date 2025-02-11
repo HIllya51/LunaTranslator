@@ -15,7 +15,7 @@ namespace ebyroid
   namespace
   {
 
-    ApiAdapter *NewAdapter(const string &, const string &, const string &);
+    ApiAdapter *NewAdapter(const string &, const string &, const string &, const string &);
     int __stdcall HiraganaCallback(EventReasonCode, int32_t, IntPtr);
     int __stdcall SpeechCallback(EventReasonCode, int32_t, uint64_t, IntPtr);
     inline pair<bool, string> WithDirecory(const char *dir, function<pair<bool, string>(void)> yield);
@@ -26,12 +26,19 @@ namespace ebyroid
     delete api_adapter_;
   }
 
-  Ebyroid *Ebyroid::Create(const string &base_dir, const string &dllpath, const string &voice)
+  Ebyroid *Ebyroid::Create(const string &base_dir, const string &dllpath, const string &voice, const string &Lang)
   {
-
-    ApiAdapter *adapter = NewAdapter(base_dir, dllpath, voice);
-    Ebyroid *ebyroid = new Ebyroid(adapter);
-    return ebyroid;
+    try
+    {
+      ApiAdapter *adapter = NewAdapter(base_dir, dllpath, voice, Lang);
+      Ebyroid *ebyroid = new Ebyroid(adapter);
+      return ebyroid;
+    }
+    catch (std::exception &e)
+    {
+      MessageBoxA(0, e.what(), "", 0);
+      return nullptr;
+    }
   }
 
   int Ebyroid::Hiragana(const char *inbytes, std::vector<char> &output)
@@ -177,18 +184,17 @@ namespace ebyroid
   namespace
   {
 
-    ApiAdapter *NewAdapter(const string &base_dir, const string &dllpath, const string &voice)
+    ApiAdapter *NewAdapter(const string &base_dir, const string &dllpath, const string &voice, const string &Lang)
     {
-      SettingsBuilder builder(base_dir, voice);
+      SettingsBuilder builder(base_dir, voice, Lang);
       Settings settings = builder.Build();
       std::unique_ptr<ApiAdapter> adapter{ApiAdapter::Create(dllpath.c_str())};
 
       TConfig config;
       config.hz_voice_db = settings.frequency;
-
-      config.msec_timeout = 1000;
-      config.path_license = settings.license_path;
       config.dir_voice_dbs = settings.voice_dir;
+      config.msec_timeout = msec_timeout;
+      config.path_license = settings.license_path;
       config.code_auth_seed = settings.seed;
       config.len_auth_seed = kLenSeedValue;
       ResultCode result = adapter->Init(&config);
@@ -203,7 +209,7 @@ namespace ebyroid
         message += std::to_string(result);
         throw std::runtime_error(message);
       }
-      SetDllDirectoryA(settings.base_dir);
+      SetDllDirectoryA(base_dir.c_str());
       result = adapter->LangLoad(settings.language_dir);
       result = adapter->VoiceLoad(settings.voice_name);
       if (result != ERR_SUCCESS)
@@ -213,9 +219,7 @@ namespace ebyroid
         throw std::runtime_error(message);
       }
 
-      auto _ = adapter.get();
-      adapter.release();
-      return _;
+      return adapter.release();
     }
 
     inline pair<bool, string> WithDirecory(const char *dir, function<pair<bool, string>(void)> yield)

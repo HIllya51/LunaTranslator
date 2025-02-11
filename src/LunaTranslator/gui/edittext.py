@@ -159,6 +159,7 @@ class edittrans(LMainWindow):
             displayreskwargs = dict(
                 name=globalconfig["fanyi"]["realtime_edit"]["name"],
                 color=TranslateColor("realtime_edit"),
+                klass="realtime_edit",
                 res=text,
                 iter_context=(1, "realtime_edit_directvis_fakeclass"),
             )

@@ -257,17 +257,13 @@
     "判定詞": "Oordeel woord",
     "翻译设置": "Vertalingsinstellingen",
     "不透明度": "Ondoorzichtigheid",
-    "有道2": "Youdao 2",
     "形容詞": "Bijvoeglijke naamwoorden",
     "附带上下文个数": "Aantal begeleidende contexten",
     "选择文件夹": "Map selecteren",
     "最短翻译字数": "Minimaal aantal vertaalwoorden",
-    "问题反馈": "Feedback van problemen",
     "缩放时调整光标速度": "Cursorsnelheid aanpassen bij inzoomen",
-    "当前MD5": "Huidige MD5",
     "土耳其语": "Turks",
     "朗读": "Hardop lezen",
-    "设置Token": "Token instellen",
     "备忘录": "memorandum",
     "自定义python处理": "Python-verwerking aanpassen",
     "東北ずん子/东北俊子": "Dongbei Kunzi/Dongbei Junzi",
@@ -792,5 +788,7 @@
     "大模型通用接口": "",
     "总大小": "",
     "进度": "",
-    "范围": ""
+    "范围": "",
+    "字体设置": "",
+    "成功添加后隐藏Anki页面": ""
 }

@@ -17,22 +17,25 @@ def dopathexists(file: str):
 originstartfile = os.startfile
 
 
-def fakestartfile(f):
-    if f.startswith("http"):
+def safestartfile(f):
+    import windows
 
-        from myutils.utils import checkisusingwine
-
-        if checkisusingwine():
-            print(f)
-            return
-    originstartfile(f)
+    # startfile在windows上，有时会谜之把http链接当成exe用run导致崩溃
+    windows.ShellExecute(
+        None,
+        "open",
+        f,
+        None,
+        None,
+        windows.SW_SHOWNORMAL,
+    )
 
 
 def overridepathexists():
     # win7上，如果假如没有D盘，然后os.path.exists("D:/...")，就会弹窗说不存在D盘
     os.path.exists = dopathexists
 
-    os.startfile = fakestartfile
+    os.startfile = safestartfile
 
 
 def prepareqtenv():

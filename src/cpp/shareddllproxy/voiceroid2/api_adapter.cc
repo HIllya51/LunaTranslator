@@ -37,6 +37,7 @@ namespace ebyroid
       throw new std::runtime_error(m);
     }
     ApiAdapter *adapter = new ApiAdapter(handle);
+#ifndef _WIN64
     adapter->init_ = LoadProc<ApiInit>(handle, "_AITalkAPI_Init@4");
     adapter->end_ = LoadProc<ApiEnd>(handle, "_AITalkAPI_End@0");
     adapter->voice_load_ = LoadProc<ApiVoiceLoad>(handle, "_AITalkAPI_VoiceLoad@4");
@@ -50,6 +51,22 @@ namespace ebyroid
     adapter->text_to_speech_ = LoadProc<ApiTextToSpeech>(handle, "_AITalkAPI_TextToSpeech@12");
     adapter->close_speech_ = LoadProc<ApiCloseSpeech>(handle, "_AITalkAPI_CloseSpeech@8");
     adapter->get_data_ = LoadProc<ApiGetData>(handle, "_AITalkAPI_GetData@16");
+#else
+    adapter->init_ = LoadProc<ApiInit>(handle, "AITalkAPI_Init");
+    adapter->end_ = LoadProc<ApiEnd>(handle, "AITalkAPI_End");
+    // adapter->voice_load_ = LoadProc<ApiVoiceLoad>(handle, "AITalkAPI_VoiceLoadFromFullPath");
+    adapter->voice_load_ = LoadProc<ApiVoiceLoad>(handle, "AITalkAPI_VoiceLoad");
+    adapter->voice_clear_ = LoadProc<ApiVoiceClear>(handle, "AITalkAPI_VoiceClear");
+    adapter->set_param_ = LoadProc<ApiSetParam>(handle, "AITalkAPI_SetParam");
+    adapter->get_param_ = LoadProc<ApiGetParam>(handle, "AITalkAPI_GetParam");
+    adapter->lang_load_ = LoadProc<ApiLangLoad>(handle, "AITalkAPI_LangLoad");
+    adapter->text_to_kana_ = LoadProc<ApiTextToKana>(handle, "AITalkAPI_TextToKana");
+    adapter->close_kana_ = LoadProc<ApiCloseKana>(handle, "AITalkAPI_CloseKana");
+    adapter->get_kana_ = LoadProc<ApiGetKana>(handle, "AITalkAPI_GetKana");
+    adapter->text_to_speech_ = LoadProc<ApiTextToSpeech>(handle, "AITalkAPI_TextToSpeech");
+    adapter->close_speech_ = LoadProc<ApiCloseSpeech>(handle, "AITalkAPI_CloseSpeech");
+    adapter->get_data_ = LoadProc<ApiGetData>(handle, "AITalkAPI_GetData");
+#endif
     return adapter;
   }
 

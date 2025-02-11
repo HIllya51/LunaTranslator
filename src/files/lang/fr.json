@@ -24,7 +24,6 @@
     "谷歌": "Google",
     "阿里": "Ali!",
     "有道": "Oui.",
-    "有道2": "YouDao 2",
     "彩云": "Nuages colorés",
     "金山快译": "Traduction rapide de Jinshan",
     "快译通": "Traduction rapide",
@@ -169,7 +168,6 @@
     "飞书": "Le livre volant",
     "编辑": "Modifier",
     "移动": "Mobile",
-    "设置Token": "Configurer token",
     "该功能可能会导致游戏崩溃！": "Cette fonctionnalité peut provoquer un crash du jeu!",
     "警告": "Avertissement",
     "文字更新分析": "Analyse des mises à jour textuelles",
@@ -232,7 +230,6 @@
     "自动切换到模式": "Basculement automatique en mode",
     "不切换": "Pas de commutation",
     "显示": "Afficher",
-    "当前MD5": "Le MD5 actuel",
     "修改": "Modifier",
     "翻译结果修正": "Correction des résultats de traduction",
     "过滤文本中的非日语字符集字符": "Filtrer les caractères du jeu de caractères non japonais dans le texte",
@@ -242,7 +239,6 @@
     "自动获取系统代理": "Obtenir automatiquement un agent système",
     "游戏设置": "Paramètres du jeu",
     "显示错误信息": "Afficher les informations d'erreur",
-    "问题反馈": "Feedback sur les questions",
     "附带上下文个数": "Nombre de contextes attachés",
     "备忘录": "Memorandum",
     "插入图片": "Insérer une image",
@@ -792,5 +788,7 @@
     "大模型通用接口": "",
     "总大小": "",
     "进度": "",
-    "范围": ""
+    "范围": "",
+    "字体设置": "",
+    "成功添加后隐藏Anki页面": ""
 }

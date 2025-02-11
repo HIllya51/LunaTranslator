@@ -271,7 +271,9 @@
         document.getElementById('maybeshoworigin').innerHTML = css;
         safe_calllunaheightchange()
     }
-    function create_div_line_id(_id, texttype) {
+    function create_div_line_id(_id, argsjson) {
+        let args = JSON.parse(decodeURIComponent(argsjson))
+        let texttype = args.texttype
         let div = document.createElement("div");
         let span = document.createElement('span')
         span.id = _id;
@@ -301,6 +303,9 @@
             div = divx
         }
         div.classList.add('centercontrol')
+        if (args.klass) {
+            div.classList.add('TS_CLASS_' + args.klass)
+        }
         document.getElementById('luna_root_div').appendChild(div);
     }
     function create_internal_text(style, styleargsjson, _id, nameu, textu, argsjson) {
@@ -464,21 +469,22 @@
         `
     }
     function _setfontstyle_which(t, args) {
-        let fontFamily = args.fontFamily
-        let fontSize = args.fontSize
-        let bold = args.bold
-        return `.${t}{
-        font-size: ${fontSize}pt;
-        font-family: ${fontFamily};
-        ${bold ? "font-weight: bold;" : ""} 
-        }
-        `
+        let style = ''
+        if (args.fontFamily) style += `font-family: ${args.fontFamily};`
+        if (args.fontSize) style += `font-size: ${args.fontSize}pt;`
+        style += `font-weight: ${args.bold ? "bold" : "normal"} ;`
+        return `.${t}{${style}}`
     }
     function setfontstyle(argsjson) {
         let args = JSON.parse(decodeURIComponent(argsjson))
-        let style = _setfontstyle_which('klass_font_origin', args.origin)
+        let extra = args.extra
+        let style = ''
+        style += _setfontstyle_which('klass_font_origin', args.origin)
         style += _setfontstyle_which('klass_font_trans', args.trans)
         style += _setfontstyle_which('klass_font_hira', args.hira)
+        for (let klass in extra) {
+            style += _setfontstyle_which('TS_CLASS_' + klass, extra[klass])
+        }
         document.getElementById('styleforfont').innerHTML = style
         measureheight('klass_font_origin', args.origin)
         measureheight('klass_font_trans', args.trans)

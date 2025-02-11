@@ -22,7 +22,7 @@ namespace ebyroid
     Ebyroid(Ebyroid &&) = delete;
     ~Ebyroid();
 
-    static Ebyroid *Create(const std::string &base_dir, const std::string &dllpath, const std::string &voice);
+    static Ebyroid *Create(const std::string &base_dir, const std::string &dllpath, const std::string &voice, const std::string &Lang);
     int Hiragana(const char *inbytes, std::vector<char> &);
     int Speech(const char *inbytes, std::vector<int16_t> &, uint32_t mode = 0u);
 

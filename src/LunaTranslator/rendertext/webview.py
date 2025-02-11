@@ -10,6 +10,7 @@ import gobject, uuid, json, os, functools
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import trypass, threader
+import copy
 from gui.usefulwidget import WebviewWidget
 
 testsavejs = False
@@ -59,6 +60,7 @@ class TextBrowser(WebviewWidget, dataget):
         self.saveiterclasspointer = {}
         self.isfirst = True
         self.colorset = set()
+        self.ts_klass = {}
         self.window().cursorSet.connect(self._switchcursor)
         self._switchcursor.connect(self.switchcursor)
         self.window().isDragging.connect(self._isDragging)
@@ -73,6 +75,7 @@ class TextBrowser(WebviewWidget, dataget):
 
     def resetflags(self):
         self.colorset.clear()
+        self.ts_klass.clear()
         self.setselectable(globalconfig["selectable"])
         self.showhideerror(globalconfig["showtranexception"])
         self.showhideorigin(globalconfig["isshowrawtext"])
@@ -170,8 +173,9 @@ class TextBrowser(WebviewWidget, dataget):
     def showhideerror(self, show):
         self.debugeval("showhideerror({})".format(int(show)))
 
-    def create_div_line_id(self, _id, texttype: TextType):
-        self.debugeval('create_div_line_id("{}",{})'.format(_id, texttype))
+    def create_div_line_id(self, _id, texttype: TextType, klass: str):
+        args = quote(json.dumps(dict(klass=klass, texttype=texttype)))
+        self.debugeval('create_div_line_id("{}","{}")'.format(_id, args))
 
     def clear_all(self):
         self.debugeval("clear_all()")
@@ -268,7 +272,8 @@ class TextBrowser(WebviewWidget, dataget):
 
     # native api end
     def setfontstyle(self):
-        def __loadfont(argc, extra):
+
+        def loadfont(argc, extra):
             fm, fs, bold = argc
             return dict(
                 fontFamily=fm,
@@ -277,37 +282,52 @@ class TextBrowser(WebviewWidget, dataget):
                 extra=extra,
             )
 
-        args = dict(
-            origin=__loadfont(
-                self._getfontinfo(TextType.Origin), globalconfig["extra_space"]
-            ),
-            trans=__loadfont(
-                self._getfontinfo(TextType.Translate), globalconfig["extra_space_trans"]
-            ),
-            hira=__loadfont(self._getfontinfo_kana(), 0),
+        extra = {}
+        for klass, data in self.ts_klass.items():
+            klassextra = {}
+            if (not data.get("fontfamily_df", True)) and ("fontfamily" in data):
+                klassextra["fontFamily"] = data["fontfamily"]
+            if (not data.get("fontsize_df", True)) and ("fontsize" in data):
+                klassextra["fontSize"] = data["fontsize"]
+            if (not data.get("showbold_df", True)) and ("showbold" in data):
+                klassextra["bold"] = data["showbold"]
+            extra[klass] = klassextra
+        origin = loadfont(
+            self._getfontinfo(TextType.Origin), globalconfig["extra_space"]
         )
+        trans = loadfont(
+            self._getfontinfo(TextType.Translate), globalconfig["extra_space_trans"]
+        )
+        hira = (loadfont(self._getfontinfo_kana(), 0),)
+        args = dict(origin=origin, trans=trans, hira=hira, extra=extra)
         args = quote(json.dumps(args))
         self.debugeval('setfontstyle("{}");'.format(args))
 
     def iter_append(
-        self, iter_context_class, texttype: TextType, name, text, color: ColorControl
+        self,
+        iter_context_class,
+        texttype: TextType,
+        name,
+        text,
+        color: ColorControl,
+        klass,
     ):
 
         if iter_context_class not in self.saveiterclasspointer:
-            _id = self.createtextlineid(texttype)
+            _id = self.createtextlineid(texttype, klass)
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
         self._webview_append(_id, name, text, [], color)
 
-    def createtextlineid(self, texttype: TextType):
-
+    def createtextlineid(self, texttype: TextType, klass: str):
+        self.setfontextra(klass)
         _id = "luna_{}".format(uuid.uuid4())
-        self.create_div_line_id(_id, texttype)
+        self.create_div_line_id(_id, texttype, klass)
         return _id
 
-    def append(self, texttype: TextType, name, text, tag, color: ColorControl):
-        _id = self.createtextlineid(texttype)
+    def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
+        _id = self.createtextlineid(texttype, klass)
         self._webview_append(_id, name, text, tag, color)
 
     def measureH(self, font_family, font_size, bold):
@@ -341,6 +361,15 @@ class TextBrowser(WebviewWidget, dataget):
             return
         self.colorset.add(color)
         self.setcolorstyle()
+
+    def setfontextra(self, klass: str):
+        if not klass:
+            return
+        curr = copy.deepcopy(globalconfig["fanyi"][klass].get("privatefont", {}))
+        if curr == self.ts_klass.get(klass, None):
+            return
+        self.ts_klass[klass] = curr
+        self.setfontstyle()
 
     def _webview_append(self, _id, name, text: str, tag, color: ColorControl):
         self._setcolors(color)

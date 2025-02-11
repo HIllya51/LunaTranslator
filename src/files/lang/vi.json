@@ -24,7 +24,6 @@
     "谷歌": "Trang chủ",
     "阿里": "Việt",
     "有道": "Có đường",
-    "有道2": "Có đường 2.",
     "彩云": "Mây màu",
     "金山快译": "Bản dịch của Golden Hills",
     "快译通": "Dịch nhanh",
@@ -169,7 +168,6 @@
     "飞书": "Sách bay",
     "编辑": "Chỉnh sửa",
     "移动": "Di chuyển",
-    "设置Token": "Thiết lập Token",
     "该功能可能会导致游戏崩溃！": "Tính năng này có thể gây ra sự cố trò chơi!",
     "警告": "Cảnh báo",
     "文字更新分析": "Phân tích cập nhật văn bản",
@@ -232,7 +230,6 @@
     "自动切换到模式": "Tự động chuyển sang chế độ",
     "不切换": "Không chuyển đổi",
     "显示": "Hiển thị",
-    "当前MD5": "MD5 hiện tại",
     "修改": "Sửa đổi",
     "翻译结果修正": "Sửa kết quả dịch",
     "过滤文本中的非日语字符集字符": "Bộ lọc ký tự bộ ký tự không phải tiếng Nhật trong văn bản",
@@ -242,7 +239,6 @@
     "自动获取系统代理": "Tự động nhận proxy hệ thống",
     "游戏设置": "Cài đặt trò chơi",
     "显示错误信息": "Hiện thông tin lỗi",
-    "问题反馈": "Phản hồi câu hỏi",
     "附带上下文个数": "Số context",
     "备忘录": "Bản ghi nhớ",
     "插入图片": "Chèn ảnh",
@@ -792,5 +788,7 @@
     "大模型通用接口": "",
     "总大小": "",
     "进度": "",
-    "范围": ""
+    "范围": "",
+    "字体设置": "",
+    "成功添加后隐藏Anki页面": ""
 }

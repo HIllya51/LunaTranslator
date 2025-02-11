@@ -257,17 +257,13 @@
     "判定詞": "Soudní slovo",
     "翻译设置": "Nastavení překladu",
     "不透明度": "Krytost",
-    "有道2": "Youdao 2.",
     "形容詞": "Přídavné přídavky",
     "附带上下文个数": "Počet doprovodných kontextů",
     "选择文件夹": "Vybrat složku",
     "最短翻译字数": "Minimální počet slov překladu",
-    "问题反馈": "Zpětná vazba problémů",
     "缩放时调整光标速度": "Nastavit rychlost kurzoru při zoomování",
-    "当前MD5": "Aktuální MD5",
     "土耳其语": "Turecky",
     "朗读": "Čtení nahlas",
-    "设置Token": "Nastavit žeton",
     "备忘录": "memorandum",
     "自定义python处理": "Přizpůsobit zpracování Pythonu",
     "東北ずん子/东北俊子": "Dongbei Kunzi/Dongbei Junzi",
@@ -792,5 +788,7 @@
     "大模型通用接口": "",
     "总大小": "",
     "进度": "",
-    "范围": ""
+    "范围": "",
+    "字体设置": "",
+    "成功添加后隐藏Anki页面": ""
 }

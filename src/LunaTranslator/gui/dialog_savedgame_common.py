@@ -27,6 +27,7 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     getspinbox,
     selectcolor,
+    ClickableLabel,
     SplitLine,
 )
 
@@ -36,22 +37,6 @@ def showcountgame(window, num):
         window.setWindowTitle("游戏管理__-__" + str(num))
     else:
         window.setWindowTitle("游戏管理")
-
-
-class ClickableLabel(QLabel):
-    def __init__(self):
-        super().__init__()
-        self.setClickable(True)
-
-    def setClickable(self, clickable):
-        self._clickable = clickable
-
-    def mousePressEvent(self, event):
-        if self._clickable and event.button() == Qt.MouseButton.LeftButton:
-            self.clicked.emit()
-
-    clicked = pyqtSignal()
-
 
 class tagitem(QFrame):
     # search game
@@ -105,7 +90,6 @@ class tagitem(QFrame):
 
         key = (tag, _type, refdata)
         lb = ClickableLabel()
-        lb.setStyleSheet("background:transparent")
         lb.setText(tag)
         lb.clicked.connect(functools.partial(self.labelclicked.emit, key))
         if removeable:

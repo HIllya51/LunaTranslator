@@ -257,17 +257,13 @@
     "判定詞": "Palavra de julgamento",
     "翻译设置": "Configuração da Tradução",
     "不透明度": "Opacidade",
-    "有道2": "Youdao 2",
     "形容詞": "Adjectivos",
     "附带上下文个数": "Número de contextos de acompanhamento",
     "选择文件夹": "Seleccionar a pasta",
     "最短翻译字数": "Número mínimo de palavras de tradução",
-    "问题反馈": "Feedback sobre problemas",
     "缩放时调整光标速度": "Ajustar a velocidade do cursor ao ampliar",
-    "当前MD5": "MD5 actual",
     "土耳其语": "Turco",
     "朗读": "A ler em voz alta",
-    "设置Token": "Definir o Ficheiro",
     "备忘录": "memorando",
     "自定义python处理": "Personalizar o Processamento Python",
     "東北ずん子/东北俊子": "Dongbei Kunzi/Dongbei Junzi",
@@ -792,5 +788,7 @@
     "大模型通用接口": "",
     "总大小": "",
     "进度": "",
-    "范围": ""
+    "范围": "",
+    "字体设置": "",
+    "成功添加后隐藏Anki页面": ""
 }

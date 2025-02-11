@@ -3,12 +3,12 @@
 int dllinjectwmain(int argc, wchar_t *argv[]);
 int updatewmain(int argc, wchar_t *wargv[]);
 bool checkisapatch();
+int voiceroid2wmain(int argc, wchar_t *argv[]);
 #ifndef _WIN64
 int lecwmain(int argc, wchar_t *argv[]);
 int jbjwmain(int argc, wchar_t *argv[]);
 int dreyewmain(int argc, wchar_t *argv[]);
 int kingsoftwmain(int argc, wchar_t *argv[]);
-int voiceroid2wmain(int argc, wchar_t *argv[]);
 int neospeech(int argc, wchar_t *argv[]);
 int neospeechlist(int argc, wchar_t *argv[]);
 int eztrans(int argc, wchar_t *argv[]);
@@ -59,12 +59,12 @@ int wmain(int argc, wchar_t *argv[])
         {L"dllinject", dllinjectwmain},
         {L"listpm", listprocessmodule},
         {L"update", updatewmain},
+        {L"voiceroid2", voiceroid2wmain},
 #ifndef _WIN64
         {L"lec", lecwmain},
         {L"jbj7", jbjwmain},
         {L"dreye", dreyewmain},
         {L"kingsoft", kingsoftwmain},
-        {L"voiceroid2", voiceroid2wmain},
         {L"neospeech", neospeech},
         {L"neospeechlist", neospeechlist},
         {L"eztrans", eztrans},

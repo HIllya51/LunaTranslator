@@ -305,6 +305,30 @@ namespace
         buffer->from(s);
     }
 
+    void T01000A7019EBC000(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        hp1->text_fun = nullptr;
+        HookParam hp;
+        hp.address = YUZU::emu_arg(context)[0xb];
+        hp.type = DIRECT_READ;
+        hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+        {
+            StringReplacer(buffer, "\x87\x85", 2, "\x81\x5c", 2);
+            StringReplacer(buffer, "\x87\x86", 2, "\x81\x5c", 2);
+            StringReplacer(buffer, "\x87\x87", 2, "\x81\x5c", 2);
+            CharFilter(buffer, '\n');
+
+            auto s = buffer->strA();
+            static std::string last;
+            if (startWith(s, last))
+            {
+                buffer->from(s.substr(last.size(), s.size() - last.size()));
+            }
+            last = s;
+        };
+        static auto _ = NewHook(hp, "01000A7019EBC000");
+    }
+
     void ReadTextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = YUZU::emu_arg(context)[hp->offset];
@@ -3688,6 +3712,8 @@ namespace
             {0x818703d4, {CODEC_UTF16, 2, 0x14, 0, F01008A401FEB6000_1, 0x01008A401FEB6000ull, "1.0.0"}},
             {0x8180d928, {CODEC_UTF16, 0, 0x14, 0, F01008A401FEB6000, 0x01008A401FEB6000ull, "1.0.0"}},
             {0x8180c1e8, {CODEC_UTF16, 0, 0x14, 0, F01008A401FEB6000_2, 0x01008A401FEB6000ull, "1.0.0"}},
+            // 流行り神 １
+            {0x80056424, {0, 0, 0, T01000A7019EBC000, 0, 0x01000A7019EBC000ull, "1.0.0"}},
         };
         return 1;
     }();
