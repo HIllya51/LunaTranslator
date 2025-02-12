@@ -1145,10 +1145,10 @@ void KiriKiriZ_msvcFilter(TextBuffer *buffer, HookParam *)
     return buffer->clear();
   prevText = text;
 
-  StringCharReplacer(buffer, L"\\n", 2, L' ');
+  StringCharReplacer(buffer, TEXTANDLEN(L"\\n"), L' ');
   if (cpp_wcsnstr(text, L"%", buffer->size / sizeof(wchar_t)))
   {
-    StringFilterBetween(buffer, L"%", 1, L";", 1);
+    StringFilterBetween(buffer, TEXTANDLEN(L"%"), TEXTANDLEN(L";"));
   }
 }
 bool Krkrtextrenderdll()
@@ -1251,7 +1251,7 @@ namespace
       return buffer->clear();
     if (vw == L" line offset ")
       return buffer->clear();
-    StringFilterBetween(buffer, L"[", 1, L"]", 1);
+    StringFilterBetween(buffer, TEXTANDLEN(L"["), TEXTANDLEN(L"]"));
   }
 
   bool kagparser()

@@ -122,11 +122,11 @@ void NitroplusSysFilter(TextBuffer *buffer, HookParam *)
 	if (buffer->size <= 2)
 		return buffer->clear();
 
-	StringFilter(buffer, "\x81@", 2);
+	StringFilter(buffer, TEXTANDLEN("\x81@"));
 	CharReplacer(buffer, '\r', ' ');
 	if (cpp_strnstr(text, "<", buffer->size))
 	{
-		StringFilterBetween(buffer, "<", 1, ">", 1);
+		StringFilterBetween(buffer, TEXTANDLEN("<"), TEXTANDLEN(">"));
 	}
 	while (buffer->size > 1 && ::isspace(*text))
 	{

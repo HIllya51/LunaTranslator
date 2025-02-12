@@ -562,7 +562,7 @@ namespace
     hp.split = stackoffset(1); // name 80000000 各种所有text 0
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
-      StringFilter(buffer, "\xf0\x40", 2);
+      StringFilter(buffer, TEXTANDLEN("\xf0\x40"));
       CharFilter(buffer, '\n');
     };
     return NewHook(hp, "TENMEI");

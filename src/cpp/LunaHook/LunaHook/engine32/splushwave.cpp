@@ -32,7 +32,7 @@ bool splushwave_(const char *buf, int size)
 */
     if ((*(char *)buffer->buff) == '#')
       return buffer->clear();
-    StringFilterBetween(buffer, "[", 1, "]", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("["), TEXTANDLEN("]"));
   };
   return NewHook(hp, "splushwave");
 }

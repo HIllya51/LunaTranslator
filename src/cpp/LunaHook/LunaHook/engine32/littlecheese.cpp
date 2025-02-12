@@ -18,7 +18,7 @@ bool littlecheese::attach_function()
     hp.offset = regoffset(ecx);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-        StringFilter(buffer, "\x81\x40", 2);
+        StringFilter(buffer, TEXTANDLEN("\x81\x40"));
     };
     if (*(DWORD *)(addr - 4) == 0x55575653)
     {

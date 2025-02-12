@@ -31,10 +31,7 @@ class OCR(baseocr):
             top_p=self.config["top_p"],
             temperature=temperature,
         )
-        if ("api.mistral.ai" not in self.config["apiurl"]) and (
-            "generativelanguage.googleapis.com/v1beta/openai/"
-            not in self.config["apiurl"]
-        ):
+        if "api.mistral.ai" not in self.config["apiurl"]:
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         return data
 
@@ -99,7 +96,7 @@ class OCR(baseocr):
 
         base64_image = base64.b64encode(imagebinary).decode("utf-8")
 
-        if self.config["apiurl"] == "https://generativelanguage.googleapis.com":
+        if self.config["apiurl"].startswith("https://generativelanguage.googleapis.com"):
             response = self.ocr_gemini(prompt, base64_image)
         else:
             response = self.ocr_normal(prompt, base64_image)

@@ -171,7 +171,7 @@ namespace
     //  return false;
     // if (*len == 2 && *text == L'N')
     //  return false;
-    StringFilter(buffer, L"NLI", 3);
+    StringFilter(buffer, TEXTANDLEN(L"NLI"));
     // Replace 『�(300e, 300f) with 「�(300c,300d)
     // CharReplacer(text, len, 0x300e, 0x300c);
     // CharReplacer(text, len, 0x300f, 0x300d);

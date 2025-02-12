@@ -1,9 +1,9 @@
 #include "DxLib.h"
 void DxLibFilter(TextBuffer *buffer, HookParam *)
 {
-    StringCharReplacer(buffer, "%N", 2, ' ');
-    StringFilter(buffer, "%K", 2);
-    StringFilter(buffer, "%P", 2);
+    StringCharReplacer(buffer, TEXTANDLEN("%N"), ' ');
+    StringFilter(buffer, TEXTANDLEN("%K"));
+    StringFilter(buffer, TEXTANDLEN("%P"));
 }
 bool InsertDxLibHook()
 {

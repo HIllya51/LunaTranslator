@@ -423,13 +423,13 @@ void StuffScript2Filter(TextBuffer *buffer, HookParam *)
 
   if (text[0] == '-')
   {
-    StringFilter(buffer, "-/-", 3);
-    StringFilterBetween(buffer, "-", 1, "-", 1);
+    StringFilter(buffer, TEXTANDLEN("-/-"));
+    StringFilterBetween(buffer, TEXTANDLEN("-"), TEXTANDLEN("-"));
   }
-  StringCharReplacer(buffer, "_n_r", 4, '\n');
-  StringCharReplacer(buffer, "_r", 2, ' ');
-  StringFilter(buffer, "\\n", 2);
-  StringFilter(buffer, "_n", 2);
+  StringCharReplacer(buffer, TEXTANDLEN("_n_r"), '\n');
+  StringCharReplacer(buffer, TEXTANDLEN("_r"), ' ');
+  StringFilter(buffer, TEXTANDLEN("\\n"));
+  StringFilter(buffer, TEXTANDLEN("_n"));
 }
 bool InsertStuffScript2Hook()
 {
@@ -486,15 +486,15 @@ void StuffScript3Filter(TextBuffer *buffer, HookParam *)
     ::memmove(text, text + 2, buffer->size);
   }
 
-  StringFilterBetween(buffer, "/\x81\x79", 3, "\x81\x7A", 2); // remove hidden name
-  StringFilterBetween(buffer, "[", 1, "]", 1);                // garbage
+  StringFilterBetween(buffer, TEXTANDLEN("/\x81\x79"), TEXTANDLEN("\x81\x7A")); // remove hidden name
+  StringFilterBetween(buffer, TEXTANDLEN("["), TEXTANDLEN("]"));                // garbage
 
   // ruby
   CharFilter(buffer, '<');
-  StringFilterBetween(buffer, ",", 1, ">", 1);
+  StringFilterBetween(buffer, TEXTANDLEN(","), TEXTANDLEN(">"));
 
-  StringCharReplacer(buffer, "_r\x81\x40", 4, ' ');
-  StringCharReplacer(buffer, "_r", 2, ' ');
+  StringCharReplacer(buffer, TEXTANDLEN("_r\x81\x40"), ' ');
+  StringCharReplacer(buffer, TEXTANDLEN("_r"), ' ');
 }
 bool InsertStuffScript3Hook()
 {
@@ -545,10 +545,10 @@ bool _5pb::attach_function()
 void KaleidoFilter(TextBuffer *buffer, HookParam *)
 {
   // Unofficial eng TL with garbage newline spaces
-  StringCharReplacer(buffer, " \\n ", 4, ' ');
-  StringCharReplacer(buffer, " \\n", 3, ' ');
-  StringCharReplacer(buffer, "\\n", 2, ' ');
-  StringCharReplacer(buffer, "\xEF\xBC\x9F", 3, '?');
+  StringCharReplacer(buffer, TEXTANDLEN(" \\n "), ' ');
+  StringCharReplacer(buffer, TEXTANDLEN(" \\n"), ' ');
+  StringCharReplacer(buffer, TEXTANDLEN("\\n"), ' ');
+  StringCharReplacer(buffer, TEXTANDLEN("\xEF\xBC\x9F"), '?');
 }
 
 bool InsertKaleidoHook()
@@ -657,7 +657,7 @@ namespace
     hp.type = USING_STRING | CODEC_UTF8;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      StringCharReplacer(buffer, "\\n", 2, '\n');
+      StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
     };
     return NewHook(hp, "5bp");
   }

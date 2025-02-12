@@ -3,32 +3,32 @@ void ONScripterruCommonFilter(TextBuffer *buffer)
 {
 
   auto text = reinterpret_cast<LPSTR>(buffer->buff);
-  StringCharReplacer(buffer, "{n}", 3, ' ');
+  StringCharReplacer(buffer, TEXTANDLEN("{n}"), ' ');
   if (cpp_strnstr(text, "{c:", buffer->size))
   {
-    StringFilterBetween(buffer, "{c:", 3, ":", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("{c:"), TEXTANDLEN(":"));
   }
   if (cpp_strnstr(text, "{e:", buffer->size))
   {
-    StringFilterBetween(buffer, "{e:", 3, ":", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("{e:"), TEXTANDLEN(":"));
   }
   if (cpp_strnstr(text, "{f:", buffer->size))
   {
-    StringFilterBetween(buffer, "{f:", 3, ":", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("{f:"), TEXTANDLEN(":"));
   }
   if (cpp_strnstr(text, "{i:", buffer->size))
   {
-    StringFilter(buffer, "{i:", 3);
+    StringFilter(buffer, TEXTANDLEN("{i:"));
   }
   if (cpp_strnstr(text, "{p:", buffer->size))
   {
-    StringFilterBetween(buffer, "{p:", 3, "}", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("{p:"), TEXTANDLEN("}"));
   }
   CharFilter(buffer, '}');
 
   if (cpp_strnstr(text, "[", buffer->size))
   {
-    StringFilterBetween(buffer, "[", 1, "]", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("["), TEXTANDLEN("]"));
   }
 }
 

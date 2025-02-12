@@ -27,11 +27,11 @@ namespace
   //[170224] [Sweet HEART] アイドル★クリニック 恋の薬でHな処方 (iso+mds+rr3)
   void filter(TextBuffer *buffer, HookParam *)
   {
-    StringFilter(buffer, "$L", 2);
-    StringFilter(buffer, "$M", 2);
-    StringFilter(buffer, "$S", 2);
-    StringFilterBetween(buffer, "[", 1, "]", 1);
-    StringFilterBetween(buffer, "&", 1, ";", 1);
+    StringFilter(buffer, TEXTANDLEN("$L"));
+    StringFilter(buffer, TEXTANDLEN("$M"));
+    StringFilter(buffer, TEXTANDLEN("$S"));
+    StringFilterBetween(buffer, TEXTANDLEN("["), TEXTANDLEN("]"));
+    StringFilterBetween(buffer, TEXTANDLEN("&"), TEXTANDLEN(";"));
     // else
     // {
     //   v18 = *v16++;

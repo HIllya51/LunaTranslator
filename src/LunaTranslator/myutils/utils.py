@@ -8,6 +8,7 @@ from string import Formatter
 from ctypes import cast, c_char, POINTER
 from traceback import print_exc
 from myutils.config import (
+    _TR,
     globalconfig,
     static_data,
     getlanguse,
@@ -881,9 +882,9 @@ def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/comple
             "claude-2.0",
             "claude-instant-1.2",
         ]
-    elif apiurl == "https://api.cohere.com/v2/chat":
+    elif apiurl.startswith("https://api.cohere.com/v2/chat"):
         return parsecoheremodellist(proxies, apikey)
-    elif apiurl == "https://generativelanguage.googleapis.com":
+    elif apiurl.startswith("https://generativelanguage.googleapis.com"):
         return parsegeminimodellist(proxies, apikey)
     params = dict(headers={"Authorization": "Bearer {}".format(apikey.strip())})
     modellink = urlpathjoin(
@@ -891,19 +892,26 @@ def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/comple
         "models",
     )
     resp = requests.get(modellink, proxies=proxies, **params)
+    if resp.status_code == 404:
+        raise Exception(
+            resp,
+            _TR(
+                "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。"
+            ),
+        )
     try:
         return sorted([_["id"] for _ in resp.json()["data"]])
     except:
         raise Exception(resp)
 
 
-def common_parse_normal_response(response: requests.Response, apiurl: None):
+def common_parse_normal_response(response: requests.Response, apiurl: str):
     try:
-        if apiurl == "https://api.cohere.com/v2/chat":
+        if apiurl.startswith("https://api.cohere.com/v2/chat"):
             return response.json()["message"]["content"][0]["text"]
-        elif apiurl == "https://api.anthropic.com/v1/messages":
+        elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
             return response.json()["content"][0]["text"]
-        elif apiurl == "https://generativelanguage.googleapis.com":
+        elif apiurl.startswith("https://generativelanguage.googleapis.com"):
             return response.json()["candidates"][0]["content"]["parts"][0]["text"]
         else:
             return response.json()["choices"][0]["message"]["content"]

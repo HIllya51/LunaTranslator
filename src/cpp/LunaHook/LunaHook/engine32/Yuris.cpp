@@ -275,24 +275,24 @@ static void Yuris6Filter(TextBuffer *buffer, HookParam *hp)
     // ruby ＜手水舎／ちょうずや＞
     if (cpp_strnstr(text, "\x81\x83", buffer->size))
     {                                                            // \x81\x83 -> '＜'
-      StringFilterBetween(buffer, "\x81\x5E", 2, "\x81\x84", 2); // \x81\x5E -> '／' , \x81\x84 -> '＞'
-      StringFilter(buffer, "\x81\x83", 2);                       // \x81\x83 -> '＜'
+      StringFilterBetween(buffer, TEXTANDLEN("\x81\x5E"), TEXTANDLEN("\x81\x84")); // \x81\x5E -> '／' , \x81\x84 -> '＞'
+      StringFilter(buffer, TEXTANDLEN("\x81\x83"));                       // \x81\x83 -> '＜'
     }
     // ruby ≪美桜／姉さん≫
     else if (cpp_strnstr(text, "\x81\xE1", buffer->size))
     {                                                            // \x81\xE1 -> '≪'
-      StringFilterBetween(buffer, "\x81\x5E", 2, "\x81\xE2", 2); // \x81\x5E -> '／' , \x81\xE2 -> '≫'
-      StringFilter(buffer, "\x81\xE1", 2);                       // \x81\xE1 -> '≪'
+      StringFilterBetween(buffer, TEXTANDLEN("\x81\x5E"), TEXTANDLEN("\x81\xE2")); // \x81\x5E -> '／' , \x81\xE2 -> '≫'
+      StringFilter(buffer, TEXTANDLEN("\x81\xE1"));                       // \x81\xE1 -> '≪'
     }
 
     CharReplacer(buffer, '=', '-');
-    StringFilter(buffer, "\xEF\xF0", 2);
-    StringFilter(buffer, "\xEF\xF1", 2);
-    StringFilter(buffer, "\xEF\xF2", 2);
-    StringFilter(buffer, "\xEF\xF3", 2);
-    StringFilter(buffer, "\xEF\xF4", 2);
-    StringFilter(buffer, "\xEF\xF5", 2);
-    StringFilter(buffer, "\x81\x98", 2);
+    StringFilter(buffer, TEXTANDLEN("\xEF\xF0"));
+    StringFilter(buffer, TEXTANDLEN("\xEF\xF1"));
+    StringFilter(buffer, TEXTANDLEN("\xEF\xF2"));
+    StringFilter(buffer, TEXTANDLEN("\xEF\xF3"));
+    StringFilter(buffer, TEXTANDLEN("\xEF\xF4"));
+    StringFilter(buffer, TEXTANDLEN("\xEF\xF5"));
+    StringFilter(buffer, TEXTANDLEN("\x81\x98"));
   }
 }
 bool Yuris::InsertYuris6Hook()

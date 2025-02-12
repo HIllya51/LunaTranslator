@@ -45,7 +45,7 @@ bool InsertShinyDaysGameHook()
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
-    StringCharReplacer(buffer, L"\\n", 2, L'\n');
+    StringCharReplacer(buffer, TEXTANDLEN(L"\\n"), L'\n');
   };
   ConsoleOutput("INSERT ShinyDays");
   return NewHook(hp, "ShinyDays");

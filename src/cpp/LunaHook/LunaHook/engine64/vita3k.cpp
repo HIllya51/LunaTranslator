@@ -251,12 +251,12 @@ namespace
     }
     void PCSG00530(TextBuffer *buffer, HookParam *)
     {
-        StringFilter(buffer, "#n", 2);
+        StringFilter(buffer, TEXTANDLEN("#n"));
     }
     void PCSG00826(TextBuffer *buffer, HookParam *)
     {
-        StringFilter(buffer, "#n", 2);
-        StringFilter(buffer, "\x81\x40", 2);
+        StringFilter(buffer, TEXTANDLEN("#n"));
+        StringFilter(buffer, TEXTANDLEN("\x81\x40"));
     }
     void PCSG00592(TextBuffer *buffer, HookParam *hp)
     {
@@ -266,11 +266,11 @@ namespace
     }
     void PCSG00833(TextBuffer *buffer, HookParam *)
     {
-        StringFilter(buffer, u8"　", strlen(u8"　"));
+        StringFilter(buffer, TEXTANDLEN(u8"　"));
     }
     void PCSG00855(TextBuffer *buffer, HookParam *)
     {
-        StringFilter(buffer, u8"#n　", strlen(u8"#n　"));
+        StringFilter(buffer, TEXTANDLEN(u8"#n　"));
     }
     void PCSG00787(TextBuffer *buffer, HookParam *)
     {
@@ -278,7 +278,7 @@ namespace
     }
     void PCSG01068(TextBuffer *buffer, HookParam *hp)
     {
-        StringCharReplacer(buffer, "\\\\", 2, '\n');
+        StringCharReplacer(buffer, TEXTANDLEN("\\\\"), '\n');
         CharFilter(buffer, '\\');
         auto s = buffer->viewA();
         if (endWith(s, u8"。!"))
@@ -374,7 +374,7 @@ namespace
         auto len = (*(DWORD *)(VITA3K::emu_arg(context)[0] + 8)) * 2;
         auto pre = VITA3K::emu_arg(context)[0] + 0xC;
         buffer->from(pre, len);
-        StringFilter(buffer, L"<br>", 4);
+        StringFilter(buffer, TEXTANDLEN(L"<br>"));
     }
     void PCSG01011(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -617,8 +617,8 @@ namespace
     {
         static std::string last;
         PCSG00535 = std::move(buffer->strA());
-        StringFilter(buffer, "\\f", 2);
-        StringCharReplacer(buffer, "\\n", 2, '\n');
+        StringFilter(buffer, TEXTANDLEN("\\f"));
+        StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
         if (last == PCSG00535)
         {
             buffer->clear();

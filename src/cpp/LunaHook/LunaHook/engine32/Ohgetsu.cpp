@@ -166,7 +166,7 @@ namespace
     hp.type = DIRECT_READ;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      StringCharReplacer(buffer, "||", 2, '\n');
+      StringCharReplacer(buffer, TEXTANDLEN("||"), '\n');
     };
     return NewHook(hp, "Ohgetsu");
   }
@@ -199,7 +199,7 @@ namespace
     hp.offset = stackoffset(1);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      StringCharReplacer(buffer, "||", 2, '\n');
+      StringCharReplacer(buffer, TEXTANDLEN("||"), '\n');
     };
     return NewHook(hp, "Ohgetsu");
   }

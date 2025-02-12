@@ -32,7 +32,6 @@ bool InsertCielHook()
   {
     if ((buffer->size) == 1)
       buffer->clear();
-    // StringCharReplacer(text, len, "^n", 2, ' ');
   };
 
   return NewHook(hp, "Ciel");

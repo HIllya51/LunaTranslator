@@ -234,8 +234,8 @@ void commonfilter(TextBuffer *buffer, HookParam *hp)
 	{
 		if (buffer->size == 2)
 		{
-			StringFilter(buffer, "\x81\xa4", 2);
-			StringFilter(buffer, "\x81\xa5", 2);
+			StringFilter(buffer, TEXTANDLEN("\x81\xa4"));
+			StringFilter(buffer, TEXTANDLEN("\x81\xa5"));
 		}
 	}
 }

@@ -313,9 +313,9 @@ namespace
         hp.type = DIRECT_READ;
         hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
         {
-            StringReplacer(buffer, "\x87\x85", 2, "\x81\x5c", 2);
-            StringReplacer(buffer, "\x87\x86", 2, "\x81\x5c", 2);
-            StringReplacer(buffer, "\x87\x87", 2, "\x81\x5c", 2);
+            StringReplacer(buffer, TEXTANDLEN("\x87\x85"), TEXTANDLEN("\x81\x5c"));
+            StringReplacer(buffer, TEXTANDLEN("\x87\x86"), TEXTANDLEN("\x81\x5c"));
+            StringReplacer(buffer, TEXTANDLEN("\x87\x87"), TEXTANDLEN("\x81\x5c"));
             CharFilter(buffer, '\n');
 
             auto s = buffer->strA();
@@ -710,9 +710,8 @@ namespace
 
     void F01004EB01A328000(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, "#n", 2);
-        char name[] = u8"雪村";
-        StringReplacer(buffer, "#Name[1]", 8, name, strlen(name));
+        StringFilter(buffer, TEXTANDLEN("#n"));
+        StringReplacer(buffer, TEXTANDLEN("#Name[1]"), TEXTANDLEN(u8"雪村"));
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"(#Color\[\d+?\])"), "");
         buffer->from(s);
@@ -767,7 +766,7 @@ namespace
         auto s = buffer->viewA();
         if (startWith(s, "#Key"))
             return buffer->clear();
-        StringFilter(buffer, "#n", 2);
+        StringFilter(buffer, TEXTANDLEN("#n"));
     }
     void F0100E1E00E2AE000(TextBuffer *buffer, HookParam *hp)
     {
@@ -779,12 +778,12 @@ namespace
     }
     void F0100DE200C0DA000(TextBuffer *buffer, HookParam *hp)
     {
-        StringReplacer(buffer, "#n", 2, " ", 1);
-        StringReplacer(buffer, "\n", 1, " ", 1);
+        StringCharReplacer(buffer, TEXTANDLEN("#n"), ' ');
+        CharReplacer(buffer, '\n', ' ');
     }
     void F010099901461A000(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, "#n", 2);
+        StringFilter(buffer, TEXTANDLEN("#n"));
     }
     void F0100AEC013DDA000(TextBuffer *buffer, HookParam *hp)
     {
@@ -799,12 +798,12 @@ namespace
     {
         if (!all_ascii((wchar_t *)buffer->buff, buffer->size / 2))
             return buffer->clear(); // chaos on first load.
-        StringReplacer(buffer, L"<br>", 4, L"\n", 1);
+        StringCharReplacer(buffer, TEXTANDLEN(L"<br>"), '\n');
     }
 
     void F01006CC015ECA000(TextBuffer *buffer, HookParam *hp)
     {
-        StringCharReplacer(buffer, L"#<br>", 5, L'\n');
+        StringCharReplacer(buffer, TEXTANDLEN(L"#<br>"), L'\n');
     }
     void F0100925014864000(TextBuffer *buffer, HookParam *hp)
     {
@@ -892,7 +891,7 @@ namespace
     }
     void F0100B5801D7CE000(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, LR"(\n)", 2);
+        StringFilter(buffer, TEXTANDLEN(LR"(\n)"));
     }
     void F01008C0016544000(TextBuffer *buffer, HookParam *hp)
     {
@@ -966,14 +965,14 @@ namespace
     }
     void F0100BD700E648000(TextBuffer *buffer, HookParam *hp)
     {
-        StringReplacer(buffer, "*", 1, " ", 1);
-        StringReplacer(buffer, u8"ゞ", sizeof(u8"ゞ"), u8"！？", sizeof(u8"！？"));
+        CharReplacer(buffer, '*', ' ');
+        StringReplacer(buffer, TEXTANDLEN(u8"ゞ"), TEXTANDLEN(u8"！？"));
     }
     void F0100D9500A0F6000(TextBuffer *buffer, HookParam *hp)
     {
-        StringReplacer(buffer, u8"㊤", sizeof(u8"㊤"), u8"―", sizeof(u8"―"));
-        StringReplacer(buffer, u8"㊥", sizeof(u8"㊥"), u8"―", sizeof(u8"―"));
-        StringReplacer(buffer, u8"^㌻", sizeof(u8"^㌻"), u8" ", sizeof(u8" ")); // \n
+        StringReplacer(buffer, TEXTANDLEN(u8"㊤"), TEXTANDLEN(u8"―"));
+        StringReplacer(buffer, TEXTANDLEN(u8"㊥"), TEXTANDLEN(u8"―"));
+        StringReplacer(buffer, TEXTANDLEN(u8"^㌻"), TEXTANDLEN(u8" ")); // \n
     }
 
     void F0100DA201E0DA000(TextBuffer *buffer, HookParam *hp)
@@ -1024,7 +1023,7 @@ namespace
     }
     void F010015600D814000(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, L"\\n", 2);
+        StringFilter(buffer, TEXTANDLEN(L"\\n"));
         auto s = buffer->viewW();
         static std::wstring last;
         if (last == s)
@@ -1995,6 +1994,11 @@ namespace
         }
         last = s;
     }
+    void F0100AA1013B96000(TextBuffer *buffer, HookParam *hp)
+    {
+        F010060301588A000(buffer, hp);
+        StringFilter(buffer, TEXTANDLEN(u8"　"));
+    }
     template <bool name>
     void F0100D8B019FC0000(TextBuffer *buffer, HookParam *hp)
     {
@@ -2077,7 +2081,7 @@ namespace
     }
     void F0100FC2019346000(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, "#n", 2);
+        StringFilter(buffer, TEXTANDLEN("#n"));
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"), "");
         buffer->from(s);
@@ -2095,7 +2099,7 @@ namespace
     }
     void F010028D0148E6000_2(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, "@w", 2);
+        StringFilter(buffer, TEXTANDLEN("@w"));
     }
     namespace
     {
@@ -2112,8 +2116,8 @@ namespace
             hp.type = USING_STRING;
             hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
             {
-                StringFilter(buffer, "@1r", 3);
-                StringFilter(buffer, "@-1r", 4);
+                StringFilter(buffer, TEXTANDLEN("@1r"));
+                StringFilter(buffer, TEXTANDLEN("@-1r"));
             };
             static auto _ = NewHook(hp, "01009E600FAF6000");
             static std::map<uint64_t, uintptr_t> mp;
@@ -2155,7 +2159,7 @@ namespace
     }
     void F010076501DAEA000(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, "\\n", 2);
+        StringFilter(buffer, TEXTANDLEN("\\n"));
     }
     void F01005E9016BDE000(TextBuffer *buffer, HookParam *hp)
     {
@@ -3714,6 +3718,8 @@ namespace
             {0x8180c1e8, {CODEC_UTF16, 0, 0x14, 0, F01008A401FEB6000_2, 0x01008A401FEB6000ull, "1.0.0"}},
             // 流行り神 １
             {0x80056424, {0, 0, 0, T01000A7019EBC000, 0, 0x01000A7019EBC000ull, "1.0.0"}},
+            // 真流行り神3
+            {0x800A3460, {CODEC_UTF8, 4, 0, 0, F0100AA1013B96000, 0x0100AA1013B96000ull, "1.0.0"}},
         };
         return 1;
     }();

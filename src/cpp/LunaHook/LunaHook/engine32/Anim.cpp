@@ -56,12 +56,12 @@ namespace
 {
     void Anim3Filter(TextBuffer *buffer, HookParam *)
     {
-        StringFilterBetween(buffer, "\x81\x40", 2, "@m", 2); // @r(2,はと)
-        StringFilterBetween(buffer, "\x81\x40", 2, "@n", 2); // @r(2,はと)
-        StringCharReplacer(buffer, "@b", 2, ' ');
-        StringCharReplacer(buffer, "\x81\x42", 2, '.');
-        StringCharReplacer(buffer, "\x81\x48", 2, '?');
-        StringCharReplacer(buffer, "\x81\x49", 2, '!');
+        StringFilterBetween(buffer, TEXTANDLEN("\x81\x40"), TEXTANDLEN("@m")); // @r(2,はと)
+        StringFilterBetween(buffer, TEXTANDLEN("\x81\x40"), TEXTANDLEN("@n")); // @r(2,はと)
+        StringCharReplacer(buffer, TEXTANDLEN("@b"), ' ');
+        StringCharReplacer(buffer, TEXTANDLEN("\x81\x42"), '.');
+        StringCharReplacer(buffer, TEXTANDLEN("\x81\x48"), '?');
+        StringCharReplacer(buffer, TEXTANDLEN("\x81\x49"), '!');
     }
 
     bool InsertAnim3Hook()

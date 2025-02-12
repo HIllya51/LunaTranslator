@@ -23,3 +23,5 @@ void StringReplacer(TextBuffer *buffer, const wchar_t *src, size_t srclen, const
 void NewLineCharToSpaceFilterA(TextBuffer *buffer, HookParam *);
 
 void all_ascii_Filter(TextBuffer *buffer, HookParam *);
+
+#define TEXTANDLEN(X) X, ARRAYSIZE(X) - 1

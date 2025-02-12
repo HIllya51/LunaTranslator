@@ -186,9 +186,8 @@ namespace
     };
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
-      // StringFilterBetween(buffer, "<", 1, ">", 1); //<BR>
       buffer->from(std::regex_replace(buffer->strA(), std::regex(R"(<.*?>)"), " "));
-      StringFilterBetween(buffer, "(", 1, ")", 1);
+      StringFilterBetween(buffer, TEXTANDLEN("("), TEXTANDLEN(")"));
       StringFilter(buffer, "&,", 1);
       StringFilter(buffer, "&.", 1);
     };

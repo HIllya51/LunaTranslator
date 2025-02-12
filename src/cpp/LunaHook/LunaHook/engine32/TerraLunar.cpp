@@ -18,7 +18,7 @@ namespace
       hp.type = USING_STRING;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        StringFilter(buffer, "[w]", 3);
+        StringFilter(buffer, TEXTANDLEN("[w]"));
       };
       succ |= NewHook(hp, "TerraLunar");
     }

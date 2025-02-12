@@ -9,7 +9,7 @@ void BGI7Filter(TextBuffer *buffer, HookParam *)
   CharFilter(buffer, L'\x0005');
   CharFilter(buffer, L'\x000A');
   CharFilter(buffer, L'▼');
-  StringFilterBetween(buffer, L"<", 1, L">", 1);
+  StringFilterBetween(buffer, TEXTANDLEN(L"<"), TEXTANDLEN(L">"));
 }
 bool BGIattach_function1()
 {

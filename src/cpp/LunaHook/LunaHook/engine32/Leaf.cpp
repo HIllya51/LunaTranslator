@@ -384,8 +384,8 @@ static void LeafFilter(TextBuffer *buffer, HookParam *)
   LPSTR text = (LPSTR)buffer->buff;
   if (::memchr(text, '\\', buffer->size))
   {
-    StringFilter(buffer, "\\n", 2);
-    StringFilter(buffer, "\\k", 2);
+    StringFilter(buffer, TEXTANDLEN("\\n"));
+    StringFilter(buffer, TEXTANDLEN("\\k"));
   }
 }
 namespace
@@ -498,13 +498,13 @@ void AquaplusFilter(TextBuffer *buffer, HookParam *)
   auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
   CharReplacer(buffer, '^', '\"');
-  StringCharReplacer(buffer, "\\n", 2, ' ');
-  StringFilter(buffer, "\\k", 2);
-  StringFilter(buffer, "\\p", 2);
+  StringCharReplacer(buffer, TEXTANDLEN("\\n"), ' ');
+  StringFilter(buffer, TEXTANDLEN("\\k"));
+  StringFilter(buffer, TEXTANDLEN("\\p"));
   if (cpp_strnstr(text, "<R", buffer->size))
   { // ex. <R華奢|きゃしゃ>
-    StringFilter(buffer, "<R", 2);
-    StringFilterBetween(buffer, "|", 1, ">", 1);
+    StringFilter(buffer, TEXTANDLEN("<R"));
+    StringFilterBetween(buffer, TEXTANDLEN("|"), TEXTANDLEN(">"));
   }
   StringFilter(buffer, "<c", 3); // remove "<c" followed by 1 char
   CharFilter(buffer, '>');

@@ -404,7 +404,7 @@ namespace
     hp.offset = regoffset(edi);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      StringCharReplacer(buffer, L"\\i", 2, L'\'');
+      StringCharReplacer(buffer, TEXTANDLEN(L"\\i"), L'\'');
     };
     hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
     return NewHook(hp, "Silkys2");
@@ -824,8 +824,8 @@ namespace
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       // 格式是:人名\n每一行text。每一行的text可以过滤掉。如果人名为空也可以过滤掉。
-      StringReplacer(buffer, "\x84\xa5\x84\xa7", 4, "\x81\x5b\x81\x5b", 4);
-      StringCharReplacer(buffer, "\\n", 2, '\n');
+      StringReplacer(buffer, TEXTANDLEN("\x84\xa5\x84\xa7"), TEXTANDLEN("\x81\x5b\x81\x5b"));
+      StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
       std::string result;
       bool hasFirstNewline = false;
       for (char c : buffer->viewA())
@@ -900,7 +900,7 @@ bool Aisystem6::attach_function()
   hp.type = USING_STRING | NO_CONTEXT; // 男主自定义人名会被分开
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    StringCharReplacer(buffer, "\x81\x93", 2, '\n');
+    StringCharReplacer(buffer, TEXTANDLEN("\x81\x93"), '\n');
   };
   return NewHook(hp, "Aisystem6");
 }

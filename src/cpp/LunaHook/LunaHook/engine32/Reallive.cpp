@@ -101,15 +101,15 @@ void RlBabelFilter(TextBuffer *buffer, HookParam *)
 {
   if (((char *)buffer->buff)[0] == '\x01')
   {
-    StringFilterBetween(buffer, "\x01", 1, "\x02", 1); // remove names
+    StringFilterBetween(buffer, TEXTANDLEN("\x01"), TEXTANDLEN("\x02")); // remove names
   }
 
   CharReplacer(buffer, '\x08', '"');
   CharReplacer(buffer, '\x09', '\'');
   CharReplacer(buffer, '\x0A', '\'');
-  CharFilter(buffer, '\x1F');                           // remove color
-  StringReplacer(buffer, "\x89\x85", 2, "\x81\x63", 2); // "\x89\x85"-> shift-JIS"…"
-  StringReplacer(buffer, "\x89\x97", 2, "--", 2);
+  CharFilter(buffer, '\x1F');                                             // remove color
+  StringReplacer(buffer, TEXTANDLEN("\x89\x85"), TEXTANDLEN("\x81\x63")); // "\x89\x85"-> shift-JIS"…"
+  StringReplacer(buffer, TEXTANDLEN("\x89\x97"), TEXTANDLEN("--"));
 }
 
 bool InsertRlBabelHook()

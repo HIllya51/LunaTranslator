@@ -21,7 +21,7 @@ bool OVERDRIVE::attach_function()
   hp.type = USING_STRING;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    StringFilter(buffer, "\\p\\l", 4);
+    StringFilter(buffer, TEXTANDLEN("\\p\\l"));
   };
   return NewHook(hp, "OVERDRIVE");
 }

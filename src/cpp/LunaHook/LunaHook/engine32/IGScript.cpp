@@ -3,17 +3,17 @@ namespace
 {
   void LucaSystemFilter1(TextBuffer *buffer, HookParam *)
   {
-    StringFilter(buffer, "\x81\x94", 2);
+    StringFilter(buffer, TEXTANDLEN("\x81\x94"));
     // 秋&冬  官中
-    StringReplacer(buffer, "\x82\xa1", 2, "\xa3\xac", 2); // ，
-    StringReplacer(buffer, "\x82\xa3", 2, "\xa1\xa3", 2); // 。
-    StringReplacer(buffer, "\x82\xa5", 2, "\xa1\xa2", 2); // 、
-    StringReplacer(buffer, "\x83\x48", 2, "\xa1\xb1", 2); // ”
-    StringReplacer(buffer, "\x83\x44", 2, "\xa3\xbf", 2); // ？
-    StringReplacer(buffer, "\x83\x42", 2, "\xa3\xa1", 2); //!
-    StringReplacer(buffer, "\x82\xa7", 2, "\xa1\xb9", 2); // 」
-    StringReplacer(buffer, "\x82\xc1", 2, "\xa1\xb7", 2); // 》
-    StringReplacer(buffer, "\x83\x46", 2, "\xa1\xaf", 2); // ’
+    StringReplacer(buffer, TEXTANDLEN("\x82\xa1"), TEXTANDLEN("\xa3\xac")); // ，
+    StringReplacer(buffer, TEXTANDLEN("\x82\xa3"), TEXTANDLEN("\xa1\xa3")); // 。
+    StringReplacer(buffer, TEXTANDLEN("\x82\xa5"), TEXTANDLEN("\xa1\xa2")); // 、
+    StringReplacer(buffer, TEXTANDLEN("\x83\x48"), TEXTANDLEN("\xa1\xb1")); // ”
+    StringReplacer(buffer, TEXTANDLEN("\x83\x44"), TEXTANDLEN("\xa3\xbf")); // ？
+    StringReplacer(buffer, TEXTANDLEN("\x83\x42"), TEXTANDLEN("\xa3\xa1")); //!
+    StringReplacer(buffer, TEXTANDLEN("\x82\xa7"), TEXTANDLEN("\xa1\xb9")); // 」
+    StringReplacer(buffer, TEXTANDLEN("\x82\xc1"), TEXTANDLEN("\xa1\xb7")); // 》
+    StringReplacer(buffer, TEXTANDLEN("\x83\x46"), TEXTANDLEN("\xa1\xaf")); // ’
   }
   template <int arg>
   void SpecialHookigi(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -92,7 +92,7 @@ namespace
     if (text[0] == '\x81' && text[1] == '\x94')
       return buffer->clear();
 
-    StringCharReplacer(buffer, "\x81\x90", 2, ' '); // new line
+    StringCharReplacer(buffer, TEXTANDLEN("\x81\x90"), ' '); // new line
     // replacement from Flowers 4 config.json
     CharReplacer(buffer, '\xA5', ' ');
     CharReplacer(buffer, '\xA2', '<');
@@ -108,7 +108,7 @@ namespace
     CharReplacer(buffer, '\xBB', ' ');
 
     while (cpp_strnstr(text, "  ", buffer->size)) // Erasing all but one whitespace from strings
-      StringCharReplacer(buffer, "  ", 2, ' ');
+      StringCharReplacer(buffer, TEXTANDLEN("  "), ' ');
 
     if (text[0] == ' ')
       ::memmove(text, text + 1, --buffer->size);

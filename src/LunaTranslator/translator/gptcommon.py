@@ -115,12 +115,12 @@ def parseresponseclaude(response: requests.Response):
     return message
 
 
-def parsestreamresp(apiurl, response: requests.Response):
-    if apiurl == "https://generativelanguage.googleapis.com":
+def parsestreamresp(apiurl: str, response: requests.Response):
+    if apiurl.startswith("https://generativelanguage.googleapis.com"):
         respmessage = yield from parseresponsegemini(response)
-    elif apiurl == "https://api.anthropic.com/v1/messages":
+    elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
         respmessage = yield from parseresponseclaude(response)
-    elif apiurl == "https://api.cohere.com/v2/chat":
+    elif apiurl.startswith("https://api.cohere.com/v2/chat"):
         respmessage = yield from parseresponsecohere(response)
     else:
         respmessage = yield from commonparseresponse_good(response)
@@ -187,9 +187,7 @@ class gptcommon(basetrans):
             temperature=temperature,
             stream=self.config["流式输出"],
         )
-        if ("api.mistral.ai" not in self.apiurl) and (
-            "generativelanguage.googleapis.com/v1beta/openai/" not in self.apiurl
-        ):
+        if "api.mistral.ai" not in self.apiurl:
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         try:
             if self.config["use_other_args"]:
@@ -239,9 +237,9 @@ class gptcommon(basetrans):
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
         usingstream = self.config["流式输出"]
-        if self.apiurl == "https://generativelanguage.googleapis.com":
+        if self.apiurl.startswith("https://generativelanguage.googleapis.com"):
             response = self.request_gemini(sysprompt, query)
-        elif self.apiurl == "https://api.anthropic.com/v1/messages":
+        elif self.apiurl.startswith("https://api.anthropic.com/v1/messages"):
             response = self.req_claude(sysprompt, query)
         else:
             message = [{"role": "system", "content": sysprompt}]

@@ -639,15 +639,16 @@ class autoinitdialog(LDialog):
                     except Exception as e:
                         print_exc()
                         if e.args and isinstance(e.args[0], requests.Response):
-                            QMessageBox.information(
-                                self,
-                                "{} {}: {}".format(
-                                    e.args[0].status_code,
-                                    e.args[0].reason,
-                                    e.args[0].url,
-                                ),
-                                str(maybejson(e.args[0])),
+                            resp = e.args[0]
+                            title = "{} {}: {}".format(
+                                resp.status_code, resp.reason, resp.url
                             )
+                            text = str(maybejson(resp))
+                            if len(e.args) >= 2:
+                                if text:
+                                    text += "\n"
+                                text += e.args[1]
+                            QMessageBox.information(self, title, text)
                         else:
                             QMessageBox.information(self, str(type(e))[8:-2], str(e))
 

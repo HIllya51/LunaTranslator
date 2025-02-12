@@ -313,7 +313,7 @@ namespace
     hp.type = NO_CONTEXT;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      StringFilter(buffer, "\\n", 2);
+      StringFilter(buffer, TEXTANDLEN("\\n"));
     }; // remove two characters of "\\n"
     ConsoleOutput("INSERT WillPlusA");
     return NewHook(hp, "WillPlusA");
@@ -366,7 +366,7 @@ namespace
       hp.user_value = i;
       hp.filter_fun = [](TextBuffer *buffer, auto *)
       {
-        StringFilter(buffer, L"\\n", 2);
+        StringFilter(buffer, TEXTANDLEN(L"\\n"));
       }; // remove two characters of "\\n"
       ConsoleOutput("INSERT WillPlusW");
       succ |= NewHook(hp, "WillPlusW");

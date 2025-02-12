@@ -4,14 +4,14 @@ namespace
   void filter(TextBuffer *buffer, HookParam *hp)
   {
     auto data = buffer->buff;
-    StringFilter(buffer, "@s", 2);
+    StringFilter(buffer, TEXTANDLEN("@s"));
     if (strstr((char *)data, "@i") || strstr((char *)data, "@y"))
       return buffer->clear();
     // ｛てんきゅう／天穹｝
     if (strstr((char *)data, "\x81\x6f") && strstr((char *)data, "\x81\x5e") && strstr((char *)data, "\x81\x70"))
     {
-      StringFilter(buffer, "\x81\x70", 2);
-      StringFilterBetween(buffer, "\x81\x6f", 2, "\x81\x5e", 2);
+      StringFilter(buffer, TEXTANDLEN("\x81\x70"));
+      StringFilterBetween(buffer, TEXTANDLEN("\x81\x6f"), TEXTANDLEN("\x81\x5e"));
     }
   };
 }

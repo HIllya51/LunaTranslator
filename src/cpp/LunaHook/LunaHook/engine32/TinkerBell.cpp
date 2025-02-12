@@ -104,7 +104,7 @@ namespace
   std::wstring last = L"";
   void tkbl_filter(TextBuffer *buffer, HookParam *hp)
   {
-    StringFilter(buffer, L"\x26bc\x65\x25\xffff", 4); // 移除心形
+    StringFilter(buffer, TEXTANDLEN(L"\x26bc\x65\x25\xffff")); // 移除心形
 
     WendyBell_filter(buffer, hp);
     auto str = buffer->strW(); // 末尾存在一个换行符

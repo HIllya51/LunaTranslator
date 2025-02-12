@@ -33,7 +33,7 @@ class wcocr:
         default = r"C:\Program Files\Tencent\QQNT"
         version = winsharedutils.queryversion(os.path.join(default, "QQ.exe"))
         if not version:
-            raise Exception
+            raise Exception()
         mojo = os.path.join(
             default,
             r"resources\app\versions",
@@ -57,7 +57,7 @@ class wcocr:
             WeChatexe = os.path.join(base, "Weixin.exe")
         version = winsharedutils.queryversion(WeChatexe)
         if not version:
-            raise Exception
+            raise Exception()
         versionf = ".".join((str(_) for _ in version))
         APPDATA = os.getenv("APPDATA")
         if version[0] == 4:
@@ -129,6 +129,6 @@ class OCR(baseocr):
     def ocr(self, imagebinary):
         global globalonce
         if not globalonce:
-            raise Exception
+            raise Exception()
         boxs, texts = globalonce.ocr(imagebinary)
         return {"box": boxs, "text": texts}

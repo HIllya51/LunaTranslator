@@ -875,7 +875,7 @@ void System43aFilter(TextBuffer *buffer, HookParam *)
 
   if (cpp_strnstr(text, "${", buffer->size))
   {
-    StringFilterBetween(buffer, "${", 3, "}", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("${"), TEXTANDLEN("}"));
   }
 }
 

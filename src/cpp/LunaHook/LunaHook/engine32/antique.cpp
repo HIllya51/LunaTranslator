@@ -41,7 +41,7 @@ bool antique::attach_function()
     static int i = 0;
     if (i++ % 2)
       return buffer->clear();
-    StringFilter(buffer, "\\n", 2);
+    StringFilter(buffer, TEXTANDLEN("\\n"));
   };
   hp.embed_hook_font = F_GetGlyphOutlineA;
   return NewHook(hp, "antique");

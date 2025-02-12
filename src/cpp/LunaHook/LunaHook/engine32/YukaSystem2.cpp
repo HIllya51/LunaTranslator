@@ -197,7 +197,7 @@ namespace __
 
     if (cpp_strnstr(text, "@r(", buffer->size))
     {
-      StringFilterBetween(buffer, "@r(", 3, ")", 1); // @r(2,はと)
+      StringFilterBetween(buffer, TEXTANDLEN("@r("), TEXTANDLEN(")")); // @r(2,はと)
     }
   }
 

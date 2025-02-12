@@ -270,7 +270,7 @@ class basetrans(commonbase):
             time.sleep(sleeptime)
         self.lastrequesttime = time.time()
         if (current != self.current) or (self.using == False):
-            raise Exception
+            raise Exception()
         while True:
             self.multiapikeycurrentidx += 1
             self.multiapikeycurrentidx = (

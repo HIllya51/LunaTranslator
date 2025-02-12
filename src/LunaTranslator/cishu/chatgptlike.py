@@ -52,15 +52,14 @@ class chatgptlike(cishubase):
             word, "use_user_user_prompt", "user_user_prompt"
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
-        if self.config["API接口地址"] == "https://generativelanguage.googleapis.com":
+        apiurl = self.config["API接口地址"]
+        if apiurl.startswith("https://generativelanguage.googleapis.com"):
             resp = self.query_gemini(sysprompt, query)
-        if self.config["API接口地址"] == "https://api.anthropic.com/v1/messages":
+        if apiurl.startswith("https://api.anthropic.com/v1/messages"):
             resp = self.query_cld(sysprompt, query)
         else:
             resp = self.search_1(sysprompt, query)
-        return self.markdown_to_html(
-            common_parse_normal_response(resp, self.config["API接口地址"])
-        )
+        return self.markdown_to_html(common_parse_normal_response(resp, apiurl))
 
     def createheaders(self):
         _ = {}
@@ -146,7 +145,6 @@ class chatgptlike(cishubase):
 
         # Set up the request headers and URL
         headers = {"Content-Type": "application/json"}
-        # by default https://generativelanguage.googleapis.com/v1
         # Send the request
         response = self.proxysession.post(
             "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(

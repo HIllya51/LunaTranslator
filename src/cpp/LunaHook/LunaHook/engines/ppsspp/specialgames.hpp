@@ -163,13 +163,13 @@ namespace ppsspp
 	void NPJH50899(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, '\n');
-		StringFilter(buffer, "\x81\x40", 2);
+		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 	}
 	void ULJM06006(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "@L", 2);
-		StringFilter(buffer, "@I", 2);
-		StringFilter(buffer, "@P", 2);
+		StringFilter(buffer, TEXTANDLEN("@L"));
+		StringFilter(buffer, TEXTANDLEN("@I"));
+		StringFilter(buffer, TEXTANDLEN("@P"));
 	}
 	void ULJM06147(TextBuffer *buffer, HookParam *hp)
 	{
@@ -193,13 +193,13 @@ namespace ppsspp
 		s = std::regex_replace(s, std::regex(R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)"), "$2"); // ｛みす／御簾｝
 		buffer->from(s);
 		CharFilter(buffer, '\n');
-		StringFilter(buffer, "@l", 2);
+		StringFilter(buffer, TEXTANDLEN("@l"));
 	}
 	void ULJM06066(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, L"%K", 2);
-		StringFilter(buffer, L"%N", 2);
-		StringFilter(buffer, L"%P", 2);
+		StringFilter(buffer, TEXTANDLEN(L"%K"));
+		StringFilter(buffer, TEXTANDLEN(L"%N"));
+		StringFilter(buffer, TEXTANDLEN(L"%P"));
 		CharFilter(buffer, L'　');
 	}
 	void NPJH50754(TextBuffer *buffer, HookParam *hp)
@@ -473,11 +473,11 @@ namespace ppsspp
 	}
 	void NPJH50831(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "#n", 2);
+		StringFilter(buffer, TEXTANDLEN("#n"));
 	}
 	void ULJM05943F(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "#n", 2);
+		StringFilter(buffer, TEXTANDLEN("#n"));
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)"), "");
 		buffer->from(s);
@@ -505,14 +505,14 @@ namespace ppsspp
 	}
 	void ULJM05276(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "@y", 2);
-		StringFilter(buffer, "@w", 2);
-		StringFilter(buffer, "\\c", 2);
-		StringFilter(buffer, "\\n", 2);
+		StringFilter(buffer, TEXTANDLEN("@y"));
+		StringFilter(buffer, TEXTANDLEN("@w"));
+		StringFilter(buffer, TEXTANDLEN("\\c"));
+		StringFilter(buffer, TEXTANDLEN("\\n"));
 	}
 	void ULJM06289(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "\x81\x40", 2);
+		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 		ULJM05943F(buffer, hp);
 	}
 	void ULJM06167(TextBuffer *buffer, HookParam *hp)
@@ -524,18 +524,18 @@ namespace ppsspp
 	}
 	void ULJM05610(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "#cr0", 4);
-		StringFilter(buffer, "#wa1", 4);
-		StringFilter(buffer, "#wa0", 4);
+		StringFilter(buffer, TEXTANDLEN("#cr0"));
+		StringFilter(buffer, TEXTANDLEN("#wa1"));
+		StringFilter(buffer, TEXTANDLEN("#wa0"));
 	}
 	void ULJM06052(TextBuffer *buffer, HookParam *)
 	{
-		StringFilter(buffer, "/K", 2);
+		StringFilter(buffer, TEXTANDLEN("/K"));
 		CharFilter(buffer, '\n');
 	}
 	void ULJM05639(TextBuffer *buffer, HookParam *)
 	{
-		StringFilter(buffer, "/K", 2);
+		StringFilter(buffer, TEXTANDLEN("/K"));
 		CharFilter(buffer, '\n');
 		if (buffer->size == 0)
 			return;
@@ -550,8 +550,8 @@ namespace ppsspp
 	}
 	void ULJM05565(TextBuffer *buffer, HookParam *)
 	{
-		StringFilter(buffer, "/K", 2);
-		StringCharReplacer(buffer, "\x81\x9b", 2, '\n');
+		StringFilter(buffer, TEXTANDLEN("/K"));
+		StringCharReplacer(buffer, TEXTANDLEN("\x81\x9b"), '\n');
 		if (buffer->size == 0)
 			return;
 		static std::string last, lastx;
@@ -617,21 +617,21 @@ namespace ppsspp
 	}
 	void ULJM06311(TextBuffer *buffer, HookParam *hp)
 	{
-		StringReplacer(buffer, "\x81\x55", 2, "!?", 2);
-		StringReplacer(buffer, "\x81\x54", 2, "!!", 2);
+		StringReplacer(buffer, TEXTANDLEN("\x81\x55"), TEXTANDLEN("!?"));
+		StringReplacer(buffer, TEXTANDLEN("\x81\x54"), TEXTANDLEN("!!"));
 		ULJM06289(buffer, hp);
 	}
 	void FULJM05603(TextBuffer *buffer, HookParam *)
 	{
-		StringFilter(buffer, "%N", 2);
-		StringFilter(buffer, "%K", 2);
-		StringFilter(buffer, "%P", 2);
-		StringFilter(buffer, "%V", 2);
-		StringFilter(buffer, "%LC", 3);
-		StringFilter(buffer, "%LE", 3);
-		StringFilter(buffer, "%FS", 3);
-		StringFilter(buffer, "%FE", 3);
-		StringFilter(buffer, "%CFFFF", 6);
+		StringFilter(buffer, TEXTANDLEN("%N"));
+		StringFilter(buffer, TEXTANDLEN("%K"));
+		StringFilter(buffer, TEXTANDLEN("%P"));
+		StringFilter(buffer, TEXTANDLEN("%V"));
+		StringFilter(buffer, TEXTANDLEN("%LC"));
+		StringFilter(buffer, TEXTANDLEN("%LE"));
+		StringFilter(buffer, TEXTANDLEN("%FS"));
+		StringFilter(buffer, TEXTANDLEN("%FE"));
+		StringFilter(buffer, TEXTANDLEN("%CFFFF"));
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
 		s = std::regex_replace(s, std::regex(R"(%O\d{3})"), "$1");
@@ -676,7 +676,7 @@ namespace ppsspp
 		void T(TextBuffer *buffer, HookParam *)
 		{
 			current = buffer->strA();
-			StringCharReplacer(buffer, "\\n", 2, '\n');
+			StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
 		}
 		void N(TextBuffer *buffer, HookParam *)
 		{
@@ -685,7 +685,7 @@ namespace ppsspp
 				buffer->clear();
 			else
 			{
-				StringCharReplacer(buffer, "\\n", 2, '\n');
+				StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
 			}
 		}
 	}
@@ -704,7 +704,7 @@ namespace ppsspp
 	}
 	void ULJM05657(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "@n", 2);
+		StringFilter(buffer, TEXTANDLEN("@n"));
 		auto s = buffer->strA();
 		if (endWith(s, "\x81\x76"))
 			s = "\x81\x75" + s;
@@ -712,14 +712,14 @@ namespace ppsspp
 	}
 	void ULJS00579(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "\\n", 2);
+		StringFilter(buffer, TEXTANDLEN("\\n"));
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(@\w(.*?)@\d)"), "$1");
 		buffer->from(s);
 	}
 	void FNPJH50127(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "\\n", 2);
+		StringFilter(buffer, TEXTANDLEN("\\n"));
 	}
 	void ULJM05756(TextBuffer *buffer, HookParam *hp)
 	{
@@ -737,7 +737,7 @@ namespace ppsspp
 	void NPJH50224(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, '\n');
-		StringCharReplacer(buffer, "*p", 2, '\n');
+		StringCharReplacer(buffer, TEXTANDLEN("*p"), '\n');
 	}
 	void NPJH50535(TextBuffer *buffer, HookParam *hp)
 	{
@@ -755,8 +755,8 @@ namespace ppsspp
 	void ULJM05960(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, '\n');
-		StringFilter(buffer, "/K", 2);
-		StringFilter(buffer, "\x81\x40", 2);
+		StringFilter(buffer, TEXTANDLEN("/K"));
+		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 		static std::string last;
 		auto s = buffer->strA();
 		if (s == last)
@@ -766,8 +766,8 @@ namespace ppsspp
 	void NPJH50700(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, '\n');
-		StringFilter(buffer, "\x81\xa5", 2);
-		StringFilter(buffer, "\x81\x40", 2);
+		StringFilter(buffer, TEXTANDLEN("\x81\xa5"));
+		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 	}
 	void ULJS00329(TextBuffer *buffer, HookParam *hp)
 	{
@@ -902,7 +902,7 @@ namespace ppsspp
 	}
 	void ULJM06183(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "%n", 2);
+		StringFilter(buffer, TEXTANDLEN("%n"));
 	}
 	void ULJM05915(TextBuffer *buffer, HookParam *hp)
 	{
@@ -985,7 +985,7 @@ namespace ppsspp
 	void ULJM06174(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, L'\n');
-		StringFilterBetween(buffer, L"[", 1, L"]", 1);
+		StringFilterBetween(buffer, TEXTANDLEN(L"["), TEXTANDLEN(L"]"));
 	}
 	void ULJM05976(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1018,33 +1018,33 @@ namespace ppsspp
 	}
 	void ULJM05874(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "%K", 2);
-		StringFilter(buffer, "%P", 2);
+		StringFilter(buffer, TEXTANDLEN("%K"));
+		StringFilter(buffer, TEXTANDLEN("%P"));
 	}
 	void ULJM05954(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "%K", 2);
-		StringFilter(buffer, "%N", 2);
-		StringFilter(buffer, "%P", 2);
-		StringFilter(buffer, "\x81\x40", 2);
+		StringFilter(buffer, TEXTANDLEN("%K"));
+		StringFilter(buffer, TEXTANDLEN("%N"));
+		StringFilter(buffer, TEXTANDLEN("%P"));
+		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 	}
 	void ULJM06070(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilterBetween(buffer, "[", 1, "]", 1);
+		StringFilterBetween(buffer, TEXTANDLEN("["), TEXTANDLEN("]"));
 		if (!startWith(buffer->viewA(), "%C"))
 			CharFilter(buffer, '\n');
 		else
-			StringFilter(buffer, "%C", 2);
+			StringFilter(buffer, TEXTANDLEN("%C"));
 	}
 	void ULJM06040_1(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "%K", 2);
-		StringFilter(buffer, "%P", 2);
+		StringFilter(buffer, TEXTANDLEN("%K"));
+		StringFilter(buffer, TEXTANDLEN("%P"));
 		// StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧
-		StringFilter(buffer, "\x81\x99", 2); // ☆
+		StringFilter(buffer, TEXTANDLEN("\x81\x99")); // ☆
 
-		StringReplacer(buffer, "\x84\xa5", 2, "\x81\x5b", 2);
-		StringReplacer(buffer, "\x84\xa7", 2, "\x81\x5b", 2);
+		StringReplacer(buffer, TEXTANDLEN("\x84\xa5"), TEXTANDLEN("\x81\x5b"));
+		StringReplacer(buffer, TEXTANDLEN("\x84\xa7"), TEXTANDLEN("\x81\x5b"));
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
 		buffer->from(s);
@@ -1162,14 +1162,14 @@ namespace ppsspp
 	}
 	void ULJM05477(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "@c", 2);
+		StringFilter(buffer, TEXTANDLEN("@c"));
 		auto s = buffer->strA();
 		buffer->from(s.substr(1, s.size() - 2));
 	}
 	void ULJM06032(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "@n", 2);
-		StringFilter(buffer, "\x81\x90", 2); // ＄
+		StringFilter(buffer, TEXTANDLEN("@n"));
+		StringFilter(buffer, TEXTANDLEN("\x81\x90")); // ＄
 	}
 	namespace
 	{
@@ -1191,29 +1191,29 @@ namespace ppsspp
 	void NPJH50489(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, '\n');
-		StringFilter(buffer, "\x81\xa5", 2);
+		StringFilter(buffer, TEXTANDLEN("\x81\xa5"));
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(\x81\xf7(.*?)\x81\x73(.*?)\x81\x74)"), "$1");
 		buffer->from(s);
 	}
 	void ULJS00471(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "@w", 2);
-		StringFilter(buffer, "@k", 2);
-		StringFilter(buffer, "@n", 2);
-		StringFilter(buffer, "\x81\x40", 2);
+		StringFilter(buffer, TEXTANDLEN("@w"));
+		StringFilter(buffer, TEXTANDLEN("@k"));
+		StringFilter(buffer, TEXTANDLEN("@n"));
+		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 	}
 	void ULJS00592(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "<br>", 4);
-		StringFilter(buffer, "\x81\x40", 2);
+		StringFilter(buffer, TEXTANDLEN("<br>"));
+		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(<tips(.*?)>(.*?)</tips>)"), "$2");
 		buffer->from(s);
 	}
 	void ULJM05891(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "@n", 2);
+		StringFilter(buffer, TEXTANDLEN("@n"));
 		auto s = buffer->strA();
 		s = std::regex_replace(s, std::regex(R"(@\w\d{4})"), "");
 		buffer->from(s);
@@ -1330,11 +1330,11 @@ namespace ppsspp
 	}
 	void ULJM06192(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "<N>", 3);
+		StringFilter(buffer, TEXTANDLEN("<N>"));
 	}
 	void ULJM05109(TextBuffer *buffer, HookParam *hp)
 	{
-		StringFilter(buffer, "$$", 2);
+		StringFilter(buffer, TEXTANDLEN("$$"));
 	}
 	void ULJM06258_2(TextBuffer *buffer, HookParam *hp)
 	{

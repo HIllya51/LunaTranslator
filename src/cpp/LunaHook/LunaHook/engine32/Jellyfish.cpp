@@ -31,8 +31,8 @@ bool Jellyfish::Jellyfish_attach_function()
   {
     if (buffer->size == 2)
       return buffer->clear();
-    StringCharReplacer(buffer, "\\n", 2, '\n');
-    StringCharReplacer(buffer, "\\N", 2, '\n');
+    StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
+    StringCharReplacer(buffer, TEXTANDLEN("\\N"), '\n');
 
     buffer->from(std::regex_replace(buffer->strA(), std::regex("\\\\[0-7a-zA-Z]"), ""));
   };

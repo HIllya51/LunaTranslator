@@ -225,10 +225,10 @@ namespace
   {
     LPSTR text = (LPSTR)buffer->buff;
     if (::memchr(text, '<', buffer->size))
-      StringFilter(buffer, "<e>", 3);
-    StringFilter(buffer, "\x0d\x0a\x81\x40", 4); // remove \n before space
-    StringFilterBetween(buffer, "<", 1, ">", 1);
-    StringFilterBetween(buffer, "{", 1, "}", 1);
+      StringFilter(buffer, TEXTANDLEN("<e>"));
+    StringFilter(buffer, TEXTANDLEN("\x0d\x0a\x81\x40")); // remove \n before space
+    StringFilterBetween(buffer, TEXTANDLEN("<"), TEXTANDLEN(">"));
+    StringFilterBetween(buffer, TEXTANDLEN("{"), TEXTANDLEN("}"));
   }
   void SpecialHookTamamo(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {

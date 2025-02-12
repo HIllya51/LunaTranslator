@@ -154,11 +154,11 @@ namespace
   {
     auto text = reinterpret_cast<LPSTR>(buffer->buff);
 
-    StringCharReplacer(buffer, "<r>", 3, '\n');
+    StringCharReplacer(buffer, TEXTANDLEN("<r>"), '\n');
     if (cpp_strnstr(text, "<ruby", buffer->size))
     {
-      StringFilter(buffer, "</ruby>", 7);
-      StringFilterBetween(buffer, "<ruby", 5, "'>", 2);
+      StringFilter(buffer, TEXTANDLEN("</ruby>"));
+      StringFilterBetween(buffer, TEXTANDLEN("<ruby"), TEXTANDLEN("'>"));
     }
   }
   LPCSTR _escudeltrim(LPCSTR text)

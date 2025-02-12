@@ -6,7 +6,7 @@ from rendertext.texttype import ColorControl, SpecialColor
 
 class base(QWidget):
     def paintText(self, painter: QPainter):
-        raise Exception
+        raise Exception()
 
     def setShadow(self):
         pass

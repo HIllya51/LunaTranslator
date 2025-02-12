@@ -46,12 +46,12 @@ void YaneSDKFilter(TextBuffer *buffer, HookParam *)
     return buffer->clear();
   prevText = text;
 
-  StringCharReplacer(buffer, L"[r]", 3, L' ');
-  StringFilter(buffer, L"[np]", 4);
+  StringCharReplacer(buffer, TEXTANDLEN(L"[r]"), L' ');
+  StringFilter(buffer, TEXTANDLEN(L"[np]"));
 
   if (cpp_wcsnstr(text, L"'", buffer->size / sizeof(wchar_t)))
   { // [桜木'さくらぎ]
-    StringFilterBetween(buffer, L"'", 1, L"]", 1);
+    StringFilterBetween(buffer, TEXTANDLEN(L"'"), TEXTANDLEN(L"]"));
   }
   CharFilter(buffer, L'[');
   CharFilter(buffer, L']');

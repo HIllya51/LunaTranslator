@@ -11,7 +11,7 @@ class baseocr(commonbase):
         pass
 
     def ocr(self, imagebinary):
-        raise Exception
+        raise Exception()
 
     ############################################################
 

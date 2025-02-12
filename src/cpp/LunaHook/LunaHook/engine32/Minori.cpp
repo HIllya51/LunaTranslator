@@ -2,27 +2,27 @@
 
 void Minori1EngFilter(TextBuffer *buffer, HookParam *)
 {
-  StringCharReplacer(buffer, "\\n", 2, ' ');
-  StringFilter(buffer, "\\a", 2);
-  StringFilter(buffer, "\\v", 2);
+  StringCharReplacer(buffer, TEXTANDLEN("\\n"), ' ');
+  StringFilter(buffer, TEXTANDLEN("\\a"));
+  StringFilter(buffer, TEXTANDLEN("\\v"));
   CharReplacer(buffer, '\xC4', '-');
   CharReplacer(buffer, '\x93', '"');
   CharReplacer(buffer, '\x94', '"');
   CharReplacer(buffer, '\x92', '\'');
-  StringCharReplacer(buffer, "\\I", 2, '\'');
-  StringCharReplacer(buffer, "\\P", 2, '\'');
+  StringCharReplacer(buffer, TEXTANDLEN("\\I"), '\'');
+  StringCharReplacer(buffer, TEXTANDLEN("\\P"), '\'');
 }
 
 void Minori1JapFilter(TextBuffer *buffer, HookParam *)
 {
   auto text = reinterpret_cast<LPSTR>(buffer->buff);
-  StringFilter(buffer, "\\a", 2);
-  StringFilter(buffer, "\\v", 2);
-  StringFilter(buffer, "\\N", 2);
+  StringFilter(buffer, TEXTANDLEN("\\a"));
+  StringFilter(buffer, TEXTANDLEN("\\v"));
+  StringFilter(buffer, TEXTANDLEN("\\N"));
 
   if (cpp_strnstr(text, "{", buffer->size))
   {
-    StringFilterBetween(buffer, "{", 1, "}", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("{"), TEXTANDLEN("}"));
   }
 }
 
@@ -73,11 +73,11 @@ bool InsertMinori1Hook()
 void Minori2Filter(TextBuffer *buffer, HookParam *)
 {
   auto text = reinterpret_cast<LPSTR>(buffer->buff);
-  StringCharReplacer(buffer, "\\n", 2, ' ');
+  StringCharReplacer(buffer, TEXTANDLEN("\\n"), ' ');
 
   if (cpp_strnstr(text, "{", buffer->size))
   {
-    StringFilterBetween(buffer, "{", 1, "}", 1);
+    StringFilterBetween(buffer, TEXTANDLEN("{"), TEXTANDLEN("}"));
   }
 }
 

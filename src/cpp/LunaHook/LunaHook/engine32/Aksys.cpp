@@ -53,8 +53,8 @@ namespace
     hp.type = USING_STRING | USING_SPLIT;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      StringFilter(buffer, "@1r", 3);
-      StringFilter(buffer, "@-1r", 4);
+      StringFilter(buffer, TEXTANDLEN("@1r"));
+      StringFilter(buffer, TEXTANDLEN("@-1r"));
       if (!StringToWideString(buffer->viewA(), 932).has_value())
         buffer->clear();
     };

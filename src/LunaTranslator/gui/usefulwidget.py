@@ -281,7 +281,7 @@ class TableViewW(QTableView):
         elif isinstance(data, bool):
             data = data
         else:
-            raise Exception
+            raise Exception()
         return data
 
     def compatiblejson(self, data):
@@ -290,7 +290,7 @@ class TableViewW(QTableView):
         elif isinstance(data, (list, dict, tuple)):
             data = data
         else:
-            raise Exception
+            raise Exception()
         return data
 
     def getdata(self, row_or_index, col=None):

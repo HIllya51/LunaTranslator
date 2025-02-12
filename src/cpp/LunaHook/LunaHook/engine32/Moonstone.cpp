@@ -79,10 +79,9 @@ bool Moonstone::attach_function()
   };
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
-    // StringReplacer(buffer, "\x81\x89", 2, "\x81\x40", 2);
-    StringFilter(buffer, "\x81\x89", 2); // ♂
-    StringFilter(buffer, "\x81\x6f", 2);
-    StringFilter(buffer, "\x81\x70", 2); // ｛｝ 上标·
+    StringFilter(buffer, TEXTANDLEN("\x81\x89")); // ♂
+    StringFilter(buffer, TEXTANDLEN("\x81\x6f"));
+    StringFilter(buffer, TEXTANDLEN("\x81\x70")); // ｛｝ 上标·
     auto s = buffer->strA();
     if (s.size() % 2 == 1)
     {
