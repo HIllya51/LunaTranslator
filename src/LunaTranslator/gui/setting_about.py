@@ -255,8 +255,8 @@ def createimageview(self):
     img = QPixmap.fromImage(QImage("./files/zan.jpg"))
     img.setDevicePixelRatio(self.devicePixelRatioF())
     img = img.scaled(
-        600,
-        600,
+        500,
+        500,
         Qt.AspectRatioMode.KeepAspectRatio,
         Qt.TransformationMode.SmoothTransformation,
     )
@@ -327,11 +327,6 @@ def setTab_about1(self, basel):
                 "交流群",
                 makehtml("{main_server}/Resource/QQGroup", show="QQ群963119821"),
             ],
-            [
-                " ",
-                makehtml("{main_server}/Resource/DiscordGroup", show="Discord"),
-            ],
-            [],
             ["如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~"],
         ]
 
@@ -347,7 +342,7 @@ def setTab_about1(self, basel):
                 "If you feel that the software is helpful to you, ",
             ],
             [
-                'welcome to become my <a href="https://patreon.com/HIllya51">sponsor. Thank you ~ ',
+                'welcome to become my <a href="https://patreon.com/HIllya51">sponsor</a>. Thank you ~ ',
             ],
         ]
     makescrollgrid(

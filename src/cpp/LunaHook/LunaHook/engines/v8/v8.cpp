@@ -1,5 +1,5 @@
 #include "v8.h"
-
+#include "osversion.hpp"
 int makehttpgetserverinternal();
 const wchar_t *LUNA_CONTENTBYPASS(const wchar_t *_);
 namespace
@@ -367,8 +367,7 @@ bool tryhookv8()
 		if (funcsucc)
 		{
 			useclipboard = !std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.clipboard"));
-#ifndef WINXP
-			usehttp = !std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.http"));
+			usehttp = !(GetOSVersion().IsleWinXP() || std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.http")));
 			if (usehttp)
 			{
 				usehttp_port = makehttpgetserverinternal();
@@ -376,9 +375,6 @@ bool tryhookv8()
 				hook_LUNA_CONTENTBYPASS();
 				dont_detach = true;
 			}
-#else
-			usehttp = false;
-#endif
 			if (useclipboard)
 			{
 				hookClipboard();
