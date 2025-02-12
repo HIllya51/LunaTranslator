@@ -27,9 +27,7 @@ class mecabwrap:
 
     def __init__(self, mecabpath) -> None:
         for ___ in (mecabpath, "."):
-            for i, (_dir, _, __) in enumerate(os.walk(___)):
-                if not i:
-                    continue
+            for _dir, _, __ in os.walk(___):
                 self.kks = winsharedutils.mecab_init(
                     os.path.abspath(_dir).encode("utf8")
                 )
