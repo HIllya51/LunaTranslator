@@ -630,6 +630,34 @@ namespace
         if (buffer->viewA() == PCSG00535)
             buffer->clear();
     }
+    void PCSG00585(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+
+        static auto katakanaMap = std::map<std::wstring, std::wstring>{
+            {L"｢", L"「"}, {L"｣", L"」"}, {L"ｧ", L"ぁ"}, {L"ｨ", L"ぃ"}, {L"ｩ", L"ぅ"}, {L"ｪ", L"ぇ"}, {L"ｫ", L"ぉ"}, {L"ｬ", L"ゃ"}, {L"ｭ", L"ゅ"}, {L"ｮ", L"ょ"}, {L"ｱ", L"あ"}, {L"ｲ", L"い"}, {L"ｳ", L"う"}, {L"ｴ", L"え"}, {L"ｵ", L"お"}, {L"ｶ", L"か"}, {L"ｷ", L"き"}, {L"ｸ", L"く"}, {L"ｹ", L"け"}, {L"ｺ", L"こ"}, {L"ｻ", L"さ"}, {L"ｼ", L"し"}, {L"ｽ", L"す"}, {L"ｾ", L"せ"}, {L"ｿ", L"そ"}, {L"ﾀ", L"た"}, {L"ﾁ", L"ち"}, {L"ﾂ", L"つ"}, {L"ﾃ", L"て"}, {L"ﾄ", L"と"}, {L"ﾅ", L"な"}, {L"ﾆ", L"に"}, {L"ﾇ", L"ぬ"}, {L"ﾈ", L"ね"}, {L"ﾉ", L"の"}, {L"ﾊ", L"は"}, {L"ﾋ", L"ひ"}, {L"ﾌ", L"ふ"}, {L"ﾍ", L"へ"}, {L"ﾎ", L"ほ"}, {L"ﾏ", L"ま"}, {L"ﾐ", L"み"}, {L"ﾑ", L"む"}, {L"ﾒ", L"め"}, {L"ﾓ", L"も"}, {L"ﾔ", L"や"}, {L"ﾕ", L"ゆ"}, {L"ﾖ", L"よ"}, {L"ﾗ", L"ら"}, {L"ﾘ", L"り"}, {L"ﾙ", L"る"}, {L"ﾚ", L"れ"}, {L"ﾛ", L"ろ"}, {L"ﾜ", L"わ"}, {L"ｦ", L"を"}, {L"ﾝ", L"ん"}, {L"ｰ", L"ー"}, {L"ｯ", L"っ"}, {L"､", L"、"}, {L"ﾟ", L"？"}, {L"ﾞ", L"！"}, {L"･", L"…"}, {L"?", L"？"}, {L"｡", L"。"}, {L"!", L"！"}};
+        auto remap = [](std::wstring &ws)
+        {
+            std::wstring result;
+            for (auto _c : ws)
+            {
+                std::wstring c;
+                c.push_back(_c);
+                if (katakanaMap.find(c) != katakanaMap.end())
+                {
+                    result += katakanaMap[c];
+                }
+                else
+                    result += c;
+            }
+            return result;
+        };
+        ws = remap(ws);
+        ws = std::regex_replace(ws, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
+        ws = std::regex_replace(ws, std::wregex(LR"(\$C\[ffffff\](.*?)@\$C\[\])"), L"$1");
+        strReplace(ws, L"\n", L"");
+        buffer->from(WideStringToString(ws, 932));
+    }
     void PCSG01196(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
@@ -892,6 +920,8 @@ namespace
             // 学園ヘヴン BOY'S LOVE SCRAMBLE!
             {0x80060E58, {0, 2, 0, 0, PCSG00535_1, "PCSG00535"}},
             {0x80083A94, {0, 2, 0, 0, PCSG00535_2, "PCSG00535"}},
+            // 学園ヘヴン2 ～DOUBLE SCRAMBLE!～
+            {0x80036616, {0, 0xc, 0, 0, PCSG00585, "PCSG00585"}},
 
         };
         return 1;
