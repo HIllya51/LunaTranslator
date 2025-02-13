@@ -289,10 +289,10 @@ void TextHook::Send(hook_context *context)
 			plpdatain = &context->argof(hp.offset);
 			lpDataIn = *plpdatain;
 		}
-
-		if (hp.text_fun)
+		auto text_fun = hp.text_fun; // 必须保存一下，否则text_fun中置nullptr会导致后续判定错误
+		if (text_fun)
 		{
-			hp.text_fun(context, &hp, &buff, &lpSplit);
+			text_fun(context, &hp, &buff, &lpSplit);
 		}
 		else if (hp.type & CSHARP_STRING)
 		{
@@ -328,9 +328,9 @@ void TextHook::Send(hook_context *context)
 			ConsoleOutput(TR[InvalidLength], buff.size, hp.name);
 			buff.size = TEXT_BUFFER_SIZE;
 		}
-		if (hp.type & USING_CHAR || (!hp.text_fun && !(hp.type & USING_STRING)))
+		if (hp.type & USING_CHAR || (!text_fun && !(hp.type & USING_STRING)))
 		{
-			if (hp.text_fun)
+			if (text_fun)
 				lpDataIn = *(uint32_t *)buff.buff;
 			if (hp.type & CODEC_UTF32 || hp.type & CODEC_UTF8)
 			{
@@ -346,7 +346,7 @@ void TextHook::Send(hook_context *context)
 				*(WORD *)buff.buff = lpDataIn & 0xffff;
 			}
 		}
-		else if ((!hp.text_fun) && (!(hp.type & CSHARP_STRING)))
+		else if ((!text_fun) && (!(hp.type & CSHARP_STRING)))
 		{
 			if (lpDataIn == 0)
 				__leave;
