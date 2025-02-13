@@ -724,6 +724,7 @@ def checkmd5reloadmodule(filename: str, module: str):
             _ = importlib.import_module(module)
             _ = importlib.reload(_)
         except ModuleNotFoundError:
+            print_exc()
             return True, None
         # 不要捕获其他错误，缺少模块时直接跳过，只报实现错误
         # except:
@@ -868,37 +869,38 @@ def parsegeminimodellist(proxies, apikey):
     return sorted(mm)
 
 
+def parseclaudemodellist(proxies, apikey):
+    # 它文档里有这个API，但不知道为什么我只收到404
+    resp = requests.get(
+        "https://api.anthropic.com/v1/models",
+        headers={"anthropic-version": "2023-06-01", "X-Api-Key": apikey},
+        proxies=proxies,
+    )
+    try:
+        return sorted([_["id"] for _ in resp.json()["data"]])
+    except:
+        raise Exception(resp)
+
+
 def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/completions"):
-    if apiurl == "https://api.anthropic.com/v1/messages":
-        return [
-            "claude-3-5-sonnet-latest",
-            "claude-3-5-sonnet-20241022",
-            "claude-3-5-sonnet-20240620",
-            "claude-3-opus-latest",
-            "claude-3-opus-20240229",
-            "claude-3-sonnet-20240229",
-            "claude-3-haiku-20240307",
-            "claude-2.1",
-            "claude-2.0",
-            "claude-instant-1.2",
-        ]
-    elif apiurl.startswith("https://api.cohere.com/v2/chat"):
+    apiurl = apiurl.strip()
+    apikey = apikey.strip()
+    if apiurl.startswith("https://api.cohere.com/v2/chat"):
         return parsecoheremodellist(proxies, apikey)
     elif apiurl.startswith("https://generativelanguage.googleapis.com"):
         return parsegeminimodellist(proxies, apikey)
-    params = dict(headers={"Authorization": "Bearer {}".format(apikey.strip())})
+    elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
+        return parseclaudemodellist(proxies, apikey)
+    params = dict(headers={"Authorization": "Bearer {}".format(apikey)})
     modellink = urlpathjoin(
-        createurl(apiurl.strip(), checkend=checkend)[: -len(checkend) + 1],
-        "models",
+        createurl(apiurl, checkend=checkend)[: -len(checkend) + 1], "models"
     )
     resp = requests.get(modellink, proxies=proxies, **params)
     if resp.status_code == 404:
-        raise Exception(
-            resp,
-            _TR(
-                "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。"
-            ),
+        extra = _TR(
+            "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。"
         )
+        raise Exception(resp, extra)
     try:
         return sorted([_["id"] for _ in resp.json()["data"]])
     except:

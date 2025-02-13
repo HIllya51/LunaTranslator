@@ -378,7 +378,6 @@
     "日语注音方案": "Phonetic Guide (Furigana)",
     "Sakura大模型": "Sakura Large Model",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Enable Context-Aware Translation (Improves quality by using previous text for translation context, but may be slower)",
-    "窗口缩放": "Window Scaling",
     "去除重复字符": "Remove Duplicate Characters",
     "游戏内叠加层": "In-Game Overlay Layer",
     "内联效果参数": "Inline Effect Parameters",
@@ -791,5 +790,6 @@
     "范围": "",
     "字体设置": "",
     "成功添加后隐藏Anki页面": "",
-    "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": ""
+    "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": "",
+    "窗口化缩放": ""
 }

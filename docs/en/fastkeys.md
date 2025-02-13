@@ -116,20 +116,20 @@
     In OCR mode, after binding the window, it additionally allows the OCR area and range box to move synchronously when the game window moves.
     In OCR/clipboard mode, after binding the window, it can also be associated with the current game settings in HOOK mode, thus using the game's proprietary translation optimization dictionary, etc.
 
-1. #### Window Scaling
-    Can scale the game window (HOOK linked game/clipboard, OCR bound window) with one click (default uses the built-in Magpie, or can be set to use a downloaded Magpie, etc.).
-
 1. #### Window Screenshot
     Can take a screenshot of the bound window (default takes two screenshots, GDI and Winrt, both of which may fail). The best part is that if Magpie is currently being used for scaling, it will also take a screenshot of the scaled window.
 
 1. #### Game Mute
     After binding the game window (not just in HOOK mode, but also in OCR or clipboard mode, as long as the game window is bound), you can mute the game with one click, saving the trouble of muting the game in the system volume mixer.
 
-1. #### Magpie In-game Overlay
-    ::: info
-    Valid only when using the built-in Magpie to scale the window
-    :::
-    Shows/hides the in-game overlay of the built-in Magpie.
+1. #### Magpie Scaling
+    Allows one-click full-screen scaling of the game window using the built-in Magpie.
+
+1. #### Magpie Windowed Scaling
+    Allows one-click windowed scaling of the game window using the built-in Magpie.
+
+1. #### Magpie In-Game Overlay
+    Enables the built-in Magpie to show/hide the in-game overlay.
 
 1. #### Gallery Recording
     Shortcut key for a recording function in game management.

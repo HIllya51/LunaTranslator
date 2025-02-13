@@ -379,7 +379,6 @@
     "日语注音方案": "Chương trình chú thích tiếng Nhật",
     "Sakura大模型": "Sakura Lớn Mô hình",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Sử dụng thông tin trên để dịch (thường có một số hiệu ứng tăng lên, nhưng có thể dẫn đến chậm hơn)",
-    "窗口缩放": "Thu phóng cửa sổ",
     "去除重复字符": "Loại bỏ các ký tự trùng lặp",
     "游戏内叠加层": "Lớp phủ trong trò chơi",
     "内联效果参数": "Tham số hiệu ứng nội tuyến",
@@ -791,5 +790,6 @@
     "范围": "",
     "字体设置": "",
     "成功添加后隐藏Anki页面": "",
-    "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": ""
+    "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": "",
+    "窗口化缩放": ""
 }

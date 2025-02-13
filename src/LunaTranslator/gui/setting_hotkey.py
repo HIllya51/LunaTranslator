@@ -75,13 +75,14 @@ def registrhotkeys(self):
         "_15": gobject.baseobject.translation_ui.bindcropwindow_signal.emit,
         "_16": gobject.baseobject.translation_ui.showhideuisignal.emit,
         "_17": gobject.baseobject.translation_ui.quitf_signal.emit,
-        "_20": gobject.baseobject.translation_ui.fullsgame_signal.emit,
         "_21": grabwindow,
         "_22": gobject.baseobject.translation_ui.muteprocessignal.emit,
         "_25": lambda: windows.SendMessage(
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
         ),
+        "41": lambda: gobject.baseobject.translation_ui.fullsgame_signal.emit(False),
+        "42": lambda: gobject.baseobject.translation_ui.fullsgame_signal.emit(True),
         "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
         "_26_1": lambda: gobject.baseobject.translation_ui.ocr_do_function(
             gobject.baseobject.translation_ui.ocr_once_follow_rect
@@ -121,7 +122,7 @@ hotkeys = [
     ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1"]],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
-    ["游戏", ["_15", "_20", "_21", "_22", "_25", "_27", "_31"]],
+    ["游戏", ["_15", "_21", "_22", "41", "42", "_25", "_27", "_31"]],
     ["查词", ["37", "40", "39", "_29", "_30", "_35", "_33"]],
 ]
 

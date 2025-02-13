@@ -379,7 +379,6 @@
     "日语注音方案": "Programa de fonética japonesa",
     "Sakura大模型": "Gran modelo Sakura",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Traducción utilizando la información anterior (generalmente tiene un cierto efecto de mejora, pero puede causar lentitud)",
-    "窗口缩放": "Ampliación de la ventana",
     "去除重复字符": "Eliminar caracteres duplicados",
     "游戏内叠加层": "Capa superpuesta en el juego",
     "内联效果参数": "Parámetros de efecto en línea",
@@ -791,5 +790,6 @@
     "范围": "",
     "字体设置": "",
     "成功添加后隐藏Anki页面": "",
-    "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": ""
+    "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": "",
+    "窗口化缩放": ""
 }

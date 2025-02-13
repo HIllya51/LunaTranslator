@@ -960,11 +960,6 @@
                 "name": "退出",
                 "keystring": ""
             },
-            "_20": {
-                "use": false,
-                "name": "窗口缩放",
-                "keystring": ""
-            },
             "_21": {
                 "use": false,
                 "name": "窗口截图",
@@ -973,6 +968,16 @@
             "_22": {
                 "use": false,
                 "name": "游戏静音",
+                "keystring": ""
+            },
+            "41": {
+                "use": false,
+                "name": "Magpie_缩放",
+                "keystring": ""
+            },
+            "42": {
+                "use": false,
+                "name": "Magpie_窗口化缩放",
                 "keystring": ""
             },
             "_25": {

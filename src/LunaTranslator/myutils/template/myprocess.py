@@ -5,7 +5,3 @@ class Process:
 
     def process_after(self, res: str, context):
         return res
-
-    @staticmethod
-    def get_setting_window(parent_window):
-        pass

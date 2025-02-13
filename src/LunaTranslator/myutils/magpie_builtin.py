@@ -20,13 +20,13 @@ class MagpieBuiltin:
         self.full = not current
 
     @threader
-    def callstatuschange(self, hwnd):
-        self.callstatuschange_(hwnd)
+    def callstatuschange(self, hwnd, windowmode):
+        self.callstatuschange_(hwnd, windowmode)
 
-    def callstatuschange_(self, hwnd):
+    def callstatuschange_(self, hwnd, windowmode):
         hwnd = windows.GetAncestor(hwnd)
         self.hwnd = hwnd
-        if self.changestatus(hwnd, self.full):
+        if self.changestatus(hwnd, self.full, windowmode):
             self.setuistatus(self.full)
 
     @threader
@@ -34,7 +34,7 @@ class MagpieBuiltin:
         self.hasend = True
         ret = False
         if not self.full and self.hwnd:
-            self.callstatuschange_(self.hwnd)
+            self.callstatuschange_(self.hwnd, False)
             ret = True
         self.end()
 
@@ -65,7 +65,7 @@ class MagpieBuiltin:
         )
         # gobject.baseobject.translation_ui.magpiecallback.disconnect()
 
-    def changestatus(self, hwnd, full):
+    def changestatus(self, hwnd, full, windowmode):
         if full:
             profiles_index = globalconfig["profiles_index"]
             if profiles_index > len(magpie_config["profiles"]):
@@ -74,7 +74,12 @@ class MagpieBuiltin:
             self.saveconfig()
             windows.SendMessage(
                 windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
-                windows.RegisterWindowMessage("Magpie_Core_CLI_Message_Start"),
+                windows.RegisterWindowMessage(
+                    [
+                        "Magpie_Core_CLI_Message_Start",
+                        "Magpie_Core_CLI_Message_Start_WindowedMode",
+                    ][windowmode]
+                ),
                 profiles_index,
                 hwnd,
             )

@@ -269,7 +269,7 @@ class TranslatorWindow(resizableframeless):
     showhide_signal = pyqtSignal()
     clear_signal_1 = pyqtSignal()
     bindcropwindow_signal = pyqtSignal()
-    fullsgame_signal = pyqtSignal()
+    fullsgame_signal = pyqtSignal(bool)
     quitf_signal = pyqtSignal()
     refreshtooliconsignal = pyqtSignal()
     hidesignal = pyqtSignal()
@@ -673,7 +673,13 @@ class TranslatorWindow(resizableframeless):
                 lambda: self.isbindedwindow,
             ),
             ("searchwordW", lambda: gobject.baseobject.searchwordW.showsignal.emit()),
-            ("fullscreen", self._fullsgame, lambda: self.isletgamefullscreened, None),
+            (
+                "fullscreen",
+                lambda: self._fullsgame(True),
+                lambda: self.isletgamefullscreened,
+                None,
+                lambda: self._fullsgame(False),
+            ),
             ("grabwindow", grabwindow, None, None, lambda: grabwindow(tocliponly=True)),
             (
                 "muteprocess",
@@ -1088,7 +1094,7 @@ class TranslatorWindow(resizableframeless):
         self.refreshtooliconsignal.emit()
 
     @threader
-    def _fullsgame(self):
+    def _fullsgame(self, windowmode):
         with self.fullscreenmanager_busy:
             try:
                 if gobject.baseobject.hwnd:
@@ -1100,7 +1106,7 @@ class TranslatorWindow(resizableframeless):
                         return
                 if not self.fullscreenmanager:
                     self.fullscreenmanager = MagpieBuiltin(self._externalfsend)
-                self.fullscreenmanager.callstatuschange(_hwnd)
+                self.fullscreenmanager.callstatuschange(_hwnd, windowmode)
             except:
                 print_exc()
 

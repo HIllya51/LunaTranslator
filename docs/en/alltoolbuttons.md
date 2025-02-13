@@ -111,7 +111,9 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     In fact, when there is no button on the button bar, there is additional blank area, you can drag it at will. This button is just for reserving a drag position.
 1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Window Scaling
-    You can scale the game window (HOOK linked game/clipboard, OCR bound window) with one click (default uses the built-in Magpie, or you can set it to use your own downloaded Magpie, etc.).
+    You can scale the game window with one click using the built-in Magpie.
+
+    Left-click for windowed scaling, and right-click for full-screen scaling.
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> Window Screenshot
     You can take a screenshot of the bound window (it will take two screenshots by default, GDI and Winrt, both of which have a certain probability of failure). The best part is that if you are currently using Magpie for scaling, it will also take a screenshot of the enlarged window.
