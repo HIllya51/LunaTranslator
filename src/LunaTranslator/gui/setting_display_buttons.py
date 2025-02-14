@@ -50,14 +50,16 @@ def doadjust(_):
     gobject.baseobject.translation_ui.enterfunction()
 
 
-def changerank(item, up, sortlist, savelist, savelay):
+def changerank(item, up, tomax, sortlist, savelist, savelay):
 
     idx = sortlist.index(item)
-    idx2 = idx + (-1 if up else 1)
+    if tomax:
+        idx2 = 0 if up else (len(sortlist) - 1)
+    else:
+        idx2 = idx + (-1 if up else 1)
     if idx2 < 0 or idx2 >= len(sortlist):
         return
     headoffset = 1
-    idx2 = idx + (-1 if up else 1)
     sortlist[idx], sortlist[idx2] = sortlist[idx2], sortlist[idx]
     for i, ww in enumerate(savelist[idx + headoffset]):
 
@@ -88,15 +90,21 @@ def createbuttonwidget(self, lay):
 
         button_up = D_getIconButton(
             callback=functools.partial(
-                changerank, k, True, sortlist, savelist, savelay
+                changerank, k, True, False, sortlist, savelist, savelay
             ),
             icon="fa.arrow-up",
+            callback2=functools.partial(
+                changerank, k, True, True, sortlist, savelist, savelay
+            ),
         )
         button_down = D_getIconButton(
             callback=functools.partial(
-                changerank, k, False, sortlist, savelist, savelay
+                changerank, k, False, False, sortlist, savelist, savelay
             ),
             icon="fa.arrow-down",
+            callback2=functools.partial(
+                changerank, k, False, True, sortlist, savelist, savelay
+            ),
         )
 
         l = [

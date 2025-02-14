@@ -872,18 +872,24 @@ def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None):
     return lambda: getspinbox(mini, maxi, d, key, double, step, callback)
 
 
-def getIconButton(callback=None, icon="fa.gear", enable=True, qicon=None):
+def getIconButton(
+    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None
+):
 
     b = IconButton(icon, enable, qicon)
 
     if callback:
         b.clicked_1.connect(callback)
-
+    if callback2:
+        b.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        b.customContextMenuRequested.connect(callback2)
     return b
 
 
-def D_getIconButton(callback=None, icon="fa.gear", enable=True, qicon=None):
-    return lambda: getIconButton(callback, icon, enable, qicon)
+def D_getIconButton(
+    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None
+):
+    return lambda: getIconButton(callback, icon, enable, qicon, callback2=callback2)
 
 
 def getcolorbutton(

@@ -549,11 +549,10 @@ class AnkiWindow(QWidget):
 
         soundbutton2 = IconButton("fa.music")
         soundbutton2.clicked.connect(self.langdu2)
-        cropbutton = IconButton("fa.crop")
-        cropbutton.clicked.connect(functools.partial(self.crophide, False))
-        cropbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        cropbutton.customContextMenuRequested.connect(
-            functools.partial(self.crophide, True)
+        cropbutton = getIconButton(
+            icon="fa.crop",
+            callback=functools.partial(self.crophide, False),
+            callback2=functools.partial(self.crophide, True),
         )
 
         grabwindowbtn = IconButton("fa.camera")
@@ -1333,22 +1332,21 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(self.dictbutton)
         self.searchlayout.addWidget(self.history_btn)
         self.searchlayout.addWidget(self.searchtext)
-        searchbutton = IconButton("fa.search")
-        searchbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        searchbutton.customContextMenuRequested.connect(self._createnewwindowsearch)
+        searchbutton = getIconButton(
+            icon="fa.search",
+            callback=lambda: self.search(self.searchtext.text()),
+            callback2=self._createnewwindowsearch,
+        )
         self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
 
-        searchbutton.clicked.connect(lambda: self.search(self.searchtext.text()))
         self.searchlayout.addWidget(searchbutton)
 
-        soundbutton = IconButton("fa.music")
-        soundbutton.clicked.connect(
-            lambda: gobject.baseobject.read_text(self.searchtext.text())
+        self.soundbutton = getIconButton(
+            icon="fa.music",
+            callback=lambda: gobject.baseobject.read_text(self.searchtext.text()),
+            callback2=self.showmenu_auto_sound,
         )
-        soundbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        soundbutton.customContextMenuRequested.connect(self.showmenu_auto_sound)
-        self.soundbutton = soundbutton
-        self.searchlayout.addWidget(soundbutton)
+        self.searchlayout.addWidget(self.soundbutton)
 
         ankiconnect = IconButton(icon="fa.adn", checkable=True)
         ankiconnect.clicked.connect(self.onceaddankiwindow)

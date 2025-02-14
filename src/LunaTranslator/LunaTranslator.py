@@ -1244,17 +1244,22 @@ class MAINUI:
                 return
             if _focusp == os.getpid():
                 return
-            if windows.FindWindow(
+            magwindow = windows.FindWindow(
                 "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
-            ):
-                return
+            )
+            if magwindow:
+                if windows.FindWindowEx(
+                    magwindow, None, "Magpie_ScalingSwapChain", None
+                ):
+                    pass
+                else:
+                    return
             if _focusp == p_pids:
                 self.translation_ui.thistimenotsetop = False
                 self.translation_ui.settop()
             else:
                 self.translation_ui.thistimenotsetop = True
                 self.translation_ui.canceltop()
-                self.translation_ui.settop(most=False)
 
         except:
             print_exc()

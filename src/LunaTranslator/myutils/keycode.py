@@ -110,7 +110,7 @@ vkcode_map = {
     "SHIFT": 16,
     "CTRL": 17,
     "ALT": 18,
-    "CAPS_LOCK": 20,
+    "CapsLock": 20,
     "SPACEBAR": 32,
     "PAGE_UP": 33,
     "PAGE_DOWN": 34,

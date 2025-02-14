@@ -832,10 +832,10 @@ class TranslatorWindow(resizableframeless):
             & windows.WS_EX_TOPMOST
         )
 
-    def settop(self, most=True):
+    def settop(self):
         windows.SetWindowPos(
             self.winid,
-            windows.HWND_TOPMOST if most else windows.HWND_TOP,
+            windows.HWND_TOPMOST,
             0,
             0,
             0,
