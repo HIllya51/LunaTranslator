@@ -62,9 +62,7 @@ def setTab7_lazy(self, basel):
     grids = [
         [
             D_getIconButton(
-                lambda: os.startfile(
-                    dynamiclink("{docs_server}/textprocess.html")
-                ),
+                lambda: os.startfile(dynamiclink("{docs_server}/textprocess.html")),
                 "fa.question",
             ),
             ("预处理方法", 5),
@@ -80,14 +78,16 @@ def setTab7_lazy(self, basel):
     savelist = []
     savelay = []
 
-    def changerank(item, up):
+    def changerank(item, up, tomax):
 
         idx = sortlist.index(item)
-        idx2 = idx + (-1 if up else 1)
+        if tomax:
+            idx2 = 0 if up else (len(sortlist) - 1)
+        else:
+            idx2 = idx + (-1 if up else 1)
         if idx2 < 0 or idx2 >= len(sortlist):
             return
         headoffset = 1
-        idx2 = idx + (-1 if up else 1)
         sortlist[idx], sortlist[idx2] = sortlist[idx2], sortlist[idx]
         for i, ww in enumerate(savelist[idx + headoffset]):
 
@@ -153,12 +153,14 @@ def setTab7_lazy(self, basel):
                 config = ""
 
         button_up = D_getIconButton(
-            callback=functools.partial(changerank, post, True),
+            callback=functools.partial(changerank, post, True, False),
             icon="fa.arrow-up",
+            callback2=functools.partial(changerank, post, True, True),
         )
         button_down = D_getIconButton(
-            callback=functools.partial(changerank, post, False),
+            callback=functools.partial(changerank, post, False, False),
             icon="fa.arrow-down",
+            callback2=functools.partial(changerank, post, False, True),
         )
 
         l = [
@@ -173,9 +175,7 @@ def setTab7_lazy(self, basel):
     grids2 = [
         [
             D_getIconButton(
-                lambda: os.startfile(
-                    dynamiclink("{docs_server}/transoptimi.html")
-                ),
+                lambda: os.startfile(dynamiclink("{docs_server}/transoptimi.html")),
                 "fa.question",
             )
         ]
