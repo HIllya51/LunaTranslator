@@ -85,5 +85,17 @@ private:
 	std::unordered_map<key_t, list_iterator_t> _cache_items_map;
 	size_t _max_size;
 };
-
+namespace std
+{
+	template <>
+	struct hash<std::pair<int, std::string>>
+	{
+		std::size_t operator()(const std::pair<int, std::string> &key) const
+		{
+			std::size_t hash1 = std::hash<int>{}(key.first);
+			std::size_t hash2 = std::hash<std::string>{}(key.second);
+			return hash1 ^ (hash2 << 1);
+		}
+	};
+}
 #endif /* _LRUCACHE_HPP_INCLUDED_ */

@@ -142,6 +142,7 @@
 #include "engine32/Giga.h"
 #include "engine32/AOS.h"
 #include "engine32/Mink.h"
+#include "engine32/MerRouge.h"
 #include "engine32/AGS.h"
 #include "engine32/YukaSystem2.h"
 #include "engine32/Exp.h"
@@ -438,5 +439,6 @@ std::vector<ENGINE *> check_engines()
         new RScript,
         new TYPEMOON,
         new TAKUYO,
-        new MixwillSoft};
+        new MixwillSoft,
+        new MerRouge};
 }
