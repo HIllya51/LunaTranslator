@@ -18,7 +18,7 @@ from ctypes import (
     WinDLL,
 )
 from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG, LPCWSTR
-import platform, windows, functools, os, threading
+import platform, windows, functools, os, re
 
 isbit64 = platform.architecture()[0] == "64bit"
 utilsdll = CDLL(
@@ -387,12 +387,21 @@ _webview2_detect_version = utilsdll.webview2_detect_version
 _webview2_detect_version.argtypes = c_wchar_p, c_void_p
 
 
+def safe_int(s):
+    match = re.search(r"\d+", s)
+    if match:
+        return int(match.group())
+    else:
+        return 0
+
+
 def detect_webview2_version(directory=None):
     _ = []
     _f = CFUNCTYPE(c_void_p, c_wchar_p)(_.append)
     _webview2_detect_version(directory, _f)
     if _:
-        return tuple(int(_) for _ in _[0].split("."))
+        # X.X.X.X beta
+        return tuple(safe_int(_) for _ in _[0].split("."))
 
 
 webview2_ext_add = utilsdll.webview2_ext_add
