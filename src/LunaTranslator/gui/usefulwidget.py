@@ -1090,12 +1090,12 @@ class abstractwebview(QWidget):
         pass
 
     def add_menu(self, index=0, label=None, callback=None):
-        pass
+        return index + 1
 
     def add_menu_noselect(
         self, index=0, label=None, callback=None, checkable=False, getchecked=None
     ):
-        pass
+        return index + 1
 
     #
     def parsehtml(self, html):
@@ -1290,6 +1290,7 @@ class WebviewWidget(abstractwebview):
         __ = winsharedutils.webview2_add_menu_CALLBACK(callback) if callback else None
         self.callbacks.append(__)
         winsharedutils.webview2_add_menu(self.webview, index, label, __)
+        return index + 1
 
     def add_menu_noselect(
         self, index=0, label=None, callback=None, checkable=False, getchecked=None
@@ -1309,6 +1310,7 @@ class WebviewWidget(abstractwebview):
         winsharedutils.webview2_add_menu_noselect(
             self.webview, index, label, __, checkable, __1
         )
+        return index + 1
 
     @staticmethod
     def showError(e: Exception):
@@ -1623,6 +1625,7 @@ class mshtmlWidget(abstractwebview):
         cb = winsharedutils.html_add_menu_cb(callback) if callback else None
         self.callbacks.append(cb)
         winsharedutils.html_add_menu(self.browser, index, label, cb)
+        return index + 1
 
     def add_menu_noselect(
         self, index=0, label=None, callback=None, checkable=False, getchecked=None
@@ -1630,6 +1633,7 @@ class mshtmlWidget(abstractwebview):
         cb = winsharedutils.html_add_menu_cb2(callback) if callback else None
         self.callbacks.append(cb)
         winsharedutils.html_add_menu_noselect(self.browser, index, label, cb)
+        return index + 1
 
 
 class CustomKeySequenceEdit(QKeySequenceEdit):
@@ -1682,7 +1686,7 @@ class auto_select_webview(QWidget):
 
     def add_menu(self, index=0, label=None, callback=None):
         self.addmenuinfo.append((index, label, callback))
-        self.internal.add_menu(index, label, callback)
+        return self.internal.add_menu(index, label, callback)
 
     def add_menu_noselect(
         self, index=0, label=None, callback=None, checkable=False, getchecked=None
@@ -1690,7 +1694,7 @@ class auto_select_webview(QWidget):
         self.addmenuinfo_noselect.append(
             (index, label, callback, checkable, getchecked)
         )
-        self.internal.add_menu_noselect(index, label, callback, checkable, getchecked)
+        return self.internal.add_menu_noselect(index, label, callback, checkable, getchecked)
 
     def clear(self):
         self.internal.setHtml(self.internal.parsehtml(""))  # 夜间

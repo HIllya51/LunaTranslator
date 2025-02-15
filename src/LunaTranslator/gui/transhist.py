@@ -18,42 +18,49 @@ class wvtranshist(WebviewWidget):
     def __init__(self, p):
         super().__init__(p)
         self.bind("calllunaloadready", self.setflags)
-        self.add_menu_noselect(0, _TR("清空"), self.clear)
-        self.add_menu_noselect(1, _TR("滚动到最后"), self.scrollend)
-        self.add_menu_noselect(2, _TR("字体"), self.seletcfont)
-        self.add_menu_noselect(3)
-        self.add_menu_noselect(
-            4,
+        nexti = self.add_menu_noselect(0, _TR("清空"), self.clear)
+        nexti = self.add_menu_noselect(nexti, _TR("滚动到最后"), self.scrollend)
+        nexti = self.add_menu_noselect(nexti, _TR("字体"), self.seletcfont)
+        nexti = self.add_menu_noselect(nexti)
+        nexti = self.add_menu_noselect(
+            nexti,
             _TR("显示原文"),
             self.showhideraw,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showorigin"],
         )
-        self.add_menu_noselect(
-            5,
+        nexti = self.add_menu_noselect(
+            nexti,
             _TR("显示翻译"),
             self.showtrans,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtrans"],
         )
-        self.add_menu_noselect(
-            6,
+        nexti = self.add_menu_noselect(
+            nexti,
+            _TR("显示翻译器名称"),
+            self.showtransname,
+            checkable=True,
+            getchecked=lambda: globalconfig["history"]["showtransname"],
+        )
+        nexti = self.add_menu_noselect(
+            nexti,
             _TR("显示时间"),
             self.showhidetime,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtime"],
         )
-        self.add_menu_noselect(7)
+        nexti = self.add_menu_noselect(nexti)
 
-        self.add_menu_noselect(
-            8,
+        nexti = self.add_menu_noselect(
+            nexti,
             _TR("使用Webview2显示"),
             self.useweb,
             True,
             lambda: globalconfig["history"]["usewebview2"],
         )
-        self.add_menu_noselect(
-            9,
+        nexti = self.add_menu_noselect(
+            nexti,
             _TR("附加HTML"),
             functools.partial(
                 extrahtml,
@@ -63,9 +70,9 @@ class wvtranshist(WebviewWidget):
                 self,
             ),
         )
-        self.add_menu_noselect(10)
+        nexti = self.add_menu_noselect(nexti)
 
-        self.add_menu(
+        nexti = self.add_menu(
             0,
             _TR("查词"),
             threader(
@@ -74,9 +81,9 @@ class wvtranshist(WebviewWidget):
                 )
             ),
         )
-        self.add_menu(1, _TR("翻译"), gobject.baseobject.textgetmethod)
-        self.add_menu(2, _TR("朗读"), gobject.baseobject.read_text)
-        self.add_menu(3)
+        nexti = self.add_menu(nexti, _TR("翻译"), gobject.baseobject.textgetmethod)
+        nexti = self.add_menu(nexti, _TR("朗读"), gobject.baseobject.read_text)
+        nexti = self.add_menu(nexti)
         self.loadex()
 
     def loadex(self, extra=None):
@@ -146,6 +153,16 @@ class wvtranshist(WebviewWidget):
             "showhidetrans({})".format(int(globalconfig["history"]["showtrans"]))
         )
 
+    def showtransname(self):
+        globalconfig["history"]["showtransname"] = not globalconfig["history"][
+            "showtransname"
+        ]
+        self.debugeval(
+            "showhidetransname({})".format(
+                int(globalconfig["history"]["showtransname"])
+            )
+        )
+
     def showhidetime(self):
         globalconfig["history"]["showtime"] = not globalconfig["history"]["showtime"]
         self.debugeval(
@@ -155,6 +172,11 @@ class wvtranshist(WebviewWidget):
     def setflags(self):
         self.debugeval(
             "showhideorigin({})".format(int(globalconfig["history"]["showorigin"]))
+        )
+        self.debugeval(
+            "showhidetransname({})".format(
+                int(globalconfig["history"]["showtransname"])
+            )
         )
         self.debugeval(
             "showhidetrans({})".format(int(globalconfig["history"]["showtrans"]))
@@ -230,6 +252,9 @@ class Qtranshist(QPlainTextEdit):
         hideshowtrans = LAction("显示翻译", menu)
         hideshowtrans.setCheckable(True)
         hideshowtrans.setChecked(globalconfig["history"]["showtrans"])
+        hideshowtransname = LAction("显示翻译器名称", menu)
+        hideshowtransname.setCheckable(True)
+        hideshowtransname.setChecked(globalconfig["history"]["showtransname"])
         hidetime = LAction("显示时间", menu)
         hidetime.setCheckable(True)
         hidetime.setChecked(globalconfig["history"]["showtime"])
@@ -253,6 +278,7 @@ class Qtranshist(QPlainTextEdit):
             menu.addSeparator()
             menu.addAction(hideshowraw)
             menu.addAction(hideshowtrans)
+            menu.addAction(hideshowtransname)
             menu.addAction(hidetime)
             menu.addSeparator()
             menu.addAction(webview2qt)
@@ -292,6 +318,11 @@ class Qtranshist(QPlainTextEdit):
                 _s = font.toString()
                 globalconfig["histfont"] = _s
                 self.setf()
+        elif action == hideshowtransname:
+            globalconfig["history"]["showtransname"] = not globalconfig["history"][
+                "showtransname"
+            ]
+            self.refresh()
         elif action == hideshowtrans:
             globalconfig["history"]["showtrans"] = not globalconfig["history"][
                 "showtrans"
@@ -356,7 +387,8 @@ class Qtranshist(QPlainTextEdit):
             tm, api, sentence = line
             if not globalconfig["history"]["showtrans"]:
                 return
-            sentence = api + " " + sentence
+            if globalconfig["history"]["showtransname"]:
+                sentence = api + " " + sentence
             if globalconfig["history"]["showtime"]:
                 sentence = tm + " " + sentence
             return sentence

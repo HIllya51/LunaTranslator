@@ -25,7 +25,7 @@ class TextBrowser(WebviewWidget, dataget):
         super().__init__(parent, transp=True)
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
         self.setMouseTracking(True)
-        self.add_menu(
+        nexti = self.add_menu(
             0,
             _TR("查词"),
             threader(
@@ -34,13 +34,13 @@ class TextBrowser(WebviewWidget, dataget):
                 )
             ),
         )
-        self.add_menu(
-            1,
+        nexti = self.add_menu(
+            nexti,
             _TR("翻译"),
             lambda w: gobject.baseobject.textgetmethod(w.replace("\n", "").strip()),
         )
-        self.add_menu(
-            2,
+        nexti = self.add_menu(
+            nexti,
             _TR("朗读"),
             lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
         )

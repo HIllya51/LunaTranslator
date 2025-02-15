@@ -1375,16 +1375,20 @@ class searchwordW(closeashidewindow):
         self.tabks = []
         self.setCentralWidget(ww)
         self.textOutput = showwordfastwebview(self, True)
-        self.textOutput.add_menu(
+        nexti = self.textOutput.add_menu(
             0, _TR("查词"), lambda w: self.search_word.emit(w, False)
         )
-        self.textOutput.add_menu(
-            1, _TR("在新窗口中查词"), threader(self.search_word_in_new_window.emit)
+        nexti = self.textOutput.add_menu(
+            nexti, _TR("在新窗口中查词"), threader(self.search_word_in_new_window.emit)
         )
-        self.textOutput.add_menu(2, _TR("翻译"), gobject.baseobject.textgetmethod)
-        self.textOutput.add_menu(3, _TR("朗读"), gobject.baseobject.read_text)
-        self.textOutput.add_menu(
-            4, _TR("加亮"), lambda _: self.textOutput.eval("highlightSelection()")
+        nexti = self.textOutput.add_menu(
+            nexti, _TR("翻译"), gobject.baseobject.textgetmethod
+        )
+        nexti = self.textOutput.add_menu(
+            nexti, _TR("朗读"), gobject.baseobject.read_text
+        )
+        nexti = self.textOutput.add_menu(
+            nexti, _TR("加亮"), lambda _: self.textOutput.eval("highlightSelection()")
         )
         self.ishightlight = False
         self.textOutput.add_menu_noselect(

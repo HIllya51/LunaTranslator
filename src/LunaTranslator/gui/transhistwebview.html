@@ -2,6 +2,8 @@
 </style>
 <style id="transcontroller">
 </style>
+<style id="apinamecontroller">
+</style>
 <style id="timecontroller">
 </style>
 <style id="fontcontroller">
@@ -31,6 +33,10 @@
     function showhidetrans(show) {
         let css = ['.trans{   display: none;    }', '.trans{}'][show]
         document.getElementById('transcontroller').innerHTML = css;
+    }
+    function showhidetransname(show) {
+        let css = ['.apiname{   display: none;    }', '.apiname{}'][show]
+        document.getElementById('apinamecontroller').innerHTML = css;
     }
     function showhidetime(show) {
         let css = ['.gettime{   display: none;    }', '.gettime{}'][show]

@@ -3,6 +3,7 @@
     "history": {
         "showorigin": true,
         "showtrans": true,
+        "showtransname": true,
         "showtime": false,
         "showapi": true,
         "usewebview2": true
