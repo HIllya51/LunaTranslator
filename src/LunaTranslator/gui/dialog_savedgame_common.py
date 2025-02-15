@@ -130,7 +130,6 @@ def startgame(gameuid):
                     gobject.baseobject.starttextsource(use=_[mode], checked=True)
 
             threader(localeswitchedrun)(gameuid)
-            return True
     except:
         print_exc()
 

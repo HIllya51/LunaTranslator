@@ -1166,9 +1166,6 @@ class MAINUI:
                 # ).family()
 
     def loadui(self, startwithgameuid):
-        if startwithgameuid:
-            if not startgame(startwithgameuid):
-                os._exit(0)
         self.installeventfillter()
         self.parsedefaultfont()
         self.loadmetadatas()
@@ -1180,6 +1177,8 @@ class MAINUI:
         self.translation_ui.show()
         self.translation_ui.aftershowdosomething()
         self.mainuiloadafter()
+        if startwithgameuid:
+            startgame(startwithgameuid)
 
     def mainuiloadafter(self):
         version = str(winsharedutils.queryversion(getcurrexe()))
