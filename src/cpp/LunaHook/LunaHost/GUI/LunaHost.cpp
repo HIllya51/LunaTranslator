@@ -276,12 +276,12 @@ LunaHost::LunaHost()
     mainlayout->addcontrol(g_selectprocessbutton, 0, 0);
     mainlayout->addcontrol(btndetachall, 0, 1);
     mainlayout->addcontrol(btnshowsettionwindow, 0, 2);
-    mainlayout->addcontrol(btnplugin, 0, 3);
-    mainlayout->addcontrol(g_hEdit_userhook, 1, 0, 1, 3);
-    mainlayout->addcontrol(g_hButton_insert, 1, 3);
+    // mainlayout->addcontrol(btnplugin, 0, 3);
+    mainlayout->addcontrol(g_hEdit_userhook, 1, 0, 1, 2);
+    mainlayout->addcontrol(g_hButton_insert, 1, 2);
 
-    mainlayout->addcontrol(g_hListBox_listtext, 2, 0, 1, 4);
-    mainlayout->addcontrol(g_showtexts, 3, 0, 1, 4);
+    mainlayout->addcontrol(g_hListBox_listtext, 2, 0, 1, 3);
+    mainlayout->addcontrol(g_showtexts, 3, 0, 1, 3);
 
     mainlayout->setfixedheigth(0, 30);
     mainlayout->setfixedheigth(1, 30);
