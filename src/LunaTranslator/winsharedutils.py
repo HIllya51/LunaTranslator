@@ -129,11 +129,11 @@ def GetLnkTargetPath(lnk):
 
 
 _extracticon2data = utilsdll.extracticon2data
-_extracticon2data.argtypes = c_wchar_p, c_void_p
+_extracticon2data.argtypes = c_bool, c_wchar_p, c_void_p
 _extracticon2data.restype = c_bool
 
 
-def extracticon2data(file):
+def extracticon2data(file, large=False):
 
     file = windows.check_maybe_unc_file(file)
     if not file:
@@ -143,7 +143,7 @@ def extracticon2data(file):
     def cb(ptr, size):
         ret.append(cast(ptr, POINTER(c_char))[:size])
 
-    succ = _extracticon2data(file, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    succ = _extracticon2data(large, file, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
     if not succ:
         return None
     return ret[0]

@@ -39,7 +39,7 @@ from gui.dialog_savedgame_common import (
     opendirforgameuid,
     getcachedimage,
     CreateShortcutForUid,
-    getpixfunction,
+    getpixfunctionAlign,
     addgamesingle,
     addgamebatch,
     addgamebatch_x,
@@ -117,7 +117,7 @@ class clickitem(QWidget):
             fr = extradatas["imagefrom"].get(image)
             if fr:
                 targetmod.get(fr).dispatchdownloadtask(image)
-        icon = getpixfunction(uid, small=True, iconfirst=True)
+        icon = getpixfunctionAlign(uid, small=True, iconfirst=True)
         icon.setDevicePixelRatio(self.devicePixelRatioF())
         _.setPixmap(icon)
         lay1.addWidget(_)

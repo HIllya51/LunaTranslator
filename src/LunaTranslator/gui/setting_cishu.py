@@ -129,6 +129,7 @@ def vistranslate_rank(self):
         globalconfig["cishuvisrank"],
         isrankeditor=True,
         namemapfunction=lambda k: _TR(globalconfig["cishu"][k]["name"]),
+        exec=True,
     )
 
 

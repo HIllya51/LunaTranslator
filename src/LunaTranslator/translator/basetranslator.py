@@ -253,8 +253,6 @@ class basetrans(commonbase):
         res = self.shorttermcacheget(content)
         if res:
             return res
-        if not globalconfig["uselongtermcache"]:
-            return None
         res = self.longtermcacheget(content)
         if res:
             return res

@@ -1694,7 +1694,9 @@ class auto_select_webview(QWidget):
         self.addmenuinfo_noselect.append(
             (index, label, callback, checkable, getchecked)
         )
-        return self.internal.add_menu_noselect(index, label, callback, checkable, getchecked)
+        return self.internal.add_menu_noselect(
+            index, label, callback, checkable, getchecked
+        )
 
     def clear(self):
         self.internal.setHtml(self.internal.parsehtml(""))  # 夜间
@@ -2109,6 +2111,7 @@ class listediter(LDialog):
         isrankeditor=False,
         namemapfunction=None,
         candidates=None,
+        exec=False,
     ) -> None:
         super().__init__(parent)
         self.setWindowFlags(
@@ -2208,7 +2211,10 @@ class listediter(LDialog):
 
             formLayout.addWidget(self.buttons)
             self.resize(600, self.sizeHint().height())
-            self.show()
+            if exec:
+                self.exec()
+            else:
+                self.show()
         except:
             print_exc()
 

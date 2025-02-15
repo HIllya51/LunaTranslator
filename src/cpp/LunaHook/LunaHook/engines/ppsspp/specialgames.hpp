@@ -1079,18 +1079,22 @@ namespace ppsspp
 	void ULJM06343(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		static auto katakanaMap = std::map<std::wstring, std::wstring>{
-			{L"｢", L"「"}, {L"｣", L"」"}, {L"ｧ", L"ぁ"}, {L"ｨ", L"ぃ"}, {L"ｩ", L"ぅ"}, {L"ｪ", L"ぇ"}, {L"ｫ", L"ぉ"}, {L"ｬ", L"ゃ"}, {L"ｭ", L"ゅ"}, {L"ｮ", L"ょ"}, {L"ｱ", L"あ"}, {L"ｲ", L"い"}, {L"ｳ", L"う"}, {L"ｴ", L"え"}, {L"ｵ", L"お"}, {L"ｶ", L"か"}, {L"ｷ", L"き"}, {L"ｸ", L"く"}, {L"ｹ", L"け"}, {L"ｺ", L"こ"}, {L"ｻ", L"さ"}, {L"ｼ", L"し"}, {L"ｽ", L"す"}, {L"ｾ", L"せ"}, {L"ｿ", L"そ"}, {L"ﾀ", L"た"}, {L"ﾁ", L"ち"}, {L"ﾂ", L"つ"}, {L"ﾃ", L"て"}, {L"ﾄ", L"と"}, {L"ﾅ", L"な"}, {L"ﾆ", L"に"}, {L"ﾇ", L"ぬ"}, {L"ﾈ", L"ね"}, {L"ﾉ", L"の"}, {L"ﾊ", L"は"}, {L"ﾋ", L"ひ"}, {L"ﾌ", L"ふ"}, {L"ﾍ", L"へ"}, {L"ﾎ", L"ほ"}, {L"ﾏ", L"ま"}, {L"ﾐ", L"み"}, {L"ﾑ", L"む"}, {L"ﾒ", L"め"}, {L"ﾓ", L"も"}, {L"ﾔ", L"や"}, {L"ﾕ", L"ゆ"}, {L"ﾖ", L"よ"}, {L"ﾗ", L"ら"}, {L"ﾘ", L"り"}, {L"ﾙ", L"る"}, {L"ﾚ", L"れ"}, {L"ﾛ", L"ろ"}, {L"ﾜ", L"わ"}, {L"ｦ", L"を"}, {L"ﾝ", L"ん"}, {L"ｰ", L"ー"}, {L"ｯ", L"っ"}, {L"､", L"、"}, {L"ﾟ", L"？"}, {L"!", L"！"}, {L"ﾞ", L"！"}, {L"･", L"…"}, {L"?", L"　"}, {L"｡", L"。"}, {L"\uF8F0", L""}, {L"\uFFFD", L""} // invalid (shift_jis A0 <=> EF A3 B0) | FF FD - F8 F0)
+		static auto katakanaMapExtra = std::map<wchar_t, wchar_t>{
+			{L'ﾟ', L'？'}, {L'ﾞ', L'！'}, {L'･', L'…'}, {L'?', L'　'}, // invalid (shift_jis A0 <=> EF A3 B0) | FF FD - F8 F0)
 		};
 		auto remap = [](std::string &s)
 		{
 			std::wstring result;
 			auto ws = StringToWideString(s, 932).value();
-			for (auto _c : ws)
+			for (auto c : ws)
 			{
-				std::wstring c;
-				c.push_back(_c);
-				if (katakanaMap.find(c) != katakanaMap.end())
+				if (c == L'\uF8F0' || c == L'\uFFFD')
+					continue;
+				if (katakanaMapExtra.find(c) != katakanaMapExtra.end())
+				{
+					result += katakanaMapExtra[c];
+				}
+				else if (katakanaMap.find(c) != katakanaMap.end())
 				{
 					result += katakanaMap[c];
 				}
@@ -1108,17 +1112,21 @@ namespace ppsspp
 	void ULJM05758(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		static auto katakanaMap = std::map<std::wstring, std::wstring>{
-			{L"｢", L"「"}, {L"｣", L"」"}, {L"ｧ", L"ぁ"}, {L"ｨ", L"ぃ"}, {L"ｩ", L"ぅ"}, {L"ｪ", L"ぇ"}, {L"ｫ", L"ぉ"}, {L"ｬ", L"ゃ"}, {L"ｭ", L"ゅ"}, {L"ｮ", L"ょ"}, {L"ｱ", L"あ"}, {L"ｲ", L"い"}, {L"ｳ", L"う"}, {L"ｴ", L"え"}, {L"ｵ", L"お"}, {L"ｶ", L"か"}, {L"ｷ", L"き"}, {L"ｸ", L"く"}, {L"ｹ", L"け"}, {L"ｺ", L"こ"}, {L"ｻ", L"さ"}, {L"ｼ", L"し"}, {L"ｽ", L"す"}, {L"ｾ", L"せ"}, {L"ｿ", L"そ"}, {L"ﾀ", L"た"}, {L"ﾁ", L"ち"}, {L"ﾂ", L"つ"}, {L"ﾃ", L"て"}, {L"ﾄ", L"と"}, {L"ﾅ", L"な"}, {L"ﾆ", L"に"}, {L"ﾇ", L"ぬ"}, {L"ﾈ", L"ね"}, {L"ﾉ", L"の"}, {L"ﾊ", L"は"}, {L"ﾋ", L"ひ"}, {L"ﾌ", L"ふ"}, {L"ﾍ", L"へ"}, {L"ﾎ", L"ほ"}, {L"ﾏ", L"ま"}, {L"ﾐ", L"み"}, {L"ﾑ", L"む"}, {L"ﾒ", L"め"}, {L"ﾓ", L"も"}, {L"ﾔ", L"や"}, {L"ﾕ", L"ゆ"}, {L"ﾖ", L"よ"}, {L"ﾗ", L"ら"}, {L"ﾘ", L"り"}, {L"ﾙ", L"る"}, {L"ﾚ", L"れ"}, {L"ﾛ", L"ろ"}, {L"ﾜ", L"わ"}, {L"ｦ", L"を"}, {L"ﾝ", L"ん"}, {L"ｰ", L"ー"}, {L"ｯ", L"っ"}, {L"､", L"、"}, {L"ﾟ", L"？"}, {L"!", L"！"}, {L"ﾞ", L"！"}, {L"･", L"…"}, {L"?", L"？"}, {L"｡", L"。"}};
+		static auto katakanaMapExtra = std::map<wchar_t, wchar_t>{
+			{L'ﾟ', L'？'},
+			{L'ﾞ', L'！'},
+			{L'･', L'…'}};
 		auto remap = [](std::string &s)
 		{
 			std::wstring result;
 			auto ws = StringToWideString(s, 932).value();
-			for (auto _c : ws)
+			for (auto c : ws)
 			{
-				std::wstring c;
-				c.push_back(_c);
-				if (katakanaMap.find(c) != katakanaMap.end())
+				if (katakanaMapExtra.find(c) != katakanaMapExtra.end())
+				{
+					result += katakanaMapExtra[c];
+				}
+				else if (katakanaMap.find(c) != katakanaMap.end())
 				{
 					result += katakanaMap[c];
 				}

@@ -172,14 +172,14 @@ def ListProcess(exe=None):
     return ret.get(exe, [])
 
 
-def getExeIcon(name: str, icon=True, cache=False):
+def getExeIcon(name: str, icon=True, cache=False, large=False):
     if name.lower().endswith(".lnk"):
         exepath, args, iconpath, dirp = winsharedutils.GetLnkTargetPath(name)
         if os.path.exists(iconpath):
             name = iconpath
         elif os.path.exists(exepath):
             name = exepath
-    data = winsharedutils.extracticon2data(name)
+    data = winsharedutils.extracticon2data(name, large=large)
     if cache:
         fn = gobject.getcachedir(
             "icon/{}.bmp".format(hashlib.md5(name.encode("utf8")).hexdigest())

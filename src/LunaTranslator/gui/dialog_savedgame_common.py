@@ -171,36 +171,44 @@ def getcachedimage(src, small) -> QPixmap:
     return _pix
 
 
-def getpixfunction(kk, small=False, iconfirst=False):
-    if iconfirst:
-        if (
-            savehook_new_data[kk].get("currenticon")
-            in savehook_new_data[kk]["imagepath_all"]
-        ):
-            src = savehook_new_data[kk].get("currenticon")
-            pix = getcachedimage(src, small)
-            if not pix.isNull():
-                return pix
-        _pix = getExeIcon(uid2gamepath[kk], False, cache=True)
-        return _pix
-    if (
-        savehook_new_data[kk].get("currentmainimage")
-        in savehook_new_data[kk]["imagepath_all"]
-    ):
-        src = savehook_new_data[kk].get("currentmainimage")
-        pix = getcachedimage(src, small)
-        if not pix.isNull():
-            return pix
-    for _ in savehook_new_data[kk]["imagepath_all"]:
+def getpixfunction(kk, small=False, iconfirst=False) -> QPixmap:
+    checks = []
+    key = ["currentmainimage", "currenticon"][iconfirst]
+    if savehook_new_data[kk].get(key) in savehook_new_data[kk]["imagepath_all"]:
+        checks = [savehook_new_data[kk].get(key)]
+    elif not iconfirst:
+        checks = savehook_new_data[kk]["imagepath_all"]
+    for _ in checks:
         pix = getcachedimage(_, small)
         if not pix.isNull():
             return pix
-    _pix = getExeIcon(uid2gamepath[kk], False, cache=True)
+    _pix: QPixmap = getExeIcon(uid2gamepath[kk], False, cache=True, large=True)
     return _pix
 
 
+def make_square_pixmap(pixmap: QPixmap):
+    width = pixmap.width()
+    height = pixmap.height()
+    size = max(width, height)
+    square_pixmap = QPixmap(size, size)
+    square_pixmap.fill(Qt.GlobalColor.transparent)
+    painter = QPainter(square_pixmap)
+    x = (size - width) // 2
+    y = (size - height) // 2
+    painter.drawPixmap(x, y, pixmap)
+    painter.end()
+    return square_pixmap
+
+
+def getpixfunctionAlign(kk, small=False, iconfirst=False):
+    icon = getpixfunction(kk, small=small, iconfirst=iconfirst)
+    if icon.width() != icon.height():
+        icon = make_square_pixmap(icon)
+    return icon
+
+
 def CreateShortcutForUid(gameuid):
-    icon = getpixfunction(gameuid, small=True, iconfirst=True)
+    icon = getpixfunctionAlign(gameuid, small=True, iconfirst=True)
     path = gobject.getcachedir("shutcuticon/{}.ico".format(uuid.uuid4()))
     icon.save(path)
     winsharedutils.CreateShortcut(

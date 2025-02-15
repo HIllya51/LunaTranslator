@@ -91,6 +91,7 @@
 #include "engine32/Malie.h"
 #include "engine32/Live.h"
 #include "engine32/Jellyfish.h"
+#include "engine32/GROOVER.h"
 #include "engine32/Nexton.h"
 #include "engine32/Lucifen.h"
 #include "engine32/Waffle.h"
@@ -440,5 +441,6 @@ std::vector<ENGINE *> check_engines()
         new TYPEMOON,
         new TAKUYO,
         new MixwillSoft,
-        new MerRouge};
+        new MerRouge,
+        new GROOVER};
 }

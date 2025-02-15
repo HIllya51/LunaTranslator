@@ -1,4 +1,4 @@
-
+﻿
 inline char *str_chr(char *s, char c, size_t n) { return (char *)::memchr(s, c, n); }
 inline wchar_t *str_chr(wchar_t *s, wchar_t c, size_t n) { return cpp_wcsnchr(s, c, n); }
 
@@ -146,3 +146,6 @@ void StringCharReplacer(TextBuffer *buffer, const wchar_t *src, size_t srclen, w
 
 void StringReplacer(TextBuffer *buffer, const char *src, size_t srclen, const char *dst, size_t dstlen) { StringReplacer_impl<char>((char *)buffer->buff, &buffer->size, src, srclen, dst, dstlen); }
 void StringReplacer(TextBuffer *buffer, const wchar_t *src, size_t srclen, const wchar_t *dst, size_t dstlen) { StringReplacer_impl<wchar_t>((wchar_t *)buffer->buff, &buffer->size, src, srclen, dst, dstlen); }
+
+std::map<wchar_t, wchar_t> katakanaMap = {
+    {L'｢', L'「'}, {L'｣', L'」'}, {L'ｧ', L'ぁ'}, {L'ｨ', L'ぃ'}, {L'ｩ', L'ぅ'}, {L'ｪ', L'ぇ'}, {L'ｫ', L'ぉ'}, {L'ｬ', L'ゃ'}, {L'ｭ', L'ゅ'}, {L'ｮ', L'ょ'}, {L'ｱ', L'あ'}, {L'ｲ', L'い'}, {L'ｳ', L'う'}, {L'ｴ', L'え'}, {L'ｵ', L'お'}, {L'ｶ', L'か'}, {L'ｷ', L'き'}, {L'ｸ', L'く'}, {L'ｹ', L'け'}, {L'ｺ', L'こ'}, {L'ｻ', L'さ'}, {L'ｼ', L'し'}, {L'ｽ', L'す'}, {L'ｾ', L'せ'}, {L'ｿ', L'そ'}, {L'ﾀ', L'た'}, {L'ﾁ', L'ち'}, {L'ﾂ', L'つ'}, {L'ﾃ', L'て'}, {L'ﾄ', L'と'}, {L'ﾅ', L'な'}, {L'ﾆ', L'に'}, {L'ﾇ', L'ぬ'}, {L'ﾈ', L'ね'}, {L'ﾉ', L'の'}, {L'ﾊ', L'は'}, {L'ﾋ', L'ひ'}, {L'ﾌ', L'ふ'}, {L'ﾍ', L'へ'}, {L'ﾎ', L'ほ'}, {L'ﾏ', L'ま'}, {L'ﾐ', L'み'}, {L'ﾑ', L'む'}, {L'ﾒ', L'め'}, {L'ﾓ', L'も'}, {L'ﾔ', L'や'}, {L'ﾕ', L'ゆ'}, {L'ﾖ', L'よ'}, {L'ﾗ', L'ら'}, {L'ﾘ', L'り'}, {L'ﾙ', L'る'}, {L'ﾚ', L'れ'}, {L'ﾛ', L'ろ'}, {L'ﾜ', L'わ'}, {L'ｦ', L'を'}, {L'ﾝ', L'ん'}, {L'ｰ', L'ー'}, {L'ｯ', L'っ'}, {L'､', L'、'}, {L'?', L'？'}, {L'｡', L'。'}, {L'!', L'！'}, {L'○', L'〇'}};

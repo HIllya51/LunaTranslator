@@ -495,22 +495,6 @@ def _createseletengeinecombo(self):
     return self.seletengeinecombo
 
 
-def vistranslate_rank(self):
-    _not = []
-    for i, k in enumerate(globalconfig["fix_translate_rank_rank"]):
-        if not translate_exits(k):
-            _not.append(i)
-    for _ in reversed(_not):
-        globalconfig["fix_translate_rank_rank"].pop(_)
-    listediter(
-        self,
-        "显示顺序",
-        globalconfig["fix_translate_rank_rank"],
-        isrankeditor=True,
-        namemapfunction=lambda k: _TR(getannotatedapiname(k)),
-    )
-
-
 def xianshigrid_style(self):
     textgrid = [
         [
@@ -527,25 +511,10 @@ def xianshigrid_style(self):
                                     grid=(
                                         [
                                             "字体",
-                                            (
-                                                functools.partial(
-                                                    createtextfontcom, "fonttype"
-                                                ),
-                                                0,
+                                            functools.partial(
+                                                createtextfontcom, "fonttype"
                                             ),
                                             "",
-                                            "字体大小",
-                                            D_getspinbox(
-                                                5,
-                                                100,
-                                                globalconfig,
-                                                "fontsizeori",
-                                                double=True,
-                                                step=0.1,
-                                                callback=mayberealtimesetfont,
-                                            ),
-                                        ],
-                                        [
                                             "行间距",
                                             D_getspinbox(
                                                 -100,
@@ -554,27 +523,59 @@ def xianshigrid_style(self):
                                                 "extra_space",
                                                 callback=mayberealtimesetfont,
                                             ),
-                                            "",
-                                            "加粗",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "showbold",
-                                                callback=mayberealtimesetfont,
-                                            ),
-                                            "",
-                                            "颜色",
-                                            D_getcolorbutton(
-                                                globalconfig,
-                                                "rawtextcolor",
-                                                callback=lambda: selectcolor(
-                                                    self,
-                                                    globalconfig,
-                                                    "rawtextcolor",
-                                                    self.original_color_button,
-                                                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                                        ],
+                                        [
+                                            "字体大小",
+                                            (
+                                                getboxlayout(
+                                                    [
+                                                        D_getspinbox(
+                                                            5,
+                                                            100,
+                                                            globalconfig,
+                                                            "fontsizeori",
+                                                            double=True,
+                                                            step=0.1,
+                                                            callback=mayberealtimesetfont,
+                                                        ),
+                                                        "",
+                                                        "加粗",
+                                                        D_getsimpleswitch(
+                                                            globalconfig,
+                                                            "showbold",
+                                                            callback=mayberealtimesetfont,
+                                                        ),
+                                                        "",
+                                                        "颜色",
+                                                        D_getcolorbutton(
+                                                            globalconfig,
+                                                            "rawtextcolor",
+                                                            callback=lambda: selectcolor(
+                                                                self,
+                                                                globalconfig,
+                                                                "rawtextcolor",
+                                                                self.original_color_button,
+                                                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                                                            ),
+                                                            name="original_color_button",
+                                                            parent=self,
+                                                        ),
+                                                        "",
+                                                        "显示",
+                                                        D_getsimpleswitch(
+                                                            globalconfig,
+                                                            "isshowrawtext",
+                                                            callback=lambda x: __changeuibuttonstate(
+                                                                self, x
+                                                            ),
+                                                            name="show_original_switch",
+                                                            parent=self,
+                                                        ),
+                                                    ],
+                                                    makewidget=True,
+                                                    margin0=True,
                                                 ),
-                                                name="original_color_button",
-                                                parent=self,
+                                                0,
                                             ),
                                         ],
                                     ),
@@ -598,6 +599,16 @@ def xianshigrid_style(self):
                                                 0,
                                             ),
                                             "",
+                                            "行间距",
+                                            D_getspinbox(
+                                                -100,
+                                                100,
+                                                globalconfig,
+                                                "extra_space_trans",
+                                                callback=mayberealtimesetfont,
+                                            ),
+                                        ],
+                                        [
                                             "字体大小",
                                             D_getspinbox(
                                                 1,
@@ -606,16 +617,6 @@ def xianshigrid_style(self):
                                                 "fontsize",
                                                 double=True,
                                                 step=0.1,
-                                                callback=mayberealtimesetfont,
-                                            ),
-                                        ],
-                                        [
-                                            "行间距",
-                                            D_getspinbox(
-                                                -100,
-                                                100,
-                                                globalconfig,
-                                                "extra_space_trans",
                                                 callback=mayberealtimesetfont,
                                             ),
                                             "",
@@ -644,7 +645,6 @@ def xianshigrid_style(self):
         [
             (
                 dict(
-                    title="内容",
                     type="grid",
                     grid=(
                         [
@@ -655,29 +655,15 @@ def xianshigrid_style(self):
                                 callback=gobject.baseobject.translation_ui.translate_text.showatcenter,
                             ),
                             "",
-                            "收到翻译时才刷新",
-                            D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
-                            "",
-                            "固定翻译显示顺序",
-                            D_getsimpleswitch(globalconfig, "fix_translate_rank"),
-                            D_getIconButton(functools.partial(vistranslate_rank, self)),
-                        ],
-                        [
-                            "显示原文",
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "isshowrawtext",
-                                callback=lambda x: __changeuibuttonstate(self, x),
-                                name="show_original_switch",
-                                parent=self,
-                            ),
-                            "",
                             "显示错误信息",
                             D_getsimpleswitch(
                                 globalconfig,
                                 "showtranexception",
                                 callback=lambda x: changeshowerrorstate(self, x),
                             ),
+                            "",
+                            "收到翻译时才刷新",
+                            D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
                         ],
                     ),
                 ),

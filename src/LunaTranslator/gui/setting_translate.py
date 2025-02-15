@@ -7,6 +7,8 @@ from myutils.utils import (
     splittranslatortypes,
     dynamiclink,
     translate_exits,
+    _TR,
+    getannotatedapiname,
     dynamicapiname,
 )
 from gui.pretransfile import sqlite2json
@@ -19,6 +21,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     D_getIconButton,
     D_getsimpleswitch,
+    listediter,
     selectcolor,
     makegrid,
     makesubtab_lazy,
@@ -502,6 +505,23 @@ def __changeuibuttonstate2(self, x):
     gobject.baseobject.maybeneedtranslateshowhidetranslate()
 
 
+def vistranslate_rank(self):
+    _not = []
+    for i, k in enumerate(globalconfig["fix_translate_rank_rank"]):
+        if not translate_exits(k):
+            _not.append(i)
+    for _ in reversed(_not):
+        globalconfig["fix_translate_rank_rank"].pop(_)
+    listediter(
+        self,
+        "显示顺序",
+        globalconfig["fix_translate_rank_rank"],
+        isrankeditor=True,
+        namemapfunction=lambda k: _TR(getannotatedapiname(k)),
+        exec=True,
+    )
+
+
 def setTabTwo_lazy(self, basel: QVBoxLayout):
     # 均衡负载  loadbalance
     # 单次负载个数 loadbalance_oncenum
@@ -524,8 +544,9 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
                 callback=gobject.baseobject.translation_ui.translate_text.showhidename,
             ),
             "",
-            "使用翻译缓存",
-            D_getsimpleswitch(globalconfig, "uselongtermcache"),
+            "固定翻译显示顺序",
+            D_getsimpleswitch(globalconfig, "fix_translate_rank"),
+            D_getIconButton(functools.partial(vistranslate_rank, self)),
         ],
         [
             "最短翻译字数",
@@ -535,8 +556,11 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
             D_getspinbox(0, 9999, globalconfig, "maxlength"),
             "",
             "翻译请求间隔_(s)",
-            D_getspinbox(
-                0, 9999, globalconfig, "requestinterval", step=0.1, double=True
+            (
+                D_getspinbox(
+                    0, 9999, globalconfig, "requestinterval", step=0.1, double=True
+                ),
+                0,
             ),
         ],
     ]
