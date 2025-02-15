@@ -586,3 +586,6 @@ def AES_decrypt(key: bytes, iv: bytes, data: bytes) -> bytes:
 IsDLLBit64 = utilsdll.IsDLLBit64
 IsDLLBit64.argtypes = (c_wchar_p,)
 IsDLLBit64.restype = c_bool
+
+CreateShortcut = utilsdll.CreateShortcut
+CreateShortcut.argtypes = LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR

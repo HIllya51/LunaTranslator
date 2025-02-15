@@ -3,8 +3,8 @@ import os, functools
 from traceback import print_exc
 from myutils.wrapper import threader, Singleton_close
 from myutils.utils import find_or_create_uid, duplicateconfig
-from myutils.hwnd import getExeIcon
-import gobject, hashlib
+from myutils.hwnd import getExeIcon, getcurrexe
+import gobject, hashlib, winsharedutils
 from gui.inputdialog import autoinitdialog
 from gui.dynalang import LFormLayout, LDialog
 from myutils.localetools import localeswitchedrun
@@ -37,6 +37,7 @@ def showcountgame(window, num):
         window.setWindowTitle("游戏管理__-__" + str(num))
     else:
         window.setWindowTitle("游戏管理")
+
 
 class tagitem(QFrame):
     # search game
@@ -129,7 +130,7 @@ def startgame(gameuid):
                     gobject.baseobject.starttextsource(use=_[mode], checked=True)
 
             threader(localeswitchedrun)(gameuid)
-
+            return True
     except:
         print_exc()
 
@@ -197,6 +198,18 @@ def getpixfunction(kk, small=False, iconfirst=False):
             return pix
     _pix = getExeIcon(uid2gamepath[kk], False, cache=True)
     return _pix
+
+
+def CreateShortcutForUid(gameuid):
+    icon = getpixfunction(gameuid, small=True, iconfirst=True)
+    path = gobject.getcachedir("icon2/{}.ico".format(gameuid))
+    icon.save(path)
+    winsharedutils.CreateShortcut(
+        savehook_new_data[gameuid]["title"],
+        getcurrexe(),
+        "--Exec {}".format(gameuid),
+        path,
+    )
 
 
 def startgamecheck(self: QWidget, reflist: list, gameuid):

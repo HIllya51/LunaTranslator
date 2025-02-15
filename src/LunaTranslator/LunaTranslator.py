@@ -44,6 +44,7 @@ from gui.setting import Setting
 from gui.attachprocessdialog import AttachProcessDialog
 import windows
 import winsharedutils
+from gui.dialog_savedgame_common import startgame
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark, dynamicapiname
@@ -1164,7 +1165,10 @@ class MAINUI:
                 #     QFontDatabase.SystemFont.GeneralFont
                 # ).family()
 
-    def loadui(self):
+    def loadui(self, startwithgameuid):
+        if startwithgameuid:
+            if not startgame(startwithgameuid):
+                os._exit(0)
         self.installeventfillter()
         self.parsedefaultfont()
         self.loadmetadatas()

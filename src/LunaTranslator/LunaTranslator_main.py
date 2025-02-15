@@ -79,12 +79,12 @@ def prepareqtenv():
     # 香港地区数字乱码
 
 
-def loadmainui():
+def loadmainui(startwithgameuid):
     import gobject
     from LunaTranslator import MAINUI
 
     gobject.baseobject = MAINUI()
-    gobject.baseobject.loadui()
+    gobject.baseobject.loadui(startwithgameuid)
     # gobject.baseobject.urlprotocol()
 
 
@@ -214,9 +214,11 @@ def urlprotocol():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--URLProtocol", required=False)
+    parser.add_argument("--Exec", required=False)
     try:
         args = parser.parse_args()
         URLProtocol: str = args.URLProtocol
+        Exec: str = args.Exec
         if URLProtocol:
             print(URLProtocol)
             result = urlsplit(URLProtocol)
@@ -227,6 +229,11 @@ def urlprotocol():
                 with open(bangumioauth, "w", encoding="utf8") as ff:
                     ff.write(result.query[5:])
                 os._exit(0)
+            elif netloc == "exec":
+                # lunatranslator://Exec?{gameuid}
+                return result.query
+        if Exec:
+            return Exec
     except Exception:
         print_exc()
 
@@ -241,6 +248,5 @@ if __name__ == "__main__":
     checklang()
     checkintegrity()
     checkpermission()
-    urlprotocol()
-    loadmainui()
+    loadmainui(urlprotocol())
     app.exit(app.exec())

@@ -38,6 +38,7 @@ from gui.dialog_savedgame_common import (
     calculatetagidx,
     opendirforgameuid,
     getcachedimage,
+    CreateShortcutForUid,
     getpixfunction,
     addgamesingle,
     addgamebatch,
@@ -684,6 +685,7 @@ class dialog_savedgame_v3(QWidget):
         delgame = LAction("删除游戏", menu)
         opendir = LAction("打开目录", menu)
         addtolist = LAction("添加到列表", menu)
+        createlnk = LAction("创建快捷方式", menu)
         if not self.currentfocusuid:
 
             menu.addAction(addlist)
@@ -691,17 +693,12 @@ class dialog_savedgame_v3(QWidget):
             exists = os.path.exists(get_launchpath(self.currentfocusuid))
             if exists:
                 menu.addAction(startgame)
-                menu.addAction(delgame)
-
                 menu.addAction(opendir)
+                menu.addAction(createlnk)
 
-                menu.addSeparator()
-                menu.addAction(addtolist)
-            else:
-
-                menu.addAction(addtolist)
-                menu.addSeparator()
-                menu.addAction(delgame)
+            menu.addAction(delgame)
+            menu.addSeparator()
+            menu.addAction(addtolist)
 
         action = menu.exec(QCursor.pos())
         if action == startgame:
@@ -716,6 +713,8 @@ class dialog_savedgame_v3(QWidget):
             self.clicked4()
         elif action == addtolist:
             self.addtolist()
+        elif action == createlnk:
+            CreateShortcutForUid(self.currentfocusuid)
 
     def addtolistcallback(self, uid, gameuid):
 

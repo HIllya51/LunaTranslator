@@ -33,6 +33,7 @@ from gui.dialog_savedgame_common import (
     loadvisinternal,
     getalistname,
     opendirforgameuid,
+    CreateShortcutForUid,
     calculatetagidx,
     getreflist,
     getpixfunction,
@@ -533,6 +534,7 @@ class dialog_savedgame_new(QWidget):
         delgame = LAction("删除游戏", menu)
         opendir = LAction("打开目录", menu)
         addtolist = LAction("添加到列表", menu)
+        createlnk = LAction("创建快捷方式", menu)
         gamesetting = LAction("游戏设置", menu)
         addgame = LAction("添加游戏", menu)
         batchadd = LAction("批量添加", menu)
@@ -542,6 +544,7 @@ class dialog_savedgame_new(QWidget):
             if exists:
                 menu.addAction(startgame)
                 menu.addAction(opendir)
+                menu.addAction(createlnk)
             menu.addAction(gamesetting)
             menu.addAction(delgame)
             menu.addSeparator()
@@ -563,6 +566,8 @@ class dialog_savedgame_new(QWidget):
             self.showsettingdialog()
         elif action == addtolist:
             self.addtolist()
+        elif action == createlnk:
+            CreateShortcutForUid(self.currentfocusuid)
         elif action == delgame:
             self.clicked2()
         elif action == opendir:
