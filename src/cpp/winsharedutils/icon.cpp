@@ -1,13 +1,21 @@
 ﻿
 #include "BMP.h"
-
+HICON GetExeIcon(const std::wstring &filePath)
+{
+    SHFILEINFO fileInfo;
+    HICON hIcon = NULL;
+    if (SHGetFileInfo(filePath.c_str(), 0, &fileInfo, sizeof(fileInfo), SHGFI_ICON | SHGFI_LARGEICON))
+    {
+        hIcon = fileInfo.hIcon;
+    }
+    return hIcon;
+}
 DECLARE_API bool extracticon2data(const wchar_t *name, void (*cb)(const char *, size_t))
 {
-    HICON h1, h2;
-
-    if (UINT_MAX == ExtractIconExW(name, 0, &h1, &h2, 1))
-        return false;
-    if (h1 == 0)
+    // if (UINT_MAX == ExtractIconExW(name, 0, &h1, &h2, 1))
+    //     return false;
+    HICON h1 = GetExeIcon(name);
+    if (!h1)
         return false;
     HDC hdc = GetDC(NULL);
     if (!hdc)
@@ -32,47 +40,14 @@ DECLARE_API bool extracticon2data(const wchar_t *name, void (*cb)(const char *, 
     DeleteDC(memDC);
 
     BMP bmpp(iconWidth, iconHeight);
-
     BITMAP bmp;
     GetObject(hBitmap, sizeof(BITMAP), &bmp);
-
     bmpp.bmp_info_header.bit_count = bmp.bmBitsPixel;
-
-    auto dwSize = bmp.bmWidthBytes * bmp.bmHeight;
-    bmpp.data.resize(dwSize);
-    auto dataptr = bmpp.data.data();
-    if (!GetBitmapBits(hBitmap, dwSize, dataptr))
+    bmpp.bmp_info_header.height = -bmpp.bmp_info_header.height;
+    bmpp.data.resize(bmp.bmWidthBytes * bmp.bmHeight);
+    if (!GetBitmapBits(hBitmap, bmpp.data.size(), bmpp.data.data()))
         return false;
     DeleteObject(hBitmap);
-
-    std::vector<LONG> tmp;
-    tmp.resize(bmp.bmWidthBytes);
-    if (bmp.bmWidthBytes == bmp.bmHeight * 4)
-    {
-        bool allalpha0 = true;
-        for (int i = 0; i < bmpp.data.size() / 4; i++)
-        {
-            if (dataptr[i * 4 + 3] != 0)
-            {
-                allalpha0 = false;
-                break;
-            }
-        }
-        if (allalpha0)
-        {
-            for (int i = 0; i < bmpp.data.size() / 4; i++)
-            {
-                dataptr[i * 4 + 3] = 0xff;
-            }
-        }
-    }
-
-    for (int i = 0; i < bmp.bmHeight / 2; i++)
-    {
-        memcpy(tmp.data(), dataptr + i * bmp.bmWidthBytes, bmp.bmWidthBytes);
-        memcpy(dataptr + i * bmp.bmWidthBytes, dataptr + (bmp.bmHeight - 1 - i) * bmp.bmWidthBytes, bmp.bmWidthBytes);
-        memcpy(dataptr + (bmp.bmHeight - 1 - i) * bmp.bmWidthBytes, tmp.data(), bmp.bmWidthBytes);
-    }
     std::string data;
     bmpp.write_tomem(data);
     cb(data.c_str(), data.size());
