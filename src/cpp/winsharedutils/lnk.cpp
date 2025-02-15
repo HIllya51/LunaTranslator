@@ -44,6 +44,18 @@ DECLARE_API void CreateShortcut(LPCWSTR shortcutName, LPCWSTR targetPath, LPCWST
     CComHeapPtr<WCHAR> desktopPath;
     CHECK_FAILURE_NORET(SHGetKnownFolderPath(FOLDERID_Desktop, 0, NULL, &desktopPath));
     std::wstring path = (LPWSTR)desktopPath;
-
-    pPersistFile->Save((path + L'\\' + shortcutName + L".lnk").c_str(), TRUE);
+    path += L'\\';
+    path += shortcutName;
+    int index = 0;
+    auto makefilename = [&]()
+    {
+        return (path + (index ? (L"(" + std::to_wstring(index + 1) + L")") : L"") + L".lnk");
+    };
+    while (true)
+    {
+        if (!PathFileExistsW(makefilename().c_str()))
+            break;
+        index += 1;
+    }
+    pPersistFile->Save(makefilename().c_str(), TRUE);
 }
