@@ -524,6 +524,9 @@ class TextBrowser(QWidget, dataget):
         )
         self.cleared = False
 
+    def setdisplayrank(self, type):
+        pass
+
     def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
         if self.checkskip(texttype):
             return

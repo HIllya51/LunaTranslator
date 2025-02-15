@@ -176,3 +176,6 @@ class Textbrowser(QFrame):
 
     def resetstyle(self):
         self.textbrowser.resetstyle()
+
+    def setdisplayrank(self, type):
+        self.textbrowser.setdisplayrank(type)

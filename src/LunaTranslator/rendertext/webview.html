@@ -1,4 +1,7 @@
-<div id="luna_root_div"></div>
+<div id="luna_root_div">
+    <div id="luna_root_div_trans"></div>
+    <div id="luna_root_div_origin"></div>
+</div>
 <div id="luna_overlay_div"></div>
 <div id="luna_atback_div"></div>
 <style>
@@ -306,7 +309,10 @@
         if (args.klass) {
             div.classList.add('TS_CLASS_' + args.klass)
         }
-        document.getElementById('luna_root_div').appendChild(div);
+        if (texttype == 0 || texttype == 2 || texttype == 3)
+            document.getElementById('luna_root_div_origin').appendChild(div);
+        else if (texttype == 1 || texttype == 4)
+            document.getElementById('luna_root_div_trans').appendChild(div);
     }
     function create_internal_text(style, styleargsjson, _id, nameu, textu, argsjson) {
         let ele = document.getElementById(_id)
@@ -391,7 +397,8 @@
 
     }
     function clear_all() {
-        document.getElementById('luna_root_div').innerHTML = "";
+        document.getElementById('luna_root_div_origin').innerHTML = "";
+        document.getElementById('luna_root_div_trans').innerHTML = "";
     }
     _clear_all = clear_all //保留符号
     function setselectable(b) {
@@ -558,6 +565,14 @@
   ${style}
 }`
         safe_calllunaheightchange()
+    }
+    function setdisplayrank(type) {
+        if (type == 1) {
+            document.getElementById('luna_root_div').insertBefore(document.getElementById('luna_root_div_trans'), document.getElementById('luna_root_div_origin'))
+        }
+        else {
+            document.getElementById('luna_root_div').insertBefore(document.getElementById('luna_root_div_origin'), document.getElementById('luna_root_div_trans'))
+        }
     }
 </script>
 <script>

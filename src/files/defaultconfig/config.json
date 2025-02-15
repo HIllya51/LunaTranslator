@@ -10,6 +10,7 @@
     "webviewLoadExt": false,
     "multihookmergeby": "\n",
     "autoopenselecttext": true,
+    "displayrank": 0,
     "ocrafterrangeselect": true,
     "excule_from_self": true,
     "showrangeafterrangeselect": true,

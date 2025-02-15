@@ -85,6 +85,7 @@ class TextBrowser(WebviewWidget, dataget):
         self.showhideclick()
         self.showhidert(globalconfig["isshowhira"])
         self.setfontstyle()
+        self.setdisplayrank(globalconfig["displayrank"])
         self.parent().refreshcontent()
 
     def refreshcontent_before(self):
@@ -325,6 +326,9 @@ class TextBrowser(WebviewWidget, dataget):
         _id = "luna_{}".format(uuid.uuid4())
         self.create_div_line_id(_id, texttype, klass)
         return _id
+
+    def setdisplayrank(self, rank):
+        self.debugeval("setdisplayrank({})".format(int(rank)))
 
     def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
         _id = self.createtextlineid(texttype, klass)

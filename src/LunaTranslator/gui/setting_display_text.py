@@ -23,6 +23,7 @@ from gui.usefulwidget import (
     listediter,
     FocusFontCombo,
     SuperCombo,
+    D_getsimplecombobox,
     getspinbox,
     getsmalllabel,
     SplitLine,
@@ -420,7 +421,23 @@ def resetgroudswitchcallback(self, group):
         self.fuckshit__2 = switch2
         self.goodfontsettingsformlayout.addRow(
             getboxlayout(
-                ["附加HTML", switch, _btn, "", "附加浏览器插件", switch2, _btn2, ""]
+                [
+                    "附加HTML",
+                    switch,
+                    _btn,
+                    "",
+                    "附加浏览器插件",
+                    switch2,
+                    _btn2,
+                    "",
+                    "显示顺序",
+                    D_getsimplecombobox(
+                        ["原文_翻译", "翻译_原文"],
+                        globalconfig,
+                        "displayrank",
+                        callback=gobject.baseobject.translation_ui.translate_text.setdisplayrank,
+                    ),
+                ]
             ),
         )
         self.goodfontsettingsformlayout.addRow(SplitLine())
