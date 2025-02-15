@@ -1222,7 +1222,7 @@ class MAINUI:
         self.starttextsource()
         self.inittray()
         self.playtimemanager = playtimemanager()
-        self.__count = 0
+        self.urlprotocol()
 
     def WinEventHookCALLBACK(self, event, hwnd, idObject):
         try:
@@ -1281,9 +1281,7 @@ class MAINUI:
     def WindowMessageCallback(self, msg: int, boolvalue: bool, strvalue: str):
         if msg == 0:
             if globalconfig["darklight2"] == 0:
-                if self.__count % 2:
-                    self.commonstylebase.setstylesheetsignal.emit()
-                self.__count += 1
+                self.commonstylebase.setstylesheetsignal.emit()
         elif msg == 1:
             if boolvalue:
                 self.translation_ui.settop()

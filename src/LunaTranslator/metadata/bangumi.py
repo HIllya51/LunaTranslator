@@ -178,7 +178,6 @@ class bgmsettings(QFormLayout):
         self.lbinfo.setText(info)
 
     def __oauth(self):
-        gobject.baseobject.urlprotocol()
         bangumioauth = gobject.getcachedir("bangumioauth")
         try:
             os.remove(bangumioauth)

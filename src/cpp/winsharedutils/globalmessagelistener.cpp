@@ -23,7 +23,8 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     {
         if (WM_SETTINGCHANGE == message)
         {
-            if (IsColorSchemeChangeMessage(lParam))
+            static int idx = 1;
+            if (IsColorSchemeChangeMessage(lParam) && ((idx++) % 2))
                 callback(0, false, NULL);
         }
         else if (message == WM_MAGPIE_SCALINGCHANGED)
