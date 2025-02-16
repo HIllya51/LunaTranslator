@@ -94,6 +94,13 @@ std::optional<BMP> getbmp(HICON hicon)
     DeleteDC(memDC);
     return std::move(getbmp(hBitmap));
 }
+#ifdef WINXP
+extern "C" WINUSERAPI
+    UINT
+        WINAPI
+        GetDpiForWindow(
+            _In_ HWND hwnd);
+#endif
 extern HWND globalmessagehwnd;
 DECLARE_API bool extracticon2data(bool large, const wchar_t *name, void (*cb)(const char *, size_t))
 {
