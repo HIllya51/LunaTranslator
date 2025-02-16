@@ -390,16 +390,21 @@ class dialog_syssetting(LDialog):
 
         formLayout.addRow(SplitLine())
         if type_ == 2:
-            for key, name in [
-                ("itemw", "宽度"),
-                ("itemh", "高度"),
-                ("margin", "边距"),
-                ("margin2", "边距_2"),
-                ("textH", "文字区高度"),
-            ]:
-                spin = getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key)
+            for i, (key, name) in enumerate(
+                [
+                    ("itemw", "宽度"),
+                    ("itemh", "高度"),
+                    ("margin", "边距"),
+                    ("margin2", "边距_2"),
+                    ("textH", "文字区高度"),
+                ]
+            ):
+                minv = 0 if i >= 2 else 32
+                spin = getspinbox(
+                    minv, 1000, globalconfig["dialog_savegame_layout"], key
+                )
                 formLayout.addRow(name, spin)
-                spin.stepbysignal.connect(lambda _: self.parent().callchange())
+                spin.valueChanged.connect(lambda _: self.parent().callchange())
             formLayout.addRow(
                 "字体",
                 getsimplepatheditor(
@@ -423,9 +428,9 @@ class dialog_syssetting(LDialog):
             for key, name in [
                 ("listitemheight", "高度"),
             ]:
-                spin = getspinbox(0, 1000, globalconfig["dialog_savegame_layout"], key)
+                spin = getspinbox(10, 1000, globalconfig["dialog_savegame_layout"], key)
                 formLayout.addRow(name, spin)
-                spin.stepbysignal.connect(lambda _: self.parent().callchange())
+                spin.valueChanged.connect(lambda _: self.parent().callchange())
             formLayout.addRow(
                 "字体",
                 getsimplepatheditor(
