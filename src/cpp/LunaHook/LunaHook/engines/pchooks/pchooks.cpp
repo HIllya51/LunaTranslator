@@ -71,30 +71,34 @@ SimpleMutex hookoncelock; // xp上这个谜之导致dll free时崩溃。虽然�
     }                                                                                                              \
   }
 
-#define NEW_MODULE_HOOK(_module, _fun, _data, _data_ind, _split_off, _split_ind, _type, _len_off) \
-  {                                                                                               \
-    HookParam hp;                                                                                 \
-    wchar_t path[MAX_PATH];                                                                       \
-    if (GetModuleFileNameW(_module, path, MAX_PATH))                                              \
-      wcsncpy_s(hp.module, wcsrchr(path, L'\\') + 1, MAX_MODULE_SIZE - 1);                        \
-    strncpy_s(hp.function, #_fun, MAX_MODULE_SIZE - 1);                                           \
-    hp.offset = GETARG(_data);                                                                    \
-    hp.index = GETARG(_data_ind);                                                                 \
-    hp.split = GETARG(_split_off);                                                                \
-    hp.split_index = GETARG(_split_ind);                                                          \
-    hp.type = _type | MODULE_OFFSET | FUNCTION_OFFSET;                                            \
-    hp.length_offset = GETARG(_len_off) / arg_sz;                                                 \
-    auto currptr = GetProcAddress(_module, hp.function);                                          \
-    if (currptr)                                                                                  \
-    {                                                                                             \
-      std::lock_guard _(hookoncelock);                                                            \
-      auto dohook = currptr ? hookonce.find(currptr) == hookonce.end() : false;                   \
-      if (dohook)                                                                                 \
-      {                                                                                           \
-        NewHook(hp, #_fun);                                                                       \
-        hookonce.insert(currptr);                                                                 \
-      }                                                                                           \
-    }                                                                                             \
+#define NEW_MODULE_HOOK(ptr, _module, _fun, _data, _data_ind, _split_off, _split_ind, _type, _len_off) \
+  {                                                                                                    \
+    HookParam hp;                                                                                      \
+    wchar_t path[MAX_PATH];                                                                            \
+    if (GetModuleFileNameW(_module, path, MAX_PATH))                                                   \
+      wcsncpy_s(hp.module, wcsrchr(path, L'\\') + 1, MAX_MODULE_SIZE - 1);                             \
+    strncpy_s(hp.function, #_fun, MAX_MODULE_SIZE - 1);                                                \
+    hp.offset = GETARG(_data);                                                                         \
+    hp.index = GETARG(_data_ind);                                                                      \
+    hp.split = GETARG(_split_off);                                                                     \
+    hp.split_index = GETARG(_split_ind);                                                               \
+    hp.type = _type | MODULE_OFFSET | FUNCTION_OFFSET;                                                 \
+    hp.length_offset = GETARG(_len_off) / arg_sz;                                                      \
+    auto currptr = GetProcAddress(_module, hp.function);                                               \
+    if (currptr)                                                                                       \
+    {                                                                                                  \
+      bool dohook = false;                                                                             \
+      std::lock_guard _(hookoncelock);                                                                 \
+      if (ptr)                                                                                         \
+        dohook = currptr == ptr;                                                                       \
+      else                                                                                             \
+        dohook = hookonce.find(currptr) == hookonce.end();                                             \
+      if (dohook)                                                                                      \
+      {                                                                                                \
+        NewHook(hp, #_fun);                                                                            \
+        hookonce.insert(currptr);                                                                      \
+      }                                                                                                \
+    }                                                                                                  \
   }
 
 void PcHooks::hookGdiGdiplusD3dxFunctions()
@@ -151,7 +155,7 @@ void PcHooks::hookGDIFunctions(void *ptr)
 }
 
 // jichi 6/18/2015: GDI+ functions
-void PcHooks::hookGDIPlusFunctions()
+void PcHooks::hookGDIPlusFunctions(void *ptr)
 {
   HMODULE hModule = ::GetModuleHandleA("gdiplus.dll");
   if (!hModule)
@@ -164,21 +168,21 @@ void PcHooks::hookGDIPlusFunctions()
   // Use arg1 pionter to GpGraphics as split
   // using namespace Gdiplus::DllExports;
   // Use arg5 style as split
-  NEW_MODULE_HOOK(hModule, GdipAddPathString, 2, 0, 5, 0, CODEC_UTF16 | USING_STRING, 3)
-  NEW_MODULE_HOOK(hModule, GdipAddPathStringI, 2, 0, 5, 0, CODEC_UTF16 | USING_STRING, 3)
-  NEW_MODULE_HOOK(hModule, GdipMeasureCharacterRanges, 2, 0, 1, 0, CODEC_UTF16 | USING_STRING, 3)
-  NEW_MODULE_HOOK(hModule, GdipDrawString, 2, 0, 1, 0, CODEC_UTF16 | USING_STRING, 3)
-  NEW_MODULE_HOOK(hModule, GdipMeasureString, 2, 0, 1, 0, CODEC_UTF16 | USING_STRING, 3)
-  NEW_MODULE_HOOK(hModule, GdipDrawDriverString, 1, 0, 3, 0, CODEC_UTF16 | USING_STRING, 2)
-  NEW_MODULE_HOOK(hModule, GdipMeasureDriverString, 1, 0, 3, 0, CODEC_UTF16 | USING_STRING, 2)
+  NEW_MODULE_HOOK(ptr, hModule, GdipAddPathString, 2, 0, 5, 0, CODEC_UTF16 | USING_STRING, 3)
+  NEW_MODULE_HOOK(ptr, hModule, GdipAddPathStringI, 2, 0, 5, 0, CODEC_UTF16 | USING_STRING, 3)
+  NEW_MODULE_HOOK(ptr, hModule, GdipMeasureCharacterRanges, 2, 0, 1, 0, CODEC_UTF16 | USING_STRING, 3)
+  NEW_MODULE_HOOK(ptr, hModule, GdipDrawString, 2, 0, 1, 0, CODEC_UTF16 | USING_STRING, 3)
+  NEW_MODULE_HOOK(ptr, hModule, GdipMeasureString, 2, 0, 1, 0, CODEC_UTF16 | USING_STRING, 3)
+  NEW_MODULE_HOOK(ptr, hModule, GdipDrawDriverString, 1, 0, 3, 0, CODEC_UTF16 | USING_STRING, 2)
+  NEW_MODULE_HOOK(ptr, hModule, GdipMeasureDriverString, 1, 0, 3, 0, CODEC_UTF16 | USING_STRING, 2)
 }
 
-void PcHooks::hookD3DXFunctions(HMODULE d3dxModule)
+void PcHooks::hookD3DXFunctions(HMODULE d3dxModule, void *ptr)
 {
   if (GetProcAddress(d3dxModule, "D3DXCreateTextA"))
   {
-    NEW_MODULE_HOOK(d3dxModule, D3DXCreateTextA, 3, 0, 0, 0, USING_STRING, 0)
-    NEW_MODULE_HOOK(d3dxModule, D3DXCreateTextW, 3, 0, 0, 0, USING_STRING | CODEC_UTF16, 0)
+    NEW_MODULE_HOOK(ptr, d3dxModule, D3DXCreateTextA, 3, 0, 0, 0, USING_STRING, 0)
+    NEW_MODULE_HOOK(ptr, d3dxModule, D3DXCreateTextW, 3, 0, 0, 0, USING_STRING | CODEC_UTF16, 0)
   }
 
   // Second call in D3DX(10)CreateFontIndirect is D3DXFont constructor, which sets up the vtable
@@ -322,8 +326,8 @@ void PcHooks::hookOtherPcFunctions(void *ptr)
 
   if (HMODULE module = GetModuleHandleW(L"OLEAUT32.dll"))
   {
-    NEW_MODULE_HOOK(module, SysAllocString, 1, 0, 0, 0, CODEC_UTF16 | USING_STRING, 0)
-    NEW_MODULE_HOOK(module, SysAllocStringLen, 1, 0, 0, 0, CODEC_UTF16 | USING_STRING | KNOWN_UNSTABLE, 2)
+    NEW_MODULE_HOOK(ptr, module, SysAllocString, 1, 0, 0, 0, CODEC_UTF16 | USING_STRING, 0)
+    NEW_MODULE_HOOK(ptr, module, SysAllocStringLen, 1, 0, 0, 0, CODEC_UTF16 | USING_STRING | KNOWN_UNSTABLE, 2)
   }
 }
 

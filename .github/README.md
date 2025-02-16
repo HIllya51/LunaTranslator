@@ -14,7 +14,7 @@
 - **HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
 
 
-- **OCR** 支持 **离线OCR** ( 除内置OCR引擎外，还支持WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **在线OCR** ( 百度、有道、讯飞、Google Lens、Google Cloud Vision、docsumo、ocrspace、Gemini、ChatGPT兼容接口 )
+- **OCR** 支持 **离线OCR** ( 除内置OCR引擎外，还支持WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **在线OCR** 
 
 - **剪贴板** 支持从剪贴板中获取文本进行翻译
 
@@ -24,11 +24,11 @@
 
 支持几乎所有能想得到的翻译引擎，包括： 
 
-- **免费在线翻译** 支持使用百度、必应、谷歌、阿里、有道、彩云、腾讯、火山、DeepL/DeepLX、papago、yandex、lingva、reverso、TranslateCom、ModernMT
+- **免费在线翻译** 支持大量免注册开箱即用的在线翻译接口
 
-- **注册在线翻译** 支持使用用户注册的 **传统翻译** ( 百度、腾讯、有道、小牛、彩云、火山、DeepL、yandex、google、ibm、Azure ) 和 **大模型翻译** ( ChatGPT兼容接口、claude、cohere、gemini、百度千帆、腾讯混元 ) 
+- **注册在线翻译** 支持使用用户注册的 **传统翻译** 和 **大模型翻译**
 
-- **离线翻译** 支持 **传统翻译** ( J北京7、金山快译、译典通、ezTrans、Sugoi、Atlas、LEC ) 和离线部署的 **大模型翻译** ( ChatGPT兼容接口、Sakura大模型 ) 
+- **离线翻译** 支持 **传统翻译** ( J北京7、金山快译、译典通、ezTrans、Sugoi、Atlas、LEC ) 和离线部署的 **大模型翻译**
 
 - **预翻译** 支持读取预翻译文件，支持翻译缓存
 
@@ -46,9 +46,11 @@
 
 - **日语分词及假名显示** 支持使用 Mecab 等分词和显示假名
 
-- **查词** 支持使用 **离线辞书** ( MDICT ) 和 **在线辞书** ( 有道、weblio、Goo、Moji、jisho、JapanDict、ChatGPT) 进行单词查询
+- **查词** 支持使用 **离线辞书** ( MDICT ) 和 **在线辞书** 进行单词查询
 
 - **Anki** 支持使用一键添加单词到anki中
+
+- **Yomitan等浏览器插件** 可以在软件内加载Yomitan等浏览器插件以辅助实现一些其他功能
 
  
 ## 支持作者

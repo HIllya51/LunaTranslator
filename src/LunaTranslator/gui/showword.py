@@ -7,6 +7,7 @@ import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, static_data, _TR
 from myutils.utils import (
+    dynamiccishuname,
     loopbackrecorder,
     selectdebugfile,
     parsekeystringtomodvkcode,
@@ -286,7 +287,7 @@ class AnkiWindow(QWidget):
         dictionaryContent = {}
         for _ in dictionarys:
             dictionaryInfo.append(
-                {"dict": _["dict"], "name": globalconfig["cishu"][_["dict"]]["name"]}
+                {"dict": _["dict"], "name": dynamiccishuname(_["dict"])}
             )
 
             dictionaryContent[_["dict"]] = quote(
@@ -495,7 +496,8 @@ class AnkiWindow(QWidget):
             "不添加辞书",
             globalconfig["ignoredict"],
             candidates=list(globalconfig["cishu"].keys()),
-            namemapfunction=lambda k: globalconfig["cishu"][k]["name"],
+            namemapfunction=lambda k: dynamiccishuname(k),
+            exec=True,
         )
 
     @threader
@@ -1157,7 +1159,7 @@ class showdiction(QWidget):
                 if not tree:
                     continue
 
-                item = QStandardItem(globalconfig["cishu"][k]["name"])
+                item = QStandardItem(dynamiccishuname(k))
                 item.setData(tree, DictNodeRole)
                 rows.append(item)
         root.appendRows(rows)
@@ -1233,7 +1235,7 @@ class searchwordW(closeashidewindow):
             if self.thisps.get(kk, 0) >= thisp:
                 idx += 1
         self.tabks.insert(idx, k)
-        self.tab.insertTab(idx, (globalconfig["cishu"][k]["name"]))
+        self.tab.insertTab(idx, (dynamiccishuname(k)))
         if not self.hasclicked:
             if thisp == max(self.thisps.values()):
                 self.tab.setCurrentIndex(0)

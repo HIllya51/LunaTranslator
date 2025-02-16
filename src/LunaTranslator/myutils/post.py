@@ -192,6 +192,7 @@ def _13_fEX(line: str):
 def _1_f(line):
     line = re.sub(r"\{(\w+)(.*?)\}(.*?)\{\/\1\}", r"\3", line)
     line = re.sub(r"\{([^}]?)[:/](.*?)\}", r"\1", line)
+    line = re.sub(r"\{.*?\}", r"", line)
     return line
 
 

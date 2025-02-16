@@ -246,7 +246,7 @@ namespace
         int cnt = 0;
         int cntx = 0;
       };
-      hp.user_value = (uintptr_t) new savecontext;
+      hp.user_value = (uintptr_t)new savecontext;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         // ff ff 4 305f 305f 304b 304b 306a 306a 3057 3057 3 5c0f 5c0f 9ce5 9ce5 904a 904a
@@ -285,6 +285,11 @@ namespace
           buffer->clear();
       };
       succ |= NewHook(hp, "TinkerBell");
+    }
+    if (succ)
+    {
+      // 上面的钩子偶尔会提取到文件路径。因为是CHAR类型没办法过滤
+      PcHooks::hookOtherPcFunctions((LPVOID)GetStringTypeExW);
     }
     return succ;
   }

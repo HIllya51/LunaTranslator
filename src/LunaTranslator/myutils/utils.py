@@ -1016,6 +1016,12 @@ def dynamicapiname(apiuid):
     )
 
 
+def dynamiccishuname(apiuid):
+    return globalconfig["cishu"][apiuid].get(
+        "name_self_set", globalconfig["cishu"][apiuid]["name"]
+    )
+
+
 def getannotatedapiname(x):
     tp = globalconfig["fanyi"][x].get("type", "free")
     return (

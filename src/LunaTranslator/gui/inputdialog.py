@@ -8,7 +8,6 @@ from myutils.utils import makehtml
 from myutils.wrapper import Singleton_close
 from gui.usefulwidget import (
     MySwitch,
-    selectcolor,
     getsimpleswitch,
     threebuttons,
     listediterline,
@@ -20,7 +19,6 @@ from gui.usefulwidget import (
     SplitLine,
     getIconButton,
     VisLFormLayout,
-    getcolorbutton,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -772,6 +770,8 @@ class autoinitdialog(LDialog):
                         viss.append(w)
                 for w in viss:
                     formLayout.setRowVisible(w, True)
+                QApplication.processEvents()
+                self.resize(self.width(), 1)
 
             cachecombo[comboname].currentIndexChanged.connect(
                 functools.partial(refcombofunction, refitems)
@@ -783,90 +783,6 @@ class autoinitdialog(LDialog):
             self.exec_()
         else:
             self.show()
-
-
-def getsomepath1(
-    parent, title, d, k, label, callback=None, isdir=False, filter1="*.db"
-):
-    autoinitdialog(
-        parent,
-        d,
-        title,
-        800,
-        [
-            {
-                "type": "file",
-                "name": label,
-                "k": k,
-                "dir": isdir,
-                "filter": filter1,
-            },
-            {"type": "okcancel", "callback": callback},
-        ],
-    )
-
-
-@Singleton_close
-class multicolorset(LDialog):
-    def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("颜色设置")
-        self.resize(QSize(300, 10))
-        formLayout = LFormLayout(self)  # 配置layout
-        _hori = QHBoxLayout()
-        l = LLabel("不透明度")
-        _hori.addWidget(l)
-        _s = getspinbox(
-            1,
-            100,
-            d=globalconfig,
-            key="showcixing_touming",
-            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-        )
-        _hori.addWidget(_s)
-        formLayout.addRow(_hori)
-        _s.valueChanged.connect(
-            lambda x: globalconfig.__setitem__("showcixing_touming", x)
-        )
-        hori = QHBoxLayout()
-        hori.addWidget(LLabel("词性"))
-        hori.addWidget(LLabel("是否显示"))
-        hori.addWidget(LLabel("颜色"))
-        for k in globalconfig["cixingcolor"]:
-            hori = QHBoxLayout()
-
-            l = LLabel(k)
-
-            hori.addWidget(l)
-
-            b = getsimpleswitch(
-                d=globalconfig["cixingcolorshow"],
-                key=k,
-                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-            )
-
-            p = getcolorbutton(
-                globalconfig["cixingcolor"],
-                k,
-                name="miaobian_color_button",
-                parent=self,
-            )
-
-            p.clicked.connect(
-                functools.partial(
-                    selectcolor,
-                    self,
-                    globalconfig["cixingcolor"],
-                    k,
-                    p,
-                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                )
-            )
-            hori.addWidget(b)
-            hori.addWidget(p)
-
-            formLayout.addRow(hori)
-        self.show()
 
 
 @Singleton_close

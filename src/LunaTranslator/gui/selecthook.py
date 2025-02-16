@@ -613,7 +613,7 @@ class hookselect(closeashidewindow):
         self.userhookinsert = IconButton("fa.question")
         self.userhookinsert.clicked.connect(
             lambda: os.startfile(
-                dynamiclink("{docs_server}/hooksettings.html#特殊码格式")
+                dynamiclink("{docs_server}/zh/hooksettings.html#特殊码格式")
             )
         )
         self.searchtextlayout.addWidget(self.userhookinsert)

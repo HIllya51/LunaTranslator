@@ -1,12 +1,10 @@
+from qtsymbols import *
 import functools, os
 import gobject
-from myutils.utils import splitocrtypes
+from myutils.utils import splitocrtypes, dynamiccishuname
 from myutils.config import globalconfig, _TR
-from gui.inputdialog import (
-    multicolorset,
-    autoinitdialog_items,
-    autoinitdialog,
-)
+from myutils.wrapper import Singleton_close
+from gui.inputdialog import autoinitdialog_items, autoinitdialog
 from gui.usefulwidget import (
     yuitsu_switch,
     makescrollgrid,
@@ -22,9 +20,82 @@ from gui.usefulwidget import (
     getIconButton,
     getsimpleswitch,
     D_getsimplecombobox,
+    getspinbox,
+    ClickableLabel,
+    getcolorbutton,
+)
+from gui.dynalang import (
+    LFormLayout,
+    LLabel,
+    LAction,
+    LDialog,
+    LDialog,
 )
 from gui.setting_display_text import Exteditor, alertwhenrestart
 from gui.setting_about import offlinelinks
+
+
+@Singleton_close
+class multicolorset(LDialog):
+    def __init__(self, parent) -> None:
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowTitle("颜色设置")
+        self.resize(QSize(300, 10))
+        formLayout = LFormLayout(self)  # 配置layout
+        _hori = QHBoxLayout()
+        l = LLabel("不透明度")
+        _hori.addWidget(l)
+        _s = getspinbox(
+            1,
+            100,
+            d=globalconfig,
+            key="showcixing_touming",
+            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+        )
+        _hori.addWidget(_s)
+        formLayout.addRow(_hori)
+        _s.valueChanged.connect(
+            lambda x: globalconfig.__setitem__("showcixing_touming", x)
+        )
+        hori = QHBoxLayout()
+        hori.addWidget(LLabel("词性"))
+        hori.addWidget(LLabel("是否显示"))
+        hori.addWidget(LLabel("颜色"))
+        for k in globalconfig["cixingcolor"]:
+            hori = QHBoxLayout()
+
+            l = LLabel(k)
+
+            hori.addWidget(l)
+
+            b = getsimpleswitch(
+                d=globalconfig["cixingcolorshow"],
+                key=k,
+                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+            )
+
+            p = getcolorbutton(
+                globalconfig["cixingcolor"],
+                k,
+                name="miaobian_color_button",
+                parent=self,
+            )
+
+            p.clicked.connect(
+                functools.partial(
+                    selectcolor,
+                    self,
+                    globalconfig["cixingcolor"],
+                    k,
+                    p,
+                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                )
+            )
+            hori.addWidget(b)
+            hori.addWidget(p)
+
+            formLayout.addRow(hori)
+        self.show()
 
 
 def setTabcishu(self, basel):
@@ -128,9 +199,52 @@ def vistranslate_rank(self):
         "显示顺序",
         globalconfig["cishuvisrank"],
         isrankeditor=True,
-        namemapfunction=lambda k: _TR(globalconfig["cishu"][k]["name"]),
+        namemapfunction=lambda k: _TR(dynamiccishuname(k)),
         exec=True,
     )
+
+
+def renameapi(qlabel: QLabel, apiuid, self, _=None):
+    menu = QMenu(qlabel)
+    editname = LAction("重命名", menu)
+    menu.addAction(editname)
+    action = menu.exec(QCursor.pos())
+
+    if action == editname:
+        before = dynamiccishuname(apiuid)
+        __d = {"k": before}
+
+        def cb(__d):
+            title = __d["k"]
+            if title not in ("", before):
+                globalconfig["cishu"][apiuid]["name_self_set"] = title
+                qlabel.setText(title)
+
+        autoinitdialog(
+            self,
+            __d,
+            "重命名",
+            600,
+            [
+                {
+                    "type": "lineedit",
+                    "name": "名称",
+                    "k": "k",
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(cb, __d),
+                },
+            ],
+            exec_=True,
+        )
+
+
+def getrenameablellabel(uid, self):
+    name = ClickableLabel(dynamiccishuname(uid))
+    fn = functools.partial(renameapi, name, uid, self)
+    name.clicked.connect(fn)
+    return name
 
 
 def initinternal(self, names):
@@ -143,7 +257,7 @@ def initinternal(self, names):
             continue
 
         line += [
-            globalconfig["cishu"][cishu]["name"],
+            functools.partial(getrenameablellabel, cishu, self),
             D_getsimpleswitch(
                 globalconfig["cishu"][cishu],
                 "use",
@@ -156,19 +270,20 @@ def initinternal(self, names):
             items[-1]["callback"] = functools.partial(
                 gobject.baseobject.startxiaoxueguan, cishu
             )
+
+            def __(cishu):
+                autoinitdialog(
+                    self,
+                    globalconfig["cishu"][cishu]["args"],
+                    dynamiccishuname(cishu),
+                    800,
+                    items,
+                    "cishu." + cishu,
+                    cishu,
+                )
+
             line += [
-                D_getIconButton(
-                    callback=functools.partial(
-                        autoinitdialog,
-                        self,
-                        globalconfig["cishu"][cishu]["args"],
-                        globalconfig["cishu"][cishu]["name"],
-                        800,
-                        items,
-                        "cishu." + cishu,
-                        cishu,
-                    ),
-                ),
+                D_getIconButton(callback=functools.partial(__, cishu)),
             ]
         else:
             line += [""]

@@ -657,11 +657,11 @@ class dialog_setting_game_internal(QWidget):
         edit = editswitchTextBrowser()
         edit.settext(savehook_new_data[gameuid].get("description", ""))
 
-        def __():
-            if not edit.text().strip():
+        def __(t: str):
+            if not t.strip():
                 savehook_new_data[gameuid]["description"] = ""
             else:
-                savehook_new_data[gameuid]["description"] = edit.text().strip()
+                savehook_new_data[gameuid]["description"] = t.strip()
 
         edit.textChanged.connect(__)
         flowwidget.addWidget(3, edit)
@@ -797,34 +797,30 @@ class dialog_setting_game_internal(QWidget):
         def selectimg(gameuid, key, res):
             savehook_new_data[gameuid][key] = res
 
-        for showname, key, filt in [
-            ("json翻译文件", "gamejsonfile", "*.json"),
-        ]:
-            if isinstance(savehook_new_data[gameuid][key], str):
-                savehook_new_data[gameuid][key] = [savehook_new_data[gameuid][key]]
-            formLayout.addRow(
-                (showname),
-                listediterline(
-                    showname,
-                    savehook_new_data[gameuid][key],
-                    ispathsedit=dict(filter1=filt),
-                ),
-            )
-
-        for showname, key, filt in [
-            ("sqlite翻译记录", "gamesqlitefile", "*.sqlite"),
-        ]:
-            formLayout.addRow(
-                showname,
-                getsimplepatheditor(
-                    savehook_new_data[gameuid][key],
-                    False,
-                    False,
-                    filt,
-                    functools.partial(selectimg, gameuid, key),
-                    icons=("fa.folder-open", "fa.refresh"),
-                ),
-            )
+        if isinstance(savehook_new_data[gameuid]["gamejsonfile"], str):
+            savehook_new_data[gameuid]["gamejsonfile"] = [
+                savehook_new_data[gameuid]["gamejsonfile"]
+            ]
+        formLayout.addRow(
+            "json翻译文件",
+            listediterline(
+                "json翻译文件",
+                savehook_new_data[gameuid]["gamejsonfile"],
+                ispathsedit=dict(filter1="*.json"),
+                exec=True,
+            ),
+        )
+        formLayout.addRow(
+            "sqlite翻译记录",
+            getsimplepatheditor(
+                savehook_new_data[gameuid]["gamesqlitefile"],
+                False,
+                False,
+                "*.sqlite",
+                functools.partial(selectimg, gameuid, "gamesqlitefile"),
+                icons=("fa.folder-open", "fa.refresh"),
+            ),
+        )
 
     def gettransoptimi(self, formLayout: LFormLayout, gameuid):
 

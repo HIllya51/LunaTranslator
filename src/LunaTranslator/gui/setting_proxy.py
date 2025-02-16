@@ -1,7 +1,12 @@
 from qtsymbols import *
 import os, functools, re
-from myutils.config import globalconfig, get_platform
-from myutils.utils import splittranslatortypes, translate_exits
+from myutils.config import globalconfig
+from myutils.utils import (
+    splittranslatortypes,
+    translate_exits,
+    dynamiccishuname,
+    dynamicapiname,
+)
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makegrid,
@@ -11,7 +16,7 @@ from gui.usefulwidget import (
 )
 
 
-def getall(l, item="fanyi", name=None):
+def getall(l, item="fanyi", name=None, getname=None):
     grids = []
     i = 0
     line = []
@@ -27,7 +32,7 @@ def getall(l, item="fanyi", name=None):
         i += 1
 
         line += [
-            globalconfig[item][fanyi].get("name", fanyi),
+            getname(fanyi) if getname else globalconfig[item][fanyi].get("name", fanyi),
             D_getsimpleswitch(globalconfig[item][fanyi], "useproxy", default=True),
         ]
         if i % 3 == 0:
@@ -100,9 +105,16 @@ def makeproxytab():
 
     lixians, pre, mianfei, shoufei = splittranslatortypes()
 
-    mianfei = getall(l=mianfei, item="fanyi", name="./Lunatranslator/translator/%s.py")
-    shoufei = getall(l=shoufei, item="fanyi", name=translate_exits)
-    lixians = getall(l=lixians, item="fanyi", name=checkxx)
+    mianfei = getall(
+        l=mianfei,
+        item="fanyi",
+        name="./Lunatranslator/translator/%s.py",
+        getname=dynamicapiname,
+    )
+    shoufei = getall(
+        l=shoufei, item="fanyi", name=translate_exits, getname=dynamicapiname
+    )
+    lixians = getall(l=lixians, item="fanyi", name=checkxx, getname=dynamicapiname)
     ocrs = getall(
         l=getnotofflines("ocr"),
         item="ocr",
@@ -122,6 +134,7 @@ def makeproxytab():
         l=getnotofflines("cishu"),
         item="cishu",
         name="./LunaTranslator/cishu/%s.py",
+        getname=dynamiccishuname,
     )
     github = getall(
         l=globalconfig["update"],

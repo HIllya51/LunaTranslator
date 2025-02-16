@@ -362,12 +362,25 @@ namespace
         s = std::regex_replace(s, std::regex("[\\s]"), "");
         buffer->from(s);
     }
+    void PCSG00172(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        strReplace(ws, L"Mﾚ      　ｰ_Mﾚ  ���", L"");
+        strReplace(ws, L"u_", L"");
+        strReplace(ws, L"ata/data4.dat", L"");
+        strReplace(ws, L":data/data4.dat", L"");
+        strReplace(ws, L"@", L"");
+        strReplace(ws, L"�", L"");
+        strReplace(ws, L"∥pp0:d", L"");
+        strReplace(ws, L"app0:d:d", L"");
+        buffer->from(WideStringToString(ws, 932));
+    }
     void PCSG00776(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
         strReplace(ws, L"\x02", L"");
         Trim(ws);
-        buffer->from(WideStringToString(ws));
+        buffer->from(WideStringToString(ws, 932));
     }
     void PCSG01046(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -941,6 +954,8 @@ namespace
             // デュラララ!! Relay
             {0x80086798, {CODEC_UTF8, 1, 0, 0, PCSG00482, "PCSG00482"}},
             {0x8005F0C4, {CODEC_UTF8, 1, 0, 0, PCSG00482, "PCSG00482"}},
+            // 神咒神威神楽
+            {0x810a2486, {0, 0, 0, 0, PCSG00172, "PCSG00172"}},
         };
         return 1;
     }();

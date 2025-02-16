@@ -32,9 +32,7 @@ If there are very complex error forms, you can activate multiple processing meth
 
 1. #### Remove Curly Braces {}
 
-    This is not exactly as it seems; it is mainly used to filter Japanese furigana. Many game scripts use {} and some other characters to add furigana to kanji. It supports two furigana formats: `{汉字/注音}` and `{汉字:注音}`, for example:
-
-    `「{恵麻/えま}さん、まだ{起き/おき}てる？」` or `「{恵麻:えま}さん、まだ{起き:おき}てる？」` will be processed into `「恵麻さん、まだ起きてる？」`
+    Many game scripts use {} and some other characters to add furigana to kanji, for example: `{kanji/furigana}` and `{kanji:furigana}`, such as `「{恵麻/えま}さん、まだ{起き/おき}てる？」` or `「{恵麻:えま}さん、まだ{起き:おき}てる？」` will be processed into `「恵麻さん、まだ起きてる？」`. It will first attempt to remove the furigana according to these patterns, and then remove all curly braces and their contents.
 
 1. #### Extract Specified Number of Lines
 

@@ -8,8 +8,8 @@
 namespace PcHooks
 {
     void hookGDIFunctions(void *ptr = 0);
-    void hookGDIPlusFunctions();
-    void hookD3DXFunctions(HMODULE d3dxModule);
+    void hookGDIPlusFunctions(void *ptr = 0);
+    void hookD3DXFunctions(HMODULE d3dxModule, void *ptr = 0);
     void hookOtherPcFunctions(void *ptr = 0);
     void hookGdiGdiplusD3dxFunctions();
 } // namespace PcHooks

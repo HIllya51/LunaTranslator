@@ -2315,6 +2315,7 @@ class listediterline(QWidget):
         ispathsedit=None,
         directedit=False,
         specialklass=None,
+        exec=False
     ):
         super().__init__()
         self.edit = ClickableLine()
@@ -2332,6 +2333,7 @@ class listediterline(QWidget):
             reflist,
             closecallback=self.callback,
             ispathsedit=ispathsedit,
+            exec=exec
         )
         self.directedit = directedit
         if directedit:
