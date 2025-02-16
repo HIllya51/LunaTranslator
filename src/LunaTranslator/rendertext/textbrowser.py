@@ -994,6 +994,10 @@ class TextBrowser(QWidget, dataget):
             return None
 
     def _dyna_merge_label(self, line):
+        if len(line) <= 0:
+            return
+        if line[0].x() < 0:
+            line[0].move(0, line[0].y())
         if len(line) <= 1:
             return
         rects = [(label.realx(), label.realx() + label.realw()) for label in line]

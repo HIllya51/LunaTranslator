@@ -479,7 +479,7 @@
         let style = ''
         if (args.fontFamily) style += `font-family: ${args.fontFamily};`
         if (args.fontSize) style += `font-size: ${args.fontSize}pt;`
-        style += `font-weight: ${args.bold ? "bold" : "normal"} ;`
+        if (args.bold != undefined) style += `font-weight: ${args.bold ? "bold" : "normal"} ;`
         return `.${t}{${style}}`
     }
     function setfontstyle(argsjson) {
