@@ -168,6 +168,7 @@ class rangeselect(QMainWindow):
 
     def closeEvent(self, a0):
         self.deleteLater()
+        windows.SetForegroundWindow(self.originhwnd)
         return super().closeEvent(a0)
 
     def __init__(self, parent=None):
@@ -416,6 +417,7 @@ class rangeselect_1(QMainWindow):
 
     def closeEvent(self, a0):
         self.deleteLater()
+        windows.SetForegroundWindow(self.originhwnd)
         return super().closeEvent(a0)
 
 
@@ -424,6 +426,8 @@ def rangeselct_function(callback, x=True):
         screen_shot_ui = rangeselect_1(gobject.baseobject.translation_ui, x)
     else:
         screen_shot_ui = rangeselect(gobject.baseobject.translation_ui)
+    screen_shot_ui.originhwnd = windows.GetForegroundWindow()
+    screen_shot_ui.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
     screen_shot_ui.show()
     screen_shot_ui.reset()
     screen_shot_ui.callback = callback
