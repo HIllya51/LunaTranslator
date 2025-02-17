@@ -1,6 +1,6 @@
-﻿#include <d3d11.h>
+﻿#ifndef WINXP
+#include <d3d11.h>
 #include <dxgi.h>
-#ifndef WINXP
 #include <winstring.h>
 #include <roapi.h>
 #include <inspectable.h>
@@ -26,12 +26,9 @@ using ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DSurface;
 using Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess;
 #else
 #include "xp.hpp"
-STDAPI CreateDirect3D11DeviceFromDXGIDevice(
-    _In_ IDXGIDevice *dxgiDevice,
-    _COM_Outptr_ IInspectable **graphicsDevice);
 #endif
-#include "common.hpp"
-
+#include "hstring.hpp"
+#include "../bmpx.hpp"
 _Use_decl_annotations_
     HRESULT
     GetTextureFromSurface(
@@ -138,35 +135,13 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
     D3D11_MAPPED_SUBRESOURCE resource;
     CHECK_FAILURE_NORET(d3d_context->Map(user_texture, NULL, D3D11_MAP_READ, 0, &resource));
 
-    BITMAPINFO l_bmp_info;
+    auto bmp = CreateBMP(captured_texture_desc.Width, captured_texture_desc.Height);
 
-    // BMP 32 bpp
-    ZeroMemory(&l_bmp_info, sizeof(BITMAPINFO));
-    l_bmp_info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    l_bmp_info.bmiHeader.biBitCount = 32;
-    l_bmp_info.bmiHeader.biCompression = BI_RGB;
-    l_bmp_info.bmiHeader.biWidth = captured_texture_desc.Width;
-    l_bmp_info.bmiHeader.biHeight = -captured_texture_desc.Height;
-    l_bmp_info.bmiHeader.biPlanes = 1;
-    l_bmp_info.bmiHeader.biSizeImage = captured_texture_desc.Width * captured_texture_desc.Height * 4;
-
-    BITMAPFILEHEADER bmfh;
-    memset(&bmfh, 0, sizeof(BITMAPFILEHEADER));
-    bmfh.bfType = 0x4D42; // 'BM'
-    bmfh.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + l_bmp_info.bmiHeader.biSizeImage;
-    bmfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-
-    auto p_buf2 = std::make_unique<BYTE[]>(bmfh.bfSize);
-    auto ptr = p_buf2.get();
-    memcpy(ptr, &bmfh, sizeof(BITMAPFILEHEADER));
-    ptr += sizeof(BITMAPFILEHEADER);
-    memcpy(ptr, (char *)&l_bmp_info.bmiHeader, sizeof(BITMAPINFOHEADER));
-    ptr += sizeof(BITMAPINFOHEADER);
     UINT l_bmp_row_pitch = captured_texture_desc.Width * 4;
     auto sptr = static_cast<BYTE *>(resource.pData);
 
     UINT l_row_pitch = std::min<UINT>(l_bmp_row_pitch, resource.RowPitch);
-
+    auto ptr = bmp.pixels;
     for (size_t h = 0; h < captured_texture_desc.Height; ++h)
     {
         memcpy_s(ptr, l_bmp_row_pitch, sptr, l_row_pitch);
@@ -174,7 +149,7 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
         ptr += l_bmp_row_pitch;
     }
     d3d_context->Unmap(user_texture, NULL);
-    cb(p_buf2.get(), bmfh.bfSize);
+    cb(bmp.data.get(), bmp.size);
 }
 DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
 {

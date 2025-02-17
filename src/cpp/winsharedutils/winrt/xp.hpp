@@ -1,3 +1,5 @@
+#include <d3d11.h>
+#include <dxgi.h>
 #include "../webview2/EventToken.h"
 //////////////////////////////////OCR
 enum class AsyncStatus
@@ -568,4 +570,8 @@ IClosable : public IInspectable
 public:
     virtual HRESULT STDMETHODCALLTYPE Close(void) = 0;
 };
+
+STDAPI CreateDirect3D11DeviceFromDXGIDevice(
+    _In_ IDXGIDevice *dxgiDevice,
+    _COM_Outptr_ IInspectable **graphicsDevice);
 //////////////////////////////////Capture

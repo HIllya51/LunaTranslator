@@ -1,4 +1,4 @@
-import time, os, threading
+import time, copy, threading
 from myutils.config import globalconfig, static_data
 import winsharedutils, windows
 from gui.rangeselect import rangeadjust
@@ -94,6 +94,7 @@ class ocrtext(basetext):
     @threader
     def gettextthread(self):
         laststate = tuple((0 for _ in range(len(globalconfig["ocr_trigger_events"]))))
+        lastevents = copy.deepcopy(globalconfig["ocr_trigger_events"])
         while not self.ending:
             if not self.isautorunning:
                 time.sleep(0.1)
@@ -107,6 +108,10 @@ class ocrtext(basetext):
                         for line in globalconfig["ocr_trigger_events"]
                     )
                 )
+                if lastevents != globalconfig["ocr_trigger_events"]:
+                    laststate = this
+                    lastevents = copy.deepcopy(globalconfig["ocr_trigger_events"])
+                    continue
                 for _, line in enumerate(globalconfig["ocr_trigger_events"]):
                     event = line["event"]
                     press = this[_]
@@ -115,7 +120,6 @@ class ocrtext(basetext):
                     ):
                         triggered = True
                         break
-
                 laststate = this
                 if triggered:
                     if gobject.baseobject.hwnd:
@@ -132,8 +136,6 @@ class ocrtext(basetext):
                                 break
                             time.sleep(0.1)
 
-                        for _ in range(len(self.savelastimg)):
-                            self.savelastimg[_] = None
                     else:
                         triggered = self.waitforstablex(strict=True)
                 if triggered:
@@ -159,23 +161,24 @@ class ocrtext(basetext):
     def waitforstable(self, i, imgr, strict):
         if strict:
             imgr1 = imgr
-        else:
-            imgr1 = normqimage(imgr)
-        if (self.savelastimg[i] is not None) and (
-            imgr1.size() == self.savelastimg[i].size()
-        ):
-            if strict:
+            if self.savelastimg[i] is not None:
                 a = qimage2binary(imgr1)
                 b = qimage2binary(self.savelastimg[i])
                 image_score = a != b
             else:
-                image_score = compareImage(imgr1, self.savelastimg[i])
+                image_score = 0
         else:
-            image_score = 0
+            imgr1 = normqimage(imgr)
+            if (self.savelastimg[i] is not None) and (
+                imgr1.size() == self.savelastimg[i].size()
+            ):
+                image_score = compareImage(imgr1, self.savelastimg[i])
+            else:
+                image_score = 0
 
         if i == 0:
             try:
-                gobject.baseobject.settin_ui.threshold1label.setText(str(image_score))
+                gobject.baseobject.settin_ui.threshold1label.setText(str(float(image_score)))
             except:
                 pass
         self.savelastimg[i] = imgr1

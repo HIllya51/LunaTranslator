@@ -31,7 +31,7 @@ using ABI::Windows::Storage::Streams::IRandomAccessStream;
 #else
 #include "xp.hpp"
 #endif
-#include "common.hpp"
+#include "hstring.hpp"
 template <class OperationT, class HandlerT, class ResultT>
 struct CompleteCallback : ComImpl<HandlerT>
 {

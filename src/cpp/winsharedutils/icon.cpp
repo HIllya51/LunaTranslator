@@ -1,6 +1,6 @@
 ﻿#include <commoncontrols.h>
 #include <shellapi.h>
-#include "BMP.h"
+#include "bmpx.hpp"
 #include "osversion.hpp"
 
 struct AutoHICON
@@ -52,20 +52,7 @@ HICON GetHighResolutionIcon(LPCWSTR pszPath)
         return NULL;
     return hico;
 }
-std::optional<BMP> getbmp(HBITMAP hBitmap)
-{
-    if (!hBitmap)
-        return {};
-    BITMAP bmp;
-    GetObject(hBitmap, sizeof(BITMAP), &bmp);
-    BMP bmpp(bmp.bmWidth, bmp.bmHeight, bmp.bmBitsPixel == 32);
-    bmpp.bmp_info_header.height = -bmpp.bmp_info_header.height;
-    if (!GetBitmapBits(hBitmap, bmpp.data.size(), bmpp.data.data()))
-        return {};
-    DeleteObject(hBitmap);
-    return std::move(bmpp);
-}
-std::optional<BMP> getbmp(HICON hicon)
+std::optional<SimpleBMP> getbmp(HICON hicon)
 {
     if (!hicon)
         return {};
@@ -92,7 +79,7 @@ std::optional<BMP> getbmp(HICON hicon)
         return {};
     SelectObject(memDC, hOldBitmap);
     DeleteDC(memDC);
-    return std::move(getbmp(hBitmap));
+    return CreateBMP(hBitmap, true);
 }
 #ifdef WINXP
 extern "C" WINUSERAPI
@@ -102,15 +89,13 @@ extern "C" WINUSERAPI
             _In_ HWND hwnd);
 #endif
 extern HWND globalmessagehwnd;
-DECLARE_API bool extracticon2data(bool large, const wchar_t *name, void (*cb)(const char *, size_t))
+DECLARE_API bool extracticon2data(bool large, const wchar_t *name, void (*cb)(const byte *, size_t))
 {
     // if (UINT_MAX == ExtractIconExW(name, 0, &h1, &h2, 1))
     //     return false;
-    auto returner = [&](BMP &bmpp)
+    auto returner = [&](SimpleBMP &bf)
     {
-        std::string data;
-        bmpp.write_tomem(data);
-        cb(data.c_str(), data.size());
+        cb(bf.data.get(), bf.size);
         return true;
     };
     do
@@ -127,15 +112,15 @@ DECLARE_API bool extracticon2data(bool large, const wchar_t *name, void (*cb)(co
         auto bmpp = bmppo.value();
         bool issmall = true;
         char zero[4] = {0, 0, 0, 0};
-        uint32_t channels = bmpp.bmp_info_header.bit_count / 8;
+        uint32_t channels = bmpp.bitCount / 8;
         int checkx = 48 * GetDpiForWindow(globalmessagehwnd) / USER_DEFAULT_SCREEN_DPI;
-        for (int y0 = 0; issmall && (y0 < -bmpp.bmp_info_header.height); y0++)
+        for (int y0 = 0; issmall && (y0 < bmpp.h); y0++)
         {
-            for (int x0 = 0; issmall && (x0 < bmpp.bmp_info_header.width); x0++)
+            for (int x0 = 0; issmall && (x0 < bmpp.w); x0++)
             {
                 if (x0 < checkx && y0 < checkx)
                     continue;
-                if (memcmp(bmpp.data.data() + channels * (y0 * bmpp.bmp_info_header.width + x0), zero, channels) != 0)
+                if (memcmp(bmpp.pixels + channels * (y0 * bmpp.w + x0), zero, channels) != 0)
                     issmall = false;
             }
         }

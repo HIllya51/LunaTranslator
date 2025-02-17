@@ -1,4 +1,5 @@
 ﻿
+#include "bmpx.hpp"
 
 void GetVirtualDesktopRect(RECT &rect)
 {
@@ -12,8 +13,6 @@ void GetVirtualDesktopRect(RECT &rect)
 HBITMAP GetBitmap(RECT &rect, HDC hDC)
 {
     HDC hMemDC;
-    int x, y;
-    int nWidth, nHeight;
     HBITMAP hBitmap, hOldBitmap;
 
     hMemDC = CreateCompatibleDC(hDC);
@@ -29,66 +28,6 @@ HBITMAP GetBitmap(RECT &rect, HDC hDC)
     DeleteDC(hMemDC);
 
     return hBitmap;
-}
-std::vector<byte> SaveBitmapToBuffer(HBITMAP hBitmap)
-{
-    WORD wBitCount; // 位图中每个像素所占字节数
-    // 定义调色板大小，位图中像素字节大小，位图文件大小，写入文件字节数
-    DWORD dwPaletteSize = 0, dwBmBitsSize, dwDIBSize, dwWritten;
-    BITMAP Bitmap;           // 位图属性结构
-    BITMAPFILEHEADER bmfHdr; // 位图文件头结构
-    BITMAPINFOHEADER bi;     // 位图信息头结构
-
-    LPSTR lpbk, lpmem;
-
-    wBitCount = 32;
-    // 设置位图信息头结构
-    GetObject(hBitmap, sizeof(BITMAP), (LPSTR)&Bitmap);
-    bi.biSize = sizeof(BITMAPINFOHEADER);
-    bi.biWidth = Bitmap.bmWidth;
-    bi.biHeight = -Bitmap.bmHeight; // 为负,正向的位图;为正,倒向的位图
-    bi.biPlanes = 1;
-    bi.biBitCount = wBitCount;
-    bi.biCompression = BI_RGB;
-    bi.biSizeImage = 0;
-    bi.biXPelsPerMeter = 0;
-    bi.biYPelsPerMeter = 0;
-    bi.biClrUsed = 0;
-    bi.biClrImportant = 0;
-    dwBmBitsSize = ((Bitmap.bmWidth * wBitCount + 31) / 32) * 4 * Bitmap.bmHeight;
-
-    // 设置位图文件头
-    bmfHdr.bfType = 0x4D42; //   "BM"
-    dwDIBSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmBitsSize;
-    bmfHdr.bfSize = dwDIBSize;
-    bmfHdr.bfReserved1 = 0;
-    bmfHdr.bfReserved2 = 0;
-    bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER);
-    std::vector<byte> data;
-    data.resize(sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmBitsSize);
-    auto buffer = data.data();
-    // 写入位图文件头
-    // WriteFile(fh, (LPSTR)&bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
-    // 写入位图信息头
-    // WriteFile(fh, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
-
-    memcpy(buffer, &bmfHdr, sizeof(BITMAPFILEHEADER));
-    buffer += sizeof(BITMAPFILEHEADER);
-    memcpy(buffer, &bi, sizeof(BITMAPINFOHEADER));
-    buffer += sizeof(BITMAPINFOHEADER);
-    // 获取位图阵列
-    if (!GetBitmapBits(hBitmap, dwBmBitsSize, buffer))
-        return {}; // 正向的内存图象数据
-    if (std::all_of(buffer, buffer + dwBmBitsSize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0)))
-        return {};
-    // for (int i = 0; i < Bitmap.bmHeight; i++)
-    // {
-    //     memcpy(buffer + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + Bitmap.bmWidth * i * 4, lpmem + Bitmap.bmWidth * (Bitmap.bmHeight - i - 1) * 4, Bitmap.bmWidth * 4);
-    // }
-    // 写位图数据
-    // WriteFile(fh, lpbk, dwBmBitsSize, &dwWritten, NULL);
-
-    return std::move(data);
 }
 namespace
 {
@@ -113,7 +52,7 @@ extern "C" WINUSERAPI
         GetDpiForWindow(
             _In_ HWND hwnd);
 #endif
-std::vector<byte> __gdi_screenshot(HWND hwnd, RECT rect)
+std::optional<SimpleBMP> __gdi_screenshot(HWND hwnd, RECT rect)
 {
     if (checkempty(hwnd, rect))
         return {};
@@ -132,17 +71,20 @@ std::vector<byte> __gdi_screenshot(HWND hwnd, RECT rect)
     if (!hdc)
         return {};
     auto bm = GetBitmap(rect, hdc);
-    auto bf = SaveBitmapToBuffer(bm);
-    DeleteObject(bm);
     ReleaseDC(hwnd, hdc);
-    return std::move(bf);
+    auto bmp = CreateBMP(bm);
+    if (!bmp)
+        return {};
+    if (std::all_of(bmp.value().pixels, bmp.value().pixels + bmp.value().pixelsize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0)))
+        return {};
+    return bmp;
 }
 DECLARE_API void gdi_screenshot(HWND hwnd, void (*cb)(byte *, size_t))
 {
     RECT rect{-1, -1, -1, -1};
     auto bf = __gdi_screenshot(hwnd, rect);
-    if (bf.size())
-        cb(bf.data(), bf.size());
+    if (bf)
+        cb(bf.value().data.get(), bf.value().size);
 }
 DECLARE_API void crop_image(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
 {
@@ -167,15 +109,15 @@ DECLARE_API void crop_image(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
                 continue;
             RECT r2{p1.x, p1.y, p2.x, p2.y};
             auto bf = __gdi_screenshot(hwnd, r2);
-            if (bf.size())
-                return cb(bf.data(), bf.size());
+            if (bf)
+                return cb(bf.value().data.get(), bf.value().size);
         }
         break;
         case 1:
         {
             auto bf = __gdi_screenshot(NULL, rect);
-            if (bf.size())
-                return cb(bf.data(), bf.size());
+            if (bf)
+                return cb(bf.value().data.get(), bf.value().size);
         }
         }
     }
