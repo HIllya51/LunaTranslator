@@ -213,11 +213,13 @@ def resetgroudswitchcallback(self, group):
         switch2 = getsimpleswitch(
             globalconfig,
             "webviewLoadExt",
-            callback=lambda x: gobject.baseobject.translation_ui.translate_text.loadinternal(
-                True, True
+            callback=lambda x: (
+                gobject.baseobject.translation_ui.translate_text.loadinternal(
+                    True, True
+                ),
+                _btn2.setEnabled(x),
             ),
         )
-        self.fuckshit__2 = switch2
         self.goodfontsettingsformlayout.addRow(
             getboxlayout(
                 [
