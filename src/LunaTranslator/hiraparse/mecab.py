@@ -91,7 +91,6 @@ class mecab(basehira):
         start = 0
         result = []
         for node, fields in self.kks.parse(text):
-            print(node, fields)
             kana = ""
             origorig = ""
             pos1 = fields[0]
