@@ -22,7 +22,7 @@ class TextBrowser(WebviewWidget, dataget):
     _isDragging = pyqtSignal(bool)
 
     def __init__(self, parent) -> None:
-        super().__init__(parent, transp=True)
+        super().__init__(parent, transp=True, loadext=globalconfig["webviewLoadExt"])
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
         self.setMouseTracking(True)
         nexti = self.add_menu(

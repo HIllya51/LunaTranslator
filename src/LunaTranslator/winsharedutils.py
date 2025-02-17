@@ -335,12 +335,14 @@ webview2_resize.argtypes = WebView2PTR, c_int, c_int
 webview2_add_menu_noselect = utilsdll.webview2_add_menu_noselect
 webview2_add_menu_noselect_CALLBACK = CFUNCTYPE(None)
 webview2_add_menu_noselect_getchecked = CFUNCTYPE(c_bool)
+webview2_add_menu_noselect_getuse = CFUNCTYPE(c_bool)
 webview2_add_menu_noselect.argtypes = (
     WebView2PTR,
     c_int,
     c_wchar_p,
     c_void_p,
     c_bool,
+    c_void_p,
     c_void_p,
 )
 webview2_add_menu = utilsdll.webview2_add_menu

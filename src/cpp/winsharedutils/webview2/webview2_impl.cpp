@@ -84,13 +84,13 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2ContextMenuIte
         return E_FAIL;
     if (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT)
     {
-        auto f = std::get<contextmenu_callback_t>(find->second.first);
+        auto f = std::get<contextmenu_callback_t>(std::get<0>(find->second));
         if (f)
             f(CurrSelectText);
     }
     else
     {
-        auto f = std::get<contextmenu_notext_callback_t>(find->second.first);
+        auto f = std::get<contextmenu_notext_callback_t>(std::get<0>(find->second));
         if (f)
             f();
     }
@@ -355,9 +355,16 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
         auto find = ref->menuscallback.find(commandid);
         if (find != ref->menuscallback.end())
         {
-            if (find->second.second)
+            if (std::get<2>(find->second))
             {
-                auto ck = find->second.second();
+                if (!std::get<2>(find->second)())
+                {
+                    continue;
+                }
+            }
+            if (std::get<1>(find->second))
+            {
+                auto ck = std::get<1>(find->second)();
                 item->put_IsChecked(ck);
             }
         }
@@ -377,13 +384,13 @@ void WebView2::WaitForLoad()
         DispatchMessageW(&msg);
     }
 }
-std::optional<std::wstring> WebView2::UserDir()
+std::optional<std::wstring> WebView2::UserDir(bool loadextension)
 {
     wchar_t dataPath[MAX_PATH];
     if (!SUCCEEDED(SHGetFolderPathW(nullptr, CSIDL_APPDATA, nullptr, 0, dataPath)))
         return {};
     wchar_t userDataFolder[MAX_PATH];
-    PathCombineW(userDataFolder, dataPath, L"LunaTranslator");
+    PathCombineW(userDataFolder, dataPath, loadextension ? L"LunaTranslator" : L"LunaTranslator_noext");
     return userDataFolder;
 }
 
@@ -392,11 +399,12 @@ std::optional<std::wstring> WebView2::UserDir()
 #else
 #include "WebView2EnvironmentOptionsFuckWRL.h"
 #endif
-HRESULT WebView2::init(bool loadextension)
+HRESULT WebView2::init(bool loadextension_)
 {
+    loadextension = loadextension_;
     waitforloadflag.test_and_set();
     handler = new WebView2ComHandler{this};
-    auto dir = UserDir();
+    auto dir = UserDir(loadextension);
     ICoreWebView2EnvironmentOptions *optionptr = nullptr;
     auto ext = loadextension ? L"--embedded-browser-webview-enable-extension" : L"";
     CComPtr<CoreWebView2EnvironmentOptions> options;
@@ -433,9 +441,9 @@ std::wstring WebView2::GetUserDataFolder()
     }();
     if (SUCCEEDED(hr))
         return result;
-    return UserDir().value_or(L"");
+    return UserDir(loadextension).value_or(L"");
 }
-void WebView2::AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback, bool checkable, contextmenu_getchecked getchecked)
+void WebView2::AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback, bool checkable, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
 {
     INT32 commandid;
     CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
@@ -451,7 +459,7 @@ void WebView2::AddMenu(int index, const wchar_t *label, contextmenu_callback_t_e
         CHECK_FAILURE_NORET(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
     }
     CHECK_FAILURE_NORET(newMenuItem->get_CommandId(&commandid));
-    menuscallback[commandid] = {callback, getchecked};
+    menuscallback[commandid] = {callback, getchecked, getuse};
     auto &whichmenu = (std::get_if<contextmenu_callback_t>(&callback)) ? menus : menus_noselect;
     whichmenu.insert(whichmenu.begin() + index, newMenuItem);
 }

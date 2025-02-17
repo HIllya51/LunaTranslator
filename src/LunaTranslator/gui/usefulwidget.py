@@ -3,7 +3,7 @@ import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject, platform, threading
 from myutils.config import _TR, globalconfig
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton_close, threader
 from myutils.utils import nowisdark, checkisusingwine
 from ctypes import POINTER, cast, c_char
 from gui.dynalang import (
@@ -1093,7 +1093,13 @@ class abstractwebview(QWidget):
         return index + 1
 
     def add_menu_noselect(
-        self, index=0, label=None, callback=None, checkable=False, getchecked=None
+        self,
+        index=0,
+        label=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
     ):
         return index + 1
 
@@ -1233,7 +1239,7 @@ class SingleExtensionSetting_(saveposwindow):
             self.setWindowIcon(icon)
 
     def createpage(self, name, settingurl, icon):
-        w = WebviewWidget(self)
+        w = WebviewWidget(self, loadext=True)
         w.name = name
         w.titlechanged.connect(functools.partial(self.titlechange, w))
         w.IconChanged.connect(functools.partial(self.iconchange, w))
@@ -1256,6 +1262,190 @@ def ExtensionSetting(name, settingurl, icon):
             gobject.baseobject.commonstylebase
         )
     SingleExtensionSetting.createpage(name, settingurl, icon)
+
+
+@Singleton_close
+class Exteditor(LDialog):
+    def __init__(self, parent) -> None:
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowTitle("浏览器插件")
+        self.resize(QSize(600, 400))
+
+        model = LStandardItemModel()
+        model.setHorizontalHeaderLabels(["移除", "", "名称", "禁用", "设置"])
+
+        table = TableViewW()
+
+        table.setModel(model)
+        table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(
+            3, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(
+            4, QHeaderView.ResizeMode.ResizeToContents
+        )
+        table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setWordWrap(False)
+        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        table.customContextMenuRequested.connect(self.__menu)
+        vbox = QVBoxLayout(self)
+        vbox.addWidget(table)
+        btn = LPushButton("添加")
+        btn.clicked.connect(functools.partial(self.tryMessage, self.Addext))
+        vbox.addWidget(btn)
+        self.show()
+        self.model = model
+        self.table = table
+        self.tryMessage(self.listexts)
+
+    def Addext(self, *_):
+        chromes = os.path.join(
+            os.environ["LOCALAPPDATA"], r"Google\Chrome\User Data\Default\Extensions"
+        )
+        edges = os.path.join(
+            os.environ["LOCALAPPDATA"], r"Microsoft\Edge\User Data\Default\Extensions"
+        )
+        if os.path.exists(edges):
+            edgeslen = len(os.listdir(edges))
+        else:
+            edgeslen = 0
+        if os.path.exists(chromes):
+            chromelen = len(os.listdir(chromes))
+        else:
+            chromelen = 0
+        if chromelen > edgeslen:
+            path = chromes
+        elif edgeslen > 0:
+            path = edges
+        else:
+            path = ""
+        res = QFileDialog.getExistingDirectory(
+            self, None, path, options=QFileDialog.Option.DontResolveSymlinks
+        )
+        if not res:
+            return
+
+        WebviewWidget.Extensions_Add(res)
+        self.listexts()
+
+    def __menu(self, _):
+        curr = self.table.currentIndex()
+        if not curr.isValid():
+            return
+        if curr.column() != 2:
+            return
+        menu = QMenu(self.table)
+        copyid = LAction("复制_ID", menu)
+
+        menu.addAction(copyid)
+        action = menu.exec(self.table.cursor().pos())
+
+        if action == copyid:
+            winsharedutils.clipboard_set(
+                self.table.model().data(curr, Qt.ItemDataRole.UserRole + 10)
+            )
+
+    def listexts(self):
+        self.model.removeRows(0, self.model.rowCount())
+        for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions_List()):
+
+            _i = self.model.rowCount()
+            item = QStandardItem(name)
+            item.setData(_id, Qt.ItemDataRole.UserRole + 10)
+            self.model.appendRow(
+                [
+                    QStandardItem(""),
+                    QStandardItem(""),
+                    item,
+                    QStandardItem(""),
+                    QStandardItem(""),
+                ]
+            )
+            d = {"1": able}
+            self.table.setIndexWidget(
+                self.model.index(_i, 3),
+                getsimpleswitch(
+                    d,
+                    "1",
+                    callback=functools.partial(
+                        self.tryMessage, self.enablex, _id, not able
+                    ),
+                ),
+            )
+            self.table.setIndexWidget(
+                self.model.index(_i, 0),
+                getIconButton(
+                    callback=functools.partial(self.tryMessage, self.removex, _id),
+                    icon="fa.times",
+                ),
+            )
+            t = QTimer(self)
+            t.setInterval(1000)
+            t.timeout.connect(
+                functools.partial(
+                    self.checkinfo,
+                    _id,
+                    self.model.index(_i, 1),
+                    self.model.index(_i, 3),
+                    self.model.index(_i, 4),
+                    name,
+                    t,
+                )
+            )
+            t.start(0)
+
+    def checkinfo(
+        self, _id, i1: QModelIndex, i3: QModelIndex, i4: QModelIndex, name, t: QTimer
+    ):
+        if not (i1.isValid() and i4.isValid()):
+            return t.stop()
+        info = WebviewWidget.Extensions_Manifest_Info(_id)
+        if info is None:
+            return
+        setting = info.get("url")
+        if setting:
+            self.table.setIndexWidget(
+                i4,
+                getIconButton(
+                    callback=functools.partial(
+                        ExtensionSetting, name, setting, info.get("icon")
+                    ),
+                    enable=self.table.indexWidgetX(i3).isChecked(),
+                ),
+            )
+        icon = info.get("icon")
+        if icon:
+            self.table.setIndexWidget(
+                i1,
+                getIconButton(
+                    qicon=QIcon(icon),
+                    callback=functools.partial(os.startfile, info["path"]),
+                    enable=self.table.indexWidgetX(i3).isChecked(),
+                ),
+            )
+        t.stop()
+
+    def enablex(self, _id, able, _):
+        WebviewWidget.Extensions_Enable(_id, able)
+        self.listexts()
+
+    def removex(self, _id):
+        WebviewWidget.Extensions_Remove(_id)
+        self.listexts()
+
+    def tryMessage(self, func, *args):
+        try:
+            func(*args)
+        except Exception as e:
+            QMessageBox.critical(self, _TR("错误"), str(e))
 
 
 class WebviewWidget(abstractwebview):
@@ -1293,7 +1483,13 @@ class WebviewWidget(abstractwebview):
         return index + 1
 
     def add_menu_noselect(
-        self, index=0, label=None, callback=None, checkable=False, getchecked=None
+        self,
+        index=0,
+        label=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
     ):
         __ = (
             winsharedutils.webview2_add_menu_noselect_CALLBACK(callback)
@@ -1307,8 +1503,12 @@ class WebviewWidget(abstractwebview):
             else None
         )
         self.callbacks.append(__1)
+        __2 = (
+            winsharedutils.webview2_add_menu_noselect_getuse(getuse) if getuse else None
+        )
+        self.callbacks.append(__2)
         winsharedutils.webview2_add_menu_noselect(
-            self.webview, index, label, __, checkable, __1
+            self.webview, index, label, __, checkable, __1, __2
         )
         return index + 1
 
@@ -1329,11 +1529,6 @@ class WebviewWidget(abstractwebview):
             )
         else:
             os.startfile("https://developer.microsoft.com/microsoft-edge/webview2")
-
-    # 切换是否加载插件理论上是可以在进程内切换的，先切回Qt再切回Webview2就能正常加载。但是不知道为什么直接重新加载却会失败。
-    # 盲猜应该是可能需要一个目录下的所有进程都结束之后才能进行切换，且同一个目录的所有Enviroment同一刻必须使用相同的启动参数
-    # 因此对于主窗口和辞书窗口，必须同时加载或不加载。所以还是把这个作为static的值吧。
-    webviewLoadExt = globalconfig["webviewLoadExt"]
 
     @staticmethod
     def __getuserdir():
@@ -1441,7 +1636,7 @@ class WebviewWidget(abstractwebview):
             )
         return super().event(a0)
 
-    def __init__(self, parent=None, transp=False) -> None:
+    def __init__(self, parent=None, transp=False, loadext=False) -> None:
         super().__init__(parent)
         self.webview = None
         self.binds = {}
@@ -1455,10 +1650,7 @@ class WebviewWidget(abstractwebview):
         self.webview = winsharedutils.WebView2PTR()
         windows.CHECK_FAILURE(
             winsharedutils.webview2_create(
-                windows.pointer(self.webview),
-                int(self.winId()),
-                transp,
-                WebviewWidget.webviewLoadExt,
+                windows.pointer(self.webview), int(self.winId()), transp, loadext
             )
         )
         winsharedutils.webview2_put_PreferredColorScheme(
@@ -1488,7 +1680,7 @@ class WebviewWidget(abstractwebview):
         winsharedutils.webview2_set_observe_ptrs(self.webview, *self.monitorptrs)
 
         self.add_menu()
-        self.add_menu_noselect()
+        nexti = self.add_menu_noselect()
         self.cachezoom = 1
 
     def IconChangedF(self, ptr, size):
@@ -1548,6 +1740,38 @@ class WebviewWidget(abstractwebview):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
 
 
+class WebviewWidget_for_auto(WebviewWidget):
+    pluginsedit = pyqtSignal()
+    reloadx = pyqtSignal()
+
+    def appendext(self):
+        globalconfig["webviewLoadExt_cishu"] = not globalconfig["webviewLoadExt_cishu"]
+        auto_select_webview.switchtype()
+
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent, loadext=globalconfig["webviewLoadExt_cishu"])
+        self.pluginsedit.connect(functools.partial(Exteditor, self))
+        self.reloadx.connect(self.appendext)
+
+        nexti = self.add_menu_noselect()
+        nexti = self.add_menu_noselect(
+            nexti,
+            _TR("附加浏览器插件"),
+            threader(self.reloadx.emit),
+            True,
+            getchecked=lambda: globalconfig["webviewLoadExt_cishu"],
+        )
+        nexti = self.add_menu_noselect(
+            nexti,
+            _TR("浏览器插件"),
+            threader(self.pluginsedit.emit),
+            False,
+            getuse=lambda: globalconfig["webviewLoadExt_cishu"],
+        )
+        nexti = self.add_menu_noselect(nexti)
+        self.cachezoom = 1
+
+
 class mshtmlWidget(abstractwebview):
     def getHtml(self, elementid):
         _ = []
@@ -1585,7 +1809,7 @@ class mshtmlWidget(abstractwebview):
         if iswine or (winsharedutils.html_version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0
         self.browser = winsharedutils.html_new(int(self.winId()))
-        self.destroyed.connect(functools.partial(mshtmlWidget, self.browser))
+        self.destroyed.connect(functools.partial(mshtmlWidget.onDestroy, self.browser))
         self.curr_url = None
         t = QTimer(self)
         t.setInterval(100)
@@ -1628,7 +1852,13 @@ class mshtmlWidget(abstractwebview):
         return index + 1
 
     def add_menu_noselect(
-        self, index=0, label=None, callback=None, checkable=False, getchecked=None
+        self,
+        index=0,
+        label=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
     ):
         cb = winsharedutils.html_add_menu_cb2(callback) if callback else None
         self.callbacks.append(cb)
@@ -1689,13 +1919,19 @@ class auto_select_webview(QWidget):
         return self.internal.add_menu(index, label, callback)
 
     def add_menu_noselect(
-        self, index=0, label=None, callback=None, checkable=False, getchecked=None
+        self,
+        index=0,
+        label=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
     ):
         self.addmenuinfo_noselect.append(
-            (index, label, callback, checkable, getchecked)
+            (index, label, callback, checkable, getchecked, getuse)
         )
         return self.internal.add_menu_noselect(
-            index, label, callback, checkable, getchecked
+            index, label, callback, checkable, getchecked, getuse
         )
 
     def clear(self):
@@ -1748,6 +1984,7 @@ class auto_select_webview(QWidget):
     def _createinternal(self, shoudong=False):
         if self.internal:
             self.layout().removeWidget(self.internal)
+            self.internal.deleteLater()
         self.internal = self._createwebview(shoudong=shoudong)
         self.internal.on_load.connect(self._on_load)
         self.internal.on_ZoomFactorChanged.connect(self.on_ZoomFactorChanged)
@@ -1780,7 +2017,7 @@ class auto_select_webview(QWidget):
             browser = mshtmlWidget()
         else:
             try:
-                browser = WebviewWidget()
+                browser = WebviewWidget_for_auto()
             except Exception as e:
                 print_exc()
                 if shoudong:
@@ -2315,7 +2552,7 @@ class listediterline(QWidget):
         ispathsedit=None,
         directedit=False,
         specialklass=None,
-        exec=False
+        exec=False,
     ):
         super().__init__()
         self.edit = ClickableLine()
@@ -2333,7 +2570,7 @@ class listediterline(QWidget):
             reflist,
             closecallback=self.callback,
             ispathsedit=ispathsedit,
-            exec=exec
+            exec=exec,
         )
         self.directedit = directedit
         if directedit:

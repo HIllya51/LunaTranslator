@@ -1393,14 +1393,16 @@ class searchwordW(closeashidewindow):
             nexti, _TR("加亮"), lambda _: self.textOutput.eval("highlightSelection()")
         )
         self.ishightlight = False
-        self.textOutput.add_menu_noselect(
+        nexti = self.textOutput.add_menu_noselect(
             0,
             _TR("加亮模式"),
             lambda: self.textOutput.eval("switch_hightlightmode()"),
             checkable=True,
             getchecked=lambda: self.callvalue(),
         )
-        self.textOutput.add_menu_noselect(1, _TR("清除加亮"), self.clear_hightlight)
+        nexti = self.textOutput.add_menu_noselect(
+            nexti, _TR("清除加亮"), self.clear_hightlight
+        )
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")

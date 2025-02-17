@@ -13,11 +13,9 @@ from gui.usefulwidget import (
     listediter,
     D_getIconButton,
     auto_select_webview,
-    getboxlayout,
     selectcolor,
     D_getspinbox,
     D_getcolorbutton,
-    getIconButton,
     getsimpleswitch,
     D_getsimplecombobox,
     getspinbox,
@@ -31,7 +29,6 @@ from gui.dynalang import (
     LDialog,
     LDialog,
 )
-from gui.setting_display_text import Exteditor, alertwhenrestart
 from gui.setting_about import offlinelinks
 
 
@@ -163,22 +160,6 @@ def gethiragrid(self):
 def _checkmaybefailed(self, _):
     auto_select_webview.switchtype()
     self.seletengeinecombo_1.setCurrentIndex(globalconfig["usewebview"])
-    self.fuckshit111.setVisible(globalconfig["usewebview"] == 1)
-
-
-def createmaybeshowuseplugins(self):
-    _btn2 = getIconButton(callback=functools.partial(Exteditor, self))
-    switch2 = getsimpleswitch(
-        globalconfig, "webviewLoadExt", callback=lambda x: alertwhenrestart(self, x)
-    )
-    self.fuckshit__1 = switch2
-    _ = getboxlayout(
-        ["附加浏览器插件", switch2, _btn2, ""], makewidget=True, margin0=True
-    )
-    _.setParent(self)
-    _.setVisible(globalconfig["usewebview"] == 1)
-    self.fuckshit111 = _
-    return _
 
 
 def _createseletengeinecombo_1(self):
@@ -474,7 +455,6 @@ def setTabcishu_l(self):
                                 0,
                             ),
                         ],
-                        [(functools.partial(createmaybeshowuseplugins, self), 0)],
                     ],
                 ),
                 0,

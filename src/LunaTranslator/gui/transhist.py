@@ -3,7 +3,7 @@ import gobject, os
 import qtawesome, winsharedutils, functools
 from myutils.config import globalconfig, _TR
 from myutils.utils import get_time_stamp
-from gui.usefulwidget import closeashidewindow, WebviewWidget
+from gui.usefulwidget import closeashidewindow, WebviewWidget, Exteditor
 from gui.dynalang import LAction
 from urllib.parse import quote
 from myutils.wrapper import threader
@@ -12,12 +12,17 @@ from gui.setting_display_text import extrahtml
 
 
 class wvtranshist(WebviewWidget):
+    pluginsedit = pyqtSignal()
+    reloadx = pyqtSignal()
+
     def scrollend(self):
         self.debugeval("scrollend()")
 
     def __init__(self, p):
-        super().__init__(p)
+        super().__init__(p, loadext=globalconfig["history"]["webviewLoadExt"])
         self.bind("calllunaloadready", self.setflags)
+        self.pluginsedit.connect(functools.partial(Exteditor, self))
+        self.reloadx.connect(self.appendext)
         nexti = self.add_menu_noselect(0, _TR("清空"), self.clear)
         nexti = self.add_menu_noselect(nexti, _TR("滚动到最后"), self.scrollend)
         nexti = self.add_menu_noselect(nexti, _TR("字体"), self.seletcfont)
@@ -57,7 +62,7 @@ class wvtranshist(WebviewWidget):
             _TR("使用Webview2显示"),
             self.useweb,
             True,
-            lambda: globalconfig["history"]["usewebview2"],
+            getchecked=lambda: globalconfig["history"]["usewebview2"],
         )
         nexti = self.add_menu_noselect(
             nexti,
@@ -69,6 +74,20 @@ class wvtranshist(WebviewWidget):
                 r"LunaTranslator\gui\exampleextrahtml.html",
                 self,
             ),
+        )
+        nexti = self.add_menu_noselect(
+            nexti,
+            _TR("附加浏览器插件"),
+            threader(self.reloadx.emit),
+            True,
+            getchecked=lambda: globalconfig["history"]["webviewLoadExt"],
+        )
+        nexti = self.add_menu_noselect(
+            nexti,
+            _TR("浏览器插件"),
+            threader(self.pluginsedit.emit),
+            False,
+            getuse=lambda: globalconfig["history"]["webviewLoadExt"],
         )
         nexti = self.add_menu_noselect(nexti)
 
@@ -132,6 +151,12 @@ class wvtranshist(WebviewWidget):
             _style = "font-size:{}pt;".format(_f.pointSize())
             _style += 'font-family:"{}";'.format(_f.family())
             self.debugeval("setfont('body{{{}}}')".format(quote(_style)))
+
+    def appendext(self):
+        globalconfig["history"]["webviewLoadExt"] = not globalconfig["history"][
+            "webviewLoadExt"
+        ]
+        self.parent().loadviewer()
 
     def useweb(self):
         globalconfig["history"]["usewebview2"] = not globalconfig["history"][

@@ -1,15 +1,13 @@
 from qtsymbols import *
-import functools, winsharedutils
+import functools
 import gobject, os
-from myutils.config import globalconfig, static_data, _TR
+from myutils.config import globalconfig, static_data
 from myutils.wrapper import tryprint
-from myutils.utils import translate_exits, getannotatedapiname
 from gui.usefulwidget import (
     getsimplecombobox,
     Singleton_close,
     saveposwindow,
     D_getspinbox,
-    D_getIconButton,
     clearlayout,
     getboxlayout,
     D_getcolorbutton,
@@ -18,19 +16,16 @@ from gui.usefulwidget import (
     getIconButton,
     getsimpleswitch,
     D_getsimpleswitch,
-    TableViewW,
     selectcolor,
-    listediter,
     FocusFontCombo,
     SuperCombo,
     D_getsimplecombobox,
     getspinbox,
     getsmalllabel,
     SplitLine,
-    WebviewWidget,
-    ExtensionSetting,
+    Exteditor,
 )
-from gui.dynalang import LPushButton, LFormLayout, LDialog, LStandardItemModel, LAction
+from gui.dynalang import LPushButton, LFormLayout
 
 
 def __changeuibuttonstate(self, x):
@@ -194,206 +189,6 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
         )
 
 
-def alertwhenrestart(self, x):
-    QMessageBox.information(
-        self,
-        _TR("注意"),
-        _TR("将在重新启动后生效！"),
-    )
-    try:
-        self.fuckshit__1.setChecked(x)
-    except:
-        pass
-    try:
-        self.fuckshit__2.setChecked(x)
-    except:
-        pass
-
-
-@Singleton_close
-class Exteditor(LDialog):
-    def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("浏览器插件")
-        self.resize(QSize(600, 400))
-
-        model = LStandardItemModel()
-        model.setHorizontalHeaderLabels(["移除", "", "名称", "禁用", "设置"])
-
-        table = TableViewW()
-
-        table.setModel(model)
-        table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(
-            3, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(
-            4, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
-        table.setWordWrap(False)
-        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        table.customContextMenuRequested.connect(self.__menu)
-        vbox = QVBoxLayout(self)
-        vbox.addWidget(table)
-        btn = LPushButton("添加")
-        btn.clicked.connect(functools.partial(self.tryMessage, self.Addext))
-        vbox.addWidget(btn)
-        self.show()
-        self.model = model
-        self.table = table
-        self.tryMessage(self.listexts)
-
-    def Addext(self, *_):
-        chromes = os.path.join(
-            os.environ["LOCALAPPDATA"], r"Google\Chrome\User Data\Default\Extensions"
-        )
-        edges = os.path.join(
-            os.environ["LOCALAPPDATA"], r"Microsoft\Edge\User Data\Default\Extensions"
-        )
-        if os.path.exists(edges):
-            edgeslen = len(os.listdir(edges))
-        else:
-            edgeslen = 0
-        if os.path.exists(chromes):
-            chromelen = len(os.listdir(chromes))
-        else:
-            chromelen = 0
-        if chromelen > edgeslen:
-            path = chromes
-        elif edgeslen > 0:
-            path = edges
-        else:
-            path = ""
-        res = QFileDialog.getExistingDirectory(
-            self, None, path, options=QFileDialog.Option.DontResolveSymlinks
-        )
-        if not res:
-            return
-
-        WebviewWidget.Extensions_Add(res)
-        self.listexts()
-
-    def __menu(self, _):
-        curr = self.table.currentIndex()
-        if not curr.isValid():
-            return
-        if curr.column() != 2:
-            return
-        menu = QMenu(self.table)
-        copyid = LAction("复制_ID", menu)
-
-        menu.addAction(copyid)
-        action = menu.exec(self.table.cursor().pos())
-
-        if action == copyid:
-            winsharedutils.clipboard_set(
-                self.table.model().data(curr, Qt.ItemDataRole.UserRole + 10)
-            )
-
-    def listexts(self):
-        self.model.removeRows(0, self.model.rowCount())
-        for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions_List()):
-
-            _i = self.model.rowCount()
-            item = QStandardItem(name)
-            item.setData(_id, Qt.ItemDataRole.UserRole + 10)
-            self.model.appendRow(
-                [
-                    QStandardItem(""),
-                    QStandardItem(""),
-                    item,
-                    QStandardItem(""),
-                    QStandardItem(""),
-                ]
-            )
-            d = {"1": able}
-            self.table.setIndexWidget(
-                self.model.index(_i, 3),
-                getsimpleswitch(
-                    d,
-                    "1",
-                    callback=functools.partial(
-                        self.tryMessage, self.enablex, _id, not able
-                    ),
-                ),
-            )
-            self.table.setIndexWidget(
-                self.model.index(_i, 0),
-                getIconButton(
-                    callback=functools.partial(self.tryMessage, self.removex, _id),
-                    icon="fa.times",
-                ),
-            )
-            t = QTimer(self)
-            t.setInterval(1000)
-            t.timeout.connect(
-                functools.partial(
-                    self.checkinfo,
-                    _id,
-                    self.model.index(_i, 1),
-                    self.model.index(_i, 3),
-                    self.model.index(_i, 4),
-                    name,
-                    t,
-                )
-            )
-            t.start(0)
-
-    def checkinfo(
-        self, _id, i1: QModelIndex, i3: QModelIndex, i4: QModelIndex, name, t: QTimer
-    ):
-        if not (i1.isValid() and i4.isValid()):
-            return t.stop()
-        info = WebviewWidget.Extensions_Manifest_Info(_id)
-        if info is None:
-            return
-        setting = info.get("url")
-        if setting:
-            self.table.setIndexWidget(
-                i4,
-                getIconButton(
-                    callback=functools.partial(
-                        ExtensionSetting, name, setting, info.get("icon")
-                    ),
-                    enable=self.table.indexWidgetX(i3).isChecked(),
-                ),
-            )
-        icon = info.get("icon")
-        if icon:
-            self.table.setIndexWidget(
-                i1,
-                getIconButton(
-                    qicon=QIcon(icon),
-                    callback=functools.partial(os.startfile, info["path"]),
-                    enable=self.table.indexWidgetX(i3).isChecked(),
-                ),
-            )
-        t.stop()
-
-    def enablex(self, _id, able, _):
-        WebviewWidget.Extensions_Enable(_id, able)
-        self.listexts()
-
-    def removex(self, _id):
-        WebviewWidget.Extensions_Remove(_id)
-        self.listexts()
-
-    def tryMessage(self, func, *args):
-        try:
-            func(*args)
-        except Exception as e:
-            QMessageBox.critical(self, _TR("错误"), str(e))
-
-
 def resetgroudswitchcallback(self, group):
     clearlayout(self.goodfontsettingsformlayout)
 
@@ -416,7 +211,11 @@ def resetgroudswitchcallback(self, group):
         )
         _btn2 = getIconButton(callback=functools.partial(Exteditor, self))
         switch2 = getsimpleswitch(
-            globalconfig, "webviewLoadExt", callback=lambda x: alertwhenrestart(self, x)
+            globalconfig,
+            "webviewLoadExt",
+            callback=lambda x: gobject.baseobject.translation_ui.translate_text.loadinternal(
+                True, True
+            ),
         )
         self.fuckshit__2 = switch2
         self.goodfontsettingsformlayout.addRow(

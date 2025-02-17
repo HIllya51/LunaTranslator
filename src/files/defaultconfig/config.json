@@ -6,9 +6,11 @@
         "showtransname": true,
         "showtime": false,
         "showapi": true,
-        "usewebview2": true
+        "usewebview2": true,
+        "webviewLoadExt": true
     },
-    "webviewLoadExt": false,
+    "webviewLoadExt": true,
+    "webviewLoadExt_cishu": true,
     "multihookmergeby": "\n",
     "autoopenselecttext": true,
     "displayrank": 0,

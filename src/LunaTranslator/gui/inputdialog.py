@@ -618,7 +618,7 @@ class autoinitdialog(LDialog):
             elif line["type"] == "lineedit_or_combo":
                 line1 = QLineEdit()
                 lineW = QHBoxLayout()
-                combo = SuperCombo()
+                combo = SuperCombo(static=True)
                 combo.setLineEdit(line1)
 
                 def __refresh(regist, line, combo: SuperCombo):

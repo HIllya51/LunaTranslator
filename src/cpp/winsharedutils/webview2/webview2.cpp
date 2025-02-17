@@ -14,7 +14,8 @@ DECLARE_API HRESULT webview2_create(WebView2 **web, HWND parent, bool background
     }
     else
     {
-        WebView2::save_ptrs.insert(_);
+        if (loadextension)
+            WebView2::save_ptrs.insert(_);
     }
     *web = _;
     return hr;
@@ -67,7 +68,13 @@ DECLARE_API void webview2_destroy(WebView2 *web)
     if (!web)
         return;
     delete web;
-    WebView2::save_ptrs.erase(web);
+    try
+    {
+        WebView2::save_ptrs.erase(web);
+    }
+    catch (...)
+    {
+    }
 }
 DECLARE_API void webview2_resize(WebView2 *web, int w, int h)
 {
@@ -81,11 +88,11 @@ DECLARE_API void webview2_add_menu(WebView2 *web, int index, const wchar_t *labe
         return;
     web->AddMenu(index, label, callback);
 }
-DECLARE_API void webview2_add_menu_noselect(WebView2 *web, int index, const wchar_t *label, contextmenu_notext_callback_t callback, bool checkable, contextmenu_getchecked getchecked)
+DECLARE_API void webview2_add_menu_noselect(WebView2 *web, int index, const wchar_t *label, contextmenu_notext_callback_t callback, bool checkable, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
 {
     if (!web)
         return;
-    web->AddMenu(index, label, callback, checkable, getchecked);
+    web->AddMenu(index, label, callback, checkable, getchecked, getuse);
 }
 DECLARE_API void webview2_detect_version(LPCWSTR dir, void (*cb)(LPCWSTR))
 {

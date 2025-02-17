@@ -233,15 +233,19 @@ class CURLException(RequestException):
     UNSUPPORTED_PROTOCOL = 1
     FAILED_INIT = 2
     URL_MALFORMAT = 3
+    NOT_BUILT_IN = 4
     COULDNT_RESOLVE_PROXY = 5
     COULDNT_RESOLVE_HOST = 6
     COULDNT_CONNECT = 7
     FTP_WEIRD_SERVER_REPLY = 8
     REMOTE_ACCESS_DENIED = 9
+    FTP_ACCEPT_FAILED = 10
     FTP_WEIRD_PASS_REPLY = 11
+    FTP_ACCEPT_TIMEOUT = 12
     FTP_WEIRD_PASV_REPLY = 13
     FTP_WEIRD_227_FORMAT = 14
     FTP_CANT_GET_HOST = 15
+    HTTP2 = 16
     FTP_COULDNT_SET_TYPE = 17
     PARTIAL_FILE = 18
     FTP_COULDNT_RETR_FILE = 19
@@ -316,7 +320,9 @@ class CURLException(RequestException):
     PROXY = 97
     SSL_CLIENTCERT = 98
     UNRECOVERABLE_POLL = 99
-    LAST = 100
+    TOO_LARGE = 100
+    ECH_REQUIRED = 101
+    LAST = 102
 
     def __init__(self, code) -> None:
         error = "UNKNOWN ERROR {}".format(code)
