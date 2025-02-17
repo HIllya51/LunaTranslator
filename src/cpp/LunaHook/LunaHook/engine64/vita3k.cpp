@@ -956,6 +956,8 @@ namespace
             {0x8005F0C4, {CODEC_UTF8, 1, 0, 0, PCSG00482, "PCSG00482"}},
             // 神咒神威神楽
             {0x810a2486, {0, 0, 0, 0, PCSG00172, "PCSG00172"}},
+            // ツキトモ。 TSUKIUTA. １２memories
+            {0x8004D078, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG01025"}},
         };
         return 1;
     }();
