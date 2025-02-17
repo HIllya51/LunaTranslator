@@ -26,7 +26,9 @@ from myutils.config import isascii
 class mecabwrap:
 
     def __init__(self, mecabpath) -> None:
-        for ___ in (mecabpath, "."):
+        for ___ in (mecabpath, ".", r"C:\Program Files\MeCab\dic"):
+            if not os.path.isdir(___):
+                continue
             for _dir, _, __ in os.walk(___):
                 self.kks = winsharedutils.mecab_init(
                     os.path.abspath(_dir).encode("utf8")
