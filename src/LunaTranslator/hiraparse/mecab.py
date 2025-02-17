@@ -26,7 +26,12 @@ from myutils.config import isascii
 class mecabwrap:
 
     def __init__(self, mecabpath) -> None:
-        for ___ in (mecabpath, ".", r"C:\Program Files\MeCab\dic"):
+        for ___ in (
+            mecabpath,
+            ".",
+            r"C:\Program Files\MeCab\dic",
+            r"C:\Program Files (x86)\MeCab\dic",
+        ):
             if not os.path.isdir(___):
                 continue
             for _dir, _, __ in os.walk(___):
@@ -34,7 +39,7 @@ class mecabwrap:
                     os.path.abspath(_dir).encode("utf8")
                 )
                 if self.kks:
-                    self.codec = winsharedutils.mecab_dictionary_codec(
+                    self.codec: str = winsharedutils.mecab_dictionary_codec(
                         self.kks
                     ).decode()
                     return
@@ -46,13 +51,25 @@ class mecabwrap:
     def parse(self, text: str):
         res = []
         codec = self.codec
+        if codec.lower().startswith("utf-16"):
 
-        def cb(surface: bytes, feature: bytes):
-            fields = list(csv.reader([feature.decode(codec)]))[0]
-            res.append((surface.decode(codec), fields))
+            def cb(surface: str, feature: str):
+                fields = list(csv.reader([feature]))[0]
+                res.append((surface, fields))
 
-        fp = winsharedutils.mecab_parse_cb(cb)
-        succ = winsharedutils.mecab_parse(self.kks, text.encode(codec), fp)
+            fp = winsharedutils.mecab_parse_cb_w(cb)
+        else:
+
+            def cb(surface: bytes, feature: bytes):
+                fields = list(csv.reader([feature.decode(codec)]))[0]
+                res.append((surface.decode(codec), fields))
+
+            fp = winsharedutils.mecab_parse_cb_a(cb)
+        succ = winsharedutils.mecab_parse(
+            self.kks,
+            text.encode(codec),
+            winsharedutils.cast(fp, winsharedutils.c_void_p).value,
+        )
         if not succ:
             raise Exception("mecab parse failed")
 
@@ -74,6 +91,7 @@ class mecab(basehira):
         start = 0
         result = []
         for node, fields in self.kks.parse(text):
+            print(node, fields)
             kana = ""
             origorig = ""
             pos1 = fields[0]
@@ -101,10 +119,13 @@ class mecab(basehira):
                 eng = self.maybeenglish(origorig)
                 if eng:
                     kana = eng
+            elif len(fields) == 7:  # Mecab/dic/ipadic utf-16 很垃圾，没啥卵用
+                kana = origorig = node
             elif len(fields) == 6:  # 英文
                 kana = origorig = node
             l = 0
-
+            if node not in text:
+                continue
             while str(node) not in text[start : start + l]:
                 l += 1
             orig = text[start : start + l]
