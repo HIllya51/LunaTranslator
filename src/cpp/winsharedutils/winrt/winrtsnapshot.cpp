@@ -146,24 +146,10 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
     l_bmp_info.bmiHeader.biBitCount = 32;
     l_bmp_info.bmiHeader.biCompression = BI_RGB;
     l_bmp_info.bmiHeader.biWidth = captured_texture_desc.Width;
-    l_bmp_info.bmiHeader.biHeight = captured_texture_desc.Height;
+    l_bmp_info.bmiHeader.biHeight = -captured_texture_desc.Height;
     l_bmp_info.bmiHeader.biPlanes = 1;
     l_bmp_info.bmiHeader.biSizeImage = captured_texture_desc.Width * captured_texture_desc.Height * 4;
 
-    auto p_buf = std::make_unique<BYTE[]>(l_bmp_info.bmiHeader.biSizeImage);
-    UINT l_bmp_row_pitch = captured_texture_desc.Width * 4;
-    auto sptr = static_cast<BYTE *>(resource.pData);
-    auto dptr = p_buf.get() + l_bmp_info.bmiHeader.biSizeImage - l_bmp_row_pitch;
-
-    UINT l_row_pitch = std::min<UINT>(l_bmp_row_pitch, resource.RowPitch);
-
-    for (size_t h = 0; h < captured_texture_desc.Height; ++h)
-    {
-        memcpy_s(dptr, l_bmp_row_pitch, sptr, l_row_pitch);
-        sptr += resource.RowPitch;
-        dptr -= l_bmp_row_pitch;
-    }
-    d3d_context->Unmap(user_texture, NULL);
     BITMAPFILEHEADER bmfh;
     memset(&bmfh, 0, sizeof(BITMAPFILEHEADER));
     bmfh.bfType = 0x4D42; // 'BM'
@@ -176,7 +162,18 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
     ptr += sizeof(BITMAPFILEHEADER);
     memcpy(ptr, (char *)&l_bmp_info.bmiHeader, sizeof(BITMAPINFOHEADER));
     ptr += sizeof(BITMAPINFOHEADER);
-    memcpy(ptr, p_buf.get(), l_bmp_info.bmiHeader.biSizeImage);
+    UINT l_bmp_row_pitch = captured_texture_desc.Width * 4;
+    auto sptr = static_cast<BYTE *>(resource.pData);
+
+    UINT l_row_pitch = std::min<UINT>(l_bmp_row_pitch, resource.RowPitch);
+
+    for (size_t h = 0; h < captured_texture_desc.Height; ++h)
+    {
+        memcpy_s(ptr, l_bmp_row_pitch, sptr, l_row_pitch);
+        sptr += resource.RowPitch;
+        ptr += l_bmp_row_pitch;
+    }
+    d3d_context->Unmap(user_texture, NULL);
     cb(p_buf2.get(), bmfh.bfSize);
 }
 DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
