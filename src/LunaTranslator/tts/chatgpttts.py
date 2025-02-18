@@ -20,7 +20,7 @@ class TTS(TTSbase):
 
     def createheaders(self):
         _ = {}
-        curkey = self.config["SECRET_KEY"]
+        curkey = self.multiapikeycurrent["SECRET_KEY"]
         if curkey:
             # 部分白嫖接口可以不填，填了反而报错
             _.update({"Authorization": "Bearer " + curkey})

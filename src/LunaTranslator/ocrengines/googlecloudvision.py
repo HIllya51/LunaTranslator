@@ -10,7 +10,7 @@ class OCR(baseocr):
         # https://cloud.google.com/vision/docs/reference/rest/v1/AnnotateImageResponse#EntityAnnotation
         self.checkempty(["key"])
         ocr_url = (
-            "https://vision.googleapis.com/v1/images:annotate?key=" + self.config["key"]
+            "https://vision.googleapis.com/v1/images:annotate?key=" + self.multiapikeycurrent["key"]
         )
         encodestr = str(base64.b64encode(imagebinary), "utf-8")
         data = {

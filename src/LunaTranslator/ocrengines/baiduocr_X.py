@@ -63,8 +63,8 @@ class OCR(baseocr):
         to_lang = self.tgtlangx
 
         # Set your own appid/appkey.
-        app_id = self.config["app_id"]
-        app_key = self.config["app_key"]
+        app_id = self.multiapikeycurrent["app_id"]
+        app_key = self.multiapikeycurrent["app_key"]
 
         # cuid & mac
         cuid = "APICUID"
@@ -167,8 +167,6 @@ class OCR(baseocr):
 
     def initocr(self):
         self.access = {}
-        if self.config["接口"] != 5:
-            self.getaccess()
 
     def get_access_token(self, API_KEY, SECRET_KEY):
         url = "https://aip.baidubce.com/oauth/2.0/token"
@@ -187,8 +185,8 @@ class OCR(baseocr):
     def getaccess(self):
         self.checkempty(["API Key", "Secret Key"])
         SECRET_KEY, API_KEY = (
-            self.config["Secret Key"],
-            self.config["API Key"],
+            self.multiapikeycurrent["Secret Key"],
+            self.multiapikeycurrent["API Key"],
         )
         if not self.access.get((API_KEY, SECRET_KEY)):
             acss = self.get_access_token(API_KEY, SECRET_KEY)

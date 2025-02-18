@@ -209,7 +209,10 @@ def resetgroudswitchcallback(self, group):
             "useextrahtml",
             callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.loadex(),
         )
-        _btn2 = getIconButton(callback=functools.partial(Exteditor, self))
+        _btn2 = getIconButton(
+            callback=functools.partial(Exteditor, self),
+            enable=globalconfig["webviewLoadExt"],
+        )
         switch2 = getsimpleswitch(
             globalconfig,
             "webviewLoadExt",

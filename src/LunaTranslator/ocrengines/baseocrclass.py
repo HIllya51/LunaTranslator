@@ -128,7 +128,7 @@ class baseocr(commonbase):
         if self.needinit:
             self.level2init()
         try:
-            text = self.ocr(imagebinary)
+            text = self.multiapikeywrapper(self.ocr)(imagebinary)
         except Exception as e:
             self.needinit = True
             raise e

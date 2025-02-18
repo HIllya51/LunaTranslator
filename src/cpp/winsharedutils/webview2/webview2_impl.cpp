@@ -548,4 +548,3 @@ void WebView2::Reload()
 {
     m_webView->Reload();
 }
-std::set<WebView2 *> WebView2::save_ptrs;

@@ -1998,6 +1998,25 @@ namespace
         }
         last = s;
     }
+    void F01001E601F6B8000_name(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (!startWith(s, u8"【"))
+            return buffer->clear();
+        s = std::regex_replace(s, std::regex(u8"【(.*?)】(.*)"), "$1");
+        s = std::regex_replace(s, std::regex(u8R"(@[_\*\d\w]*)"), "");
+        buffer->from(s);
+    }
+    void F01001E601F6B8000_text(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(u8"【(.*?)】"), "");
+        s = std::regex_replace(s, std::regex("@r(.*?)@(.*?)@"), "$1");
+        s = std::regex_replace(s, std::regex(u8"@n"), "");
+        s = std::regex_replace(s, std::regex(u8R"(@[_\*\d\w]*)"), "");
+        s = std::regex_replace(s, std::regex(u8R"(\*)"), "");
+        buffer->from(s);
+    }
     void F0100AA1013B96000(TextBuffer *buffer, HookParam *hp)
     {
         F010060301588A000(buffer, hp);
@@ -3724,6 +3743,15 @@ namespace
             {0x80056424, {0, 0, 0, T01000A7019EBC000, 0, 0x01000A7019EBC000ull, "1.0.0"}},
             // 真流行り神3
             {0x800A3460, {CODEC_UTF8, 4, 0, 0, F0100AA1013B96000, 0x0100AA1013B96000ull, "1.0.0"}},
+            // 制服カノジョ まよいごエンゲージ 1.0.0 & 1.0.1
+            {0x805DEB14, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x01001E601F6B8000ull, nullptr}},
+            {0x8060E3F8, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_name, 0x01001E601F6B8000ull, nullptr}},
+            // 制服カノジョ2 1.0.0 & 1.0.1
+            {0x8058B940, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x010012C020B78000ull, nullptr}}, // 缺少第一句，且分段显示的缺少后半句
+            {0x8058B8C0, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_name, 0x010012C020B78000ull, nullptr}},
+            // この青空に約束を― Refine 1.0.0 & 1.0.1
+            {0x804F2AC0, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x01006E201FC0A000ull, nullptr}},
+            {0x804F2B80, {CODEC_UTF8, 0, 0, 0, F01001E601F6B8000_name, 0x01006E201FC0A000ull, nullptr}},
         };
         return 1;
     }();

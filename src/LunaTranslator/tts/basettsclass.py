@@ -94,7 +94,7 @@ class TTSbase(commonbase):
             data = self.LRUCache.get(key)
             if data:
                 return callback(data)
-            data = self.speak(content, self.voice, self.param)
+            data = self.multiapikeywrapper(self.speak)(content, self.voice, self.param)
             if data:
                 callback(data)
                 self.LRUCache.put(key, data)

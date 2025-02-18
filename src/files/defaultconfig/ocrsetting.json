@@ -21,21 +21,25 @@
         "argstype": {
             "API Key": {
                 "refcombo": "接口",
-                "refcombo_i_r": 5
+                "refcombo_i_r": 5,
+                "type": "textlist"
             },
             "Secret Key": {
                 "refcombo": "接口",
-                "refcombo_i_r": 5
+                "refcombo_i_r": 5,
+                "type": "textlist"
             },
             "app_key": {
                 "name": "密钥",
                 "refcombo": "接口",
-                "refcombo_i": 5
+                "refcombo_i": 5,
+                "type": "textlist"
             },
             "app_id": {
                 "name": "APP ID",
                 "refcombo": "接口",
-                "refcombo_i": 5
+                "refcombo_i": 5,
+                "type": "textlist"
             },
             "接口": {
                 "rank": 0,
@@ -60,9 +64,16 @@
             "interface": 0
         },
         "argstype": {
+            "SecretId": {
+                "type": "textlist"
+            },
+            "SecretKey": {
+                "type": "textlist"
+            },
             "ProjectId": {
                 "refcombo": "interface",
-                "refcombo_i": 1
+                "refcombo_i": 1,
+                "type": "textlist"
             },
             "Region": {
                 "rank": 1,
@@ -90,6 +101,11 @@
     "docsumo": {
         "args": {
             "token": ""
+        },
+        "argstype": {
+            "token": {
+                "type": "textlist"
+            }
         }
     },
     "youdaocr": {
@@ -105,7 +121,8 @@
                 "refcombo_l": [
                     0,
                     2
-                ]
+                ],
+                "type": "textlist"
             },
             "APP_KEY": {
                 "name": "应用ID",
@@ -113,7 +130,8 @@
                 "refcombo_l": [
                     0,
                     2
-                ]
+                ],
+                "type": "textlist"
             },
             "interface": {
                 "rank": 0,
@@ -134,6 +152,9 @@
             "interface": 0
         },
         "argstype": {
+            "apikey": {
+                "type": "textlist"
+            },
             "interface": {
                 "rank": 0,
                 "type": "combo",
@@ -148,48 +169,23 @@
         "args": {
             "Access Key ID": "",
             "Secret Access Key": ""
+        },
+        "argstype": {
+            "Access Key ID": {
+                "type": "textlist"
+            },
+            "Secret Access Key": {
+                "type": "textlist"
+            }
         }
     },
     "googlecloudvision": {
         "args": {
             "key": ""
-        }
-    },
-    "geminiocr": {
-        "args": {
-            "key": "",
-            "BASE_URL": "https://generativelanguage.googleapis.com/",
-            "model": "gemini-1.5-flash",
-            "use_custom_prompt": false,
-            "modellistcache": [],
-            "custom_prompt": ""
         },
         "argstype": {
-            "BASE_URL": {
-                "name": "API接口地址",
-                "rank": 0
-            },
             "key": {
-                "rank": 2,
-                "name": "API Key"
-            },
-            "custom_prompt": {
-                "name": "自定义_promt",
-                "type": "multiline",
-                "refswitch": "use_custom_prompt"
-            },
-            "use_custom_prompt": {
-                "type": "switch_ref",
-                "name": "使用自定义promt"
-            },
-            "model": {
-                "rank": 3,
-                "type": "lineedit_or_combo",
-                "list_function": "list_models",
-                "list_cache": "modellistcache"
-            },
-            "modellistcache": {
-                "type": "list_cache"
+                "type": "textlist"
             }
         }
     },
@@ -210,7 +206,8 @@
         "argstype": {
             "SECRET_KEY": {
                 "rank": 0.5,
-                "name": "API Key"
+                "name": "API Key",
+                "type": "textlist"
             },
             "s": {
                 "type": "split",
@@ -273,6 +270,15 @@
             "interface": "hh_ocr_recognize_doc"
         },
         "argstype": {
+            "APPId": {
+                "type": "textlist"
+            },
+            "APISecret": {
+                "type": "textlist"
+            },
+            "APIKey": {
+                "type": "textlist"
+            },
             "interface": {
                 "rank": 0,
                 "name": "接口",

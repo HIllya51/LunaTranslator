@@ -47,7 +47,7 @@ class cishubase(commonbase):
                 self.init()
                 self.needinit = False
             try:
-                res = self.search(sentence)
+                res = self.multiapikeywrapper(self.search)(sentence)
             except:
                 print_exc()
                 self.needinit = True

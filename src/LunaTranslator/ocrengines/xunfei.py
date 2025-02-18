@@ -174,9 +174,9 @@ class OCR(baseocr):
 
     def ocr(self, imagebinary):
         self.checkempty(["APPId", "APISecret", "APIKey"])
-        appid = self.config["APPId"]
-        apisecret = self.config["APISecret"]
-        apikey = self.config["APIKey"]
+        appid = self.multiapikeycurrent["APPId"]
+        apisecret = self.multiapikeycurrent["APISecret"]
+        apikey = self.multiapikeycurrent["APIKey"]
         if self.config["interface"] == "hh_ocr_recognize_doc":
             boxs, texts = get_result(
                 "http://api.xf-yun.com/v1/private/hh_ocr_recognize_doc",

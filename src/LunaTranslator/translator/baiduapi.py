@@ -7,8 +7,6 @@ import random
 class TS(basetrans):
     def inittranslator(self):
         self.access = {}
-        if self.config["interface"] == 1:
-            self.getaccess()
 
     def langmap(self):
         return {

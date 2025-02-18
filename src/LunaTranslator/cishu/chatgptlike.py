@@ -63,7 +63,7 @@ class chatgptlike(cishubase):
 
     def createheaders(self):
         _ = {}
-        curkey = self.config["SECRET_KEY"]
+        curkey = self.multiapikeycurrent["SECRET_KEY"]
         if curkey:
             # 部分白嫖接口可以不填，填了反而报错
             _.update({"Authorization": "Bearer " + curkey})
@@ -91,7 +91,7 @@ class chatgptlike(cishubase):
             "anthropic-version": "2023-06-01",
             "accept": "application/json",
             "content-type": "application/json",
-            "X-Api-Key": self.config["SECRET_KEY"],
+            "X-Api-Key": self.multiapikeycurrent["SECRET_KEY"],
         }
         data = dict(
             model=self.config["model"],
@@ -115,11 +115,15 @@ class chatgptlike(cishubase):
                     "threshold": "BLOCK_NONE",
                 },
                 {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
                     "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
                     "threshold": "BLOCK_NONE",
                 },
                 {
-                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "category": "HARM_CATEGORY_CIVIC_INTEGRITY",
                     "threshold": "BLOCK_NONE",
                 },
                 {
@@ -148,7 +152,7 @@ class chatgptlike(cishubase):
         # Send the request
         response = self.proxysession.post(
             "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(
-                self.config["model"], self.config["SECRET_KEY"]
+                self.config["model"], self.multiapikeycurrent["SECRET_KEY"]
             ),
             headers=headers,
             json=payload,

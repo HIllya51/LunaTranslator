@@ -78,7 +78,6 @@ class WebView2
     bool loadextension;
 
 public:
-    static std::set<WebView2 *> save_ptrs;
     zoomchange_callback_t zoomchange_callback = nullptr;
     navigating_callback_t navigating_callback = nullptr;
     webmessage_callback_t webmessage_callback = nullptr;

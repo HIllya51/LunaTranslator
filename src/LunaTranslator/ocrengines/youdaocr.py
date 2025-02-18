@@ -63,7 +63,7 @@ class OCR(baseocr):
             return hash_algorithm.hexdigest()
 
         self.checkempty(["APP_KEY", "APP_SECRET"])
-        APP_KEY, APP_SECRET = self.config["APP_KEY"], self.config["APP_SECRET"]
+        APP_KEY, APP_SECRET = self.multiapikeycurrent["APP_KEY"], self.multiapikeycurrent["APP_SECRET"]
         YOUDAO_URL = "https://openapi.youdao.com/ocrapi"
         content = base64.b64encode(imagebinary).decode("utf-8")
 
@@ -135,7 +135,7 @@ class OCR(baseocr):
     def ocrapi_ts(self, imagebinary):
 
         self.checkempty(["APP_KEY", "APP_SECRET"])
-        APP_KEY, APP_SECRET = self.config["APP_KEY"], self.config["APP_SECRET"]
+        APP_KEY, APP_SECRET = self.multiapikeycurrent["APP_KEY"], self.multiapikeycurrent["APP_SECRET"]
 
         """
         添加鉴权相关参数 -

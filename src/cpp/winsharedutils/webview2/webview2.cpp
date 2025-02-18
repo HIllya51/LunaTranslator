@@ -1,5 +1,8 @@
 ﻿#include "webview2_impl.hpp"
-
+namespace
+{
+    std::set<WebView2 *> save_ptrs;
+}
 DECLARE_API HRESULT webview2_create(WebView2 **web, HWND parent, bool backgroundtransparent, bool loadextension)
 {
     *web = nullptr;
@@ -15,18 +18,18 @@ DECLARE_API HRESULT webview2_create(WebView2 **web, HWND parent, bool background
     else
     {
         if (loadextension)
-            WebView2::save_ptrs.insert(_);
+            save_ptrs.insert(_);
     }
     *web = _;
     return hr;
 }
 DECLARE_API HRESULT webview2_ext_add(LPCWSTR extpath)
 {
-    auto begin = WebView2::save_ptrs.begin();
-    if (begin == WebView2::save_ptrs.end())
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
         return E_ACCESSDENIED;
     CHECK_FAILURE((*begin)->AddExtension(extpath));
-    for (auto web : WebView2::save_ptrs)
+    for (auto web : save_ptrs)
     {
         web->Reload();
     }
@@ -34,18 +37,18 @@ DECLARE_API HRESULT webview2_ext_add(LPCWSTR extpath)
 }
 DECLARE_API HRESULT webview2_ext_list(List_Ext_callback_t cb)
 {
-    auto begin = WebView2::save_ptrs.begin();
-    if (begin == WebView2::save_ptrs.end())
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
         return E_ACCESSDENIED;
     return (*begin)->ListExtensionDoSomething(cb, nullptr, FALSE, FALSE);
 }
 DECLARE_API HRESULT webview2_ext_enable(LPCWSTR id, BOOL enable)
 {
-    auto begin = WebView2::save_ptrs.begin();
-    if (begin == WebView2::save_ptrs.end())
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
         return E_ACCESSDENIED;
     CHECK_FAILURE((*begin)->ListExtensionDoSomething(nullptr, id, FALSE, enable));
-    for (auto web : WebView2::save_ptrs)
+    for (auto web : save_ptrs)
     {
         web->Reload();
     }
@@ -53,11 +56,11 @@ DECLARE_API HRESULT webview2_ext_enable(LPCWSTR id, BOOL enable)
 }
 DECLARE_API HRESULT webview2_ext_rm(LPCWSTR id)
 {
-    auto begin = WebView2::save_ptrs.begin();
-    if (begin == WebView2::save_ptrs.end())
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
         return E_ACCESSDENIED;
     CHECK_FAILURE((*begin)->ListExtensionDoSomething(nullptr, id, TRUE, FALSE));
-    for (auto web : WebView2::save_ptrs)
+    for (auto web : save_ptrs)
     {
         web->Reload();
     }
@@ -70,7 +73,7 @@ DECLARE_API void webview2_destroy(WebView2 *web)
     delete web;
     try
     {
-        WebView2::save_ptrs.erase(web);
+        save_ptrs.erase(web);
     }
     catch (...)
     {
@@ -161,8 +164,8 @@ DECLARE_API void webview2_bind(WebView2 *web, LPCWSTR funcname)
 
 DECLARE_API void webview2_get_userdir(void (*cb)(LPCWSTR))
 {
-    auto begin = WebView2::save_ptrs.begin();
-    if (begin == WebView2::save_ptrs.end())
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
         return;
     cb((*begin)->GetUserDataFolder().c_str());
 }

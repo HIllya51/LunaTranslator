@@ -3,7 +3,7 @@ from myutils.utils import getlangtgt, getlangsrc, getlanguse
 from myutils.config import _TR
 from myutils.wrapper import stripwrapper
 from language import Languages
-import requests
+import requests, types, functools
 
 
 class ArgsEmptyExc(Exception):
@@ -40,10 +40,87 @@ class proxysession(requests.Session):
         return super().request(*args, **kwargs)
 
 
-class commonbase:
+class multikeyhelper:
+    @property
+    def keyfrom(self): ...
+
+    def __init__(self):
+        self.multiapikeycurrentidx = -1
+        self.delay_known_apikeys_num = 1
+        self.apikey_skip_round = {}
+        self.apikey_error_cnt = {}
+
+    @property
+    def multiapikeycurrent(self):
+
+        class alternatedict(dict):
+            def __getitem__(self2, __key):
+                t = super().__getitem__(__key)
+                if type(t) != str:
+                    raise Exception("Incorrect use of multiapikeycurrent")
+                if "|" in t:
+                    ts = t.split("|")
+                    self.multiapikeycurrentidx = self.multiapikeycurrentidx % len(ts)
+                    self.delay_known_apikeys_num = len(ts)
+                    t = ts[int(self.multiapikeycurrentidx)]
+                return t.strip()
+
+        return alternatedict(self.keyfrom)
+
+    def __error_happend(self, curridx):
+        if curridx not in self.apikey_error_cnt:
+            self.apikey_error_cnt[curridx] = 0
+            self.apikey_skip_round[curridx] = 0
+        self.apikey_error_cnt[curridx] += 1
+        self.apikey_skip_round[curridx] += self.apikey_error_cnt[curridx]
+
+    def __before_query(self):
+        while True:
+            self.multiapikeycurrentidx += 1
+            self.multiapikeycurrentidx = (
+                self.multiapikeycurrentidx % self.delay_known_apikeys_num
+            )
+            if self.apikey_skip_round.get(self.multiapikeycurrentidx, 0):
+                self.apikey_skip_round[self.multiapikeycurrentidx] -= 1
+            else:
+                break
+        return self.multiapikeycurrentidx
+
+    def multiapikeywrapper(self, func):
+        def _wrapper(*args, **kwargs):
+            try:
+                curridx = self.__before_query()
+                ret = func(*args, *kwargs)
+
+                if isinstance(ret, types.GeneratorType):
+                    return self.__generatorhelper(ret, curridx)
+                else:
+                    return ret
+            except Exception as e:
+                self.__error_happend(curridx)
+                raise e
+
+        return _wrapper
+
+    def __generatorhelper(self, ret, curridx):
+        try:
+            for _ in ret:
+                yield _
+        except GeneratorExit as e:
+            raise e
+        except Exception as e:
+            self.__error_happend(curridx)
+            raise e
+
+
+class commonbase(multikeyhelper):
     _globalconfig_key = None
     _setting_dict = None
     typename = None
+
+    @property
+    def keyfrom(self):
+        return self.config
 
     def langmap(self):
         return {}
@@ -99,6 +176,7 @@ class commonbase:
         return Languages.create_langmap(self.langmap())
 
     def __init__(self, typename) -> None:
+        super().__init__()
         self.typename = typename
         self.renewsesion()
 

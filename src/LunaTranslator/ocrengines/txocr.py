@@ -53,7 +53,7 @@ class OCR(baseocr):
         req_para = {
             "Source": self.langocr,
             "Target": self.tgtlang,
-            "ProjectId": int(self.config["ProjectId"]),
+            "ProjectId": int(self.multiapikeycurrent["ProjectId"]),
             "Data": encodestr,
             "SessionUuid": str(uuid.uuid4()),
             "Scene": "doc",
@@ -103,7 +103,7 @@ class OCR(baseocr):
             + "\n"
             + hashedCanonicalRequest
         )
-        kDate = sha256(date.encode(), ("TC3" + self.config["SecretKey"]).encode())
+        kDate = sha256(date.encode(), ("TC3" + self.multiapikeycurrent["SecretKey"]).encode())
         kService = sha256(service.encode(), kDate)
         kSigning = sha256("tc3_request".encode(), kService)
         signature = sha256(stringToSign.encode(), kSigning)
@@ -112,7 +112,7 @@ class OCR(baseocr):
             algorithm
             + " "
             + "Credential="
-            + self.config["SecretId"]
+            + self.multiapikeycurrent["SecretId"]
             + "/"
             + credentialScope
             + ", "
@@ -166,7 +166,7 @@ class OCR(baseocr):
             "Region": self.region,  # https://cloud.tencent.com/document/product/866/33526
             "Timestamp": int(time.time()),
             "Nonce": random.randint(1, 100000),
-            "SecretId": self.config["SecretId"],
+            "SecretId": self.multiapikeycurrent["SecretId"],
         }
         raw_msg = "&".join(
             [
@@ -176,7 +176,7 @@ class OCR(baseocr):
         )
         raw_msg = "GETocr.tencentcloudapi.com/?" + raw_msg
         raw = raw_msg.encode()
-        key = self.config["SecretKey"].encode()
+        key = self.multiapikeycurrent["SecretKey"].encode()
         hashed = hmac.new(key, raw, sha1)
         b64output = base64.encodebytes(hashed.digest()).decode("utf-8")
         req_para.update({"Signature": b64output})

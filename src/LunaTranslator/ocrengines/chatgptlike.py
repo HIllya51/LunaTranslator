@@ -36,7 +36,7 @@ class OCR(baseocr):
         return data
 
     def createheaders(self):
-        return {"Authorization": "Bearer " + self.config["SECRET_KEY"]}
+        return {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
 
     def ocr_gemini(self, prompt, base64_image):
         payload = {
@@ -54,9 +54,34 @@ class OCR(baseocr):
                 }
             ]
         }
+        safety = {
+            "safety_settings": [
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_CIVIC_INTEGRITY",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_NONE",
+                },
+            ]
+        }
+        payload.update(safety)
         response = self.proxysession.post(
             "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(
-                self.config["model"], self.config["SECRET_KEY"]
+                self.config["model"], self.multiapikeycurrent["SECRET_KEY"]
             ),
             json=payload,
         )

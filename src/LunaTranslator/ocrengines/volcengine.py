@@ -546,8 +546,8 @@ class OCR(baseocr):
         visual_service = VisualService()
         self.checkempty(["Access Key ID", "Secret Access Key"])
         # call below method if you dont set ak and sk in $HOME/.volc/config
-        visual_service.set_ak(self.config["Access Key ID"])
-        visual_service.set_sk(self.config["Secret Access Key"])
+        visual_service.set_ak(self.multiapikeycurrent["Access Key ID"])
+        visual_service.set_sk(self.multiapikeycurrent["Secret Access Key"])
 
         visual_service.set_api_info("MultiLanguageOCR", "2022-08-31")
 

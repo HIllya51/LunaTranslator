@@ -42,6 +42,9 @@ class mecabwrap:
                     self.codec: str = winsharedutils.mecab_dictionary_codec(
                         self.kks
                     ).decode()
+                    self.isutf16 = (self.codec.lower().startswith("utf-16")) or (
+                        self.codec.lower().startswith("utf16")
+                    )
                     return
         raise Exception("not find")
 
@@ -51,7 +54,7 @@ class mecabwrap:
     def parse(self, text: str):
         res = []
         codec = self.codec
-        if codec.lower().startswith("utf-16"):
+        if self.isutf16:
 
             def cb(surface: str, feature: str):
                 fields = list(csv.reader([feature]))[0]
