@@ -3,7 +3,7 @@ import functools, threading
 from myutils.wrapper import threader
 from traceback import print_exc
 from myutils.proxy import getproxy
-from myutils.utils import LRUCache
+from myutils.utils import LRUCache, stringfyerror
 from myutils.commonbase import commonbase
 
 
@@ -98,6 +98,7 @@ class TTSbase(commonbase):
             if data:
                 callback(data)
                 self.LRUCache.put(key, data)
-        except:
+        except Exception as e:
             print_exc()
+            print(stringfyerror(e))
             return

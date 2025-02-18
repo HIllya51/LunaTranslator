@@ -38,12 +38,15 @@ from gui.inputdialog import (
 from gui.specialwidget import chartwidget
 from gui.usefulwidget import (
     TableViewW,
+    automakegrid,
     FlowWidget,
     getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
     clearlayout,
     getsimplecombobox,
+    D_getIconButton,
+    D_getsimpleswitch,
     getspinbox,
     getIconButton,
     makesubtab_lazy,
@@ -748,30 +751,32 @@ class dialog_setting_game_internal(QWidget):
 
     def getttssetting(self, formLayout: LFormLayout, gameuid):
         formLayout2 = self.createfollowdefault(
-            savehook_new_data[gameuid], "tts_follow_default", formLayout
+            savehook_new_data[gameuid],
+            "tts_follow_default",
+            formLayout,
+            klass=QGridLayout,
         )
-        formLayout2.addRow(
-            "语音指定",
-            getboxlayout(
+        automakegrid(
+            formLayout2,
+            [
+                ["", "", "", "", "继承默认", ""],
                 [
-                    getsimpleswitch(savehook_new_data[gameuid], "tts_skip"),
-                    getIconButton(
+                    getsmalllabel("语音指定"),
+                    D_getsimpleswitch(savehook_new_data[gameuid], "tts_skip"),
+                    D_getIconButton(
                         callback=lambda: yuyinzhidingsetting(
                             self, savehook_new_data[gameuid]["tts_skip_regex"]
                         )
                     ),
-                    QLabel(),
+                    "",
+                    D_getsimpleswitch(
+                        savehook_new_data[gameuid], "tts_skip_merge", default=False
+                    ),
                 ],
-                margin0=True,
-                makewidget=True,
-            ),
-        )
-        formLayout2.addRow(
-            "语音修正",
-            getboxlayout(
                 [
-                    getsimpleswitch(savehook_new_data[gameuid], "tts_repair"),
-                    getIconButton(
+                    getsmalllabel("语音修正"),
+                    D_getsimpleswitch(savehook_new_data[gameuid], "tts_repair"),
+                    D_getIconButton(
                         callback=lambda: noundictconfigdialog1(
                             self,
                             savehook_new_data[gameuid]["tts_repair_regex"],
@@ -779,17 +784,21 @@ class dialog_setting_game_internal(QWidget):
                             ["正则", "转义", "原文", "替换"],
                         )
                     ),
-                    QLabel(),
-                    getsimpleswitch(
+                    "",
+                    D_getsimpleswitch(
+                        savehook_new_data[gameuid], "tts_repair_merge", default=False
+                    ),
+                    "",
+                    D_getsimpleswitch(
                         savehook_new_data[gameuid],
                         "tts_repair_use_at_translate",
                         default=globalconfig["ttscommon"]["tts_repair"],
                     ),
-                    LLabel("作用于翻译"),
+                    getsmalllabel("作用于翻译"),
+                    "",
+                    "",
                 ],
-                margin0=True,
-                makewidget=True,
-            ),
+            ],
         )
 
     def getpretranstab(self, formLayout: LFormLayout, gameuid):

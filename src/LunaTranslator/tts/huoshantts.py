@@ -72,6 +72,8 @@ class TTS(TTSbase):
             headers=headers,
             json=json_data,
         )
-        b64 = base64.b64decode(response.json()["audio"]["data"])
-
-        return b64
+        try:
+            b64 = base64.b64decode(response.json()["audio"]["data"])
+            return b64
+        except:
+            raise Exception(response)

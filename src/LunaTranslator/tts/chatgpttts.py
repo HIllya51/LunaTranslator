@@ -52,5 +52,10 @@ class TTS(TTSbase):
             "speed": speed,  # 0.25 to 4.0. 1.0 is the default.
         }
 
-        response = requests.post(self.createurl(), headers=headers, json=json_data)
+        response = self.proxysession.post(
+            self.createurl(), headers=headers, json=json_data
+        )
+        if 400 <= response.status_code < 600:
+            raise Exception(response)
+
         return response.content

@@ -28,8 +28,8 @@ class TTS(TTSbase):
         }
 
         response = self.proxysession.get(
-            "https://dict.youdao.com/dictvoice",
-            params=params,
-            headers=headers,
-        ).content
-        return response
+            "https://dict.youdao.com/dictvoice", params=params, headers=headers
+        )
+        if 400 <= response.status_code < 600:
+            raise Exception(response)
+        return response.content

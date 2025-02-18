@@ -1,5 +1,5 @@
 import time, uuid
-import os, threading, re, winreg
+import os, threading, re, winreg, copy
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -624,6 +624,19 @@ class MAINUI:
                     break
                 if savehook_new_data[gameuid]["tts_follow_default"]:
                     break
+                tts_repair_merge = savehook_new_data[gameuid].get(
+                    "tts_repair_merge", False
+                )
+                tts_skip_merge = savehook_new_data[gameuid].get("tts_skip_merge", False)
+                if tts_skip_merge or tts_repair_merge:
+                    _this = copy.deepcopy(savehook_new_data[gameuid])
+                    if tts_repair_merge:
+                        _ = copy.deepcopy(globalconfig["ttscommon"]["tts_repair_regex"])
+                        _this["tts_repair_regex"] += _
+                    if tts_skip_merge:
+                        _ = copy.deepcopy(globalconfig["ttscommon"]["tts_skip_regex"])
+                        _this["tts_skip_regex"] += _
+                    return _this
                 return savehook_new_data[gameuid]
         except:
             pass
