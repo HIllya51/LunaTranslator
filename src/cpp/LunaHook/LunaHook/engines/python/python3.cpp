@@ -113,7 +113,7 @@ namespace
 
 }
 #ifdef _WIN64
-void DoReadPyString(PyObject *fmtstr, HookParam *hp, TextBuffer *buffer)
+void DoReadPyString(PyObject *fmtstr, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
 
     if (!fmtstr)
@@ -122,10 +122,22 @@ void DoReadPyString(PyObject *fmtstr, HookParam *hp, TextBuffer *buffer)
     auto fmtdata = PyUnicode_DATA(fmtstr);
     auto fmtkind = PyUnicode_KIND(fmtstr);
     auto fmtcnt = PyUnicode_GET_LENGTH(fmtstr);
+    bool lastispercent = false;
     for (auto i = 0; i < fmtcnt; i++)
     {
-        if (PyUnicode_READ(fmtkind, fmtdata, i) == '%')
-            return;
+        auto thischar = PyUnicode_READ(fmtkind, fmtdata, i);
+        if (thischar == '%')
+        {
+            lastispercent = true;
+            *split = 1;
+        }
+        else if (lastispercent)
+        {
+            if (((thischar <= 'Z') && (thischar >= 'A')) || ((thischar <= 'z') && (thischar >= 'a')) || ((thischar <= '9') && (thischar >= '0')))
+            {
+                return;
+            }
+        }
     }
     size_t len;
     hp->type &= ~CODEC_UTF8;
@@ -174,7 +186,7 @@ bool InsertRenpy3Hook()
                     {
                         auto fmtstr = (PyObject *)context->rcx;
 
-                        DoReadPyString(fmtstr, hp, buffer);
+                        DoReadPyString(fmtstr, hp, buffer, split);
                     };
                     if (PyUnicode_FromKindAndData)
                     {

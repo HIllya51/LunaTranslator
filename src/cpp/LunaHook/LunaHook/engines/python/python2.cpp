@@ -38,7 +38,7 @@ namespace
 
     PyUnicode_FromObject_t PyUnicode_FromObject;
 
-    inline void GetPyUnicodeString(PyObject *object, TextBuffer *buffer)
+    inline void GetPyUnicodeString(PyObject *object, TextBuffer *buffer, uintptr_t *split)
     {
         if (!object)
             return;
@@ -49,8 +49,21 @@ namespace
         auto fmt = PyUnicode_AS_UNICODE(uformat);
         auto fmtcnt = PyUnicode_GET_SIZE(uformat);
 
-        if (wcschr(fmt, L'%') != nullptr)
-            return;
+        *split = wcschr(fmt, L'%') != nullptr;
+        if (*split)
+        {
+            for (int i = 0; i < fmtcnt - 1; i++)
+            {
+                if (fmt[i] == L'%')
+                {
+                    auto thischar = fmt[i + 1];
+                    if (((thischar <= L'Z') && (thischar >= L'A')) || ((thischar <= L'z') && (thischar >= L'a')) || ((thischar <= L'9') && (thischar >= L'0')))
+                    {
+                        return;
+                    }
+                }
+            }
+        }
         buffer->from(fmt, sizeof(wchar_t) * fmtcnt);
     }
 
@@ -86,7 +99,7 @@ bool InsertRenpyHook()
                     hp.text_fun = [](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
                     {
                         auto format = (PyObject *)context->argof(1);
-                        GetPyUnicodeString(format, buffer);
+                        GetPyUnicodeString(format, buffer, split);
                     };
                     if (PyUnicode_FromUnicode)
                     {
