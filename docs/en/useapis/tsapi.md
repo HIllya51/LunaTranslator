@@ -147,7 +147,7 @@ https://niutrans.com/cloud/api/list
 
 == Yandex
 
-https://yandex.cloud/en/services/translate
+https://yandex.cloud/en/docs/translate/api-ref/authentication#service-account_1
 
 == Huawei Cloud
 

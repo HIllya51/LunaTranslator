@@ -1,4 +1,5 @@
 from translator.basetranslator import basetrans
+from language import Languages
 
 
 class TS(basetrans):
@@ -8,17 +9,18 @@ class TS(basetrans):
 
         key = self.multiapikeycurrent["key"]
 
-        url = "https://translate.yandex.net/api/v1.5/tr.json/translate"
-
-        params = {
-            "key": key,
-            "lang": "{}-{}".format(self.srclang, self.tgtlang),
-            "text": content,
+        url = "https://translate.api.cloud.yandex.net/translate/v2/translate"
+        js = {
+            "targetLanguageCode": self.tgtlang,
+            "texts": [content],
         }
-
-        response = self.proxysession.get(url, params=params)
+        if self.srclang != Languages.Auto:
+            js["sourceLanguageCode"] = self.srclang
+        response = self.proxysession.post(
+            url, json=js, headers={"Authorization": "Api-Key " + key}
+        )
 
         try:
-            return response.json()["text"][0]
+            return response.json()["translations"][0]["text"]
         except:
             raise Exception(response)

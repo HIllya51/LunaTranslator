@@ -148,7 +148,7 @@ https://niutrans.com/cloud/api/list
 
 == yandex
 
-https://yandex.cloud/en/services/translate
+https://yandex.cloud/en/docs/translate/api-ref/authentication#service-account_1
 
 == 华为云
 

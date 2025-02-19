@@ -260,6 +260,7 @@
 		},
 		"argstype": {
 			"key": {
+				"name": "API key",
 				"type": "textlist"
 			}
 		}
