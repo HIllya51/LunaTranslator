@@ -8,6 +8,12 @@
 
 ## 自动更新
 
-在关于软件->其他设置中，可以开启自动更新。自动更新偶尔会导致错误，请手动更新以修复！
+在关于软件->其他设置中，可以开启自动更新。
 
 ![img](https://image.lunatranslator.org/zh/update.png) 
+
+### 自动更新失败
+
+![img](https://image.lunatranslator.org/zh/refused.png)
+
+常见为当`files`目录或其中的文件被占用时，会导致自动更新失败，请手动更新以修复。

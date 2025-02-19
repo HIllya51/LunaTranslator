@@ -8,6 +8,12 @@ Alternatively, you can copy the previous userconfig folder to the new unzipped d
 
 ## Automatic Update
 
-In the About Software ->Other Settings section, automatic updates can be enabled. Automatic updates may occasionally cause errors, please manually update to fix it!
+In the software settings -> other settings, you can enable automatic updates.
 
 ![img](https://image.lunatranslator.org/zh/update.png)
+
+### Automatic Update Failure
+
+![img](https://image.lunatranslator.org/zh/refused.png)
+
+Commonly, when the `files` directory or files within it are in use, automatic updates may fail. Please manually update to fix this.
