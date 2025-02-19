@@ -304,9 +304,8 @@ class gptcommon(basetrans):
         sys_message = {"systemInstruction": {"parts": {"text": sysprompt}}}
         message = []
         self._gpt_common_parse_context(
-            message, self.context, self.config["附带上下文个数"]
+            message, self.context, self.config["附带上下文个数"], isgemini=True
         )
-
         message.append({"role": "user", "parts": [{"text": query}]})
         prefill = self._gptlike_create_prefill("prefill_use", "prefill")
         if prefill:
