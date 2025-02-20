@@ -8,7 +8,7 @@
 
 部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki
 
-## ChatGPT兼容接口
+## 大模型通用接口
 
 可以将**Sakura大模型**地址和模型填到这个的参数里面使用（相比起来只是多了些预设prompt等参数，其他无区别）
 
