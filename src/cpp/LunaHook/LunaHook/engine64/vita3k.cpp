@@ -559,6 +559,12 @@ namespace
         s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
         buffer->from(s);
     }
+    void PCSG01325(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(u8R"(@[_\*\d\w]*)"), "");
+        buffer->from(s);
+    }
     void FPCSG00855(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -983,6 +989,9 @@ namespace
             {0x80029E5C, {CODEC_UTF8, 4, 0, 0, PCSG01114, "PCSG01114"}},
             // 添いカノ ～ぎゅっと抱きしめて～
             {0x8007D250, {0, 0, 0, 0, PCSG01254, "PCSG01254"}},
+            // アイキス
+            {0x80322DDA, {CODEC_UTF8, 5, 0, 0, PCSG01325, "PCSG01325"}},
+            {0x801B8F9A, {CODEC_UTF8, 5, 0, 0, PCSG01325, "PCSG01325"}},
         };
         return 1;
     }();
