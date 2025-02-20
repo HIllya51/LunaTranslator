@@ -959,7 +959,7 @@ namespace
             // ツキトモ。 TSUKIUTA. １２memories
             {0x8004D078, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG01025"}},
             // アイドリッシュセブン　Twelve Fantasia!
-            {0x8011E570, {CODEC_UTF8, 4, 0, 0, 0, "PCSG01094"}}, // 0x8011e580
+            {0x8011E570, {CODEC_UTF8, 4, 0, 0, 0, "PCSG01094"}}, // 或0x8011e580。映射地址会发生切换，导致用特殊码搜索搜不到，且有好几个杂乱线程，但我也不想改框架了，很烦
         };
         return 1;
     }();

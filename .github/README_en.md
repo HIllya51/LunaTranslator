@@ -23,11 +23,9 @@
 
 Supports almost all conceivable translation engines, including:
 
-- **Free Online Translation** Supports a large number of online translation interfaces that can be used without registration
+- **Online Translation** Supports many online translation interfaces that can be used without registration, and supports **traditional translation** and **large model translation** using user-registered APIs
 
-- **Registered Online Translation** Supports user-registered **traditional translation** and **large model translation**
-
-- **Offline Translation** Supports **traditional translation** (J Beijing 7, Kingsoft, Yidiantong, ezTrans, Sugoi, Atlas, LEC) and offline deployed **large model translation**
+- **Offline translation** Supports common **traditional translation** engines and **large model translation** for offline deployment
 
 - **Pre-translation** Supports reading pre-translated files, supports translation caching
 
