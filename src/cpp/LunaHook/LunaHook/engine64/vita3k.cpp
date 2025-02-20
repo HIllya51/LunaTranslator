@@ -958,6 +958,8 @@ namespace
             {0x810a2486, {0, 0, 0, 0, PCSG00172, "PCSG00172"}},
             // ツキトモ。 TSUKIUTA. １２memories
             {0x8004D078, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG01025"}},
+            // アイドリッシュセブン　Twelve Fantasia!
+            {0x8011E570, {CODEC_UTF8, 4, 0, 0, 0, "PCSG01094"}}, // 0x8011e580
         };
         return 1;
     }();
