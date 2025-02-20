@@ -431,7 +431,7 @@ namespace
             }
         }
         static auto katakanaMapExtra = std::map<wchar_t, wchar_t>{
-            {L'ﾟ', L'？'}, {L'ﾞ', L'！'}, {L'･', L'…'}, {L'?', L'　'}, // invalid (shift_jis A0 <=> EF A3 B0) | FF FD - F8 F0)
+            {L'?', L'　'}, // invalid (shift_jis A0 <=> EF A3 B0) | FF FD - F8 F0)
         };
 
         auto remap = [](std::string &s)
@@ -443,13 +443,9 @@ namespace
                 if (c == L'\uF8F0' || c == L'\uFFFD')
                     continue;
                 if (katakanaMapExtra.find(c) != katakanaMapExtra.end())
-                {
                     result += katakanaMapExtra[c];
-                }
                 else if (katakanaMap.find(c) != katakanaMap.end())
-                {
                     result += katakanaMap[c];
-                }
                 else
                     result += c;
             }

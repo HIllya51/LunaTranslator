@@ -664,21 +664,13 @@ namespace
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
 
-        static auto katakanaMapExtra = std::map<wchar_t, wchar_t>{
-            {L'ﾟ', L'？'}, {L'ﾞ', L'！'}, {L'･', L'…'}};
         auto remap = [](std::wstring &ws)
         {
             std::wstring result;
             for (auto c : ws)
             {
-                if (katakanaMapExtra.find(c) != katakanaMapExtra.end())
-                {
-                    result += katakanaMapExtra[c];
-                }
                 if (katakanaMap.find(c) != katakanaMap.end())
-                {
                     result += katakanaMap[c];
-                }
                 else
                     result += c;
             }
@@ -688,6 +680,26 @@ namespace
         ws = std::regex_replace(ws, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
         ws = std::regex_replace(ws, std::wregex(LR"(\$C\[ffffff\](.*?)@\$C\[\])"), L"$1");
         strReplace(ws, L"\n", L"");
+        buffer->from(WideStringToString(ws, 932));
+    }
+    void PCSG01254(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+
+        auto remap = [](std::wstring &ws)
+        {
+            std::wstring result;
+            for (auto c : ws)
+            {
+                if (katakanaMap.find(c) != katakanaMap.end())
+                    result += katakanaMap[c];
+                else
+                    result += c;
+            }
+            return result;
+        };
+        ws = remap(ws);
+        strReplace(ws, L"@r", L"");
         buffer->from(WideStringToString(ws, 932));
     }
     void PCSG01196(TextBuffer *buffer, HookParam *hp)
@@ -752,7 +764,7 @@ namespace
             {0x800581a2, {CODEC_UTF8, 0, 0, 0, FPCSG01008, "PCSG00935"}}, // text
             // New Game! The Challenge Stage!
             {0x8012674c, {CODEC_UTF8, 0, 0, TPCSG00903, FPCSG00903, "PCSG00903"}},
-            // 喧嘩番長乙女
+            // 喧嘩番長 乙女
             {0x80009722, {CODEC_UTF16, 0, 0, 0, FPCSG00839, "PCSG00829"}},
             {0x800086C0, {CODEC_UTF16, 0, 0, 0, PCSG00829, "PCSG00829"}}, // 缺少部分
             // アルカナ・ファミリア -La storia della Arcana Famiglia- Ancora
@@ -969,6 +981,8 @@ namespace
             {0x80038874, {CODEC_UTF8, 6, 0, 0, FPCSG00855, "PCSG01159"}},
             // ワールドエンド・シンドローム
             {0x80029E5C, {CODEC_UTF8, 4, 0, 0, PCSG01114, "PCSG01114"}},
+            // 添いカノ ～ぎゅっと抱きしめて～
+            {0x8007D250, {0, 0, 0, 0, PCSG01254, "PCSG01254"}},
         };
         return 1;
     }();
