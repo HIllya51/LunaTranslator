@@ -559,6 +559,23 @@ namespace
         s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
         buffer->from(s);
     }
+    void PCSG01250_T(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (!startWith(s, "<text"))
+            return buffer->clear();
+        s = s.substr(6, s.size() - 6 - 1);
+        s = std::regex_replace(s, std::regex(R"(/ruby:(.*?)&(.*?)/)"), "$1");
+        buffer->from(s);
+    }
+    void PCSG01250_N(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (!startWith(s, "<name"))
+            return buffer->clear();
+        s = s.substr(6 + 1, s.size() - 6 - 1 - 2);
+        buffer->from(s);
+    }
     void PCSG01325(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -992,6 +1009,9 @@ namespace
             // アイキス
             {0x80322DDA, {CODEC_UTF8, 5, 0, 0, PCSG01325, "PCSG01325"}},
             {0x801B8F9A, {CODEC_UTF8, 5, 0, 0, PCSG01325, "PCSG01325"}},
+            // スキとスキとでサンカク恋愛
+            {0x80013ED6, {0, 4, 0, 0, PCSG01250_T, "PCSG01250"}},
+            {0x80013EE6, {0, 4, 0, 0, PCSG01250_N, "PCSG01250"}},
         };
         return 1;
     }();
