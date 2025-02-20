@@ -13,8 +13,7 @@
 
 - **HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
 
-
-- **OCR** 支持 **离线OCR** ( 除内置OCR引擎外，还支持WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **在线OCR** 
+- **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** ( 内置OCR引擎、WindowsOCR、Tessearact5、manga-ocr、WeChat/QQ OCR ) 和 **[在线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 
 
 - **剪贴板** 支持从剪贴板中获取文本进行翻译
 
@@ -24,9 +23,9 @@
 
 支持几乎所有能想得到的翻译引擎，包括： 
 
-- **在线翻译** 支持大量免注册开箱即用的在线翻译接口，支持使用用户注册的API的 **传统翻译** 和 **大模型翻译** 
+- **在线翻译** 支持大量免注册开箱即用的在线翻译接口，也支持使用用户注册的API的 **[传统翻译](https://docs.lunatranslator.org/useapis/tsapi.html)** 和 **[大模型翻译](https://docs.lunatranslator.org/guochandamoxing.html)** 
 
-- **离线翻译** 支持常见 **传统翻译** 引擎和离线部署的 **大模型翻译**
+- **离线翻译** 支持常见 **传统翻译** 引擎和离线部署的 **[大模型翻译](https://docs.lunatranslator.org/offlinellm.html)**
 
 - **预翻译** 支持读取预翻译文件，支持翻译缓存
 

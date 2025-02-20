@@ -13,7 +13,7 @@
 
 - **HOOK** Supports obtaining text using HOOK methods, supports the use of special codes, supports automatic saving of games and HOOKs, automatic loading of HOOKs, etc. For some engines, it also supports embedded translation. For games that are not supported or not well supported, please [submit feedback](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 
 
-- **OCR** supports **offline OCR** (in addition to the built-in OCR engine, it also supports WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **online OCR**
+- **OCR** supports **[offline OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** ( built-in OCR, WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **[online OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**
 
 - **Clipboard** Supports obtaining text from the clipboard for translation
 
@@ -23,9 +23,9 @@
 
 Supports almost all conceivable translation engines, including:
 
-- **Online Translation** Supports many online translation interfaces that can be used without registration, and supports **traditional translation** and **large model translation** using user-registered APIs
+- **Online Translation** Supports many online translation interfaces that can be used without registration, and also supports **[traditional translation](https://docs.lunatranslator.org/useapis/tsapi.html)** and **[large model translation](https://docs.lunatranslator.org/guochandamoxing.html)** using user-registered APIs
 
-- **Offline translation** Supports common **traditional translation** engines and **large model translation** for offline deployment
+- **Offline translation** Supports common **traditional translation** engines and **[large model translation](https://docs.lunatranslator.org/offlinellm.html)** for offline deployment
 
 - **Pre-translation** Supports reading pre-translated files, supports translation caching
 
