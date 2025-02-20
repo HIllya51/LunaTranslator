@@ -563,7 +563,7 @@ namespace
     {
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(u8R"(#n(　)*)"), "");
-        s = std::regex_replace(s, std::regex(R"(#\w.+?])"), "");
+        s = std::regex_replace(s, std::regex(R"(#\w.+?\])"), "");
         buffer->from(s);
     }
     void FPCSG00855_2_1(TextBuffer *buffer, HookParam *hp)
@@ -597,7 +597,7 @@ namespace
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
         ws = std::regex_replace(ws, std::wregex(LR"(#n\u3000*)"), L"");
-        ws = std::regex_replace(ws, std::wregex(LR"(#\w.+?])"), L"");
+        ws = std::regex_replace(ws, std::wregex(LR"(#\w.+?\])"), L"");
         buffer->from(WideStringToString(ws, 932));
     }
     void FPCSG00852(TextBuffer *buffer, HookParam *hp)
@@ -748,7 +748,8 @@ namespace
             // New Game! The Challenge Stage!
             {0x8012674c, {CODEC_UTF8, 0, 0, TPCSG00903, FPCSG00903, "PCSG00903"}},
             // 喧嘩番長乙女
-            {0x80009722, {CODEC_UTF16, 0, 0, 0, FPCSG00839, "PCSG00839"}},
+            {0x80009722, {CODEC_UTF16, 0, 0, 0, FPCSG00839, "PCSG00829"}},
+            {0x800086C0, {CODEC_UTF16, 0, 0, 0, PCSG00829, "PCSG00829"}}, // 缺少部分
             // アルカナ・ファミリア -La storia della Arcana Famiglia- Ancora
             {0x80070e30, {0, 2, 0, 0, FPCSG00751, "PCSG00751"}}, // all,sjis
             {0x80070cdc, {0, 1, 0, 0, FPCSG00751, "PCSG00751"}}, // text
@@ -940,8 +941,6 @@ namespace
             // ハナヤマタ　よさこいLIVE！
             {0x810789EE, {CODEC_UTF16, 3, 0, 0, PCSG00451<1>, "PCSG00451"}},
             {0x81078B22, {CODEC_UTF16, 1, 0, 0, PCSG00451<0>, "PCSG00451"}},
-            // 喧嘩番長 乙女
-            {0x800086C0, {CODEC_UTF16, 0, 0, 0, PCSG00829, "PCSG00829"}}, // 缺少部分
             // sweet pool
             {0x8003D5B6, {0, 0, 0, 0, PCSG01196, "PCSG01196"}},
             // 学園ヘヴン BOY'S LOVE SCRAMBLE!
@@ -960,6 +959,9 @@ namespace
             {0x8004D078, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG01025"}},
             // アイドリッシュセブン　Twelve Fantasia!
             {0x8011E570, {CODEC_UTF8, 4, 0, 0, 0, "PCSG01094"}}, // 或0x8011e580。映射地址会发生切换，导致用特殊码搜索搜不到，且有好几个杂乱线程，但我也不想改框架了，很烦
+            // VARIABLE BARRICADE
+            {0x80031CDE, {CODEC_UTF8, 6, 0, 0, FPCSG00855, "PCSG01159"}},
+            {0x80038874, {CODEC_UTF8, 6, 0, 0, FPCSG00855, "PCSG01159"}},
         };
         return 1;
     }();

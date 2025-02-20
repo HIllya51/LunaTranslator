@@ -1253,7 +1253,7 @@ namespace
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(u8"　"), "");
         s = std::regex_replace(s, std::regex(R"(#n)"), "");
-        s = std::regex_replace(s, std::regex(R"(#\w.+?])"), "");
+        s = std::regex_replace(s, std::regex(R"(#\w.+?\])"), "");
         buffer->from(s);
     }
     void F010061300DF48000(TextBuffer *buffer, HookParam *hp)
