@@ -33,7 +33,7 @@ class TS(basetrans):
         }
 
         data = "text=" + parse.quote(query) + "&target_lang=" + self.tgtlang
-        if self.srclang != Languages.Auto:
+        if self.srclang_1 != Languages.Auto:
             data += "&source_lang=" + self.srclang
         response = self.proxysession.post(
             endpoint, headers=headers, verify=False, data=data

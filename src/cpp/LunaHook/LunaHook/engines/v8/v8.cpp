@@ -101,6 +101,7 @@ namespace v8script
 #define fnGetCurrentContext "?GetCurrentContext@Isolate@v8@@QAE?AV?$Local@VContext@v8@@@2@XZ"
 #define fnCompile_local "?Compile@Script@v8@@SA?AV?$Local@VScript@v8@@@2@V?$Handle@VString@v8@@@2@PAVScriptOrigin@2@@Z"
 #define fnCompile_local_2 "?Compile@Script@v8@@SA?AV?$Local@VScript@v8@@@2@V?$Local@VString@v8@@@2@PAVScriptOrigin@2@@Z"
+#define fnCompile_local_3 "?Compile@Script@v8@@SA?AV?$Local@VScript@v8@@@2@V?$Handle@VString@v8@@@2@PAVScriptOrigin@2@PAVScriptData@2@0@Z"
 #define fnRun_local "?Run@Script@v8@@QAE?AV?$Local@VValue@v8@@@2@XZ"
 #define fnCompile_maylocal "?Compile@Script@v8@@SA?AV?$MaybeLocal@VScript@v8@@@2@V?$Local@VContext@v8@@@2@V?$Local@VString@v8@@@2@PAVScriptOrigin@2@@Z"
 #define fnRunv_maylocal "?Run@Script@v8@@QAE?AV?$MaybeLocal@VValue@v8@@@2@V?$Local@VContext@v8@@@2@@Z"
@@ -113,6 +114,7 @@ namespace v8script
 #define fnGetCurrentContext "?GetCurrentContext@Isolate@v8@@QEAA?AV?$Local@VContext@v8@@@2@XZ"
 #define fnCompile_local "?Compile@Script@v8@@SA?AV?$Local@VScript@v8@@@2@V?$Handle@VString@v8@@@2@PEAVScriptOrigin@2@@Z"
 #define fnCompile_local_2 fnCompile_local
+#define fnCompile_local_3 fnCompile_local
 #define fnRun_local "?Run@Script@v8@@QEAA?AV?$Local@VValue@v8@@@2@XZ"
 #define fnCompile_maylocal "?Compile@Script@v8@@SA?AV?$MaybeLocal@VScript@v8@@@2@V?$Local@VContext@v8@@@2@V?$Local@VString@v8@@@2@PEAVScriptOrigin@2@@Z"
 #define fnRunv_maylocal "?Run@Script@v8@@QEAA?AV?$MaybeLocal@VValue@v8@@@2@V?$Local@VContext@v8@@@2@@Z"
@@ -124,7 +126,7 @@ namespace v8script
 	typedef void *(THISCALL *RequestInterruptt)(void *, RequestInterrupt_callback, void *);
 
 	typedef void *(*NewFromUtf8t)(void *, void *, const char *, int, int);
-	typedef void *(*Compile_local_t)(void *, void *, void *);
+	typedef void *(*Compile_local_t)(void *, void *, void *, void *, void *);
 	typedef void *(*Compile_maybelocal_t)(void *, void *, void *, void *);
 	RequestInterruptt RequestInterrupt;
 	NewFromUtf8t NewFromUtf8 = 0, NewFromUtf8v2, NewFromUtf8v1;
@@ -173,7 +175,7 @@ namespace v8script
 			return;
 		if (NewFromUtf8v1)
 		{
-			(Compile_local)(&script, v8string, 0);
+			(Compile_local)(&script, v8string, 0, 0, 0);
 			ConsoleOutput("script %p", script);
 			if (!script)
 				return;
@@ -198,7 +200,7 @@ namespace v8script
 		NewFromUtf8v1 = (decltype(NewFromUtf8))GetProcAddress(hmodule, fnNewFromUtf8_local);
 
 		GetCurrentContext = (decltype(GetCurrentContext))GetProcAddress(hmodule, fnGetCurrentContext);
-		if (!(RequestInterrupt && GetCurrentContext))
+		if (!GetCurrentContext)
 			return false;
 		if (NewFromUtf8v1)
 		{
@@ -206,6 +208,8 @@ namespace v8script
 			Compile_local = (decltype(Compile_local))GetProcAddress(hmodule, fnCompile_local);
 			if (!Compile_local)
 				Compile_local = (decltype(Compile_local))GetProcAddress(hmodule, fnCompile_local_2);
+			if (!Compile_local)
+				Compile_local = (decltype(Compile_local))GetProcAddress(hmodule, fnCompile_local_3);
 			Run_local = (decltype(Run_local))GetProcAddress(hmodule, fnRun_local);
 			if (!(Run_local && Compile_local))
 				return false;
@@ -227,8 +231,10 @@ namespace v8script
 	{
 		if (!isolate)
 			return false;
-		RequestInterrupt(isolate, _interrupt_function, nullptr);
-
+		if (RequestInterrupt)
+			RequestInterrupt(isolate, _interrupt_function, nullptr);
+		else
+			_interrupt_function(isolate, nullptr);
 		return true;
 	}
 

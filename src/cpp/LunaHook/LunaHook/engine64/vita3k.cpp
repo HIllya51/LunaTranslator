@@ -161,6 +161,12 @@ namespace
         last = s;
     }
 
+    void PCSG01235(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = VITA3K::emu_arg(context)[hp->offset];
+        buffer->from((char *)(address - 3));
+    }
+
     void ReadU16TextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = VITA3K::emu_arg(context)[hp->offset];
@@ -206,6 +212,10 @@ namespace
         auto address = VITA3K::emu_arg(context)[0];
         buffer->from(address + 0x1C, (*(DWORD *)(address + 0x14)));
     }
+    void PCSG01247(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\\n"));
+    }
     void FPCSG00903(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -217,6 +227,13 @@ namespace
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(R"(\\n)"), " ");
         s = std::regex_replace(s, std::regex(R"(,.*$)"), " ");
+        buffer->from(s);
+    }
+    void PCSG01002(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, L'\n');
+        auto s = buffer->strW();
+        s = std::regex_replace(s, std::wregex(L"<.*?>"), L"");
         buffer->from(s);
     }
     void FPCSG00839(TextBuffer *buffer, HookParam *hp)
@@ -272,9 +289,40 @@ namespace
     {
         StringFilter(buffer, TEXTANDLEN(u8"#n　"));
     }
+    void PCSG01150(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN(u8"#n　"));
+        StringFilter(buffer, TEXTANDLEN(u8"#n"));
+        PCSG00592(buffer, hp);
+    }
+    void PCSG01260_T(TextBuffer *buffer, HookParam *)
+    {
+        StringFilter(buffer, TEXTANDLEN(u8"@n"));
+    }
+    void PCSG01260(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strA();
+        if (!startWith(s, u8"【"))
+            return buffer->clear();
+        buffer->from(s.substr(0, s.find(u8"】") + strlen(u8"】")));
+    }
     void PCSG00787(TextBuffer *buffer, HookParam *)
     {
         CharFilter(buffer, '\n');
+    }
+    void PCSG01284(TextBuffer *buffer, HookParam *)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+            buffer->clear();
+        last = s;
+    }
+    void PCSG01204(TextBuffer *buffer, HookParam *)
+    {
+        CharFilter(buffer, '\n');
+        StringFilter(buffer, TEXTANDLEN("@1r"));
+        StringFilter(buffer, TEXTANDLEN("@-1r"));
     }
     void PCSG01068(TextBuffer *buffer, HookParam *hp)
     {
@@ -309,9 +357,7 @@ namespace
     }
     void FPCSG00912(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("%N"), "");
-        buffer->from(s);
+        StringFilter(buffer, TEXTANDLEN("%N"));
     }
     void FPCSG00706(TextBuffer *buffer, HookParam *hp)
     {
@@ -411,6 +457,73 @@ namespace
                 s = s.substr(pos + strlen(u8"×"));
             buffer->from(s);
         }
+    }
+    namespace Corda
+    {
+        std::string readBinaryString(uintptr_t address, bool *haveName)
+        {
+            *haveName = false;
+            if ((*(WORD *)address & 0xF0FF) == 0x801b)
+            {
+                *haveName = true;
+                address = address + 2; // (1)
+            }
+            std::string s;
+            int i = 0;
+            uint8_t c;
+            if (*(BYTE *)(address + i) == 0xaa)
+                i += 1;
+
+            while (true)
+            {
+                c = *(uint8_t *)(address + i);
+                if (!c)
+                {
+                    if (*(uint8_t *)(address + i + 1) == 0xaa)
+                        i += 2;
+                    else
+                        break;
+                }
+                else if (c == 0x1b)
+                {
+                    if (*haveName)
+                        return s; // (1) skip junk after name
+
+                    c = *(uint8_t *)(address + (i + 1));
+                    if (c == 0x7f)
+                        i += 5;
+                    else if (c == 0xb4) // 下天の華 夢灯り //NPJH50864
+                        i += 6;
+                    else
+                        i += 2;
+                }
+                else if (c == 0x0a)
+                {
+                    s += '\n';
+                    i += 1;
+                }
+                else if (c == 0x20)
+                {
+                    s += ' ';
+                    i += 1;
+                }
+                else
+                {
+                    auto len = 1 + (IsShiftjisLeadByte(*(BYTE *)(address + i)));
+                    s += std::string((char *)(address + i), len);
+                    i += len; // encoder.encode(c).byteLength;
+                }
+            }
+            return s;
+        }
+    }
+    void PCSG01245(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = VITA3K::emu_arg(context)[hp->offset];
+        bool haveNamve;
+        auto s = Corda::readBinaryString(address, &haveNamve);
+        *split = haveNamve;
+        buffer->from(s);
     }
     void PCSG00912(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -566,14 +679,22 @@ namespace
             return buffer->clear();
         s = s.substr(6, s.size() - 6 - 1);
         s = std::regex_replace(s, std::regex(R"(/ruby:(.*?)&(.*?)/)"), "$1");
+        s = std::regex_replace(s, std::regex(R"(#n)"), "");
         buffer->from(s);
     }
+    template <int ex = 1>
     void PCSG01250_N(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
         if (!startWith(s, "<name"))
             return buffer->clear();
-        s = s.substr(6 + 1, s.size() - 6 - 1 - 2);
+        s = s.substr(6 + ex, s.size() - 6 - 1 - 2 * ex);
+        buffer->from(s);
+    }
+    void PCSG01202(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(/ruby:(.*?)&(.*?)/)"), "$1");
         buffer->from(s);
     }
     void PCSG01325(TextBuffer *buffer, HookParam *hp)
@@ -676,12 +797,58 @@ namespace
         StringFilter(buffer, TEXTANDLEN(u8"▼"));
         CharFilter(buffer, '\n');
     }
+    void PCSG01249(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("[n]"));
+    }
     void PCSG00370(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("\n\x81\x40"));
         StringFilter(buffer, TEXTANDLEN("\x81\xa5"));
         StringFilter(buffer, TEXTANDLEN("\x81\x84"));
         CharFilter(buffer, '\n');
+    }
+    void PCSG01289(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+
+        auto remap = [](std::wstring &ws)
+        {
+            std::wstring result;
+            for (auto c : ws)
+            {
+                if (katakanaMap.find(c) != katakanaMap.end())
+                    result += katakanaMap[c];
+                else
+                    result += c;
+            }
+            return result;
+        };
+        ws = remap(ws);
+        ws = std::regex_replace(ws, std::wregex(LR"(\$t(.*?)@)"), L"$1");
+        ws = std::regex_replace(ws, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
+        buffer->from(WideStringToString(ws, 932));
+    }
+    void PCSG01198(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = StringToWideString(buffer->viewA(), 932).value();
+
+        auto remap = [](std::wstring &ws)
+        {
+            std::wstring result;
+            for (auto c : ws)
+            {
+                if (katakanaMap.find(c) != katakanaMap.end())
+                    result += katakanaMap[c];
+                else
+                    result += c;
+            }
+            return result;
+        };
+        ws = remap(ws);
+        ws = std::regex_replace(ws, std::wregex(LR"(`(.*?)@)"), L"$1");
+        ws = std::regex_replace(ws, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
+        buffer->from(WideStringToString(ws, 932));
     }
     void PCSG00585(TextBuffer *buffer, HookParam *hp)
     {
@@ -754,6 +921,13 @@ namespace
             return buffer->clear();
         last = s;
     }
+    void PCSG01314(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(@r(.*?)@(.*?)@)"), "$1");
+        s = std::regex_replace(s, std::regex(R"(@\w)"), "");
+        buffer->from(s);
+    }
     void F010052300F612000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -761,6 +935,13 @@ namespace
         s = std::regex_replace(s, std::regex(R"(@r(.*?)@\d)"), "$1");
         strReplace(s, R"(\c)", "");
         strReplace(s, R"(\n)", "");
+        buffer->from(s);
+    }
+    void PCSG01197(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(#r(.*?)\|(.*?)#)"), "$1");
+        strReplace(s, R"(@w)", "");
         buffer->from(s);
     }
     auto _ = []()
@@ -1015,6 +1196,63 @@ namespace
             // 戦場の円舞曲
             {0x8006C08C, {0, 5, 0, 0, FPCSG00448, "PCSG00428"}},
             {0x8002B1DE, {0, 7, 0, 0, FPCSG00448, "PCSG00428"}},
+            // ピオフィオーレの晩鐘
+            {0x80034656, {CODEC_UTF8, 0, 0, 0, 0, "PCSG01139"}},
+            // 千の刃濤、桃花染の皇姫
+            {0x802D44D4, {CODEC_UTF8, 6, 0, 0, 0, "PCSG01127"}}, // 有注音时有乱码
+            // Panic Palette～パニック パレット～
+            {0x80010C96, {0, 0, 0, 0, PCSG01247, "PCSG01247"}},
+            // ノラと皇女と野良猫ハート2
+            {0x80027620, {CODEC_UTF8, 0xb, 0, PCSG01235, 0, "PCSG01235"}}, // 开头少十几句
+            // IxSHE Tell
+            {0x80027EB0, {CODEC_UTF8, 0xb, 0, PCSG01235, 0, "PCSG01297"}}, // 少很多句
+            // NG
+            {0x80063E54, {0, 0, 0, 0, PCSG01204, "PCSG01204"}},
+            // Making*Lovers
+            {0x808E1530, {0, 6, 0, 0, PCSG01284, "PCSG01284"}},
+            // LOVE CLEAR
+            {0x8031BFA2, {CODEC_UTF8, 5, 0, 0, PCSG01314, "PCSG01314"}},
+            // アマツツミ
+            {0x800785C8, {0, 2, 0, 0, PCSG01198, "PCSG01198"}},
+            // Cafe Cuillere ～カフェ キュイエール～
+            {0x8000DF58, {0, 0, 0, 0, PCSG01197, "PCSG01197"}},
+            {0x800104FC, {0, 1, 0, 0, PCSG01197, "PCSG01197"}},
+            // CharadeManiacs
+            {0x800A0264, {CODEC_UTF8, 2, 0, 0, PCSG01150, "PCSG01150"}},
+            // Collar×Malice -Unlimited-
+            {0x8000D3A4, {CODEC_UTF8, 0, 0, 0, PCSG00530, "PCSG01162"}},
+            // D.S.-Dal Segno-
+            {0x80014AEC, {0, 0, 0, 0, 0, "PCSG01122"}},
+            // ダンジョンに出会いを求めるのは間違っているだろうか インフィニト・コンバーテ
+            {0x8232D5C0, {CODEC_UTF16 | FULL_STRING, 2, 0, 0, PCSG01002, "PCSG01002"}},
+            // ダンジョントラベラーズ２－２ 闇堕ちの乙女とはじまりの書
+            {0x800BE808, {CODEC_UTF8, 3, 0, 0, PCSG00787, "PCSG00841"}},
+            // DYNAMIC CHORD feat.apple-polisher V edition
+            {0x80033F6C, {0, 0, 0, 0, FPCSG00912, "PCSG00915"}},
+            {0x8003C61E, {0, 0, 0, 0, FPCSG00912, "PCSG00915"}},
+            // フローラル・フローラブ
+            {0x80022C9C, {0, 7, 0, 0, PCSG01202, "PCSG01202"}},
+            // EVE rebirth terror
+            {0x80030CAA, {0, 1, 0, 0, PCSG01249, "PCSG01249"}},
+            // フルキス
+            {0x801B28C8, {CODEC_UTF8, 5, 0, 0, PCSG01260, "PCSG01260"}},
+            {0x801B1FC0, {CODEC_UTF8, 0, 0, 0, PCSG01260_T, "PCSG01260"}},
+            // 軍靴をはいた猫
+            {0x800647D0, {0, 1, 0, 0, PCSG01289, "PCSG01289"}},
+            // 学園CLUB ～ヒミツのナイトクラブ～
+            {0x80029854, {0, 1, 0, 0, FPCSG00852, "PCSG01065"}},
+            // グリザイア ファントムトリガー ０３＆０４
+            {0x80052EFE, {0, 4, 0, 0, PCSG01289, "PCSG01218"}},
+            // かりぐらし恋愛
+            {0x800444CC, {0, 0, 0, 0, PCSG00530, "PCSG01253"}},
+            {0x800443B8, {0, 0, 0, 0, PCSG00530, "PCSG01253"}},
+            // カタハネ -An' call Belle-
+            {0x8005D784, {0, 1, 0, 0, PCSG01198, "PCSG01153"}},
+            // 金色ラブリッチェ
+            {0x800154CC, {0, 0, 0, 0, PCSG01250_N<0>, "PCSG01318"}},
+            {0x800158B8, {0, 4, 0, 0, PCSG01250_T, "PCSG01318"}},
+            // 金色のコルダ オクターヴ
+            {0x80022B46, {0, 2, 0, PCSG01245, 0, "PCSG01245"}},
         };
         return 1;
     }();

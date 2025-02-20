@@ -131,7 +131,18 @@ function rpgmakerhook() {
         return this.drawTextEx_origin(text, x, y)
     }
 }
-
+function Almighthook() {
+    //https://vndb.org/v19007
+    if (Almight.Tag.prototype._text_1) return;
+    Almight.Tag.prototype._text_1 = Almight.Tag.prototype._text_
+    Almight.Tag.prototype._text_ = function (params) {
+        params.text = cppjsio('almight', params.text, 10, true)
+        if (fontface) {
+            this.font({ face: fontface })
+        }
+        return this._text_1(params)
+    }
+}
 function tyranohook() {
 
     if (tyrano.plugin.kag.tag.text.originstart) return;
@@ -159,6 +170,9 @@ function retryinject(times) {
         }
         else if (window.Utils && Utils.RPGMAKER_NAME) {
             rpgmakerhook();
+        }
+        else if (window.Almight && Almight.version) {
+            Almighthook();
         }
         else {
             setTimeout(retryinject, 3000, times - 1);

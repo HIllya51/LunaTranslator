@@ -935,9 +935,7 @@ namespace
     }
     void F0100068019996000(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("%N"), "\n");
-        buffer->from(s);
+        StringReplacer(buffer, TEXTANDLEN("%N"), TEXTANDLEN(u8"\n"));
     }
     void F0100ADC014DA0000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1099,7 +1097,6 @@ namespace
 
     void F010043B013C5C000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
         static std::wstring last;
@@ -1130,8 +1127,7 @@ namespace
     void F0100CB700D438000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(<RUBY><RB>(.*?)<\/RB><RT>(.*?)<\/RT><\/RUBY>)"),
-                               "$1");
+        s = std::regex_replace(s, std::regex(R"(<RUBY><RB>(.*?)<\/RB><RT>(.*?)<\/RT><\/RUBY>)"), "$1");
         s = std::regex_replace(s, std::regex("<[^>]*>"), "");
         static std::string last;
         if (last == s)
