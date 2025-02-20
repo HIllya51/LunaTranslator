@@ -643,6 +643,11 @@ namespace
         if (buffer->viewA() == PCSG00535)
             buffer->clear();
     }
+    void PCSG01114(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '@');
+        StringFilterBetween(buffer, TEXTANDLEN("{"), TEXTANDLEN("}"));
+    }
     void PCSG00482(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN(u8"▼"));
@@ -962,6 +967,8 @@ namespace
             // VARIABLE BARRICADE
             {0x80031CDE, {CODEC_UTF8, 6, 0, 0, FPCSG00855, "PCSG01159"}},
             {0x80038874, {CODEC_UTF8, 6, 0, 0, FPCSG00855, "PCSG01159"}},
+            // ワールドエンド・シンドローム
+            {0x80029E5C, {CODEC_UTF8, 4, 0, 0, PCSG01114, "PCSG01114"}},
         };
         return 1;
     }();
