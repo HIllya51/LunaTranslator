@@ -100,9 +100,56 @@ bool InsertAliceHook()
   // ConsoleOutput("AliceHook: failed");
   return ok;
 }
-
+namespace
+{
+  bool Sys42VM()
+  {
+    // https://vndb.org/r41279
+    // Beat Blades Haruka
+    auto vm = GetModuleHandle(L"Sys42VM.dll");
+    if (!vm)
+      return false;
+    auto [s, e] = Util::QueryModuleLimits(vm);
+    BYTE sig[] = {
+        0x51, 0x56,
+        0x8b, 0xf0,
+        0x8b, 0x46, 0x04,
+        0x85, 0xc0,
+        0x74, 0x07,
+        0x8b, 0x4e, 0x08,
+        0x2b, 0xc8,
+        0x75, 0x05,
+        0xe8, XX4,
+        0x8b, 0x76, 0x04,
+        0x56,
+        0x8b, 0x74, 0x24, 0x10,
+        0xe8, XX4,
+        0x5e, 0x59,
+        0xc2, 0x04, 0x00};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), s, e);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = FULL_STRING | USING_STRING;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      auto a1 = context->eax;
+      auto v3 = *(DWORD *)(a1 + 4);
+      if (!v3 || *(DWORD *)(a1 + 8) == v3)
+        return;
+      buffer->from(*(const char **)(a1 + 4));
+    };
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      if (endWith(buffer->viewA(), ".asd"))
+        buffer->clear();
+    };
+    return NewHook(hp, "System42");
+  }
+}
 bool Alice::attach_function_()
 {
 
-  return InsertAliceHook();
+  return InsertAliceHook() | Sys42VM();
 }

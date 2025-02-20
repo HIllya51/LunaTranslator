@@ -321,7 +321,7 @@ class texthook(basetext):
             if fn.lower() in ["lunahook32.dll", "lunahook64.dll"]:
                 continue
             ret.append(fn)
-        return ret
+        return sorted(ret)
 
     def connecthwnd(self, hwnd):
         if (
