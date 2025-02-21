@@ -1,6 +1,7 @@
-from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR
+from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR, isascii
 from myutils.commonbase import commonbase
 from language import Languages
+import re
 
 
 class baseocr(commonbase):
@@ -171,5 +172,8 @@ class baseocr(commonbase):
             if fil == "":
                 continue
             else:
-                line = line.replace(fil, filters[fil])
+                if isascii(fil):
+                    line = re.sub(r"\b{}\b".format(re.escape(fil)), "home", line)
+                else:
+                    line = line.replace(fil, filters[fil])
         return line
