@@ -306,7 +306,7 @@ class TextBrowser(WebviewWidget, dataget):
         trans = loadfont(
             self._getfontinfo(TextType.Translate), globalconfig["lineheightstrans"]
         )
-        hira = (loadfont(self._getfontinfo_kana()),)
+        hira = loadfont(self._getfontinfo_kana())
         args = dict(origin=origin, trans=trans, hira=hira, extra=extra)
         args = quote(json.dumps(args))
         self.debugeval('setfontstyle("{}");'.format(args))
