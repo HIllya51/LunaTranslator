@@ -3161,3 +3161,7 @@ class PopupWidget(QWidget):
         if event.button() == Qt.MouseButton.LeftButton:
             self.dragging = False
             self.offset = None
+
+    def closeEvent(self, a0):
+        self.deleteLater()
+        return super().closeEvent(a0)
