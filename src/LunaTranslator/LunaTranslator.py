@@ -52,6 +52,7 @@ from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LMenu
 from gui.setting_textinput_ocr import showocrimage
+from gui.usefulwidget import PopupWidget
 from rendertext.texttype import TextType, SpecialColor, TranslateColor
 
 
@@ -970,7 +971,9 @@ class MAINUI:
             print_exc()
 
     def setdarkandbackdrop(self, widget, dark):
-        ismenulist = isinstance(widget, (QMenu,)) or (type(widget) == QFrame)
+        ismenulist = isinstance(widget, (QMenu, PopupWidget)) or (
+            type(widget) == QFrame
+        )
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
         winsharedutils.SetTheme(
@@ -998,7 +1001,7 @@ class MAINUI:
         if globalconfig["usesearchword"]:
             self.searchwordW.search_word.emit(word, append)
 
-    def __dontshowintaborsetbackdrop(self, widget):
+    def __dontshowintaborsetbackdrop(self, widget: QWidget):
         window_flags = widget.windowFlags()
         if (
             Qt.WindowType.FramelessWindowHint & window_flags
