@@ -123,3 +123,19 @@ struct CoAsyncTaskWaiter
         CoWaitForMultipleHandles(COWAIT_DISPATCH_WINDOW_MESSAGES | COWAIT_DISPATCH_CALLS | COWAIT_INPUTAVAILABLE, INFINITE, 1, &event.m_h, &handleIndex);
     }
 };
+
+struct AutoFreeString
+{
+    LPWSTR ptr;
+    AutoFreeString(LPWSTR ptr) : ptr(ptr)
+    {
+    }
+    ~AutoFreeString()
+    {
+        delete[] ptr;
+    }
+    operator LPWSTR()
+    {
+        return ptr;
+    }
+};

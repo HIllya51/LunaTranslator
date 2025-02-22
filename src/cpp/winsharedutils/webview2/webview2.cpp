@@ -85,17 +85,17 @@ DECLARE_API void webview2_resize(WebView2 *web, int w, int h)
         return;
     web->Resize(w, h);
 }
-DECLARE_API void webview2_add_menu(WebView2 *web, int index, const wchar_t *label, contextmenu_callback_t callback)
+DECLARE_API void webview2_add_menu(WebView2 *web, int index, contextmenu_gettext gettext, contextmenu_callback_t callback)
 {
     if (!web)
         return;
-    web->AddMenu(index, label, callback);
+    web->AddMenu(index, gettext, callback);
 }
-DECLARE_API void webview2_add_menu_noselect(WebView2 *web, int index, const wchar_t *label, contextmenu_notext_callback_t callback, bool checkable, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
+DECLARE_API void webview2_add_menu_noselect(WebView2 *web, int index, contextmenu_gettext gettext, contextmenu_notext_callback_t callback, bool checkable, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
 {
     if (!web)
         return;
-    web->AddMenu(index, label, callback, checkable, getchecked, getuse);
+    web->AddMenu(index, gettext, callback, checkable, getchecked, getuse);
 }
 DECLARE_API void webview2_detect_version(LPCWSTR dir, void (*cb)(LPCWSTR))
 {

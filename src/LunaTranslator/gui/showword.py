@@ -1378,30 +1378,34 @@ class searchwordW(closeashidewindow):
         self.setCentralWidget(ww)
         self.textOutput = showwordfastwebview(self, True)
         nexti = self.textOutput.add_menu(
-            0, _TR("查词"), lambda w: self.search_word.emit(w, False)
+            0, lambda: _TR("查词"), lambda w: self.search_word.emit(w, False)
         )
         nexti = self.textOutput.add_menu(
-            nexti, _TR("在新窗口中查词"), threader(self.search_word_in_new_window.emit)
+            nexti,
+            lambda: _TR("在新窗口中查词"),
+            threader(self.search_word_in_new_window.emit),
         )
         nexti = self.textOutput.add_menu(
-            nexti, _TR("翻译"), gobject.baseobject.textgetmethod
+            nexti, lambda: _TR("翻译"), gobject.baseobject.textgetmethod
         )
         nexti = self.textOutput.add_menu(
-            nexti, _TR("朗读"), gobject.baseobject.read_text
+            nexti, lambda: _TR("朗读"), gobject.baseobject.read_text
         )
         nexti = self.textOutput.add_menu(
-            nexti, _TR("加亮"), lambda _: self.textOutput.eval("highlightSelection()")
+            nexti,
+            lambda: _TR("加亮"),
+            lambda _: self.textOutput.eval("highlightSelection()"),
         )
         self.ishightlight = False
         nexti = self.textOutput.add_menu_noselect(
             0,
-            _TR("加亮模式"),
+            lambda: _TR("加亮模式"),
             lambda: self.textOutput.eval("switch_hightlightmode()"),
             checkable=True,
             getchecked=lambda: self.callvalue(),
         )
         nexti = self.textOutput.add_menu_noselect(
-            nexti, _TR("清除加亮"), self.clear_hightlight
+            nexti, lambda: _TR("清除加亮"), self.clear_hightlight
         )
         self.textOutput.set_zoom(globalconfig["ZoomFactor"])
         self.textOutput.on_ZoomFactorChanged.connect(

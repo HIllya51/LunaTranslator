@@ -4,6 +4,7 @@ typedef void (*evaljs_callback_t)(LPCWSTR);
 typedef void (*navigating_callback_t)(LPCWSTR, bool);
 typedef void (*titlechange_callback_t)(LPCWSTR);
 typedef void (*contextmenu_callback_t)(LPCWSTR);
+typedef LPWSTR (*contextmenu_gettext)();
 typedef bool (*contextmenu_getchecked)();
 typedef bool (*contextmenu_getuse)();
 typedef void (*contextmenu_notext_callback_t)();
@@ -25,10 +26,9 @@ public:
     // ICoreWebView2GetFaviconCompletedHandler
     HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode, IStream *faviconStream);
 };
-class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler, ICoreWebView2CustomItemSelectedEventHandler, ICoreWebView2DocumentTitleChangedEventHandler>
+class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler,  ICoreWebView2DocumentTitleChangedEventHandler>
 {
     WebView2 *ref;
-    CComHeapPtr<WCHAR> CurrSelectText;
     COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND targetKind;
     std::once_flag navigatingfirst;
     bool isextensionsettignwindow;
@@ -38,8 +38,6 @@ public:
     WebView2ComHandler(WebView2 *ref) : ref(ref) {}
     // ICoreWebView2DocumentTitleChangedEventHandler
     HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, IUnknown *args);
-    // ICoreWebView2CustomItemSelectedEventHandler
-    HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2ContextMenuItem *sender, IUnknown *args);
     // ICoreWebView2NavigationStartingEventHandler
     HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, ICoreWebView2NavigationStartingEventArgs *args);
     // ICoreWebView2CreateCoreWebView2ControllerCompletedHandler
@@ -57,7 +55,15 @@ public:
     // ICoreWebView2ContextMenuRequestedEventHandler
     HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, ICoreWebView2ContextMenuRequestedEventArgs *args);
 };
-
+typedef std::variant<contextmenu_callback_t, contextmenu_notext_callback_t> contextmenu_callback_t_ex;
+struct MenuContexts
+{
+    contextmenu_gettext gettext;
+    contextmenu_callback_t_ex callback;
+    bool checkable;
+    contextmenu_getchecked getchecked;
+    contextmenu_getuse getuse;
+};
 class WebView2
 {
     friend class WebView2ComHandler;
@@ -68,10 +74,8 @@ class WebView2
     CComPtr<ICoreWebView2> m_webView;
     CComPtr<ICoreWebView2Environment> m_env;
     CComPtr<WebView2ComHandler> handler;
-    std::vector<CComPtr<ICoreWebView2ContextMenuItem>> menus;
-    std::vector<CComPtr<ICoreWebView2ContextMenuItem>> menus_noselect;
-    typedef std::variant<contextmenu_callback_t, contextmenu_notext_callback_t> contextmenu_callback_t_ex;
-    std::map<INT32, std::tuple<contextmenu_callback_t_ex, contextmenu_getchecked, contextmenu_getuse>> menuscallback;
+    std::vector<MenuContexts> menus;
+    std::vector<MenuContexts> menus_noselect;
     std::optional<std::wstring> UserDir(bool);
     HRESULT CreateCoreWebView2EnvironmentError = S_OK, CreateCoreWebView2ControllerError = S_OK;
     LONG chromeextensionpage = 0;
@@ -85,7 +89,7 @@ public:
     titlechange_callback_t titlechange_callback = nullptr;
     IconChanged_callback_t IconChanged_callback = nullptr;
     void WaitForLoad();
-    void AddMenu(int index, const wchar_t *label, contextmenu_callback_t_ex callback, bool checkable = false, contextmenu_getchecked getchecked = nullptr, contextmenu_getuse getuse = nullptr);
+    void AddMenu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, bool checkable = false, contextmenu_getchecked getchecked = nullptr, contextmenu_getuse getuse = nullptr);
     WebView2(HWND parent, bool);
     HRESULT init(bool);
     void put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME);

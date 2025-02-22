@@ -27,7 +27,7 @@ class TextBrowser(WebviewWidget, dataget):
         self.setMouseTracking(True)
         nexti = self.add_menu(
             0,
-            _TR("查词"),
+            lambda: _TR("查词"),
             threader(
                 lambda w: gobject.baseobject.searchwordW.search_word.emit(
                     w.replace("\n", "").strip(), False
@@ -36,15 +36,15 @@ class TextBrowser(WebviewWidget, dataget):
         )
         nexti = self.add_menu(
             nexti,
-            _TR("翻译"),
+            lambda: _TR("翻译"),
             lambda w: gobject.baseobject.textgetmethod(w.replace("\n", "").strip()),
         )
         nexti = self.add_menu(
             nexti,
-            _TR("朗读"),
+            lambda: _TR("朗读"),
             lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
         )
-        self.add_menu_noselect(0, _TR("清空"), self.___cleartext)
+        self.add_menu_noselect(0, lambda: _TR("清空"), self.___cleartext)
         self.bind("calllunaclickedword", gobject.baseobject.clickwordcallback)
         self.bind("calllunaMouseMove", self.calllunaMouseMove)
         self.bind("calllunaMousePress", self.calllunaMousePress)

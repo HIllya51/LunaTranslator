@@ -23,34 +23,34 @@ class wvtranshist(WebviewWidget):
         self.bind("calllunaloadready", self.setflags)
         self.pluginsedit.connect(functools.partial(Exteditor, self))
         self.reloadx.connect(self.appendext)
-        nexti = self.add_menu_noselect(0, _TR("清空"), self.clear)
-        nexti = self.add_menu_noselect(nexti, _TR("滚动到最后"), self.scrollend)
-        nexti = self.add_menu_noselect(nexti, _TR("字体"), self.seletcfont)
+        nexti = self.add_menu_noselect(0, lambda: _TR("清空"), self.clear)
+        nexti = self.add_menu_noselect(nexti, lambda: _TR("滚动到最后"), self.scrollend)
+        nexti = self.add_menu_noselect(nexti, lambda: _TR("字体"), self.seletcfont)
         nexti = self.add_menu_noselect(nexti)
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("显示原文"),
+            lambda: _TR("显示原文"),
             self.showhideraw,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showorigin"],
         )
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("显示翻译"),
+            lambda: _TR("显示翻译"),
             self.showtrans,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtrans"],
         )
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("显示翻译器名称"),
+            lambda: _TR("显示翻译器名称"),
             self.showtransname,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtransname"],
         )
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("显示时间"),
+            lambda: _TR("显示时间"),
             self.showhidetime,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtime"],
@@ -59,14 +59,14 @@ class wvtranshist(WebviewWidget):
 
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("使用Webview2显示"),
+            lambda: _TR("使用Webview2显示"),
             self.useweb,
             True,
             getchecked=lambda: globalconfig["history"]["usewebview2"],
         )
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("附加HTML"),
+            lambda: _TR("附加HTML"),
             functools.partial(
                 extrahtml,
                 self,
@@ -77,14 +77,14 @@ class wvtranshist(WebviewWidget):
         )
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("附加浏览器插件"),
+            lambda: _TR("附加浏览器插件"),
             threader(self.reloadx.emit),
             True,
             getchecked=lambda: globalconfig["history"]["webviewLoadExt"],
         )
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("浏览器插件"),
+            lambda: _TR("浏览器插件"),
             threader(self.pluginsedit.emit),
             False,
             getuse=lambda: globalconfig["history"]["webviewLoadExt"],
@@ -93,15 +93,17 @@ class wvtranshist(WebviewWidget):
 
         nexti = self.add_menu(
             0,
-            _TR("查词"),
+            lambda: _TR("查词"),
             threader(
                 lambda w: gobject.baseobject.searchwordW.search_word.emit(
                     w.replace("\n", "").strip(), False
                 )
             ),
         )
-        nexti = self.add_menu(nexti, _TR("翻译"), gobject.baseobject.textgetmethod)
-        nexti = self.add_menu(nexti, _TR("朗读"), gobject.baseobject.read_text)
+        nexti = self.add_menu(
+            nexti, lambda: _TR("翻译"), gobject.baseobject.textgetmethod
+        )
+        nexti = self.add_menu(nexti, lambda: _TR("朗读"), gobject.baseobject.read_text)
         nexti = self.add_menu(nexti)
         self.loadex()
 

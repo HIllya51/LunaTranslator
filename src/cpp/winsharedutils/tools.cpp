@@ -54,3 +54,11 @@ DECLARE_API const char *mecab_dictionary_codec(MeCab::Tagger *tagger)
         return nullptr;
     return tagger->dictionary_info()->charset;
 }
+
+DECLARE_API LPWSTR str_alloc(LPCWSTR str)
+{
+    // 从python向c++传递字符串时，需要转成非托管字符串，否则会内存泄漏
+    auto _ = new WCHAR[wcslen(str) + 1];
+    wcscpy(_, str);
+    return _;
+}

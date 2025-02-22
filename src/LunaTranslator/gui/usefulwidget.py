@@ -1089,13 +1089,23 @@ class abstractwebview(QWidget):
     def navigate(self, url):
         pass
 
-    def add_menu(self, index=0, label=None, callback=None):
+    def wrapgetlabel(self, getlabel):
+        if not getlabel:
+            return
+
+        def __(f):
+            _ = f()
+            return winsharedutils.str_alloc(_)
+
+        return functools.partial(__, getlabel)
+
+    def add_menu(self, index=0, getlabel=None, callback=None):
         return index + 1
 
     def add_menu_noselect(
         self,
         index=0,
-        label=None,
+        getlabel=None,
         callback=None,
         checkable=False,
         getchecked=None,
@@ -1476,16 +1486,21 @@ class WebviewWidget(abstractwebview):
         cb = winsharedutils.webview2_evaljs_CALLBACK(callback) if callback else None
         winsharedutils.webview2_evaljs(self.webview, js, cb)
 
-    def add_menu(self, index=0, label=None, callback=None):
+    def add_menu(self, index=0, getlabel=None, callback=None):
         __ = winsharedutils.webview2_add_menu_CALLBACK(callback) if callback else None
         self.callbacks.append(__)
-        winsharedutils.webview2_add_menu(self.webview, index, label, __)
+        getlabel = self.wrapgetlabel(getlabel)
+        __3 = (
+            winsharedutils.webview2_contextmenu_gettext(getlabel) if getlabel else None
+        )
+        self.callbacks.append(__3)
+        winsharedutils.webview2_add_menu(self.webview, index, __3, __)
         return index + 1
 
     def add_menu_noselect(
         self,
         index=0,
-        label=None,
+        getlabel=None,
         callback=None,
         checkable=False,
         getchecked=None,
@@ -1507,8 +1522,13 @@ class WebviewWidget(abstractwebview):
             winsharedutils.webview2_add_menu_noselect_getuse(getuse) if getuse else None
         )
         self.callbacks.append(__2)
+        getlabel = self.wrapgetlabel(getlabel)
+        __3 = (
+            winsharedutils.webview2_contextmenu_gettext(getlabel) if getlabel else None
+        )
+        self.callbacks.append(__3)
         winsharedutils.webview2_add_menu_noselect(
-            self.webview, index, label, __, checkable, __1, __2
+            self.webview, index, __3, __, checkable, __1, __2
         )
         return index + 1
 
@@ -1680,7 +1700,7 @@ class WebviewWidget(abstractwebview):
         winsharedutils.webview2_set_observe_ptrs(self.webview, *self.monitorptrs)
 
         self.add_menu()
-        nexti = self.add_menu_noselect()
+        self.add_menu_noselect()
         self.cachezoom = 1
 
     def IconChangedF(self, ptr, size):
@@ -1756,14 +1776,14 @@ class WebviewWidget_for_auto(WebviewWidget):
         nexti = self.add_menu_noselect()
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("附加浏览器插件"),
+            lambda: _TR("附加浏览器插件"),
             threader(self.reloadx.emit),
             True,
             getchecked=lambda: globalconfig["webviewLoadExt_cishu"],
         )
         nexti = self.add_menu_noselect(
             nexti,
-            _TR("浏览器插件"),
+            lambda: _TR("浏览器插件"),
             threader(self.pluginsedit.emit),
             False,
             getuse=lambda: globalconfig["webviewLoadExt_cishu"],
@@ -1816,7 +1836,7 @@ class mshtmlWidget(abstractwebview):
         t.timeout.connect(self.__getcurrent)
         t.timeout.emit()
         t.start()
-        self.add_menu(0, _TR("复制"), winsharedutils.clipboard_set)
+        self.add_menu(0, lambda: _TR("复制"), winsharedutils.clipboard_set)
         self.add_menu(0)
 
     def __getcurrent(self):
@@ -1845,16 +1865,19 @@ class mshtmlWidget(abstractwebview):
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_font(self._parsehtml_dark(html)))
 
-    def add_menu(self, index=0, label=None, callback=None):
+    def add_menu(self, index=0, getlabel=None, callback=None):
         cb = winsharedutils.html_add_menu_cb(callback) if callback else None
         self.callbacks.append(cb)
-        winsharedutils.html_add_menu(self.browser, index, label, cb)
+        getlabel = self.wrapgetlabel(getlabel)
+        cb2 = winsharedutils.html_add_menu_gettext(getlabel) if getlabel else None
+        self.callbacks.append(cb2)
+        winsharedutils.html_add_menu(self.browser, index, cb2, cb)
         return index + 1
 
     def add_menu_noselect(
         self,
         index=0,
-        label=None,
+        getlabel=None,
         callback=None,
         checkable=False,
         getchecked=None,
@@ -1862,7 +1885,10 @@ class mshtmlWidget(abstractwebview):
     ):
         cb = winsharedutils.html_add_menu_cb2(callback) if callback else None
         self.callbacks.append(cb)
-        winsharedutils.html_add_menu_noselect(self.browser, index, label, cb)
+        getlabel = self.wrapgetlabel(getlabel)
+        cb2 = winsharedutils.html_add_menu_gettext(getlabel) if getlabel else None
+        self.callbacks.append(cb2)
+        winsharedutils.html_add_menu_noselect(self.browser, index, cb2, cb)
         return index + 1
 
 
@@ -1914,24 +1940,24 @@ class auto_select_webview(QWidget):
         self.bindinfo.append((funcname, function))
         self.internal.bind(funcname, function)
 
-    def add_menu(self, index=0, label=None, callback=None):
-        self.addmenuinfo.append((index, label, callback))
-        return self.internal.add_menu(index, label, callback)
+    def add_menu(self, index=0, getlabel=None, callback=None):
+        self.addmenuinfo.append((index, getlabel, callback))
+        return self.internal.add_menu(index, getlabel, callback)
 
     def add_menu_noselect(
         self,
         index=0,
-        label=None,
+        getlabel=None,
         callback=None,
         checkable=False,
         getchecked=None,
         getuse=None,
     ):
         self.addmenuinfo_noselect.append(
-            (index, label, callback, checkable, getchecked, getuse)
+            (index, getlabel, callback, checkable, getchecked, getuse)
         )
         return self.internal.add_menu_noselect(
-            index, label, callback, checkable, getchecked, getuse
+            index, getlabel, callback, checkable, getchecked, getuse
         )
 
     def clear(self):
