@@ -12,6 +12,7 @@ from gui.usefulwidget import (
     getsimplecombobox,
     MySwitch,
     getsimpleswitch,
+    getsimplepatheditor,
     FocusSpin,
     FocusCombo,
     IconButton,
@@ -183,7 +184,7 @@ class searchhookparam(LDialog):
             ]  # dumpvalues[6]
             usestruct.searchTime = dumpvalues["time"] * 1000  # dumpvalues[7]
             usestruct.maxRecords = dumpvalues["maxrecords"]  # dumpvalues[8]
-        gobject.baseobject.textsource.findhook(usestruct)
+        gobject.baseobject.textsource.findhook(usestruct, dumpvalues["addresses"])
         if idx != 1:
             self.parent().findhookchecked()
         self.close()
@@ -358,6 +359,24 @@ class searchhookparam(LDialog):
         self.search_method.addW("特征匹配", patternW)
         self.search_method.addW("函数对齐", QLabel())
         self.search_method.addW("函数调用", QLabel())
+
+        addresses = [""]
+
+        def callback(fn):
+            with open(fn, "r", encoding="utf8") as ff:
+                addresses.append(ff.read())
+
+        self.regists["addresses"] = lambda: addresses[-1]
+        self.search_method.addW(
+            "地址表",
+            getsimplepatheditor(
+                text="",
+                callback=callback,
+                icons=("fa.folder-open",),
+                clearable=False,
+                w=True,
+            ),
+        )
 
         autoaddline(
             "pattern",

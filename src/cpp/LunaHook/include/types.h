@@ -161,7 +161,7 @@ struct hook_context
 #define ___baseoffset (int)offsetof(hook_context, base)
 #define regoffset(reg) ((int)offsetof(hook_context, reg) - ___baseoffset)
 #define stackoffset(idx) ((int)offsetof(hook_context, stack[idx]) - ___baseoffset)
-#define GETARG(i) (((int)(size_t) & reinterpret_cast<char const volatile &>((((hook_context *)0)->argof(i)))) - ___baseoffset)
+#define GETARG(i) (((int)(size_t)&reinterpret_cast<char const volatile &>((((hook_context *)0)->argof(i)))) - ___baseoffset)
 #ifndef _WIN64
 #define THISCALLARG1 stack[1]
 #define LASTRETVAL eax
@@ -251,6 +251,8 @@ struct SearchParam
 	wchar_t exportModule[MAX_MODULE_SIZE] = {};	  // hook the exports of this module (highest priority)
 	wchar_t text[PATTERN_SIZE] = {};			  // text to search for
 	bool isjithook;
+	wchar_t sharememname[64] = {0};
+	ALIGNPTR(uint64_t __4, size_t sharememsize = 0);
 };
 enum SUPPORT_LANG;
 

@@ -2642,6 +2642,7 @@ def getsimplepatheditor(
     clearable=True,
     clearset=None,
     isfontselector=False,
+    w=False,
 ):
     lay = QHBoxLayout()
     lay.setContentsMargins(0, 0, 0, 0)
@@ -2704,6 +2705,10 @@ def getsimplepatheditor(
 
             clear.clicked.connect(functools.partial(__, callback, e, clearset))
             lay.addWidget(clear)
+    if w and isinstance(lay, QLayout):
+        w = QWidget()
+        w.setLayout(lay)
+        lay = w
     return lay
 
 

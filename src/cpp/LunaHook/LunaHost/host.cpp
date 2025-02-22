@@ -315,13 +315,26 @@ namespace Host
 		prs.at(processId).Send(RemoveHookCmd(address));
 	}
 
-	void FindHooks(DWORD processId, SearchParam sp, HookEventHandler HookFound)
+	void FindHooks(DWORD processId, SearchParam sp, HookEventHandler HookFound, LPCWSTR addresses)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
 		if (prs.find(processId) == prs.end())
 			return;
 		if (HookFound)
 			prs.at(processId).OnHookFound = HookFound;
+		static int idx = 0;
+		if (sp.search_method == 3)
+		{
+			if (!addresses)
+				addresses = L"";
+			auto size = wcslen(addresses) * 2;
+			auto name = HOOK_SEARCH_SHARED_MEM + std::to_wstring(GetCurrentProcessId()) + std::to_wstring(idx++);
+			auto handle = CreateFileMappingW(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, size + 2, (name).c_str());
+			auto ptr = MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, size + 2);
+			wcscpy((LPWSTR)ptr, addresses);
+			wcscpy(sp.sharememname, name.c_str());
+			sp.sharememsize = size + 2;
+		}
 		prs.at(processId).Send(FindHookCmd(sp));
 	}
 

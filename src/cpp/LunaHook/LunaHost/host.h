@@ -20,7 +20,7 @@ namespace Host
 	void SetLanguage(const char *);
 	void InsertPCHooks(DWORD processId, int which);
 	void RemoveHook(DWORD processId, uint64_t address);
-	void FindHooks(DWORD processId, SearchParam sp, HookEventHandler HookFound = {});
+	void FindHooks(DWORD processId, SearchParam sp, HookEventHandler HookFound = {}, LPCWSTR addresses=nullptr);
 	CommonSharedMem *GetCommonSharedMem(DWORD pid);
 	TextThread *GetThread(int64_t handle);
 	TextThread &GetThread(ThreadParam tp);

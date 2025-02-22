@@ -400,6 +400,8 @@ void inlinehookpipeline(std::vector<uintptr_t> &addresses)
 		MH_RemoveHook((void *)addr);
 	VirtualFree(trampolines, 0, MEM_RELEASE);
 }
+uintptr_t getasbaddr(const HookParam &hp);
+
 void _SearchForHooks(SearchParam spUser)
 {
 	static std::mutex m;
@@ -505,7 +507,39 @@ void _SearchForHooks(SearchParam spUser)
 				}
 			}
 		}
-
+		else if (sp.search_method == 3)
+		{
+			auto fm = OpenFileMappingW(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, sp.sharememname);
+			auto ptr = (LPWSTR)MapViewOfFile(fm, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, sp.sharememsize);
+			for (auto line : strSplit(ptr, L"\n"))
+			{
+				if (!line.size())
+					continue;
+				try
+				{
+					std::wsmatch match;
+					if (!std::regex_match(line, match, std::wregex(L"^([[:xdigit:]]+)(:.+?)?(:.+)?")))
+						continue;
+					HookParam hp;
+					hp.address = std::stoull(match[1], nullptr, 16);
+					if (match[2].matched)
+					{
+						hp.type |= MODULE_OFFSET;
+						wcsncpy_s(hp.module, match[2].str().erase(0, 1).c_str(), MAX_MODULE_SIZE - 1);
+					}
+					if (match[3].matched)
+					{
+						hp.type |= FUNCTION_OFFSET;
+						std::wstring func = match[3];
+						strncpy_s(hp.function, std::string(func.begin(), func.end()).erase(0, 1).c_str(), MAX_MODULE_SIZE - 1);
+					}
+					addresses1.push_back(getasbaddr(hp));
+				}
+				catch (...)
+				{
+				}
+			}
+		}
 		mergevector(addresses, addresses1);
 
 		auto limits = Util::QueryModuleLimits(GetModuleHandleW(LUNA_HOOK_DLL));

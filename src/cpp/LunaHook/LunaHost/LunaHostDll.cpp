@@ -99,13 +99,13 @@ C_LUNA_API void Luna_RemoveHook(DWORD pid, uint64_t addr)
 {
     Host::RemoveHook(pid, addr);
 }
-C_LUNA_API void Luna_FindHooks(DWORD pid, SearchParam sp, findhookcallback_t findhookcallback)
+C_LUNA_API void Luna_FindHooks(DWORD pid, SearchParam sp, findhookcallback_t findhookcallback, LPCWSTR addresses)
 {
     Host::FindHooks(pid, sp, [=](HookParam hp, std::wstring text)
                     {
                             wchar_t hookcode[HOOKCODE_LEN];
                             wcscpy_s(hookcode,HOOKCODE_LEN, hp.hookcode);
-                            findhookcallback(hookcode,text.c_str()); });
+                            findhookcallback(hookcode,text.c_str()); }, addresses);
 }
 C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, Displaymode displaymode, bool fastskipignore)
 {

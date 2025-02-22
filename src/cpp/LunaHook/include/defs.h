@@ -11,6 +11,7 @@ constexpr auto HOST_PIPE = L"\\\\.\\pipe\\LUNA_HOST";
 // Sections
 
 constexpr auto EMBED_SHARED_MEM = L"EMBED_SHARED_MEM"; // _%d
+constexpr auto HOOK_SEARCH_SHARED_MEM = L"HOOK_SEARCH_SHARED_MEM";
 
 // Mutexes
 
