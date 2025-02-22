@@ -3128,3 +3128,36 @@ class ClickableLabel(LLabel):
             self.clicked.emit()
 
     clicked = pyqtSignal()
+
+
+class PopupWidget(QWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setWindowFlag(Qt.WindowType.Popup)
+        self.dragging = False
+        self.offset = None
+
+    def display(self, pos=None):
+        self.move(pos if pos else QCursor.pos())
+        self.show()
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if not self.rect().contains(event.pos()):
+            return super().mousePressEvent(event)
+
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.dragging = True
+            self.offset = QCursor.pos() - self.pos()
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        if not self.rect().contains(event.pos()):
+            return super().mouseMoveEvent(event)
+        if self.dragging:
+            self.move(QCursor.pos() - self.offset)
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        if not self.rect().contains(event.pos()):
+            return super().mouseReleaseEvent(event)
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.dragging = False
+            self.offset = None

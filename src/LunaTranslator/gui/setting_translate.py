@@ -32,8 +32,10 @@ from gui.usefulwidget import (
     getsmalllabel,
     makescrollgrid,
     IconButton,
+    PopupWidget,
 )
-from gui.dynalang import LPushButton, LLabel, LAction, LDialog
+from gui.setting_display_text import GetFormForLineHeight
+from gui.dynalang import LPushButton, LAction
 from gui.setting_about import offlinelinks
 
 
@@ -111,19 +113,22 @@ def getalistname(parent, copy, btnplus, callback):
     )
 
 
-class SpecialFont(LDialog):
+class SpecialFont(PopupWidget):
     def __init__(self, apiuid, p):
-        super().__init__(p, Qt.WindowType.WindowCloseButtonHint)
+        super().__init__(p)
         self.apiuid = apiuid
-        self.setWindowTitle(dynamicapiname(apiuid) + "_字体设置")
-        self.resize(500, 1)
         box = QGridLayout(self)
         grid = []
-        grid.append(["", "", "", "跟随默认"])
+        grid.append(
+            [
+                "",
+                "跟随默认",
+            ]
+        )
         if "privatefont" not in globalconfig["fanyi"][apiuid]:
             globalconfig["fanyi"][apiuid]["privatefont"] = {}
         dd = globalconfig["fanyi"][apiuid]["privatefont"]
-        for i in range(3):
+        for i in range(4):
             if i == 0:
                 t = "字体"
                 k = "fontfamily"
@@ -155,6 +160,12 @@ class SpecialFont(LDialog):
                 w = getsimpleswitch(
                     dd, k, default=globalconfig[k], callback=self.resetfont
                 )
+            elif i == 3:
+                t = "间距"
+                k = "lineheight"
+                w = QWidget()
+                GetFormForLineHeight(w, dd, self.resetfont)
+
             w.setEnabled(not dd.get(k + "_df", True))
             switch = D_getsimpleswitch(
                 dd,
@@ -162,7 +173,7 @@ class SpecialFont(LDialog):
                 callback=functools.partial(self.disableclear, w),
                 default=True,
             )
-            grid.append([getsmalllabel(t), w, "", switch])
+            grid.append([getsmalllabel(t), switch, w])
         automakegrid(box, grid)
 
     def disableclear(self, w: QWidget, _):
@@ -188,7 +199,8 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
         menu.addAction(copy)
     if which == 1:
         menu.addAction(delete)
-    action = menu.exec(QCursor.pos())
+    pos = QCursor.pos()
+    action = menu.exec(pos)
     if action == delete:
         selectllmcallback_2(self, countnum, btnplus, apiuid, None)
     elif action == editname:
@@ -220,7 +232,7 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
             exec_=True,
         )
     elif action == specialfont:
-        SpecialFont(apiuid, self).exec()
+        SpecialFont(apiuid, self).display(pos)
     elif action == copy:
         selectllmcallback(self, countnum, btnplus, apiuid, None)
 

@@ -205,7 +205,7 @@ class TextBrowser(QWidget, dataget):
 
     def contentchangedfunction(self):
         sz = self.textbrowser.document().size().toSize()
-        visheight = int(sz.height() + self.extra_height)
+        visheight = sz.height()
         self.textbrowser.resize(self.width(), visheight)
         self.contentsChanged.emit(QSize(sz.width(), visheight + self.labeloffset_y))
 
@@ -270,7 +270,6 @@ class TextBrowser(QWidget, dataget):
         self.lastcolor = None
         self.iteryinyinglabelsave = {}
         self.saveiterclasspointer = {}
-        self.extra_height = 0
         self.cleared = True
 
         self.setAcceptDrops(True)
@@ -565,7 +564,7 @@ class TextBrowser(QWidget, dataget):
         if hastag:
             self._setlineheight_x(blockcount, blockcount_after, self._split_tags(tag))
         else:
-            self._setlineheight(blockcount, blockcount_after, texttype)
+            self._setlineheight(blockcount, blockcount_after, texttype, klass)
         self.textbrowser.document().blockSignals(False)
         self.textbrowser.document().contentsChanged.emit()
         if hastag:
@@ -668,13 +667,14 @@ class TextBrowser(QWidget, dataget):
             return False
         return True
 
+    def getlhfordict(self, dic):
+        return 100 * (
+            1 if dic.get("lineHeightNormal", True) else dic.get("lineHeight", 1)
+        )
+
     def _setlineheight_x(self, b1, b2, linetags):
-        fh = globalconfig["extra_space"]
         fha, _ = self._getfh(True)
 
-        self.extra_height = fha
-        if fh < 0:
-            self.extra_height = -fh + self.extra_height
         for i in range(b1, b2):
             _fha = 0
             for word in linetags[i - b1]:
@@ -688,26 +688,31 @@ class TextBrowser(QWidget, dataget):
                 self.atback_color.move(0, int(fha))
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()
-            tf.setTopMargin(_fha)
-            tf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
+            tf.setTopMargin(_fha + globalconfig["lineheights"]["marginTop"])
+            tf.setLineHeight(
+                self.getlhfordict(globalconfig["lineheights"]),
+                LineHeightTypes.ProportionalHeight,
+            )
+            tf.setBottomMargin(globalconfig["lineheights"]["marginBottom"])
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
 
-    def _setlineheight(self, b1, b2, texttype: TextType):
+    def _setlineheight(self, b1, b2, texttype: TextType, klass: str):
         if texttype == TextType.Origin:
-            fh = globalconfig["extra_space"]
+            fh = globalconfig["lineheights"]
         else:
-            fh = globalconfig["extra_space_trans"]
-        if fh < 0:
-            self.extra_height = -fh
-        else:
-            self.extra_height = 0
+            fh = globalconfig["lineheightstrans"]
+            if klass:
+                data = globalconfig["fanyi"][klass].get("privatefont", {})
+                if not data.get("lineheight_df", True):
+                    fh = data
         for i in range(b1, b2):
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()
-            tf.setTopMargin(0)
-            tf.setLineHeight(fh, LineHeightTypes.LineDistanceHeight)
+            tf.setTopMargin(fh.get("marginTop", 0))
+            tf.setLineHeight(self.getlhfordict(fh), LineHeightTypes.ProportionalHeight)
+            tf.setBottomMargin(fh.get("marginBottom", 0))
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)

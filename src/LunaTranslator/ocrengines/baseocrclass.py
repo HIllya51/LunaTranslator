@@ -173,7 +173,7 @@ class baseocr(commonbase):
                 continue
             else:
                 if isascii(fil):
-                    line = re.sub(r"\b{}\b".format(re.escape(fil)), "home", line)
+                    line = re.sub(r"\b{}\b".format(re.escape(fil)), fil, line)
                 else:
                     line = line.replace(fil, filters[fil])
         return line

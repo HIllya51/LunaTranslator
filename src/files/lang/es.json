@@ -571,7 +571,6 @@
     "当前支持的语言": "Idiomas apoyados actualmente",
     "添加语言包": "Añadir paquetes de idiomas",
     "在线": "En línea",
-    "行间距": "Distancia entre líneas",
     "阴影": "Sombra",
     "火山": "Volcán",
     "有道词典": "Diccionario youdao",
@@ -791,5 +790,10 @@
     "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": "",
     "窗口化缩放": "",
     "窗口缩放": "",
-    "创建快捷方式": ""
+    "创建快捷方式": "",
+    "间距": "",
+    "上边距": "",
+    "下边距": "",
+    "行高": "",
+    "倍": ""
 }

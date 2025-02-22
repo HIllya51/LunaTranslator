@@ -20,9 +20,11 @@ from gui.usefulwidget import (
     FocusFontCombo,
     SuperCombo,
     D_getsimplecombobox,
+    D_getIconButton,
     getspinbox,
     getsmalllabel,
     SplitLine,
+    PopupWidget,
     Exteditor,
 )
 from gui.dynalang import LPushButton, LFormLayout
@@ -299,6 +301,71 @@ def _createseletengeinecombo(self):
     return self.seletengeinecombo
 
 
+def GetFormForLineHeight(parent, dic, callback):
+    form = LFormLayout(parent)
+    form.addRow(
+        "上边距",
+        getspinbox(-100, 100, dic, "marginTop", callback=callback, default=0),
+    )
+    form.addRow(
+        "下边距",
+        getspinbox(-100, 100, dic, "marginBottom", callback=callback, default=0),
+    )
+    value = getboxlayout(
+        [
+            getspinbox(
+                0,
+                2,
+                dic,
+                "lineHeight",
+                callback=callback,
+                double=True,
+                step=0.01,
+                default=1,
+            ),
+            "倍",
+        ],
+        margin0=True,
+        makewidget=True,
+    )
+    value.setEnabled(not dic.get("lineHeightNormal", True))
+    lineheigth = getboxlayout(
+        [
+            getboxlayout(
+                [
+                    "默认",
+                    getsimpleswitch(
+                        dic,
+                        "lineHeightNormal",
+                        callback=lambda _: (
+                            value.setEnabled(not _),
+                            callback(),
+                        ),
+                        default=True,
+                    ),
+                ],
+                margin0=True,
+            ),
+            value,
+        ],
+        lc=QVBoxLayout,
+        margin0=True,
+    )
+    form.addRow(SplitLine())
+    form.addRow("行高", lineheigth)
+
+
+class Spacesetting(PopupWidget):
+    def __init__(self, parent, trans):
+        super().__init__(parent)
+        GetFormForLineHeight(
+            self,
+            globalconfig[["lineheights", "lineheightstrans"][trans]],
+            mayberealtimesetfont,
+        )
+        self.display()
+
+
 def xianshigrid_style(self):
     textgrid = [
         [
@@ -319,13 +386,30 @@ def xianshigrid_style(self):
                                                 createtextfontcom, "fonttype"
                                             ),
                                             "",
-                                            "行间距",
-                                            D_getspinbox(
-                                                -100,
-                                                100,
+                                            "颜色",
+                                            D_getcolorbutton(
                                                 globalconfig,
-                                                "extra_space",
-                                                callback=mayberealtimesetfont,
+                                                "rawtextcolor",
+                                                callback=lambda: selectcolor(
+                                                    self,
+                                                    globalconfig,
+                                                    "rawtextcolor",
+                                                    self.original_color_button,
+                                                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                                                ),
+                                                name="original_color_button",
+                                                parent=self,
+                                            ),
+                                            "",
+                                            "显示",
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "isshowrawtext",
+                                                callback=lambda x: __changeuibuttonstate(
+                                                    self, x
+                                                ),
+                                                name="show_original_switch",
+                                                parent=self,
                                             ),
                                         ],
                                         [
@@ -350,30 +434,13 @@ def xianshigrid_style(self):
                                                             callback=mayberealtimesetfont,
                                                         ),
                                                         "",
-                                                        "颜色",
-                                                        D_getcolorbutton(
-                                                            globalconfig,
-                                                            "rawtextcolor",
-                                                            callback=lambda: selectcolor(
+                                                        "间距",
+                                                        D_getIconButton(
+                                                            callback=functools.partial(
+                                                                Spacesetting,
                                                                 self,
-                                                                globalconfig,
-                                                                "rawtextcolor",
-                                                                self.original_color_button,
-                                                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                                                            ),
-                                                            name="original_color_button",
-                                                            parent=self,
-                                                        ),
-                                                        "",
-                                                        "显示",
-                                                        D_getsimpleswitch(
-                                                            globalconfig,
-                                                            "isshowrawtext",
-                                                            callback=lambda x: __changeuibuttonstate(
-                                                                self, x
-                                                            ),
-                                                            name="show_original_switch",
-                                                            parent=self,
+                                                                False,
+                                                            )
                                                         ),
                                                     ],
                                                     makewidget=True,
@@ -402,15 +469,6 @@ def xianshigrid_style(self):
                                                 ),
                                                 0,
                                             ),
-                                            "",
-                                            "行间距",
-                                            D_getspinbox(
-                                                -100,
-                                                100,
-                                                globalconfig,
-                                                "extra_space_trans",
-                                                callback=mayberealtimesetfont,
-                                            ),
                                         ],
                                         [
                                             "字体大小",
@@ -431,8 +489,12 @@ def xianshigrid_style(self):
                                                 callback=mayberealtimesetfont,
                                             ),
                                             "",
-                                            "",
-                                            "",
+                                            "间距",
+                                            D_getIconButton(
+                                                callback=functools.partial(
+                                                    Spacesetting, self, True
+                                                )
+                                            ),
                                         ],
                                     ),
                                 ),

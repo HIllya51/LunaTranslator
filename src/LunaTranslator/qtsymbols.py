@@ -6,6 +6,8 @@ try:
     isqt5 = True
     class LineHeightTypes:
         LineDistanceHeight=QTextBlockFormat.LineHeightTypes.LineDistanceHeight
+        SingleHeight=QTextBlockFormat.LineHeightTypes.SingleHeight
+        ProportionalHeight=QTextBlockFormat.LineHeightTypes.ProportionalHeight
         FixedHeight=QTextBlockFormat.LineHeightTypes.FixedHeight
 except:
     #from traceback import print_exc
@@ -18,6 +20,8 @@ except:
 
     class LineHeightTypes:
         LineDistanceHeight=QTextBlockFormat.LineHeightTypes.LineDistanceHeight.value
+        SingleHeight=QTextBlockFormat.LineHeightTypes.SingleHeight.value
+        ProportionalHeight=QTextBlockFormat.LineHeightTypes.ProportionalHeight.value
         FixedHeight=QTextBlockFormat.LineHeightTypes.FixedHeight.value
 
     QRegExp=QRegularExpression

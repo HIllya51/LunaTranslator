@@ -362,7 +362,6 @@
     "选中时颜色": "Farbe bei Auswahl",
     "游戏不存在时颜色": "Farbe, wenn das Spiel nicht existiert",
     "原文": "Originaltext",
-    "行间距": "Zeilenabstand",
     "下载": "Download",
     "附加参数": "Zusätzliche Parameter",
     "语言": "Sprache",
@@ -791,5 +790,10 @@
     "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": "",
     "窗口化缩放": "",
     "窗口缩放": "",
-    "创建快捷方式": ""
+    "创建快捷方式": "",
+    "间距": "",
+    "上边距": "",
+    "下边距": "",
+    "行高": "",
+    "倍": ""
 }

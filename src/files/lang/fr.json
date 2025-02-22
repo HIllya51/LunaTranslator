@@ -571,7 +571,6 @@
     "当前支持的语言": "Langues actuellement supportées",
     "添加语言包": "Ajouter un pack de langue",
     "在线": "En ligne",
-    "行间距": "Espacement des lignes",
     "阴影": "Ombre",
     "火山": "Le volcan",
     "有道词典": "Dictionnaire Tao",
@@ -791,5 +790,10 @@
     "API接口地址填写错误，或者当前平台不支持自动获取模型列表。\n请检查API接口地址，或手动填写模型名。": "",
     "窗口化缩放": "",
     "窗口缩放": "",
-    "创建快捷方式": ""
+    "创建快捷方式": "",
+    "间距": "",
+    "上边距": "",
+    "下边距": "",
+    "行高": "",
+    "倍": ""
 }

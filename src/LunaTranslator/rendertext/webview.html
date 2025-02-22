@@ -477,9 +477,13 @@
     }
     function _setfontstyle_which(t, args) {
         let style = ''
+        if (args.lineHeightNormal) { style += `line-height:normal;` }
+        else if (args.lineHeight) { style += `line-height:${args.lineHeight}em;` }
         if (args.fontFamily) style += `font-family: ${args.fontFamily};`
         if (args.fontSize) style += `font-size: ${args.fontSize}pt;`
         if (args.bold != undefined) style += `font-weight: ${args.bold ? "bold" : "normal"} ;`
+        if (args.marginTop != undefined) style += `margin-top: ${args.marginTop};`
+        if (args.marginBottom != undefined) style += `margin-bottom: ${args.marginBottom};`
         return `.${t}{${style}}`
     }
     function setfontstyle(argsjson) {
@@ -493,8 +497,6 @@
             style += _setfontstyle_which('TS_CLASS_' + klass, extra[klass])
         }
         document.getElementById('styleforfont').innerHTML = style
-        measureheight('klass_font_origin', args.origin)
-        measureheight('klass_font_trans', args.trans)
         document.getElementById('styleforfont').innerHTML += `.klass_font_hira{
         line-height: normal;
         }
@@ -573,6 +575,7 @@
         else {
             document.getElementById('luna_root_div').insertBefore(document.getElementById('luna_root_div_origin'), document.getElementById('luna_root_div_trans'))
         }
+        safe_calllunaheightchange()
     }
 </script>
 <script>

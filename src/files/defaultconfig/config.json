@@ -397,8 +397,18 @@
     "localeswitchmethod": 0,
     "hide_not_exists": false,
     "startgamenototop": true,
-    "extra_space": 0,
-    "extra_space_trans": 0,
+    "lineheights": {
+        "lineHeight": 1,
+        "lineHeightNormal": true,
+        "marginTop": 0,
+        "marginBottom": 0
+    },
+    "lineheightstrans": {
+        "lineHeight": 1,
+        "lineHeightNormal": true,
+        "marginTop": 0,
+        "marginBottom": 0
+    },
     "fonttype": "",
     "fonttype2": "",
     "hira_vis_type": 0,
