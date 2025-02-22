@@ -382,71 +382,72 @@ def xianshigrid_style(self):
                                     grid=(
                                         [
                                             "字体",
-                                            functools.partial(
-                                                createtextfontcom, "fonttype"
-                                            ),
-                                            "",
-                                            "颜色",
-                                            D_getcolorbutton(
-                                                globalconfig,
-                                                "rawtextcolor",
-                                                callback=lambda: selectcolor(
-                                                    self,
-                                                    globalconfig,
-                                                    "rawtextcolor",
-                                                    self.original_color_button,
-                                                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                                                ),
-                                                name="original_color_button",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "显示",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "isshowrawtext",
-                                                callback=lambda x: __changeuibuttonstate(
-                                                    self, x
-                                                ),
-                                                name="show_original_switch",
-                                                parent=self,
-                                            ),
-                                        ],
-                                        [
-                                            "字体大小",
                                             (
                                                 getboxlayout(
                                                     [
-                                                        D_getspinbox(
-                                                            5,
-                                                            100,
-                                                            globalconfig,
-                                                            "fontsizeori",
-                                                            double=True,
-                                                            step=0.1,
-                                                            callback=mayberealtimesetfont,
+                                                        functools.partial(
+                                                            createtextfontcom,
+                                                            "fonttype",
                                                         ),
                                                         "",
-                                                        "加粗",
+                                                        "颜色",
+                                                        D_getcolorbutton(
+                                                            globalconfig,
+                                                            "rawtextcolor",
+                                                            callback=lambda: selectcolor(
+                                                                self,
+                                                                globalconfig,
+                                                                "rawtextcolor",
+                                                                self.original_color_button,
+                                                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                                                            ),
+                                                            name="original_color_button",
+                                                            parent=self,
+                                                        ),
+                                                        "",
+                                                        "显示",
                                                         D_getsimpleswitch(
                                                             globalconfig,
-                                                            "showbold",
-                                                            callback=mayberealtimesetfont,
-                                                        ),
-                                                        "",
-                                                        "间距",
-                                                        D_getIconButton(
-                                                            callback=functools.partial(
-                                                                Spacesetting,
-                                                                self,
-                                                                False,
-                                                            )
+                                                            "isshowrawtext",
+                                                            callback=lambda x: __changeuibuttonstate(
+                                                                self, x
+                                                            ),
+                                                            name="show_original_switch",
+                                                            parent=self,
                                                         ),
                                                     ],
                                                     makewidget=True,
                                                     margin0=True,
                                                 ),
                                                 0,
+                                            ),
+                                        ],
+                                        [
+                                            "字体大小",
+                                            D_getspinbox(
+                                                5,
+                                                100,
+                                                globalconfig,
+                                                "fontsizeori",
+                                                double=True,
+                                                step=0.1,
+                                                callback=mayberealtimesetfont,
+                                            ),
+                                            "",
+                                            "加粗",
+                                            D_getsimpleswitch(
+                                                globalconfig,
+                                                "showbold",
+                                                callback=mayberealtimesetfont,
+                                            ),
+                                            "",
+                                            "间距",
+                                            D_getIconButton(
+                                                callback=functools.partial(
+                                                    Spacesetting,
+                                                    self,
+                                                    False,
+                                                )
                                             ),
                                         ],
                                     ),
