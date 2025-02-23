@@ -190,12 +190,16 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
     specialfont = LAction("字体设置", menu)
     delete = LAction("删除", menu)
     copy = LAction("复制", menu)
+    usecache = LAction("使用翻译缓存", menu)
+    usecache.setCheckable(True)
     menu.addAction(editname)
     menu.addAction(specialfont)
     which = translate_exits(apiuid, which=True)
     is_gpt_like = globalconfig["fanyi"][apiuid].get("is_gpt_like", False)
     if is_gpt_like:
         menu.addSeparator()
+        menu.addAction(usecache)
+        usecache.setChecked(globalconfig["fanyi"][apiuid].get("use_trans_cache", True))
         menu.addAction(copy)
     if which == 1:
         menu.addAction(delete)
@@ -203,6 +207,8 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
     action = menu.exec(pos)
     if action == delete:
         selectllmcallback_2(self, countnum, btnplus, apiuid, None)
+    elif action == usecache:
+        globalconfig["fanyi"][apiuid]["use_trans_cache"] = usecache.isChecked()
     elif action == editname:
         before = dynamicapiname(apiuid)
         __d = {"k": before}

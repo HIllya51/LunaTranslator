@@ -315,9 +315,7 @@ class Qtranshist(QPlainTextEdit):
             self.clear()
             self.parent().trace.clear()
         elif action == webview2qt:
-            globalconfig["history"]["usewebview2"] = not globalconfig["history"][
-                "usewebview2"
-            ]
+            globalconfig["history"]["usewebview2"] = webview2qt.isChecked()
             self.parent().loadviewer(True)
         elif action == search:
             gobject.baseobject.searchwordW.search_word.emit(
@@ -346,24 +344,16 @@ class Qtranshist(QPlainTextEdit):
                 globalconfig["histfont"] = _s
                 self.setf()
         elif action == hideshowtransname:
-            globalconfig["history"]["showtransname"] = not globalconfig["history"][
-                "showtransname"
-            ]
+            globalconfig["history"]["showtransname"] = hideshowtransname.isChecked()
             self.refresh()
         elif action == hideshowtrans:
-            globalconfig["history"]["showtrans"] = not globalconfig["history"][
-                "showtrans"
-            ]
+            globalconfig["history"]["showtrans"] = hideshowtrans.isChecked()
             self.refresh()
         elif action == hideshowraw:
-            globalconfig["history"]["showorigin"] = not globalconfig["history"][
-                "showorigin"
-            ]
+            globalconfig["history"]["showorigin"] = hideshowraw.isChecked()
             self.refresh()
         elif action == hidetime:
-            globalconfig["history"]["showtime"] = not globalconfig["history"][
-                "showtime"
-            ]
+            globalconfig["history"]["showtime"] = hidetime.isChecked()
             self.refresh()
         elif action == scrolltoend:
             scrollbar = self.verticalScrollBar()

@@ -148,8 +148,11 @@ class basetrans(commonbase):
                 print_exc()
 
     @property
+    def use_trans_cache(self):
+        return globalconfig["fanyi"][self.typename].get("use_trans_cache", True)
+
+    @property
     def is_gpt_like(self):
-        # Don't use short-term cache, only use long-term cache, useful for gpt like apis to modify prompt
         return globalconfig["fanyi"][self.typename].get("is_gpt_like", False)
 
     @property
@@ -226,9 +229,10 @@ class basetrans(commonbase):
         self._cache[langkey][src] = tgt
 
     def shortorlongcacheget(self, content, is_auto_run):
-        # 除了预翻译不使用翻译缓存，以及手动触发gpt翻译外，其他不管什么翻译都缓存下来。
         if self.is_gpt_like and not is_auto_run:
             return None
+        if not self.use_trans_cache:
+            return
         res = self.shorttermcacheget(content)
         if res:
             return res
