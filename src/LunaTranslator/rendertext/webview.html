@@ -1,4 +1,4 @@
-<div id="luna_root_div" dir="auto">
+<div id="luna_root_div">
     <div id="luna_root_div_trans"></div>
     <div id="luna_root_div_origin"></div>
 </div>
@@ -366,6 +366,7 @@
         let color = args.color
         let kanacolor = args.kanacolor
         let ele = document.getElementById(_id)
+        document.getElementById(get_out_div(_id)).dir = 'auto'
         tags.forEach(word => {
             if (word.orig == '\n') {
                 ele.appendChild(document.createElement('br'))
