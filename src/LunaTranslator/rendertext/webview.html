@@ -1,4 +1,4 @@
-<div id="luna_root_div">
+<div id="luna_root_div" dir="auto">
     <div id="luna_root_div_trans"></div>
     <div id="luna_root_div_origin"></div>
 </div>
@@ -274,11 +274,15 @@
         document.getElementById('maybeshoworigin').innerHTML = css;
         safe_calllunaheightchange()
     }
+    function get_out_div(_id) {
+        return 'div' + _id
+    }
     function create_div_line_id(_id, argsjson) {
         let args = JSON.parse(decodeURIComponent(argsjson))
         let texttype = args.texttype
         let div = document.createElement("div");
         let span = document.createElement('span')
+        div.id = get_out_div(_id)
         span.id = _id;
         span.classList.add('lunatranslator_text')
         div.appendChild(span)
@@ -314,13 +318,21 @@
         else if (texttype == 1 || texttype == 4)
             document.getElementById('luna_root_div_trans').appendChild(div);
     }
+    function isRTL(text) {
+        // 使用正则表达式检测RTL字符
+        const rtlRegex = /[\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/;
+        return rtlRegex.test(text);
+    }
     function create_internal_text(style, styleargsjson, _id, nameu, textu, argsjson) {
+        //由于name的存在，dir auto会失效。
         let ele = document.getElementById(_id)
         ele.innerHTML = ''
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let name = decodeURIComponent(nameu)
         let text = decodeURIComponent(textu)
+        let div = document.getElementById(get_out_div(_id))
+        div.dir = isRTL(text) ? 'rtl' : 'auto'
         let innerele = dispatch_text_style(style, styleargs, name, text, args);
         ele.appendChild(innerele)
         safe_calllunaheightchange()

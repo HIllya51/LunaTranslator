@@ -515,6 +515,8 @@ void _SearchForHooks(SearchParam spUser)
 			{
 				if (!line.size())
 					continue;
+				if (startWith(line, L"//"))
+					continue;
 				try
 				{
 					std::wsmatch match;
