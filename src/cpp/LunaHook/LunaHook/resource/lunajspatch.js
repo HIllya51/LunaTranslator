@@ -74,7 +74,7 @@ function rpgmakerhook() {
         return (this.fontItalic ? 'Italic ' : '') +
             this.fontSize + 'px ' + fontface;
     }
-    Bitmap.prototype.collectstring = { 5: '', 6: '' };
+    Bitmap.prototype.collectstring = { 32: '', 5: '', 6: '' };
     setInterval(function () {
         for (lpsplit in Bitmap.prototype.collectstring) {
             if (Bitmap.prototype.collectstring[lpsplit].length) {
@@ -118,13 +118,22 @@ function rpgmakerhook() {
         text = cppjsio('rpgmakermv', text, 1, true)
         return this.drawText_origin(text, x, y, maxWidth, align)
     }
+    Window_Base.prototype.lastcalltime = 0
     Window_Base.prototype.drawTextEx = function (text, x, y) {
-        //使用剪贴板时，不要内嵌，会很卡（其实可以检测调用间隔来减少卡顿，但没必要了，太麻烦了。）。http下没有性能问题。
+        //使用剪贴板时，需要检测调用间隔来减少卡顿。http下没有性能问题。
         if (internal_http_port) {
             text = cppjsio('rpgmakermv', text, 2, true)
         }
-        else if (is_useclipboard) {
-            cppjsio('rpgmakermv', text, 2, false)
+        else {
+            __last = Window_Base.prototype.lastcalltime
+            __now = new Date().getTime()
+            Window_Base.prototype.lastcalltime = __now
+            if (__now - __last > 100) {
+                text = cppjsio('rpgmakermv', text, 2, true)
+            }
+            else {
+                Bitmap.prototype.collectstring[32] += text;
+            }
         }
         return this.drawTextEx_origin(text, x, y)
     }
