@@ -313,7 +313,6 @@ namespace
     if (!addr)
       return false;
     HookParam hp;
-    hp.type = USING_STRING;
     hp.offset = stackoffset(2);
     hp.type = USING_STRING;
     hp.address = addr;
@@ -322,7 +321,6 @@ namespace
 }
 bool Candy::attach_function()
 {
-
   auto b1 = InsertCandyHook();
   if (b1)
     PcHooks::hookOtherPcFunctions();
@@ -356,6 +354,5 @@ bool WillowSoft::attach_function()
   hp.type |= DATA_INDIRECT;
   hp.index = 0;
   hp.address = addr;
-
   return NewHook(hp, "WillowSoft");
 }
