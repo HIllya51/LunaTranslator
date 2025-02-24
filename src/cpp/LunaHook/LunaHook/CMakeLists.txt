@@ -2,7 +2,7 @@ include_directories(. util engines)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8) 
 	set(enginessrc 
 		BGI MKXPZ Ryujinx livecaptions Kincaid vita3k rpcs3 yuzu TYPEMOON UnrealEngine AGES7
-		Godot 5pb lucasystem LightVN V8 Artemis KiriKiri YOX CMVS Suika2)
+		Godot 5pb lucasystem LightVN V8 Artemis KiriKiri YOX CMVS Suika2 GameMaker)
 	set(enginepath "engine64")
 	set(collector "enginecollection64.cpp")
 else()
