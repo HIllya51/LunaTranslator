@@ -240,6 +240,8 @@ _crop_image.argtypes = HWND, RECT, c_void_p
 
 
 def gdi_screenshot(hwnd):
+    if windows.GetClassName(hwnd) == "UnityWndClass":
+        return None
     ret = []
 
     def cb(ptr, size):
@@ -262,6 +264,8 @@ def crop_image(x1, y1, x2, y2, hwnd=None):
     def cb(ptr, size):
         ret.append(cast(ptr, POINTER(c_char))[:size])
 
+    if windows.GetClassName(hwnd) == "UnityWndClass":
+        hwnd = None
     _crop_image(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
     if len(ret) == 0:
         return None

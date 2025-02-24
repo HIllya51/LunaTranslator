@@ -807,3 +807,16 @@ class HRESULT_ERROR(Exception):
 def CHECK_FAILURE(hr, module=None):
     if hr < 0:
         raise HRESULT_ERROR(FormatMessage(hr, module))
+
+
+GetClassNameW = _user32.GetClassNameW
+GetClassNameW.argtypes = HWND, LPWSTR, c_int
+GetClassNameW.restype = c_int
+
+
+def GetClassName(hwnd):
+    buff = create_unicode_buffer(256)
+    ret = GetClassNameW(hwnd, buff, 256)
+    if not ret:
+        return
+    return buff.value
