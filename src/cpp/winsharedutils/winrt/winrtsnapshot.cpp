@@ -135,7 +135,7 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
     D3D11_MAPPED_SUBRESOURCE resource;
     CHECK_FAILURE_NORET(d3d_context->Map(user_texture, NULL, D3D11_MAP_READ, 0, &resource));
 
-    auto bmp = CreateBMP(captured_texture_desc.Width, captured_texture_desc.Height);
+    auto bmp = CreateBMP(captured_texture_desc.Width, captured_texture_desc.Height, 32, true);
 
     UINT l_bmp_row_pitch = captured_texture_desc.Width * 4;
     auto sptr = static_cast<BYTE *>(resource.pData);
