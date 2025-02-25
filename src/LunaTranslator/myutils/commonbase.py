@@ -90,7 +90,7 @@ class multikeyhelper:
         def _wrapper(*args, **kwargs):
             try:
                 curridx = self.__before_query()
-                ret = func(*args, *kwargs)
+                ret = func(*args, **kwargs)
 
                 if isinstance(ret, types.GeneratorType):
                     return self.__generatorhelper(ret, curridx)

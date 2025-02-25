@@ -279,10 +279,12 @@ if __name__ == "__main__":
         downloadalls(sys.argv[2] if len(sys.argv) >= 3 else "")
     elif sys.argv[1] == "loadversion":
         with open("cpp/version.cmake", "r", encoding="utf8") as ff:
-            pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)"
+            pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)\nset\(VERSION_REVISION\s*(\d+)\s*\)"
             match = re.findall(pattern, ff.read())[0]
-            version_major, version_minor, version_patch = match
+            version_major, version_minor, version_patch, version_revison = match
             versionstring = f"v{version_major}.{version_minor}.{version_patch}"
+            if version_revison:
+                versionstring += f".{version_revison}"
             print("version=" + versionstring)
             exit()
     elif sys.argv[1] == "cpp":
