@@ -28,7 +28,9 @@ class TabWidget(QWidget):
         max_width = 0
         for i in range(list_widget.count()):
             item = list_widget.item(i)
-            width = font_metrics.size(0, item.text() + item.text()[0] + item.text()[-1]).width()
+            width = font_metrics.size(
+                0, item.text() + item.text()[0] + item.text()[-1]
+            ).width()
             max_width = max(max_width, width)
             item.setSizeHint(QSize(0, int(font_metrics.ascent() * 2)))
         list_widget.setFixedWidth(max_width)
@@ -77,13 +79,24 @@ class Setting(closeashidewindow):
     voicelistsignal = pyqtSignal(object)
     versiontextsignal = pyqtSignal(str)
     progresssignal2 = pyqtSignal(str, int)
+    progresssignal4 = pyqtSignal(str, int)
     progresssignal3 = pyqtSignal(int)
     showandsolvesig = pyqtSignal(str, str)
+
+    def _progresssignal4(self, text, val):
+        try:
+            self.downloadprogress.setValue(val)
+            self.downloadprogress.setFormat(text)
+            if val or text:
+                self.downloadprogress.setVisible(True)
+        except:
+            self.downloadprogress_cache = text, val
 
     def __init__(self, parent):
         super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
         self.setWindowIcon(qtawesome.icon("fa.gear"))
 
+        self.progresssignal4.connect(self._progresssignal4)
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.voicelistsignal.connect(functools.partial(showvoicelist, self))
         self.versiontextsignal.connect(

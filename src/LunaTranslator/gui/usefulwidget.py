@@ -1323,11 +1323,11 @@ class Exteditor(LDialog):
         edges = os.path.join(
             os.environ["LOCALAPPDATA"], r"Microsoft\Edge\User Data\Default\Extensions"
         )
-        if os.path.exists(edges):
+        if os.path.isdir(edges):
             edgeslen = len(os.listdir(edges))
         else:
             edgeslen = 0
-        if os.path.exists(chromes):
+        if os.path.isdir(chromes):
             chromelen = len(os.listdir(chromes))
         else:
             chromelen = 0

@@ -43,7 +43,7 @@ namespace Util
   bool CheckFile_exits(LPCWSTR name, bool if_exits_also_ok);
   bool CheckFile(LPCWSTR name);
 
-  bool SearchResourceString(LPCWSTR str);
+  bool SearchResourceString(LPCWSTR str, HMODULE hModule=NULL);
 
   std::pair<uintptr_t, uintptr_t> QueryModuleLimits(HMODULE module, uintptr_t addition = 0x1000, DWORD protect = PAGE_EXECUTE);
   std::vector<uintptr_t> SearchMemory(const void *bytes, short length, DWORD protect = PAGE_EXECUTE, uintptr_t minAddr = 0, uintptr_t maxAddr = -1ULL);

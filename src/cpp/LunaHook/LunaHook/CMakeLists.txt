@@ -23,7 +23,8 @@ else()
 		Syuntada Pensil Anim hibiki Nitroplus Reallive Siglus Taskforce2 RUGP IronGameSystem Anex86
 		ShinyDaysGame MarineHeart ShinaRio CaramelBox UnisonShift Escude Ryokucha Alice Footy2
 		utawarerumono System4x Abalone Abel 5pb HorkEye XUSE Leaf Nekopack AXL AGS AdobeFlash10
-		FocasLens Tamamo Ages3ResT H_do_C RScript TYPEMOON TAKUYO MixwillSoft MerRouge GROOVER)
+		FocasLens Tamamo Ages3ResT H_do_C RScript TYPEMOON TAKUYO MixwillSoft MerRouge GROOVER
+		SmartAdv)
 	set(enginepath "engine32")
 	set(collector "enginecollection32.cpp")
 endif()

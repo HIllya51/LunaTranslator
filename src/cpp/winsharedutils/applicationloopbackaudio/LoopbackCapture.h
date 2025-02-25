@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <AudioClient.h>
 #include <mmdeviceapi.h>
@@ -8,7 +8,7 @@
 #ifndef WINXP
 #include <audioclientactivationparams.h>
 #else
-#include"xpdef.hpp"
+#include "xpdef.hpp"
 #endif
 
 #include "Common.h"
@@ -16,83 +16,10 @@
 
 // https://learn.microsoft.com/zh-cn/windows/uwp/cpp-and-winrt-apis/agile-objects
 // https://learn.microsoft.com/en-us/windows/win32/api/mmdeviceapi/nf-mmdeviceapi-activateaudiointerfaceasync
-class CLoopbackCapture : public ComImpl<IActivateAudioInterfaceCompletionHandler, IAgileObject, IMarshal>
+class CLoopbackCapture : public ComImpl<IActivateAudioInterfaceCompletionHandler, IAgileObject>
 {
 public:
-    // IMarshal
-    CComPtr<IMarshal> marshaller_;
-    STDMETHOD(GetUnmarshalClass)(_In_ REFIID riid,
-                                 _In_opt_ void *pv,
-                                 _In_ DWORD dwDestContext,
-                                 _Reserved_ void *pvDestContext,
-                                 _In_ DWORD mshlflags,
-                                 _Out_ CLSID *pCid) override
-    {
-        if (marshaller_)
-        {
-            return marshaller_->GetUnmarshalClass(riid, pv, dwDestContext, pvDestContext, mshlflags, pCid);
-        }
-        return E_OUTOFMEMORY;
-    }
-    STDMETHOD(GetMarshalSizeMax)(_In_ REFIID riid, _In_opt_ void *pv, _In_ DWORD dwDestContext,
-                                 _Reserved_ void *pvDestContext, _In_ DWORD mshlflags, _Out_ DWORD *pSize) override
-    {
-        if (marshaller_)
-        {
-            return marshaller_->GetMarshalSizeMax(riid, pv, dwDestContext, pvDestContext, mshlflags, pSize);
-        }
-        return E_OUTOFMEMORY;
-    }
-
-    STDMETHOD(MarshalInterface)(_In_ IStream *pStm, _In_ REFIID riid, _In_opt_ void *pv, _In_ DWORD dwDestContext,
-                                _Reserved_ void *pvDestContext, _In_ DWORD mshlflags) override
-    {
-        if (marshaller_)
-        {
-            return marshaller_->MarshalInterface(pStm, riid, pv, dwDestContext, pvDestContext, mshlflags);
-        }
-        return E_OUTOFMEMORY;
-    }
-    STDMETHOD(UnmarshalInterface)(_In_ IStream *pStm, _In_ REFIID riid, _Outptr_ void **ppv) override
-    {
-        if (marshaller_)
-        {
-            return marshaller_->UnmarshalInterface(pStm, riid, ppv);
-        }
-        return E_OUTOFMEMORY;
-    }
-
-    STDMETHOD(ReleaseMarshalData)(_In_ IStream *pStm) override
-    {
-        if (marshaller_)
-        {
-            return marshaller_->ReleaseMarshalData(pStm);
-        }
-        return E_OUTOFMEMORY;
-    }
-
-    STDMETHOD(DisconnectObject)(_In_ DWORD dwReserved) override
-    {
-        if (marshaller_)
-        {
-            return marshaller_->DisconnectObject(dwReserved);
-        }
-        return E_OUTOFMEMORY;
-    }
-
-    CLoopbackCapture()
-    {
-        CComPtr<IUnknown> unknown;
-        if (SUCCEEDED(::CoCreateFreeThreadedMarshaler(nullptr, &unknown)))
-        {
-            unknown.QueryInterface(&marshaller_);
-        }
-    }
-
-    // IMarshal
-
     ~CLoopbackCapture();
-
     HRESULT StartCaptureAsync(DWORD processId, bool includeProcessTree);
     HRESULT StopCaptureAsync();
 

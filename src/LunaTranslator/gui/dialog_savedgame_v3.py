@@ -483,6 +483,8 @@ class viewpixmap_x(QWidget):
         self.centerwidget.setVisible(False)
         self.pathview.setText(path)
         try:
+            if not os.path.isfile(extradatas["localedpath"].get(path, path)):
+                raise Exception()
             timestamp = get_time_stamp(
                 ct=os.path.getctime(extradatas["localedpath"].get(path, path)), ms=False
             )

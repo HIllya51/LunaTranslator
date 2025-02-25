@@ -15,6 +15,16 @@ def dopathexists(file: str):
 
 
 originstartfile = os.startfile
+originisdir = os.path.isdir
+originisfile = os.path.isfile
+
+
+def doisdir(file: str):
+    return dopathexists(file) and originisdir(file)
+
+
+def doisfile(file: str):
+    return dopathexists(file) and originisfile(file)
 
 
 def safestartfile(f):
@@ -33,8 +43,10 @@ def safestartfile(f):
 
 def overridepathexists():
     # win7上，如果假如没有D盘，然后os.path.exists("D:/...")，就会弹窗说不存在D盘
+    # 对于不存在的UNC路径，会先进行网络探测，达到timeout才会返回，导致非常卡顿
     os.path.exists = dopathexists
-
+    os.path.isdir = doisdir
+    os.path.isfile = doisfile
     os.startfile = safestartfile
 
 

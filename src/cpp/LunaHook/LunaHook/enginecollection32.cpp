@@ -88,6 +88,7 @@
 #include "engine32/AdobeAir.h"
 #include "engine32/DISCOVERY.h"
 #include "engine32/Retouch.h"
+#include "engine32/SmartAdv.h"
 #include "engine32/Malie.h"
 #include "engine32/Live.h"
 #include "engine32/Jellyfish.h"
@@ -442,5 +443,6 @@ std::vector<ENGINE *> check_engines()
         new TAKUYO,
         new MixwillSoft,
         new MerRouge,
-        new GROOVER};
+        new GROOVER,
+        new SmartAdv};
 }

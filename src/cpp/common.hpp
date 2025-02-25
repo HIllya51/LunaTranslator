@@ -56,13 +56,13 @@ private:
     template <typename First, typename... Rest>
     void *get_interface(REFIID riid)
     {
-        if (riid == __uuidof(First))
+        if (IsEqualGUID(riid, __uuidof(First)))
             return static_cast<First *>(this);
         if constexpr (sizeof...(Rest) > 0)
         {
             return get_interface<Rest...>(riid);
         }
-        else if (riid == __uuidof(IUnknown))
+        else if (IsEqualGUID(riid, __uuidof(IUnknown)))
             return this;
         return nullptr;
     }
@@ -98,6 +98,7 @@ public:
         AddRef();
         return S_OK;
     }
+    virtual ~ComImpl() {}
 };
 
 #ifdef WINXP

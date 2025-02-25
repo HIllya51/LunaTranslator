@@ -284,22 +284,23 @@ namespace Util
   }
 
   // Search string in rsrc section. This section usually contains version and copyright info.
-  bool SearchResourceString(LPCWSTR str)
+  bool SearchResourceString(LPCWSTR str, HMODULE hModule)
   {
-    uintptr_t hModule = (uintptr_t)GetModuleHandleW(nullptr);
+    if (!hModule)
+      hModule = GetModuleHandleW(nullptr);
     IMAGE_DOS_HEADER *DosHdr;
     IMAGE_NT_HEADERS *NtHdr;
     DosHdr = (IMAGE_DOS_HEADER *)hModule;
     uintptr_t rsrc, size;
     if (IMAGE_DOS_SIGNATURE == DosHdr->e_magic)
     {
-      NtHdr = (IMAGE_NT_HEADERS *)(hModule + DosHdr->e_lfanew);
+      NtHdr = (IMAGE_NT_HEADERS *)((uintptr_t)hModule + DosHdr->e_lfanew);
       if (IMAGE_NT_SIGNATURE == NtHdr->Signature)
       {
         rsrc = NtHdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress;
         if (rsrc)
         {
-          rsrc += hModule;
+          rsrc += (uintptr_t)hModule;
           if (IthGetMemoryRange((LPVOID)rsrc, &rsrc, &size) &&
               SearchPattern(rsrc, size - 4, str, wcslen(str) << 1))
             return true;

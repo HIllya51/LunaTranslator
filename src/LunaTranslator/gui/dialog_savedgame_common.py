@@ -104,7 +104,7 @@ class tagitem(QFrame):
 def opendirforgameuid(gameuid):
     f = get_launchpath(gameuid)
     f = os.path.dirname(f)
-    if os.path.exists(f) and os.path.isdir(f):
+    if os.path.isdir(f):
         os.startfile(f)
 
 

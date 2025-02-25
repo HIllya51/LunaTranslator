@@ -67,6 +67,10 @@ class CaseInsensitiveDict(MutableMapping):
         return str(dict(self.items()))
 
 
+CONTENT_CHUNK_SIZE = 10 * 1024
+ITER_CHUNK_SIZE = 512
+
+
 class Response:
     def __init__(self, stream):
         self.headers = CaseInsensitiveDict()
@@ -76,18 +80,16 @@ class Response:
         self.status_code = 0
         self.reason = ""
         self.__content = b""
-        self.__content_s = []
-        self.content_prepared = threading.Event()
         self.iter_once = True
+        self.stream_X = False
 
     @property
     def content(self):
         if self.stream:
-            if self.iter_once:
-                for _ in self.iter_content():
-                    pass
-            self.content_prepared.wait()
-            return b"".join(self.__content_s)
+            if not self.stream_X:
+                self.__content = b"".join(self.iter_content(CONTENT_CHUNK_SIZE))
+                self.stream_X = True
+            return self.__content
         else:
             return self.__content
 
@@ -135,9 +137,7 @@ class Response:
 
         def __generate():
             for chunk in self.iter_content_impl(chunk_size):
-                self.__content_s.append(chunk)
                 yield chunk
-            self.content_prepared.set()
 
         stream_chunks = __generate()
 
@@ -151,7 +151,9 @@ class Response:
     def iter_content_impl(self, chunk_size=1):
         pass
 
-    def iter_lines(self, chunk_size=512, decode_unicode=False, delimiter=None):
+    def iter_lines(
+        self, chunk_size=ITER_CHUNK_SIZE, decode_unicode=False, delimiter=None
+    ):
         pending = None
         size = 0
         for chunk in self.iter_content(

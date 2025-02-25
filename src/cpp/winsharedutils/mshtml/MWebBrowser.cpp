@@ -742,8 +742,8 @@ STDMETHODIMP MWebBrowser::QueryService(
 {
     *ppvObject = NULL;
 
-    if (riid == __uuidof(IWindowForBindingUI) ||
-        riid == __uuidof(IHttpSecurity))
+    if (IsEqualGUID(riid, __uuidof(IWindowForBindingUI)) ||
+        IsEqualGUID(riid, __uuidof(IHttpSecurity)))
     {
         *ppvObject = static_cast<IHttpSecurity *>(this);
     }

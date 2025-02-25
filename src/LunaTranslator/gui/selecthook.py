@@ -420,14 +420,7 @@ class hookselect(closeashidewindow):
     removehooksignal = pyqtSignal(tuple)
     getfoundhooksignal = pyqtSignal(dict)
     update_item_new_line = pyqtSignal(tuple, str)
-
     SaveTextThreadRole = Qt.ItemDataRole.UserRole + 1
-    procchanged = pyqtSignal()
-
-    def _procchanged(self):
-        if self.searchhookparam:
-            self.searchhookparam.deleteLater()
-            self.searchhookparam = None
 
     def __init__(self, parent):
         super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
@@ -435,7 +428,6 @@ class hookselect(closeashidewindow):
         self.hidesearchhookbuttons()
         self.firsttimex = True
         self.searchhookparam = None
-        self.procchanged.connect(self._procchanged)
         self.removehooksignal.connect(self.removehook)
         self.addnewhooksignal.connect(self.addnewhook)
         self.getnewsentencesignal.connect(self.getnewsentence)

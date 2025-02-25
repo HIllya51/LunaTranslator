@@ -20,7 +20,7 @@ class TS(basetrans):
             base = os.path.abspath(
                 os.path.join(self.config["path"], "GTS/" + self.srclang + self.tgtlang)
             )
-            if os.path.exists(base) == False:
+            if not os.path.isdir(base):
                 return False
             dll = None
             for f in os.listdir(base):
