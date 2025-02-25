@@ -83,9 +83,9 @@ def move_directory_contents(source_dir, destination_dir):
 def downloadmapie():
     os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {mylinks['magpie.zip']}")
-    subprocess.run(f"7z x -y magpie.zip -oALL")
+    subprocess.run(f"7z x -y magpie.zip")
     os.chdir(rootDir)
-    move_directory_contents("scripts/temp/ALL/ALL", "files/plugins/Magpie")
+    os.rename("scripts/temp/Magpie", "files/plugins/Magpie")
 
 
 def downloadlr():
