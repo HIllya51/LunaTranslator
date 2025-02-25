@@ -283,7 +283,7 @@ if __name__ == "__main__":
             match = re.findall(pattern, ff.read())[0]
             version_major, version_minor, version_patch, version_revison = match
             versionstring = f"v{version_major}.{version_minor}.{version_patch}"
-            if version_revison:
+            if int(version_revison):
                 versionstring += f".{version_revison}"
             print("version=" + versionstring)
             exit()
