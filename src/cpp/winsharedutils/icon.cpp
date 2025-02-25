@@ -79,7 +79,7 @@ std::optional<SimpleBMP> getbmp(HICON hicon)
         return {};
     SelectObject(memDC, hOldBitmap);
     DeleteDC(memDC);
-    return CreateBMP(hBitmap, true);
+    return CreateBMP(hBitmap);
 }
 #ifdef WINXP
 extern "C" WINUSERAPI

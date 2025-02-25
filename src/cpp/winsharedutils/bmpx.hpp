@@ -19,7 +19,7 @@ struct SimpleBMP
     size_t pixelsize;
     int w, h, bitCount;
 };
-inline SimpleBMP CreateBMP(int w, int h, int biBitCount = 32, bool alpha = false)
+inline SimpleBMP CreateBMP(int w, int h, int biBitCount = 32, bool alpha = true)
 {
     BITMAPINFO l_bmp_info;
     // BMP 32 bpp
@@ -57,7 +57,7 @@ inline SimpleBMP CreateBMP(int w, int h, int biBitCount = 32, bool alpha = false
     }
     return SimpleBMP{data, bmfh.bfSize, ptr, l_bmp_info.bmiHeader.biSizeImage, w, h, biBitCount};
 }
-inline std::optional<SimpleBMP> CreateBMP(HBITMAP hBitmap, bool alpha = false)
+inline std::optional<SimpleBMP> CreateBMP(HBITMAP hBitmap, bool alpha = true)
 {
     BITMAP bmp;
     if (!GetObject(hBitmap, sizeof(BITMAP), &bmp))
