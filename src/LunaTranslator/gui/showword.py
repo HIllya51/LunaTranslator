@@ -14,6 +14,7 @@ from myutils.utils import (
     getimageformatlist,
     getimagefilefilter,
     checkmd5reloadmodule,
+    getimageformat,
 )
 from hiraparse.basehira import basehira
 from myutils.wrapper import threader, tryprint
@@ -43,10 +44,6 @@ from gui.usefulwidget import (
 from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
 from myutils.audioplayer import bass_code_cast
 from gui.dialog_savedgame import threeswitch
-
-
-def getimageformat():
-    return getimageformatlist()[globalconfig["imageformat"]]
 
 
 class AnkiWindow(QWidget):
@@ -134,7 +131,7 @@ class AnkiWindow(QWidget):
         self.orientswitch = threeswitch(self, icons=["fa.arrows-h", "fa.arrows-v"])
         self.orientswitch.selectlayout(globalconfig["anki_Orientation_V"])
         self.orientswitch.btnclicked.connect(self.selectlayout)
-        self.setsize()
+        self.orientswitch.sizeChanged.connect(self.do_resize)
 
     def selectlayout(self, i):
         globalconfig["anki_Orientation_V"] = i
@@ -147,21 +144,9 @@ class AnkiWindow(QWidget):
     def resizeEvent(self, e: QResizeEvent):
         self.do_resize()
 
-    def event(self, a0: QEvent) -> bool:
-        if a0.type() == QEvent.Type.FontChange:
-            self.setsize()
-        return super().event(a0)
-
-    def do_resize(self):
+    def do_resize(self, _=None):
         x = self.width() - self.orientswitch.width()
         self.orientswitch.move(x, 0)
-
-    def setsize(self):
-        h = QFontMetricsF(self.font()).height()
-        h = int(h * gobject.Consts.btnscale)
-        sz = QSize(h * 2, h)
-        self.orientswitch.setFixedSize(sz)
-        self.do_resize()
 
     def ifshowrefresh(self, idx):
         if idx == 2:

@@ -95,13 +95,13 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     After using `Perform OCR Once`, use this button to perform OCR again at the original location without having to re-select the recognition area.
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation_Direct Replacement
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation_Global
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation
-1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> Translation Result Correction_Global
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> Translation Result Correction
-    The above five buttons have similar effects and are used to quickly open the translation optimization settings window to add new specified terms.
+    The above three buttons have similar effects and are used to quickly open the translation optimization settings window to add new specified terms.
 
-    For `Global`, it will definitely open the global dictionary settings. For non-`Global`, when there is a bound game (HOOK linked game/clipboard, OCR bound window), it will open the game's dedicated dictionary settings, otherwise it will open the global dictionary settings.
+    When left-clicking the mouse, if there is a bound game (HOOK linked game/clipboard, OCR bound window), it opens the dedicated dictionary settings for the game. Otherwise, it opens the global dictionary settings.
+
+    When right-clicking the mouse, it always opens the global dictionary settings.
 1. #### <i class="fa fa-minus"></i> <i class="fa fa-icon fa-rotate-right"></i> Minimize to Tray
     N/A
 1. #### <i class="fa fa-times"></i> <i class="fa fa-icon fa-rotate-right"></i> Exit
@@ -154,9 +154,9 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> Simulate Key Press Enter
     As above, it is used to send a simulated key press to the game window. It has some effect when using streaming/tablet.
 1. #### <i class="fa fa-list-ul"></i> <i class="fa fa-icon fa-rotate-right"></i> Memo
-    Open the memo window for the game you are currently playing. Each game has a separate memo file.
-
-    It can be used to temporarily write some notes, or copy the strategy into it to read and delete as you play, which is very convenient. It saves the trouble of opening a web page/separately opening a txt file, very practical.
+    Open the memo window for the game you are currently playing. 
+    
+    When you click the left button, the memo for the current game is opened. When you click the right button, the global memo is opened.
 1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> Bind Window (Some software does not support) (Click to cancel)
     **This button is very important, many features depend on this button to be set first before they can be used**
 

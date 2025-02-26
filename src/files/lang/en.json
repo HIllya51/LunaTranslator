@@ -240,7 +240,6 @@
     "显示错误信息": "Show Error Message",
     "附带上下文个数": "Number of Context Lines to Include",
     "备忘录": "Memo",
-    "插入图片": "Insert Image",
     "当前权限": "Current Privileges",
     "非管理员": "Non-administrator",
     "管理员": "Administrator",
@@ -532,7 +531,6 @@
     "自动调整高度": "Auto Adjust Height",
     "文本区": "Text Area",
     "收到翻译时才刷新": "Only Refresh Display on New Translation",
-    "自动隐藏窗口": "Auto Hide Window",
     "显示内容": "Show Content",
     "界面设置": "Interface Settings",
     "其他界面": "Other Interface",
@@ -622,7 +620,6 @@
     "转义": "Escape",
     "游戏已存在，是否重复添加？": "This game already exists. Do you want to add it again?",
     "点击消息后退出并开始更新": "Click Here to Exit and Update",
-    "全局": "Global",
     "添加文件": "Add File",
     "添加文件夹": "Add Folder",
     "类型": "Type",
@@ -792,5 +789,7 @@
     "地址表": "",
     "使用翻译缓存": "",
     "添加失败": "",
-    "自动添加失败，是否手动添加？": ""
+    "自动添加失败，是否手动添加？": "",
+    "自动隐藏": "",
+    "窗口": ""
 }

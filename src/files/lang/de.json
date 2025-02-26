@@ -285,7 +285,6 @@
     "性能": "Leistung",
     "缩放模式": "Zoom-Modus",
     "自定义剪裁": "Kundenspezifisches Schneiden",
-    "插入图片": "Bild einfügen",
     "中东欧": "Mittel- und Osteuropa",
     "伊織弓鶴": "Izumi Bugkranich",
     "添加游戏": "Spiel hinzufügen",
@@ -533,7 +532,6 @@
     "词性颜色": "Teil der Sprachfarbe",
     "自动调整高度": "Höhe automatisch anpassen",
     "文本区": "Textbereich",
-    "自动隐藏窗口": "Fenster automatisch ausblenden",
     "显示内容": "Inhalt anzeigen",
     "界面设置": "Schnittstelleneinstellungen",
     "主界面": "Hauptschnittstelle",
@@ -622,7 +620,6 @@
     "转义": "Flucht",
     "游戏已存在，是否重复添加？": "Das Spiel existiert bereits, möchtest du es noch einmal hinzufügen?",
     "点击消息后退出并开始更新": "Klicken Sie auf die Nachricht, um zu beenden und mit der Aktualisierung zu beginnen",
-    "全局": "Gesamtlage",
     "添加文件": "Datei hinzufügen",
     "添加文件夹": "Ordner hinzufügen",
     "类型": "Typ",
@@ -792,5 +789,7 @@
     "地址表": "",
     "使用翻译缓存": "",
     "添加失败": "",
-    "自动添加失败，是否手动添加？": ""
+    "自动添加失败，是否手动添加？": "",
+    "自动隐藏": "",
+    "窗口": ""
 }

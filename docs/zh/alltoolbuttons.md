@@ -95,13 +95,13 @@
     当使用过一次`进行一次OCR`后，使用这个按钮，可以在原来的位置上再次进行一次OCR而无需重新选择识别区域。
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_直接替换
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_全局
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译
-1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻译结果修正_全局
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻译结果修正
-    以上五个按钮，效果类似，是用来快捷打开翻译优化的设置窗口，增加新的指定词条的。
+    以上三个按钮，效果类似，是用来快捷打开翻译优化的设置窗口，增加新的指定词条的。
 
-    对于`全局`，则一定打开全局的词典设置。对于非`全局`，则当有绑定的游戏(HOOK链接游戏/剪贴板、OCR绑定窗口)时，打开游戏的专用词典设置，否则则是打开全局的词典设置
+    鼠标左键点击时，当有绑定的游戏(HOOK链接游戏/剪贴板、OCR绑定窗口)时，打开游戏的专用词典设置，否则则是打开全局的词典设置。
+
+    鼠标右键点击时，必然打开全局的词典设置。
 1. #### <i class="fa fa-minus"></i> <i class="fa fa-icon fa-rotate-right"></i> 最小化到托盘
     略
 1. #### <i class="fa fa-times"></i> <i class="fa fa-icon fa-rotate-right"></i> 退出
@@ -153,9 +153,9 @@
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> 模拟按键Enter
     同上，用于向游戏窗口发送一次模拟按键。对于使用串流/平板时，有些作用。
 1. #### <i class="fa fa-list-ul"></i> <i class="fa fa-icon fa-rotate-right"></i> 备忘录
-    对于当前正在玩的游戏，打开备忘录窗口。对于每个游戏都有单独的一个备忘录文件。
-
-    可以用来临时写点笔录，或者把攻略复制进来看并且随玩随删，很方便，免去打开网页/单独开一个txt文件的麻烦，非常实用。
+    对于当前正在玩的游戏，打开备忘录窗口。
+    
+    点击左键时，打开当前游戏的备忘录。点击右键时，打开全局的备忘录。
 1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 绑定窗口（部分软件不支持）（点击自己取消）
     **该按钮非常重要，许多功能都依赖于该按钮先进行设置后才可用**
 

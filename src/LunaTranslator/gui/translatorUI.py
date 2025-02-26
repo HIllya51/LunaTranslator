@@ -282,6 +282,7 @@ class TranslatorWindow(resizableframeless):
     changeshowhidetranssig = pyqtSignal()
     magpiecallback = pyqtSignal(bool)
     clipboardcallback = pyqtSignal(bool, str)
+    internaltexthide = pyqtSignal(bool)
 
     @threader
     def tracewindowposthread(self):
@@ -434,14 +435,16 @@ class TranslatorWindow(resizableframeless):
         else:
             self.translate_text.append(texttype, name, text, hira, color, klass)
         if globalconfig["autodisappear"]:
-            flag = (globalconfig["showintab"] and self.isMinimized()) or (
-                not globalconfig["showintab"] and self.isHidden()
-            )
-
-            if flag:
-                self.show_()
             self.lastrefreshtime = time.time()
             self.autohidestart = True
+            if globalconfig["autodisappear_which"] == 0:
+                flag = (globalconfig["showintab"] and self.isMinimized()) or (
+                    not globalconfig["showintab"] and self.isHidden()
+                )
+                if flag:
+                    self.show_()
+            elif globalconfig["autodisappear_which"] == 1:
+                self.translate_text.textbrowser.setVisible(True)
 
     @threader
     def autohidedelaythread(self):
@@ -455,12 +458,16 @@ class TranslatorWindow(resizableframeless):
             ):
                 self.lastrefreshtime = time.time()
                 continue
-            if globalconfig["autodisappear"] and self.autohidestart:
-                if (
+            if globalconfig["autodisappear"]:
+                if self.autohidestart and (
                     time.time() - self.lastrefreshtime
                     >= globalconfig["disappear_delay"]
                 ):
-                    self.hidesignal.emit()
+                    if globalconfig["autodisappear_which"] == 0:
+
+                        self.hidesignal.emit()
+                    elif globalconfig["autodisappear_which"] == 1:
+                        self.internaltexthide.emit(False)
                     self.autohidestart = False
 
     def showhideui(self):
@@ -587,14 +594,13 @@ class TranslatorWindow(resizableframeless):
             ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
             (
                 "noundict",
-                lambda: loadpostsettingwindowmethod("noundict")(
-                    gobject.baseobject.commonstylebase
-                ),
-            ),
-            (
-                "noundict_2",
                 lambda: loadpostsettingwindowmethod_maybe(
                     "noundict", gobject.baseobject.commonstylebase
+                ),
+                None,
+                None,
+                lambda: loadpostsettingwindowmethod("noundict")(
+                    gobject.baseobject.commonstylebase
                 ),
             ),
             (
@@ -602,17 +608,21 @@ class TranslatorWindow(resizableframeless):
                 lambda: loadpostsettingwindowmethod_maybe(
                     "vndbnamemap", gobject.baseobject.commonstylebase
                 ),
-            ),
-            (
-                "fix",
-                lambda: loadpostsettingwindowmethod("transerrorfix")(
+                None,
+                None,
+                lambda: loadpostsettingwindowmethod("vndbnamemap")(
                     gobject.baseobject.commonstylebase
                 ),
             ),
             (
-                "fix_2",
+                "fix",
                 lambda: loadpostsettingwindowmethod_maybe(
                     "transerrorfix", gobject.baseobject.commonstylebase
+                ),
+                None,
+                None,
+                lambda: loadpostsettingwindowmethod("transerrorfix")(
+                    gobject.baseobject.commonstylebase
                 ),
             ),
             (
@@ -690,6 +700,9 @@ class TranslatorWindow(resizableframeless):
             (
                 "memory",
                 lambda: dialog_memory(gobject.baseobject.commonstylebase),
+                None,
+                None,
+                lambda: dialog_memory(gobject.baseobject.commonstylebase, True),
             ),
             (
                 "keepontop",
@@ -879,6 +892,7 @@ class TranslatorWindow(resizableframeless):
 
     def initvalues(self):
         self.enter_sig = 0
+        self.lastrefreshtime = time.time()
         self.fullscreenmanager_busy = threading.Lock()
         self.isletgamefullscreened = False
         self.showhidestate = False
@@ -936,10 +950,20 @@ class TranslatorWindow(resizableframeless):
 
         self.muteprocessignal.connect(self.muteprocessfuntion)
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
-        self.move_signal.connect(self.move)
+        self.move_signal.connect(self.safemove)
         self.closesignal.connect(self.close)
         self.changeshowhiderawsig.connect(self.changeshowhideraw)
         self.changeshowhidetranssig.connect(self.changeshowhidetrans)
+        self.internaltexthide.connect(
+            lambda _: self.translate_text.textbrowser.setVisible(_)
+        )
+
+    def safemove(self, pos: QPoint):
+        if pos.x() < 0:
+            return
+        if pos.y() < 0:
+            return
+        self.move(pos)
 
     def __init__(self):
         flags = (
@@ -1369,6 +1393,9 @@ class TranslatorWindow(resizableframeless):
 
     def enterfunction(self, delay=None):
         self.titlebar.show()
+        self.translate_text.textbrowser.setVisible(True)
+        self.autohidestart = True
+        self.lastrefreshtime = time.time()
         self.set_color_transparency()
         self.dodelayhide(delay)
 

@@ -157,23 +157,6 @@ def gethiragrid(self):
     return grids
 
 
-def _checkmaybefailed(self, _):
-    auto_select_webview.switchtype()
-    self.seletengeinecombo_1.setCurrentIndex(globalconfig["usewebview"])
-
-
-def _createseletengeinecombo_1(self):
-
-    self.seletengeinecombo_1 = getsimplecombobox(
-        ["MSHTML", "WebView2"],
-        globalconfig,
-        "usewebview",
-        callback=functools.partial(_checkmaybefailed, self),
-        static=True,
-    )
-    return self.seletengeinecombo_1
-
-
 def vistranslate_rank(self):
     listediter(
         self,
@@ -446,13 +429,6 @@ def setTabcishu_l(self):
                             (
                                 D_getsimpleswitch(globalconfig, "usewordorigin"),
                                 1,
-                            ),
-                        ],
-                        [
-                            "显示引擎",
-                            (
-                                functools.partial(_createseletengeinecombo_1, self),
-                                0,
                             ),
                         ],
                     ],

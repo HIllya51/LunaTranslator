@@ -74,13 +74,6 @@ class LAction(QAction):
         super().__init__(*newarg, **kwargv)
 
 
-class LMenu(QMenu):
-    def updatelangtext(self):
-        for action in self.actions():
-            if isinstance(action, LAction):
-                action.updatelangtext()
-
-
 class LCheckBox(QCheckBox):
     def __init__(self, text):
         super().__init__(_TR(text))

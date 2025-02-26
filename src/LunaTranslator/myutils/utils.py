@@ -742,6 +742,11 @@ class loopbackrecorder:
     def __init__(self):
         self.capture = winsharedutils.loopbackrecorder()
 
+    def stop(self):
+        if not self.capture:
+            return None
+        self.capture.stop()
+
     def stop_save(self):
         if not self.capture:
             return None
@@ -1004,6 +1009,10 @@ def getimageformatlist():
     if globalconfig["imageformat"] == -1 or globalconfig["imageformat"] >= len(_):
         globalconfig["imageformat"] = _.index("png")
     return _
+
+
+def getimageformat():
+    return getimageformatlist()[globalconfig["imageformat"]]
 
 
 def getimagefilefilter():

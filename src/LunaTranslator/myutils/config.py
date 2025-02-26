@@ -138,10 +138,6 @@ except:
 translatorsetting = tryreadconfig("translatorsetting.json")
 ocrsetting = tryreadconfig("ocrsetting.json")
 
-if "imagerefmp3" not in extradatas:
-    extradatas["imagerefmp3"] = {}
-if "imagecomment" not in extradatas:
-    extradatas["imagecomment"] = {}
 if "localedpath" not in extradatas:
     extradatas["localedpath"] = {}
 if "imagefrom" not in extradatas:

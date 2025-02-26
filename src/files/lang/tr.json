@@ -240,7 +240,6 @@
     "显示错误信息": "Hata mesajını göster",
     "附带上下文个数": "Yapılan anlaşmalar sayısı",
     "备忘录": "memorandum",
-    "插入图片": "Resim Gir",
     "当前权限": "Güncel izinler",
     "非管理员": "Yönetici olmayan",
     "管理员": "yöneticiler",
@@ -533,7 +532,6 @@
     "自动调整高度": "Otomatik yükseklik ayarlaması",
     "文本区": "Metin alanı",
     "收到翻译时才刷新": "Sadece çeviri alırken yenilene",
-    "自动隐藏窗口": "Pencereyi otomatik sakla",
     "显示内容": "İçeri göster",
     "界面设置": "Arayüz ayarları",
     "其他界面": "Diğer arayüzler",
@@ -622,7 +620,6 @@
     "转义": "Kaçmak",
     "游戏已存在，是否重复添加？": "Oyun zaten var, tekrar eklemek ister misiniz?",
     "点击消息后退出并开始更新": "Çıkmak ve güncellenmeye başlamak için mesajı tıklayın",
-    "全局": "bütün durum",
     "添加文件": "Dosya ekle",
     "添加文件夹": "Dosyaları ekle",
     "类型": "tür",
@@ -792,5 +789,7 @@
     "地址表": "",
     "使用翻译缓存": "",
     "添加失败": "",
-    "自动添加失败，是否手动添加？": ""
+    "自动添加失败，是否手动添加？": "",
+    "自动隐藏": "",
+    "窗口": ""
 }

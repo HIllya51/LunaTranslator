@@ -46,6 +46,7 @@ from gui.dialog_savedgame_common import (
 
 class threeswitch(QWidget):
     btnclicked = pyqtSignal(int)
+    sizeChanged = pyqtSignal(QSize)
 
     def selectlayout(self, i):
         try:
@@ -68,8 +69,13 @@ class threeswitch(QWidget):
         for i, icon in enumerate(icons):
             btn = IconButton(parent=self, icon=icon, checkable=True)
             btn.clicked.connect(functools.partial(self.selectlayout, i))
+            btn.sizeChanged.connect(self.sizechange)
             self.btns.append(btn)
             hv.addWidget(btn)
+
+    def sizechange(self, size: QSize):
+        self.setFixedSize(QSize(size.width() * len(self.btns), size.height()))
+        self.sizeChanged.emit(self.size())
 
 
 @Singleton_close
@@ -94,11 +100,6 @@ class dialog_savedgame_integrated(saveposwindow):
         except:
             print_exc()
 
-    def event(self, a0: QEvent) -> bool:
-        if a0.type() == QEvent.Type.FontChange:
-            self.setsize()
-        return super().event(a0)
-
     def __init__(self, parent) -> None:
         super().__init__(
             parent,
@@ -120,18 +121,10 @@ class dialog_savedgame_integrated(saveposwindow):
         self.switch.btnclicked.connect(self.selectlayout)
         self.syssettingbtn = IconButton(icon="fa.gear", parent=self)
         self.syssettingbtn.clicked.connect(self.syssetting)
-        self.setsize()
+        self.syssettingbtn.sizeChanged.connect(self.do_resize)
+        self.switch.sizeChanged.connect(self.do_resize)
         self.show()
         self.switch.selectlayout(globalconfig["gamemanager_integrated_internal_layout"])
-
-    def setsize(self):
-        h = QFontMetricsF(self.font()).height()
-        h = int(h * gobject.Consts.btnscale)
-        sz = QSize(h, h)
-        self.syssettingbtn.setFixedSize(sz)
-        sz = QSize(h * 3, h)
-        self.switch.setFixedSize(sz)
-        self.do_resize()
 
     def syssetting(self):
         dialog_syssetting(
@@ -142,7 +135,7 @@ class dialog_savedgame_integrated(saveposwindow):
     def resizeEvent(self, e: QResizeEvent):
         self.do_resize()
 
-    def do_resize(self):
+    def do_resize(self, _=None):
         x = self.width() - self.switch.width()
         self.switch.move(x, 0)
         x -= self.syssettingbtn.width()
@@ -697,13 +690,6 @@ class dialog_savedgame_new(QWidget):
         )
         self.setStyleSheet(style)
 
-    def event(self, a0: QEvent) -> bool:
-        if a0.type() == QEvent.Type.FontChange:
-            h = QFontMetricsF(self.font()).height()
-            h = int(h * gobject.Consts.btnscale)
-            self.___.setFixedWidth(4 * h)
-        return super().event(a0)
-
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self._parent = parent
@@ -722,11 +708,9 @@ class dialog_savedgame_new(QWidget):
 
         self.currtags = tuple()
         self.tagswidget.tagschanged.connect(self.tagschanged)
-        _ = QLabel()
-        _.setFixedWidth(100)
-        self.___ = _
+        self.___ = threeswitch(self, [None, None, None, None])
         layout.addWidget(self.tagswidget)
-        layout.addWidget(_)
+        layout.addWidget(self.___)
         formLayout.addLayout(layout)
         self.flow = QWidget()
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)

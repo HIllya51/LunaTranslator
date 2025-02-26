@@ -240,7 +240,6 @@
     "显示错误信息": "Hiện thông tin lỗi",
     "附带上下文个数": "Số context",
     "备忘录": "Bản ghi nhớ",
-    "插入图片": "Chèn ảnh",
     "当前权限": "Quyền hiện tại",
     "非管理员": "Không quản trị",
     "管理员": "Trang chủ",
@@ -533,7 +532,6 @@
     "自动调整高度": "Tự động điều chỉnh chiều cao",
     "文本区": "Vùng văn bản",
     "收到翻译时才刷新": "Làm mới khi nhận được bản dịch",
-    "自动隐藏窗口": "Tự động ẩn cửa sổ",
     "显示内容": "Hiển thị nội dung",
     "界面设置": "Thiết lập giao diện",
     "其他界面": "Giao diện khác",
@@ -622,7 +620,6 @@
     "转义": "Thoát",
     "游戏已存在，是否重复添加？": "Trò chơi đã tồn tại, có được thêm nhiều lần không?",
     "点击消息后退出并开始更新": "Thoát sau khi nhấp vào tin nhắn và bắt đầu cập nhật",
-    "全局": "Toàn cục",
     "添加文件": "Thêm tập tin",
     "添加文件夹": "Thêm thư mục",
     "类型": "Loại",
@@ -792,5 +789,7 @@
     "地址表": "",
     "使用翻译缓存": "",
     "添加失败": "",
-    "自动添加失败，是否手动添加？": ""
+    "自动添加失败，是否手动添加？": "",
+    "自动隐藏": "",
+    "窗口": ""
 }

@@ -4,7 +4,7 @@ from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject, platform, threading
 from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton_close, threader
-from myutils.utils import nowisdark, checkisusingwine
+from myutils.utils import nowisdark, checkisusingwine, getimagefilefilter
 from ctypes import POINTER, cast, c_char
 from gui.dynalang import (
     LLabel,
@@ -1983,8 +1983,9 @@ class auto_select_webview(QWidget):
     def sizeHint(self):
         return QSize(256, 192)
 
-    def __init__(self, parent, dyna=False) -> None:
+    def __init__(self, parent, dyna=False, loadex=True) -> None:
         super().__init__(parent)
+        self.loadex = loadex
         self.addmenuinfo = []
         self.addmenuinfo_noselect = []
         self.bindinfo = []
@@ -2038,18 +2039,13 @@ class auto_select_webview(QWidget):
             self.internal.setHtml(html)
 
     def _createwebview(self, shoudong=False):
-        contex = globalconfig["usewebview"]
-        if contex == 0:
+        try:
+            browser = (WebviewWidget, WebviewWidget_for_auto)[self.loadex]()
+        except Exception as e:
+            print_exc()
+            if shoudong:
+                WebviewWidget.showError(e)
             browser = mshtmlWidget()
-        else:
-            try:
-                browser = WebviewWidget_for_auto()
-            except Exception as e:
-                print_exc()
-                if shoudong:
-                    WebviewWidget.showError(e)
-                browser = mshtmlWidget()
-                globalconfig["usewebview"] = 0
         return browser
 
 
@@ -2824,17 +2820,22 @@ class pixmapviewer(QWidget):
 
 class IconButton(QPushButton):
     clicked_1 = pyqtSignal()
+    sizeChanged = pyqtSignal(QSize)
 
     def event(self, e):
         if e.type() == QEvent.Type.FontChange:
-            h = QFontMetricsF(self.font()).height()
-            h = int(h * gobject.Consts.btnscale)
-            sz = QSize(h, h)
-            self.setFixedSize(sz)
-            self.setIconSize(sz)
+            self.resizedirect()
         elif e.type() == QEvent.Type.EnabledChange:
             self.seticon()
         return super().event(e)
+
+    def resizedirect(self):
+        h = QFontMetricsF(self.font()).height()
+        h = int(h * gobject.Consts.btnscale)
+        sz = QSize(h, h)
+        self.setFixedSize(sz)
+        self.setIconSize(sz)
+        self.sizeChanged.emit(sz)
 
     def __init__(self, icon, enable=True, qicon=None, parent=None, checkable=False):
         super().__init__(parent)
@@ -2848,11 +2849,15 @@ class IconButton(QPushButton):
         self.setCheckable(checkable)
         self.setEnabled(enable)
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.resizedirect()
 
     def seticon(self):
         if self._qicon:
             icon = self._qicon
         else:
+            if self._icon is None:
+                # 用于虚拟占位度量
+                return
             if self.isCheckable():
                 if isinstance(self._icon, str):
                     icons = [self._icon, self._icon]
@@ -3070,7 +3075,6 @@ class editswitchTextBrowser(QWidget):
         l.setContentsMargins(0, 0, 0, 0)
         l.addWidget(stack)
         self.switch = IconButton(parent=self, icon="fa.edit", checkable=True)
-        self.switch.setFixedSize(QSize(25, 25))
         self.switch.raise_()
         self.switch.clicked.connect(stack.setCurrentIndex)
 

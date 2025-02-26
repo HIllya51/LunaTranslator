@@ -50,7 +50,7 @@ from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark, dynamicapiname
 from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
-from gui.dynalang import LAction, LMenu
+from gui.dynalang import LAction
 from gui.setting_textinput_ocr import showocrimage
 from gui.usefulwidget import PopupWidget
 from rendertext.texttype import TextType, SpecialColor, TranslateColor
@@ -1038,7 +1038,7 @@ class MAINUI:
     def inittray(self):
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(getExeIcon(getcurrexe()))
-        trayMenu = LMenu(self.commonstylebase)
+        trayMenu = QMenu(self.commonstylebase)
         showAction = LAction("显示", trayMenu)
         showAction.triggered.connect(self.translation_ui.show_)
         settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)

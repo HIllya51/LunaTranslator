@@ -131,9 +131,6 @@
 1. #### Magpie In-Game Overlay
     Enables the built-in Magpie to show/hide the in-game overlay.
 
-1. #### Gallery Recording
-    Shortcut key for a recording function in game management.
-
 == Dictionary Lookup
 
 1. #### Retrieve and search for words

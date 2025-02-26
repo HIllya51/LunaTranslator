@@ -53,7 +53,10 @@ def Singleton_impl(cls, behavior="activate"):
                             child.close()
                     self.deleteLater()
                     _instance.pop(cls)
-                _lock.release()
+                try:
+                    _lock.release()
+                except:
+                    pass
 
         try:
             _inst = __(*args, **kwagrs)

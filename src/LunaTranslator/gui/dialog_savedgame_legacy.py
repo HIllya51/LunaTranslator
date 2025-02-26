@@ -7,6 +7,7 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getIconButton,
     getIconButton,
+    IconButton,
 )
 from gui.dialog_savedgame_setting import dialog_setting_game
 from gui.dynalang import LPushButton, LStandardItemModel
@@ -182,9 +183,7 @@ class dialog_savedgame_legacy(QWidget):
 
         self.table.setIndexWidget(
             self.model.index(row, 2),
-            D_getIconButton(
-                functools.partial(self.showsettingdialog, k)
-            ),
+            D_getIconButton(functools.partial(self.showsettingdialog, k)),
         )
 
     def __init__(self, parent) -> None:
@@ -231,17 +230,6 @@ class dialog_savedgame_legacy(QWidget):
         bottom.addWidget(button)
         bottom.addWidget(button2)
         bottom.addWidget(button3)
-        _ = QLabel()
-        _.setFixedHeight(20)
-        _.setStyleSheet("background:transparent")
-        self.___ = _
-        formLayout.addWidget(_)
+        formLayout.addWidget(IconButton(None))
         formLayout.addWidget(table)
         formLayout.addLayout(bottom)
-
-    def event(self, a0: QEvent) -> bool:
-        if a0.type() == QEvent.Type.FontChange:
-            h = QFontMetricsF(self.font()).height()
-            h = int(h * gobject.Consts.btnscale)
-            self.___.setFixedHeight(h)
-        return super().event(a0)

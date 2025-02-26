@@ -240,7 +240,6 @@
     "显示错误信息": "Wyświetlanie komunikatów o błędach",
     "附带上下文个数": "Liczba kontekstów towarzyszących",
     "备忘录": "memorandum",
-    "插入图片": "Wstaw obrazek",
     "当前权限": "Aktualne uprawnienia",
     "非管理员": "Nieadministrator",
     "管理员": "administratorzy",
@@ -533,7 +532,6 @@
     "自动调整高度": "Automatyczna regulacja wysokości",
     "文本区": "Obszar tekstowy",
     "收到翻译时才刷新": "Odśwież tylko po otrzymaniu tłumaczenia",
-    "自动隐藏窗口": "Automatyczne ukrywanie okna",
     "显示内容": "pokaż zawartość",
     "界面设置": "Ustawienia interfejsu",
     "其他界面": "Inne interfejsy",
@@ -622,7 +620,6 @@
     "转义": "Ucieczka",
     "游戏已存在，是否重复添加？": "Gra już istnieje, chcesz dodać ją ponownie?",
     "点击消息后退出并开始更新": "Kliknij na wiadomość, aby wyjść i rozpocząć aktualizację",
-    "全局": "ogólna sytuacja",
     "添加文件": "Dodaj plik",
     "添加文件夹": "dodaj foldery",
     "类型": "typ",
@@ -792,5 +789,7 @@
     "地址表": "",
     "使用翻译缓存": "",
     "添加失败": "",
-    "自动添加失败，是否手动添加？": ""
+    "自动添加失败，是否手动添加？": "",
+    "自动隐藏": "",
+    "窗口": ""
 }

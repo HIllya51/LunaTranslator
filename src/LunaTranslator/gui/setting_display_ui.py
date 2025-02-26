@@ -506,13 +506,27 @@ def mainuisetting(self):
                                 name="mousetransbutton",
                             ),
                             "",
-                            "自动隐藏窗口",
-                            D_getsimpleswitch(globalconfig, "autodisappear"),
-                            D_getspinbox(
-                                1,
-                                100,
-                                globalconfig,
-                                "disappear_delay",
+                            "自动隐藏",
+                            (
+                                getboxlayout(
+                                    [
+                                        D_getsimpleswitch(
+                                            globalconfig, "autodisappear"
+                                        ),
+                                        D_getsimplecombobox(
+                                            ["窗口", "文本"], globalconfig, "autodisappear_which"
+                                        ),
+                                        D_getspinbox(
+                                            1,
+                                            100,
+                                            globalconfig,
+                                            "disappear_delay",
+                                        ),
+                                    ],
+                                    makewidget=True,
+                                    margin0=True,
+                                ),
+                                0,
                             ),
                         ],
                     ),

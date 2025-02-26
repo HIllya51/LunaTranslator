@@ -18,6 +18,7 @@
     "excule_from_self": true,
     "showrangeafterrangeselect": true,
     "autodisappear": false,
+    "autodisappear_which": 0,
     "WindowBackdrop": 3,
     "WindowEffect": 0,
     "WindowEffect_shadow": false,
@@ -391,7 +392,6 @@
     "ocr_diff_sim": 0.95,
     "ocr_text_diff": 3,
     "autorun": true,
-    "usewebview": 1,
     "fontsize": 17.0,
     "fontsizeori": 17.0,
     "localeswitchmethod": 0,
@@ -657,23 +657,11 @@
             },
             "noundict": {
                 "use": false,
-                "tip": "专有名词翻译_全局",
-                "icon": "fa.book",
-                "align": 0
-            },
-            "noundict_2": {
-                "use": false,
                 "tip": "专有名词翻译",
                 "icon": "fa.book",
                 "align": 0
             },
             "fix": {
-                "use": false,
-                "tip": "翻译结果修正_全局",
-                "icon": "fa.won",
-                "align": 0
-            },
-            "fix_2": {
                 "use": false,
                 "tip": "翻译结果修正",
                 "icon": "fa.won",
@@ -1046,11 +1034,6 @@
             "_30": {
                 "use": false,
                 "name": "Anki_录音_例句",
-                "keystring": ""
-            },
-            "_31": {
-                "use": false,
-                "name": "画廊_录音",
                 "keystring": ""
             },
             "_32": {

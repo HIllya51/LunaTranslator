@@ -363,11 +363,15 @@ def setTab_about1(self, basel):
 
 def setTab_about(self, basel):
     tab_widget, do = makesubtab_lazy(
-        ["关于软件", "其他设置", "年度总结"],
+        [
+            "关于软件",
+            "其他设置",
+            # "年度总结"
+        ],
         [
             functools.partial(setTab_about1, self),
             functools.partial(setTab_update, self),
-            functools.partial(yearsummary, self),
+            # functools.partial(yearsummary, self),
         ],
         delay=True,
     )
