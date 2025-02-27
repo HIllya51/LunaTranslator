@@ -171,6 +171,6 @@
 1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> 常に最前面に表示
     翻訳ウィンドウの常に最前面をキャンセル/有効にする。
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> 選択可能
-    翻訳ウィンドウのテキストエリア内のテキストを選択可能にします。選択可能が有効になっている場合、テキストエリア内でドラッグできず、ツールバーのみをドラッグできます（ドラッグはテキストを選択するためです）。
+    翻訳ウィンドウのテキストエリア内のテキストを選択可能にします。
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 検索
     検索ウィンドウを開く。

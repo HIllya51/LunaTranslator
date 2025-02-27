@@ -248,3 +248,52 @@ DECLARE_API bool IsDLLBit64(LPCWSTR file)
     UnmapViewOfFile(mapAddr);
     return is64;
 }
+
+typedef struct
+{
+    DWORD ExitStatus;
+    DWORD PebBaseAddress;
+    DWORD AffinityMask;
+    DWORD BasePriority;
+    ULONG UniqueProcessId;
+    ULONG InheritedFromUniqueProcessId;
+} PROCESS_BASIC_INFORMATION;
+
+#define ProcessBasicInformation 0
+typedef LONG(__stdcall *PROCNTQSIP)(HANDLE, UINT, PVOID, ULONG, PULONG);
+
+DECLARE_API DWORD GetParentProcessID(DWORD dwProcessId)
+{
+    LONG status;
+    DWORD dwParentPID = (DWORD)-1;
+    PROCESS_BASIC_INFORMATION pbi;
+
+    PROCNTQSIP NtQueryInformationProcess = (PROCNTQSIP)GetProcAddress(
+        GetModuleHandle(L"ntdll"), "NtQueryInformationProcess");
+
+    if (NULL == NtQueryInformationProcess)
+    {
+        return (DWORD)-1;
+    }
+    // Get process handle
+    CHandle hProcess{OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwProcessId)};
+    if (!hProcess)
+    {
+        return (DWORD)-1;
+    }
+
+    // Retrieve information
+    status = NtQueryInformationProcess(hProcess,
+                                       ProcessBasicInformation,
+                                       (PVOID)&pbi,
+                                       sizeof(PROCESS_BASIC_INFORMATION),
+                                       NULL);
+
+    // Copy parent Id on success
+    if (!status)
+    {
+        dwParentPID = pbi.InheritedFromUniqueProcessId;
+    }
+
+    return dwParentPID;
+}

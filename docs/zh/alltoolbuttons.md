@@ -170,7 +170,7 @@
 1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> 窗口置顶
     取消/置顶翻译窗口
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> 可选取的
-    使得翻译窗的文本区中的文本，是可用进行选择的。当激活了可选取后，无法在文本去进行拖动而只能拖动工具栏（因为拖动时是在选取文本）
+    使得翻译窗的文本区中的文本，是可以进行选择的。
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 查词
     打开查词窗口。
   

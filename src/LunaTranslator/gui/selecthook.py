@@ -122,6 +122,7 @@ class searchhookparam(LDialog):
             return default
 
     def searchstart(self):
+        dumpvalues = {}
         idx = self.searchmethod.idx()
         usestruct = gobject.baseobject.textsource.defaultsp()
         if idx == 0:
@@ -136,7 +137,6 @@ class searchhookparam(LDialog):
                 QMessageBox.information(self, _TR("警告"), _TR("搜索文本过短！"))
                 return
         elif idx == 2:
-            dumpvalues = {}
             for k, widget in self.regists.items():
                 if isinstance(widget, QLineEdit):
                     dumpvalues[k] = widget.text()
@@ -184,7 +184,9 @@ class searchhookparam(LDialog):
             ]  # dumpvalues[6]
             usestruct.searchTime = dumpvalues["time"] * 1000  # dumpvalues[7]
             usestruct.maxRecords = dumpvalues["maxrecords"]  # dumpvalues[8]
-        gobject.baseobject.textsource.findhook(usestruct, dumpvalues["addresses"])
+        gobject.baseobject.textsource.findhook(
+            usestruct, dumpvalues.get("addresses", None)
+        )
         if idx != 1:
             self.parent().findhookchecked()
         self.close()

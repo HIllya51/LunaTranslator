@@ -602,3 +602,6 @@ CreateShortcut.argtypes = LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR
 str_alloc = utilsdll.str_alloc
 str_alloc.argtypes = (c_wchar_p,)
 str_alloc.restype = c_void_p
+GetParentProcessID = utilsdll.GetParentProcessID
+GetParentProcessID.argtypes = (DWORD,)
+GetParentProcessID.restype = DWORD

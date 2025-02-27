@@ -171,6 +171,6 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> Always on Top
     Cancel/Always on Top translation window
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> Selectable
-    Make the text in the translation window's text area selectable. When selectable is activated, you cannot drag in the text area but can only drag the toolbar (because dragging is for selecting text)
+    Make the text in the translation window's text area selectable.
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> Look Up
     Open the look-up window.

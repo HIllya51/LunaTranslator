@@ -1,36 +1,20 @@
 from qtsymbols import *
-import os, functools, uuid, threading, shutil, time
+import os, functools, uuid, threading
 from traceback import print_exc
-import gobject
 from myutils.config import (
     savehook_new_list,
     savehook_new_data,
     savegametaged,
     get_launchpath,
     extradatas,
-    _TR,
     globalconfig,
 )
 from myutils.hwnd import clipboard_set_image
-from myutils.utils import (
-    get_time_stamp,
-    loopbackrecorder,
-    getimagefilefilter,
-    targetmod,
-)
-from myutils.audioplayer import playonce
+from myutils.utils import get_time_stamp, getimagefilefilter, targetmod
 from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
-from gui.usefulwidget import (
-    pixmapviewer,
-    IconButton,
-    makesubtab_lazy,
-    tabadd_lazy,
-    listediter,
-)
-from gui.dialog_savedgame_setting import (
-    dialog_setting_game_internal,
-)
+from gui.usefulwidget import pixmapviewer, makesubtab_lazy, tabadd_lazy, listediter
+from gui.dialog_savedgame_setting import dialog_setting_game_internal
 from gui.dialog_savedgame_common import (
     getalistname,
     startgamecheck,
