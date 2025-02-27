@@ -53,7 +53,7 @@
 
 == cohere
 
-**API接口地址** `https://api.cohere.com/v2/chat`
+**API接口地址** `https://api.cohere.ai/compatibility/v1`
 
 **API Key** https://dashboard.cohere.com/api-keys
 

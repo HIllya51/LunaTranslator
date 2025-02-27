@@ -58,26 +58,6 @@ def commonparseresponse_good(response: requests.Response):
     return message
 
 
-def parseresponsecohere(response: requests.Response):
-    message = ""
-    for json_data in stream_event_parser(response):
-        try:
-            delta = json_data.get("delta")
-            if not delta:
-                continue
-            if "message" not in delta:
-                continue
-            content = delta["message"]["content"]
-            if not content:
-                continue
-            msg = content["text"]
-        except:
-            raise Exception(json_data)
-        yield msg
-        message += msg
-    return message
-
-
 def parseresponsegemini(response: requests.Response):
     line = ""
     for __x in response.iter_lines(decode_unicode=True):
@@ -120,8 +100,6 @@ def parsestreamresp(apiurl: str, response: requests.Response):
         respmessage = yield from parseresponsegemini(response)
     elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
         respmessage = yield from parseresponseclaude(response)
-    elif apiurl.startswith("https://api.cohere.com/v2/chat"):
-        respmessage = yield from parseresponsecohere(response)
     else:
         respmessage = yield from commonparseresponse_good(response)
     return respmessage
@@ -181,7 +159,7 @@ class gptcommon(basetrans):
             messages=message,
             # optional
             max_tokens=self.config["max_tokens"],
-            n=1,
+            # n=1,
             # stop=None,
             top_p=self.config["top_p"],
             temperature=temperature,

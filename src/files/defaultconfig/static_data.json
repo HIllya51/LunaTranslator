@@ -587,7 +587,7 @@
         },
         {
             "vis": "cohere",
-            "value": "https://api.cohere.com/v2/chat",
+            "value": "https://api.cohere.ai/compatibility/v1",
             "icon": "files/llm_icons/cohere.svg"
         },
         {

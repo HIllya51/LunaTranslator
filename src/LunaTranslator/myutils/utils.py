@@ -821,8 +821,6 @@ def urlpathjoin(*argc):
 
 
 def createurl(url: str, checkend="/chat/completions"):
-    if url == "https://api.cohere.com/v2/chat":
-        return url
     if url.endswith(checkend):
         pass
     else:
@@ -890,7 +888,7 @@ def parseclaudemodellist(proxies, apikey):
 def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/completions"):
     apiurl = apiurl.strip()
     apikey = apikey.strip()
-    if apiurl.startswith("https://api.cohere.com/v2/chat"):
+    if apiurl.startswith("https://api.cohere."):
         return parsecoheremodellist(proxies, apikey)
     elif apiurl.startswith("https://generativelanguage.googleapis.com"):
         return parsegeminimodellist(proxies, apikey)
@@ -914,9 +912,7 @@ def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/comple
 
 def common_parse_normal_response(response: requests.Response, apiurl: str):
     try:
-        if apiurl.startswith("https://api.cohere.com/v2/chat"):
-            return response.json()["message"]["content"][0]["text"]
-        elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
+        if apiurl.startswith("https://api.anthropic.com/v1/messages"):
             return response.json()["content"][0]["text"]
         elif apiurl.startswith("https://generativelanguage.googleapis.com"):
             return response.json()["candidates"][0]["content"]["parts"][0]["text"]

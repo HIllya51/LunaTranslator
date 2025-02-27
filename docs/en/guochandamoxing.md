@@ -53,7 +53,7 @@ If the platform does not support fetching models via an API and the default list
 
 == Cohere
 
-**API Interface Address** `https://api.cohere.com/v2/chat`
+**API Interface Address** `https://api.cohere.ai/compatibility/v1`
 
 **API Key** https://dashboard.cohere.com/api-keys
 
