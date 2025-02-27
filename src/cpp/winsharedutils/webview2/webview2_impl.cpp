@@ -358,6 +358,8 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
     UINT idx = 0;
     for (auto &&context : (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT ? ref->menus : ref->menus_noselect))
     {
+        if (context.getuse && !context.getuse())
+            continue;
         CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
         if (context.gettext && AutoFreeString(context.gettext()) && wcslen(AutoFreeString(context.gettext())))
         {
