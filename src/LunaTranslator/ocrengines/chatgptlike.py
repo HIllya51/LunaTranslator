@@ -26,7 +26,7 @@ class OCR(baseocr):
             messages=message,
             # optional
             max_tokens=self.config["max_tokens"],
-            n=1,
+            # n=1,
             # stop=None,
             top_p=self.config["top_p"],
             temperature=temperature,
@@ -121,7 +121,9 @@ class OCR(baseocr):
 
         base64_image = base64.b64encode(imagebinary).decode("utf-8")
 
-        if self.config["apiurl"].startswith("https://generativelanguage.googleapis.com"):
+        if self.config["apiurl"].startswith(
+            "https://generativelanguage.googleapis.com"
+        ):
             response = self.ocr_gemini(prompt, base64_image)
         else:
             response = self.ocr_normal(prompt, base64_image)

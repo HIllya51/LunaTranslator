@@ -1,7 +1,7 @@
 from myutils.utils import createurl, common_list_models, common_parse_normal_response
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
-from translator.gptcommon import qianfanIAM
+from translator.gptcommon import createheaders
 
 
 def list_models(typename, regist):
@@ -27,7 +27,7 @@ class chatgptlike(cishubase):
             messages=message,
             # optional
             max_tokens=self.config["max_tokens"],
-            n=1,
+            # n=1,
             # stop=None,
             top_p=self.config["top_p"],
             temperature=temperature,
@@ -62,24 +62,11 @@ class chatgptlike(cishubase):
         return self.markdown_to_html(common_parse_normal_response(resp, apiurl))
 
     def createheaders(self):
-        _ = {}
-        curkey = self.multiapikeycurrent["SECRET_KEY"]
-        if curkey:
-            # 部分白嫖接口可以不填，填了反而报错
-            _.update({"Authorization": "Bearer " + curkey})
-        if "openai.azure.com/openai/deployments/" in self.apiurl:
-            _.update({"api-key": curkey})
-        elif ("qianfan.baidubce.com/v2" in self.apiurl) and (":" in curkey):
-            if not self.maybeuse.get(curkey):
-                Access_Key, Secret_Key = curkey.split(":")
-                key = qianfanIAM.getkey(Access_Key, Secret_Key, self.proxy)
-                self.maybeuse[curkey] = key
-            _.update({"Authorization": "Bearer " + self.maybeuse[curkey]})
-        return _
+        return createheaders(
+            self.apiurl, self.multiapikeycurrent, self.maybeuse, self.proxy
+        )
 
     def createurl(self):
-        if "openai.azure.com/openai/deployments/" in self.apiurl:
-            return self.apiurl
         return createurl(self.apiurl)
 
     def query_cld(self, sysprompt, query):

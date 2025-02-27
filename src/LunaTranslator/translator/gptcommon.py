@@ -137,6 +137,23 @@ class qianfanIAM:
         ).json()["token"]
 
 
+def createheaders(apiurl, config, maybeuse, proxy):
+    _ = {}
+    curkey = config["SECRET_KEY"]
+    if curkey:
+        # 部分白嫖接口可以不填，填了反而报错
+        _.update({"Authorization": "Bearer " + curkey})
+    if "openai.azure.com/openai/deployments/" in apiurl:
+        _.update({"api-key": curkey})
+    elif ("qianfan.baidubce.com/v2" in apiurl) and (":" in curkey):
+        if not maybeuse.get(curkey):
+            Access_Key, Secret_Key = curkey.split(":")
+            key = qianfanIAM.getkey(Access_Key, Secret_Key, proxy)
+            maybeuse[curkey] = key
+        _.update({"Authorization": "Bearer " + maybeuse[curkey]})
+    return _
+
+
 class gptcommon(basetrans):
     @property
     def apiurl(self) -> str:
@@ -176,20 +193,9 @@ class gptcommon(basetrans):
         return data
 
     def createheaders(self):
-        _ = {}
-        curkey = self.multiapikeycurrent["SECRET_KEY"]
-        if curkey:
-            # 部分白嫖接口可以不填，填了反而报错
-            _.update({"Authorization": "Bearer " + curkey})
-        if "openai.azure.com/openai/deployments/" in self.apiurl:
-            _.update({"api-key": curkey})
-        elif ("qianfan.baidubce.com/v2" in self.apiurl) and (":" in curkey):
-            if not self.maybeuse.get(curkey):
-                Access_Key, Secret_Key = curkey.split(":")
-                key = qianfanIAM.getkey(Access_Key, Secret_Key, self.proxy)
-                self.maybeuse[curkey] = key
-            _.update({"Authorization": "Bearer " + self.maybeuse[curkey]})
-        return _
+        return createheaders(
+            self.apiurl, self.multiapikeycurrent, self.maybeuse, self.proxy
+        )
 
     def commonparseresponse_good(self, response: requests.Response):
 
@@ -243,8 +249,6 @@ class gptcommon(basetrans):
         self.context.append({"role": "assistant", "content": respmessage})
 
     def createurl(self):
-        if "openai.azure.com/openai/deployments/" in self.apiurl:
-            return self.apiurl
         return createurl(self.apiurl)
 
     def request_gemini(self, sysprompt, query):

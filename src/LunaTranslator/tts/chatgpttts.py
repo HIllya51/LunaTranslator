@@ -34,8 +34,6 @@ class TTS(TTSbase):
         return self.config["API接口地址"].strip()
 
     def createurl(self):
-        if "openai.azure.com/openai/deployments/" in self.apiurl:
-            return self.apiurl
         return createurl(self.apiurl, checkend="/audio/speech")
 
     def speak(self, content, voice, param: SpeechParam):

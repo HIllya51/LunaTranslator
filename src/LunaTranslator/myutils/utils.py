@@ -821,6 +821,8 @@ def urlpathjoin(*argc):
 
 
 def createurl(url: str, checkend="/chat/completions"):
+    if "openai.azure.com/openai/deployments/" in url:
+        return url
     if url.endswith(checkend):
         pass
     else:
