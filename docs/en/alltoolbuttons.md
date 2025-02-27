@@ -173,4 +173,4 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> Selectable
     Make the text in the translation window's text area selectable.
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> Look Up
-    Open the look-up window.
+    If there is currently text selected, the selected text will be queried and a word search window will be opened. Otherwise, it will only open or close the keyword search window.

@@ -173,4 +173,4 @@
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> 選択可能
     翻訳ウィンドウのテキストエリア内のテキストを選択可能にします。
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 検索
-    検索ウィンドウを開く。
+    現在選択されているテキストがある場合は、選択されているテキストを問い合せ、単語検索ウィンドウを開きます。それ以外の場合は単に単語検索ウィンドウを開いたり閉じたりします。

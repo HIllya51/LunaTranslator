@@ -1308,7 +1308,7 @@ class searchwordW(closeashidewindow):
         self.searchlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchlayout)
         self.searchtext = FQLineEdit()
-        self.searchtext.textChanged.connect(self.ankiwindow.reset)
+        self.searchtext.textChanged.connect(self.ankiwindow.wordedit.setText)
 
         self.dictbutton = IconButton(icon="fa.book", checkable=True)
         self.historys = []
@@ -1553,7 +1553,7 @@ class searchwordW(closeashidewindow):
         self.__parsehistory(word)
         if globalconfig["is_search_word_auto_tts"]:
             gobject.baseobject.read_text(self.searchtext.text())
-        self.ankiwindow.reset(word)
+        self.ankiwindow.wordedit.setText(word)
         for i in range(self.tab.count()):
             self.tab.removeTab(0)
         self.tabks.clear()

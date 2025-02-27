@@ -523,6 +523,9 @@ class TextBrowser(QWidget, dataget):
         )
         self.cleared = False
 
+    def GetSelectedText(self):
+        return self.textbrowser.textCursor().selectedText()
+
     def setdisplayrank(self, type):
         pass
 

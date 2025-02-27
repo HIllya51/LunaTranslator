@@ -179,3 +179,6 @@ class Textbrowser(QFrame):
 
     def setdisplayrank(self, type):
         self.textbrowser.setdisplayrank(type)
+
+    def GetSelectedText(self):
+        return self.textbrowser.GetSelectedText()

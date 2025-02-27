@@ -682,7 +682,7 @@ class TranslatorWindow(resizableframeless):
                 None,
                 lambda: self.isbindedwindow,
             ),
-            ("searchwordW", lambda: gobject.baseobject.searchwordW.showsignal.emit()),
+            ("searchwordW", self.callopensearchwordwindow),
             (
                 "fullscreen",
                 lambda: self._fullsgame(False),
@@ -789,6 +789,13 @@ class TranslatorWindow(resizableframeless):
                 iconstate,
                 colorstate,
             )
+
+    def callopensearchwordwindow(self):
+        curr = self.translate_text.GetSelectedText()
+        if curr:
+            gobject.baseobject.searchwordW.search_word.emit(curr, False)
+        else:
+            gobject.baseobject.searchwordW.showsignal.emit()
 
     @property
     def winid(self):
