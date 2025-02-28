@@ -455,7 +455,6 @@
     "恢复": "terugwinning",
     "模板": "Sjabloon",
     "截图": "screenshot",
-    "允许重复": "Herhaling toestaan",
     "添加时更新模板": "Sjabloon bijwerken bij het toevoegen",
     "截图后进行OCR": "Maak een screenshot en voer OCR uit",
     "优先级": "prioriteit",
@@ -791,5 +790,8 @@
     "添加失败": "",
     "自动添加失败，是否手动添加？": "",
     "自动隐藏": "",
-    "窗口": ""
+    "窗口": "",
+    "检测到存在重复，如何处理？": "",
+    "重复添加": "",
+    "删除重复": ""
 }

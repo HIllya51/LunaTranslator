@@ -5,19 +5,19 @@ from myutils.wrapper import Singleton_close
 from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, _TR
 from gui.rangeselect import rangeselct_function
 from myutils.ocrutil import imageCut
+from hiraparse.basehira import basehira
 from gui.inputdialog import autoinitdialog
 from myutils.hwnd import grabwindow, getExeIcon
 from gui.usefulwidget import (
     saveposwindow,
     makesubtab_lazy,
     mayberelpath,
-    clearlayout,
     IconButton,
     auto_select_webview,
     PopupWidget,
     getIconButton,
 )
-from gui.dynalang import LAction
+from gui.dynalang import LAction, LPushButton
 
 
 class TextEditOrPlain(QStackedWidget):
@@ -58,6 +58,39 @@ class TextEditOrPlain(QStackedWidget):
             self.edit2.insertPlainText(text)
 
 
+class TextSelect(PopupWidget):
+    def __init__(self, p: "dialog_memory"):
+        super().__init__(p)
+        self.p = p
+        hbox = QVBoxLayout(self)
+        origin = LPushButton("原文")
+        ts = LPushButton("翻译")
+        origin_hira = LPushButton("原文_+_注音")
+        hbox.addWidget(origin)
+        hbox.addWidget(ts)
+        hbox.addWidget(origin_hira)
+        self.display()
+        origin.clicked.connect(
+            functools.partial(self.__wrap, lambda: gobject.baseobject.currenttext)
+        )
+        origin_hira.clicked.connect(
+            functools.partial(
+                self.__wrap,
+                lambda: basehira.makerubyhtml(
+                    gobject.baseobject.parsehira(gobject.baseobject.currenttext)
+                ),
+            )
+        )
+        ts.clicked.connect(
+            functools.partial(self.__wrap, lambda: gobject.baseobject.currenttranslate)
+        )
+
+    def __wrap(self, f):
+        t: str = f()
+        self.p.editor.inserttext("\n<br>\n" + t.replace("\n", "\n<br>\n") + "\n<br>\n")
+        self.close()
+
+
 class Picselect(PopupWidget):
     def cropcallback(self, path):
         if not path:
@@ -65,8 +98,7 @@ class Picselect(PopupWidget):
         tgt = os.path.join(self.moveto, os.path.basename(path))
         os.rename(path, tgt)
         tgt = mayberelpath(tgt)
-        w = self.p.tab.currentWidget().layout().itemAt(0).widget()
-        w.editstack.inserttext(
+        self.p.editor.inserttext(
             '\n<img src="{}" style="max-width: 100%">\n'.format(os.path.basename(path))
         )
 
@@ -106,6 +138,8 @@ class Picselect(PopupWidget):
         def ocroncefunction(rect, img=None):
             if not img:
                 img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+            if img.isNull():
+                return
             fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
             img.save(fname)
             self.cropcallback(fname)
@@ -126,8 +160,7 @@ class AudioSelect(PopupWidget):
         html = """\n<audio controls src="{b64}"></audio>\n""".format(
             b64=os.path.basename(path)
         )
-        w = self.p.tab.currentWidget().layout().itemAt(0).widget()
-        w.editstack.inserttext(html)
+        self.p.editor.inserttext(html)
 
     def insertpic(self):
         f = QFileDialog.getOpenFileName()
@@ -305,13 +338,15 @@ class dialog_memory(saveposwindow):
         self.switch3.clicked.connect(self.__switch)
         self.insertpicbtn = IconButton(parent=self, icon="fa.picture-o")
         self.insertaudiobtn = IconButton(parent=self, icon="fa.music")
+        self.textbtn = IconButton(parent=self, icon="fa.text-height")
+        self.buttonslayout.addWidget(self.textbtn)
         self.buttonslayout.addWidget(self.insertaudiobtn)
         self.buttonslayout.addWidget(self.insertpicbtn)
         self.buttonslayout.addWidget(self.switch3)
         self.buttonslayout.addWidget(self.switch)
         self.insertpicbtn.clicked.connect(functools.partial(Picselect, self))
         self.insertaudiobtn.clicked.connect(functools.partial(AudioSelect, self))
-
+        self.textbtn.clicked.connect(functools.partial(TextSelect, self))
         self.tab = makesubtab_lazy(
             titles=list(_.get("title", str(i)) for i, _ in enumerate(self.config)),
             functions=list(
@@ -329,19 +364,23 @@ class dialog_memory(saveposwindow):
         self._add_trace(0)
         self.show()
 
+    @property
+    def editor(self) -> TextEditOrPlain:
+        return self.editororview.editstack
+
+    @property
+    def editororview(self) -> editswitchTextBrowserEx:
+        return self.tab.currentWidget().layout().itemAt(0).widget()
+
     def __switch(self, x):
-        w = self.tab.currentWidget().layout().itemAt(0).widget()
-        w.editstack.setCurrentIndex(x)
+        self.editor.setCurrentIndex(x)
         self.config[self.tab.currentIndex()]["plain"] = x
         self.saveconfig()
 
     def switchreadonly(self, i):
-        w = self.tab.currentWidget().layout().itemAt(0).widget()
-        w.delayload(1 - i)
-        w.readoreditstack.setCurrentIndex(1 - i)
-        self.insertpicbtn.setVisible(i)
-        self.insertaudiobtn.setVisible(i)
-        self.switch3.setVisible(i)
+        self.editororview.delayload(1 - i)
+        self.editororview.readoreditstack.setCurrentIndex(1 - i)
+        self.btnvisible(i)
         self.config[self.tab.currentIndex()]["edit"] = i
         self.saveconfig()
 
@@ -365,8 +404,12 @@ class dialog_memory(saveposwindow):
         self.insertpicbtn.setChecked(config.get("edit", True))
         self.switch.setChecked(config.get("edit", True))
         i = config.get("edit", True)
+        self.btnvisible(i)
+
+    def btnvisible(self, i):
         self.insertpicbtn.setVisible(i)
         self.insertaudiobtn.setVisible(i)
+        self.textbtn.setVisible(i)
         self.switch3.setVisible(i)
 
     def tabmenu(self, position):

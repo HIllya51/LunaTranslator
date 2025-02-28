@@ -1,6 +1,6 @@
 import requests
 
-global_port = 999
+global_port = 8765
 global_host = "127.0.0.1"
 
 
@@ -9,6 +9,10 @@ class AnkiException(Exception):
 
 
 class AnkiModelExists(AnkiException):
+    pass
+
+
+class AnkiNoteDuplicate(AnkiException):
     pass
 
 
@@ -26,6 +30,8 @@ def invoke(action, **params):
     if response["error"] is not None:
         if response["error"] == "Model name already exists":
             raise AnkiModelExists()
+        elif response["error"] == "cannot create note because it is a duplicate":
+            raise AnkiNoteDuplicate(response["error"])
         else:
             raise AnkiException(response["error"])
     return response["result"]
@@ -145,3 +151,11 @@ class Note:
                 "picture": picture,
             },
         )
+
+    @staticmethod
+    def find(DeckName, word):
+        return invoke("findNotes", query='deck:"{}" w:"{}"'.format(DeckName, word))
+
+    @staticmethod
+    def delete(notes):
+        return invoke("deleteNotes", notes=notes)

@@ -41,7 +41,7 @@ from gui.usefulwidget import (
     tabadd_lazy,
     VisLFormLayout,
 )
-from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
+from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction, LMessageBox
 from myutils.audioplayer import bass_code_cast
 from gui.dialog_savedgame import threeswitch
 
@@ -380,10 +380,6 @@ class AnkiWindow(QWidget):
             "ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName6")
         )
 
-        layout.addRow(
-            "允许重复",
-            getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
-        )
         layout.addRow(
             "添加时更新模板",
             getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
@@ -763,30 +759,17 @@ class AnkiWindow(QWidget):
         if res != "":
             item.setText(res)
 
-    def selecfile(self, item):
+    def selecfile(self, item: QLineEdit):
         f = QFileDialog.getOpenFileName()
         res = f[0]
         if res != "":
             item.setText(res)
 
-    def makerubyhtml(self, ruby):
-        if not ruby:
-            return ""
-        html = ""
-        for i in range(len(ruby)):
-            html += ruby[i]["orig"]
-            if ruby[i]["orig"] != ruby[i]["hira"]:
-                html += "<rt>" + ruby[i]["hira"] + "</rt>"
-            else:
-                html += "<rt></rt>"
-        html = "<ruby>" + html + "</ruby>"
-        return html
-
     def wordedit_t(self, text):
         self.currentword = text
         if text and len(text):
             _hs = gobject.baseobject.parsehira(text)
-            self.zhuyinedit.setPlainText(self.makerubyhtml(basehira.parseastarget(_hs)))
+            self.zhuyinedit.setPlainText(basehira.makerubyhtml(_hs))
         else:
             self.zhuyinedit.clear()
 
@@ -798,7 +781,31 @@ class AnkiWindow(QWidget):
 
     def errorwrap(self, close=False):
         try:
-            self.addanki()
+            anki.global_port = globalconfig["ankiconnect"]["port"]
+            anki.global_host = globalconfig["ankiconnect"]["host"]
+            duplicates = anki.Note.find(self.DeckName, self.currentword)
+
+            if duplicates:
+                msg_box = LMessageBox(self)
+                msg_box.setIcon(QMessageBox.Icon.Question)
+                msg_box.setWindowTitle("?")
+                msg_box.setText("检测到存在重复，如何处理？")
+                custom_button = LPushButton("取消")
+                custom_button1 = LPushButton("重复添加")
+                custom_button2 = LPushButton("删除重复")
+                msg_box.addButton(custom_button, QMessageBox.ButtonRole.ActionRole)
+                msg_box.addButton(custom_button1, QMessageBox.ButtonRole.YesRole)
+                msg_box.addButton(custom_button2, QMessageBox.ButtonRole.NoRole)
+
+                msg_box.exec_()
+                if msg_box.clickedButton() == custom_button:
+                    return
+                elif msg_box.clickedButton() == custom_button1:
+                    pass
+                elif msg_box.clickedButton() == custom_button2:
+                    anki.Note.delete(duplicates)
+
+            self.addanki(dup=True)
             if globalconfig["ankiconnect"]["addsuccautocloseEx"] and self.isVisible():
                 self.refsearchw.ankiconnect.click()
             if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
@@ -828,19 +835,20 @@ class AnkiWindow(QWidget):
                 model_css = ff.read()
         return model_htmlfront, model_htmlback, model_css
 
-    def addanki(self):
-
-        autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
-        allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
-        anki.global_port = globalconfig["ankiconnect"]["port"]
-        anki.global_host = globalconfig["ankiconnect"]["host"]
-        ModelName = globalconfig["ankiconnect"]["ModelName6"]
+    @property
+    def DeckName(self):
         try:
-            DeckName = globalconfig["ankiconnect"]["DeckNameS"][
+            return globalconfig["ankiconnect"]["DeckNameS"][
                 globalconfig["ankiconnect"]["DeckName_i"]
             ]
         except:
-            DeckName = "lunadeck"
+            return "lunadeck"
+
+    def addanki(self, dup=False):
+
+        autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
+        ModelName = globalconfig["ankiconnect"]["ModelName6"]
+        DeckName = self.DeckName
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
         tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)
@@ -879,9 +887,7 @@ class AnkiWindow(QWidget):
                     }
                 )
         text_fields, audios, pictures = self.getfieldsdataall()
-        anki.Note.add(
-            DeckName, ModelName, text_fields, allowDuplicate, tags, audios, pictures
-        )
+        anki.Note.add(DeckName, ModelName, text_fields, dup, tags, audios, pictures)
 
     def getfieldsdataall(self):
         text_fields = self.loadfileds()

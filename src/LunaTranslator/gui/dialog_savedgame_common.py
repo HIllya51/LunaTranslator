@@ -243,7 +243,7 @@ def addgamesingle(parent, callback, targetlist):
         idx = targetlist.index(uid)
         response = QMessageBox.question(
             parent,
-            "",
+            "?",
             _TR("游戏已存在，是否重复添加？"),
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,

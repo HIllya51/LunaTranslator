@@ -109,3 +109,18 @@ class basehira:
                             _ka[_reverse_idx], target[_reverse_idx]
                         )
         return hira
+
+    @staticmethod
+    def makerubyhtml(hira):
+        ruby=basehira.parseastarget(hira)
+        if not ruby:
+            return ""
+        html = ""
+        for i in range(len(ruby)):
+            html += ruby[i]["orig"]
+            if ruby[i]["orig"] != ruby[i]["hira"]:
+                html += "<rt>" + ruby[i]["hira"] + "</rt>"
+            else:
+                html += "<rt></rt>"
+        html = "<ruby>" + html + "</ruby>"
+        return html
