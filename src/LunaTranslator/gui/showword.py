@@ -783,7 +783,11 @@ class AnkiWindow(QWidget):
         try:
             anki.global_port = globalconfig["ankiconnect"]["port"]
             anki.global_host = globalconfig["ankiconnect"]["host"]
-            duplicates = anki.Note.find(self.DeckName, self.currentword)
+            try:
+                duplicates = anki.Note.find(self.DeckName, self.currentword)
+            except:
+                print_exc()
+                duplicates = []
 
             if duplicates:
                 msg_box = LMessageBox(self)
