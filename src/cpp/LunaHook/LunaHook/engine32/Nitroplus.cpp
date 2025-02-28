@@ -230,6 +230,7 @@ int __fastcall sub_477820(int a1)
 				byte_5ADB30[2] = 0;
 				byte_5ADB30[0] = BYTE2(a1);
 				byte_5ADB30[1] = a1;
+				buffer->from(byte_5ADB30);
 			}
 			else
 			{
