@@ -28,6 +28,7 @@ class LLabel(QLabel):
     def __init__(self, *argc):
         self.__s = None
         self._ToolTip = None
+        self._acc = None
         if len(argc) == 1:
             if isinstance(argc[0], str):
                 self.__s = argc[0]
@@ -46,10 +47,16 @@ class LLabel(QLabel):
             super().setText(_TR(self.__s))
         if self._ToolTip:
             super().setToolTip(_TR(self._ToolTip))
+        if self._acc:
+            super().setAccessibleName(_TR(self._acc))
 
     def setToolTip(self, t):
         self._ToolTip = t
         super().setToolTip(_TR(t))
+
+    def setAccessibleName(self, t):
+        self._acc = t
+        super().setAccessibleName(_TR(t))
 
 
 class LPushButton(QPushButton):

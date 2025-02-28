@@ -207,6 +207,7 @@ class ButtonBar(QFrame):
             button.rightclick.connect(functools.partial(callwrap, rightclick))
         if tips:
             button.setToolTip(tips)
+            button.setAccessibleName(tips)
         if _type not in self.stylebuttons:
             self.stylebuttons[_type] = []
         self.stylebuttons[_type].append(button)
