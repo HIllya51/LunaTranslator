@@ -109,10 +109,142 @@ namespace
 		return succ;
 	}
 }
+namespace
+{
+	// https://vndb.org/v7738
+	// 君と彼女と彼女の恋。
+	/*
+int __fastcall sub_477820(int a1)
+{
+  int result; // eax
+  __m64 *v2; // eax
+  unsigned int v3; // eax
+  char *v4; // eax
+  _BYTE *v5; // eax
+  _WORD v6[11]; // [esp+4h] [ebp-20h] BYREF
+  int v7; // [esp+1Ah] [ebp-Ah]
+  int v8; // [esp+1Eh] [ebp-6h]
+  __int16 v9; // [esp+22h] [ebp-2h]
+
+  result = 0;
+  strcpy((char *)v6, "$SYSTEM_last_text");
+  *(_DWORD *)&v6[9] = 0;
+  v7 = 0;
+  v8 = 0;
+  v9 = 0;
+  if ( dword_61A3B0 != 400 )
+  {
+	if ( a1 )
+	{
+	  v3 = strlen(byte_5ADB30);
+	  if ( v3 < 0x1F8 )
+	  {
+		if ( (a1 & 0xFF00) != 0 )
+		{
+		  v4 = &byte_5ADB30[v3];
+		  *v4 = BYTE1(a1);
+		  v4[1] = a1;
+		  v4[2] = 0;
+		}
+		else if ( a1 == 2162721 || a1 == 2162751 || a1 == 4128801 || a1 == 4128831 )
+		{
+		  byte_5ADB30[v3] = BYTE2(a1);
+		  byte_5ADB31[v3] = a1;
+		  byte_5ADB32[v3] = 0;
+		}
+		else
+		{
+		  byte_5ADB30[v3] = a1;
+		  byte_5ADB31[v3] = 0;
+		}
+		v5 = (_BYTE *)dword_623804;
+		if ( dword_623804 || (v5 = (_BYTE *)sub_468060(v6)) != 0 )
+		{
+		  *v5 = 1;
+		  sub_471390(v5 + 152, byte_5ADB30, 512);
+		}
+	  }
+	}
+	else
+	{
+	  byte_5ADB30[0] = 0;
+	  v2 = (__m64 *)sub_468060(v6);
+	  if ( v2 )
+	  {
+		v2->m64_i8[0] = 1;
+		sub_471320(v2 + 19, 1024);
+		return 1;
+	  }
+	}
+	return 1;
+  }
+  return result;
+}
+*/
+#define BYTEn(x, n) (*((BYTE *)&(x) + n))
+#define BYTE1(x) BYTEn(x, 1)
+#define BYTE2(x) BYTEn(x, 2)
+	bool totono()
+	{
+		BYTE sig[] = {
+			0X81, 0XF9, 0X21, 0X00, 0X21, 0X00,
+			0X74, XX,
+			0X81, 0XF9, 0X3F, 0X00, 0X21, 0X00,
+			0X74, XX,
+			0X81, 0XF9, 0X21, 0X00, 0X3F, 0X00,
+			0X74, XX,
+			0X81, 0XF9, 0X3F, 0X00, 0X3F, 0X00,
+			0X74, XX};
+		BYTE sig2[] = {
+			0XC7, 0X44, 0X24, 0X04, 0X24, 0X53, 0X59, 0X53,
+			0XC7, 0X44, 0X24, 0X08, 0X54, 0X45, 0X4D, 0X5F,
+			0XC7, 0X44, 0X24, 0X0C, 0X6C, 0X61, 0X73, 0X74,
+			0XC7, 0X44, 0X24, 0X10, 0X5F, 0X74, 0X65, 0X78};
+		ULONG addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+		if (!addr)
+			addr = MemDbg::findBytes(sig2, sizeof(sig2), processStartAddress, processStopAddress);
+		if (!addr)
+			return false;
+		addr = MemDbg::findEnclosingAlignedFunction(addr, 0x100);
+		if (!addr)
+			return false;
+		HookParam hp;
+		hp.address = addr;
+		hp.type = USING_STRING | NO_CONTEXT;
+		hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+		{
+			auto a1 = context->ecx;
+			if (!a1)
+				return;
+			if ((a1 & 0xFF00) != 0)
+			{
+				char v4[3];
+				*v4 = BYTE1(a1);
+				v4[1] = a1;
+				v4[2] = 0;
+				buffer->from(v4);
+			}
+			else if (a1 == 2162721 || a1 == 2162751 || a1 == 4128801 || a1 == 4128831)
+			{
+				char byte_5ADB30[3];
+				byte_5ADB30[2] = 0;
+				byte_5ADB30[0] = BYTE2(a1);
+				byte_5ADB30[1] = a1;
+			}
+			else
+			{
+				char byte_5ADB30[2];
+				byte_5ADB30[1] = 0;
+				byte_5ADB30[0] = a1;
+				buffer->from(byte_5ADB30);
+			}
+		};
+		return NewHook(hp, "Nitroplus3");
+	}
+}
 bool Nitroplus::attach_function()
 {
-
-	return InsertNitroplusHook() || InsertNitroplus2Hook() || dmmdrc();
+	return InsertNitroplusHook() || InsertNitroplus2Hook() || dmmdrc() || totono();
 }
 
 void NitroplusSysFilter(TextBuffer *buffer, HookParam *)
