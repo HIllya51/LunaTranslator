@@ -420,6 +420,6 @@ class TextBrowser(WebviewWidget, dataget):
 
     def GetSelectedText(self):
         ret = []
-        self.eval("window.getSelection().toString()", ret.append)
+        self.eval("getCleanSelectionText()", ret.append)
         if ret:
             return json.loads(ret[0])
