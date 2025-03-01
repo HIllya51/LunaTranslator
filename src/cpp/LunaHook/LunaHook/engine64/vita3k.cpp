@@ -1255,6 +1255,8 @@ namespace
             {0x80022B46, {0, 2, 0, PCSG01245, 0, "PCSG01245"}},
             // 幕末Rock 超魂
             {0x8000BF18, {0, 4, 0, 0, PCSG01247, "PCSG00425"}},
+            // your diary +
+            {0x800482CE, {0, 0, 0, 0, FPCSG00815, "PCSG01267"}},
         };
         return 1;
     }();
