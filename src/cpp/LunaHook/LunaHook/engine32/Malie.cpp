@@ -1108,7 +1108,7 @@ namespace
         // remove short pause
         static std::string shortPause((LPCSTR)L"\x07\x04", 2 * sizeof(wchar_t));
         // text.replace(shortPause, ""); // there is no remove method in std::string
-        strReplace(text, shortPause, "");
+        strReplace(text, shortPause);
       }
       // I need a cache retainer here to make sure same text result in same result
       void hookafter(hook_context *s, TextBuffer buffer)

@@ -27,10 +27,10 @@ namespace
       if (xx == last)
         return buffer->clear();
       last = xx;
-      strReplace(xx, "@", "");
-      strReplace(xx, "\\", "");
+      strReplace(xx, "@");
+      strReplace(xx, "\\");
       strReplace(xx, "_", "\n");
-      strReplace(xx, "/", "");
+      strReplace(xx, "/");
       // # ( ) < 代码里，但C了一会儿没遇到，不管了先
       buffer->from(xx);
     };

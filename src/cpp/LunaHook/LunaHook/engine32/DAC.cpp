@@ -36,9 +36,9 @@ bool DAC::attach_function()
     else
     {
       thisthread = s;
-      strReplace(s, "`#`{$$lines}", "");
-      strReplace(s, "\n", "");
-      strReplace(s, "\r", "");
+      strReplace(s, "`#`{$$lines}");
+      strReplace(s, "\n");
+      strReplace(s, "\r");
       buffer->from(s);
     }
   };

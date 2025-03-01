@@ -233,7 +233,7 @@ bool InsertCatSystem2Hook()
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     auto _ = std::regex_replace(buffer->strA(), std::regex(R"(\[(.+?)/.+\])"), "$1");
-    strReplace(_, "\\@", "");
+    strReplace(_, "\\@");
     buffer->from(_);
   };
   hp.lineSeparator = L"\\n";

@@ -5,7 +5,7 @@ namespace
   {
     std::string s = buffer->strA();
     s = std::regex_replace(s, std::regex("#(.*?)#"), "");
-    strReplace(s, "\\c", "");
+    strReplace(s, "\\c");
     buffer->from(s);
   }
 }

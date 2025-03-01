@@ -519,8 +519,8 @@ namespace
       {
         std::string result = buffer->strA();
         result = std::regex_replace(result, std::regex("#\\{(.*?)\\}(.*?)#", std::regex_constants::icase), "$2");
-        strReplace(result, u8"　\n", "");
-        strReplace(result, u8"\n", "");
+        strReplace(result, u8"　\n");
+        strReplace(result, u8"\n");
         buffer->from(result);
       };
       succ |= NewHook(hp, "sayanouta");

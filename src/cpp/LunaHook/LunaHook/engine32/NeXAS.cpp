@@ -521,10 +521,10 @@ namespace
       s = std::regex_replace(s, std::regex(R"(@f\d{2})"), "");
       s = std::regex_replace(s, std::regex(R"(@h[_\d\w]+)"), "");
       s = std::regex_replace(s, std::regex(R"(@r(.*?)@(.*?)@)"), "$1");
-      strReplace(s, "@n", "");
-      strReplace(s, "@e", "");
-      strReplace(s, "@k", "");
-      strReplace(s, "@p", "");
+      strReplace(s, "@n");
+      strReplace(s, "@e");
+      strReplace(s, "@k");
+      strReplace(s, "@p");
       buffer->from(s);
     };
     return NewHook(hp, "NeXAS4");

@@ -24,7 +24,7 @@ bool MKXPZ::attach_function()
     s = std::regex_replace(s, std::regex("<.*?>"), "");
     s = std::regex_replace(s, std::regex(R"(\\tg\[(.*?)\])"), "$1\n"); // 人名
     s = std::regex_replace(s, std::regex(R"(\\\w+\[\d+\])"), "");
-    strReplace(s, "\\|", "");
+    strReplace(s, "\\|");
     buffer->from(s);
   };
   hp.address = (uintptr_t)onigenc_get_right_adjust_char_head_with_prev; // 这个比较纯粹，但有时候会缺

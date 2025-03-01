@@ -168,7 +168,7 @@ namespace
           oldData = text;
 
         if (*role == Engine::NameRole)
-          strReplace(oldData, "\x81\x40", "");
+          strReplace(oldData, "\x81\x40");
         // oldData.replace("\x81\x40", ""); // remove spaces in the middle of names
         buffer->from(oldData);
       }
@@ -209,7 +209,7 @@ namespace
         else
           oldData = text;
         if (role == Engine::NameRole)
-          strReplace(oldData, "\x81\x40", "");
+          strReplace(oldData, "\x81\x40");
         // oldData.replace("\x81\x40", ""); // remove spaces in the middle of names
         if (oldData == newData)
         {

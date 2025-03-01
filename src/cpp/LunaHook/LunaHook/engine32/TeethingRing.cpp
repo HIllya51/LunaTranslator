@@ -51,7 +51,7 @@ bool TeethingRing_attach_function()
     if (all_ascii((char *)buffer->buff, buffer->size))
       return buffer->clear();
     auto str = buffer->strA();
-    strReplace(str, "#F", "");
+    strReplace(str, "#F");
     buffer->from(str);
   };
   return NewHook(hp, "TeethingRing");
@@ -103,7 +103,7 @@ bool TeethingRing_attach_function2()
     if (all_ascii((char *)buffer->buff, buffer->size))
       return buffer->clear();
     auto str = buffer->strA();
-    strReplace(str, "#F", "");
+    strReplace(str, "#F");
     // 俺はこのアクシデントが、何か幸#<さい>先#<さき>のいいもののように思えて、鞄を抱え直してギルドへの階段を昇り始めた。
     str = std::regex_replace(str, std::regex("#<(.*?)>"), "");
     buffer->from(str);

@@ -392,7 +392,7 @@ namespace
 {
   void hook2(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    strReplace(save, "\\k", "");
+    strReplace(save, "\\k");
     save = std::regex_replace(save, std::regex("<R(.+?)\\|.+>"), "$1");
     buffer->from(save);
   }
@@ -647,13 +647,13 @@ namespace
         return;
       last[ret] = current;
       strReplace(current, "\\k\\n", "\n");
-      strReplace(current, "\\n", "");
-      strReplace(current, "\\k", "");
-      strReplace(current, "\\s", "");
+      strReplace(current, "\\n");
+      strReplace(current, "\\k");
+      strReplace(current, "\\s");
       current = std::regex_replace(current, std::regex(R"(\|(.*?)>)"), "$1");
-      strReplace(current, "<F60", "");
-      strReplace(current, "<R", "");
-      strReplace(current, ">", "");
+      strReplace(current, "<F60");
+      strReplace(current, "<R");
+      strReplace(current, ">");
       buffer->from(current);
     };
     return NewHook(hp, "kizuato");

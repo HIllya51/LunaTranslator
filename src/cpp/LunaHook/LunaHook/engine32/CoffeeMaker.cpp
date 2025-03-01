@@ -57,7 +57,7 @@ bool CoffeeMaker_attach_function2()
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     auto s = buffer->strA();
-    strReplace(s, R"(\w\w\w)", "");
+    strReplace(s, R"(\w\w\w)");
     buffer->from(s);
   };
   return NewHook(hp, "CoffeeMaker");

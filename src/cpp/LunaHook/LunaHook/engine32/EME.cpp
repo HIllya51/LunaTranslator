@@ -32,7 +32,7 @@ bool InsertEMEHook()
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
     auto xx = buffer->strA();
-    strReplace(xx, "	", "");
+    strReplace(xx, "	");
     buffer->from(xx);
   };
   return NewHook(hp, "EmonEngine");
@@ -62,7 +62,7 @@ namespace
       hp.filter_fun = [](TextBuffer *buffer, HookParam *)
       {
         auto xx = buffer->strA();
-        strReplace(xx, "	", "");
+        strReplace(xx, "	");
         static lru_cache<std::string> last(10);
         if (last.touch(xx))
           buffer->clear();
@@ -127,7 +127,7 @@ namespace
       hp.filter_fun = [](TextBuffer *buffer, HookParam *)
       {
         auto xx = buffer->strA();
-        strReplace(xx, "	", "");
+        strReplace(xx, "	");
         buffer->from(xx);
       };
       return NewHook(hp, "EmonEngine2");

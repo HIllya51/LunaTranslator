@@ -1460,8 +1460,8 @@ namespace Private
     strReplace(utf8save, "#000033ff;", "\\#0033FF");
     strReplace(utf8save, "#;", "\\#FFFFFF");
     strReplace(utf8save, "#00ff0000;", "\\#FF0000");
-    strReplace(utf8save, "%p-1;%f\xef\xbc\xad\xef\xbc\xb3 \xe3\x82\xb4\xe3\x82\xb7\xe3\x83\x83\xe3\x82\xaf;", ""); //"%p-1;%fＭＳ ゴシック;"
-    strReplace(utf8save, "%p;%fuser;", "");
+    strReplace(utf8save, "%p-1;%f\xef\xbc\xad\xef\xbc\xb3 \xe3\x82\xb4\xe3\x82\xb7\xe3\x83\x83\xe3\x82\xaf;"); //"%p-1;%fＭＳ ゴシック;"
+    strReplace(utf8save, "%p;%fuser;");
 
     buffer->from(utf8save);
   }

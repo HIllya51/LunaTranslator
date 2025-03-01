@@ -414,7 +414,7 @@ namespace
         auto retaddr = s->stack[0];
         *role = addr_role[retaddr];
         if (*role == Engine::NameRole)
-          strReplace(oldData, "\x81\x40", ""); // remove spaces in the middle of names
+          strReplace(oldData, "\x81\x40"); // remove spaces in the middle of names
 
         buffer->from(oldData);
       }
