@@ -251,7 +251,7 @@ std::unordered_map<LANG_STRINGS_UI, std::unordered_map<SUPPORT_LANG, const wchar
         {FONTSELECT, {
                          {English, L"Select Font"},
                          {Chinese, L"选择字体"},
-                         {TradChinese, L"選擇字體"},
+                         {TradChinese, L"選擇字型"},
                          {Russian, L"Выбрать шрифт"},
                      }},
 };

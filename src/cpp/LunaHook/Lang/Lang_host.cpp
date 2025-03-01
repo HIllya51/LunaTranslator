@@ -53,7 +53,7 @@ std::unordered_map<LANG_STRINGS_HOST, std::unordered_map<SUPPORT_LANG, const wch
         {UNMATCHABLEVERSION, {
                                  {English, L"The file version cannot be matched, may not work properly, please re-download again!"},
                                  {Chinese, L"文件版本无法匹配，可能无法正常工作，请重新下载！"},
-                                 {TradChinese, L"文件版本不匹配，可能無法正常運作，請重新下載！"},
+                                 {TradChinese, L"檔案版本不匹配，可能無法正常運作，請重新下載！"},
                                  {Russian, L"Версии файлов не совпадают и могут не работать должным образом, пожалуйста, загрузите их снова!"},
                              }},
 };
