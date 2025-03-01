@@ -41,7 +41,7 @@ from gui.usefulwidget import (
     tabadd_lazy,
     VisLFormLayout,
 )
-from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction, LMessageBox
+from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
 from myutils.audioplayer import bass_code_cast
 from gui.dialog_savedgame import threeswitch
 
@@ -117,6 +117,8 @@ class AnkiWindow(QWidget):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle("Anki Connect")
         self.currentword = ""
+        self.lastankid = None
+        self.lastankiword = None
         self.tabs = makesubtab_lazy(callback=self.ifshowrefresh)
         self.tabs.addTab(self.createaddtab(), "添加")
         tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
@@ -306,52 +308,6 @@ class AnkiWindow(QWidget):
                     fields[field] = html
         return fields
 
-    def loadfakefields(self):
-        if len(self.editpath.text()):
-            try:
-                with open(self.editpath.text(), "rb") as image_file:
-                    encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
-                encoded_string = '<img src="data:image/png;base64,{}">'.format(
-                    encoded_string
-                )
-            except:
-                encoded_string = ""
-        else:
-            encoded_string = ""
-        if len(self.audiopath.text()):
-            try:
-                with open(self.audiopath.text(), "rb") as image_file:
-                    encoded_string2 = base64.b64encode(image_file.read()).decode(
-                        "utf-8"
-                    )
-                encoded_string2 = """<button onclick='document.getElementById("audio1111").play()'>play audio<audio controls id="audio1111" style="display: none"><source src="data:audio/mpeg;base64,{}"></audio></button>""".format(
-                    encoded_string2
-                )
-            except:
-                encoded_string2 = ""
-        else:
-            encoded_string2 = ""
-        if len(self.audiopath_sentence.text()):
-            try:
-                with open(self.audiopath_sentence.text(), "rb") as image_file:
-                    encoded_string3 = base64.b64encode(image_file.read()).decode(
-                        "utf-8"
-                    )
-                encoded_string3 = """<button onclick='document.getElementById("audio2222").play()'>play audio_sentence<audio controls id="audio2222" style="display: none"><source src="data:audio/mpeg;base64,{}"></audio></button>""".format(
-                    encoded_string3
-                )
-            except:
-
-                encoded_string3 = ""
-        else:
-            encoded_string3 = ""
-        fields = {
-            "audio_for_word": encoded_string2,
-            "audio_for_example_sentence": encoded_string3,
-            "screenshot": encoded_string,
-        }
-        return fields
-
     def saveedits(self):
         model_htmlfront = self.fronttext.toPlainText()
         model_htmlback = self.backtext.toPlainText()
@@ -380,6 +336,10 @@ class AnkiWindow(QWidget):
             "ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName6")
         )
 
+        layout.addRow(
+            "允许重复",
+            getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
+        )
         layout.addRow(
             "添加时更新模板",
             getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
@@ -773,6 +733,13 @@ class AnkiWindow(QWidget):
         else:
             self.zhuyinedit.clear()
 
+    def maybereset(self, text):
+        self.wordedit.setText(text)
+        if gobject.baseobject.currenttext != self.example.toPlainText():
+            self.editpath.clear()
+            self.audiopath.clear()
+            self.audiopath_sentence.clear()
+
     def reset(self, text):
         self.wordedit.setText(text)
         self.editpath.clear()
@@ -783,33 +750,13 @@ class AnkiWindow(QWidget):
         try:
             anki.global_port = globalconfig["ankiconnect"]["port"]
             anki.global_host = globalconfig["ankiconnect"]["host"]
-            try:
-                duplicates = anki.Note.find(self.DeckName, self.currentword)
-            except:
-                print_exc()
-                duplicates = []
-
-            if duplicates:
-                msg_box = LMessageBox(self)
-                msg_box.setIcon(QMessageBox.Icon.Question)
-                msg_box.setWindowTitle("?")
-                msg_box.setText("检测到存在重复，如何处理？")
-                custom_button = LPushButton("取消")
-                custom_button1 = LPushButton("重复添加")
-                custom_button2 = LPushButton("删除重复")
-                msg_box.addButton(custom_button, QMessageBox.ButtonRole.ActionRole)
-                msg_box.addButton(custom_button1, QMessageBox.ButtonRole.YesRole)
-                msg_box.addButton(custom_button2, QMessageBox.ButtonRole.NoRole)
-
-                msg_box.exec_()
-                if msg_box.clickedButton() == custom_button:
-                    return
-                elif msg_box.clickedButton() == custom_button1:
-                    pass
-                elif msg_box.clickedButton() == custom_button2:
-                    anki.Note.delete(duplicates)
-
-            self.addanki(dup=True)
+            if self.currentword == self.lastankiword:
+                response = QMessageBox.question(
+                    self, "?", _TR("检测到存在重复，是否覆盖？")
+                )
+                if response == QMessageBox.StandardButton.Yes:
+                    anki.Note.delete([self.lastankid])
+            self.addanki()
             if globalconfig["ankiconnect"]["addsuccautocloseEx"] and self.isVisible():
                 self.refsearchw.ankiconnect.click()
             if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
@@ -839,20 +786,19 @@ class AnkiWindow(QWidget):
                 model_css = ff.read()
         return model_htmlfront, model_htmlback, model_css
 
-    @property
-    def DeckName(self):
+    def addanki(self):
+
+        autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
+        allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
+        anki.global_port = globalconfig["ankiconnect"]["port"]
+        anki.global_host = globalconfig["ankiconnect"]["host"]
+        ModelName = globalconfig["ankiconnect"]["ModelName6"]
         try:
-            return globalconfig["ankiconnect"]["DeckNameS"][
+            DeckName = globalconfig["ankiconnect"]["DeckNameS"][
                 globalconfig["ankiconnect"]["DeckName_i"]
             ]
         except:
-            return "lunadeck"
-
-    def addanki(self, dup=False):
-
-        autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
-        ModelName = globalconfig["ankiconnect"]["ModelName6"]
-        DeckName = self.DeckName
+            DeckName = "lunadeck"
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
         tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)
@@ -891,7 +837,10 @@ class AnkiWindow(QWidget):
                     }
                 )
         text_fields, audios, pictures = self.getfieldsdataall()
-        anki.Note.add(DeckName, ModelName, text_fields, dup, tags, audios, pictures)
+        self.lastankid = anki.Note.add(
+            DeckName, ModelName, text_fields, allowDuplicate, tags, audios, pictures
+        )
+        self.lastankiword = self.currentword
 
     def getfieldsdataall(self):
         text_fields = self.loadfileds()
@@ -1318,7 +1267,7 @@ class searchwordW(closeashidewindow):
         self.searchlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchlayout)
         self.searchtext = FQLineEdit()
-        self.searchtext.textChanged.connect(self.ankiwindow.wordedit.setText)
+        self.searchtext.textChanged.connect(self.ankiwindow.maybereset)
 
         self.dictbutton = IconButton(icon="fa.book", checkable=True)
         self.historys = []
@@ -1563,7 +1512,7 @@ class searchwordW(closeashidewindow):
         self.__parsehistory(word)
         if globalconfig["is_search_word_auto_tts"]:
             gobject.baseobject.read_text(self.searchtext.text())
-        self.ankiwindow.wordedit.setText(word)
+        self.ankiwindow.maybereset(word)
         for i in range(self.tab.count()):
             self.tab.removeTab(0)
         self.tabks.clear()

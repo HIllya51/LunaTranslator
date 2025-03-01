@@ -131,7 +131,7 @@ class Note:
         audio: list,
         picture: list,
     ):
-        invoke(
+        return invoke(
             "addNote",
             note={
                 "deckName": deckName,
