@@ -86,6 +86,7 @@ class TextBrowser(WebviewWidget, dataget):
         self.showhidert(globalconfig["isshowhira"])
         self.setfontstyle()
         self.setdisplayrank(globalconfig["displayrank"])
+        self.sethovercolor(globalconfig["hovercolor"])
         self.parent().refreshcontent()
 
     def refreshcontent_before(self):
@@ -237,6 +238,9 @@ class TextBrowser(WebviewWidget, dataget):
             Qt.KeyboardModifier.NoModifier,
         )
         QApplication.sendEvent(self, event)
+
+    def sethovercolor(self, color):
+        self.debugeval('sethovercolor("{}")'.format(quote(color)))
 
     def calllunaEnter(self):
         QApplication.sendEvent(self.window(), QEvent(QEvent.Type.Enter))

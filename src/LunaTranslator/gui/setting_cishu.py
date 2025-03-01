@@ -412,7 +412,25 @@ def setTabcishu_l(self):
                                 ),
                                 1,
                             ),
-                            "",
+                            getcolorbutton(
+                                globalconfig,
+                                "hovercolor",
+                                callback=functools.partial(
+                                    selectcolor,
+                                    self,
+                                    globalconfig,
+                                    "hovercolor",
+                                    None,
+                                    self,
+                                    "hovercolor",
+                                    callback=lambda: gobject.baseobject.translation_ui.translate_text.sethovercolor(
+                                        globalconfig["hovercolor"]
+                                    ),
+                                    alpha=True,
+                                ),
+                                name="hovercolor",
+                                parent=self,
+                            ),
                             "",
                             "点击单词复制",
                             (

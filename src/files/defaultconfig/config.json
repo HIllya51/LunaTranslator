@@ -500,6 +500,7 @@
         400,
         400
     ],
+    "hovercolor": "#80000000",
     "anki_Orientation_V": true,
     "gamemanageruseversion": 0,
     "gamemanager_integrated_internal_layout": 2,

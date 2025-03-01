@@ -12,9 +12,10 @@ from traceback import print_exc
 from rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
 
+reference = []
+
 
 class Qlabel_c(QLabel):
-
     def mousePressEvent(self, ev):
         self.pr = True
         return super().mousePressEvent(ev)
@@ -42,19 +43,28 @@ class Qlabel_c(QLabel):
     def enterEvent(self, a0) -> None:
         try:
             if self.company:
-                self.company.setStyleSheet("background-color: rgba(0,0,0,0.5);")
+                self.company.ref.setStyleSheet(
+                    "background-color: " + globalconfig["hovercolor"]
+                )
+                reference.append(self.company.ref.setStyleSheet)
         except:
             pass
-        self.setStyleSheet("background-color: rgba(0,0,0,0.5);")
+        self.ref.setStyleSheet("background-color: " + globalconfig["hovercolor"])
+        reference.append(self.ref)
         return super().enterEvent(a0)
 
     def leaveEvent(self, a0) -> None:
         try:
             if self.company:
-                self.company.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+                self.company.ref.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+                reference.remove(self.company.ref)
         except:
             pass
-        self.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+        self.ref.setStyleSheet("background-color: rgba(0,0,0,0.01);")
+        try:
+            reference.remove(self.ref)
+        except:
+            pass
         return super().leaveEvent(a0)
 
 
@@ -152,15 +162,21 @@ class QTextBrowser_1(QTextEdit):
                 label.company.refmask.setStyleSheet(
                     "background-color: rgba(0,0,0,0.01);"
                 )
+                reference.remove(label.refmask)
+                reference.remove(label.company.refmask)
             except:
                 pass
         targetlabel = self.getcurrlabel(ev.pos())
         if targetlabel and targetlabel.isVisible():
             try:
-                targetlabel.refmask.setStyleSheet("background-color: rgba(0,0,0,0.5);")
-                targetlabel.company.refmask.setStyleSheet(
-                    "background-color: rgba(0,0,0,0.5);"
+                targetlabel.refmask.setStyleSheet(
+                    "background-color: " + globalconfig["hovercolor"]
                 )
+                targetlabel.company.refmask.setStyleSheet(
+                    "background-color: " + globalconfig["hovercolor"]
+                )
+                reference.append(self.refmask.setStyleSheet)
+                reference.append(self.company.refmask.setStyleSheet)
             except:
                 pass
         if not self.ismousehastext(ev):
@@ -872,6 +888,7 @@ class TextBrowser(QWidget, dataget):
             ql_1.setStyleSheet("background-color: rgba(0,0,0,0.01);")
             self.searchmasklabels_clicked.append(ql_1)
             ql = Qlabel_c(self.masklabel)
+            ql.ref = ql_1
             ql.setMouseTracking(True)
             ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
             self.searchmasklabels_clicked2.append(ql)
@@ -1054,3 +1071,10 @@ class TextBrowser(QWidget, dataget):
         self.saveiterclasspointer.clear()
         self.textbrowser.move(0, 0)
         self.atback_color.move(0, 0)
+
+    def sethovercolor(self, color):
+        for _ in reference:
+            try:
+                _.setStyleSheet("background-color: " + color)
+            except:
+                pass

@@ -182,3 +182,6 @@ class Textbrowser(QFrame):
 
     def GetSelectedText(self):
         return self.textbrowser.GetSelectedText()
+
+    def sethovercolor(self, color):
+        self.textbrowser.sethovercolor(color)
