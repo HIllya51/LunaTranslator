@@ -770,6 +770,7 @@ class TranslatorWindow(resizableframeless):
                 self.setselectable,
                 None,
                 lambda: globalconfig["selectable"],
+                self.setselectableEx,
             ),
         )
 
@@ -1057,8 +1058,17 @@ class TranslatorWindow(resizableframeless):
         self.autohidedelaythread()
         self.tracewindowposthread()
 
-    def setselectable(self):
+    def setselectableEx(self):
+        globalconfig["selectableEx"] = True
+        try:
+            gobject.baseobject.settin_ui.selectable_btn.clicksignal.emit()
+        except:
+            globalconfig["selectable"] = not globalconfig["selectable"]
+            self.translate_text.setselectable(globalconfig["selectable"])
+            self.refreshtoolicon()
 
+    def setselectable(self):
+        globalconfig["selectableEx"] = False
         try:
             gobject.baseobject.settin_ui.selectable_btn.clicksignal.emit()
         except:

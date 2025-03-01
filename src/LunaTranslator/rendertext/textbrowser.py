@@ -154,6 +154,8 @@ class QTextBrowser_1(QTextEdit):
         return rect1.contains(ev.pos())
 
     def mouseMoveEvent(self, ev: QMouseEvent):
+        if globalconfig["selectable"] and globalconfig["selectableEx"]:
+            return super().mouseMoveEvent(ev)
         for label in self.parent().searchmasklabels:
             if label.geometry().contains(ev.pos()):
                 continue

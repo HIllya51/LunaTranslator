@@ -261,6 +261,8 @@ class TextBrowser(WebviewWidget, dataget):
         QApplication.sendEvent(self, event)
 
     def calllunaMouseMove(self, x, y):
+        if globalconfig["selectable"] and globalconfig["selectableEx"]:
+            return
         pos = self.parsexyaspos(x, y)
         event = QMouseEvent(
             QEvent.Type.MouseMove,

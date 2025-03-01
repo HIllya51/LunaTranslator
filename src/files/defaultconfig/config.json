@@ -1925,6 +1925,7 @@
     "mustocr_interval": 5,
     "ocrmininterval": 1,
     "selectable": true,
+    "selectableEx": false,
     "autoupdate": true,
     "proxies": null,
     "viewlistpos": 0,

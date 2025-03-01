@@ -171,6 +171,8 @@
     取消/置顶翻译窗口
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> 可选取的
     使得翻译窗的文本区中的文本，是可以进行选择的。
+
+    如果激活时点击的是鼠标右键，则同时会禁止拖拽非文本区域以移动窗口。
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 查词
     如果当前有文本被选取，则会查询选取的文本并打开查词窗口。否则只是打开或关闭查词窗口。
   
