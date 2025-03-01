@@ -19,8 +19,8 @@ LPCSTR reverse_search_begin(const char *s, int maxsize = VNR_TEXT_CAPACITY);
 
 bool all_ascii(const char *s, int maxsize = VNR_TEXT_CAPACITY);
 bool all_ascii(const wchar_t *s, int maxsize = VNR_TEXT_CAPACITY);
-void strReplace(std::string &str, const std::string &oldStr, const std::string &newStr);
-void strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr);
+std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr = "");
+std::wstring &strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr = L"");
 std::vector<std::string> strSplit(const std::string &s, const std::string &delim);
 std::vector<std::wstring> strSplit(const std::wstring &s, const std::wstring &delim);
 bool startWith(const std::string_view &s, const std::string_view &s2);
@@ -99,10 +99,11 @@ int utf8charlen(char *data);
 inline bool disable_mbwc = false;
 inline bool disable_wcmb = false;
 template <class ST>
-inline void Trim(ST &text)
+inline ST &Trim(ST &text)
 {
   text.erase(text.begin(), std::find_if_not(text.begin(), text.end(), iswspace));
   text.erase(std::find_if_not(text.rbegin(), text.rend(), iswspace).base(), text.end());
+  return text;
 }
 
 template <typename T>

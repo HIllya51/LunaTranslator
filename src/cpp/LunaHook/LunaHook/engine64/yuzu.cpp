@@ -2009,6 +2009,22 @@ namespace
         s = std::regex_replace(s, std::regex(u8R"(\*)"), "");
         buffer->from(s);
     }
+    void F010014A01ADA0000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        if (!startWith(s, L"<color="))
+            return buffer->clear();
+        s = std::regex_replace(s, std::wregex(L"<color=\\w+>(.*?)</color>"), L"$1");
+        auto spls = strSplit(s, L",");
+        if (spls.size() != 4)
+            return buffer->clear();
+        if (Trim(spls[0]) != L"mes")
+            return buffer->clear();
+        auto fuck = std::regex_replace(spls[1], std::wregex(L"（(.*?)）"), L"");
+        fuck = std::regex_replace(fuck, std::wregex(L"・.*"), L"");
+        s = L"【" + Trim(fuck) + L"】" + Trim(strReplace(spls[3], L"\\n"));
+        buffer->from(s);
+    }
     void F0100AA1013B96000(TextBuffer *buffer, HookParam *hp)
     {
         F010060301588A000(buffer, hp);
@@ -3744,6 +3760,9 @@ namespace
             // この青空に約束を― Refine 1.0.0 & 1.0.1
             {0x804F2AC0, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x01006E201FC0A000ull, nullptr}},
             {0x804F2B80, {CODEC_UTF8, 0, 0, 0, F01001E601F6B8000_name, 0x01006E201FC0A000ull, nullptr}},
+            // 結城友奈は勇者である花結いのきらめきVol.1
+            {0x81C2FBE4, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x010014A01ADA0000ull, "1.0.0"}},
+            {0x81F2B984, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x010014A01ADA0000ull, "1.0.3"}},
         };
         return 1;
     }();

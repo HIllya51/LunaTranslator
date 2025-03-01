@@ -19,7 +19,7 @@ inline bool all_ascii_impl(const CharT *s, int maxsize)
 }
 
 template <class StringT>
-inline void strReplace_impl(StringT &str, const StringT &oldStr, const StringT &newStr)
+inline StringT &strReplace_impl(StringT &str, const StringT &oldStr, const StringT &newStr)
 {
   size_t pos = 0;
   while ((pos = str.find(oldStr, pos)) != StringT::npos)
@@ -27,6 +27,7 @@ inline void strReplace_impl(StringT &str, const StringT &oldStr, const StringT &
     str.replace(pos, oldStr.length(), newStr);
     pos += newStr.length();
   }
+  return str;
 }
 
 template <class StringT>
@@ -71,8 +72,8 @@ inline bool startWith_impl(const StringT &s, const StringT &s2)
 bool all_ascii(const char *s, int maxsize) { return all_ascii_impl<char>(s, maxsize); }
 bool all_ascii(const wchar_t *s, int maxsize) { return all_ascii_impl<wchar_t>(s, maxsize); }
 
-void strReplace(std::string &str, const std::string &oldStr, const std::string &newStr) { strReplace_impl<std::string>(str, oldStr, newStr); }
-void strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr) { strReplace_impl<std::wstring>(str, oldStr, newStr); }
+std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr) { return strReplace_impl<std::string>(str, oldStr, newStr); }
+std::wstring &strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr) { return strReplace_impl<std::wstring>(str, oldStr, newStr); }
 std::vector<std::string> strSplit(const std::string &s, const std::string &delim) { return strSplit_impl<std::string>(s, delim); }
 std::vector<std::wstring> strSplit(const std::wstring &s, const std::wstring &delim) { return strSplit_impl<std::wstring>(s, delim); }
 bool startWith(const std::string_view &s, const std::string_view &s2) { return startWith_impl<std::string_view>(s, s2); }
