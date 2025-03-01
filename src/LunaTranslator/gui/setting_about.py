@@ -33,7 +33,7 @@ def tryqueryfromhost():
             res = requests.get(
                 "{main_server}/version".format(main_server=main_server),
                 verify=False,
-                proxies=getproxy(("update", "lunatranslator")),
+                proxies=getproxy(),
             )
             res = res.json()
             gobject.serverindex = i
@@ -115,11 +115,7 @@ def updatemethod(urls, self):
     savep = gobject.getcachedir("update/" + url.split("/")[-1])
     if not savep.endswith(".zip"):
         savep += ".zip"
-    if url.startswith("https://github.com"):
-        __x = "github"
-    else:
-        __x = "lunatranslator"
-    r2 = requests.head(url, verify=False, proxies=getproxy(("update", __x)))
+    r2 = requests.head(url, verify=False, proxies=getproxy())
     size = int(r2.headers["Content-Length"])
     if check_interrupt():
         return
@@ -131,7 +127,7 @@ def updatemethod(urls, self):
             url,
             stream=True,
             verify=False,
-            proxies=getproxy(("update", __x)),
+            proxies=getproxy(),
         )
         file_size = 0
         for i in r.iter_content(chunk_size=1024 * 32):

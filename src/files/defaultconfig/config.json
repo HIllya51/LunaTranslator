@@ -1220,16 +1220,6 @@
             ]
         }
     },
-    "update": {
-        "lunatranslator": {
-            "useproxy": true,
-            "name": "lunatranslator.org"
-        },
-        "github": {
-            "useproxy": true,
-            "name": "GitHub"
-        }
-    },
     "hirasetting": {
         "mecab": {
             "use": true,

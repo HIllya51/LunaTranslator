@@ -136,10 +136,6 @@ def makeproxytab():
         name="./LunaTranslator/cishu/%s.py",
         getname=dynamiccishuname,
     )
-    github = getall(
-        l=globalconfig["update"],
-        item="update",
-    )
     titles = [
         "在线翻译",
         "注册在线翻译",
@@ -148,7 +144,6 @@ def makeproxytab():
         "辞书",
         "元数据",
         "离线翻译",
-        "自动更新",
     ]
     funcs = [
         functools.partial(makegridW, mianfei),
@@ -158,7 +153,6 @@ def makeproxytab():
         functools.partial(makegridW, cishus),
         functools.partial(makegridW, meta),
         functools.partial(makegridW, lixians),
-        functools.partial(makegridW, github),
     ]
     tab, dotab = makesubtab_lazy(
         titles,

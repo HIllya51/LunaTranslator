@@ -165,20 +165,6 @@ class texthook(basetext):
 
             return __shitdict(savehook_new_data[self.gameuid]["hooksetting_private"])
 
-    def tryqueryfromhost(self):
-
-        for i, main_server in enumerate(static_data["main_server"]):
-            try:
-                res = requests.get(
-                    "{main_server}/version_lunahook".format(main_server=main_server),
-                    verify=False,
-                    proxies=getproxy(("update", "lunatranslator")),
-                )
-                res = res.json()
-                return res
-            except:
-                pass
-
     def init(self):
 
         self.pids = []
