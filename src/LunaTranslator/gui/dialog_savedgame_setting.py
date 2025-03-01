@@ -14,6 +14,7 @@ from myutils.config import (
     globalconfig,
     static_data,
 )
+from gui.dialog_memory import dialog_memory
 from textsource.texthook import codepage_display
 from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
@@ -227,6 +228,10 @@ class dialog_setting_game_internal(QWidget):
                     getIconButton(
                         lambda: favorites(self, gameuid),
                         icon="fa.heart",
+                    ),
+                    getIconButton(
+                        lambda: dialog_memory(self, gameuid= gameuid),
+                        icon="fa.list-ul",
                     ),
                 ]
             ),

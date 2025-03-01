@@ -302,10 +302,13 @@ class dialog_memory(saveposwindow):
 
     @property
     def gameuid(self):
+        if self._gameuid:
+            return self._gameuid
         return 0 if self.xx else gobject.baseobject.gameuid
 
-    def __init__(self, parent, x=False) -> None:
+    def __init__(self, parent, x=False, gameuid=None) -> None:
         self.xx = x
+        self._gameuid = gameuid
         super().__init__(
             parent,
             flags=Qt.WindowType.WindowCloseButtonHint
