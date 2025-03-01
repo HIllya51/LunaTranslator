@@ -1235,7 +1235,7 @@ namespace ppsspp
 	{
 		CharFilter(buffer, L'\n');
 		auto s = buffer->strW();
-		s = std::regex_replace(s, std::wregex(LR"(<CLT \d>(.*?)<CLT>)"), L"$1");
+		s = std::regex_replace(s, std::wregex(LR"(<CLT \d+>(.*?)<CLT>)"), L"$1");
 		buffer->from(s);
 	}
 	void ULJM05574(TextBuffer *buffer, HookParam *hp)

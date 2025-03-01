@@ -944,6 +944,13 @@ namespace
         strReplace(s, R"(@w)", "");
         buffer->from(s);
     }
+    void PCSG00433(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, L'\n');
+        auto s = buffer->strW();
+        s = std::regex_replace(s, std::wregex(LR"(<CLT \d+>(.*?)<CLT>)"), L"$1");
+        buffer->from(s);
+    }
     auto _ = []()
     {
         emfunctionhooks = {
@@ -1257,6 +1264,8 @@ namespace
             {0x8000BF18, {0, 4, 0, 0, PCSG01247, "PCSG00425"}},
             // your diary +
             {0x800482CE, {0, 0, 0, 0, FPCSG00815, "PCSG01267"}},
+            // 絶対絶望少女　ダンガンロンパ Another Episode
+            {0x80086CB8, {CODEC_UTF16, 1, 0, 0, PCSG00433, "PCSG00433"}},
         };
         return 1;
     }();
