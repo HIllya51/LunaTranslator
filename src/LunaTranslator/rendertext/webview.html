@@ -77,9 +77,9 @@
         if (window.LUNAJSObject)
             LUNAJSObject.calllunaheightchange(h)
     }
-    function safe_calllunaclickedword(word) {
+    function safe_calllunaclickedword(word, app) {
         if (window.LUNAJSObject)
-            LUNAJSObject.calllunaclickedword(word)
+            LUNAJSObject.calllunaclickedword(word, app)
     }
 </script>
 <script>
@@ -236,6 +236,7 @@
     }
 </style>
 <script>
+    var allowclickword = false
     function sethovercolor(color) {
         color = decodeURIComponent(color)
         const alpha = color.slice(1, 3); // aa
@@ -257,6 +258,7 @@
         safe_calllunaheightchange()
     }
     function showhideclick(show) {
+        allowclickword = show
         let css = ['', `
     .lunatranslator_clickword {
         z-index: 2000;
@@ -402,8 +404,16 @@
 
             eleori.setAttribute('word', JSON.stringify(word))
             eleori.addEventListener('click', function (e) {
-                safe_calllunaclickedword(JSON.parse(this.getAttribute('word')))
+                safe_calllunaclickedword(JSON.parse(this.getAttribute('word')), false)
             })
+            eleori.oncontextmenu = function (e) {
+                if (!allowclickword) return
+                if (window.getSelection().toString()) { }
+                else {
+                    event.preventDefault();
+                    safe_calllunaclickedword(JSON.parse(this.getAttribute('word')), true)
+                }
+            }
             eleori.classList.add('lunatranslator_clickword')
             eleori.appendChild(style1)
 
