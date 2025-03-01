@@ -2837,7 +2837,7 @@ class IconButton(QPushButton):
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setStyleSheet("border:transparent;padding: 0px;")
         self.setCheckable(checkable)
-        self.setEnabled(enable and bool(self._icon))
+        self.setEnabled(enable and (bool(icon) or bool(qicon)))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.resizedirect()
 
