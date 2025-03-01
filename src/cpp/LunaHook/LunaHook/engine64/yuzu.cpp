@@ -50,7 +50,7 @@ namespace
         int padding;
         decltype(HookParam::text_fun) hookfunc;
         decltype(HookParam::filter_fun) filterfun;
-        uint64_t _id;
+        std::variant<uint64_t, std::vector<uint64_t>> _id;
         const char *_version;
     };
     std::unordered_map<uint64_t, emfuncinfo> emfunctionhooks;
@@ -67,7 +67,23 @@ namespace
         {
             // 判断是有效的info
             auto checkversion = (em._version == 0) || (std::string(em._version) == (game_info.version));
-            auto checkid = em._id == game_info.id;
+            bool checkid;
+
+            auto visitf = [&](auto &&_ids)
+            {
+                using T = std::decay_t<decltype(_ids)>;
+                if constexpr (std::is_same_v<T, uint64_t>)
+                {
+                    checkid = _ids == game_info.id;
+                }
+                else if constexpr (std::is_same_v<T, std::vector<uint64_t>>)
+                {
+                    checkid = std::any_of(_ids.begin(), _ids.end(), [=](uint64_t _id)
+                                          { return _id == game_info.id; });
+                }
+            };
+            std::visit(visitf, em._id);
+
             return checkid && checkversion;
         }
         else
@@ -205,7 +221,31 @@ bool yuzu::attach_function()
             hpinternal.offset = op.offset;
             hpinternal.padding = op.padding;
             hpinternal.jittype = JITTYPE::YUZU;
-            NewHook(hpinternal, ull2hex(op._id).c_str());
+
+            std::string ids;
+            auto visitf = [&](auto &&_ids)
+            {
+                using T = std::decay_t<decltype(_ids)>;
+                if constexpr (std::is_same_v<T, uint64_t>)
+                {
+                    ids = ull2hex(_ids);
+                }
+                else if constexpr (std::is_same_v<T, std::vector<uint64_t>>)
+                {
+                    if (std::any_of(_ids.begin(), _ids.end(), [=](uint64_t _id)
+                                    { return _id == game_info.id; }))
+                    {
+                        ids = ull2hex(game_info.id);
+                    }
+                    else
+                    {
+                        ids = ull2hex(_ids[0]);
+                    }
+                }
+            };
+            std::visit(visitf, op._id);
+
+            NewHook(hpinternal, ids.c_str());
         }();
         delayinsertNewHook(em_address);
     };
@@ -3766,9 +3806,11 @@ namespace
             // 結城友奈は勇者である花結いのきらめきVol.2
             {0x82D259B4, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01006F901ADA2000ull, "1.0.0"}},
             {0x81FCC294, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01006F901ADA2000ull, "1.0.3"}},
-            // 結城友奈は勇者である花結いのきらめきVol.3
-            {0x82D5E904, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01002DF01ADA4000ull, "1.0.0"}},
+            // 結城友奈は勇者である花結いのきらめきVol.3 01002DF01ADA4000
+            // 結城友奈は勇者である花結いのきらめきVol.4 0100A2901ADA6000
+            {0x82D5E904, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, std::vector<uint64_t>{0x01002DF01ADA4000ull, 0x0100A2901ADA6000ull}, "1.0.0"}},
             {0x82D5E804, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01002DF01ADA4000ull, "1.0.3"}},
+            {0x82022244, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x0100A2901ADA6000ull, "1.0.3"}},
         };
         return 1;
     }();
