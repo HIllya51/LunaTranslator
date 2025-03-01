@@ -445,18 +445,27 @@ class TranslatorWindow(resizableframeless):
                 if flag:
                     self.show_()
             elif globalconfig["autodisappear_which"] == 1:
-                self.translate_text.textbrowser.setVisible(True)
+                if globalconfig["disappear_delay"] == 0:
+                    if self.isMouseHover:
+                        self.translate_text.textbrowser.setVisible(True)
+                else:
+                    self.translate_text.textbrowser.setVisible(True)
+
+    @property
+    def isMouseHover(self):
+        # 当鼠标悬停，或前景窗口为当前进程的其他窗口时，返回真
+        return self.geometry().contains(QCursor.pos()) or (
+            windows.GetForegroundWindow() != self.winid
+            and windows.GetWindowThreadProcessId(windows.GetForegroundWindow())
+            == os.getpid()
+        )
 
     @threader
     def autohidedelaythread(self):
         while True:
             time.sleep(0.5)
             # 当鼠标悬停，或前景窗口为当前进程的其他窗口时，禁止自动隐藏
-            if self.geometry().contains(QCursor.pos()) or (
-                windows.GetForegroundWindow() != self.winid
-                and windows.GetWindowThreadProcessId(windows.GetForegroundWindow())
-                == os.getpid()
-            ):
+            if self.isMouseHover:
                 self.lastrefreshtime = time.time()
                 continue
             if globalconfig["autodisappear"]:
