@@ -256,6 +256,7 @@ def __changeuibuttonstate3(self, x):
 
 
 def __changeuibuttonstate(self, x):
+    globalconfig["locktoolsEx"] = False
     gobject.baseobject.translation_ui.refreshtoolicon()
 
     gobject.baseobject.translation_ui.enterfunction()
@@ -275,6 +276,7 @@ def uisetting(self, l):
 
 
 def __changeselectablestate(self, x):
+    globalconfig["selectableEx"] = False
     gobject.baseobject.translation_ui.refreshtoolicon()
     gobject.baseobject.translation_ui.translate_text.setselectable(x)
 

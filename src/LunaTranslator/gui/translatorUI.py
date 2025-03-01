@@ -659,6 +659,7 @@ class TranslatorWindow(resizableframeless):
                 self.changetoolslockstate,
                 lambda: globalconfig["locktools"],
                 lambda: globalconfig["locktools"],
+                self.changetoolslockstateEx,
             ),
             (
                 "gamepad_new",
@@ -1174,6 +1175,19 @@ class TranslatorWindow(resizableframeless):
         usegeo = usegeo.intersected(self.rect())
         return usegeo
 
+    @property
+    def locktoolsExcheckrect(self):
+        btn: QWidget = self.titlebar.buttons["locktoolsbutton"]
+        usegeo = btn.geometry()
+        usegeo = QRect(
+            usegeo.x() - usegeo.width(),
+            usegeo.y(),
+            usegeo.width() * 3,
+            usegeo.height(),
+        )
+        usegeo = usegeo.intersected(self.rect())
+        return usegeo
+
     @threader
     def mousetransparent_check(self):
         hwnd = int(self.winid)
@@ -1274,7 +1288,16 @@ class TranslatorWindow(resizableframeless):
         globalconfig["autorun"] = not globalconfig["autorun"]
         self.refreshtoolicon()
 
+    def changetoolslockstateEx(self):
+        globalconfig["locktoolsEx"] = True
+        try:
+            gobject.baseobject.settin_ui.locktoolsbutton.clicksignal.emit()
+        except:
+            globalconfig["locktools"] = not globalconfig["locktools"]
+            self.refreshtoolicon()
+
     def changetoolslockstate(self):
+        globalconfig["locktoolsEx"] = False
         try:
             gobject.baseobject.settin_ui.locktoolsbutton.clicksignal.emit()
         except:
@@ -1383,6 +1406,13 @@ class TranslatorWindow(resizableframeless):
             usegeo = self.mousetranscheckrect
         return usegeo.contains(self.mapFromGlobal(QCursor.pos()))
 
+    def checklocktoolsEx(self):
+        usegeo = self.titlebar.geometry()
+        btn: QWidget = self.titlebar.buttons["locktoolsbutton"]
+        if (not btn.isVisible()) and (btn.reflayout is not None):
+            usegeo = self.locktoolsExcheckrect
+        return usegeo.contains(self.mapFromGlobal(QCursor.pos()))
+
     def __betterenterevent(self):
         if self._isentered:
             return
@@ -1419,7 +1449,8 @@ class TranslatorWindow(resizableframeless):
         self.toolbarhidedelaysignal.emit()
 
     def enterfunction(self, delay=None):
-        self.titlebar.show()
+        if (not globalconfig["locktoolsEx"]) or self.checklocktoolsEx():
+            self.titlebar.show()
         self.translate_text.textbrowser.setVisible(True)
         self.autohidestart = True
         self.lastrefreshtime = time.time()

@@ -59,7 +59,9 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     The function of this button is to switch the opacity of the translation window to 0 with one click. This switch will not cause the original opacity settings to be forgotten.
     
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> Lock Toolbar
-    When the toolbar is not locked, it will automatically hide when the mouse moves out; after activation, the toolbar will always be displayed.
+    After activation, the toolbar will always be displayed.
+
+    When the toolbar is not locked, it will automatically hide when the mouse moves away, and it will reappear when the mouse enters the window. If the toolbar lock was canceled using the right mouse button, the toolbar will only reappear when the mouse enters the **area of the lock toolbar button and its adjacent buttons on either side**.
 
     When the toolbar is not locked, if `Mouse Through Window` is activated, the toolbar will only be displayed when the mouse moves to the **area of the Mouse Through Window button and one button to the left and right**; otherwise, as long as the mouse enters the translation window, the toolbar will be displayed.
 

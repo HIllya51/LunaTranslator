@@ -423,6 +423,7 @@
     "transparent_tool": 50,
     "isshowhira": true,
     "locktools": true,
+    "locktoolsEx": false,
     "showfanyisource": false,
     "showfanyi": true,
     "autoread": false,
