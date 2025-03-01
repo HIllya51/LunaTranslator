@@ -288,11 +288,11 @@ namespace
     void PCSG00855(TextBuffer *buffer, HookParam *)
     {
         StringFilter(buffer, TEXTANDLEN(u8"#n　"));
+        StringFilter(buffer, TEXTANDLEN(u8"#n"));
     }
     void PCSG01150(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, TEXTANDLEN(u8"#n　"));
-        StringFilter(buffer, TEXTANDLEN(u8"#n"));
+        PCSG00855(buffer, hp);
         PCSG00592(buffer, hp);
     }
     void PCSG01260_T(TextBuffer *buffer, HookParam *)
@@ -1125,6 +1125,8 @@ namespace
             {0x8001a860, {CODEC_UTF8, 8, 0, 0, PCSG00938, "PCSG00938"}},
             {0x80022bd2, {CODEC_UTF8, 4, 0x14, 0, PCSG00938, "PCSG00938"}},
             {0x80022bf0, {CODEC_UTF8, 5, 0, 0, PCSG00938, "PCSG00938"}},
+            // ワンド オブ フォーチュン Ｒ２ ＦＤ ～君に捧げるエピローグ～
+            {0x80035B80, {CODEC_UTF8, 6, 0, 0, PCSG00855, "PCSG01208"}},
             // I DOLL U
             {0x8000AC70, {CODEC_UTF8, 0, 0, 0, PCSG00833, "PCSG00592"}}, // 需要自己替换#Name[1] #Name[2]
             {0x8000AE7E, {CODEC_UTF8, 4, 0, 0, PCSG00592, "PCSG00592"}},
@@ -1266,6 +1268,8 @@ namespace
             {0x800482CE, {0, 0, 0, 0, FPCSG00815, "PCSG01267"}},
             // 絶対絶望少女　ダンガンロンパ Another Episode
             {0x80086CB8, {CODEC_UTF16, 1, 0, 0, PCSG00433, "PCSG00433"}},
+            // 夢現Re:Master
+            {0x8000CD76, {CODEC_UTF8, 2, 0, 0, 0, "PCSG01266"}},
         };
         return 1;
     }();
