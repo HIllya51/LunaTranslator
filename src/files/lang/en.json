@@ -238,7 +238,7 @@
     "自动获取系统代理": "Auto-detect System Proxy",
     "游戏设置": "Game Settings",
     "显示错误信息": "Show Error Message",
-    "附带上下文个数": "Context Length",
+    "附带上下文个数": "Number of Context Lines to Include",
     "备忘录": "Memo",
     "当前权限": "Current Privileges",
     "非管理员": "Non-administrator",
