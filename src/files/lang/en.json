@@ -189,7 +189,7 @@
     "繁简转换": "Trad/Simp Chinese Conversion",
     "自定义翻译": "Custom Translation",
     "说明": "Description",
-    "分析图像更新+周期执行": "Analyze on Text Updates + Execute Periodically",
+    "分析图像更新+周期执行": "Analyze on Image Changes + Execute Periodically",
     "内嵌的翻译器": "Embedded Translator",
     "代理设置": "Proxy Settings",
     "自动更新": "Auto Update",
