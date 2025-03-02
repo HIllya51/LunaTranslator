@@ -473,9 +473,6 @@ class MySwitch(QAbstractButton):
     def event(self, a0: QEvent) -> bool:
         if a0.type() == QEvent.Type.MouseButtonDblClick:
             return True
-        elif a0.type() == QEvent.Type.EnabledChange:
-            self.setEnabled(not self.isEnabled())
-            return True
         elif a0.type() == QEvent.Type.FontChange:
             self.__loadsize()
         return super().event(a0)
