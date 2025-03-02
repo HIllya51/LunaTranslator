@@ -42,6 +42,7 @@
 1. #### Word selection translation
     Translate the text currently selected by the mouse
 
+    UIAutomation is preferred for word extraction. If the focus control of the current window does not support UIAutomationTextPattern and word extraction fails, the clipboard will be used to automatically send Ctrl+C to extract the word.
 1. #### Show/Hide Translation Window
     N/A
 
@@ -136,9 +137,11 @@
 1. #### Retrieve and search for words
     Search for words in the text currently selected by the mouse
 
+    UIAutomation is preferred for word extraction. If the focus control of the current window does not support UIAutomationTextPattern and word extraction fails, the clipboard will be used to automatically send Ctrl+C to extract the word.
 1. #### Word Lookup in a New Window  
     Look up the currently selected text by the mouse in a new search window to avoid overwriting the ongoing search.
 
+    UIAutomation is preferred for word extraction. If the focus control of the current window does not support UIAutomationTextPattern and word extraction fails, the clipboard will be used to automatically send Ctrl+C to extract the word.
 1. #### OCR word search
     Select the OCR range for one OCR and then search for words
 

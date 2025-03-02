@@ -465,14 +465,17 @@ check_window_viewable.argtypes = (HWND,)
 check_window_viewable.restype = c_bool
 _GetSelectedText = utilsdll.GetSelectedText
 _GetSelectedText.argtypes = (c_void_p,)
+_GetSelectedText.restype = c_bool
 
 
 def GetSelectedText():
     ret = []
-    _GetSelectedText(CFUNCTYPE(None, c_wchar_p)(ret.append))
+    support = _GetSelectedText(CFUNCTYPE(None, c_wchar_p)(ret.append))
+    if not support:
+        return None
     if len(ret):
         return ret[0]
-    return None
+    return ""
 
 
 get_allAccess_ptr = utilsdll.get_allAccess_ptr

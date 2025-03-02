@@ -12,9 +12,13 @@ class copyboard(basetext):
     def __callback(self, ismy, string):
         if globalconfig["excule_from_self"] and ismy:
             return
+        if gobject.baseobject.freezeclipboard:
+            gobject.baseobject.freezeclipboard = False
+            return
         self.dispatchtext(string)
 
     def init(self) -> None:
+        gobject.baseobject.freezeclipboard = False
         self.startsql(gobject.gettranslationrecorddir("0_copy.sqlite"))
         gobject.baseobject.translation_ui.clipboardcallback.connect(self.__callback)
         winsharedutils.startclipboardlisten()

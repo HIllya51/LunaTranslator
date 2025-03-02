@@ -122,16 +122,19 @@ DECLARE_API bool check_window_viewable(HWND hwnd)
     return IntersectRect(&_, &windowRect, &monitorInfo.rcWork);
 }
 
-DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
+DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
 {
-    CO_INIT co;
-    CHECK_FAILURE_NORET(co);
+    bool succ = true;
     try
     {
+        CO_INIT co;
+        if (FAILED(co))
+            throw std::runtime_error("");
         // 初始化 COM
         CComPtr<IUIAutomation> automation;
         if (FAILED(CoCreateInstance(CLSID_CUIAutomation, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&automation))) || !automation)
         {
+            succ = false;
             throw std::runtime_error("无法初始化 UI Automation.");
         }
 
@@ -146,6 +149,7 @@ DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
         CComPtr<IUIAutomationTextPattern> textPattern;
         if (FAILED(focusedElement->GetCurrentPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern))) || !textPattern)
         {
+            succ = false;
             throw std::runtime_error("当前元素不支持 TextPattern.");
         }
 
@@ -175,6 +179,7 @@ DECLARE_API void GetSelectedText(void (*cb)(const wchar_t *))
     {
         printf(e.what());
     }
+    return succ;
 }
 
 DECLARE_API void *get_allAccess_ptr()

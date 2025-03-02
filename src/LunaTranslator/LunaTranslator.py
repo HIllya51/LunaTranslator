@@ -59,6 +59,7 @@ from rendertext.texttype import TextType, SpecialColor, TranslateColor
 class MAINUI:
     def __init__(self) -> None:
         super().__init__()
+        self.freezeclipboard = False
         self.update_avalable = False
         self.translators = {}
         self.cishus = {}
