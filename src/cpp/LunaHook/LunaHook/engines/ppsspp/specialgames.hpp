@@ -1199,6 +1199,11 @@ namespace ppsspp
 		StringFilter(buffer, TEXTANDLEN("@n"));
 		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 	}
+	void ULJM06173(TextBuffer *buffer, HookParam *hp)
+	{
+		StringCharReplacer(buffer, TEXTANDLEN("\x81\x40<br>"), '\n');
+		StringFilter(buffer, TEXTANDLEN("<br>"));
+	}
 	void ULJS00592(TextBuffer *buffer, HookParam *hp)
 	{
 		StringFilter(buffer, TEXTANDLEN("<br>"));
@@ -2086,5 +2091,15 @@ namespace ppsspp
 		{0x88744A8, {0, 3, 0, 0, ULJM05915, "ULJM05915"}},
 		// 君が主で執事が俺で～お仕え日記～ぽーたぶる
 		{0x882135C, {0, 1, 0, 0, ULJM06183, "ULJM06183"}},
+		// 探偵オペラ ミルキィホームズ
+		{0x88AF23C, {CODEC_UTF8, 0xf, 0, 0, ULJS00124, "ULJS00343"}},
+		// 探偵オペラ　ミルキィホームズ　２
+		{0x88B3848, {CODEC_UTF8, 0xf, 0, 0, ULJS00124, "ULJS00520"}},
+		// TOKYOヤマノテBOYS Portable DARK CHERRY DISC
+		{0x8856FC8, {0, 0, 0, 0, ULJM06173, "ULJM06173"}},
+		// TOKYOヤマノテBOYS Portable HONEY MILK DISC
+		{0x8856C80, {0, 0, 0, 0, ULJM06173, "ULJM06171"}},
+		// アンジェリーク 魔恋の六騎士
+		{0x889CBC8, {0, 1, 0, 0, ULJM06129, "ULJM05986"}},
 	};
 }
