@@ -5,7 +5,7 @@ os.chdir(os.path.dirname(__file__))
 
 def psp():
     with open(
-        "../cpp/LunaHook/LunaHook/engines/ppsspp/specialgames.hpp", "r", encoding="utf8"
+        "../LunaHook/engines/ppsspp/specialgames.hpp", "r", encoding="utf8"
     ) as ff:
         content = ff.read()
     ret = []
@@ -24,7 +24,7 @@ def psp():
 
 
 def ns():
-    with open("../cpp/LunaHook/LunaHook/engine64/yuzu.cpp", "r", encoding="utf8") as ff:
+    with open("../LunaHook/engine64/yuzu.cpp", "r", encoding="utf8") as ff:
         content = ff.read()
     ret = []
     for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
@@ -47,7 +47,7 @@ def ns():
 
 def psv():
     with open(
-        "../cpp/LunaHook/LunaHook/engine64/vita3k.cpp", "r", encoding="utf8"
+        "../LunaHook/engine64/vita3k.cpp", "r", encoding="utf8"
     ) as ff:
         content = ff.read()
     ret = []
@@ -67,7 +67,7 @@ def psv():
 
 def rpcs3():
     with open(
-        "../cpp/LunaHook/LunaHook/engine64/rpcs3.cpp", "r", encoding="utf8"
+        "../LunaHook/engine64/rpcs3.cpp", "r", encoding="utf8"
     ) as ff:
         content = ff.read()
     ret = []
@@ -101,12 +101,12 @@ def maketable(lst):
 
 
 for lang in ["zh", "en", "ja"]:
-    with open(f"../../docs/{lang}/emugames_template.md", "r", encoding="utf8") as ff:
+    with open(f"../../../../docs/{lang}/emugames_template.md", "r", encoding="utf8") as ff:
         temp = ff.read()
 
     temp = temp.replace("NS_GAME_LIST", maketable(ns))
     temp = temp.replace("PSP_GAME_LIST", maketable(psp))
     temp = temp.replace("PSV_GAME_LIST", maketable(psv))
     temp = temp.replace("PS3_GAME_LIST", maketable(rpcs3))
-    with open(f"../../docs/{lang}/emugames.md", "w", encoding="utf8") as ff:
+    with open(f"../../../../docs/{lang}/emugames.md", "w", encoding="utf8") as ff:
         ff.write(temp)

@@ -2601,13 +2601,16 @@ namespace
             // Memories Off ～それから～
             {0x8003fb7c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B4A01326E000ull, "1.0.0"}},
             {0x8003fb8c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B4A01326E000ull, "1.0.1"}},
+            // Memories Off 2nd
+            {0x8003ee0c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100D31013274000ull, "1.0.0"}},
+            {0x8003ee1c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100D31013274000ull, "1.0.1"}},
+            // Memories Off #5 とぎれたフィルム
+            {0x8003f6ac, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010073901326C000ull, "1.0.0"}},
+            {0x8003f5fc, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010073901326C000ull, "1.0.1"}},
             // ファミコン探偵倶楽部 消えた後継者
             {0x80052a10, {CODEC_UTF16, 3, 0, mages_readstring, 0, 0x0100B4500F7AE000ull, "1.0.0"}},
             // ファミコン探偵倶楽部PartII うしろに立つ少女
             {0x8004cb30, {CODEC_UTF16, 3, 0, mages_readstring, 0, 0x010078400F7B0000ull, "1.0.0"}},
-            // Memories Off 2nd
-            {0x8003ee0c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100D31013274000ull, "1.0.0"}},
-            {0x8003ee1c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100D31013274000ull, "1.0.1"}},
             // 想い出にかわる君 ～メモリーズオフ～
             {0x8003ef6c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100FFA013272000ull, "1.0.0"}},
             {0x8003ef7c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100FFA013272000ull, "1.0.1"}},
@@ -2616,9 +2619,6 @@ namespace
             {0x80043d5c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010047A013268000ull, "1.0.1"}},
             // メモリーズオフ ゆびきりの記憶
             {0x800440ec, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010079C012896000ull, "1.0.0"}},
-            // Memories Off #5 とぎれたフィルム
-            {0x8003f6ac, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010073901326C000ull, "1.0.0"}},
-            {0x8003f5fc, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010073901326C000ull, "1.0.1"}},
             // シンスメモリーズ 星天の下で
             {0x80048cc8, {CODEC_UTF16, 4, 0, mages_readstring, 0, 0x0100E94014792000ull, 0}}, // line + name => join
             {0x8004f44c, {CODEC_UTF16, 4, 0, mages_readstring, 0, 0x0100E94014792000ull, 0}}, // fast trophy
