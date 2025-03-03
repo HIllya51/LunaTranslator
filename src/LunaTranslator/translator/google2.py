@@ -1,4 +1,4 @@
-﻿import re, html
+import re, html
 from translator.basetranslator import basetrans
 from language import Languages
 

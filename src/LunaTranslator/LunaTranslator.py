@@ -884,7 +884,7 @@ class MAINUI:
             return aclass(classname)
         except Exception as e:
             self.displayinfomessage(
-                dynamicapiname(classname) + " import failed : " + str(stringfyerror(e)),
+                _TR(dynamicapiname(classname)) + " import failed : " + str(stringfyerror(e)),
                 "<msg_error_Translator>",
             )
             raise e
