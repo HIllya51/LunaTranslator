@@ -2615,15 +2615,15 @@ namespace
             // 想い出にかわる君 ～メモリーズオフ～
             {0x8003ef6c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100FFA013272000ull, "1.0.0"}},
             {0x8003ef7c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100FFA013272000ull, "1.0.1"}},
-            // ファミコン探偵倶楽部 消えた後継者
-            {0x80052a10, {CODEC_UTF16, 3, 0, mages_readstring, 0, 0x0100B4500F7AE000ull, "1.0.0"}},
-            // ファミコン探偵倶楽部PartII うしろに立つ少女
-            {0x8004cb30, {CODEC_UTF16, 3, 0, mages_readstring, 0, 0x010078400F7B0000ull, "1.0.0"}},
             // シンスメモリーズ 星天の下で
             {0x80048cc8, {CODEC_UTF16, 4, 0, mages_readstring, 0, 0x0100E94014792000ull, 0}}, // line + name => join
             {0x8004f44c, {CODEC_UTF16, 4, 0, mages_readstring, 0, 0x0100E94014792000ull, 0}}, // fast trophy
             {0x8004f474, {CODEC_UTF16, 4, 0, mages_readstring, 0, 0x0100E94014792000ull, 0}}, // prompt
             {0x80039dc0, {CODEC_UTF16, 4, 0, mages_readstring, 0, 0x0100E94014792000ull, 0}}, // choice
+            // ファミコン探偵倶楽部 消えた後継者
+            {0x80052a10, {CODEC_UTF16, 3, 0, mages_readstring, 0, 0x0100B4500F7AE000ull, "1.0.0"}},
+            // ファミコン探偵倶楽部PartII うしろに立つ少女
+            {0x8004cb30, {CODEC_UTF16, 3, 0, mages_readstring, 0, 0x010078400F7B0000ull, "1.0.0"}},
             // やはりゲームでも俺の青春ラブコメはまちがっている。
             {0x8005DFB8, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100E0D0154BC000ull, "1.0.0"}},
             // CHAOS;HEAD NOAH
