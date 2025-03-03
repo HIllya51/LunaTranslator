@@ -3834,6 +3834,7 @@ namespace
             {0x81DDD634, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01000DD01ADAE000ull, "1.0.1"}},
             // 冬園サクリフィス
             {0x816CA374, {CODEC_UTF16, 1, 0, 0, F0100D7E01E998000, 0x0100D7E01E998000ull, "1.0.0"}},
+            {0x818c90d4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, 0, 0x0100D7E01E998000ull, "1.0.0"}},
         };
         return 1;
     }();
