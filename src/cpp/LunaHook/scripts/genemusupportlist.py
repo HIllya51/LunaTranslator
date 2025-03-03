@@ -96,7 +96,7 @@ def maketable(lst):
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |"""
     for i, (_id, game) in enumerate(lst):
-        res += "\n" + f"| {i+1} | {_id} | {game} |"
+        res += "\n" + f"|  | {_id} | {game} |"
     return res
 
 

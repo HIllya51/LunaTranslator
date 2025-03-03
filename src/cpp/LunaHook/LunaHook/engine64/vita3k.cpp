@@ -34,7 +34,7 @@ namespace
         int padding;
         decltype(HookParam::text_fun) hookfunc;
         decltype(HookParam::filter_fun) filterfun;
-        const char *_id;
+        std::variant<const char *, std::vector<const char *>> _id;
     };
     std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks;
 }
@@ -83,6 +83,29 @@ namespace
         hp.type = DIRECT_READ;
         NewHook(hp, "Vita3KGameInfo");
     }
+    auto MatchGameId = [](const auto &idsv) -> const char *
+    {
+        if (!Vita3KGameID.size())
+            return nullptr;
+        if (const auto *id = std::get_if<const char *>(&idsv))
+        {
+            if (Vita3KGameID == *id)
+                return *id;
+            return nullptr;
+        }
+        else if (const auto *ids = std::get_if<std::vector<const char *>>(&idsv))
+        {
+            for (auto &&id : *ids)
+            {
+                if (Vita3KGameID == id)
+                {
+                    return id;
+                }
+            }
+            return nullptr;
+        }
+        return nullptr;
+    };
 }
 bool vita3k::attach_function()
 {
@@ -109,7 +132,8 @@ bool vita3k::attach_function()
             if (emfunctionhooks.find(em_address) == emfunctionhooks.end())
                 return;
             auto op = emfunctionhooks.at(em_address);
-            if (Vita3KGameID.size() && (op._id != Vita3KGameID))
+            auto getmatched = MatchGameId(op._id);
+            if (!getmatched)
                 return;
             HookParam hpinternal;
             hpinternal.address = entrypoint;
@@ -123,7 +147,7 @@ bool vita3k::attach_function()
             hpinternal.offset = op.offset;
             hpinternal.padding = op.padding;
             hpinternal.jittype = JITTYPE::VITA3K;
-            NewHook(hpinternal, op._id);
+            NewHook(hpinternal, getmatched);
         }();
         delayinsertNewHook(em_address);
     };
@@ -744,12 +768,29 @@ namespace
         s = std::regex_replace(s, std::regex(u8R"(@[_\*\d\w]*)"), "");
         buffer->from(s);
     }
+    void PCSG00431(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("#n\x81\x40"));
+        StringFilter(buffer, TEXTANDLEN("#n"));
+        static std::string last;
+        auto s = buffer->strA();
+        if (startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+        }
+        last = s;
+    }
     void FPCSG00855(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
         s = std::regex_replace(s, std::regex(u8R"(#n(　)*)"), "");
         s = std::regex_replace(s, std::regex(R"(#\w.+?\])"), "");
         buffer->from(s);
+    }
+    void PCSG01178(TextBuffer *buffer, HookParam *hp)
+    {
+        FPCSG00855(buffer, hp);
+        StringFilter(buffer, TEXTANDLEN("  "));
     }
     void FPCSG00855_2_1(TextBuffer *buffer, HookParam *hp)
     {
@@ -780,10 +821,10 @@ namespace
     }
     void FPCSG00477(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
-        ws = std::regex_replace(ws, std::wregex(LR"(#n\u3000*)"), L"");
-        ws = std::regex_replace(ws, std::wregex(LR"(#\w.+?\])"), L"");
-        buffer->from(WideStringToString(ws, 932));
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex(R"(#n(\x81\x40)*)"), "");
+        s = std::regex_replace(s, std::regex(R"(#\w.+?\])"), "");
+        buffer->from(s);
     }
     void PCSG00654(TextBuffer *buffer, HookParam *hp)
     {
@@ -1165,6 +1206,9 @@ namespace
             {0x800579EE, {0, 0, 0, 0, PCSG00826, "PCSG00826"}},
             // Norn9 ~Norn + Nonette~ Act Tune
             {0x8001E288, {CODEC_UTF8, 0, 0, 0, PCSG00833, "PCSG00833"}},
+            // NORN9 VAR COMMONS
+            {0x80019DFA, {0, 4, 0, 0, PCSG00431, "PCSG00431"}},
+            {0x800338AA, {0, 0XD, 0, 0, FPCSG00855, "PCSG00431"}},
             // 空蝉の廻
             {0x82535242, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 1, 0, 0, 0, "PCSG01011"}}, // 后缀有人名，需要额外过滤
             {0x801AE35A, {CODEC_UTF8, 7, 0, PCSG01011, 0, "PCSG01011"}},
@@ -1383,6 +1427,18 @@ namespace
             {0x8006080E, {0, 0, 0, 0, PCSG01254, "PCSG01087"}},
             // 古書店街の橋姫 々
             {0x8000C74A, {0, 0, 0, 0, 0, "PCSG01213"}},
+            // ナデレボ！
+            {0x80043D1A, {0, 0, 0, 0, PCSG01178, "PCSG01178"}},
+            // 猛獣たちとお姫様 ～in blossom～
+            {0x8001DD9E, {CODEC_UTF8, 0, 0, 0, 0, "PCSG01096"}},
+            // クロガネ回姫譚 －閃夜一夜－
+            {0x8003979C, {0, 0, 0, 0, PCSG01249, "PCSG00417"}},
+            // スクール・ウォーズ～全巻パック　本編＆卒業戦線～ //PCSG00574
+            // ロミオVSジュリエット 全巻パック //PCSG00618
+            {0x80017628, {CODEC_UTF8, 1, 0, 0, 0, std::vector<const char *>{"PCSG00574", "PCSG00618"}}},
+            // 猛獣使いと王子様 ～Flower ＆ Snow～
+            {0x80071E3C, {CODEC_UTF8, 0, 0, 0, FPCSG00855, "PCSG00604"}},
+            {0x80080BAA, {CODEC_UTF8, 7, 0, 0, FPCSG00855, "PCSG00604"}},
         };
         return 1;
     }();

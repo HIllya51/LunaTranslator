@@ -34,3 +34,14 @@
     font-size: 1.7em;
     font-weight: 400;
 }
+
+
+[id^="panel-"] tbody {
+    counter-reset: rowNumber;
+}
+[id^="panel-"] tbody tr {
+    counter-increment: rowNumber;
+}
+[id^="panel-"] tbody tr td:first-child::before {
+    content: counter(rowNumber);
+} 
