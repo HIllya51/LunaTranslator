@@ -352,6 +352,7 @@ namespace
     void T01000A7019EBC000(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         hp1->text_fun = nullptr;
+        hp1->type |= HOOK_EMPTY;
         HookParam hp;
         hp.address = YUZU::emu_arg(context)[0xb];
         hp.type = DIRECT_READ;

@@ -43,7 +43,6 @@ namespace
 {
     void trygetgameinwindowtitle()
     {
-
         HookParam hp;
         hp.address = 0x3000;
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -194,7 +193,8 @@ namespace
     void PCSG00595(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         hp1->text_fun = nullptr;
-        auto address = VITA3K::emu_arg(context)[0] + 0x20;
+        hp1->type |= HOOK_EMPTY;
+        auto address = VITA3K::emu_arg(context)[0] + hp1->padding;
         buffer->from((char *)address);
         HookParam hp;
         hp.address = address;
@@ -221,7 +221,7 @@ namespace
                 buffer->from(collect);
             last = collect;
         };
-        static auto _ = NewHook(hp, "PCSG00595");
+        static auto _ = NewHook(hp, hp1->name);
     }
     void ReadU16TextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -253,6 +253,12 @@ namespace
         s = std::regex_replace(s, std::regex("(#n)+"), "");
         s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
         s = std::regex_replace(s, std::regex("#Pos\\[[\\s\\S]*?\\]"), "");
+        buffer->from(s);
+    }
+    void PCSG01203(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = std::regex_replace(s, std::regex("#Ruby\\[[-\\d]+,(.*?)\\]"), "");
         buffer->from(s);
     }
     void FPCSG01008(TextBuffer *buffer, HookParam *hp)
@@ -370,6 +376,17 @@ namespace
     void PCSG00787(TextBuffer *buffer, HookParam *)
     {
         CharFilter(buffer, '\n');
+    }
+    void PCSG01034(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, L'\n');
+        static std::string last;
+        auto s = buffer->strA();
+        if (s == last)
+        {
+            buffer->clear();
+        }
+        last = s;
     }
     void PCSG00502(TextBuffer *buffer, HookParam *)
     {
@@ -1419,7 +1436,7 @@ namespace
             // カレイドイヴ
             {0x80018748, {0, 0, 0, 0, FPCSG00852, "PCSG00520"}},
             // 神々の悪戯 InFinite
-            {0x8009730e, {0, 0, 0, PCSG00595, 0, "PCSG00595"}},
+            {0x8009730e, {0, 0, 0x20, PCSG00595, 0, "PCSG00595"}},
             // 神さまと恋ゴコロ
             {0x8000E47A, {0, 0, 0, 0, PCSG01144, "PCSG00449"}},
             {0x80015842, {0, 1, 0, 0, PCSG00449, "PCSG00449"}},
@@ -1435,10 +1452,21 @@ namespace
             {0x8003979C, {0, 0, 0, 0, PCSG01249, "PCSG00417"}},
             // スクール・ウォーズ～全巻パック　本編＆卒業戦線～ //PCSG00574
             // ロミオVSジュリエット 全巻パック //PCSG00618
-            {0x80017628, {CODEC_UTF8, 1, 0, 0, 0, std::vector<const char *>{"PCSG00574", "PCSG00618"}}},
+            // スクール・ウォーズ～全巻パック　本編＆卒業戦線～ //PCSG00574
+            {0x80017628, {CODEC_UTF8, 1, 0, 0, 0, std::vector<const char *>{"PCSG00574", "PCSG00618", "PCSG00574"}}},
             // 猛獣使いと王子様 ～Flower ＆ Snow～
             {0x80071E3C, {CODEC_UTF8, 0, 0, 0, FPCSG00855, "PCSG00604"}},
             {0x80080BAA, {CODEC_UTF8, 7, 0, 0, FPCSG00855, "PCSG00604"}},
+            // 新装版お菓子な島のピーターパン～Sweet Never Land～
+            {0x80027140, {CODEC_UTF8, 1, 0, 0, 0, "PCSG00526"}},
+            // タユタマ２ -you're the only one-
+            {0x8004C0CA, {0, 0, 0, 0, PCSG01203, "PCSG01203"}},
+            // 戦極姫７～戦雲つらぬく紅蓮の遺志～
+            {0x8276B2CE, {CODEC_UTF16, 0x9, 0, 0, PCSG01034, "PCSG01034"}},
+            // 新装版クリムゾン・エンパイア
+            {0x800125AE, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00481"}},
+            // うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE
+            {0x80052B34, {0, 0, 0x24, PCSG00595, 0, "PCSG01081"}},
         };
         return 1;
     }();

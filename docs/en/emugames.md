@@ -764,7 +764,13 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | PCSG00417 | クロガネ回姫譚 －閃夜一夜－ |
 |  | PCSG00574 | スクール・ウォーズ～全巻パック　本編＆卒業戦線～ |
 |  | PCSG00618 | ロミオVSジュリエット 全巻パック |
+|  | PCSG00574 | スクール・ウォーズ～全巻パック　本編＆卒業戦線～ |
 |  | PCSG00604 | 猛獣使いと王子様 ～Flower ＆ Snow～ |
+|  | PCSG00526 | 新装版お菓子な島のピーターパン～Sweet Never Land～ |
+|  | PCSG01203 | タユタマ２ -you're the only one- |
+|  | PCSG01034 | 戦極姫７～戦雲つらぬく紅蓮の遺志～ |
+|  | PCSG00481 | 新装版クリムゾン・エンパイア |
+|  | PCSG01081 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
 
 == PS3
 
