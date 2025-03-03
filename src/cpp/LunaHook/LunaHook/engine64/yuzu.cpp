@@ -1996,6 +1996,7 @@ namespace
     void F0100D7E01E998000(TextBuffer *buffer, HookParam *hp)
     {
         StringFilterBetween(buffer, TEXTANDLEN(L"<"), TEXTANDLEN(L">"));
+        StringFilter(buffer, TEXTANDLEN(L"　\n"));
         CharFilter(buffer, L'\n');
     }
     void F01007A901E728000(TextBuffer *buffer, HookParam *hp)
