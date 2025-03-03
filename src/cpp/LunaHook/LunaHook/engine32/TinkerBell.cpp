@@ -94,7 +94,7 @@ namespace
         wc = wc.substr(0, i) + wc.substr(i + 1);
       }
     }
-    strReplace(wc, L"\xfe", L"");
+    strReplace(wc, L"\xfe");
     buffer->from(wc);
   }
 }

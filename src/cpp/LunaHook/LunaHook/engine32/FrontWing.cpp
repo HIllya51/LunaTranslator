@@ -54,7 +54,7 @@ bool FrontWing2_attach_function()
       s += __[i];
     }
     auto ws = StringToWideString(s, 932).value();
-    strReplace(ws, L"\r", L"");
+    strReplace(ws, L"\r");
     ws = std::regex_replace(ws, std::wregex(LR"([\w\d]*\\[\w\d]*\\[\w\d_]*)"), L"");
     ws = std::regex_replace(ws, std::wregex(LR"(\[rb,(.*?),(.*?)\])"), L"$1");
     ws = std::regex_replace(ws, std::wregex(L",(.*?),(.*?)"), L"$1$2");

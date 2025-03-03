@@ -763,7 +763,7 @@ namespace
     void F0100CF90151E0000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
-        strReplace(ws, L"^", L"");
+        strReplace(ws, L"^");
         ws = std::regex_replace(ws, std::wregex(LR"(@c\d)"), L"");
         ws = std::regex_replace(ws, std::wregex(LR"(@v\(\d+\))"), L"");
         buffer->from(WideStringToString(ws, 932));
@@ -970,9 +970,9 @@ namespace
             buffer->clear();
         else
         {
-            strReplace(ws, L"@n", L"");
-            strReplace(ws, L"%dts", L"");
-            strReplace(ws, L"%dte", L"");
+            strReplace(ws, L"@n");
+            strReplace(ws, L"%dts");
+            strReplace(ws, L"%dte");
             ws = std::regex_replace(ws, std::wregex(LR"(%rbs(.*?)\{(.*?)\}%rbe)"), L"$1");
             buffer->from(ws);
         }
@@ -1956,7 +1956,7 @@ namespace
     void F0100509013040000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
-        strReplace(ws, L"^", L"");
+        strReplace(ws, L"^");
         buffer->from(WideStringToString(ws, 932));
     }
     void F01005090130400002(TextBuffer *buffer, HookParam *hp)
@@ -2400,7 +2400,7 @@ namespace
         {
 
             auto s = buffer->strW();
-            strReplace(s, L"/player", L"");
+            strReplace(s, L"/player");
             HookParam hp;
             hp.address = (uintptr_t)F01006530151F0000_collect;
             hp.offset = GETARG(1);
@@ -3670,10 +3670,6 @@ namespace
             // ジュエリー・ハーツ・アカデミア -We will wing wonder world-
             {0x805b0714, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, 0x010064701F37A000ull, "1.0.0"}},
             {0x805b0704, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x010064701F37A000ull, "1.0.0"}},
-            // 真 流行り神１・２パック
-            {0x80072720, {CODEC_UTF8, 1, 0, 0, F010005F00E036000, 0x010005F00E036000ull, "1.0.0"}},
-            // 真流行り神3
-            {0x80082F70, {0, 0, 0, TF0100AA1013B96000, 0, 0x0100AA1013B96000ull, nullptr}}, //"1.0.0", "1.0.1"
             // NG
             {0x228AA4, {0, 6, 0, 0, F01009E600FAF6000, 0x01009E600FAF6000ull, "1.0.0"}},
             {0x228C0C, {0, 6, 0, 0, F01009E600FAF6000, 0x01009E600FAF6000ull, "1.0.0"}},
@@ -3798,8 +3794,11 @@ namespace
             {0x8180c1e8, {CODEC_UTF16, 0, 0x14, 0, F01008A401FEB6000_2, 0x01008A401FEB6000ull, "1.0.0"}},
             // 流行り神 １
             {0x80056424, {0, 0, 0, T01000A7019EBC000, 0, 0x01000A7019EBC000ull, "1.0.0"}},
+            // 真 流行り神１・２パック
+            {0x80072720, {CODEC_UTF8, 1, 0, 0, F010005F00E036000, 0x010005F00E036000ull, "1.0.0"}},
             // 真流行り神3
             {0x800A3460, {CODEC_UTF8, 4, 0, 0, F0100AA1013B96000, 0x0100AA1013B96000ull, "1.0.0"}},
+            {0x80082F70, {0, 0, 0, TF0100AA1013B96000, 0, 0x0100AA1013B96000ull, nullptr}}, //"1.0.0", "1.0.1"
             // 制服カノジョ まよいごエンゲージ //1.0.0 & 1.0.1
             {0x805DEB14, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x01001E601F6B8000ull, nullptr}},
             {0x8060E3F8, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_name, 0x01001E601F6B8000ull, nullptr}},

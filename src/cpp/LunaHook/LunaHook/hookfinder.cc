@@ -590,14 +590,19 @@ void _SearchForHooks(SearchParam spUser)
 		}
 		ConsoleOutput("%p %p", minemaddr, maxemaddr);
 		ConsoleOutput("%p %p", sp.minAddress, sp.maxAddress);
-#if DUMP_JIT_ADDR_MAP
-		auto f = fopen("1.txt", "a");
-		for (auto addr : jitaddr2emuaddr)
+		if (sp.searchTime == 0 || sp.maxAddress == 0)
 		{
-			fprintf(f, "%llx => %p\n", addr.second.second, addr.first);
+			auto f = fopen("JIT_ADDR_MAP_DUMP.txt", "w");
+			std::stringstream cache;
+			cache << std::hex;
+			for (auto addr : jitaddr2emuaddr)
+			{
+				cache << addr.second.second << " => " << addr.first << "\n";
+			}
+			fprintf(f, cache.str().c_str());
+			fclose(f);
+			return;
 		}
-		fclose(f);
-#endif
 		safeleave = false;
 		std::vector<newFuncType> funcs;
 		std::vector<void *> successaddr;

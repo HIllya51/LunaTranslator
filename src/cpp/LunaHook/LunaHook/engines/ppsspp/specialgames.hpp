@@ -211,8 +211,8 @@ namespace ppsspp
 	void ULJM06378(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
-		strReplace(ws, L"\\", L"");
-		strReplace(ws, L"$", L"");
+		strReplace(ws, L"\\");
+		strReplace(ws, L"$");
 		buffer->from(WideStringToString(ws, 932));
 	}
 	void NPJH50215(TextBuffer *buffer, HookParam *hp)
@@ -798,16 +798,16 @@ namespace ppsspp
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
 		if (startWith(ws, L"disc"))
 			return buffer->clear();
-		strReplace(ws, L"\\", L"");
-		strReplace(ws, L"$", L"");
-		strReplace(ws, L"%　&", L"");
+		strReplace(ws, L"\\");
+		strReplace(ws, L"$");
+		strReplace(ws, L"%　&");
 		buffer->from(WideStringToString(ws, 932));
 	}
 	void ULJM05796(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::wstring last;
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
-		strReplace(ws, L"\\", L"");
+		strReplace(ws, L"\\");
 		if (last == ws)
 		{
 			buffer->clear();
@@ -828,7 +828,7 @@ namespace ppsspp
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
 		ws = std::regex_replace(ws, std::wregex(LR"(<(.*?),(.*?)>)"), L"$1");
-		strReplace(ws, L"^", L"");
+		strReplace(ws, L"^");
 		static std::wstring last;
 		if (startWith(ws, last))
 		{
@@ -852,7 +852,7 @@ namespace ppsspp
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
 		ws = std::regex_replace(ws, std::wregex(LR"(<(.*?),(.*?)>)"), L"$1");
-		strReplace(ws, L"^", L"");
+		strReplace(ws, L"^");
 		buffer->from(WideStringToString(ws, 932));
 	}
 	void ULJM06129(TextBuffer *buffer, HookParam *hp)

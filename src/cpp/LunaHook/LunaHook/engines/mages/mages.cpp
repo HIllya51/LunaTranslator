@@ -29,8 +29,8 @@ namespace mages
 
         auto compound_chars = StringToWideString(compound_charsA);
         auto charset = StringToWideString(charsetA);
-        strReplace(charset, L"\n", L"");
-        strReplace(charset, L"\r", L"");
+        strReplace(charset, L"\n");
+        strReplace(charset, L"\r");
         std::map<WORD, std::wstring> table = {};
 
         for (auto line : strSplit(compound_chars, L"\n"))

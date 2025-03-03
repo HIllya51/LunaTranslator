@@ -4,6 +4,15 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 
 サポートされていないゲームについては、[issue](https://lunatranslator.org/Resource/game_support)を送信してください。
 
+::: details サポートされているエミュレータ
+| プラットフォーム |エミュレータ |
+| - | - |
+| NS | yuzu, sudachi, citron, suyu |
+| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) |
+| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) |
+| PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |
+:::
+
 ::: tabs
 
 == NS

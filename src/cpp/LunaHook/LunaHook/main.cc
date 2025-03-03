@@ -317,6 +317,7 @@ bool NewHook(HookParam hp, LPCSTR name)
 		}
 		return NewHook_1(hp, name);
 	}
+	std::lock_guard _(maplock);
 	// 下面的是手动插入
 	if (emuaddr2jitaddr.find(hp.emu_addr) == emuaddr2jitaddr.end())
 	{

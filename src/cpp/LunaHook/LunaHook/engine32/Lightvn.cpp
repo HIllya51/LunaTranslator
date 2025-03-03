@@ -44,8 +44,8 @@ void SpecialHookLightvnW(hook_context *context, HookParam *hp, TextBuffer *buffe
 	{
 		_ = std::wstring(match[1]);
 		_ = std::regex_replace(_, std::wregex(L"\\[(.*?)\\]<(.*?)>"), L"$1");
-		strReplace(_, L"\\c", L"");
-		strReplace(_, L"\\w", L"");
+		strReplace(_, L"\\c");
+		strReplace(_, L"\\w");
 		*split = 1;
 	}
 	else if (std::regex_match(s, match, _3))

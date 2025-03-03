@@ -4,6 +4,15 @@ LunaTranslator supports a wide range of games on NS/PSP/PSV/PS3 through HOOK emu
 
 For games that are not supported, please send an [issue](https://lunatranslator.org/Resource/game_support)
 
+::: details Supported emulators
+| Platform | Emulator |
+| - | - |
+| NS | yuzu, sudachi, citron, suyu |
+| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) |
+| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) |
+| PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |
+:::
+
 ::: tabs
 
 == NS
