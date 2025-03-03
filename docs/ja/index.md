@@ -23,16 +23,22 @@ hero:
 features:  
   - title: HOOK  
     details: 主にHOOKを使用してゲームテキストを抽出し、ほぼすべての一般的およびニッチなビジュアルノベルに対応しています。  
+    link: ./hooksettings
   - title: 埋め込み翻訳  
     details: 一部のゲームでは、翻訳を直接ゲームに組み込むことができ、没入感のある体験を提供します。
+    link: ./embedtranslate
   - title: HOOKエミュレータ  
-    details: NS/PSP/PSV/PS3のほとんどのゲームでHOOKエミュレータをサポートし、直接ゲームテキストを読み取ります。  
+    details: NS/PSP/PSV/PS3のほとんどのゲームでHOOKエミュレータをサポートし、直接ゲームテキストを読み取ります。
+    link: ./emugames
   - title: OCR  
     details: 高精度のOCRモデルを内蔵し、多くの他のオンライン＆オフラインOCRエンジンをサポートし、柔軟にテキストを読み取ります。  
+    link: ./useapis/ocrapi
   - title: 豊富な翻訳API  
     details: ほとんどすべての翻訳エンジンをサポートし、大規模言語モデル翻訳、オフライン翻訳などを含みます。
+    link: ./useapis/tsapi
   - title: 辞書とAnki連携  
     details: Mecab、MDict、オンライン辞書、AnkiConnectをサポートしています。 
+    link: ./qa1
   - title: 音声合成  
     details: 多数のオンライン＆オフライン音声合成エンジンをサポートします。  
   - title: 高度なカスタマイズ  

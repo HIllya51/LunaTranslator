@@ -23,16 +23,22 @@ hero:
 features:
   - title: HOOK
     details: 主要使用HOOK提取游戏文本，几乎适配了所有的常见和冷门的视觉小说
+    link: ./hooksettings
   - title: 内嵌翻译
     details: 部分游戏还可以直接内嵌翻译到游戏中，以获取沉浸式体验
+    link: ./embedtranslate
   - title: HOOK模拟器
     details: 对NS/PSP/PSV/PS3上的大部分游戏，支持HOOK模拟器直接读取游戏文本
+    link: ./emugames
   - title: OCR
     details: 内置较高精度的OCR模型，并支持许多其他在线&离线OCR引擎，以便灵活的读取任意文本
+    link: ./useapis/ocrapi
   - title: 丰富的翻译接口
     details: 支持几乎所有翻译引擎，包括大语言模型翻译、离线翻译等
+    link: ./useapis/tsapi
   - title: 词典与Anki集成
     details: 支持Mecab，支持MDict及在线词典，支持AnkiConnect
+    link: ./qa1
   - title: 语音合成
     details: 支持大量在线&离线语音合成引擎
   - title: 高度可配置

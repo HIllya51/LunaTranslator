@@ -10,7 +10,7 @@ namespace ppsspp
 		int padding;
 		decltype(HookParam::text_fun) hookfunc;
 		decltype(HookParam::filter_fun) filterfun;
-		const char *_id;
+		std::variant<const char *, std::vector<const char *>> _id;
 	};
 
 }
@@ -1040,7 +1040,7 @@ namespace ppsspp
 	{
 		StringFilter(buffer, TEXTANDLEN("%K"));
 		StringFilter(buffer, TEXTANDLEN("%P"));
-		// StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧
+		/* StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧 */
 		StringFilter(buffer, TEXTANDLEN("\x81\x99")); // ☆
 
 		StringReplacer(buffer, TEXTANDLEN("\x84\xa5"), TEXTANDLEN("\x81\x5b"));
@@ -1423,12 +1423,12 @@ namespace ppsspp
 			buffer->clear();
 	}
 	std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks = {
-		// sceFontGetCharInfo 还有很多无法用JIThook的游戏可以用这个函数，包括有JIThook地址的，但之前没有进行记录，现在进行以下记录，仅用于避免未来重复劳动。
+		/* sceFontGetCharInfo 还有很多无法用JIThook的游戏可以用这个函数，包括有JIThook地址的，但之前没有进行记录，现在进行以下记录，仅用于避免未来重复劳动。*/
 		// Starry☆Sky～After Spring～Portable //ULJM06207
 		// Starry☆Sky～After Summer～Portable //ULJM06208
 		// Starry☆Sky～After Autumn～Portable //ULJM06209
 		// Starry☆Sky～After Winter～Portable //ULJM06210
-		// アラビアンズ・ロスト	//ULJM06104
+		// アラビアンズ・ロスト //ULJM06104
 		// MEMORIES OFF //ULJM05334
 
 		// 黄昏のシンセミア portable
@@ -1446,10 +1446,10 @@ namespace ppsspp
 		// 蘭島物語 レアランドストーリー 少女の約定
 		{0x880E840, {CODEC_UTF16, 1, 0, 0, 0, "ULJM05387"}},
 		{0x881542C, {CODEC_UTF16, 1, 0, 0, 0, "ULJM05387"}},
-		// Solomon's Ring ～地の章～  ULJM06204
-		// Solomon's Ring ～水の章～  ULJM06203
-		// Solomon's Ring ～風の章～  ULJM06202
-		{0x88052C0, {0, 2, 0, 0, ULJM06200, "ULJM0620[234]"}},
+		// Solomon's Ring ～地の章～  //ULJM06204
+		// Solomon's Ring ～水の章～  //ULJM06203
+		// Solomon's Ring ～風の章～  //ULJM06202
+		{0x88052C0, {0, 2, 0, 0, ULJM06200, std::vector<const char *>{"ULJM06202", "ULJM06203", "ULJM06204"}}},
 		// Solomon's Ring ～火の章～
 		{0x88061B0, {0, 2, 0, 0, ULJM06200, "ULJM06200"}},
 		// 神なる君と
@@ -1578,7 +1578,7 @@ namespace ppsspp
 		// Never7 -the end of infinity-
 		{0x88196F0, {0, 0xe, 0, 0, ULJM05433, "ULJM05433"}},
 		// 青春はじめました！
-		{0x880a744, {0, 0, 0, 0, ULJM05943F, "ULJM0630[23]"}}, // ULJM06302 & ULJM06303
+		{0x880a744, {0, 0, 0, 0, ULJM05943F, std::vector<const char *>{"ULJM06302", "ULJM06303"}}},
 		// アーメン・ノワール ポータブル
 		{0x883b6a8, {0, 0, 0, 0, ULJM05943F, "ULJM06064"}},
 		// デス・コネクション　ポータブル
@@ -1630,7 +1630,7 @@ namespace ppsspp
 		// アイドルマスターSP ミッシングムーン
 		{0x8951AE0, {0, 1, 0, 0, ULJS00169, "ULJS00169"}},
 		// カヌチ 二つの翼
-		{0x88158A0, {0, 0, 0, 0, ULJM05796, "ULJM0579[67]"}}, // ULJM05796 & ULJM05797
+		{0x88158A0, {0, 0, 0, 0, ULJM05796, std::vector<const char *>{"ULJM05796", "ULJM05797"}}},
 		// うたわれるもの PORTABLE
 		{0x881CC54, {0, 0, 0, 0, ULJM05458, "ULJM05458"}},
 		// とある科学の超電磁砲
@@ -1688,7 +1688,7 @@ namespace ppsspp
 		// ＣＬＡＮＮＡＤ　光見守る坂道で　下巻
 		{0x8853844, {0, 0xC, 0, 0, 0, "NPJH50273"}},
 		// CLANNAD
-		{0x880F240, {CODEC_UTF16, 0, 0, 0, ULJM05282, "ULJM0533[89]"}}, // ULJM05338 & ULJM05339
+		{0x880F240, {CODEC_UTF16, 0, 0, 0, ULJM05282, std::vector<const char *>{"ULJM05338", "ULJM05339"}}},
 		// 東京鬼祓師　鴉乃杜學園奇譚
 		{0x89F25C8, {0, 1, 0, 0, NPJH50215, "NPJH50215"}},
 		// 雅恋 ～MIYAKO～
@@ -1986,7 +1986,7 @@ namespace ppsspp
 		// シークレット オブ エヴァンゲリオン ポータブル
 		{0x883F774, {0, 0xd, 0, 0, ULJS00124, "ULJM05251"}},
 		// 学園ヘヴン BOY'S LOVE SCRAMBLE!
-		{0x8811044, {CODEC_UTF16, 0, 0, 0, ULJM05203, "ULJM0556[23]"}},
+		{0x8811044, {CODEC_UTF16, 0, 0, 0, ULJM05203, std::vector<const char *>{"ULJM05562", "ULJM05563"}}},
 		// 学園ヘヴン　おかわりっ！
 		{0x8813880, {CODEC_UTF16, 0, 0, 0, ULJM05203, "ULJM05729"}},
 		// 咎狗の血 T B P
@@ -2074,13 +2074,13 @@ namespace ppsspp
 		// BROTHERS CONFLICT Passion Pink
 		{0x88D85C8, {CODEC_UTF16, 0, 0, 0, ULJM06066, "ULJM06066"}},
 		// 暁の護衛 トリニティ
-		{0x8920768, {CODEC_UTF16, 0, 0, 0, ULJM06174, "ULJM0617[45]"}},
+		{0x8920768, {CODEC_UTF16, 0, 0, 0, ULJM06174, std::vector<const char *>{"ULJM06174", "ULJM06175"}}},
 		// 三国恋戦記
-		{0x8896A0C, {0, 0, 0, 0, ULJM05758, "ULJM0612[34]"}},
+		{0x8896A0C, {0, 0, 0, 0, ULJM05758, std::vector<const char *>{"ULJM06123", "ULJM06124"}}},
 		// グリザイアの果実 -LE FRUIT DE LA GRISAIA-
-		{0x8840324, {0, 4, 0, 0, ULJM06232, "ULJM0623[23]"}},
+		{0x8840324, {0, 4, 0, 0, ULJM06232, std::vector<const char *>{"ULJM06232", "ULJM06233"}}},
 		// Dies irae ～Amantes amentes～
-		{0x88E08D0, {0, 3, 0, 0, 0, "ULJM0610[78]"}},
+		{0x88E08D0, {0, 3, 0, 0, 0, std::vector<const char *>{"ULJM06107", "ULJM06108"}}},
 		// 花帰葬
 		{0x88139f4, {CODEC_UTF16, 0, 0, 0, ULJM05701, "ULJM05701"}},
 		// 死神所業～怪談ロマンス～

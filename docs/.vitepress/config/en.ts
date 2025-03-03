@@ -33,7 +33,8 @@ export const en = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'HOOK Settings', link: '/en/hooksettings' },
-                            { text: 'Embedded Translation', link: '/en/embedtranslate' }
+                            { text: 'Embedded Translation', link: '/en/embedtranslate' },
+                            { text: 'Emulator Game Support', link: '/en/emugames' },
                         ]
                     },
                     {

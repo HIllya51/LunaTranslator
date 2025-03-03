@@ -91,7 +91,8 @@ export const ja = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'HOOK設定', link: '/ja/hooksettings' },
-                            { text: '埋め込み翻訳', link: '/ja/embedtranslate' }
+                            { text: '埋め込み翻訳', link: '/ja/embedtranslate' },
+                            { text: 'シミュレーターゲームサポート', link: '/ja/emugames' },
                         ]
                     },
                     {

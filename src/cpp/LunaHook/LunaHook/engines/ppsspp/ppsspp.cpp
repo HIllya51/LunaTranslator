@@ -267,23 +267,26 @@ namespace ppsspp
         std::string DISC_ID{""};
         std::string TITLE{""};
     } game_info;
+    auto isidmatched = [](const std::string &target, auto &&idsv)
+    {
+        if (auto *id = std::get_if<const char *>(&idsv))
+        {
+            return target == (*id);
+        }
+        else if (auto *ids = std::get_if<std::vector<const char *>>(&idsv))
+        {
+            return _of(ids->begin(), ids->end(), [&](auto id)
+                               { return target == id; });
+        }
+        return false;
+    };
     bool checkiscurrentgame(const emfuncinfo &em)
     {
         if (game_info.DISC_ID.size())
         {
-            std::smatch match;
-            return std::regex_match(game_info.DISC_ID, match, std::regex(em._id));
+            return isidmatched(game_info.DISC_ID, em._id);
         }
-        else
-        {
-            auto wininfos = get_proc_windows();
-            for (auto &&info : wininfos)
-            {
-                if (std::regex_search(info.title, std::wregex(acastw(em._id))))
-                    return true;
-            }
-            return false;
-        }
+        return true;
     }
     std::unordered_set<uintptr_t> breakpoints;
 
@@ -349,7 +352,19 @@ namespace ppsspp
         hpinternal.offset = op.offset;
         hpinternal.padding = op.padding;
         hpinternal.jittype = JITTYPE::PPSSPP;
-        NewHook(hpinternal, op._id);
+        const char *idptr;
+        if (auto *id = std::get_if<const char *>(&op._id))
+        {
+            idptr = *id;
+        }
+        else if (auto *ids = std::get_if<std::vector<const char *>>(&op._id))
+        {
+            if (game_info.DISC_ID.size())
+                idptr = game_info.DISC_ID.c_str();
+            else
+                idptr = ids->front();
+        }
+        NewHook(hpinternal, idptr);
     }
     namespace
     {
@@ -551,7 +566,7 @@ namespace ppsspp
         Load_PSP_ISO_StringFromFormat();
         HookParam hp;
         hp.address = DoJitPtr; // Jit::DoJit
-        hp.user_value = (uintptr_t) new uintptr_t;
+        hp.user_value = (uintptr_t)new uintptr_t;
         hp.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
         {
             static auto once1 = oncegetJitBlockCache(context);

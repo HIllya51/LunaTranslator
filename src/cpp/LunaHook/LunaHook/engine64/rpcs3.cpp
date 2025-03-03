@@ -120,7 +120,7 @@ namespace
         /*
         extern void ppu_register_function_at(u32 addr, u32 size, ppu_intrp_func_t ptr = nullptr)
         {
-            // Initialize specific function
+               // Initialize specific function
             if (ptr)
             {
                 ppu_ref(addr) = reinterpret_cast<ppu_intrp_func_t>((reinterpret_cast<uptr>(ptr) & 0xffff'ffff'ffffu) | (uptr(ppu_ref(addr)) & ~0xffff'ffff'ffffu));

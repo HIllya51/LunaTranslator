@@ -94,7 +94,8 @@ export const zh = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'HOOK设置', link: '/zh/hooksettings' },
-                            { text: '内嵌翻译', link: '/zh/embedtranslate' }
+                            { text: '内嵌翻译', link: '/zh/embedtranslate' },
+                            { text: '模拟器游戏支持', link: '/zh/emugames' },
                         ]
                     },
                     {

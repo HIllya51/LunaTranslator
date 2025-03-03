@@ -65,7 +65,7 @@ namespace
     {
         if ((game_info.version.size()) && game_info.name.size() && (game_info.id != 0))
         {
-            // 判断是有效的info
+            /* 判断是有效的info */
             auto checkversion = (em._version == 0) || (std::string(em._version) == (game_info.version));
             bool checkid;
 
@@ -88,8 +88,10 @@ namespace
         }
         else
         {
-            // 加载游戏后在hook，没有办法获取id。
-            // 标题里没有id，只有version，没啥必要判断了，直接true得了。
+            /*
+                加载游戏后在hook，没有办法获取id。
+                标题里没有id，只有version，没啥必要判断了，直接true得了。
+            */
             return true;
         }
     }
@@ -142,9 +144,11 @@ bool Hook_Network_RoomMember_SendGameInfo()
         hp.address = addr;
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
-            // void __fastcall Network::RoomMember::SendGameInfo(
-            //     Network::RoomMember *this,
-            //     const AnnounceMultiplayerRoom::GameInfo *game_info)
+            /*
+                void __fastcall Network::RoomMember::SendGameInfo(
+                Network::RoomMember *this,
+                const AnnounceMultiplayerRoom::GameInfo *game_info)
+            */
             game_info = *(GameInfo *)context->rdx;
             if (game_info.id)
             {
@@ -2192,7 +2196,7 @@ namespace
             };
             static auto _ = NewHook(hp, "01009E600FAF6000");
             static std::map<uint64_t, uintptr_t> mp;
-            // 这个address会被触发两次。
+            /* 这个address会被触发两次。 */
             if (mp.find(hpx->emu_addr) == mp.end())
                 mp[hpx->emu_addr] = hpx->address;
             if (mp[hpx->emu_addr] != hpx->address)
@@ -2379,7 +2383,6 @@ namespace
             hp.type = CODEC_UTF8 | USING_STRING;
             static auto _ = NewHook(hp, "0100A4700BC98000");
             TT0100A4700BC98000(s.c_str());
-            // buffer->clear();
         }
     }
     namespace
@@ -3724,7 +3727,7 @@ namespace
             // フルキス
             {0x804988A0, {CODEC_UTF8, 0, 0, 0, F0100FB50156E6000_1, 0x0100FB50156E6000ull, "1.0.0"}}, // text
             {0x804FECD4, {CODEC_UTF8, 1, 0, 0, F0100FB50156E6000_2, 0x0100FB50156E6000ull, "1.0.0"}}, // text+name->name
-            // フルキスS  1.0.0 & 1.0.1
+            // フルキスS  //1.0.0 & 1.0.1
             {0x804E7AF0, {CODEC_UTF8, 0, 0, 0, F0100FB50156E6000_1, 0x0100BEE0156D8000ull, nullptr}}, // text
             {0x804FF454, {CODEC_UTF8, 1, 0, 0, F0100FB50156E6000_2, 0x0100BEE0156D8000ull, nullptr}}, // text+name->name
             // アーキタイプ・アーカディア
@@ -3791,13 +3794,13 @@ namespace
             {0x80056424, {0, 0, 0, T01000A7019EBC000, 0, 0x01000A7019EBC000ull, "1.0.0"}},
             // 真流行り神3
             {0x800A3460, {CODEC_UTF8, 4, 0, 0, F0100AA1013B96000, 0x0100AA1013B96000ull, "1.0.0"}},
-            // 制服カノジョ まよいごエンゲージ 1.0.0 & 1.0.1
+            // 制服カノジョ まよいごエンゲージ //1.0.0 & 1.0.1
             {0x805DEB14, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x01001E601F6B8000ull, nullptr}},
             {0x8060E3F8, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_name, 0x01001E601F6B8000ull, nullptr}},
-            // 制服カノジョ2 1.0.0 & 1.0.1
+            // 制服カノジョ2 //1.0.0 & 1.0.1
             {0x8058B940, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x010012C020B78000ull, nullptr}}, // 缺少第一句，且分段显示的缺少后半句
             {0x8058B8C0, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_name, 0x010012C020B78000ull, nullptr}},
-            // この青空に約束を― Refine 1.0.0 & 1.0.1
+            // この青空に約束を― Refine //1.0.0 & 1.0.1
             {0x804F2AC0, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x01006E201FC0A000ull, nullptr}},
             {0x804F2B80, {CODEC_UTF8, 0, 0, 0, F01001E601F6B8000_name, 0x01006E201FC0A000ull, nullptr}},
             // 結城友奈は勇者である花結いのきらめきVol.1
@@ -3806,8 +3809,8 @@ namespace
             // 結城友奈は勇者である花結いのきらめきVol.2
             {0x82D259B4, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01006F901ADA2000ull, "1.0.0"}},
             {0x81FCC294, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01006F901ADA2000ull, "1.0.3"}},
-            // 結城友奈は勇者である花結いのきらめきVol.3 01002DF01ADA4000
-            // 結城友奈は勇者である花結いのきらめきVol.4 0100A2901ADA6000   存在瑕疵：[!?]符号会把句子此符号之后的内容给丢掉。
+            // 結城友奈は勇者である花結いのきらめきVol.3 //01002DF01ADA4000
+            // 結城友奈は勇者である花結いのきらめきVol.4 //0100A2901ADA6000   存在瑕疵：[!?]符号会把句子此符号之后的内容给丢掉。
             {0x82D5E904, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, std::vector<uint64_t>{0x01002DF01ADA4000ull, 0x0100A2901ADA6000ull}, "1.0.0"}},
             {0x82D5E804, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01002DF01ADA4000ull, "1.0.3"}},
             {0x82022244, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x0100A2901ADA6000ull, "1.0.3"}},

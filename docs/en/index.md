@@ -23,16 +23,22 @@ hero:
 features:  
   - title: HOOK  
     details: Primarily uses HOOK to extract game text, compatible with almost all popular and niche visual novels.  
+    link: ./hooksettings
   - title: Embedded Translation  
     details: Some games also support directly embedding translations into the game for an immersive experience.
+    link: ./embedtranslate
   - title: HOOK Emulator  
-    details: Supports HOOK emulators to directly extract text from most games on NS/PSP/PSV/PS3.  
+    details: Supports HOOK emulators to directly extract text from most games on NS/PSP/PSV/PS3.
+    link: ./emugames
   - title: OCR  
     details: Built-in high-precision OCR model, supporting many other online & offline OCR engines for flexible text extraction.  
+    link: ./useapis/ocrapi
   - title: Rich Translation APIs  
     details: Supports almost all translation engines, including large language model translation, offline translation, and more.
+    link: ./useapis/tsapi
   - title: Dictionary & Anki Integration  
     details: Supports Mecab, MDict, online dictionaries, and AnkiConnect.
+    link: ./qa1
   - title: Text-to-Speech  
     details: Supports a wide range of online & offline text-to-speech engines.  
   - title: Highly Configurable  
