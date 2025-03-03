@@ -175,7 +175,7 @@ std::unordered_map<LANG_STRINGS_HOOK, std::unordered_map<SUPPORT_LANG, const cha
     {RYUJINXUNSUPPORT, {
                            {English, "not support ryujinx, please use yuzu/sudachi/citron instead."},
                            {Chinese, u8"不支持ryujinx，请使用yuzu/sudachi/citron"},
-                           {TradChinese, u8"不支持ryujinx，請使用yuzu/sudachi/citron"},
+                           {TradChinese, u8"不支援 Ryujinx，請使用 yuzu／Sudachi／Citron"},
                            {Russian, u8"Не поддерживайте ryujinx, используйте yuzu / sudachi / citron"},
                        }}
 
