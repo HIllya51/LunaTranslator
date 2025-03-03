@@ -738,6 +738,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 | 115 | PCSG00433 | 絶対絶望少女　ダンガンロンパ Another Episode |
 | 116 | PCSG01266 | 夢現Re:Master |
 | 117 | PCSG00502 | 結城友奈は勇者である　樹海の記憶 |
+| 118 | PCSG00728 | 終わりのセラフ　運命の始まり |
 
 == PS3
 
