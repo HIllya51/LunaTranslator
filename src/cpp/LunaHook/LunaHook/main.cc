@@ -2,7 +2,11 @@
 #include "MinHook.h"
 void HIJACK();
 void detachall();
+#if EMUADD_MAP_MULTI
+std::unordered_map<uint64_t, std::pair<JITTYPE, std::set<uintptr_t>>> emuaddr2jitaddr;
+#else
 std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
+#endif
 std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
 HMODULE hLUNAHOOKDLL;
 WinMutex viewMutex;
@@ -229,7 +233,13 @@ void jitaddrclear()
 void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE jittype)
 {
 	std::lock_guard _(maplock);
+#if EMUADD_MAP_MULTI
+	if (emuaddr2jitaddr.find(em_addr) == emuaddr2jitaddr.end())
+		emuaddr2jitaddr[em_addr] = {jittype, {}};
+	emuaddr2jitaddr[em_addr].second.insert(jitaddr);
+#else
 	emuaddr2jitaddr[em_addr] = {jittype, jitaddr};
+#endif
 	jitaddr2emuaddr[jitaddr] = {jittype, em_addr};
 }
 bool NewHook_1(HookParam &hp, LPCSTR lpname)
@@ -317,9 +327,19 @@ bool NewHook(HookParam hp, LPCSTR name)
 	wcscpy(hp.module, L"");
 	hp.type &= ~MODULE_OFFSET;
 
-	hp.address = emuaddr2jitaddr[hp.emu_addr].second;
 	hp.jittype = emuaddr2jitaddr[hp.emu_addr].first;
+#if EMUADD_MAP_MULTI
+	bool succ = false;
+	for (auto addr : emuaddr2jitaddr[hp.emu_addr].second)
+	{
+		hp.address = addr;
+		succ |= NewHook_1(hp, name);
+	}
+	return succ;
+#else
+	hp.address = emuaddr2jitaddr[hp.emu_addr].second;
 	return NewHook_1(hp, name);
+#endif
 }
 void RemoveHook(uint64_t addr, int maxOffset)
 {

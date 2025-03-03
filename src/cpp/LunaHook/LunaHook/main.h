@@ -20,7 +20,12 @@ inline JITTYPE jittypedefault = JITTYPE::PC;
 int HookStrLen(HookParam *, BYTE *data);
 
 // v141_xp上，定义inline std::map会直接导致dll detach后发生崩溃。
+#define EMUADD_MAP_MULTI 0
+#if EMUADD_MAP_MULTI
+extern std::unordered_map<uint64_t, std::pair<JITTYPE, std::set<uintptr_t>>> emuaddr2jitaddr;
+#else
 extern std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
+#endif
 extern std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
 void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE);
 void jitaddrclear();
