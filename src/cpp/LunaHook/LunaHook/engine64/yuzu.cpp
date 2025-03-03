@@ -1993,6 +1993,11 @@ namespace
         strReplace(s, "[#]"); // 分两段显示
         buffer->from(s);
     }
+    void F0100D7E01E998000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilterBetween(buffer, TEXTANDLEN(L"<"), TEXTANDLEN(L">"));
+        CharFilter(buffer, L'\n');
+    }
     void F01007A901E728000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -3392,7 +3397,7 @@ namespace
             {0x80086e70, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, 0x010012A017F18000ull, "1.0.2"}},
             // 月姫 -A piece of blue glass moon-
             {0x800ac290, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, 0x01001DC01486A000ull, 0}}, // 1.0.1,1.0.2
-            // 映画 五等分の花嫁　～君と過ごした五つの思い出～ 
+            // 映画 五等分の花嫁　～君と過ごした五つの思い出～
             {0x80011688, {CODEC_UTF8, 1, 0, 0, F01005E9016BDE000, 0x01005E9016BDE000ull, "1.0.0"}}, // dialogue, menu, choice, name
             // FLOWERS 四季
             {0x8006f940, {CODEC_UTF16, 1, 0, 0, F01002AE00F442000, 0x01002AE00F442000ull, "1.0.1"}},
@@ -3826,6 +3831,8 @@ namespace
             // 結城友奈は勇者である花結いのきらめきVol.8
             {0x81FEB714, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01000DD01ADAE000ull, "1.0.0"}},
             {0x81DDD634, {CODEC_UTF16, 1, 0, 0, F010014A01ADA0000, 0x01000DD01ADAE000ull, "1.0.1"}},
+            // 冬園サクリフィス
+            {0x816CA374, {CODEC_UTF16, 1, 0, 0, F0100D7E01E998000, 0x0100D7E01E998000ull, "1.0.0"}},
         };
         return 1;
     }();

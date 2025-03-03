@@ -299,6 +299,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 | 286 | 010073D01ADAA000 | 結城友奈は勇者である花結いのきらめきVol.6 |
 | 287 | 010085C01ADAC000 | 結城友奈は勇者である花結いのきらめきVol.7 |
 | 288 | 01000DD01ADAE000 | 結城友奈は勇者である花結いのきらめきVol.8 |
+| 289 | 0100D7E01E998000 | 冬園サクリフィス |
 
 == PSP
 

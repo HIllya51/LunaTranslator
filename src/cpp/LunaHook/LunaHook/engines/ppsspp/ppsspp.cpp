@@ -275,7 +275,7 @@ namespace ppsspp
         }
         else if (auto *ids = std::get_if<std::vector<const char *>>(&idsv))
         {
-            return _of(ids->begin(), ids->end(), [&](auto id)
+            return std::any_of(ids->begin(), ids->end(), [&](auto id)
                                { return target == id; });
         }
         return false;
