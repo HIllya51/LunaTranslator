@@ -52,13 +52,13 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 | 39 | 0100AA001415E000 | Final Fantasy VI |
 | 40 | 01006F000B056000 | Final Fantasy IX |
 | 41 | 0100068019996000 | Norn9 Var Commons |
-| 42 | 010046601C024000 | 薄桜鬼 真改 遊戯録　隊士達の大宴会 for Nintendo Switch   三合一 |
-| 43 | 01004EB01A328000 | 薄桜鬼SSL ～sweet school life～ for Nintendo Switch |
-| 44 | 0100EA601A0A0000 | 薄桜鬼 真改 万葉ノ抄 |
-| 45 | 0100997017690000 | 薄桜鬼 真改 天雲ノ抄 |
-| 46 | 0100C49010598000 | 薄桜鬼 真改 銀星ノ抄 |
-| 47 | 0100E1E00E2AE000 | 薄桜鬼 真改 月影ノ抄 |
-| 48 | 0100D57014692000 | 薄桜鬼　黎明録 |
+| 42 | 0100EA601A0A0000 | 薄桜鬼 真改 万葉ノ抄 |
+| 43 | 0100997017690000 | 薄桜鬼 真改 天雲ノ抄 |
+| 44 | 0100C49010598000 | 薄桜鬼 真改 銀星ノ抄 |
+| 45 | 0100E1E00E2AE000 | 薄桜鬼 真改 月影ノ抄 |
+| 46 | 0100D57014692000 | 薄桜鬼　黎明録 |
+| 47 | 01004EB01A328000 | 薄桜鬼SSL ～sweet school life～ for Nintendo Switch |
+| 48 | 010046601C024000 | 薄桜鬼 真改 遊戯録　隊士達の大宴会 for Nintendo Switch |
 | 49 | 0100AC20128AC000 | Chrono Cross: The Radical Dreamers Edition |
 | 50 | 0100ADC014DA0000 | AIR |
 | 51 | 0100AFA01750C000 | 死神と少女 |
@@ -159,7 +159,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 | 146 | 01004D601B0AA000 | 終遠のヴィルシュ -EpiC:lycoris- |
 | 147 | 01003FE00E2F8000 | スペードの国のアリス ～Wonderful White World～ |
 | 148 | 0100AB100E2FA000 | スペードの国のアリス ～Wonderful Black World～ |
-| 149 | 01003D2017FEA000 | 十三支演義 偃月三国伝1・2 for Nintendo Switch (Juuzaengi ~Engetsu Sangokuden~) |
+| 149 | 01003D2017FEA000 | 十三支演義 偃月三国伝1・2 for Nintendo Switch |
 | 150 | 01002C0008E52000 | Tales of Vesperia: Definitive Edition |
 | 151 | 01002BB00A662000 | Nil Adminari no Tenbin Irodori Nadeshiko |
 | 152 | 01008DE00C022000 | 華ヤカ哉、我ガ一族 モダンノスタルジィ |
@@ -178,7 +178,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 | 165 | 010065301A2E0000 | Star Ocean The Second Story R |
 | 166 | 010012A017F18000 | 魔法使いの夜 通常版 |
 | 167 | 01001DC01486A000 | 月姫 -A piece of blue glass moon- |
-| 168 | 01005E9016BDE000 | 映画 五等分の花嫁　～君と過ごした五つの思い出～ (JP) |
+| 168 | 01005E9016BDE000 | 映画 五等分の花嫁　～君と過ごした五つの思い出～ |
 | 169 | 01002AE00F442000 | FLOWERS 四季 |
 | 170 | 01000A400AF2A000 | 最悪なる災厄人間に捧ぐ |
 | 171 | 01006B5014E2E000 | 神様のような君へ |
@@ -260,11 +260,11 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 | 247 | 01003E601E324000 | Dragon Quest III Hd-2D Remake |
 | 248 | 01008BA00F172000 | EVE rebirth terror |
 | 249 | 01007BE0160D6000 | EVE ghost enemies |
-| 250 | 01002BB00A662000 | ニル・アドミラリの天秤 色ドリ撫子，二合一，其一 |
+| 250 | 01002BB00A662000 | ニル・アドミラリの天秤 色ドリ撫子 |
 | 251 | 01002BB00A662000 | 其二 |
 | 252 | 01007A901E728000 | 八剱伝 |
-| 253 | 0100509013040000 | 大正メビウスライン大全 三合一 |
-| 254 | 010035001D1B2000 | 猛獣たちとお姫様 for Nintendo Switch  二合一 |
+| 253 | 0100509013040000 | 大正メビウスライン大全 |
+| 254 | 010035001D1B2000 | 猛獣たちとお姫様 for Nintendo Switch |
 | 255 | 010045F00BF64000 | BEAST Darling! ～けもみみ男子と秘密の寮～ |
 | 256 | 010052300F612000 | 恋の花咲く百花園 |
 | 257 | 0100CF90151E0000 | 東京24区 -祈- |
