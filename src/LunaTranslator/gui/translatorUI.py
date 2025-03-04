@@ -1374,6 +1374,9 @@ class TranslatorWindow(resizableframeless):
 
     @tryprint
     def afterrange(self, clear, rect, img=None):
+        (x1, y1), (x2, y2) = rect
+        if x1 == x2 or y1 == y2:
+            return
         if clear or not globalconfig["multiregion"]:
             gobject.baseobject.textsource.clearrange()
         gobject.baseobject.textsource.newrangeadjustor()
