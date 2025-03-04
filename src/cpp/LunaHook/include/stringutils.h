@@ -18,20 +18,23 @@ StringT stolower(StringT s)
 LPCSTR reverse_search_begin(const char *s, int maxsize = VNR_TEXT_CAPACITY);
 namespace re
 {
-  template <typename CharT, class StringT = std::basic_string<CharT>>
-  StringT sub(const StringT &str, const CharT *pattern, const CharT *as = nullptr, std::regex_constants::syntax_option_type _Flags = std::regex_constants::ECMAScript)
+
+  template <typename CharT>
+  constexpr auto default_string()
   {
-    if (!as)
+    if constexpr (std::is_same_v<CharT, char>)
     {
-      if constexpr (std::is_same_v<CharT, char>)
-      {
-        as = "";
-      }
-      else if constexpr (std::is_same_v<CharT, wchar_t>)
-      {
-        as = L"";
-      }
+      return "";
     }
+    else if constexpr (std::is_same_v<CharT, wchar_t>)
+    {
+      return L"";
+    }
+  }
+
+  template <typename CharT, class StringT = std::basic_string<CharT>>
+  StringT sub(const StringT &str, const CharT *pattern, const CharT *as = default_string<CharT>(), std::regex_constants::syntax_option_type _Flags = std::regex_constants::ECMAScript)
+  {
     return std::regex_replace(str, std::basic_regex<CharT>(pattern, _Flags), as);
   }
   template <typename CharT>
