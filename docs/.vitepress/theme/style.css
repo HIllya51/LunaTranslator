@@ -21,7 +21,8 @@
     display: none;
 }
 
-.danger {
+summary,
+.custom-block {
     padding-top: 8px;
 }
 
