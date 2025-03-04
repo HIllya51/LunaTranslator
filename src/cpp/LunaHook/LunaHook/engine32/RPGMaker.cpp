@@ -33,7 +33,7 @@ bool RPGMaker::attach_function()
     std::string result = buffer->strA();
     if (all_ascii(result.c_str(), result.size()))
       return buffer->clear();
-    buffer->from(std::regex_replace(result, std::regex(R"(@c\[\](.*?)@c\[\])"), "$1"));
+    buffer->from(re::sub(result, R"(@c\[\](.*?)@c\[\])", "$1"));
   };
 
   return NewHook(hp, "RPGMaker");

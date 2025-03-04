@@ -312,23 +312,23 @@ namespace
   {
     auto s = buffer->strA();
 
-    s = std::regex_replace(s, std::regex("\\{#(.*?)\\}"), "");
-    s = std::regex_replace(s, std::regex("<(.*?)>"), "");
+    s = re::sub(s, "\\{#(.*?)\\}");
+    s = re::sub(s, "<(.*?)>");
 
-    s = std::regex_replace(s, std::regex("(.*)\x81u([\\s\\S]*?)\x81v(.*)"), "\x81u$2\x81v"); // 「  」
-    s = std::regex_replace(s, std::regex("(.*)\x81i([\\s\\S]*?)\x81j(.*)"), "\x81i$2\x81j"); // （  ）
+    s = re::sub(s, "(.*)\x81u([\\s\\S]*?)\x81v(.*)", "\x81u$2\x81v"); // 「  」
+    s = re::sub(s, "(.*)\x81i([\\s\\S]*?)\x81j(.*)", "\x81i$2\x81j"); // （  ）
     buffer->from(s);
   }
   void Tamamogetname(TextBuffer *buffer, HookParam *)
   {
     auto s = buffer->strA();
 
-    s = std::regex_replace(s, std::regex("\\{#(.*?)\\}"), "");
-    s = std::regex_replace(s, std::regex("<(.*?)>"), "");
+    s = re::sub(s, "\\{#(.*?)\\}");
+    s = re::sub(s, "<(.*?)>");
     if (s.find("\x81u") != s.npos && s.find("\x81v") != s.npos)
-      s = std::regex_replace(s, std::regex("(.*)\x81u([\\s\\S]*?)\x81v(.*)"), "$1"); // 「  」
+      s = re::sub(s, "(.*)\x81u([\\s\\S]*?)\x81v(.*)", "$1"); // 「  」
     else if (s.find("\x81i") != s.npos && s.find("\x81j") != s.npos)
-      s = std::regex_replace(s, std::regex("(.*)\x81i([\\s\\S]*?)\x81j(.*)"), "$1"); // （  ）
+      s = re::sub(s, "(.*)\x81i([\\s\\S]*?)\x81j(.*)", "$1"); // （  ）
     else
       return buffer->clear();
     buffer->from(s);

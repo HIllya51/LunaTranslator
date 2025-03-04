@@ -695,8 +695,8 @@ namespace
       // 「なるほど。それゆえ、御一夜は衰退し、\n\x%lエアクラ;#00ffc040;エアクラ%l;#;工場の誘致話が持ち上がったわけか？」
       // 「ナビ。お前も\x%lエアクラ;#00ffc040;エアクラ%l;#;の仲間だったな。\n気を悪くしたか？」
       auto xx = buffer->strW();
-      xx = std::regex_replace(xx, std::wregex(L"\\[(.*?),\\d\\]"), L"$1");
-      xx = std::regex_replace(xx, std::wregex(L"\\\\x%l(.*?);(.*?);(.*?);#;"), L"$1");
+      xx = re::sub(xx, L"\\[(.*?),\\d\\]", L"$1");
+      xx = re::sub(xx, L"\\\\x%l(.*?);(.*?);(.*?);#;", L"$1");
       buffer->from(xx);
     };
     hp.lineSeparator = L"\\n";

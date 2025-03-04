@@ -1198,7 +1198,7 @@ namespace
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       std::string str = buffer->strA();
-      std::string result1 = std::regex_replace(str, std::regex("\\{(.*?)/(.*?)\\}"), "$1");
+      std::string result1 = re::sub(str, "\\{(.*?)/(.*?)\\}", "$1");
       buffer->from(result1);
     };
 

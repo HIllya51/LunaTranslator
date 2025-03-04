@@ -67,11 +67,10 @@ namespace
                 auto game = getSecondSubstring(info.title);
                 if (!game.size())
                     continue;
-                std::wregex reg1(L"\\((.*?)\\)");
-                std::wsmatch match;
-                if (!std::regex_search(game, match, reg1))
+                auto match = re::search(game, L"\\((.*?)\\)");
+                if (!match)
                     return;
-                auto curr = match[1].str();
+                auto curr = match.value()[1].str();
                 if (last == curr)
                     return;
                 Vita3KGameID = wcasta(curr);
@@ -158,19 +157,19 @@ namespace
     void FPCSG01023(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("<br>"), "");
-        s = std::regex_replace(s, std::regex("%CF11F"), "");
-        s = std::regex_replace(s, std::regex("%CFFFF"), "");
-        s = std::regex_replace(s, std::regex("%K%P"), "");
-        s = std::regex_replace(s, std::regex("%K%N"), "");
-        s = std::regex_replace(s, std::regex("\n"), "");
+        s = re::sub(s, "<br>");
+        s = re::sub(s, "%CF11F");
+        s = re::sub(s, "%CFFFF");
+        s = re::sub(s, "%K%P");
+        s = re::sub(s, "%K%N");
+        s = re::sub(s, "\n");
         buffer->from(s);
     }
     void FPCSG01282_1(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("(\\n)+"), " ");
-        s = std::regex_replace(s, std::regex("\\d$|^@[a-z]+|#.*?#|\\$"), "");
+        s = re::sub(s, "(\\n)+", " ");
+        s = re::sub(s, "\\d$|^@[a-z]+|#.*?#|\\$");
         buffer->from(s);
     }
     template <int idx>
@@ -232,9 +231,9 @@ namespace
     void FPCSG00410(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
-        s = std::regex_replace(s, std::regex("#Pos\\[[\\s\\S]*?\\]"), "");
-        s = std::regex_replace(s, std::regex("#n"), " ");
+        s = re::sub(s, "#[A-Za-z]+\\[(\\d*[.])?\\d+\\]");
+        s = re::sub(s, "#Pos\\[[\\s\\S]*?\\]");
+        s = re::sub(s, "#n", " ");
         // .replaceAll("④", "!?").replaceAll("②", "!!").replaceAll("⑥", "。").replaceAll("⑪", "【")
         // 	.replaceAll("⑫", "】").replaceAll("⑤", "、").replaceAll("①", "・・・")
         strReplace(s, "\x87\x43", "!?");
@@ -249,24 +248,24 @@ namespace
     void FPCSG00448(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("[\\s]"), "");
-        s = std::regex_replace(s, std::regex("(#n)+"), "");
-        s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
-        s = std::regex_replace(s, std::regex("#Pos\\[[\\s\\S]*?\\]"), "");
+        s = re::sub(s, "[\\s]");
+        s = re::sub(s, "(#n)+");
+        s = re::sub(s, "#[A-Za-z]+\\[(\\d*[.])?\\d+\\]");
+        s = re::sub(s, "#Pos\\[[\\s\\S]*?\\]");
         buffer->from(s);
     }
     void PCSG01203(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("#Ruby\\[[-\\d]+,(.*?)\\]"), "");
+        s = re::sub(s, "#Ruby\\[[-\\d]+,(.*?)\\]");
         buffer->from(s);
     }
     void FPCSG01008(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("#Ruby\\[([^,]+)\\.([^\\]]+)\\]."), "$1");
-        s = std::regex_replace(s, std::regex("(#n)+"), " ");
-        s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
+        s = re::sub(s, "#Ruby\\[([^,]+)\\.([^\\]]+)\\].", "$1");
+        s = re::sub(s, "(#n)+", " ");
+        s = re::sub(s, "#[A-Za-z]+\\[(\\d*[.])?\\d+\\]");
         buffer->from(s);
     }
     void TPCSG00903(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -286,30 +285,30 @@ namespace
     void FPCSG00903(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\\\n"), " ");
+        s = re::sub(s, "\\\\n", " ");
         buffer->from(s);
     }
     void FPCSG01180(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(\\n)"), " ");
-        s = std::regex_replace(s, std::regex(R"(,.*$)"), " ");
+        s = re::sub(s, R"(\\n)", " ");
+        s = re::sub(s, R"(,.*$)", " ");
         buffer->from(s);
     }
     void PCSG01002(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, L'\n');
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<.*?>"), L"");
+        s = re::sub(s, L"<.*?>");
         buffer->from(s);
     }
     void FPCSG00839(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\[[^\\]]+."), L"");
-        s = std::regex_replace(s, std::wregex(L"\\\\k|\\\\x|%C|%B|%p-1;"), L"");
-        s = std::regex_replace(s, std::wregex(L"#[0-9a-fA-F]+;([^%#]+)(%r)?"), L"$1");
-        s = std::regex_replace(s, std::wregex(L"\\\\n"), L"");
+        s = re::sub(s, L"\\[[^\\]]+.");
+        s = re::sub(s, L"\\\\k|\\\\x|%C|%B|%p-1;");
+        s = re::sub(s, L"#[0-9a-fA-F]+;([^%#]+)(%r)?", L"$1");
+        s = re::sub(s, L"\\\\n");
         static std::wstring last;
         if (last.find(s) != last.npos)
             return buffer->clear();
@@ -319,18 +318,18 @@ namespace
     void FPCSG00751(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("[\\s]"), "");
-        s = std::regex_replace(s, std::regex("@[a-z]"), "");
-        // s = std::regex_replace(s, std::regex("＄"), "");
+        s = re::sub(s, "[\\s]");
+        s = re::sub(s, "@[a-z]");
+        // s = re::sub(s, "＄"), "");
         strReplace(s, "\x81\x90");
         buffer->from(s);
     }
     void FPCSG00401(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"([\s])"), "");
-        s = std::regex_replace(s, std::regex(R"(\c)"), "");
-        s = std::regex_replace(s, std::regex(R"(\\n)"), "");
+        s = re::sub(s, R"([\s])");
+        s = re::sub(s, R"(\c)");
+        s = re::sub(s, R"(\\n)");
         buffer->from(s);
     }
     void PCSG00530(TextBuffer *buffer, HookParam *)
@@ -345,7 +344,7 @@ namespace
     void PCSG00592(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#Color\[\d+\])"), "");
+        s = re::sub(s, R"(#Color\[\d+\])");
         buffer->from(s);
     }
     void PCSG00833(TextBuffer *buffer, HookParam *)
@@ -417,24 +416,24 @@ namespace
     void PCSG01167(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8R"(<(.*?)>(.*?)\|)"), "$2");
+        s = re::sub(s, u8R"(<(.*?)>(.*?)\|)", "$2");
         buffer->from(s);
     }
     void PCSG00917(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8R"(([^。…？！])　)"), "$1");
-        s = std::regex_replace(s, std::regex(u8R"(^　)"), "");
-        s = std::regex_replace(s, std::regex(u8R"(#n)"), "");
+        s = re::sub(s, u8R"(([^。…？！])　)", "$1");
+        s = re::sub(s, u8R"(^　)");
+        s = re::sub(s, u8R"(#n)");
         buffer->from(s);
     }
     void PCSG00938(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8R"(([^。…？！])　)"), "$1");
-        s = std::regex_replace(s, std::regex(u8R"(^　)"), "");
-        s = std::regex_replace(s, std::regex(u8R"(#n)"), "");
-        s = std::regex_replace(s, std::regex(u8R"(#\w+\[\d+\]|!)"), "");
+        s = re::sub(s, u8R"(([^。…？！])　)", "$1");
+        s = re::sub(s, u8R"(^　)");
+        s = re::sub(s, u8R"(#n)");
+        s = re::sub(s, u8R"(#\w+\[\d+\]|!)");
         buffer->from(s);
     }
     void FPCSG00912(TextBuffer *buffer, HookParam *hp)
@@ -444,7 +443,7 @@ namespace
     void FPCSG00706(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<br>"), L"");
+        s = re::sub(s, L"<br>");
         buffer->from(s);
     }
     void FPCSG00696(TextBuffer *buffer, HookParam *hp)
@@ -462,32 +461,32 @@ namespace
         strReplace(s, "\x81\x55", "!?");
         strReplace(s, "\x81\x54", "!!");
         strReplace(s, "\x81\x40");
-        s = std::regex_replace(s, std::regex("(#n)+"), "");
-        s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
+        s = re::sub(s, "(#n)+");
+        s = re::sub(s, "#[A-Za-z]+\\[(\\d*[.])?\\d+\\]");
         buffer->from(s);
     }
     void FPCSG00389(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("[\\s]"), "");
-        s = std::regex_replace(s, std::regex("(#n)+"), "");
-        s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
-        s = std::regex_replace(s, std::regex("#Pos\\[[\\s\\S]*?\\]"), "");
+        s = re::sub(s, "[\\s]");
+        s = re::sub(s, "(#n)+");
+        s = re::sub(s, "#[A-Za-z]+\\[(\\d*[.])?\\d+\\]");
+        s = re::sub(s, "#Pos\\[[\\s\\S]*?\\]");
         buffer->from(s);
     }
     void FPCSG00216(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("[\\s]"), "");
-        s = std::regex_replace(s, std::regex("(#n)+"), "");
-        s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*[.])?\\d+\\]"), "");
-        s = std::regex_replace(s, std::regex("#Pos\\[[\\s\\S]*?\\]"), "");
+        s = re::sub(s, "[\\s]");
+        s = re::sub(s, "(#n)+");
+        s = re::sub(s, "#[A-Za-z]+\\[(\\d*[.])?\\d+\\]");
+        s = re::sub(s, "#Pos\\[[\\s\\S]*?\\]");
         buffer->from(s);
     }
     void FPCSG00405(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("[\\s]"), "");
+        s = re::sub(s, "[\\s]");
         buffer->from(s);
     }
     void PCSG00172(TextBuffer *buffer, HookParam *hp)
@@ -713,25 +712,25 @@ namespace
     void FPCSG00468(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8R"(\\n(　)*|\\k)"), "");
-        s = std::regex_replace(s, std::regex(R"(\[|\*[^\]]+])"), "");
-        s = std::regex_replace(s, std::regex(u8"×"), "");
+        s = re::sub(s, u8R"(\\n(　)*|\\k)");
+        s = re::sub(s, R"(\[|\*[^\]]+])");
+        s = re::sub(s, u8"×");
         buffer->from(s);
     }
     void FPCSG00808(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(^\s+|\s+$)"), "");
-        s = std::regex_replace(s, std::regex(R"(\s*(#n)*\s*)"), "");
-        s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
+        s = re::sub(s, R"(^\s+|\s+$)");
+        s = re::sub(s, R"(\s*(#n)*\s*)");
+        s = re::sub(s, R"(#\w+(\[.+?\])?)");
         buffer->from(s);
     }
     void F010088B01A8FC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
         static std::string last;
-        s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
-        s = std::regex_replace(s, std::regex(u8"　"), "");
+        s = re::sub(s, R"(#\w+(\[.+?\])?)");
+        s = re::sub(s, u8"　");
         if (last == s)
             return buffer->clear();
         last = s;
@@ -750,8 +749,8 @@ namespace
     void FPCSG00815(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(\s*(#n)*\s*)"), "");
-        s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
+        s = re::sub(s, R"(\s*(#n)*\s*)");
+        s = re::sub(s, R"(#\w+(\[.+?\])?)");
         buffer->from(s);
     }
     void PCSG01250_T(TextBuffer *buffer, HookParam *hp)
@@ -760,8 +759,8 @@ namespace
         if (!startWith(s, "<text"))
             return buffer->clear();
         s = s.substr(6, s.size() - 6 - 1);
-        s = std::regex_replace(s, std::regex(R"(/ruby:(.*?)&(.*?)/)"), "$1");
-        s = std::regex_replace(s, std::regex(R"(#n)"), "");
+        s = re::sub(s, R"(/ruby:(.*?)&(.*?)/)", "$1");
+        s = re::sub(s, R"(#n)");
         buffer->from(s);
     }
     template <int ex = 1>
@@ -776,13 +775,13 @@ namespace
     void PCSG01202(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(/ruby:(.*?)&(.*?)/)"), "$1");
+        s = re::sub(s, R"(/ruby:(.*?)&(.*?)/)", "$1");
         buffer->from(s);
     }
     void PCSG01325(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8R"(@[_\*\d\w]*)"), "");
+        s = re::sub(s, u8R"(@[_\*\d\w]*)");
         buffer->from(s);
     }
     void PCSG00431(TextBuffer *buffer, HookParam *hp)
@@ -800,8 +799,8 @@ namespace
     void FPCSG00855(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8R"(#n(　)*)"), "");
-        s = std::regex_replace(s, std::regex(R"(#\w.+?\])"), "");
+        s = re::sub(s, u8R"(#n(　)*)");
+        s = re::sub(s, R"(#\w.+?\])");
         buffer->from(s);
     }
     void PCSG01178(TextBuffer *buffer, HookParam *hp)
@@ -839,8 +838,8 @@ namespace
     void FPCSG00477(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#n(\x81\x40)*)"), "");
-        s = std::regex_replace(s, std::regex(R"(#\w.+?\])"), "");
+        s = re::sub(s, R"(#n(\x81\x40)*)");
+        s = re::sub(s, R"(#\w.+?\])");
         buffer->from(s);
     }
     void PCSG00654(TextBuffer *buffer, HookParam *hp)
@@ -865,7 +864,7 @@ namespace
         last = s;
         strReplace(s, L"\\n　");
         strReplace(s, L"\\n");
-        s = std::regex_replace(s, std::wregex(LR"(\[(.*?),\d\])"), L"");
+        s = re::sub(s, LR"(\[(.*?),\d\])");
         buffer->from(s);
     }
     template <int __>
@@ -931,8 +930,8 @@ namespace
             return result;
         };
         ws = remap(ws);
-        ws = std::regex_replace(ws, std::wregex(LR"(\$t(.*?)@)"), L"$1");
-        ws = std::regex_replace(ws, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
+        ws = re::sub(ws, LR"(\$t(.*?)@)", L"$1");
+        ws = re::sub(ws, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
         buffer->from(WideStringToString(ws, 932));
     }
     void PCSG01198(TextBuffer *buffer, HookParam *hp)
@@ -952,8 +951,8 @@ namespace
             return result;
         };
         ws = remap(ws);
-        ws = std::regex_replace(ws, std::wregex(LR"(`(.*?)@)"), L"$1");
-        ws = std::regex_replace(ws, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
+        ws = re::sub(ws, LR"(`(.*?)@)", L"$1");
+        ws = re::sub(ws, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
         buffer->from(WideStringToString(ws, 932));
     }
     void PCSG00585(TextBuffer *buffer, HookParam *hp)
@@ -973,8 +972,8 @@ namespace
             return result;
         };
         ws = remap(ws);
-        ws = std::regex_replace(ws, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
-        ws = std::regex_replace(ws, std::wregex(LR"(\$C\[ffffff\](.*?)@\$C\[\])"), L"$1");
+        ws = re::sub(ws, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
+        ws = re::sub(ws, LR"(\$C\[ffffff\](.*?)@\$C\[\])", L"$1");
         strReplace(ws, L"\n");
         buffer->from(WideStringToString(ws, 932));
     }
@@ -995,14 +994,14 @@ namespace
             return result;
         };
         ws = remap(ws);
-        ws = std::regex_replace(ws, std::wregex(LR"(@[a-zA-Z\d_\.]+)"), L""); // 操了，wregex \w会匹配到unicode字符
+        ws = re::sub(ws, LR"(@[a-zA-Z\d_\.]+)"); // 操了，wregex \w会匹配到unicode字符
         buffer->from(WideStringToString(ws, 932));
     }
     void PCSG01196(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
         strReplace(ws, L"^", L"\n");
-        ws = std::regex_replace(ws, std::wregex(LR"(<(.*?)>(.*?)|)"), L"$2");
+        ws = re::sub(ws, LR"(<(.*?)>(.*?)|)", L"$2");
         buffer->from(WideStringToString(ws, 932));
     }
     void PCSG01151(TextBuffer *buffer, HookParam *hp)
@@ -1015,7 +1014,7 @@ namespace
     void FPCSG01066(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8R"(\n(　)*)"), "");
+        s = re::sub(s, u8R"(\n(　)*)");
         buffer->from(s);
     }
     void FPCSG01075(TextBuffer *buffer, HookParam *hp)
@@ -1030,15 +1029,15 @@ namespace
     void PCSG01314(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(@r(.*?)@(.*?)@)"), "$1");
-        s = std::regex_replace(s, std::regex(R"(@[\w\d_]+)"), "");
+        s = re::sub(s, R"(@r(.*?)@(.*?)@)", "$1");
+        s = re::sub(s, R"(@[\w\d_]+)");
         buffer->from(s);
     }
     void F010052300F612000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#r(.*?)\|(.*?)#)"), "$1");
-        s = std::regex_replace(s, std::regex(R"(@r(.*?)@\d)"), "$1");
+        s = re::sub(s, R"(#r(.*?)\|(.*?)#)", "$1");
+        s = re::sub(s, R"(@r(.*?)@\d)", "$1");
         strReplace(s, R"(\c)");
         strReplace(s, R"(\n)");
         buffer->from(s);
@@ -1065,7 +1064,7 @@ namespace
     void PCSG01197(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#r(.*?)\|(.*?)#)"), "$1");
+        s = re::sub(s, R"(#r(.*?)\|(.*?)#)", "$1");
         strReplace(s, R"(@w)");
         buffer->from(s);
     }
@@ -1089,7 +1088,7 @@ namespace
     {
         CharFilter(buffer, L'\n');
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(<CLT \d+>(.*?)<CLT>)"), L"$1");
+        s = re::sub(s, LR"(<CLT \d+>(.*?)<CLT>)", L"$1");
         buffer->from(s);
     }
     auto _ = []()

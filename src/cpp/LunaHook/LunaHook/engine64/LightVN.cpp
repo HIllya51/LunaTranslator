@@ -89,7 +89,7 @@ namespace
       for (auto _ : filterpath)
         if (str.find(_) != str.npos)
           return buffer->clear();
-      str = std::regex_replace(str, std::wregex(L"\\[(.*?)\\]<(.*?)>"), L"$1");
+      str = re::sub(str, L"\\[(.*?)\\]<(.*?)>", L"$1");
       buffer->from(str);
     };
     return NewHook(hp, "LightVN2");
@@ -100,9 +100,8 @@ namespace
   void commonfilter(TextBuffer *buffer, HookParam *)
   {
     auto str = buffer->strW();
-    std::wregex pattern(L"-{2,}");
-    str = std::regex_replace(str, pattern, L"");
-    str = std::regex_replace(str, std::wregex(L"\\[(.*?)\\]<(.*?)>"), L"$1");
+    str = re::sub(str, L"-{2,}");
+    str = re::sub(str, L"\\[(.*?)\\]<(.*?)>", L"$1");
     buffer->from(str);
   }
   bool lightvnparsestring()

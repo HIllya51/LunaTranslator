@@ -40,7 +40,7 @@ bool InsertAnim2Hook()
     myhp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
         std::string result = buffer->strA();
-        result = std::regex_replace(result, std::regex("@\\[(.*?):(.*?)\\]", std::regex_constants::icase), "$1");
+        result = re::sub(result, "@\\[(.*?):(.*?)\\]", "$1");
         buffer->from(result);
     };
     myhp.lineSeparator = L"@n";

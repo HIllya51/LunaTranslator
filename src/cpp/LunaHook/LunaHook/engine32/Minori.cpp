@@ -668,7 +668,7 @@ namespace
           hp.embed_hook_font = F_GetGlyphOutlineA;
           hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
           {
-            buffer->from(std::regex_replace(buffer->strA(), std::regex("\\{.*?\\}"), ""));
+            buffer->from(re::sub(buffer->strA(), "\\{.*?\\}"));
           };
           count |= NewHook(hp, "EmbedMinori");
         }

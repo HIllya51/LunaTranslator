@@ -314,11 +314,11 @@ bool InsertNeXASHookA()
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       auto s = buffer->strA();
-      s = std::regex_replace(s, std::regex("@r(.*?)@(.*?)@"), "$1");
-      s = std::regex_replace(s, std::regex("@v\\d{8}"), "");
-      s = std::regex_replace(s, std::regex("@k"), "");
-      s = std::regex_replace(s, std::regex("@g"), "");
-      s = std::regex_replace(s, std::regex("@d"), "");
+      s = re::sub(s, "@r(.*?)@(.*?)@", "$1");
+      s = re::sub(s, "@v\\d{8}");
+      strReplace(s, "@k");
+      strReplace(s, "@g");
+      strReplace(s, "@d");
       buffer->from(s);
     };
     if (NewHook(hp, "NeXAS3"))
@@ -474,7 +474,7 @@ namespace
         if (startWith(s, "@v"))
         {
           // S001_L1_0001
-          s = std::regex_replace(s, std::regex("@v[a-zA-Z0-9]{4}_[a-zA-Z0-9]{2}_[a-zA-Z0-9]{4}"), "");
+          s = re::sub(s, "@v[a-zA-Z0-9]{4}_[a-zA-Z0-9]{2}_[a-zA-Z0-9]{4}");
           buffer->from(s);
         }
         else
@@ -514,13 +514,13 @@ namespace
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       auto s = buffer->strA();
-      s = std::regex_replace(s, std::regex(R"(@v[_\w\d]{8})"), "");
-      s = std::regex_replace(s, std::regex(R"(@t\d{4})"), "");
-      s = std::regex_replace(s, std::regex(R"(@s\d{4})"), "");
-      s = std::regex_replace(s, std::regex(R"(@m\d{2})"), "");
-      s = std::regex_replace(s, std::regex(R"(@f\d{2})"), "");
-      s = std::regex_replace(s, std::regex(R"(@h[_\d\w]+)"), "");
-      s = std::regex_replace(s, std::regex(R"(@r(.*?)@(.*?)@)"), "$1");
+      s = re::sub(s, R"(@v[_\w\d]{8})");
+      s = re::sub(s, R"(@t\d{4})");
+      s = re::sub(s, R"(@s\d{4})");
+      s = re::sub(s, R"(@m\d{2})");
+      s = re::sub(s, R"(@f\d{2})");
+      s = re::sub(s, R"(@h[_\d\w]+)");
+      s = re::sub(s, R"(@r(.*?)@(.*?)@)", "$1");
       strReplace(s, "@n");
       strReplace(s, "@e");
       strReplace(s, "@k");

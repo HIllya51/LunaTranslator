@@ -1300,8 +1300,8 @@ namespace
     }
     else if (type == 1)
     {
-      newText = std::regex_replace(newText, std::wregex(L"\u300c"), L"\\[\u300c\\]");
-      newText = std::regex_replace(newText, std::wregex(L"\u300d"), L"\\[\u300d\\]");
+      newText = re::sub(newText, L"\u300c", L"\\[\u300c\\]");
+      newText = re::sub(newText, L"\u300d", L"\\[\u300d\\]");
     }
     newText += saveend;
     auto text = (LPWSTR)s->esi;
@@ -1323,9 +1323,9 @@ namespace
     //算了，改人名容易出问题
     //[name name="？／翼"]    ->人名
     //[name name="翼"]
-    auto checkisname=std::regex_replace(wstext, std::wregex(L"\\[name name=\"(.*?)\"\\]"), L"");
+    auto checkisname=re::sub(wstext, std::wregex(L"\\[name name=\"(.*?)\"\\]"), L"");
     if(wstext!=L"" && checkisname==L""){
-      auto name=std::regex_replace(wstext, std::wregex(L"\\[name name=\"(.*?)\"\\]"), L"$1");
+      auto name=re::sub(wstext, std::wregex(L"\\[name name=\"(.*?)\"\\]"), L"$1");
 
       auto _idx=name.find(L'\uff0f');
       std::wstring end=L"";
@@ -1352,14 +1352,14 @@ namespace
     else if (wstext.substr(0, 3) == L"[\u300c]")
     { // 「 」
       type = 2;
-      wstext = std::regex_replace(wstext, std::wregex(L"\\[\u300c\\]"), L"\u300c");
-      wstext = std::regex_replace(wstext, std::wregex(L"\\[\u300d\\]"), L"\u300d");
+      wstext = re::sub(wstext, L"\\[\u300c\\]", L"\u300c");
+      wstext = re::sub(wstext, L"\\[\u300d\\]", L"\u300d");
     }
     if (type == 0)
       return; // 未知类型
     saveend = L"";
     auto innner = wstext.substr(0, wstext.size() - 5);
-    innner = std::regex_replace(innner, std::wregex(L"\\[eruby text=(.*?) str=(.*?)\\]"), L"$2");
+    innner = re::sub(innner, L"\\[eruby text=(.*?) str=(.*?)\\]", L"$2");
     if (innner[innner.size() - 1] == L']')
     {
       // 「ボクの身体をあれだけ好き勝手しておいて、いまさらカマトトぶっても遅いよ。ほら、正直になりなよ」[waitsd layer=&CHAR6]
@@ -1657,9 +1657,9 @@ namespace
         t = t.substr(0, t.size() - 4);
       if (t.size() > 4 && t.substr(t.size() - 3) == L"[r]")
         t = t.substr(0, t.size() - 3); // 揺り籠より天使まで
-      t = std::regex_replace(t, std::wregex(L"\\[\ruby text=\"(.*?)\"\\]"), L"");
-      t = std::regex_replace(t, std::wregex(L"\\[ruby text=\"(.*?)\"\\]"), L"");
-      t = std::regex_replace(t, std::wregex(L"\\[ch text=\"(.*?)\"\\]"), L"$1");
+      t = re::sub(t, L"\\[\ruby text=\"(.*?)\"\\]");
+      t = re::sub(t, L"\\[ruby text=\"(.*?)\"\\]");
+      t = re::sub(t, L"\\[ch text=\"(.*?)\"\\]", L"$1");
       if (std::any_of(t.begin(), t.end(), [](wchar_t c)
                       { return (c <= 127) && ((c != L'[') || c != L']'); }))
         return buffer->clear();

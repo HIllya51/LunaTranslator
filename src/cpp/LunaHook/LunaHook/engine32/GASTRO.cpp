@@ -4,7 +4,7 @@ namespace
   void filter(TextBuffer *buffer, HookParam *hp)
   {
     std::string s = buffer->strA();
-    s = std::regex_replace(s, std::regex("#(.*?)#"), "");
+    s = re::sub(s, "#(.*?)#");
     strReplace(s, "\\c");
     buffer->from(s);
   }

@@ -21,9 +21,9 @@ bool MKXPZ::attach_function()
       return buffer->clear();
     if (startWith(s, "Graphics/"))
       return buffer->clear();
-    s = std::regex_replace(s, std::regex("<.*?>"), "");
-    s = std::regex_replace(s, std::regex(R"(\\tg\[(.*?)\])"), "$1\n"); // 人名
-    s = std::regex_replace(s, std::regex(R"(\\\w+\[\d+\])"), "");
+    s = re::sub(s, "<.*?>");
+    s = re::sub(s, R"(\\tg\[(.*?)\])", "$1\n"); // 人名
+    s = re::sub(s, R"(\\\w+\[\d+\])");
     strReplace(s, "\\|");
     buffer->from(s);
   };

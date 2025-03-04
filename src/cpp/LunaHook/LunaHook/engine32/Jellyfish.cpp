@@ -34,7 +34,7 @@ bool Jellyfish::Jellyfish_attach_function()
     StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
     StringCharReplacer(buffer, TEXTANDLEN("\\N"), '\n');
 
-    buffer->from(std::regex_replace(buffer->strA(), std::regex("\\\\[0-7a-zA-Z]"), ""));
+    buffer->from(re::sub(buffer->strA(), "\\\\[0-7a-zA-Z]"));
   };
 
   return NewHook(hp, "Jellyfish");

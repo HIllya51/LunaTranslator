@@ -147,9 +147,9 @@ namespace
 
   std::string rubyRemove(std::string text)
   {
-    text = std::regex_replace(text, std::regex("<r(.*?)>(.*?)</r>"), "$2");
-    text = std::regex_replace(text, std::regex("<c(.*?)>(.*?)</c>"), "$2");
-    text = std::regex_replace(text, std::regex("<s(.*?)>(.*?)</s>"), "$2");
+    text = re::sub(text, "<r(.*?)>(.*?)</r>", "$2");
+    text = re::sub(text, "<c(.*?)>(.*?)</c>", "$2");
+    text = re::sub(text, "<s(.*?)>(.*?)</s>", "$2");
     return text;
   }
 }

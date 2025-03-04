@@ -4,11 +4,9 @@ void IG64filter(TextBuffer *buffer, HookParam *)
 {
 
   std::wstring str = buffer->strW();
-  std::wregex reg1(L"\\$\\[(.*?)\\$/(.*?)\\$\\]");
-  std::wstring result1 = std::regex_replace(str, reg1, L"$1");
+  str = re::sub(str, L"\\$\\[(.*?)\\$/(.*?)\\$\\]", L"$1");
 
-  std::wregex reg2(L"@[^@]*@");
-  buffer->from(std::regex_replace(result1, reg2, L""));
+  buffer->from(re::sub(str, L"@[^@]*@"));
 };
 bool InsertIG64Hook2()
 {

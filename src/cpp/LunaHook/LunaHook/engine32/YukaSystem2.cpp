@@ -128,7 +128,7 @@ bool InsertYukaSystem2Hook()
       return buffer->clear();
     auto str = buffer->strA();
 
-    str = std::regex_replace(str, std::regex(R"(@r\((.*?),(.*?)\))"), "$1");
+    str = re::sub(str, R"(@r\((.*?),(.*?)\))", "$1");
 
     auto wstr = StringToWideString(str);
 

@@ -232,7 +232,7 @@ bool InsertCatSystem2Hook()
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    auto _ = std::regex_replace(buffer->strA(), std::regex(R"(\[(.+?)/.+\])"), "$1");
+    auto _ = re::sub(buffer->strA(), R"(\[(.+?)/.+\])", "$1");
     strReplace(_, "\\@");
     buffer->from(_);
   };
@@ -843,7 +843,7 @@ namespace
       hp.embed_hook_font = F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        buffer->from(std::regex_replace(buffer->strA(), std::regex(R"(\[(.+?)/.+\])"), "$1"));
+        buffer->from(re::sub(buffer->strA(), R"(\[(.+?)/.+\])", "$1"));
       };
 
       return NewHook(hp, "EmbedCS2");

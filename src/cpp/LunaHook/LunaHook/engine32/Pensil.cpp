@@ -26,7 +26,7 @@ namespace
   void pensilfilter(TextBuffer *buffer, HookParam *hp)
   {
     // 「馬鹿な、\{軌道護符|サテラ}が封じられるとは！　ハーリーの仕業か。連中の魔法科学はそこまで進んだのか！？」
-    buffer->from(std::regex_replace(buffer->strA(), std::regex("\\\\\\{(.*?)\\|(.*?)\\}"), "$1"));
+    buffer->from(re::sub(buffer->strA(), "\\\\\\{(.*?)\\|(.*?)\\}", "$1"));
   };
 }
 

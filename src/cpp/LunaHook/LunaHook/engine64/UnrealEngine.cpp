@@ -3,11 +3,9 @@
 void ENTERGRAMfilter(TextBuffer *buffer, HookParam *hp)
 {
   std::wstring str = buffer->strW();
-  std::wregex reg1(L"\\|(.*?)\u300a(.*?)\u300b");
-  std::wstring result1 = std::regex_replace(str, reg1, L"$1");
-  std::wregex reg2(L"\u3000|\n");
-  std::wstring result2 = std::regex_replace(result1, reg2, L"");
-  buffer->from(result2);
+  str = re::sub(str, L"\\|(.*?)\u300a(.*?)\u300b", L"$1");
+  str = re::sub(str, L"\u3000|\n");
+  buffer->from(str);
 };
 bool InsertENTERGRAM()
 {

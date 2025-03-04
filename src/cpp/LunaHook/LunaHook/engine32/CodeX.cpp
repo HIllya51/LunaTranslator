@@ -8,7 +8,7 @@ void CodeXFilter(TextBuffer *buffer, HookParam *)
     result = result.substr(1);
 
   //|晒[さら]
-  result = std::regex_replace(result, std::regex("\\|(.+?)\\[(.+?)\\]"), "$1");
+  result = re::sub(result, "\\|(.+?)\\[(.+?)\\]", "$1");
   buffer->from(result);
 }
 
@@ -271,11 +271,11 @@ LABEL_3:
     {
       // 这个东西^开头的都是各种奇葩控制符。懒得管了。
       auto result = StringToWideString(buffer->viewA(), 932).value();
-      result = std::regex_replace(result, std::wregex(LR"(\|(.*?)\[(.*?)\])"), L"$1");
-      result = std::regex_replace(result, std::wregex(LR"(\^d\d)"), L"");
+      result = re::sub(result, LR"(\|(.*?)\[(.*?)\])", L"$1");
+      result = re::sub(result, LR"(\^d\d)");
       // 内嵌会导致^\w解析错误
       //^n ^m ...
-      result = std::regex_replace(result, std::wregex(LR"(\^\w)"), L"");
+      result = re::sub(result, LR"(\^\w)");
       buffer->from(WideStringToString(result, 932));
     };
     patch_fun_ptrs = {{(void *)__ismbblead, +[](BYTE b)

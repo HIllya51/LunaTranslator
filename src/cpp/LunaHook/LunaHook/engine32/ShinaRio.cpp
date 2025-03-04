@@ -192,7 +192,7 @@ bool InsertShinaHook(int ver)
             hp.filter_fun = [](TextBuffer *buffer, HookParam *)
             {
               StringFilter(buffer, TEXTANDLEN("_r"));
-              buffer->from(std::regex_replace(buffer->strA(), std::regex("_t!.*?[/>]"), ""));
+              buffer->from(re::sub(buffer->strA(), "_t!.*?[/>]"));
             };
             ConsoleOutput("triggered: adding dynamic reader");
             ret |= NewHook(hp, "ShinaRio READ");
@@ -980,7 +980,7 @@ namespace
       hp.embed_hook_font = F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        buffer->from(std::regex_replace(buffer->strA(), std::regex("_t!.*?[/>]"), ""));
+        buffer->from(re::sub(buffer->strA(), "_t!.*?[/>]"));
       };
       return NewHook(hp, "EmbedShario");
     }

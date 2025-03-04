@@ -70,8 +70,8 @@ bool Aromarie::attach_function()
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       auto s = buffer->strA();
-      s = std::regex_replace(s, std::regex(R"(\\\w)"), "");
-      s = std::regex_replace(s, std::regex(R"(%.*?%)"), "");
+      s = re::sub(s, R"(\\\w)");
+      s = re::sub(s, R"(%.*?%)");
       buffer->from(s);
     };
     return NewHook(hp, "AromarieText");

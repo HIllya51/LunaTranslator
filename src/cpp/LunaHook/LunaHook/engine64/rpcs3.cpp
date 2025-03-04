@@ -261,10 +261,10 @@ namespace
     void FBLJM61131(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\[[^\\]]+."), "");
-        s = std::regex_replace(s, std::regex("\\\\k|\\\\x|%C|%B"), "");
-        s = std::regex_replace(s, std::regex("\\%\\d+\\#[0-9a-fA-F]*\\;"), "");
-        s = std::regex_replace(s, std::regex("\\n+"), " ");
+        s = re::sub(s, "\\[[^\\]]+.");
+        s = re::sub(s, "\\\\k|\\\\x|%C|%B");
+        s = re::sub(s, "\\%\\d+\\#[0-9a-fA-F]*\\;");
+        s = re::sub(s, "\\n+");
         buffer->from(s);
     }
     auto _ = []()

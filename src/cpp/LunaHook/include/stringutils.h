@@ -16,7 +16,53 @@ StringT stolower(StringT s)
 }
 
 LPCSTR reverse_search_begin(const char *s, int maxsize = VNR_TEXT_CAPACITY);
+namespace re
+{
+  template <typename CharT, class StringT = std::basic_string<CharT>>
+  StringT sub(const StringT &str, const CharT *pattern, const CharT *as = nullptr, std::regex_constants::syntax_option_type _Flags = std::regex_constants::ECMAScript)
+  {
+    if (!as)
+    {
+      if constexpr (std::is_same_v<CharT, char>)
+      {
+        as = "";
+      }
+      else if constexpr (std::is_same_v<CharT, wchar_t>)
+      {
+        as = L"";
+      }
+    }
+    return std::regex_replace(str, std::basic_regex<CharT>(pattern, _Flags), as);
+  }
+  template <typename CharT>
+  using MatchT = std::conditional_t<std::is_same_v<CharT, char>, std::smatch, std::conditional_t<std::is_same_v<CharT, wchar_t>, std::wsmatch, void>>;
 
+  template <typename CharT, class StringT = std::basic_string<CharT>, class Match = MatchT<CharT>>
+  std::optional<Match> match(const StringT &str, const CharT *pattern)
+  {
+    Match match;
+    if (!std::regex_match(str, match, std::basic_regex<CharT>(pattern)))
+      return {};
+    return match;
+  }
+  template <typename CharT, class StringT = std::basic_string<CharT>, class Match = MatchT<CharT>>
+  std::optional<Match> search(const StringT &str, const CharT *pattern)
+  {
+    Match match;
+    if (!std::regex_search(str, match, std::basic_regex<CharT>(pattern)))
+      return {};
+    return match;
+  }
+  template <typename CharT, class StringT = std::basic_string<CharT>, class iteratorT = std::conditional_t<std::is_same_v<CharT, char>, std::sregex_token_iterator, std::conditional_t<std::is_same_v<CharT, wchar_t>, std::wsregex_token_iterator, void>>>
+  std::vector<StringT> split(const StringT &str, const CharT *pattern)
+  {
+    auto r = std::basic_regex<CharT>(pattern);
+    iteratorT it(str.begin(), str.end(), r, -1);
+    iteratorT end;
+    std::vector<StringT> parts(it, end);
+    return parts;
+  }
+}
 bool all_ascii(const char *s, int maxsize = VNR_TEXT_CAPACITY);
 bool all_ascii(const wchar_t *s, int maxsize = VNR_TEXT_CAPACITY);
 std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr = "");

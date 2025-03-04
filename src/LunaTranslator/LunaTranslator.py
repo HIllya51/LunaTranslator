@@ -349,6 +349,8 @@ class MAINUI:
                 text = text[: globalconfig["maxlength"]] + "……"
 
             self.translation_ui.displayraw1.emit(text)
+            self.transhis.getnewsentencesignal.emit(text)
+            self.maybesetedittext(text)
             return
 
         try:

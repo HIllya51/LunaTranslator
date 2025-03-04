@@ -1148,7 +1148,7 @@ namespace
     {
       // It could be either <R..> or <r..>
       std::string result = buffer->strA();
-      result = std::regex_replace(result, std::regex("<r.+?>(.+?)</r>", std::regex_constants::icase), "$1");
+      result = re::sub(result, "<r.+?>(.+?)</r>", "$1", std::regex_constants::icase);
       buffer->from(result);
     };
 

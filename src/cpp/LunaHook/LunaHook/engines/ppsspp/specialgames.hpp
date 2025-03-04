@@ -19,27 +19,29 @@ namespace ppsspp
 {
 	void NPJH50796(TextBuffer *buffer, HookParam *hp)
 	{
-		static int i = 0;
-		i++;
-		if (i % 2)
-			return buffer->clear();
+		static std::string last;
 		std::string result = buffer->strA();
-		result = std::regex_replace(result, std::regex(R"(@(.*?)@)"), "$1");
+		if (result == last)
+		{
+			return buffer->clear();
+		}
+		last = result;
+		result = re::sub(result, R"(@(.*?)@)", "$1");
 		buffer->from(result);
 	}
 	void ULJS00600(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string result = buffer->strA();
-		result = std::regex_replace(result, std::regex(R"(%d\d{3})"), "");
-		result = std::regex_replace(result, std::regex(R"(%d\d)"), "");
+		result = re::sub(result, R"(%d\d{3})");
+		result = re::sub(result, R"(%d\d)");
 		strReplace(result, u8"\n　");
 		buffer->from(result);
 	}
 	void ULJM05968(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string result = buffer->strA();
-		result = std::regex_replace(result, std::regex(R"(vc\d+)"), " ");
-		result = std::regex_replace(result, std::regex(R"(rb(.*?)rs(.*?)re)"), "$2");
+		result = re::sub(result, R"(vc\d+)");
+		result = re::sub(result, R"(rb(.*?)rs(.*?)re)", "$2");
 		strReplace(result, "kw");
 		strReplace(result, "cr");
 		buffer->from(result);
@@ -47,8 +49,8 @@ namespace ppsspp
 	void ULJS00403_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string result = buffer->strA();
-		result = std::regex_replace(result, std::regex(R"((\\n)+)"), " ");
-		result = std::regex_replace(result, std::regex(R"((\\d$|^\@[a-z]+|#.*?#|\$))"), "");
+		result = re::sub(result, R"((\\n)+)");
+		result = re::sub(result, R"((\\d$|^\@[a-z]+|#.*?#|\$))");
 		buffer->from(result);
 	}
 	void ULJS00124_1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -150,8 +152,8 @@ namespace ppsspp
 		if (_3 == s.npos)
 			return;
 		s = s.substr(0, _1);
-		s = std::regex_replace(s, std::regex(R"(\x81m(.*?)\x81n)"), "");   // ［龍神］
-		s = std::regex_replace(s, std::regex(R"(\x81o(.*?)\x81p)"), "$1"); // ｛龍の宝玉｝
+		s = re::sub(s, R"(\x81m(.*?)\x81n)");		// ［龍神］
+		s = re::sub(s, R"(\x81o(.*?)\x81p)", "$1"); // ｛龍の宝玉｝
 		strReplace(s, "\n");
 		strReplace(s, "\x81\x40");
 		buffer->from(s);
@@ -190,7 +192,7 @@ namespace ppsspp
 	void ULJM05770(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)"), "$2"); // ｛みす／御簾｝
+		s = re::sub(s, R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)", "$2"); // ｛みす／御簾｝
 		buffer->from(s);
 		CharFilter(buffer, '\n');
 		StringFilter(buffer, TEXTANDLEN("@l"));
@@ -205,7 +207,7 @@ namespace ppsspp
 	void NPJH50754(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(<R(.*?)>(.*?)</R>)"), "$2"); // ｛みす／御簾｝
+		s = re::sub(s, R"(<R(.*?)>(.*?)</R>)", "$2"); // ｛みす／御簾｝
 		buffer->from(s);
 	}
 	void ULJM06378(TextBuffer *buffer, HookParam *hp)
@@ -223,20 +225,19 @@ namespace ppsspp
 		{
 			ws = ws.substr(0, ws.find(L"wc"));
 		}
-		ws = std::regex_replace(ws, std::wregex(LR"(l(.*?)\((.*?)\))"), L"$1");
+		ws = re::sub(ws, LR"(l(.*?)\((.*?)\))", L"$1");
 		buffer->from(WideStringToString(ws, 932));
 	}
 
 	void NPJH50909_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
-		ws = std::regex_replace(ws, std::wregex(L"(\\%N)+"), L" ");
-		ws = std::regex_replace(ws, std::wregex(L"\\%\\@\\%\\d+"), L"");
-		std::wsmatch match;
-		if (std::regex_search(ws, match, std::wregex(L"(^[^「]+)「")))
+		ws = re::sub(ws, L"(\\%N)+", L" ");
+		ws = re::sub(ws, L"\\%\\@\\%\\d+");
+		if (auto match = re::search(ws, L"(^[^「]+)「"))
 		{
-			std::wstring name = match[1].str();
-			ws = std::regex_replace(ws, std::wregex(L"^[^「]+"), L"");
+			std::wstring name = match.value()[1].str();
+			ws = re::sub(ws, L"^[^「]+");
 			ws = name + L"\n" + ws;
 		}
 		buffer->from(WideStringToString(ws, 932));
@@ -244,17 +245,17 @@ namespace ppsspp
 	void ULJM06119_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(/\[[^\]]+./g)"), "");
-		s = std::regex_replace(s, std::regex(R"(/\\k|\\x|%C|%B)"), "");
-		s = std::regex_replace(s, std::regex(R"(/\%\d+\#[0-9a-fA-F]*\;)"), "");
-		s = std::regex_replace(s, std::regex(R"(/\n+)"), " ");
+		s = re::sub(s, R"(/\[[^\]]+./g)");
+		s = re::sub(s, R"(/\\k|\\x|%C|%B)");
+		s = re::sub(s, R"(/\%\d+\#[0-9a-fA-F]*\;)");
+		s = re::sub(s, R"(/\n+)", " ");
 		buffer->from(s);
 	}
 	void ULJM06036_filter(TextBuffer *buffer, HookParam *hp)
 	{
 		std::wstring result = buffer->strW();
-		result = std::regex_replace(result, std::wregex(LR"(<R([^\/]+).([^>]+).>)"), L"$2");
-		result = std::regex_replace(result, std::wregex(LR"(<[A-Z]+>)"), L"");
+		result = re::sub(result, LR"(<R([^\/]+).([^>]+).>)", L"$2");
+		result = re::sub(result, LR"(<[A-Z]+>)");
 		buffer->from(result);
 	}
 	namespace Corda
@@ -329,7 +330,7 @@ namespace ppsspp
 	{
 		CharFilter(buffer, '\n');
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(@\d+r)"), "");
+		s = re::sub(s, R"(@\d+r)");
 		buffer->from(s);
 	}
 	std::wstring ULJM06143Code(std::string s)
@@ -456,7 +457,7 @@ namespace ppsspp
 		auto s = buffer->strA();
 		s = s.substr(s.find("#n"));
 		strReplace(s, "#n");
-		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)"), "");
+		s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)");
 		buffer->from(s);
 	}
 	void NPJH50831_1(TextBuffer *buffer, HookParam *hp)
@@ -479,7 +480,7 @@ namespace ppsspp
 	{
 		StringFilter(buffer, TEXTANDLEN("#n"));
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)"), "");
+		s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)");
 		buffer->from(s);
 	}
 	void ULJM05783(TextBuffer *buffer, HookParam *hp)
@@ -603,7 +604,7 @@ namespace ppsspp
 	void ULJS00459(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strW();
-		buffer->from(std::regex_replace(s, std::wregex(LR"(≪RUBY≫(.*?)≪(.*?)≫(.*?)≪/RUBY≫)"), L"$1"));
+		buffer->from(re::sub(s, LR"(≪RUBY≫(.*?)≪(.*?)≫(.*?)≪/RUBY≫)", L"$1"));
 	}
 	void ULJM06311_1(TextBuffer *buffer, HookParam *hp)
 	{
@@ -633,15 +634,15 @@ namespace ppsspp
 		StringFilter(buffer, TEXTANDLEN("%FE"));
 		StringFilter(buffer, TEXTANDLEN("%CFFFF"));
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
-		s = std::regex_replace(s, std::regex(R"(%O\d{3})"), "$1");
-		s = std::regex_replace(s, std::regex(R"(%S\d{3})"), "$1");
+		s = re::sub(s, R"(\{(.*?)\}\[(.*?)\])", "$1");
+		s = re::sub(s, R"(%O\d{3})", "$1");
+		s = re::sub(s, R"(%S\d{3})", "$1");
 		buffer->from(s);
 	}
 	void NPJH50745(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(u8R"(†(.*?)‡(.*?)‡)"), "$2");
+		s = re::sub(s, u8R"(†(.*?)‡(.*?)‡)", "$2");
 		strReplace(s, "\n");
 		strReplace(s, u8"▼");
 		buffer->from(s);
@@ -692,13 +693,13 @@ namespace ppsspp
 	void FNPJH50243(TextBuffer *buffer, HookParam *)
 	{
 		auto s = buffer->strW();
-		s = std::regex_replace(s, std::wregex(LR"(<(.*?)\|(.*?)>)"), L"$1");
+		s = re::sub(s, LR"(<(.*?)\|(.*?)>)", L"$1");
 		buffer->from(s);
 	}
 	void FNPJH50459(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(#SCL\((.*?)\)(.*?)#ECL)"), "$2");
+		s = re::sub(s, R"(#SCL\((.*?)\)(.*?)#ECL)", "$2");
 		strReplace(s, "\n\r\n", "\n");
 		buffer->from(s);
 	}
@@ -714,7 +715,7 @@ namespace ppsspp
 	{
 		StringFilter(buffer, TEXTANDLEN("\\n"));
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(@\w(.*?)@\d)"), "$1");
+		s = re::sub(s, R"(@\w(.*?)@\d)", "$1");
 		buffer->from(s);
 	}
 	void FNPJH50127(TextBuffer *buffer, HookParam *hp)
@@ -749,7 +750,7 @@ namespace ppsspp
 			return buffer->clear();
 		}
 		last = s;
-		s = std::regex_replace(s, std::regex(R"(@\d{2})"), "");
+		s = re::sub(s, R"(@\d{2})");
 		buffer->from(s);
 	}
 	void ULJM05960(TextBuffer *buffer, HookParam *hp)
@@ -773,7 +774,7 @@ namespace ppsspp
 	{
 		auto s = buffer->strA();
 		strReplace(s, "#n");
-		s = std::regex_replace(s, std::regex(R"(#R(.*?)\((.*?)\))"), "$1");
+		s = re::sub(s, R"(#R(.*?)\((.*?)\))", "$1");
 		buffer->from(s);
 	}
 	void ULJS00354(TextBuffer *buffer, HookParam *hp)
@@ -790,7 +791,7 @@ namespace ppsspp
 		if ((i++ % 2) || all_ascii((char *)buffer->buff, buffer->size))
 			return buffer->clear();
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(\[(.*?)\*(.*?)\])"), "$1");
+		s = re::sub(s, R"(\[(.*?)\*(.*?)\])", "$1");
 		buffer->from(s);
 	}
 	void ULJM05691(TextBuffer *buffer, HookParam *hp)
@@ -827,7 +828,7 @@ namespace ppsspp
 	void NPJH50900(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
-		ws = std::regex_replace(ws, std::wregex(LR"(<(.*?),(.*?)>)"), L"$1");
+		ws = re::sub(ws, LR"(<(.*?),(.*?)>)", L"$1");
 		strReplace(ws, L"^");
 		static std::wstring last;
 		if (startWith(ws, last))
@@ -851,14 +852,14 @@ namespace ppsspp
 	void ULJM06397(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
-		ws = std::regex_replace(ws, std::wregex(LR"(<(.*?),(.*?)>)"), L"$1");
+		ws = re::sub(ws, LR"(<(.*?),(.*?)>)", L"$1");
 		strReplace(ws, L"^");
 		buffer->from(WideStringToString(ws, 932));
 	}
 	void ULJM06129(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(#\w+?\[\d\])"), "");
+		s = re::sub(s, R"(#\w+?\[\d\])");
 		strReplace(s, "#n");
 		buffer->from(s);
 	}
@@ -870,17 +871,17 @@ namespace ppsspp
 			buffer->clear();
 		else
 		{
-			s = std::regex_replace(s, std::regex("#C[0-9]{9}"), "");
-			s = std::regex_replace(s, std::regex("#RUBS(.*?)#RUBE(.*?)#REND"), "$2");
-			s = std::regex_replace(s, std::regex("#CDEF"), "");
+			s = re::sub(s, "#C[0-9]{9}");
+			s = re::sub(s, "#RUBS(.*?)#RUBE(.*?)#REND", "$2");
+			s = re::sub(s, "#CDEF");
 			buffer->from(s);
 		}
 	}
 	void ULJM06145(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(#Ruby\[(.*?),(.*?)\])"), "$1");
-		s = std::regex_replace(s, std::regex("#[A-Za-z]+\\[(\\d*\\.)?\\d+\\]+"), "");
+		s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
+		s = re::sub(s, "#[A-Za-z]+\\[(\\d*\\.)?\\d+\\]+");
 		strReplace(s, "#n");
 		strReplace(s, "\x84\xbd", "!?");
 		buffer->from(s);
@@ -888,14 +889,14 @@ namespace ppsspp
 	void FULJM05690(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(#Kana\[(.*?),(.*?)\])"), "$1");
+		s = re::sub(s, R"(#Kana\[(.*?),(.*?)\])", "$1");
 		strReplace(s, "#n");
 		buffer->from(s);
 	}
 	void ULJM05703(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(#Kana\[(.*?),(.*?)\])"), "$1");
+		s = re::sub(s, R"(#Kana\[(.*?),(.*?)\])", "$1");
 		strReplace(s, "\x81\x40");
 		buffer->from(s);
 		ULJM05943F(buffer, hp);
@@ -931,21 +932,21 @@ namespace ppsspp
 	void NPJH50619F(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex("[\\r\\n]+"), "");
-		s = std::regex_replace(s, std::regex("^(.*?)\\)+"), "");
-		s = std::regex_replace(s, std::regex("#ECL+"), "");
-		s = std::regex_replace(s, std::regex("(#.+?\\))+"), "");
+		s = re::sub(s, "[\\r\\n]+");
+		s = re::sub(s, "^(.*?)\\)+");
+		s = re::sub(s, "#ECL+");
+		s = re::sub(s, "(#.+?\\))+");
 		buffer->from(s);
 	}
 
 	void NPJH50505F(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex("#RUBS(#[A-Z0-9]+)*[^#]+"), "");
-		s = std::regex_replace(s, std::regex("#FAMILY"), "$FAMILY");
-		s = std::regex_replace(s, std::regex("#GIVE"), "$GIVE");
-		s = std::regex_replace(s, std::regex("(#[A-Z0-9\\-]+)+"), "");
-		s = std::regex_replace(s, std::regex("\\n+"), "");
+		s = re::sub(s, "#RUBS(#[A-Z0-9]+)*[^#]+");
+		s = re::sub(s, "#FAMILY", "$FAMILY");
+		s = re::sub(s, "#GIVE", "$GIVE");
+		s = re::sub(s, "(#[A-Z0-9\\-]+)+");
+		s = re::sub(s, "\\n+");
 		buffer->from(s);
 	}
 	void ULJM05441(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -978,8 +979,8 @@ namespace ppsspp
 		if (last == ws)
 			return buffer->clear();
 		last = ws;
-		ws = std::regex_replace(ws, std::wregex(LR"(^\u3010[^\u3011]+\u3011)"), L"");
-		ws = std::regex_replace(ws, std::wregex(LR"(\n\u3000+)"), L"");
+		ws = re::sub(ws, LR"(^\u3010[^\u3011]+\u3011)");
+		ws = re::sub(ws, LR"(\n\u3000+)");
 		buffer->from(ws);
 	}
 	void ULJM06174(TextBuffer *buffer, HookParam *hp)
@@ -1013,7 +1014,7 @@ namespace ppsspp
 	void ULJM06040_2(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(\x81k(.*?)\x81l(.*))"), "$1");
+		s = re::sub(s, R"(\x81k(.*?)\x81l(.*))", "$1");
 		buffer->from(s);
 	}
 	void ULJM05874(TextBuffer *buffer, HookParam *hp)
@@ -1046,7 +1047,7 @@ namespace ppsspp
 		StringReplacer(buffer, TEXTANDLEN("\x84\xa5"), TEXTANDLEN("\x81\x5b"));
 		StringReplacer(buffer, TEXTANDLEN("\x84\xa7"), TEXTANDLEN("\x81\x5b"));
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(\{(.*?)\}\[(.*?)\])"), "$1");
+		s = re::sub(s, R"(\{(.*?)\}\[(.*?)\])", "$1");
 		buffer->from(s);
 	}
 	void NPJH00122(TextBuffer *buffer, HookParam *hp)
@@ -1097,10 +1098,10 @@ namespace ppsspp
 				else
 					result += c;
 			}
-			result = std::regex_replace(result, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
-			result = std::regex_replace(result, std::wregex(LR"(\$C\[(.*?)\])"), L"");
-			result = std::regex_replace(result, std::wregex(LR"(\$\w)"), L"");
-			result = std::regex_replace(result, std::wregex(LR"(@)"), L"");
+			result = re::sub(result, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
+			result = re::sub(result, LR"(\$C\[(.*?)\])");
+			result = re::sub(result, LR"(\$\w)");
+			result = re::sub(result, LR"(@)");
 			return WideStringToString(result, 932);
 		};
 		buffer->from(remap(s));
@@ -1136,7 +1137,7 @@ namespace ppsspp
 			return buffer->clear();
 		}
 		last = s;
-		s = std::regex_replace(s, std::regex(R"(\$t(.*?)@)"), "$1");
+		s = re::sub(s, R"(\$t(.*?)@)", "$1");
 		buffer->from(s);
 	}
 	void ULJM05634(TextBuffer *buffer, HookParam *hp)
@@ -1189,7 +1190,7 @@ namespace ppsspp
 		CharFilter(buffer, '\n');
 		StringFilter(buffer, TEXTANDLEN("\x81\xa5"));
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(\x81\xf7(.*?)\x81\x73(.*?)\x81\x74)"), "$1");
+		s = re::sub(s, R"(\x81\xf7(.*?)\x81\x73(.*?)\x81\x74)", "$1");
 		buffer->from(s);
 	}
 	void ULJS00471(TextBuffer *buffer, HookParam *hp)
@@ -1209,14 +1210,14 @@ namespace ppsspp
 		StringFilter(buffer, TEXTANDLEN("<br>"));
 		StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(<tips(.*?)>(.*?)</tips>)"), "$2");
+		s = re::sub(s, R"(<tips(.*?)>(.*?)</tips>)", "$2");
 		buffer->from(s);
 	}
 	void ULJM05891(TextBuffer *buffer, HookParam *hp)
 	{
 		StringFilter(buffer, TEXTANDLEN("@n"));
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(@\w\d{4})"), "");
+		s = re::sub(s, R"(@\w\d{4})");
 		buffer->from(s);
 	}
 	void ULJM05456(TextBuffer *buffer, HookParam *hp)
@@ -1232,7 +1233,7 @@ namespace ppsspp
 		{
 			last = s;
 			s = s.substr(0, s.size() - 1);
-			s = std::regex_replace(s, std::regex(R"(\$\w\d{5})"), "$1");
+			s = re::sub(s, R"(\$\w\d{5})", "$1");
 			buffer->from(s);
 		}
 	}
@@ -1240,13 +1241,13 @@ namespace ppsspp
 	{
 		CharFilter(buffer, L'\n');
 		auto s = buffer->strW();
-		s = std::regex_replace(s, std::wregex(LR"(<CLT \d+>(.*?)<CLT>)"), L"$1");
+		s = re::sub(s, LR"(<CLT \d+>(.*?)<CLT>)", L"$1");
 		buffer->from(s);
 	}
 	void ULJM05574(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(%RS(.*?)%RT(.*?)%RE)"), "$1");
+		s = re::sub(s, R"(%RS(.*?)%RT(.*?)%RE)", "$1");
 		strReplace(s, "%N");
 		buffer->from(s);
 	}
@@ -1263,7 +1264,7 @@ namespace ppsspp
 	{
 		//%(モーターパラグライダー%*モーターパラグライダー%)
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(%\((.*?)%\*(.*?)%\))"), "$1");
+		s = re::sub(s, R"(%\((.*?)%\*(.*?)%\))", "$1");
 		strReplace(s, "%!");
 		buffer->from(s);
 	}
@@ -1391,7 +1392,7 @@ namespace ppsspp
 	{
 		NPJH50899(buffer, hp);
 		auto s = buffer->strA();
-		s = s.substr(0, 2) + std::regex_replace(s.substr(2, s.size() - 4), std::regex(R"(\x81\x77(.*?)\x81\x78)"), "$1") + s.substr(s.size() - 2);
+		s = s.substr(0, 2) + re::sub(s.substr(2, s.size() - 4), R"(\x81\x77(.*?)\x81\x78)", "$1") + s.substr(s.size() - 2);
 		buffer->from(s);
 	}
 	void ULJM06353(TextBuffer *buffer, HookParam *hp)
@@ -1407,16 +1408,15 @@ namespace ppsspp
 	void NPJH50836_1(TextBuffer *buffer, HookParam *hp)
 	{
 		auto s = buffer->strA();
-		s = std::regex_replace(s, std::regex(R"(\{ruby:(.*?)&(.*?)\})"), "$1");
+		s = re::sub(s, R"(\{ruby:(.*?)&(.*?)\})", "$1");
 		buffer->from(s);
 	}
 	void NPJH50836_2(TextBuffer *buffer, HookParam *hp)
 	{
 		auto ws = StringToWideString(buffer->viewA(), 932).value();
-		std::wsmatch match;
-		if (std::regex_search(ws, match, std::wregex(L"<12 0,(.*?),(.*?),")))
+		if (auto match = re::search(ws, L"<12 0,(.*?),(.*?),"))
 		{
-			std::wstring name = match[2].str();
+			std::wstring name = match.value()[2].str();
 			return buffer->from(WideStringToString(name, 932));
 		}
 		else
@@ -1981,7 +1981,7 @@ namespace ppsspp
 		// 紫影のソナーニルRefrain
 		{0x88126C4, {CODEC_UTF8, 1, 0, 0, ULJS00600, "ULJS00600"}},
 		// スズノネセブン！ Portable
-		{0x883002C, {0, 1, 0, 0, NPJH50796, "NPJH50796"}},
+		{0x883002C, {0, 1, 0, 0, NPJH50796, "NPJH50796"}}, // 有人名，但要显示完才输出
 		{0x8849710, {0, 3, 0, 0, 0, "NPJH50796"}},
 		// シークレット オブ エヴァンゲリオン ポータブル
 		{0x883F774, {0, 0xd, 0, 0, ULJS00124, "ULJM05251"}},

@@ -268,8 +268,8 @@ namespace
       //[f,0][rf,0][s,36,36][c,$FFFFFFFF][rc,$FFFFFFFF]一瞬が勝負だ。私は模造刀に手をかけ、立て膝の状態（いわゆる『[rb,座業,すわりわざ]』）で待機していた。
 
       auto s = buffer->strW();
-      s = std::regex_replace(s, std::wregex(L"\\[rb,(.*?),(.*?)\\]"), L"$1");
-      s = std::regex_replace(s, std::wregex(L"\\[(.*?)\\]"), L"");
+      s = re::sub(s, L"\\[rb,(.*?),(.*?)\\]", L"$1");
+      s = re::sub(s, L"\\[(.*?)\\]");
       buffer->from(s);
     };
     return NewHook(hp, "qlie4");
@@ -1018,7 +1018,7 @@ namespace
       hp.embed_hook_font = F_ExtTextOutA | F_GetTextExtentPoint32A;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        buffer->from(std::regex_replace(buffer->strA(), std::regex("\\[rb,(.*?),.+\\]"), "$1"));
+        buffer->from(re::sub(buffer->strA(), "\\[rb,(.*?),.+\\]", "$1"));
       };
       return NewHook(hp, "EmbedQLIE");
     }

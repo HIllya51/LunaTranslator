@@ -105,7 +105,7 @@ bool TeethingRing_attach_function2()
     auto str = buffer->strA();
     strReplace(str, "#F");
     // 俺はこのアクシデントが、何か幸#<さい>先#<さき>のいいもののように思えて、鞄を抱え直してギルドへの階段を昇り始めた。
-    str = std::regex_replace(str, std::regex("#<(.*?)>"), "");
+    str = re::sub(str, "#<(.*?)>");
     buffer->from(str);
   };
   return NewHook(hp, "TeethingRing");

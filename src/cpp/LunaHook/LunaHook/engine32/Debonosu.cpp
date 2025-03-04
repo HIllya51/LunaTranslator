@@ -64,7 +64,7 @@ namespace
               hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | FIXING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS; // there is only one thread
               hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
               {
-                buffer->from(std::regex_replace(buffer->strA(), std::regex("\\{(.*?)/(.*?)\\}"), "$1"));
+                buffer->from(re::sub(buffer->strA(), "\\{(.*?)/(.*?)\\}", "$1"));
               };
               ConsoleOutput("INSERT Debonosu");
 
@@ -191,7 +191,7 @@ namespace
           hp->type |= CODEC_UTF8;
         else
           hp->type &= ~CODEC_UTF8;
-        std::string result1 = std::regex_replace(str, std::regex("\\{(.*?)/(.*?)\\}"), "$1");
+        std::string result1 = re::sub(str, "\\{(.*?)/(.*?)\\}", "$1");
         buffer->from(result1);
       };
       succ |= NewHook(hp, "debonosu");

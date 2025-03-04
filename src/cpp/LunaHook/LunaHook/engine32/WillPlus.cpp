@@ -272,9 +272,9 @@ namespace
     StringFilter(buffer, L"%XS", 5); // remove %XS followed by 2 chars
     std::wstring str = buffer->strW();
     strReplace(str, L"\\n", L"\n");
-    std::wstring result1 = std::regex_replace(str, std::wregex(L"\\{(.*?):(.*?)\\}"), L"$1");
-    result1 = std::regex_replace(result1, std::wregex(L"\\{(.*?);(.*?)\\}"), L"$1");
-    result1 = std::regex_replace(result1, std::wregex(L"%[A-Z]+"), L"");
+    std::wstring result1 = re::sub(str, L"\\{(.*?):(.*?)\\}", L"$1");
+    result1 = re::sub(result1, L"\\{(.*?);(.*?)\\}", L"$1");
+    result1 = re::sub(result1, L"%[A-Z]+", L"");
     buffer->from(result1);
   };
   bool InsertWillPlusAHook()
@@ -547,8 +547,8 @@ namespace will3
       lc = 1;
       str = str.substr(3);
     }
-    str = std::regex_replace(str, std::wregex(L"\\{(.*?):(.*?)\\}"), L"$1");
-    str = std::regex_replace(str, std::wregex(L"\\{(.*?);(.*?)\\}"), L"$1");
+    str = re::sub(str, L"\\{(.*?):(.*?)\\}", L"$1");
+    str = re::sub(str, L"\\{(.*?);(.*?)\\}", L"$1");
 
     buffer->from(str);
   }

@@ -55,9 +55,9 @@ bool FrontWing2_attach_function()
     }
     auto ws = StringToWideString(s, 932).value();
     strReplace(ws, L"\r");
-    ws = std::regex_replace(ws, std::wregex(LR"([\w\d]*\\[\w\d]*\\[\w\d_]*)"), L"");
-    ws = std::regex_replace(ws, std::wregex(LR"(\[rb,(.*?),(.*?)\])"), L"$1");
-    ws = std::regex_replace(ws, std::wregex(L",(.*?),(.*?)"), L"$1$2");
+    ws = re::sub(ws, LR"([\w\d]*\\[\w\d]*\\[\w\d_]*)");
+    ws = re::sub(ws, LR"(\[rb,(.*?),(.*?)\])", L"$1");
+    ws = re::sub(ws, L",(.*?),(.*?)", L"$1$2");
     buffer->from(WideStringToString(ws, 932));
   };
   return NewHook(hp, "FrontWing");

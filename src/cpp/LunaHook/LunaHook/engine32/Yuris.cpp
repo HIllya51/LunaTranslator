@@ -266,8 +266,8 @@ static void Yuris6Filter(TextBuffer *buffer, HookParam *hp)
 
   if (hp->codepage == CP_UTF8 || hp->type & CODEC_UTF8)
   {
-    buffer->from(std::regex_replace(buffer->strA(), std::regex(u8R"(≪(.*?)／(.*?)≫)"), "$1"));
-    buffer->from(std::regex_replace(buffer->strA(), std::regex(u8R"(＜(.*?)／(.*?)＞)"), "$1"));
+    buffer->from(re::sub(buffer->strA(), u8R"(≪(.*?)／(.*?)≫)", "$1"));
+    buffer->from(re::sub(buffer->strA(), u8R"(＜(.*?)／(.*?)＞)", "$1"));
   }
   else
   {

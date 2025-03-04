@@ -479,7 +479,7 @@ namespace
       hp.embed_hook_font = F_DrawTextA | F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        buffer->from(std::regex_replace(buffer->strA(), std::regex("\\[.+\\|(.+?)\\]"), "$1"));
+        buffer->from(re::sub(buffer->strA(), "\\[.+\\|(.+?)\\]", "$1"));
       };
 
       return NewHook(hp, "EmbedFVP");
@@ -527,7 +527,7 @@ bool FVP::attach_function()
 //     if (text.find(L'|') == std::wstring::npos)
 //         return text;
 //     static std::wregex rx(L"\\[.+\\|(.+?)\\]");
-//     return std::regex_replace(text, rx, L"$1");
+//     return re::sub(text, rx, L"$1");
 // }
 
 // EOF

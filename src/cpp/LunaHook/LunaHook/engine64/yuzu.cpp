@@ -394,45 +394,45 @@ namespace
     void F0100A3A00CC7E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(^\`([^\@]+).)"), L"$1: ");
-        s = std::regex_replace(s, std::wregex(LR"(\$[A-Z]\d*(,\d*)*)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\$\[([^$]+)..([^$]+)..)"), L"$1");
+        s = re::sub(s, (LR"(^\`([^\@]+).)"), L"$1: ");
+        s = re::sub(s, (LR"(\$[A-Z]\d*(,\d*)*)"));
+        s = re::sub(s, (LR"(\$\[([^$]+)..([^$]+)..)"), L"$1");
         buffer->from(s);
     }
 
     void F010045C0109F2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#[^\]]*\])"), "");
-        s = std::regex_replace(s, std::regex(R"(#[^n]*n)"), "");
-        s = std::regex_replace(s, std::regex(u8"　"), "");
-        s = std::regex_replace(s, std::regex(u8R"(Save[\s\S]*データ)"), "");
+        s = re::sub(s, (R"(#[^\]]*\])"));
+        s = re::sub(s, (R"(#[^n]*n)"));
+        s = re::sub(s, (u8"　"));
+        s = re::sub(s, (u8R"(Save[\s\S]*データ)"));
         buffer->from(s);
     }
 
     void F0100A1E00BFEA000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\\s]"), L"");
-        s = std::regex_replace(s, std::wregex(L"(.+? \")"), L"");
-        s = std::regex_replace(s, std::wregex(L"(\",.*)"), L"");
-        s = std::regex_replace(s, std::wregex(L"(\" .*)"), L"");
+        s = re::sub(s, (L"[\\s]"));
+        s = re::sub(s, (L"(.+? \")"));
+        s = re::sub(s, (L"(\",.*)"));
+        s = re::sub(s, (L"(\" .*)"));
         buffer->from(s);
     }
 
     void F0100A1200CA3C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\$d"), L"\n");
-        s = std::regex_replace(s, std::wregex(L"＿"), L" ");
-        s = std::regex_replace(s, std::wregex(L"@"), L" ");
-        s = std::regex_replace(s, std::wregex(L"\\[([^\\/\\]]+)\\/[^\\/\\]]+\\]"), L"$1");
-        s = std::regex_replace(s, std::wregex(L"[~^$❝.❞'?,(-)!—:;-❛ ❜]"), L"");
-        s = std::regex_replace(s, std::wregex(L"[A-Za-z0-9]"), L"");
-        s = std::regex_replace(s, std::wregex(L"^\\s+"), L"");
-        while (std::regex_search(s, std::wregex(L"^\\s*$")))
+        s = re::sub(s, (L"\\$d"), L"\n");
+        s = re::sub(s, (L"＿"), L" ");
+        s = re::sub(s, (L"@"), L" ");
+        s = re::sub(s, (L"\\[([^\\/\\]]+)\\/[^\\/\\]]+\\]"), L"$1");
+        s = re::sub(s, (L"[~^$❝.❞'?,(-)!—:;-❛ ❜]"));
+        s = re::sub(s, (L"[A-Za-z0-9]"));
+        s = re::sub(s, (L"^\\s+"));
+        while (re::search(s, (L"^\\s*$")))
         {
-            s = std::regex_replace(s, std::wregex(L"^\\s*$"), L"");
+            s = re::sub(s, (L"^\\s*$"));
         }
         buffer->from(s);
     }
@@ -440,10 +440,7 @@ namespace
     void F0100F6A00A684000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        auto r = std::regex("(?=@.)");
-        std::sregex_token_iterator it(s.begin(), s.end(), r, -1);
-        std::sregex_token_iterator end;
-        std::vector<std::string> parts(it, end);
+        auto parts = re::split(s, "(?=@.)");
         s = "";
         for (auto part : parts)
         {
@@ -501,11 +498,7 @@ namespace
     void F01006590155AC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        auto r = std::regex("(?=@.)");
-        std::sregex_token_iterator it(s.begin(), s.end(), r, -1);
-        std::sregex_token_iterator end;
-
-        std::vector<std::string> parts(it, end);
+        auto parts = re::split(s, "(?=@.)");
         s = "";
         int counter = 0;
         while (counter < parts.size())
@@ -545,7 +538,7 @@ namespace
             }
             else if (tag == "@v" || tag == "@h")
             {
-                s += std::regex_replace(content, std::regex("[\\w_-]+"), "");
+                s += re::sub(content, ("[\\w_-]+"));
                 counter++;
                 continue;
             }
@@ -562,7 +555,7 @@ namespace
                     counter++;
                     continue;
                 }
-                s += std::regex_replace(content, std::regex(u8"[\\d+─]"), "");
+                s += re::sub(content, (u8"[\\d+─]"));
                 counter += 3;
                 continue;
             }
@@ -581,11 +574,7 @@ namespace
         static std::string readString_savedSentence = "";
         static bool readString_playerNameFlag = false;
         static std::string readString_playerName = u8"ラピス";
-        auto r = std::regex("(?=@.)");
-        std::sregex_token_iterator it(s.begin(), s.end(), r, -1);
-        std::sregex_token_iterator end;
-
-        std::vector<std::string> parts(it, end);
+        auto parts = re::split(s, "(?=@.)");
         s = "";
         size_t counter = 0;
 
@@ -646,7 +635,7 @@ namespace
             }
             else if (tag == "@v" || tag == "@h")
             {
-                s += std::regex_replace(content, std::regex("[\\w_-]+"), "");
+                s += re::sub(content, ("[\\w_-]+"));
                 counter++;
                 continue;
             }
@@ -663,7 +652,7 @@ namespace
                     counter++;
                     continue;
                 }
-                s += std::regex_replace(content, std::regex(u8"[\\d+─]"), "");
+                s += re::sub(content, (u8"[\\d+─]"));
                 counter += 3;
                 continue;
             }
@@ -701,55 +690,55 @@ namespace
         {
             return buffer->clear();
         }
-        s = std::regex_replace(s, std::wregex(L"\n+"), L" ");
+        s = re::sub(s, (L"\n+"), L" ");
 
-        s = std::regex_replace(s, std::wregex(L"\\$\\{FirstName\\}"), L"ナーヤ");
+        s = re::sub(s, (L"\\$\\{FirstName\\}"), L"ナーヤ");
 
         if (startWith(s, L"#T"))
         {
-            s = std::regex_replace(s, std::wregex(L"#T2[^#]+"), L"");
-            s = std::regex_replace(s, std::wregex(L"#T\\d"), L"");
+            s = re::sub(s, (L"#T2[^#]+"));
+            s = re::sub(s, (L"#T\\d"));
         }
         buffer->from(utf16_to_utf32(s));
     }
     void F010093800DB1C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(L"\\n+"), L" ");
-        s = std::regex_replace(s, std::wregex(L"\\$\\{FirstName\\}"), L"シリーン");
+        s = re::sub(s, (L"\\n+"), L" ");
+        s = re::sub(s, (L"\\$\\{FirstName\\}"), L"シリーン");
         if (startWith(s, L"#T"))
         {
-            s = std::regex_replace(s, std::wregex(L"\\#T2[^#]+"), L"");
-            s = std::regex_replace(s, std::wregex(L"\\#T\\d"), L"");
+            s = re::sub(s, (L"\\#T2[^#]+"));
+            s = re::sub(s, (L"\\#T\\d"));
         }
         buffer->from(utf16_to_utf32(s));
     }
     void F0100AAF020664000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(LR"(\n)"), L" ");
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
+        s = re::sub(s, (LR"(\n)"), L" ");
+        s = re::sub(s, (LR"(\u3000)"));
         buffer->from(utf16_to_utf32(s));
     }
     void F0100F7E00DFC8000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(L"[\\s]"), L" ");
-        s = std::regex_replace(s, std::wregex(L"#KW"), L"");
-        s = std::regex_replace(s, std::wregex(L"#C\\(TR,0xff0000ff\\)"), L"");
-        s = std::regex_replace(s, std::wregex(L"#P\\(.*\\)"), L"");
+        s = re::sub(s, (L"[\\s]"), L" ");
+        s = re::sub(s, (L"#KW"));
+        s = re::sub(s, (L"#C\\(TR,0xff0000ff\\)"));
+        s = re::sub(s, (L"#P\\(.*\\)"));
         buffer->from(utf16_to_utf32(s));
     }
     void F0100982015606000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\n+|(\\\\n)+"), L" ");
+        s = re::sub(s, (L"\\n+|(\\\\n)+"), L" ");
         buffer->from(s);
     }
     void F0100C4E013E5E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\\\n"), L" ");
+        s = re::sub(s, (L"\\\\n"), L" ");
         buffer->from(s);
     }
 
@@ -758,21 +747,21 @@ namespace
         StringFilter(buffer, TEXTANDLEN("#n"));
         StringReplacer(buffer, TEXTANDLEN("#Name[1]"), TEXTANDLEN(u8"雪村"));
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#Color\[\d+?\])"), "");
+        s = re::sub(s, (R"(#Color\[\d+?\])"));
         buffer->from(s);
     }
     void F0100CF90151E0000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
         strReplace(ws, L"^");
-        ws = std::regex_replace(ws, std::wregex(LR"(@c\d)"), L"");
-        ws = std::regex_replace(ws, std::wregex(LR"(@v\(\d+\))"), L"");
+        ws = re::sub(ws, (LR"(@c\d)"));
+        ws = re::sub(ws, (LR"(@v\(\d+\))"));
         buffer->from(WideStringToString(ws, 932));
     }
     void F010052300F612000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#r(.*?)\|(.*?)#)"), "$1");
+        s = re::sub(s, (R"(#r(.*?)\|(.*?)#)"), "$1");
         strReplace(s, R"(\c)");
         strReplace(s, R"(\n)");
         buffer->from(s);
@@ -784,7 +773,7 @@ namespace
         auto s = buffer->strA();
         char __[] = "$1";
         __[1] += _1 - 1;
-        s = std::regex_replace(s, std::regex(R"(<CLY2>(.*?)<CLNA>([\s\S]*))"), __);
+        s = re::sub(s, (R"(<CLY2>(.*?)<CLNA>([\s\S]*))"), __);
         buffer->from(s);
     }
     namespace
@@ -793,10 +782,10 @@ namespace
         void F0100FB50156E6000_1(TextBuffer *buffer, HookParam *hp)
         {
             auto s = buffer->strA();
-            s = std::regex_replace(s, std::regex(R"(@v\(\d+\))"), "");
+            s = re::sub(s, (R"(@v\(\d+\))"));
             F0100FB50156E6000 = s;
-            s = std::regex_replace(s, std::regex("@r(.*?)@(.*?)@"), "$1");
-            s = std::regex_replace(s, std::regex("@n"), "");
+            s = re::sub(s, ("@r(.*?)@(.*?)@"), "$1");
+            s = re::sub(s, ("@n"));
             buffer->from(s);
         }
         void F0100FB50156E6000_2(TextBuffer *buffer, HookParam *hp)
@@ -816,9 +805,9 @@ namespace
     void F0100E1E00E2AE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("#n"), "\n");
-        s = std::regex_replace(s, std::regex("[A-Za-z0-9]"), "");
-        s = std::regex_replace(s, std::regex("[~^,\\-\\[\\]#]"), "");
+        s = re::sub(s, ("#n"), "\n");
+        s = re::sub(s, ("[A-Za-z0-9]"));
+        s = re::sub(s, ("[~^,\\-\\[\\]#]"));
         buffer->from(s);
     }
     void F0100DE200C0DA000(TextBuffer *buffer, HookParam *hp)
@@ -853,16 +842,16 @@ namespace
     void F0100925014864000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("(#n)+"), " ");
-        s = std::regex_replace(s, std::regex("(#[A-Za-z]+\\[(\\d*[.])?\\d+\\])+"), "");
+        s = re::sub(s, ("(#n)+"), " ");
+        s = re::sub(s, ("(#[A-Za-z]+\\[(\\d*[.])?\\d+\\])+"));
         buffer->from(s);
     }
 
     void F0100936018EB4000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(L"<[^>]+>"), L"");
-        s = std::regex_replace(s, std::wregex(L"\n+"), L" ");
+        s = re::sub(s, (L"<[^>]+>"));
+        s = re::sub(s, (L"\n+"), L" ");
         buffer->from(utf16_to_utf32(s));
     }
     void T01000BB01CB8A000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -900,11 +889,11 @@ namespace
         auto address1 = YUZU::emu_arg(context)[0];
         auto address2 = YUZU::emu_arg(context)[1];
         auto word = std::string((char *)address1);
-        word = std::regex_replace(word, std::regex(R"(\w+\.\w+)"), "");
+        word = re::sub(word, (R"(\w+\.\w+)"));
         while (!(*(BYTE *)address2))
             address2 += 1;
         auto meaning = std::string((char *)address2);
-        meaning = std::regex_replace(meaning, std::regex(R"(%\w+)"), "");
+        meaning = re::sub(meaning, (R"(%\w+)"));
         auto s = word + '\n' + meaning;
         buffer->from(s);
     }
@@ -921,7 +910,7 @@ namespace
     void F010045C014650000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"((@(\/)?[a-zA-Z#](\(\d+\))?|)+|[\*<>]+)"), "");
+        s = re::sub(s, (R"((@(\/)?[a-zA-Z#](\(\d+\))?|)+|[\*<>]+)"));
         buffer->from(s);
     }
 
@@ -929,9 +918,9 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\n)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(<[^>]*>)"), L"");
+        s = re::sub(s, (LR"(\n)"));
+        s = re::sub(s, (LR"(\u3000)"));
+        s = re::sub(s, (LR"(<[^>]*>)"));
         buffer->from(s);
     }
     void F0100B5801D7CE000(TextBuffer *buffer, HookParam *hp)
@@ -942,7 +931,7 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]+>"), L" ");
+        s = re::sub(s, (L"<[^>]+>"), L" ");
         buffer->from(s);
     }
     void F0100FB7019ADE000(TextBuffer *buffer, HookParam *hp)
@@ -955,7 +944,7 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\[.*?\\]"), L" ");
+        s = re::sub(s, (L"\\[.*?\\]"), L" ");
         buffer->from(s);
     }
     void F010019C0155D8000_1(TextBuffer *buffer, HookParam *hp)
@@ -974,7 +963,7 @@ namespace
             strReplace(ws, L"@n");
             strReplace(ws, L"%dts");
             strReplace(ws, L"%dte");
-            ws = std::regex_replace(ws, std::wregex(LR"(%rbs(.*?)\{(.*?)\}%rbe)"), L"$1");
+            ws = re::sub(ws, (LR"(%rbs(.*?)\{(.*?)\}%rbe)"), L"$1");
             buffer->from(ws);
         }
     }
@@ -986,24 +975,24 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[~^$(,)]"), L"");
-        s = std::regex_replace(s, std::wregex(L"[A-Za-z0-9]"), L"");
-        s = std::regex_replace(s, std::wregex(L"@"), L" ");
-        s = std::regex_replace(s, std::wregex(L"^\\s+"), L"");
+        s = re::sub(s, (L"[~^$(,)]"));
+        s = re::sub(s, (L"[A-Za-z0-9]"));
+        s = re::sub(s, (L"@"), L" ");
+        s = re::sub(s, (L"^\\s+"));
         buffer->from(s);
     }
     void F0100AFA01750C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"((\\n)+)"), " ");
-        s = std::regex_replace(s, std::regex(R"(\\d$|^\@[a-z]+|#.*?#|\$)"), "");
+        s = re::sub(s, (R"((\\n)+)"), " ");
+        s = re::sub(s, (R"(\\d$|^\@[a-z]+|#.*?#|\$)"));
         buffer->from(s);
     }
     void F0100C1E0102B8000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("#N"), "\n");
-        s = std::regex_replace(s, std::regex("#Color\\[[\\d]+\\]"), "");
+        s = re::sub(s, ("#N"), "\n");
+        s = re::sub(s, ("#Color\\[[\\d]+\\]"));
         buffer->from(s);
     }
     void F0100BD700E648000(TextBuffer *buffer, HookParam *hp)
@@ -1021,28 +1010,28 @@ namespace
     void F0100DA201E0DA000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\\s]"), L"");
+        s = re::sub(s, (L"[\\s]"));
         buffer->from(s);
     }
     void F01002C0008E52000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("(YUR)"), u8"ユーリ");
-        s = std::regex_replace(s, std::regex("(FRE)"), u8"フレン");
-        s = std::regex_replace(s, std::regex("(RAP)"), u8"ラピード");
-        s = std::regex_replace(s, std::regex("(EST|ESU)"), u8"エステル");
-        s = std::regex_replace(s, std::regex("(KAR)"), u8"カロル");
-        s = std::regex_replace(s, std::regex("(RIT)"), u8"リタ");
-        s = std::regex_replace(s, std::regex("(RAV|REI)"), u8"レイヴン");
-        s = std::regex_replace(s, std::regex("(JUD)"), u8"ジュディス");
-        s = std::regex_replace(s, std::regex("(PAT)"), u8"パティ");
-        s = std::regex_replace(s, std::regex("(DUK|DYU)"), u8"デューク");
-        s = std::regex_replace(s, std::regex("[A-Za-z0-9]"), "");
-        s = std::regex_replace(s, std::regex("[,(-)_]"), "");
-        s = std::regex_replace(s, std::regex("^\\s+"), "");
-        while (std::regex_search(s, std::regex("^\\s*$")))
+        s = re::sub(s, ("(YUR)"), u8"ユーリ");
+        s = re::sub(s, ("(FRE)"), u8"フレン");
+        s = re::sub(s, ("(RAP)"), u8"ラピード");
+        s = re::sub(s, ("(EST|ESU)"), u8"エステル");
+        s = re::sub(s, ("(KAR)"), u8"カロル");
+        s = re::sub(s, ("(RIT)"), u8"リタ");
+        s = re::sub(s, ("(RAV|REI)"), u8"レイヴン");
+        s = re::sub(s, ("(JUD)"), u8"ジュディス");
+        s = re::sub(s, ("(PAT)"), u8"パティ");
+        s = re::sub(s, ("(DUK|DYU)"), u8"デューク");
+        s = re::sub(s, ("[A-Za-z0-9]"));
+        s = re::sub(s, ("[,(-)_]"));
+        s = re::sub(s, ("^\\s+"));
+        while (re::search(s, ("^\\s*$")))
         {
-            s = std::regex_replace(s, std::regex("^\\s*$"), "");
+            s = re::sub(s, ("^\\s*$"));
         }
         buffer->from(s);
     }
@@ -1050,8 +1039,8 @@ namespace
     void F01005940182EC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\s"), L"");
-        s = std::regex_replace(s, std::wregex(L"<color=.*?>(.*?)<\\/color>"), L"$1");
+        s = re::sub(s, (L"\\s"));
+        s = re::sub(s, (L"<color=.*?>(.*?)<\\/color>"), L"$1");
         buffer->from(s);
     }
     void F0100AE90109A2000(TextBuffer *buffer, HookParam *hp)
@@ -1061,7 +1050,7 @@ namespace
         if (endWith(last, s))
             return buffer->clear();
         last = s;
-        s = std::regex_replace(s, std::wregex(LR"(%co[\de])"), L"");
+        s = re::sub(s, (LR"(%co[\de])"));
         buffer->from(s);
     }
     void F010015600D814000(TextBuffer *buffer, HookParam *hp)
@@ -1116,23 +1105,23 @@ namespace
             return;
         }
         last = s;
-        s = std::regex_replace(s, std::regex(R"(@v\d+)"), "");
-        s = std::regex_replace(s, std::regex(R"(@t\d+)"), "");
-        s = std::regex_replace(s, std::regex(R"(@\w+)"), "");
+        s = re::sub(s, (R"(@v\d+)"));
+        s = re::sub(s, (R"(@t\d+)"));
+        s = re::sub(s, (R"(@\w+)"));
         buffer->from(s);
     }
     void F01001BB01E8E2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
+        s = re::sub(s, (L"<[^>]*>"));
         buffer->from(s);
     }
     void F0100B0C016164000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
-        s = std::regex_replace(s, std::wregex(L"[A-Za-z0-9]"), L"");
+        s = re::sub(s, (L"<[^>]*>"));
+        s = re::sub(s, (L"[A-Za-z0-9]"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1143,7 +1132,7 @@ namespace
     void F010043B013C5C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
+        s = re::sub(s, (L"<[^>]*>"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1153,7 +1142,7 @@ namespace
     void F010055D009F78000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\d+"), "");
+        s = re::sub(s, ("\\d+"));
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -1164,16 +1153,16 @@ namespace
     void F010080C01AA22000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("#\\d+R.*?#"), "");
-        s = std::regex_replace(s, std::regex("[A-Za-z0-9]"), "");
-        s = std::regex_replace(s, std::regex(u8"[().%,_!#©&:?/]"), "");
+        s = re::sub(s, ("#\\d+R.*?#"));
+        s = re::sub(s, ("[A-Za-z0-9]"));
+        s = re::sub(s, (u8"[().%,_!#©&:?/]"));
         buffer->from(s);
     }
     void F0100CB700D438000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(<RUBY><RB>(.*?)<\/RB><RT>(.*?)<\/RT><\/RUBY>)"), "$1");
-        s = std::regex_replace(s, std::regex("<[^>]*>"), "");
+        s = re::sub(s, (R"(<RUBY><RB>(.*?)<\/RB><RT>(.*?)<\/RT><\/RUBY>)"), "$1");
+        s = re::sub(s, ("<[^>]*>"));
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -1183,18 +1172,18 @@ namespace
     void F01005C301AC5E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(".*_.*_.*"), ""); // SIR_C01_016,ERU_C00_000
-        s = std::regex_replace(s, std::regex("\\.mp4"), "");
-        s = std::regex_replace(s, std::regex("@v"), "");
-        s = std::regex_replace(s, std::regex("@n"), "\n");
+        s = re::sub(s, (".*_.*_.*")); // SIR_C01_016,ERU_C00_000
+        s = re::sub(s, ("\\.mp4"));
+        s = re::sub(s, ("@v"));
+        s = re::sub(s, ("@n"), "\n");
         buffer->from(s);
     }
     void F0100815019488000_text(TextBuffer *buffer, HookParam *hp)
     {
         //@n@vaoi_s01_0110「うんうん、そうかも！」
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("@.*_.*_\\d+"), "");
-        s = std::regex_replace(s, std::regex("@n"), "");
+        s = re::sub(s, ("@.*_.*_\\d+"));
+        s = re::sub(s, ("@n"));
         buffer->from(s);
     }
     void F0100815019488000_name(TextBuffer *buffer, HookParam *hp)
@@ -1203,16 +1192,16 @@ namespace
         auto s = buffer->strA();
         if (s.find("@n") == s.npos)
             return buffer->clear();
-        s = std::regex_replace(s, std::regex("(.*)@n.*"), "$1");
+        s = re::sub(s, ("(.*)@n.*"), "$1");
         buffer->from(s);
     }
     void F010072000BD32000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(\[~\])"), "\n");
-        s = std::regex_replace(s, std::regex(R"(rom:[\s\S]*$)"), "");
-        s = std::regex_replace(s, std::regex(R"(\[[\w\d]*\[[\w\d]*\].*?\[\/[\w\d]*\]\])"), "");
-        s = std::regex_replace(s, std::regex(R"(\[.*?\])"), "");
+        s = re::sub(s, (R"(\[~\])"), "\n");
+        s = re::sub(s, (R"(rom:[\s\S]*$)"));
+        s = re::sub(s, (R"(\[[\w\d]*\[[\w\d]*\].*?\[\/[\w\d]*\]\])"));
+        s = re::sub(s, (R"(\[.*?\])"));
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -1223,17 +1212,17 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
-        s = std::regex_replace(s, std::wregex(L"\\b\\d{2}:\\d{2}\\b"), L"");
+        s = re::sub(s, (L"<[^>]*>"));
+        s = re::sub(s, (L"\\b\\d{2}:\\d{2}\\b"));
 
         auto _ = L"^(?:スキップ|むしる|取り出す|話す|選ぶ|ならびかえ|閉じる|やめる|undefined|決定|ボロのクワ|拾う)$(\\r?\\n|\\r)?";
-        while (std::regex_search(s, std::wregex(_)))
+        while (re::search(s, (_)))
         {
-            s = std::regex_replace(s, std::wregex(_), L"");
+            s = re::sub(s, (_));
         }
-        while (std::regex_search(s, std::wregex(L"^\\s*$")))
+        while (re::search(s, (L"^\\s*$")))
         {
-            s = std::regex_replace(s, std::wregex(L"^\\s*$"), L"");
+            s = re::sub(s, (L"^\\s*$"));
         }
         static std::wstring last;
         if (last == s)
@@ -1245,9 +1234,9 @@ namespace
     {
         auto s = buffer->strA();
         static std::string last;
-        s = std::regex_replace(s, std::regex(R"((#Ruby\[)([^,]+),(#\w+\[.\])?(.+?]))"), "$2");
-        s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
-        s = std::regex_replace(s, std::regex(u8"　"), "");
+        s = re::sub(s, (R"((#Ruby\[)([^,]+),(#\w+\[.\])?(.+?]))"), "$2");
+        s = re::sub(s, (R"(#\w+(\[.+?\])?)"));
+        s = re::sub(s, (u8"　"));
         if (last == s)
             return buffer->clear();
         last = s;
@@ -1257,8 +1246,8 @@ namespace
     {
         auto s = buffer->strA();
         static std::string last;
-        s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
-        s = std::regex_replace(s, std::regex(u8"　"), "");
+        s = re::sub(s, (R"(#\w+(\[.+?\])?)"));
+        s = re::sub(s, (u8"　"));
         if (last == s)
             return buffer->clear();
         last = s;
@@ -1288,57 +1277,57 @@ namespace
     void F0100CEF0152DE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8"　"), "");
-        s = std::regex_replace(s, std::regex(R"(#n)"), "");
-        s = std::regex_replace(s, std::regex(R"(#\w.+?\])"), "");
+        s = re::sub(s, (u8"　"));
+        s = re::sub(s, (R"(#n)"));
+        s = re::sub(s, (R"(#\w.+?\])"));
         buffer->from(s);
     }
     void F010061300DF48000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(%\w+)"), "");
-        s = std::regex_replace(s, std::regex(u8"　"), "");
+        s = re::sub(s, (R"(%\w+)"));
+        s = re::sub(s, (u8"　"));
         buffer->from(s);
     }
     void F0100E4000F616000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
-        ws = std::regex_replace(ws, std::wregex(LR"(\\\w)"), L"");
+        ws = re::sub(ws, (LR"(\\\w)"));
         buffer->from(WideStringToString(ws, 932));
     }
     void F01005A401D766000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(\\n)"), "");
-        s = std::regex_replace(s, std::regex(R"(\|(.*?)\|(.*?)\|)"), "$1");
+        s = re::sub(s, (R"(\\n)"));
+        s = re::sub(s, (R"(\|(.*?)\|(.*?)\|)"), "$1");
         buffer->from(s);
     }
     void F01005A401D766000_2(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"((#Ruby\[)([^,]+).([^\]]+).)"), "$2");
-        s = std::regex_replace(s, std::regex(R"((\\n)+)"), "");
-        s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"), "");
-        s = std::regex_replace(s, std::regex(R"(<color=.*>(.*)<\/color>)"), "$1");
+        s = re::sub(s, (R"((#Ruby\[)([^,]+).([^\]]+).)"), "$2");
+        s = re::sub(s, (R"((\\n)+)"));
+        s = re::sub(s, (R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"));
+        s = re::sub(s, (R"(<color=.*>(.*)<\/color>)"), "$1");
         buffer->from(s);
     }
     void F010027300A660000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8R"(#n(　)*)"), "");
+        s = re::sub(s, (u8R"(#n(　)*)"));
         buffer->from(s);
     }
     void F0100FA10185B0000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#.+?])"), "");
+        s = re::sub(s, (R"(#.+?])"));
         buffer->from(s);
     }
     void F010095E01581C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(\n)"), "");
-        s = std::regex_replace(s, std::regex(R"(\\\w+)"), "");
+        s = re::sub(s, (R"(\n)"));
+        s = re::sub(s, (R"(\\\w+)"));
         buffer->from(s);
     }
     void F0100943010310000(TextBuffer *buffer, HookParam *hp)
@@ -1346,23 +1335,23 @@ namespace
         auto s = buffer->strA();
         strReplace(s, u8"❞", "\"");
         strReplace(s, u8"❝", "\"");
-        s = std::regex_replace(s, std::regex("@(.*?)@"), "$1\n");
+        s = re::sub(s, ("@(.*?)@"), "$1\n");
         buffer->from(s);
     }
     template <bool choice>
     void F010027401A2A2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\[dic.*?text="), L"");
-        s = std::regex_replace(s, std::wregex(L"\\[|'.*?\\]"), L"");
-        s = std::regex_replace(s, std::wregex(L"\\]"), L"");
+        s = re::sub(s, (L"\\[dic.*?text="));
+        s = re::sub(s, (L"\\[|'.*?\\]"));
+        s = re::sub(s, (L"\\]"));
         if (choice)
         {
-            s = std::regex_replace(s, std::wregex(LR"([ \t\r\f\v]|　)"), L"");
+            s = re::sub(s, (LR"([ \t\r\f\v]|　)"));
         }
         else
         {
-            s = std::regex_replace(s, std::wregex(L"\\s|　"), L"");
+            s = re::sub(s, (L"\\s|　"));
         }
         buffer->from(s);
     }
@@ -1382,8 +1371,8 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
-        s = std::regex_replace(s, std::wregex(L".*?_"), L"");
+        s = re::sub(s, (L"<[^>]*>"));
+        s = re::sub(s, (L".*?_"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1393,9 +1382,9 @@ namespace
     void F01007FD00DB20000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(LR"(\n+)"), L" ");
-        s = std::regex_replace(s, std::wregex(LR"(\#T1[^#]+)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\#T\d)"), L"");
+        s = re::sub(s, (LR"(\n+)"), L" ");
+        s = re::sub(s, (LR"(\#T1[^#]+)"));
+        s = re::sub(s, (LR"(\#T\d)"));
         if (s == L"　　")
             return buffer->clear();
         buffer->from(utf16_to_utf32(s));
@@ -1403,9 +1392,9 @@ namespace
     void F010021D01474E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(LR"(#\w\(.+?\)|#\w{2})"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\n)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
+        s = re::sub(s, (LR"(#\w\(.+?\)|#\w{2})"));
+        s = re::sub(s, (LR"(\n)"));
+        s = re::sub(s, (LR"(\u3000)"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1415,8 +1404,8 @@ namespace
     void F010021D01474E000_2(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(#\w.+?\)|#\w+)"), L"");
+        s = re::sub(s, (LR"(\u3000)"));
+        s = re::sub(s, (LR"(#\w.+?\)|#\w+)"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1426,8 +1415,8 @@ namespace
     void F01002C00177AE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\n)"), L"");
+        s = re::sub(s, (LR"(\u3000)"));
+        s = re::sub(s, (LR"(\n)"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1441,15 +1430,15 @@ namespace
         if (last.find(s) != last.npos)
             return buffer->clear();
         last = s;
-        s = std::regex_replace(s, std::regex(R"([~^$(,)R])"), "");
-        s = std::regex_replace(s, std::regex(R"(\\n)"), "");
+        s = re::sub(s, (R"([~^$(,)R])"));
+        s = re::sub(s, (R"(\\n)"));
         buffer->from(s);
     }
     template <int i>
     void F010079200C26E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#n)"), "");
+        s = re::sub(s, (R"(#n)"));
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -1460,7 +1449,7 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\n)"), L"");
+        s = re::sub(s, (LR"(\n)"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1471,11 +1460,11 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\d"), L"");
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
-        while (std::regex_search(s, std::wregex(L"^\\s*$")))
+        s = re::sub(s, (L"\\d"));
+        s = re::sub(s, (L"<[^>]*>"));
+        while (re::search(s, (L"^\\s*$")))
         {
-            s = std::regex_replace(s, std::wregex(L"^\\s*$"), L"");
+            s = re::sub(s, (L"^\\s*$"));
         }
         static std::wstring last;
         if (last == s)
@@ -1487,17 +1476,18 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
-        s = std::regex_replace(s, std::wregex(L"\\{([^{}]+):[^{}]+\\}"), L"$1");
+        s = re::sub(s, (L"<[^>]*>"));
+        s = re::sub(s, (L"\\{([^{}]+):[^{}]+\\}"), L"$1");
         buffer->from(s);
     }
 
     void F010028D0148E6000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("{|\\/.*?}|\\[.*?]", std::regex_constants::grep), "");
-        s = std::regex_replace(s, std::regex("(\\\\\\\\c|\\\\\\\\n)+"), " ");
-        s = std::regex_replace(s, std::regex(",.*$"), " ");
+        s = re::sub(s, R"({|\/.*?}|\[.*?\])");
+        s = re::sub(s, R"((\\c|\\n)+)"
+                       " ");
+        s = re::sub(s, ",.*$", " ");
         buffer->from(s);
     }
 
@@ -1505,16 +1495,16 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\\r\\n]+"), L"");
-        s = std::regex_replace(s, std::wregex(L"<[^>]+>|\\[\\[[^]]+\\]\\]"), L"");
+        s = re::sub(s, (L"[\\r\\n]+"));
+        s = re::sub(s, (L"<[^>]+>|\\[\\[[^]]+\\]\\]"));
         buffer->from(s);
     }
 
     void F0100B5500CA0C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\\\"), "");
-        s = std::regex_replace(s, std::regex("\\$"), "");
+        s = re::sub(s, ("\\\\"));
+        s = re::sub(s, ("\\$"));
         buffer->from(s);
     }
     void T0100B5500CA0C000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -1526,8 +1516,8 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\r\n]+"), L"");
-        s = std::regex_replace(s, std::wregex(L"(<.+?>)+"), L"\r\n");
+        s = re::sub(s, (L"[\r\n]+"));
+        s = re::sub(s, (L"(<.+?>)+"), L"\r\n");
         strReplace(s, L"", L"(L)");
         strReplace(s, L"", L"(ZL)");
         strReplace(s, L"", L"(Y)");
@@ -1546,28 +1536,28 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>([^<]*)<\\/[^>]*>"), L"");
-        s = std::regex_replace(s, std::wregex(L"<sprite name=L>"), L"L");
-        s = std::regex_replace(s, std::wregex(L"<sprite name=R>"), L"R");
-        s = std::regex_replace(s, std::wregex(L"<sprite name=A>"), L"A");
-        s = std::regex_replace(s, std::wregex(L"<sprite name=B>"), L"B");
-        s = std::regex_replace(s, std::wregex(L"<sprite name=X>"), L"X");
-        s = std::regex_replace(s, std::wregex(L"<sprite name=Y>"), L"Y");
-        s = std::regex_replace(s, std::wregex(L"<sprite name=PLUS>"), L"+");
-        s = std::regex_replace(s, std::wregex(L"<sprite name=MINUS>"), L"-");
-        s = std::regex_replace(s, std::wregex(L"<[^>]+>"), L"");
+        s = re::sub(s, (L"<[^>]*>([^<]*)<\\/[^>]*>"));
+        s = re::sub(s, (L"<sprite name=L>"), L"L");
+        s = re::sub(s, (L"<sprite name=R>"), L"R");
+        s = re::sub(s, (L"<sprite name=A>"), L"A");
+        s = re::sub(s, (L"<sprite name=B>"), L"B");
+        s = re::sub(s, (L"<sprite name=X>"), L"X");
+        s = re::sub(s, (L"<sprite name=Y>"), L"Y");
+        s = re::sub(s, (L"<sprite name=PLUS>"), L"+");
+        s = re::sub(s, (L"<sprite name=MINUS>"), L"-");
+        s = re::sub(s, (L"<[^>]+>"));
         buffer->from(s);
     }
     void F0100D7800E9E0000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[A-Za-z0-9]"), L"");
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
-        s = std::regex_replace(s, std::wregex(L"^二十五字二.*(\r?\n|\r)?"), L"");
-        s = std::regex_replace(s, std::wregex(L"^操作を割り当てる.*(\r?\n|\r)?"), L"");
-        s = std::regex_replace(s, std::wregex(L"^上記アイコンが出.*(\r?\n|\r)?"), L"");
-        s = std::regex_replace(s, std::wregex(L"[()~^,ö.!]"), L"");
+        s = re::sub(s, (L"[A-Za-z0-9]"));
+        s = re::sub(s, (L"<[^>]*>"));
+        s = re::sub(s, (L"^二十五字二.*(\r?\n|\r)?"));
+        s = re::sub(s, (L"^操作を割り当てる.*(\r?\n|\r)?"));
+        s = re::sub(s, (L"^上記アイコンが出.*(\r?\n|\r)?"));
+        s = re::sub(s, (L"[()~^,ö.!]"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1668,16 +1658,16 @@ namespace
     void F0100CBA014014000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8"《.*?》"), "");
-        s = std::regex_replace(s, std::regex("<[^>]*>"), "");
+        s = re::sub(s, (u8"《.*?》"));
+        s = re::sub(s, ("<[^>]*>"));
         buffer->from(s);
     }
     template <int idx>
     void F0100CC401A16C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("<[^>]*>"), "");
-        s = std::regex_replace(s, std::regex("\\d+"), "");
+        s = re::sub(s, ("<[^>]*>"));
+        s = re::sub(s, ("\\d+"));
         if (s == "")
             return buffer->clear();
         static std::string last;
@@ -1689,28 +1679,28 @@ namespace
     void F0100BDD01AAE4000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("(#Ruby\\[)([^,]+).([^\\]]+)."), "$2");
-        s = std::regex_replace(s, std::regex("(#n)+"), " ");
-        s = std::regex_replace(s, std::regex("(#[A-Za-z]+[(\\d*[.])?\\d+])+"), "");
+        s = re::sub(s, ("(#Ruby\\[)([^,]+).([^\\]]+)."), "$2");
+        s = re::sub(s, ("(#n)+"), " ");
+        s = re::sub(s, ("(#[A-Za-z]+[(\\d*[.])?\\d+])+"));
         buffer->from(s);
     }
     void F0100C310110B4000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("(#Ruby\\[)([^,]+).([^\\]]+)."), "$2");
-        s = std::regex_replace(s, std::regex("#Color\\[[\\d]+\\]"), "");
-        s = std::regex_replace(s, std::regex(u8"(　#n)+"), "#n");
-        s = std::regex_replace(s, std::regex("#n+"), " ");
+        s = re::sub(s, ("(#Ruby\\[)([^,]+).([^\\]]+)."), "$2");
+        s = re::sub(s, ("#Color\\[[\\d]+\\]"));
+        s = re::sub(s, (u8"(　#n)+"), "#n");
+        s = re::sub(s, ("#n+"), " ");
         buffer->from(s);
     }
     void F010003F003A34000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"([\s\S]*$)"), L"");
-        s = std::regex_replace(s, std::wregex(L"\n+"), L" ");
-        s = std::regex_replace(s, std::wregex(L"\\s"), L"");
-        s = std::regex_replace(s, std::wregex(L"[＀븅]"), L"");
+        s = re::sub(s, (LR"([\s\S]*$)"));
+        s = re::sub(s, (L"\n+"), L" ");
+        s = re::sub(s, (L"\\s"));
+        s = re::sub(s, (L"[＀븅]"));
         buffer->from(s);
     }
 
@@ -1718,16 +1708,16 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
-        s = std::regex_replace(s, std::wregex(L"\\[.*?\\]"), L"");
+        s = re::sub(s, (L"<[^>]*>"));
+        s = re::sub(s, (L"\\[.*?\\]"));
         std::vector<std::wstring> lines = strSplit(s, L"\n");
         std::wstring result;
         for (const std::wstring &line : lines)
         {
             if (result.empty() == false)
                 result += L"\n";
-            s = std::regex_replace(s, std::wregex(L"^(?:メニュー|システム|Ver\\.)$(\\r?\\n|\\r)?"), L"");
-            s = std::regex_replace(s, std::wregex(L"^\\s*$"), L"");
+            s = re::sub(s, (L"^(?:メニュー|システム|Ver\\.)$(\\r?\\n|\\r)?"));
+            s = re::sub(s, (L"^\\s*$"));
         }
         static std::wstring last;
         if (last == s)
@@ -1739,24 +1729,24 @@ namespace
     void F010046601125A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(L"<rb>(.+?)</rb><rt>.+?</rt>"), L"$1");
-        s = std::regex_replace(s, std::wregex(L"\n+"), L" ");
+        s = re::sub(s, (L"<rb>(.+?)</rb><rt>.+?</rt>"), L"$1");
+        s = re::sub(s, (L"\n+"), L" ");
         buffer->from(utf16_to_utf32(s));
     }
     void F0100771013FA8000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<br>"), L"\n");
-        s = std::regex_replace(s, std::wregex(L"^(\\s+)"), L"");
+        s = re::sub(s, (L"<br>"), L"\n");
+        s = re::sub(s, (L"^(\\s+)"));
         buffer->from(s);
     }
     void F0100556015CCC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\[[^\\]]+."), "");
-        s = std::regex_replace(s, std::regex("\\\\k|\\\\x|%C|%B|%p-1;"), "");
-        s = std::regex_replace(s, std::regex("#[0-9a-fA-F]+;([^%#]+)(%r)?"), "$1");
+        s = re::sub(s, ("\\[[^\\]]+."));
+        s = re::sub(s, ("\\\\k|\\\\x|%C|%B|%p-1;"));
+        s = re::sub(s, ("#[0-9a-fA-F]+;([^%#]+)(%r)?"), "$1");
         static std::set<std::string> dump;
         if (dump.find(s) != dump.end())
             return buffer->clear();
@@ -1766,13 +1756,13 @@ namespace
     void F0100CC80140F8000_1(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"^(?:スキップ|メニュー|バックログ|ズームイン|ズームアウト|ガイド OFF|早送り|オート|人物情報|ユニット表示切替|カメラリセット|ガイド表示切替|ページ切替|閉じる|コマンド選択|詳細|シミュレーション|移動)$([\\r?\\n|\\r])?"), L"");
+        s = re::sub(s, (L"^(?:スキップ|メニュー|バックログ|ズームイン|ズームアウト|ガイド OFF|早送り|オート|人物情報|ユニット表示切替|カメラリセット|ガイド表示切替|ページ切替|閉じる|コマンド選択|詳細|シミュレーション|移動)$([\\r?\\n|\\r])?"));
 
-        s = std::regex_replace(s, std::wregex(L"[A-Za-z0-9]"), L"");
-        s = std::regex_replace(s, std::wregex(L"[().%,_!#©&:?/]"), L"");
-        while (std::regex_search(s, std::wregex(L"^\\s*$")))
+        s = re::sub(s, (L"[A-Za-z0-9]"));
+        s = re::sub(s, (L"[().%,_!#©&:?/]"));
+        while (re::search(s, (L"^\\s*$")))
         {
-            s = std::regex_replace(s, std::wregex(L"^\\s*$"), L"");
+            s = re::sub(s, (L"^\\s*$"));
         }
         buffer->from(s);
     }
@@ -1799,27 +1789,27 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\\s]"), L"");
-        s = std::regex_replace(s, std::wregex(L"\\\\n"), L"");
+        s = re::sub(s, (L"[\\s]"));
+        s = re::sub(s, (L"\\\\n"));
         buffer->from(s);
     }
     void F010042300C4F6000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\\s]"), L"");
-        s = std::regex_replace(s, std::wregex(L"(.+?/)"), L"");
-        s = std::regex_replace(s, std::wregex(L"(\" .*)"), L"");
-        s = std::regex_replace(s, std::wregex(L"^(.+?\")"), L"");
+        s = re::sub(s, (L"[\\s]"));
+        s = re::sub(s, (L"(.+?/)"));
+        s = re::sub(s, (L"(\" .*)"));
+        s = re::sub(s, (L"^(.+?\")"));
         buffer->from(s);
     }
     void F010044800D2EC000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\n+"), L" ");
-        s = std::regex_replace(s, std::wregex(L"\\<PL_N\\>"), L"???");
-        s = std::regex_replace(s, std::wregex(L"<.+?>"), L"");
+        s = re::sub(s, (L"\\n+"), L" ");
+        s = re::sub(s, (L"\\<PL_N\\>"), L"???");
+        s = re::sub(s, (L"<.+?>"));
         buffer->from(s);
     }
     template <int i>
@@ -1827,8 +1817,8 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\$[a-z]"), L"");
-        s = std::regex_replace(s, std::wregex(L"@"), L"");
+        s = re::sub(s, (L"\\$[a-z]"));
+        s = re::sub(s, (L"@"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1838,19 +1828,19 @@ namespace
     void F010050000705E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\s"), "");
-        s = std::regex_replace(s, std::regex("<br>"), "\n");
-        s = std::regex_replace(s, std::regex("<([^:>]+):[^>]+>"), "$1");
-        s = std::regex_replace(s, std::regex("<[^>]+>"), "");
+        s = re::sub(s, ("\\s"));
+        s = re::sub(s, ("<br>"), "\n");
+        s = re::sub(s, ("<([^:>]+):[^>]+>"), "$1");
+        s = re::sub(s, ("<[^>]+>"));
         buffer->from(s);
     }
     void F01001B900C0E2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\s"), "");
-        s = std::regex_replace(s, std::regex("#[A-Za-z]+(\\[(\\d*\\.)?\\d+\\])+"), "");
-        s = std::regex_replace(s, std::regex("#[a-z]"), "");
-        s = std::regex_replace(s, std::regex("[a-z]"), "");
+        s = re::sub(s, ("\\s"));
+        s = re::sub(s, ("#[A-Za-z]+(\\[(\\d*\\.)?\\d+\\])+"));
+        s = re::sub(s, ("#[a-z]"));
+        s = re::sub(s, ("[a-z]"));
         buffer->from(s);
     }
 
@@ -1858,11 +1848,11 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
-        s = std::regex_replace(s, std::wregex(L"｛([^｛｝]+)：[^｛｝]+｝"), L"$1");
-        while (std::regex_search(s, std::wregex(L"^\\s+")))
+        s = re::sub(s, (L"<[^>]*>"));
+        s = re::sub(s, (L"｛([^｛｝]+)：[^｛｝]+｝"), L"$1");
+        while (re::search(s, (L"^\\s+")))
         {
-            s = std::regex_replace(s, std::wregex(L"^\\s+"), L"");
+            s = re::sub(s, (L"^\\s+"));
         }
         buffer->from(s);
     }
@@ -1870,15 +1860,15 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
+        s = re::sub(s, (L"<[^>]*>"));
         auto _ = L"^(?:決定|進む|ページ移動|ノート全体図|閉じる|もどる|セーブ中)$(\\r?\\n|\\r)?";
-        while (std::regex_search(s, std::wregex(_)))
+        while (re::search(s, (_)))
         {
-            s = std::regex_replace(s, std::wregex(_), L"");
+            s = re::sub(s, (_));
         }
-        while (std::regex_search(s, std::wregex(L"^\\s*$")))
+        while (re::search(s, (L"^\\s*$")))
         {
-            s = std::regex_replace(s, std::wregex(L"^\\s*$"), L"");
+            s = re::sub(s, (L"^\\s*$"));
         }
         static std::wstring last;
         if (last == s)
@@ -1890,61 +1880,61 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\n+|(\\\\n)+"), L" ");
-        s = std::regex_replace(s, std::wregex(L"#n"), L"");
+        s = re::sub(s, (L"\\n+|(\\\\n)+"), L" ");
+        s = re::sub(s, (L"#n"));
         buffer->from(s);
     }
     void F010094601D910000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\<.*?\\>"), L"");
-        s = std::regex_replace(s, std::wregex(L"\\[.*?\\]"), L"");
-        s = std::regex_replace(s, std::wregex(L"\\s"), L"");
+        s = re::sub(s, (L"\\<.*?\\>"));
+        s = re::sub(s, (L"\\[.*?\\]"));
+        s = re::sub(s, (L"\\s"));
         buffer->from(s);
     }
     void F010079201BD88000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\\s]"), L"");
-        s = std::regex_replace(s, std::wregex(L"\\\\n"), L"");
+        s = re::sub(s, (L"[\\s]"));
+        s = re::sub(s, (L"\\\\n"));
         buffer->from(s);
     }
     void F010086C00AF7C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\[([^\\]]+)\\/[^\\]]+\\]"), "$1");
-        s = std::regex_replace(s, std::regex("\\s+"), " ");
-        s = std::regex_replace(s, std::regex("\\\\n"), " ");
-        s = std::regex_replace(s, std::regex("<[^>]+>|\\[[^\\]]+\\]"), "");
+        s = re::sub(s, ("\\[([^\\]]+)\\/[^\\]]+\\]"), "$1");
+        s = re::sub(s, ("\\s+"), " ");
+        s = re::sub(s, ("\\\\n"), " ");
+        s = re::sub(s, ("<[^>]+>|\\[[^\\]]+\\]"));
         buffer->from(s);
     }
     void F010079C017B98000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
-        s = std::regex_replace(s, std::wregex(L"[\\s]"), L"");
-        s = std::regex_replace(s, std::wregex(L"#KW"), L"");
-        s = std::regex_replace(s, std::wregex(L"#C\\(TR,0xff0000ff\\)"), L"");
-        s = std::regex_replace(s, std::wregex(L"【SW】"), L"");
-        s = std::regex_replace(s, std::wregex(L"【SP】"), L"");
-        s = std::regex_replace(s, std::wregex(L"#P\\(.*\\)"), L"");
+        s = re::sub(s, (L"[\\s]"));
+        s = re::sub(s, (L"#KW"));
+        s = re::sub(s, (L"#C\\(TR,0xff0000ff\\)"));
+        s = re::sub(s, (L"【SW】"));
+        s = re::sub(s, (L"【SP】"));
+        s = re::sub(s, (L"#P\\(.*\\)"));
         buffer->from(utf16_to_utf32(s));
     }
     void F010061A01C1CE000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[\\s]"), L"");
-        s = std::regex_replace(s, std::wregex(L"sound"), L" ");
+        s = re::sub(s, (L"[\\s]"));
+        s = re::sub(s, (L"sound"), L" ");
         buffer->from(s);
     }
     void F0100F7401AA74000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("[\\s]"), "");
-        s = std::regex_replace(s, std::regex("@[a-z]"), "");
-        s = std::regex_replace(s, std::regex("@[0-9]"), "");
+        s = re::sub(s, ("[\\s]"));
+        s = re::sub(s, ("@[a-z]"));
+        s = re::sub(s, ("@[0-9]"));
         buffer->from(s);
     }
     void F010069E01A7CE000(TextBuffer *buffer, HookParam *hp)
@@ -1983,8 +1973,8 @@ namespace
         auto s = buffer->strA();
         strReplace(s, "#n");
         strReplace(s, "\x81\x40");
-        s = std::regex_replace(s, std::regex(R"(#Ruby\[(.*?),(.*?)\])"), "$1");
-        s = std::regex_replace(s, std::regex(R"(#(\w+?)\[[\d,\.]+?\])"), ""); // #Pos[0,42]#Speed[5]#Effect[0]#Scale[1] #Scale[0.9]
+        s = re::sub(s, (R"(#Ruby\[(.*?),(.*?)\])"), "$1");
+        s = re::sub(s, (R"(#(\w+?)\[[\d,\.]+?\])")); // #Pos[0,42]#Speed[5]#Effect[0]#Scale[1] #Scale[0.9]
         buffer->from(s);
     }
     void F01008BA00F172000(TextBuffer *buffer, HookParam *hp)
@@ -2003,26 +1993,26 @@ namespace
     void F01007A901E728000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"((\\n)+)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"([^ \t\r\n\f\v]+＠)"), L""); // c++ regex\S对中文字符支持有问题
-        s = std::regex_replace(s, std::wregex(LR"(\\)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"((\@)+)"), L"");
+        s = re::sub(s, (LR"((\\n)+)"));
+        s = re::sub(s, (LR"([^ \t\r\n\f\v]+＠)")); // c++ regex\S对中文字符支持有问题
+        s = re::sub(s, (LR"(\\)"));
+        s = re::sub(s, (LR"((\@)+)"));
         buffer->from(s);
     }
     void F01003E601E324000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(<[^>]*>)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\[[^\]]*\])"), L"");
+        s = re::sub(s, (LR"(<[^>]*>)"));
+        s = re::sub(s, (LR"(\[[^\]]*\])"));
         buffer->from(s);
     }
     void F01000EA00B23C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"[`@](.*?)@"), L"$1");
-        s = std::regex_replace(s, std::wregex(L"\\$\\[(.*?)\\$/(.*?)\\$\\]"), L"$1");
-        s = std::regex_replace(s, std::wregex(L"\\$K\\d+(.*?)\\$K\\d+"), L"$1");
-        s = std::regex_replace(s, std::wregex(L"\\$A\\d+"), L"");
+        s = re::sub(s, (L"[`@](.*?)@"), L"$1");
+        s = re::sub(s, (L"\\$\\[(.*?)\\$/(.*?)\\$\\]"), L"$1");
+        s = re::sub(s, (L"\\$K\\d+(.*?)\\$K\\d+"), L"$1");
+        s = re::sub(s, (L"\\$A\\d+"));
         strReplace(s, L"$2", L"花");
         strReplace(s, L"$1", L"山田");
         strReplace(s, L"$(3)", L"花");
@@ -2046,18 +2036,18 @@ namespace
         auto s = buffer->strA();
         if (!startWith(s, u8"【"))
             return buffer->clear();
-        s = std::regex_replace(s, std::regex(u8"【(.*?)】(.*)"), "$1");
-        s = std::regex_replace(s, std::regex(u8R"(@[_\*\d\w]*)"), "");
+        s = re::sub(s, (u8"【(.*?)】(.*)"), "$1");
+        s = re::sub(s, (u8R"(@[_\*\d\w]*)"));
         buffer->from(s);
     }
     void F01001E601F6B8000_text(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(u8"【(.*?)】"), "");
-        s = std::regex_replace(s, std::regex("@r(.*?)@(.*?)@"), "$1");
-        s = std::regex_replace(s, std::regex(u8"@n"), "");
-        s = std::regex_replace(s, std::regex(u8R"(@[_\*\d\w]*)"), "");
-        s = std::regex_replace(s, std::regex(u8R"(\*)"), "");
+        s = re::sub(s, (u8"【(.*?)】"));
+        s = re::sub(s, ("@r(.*?)@(.*?)@"), "$1");
+        s = re::sub(s, (u8"@n"));
+        s = re::sub(s, (u8R"(@[_\*\d\w]*)"));
+        s = re::sub(s, (u8R"(\*)"));
         buffer->from(s);
     }
     void F010014A01ADA0000(TextBuffer *buffer, HookParam *hp)
@@ -2065,14 +2055,14 @@ namespace
         auto s = buffer->strW();
         if (!startWith(s, L"<color="))
             return buffer->clear();
-        s = std::regex_replace(s, std::wregex(L"<color=\\w+>(.*?)</color>"), L"$1");
+        s = re::sub(s, (L"<color=\\w+>(.*?)</color>"), L"$1");
         auto spls = strSplit(s, L",");
         if (spls.size() != 4)
             return buffer->clear();
         if (Trim(spls[0]) != L"mes")
             return buffer->clear();
-        auto fuck = std::regex_replace(spls[1], std::wregex(L"（(.*?)）"), L"");
-        fuck = std::regex_replace(fuck, std::wregex(L"・.*"), L"");
+        auto fuck = re::sub(spls[1], (L"（(.*?)）"));
+        fuck = re::sub(fuck, (L"・.*"));
         s = L"【" + Trim(fuck) + L"】" + Trim(strReplace(spls[3], L"\\n"));
         buffer->from(s);
     }
@@ -2097,7 +2087,7 @@ namespace
             if (!startWith(buffer->viewA(), "<text"))
                 return buffer->clear();
             auto s = buffer->strA();
-            buffer->from(std::regex_replace(s.substr(6, s.size() - 6 - 1), std::regex("/ruby:(.*?)&(.*?)/"), "$1"));
+            buffer->from(re::sub(s.substr(6, s.size() - 6 - 1), ("/ruby:(.*?)&(.*?)/"), "$1"));
         }
     }
     void F0100F7700CB82000(TextBuffer *buffer, HookParam *hp)
@@ -2158,25 +2148,25 @@ namespace
     void F0100A0001B9F0000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(\w+\.png)"), "");
+        s = re::sub(s, (R"(\w+\.png)"));
         buffer->from(s);
     }
     void F0100FC2019346000(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("#n"));
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"), "");
+        s = re::sub(s, (R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)"));
         buffer->from(s);
     }
     template <bool choice>
     void F0100E5200D1A2000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
-        ws = std::regex_replace(ws, std::wregex(LR"((\\n)+)"), L" ");
-        ws = std::regex_replace(ws, std::wregex(LR"(\\d$|^\@[a-z]+|#.*?#|\$)"), L"");
-        ws = std::regex_replace(ws, std::wregex(LR"(\u3000+)"), L"");
+        ws = re::sub(ws, (LR"((\\n)+)"), L" ");
+        ws = re::sub(ws, (LR"(\\d$|^\@[a-z]+|#.*?#|\$)"));
+        ws = re::sub(ws, (LR"(\u3000+)"));
         if (choice)
-            ws = std::regex_replace(ws, std::wregex(LR"(, ?\w+)"), L"");
+            ws = re::sub(ws, (LR"(, ?\w+)"));
         buffer->from(WideStringToString(ws, 932));
     }
     void F010028D0148E6000_2(TextBuffer *buffer, HookParam *hp)
@@ -2216,27 +2206,27 @@ namespace
     void F0100EFE0159C6000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = StringToWideString(buffer->viewA(), 932).value();
-        ws = std::regex_replace(ws, std::wregex(LR"((\\n)+)"), L" ");
-        ws = std::regex_replace(ws, std::wregex(LR"(\\d$|^\@[a-z]+|#.*?#|\$)"), L"");
-        ws = std::regex_replace(ws, std::wregex(LR"(\u3000+)"), L"");
-        ws = std::regex_replace(ws, std::wregex(LR"(@w|\\c)"), L"");
+        ws = re::sub(ws, (LR"((\\n)+)"), L" ");
+        ws = re::sub(ws, (LR"(\\d$|^\@[a-z]+|#.*?#|\$)"));
+        ws = re::sub(ws, (LR"(\u3000+)"));
+        ws = re::sub(ws, (LR"(@w|\\c)"));
         if (choice)
-            ws = std::regex_replace(ws, std::wregex(LR"(, ?\w+)"), L"");
+            ws = re::sub(ws, (LR"(, ?\w+)"));
         buffer->from(WideStringToString(ws, 932));
     }
 
     void F0100FDB00AA80000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\[([^\\]]+)\\/[^\\]]+\\]"), "$1");
-        s = std::regex_replace(s, std::regex("<[^>]*>"), "");
+        s = re::sub(s, ("\\[([^\\]]+)\\/[^\\]]+\\]"), "$1");
+        s = re::sub(s, ("<[^>]*>"));
         buffer->from(s);
     }
     void F0100FF500E34A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\[.*?\\]"), "");
-        s = std::regex_replace(s, std::regex("\\n+"), " ");
+        s = re::sub(s, ("\\[.*?\\]"));
+        s = re::sub(s, ("\\n+"), " ");
         buffer->from(s);
     }
     void F010076501DAEA000(TextBuffer *buffer, HookParam *hp)
@@ -2246,10 +2236,10 @@ namespace
     void F01005E9016BDE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(\[[^\]]+.)"), "");
-        s = std::regex_replace(s, std::regex("\\\\k|\\\\x|%C|%B|%p-1;"), "");
-        s = std::regex_replace(s, std::regex("#[0-9a-fA-F]+;([^%#]+)(%r)?"), "$1");
-        s = std::regex_replace(s, std::regex("\\\\n"), " ");
+        s = re::sub(s, (R"(\[[^\]]+.)"));
+        s = re::sub(s, ("\\\\k|\\\\x|%C|%B|%p-1;"));
+        s = re::sub(s, ("#[0-9a-fA-F]+;([^%#]+)(%r)?"), "$1");
+        s = re::sub(s, ("\\\\n"), " ");
         buffer->from(s);
     }
 
@@ -2257,24 +2247,24 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"<WaitFrame>\\d+</WaitFrame>"), L"");
-        s = std::regex_replace(s, std::wregex(L"<[^>]*>"), L"");
+        s = re::sub(s, (L"<WaitFrame>\\d+</WaitFrame>"));
+        s = re::sub(s, (L"<[^>]*>"));
         buffer->from(s);
     }
     void F01002AE00F442000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\[([^\]\/]+)\/[^\]]+\])"), L"$1");
-        s = std::regex_replace(s, std::wregex(LR"(([^ \t\r\n\f\v]*)@)"), L"$1");
-        s = std::regex_replace(s, std::wregex(LR"(\$)"), L"");
+        s = re::sub(s, (LR"(\[([^\]\/]+)\/[^\]]+\])"), L"$1");
+        s = re::sub(s, (LR"(([^ \t\r\n\f\v]*)@)"), L"$1");
+        s = re::sub(s, (LR"(\$)"));
         buffer->from(s);
     }
     void F01000A400AF2A000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"@[a-zA-Z]|%[a-zA-Z]+"), L"");
+        s = re::sub(s, (L"@[a-zA-Z]|%[a-zA-Z]+"));
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -2285,41 +2275,41 @@ namespace
     void F01006B5014E2E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("@r(.*?)@(.*?)@"), "$1");
-        s = std::regex_replace(s, std::regex("@n"), "");
-        s = std::regex_replace(s, std::regex("@v"), "");
-        s = std::regex_replace(s, std::regex("TKY[0-9]{6}_[A-Z][0-9]{2}"), "");
+        s = re::sub(s, ("@r(.*?)@(.*?)@"), "$1");
+        s = re::sub(s, ("@n"));
+        s = re::sub(s, ("@v"));
+        s = re::sub(s, ("TKY[0-9]{6}_[A-Z][0-9]{2}"));
         buffer->from(s);
     }
     void F01000AE01954A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("[A-Za-z0-9]"), "");
-        s = std::regex_replace(s, std::regex("[~^(-).%,!:#@$/*&;+_]"), "");
+        s = re::sub(s, ("[A-Za-z0-9]"));
+        s = re::sub(s, ("[~^(-).%,!:#@$/*&;+_]"));
         buffer->from(s);
     }
     void F01003BD013E30000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("{|\\/.*?}|\\[.*?]"), "");
+        s = re::sub(s, ("{|\\/.*?}|\\[.*?]"));
         buffer->from(s);
     }
     void F010074F013262000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\[.*?]"), "");
+        s = re::sub(s, ("\\[.*?]"));
         buffer->from(s);
     }
     void F010057E00AC56000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("<[^>]*>"), "");
-        s = std::regex_replace(s, std::regex(u8"ズーム|回転|身長|体重"), "");
-        s = std::regex_replace(s, std::regex("[A-Za-z0-9]"), "");
-        s = std::regex_replace(s, std::regex("[().%,!#/]"), "");
-        while (std::regex_search(s, std::regex("^\\s*$")))
+        s = re::sub(s, ("<[^>]*>"));
+        s = re::sub(s, (u8"ズーム|回転|身長|体重"));
+        s = re::sub(s, ("[A-Za-z0-9]"));
+        s = re::sub(s, ("[().%,!#/]"));
+        while (re::search(s, ("^\\s*$")))
         {
-            s = std::regex_replace(s, std::regex("^\\s*$"), "");
+            s = re::sub(s, ("^\\s*$"));
         }
         static std::string last;
         if (last == s)
@@ -2330,10 +2320,10 @@ namespace
     void F010051D010FC2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex("\\[([^\\]]+)\\/[^\\]]+\\]"), "$1");
-        s = std::regex_replace(s, std::regex("\\s+"), " ");
-        s = std::regex_replace(s, std::regex("\\\\n"), " ");
-        s = std::regex_replace(s, std::regex("<[^>]+>|\\[[^\\]]+\\]"), "");
+        s = re::sub(s, ("\\[([^\\]]+)\\/[^\\]]+\\]"), "$1");
+        s = re::sub(s, ("\\s+"), " ");
+        s = re::sub(s, ("\\\\n"), " ");
+        s = re::sub(s, ("<[^>]+>|\\[[^\\]]+\\]"));
         buffer->from(s);
     }
 
@@ -2341,31 +2331,31 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\$\w{1,2})"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\$\[|\$\/.+?])"), L"");
+        s = re::sub(s, (LR"(\$\w{1,2})"));
+        s = re::sub(s, (LR"(\$\[|\$\/.+?])"));
         buffer->from(s);
     }
     void F0100EC001DE7E000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(<\w+=[^>]+>|<\/\w+>)"), L"");
+        s = re::sub(s, (LR"(<\w+=[^>]+>|<\/\w+>)"));
         buffer->from(s);
     }
     void F0100DEF01D0C6000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\n)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(<.+?>)"), L"");
+        s = re::sub(s, (LR"(\n)"));
+        s = re::sub(s, (LR"(\u3000)"));
+        s = re::sub(s, (LR"(<.+?>)"));
         buffer->from(s);
     }
     void F01005AF00E9DC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = std::regex_replace(s, std::regex(R"(#n)"), "");
-        s = std::regex_replace(s, std::regex(R"(#\w+(\[.+?\])?)"), "");
+        s = re::sub(s, (R"(#n)"));
+        s = re::sub(s, (R"(#\w+(\[.+?\])?)"));
         buffer->from(s);
     }
     void F010031C01F410000(TextBuffer *buffer, HookParam *hp)
@@ -2421,7 +2411,7 @@ namespace
     void wF0100A9B01D4AE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(@(.*?)@)"), L"$1\n");
+        s = re::sub(s, (LR"(@(.*?)@)"), L"$1\n");
         buffer->from(s);
     }
     void aF0100A9B01D4AE000(TextBuffer *buffer, HookParam *hp)
@@ -2431,9 +2421,9 @@ namespace
         strReplace(s, u8"❜", "'");
         strReplace(s, u8"❝", "\"");
         strReplace(s, u8"❞", "\"");
-        s = std::regex_replace(s, std::regex(R"(@(.*?)@)"), "$1\n");
-        s = std::regex_replace(s, std::regex(R"(\$s\(i?\))"), "");
-        s = std::regex_replace(s, std::regex(R"(\$[<>]\d+)"), "");
+        s = re::sub(s, (R"(@(.*?)@)"), "$1\n");
+        s = re::sub(s, (R"(\$s\(i?\))"));
+        s = re::sub(s, (R"(\$[<>]\d+)"));
         buffer->from(s);
     }
     void F0100FB301E70A000(TextBuffer *buffer, HookParam *hp)
@@ -2449,20 +2439,20 @@ namespace
         if (last == s)
             return buffer->clear();
         last = s;
-        s = std::regex_replace(s, std::wregex(LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
+        s = re::sub(s, (LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
         buffer->from(s);
     }
     void F0100C9001E10C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(<(.*?)>)"), L""); //<indent=3.5%>
+        s = re::sub(s, (LR"(<(.*?)>)")); //<indent=3.5%>
         buffer->from(s);
     }
     void F01001BA01EBFC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(#n)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(#\w+(\[.+?\])?)"), L"");
+        s = re::sub(s, (LR"(#n)"));
+        s = re::sub(s, (LR"(#\w+(\[.+?\])?)"));
         buffer->from(s);
     }
     void F01000BB01CB8A000(TextBuffer *buffer, HookParam *hp)
@@ -2472,39 +2462,39 @@ namespace
         if (last == s)
             return buffer->clear();
         last = s;
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
+        s = re::sub(s, (LR"(\u3000)"));
         buffer->from(s);
     }
     void F010044701E9BC000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\<.*?\>)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\s)"), L"");
+        s = re::sub(s, (LR"(\<.*?\>)"));
+        s = re::sub(s, (LR"(\s)"));
         buffer->from(s);
     }
     void F01003BB01DF54000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\\\u3000*)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\$)"), L"");
+        s = re::sub(s, (LR"(\\\u3000*)"));
+        s = re::sub(s, (LR"(\$)"));
         buffer->from(s);
     }
     void F01004E5017C54000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(<.+?>)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
+        s = re::sub(s, (LR"(<.+?>)"));
+        s = re::sub(s, (LR"(\u3000)"));
         buffer->from(s);
     }
     void F0100FA001E160000(TextBuffer *buffer, HookParam *hp)
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\r\n)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\u3000)"), L"");
+        s = re::sub(s, (LR"(\r\n)"));
+        s = re::sub(s, (LR"(\u3000)"));
         buffer->from(s);
     }
     template <bool choice>
@@ -2512,11 +2502,11 @@ namespace
     {
         auto s = buffer->strA();
         strReplace(s, "\n");
-        s = std::regex_replace(s, std::regex(R"(\\d$|^\@[a-z]+|#.*?#|\$)"), "");
+        s = re::sub(s, (R"(\\d$|^\@[a-z]+|#.*?#|\$)"));
         strReplace(s, "\x81\x40");
-        s = std::regex_replace(s, std::regex(R"(@w|\\c)"), "");
+        s = re::sub(s, (R"(@w|\\c)"));
         if (choice)
-            s = std::regex_replace(s, std::regex(R"(, ?\w+)"), "");
+            s = re::sub(s, (R"(, ?\w+)"));
         buffer->from(s);
     }
     void F0100B1F0123B6000(TextBuffer *buffer, HookParam *hp)
@@ -2529,15 +2519,15 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"([\s])"), L"");
-        s = std::regex_replace(s, std::wregex(LR"($$R)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(%)"), L"");
+        s = re::sub(s, (LR"([\s])"));
+        s = re::sub(s, (LR"($$R)"));
+        s = re::sub(s, (LR"(%)"));
         buffer->from(s);
     }
     void F01008A401FEB6000_2(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = std::regex_replace(buffer->strW(), std::wregex(LR"(<color=.*>(.*)<\/color>)"), L"$1");
-        buffer->from(std::regex_replace(ws, std::wregex(LR"([\r\n]+)"), L""));
+        auto ws = re::sub(buffer->strW(), (LR"(<color=.*>(.*)<\/color>)"), L"$1");
+        buffer->from(re::sub(ws, (LR"([\r\n]+)"), L""));
     }
     bool F01008A401FEB6000_3;
     void F01008A401FEB6000_1(TextBuffer *buffer, HookParam *hp)
@@ -2555,32 +2545,31 @@ namespace
     void F01005DE00CA34000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"(\$t(.*?)@)"), L"【$1】");
+        s = re::sub(s, (LR"(\$t(.*?)@)"), L"【$1】");
         buffer->from(s);
     }
     void F0100BBA00B23E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"((^`)|(#\w+\[(\d*\.?\d+)\])|(\$K\d+)|(\$C\[\d+\]))"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\$\[([^\$\/]*)\$\/[^\$]*\$]|([^\$\/]*)\$\/[^\$]*\$\])"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(@)"), L"");
-        s = std::regex_replace(s, std::wregex(LR"($2)"), L"凛");
+        s = re::sub(s, (LR"((^`)|(#\w+\[(\d*\.?\d+)\])|(\$K\d+)|(\$C\[\d+\]))"));
+        s = re::sub(s, (LR"(\$\[([^\$\/]*)\$\/[^\$]*\$]|([^\$\/]*)\$\/[^\$]*\$\])"));
+        s = re::sub(s, (LR"(@)"));
+        s = re::sub(s, (LR"($2)"), L"凛");
         buffer->from(s);
     }
     void F010091C01BD8A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(LR"([\s])"), L"");
-        s = std::regex_replace(s, std::wregex(LR"(\\n)"), L"");
+        s = re::sub(s, (LR"([\s])"));
+        s = re::sub(s, (LR"(\\n)"));
         buffer->from(s);
     }
     void F01001EF017BE6000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
-        while (std::regex_search(s, std::wregex(L"^\\s*$")))
+        while (re::search(s, (L"^\\s*$")))
         {
-            s = std::regex_replace(s, std::wregex(L"^\\s*$"), L"");
+            s = re::sub(s, (L"^\\s*$"));
         }
         buffer->from(s);
     }
@@ -2588,10 +2577,10 @@ namespace
     {
 
         auto s = buffer->strW();
-        s = std::regex_replace(s, std::wregex(L"\\n+"), L" ");
-        s = std::regex_replace(s, std::wregex(L"\\<PL_Namae\\>"), L"???");
-        s = std::regex_replace(s, std::wregex(L"\\<chiaki_washa\\>"), L"chiaki_washa");
-        s = std::regex_replace(s, std::wregex(L"<.+?>"), L"");
+        s = re::sub(s, (L"\\n+"), L" ");
+        s = re::sub(s, (L"\\<PL_Namae\\>"), L"???");
+        s = re::sub(s, (L"\\<chiaki_washa\\>"), L"chiaki_washa");
+        s = re::sub(s, (L"<.+?>"));
         buffer->from(s);
     }
 

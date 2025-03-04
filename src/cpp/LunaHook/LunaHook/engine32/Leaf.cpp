@@ -393,7 +393,7 @@ namespace
   void hook2(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     strReplace(save, "\\k");
-    save = std::regex_replace(save, std::regex("<R(.+?)\\|.+>"), "$1");
+    save = re::sub(save, "<R(.+?)\\|.+>", "$1");
     buffer->from(save);
   }
   void hook2a(hook_context *s, TextBuffer buffer)
@@ -650,7 +650,7 @@ namespace
       strReplace(current, "\\n");
       strReplace(current, "\\k");
       strReplace(current, "\\s");
-      current = std::regex_replace(current, std::regex(R"(\|(.*?)>)"), "$1");
+      current = re::sub(current, R"(\|(.*?)>)", "$1");
       strReplace(current, "<F60");
       strReplace(current, "<R");
       strReplace(current, ">");

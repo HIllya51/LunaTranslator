@@ -1,7 +1,10 @@
 ﻿#include "Lightvn.h"
 
 // https://vndb.org/r?f=fwLight_evn-
-
+#define PATTERN1 "\\[PARSETOKENS\\] line:[-\"\\.]+([\\s\\S]*?)\\(scenario:([\\s\\S]*?)"
+#define PATTERN2 "\\[PARSETOKENS\\] line:([\\s\\S]*?)backlogName = '([\\s\\S]*?)'([\\s\\S]*?)"
+#define WIDEN2(x) L##x
+#define WIDEN(x) WIDEN2(x)
 void SpecialHookLightvnA(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
 	//[Parser::ReadScriptBreak] curline:'"「次は[水縹]<みはなだ>駅、水縹駅――お出口は左側です」'
@@ -13,47 +16,39 @@ void SpecialHookLightvnA(hook_context *context, HookParam *hp, TextBuffer *buffe
 	std::string s = (char *)context->stack[1];
 	// std::regex _1("\\[Parser::ReadScriptBreak\\] curline:'[\"\\.]([\\s\\S]*?)'([\\s\\S]*?)");//对于多行显示不全
 	// std::regex _2("\\[PARSETOKENS\\] line:([\\s\\S]*?)\\(scenario:([\\s\\S]*?)");
-	std::regex _2("\\[PARSETOKENS\\] line:[-\"\\.]+([\\s\\S]*?)\\(scenario:([\\s\\S]*?)");
-	std::regex _3("\\[PARSETOKENS\\] line:([\\s\\S]*?)backlogName = '([\\s\\S]*?)'([\\s\\S]*?)");
-	std::smatch match;
-	std::string _;
-	if (std::regex_match(s, match, _2))
+	if (auto match = re::match(s, PATTERN1))
 	{
-		_ = std::string(match[1]);
-		_ = std::regex_replace(_, std::regex("\\[(.*?)\\]<(.*?)>"), "$1");
-		strReplace(_, "\\c");
-		strReplace(_, "\\w");
+		s = match.value()[1];
+		s = re::sub(s, "\\[(.*?)\\]<(.*?)>", "$1");
+		strReplace(s, "\\c");
+		strReplace(s, "\\w");
 		*split = 1;
 	}
-	else if (std::regex_match(s, match, _3))
+	else if (auto match = re::match(s, PATTERN2))
 	{
-		_ = std::string(match[2]);
+		s = match.value()[2];
 		*split = 2;
 	}
-	buffer->from(_);
+	buffer->from(s);
 }
 
 void SpecialHookLightvnW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
 	std::wstring s((wchar_t *)context->stack[1]);
-	std::wregex _2(L"\\[PARSETOKENS\\] line:[-\"\\.]+([\\s\\S]*?)\\(scenario:([\\s\\S]*?)");
-	std::wregex _3(L"\\[PARSETOKENS\\] line:([\\s\\S]*?)backlogName = '([\\s\\S]*?)'([\\s\\S]*?)");
-	std::wsmatch match;
-	std::wstring _;
-	if (std::regex_match(s, match, _2))
+	if (auto match = re::match(s, WIDEN(PATTERN1)))
 	{
-		_ = std::wstring(match[1]);
-		_ = std::regex_replace(_, std::wregex(L"\\[(.*?)\\]<(.*?)>"), L"$1");
-		strReplace(_, L"\\c");
-		strReplace(_, L"\\w");
+		s = match.value()[1];
+		s = re::sub(s, L"\\[(.*?)\\]<(.*?)>", L"$1");
+		strReplace(s, L"\\c");
+		strReplace(s, L"\\w");
 		*split = 1;
 	}
-	else if (std::regex_match(s, match, _3))
+	else if (auto match = re::match(s, WIDEN(PATTERN2)))
 	{
-		_ = std::wstring(match[2]);
+		s = match.value()[2];
 		*split = 2;
 	}
-	buffer->from(_);
+	buffer->from(s);
 }
 bool InsertLightvnHook()
 {

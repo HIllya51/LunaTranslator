@@ -65,7 +65,7 @@ namespace
         std::wstring str = buffer->strW();
         if (str.find(L"OnShowComplete") != str.npos)
         {
-          str = std::regex_replace(str, std::wregex(L"\n"), L"");
+          str = re::sub(str, L"\n");
           std::wregex reg1(L"\\((.*?)\\)");
           std::wsmatch match;
           std::regex_search(str, match, reg1);
