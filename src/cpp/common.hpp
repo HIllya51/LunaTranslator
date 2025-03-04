@@ -105,6 +105,12 @@ public:
 #define COWAIT_INPUTAVAILABLE 4
 #define COWAIT_DISPATCH_CALLS 8
 #define COWAIT_DISPATCH_WINDOW_MESSAGES 0x10
+
+extern "C" WINUSERAPI
+    UINT
+        WINAPI
+        GetDpiForWindow(
+            _In_ HWND hwnd);
 #endif
 
 struct CoAsyncTaskWaiter

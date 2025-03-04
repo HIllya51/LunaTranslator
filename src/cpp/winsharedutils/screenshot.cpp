@@ -45,13 +45,6 @@ namespace
     }
 }
 extern HWND globalmessagehwnd;
-#ifdef WINXP
-extern "C" WINUSERAPI
-    UINT
-        WINAPI
-        GetDpiForWindow(
-            _In_ HWND hwnd);
-#endif
 std::optional<SimpleBMP> __gdi_screenshot(HWND hwnd, RECT rect)
 {
     if (checkempty(hwnd, rect))
@@ -123,9 +116,9 @@ DECLARE_API void crop_image(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
     }
 }
 
-DECLARE_API void maximum_window(HWND hwnd)
+DECLARE_API RECT maximum_window()
 {
     RECT rect;
     GetVirtualDesktopRect(rect);
-    MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+    return rect; // MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
 }

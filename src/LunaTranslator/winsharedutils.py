@@ -273,7 +273,7 @@ def crop_image(x1, y1, x2, y2, hwnd=None):
 
 
 maximum_window = utilsdll.maximum_window
-maximum_window.argtypes = (HWND,)
+maximum_window.restype = RECT
 setbackdropX = utilsdll.setbackdropX
 setbackdropX.argtypes = HWND, c_bool, c_bool
 setAeroEffect = utilsdll.setAeroEffect
