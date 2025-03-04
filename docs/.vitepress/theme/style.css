@@ -39,9 +39,16 @@
 [id^="panel-"] tbody {
     counter-reset: rowNumber;
 }
+
 [id^="panel-"] tbody tr {
     counter-increment: rowNumber;
 }
+
 [id^="panel-"] tbody tr td:first-child::before {
     content: counter(rowNumber);
-} 
+}
+
+
+summary {
+    margin-bottom: 0;
+}
