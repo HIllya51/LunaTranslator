@@ -1,7 +1,7 @@
 
 #include "MinHook.h"
 #include "veh_hook.h"
-#define DUMP_JIT_ADDR_MAP 0
+#define HOOK_SEARCH_UNSAFE 0
 namespace
 {
 	SearchParam sp;
@@ -125,6 +125,26 @@ bool IsBadReadPtr(void *data)
 	}
 	return cacheEntry == BAD_PAGE;
 }
+namespace
+{
+	bool maybeWideCharja(WORD w)
+	{
+		return (0x3040 <= w && w <= 0x309F) || (0x30A0 <= w && w <= 0x30FF) || (0x4E00 <= w && w <= 0x9FFF) || (0x3000 <= w && w <= 0x303F);
+	}
+	bool maybeWideStringja(char *str)
+	{
+		auto w = *(WORD *)str;
+		return maybeWideCharja(w);
+	}
+	bool maybeAnsitringja(char *str)
+	{
+		return IsDBCSLeadByteEx(932, *str) && (str[1] != 0);
+	}
+	bool maybeIsJa(char *str)
+	{
+		return maybeAnsitringja(str) || maybeWideStringja(str);
+	}
+}
 void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jittype = JITTYPE::PC, uint64_t em_addr = 0, bool csstring = false)
 {
 	str += padding;
@@ -135,15 +155,15 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 		int length = 0, sum = 0;
 		for (; *(uint16_t *)(str + length) && length < MAX_STRING_SIZE; length += sizeof(uint16_t))
 			sum += *(uint16_t *)(str + length);
-#if DUMP_JIT_ADDR_MAP
-		if (((length > STRING) || (IsDBCSLeadByteEx(932, *str))) && length < MAX_STRING_SIZE - 1)
+#if HOOK_SEARCH_UNSAFE
+		if (((length > STRING) || maybeIsJa(str)) && length < MAX_STRING_SIZE - 1)
 #else
 		if (length > STRING && length < MAX_STRING_SIZE - 1)
 #endif
 		{
 			// many duplicate results with same address, offset, and third/fourth character will be found: filter them out
 			uint64_t signature = ((uint64_t)i << 56) | ((uint64_t)(str[2] + str[3]) << 48) | address;
-#if DUMP_JIT_ADDR_MAP
+#if HOOK_SEARCH_UNSAFE
 #else
 			if (signatureCache[signature % CACHE_SIZE] == signature)
 				return;

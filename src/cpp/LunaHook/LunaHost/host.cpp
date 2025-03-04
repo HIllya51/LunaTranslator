@@ -1,5 +1,6 @@
 #include "host.h"
-#define SEARCH_SJIS_UNSAFE 0
+#define HOOK_SEARCH_LENGTH STRING
+//#define HOOK_SEARCH_LENGTH 0
 namespace
 {
 	class ProcessRecord
@@ -92,7 +93,7 @@ namespace
 				auto info = *(HookFoundNotif *)buffer;
 				auto OnHookFound = processRecordsByIds->at(processId).OnHookFound;
 				std::wstring wide = info.text;
-				if (wide.size() > STRING)
+				if (wide.size() > HOOK_SEARCH_LENGTH)
 				{
 					wcscpy_s(info.hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
 					OnHookFound(info.hp, std::move(info.text));
@@ -101,17 +102,14 @@ namespace
 				{
 					info.hp.type &= ~CODEC_UTF16;
 					if (auto converted = StringToWideString((char *)info.text, info.hp.codepage))
-#if SEARCH_SJIS_UNSAFE
-						if (converted->size())
-#else
-						if (converted->size() > STRING)
-#endif
+
+						if (converted->size() > HOOK_SEARCH_LENGTH)
 						{
 							wcscpy_s(info.hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
 							OnHookFound(info.hp, std::move(converted.value()));
 						}
 					if (auto converted = StringToWideString((char *)info.text, info.hp.codepage = CP_UTF8))
-						if (converted->size() > STRING)
+						if (converted->size() > HOOK_SEARCH_LENGTH)
 						{
 							wcscpy_s(info.hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info.hp, processId).c_str());
 							OnHookFound(info.hp, std::move(converted.value()));

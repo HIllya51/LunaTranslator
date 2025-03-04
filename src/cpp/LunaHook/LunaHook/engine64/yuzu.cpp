@@ -65,7 +65,7 @@ namespace
     {
         if ((game_info.version.size()) && game_info.name.size() && (game_info.id != 0))
         {
-            /* 判断是有效的info */
+            // 判断是有效的info
             auto checkversion = (em._version == 0) || (std::string(em._version) == (game_info.version));
             bool checkid;
 
@@ -88,10 +88,8 @@ namespace
         }
         else
         {
-            /*
-                加载游戏后在hook，没有办法获取id。
-                标题里没有id，只有version，没啥必要判断了，直接true得了。
-            */
+            // 加载游戏后在hook，没有办法获取id。
+            // 标题里没有id，只有version，没啥必要判断了，直接true得了。
             return true;
         }
     }
@@ -144,11 +142,9 @@ bool Hook_Network_RoomMember_SendGameInfo()
         hp.address = addr;
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
-            /*
-                void __fastcall Network::RoomMember::SendGameInfo(
-                Network::RoomMember *this,
-                const AnnounceMultiplayerRoom::GameInfo *game_info)
-            */
+            // void __fastcall Network::RoomMember::SendGameInfo(
+            // Network::RoomMember *this,
+            // const AnnounceMultiplayerRoom::GameInfo *game_info)
             game_info = *(GameInfo *)context->rdx;
             if (game_info.id)
             {
@@ -164,24 +160,16 @@ namespace
 {
     void trygetgameinwindowtitle()
     {
-        auto getSecondSubstring = [](const std::wstring &str) -> std::wstring
-        {
-            size_t firstPos = str.find(L'|');
-            if (firstPos == std::wstring::npos)
-                return L"";
-            size_t nextPos = str.find(L'|', firstPos + 1);
-            if (nextPos == std::wstring::npos)
-                return L"";
-            size_t start = firstPos + 1;
-            size_t end = nextPos;
-            return str.substr(start, end - start);
-        };
         auto wininfos = get_proc_windows();
         for (auto &&info : wininfos)
         {
-            auto game = getSecondSubstring(info.title);
-            if (game.size())
+            auto spls = strSplit(info.title, L"|");
+            if (spls.size() == 4 || spls.size() == 5)
             {
+                // yuzu 4->1
+                // citronv 5->2
+                auto game = spls[(spls.size() == 4) ? 1 : 2];
+                Trim(strReplace(game, L"(64-bit)"));
                 return HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
             }
         }
@@ -258,28 +246,6 @@ bool yuzu::attach_function()
 
 namespace
 {
-    int readu8(BYTE *addr)
-    {
-        int numBytes = 0;
-        auto firstByte = *addr;
-        if (firstByte <= 0x7F)
-        {
-            numBytes = 1;
-        }
-        else if ((firstByte & 0xE0) == 0xC0)
-        {
-            numBytes = 2;
-        }
-        else if ((firstByte & 0xF0) == 0xE0)
-        {
-            numBytes = 3;
-        }
-        else if ((firstByte & 0xF8) == 0xF0)
-        {
-            numBytes = 4;
-        }
-        return numBytes;
-    }
     void T010012A017F18000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = YUZU::emu_arg(context)[2];
@@ -292,7 +258,7 @@ namespace
                 break;
             if (c >= 0x20)
             {
-                auto l = readu8((BYTE *)address);
+                auto l = utf8charlen((char *)address);
                 s += std::string((char *)address, l);
                 address += l;
             }
@@ -304,7 +270,7 @@ namespace
                     bottom = "";
                     while (true)
                     {
-                        auto l = readu8((BYTE *)address);
+                        auto l = utf8charlen((char *)address);
                         auto ss = std::string((char *)address, l);
                         address += l;
                         if (ss[0] < 0xa)
@@ -317,7 +283,7 @@ namespace
                 {
                     while (true)
                     {
-                        auto l = readu8((BYTE *)address);
+                        auto l = utf8charlen((char *)address);
                         auto ss = std::string((char *)address, l);
                         address += l;
                         if (ss[0] < 0xa)
@@ -354,7 +320,7 @@ namespace
             return;
         buffer->from((char *)YUZU::emu_arg(context)[0x3]);
     }
-    void Fliuxingzhishen(TextBuffer *buffer, HookParam*)
+    void Fliuxingzhishen(TextBuffer *buffer, HookParam *)
     {
         StringReplacer(buffer, TEXTANDLEN("\x87\x85"), TEXTANDLEN("\x81\x5c"));
         StringReplacer(buffer, TEXTANDLEN("\x87\x86"), TEXTANDLEN("\x81\x5c"));
@@ -739,6 +705,20 @@ namespace
         s = re::sub(s, (L"#P\\(.*\\)"));
         buffer->from(utf16_to_utf32(s));
     }
+    void F0100B0100E26C000(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, L'\n');
+        StringReplacer(buffer, TEXTANDLEN(L"∈"), TEXTANDLEN(L"!!"));
+        StringReplacer(buffer, TEXTANDLEN(L"∋"), TEXTANDLEN(L"!?"));
+        StringReplacer(buffer, TEXTANDLEN(L"▼"), TEXTANDLEN(L"🩷"));
+    }
+    void F0100B0100E26C000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        F0100B0100E26C000(buffer, hp);
+        auto s = buffer->strW();
+        s = re::sub(s, (L"｛(.*?)＊＊｝"), L"$1くん");
+        buffer->from(s);
+    }
     void F0100982015606000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -907,7 +887,6 @@ namespace
         auto s = word + '\n' + meaning;
         buffer->from(s);
     }
-
     void T0100B0100E26C000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = YUZU::emu_arg(context)[hp->offset];
@@ -1576,7 +1555,7 @@ namespace
     }
     void TF0100AA1013B96000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto ptr = (char *)(YUZU::emu_arg(context, hp->emu_addr)[0] + 0xb);
+        auto ptr = (char *)(YUZU::emu_arg(context, hp->emu_addr)[0xb]);
         std::string collect;
         while (*ptr || *(ptr - 1))
             ptr--;
@@ -2051,6 +2030,28 @@ namespace
         s = re::sub(s, (u8R"(@[_\*\d\w]*)"));
         buffer->from(s);
     }
+    void F01004BD01639E000_n(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = utf32_to_utf16(buffer->viewU());
+        strReplace(s, L"　");
+        buffer->from(utf16_to_utf32(s));
+    }
+    void F01004BD01639E000_tx(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = utf32_to_utf16(buffer->viewU());
+        strReplace(s, L"\n　");
+        strReplace(s, L"\n");
+        s = re::sub(s, LR"(#C\(.*?\))");
+        s = re::sub(s, LR"(#R\(.*?\))");
+        buffer->from(utf16_to_utf32(s));
+    }
+    void F01004BD01639E000_t(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = utf32_to_utf16(buffer->viewU());
+        strReplace(s, L"\n　");
+        strReplace(s, L"\n");
+        buffer->from(utf16_to_utf32(s));
+    }
     void F01001E601F6B8000_text(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2210,7 +2211,7 @@ namespace
             };
             static auto _ = NewHook(hp, "01009E600FAF6000");
             static std::map<uint64_t, uintptr_t> mp;
-            /* 这个address会被触发两次。 */
+            // 这个address会被触发两次。
             if (mp.find(hpx->emu_addr) == mp.end())
                 mp[hpx->emu_addr] = hpx->address;
             if (mp[hpx->emu_addr] != hpx->address)
@@ -3219,6 +3220,8 @@ namespace
             {0x817e7da8, {CODEC_UTF16, 2, 0, T0100B0100E26C000, F0100982015606000, 0x0100B0100E26C000ull, "1.0.0"}}, // name (x1) + dialogue (x2)
             {0x81429f54, {CODEC_UTF16, 0, 1, T0100B0100E26C000, F0100982015606000, 0x0100B0100E26C000ull, "1.0.0"}}, // choice (x0)
             {0x8180633c, {CODEC_UTF16, 1, 2, T0100B0100E26C000, F0100982015606000, 0x0100B0100E26C000ull, "1.0.0"}}, // help (x1)
+            {0x8154C5E0, {CODEC_UTF16, 2, 0, T0100B0100E26C000, F0100B0100E26C000_1, 0x0100B0100E26C000ull, "1.1.0"}},
+            {0x81DB3210, {CODEC_UTF16, 9, 0, T0100B0100E26C000, F0100B0100E26C000, 0x0100B0100E26C000ull, "1.1.0"}},
             // Triangle Strategy
             {0x80aadebc, {CODEC_UTF16, 0, 0, 0, F0100CC80140F8000<0>, 0x0100CC80140F8000ull, "1.1.0"}}, // Main Text
             {0x81358ce4, {CODEC_UTF16, 3, 0, 0, F0100CC80140F8000<1>, 0x0100CC80140F8000ull, "1.1.0"}}, // Secondary Text
@@ -3807,9 +3810,9 @@ namespace
             {0x800D8AA0, {0, 0x3, 0, T001005BB019EC0000, Fliuxingzhishen, 0x01005BB019EC0000ull, "1.0.0"}}, // 单字符疯狂刷新，没办法了
             // 真 流行り神１・２パック
             {0x80072720, {CODEC_UTF8, 1, 0, 0, F010005F00E036000, 0x010005F00E036000ull, "1.0.0"}},
-            // 真流行り神3
-            {0x800A3460, {CODEC_UTF8, 4, 0, 0, F0100AA1013B96000, 0x0100AA1013B96000ull, "1.0.0"}},
-            {0x80082F70, {0, 0, 0, TF0100AA1013B96000, 0, 0x0100AA1013B96000ull, nullptr}}, //"1.0.0", "1.0.1"
+            // 真流行り神3  //1.0.0 & 1.0.1
+            {0x800A3460, {CODEC_UTF8, 4, 0, 0, F0100AA1013B96000, 0x0100AA1013B96000ull, nullptr}},
+            {0x80082F70, {0, 0, 0, TF0100AA1013B96000, 0, 0x0100AA1013B96000ull, nullptr}},
             // 制服カノジョ まよいごエンゲージ //1.0.0 & 1.0.1
             {0x805DEB14, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_text, 0x01001E601F6B8000ull, nullptr}},
             {0x8060E3F8, {CODEC_UTF8, 1, 0, 0, F01001E601F6B8000_name, 0x01001E601F6B8000ull, nullptr}},
@@ -3845,6 +3848,14 @@ namespace
             // 冬園サクリフィス
             {0x816CA374, {CODEC_UTF16, 1, 0, 0, F0100D7E01E998000, 0x0100D7E01E998000ull, "1.0.0"}},
             {0x818c90d4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, 0, 0x0100D7E01E998000ull, "1.0.0"}},
+            // 異世界娘と婚活中 ～ Isekai Bride Hunting ～
+            {0x801077A0, {CODEC_UTF8, 0xf, 0, 0, 0, 0x0100493017C4C000ull, "1.0.0"}},
+            // 時計仕掛けのレイライン -陽炎に彷徨う魔女-
+            {0x80042DD8, {0, 0, 0, 0, 0, 0x0100983013C9A000ull, "1.0.0"}},
+            // ビルシャナ戦姫 ～一樹の風～
+            {0x8004D480, {CODEC_UTF32, 1, 0, 0, F01004BD01639E000_n, 0x01004BD01639E000ull, "1.0.0"}},
+            {0x80181268, {CODEC_UTF32, 0xa, 0, 0, F01004BD01639E000_t, 0x01004BD01639E000ull, "1.0.0"}},
+            {0x8003CB94, {CODEC_UTF32, 2, 0, 0, F01004BD01639E000_tx, 0x01004BD01639E000ull, "1.0.1"}},
         };
         return 1;
     }();

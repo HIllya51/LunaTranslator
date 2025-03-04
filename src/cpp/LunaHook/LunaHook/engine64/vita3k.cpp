@@ -48,7 +48,7 @@ namespace
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
             static std::wstring last;
-            /* vita3k Vulkan模式GetWindowText会卡住 */
+            // vita3k Vulkan模式GetWindowText会卡住
             auto getSecondSubstring = [](const std::wstring &str) -> std::wstring
             {
                 size_t firstPos = str.find(L'|');

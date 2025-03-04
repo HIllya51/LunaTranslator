@@ -101,6 +101,8 @@ inline void StringReplacer_impl(CharT *str, size_t *size, const CharT *src, size
        cur && len;
        cur = str_nstr(cur, src, curlen))
   {
+    if (srclen < dstlen)
+      ::memmove(cur + dstlen, cur + srclen, sizeof(CharT) * (len + srclen - dstlen));
     ::memcpy(cur, dst, sizeof(CharT) * dstlen);
     cur += dstlen;
     len -= srclen - dstlen;

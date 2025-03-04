@@ -7,7 +7,7 @@ def psp():
     with open(
         "../LunaHook/engines/ppsspp/specialgames.hpp", "r", encoding="utf8"
     ) as ff:
-        content = ff.read()
+        content = ff.read().split(' = {')[-1]
     ret = []
     for match in re.finditer(r"^		// (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]
@@ -25,7 +25,7 @@ def psp():
 
 def ns():
     with open("../LunaHook/engine64/yuzu.cpp", "r", encoding="utf8") as ff:
-        content = ff.read()
+        content = ff.read().split(' = {')[-1]
     ret = []
     for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]
@@ -49,7 +49,7 @@ def psv():
     with open(
         "../LunaHook/engine64/vita3k.cpp", "r", encoding="utf8"
     ) as ff:
-        content = ff.read()
+        content = ff.read().split(' = {')[-1]
     ret = []
     for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]

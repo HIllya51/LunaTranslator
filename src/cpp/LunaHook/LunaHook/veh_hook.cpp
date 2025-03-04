@@ -88,7 +88,10 @@ bool remove_veh_hook(void *origFunc)
     if (!node)
         return true;
     if (node->usecount > 0)
+    {
+        node->usecount -= 1;
         return false;
+    }
     repair_origin(node);
     RemoveVectoredExceptionHandler(node->handle);
     list.erase(origFunc);
@@ -126,8 +129,12 @@ LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo)
     else if (Code == STATUS_SINGLE_STEP) //&& hooktype == VEH_HK_INT3)
     {
         if (!lastnode)
-            return EXCEPTION_CONTINUE_SEARCH;
-
+            return EXCEPTION_CONTINUE_EXECUTION;
+        if (lastnode->usecount <= 0)
+        {
+            lastnode = nullptr;
+            return EXCEPTION_CONTINUE_EXECUTION;
+        }
         VirtualProtect(Addr, sizeof(int), PAGE_EXECUTE_READWRITE, &lastnode->OldProtect);
         *(BYTE *)lastnode->origFunc = OPCODE_INT3;
         VirtualProtect(Addr, sizeof(int), lastnode->OldProtect, &oldProtect);

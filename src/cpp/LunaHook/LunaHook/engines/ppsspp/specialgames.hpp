@@ -1041,7 +1041,7 @@ namespace ppsspp
 	{
 		StringFilter(buffer, TEXTANDLEN("%K"));
 		StringFilter(buffer, TEXTANDLEN("%P"));
-		/* StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧 */
+		// StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧
 		StringFilter(buffer, TEXTANDLEN("\x81\x99")); // ☆
 
 		StringReplacer(buffer, TEXTANDLEN("\x84\xa5"), TEXTANDLEN("\x81\x5b"));
