@@ -348,7 +348,19 @@ namespace
         }
         buffer->from(s);
     }
-
+    void T001005BB019EC0000(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        if ((WORD)YUZU::emu_arg(context)[0x6] == 0)
+            return;
+        buffer->from((char *)YUZU::emu_arg(context)[0x3]);
+    }
+    void Fliuxingzhishen(TextBuffer *buffer, HookParam*)
+    {
+        StringReplacer(buffer, TEXTANDLEN("\x87\x85"), TEXTANDLEN("\x81\x5c"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x86"), TEXTANDLEN("\x81\x5c"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x87"), TEXTANDLEN("\x81\x5c"));
+        StringFilter(buffer, TEXTANDLEN("\x87\x6e"));
+    }
     void T01000A7019EBC000(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         hp1->text_fun = nullptr;
@@ -358,16 +370,14 @@ namespace
         hp.type = DIRECT_READ;
         hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
         {
-            StringReplacer(buffer, TEXTANDLEN("\x87\x85"), TEXTANDLEN("\x81\x5c"));
-            StringReplacer(buffer, TEXTANDLEN("\x87\x86"), TEXTANDLEN("\x81\x5c"));
-            StringReplacer(buffer, TEXTANDLEN("\x87\x87"), TEXTANDLEN("\x81\x5c"));
+            Fliuxingzhishen(buffer, 0);
             CharFilter(buffer, '\n');
 
             auto s = buffer->strA();
             static std::string last;
             if (startWith(s, last))
             {
-                buffer->from(s.substr(last.size(), s.size() - last.size()));
+                buffer->from(s.substr(last.size()));
             }
             last = s;
         };
@@ -1587,6 +1597,7 @@ namespace
         strReplace(collect, "\x87\x85", "\x81\x5c");
         strReplace(collect, "\x87\x86", "\x81\x5c");
         strReplace(collect, "\x87\x87", "\x81\x5c");
+        strReplace(collect, "\x87\x6e");
         strReplace(collect, "\n");
         strReplace(collect, "\x81\x40");
         buffer->from(collect);
@@ -2027,7 +2038,7 @@ namespace
             return buffer->clear();
         if (startWith(s, last))
         {
-            buffer->from(s.substr(last.size(), s.size() - last.size()));
+            buffer->from(s.substr(last.size()));
         }
         last = s;
     }
@@ -2090,6 +2101,13 @@ namespace
             buffer->from(re::sub(s.substr(6, s.size() - 6 - 1), ("/ruby:(.*?)&(.*?)/"), "$1"));
         }
     }
+    void F0100B4D019EBE000(TextBuffer *buffer, HookParam *hp)
+    {
+        static int i = 0;
+        if (i++ % 2)
+            return buffer->clear();
+        Fliuxingzhishen(buffer, 0);
+    }
     void F0100F7700CB82000(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -2101,7 +2119,6 @@ namespace
         if (lastx.touch(last))
             return buffer->clear();
     }
-
     void F010005F00E036000_1(TextBuffer *buffer, HookParam *hp)
     {
         static lru_cache<std::string> cache(5);
@@ -2138,7 +2155,7 @@ namespace
         };
         if (startWith(s, last))
         {
-            buffer->from(parse(s.substr(last.size(), s.size() - last.size())));
+            buffer->from(parse(s.substr(last.size())));
             last = s;
             return;
         }
@@ -3784,6 +3801,10 @@ namespace
             {0x8180c1e8, {CODEC_UTF16, 0, 0x14, 0, F01008A401FEB6000_2, 0x01008A401FEB6000ull, "1.0.0"}},
             // 流行り神 １
             {0x80056424, {0, 0, 0, T01000A7019EBC000, 0, 0x01000A7019EBC000ull, "1.0.0"}},
+            // 流行り神２
+            {0x8004BD58, {0, 3, 0, 0, F0100B4D019EBE000, 0x0100B4D019EBE000ull, "1.0.0"}}, // 单字符刷新一次，不可以快进，被快进的字符无法捕获
+            // 流行り神 ３
+            {0x800D8AA0, {0, 0x3, 0, T001005BB019EC0000, Fliuxingzhishen, 0x01005BB019EC0000ull, "1.0.0"}}, // 单字符疯狂刷新，没办法了
             // 真 流行り神１・２パック
             {0x80072720, {CODEC_UTF8, 1, 0, 0, F010005F00E036000, 0x010005F00E036000ull, "1.0.0"}},
             // 真流行り神3

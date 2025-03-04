@@ -327,7 +327,6 @@ class MAINUI:
         origin = text
         currentsignature = uuid.uuid4()
         if not waitforresultcallback:
-            self.currentsignature = currentsignature
             # 内嵌&文件翻译不要进行文本预处理
             try:
                 text = POSTSOLVE(text)
@@ -340,6 +339,9 @@ class MAINUI:
                 )
                 return
 
+        if is_auto_run and text == self.currenttext:
+            return
+        self.currentsignature = currentsignature
         if is_auto_run and (
             len(text) < globalconfig["minlength"]
             or len(text) > globalconfig["maxlength"]
@@ -581,8 +583,10 @@ class MAINUI:
             if needshowraw:
                 self.refresh_on_get_trans_signature = _showrawfunction
                 _showrawfunction()
-            if (currentsignature == self.currentsignature) and (
-                iter_res_status in (0, 1)
+            if (
+                (currentsignature == self.currentsignature)
+                and (iter_res_status in (0, 1))
+                and (not waitforresultcallback)
             ):
                 displayreskwargs = dict(
                     name=apiname,
@@ -886,7 +890,9 @@ class MAINUI:
             return aclass(classname)
         except Exception as e:
             self.displayinfomessage(
-                _TR(dynamicapiname(classname)) + " import failed : " + str(stringfyerror(e)),
+                _TR(dynamicapiname(classname))
+                + " import failed : "
+                + str(stringfyerror(e)),
                 "<msg_error_Translator>",
             )
             raise e
