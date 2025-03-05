@@ -1984,6 +1984,7 @@ namespace
     {
         StringFilterBetween(buffer, TEXTANDLEN(L"<"), TEXTANDLEN(L">"));
         StringFilter(buffer, TEXTANDLEN(L"　\n"));
+        StringFilter(buffer, TEXTANDLEN(L"\n　"));
         CharFilter(buffer, L'\n');
     }
     void F01007A901E728000(TextBuffer *buffer, HookParam *hp)
