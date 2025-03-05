@@ -1,5 +1,6 @@
 ﻿#include "yuzu.h"
 #include "mages/mages.h"
+#include "JIT_Keeper.hpp"
 namespace
 {
     auto isFastMem = true;
@@ -174,14 +175,81 @@ namespace
             }
         }
     }
+    void NS_CheckEmAddrHOOKable(uint64_t em_address, uintptr_t entrypoint)
+    {
+        if (emfunctionhooks.find(em_address) == emfunctionhooks.end())
+            return;
+        auto op = emfunctionhooks.at(em_address);
+        if (!(checkiscurrentgame(op)))
+            return;
+
+        HookParam hpinternal;
+        hpinternal.address = entrypoint;
+        hpinternal.emu_addr = em_address; // 用于生成hcode
+        hpinternal.type = NO_CONTEXT | BREAK_POINT | op.type;
+        if (!(op.type & USING_CHAR))
+            hpinternal.type |= USING_STRING;
+        hpinternal.codepage = 932;
+        hpinternal.text_fun = op.hookfunc;
+        hpinternal.filter_fun = op.filterfun;
+        hpinternal.offset = op.offset;
+        hpinternal.padding = op.padding;
+        hpinternal.jittype = JITTYPE::YUZU;
+
+        std::string ids;
+        auto visitf = [&](auto &&_ids)
+        {
+            using T = std::decay_t<decltype(_ids)>;
+            if constexpr (std::is_same_v<T, uint64_t>)
+            {
+                ids = ull2hex(_ids);
+            }
+            else if constexpr (std::is_same_v<T, std::vector<uint64_t>>)
+            {
+                if (std::any_of(_ids.begin(), _ids.end(), [=](uint64_t _id)
+                                { return _id == game_info.id; }))
+                {
+                    ids = ull2hex(game_info.id);
+                }
+                else
+                {
+                    ids = ull2hex(_ids[0]);
+                }
+            }
+        };
+        std::visit(visitf, op._id);
+
+        NewHook(hpinternal, ids.c_str());
+    }
 }
+struct NSGameInfoC
+{
+    GameInfo info;
+    bool load()
+    {
+        game_info = std::move(info);
+        if (game_info.id)
+        {
+            HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
+        }
+        else
+        {
+            trygetgameinwindowtitle();
+        }
+        return true;
+    }
+    void save()
+    {
+        info = std::move(game_info);
+    }
+};
 bool yuzu::attach_function()
 {
     ConsoleOutput("[Compatibility] Yuzu 1616+");
     auto DoJitPtr = getDoJitAddress();
     if (!DoJitPtr)
         return false;
-    trygetgameinwindowtitle();
+    JIT_Keeper<NSGameInfoC>::CreateStatic(NS_CheckEmAddrHOOKable);
     Hook_Network_RoomMember_SendGameInfo();
     HookParam hp;
     hp.address = DoJitPtr;
@@ -193,52 +261,7 @@ bool yuzu::attach_function()
         if (!entrypoint)
             return;
         jitaddraddr(em_address, entrypoint, JITTYPE::YUZU);
-        [&]()
-        {
-            if (emfunctionhooks.find(em_address) == emfunctionhooks.end())
-                return;
-            auto op = emfunctionhooks.at(em_address);
-            if (!(checkiscurrentgame(op)))
-                return;
-
-            HookParam hpinternal;
-            hpinternal.address = entrypoint;
-            hpinternal.emu_addr = em_address; // 用于生成hcode
-            hpinternal.type = NO_CONTEXT | BREAK_POINT | op.type;
-            if (!(op.type & USING_CHAR))
-                hpinternal.type |= USING_STRING;
-            hpinternal.codepage = 932;
-            hpinternal.text_fun = op.hookfunc;
-            hpinternal.filter_fun = op.filterfun;
-            hpinternal.offset = op.offset;
-            hpinternal.padding = op.padding;
-            hpinternal.jittype = JITTYPE::YUZU;
-
-            std::string ids;
-            auto visitf = [&](auto &&_ids)
-            {
-                using T = std::decay_t<decltype(_ids)>;
-                if constexpr (std::is_same_v<T, uint64_t>)
-                {
-                    ids = ull2hex(_ids);
-                }
-                else if constexpr (std::is_same_v<T, std::vector<uint64_t>>)
-                {
-                    if (std::any_of(_ids.begin(), _ids.end(), [=](uint64_t _id)
-                                    { return _id == game_info.id; }))
-                    {
-                        ids = ull2hex(game_info.id);
-                    }
-                    else
-                    {
-                        ids = ull2hex(_ids[0]);
-                    }
-                }
-            };
-            std::visit(visitf, op._id);
-
-            NewHook(hpinternal, ids.c_str());
-        }();
+        NS_CheckEmAddrHOOKable(em_address, entrypoint);
         delayinsertNewHook(em_address);
     };
     return NewHook(hp, "YuzuDoJit");

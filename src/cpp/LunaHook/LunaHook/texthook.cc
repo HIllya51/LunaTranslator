@@ -566,6 +566,14 @@ void TextHook::Clear()
 	else
 		RemoveHookCode();
 	NotifyHookRemove(address, hp.name);
+	if (hp.emu_addr && !isDetachClear)
+	{
+		// detach时不要清除
+		std::lock_guard __(JIT_HP_Records_lock);
+		JIT_HP_Records.erase(std::remove_if(JIT_HP_Records.begin(), JIT_HP_Records.end(), [&](HookParam &hpx)
+											{ return hpx.address == hp.address; }),
+							 JIT_HP_Records.end());
+	}
 	std::scoped_lock lock(viewMutex);
 	memset(&hp, 0, sizeof(HookParam));
 	address = 0;

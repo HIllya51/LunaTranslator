@@ -27,6 +27,8 @@ extern std::unordered_map<uint64_t, std::pair<JITTYPE, std::set<uintptr_t>>> emu
 extern std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
 #endif
 extern std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
+extern std::vector<HookParam> JIT_HP_Records;
+extern std::mutex JIT_HP_Records_lock;
 void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE);
 void jitaddrclear();
 

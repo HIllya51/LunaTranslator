@@ -1,5 +1,6 @@
 #include "ppsspp.h"
 #include "specialgames.hpp"
+#include "JIT_Keeper.hpp"
 // See: https://github.com/hrydgard/ppsspp
 
 // Core/HLE (High Level Emulator)
@@ -480,7 +481,11 @@ namespace ppsspp
         {
             if (IsValidAddress(blocks_[i].originalAddress) && blocks_[i].normalEntry)
             {
-                dohookemaddr(blocks_[i].originalAddress, (uintptr_t)blocks_[i].normalEntry);
+                auto breakpoint = (uintptr_t)blocks_[i].normalEntry;
+                if (breakpoints.find(breakpoint) != breakpoints.end())
+                    continue;
+                breakpoints.insert(breakpoint);
+                dohookemaddr(blocks_[i].originalAddress, breakpoint);
                 delayinsertNewHook(blocks_[i].originalAddress);
             }
         }
@@ -543,26 +548,49 @@ namespace ppsspp
         };
         NewHook(hp, "PPSSPPGameInfo");
     }
-    void trygetgameinwindowtitle()
+    struct GameInfoC
     {
-        auto wininfos = get_proc_windows();
-        for (auto &&info : wininfos)
+        GameInfo info;
+        std::unordered_set<uintptr_t> breakpoints_once;
+        bool load()
         {
-            if (info.title.find(L'-') == info.title.npos)
-                continue;
-            auto title = WideStringToString(info.title.substr(info.title.find(L'-') + 2));
-            game_info.DISC_ID = title.substr(0, title.find(':') - 1);
-            game_info.TITLE = title.substr(title.find(':') + 2);
-            HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
-            return;
+            breakpoints = std::move(breakpoints_once);
+            GameInfo info_1 = getintitle();
+            bool ret = (info.DISC_ID.size() && (info_1.DISC_ID != info.DISC_ID));
+            game_info = std::move(info_1);
+            if (game_info.DISC_ID.size())
+            {
+                HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+            }
+            return ret;
         }
-    }
+        GameInfo getintitle()
+        {
+            GameInfo info_1;
+            auto wininfos = get_proc_windows();
+            for (auto &&info : wininfos)
+            {
+                if (info.title.find(L'-') == info.title.npos)
+                    continue;
+                auto title = WideStringToString(info.title.substr(info.title.find(L'-') + 2));
+                info_1.DISC_ID = title.substr(0, title.find(':') - 1);
+                info_1.TITLE = title.substr(title.find(':') + 2);
+            }
+            return info_1;
+        }
+        void save()
+        {
+            breakpoints_once = std::move(breakpoints);
+            info = std::move(game_info);
+        }
+    };
+
     bool hookPPSSPPDoJit()
     {
         auto DoJitPtr = getDoJitAddress();
         if (!DoJitPtr)
             return false;
-        trygetgameinwindowtitle();
+        JIT_Keeper<GameInfoC>::CreateStatic(dohookemaddr);
         Load_PSP_ISO_StringFromFormat();
         HookParam hp;
         hp.address = DoJitPtr; // Jit::DoJit

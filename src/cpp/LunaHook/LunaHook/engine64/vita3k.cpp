@@ -1,10 +1,16 @@
 ﻿#include "vita3k.h"
+#include "JIT_Keeper.hpp"
 namespace
 {
     auto isVirtual = true;
     auto idxDescriptor = isVirtual == true ? 2 : 1;
     auto idxEntrypoint = idxDescriptor + 1;
-    std::string Vita3KGameID;
+    struct GameInfo
+    {
+        std::string game;
+        std::string Vita3KGameID;
+        std::wstring lastcheck;
+    } game_info;
     uintptr_t getDoJitAddress()
     {
         // Vita3K\external\dynarmic\src\dynarmic\backend\x64\emit_x64.h
@@ -47,7 +53,6 @@ namespace
         hp.address = 0x3000;
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
-            static std::wstring last;
             // vita3k Vulkan模式GetWindowText会卡住
             auto getSecondSubstring = [](const std::wstring &str) -> std::wstring
             {
@@ -71,11 +76,12 @@ namespace
                 if (!match)
                     return;
                 auto curr = match.value()[1].str();
-                if (last == curr)
+                if (game_info.lastcheck == curr)
                     return;
-                Vita3KGameID = wcasta(curr);
-                last = curr;
-                return HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
+                game_info.Vita3KGameID = wcasta(curr);
+                game_info.lastcheck = curr;
+                game_info.game = WideStringToString(game);
+                return HostInfo(HOSTINFO::EmuGameName, game_info.game.c_str());
             }
         };
         hp.type = DIRECT_READ;
@@ -83,19 +89,19 @@ namespace
     }
     auto MatchGameId = [](const auto &idsv) -> const char *
     {
-        if (!Vita3KGameID.size())
-            return nullptr;
         if (const auto *id = std::get_if<const char *>(&idsv))
         {
-            if (Vita3KGameID == *id)
+            if (game_info.Vita3KGameID == *id)
                 return *id;
             return nullptr;
         }
         else if (const auto *ids = std::get_if<std::vector<const char *>>(&idsv))
         {
+            if (!game_info.Vita3KGameID.size())
+                return nullptr;
             for (auto &&id : *ids)
             {
-                if (Vita3KGameID == id)
+                if (game_info.Vita3KGameID == id)
                 {
                     return id;
                 }
@@ -104,13 +110,54 @@ namespace
         }
         return nullptr;
     };
+    void CheckEmAddrHOOKable(uint64_t em_address, uintptr_t entrypoint)
+    {
+        if (emfunctionhooks.find(em_address) == emfunctionhooks.end())
+            return;
+        auto op = emfunctionhooks.at(em_address);
+        auto getmatched = MatchGameId(op._id);
+        if (!getmatched)
+            return;
+        HookParam hpinternal;
+        hpinternal.address = entrypoint;
+        hpinternal.emu_addr = em_address; // 用于生成hcode
+        hpinternal.type = NO_CONTEXT | BREAK_POINT | op.type;
+        if (!(op.type & USING_CHAR))
+            hpinternal.type |= USING_STRING;
+        hpinternal.codepage = 932;
+        hpinternal.text_fun = op.hookfunc;
+        hpinternal.filter_fun = op.filterfun;
+        hpinternal.offset = op.offset;
+        hpinternal.padding = op.padding;
+        hpinternal.jittype = JITTYPE::VITA3K;
+        NewHook(hpinternal, getmatched);
+    }
+    struct IDremember
+    {
+        GameInfo info;
+        bool load()
+        {
+            if (info.Vita3KGameID.size())
+            {
+                game_info = std::move(info);
+                HostInfo(HOSTINFO::EmuGameName, game_info.game.c_str());
+            }
+            return true;
+        }
+        void save()
+        {
+            info = std::move(game_info);
+        }
+    };
 }
+
 bool vita3k::attach_function()
 {
     ConsoleOutput("[Compatibility] Vita3k 0.1.9 3339+");
     auto DoJitPtr = getDoJitAddress();
     if (DoJitPtr == 0)
         return false;
+    JIT_Keeper<IDremember>::CreateStatic(CheckEmAddrHOOKable);
     trygetgameinwindowtitle();
     HookParam hp;
     hp.address = DoJitPtr;
@@ -124,29 +171,9 @@ bool vita3k::attach_function()
         if (!entrypoint)
             return;
         // ConsoleOutput("%p",em_address);
+        CheckEmAddrHOOKable(em_address, entrypoint);
         jitaddraddr(em_address, entrypoint, JITTYPE::VITA3K);
-        [&]()
-        {
-            if (emfunctionhooks.find(em_address) == emfunctionhooks.end())
-                return;
-            auto op = emfunctionhooks.at(em_address);
-            auto getmatched = MatchGameId(op._id);
-            if (!getmatched)
-                return;
-            HookParam hpinternal;
-            hpinternal.address = entrypoint;
-            hpinternal.emu_addr = em_address; // 用于生成hcode
-            hpinternal.type = NO_CONTEXT | BREAK_POINT | op.type;
-            if (!(op.type & USING_CHAR))
-                hpinternal.type |= USING_STRING;
-            hpinternal.codepage = 932;
-            hpinternal.text_fun = op.hookfunc;
-            hpinternal.filter_fun = op.filterfun;
-            hpinternal.offset = op.offset;
-            hpinternal.padding = op.padding;
-            hpinternal.jittype = JITTYPE::VITA3K;
-            NewHook(hpinternal, getmatched);
-        }();
+
         delayinsertNewHook(em_address);
     };
     return NewHook(hp, "vita3kjit");

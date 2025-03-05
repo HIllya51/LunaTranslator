@@ -39,8 +39,7 @@ bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
     {
         return false;
     }
-    void *handle = AddVectoredExceptionHandler(1, (PVECTORED_EXCEPTION_HANDLER)veh_dispatch);
-    veh_node newnode{origFunc, newFunc, handle, hook_type};
+    veh_node newnode{origFunc, newFunc, nullptr, hook_type};
 
     // For memory hooks especially, we need to know the address of the start of the relevant page.
     MEMORY_BASIC_INFORMATION mem_info;
@@ -53,6 +52,7 @@ bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
     newnode.origBaseByte = *(BYTE *)origFunc;
     *(BYTE *)origFunc = OPCODE_INT3;
     VirtualProtect(origFunc, sizeof(int), newnode.OldProtect, &oldProtect);
+    newnode.handle = AddVectoredExceptionHandler(1, (PVECTORED_EXCEPTION_HANDLER)veh_dispatch);
     list.emplace(std::make_pair(origFunc, newnode));
     return true;
 }
@@ -81,6 +81,13 @@ void repair_origin(veh_node *node)
     *(BYTE *)node->origFunc = node->origBaseByte;
     VirtualProtect(node->origFunc, sizeof(int), node->OldProtect, &_p);
 }
+static void RemoveNode(veh_node *node)
+{
+    repair_origin(node);
+    if (node->handle)
+        RemoveVectoredExceptionHandler(node->handle);
+    list.erase(node->origFunc);
+}
 bool remove_veh_hook(void *origFunc)
 {
     std::lock_guard _(vehlistlock);
@@ -92,9 +99,7 @@ bool remove_veh_hook(void *origFunc)
         node->usecount -= 1;
         return false;
     }
-    repair_origin(node);
-    RemoveVectoredExceptionHandler(node->handle);
-    list.erase(origFunc);
+    RemoveNode(node);
     return true;
 }
 thread_local veh_node *lastnode;
@@ -132,6 +137,7 @@ LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo)
             return EXCEPTION_CONTINUE_EXECUTION;
         if (lastnode->usecount <= 0)
         {
+            RemoveNode(lastnode);
             lastnode = nullptr;
             return EXCEPTION_CONTINUE_EXECUTION;
         }
