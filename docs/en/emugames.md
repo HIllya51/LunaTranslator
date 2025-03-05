@@ -160,6 +160,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | 0100E390145C8000 | 殺し屋とストロベリー |
 |  | 0100D9A01BD86000 | ときめきメモリアル Girl's Side |
 |  | 010079201BD88000 | ときめきメモリアル Girl’s Side 2nd Kiss |
+|  | 010091C01BD8A000 | ときめきメモリアル Girl's Side 3rd Story for Nintendo Switch |
 |  | 0100B0100E26C000 | ときめきメモリアル Girl's Side 4th Heart |
 |  | 0100CC80140F8000 | Triangle Strategy |
 |  | 010074F013262000 | Xenoblade Chronicles 3 |

@@ -1,6 +1,6 @@
 from textsource.textsourcebase import basetext
 from myutils.wrapper import threader
-import json, time, os, gobject, winsharedutils
+import json, time, os, gobject, winsharedutils, re
 from myutils.config import globalconfig
 
 
@@ -220,7 +220,7 @@ class filetrans(basetext):
             _ref = __p()
             if not line:
                 continue
-            ts = self.query(line)
+            ts: str = self.query(line)
             if not ts:
                 engine = (
                     globalconfig["translator_2"]
@@ -235,3 +235,9 @@ class filetrans(basetext):
                 continue
             if len(ts.split("\n")) == len(line.split("\n")):
                 file.save(index, line, ts)
+            elif len(ts.split("\n")) > len(line.split("\n")):
+                # 删除空行
+                lines = [line for line in ts.split("\n") if line]
+                tsx = "\n".join(lines)
+                if len(tsx.split("\n")) == len(line.split("\n")):
+                    file.save(index, line, tsx)

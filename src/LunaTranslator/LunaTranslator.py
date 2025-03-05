@@ -538,14 +538,14 @@ class MAINUI:
 
     def GetTranslationCallback(
         self,
-        usefultranslators,
+        usefultranslators: list,
         waitforresultcallback,
         classname,
         currentsignature,
         optimization_params,
         _showrawfunction,
         contentraw,
-        res,
+        res: str,
         iter_res_status,
         iserror=False,
     ):
