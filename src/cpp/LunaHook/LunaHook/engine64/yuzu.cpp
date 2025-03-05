@@ -1320,12 +1320,18 @@ namespace
         s = re::sub(s, (R"(\\\w+)"));
         buffer->from(s);
     }
+    void F01003B300E4AA000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, L"@(.*?)@", L"【$1】");
+        buffer->from(s);
+    }
     void F0100943010310000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
         strReplace(s, u8"❞", "\"");
         strReplace(s, u8"❝", "\"");
-        s = re::sub(s, ("@(.*?)@"), "$1\n");
+        s = re::sub(s, ("@(.*?)@"), u8"【$1】");
         buffer->from(s);
     }
     template <bool choice>
@@ -3865,6 +3871,12 @@ namespace
             {0x8004D480, {CODEC_UTF32, 1, 0, 0, F01004BD01639E000_n, 0x01004BD01639E000ull, "1.0.0"}},
             {0x80181268, {CODEC_UTF32, 0xa, 0, 0, F01004BD01639E000_t, 0x01004BD01639E000ull, "1.0.0"}},
             {0x8003CB94, {CODEC_UTF32, 2, 0, 0, F01004BD01639E000_tx, 0x01004BD01639E000ull, "1.0.1"}},
+            // THE GRISAIA TRILOGY //en和ja同步，但是en会在查看历史的时候把历史也输出出来
+            {0x800A2408, {CODEC_UTF8, 0x9, 0, 0, F0100943010310000, 0x01003B300E4AA000ull, "1.0.0"}}, // en
+            {0x800D4B80, {CODEC_UTF16, 8, 0, 0, F01003B300E4AA000, 0x01003B300E4AA000ull, "1.0.0"}},  // ja
+            {0x800A25E0, {CODEC_UTF8, 8, 0, 0, F0100943010310000, 0x01003B300E4AA000ull, "1.0.2"}},   // en
+            {0x800A3EB0, {CODEC_UTF16, 8, 0, 0, F01003B300E4AA000, 0x01003B300E4AA000ull, "1.0.2"}},  // ja
+
         };
         return 1;
     }();

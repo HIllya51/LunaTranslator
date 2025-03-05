@@ -314,6 +314,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | 0100493017C4C000 | 異世界娘と婚活中 ～ Isekai Bride Hunting ～ |
 |  | 0100983013C9A000 | 時計仕掛けのレイライン -陽炎に彷徨う魔女- |
 |  | 01004BD01639E000 | ビルシャナ戦姫 ～一樹の風～ |
+|  | 01003B300E4AA000 | THE GRISAIA TRILOGY |
 
 == PSP
 
