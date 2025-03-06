@@ -12,13 +12,13 @@ struct veh_node
 {
     void *origFunc;
     newFuncType newFunc;
-    void *handle;
+    void *handle = nullptr;
     DWORD hooktype;
     void *baseAddr; // Address of the page in which origFunc resides.
     BYTE origBaseByte;
     DWORD OldProtect;
     int usecount;
-    veh_node(void *origFunc, newFuncType newFunc, void *handle, DWORD hooktype) : hooktype(hooktype), handle(handle), newFunc(newFunc), origFunc(origFunc), OldProtect(PAGE_EXECUTE_READWRITE), usecount(0)
+    veh_node(void *origFunc, newFuncType newFunc, DWORD hooktype) : hooktype(hooktype), newFunc(newFunc), origFunc(origFunc), OldProtect(PAGE_EXECUTE_READWRITE), usecount(0)
     {
     }
 };
@@ -39,7 +39,7 @@ bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
     {
         return false;
     }
-    veh_node newnode{origFunc, newFunc, nullptr, hook_type};
+    veh_node newnode{origFunc, newFunc, hook_type};
 
     // For memory hooks especially, we need to know the address of the start of the relevant page.
     MEMORY_BASIC_INFORMATION mem_info;
