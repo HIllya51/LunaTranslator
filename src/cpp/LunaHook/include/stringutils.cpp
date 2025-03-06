@@ -74,6 +74,7 @@ bool all_ascii(const wchar_t *s, int maxsize) { return all_ascii_impl<wchar_t>(s
 
 std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr) { return strReplace_impl<std::string>(str, oldStr, newStr); }
 std::wstring &strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr) { return strReplace_impl<std::wstring>(str, oldStr, newStr); }
+std::u32string &strReplace(std::u32string &str, const std::u32string &oldStr, const std::u32string &newStr) { return strReplace_impl<std::u32string>(str, oldStr, newStr); }
 std::vector<std::string> strSplit(const std::string &s, const std::string &delim) { return strSplit_impl<std::string>(s, delim); }
 std::vector<std::wstring> strSplit(const std::wstring &s, const std::wstring &delim) { return strSplit_impl<std::wstring>(s, delim); }
 bool startWith(const std::string_view &s, const std::string_view &s2) { return startWith_impl<std::string_view>(s, s2); }
@@ -202,9 +203,9 @@ inline unsigned int convertUTF32ToUTF16(unsigned int cUTF32, unsigned int &h, un
   return ret;
 }
 
-u32string utf16_to_utf32(std::wstring_view wsv)
+std::u32string utf16_to_utf32(std::wstring_view wsv)
 {
-  u32string utf32String;
+  std::u32string utf32String;
   for (size_t i = 0; i < wsv.size(); i++)
   {
     auto u16c = wsv[i];
@@ -224,7 +225,7 @@ u32string utf16_to_utf32(std::wstring_view wsv)
   return utf32String;
 }
 
-std::wstring utf32_to_utf16(u32string_view sv)
+std::wstring utf32_to_utf16(std::u32string_view sv)
 {
   std::wstring u16str;
   for (auto i = 0; i < sv.size(); i++)
@@ -238,7 +239,7 @@ std::wstring utf32_to_utf16(u32string_view sv)
   return u16str;
 }
 
-uint32_t *u32strcpy(uint32_t *s, const uint32_t *r)
+char32_t *u32strcpy(char32_t *s, const char32_t *r)
 {
   while (*r)
   {
@@ -315,7 +316,7 @@ std::optional<std::wstring> commonparsestring(void *data, size_t length, void *p
   if (hp->type & CODEC_UTF16)
     return std::wstring((wchar_t *)data, length / sizeof(wchar_t));
   else if (hp->type & CODEC_UTF32)
-    return utf32_to_utf16(u32string_view((uint32_t *)data, length / sizeof(uint32_t)));
+    return utf32_to_utf16(std::u32string_view((char32_t *)data, length / sizeof(char32_t)));
   else if (auto converted = StringToWideString(std::string((char *)data, length), (hp->type & CODEC_UTF8) ? CP_UTF8 : (hp->codepage ? hp->codepage : df)))
     return converted.value();
   else

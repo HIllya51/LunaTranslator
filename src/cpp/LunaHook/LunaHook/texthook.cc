@@ -334,7 +334,7 @@ void TextHook::Send(hook_context *context)
 				lpDataIn = *(uint32_t *)buff.buff;
 			if (hp.type & CODEC_UTF32 || hp.type & CODEC_UTF8)
 			{
-				*(uint32_t *)buff.buff = lpDataIn & 0xffffffff;
+				*(char32_t *)buff.buff = lpDataIn & 0xffffffff;
 			}
 			else
 			{ // CHAR_LITTEL_ENDIAN,CODEC_ANSI_BE,CODEC_UTF16

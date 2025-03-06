@@ -73,14 +73,14 @@ inline const wchar_t *cpp_wcsnchr(const wchar_t *s, wchar_t c, size_t n) { retur
   }
 
 template <typename charT>
-inline charT *cpp_basic_strnstr(charT *s, const charT *r, size_t n) cpp_basic_strnstr_(s, n, r, ::strlen(r), ::strncmp) template <typename charT>
-inline const charT *cpp_basic_strnstr(const charT *s, const charT *r, size_t n) cpp_basic_strnstr_(s, n, r, ::strlen(r), ::strncmp)
-
-    template <>
-    inline wchar_t *cpp_basic_strnstr<wchar_t>(wchar_t *s, const wchar_t *r, size_t n) cpp_basic_strnstr_(s, n, r, ::wcslen(r), ::wcsncmp) template <>
-    inline const wchar_t *cpp_basic_strnstr<wchar_t>(const wchar_t *s, const wchar_t *r, size_t n) cpp_basic_strnstr_(s, n, r, ::wcslen(r), ::wcsncmp)
-
-        inline char *cpp_strnstr(char *s, const char *r, size_t n)
+inline charT *cpp_basic_strnstr(charT *s, const charT *r, size_t n) cpp_basic_strnstr_(s, n, r, ::strlen(r), ::strncmp);
+template <typename charT>
+inline const charT *cpp_basic_strnstr(const charT *s, const charT *r, size_t n) cpp_basic_strnstr_(s, n, r, ::strlen(r), ::strncmp);
+template <>
+inline wchar_t *cpp_basic_strnstr<wchar_t>(wchar_t *s, const wchar_t *r, size_t n) cpp_basic_strnstr_(s, n, r, ::wcslen(r), ::wcsncmp);
+template <>
+inline const wchar_t *cpp_basic_strnstr<wchar_t>(const wchar_t *s, const wchar_t *r, size_t n) cpp_basic_strnstr_(s, n, r, ::wcslen(r), ::wcsncmp);
+inline char *cpp_strnstr(char *s, const char *r, size_t n)
 {
   return cpp_basic_strnstr<char>(s, r, n);
 }

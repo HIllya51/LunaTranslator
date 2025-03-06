@@ -354,13 +354,17 @@ struct TextBuffer
 	{
 		return std::wstring_view((wchar_t *)buff, size / 2);
 	}
-	std::basic_string_view<uint32_t> viewU()
+	std::u32string_view viewU()
 	{
-		return std::basic_string_view<uint32_t>((uint32_t *)buff, size / 4);
+		return std::u32string_view((char32_t *)buff, size / 4);
 	}
 	std::string strA()
 	{
 		return std::string((char *)buff, size);
+	}
+	std::u32string strU()
+	{
+		return std::u32string((char32_t *)buff, size / sizeof(char32_t));
 	}
 	std::wstring strW()
 	{

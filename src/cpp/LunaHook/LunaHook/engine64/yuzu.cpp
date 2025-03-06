@@ -1388,7 +1388,6 @@ namespace
 
     void F0100BD4014D8C000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, (L"<[^>]*>"));
         s = re::sub(s, (L".*?_"));
@@ -1755,7 +1754,6 @@ namespace
     }
     void F0100771013FA8000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, (L"<br>"), L"\n");
         s = re::sub(s, (L"^(\\s+)"));
@@ -1942,7 +1940,6 @@ namespace
     }
     void F010061A01C1CE000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, (L"[\\s]"));
         s = re::sub(s, (L"sound"), L" ");
@@ -2062,9 +2059,9 @@ namespace
     }
     void F01004BD01639E000_n(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = utf32_to_utf16(buffer->viewU());
-        strReplace(s, L"　");
-        buffer->from(utf16_to_utf32(s));
+        auto s = buffer->strU();
+        strReplace(s, U"　");
+        buffer->from(s);
     }
     void F01004BD01639E000_tx(TextBuffer *buffer, HookParam *hp)
     {
@@ -2077,10 +2074,10 @@ namespace
     }
     void F01004BD01639E000_t(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = utf32_to_utf16(buffer->viewU());
-        strReplace(s, L"\n　");
-        strReplace(s, L"\n");
-        buffer->from(utf16_to_utf32(s));
+        auto s = buffer->strU();
+        strReplace(s, U"\n　");
+        strReplace(s, U"\n");
+        buffer->from(s);
     }
     void F01001E601F6B8000_text(TextBuffer *buffer, HookParam *hp)
     {

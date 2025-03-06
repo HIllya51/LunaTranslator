@@ -1,8 +1,6 @@
 #ifndef __LUNA_STRINGUILTS_H
 #define __LUNA_STRINGUILTS_H
 
-using u32string = std::basic_string<uint32_t>;
-using u32string_view = std::basic_string_view<uint32_t>;
 enum
 {
   VNR_TEXT_CAPACITY = 1500
@@ -70,6 +68,7 @@ bool all_ascii(const char *s, int maxsize = VNR_TEXT_CAPACITY);
 bool all_ascii(const wchar_t *s, int maxsize = VNR_TEXT_CAPACITY);
 std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr = "");
 std::wstring &strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr = L"");
+std::u32string &strReplace(std::u32string &str, const std::u32string &oldStr, const std::u32string &newStr = U"");
 std::vector<std::string> strSplit(const std::string &s, const std::string &delim);
 std::vector<std::wstring> strSplit(const std::wstring &s, const std::wstring &delim);
 bool startWith(const std::string_view &s, const std::string_view &s2);
@@ -77,8 +76,8 @@ bool startWith(const std::wstring_view &s, const std::wstring_view &s2);
 
 bool endWith(const std::string_view &s, const std::string_view &s2);
 bool endWith(const std::wstring_view &s, const std::wstring_view &s2);
-std::wstring utf32_to_utf16(u32string_view sv);
-u32string utf16_to_utf32(std::wstring_view);
+std::wstring utf32_to_utf16(std::u32string_view sv);
+std::u32string utf16_to_utf32(std::wstring_view);
 
 std::string WideStringToString(const std::wstring &text, UINT cp = CP_UTF8);
 std::string WideStringToString(std::wstring_view text, UINT cp = CP_UTF8);
@@ -93,7 +92,7 @@ std::optional<std::wstring> StringToWideString(const char *, UINT encoding);
 
 std::string wcasta(const std::wstring &x);
 std::wstring acastw(const std::string &x);
-uint32_t *u32strcpy(uint32_t *s, const uint32_t *r);
+char32_t *u32strcpy(char32_t *s, const char32_t *r);
 
 template <class CharT>
 size_t strlenEx(const CharT *s)
@@ -109,7 +108,7 @@ size_t strnlenEx(const CharT *s, size_t sz)
     t = strnlen(s, sz);
   else if constexpr (std::is_same_v<CharT, wchar_t>)
     t = wcsnlen(s, sz);
-  else if constexpr (std::is_same_v<CharT, uint32_t>)
+  else if constexpr (std::is_same_v<CharT, char32_t>)
     t = strlenEx(s);
   else
     static_assert(true);
@@ -123,7 +122,7 @@ CharT *strcpyEx(CharT *s, const CharT *r)
     return strcpy(s, r);
   else if constexpr (std::is_same_v<CharT, wchar_t>)
     return wcscpy(s, r);
-  else if constexpr (std::is_same_v<CharT, uint32_t>)
+  else if constexpr (std::is_same_v<CharT, char32_t>)
     return u32strcpy(s, r);
   else
     static_assert(true);
@@ -137,7 +136,7 @@ CharT *strncpyEx(CharT *s, const CharT *r, size_t sz)
     return strncpy(s, r, sz);
   else if constexpr (std::is_same_v<CharT, wchar_t>)
     return wcsncpy(s, r, sz);
-  else if constexpr (std::is_same_v<CharT, uint32_t>)
+  else if constexpr (std::is_same_v<CharT, char32_t>)
     return u32strcpy(s, r);
   else
     static_assert(true);

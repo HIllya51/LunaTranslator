@@ -221,7 +221,7 @@ int HookStrLen(HookParam *hp, BYTE *data)
 	if (hp->type & CODEC_UTF16)
 		return wcsnlen((wchar_t *)data, TEXT_BUFFER_SIZE) * 2;
 	else if (hp->type & CODEC_UTF32)
-		return strlenEx((uint32_t *)data) * 4;
+		return strlenEx((char32_t *)data) * 4;
 	else
 		return strnlen((char *)data, TEXT_BUFFER_SIZE);
 }
