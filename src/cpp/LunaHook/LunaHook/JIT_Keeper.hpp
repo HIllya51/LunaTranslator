@@ -1,20 +1,9 @@
-namespace
-{
-    struct __empty_game_info
-    {
-        bool load()
-        {
-            return true;
-        }
-        void save()
-        {
-        }
-    };
-}
-template <typename InfoT = __empty_game_info>
+
+template <typename InfoT>
 struct JIT_Keeper
 {
-    // 存在问题：当移除dll，然后模拟器切换游戏进行clear，然后注入dll，会初始化不正确的映射表。且如果游戏ID也发生切换，会显示到不正确的ID。不过一般不影响使用
+    // 存在问题：当移除dll，然后模拟器切换游戏进行clear，然后注入dll，会初始化不正确的映射表。
+    // 且如果游戏ID也发生切换，会显示到不正确的ID，且会导致在新游戏内由于ID错误无法加载新JIT的钩子。
     struct Datas
     {
         InfoT game_info;
