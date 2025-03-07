@@ -713,6 +713,8 @@ std::vector<WindowInfo> get_proc_windows()
   EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&hwnds));
   for (auto hwnd : hwnds)
   {
+    if (!(IsWindow(hwnd) && IsWindowEnabled(hwnd) & IsWindowVisible(hwnd)))
+      continue;
     WindowInfo windowInfo;
     windowInfo.handle = hwnd;
     auto length = GetWindowTextLengthW(hwnd);

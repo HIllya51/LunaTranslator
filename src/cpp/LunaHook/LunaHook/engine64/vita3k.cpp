@@ -7,7 +7,7 @@ namespace
     auto idxEntrypoint = idxDescriptor + 1;
     struct GameInfo
     {
-        std::string game;
+        std::wstring game;
         std::string Vita3KGameID;
         std::wstring lastcheck;
     } game_info;
@@ -80,7 +80,7 @@ namespace
                     return;
                 game_info.Vita3KGameID = wcasta(curr);
                 game_info.lastcheck = curr;
-                game_info.game = WideStringToString(game);
+                game_info.game = game;
                 return HostInfo(HOSTINFO::EmuGameName, game_info.game.c_str());
             }
         };

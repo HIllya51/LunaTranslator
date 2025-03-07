@@ -67,6 +67,8 @@ namespace
 			hp.jittype = JITTYPE::PPSSPP;
 		else if (endWith(HCode, L":JIT:VITA3K"))
 			hp.jittype = JITTYPE::VITA3K;
+		else if (endWith(HCode, L":JIT:PCSX2"))
+			hp.jittype = JITTYPE::PCSX2;
 		else if (endWith(HCode, L":JIT:RPCS3"))
 			hp.jittype = JITTYPE::RPCS3;
 		else if (endWith(HCode, L":JIT:UNITY"))
@@ -408,6 +410,9 @@ namespace
 					break;
 				case JITTYPE::VITA3K:
 					HCode += L":JIT:VITA3K";
+					break;
+				case JITTYPE::PCSX2:
+					HCode += L":JIT:PCSX2";
 					break;
 				case JITTYPE::RPCS3:
 					HCode += L":JIT:RPCS3";

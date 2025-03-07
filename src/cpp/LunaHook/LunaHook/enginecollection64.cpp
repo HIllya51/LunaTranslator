@@ -19,6 +19,7 @@
 #include "engine64/Ryujinx.h"
 #include "engine64/vita3k.h"
 #include "engine64/rpcs3.h"
+#include "engine64/PCSX2.h"
 #include "engine64/MKXPZ.h"
 #include "engines/mono/mono.h"
 #include "engines/lua/lua51.h"
@@ -36,6 +37,7 @@ std::vector<ENGINE *> check_engines()
         new PPSSPPWindows,
         new vita3k,
         new rpcs3,
+        new PCSX2,
         new livecaptions,
         new Suika2,
         new lucasystem,

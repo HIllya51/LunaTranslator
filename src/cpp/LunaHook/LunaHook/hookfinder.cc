@@ -257,6 +257,9 @@ void SafeSendJitVeh(hook_context *context, uintptr_t address, uint64_t em_addr, 
 			case JITTYPE::VITA3K:
 				str = (char *)VITA3K::emu_arg(context)[i];
 				break;
+			case JITTYPE::PCSX2:
+				str = (char *)PCSX2Types::argsof(i);
+				break;
 			case JITTYPE::RPCS3:
 				str = (char *)RPCS3::emu_arg(context)[i];
 				break;

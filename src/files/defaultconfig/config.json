@@ -448,7 +448,8 @@
         "addsuccautoclose": false,
         "addsuccautocloseEx": false,
         "boldword": false,
-        "tags": []
+        "tags": [],
+        "allowDuplicate": true
     },
     "imageformat": -1,
     "mp3kbps": 64,

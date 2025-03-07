@@ -188,7 +188,8 @@ enum class JITTYPE
 	PPSSPP,
 	VITA3K,
 	RPCS3,
-	UNITY
+	UNITY,
+	PCSX2,
 };
 struct TextBuffer;
 struct HookParam

@@ -52,9 +52,15 @@ struct JIT_Keeper
     {
         (*ptr)->game_info.save();
         // 保持地址
-        (*ptr)->JIT_HP_Records = std::move(JIT_HP_Records);
-        (*ptr)->emuaddr2jitaddr = std::move(emuaddr2jitaddr);
-        (*ptr)->jitaddr2emuaddr = std::move(jitaddr2emuaddr);
+        {
+            std::lock_guard _(JIT_HP_Records_lock);
+            (*ptr)->JIT_HP_Records = std::move(JIT_HP_Records);
+        }
+        {
+            std::lock_guard _(maplock);
+            (*ptr)->emuaddr2jitaddr = std::move(emuaddr2jitaddr);
+            (*ptr)->jitaddr2emuaddr = std::move(jitaddr2emuaddr);
+        }
     }
     static void CreateStatic(std::function<void(uint64_t, uintptr_t)> checkfunction)
     {

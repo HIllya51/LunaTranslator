@@ -8,6 +8,7 @@ std::unordered_map<uint64_t, std::pair<JITTYPE, std::set<uintptr_t>>> emuaddr2ji
 std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
 #endif
 std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
+std::mutex maplock;
 std::vector<HookParam> JIT_HP_Records;
 std::mutex JIT_HP_Records_lock;
 HMODULE hLUNAHOOKDLL;
@@ -234,7 +235,6 @@ int HookStrLen(HookParam *hp, BYTE *data)
 	else
 		return strnlen((char *)data, TEXT_BUFFER_SIZE);
 }
-static std::mutex maplock;
 void jitaddrclear()
 {
 	{

@@ -1,5 +1,5 @@
 #include "MinHook.h"
-
+std::atomic<bool> patch_fun_ptrs_patch_once_flag = true;
 DynamicShiftJISCodec *dynamiccodec = new DynamicShiftJISCodec(932);
 
 void cast_back(const HookParam &hp, TextBuffer *buff, const std::wstring &trans, bool normal)
@@ -114,12 +114,23 @@ void detachall()
       MH_RemoveHook((LPVOID)info.addr);
   }
 
-  if (!patch_fun_ptrs_patch_once.load())
+  if (!patch_fun_ptrs_patch_once_flag.load())
   {
     for (auto &&[ptr1, ptr2] : patch_fun_ptrs)
     {
       if (MH_OK == MH_DisableHook(ptr1))
         MH_RemoveHook(ptr1);
+    }
+  }
+}
+void patch_fun_ptrs_patch_once()
+{
+  if (auto cur_patch_fun_ptrs_patch_once_flag = patch_fun_ptrs_patch_once_flag.exchange(false))
+  {
+    // 理论上搞个激活内嵌的行的使用计数是可以更早的detach的，但感觉好麻烦，算了。
+    for (auto &&[ptr1, ptr2] : patch_fun_ptrs)
+    {
+      ReplaceFunction(ptr1, ptr2);
     }
   }
 }
@@ -143,14 +154,7 @@ void solvefont(HookParam hp)
     current_patch_fun();
     dont_detach = true;
   }
-  if (auto cur_patch_fun_ptrs_patch_once = patch_fun_ptrs_patch_once.exchange(false))
-  {
-    // 理论上搞个激活内嵌的行的使用计数是可以更早的detach的，但感觉好麻烦，算了。
-    for (auto &&[ptr1, ptr2] : patch_fun_ptrs)
-    {
-      ReplaceFunction(ptr1, ptr2);
-    }
-  }
+  patch_fun_ptrs_patch_once();
 }
 static std::wstring alwaysInsertSpacesSTD(const std::wstring &text)
 {

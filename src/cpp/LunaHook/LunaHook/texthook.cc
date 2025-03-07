@@ -194,6 +194,8 @@ uintptr_t jitgetaddr(hook_context *context, HookParam *hp, bool offset)
 	switch (hp->jittype)
 	{
 #ifdef _WIN64
+	case JITTYPE::PCSX2:
+		return PCSX2Types::argsof(off);
 	case JITTYPE::RPCS3:
 		return RPCS3::emu_arg(context)[off];
 	case JITTYPE::VITA3K:

@@ -10,6 +10,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 | NS | yuzu, sudachi, citron, suyu |
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) |
+| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) |
 | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |
 :::
 
@@ -630,6 +631,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | ULJM06173 | TOKYOヤマノテBOYS Portable DARK CHERRY DISC |
 |  | ULJM06171 | TOKYOヤマノテBOYS Portable HONEY MILK DISC |
 |  | ULJM05986 | アンジェリーク 魔恋の六騎士 |
+|  | NPJH50689 | MISSINGPARTS the TANTEI stories Complete |
 
 == PSV
 
@@ -778,6 +780,18 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | PCSG01034 | 戦極姫７～戦雲つらぬく紅蓮の遺志～ |
 |  | PCSG00481 | 新装版クリムゾン・エンパイア |
 |  | PCSG01081 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
+
+== PS2
+
+
+|  | ID       | Game                |
+| ---- | ---------- | ------------------- |
+|  | SLPM-65732 | SuperLite 2000 アドベンチャー アカイイト |
+|  | SLPM-65914 | Nana |
+|  | SLPM-66045 | My Merry May with be |
+|  | SLPM-66302 | CLANNAD - ゲオオンラインストア |
+|  | SLPS-25547 | 苺ましまろ |
+|  | SLPS-25677 | ブラッドプラス ワン ナイト キス |
 
 == PS3
 

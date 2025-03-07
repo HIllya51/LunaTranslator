@@ -261,10 +261,10 @@ namespace
     void FBLJM61131(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, "\\[[^\\]]+.");
-        s = re::sub(s, "\\\\k|\\\\x|%C|%B");
-        s = re::sub(s, "\\%\\d+\\#[0-9a-fA-F]*\\;");
-        s = re::sub(s, "\\n+");
+        s = re::sub(s, R"(\[[^\]]+.)");
+        s = re::sub(s, R"(\\k|\\x|%C|%B)");
+        s = re::sub(s, R"(\%\d+\#[0-9a-fA-F]*\;)");
+        s = re::sub(s, R"(\n+)");
         buffer->from(s);
     }
     auto _ = []()

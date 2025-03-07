@@ -171,7 +171,7 @@ namespace
                 // citronv 5->2
                 auto game = spls[(spls.size() == 4) ? 1 : 2];
                 Trim(strReplace(game, L"(64-bit)"));
-                return HostInfo(HOSTINFO::EmuGameName, WideStringToString(game).c_str());
+                return HostInfo(HOSTINFO::EmuGameName, game.c_str());
             }
         }
     }

@@ -53,6 +53,32 @@ namespace ppsspp
 		result = re::sub(result, R"((\\d$|^\@[a-z]+|#.*?#|\$))");
 		buffer->from(result);
 	}
+	void TNPJH50689(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+	{
+		static uintptr_t TNPJH50689_last = 0;
+		auto a2 = (char *)PPSSPP::emu_arg(context)[1];
+		if (!TNPJH50689_last)
+		{
+			TNPJH50689_last = (uintptr_t)a2;
+		}
+		else
+		{
+			if (TNPJH50689_last < (uintptr_t)a2)
+			{
+				buffer->from(a2);
+			}
+			else
+			{
+				static std::string last;
+				if (last != a2)
+				{
+					last = a2;
+					buffer->from(a2);
+					*split = 1;
+				}
+			}
+		}
+	}
 	void ULJS00124_1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 	{
 		auto a2 = (char *)PPSSPP::emu_arg(context)[1];
@@ -1126,6 +1152,29 @@ namespace ppsspp
 		};
 		buffer->from(remap(s));
 	}
+	void NPJH50689(TextBuffer *buffer, HookParam *hp)
+	{
+		static lru_cache<std::string> cache(3);
+		auto s = buffer->strA();
+		if (cache.touch(s))
+			return buffer->clear();
+		auto remap = [](std::string &s)
+		{
+			std::wstring result;
+			auto ws = StringToWideString(s, 932).value();
+			for (auto c : ws)
+			{
+				if (katakanaMap.find(c) != katakanaMap.end())
+				{
+					result += katakanaMap[c];
+				}
+				else
+					result += c;
+			}
+			return WideStringToString(result, 932);
+		};
+		buffer->from(remap(s));
+	}
 	void ULJM06232(TextBuffer *buffer, HookParam *hp)
 	{
 		ULJM05758(buffer, hp);
@@ -2101,5 +2150,7 @@ namespace ppsspp
 		{0x8856C80, {0, 0, 0, 0, ULJM06173, "ULJM06171"}},
 		// アンジェリーク 魔恋の六騎士
 		{0x889CBC8, {0, 1, 0, 0, ULJM06129, "ULJM05986"}},
+		// MISSINGPARTS the TANTEI stories Complete
+		{0x883F9F4, {0, 1, 0, TNPJH50689, NPJH50689, "NPJH50689"}},
 	};
 }
