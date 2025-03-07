@@ -297,7 +297,7 @@ namespace
     auto _ = []()
     {
         emfunctionhooks = {
-            // SuperLite 2000 アドベンチャー アカイイト
+            // アカイイト
             {0x136800, {0, PCSX2_REG_OFFSET(t0), 0, 0, FSLPM66136, "SLPM-65732"}},
             // Nana
             {0x15036C, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM65914, "SLPM-65914"}},

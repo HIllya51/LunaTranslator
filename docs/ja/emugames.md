@@ -786,7 +786,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
-|  | SLPM-65732 | SuperLite 2000 アドベンチャー アカイイト |
+|  | SLPM-65732 | アカイイト |
 |  | SLPM-65914 | Nana |
 |  | SLPM-66045 | My Merry May with be |
 |  | SLPM-66302 | CLANNAD - ゲオオンラインストア |
