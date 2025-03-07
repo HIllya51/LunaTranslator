@@ -90,12 +90,6 @@ struct WindowInfo
 std::vector<WindowInfo> get_proc_windows();
 
 template <typename StringT>
-size_t strSize(const StringT &s)
-{
-  return s.size() * sizeof(StringT::value_type);
-}
-
-template <typename StringT>
 auto allocateString(const StringT &s) -> typename StringT::value_type *
 {
   size_t t = s.size();

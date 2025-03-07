@@ -255,13 +255,13 @@ namespace
     }
     void FSLPM65914(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = StringToWideString(buffer->viewA(), 932).value();
+        auto s = buffer->strAW();
         strReplace(s, L"①ｎ");
         if (startWith(s, L"Ｖ＿") || std::all_of(s.begin(), s.end(), [](wchar_t c)
                                                  { return (c == L'±') || (c == L'-') || (c == L'\\') || (c == L'．') || (c == L'，') || (c == L'－') || (c == L'　') || (c == L' ') || ((c >= L'０') && (c <= L'９')) || ((c >= L'0') && (c <= L'9')); }))
             return buffer->clear();
         s = re::sub(s, LR"(^([±\s]+[０-９０-９，．\-]+|[０-９0-9，．\-]+)$)");
-        buffer->from(WideStringToString(s, 932));
+        buffer->fromWA(s);
     }
     void FSLPM66045(TextBuffer *buffer, HookParam *hp)
     {
@@ -272,22 +272,22 @@ namespace
     }
     void FSLPM66302(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = StringToWideString(buffer->viewA(), 932).value();
+        auto s = buffer->strAW();
         s = strSplit(s, L"\");")[0];
         s = re::sub(s, LR"((\\n)+)", L" ");
         s = re::sub(s, LR"(\\d$|^\@[a-z]+|#.*?#|\$)");
         s = re::sub(s, LR"(@w|\\c)");
         strReplace(s, L"＊Ａ", L"岡崎");
         strReplace(s, L"＊Ｂ", L"朋也");
-        buffer->from(WideStringToString(s, 932));
+        buffer->fromWA(s);
     }
     void FSLPS25677(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = StringToWideString(buffer->viewA(), 932).value();
+        auto s = buffer->strAW();
         s = re::sub(s, LR"(^\[.*$)");
         s = re::sub(s, LR"(\_0C|\_1_5C|\_1C)");
         s = re::sub(s, LR"(^([a-zA-Z]+)|([a-zA-Z]+)$)");
-        buffer->from(WideStringToString(s, 932));
+        buffer->fromWA(s);
     }
     void FSLPS25547(TextBuffer *buffer, HookParam *hp)
     {

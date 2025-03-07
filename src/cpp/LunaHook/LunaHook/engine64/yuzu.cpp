@@ -471,28 +471,12 @@ namespace
                 s += content;
             }
         }
-        static auto katakanaMapExtra = std::map<wchar_t, wchar_t>{
-            {L'?', L'　'}, // invalid (shift_jis A0 <=> EF A3 B0) | FF FD - F8 F0)
-        };
-
-        auto remap = [](std::string &s)
-        {
-            std::wstring result;
-            auto ws = StringToWideString(s, 932).value();
-            for (auto c : ws)
-            {
-                if (c == L'\uF8F0' || c == L'\uFFFD')
-                    continue;
-                if (katakanaMapExtra.find(c) != katakanaMapExtra.end())
-                    result += katakanaMapExtra[c];
-                else if (katakanaMap.find(c) != katakanaMap.end())
-                    result += katakanaMap[c];
-                else
-                    result += c;
-            }
-            return WideStringToString(result, 932);
-        };
-        buffer->from(remap(s));
+        auto ws = StringToWideString(s, 932).value();
+        strReplace(ws, L"\uF8F0");
+        strReplace(ws, L"\uFFFD");
+        strReplace(ws, L"?", L"　");
+        ws = remapkatakana(ws);
+        buffer->fromWA(ws);
     }
     void F01006590155AC000(TextBuffer *buffer, HookParam *hp)
     {
@@ -766,11 +750,11 @@ namespace
     }
     void F0100CF90151E0000(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         strReplace(ws, L"^");
         ws = re::sub(ws, (LR"(@c\d)"));
         ws = re::sub(ws, (LR"(@v\(\d+\))"));
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void F010052300F612000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1304,9 +1288,9 @@ namespace
     }
     void F0100E4000F616000(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         ws = re::sub(ws, (LR"(\\\w)"));
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void F01005A401D766000(TextBuffer *buffer, HookParam *hp)
     {
@@ -1962,13 +1946,13 @@ namespace
     }
     void F0100509013040000(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         strReplace(ws, L"^");
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void F01005090130400002(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         if (startWith(ws, L"_SELZ"))
         {
             auto _ = strSplit(strSplit(ws, L");")[0], L",");
@@ -1979,7 +1963,7 @@ namespace
                     wss += L"\r\n";
                 wss += _[i];
             }
-            buffer->from(WideStringToString(wss, 932));
+            buffer->fromWA(wss);
         }
         else
             buffer->clear();
@@ -2206,13 +2190,13 @@ namespace
     template <bool choice>
     void F0100E5200D1A2000(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         ws = re::sub(ws, (LR"((\\n)+)"), L" ");
         ws = re::sub(ws, (LR"(\\d$|^\@[a-z]+|#.*?#|\$)"));
         ws = re::sub(ws, (LR"(\u3000+)"));
         if (choice)
             ws = re::sub(ws, (LR"(, ?\w+)"));
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void F010028D0148E6000_2(TextBuffer *buffer, HookParam *hp)
     {
@@ -2250,14 +2234,14 @@ namespace
     template <bool choice>
     void F0100EFE0159C6000(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         ws = re::sub(ws, (LR"((\\n)+)"), L" ");
         ws = re::sub(ws, (LR"(\\d$|^\@[a-z]+|#.*?#|\$)"));
         ws = re::sub(ws, (LR"(\u3000+)"));
         ws = re::sub(ws, (LR"(@w|\\c)"));
         if (choice)
             ws = re::sub(ws, (LR"(, ?\w+)"));
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
 
     void F0100FDB00AA80000(TextBuffer *buffer, HookParam *hp)

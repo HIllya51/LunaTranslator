@@ -518,7 +518,7 @@ namespace
     }
     void PCSG00172(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         strReplace(ws, L"Mﾚ      　ｰ_Mﾚ  ���");
         strReplace(ws, L"u_");
         strReplace(ws, L"ata/data4.dat");
@@ -527,14 +527,14 @@ namespace
         strReplace(ws, L"�");
         strReplace(ws, L"∥pp0:d");
         strReplace(ws, L"app0:d:d");
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void PCSG00776(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         strReplace(ws, L"\x02");
         Trim(ws);
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void PCSG01046(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -871,16 +871,16 @@ namespace
     }
     void PCSG00654(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA());
+        auto ws = buffer->strAW(CP_UTF8);
         strReplace(ws, L"\\");
         strReplace(ws, L"$");
-        buffer->from(WideStringToString(ws));
+        buffer->fromWA(ws, CP_UTF8);
     }
     void FPCSG00852(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         strReplace(ws, L"^");
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void PCSG00829(TextBuffer *buffer, HookParam *hp)
     {
@@ -942,101 +942,49 @@ namespace
     }
     void PCSG01289(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
-
-        auto remap = [](std::wstring &ws)
-        {
-            std::wstring result;
-            for (auto c : ws)
-            {
-                if (katakanaMap.find(c) != katakanaMap.end())
-                    result += katakanaMap[c];
-                else
-                    result += c;
-            }
-            return result;
-        };
-        ws = remap(ws);
+        auto ws = buffer->strAW();
+        ws = remapkatakana(ws);
         ws = re::sub(ws, LR"(\$t(.*?)@)", L"$1");
         ws = re::sub(ws, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void PCSG01198(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
-
-        auto remap = [](std::wstring &ws)
-        {
-            std::wstring result;
-            for (auto c : ws)
-            {
-                if (katakanaMap.find(c) != katakanaMap.end())
-                    result += katakanaMap[c];
-                else
-                    result += c;
-            }
-            return result;
-        };
-        ws = remap(ws);
+        auto ws = buffer->strAW();
+        ws = remapkatakana(ws);
         ws = re::sub(ws, LR"(`(.*?)@)", L"$1");
         ws = re::sub(ws, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void PCSG00585(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
-
-        auto remap = [](std::wstring &ws)
-        {
-            std::wstring result;
-            for (auto c : ws)
-            {
-                if (katakanaMap.find(c) != katakanaMap.end())
-                    result += katakanaMap[c];
-                else
-                    result += c;
-            }
-            return result;
-        };
-        ws = remap(ws);
+        auto ws = buffer->strAW();
+        ws = remapkatakana(ws);
         ws = re::sub(ws, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
         ws = re::sub(ws, LR"(\$C\[ffffff\](.*?)@\$C\[\])", L"$1");
         strReplace(ws, L"\n");
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void PCSG01254(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
-
-        auto remap = [](std::wstring &ws)
-        {
-            std::wstring result;
-            for (auto c : ws)
-            {
-                if (katakanaMap.find(c) != katakanaMap.end())
-                    result += katakanaMap[c];
-                else
-                    result += c;
-            }
-            return result;
-        };
-        ws = remap(ws);
+        auto ws = buffer->strAW();
+        ws = remapkatakana(ws);
         ws = re::sub(ws, LR"(@[a-zA-Z\d_\.]+)"); // 操了，wregex \w会匹配到unicode字符
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void PCSG01196(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         strReplace(ws, L"^", L"\n");
         ws = re::sub(ws, LR"(<(.*?)>(.*?)|)", L"$2");
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void PCSG01151(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = StringToWideString(buffer->viewA(), 932).value();
+        auto ws = buffer->strAW();
         strReplace(ws, L"^");
         strReplace(ws, L"　");
-        buffer->from(WideStringToString(ws, 932));
+        buffer->fromWA(ws);
     }
     void FPCSG01066(TextBuffer *buffer, HookParam *hp)
     {

@@ -1,12 +1,4 @@
 
-LPCSTR reverse_search_begin(const char *s, int maxsize)
-{
-  if (*s)
-    for (int i = 0; i < maxsize; i++, s--)
-      if (!*s)
-        return s + 1;
-  return nullptr;
-}
 
 template <class CharT>
 inline bool all_ascii_impl(const CharT *s, int maxsize)

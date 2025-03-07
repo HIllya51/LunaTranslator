@@ -270,13 +270,13 @@ LABEL_3:
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       // 这个东西^开头的都是各种奇葩控制符。懒得管了。
-      auto result = StringToWideString(buffer->viewA(), 932).value();
+      auto result = buffer->strAW();
       result = re::sub(result, LR"(\|(.*?)\[(.*?)\])", L"$1");
       result = re::sub(result, LR"(\^d\d)");
       // 内嵌会导致^\w解析错误
       //^n ^m ...
       result = re::sub(result, LR"(\^\w)");
-      buffer->from(WideStringToString(result, 932));
+      buffer->fromWA(result);
     };
     patch_fun_ptrs = {{(void *)__ismbblead, +[](BYTE b)
                                             { return b != '^'; }},

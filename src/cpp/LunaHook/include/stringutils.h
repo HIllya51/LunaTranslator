@@ -13,7 +13,12 @@ StringT stolower(StringT s)
   return s;
 }
 
-LPCSTR reverse_search_begin(const char *s, int maxsize = VNR_TEXT_CAPACITY);
+template <typename StringT>
+size_t strSize(const StringT &s)
+{
+  return s.size() * sizeof(StringT::value_type);
+}
+
 namespace re
 {
 

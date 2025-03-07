@@ -378,6 +378,14 @@ struct TextBuffer
 	{
 		return std::wstring((wchar_t *)buff, size / 2);
 	}
+	std::wstring strAW(UINT cp = 932)
+	{
+		return StringToWideString(viewA(), cp).value();
+	}
+	void fromWA(const std::wstring &ws, UINT cp = 932)
+	{
+		from(WideStringToString(ws, cp));
+	}
 	void clear()
 	{
 		size = 0;

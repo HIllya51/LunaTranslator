@@ -58,7 +58,7 @@ bool FrontWing2_attach_function()
     ws = re::sub(ws, LR"([\w\d]*\\[\w\d]*\\[\w\d_]*)");
     ws = re::sub(ws, LR"(\[rb,(.*?),(.*?)\])", L"$1");
     ws = re::sub(ws, L",(.*?),(.*?)", L"$1$2");
-    buffer->from(WideStringToString(ws, 932));
+    buffer->fromWA(ws);
   };
   return NewHook(hp, "FrontWing");
 }

@@ -27,3 +27,4 @@ void all_ascii_Filter(TextBuffer *buffer, HookParam *);
 #define TEXTANDLEN(X) X, ARRAYSIZE(X) - 1
 
 extern std::map<wchar_t, wchar_t> katakanaMap;
+std::wstring &remapkatakana(std::wstring &);

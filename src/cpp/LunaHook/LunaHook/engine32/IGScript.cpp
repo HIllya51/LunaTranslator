@@ -27,13 +27,6 @@ namespace
     if (strlen((char *)Src) < Size - 4)
       return;
     buffer->from((char *)Src);
-    // ConsoleOutput(WideStringToString(StringToWideString((char*)Src,936).value()).c_str());
-    // std::string xx;
-    // for(int i=0;i<*len;i++){
-    //   xx+=" "+std::to_string(*(BYTE*)(Src+i));
-
-    // }
-    // ConsoleOutput(xx.c_str());
   }
 }
 bool IGScript1attach_function()

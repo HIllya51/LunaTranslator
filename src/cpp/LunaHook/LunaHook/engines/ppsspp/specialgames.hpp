@@ -238,26 +238,26 @@ namespace ppsspp
 	}
 	void ULJM06378(TextBuffer *buffer, HookParam *hp)
 	{
-		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		auto ws = buffer->strAW();
 		strReplace(ws, L"\\");
 		strReplace(ws, L"$");
-		buffer->from(WideStringToString(ws, 932));
+		buffer->fromWA(ws);
 	}
 	void NPJH50215(TextBuffer *buffer, HookParam *hp)
 	{
-		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		auto ws = buffer->strAW();
 		strReplace(ws, L"r", L"\n");
 		if (ws.find(L"wc"))
 		{
 			ws = ws.substr(0, ws.find(L"wc"));
 		}
 		ws = re::sub(ws, LR"(l(.*?)\((.*?)\))", L"$1");
-		buffer->from(WideStringToString(ws, 932));
+		buffer->fromWA(ws);
 	}
 
 	void NPJH50909_filter(TextBuffer *buffer, HookParam *hp)
 	{
-		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		auto ws = buffer->strAW();
 		ws = re::sub(ws, L"(\\%N)+", L" ");
 		ws = re::sub(ws, L"\\%\\@\\%\\d+");
 		if (auto match = re::search(ws, L"(^[^「]+)「"))
@@ -266,7 +266,7 @@ namespace ppsspp
 			ws = re::sub(ws, L"^[^「]+");
 			ws = name + L"\n" + ws;
 		}
-		buffer->from(WideStringToString(ws, 932));
+		buffer->fromWA(ws);
 	}
 	void ULJM06119_filter(TextBuffer *buffer, HookParam *hp)
 	{
@@ -822,18 +822,18 @@ namespace ppsspp
 	}
 	void ULJM05691(TextBuffer *buffer, HookParam *hp)
 	{
-		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		auto ws = buffer->strAW();
 		if (startWith(ws, L"disc"))
 			return buffer->clear();
 		strReplace(ws, L"\\");
 		strReplace(ws, L"$");
 		strReplace(ws, L"%　&");
-		buffer->from(WideStringToString(ws, 932));
+		buffer->fromWA(ws);
 	}
 	void ULJM05796(TextBuffer *buffer, HookParam *hp)
 	{
 		static std::wstring last;
-		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		auto ws = buffer->strAW();
 		strReplace(ws, L"\\");
 		if (last == ws)
 		{
@@ -846,14 +846,14 @@ namespace ppsspp
 				buffer->clear();
 			else
 			{
-				buffer->from(WideStringToString(ws, 932));
+				buffer->fromWA(ws);
 				last = ws;
 			}
 		}
 	}
 	void NPJH50900(TextBuffer *buffer, HookParam *hp)
 	{
-		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		auto ws = buffer->strAW();
 		ws = re::sub(ws, LR"(<(.*?),(.*?)>)", L"$1");
 		strReplace(ws, L"^");
 		static std::wstring last;
@@ -865,7 +865,7 @@ namespace ppsspp
 		}
 		else
 			last = ws;
-		buffer->from(WideStringToString(ws, 932));
+		buffer->fromWA(ws);
 	}
 	void ULJM05795(TextBuffer *buffer, HookParam *hp)
 	{
@@ -877,10 +877,10 @@ namespace ppsspp
 	}
 	void ULJM06397(TextBuffer *buffer, HookParam *hp)
 	{
-		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		auto ws = buffer->strAW();
 		ws = re::sub(ws, LR"(<(.*?),(.*?)>)", L"$1");
 		strReplace(ws, L"^");
-		buffer->from(WideStringToString(ws, 932));
+		buffer->fromWA(ws);
 	}
 	void ULJM06129(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1105,52 +1105,21 @@ namespace ppsspp
 	}
 	void ULJM06343(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = buffer->strA();
-		static auto katakanaMapExtra = std::map<wchar_t, wchar_t>{
-			{L'?', L'　'}, // invalid (shift_jis A0 <=> EF A3 B0) | FF FD - F8 F0)
-		};
-		auto remap = [](std::string &s)
-		{
-			std::wstring result;
-			auto ws = StringToWideString(s, 932).value();
-			for (auto c : ws)
-			{
-				if (c == L'\uF8F0' || c == L'\uFFFD')
-					continue;
-				if (katakanaMapExtra.find(c) != katakanaMapExtra.end())
-					result += katakanaMapExtra[c];
-				else if (katakanaMap.find(c) != katakanaMap.end())
-					result += katakanaMap[c];
-				else
-					result += c;
-			}
-			result = re::sub(result, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
-			result = re::sub(result, LR"(\$C\[(.*?)\])");
-			result = re::sub(result, LR"(\$\w)");
-			result = re::sub(result, LR"(@)");
-			return WideStringToString(result, 932);
-		};
-		buffer->from(remap(s));
+		auto ws = buffer->strAW();
+		strReplace(ws, L"\uF8F0");
+		strReplace(ws, L"\uFFFD");
+		strReplace(ws, L"?", L"　");
+		ws = remapkatakana(ws);
+		ws = re::sub(ws, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
+		ws = re::sub(ws, LR"(\$C\[(.*?)\])");
+		ws = re::sub(ws, LR"(\$\w)");
+		ws = re::sub(ws, LR"(@)");
+		buffer->fromWA(ws);
 	}
 	void ULJM05758(TextBuffer *buffer, HookParam *hp)
 	{
-		auto s = buffer->strA();
-		auto remap = [](std::string &s)
-		{
-			std::wstring result;
-			auto ws = StringToWideString(s, 932).value();
-			for (auto c : ws)
-			{
-				if (katakanaMap.find(c) != katakanaMap.end())
-				{
-					result += katakanaMap[c];
-				}
-				else
-					result += c;
-			}
-			return WideStringToString(result, 932);
-		};
-		buffer->from(remap(s));
+		auto s = buffer->strAW();
+		buffer->fromWA(remapkatakana(s));
 	}
 	void NPJH50689(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1158,22 +1127,7 @@ namespace ppsspp
 		auto s = buffer->strA();
 		if (cache.touch(s))
 			return buffer->clear();
-		auto remap = [](std::string &s)
-		{
-			std::wstring result;
-			auto ws = StringToWideString(s, 932).value();
-			for (auto c : ws)
-			{
-				if (katakanaMap.find(c) != katakanaMap.end())
-				{
-					result += katakanaMap[c];
-				}
-				else
-					result += c;
-			}
-			return WideStringToString(result, 932);
-		};
-		buffer->from(remap(s));
+		ULJM05758(buffer, hp);
 	}
 	void ULJM06232(TextBuffer *buffer, HookParam *hp)
 	{
@@ -1462,11 +1416,11 @@ namespace ppsspp
 	}
 	void NPJH50836_2(TextBuffer *buffer, HookParam *hp)
 	{
-		auto ws = StringToWideString(buffer->viewA(), 932).value();
+		auto ws = buffer->strAW();
 		if (auto match = re::search(ws, L"<12 0,(.*?),(.*?),"))
 		{
 			std::wstring name = match.value()[2].str();
-			return buffer->from(WideStringToString(name, 932));
+			return buffer->fromWA(name);
 		}
 		else
 			buffer->clear();
