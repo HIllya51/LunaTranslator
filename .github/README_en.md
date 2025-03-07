@@ -11,7 +11,7 @@
 
 #### Text Input
 
-- **HOOK** Supports obtaining text using HOOK methods, supports the use of special codes, supports automatic saving of games and HOOKs, automatic loading of HOOKs, etc. For some engines, it also supports embedded translation. For games that are not supported or not well supported, please [submit feedback](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 
+- **HOOK** Supports obtaining text using HOOK methods. For some engines, it also supports embedded translation. And Extracting text from games running on some [Emulators](https://docs.lunatranslator.org/emugames.html) is also supported. For games that are not supported or not well supported, please [submit feedback](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 
 
 - **OCR** supports **[offline OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** ( built-in OCR, WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **[online OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**
 

@@ -11,7 +11,7 @@
 
 #### 文本输入
 
-- **HOOK** 支持使用HOOK方式获取文本，支持使用特殊码，支持自动保存游戏及HOOK、自动加载HOOK等。对于部分引擎，还支持内嵌翻译。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
+- **HOOK** 支持使用HOOK方式获取文本。对于部分游戏引擎，还支持内嵌翻译。还支持提取部分[模拟器](https://docs.lunatranslator.org/emugames.html)上运行的游戏的文本。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
 
 - **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** ( 内置OCR引擎、WindowsOCR、Tesseract5、manga-ocr、WeChat/QQ OCR ) 和 **[在线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 
 
