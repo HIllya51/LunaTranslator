@@ -1,4 +1,4 @@
-
+﻿
 #include "MinHook.h"
 #include "veh_hook.h"
 extern WinMutex viewMutex;
@@ -125,7 +125,6 @@ bool TextHook::Insert(HookParam hp)
 	auto addr = getasbaddr(hp);
 	if (!addr)
 		return false;
-
 	RemoveHook(addr, 0);
 	ConsoleOutput(TR[INSERTING_HOOK], hp.name, addr);
 	local_buffer = new BYTE[PIPE_BUFFER_SIZE];

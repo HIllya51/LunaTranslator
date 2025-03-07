@@ -144,6 +144,12 @@ namespace
 				Host::InfoOutput(info.type, StringToWideString(info.message));
 			}
 			break;
+			case HOST_NOTIFICATION_TEXT_W:
+			{
+				auto info = *(HostInfoNotifW *)buffer;
+				Host::InfoOutput(info.type, info.message);
+			}
+			break;
 			default:
 			{
 				auto data = (TextOutput_T *)buffer;

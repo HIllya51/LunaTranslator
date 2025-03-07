@@ -187,21 +187,6 @@ def checkintegrity():
         os._exit(0)
 
 
-def checkpermission():
-    from myutils.config import _TR, saveallconfig
-    from qtsymbols import QMessageBox
-
-    try:
-        saveallconfig(test=True)
-        # 先写一遍试试，免得到最后配置半天白瞎。
-    except PermissionError:
-        msg = QMessageBox()
-        msg.setText(_TR("权限不足，请以管理员权限运行！"))
-        msg.setWindowTitle(_TR("错误"))
-        msg.exec()
-        os._exit(0)
-
-
 def switchdir():
     dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(dirname)
@@ -259,6 +244,5 @@ if __name__ == "__main__":
     app.setQuitOnLastWindowClosed(False)
     checklang()
     checkintegrity()
-    checkpermission()
     loadmainui(urlprotocol())
     app.exit(app.exec())

@@ -127,6 +127,15 @@ void HostInfo(HOSTINFO type, LPCSTR text, ...)
 	vsnprintf(buffer.message, MESSAGE_SIZE, text, args);
 	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
 }
+void HostInfo(HOSTINFO type, LPCWSTR text, ...)
+{
+	HostInfoNotifW buffer;
+	va_list args;
+	va_start(args, text);
+	buffer.type = type;
+	_vsnwprintf(buffer.message, MESSAGE_SIZE, text, args);
+	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
+}
 Synchronized<std::unordered_map<uintptr_t, std::wstring>> modulecache;
 std::wstring &querymodule(uintptr_t addr)
 {

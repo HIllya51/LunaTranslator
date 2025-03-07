@@ -281,6 +281,13 @@ struct HostInfoNotif
 	HOSTINFO type;
 	char message[MESSAGE_SIZE] = {};
 };
+struct HostInfoNotifW
+{
+	HostInfoNotifW(std::wstring message = L"") { wcsncpy_s(this->message, message.c_str(), MESSAGE_SIZE - 1); }
+	HostNotificationType command = HOST_NOTIFICATION_TEXT_W;
+	HOSTINFO type;
+	wchar_t message[MESSAGE_SIZE] = {};
+};
 
 struct HookFoundNotif
 {

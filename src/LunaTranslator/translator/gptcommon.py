@@ -10,7 +10,7 @@ def list_models(typename, regist):
     return common_list_models(
         getproxy(("fanyi", typename)),
         regist["API接口地址"](),
-        regist["SECRET_KEY"]().split("|")[0],
+        regist.get("SECRET_KEY", lambda: "")().split("|")[0],
     )
 
 

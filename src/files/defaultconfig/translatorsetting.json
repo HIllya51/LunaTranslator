@@ -689,6 +689,8 @@
 	"sakura": {
 		"args": {
 			"API接口地址": "http://127.0.0.1:8080/",
+			"model": "sukinishiro",
+			"modellistcache": [],
 			"use_context": false,
 			"append_context_num": 3,
 			"temperature": 0.1,
@@ -704,6 +706,15 @@
 			"s": ""
 		},
 		"argstype": {
+			"model": {
+				"rank": 0.2,
+				"type": "lineedit_or_combo",
+				"list_function": "list_models",
+				"list_cache": "modellistcache"
+			},
+			"modellistcache": {
+				"type": "list_cache"
+			},
 			"s": {
 				"type": "split",
 				"rank": 0.5

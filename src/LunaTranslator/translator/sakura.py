@@ -2,9 +2,7 @@ from translator.basetranslator import basetrans
 import requests
 import json, zhconv
 from myutils.utils import urlpathjoin
-
-# OpenAI
-# from openai import OpenAI
+from translator.gptcommon import list_models
 
 
 class TS(basetrans):
@@ -134,7 +132,7 @@ class TS(basetrans):
         # OpenAI
         # output = self.client.chat.completions.create(
         data = dict(
-            model="sukinishiro",
+            model=self.config["model"],
             messages=messages,
             temperature=float(self.config["temperature"]),
             top_p=float(self.config["top_p"]),
@@ -168,7 +166,7 @@ class TS(basetrans):
         # OpenAI
         # output = self.client.chat.completions.create(
         data = dict(
-            model="sukinishiro",
+            model=self.config["model"],
             messages=messages,
             temperature=float(self.config["temperature"]),
             top_p=float(self.config["top_p"]),

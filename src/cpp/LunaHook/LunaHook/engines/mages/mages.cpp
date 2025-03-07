@@ -5,7 +5,6 @@ namespace mages
 
     std::map<WORD, std::wstring> createTable(int _idx)
     {
-        ConsoleOutput("%d", _idx);
         auto compound_charsA = LoadResData(std::vector<const wchar_t *>{
                                                L"compound_chars_default",
                                                L"compound_chars_Robotics_Notes_Elite",

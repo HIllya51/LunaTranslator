@@ -6,6 +6,7 @@
 
 void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T(*buffer), int len);
 void HostInfo(HOSTINFO type, LPCSTR text, ...);
+void HostInfo(HOSTINFO type, LPCWSTR text, ...);
 #define ConsoleOutput(text, ...) HostInfo(HOSTINFO::Console, text, ##__VA_ARGS__, -1)
 void NotifyHookFound(HookParam hp, wchar_t *text);
 void NotifyHookRemove(uint64_t addr, LPCSTR name);
