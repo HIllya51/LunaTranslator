@@ -476,7 +476,20 @@ bool TextHook::InsertHookCode()
 	memcpy(trampoline, common_hook, sizeof(common_hook));
 	return MH_EnableHook(location) == MH_OK;
 }
-
+bool SafeFilterFun(HookParam &hp, TextBuffer &buff)
+{
+	try
+	{
+		hp.filter_fun(&buff, &hp);
+		if (buff.size <= 0)
+			return false;
+		return true;
+	}
+	catch (std::exception &e)
+	{
+		return false;
+	}
+}
 void TextHook::Read()
 {
 	// BYTE(*buffer)[PIPE_BUFFER_SIZE] = &::buffer, *pbData = *buffer + sizeof(ThreadParam);
@@ -513,8 +526,7 @@ void TextHook::Read()
 					memcpy(pbData, location, buff.size);
 					if (hp.filter_fun)
 					{
-						hp.filter_fun(&buff, &hp);
-						if (buff.size <= 0)
+						if (!SafeFilterFun(hp, buff))
 							continue;
 					}
 					TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);

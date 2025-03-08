@@ -792,6 +792,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-66302 | CLANNAD - ゲオオンラインストア |
 |  | SLPS-25547 | 苺ましまろ |
 |  | SLPS-25677 | ブラッドプラス ワン ナイト キス |
+|  | SLPM-55195 | プリンセスラバー！ Eternal Love For My Lady [初回限定版] |
 
 == PS3
 

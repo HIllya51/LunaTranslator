@@ -295,10 +295,13 @@ namespace PCSX2Types
     // alignas(16) extern cpuRegistersPack _cpuRegistersPack;
     inline cpuRegistersPack *_cpuRegistersPack = nullptr;
     inline EEVM_MemoryAllocMess *eeMem = nullptr;
-
+    inline uintptr_t emu_addr(uint32_t addr)
+    {
+        return (uintptr_t)eeMem->Main + addr;
+    }
     inline uintptr_t argsof(int idx)
     {
-        return (uintptr_t)eeMem->Main + ((DWORD *)(&_cpuRegistersPack->cpuRegs.GPR.r[idx].UQ))[0];
+        return emu_addr(((DWORD *)(&_cpuRegistersPack->cpuRegs.GPR.r[idx].UQ))[0]);
     }
 }
 #define PCSX2_REG_OFFSET(reg) (offsetof(__named_regs__, reg) / sizeof(GPR_reg))

@@ -792,6 +792,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPM-66302 | CLANNAD - ゲオオンラインストア |
 |  | SLPS-25547 | 苺ましまろ |
 |  | SLPS-25677 | ブラッドプラス ワン ナイト キス |
+|  | SLPM-55195 | プリンセスラバー！ Eternal Love For My Lady [初回限定版] |
 
 == PS3
 

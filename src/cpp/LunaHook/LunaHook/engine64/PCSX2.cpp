@@ -123,6 +123,7 @@ namespace
         if (!EEmem)
             return false;
         eeMem = *(decltype(eeMem) *)EEmem;
+        ConsoleOutput("eeMem %p", eeMem);
         return true;
     }
     void SafeAddBreakPoint(u32 addr, bool enable = true)
@@ -202,6 +203,21 @@ bool PCSX2::attach_function()
             const GameList::Entry *entry = (GameList::Entry *)context->rdx;
             current_serial = entry->serial;
             jitaddrclear();
+            for (auto &&[addr, op] : emfunctionhooks)
+            {
+                if ((op._id == current_serial) && (op.type & DIRECT_READ))
+                {
+                    HookParam hpinternal;
+                    hpinternal.address = emu_addr(addr);
+                    hpinternal.type = op.type | USING_STRING;
+                    hpinternal.codepage = 932;
+                    hpinternal.text_fun = op.hookfunc;
+                    hpinternal.filter_fun = op.filterfun;
+                    hpinternal.offset = op.offset;
+                    hpinternal.padding = op.padding;
+                    NewHook(hpinternal, op._id);
+                }
+            }
             return HostInfo(HOSTINFO::EmuGameName, "%s %s", entry->serial.c_str(), entry->title.c_str());
         };
         succ = succ && NewHook(hp, "startGameListEntry");
@@ -247,9 +263,10 @@ bool PCSX2::attach_function()
         //{(void *)psxDynarecCheckBreakpoint, +[]() {}},
     };
     patch_fun_ptrs_patch_once();
-    for (auto &&hs : emfunctionhooks)
+    for (auto &&[addr, op] : emfunctionhooks)
     {
-        SafeAddBreakPoint(hs.first);
+        if (!(op.type & DIRECT_READ))
+            SafeAddBreakPoint(addr);
     }
     return true;
 }
@@ -306,6 +323,11 @@ namespace
         CharFilter(buffer, '\n');
         FSLPS25677(buffer, hp);
     }
+    void FSLPM55195(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
+        StringFilter(buffer, TEXTANDLEN("%n"));
+    }
     auto _ = []()
     {
         emfunctionhooks = {
@@ -322,6 +344,8 @@ namespace
             // ブラッドプラス ワン ナイト キス
             {0x267B58, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPS25677, "SLPS-25677"}},
             {0x268260, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPS25677, "SLPS-25677"}},
+            // プリンセスラバー！ Eternal Love For My Lady [初回限定版]
+            {0x92748C, {DIRECT_READ, 0, 0, 0, FSLPM55195, "SLPM-55195"}},
         };
         return 0;
     }();
