@@ -332,20 +332,24 @@ namespace YUZU
 
     public:
         emu_arg(hook_context *context, uint64_t em_addr = 0) : context(context), is64(em_addr == 0 || em_addr > 0x80004000) {};
-        uintptr_t operator[](int idx)
+        uintptr_t value(int idx)
         {
-            auto base = context->r13;
             if (is64)
             {
                 auto args = (uintptr_t *)context->r15;
-                return base + args[idx];
+                return args[idx];
             }
             else
             {
                 // 0x204000
                 auto args = (DWORD *)context->r15;
-                return base + args[idx];
+                return args[idx];
             }
+        }
+        uintptr_t operator[](int idx)
+        {
+            auto base = context->r13;
+            return base + value(idx);
         }
     };
 }
@@ -374,10 +378,14 @@ namespace VITA3K
 
     public:
         emu_arg(hook_context *context) : context(context) {};
-        uintptr_t operator[](int idx)
+        uintptr_t value(int idx)
         {
             auto args = (uint32_t *)context->r15;
-            return emu_addr(context, args[idx]);
+            return args[idx];
+        }
+        uintptr_t operator[](int idx)
+        {
+            return emu_addr(context, value(idx));
         }
     };
 }

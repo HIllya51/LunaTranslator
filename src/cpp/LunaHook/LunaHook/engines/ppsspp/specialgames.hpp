@@ -1176,14 +1176,19 @@ namespace ppsspp
 #pragma optimize("", off)
 		void ULJM06115_C(const char *_) {}
 #pragma optimize("", on)
-		void ULJM06115(TextBuffer *buffer, HookParam *)
+		void ULJM06115(TextBuffer *buffer, HookParam *hpx)
 		{
 			auto s = buffer->strA();
-			HookParam hp;
-			hp.address = (uintptr_t)ULJM06115_C;
-			hp.offset = GETARG(1);
-			hp.type = USING_STRING;
-			static auto _ = NewHook(hp, "ULJM06115");
+
+			if (!hpx->user_value)
+			{
+				hpx->user_value = 1;
+				HookParam hp;
+				hp.address = (uintptr_t)ULJM06115_C;
+				hp.offset = GETARG(1);
+				hp.type = USING_STRING;
+				NewHook(hp, "ULJM06115");
+			}
 			ULJM06115_C(s.data());
 			buffer->clear();
 		}

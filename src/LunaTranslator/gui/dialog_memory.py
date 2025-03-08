@@ -112,9 +112,12 @@ class Picselect(PopupWidget):
         self.p = p
         self.moveto = p.rwpath
         hbox = QHBoxLayout(self)
-        self.insertpicbtn = IconButton(parent=self, icon="fa.camera")
-        self.insertpicbtn.clicked.connect(
-            lambda: grabwindow(getimageformat(), self.cropcallback)
+        self.insertpicbtn = getIconButton(
+            icon="fa.camera",
+            callback=lambda: grabwindow(getimageformat(), self.cropcallback),
+            callback2=lambda: grabwindow(
+                getimageformat(), self.cropcallback, usewgc=True
+            ),
         )
         self.crop = getIconButton(
             icon="fa.crop",

@@ -19,7 +19,7 @@
 class CLoopbackCapture : public ComImpl<IActivateAudioInterfaceCompletionHandler, IAgileObject>
 {
 public:
-    ~CLoopbackCapture();
+    ~CLoopbackCapture() override;
     HRESULT StartCaptureAsync(DWORD processId, bool includeProcessTree);
     HRESULT StopCaptureAsync();
 

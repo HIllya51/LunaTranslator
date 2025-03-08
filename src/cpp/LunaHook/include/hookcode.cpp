@@ -288,15 +288,20 @@ namespace
 			if (hp.codepage != 0)
 				RCode += std::to_wstring(hp.codepage) + L'#';
 		}
-		if (hp.jittype == JITTYPE::PCSX2)
+		switch (hp.jittype)
 		{
+		case JITTYPE::YUZU:
+			RCode += L'@' + HexString(hp.emu_addr) + L":EMUMEM:YUZU";
+			break;
+		case JITTYPE::PCSX2:
 			RCode += L'@' + HexString(hp.emu_addr) + L":EMUMEM:PCSX2";
-		}
-		else
-		{
+			break;
+		case JITTYPE::VITA3K:
+			RCode += L'@' + HexString(hp.emu_addr) + L":EMUMEM:VITA3K";
+			break;
+		default:
 			RCode += L'@' + HexString(hp.address);
 		}
-
 		return RCode;
 	}
 

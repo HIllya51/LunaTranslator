@@ -211,7 +211,7 @@ bool PCSX2::attach_function()
                     hpinternal.address = emu_addr(addr);
                     hpinternal.emu_addr = addr;
                     hpinternal.jittype = JITTYPE::PCSX2;
-                    hpinternal.type = op.type | USING_STRING;
+                    hpinternal.type = op.type;
                     hpinternal.codepage = 932;
                     hpinternal.text_fun = op.hookfunc;
                     hpinternal.filter_fun = op.filterfun;
@@ -330,6 +330,13 @@ namespace
         StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
         StringFilter(buffer, TEXTANDLEN("%n"));
     }
+    void FSLPM65997(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(#\w+?\[\d\])");
+        strReplace(s, "#n");
+        buffer->from(s);
+    }
     auto _ = []()
     {
         emfunctionhooks = {
@@ -348,6 +355,8 @@ namespace
             {0x268260, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPS25677, "SLPS-25677"}},
             // プリンセスラバー！ Eternal Love For My Lady [初回限定版]
             {0x92748C, {DIRECT_READ, 0, 0, 0, FSLPM55195, "SLPM-55195"}},
+            // 破滅のマルス
+            {0x308460, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-65997"}},
         };
         return 0;
     }();

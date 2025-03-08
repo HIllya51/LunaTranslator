@@ -356,6 +356,8 @@ namespace
         hp1->type |= HOOK_EMPTY;
         HookParam hp;
         hp.address = YUZU::emu_arg(context)[0xb];
+        hp.emu_addr = YUZU::emu_arg(context).value(0xb);
+        hp.jittype = JITTYPE::YUZU;
         hp.type = DIRECT_READ;
         hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
         {
@@ -370,7 +372,7 @@ namespace
             }
             last = s;
         };
-        static auto _ = NewHook(hp, "01000A7019EBC000");
+        NewHook(hp, "01000A7019EBC000");
     }
 
     void ReadTextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -2211,16 +2213,21 @@ namespace
         void F01009E600FAF6000(TextBuffer *buffer, HookParam *hpx)
         {
             auto s = buffer->strA();
-            HookParam hp;
-            hp.address = (uintptr_t)F01009E600FAF6000_collect;
-            hp.offset = GETARG(1);
-            hp.type = USING_STRING;
-            hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+
+            if (!hpx->user_value)
             {
-                StringFilter(buffer, TEXTANDLEN("@1r"));
-                StringFilter(buffer, TEXTANDLEN("@-1r"));
-            };
-            static auto _ = NewHook(hp, "01009E600FAF6000");
+                hpx->user_value = 1;
+                HookParam hp;
+                hp.address = (uintptr_t)F01009E600FAF6000_collect;
+                hp.offset = GETARG(1);
+                hp.type = USING_STRING;
+                hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+                {
+                    StringFilter(buffer, TEXTANDLEN("@1r"));
+                    StringFilter(buffer, TEXTANDLEN("@-1r"));
+                };
+                NewHook(hp, "01009E600FAF6000");
+            }
             static std::map<uint64_t, uintptr_t> mp;
             // 这个address会被触发两次。
             if (mp.find(hpx->emu_addr) == mp.end())
@@ -2400,14 +2407,18 @@ namespace
         void TT0100A4700BC98000(const char *_) {}
 #pragma optimize("", on)
 
-        void T0100A4700BC98000(TextBuffer *buffer, HookParam *)
+        void T0100A4700BC98000(TextBuffer *buffer, HookParam *hpx)
         {
             auto s = buffer->strA();
-            HookParam hp;
-            hp.address = (uintptr_t)TT0100A4700BC98000;
-            hp.offset = GETARG(1);
-            hp.type = CODEC_UTF8 | USING_STRING;
-            static auto _ = NewHook(hp, "0100A4700BC98000");
+            if (!hpx->user_value)
+            {
+                hpx->user_value = 1;
+                HookParam hp;
+                hp.address = (uintptr_t)TT0100A4700BC98000;
+                hp.offset = GETARG(1);
+                hp.type = CODEC_UTF8 | USING_STRING;
+                NewHook(hp, "0100A4700BC98000");
+            }
             TT0100A4700BC98000(s.c_str());
         }
     }
@@ -2416,16 +2427,19 @@ namespace
 #pragma optimize("", off)
         void F01006530151F0000_collect(const wchar_t *_) {}
 #pragma optimize("", on)
-        void F01006530151F0000(TextBuffer *buffer, HookParam *)
+        void F01006530151F0000(TextBuffer *buffer, HookParam *hpx)
         {
-
             auto s = buffer->strW();
             strReplace(s, L"/player");
-            HookParam hp;
-            hp.address = (uintptr_t)F01006530151F0000_collect;
-            hp.offset = GETARG(1);
-            hp.type = CODEC_UTF16 | USING_STRING;
-            static auto _ = NewHook(hp, "01006530151F0000");
+            if (!hpx->user_value)
+            {
+                hpx->user_value = 1;
+                HookParam hp;
+                hp.address = (uintptr_t)F01006530151F0000_collect;
+                hp.offset = GETARG(1);
+                hp.type = CODEC_UTF16 | USING_STRING;
+                NewHook(hp, "01006530151F0000");
+            }
             F01006530151F0000_collect(s.c_str());
             buffer->clear();
         }
@@ -3825,6 +3839,7 @@ namespace
             {0x8180c1e8, {CODEC_UTF16, 0, 0x14, 0, F01008A401FEB6000_2, 0x01008A401FEB6000ull, "1.0.0"}},
             // 流行り神 １
             {0x80056424, {0, 0, 0, T01000A7019EBC000, 0, 0x01000A7019EBC000ull, "1.0.0"}},
+            {0x800563D4, {0, 0, 0, T01000A7019EBC000, 0, 0x01000A7019EBC000ull, "1.0.1"}},
             // 流行り神２
             {0x8004BD58, {0, 3, 0, 0, F0100B4D019EBE000, 0x0100B4D019EBE000ull, "1.0.0"}}, // 单字符刷新一次，不可以快进，被快进的字符无法捕获
             // 流行り神 ３

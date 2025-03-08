@@ -22,7 +22,7 @@ def clipboard_set_image(p: QImage):
 
 
 @threader
-def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
+def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
     tmsp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
     if tocliponly:
         fname = ""
@@ -73,10 +73,11 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False):
     if not hwnd:
         return
     hwnd = windows.GetAncestor(hwnd)
-    p = safepixmap(winsharedutils.gdi_screenshot(hwnd))
-    callback(p, fname + "_gdi." + app)
+    if not usewgc:
+        p = safepixmap(winsharedutils.gdi_screenshot(hwnd))
+        callback(p, fname + "_gdi." + app)
     isshit = (not callback_origin) and (not tocliponly)
-    if p.isNull() or isshit:
+    if usewgc or (p.isNull() or isshit):
 
         @threader
         def _():

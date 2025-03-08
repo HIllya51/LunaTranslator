@@ -98,7 +98,7 @@ public:
         AddRef();
         return S_OK;
     }
-    virtual ~ComImpl() {}
+    virtual ~ComImpl() = default;
 };
 
 #ifdef WINXP

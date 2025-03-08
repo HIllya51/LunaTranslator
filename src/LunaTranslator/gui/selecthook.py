@@ -133,7 +133,7 @@ class searchhookparam(LDialog):
             # usestruct.codepage=self.codepage.value()
             usestruct.codepage = codepage_real[self.codepagesave["spcp"]]
             usestruct.text = self.searchtext.text()[:30]
-            if len(usestruct.text) < 4:
+            if len(usestruct.text) < 3:
                 QMessageBox.information(self, _TR("警告"), _TR("搜索文本过短！"))
                 return
         elif idx == 2:

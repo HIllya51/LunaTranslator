@@ -497,13 +497,17 @@ class AnkiWindow(QWidget):
             callback=functools.partial(self.crophide, False),
             callback2=functools.partial(self.crophide, True),
         )
-
-        grabwindowbtn = IconButton("fa.camera")
-        grabwindowbtn.clicked.connect(
-            lambda: grabwindow(
+        grabwindowbtn = getIconButton(
+            icon="fa.camera",
+            callback=lambda: grabwindow(
                 getimageformat(),
                 functools.partial(self.settextsignal.emit, self.editpath),
-            )
+            ),
+            callback2=lambda: grabwindow(
+                getimageformat(),
+                functools.partial(self.settextsignal.emit, self.editpath),
+                usewgc=True,
+            ),
         )
 
         def createtbn(target: QLineEdit):

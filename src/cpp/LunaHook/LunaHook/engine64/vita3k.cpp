@@ -220,11 +220,11 @@ namespace
     {
         hp1->text_fun = nullptr;
         hp1->type |= HOOK_EMPTY;
-        auto address = VITA3K::emu_arg(context)[0] + hp1->padding;
-        buffer->from((char *)address);
         HookParam hp;
-        hp.address = address;
+        hp.emu_addr = VITA3K::emu_arg(context).value(0) + hp1->padding;
+        hp.address = VITA3K::emu_addr(context, hp.emu_addr);
         hp.type = DIRECT_READ;
+        hp.jittype = JITTYPE ::VITA3K;
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
             static std::string last;
@@ -247,7 +247,7 @@ namespace
                 buffer->from(collect);
             last = collect;
         };
-        static auto _ = NewHook(hp, hp1->name);
+        NewHook(hp, hp1->name);
     }
     void ReadU16TextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
