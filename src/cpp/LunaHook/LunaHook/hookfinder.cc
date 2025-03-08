@@ -680,10 +680,17 @@ void SearchForText(wchar_t *text, UINT codepage)
 			NewHook(hp, "Search");
 		}
 	};
-	GenerateHooks(Util::SearchMemory(utf8Text, strlen(utf8Text), PAGE_READWRITE), CODEC_UTF8);
+	uintptr_t minaddr = 0;
+#ifdef _WIN64
+	if ((jittypedefault == JITTYPE::PCSX2))
+	{
+		minaddr = (uintptr_t)PCSX2Types::eeMem->Main;
+	}
+#endif
+	GenerateHooks(Util::SearchMemory(utf8Text, strlen(utf8Text), PAGE_READWRITE, minaddr), CODEC_UTF8);
 	if (codepage != CP_UTF8)
-		GenerateHooks(Util::SearchMemory(codepageText, strlen(codepageText), PAGE_READWRITE), USING_STRING);
-	GenerateHooks(Util::SearchMemory(text, wcslen(text) * sizeof(wchar_t), PAGE_READWRITE), CODEC_UTF16);
+		GenerateHooks(Util::SearchMemory(codepageText, strlen(codepageText), PAGE_READWRITE, minaddr), USING_STRING);
+	GenerateHooks(Util::SearchMemory(text, wcslen(text) * sizeof(wchar_t), PAGE_READWRITE, minaddr), CODEC_UTF16);
 	if (!found)
 		ConsoleOutput(TR[COULD_NOT_FIND]);
 }
