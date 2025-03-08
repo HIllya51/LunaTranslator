@@ -40,7 +40,7 @@
 #include "engine32/Bishop.h"
 #include "engine32/HXP.h"
 #include "engine32/morning.h"
-#include "engine32/IGScript.h"
+#include "engine32/LucaSystem.h"
 #include "engine32/TSSystem.h"
 #include "engine32/ScrPlayer.h"
 #include "engine32/Aksys.h"
@@ -340,7 +340,7 @@ std::vector<ENGINE *> check_engines()
         new Nitroplusplus,
         new Jellyfish,
         new SYSD,
-        new IGScript,
+        new LucaSystem,
         new ScrPlayer,
         new ElfFunClubFinal,
         new Aksys,

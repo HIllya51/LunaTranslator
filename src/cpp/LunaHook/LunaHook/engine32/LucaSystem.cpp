@@ -1,9 +1,35 @@
-#include "IGScript.h"
+﻿#include "LucaSystem.h"
 namespace
 {
-  void LucaSystemFilter1(TextBuffer *buffer, HookParam *)
+  void LucaSystemFilter(TextBuffer *buffer, HookParam *)
   {
-    StringFilter(buffer, TEXTANDLEN("\x81\x94"));
+    auto ws = buffer->strAW();
+    strReplace(ws, L"＃", L"");
+    strReplace(ws, L"＄", L" ");
+    // replacement from Flowers 4 config.json
+    strReplace(ws, L"\xA5", L" ");
+    strReplace(ws, L"\xA2", L"<");
+    strReplace(ws, L"\xA3", L">");
+    strReplace(ws, L"\xA1", L"\"");
+    strReplace(ws, L"\xA4", L"\'");
+    strReplace(ws, L"\xA7", L"à");
+    strReplace(ws, L"\xA8", L"è");
+    strReplace(ws, L"\xA9", L"é");
+    strReplace(ws, L"\xAA", L"ë");
+    strReplace(ws, L"\xAB", L"ō");
+    strReplace(ws, L"\xB0", L"-");
+    strReplace(ws, L"\xBB", L" ");
+
+    while (ws.find(L"  ") != ws.npos) // Erasing all but one whitespace from strings
+      strReplace(ws, L"  ", L" ");
+
+    ws = re::sub(ws, LR"(<(.*?)<(.*?)>)", L"$1");
+    buffer->fromWA(ws);
+  }
+
+  void LucaSystemFilter1(TextBuffer *buffer, HookParam *hp)
+  {
+    LucaSystemFilter(buffer, hp);
     // 秋&冬  官中
     StringReplacer(buffer, TEXTANDLEN("\x82\xa1"), TEXTANDLEN("\xa3\xac")); // ，
     StringReplacer(buffer, TEXTANDLEN("\x82\xa3"), TEXTANDLEN("\xa1\xa3")); // 。
@@ -63,8 +89,8 @@ bool IGScript1attach_function()
   bool insertgbk = memcmp(funcstart, (LPVOID *)addr, 5) == 0;
   hp.text_fun = SpecialHookigi<2>;
   hp.type = NO_CONTEXT;
-  // hp.filter_fun=LucaSystemFilter1;
-  bool succ = NewHook(hp, "IGScript");
+  hp.filter_fun = LucaSystemFilter;
+  bool succ = NewHook(hp, "LucaSystem");
 
   if (insertgbk)
   {
@@ -72,41 +98,12 @@ bool IGScript1attach_function()
     hp.text_fun = SpecialHookigi<5>;
     // 仅官中适用这个过滤器。日语原版不需要过滤
     hp.filter_fun = LucaSystemFilter1;
-    succ |= NewHook(hp, "IGScript_1");
+    succ |= NewHook(hp, "LucaSystem_chs");
   }
   return succ;
 }
 namespace
 {
-  void LucaSystemFilter(TextBuffer *buffer, HookParam *)
-  {
-    auto text = reinterpret_cast<LPSTR>(buffer->buff);
-
-    if (text[0] == '\x81' && text[1] == '\x94')
-      return buffer->clear();
-
-    StringCharReplacer(buffer, TEXTANDLEN("\x81\x90"), ' '); // new line
-    // replacement from Flowers 4 config.json
-    CharReplacer(buffer, '\xA5', ' ');
-    CharReplacer(buffer, '\xA2', '<');
-    CharReplacer(buffer, '\xA3', '>');
-    CharReplacer(buffer, '\xA1', '\"');
-    CharReplacer(buffer, '\xA4', '\'');
-    CharReplacer(buffer, '\xA7', 'à');
-    CharReplacer(buffer, '\xA8', 'è');
-    CharReplacer(buffer, '\xA9', 'é');
-    CharReplacer(buffer, '\xAA', 'ë');
-    CharReplacer(buffer, '\xAB', 'ō');
-    CharReplacer(buffer, '\xB0', '-');
-    CharReplacer(buffer, '\xBB', ' ');
-
-    while (cpp_strnstr(text, "  ", buffer->size)) // Erasing all but one whitespace from strings
-      StringCharReplacer(buffer, TEXTANDLEN("  "), ' ');
-
-    if (text[0] == ' ')
-      ::memmove(text, text + 1, --buffer->size);
-  }
-
   bool InsertLucaSystemHook()
   {
 
@@ -142,7 +139,6 @@ namespace
       addr = MemDbg::findBytes(bytes2, sizeof(bytes2), minAddress, maxAddress);
       if (!addr)
       {
-        ConsoleOutput("LucaSystem: pattern not found");
         return false;
       }
     }
@@ -157,7 +153,7 @@ namespace
     return NewHook(hp, "LucaSystem");
   }
 }
-bool IGScript::attach_function()
+bool LucaSystem::attach_function()
 {
 
   auto b1 = IGScript1attach_function();

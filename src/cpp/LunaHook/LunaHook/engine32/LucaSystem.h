@@ -1,9 +1,9 @@
 
 
-class IGScript : public ENGINE
+class LucaSystem : public ENGINE
 {
 public:
-    IGScript()
+    LucaSystem()
     {
 
         check_by = CHECK_BY::CUSTOM;

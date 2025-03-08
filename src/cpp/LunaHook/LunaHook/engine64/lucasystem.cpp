@@ -40,7 +40,7 @@ bool InsertIG64Hook2()
     hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW; // 可以内嵌英文
     hp.filter_fun = IG64filter;
     hp.offset = regoffset(rdx); // rdx
-    ok |= NewHook(hp, "IG642");
+    ok |= NewHook(hp, "LucaSystem");
   }
   return ok;
 }
