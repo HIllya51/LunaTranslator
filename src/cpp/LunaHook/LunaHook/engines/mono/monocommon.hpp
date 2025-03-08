@@ -76,6 +76,7 @@ namespace monocommon
         decltype(HookParam::text_fun) text_fun = nullptr;
         bool Embed = false;
         bool isstring = true;
+        const wchar_t *lineSeparator = nullptr;
         std::string hookname()
         {
             char tmp[1024];
@@ -95,6 +96,7 @@ namespace monocommon
         HookParam hp;
         hp.address = addr;
         hp.offset = hook.offset;
+        hp.lineSeparator = hook.lineSeparator;
         hp.text_fun = (decltype(hp.text_fun))hook.text_fun;
         if (hook.isstring)
         {
@@ -147,6 +149,10 @@ namespace monocommon
         {"Assembly-CSharp", "Assets.Scripts.Core.TextWindow", "TextController", "SetText", 4, 3, nullptr, true},
         // 逆転裁判123 成歩堂セレクション
         {"Assembly-CSharp", "", "MessageText", "Append", 1, 2, nullptr, false, false},
+#ifdef _WIN64
+        // 神託の使徒×終焉の女神
+        {"Assembly-CSharp", "", "TextManager", "SetText", 1, 2, nullptr, true, true, LR"(\n)"},
+#endif
     };
     bool hook_mono_il2cpp()
     {

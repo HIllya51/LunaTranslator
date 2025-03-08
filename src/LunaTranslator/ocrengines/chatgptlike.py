@@ -38,6 +38,27 @@ class OCR(baseocr):
     def createheaders(self):
         return {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
 
+    def ocr_mistral(self, _, base64_image):
+        payload = {
+            "model": self.config["model"],
+            "document": {
+                "type": "image_url",
+                "image_url": f"data:image/jpeg;base64,{base64_image}",
+            },
+        }
+        response = self.proxysession.post(
+            "https://api.mistral.ai/v1/ocr",
+            headers=self.createheaders(),
+            json=payload,
+        )
+        try:
+            texts = []
+            for pages in response.json()["pages"]:
+                texts.append(pages["markdown"])
+            return {"text": texts}
+        except:
+            raise Exception(response)
+
     def ocr_gemini(self, prompt, base64_image):
         payload = {
             "contents": [
@@ -125,6 +146,8 @@ class OCR(baseocr):
             "https://generativelanguage.googleapis.com"
         ):
             response = self.ocr_gemini(prompt, base64_image)
+        elif self.config["apiurl"].startswith("https://api.mistral.ai/v1"):
+            return self.ocr_mistral(prompt, base64_image)
         else:
             response = self.ocr_normal(prompt, base64_image)
         return common_parse_normal_response(response, self.config["apiurl"])

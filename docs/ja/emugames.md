@@ -122,7 +122,8 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | 010037400DAAE000 | Brothers Conflict: Precious Baby |
 |  | 010021300F69E000 | 絶対階級学園 ~Eden with roses and phantasm~ |
 |  | 010050000705E000 | Dragon Quest Builders 2 |
-|  | 010037400DAAE000 | BUSTAFELLOWS シーズン2 |
+|  | 010060800B7A8000 | BUSTAFELLOWS |
+|  | 0100874017BE2000 | BUSTAFELLOWS シーズン2 |
 |  | 010094601D910000 | 5分後に意外な結末　モノクロームの図書館 |
 |  | 010024200E00A000 | うたの☆プリンスさまっ♪ Repeat LOVE |
 |  | 01000C7019E1C000 | ワンド オブ フォーチュン Ｒ～ for Nintendo Switch |
@@ -193,7 +194,6 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | 01002AE00F442000 | FLOWERS 四季 |
 |  | 01000A400AF2A000 | 最悪なる災厄人間に捧ぐ |
 |  | 01006B5014E2E000 | 神様のような君へ |
-|  | 010060800B7A8000 | BUSTAFELLOWS |
 |  | 01001B900C0E2000 | 猛獣使いと王子様 ～Flower ＆ Snow～ for Nintendo Switch |
 |  | 010007500F27C000 | Detective Pikachu Returns |
 |  | 0100217014266000 | Dragon Quest Treasures |
@@ -632,6 +632,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | ULJM06171 | TOKYOヤマノテBOYS Portable HONEY MILK DISC |
 |  | ULJM05986 | アンジェリーク 魔恋の六騎士 |
 |  | NPJH50689 | MISSINGPARTS the TANTEI stories Complete |
+|  | ULJM05659 | Canvas3 ～七色の奇跡～ |
 
 == PSV
 

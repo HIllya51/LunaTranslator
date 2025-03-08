@@ -1882,10 +1882,10 @@ namespace
     }
     void F0100874017BE2000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
-        s = re::sub(s, (L"\\n+|(\\\\n)+"), L" ");
-        s = re::sub(s, (L"#n"));
+        s = re::sub(s, (L"\\n+|(\\\\n)+"));
+        strReplace(s, (L"#n"));
+        strReplace(s, (L"　"));
         buffer->from(s);
     }
     void F010094601D910000(TextBuffer *buffer, HookParam *hp)
@@ -3026,12 +3026,18 @@ namespace
             {0x80713be0, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Mission3
             {0x8076ab04, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Tutorial header
             {0x8076ab2c, {CODEC_UTF8, 1, 0, 0, F010050000705E000, 0x010050000705E000ull, "1.7.3"}}, // Tutorial explanation
+            // BUSTAFELLOWS
+            {0x80191b18, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Dialogue
+            {0x80191f88, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Choice
+            {0x801921a4, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Choice 2
+            {0x801935f0, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // option
             // BUSTAFELLOWS シーズン2
-            {0x819ed3e4, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // dialogue
-            {0x82159cd0, {CODEC_UTF16, 1, 0, ReadTextAndLenW, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // textmessage
-            {0x81e17530, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // option
-            {0x81e99d64, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // choice
-            {0x8186f81c, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010037400DAAE000ull, "1.0.0"}}, // archives
+            {0x819ed3e4, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.0"}}, // dialogue
+            {0x82159cd0, {CODEC_UTF16, 1, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.0"}}, // textmessage
+            {0x81e17530, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.0"}}, // option
+            {0x81e99d64, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.0"}}, // choice
+            {0x8186f81c, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.0"}}, // archives
+            {0x819ED7C8, {CODEC_UTF16, 1, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.2"}},
             // 5分後に意外な結末　モノクロームの図書館
             {0x81fa4890, {CODEC_UTF16, 1, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // book text
             {0x81fa5250, {CODEC_UTF16, 1, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // book text
@@ -3203,7 +3209,7 @@ namespace
             {0x805c9014, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, 0x010029B018432000ull, "1.0.0"}}, // Story/Character Info
             // ひぐらしのなく頃に奉
             {0x800bd6c8, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, "1.0.0"}}, // sjis
-            {0x800c2d20, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, "1.2.0"}}, // sjis
+            {0x800c2d20, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, nullptr}}, //  1.2.0 && 2.0.2
             // うみねこのなく頃に咲 ～猫箱と夢想の交響曲～
             {0x800b4560, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 name + text (bottom, center) - whole line. filter is to complex, quit.
             {0x801049c0, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 prompt, bottomLeft
@@ -3451,11 +3457,6 @@ namespace
             {0x8034EB44, {CODEC_UTF16, 8, 0, 0, F01000A400AF2A000, 0x01000A400AF2A000ull, "1.0.0"}}, // text
             // 神様のような君へ
             {0x80487CD0, {CODEC_UTF8, 0, 0, 0, F01006B5014E2E000, 0x01006B5014E2E000ull, "1.0.0"}}, // text
-            // BUSTAFELLOWS
-            {0x80191b18, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Dialogue
-            {0x80191f88, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Choice
-            {0x801921a4, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // Choice 2
-            {0x801935f0, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x010060800B7A8000ull, "1.1.3"}}, // option
             // 猛獣使いと王子様 ～Flower ＆ Snow～ for Nintendo Switch
             {0x800a1a10, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, 0x01001B900C0E2000ull, "1.0.0"}}, // Dialogue 1
             {0x80058f80, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, 0x01001B900C0E2000ull, "1.0.0"}}, // Dialogue 2

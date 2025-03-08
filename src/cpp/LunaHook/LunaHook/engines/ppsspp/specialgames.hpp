@@ -46,7 +46,12 @@ namespace ppsspp
 		strReplace(result, "cr");
 		buffer->from(result);
 	}
-	void ULJS00403_filter(TextBuffer *buffer, HookParam *hp)
+	void ULJM05659(TextBuffer *buffer, HookParam *hp)
+	{
+		if (buffer->buff[buffer->size - 1] == ',')
+			buffer->size -= 1;
+	}
+	void ULJS00403(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string result = buffer->strA();
 		result = re::sub(result, R"((\\n)+)");
@@ -1471,7 +1476,7 @@ namespace ppsspp
 		// 流行り神３
 		{0x885CB50, {0, 3, 0, 0, 0, "ULJS00204"}},
 		// 死神と少女
-		{0x883bf34, {0, 1, 0, 0, ULJS00403_filter, "ULJS00403"}},
+		{0x883bf34, {0, 1, 0, 0, ULJS00403, "ULJS00403"}},
 		// アマガミ
 		{0x0886775c, {0, 0, 0, ULJS00339, 0, "ULJS00339"}}, // String.length()
 		// 世界でいちばんNG（だめ）な恋
@@ -2111,5 +2116,7 @@ namespace ppsspp
 		{0x889CBC8, {0, 1, 0, 0, ULJM06129, "ULJM05986"}},
 		// MISSINGPARTS the TANTEI stories Complete
 		{0x883F9F4, {0, 1, 0, TNPJH50689, NPJH50689, "NPJH50689"}},
+		// Canvas3 ～七色の奇跡～
+		{0x886000C, {0, 0, 0, 0, ULJM05659, "ULJM05659"}},
 	};
 }
