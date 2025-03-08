@@ -2,17 +2,17 @@
     "language": "zh-hans",
     "theme": 0,
     "windowPos": {
-        "centerX": 860.0,
-        "centerY": 855.5,
+        "centerX": 1708.0,
+        "centerY": 859.0,
         "width": 998.6666870117188,
-        "height": 494.0,
+        "height": 806.6666870117188,
         "maximized": false
     },
     "shortcuts": {
         "scale": 593,
+        "windowedModeScale": 2385,
         "overlay": 2372
     },
-    "autoRestore": false,
     "countdownSeconds": 3,
     "developerMode": false,
     "debugMode": false,
@@ -136,7 +136,6 @@
             },
             "frameRateLimiterEnabled": false,
             "maxFrameRate": 60.0,
-            "disableWindowResizing": false,
             "3DGameMode": false,
             "showFPS": true,
             "captureTitleBar": false,
