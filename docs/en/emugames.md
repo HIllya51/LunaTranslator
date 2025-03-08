@@ -680,6 +680,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | PCSG00472 | DIABOLIK LOVERS VANDEAD CARNIVAL |
 |  | PCSG00910 | DIABOLIK LOVERS LOST EDEN |
 |  | PCSG00826 | DIABOLIK LOVERS LUNATIC PARADE |
+|  | PCSG00272 | DIABOLIK LOVERS LIMITED V EDITION |
 |  | PCSG00833 | Norn9 ~Norn + Nonette~ Act Tune |
 |  | PCSG00431 | NORN9 VAR COMMONS |
 |  | PCSG01011 | 空蝉の廻 |
