@@ -3898,6 +3898,9 @@ namespace
             {0x800D4B80, {CODEC_UTF16, 8, 0, 0, F01003B300E4AA000, 0x01003B300E4AA000ull, "1.0.0"}},  // ja
             {0x800A25E0, {CODEC_UTF8, 8, 0, 0, F0100943010310000, 0x01003B300E4AA000ull, "1.0.2"}},   // en
             {0x800A3EB0, {CODEC_UTF16, 8, 0, 0, F01003B300E4AA000, 0x01003B300E4AA000ull, "1.0.2"}},  // ja
+            // りゅうおうのおしごと！
+            {0x805F5A00, {CODEC_UTF16, 0xc, 0, 0, NewLineCharFilterW, 0x010033100EE12000ull, "1.0"}},
+            {0x805D5710, {CODEC_UTF16, 0xc, 0, 0, NewLineCharFilterW, 0x010033100EE12000ull, "1.0.3"}},
 
         };
         return 1;
