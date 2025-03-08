@@ -167,6 +167,16 @@ namespace
         hpinternal.jittype = JITTYPE::PCSX2;
         NewHook(hpinternal, op._id);
     }
+    std::set<uint32_t> recRecompileReady;
+}
+bool PCSX2_UserHook_delayinsert(uint32_t addr)
+{
+    if (recRecompileReady.find(addr) == recRecompileReady.end())
+    {
+        SafeAddBreakPoint(addr);
+        return true;
+    }
+    return false;
 }
 bool PCSX2::attach_function()
 {
@@ -217,8 +227,10 @@ bool PCSX2::attach_function()
                     std::lock_guard _(maplock);
                     if (emuaddr2jitaddr.find(startpc) == emuaddr2jitaddr.end())
                         return;
+                    recRecompileReady.insert(startpc);
                     auto fnptr = emuaddr2jitaddr[startpc].second;
                     CheckForHook(startpc, fnptr);
+                    delayinsertNewHook(startpc);
                 };
                 NewHook(hpinternal, "Ret");
             }

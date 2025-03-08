@@ -302,6 +302,9 @@ void delayinsertNewHook(uint64_t em_address)
 	_delayinserthook->erase(em_address);
 	NewHook(h.second, h.first.c_str());
 }
+#ifdef _WIN64
+bool PCSX2_UserHook_delayinsert(uint32_t);
+#endif
 bool NewHook(HookParam hp, LPCSTR name)
 {
 	if (hp.address || hp.jittype == JITTYPE::PC)
@@ -338,11 +341,20 @@ bool NewHook(HookParam hp, LPCSTR name)
 		return NewHook_1(hp, name);
 	}
 	std::lock_guard _(maplock);
-	// 下面的是手动插入
-	if (emuaddr2jitaddr.find(hp.emu_addr) == emuaddr2jitaddr.end())
+// 下面的是手动插入
+#ifdef _WIN64
+	if ((hp.jittype == JITTYPE::PCSX2) && PCSX2_UserHook_delayinsert(hp.emu_addr))
 	{
-		delayinsertadd(hp, name);
 		return true;
+	}
+	else
+#endif
+	{
+		if (emuaddr2jitaddr.find(hp.emu_addr) == emuaddr2jitaddr.end())
+		{
+			delayinsertadd(hp, name);
+			return true;
+		}
 	}
 	strcpy(hp.function, "");
 	wcscpy(hp.module, L"");
