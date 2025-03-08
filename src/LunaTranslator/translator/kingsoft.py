@@ -1,12 +1,13 @@
 from translator.basetranslator import basetrans
 from myutils.config import _TR
 import os, time
-import windows, winsharedutils
+import windows, winsharedutils, threading
 from language import Languages
 
 
 class TS(basetrans):
     def inittranslator(self):
+        self.lock = threading.Lock()
         self.path11 = None
         self.pair = None
         self.checkpath()
@@ -61,15 +62,16 @@ class TS(basetrans):
             )
         return True
 
-    def translate(self, content):
-        if self.checkpath() == False:
+    def translate(self, content: str):
+        if not self.checkpath():
             raise Exception(_TR("翻译器加载失败"))
         ress = []
         for line in content.split("\n"):
             if len(line) == 0:
                 continue
-            windows.WriteFile(self.hPipe, line.encode("utf-16-le"))
-            x = windows.ReadFile(self.hPipe, 4096)
+            with self.lock:
+                windows.WriteFile(self.hPipe, line.encode("utf-16-le"))
+                x = windows.ReadFile(self.hPipe, 4096)
             ress.append(x.decode("utf-16-le"))
 
         return "\n".join(ress)

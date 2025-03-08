@@ -1,14 +1,14 @@
 from translator.basetranslator import basetrans
 import ctypes
 import os, time
-import windows, winsharedutils
+import windows, winsharedutils, threading
 from myutils.config import _TR
 from language import Languages
 
 
 class TS(basetrans):
     def inittranslator(self):
-
+        self.lock = threading.Lock()
         self.path = None
         self.userdict = None
         self.checkpath()
@@ -64,7 +64,7 @@ class TS(basetrans):
             )
         return True
 
-    def translate(self, content):
+    def translate(self, content: str):
         if self.tgtlang not in ["936", "950"]:
             return ""
         if self.checkpath() == False:
@@ -76,9 +76,10 @@ class TS(basetrans):
             if len(line) == 0:
                 continue
             code1 = line.encode("utf-16-le")
-            windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(int(self.tgtlang))))
-            windows.WriteFile(self.hPipe, code1)
-            xx = windows.ReadFile(self.hPipe, 65535)
+            with self.lock:
+                windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(int(self.tgtlang))))
+                windows.WriteFile(self.hPipe, code1)
+                xx = windows.ReadFile(self.hPipe, 65535)
             xx = xx.decode("utf-16-le", errors="ignore")
             ress.append(xx)
         return "\n".join(ress)

@@ -1,12 +1,12 @@
 from translator.basetranslator import basetrans
 from myutils.config import _TR
-import os, time
+import os, time, threading
 import windows, ctypes, winsharedutils
 
 
 class TS(basetrans):
     def inittranslator(self):
-
+        self.lock = threading.Lock()
         self.path = None
         self.userdict = None
         self.checkpath()
@@ -50,15 +50,16 @@ class TS(basetrans):
             )
         return True
 
-    def translate(self, content):
+    def translate(self, content: str):
 
-        if self.checkpath() == False:
+        if not self.checkpath():
             raise Exception(_TR("翻译器加载失败"))
         content = content.replace("\r", "\n")
 
         code1 = content.encode("utf-16-le")
-        windows.WriteFile(self.hPipe, code1)
-        size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-        if not size:
-            raise Exception("not installed")
-        return windows.ReadFile(self.hPipe, size).decode("utf-16-le")
+        with self.lock:
+            windows.WriteFile(self.hPipe, code1)
+            size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+            if not size:
+                raise Exception("not installed")
+            return windows.ReadFile(self.hPipe, size).decode("utf-16-le")

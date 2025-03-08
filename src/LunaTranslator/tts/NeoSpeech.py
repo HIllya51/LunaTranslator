@@ -1,6 +1,6 @@
 import time
 import os
-import windows, winsharedutils
+import windows, winsharedutils, threading
 from tts.basettsclass import TTSbase, SpeechParam
 import ctypes, subprocess, gobject
 from ctypes import cast, POINTER, c_char, c_int32
@@ -8,6 +8,7 @@ from ctypes import cast, POINTER, c_char, c_int32
 
 class TTS(TTSbase):
     def init(self):
+        self.lock = threading.Lock()
         exepath = os.path.join(os.getcwd(), "files/plugins/shareddllproxy32.exe")
         t = time.time()
         t = str(t)
@@ -66,12 +67,13 @@ class TTS(TTSbase):
             vis.append(datas[i * 3])
         return internal, vis
 
-    def speak(self, content, voice, param: SpeechParam):
+    def speak(self, content: str, voice, param: SpeechParam):
         hkey, idx = voice
-        windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(param.speed)))
-        windows.WriteFile(self.hPipe, content.encode("utf-16-le"))
-        windows.WriteFile(self.hPipe, hkey.encode("utf-16-le"))
-        windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(int(idx))))
-        size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+        with self.lock:
+            windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(param.speed)))
+            windows.WriteFile(self.hPipe, content.encode("utf-16-le"))
+            windows.WriteFile(self.hPipe, hkey.encode("utf-16-le"))
+            windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(int(idx))))
+            size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
 
-        return cast(self.mem, POINTER(c_char))[:size]
+            return cast(self.mem, POINTER(c_char))[:size]

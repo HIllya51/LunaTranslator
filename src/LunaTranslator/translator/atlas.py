@@ -1,11 +1,11 @@
 from translator.basetranslator import basetrans
 import ctypes, time
-import windows, winsharedutils
+import windows, winsharedutils, threading
 
 
 class TS(basetrans):
     def inittranslator(self):
-
+        self.lock = threading.Lock()
         t = time.time()
         t = str(t)
         pipename = "\\\\.\\Pipe\\dreye_" + t
@@ -33,12 +33,12 @@ class TS(basetrans):
             )
         )
 
-    def translate(self, content):
-
+    def translate(self, content: str):
         l = content.encode("utf-16-le")
-        windows.WriteFile(self.hPipe, bytes(ctypes.c_int(len(l))))
-        windows.WriteFile(self.hPipe, l)
-        size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-        if not size:
-            raise Exception("not installed")
-        return windows.ReadFile(self.hPipe, size).decode("utf-16-le")
+        with self.lock:
+            windows.WriteFile(self.hPipe, bytes(ctypes.c_int(len(l))))
+            windows.WriteFile(self.hPipe, l)
+            size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+            if not size:
+                raise Exception("not installed")
+            return windows.ReadFile(self.hPipe, size).decode("utf-16-le")

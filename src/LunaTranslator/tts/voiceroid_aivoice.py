@@ -4,7 +4,7 @@ import windows, winsharedutils
 from tts.basettsclass import TTSbase, SpeechParam
 from ctypes import cast, POINTER, c_char, c_int32, c_float
 import xml.etree.ElementTree as ET
-import hashlib, zlib
+import hashlib, zlib, threading
 from traceback import print_exc
 
 
@@ -85,6 +85,7 @@ class TTS(TTSbase):
                 return os.path.abspath(dll)
 
     def init(self):
+        self.lock = threading.Lock()
         # voiceroid+ & voiceroid2 & AIVoice -> aitalked.dll
         # AIVoice2 -> aitalk_engine.dll
         dllpath = self.findtarget(self.config["path"])
@@ -158,8 +159,7 @@ class TTS(TTSbase):
             x = 0.05 * x + 1.0
         return x
 
-    def speak(self, content, voice, speed: SpeechParam):
-
+    def speak(self, content: str, voice: str, speed: SpeechParam):
         __ = []
         for c in content:
             try:
@@ -169,13 +169,14 @@ class TTS(TTSbase):
         code1 = b"".join(__)
         if not code1:
             return
-        windows.WriteFile(self.hPipe, voice.encode())
-        windows.WriteFile(self.hPipe, self.cacheDialect[self.voice].encode())
-        windows.WriteFile(self.hPipe, bytes(c_float(self.linear_map(speed.speed))))
-        windows.WriteFile(self.hPipe, bytes(c_float(self.linear_map2(speed.pitch))))
-        windows.WriteFile(self.hPipe, code1)
+        with self.lock:
+            windows.WriteFile(self.hPipe, voice.encode())
+            windows.WriteFile(self.hPipe, self.cacheDialect[self.voice].encode())
+            windows.WriteFile(self.hPipe, bytes(c_float(self.linear_map(speed.speed))))
+            windows.WriteFile(self.hPipe, bytes(c_float(self.linear_map2(speed.pitch))))
+            windows.WriteFile(self.hPipe, code1)
 
-        size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-        if size == 0:
-            return None
-        return cast(self.mem, POINTER(c_char))[:size]
+            size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
+            if size == 0:
+                return None
+            return cast(self.mem, POINTER(c_char))[:size]

@@ -1,12 +1,13 @@
 from translator.basetranslator import basetrans
 from myutils.config import _TR
 import os, time
-import windows, winsharedutils
+import windows, winsharedutils, threading
 from language import Languages
 
 
 class TS(basetrans):
     def inittranslator(self):
+        self.lock = threading.Lock()
         self.path = None
         self.pair = None
         self.checkpath()
@@ -59,9 +60,9 @@ class TS(basetrans):
             )
         return True
 
-    def translate(self, content):
+    def translate(self, content: str):
 
-        if self.checkpath() == False:
+        if not self.checkpath():
             raise Exception(_TR("翻译器加载失败"))
         codes = {
             Languages.Chinese: "gbk",
@@ -72,6 +73,9 @@ class TS(basetrans):
         for line in content.split("\n"):
             if len(line) == 0:
                 continue
-            windows.WriteFile(self.hPipe, line.encode(codes[self.srclang]))
-            ress.append(windows.ReadFile(self.hPipe, 4096).decode(codes[self.tgtlang]))
+            with self.lock:
+                windows.WriteFile(self.hPipe, line.encode(codes[self.srclang]))
+                ress.append(
+                    windows.ReadFile(self.hPipe, 4096).decode(codes[self.tgtlang])
+                )
         return "\n".join(ress)
