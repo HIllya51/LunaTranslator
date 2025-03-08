@@ -343,9 +343,20 @@ bool NewHook(HookParam hp, LPCSTR name)
 	std::lock_guard _(maplock);
 // 下面的是手动插入
 #ifdef _WIN64
-	if ((hp.jittype == JITTYPE::PCSX2) && PCSX2_UserHook_delayinsert(hp.emu_addr))
+	if (hp.jittype == JITTYPE::PCSX2)
 	{
-		return true;
+		if (hp.type & DIRECT_READ)
+		{
+			hp.address = PCSX2Types::emu_addr(hp.emu_addr);
+			return NewHook_1(hp, name);
+		}
+		else if (PCSX2_UserHook_delayinsert(hp.emu_addr))
+			return true;
+		else if (emuaddr2jitaddr.find(hp.emu_addr) == emuaddr2jitaddr.end())
+		{
+			delayinsertadd(hp, name);
+			return true;
+		}
 	}
 	else
 #endif

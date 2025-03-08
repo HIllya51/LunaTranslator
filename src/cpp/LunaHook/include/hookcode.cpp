@@ -33,7 +33,12 @@ namespace
 			hp.codepage = std::stoi(match[1]);
 			RCode.erase(0, match[0].length());
 		}
-
+		if (std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+):EMUMEM:PCSX2")))
+		{
+			hp.emu_addr = std::stoull(match[1], nullptr, 16);
+			hp.jittype = JITTYPE::PCSX2;
+			return hp;
+		}
 		// @addr
 		if (!std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+)")))
 			return {};
@@ -283,8 +288,14 @@ namespace
 			if (hp.codepage != 0)
 				RCode += std::to_wstring(hp.codepage) + L'#';
 		}
-
-		RCode += L'@' + HexString(hp.address);
+		if (hp.jittype == JITTYPE::PCSX2)
+		{
+			RCode += L'@' + HexString(hp.emu_addr) + L":EMUMEM:PCSX2";
+		}
+		else
+		{
+			RCode += L'@' + HexString(hp.address);
+		}
 
 		return RCode;
 	}

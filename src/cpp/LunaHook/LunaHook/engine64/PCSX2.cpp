@@ -209,6 +209,8 @@ bool PCSX2::attach_function()
                 {
                     HookParam hpinternal;
                     hpinternal.address = emu_addr(addr);
+                    hpinternal.emu_addr = addr;
+                    hpinternal.jittype = JITTYPE::PCSX2;
                     hpinternal.type = op.type | USING_STRING;
                     hpinternal.codepage = 932;
                     hpinternal.text_fun = op.hookfunc;
