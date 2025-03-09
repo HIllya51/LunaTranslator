@@ -797,6 +797,8 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPS-25677 | ブラッドプラス ワン ナイト キス |
 |  | SLPM-55195 | プリンセスラバー！ Eternal Love For My Lady [初回限定版] |
 |  | SLPM-65997 | 破滅のマルス |
+|  | SLPS-25385 | フレンズ ～青春の輝き～ |
+|  | SLPM-66399 | SAMURAI 7 |
 
 == PS3
 

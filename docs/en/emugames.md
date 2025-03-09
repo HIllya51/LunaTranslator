@@ -797,6 +797,8 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPS-25677 | ブラッドプラス ワン ナイト キス |
 |  | SLPM-55195 | プリンセスラバー！ Eternal Love For My Lady [初回限定版] |
 |  | SLPM-65997 | 破滅のマルス |
+|  | SLPS-25385 | フレンズ ～青春の輝き～ |
+|  | SLPM-66399 | SAMURAI 7 |
 
 == PS3
 

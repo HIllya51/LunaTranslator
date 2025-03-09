@@ -357,6 +357,10 @@ namespace
             {0x92748C, {DIRECT_READ, 0, 0, 0, FSLPM55195, "SLPM-55195"}},
             // 破滅のマルス
             {0x308460, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-65997"}},
+            // フレンズ ～青春の輝き～
+            {0x456048, {DIRECT_READ, 0, 0, 0, 0, "SLPS-25385"}},
+            // SAMURAI 7
+            {0x190FDac, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66399"}},
         };
         return 0;
     }();
