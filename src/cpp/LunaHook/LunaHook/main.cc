@@ -115,6 +115,8 @@ DWORD WINAPI Pipe(LPVOID)
 
 void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T *buffer, int len)
 {
+	if (!len)
+		return;
 	memcpy(&buffer->tp, &tp, sizeof(tp));
 	memcpy(&buffer->hp, &hp, sizeof(hp));
 	WriteFile(hookPipe, buffer, sizeof(TextOutput_T) + len, DUMMY, nullptr);

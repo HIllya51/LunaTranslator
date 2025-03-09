@@ -507,8 +507,7 @@ void TextHook::Read()
 			while ((!(hp.type & HOOK_EMPTY)) && (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT))
 			{
 				hp.text_fun(0, &hp, &buff, &split);
-				if (buff.size)
-					TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
+				TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
 			}
 		}
 		else
