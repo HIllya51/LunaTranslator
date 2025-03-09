@@ -247,7 +247,7 @@ int is_valid_following_byte(unsigned char byte)
 {
   return (byte & 0xC0) == 0x80; // 10xxxxxx
 }
-int utf8charlen(char *str)
+int utf8charlen(const char *str)
 {
   if ((!str) || (!*str))
     return 0;
@@ -286,6 +286,19 @@ int utf8charlen(char *str)
     }
   }
   return 0; // 不是有效的UTF-8序列
+}
+
+bool isStringUtf8(const std::string_view str)
+{
+  size_t len = 0;
+  while (len < str.size())
+  {
+    auto l = utf8charlen(len + str.data());
+    if (!l)
+      break;
+    len += l;
+  }
+  return len == str.size();
 }
 std::string wcasta(const std::wstring &x)
 {

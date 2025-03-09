@@ -148,7 +148,8 @@ CharT *strncpyEx(CharT *s, const CharT *r, size_t sz)
   return nullptr;
 }
 
-int utf8charlen(char *data);
+int utf8charlen(const char *str);
+bool isStringUtf8(const std::string_view str);
 inline bool disable_mbwc = false;
 inline bool disable_wcmb = false;
 template <class ST>
