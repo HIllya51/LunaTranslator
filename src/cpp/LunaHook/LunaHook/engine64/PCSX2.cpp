@@ -320,6 +320,13 @@ namespace
         s = re::sub(s, LR"(^([a-zA-Z]+)|([a-zA-Z]+)$)");
         buffer->fromWA(s);
     }
+    void SLPM62343(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+        StringFilter(buffer, TEXTANDLEN("/K"));
+        StringFilter(buffer, TEXTANDLEN("/L"));
+        StringFilter(buffer, TEXTANDLEN("\x81\x40"));
+    }
     void FSLPS25547(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -387,6 +394,8 @@ namespace
             {0x53FA10, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, FSLPM66332, "SLPM-66332"}},
             // 銀魂 銀さんと一緒！ボクのかぶき町日記
             {0x8DA13A, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPS-25809"}},
+            // THE 恋愛ホラーアドベンチャー～漂流少女～
+            {0x1A1640, {DIRECT_READ, 0, 0, 0, SLPM62343, "SLPM-62343"}},
         };
         return 0;
     }();

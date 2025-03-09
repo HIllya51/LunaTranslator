@@ -801,6 +801,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPM-66399 | SAMURAI 7 |
 |  | SLPM-66332 | 高円寺女子サッカー |
 |  | SLPS-25809 | 銀魂 銀さんと一緒！ボクのかぶき町日記 |
+|  | SLPM-62343 | THE 恋愛ホラーアドベンチャー～漂流少女～ |
 
 == PS3
 
