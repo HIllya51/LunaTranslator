@@ -325,6 +325,16 @@ namespace
         CharFilter(buffer, '\n');
         FSLPS25677(buffer, hp);
     }
+    void SLPS25809(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("/K"));
+        CharFilter(buffer, '\n');
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+    }
     void FSLPM66332(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\x01');
@@ -365,7 +375,7 @@ namespace
             // ブラッドプラス ワン ナイト キス
             {0x267B58, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPS25677, "SLPS-25677"}},
             {0x268260, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPS25677, "SLPS-25677"}},
-            // プリンセスラバー！ Eternal Love For My Lady [初回限定版]
+            // プリンセスラバー！ Eternal Love For My Lady
             {0x92748C, {DIRECT_READ, 0, 0, 0, FSLPM55195, "SLPM-55195"}},
             // 破滅のマルス
             {0x308460, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-65997"}},
@@ -373,8 +383,10 @@ namespace
             {0x456048, {DIRECT_READ, 0, 0, 0, 0, "SLPS-25385"}},
             // SAMURAI 7
             {0x190FDac, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66399"}},
-            // 高円寺女子サッカー [通常版]
+            // 高円寺女子サッカー
             {0x53FA10, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, FSLPM66332, "SLPM-66332"}},
+            // 銀魂 銀さんと一緒！ボクのかぶき町日記
+            {0x8DA13A, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPS-25809"}},
         };
         return 0;
     }();

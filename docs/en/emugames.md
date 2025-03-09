@@ -795,11 +795,12 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-66302 | CLANNAD - ゲオオンラインストア |
 |  | SLPS-25547 | 苺ましまろ |
 |  | SLPS-25677 | ブラッドプラス ワン ナイト キス |
-|  | SLPM-55195 | プリンセスラバー！ Eternal Love For My Lady [初回限定版] |
+|  | SLPM-55195 | プリンセスラバー！ Eternal Love For My Lady |
 |  | SLPM-65997 | 破滅のマルス |
 |  | SLPS-25385 | フレンズ ～青春の輝き～ |
 |  | SLPM-66399 | SAMURAI 7 |
-|  | SLPM-66332 | 高円寺女子サッカー [通常版] |
+|  | SLPM-66332 | 高円寺女子サッカー |
+|  | SLPS-25809 | 銀魂 銀さんと一緒！ボクのかぶき町日記 |
 
 == PS3
 
