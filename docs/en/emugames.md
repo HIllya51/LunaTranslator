@@ -799,6 +799,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-65997 | 破滅のマルス |
 |  | SLPS-25385 | フレンズ ～青春の輝き～ |
 |  | SLPM-66399 | SAMURAI 7 |
+|  | SLPM-66332 | 高円寺女子サッカー [通常版] |
 
 == PS3
 

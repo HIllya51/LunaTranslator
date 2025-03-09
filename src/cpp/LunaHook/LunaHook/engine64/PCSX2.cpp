@@ -325,6 +325,18 @@ namespace
         CharFilter(buffer, '\n');
         FSLPS25677(buffer, hp);
     }
+    void FSLPM66332(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\x01');
+        // 文本速度太慢了
+        auto s = buffer->strA();
+        static std::string last;
+        if (startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+        }
+        last = s;
+    }
     void FSLPM55195(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
@@ -361,6 +373,8 @@ namespace
             {0x456048, {DIRECT_READ, 0, 0, 0, 0, "SLPS-25385"}},
             // SAMURAI 7
             {0x190FDac, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66399"}},
+            // 高円寺女子サッカー [通常版]
+            {0x53FA10, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, FSLPM66332, "SLPM-66332"}},
         };
         return 0;
     }();
