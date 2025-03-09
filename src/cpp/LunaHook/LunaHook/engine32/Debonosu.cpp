@@ -66,14 +66,11 @@ namespace
               {
                 buffer->from(re::sub(buffer->strA(), "\\{(.*?)/(.*?)\\}", "$1"));
               };
-              ConsoleOutput("INSERT Debonosu");
 
               return NewHook(hp, "Debonosu");
             }
       }
 
-    ConsoleOutput("Debonosu: failed");
-    // ConsoleOutput("Unknown Debonosu engine.");
     return false;
   }
   void SpecialHookDebonosuName(hook_context *context, HookParam *hp, uintptr_t *data, uintptr_t *split, size_t *len)
@@ -108,7 +105,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("DebonosuName: pattern NOT FOUND");
       return false;
     }
     HookParam hp;
@@ -117,7 +113,6 @@ namespace
     hp.offset = regoffset(ecx);
     // hp.type = USING_STRING;
     hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT | EMBED_ABLE | EMBED_AFTER_NEW; //|FIXING_SPLIT; // there is only one thread
-    ConsoleOutput("INSERT DebonosuName");
 
     return NewHook(hp, "DebonosuName");
   }
@@ -179,7 +174,7 @@ namespace
     {
       HookParam hp;
       hp.address = addr + 6;
-      hp.type = USING_STRING | NO_CONTEXT;
+      hp.type = USING_STRING | NO_CONTEXT | EMBED_ABLE | EMBED_AFTER_NEW;
       hp.offset = regoffset(eax);
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
@@ -187,12 +182,9 @@ namespace
         if (all_ascii(text, buffer->size))
           return buffer->clear();
         std::string str = buffer->strA();
-        if (WideStringToString(StringToWideString(str)) == str)
-          hp->type |= CODEC_UTF8;
-        else
-          hp->type &= ~CODEC_UTF8;
         std::string result1 = re::sub(str, "\\{(.*?)/(.*?)\\}", "$1");
         buffer->from(result1);
+        Utf8TypeChecker(buffer, hp);
       };
       succ |= NewHook(hp, "debonosu");
     }

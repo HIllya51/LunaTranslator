@@ -1,14 +1,5 @@
 #include "Artemis.h"
-namespace
-{
-	void checkutf8(TextBuffer *buffer, HookParam *hp)
-	{
-		// 背徳の衝動, sjis
-		hp->type |= CODEC_UTF8;
-		if (!isStringUtf8(buffer->viewA()))
-			hp->type &= ~CODEC_UTF8;
-	}
-}
+
 bool InsertArtemisHook()
 {
 
@@ -30,7 +21,7 @@ bool InsertArtemisHook()
 		hp.address = addr + 1;
 		hp.offset = regoffset(rdx);
 		hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
-		hp.filter_fun = checkutf8;
+		hp.filter_fun = Utf8TypeChecker;
 		return NewHook(hp, "Artemis");
 	}
 	return false;
@@ -50,7 +41,7 @@ bool Artemis64()
 		hp.address = addr;
 		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
 		hp.offset = regoffset(rdx); // rdx
-		hp.filter_fun = checkutf8;
+		hp.filter_fun = Utf8TypeChecker;
 		return NewHook(hp, "Artemis64");
 	}
 
@@ -103,7 +94,7 @@ bool Artemis64x()
 		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | USING_SPLIT | NO_CONTEXT;
 		hp.offset = regoffset(rdx);
 		hp.split = regoffset(rcx);
-		hp.filter_fun = checkutf8;
+		hp.filter_fun = Utf8TypeChecker;
 		succ |= NewHook(hp, "Artemis64x");
 	}
 

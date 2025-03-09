@@ -1,4 +1,4 @@
-
+void Utf8TypeChecker(TextBuffer *buffer, HookParam *hp);
 void CharReplacer(TextBuffer *buffer, char fr, char to);
 void CharReplacer(TextBuffer *buffer, wchar_t fr, wchar_t to);
 

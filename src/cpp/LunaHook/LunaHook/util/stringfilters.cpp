@@ -161,3 +161,14 @@ std::wstring &remapkatakana(std::wstring &ws)
   }
   return ws;
 }
+void Utf8TypeChecker(TextBuffer *buffer, HookParam *hp)
+{
+  if (!isStringUtf8(buffer->viewA()))
+  {
+    hp->type &= ~CODEC_UTF8;
+  }
+  else
+  {
+    hp->type |= CODEC_UTF8;
+  }
+}

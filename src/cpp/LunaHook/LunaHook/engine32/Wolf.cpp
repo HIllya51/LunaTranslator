@@ -146,8 +146,7 @@ namespace
   void commonfilter(TextBuffer *buffer, HookParam *hp)
   {
     auto str = buffer->viewA();
-    bool checkchaos = WideStringToString(StringToWideString(str)) != str;
-    if (checkchaos)
+    if (!isStringUtf8(str))
       return buffer->clear();
     bool check1 = str.find("/") != str.npos || str.find("\\") != str.npos;
     auto hashsuffix = [&]()

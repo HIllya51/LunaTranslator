@@ -1,11 +1,10 @@
-
+﻿
 
 class Debonosu : public ENGINE
 {
 public:
     Debonosu()
     {
-
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {
