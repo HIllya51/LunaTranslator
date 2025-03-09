@@ -802,6 +802,8 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-66332 | 高円寺女子サッカー |
 |  | SLPS-25809 | 銀魂 銀さんと一緒！ボクのかぶき町日記 |
 |  | SLPM-62343 | THE 恋愛ホラーアドベンチャー～漂流少女～ |
+|  | SLPS-20394 | 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03 |
+|  | SLPS-25871 | ドラスティックキラー |
 
 == PS3
 

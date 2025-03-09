@@ -327,6 +327,13 @@ namespace
         StringFilter(buffer, TEXTANDLEN("/L"));
         StringFilter(buffer, TEXTANDLEN("\x81\x40"));
     }
+    void SLPL25871(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->size <= 4)
+            return buffer->clear();
+        CharFilter(buffer, '\n');
+        StringFilter(buffer, TEXTANDLEN("\x81\x40"));
+    }
     void FSLPS25547(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -366,6 +373,36 @@ namespace
         strReplace(s, "#n");
         buffer->from(s);
     }
+    void SLPS20394(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        static std::string last;
+        static std::string lasts[4];
+        std::string collect;
+        auto addrs = {0x2AF161, 0x2AFAA8, 0x2AEFA4, 0x2AEFE5};
+        for (auto str : addrs)
+            collect += (char *)emu_addr(str);
+        if (last == collect)
+            return;
+        last = collect;
+        int i = -1;
+        collect = "";
+        for (auto str : addrs)
+        {
+            i++;
+            std::string x = (char *)emu_addr(str);
+            if (x[0] == 'y')
+            {
+                x = '\x81' + x;
+            }
+            if (i && (lasts[i] == x))
+                break;
+            lasts[i] = x;
+            collect += x;
+        }
+        strReplace(collect, "\x99\xea", "\x98\xa3");
+        strReplace(collect, "\x81\x40");
+        buffer->from(collect);
+    }
     auto _ = []()
     {
         emfunctionhooks = {
@@ -396,6 +433,11 @@ namespace
             {0x8DA13A, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPS-25809"}},
             // THE 恋愛ホラーアドベンチャー～漂流少女～
             {0x1A1640, {DIRECT_READ, 0, 0, 0, SLPM62343, "SLPM-62343"}},
+            // 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03
+            {0x2AF161, {DIRECT_READ, 0, 0, SLPS20394, 0, "SLPS-20394"}},
+            // ドラスティックキラー
+            {0x1AC5D40, {DIRECT_READ, 0, 0, 0, SLPL25871, "SLPS-25871"}},
+            {0x1AC6970, {DIRECT_READ, 0, 0, 0, SLPL25871, "SLPS-25871"}},
         };
         return 0;
     }();

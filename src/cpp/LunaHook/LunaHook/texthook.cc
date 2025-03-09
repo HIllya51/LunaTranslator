@@ -502,10 +502,10 @@ void TextHook::Read()
 		if (hp.text_fun)
 		{
 			auto buffer = (TextOutput_T *)local_buffer;
-			uintptr_t split = 0;
-			buff.size = 0;
 			while ((!(hp.type & HOOK_EMPTY)) && (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT))
 			{
+				uintptr_t split = 0;
+				buff.size = 0;
 				hp.text_fun(0, &hp, &buff, &split);
 				TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
 			}
