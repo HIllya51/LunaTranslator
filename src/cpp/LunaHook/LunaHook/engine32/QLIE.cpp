@@ -126,16 +126,25 @@ namespace
             { // push ebp, mov ebp,esp, sub esp,*
               HookParam hp;
               hp.address = j;
-              hp.offset = stackoffset(6);
-              hp.split = regoffset(esp);
-              hp.type = DATA_INDIRECT | USING_SPLIT;
-              ConsoleOutput("INSERT QLIE1");
+              hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+              {
+                auto addr = context->stack[6];
+                if (IsBadReadPtr((void *)addr, 2))
+                {
+                  // https://vndb.org/v571
+                  // きみはぐ
+                  addr = context->stack[7];
+                }
+                else
+                {
+                  *split = context->esp;
+                }
+                buffer->from_t<WORD>(*(WORD *)addr);
+              };
               return NewHook(hp, "QLiE");
             }
       }
 
-    ConsoleOutput("QLIE1: failed");
-    // ConsoleOutput("Unknown QLIE engine");
     return false;
   }
 

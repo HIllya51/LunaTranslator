@@ -31,11 +31,8 @@ bool InsertArtemisHook()
 		hp.offset = regoffset(rdx);
 		hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
 		hp.filter_fun = checkutf8;
-		ConsoleOutput("INSERT Artemis Hook ");
 		return NewHook(hp, "Artemis");
 	}
-
-	ConsoleOutput("Artemis: pattern not found");
 	return false;
 }
 bool Artemis64()
@@ -49,8 +46,6 @@ bool Artemis64()
 	auto addrs = Util::SearchMemory(BYTES, sizeof(BYTES), PAGE_EXECUTE_READ, processStartAddress, processStopAddress);
 	for (auto addr : addrs)
 	{
-		char info[1000] = {};
-		ConsoleOutput("InsertArtemis64Hook %p", addr);
 		HookParam hp;
 		hp.address = addr;
 		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
@@ -59,7 +54,6 @@ bool Artemis64()
 		return NewHook(hp, "Artemis64");
 	}
 
-	ConsoleOutput("InsertArtemis64Hook failed");
 	return false;
 }
 
