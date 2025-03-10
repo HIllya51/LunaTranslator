@@ -380,7 +380,7 @@ struct TextBuffer
 	}
 	std::wstring strAW(UINT cp = 932)
 	{
-		return StringToWideString(viewA(), cp).value();
+		return StringToWideString(viewA(), cp).value_or(L"");
 	}
 	void fromWA(const std::wstring &ws, UINT cp = 932)
 	{

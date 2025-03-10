@@ -238,7 +238,7 @@ namespace ppsspp
 	void NPJH50754(TextBuffer *buffer, HookParam *hp)
 	{
 		std::string s = buffer->strA();
-		s = re::sub(s, R"(<R(.*?)>(.*?)</R>)", "$2"); // ｛みす／御簾｝
+		s = re::sub(s, R"(<R(.*?)>(.*?)</R>)", "$2");
 		buffer->from(s);
 	}
 	void ULJM06378(TextBuffer *buffer, HookParam *hp)

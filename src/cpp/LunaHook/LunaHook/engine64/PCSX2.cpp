@@ -294,6 +294,13 @@ namespace
         s = re::sub(s, LR"(^([±\s]+[０-９０-９，．\-]+|[０-９0-9，．\-]+)$)");
         buffer->fromWA(s);
     }
+    void SLPM55227(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        s = re::sub(s, LR"(@(.*?)@)", L"$1");
+        strReplace(s, L"%n");
+        buffer->fromWA(s);
+    }
     void FSLPM66045(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -319,6 +326,35 @@ namespace
         s = re::sub(s, LR"(\_0C|\_1_5C|\_1C)");
         s = re::sub(s, LR"(^([a-zA-Z]+)|([a-zA-Z]+)$)");
         buffer->fromWA(s);
+    }
+    void SLPM66272(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ss = buffer->strA();
+        auto s = buffer->strAW();
+        if (WideStringToString(s, 932) != ss)
+            return buffer->clear();
+        strReplace(s, L"#");
+        strReplace(s, L"ﾞ");
+        strReplace(s, L"!");
+        buffer->fromWA(s);
+        if (buffer->strAW().size() <= 4)
+            buffer->clear();
+    }
+    void SLPM65396(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+    }
+    void SLPM55014(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("%FS"));
+        StringFilter(buffer, TEXTANDLEN("%FE"));
+        StringFilter(buffer, TEXTANDLEN("%LC"));
+        StringFilter(buffer, TEXTANDLEN("%N"));
+    }
+    void SLPM55170(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("%P"));
+        StringFilter(buffer, TEXTANDLEN("%K"));
     }
     void SLPM62343(TextBuffer *buffer, HookParam *hp)
     {
@@ -349,10 +385,10 @@ namespace
             return buffer->clear();
         last = s;
     }
-    void FSLPM66332(TextBuffer *buffer, HookParam *hp)
+    template <int i>
+    void SLPS25897(TextBuffer *buffer, HookParam *hp)
     {
-        CharFilter(buffer, '\x01');
-        // 文本速度太慢了
+        CharFilter(buffer, '\n');
         auto s = buffer->strA();
         static std::string last;
         if (startWith(s, last))
@@ -361,10 +397,40 @@ namespace
         }
         last = s;
     }
+    void FSLPM66332(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\x01');
+        SLPS25897<3>(buffer, hp);
+    }
+    void SLPS25897_1(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+        auto s = buffer->strA();
+        static std::string last;
+        if (last.size() && startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+        }
+        else
+        {
+            std::string name = (char *)emu_addr(0x1869C60);
+            if (name.size())
+                name = "\x81\x79" + name + "\x81\x7a";
+            buffer->from(name + buffer->strA());
+        }
+        last = s;
+    }
     void FSLPM55195(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
         StringFilter(buffer, TEXTANDLEN("%n"));
+    }
+    void FSLPM66293(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("#cr0"));
+        CharFilter(buffer, '\n');
+        std::string name = (char *)emu_addr(0x712260);
+        buffer->from(name + buffer->strA());
     }
     void FSLPM65997(TextBuffer *buffer, HookParam *hp)
     {
@@ -373,12 +439,26 @@ namespace
         strReplace(s, "#n");
         buffer->from(s);
     }
-    void SLPS20394(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    void SLPM66437(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L"d");
+        buffer->fromWA(s);
+    }
+    void SLPM66905(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)", "$2");
+        strReplace(s, "\n");
+        strReplace(s, "\x81\x40");
+        buffer->from(s);
+    }
+    void SLPS25150(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         static std::string last;
         static std::string lasts[4];
         std::string collect;
-        auto addrs = {0x2AF161, 0x2AFAA8, 0x2AEFA4, 0x2AEFE5};
+        auto addrs = {0x461F38, 0x462000, 0x4620CA, 0x462192};
         for (auto str : addrs)
             collect += (char *)emu_addr(str);
         if (last == collect)
@@ -390,18 +470,77 @@ namespace
         {
             i++;
             std::string x = (char *)emu_addr(str);
-            if (x[0] == 'y')
+            if (i && (lasts[i] == x))
+                break;
+            lasts[i] = x;
+            collect += x;
+        }
+        static std::string last1;
+        if (startWith(collect, last1))
+        {
+            buffer->from(collect.substr(last1.size()));
+        }
+        else
+        {
+            buffer->from(collect);
+        }
+        last1 = collect;
+    }
+    template <int a, int b, int c, int d>
+    void SLPS20394(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        static std::string last;
+        static std::string lasts[4];
+        std::string collect;
+        auto addrs = {a, b, c, d};
+        for (auto str : addrs)
+            collect += (char *)emu_addr(str);
+        if (last == collect)
+            return;
+        last = collect;
+        int i = -1;
+        collect = "";
+        for (auto str : addrs)
+        {
+            i++;
+            std::string x = (char *)emu_addr(str);
+            if ((x[0] == 'y') || (x[0] == 'u'))
             {
                 x = '\x81' + x;
             }
             if (i && (lasts[i] == x))
                 break;
             lasts[i] = x;
+            if (endWith(x, "\r"))
+                x = x.substr(0, x.size() - 1);
             collect += x;
         }
         strReplace(collect, "\x99\xea", "\x98\xa3");
         strReplace(collect, "\x81\x40");
         buffer->from(collect);
+    }
+    void SLPM66458(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\\n"));
+        CharFilter(buffer, '\n');
+        CharFilter(buffer, '\x01');
+    }
+    void SLPM65843(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\\n"));
+    }
+    void SLPS25679(TextBuffer *buffer, HookParam *hp)
+    {
+        StringReplacer(buffer, TEXTANDLEN("\x87\x4e"), TEXTANDLEN("\x81\x60"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x4f"), TEXTANDLEN("\x81\x60"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x50"), TEXTANDLEN("\x81\x60"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x51"), TEXTANDLEN("\x81\x60"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x52"), TEXTANDLEN("\x81\x60"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x5b"), TEXTANDLEN("\x81\x5b"));
+
+        auto s = buffer->strAW();
+        s = re::sub(s, LR"(\[(.*?)\*(.*?)\])", L"$1");
+        buffer->fromWA(s);
     }
     auto _ = []()
     {
@@ -433,11 +572,60 @@ namespace
             {0x8DA13A, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPS-25809"}},
             // THE 恋愛ホラーアドベンチャー～漂流少女～
             {0x1A1640, {DIRECT_READ, 0, 0, 0, SLPM62343, "SLPM-62343"}},
+            // 好きなものは好きだからしょうがない！！ -FIRST LIMIT & TARGET†NIGHTS- Sukisho！ Episode ＃01+＃02
+            {0x268CE9, {DIRECT_READ, 0, 0, SLPS20394<0x268CE9, 0x268D2A, 0x268D6B, 0x268DAC>, 0, "SLPS-20352"}}, //[ディスク 1]
+            {0x2690EA, {DIRECT_READ, 0, 0, SLPS20394<0x2690EA, 0x26912A, 0x26916B, 0x2691AC>, 0, "SLPS-20353"}}, //[ディスク 2]
             // 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03
-            {0x2AF161, {DIRECT_READ, 0, 0, SLPS20394, 0, "SLPS-20394"}},
+            {0x2AF161, {DIRECT_READ, 0, 0, SLPS20394<0x2AF161, 0x2AFAA8, 0x2AEFA4, 0x2AEFE5>, 0, "SLPS-20394"}},
             // ドラスティックキラー
             {0x1AC5D40, {DIRECT_READ, 0, 0, 0, SLPL25871, "SLPS-25871"}},
             {0x1AC6970, {DIRECT_READ, 0, 0, 0, SLPL25871, "SLPS-25871"}},
+            // 風雨来記
+            {0x1FFACA0, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPM-66458"}},
+            // うたわれるもの 散りゆく者への子守唄
+            {0x50574C, {DIRECT_READ, 0, 0, 0, SLPS25679, "SLPS-25679"}},
+            // Only you リベルクルス ドラマCD付き
+            {0x461F38, {DIRECT_READ, 0, 0, SLPS25150, 0, "SLPS-25150"}},
+            // D.C. ～ダ・カーポ～ the Origin
+            {0x517688, {DIRECT_READ, 0, 0, 0, SLPM66905, "SLPM-66905"}},
+            // Soul Link EXTENSION
+            {0x1E14A3C, {DIRECT_READ, 0, 0, 0, SLPM66437, "SLPM-66437"}},
+            // デ・ジ・キャラット ファンタジー エクセレント
+            {0x10E2C80, {DIRECT_READ, 0, 0, 0, SLPM65396, "SLPM-65396"}},
+            // I/O
+            {0xF0BF80, {DIRECT_READ, 0, 0, 0, SLPM66272, "SLPM-66272"}},
+            // シークレット・オブ・エヴァンゲリオン
+            {0x842E48, {DIRECT_READ, 0, 0, 0, SLPS25897<2>, "SLPM-66569"}},
+            // PANDORA ～君の名前を僕は知る～
+            {0x1690C50, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55269"}},
+            // 学園アリス ～きらきら★メモリーキッス～
+            {0x711FC0, {DIRECT_READ, 0, 0, 0, FSLPM66293, "SLPM-66293"}},
+            // After...～忘れえぬ絆～
+            {0x15DA4c, {DIRECT_READ, 0, 0, 0, SLPS25897<1>, "SLPM-65481"}},
+            // ゼロの使い魔 迷子の終止符と幾千の交響曲
+            {0x1FFD934, {DIRECT_READ, 0, 0, 0, SLPS25897_1, "SLPS-25897"}},
+            // スキップ・ビート
+            {0x1CF70F0, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-55170"}},
+            // Myself; Yourself それぞれのfinale
+            {0x1C785A8, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55163"}},
+            // ARIA The ORIGINATION ～蒼い惑星のエルシエロ～
+            {0x10F8488, {DIRECT_READ, 0, 0, 0, SLPM55014, "SLPM-55014"}},
+            // ARIA The NATURAL ～遠い記憶のミラージュ～
+            {0x1137428, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66536"}},
+            // 猛獣使いと王子様
+            {0x16681E0, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55264"}},
+            // 120円の春
+            {0x1CEAF56, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-65843"}},
+            // ゲームになったよ！ドクロちゃん～健康診断大作戦～
+            {0x1B9Bbec, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66186"}},
+            // 地獄少女 澪縁
+            {0x2A078F, {DIRECT_READ, 0, 0, 0, SLPM65396, "SLPM-55213"}},
+            // エーデルブルーメ
+            {0x46631C, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66975"}},
+            // セキレイ ～未来からのおくりもの～
+            {0x4639C5, {DIRECT_READ, 0, 0, 0, SLPM55227, "SLPM-55227"}},
+            // Fate/stay night[Realta Nua]
+            {0x2C0DD5, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66513"}},
         };
         return 0;
     }();

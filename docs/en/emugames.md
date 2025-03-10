@@ -802,8 +802,32 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-66332 | 高円寺女子サッカー |
 |  | SLPS-25809 | 銀魂 銀さんと一緒！ボクのかぶき町日記 |
 |  | SLPM-62343 | THE 恋愛ホラーアドベンチャー～漂流少女～ |
+|  | SLPS-20352 | 好きなものは好きだからしょうがない！！ -FIRST LIMIT & TARGET†NIGHTS- Sukisho！ Episode ＃01+＃02 |
 |  | SLPS-20394 | 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03 |
 |  | SLPS-25871 | ドラスティックキラー |
+|  | SLPM-66458 | 風雨来記 |
+|  | SLPS-25679 | うたわれるもの 散りゆく者への子守唄 |
+|  | SLPS-25150 | Only you リベルクルス ドラマCD付き |
+|  | SLPM-66905 | D.C. ～ダ・カーポ～ the Origin |
+|  | SLPM-66437 | Soul Link EXTENSION |
+|  | SLPM-65396 | デ・ジ・キャラット ファンタジー エクセレント |
+|  | SLPM-66272 | I/O |
+|  | SLPM-66569 | シークレット・オブ・エヴァンゲリオン |
+|  | SLPM-55269 | PANDORA ～君の名前を僕は知る～ |
+|  | SLPM-66293 | 学園アリス ～きらきら★メモリーキッス～ |
+|  | SLPM-65481 | After...～忘れえぬ絆～ |
+|  | SLPS-25897 | ゼロの使い魔 迷子の終止符と幾千の交響曲 |
+|  | SLPM-55170 | スキップ・ビート |
+|  | SLPM-55163 | Myself; Yourself それぞれのfinale |
+|  | SLPM-55014 | ARIA The ORIGINATION ～蒼い惑星のエルシエロ～ |
+|  | SLPM-66536 | ARIA The NATURAL ～遠い記憶のミラージュ～ |
+|  | SLPM-55264 | 猛獣使いと王子様 |
+|  | SLPM-65843 | 120円の春 |
+|  | SLPM-66186 | ゲームになったよ！ドクロちゃん～健康診断大作戦～ |
+|  | SLPM-55213 | 地獄少女 澪縁 |
+|  | SLPM-66975 | エーデルブルーメ |
+|  | SLPM-55227 | セキレイ ～未来からのおくりもの～ |
+|  | SLPM-66513 | Fate/stay night[Realta Nua] |
 
 == PS3
 

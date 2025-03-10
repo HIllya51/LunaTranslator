@@ -478,14 +478,12 @@ bool TextHook::InsertHookCode()
 }
 bool SafeFilterFun(HookParam &hp, TextBuffer &buff)
 {
-	try
+	__try
 	{
 		hp.filter_fun(&buff, &hp);
-		if (buff.size <= 0)
-			return false;
 		return true;
 	}
-	catch (std::exception &e)
+	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
 		return false;
 	}

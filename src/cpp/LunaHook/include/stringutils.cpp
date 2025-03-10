@@ -155,6 +155,8 @@ std::string WideStringToString(const wchar_t *text, UINT cp)
 }
 std::string WideStringToString(std::wstring_view text, UINT cp)
 {
+  if (!text.size())
+    return "";
   std::vector<char> buffer((text.size()) * 4);
   if (disable_wcmb)
   {
