@@ -45,8 +45,6 @@ class autostatus:
 
 class Requester(Requester_common):
 
-    Accept_Encoding = ("gzip, deflate, br, zstd", "")[get_platform() == "xp"]
-
     def __init__(self) -> None:
         # 用tls不太行，因为为了防止阻塞，每次请求都是完全重新开的线程，会100%重新initcurl
         self.occupied = 0
@@ -162,11 +160,7 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout[0])
         if timeout[1]:
             curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, sum(timeout))
-        curl_easy_setopt(
-            curl,
-            CURLoption.ACCEPT_ENCODING,
-            headers["Accept-Encoding"].encode("utf8"),
-        )
+        # 不需要设置CURLoption.ACCEPT_ENCODING，直接使用内置的默认值。设置了反而有问题。
 
         if method == "HEAD":
             curl_easy_setopt(curl, CURLoption.NOBODY, 1)

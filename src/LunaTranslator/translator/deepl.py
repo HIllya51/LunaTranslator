@@ -198,7 +198,6 @@ class TS(basetrans):
                 "x-app-os-name": "iOS",
                 "x-app-os-version": "16.3.0",
                 "Accept-Language": "en-US,en;q=0.9",
-                "Accept-Encoding": "gzip, deflate, br",
                 "x-app-device": "iPhone13,2",
                 "User-Agent": "DeepL-iOS/2.9.1 iOS 16.3.0 (iPhone13,2)",
                 "x-app-build": "510265",

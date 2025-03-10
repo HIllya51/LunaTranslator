@@ -33,7 +33,6 @@ class Response(Response):
 
 
 class Requester(Requester_common):
-    Accept_Encoding = "gzip, deflate"
 
     def _getheaders(self, hreq):
         dwSize = DWORD()
@@ -160,8 +159,6 @@ class Requester(Requester_common):
         self._set_proxy(hRequest, proxy)
         self._set_allow_redirects(hRequest, allow_redirects)
         autodec = self._set_auto_decompress(hRequest)
-        if stream and not (autodec):
-            _headers.pop("Accept-Encoding")
         headers = self._parseheader(_headers, cookies)
         headers = "\r\n".join(headers)
         MaybeRaiseException0(

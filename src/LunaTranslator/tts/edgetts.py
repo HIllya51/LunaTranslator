@@ -29,7 +29,6 @@ BASE_HEADERS = {
     " Edg/{CHROMIUM_MAJOR_VERSION}.0.0.0".format(
         CHROMIUM_MAJOR_VERSION=CHROMIUM_MAJOR_VERSION
     ),
-    "Accept-Encoding": "gzip, deflate, br",
     "Accept-Language": "en-US,en;q=0.9",
 }
 WSS_HEADERS = {

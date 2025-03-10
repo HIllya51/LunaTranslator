@@ -192,7 +192,6 @@ class Response:
 
 
 class Requester_common:
-    Accept_Encoding = ...
     default_UA = default_UA
 
     @staticmethod
@@ -431,7 +430,6 @@ class Session:
 
         self.headers = CaseInsensitiveDict(
             {
-                # "Accept-Encoding": "gzip, deflate, br",
                 "Accept": "*/*",
                 "Connection": "keep-alive",
             }
@@ -453,8 +451,7 @@ class Session:
             from network.winhttp.requester import Requester
         self._requester = Requester()
         self._libidx = globalconfig["network"]
-
-        self.headers.update({"Accept-Encoding": self.requester.Accept_Encoding})
+        # 不需要设置Accept-Encoding，会自动处理。设置了反而有问题。
         self.headers.update({"User-Agent": self.requester.default_UA})
         return self._requester
 
