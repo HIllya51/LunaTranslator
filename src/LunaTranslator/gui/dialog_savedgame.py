@@ -619,7 +619,8 @@ class dialog_savedgame_new(QWidget):
             i = calculatetagidx(self.reftagid)
             savegametaged.pop(i)
             self.loadcombo(False)
-            self.resetcurrvislist(globalconfig["currvislistuid"])
+            uid = self.vislistcombo.getIndexData(self.vislistcombo.currentIndex())
+            self.resetcurrvislist(uid)
 
     def directshow(self):
         self.flow.directshow()
@@ -636,17 +637,15 @@ class dialog_savedgame_new(QWidget):
             self.__layout.removeWidget(w)
             w.hide()
             w.deleteLater()
-        self.__layout.insertWidget(
-            0,
-            getsimplecombobox(
-                vis,
-                globalconfig,
-                "currvislistuid",
-                self.resetcurrvislist,
-                internal=uid,
-                static=True,
-            ),
+        self.vislistcombo = getsimplecombobox(
+            vis,
+            globalconfig,
+            "currvislistuid",
+            self.resetcurrvislist,
+            internal=uid,
+            static=True,
         )
+        self.__layout.insertWidget(0, self.vislistcombo)
 
     def callexists(self, _):
         if _:

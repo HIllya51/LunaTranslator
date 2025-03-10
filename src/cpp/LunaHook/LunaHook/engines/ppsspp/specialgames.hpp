@@ -1484,23 +1484,23 @@ namespace ppsspp
 		{0x8850b2c, {0, 0, 0, 0, NPJH50909_filter, "ULJM05878"}}, // onscreen toast
 		// Dunamis15
 		{0x0891D72C, {CODEC_UTF8, 0, 0, 0, ULJM06119_filter, "ULJM06119"}},
-		// 金色のコルダ３ AnotherSky feat.神南
-		{0x883C940, {0, 0, 0, ULJM05428, 0, "NPJH50845"}},
-		// 金色のコルダ３ フルボイス Special
-		{0x8A731B0, {0, 1, 0, ULJM05428, 0, "NPJH50821"}},
-		// 金色のコルダ３ AnotherSky feat.至誠館
-		{0x8A99BD8, {0, 1, 0, ULJM05428, 0, "NPJH50846"}},
-		// 金色のコルダ３ AnotherSky feat.天音学園
-		{0x8AAB770, {0, 1, 0, ULJM05428, 0, "NPJH50847"}},
-		// 金色のコルダ３
-		{0x896C3B8, {0, 1, 0, ULJM05428, 0, "ULJM05624"}},
+		// 金色のコルダ
+		{0x886162c, {0, 1, 0, ULJM05428, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
+		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},	   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
 		// 金色のコルダ2 f
 		{0x89b59dc, {0, 1, 0, ULJM05428, 0, "ULJM05428"}},
 		// 金色のコルダ２ f アンコール
 		{0x89D9FB0, {0, 1, 0, ULJM05428, 0, "ULJM05508"}},
-		// 金色のコルダ
-		{0x886162c, {0, 1, 0, ULJM05428, 0, "ULJM05054"}}, // dialogue: 0x886162c (x1), 0x889d5fc-0x889d520(a2) fullLine
-		{0x8899e90, {0, 0, 0x3c, 0, 0, "ULJM05054"}},	   // name 0x88da57c, 0x8899ca4 (x0, oneTime), 0x8899e90
+		// 金色のコルダ３
+		{0x896C3B8, {0, 1, 0, ULJM05428, 0, "ULJM05624"}},
+		// 金色のコルダ３ フルボイス Special
+		{0x8A731B0, {0, 1, 0, ULJM05428, 0, "NPJH50821"}},
+		// 金色のコルダ３ AnotherSky feat.神南
+		{0x883C940, {0, 0, 0, ULJM05428, 0, "NPJH50845"}},
+		// 金色のコルダ３ AnotherSky feat.至誠館
+		{0x8A99BD8, {0, 1, 0, ULJM05428, 0, "NPJH50846"}},
+		// 金色のコルダ３ AnotherSky feat.天音学園
+		{0x8AAB770, {0, 1, 0, ULJM05428, 0, "NPJH50847"}},
 		// Sol Trigger
 		{0x8952cfc, {CODEC_UTF8, 0, 0, 0, NPJH50619F, "NPJH50619"}}, // dialog
 		{0x884aad4, {CODEC_UTF8, 0, 0, 0, NPJH50619F, "NPJH50619"}}, // description
@@ -1562,16 +1562,16 @@ namespace ppsspp
 		{0x88861C8, {0, 3, 0, 0, 0, "ULJM06393"}},
 		{0x8885fd8, {0, 0, 0, 0, 0, "ULJM06393"}},
 		{0x88ac3a8, {0, 1, 0, 0, 0, "ULJM06393"}},
+		// S・Y・K ～新説西遊記～ ポータブル
+		{0x88DD918, {0, 0, 0, 0, ULJM05823_2, "ULJM05697"}}, // text+name->name
+		{0x88DA420, {0, 4, 0, 0, ULJM05943F, "ULJM05697"}},
+		// S.Y.K ～蓮咲伝～ Portable
+		{0x88FB080, {0, 0, 0, 0, ULJM05867_1, "ULJM05867"}}, // TEXT
+		{0x88FB0B8, {0, 0, 0, 0, ULJM05867_2, "ULJM05867"}}, // NAME
 		// L.G.S～新説 封神演義～
 		{0x888A358, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME+TEXT
 		{0x88DB214, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // TEXT
 		{0x889E970, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME
-		// S.Y.K ～蓮咲伝～ Portable
-		{0x88FB080, {0, 0, 0, 0, ULJM05867_1, "ULJM05867"}}, // TEXT
-		{0x88FB0B8, {0, 0, 0, 0, ULJM05867_2, "ULJM05867"}}, // NAME
-		// S・Y・K ～新説西遊記～ ポータブル
-		{0x88DD918, {0, 0, 0, 0, ULJM05823_2, "ULJM05697"}}, // text+name->name
-		{0x88DA420, {0, 4, 0, 0, ULJM05943F, "ULJM05697"}},
 		// 源狼 GENROH
 		{0x8940DA8, {0, 1, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
 		// 十鬼の絆 関ヶ原奇譚
@@ -1599,8 +1599,6 @@ namespace ppsspp
 		{0x88B2464, {0, 0, 0, 0, ULJM05823_2, "ULJM05823"}}, // text+name->name
 		// しらつゆの怪
 		{0x888A26C, {0, 0, 0, 0, ULJM06289, "ULJM06289"}},
-		// 新装版クローバーの国のアリス～Wonderful Wonder World～
-		{0x8875E50, {0, 1, 0, 0, 0, "NPJH50894"}},
 		// ダイヤの国のアリス～Wonderful Wonder World～
 		{0x8857E3C, {0, 0, 0, 0, 0, "ULJM06216"}},
 		// ダイヤの国のアリス～ Wonderful Mirror World ～
@@ -1609,6 +1607,8 @@ namespace ppsspp
 		{0x8881CAC, {0, 1, 0, 0, 0, "NPJH50872"}},
 		// 新装版 ハートの国のアリス～Wonderful Wonder World～
 		{0x886B610, {0, 1, 0, 0, 0, "ULJM06332"}},
+		// 新装版クローバーの国のアリス～Wonderful Wonder World～
+		{0x8875E50, {0, 1, 0, 0, 0, "NPJH50894"}},
 		// Glass Heart Princess
 		{0x885FA30, {0, 0, 0, 0, ULJM05943F, "ULJM06196"}},
 		// Glass Heart Princess:PLATINUM
@@ -1696,12 +1696,12 @@ namespace ppsspp
 		{0x8863D5C, {0, 3, 0, 0, ULJM05874, "ULJM05874"}},
 		// メモリーズオフ ゆびきりの記憶
 		{0x88A50B0, {0, 1, 0, 0, ULJM06040_1, "ULJM05875"}},
+		// CLANNAD
+		{0x880F240, {CODEC_UTF16, 0, 0, 0, ULJM05282, std::vector<const char *>{"ULJM05338", "ULJM05339"}}},
 		// ＣＬＡＮＮＡＤ　光見守る坂道で　上巻
 		{0x8850950, {0, 0xC, 0, 0, 0, "NPJH50266"}},
 		// ＣＬＡＮＮＡＤ　光見守る坂道で　下巻
 		{0x8853844, {0, 0xC, 0, 0, 0, "NPJH50273"}},
-		// CLANNAD
-		{0x880F240, {CODEC_UTF16, 0, 0, 0, ULJM05282, std::vector<const char *>{"ULJM05338", "ULJM05339"}}},
 		// 東京鬼祓師　鴉乃杜學園奇譚
 		{0x89F25C8, {0, 1, 0, 0, NPJH50215, "NPJH50215"}},
 		// 雅恋 ～MIYAKO～
