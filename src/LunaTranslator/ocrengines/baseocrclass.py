@@ -29,6 +29,10 @@ class baseocr(commonbase):
         return self.srclang_1.space
 
     ############################################################
+    @property
+    def required_image_format(self):
+        return "PNG"
+
     _globalconfig_key = "ocr"
     _setting_dict = ocrsetting
 

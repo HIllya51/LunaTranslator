@@ -262,6 +262,9 @@ class question(QWidget):
 
 
 class OCR(baseocr):
+    @property
+    def required_image_format(self):
+        return "BMP"
 
     def langmap(self):
         return {Languages.TradChinese: "cht"}

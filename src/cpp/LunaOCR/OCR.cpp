@@ -1,7 +1,5 @@
 #include <onnxruntime/core/session/onnxruntime_cxx_api.h>
 #include <opencv2/opencv.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/imgcodecs.hpp>
 #include <clipper2/clipper.h>
 typedef std::vector<cv::Point> TextBox;
 typedef std::string TextLine;
@@ -596,13 +594,30 @@ cv::Mat makePadding(cv::Mat &src, const int padding)
     cv::copyMakeBorder(src, paddingSrc, padding, padding, padding, padding, cv::BORDER_ISOLATED, paddingScalar);
     return paddingSrc;
 }
-
+namespace
+{
+    cv::Mat LoadMatFromBMP(const void *binptr, size_t size)
+    {
+        auto imageptr = (uintptr_t)binptr;
+        BITMAPFILEHEADER *fileHeader = (BITMAPFILEHEADER *)imageptr;
+        imageptr += sizeof(BITMAPFILEHEADER);
+        BITMAPINFOHEADER *infoHeader = (BITMAPINFOHEADER *)imageptr;
+        imageptr += sizeof(BITMAPINFOHEADER);
+        auto pixelData = (uintptr_t)binptr + fileHeader->bfOffBits;
+        int width = infoHeader->biWidth;
+        int height = infoHeader->biHeight;
+        auto mat = cv::Mat(height, width, (infoHeader->biBitCount == 24) ? CV_8UC3 : CV_8UC4, (void *)pixelData);
+        cv::flip(mat, mat, 0);
+        return std::move(mat);
+    }
+}
 std::vector<TextBlock> OcrLite::detect(const void *binptr, size_t size,
                                        const int padding, const int maxSideLen,
                                        float boxScoreThresh, float boxThresh, float unClipRatio, Directional mode)
 {
-    std::vector<uchar> bytes{(uchar *)binptr, (uchar *)binptr + size};
-    cv::Mat originSrc = imdecode(bytes, cv::IMREAD_COLOR); // default : BGR
+    // std::vector<uchar> bytes{(uchar *)binptr, (uchar *)binptr + size};
+    // cv::Mat originSrc = imdecode(bytes, cv::IMREAD_COLOR); // default : BGR
+    cv::Mat originSrc = std::move(LoadMatFromBMP(binptr, size));
     int originMaxSide = (std::max)(originSrc.cols, originSrc.rows);
     int resize;
     if (maxSideLen <= 0 || maxSideLen > originMaxSide)

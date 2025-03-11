@@ -189,6 +189,7 @@ class AudioSelect(PopupWidget):
         recored.stop()
 
     def startorendrecord(self, btn: QPushButton, idx):
+        self.blockwindow(idx)
         if idx:
             try:
                 self.recorders = loopbackrecorder()

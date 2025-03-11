@@ -3158,12 +3158,18 @@ class PopupWidget(QWidget):
         self.setWindowFlag(Qt.WindowType.Popup)
         self.dragging = False
         self.offset = None
+        self._block = False
+
+    def blockwindow(self, b):
+        self._block = b
 
     def display(self, pos=None):
         self.move(pos if pos else QCursor.pos())
         self.show()
 
     def mousePressEvent(self, event: QMouseEvent):
+        if self._block:
+            return
         if not self.rect().contains(event.pos()):
             return super().mousePressEvent(event)
 
@@ -3178,6 +3184,8 @@ class PopupWidget(QWidget):
             self.move(QCursor.pos() - self.offset)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
+        if self._block:
+            return
         if not self.rect().contains(event.pos()):
             return super().mouseReleaseEvent(event)
         if event.button() == Qt.MouseButton.LeftButton:

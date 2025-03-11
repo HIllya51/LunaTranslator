@@ -54,14 +54,16 @@ def __ocr_init():
 
 def ocr_run(qimage: QImage):
     gobject.baseobject.maybesetimage(qimage)
-    image = qimage2binary(qimage, "PNG")
-    if not image:
+    if qimage.isNull():
         return "", None
     global _nowuseocrx, _ocrengine
     thisocrtype = _nowuseocrx
     try:
         ocr_init()
         thisocrtype = _ocrengine.typename
+        image = qimage2binary(qimage, _ocrengine.required_image_format)
+        if not image:
+            return "", None
         res = _ocrengine._private_ocr(image)
         if not res:
             return "", None
