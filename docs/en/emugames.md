@@ -828,6 +828,11 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-66975 | エーデルブルーメ |
 |  | SLPM-55227 | セキレイ ～未来からのおくりもの～ |
 |  | SLPM-66513 | Fate/stay night[Realta Nua] |
+|  | SLPS-25604 | アルトネリコ 世界の終わりで詩い続ける少女 |
+|  | SLPS-73249 | アルトネリコ 世界の終わりで詩い続ける少女 [PlayStation2 the Best] |
+|  | SLPS-25819 | アルトネリコ2 世界に響く少女たちの創造詩 |
+|  | SLPS-73263 | アルトネリコ2 世界に響く少女たちの創造詩 [PlayStation2 the Best] |
+|  | SLPM-55281 | CLOCK ZERO ～終焉の一秒～ |
 
 == PS3
 

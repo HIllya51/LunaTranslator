@@ -792,5 +792,6 @@
     "自动隐藏": "Auto Hide",
     "窗口": "Window",
     "允许重复": "Allow Duplicates",
-    "检测到存在重复，是否覆盖？": "Duplicates detected. Overwrite?"
+    "检测到存在重复，是否覆盖？": "Duplicates detected. Overwrite?",
+    "隐藏思考过程": ""
 }

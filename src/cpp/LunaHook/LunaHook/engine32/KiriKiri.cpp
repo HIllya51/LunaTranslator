@@ -1,4 +1,4 @@
-#include "KiriKiri.h"
+﻿#include "KiriKiri.h"
 
 /********************************************************************************************
 KiriKiri hook:
@@ -1278,12 +1278,47 @@ namespace
     hp.filter_fun = KiriKiri4Filter;
     return NewHook(hp, "KAGParser");
   }
+  bool krkrzx()
+  {
+    BYTE bytes[] = {
+        0x8b, 0x4d, 0x10,
+        0x66, 0x90,
+        0x8b, 0x47, XX,
+        0x48,
+        0x83, 0xf8, 0x04,
+        0x0f, 0x87, 0xaa, 0x00, 0x00, 0x00,
+        0xff, 0x24, 0x85, XX4};
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(2);
+    hp.type = CODEC_UTF16 | USING_STRING;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      static std::wstring last;
+      auto ws = buffer->strW();
+      if (ws == last)
+        return buffer->clear();
+      last = ws;
+      strReplace(ws, L"／");
+      strReplace(ws, L"　");
+      ws = re::sub(ws, LR"(\$r:(.*?),(.*?);)", L"$1");
+      ws = re::sub(ws, LR"(\$(.*?);)");
+      buffer->from(ws);
+    };
+    return NewHook(hp, "KiriKiriZX");
+  }
 }
 bool InsertKiriKiriZHook()
 {
   auto ok = Krkrtextrenderdll();
   ok = kagparser();
-  return InsertKiriKiriZHook2() || InsertKiriKiriZHook1() || ok;
+  return krkrzx() | (InsertKiriKiriZHook2() || InsertKiriKiriZHook1()) || ok;
 }
 namespace
 {

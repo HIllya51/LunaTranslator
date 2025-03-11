@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-import json, requests, hmac, hashlib
+import json, requests, hmac, hashlib, re
 from datetime import datetime, timezone
 from myutils.utils import createurl, common_list_models, common_parse_normal_response
 from myutils.proxy import getproxy
@@ -39,17 +39,30 @@ def stream_event_parser(response: requests.Response):
         yield json_data
 
 
-def commonparseresponse_good(response: requests.Response):
+def commonparseresponse_good(hidethinking: bool, response: requests.Response):
 
     message = ""
+    isthinking = False
     for json_data in stream_event_parser(response):
         try:
             if len(json_data["choices"]) == 0:
                 continue
-            msg = json_data["choices"][0].get("delta", {}).get("content", None)
+            msg: str = json_data["choices"][0].get("delta", {}).get("content", None)
             if msg:
-                message += msg
-                yield msg
+                if hidethinking and (msg.strip() == "<think>"):
+                    yield "thinking ..."
+                    isthinking = True
+                elif hidethinking and isthinking:
+                    if msg.strip() == "</think>":
+                        isthinking = False
+                        yield "\0"
+                else:
+                    if hidethinking and (not message) and (not msg.strip()):
+                        # 跳过</think>后的\n
+                        pass
+                    else:
+                        message += msg
+                        yield msg
             rs = json_data["choices"][0].get("finish_reason")
             if rs and rs != "null":
                 break
@@ -95,13 +108,13 @@ def parseresponseclaude(response: requests.Response):
     return message
 
 
-def parsestreamresp(apiurl: str, response: requests.Response):
+def parsestreamresp(hidethinking: bool, apiurl: str, response: requests.Response):
     if apiurl.startswith("https://generativelanguage.googleapis.com"):
         respmessage = yield from parseresponsegemini(response)
     elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
         respmessage = yield from parseresponseclaude(response)
     else:
-        respmessage = yield from commonparseresponse_good(response)
+        respmessage = yield from commonparseresponse_good(hidethinking, response)
     return respmessage
 
 
@@ -197,24 +210,6 @@ class gptcommon(basetrans):
             self.apiurl, self.multiapikeycurrent, self.maybeuse, self.proxy
         )
 
-    def commonparseresponse_good(self, response: requests.Response):
-
-        message = ""
-        for json_data in self.stream_event_parser(response):
-            try:
-                if len(json_data["choices"]) == 0:
-                    continue
-                msg = json_data["choices"][0].get("delta", {}).get("content", None)
-                if msg:
-                    message += msg
-                    yield msg
-                rs = json_data["choices"][0].get("finish_reason")
-                if rs and rs != "null":
-                    break
-            except:
-                raise Exception(json_data)
-        return message
-
     def translate(self, query):
         query = self._gptlike_createquery(
             query, "use_user_user_prompt", "user_user_prompt"
@@ -240,10 +235,15 @@ class gptcommon(basetrans):
                 json=self.createdata(message),
                 stream=usingstream,
             )
+        hidethinking = self.config.get("hidethinking", False)
         if usingstream:
-            respmessage = yield from parsestreamresp(self.apiurl, response)
+            respmessage = yield from parsestreamresp(
+                hidethinking, self.apiurl, response
+            )
         else:
-            respmessage = common_parse_normal_response(response, self.apiurl)
+            respmessage = common_parse_normal_response(
+                response, self.apiurl, hidethinking=hidethinking
+            )
             yield respmessage
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": respmessage})

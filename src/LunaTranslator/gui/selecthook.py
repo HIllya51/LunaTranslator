@@ -376,7 +376,7 @@ class searchhookparam(LDialog):
         addresses = [""]
 
         def callback(fn):
-            with open(fn, "r", encoding="utf8") as ff:
+            with open(fn, "r", encoding="utf8", errors="ignore") as ff:
                 addresses.append(ff.read())
 
         self.regists["addresses"] = lambda: addresses[-1]

@@ -395,9 +395,15 @@
 			"s": "",
 			"s2": "",
 			"prefill": "",
-			"prefill_use": false
+			"prefill_use": false,
+			"hidethinking": false
 		},
 		"argstype": {
+			"hidethinking": {
+				"type": "switch",
+				"name": "隐藏思考过程",
+				"rank": 3.5
+			},
 			"prefill": {
 				"refswitch": "prefill_use",
 				"rank": 5.11
@@ -809,9 +815,15 @@
 			"s": "",
 			"s2": "",
 			"prefill": "",
-			"prefill_use": false
+			"prefill_use": false,
+			"hidethinking": false
 		},
 		"argstype": {
+			"hidethinking": {
+				"type": "switch",
+				"name": "隐藏思考过程",
+				"rank": 3.5
+			},
 			"prefill": {
 				"refswitch": "prefill_use",
 				"rank": 5.11

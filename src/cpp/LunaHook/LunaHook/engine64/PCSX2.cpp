@@ -344,6 +344,10 @@ namespace
     {
         CharFilter(buffer, '\n');
     }
+    void SLPS25604(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("CR"));
+    }
     void SLPM55014(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("%FS"));
@@ -626,6 +630,16 @@ namespace
             {0x4639C5, {DIRECT_READ, 0, 0, 0, SLPM55227, "SLPM-55227"}},
             // Fate/stay night[Realta Nua]
             {0x2C0DD5, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66513"}},
+            // アルトネリコ 世界の終わりで詩い続ける少女
+            {0xC3FC8C, {DIRECT_READ, 0, 0, 0, SLPS25604, "SLPS-25604"}},
+            // アルトネリコ 世界の終わりで詩い続ける少女 [PlayStation2 the Best]
+            {0xC3F6CC, {DIRECT_READ, 0, 0, 0, SLPS25604, "SLPS-73249"}},
+            // アルトネリコ2 世界に響く少女たちの創造詩
+            {0xAF15BC, {DIRECT_READ, 0, 0, 0, SLPS25604, "SLPS-25819"}},
+            // アルトネリコ2 世界に響く少女たちの創造詩 [PlayStation2 the Best]
+            {0xAF1B3C, {DIRECT_READ, 0, 0, 0, SLPS25604, "SLPS-73263"}},
+            // CLOCK ZERO ～終焉の一秒～
+            {0x1A07855, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55281"}},
         };
         return 0;
     }();

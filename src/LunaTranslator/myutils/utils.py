@@ -912,7 +912,7 @@ def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/comple
         raise Exception(resp)
 
 
-def common_parse_normal_response(response: requests.Response, apiurl: str):
+def common_parse_normal_response_1(response: requests.Response, apiurl: str):
     try:
         if apiurl.startswith("https://api.anthropic.com/v1/messages"):
             return response.json()["content"][0]["text"]
@@ -922,6 +922,15 @@ def common_parse_normal_response(response: requests.Response, apiurl: str):
             return response.json()["choices"][0]["message"]["content"]
     except:
         raise Exception(response)
+
+
+def common_parse_normal_response(
+    response: requests.Response, apiurl: str, hidethinking=False
+):
+    resp = common_parse_normal_response_1(response, apiurl)
+    if hidethinking:
+        resp = re.sub(r"<think>([\s\S]*)</think>", "", resp)
+    return resp
 
 
 def createenglishlangmap():
