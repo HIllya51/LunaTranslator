@@ -50,31 +50,35 @@ bool DACattach_function2()
   // 少女達のさえずり
   // https://vndb.org/v5378
   const uint8_t bytes[] = {
-      0x8b, 0x5d, 0x1c,
-      0x66, 0x8b, 0x1b,
-      0x66, 0x81, 0xfb, 0x84, 0xaa,
+      0x66, 0x81, XX, 0x84, 0xaa,
       0x74, 0x07,
-      0x66, 0x81, 0xfb, 0x84, 0x9f,
+      0x66, 0x81, XX, 0x84, 0x9f,
       0x75, 0x0b};
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (!addr)
+  ULONG addrX = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addrX)
     return false;
-  addr = findfuncstart(addr);
+  auto addr = findfuncstart(addrX);
+  if (!addr)
+  {
+    //[120831][Exception] 白神子～しろみこ～ 初回限定版
+    BYTE start2[] = {0xcc, 0x83, 0xec, XX};
+    addr = reverseFindBytes(start2, sizeof(start2), addrX - 0x100, addrX);
+    ConsoleOutput("%p", addr);
+    if (addr)
+      addr += 1;
+  }
   if (!addr)
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.type = USING_STRING | FULL_STRING;
+  hp.type = USING_STRING;
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     static std::map<DWORD, std::string> mp;
-    int len = context->stack[10];
-    if (len == -1)
-      return;
     if (mp.find(context->retaddr) == mp.end())
       mp.insert({context->retaddr, ""});
     auto &&thisthread = mp.at(context->retaddr);
-    auto s = std::string((char *)context->stack[6], len);
+    auto s = std::string((char *)context->stack[6]);
     if (startWith(s, thisthread))
     {
       buffer->from(s.substr(thisthread.size()));
