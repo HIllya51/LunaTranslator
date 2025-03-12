@@ -1064,7 +1064,8 @@ class MAINUI:
         trayMenu.addAction(quitAction)
         self.tray.setContextMenu(trayMenu)
         self.tray.activated.connect(self.leftclicktray)
-        self.tray.messageClicked.connect(print)
+        self.tray.messageClicked.connect(self.__trayclicked)
+        self.trayclicked = print
         self.tray.show()
         ver = winsharedutils.queryversion(getcurrexe())
         version = str(ver)
@@ -1079,6 +1080,9 @@ class MAINUI:
 
         globalconfig["load_doc_or_log"] = version
 
+    def __trayclicked(self):
+        self.trayclicked()
+
     def triggertoupdate(self):
         self.istriggertoupdate = True
         winsharedutils.dispatchcloseevent()
@@ -1088,8 +1092,7 @@ class MAINUI:
             self.translation_ui.showhideui()
 
     def showtraymessage(self, title, message, callback):
-        self.tray.messageClicked.disconnect()
-        self.tray.messageClicked.connect(callback)
+        self.trayclicked = callback
         self.tray.showMessage(title, message, getExeIcon(getcurrexe()))
 
     def destroytray(self):
