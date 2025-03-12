@@ -1068,14 +1068,16 @@ class MAINUI:
         self.tray.show()
         ver = winsharedutils.queryversion(getcurrexe())
         version = str(ver)
-        if version != globalconfig["load_doc_everytimes"]:
+        if "load_doc_or_log" not in globalconfig:
+            os.startfile(dynamiclink("{docs_server}"))
+        elif version != globalconfig["load_doc_or_log"]:
             self.showtraymessage(
                 "v" + ".".join(str(_) for _ in ver),
                 _TR("更新记录"),
                 lambda: os.startfile(dynamiclink("{main_server}/ChangeLog")),
             )
 
-            globalconfig["load_doc_everytimes"] = version
+        globalconfig["load_doc_or_log"] = version
 
     def triggertoupdate(self):
         self.istriggertoupdate = True
