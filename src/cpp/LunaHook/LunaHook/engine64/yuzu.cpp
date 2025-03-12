@@ -1233,7 +1233,7 @@ namespace
     {
         auto s = buffer->strA();
         static std::string last;
-        s = re::sub(s, (R"((#Ruby\[)([^,]+),(#\w+\[.\])?(.+?]))"), "$2");
+        s = re::sub(s, (R"((#Ruby\[)([^,]+),(#\w+\[.\])?(.+?\]))"), "$2");
         s = re::sub(s, (R"(#\w+(\[.+?\])?)"));
         s = re::sub(s, (u8"　"));
         if (last == s)
@@ -1799,7 +1799,6 @@ namespace
     }
     void F010042300C4F6000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, (L"[\\s]"));
         s = re::sub(s, (L"(.+?/)"));
@@ -2627,6 +2626,11 @@ namespace
         buffer->from(s);
     }
 
+    void F010042300C4F6000_1(TextBuffer *buffer, HookParam *)
+    {
+        StringFilter(buffer, TEXTANDLEN(L"\n　"));
+        CharFilter(buffer, L'\n');
+    }
     void NewLineCharFilterW(TextBuffer *buffer, HookParam *)
     {
         CharFilter(buffer, L'\n');
@@ -2998,10 +3002,11 @@ namespace
             // Sugar * Style
             {0x800ccbc8, {0, 0, 0, 0, 0, 0x0100325012B70000ull, "1.0.0"}}, // ret x0 name + text (readShiftJisString), filter is to complex, quit.
             // Nightshade／百花百狼
-            {0x802999c8, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}}, // dialogue
-            {0x8015b544, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}}, // name
-            {0x802a2fd4, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}}, // choice1
-            {0x802b7900, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}}, // choice2
+            {0x802989E4, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010042300C4F6000_1, 0x010042300C4F6000ull, "1.0.0"}}, // dialogue
+            {0x802999c8, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}},   // dialogue
+            {0x8015b544, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}},   // name
+            {0x802a2fd4, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}},   // choice1
+            {0x802b7900, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}},   // choice2
             // 囚われのパルマ
             {0x8015b7a8, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010044800D2EC000, 0x010044800D2EC000ull, "1.0.0"}}, // text x0
             {0x8015b46c, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010044800D2EC000, 0x010044800D2EC000ull, "1.0.0"}}, // name x1
@@ -3727,6 +3732,8 @@ namespace
             {0x217030, {0, 0, 0, 0, F0100A250191E8000<true>, 0x0100A250191E8000ull, "1.0.0"}},
             // 三国恋戦記～オトメの兵法！～
             {0x800644A0, {CODEC_UTF16, 1, 0, 0, F01000EA00B23C000, 0x01000EA00B23C000ull, "1.0.0"}},
+            {0x800644C0, {CODEC_UTF16, 1, 0, 0, F01000EA00B23C000, 0x01000EA00B23C000ull, "1.0.1"}},
+            {0x800645E0, {CODEC_UTF16, 1, 0, 0, F01000EA00B23C000, 0x01000EA00B23C000ull, "1.0.2"}},
             // 三国恋戦記～思いでがえし～＋学園恋戦記
             {0x80153B20, {CODEC_UTF16, 8, 0, 0, F01000EA00B23C000, 0x01003B6014B38000ull, "1.0.0"}},
             // 殺人探偵ジャック・ザ・リッパー

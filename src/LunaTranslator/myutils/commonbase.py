@@ -130,6 +130,10 @@ class commonbase(multikeyhelper):
         return getproxy((self._globalconfig_key, self.typename))
 
     @property
+    def is_src_auto(self):
+        return self.srclang_1 == Languages.Auto
+
+    @property
     def srclang(self):
         l = self.srclang_1
         return self.langmap_.get(l, l)

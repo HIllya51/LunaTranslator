@@ -1,6 +1,5 @@
 import time, hashlib
 from translator.basetranslator import basetrans
-
 from language import Languages
 
 

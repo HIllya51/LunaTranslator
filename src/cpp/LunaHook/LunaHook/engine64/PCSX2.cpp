@@ -678,6 +678,8 @@ namespace
             {0x1A07855, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55281"}},
             // ToHeart2
             {0x20AB10, {DIRECT_READ, 0, 0, SLPS25414, 0, "SLPS-25414"}},
+            // 仔羊捕獲ケーカク！ スイートボーイズライフ
+            {0x911CA2, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66582"}},
         };
         return 0;
     }();

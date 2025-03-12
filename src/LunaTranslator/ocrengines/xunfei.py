@@ -187,7 +187,7 @@ class OCR(baseocr):
                 apikey,
             )
         elif self.config["interface"] == "ocr":
-            if self.srclang_1 == Languages.Auto:
+            if self.is_src_auto:
                 self.raise_cant_be_auto_lang()
             boxs, texts = get_result2(
                 "https://cn-east-1.api.xf-yun.com/v1/ocr",

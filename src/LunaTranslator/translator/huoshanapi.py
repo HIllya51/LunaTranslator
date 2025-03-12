@@ -3,6 +3,7 @@ from collections import OrderedDict
 from translator.basetranslator import basetrans
 from urllib.parse import urlencode
 from functools import reduce
+import requests
 import hmac
 import datetime
 import pytz
@@ -307,11 +308,11 @@ class SignerV4(object):
 
 
 class Service(object):
-    def __init__(self, service_info, api_info):
+    def __init__(self, service_info: ServiceInfo, api_info):
         self.service_info = service_info
         self.api_info = api_info
 
-    def json(self, api, params, body, session):
+    def json(self, api, params, body, session: requests.Session):
         if not (api in self.api_info):
             raise Exception("no such api")
         api_info = self.api_info[api]
@@ -332,7 +333,7 @@ class Service(object):
         else:
             raise Exception(resp)
 
-    def prepare_request(self, api_info, params, doseq=0):
+    def prepare_request(self, api_info: ApiInfo, params, doseq=0):
         for key in params:
             if (
                 type(params[key]) == int
@@ -380,29 +381,28 @@ class Service(object):
         return od
 
 
-def trans(TextList, k_access_key, k_secret_key, src, tgt, session):
-
-    k_service_info = ServiceInfo(
-        "open.volcengineapi.com",
-        {"Content-Type": "application/json"},
-        Credentials(k_access_key, k_secret_key, "translate", "cn-north-1"),
-        5,
-        5,
-    )
-    k_query = {"Action": "TranslateText", "Version": "2020-06-01"}
-    k_api_info = {"translate": ApiInfo("POST", "/", k_query, {}, {})}
-    service = Service(k_service_info, k_api_info)
-    body = {
-        "TargetLanguage": tgt,
-        "TextList": [TextList],
-    }
-    if src != Languages.Auto:
-        body.update({"SourceLanguage": src})
-    res = service.json("translate", {}, json.dumps(body), session)
-    return res
-
-
 class TS(basetrans):
+    def trans(self, TextList, k_access_key, k_secret_key):
+
+        k_service_info = ServiceInfo(
+            "open.volcengineapi.com",
+            {"Content-Type": "application/json"},
+            Credentials(k_access_key, k_secret_key, "translate", "cn-north-1"),
+            5,
+            5,
+        )
+        k_query = {"Action": "TranslateText", "Version": "2020-06-01"}
+        k_api_info = {"translate": ApiInfo("POST", "/", k_query, {}, {})}
+        service = Service(k_service_info, k_api_info)
+        body = {
+            "TargetLanguage": self.tgtlang,
+            "TextList": [TextList],
+        }
+        if not self.is_src_auto:
+            body.update({"SourceLanguage": self.srclang})
+        res = service.json("translate", {}, json.dumps(body), self.proxysession)
+        return res
+
     def langmap(self):
         return {Languages.TradChinese: "zh-Hant"}
 
@@ -411,7 +411,7 @@ class TS(basetrans):
 
         keyid = self.multiapikeycurrent["Access Key ID"]
         acckey = self.multiapikeycurrent["Secret Access Key"]
-        res = trans(query, keyid, acckey, self.srclang, self.tgtlang, self.proxysession)
+        res = self.trans(query, keyid, acckey)
         try:
 
             return "\n".join(

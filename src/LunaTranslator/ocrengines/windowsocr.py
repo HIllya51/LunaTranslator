@@ -131,7 +131,7 @@ class OCR(baseocr):
         if len(supports) == 0:
 
             raise Exception(_TR("无可用语言"))
-        if self.srclang == Languages.Auto:
+        if self.is_src_auto:
             if len(supports) == 1:
                 uselang = supports[0]
             else:

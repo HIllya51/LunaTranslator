@@ -116,9 +116,9 @@ DECLARE_API void crop_image(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
     }
 }
 
-DECLARE_API RECT maximum_window()
+DECLARE_API void maximum_window(HWND hwnd)
 {
     RECT rect;
     GetVirtualDesktopRect(rect);
-    return rect; // MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+    MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
 }

@@ -11,7 +11,7 @@ class TS(basetrans):
     def translate(self, content):
 
         from_language = self.srclang
-        if from_language == Languages.Auto:
+        if self.is_src_auto:
             detect_form = {"text_to_translate": content}
             r_detect = self.proxysession.post(
                 "https://www.translate.com/translator/ajax_lang_auto_detect",

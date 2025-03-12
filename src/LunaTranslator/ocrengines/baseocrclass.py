@@ -1,6 +1,5 @@
 from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR, isascii
 from myutils.commonbase import commonbase
-from language import Languages
 import re
 
 
@@ -113,8 +112,7 @@ class baseocr(commonbase):
 
     ########################################################
     def raise_cant_be_auto_lang(self):
-        l = self.srclang_1
-        if l == Languages.Auto:
+        if self.is_src_auto:
             raise Exception(_TR("当前OCR引擎不支持设置语言为自动"))
 
     def __init__(self, typename):

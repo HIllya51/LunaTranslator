@@ -10,7 +10,7 @@ class youdao(cishubase):
 
     def search(self, word: str):
         lang = self.srclang
-        if lang == Languages.Auto:
+        if self.is_src_auto:
             if isascii(word):
                 lang = Languages.English
             else:

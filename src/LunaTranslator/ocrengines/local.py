@@ -277,7 +277,7 @@ class OCR(baseocr):
     def checkchange(self):
         if self._savelang == self.srclang:
             return
-        if self.srclang == Languages.Auto:
+        if self.is_src_auto:
             validlangs = getallsupports()
             if len(validlangs) == 1:
                 uselang = validlangs[0]

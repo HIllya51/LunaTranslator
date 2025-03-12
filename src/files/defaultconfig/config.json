@@ -1575,17 +1575,11 @@
             "color": "pink",
             "name": "Azure"
         },
-        "baidu_ai": {
-            "use": true,
-            "color": "#ff65db",
-            "useproxy": false,
-            "name": "百度_v2"
-        },
         "baidu": {
             "use": false,
             "color": "#ff65db",
             "useproxy": false,
-            "name": "百度_v1"
+            "name": "百度"
         },
         "bing": {
             "use": false,
@@ -1596,12 +1590,7 @@
         "google": {
             "use": false,
             "color": "#ff0000",
-            "name": "谷歌_v1"
-        },
-        "google2": {
-            "use": false,
-            "color": "#95a5ff",
-            "name": "谷歌_v2"
+            "name": "谷歌"
         },
         "ModernMt": {
             "use": false,
@@ -1631,7 +1620,7 @@
             "use": false,
             "useproxy": false,
             "color": "#95a5ff",
-            "name": "有道词典"
+            "name": "有道"
         },
         "caiyun": {
             "use": false,
@@ -1694,12 +1683,6 @@
             "use": false,
             "color": "#1839f0",
             "name": "LEC"
-        },
-        "youdao3": {
-            "use": false,
-            "color": "blue",
-            "useproxy": false,
-            "name": "有道"
         },
         "itrans": {
             "use": false,

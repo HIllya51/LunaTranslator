@@ -1,6 +1,5 @@
 from translator.basetranslator import basetrans
 import json
-from language import Languages
 
 
 class TS(basetrans):
@@ -12,7 +11,7 @@ class TS(basetrans):
         url = self.config["apiurl"] + "/v3/translate?version=2018-05-01"
         headers = {"Content-Type": "application/json"}
         data = {"text": [query], "target": self.tgtlang}
-        if self.srclang != Languages.Auto:
+        if not self.is_src_auto:
             data.update({"source": self.srclang})
 
         response = self.proxysession.post(

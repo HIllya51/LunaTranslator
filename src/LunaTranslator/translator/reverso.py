@@ -39,13 +39,13 @@ class TS(basetrans):
         }
 
     def translate(self, content):
-        if self.srclang == Languages.Auto:
+        if self.is_src_auto:
             src = self.mostmaybelang
         else:
             src = self.srclang
 
         data = self.reverso_api(self.config["origin"], content, src, self.tgtlang)
-        if self.srclang == Languages.Auto:
+        if self.is_src_auto:
             det = data["languageDetection"]["detectedLanguage"]
             if det == src:
                 return "".join(data["translation"])

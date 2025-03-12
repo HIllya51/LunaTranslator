@@ -1,5 +1,4 @@
 from translator.basetranslator import basetrans
-from language import Languages
 
 
 class TS(basetrans):
@@ -14,7 +13,7 @@ class TS(basetrans):
             "targetLanguageCode": self.tgtlang,
             "texts": [content],
         }
-        if self.srclang != Languages.Auto:
+        if not self.is_src_auto:
             js["sourceLanguageCode"] = self.srclang
         response = self.proxysession.post(
             url, json=js, headers={"Authorization": "Api-Key " + key}

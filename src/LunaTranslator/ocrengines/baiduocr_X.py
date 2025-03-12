@@ -231,7 +231,7 @@ class OCR(baseocr):
         }
 
         if self.config["接口"] in [0, 1]:
-            if self.srclang_1 == Languages.Auto:
+            if self.is_src_auto:
                 data["detect_language"] = True
                 data.pop("language_type")
         interfacetype = self.config["接口"]

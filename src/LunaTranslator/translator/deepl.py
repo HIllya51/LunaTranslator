@@ -76,7 +76,7 @@ class cdp_deepl(cdp_helper):
         return self.ref.tgtlang_1
 
     def translate(self, content):
-        if self.srclang == Languages.Auto:
+        if self.ref.is_src_auto:
             self.Runtime_evaluate(
                 'document.querySelector("#translator-source-clear-button").click()'
             )

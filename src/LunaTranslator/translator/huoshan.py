@@ -27,7 +27,7 @@ class TS(basetrans):
             "glossary_list": [],
             "category": "",
         }
-        if self.srclang != Languages.Auto:
+        if not self.is_src_auto:
             json_data["source_language"] = self.srclang
         response = self.proxysession.post(
             "https://translate.volcengine.com/crx/translate/v1/",

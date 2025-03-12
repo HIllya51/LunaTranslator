@@ -16,7 +16,7 @@ class TS(basetrans):
             "target": self.tgtlang,
             "q": (query),
         }
-        if self.srclang != Languages.Auto:
+        if not self.is_src_auto:
             params["source"] = self.srclang
         response = self.proxysession.get(
             "https://translation.googleapis.com/language/translate/v2/", params=params

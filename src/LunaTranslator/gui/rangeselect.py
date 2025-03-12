@@ -164,13 +164,6 @@ class rangeadjust(Mainw):
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
 
-def get_maximum(scale):
-    _rect = winsharedutils.maximum_window()
-    lt = QPoint(_rect.left, _rect.top) / scale
-    rb = QPoint(_rect.right, _rect.bottom) / scale
-    return QRect(lt, rb)
-
-
 class rangeselect(QMainWindow):
 
     def closeEvent(self, a0):
@@ -197,7 +190,10 @@ class rangeselect(QMainWindow):
         self.reset()
 
     def reset(self):
-        self.setGeometry(get_maximum(self.devicePixelRatioF()))
+        if len(QApplication.screens()) == 1:
+            self.setGeometry(QRect(QPoint(0, 0), QApplication.screens()[0].size()))
+        else:
+            winsharedutils.maximum_window(int(self.winId()))
         self.once = True
         self.is_drawing = False
         self.start_point = QPoint()
@@ -214,6 +210,10 @@ class rangeselect(QMainWindow):
         )
 
     def resizeEvent(self, e: QResizeEvent):
+        if len(QApplication.screens()) == 1:
+            pass
+        else:
+            winsharedutils.maximum_window(int(self.backlabel.winId()))
         self.backlabel.resize(e.size())
 
     def paintEvent(self, event):

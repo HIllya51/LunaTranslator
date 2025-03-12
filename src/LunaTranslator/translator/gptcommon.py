@@ -42,6 +42,7 @@ def stream_event_parser(response: requests.Response):
 def commonparseresponse_good(hidethinking: bool, response: requests.Response):
 
     message = ""
+    thinkcnt = 0
     isthinking = False
     for json_data in stream_event_parser(response):
         try:
@@ -56,6 +57,11 @@ def commonparseresponse_good(hidethinking: bool, response: requests.Response):
                     if msg.strip() == "</think>":
                         isthinking = False
                         yield "\0"
+                    else:
+                        thinkcnt += len(msg)
+                        yield "\0"
+                        yield "thinking {} ...".format(thinkcnt)
+
                 else:
                     if hidethinking and (not message) and (not msg.strip()):
                         # 跳过</think>后的\n

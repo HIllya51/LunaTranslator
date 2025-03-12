@@ -1,7 +1,5 @@
 from translator.basetranslator import basetrans
 
-from language import Languages
-
 
 class TS(basetrans):
 
@@ -10,7 +8,7 @@ class TS(basetrans):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 YaBrowser/24.1.5.825 Yowser/2.5 Safari/537.36"
         }
-        if self.srclang == Languages.Auto:
+        if self.is_src_auto:
             params = {
                 "srv": "browser_video_translation",
                 "text": content,
