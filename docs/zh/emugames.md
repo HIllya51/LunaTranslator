@@ -833,6 +833,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPS-25819 | アルトネリコ2 世界に響く少女たちの創造詩 |
 |  | SLPS-73263 | アルトネリコ2 世界に響く少女たちの創造詩 [PlayStation2 the Best] |
 |  | SLPM-55281 | CLOCK ZERO ～終焉の一秒～ |
+|  | SLPS-25414 | ToHeart2 |
 
 == PS3
 

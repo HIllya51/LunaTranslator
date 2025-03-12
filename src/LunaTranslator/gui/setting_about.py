@@ -197,7 +197,9 @@ def versioncheckthread(self):
         gobject.baseobject.update_avalable = True
         self.downloadprogress_cache = (_TR("准备完毕，等待更新"), 10000)
         gobject.baseobject.showtraymessage(
-            sversion, _TR("准备完毕，等待更新") + "\n" + _TR("点击消息后退出并开始更新")
+            sversion,
+            _TR("准备完毕，等待更新") + "\n" + _TR("点击消息后退出并开始更新"),
+            gobject.baseobject.triggertoupdate,
         )
 
 

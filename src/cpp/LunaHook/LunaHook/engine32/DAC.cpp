@@ -63,7 +63,6 @@ bool DACattach_function2()
     //[120831][Exception] 白神子～しろみこ～ 初回限定版
     BYTE start2[] = {0xcc, 0x83, 0xec, XX};
     addr = reverseFindBytes(start2, sizeof(start2), addrX - 0x100, addrX);
-    ConsoleOutput("%p", addr);
     if (addr)
       addr += 1;
   }

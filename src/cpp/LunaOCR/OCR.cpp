@@ -1,4 +1,4 @@
-#include <onnxruntime/core/session/onnxruntime_cxx_api.h>
+﻿#include <onnxruntime/core/session/onnxruntime_cxx_api.h>
 #include <opencv2/opencv.hpp>
 #include <clipper2/clipper.h>
 typedef std::vector<cv::Point> TextBox;
@@ -606,7 +606,9 @@ namespace
         auto pixelData = (uintptr_t)binptr + fileHeader->bfOffBits;
         int width = infoHeader->biWidth;
         int height = infoHeader->biHeight;
-        auto mat = cv::Mat(height, width, (infoHeader->biBitCount == 24) ? CV_8UC3 : CV_8UC4, (void *)pixelData);
+        // 实际上只会是CV_8UC3；32位这样处理不太对，但懒得管了。
+        int rowSize = (infoHeader->biBitCount == 24) ? (((width * 3 + 3) / 4) * 4) : (4 * width);
+        auto mat = cv::Mat(height, width, (infoHeader->biBitCount == 24) ? CV_8UC3 : CV_8UC4, (void *)pixelData, rowSize);
         cv::flip(mat, mat, 0);
         return std::move(mat);
     }

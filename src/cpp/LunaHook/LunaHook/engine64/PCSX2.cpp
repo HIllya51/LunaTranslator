@@ -457,6 +457,42 @@ namespace
         strReplace(s, "\x81\x40");
         buffer->from(s);
     }
+    void SLPS25414(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        static std::string last;
+        auto len = *(int *)emu_addr(0x20AB10);
+        if (!len)
+            return;
+        auto strx = std::string((char *)emu_addr(0x20AB14), len);
+        std::string str;
+        for (auto i = 0; i < strx.size(); i++)
+        {
+            if (strx[i])
+            {
+                str += strx[i];
+            }
+            else
+            {
+                while (i % 4 != 3)
+                    i++;
+            }
+        }
+        auto parse = [](std::string str2)
+        {
+            strReplace(str2, "\\k\\n");
+            str2 = re::sub(str2, R"(\\p\d{4})");
+            return str2;
+        };
+        if (startWith(str, last))
+        {
+            buffer->from(parse(str.substr(last.size())));
+        }
+        else
+        {
+            buffer->from(parse(str));
+        }
+        last = str;
+    }
     void SLPS25150(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         static std::string last;
@@ -640,6 +676,8 @@ namespace
             {0xAF1B3C, {DIRECT_READ, 0, 0, 0, SLPS25604, "SLPS-73263"}},
             // CLOCK ZERO ～終焉の一秒～
             {0x1A07855, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55281"}},
+            // ToHeart2
+            {0x20AB10, {DIRECT_READ, 0, 0, SLPS25414, 0, "SLPS-25414"}},
         };
         return 0;
     }();
