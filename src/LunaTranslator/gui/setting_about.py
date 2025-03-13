@@ -391,9 +391,10 @@ def setTab_update(self, basel):
     if version is None:
         versionstring = "unknown"
     else:
-        versionstring = ("v{}.{}.{}  {}").format(
-            version[0], version[1], version[2], platform.architecture()[0]
-        )
+        vs = ".".join(str(_) for _ in version)
+        if vs.endswith(".0"):
+            vs = vs[:-2]
+        versionstring = ("v{} {}").format(vs, platform.architecture()[0])
     inner, vis = [_.code for _ in UILanguages], [_.nativename for _ in UILanguages]
     grid2 = [
         [
