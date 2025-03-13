@@ -1,7 +1,7 @@
 import sys, time
 
 sys.path.insert(0, "./LunaTranslator")
-from translator.baidu_ai import TS
+from translator.youdaodict import TS
 
 
 class TS1(TS):

@@ -46,6 +46,14 @@ def gethookgrid_em(self):
     alltrans, alltransvis = loadvalidtss()
     grids = [
         [
+            "清除游戏内显示的文字",
+            D_getsimpleswitch(
+                globalconfig["embedded"],
+                "clearText",
+                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
+            ),
+        ],
+        [
             "显示模式",
             "",
             D_getsimplecombobox(

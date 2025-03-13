@@ -2213,20 +2213,16 @@ namespace
         {
             auto s = buffer->strA();
 
-            if (!hpx->user_value)
+            HookParam hp;
+            hp.address = (uintptr_t)F01009E600FAF6000_collect;
+            hp.offset = GETARG(1);
+            hp.type = USING_STRING;
+            hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
             {
-                hpx->user_value = 1;
-                HookParam hp;
-                hp.address = (uintptr_t)F01009E600FAF6000_collect;
-                hp.offset = GETARG(1);
-                hp.type = USING_STRING;
-                hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
-                {
-                    StringFilter(buffer, TEXTANDLEN("@1r"));
-                    StringFilter(buffer, TEXTANDLEN("@-1r"));
-                };
-                NewHook(hp, "01009E600FAF6000");
-            }
+                StringFilter(buffer, TEXTANDLEN("@1r"));
+                StringFilter(buffer, TEXTANDLEN("@-1r"));
+            };
+            static auto _ = NewHook(hp, "01009E600FAF6000");
             static std::map<uint64_t, uintptr_t> mp;
             // 这个address会被触发两次。
             if (mp.find(hpx->emu_addr) == mp.end())
@@ -2409,16 +2405,41 @@ namespace
         void T0100A4700BC98000(TextBuffer *buffer, HookParam *hpx)
         {
             auto s = buffer->strA();
-            if (!hpx->user_value)
-            {
-                hpx->user_value = 1;
-                HookParam hp;
-                hp.address = (uintptr_t)TT0100A4700BC98000;
-                hp.offset = GETARG(1);
-                hp.type = CODEC_UTF8 | USING_STRING;
-                NewHook(hp, "0100A4700BC98000");
-            }
+            HookParam hp;
+            hp.address = (uintptr_t)TT0100A4700BC98000;
+            hp.offset = GETARG(1);
+            hp.type = CODEC_UTF8 | USING_STRING;
+            static auto _ = NewHook(hp, "0100A4700BC98000");
             TT0100A4700BC98000(s.c_str());
+        }
+    }
+    namespace
+    {
+#pragma optimize("", off)
+        void F010059D020670000_collect(const char *_) {}
+#pragma optimize("", on)
+        void F010059D020670000(TextBuffer *buffer, HookParam *hpx)
+        {
+            auto s = buffer->strA();
+            HookParam hp;
+            hp.address = (uintptr_t)F010059D020670000_collect;
+            hp.offset = GETARG(1);
+            hp.type = CODEC_UTF8 | USING_STRING;
+            hp.filter_fun = all_ascii_Filter;
+            static auto _ = NewHook(hp, hpx->name);
+            static std::string last;
+            if (last == s)
+                return buffer->clear();
+            last = s;
+            strReplace(s, "\\n");
+            strReplace(s, u8"Ц", "!!");
+            strReplace(s, u8"Щ", "!!?");
+            strReplace(s, u8"└┐", "～～");
+            strReplace(s, u8"└─┐", "～～");
+            s = re::sub(s, R"(\{W\d+\})");
+            s = re::sub(s, R"(\[(.*?)\*(.*?)\])", "$1");
+            F010059D020670000_collect(s.c_str());
+            buffer->clear();
         }
     }
     namespace
@@ -2430,15 +2451,11 @@ namespace
         {
             auto s = buffer->strW();
             strReplace(s, L"/player");
-            if (!hpx->user_value)
-            {
-                hpx->user_value = 1;
-                HookParam hp;
-                hp.address = (uintptr_t)F01006530151F0000_collect;
-                hp.offset = GETARG(1);
-                hp.type = CODEC_UTF16 | USING_STRING;
-                NewHook(hp, "01006530151F0000");
-            }
+            HookParam hp;
+            hp.address = (uintptr_t)F01006530151F0000_collect;
+            hp.offset = GETARG(1);
+            hp.type = CODEC_UTF16 | USING_STRING;
+            static auto _ = NewHook(hp, hpx->name);
             F01006530151F0000_collect(s.c_str());
             buffer->clear();
         }
@@ -3908,6 +3925,17 @@ namespace
             // りゅうおうのおしごと！
             {0x805F5A00, {CODEC_UTF16, 0xc, 0, 0, NewLineCharFilterW, 0x010033100EE12000ull, "1.0"}},
             {0x805D5710, {CODEC_UTF16, 0xc, 0, 0, NewLineCharFilterW, 0x010033100EE12000ull, "1.0.3"}},
+            // うたわれるもの 偽りの仮面
+            {0x1838E34, {CODEC_UTF8, 5, 0, 0, F010059D020670000, 0x010059D020670000ull, "1.0.1"}},
+            {0x2AE240, {CODEC_UTF8, 2, 0, 0, F010059D020670000, 0x010059D020670000ull, "1.0.1"}},
+            // うたわれるもの 散りゆく者への子守唄
+            {0x313A00, {CODEC_UTF8, 5, 0, 0, F010059D020670000, 0x0100CF502066E000ull, "1.0.0"}},
+            {0x2AF0D8, {CODEC_UTF8, 0, 0, 0, F010059D020670000, 0x0100CF502066E000ull, "1.0.0"}},
+            {0x17CA2A4, {CODEC_UTF8, 0, 0, 0, F010059D020670000, 0x0100CF502066E000ull, "1.0.0"}},
+            // うたわれるもの 二人の白皇
+            {0x2D1438, {CODEC_UTF8, 2, 0, 0, F010059D020670000, 0x0100345020672000ull, "1.0.0"}},
+            {0x2D1418, {CODEC_UTF8, 2, 0, 0, F010059D020670000, 0x0100345020672000ull, "1.0.0"}},
+            {0x2E29B4, {CODEC_UTF8, 0, 0, 0, F010059D020670000, 0x0100345020672000ull, "1.0.0"}},
 
         };
         return 1;

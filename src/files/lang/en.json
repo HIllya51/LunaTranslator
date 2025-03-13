@@ -745,7 +745,6 @@
     "还原": "Restore",
     "加亮模式": "Highlighting Mode",
     "清除加亮": "Clear Highlight",
-    "内嵌翻译上下文": "Embedded Translation Context",
     "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "Webview2 Runtime not found!\nPlease install Webview2 Runtime, or download the fixed version and extract it to the software directory.",
     "识别设置": "Recognition Settings",
     "附加HTML": "Append HTML",
@@ -793,5 +792,8 @@
     "窗口": "Window",
     "允许重复": "Allow Duplicates",
     "检测到存在重复，是否覆盖？": "Duplicates detected. Overwrite?",
-    "隐藏思考过程": ""
+    "隐藏思考过程": "",
+    "清除游戏内显示的文字": "",
+    "已复制到剪贴板": "",
+    "已激活的": ""
 }

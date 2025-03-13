@@ -5,15 +5,12 @@ from myutils.config import globalconfig, _TR
 from myutils.utils import autosql, getannotatedapiname
 from gui.usefulwidget import SuperCombo
 from gui.dynalang import LFormLayout, LPushButton, LDialog
-from textsource.texthook import splitembedlines
 from collections import Counter
 from myutils.wrapper import tryprint
 
 
 @tryprint
-def sqlite2json2(
-    self, sqlitefile, targetjson=None, existsmerge=False, isforembed=False
-):
+def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     try:
         sql = autosql(sqlite3.connect(sqlitefile, check_same_thread=False))
         ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
@@ -78,7 +75,7 @@ def sqlite2json2(
     formLayout.addRow(button)
     button.rejected.connect(dialog.close)
 
-    def __savefunction(target, existsmerge, isforembed):
+    def __savefunction(target, existsmerge):
         if len(_collect) > 0:
             transkirokuuse = combo.getIndexData(combo.currentIndex())
             for k in js_format2:
@@ -95,9 +92,6 @@ def sqlite2json2(
             for k in existsjs:
                 if k not in js_format2 or js_format2[k] == "":
                     js_format2[k] = existsjs[k]
-        if isforembed:
-            for _ in js_format2:
-                js_format2[_] = splitembedlines(js_format2[_])
         os.makedirs(os.path.dirname(target), exist_ok=True)
         with open(target, "w", encoding="utf8") as ff:
             ff.write(
@@ -105,9 +99,7 @@ def sqlite2json2(
             )
         dialog.close()
 
-    button.accepted.connect(
-        functools.partial(__savefunction, targetjson, existsmerge, isforembed)
-    )
+    button.accepted.connect(functools.partial(__savefunction, targetjson, existsmerge))
     button.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
     button.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
     dialog.show()

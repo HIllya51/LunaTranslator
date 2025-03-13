@@ -157,3 +157,61 @@ bool ApricoT::attach_function()
 
   return InsertApricoTHook();
 }
+
+bool CROSSNET::attach_function()
+{
+  //[040130][APRICOT] Maple Colors H (bin+cue)
+  const uint8_t bytes[] = {
+      0x8b, 0x4c, 0x24, XX,
+      0x8b, 0x44, 0x24, XX,
+      0x2b, 0xc8,
+      0x32, 0xdb,
+      0x33, 0xff,
+      0xd1, 0xf9,
+      0x0f, 0x84, XX4};
+  ULONG addrX = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  HookParam hp;
+  hp.address = addrX + 8;
+  hp.type = USING_STRING;
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    auto ret = context->retaddr;
+    if ((ret != 0) && (ret != 0x15d800))
+      return;
+    auto ecx = (char *)context->ecx;
+    auto eax = (char *)context->eax;
+    std::string str;
+    for (int edi = 0; edi != (((int)(ecx - eax)) >> 1); edi++)
+    {
+      WORD ax = *(WORD *)(eax + edi * 2);
+      if (ax == 0xa)
+        continue;
+      ax = _byteswap_ushort(ax);
+      str += std::string((char *)&ax, 2);
+    }
+    static std::string name;
+    if (ret == 0x15d800)
+    {
+      name = str;
+    }
+    else
+    {
+      auto parse = [](std::string s)
+      {
+        return strReplace(s, "\x81\x40");
+      };
+      static std::string last;
+      if (last.size() && startWith(str, last))
+      {
+        buffer->from(parse(str.substr(last.size())));
+        name = "";
+      }
+      else
+      {
+        buffer->from(name + parse(str));
+      }
+      last = str;
+    }
+  };
+  return NewHook(hp, "CROSSNET");
+}

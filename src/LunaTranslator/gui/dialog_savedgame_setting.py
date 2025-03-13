@@ -40,7 +40,9 @@ from gui.specialwidget import chartwidget
 from gui.usefulwidget import (
     TableViewW,
     automakegrid,
+    D_getspinbox,
     FlowWidget,
+    FocusFontCombo,
     getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
@@ -230,7 +232,7 @@ class dialog_setting_game_internal(QWidget):
                         icon="fa.heart",
                     ),
                     getIconButton(
-                        lambda: dialog_memory(self, gameuid= gameuid),
+                        lambda: dialog_memory(self, gameuid=gameuid),
                         icon="fa.list-ul",
                     ),
                 ]
@@ -319,7 +321,7 @@ class dialog_setting_game_internal(QWidget):
 
         functs = [
             ("启动", functools.partial(self.___tabf, self.starttab)),
-            ("HOOK", functools.partial(self.___tabf, self.gethooktab)),
+            ("HOOK", self.gethooktab),
             ("语言", functools.partial(self.___tabf, self.getlangtab)),
             ("文本处理", functools.partial(self.___tabf, self.gettextproc)),
             ("翻译优化", functools.partial(self.___tabf, self.gettransoptimi)),
@@ -629,6 +631,7 @@ class dialog_setting_game_internal(QWidget):
                 gobject.global_dialog_savedgame_new.tagswidget.addTag(*_)
             except:
                 winsharedutils.clipboard_set(_[0])
+                QToolTip.showText(QCursor.pos(), _TR("已复制到剪贴板"), self)
 
         qw.labelclicked.connect(safeaddtags)
         if first:
@@ -1087,7 +1090,125 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
 
-    def gethooktab(self, formLayout: LFormLayout, gameuid):
+    def getembedtab(self, formLayout: LFormLayout, gameuid):
+
+        formLayout2 = self.createfollowdefault(
+            savehook_new_data[gameuid],
+            "embed_follow_default",
+            formLayout,
+            callback=lambda: gobject.baseobject.textsource.flashembedsettings(),
+        )
+        formLayout2.addRow(
+            "清除游戏内显示的文字",
+            getsimpleswitch(
+                savehook_new_data[gameuid]["embed_setting_private"],
+                "clearText",
+                default=globalconfig["embedded"]["clearText"],
+                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
+            ),
+        )
+
+        formLayout2.addRow(
+            "显示模式",
+            getsimplecombobox(
+                ["翻译", "原文_翻译", "翻译_原文"],
+                savehook_new_data[gameuid]["embed_setting_private"],
+                "displaymode",
+                default=globalconfig["embedded"]["displaymode"],
+                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
+            ),
+        )
+        formLayout2.addRow(
+            "将汉字转换成繁体/日式汉字",
+            getsimpleswitch(
+                savehook_new_data[gameuid]["embed_setting_private"],
+                "trans_kanji",
+                default=globalconfig["embedded"]["trans_kanji"],
+            ),
+        )
+        formLayout2.addRow(
+            "限制每行字数",
+            getboxlayout(
+                [
+                    D_getsimpleswitch(
+                        savehook_new_data[gameuid]["embed_setting_private"],
+                        "limittextlength_use",
+                        default=globalconfig["embedded"]["limittextlength_use"],
+                    ),
+                    D_getspinbox(
+                        0,
+                        1000,
+                        savehook_new_data[gameuid]["embed_setting_private"],
+                        "limittextlength_length",
+                        default=globalconfig["embedded"]["limittextlength_length"],
+                    ),
+                ],
+                makewidget=True,
+                margin0=True,
+            ),
+        )
+        formLayout2.addRow(
+            "修改游戏字体",
+            getboxlayout(
+                [
+                    D_getsimpleswitch(
+                        savehook_new_data[gameuid]["embed_setting_private"],
+                        "changefont",
+                        default=globalconfig["embedded"]["changefont"],
+                        callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
+                    ),
+                    functools.partial(self.creategamefont_comboBox, gameuid),
+                ],
+                makewidget=True,
+                margin0=True,
+            ),
+        )
+        formLayout2.addRow(
+            "内嵌安全性检查",
+            getsimpleswitch(
+                savehook_new_data[gameuid]["embed_setting_private"],
+                "safecheck_use",
+                default=globalconfig["embedded"]["safecheck_use"],
+            ),
+        )
+        if savehook_new_data[gameuid].get("embedablehook"):
+            box = QGroupBox()
+            settinglayout = LFormLayout(box)
+
+            settinglayout.addRow(
+                "已激活的",
+                listediterline(
+                    "已激活的",
+                    savehook_new_data[gameuid]["embedablehook"],
+                    specialklass=embeddisabler,
+                ),
+            )
+            formLayout.addRow(box)
+
+    def creategamefont_comboBox(self, gameuid):
+
+        gamefont_comboBox = FocusFontCombo()
+
+        def callback(x):
+            savehook_new_data[gameuid]["embed_setting_private"].__setitem__(
+                "changefont_font", x
+            )
+            try:
+                gobject.baseobject.textsource.flashembedsettings()
+            except:
+                pass
+
+        gamefont_comboBox.currentTextChanged.connect(callback)
+        gamefont_comboBox.setCurrentFont(
+            QFont(
+                savehook_new_data[gameuid]["embed_setting_private"].get(
+                    "changefont_font", globalconfig["embedded"]["changefont_font"]
+                )
+            )
+        )
+        return gamefont_comboBox
+
+    def gethooktab_internal(self, formLayout: LFormLayout, gameuid):
 
         formLayout.addRow(
             "延迟注入_(ms)",
@@ -1175,19 +1296,26 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
 
-        if savehook_new_data[gameuid].get("embedablehook"):
-            box = QGroupBox()
-            settinglayout = LFormLayout(box)
-
-            settinglayout.addRow(
-                "内嵌翻译上下文",
-                listediterline(
-                    "内嵌翻译上下文",
-                    savehook_new_data[gameuid]["embedablehook"],
-                    specialklass=embeddisabler,
-                ),
-            )
-            formLayout.addRow(box)
+    def gethooktab(self, gameuid):
+        _w = QWidget()
+        formLayout = QVBoxLayout(_w)
+        formLayout.setContentsMargins(0, 0, 0, 0)
+        functs = [
+            ("HOOK设置", functools.partial(self.___tabf, self.gethooktab_internal)),
+            ("内嵌翻译", functools.partial(self.___tabf, self.getembedtab)),
+        ]
+        methodtab, do = makesubtab_lazy(
+            [_[0] for _ in functs],
+            [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
+            delay=True,
+            initial=(
+                (self.keepindexobject, "gamesettinghook")
+                if (self.keepindexobject is not None)
+                else None
+            ),
+        )
+        formLayout.addWidget(methodtab)
+        return _w, do
 
 
 @Singleton_close

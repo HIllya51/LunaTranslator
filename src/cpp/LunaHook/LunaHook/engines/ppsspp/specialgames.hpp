@@ -356,7 +356,6 @@ namespace ppsspp
 		*split = haveNamve;
 		buffer->from(s);
 	}
-
 	void ULJM06281(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, '\n');
@@ -1185,15 +1184,11 @@ namespace ppsspp
 		{
 			auto s = buffer->strA();
 
-			if (!hpx->user_value)
-			{
-				hpx->user_value = 1;
-				HookParam hp;
-				hp.address = (uintptr_t)ULJM06115_C;
-				hp.offset = GETARG(1);
-				hp.type = USING_STRING;
-				NewHook(hp, "ULJM06115");
-			}
+			HookParam hp;
+			hp.address = (uintptr_t)ULJM06115_C;
+			hp.offset = GETARG(1);
+			hp.type = USING_STRING;
+			static auto _ = NewHook(hp, "ULJM06115");
 			ULJM06115_C(s.data());
 			buffer->clear();
 		}
@@ -2118,5 +2113,7 @@ namespace ppsspp
 		{0x883F9F4, {0, 1, 0, TNPJH50689, NPJH50689, "NPJH50689"}},
 		// Canvas3 ～七色の奇跡～
 		{0x886000C, {0, 0, 0, 0, ULJM05659, "ULJM05659"}},
+		// どこでもいっしょ
+		{0x8819C88, {0, 1, 0, 0, ULJS00124, "UCJS10002"}},
 	};
 }

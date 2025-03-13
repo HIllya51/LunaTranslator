@@ -7,6 +7,7 @@
 #include "engine32/sakanagl.h"
 #include "engine32/H_do_C.h"
 #include "engine32/LCScript.h"
+#include "engine32/Hug.h"
 #include "engine32/Cage.h"
 #include "engine32/ONScripterru.h"
 #include "engine32/AbogadoPowers.h"
@@ -444,5 +445,7 @@ std::vector<ENGINE *> check_engines()
         new MixwillSoft,
         new MerRouge,
         new GROOVER,
-        new SmartAdv};
+        new SmartAdv,
+        new CROSSNET,
+        new Hug};
 }

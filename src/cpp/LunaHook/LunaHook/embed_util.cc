@@ -1,4 +1,4 @@
-#include "MinHook.h"
+﻿#include "MinHook.h"
 std::atomic<bool> patch_fun_ptrs_patch_once_flag = true;
 DynamicShiftJISCodec *dynamiccodec = new DynamicShiftJISCodec(932);
 
@@ -271,12 +271,16 @@ bool checktranslatedok(TextBuffer buff)
 }
 bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
+  if (commonsharedmem->clearText)
+  {
+    buff->from(" "); // 也可以选择对齐空格长度。到底哪个更稳定需要更多测试
+    return true;
+  }
   std::wstring origin;
   if (auto t = commonparsestring(buff->buff, buff->size, &hp, commonsharedmem->codepage))
     origin = t.value();
   else
     return false;
-
   std::wstring translate;
   auto hash = texthash(buff->buff, buff->size);
   if (translatecache.find(hash) != translatecache.end())

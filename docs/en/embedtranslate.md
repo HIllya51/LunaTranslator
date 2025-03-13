@@ -41,7 +41,7 @@ After unchecking this setting, Simplified Chinese can be displayed correctly. Ho
 
 ## Embedded Translation Settings
 
-1. #### Keep Original Text
+1. #### Display Mode
 
     ![img](https://image.lunatranslator.org/zh/embed/keeporigin.png) 
 
@@ -76,3 +76,15 @@ After unchecking this setting, Simplified Chinese can be displayed correctly. Ho
     For games like Renpy, the extracted text often includes characters of syntax elements such as `{` `}` `[` `]`. If the translation source does not handle these contents correctly, it will break the syntax and cause the game to crash. Therefore, the software defaults to **skipping translation** of certain character combinations that may cause the game by regex matching. If you are not worried about game crashes, you can cancel this setting, or manually replace some finer-grained regex matches to reduce unnecessary skipping.
 
     ![img](https://image.lunatranslator.org/zh/embed/safeskip.png)
+    
+1. #### Clear In-Game Display Text
+
+    After enabling this option, the content meant to be displayed as embedded text within the game will be cleared.
+
+    This option may meet the following needs:
+
+    1. Sometimes, embedded translations encounter unsolvable issues with character encoding and fonts being unable to display correctly. By enabling this option and then overlaying the software window on top of where the text would normally appear in-game, it can create the illusion of an embedded translation.
+
+    1. Sometimes, rather than embedding translations, we may use external translation tools. In such cases, placing the translation window over the text area might cause overlap with the original text, while moving it elsewhere could obstruct the game screen.
+    
+    1. Sometimes, we only want to use the game for learning Japanese, but the game text does not have features like furigana annotations or bilingual display.

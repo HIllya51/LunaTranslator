@@ -107,7 +107,7 @@ C_LUNA_API void Luna_FindHooks(DWORD pid, SearchParam sp, findhookcallback_t fin
                             wcscpy_s(hookcode,HOOKCODE_LEN, hp.hookcode);
                             findhookcallback(hookcode,text.c_str()); }, addresses);
 }
-C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, Displaymode displaymode, bool fastskipignore)
+C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, Displaymode displaymode, bool fastskipignore, bool clearText)
 {
     auto sm = Host::GetCommonSharedMem(pid);
     if (!sm)
@@ -118,6 +118,7 @@ C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet
     wcscpy_s(sm->fontFamily, ARRAYSIZE(sm->fontFamily), fontFamily);
     sm->displaymode = displaymode;
     sm->fastskipignore = fastskipignore;
+    sm->clearText = clearText;
 }
 C_LUNA_API bool Luna_checkisusingembed(ThreadParam tp)
 {

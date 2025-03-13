@@ -408,6 +408,7 @@ struct CommonSharedMem
 	wchar_t fontFamily[100];
 	UINT codepage;
 	bool fastskipignore;
+	bool clearText;
 	struct
 	{
 		bool use;

@@ -317,6 +317,9 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | 01004BD01639E000 | ビルシャナ戦姫 ～一樹の風～ |
 |  | 01003B300E4AA000 | THE GRISAIA TRILOGY |
 |  | 010033100EE12000 | りゅうおうのおしごと！ |
+|  | 010059D020670000 | うたわれるもの 偽りの仮面 |
+|  | 0100CF502066E000 | うたわれるもの 散りゆく者への子守唄 |
+|  | 0100345020672000 | うたわれるもの 二人の白皇 |
 
 == PSP
 
@@ -634,6 +637,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | ULJM05986 | アンジェリーク 魔恋の六騎士 |
 |  | NPJH50689 | MISSINGPARTS the TANTEI stories Complete |
 |  | ULJM05659 | Canvas3 ～七色の奇跡～ |
+|  | UCJS10002 | どこでもいっしょ |
 
 == PSV
 
@@ -818,6 +822,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPM-65481 | After...～忘れえぬ絆～ |
 |  | SLPS-25897 | ゼロの使い魔 迷子の終止符と幾千の交響曲 |
 |  | SLPM-55170 | スキップ・ビート |
+|  | SLPM-66891 & SLPM-66892 | Myself;Yourself |
 |  | SLPM-55163 | Myself; Yourself それぞれのfinale |
 |  | SLPM-55014 | ARIA The ORIGINATION ～蒼い惑星のエルシエロ～ |
 |  | SLPM-66536 | ARIA The NATURAL ～遠い記憶のミラージュ～ |
@@ -835,6 +840,8 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPM-55281 | CLOCK ZERO ～終焉の一秒～ |
 |  | SLPS-25414 | ToHeart2 |
 |  | SLPM-66582 | 仔羊捕獲ケーカク！ スイートボーイズライフ |
+|  | SLPM-66817 | Palais de Reine |
+|  | SLPS-25378 & SLPS-25379 | 東京魔人學園外法帖血風録 |
 
 == PS3
 

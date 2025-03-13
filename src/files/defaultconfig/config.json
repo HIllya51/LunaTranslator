@@ -288,7 +288,8 @@
         "changecharset": false,
         "changecharset_charset": 2,
         "limittextlength_use": false,
-        "limittextlength_length": 40
+        "limittextlength_length": 40,
+        "clearText": false
     },
     "requestinterval": 0.5,
     "keepontop": true,
@@ -1710,7 +1711,7 @@
         },
         "baiduapi": {
             "type": "api",
-            "use": false,
+            "use": true,
             "color": "blue",
             "useproxy": false,
             "name": "百度"

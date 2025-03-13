@@ -855,8 +855,8 @@ def getspinbox(
     return s
 
 
-def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None):
-    return lambda: getspinbox(mini, maxi, d, key, double, step, callback)
+def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, default=None):
+    return lambda: getspinbox(mini, maxi, d, key, double, step, callback, default)
 
 
 def getIconButton(
@@ -3145,8 +3145,12 @@ class ClickableLabel(LLabel):
     def setClickable(self, clickable: bool):
         self._clickable = clickable
 
-    def mousePressEvent(self, event: QMouseEvent):
-        if self._clickable and event.button() == Qt.MouseButton.LeftButton:
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        if (
+            self._clickable
+            and event.button() == Qt.MouseButton.LeftButton
+            and self.rect().contains(event.pos())
+        ):
             self.clicked.emit()
 
     clicked = pyqtSignal()

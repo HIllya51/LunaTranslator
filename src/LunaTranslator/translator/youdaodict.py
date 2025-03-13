@@ -17,21 +17,8 @@ class TS(basetrans):
         )
         return tm, hashlib.md5(bytes(string, encoding="utf-8")).hexdigest()
 
-    def translate10_9_8(self, content, v=10):
-        if v == 10:
-            cookies = {
-                "DESKDICT_VENDOR": "fanyiweb_navigation",
-                "OUTFOX_SEARCH_USER_ID": "-2107314897@110.242.68.66",  # 没用
-            }
-        elif v == 9:
-            cookies = {
-                "DESKDICT_VENDOR": "dict_web_product",
-            }
-        elif v == 8:
-            cookies = {
-                "OUTFOX_SEARCH_USER_ID": "-22405009@10.112.57.88",
-                "DESKDICT_VENDOR": "unknown",
-            }
+    def translate(self, content):
+        cookies = {"DESKDICT_VENDOR": "unknown"}
         headers = {
             "Connection": "Keep-Alive",
             "Accept": "*/*",
@@ -60,7 +47,7 @@ class TS(basetrans):
             "id": "0a464aedddbc6e4b9",  # 无所谓
             "vendor": "fanyiweb_navigation",
             "in": "YoudaoDict_fanyiweb_navigation",
-            "appVer": "10.1.3.0",
+            "appVer": "11.2.0.0",
             "appZengqiang": "0",
             "abTest": "0",
             "model": "LENOVO",
@@ -68,8 +55,9 @@ class TS(basetrans):
             "OsVersion": "10.0.19045",
             "network": "none",
             "mid": "windows10.0.19045",
-            "appVersion": "10.1.3.0",
+            "appVersion": "11.2.0.0",
             "product": "deskdict",
+            "source": "mine_transtab_realtime",
         }
         response = self.proxysession.post(
             "https://dict.youdao.com/dicttranslate",
@@ -87,6 +75,3 @@ class TS(basetrans):
             )
         except:
             raise Exception(response)
-
-    def translate(self, content):
-        return self.translate10_9_8(content)

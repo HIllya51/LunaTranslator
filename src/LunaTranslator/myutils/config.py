@@ -34,11 +34,7 @@ def tryreadconfig(path, default=None):
         with open(path, "r", encoding="utf-8") as ff:
             return json.load(ff)
     except:
-        try:
-            with open(path + ".tmp", "r", encoding="utf-8") as ff:
-                return json.load(ff)
-        except:
-            return default if default else {}
+        return default if default else {}
 
 
 def tryreadconfig_1(path, default=None, pathold=None):
@@ -149,6 +145,8 @@ def getdefaultsavehook(title=None):
         "gamepath": "",  # 不要直接访问，要通过uid2gamepath来间接访问
         # "launchpath": "",
         "hooksetting_follow_default": True,
+        "embed_follow_default": True,
+        "embed_setting_private": {},
         "hooksetting_private": {},  # 显示时再加载，缺省用global中的键
         "textproc_follow_default": True,
         "save_text_process_info": {
@@ -635,41 +633,44 @@ def getlang_inner2show(langcode):
     ).get(langcode, "??")
 
 
-def safesave(fname, js, beatiful=True):
+def unsafesave(fname: str, js, beatiful=True, isconfig=True):
     # 有时保存时意外退出，会导致config文件被清空
-    os.makedirs("./userconfig", exist_ok=True)
-    with open(fname + ".tmp", "w", encoding="utf-8") as ff:
-        if beatiful:
-            ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False, indent=4))
-        else:
-            # savegamedata 1w条时，indent=4要2秒，不indent 0.37秒，不ensure_ascii 0.27秒，用不着数据库了
-            ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False))
-    if os.path.exists(fname):
-        os.remove(fname)
-    shutil.copy(fname + ".tmp", fname)
-    os.remove(fname + ".tmp")
-    # wine上MoveFile会权限问题失败，不知道为什么，WinError 32
+    os.makedirs(os.path.dirname(fname), exist_ok=True)
+    if isconfig:
+        backup = os.path.join(os.path.dirname(fname), "backup")
+        os.makedirs(backup, exist_ok=True)
+        shutil.copy(fname, os.path.join(backup, os.path.basename(fname)))
+    js = json.dumps(
+        js, ensure_ascii=False, sort_keys=False, indent=4 if beatiful else None
+    )
+    with open(fname, "w", encoding="utf-8") as ff:
+        ff.write(js)
+
+
+def safesave(*argc, **kw):
+    try:
+        unsafesave(*argc, **kw)
+    except:
+        print_exc()
 
 
 def saveallconfig(test=False):
 
-    safesave("./userconfig/config.json", globalconfig)
-    os.makedirs("./userconfig/Magpie", exist_ok=True)
-    safesave("./userconfig/Magpie/config.json", magpie_config)
-    safesave("./userconfig/postprocessconfig.json", postprocessconfig)
-    safesave("./userconfig/transerrorfixdictconfig.json", transerrorfixdictconfig)
-    safesave("./userconfig/translatorsetting.json", translatorsetting)
-    safesave("./userconfig/ocrerrorfix.json", ocrerrorfix)
-    safesave("./userconfig/ocrsetting.json", ocrsetting)
+    safesave("userconfig/config.json", globalconfig)
+    safesave("userconfig/postprocessconfig.json", postprocessconfig)
+    safesave("userconfig/transerrorfixdictconfig.json", transerrorfixdictconfig)
+    safesave("userconfig/translatorsetting.json", translatorsetting)
+    safesave("userconfig/ocrerrorfix.json", ocrerrorfix)
+    safesave("userconfig/ocrsetting.json", ocrsetting)
     safesave(
-        "./userconfig/savegamedata_5.3.1.json",
+        "userconfig/savegamedata_5.3.1.json",
         [savehook_new_list, savehook_new_data, savegametaged, None, extradatas],
         beatiful=False,
     )
+    safesave("userconfig/Magpie/config.json", magpie_config, isconfig=False)
     if not test:
         safesave(
-            "./files/lang/{}.json".format(getlanguse()),
-            languageshow,
+            "files/lang/{}.json".format(getlanguse()), languageshow, isconfig=False
         )
 
 
