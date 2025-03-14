@@ -122,7 +122,7 @@ bool LWScript2()
     return false;
   int off;
   if (*(BYTE *)(addr + 3) == 0x4C)
-    stackoffset(2);
+    off = stackoffset(2);
   else
     off = regoffset(ecx);
   HookParam hp;

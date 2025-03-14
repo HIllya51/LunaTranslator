@@ -137,7 +137,6 @@ namespace
     // jichi 2/11/2015: Check baddaddr which might crash the game on Windows XP.
     if (*pw == 0xc483 && !::IsBadReadPtr((LPCVOID)(pb + 2), 1) && !::IsBadReadPtr((LPCVOID)(*(pb + 2) - 8), 1))
     {
-      ConsoleOutput("WillPlus1 pattern found");
       // jichi 1/18/2015:
       // By studying [honeybee] RE:BIRTHDAY SONG, it seems the scenario text is at fixed address
       // This offset might be used to find fixed address
@@ -151,8 +150,7 @@ namespace
       *split = 0; // 8/3/2014 jichi: use return address as split
     }
     else
-    { // jichi 1/19/2015: Try willplus2
-      ConsoleOutput("WillPlus1 pattern not found, try WillPlus2 instead");
+    {                                                     // jichi 1/19/2015: Try willplus2
       hp->offset = 4 * 8;                                 // arg8, address of text
       hp->type = USING_STRING | NO_CONTEXT | USING_SPLIT; // merge different scenario threads
       hp->split = 4 * 1;                                  // arg1 as split to get rid of saving message
@@ -175,16 +173,12 @@ namespace
     }; // jichi: caller pattern: sub esp = 0x81,0xec byte
     ULONG addr = MemDbg::findCallerAddress((ULONG)::GetGlyphOutlineA, sub_esp, processStartAddress, processStopAddress);
     if (!addr)
-    {
-      ConsoleOutput("WillPlus: function call not found");
       return false;
-    }
 
     HookParam hp;
     hp.address = addr;
     hp.text_fun = SpecialHookWillPlus;
     hp.type = USING_STRING;
-    ConsoleOutput("INSERT WillPlus");
     return NewHook(hp, "WillPlus");
   }
 
@@ -292,10 +286,7 @@ namespace
 
       myhp.offset = regoffset(eax);
       myhp.filter_fun = WillPlus_extra_filter;
-      char nameForUser[HOOK_NAME_SIZE] = "WillPlus3_memcpy";
-
-      ConsoleOutput("Insert: WillPlus3_memcpy Hook");
-      return NewHook(myhp, nameForUser);
+      return NewHook(myhp, "WillPlus3_memcpy");
     }
 
     const BYTE bytes[] = {
@@ -303,10 +294,7 @@ namespace
     };
     DWORD addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!addr)
-    {
-      ConsoleOutput("WillPlusA: pattern not found");
       return false;
-    }
     HookParam hp;
     hp.address = addr;
     hp.text_fun = SpecialHookWillPlusA;
@@ -314,8 +302,7 @@ namespace
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       StringFilter(buffer, TEXTANDLEN("\\n"));
-    }; // remove two characters of "\\n"
-    ConsoleOutput("INSERT WillPlusA");
+    };
     return NewHook(hp, "WillPlusA");
   }
 
@@ -355,10 +342,7 @@ namespace
     {
       DWORD addr = MemDbg::findBytes(bytes[i], sizes[i], processStartAddress, processStopAddress);
       if (!addr)
-      {
-        ConsoleOutput("WillPlusW: pattern not found");
         return false;
-      }
       HookParam hp;
       hp.address = addr;
       hp.text_fun = SpecialHookWillPlusW;
@@ -367,8 +351,7 @@ namespace
       hp.filter_fun = [](TextBuffer *buffer, auto *)
       {
         StringFilter(buffer, TEXTANDLEN(L"\\n"));
-      }; // remove two characters of "\\n"
-      ConsoleOutput("INSERT WillPlusW");
+      };
       succ |= NewHook(hp, "WillPlusW");
     }
     return succ;
@@ -500,8 +483,6 @@ namespace
         found |= NewHook(hp, "WillPlus3");
       }
     }
-    if (!found)
-      ConsoleOutput("WillPlus: failed to find instructions");
     return found;
   }
 
@@ -519,18 +500,18 @@ namespace will3
   int kp = 0;
   int lf = 0;
   int lc = 0;
-  void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  int offset = 0;
+  void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *)
   {
-    // DOUT(QString::fromUtf16((LPWSTR)s->stack[6]));//"MS UI Gothic"
-    // DOUT(QString::fromUtf16((LPWSTR)s->stack[7]));//"���������ˤˤʤꤿ����%K%P"
-    auto text = (LPWSTR)s->stack[7]; // text in arg1
-
+    auto text = (LPWSTR)s->stack[hp->offset]; // text in arg1
+    offset = hp->offset;
     if (!text || !*text)
       return;
 
-    std::wstring str = ((LPWSTR)s->stack[7]);
+    std::wstring str = text;
     kp = 0;
     lf = 0;
+    lc = 0;
     if (endWith(str, L"%K%P"))
     {
       kp = 1;
@@ -567,7 +548,7 @@ namespace will3
     {
       data_ = L"%LC" + data_;
     }
-    s->stack[7] = (DWORD)allocateString(data_);
+    s->stack[offset] = (DWORD)allocateString(data_);
   }
 }
 bool InsertWillPlus4Hook()
@@ -588,12 +569,13 @@ bool InsertWillPlus4Hook()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.offset = stackoffset(7);
+  hp.offset = 7;
   // hp.filter_fun = WillPlus_extra_filter;
   hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE;
   hp.text_fun = will3::hookBefore;
   hp.lineSeparator = L"\\n";
   hp.embed_fun = will3::hookafter;
+  hp.embed_hook_font = F_GetGlyphOutlineW;
   return NewHook(hp, "EmbedWillplus3");
 }
 bool InsertWillPlus5Hook()
@@ -622,7 +604,6 @@ bool InsertWillPlus5Hook()
     hp.address = addr;
     hp.offset = regoffset(eax);
     hp.type = CODEC_UTF16;
-    ConsoleOutput("INSERT WillPlus_extra2");
     ok |= NewHook(hp, "WillPlus_extra2");
   }
   return ok;
@@ -671,12 +652,10 @@ bool insertwillplus6()
   if (!addr)
     return false;
   addr += sizeof(bytes);
-  ConsoleOutput("%p %p %p", addr, processStartAddress, processStopAddress);
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(6);
   hp.type = CODEC_UTF16 | USING_STRING;
-  ConsoleOutput("INSERT WillPlus6");
   return NewHook(hp, "WillPlus6");
 }
 bool willX()
@@ -1566,7 +1545,6 @@ namespace
       hp.embed_fun = Private::hookafter;
       hp.embed_hook_font = F_GetGlyphOutlineA | F_TextOutA;
       static ULONG paddr = (PatchA::patchEncoding(startAddress, stopAddress));
-      ConsoleOutput("%p", paddr);
       if (paddr)
       {
         hp.type |= EMBED_DYNA_SJIS;
@@ -1753,18 +1731,51 @@ namespace
     default:
       return false;
     }
-    HookParam hp = {};
+    HookParam hp;
     hp.address = addr;
     hp.offset = offset;
     hp.type = CODEC_UTF16 | USING_CHAR;
     return NewHook(hp, "WillPlus7");
+  }
+  bool willplus_1_9_9_15()
+  {
+    // のーぶるバトラー TRIAL EDITION
+    const BYTE bytes[] = {
+        0x8b, 0x45, XX,
+        0x83, 0xf8, 0x0f,
+        0x76, XX,
+        0x8d, 0x48, 0x01,
+        0x8b, 0xc6,
+        0x81, 0xf9, 0x00, 0x10, 0x00, 0x00,
+        0x72, XX,
+        0x8b, 0x70, 0xfc,
+        0x83, 0xc1, 0x23,
+        0x2b, 0xc6,
+        0x83, 0xc0, 0xfc,
+        0x83, 0xf8, 0x1f,
+        0x76, 0x06,
+        0xff, 0x15, XX4};
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr; // 0x4A1C50;
+    hp.offset = 3;
+    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE;
+    hp.text_fun = will3::hookBefore;
+    hp.embed_fun = will3::hookafter;
+    hp.embed_hook_font = F_GetGlyphOutlineW;
+    return NewHook(hp, "WillPlus_1.9.9.15");
   }
 }
 bool WillPlus::attach_function()
 {
   bool succ = WillPlusEngine::attach();
   succ |= InsertWillPlusHook();
-  succ |= InsertWillPlus4Hook();
+  succ |= InsertWillPlus4Hook() || willplus_1_9_9_15();
   succ |= InsertWillPlus5Hook();
   succ |= insertwillplus6();
   succ |= willX();
