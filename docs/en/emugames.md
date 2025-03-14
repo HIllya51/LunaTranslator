@@ -842,6 +842,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-66582 | 仔羊捕獲ケーカク！ スイートボーイズライフ |
 |  | SLPM-66817 | Palais de Reine |
 |  | SLPS-25378 & SLPS-25379 | 東京魔人學園外法帖血風録 |
+|  | SLPS-25220 | エリュシオン～永遠のサンクチュアリ～ |
 
 == PS3
 

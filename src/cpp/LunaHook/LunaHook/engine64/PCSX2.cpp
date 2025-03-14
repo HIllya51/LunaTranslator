@@ -585,6 +585,43 @@ namespace
         }
         last1 = collect;
     }
+    void SLPS25220(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        static std::string last;
+        static std::string lasts[3];
+        std::string collect;
+        auto addrs = {0x312FDC, 0x31230E, 0x312340};
+        for (auto str : addrs)
+            collect += (char *)emu_addr(str);
+        if (last == collect)
+            return;
+        last = collect;
+        int i = -1;
+        collect = "";
+        for (auto str : addrs)
+        {
+            i++;
+            std::string x = (char *)emu_addr(str);
+            if (i && (lasts[i] == x))
+                break;
+            lasts[i] = x;
+            collect += x;
+        }
+        static std::string last1;
+        auto parse = [](std::string str2)
+        {
+            return strReplace(str2, "\x99\xa2", "\x81\x45");
+        };
+        if (startWith(collect, last1))
+        {
+            buffer->from(parse(collect.substr(last1.size())));
+        }
+        else
+        {
+            buffer->from(parse(collect));
+        }
+        last1 = collect;
+    }
     void SLPS25150(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         static std::string last;
@@ -778,6 +815,8 @@ namespace
             {0xB9DDC4, {DIRECT_READ, 0, 0, SLPM66817, 0, "SLPM-66817"}},
             // 東京魔人學園外法帖血風録
             {0xFA73EC, {DIRECT_READ, 0, 0, SLPS25379, 0, std::vector<const char *>{"SLPS-25378", "SLPS-25379"}}},
+            // エリュシオン～永遠のサンクチュアリ～
+            {0x312FDC, {DIRECT_READ, 0, 0, SLPS25220, 0, "SLPS-25220"}},
         };
         return 0;
     }();
