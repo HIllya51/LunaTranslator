@@ -47,7 +47,6 @@ int updatewmain(int argc, wchar_t *argv[])
         {
         }
         MessageBoxA(GetForegroundWindow(), (std::string("Update failed!\r\n") + e.what()).c_str(), "Error", 0);
-        ShellExecute(0, L"open", (std::wstring(argv[3]) + L"/Github/LunaTranslator/releases").c_str(), NULL, NULL, SW_SHOWNORMAL);
         return 0;
     }
     try

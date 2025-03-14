@@ -88,8 +88,8 @@ def doupdate():
         gobject.getcachedir("Updater.exe"),
     )
     subprocess.Popen(
-        r".\cache\Updater.exe update {} .\cache\update\LunaTranslator{} {}".format(
-            int(gobject.baseobject.istriggertoupdate), bit, dynamiclink("{main_server}")
+        r".\cache\Updater.exe update {} .\cache\update\LunaTranslator{}".format(
+            int(gobject.baseobject.istriggertoupdate), bit
         )
     )
 
