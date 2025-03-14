@@ -1070,7 +1070,7 @@ class MAINUI:
         version = winsharedutils.queryversion(getcurrexe())
         if "load_doc_or_log" not in globalconfig:
             os.startfile(dynamiclink("{docs_server}"))
-        elif version != globalconfig["load_doc_or_log"]:
+        elif version != tuple(globalconfig["load_doc_or_log"]):
             vs = ".".join(str(_) for _ in version)
             if vs.endswith(".0"):
                 vs = vs[:-2]
