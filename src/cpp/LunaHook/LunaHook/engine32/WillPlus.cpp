@@ -356,71 +356,9 @@ namespace
     }
     return succ;
   }
-  /*
-    Artikash 9/29/2018: Updated WillPlus hook
-    Sample games: https://vndb.org/r54549 https://vndb.org/v22705
-    Not too sure about the stability of this pattern, but it works for both of the above
-    Hook code for first game: /HQ-8*0@43D620. This seems fairly stable: __thiscall calling convention and first member points to string
-    Method to find hook code: trace call stack from GetGlyphOutlineW
-    Disassembly from first game (damekoi). The first few instructions are actually a common function prologue: not enough to locate hook
-    Hooking SysAllocString also seems to work, but has some garbage
-    0043D61D - C2 0800               - ret 0008 { 8 }
-    0043D620 - 55                    - push ebp
-    0043D621 - 8B EC                 - mov ebp,esp
-    0043D623 - 6A FF                 - push -01 { 255 }
-    0043D625 - 68 6B6D5400           - push 00546D6B { [139] }
-    0043D62A - 64 A1 00000000        - mov eax,fs:[00000000] { 0 }
-    0043D630 - 50                    - push eax
-    0043D631 - 81 EC 30010000        - sub esp,00000130 { 304 }
-    0043D637 - A1 08E05800           - mov eax,[0058E008] { [6A9138CD] }
-    0043D63C - 33 C5                 - xor eax,ebp
-    0043D63E - 89 45 EC              - mov [ebp-14],eax
-    0043D641 - 53                    - push ebx
-    0043D642 - 56                    - push esi
-    0043D643 - 57                    - push edi
-    0043D644 - 50                    - push eax
-    0043D645 - 8D 45 F4              - lea eax,[ebp-0C]
-    0043D648 - 64 A3 00000000        - mov fs:[00000000],eax { 0 }
-    0043D64E - 8B F9                 - mov edi,ecx
-    0043D650 - 89 BD E8FEFFFF        - mov [ebp-00000118],edi
-    0043D656 - 8B 45 08              - mov eax,[ebp+08]
-    0043D659 - 8B 4D 14              - mov ecx,[ebp+14]
-    0043D65C - F3 0F10 45 1C         - movss xmm0,[ebp+1C]
-    0043D661 - 8B 5D 18              - mov ebx,[ebp+18]
-    0043D664 - 89 85 10FFFFFF        - mov [ebp-000000F0],eax
-    0043D66A - 8B 45 10              - mov eax,[ebp+10]
-    0043D66D - 89 85 08FFFFFF        - mov [ebp-000000F8],eax
-    0043D673 - 89 47 68              - mov [edi+68],eax
-    0043D676 - 8B 45 20              - mov eax,[ebp+20]
-    0043D679 - 51                    - push ecx
-    ...
-  */
   static bool InsertNewWillPlusHook()
   {
     bool found = false;
-    const BYTE characteristicInstructions[] =
-        {
-            0xc2, 0x08, 0,          // ret 0008; Seems to always be ret 8 before the hookable function. not sure why, not sure if stable.
-            0x55,                   // push ebp; hook here
-            0x8b, 0xec,             // mov ebp,esp
-            0x6a, 0xff,             // push -01
-            0x68, XX4,              // push ?
-            0x64, 0xa1, 0, 0, 0, 0, // mov eax,fs:[0]
-            0x50,                   // push eax
-            0x81, 0xec, XX4,        // sub esp,?
-            0xa1, XX4,              // mov eax,[?]
-            0x33, 0xc5,             // xor eax,ebp
-                                    // 0x89, 0x45, 0xec // mov [ebp-14],eax; not sure if 0x14 is stable
-        };
-    for (auto addr : Util::SearchMemory(characteristicInstructions, sizeof(characteristicInstructions), PAGE_EXECUTE, processStartAddress, processStopAddress))
-    {
-      HookParam hp;
-      hp.address = addr + 3;
-      hp.type = USING_STRING | CODEC_UTF16 | DATA_INDIRECT;
-      hp.offset = regoffset(ecx);
-      hp.index = 0;
-      found |= NewHook(hp, "WillPlus2");
-    }
     /*
     hook cmp reg,0x3000
     Sample games:
@@ -501,13 +439,16 @@ namespace will3
   int lf = 0;
   int lc = 0;
   int offset = 0;
-  void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *)
+  void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     auto text = (LPWSTR)s->stack[hp->offset]; // text in arg1
     offset = hp->offset;
     if (!text || !*text)
       return;
-
+    if (hp->offset == 7)
+    {
+      *split = s->stack[1];
+    }
     std::wstring str = text;
     kp = 0;
     lf = 0;
