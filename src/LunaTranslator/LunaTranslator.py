@@ -1067,8 +1067,7 @@ class MAINUI:
         self.tray.messageClicked.connect(self.__trayclicked)
         self.trayclicked = print
         self.tray.show()
-        ver = winsharedutils.queryversion(getcurrexe())
-        version = str(ver)
+        version = winsharedutils.queryversion(getcurrexe())
         if "load_doc_or_log" not in globalconfig:
             os.startfile(dynamiclink("{docs_server}"))
         elif version != globalconfig["load_doc_or_log"]:

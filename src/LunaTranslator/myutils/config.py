@@ -636,7 +636,7 @@ def getlang_inner2show(langcode):
 def unsafesave(fname: str, js, beatiful=True, isconfig=True):
     # 有时保存时意外退出，会导致config文件被清空
     os.makedirs(os.path.dirname(fname), exist_ok=True)
-    if isconfig:
+    if isconfig and os.path.isfile(fname):
         backup = os.path.join(os.path.dirname(fname), "backup")
         os.makedirs(backup, exist_ok=True)
         shutil.copy(fname, os.path.join(backup, os.path.basename(fname)))
