@@ -1012,6 +1012,20 @@ namespace
         s = re::sub(s, (L"[\\s]"));
         buffer->from(s);
     }
+    void F010039F0202BC000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(<ruby=(.*?)>(.*?)</ruby>)", L"$2");
+        s = re::sub(s, LR"(<(.*?)>)");
+        strReplace(s, L"\n");
+        buffer->from(s);
+    }
+    void F0100A89019EEC000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(\s)");
+        buffer->from(s);
+    }
     void F01002C0008E52000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -3936,7 +3950,11 @@ namespace
             {0x2D1438, {CODEC_UTF8, 2, 0, 0, F010059D020670000, 0x0100345020672000ull, "1.0.0"}},
             {0x2D1418, {CODEC_UTF8, 2, 0, 0, F010059D020670000, 0x0100345020672000ull, "1.0.0"}},
             {0x2E29B4, {CODEC_UTF8, 0, 0, 0, F010059D020670000, 0x0100345020672000ull, "1.0.0"}},
-
+            // さくら、もゆ。-as the Night's, Reincarnation-
+            {0x82340e88, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F0100A89019EEC000, 0x0100A89019EEC000ull, "1.0.0"}},
+            // 神椿市建設中。REGENERATE
+            {0x820B8384, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010039F0202BC000, 0x010039F0202BC000ull, "1.0.0"}},
+            {0x81607D1C, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010039F0202BC000, 0x010039F0202BC000ull, "1.0.1"}},
         };
         return 1;
     }();
