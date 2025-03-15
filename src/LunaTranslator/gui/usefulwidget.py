@@ -3162,34 +3162,6 @@ class PopupWidget(QWidget):
         self.setWindowFlag(Qt.WindowType.Popup)
         self.dragging = False
         self.offset = None
-        self._block = False
-        t = QTimer(self)
-        t.timeout.connect(self.settop)
-        t.setInterval(100)
-        self.t = t
-
-    def settop(self):
-        windows.SetWindowPos(
-            int(self.winId()),
-            windows.HWND_TOPMOST,
-            0,
-            0,
-            0,
-            0,
-            windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
-        )
-
-    def event(self, event: QEvent):
-        if event.type() == QEvent.Type.Close:
-            if self._block:
-                event.ignore()
-                return True
-        return super().event(event)
-
-    def blockwindow(self, b):
-        self._block = b
-        if b:
-            self.t.start()
 
     def display(self, pos=None):
         self.move(pos if pos else QCursor.pos())

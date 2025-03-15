@@ -58,155 +58,14 @@ class TextEditOrPlain(QStackedWidget):
             self.edit2.insertPlainText(text)
 
 
-class TextSelect(PopupWidget):
-    def __init__(self, p: "dialog_memory"):
-        super().__init__(p)
-        self.p = p
-        hbox = QVBoxLayout(self)
-        origin = LPushButton("原文")
-        ts = LPushButton("翻译")
-        origin_hira = LPushButton("原文_+_注音")
-        hbox.addWidget(origin)
-        hbox.addWidget(ts)
-        hbox.addWidget(origin_hira)
-        self.display()
-        origin.clicked.connect(
-            functools.partial(self.__wrap, lambda: gobject.baseobject.currenttext)
-        )
-        origin_hira.clicked.connect(
-            functools.partial(
-                self.__wrap,
-                lambda: basehira.makerubyhtml(
-                    gobject.baseobject.parsehira(gobject.baseobject.currenttext)
-                ),
-            )
-        )
-        ts.clicked.connect(
-            functools.partial(self.__wrap, lambda: gobject.baseobject.currenttranslate)
-        )
+class QMenuEx(QMenu):
+    def __init__(self, *a, **k):
+        super().__init__(*a, **k)
+        self.left = True
 
-    def __wrap(self, f):
-        t: str = f()
-        self.p.editor.inserttext("\n<br>\n" + t.replace("\n", "\n<br>\n") + "\n<br>\n")
-        self.close()
-
-
-class Picselect(PopupWidget):
-    def cropcallback(self, path):
-        if not path:
-            return
-        tgt = os.path.join(self.moveto, os.path.basename(path))
-        os.rename(path, tgt)
-        tgt = mayberelpath(tgt)
-        self.p.editor.inserttext(
-            '\n<img src="{}" style="max-width: 100%">\n'.format(os.path.basename(path))
-        )
-
-    def insertpic(self):
-        f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
-        res = f[0]
-        self.cropcallback(res)
-
-    def __init__(self, p: "dialog_memory"):
-        super().__init__(p)
-        self.p = p
-        self.moveto = p.rwpath
-        hbox = QHBoxLayout(self)
-        self.insertpicbtn = getIconButton(
-            icon="fa.camera",
-            callback=lambda: grabwindow(getimageformat(), self.cropcallback),
-            callback2=lambda: grabwindow(
-                getimageformat(), self.cropcallback, usewgc=True
-            ),
-        )
-        self.crop = getIconButton(
-            icon="fa.crop",
-            callback=functools.partial(self.crophide, False),
-            callback2=functools.partial(self.crophide, True),
-        )
-        self.select = IconButton(parent=self, icon="fa.folder-open")
-        self.select.clicked.connect(self.insertpic)
-        hbox.addWidget(self.crop)
-        hbox.addWidget(self.insertpicbtn)
-        hbox.addWidget(self.select)
-        self.display()
-
-    def crophide(self, s=False):
-        currpos = gobject.baseobject.translation_ui.pos()
-        currpos2 = self.window().pos()
-        if s:
-            self.window().move(-9999, -9999)
-            gobject.baseobject.translation_ui.move(-9999, -9999)
-
-        def ocroncefunction(rect, img=None):
-            if not img:
-                img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
-            if img.isNull():
-                return
-            fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
-            img.save(fname)
-            self.cropcallback(fname)
-            if s:
-                gobject.baseobject.translation_ui.move(currpos)
-                self.window().move(currpos2)
-
-        rangeselct_function(ocroncefunction)
-
-
-class AudioSelect(PopupWidget):
-    def cropcallback(self, path):
-        if not path:
-            return
-        tgt = os.path.join(self.moveto, os.path.basename(path))
-        os.rename(path, tgt)
-        tgt = mayberelpath(tgt)
-        html = """\n<audio controls src="{b64}"></audio>\n""".format(
-            b64=os.path.basename(path)
-        )
-        self.p.editor.inserttext(html)
-
-    def insertpic(self):
-        f = QFileDialog.getOpenFileName()
-        res = f[0]
-        self.cropcallback(res)
-
-    def __init__(self, p: "dialog_memory"):
-        super().__init__(p)
-        self.p = p
-        self.moveto = p.rwpath
-        self.recorders = None
-        hbox = QHBoxLayout(self)
-        recordbtn1 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True)
-        recordbtn1.clicked.connect(functools.partial(self.startorendrecord, recordbtn1))
-        self.select = IconButton(parent=self, icon="fa.folder-open")
-        self.select.clicked.connect(self.insertpic)
-        hbox.addWidget(recordbtn1)
-        hbox.addWidget(self.select)
-        self.display()
-
-    @staticmethod
-    def safestop(recored: loopbackrecorder):
-        recored.stop()
-
-    def startorendrecord(self, btn: QPushButton, idx):
-        self.blockwindow(idx)
-        if idx:
-            try:
-                self.recorders = loopbackrecorder()
-                self.destroyed.connect(
-                    functools.partial(AudioSelect.safestop, self.recorders)
-                )
-            except Exception as e:
-                self.recorders = None
-                QMessageBox.critical(self, _TR("错误"), str(e))
-                btn.click()
-                return
-        else:
-            if not self.recorders:
-                return
-            file = self.recorders.stop_save()
-            self.recorders = None
-            self.cropcallback(file)
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        self.left = event.button() == Qt.MouseButton.LeftButton
+        super().mouseReleaseEvent(event)
 
 
 class editswitchTextBrowserEx(QWidget):
@@ -345,15 +204,16 @@ class dialog_memory(saveposwindow):
         self.switch3.clicked.connect(self.__switch)
         self.insertpicbtn = IconButton(parent=self, icon="fa.picture-o")
         self.insertaudiobtn = IconButton(parent=self, icon="fa.music")
+        self.insertaudiobtnisrecoding = False
         self.textbtn = IconButton(parent=self, icon="fa.text-height")
         self.buttonslayout.addWidget(self.textbtn)
         self.buttonslayout.addWidget(self.insertaudiobtn)
         self.buttonslayout.addWidget(self.insertpicbtn)
         self.buttonslayout.addWidget(self.switch3)
         self.buttonslayout.addWidget(self.switch)
-        self.insertpicbtn.clicked.connect(functools.partial(Picselect, self))
-        self.insertaudiobtn.clicked.connect(functools.partial(AudioSelect, self))
-        self.textbtn.clicked.connect(functools.partial(TextSelect, self))
+        self.insertpicbtn.clicked.connect(self.Picselect)
+        self.insertaudiobtn.clicked.connect(self.AudioSelect)
+        self.textbtn.clicked.connect(self.TextInsert)
         self.tab = makesubtab_lazy(
             titles=list(_.get("title", str(i)) for i, _ in enumerate(self.config)),
             functions=list(
@@ -370,6 +230,138 @@ class dialog_memory(saveposwindow):
         self.setCentralWidget(self.tab)
         self._add_trace(0)
         self.show()
+
+    def startorendrecord(self, btn: QPushButton, idx):
+        if idx:
+            try:
+
+                def safestop(recored: loopbackrecorder):
+                    recored.stop()
+
+                self.recorders = loopbackrecorder()
+                self.destroyed.connect(functools.partial(safestop, self.recorders))
+            except Exception as e:
+                self.recorders = None
+                QMessageBox.critical(self, _TR("错误"), str(e))
+                btn.click()
+                return
+        else:
+            if not self.recorders:
+                return
+            file = self.recorders.stop_save()
+            self.recorders = None
+            self.cropcallback(file)
+
+    def AudioSelect(self):
+        if self.insertaudiobtnisrecoding:
+            self.startorendrecord(self.insertaudiobtn, False)
+            self.insertaudiobtnisrecoding = False
+            return
+        menu = QMenuEx(self)
+        record = LAction("录音", menu)
+        audio = LAction("音频", menu)
+        record.setIcon(qtawesome.icon("fa.microphone"))
+        audio.setIcon(qtawesome.icon("fa.folder-open"))
+        menu.addAction(record)
+        menu.addAction(audio)
+        action = menu.exec(QCursor.pos())
+        if action == record:
+            self.insertaudiobtnisrecoding = True
+            self.startorendrecord(self.insertaudiobtn, True)
+            self.insertaudiobtn.setIcon(qtawesome.icon("fa.stop"))
+        elif action == audio:
+            f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
+            res = f[0]
+            self.audiocallback(res)
+
+    def audiocallback(self, path):
+        if not path:
+            return
+        tgt = os.path.join(self.rwpath, os.path.basename(path))
+        os.rename(path, tgt)
+        tgt = mayberelpath(tgt)
+        html = """\n<audio controls src="{b64}"></audio>\n""".format(
+            b64=os.path.basename(path)
+        )
+        self.editor.inserttext(html)
+
+    def Picselect(self):
+        menu = QMenuEx(self)
+        crop = LAction("截图", menu)
+        crophwnd = LAction("窗口截图", menu)
+        select = LAction("图片", menu)
+        crop.setIcon(qtawesome.icon("fa.crop"))
+        crophwnd.setIcon(qtawesome.icon("fa.camera"))
+        select.setIcon(qtawesome.icon("fa.folder-open"))
+        menu.addAction(crop)
+        menu.addAction(crophwnd)
+        menu.addAction(select)
+        action = menu.exec(QCursor.pos())
+        if action == crop:
+            self.crophide(not menu.left)
+        elif action == crophwnd:
+            grabwindow(getimageformat(), self.cropcallback, usewgc=menu.left)
+        elif action == select:
+            f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
+            res = f[0]
+            self.cropcallback(res)
+
+    def crophide(self, s=False):
+        currpos = gobject.baseobject.translation_ui.pos()
+        currpos2 = self.window().pos()
+        if s:
+            self.window().move(-9999, -9999)
+            gobject.baseobject.translation_ui.move(-9999, -9999)
+
+        def ocroncefunction(rect, img=None):
+            if not img:
+                img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+            if img.isNull():
+                return
+            fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
+            img.save(fname)
+            self.cropcallback(fname)
+
+        def __ocroncefunction(rect, img=None):
+            ocroncefunction(rect, img=img)
+            if s:
+                gobject.baseobject.translation_ui.move(currpos)
+                self.window().move(currpos2)
+
+        rangeselct_function(__ocroncefunction)
+
+    def cropcallback(self, path):
+        if not path:
+            return
+        tgt = os.path.join(self.rwpath, os.path.basename(path))
+        os.rename(path, tgt)
+        tgt = mayberelpath(tgt)
+        self.editor.inserttext(
+            '\n<img src="{}" style="max-width: 100%">\n'.format(os.path.basename(path))
+        )
+
+    def TextInsert(self):
+        menu = QMenu(self)
+        origin = LAction("原文", menu)
+        ts = LAction("翻译", menu)
+        origin_hira = LAction("原文_+_注音", menu)
+        menu.addAction(origin)
+        menu.addAction(ts)
+        menu.addAction(origin_hira)
+        action = menu.exec(QCursor.pos())
+        if action == origin:
+            self.__wrap(gobject.baseobject.currenttext)
+        elif action == ts:
+            self.__wrap(gobject.baseobject.currenttranslate)
+        elif action == origin_hira:
+            self.__wrap(
+                basehira.makerubyhtml(
+                    gobject.baseobject.parsehira(gobject.baseobject.currenttext)
+                )
+            )
+
+    def __wrap(self, t: str):
+        self.editor.inserttext("\n<br>\n" + t.replace("\n", "\n<br>\n") + "\n<br>\n")
 
     @property
     def editor(self) -> TextEditOrPlain:
