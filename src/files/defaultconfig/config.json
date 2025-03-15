@@ -1577,7 +1577,7 @@
             "name": "Azure"
         },
         "baidu": {
-            "use": false,
+            "use": true,
             "color": "#ff65db",
             "useproxy": false,
             "name": "百度"
@@ -1711,7 +1711,7 @@
         },
         "baiduapi": {
             "type": "api",
-            "use": true,
+            "use": false,
             "color": "blue",
             "useproxy": false,
             "name": "百度"
