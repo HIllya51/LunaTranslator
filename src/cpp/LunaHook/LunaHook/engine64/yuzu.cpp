@@ -2521,13 +2521,6 @@ namespace
         s = re::sub(s, (LR"(<(.*?)>)")); //<indent=3.5%>
         buffer->from(s);
     }
-    void F01001BA01EBFC000(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strW();
-        s = re::sub(s, (LR"(#n)"));
-        s = re::sub(s, (LR"(#\w+(\[.+?\])?)"));
-        buffer->from(s);
-    }
     void F01000BB01CB8A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -3680,8 +3673,8 @@ namespace
             {0x80122a4c, {CODEC_UTF16, 0, 0, T01000BB01CB8A000, F01000BB01CB8A000, 0x01000BB01CB8A000ull, "1.0.0"}},
             {0x800ba088, {CODEC_UTF16, 0, 0, T01000BB01CB8A000, F01000BB01CB8A000, 0x01000BB01CB8A000ull, "1.0.0"}},
             // 燃えよ！ 乙女道士 ～華遊恋語～
-            {0x8005c698, {CODEC_UTF16, 1, 0x20, 0, F01001BA01EBFC000, 0x01001BA01EBFC000ull, "1.0.0"}},
-            {0x80051cd0, {CODEC_UTF16, 1, 0, 0, F01001BA01EBFC000, 0x01001BA01EBFC000ull, "1.0.0"}},
+            {0x8005c698, {CODEC_UTF8, 1, 0x20, 0, F01005AF00E9DC000, 0x01001BA01EBFC000ull, "1.0.0"}},
+            {0x80051cd0, {CODEC_UTF8, 1, 0, 0, F01005AF00E9DC000, 0x01001BA01EBFC000ull, "1.0.0"}},
             // planetarian～雪圏球～
             {0x800F32A0, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, 0, 0x010031C01F410000ull, "1.0.0"}}, // 各种语言一起都提取出来了
             // planetarian～ちいさなほしのゆめ＆雪圏球～ パッケージ版 英文版
