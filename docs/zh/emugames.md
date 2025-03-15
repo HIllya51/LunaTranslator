@@ -845,6 +845,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPM-66817 | Palais de Reine |
 |  | SLPS-25378 & SLPS-25379 | 東京魔人學園外法帖血風録 |
 |  | SLPS-25220 | エリュシオン～永遠のサンクチュアリ～ |
+|  | SLPS-25902 | 純情ロマンチカ ～恋のドキドキ大作戦 |
 
 == PS3
 

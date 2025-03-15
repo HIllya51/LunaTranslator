@@ -427,6 +427,16 @@ namespace
         }
         last = s;
     }
+    void SLPS25902(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+        StringFilter(buffer, TEXTANDLEN("/K"));
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+    }
     void FSLPM66332(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\x01');
@@ -817,6 +827,8 @@ namespace
             {0xFA73EC, {DIRECT_READ, 0, 0, SLPS25379, 0, std::vector<const char *>{"SLPS-25378", "SLPS-25379"}}},
             // エリュシオン～永遠のサンクチュアリ～
             {0x312FDC, {DIRECT_READ, 0, 0, SLPS25220, 0, "SLPS-25220"}},
+            // 純情ロマンチカ ～恋のドキドキ大作戦
+            {0x83907A, {DIRECT_READ, 0, 0, 0, SLPS25902, "SLPS-25902"}},
         };
         return 0;
     }();

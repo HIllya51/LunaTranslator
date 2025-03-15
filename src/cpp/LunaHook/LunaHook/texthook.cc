@@ -516,20 +516,14 @@ void TextHook::Read()
 				if (!location)
 					continue;
 				int currentLen = HookStrlen((BYTE *)location);
-				bool changed = memcmp(pbData, location, buff.size) != 0;
-				if (changed || (currentLen != buff.size))
-				{
-					buff.size = min(currentLen, TEXT_BUFFER_SIZE);
-					memcpy(pbData, location, buff.size);
-					if (hp.filter_fun)
-					{
-						if (!SafeFilterFun(hp, buff))
-							continue;
-					}
-					TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
-					buff.size = min(currentLen, TEXT_BUFFER_SIZE);
-					memcpy(pbData, location, buff.size);
-				}
+				if (currentLen == buff.size && (memcmp(pbData, location, buff.size) == 0))
+					continue;
+				buff.from(location, currentLen);
+				if (hp.filter_fun && (!SafeFilterFun(hp, buff)))
+					continue;
+				TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
+				if (hp.filter_fun)
+					buff.from(location, currentLen);
 			}
 		}
 	}
