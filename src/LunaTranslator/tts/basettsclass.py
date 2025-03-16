@@ -1,8 +1,7 @@
 from myutils.config import globalconfig
-import functools, threading
+import functools
 from myutils.wrapper import threader
 from traceback import print_exc
-from myutils.proxy import getproxy
 from myutils.utils import LRUCache, stringfyerror
 from myutils.commonbase import commonbase
 

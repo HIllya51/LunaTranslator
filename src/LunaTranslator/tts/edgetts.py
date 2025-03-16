@@ -4,8 +4,6 @@ from datetime import datetime
 import time
 import re
 import uuid, hashlib
-import time
-import time
 from tts.basettsclass import TTSbase, SpeechParam
 
 # https://github.com/rany2/edge-tts

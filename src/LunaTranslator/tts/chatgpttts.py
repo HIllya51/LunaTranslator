@@ -1,7 +1,6 @@
 from tts.basettsclass import TTSbase, SpeechParam
 from myutils.utils import createurl, common_list_models
 from myutils.proxy import getproxy
-import requests
 
 
 def list_models(typename, regist):
