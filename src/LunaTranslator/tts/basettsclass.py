@@ -12,6 +12,15 @@ class SpeechParam:
         self.speed = speed
         self.pitch = pitch
 
+    def __hash__(self):
+        return self._tuple_().__hash__()
+
+    def __eq__(self, value: "SpeechParam"):
+        return self._tuple_() == value._tuple_()
+
+    def _tuple_(self):
+        return tuple((self.speed, self.pitch))
+
 
 class TTSbase(commonbase):
     def init(self): ...
