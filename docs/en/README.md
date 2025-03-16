@@ -12,10 +12,6 @@
 
 32-bit <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/xp')"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
-::: danger
-Make sure not to download the source code by mistake!
-:::
-
 ## Launch
 
 After downloading, extract the files to any directory.

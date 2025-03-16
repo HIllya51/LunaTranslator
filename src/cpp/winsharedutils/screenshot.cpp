@@ -65,7 +65,7 @@ std::optional<SimpleBMP> __gdi_screenshot(HWND hwnd, RECT rect)
         return {};
     auto bm = GetBitmap(rect, hdc);
     ReleaseDC(hwnd, hdc);
-    auto bmp = CreateBMP(bm);
+    auto bmp = CreateBMP(bm, false);
     if (!bmp)
         return {};
     if (std::all_of(bmp.value().pixels, bmp.value().pixels + bmp.value().pixelsize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0)))

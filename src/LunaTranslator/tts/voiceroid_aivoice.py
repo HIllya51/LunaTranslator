@@ -1,5 +1,5 @@
 import time
-import os
+import os, io
 import windows, winsharedutils
 from tts.basettsclass import TTSbase, SpeechParam
 from ctypes import cast, POINTER, c_char, c_int32, c_float
@@ -29,7 +29,7 @@ class TTS(TTSbase):
                 voicelist.append(_)
         return voicelist, vis
 
-    def voiceroid2_decrypt(self, stream):
+    def voiceroid2_decrypt(self, stream: io.FileIO):
         a = b"jD5yPFM63olaOWC5fiGpLL5LJnpwTlsK"
         d = 16
         salt = stream.read(d)

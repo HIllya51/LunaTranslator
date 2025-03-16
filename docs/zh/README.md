@@ -12,10 +12,6 @@
 
 32位 <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/xp')"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
-::: danger
-不要下错了下成源代码了！
-:::
-
 ## 启动
 
 下载后解压到任意目录

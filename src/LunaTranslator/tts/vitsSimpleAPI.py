@@ -5,7 +5,7 @@ from urllib.parse import quote
 
 class TTS(TTSbase):
     def getvoicelist(self):
-        responseVits = self.proxysession.get(
+        responseVits: dict = self.proxysession.get(
             urlpathjoin(self.config["URL"], self.config["voices"])
         ).json()
         voicelist = []
