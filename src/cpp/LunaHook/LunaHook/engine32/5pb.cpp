@@ -545,10 +545,14 @@ bool _5pb::attach_function()
 void KaleidoFilter(TextBuffer *buffer, HookParam *)
 {
   // Unofficial eng TL with garbage newline spaces
-  StringCharReplacer(buffer, TEXTANDLEN(" \\n "), ' ');
-  StringCharReplacer(buffer, TEXTANDLEN(" \\n"), ' ');
-  StringCharReplacer(buffer, TEXTANDLEN("\\n"), ' ');
+  StringFilter(buffer, TEXTANDLEN(" \\n "));
+  StringFilter(buffer, TEXTANDLEN(" \\n"));
+  StringFilter(buffer, TEXTANDLEN("\\n"));
   StringCharReplacer(buffer, TEXTANDLEN("\xEF\xBC\x9F"), '?');
+  auto s = buffer->strA();
+  s = re::sub(s, "#[0-9a-f]{6};(.*?)%r", "$1");
+  s = re::sub(s, "%t\\d+;");
+  buffer->from(s);
 }
 
 bool InsertKaleidoHook()
@@ -583,10 +587,8 @@ bool InsertKaleidoHook()
   hp.index = 0;
   hp.split = stackoffset(3);
   hp.split_index = 0;
-  hp.type = USING_STRING | USING_SPLIT;
+  hp.type = USING_STRING | USING_SPLIT | CODEC_UTF8;
   hp.filter_fun = KaleidoFilter;
-  ConsoleOutput(" INSERT Kaleido");
-
   return NewHook(hp, "Kaleido");
 }
 namespace
@@ -655,10 +657,7 @@ namespace
     hp.address = addr;
     hp.offset = stackoffset(1);
     hp.type = USING_STRING | CODEC_UTF8;
-    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
-    {
-      StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
-    };
+    hp.filter_fun = KaleidoFilter;
     return NewHook(hp, "5bp");
   }
 } // namespace name
