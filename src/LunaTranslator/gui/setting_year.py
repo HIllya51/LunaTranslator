@@ -1,5 +1,4 @@
 from qtsymbols import *
-import queue
 import gobject
 import os
 from gui.usefulwidget import WebviewWidget

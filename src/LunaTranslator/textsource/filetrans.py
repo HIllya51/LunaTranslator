@@ -1,6 +1,6 @@
 from textsource.textsourcebase import basetext
 from myutils.wrapper import threader
-import json, time, os, gobject, winsharedutils, re
+import json, time, os, gobject, winsharedutils
 from myutils.config import globalconfig
 
 

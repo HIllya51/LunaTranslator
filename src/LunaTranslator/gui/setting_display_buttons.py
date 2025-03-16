@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, json
-import qtawesome, gobject
+import gobject
 from myutils.config import globalconfig
 from myutils.wrapper import Singleton
 from gui.usefulwidget import (

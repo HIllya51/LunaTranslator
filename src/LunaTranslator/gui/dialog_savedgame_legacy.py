@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, threading, gobject
+import functools, threading
 from myutils.config import savehook_new_list, savehook_new_data, get_launchpath
 from myutils.hwnd import getExeIcon
 from gui.usefulwidget import (

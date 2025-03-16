@@ -15,7 +15,6 @@ from ctypes import (
     c_double,
     c_char,
     CFUNCTYPE,
-    WinDLL,
 )
 from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG, LPCWSTR
 import platform, windows, functools, os, re

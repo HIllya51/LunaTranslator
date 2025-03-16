@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, gobject, os
+import functools, os
 from myutils.post import POSTSOLVE
 from myutils.utils import (
     selectdebugfile,

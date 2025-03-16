@@ -1,4 +1,4 @@
-import windows, os, winsharedutils, re, functools
+import windows, os, winsharedutils, functools
 from qtsymbols import *
 from myutils.config import (
     savehook_new_data,

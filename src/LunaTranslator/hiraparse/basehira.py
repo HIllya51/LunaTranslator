@@ -1,4 +1,4 @@
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig
 from traceback import print_exc
 from myutils.proxy import getproxy
 

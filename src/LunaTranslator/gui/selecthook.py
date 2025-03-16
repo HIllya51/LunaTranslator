@@ -52,15 +52,15 @@ def getformlayoutw(w=None, cls=LFormLayout, hide=False):
 class QButtonGroup_switch_widegt(QWidget):
     selectidx = pyqtSignal(int)
 
-    def __init__(self, p) -> None:
+    def __init__(self, p: QWidget) -> None:
         super().__init__()
         self._parent = p
-        _, self.mainlayout = getformlayoutw(self, QVBoxLayout)
+        self.mainlayout: QVBoxLayout = getformlayoutw(self, QVBoxLayout)[1]
         self.selectlayout = QHBoxLayout()
         self.selectlayout.setContentsMargins(0, 0, 0, 0)
         self.mainlayout.addLayout(self.selectlayout)
         self.selectGroup = QButtonGroup()
-        self.wlist = []
+        self.wlist: list[QWidget] = []
         self.selectGroup.buttonClicked.connect(self.selectmodelf)
 
     def idx(self):
@@ -76,7 +76,7 @@ class QButtonGroup_switch_widegt(QWidget):
         self.wlist[idx].show()
         self._parent.resize(self._parent.width(), 1)
 
-    def addW(self, text, widget):
+    def addW(self, text, widget: QWidget):
         self.mainlayout.addWidget(widget)
         btn = LRadioButton(text)
         self.selectGroup.addButton(btn, len(self.wlist))
@@ -115,7 +115,7 @@ class PatternValidator(QValidator):
 
 
 class searchhookparam(LDialog):
-    def safehex(self, string, default):
+    def safehex(self, string: str, default):
         try:
             return int(string.replace(" ", "").replace("0x", ""), 16)
         except:

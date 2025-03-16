@@ -1,5 +1,5 @@
 from myutils.config import savehook_new_data, globalconfig
-import gobject, re
+import gobject
 from qtsymbols import *
 from myutils.utils import postusewhich, case_insensitive_replace
 from myutils.config import get_launchpath

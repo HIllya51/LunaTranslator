@@ -21,7 +21,6 @@ from gui.usefulwidget import (
 )
 from language import UILanguages, Languages
 from gui.dynalang import LLabel, LPushButton
-from gui.setting_year import yearsummary
 
 versionchecktask = queue.Queue()
 

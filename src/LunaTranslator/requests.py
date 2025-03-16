@@ -1,4 +1,4 @@
-import json, base64, re, string, random, threading, codecs
+import json, base64, re, string, random, codecs
 from collections.abc import Mapping, MutableMapping
 from collections import OrderedDict
 from urllib.parse import urlencode, urlsplit

@@ -1,4 +1,3 @@
-import requests
 from ocrengines.baseocrclass import baseocr
 import os, uuid, gobject
 

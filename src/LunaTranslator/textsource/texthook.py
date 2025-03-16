@@ -7,7 +7,6 @@ from winsharedutils import Is64bit
 from myutils.config import (
     globalconfig,
     savehook_new_data,
-    static_data,
     findgameuidofpath,
     getlanguse,
     _TR,
@@ -18,8 +17,7 @@ from myutils.kanjitrans import kanjitrans
 from myutils.hwnd import injectdll, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
-import subprocess, requests
-from myutils.proxy import getproxy
+import subprocess
 from ctypes import (
     CDLL,
     CFUNCTYPE,

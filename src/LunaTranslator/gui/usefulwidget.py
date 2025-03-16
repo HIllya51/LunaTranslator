@@ -4,7 +4,7 @@ from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject, platform, threading
 from myutils.config import _TR, globalconfig
 from myutils.wrapper import Singleton_close, threader
-from myutils.utils import nowisdark, checkisusingwine, getimagefilefilter
+from myutils.utils import nowisdark, checkisusingwine
 from ctypes import POINTER, cast, c_char
 from gui.dynalang import (
     LLabel,

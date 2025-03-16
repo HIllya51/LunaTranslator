@@ -3,7 +3,7 @@ from myutils.utils import getlangtgt, getlangsrc, getlanguse
 from myutils.config import _TR
 from myutils.wrapper import stripwrapper
 from language import Languages
-import requests, types, functools
+import requests, types
 
 
 class ArgsEmptyExc(Exception):

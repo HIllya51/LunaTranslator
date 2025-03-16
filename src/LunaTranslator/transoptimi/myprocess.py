@@ -3,7 +3,7 @@ from myutils.utils import selectdebugfile, checkmd5reloadmodule
 
 class Process:
     @staticmethod
-    def get_setting_window(parent_window):
+    def get_setting_window(_):
         return selectdebugfile("./userconfig/myprocess.py")
 
     def process_after(self, res, contenxt):

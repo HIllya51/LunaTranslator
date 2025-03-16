@@ -9,7 +9,7 @@ from rendertext.texttype import (
 import gobject, uuid, json, os, functools
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
-from myutils.wrapper import trypass, threader
+from myutils.wrapper import threader
 import copy
 from gui.usefulwidget import WebviewWidget
 

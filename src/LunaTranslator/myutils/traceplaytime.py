@@ -2,8 +2,7 @@ import sqlite3, gobject, threading, time, windows
 import time
 import os, threading
 from qtsymbols import *
-from traceback import print_exc
-from myutils.config import findgameuidofpath, savehook_new_data, globalconfig
+from myutils.config import findgameuidofpath, globalconfig
 from myutils.hwnd import getpidexe, ListProcess
 import windows
 import gobject

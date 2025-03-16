@@ -15,7 +15,7 @@ from ctypes import (
 )
 import os
 from language import Languages
-import gobject, requests, uuid
+import gobject, requests
 from traceback import print_exc
 from qtsymbols import *
 from myutils.wrapper import threader

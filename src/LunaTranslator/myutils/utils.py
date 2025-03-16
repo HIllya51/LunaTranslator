@@ -1,11 +1,9 @@
-import windows
 import os, time
 import codecs, hashlib, shutil
 import socket, gobject, uuid, functools
 import importlib, json, requests
 from qtsymbols import *
 from string import Formatter
-from ctypes import cast, c_char, POINTER
 from traceback import print_exc
 from myutils.config import (
     _TR,
@@ -22,7 +20,7 @@ from myutils.keycode import vkcode_map, mod_map
 from language import Languages
 import threading, winreg
 import re, heapq, winsharedutils
-from myutils.wrapper import tryprint, threader
+from myutils.wrapper import tryprint
 from html.parser import HTMLParser
 from myutils.audioplayer import bass_code_cast
 

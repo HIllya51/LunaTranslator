@@ -1,5 +1,5 @@
 import time, copy, threading
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig
 import winsharedutils, windows
 from gui.rangeselect import rangeadjust
 from myutils.wrapper import threader

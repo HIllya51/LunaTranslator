@@ -14,10 +14,8 @@ from gui.usefulwidget import (
     mayberelpath,
     IconButton,
     auto_select_webview,
-    PopupWidget,
-    getIconButton,
 )
-from gui.dynalang import LAction, LPushButton
+from gui.dynalang import LAction
 
 
 class TextEditOrPlain(QStackedWidget):

@@ -6,7 +6,6 @@ from myutils.config import globalconfig, static_data
 from myutils.utils import nowisdark
 from gui.usefulwidget import (
     D_getsimplecombobox,
-    WebviewWidget,
     D_getspinbox,
     D_getcolorbutton,
     getIconButton,

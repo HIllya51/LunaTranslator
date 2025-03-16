@@ -41,6 +41,7 @@ class IconLabelX(LLabel):
     def __init__(self, *argc):
         super().__init__(*argc)
         self.reflayout = None
+        self.belong = None
         self._icon = QIcon()
         self._size = QSize()
         self.setMouseTracking(True)
@@ -115,7 +116,7 @@ class ButtonBar(QFrame):
     def __init__(self, *argc):
         super().__init__(*argc)
 
-        def __(p=None, pp=None):
+        def __(p: QHBoxLayout = None, pp=None):
             _ = QHBoxLayout(pp)
             _.setContentsMargins(0, 0, 0, 0)
             _.setSpacing(0)
@@ -224,7 +225,7 @@ class ButtonBar(QFrame):
         __ = [self._left, self._right, self._center]
         cnt = 0
         for name in globalconfig["toolbutton"]["rank2"]:
-            button = self.buttons[name]
+            button: IconLabelX = self.buttons[name]
             if button.belong:
                 hide = True
                 for k in button.belong:
@@ -253,7 +254,8 @@ class ButtonBar(QFrame):
 
     def adjustminwidth(self):
         w = self.cntbtn * self.height() * 2 / 1.5
-        self.parent().setMinimumWidth(int(w))
+        p: QWidget = self.parent()
+        p.setMinimumWidth(int(w))
 
 
 class TranslatorWindow(resizableframeless):
@@ -399,7 +401,7 @@ class TranslatorWindow(resizableframeless):
             clear = False
         self.showline(clear=clear, text=res, color=color, texttype=t)
 
-    def cleartext(self, text):
+    def cleartext(self, text: str):
         text = text.replace("\t", " ")
         text = text.replace("\r", "\n")
         text = text.replace("\u2028", "\n")

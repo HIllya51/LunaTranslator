@@ -9,10 +9,8 @@ from gui.usefulwidget import (
     yuitsu_switch,
     makescrollgrid,
     D_getsimpleswitch,
-    getsimplecombobox,
     listediter,
     D_getIconButton,
-    auto_select_webview,
     selectcolor,
     D_getspinbox,
     D_getcolorbutton,
@@ -22,13 +20,7 @@ from gui.usefulwidget import (
     ClickableLabel,
     getcolorbutton,
 )
-from gui.dynalang import (
-    LFormLayout,
-    LLabel,
-    LAction,
-    LDialog,
-    LDialog,
-)
+from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
 from gui.setting_about import offlinelinks
 
 

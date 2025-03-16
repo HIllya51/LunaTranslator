@@ -209,7 +209,7 @@ class lazyscrollflow(ScrollArea):
         for i, widfunc in needdos:
             try:
                 with self.lock:
-                    widfunc = widfunc()
+                    widfunc: QWidget = widfunc()
                     widfunc.setParent(self.internalwid)
                     widfunc.adjustSize()
                     widfunc.setVisible(True)
@@ -401,7 +401,7 @@ class delayloadvbox(QWidget):
         for i, widfunc, ystart, h in needdos:
             try:
                 with self.lock:
-                    widfunc = widfunc()
+                    widfunc: QWidget = widfunc()
                     widfunc.setParent(self)
                     widfunc.setVisible(True)
                     widfunc.move(0, ystart)

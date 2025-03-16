@@ -1,5 +1,5 @@
 import winsharedutils
-import os, csv, gobject
+import os, csv
 from hiraparse.basehira import basehira
 from myutils.config import isascii
 

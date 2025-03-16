@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, os
-from myutils.config import globalconfig, ocrsetting, ocrerrorfix, static_data
+from myutils.config import globalconfig, ocrsetting, ocrerrorfix
 from myutils.utils import splitocrtypes, dynamiclink, getimagefilefilter
 from gui.inputdialog import postconfigdialog, autoinitdialog_items, autoinitdialog
 from gui.usefulwidget import (
@@ -22,7 +22,6 @@ from gui.usefulwidget import (
     threebuttons,
     makesubtab_lazy,
     makescrollgrid,
-    makegrid,
 )
 from myutils.keycode import vkcode_map
 import gobject, qtawesome

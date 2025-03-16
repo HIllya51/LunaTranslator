@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
 import qtawesome
-from myutils.config import globalconfig, _TRL
+from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting_textinput import setTabOne_lazy
 from gui.setting_translate import setTabTwo_lazy

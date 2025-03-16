@@ -1,4 +1,4 @@
-import requests, re
+import re
 from myutils.utils import simplehtmlparser
 
 
