@@ -322,6 +322,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | 0100345020672000 | うたわれるもの 二人の白皇 |
 |  | 0100A89019EEC000 | さくら、もゆ。-as the Night's, Reincarnation- |
 |  | 010039F0202BC000 | 神椿市建設中。REGENERATE |
+|  | 01009A401E186000 | ヒプノシスマイク -Alternative Rap Battle- 1st period |
 
 == PSP
 

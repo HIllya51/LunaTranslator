@@ -3948,6 +3948,8 @@ namespace
             // 神椿市建設中。REGENERATE
             {0x820B8384, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010039F0202BC000, 0x010039F0202BC000ull, "1.0.0"}},
             {0x81607D1C, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010039F0202BC000, 0x010039F0202BC000ull, "1.0.1"}},
+            // ヒプノシスマイク -Alternative Rap Battle- 1st period
+            {0x82F78350, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, NewLineCharFilterW, 0x01009A401E186000ull, "1.0.0"}},
         };
         return 1;
     }();
