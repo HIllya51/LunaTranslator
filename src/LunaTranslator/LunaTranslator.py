@@ -1094,7 +1094,11 @@ class MAINUI:
 
     def showtraymessage(self, title, message, callback):
         self.trayclicked = callback
-        self.tray.showMessage(title, message, getExeIcon(getcurrexe()))
+        try:
+            self.tray.showMessage(title, message, getExeIcon(getcurrexe()))
+        except:
+            # xp版自定义icon不支持
+            self.tray.showMessage(title, message, QSystemTrayIcon.MessageIcon.NoIcon)
 
     def destroytray(self):
         self.tray.hide()
