@@ -776,6 +776,16 @@ namespace
         s = re::sub(s, (R"(<CLY2>(.*?)<CLNA>([\s\S]*))"), __);
         buffer->from(s);
     }
+    void F010081E0161B2000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, (R"(@v\w+_\w+_\w+)"));
+        s = re::sub(s, ("@r(.*?)@(.*?)@"), "$1");
+        s = re::sub(s, (R"(@t\w{4})"));
+        s = re::sub(s, (R"(@h\w+_\d+)"));
+        strReplace(s, "@n");
+        buffer->from(s);
+    }
     namespace
     {
         static std::string F0100FB50156E6000;
@@ -785,7 +795,7 @@ namespace
             s = re::sub(s, (R"(@v\(\d+\))"));
             F0100FB50156E6000 = s;
             s = re::sub(s, ("@r(.*?)@(.*?)@"), "$1");
-            s = re::sub(s, ("@n"));
+            strReplace(s, "@n");
             buffer->from(s);
         }
         void F0100FB50156E6000_2(TextBuffer *buffer, HookParam *hp)
@@ -3950,6 +3960,8 @@ namespace
             {0x81607D1C, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010039F0202BC000, 0x010039F0202BC000ull, "1.0.1"}},
             // ヒプノシスマイク -Alternative Rap Battle- 1st period
             {0x82F78350, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, NewLineCharFilterW, 0x01009A401E186000ull, "1.0.0"}},
+            // D.C.4 Fortunate Departures ～ダ・カーポ4～ フォーチュネイトデパーチャーズ
+            {0x8043D69C, {CODEC_UTF8, 0, 0, 0, F010081E0161B2000, 0x010081E0161B2000ull, "1.0.0"}},
         };
         return 1;
     }();

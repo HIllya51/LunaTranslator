@@ -323,6 +323,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | 0100A89019EEC000 | さくら、もゆ。-as the Night's, Reincarnation- |
 |  | 010039F0202BC000 | 神椿市建設中。REGENERATE |
 |  | 01009A401E186000 | ヒプノシスマイク -Alternative Rap Battle- 1st period |
+|  | 010081E0161B2000 | D.C.4 Fortunate Departures ～ダ・カーポ4～ フォーチュネイトデパーチャーズ |
 
 == PSP
 
@@ -377,7 +378,9 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | NPJH50243 | ティアーズ・トゥ・ティアラ 外伝 アヴァロンの謎 ＰＯＲＴＡＢＬＥ |
 |  | ULJM05802 | 薔薇ノ木ニ薔薇ノ花咲ク |
 |  | ULJM05690 | D.C. Girl's Symphony Pocket ～ダ・カーポ～ ガールズシンフォニーポケット |
+|  | ULJM06239 | D.C.III Plus ～ダ・カーポIII～プラス |
 |  | ULJM05437 | Ever17 -the out of infinity- Premium Edition |
+|  | ULJM05433 | Never7 -the end of infinity- |
 |  | ULJM06168 | 24時の鐘とシンデレラ～Halloween Wedding～ |
 |  | ULJM06023 | １２時の鐘とシンデレラ～Halloween Wedding～ |
 |  | ULJM06272 | 0時の鐘とシンデレラ～Halloween Wedding～ |
@@ -397,7 +400,6 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | ULJS00316 | ティンクル☆くるせいだーす GoGo! |
 |  | NPJH50808 | 明治東亰恋伽 |
 |  | NPJH50900 | 明治東亰恋伽 トワヰライト・キス |
-|  | ULJM05433 | Never7 -the end of infinity- |
 |  | ULJM06302 & ULJM06303 | 青春はじめました！ |
 |  | ULJM06064 | アーメン・ノワール ポータブル |
 |  | ULJM05823 | デス・コネクション　ポータブル |
@@ -607,7 +609,6 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | ULJM06224 | Stellar☆Theater Portable |
 |  | ULJM05683 | Starry☆Sky ～in Spring～ Portable |
 |  | ULJS00563 | 英国探偵ミステリア |
-|  | ULJM06239 | D.C.III Plus ～ダ・カーポIII～プラス |
 |  | ULJM06305 | 変態王子と笑わない猫。 |
 |  | ULJM05848 | Are you Alice? |
 |  | ULJM05768 | 加奈～いもうと～ |
