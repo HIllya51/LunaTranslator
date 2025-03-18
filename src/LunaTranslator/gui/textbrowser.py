@@ -185,3 +185,6 @@ class Textbrowser(QFrame):
 
     def sethovercolor(self, color):
         self.textbrowser.sethovercolor(color)
+
+    def verticalhorizontal(self, _):
+        self.textbrowser.verticalhorizontal(_)

@@ -38,7 +38,8 @@
         user-select: none;
     }
 </style>
-
+<style id="maybevertical">
+</style>
 <style id="colorcontroller"></style>
 <script>document.addEventListener('DOMContentLoaded', () => {
         //https://github.com/MicrosoftEdge/WebView2Feedback/blob/main/specs/WebMessageObjects.md
@@ -631,7 +632,11 @@
         }
         return fragment.textContent.trim();
     }
-
+    function verticalhorizontal(v) {
+        let css = ['', 'body {writing-mode: vertical-rl;}'][v]
+        document.getElementById('maybevertical').innerHTML = css;
+        safe_calllunaheightchange()
+    }
 </script>
 <script>
     if (window.LUNAJSObject)

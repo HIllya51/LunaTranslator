@@ -191,6 +191,31 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
         )
 
 
+class otherdisplaysetting(PopupWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+        form = LFormLayout(self)
+        form.addRow(
+            "显示顺序",
+            getsimplecombobox(
+                ["原文_翻译", "翻译_原文"],
+                globalconfig,
+                "displayrank",
+                callback=gobject.baseobject.translation_ui.translate_text.setdisplayrank,
+            ),
+        )
+        form.addRow(
+            "显示方向",
+            getsimplecombobox(
+                ["横向", "竖向"],
+                globalconfig,
+                "verticalhorizontal",
+                callback=gobject.baseobject.translation_ui.translate_text.verticalhorizontal,
+            ),
+        )
+        self.display()
+
+
 def resetgroudswitchcallback(self, group):
     clearlayout(self.goodfontsettingsformlayout)
 
@@ -236,13 +261,8 @@ def resetgroudswitchcallback(self, group):
                     switch2,
                     _btn2,
                     "",
-                    "显示顺序",
-                    D_getsimplecombobox(
-                        ["原文_翻译", "翻译_原文"],
-                        globalconfig,
-                        "displayrank",
-                        callback=gobject.baseobject.translation_ui.translate_text.setdisplayrank,
-                    ),
+                    "其他设置",
+                    D_getIconButton(functools.partial(otherdisplaysetting, self)),
                 ]
             ),
         )

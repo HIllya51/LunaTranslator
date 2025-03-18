@@ -440,6 +440,9 @@ class TextBrowser(QWidget, dataget):
     def showhideerror(self, show):
         self.parent().refreshcontent()
 
+    def verticalhorizontal(self, v):
+        pass
+
     def setfontstyle(self):
         self.parent().refreshcontent()
 

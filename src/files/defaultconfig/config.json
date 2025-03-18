@@ -1907,5 +1907,6 @@
     "textoutput_origin": true,
     "textoutput_trans": false,
     "wordlabel": [],
-    "getWordFallbackClipboard": true
+    "getWordFallbackClipboard": true,
+    "verticalhorizontal": false
 }
