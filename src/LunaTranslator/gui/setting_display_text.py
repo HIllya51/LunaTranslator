@@ -261,7 +261,7 @@ def resetgroudswitchcallback(self, group):
                     switch2,
                     _btn2,
                     "",
-                    "其他设置",
+                    "其他",
                     D_getIconButton(functools.partial(otherdisplaysetting, self)),
                 ]
             ),
