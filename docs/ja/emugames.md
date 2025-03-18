@@ -325,6 +325,8 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | 010039F0202BC000 | 神椿市建設中。REGENERATE |
 |  | 01009A401E186000 | ヒプノシスマイク -Alternative Rap Battle- 1st period |
 |  | 010081E0161B2000 | D.C.4 Fortunate Departures ～ダ・カーポ4～ フォーチュネイトデパーチャーズ |
+|  | 010048101D49E000 | Re;quartz零度 |
+|  | 0100B6501FE4C000 | 喧嘩番長 乙女 ダブルパック |
 
 == PSP
 

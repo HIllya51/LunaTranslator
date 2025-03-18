@@ -741,7 +741,23 @@ namespace
         s = re::sub(s, (L"\\\\n"), L" ");
         buffer->from(s);
     }
-
+    void F0100B6501FE4C000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, (LR"([\r\n]+)"));
+        buffer->from(s);
+    }
+    void F010048101D49E000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, (LR"(\$\[(.*?)\$/(.*?)\$\])"), L"$1");
+        s = re::sub(s, (LR"(@(.*?)@)"), L"$1");
+        if (hp->offset == 9)
+        {
+            strReplace(s, L"$d", L"\n");
+        }
+        buffer->from(s);
+    }
     void F01004EB01A328000(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("#n"));
@@ -3966,6 +3982,15 @@ namespace
             {0x82F78350, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, NewLineCharFilterW, 0x01009A401E186000ull, "1.0.0"}},
             // D.C.4 Fortunate Departures ～ダ・カーポ4～ フォーチュネイトデパーチャーズ
             {0x8043D69C, {CODEC_UTF8, 0, 0, 0, F010081E0161B2000, 0x010081E0161B2000ull, "1.0.0"}},
+            // Re;quartz零度
+            {0x8017F0CC, {CODEC_UTF16, 8, 0, 0, F010048101D49E000, 0x010048101D49E000ull, "1.0.0"}},
+            {0x800ef69c, {CODEC_UTF16, 1, 0, 0, F010048101D49E000, 0x010048101D49E000ull, "1.0.1"}},
+            {0x8011aea4, {CODEC_UTF16, 9, 0, 0, F010048101D49E000, 0x010048101D49E000ull, "1.0.1"}},
+            // 喧嘩番長 乙女 ダブルパック
+            {0x81801c7c, {CODEC_UTF16, 0, 0x14, 0, F0100B6501FE4C000, 0x0100B6501FE4C000ull, "1.1.0"}},
+            {0x8161f640, {CODEC_UTF16, 0, 0x14, 0, F0100B6501FE4C000, 0x0100B6501FE4C000ull, "1.1.0"}},
+            {0x817f8490, {CODEC_UTF16, 1, 0x14, 0, F0100B6501FE4C000, 0x0100B6501FE4C000ull, "1.1.0"}},
+
         };
         return 1;
     }();
