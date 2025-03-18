@@ -3990,7 +3990,8 @@ namespace
             {0x81801c7c, {CODEC_UTF16, 0, 0x14, 0, F0100B6501FE4C000, 0x0100B6501FE4C000ull, "1.1.0"}},
             {0x8161f640, {CODEC_UTF16, 0, 0x14, 0, F0100B6501FE4C000, 0x0100B6501FE4C000ull, "1.1.0"}},
             {0x817f8490, {CODEC_UTF16, 1, 0x14, 0, F0100B6501FE4C000, 0x0100B6501FE4C000ull, "1.1.0"}},
-
+            // Yukar From The Abyss
+            {0x82396AFC, {CODEC_UTF16, 0, 0x14, 0, 0, 0x010008401AB4A000ull, "1.0.0"}},
         };
         return 1;
     }();
