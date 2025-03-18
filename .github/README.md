@@ -6,13 +6,6 @@
 
 ### [使用说明](https://docs.lunatranslator.org/) | [视频教程](https://space.bilibili.com/592120404/video) | [软件下载](https://docs.lunatranslator.org/README.html) | [![](https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge)](https://qm.qq.com/q/I5rr3uEpi2) [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB)
 
-## 支持作者
-
-<details>
-<summary>如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~</summary>
-<img src='../src/files/zan.jpg' style="height: 400px !important;">
-</details>
-
 ## 功能支持
 
 #### 文本输入
@@ -54,6 +47,11 @@
 - **Anki** 支持使用一键添加单词到anki中
 
 - **Yomitan等浏览器插件** 可以在软件内加载Yomitan等浏览器插件以辅助实现一些其他功能
+
+## 支持作者
+
+如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢，么么哒~
+<img src='../src/files/zan.jpg' style="height: 400px !important;">
 
 ## 开源许可
 
