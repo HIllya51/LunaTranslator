@@ -42,7 +42,7 @@ def autoreadswitch(self):
 def safeGet():
 
     t = winsharedutils.GetSelectedText()
-    if t is None:
+    if (t is None) and (globalconfig["getWordFallbackClipboard"]):
         t = winsharedutils.clipboard_get()
     if 0:
         QToolTip.showText(

@@ -189,6 +189,17 @@ namespace ppsspp
 		strReplace(s, "\x81\x40");
 		buffer->from(s);
 	}
+	void ULJS00293(TextBuffer *buffer, HookParam *hp)
+	{
+		auto s = buffer->viewA();
+		if (s.find("(V") != s.npos)
+		{
+			buffer->from(s.substr(0, s.find("(V")));
+		}
+		CharFilter(buffer, '\n');
+		StringReplacer(buffer, TEXTANDLEN("\x04(DIO)"), TEXTANDLEN("\x83\x66\x83\x42\x83\x49"));
+		StringReplacer(buffer, TEXTANDLEN("\x04(MEL)"), TEXTANDLEN("\x83\x81\x83\x8b"));
+	}
 	void ULJS00124(TextBuffer *buffer, HookParam *hp)
 	{
 		CharFilter(buffer, '\n');
@@ -2115,5 +2126,8 @@ namespace ppsspp
 		{0x886000C, {0, 0, 0, 0, ULJM05659, "ULJM05659"}},
 		// どこでもいっしょ
 		{0x8819C88, {0, 1, 0, 0, ULJS00124, "UCJS10002"}},
+		// テイルズ オブ ファンタジア なりきりダンジョンX
+		{0x88F45D0, {0, 5, 0, 0, ULJS00293, "ULJS00293"}},
+
 	};
 }

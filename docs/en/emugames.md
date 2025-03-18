@@ -641,6 +641,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | NPJH50689 | MISSINGPARTS the TANTEI stories Complete |
 |  | ULJM05659 | Canvas3 ～七色の奇跡～ |
 |  | UCJS10002 | どこでもいっしょ |
+|  | ULJS00293 | テイルズ オブ ファンタジア なりきりダンジョンX |
 
 == PSV
 

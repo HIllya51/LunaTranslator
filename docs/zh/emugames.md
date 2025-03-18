@@ -641,6 +641,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | NPJH50689 | MISSINGPARTS the TANTEI stories Complete |
 |  | ULJM05659 | Canvas3 ～七色の奇跡～ |
 |  | UCJS10002 | どこでもいっしょ |
+|  | ULJS00293 | テイルズ オブ ファンタジア なりきりダンジョンX |
 
 == PSV
 
