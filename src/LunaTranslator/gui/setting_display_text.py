@@ -210,7 +210,7 @@ class otherdisplaysetting(PopupWidget):
                 ["横向", "竖向"],
                 globalconfig,
                 "verticalhorizontal",
-                callback=gobject.baseobject.translation_ui.translate_text.verticalhorizontal,
+                callback=gobject.baseobject.translation_ui.verticalhorizontal,
             ),
         )
         self.display()

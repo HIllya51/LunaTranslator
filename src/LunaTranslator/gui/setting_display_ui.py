@@ -87,6 +87,7 @@ def changeHorizontal_tool(self):
 def toolcolorchange():
     gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
     gobject.baseobject.translation_ui.enterfunction()
+    gobject.baseobject.translation_ui.setbuttonsizeX()
     gobject.baseobject.translation_ui.set_color_transparency()
 
 

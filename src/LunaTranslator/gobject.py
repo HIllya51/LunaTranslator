@@ -57,3 +57,5 @@ class Consts:
     buttoncolor = "#FF69B4"
     buttoncolor_disable = "#afafaf"
     btnscale = 1.2
+    toolwdivh = 4 / 3
+    toolscale = 1.5

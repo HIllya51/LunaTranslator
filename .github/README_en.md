@@ -48,7 +48,7 @@ Supports almost all conceivable translation engines, including:
 
 - **Anki** Supports one-click addition of words to Anki
 
-- **Browser Extensions like Yomitan** Browser extensions like Yomitan can be loaded within the software to assist in implementing additional features.
+- **Load Browser Extensions** Browser extensions like Yomitan can be loaded within the software to assist in implementing additional features.
 
 ## Open Source License
 
