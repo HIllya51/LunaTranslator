@@ -373,18 +373,21 @@ class searchhookparam(LDialog):
         self.search_method.addW("函数对齐", QLabel())
         self.search_method.addW("函数调用", QLabel())
 
-        addresses = [""]
+        addresses = []
 
-        def callback(fn):
-            with open(fn, "r", encoding="utf8", errors="ignore") as ff:
-                addresses.append(ff.read())
+        def callback():
+            try:
+                with open(addresses[-1], "r", encoding="utf8", errors="ignore") as ff:
+                    return ff.read()
+            except:
+                return ""
 
-        self.regists["addresses"] = lambda: addresses[-1]
+        self.regists["addresses"] = callback
         self.search_method.addW(
             "地址表",
             getsimplepatheditor(
                 text="",
-                callback=callback,
+                callback=addresses.append,
                 icons=("fa.folder-open",),
                 clearable=False,
                 w=True,

@@ -1216,7 +1216,6 @@
             "name": "GoogleTTS",
             "voice": "",
             "arg_not_sup": [
-                "rate",
                 "pitch"
             ]
         }

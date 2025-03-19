@@ -1,6 +1,7 @@
 ﻿#include "yuzu.h"
 #include "mages/mages.h"
 #include "JIT_Keeper.hpp"
+
 namespace
 {
     auto isFastMem = true;
@@ -372,7 +373,7 @@ namespace
             }
             last = s;
         };
-        NewHook(hp, "01000A7019EBC000");
+        NewHook(hp, hp1->name);
     }
 
     void ReadTextAndLenDW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -2243,12 +2244,22 @@ namespace
     {
         StringFilter(buffer, TEXTANDLEN("@w"));
     }
+    DECLARE_FUNCTION(F010047E01E22A000_collect, EXPAND_BRACKETS(const wchar_t *_, int split));
+    void F010047E01E22A000(TextBuffer *buffer, HookParam *hpx)
+    {
+        auto s = buffer->strW();
+        HookParam hp;
+        hp.address = (uintptr_t)F010047E01E22A000_collect;
+        hp.offset = GETARG(1);
+        hp.type = USING_STRING | CODEC_UTF16 | USING_SPLIT;
+        hp.split = GETARG(2);
+        static auto _ = NewHook(hp, hpx->name);
+        F010047E01E22A000_collect(s.c_str(), hpx->emu_addr);
+        buffer->clear();
+    }
     namespace
     {
-#pragma optimize("", off)
-        // 必须禁止优化这个函数，或者引用一下参数，否则参数被优化没了。
-        void F01009E600FAF6000_collect(const char *_) {}
-#pragma optimize("", on)
+        DECLARE_FUNCTION(F01009E600FAF6000_collect, const char *_);
         void F01009E600FAF6000(TextBuffer *buffer, HookParam *hpx)
         {
             auto s = buffer->strA();
@@ -2262,7 +2273,7 @@ namespace
                 StringFilter(buffer, TEXTANDLEN("@1r"));
                 StringFilter(buffer, TEXTANDLEN("@-1r"));
             };
-            static auto _ = NewHook(hp, "01009E600FAF6000");
+            static auto _ = NewHook(hp, hpx->name);
             static std::map<uint64_t, uintptr_t> mp;
             // 这个address会被触发两次。
             if (mp.find(hpx->emu_addr) == mp.end())
@@ -2438,10 +2449,7 @@ namespace
     }
     namespace
     {
-#pragma optimize("", off)
-        void TT0100A4700BC98000(const char *_) {}
-#pragma optimize("", on)
-
+        DECLARE_FUNCTION(TT0100A4700BC98000, const char *_);
         void T0100A4700BC98000(TextBuffer *buffer, HookParam *hpx)
         {
             auto s = buffer->strA();
@@ -2449,15 +2457,13 @@ namespace
             hp.address = (uintptr_t)TT0100A4700BC98000;
             hp.offset = GETARG(1);
             hp.type = CODEC_UTF8 | USING_STRING;
-            static auto _ = NewHook(hp, "0100A4700BC98000");
+            static auto _ = NewHook(hp, hpx->name);
             TT0100A4700BC98000(s.c_str());
         }
     }
     namespace
     {
-#pragma optimize("", off)
-        void F010059D020670000_collect(const char *_) {}
-#pragma optimize("", on)
+        DECLARE_FUNCTION(F010059D020670000_collect, const char *_);
         void F010059D020670000(TextBuffer *buffer, HookParam *hpx)
         {
             auto s = buffer->strA();
@@ -2484,9 +2490,7 @@ namespace
     }
     namespace
     {
-#pragma optimize("", off)
-        void F01006530151F0000_collect(const wchar_t *_) {}
-#pragma optimize("", on)
+        DECLARE_FUNCTION(F01006530151F0000_collect, const wchar_t *_);
         void F01006530151F0000(TextBuffer *buffer, HookParam *hpx)
         {
             auto s = buffer->strW();
@@ -3992,6 +3996,9 @@ namespace
             {0x817f8490, {CODEC_UTF16, 1, 0x14, 0, F0100B6501FE4C000, 0x0100B6501FE4C000ull, "1.1.0"}},
             // Yukar From The Abyss
             {0x82396AFC, {CODEC_UTF16, 0, 0x14, 0, 0, 0x010008401AB4A000ull, "1.0.0"}},
+            // Voice Love on Air
+            {0x83332430, {CODEC_UTF16, 0, 0, 0, F010047E01E22A000, 0x010047E01E22A000ull, "1.0.0"}},
+            {0x83161F9C, {CODEC_UTF16, 0, 0, 0, F010047E01E22A000, 0x010047E01E22A000ull, "1.0.0"}}, // prologue+name
         };
         return 1;
     }();

@@ -56,7 +56,6 @@ class TS(basetrans):
                 self.uuid,
                 tm,
             ),
-            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
             "device-type": "pc",
             "origin": "https://papago.naver.com",
             "referer": "https://papago.naver.com/",

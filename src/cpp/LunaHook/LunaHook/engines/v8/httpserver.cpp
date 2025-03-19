@@ -468,12 +468,7 @@ Return Value:
 
 --***************************************************************************/
 
-#pragma optimize("", off)
-const wchar_t *LUNA_CONTENTBYPASS(const wchar_t *_)
-{
-    return _;
-}
-#pragma optimize("", on)
+DECLARE_PLAIN_FUNCTION(const wchar_t *LUNA_CONTENTBYPASS(const wchar_t *_) { return _; })
 
 DWORD
 SendHttpResponse(

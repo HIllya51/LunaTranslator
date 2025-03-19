@@ -328,6 +328,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | 010048101D49E000 | Re;quartz零度 |
 |  | 0100B6501FE4C000 | 喧嘩番長 乙女 ダブルパック |
 |  | 010008401AB4A000 | Yukar From The Abyss |
+|  | 010047E01E22A000 | Voice Love on Air |
 
 == PSP
 

@@ -9,7 +9,6 @@ class TS(basetrans):
         headers = {
             "accept": "application/json, text/plain, */*",
             "accept-language": "zh-CN,zh;q=0.9,ar;q=0.8,sq;q=0.7,ru;q=0.6",
-            "content-type": "application/json",
             "origin": "https://transmart.qq.com",
             "priority": "u=1, i",
             "referer": "https://transmart.qq.com/zh-CN/index?sourcelang=zh&targetlang=en&source=%E6%B5%8B%E8%AF%951%0A%E6%B5%8B%E8%AF%951%E8%AF%B7%E6%B1%82",

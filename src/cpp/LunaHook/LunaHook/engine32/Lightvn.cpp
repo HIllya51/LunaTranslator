@@ -3,8 +3,7 @@
 // https://vndb.org/r?f=fwLight_evn-
 #define PATTERN1 "\\[PARSETOKENS\\] line:[-\"\\.]+([\\s\\S]*?)\\(scenario:([\\s\\S]*?)"
 #define PATTERN2 "\\[PARSETOKENS\\] line:([\\s\\S]*?)backlogName = '([\\s\\S]*?)'([\\s\\S]*?)"
-#define WIDEN2(x) L##x
-#define WIDEN(x) WIDEN2(x)
+
 void SpecialHookLightvnA(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
 	//[Parser::ReadScriptBreak] curline:'"「次は[水縹]<みはなだ>駅、水縹駅――お出口は左側です」'

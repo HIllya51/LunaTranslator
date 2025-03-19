@@ -66,105 +66,101 @@ def assemble_ws_auth_url(requset_url, method="GET", api_key="", api_secret=""):
     return requset_url + "?" + urlencode(values)
 
 
-def get_result(url, sess, bina, appid, apisecret, apikey):
-    request_url = assemble_ws_auth_url(url, "POST", apikey, apisecret)
-    headers = {
-        "content-type": "application/json",
-        "host": "api.xf-yun.com",
-        "appid": "APPID",
-    }
-    body = {
-        "header": {"app_id": appid, "status": 3},
-        "parameter": {
-            "hh_ocr_recognize_doc": {
-                "recognizeDocumentRes": {
-                    "encoding": "utf8",
-                    "compress": "raw",
-                    "format": "json",
-                }
-            }
-        },
-        "payload": {
-            "image": {
-                "encoding": "jpg",
-                "image": str(base64.b64encode(bina), "utf-8"),
-                "status": 3,
-            }
-        },
-    }
-    response = sess.post(request_url, data=json.dumps(body), headers=headers)
-    re = response.content.decode("utf8")
-    try:
-        str_result = json.loads(re)
-        renew_text = str_result["payload"]["recognizeDocumentRes"]["text"]
-        result = json.loads(str(base64.b64decode(renew_text), "utf-8"))["lines"]
-        boxs = []
-        texts = []
-        for line in result:
-            boxs.append(line["position"])
-            texts.append(line["text"])
-        return boxs, texts
-    except:
-        raise Exception(response)
-
-
-def get_result2(url, appid, apisecret, apikey, sess, bina, lang):
-    request_url = assemble_ws_auth_url(url, "POST", apikey, apisecret)
-    headers = {
-        "content-type": "application/json",
-        "host": "cn-east-1.api.xf-yun.com",
-        "app_id": appid,
-    }
-    body = {
-        "header": {"app_id": appid, "status": 3},
-        "parameter": {
-            "ocr": {
-                "language": lang,
-                "ocr_output_text": {
-                    "encoding": "utf8",
-                    "compress": "raw",
-                    "format": "json",
-                },
-            }
-        },
-        "payload": {
-            "image": {
-                "encoding": "jpg",
-                "image": str(base64.b64encode(bina), "utf-8"),
-                "status": 3,
-            }
-        },
-    }
-    response = sess.post(request_url, data=json.dumps(body), headers=headers)
-
-    re = response.content.decode("utf8")
-    try:
-        str_result = json.loads(re)
-        renew_text = str_result["payload"]["ocr_output_text"]["text"]
-        pages = json.loads(str(base64.b64decode(renew_text), "utf-8"))["pages"]
-        boxs = []
-        texts = []
-        for page in pages:
-            for line in page.get("lines", []):
-                texts.append(line["content"])
-                boxs.append(
-                    [
-                        line["coord"][0]["x"],
-                        line["coord"][0]["y"],
-                        line["coord"][1]["x"],
-                        line["coord"][1]["y"],
-                        line["coord"][2]["x"],
-                        line["coord"][2]["y"],
-                        line["coord"][3]["x"],
-                        line["coord"][3]["y"],
-                    ]
-                )
-        return boxs, texts
-    except:
-        raise Exception(response)
-
-
 class OCR(baseocr):
+    def get_result(self, url, bina, appid, apisecret, apikey):
+        request_url = assemble_ws_auth_url(url, "POST", apikey, apisecret)
+        headers = {
+            "host": "api.xf-yun.com",
+            "appid": "APPID",
+        }
+        body = {
+            "header": {"app_id": appid, "status": 3},
+            "parameter": {
+                "hh_ocr_recognize_doc": {
+                    "recognizeDocumentRes": {
+                        "encoding": "utf8",
+                        "compress": "raw",
+                        "format": "json",
+                    }
+                }
+            },
+            "payload": {
+                "image": {
+                    "encoding": "jpg",
+                    "image": str(base64.b64encode(bina), "utf-8"),
+                    "status": 3,
+                }
+            },
+        }
+        response = self.proxysession.post(request_url, json=body, headers=headers)
+        re = response.content.decode("utf8")
+        try:
+            str_result = json.loads(re)
+            renew_text = str_result["payload"]["recognizeDocumentRes"]["text"]
+            result = json.loads(str(base64.b64decode(renew_text), "utf-8"))["lines"]
+            boxs = []
+            texts = []
+            for line in result:
+                boxs.append(line["position"])
+                texts.append(line["text"])
+            return boxs, texts
+        except:
+            raise Exception(response)
+
+    def get_result2(self, url, appid, apisecret, apikey, bina):
+        request_url = assemble_ws_auth_url(url, "POST", apikey, apisecret)
+        headers = {
+            "host": "cn-east-1.api.xf-yun.com",
+            "app_id": appid,
+        }
+        body = {
+            "header": {"app_id": appid, "status": 3},
+            "parameter": {
+                "ocr": {
+                    "language": self.srclang,
+                    "ocr_output_text": {
+                        "encoding": "utf8",
+                        "compress": "raw",
+                        "format": "json",
+                    },
+                }
+            },
+            "payload": {
+                "image": {
+                    "encoding": "jpg",
+                    "image": str(base64.b64encode(bina), "utf-8"),
+                    "status": 3,
+                }
+            },
+        }
+        response = self.proxysession.post(request_url, json=body, headers=headers)
+
+        re = response.content.decode("utf8")
+        try:
+            str_result = json.loads(re)
+            renew_text = str_result["payload"]["ocr_output_text"]["text"]
+            pages = json.loads(str(base64.b64decode(renew_text), "utf-8"))["pages"]
+            boxs = []
+            texts = []
+            for page in pages:
+                for line in page.get("lines", []):
+                    texts.append(line["content"])
+                    boxs.append(
+                        [
+                            line["coord"][0]["x"],
+                            line["coord"][0]["y"],
+                            line["coord"][1]["x"],
+                            line["coord"][1]["y"],
+                            line["coord"][2]["x"],
+                            line["coord"][2]["y"],
+                            line["coord"][3]["x"],
+                            line["coord"][3]["y"],
+                        ]
+                    )
+            return boxs, texts
+        except:
+            raise Exception(response)
+
     def langmap(self):
         return {
             Languages.Chinese: "ch_en",
@@ -178,9 +174,8 @@ class OCR(baseocr):
         apisecret = self.multiapikeycurrent["APISecret"]
         apikey = self.multiapikeycurrent["APIKey"]
         if self.config["interface"] == "hh_ocr_recognize_doc":
-            boxs, texts = get_result(
+            boxs, texts = self.get_result(
                 "http://api.xf-yun.com/v1/private/hh_ocr_recognize_doc",
-                self.proxysession,
                 imagebinary,
                 appid,
                 apisecret,
@@ -189,14 +184,12 @@ class OCR(baseocr):
         elif self.config["interface"] == "ocr":
             if self.is_src_auto:
                 self.raise_cant_be_auto_lang()
-            boxs, texts = get_result2(
+            boxs, texts = self.get_result2(
                 "https://cn-east-1.api.xf-yun.com/v1/ocr",
                 appid,
                 apisecret,
                 apikey,
-                self.proxysession,
                 imagebinary,
-                self.srclang,
             )
 
         return {"box": boxs, "text": texts}

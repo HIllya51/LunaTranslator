@@ -19,12 +19,9 @@ class TS(basetrans):
             "detect": True,
         }
         headers = {
-            "content-type": "application/json",
             "x-authorization": "token " + token,
         }
-        response = self.proxysession.request(
-            "POST", url, data=json.dumps(payload), headers=headers
-        )
+        response = self.proxysession.request("POST", url, json=payload, headers=headers)
         try:
             return response.json()["target"]
         except:

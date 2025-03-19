@@ -32,7 +32,6 @@ class TTS(TTSbase):
     def speak(self, content, voice, param: SpeechParam):
 
         headers = {
-            "Content-Type": "application/json",
             "Connection": "Keep-Alive",
             "Accept-Language": "zh-CN,en,*",
             "User-Agent": "Mozilla/5.0",

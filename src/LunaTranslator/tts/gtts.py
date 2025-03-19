@@ -1,141 +1,7 @@
 # -*- coding: utf-8 -*-
 import base64
 import json
-import logging
 import re
-import urllib
-
-_langs = {
-    "af": "Afrikaans",
-    "ar": "Arabic",
-    "bg": "Bulgarian",
-    "bn": "Bengali",
-    "bs": "Bosnian",
-    "ca": "Catalan",
-    "cs": "Czech",
-    "da": "Danish",
-    "de": "German",
-    "el": "Greek",
-    "en": "English",
-    "es": "Spanish",
-    "et": "Estonian",
-    "fi": "Finnish",
-    "fr": "French",
-    "gu": "Gujarati",
-    "hi": "Hindi",
-    "hr": "Croatian",
-    "hu": "Hungarian",
-    "id": "Indonesian",
-    "is": "Icelandic",
-    "it": "Italian",
-    "iw": "Hebrew",
-    "ja": "Japanese",
-    "jw": "Javanese",
-    "km": "Khmer",
-    "kn": "Kannada",
-    "ko": "Korean",
-    "la": "Latin",
-    "lv": "Latvian",
-    "ml": "Malayalam",
-    "mr": "Marathi",
-    "ms": "Malay",
-    "my": "Myanmar (Burmese)",
-    "ne": "Nepali",
-    "nl": "Dutch",
-    "no": "Norwegian",
-    "pl": "Polish",
-    "pt": "Portuguese",
-    "ro": "Romanian",
-    "ru": "Russian",
-    "si": "Sinhala",
-    "sk": "Slovak",
-    "sq": "Albanian",
-    "sr": "Serbian",
-    "su": "Sundanese",
-    "sv": "Swedish",
-    "sw": "Swahili",
-    "ta": "Tamil",
-    "te": "Telugu",
-    "th": "Thai",
-    "tl": "Filipino",
-    "tr": "Turkish",
-    "uk": "Ukrainian",
-    "ur": "Urdu",
-    "vi": "Vietnamese",
-    "zh-CN": "Chinese (Simplified)",
-    "zh-TW": "Chinese (Traditional)",
-}
-
-
-def _main_langs():
-    return _langs
-
-
-from warnings import warn
-import logging
-
-__all__ = ["tts_langs"]
-
-# Logger
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
-
-
-def tts_langs():
-    langs = dict()
-    langs.update(_main_langs())
-    langs.update(_extra_langs())
-    log.debug("langs: {}".format(langs))
-    return langs
-
-
-def _extra_langs():
-    return {
-        # Chinese
-        "zh-TW": "Chinese (Mandarin/Taiwan)",
-        "zh": "Chinese (Mandarin)",
-    }
-
-
-def _fallback_deprecated_lang(lang):
-    deprecated = {
-        # '<fallback>': [<list of deprecated langs>]
-        "en": [
-            "en-us",
-            "en-ca",
-            "en-uk",
-            "en-gb",
-            "en-au",
-            "en-gh",
-            "en-in",
-            "en-ie",
-            "en-nz",
-            "en-ng",
-            "en-ph",
-            "en-za",
-            "en-tz",
-        ],
-        "fr": ["fr-ca", "fr-fr"],
-        "pt": ["pt-br", "pt-pt"],
-        "es": ["es-es", "es-us"],
-        "zh-CN": ["zh-cn"],
-        "zh-TW": ["zh-tw"],
-    }
-
-    for fallback_lang, deprecated_langs in deprecated.items():
-        if lang.lower() in deprecated_langs:
-            msg = (
-                "'{}' has been deprecated, falling back to '{}'. "
-                "This fallback will be removed in a future version."
-            ).format(lang, fallback_lang)
-
-            warn(msg, DeprecationWarning)
-            log.warning(msg)
-
-            return fallback_lang
-
-    return lang
-
 
 # -*- coding: utf-8 -*-
 import re
@@ -324,7 +190,7 @@ import re
 _ALL_PUNC_OR_SPACE = re.compile("^[{}]*$".format(re.escape(punc + ws)))
 
 
-def _minimize(the_string, delim, max_size):
+def _minimize(the_string: str, delim, max_size):
     if the_string.startswith(delim):
         the_string = the_string[len(delim) :]
 
@@ -352,106 +218,62 @@ def _translate_url(tld="com", path=""):
     return _GOOGLE_TTS_URL.format(tld, path)
 
 
-__all__ = ["gTTS", "gTTSError"]
-
-# Logger
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
-
-
 class Speed:
     SLOW = True
     NORMAL = None
 
 
-class gTTS:
+from tts.basettsclass import TTSbase, SpeechParam
+
+
+class TTS(TTSbase):
     GOOGLE_TTS_MAX_CHARS = 100  # Max characters the Google TTS API takes at a time
     GOOGLE_TTS_HEADERS = {
         "Referer": "http://translate.google.com/",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/47.0.2526.106 Safari/537.36",
-        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
     }
     GOOGLE_TTS_RPC = "jQ1olc"
 
-    def __init__(
-        self,
-        ref,
-        text,
-        tld="com",
-        lang="en",
-        slow=False,
-        lang_check=True,
-        pre_processor_funcs=[
+    def init(self):
+        slow = False
+        pre_processor_funcs = [
             pre_processors.tone_marks,
             pre_processors.end_of_line,
             pre_processors.abbreviations,
             pre_processors.word_sub,
-        ],
-        tokenizer_func=Tokenizer(
-            [
-                tokenizer_cases.tone_marks,
-                tokenizer_cases.period_comma,
-                tokenizer_cases.colon,
-                tokenizer_cases.other_punctuation,
-            ]
-        ).run,
-    ):
-        self.ref = ref
+        ]
+        tokenizer_func = (
+            Tokenizer(
+                [
+                    tokenizer_cases.tone_marks,
+                    tokenizer_cases.period_comma,
+                    tokenizer_cases.colon,
+                    tokenizer_cases.other_punctuation,
+                ]
+            ).run,
+        )
         # Debug
         for k, v in dict(locals()).items():
             if k == "self":
                 continue
-            log.debug("%s: %s", k, v)
-
-        # Text
-        assert text, "No text to speak"
-        self.text = text
-
-        # Translate URL top-level domain
-        self.tld = tld
-
-        # Language
-        self.lang_check = lang_check
-        lang = str(self.ref.srclang)
-        self.lang = lang
-        if self.lang_check:
-            # Fallback lang in case it is deprecated
-            self.lang = _fallback_deprecated_lang(lang)
-
-            try:
-                langs = tts_langs()
-                if self.lang not in langs:
-                    raise ValueError("Language not supported: %s" % lang)
-            except RuntimeError as e:
-                log.debug(str(e), exc_info=True)
-                log.warning(str(e))
-
-        # Read speed
-        if slow:
-            self.speed = Speed.SLOW
-        else:
-            self.speed = Speed.NORMAL
 
         # Pre-processors and tokenizer
         self.pre_processor_funcs = pre_processor_funcs
         self.tokenizer_func = tokenizer_func
 
-    def _tokenize(self, text):
+    def _tokenize(self, text: str):
         # Pre-clean
         text = text.strip()
 
         # Apply pre-processors
         for pp in self.pre_processor_funcs:
-            log.debug("pre-processing: %s", pp)
             text = pp(text)
 
         if len(text) <= self.GOOGLE_TTS_MAX_CHARS:
             return _clean_tokens([text])
 
-        # Tokenize
-        log.debug("tokenizing: %s", self.tokenizer_func)
         tokens = self.tokenizer_func(text)
 
         # Clean
@@ -467,46 +289,59 @@ class gTTS:
 
         return tokens
 
-    def _prepare_requests(self):
+    def _prepare_requests(self, text, slow):
         translate_url = _translate_url(
-            tld=self.tld, path="_/TranslateWebserverUi/data/batchexecute"
+            tld="com", path="_/TranslateWebserverUi/data/batchexecute"
         )
 
-        text_parts = self._tokenize(self.text)
-        log.debug("text_parts: %s", str(text_parts))
-        log.debug("text_parts: %i", len(text_parts))
-        assert text_parts, "No text to send to TTS API"
-
-        prepared_requests = []
-        for idx, part in enumerate(text_parts):
-            data = self._package_rpc(part)
-
-            log.debug("data-%i: %s", idx, data)
+        text_parts = self._tokenize(text)
+        for part in text_parts:
+            data = self._package_rpc(part, slow)
 
             # Request
-            r = self.ref.proxysession.post(
+            r = self.proxysession.post(
                 url=translate_url,
                 data=data,
                 headers=self.GOOGLE_TTS_HEADERS,
             )
 
-            # Prepare request
-            prepared_requests.append(r)
+            yield r
 
-        return prepared_requests
+    def langdetect(self, text):
+        param = [[text, self.srclang, self.tgtlang, True], [1]]
+        freq = {"f.req": [[["MkEWBc", param, None, "generic"]]]}
 
-    def _package_rpc(self, text):
-        parameter = [text, self.lang, self.speed, "null"]
+        headers = {
+            "Origin": "https://translate.google.com",
+            "Referer": "https://translate.google.com",
+            "X-Requested-With": "XMLHttpRequest",
+        }
+
+        response = self.proxysession.post(
+            "https://translate.google.com/_/TranslateWebserverUi/data/batchexecute",
+            verify=False,
+            headers=headers,
+            data=freq,
+        )
+        json_data = json.loads(response.text[6:])
+        data = json.loads(json_data[0][2])
+        return data[0][2]
+
+    def _package_rpc(self, text, slow):
+
+        speed = (Speed.NORMAL, Speed.SLOW)[slow]
+        srclang = self.langdetect(text) if self.is_src_auto else self.srclang
+        parameter = [text, srclang, speed, "null"]
         escaped_parameter = json.dumps(parameter, separators=(",", ":"))
 
         rpc = [[[self.GOOGLE_TTS_RPC, escaped_parameter, None, "generic"]]]
         espaced_rpc = json.dumps(rpc, separators=(",", ":"))
-        return "f.req={}&".format(urllib.parse.quote(espaced_rpc))
+        return {"f.req": espaced_rpc}
 
-    def stream(self):
+    def stream(self, content, slow):
 
-        prepared_requests = self._prepare_requests()
-        for idx, r in enumerate(prepared_requests):
+        prepared_requests = self._prepare_requests(content, slow)
+        for r in prepared_requests:
 
             # Write
             for line in r.content.split(b"\n"):
@@ -519,79 +354,13 @@ class gTTS:
                     else:
                         # Request successful, good response,
                         # no audio stream in response
-                        raise gTTSError(tts=self, response=r)
-            log.debug("part-%i created", idx)
+                        raise Exception(r)
 
-    def write_to_fp(self, fp):
-
-        try:
-            for idx, decoded in enumerate(self.stream()):
-                fp.write(decoded)
-                log.debug("part-%i written to %s", idx, fp)
-        except (AttributeError, TypeError) as e:
-            raise TypeError(
-                "'fp' is not a file-like object or it does not take bytes: %s" % str(e)
-            )
-
-    def save(self):
-        bs = b""
-        for idx, decoded in enumerate(self.stream()):
-            bs += decoded
-        return bs
-
-
-class gTTSError(Exception):
-    def __init__(self, msg=None, **kwargs):
-        self.tts = kwargs.pop("tts", None)
-        self.rsp = kwargs.pop("response", None)
-        if msg:
-            self.msg = msg
-        elif self.tts is not None:
-            self.msg = self.infer_msg(self.tts, self.rsp)
-        else:
-            self.msg = None
-        super(gTTSError, self).__init__(self.msg)
-
-    def infer_msg(self, tts, rsp=None):
-        cause = "Unknown"
-
-        if rsp is None:
-            premise = "Failed to connect"
-
-            if tts.tld != "com":
-                host = _translate_url(tld=tts.tld)
-                cause = "Host '{}' is not reachable".format(host)
-
-        else:
-            # rsp should be <requests.Response>
-            # http://docs.python-requests.org/en/master/api/
-            status = rsp.status_code
-            reason = rsp.reason
-
-            premise = "{:d} ({}) from TTS API".format(status, reason)
-
-            if status == 403:
-                cause = "Bad token or upstream API changes"
-            elif status == 404 and tts.tld != "com":
-                cause = "Unsupported tld '{}'".format(tts.tld)
-            elif status == 200 and not tts.lang_check:
-                cause = (
-                    "No audio stream in response. Unsupported language '%s'"
-                    % self.tts.lang
-                )
-            elif status >= 500:
-                cause = "Upstream API error. Try again later."
-
-        return "{}. Probable cause: {}".format(premise, cause)
-
-
-from tts.basettsclass import TTSbase
-
-
-class TTS(TTSbase):
     def getvoicelist(self):
         return [""], [""]
 
-    def speak(self, content, voice, _):
-        tts = gTTS(self, content)
-        return tts.save()
+    def speak(self, content, _, speed: SpeechParam):
+        return b"".join(self.stream(content, speed.speed < 0))
+
+    def ttscachekey(self, *argc):
+        return self.srclang, super().ttscachekey(*argc)

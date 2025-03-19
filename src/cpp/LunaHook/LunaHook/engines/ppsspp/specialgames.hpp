@@ -1188,9 +1188,7 @@ namespace ppsspp
 	}
 	namespace
 	{
-#pragma optimize("", off)
-		void ULJM06115_C(const char *_) {}
-#pragma optimize("", on)
+		DECLARE_FUNCTION(ULJM06115_C, const char *_);
 		void ULJM06115(TextBuffer *buffer, HookParam *hpx)
 		{
 			auto s = buffer->strA();

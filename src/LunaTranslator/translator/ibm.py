@@ -9,14 +9,11 @@ class TS(basetrans):
         self.checkempty(["apiurl"])
         apikey = self.multiapikeycurrent["apikey"]
         url = self.config["apiurl"] + "/v3/translate?version=2018-05-01"
-        headers = {"Content-Type": "application/json"}
         data = {"text": [query], "target": self.tgtlang}
         if not self.is_src_auto:
             data.update({"source": self.srclang})
 
-        response = self.proxysession.post(
-            url, auth=("apikey", apikey), headers=headers, data=json.dumps(data)
-        )
+        response = self.proxysession.post(url, auth=("apikey", apikey), json=data)
         try:
             result = response.json()
             translation = result["translations"][0]["translation"]

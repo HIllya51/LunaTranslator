@@ -8,6 +8,7 @@
 #include "engine64/livecaptions.h"
 #include "engine64/CMVS.h"
 #include "engine64/5pb.h"
+#include "engine64/Chunsoft.h"
 #include "engine64/lucasystem.h"
 #include "engine64/UnrealEngine.h"
 #include "engine64/TYPEMOON.h"
@@ -54,6 +55,7 @@ std::vector<ENGINE *> check_engines()
         new lua51,
         new MKXPZ,
         new BGI,
-        new GameMaker
+        new GameMaker,
+        new Chunsoft
     };
 }

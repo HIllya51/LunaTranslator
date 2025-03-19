@@ -63,10 +63,8 @@ class TS(basetrans):
         ).text
 
     def realfy1(self, content):
-        param = json.dumps([[content, self.srclang, self.tgtlang, True], [1]])
-        # print([content, 'ja', 'zh-CN', True])
-        freq = json.dumps([[["MkEWBc", param, None, "generic"]]])
-        freq = {"f.req": freq}
+        param = [[content, self.srclang, self.tgtlang, True], [1]]
+        freq = {"f.req": [[["MkEWBc", param, None, "generic"]]]}
 
         headers = {
             "Origin": "https://translate.google.com",

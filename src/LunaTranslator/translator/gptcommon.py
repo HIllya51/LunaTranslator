@@ -329,7 +329,6 @@ class gptcommon(basetrans):
         headers = {
             "anthropic-version": "2023-06-01",
             "accept": "application/json",
-            "content-type": "application/json",
             "X-Api-Key": self.multiapikeycurrent["SECRET_KEY"],
         }
 

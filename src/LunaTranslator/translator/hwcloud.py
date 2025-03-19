@@ -4,9 +4,6 @@ from datetime import datetime
 from urllib.parse import quote, unquote
 
 
-class SdkRequest: ...
-
-
 text_type = str
 binary_type = bytes
 
@@ -27,6 +24,16 @@ def ensure_binary(s, encoding="utf-8", errors="strict"):
     if isinstance(s, text_type):
         return s.encode(encoding, errors)
     raise TypeError("not expecting type '%s'" % type(s))
+
+
+class Req:
+    def __init__(self) -> None:
+        self.header_params = {}
+        self.query_params = {}
+        self.method = ""
+        self.body = b""
+        self.resource_path = ""
+        self.host = ""
 
 
 class Signer(object):
@@ -50,8 +57,7 @@ class Signer(object):
         if not self._sk:
             raise ValueError("sk is required in credentials")
 
-    def sign(self, request):
-        # type: (SdkRequest) -> SdkRequest
+    def sign(self, request: Req):
         self._verify_required()
         if isinstance(request.body, text_type):
             request.body = ensure_binary(request.body)
@@ -74,15 +80,13 @@ class Signer(object):
         return request
 
     @classmethod
-    def _process_content_header(cls, request):
-        # type: (SdkRequest) -> None
+    def _process_content_header(cls, request: Req):
         content_type = request.header_params.get("Content-Type")
         if content_type and not content_type.startswith("application/json"):
             request.header_params[cls._HEADER_CONTENT] = "UNSIGNED-PAYLOAD"
 
     @classmethod
-    def process_request_uri(cls, request):
-        # type: (SdkRequest) -> None
+    def process_request_uri(cls, request: Req):
         canonical_query_string = cls._process_canonical_query_string(request)
         request.uri = (
             "%s?%s" % (request.resource_path, canonical_query_string)
@@ -91,8 +95,7 @@ class Signer(object):
         )
 
     @classmethod
-    def _process_header_time(cls, request):
-        # type: (SdkRequest) -> datetime
+    def _process_header_time(cls, request: Req):
         header_time = cls._get_header_ignore_case(request, cls._HEADER_X_DATE)
         if header_time is None:
             t = datetime.utcnow()
@@ -104,8 +107,7 @@ class Signer(object):
         return t
 
     @classmethod
-    def _process_header_host(cls, request):
-        # type: (SdkRequest) -> None
+    def _process_header_host(cls, request: Req):
         has_host_header = False
         for key in request.header_params:
             if key.lower() == "host":
@@ -137,26 +139,13 @@ class Signer(object):
         return quote(s, safe="~")
 
     @classmethod
-    def _get_header_ignore_case(cls, r, header):
-        # type: (SdkRequest, str) -> str|None
+    def _get_header_ignore_case(cls, r: Req, header):
         for k in r.header_params:
             if k.lower() == header.lower():
                 return r.header_params[k]
         return None
 
-    def _process_canonical_request(self, request, signed_headers):
-        # type: (SdkRequest, dict) -> str
-        """
-        Build a CanonicalRequest from a regular request string
-
-        CanonicalRequest consists of several parts:
-          Part 1. HTTPRequestMethod
-          Part 2. CanonicalURI
-          Part 3. CanonicalQueryString
-          Part 4. CanonicalHeaders
-          Part 5 SignedHeaders
-          Part 6 HexEncode(Hash(RequestPayload))
-        """
+    def _process_canonical_request(self, request: Req, signed_headers):
         canonical_headers = self._process_canonical_headers(request, signed_headers)
 
         hex_encode = self._process_hash_payload(request)
@@ -172,8 +161,7 @@ class Signer(object):
             hex_encode,
         )
 
-    def _process_hash_payload(self, request):
-        # type: (SdkRequest) -> str
+    def _process_hash_payload(self, request: Req):
         if not request.body:
             return self._EMPTY_HASH
 
@@ -183,8 +171,7 @@ class Signer(object):
 
         return self._hash_hex_string(request.body)
 
-    def _process_canonical_uri(self, request):
-        # type: (SdkRequest) -> str
+    def _process_canonical_uri(self, request: Req):
         pattens = unquote(request.resource_path).split("/")
         uri = []
         for v in pattens:
@@ -201,8 +188,7 @@ class Signer(object):
         return cls._process_canonical_query_string(request)
 
     @classmethod
-    def _process_canonical_query_string(cls, request):
-        # type: (SdkRequest) -> str
+    def _process_canonical_query_string(cls, request: Req):
         params = []
         for param in request.query_params:
             params.append(param)
@@ -225,8 +211,7 @@ class Signer(object):
 
         return "&".join(canonical_query_param)
 
-    def _process_canonical_headers(self, request, signed_headers):
-        # type: (SdkRequest, dict) -> str
+    def _process_canonical_headers(self, request: Req, signed_headers):
         canonical_headers = []
         __headers = {}
         for key in request.header_params:
@@ -245,8 +230,7 @@ class Signer(object):
         return "\n".join(canonical_headers) + "\n"
 
     @classmethod
-    def _process_signed_headers(cls, request):
-        # type: (SdkRequest) -> list
+    def _process_signed_headers(cls, request: Req):
         signed_headers = []
         for key in request.header_params:
             if "_" in key:
@@ -270,16 +254,6 @@ class Signer(object):
 
     def _hex(self, data):
         return "".join(format(c, "02x") for c in ensure_binary(data))
-
-
-class Req:
-    def __init__(self) -> None:
-        self.header_params = {}
-        self.query_params = {}
-        self.method = ""
-        self.body = b""
-        self.resource_path = ""
-        self.host = ""
 
 
 class TS(basetrans):

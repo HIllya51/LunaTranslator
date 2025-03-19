@@ -98,7 +98,7 @@ class TTSbase(commonbase):
         if len(self.voicelist) == 0:
             return
         try:
-            key = content, self.voice, self.param
+            key = self.ttscachekey(content, self.voice, self.param)
             data = self.LRUCache.get(key)
             if data:
                 return callback(data)
@@ -110,3 +110,6 @@ class TTSbase(commonbase):
             print_exc()
             print(stringfyerror(e))
             return
+
+    def ttscachekey(self, content, voice, param):
+        return content, voice, param

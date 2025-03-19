@@ -12,7 +12,6 @@ class TS(basetrans):
             "authority": "translate.volcengine.com",
             "accept": "application/json, text/plain, */*",
             "accept-language": "zh-CN,zh;q=0.9,ar;q=0.8,sq;q=0.7",
-            "content-type": "application/json",
             "origin": "chrome-extension://klgfhbiooeogdfodpopgppeadghjjemk",
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",

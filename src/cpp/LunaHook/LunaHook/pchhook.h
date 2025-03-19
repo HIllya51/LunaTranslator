@@ -23,3 +23,15 @@
 #include "hookfinder.h"
 #include "util/textunion.h"
 #include "util/ntxpundef.h"
+
+#define EXPAND_BRACKETS(...) EXPAND_BRACKETS_IMPL(__VA_ARGS__)
+#define EXPAND_BRACKETS_IMPL(...) __VA_ARGS__
+
+#define DECLARE_PLAIN_FUNCTION(FUNC) \
+    __pragma(optimize("", off)) FUNC \
+    __pragma(optimize("", on))
+
+#define DECLARE_FUNCTION(NAME, ARGS) DECLARE_PLAIN_FUNCTION(void NAME(ARGS){})
+
+#define ___WIDEN___(x) L##x
+#define WIDEN(x) ___WIDEN___(x)

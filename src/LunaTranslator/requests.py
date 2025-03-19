@@ -373,7 +373,7 @@ class Requester_common:
         if isinstance(data, (str, bytes)):
             pass
         else:
-            contenttype = "application/x-www-form-urlencoded"
+            contenttype = "application/x-www-form-urlencoded; charset=utf-8"
         return contenttype, databytes
 
     def _parsefilesasmultipart(self, files: dict, header: dict):

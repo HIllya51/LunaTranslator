@@ -207,7 +207,7 @@ class Util(object):
 
 class SignerV4(object):
     @staticmethod
-    def sign(request, credentials):
+    def sign(request: Request, credentials: Credentials):
         if request.path == "":
             request.path = "/"
         if request.method != "GET" and not ("Content-Type" in request.headers):
@@ -240,7 +240,7 @@ class SignerV4(object):
         return
 
     @staticmethod
-    def hashed_canonical_request_v4(request, meta):
+    def hashed_canonical_request_v4(request: Request, meta: MetaData):
         # if sys.version_info[0] == 3:
         #     body_hash = Util.sha256(request.body.decode('utf-8'))
         # else:
@@ -290,7 +290,7 @@ class SignerV4(object):
         return Util.hmac_sha256(kservice, "request")
 
     @staticmethod
-    def build_auth_header_v4(signature, meta, credentials):
+    def build_auth_header_v4(signature, meta: MetaData, credentials: Credentials):
         credential = credentials.ak + "/" + meta.credential_scope
         return (
             meta.algorithm
@@ -312,7 +312,7 @@ class Service(object):
         self.service_info = service_info
         self.api_info = api_info
 
-    def json(self, api, params, body, session: requests.Session):
+    def json(self, api, params, body: str, session: requests.Session):
         if not (api in self.api_info):
             raise Exception("no such api")
         api_info = self.api_info[api]
@@ -329,7 +329,7 @@ class Service(object):
             data=r.body.encode("utf8").decode("latin1"),
         )
         if resp.status_code == 200:
-            return json.dumps(resp.json())
+            return resp.json()
         else:
             raise Exception(resp)
 
@@ -414,8 +414,6 @@ class TS(basetrans):
         res = self.trans(query, keyid, acckey)
         try:
 
-            return "\n".join(
-                [_["Translation"] for _ in json.loads(res)["TranslationList"]]
-            )
+            return "\n".join([_["Translation"] for _ in res["TranslationList"]])
         except:
             raise Exception(res)

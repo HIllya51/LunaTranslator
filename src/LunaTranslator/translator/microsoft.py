@@ -40,13 +40,10 @@ class TS(basetrans):
         _privateKey = b"\xa2):=\xd0\xdd2s\x97zd\xdb\xc2\xf3'\xf5\xd7\xbf\x87\xd9E\x9d\xf0Z\tf\xc60\xc6j\xaa\x84\x9aA\xaa\x94:\xa8\xd5\x1anM\xaa\xc9\xa3p\x125\xc7\xeb\x12\xf6\xe8#\x07\x9eG\x10\x95\x91\x88U\xd8\x17"
         headers = {
             "X-MT-Signature": self.get_signature(url, _privateKey),
-            "Content-Type": "application/json",
         }
         json_data = [{"Text": text}]
         response = self.proxysession.post(
-            "https://{}".format(url),
-            headers=headers,
-            data=json.dumps(json_data).encode("utf-8"),
+            "https://{}".format(url), headers=headers, json=json_data
         )
         try:
             data_json = response.json()
