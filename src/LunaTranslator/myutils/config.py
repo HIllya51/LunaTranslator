@@ -4,6 +4,24 @@ from traceback import print_exc
 from language import TransLanguages, Languages
 
 
+def __mayberelpath(path):
+    try:
+        # https://bugs.python.org/issue36689
+        # commonpath在低版本上不能跨盘比较
+        if os.path.commonpath((os.getcwd(), path)) == os.getcwd():
+            return os.path.relpath(path)
+    except:
+        pass
+    return os.path.normpath(path)
+
+
+def mayberelpath(path):
+    p = __mayberelpath(path)
+    if os.path.exists(p):
+        return p
+    return path
+
+
 def isascii(s: str):
     try:
         return s.isascii()

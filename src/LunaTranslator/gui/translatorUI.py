@@ -7,8 +7,10 @@ from myutils.config import (
     globalconfig,
     saveallconfig,
     _TR,
+    mayberelpath,
     savehook_new_data,
     savehook_new_list,
+    translatorsetting,
 )
 from myutils.magpie_builtin import MagpieBuiltin
 from gui.dialog_savedgame import dialog_setting_game
@@ -1108,13 +1110,71 @@ class TranslatorWindow(resizableframeless):
         self.adjustbuttons = self.titlebar.adjustbuttons
         self.verticalhorizontal(globalconfig["verticalhorizontal"])
 
-    def dropfilecallback(self, file: str):
-        if not (file.lower().endswith(".exe") or file.lower().endswith(".lnk")):
-            return
+    def __parsedropexe(self, file):
         uid = find_or_create_uid(savehook_new_list, file)
         if uid not in savehook_new_list:
             savehook_new_list.insert(0, uid)
         startgame(uid)
+        self.displaystatus.emit(
+            _TR("启动游戏_ " + savehook_new_data[uid]["title"]), TextType.Info
+        )
+
+    def __parsedropmecab(self, file):
+        isfile = os.path.isfile(file)
+        flow = os.path.basename(file).lower()
+        if isfile and flow == "dicrc":
+            file = os.path.dirname(file)
+        filer = mayberelpath(file)
+        globalconfig["hirasetting"]["mecab"]["args"]["path"] = filer
+        self.displaystatus.emit(_TR("成功设置_Mecab_路径_ " + filer), TextType.Info)
+
+    def __parsedropjson(self, file):
+        try:
+            gameuid = gobject.baseobject.gameuid
+            _path = savehook_new_data[gameuid]["gamejsonfile"]
+            if isinstance(_path, str):
+                _path = [_path]
+            filer = mayberelpath(file)
+            if filer not in _path:
+                _path.append(filer)
+                savehook_new_data[gameuid]["gamejsonfile"] = _path
+                self.displaystatus.emit(
+                    _TR("成功添加_Mecab_路径_ " + filer), TextType.Info
+                )
+        except:
+            print_exc()
+
+            _path = translatorsetting["rengong"]["args"]["jsonfile"]
+            filer = mayberelpath(file)
+            if filer not in _path:
+                _path.append(filer)
+                translatorsetting["rengong"]["args"]["jsonfile"] = _path
+                self.displaystatus.emit(
+                    _TR("成功添加_json文件_ " + filer), TextType.Info
+                )
+
+    def dropfilecallback(self, file: str):
+        isfile = os.path.isfile(file)
+        flow = os.path.basename(file).lower()
+        checks = [
+            (
+                lambda: (isfile and flow == "dicrc")
+                or ((not isfile) and os.path.isfile(os.path.join(file, "dicrc"))),
+                self.__parsedropmecab,
+            ),
+            (lambda: isfile and flow.endswith(".json"), self.__parsedropjson),
+            (
+                lambda: isfile and (flow.endswith(".exe") or flow.endswith(".lnk")),
+                self.__parsedropexe,
+            ),
+        ]
+        for checkf, do in checks:
+            if checkf():
+                try:
+                    do(file)
+                except:
+                    print_exc()
+                break
 
     def showEvent(self, e):
         if not self.firstshow:

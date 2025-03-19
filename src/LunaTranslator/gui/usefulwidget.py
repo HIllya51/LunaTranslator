@@ -2,7 +2,7 @@ from qtsymbols import *
 import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject, platform, threading
-from myutils.config import _TR, globalconfig
+from myutils.config import _TR, globalconfig, mayberelpath
 from myutils.wrapper import Singleton_close, threader
 from myutils.utils import nowisdark, checkisusingwine
 from ctypes import POINTER, cast, c_char
@@ -2604,17 +2604,6 @@ class listediterline(QWidget):
             self.setText("|".join((str(_) for _ in self.reflist)))
         if self.directedit:
             self.edit.setReadOnly(False)
-
-
-def mayberelpath(path):
-    try:
-        # https://bugs.python.org/issue36689
-        # commonpath在低版本上不能跨盘比较
-        if os.path.commonpath((os.getcwd(), path)) == os.getcwd():
-            return os.path.relpath(path)
-    except:
-        pass
-    return os.path.normpath(path)
 
 
 def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):
