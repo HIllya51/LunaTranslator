@@ -41,6 +41,7 @@ localeEmulatorFile = "https://github.com/xupefei/Locale-Emulator/releases/downlo
 LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
 
 curlFile32 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win32-mingw.zip"
+curlFile32xp = "https://web.archive.org/web/20220101212640if_/https://curl.se/windows/dl-7.80.0/curl-7.80.0-win32-mingw.zip"
 curlFile64 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
 
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
@@ -164,10 +165,12 @@ def downloadNtlea():
 
 def downloadCurl(arch):
     if arch == "xp":
-        subprocess.run(
-            "curl -C - -LO https://github.com/test123456654321/RESOURCES/releases/download/dictionary/libcurl.dll"
-        )
-        shutil.copy("libcurl.dll", rootDir + "/files/plugins/DLL32")
+        os.chdir(f"{rootDir}/scripts/temp")
+        subprocess.run(f"curl -C - -LO {curlFile32xp}")
+        subprocess.run(f"7z x -y {curlFile32xp.split('/')[-1]}")
+        os.chdir(rootDir)
+        outputDirName32 = curlFile32xp.split("/")[-1].replace(".zip", "")
+        fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/plugins/DLL32")
         return
     os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {curlFile32}")

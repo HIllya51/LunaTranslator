@@ -193,23 +193,34 @@ curl_easy_recv.restype = CURLcode
 curl_easy_strerror = libcurl.curl_easy_strerror
 curl_easy_strerror.argtypes = (CURLcode,)
 curl_easy_strerror.restype = c_char_p
-curl_ws_recv = libcurl.curl_ws_recv
-curl_ws_recv.argtypes = (
-    CURL,
-    c_void_p,
-    c_size_t,
-    POINTER(c_size_t),
-    POINTER(POINTER(curl_ws_frame)),
-)
-curl_ws_recv.restype = CURLcode
-curl_ws_send = libcurl.curl_ws_send
-curl_ws_send.argtypes = CURL, c_void_p, c_size_t, POINTER(c_size_t), c_int64, c_uint
-curl_ws_send.restype = CURLcode
 curl_easy_duphandle = libcurl.curl_easy_duphandle
 curl_easy_duphandle.argtypes = (CURL,)
 curl_easy_duphandle.restype = CURL
 curl_easy_reset = libcurl.curl_easy_reset
 curl_easy_reset.argtypes = (CURL,)
+
+try:
+    curl_ws_recv = libcurl.curl_ws_recv
+    curl_ws_recv.argtypes = (
+        CURL,
+        c_void_p,
+        c_size_t,
+        POINTER(c_size_t),
+        POINTER(POINTER(curl_ws_frame)),
+    )
+    curl_ws_recv.restype = CURLcode
+    curl_ws_send = libcurl.curl_ws_send
+    curl_ws_send.argtypes = CURL, c_void_p, c_size_t, POINTER(c_size_t), c_int64, c_uint
+    curl_ws_send.restype = CURLcode
+except:
+
+    def curl_ws_send(*a):
+        return CURLException.UNSUPPORTED_PROTOCOL
+
+    def curl_ws_recv(*a):
+        return CURLException.UNSUPPORTED_PROTOCOL
+
+
 CURLWS_TEXT = 1 << 0
 CURLWS_BINARY = 1 << 1
 CURLWS_CLOSE = 1 << 3
