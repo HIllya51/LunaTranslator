@@ -1150,7 +1150,7 @@ class TranslatorWindow(resizableframeless):
                 _path.append(filer)
                 translatorsetting["rengong"]["args"]["jsonfile"] = _path
                 self.displaystatus.emit(
-                    _TR("成功添加_json文件_ " + filer), TextType.Info
+                    _TR("成功添加_json翻译文件_ " + filer), TextType.Info
                 )
 
     def dropfilecallback(self, file: str):
