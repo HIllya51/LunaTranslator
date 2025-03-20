@@ -131,11 +131,7 @@ class texthook(basetext):
 
     @property
     def embedconfig(self):
-        try:
-            df = savehook_new_data[self.gameuid]["embed_follow_default"]
-        except:
-            df = True
-        if df:
+        if self.hconfig.get("embed_follow_default", True):
             return globalconfig["embedded"]
 
         class __shitdict(dict):
@@ -145,15 +141,11 @@ class texthook(basetext):
                 else:
                     return globalconfig["embedded"][key]
 
-        return __shitdict(savehook_new_data[self.gameuid]["embed_setting_private"])
+        return __shitdict(self.hconfig["embed_setting_private"])
 
     @property
     def config(self):
-        try:
-            df = savehook_new_data[self.gameuid]["hooksetting_follow_default"]
-        except:
-            df = True
-        if df:
+        if self.hconfig.get("hooksetting_follow_default", True):
             return globalconfig
 
         class __shitdict(dict):
@@ -163,7 +155,11 @@ class texthook(basetext):
                 else:
                     return globalconfig[key]
 
-        return __shitdict(savehook_new_data[self.gameuid]["hooksetting_private"])
+        return __shitdict(self.hconfig["hooksetting_private"])
+
+    @property
+    def hconfig(self):
+        return savehook_new_data.get(self.gameuid, {})
 
     def init(self):
 
@@ -371,9 +367,9 @@ class texthook(basetext):
         )
         self.startsql(sqlitef)
         if autostart:
-            autostarthookcode = savehook_new_data[gameuid]["hook"]
-            needinserthookcode = savehook_new_data[gameuid]["needinserthookcode"]
-            injecttimeout = savehook_new_data[gameuid]["inserthooktimeout"] / 1000
+            autostarthookcode = self.hconfig.get("hook", [])
+            needinserthookcode = self.hconfig.get("needinserthookcode", [])
+            injecttimeout = self.hconfig.get("inserthooktimeout", 500) / 1000
         else:
             injecttimeout = 0
             autostarthookcode = []
@@ -388,7 +384,7 @@ class texthook(basetext):
         self.is64bit = Is64bit(pids[0])
         if (
             len(autostarthookcode) == 0
-            and len(savehook_new_data[self.gameuid]["embedablehook"]) == 0
+            and len(self.hconfig.get("embedablehook", [])) == 0
             and globalconfig["autoopenselecttext"]
         ):
             gobject.baseobject.hookselectdialog.realshowhide.emit(True)
@@ -459,11 +455,11 @@ class texthook(basetext):
             pass
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
-        if savehook_new_data[self.gameuid]["insertpchooks_string"]:
+        if self.hconfig.get("insertpchooks_string", False):
             self.Luna_InsertPCHooks(pid, 0)
             self.Luna_InsertPCHooks(pid, 1)
         gobject.baseobject.displayinfomessage(
-            savehook_new_data[self.gameuid]["title"], "<msg_info_refresh>"
+            self.hconfig["title"], "<msg_info_refresh>"
         )
         self.flashembedsettings(pid)
         self.setsettings()
@@ -473,9 +469,10 @@ class texthook(basetext):
             self.Luna_InsertPCHooks(pid, which)
 
     def newhookinsert(self, pid, addr, hcode):
-        for _hc, _addr, _ctx1, _ctx2 in savehook_new_data[self.gameuid][
-            "embedablehook"
-        ]:
+        if hcode in self.hconfig.get("removeforeverhook", []):
+            self.Luna_RemoveHook(pid, addr)
+            return
+        for _hc, _, _ctx1, _ctx2 in self.hconfig.get("embedablehook", []):
             if hcode == _hc:
                 tp = ThreadParam()
                 tp.processId = pid
@@ -580,6 +577,8 @@ class texthook(basetext):
         return -1
 
     def onnewhook(self, hc, hn, tp, isembedable):
+        if hc in self.hconfig.get("removeforeverhook", []):
+            return
         key = (hc, hn.decode("utf8"), tp)
         autoindex = self.matchkeyindex(key)
         select = autoindex != -1
@@ -600,7 +599,6 @@ class texthook(basetext):
         gobject.baseobject.hookselectdialog.addnewhooksignal.emit(
             key, select, isembedable
         )
-        return True
 
     def setlang(self):
         self.Luna_SetLanguage(getlanguse().encode())

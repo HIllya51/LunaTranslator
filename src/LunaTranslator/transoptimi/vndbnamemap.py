@@ -21,6 +21,8 @@ class Process:
     @staticmethod
     def get_setting_window_gameprivate(parent_window, gameuid):
 
+        if "namemap2" not in savehook_new_data[gameuid]:
+            savehook_new_data[gameuid]["namemap2"] = []
         noundictconfigdialog1(
             parent_window,
             savehook_new_data[gameuid]["namemap2"],
@@ -38,11 +40,12 @@ class Process:
             return globalconfig["global_namemap2"]
         elif which == 2:
             gameuid = gobject.baseobject.gameuid
-            return savehook_new_data[gameuid]["namemap2"]
+            return savehook_new_data[gameuid].get("namemap2", [])
         elif which == 3:
             gameuid = gobject.baseobject.gameuid
             return (
-                savehook_new_data[gameuid]["namemap2"] + globalconfig["global_namemap2"]
+                savehook_new_data[gameuid].get("namemap2", [])
+                + globalconfig["global_namemap2"]
             )
 
     def process_before(self, s):

@@ -49,10 +49,10 @@
         document.getElementById('rootele').innerHTML = ""
     }
 
-    function getnewsentence(time, sentence) {
+    function __getnewsentence(time, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
-        times.innerText = decodeURIComponent(time)
+        times.innerText = decodeURIComponent(time) + " "
         times.classList.add('gettime')
         span.appendChild(times)
         let sent = document.createElement('span')
@@ -60,16 +60,19 @@
         span.appendChild(sent)
         span.classList.add('origin')
         document.getElementById('rootele').appendChild(span)
+    }
+    function getnewsentence(time, sentence) {
+        __getnewsentence(time, sentence)
         scrollend()
     }
-    function getnewtrans(time, api, sentence) {
+    function __getnewtrans(time, api, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
-        times.innerText = decodeURIComponent(time)
+        times.innerText = decodeURIComponent(time) + " "
         times.classList.add('gettime')
         span.appendChild(times)
         let apis = document.createElement('span')
-        apis.innerText = decodeURIComponent(api)
+        apis.innerText = decodeURIComponent(api) + " "
         apis.classList.add('apiname')
         span.appendChild(apis)
         let sent = document.createElement('span')
@@ -77,6 +80,23 @@
         span.appendChild(sent)
         span.classList.add('trans')
         document.getElementById('rootele').appendChild(span)
+    }
+    function getnewtrans(time, api, sentence) {
+        __getnewtrans(time, api, sentence)
+        scrollend()
+    }
+    function fastinit(data) {
+        data = JSON.parse(decodeURIComponent(data))
+        data.forEach(line => {
+            if (line[0] == 0) {
+                addbr()
+                __getnewsentence(line[1][0], line[1][1])
+            }
+            else if (line[0] == 1) {
+                __getnewtrans(line[1][0], line[1][1], line[1][2])
+
+            }
+        });
         scrollend()
     }
     function scrollend() {

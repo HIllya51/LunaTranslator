@@ -97,7 +97,7 @@ class clickitem(QWidget):
         self._ = _
         _.setScaledContents(True)
         _.setStyleSheet("background:transparent")
-        for image in savehook_new_data[uid]["imagepath_all"]:
+        for image in savehook_new_data[uid].get("imagepath_all", []):
             fr = extradatas["imagefrom"].get(image)
             if fr:
                 targetmod.get(fr).dispatchdownloadtask(image)
@@ -432,7 +432,7 @@ class pixwrapper(QWidget):
         menu = QMenu(self)
 
         setimage = LAction("设为封面", menu)
-        curr = savehook_new_data[self.k]["currentvisimage"]
+        curr = savehook_new_data[self.k].get("currentvisimage")
         curricon = savehook_new_data[self.k].get("currenticon")
         seticon = LAction("设为图标", menu)
         seticon.setCheckable(True)
@@ -463,6 +463,8 @@ class pixwrapper(QWidget):
             getselectpos(self, self.switchpos)
 
         elif action == hualang:
+            if "imagepath_all" not in savehook_new_data[self.k]:
+                savehook_new_data[self.k]["imagepath_all"] = []
             listediter(
                 self,
                 "画廊",
@@ -486,7 +488,7 @@ class pixwrapper(QWidget):
         self.sethor(hor)
 
     def removepath(self, path):
-        lst = savehook_new_data[self.k]["imagepath_all"]
+        lst = savehook_new_data[self.k].get("imagepath_all", [])
         lst.pop(lst.index(path))
 
     def changepixmappath(self, path):
@@ -496,8 +498,10 @@ class pixwrapper(QWidget):
 
     def setpix(self, k):
         self.k = k
-        pixmaps = savehook_new_data[k]["imagepath_all"].copy()
-        self.previewimages.setpixmaps(pixmaps, savehook_new_data[k]["currentvisimage"])
+        pixmaps = savehook_new_data[k].get("imagepath_all", []).copy()
+        self.previewimages.setpixmaps(
+            pixmaps, savehook_new_data[k].get("currentvisimage")
+        )
         self.pixview.bottombtn.setVisible(os.path.exists(get_launchpath(k)))
 
 

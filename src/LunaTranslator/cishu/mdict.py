@@ -6,7 +6,7 @@ from myutils.audioplayer import bass_code_cast
 import json, os, re
 from cishu.mdict_.readmdict import MDX, MDD, MDict
 import hashlib, sqlite3, functools
-import winsharedutils
+import winsharedutils, copy
 
 cachejson = None
 
@@ -272,7 +272,7 @@ class mdict(cishubase):
     def checkpath(self):
         if self.config["paths"] == self.paths:
             return
-        self.paths = self.config["paths"]
+        self.paths = copy.deepcopy(self.config["paths"])
         self.builders = []
         self.dedump = set()
         for f in self.paths:

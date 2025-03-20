@@ -20,6 +20,8 @@ class Process:
 
     @staticmethod
     def get_setting_window_gameprivate(parent_window, gameuid):
+        if "noundictconfig_ex" not in savehook_new_data[gameuid]:
+            savehook_new_data[gameuid]["noundictconfig_ex"] = []
         postconfigdialog_(
             parent_window,
             savehook_new_data[gameuid]["noundictconfig_ex"],
@@ -38,11 +40,11 @@ class Process:
             return globalconfig["noundictconfig_ex"]
         elif which == 2:
             gameuid = gobject.baseobject.gameuid
-            return savehook_new_data[gameuid]["noundictconfig_ex"]
+            return savehook_new_data[gameuid].get("noundictconfig_ex", [])
         elif which == 3:
             gameuid = gobject.baseobject.gameuid
             return (
-                savehook_new_data[gameuid]["noundictconfig_ex"]
+                savehook_new_data[gameuid].get("noundictconfig_ex", [])
                 + globalconfig["noundictconfig_ex"]
             )
 

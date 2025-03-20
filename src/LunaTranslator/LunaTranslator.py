@@ -629,14 +629,15 @@ class MAINUI:
                 gameuid = self.gameuid
                 if not gameuid:
                     break
-                if savehook_new_data[gameuid]["tts_follow_default"]:
+                if savehook_new_data[gameuid].get("tts_follow_default", True):
                     break
                 tts_repair_merge = savehook_new_data[gameuid].get(
                     "tts_repair_merge", False
                 )
                 tts_skip_merge = savehook_new_data[gameuid].get("tts_skip_merge", False)
                 if tts_skip_merge or tts_repair_merge:
-                    _this = copy.deepcopy(savehook_new_data[gameuid])
+                    _this = {"tts_repair_regex": [], "tts_skip_regex": []}
+                    _this.update(copy.deepcopy(savehook_new_data[gameuid]))
                     if tts_repair_merge:
                         _ = copy.deepcopy(globalconfig["ttscommon"]["tts_repair_regex"])
                         _this["tts_repair_regex"] += _
@@ -650,8 +651,8 @@ class MAINUI:
         return globalconfig["ttscommon"]
 
     def ttsrepair(self, text, usedict):
-        if usedict["tts_repair"]:
-            text = parsemayberegexreplace(usedict["tts_repair_regex"], text)
+        if usedict.get("tts_repair", False):
+            text = parsemayberegexreplace(usedict.get("tts_repair_regex", []), text)
         return text
 
     def matchwhich(self, dic: dict, res: str, isorigin: bool):
@@ -689,8 +690,8 @@ class MAINUI:
         return None
 
     def ttsskip(self, text, usedict, isorigin) -> dict:
-        if usedict["tts_skip"]:
-            return self.matchwhich(usedict["tts_skip_regex"], text, isorigin)
+        if usedict.get("tts_skip", False):
+            return self.matchwhich(usedict.get("tts_skip_regex", []), text, isorigin)
         return None
 
     @threader

@@ -19,6 +19,8 @@ class Process:
     @staticmethod
     def get_setting_window_gameprivate(parent_window, gameuid):
 
+        if "transerrorfix" not in savehook_new_data[gameuid]:
+            savehook_new_data[gameuid]["transerrorfix"] = []
         noundictconfigdialog1(
             parent_window,
             savehook_new_data[gameuid]["transerrorfix"],
@@ -40,10 +42,10 @@ class Process:
             return transerrorfixdictconfig["dict_v2"]
         elif which == 2:
             gameuid = gobject.baseobject.gameuid
-            return savehook_new_data[gameuid]["transerrorfix"]
+            return savehook_new_data[gameuid].get("transerrorfix", [])
         elif which == 3:
             gameuid = gobject.baseobject.gameuid
             return (
-                savehook_new_data[gameuid]["transerrorfix"]
+                savehook_new_data[gameuid].get("transerrorfix", [])
                 + transerrorfixdictconfig["dict_v2"]
             )

@@ -367,7 +367,7 @@ def POSTSOLVE(line):
     try:
 
         gameuid = gobject.baseobject.gameuid
-        if gameuid and not savehook_new_data[gameuid]["textproc_follow_default"]:
+        if gameuid and not savehook_new_data[gameuid].get("textproc_follow_default", True):
             useranklist = savehook_new_data[gameuid]["save_text_process_info"]["rank"]
             usedpostprocessconfig = savehook_new_data[gameuid][
                 "save_text_process_info"

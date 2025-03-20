@@ -1,6 +1,6 @@
 from qtsymbols import *
 import gobject, os
-import qtawesome, winsharedutils, functools
+import qtawesome, winsharedutils, functools, json
 from myutils.config import globalconfig, _TR
 from myutils.utils import get_time_stamp
 from gui.usefulwidget import closeashidewindow, WebviewWidget, Exteditor
@@ -219,18 +219,7 @@ class wvtranshist(WebviewWidget):
         self.parent().trace.clear()
 
     def refresh(self):
-        seted = False
-        for i, line in enumerate(self.parent().trace):
-            if seted and (len(line[1]) == 2):
-                self.addbr()
-            self.visline(line)
-
-    def visline(self, line):
-        ii, _ = line
-        if ii == 0:
-            self.getnewsentence(line)
-        elif ii == 1:
-            self.getnewtrans(line)
+        self.debugeval('fastinit("{}");'.format(quote(json.dumps(self.parent().trace))))
 
     def addbr(self):
         self.debugeval("addbr();")
@@ -239,16 +228,14 @@ class wvtranshist(WebviewWidget):
         self.addbr()
         sentence = sentence[1]
         self.debugeval(
-            'getnewsentence("{}","{}");'.format(
-                quote(sentence[0] + " "), quote(sentence[1])
-            )
+            'getnewsentence("{}","{}");'.format(quote(sentence[0]), quote(sentence[1]))
         )
 
     def getnewtrans(self, sentence):
         sentence = sentence[1]
         self.debugeval(
             'getnewtrans("{}","{}","{}");'.format(
-                quote(sentence[0] + " "), quote(sentence[1] + " "), quote(sentence[2])
+                quote(sentence[0]), quote(sentence[1]), quote(sentence[2])
             )
         )
 

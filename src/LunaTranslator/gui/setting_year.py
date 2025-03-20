@@ -112,12 +112,12 @@ def getuidimage_local(uid):
     if not data:
         return
     main = savehook_new_data[uid].get("currentmainimage")
-    if (main in savehook_new_data[uid]["imagepath_all"]) and os.path.exists(
+    if (main in savehook_new_data[uid].get("imagepath_all", [])) and os.path.exists(
         extradatas["localedpath"].get(main, main)
     ):
         return os.path.abspath(extradatas["localedpath"].get(main, main))
     else:
-        for _ in savehook_new_data[uid]["imagepath_all"]:
+        for _ in savehook_new_data[uid].get("imagepath_all", []):
             if os.path.exists(extradatas["localedpath"].get(_, _)):
                 return os.path.abspath(extradatas["localedpath"].get(_, _))
 
@@ -130,10 +130,12 @@ def getuidimage(uid):
     if not data:
         return
     main = savehook_new_data[uid].get("currentmainimage")
-    if (main in savehook_new_data[uid]["imagepath_all"]) and main.startswith("http"):
+    if (main in savehook_new_data[uid].get("imagepath_all", [])) and main.startswith(
+        "http"
+    ):
         return main
     else:
-        for _ in savehook_new_data[uid]["imagepath_all"]:
+        for _ in savehook_new_data[uid].get("imagepath_all", []):
             if _.startswith("http"):
                 return os.path.abspath(_)
 

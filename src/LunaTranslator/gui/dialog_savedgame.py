@@ -379,7 +379,7 @@ class ItemWidget(QWidget):
         self.l.setContentsMargins(
             *([globalconfig["dialog_savegame_layout"]["margin2"]] * 4)
         )
-        for image in savehook_new_data[gameuid]["imagepath_all"]:
+        for image in savehook_new_data[gameuid].get("imagepath_all",[]):
             fr = extradatas["imagefrom"].get(image)
             if fr:
                 targetmod.get(fr).dispatchdownloadtask(image)

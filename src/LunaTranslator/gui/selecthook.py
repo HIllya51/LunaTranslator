@@ -233,7 +233,9 @@ class searchhookparam(LDialog):
 
         layout1 = QHBoxLayout()
         layout1.addWidget(LLabel("代码页"))
-        if savehook_new_data[gobject.baseobject.gameuid]["hooksetting_follow_default"]:
+        if savehook_new_data[gobject.baseobject.gameuid].get(
+            "hooksetting_follow_default", True
+        ):
             cp = globalconfig["codepage_index"]
         else:
             cp = savehook_new_data[gobject.baseobject.gameuid][
@@ -554,9 +556,9 @@ class hookselect(closeashidewindow):
         if _isusing:
 
             if hn[:8] == "UserHook":
-                needinserthookcode = savehook_new_data[gobject.baseobject.gameuid][
-                    "needinserthookcode"
-                ]
+                needinserthookcode = savehook_new_data[gobject.baseobject.gameuid].get(
+                    "needinserthookcode", []
+                )
                 needinserthookcode = list(set(needinserthookcode + [hc]))
                 savehook_new_data[gobject.baseobject.gameuid].update(
                     {"needinserthookcode": needinserthookcode}
@@ -569,6 +571,8 @@ class hookselect(closeashidewindow):
         hc, hn, tp = key
         gobject.baseobject.textsource.Luna_useembed(tp, use)
         _use = self._check_tp_using(key)
+        if "embedablehook" not in savehook_new_data[gobject.baseobject.gameuid]:
+            savehook_new_data[gobject.baseobject.gameuid]["embedablehook"] = []
         if _use:
             savehook_new_data[gobject.baseobject.gameuid]["embedablehook"].append(
                 [hc, tp.addr, tp.ctx, tp.ctx2]
@@ -708,12 +712,14 @@ class hookselect(closeashidewindow):
             return
         menu = QMenu(self.tttable)
         remove = LAction("移除", menu)
+        removeforever = LAction("移除且总是移除", menu)
         copy = LAction("复制特殊码", menu)
         menu.addAction(remove)
+        menu.addAction(removeforever)
         menu.addAction(copy)
         action = menu.exec(self.tttable.cursor().pos())
         hc, hn, tp = self.querykeyofrow(index)
-        if action == remove:
+        if action in (remove, removeforever):
             gobject.baseobject.textsource.Luna_RemoveHook(tp.processId, tp.addr)
             if hn[:8] == "UserHook":
                 try:
@@ -722,6 +728,14 @@ class hookselect(closeashidewindow):
                     ].remove(hc)
                 except:
                     pass
+            if action == removeforever:
+                removeforeverhook = savehook_new_data[gobject.baseobject.gameuid].get(
+                    "removeforeverhook", []
+                )
+                removeforeverhook = list(set(removeforeverhook + [hc]))
+                savehook_new_data[gobject.baseobject.gameuid].update(
+                    {"removeforeverhook": removeforeverhook}
+                )
         elif action == copy:
             winsharedutils.clipboard_set(hc)
 
@@ -853,9 +867,9 @@ class hookselect(closeashidewindow):
                 gobject.baseobject.textsource.edit_selectedhook_insert(key)
 
                 if hn[:8] == "UserHook":
-                    needinserthookcode = savehook_new_data[gobject.baseobject.gameuid][
-                        "needinserthookcode"
-                    ]
+                    needinserthookcode = savehook_new_data[
+                        gobject.baseobject.gameuid
+                    ].get("needinserthookcode", [])
                     needinserthookcode = list(set(needinserthookcode + [hc]))
                     savehook_new_data[gobject.baseobject.gameuid].update(
                         {"needinserthookcode": needinserthookcode}

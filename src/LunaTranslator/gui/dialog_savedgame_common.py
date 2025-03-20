@@ -112,7 +112,7 @@ def startgame(gameuid):
     try:
         game = get_launchpath(gameuid)
         if os.path.exists(game):
-            mode = savehook_new_data[gameuid]["onloadautochangemode2"]
+            mode = savehook_new_data[gameuid].get("onloadautochangemode2", 0)
             if mode > 0:
                 _ = {1: "texthook", 2: "copy", 3: "ocr"}
                 if globalconfig["sourcestatus2"][_[mode]]["use"] == False:
@@ -174,10 +174,10 @@ def getcachedimage(src, small) -> QPixmap:
 def getpixfunction(kk, small=False, iconfirst=False) -> QPixmap:
     checks = []
     key = ["currentmainimage", "currenticon"][iconfirst]
-    if savehook_new_data[kk].get(key) in savehook_new_data[kk]["imagepath_all"]:
+    if savehook_new_data[kk].get(key) in savehook_new_data[kk].get("imagepath_all",[]):
         checks = [savehook_new_data[kk].get(key)]
     elif not iconfirst:
-        checks = savehook_new_data[kk]["imagepath_all"]
+        checks = savehook_new_data[kk].get("imagepath_all",[])
     for _ in checks:
         pix = getcachedimage(_, small)
         if not pix.isNull():

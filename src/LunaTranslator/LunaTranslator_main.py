@@ -102,7 +102,7 @@ def loadmainui(startwithgameuid):
 
 def checklang():
 
-    from myutils.config import globalconfig, oldlanguage, static_data
+    from myutils.config import globalconfig
     from qtsymbols import (
         QDialog,
         pyqtSignal,
@@ -148,15 +148,8 @@ def checklang():
 
     if "languageuse2" in globalconfig:
         return
-    if globalconfig["language_setted_2.4.5"]:
-        # 新版改成新的index无关的语言设置
-        globalconfig["languageuse2"] = oldlanguage[globalconfig["languageuse"]]
-        globalconfig["tgtlang4"] = oldlanguage[globalconfig["tgtlang3"]]
-        globalconfig["srclang4"] = oldlanguage[globalconfig["srclang3"]]
-        return
     x = languageset()
     x.exec()
-    globalconfig["language_setted_2.4.5"] = True
     globalconfig["languageuse2"] = x.current
     globalconfig["tgtlang4"] = x.current
 

@@ -610,14 +610,14 @@ class TranslatorWindow(resizableframeless):
         gameuid = gobject.baseobject.gameuid
         maps = {}
         if gameuid:
-            for name, link in savehook_new_data[gameuid]["relationlinks"]:
+            for name, link in savehook_new_data[gameuid].get("relationlinks", []):
                 act = QAction(name, menu)
                 maps[act] = link
                 menu.addAction(act)
         if (
             globalconfig["relationlinks"]
             and gameuid
-            and savehook_new_data[gameuid]["relationlinks"]
+            and savehook_new_data[gameuid].get("relationlinks", [])
         ):
             menu.addSeparator()
         for name, link in globalconfig["relationlinks"]:
@@ -1128,10 +1128,20 @@ class TranslatorWindow(resizableframeless):
         globalconfig["hirasetting"]["mecab"]["args"]["path"] = filer
         self.displaystatus.emit(_TR("成功设置_Mecab_路径_ " + filer), TextType.Info)
 
+    def __parsedropmdx(self, file):
+        isfile = os.path.isfile(file)
+        flow = os.path.basename(file).lower()
+        if isfile and flow == "dicrc":
+            file = os.path.dirname(file)
+        filer = mayberelpath(file)
+        if filer not in globalconfig["cishu"]["mdict"]["args"]["paths"]:
+            globalconfig["cishu"]["mdict"]["args"]["paths"].append(filer)
+        self.displaystatus.emit(_TR("成功添加_MDict_ " + filer), TextType.Info)
+
     def __parsedropjson(self, file):
         try:
             gameuid = gobject.baseobject.gameuid
-            _path = savehook_new_data[gameuid]["gamejsonfile"]
+            _path = savehook_new_data[gameuid].get("gamejsonfile", [])
             if isinstance(_path, str):
                 _path = [_path]
             filer = mayberelpath(file)
@@ -1161,6 +1171,10 @@ class TranslatorWindow(resizableframeless):
                 lambda: (isfile and flow == "dicrc")
                 or ((not isfile) and os.path.isfile(os.path.join(file, "dicrc"))),
                 self.__parsedropmecab,
+            ),
+            (
+                lambda: (isfile and flow.endswith(".mdx")),
+                self.__parsedropmdx,
             ),
             (lambda: isfile and flow.endswith(".json"), self.__parsedropjson),
             (

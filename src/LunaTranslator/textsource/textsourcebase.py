@@ -90,6 +90,13 @@ class basetext:
                         "SELECT * FROM artificialtrans WHERE source = ?", (src,)
                     ).fetchone()
                     try:
+                        if (
+                            "statistic_wordcount"
+                            not in savehook_new_data[gobject.baseobject.gameuid]
+                        ):
+                            savehook_new_data[gobject.baseobject.gameuid][
+                                "statistic_wordcount"
+                            ] = 0
                         savehook_new_data[gobject.baseobject.gameuid][
                             "statistic_wordcount"
                         ] += lensrc
@@ -107,6 +114,13 @@ class basetext:
                                 (src, json.dumps({})),
                             )
                         try:
+                            if (
+                                "statistic_wordcount_nodump"
+                                not in savehook_new_data[gobject.baseobject.gameuid]
+                            ):
+                                savehook_new_data[gobject.baseobject.gameuid][
+                                    "statistic_wordcount_nodump"
+                                ] = 0
                             savehook_new_data[gobject.baseobject.gameuid][
                                 "statistic_wordcount_nodump"
                             ] += lensrc

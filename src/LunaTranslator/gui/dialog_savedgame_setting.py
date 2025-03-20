@@ -85,6 +85,9 @@ class favorites(LDialog):
             self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
         self.setWindowTitle("收藏夹")
         self.gameuid = gameuid
+        if gameuid:
+            if "relationlinks" not in savehook_new_data[self.gameuid]:
+                savehook_new_data[self.gameuid]["relationlinks"] = []
         self.reflist = (
             savehook_new_data[self.gameuid]["relationlinks"]
             if gameuid
@@ -488,6 +491,7 @@ class dialog_setting_game_internal(QWidget):
                 ["不切换", "HOOK", "剪贴板", "OCR"],
                 savehook_new_data[gameuid],
                 "onloadautochangemode2",
+                default=0,
             ),
         )
 
@@ -574,7 +578,7 @@ class dialog_setting_game_internal(QWidget):
         _cnt = sum([_[1] - _[0] for _ in __])
         self._timelabel.setText(self.formattime(_cnt))
         self._wordlabel.setText(
-            str(savehook_new_data[self.gameuid]["statistic_wordcount"])
+            str(savehook_new_data[self.gameuid].get("statistic_wordcount", 0))
         )
         self.chart.setdata(self.split_range_into_days(__))
 
@@ -749,9 +753,10 @@ class dialog_setting_game_internal(QWidget):
                 dic,
                 key,
                 callback=functools.partial(__function, __extraw, callback),
+                default=True,
             ),
         )
-        __extraw.setEnabled(not dic[key])
+        __extraw.setEnabled(not dic.get(key, True))
         formLayout.addRow(__extraw)
         formLayout2 = klass(__extraw)
         formLayout2.setContentsMargins(0, 0, 0, 0)
@@ -764,18 +769,36 @@ class dialog_setting_game_internal(QWidget):
             formLayout,
             klass=QGridLayout,
         )
+
+        def __delay1():
+            if "tts_skip_regex" not in savehook_new_data[gameuid]:
+                savehook_new_data[gameuid]["tts_skip_regex"] = []
+            yuyinzhidingsetting(self, savehook_new_data[gameuid]["tts_skip_regex"])
+
+        def __delay2():
+            if "tts_repair_regex" not in savehook_new_data[gameuid]:
+                savehook_new_data[gameuid]["tts_repair_regex"] = [
+                    {"regex": True, "key": "(.*?)「", "value": ""}
+                ]
+            noundictconfigdialog1(
+                self,
+                savehook_new_data[gameuid]["tts_repair_regex"],
+                "语音修正",
+                ["正则", "转义", "原文", "替换"],
+            )
+
         automakegrid(
             formLayout2,
             [
                 ["", "", "", "", "继承默认", ""],
                 [
                     getsmalllabel("语音指定"),
-                    D_getsimpleswitch(savehook_new_data[gameuid], "tts_skip"),
-                    D_getIconButton(
-                        callback=lambda: yuyinzhidingsetting(
-                            self, savehook_new_data[gameuid]["tts_skip_regex"]
-                        )
+                    D_getsimpleswitch(
+                        savehook_new_data[gameuid],
+                        "tts_skip",
+                        default=globalconfig["ttscommon"]["tts_skip"],
                     ),
+                    D_getIconButton(callback=__delay1),
                     "",
                     D_getsimpleswitch(
                         savehook_new_data[gameuid], "tts_skip_merge", default=False
@@ -783,15 +806,12 @@ class dialog_setting_game_internal(QWidget):
                 ],
                 [
                     getsmalllabel("语音修正"),
-                    D_getsimpleswitch(savehook_new_data[gameuid], "tts_repair"),
-                    D_getIconButton(
-                        callback=lambda: noundictconfigdialog1(
-                            self,
-                            savehook_new_data[gameuid]["tts_repair_regex"],
-                            "语音修正",
-                            ["正则", "转义", "原文", "替换"],
-                        )
+                    D_getsimpleswitch(
+                        savehook_new_data[gameuid],
+                        "tts_repair",
+                        default=globalconfig["ttscommon"]["tts_repair"],
                     ),
+                    D_getIconButton(callback=__delay2),
                     "",
                     D_getsimpleswitch(
                         savehook_new_data[gameuid], "tts_repair_merge", default=False
@@ -814,6 +834,8 @@ class dialog_setting_game_internal(QWidget):
         def selectimg(gameuid, key, res):
             savehook_new_data[gameuid][key] = res
 
+        if "gamejsonfile" not in savehook_new_data[gameuid]:
+            savehook_new_data[gameuid]["gamejsonfile"] = []
         if isinstance(savehook_new_data[gameuid]["gamejsonfile"], str):
             savehook_new_data[gameuid]["gamejsonfile"] = [
                 savehook_new_data[gameuid]["gamejsonfile"]
@@ -830,7 +852,7 @@ class dialog_setting_game_internal(QWidget):
         formLayout.addRow(
             "sqlite翻译记录",
             getsimplepatheditor(
-                savehook_new_data[gameuid]["gamesqlitefile"],
+                savehook_new_data[gameuid].get("gamesqlitefile", ""),
                 False,
                 False,
                 "*.sqlite",
@@ -863,7 +885,13 @@ class dialog_setting_game_internal(QWidget):
 
                 vbox.addWidget(LLabel(visname), i + 1, 0)
                 vbox.addWidget(
-                    getsimpleswitch(savehook_new_data[gameuid], name + "_use"), i + 1, 1
+                    getsimpleswitch(
+                        savehook_new_data[gameuid],
+                        name + "_use",
+                        default=False,
+                    ),
+                    i + 1,
+                    1,
                 )
                 vbox.addWidget(
                     getIconButton(
@@ -874,7 +902,11 @@ class dialog_setting_game_internal(QWidget):
                 )
                 vbox.addWidget(QLabel(), i + 1, 3)
                 vbox.addWidget(
-                    getsimpleswitch(savehook_new_data[gameuid], name + "_merge"),
+                    getsimpleswitch(
+                        savehook_new_data[gameuid],
+                        name + "_merge",
+                        default=False,
+                    ),
                     i + 1,
                     4,
                 )
@@ -1061,13 +1093,6 @@ class dialog_setting_game_internal(QWidget):
 
     def getlangtab(self, formLayout: LFormLayout, gameuid):
 
-        savehook_new_data[gameuid]["private_tgtlang_2"] = savehook_new_data[
-            gameuid
-        ].get("private_tgtlang_2", globalconfig["tgtlang4"])
-        savehook_new_data[gameuid]["private_srclang_2"] = savehook_new_data[
-            gameuid
-        ].get("private_srclang_2", globalconfig["srclang4"])
-
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid], "lang_follow_default", formLayout
         )
@@ -1078,6 +1103,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid],
                 "private_srclang_2",
                 internal=["auto"] + [_.code for _ in TransLanguages],
+                default=globalconfig["srclang4"],
             ),
         )
         formLayout2.addRow(
@@ -1087,6 +1113,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid],
                 "private_tgtlang_2",
                 internal=[_.code for _ in TransLanguages],
+                default=globalconfig["tgtlang4"],
             ),
         )
 
@@ -1198,7 +1225,6 @@ class dialog_setting_game_internal(QWidget):
             except:
                 pass
 
-        gamefont_comboBox.currentTextChanged.connect(callback)
         gamefont_comboBox.setCurrentFont(
             QFont(
                 savehook_new_data[gameuid]["embed_setting_private"].get(
@@ -1206,13 +1232,16 @@ class dialog_setting_game_internal(QWidget):
                 )
             )
         )
+        gamefont_comboBox.currentTextChanged.connect(callback)
         return gamefont_comboBox
 
     def gethooktab_internal(self, formLayout: LFormLayout, gameuid):
 
         formLayout.addRow(
             "延迟注入_(ms)",
-            getspinbox(0, 1000000, savehook_new_data[gameuid], "inserthooktimeout"),
+            getspinbox(
+                0, 1000000, savehook_new_data[gameuid], "inserthooktimeout", default=500
+            ),
         )
         box = LGroupBox()
         box.setTitle("额外的钩子")
@@ -1231,9 +1260,11 @@ class dialog_setting_game_internal(QWidget):
                     if _
                     else None
                 ),
+                default=False,
             ),
         )
-
+        if "needinserthookcode" not in savehook_new_data[gameuid]:
+            savehook_new_data[gameuid]["needinserthookcode"] = []
         settinglayout.addRow(
             "特殊码",
             listediterline(
@@ -1295,6 +1326,19 @@ class dialog_setting_game_internal(QWidget):
                 default=globalconfig["maxHistorySize"],
             ),
         )
+        if savehook_new_data[gameuid].get("removeforeverhook"):
+            box = QGroupBox()
+            settinglayout = LFormLayout(box)
+
+            settinglayout.addRow(
+                "移除且总是移除",
+                listediterline(
+                    "移除且总是移除",
+                    savehook_new_data[gameuid]["removeforeverhook"],
+                    specialklass=embeddisabler,
+                ),
+            )
+            formLayout.addRow(box)
 
     def gethooktab(self, gameuid):
         _w = QWidget()

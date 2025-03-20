@@ -163,28 +163,34 @@ class common:
                 continue
             extradatas["localedpath"][_] = self.dispatchdownloadtask(_)
             extradatas["imagefrom"][_] = self.typename
-            if _ in savehook_new_data[gameuid]["imagepath_all"]:
+            if _ in savehook_new_data[gameuid].get("imagepath_all", []):
                 continue
+            if "imagepath_all" not in savehook_new_data[gameuid]:
+                savehook_new_data[gameuid]["imagepath_all"] = []
             savehook_new_data[gameuid]["imagepath_all"].append(_)
         if title:
-            if not savehook_new_data[gameuid]["istitlesetted"]:
+            if not savehook_new_data[gameuid].get("istitlesetted", False):
                 savehook_new_data[gameuid]["title"] = title
             _vis = globalconfig["metadata"][self.typename]["name"]
             _url = self.refmainpage(vid)
-            _urls = [_[1] for _ in savehook_new_data[gameuid]["relationlinks"]]
+            _urls = [_[1] for _ in savehook_new_data[gameuid].get("relationlinks", [])]
             if _url not in _urls:
+                if "relationlinks" not in savehook_new_data[gameuid]:
+                    savehook_new_data[gameuid]["relationlinks"] = []
                 savehook_new_data[gameuid]["relationlinks"].append((_vis, _url))
         if description and not savehook_new_data[gameuid].get("description"):
             savehook_new_data[gameuid]["description"] = description
         if namemap:
             dedump = set()
-            for _ in savehook_new_data[gameuid]["namemap2"]:
+            for _ in savehook_new_data[gameuid].get("namemap2", []):
                 dedump.add(_.get("key", ""))
             namemap = namemapcast(namemap)
             usenamemap = getlangtgt() == "en"
             for name in namemap:
                 if name in dedump:
                     continue
+                if "namemap2" not in savehook_new_data[gameuid]:
+                    savehook_new_data[gameuid]["namemap2"] = []
                 savehook_new_data[gameuid]["namemap2"].append(
                     {
                         "key": name,
