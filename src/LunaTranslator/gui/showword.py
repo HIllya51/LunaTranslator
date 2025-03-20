@@ -51,7 +51,7 @@ class AnkiWindow(QWidget):
     refreshhtml = pyqtSignal()
     settextsignal = pyqtSignal(QObject, str)
 
-    def settextsignalf(self, obj, text):
+    def settextsignalf(self, obj: QLineEdit, text):
         obj.setText(text)
 
     def callbacktts(self, edit, sig, data):
@@ -1164,6 +1164,7 @@ class searchwordW(closeashidewindow):
     def showEvent(self, e):
         super().showEvent(e)
         self.__load()
+        self.searchtext.setFocus()
 
     @tryprint
     def __show_dict_result_function(self, timestamp, k, res):
@@ -1483,7 +1484,7 @@ class searchwordW(closeashidewindow):
             res.insert(idx, {"dict": k, "content": v})
         return res
 
-    def __click_word_search_function(self, word, append):
+    def __click_word_search_function(self, word: str, append):
         self.showNormal()
         if self.state != 2:
             return
@@ -1512,7 +1513,7 @@ class searchwordW(closeashidewindow):
         self.historys.insert(0, word)
         self.history_btn.setEnabled(True)
 
-    def search(self, word):
+    def search(self, word: str):
         current = time.time()
         self.current = current
         word = word.strip()
