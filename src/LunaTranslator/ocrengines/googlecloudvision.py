@@ -27,7 +27,6 @@ class OCR(baseocr):
             blocks = response.json()["responses"][0]["fullTextAnnotation"]["pages"][0][
                 "blocks"
             ]
-            print(blocks)
             for block in blocks:
                 for paragraph in block["paragraphs"]:
                     ws = []
