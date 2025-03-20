@@ -1164,6 +1164,10 @@ class searchwordW(closeashidewindow):
     def showEvent(self, e):
         super().showEvent(e)
         self.__load()
+        self.activate()
+
+    def activate(self):
+        self.activateWindow()
         self.searchtext.setFocus()
 
     @tryprint
@@ -1492,6 +1496,7 @@ class searchwordW(closeashidewindow):
         if append:
             word = self.searchtext.text() + word
         self.searchtext.setText(word)
+        self.activate()
         self.search(word)
         self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         if globalconfig["ankiconnect"]["autoruntts"]:
