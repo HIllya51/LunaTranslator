@@ -107,7 +107,7 @@ class baseocr(commonbase):
         juhe.sort(key=lambda x: mids[x[0]][mids_idx], reverse=vertical)
         lines = []
         for _j in juhe:
-            lines.append(" ".join([texts[_] for _ in _j]))
+            lines.append(self.space_1.join([texts[_] for _ in _j]))
         return lines
 
     ########################################################
