@@ -210,7 +210,7 @@ class TS(basetrans):
     def translate(self, query):
         if isinstance(query, dict):
             gpt_dict = query["gpt_dict"]
-            query = query["contentraw"]
+            query: str = query["contentraw"]
         else:
             gpt_dict = None
         self.checkempty(["API接口地址"])
@@ -228,8 +228,6 @@ class TS(basetrans):
                     output_text += text_partial
                     yield text_partial
                     completion_tokens += 1
-                else:
-                    finish_reason = o["choices"][0]["finish_reason"]
         else:
             output = self.send_request(messages)
             for o in output:
@@ -258,8 +256,6 @@ class TS(basetrans):
                             output_text += text_partial
                             yield text_partial
                             completion_tokens += 1
-                        else:
-                            finish_reason = o["choices"][0]["finish_reason"]
                 else:
                     output = self.send_request(
                         messages, frequency_penalty=frequency_penalty
@@ -277,5 +273,7 @@ class TS(basetrans):
                         + output_text
                     )
                     break
+        if not (query.strip() and output_text.strip()):
+            return
         self.context.append(query)
         self.context.append(output_text)

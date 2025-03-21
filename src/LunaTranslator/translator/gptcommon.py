@@ -251,6 +251,8 @@ class gptcommon(basetrans):
                 response, self.apiurl, hidethinking=hidethinking
             )
             yield respmessage
+        if not (query.strip() and respmessage.strip()):
+            return
         self.context.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": respmessage})
 
