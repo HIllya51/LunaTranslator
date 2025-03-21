@@ -342,10 +342,8 @@ struct TextBuffer
 	template <typename AddrT>
 	void from(const AddrT ptr, size_t t)
 	{
-		if (!ptr || !t)
-			return;
 		size = min(TEXT_BUFFER_SIZE, t);
-		if (size)
+		if (size && ptr)
 			memcpy(buff, (void *)ptr, size);
 	}
 	template <typename T>

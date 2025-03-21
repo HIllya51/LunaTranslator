@@ -427,6 +427,24 @@ namespace
         }
         last = s;
     }
+    void SLPS25662(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+        auto s = buffer->strA();
+        static std::string last;
+        if (last.size() && startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+        }
+        else
+        {
+            std::string name = (char *)emu_addr(0x1869C60);
+            if (name.size())
+                name = "\x81\x79" + name + "\x81\x7a";
+            buffer->from(name + buffer->strA());
+        }
+        last = s;
+    }
     void SLPS25902(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -829,6 +847,8 @@ namespace
             {0x312FDC, {DIRECT_READ, 0, 0, SLPS25220, 0, "SLPS-25220"}},
             // 純情ロマンチカ ～恋のドキドキ大作戦
             {0x83907A, {DIRECT_READ, 0, 0, 0, SLPS25902, "SLPS-25902"}},
+            // 今日からマ王！はじマりの旅 [プレミアムBOX]
+            {0x356FB0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25662, "SLPS-25662"}},
         };
         return 0;
     }();
