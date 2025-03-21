@@ -6,7 +6,7 @@ from myutils.audioplayer import bass_code_cast
 import json, os, re
 from cishu.mdict_.readmdict import MDX, MDD, MDict
 import hashlib, sqlite3, functools
-import winsharedutils, copy
+import winsharedutils
 
 cachejson = None
 
@@ -270,12 +270,9 @@ class mdict(cishubase):
                 print_exc()
 
     def checkpath(self):
-        if self.config["paths"] == self.paths:
-            return
-        self.paths = copy.deepcopy(self.config["paths"])
         self.builders = []
         self.dedump = set()
-        for f in self.paths:
+        for f in self.config["paths"]:
             if f.strip() == "":
                 continue
             if not os.path.exists(f):
@@ -296,7 +293,6 @@ class mdict(cishubase):
                 self.extraconf = json.loads(ff.read())
         except:
             self.extraconf = {}
-        self.paths = None
         self.checkpath()
         try:
             with open(
@@ -640,7 +636,6 @@ if(window.LUNAJSObject)
         return content
 
     def search(self, word):
-        self.checkpath()
         allres = []
         audiob64vals = {}
         hrefsrcvals = {}

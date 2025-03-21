@@ -1125,8 +1125,11 @@ class TranslatorWindow(resizableframeless):
         if isfile and flow == "dicrc":
             file = os.path.dirname(file)
         filer = mayberelpath(file)
+        changed = filer != globalconfig["hirasetting"]["mecab"]["args"]["path"]
         globalconfig["hirasetting"]["mecab"]["args"]["path"] = filer
         self.displaystatus.emit(_TR("成功设置_Mecab_路径_ " + filer), TextType.Info)
+        if changed:
+            gobject.baseobject.starthira()
 
     def __parsedropmdx(self, file):
         isfile = os.path.isfile(file)
@@ -1134,9 +1137,12 @@ class TranslatorWindow(resizableframeless):
         if isfile and flow == "dicrc":
             file = os.path.dirname(file)
         filer = mayberelpath(file)
-        if filer not in globalconfig["cishu"]["mdict"]["args"]["paths"]:
+        changed = filer not in globalconfig["cishu"]["mdict"]["args"]["paths"]
+        if changed:
             globalconfig["cishu"]["mdict"]["args"]["paths"].append(filer)
         self.displaystatus.emit(_TR("成功添加_MDict_ " + filer), TextType.Info)
+        if changed:
+            gobject.baseobject.startxiaoxueguan("mdict")
 
     def __parsedropjson(self, file):
         try:
