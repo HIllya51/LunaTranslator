@@ -41,11 +41,9 @@ else()
 
 
     if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-        set(OnnxRuntime_DIR ${CMAKE_CURRENT_LIST_DIR}/onnxruntime-static/windows-x64)
         set(OpenCV_DIR ${CMAKE_CURRENT_LIST_DIR}/opencv-static/windows-x64)
         set(OpenCV_ARCH x64)
     else()
-        set(OnnxRuntime_DIR ${CMAKE_CURRENT_LIST_DIR}/onnxruntime-static/windows-x86)
         set(OpenCV_DIR ${CMAKE_CURRENT_LIST_DIR}/opencv-static/windows-x86)
         set(OpenCV_ARCH x86)
     endif()

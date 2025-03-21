@@ -67,7 +67,11 @@ for f in collect:
         with open(f, "rb") as ff:
             bs = bytearray(ff.read())
         for _dll, offset in imports:
-            if _dll.lower().startswith("api-ms-win-core"):
+            if _dll.lower() == "api-ms-win-core-shlwapi-legacy-l1-1-0.dll":
+                _target = "Shlwapi.dll"
+            elif _dll.lower() == "api-ms-win-eventing-provider-l1-1-0.dll":
+                _target = "Advapi32.dll"
+            elif _dll.lower().startswith("api-ms-win-core"):
                 # 其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
                 _target = "kernel32.dll"
             elif _dll.lower().startswith("api-ms-win-crt"):

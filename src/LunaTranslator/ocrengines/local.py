@@ -40,6 +40,9 @@ class ocrpoints(Structure):
 
 class ocrwrapper:
     def __init__(self, det, rec, key) -> None:
+        # msvcp140已被qt导入
+        # onnxruntime v1.13.1
+        self.dll1 = CDLL(gobject.GetDllpath("onnxruntime.dll"))
         self.dll = CDLL(gobject.GetDllpath("LunaOCR.dll"))
         self.pOcrObj = None
         self.__OcrInit(det, rec, key)

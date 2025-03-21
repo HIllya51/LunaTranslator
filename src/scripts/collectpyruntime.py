@@ -135,22 +135,6 @@ copycheck(
     os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/msvcp140_1.dll"),
     os.path.join(runtime),
 )
-copycheck(
-    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/vcruntime140.dll"),
-    os.path.join(runtime),
-)
-copycheck(
-    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/vcruntime140_1.dll"),
-    os.path.join(runtime),
-)
-copycheck(
-    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/msvcp140.dll"),
-    os.path.join(runtime),
-)
-copycheck(
-    os.path.join(py37Path, "Lib/site-packages/PyQt5/Qt5/bin/msvcp140_1.dll"),
-    os.path.join(runtime),
-)
 for _ in os.listdir(os.path.join(py37Path, "Lib/site-packages/PyQt5")):
     if _.startswith("sip"):
         copycheck(

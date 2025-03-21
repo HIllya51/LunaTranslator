@@ -1151,6 +1151,43 @@ void KiriKiriZ_msvcFilter(TextBuffer *buffer, HookParam *)
     StringFilterBetween(buffer, TEXTANDLEN(L"%"), TEXTANDLEN(L";"));
   }
 }
+bool KrkrtextrenderdllEx(DWORD minAddress, DWORD maxAddress)
+{
+  // Role player：いくら姉妹の粘膜ポトレ　ぐりぐちゃLIVE！　体験版
+  BYTE bytes[] = {
+      0x83, 0xf8, 0x52,
+      0x0f, 0x87, XX4,
+      0x0f, 0xb6, 0x80, XX4,
+      0xff, 0x24, 0x85, XX4};
+  auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
+  if (!addr)
+    return false;
+  bytes[2] = XX;
+  if (!MemDbg::findBytes(bytes, sizeof(bytes), addr + sizeof(bytes), addr + sizeof(bytes) + 0x80))
+    return false;
+  addr = findfuncstart(addr, 0x300);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = stackoffset(1);
+  hp.type = EMBED_ABLE | EMBED_AFTER_NEW | CODEC_UTF16 | NO_CONTEXT | USING_STRING;
+  hp.lineSeparator = L"\\n";
+  hp.embed_hook_font = F_GetTextExtentPoint32W | F_GetGlyphOutlineW;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+  {
+    // 会连续调用两次，只需修改第一次就可以了。
+    static std::wstring last;
+    auto ws = buffer->strW();
+    if (ws == last)
+      return buffer->clear();
+    last = ws;
+    ws = re::sub(ws, L"%p.*?;%f.*?;");
+    ws = re::sub(ws, LR"(\[.*?\])");
+    buffer->from(ws);
+  };
+  return NewHook(hp, "textrender");
+}
 bool Krkrtextrenderdll()
 {
   HMODULE module = GetModuleHandleW(L"textrender.dll");
@@ -1160,6 +1197,8 @@ bool Krkrtextrenderdll()
     return false;
 
   auto [minAddress, maxAddress] = Util::QueryModuleLimits(module);
+  if (KrkrtextrenderdllEx(minAddress, maxAddress))
+    return true;
   bool b1 = [=]()
   {
     BYTE bytes[] = {
@@ -1175,7 +1214,7 @@ bool Krkrtextrenderdll()
     hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16;
 
-    return NewHook(hp, "krkr_textrender");
+    return NewHook(hp, "textrender");
   }();
   bool b2 = [=]()
   {
@@ -1199,7 +1238,7 @@ bool Krkrtextrenderdll()
     hp.offset = regoffset(eax);
     hp.type = CODEC_UTF16 | USING_STRING;
     hp.filter_fun = KiriKiriZ_msvcFilter;
-    return NewHook(hp, "krkr_textrender");
+    return NewHook(hp, "textrender");
   }();
   auto b3 = [=]()
   {
@@ -1230,7 +1269,7 @@ bool Krkrtextrenderdll()
       }
       buffer->from(text);
     };
-    return NewHook(hp, "krkr_textrender");
+    return NewHook(hp, "textrender");
   };
   return b1 || b2 || b3();
 }
@@ -1317,7 +1356,7 @@ namespace
 bool InsertKiriKiriZHook()
 {
   auto ok = Krkrtextrenderdll();
-  ok = kagparser();
+  ok = kagparser() || ok;
   return krkrzx() | (InsertKiriKiriZHook2() || InsertKiriKiriZHook1()) || ok;
 }
 namespace
@@ -1444,76 +1483,6 @@ namespace
 namespace Private
 {
 
-  std::wstring ConvertToFullWidth(const std::wstring &str)
-  {
-    std::wstring fullWidthStr;
-    wchar_t last = 0;
-    for (wchar_t c : str)
-    {
-      if (c >= 32 && c <= 126 && c != L'\\' && last != L'\\')
-      {
-        fullWidthStr += static_cast<wchar_t>(c + 65248);
-      }
-      else
-      {
-        fullWidthStr += c;
-      }
-      last = c;
-    }
-    return fullWidthStr;
-  }
-
-  void hookBeforez(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-  {
-
-    auto text = (LPCSTR)s->ecx;
-    if (!text || !*text)
-      return;
-    if (strlen(text) > 2000)
-      return;
-    if (all_ascii(text, strlen(text)))
-      return;
-    //"。」』？―！、"
-    auto chatflags = {"\xe3\x80\x82", "\xe3\x80\x8d", "\xe3\x80\x8f", "\xef\xbc\x9f", "\xe2\x80\x95", "\xef\xbc\x81", "\xe3\x80\x81"};
-    bool ok = false;
-    for (auto f : chatflags)
-    {
-      if (strstr(text, f))
-        ok = true;
-    }
-    if (ok == false)
-      return;
-    // auto role =  Engine::ScenarioRole ;
-    // auto split = s->edx;
-    // auto sig = Engine::hashThreadSignature(role, split);
-
-    std::string utf8save = text;
-    strReplace(utf8save, "%51;", "\\-");
-    strReplace(utf8save, "%164;", "\\+\\+");
-    strReplace(utf8save, "%123;", "\\+");
-    strReplace(utf8save, "%205;", "\\+\\+\\+");
-    strReplace(utf8save, "#000033ff;", "\\#0033FF");
-    strReplace(utf8save, "#;", "\\#FFFFFF");
-    strReplace(utf8save, "#00ff0000;", "\\#FF0000");
-    strReplace(utf8save, "%p-1;%f\xef\xbc\xad\xef\xbc\xb3 \xe3\x82\xb4\xe3\x82\xb7\xe3\x83\x83\xe3\x82\xaf;"); //"%p-1;%fＭＳ ゴシック;"
-    strReplace(utf8save, "%p;%fuser;");
-
-    buffer->from(utf8save);
-  }
-  void after(hook_context *s, TextBuffer buffer)
-  {
-
-    std::string res = buffer.strA(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
-    strReplace(res, "\\-", "%51;");
-    strReplace(res, "\\+\\+", "%164;");
-    strReplace(res, "\\+", "%123;");
-    strReplace(res, "\\+\\+\\+", "%205;");
-    strReplace(res, "\\#0033FF", "#000033ff;");
-    strReplace(res, "\\#FFFFFF", "#;");
-    strReplace(res, "\\#FF0000", "#00ff0000;");
-    res = WideStringToString(ConvertToFullWidth((StringToWideString(res))));
-    s->ecx = (DWORD)allocateString(res);
-  }
   bool attach(ULONG startAddress, ULONG stopAddress)
   {
     // findbytes搜索1长度BYTE[]时有问题。
@@ -1625,13 +1594,34 @@ dl 16
       {
         HookParam hp;
         hp.address = addr;
-        hp.type = EMBED_ABLE | CODEC_UTF8 | NO_CONTEXT | USING_STRING;
-        hp.text_fun = hookBeforez;
-        hp.embed_fun = after;
+        hp.offset = regoffset(ecx);
+        hp.type = EMBED_ABLE | EMBED_AFTER_NEW | CODEC_UTF8 | NO_CONTEXT | USING_STRING;
+        hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+        {
+          auto s = buffer->strA();
+          if (s.size() > 2000)
+            return buffer->clear();
+          if (all_ascii(s.c_str(), s.size()))
+            return buffer->clear();
+          //"。」』？―！、"
+          auto chatflags = {"\xe3\x80\x82", "\xe3\x80\x8d", "\xe3\x80\x8f", "\xef\xbc\x9f", "\xe2\x80\x95", "\xef\xbc\x81", "\xe3\x80\x81"};
+          bool ok = false;
+          for (auto f : chatflags)
+          {
+            if (strstr(s.c_str(), f))
+              ok = true;
+          }
+          if (ok == false)
+            return buffer->clear();
+          s = re::sub(s, "%\\d+?;");
+          s = re::sub(s, "#[0-9a-fA-F]*?;");
+          s = re::sub(s, "%p.*?;%f.*?;");
+          s = re::sub(s, R"(\[.*?\])");
+          buffer->from(s);
+        };
         hp.lineSeparator = L"\\n";
         hp.embed_hook_font = F_GetTextExtentPoint32W | F_GetGlyphOutlineW;
         succ |= NewHook(hp, "EmbedKrkrZ");
-        // return true;
       }
     }
 

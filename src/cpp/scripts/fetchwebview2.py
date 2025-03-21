@@ -22,31 +22,36 @@ if os.path.exists(mswebview2_dir) == False:
     )
 
 
-onnx = os.path.normpath(
-    os.path.join(
-        os.path.dirname(__file__), "../libs/onnxruntime-static/windows-x64/lib/onnx.lib"
-    )
+onnx_1 = os.path.normpath(
+    os.path.join(os.path.dirname(__file__), "../libs/onnxruntime-win-x64-1.13.1/lib/onnxruntime.dll")
 )
+if os.path.exists(onnx_1) == False:
+    os.system(
+        rf'curl -SLo ../libs/onnxruntime-win-x64-1.13.1.zip https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-win-x64-1.13.1.zip'
+    )
+    os.system(rf'7z x -y ../libs/onnxruntime-win-x64-1.13.1.zip -o../libs/')
+
+onnx_1 = os.path.normpath(
+    os.path.join(os.path.dirname(__file__), "../libs/onnxruntime-win-x86-1.13.1/lib/onnxruntime.dll")
+)
+if os.path.exists(onnx_1) == False:
+    os.system(
+        rf'curl -SLo ../libs/onnxruntime-win-x86-1.13.1.zip https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-win-x86-1.13.1.zip'
+    )
+    os.system(rf'7z x -y ../libs/onnxruntime-win-x86-1.13.1.zip -o../libs/')
+
+
+
 opencv = os.path.normpath(
     os.path.join(
         os.path.dirname(__file__),
         r"..\libs\opencv-static\windows-x64\x64\vc16\staticlib\opencv_core470.lib",
     )
 )
-onnx_1 = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "../libs/onnxruntime-static/onnxruntime-static.7z")
-)
 opencv_1 = os.path.normpath(
     os.path.join(os.path.dirname(__file__), r"..\libs\opencv-static\opencv-static.7z")
 )
 
-
-if os.path.exists(onnx) == False:
-    os.makedirs(os.path.dirname(onnx_1), exist_ok=True)
-    os.system(
-        rf'curl -SLo "{onnx_1}" https://github.com/RapidAI/OnnxruntimeBuilder/releases/download/1.14.1/onnxruntime-1.14.1-vs2019-static-mt.7z'
-    )
-    os.system(rf'7z x -y "{onnx_1}" -o{os.path.dirname(onnx_1)}')
 if os.path.exists(opencv) == False:
     os.makedirs(os.path.dirname(opencv_1), exist_ok=True)
     os.system(
