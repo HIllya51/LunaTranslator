@@ -338,14 +338,10 @@ if __name__ == "__main__":
 
         os.makedirs("files/plugins/DLL32", exist_ok=True)
         shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
-        shutil.copy("cpp/builds/_x86/winsharedutils.dll", "files/plugins/DLL32")
-        shutil.copy("cpp/builds/_x86/wcocr.dll", "files/plugins/DLL32")
-        shutil.copy("cpp/builds/_x86/LunaOCR.dll", "files/plugins/DLL32")
+        os.system(f"robocopy cpp/builds/_x86 files/plugins/DLL32 *.dll")
         os.makedirs("files/plugins/DLL64", exist_ok=True)
         shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files/plugins")
-        shutil.copy("cpp/builds/_x64/winsharedutils.dll", "files/plugins/DLL64")
-        shutil.copy("cpp/builds/_x64/wcocr.dll", "files/plugins/DLL64")
-        shutil.copy("cpp/builds/_x64/LunaOCR.dll", "files/plugins/DLL64")
+        os.system(f"robocopy cpp/builds/_x64 files/plugins/DLL64 *.dll")
 
         if sys.argv[2] == "x86":
             os.remove("files/plugins/LunaHook/LunaHost64.dll")
