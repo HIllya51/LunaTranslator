@@ -190,10 +190,14 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
     specialfont = LAction("字体设置", menu)
     delete = LAction("删除", menu)
     copy = LAction("复制", menu)
+    astoppest = LAction("设为首选", menu)
+    astoppest.setCheckable(True)
     usecache = LAction("使用翻译缓存", menu)
     usecache.setCheckable(True)
+    astoppest.setChecked(globalconfig["toppest_translator"] == apiuid)
     menu.addAction(editname)
     menu.addAction(specialfont)
+    menu.addAction(astoppest)
     which = translate_exits(apiuid, which=True)
     is_gpt_like = globalconfig["fanyi"][apiuid].get("is_gpt_like", False)
     if is_gpt_like:
@@ -207,6 +211,16 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
     action = menu.exec(pos)
     if action == delete:
         selectllmcallback_2(self, countnum, btnplus, apiuid, None)
+    elif action == astoppest:
+        globalconfig["toppest_translator"] = apiuid if action.isChecked() else None
+        if action.isChecked():
+            try:
+                # 若已开启，则立即置顶
+                globalconfig["fix_translate_rank_rank"].remove(apiuid)
+                globalconfig["fix_translate_rank_rank"].insert(0, apiuid)
+            except:
+                pass
+
     elif action == usecache:
         globalconfig["fanyi"][apiuid]["use_trans_cache"] = usecache.isChecked()
     elif action == editname:

@@ -469,8 +469,6 @@
     "窗口特效": "Hiệu ứng cửa sổ",
     "网络请求": "Yêu cầu mạng",
     "显示时间": "Thời gian hiển thị",
-    "过滤历史重复": "Lọc lịch sử lặp lại",
-    "缓存条数": "Số thanh bộ nhớ cache",
     "删除列表": "Xoá danh sách",
     "上移": "Di chuyển lên",
     "下移": "Di chuyển xuống",
@@ -659,11 +657,9 @@
     "显示/隐藏翻译": "Hiện/ẩn bản dịch",
     "华为云": "Hoa Vi Vân",
     "游戏适配": "Trò chơi phù hợp",
-    "指定翻译器": "Chỉ định trình dịch",
     "关于软件": "Về phần mềm",
     "严格的": "Nghiêm ngặt",
     "收藏夹": "Yêu thích",
-    "使用指定翻译器": "Dùng bộ dịch đã chỉ định",
     "复制图片": "Sao chép ảnh",
     "试用": "Thử nghiệm",
     "图片翻译": "Dịch ảnh",
@@ -674,7 +670,6 @@
     "讯飞": "Tin nhắn",
     "百度翻译开放平台": "100 phiên dịch mở",
     "百度智能云": "100 đám mây thông minh",
-    "（支持gpt词典）": "(Hỗ trợ GPT Dictionary)",
     "日志": "Đăng nhập",
     "查看": "Xem thêm",
     "标记": "Đánh dấu",
@@ -802,5 +797,7 @@
     "成功设置": "",
     "成功添加": "",
     "启动游戏": "",
-    "移除且总是移除": ""
+    "移除且总是移除": "",
+    "设为首选": "",
+    "QQ群": ""
 }

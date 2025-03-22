@@ -11,7 +11,26 @@ from gui.usefulwidget import (
 )
 from rendertext.texttype import TranslateColor
 from gui.dynalang import LPushButton, LMainWindow
-from gui.setting_textinput import loadvalidtss
+from myutils.utils import translate_exits, getannotatedapiname
+
+
+def sortAwithB(l1, l2):
+    sorted_pairs = sorted(zip(l1, l2))
+    return [x[1] for x in sorted_pairs], [x[0] for x in sorted_pairs]
+
+
+def loadvalidtss():
+
+    alltransvis = []
+    alltrans = []
+    for x in globalconfig["fanyi"]:
+        if x == "premt":
+            continue
+        if not translate_exits(x):
+            continue
+        alltransvis.append(getannotatedapiname(x))
+        alltrans.append(x)
+    return sortAwithB(alltransvis, alltrans)
 
 
 @Singleton_close

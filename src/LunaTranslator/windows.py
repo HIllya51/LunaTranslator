@@ -20,6 +20,7 @@ from ctypes import (
 )
 import os
 from ctypes.wintypes import (
+    MAX_PATH,
     RECT,
     POINT,
     HWND,
@@ -98,7 +99,6 @@ NMPWAIT_WAIT_FOREVER = -1
 FILE_SHARE_READ = 0x00000001
 FILE_ATTRIBUTE_NORMAL = 0x80
 INVALID_HANDLE_VALUE = -1
-MAX_PATH = 260
 VOLUME_NAME_DOS = 0x0
 VOLUME_NAME_NT = 0x2
 
@@ -820,3 +820,16 @@ def GetClassName(hwnd):
     if not ret:
         return
     return buff.value
+
+
+_SearchPath = _kernel32.SearchPathW
+_SearchPath.argtypes = (LPCWSTR, LPCWSTR, LPCWSTR, DWORD, LPWSTR, LPWSTR)
+_SearchPath.restype = DWORD
+
+
+def SearchPath(dll_name):
+    path_buffer = create_unicode_buffer(MAX_PATH)
+    result = _SearchPath(None, dll_name, None, MAX_PATH, path_buffer, None)
+    if result == 0:
+        return None
+    return path_buffer.value

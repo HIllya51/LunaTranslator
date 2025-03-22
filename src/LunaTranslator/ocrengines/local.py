@@ -15,7 +15,7 @@ from ctypes import (
 )
 import os
 from language import Languages
-import gobject, requests
+import gobject, requests, winsharedutils, windows
 from traceback import print_exc
 from qtsymbols import *
 from myutils.wrapper import threader
@@ -38,21 +38,51 @@ class ocrpoints(Structure):
     ]
 
 
+def usewhichonnxruntime():
+    # 尝试加载系统onnxruntime，有directml优化，速度稍快一丢丢
+    sysonnx = windows.SearchPath("onnxruntime.dll")
+    if sysonnx:
+        ver = winsharedutils.queryversion(sysonnx)
+    else:
+        ver = (0,)
+    myonnx = gobject.GetDllpath("onnxruntime.dll")
+    vermy = winsharedutils.queryversion(myonnx)
+    print(sysonnx, ver)
+    print(myonnx, vermy)
+    # 但最多尝试到v1.20.1版本，v1.21.0开始会不兼容。
+    # https://github.com/microsoft/onnxruntime/releases/tag/v1.21.0
+    # All the prebuilt Windows packages now require VC++ Runtime version >= 14.40(instead of 14.38). If your VC++ runtime version is lower than that, you may see a crash when ONNX Runtime was initializing. See https://github.com/microsoft/STL/wiki/Changelog#vs-2022-1710 for more details.
+    # 不过实测在更古老py37(14.00)上是没问题的，但在py311(14.38)或pyqt(14.26)上确实会崩溃，保险起见不要加载。
+    if (ver >= vermy) and (ver < (1, 21)):
+        return sysonnx
+    return myonnx
+
+
+usewhich = usewhichonnxruntime()
+print(usewhich)
+
+# msvcp140已被qt导入
+# onnxruntime v1.13.1 用于win7兼容
+onnxruntimedll = CDLL(usewhich)
+LunaOCR = CDLL(gobject.GetDllpath("LunaOCR.dll"))
+OcrListProviders = LunaOCR.OcrListProviders
+OcrListProviders()
+
+OcrInit = LunaOCR.OcrInit
+OcrInit.restype = c_void_p
+OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32
+
+OcrDetect = LunaOCR.OcrDetect
+OcrDetect.argtypes = (c_void_p, c_void_p, c_size_t, c_int32, c_void_p)
+
+OcrDestroy = LunaOCR.OcrDestroy
+OcrDestroy.argtypes = (c_void_p,)
+
+
 class ocrwrapper:
+
     def __init__(self, det, rec, key) -> None:
-        # msvcp140已被qt导入
-        # onnxruntime v1.13.1
-        self.dll1 = CDLL(gobject.GetDllpath("onnxruntime.dll"))
-        self.dll = CDLL(gobject.GetDllpath("LunaOCR.dll"))
-        self.pOcrObj = None
-        self.__OcrInit(det, rec, key)
-
-    def __OcrInit(self, szDetModel, szRecModel, szKeyPath, nThreads=4):
-
-        _OcrInit = self.dll.OcrInit
-        _OcrInit.restype = c_void_p
-        _OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32
-        self.pOcrObj = _OcrInit(szDetModel, szRecModel, szKeyPath, nThreads)
+        self.pOcrObj = OcrInit(det, rec, key, 4)
 
     def __OcrDetect(self, data: bytes, mode: int):
 
@@ -63,15 +93,7 @@ class ocrwrapper:
             pss.append((ps.x1, ps.y1, ps.x2, ps.y2, ps.x3, ps.y3, ps.x4, ps.y4))
             texts.append(text.decode("utf8"))
 
-        _OcrDetect = self.dll.OcrDetect
-        _OcrDetect.argtypes = (
-            c_void_p,
-            c_void_p,
-            c_size_t,
-            c_int32,
-            c_void_p,
-        )
-        _OcrDetect(
+        OcrDetect(
             self.pOcrObj,
             data,
             len(data),
@@ -88,11 +110,7 @@ class ocrwrapper:
             return [], []
 
     def __del__(self):
-        if not self.pOcrObj:
-            return
-        _OcrDestroy = self.dll.OcrDestroy
-        _OcrDestroy.argtypes = (c_void_p,)
-        _OcrDestroy(self.pOcrObj)
+        OcrDestroy(self.pOcrObj)
 
 
 def findmodel(langcode):

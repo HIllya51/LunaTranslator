@@ -431,7 +431,7 @@
 			"s2": "",
 			"prefill": "",
 			"prefill_use": false,
-			"hidethinking": false
+			"hidethinking": true
 		},
 		"argstype": {
 			"hidethinking": {
@@ -743,7 +743,7 @@
 			"frequency_penalty": 0,
 			"fix_degeneration": false,
 			"流式输出": true,
-			"prompt_version": 2,
+			"prompt_version": 3,
 			"s": ""
 		},
 		"argstype": {
@@ -766,8 +766,9 @@
 				"type": "combo",
 				"list": [
 					"v0.9",
-					"v0.10pre1_（支持gpt词典）",
-					"v1.0/v1.0pre1_（支持gpt词典）"
+					"v0.10pre1",
+					"v1.0/v1.0pre1",
+					"GalTransl-7B-v3"
 				]
 			},
 			"API接口地址": {

@@ -24,7 +24,6 @@
     "read_raw": true,
     "global_list_opened": true,
     "read_trans": false,
-    "read_translator2": "",
     "disappear_delay": 5,
     "network": 1,
     "useextrahtml": false,
@@ -269,16 +268,12 @@
             "port": 2333
         }
     },
-    "translator_2": null,
-    "use_appointed_translate": false,
     "embedded": {
         "safecheck_use": true,
         "safecheckregexs": [
             "(.*?)\\{(.*?)\\}(.*?)",
             "(.*?)\\[(.*?)\\](.*?)"
         ],
-        "translator_2": null,
-        "use_appointed_translate": false,
         "timeout_translate": 2,
         "trans_kanji": false,
         "displaymode": 0,
@@ -459,7 +454,7 @@
     "setting_geo_2": [
         100,
         100,
-        1200,
+        800,
         600
     ],
     "global_namemap2": [],
@@ -1908,5 +1903,6 @@
     "wordlabel": [],
     "getWordFallbackClipboard": true,
     "verticalhorizontal": false,
-    "noundictconfig_ex": []
+    "noundictconfig_ex": [],
+    "toppest_translator": null
 }

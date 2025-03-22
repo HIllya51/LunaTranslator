@@ -44,12 +44,26 @@ def commonparseresponse_good(hidethinking: bool, response: requests.Response):
     message = ""
     thinkcnt = 0
     isthinking = False
+    isreasoning_content = False
     for json_data in stream_event_parser(response):
         try:
             if len(json_data["choices"]) == 0:
                 continue
-            msg: str = json_data["choices"][0].get("delta", {}).get("content", None)
-            if msg:
+            delta = json_data["choices"][0].get("delta", {})
+            msg: str = delta.get("content", None)
+            reasoning_content: str = delta.get("reasoning_content", None)
+            if reasoning_content:
+                if hidethinking:
+                    isreasoning_content = True
+                    thinkcnt += len(reasoning_content)
+                    yield "\0"
+                    yield "thinking {} ...".format(thinkcnt)
+                else:
+                    yield reasoning_content
+            elif msg:
+                if isreasoning_content:
+                    isreasoning_content = False
+                    yield "\0"
                 if hidethinking and (msg.strip() == "<think>"):
                     yield "thinking ..."
                     isthinking = True
@@ -188,7 +202,7 @@ class gptcommon(basetrans):
         self.maybeuse = {}
         super().__init__(typename)
 
-    def createdata(self, message):
+    def createdata(self, message, extra):
         temperature = self.config["Temperature"]
         data = dict(
             model=self.config["model"],
@@ -203,18 +217,17 @@ class gptcommon(basetrans):
         )
         if "api.mistral.ai" not in self.apiurl:
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
-        try:
-            if self.config["use_other_args"]:
-                extra = json.loads(self.config["other_args"])
-                data.update(extra)
-        except:
-            pass
+        data.update(extra)
         return data
 
-    def createheaders(self):
-        return createheaders(
+    def createheaders(self, extra):
+        headers = createheaders(
             self.apiurl, self.multiapikeycurrent, self.maybeuse, self.proxy
         )
+        if "luna_headers" in extra:
+            hh = extra.pop("luna_headers")
+            headers.update(hh)
+        return headers
 
     def translate(self, query):
         query = self._gptlike_createquery(
@@ -235,10 +248,19 @@ class gptcommon(basetrans):
             prefill = self._gptlike_create_prefill("prefill_use", "prefill")
             if prefill:
                 message.append({"role": "assistant", "content": prefill})
+            try:
+                extra = {}
+                if self.config["use_other_args"]:
+                    try:
+                        extra = json.loads(self.config["other_args"])
+                    except:
+                        extra = eval(self.config["other_args"])
+            except:
+                pass
             response = self.proxysession.post(
                 self.createurl(),
-                headers=self.createheaders(),
-                json=self.createdata(message),
+                headers=self.createheaders(extra),
+                json=self.createdata(message, extra),
                 stream=usingstream,
             )
         hidethinking = self.config.get("hidethinking", False)

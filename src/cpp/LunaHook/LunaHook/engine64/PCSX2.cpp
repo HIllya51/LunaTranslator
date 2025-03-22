@@ -99,7 +99,7 @@ namespace
         auto fmtstrptr = MemDbg::findBytes(fmtstr, sizeof(fmtstr), processStartAddress, processStopAddress);
         if (!fmtstrptr)
             return false;
-        fmtstrptr = MemDbg::findleaaddr(fmtstrptr, processStartAddress, processStopAddress);
+        fmtstrptr = MemDbg::find_leaorpush_addr(fmtstrptr, processStartAddress, processStopAddress);
         if (!fmtstrptr)
             return false;
         startGameListEntry = MemDbg::findEnclosingAlignedFunction(fmtstrptr);

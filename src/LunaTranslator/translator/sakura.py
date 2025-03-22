@@ -10,7 +10,7 @@ class TS(basetrans):
 
     @property
     def using_gpt_dict(self):
-        return self.config["prompt_version"] in [1, 2]
+        return self.config["prompt_version"] in [1, 2, 3]
 
     def __init__(self, typename):
         super().__init__(typename)
@@ -73,7 +73,8 @@ class TS(basetrans):
         contextnum = (
             self.config["append_context_num"] if self.config["use_context"] else 0
         )
-        if self.config["prompt_version"] == 0:
+        prompt_version = self.config["prompt_version"]
+        if prompt_version == 0:
             messages = [
                 {
                     "role": "system",
@@ -84,7 +85,7 @@ class TS(basetrans):
             messages.append(
                 {"role": "user", "content": "将下面的日文文本翻译成中文：" + query}
             )
-        elif self.config["prompt_version"] == 1:
+        elif prompt_version == 1:
             messages = [
                 {
                     "role": "system",
@@ -101,7 +102,7 @@ class TS(basetrans):
                 + query
             )
             messages.append({"role": "user", "content": content})
-        elif self.config["prompt_version"] == 2:
+        elif prompt_version == 2:
             messages = [
                 {
                     "role": "system",
@@ -119,6 +120,26 @@ class TS(basetrans):
                 )
             else:
                 content = "将下面的日文文本翻译成中文：" + query
+            messages.append({"role": "user", "content": content})
+        elif prompt_version == 3:
+            messages = [
+                {
+                    "role": "system",
+                    "content": "你是一个视觉小说翻译模型，可以通顺地使用给定的术语表以指定的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，注意不要混淆使役态和被动态的主语和宾语，不要擅自添加原文中没有的特殊符号，也不要擅自增加或减少换行。",
+                }
+            ]
+            self._gpt_common_parse_context_2(messages, self.context, contextnum, True)
+            if gpt_dict:
+                content = (
+                    "参考以下术语表（可为空，格式为src->dst #备注）\n"
+                    + self.make_gpt_dict_text(gpt_dict)
+                    + "\n"
+                    + "根据以上术语表的对应关系和备注，结合历史剧情和上下文，将下面的文本从日文翻译成简体中文："
+                    + "\n"
+                    + query
+                )
+            else:
+                content = "将下面的文本从日文翻译成简体中文：" + query
             messages.append({"role": "user", "content": content})
         return messages
 

@@ -4,7 +4,8 @@
         "name": "字符串替换",
         "args": {
             "internal": []
-        }
+        },
+        "isExUse": true
     },
     "_remove_non_shiftjis_char": {
         "use": false,
@@ -28,7 +29,8 @@
     },
     "_1": {
         "use": false,
-        "name": "去除花括号{}"
+        "name": "去除花括号{}",
+        "isExUse": true
     },
     "lines_threshold_1": {
         "use": false,
@@ -70,22 +72,6 @@
             }
         }
     },
-    "dedump": {
-        "use": false,
-        "name": "过滤历史重复_LRU",
-        "args": {
-            "cachesize": 3
-        },
-        "argstype": {
-            "cachesize": {
-                "type": "intspin",
-                "name": "缓存条数",
-                "min": -1,
-                "max": 10000,
-                "step": 1
-            }
-        }
-    },
     "_3": {
         "use": false,
         "name": "去除重复行_ABCDABCDABCD->ABCD",
@@ -107,11 +93,13 @@
     },
     "_4": {
         "use": false,
-        "name": "过滤尖括号<>"
+        "name": "过滤尖括号<>",
+        "isExUse": true
     },
     "_6EX": {
         "use": false,
-        "name": "过滤换行符"
+        "name": "过滤换行符",
+        "isExUse": true
     },
     "_91": {
         "use": false,
@@ -125,16 +113,13 @@
         "use": false,
         "name": "去除重复行_ABCDBCDCDD->ABCD"
     },
-    "_13": {
+    "_13EX": {
         "use": false,
         "name": "去除重复行_AABABCABCD->ABCD"
     },
-    "_13EX": {
-        "use": false,
-        "name": "去除重复行_AABABCABCDEEFEFG->ABCDEFG"
-    },
     "_11": {
         "use": false,
-        "name": "自定义python处理"
+        "name": "自定义python处理",
+        "isExUse": true
     }
 }

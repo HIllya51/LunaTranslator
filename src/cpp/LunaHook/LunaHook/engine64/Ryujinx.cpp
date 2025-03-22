@@ -93,7 +93,7 @@ LABEL_89:
   auto paFailedToLoadJi = MemDbg::findBytes(aFailedToLoadJi, sizeof(aFailedToLoadJi), processStartAddress, processStopAddress);
   if (!paFailedToLoadJi)
     return false;
-  auto lea_aFailedToLoadJi = MemDbg::findleaaddr(paFailedToLoadJi, processStartAddress, processStopAddress);
+  auto lea_aFailedToLoadJi = MemDbg::find_leaorpush_addr(paFailedToLoadJi, processStartAddress, processStopAddress);
   if (!lea_aFailedToLoadJi)
     return false;
   ConsoleOutput("lea_aFailedToLoadJi %p", lea_aFailedToLoadJi - processStartAddress);

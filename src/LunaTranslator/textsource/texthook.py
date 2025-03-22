@@ -496,18 +496,13 @@ class texthook(basetext):
     def getembedtext(self, text: str, tp):
         if not self.isautorunning:
             return self.embedcallback(text, "", tp)
-        engine = (
-            self.embedconfig["translator_2"]
-            if self.embedconfig["use_appointed_translate"]
-            else None
-        )
         if self.safeembedcheck(text):
-            trans = self.waitfortranslation(text, engine)
+            trans = self.waitfortranslation(text)
         else:
             collect = []
             for _ in text.split("\n"):
                 if _ and self.safeembedcheck(_):
-                    _ = self.waitfortranslation(_, engine)
+                    _ = self.waitfortranslation(_)
                 collect.append(_)
             trans = "\n".join(collect)
         if not trans:

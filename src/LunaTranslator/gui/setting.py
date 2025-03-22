@@ -43,9 +43,17 @@ class TabWidget(QWidget):
     def setCurrentIndex(self, idx):
         self.list_widget.setCurrentRow(idx)
 
+    def __currentChanged(self, idx):
+        self.tab_widget.setCurrentIndex(idx)
+        if self.__first:
+            self.__first = False
+            return
+        globalconfig["isopensettingfirsttime"] = idx
+
     def __init__(self, parent=None):
         super(TabWidget, self).__init__(parent)
         layout = QHBoxLayout(self)
+        self.__first = True
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.list_widget = LListWidget(self)
@@ -56,7 +64,7 @@ class TabWidget(QWidget):
         self.tab_widget.tabBar().hide()
         layout.addWidget(self.list_widget)
         layout.addWidget(self.tab_widget)
-        self.currentChanged.connect(self.tab_widget.setCurrentIndex)
+        self.currentChanged.connect(self.__currentChanged)
         self.list_widget.currentRowChanged.connect(self.currentChanged)
         self.idx = 0
         self.titles = []
@@ -146,3 +154,8 @@ class Setting(closeashidewindow):
         self.setCentralWidget(self.tab_widget)
         do()
         self.tab_widget.adjust_list_widget_width()
+        last = self.tab_widget.list_widget.count() - 1
+        if "isopensettingfirsttime" not in globalconfig:
+            globalconfig["isopensettingfirsttime"] = last
+        if globalconfig["isopensettingfirsttime"] == last:
+            self.tab_widget.setCurrentIndex(last)

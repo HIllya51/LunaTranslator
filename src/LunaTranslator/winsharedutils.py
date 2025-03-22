@@ -16,7 +16,7 @@ from ctypes import (
     c_char,
     CFUNCTYPE,
 )
-from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG, LPCWSTR
+from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG, LPCWSTR, MAX_PATH
 import platform, windows, functools, os, re
 
 isbit64 = platform.architecture()[0] == "64bit"
@@ -119,7 +119,6 @@ _GetLnkTargetPath.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_wchar_p
 
 
 def GetLnkTargetPath(lnk):
-    MAX_PATH = 260
     exe = create_unicode_buffer(MAX_PATH + 1)
     arg = create_unicode_buffer(MAX_PATH + 1)
     icon = create_unicode_buffer(MAX_PATH + 1)

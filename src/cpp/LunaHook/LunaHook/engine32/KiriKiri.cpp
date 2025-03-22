@@ -1,46 +1,5 @@
 ﻿#include "KiriKiri.h"
 
-/********************************************************************************************
-KiriKiri hook:
-  Usually there are xp3 files in the game folder but also exceptions.
-  Find TVP(KIRIKIRI) in the version description is a much more precise way.
-
-  KiriKiri1 correspond to AGTH KiriKiri hook, but this doesn't always work well.
-  Find call to GetGlyphOutlineW and go to function header. EAX will point to a
-  structure contains character (at 0x14, [EAX+0x14]) we want. To split names into
-  different threads AGTH uses [EAX], seems that this value stands for font size.
-  Since KiriKiri is compiled by BCC and BCC fastcall uses EAX to pass the first
-  parameter. Here we choose EAX is reasonable.
-  KiriKiri2 is a redundant hook to catch text when 1 doesn't work. When this happens,
-  usually there is a single GetTextExtentPoint32W contains irregular repetitions which
-  is out of the scope of KS or KF. This time we find a point and split them into clean
-  text threads. First find call to GetTextExtentPoint32W and step out of this function.
-  Usually there is a small loop. It is this small loop messed up the text. We can find
-  one ADD EBX,2 in this loop. It's clear that EBX is a string pointer goes through the
-  string. After the loop EBX will point to the end of the string. So EBX-2 is the last
-  char and we insert hook here to extract it.
-********************************************************************************************/
-#if 0  // jichi 11/12/2013: not used
-static void SpecialHookKiriKiri(hook_context *context,  HookParam *, uintptr_t *data, uintptr_t *split, size_t*len)
-{
-  DWORD p1 =  *(DWORD *)(esp_base - 0x14),
-        p2 =  *(DWORD *)(esp_base - 0x18);
-  if ((p1>>16) == (p2>>16)) {
-    if (DWORD p3 = *(DWORD *)p1) {
-      p3 += 8;
-      for (p2 = p3 + 2; *(WORD *)p2; p2 += 2);
-      *len = p2 - p3;
-      *data = p3;
-      p1 = *(DWORD *)(esp_base - 0x20);
-      p1 = *(DWORD *)(p1 + 0x74);
-      *split = p1 | *(DWORD *)(esp_base + 0x48);
-    } else
-      *len = 0;
-  } else
-    *len=0;
-}
-#endif // 0
-
 namespace kirikiri
 {
 #pragma pack(push, 4)
@@ -1132,49 +1091,9 @@ namespace
 
 } // unnamed namespace
 
-// jichi 1/30/2015: Do KiriKiriZ2 first, which might insert to the same location as KiriKiri1.
-
-void KiriKiriZ_msvcFilter(TextBuffer *buffer, HookParam *)
+namespace
 {
-  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
-  static std::wstring prevText;
-
-  text[buffer->size / sizeof(wchar_t)] = L'\0'; // clean text
-
-  if (!prevText.compare(text))
-    return buffer->clear();
-  prevText = text;
-
-  StringCharReplacer(buffer, TEXTANDLEN(L"\\n"), L' ');
-  if (cpp_wcsnstr(text, L"%", buffer->size / sizeof(wchar_t)))
-  {
-    StringFilterBetween(buffer, TEXTANDLEN(L"%"), TEXTANDLEN(L";"));
-  }
-}
-bool KrkrtextrenderdllEx(DWORD minAddress, DWORD maxAddress)
-{
-  // Role player：いくら姉妹の粘膜ポトレ　ぐりぐちゃLIVE！　体験版
-  BYTE bytes[] = {
-      0x83, 0xf8, 0x52,
-      0x0f, 0x87, XX4,
-      0x0f, 0xb6, 0x80, XX4,
-      0xff, 0x24, 0x85, XX4};
-  auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
-  if (!addr)
-    return false;
-  bytes[2] = XX;
-  if (!MemDbg::findBytes(bytes, sizeof(bytes), addr + sizeof(bytes), addr + sizeof(bytes) + 0x80))
-    return false;
-  addr = findfuncstart(addr, 0x300);
-  if (!addr)
-    return false;
-  HookParam hp;
-  hp.address = addr;
-  hp.offset = stackoffset(1);
-  hp.type = EMBED_ABLE | EMBED_AFTER_NEW | CODEC_UTF16 | NO_CONTEXT | USING_STRING;
-  hp.lineSeparator = L"\\n";
-  hp.embed_hook_font = F_GetTextExtentPoint32W | F_GetGlyphOutlineW;
-  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+  void KrkrtextrenderFilter(TextBuffer *buffer, HookParam *)
   {
     // 会连续调用两次，只需修改第一次就可以了。
     static std::wstring last;
@@ -1186,39 +1105,13 @@ bool KrkrtextrenderdllEx(DWORD minAddress, DWORD maxAddress)
     ws = re::sub(ws, LR"(\[.*?\])");
     buffer->from(ws);
   };
-  return NewHook(hp, "textrender");
-}
-bool Krkrtextrenderdll()
-{
-  HMODULE module = GetModuleHandleW(L"textrender.dll");
-  if (module == 0)
-    return false;
-  if (GetProcAddress(module, "V2Link") == 0)
-    return false;
-
-  auto [minAddress, maxAddress] = Util::QueryModuleLimits(module);
-  if (KrkrtextrenderdllEx(minAddress, maxAddress))
-    return true;
-  bool b1 = [=]()
+  DWORD findtextrender(DWORD minAddress, DWORD maxAddress)
   {
     BYTE bytes[] = {
-        0x81, 0xEC, 0xFC, 0x00, 0x00, 0x00};
-    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
-    if (!addr)
-      return false;
-    addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (!addr)
-      return false;
-    HookParam hp;
-    hp.address = (DWORD)addr;
-    hp.offset = stackoffset(2);
-    hp.type = CODEC_UTF16;
-
-    return NewHook(hp, "textrender");
-  }();
-  bool b2 = [=]()
-  {
-    BYTE bytes[] = {
+        0x8b, XX, XX, XX,
+        0x8b, XX, XX, XX,
+        XX,
+        XX, XX,
         0xFF, XX,
         0x88, XX, XX, XX,
         XX, XX, XX, XX,
@@ -1230,48 +1123,115 @@ bool Krkrtextrenderdll()
         0xE8, XX, XX, XX, XX,
         0xB0, 0x01,
         0xC3};
+    return MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
+  }
+  DWORD findtextrender3(DWORD minAddress, DWORD maxAddress, DWORD rominAddress, DWORD romaxAddress)
+  {
+    char tjsGetString[] = "const tjs_char * tTJSVariant::GetString() const";
+    auto addr = MemDbg::findBytes(tjsGetString, sizeof(tjsGetString), rominAddress, romaxAddress);
+    if (!addr)
+      return 0;
+    auto pushs = MemDbg::find_leaorpush_addr_all(addr, minAddress, maxAddress);
+    if (pushs.size() != 3)
+      return 0;
+    for (auto target : pushs)
+    {
+      addr = MemDbg::findEnclosingAlignedFunction(target);
+      if (!addr)
+        continue;
+      if (findxref_reverse_checkcallop(addr, minAddress, maxAddress, 0xe8).size() != 1)
+        continue;
+      BYTE sig[] = {
+          0x68, XX4,
+          0xe8, XX4,
+          0x83, 0xc4, 0x04,
+          XX, XX4,
+          XX,
+          0xff, XX};
+      if (!MatchPattern(target, sig, sizeof(sig)))
+        continue;
+      return target + sizeof(sig);
+    }
+    return 0;
+  }
+  DWORD findtextrender2(DWORD minAddress, DWORD maxAddress)
+  {
+    // 该函数很像TextRenderBase::render，但也可能并不是
+    // https://github.com/3c1u/TextRender/blob/master/textrender.cc#L486
+    // bool TextRenderBase::render(tTJSString text, int autoIndent, int diff, int all, bool same)
+    BYTE bytes[] = {
+        0x83, XX, 0x52,
+        0x0f, 0x87, XX4,
+        0x0f, 0xb6, XX, XX4,
+        0xff, 0x24, XX, XX4};
     auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
     if (!addr)
-      return false;
-    HookParam hp;
-    hp.address = addr - 0xb;
-    hp.offset = regoffset(eax);
-    hp.type = CODEC_UTF16 | USING_STRING;
-    hp.filter_fun = KiriKiriZ_msvcFilter;
-    return NewHook(hp, "textrender");
-  }();
-  auto b3 = [=]()
+      return 0;
+    bytes[2] = 0x0f;
+    if (!MemDbg::findBytes(bytes, sizeof(bytes), addr + sizeof(bytes), addr + sizeof(bytes) + 0x100))
+      return 0;
+    return findfuncstart(addr, 0x400, true);
+  }
+}
+bool Krkrtextrenderdll()
+{
+  /*
+  char __cdecl sub_1000BE60(
+        char a1,
+        int a2,
+        int a3,
+        int a4,
+        int a5,
+        int (__thiscall **a6)(int, int, int, int, int, int, int),
+        int a7)
+{
+  int v7; // eax
+  int v9; // [esp-Ch] [ebp-14h]
+  int v10; // [esp-8h] [ebp-10h]
+  int v11; // [esp-4h] [ebp-Ch]
+  int v12; // [esp+0h] [ebp-8h]
+  int v13; // [esp+4h] [ebp-4h]
+
+  v13 = (unsigned __int8)sub_1000C800(&a1);
+  v12 = (unsigned __int8)sub_1000C720(&a1);
+  v11 = sub_1000C640(&a1);
+  v10 = sub_1000C560(&a1);
+  v9 = sub_1000C480(&a1);
+  v7 = sub_1000C390(&a1); ===> sub_1000C390内部GetString，findtextrender3立即获取GetString的返回值。
+                              返回值v7，findtextrender获取该返回值。
+                              v7压栈然后调用*a6，a6为findtextrender2
+  LOBYTE(a6) = (*a6)(a7, v7, v9, v10, v11, v12, v13);
+  if ( a4 )
+    sub_1000A420(a4, &a6);
+  return 1;
+}
+  */
+  HMODULE module = GetModuleHandleW(L"textrender.dll");
+  if (module == 0)
+    return false;
+  if (GetProcAddress(module, "V2Link") == 0)
+    return false;
+
+  auto [rominAddress, romaxAddress] = Util::QueryModuleLimits(module, 0, PAGE_READONLY);
+  auto [minAddress, maxAddress] = Util::QueryModuleLimits(module);
+  HookParam hp;
+  hp.offset = regoffset(eax);
+  auto addr = findtextrender(minAddress, maxAddress);
+  if (!addr)
+    addr = findtextrender3(minAddress, maxAddress, rominAddress, romaxAddress);
+  if (!addr)
   {
-    auto [minAddress, maxAddress] = Util::QueryModuleLimits(module, 0, PAGE_READONLY);
-    char tjs[] = "tTJSVariant::tTJSVariant(const tjs_char *)";
-    auto addr = MemDbg::findBytes(tjs, sizeof(tjs), minAddress, maxAddress);
-    if (!addr)
-      return false;
-    addr = MemDbg::findPushAddress(addr, minAddress, maxAddress);
-    if (!addr)
-      return false;
-    addr = MemDbg::findEnclosingAlignedFunction(addr);
-    if (!addr)
-      return false;
-    HookParam hp;
-    hp.address = addr;
-    hp.offset = stackoffset(2);
-    hp.type = CODEC_UTF16 | USING_STRING | DATA_INDIRECT;
-    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-    {
-      auto text = *(wchar_t **)context->stack[2];
-      if (hp->user_value == context->retaddr)
-        return;
-      if (text[0] == L'%')
-      {
-        hp->user_value = context->retaddr;
-        return;
-      }
-      buffer->from(text);
-    };
-    return NewHook(hp, "textrender");
-  };
-  return b1 || b2 || b3();
+    hp.offset = stackoffset(1);
+    addr = findtextrender2(minAddress, maxAddress);
+  }
+  if (!addr)
+    return false;
+  hp.address = addr;
+  hp.type = EMBED_ABLE | EMBED_AFTER_NEW | CODEC_UTF16 | NO_CONTEXT | USING_STRING;
+  hp.lineSeparator = L"\\n";
+  hp.embed_hook_font = F_GetTextExtentPoint32W | F_GetGlyphOutlineW;
+  hp.filter_fun = KrkrtextrenderFilter;
+  return NewHook(hp, "TextRender");
 }
 namespace
 {
@@ -1603,8 +1563,7 @@ dl 16
             return buffer->clear();
           if (all_ascii(s.c_str(), s.size()))
             return buffer->clear();
-          //"。」』？―！、"
-          auto chatflags = {"\xe3\x80\x82", "\xe3\x80\x8d", "\xe3\x80\x8f", "\xef\xbc\x9f", "\xe2\x80\x95", "\xef\xbc\x81", "\xe3\x80\x81"};
+          auto chatflags = {u8"（", u8"）", u8"。", u8"「", u8"」", u8"『", u8"』", u8"？", u8"！", u8"、", u8"―"};
           bool ok = false;
           for (auto f : chatflags)
           {

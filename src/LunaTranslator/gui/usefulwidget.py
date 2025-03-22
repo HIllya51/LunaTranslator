@@ -960,6 +960,7 @@ def getsimpleswitch(
 def __getsmalllabel(text):
     __ = LLabel(text)
     __.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+    __.setOpenExternalLinks(True)
     return __
 
 

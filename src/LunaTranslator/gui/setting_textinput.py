@@ -1,7 +1,6 @@
 from qtsymbols import *
 import functools
 import gobject
-from myutils.utils import translate_exits, getannotatedapiname
 from myutils.config import globalconfig
 from textsource.texthook import codepage_display
 from traceback import print_exc
@@ -43,7 +42,6 @@ def __create2(self):
 
 
 def gethookgrid_em(self):
-    alltrans, alltransvis = loadvalidtss()
     grids = [
         [
             "清除游戏内显示的文字",
@@ -74,16 +72,6 @@ def gethookgrid_em(self):
                 double=True,
                 step=0.1,
                 callback=lambda x: gobject.baseobject.textsource.flashembedsettings(),
-            ),
-        ],
-        [
-            "使用指定翻译器",
-            D_getsimpleswitch(globalconfig["embedded"], "use_appointed_translate"),
-            D_getsimplecombobox(
-                alltransvis,
-                globalconfig["embedded"],
-                "translator_2",
-                internal=alltrans,
             ),
         ],
         [
@@ -201,25 +189,6 @@ def creategamefont_comboBox():
     return gamefont_comboBox
 
 
-def sortAwithB(l1, l2):
-    sorted_pairs = sorted(zip(l1, l2))
-    return [x[1] for x in sorted_pairs], [x[0] for x in sorted_pairs]
-
-
-def loadvalidtss():
-
-    alltransvis = []
-    alltrans = []
-    for x in globalconfig["fanyi"]:
-        if x == "premt":
-            continue
-        if not translate_exits(x):
-            continue
-        alltransvis.append(getannotatedapiname(x))
-        alltrans.append(x)
-    return sortAwithB(alltransvis, alltrans)
-
-
 def getTabclip(self):
 
     grids = [
@@ -278,7 +247,6 @@ def createdownloadprogress(self):
 
 
 def filetranslate(self):
-    alltrans, alltransvis = loadvalidtss()
     grids = [
         [
             (
@@ -292,19 +260,10 @@ def filetranslate(self):
                                 functools.partial(selectfile, self),
                                 icon="fa.folder-open",
                             ),
+                            "",
+                            "",
                         ],
                         [(functools.partial(createdownloadprogress, self), 0)],
-                        [],
-                        [
-                            "使用指定翻译器",
-                            D_getsimpleswitch(globalconfig, "use_appointed_translate"),
-                            D_getsimplecombobox(
-                                alltransvis,
-                                globalconfig,
-                                "translator_2",
-                                internal=alltrans,
-                            ),
-                        ],
                     ],
                 ),
                 0,

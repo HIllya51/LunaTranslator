@@ -222,12 +222,7 @@ class filetrans(basetext):
                 continue
             ts: str = self.query(line)
             if not ts:
-                engine = (
-                    globalconfig["translator_2"]
-                    if globalconfig["use_appointed_translate"]
-                    else None
-                )
-                ts = self.waitfortranslation(line, engine)
+                ts = self.waitfortranslation(line)
             if self.ending:
                 return
 

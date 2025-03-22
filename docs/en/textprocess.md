@@ -8,6 +8,10 @@ Generally, in HOOK mode, sometimes incorrect text is read, such as repeated text
 If there are very complex error forms, you can activate multiple processing methods and adjust their execution order to obtain a rich combination of processing methods.
 :::
 
+::: tip
+Most processing methods do not take effect when embedding translations to reduce the possibility of game crashes. The methods that can be used include: `Filter Newline Characters`, `String Replacement`,  `Custom Python Processing`, `Filter Angle Brackets <>`, `Remove Curly Braces {}`
+:::
+
 1. #### Filter Non-Japanese Character Set Characters in Text
 
     Sometimes, garbled text is hooked. Since this problem usually occurs in Japanese games, this method is preset to filter out **characters that cannot be encoded using the shift-jis character set**, for example:
@@ -46,10 +50,6 @@ If there are very complex error forms, you can activate multiple processing meth
 
     Due to the way games sometimes draw text (e.g., drawing text, then shadow, then outline), HOOK mode may extract the same characters multiple times. For example, `恵恵恵麻麻麻さささんんんははは再再再びびび液液液タタタブブブへへへ視視視線線線ををを落落落とととすすす。。。` will be processed into `恵麻さんは再び液タブへ視線を落とす。`. The default repetition count is `1`, which automatically analyzes the number of repeated characters, but there may be inaccuracies, so it is recommended to specify a definite repetition count.
 
-1. #### Filter Historical Duplicates LRU
-
-    Sometimes, the way the game redraws text is not character by character but line by line, and it continuously redraws the current displayed text in a static state. For example, if the current display is two lines of text `你好` and `哈哈`, without using this method, it will repeatedly output `你好哈哈你好哈哈你好哈哈你好哈哈……`. Using this method, it caches several recently output texts, and when the cache is full and new text appears, it removes the earliest text in the cache, thus preventing recent texts from repeatedly refreshing.
-
 1. #### Remove Duplicate Lines _ABCDABCDABCD->ABCD
 
     This is also common, similar to the above, but generally does not refresh repeatedly, but quickly refreshes multiple times. The effect is `恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。` will become `恵麻さんは再び液タブへ視線を落とす。`. Similarly, the default repetition count is `1`, which automatically analyzes the number of repeated characters, but there may be inaccuracies, so it is recommended to specify a definite repetition count.
@@ -84,9 +84,7 @@ If there are very complex error forms, you can activate multiple processing meth
 
     This is also common. The reason for this is that every time a character is drawn, the previous characters are redrawn when the next character is drawn. For example, `恵麻恵麻さ恵麻さん恵麻さんは恵麻さんは再恵麻さんは再び恵麻さんは再び液恵麻さんは再び液タ恵麻さんは再び液タブ恵麻さんは再び液タブへ恵麻さんは再び液タブへ視恵麻さんは再び液タブへ視線恵麻さんは再び液タブへ視線を恵麻さんは再び液タブへ視線を落恵麻さんは再び液タブへ視線を落と恵麻さんは再び液タブへ視線を落とす恵麻さんは再び液タブへ視線を落とす。` will be analyzed to determine that the real text should be `恵麻さんは再び液タブへ視線を落とす。`
 
-1. #### Remove Duplicate Lines _AABABCABCDEEFEFG->ABCDEFG
-
-    This is similar to the above, but when there are multiple lines of text, each line is processed separately according to the above logic, which brings more complexity. Due to the complexity, this processing often fails to handle correctly. If encountered, it is recommended to write a custom Python script to solve it.
+    When there are multiple lines of text, each line is processed separately according to the above logic, which brings more complexity. Due to the complexity, this processing often fails to handle correctly. If encountered, it is recommended to write a custom Python script to solve it.
 
 1. #### Custom Python Processing
 

@@ -12,7 +12,7 @@ bool GameMaker::attach_function()
   auto addr = MemDbg::findBytes(func, sizeof(func), processStartAddress, processStopAddress);
   if (!addr)
     return false;
-  addr = MemDbg::findleaaddr(addr, processStartAddress, processStopAddress);
+  addr = MemDbg::find_leaorpush_addr(addr, processStartAddress, processStopAddress);
   if (!addr)
     return false;
   BYTE target[] = {0x48, 0x8D, 0x15, XX4};

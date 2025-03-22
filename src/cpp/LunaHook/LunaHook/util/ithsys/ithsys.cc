@@ -19,6 +19,13 @@
  *  @param  patternSize  size of the pattern array
  *  @return  relative offset from the startAddress
  */
+bool MatchPattern(uintptr_t base, LPCVOID target, uintptr_t search_length)
+{
+  for (int j = 0; j < search_length; ++j)
+    if (*((BYTE *)base + j) != *((BYTE *)target + j) && *((BYTE *)target + j) != XX)
+      return false;
+  return true;
+}
 uintptr_t SearchPattern(uintptr_t base, uintptr_t base_length, LPCVOID search, uintptr_t search_length)
 {
   // Artikash 7/14/2018: not sure, but I think this could throw read access violation if I dont subtract search_length

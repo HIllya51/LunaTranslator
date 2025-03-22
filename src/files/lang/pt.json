@@ -476,8 +476,6 @@
     "窗口特效": "Efeitos de janela",
     "网络请求": "Pedido de rede",
     "显示时间": "Tempo de exibição",
-    "过滤历史重复": "Filtrar o histórico duplicado",
-    "缓存条数": "Número de entradas na 'cache'",
     "创建列表": "Criar uma Lista",
     "删除列表": "Apagar a Lista",
     "上移": "Subir",
@@ -659,11 +657,9 @@
     "显示/隐藏翻译": "Mostrar/ Esconder a Tradução",
     "华为云": "Hua Weiyun",
     "游戏适配": "Adaptação do jogo",
-    "指定翻译器": "Especificar o tradutor",
     "关于软件": "Sobre o software",
     "严格的": "estrito",
     "收藏夹": "Favoritos",
-    "使用指定翻译器": "Usar o tradutor designado",
     "复制图片": "Copiar a imagem",
     "试用": "em julgamento",
     "图片翻译": "Tradução da imagem",
@@ -674,7 +670,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Plataforma Aberta de Tradução Baidu",
     "百度智能云": "Nuvem AI Baidu",
-    "（支持gpt词典）": "(Suporta dicionário GPT)",
     "日志": "diário",
     "查看": "ver",
     "标记": "signo",
@@ -802,5 +797,7 @@
     "成功设置": "",
     "成功添加": "",
     "启动游戏": "",
-    "移除且总是移除": ""
+    "移除且总是移除": "",
+    "设为首选": "",
+    "QQ群": ""
 }

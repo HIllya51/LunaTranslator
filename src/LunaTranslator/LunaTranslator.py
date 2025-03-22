@@ -325,18 +325,16 @@ class MAINUI:
             return
         origin = text
         currentsignature = uuid.uuid4()
-        if not waitforresultcallback:
-            # 内嵌&文件翻译不要进行文本预处理
-            try:
-                text = POSTSOLVE(text)
-                self.settin_ui.showandsolvesig.emit(origin, text)
-                if not text:
-                    return
-            except Exception as e:
-                self.translation_ui.displaystatus.emit(
-                    stringfyerror(e), TextType.Error_origin
-                )
+        try:
+            text = POSTSOLVE(text, isEx=waitforresultcallback)
+            self.settin_ui.showandsolvesig.emit(origin, text)
+            if not text:
                 return
+        except Exception as e:
+            self.translation_ui.displaystatus.emit(
+                stringfyerror(e), TextType.Error_origin
+            )
+            return
 
         if is_auto_run and text == self.currenttext:
             return
@@ -599,9 +597,9 @@ class MAINUI:
 
                 self.transhis.getnewtranssignal.emit(apiname, res)
                 if not waitforresultcallback:
-                    if (
-                        globalconfig["read_trans"]
-                        and globalconfig["read_translator2"] == classname
+                    if globalconfig["read_trans"] and (
+                        (not globalconfig["toppest_translator"])
+                        or (globalconfig["toppest_translator"] == classname)
                     ):
                         self.currentread = res
                         self.currentread_from_origin = False
@@ -922,7 +920,15 @@ class MAINUI:
             rankkey = rankkeys.get(fanyiorcishu)
             if use:
                 if _type not in globalconfig[rankkey]:
-                    globalconfig[rankkey].append(_type)
+                    # 对于首选的翻译，如果关闭后重新激活，则置顶而非置底
+                    # 若手动调整到非指定位置，则保持不变
+                    if (
+                        fanyiorcishu == "fanyi"
+                        and _type == globalconfig["toppest_translator"]
+                    ):
+                        globalconfig[rankkey].insert(0, _type)
+                    else:
+                        globalconfig[rankkey].append(_type)
             else:
                 if _type in globalconfig[rankkey]:
                     globalconfig[rankkey].remove(_type)
@@ -1069,7 +1075,11 @@ class MAINUI:
         self.tray.show()
         version = winsharedutils.queryversion(getcurrexe())
         if "load_doc_or_log" not in globalconfig:
-            os.startfile(dynamiclink("{docs_server}"))
+            self.showtraymessage(
+                _TR("使用说明"),
+                "",
+                lambda: os.startfile(dynamiclink("{docs_server}")),
+            )
         elif version != tuple(globalconfig["load_doc_or_log"]):
             vs = ".".join(str(_) for _ in version)
             if vs.endswith(".0"):

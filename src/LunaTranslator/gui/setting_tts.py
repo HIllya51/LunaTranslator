@@ -11,7 +11,6 @@ from gui.inputdialog import (
 )
 from tts.basettsclass import TTSbase
 from gui.setting_about import offlinelinks
-from gui.setting_textinput import loadvalidtss
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -197,7 +196,6 @@ def getttsgrid(self, names):
 def setTab5lz(self):
     grids = []
     offline, online = splitocrtypes(globalconfig["reader"])
-    alltrans, alltransvis = loadvalidtss()
     offilesgrid = getttsgrid(self, offline)
     offilesgrid += [
         [(functools.partial(offlinelinks, "tts"), 0)],
@@ -311,17 +309,6 @@ def setTab5lz(self):
                                                 globalconfig, "ttsautoforward"
                                             ),
                                         ],
-                                    ],
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                        [
-                            (
-                                dict(
-                                    type="grid",
-                                    grid=[
                                         [
                                             "朗读原文",
                                             D_getsimpleswitch(globalconfig, "read_raw"),
@@ -330,13 +317,6 @@ def setTab5lz(self):
                                             D_getsimpleswitch(
                                                 globalconfig, "read_trans"
                                             ),
-                                            D_getsimplecombobox(
-                                                alltransvis,
-                                                globalconfig,
-                                                "read_translator2",
-                                                internal=alltrans,
-                                            ),
-                                            "",
                                         ],
                                     ],
                                 ),

@@ -1,4 +1,4 @@
-import re, codecs, inspect
+import re, inspect
 from traceback import print_exc
 from collections import Counter
 import gobject
@@ -12,11 +12,7 @@ from myutils.utils import (
     is_ascii_symbo,
     is_ascii_control,
 )
-from myutils.config import (
-    postprocessconfig,
-    globalconfig,
-    savehook_new_data,
-)
+from myutils.config import postprocessconfig, globalconfig, savehook_new_data
 
 lrucache = LRUCache(0)
 
@@ -331,35 +327,37 @@ def _mypostloader(line, file, module):
     return _.POSTSOLVE(line)
 
 
-def POSTSOLVE(line):
+processfunctions = {
+    "_remove_symbo": _remove_symbo,
+    "_2": _2_f,
+    "_3": _3_f,
+    "_3_2": _3_2,
+    "_10": _10_f,
+    "_1": _1_f,
+    "_4": _4_f,
+    "_6": _6_fEX,  # 废弃，重定向到新的实现
+    "_6EX": _6_fEX,
+    "_91": _91_f,
+    "_92": _92_f,
+    "_7": _7_f,  # depracated
+    "_8": _8_f,  # depracated
+    "_13": _13_f,  # depracated
+    "_13EX": _13_fEX,
+    "_7_zhuanyi": _7_zhuanyi_f,  # depracated
+    "_remove_non_shiftjis_char": _remove_non_shiftjis_char,
+    "_remove_control": _remove_control,
+    "_remove_chaos": _remove_chaos,
+    "_remove_not_in_ja_bracket": _remove_not_in_ja_bracket,
+    "dedump": dedump,  # depracated
+    "lines_threshold_1": lines_threshold,
+    "_11": _mypostloader,
+    "stringreplace": stringreplace,
+}
+
+
+def POSTSOLVE(line, isEx=False):
     if line == "":
         return ""
-    functions = {
-        "_remove_symbo": _remove_symbo,
-        "_2": _2_f,
-        "_3": _3_f,
-        "_3_2": _3_2,
-        "_10": _10_f,
-        "_1": _1_f,
-        "_4": _4_f,
-        "_6": _6_fEX,  # 废弃，重定向到新的实现
-        "_6EX": _6_fEX,
-        "_91": _91_f,
-        "_92": _92_f,
-        "_7": _7_f,  # depracated
-        "_8": _8_f,  # depracated
-        "_13": _13_f,
-        "_13EX": _13_fEX,
-        "_7_zhuanyi": _7_zhuanyi_f,  # depracated
-        "_remove_non_shiftjis_char": _remove_non_shiftjis_char,
-        "_remove_control": _remove_control,
-        "_remove_chaos": _remove_chaos,
-        "_remove_not_in_ja_bracket": _remove_not_in_ja_bracket,
-        "dedump": dedump,
-        "lines_threshold_1": lines_threshold,
-        "_11": _mypostloader,
-        "stringreplace": stringreplace,
-    }
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig
     usemypostpath = "./userconfig/mypost.py"
@@ -367,7 +365,9 @@ def POSTSOLVE(line):
     try:
 
         gameuid = gobject.baseobject.gameuid
-        if gameuid and not savehook_new_data[gameuid].get("textproc_follow_default", True):
+        if gameuid and not savehook_new_data[gameuid].get(
+            "textproc_follow_default", True
+        ):
             useranklist = savehook_new_data[gameuid]["save_text_process_info"]["rank"]
             usedpostprocessconfig = savehook_new_data[gameuid][
                 "save_text_process_info"
@@ -383,22 +383,24 @@ def POSTSOLVE(line):
     except:
         print_exc()
     for postitem in useranklist:
-        if postitem not in functions:
+        if postitem not in processfunctions:
             continue
         if postitem not in usedpostprocessconfig:
             continue
         if usedpostprocessconfig[postitem]["use"]:
+            if isEx and not (usedpostprocessconfig[postitem].get("isExUse", False)):
+                continue
             try:
-                _f = functions[postitem]
+                _f = processfunctions[postitem]
                 if postitem == "_11":
-                    line = functions[postitem](line, usemypostpath, usemodule)
+                    line = processfunctions[postitem](line, usemypostpath, usemodule)
                 else:
                     sig = inspect.signature(_f)
                     np = len(sig.parameters)
                     if np == 1:
-                        line = functions[postitem](line)
+                        line = processfunctions[postitem](line)
                     elif np == 2:
-                        line = functions[postitem](
+                        line = processfunctions[postitem](
                             line, usedpostprocessconfig[postitem].get("args", {})
                         )
                     else:

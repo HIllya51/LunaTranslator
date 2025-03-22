@@ -143,7 +143,7 @@ namespace
         ConsoleOutput("%p", logstrptr);
         if (logstrptr == 0)
             return 0;
-        auto addr = MemDbg::findleaaddr(logstrptr, processStartAddress, processStopAddress);
+        auto addr = MemDbg::find_leaorpush_addr(logstrptr, processStartAddress, processStopAddress);
         ConsoleOutput("%p", addr);
         if (!addr)
             return 0;

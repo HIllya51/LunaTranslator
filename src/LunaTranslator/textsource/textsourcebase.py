@@ -51,13 +51,13 @@ class basetext:
             return
         self.textgetmethod(*arg, **kwarg)
 
-    def waitfortranslation(self, text, engine=None):
+    def waitfortranslation(self, text):
         resultwaitor = queue.Queue()
         self.textgetmethod(
             text,
             is_auto_run=True,
             waitforresultcallback=resultwaitor.put,
-            waitforresultcallbackengine=engine,
+            waitforresultcallbackengine=globalconfig["toppest_translator"],
         )
         return resultwaitor.get()
 

@@ -5,6 +5,7 @@ from traceback import print_exc
 from language import TransLanguages
 import gobject, winsharedutils
 import copy
+from myutils.post import processfunctions
 from myutils.config import (
     savehook_new_data,
     uid2gamepath,
@@ -942,7 +943,7 @@ class dialog_setting_game_internal(QWidget):
         self.__privatetextproc_gameuid = gameuid
         for row, k in enumerate(
             savehook_new_data[gameuid]["save_text_process_info"]["rank"]
-        ):  # 2
+        ):
             self.__checkaddnewmethod(row, k)
         vbox.addWidget(table)
         buttons = threebuttons(texts=["添加行", "删除行", "上移", "下移"])
@@ -1057,6 +1058,8 @@ class dialog_setting_game_internal(QWidget):
         __viss = []
         _internal = []
         for xx in postprocessconfig:
+            if xx not in processfunctions:
+                continue
             __list = savehook_new_data[self.__privatetextproc_gameuid][
                 "save_text_process_info"
             ]["rank"]

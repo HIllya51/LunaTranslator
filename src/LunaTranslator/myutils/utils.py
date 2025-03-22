@@ -823,6 +823,8 @@ def createurl(url: str, checkend="/chat/completions"):
         return url
     if url.endswith(checkend):
         pass
+    elif url.endswith("#"):
+        return url[:-1]
     else:
         ex = "/chat/completions"
         if url.endswith(ex):

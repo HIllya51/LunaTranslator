@@ -469,8 +469,6 @@
     "窗口特效": "Pencere etkileri",
     "网络请求": "Network request",
     "显示时间": "Display time",
-    "过滤历史重复": "Tarihi çizgileri sil",
-    "缓存条数": "Cache girişlerinin sayısı",
     "删除列表": "Listeyi sil",
     "上移": "Yukarı Taşı",
     "下移": "Aşağı taşın",
@@ -659,11 +657,9 @@
     "显示/隐藏翻译": "Çeviri Göster/Gizle",
     "华为云": "Hua Weiyun",
     "游戏适配": "Oyun uygulaması",
-    "指定翻译器": "Çevirmeyi belirtin",
     "关于软件": "Yazılım hakkında",
     "严格的": "strict",
     "收藏夹": "Favoritler",
-    "使用指定翻译器": "Belirlenmiş tercümanları kullan",
     "复制图片": "Görüntü kopyala",
     "试用": "mahkemede",
     "图片翻译": "Resim çevirimi",
@@ -674,7 +670,6 @@
     "讯飞": "IFlytek",
     "百度翻译开放平台": "Baidu Çeviri Açık Platformu",
     "百度智能云": "Baidu AI Bulud",
-    "（支持gpt词典）": "(GPT sözlük destekliyor)",
     "日志": "Günlük",
     "查看": "Gördün mü?",
     "标记": "imza",
@@ -802,5 +797,7 @@
     "成功设置": "",
     "成功添加": "",
     "启动游戏": "",
-    "移除且总是移除": ""
+    "移除且总是移除": "",
+    "设为首选": "",
+    "QQ群": ""
 }

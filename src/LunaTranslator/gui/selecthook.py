@@ -159,7 +159,6 @@ class searchhookparam(LDialog):
                     usestruct.length = len(bs)
                 except:
                     pass
-            usestruct.boundaryModule = dumpvalues["module"][:120]
             usestruct.address_method = self.search_addr_range.idx()
             usestruct.search_method = self.search_method.idx()
             usestruct.isjithook = bool(dumpvalues["isjithook"])
@@ -171,6 +170,7 @@ class searchhookparam(LDialog):
                     dumpvalues["stopaddr"], usestruct.maxAddress
                 )
             else:
+                usestruct.boundaryModule = dumpvalues["module"][:120]
                 usestruct.minAddress = self.safehex(
                     dumpvalues["offstartaddr"], usestruct.minAddress
                 )
@@ -641,7 +641,6 @@ class hookselect(closeashidewindow):
         __.clicked.connect(
             lambda: os.startfile(dynamiclink("{main_server}/Resource/game_support"))
         )
-        self.searchtextlayout.addWidget(__)
 
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
@@ -660,6 +659,7 @@ class hookselect(closeashidewindow):
         self.userhookfind = LPushButton("搜索特殊码")
         self.userhookfind.clicked.connect(self.findhook)
         self.searchtextlayout.addWidget(self.userhookfind)
+        self.searchtextlayout.addWidget(__)
 
         ###################
         self.ttCombomodelmodel2 = LStandardItemModel()

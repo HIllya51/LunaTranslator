@@ -773,3 +773,10 @@ DECLARE_API void OcrDestroy(OcrLite *pOcrObj)
     if (pOcrObj)
         delete pOcrObj;
 }
+DECLARE_API void OcrListProviders()
+{
+    for (auto &&s : Ort::GetAvailableProviders())
+    {
+        std::cout << s << "\n";
+    }
+}
