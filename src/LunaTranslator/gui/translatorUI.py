@@ -1091,6 +1091,7 @@ class TranslatorWindow(resizableframeless):
         self.addbuttons()
         self.smooth_resizer = QVariantAnimation(self)
         self.smooth_resizer.setDuration(500)
+        self.smooth_resizer.setEasingCurve(QEasingCurve.Type.InOutQuad)
         self.smooth_resizer.valueChanged.connect(self.smooth_resizing)
         self.smooth_resizer2 = QVariantAnimation(self)
         self.smooth_resizer2.setDuration(500)

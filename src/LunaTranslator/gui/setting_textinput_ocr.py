@@ -19,6 +19,7 @@ from gui.usefulwidget import (
     pixmapviewer,
     LStandardItemModel,
     SuperCombo,
+    NQGroupBox,
     threebuttons,
     makesubtab_lazy,
     makescrollgrid,
@@ -268,10 +269,7 @@ def _ocrparam_create(self, idx):
 
 
 def _ocrparam(self):
-    self._ocrparam = QGroupBox()
-    self._ocrparam.setStyleSheet(
-        "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
-    )
+    self._ocrparam = NQGroupBox()
     self._ocrparaml = LFormLayout(self._ocrparam)
     _ocrparam_create(self, globalconfig["ocr_auto_method"])
     return self._ocrparam

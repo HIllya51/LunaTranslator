@@ -48,7 +48,7 @@ class TabWidget(QWidget):
         if self.__first:
             self.__first = False
             return
-        globalconfig["isopensettingfirsttime"] = idx
+        globalconfig["isopensettingfirsttime1"] = idx
 
     def __init__(self, parent=None):
         super(TabWidget, self).__init__(parent)
@@ -96,7 +96,7 @@ class Setting(closeashidewindow):
             self.downloadprogress.setValue(val)
             self.downloadprogress.setFormat(text)
             if val or text:
-                self.downloadprogress.setVisible(True)
+                self.updatelayout.setRowVisible(1, True)
         except:
             self.downloadprogress_cache = text, val
 
@@ -155,7 +155,7 @@ class Setting(closeashidewindow):
         do()
         self.tab_widget.adjust_list_widget_width()
         last = self.tab_widget.list_widget.count() - 1
-        if "isopensettingfirsttime" not in globalconfig:
-            globalconfig["isopensettingfirsttime"] = last
-        if globalconfig["isopensettingfirsttime"] == last:
+        if "isopensettingfirsttime1" not in globalconfig:
+            globalconfig["isopensettingfirsttime1"] = last
+        if globalconfig["isopensettingfirsttime1"] == last:
             self.tab_widget.setCurrentIndex(last)

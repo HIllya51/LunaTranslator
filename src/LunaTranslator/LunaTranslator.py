@@ -453,6 +453,7 @@ class MAINUI:
         if not globalconfig["refresh_on_get_trans"]:
             _showrawfunction()
             _showrawfunction = None
+        read_trans_once_check = []
         for engine in real_fix_rank:
             if engine in globalconfig["fanyi"]:
                 _colork = engine
@@ -469,6 +470,7 @@ class MAINUI:
                 waitforresultcallback,
                 is_auto_run,
                 result=maybehaspremt.get(engine),
+                read_trans_once_check=read_trans_once_check,
             )
         return True
 
@@ -506,7 +508,8 @@ class MAINUI:
         text_solved,
         waitforresultcallback,
         is_auto_run,
-        result=None,
+        result,
+        read_trans_once_check: list,
     ):
         callback = partial(
             self.GetTranslationCallback,
@@ -517,6 +520,7 @@ class MAINUI:
             optimization_params,
             _showrawfunction,
             text,
+            read_trans_once_check,
         )
         task = (
             callback,
@@ -542,6 +546,7 @@ class MAINUI:
         optimization_params,
         _showrawfunction,
         contentraw,
+        read_trans_once_check: list,
         res: str,
         iter_res_status,
         iserror=False,
@@ -597,13 +602,14 @@ class MAINUI:
 
                 self.transhis.getnewtranssignal.emit(apiname, res)
                 if not waitforresultcallback:
-                    if globalconfig["read_trans"] and (
-                        (not globalconfig["toppest_translator"])
-                        or (globalconfig["toppest_translator"] == classname)
+                    if (not read_trans_once_check) and (
+                        (globalconfig["toppest_translator"] == classname)
+                        or ((not globalconfig["toppest_translator"]))
                     ):
                         self.currentread = res
                         self.currentread_from_origin = False
                         self.readcurrent()
+                        read_trans_once_check.append(classname)
 
                     if globalconfig["textoutput_trans"]:
                         self.dispatchoutputer(res)

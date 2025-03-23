@@ -245,9 +245,7 @@ void TextHook::parsenewlineseperator(TextBuffer *buff)
   else
   {
     // ansi/utf8，newlineseperator都是简单字符
-    std::string newlineseperatorA;
-    for (int i = 0; i < wcslen(hp.lineSeparator); i++)
-      newlineseperatorA += (char)hp.lineSeparator[i];
+    std::string newlineseperatorA = wcasta(hp.lineSeparator);
     StringCharReplacer(buff, newlineseperatorA.c_str(), newlineseperatorA.size(), '\n');
   }
 }

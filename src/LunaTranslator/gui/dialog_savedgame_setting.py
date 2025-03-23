@@ -47,6 +47,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
+    NQGroupBox,
     clearlayout,
     getsimplecombobox,
     D_getIconButton,
@@ -456,7 +457,7 @@ class dialog_setting_game_internal(QWidget):
         self.setWindowIcon(_icon)
 
     def starttab(self, formLayout: LFormLayout, gameuid):
-        box = QGroupBox()
+        box = NQGroupBox()
         settinglayout = LFormLayout(box)
 
         def __(box, layout, config, uid):
@@ -1202,7 +1203,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         if savehook_new_data[gameuid].get("embedablehook"):
-            box = QGroupBox()
+            box = NQGroupBox()
             settinglayout = LFormLayout(box)
 
             settinglayout.addRow(
@@ -1275,7 +1276,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["needinserthookcode"],
             ),
         )
-        box = QGroupBox()
+        box = NQGroupBox()
         settinglayout = LFormLayout(box)
         formLayout.addRow(box)
 
@@ -1330,7 +1331,7 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         if savehook_new_data[gameuid].get("removeforeverhook"):
-            box = QGroupBox()
+            box = NQGroupBox()
             settinglayout = LFormLayout(box)
 
             settinglayout.addRow(

@@ -19,7 +19,7 @@ from gui.usefulwidget import (
     selectcolor,
     FocusFontCombo,
     SuperCombo,
-    D_getsimplecombobox,
+    NQGroupBox,
     D_getIconButton,
     getspinbox,
     getsmalllabel,
@@ -299,10 +299,7 @@ def resetgroudswitchcallback(self, group):
 
 def creategoodfontwid(self):
 
-    self.goodfontsettingsWidget = QGroupBox()
-    self.goodfontsettingsWidget.setStyleSheet(
-        "QGroupBox{ margin-top:0px;} QGroupBox:title {margin-top: 0px;}"
-    )
+    self.goodfontsettingsWidget = NQGroupBox()
     self.goodfontsettingsformlayout = LFormLayout(self.goodfontsettingsWidget)
     resetgroudswitchcallback(self, globalconfig["rendertext_using"])
     return self.goodfontsettingsWidget

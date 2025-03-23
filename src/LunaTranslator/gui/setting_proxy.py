@@ -114,7 +114,6 @@ def makeproxytab():
     shoufei = getall(
         l=shoufei, item="fanyi", name=translate_exits, getname=dynamicapiname
     )
-    lixians = getall(l=lixians, item="fanyi", name=checkxx, getname=dynamicapiname)
     ocrs = getall(
         l=getnotofflines("ocr"),
         item="ocr",
@@ -143,7 +142,6 @@ def makeproxytab():
         "语音合成",
         "辞书",
         "元数据",
-        "离线翻译",
     ]
     funcs = [
         functools.partial(makegridW, mianfei),
@@ -152,7 +150,6 @@ def makeproxytab():
         functools.partial(makegridW, readers),
         functools.partial(makegridW, cishus),
         functools.partial(makegridW, meta),
-        functools.partial(makegridW, lixians),
     ]
     tab, dotab = makesubtab_lazy(
         titles,

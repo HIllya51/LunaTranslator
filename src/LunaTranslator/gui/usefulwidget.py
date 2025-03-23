@@ -2128,6 +2128,12 @@ def makeforms(lay: LFormLayout, lis):
             lay.addRow(wid)
 
 
+class NQGroupBox(QGroupBox):
+    def __init__(self, *a, **k):
+        super().__init__(*a, **k)
+        self.setObjectName("notitle")
+
+
 def makegroupingrid(args):
     lis = args.get("grid")
     title = args.get("title", None)
@@ -2136,15 +2142,16 @@ def makegroupingrid(args):
     groupname = args.get("name", None)
     enable = args.get("enable", True)
     internallayoutname = args.get("internallayoutname", None)
-    group = LGroupBox()
+
+    if title:
+        group = LGroupBox()
+        group.setTitle(title)
+    else:
+        group = NQGroupBox()
     if not enable:
         group.setEnabled(False)
     if groupname and parent:
         setattr(parent, groupname, group)
-    if title:
-        group.setTitle(title)
-    else:
-        group.setObjectName("notitle")
 
     if _type == "grid":
         grid = QGridLayout(group)
@@ -2199,7 +2206,7 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
             elif len(item) == 3:
                 wid, cols, arg = item
                 if type(wid) == str:
-                    wid = QLabel(wid)
+                    wid = LLabel(wid)
                     if arg == "link":
                         wid.setOpenExternalLinks(True)
                 elif arg == "group":
@@ -2970,10 +2977,9 @@ class VisLFormLayout(LFormLayout):
         self._row_vis[row_index] = visible
 
 
-class CollapsibleBox(QGroupBox):
+class CollapsibleBox(NQGroupBox):
     def __init__(self, delayloadfunction=None, parent=None, margin0=True):
         super(CollapsibleBox, self).__init__(parent)
-        self.setObjectName("notitle")
         lay = QVBoxLayout(self)
         if margin0:
             lay.setContentsMargins(0, 0, 0, 0)
