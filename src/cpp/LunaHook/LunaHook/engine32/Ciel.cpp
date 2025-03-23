@@ -26,8 +26,7 @@ bool InsertCielHook()
   HookParam hp;
   hp.address = addr;
   hp.offset = regoffset(edi);
-  hp.index = 0;
-  hp.type = DATA_INDIRECT;
+  hp.type = DATA_INDIRECT | NO_CONTEXT;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
     if ((buffer->size) == 1)
