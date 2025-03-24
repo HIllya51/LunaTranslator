@@ -1172,7 +1172,7 @@ class MAINUI:
         QListWidget {{
                 font:{fontsize}pt  {fonttype};  }}
             """.format(
-            fontsize=globalconfig["settingfontsize"] + 4,
+            fontsize=globalconfig["settingfontsize"] + 2,
             fonttype=globalconfig["settingfonttype"],
         )
         style += "QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"

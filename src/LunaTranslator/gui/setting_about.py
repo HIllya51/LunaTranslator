@@ -362,15 +362,13 @@ class aboutwidget(NQGroupBox):
         clearlayout(self.grid)
         commonlink = [
             getsmalllabel(
-                makehtml("https://github.com/HIllya51/LunaTranslator", show="Github")
+                makehtml("{main_server}/Github/LunaTranslator", show="Github")
             ),
             getsmalllabel(makehtml("{main_server}/", show="项目网站")),
             getsmalllabel(makehtml("{docs_server}", show="使用说明")),
         ]
         qqqun = [
-            getsmalllabel(
-                makehtml("https://space.bilibili.com/592120404", show="视频教程")
-            ),
+            getsmalllabel(makehtml("{main_server}/Resource/Bilibili", show="Bilibili")),
             getsmalllabel(
                 makehtml("{main_server}/Resource/QQGroup", show="QQ群_963119821")
             ),
