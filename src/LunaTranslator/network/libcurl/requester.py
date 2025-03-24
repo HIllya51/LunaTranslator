@@ -136,7 +136,7 @@ class Requester(Requester_common):
         server,
         port,
         param,
-        url,
+        url: str,
         headers,
         cookies,
         databytes,
@@ -163,10 +163,11 @@ class Requester(Requester_common):
 
         if method == "HEAD":
             curl_easy_setopt(curl, CURLoption.NOBODY, 1)
-        curl_easy_setopt(curl, CURLoption.CUSTOMREQUEST, method.encode("utf8"))
+        MaybeRaiseException(
+            curl_easy_setopt(curl, CURLoption.CUSTOMREQUEST, method.encode("utf8"))
+        )
         MaybeRaiseException(curl_easy_setopt(curl, CURLoption.URL, url.encode("utf8")))
-        curl_easy_setopt(curl, CURLoption.PORT, port)
-
+        MaybeRaiseException(curl_easy_setopt(curl, CURLoption.PORT, port))
         self._setheaders(curl, headers, cookies)
 
         self._set_verify(curl, verify)

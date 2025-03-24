@@ -685,9 +685,6 @@
     "向下": "Xuống",
     "无可用模型": "Không có mẫu",
     "无可用语言": "Không có ngôn ngữ",
-    "过时的词典": "Từ điển lỗi thời",
-    "其他工具": "Công cụ khác",
-    "过时的翻译器": "Trình dịch lỗi thời",
     "翻译器加载失败": "Trình dịch không tải được",
     "核心设置": "Thiết lập lõi",
     "手动设置代理": "Thiết lập proxy theo cách thủ công",
@@ -801,5 +798,6 @@
     "设为首选": "",
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Nếu bạn cảm thấy phần mềm này hữu ích cho bạn,",
-    "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Chào mừng bạn đến với <a href = \"https://patreon.com/hillya51\"> Nhà tài trợ </a>. Cảm ơn bạn ~"
+    "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Chào mừng bạn đến với <a href = \"https://patreon.com/hillya51\"> Nhà tài trợ </a>. Cảm ơn bạn ~",
+    "过时的": ""
 }

@@ -10,6 +10,7 @@ import shutil, gobject
 from myutils.proxy import getproxy
 import zipfile, os
 import subprocess
+from traceback import print_exc
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makescrollgrid,
@@ -252,11 +253,14 @@ def delayloadlinks(key, lay):
         __grid = []
         function = source.get("function")
         if function:
-            func = getattr(
-                importlib.import_module(function[0]),
-                function[1],
-            )
-            __grid.append([(func, 0)])
+            try:
+                func = getattr(
+                    importlib.import_module(function[0]),
+                    function[1],
+                )
+                __grid.append([(func, 0)])
+            except:
+                print_exc()
         else:
             for link in source["links"]:
                 __grid.append(
@@ -379,8 +383,9 @@ class aboutwidget(NQGroupBox):
             )
         ]
         if getlanguse() == Languages.Chinese:
+            commonlink += qqqun + [""]
             shuominggrid = [
-                [*commonlink, *qqqun, ""],
+                commonlink,
                 [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", -1)],
                 [(functools.partial(createimageview, self), -1)],
             ]
@@ -388,8 +393,9 @@ class aboutwidget(NQGroupBox):
         else:
             if getlanguse() == Languages.TradChinese:
                 discord = qqqun + discord
+            commonlink += discord + [""]
             shuominggrid = [
-                [*commonlink, *discord, ""],
+                commonlink,
                 [],
                 [("如果你感觉该软件对你有帮助，", -1)],
                 [

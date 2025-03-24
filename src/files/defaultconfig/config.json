@@ -1438,7 +1438,7 @@
             "type": "offline"
         }
     },
-    "force_rect": false,
+    "force_rect": true,
     "darklight2": 0,
     "darktheme2": "PyQtDarkTheme",
     "lighttheme2": "PyQtDarkTheme",

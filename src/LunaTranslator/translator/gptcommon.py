@@ -16,15 +16,8 @@ def list_models(typename, regist):
 
 def stream_event_parser(response: requests.Response):
 
-    if (response.status_code != 200) and (
-        not response.headers["Content-Type"].startswith("text/event-stream")
-    ):
-        # application/json
-        # text/html
-        # 谷歌死妈了，流式返回429报错
-        raise Exception(response)
-    for chunk in response.iter_lines():
-        response_data: str = chunk.decode("utf-8").strip()
+    for response_data in response.iter_lines(decode_unicode=True):
+        response_data = response_data.strip()
         if not response_data:
             continue
         if not response_data.startswith("data: "):
@@ -105,8 +98,8 @@ def parseresponsegemini(response: requests.Response):
 
 def parseresponseclaude(response: requests.Response):
     message = ""
-    for chunk in response.iter_lines():
-        response_data = chunk.decode("utf-8").strip()
+    for response_data in response.iter_lines(decode_unicode=True):
+        response_data = response_data.strip()
         if not response_data:
             continue
         if response_data.startswith("data: "):
@@ -129,6 +122,13 @@ def parseresponseclaude(response: requests.Response):
 
 
 def parsestreamresp(hidethinking: bool, apiurl: str, response: requests.Response):
+
+    if (response.status_code != 200) and (
+        not response.headers["Content-Type"].startswith("text/event-stream")
+    ):
+        # application/json
+        # text/html
+        raise Exception(response)
     if apiurl.startswith("https://generativelanguage.googleapis.com"):
         respmessage = yield from parseresponsegemini(response)
     elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
@@ -141,7 +141,7 @@ def parsestreamresp(hidethinking: bool, apiurl: str, response: requests.Response
 class qianfanIAM:
 
     @staticmethod
-    def sign(access_key_id, secret_access_key):
+    def sign(access_key_id: str, secret_access_key: str):
         now = datetime.now(timezone.utc)
         canonical_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
         sign_key_info = "bce-auth-v1/{}/{}/8640000".format(
@@ -157,7 +157,7 @@ class qianfanIAM:
         return "{}/host/{}".format(sign_key_info, sign_result)
 
     @staticmethod
-    def getkey(ak, sk, proxy):
+    def getkey(ak: str, sk: str, proxy):
         headers = {
             "Host": "iam.bj.baidubce.com",
             "Authorization": qianfanIAM.sign(ak, sk),
@@ -170,7 +170,7 @@ class qianfanIAM:
         ).json()["token"]
 
 
-def createheaders(apiurl, config, maybeuse, proxy):
+def createheaders(apiurl: str, config: dict, maybeuse: dict, proxy):
     _ = {}
     curkey = config["SECRET_KEY"]
     if curkey:
@@ -314,7 +314,9 @@ class gptcommon(basetrans):
             ]
         }
         # https://discuss.ai.google.dev/t/gemma-3-missing-features-despite-announcement/71692/13
-        sys_message = {"systemInstruction": {"parts": {"text": sysprompt}}} if sysprompt else {}
+        sys_message = (
+            {"systemInstruction": {"parts": {"text": sysprompt}}} if sysprompt else {}
+        )
         message = []
         self._gpt_common_parse_context(
             message, self.context, self.config["附带上下文个数"], isgemini=True

@@ -1186,6 +1186,8 @@ namespace
             // 鏡界の白雪
             {0x810286C8, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00787"}}, // VPK版手动复制安装
             {0x8002BB78, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00787"}}, // zip安装版
+            {0x80025f0e, {CODEC_UTF8, 5, 0, 0, PCSG00787, "PCSG00787"}},
+            {0x80141978, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00787"}},
             // ニセコイ　ヨメイリ！？
             {0x8189e60c, {CODEC_UTF8, 4, 0, 0, 0, "PCSG00397"}},
             // DIABOLIK LOVERS DARK FATE

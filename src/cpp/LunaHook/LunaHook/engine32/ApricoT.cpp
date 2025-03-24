@@ -157,8 +157,77 @@ bool ApricoT::attach_function()
 
   return InsertApricoTHook();
 }
+bool MapleColors2()
+{
+  // https://vndb.org/v1285
+  const uint8_t bytes[] = {
+      0x33, 0xed,
+      0x39, 0x6c, XX2,
+      0x0f, 0x8e, XX4,
+      //<==
+      0x8b, 0x9c, 0x24, XX4,
+      0x8d, 0x4e, 0x04,
+      0x89, 0x4c, XX2,
+      0xeb, 0x0b};
+  ULONG addrX = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addrX)
+    return false;
+  HookParam hp;
+  hp.address = addrX + 2 + 4 + 6;
+  hp.type = USING_STRING | NO_CONTEXT;
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    auto ret = context->retaddr;
+    if (ret == 0)
+      return;
+    auto v7 = (DWORD *)context->esi;
+    auto v34 = v7 + 1;
+    std::string str;
+    for (int v21 = 0; v21 < v7[5]; v21++)
+    {
+      auto v22 = v7[6] < 4u ? v34 : (DWORD *)*v34;
+      auto v23 = v22[v21];
+      v23 = _byteswap_ushort(v23);
+      str += std::string((char *)&v23, 2);
+    }
+    if (ret > 0x10000)
+    {
+      static std::string lastname;
+      if (str == lastname)
+        return;
+      lastname = str;
+      buffer->from(str);
+      *split = 1;
+    }
+    else
+    {
+      static lru_cache<std::string> cache(4);
+      static std::string last;
 
-bool CROSSNET::attach_function()
+      if (cache.touch(str))
+      {
+        last = str;
+        return;
+      }
+      auto parse = [](std::string s)
+      {
+        return strReplace(s, "\x81\x40");
+      };
+      if (startWith(str, last))
+      {
+        buffer->from(parse(str.substr(last.size())));
+        last = str;
+      }
+      else
+      {
+        last = str;
+        buffer->from(parse(str));
+      }
+    }
+  };
+  return NewHook(hp, "MapleColors2");
+}
+bool MapleColorsH()
 {
   //[040130][APRICOT] Maple Colors H (bin+cue)
   const uint8_t bytes[] = {
@@ -170,6 +239,8 @@ bool CROSSNET::attach_function()
       0xd1, 0xf9,
       0x0f, 0x84, XX4};
   ULONG addrX = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addrX)
+    return false;
   HookParam hp;
   hp.address = addrX + 8;
   hp.type = USING_STRING;
@@ -213,5 +284,9 @@ bool CROSSNET::attach_function()
       last = str;
     }
   };
-  return NewHook(hp, "CROSSNET");
+  return NewHook(hp, "MapleColors");
+}
+bool MapleColors::attach_function()
+{
+  return MapleColorsH() || MapleColors2();
 }

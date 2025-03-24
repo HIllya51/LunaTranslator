@@ -17,7 +17,6 @@
 #include <functional>
 #include <algorithm>
 #include <regex>
-#include <algorithm>
 #include <memory>
 #include <optional>
 #include <thread>

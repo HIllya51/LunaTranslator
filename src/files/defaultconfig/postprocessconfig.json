@@ -54,7 +54,7 @@
         }
     },
     "_2": {
-        "use": false,
+        "use": true,
         "name": "去除重复字符_AAAABBBBCCCC->ABC",
         "args": {
             "重复次数(若为1则自动分析去重)": 1,
@@ -73,7 +73,7 @@
         }
     },
     "_3": {
-        "use": false,
+        "use": true,
         "name": "去除重复行_ABCDABCDABCD->ABCD",
         "args": {
             "重复次数(若为1则自动分析去重)": 1
@@ -97,7 +97,7 @@
         "isExUse": true
     },
     "_6EX": {
-        "use": false,
+        "use": true,
         "name": "过滤换行符",
         "isExUse": true
     },

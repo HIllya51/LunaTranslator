@@ -685,9 +685,6 @@
     "向下": "giù",
     "无可用模型": "Nessun modello disponibile",
     "无可用语言": "Nessuna lingua disponibile",
-    "过时的词典": "Dizionario obsoleto",
-    "其他工具": "Altri strumenti",
-    "过时的翻译器": "Traduttore obsoleto",
     "翻译器加载失败": "Caricamento del traduttore non riuscito",
     "核心设置": "Impostazioni centrali",
     "手动设置代理": "Configura manualmente il proxy",
@@ -801,5 +798,6 @@
     "设为首选": "",
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Se ritieni che il software ti sia utile,",
-    "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Benvenuto in Be My <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Grazie ~"
+    "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Benvenuto in Be My <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Grazie ~",
+    "过时的": ""
 }

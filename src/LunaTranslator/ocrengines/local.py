@@ -41,12 +41,11 @@ class ocrpoints(Structure):
 def usewhichonnxruntime():
     # 尝试加载系统onnxruntime，有directml优化，速度稍快一丢丢
     sysonnx = windows.SearchPath("onnxruntime.dll")
-    if sysonnx:
-        ver = winsharedutils.queryversion(sysonnx)
-    else:
-        ver = (0,)
+    ver = winsharedutils.queryversion(sysonnx)
+    ver = ver if ver else (0,)
     myonnx = gobject.GetDllpath("onnxruntime.dll")
     vermy = winsharedutils.queryversion(myonnx)
+    vermy = vermy if vermy else (0, )
     print(sysonnx, ver)
     print(myonnx, vermy)
     # 但最多尝试到v1.20.1版本，v1.21.0开始会不兼容。

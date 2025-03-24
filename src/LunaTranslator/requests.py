@@ -271,8 +271,10 @@ class Requester_common:
                     ).strip()
                 ).decode()
             )
-
         scheme, server, port, param, url = self._parseurl(url, params)
+        if server == "127.0.0.1":
+            # libcurl在本地地址走代理时有时会谜之502
+            proxies = None
         databytes = b""
         contenttype = None
         if files:

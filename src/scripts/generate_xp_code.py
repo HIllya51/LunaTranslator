@@ -18,10 +18,18 @@ class TypeHintRemover_2(ast.NodeTransformer):
         return obj
 
 
+def parseEx(node):
+    transformed = TypeHintRemover_1().visit(node)
+    transformed = TypeHintRemover_2().visit(transformed)
+    if "body" in dir(transformed):
+        for i, obj in enumerate(transformed.body):
+            transformed.body[i] = parseEx(obj)
+    return transformed
+
+
 def typeHintRemover(source):
     parsed_source = ast.parse(source)
-    transformed = TypeHintRemover_1().visit(parsed_source)
-    transformed = TypeHintRemover_2().visit(transformed)
+    transformed = parseEx(parsed_source)
     return ast.unparse(transformed)
 
 
@@ -31,7 +39,9 @@ def parsecode(code: str):
     code = code.replace("self.parent().devicePixelRatioF()", "1")
     code = code.replace("self.devicePixelRatioF()", "1")
     code = re.sub(
-        r"(Q[a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+\.([a-zA-Z0-9_]+)([ \)\n,:\]])", r"\1.\2\3", code
+        r"(Q[a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+\.([a-zA-Z0-9_]+)([ \)\n,:\]])",
+        r"\1.\2\3",
+        code,
     )
     code = typeHintRemover(code)
     return code

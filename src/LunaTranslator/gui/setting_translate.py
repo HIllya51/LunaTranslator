@@ -24,6 +24,7 @@ from gui.usefulwidget import (
     listediter,
     selectcolor,
     makegrid,
+    CollapsibleBoxWithButton,
     makesubtab_lazy,
     getspinbox,
     ClickableLabel,
@@ -494,6 +495,46 @@ def initsome11(self, l, label=None, btnplus=False):
     return grids
 
 
+def delayfoldoldtrans(self, lay):
+
+    _, not_is_gpt_like = splitapillm(splittranslatortypes()[0])
+    not_is_gpt_like = initsome11(self, not_is_gpt_like)
+    w, do = makegrid(not_is_gpt_like, delay=True)
+    lay.addWidget(w)
+    do()
+
+
+def foldoldtrans(self):
+
+    box = CollapsibleBoxWithButton(functools.partial(delayfoldoldtrans, self), "过时的")
+    return box
+
+
+def initsome21(self, l, label=None, btnplus=None):
+    is_gpt_likes, not_is_gpt_like = splitapillm(l)
+    not_is_gpt_like = initsome11(self, not_is_gpt_like, label)
+    is_gpt_likes = initsome11(self, is_gpt_likes, label, btnplus=btnplus)
+    grids = [
+        [
+            (
+                dict(
+                    type="grid",
+                    title="大模型",
+                    grid=is_gpt_likes,
+                    internallayoutname=(
+                        ("damoxinggridinternal" + btnplus) if btnplus else None
+                    ),
+                    parent=self,
+                ),
+                0,
+                "group",
+            )
+        ],
+        [functools.partial(foldoldtrans, self)],
+    ]
+    return grids
+
+
 def initsome2(self, l, label=None, btnplus=None):
     is_gpt_likes, not_is_gpt_like = splitapillm(l)
     not_is_gpt_like = initsome11(self, not_is_gpt_like, label)
@@ -624,7 +665,7 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
 
     lixians, pre, mianfei, shoufei = splittranslatortypes()
 
-    offlinegrid = initsome2(self, lixians, btnplus="offline")
+    offlinegrid = initsome21(self, lixians, btnplus="offline")
     offlinegrid += [[functools.partial(offlinelinks, "translate")]]
     onlinegrid = initsome11(self, mianfei)
     online_reg_grid += initsome2(self, shoufei, btnplus="api")

@@ -2110,7 +2110,11 @@ def makeforms(lay: LFormLayout, lis):
             wid = hb
         else:
             if callable(wid):
-                wid = wid()
+                try:
+                    wid = wid()
+                except:
+                    print_exc()
+                    wid = QWidget()
             elif isinstance(wid, str):
                 wid = QLabel(wid)
                 wid.setOpenExternalLinks(True)
@@ -2219,7 +2223,11 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
                 cols = -maxl // cols
             do = None
             if callable(wid):
-                wid = wid()
+                try:
+                    wid = wid()
+                except:
+                    print_exc()
+                    wid = QWidget()
                 if isinstance(wid, tuple):
                     wid, do = wid
             grid.addWidget(wid, nowr, nowc, 1, cols)
@@ -2931,6 +2939,23 @@ class VisLFormLayout(LFormLayout):
         self._row_widgets = {}
         self._reverse = {}
         self._row_vis = {}
+        if "takeRow" not in dir(self):
+            # qt5.5兼容
+            self.takeRow = self.__takeRow
+
+    def __takeRow(self, row):
+        label_item = self.itemAt(row, QFormLayout.ItemRole.LabelRole)
+        field_item = self.itemAt(row, QFormLayout.ItemRole.FieldRole)
+        if label_item:
+            self.removeItem(label_item)
+        if field_item:
+            self.removeItem(field_item)
+
+        class __res:
+            def __init__(self_, fieldItem, labelItem):
+                self_.labelItem, self_.fieldItem = labelItem, fieldItem
+
+        return __res(field_item, label_item)
 
     def addRow(self, label_or_field, field=None):
         row_index = self.rowCount()
@@ -2967,13 +2992,14 @@ class VisLFormLayout(LFormLayout):
         else:
             tres = self.takeRow(insert_position)
             label = tres.labelItem
-            if label is not None:
+            if label:
                 self.removeItem(label)
                 label.widget().deleteLater()
-            if tres.fieldItem.widget():
-                tres.fieldItem.widget().hide()
-            else:
-                showhidelayout(tres.fieldItem.layout(), False)
+            if tres.fieldItem:
+                if tres.fieldItem.widget():
+                    tres.fieldItem.widget().hide()
+                else:
+                    showhidelayout(tres.fieldItem.layout(), False)
         self._row_vis[row_index] = visible
 
 

@@ -685,9 +685,6 @@
     "向下": "Vers le bas",
     "无可用模型": "Aucun modèle disponible",
     "无可用语言": "Aucune langue disponible",
-    "过时的词典": "Dictionnaire obsolète",
-    "其他工具": "Autres outils",
-    "过时的翻译器": "Traducteur obsolète",
     "翻译器加载失败": "Le chargement du traducteur a échoué",
     "核心设置": "Paramètres de base",
     "手动设置代理": "Configurer l'agent manuellement",
@@ -801,5 +798,6 @@
     "设为首选": "",
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Si vous sentez que le logiciel vous est utile,",
-    "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Bienvenue pour être mon <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Merci ~"
+    "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Bienvenue pour être mon <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Merci ~",
+    "过时的": ""
 }

@@ -685,9 +685,6 @@
     "向下": "ner",
     "无可用模型": "Inga tillgängliga modeller",
     "无可用语言": "Inga tillgängliga språk",
-    "过时的词典": "Föråldrad ordlista",
-    "其他工具": "Andra verktyg",
-    "过时的翻译器": "Föråldrad översättare",
     "翻译器加载失败": "Laddning av översättare misslyckades",
     "核心设置": "Kärninställningar",
     "手动设置代理": "Ställ in proxy manuellt",
@@ -801,5 +798,6 @@
     "设为首选": "",
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Om du tycker att programvaran är till hjälp för dig,",
-    "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Välkommen till att vara min <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Tack ~"
+    "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Välkommen till att vara min <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Tack ~",
+    "过时的": ""
 }

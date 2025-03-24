@@ -446,6 +446,6 @@ std::vector<ENGINE *> check_engines()
         new MerRouge,
         new GROOVER,
         new SmartAdv,
-        new CROSSNET,
+        new MapleColors,
         new Hug};
 }
