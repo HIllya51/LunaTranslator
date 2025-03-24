@@ -602,9 +602,13 @@ class MAINUI:
 
                 self.transhis.getnewtranssignal.emit(apiname, res)
                 if not waitforresultcallback:
-                    if (not read_trans_once_check) and (
-                        (globalconfig["toppest_translator"] == classname)
-                        or ((not globalconfig["toppest_translator"]))
+                    if (
+                        globalconfig["read_trans"]
+                        and (not read_trans_once_check)
+                        and (
+                            (globalconfig["toppest_translator"] == classname)
+                            or ((not globalconfig["toppest_translator"]))
+                        )
                     ):
                         self.currentread = res
                         self.currentread_from_origin = False
