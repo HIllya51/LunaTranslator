@@ -302,7 +302,7 @@ def updatexx(self):
         vs = ".".join(str(_) for _ in version)
         if vs.endswith(".0"):
             vs = vs[:-2]
-        versionstring = ("v{} {}").format(vs, platform.architecture()[0])
+        versionstring = ("v{}").format(vs)
 
     w = NQGroupBox(self)
     l = VisLFormLayout(w)
@@ -392,6 +392,7 @@ class aboutwidget(NQGroupBox):
                 discord = qqqun + discord
             shuominggrid = [
                 [*commonlink, *discord, ""],
+                [],
                 [("如果你感觉该软件对你有帮助，", -1)],
                 [
                     (
