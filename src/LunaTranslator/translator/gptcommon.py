@@ -313,7 +313,8 @@ class gptcommon(basetrans):
                 },
             ]
         }
-        sys_message = {"systemInstruction": {"parts": {"text": sysprompt}}}
+        # https://discuss.ai.google.dev/t/gemma-3-missing-features-despite-announcement/71692/13
+        sys_message = {"systemInstruction": {"parts": {"text": sysprompt}}} if sysprompt else {}
         message = []
         self._gpt_common_parse_context(
             message, self.context, self.config["附带上下文个数"], isgemini=True

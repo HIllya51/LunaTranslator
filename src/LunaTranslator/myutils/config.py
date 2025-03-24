@@ -392,8 +392,6 @@ def loadlanguage():
 def _TR(k: str) -> str:
     if not k:
         return ""
-    if isascii(k):
-        return k
     if k.startswith("(") and k.endswith(")"):
         return "(" + _TR(k[1:-1]) + ")"
     if k.startswith("<a") and k.endswith("</a>"):
@@ -405,6 +403,8 @@ def _TR(k: str) -> str:
     if "_" in k:
         splits = k.split("_")
         return " ".join([_TR(_) for _ in splits])
+    if isascii(k):
+        return k
     loadlanguage()
     __ = languageshow.get(k)
     if __:
