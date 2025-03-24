@@ -316,16 +316,9 @@ std::vector<uintptr_t> GetFunctions(uintptr_t module)
 												sizeof(DWORD) * *(WORD *)(module + exportDirectory->AddressOfNameOrdinals + i * sizeof(WORD))));
 	return functions;
 }
-void mergevector(std::vector<uintptr_t> &v1, std::vector<uintptr_t> &v2)
+void mergevector(std::vector<uintptr_t> &v1, const std::vector<uintptr_t> &v2)
 {
-	for (auto addr : v2)
-	{
-		auto it = std::find(v1.begin(), v1.end(), addr);
-		if (it == v1.end())
-		{
-			v1.push_back(addr);
-		}
-	}
+	std::set_union(v1.begin(), v1.end(), v2.begin(), v2.end(), v1.begin());
 }
 void SearchForHooks_Return()
 {
