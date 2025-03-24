@@ -369,8 +369,11 @@ class aboutwidget(NQGroupBox):
         ]
         qqqun = [
             getsmalllabel(
+                makehtml("https://space.bilibili.com/592120404", show="视频教程")
+            ),
+            getsmalllabel(
                 makehtml("{main_server}/Resource/QQGroup", show="QQ群_963119821")
-            )
+            ),
         ]
         discord = [
             getsmalllabel(
