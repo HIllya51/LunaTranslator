@@ -39,6 +39,7 @@ from gui.dynalang import LDialog, LLabel
 class IconLabelX(LLabel):
     clicked = pyqtSignal()
     rightclick = pyqtSignal()
+    middleclick = pyqtSignal()
 
     @staticmethod
     def w():
@@ -120,6 +121,8 @@ class IconLabelX(LLabel):
                 self.rightclick.emit()
             elif ev.button() == Qt.MouseButton.LeftButton:
                 self.clicked.emit()
+            elif ev.button() == Qt.MouseButton.MiddleButton:
+                self.middleclick.emit()
         return super().mouseReleaseEvent(ev)
 
 
@@ -127,6 +130,24 @@ def str2rgba(string, alpha100):
     c = QColor(string)
     c.setAlphaF(alpha100 / 100)
     return c.name(QColor.NameFormat.HexArgb)
+
+
+class buttonfunctions:
+    def __init__(
+        self,
+        clicked=None,
+        rightclick=None,
+        middleclick=None,
+        iconstate=None,
+        colorstate=None,
+    ):
+        (
+            self.clicked,
+            self.rightclick,
+            self.middleclick,
+            self.iconstate,
+            self.colorstate,
+        ) = (clicked, rightclick, middleclick, iconstate, colorstate)
 
 
 class ButtonBar(QFrame):
@@ -212,13 +233,14 @@ class ButtonBar(QFrame):
     def takusanbuttons(
         self,
         _type,
-        clickfunc,
+        clicked,
         rightclick,
         tips,
         name,
         belong=None,
         iconstate=None,
         colorstate=None,
+        middleclick=None,
     ):
         button = IconLabelX()
 
@@ -228,10 +250,12 @@ class ButtonBar(QFrame):
             except:
                 print_exc()
 
-        if clickfunc:
-            button.clicked.connect(functools.partial(callwrap, clickfunc))
+        if clicked:
+            button.clicked.connect(functools.partial(callwrap, clicked))
         if rightclick:
             button.rightclick.connect(functools.partial(callwrap, rightclick))
+        if middleclick:
+            button.middleclick.connect(functools.partial(callwrap, middleclick))
         if tips:
             button.setToolTip(tips)
             button.setAccessibleName(tips)
@@ -643,9 +667,11 @@ class TranslatorWindow(resizableframeless):
             ("retrans", self.startTranslater),
             (
                 "automodebutton",
-                self.changeTranslateMode,
-                lambda: globalconfig["autorun"],
-                lambda: globalconfig["autorun"],
+                buttonfunctions(
+                    clicked=self.changeTranslateMode,
+                    iconstate=lambda: globalconfig["autorun"],
+                    colorstate=lambda: globalconfig["autorun"],
+                ),
             ),
             ("setting", lambda: gobject.baseobject.settin_ui.showsignal.emit()),
             (
@@ -656,75 +682,83 @@ class TranslatorWindow(resizableframeless):
             ("edittrans", lambda: edittrans(gobject.baseobject.commonstylebase)),
             (
                 "showraw",
-                self.changeshowhideraw,
-                lambda: globalconfig["isshowrawtext"],
-                lambda: globalconfig["isshowrawtext"],
+                buttonfunctions(
+                    clicked=self.changeshowhideraw,
+                    iconstate=lambda: globalconfig["isshowrawtext"],
+                    colorstate=lambda: globalconfig["isshowrawtext"],
+                ),
             ),
             (
                 "showtrans",
-                self.changeshowhidetrans,
-                lambda: globalconfig["showfanyi"],
-                lambda: globalconfig["showfanyi"],
+                buttonfunctions(
+                    clicked=self.changeshowhidetrans,
+                    iconstate=lambda: globalconfig["showfanyi"],
+                    colorstate=lambda: globalconfig["showfanyi"],
+                ),
             ),
             ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
             (
                 "noundict",
-                lambda: loadpostsettingwindowmethod_maybe(
-                    "noundict", gobject.baseobject.commonstylebase
-                ),
-                None,
-                None,
-                lambda: loadpostsettingwindowmethod("noundict")(
-                    gobject.baseobject.commonstylebase
+                buttonfunctions(
+                    clicked=lambda: loadpostsettingwindowmethod_maybe(
+                        "noundict", gobject.baseobject.commonstylebase
+                    ),
+                    rightclick=lambda: loadpostsettingwindowmethod("noundict")(
+                        gobject.baseobject.commonstylebase,
+                    ),
                 ),
             ),
             (
                 "noundict_direct",
-                lambda: loadpostsettingwindowmethod_maybe(
-                    "vndbnamemap", gobject.baseobject.commonstylebase
-                ),
-                None,
-                None,
-                lambda: loadpostsettingwindowmethod("vndbnamemap")(
-                    gobject.baseobject.commonstylebase
+                buttonfunctions(
+                    clicked=lambda: loadpostsettingwindowmethod_maybe(
+                        "vndbnamemap", gobject.baseobject.commonstylebase
+                    ),
+                    rightclick=lambda: loadpostsettingwindowmethod("vndbnamemap")(
+                        gobject.baseobject.commonstylebase
+                    ),
                 ),
             ),
             (
                 "fix",
-                lambda: loadpostsettingwindowmethod_maybe(
-                    "transerrorfix", gobject.baseobject.commonstylebase
-                ),
-                None,
-                None,
-                lambda: loadpostsettingwindowmethod("transerrorfix")(
-                    gobject.baseobject.commonstylebase
+                buttonfunctions(
+                    clicked=lambda: loadpostsettingwindowmethod_maybe(
+                        "transerrorfix", gobject.baseobject.commonstylebase
+                    ),
+                    rightclick=lambda: loadpostsettingwindowmethod("transerrorfix")(
+                        gobject.baseobject.commonstylebase
+                    ),
                 ),
             ),
             (
                 "langdu",
-                lambda: gobject.baseobject.readcurrent(force=True),
-                None,
-                None,
-                lambda: gobject.baseobject.audioplayer.stop(),
+                buttonfunctions(
+                    clicked=lambda: gobject.baseobject.readcurrent(force=True),
+                    rightclick=lambda: gobject.baseobject.audioplayer.stop(),
+                ),
             ),
             (
                 "mousetransbutton",
-                lambda: self.changemousetransparentstate(0),
-                None,
-                lambda: globalconfig["mousetransparent"],
+                buttonfunctions(
+                    clicked=lambda: self.changemousetransparentstate(0),
+                    colorstate=lambda: globalconfig["mousetransparent"],
+                ),
             ),
             (
                 "backtransbutton",
-                lambda: self.changemousetransparentstate(1),
-                None,
-                lambda: globalconfig["backtransparent"],
+                buttonfunctions(
+                    clicked=lambda: self.changemousetransparentstate(1),
+                    colorstate=lambda: globalconfig["backtransparent"],
+                ),
             ),
             (
                 "locktoolsbutton",
-                self.changetoolslockstate,
-                lambda: globalconfig["locktools"],
-                lambda: globalconfig["locktools"],
-                self.changetoolslockstateEx,
+                buttonfunctions(
+                    clicked=self.changetoolslockstate,
+                    iconstate=lambda: globalconfig["locktools"],
+                    colorstate=lambda: globalconfig["locktools"],
+                    rightclick=self.changetoolslockstateEx,
+                ),
             ),
             (
                 "gamepad_new",
@@ -740,51 +774,64 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "selectocrrange",
-                self.clickRange,
-                None,
-                None,
-                self.clickRangeclear,
+                buttonfunctions(
+                    clicked=self.clickRange,
+                    rightclick=self.clickRangeclear,
+                ),
             ),
             (
                 "hideocrrange",
-                self.showhideocrrange,
-                None,
-                lambda: self.showhidestate,
-                self.clear_signal_1.emit,
+                buttonfunctions(
+                    clicked=self.showhideocrrange,
+                    colorstate=lambda: self.showhidestate,
+                    rightclick=self.clear_signal_1.emit,
+                ),
             ),
             (
                 "bindwindow",
-                self.bindcropwindow_signal.emit,
-                None,
-                lambda: self.isbindedwindow,
+                buttonfunctions(
+                    clicked=self.bindcropwindow_signal.emit,
+                    colorstate=lambda: self.isbindedwindow,
+                ),
             ),
             ("searchwordW", self.callopensearchwordwindow),
             (
                 "fullscreen",
-                lambda: self._fullsgame(False),
-                lambda: self.isletgamefullscreened,
-                None,
-                lambda: self._fullsgame(True),
+                buttonfunctions(
+                    clicked=lambda: self._fullsgame(False),
+                    rightclick=lambda: self._fullsgame(True),
+                    middleclick=MagpieBuiltin.overlay,
+                    iconstate=lambda: self.isletgamefullscreened,
+                ),
             ),
-            ("grabwindow", grabwindow, None, None, lambda: grabwindow(tocliponly=True)),
+            (
+                "grabwindow",
+                buttonfunctions(
+                    clicked=grabwindow, rightclick=lambda: grabwindow(tocliponly=True)
+                ),
+            ),
             (
                 "muteprocess",
-                self.muteprocessfuntion,
-                lambda: self.processismuteed,
-                None,
+                buttonfunctions(
+                    clicked=self.muteprocessfuntion,
+                    iconstate=lambda: self.processismuteed,
+                ),
             ),
             (
                 "memory",
-                lambda: dialog_memory(gobject.baseobject.commonstylebase),
-                None,
-                None,
-                lambda: dialog_memory(gobject.baseobject.commonstylebase, True),
+                buttonfunctions(
+                    clicked=lambda: dialog_memory(gobject.baseobject.commonstylebase),
+                    rightclick=lambda: dialog_memory(
+                        gobject.baseobject.commonstylebase, True
+                    ),
+                ),
             ),
             (
                 "keepontop",
-                self.btnsetontopfunction,
-                None,
-                lambda: globalconfig["keepontop"],
+                buttonfunctions(
+                    clicked=self.btnsetontopfunction,
+                    colorstate=lambda: globalconfig["keepontop"],
+                ),
             ),
             (
                 "simulate_key_ctrl",
@@ -796,26 +843,26 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "copy_once",
-                lambda: gobject.baseobject.textgetmethod(
-                    winsharedutils.clipboard_get(), False
-                ),
-                None,
-                None,
-                lambda: gobject.baseobject.textgetmethod(
-                    gobject.baseobject.currenttext
-                    + (getlangsrc().space if gobject.baseobject.currenttext else "")
-                    + winsharedutils.clipboard_get(),
-                    False,
+                buttonfunctions(
+                    clicked=lambda: gobject.baseobject.textgetmethod(
+                        winsharedutils.clipboard_get(), False
+                    ),
+                    rightclick=lambda: gobject.baseobject.textgetmethod(
+                        gobject.baseobject.currenttext
+                        + (getlangsrc().space if gobject.baseobject.currenttext else "")
+                        + winsharedutils.clipboard_get(),
+                        False,
+                    ),
                 ),
             ),
             (
                 "game_ref_favorites",
-                self.favoritesmenu,
-                None,
-                None,
-                lambda: favorites(
-                    gobject.baseobject.commonstylebase,
-                    gobject.baseobject.gameuid,
+                buttonfunctions(
+                    clicked=self.favoritesmenu,
+                    rightclick=lambda: favorites(
+                        gobject.baseobject.commonstylebase,
+                        gobject.baseobject.gameuid,
+                    ),
                 ),
             ),
             (
@@ -833,23 +880,28 @@ class TranslatorWindow(resizableframeless):
             ("quit", self.close),
             (
                 "selectable",
-                self.setselectable,
-                None,
-                lambda: globalconfig["selectable"],
-                self.setselectableEx,
+                buttonfunctions(
+                    clicked=self.setselectable,
+                    colorstate=lambda: globalconfig["selectable"],
+                    rightclick=self.setselectableEx,
+                ),
             ),
         )
 
         _type = {"quit": 2}
 
         for __ in functions:
-            btn = func = iconstate = colorstate = rightclick = None
+            btn = clicked = iconstate = colorstate = rightclick = middleclick = None
             if len(__) == 2:
-                btn, func = __
-            elif len(__) == 4:
-                btn, func, iconstate, colorstate = __
-            elif len(__) == 5:
-                btn, func, iconstate, colorstate, rightclick = __
+                btn, funcs = __
+                if isinstance(funcs, buttonfunctions):
+                    clicked = funcs.clicked
+                    rightclick = funcs.rightclick
+                    middleclick = funcs.middleclick
+                    iconstate = funcs.iconstate
+                    colorstate = funcs.colorstate
+                else:
+                    clicked = funcs
             belong = (
                 globalconfig["toolbutton"]["buttons"][btn]["belong"]
                 if "belong" in globalconfig["toolbutton"]["buttons"][btn]
@@ -858,13 +910,14 @@ class TranslatorWindow(resizableframeless):
             tp = _type[btn] if btn in _type else 1
             self.titlebar.takusanbuttons(
                 tp,
-                func,
+                clicked,
                 rightclick,
                 globalconfig["toolbutton"]["buttons"][btn]["tip"],
                 btn,
                 belong,
                 iconstate,
                 colorstate,
+                middleclick,
             )
 
     def callopensearchwordwindow(self):

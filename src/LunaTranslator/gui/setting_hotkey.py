@@ -13,6 +13,7 @@ from gui.usefulwidget import (
     getboxlayout,
 )
 from gui.dynalang import LLabel
+from myutils.magpie_builtin import MagpieBuiltin
 
 
 def delaycreatereferlabels(self, name):
@@ -79,10 +80,7 @@ def registrhotkeys(self):
         "_17": gobject.baseobject.translation_ui.quitf_signal.emit,
         "_21": grabwindow,
         "_22": gobject.baseobject.translation_ui.muteprocessignal.emit,
-        "_25": lambda: windows.SendMessage(
-            windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
-            windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
-        ),
+        "_25": MagpieBuiltin.overlay,
         "41": lambda: gobject.baseobject.translation_ui.fullsgame_signal.emit(False),
         "42": lambda: gobject.baseobject.translation_ui.fullsgame_signal.emit(True),
         "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
